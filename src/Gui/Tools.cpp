@@ -61,6 +61,30 @@ QPixmap FCTools::resize(int w, int h, QPixmap p)
   return pm;
 }
 
+QPixmap FCTools::fillUp(int w, int h, QPixmap p)
+{
+  if (p.width() == 0 || p.height() == 0)
+    return p; // do not resize a null pixmap
+
+  QPixmap pix = p;
+  int x = pix.width () > w ? 0 : (w - pix.width ())/2;
+  int y = pix.height() > h ? 0 : (h - pix.height())/2;
+
+  QPalette pal = qApp->palette();
+  QColorGroup g = pal.disabled();
+
+  QPixmap pm;
+  pm.resize(w,h);
+  pm.fill(g.base());
+
+  QPainter pt;
+  pt.begin( &pm );
+  pt.setPen( g.light() );
+  pt.drawPixmap(x, y, pix);
+  pt.end();
+  return pm;
+}
+
 void FCTools::clearToolButtons(QToolBar* tb)
 {
   if ( !tb->children() )

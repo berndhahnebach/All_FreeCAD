@@ -884,7 +884,10 @@ void ApplicationWindow::LoadWindowSettings()
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	setUsesBigPixmaps (big);
   if (s)
+  {
     QApplication::setStyle(s);
+    setAreaPal(palette());
+  }
 }
 
 void ApplicationWindow::SaveWindowSettings()
@@ -904,6 +907,19 @@ void ApplicationWindow::SaveWindowSettings()
   }
 }
 
+void ApplicationWindow::setPalette(const QPalette& pal)
+{
+  QextMdiMainFrm::setPalette(pal);
+  setAreaPal(pal);
+}
+
+void ApplicationWindow::setAreaPal(const QPalette& pal)
+{
+  m_pMdi->setMdiCaptionActiveBackColor(pal.disabled().background());
+  m_pMdi->setMdiCaptionActiveForeColor(pal.active().foreground());
+  m_pMdi->setMdiCaptionInactiveBackColor(pal.active().mid());
+  m_pMdi->setMdiCaptionInactiveForeColor(pal.disabled().light());
+}
 
 //**************************************************************************
 // Python stuff

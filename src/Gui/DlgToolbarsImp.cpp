@@ -68,7 +68,7 @@ FCDlgCustomToolbarsImp::FCDlgCustomToolbarsImp( QWidget* parent, const char* nam
     {
       QListViewItem* item = new QListViewItem(itemNode,FCListView::lastItem(AvailableActions), (*it3)->GetAction()->menuText());
       QPixmap pix = (*it3)->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
-      item->setPixmap(0, FCTools::resize(24,24,pix));
+      item->setPixmap(0, FCTools::fillUp(24,24,pix));
       itemNode->insertItem(item);
     }
 
@@ -223,7 +223,7 @@ void FCDlgCustomToolbarsImp::slotToolBarSelected(const QString & name)
           {
             QListViewItem* item = new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), pCom->GetAction()->menuText());
             QPixmap pix = pCom->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
-            item->setPixmap(0, FCTools::resize(24,24,pix));
+            item->setPixmap(0, FCTools::fillUp(24,24,pix));
             ToolbarActions->insertItem(item);
           }
         }
@@ -255,7 +255,7 @@ void FCDlgCustomToolbarsImp::slotAddAction()
         if (it.current()->pixmap(0) != NULL)
         {
           QPixmap pix = *(it.current()->pixmap(0));
-  	    	i->setPixmap( 0,  FCTools::resize(24,24,pix));
+  	    	i->setPixmap( 0,  FCTools::fillUp(24,24,pix));
         }
 		    ToolbarActions->setCurrentItem( i );
 		    ToolbarActions->ensureItemVisible( i );
@@ -280,7 +280,7 @@ void FCDlgCustomToolbarsImp::slotAddAction()
       if (it.current()->pixmap(0) != NULL)
       {
         QPixmap pix = *(it.current()->pixmap(0));
-  	    i->setPixmap( 0, FCTools::resize(24,24,pix) );
+  	    i->setPixmap( 0, FCTools::fillUp(24,24,pix) );
       }
 	    ToolbarActions->setCurrentItem( i );
 	    ToolbarActions->ensureItemVisible( i );

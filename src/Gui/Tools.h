@@ -35,6 +35,7 @@ class FCTools
 {
   public:
     static QPixmap resize(int w, int h, QPixmap p);
+    static QPixmap fillUp(int w, int h, QPixmap p);
     static void clearToolButtons(QToolBar* tb);
 };
 

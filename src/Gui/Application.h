@@ -153,6 +153,8 @@ public:
 	/// call update to all views of the active document
 	void UpdateActive(void);
 	//@}
+  void setPalette(const QPalette&);
+  void setAreaPal(const QPalette&);
 
 	/// Set the active document
 	void SetActiveDocument(FCGuiDocument* pcDocument);
