@@ -157,7 +157,9 @@ inline std::string FindHomePathUnix(const char* sCall)
 	if (Call[0] == PATHSEP)
 	{
 		SimplifyPath(Call);
-		EnvPrint("FindHomePath--------------------");
+
+		EnvPrint("FindHomePath -----------------");
+
 		EnvPrint(Call.c_str());
 		std::string::size_type pos = Call.find_last_of(PATHSEP);
 		TempHomePath.assign(Call,0,pos);
@@ -178,8 +180,7 @@ inline std::string FindHomePathWin32(HANDLE hModule)
 		               szFileName,
 					   MAX_PATH-1);
 
-	EnvPrint("FindHomePath--------------------");
-	EnvPrint(szFileName);
+	EnvPrint("FindHomePath -----------------");
 
 	std::string Call(szFileName), TempHomePath;
 	std::string::size_type pos = Call.find_last_of(PATHSEP);
@@ -197,8 +198,7 @@ inline std::string FindHomePathWin32(HANDLE hModule)
 
 inline std::string GetFreeCADLib(const char* sHomePath)
 {
-	EnvPrint("GetFreeCADLib--------------------");
-	EnvPrint(sHomePath);
+	EnvPrint("GetFreeCADLib ----------------");
 
 	if(getenv("FREECADLIB") )
 	{
@@ -229,6 +229,8 @@ inline std::string GetFreeCADLib(const char* sHomePath)
 
 inline void SetPluginDefaults(const char* sPath)
 {
+	EnvPrint("OCC Plugins ------------------");
+
 	std::string sTempString;
 
 	sTempString += sPath;
@@ -243,6 +245,8 @@ inline void SetPluginDefaults(const char* sPath)
 
 inline void SetPythonToFreeCADLib(const char* sLib)
 {
+	EnvPrint("Python Vars ------------------");
+
 	if (sLib == NULL) return;
 	std::string sTempString2;
 	if(std::string(sLib) != "")
@@ -279,6 +283,8 @@ inline void SetPythonToFreeCADLib(const char* sLib)
 
 inline void SetCasCadeToFreeCADLib(const char* sLib)
 {
+	EnvPrint("OCC Vars ---------------------");
+
 	if (sLib == NULL) return;
 	std::string sTempString3;
 	if(std::string(sLib) != "")

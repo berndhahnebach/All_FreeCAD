@@ -62,13 +62,24 @@ void PrintInitHelp(void);
 
 int main( int argc, char ** argv ) 
 {
+	EnvPrint("Main =================================================");
+
+	// find the home path....
+	std::string sHomePath;
+#	ifdef FC_OS_WIN32
+		sHomePath = FindHomePathWin32(0);
+#	else
+		sHomePath = FindHomePathUnix(argv[0]);
+#	endif
+
+
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
 	FCApplication::SetRunMode("Cmd");
 
 	// parse the options 
-	FCApplication::InitConfig(argc,argv);
+	FCApplication::InitConfig(argc,argv,sHomePath.c_str());
 
 	FCApplication::InitApplication();
 

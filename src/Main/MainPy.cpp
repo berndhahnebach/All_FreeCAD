@@ -64,9 +64,16 @@
 #	define MainExport
 #endif
 
+
 #ifdef FC_OS_WIN32
+
+std::string path;
+
 BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved)
 {
+
+	path = FindHomePathWin32(hModule);
+
 	return TRUE;
 }
 #endif
@@ -76,27 +83,18 @@ extern "C" {
 
 		// Init phase ===========================================================
 
-		int argc=1;
-		char cwd[1024];
+		std::string sHomePath;
 
-		if ( getcwd(cwd, sizeof(cwd) ) == 0L )
-		{
-				// Error
-				exit(0);
-		}
+		// find home path
+#		ifdef FC_OS_WIN32
+			sHomePath = path;
+#		else
+			//sHomePaht = ???;
+#		endif
 
-		// FreeCAD.py dient nur als Anhaengsel, um das richtige Home-Directory zu berechnen
-		std::string tmp = cwd;
-		tmp += PATHSEP;
-		tmp += "FreeCAD.py";
-
-		char* argv = new char[1024];
-		strcpy(argv, tmp.c_str());
-		EnvPrint(argv);
-
-
+		char* argv = "FreeCAD";
 		// parse the options
-		FCApplication::InitConfig(argc,&argv);
+		FCApplication::InitConfig(1,&argv,sHomePath.c_str());
 
 		FCApplication::InitApplication();
 
@@ -107,40 +105,3 @@ extern "C" {
 	} //InitFreeCAD....
 } // extern "C"
 
-
-
-
-/*
-void CheckEnv(void)
-{
-
-	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SetPluginDefaults(FCApplication::Config()["HomePath"].c_str());
-
-	// sets all needed varables if a FreeCAD LibPack is found
-	if(FCApplication::Config()["FreeCADLib"] != "")
-	{
-		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(FCApplication::Config()["FreeCADLib"].c_str());
-
-		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(FCApplication::Config()["FreeCADLib"].c_str());
-	}
-
-	cout << flush;
-
-	bool bFailure=false;
-
-	TestEnvExists("CSF_MDTVFontDirectory",bFailure);
-	TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
-	TestEnvExists("CSF_UnitsDefinition",bFailure);
-	TestEnvExists("CSF_UnitsLexicon",bFailure);
-
-	if (bFailure) {
-     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
-		exit(1);
-	}
-
-}
-
-*/

@@ -193,7 +193,7 @@ public:
 	/** @name Init, Destruct an Access methodes */
 	//@{
 	static void Destruct(void);
-	static void InitConfig(int argc, char ** argv );
+	static void InitConfig(int argc, char ** argv, const char * sHomePath  );
 	static void InitApplication(void);
 	static void DumpConfig(void);
 	static void SetRunMode(const char*);
@@ -217,7 +217,7 @@ private:
 	/// print the help massage
 	static void PrintInitHelp(void);
 	/// figure out some things
-	static void ExtractPathAndUser(const char*);
+	static void ExtractUser();
 	/// load the user and system parameter set
 	static void LoadParameters(void);
 	/// puts the given env variable in the config

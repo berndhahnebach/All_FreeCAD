@@ -38,8 +38,6 @@
 #	error "Dont compile that file on UNIX!"
 #endif
 
-
-
 #include <iostream>
 #include <windows.h>
 #include <direct.h>
@@ -62,13 +60,13 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 //    case DLL_THREAD_ATTACH:
 		// set the resource env variables
 		
+		EnvPrint("Base =============================================");
+
 		std::string cHomePath = FindHomePathWin32(hModule);
 
-		EnvPrint("Base");
 		
-		std::string Temp;
 		// try to figure out if using FreeCADLib
-		Temp = GetFreeCADLib(cHomePath.c_str());
+		std::string Temp = GetFreeCADLib(cHomePath.c_str());
 
 		// sets all needed varables if a FreeCAD LibPack is found
 		if(Temp != "")
@@ -80,11 +78,11 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 			SetCasCadeToFreeCADLib(Temp.c_str());
 		}
 
-
 		SetPluginDefaults(cHomePath.c_str());
 
 		break;
 
+    //case DLL_THREAD_ATTACH:
     //case DLL_THREAD_DETACH:
     //case DLL_PROCESS_DETACH:
     }

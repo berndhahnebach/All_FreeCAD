@@ -640,7 +640,7 @@ void FCApplication::Destruct(void)
 #endif
 
 
-void FCApplication::InitConfig(int argc, char ** argv )
+void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 {
 	static const char sBanner[] = \
 "  #####                 ####  ###   ####  \n" \
@@ -655,8 +655,12 @@ void FCApplication::InitConfig(int argc, char ** argv )
 	_argc = argc;
 	_argv = argv;
 
+	// use home path out of the main modules
+	mConfig["HomePath"] = sHomePath;
+
 	// extract home path
-	ExtractPathAndUser(argv[0]);
+	ExtractUser();
+
 
 	// first check the environment variables
 	CheckEnv();
@@ -942,15 +946,8 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 }  
 
 
-void FCApplication::ExtractPathAndUser(const char* sCall)
+void FCApplication::ExtractUser()
 {
-	// find home path
-#	ifdef FC_OS_WIN32
-		mConfig["HomePath"] = FindHomePathWin32(0);
-#	else
-		mConfig["HomePath"] = FindHomePathUnix(sCall);
-#	endif
-
 	// std paths
 	mConfig["BinPath"] = mConfig["HomePath"] + PATHSEP + "bin" + PATHSEP;
 	mConfig["DocPath"] = mConfig["HomePath"] + PATHSEP + "doc" + PATHSEP;
@@ -967,7 +964,6 @@ void FCApplication::ExtractPathAndUser(const char* sCall)
 	mConfig["UserName"] = user;
 
 	PrintPath();
-
 }
 
 const char sEnvErrorText1[] = \

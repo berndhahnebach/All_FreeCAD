@@ -35,7 +35,7 @@
 // === Incuding of libs: ============================================================================
 #include "../Config.h"
 #ifndef FC_OS_WIN32
-//#	error "Dont compile that file on UNIX!"
+#	error "Dont compile that file on UNIX!"
 #endif
 
 #include <iostream>
@@ -59,13 +59,14 @@ BOOL APIENTRY DllMain(HANDLE hModule,
     case DLL_PROCESS_ATTACH:
 //    case DLL_THREAD_ATTACH:
 		// set the resource env variables
-		
-		std::string cHomePath = FindHomePathWin32(hModule);
-		EnvPrint("Gui");
 
-		std::string Temp;
+		EnvPrint("Gui ==============================================");
+
+		std::string cHomePath = FindHomePathWin32(hModule);
+
+
 		// try to figure out if using FreeCADLib
-		Temp = GetFreeCADLib(cHomePath.c_str());
+		std::string Temp = GetFreeCADLib(cHomePath.c_str());
 
 		// sets all needed varables if a FreeCAD LibPack is found
 		if(Temp != "")
