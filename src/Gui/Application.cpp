@@ -504,6 +504,12 @@ bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
 
 FCView* ApplicationWindow::GetActiveView(void)
 {
+  // check if the is an active window and if it inherits "FCViewContainer"
+  // (there exists also windows which do NOT inherit "FCViewContainer")
+  // e.g. "FCFloatingChildView"
+  if (!activeWindow() || !activeWindow()->inherits("FCViewContainer"))
+    return 0;
+
 	FCViewContainer * pViewContainer = reinterpret_cast <FCViewContainer *> ( activeWindow() );
 
 	if(pViewContainer)
