@@ -39,6 +39,8 @@ public:
 	virtual void OnDocNew(FCDocument* pcDoc);
 	virtual void OnDocDelete(FCDocument* pcDoc);
 
+	void OnLastWindowClosed(FCGuiDocument* pcDoc);
+
 	static ApplicationWindow* Instance;
 
 protected:

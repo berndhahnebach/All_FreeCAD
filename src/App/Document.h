@@ -193,6 +193,7 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------
 
+	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 	PyObject *PyUndo(PyObject *args);		// Python wrapper

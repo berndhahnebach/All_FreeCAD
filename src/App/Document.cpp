@@ -462,6 +462,14 @@ FCDocument::~FCDocument()						// Everything handled in parent
 	GetConsole().Log("Destroy Document %p\n",this);
 } 
 
+
+//--------------------------------------------------------------------------
+// FCDocument representation
+//--------------------------------------------------------------------------
+PyObject *FCDocument::_repr(void)
+{
+	return Py_BuildValue("s", "FreeCAD Document");
+}
 //--------------------------------------------------------------------------
 // FCDocument Attributes
 //--------------------------------------------------------------------------

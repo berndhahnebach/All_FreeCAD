@@ -102,7 +102,7 @@ void ApplicationWindow::OnDocNew(FCDocument* pcDoc)
 
 void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 {
-	FCGuiDocument* pcGDoc=0;
+	FCGuiDocument* pcGDoc;
 
 	for(FClist<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
 	{
@@ -110,10 +110,19 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 		{
 			pcGDoc = *It;
 			lpcDocuments.erase(It);
+			delete pcGDoc;
 		}
 	}
-	delete pcGDoc;
+	
 }
+void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
+{
+	// GuiDocument has closed the last window and get destructed
+	lpcDocuments.remove(pcDoc);
+	delete pcDoc;	
+}
+
+
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

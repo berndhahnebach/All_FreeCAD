@@ -141,7 +141,7 @@ FCDocument* FCApplication::New(const char * Name)
 		delete pDoc ;  
 		throw FCException("No doc module");
 	}
-*/	pDoc->_INCREF();
+*/	//pDoc->_INCREF();
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
 

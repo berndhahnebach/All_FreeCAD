@@ -79,6 +79,7 @@ FCGuiDocument* FCView::getDocument()
 void FCView::closeEvent(QCloseEvent* e)
 {
 	emit sendCloseView(this);
+	QextMdiChildView::closeEvent(e);
 }
 /*
 

@@ -55,8 +55,10 @@ public:
 
 	FCDocument*	 GetDoc(void){return _pcDocument;}
 
+	void OnLastViewClosed(void);
+
 public slots:
-	void slotCloseView(MDIWindow* theView);
+	void slotCloseView(FCView* theView);
 
 
 private:
@@ -64,6 +66,7 @@ private:
 		const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj,
 		const Standard_Boolean ComputedMode,const Standard_Boolean aDefaultComputedMode );
 private:
+	int								_iWinCount;
 	ApplicationWindow*				_pcAppWnd;
 //#	pragma warning( disable : 4251 )
 	FClist<FCView*>			_LpcViews;

@@ -40,7 +40,8 @@
 
 FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, const char * name)
 	:_pcAppWnd(app),
-	 _pcDocument(pcDocument)
+	 _pcDocument(pcDocument),
+	 _iWinCount(0)
 {
 	// keeping an Instance of this document as long as the window lives
 	_pcDocument->_INCREF();
@@ -70,6 +71,7 @@ FCGuiDocument::~FCGuiDocument()
 	for(FClist<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 		delete *It;
 
+	// remove the reverence from the object
 	_pcDocument->_DECREF();
 }
 
@@ -86,10 +88,12 @@ void FCGuiDocument::CreateView()
 
 	//connect( w, SIGNAL( message(const QString&, int) ), _pcAppWnd->statusBar(), SLOT( message(const QString&, int )) );
 	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(onCloseView(FCView*)));
-	connect( w, SIGNAL(closeEvent(FCView*)),this,SLOT(onCloseView(FCView*)));
+	connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(slotCloseView(FCView*)));
 
 	QString aName;
-    w->setCaption(aName.sprintf("Document 1:1"));
+//	aName.sprintf("%s:%d",_pcDocument->GetName(),_iWinCount++);
+	aName.sprintf("%s:%d","Document",_iWinCount++);
+    w->setCaption(aName);
 	
     w->setIcon( FCIcon );
 
@@ -101,17 +105,23 @@ void FCGuiDocument::CreateView()
 
 }
 
-void FCGuiDocument::slotCloseView(MDIWindow* theView)
+void FCGuiDocument::slotCloseView(FCView* theView)
 {
 
+	_LpcViews.remove(theView);
 	// last view?
-	if(_LpcViews.size() == 1)
+	if(_LpcViews.size() == 0)
 	{
+		OnLastViewClosed();
 	}
-	    
-  
-  
 }
+
+void FCGuiDocument::OnLastViewClosed(void)
+{
+
+	_pcAppWnd->OnLastWindowClosed(this);
+}
+
 /*
 
 void FCGuiDocument::removeView(MDIWindow* theView)
