@@ -1552,6 +1552,9 @@ FCAutoWaitCursor::FCAutoWaitCursor(uint id, int i)
 
 FCAutoWaitCursor::~FCAutoWaitCursor()
 {
+#ifdef FC_OS_WIN32
+	AttachThreadInput(GetCurrentThreadId(), main_threadid, false);
+#endif
 	bRun = false;
 	wait();
 }
@@ -1559,10 +1562,7 @@ FCAutoWaitCursor::~FCAutoWaitCursor()
 void FCAutoWaitCursor::SetWaitCursor()
 {
 #ifdef FC_OS_WIN32 // win32 api functions
-	AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
 	SetCursor(LoadCursor(NULL, IDC_WAIT));
-#else
-	QApplication::setOverrideCursor(Qt::waitCursor);
 #endif
 }
 
@@ -1577,6 +1577,7 @@ void FCAutoWaitCursor::run()
 
 #ifdef FC_OS_WIN32
 		HCURSOR hCursor = NULL;
+		AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
 #endif
 
 	while (bRun)
@@ -1612,7 +1613,6 @@ void FCAutoWaitCursor::run()
 				if (i==step)
 				{
 #	ifdef FC_OS_WIN32 // win32 api functions
-					AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
 					hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
 # else
 					QApplication::setOverrideCursor(Qt::waitCursor);
@@ -1622,15 +1622,16 @@ void FCAutoWaitCursor::run()
 			}
 			else if ( ignore && cursorset)
 			{
+#	ifdef FC_OS_WIN32 // win32 api functions
 				if (hCursor)
 				{
-#	ifdef FC_OS_WIN32 // win32 api functions
 					SetCursor(hCursor);
-# else
-					QApplication::restoreOverrideCursor();
-#	endif
 					cursorset = false;
 				}
+# else
+				QApplication::restoreOverrideCursor();
+				cursorset = false;
+#	endif
 			}
 		}
 		else
