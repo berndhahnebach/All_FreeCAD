@@ -406,6 +406,13 @@ bool FCCommand::addTo(QWidget *pcWidget)
 	return _pcAction->addTo(pcWidget);
 }
 
+bool FCCommand::removeFrom(QWidget *pcWidget)
+{
+	if (!_pcAction)
+    return false;
+	return _pcAction->removeFrom(pcWidget);
+}
+
  
 ApplicationWindow *FCCommand::GetAppWnd(void)
 {
@@ -817,6 +824,15 @@ void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
   {
 	  FCCommand* pCom = _sCommands[Name];
 	  pCom->addTo(pcWidget);
+  }
+}
+
+void FCCommandManager::RemoveFrom(const char* Name,QWidget *pcWidget)
+{
+  if (_sCommands.find(Name) != _sCommands.end())
+  {
+	  FCCommand* pCom = _sCommands[Name];
+	  pCom->removeFrom(pcWidget);
   }
 }
 

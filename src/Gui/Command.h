@@ -253,8 +253,10 @@ public:
 	virtual void activated (); 
 	/// get called by the FCAction
 	virtual void toggled ( bool ); 
-	/// adds this command to abetrary widgets
+	/// adds this command to arbitrary widgets
 	virtual bool addTo(QWidget *);
+	/// removes this command from arbitrary widgets
+  virtual bool removeFrom(QWidget *pcWidget);
 	//@}
 
 
@@ -461,6 +463,8 @@ public:
 
 	/// Adds the given command to a given widget
 	void AddTo(const char* Name,QWidget *pcWidget);
+  /// Removes the given command from the widget
+  void RemoveFrom(const char* Name,QWidget *pcWidget);
 
 	/** Returns all commands of a special App Module
 	 *  delivers a vector of all comands in the given application module. When no 
