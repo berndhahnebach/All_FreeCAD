@@ -183,7 +183,6 @@ class Private;
  * between 2 and 36.
  *
  * @short An input widget for integer numbers, consisting of a spinbox and a slider.
- * @version $Id$
  */
 
 class KIntNumInput : public KNumInput
@@ -833,7 +832,6 @@ private:
 
    @short A spin box for fractional numbers.
    @author Marc Mutz <mutz@kde.org>
-   @version $Id$
    @since 3.1
 **/
 

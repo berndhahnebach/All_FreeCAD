@@ -25,35 +25,35 @@
 #define DLG_WAIT_CURSOR_H
 
 #ifndef _PreComp_
-# include <string>
-# include <vector>
 # include <qthread.h>
 #endif
 
 
+namespace Gui {
+
 /**
- * This class sets a waiting cursor automatically while a  slow operation is running. 
- * Therefore you have just to  create an instance of FCWaitingCursor before the time 
+ * This class sets a waitcursor automatically while a  slow operation is running. 
+ * Therefore you just have to create an instance of WaitCursor before the time 
  * consuming operation.
  * If the operation takes less time than the @ref minimumDuration (1500 ms
  * by default), the waiting cursor will not appear at all. For example
  *
  * \code:
- * FCWaitingCursor ac;
+ * WaitCursor ac;
  * ...
  * ...                   // slow operation
  * ...
  * \endcode
  *  
  * The @ref setWaitCursor() method is called in the constructor, @ref restoreCursor()
- * at destruction time of FCWaitingCursor.
+ * at destruction time of WaitCursor.
  *
  * Sometimes you have two slow operations with some user interactions between them.
  * Avoiding to show the waiting cursor then you have to call the methods @ref restoreCursor()
  * and setWaitCursor manually, like:
  *
  * \code:
- * FCWaitingCursor ac;
+ * WaitCursor ac;
  * ...
  * ...                   // 1st slow operation
  * ac.restoreCursor();
@@ -66,11 +66,11 @@
  *  
  * @author Werner Mayer
  */
-class GuiExport FCWaitingCursor : public QThread
+class GuiExport WaitCursor : public QThread
 {
 public:
-  FCWaitingCursor();
-  ~FCWaitingCursor();
+  WaitCursor();
+  ~WaitCursor();
 
   void setWaitCursor();
   void restoreCursor();
@@ -79,10 +79,10 @@ public:
 
 private:
   void run();
-  struct FCWaitingCursorP* d;
+  struct WaitCursorP* d;
 };
 
-/**
+/*
  * The FCAutoWaitCursor sets automatically the
  * waiting cursor if the application is busy
  *
@@ -90,9 +90,8 @@ private:
  * When clicking on the window bar (under Windows OS) the waiting cursor appears
  * after a while although the application actuallay is not really busy. 
  * Under Linux (Debian) I got some mysterious errors and the application hanged up.
- * So do not use this class but use the  @ref FCWaitingCursor class instead.
+ * So do not use this class but use the  @ref WaitCursor class instead.
  * @author Werner Mayer
- */
 class GuiExport FCAutoWaitCursor : public QThread
 {
 public:
@@ -122,6 +121,8 @@ private:
   class FCAutoWaitCursorP* d;
   friend class FCAutoWaitCursorP;
 };
+*/
+} // namespace Gui
 
 #endif
 

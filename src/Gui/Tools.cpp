@@ -32,13 +32,14 @@
 # include <qobjectlist.h>
 # include <qpainter.h>
 # include <qpalette.h>
-# include <qpixmap.h>
 # include <qtoolbar.h>
 #endif
 
 #include "Tools.h"
 
-QPixmap FCTools::resize(int w, int h, QPixmap p)
+using namespace Gui;
+
+QPixmap Tools::resize(int w, int h, QPixmap p)
 {
   QPixmap pix = p;
 
@@ -62,7 +63,7 @@ QPixmap FCTools::resize(int w, int h, QPixmap p)
   return pm;
 }
 
-QPixmap FCTools::fillUp(int w, int h, QPixmap p)
+QPixmap Tools::fillUp(int w, int h, QPixmap p)
 {
   if (p.width() == 0 || p.height() == 0)
     w = 1;
@@ -96,7 +97,7 @@ QPixmap FCTools::fillUp(int w, int h, QPixmap p)
   return pm;
 }
 
-QPixmap FCTools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
+QPixmap Tools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
 {
   if (!p.mask())
     return p; // sorry, but cannot do anything
@@ -114,7 +115,7 @@ QPixmap FCTools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
   return p;
 }
 
-QPixmap FCTools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
+QPixmap Tools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
 {
   if (!p.mask())
     return p; // sorry, but cannot do anything
@@ -132,24 +133,7 @@ QPixmap FCTools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
   return p;
 }
 
-void FCTools::clearToolButtons(QToolBar* tb)
-{
-  if ( !tb->children() )
-    return;
-  QObjectListIt it( *tb->children() );
-  QObject * obj;
-  while( (obj=it.current()) != 0 )
-  {
-    ++it;
-    if ( obj->isWidgetType() )
-    {
-      if ( obj->inherits("QToolButton") || obj->inherits("QToolBarSeparator") )
-        delete obj;
-    }
-  }
-}
-
-int FCTools::getURLType(const QString& url)
+int Tools::getURLType(const QString& url)
 {
   QFileInfo fi(url);
 
@@ -170,9 +154,4 @@ int FCTools::getURLType(const QString& url)
   }
 
   return 2;
-}
-
-QString FCTools::i18n(const QString& s)
-{
-  return QObject::tr(s);
 }

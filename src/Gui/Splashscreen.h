@@ -24,53 +24,65 @@
 #ifndef __SPLASHSCREEN_H__
 #define __SPLASHSCREEN_H__
 
-class QVBoxLayout;
+#ifndef _PreComp_
+# include <qsplashscreen.h>
+# include <qdialog.h>
+#endif
+
 class QHBoxLayout;
 class QGridLayout;
 class QLabel;
 class QProgressBar;
-class QTextView;
 class QPushButton;
-class QCheckBox;
-class FCSplashObserver;
 
-/** Splasher at startup */
-class FCSplashScreen : public QSplashScreen
+
+namespace Gui {
+
+class SplashObserver;
+
+/** This widget provides a splash screen that can be shown  during application startup.
+ *
+ * \author Werner Mayer
+ */
+class SplashScreen : public QSplashScreen
 {
 public:
-  FCSplashScreen(  const QPixmap & pixmap = QPixmap ( ), WFlags f = 0 );
-  ~FCSplashScreen();
+  SplashScreen(  const QPixmap & pixmap = QPixmap ( ), WFlags f = 0 );
+  ~SplashScreen();
 
 protected:
   void drawContents ( QPainter * painter );
 
+private:
   QProgressBar* progBar;
-  FCSplashObserver* messages;
+  SplashObserver* messages;
 };
 
-/** About dialog */
-class AboutDlg : public QDialog
+/** This widget provides the "About dialog" of an application. 
+ * This shows the current version, the build number and date. 
+ * \author Werner Mayer
+ */
+class AboutDialog : public QDialog
 {
   Q_OBJECT
 
 public:
-  AboutDlg( QWidget* parent = 0, const char* name = 0 );
-  ~AboutDlg();
-
-  QLabel* pixmapLabel1;
-  QPushButton* pushButton1;
-  QLabel* textLabel1;
-
-protected:
-  QGridLayout* Form1Layout;
-  QHBoxLayout* layout1;
+  AboutDialog( QWidget* parent = 0, const char* name = 0 );
+  ~AboutDialog();
 
 protected slots:
   void languageChange();
 
 private:
   QPixmap image0;
+  QLabel* pixmapLabel1;
+  QPushButton* pushButton1;
+  QLabel* textLabel1;
+  QGridLayout* Form1Layout;
+  QHBoxLayout* layout1;
 };
+
+} // namespace Gui
 
 
 #endif // __SPLASHSCREEN_H__

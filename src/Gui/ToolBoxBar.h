@@ -24,7 +24,7 @@
 #ifndef __TOOLBOXBAR_H__
 #define __TOOLBOXBAR_H__
 
-#include "PrefWidgets.h"
+#include "CustomWidgets.h"
 
 namespace Gui {
 namespace DockWnd {

@@ -8,7 +8,7 @@
  */
 
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -19,12 +19,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -44,7 +44,7 @@
 #	pragma warning( disable : 4503 )
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #	pragma warning( disable : 4290 )  // not implemented throw specification
-#	pragma warning( disable : 4275 )  
+#	pragma warning( disable : 4275 )
 #endif
 
 
@@ -56,6 +56,11 @@
 #include <vector>
 
 
+#ifdef FC_OS_LINUX
+#ifndef xercesc
+# define xercesc xercesc_2_4
+#endif
+#endif
 
 	namespace xercesc{
 		class DOMNode;
@@ -64,7 +69,7 @@
 	}
 
 
-	
+
 
 
 
@@ -76,14 +81,14 @@ typedef unsigned short XMLCh;
 
 /** The parameter container class
  *  This is the base class of all classes handle parameter.
- *  The class contains a map of key-value pairs in a grouping 
+ *  The class contains a map of key-value pairs in a grouping
  *  structure, not unlike the windows registry.
- *  It allows the user to set and retrieve values of the 
+ *  It allows the user to set and retrieve values of the
  *  type float, long and string. Also it handles importing
  *  and exporting groups of parameters and enables streaming
  *  to a persistent medium via XML.
  *  \par
- *  Its main task is making user parameter persitent, saving 
+ *  Its main task is making user parameter persitent, saving
  *  last used values in dialog boxes, setting and retrieving all
  *  kind of preferences and so on.
  *  @see FCParameterManager
@@ -165,15 +170,15 @@ public:
 	void RemoveBlob(const char* Name);
 	//@}
 
-	
-	
+
+
 	/** @name methodes for Blob handling (not implemented yet) */
 	//@{
 	/// set a string value
 	void  SetASCII(const char* Name, const char *sValue);
 	/// read a string values with a buffer
 	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
-	/// read a string values 
+	/// read a string values
 	std::string GetASCII(const char* Name, const char * pPreset=NULL);
 	/// remove a string value from this group
 	void RemoveASCII(const char* Name);
@@ -205,7 +210,7 @@ protected:
 	xercesc::DOMElement *FindNextElement(xercesc::DOMNode *Prev, const char* Type);
 
 	/** Find an element specified by Type and Name
-	 *  Search in the parent element Start for the first occourrence of an 
+	 *  Search in the parent element Start for the first occourrence of an
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise NULL
 	 *  If the names not given he returns the first occourence fo Type.
@@ -213,7 +218,7 @@ protected:
 	xercesc::DOMElement *FindElement(xercesc::DOMElement *Start, const char* Type, const char* Name=0L);
 
 	/** Find an element specified by Type and Name or create it if not found
-	 *  Search in the parent element Start for the first occourrence of an 
+	 *  Search in the parent element Start for the first occourrence of an
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
@@ -231,7 +236,7 @@ protected:
 
 
 /** The parameter manager class
- *  This class manages a parameter XML document. 
+ *  This class manages a parameter XML document.
  *  Does loding, saving and handling the DOM document.
  *  @see FCParameterGrp
  */

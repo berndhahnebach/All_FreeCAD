@@ -46,7 +46,8 @@
 
 #include "Widgets.h"
 #include "Application.h"
-#include "PrefWidgets.h"
+#include "Action.h"
+#include "CustomWidgets.h"
 #include "WaitCursor.h"
 #include "../Base/Exception.h"
 
@@ -57,7 +58,7 @@
 # include <qstyle.h>
 #endif
 
-using Gui::ProgressBar;
+using namespace Gui;
 
 
 QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter,
@@ -172,7 +173,7 @@ FCMessageBox::FCMessageBox(const QString & caption, const QString & text, Icon i
   QString msg = tr("Do not show this message again");
   QString entry = QString("NotShowDialog:%1").arg(text);
 
-  checkBox = new FCCheckBox(this, "FCCheckBox");
+  checkBox = new Gui::PrefCheckBox(this, "FCCheckBox");
   checkBox->setText( msg );
   checkBox->setEntryName(entry);
   checkBox->setParamGrpPath("User parameter:BaseApp/Windows/Dialogs");
@@ -278,7 +279,7 @@ struct ProgressBarPrivate
   int nElapsed; // in milliseconds
   int nRemaining;
   QTime measureTime;
-  FCWaitingCursor* cWaitCursor;
+  WaitCursor* cWaitCursor;
 };
 }
 
@@ -396,7 +397,7 @@ bool ProgressBar::start(const char* pszStr, unsigned long steps)
     enterControlEvents();
     d->nElapsed = 0;
     d->measureTime.start();
-    d->cWaitCursor = new FCWaitingCursor;
+    d->cWaitCursor = new Gui::WaitCursor;
   }
   else
     d->measureTime.restart();
@@ -656,12 +657,12 @@ void FCCmdView::slotSelectionChanged(QIconViewItem * item)
 
 QDragObject * FCCmdView::dragObject ()
 {
-  FCActionDrag::actions.clear();
+  ActionDrag::actions.clear();
   if ( !currentItem() )
     return 0;
 
   bool bFirst = true;
-  FCActionDrag *ad=NULL;
+  ActionDrag *ad=NULL;
   //  QPoint orig = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
   for ( QIconViewItem *item = firstItem(); item; item = item->nextItem() )
   {
@@ -669,7 +670,7 @@ QDragObject * FCCmdView::dragObject ()
     {
       if (typeid(*item) == typeid(FCCmdViewItem))
       {
-        ad = new FCActionDrag( ((FCCmdViewItem*)item)->GetAction(), this );
+        ad = new ActionDrag( ((FCCmdViewItem*)item)->GetAction(), this );
         if (bFirst)
         {
           bFirst = false;

@@ -31,6 +31,7 @@
 
 #include "DlgEditorImp.h"
 
+using namespace Gui;
 using namespace Gui::Dialog;
 
 /**

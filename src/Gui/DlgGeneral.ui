@@ -59,7 +59,7 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="FCPrefSpinBox" row="0" column="1" rowspan="1" colspan="2">
+                        <widget class="Gui::PrefSpinBox" row="0" column="1" rowspan="1" colspan="2">
                             <property name="name">
                                 <cstring>RecentFiles</cstring>
                             </property>
@@ -85,7 +85,7 @@
                                 <number>4</number>
                             </property>
                         </widget>
-                        <widget class="FCCheckBox" row="1" column="0" rowspan="1" colspan="2">
+                        <widget class="Gui::PrefCheckBox" row="1" column="0" rowspan="1" colspan="2">
                             <property name="name">
                                 <cstring>SplashScreen</cstring>
                             </property>
@@ -163,7 +163,7 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="FCCheckBox" row="0" column="0" rowspan="1" colspan="3">
+                        <widget class="Gui::PrefCheckBox" row="0" column="0" rowspan="1" colspan="3">
                             <property name="name">
                                 <cstring>ShowCmdLine</cstring>
                             </property>
@@ -180,7 +180,7 @@
                                 <string>Show command line</string>
                             </property>
                         </widget>
-                        <widget class="FCPrefSpinBox" row="1" column="1">
+                        <widget class="Gui::PrefSpinBox" row="1" column="1">
                             <property name="name">
                                 <cstring>SizeCmdLine</cstring>
                             </property>
@@ -238,7 +238,7 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="FCCheckBox" row="0" column="0">
+                        <widget class="Gui::PrefCheckBox" row="0" column="0">
                             <property name="name">
                                 <cstring>AllowDragMenu</cstring>
                             </property>
@@ -271,7 +271,7 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="FCCheckBox" row="0" column="0">
+                        <widget class="Gui::PrefCheckBox" row="0" column="0">
                             <property name="name">
                                 <cstring>UsesBigPixmaps</cstring>
                             </property>
@@ -305,7 +305,7 @@
                                 </size>
                             </property>
                         </spacer>
-                        <widget class="FCComboBox" row="1" column="1">
+                        <widget class="Gui::PrefComboBox" row="1" column="1">
                             <property name="name">
                                 <cstring>WindowStyle</cstring>
                             </property>
@@ -367,7 +367,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCComboBox</class>
+        <class>Gui::PrefComboBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>50</width>
@@ -387,7 +387,7 @@
         <property type="String">currentText</property>
     </customwidget>
     <customwidget>
-        <class>FCCheckBox</class>
+        <class>Gui::PrefCheckBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>80</width>
@@ -410,7 +410,7 @@
         <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
-        <class>FCPrefSpinBox</class>
+        <class>Gui::PrefSpinBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>30</width>
@@ -457,12 +457,12 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>fcprefspinbox.h</includehint>
-    <includehint>fccheckbox.h</includehint>
-    <includehint>fccheckbox.h</includehint>
-    <includehint>fcprefspinbox.h</includehint>
-    <includehint>fccheckbox.h</includehint>
-    <includehint>fccheckbox.h</includehint>
-    <includehint>fccombobox.h</includehint>
+    <includehint>prefspinbox.h</includehint>
+    <includehint>prefcheckbox.h</includehint>
+    <includehint>prefcheckbox.h</includehint>
+    <includehint>prefspinbox.h</includehint>
+    <includehint>prefcheckbox.h</includehint>
+    <includehint>prefcheckbox.h</includehint>
+    <includehint>prefcombobox.h</includehint>
 </includehints>
 </UI>

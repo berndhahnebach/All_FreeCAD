@@ -25,11 +25,12 @@
 
 #ifndef _PreComp_
 # include <qcursor.h>
+# include <qmessagebox.h>
 #endif
 
 #include "CommandLine.h"
 #include "Application.h"
-#include "PrefWidgets.h"
+#include "Action.h"
 #include "Command.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
@@ -292,11 +293,11 @@ void CommandLineBase::contextMenuEvent ( QContextMenuEvent * e )
 void CommandLineBase::dropEvent ( QDropEvent      * e )
 {
   QString action;
-  if (FCActionDrag::decode(e, action))
+  if ( ActionDrag::decode(e, action) )
   {
     if (!action.isEmpty())
     {
-      FCActionDrag::actions.clear();
+      ActionDrag::actions.clear();
       FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
       FCCommand* pCmd = rclMan.GetCommandByName(action.latin1());
 
@@ -312,7 +313,7 @@ void CommandLineBase::dropEvent ( QDropEvent      * e )
 
 void CommandLineBase::dragEnterEvent ( QDragEnterEvent * e )
 {
-  if (FCActionDrag::canDecode(e))
+  if ( ActionDrag::canDecode(e) )
     e->accept(true);
   else
     QComboBox::dragEnterEvent(e);

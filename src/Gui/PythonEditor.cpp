@@ -41,8 +41,12 @@
 #include "../Base/Parameter.h"
 
 using namespace Gui;
-using namespace Gui::Dialog;
+using Gui::Dialog::GetDefCol;
 
+/**
+ *  Constructs a PythonWindow which is a child of 'parent', with the
+ *  name 'name' and installs the Python syntax highlighter.
+ */
 PythonWindow::PythonWindow(QWidget *parent,const char *name)
     : QTextEdit(parent, name)
 {
@@ -50,6 +54,7 @@ PythonWindow::PythonWindow(QWidget *parent,const char *name)
   pythonSyntax = new PythonSyntaxHighlighter(this);
 }
 
+/** Destroys the object and frees any allocated resources */
 PythonWindow::~PythonWindow()
 {
   delete pythonSyntax;
@@ -89,17 +94,26 @@ void PythonWindow::keyPressEvent(QKeyEvent * e)
 
 // ------------------------------------------------------------------------
 
+/**
+ *  Constructs a PythonEditor which is a child of 'parent', with the
+ *  name 'name'. 
+ */
 PythonEditor::PythonEditor(QWidget *parent,const char *name)
     : PythonWindow(parent, name)
 {
 }
 
+/** Destroys the object and frees any allocated resources */
 PythonEditor::~PythonEditor()
 {
 }
 
 // ------------------------------------------------------------------------
 
+/**
+ *  Constructs a PythonConsole which is a child of 'parent', with the
+ *  name 'name'. 
+ */
 PythonConsole::PythonConsole(QWidget *parent,const char *name)
     : PythonWindow(parent, name), lastPara(-1)
 {
@@ -114,10 +128,15 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   setTabStopWidth(32);
 }
 
+/** Destroys the object and frees any allocated resources */
 PythonConsole::~PythonConsole()
 {
 }
 
+/**
+ * Checks the input of the console to make the correct indentations.
+ * After a command is prompted completely the Python interpreter is started.
+ */
 void PythonConsole::keyPressEvent(QKeyEvent * e)
 {
   PythonWindow::keyPressEvent(e);
@@ -175,6 +194,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 
 // ------------------------------------------------------------------------
 
+namespace Gui {
 class PythonSyntaxHighlighterP
 {
 public:
@@ -216,24 +236,35 @@ public:
   QColor cNormalText, cComment, cBlockcomment, cLiteral, cNumber,
   cOperator, cKeyword, cClassName, cDefineName;
 };
+} // namespace Gui
 
+/**
+ * Constructs a Python syntax highlighter.
+ */
 PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
     : QSyntaxHighlighter(edit)
 {
   d = new PythonSyntaxHighlighterP;
 }
 
+/** Destroys this object. */
 PythonSyntaxHighlighter::~PythonSyntaxHighlighter()
 {
   delete d;
 }
 
+/**
+ * If \a b is set to true the following input to the editor is highlighted as error.
+ */
 void PythonSyntaxHighlighter::highlightError (bool b)
 {
   d->hlError = b;
 }
 
-int PythonSyntaxHighlighter::highlightBlockComments( const QString& txt, int& from, int endStateOfLastPara )
+/**
+ * Highlights a part of the text \a txt as block comment.
+ */
+int PythonSyntaxHighlighter::highlightBlockComment( const QString& txt, int& from, int endStateOfLastPara )
 {
   QRegExp rx("(\"\"\"|''')");
   int pos = txt.find(rx, from);
@@ -288,7 +319,10 @@ int PythonSyntaxHighlighter::highlightBlockComments( const QString& txt, int& fr
   return endStateOfLastPara;
 }
 
-int PythonSyntaxHighlighter::highlightLiterals( const QString& txt, int& from, int endStateOfLastPara )
+/**
+ * Highlights a part of the text \a txt as string literal.
+ */
+int PythonSyntaxHighlighter::highlightLiteral( const QString& txt, int& from, int endStateOfLastPara )
 {
   QRegExp rx("(\"|')");
   int pos = txt.find(rx, from);
@@ -321,7 +355,10 @@ int PythonSyntaxHighlighter::highlightLiterals( const QString& txt, int& from, i
   return (int)endStateOfLastPara;
 }
 
-int PythonSyntaxHighlighter::highlightComments( const QString& txt, int& from, int endStateOfLastPara )
+/**
+ * Highlights a part of the text \a txt as comment.
+ */
+int PythonSyntaxHighlighter::highlightComment( const QString& txt, int& from, int endStateOfLastPara )
 {
   // check for comments
   int pos = txt.find("#", from);
@@ -335,6 +372,9 @@ int PythonSyntaxHighlighter::highlightComments( const QString& txt, int& from, i
   return (int)endStateOfLastPara;
 }
 
+/**
+ * Highlights a part of the text \a txt as normal text.
+ */
 int PythonSyntaxHighlighter::highlightNormalText( const QString& txt, int& from, int endStateOfLastPara )
 {
   // colourize everything black
@@ -343,7 +383,10 @@ int PythonSyntaxHighlighter::highlightNormalText( const QString& txt, int& from,
   return 0;
 }
 
-int PythonSyntaxHighlighter::highlightKeywords( const QString& txt, int& from, int endStateOfLastPara )
+/**
+ * Highlights all keywords of the text \a txt.
+ */
+int PythonSyntaxHighlighter::highlightKeyword( const QString& txt, int& from, int endStateOfLastPara )
 {
   // search for all keywords to colourize
   for (QStringList::Iterator it = d->keywords.begin(); it != d->keywords.end(); ++it)
@@ -380,7 +423,10 @@ int PythonSyntaxHighlighter::highlightKeywords( const QString& txt, int& from, i
   return 0;
 }
 
-int PythonSyntaxHighlighter::highlightOperators( const QString& txt, int& from, int endStateOfLastPara )
+/**
+ * Highlights all operators of the text \a txt.
+ */
+int PythonSyntaxHighlighter::highlightOperator( const QString& txt, int& from, int endStateOfLastPara )
 {
   QRegExp rx( "[\\[\\]\\{\\}\\(\\)\\+\\*\\-/<>]" );
   int pos = rx.search( txt, from );
@@ -394,7 +440,10 @@ int PythonSyntaxHighlighter::highlightOperators( const QString& txt, int& from, 
   return 0;
 }
 
-int PythonSyntaxHighlighter::highlightNumbers( const QString& txt, int& from, int endStateOfLastPara )
+/**
+ * Highlights all numbers of the text \a txt.
+ */
+int PythonSyntaxHighlighter::highlightNumber( const QString& txt, int& from, int endStateOfLastPara )
 {
   QRegExp rx( "\\b(\\d+)\\b" );
   int pos = rx.search( txt, from );
@@ -408,6 +457,9 @@ int PythonSyntaxHighlighter::highlightNumbers( const QString& txt, int& from, in
   return 0;
 }
 
+/**
+ * Detects all kinds of text to highlight them in the correct color.
+ */
 int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
   QString txt(text);
@@ -424,9 +476,9 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
 
   // colourize all keywords, operators, numbers, normal text
   highlightNormalText(txt, from, endStateOfLastPara);
-  highlightKeywords  (txt, from, endStateOfLastPara);
-  highlightOperators (txt, from, endStateOfLastPara);
-  highlightNumbers   (txt, from, endStateOfLastPara);
+  highlightKeyword   (txt, from, endStateOfLastPara);
+  highlightOperator  (txt, from, endStateOfLastPara);
+  highlightNumber    (txt, from, endStateOfLastPara);
 
   QString comnt("#");
   QRegExp blkcm("(\"\"\"|''')");
@@ -436,7 +488,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
     if ( endStateOfLastPara == int(Blockcomment) )
     {
       // search for closing block comments
-      endStateOfLastPara = highlightBlockComments(txt, from, endStateOfLastPara);
+      endStateOfLastPara = highlightBlockComment (txt, from, endStateOfLastPara);
       if (endStateOfLastPara > 0) return endStateOfLastPara;
     }
     else
@@ -455,21 +507,21 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
       if (com < bcm && com < str)
       {
         from = com;
-        highlightComments(txt, from, endStateOfLastPara);
+        highlightComment (txt, from, endStateOfLastPara);
         return 0;
       }
       // block comment
       else if (bcm < com && bcm <= str)
       {
         from = bcm;
-        endStateOfLastPara = highlightBlockComments(txt, from, endStateOfLastPara);
+        endStateOfLastPara = highlightBlockComment (txt, from, endStateOfLastPara);
         if (endStateOfLastPara > 0) return endStateOfLastPara;
       }
       // string literal
       else if (str < com && str < bcm)
       {
         from = str;
-        endStateOfLastPara = highlightLiterals(txt, from, endStateOfLastPara);
+        endStateOfLastPara = highlightLiteral (txt, from, endStateOfLastPara);
         if (endStateOfLastPara > 0) return 0;
       }
       // no tag found
@@ -485,7 +537,11 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
 
 // ------------------------------------------------------------------------
 
-PythonView::PythonView( QWidget* parent, const char* name)
+/**
+ *  Constructs a PythonEditView which is a child of 'parent', with the
+ *  name 'name'.
+ */
+PythonEditView::PythonEditView( QWidget* parent, const char* name)
     : FCView(0,parent, name)
 {
   setCaption("Editor");
@@ -493,53 +549,61 @@ PythonView::PythonView( QWidget* parent, const char* name)
   resize( 400, 300 );
 
   textEdit = new PythonEditor(this);
+  textEdit->setWordWrap( QTextEdit::NoWrap );
 
   QGridLayout *layout = new QGridLayout(this,0,0);
   layout->addWidget(textEdit,0,0);
 }
 
-PythonView::~PythonView()
+/** Destroys the object and frees any allocated resources */
+PythonEditView::~PythonEditView()
 {
   delete textEdit;
 }
 
-bool PythonView::OnMsg(const char* pMsg)
+/**
+ * Runs the action specified by \a pMsg.
+ */
+bool PythonEditView::OnMsg(const char* pMsg)
 {
   if (strcmp(pMsg,"Save")==0){
-    Save();
+    save();
     return true;
   }
   if (strcmp(pMsg,"SaveAs")==0){
-    SaveAs();
+    saveAs();
     return true;
   }
   if (strcmp(pMsg,"Cut")==0){
-    Cut();
+    cut();
     return true;
   }
   if (strcmp(pMsg,"Copy")==0){
-    Copy();
+    copy();
     return true;
   }
   if (strcmp(pMsg,"Paste")==0){
-    Paste();
+    paste();
     return true;
   }
   if (strcmp(pMsg,"Undo")==0){
-    Undo();
+    undo();
     return true;
   }
   if (strcmp(pMsg,"Redo")==0){
-    Redo();
+    redo();
     return true;
   }
 
-  Base::Console().Log("FCScintillaView::OnMsg() unhandled \"%s\"\n",pMsg);
+  Base::Console().Log("PythonEditView::OnMsg() unhandled \"%s\"\n",pMsg);
   return false;
 }
 
-// Message handler test
-bool PythonView::OnHasMsg(const char* pMsg)
+/**
+ * Checks if the action \a pMsg is available. This is for enabling/disabling
+ * the corresponding buttons or menu items for this action.
+ */
+bool PythonEditView::OnHasMsg(const char* pMsg)
 {
   if (strcmp(pMsg,"Save")==0)  return true;
   if (strcmp(pMsg,"Print")==0) return true;
@@ -574,7 +638,8 @@ bool PythonView::OnHasMsg(const char* pMsg)
   return false;
 }
 
-bool PythonView::CanClose(void)
+/** Checking on close state. */
+bool PythonEditView::CanClose(void)
 {
   if ( !textEdit->isModified() )
     return true;
@@ -582,7 +647,7 @@ bool PythonView::CanClose(void)
   switch(QMessageBox::warning( this, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
   {
   case 0:
-    return Save();
+    return save();
   case 1:
     return true;
   case 2:
@@ -592,24 +657,31 @@ bool PythonView::CanClose(void)
   }
 }
 
-bool PythonView::Save(void)
+/**
+ * Saves the changes of the editor to a file. If the input has not been saved yet before
+ * a file dialog appears.
+ */
+bool PythonEditView::save()
 {
   if ( !textEdit->isModified() )
     return true;
 
   // check if saved ever before
-  if (isAlreadySavedBefore())
+  if ( isSavedOnce() )
   {
     saveFile();
     return true;
   }
   else
   {
-    return SaveAs();
+    return saveAs();
   }
 }
 
-bool PythonView::SaveAs(void)
+/**
+ * Saves the content of the editor to a file specified by the appearing file dialog.
+ */
+bool PythonEditView::saveAs(void)
 {
   QString fn = QFileDialog::getSaveFileName(QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)", this);
   if (!fn.isEmpty())
@@ -624,13 +696,16 @@ bool PythonView::SaveAs(void)
   }
 }
 
-bool PythonView::Open(void)
+/**
+ * Opens a file specified by the appearing file dialog.
+ */
+bool PythonEditView::open(void)
 {
   QString file = QFileDialog::getOpenFileName(QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", this);
   if ( file.isEmpty() )
     return false;
 
-  OpenFile(file);
+  openFile(file);
   setCaption(file);
   QString name = file.left(file.findRev('.'));
   setTabCaption(name);
@@ -638,7 +713,10 @@ bool PythonView::Open(void)
   return true;
 }
 
-void PythonView::OpenFile (const QString& fileName)
+/**
+ * Opens the file \a fileName.
+ */
+void PythonEditView::openFile (const QString& fileName)
 {
   QString line;
   _fileName = fileName;
@@ -661,38 +739,63 @@ void PythonView::OpenFile (const QString& fileName)
   textEdit->setModified(false);
 }
 
-void PythonView::Cut(void)
+/**
+ * Copies the selected text to the clipboard and deletes it from the text edit.
+ * If there is no selected text nothing happens.
+ */
+void PythonEditView::cut(void)
 {
   textEdit->cut();
 }
 
-void PythonView::Copy(void)
+/**
+ * Copies any selected text to the clipboard.
+ */
+void PythonEditView::copy(void)
 {
   textEdit->copy();
 }
 
-void PythonView::Paste(void)
+/**
+ * Pastes the text from the clipboard into the text edit at the current cursor position. 
+ * If there is no text in the clipboard nothing happens.
+ */
+void PythonEditView::paste(void)
 {
   textEdit->paste();
 }
 
-void PythonView::Undo(void)
+/**
+ * Undoes the last operation.
+ * If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.
+ */
+void PythonEditView::undo(void)
 {
   textEdit->undo();
 }
 
-void PythonView::Redo(void)
+/**
+ * Redoes the last operation.
+ * If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.
+ */
+void PythonEditView::redo(void)
 {
   textEdit->redo();
 }
 
-void PythonView::Print(QPainter& cPrinter)
+/**
+ * \todo: Shows the printer dialog.
+ */
+void PythonEditView::Print(QPainter& cPrinter)
 {
   // no printing yet ;-)
   assert(0);
 }
 
-void PythonView::saveFile()
+/**
+ * Saves the contents to a file.
+ */
+void PythonEditView::saveFile()
 {
   QFile file(_fileName);
   if( !file.open(IO_WriteOnly))
@@ -707,7 +810,10 @@ void PythonView::saveFile()
   return;
 }
 
-bool PythonView::isAlreadySavedBefore()
+/**
+ * Checks if the contents has been saved once to a file.
+ */
+bool PythonEditView::isSavedOnce()
 {
   return (!_fileName.isEmpty());
 }

@@ -45,12 +45,12 @@ DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, 
     : DlgSettings3DView( parent, name, fl )
 {
   append(UseAntialiasing->getHandler());
-  append(FCCheckBox_UseInventorViewer->getHandler());
+  append(PrefCheckBox_UseInventorViewer->getHandler());
   append(CheckBox_CornerCoordSystem->getHandler());
   append(CheckBox_ShowFPS->getHandler());
   append(CheckBox_UseSimpleBackground->getHandler());
   append(CheckBox_ShowViewerDecoration->getHandler());
-  append(FCLineEdit_UserDefinedViewerExt->getHandler());
+  append(PrefLineEdit_UserDefinedViewerExt->getHandler());
   append(CheckBox_UseAutoRotation->getHandler());
 }
 
@@ -68,7 +68,7 @@ DlgSettings3DViewImp::~DlgSettings3DViewImp()
 void DlgSettings3DViewImp::chooseDir()
 {
   QString cPath = FileDialog::getOpenFileName( QString::null, "Inventor (*.iv)");
-  FCLineEdit_UserDefinedViewerExt->setText(cPath.latin1());
+  PrefLineEdit_UserDefinedViewerExt->setText(cPath.latin1());
 }
 
 /**

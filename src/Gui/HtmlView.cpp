@@ -44,7 +44,7 @@
 #include "HtmlViewP.h"
 #include "Process.h"
 #include "Application.h"
-#include "PrefWidgets.h"
+#include "CustomWidgets.h"
 #include "Tools.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
@@ -62,6 +62,7 @@
 # define _chdir chdir
 #endif
 
+using namespace Gui;
 
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
@@ -509,7 +510,7 @@ void FCTextBrowser::setSource (const QString & name)
     const QMimeSource* mime = mimeSourceFactory()->data(source, context());
     if (mime == NULL)
     {
-      int type = FCTools::getURLType(source);
+      int type = Tools::getURLType(source);
       if ( type == 1 )
       {
         QString msg = tr("File %1 does not exist.\n").arg(source);

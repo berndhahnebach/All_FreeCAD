@@ -174,7 +174,6 @@ class KFloatValidator : public QValidator {
 
    @short A locale-aware @ref QDoubleValidator
    @author Marc Mutz <mutz@kde.org>
-   @version $Id$
    @see KIntValidator
    @since 3.1
 **/

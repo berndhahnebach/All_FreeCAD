@@ -280,7 +280,7 @@ QAction * FCCppCommand::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -322,7 +322,7 @@ QAction * FCScriptCommand::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(_sStatusTip.c_str()));
 	pcAction->setWhatsThis(QObject::tr(_sWhatsThis.c_str()));
 	if(_sPixmap!="")
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(_sPixmap.c_str()));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(_sPixmap.c_str()));
 	pcAction->setAccel(_iAccel);
 
 	return pcAction;
@@ -442,7 +442,7 @@ QAction * FCPythonCommand::CreateAction(void)
 	pcAction->setStatusTip(GetResource("StatusTip").c_str());
 	pcAction->setWhatsThis(GetResource("WhatsThis").c_str());
 	if(GetResource("Pixmap") != "")
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(GetResource("Pixmap").c_str()));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(GetResource("Pixmap").c_str()));
 
 	return pcAction;
 }

@@ -355,7 +355,7 @@ QAction * FCCmdUndo::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -407,7 +407,7 @@ QAction * FCCmdRedo::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -466,7 +466,7 @@ QAction * FCCmdWorkbench::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
   pcAction->setItems(ApplicationWindow::Instance->GetWorkbenches());
@@ -548,7 +548,7 @@ QAction * FCCmdMRU::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -717,7 +717,7 @@ FCCmdAbout::FCCmdAbout()
 
 void FCCmdAbout::Activated(int iMsg)
 {
-	AboutDlg().exec();
+	AboutDialog().exec();
 }
 
 //===========================================================================

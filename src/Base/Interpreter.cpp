@@ -66,7 +66,7 @@ void InterpreterSingleton::Launch(const char *psCmd)
 
 	int ret = PyRun_SimpleString(Cmd.str);
 
-//	if(ret == -1) throw Exception("script failed");
+	if(ret == -1) throw Exception("script failed");
 }
 
 void InterpreterSingleton::LaunchFile(const char*pxFileName)

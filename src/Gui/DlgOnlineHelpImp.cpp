@@ -41,7 +41,7 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl
 {
   append(UseProxy->getHandler());
   append(DownloadURL->getHandler());
-  append(FCLineEdit2->getHandler());
+  append(PrefLineEdit2->getHandler());
   append(Location->getHandler());
 
   setModified(true);

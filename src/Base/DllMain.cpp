@@ -79,9 +79,6 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 		}
 
 		SetPluginDefaults(cHomePath.c_str());
-		char sBuf[255];
-		GetEnvironmentVariable("PYTHONPATH",sBuf,255);
-		std::cout << "Python-Pfad" << sBuf << std::endl;
 
 		break;
 

@@ -24,7 +24,7 @@
 #ifndef __PROPERTY_PAGE__H__
 #define __PROPERTY_PAGE__H__
 
-#include "PrefWidgets.h"
+#include "CustomWidgets.h"
 
 namespace Gui {
 namespace Dialog {
@@ -60,7 +60,7 @@ private:
  * @see PropertyPage
  * \author Werner Mayer
  */
-class GuiExport PreferencePage : public PropertyPage, public FCWidgetPrefsManager
+class GuiExport PreferencePage : public PropertyPage, public PrefWidgetManager
 {
 public:
   PreferencePage();

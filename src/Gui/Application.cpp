@@ -111,7 +111,7 @@
 #include "Icons/FCIcon.xpm"
 #include "Splashscreen.h"
 #include "WidgetFactory.h"
-#include "PrefWidgets.h"
+#include "CustomWidgets.h"
 #include "Command.h"
 #include "Tree.h"
 #include "PropertyView.h"
@@ -1127,7 +1127,7 @@ void ApplicationWindow::StartSplasher(void)
 		if (hGrp->GetBool("AllowSplasher", true))
 		{
 			QPixmap pixmap(( const char** ) splash_screen );
-			_splash = new FCSplashScreen( pixmap );
+			_splash = new SplashScreen( pixmap );
 			_splash->show();
 		}
 	}
@@ -1225,8 +1225,8 @@ PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
 
 	PyObject* pPyResource=0L;
 	try{
-		pPyResource = new FCPyResource();
-		((FCPyResource*)pPyResource)->load(fn);
+		pPyResource = new PyResource();
+		((PyResource*)pPyResource)->load(fn);
 	} catch (const Base::Exception& e)
 	{
     PyErr_SetString(PyExc_AssertionError, e.what());

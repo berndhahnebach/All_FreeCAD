@@ -45,24 +45,29 @@
 
 inline void EnvPrint(const char* sVar, const char* sVal)
 {
+#ifdef FC_VERBOSE
 	std::cout << sVar << "=" << sVal  << std::endl;
+#endif
 }
 
 inline void EnvPrint(const char* sMsg)
 {
+#ifdef FC_VERBOSE
 	std::cout << sMsg << std::endl;
+#endif
 }
 
 inline void SetEnvironment(const char* sVar, const char* sVal)
 {
-#ifdef FC_OS_LINUX
+#if defined (FC_OS_LINUX)
 	setenv(sVar, sVal, 1);
+//#elif defined (FC_OS_WIN32) // Seems not to work properly!
+//	SetEnvironmentVariable(sVar,sVal);
 #else
 	std::string env(sVar);
 	env += "=";
 	env += sVal;
 	putenv (env.c_str());
-	SetEnvironmentVariable(sVar,sVal);
 #endif
 }
 

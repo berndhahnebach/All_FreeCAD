@@ -139,6 +139,7 @@ moc_Action.cpp \
 moc_Application.cpp \
 moc_ButtonGroup.cpp \
 moc_CommandLine.cpp \
+moc_CustomWidgets.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
 moc_DlgCmdbarsImp.cpp \
@@ -278,6 +279,7 @@ Command.cpp \
 CommandStd.cpp  \
 CommandTest.cpp \
 CommandView.cpp \
+CustomWidgets.cpp \
 DlgActionsImp.cpp \
 DlgCmdbarsImp.cpp \
 DlgCommandsImp.cpp \
@@ -371,19 +373,20 @@ am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
 	SoBrepShape.lo LanguageFactory.lo Action.lo Application.lo \
 	BitmapFactory.lo ButtonGroup.lo CommandLine.lo Command.lo \
-	CommandStd.lo CommandTest.lo CommandView.lo DlgActionsImp.lo \
-	DlgCmdbarsImp.lo DlgCommandsImp.lo DlgCustomizeImp.lo \
-	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
-	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
-	DlgParameterImp.lo DlgPreferencesImp.lo DlgSettingsImp.lo \
-	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
-	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
-	Document.lo GuiConsole.lo HtmlView.lo Macro.lo MouseModel.lo \
-	PrefWidgets.lo Process.lo PropertyPage.lo PropertyView.lo \
-	PythonEditor.lo ReportView.lo resource.lo Selection.lo \
-	Splashscreen.lo StackBar.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
-	Tree.lo View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
-	WaitCursor.lo WidgetFactory.lo Widgets.lo Window.lo
+	CommandStd.lo CommandTest.lo CommandView.lo CustomWidgets.lo \
+	DlgActionsImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
+	DlgCustomizeImp.lo DlgDocTemplatesImp.lo DlgEditorImp.lo \
+	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
+	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
+	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
+	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
+	DlgUndoRedo.lo Document.lo GuiConsole.lo HtmlView.lo Macro.lo \
+	MouseModel.lo PrefWidgets.lo Process.lo PropertyPage.lo \
+	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
+	Selection.lo Splashscreen.lo StackBar.lo ToolBox.lo \
+	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
+	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
+	WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -397,6 +400,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/CommandStd.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandTest.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandView.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/CustomWidgets.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgActionsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCmdbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCommandsImp.Plo \
@@ -524,6 +528,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandStd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandTest.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandView.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CustomWidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgActionsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCmdbarsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCommandsImp.Plo@am__quote@

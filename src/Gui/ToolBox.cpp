@@ -98,7 +98,6 @@ int ToolBox::removeItem ( QWidget * item )
 {
   int id = _pToolBox->removeItem( item );
   delete item;
-  int ct = _pToolBox->count();
   return id;
 }
 

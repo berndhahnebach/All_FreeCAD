@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 # include <qaction.h>
+# include <qdragobject.h>
 # include <qtooltip.h>
 # include <string>
 # include <vector>
@@ -35,6 +36,23 @@ class FCCommand;
 
 namespace Gui 
 {
+
+/**
+ * Class for drag and drop a 'QAction' object
+ * @author Werner Mayer
+ */
+class ActionDrag : public QStoredDrag
+{
+public:
+  ActionDrag ( QString action, QWidget * dragSource = 0, const char * name = 0 );
+  virtual ~ActionDrag ();
+
+  static bool canDecode ( const QMimeSource * e );
+  static bool decode ( const QMimeSource * e, QString&  action );
+
+public:
+  static std::vector<QString> actions;
+};
 
 /**
  * Allows actions to be added to widgets other than toolbars or popup menus.

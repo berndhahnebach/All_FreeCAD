@@ -238,7 +238,7 @@ bool CImageConvApp::AppendToFile(const QString& file)
         return false;
 
       bmp.at( bmp.size()-3 );
-      ts << "  rclBmpFactory.AddXPM(\"" << file << "\", " << file << ");\n";
+      ts << "  rclBmpFactory.addXPM(\"" << file << "\", " << file << ");\n";
       ts << "}\n";
       bmp.close();
     }

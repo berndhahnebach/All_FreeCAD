@@ -37,9 +37,9 @@ using namespace Gui::Dialog;
 DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettingsMacro( parent, name, fl )
 {
-  append(FCCheckBox_GuiAsComment->getHandler());
-  append(FCCheckBox_RecordGui   ->getHandler());
-  append(MacroPath              ->getHandler());
+  append(PrefCheckBox_GuiAsComment->getHandler());
+  append(PrefCheckBox_RecordGui   ->getHandler());
+  append(MacroPath                ->getHandler());
 }
 
 /** 

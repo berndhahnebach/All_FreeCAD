@@ -58,6 +58,8 @@
 #include "Macro.h"
 #include "PythonEditor.h"
 
+using namespace Gui;
+
 /* 
  *  Constructs a DlgMacroExecuteImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
@@ -156,9 +158,9 @@ void DlgMacroExecuteImp::OnEdit()
 
 	QDir dir(_cMacroPath.c_str());
 	QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
-	PythonView* edit = new PythonView(ApplicationWindow::Instance, "Editor");
+	PythonEditView* edit = new PythonEditView(ApplicationWindow::Instance, "Editor");
   ApplicationWindow::Instance->addWindow(edit,QextMdi::StandardAdd);
-	edit->OpenFile(file);
+	edit->openFile(file);
 	edit->setCaption(file);
 	QString name = file.left(file.findRev('.'));
 	edit->setTabCaption(name);

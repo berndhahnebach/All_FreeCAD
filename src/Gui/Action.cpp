@@ -40,6 +40,37 @@ using namespace Gui;
 using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
 
+std::vector<QString> ActionDrag::actions;
+
+ActionDrag::ActionDrag ( QString action, QWidget * dragSource , const char * name  )
+  : QStoredDrag("FCActionDrag", dragSource, name)
+{
+  // store the QAction name
+  actions.push_back(action);
+}
+
+ActionDrag::~ActionDrag ()
+{
+}
+
+bool ActionDrag::canDecode ( const QMimeSource * e )
+{
+  return e->provides( "ActionDrag" );
+}
+
+bool ActionDrag::decode ( const QMimeSource * e, QString&  action )
+{
+  if (actions.size() > 0)
+  {
+    action = *actions.begin();
+    return true;
+  }
+
+  return false;
+}
+
+// --------------------------------------------------------------------
+
 /**
  * Constructs an action called \a name with parent \a parent. It also stores a pointer
  * to the command object.
@@ -213,7 +244,7 @@ bool ActionGroup::addTo(QWidget *w)
     connect( combo, SIGNAL( destroyed() ),     this, SLOT( onDestroyed()    ) );
     connect( combo, SIGNAL(  activated(int) ), this, SLOT( onActivated(int) ) );
     combo->setMinimumWidth(130);
-    QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
+    QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
     {
       combo->insertItem(FCIcon, it->c_str());
@@ -273,7 +304,7 @@ void ActionGroup::setItems(const std::vector<std::string>& items)
 void ActionGroup::insertItem(const char* item)
 {
   mItems.push_back(item);
-  QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
+  QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
   for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
   {
     if ((*it)->inherits("QComboBox"))

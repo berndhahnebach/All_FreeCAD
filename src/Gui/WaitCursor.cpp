@@ -34,17 +34,25 @@
 
 #include "WaitCursor.h"
 
-struct FCWaitingCursorP
+using namespace Gui;
+
+namespace Gui {
+struct WaitCursorP
 {
   bool wait;
   int minimumDuration;
   uint main_threadid;
   QTime measure;
 };
+} // namespace Gui
 
-FCWaitingCursor::FCWaitingCursor()
+/**
+ * Constructs this object and starts the thread immediately.
+ * The minimum duration time is set to 1.500 ms. 
+ */
+WaitCursor::WaitCursor()
 {
-  d = new FCWaitingCursorP;
+  d = new WaitCursorP;
   d->minimumDuration = 1500;
   d->wait = false;
 #ifdef FC_OS_WIN32
@@ -54,13 +62,19 @@ FCWaitingCursor::FCWaitingCursor()
   setWaitCursor();
 }
 
-FCWaitingCursor::~FCWaitingCursor()
+/** Restores the last cursor again. */
+WaitCursor::~WaitCursor()
 {
   restoreCursor();
   delete d;
 }
 
-void FCWaitingCursor::run()
+/** 
+ * Either this method is living as long as the instance is existing or until the
+ * minimum duration time is reached. In the second case the waitcursor is set and the
+ * thread terminates.
+ */
+void WaitCursor::run()
 {
 #ifdef FC_OS_WIN32
   AttachThreadInput(GetCurrentThreadId(), d->main_threadid, true);
@@ -83,7 +97,10 @@ void FCWaitingCursor::run()
 #endif
 }
 
-void FCWaitingCursor::setWaitCursor()
+/**
+ * Starts the thread unless the thread is already running or the waitcursor is set.
+ */
+void WaitCursor::setWaitCursor()
 {
   // wait cursor already set
   if ( d->wait ) return;
@@ -93,7 +110,10 @@ void FCWaitingCursor::setWaitCursor()
   start();
 }
 
-void FCWaitingCursor::restoreCursor()
+/**
+ * Terminates the running thread and restores the cursor.
+ */
+void WaitCursor::restoreCursor()
 {
   // if running just terminate it
   if ( running() )
@@ -108,18 +128,24 @@ void FCWaitingCursor::restoreCursor()
   d->wait = false;
 }
 
-int FCWaitingCursor::minimumDuration()
+/**
+ * Returns the minimum duration time.
+ */
+int WaitCursor::minimumDuration()
 {
   return d->minimumDuration;
 }
 
-void FCWaitingCursor::setMinimumDuration ( int ms )
+/**
+ * Sets the minimum duration time to \a ms milliseconds. 
+ */
+void WaitCursor::setMinimumDuration ( int ms )
 {
   d->minimumDuration = ms;
 }
 
 // --------------------------------------------------------
-
+/*
 class FCAutoWaitCursorP : public QWidget
 {
 public:
@@ -277,3 +303,4 @@ void FCAutoWaitCursor::run()
     }
   }
 }
+*/

@@ -32,10 +32,10 @@
 #include "Window.h"
 #include "../Base/Console.h"
 
-class PythonConsole;
 class QTabWidget;
 
 namespace Gui {
+class PythonConsole;
 namespace DockWnd {
 
 class ReportOutput;

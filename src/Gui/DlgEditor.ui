@@ -70,7 +70,7 @@
                     </property>
                 </widget>
                 <widget row="1"  column="1" >
-                    <class>FCComboBox</class>
+                    <class>Gui::PrefComboBox</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>MyCustomWidget1_2</cstring>
@@ -121,7 +121,7 @@
                     <number>6</number>
                 </property>
                 <widget row="0"  column="0" >
-                    <class>FCCheckBox</class>
+                    <class>Gui::PrefCheckBox</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>EnableLineNumber</cstring>
@@ -155,7 +155,7 @@
                     </property>
                 </widget>
                 <widget row="1"  column="0" >
-                    <class>FCCheckBox</class>
+                    <class>Gui::PrefCheckBox</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>EnableFolding</cstring>
@@ -411,7 +411,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCComboBox</class>
+        <class>Gui::PrefComboBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>50</width>
@@ -429,7 +429,7 @@
         <property type="String">currentText</property>
     </customwidget>
     <customwidget>
-        <class>FCCheckBox</class>
+        <class>Gui::PrefCheckBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>80</width>

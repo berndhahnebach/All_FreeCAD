@@ -29,6 +29,7 @@
 
 // forward declaration
 class QTabWidget;
+class QListBox;
 
 namespace Gui {
 namespace Dialog {
@@ -39,7 +40,7 @@ namespace Dialog {
  * Each preference page can be created by the Qt Designer selecting the "Widget" project.
  * For automation of saving or loading the settings of the elements of such a page
  * (e.g. combo boxes, line edits, check boxes, ...) you can make use of the classes
- * inherited by @ref FCWidgetPrefs class like:
+ * inherited by @ref PrefWidget class like:
  * FCEditSpinBox, FCLineEdit, FCComboBox, FCListBox, FCCheckBox, FCRadioButton and FCSlider
  *
  * The implementation class must inherit the Qt-generated class and @ref PreferencePage.

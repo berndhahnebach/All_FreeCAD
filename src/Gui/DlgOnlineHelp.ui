@@ -25,9 +25,9 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="FCLineEdit">
+        <widget class="Gui::PrefLineEdit">
             <property name="name">
-                <cstring>FCLineEdit2</cstring>
+                <cstring>PrefLineEdit2</cstring>
             </property>
             <property name="enabled">
                 <bool>false</bool>
@@ -39,7 +39,7 @@
                 <cstring>System parameter:BaseApp/WindowSettings</cstring>
             </property>
         </widget>
-        <widget class="FCCheckBox">
+        <widget class="Gui::PrefCheckBox">
             <property name="name">
                 <cstring>UseProxy</cstring>
             </property>
@@ -64,7 +64,7 @@
                 <string>Download online help:</string>
             </property>
         </widget>
-        <widget class="FCLineEdit">
+        <widget class="Gui::PrefLineEdit">
             <property name="name">
                 <cstring>DownloadURL</cstring>
             </property>
@@ -92,7 +92,7 @@
                 <string>Location of online help:</string>
             </property>
         </widget>
-        <widget class="FCLineEdit">
+        <widget class="Gui::PrefLineEdit">
             <property name="name">
                 <cstring>Location</cstring>
             </property>
@@ -136,7 +136,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCCheckBox</class>
+        <class>Gui::PrefCheckBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>80</width>
@@ -159,7 +159,7 @@
         <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
-        <class>FCLineEdit</class>
+        <class>Gui::PrefLineEdit</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>100</width>
@@ -190,15 +190,15 @@
     <connection>
         <sender>UseProxy</sender>
         <signal>toggled(bool)</signal>
-        <receiver>FCLineEdit2</receiver>
+        <receiver>PrefLineEdit2</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>fclineedit.h</includehint>
-    <includehint>fccheckbox.h</includehint>
-    <includehint>fclineedit.h</includehint>
-    <includehint>fclineedit.h</includehint>
+    <includehint>preflineedit.h</includehint>
+    <includehint>prefcheckbox.h</includehint>
+    <includehint>preflineedit.h</includehint>
+    <includehint>preflineedit.h</includehint>
 </includehints>
 </UI>

@@ -31,9 +31,15 @@
 # include <qsyntaxhighlighter.h>
 #endif
 
+namespace Gui {
+
 class PythonSyntaxHighlighter;
 class PythonSyntaxHighlighterP;
 
+/**
+ * Basic stuff for a Python text editor with syntax highlighting..
+ * \author Werner Mayer
+ */
 class GuiExport PythonWindow : public QTextEdit
 {
 protected:
@@ -42,12 +48,18 @@ protected:
 
 protected:
   virtual void keyPressEvent(QKeyEvent * e);
-  int nInsertTabs;
 
 protected:
   PythonSyntaxHighlighter* pythonSyntax;
+
+private:
+  int nInsertTabs;
 };
 
+/**
+ * Python text editor with syntax highlighting..
+ * \author Werner Mayer
+ */
 class GuiExport PythonEditor : public PythonWindow
 {
 public:
@@ -55,6 +67,10 @@ public:
   ~PythonEditor();
 };
 
+/**
+ * Python text console with syntax highlighting..
+ * \author Werner Mayer
+ */
 class GuiExport PythonConsole : public PythonWindow
 {
 public:
@@ -63,9 +79,15 @@ public:
 
 protected:
   void keyPressEvent(QKeyEvent * e);
+
+private:
   int lastPara;
 };
 
+/**
+ * Syntax highlighter for Python.
+ * \author Werner Mayer
+ */
 class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
 {
 protected:
@@ -87,65 +109,62 @@ public:
   void highlightError (bool b);
 
 private:
-  int highlightLiterals( const QString&, int& from, int endStateOfLastPara );
-  int highlightBlockComments( const QString&, int& from, int endStateOfLastPara );
-  int highlightComments( const QString&, int& from, int endStateOfLastPara );
-  int highlightOperators( const QString&, int& from, int endStateOfLastPara );
-  int highlightNumbers( const QString&, int& from, int endStateOfLastPara );
+  int highlightLiteral( const QString&, int& from, int endStateOfLastPara );
+  int highlightBlockComment( const QString&, int& from, int endStateOfLastPara );
+  int highlightComment( const QString&, int& from, int endStateOfLastPara );
+  int highlightOperator( const QString&, int& from, int endStateOfLastPara );
+  int highlightNumber( const QString&, int& from, int endStateOfLastPara );
   int highlightNormalText( const QString&, int& from, int endStateOfLastPara );
-  int highlightKeywords( const QString&, int& from, int endStateOfLastPara );
+  int highlightKeyword( const QString&, int& from, int endStateOfLastPara );
 
   PythonSyntaxHighlighterP* d;
 };
 
 /**
  * A special view class which sends the messages from the application to
- * the Python editor and embeds the editor in a window
+ * the Python editor and embeds the editor in a window.
+ * \author Werner Mayer
  */
-class PythonView : public FCView
+class GuiExport PythonEditView : public FCView
 {
 public:
-  PythonView( QWidget* parent, const char* name);
-  ~PythonView();
+  PythonEditView( QWidget* parent, const char* name);
+  ~PythonEditView();
 
-  QTextEdit* GetEditor() const { return textEdit; }
+  QTextEdit* editor() const { return textEdit; }
 
-  const char *GetName(void){return "Scintilla";}
+  const char *GetName(void){return "PythonEditView";}
   void Update(void){};
 
-  /** Mesage handler.
-     * Runs the action specified by pMsg.
-     */
   bool OnMsg(const char* pMsg);
-  /** Mesage handler test
-     * Checks if the action pMsg is available. This is for enabling/disabling
-     * the corresponding buttons or menu items for this action.
-     */
   bool OnHasMsg(const char* pMsg);
-  /** checking on close state */
+  
   bool CanClose(void);
   void Print(QPainter& cPrinter);
-  void OpenFile (const QString& fileName);
+  void openFile (const QString& fileName);
 
   /** @name Standard actions of the editor */
   //@{
-  bool Save   (void);
-  bool SaveAs (void);
-  bool Open   (void);
-  void Cut    (void);
-  void Copy   (void);
-  void Paste  (void);
-  void Undo   (void);
-  void Redo   (void);
+  bool save   (void);
+  bool saveAs (void);
+  bool open   (void);
+  void cut    (void);
+  void copy   (void);
+  void paste  (void);
+  void undo   (void);
+  void redo   (void);
   //@}
 
+  bool isSavedOnce();
 
+private:
   void saveFile();
-  bool isAlreadySavedBefore();
-  QString _fileName;
 
-protected:
+private:
   QTextEdit* textEdit;
+  QString _fileName;
 };
+
+} // namespace Gui
 
 #endif // __PYTHON_EDITOR_H__

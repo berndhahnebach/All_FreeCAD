@@ -31,6 +31,7 @@
 #include "Widgets.h"
 #include "PythonEditor.h"
 
+using namespace Gui;
 using namespace Gui::DockWnd;
 
 /**

@@ -5,6 +5,7 @@ moc_Action.cpp \
 moc_Application.cpp \
 moc_ButtonGroup.cpp \
 moc_CommandLine.cpp \
+moc_CustomWidgets.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
 moc_DlgCmdbarsImp.cpp \
@@ -144,6 +145,7 @@ Command.cpp \
 CommandStd.cpp  \
 CommandTest.cpp \
 CommandView.cpp \
+CustomWidgets.cpp \
 DlgActionsImp.cpp \
 DlgCmdbarsImp.cpp \
 DlgCommandsImp.cpp \

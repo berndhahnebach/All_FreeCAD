@@ -23,11 +23,9 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <list>
-# include <string>
-# include <vector>
-# include <qlistbox.h>
+# include <qlayout.h>
 # include <qobjectlist.h>
+# include <qpushbutton.h>
 #endif
 
 #include "WidgetFactory.h"
@@ -36,32 +34,36 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
-#if QT_VERSION >= 300
-# include <qwidgetfactory.h>
-# ifdef FC_OS_WIN32
-#   pragma comment(lib,"qui.lib")
-#   pragma warning( disable : 4098 )
-# endif
+#ifdef FC_OS_WIN32
+# pragma comment(lib,"qui.lib")
+# pragma warning( disable : 4098 )
 #endif
 
 using Base::Console;
+using namespace Gui;
 
-FCWidgetFactory* FCWidgetFactory::_pcSingleton = NULL;
 
-FCWidgetFactory& FCWidgetFactory::Instance(void)
+Gui::WidgetFactoryInst* Gui::WidgetFactoryInst::_pcSingleton = NULL;
+
+WidgetFactoryInst& WidgetFactoryInst::Instance()
 {
-  if (_pcSingleton == NULL)
-    _pcSingleton = new FCWidgetFactory;
+  if (_pcSingleton == 0L)
+    _pcSingleton = new WidgetFactoryInst;
   return *_pcSingleton;
 }
 
-void FCWidgetFactory::Destruct (void)
+void WidgetFactoryInst::Destruct ()
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
 
-QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) const
+/**
+ * Creates a widget with the name \a sName which is a child of \a parent.
+ * To create an instance of this widget once it must has been registered. 
+ * If there is no appropriate widget registered 0 is returned.
+ */
+QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) const
 {
   QWidget* w = (QWidget*)Produce(sName);
 
@@ -73,7 +75,7 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) con
 #else
     Console().Log("\"%s\" is not registered\n", sName);
 #endif
-    return NULL;
+    return 0;
   }
 
   try
@@ -86,12 +88,12 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) con
   catch (...)
   {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit from \"QWidget\"\n", sName);
+    Console().Error("%s does not inherit \"QWidget\"\n", sName);
 #else
-    Console().Log("%s does not inherit from \"QWidget\"\n", sName);
+    Console().Log("%s does not inherit \"QWidget\"\n", sName);
 #endif
     delete w;
-    return NULL;
+    return 0;
   }
 
   // set the parent to the widget
@@ -101,28 +103,35 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) con
   return w;
 }
 
-QWidget* FCWidgetFactory::ProducePrefWidget(const char* sName, QWidget* parent, const char* sPref)
+/**
+ * Creates a preference widget with the name \a sName and the preference name \a sPref 
+ * which is a child of \a parent.
+ * To create an instance of this widget once it must has been registered. 
+ * If there is no appropriate widget registered 0 is returned.
+ * After creation of this widget its recent preferences are restored automatically.
+ */
+QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent, const char* sPref)
 {
-  QWidget* w = ProduceWidget(sName);
+  QWidget* w = createWidget(sName);
   // this widget class is not registered
   if (!w)
-    return NULL; // no valid QWidget object
+    return 0; // no valid QWidget object
 
   // set the parent to the widget
   w->reparent(parent, QPoint(0,0));
 
   try
   {
-    dynamic_cast<FCWidgetPrefs*>(w)->setPrefName(sPref);
-    dynamic_cast<FCWidgetPrefs*>(w)->restorePreferences();
+    dynamic_cast<PrefWidget*>(w)->setPrefName(sPref);
+    dynamic_cast<PrefWidget*>(w)->restorePreferences();
   }
   catch (...)
   {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit from \"FCWidgetPrefs\"\n", w->className());
+    Console().Error("%s does not inherit from \"PrefWidget\"\n", w->className());
 #endif
     delete w;
-    return NULL;
+    return 0;
   }
 
   return w;
@@ -130,34 +139,17 @@ QWidget* FCWidgetFactory::ProducePrefWidget(const char* sName, QWidget* parent, 
 
 // ----------------------------------------------------
 
-#if QT_VERSION >= 300
-class FCQtWidgetFactory : public QWidgetFactory
-{
-public:
-  FCQtWidgetFactory() : QWidgetFactory(){}
-  ~FCQtWidgetFactory(){}
+WidgetFactorySupplier* WidgetFactorySupplier::_pcSingleton = 0L;
 
-  QWidget* createWidget( const QString & className, QWidget * parent, const char * name ) const
-  {
-    QString cname = QString("class %1").arg(className);
-    return GetWidgetFactory().ProduceWidget(cname.latin1(), parent);
-  }
-};
-#endif
-
-// ----------------------------------------------------
-
-FCWidgetFactorySupplier* FCWidgetFactorySupplier::_pcSingleton = 0L;
-
-FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
+WidgetFactorySupplier & WidgetFactorySupplier::Instance()
 {
   // not initialized?
   if(!_pcSingleton)
   {
-    _pcSingleton = new FCWidgetFactorySupplier;
+    _pcSingleton = new WidgetFactorySupplier;
 
 #if QT_VERSION >= 300
-    QWidgetFactory::addWidgetFactory(new FCQtWidgetFactory);
+    QWidgetFactory::addWidgetFactory(new QtWidgetFactory);
 #endif
   }
 
@@ -166,7 +158,11 @@ FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
 
 // ----------------------------------------------------
 
-FCContainerDialog::FCContainerDialog( QWidget* templChild )
+/**
+ *  Constructs a ContainerDialog which embeds the child \a templChild.
+ *  The dialog will be modal.
+ */
+ContainerDialog::ContainerDialog( QWidget* templChild )
     : QDialog( 0L, 0L, true, 0 )
 
 {
@@ -201,7 +197,8 @@ FCContainerDialog::FCContainerDialog( QWidget* templChild )
   connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
 }
 
-FCContainerDialog::~FCContainerDialog()
+/** Destroys the object and frees any allocated resources */
+ContainerDialog::~ContainerDialog()
 {
 }
 
@@ -211,11 +208,11 @@ FCContainerDialog::~FCContainerDialog()
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject FCPyResource::Type = {
+PyTypeObject PyResource::Type = {
                                     PyObject_HEAD_INIT(&PyType_Type)
                                     0,                    /*ob_size*/
-                                    "FCPyResource",       /*tp_name*/
-                                    sizeof(FCPyResource), /*tp_basicsize*/
+                                    "PyResource",         /*tp_name*/
+                                    sizeof(PyResource),   /*tp_basicsize*/
                                     0,                    /*tp_itemsize*/
                                     /* methods */
                                     PyDestructor,         /*tp_dealloc*/
@@ -234,11 +231,11 @@ PyTypeObject FCPyResource::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef FCPyResource::Methods[] = {
-                                        {"GetValue",       (PyCFunction) sGetValue, Py_NEWARGS},
-                                        {"SetValue",       (PyCFunction) sSetValue, Py_NEWARGS},
-                                        {"Show",           (PyCFunction) sShow,     Py_NEWARGS},
-                                        {"Connect",        (PyCFunction) sConnect,  Py_NEWARGS},
+PyMethodDef PyResource::Methods[] = {
+                                        {"GetValue",       (PyCFunction) svalue,    Py_NEWARGS},
+                                        {"SetValue",       (PyCFunction) ssetValue, Py_NEWARGS},
+                                        {"Show",           (PyCFunction) sshow,     Py_NEWARGS},
+                                        {"Connect",        (PyCFunction) sconnect,  Py_NEWARGS},
 
                                         {NULL, NULL}      /* Sentinel */
                                       };
@@ -246,17 +243,17 @@ PyMethodDef FCPyResource::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCPyResource::Parents[] = {&FCPyObject::Type,&FCPyResource::Type, NULL};
+PyParentObject PyResource::Parents[] = {&FCPyObject::Type,&PyResource::Type, NULL};
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCPyResource::FCPyResource(PyTypeObject *T)
+PyResource::PyResource(PyTypeObject *T)
     : FCPyObject( T), myDlg(0L)
 {
 }
 
-PyObject *FCPyResource::PyMake(PyObject *ignored, PyObject *args) // Python wrapper
+PyObject *PyResource::PyMake(PyObject *ignored, PyObject *args) // Python wrapper
 {
   //return new FCPyResource();      // Make new Python-able object
   return 0;
@@ -265,12 +262,12 @@ PyObject *FCPyResource::PyMake(PyObject *ignored, PyObject *args) // Python wrap
 //--------------------------------------------------------------------------
 //  FCPyResource destructor
 //--------------------------------------------------------------------------
-FCPyResource::~FCPyResource()
+PyResource::~PyResource()
 {
   delete myDlg;
-  for (std::vector<FCSignalConnect*>::iterator it = mySingals.begin(); it != mySingals.end(); ++it)
+  for (std::vector<SignalConnect*>::iterator it = mySingals.begin(); it != mySingals.end(); ++it)
   {
-    FCSignalConnect* sc = *it;
+    SignalConnect* sc = *it;
     delete sc;
   }
 }
@@ -278,19 +275,24 @@ FCPyResource::~FCPyResource()
 //--------------------------------------------------------------------------
 // FCPyParametrGrp Attributes
 //--------------------------------------------------------------------------
-PyObject *FCPyResource::_getattr(char *attr)        // __getattr__ function: note only need to handle new state
+PyObject *PyResource::_getattr(char *attr)        // __getattr__ function: note only need to handle new state
 {
   _getattr_up(FCPyObject);            // send to parent
   return 0;
 }
 
-int FCPyResource::_setattr(char *attr, PyObject *value)   // __setattr__ function: note only need to handle new state
+int PyResource::_setattr(char *attr, PyObject *value)   // __setattr__ function: note only need to handle new state
 {
   return FCPyObject::_setattr(attr, value); // send up to parent
   return 0;
 }
 
-void FCPyResource::load(const char* name)
+/**
+ * Loads an .ui file with the name \a name. If the .ui file cannot be found or the QWidgetFactory
+ * cannot create an instance an exception is thrown. If the created resource does not inherit QDialog
+ * an instance of ContainerDialog is created to embed it.
+ */
+void PyResource::load(const char* name)
 {
   QString fn = name;
   QFileInfo fi(fn);
@@ -301,7 +303,7 @@ void FCPyResource::load(const char* name)
 #if QT_VERSION < 300
   throw FCException("Qt version is too old!\n");
 #else
-  QWidget* w=NULL;
+  QWidget* w=0;
   try{
     w = QWidgetFactory::create(fn);
   }catch(...){
@@ -314,12 +316,93 @@ void FCPyResource::load(const char* name)
   }
   else
   {
-    myDlg = new FCContainerDialog(w);
+    myDlg = new ContainerDialog(w);
   }
 #endif
 }
 
-PyObject *FCPyResource::Show(PyObject *args)
+/**
+ * Makes a connection between the sender widget \a sender and its signal \a signal
+ * of the created resource and Python callback function \a cb.
+ * If the sender widget does not exist or no resource has been loaded this methode returns FALSE, 
+ * otherwise it returns TRUE.
+ */
+bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
+{
+  if ( !myDlg )
+    return false;
+
+  QObject* objS=0L;
+  QObjectList *l = myDlg->queryList( "QWidget" );
+  QObjectListIt it( *l );
+  QObject *obj;
+  QString sigStr = QString("2%1").arg(signal);
+
+  while ( (obj = it.current()) != 0 ) {
+    ++it;
+    if (strcmp(obj->name(), sender) == 0)
+    {
+      objS = obj;
+      break;
+    }
+  }
+
+  delete l; // delete the list, not the objects
+
+  if (objS)
+  {
+    SignalConnect* sc = new SignalConnect(this, cb, objS);
+    mySingals.push_back(sc);
+    QObject::connect(objS, sigStr.latin1(), sc, SLOT ( onExecute() )  );
+
+    return true;
+  }
+  else
+    return false;
+}
+
+/**
+ * Searches for the sender, the signal and the callback function to connect with
+ * in the argument object \a args. In the case it fails 0 is returned.
+ */
+PyObject *PyResource::connect(PyObject *args)
+{
+  char *psSender;
+  char *psSignal;
+
+  PyObject *result = NULL;
+  PyObject *temp;
+
+  if (PyArg_ParseTuple(args, "ssO:set_callback", &psSender, &psSignal, &temp))
+  {
+    if (!PyCallable_Check(temp))
+    {
+      PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+      return NULL;
+    }
+
+    Py_XINCREF(temp);         /* Add a reference to new callback */
+    std::string sSender = psSender;
+    std::string sSignal = psSignal;
+
+    if ( !connect(psSender, psSignal, temp) )
+    {
+      // no signal object found => dispose the callback object
+      Py_XDECREF(temp);  /* Dispose of callback */
+    }
+
+    /* Boilerplate to return "None" */
+    Py_INCREF(Py_None);
+    result = Py_None;
+  }
+
+  return result;
+}
+
+/**
+ * If any resouce has been loaded this methods shows it as a modal dialog.
+ */
+PyObject *PyResource::show(PyObject *args)
 {
   if (myDlg)
   {
@@ -330,7 +413,12 @@ PyObject *FCPyResource::Show(PyObject *args)
   return Py_None;
 }
 
-PyObject *FCPyResource::GetValue(PyObject *args)
+/**
+ * Searches for a widget and its value in the argument object \a args
+ * to returns its value as Python object.
+ * In the case it fails 0 is returned.
+ */
+PyObject *PyResource::value(PyObject *args)
 {
   char *psName;
   char *psProperty;
@@ -394,7 +482,12 @@ PyObject *FCPyResource::GetValue(PyObject *args)
   return pItem;
 }
 
-PyObject *FCPyResource::SetValue(PyObject *args)
+/**
+ * Searches for a widget, its value name and the new value in the argument object \a args
+ * to set even this new value.
+ * In the case it fails 0 is returned.
+ */
+PyObject *PyResource::setValue(PyObject *args)
 {
   char *psName;
   char *psProperty;
@@ -465,84 +558,22 @@ PyObject *FCPyResource::SetValue(PyObject *args)
   return Py_None;
 }
 
-PyObject *FCPyResource::Connect(PyObject *args)
-{
-  char *psSender;
-  char *psSignal;
-
-  PyObject *result = NULL;
-  PyObject *temp;
-
-  if (PyArg_ParseTuple(args, "ssO:set_callback", &psSender, &psSignal, &temp))
-  {
-    if (!PyCallable_Check(temp))
-    {
-      PyErr_SetString(PyExc_TypeError, "parameter must be callable");
-      return NULL;
-    }
-
-    Py_XINCREF(temp);         /* Add a reference to new callback */
-    std::string sSender = psSender;
-    std::string sSignal = psSignal;
-
-    if ( !connect(psSender, psSignal, temp) )
-    {
-      // no signal object found => dispose the callback object
-      Py_XDECREF(temp);  /* Dispose of callback */
-    }
-
-    /* Boilerplate to return "None" */
-    Py_INCREF(Py_None);
-    result = Py_None;
-  }
-
-  return result;
-}
-
-bool FCPyResource::connect(const char* sender, const char* signal, PyObject* cb)
-{
-  QObject* objS=0L;
-  QObjectList *l = myDlg->queryList( "QWidget" );
-  QObjectListIt it( *l );
-  QObject *obj;
-  QString sigStr = QString("2%1").arg(signal);
-
-  while ( (obj = it.current()) != 0 ) {
-    ++it;
-    if (strcmp(obj->name(), sender) == 0)
-    {
-      objS = obj;
-      break;
-    }
-  }
-
-  delete l; // delete the list, not the objects
-
-  if (objS)
-  {
-    FCSignalConnect* sc = new FCSignalConnect(this, cb, objS);
-    mySingals.push_back(sc);
-    QObject::connect(objS, sigStr.latin1(), sc, SLOT ( onExecute() )  );
-
-    return true;
-  }
-  else
-    return false;
-}
-
 // ----------------------------------------------------
 
-FCSignalConnect::FCSignalConnect( Base::FCPyObject* res, PyObject* cb, QObject* sender)
-    : myResource(res), myCallback(cb), mySender(sender)
+SignalConnect::SignalConnect( Base::FCPyObject* res, PyObject* cb, QObject* sender)
+  : myResource(res), myCallback(cb), mySender(sender)
 {
 }
 
-FCSignalConnect::~FCSignalConnect()
+SignalConnect::~SignalConnect()
 {
   Py_XDECREF(myCallback);  /* Dispose of callback */
 }
 
-void FCSignalConnect::onExecute()
+/**
+ * Calls the callback function of the connected Python object.
+ */
+void SignalConnect::onExecute()
 {
   int arg;
   PyObject *arglist;

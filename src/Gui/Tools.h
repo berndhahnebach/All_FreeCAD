@@ -21,23 +21,27 @@
  ***************************************************************************/
 
 
-#ifndef __FC_TOOLS_H__
-#define __FC_TOOLS_H__
+#ifndef TOOLS_H__
+#define TOOLS_H__
 
 #ifndef _PreComp_
 # include <qstring.h>
 # include <qpixmap.h>
-# include <qtoolbar.h>
 #endif
+
+class QToolBar;
+
+namespace Gui {
 
 /**
  * A helper class
+ * \author Werner Mayer
  */
-class FCTools
+class Tools
 {
 public:
   /** Resizes the area of a pixmap
-   * If the size is greater than the old one the pixmap
+   * If the new size is greater than the old one the pixmap
    * will be placed in the center. The border area will be filled
    * up with current style's base color. 
    */
@@ -64,17 +68,12 @@ public:
    */
   static QPixmap resize(int w, int h, QPixmap p);
 
-  /** Clears only the tool buttons and the separators of a toolbar */
-  static void clearToolButtons(QToolBar* tb);
-
   /** Returns whether the given url is a:
    * 0: an existing file
    * 1: a non-existing file but valid file name
    * 2: something else
    */
   static int getURLType(const QString& url);
-
-  static QString i18n(const QString& s);
 };
 
 template <class T>
@@ -89,4 +88,6 @@ const T& FCmin (const T& a, const T& b)
   return (a < b ? a : b);
 }
 
-#endif // __FC_TOOLS_H__
+} // namespace Gui
+
+#endif // TOOLS_H__

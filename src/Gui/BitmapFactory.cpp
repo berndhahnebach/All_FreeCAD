@@ -1,41 +1,35 @@
 /***************************************************************************
-                          BitmapFactory.cpp  -  description
-                             -------------------
-    begin                : 2003/01/12 23:25:44
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file BitmapFactory.cpp
- *  \brief Produce widgets
- *  \author Werner Mayer
- *  \version 0.1
- *  \date    2003/01/06
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
 
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <string>
-#	include <list>
-#	include <vector>
-#	include <qdir.h>
-#	include <qpainter.h>
-#	include <qpixmap.h>
-#	include <qtoolbar.h>
+# include <string>
+# include <list>
+# include <vector>
+# include <qdir.h>
+# include <qpainter.h>
+# include <qpixmap.h>
+# include <qtoolbar.h>
 #endif
 
 #include "BitmapFactory.h"
@@ -51,13 +45,13 @@ BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = NULL;
 BitmapFactoryInst& BitmapFactoryInst::Instance(void)
 {
   if (_pcSingleton == NULL)
-	{
+  {
     _pcSingleton = new BitmapFactoryInst;
-		_pcSingleton->AddPath("../../FreeCADIcons");
-		_pcSingleton->AddPath("../Icons");
+    _pcSingleton->addPath("../../FreeCADIcons");
+    _pcSingleton->addPath("../Icons");
 
-		RegisterIcons();
-	}
+    RegisterIcons();
+  }
 
   return *_pcSingleton;
 }
@@ -68,57 +62,57 @@ void BitmapFactoryInst::Destruct (void)
     delete _pcSingleton;
 }
 
-void BitmapFactoryInst::AddPath(const char* sPath)
+void BitmapFactoryInst::addPath(const char* sPath)
 {
-	_vsPaths.push_back(sPath);
+  _vsPaths.push_back(sPath);
 }
 
-void BitmapFactoryInst::RemovePath(const char* sPath)
+void BitmapFactoryInst::removePath(const char* sPath)
 {
-	_vsPaths.erase(std::find<std::vector<std::string>::iterator,std::string>(_vsPaths.begin(),_vsPaths.end(),sPath));
+  _vsPaths.erase(std::find<std::vector<std::string>::iterator,std::string>(_vsPaths.begin(),_vsPaths.end(),sPath));
 }
 
-void BitmapFactoryInst::AddXPM(const char* sName, const char** pXPM)
+void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
 {
-	_mpXPM[sName] = pXPM;
+  _mpXPM[sName] = pXPM;
 }
 
-void BitmapFactoryInst::RemoveXPM(const char* sName)
+void BitmapFactoryInst::removeXPM(const char* sName)
 {
-	_mpXPM.erase(sName);
+  _mpXPM.erase(sName);
 }
 
-QPixmap BitmapFactoryInst::GetPixmap(const char* sName)
+QPixmap BitmapFactoryInst::pixmap(const char* sName)
 {
-	// first try to find it in the build in XPM
-	std::map<std::string,const char**>::const_iterator It = _mpXPM.find(sName);
+  // first try to find it in the build in XPM
+  std::map<std::string,const char**>::const_iterator It = _mpXPM.find(sName);
 
-	if(It != _mpXPM.end())
-		return QPixmap(It->second);
+  if(It != _mpXPM.end())
+    return QPixmap(It->second);
 
-	// try to find it in the given directorys
-	for(std::vector<std::string>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
-	{
-		// list dir
-		QDir d( (*It2).c_str() );
-		if( QFile(d.path()+QDir::separator() + sName +".bmp").exists() )
-			return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
-		if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
-			return QPixmap(d.path()+QDir::separator()+ sName + ".png");
-		if( QFile(d.path()+QDir::separator()+ sName + ".gif").exists() )
-			return QPixmap(d.path()+QDir::separator()+ sName + ".gif");
-	}
+  // try to find it in the given directorys
+  for(std::vector<std::string>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
+  {
+    // list dir
+    QDir d( (*It2).c_str() );
+    if( QFile(d.path()+QDir::separator() + sName +".bmp").exists() )
+      return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
+    if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
+      return QPixmap(d.path()+QDir::separator()+ sName + ".png");
+    if( QFile(d.path()+QDir::separator()+ sName + ".gif").exists() )
+      return QPixmap(d.path()+QDir::separator()+ sName + ".gif");
+  }
 
-	Base::Console().Warning("Can't find Pixmap:%s\n",sName);
+  Base::Console().Warning("Can't find Pixmap:%s\n",sName);
 
-	return QPixmap(px);
+  return QPixmap(px);
 
 }
 
-QPixmap BitmapFactoryInst::GetPixmap(const char* sName, const char* sMask, Position pos)
+QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position pos)
 {
-  QPixmap p1 = GetPixmap(sName);
-  QPixmap p2 = GetPixmap(sMask);
+  QPixmap p1 = pixmap(sName);
+  QPixmap p2 = pixmap(sMask);
 
   int x = 0, y = 0;
 
@@ -139,7 +133,7 @@ QPixmap BitmapFactoryInst::GetPixmap(const char* sName, const char* sMask, Posit
   }
 
   QPixmap p = p1;
-  p = FCTools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
+  p = Tools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
 
   QPainter pt;
   pt.begin( &p );

@@ -67,7 +67,7 @@
                             <number>6</number>
                         </property>
                         <widget>
-                            <class>FCLineEdit</class>
+                            <class>Gui::PrefLineEdit</class>
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>MacroPath</cstring>
@@ -128,10 +128,10 @@
                             <number>6</number>
                         </property>
                         <widget row="0"  column="0" >
-                            <class>FCCheckBox</class>
+                            <class>Gui::PrefCheckBox</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>FCCheckBox_RecordGui</cstring>
+                                <cstring>PrefCheckBox_RecordGui</cstring>
                             </property>
                             <property>
                                 <name>prefEntry</name>
@@ -147,10 +147,10 @@
                             </property>
                         </widget>
                         <widget row="1"  column="0" >
-                            <class>FCCheckBox</class>
+                            <class>Gui::PrefCheckBox</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>FCCheckBox_GuiAsComment</cstring>
+                                <cstring>PrefCheckBox_GuiAsComment</cstring>
                             </property>
                             <property>
                                 <name>prefEntry</name>
@@ -173,7 +173,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCLineEdit</class>
+        <class>Gui::PrefLineEdit</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>100</width>
@@ -189,7 +189,7 @@
         <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
-        <class>FCCheckBox</class>
+        <class>Gui::PrefCheckBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>100</width>

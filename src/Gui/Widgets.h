@@ -45,11 +45,13 @@
 
 #include "../Base/Sequencer.h"
 
-//namespace Gui {
-
 class QHBoxLayout;
 class QTime;
 class QGridLayout;
+
+namespace Gui {
+class PrefCheckBox;
+} // namespace Gui
 
 /**
  * Using the Qt's open/save dialogs with own adjustments
@@ -104,7 +106,7 @@ protected:
   FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
                int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
 
-  class FCCheckBox* checkBox;
+  Gui::PrefCheckBox* checkBox;
   QGridLayout* layout;
 };
 

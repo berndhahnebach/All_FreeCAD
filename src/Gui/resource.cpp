@@ -22,12 +22,6 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <list>
-# include <string>
-# include <vector>
-# include <qlistbox.h>
-#endif
 
 #include "BitmapFactory.h"
 #include "WidgetFactory.h"
@@ -40,6 +34,9 @@
 //
 #include "Language/FreeCAD_de.h"
 
+/**
+ * Register all languages to switch between them at any later time.
+ */
 Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 {
   // ADD ALL PIXMAPS TO THE FACTORY AUTOMATICALLY
@@ -65,33 +62,37 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 #include "DlgSettingsMacroImp.h"
 #include "DlgOnlineHelpImp.h"
 
+using namespace Gui;
 using namespace Gui::Dialog;
 
-FCWidgetFactorySupplier::FCWidgetFactorySupplier()
+/**
+ * Registers all preference pages or widgets to create them dynamically at any later time.
+ */
+WidgetFactorySupplier::WidgetFactorySupplier()
 {
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-  Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("FreeCAD"     ) );
-  new FCPrefPageProducer<DlgGeneralImp>         ( QObject::tr("General"     ) );
-  new FCPrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr("Editor"      ) );
-  new FCPrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr("Macros"      ) );
-  new FCPrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr("Online help" ) );
-  Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("Viewer"      ) );
-  new FCPrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr("Help Viewer" ) );
-  new FCPrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr("3D View"     ) );
+  Gui::Dialog::DlgPreferencesImp::addGroup    ( QObject::tr("FreeCAD"     ) );
+  new PrefPageProducer<DlgGeneralImp>         ( QObject::tr("General"     ) );
+  new PrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr("Editor"      ) );
+  new PrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr("Macros"      ) );
+  new PrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr("Online help" ) );
+  Gui::Dialog::DlgPreferencesImp::addGroup    ( QObject::tr("Viewer"      ) );
+  new PrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr("Help Viewer" ) );
+  new PrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr("3D View"     ) );
 
   // ADD YOUR PREFERENCE WIDGETS HERE
   //
   //
-  new FCWidgetProducer<FCPrefSpinBox>;
-  new FCWidgetProducer<FCLineEdit>;
-  new FCWidgetProducer<FCComboBox>;
-  new FCWidgetProducer<FCListBox>;
-  new FCWidgetProducer<FCCheckBox>;
-  new FCWidgetProducer<FCRadioButton>;
-  new FCWidgetProducer<FCSlider>;
-  new FCWidgetProducer<FCCmdView>;
-  new FCWidgetProducer<FCAccelLineEdit>;
-  new FCWidgetProducer<FCColorButton>;
+  new WidgetProducer<PrefSpinBox>;
+  new WidgetProducer<PrefLineEdit>;
+  new WidgetProducer<PrefComboBox>;
+  new WidgetProducer<PrefListBox>;
+  new WidgetProducer<PrefCheckBox>;
+  new WidgetProducer<PrefRadioButton>;
+  new WidgetProducer<PrefSlider>;
+  new WidgetProducer<FCCmdView>;
+  new WidgetProducer<FCAccelLineEdit>;
+  new WidgetProducer<FCColorButton>;
 }

@@ -28,7 +28,7 @@ DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  con
 {
 	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
     
-	QPixmap pixmap(Gui::BitmapFactory().GetPixmap("Folder32"));
+	QPixmap pixmap(Gui::BitmapFactory().pixmap("Folder32"));
 	QString str;
 	// cycling through the Templates
 	for(std::vector<std::string>::iterator i=vTemplates.begin();i!=vTemplates.end();i++)

@@ -94,7 +94,7 @@ void DlgCustomActionsImp::showPixmaps()
     if (!(*it)->GetAction()->iconSet().isNull())
     {
       QPixmap p = (*it)->GetAction()->iconSet().pixmap();
-      item->setPixmap(0, FCTools::fillUp(24,24,p));
+      item->setPixmap(0, Tools::fillUp(24,24,p));
     }
   }
 }
@@ -197,7 +197,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
     PixmapLabel->clear();
     if (QString(pScript->GetPixmap()).length() > 2)
     {
-      QPixmap p = Gui::BitmapFactory().GetPixmap(pScript->GetPixmap());
+      QPixmap p = Gui::BitmapFactory().pixmap(pScript->GetPixmap());
       PixmapLabel->setPixmap(p);
     }
   }
@@ -254,7 +254,7 @@ void DlgCustomActionsImp::onAddCustomAction()
     if (PixmapLabel->pixmap() != NULL)
     {
       QPixmap p = *PixmapLabel->pixmap();
-      item->setPixmap(0, FCTools::fillUp(24,24,p));
+      item->setPixmap(0, Tools::fillUp(24,24,p));
     }
   }
 

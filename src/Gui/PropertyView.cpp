@@ -128,9 +128,9 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
   _pPropEditor->addColumn( "Value" );
 
 	// retrieve the Pixmaps
-	pcLabelOpen   = new QPixmap(Gui::BitmapFactory().GetPixmap("RawTree_LabelClosed"));
-	pcLabelClosed = new QPixmap(Gui::BitmapFactory().GetPixmap("RawTree_LabelOpen"));
-	pcAttribute   = new QPixmap(Gui::BitmapFactory().GetPixmap("RawTree_Attr"));
+	pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
+	pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
+	pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
 
 	//_pcListView->setSize(200,400);
   resize( 200, 400 );

@@ -26,135 +26,160 @@
 
 #include "../Base/Parameter.h"
 #include "Widgets.h"
-#include "qextmdi/qextmdimainfrm.h"
 
-#include <qcheckbox.h>
-#include <qradiobutton.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qlistbox.h>
-#include <qslider.h>
-#include <qtoolbar.h>
+#ifndef _PreComp_
+# include <qcheckbox.h>
+# include <qcombobox.h>
+# include <qlineedit.h>
+# include <qlistbox.h>
+# include <qradiobutton.h>
+# include <qslider.h>
+#endif
 
 // forward declarations
-class FCWidgetPrefsHandler;
 class QDoubleValidator;
-class FCWidgetFactorySupplier;
 class QAction;
 class QMainWindow;
 class FCDockWindow;
 class FCCommandManager;
 
 namespace Gui {
-namespace DockWnd {
-class ToolBox;
+class WidgetFactoryInst;
+class PrefWidgetHandler;
 
-} // namespace DockWnd
-} // namespace Gui
-
-/** The widget preference class
- *  If you want to extend a QWidget class to save/restore data
- *  you just have to derive from this class and implement
- *  the both methods @ref restorePreferences() and
- *  @ref savePreferences()
- *  @see FCWidgetPrefsHandler
- *  @see FCWidgetFactorySupplier
+/** The preference widget class.
+ * If you want to extend a QWidget class to save/restore its data
+ * you just have to derive from this class and implement the methods 
+ * restorePreferences() and savePreferences().
+ *
+ * @see PrefWidgetHandler
+ * \author Werner Mayer
  */
-class FCWidgetPrefs : public FCParameterGrp::ObserverType
+class PrefWidget : public FCParameterGrp::ObserverType
 {
 public:
-  /** changes the preference name */
-  virtual void setEntryName(QString name);
-  /** get the widget's name in preferences */
-  QString getEntryName() const;
-  /** changes the preference path */
-  virtual void setParamGrpPath(QString name);
-  /** get the widget's preferences path */
-  QString getParamGrpPath() const;
-  /** return the handler */
-  FCWidgetPrefsHandler* getHandler();
-  /** install a new handler */
-  void installHandler(FCWidgetPrefsHandler*);
-  /** get the handle to the parameter group */
-  FCParameterGrp::handle getParamGrp();
-  /** observers method */
+  virtual void setEntryName( const QString& name );
+  QString entryName() const;
+
+  virtual void setParamGrpPath( const QString& path );
+  QString paramGrpPath() const;
+  FCParameterGrp::handle getParamGrp() const;
+
+  void installHandler(PrefWidgetHandler*);
+  PrefWidgetHandler* getHandler();
+
   virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
-  /** get the handle to the root parameter group */
+
   static FCParameterGrp::handle getRootParamGrp();
 
 protected:
-  /** Restore the preferences
-   * Must be reimplemented in subclasses
+  /** Restores the preferences
+   * Must be reimplemented in any subclasses.
    */
   virtual void restorePreferences() = 0;
   /** Save the preferences
-   * Must be reimplemented in subclasses
+   * Must be reimplemented in any subclasses.
    */
   virtual void savePreferences()    = 0;
-  /// constructor
-  FCWidgetPrefs(const char * name = 0, bool bInstall=true);
-  /// destructor
-  virtual ~FCWidgetPrefs();
 
-  /// changes the preference name
-  void setPrefName(QString pref);
-  FCParameterGrp::handle hPrefGrp;
+  PrefWidget(const char * name = 0, bool bInstall=true);
+  virtual ~PrefWidget();
+
+  void setPrefName( const QString& name );
+
+  FCParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
 
 private:
-  FCWidgetPrefsHandler* pHandler;
+  PrefWidgetHandler* pHandler;
   QString m_sPrefName;
   QString m_sPrefGrp;
 
   // friends
-  friend class FCWidgetFactory;
-  friend class FCWidgetPrefsHandler;
+  friend class Gui::WidgetFactoryInst;
+  friend class PrefWidgetHandler;
 };
 
-/** The preference handler class
- *  This class allows you to connect the slots
- *  @ref Save() and @ref Restore() 
- *  to signals of your classes.
- *  @see FCWidgetPrefs
+/** The PrefWidgetHandler class allows you to connect the slots
+ * @ref onSave() and @ref onRestore() to signals of your classes.
+ * @see PrefWidget
+ * \author Werner Mayer
  */
-class FCWidgetPrefsHandler : public QObject
+class PrefWidgetHandler : public QObject
 {
   Q_OBJECT
 
 protected:
-  FCWidgetPrefsHandler(FCWidgetPrefs* p);
+  PrefWidgetHandler( PrefWidget* p );
 
 public slots:
-  /// save
   virtual void onSave();
-  /// restore
   virtual void onRestore();
 
 signals:
-  /// emits this signal when @ref onSave() was called
+  /** This signal is emitted after onSave() was called */
   void saved();
-  /// emits this signal when @ref onRestore() was called
+  /** This signal is emitted after onRestore() was called */
   void restored();
 
 protected:
-  FCWidgetPrefs* pPref;
+  /** Pointer to PrefWidget object managed by this class. */
+  PrefWidget* pPref; 
 
   //friends
-  friend class FCWidgetPrefs;
-  friend class FCWidgetPrefsManager;
+  friend class PrefWidget;
+  friend class PrefWidgetManager;
 };
 
-/** Container class for storing several
- * @ref FCWidgetPrefsHandler objects.
+/** Container class for storing several @ref PrefWidgetHandler objects.
+ * To restore and save the settings of any widgets in own dialogs you have to derive
+ * your dialog class from PrefWidgetManager and call append() e.g. in the dialog's 
+ * constructor for each widget you want to enable this mechanism.
+ *
+ * At destruction time you can call PrefWidgetHandler::onSave() for each registered handler
+ * to save the preferences of the used widgets.
+ * You also have the possibility to connect the onSave() slot to any signals you prefer.
+ *
+ * \code
+ * class MyDialog : public QDialog, public PrefWidgetManager
+ * {
+ * public:
+ *    MyDialog( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 )
+ *    {
+ *       // register the widgets' handlers to load and save their preferences
+ *       append( _listBox ->getHandler() );
+ *       append( _listEdit->getHandler() );
+ *    }
+ *
+ *    ~MyDialog()
+ *    {
+ *      std::vector<PrefWidgetHandler*> handler(getHandlers());
+ *      for ( std::vector<PrefWidgetHandler*>::iterator it = handler.begin(); it != handler.end(); ++it)
+ *      {
+ *        (*it)->onSave();
+ *      }
+ *    }
+ * ...
+ *   PrefListBox*  _listBox;
+ *   PrefLineEdit* _lineEdit;
+ * };
+ * \endcode
+ * @see Gui::Dialog::DlgPreferencesImp
+ *
+ * \author Werner Mayer
  */
-class FCWidgetPrefsManager
+class PrefWidgetManager
 {
 public:
-  std::vector<FCWidgetPrefsHandler*> getHandlers()
+  std::vector<PrefWidgetHandler*> getHandlers()
   {
     return m_aHandlers;
   }
 
-  void append(FCWidgetPrefsHandler* handler)
+  /**
+   * Appends the PrefWidgetHandler \a handler and restores the preferences
+   * of the widget managed by \a handler.
+   */
+  void append( PrefWidgetHandler* handler )
   {
     if (handler)
     {
@@ -168,29 +193,31 @@ public:
   }
 
 protected:
-  std::vector<FCWidgetPrefsHandler*> m_aHandlers;
+  /** Vector of all registered handlers. */
+  std::vector<PrefWidgetHandler*> m_aHandlers;
 };
 
-/** The FCEditSpinBox class
+/** The PrefSpinBox class.
+ * \author Werner Mayer
  */
-class FCPrefSpinBox : public FCFloatSpinBox, public FCWidgetPrefs
+class PrefSpinBox : public FCFloatSpinBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCPrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~FCPrefSpinBox();
+  PrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefSpinBox();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -199,26 +226,27 @@ protected:
 };
 
 /**
- * FCLineEdit
+ * The PrefLineEdit class.
+ * \author Werner Mayer
  */
-class FCLineEdit : public QLineEdit, public FCWidgetPrefs
+class PrefLineEdit : public QLineEdit, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCLineEdit ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~FCLineEdit();
+  PrefLineEdit ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefLineEdit();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -227,26 +255,27 @@ protected:
 };
 
 /**
- * FCComboBox
+ * The PrefComboBox class.
+ * \author Werner Mayer
  */
-class FCComboBox : public QComboBox, public FCWidgetPrefs
+class PrefComboBox : public QComboBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCComboBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~FCComboBox();
+  PrefComboBox ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefComboBox();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -255,26 +284,27 @@ protected:
 };
 
 /**
- * FCListBox
+ * The PrefListBox class.
+ * \author Werner Mayer
  */
-class FCListBox : public QListBox, public FCWidgetPrefs
+class PrefListBox : public QListBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
-  virtual ~FCListBox();
+  PrefListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  virtual ~PrefListBox();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -283,26 +313,27 @@ protected:
 };
 
 /**
- * FCCheckBox
+ * The PrefCheckBox class.
+ * \author Werner Mayer
  */
-class FCCheckBox : public QCheckBox, public FCWidgetPrefs
+class PrefCheckBox : public QCheckBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCCheckBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~FCCheckBox();
+  PrefCheckBox ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefCheckBox();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -311,26 +342,27 @@ protected:
 };
 
 /**
- * FCRadioButton
+ * The PrefRadioButton class.
+ * \author Werner Mayer
  */
-class FCRadioButton : public QRadioButton, public FCWidgetPrefs
+class PrefRadioButton : public QRadioButton, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCRadioButton ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~FCRadioButton();
+  PrefRadioButton ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefRadioButton();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -339,26 +371,27 @@ protected:
 };
 
 /**
- * FCSlider
+ * The PrefSlider class.
+ * \author Werner Mayer
  */
-class FCSlider : public QSlider, public FCWidgetPrefs
+class PrefSlider : public QSlider, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  FCSlider ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~FCSlider();
+  PrefSlider ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefSlider();
 
   // PROPERTIES
   // getters
-  QString getEntryName    () const;
-  QString getParamGrpPath () const;
+  QString entryName    () const;
+  QString paramGrpPath () const;
   // setters
-  void  setEntryName     (QString name);
-  void  setParamGrpPath  (QString name);
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
 
 protected:
   // restore from/save to parameters
@@ -366,236 +399,6 @@ protected:
   void savePreferences();
 };
 
-/**
- *  Class to drag a 'QAction' object
- */
-class FCActionDrag : public QStoredDrag
-{
-public:
-  FCActionDrag ( QString action, QWidget * dragSource = 0, const char * name = 0 );
-  virtual ~FCActionDrag ();
-
-  static bool canDecode ( const QMimeSource * e );
-  static bool decode ( const QMimeSource * e, QString&  action );
-
-public:
-  static std::vector<QString> actions;
-};
-
-/**
- * This abstract class is part of the framework providing
- * methods for a user defined configuration of toolbars and menus
- */
-class FCCustomWidget : public FCWidgetPrefs
-{
-public:
-  /** Returns true if items are set, otherwise false */
-  bool hasCustomItems();
-  /** Returns a list of set items */
-  std::vector<std::string> getItems();
-  /** Sets the given items to current */
-  void setItems(const std::vector<std::string>& items);
-  /** Appends several items */
-  void appendItems(FCParameterGrp::handle, const std::vector<std::string>& item);
-  /** Removes several items */
-  void removeItems(FCParameterGrp::handle, const std::vector<std::string>& item);
-  /** Calls @ref restorePreferences()
-   * So it is possible to call the load routine from outside
-   */
-  void loadXML();
-  /** Calls @ref savePreferences()
-   * So it is possible to call the save routine from outside
-   */
-  void saveXML();
-  /** Sets the 'removable' property to b
-   * After switching to a new workbench the customizable
-   * widgets of the old workbench (toolbars, command bars and menus 
-   * (currently disabled)) normally will be deleted. To avoid this
-   * you can set this property to 'false'. The default is 'true'.
-   */
-  virtual void setRemovable(bool b);
-  /** Returns whether the widget can be modified or not */
-  bool isRemovable() const;
-  virtual void setCanModify(bool b);
-  bool canModify() const;
-  virtual void update(FCCommandManager& rclMgr) = 0;
-  /** Returns the acive workbench at creation time of this object */
-  QString getWorkbench();
-  virtual ~FCCustomWidget();
-
-protected:
-  FCCustomWidget(const char* grp, const char * name);
-  /// reimplementation
-  virtual void restorePreferences();
-  /// reimplementation
-  virtual void savePreferences();
-  /// for internal use only
-  void init(const char* grp, const char* name);
-
-  std::vector<std::string> _clItems;
-  QString                  _clWorkbench;
-  bool                     _bCanModify;
-  bool                     _bCanRemovable;
-  typedef std::map<FCParameterGrp::handle, std::vector<std::string> > WorkbenchItems;
-  // items from other workbenches
-  WorkbenchItems _clWbItems;
-};
-
-/**
- *  Toolbar class that knows 'drag and drop'
- */
-class FCToolBar : public QToolBar, public FCCustomWidget
-{
-  Q_OBJECT
-
-public:
-  FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0, const char* type = "Toolbars" );
-  FCToolBar ( QMainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
-  virtual ~FCToolBar();
-  virtual void clearUp();
-  void update(FCCommandManager& rclMgr);
-  void setCanModify(bool b);
-
-public:
-  static bool isAllowed(QWidget* w);
-
-protected:
-  void dropEvent ( QDropEvent * );
-  void dragEnterEvent ( QDragEnterEvent * );
-  void dragLeaveEvent ( QDragLeaveEvent * );
-  void dragMoveEvent ( QDragMoveEvent * );
-  virtual void restorePreferences();
-  virtual void savePreferences();
-  bool bSaveColor;
-};
-
-/**
- *  Menu class that knows 'drag and drop'
- */
-class FCPopupMenu : public QPopupMenu, public FCCustomWidget
-{
-  Q_OBJECT
-
-public:
-  FCPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
-  virtual ~FCPopupMenu();
-  void update(FCCommandManager& rclMgr);
-  virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
-
-protected:
-  void dropEvent ( QDropEvent * );
-  void dragEnterEvent ( QDragEnterEvent * );
-  void dragLeaveEvent ( QDragLeaveEvent * );
-  void dragMoveEvent ( QDragMoveEvent * );
-  void mouseMoveEvent ( QMouseEvent * );
-  void mouseReleaseEvent( QMouseEvent * );
-  virtual void restorePreferences();
-  virtual void savePreferences();
-  QString parent;
-  bool    bAllowDrag;
-  FCParameterGrp::handle hCommonGrp;
-};
-
-/**
- * Class that manages the construction/destruction of all customizable objects.
- * At destruction of a custom widget its content will be written to preferences.
- * At construction the content will be restored.
- * @see FCToolBar, FCPopupMenu and FCDockWindow
- */
-class FCCustomWidgetManager
-{
-public:
-  FCCustomWidgetManager(FCCommandManager& rclMgr, Gui::DockWnd::ToolBox* pCmdBar);
-  ~FCCustomWidgetManager();
-
-  /** Loads the custom widgets depending on the given
-   * workbench from the preferences 
-   */
-  bool loadCustomWidegts(const char* workbench);
-  /** Updates the custom widgets depending on the given workbench */
-  bool update(const char* workbench);
-  /** Clears all custom widgets and reload it from preferences */
-  bool update();
-
-  // toolbars
-  /** Returns the toolbar by name
-   * If it does not exist it will be created
-   */
-  FCToolBar* getToolBar(const char* name);
-  /** returns a vector of all toolbars */
-  std::vector<FCToolBar*> getToolBars();
-  /** Adds new toolbar with its items
-   * After adding the new toolbar it searches for its items in 
-   * the preferences. If it has found any items it uses these instead of 
-   * the given in 'defIt'. If force is set to true the toolbar takes the
-   * given items anyway.
-   */
-  void addToolBar   (const std::string& type, const std::vector<std::string>& defIt);
-  /** Deletes the specified toolbar if it exists */
-  void delToolBar(const char* name);
-  /** Removes toolbar items */
-  void removeToolBarItems (const std::string& type, const std::vector<std::string>& item);
-  /** Get the number of toolbars */
-  int countToolBars();
-
-  // command bars
-  /** Returns the command bar by name
-   * If it does not exist it will be created
-   */
-  FCToolBar* getCmdBar(const char* name);
-  /** returns a vector of all command bars */
-  std::vector<FCToolBar*> getCmdBars();
-  /** Adds new command bar with its items
-   * After adding the new command bar it searches for its items in 
-   * the preferences. If it has found any items it uses these instead of 
-   * the given in 'defIt'. If force is set to true the toolbar takes the
-   * given items anyway.
-   */
-  void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt);
-  /** Deletes the specified command bar if it exists */
-  void delCmdBar(const char* name);
-  /** Removes command bar items */
-  void removeCmdBarItems (const std::string& type, const std::vector<std::string>& item);
-  /** Get the number of command bars */
-  int countCmdBars();
-
-  // menus
-  /** Returns the menu bar by name
-   * If it does not exist it will be created. If parent is not NULL
-   * the menu with the name 'parent' is the father. Otherwise
-   * the menu will be put in the application's menu bar.
-   */
-  FCPopupMenu* getPopupMenu(const char* name, const char* parent = 0);
-  /** returns a vector of all menus */
-  std::vector<FCPopupMenu*> getPopupMenus();
-  /** Adds new menu with its items and its parent */
-  void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt,
-                     const char* parent = 0);
-  /** Deletes the specified menu if it exists */
-  void delPopupMenu(const char* name);
-  /** Removes menu items */
-  void removeMenuItems (const std::string& type, const std::vector<std::string>& item);
-  /** Get the number of menus */
-  int countPopupMenus();
-
-  // dockable windows
-  /** Returns the dock window bar by name
-   * If it does not exist it returns NULL
-   */
-  FCDockWindow* getDockWindow(const char* name);
-  /** returns a vector of all dock windows */
-  std::vector<FCDockWindow*> getDockWindows();
-  /** Deletes the specified dock window if it exists */
-  void delDockWindow(const char* name);
-  /** Adds a new dock window */
-  void addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,
-                     KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 50);
-
-  void show();
-  void hide();
-
-private:
-  struct FCCustomWidgetManagerP* d;
-};
+} // namespace Gui
 
 #endif // __FC_PREF_WIDGETS_H__

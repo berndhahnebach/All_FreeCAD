@@ -182,7 +182,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
     }
     else
     {
-    addPreferencePage(GetWidgetFactory().ProduceWidget(*it), tr(*it));
+      addPreferencePage( WidgetFactory().createWidget(*it), tr(*it) );
     }
   }
 
@@ -258,8 +258,8 @@ QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, cons
     return (QTabWidget*)tabWidgetStack->widget(m_mGroupIDs[name]);
   }
 
-  QPixmap pixSel   = Gui::BitmapFactory().GetPixmap(Pixmap);
-  QPixmap pixUnsel = Gui::BitmapFactory().GetPixmap(Pixmap2);
+  QPixmap pixSel   = Gui::BitmapFactory().pixmap(Pixmap);
+  QPixmap pixUnsel = Gui::BitmapFactory().pixmap(Pixmap2);
 
   int iSize = m_mGroupIDs.size();
   m_mGroupIDs[name] = iSize;
@@ -286,8 +286,8 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
   if (dynamic_cast<PreferencePage*>(page) != NULL)
   {
     // and its preference widgets
-    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<PreferencePage*>(page)->getHandlers();
-    for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
+    std::vector<PrefWidgetHandler*> aHandlers = dynamic_cast<PreferencePage*>(page)->getHandlers();
+    for (std::vector<PrefWidgetHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
     {
       connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
       connect(PushButton14, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply

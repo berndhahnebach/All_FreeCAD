@@ -25,42 +25,36 @@
 
 #include "../Version.h"
 #ifndef _PreComp_
-# include <qapplication.h>
-# include <qmessagebox.h>
-# include <qiconview.h>
-# include <qfiledialog.h>
-# include <qimage.h>
 # include <qlabel.h>
 # include <qlayout.h>
 # include <qpixmap.h>
 # include <qprogressbar.h>
 # include <qpushbutton.h>
-# include <qsplashscreen.h>
 # include <qstylefactory.h>
-# include <qtextbrowser.h>
-# include <qtextview.h>
 # include <qthread.h>
-# include <qtooltip.h>
 # include <qvariant.h>
-# include <qwhatsthis.h>
-# include <qcheckbox.h>
 #endif
 
 #include "Splashscreen.h"
 #include "Icons/developers.h"
 #include "../Base/Console.h"
 
+using namespace Gui;
 
-class FCSplashObserver : public Base::ConsoleObserver
+namespace Gui {
+/** Displays all messages at startup inside the splash screen.
+ * \author Werner Mayer
+ */
+class SplashObserver : public Base::ConsoleObserver
 {
 public:
-  FCSplashObserver(QSplashScreen* splasher=0, const char* name=0)
+  SplashObserver(QSplashScreen* splasher=0, const char* name=0)
       : splash(splasher)
   {
     Base::Console().AttacheObserver(this);
   }
 
-  virtual ~FCSplashObserver()
+  virtual ~SplashObserver()
   {
     Base::Console().DetacheObserver(this);
   }
@@ -94,14 +88,18 @@ public:
 private:
   QSplashScreen* splash;
 };
+} // namespace Gui
 
 // ------------------------------------------------------------------------------
 
-FCSplashScreen::FCSplashScreen(  const QPixmap & pixmap , WFlags f )
+/**
+ * Constructs a splash screen that will display the pixmap.
+ */
+SplashScreen::SplashScreen(  const QPixmap & pixmap , WFlags f )
     : QSplashScreen( pixmap, f), progBar(0L)
 {
   // write the messages to splasher
-  messages = new FCSplashObserver(this);
+  messages = new SplashObserver(this);
 
   // append also a progressbar for visual feedback
   progBar = new QProgressBar( this, "SplasherProgress" );
@@ -114,13 +112,18 @@ FCSplashScreen::FCSplashScreen(  const QPixmap & pixmap , WFlags f )
   progBar->move(3, height()-(progBar->height()));
 }
 
-FCSplashScreen::~FCSplashScreen()
+/** Destruction. */
+SplashScreen::~SplashScreen()
 {
   delete messages;
   delete progBar;
 }
 
-void FCSplashScreen::drawContents ( QPainter * painter )
+/** 
+ * Draws the contents of the splash screen using painter \a painter. The default 
+ * implementation draws the message passed by message().
+ */
+void SplashScreen::drawContents ( QPainter * painter )
 {
   if (progBar)
     progBar->setProgress(progBar->progress() + 6);
@@ -129,7 +132,13 @@ void FCSplashScreen::drawContents ( QPainter * painter )
 
 // ------------------------------------------------------------------------------
 
-AboutDlg::AboutDlg( QWidget* parent, const char* name )
+/**
+ *  Constructs a AboutDialog which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'WStyle_Customize|WStyle_NoBorder|WType_Modal'
+ *
+ *  The dialog will be modal.
+ */
+AboutDialog::AboutDialog( QWidget* parent, const char* name )
     : QDialog( parent, name, true,  QLabel::WStyle_Customize  |
                QLabel::WStyle_NoBorder   |
                QLabel::WType_Modal       ),
@@ -167,19 +176,19 @@ AboutDlg::AboutDlg( QWidget* parent, const char* name )
   connect(pushButton1, SIGNAL(clicked()), this, SLOT(accept()));
 }
 
-/*
+/**
  *  Destroys the object and frees any allocated resources
  */
-AboutDlg::~AboutDlg()
+AboutDialog::~AboutDialog()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
+/**
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void AboutDlg::languageChange()
+void AboutDialog::languageChange()
 {
   pushButton1->setText( tr( "&OK" ) );
   pushButton1->setAccel( QKeySequence( tr( "Alt+O" ) ) );

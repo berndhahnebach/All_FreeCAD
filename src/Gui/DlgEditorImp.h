@@ -33,10 +33,10 @@ namespace Dialog {
 /** This class implements a preferences page for the editor settings.
  *  Here you can change differnt color settings and font for the editors.
  *  @see class PreferencePage
- *  @see class FCWidgetPrefs
+ *  @see class PrefWidget
  *  \author Werner Mayer
  */
-class DlgSettingsEditorImp : public DlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public FCWidgetPrefs
+class DlgSettingsEditorImp : public DlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public PrefWidget
 {
 Q_OBJECT
 
