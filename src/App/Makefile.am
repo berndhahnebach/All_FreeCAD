@@ -38,7 +38,7 @@ libFreeCADApp_la_SOURCES=\
 		Topology.cpp
 
 %Script.h: FreeCAD%.py
-	../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
 
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries)
