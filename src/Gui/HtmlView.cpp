@@ -435,6 +435,10 @@ FCHtmlView::~FCHtmlView()
     SaveHistory();
   if (bBookm)
     SaveBookmarks();
+  for (std::vector<std::string>::iterator it = aStrGroups.begin(); it != aStrGroups.end(); ++it)
+  {
+    GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Detach(this);
+  }
 }
 
 void FCHtmlView::init()

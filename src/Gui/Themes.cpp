@@ -34,7 +34,7 @@
 ///////////////////////////////////////////////////////
 
 
-#if QT_VER <= 230
+#if QT_VERSION <= 230
 MetalStyle::MetalStyle() : QWindowsStyle() { }
 
 /*!

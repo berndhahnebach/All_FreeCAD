@@ -43,7 +43,7 @@
 #include <qlayout.h>
 #include <qdatetime.h>
 
-#if QT_VER > 230
+#if QT_VERSION > 230
 # include <qstyle.h>
 #endif
 
@@ -220,7 +220,7 @@ void FCProgressBar::drawContents( QPainter *p )
 	if ( progress_val != total_steps )
     p->fillRect( bar, colorGroup().brush( QColorGroup::Background ) );
 
-#if QT_VER <= 230
+#if QT_VERSION <= 230
 	p->setPen( style()==MotifStyle? colorGroup().foreground() : colorGroup().text() );
 #else
   p->setPen( style().isA("QMotifStyle")? colorGroup().foreground() : colorGroup().text());
@@ -372,8 +372,10 @@ FCCmdView::FCCmdView ( QWidget * parent, const char * name, WFlags f )
   setGridX(50);
   setGridY(50);
 
+  setSelectionMode(Extended);
+
   // clicking on a icon a signal with its description will be emitted
-  connect(this, SIGNAL ( selectionChanged ( QIconViewItem * ) ), this, SLOT ( slotSelectionChanged(QIconViewItem * ) ) );
+  connect(this, SIGNAL ( currentChanged ( QIconViewItem * ) ), this, SLOT ( slotSelectionChanged(QIconViewItem * ) ) );
 }
 
 FCCmdView::~FCCmdView ()
@@ -385,20 +387,32 @@ void FCCmdView::slotSelectionChanged(QIconViewItem * item)
   emit emitSelectionChanged(item->text());
 }
 
-void FCCmdView::contentsMousePressEvent ( QMouseEvent * e )
+QDragObject * FCCmdView::dragObject ()
 {
-  // create an object for drag and drop
-  QIconView::contentsMousePressEvent(e);
-  QIconViewItem *item = findItem( e->pos() );
-  if (item != NULL)
+  if ( !currentItem() )
+      return 0;
+
+  bool bFirst = true;
+  FCActionDrag *ad=NULL;
+  QPoint orig = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
+  for ( QIconViewItem *item = firstItem(); item; item = item->nextItem() ) 
   {
-    if (typeid(*item) == typeid(FCCmdViewItem))
+    if ( item->isSelected() ) 
     {
-      FCActionDrag *ad = new FCActionDrag( ((FCCmdViewItem*)item)->GetAction(), this );
-      ad->setPixmap(QPixmap(*item->pixmap()),QPoint(8,8));
-      ad->dragCopy();
+      if (typeid(*item) == typeid(FCCmdViewItem))
+      {
+        ad = new FCActionDrag( ((FCCmdViewItem*)item)->GetAction(), this );
+        if (bFirst)
+        {
+          bFirst = false;
+          ad->setPixmap( *currentItem()->pixmap(), QPoint( currentItem()->pixmapRect().width() / 2, 
+                                                           currentItem()->pixmapRect().height() / 2 ) );
+        }
+      }
     }
   }
+
+  return ad;
 }
 
 /* 

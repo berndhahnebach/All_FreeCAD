@@ -127,6 +127,7 @@ class GuiExport FCSplashAbout : public FCSplashWidget
     void hideEvent ( QHideEvent * e);
     QVBoxLayout* SplasherDialogLayout;
     QPushButton* ButtonOK;
+    QLabel* RemainingTime;
     QLabel* PixmapLabel;
     FCSplashBrowser* SplasherTextView;
 

@@ -46,6 +46,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Observer.h"
+#include "Console.h"
 #include "Exception.h"
 
 
@@ -84,9 +85,15 @@ FCSubject::FCSubject(){}
 
 FCSubject::~FCSubject()
 {
-	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
-        (*Iter)->OnDestroy(*this);   // send OnChange-signal
-
+  if (_ObserverSet.size() > 0)
+  {
+    printf("Not detached all observers yet\n");
+    throw;
+  }
+//	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+//  {
+//    (*Iter)->OnDestroy(*this);   // send OnChange-signal
+//  }
 }
 
 //**************************************************************************

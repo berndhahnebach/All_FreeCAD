@@ -38,7 +38,7 @@
 #include <qfiledialog.h>
 #include <qvariant.h>
 #include <qdialog.h>
-#if QT_VER > 230
+#if QT_VERSION > 230
 # include <qlistview.h>
 #endif
 
@@ -141,7 +141,7 @@ class FCCmdView : public QIconView
     virtual ~FCCmdView ();
 
   protected:
-    void contentsMousePressEvent ( QMouseEvent * e );
+    QDragObject * dragObject ();
 
   protected slots:
     void slotSelectionChanged(QIconViewItem * item);

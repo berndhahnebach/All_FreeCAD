@@ -230,7 +230,7 @@ FCAction * FCCppCommand::CreateAction(void)
 	FCAction *pcAction;
 
 	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
-	pcAction->setText(sName.c_str());
+	pcAction->setText(_pcAction->tr(sMenuText));
 	pcAction->setMenuText(_pcAction->tr(sMenuText));
 	pcAction->setToolTip(_pcAction->tr(sToolTipText));
 	pcAction->setStatusTip(_pcAction->tr(sStatusTip));

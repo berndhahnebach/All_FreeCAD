@@ -303,6 +303,8 @@ FCProgressBar* ApplicationWindow::GetProgressBar()
 
 void ApplicationWindow::CreateTestOperations()
 {
+  QString tmpWb = _cActiveWorkbenchName;
+  _cActiveWorkbenchName = "Standard";
 	_cBmpFactory.AddPath("../../FreeCADIcons");
 	_cBmpFactory.AddPath("../Icons");
 	_cBmpFactory.GetPixmap("Function");
@@ -397,6 +399,7 @@ void ApplicationWindow::CreateTestOperations()
 //  _pcWidgetMgr->addPopupMenu("Hallo2", Menus, "?");
 	 
 	setMenuForSDIModeSysButtons( menuBar());
+  _cActiveWorkbenchName = tmpWb;
 }
 
 /// send Messages to the active view
@@ -650,6 +653,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 
 	// runing the start of the workbench object
 	GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
+  _pcWidgetMgr->update(name);
 
 	// set the combo box
 	if(_pcWorkbenchCombo->currentText() != name){

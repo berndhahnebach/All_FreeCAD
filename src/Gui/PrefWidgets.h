@@ -276,10 +276,10 @@ class FCActionDrag : public QStoredDrag
     virtual ~FCActionDrag ();
 
     static bool canDecode ( const QMimeSource * e );
-    static bool decode ( const QMimeSource * e, QAction*  a );
+    static bool decode ( const QMimeSource * e, QAction*&  a );
 
   public:
-    static QAction* pAction;
+    static std::vector<QAction*> actions;
 };
 
 class FCCustomWidget : public FCWidgetPrefs
@@ -290,6 +290,7 @@ class FCCustomWidget : public FCWidgetPrefs
     void setItems(const std::vector<std::string>& items);
     void loadXML();
     void saveXML();
+    QString getWorkbench();
     virtual ~FCCustomWidget();
 
   protected:
@@ -299,6 +300,7 @@ class FCCustomWidget : public FCWidgetPrefs
     void init(const char* grp, const char* name);
 
     std::vector<std::string> _clItems;
+    QString                  _clWorkbench;
 };
 
 /**
@@ -309,7 +311,7 @@ class FCToolBar : public QToolBar, public FCCustomWidget
   Q_OBJECT
 
   public:
-#if QT_VER <= 230
+#if QT_VERSION <= 230
     FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0, const char* type = "Toolbars" );
 #endif
     FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0, const char* type = "Toolbars" );
@@ -353,6 +355,7 @@ class FCCustomWidgetManager
     ~FCCustomWidgetManager();
 
     bool init(const char* workbench);
+    bool update(const char* workbench);
 
     FCToolBar* getToolBar(const char* name);
     std::vector<FCToolBar*> getToolBars();

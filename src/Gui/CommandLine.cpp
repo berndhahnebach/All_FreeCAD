@@ -80,6 +80,10 @@ FCCommandLine::FCCommandLine(void)
   _astrRunCmds.push_back("execute");
   _astrRunCmds.push_back("execfile");
 
+#if QT_VERSION > 230
+  setLineEdit(new FCCmdLineEdit(this));
+#endif
+
   // hide the botton from combo box
   setStyle(new FCWindowsStyle);
   ReadCmdList();
@@ -282,6 +286,45 @@ void FCCommandLine::enterEvent ( QEvent * e)
 void FCCommandLine::leaveEvent ( QEvent * e)
 {
   setStyle(new FCWindowsStyle);
+}
+
+FCCmdLineEdit::FCCmdLineEdit(QWidget * parent, const char * name)
+: QLineEdit(parent, name)
+{
+  setAcceptDrops(true);
+}
+
+void FCCmdLineEdit::dropEvent  ( QDropEvent * e)
+{
+  QAction *a=NULL;
+  if (FCActionDrag::decode(e, a))
+  {
+    if (a != NULL)
+    {
+      FCActionDrag::actions.clear();
+      FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+      std::vector <FCCommand*> cmds = rclMan.GetAllCommands();
+
+      for (std::vector<FCCommand*>::iterator it = cmds.begin(); it!=cmds.end(); ++it)
+      {
+        if ((*it)->GetAction() == a)
+        {
+          setText((*it)->GetName());
+          break;
+        }
+      }
+    }
+  }
+
+  QLineEdit::dropEvent(e);
+}
+
+void FCCmdLineEdit::dragEnterEvent ( QDragEnterEvent * e)
+{
+  if (FCActionDrag::canDecode(e))
+    e->accept(true);
+  else
+    QLineEdit::dragEnterEvent(e);
 }
 
 #include "moc_CommandLine.cpp"

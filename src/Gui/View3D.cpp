@@ -50,8 +50,12 @@
 FCView3D::FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
     :FCView( pcDocument,parent, name, wflags)
 {
-	_pcView3D = new View3D(_pcDocument,this);
-	
+	_pcFrame = new QVBox (this);
+  _pcFrame->setSpacing ( 6 );
+  _pcFrame->setMargin (3);
+  _pcFrame->setFrameShadow(QVBox::Sunken);
+  _pcFrame->setFrameStyle(QVBox::Box);
+	_pcView3D = new View3D(_pcDocument,_pcFrame);
 }
 
 FCView3D::~FCView3D()
@@ -61,7 +65,7 @@ FCView3D::~FCView3D()
 
 void FCView3D::resizeEvent ( QResizeEvent * e)
 {
-  _pcView3D->resize(e->size());
+  _pcFrame->resize(e->size());
 }
 
 

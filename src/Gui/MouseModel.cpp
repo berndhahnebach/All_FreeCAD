@@ -308,21 +308,13 @@ void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 			GetView()->Rotation(cEvent->x(),cEvent->y());
 			break;
 		case panning:
-		  //myView->Panning(cEvent->x()-iX,iY-cEvent->y()); // Dont work proper ?!?!
-		  // get width size in Window system
-		  V3d_Coordinate xc,yc;
-		  GetView()->Center(xc,yc);	
-		  Standard_Integer Xc,Yc;
-		  GetView()->Convert(xc,yc,Xc,Yc);
-		  // set the new center
-		  GetView()->SetCenter(Xc - (cEvent->x()-iX),Yc - (cEvent->y()-iY));
-
+		  GetView()->Pan(cEvent->x()-iX,iY-cEvent->y()); // Use "Pan(...)" instead of "Panning(...)" !!!
 			break;
 		case zooming:
 			GetView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
 			break;
 		default:
-			;
+			break;
 	}
 	GetContext()->MoveTo(cEvent->x(),cEvent->y(),GetView());
 	
@@ -388,7 +380,7 @@ FCMouseModelPolyPicker::FCMouseModelPolyPicker()
 
 void FCMouseModelPolyPicker::initialize()
 {
-#if QT_VER <= 230
+#if QT_VERSION <= 230
   _pcView3D->setCursor(QCursor(CrossCursor));
 #else
   _pcView3D->setCursor(QCursor(QCursor::CrossCursor));

@@ -57,7 +57,7 @@ class FCWindowsStyle : public QWindowsStyle
 {
   public:
 
-#if QT_VER <= 230
+#if QT_VERSION <= 230
     void drawComboButton ( QPainter * p, int x, int y, int w, int h, 
                            const QColorGroup & g, bool sunken = FALSE, 
                            bool editable = FALSE, bool enabled = TRUE, 
@@ -144,7 +144,7 @@ class FCWindowsStyle : public QWindowsStyle
          		         subB.width()-4, subB.height()-4, g, !maxedOut );
       }
     }
-#elif QT_VER > 230
+#elif QT_VERSION > 230
     void drawPrimitive( PrimitiveElement pe, QPainter * p, const QRect & r, const QColorGroup & cg, SFlags flags, const QStyleOption & opt ) const
     {
       QWindowsStyle::drawPrimitive( pe, p, r, cg, flags, opt );
@@ -198,5 +198,19 @@ inline FCCommandLine &GetCmdLine(void)
 {
   return FCCommandLine::Instance();
 }
+
+/** The command line edit class
+ */
+class FCCmdLineEdit : public QLineEdit
+{
+  Q_OBJECT
+
+  public:
+    FCCmdLineEdit(QWidget * parent, const char * name=0);
+
+  protected:
+    void dropEvent      ( QDropEvent      * );
+    void dragEnterEvent ( QDragEnterEvent * );
+};
 
 #endif // __COMMAND_LINE_H__

@@ -38,7 +38,7 @@
 #include "../Base/Parameter.h"
 #include "Window.h"
 
-#if QT_VER > 230
+#if QT_VERSION > 230
 # include <qlistview.h>
 #endif 
 

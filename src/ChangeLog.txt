@@ -204,3 +204,13 @@ Version: V0.1B49 Date: Thu Apr 03 22:45:35 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B50 Date: Fri Apr 04 22:10:24 2003 +++++++++++++++++++++++++++++++
 + Fix on the window rewrite
 + some work on the Linux port
+
+Version: V0.1B51 Date: Sun Apr 06 21:27:35 2003 +++++++++++++++++++++++++++++++
++ Realy big patch from Werner
+  - Fix a problem with the paning in MouseModel
+  - Fixing workbench binding for std. menus
+  - switch to QT_VER for easier changing QT Version
+  - fix cmd_name bug in CmdBar
+  - making command line dropabel (QT3)
+  - frame for 3Dview
+  - time in about dialog ;-)

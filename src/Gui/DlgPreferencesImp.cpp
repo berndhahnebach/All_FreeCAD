@@ -44,7 +44,7 @@
 #endif
 #include <qwidgetstack.h>
 #include <qtabwidget.h>
-#if QT_VER >= 230
+#if QT_VERSION >= 230
 # include <qlistview.h>
 #endif
 #include "DlgPreferencesImp.h"

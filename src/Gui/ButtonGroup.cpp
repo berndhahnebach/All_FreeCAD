@@ -256,7 +256,7 @@ void FCButtonGroup::showText()
 FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar")
 {
-#if QT_VER >= 300
+#if QT_VERSION >= 300
 	setFrameStyle( QFrame::NoFrame );
 #endif
 	setOrientation( Qt::Vertical );
@@ -295,7 +295,7 @@ void FCToolboxBar::addedButton(QString text)
     }
   }
 
-#if QT_VER > 230
+#if QT_VERSION > 230
   delete m_Dummy;
   m_Dummy = new QWidget(this);
   setStretchableWidget( m_Dummy );
@@ -355,7 +355,7 @@ void FCToolboxBar::resetBackgroundColor()
 FCOutlookBar::FCOutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar" )
 {
-#if QT_VER >= 300
+#if QT_VERSION >= 300
 	setFrameStyle( QFrame::NoFrame );
 #endif
 	setOrientation( Qt::Vertical );
@@ -395,7 +395,7 @@ void FCOutlookBar::addedButton(QString text)
     }
   }
 
-#if QT_VER > 230
+#if QT_VERSION > 230
   delete m_Dummy;
   m_Dummy = new QWidget(this);
   setStretchableWidget( m_Dummy );

@@ -95,7 +95,7 @@ protected:
 private:
 	View3D*			_pcView3D;
 	QWidget*		_pcWidget;
-	QVBox*	_pcVBoxLayout;    
+	QVBox*	    _pcFrame;    
 	QWidgetStack*	_pcWidgetStack;
 	QTabBar*		_pcTabBar;
 

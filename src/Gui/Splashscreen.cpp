@@ -262,6 +262,10 @@ FCSplashAbout::FCSplashAbout( QWidget* parent,  const char* name)
   connect(SplasherTextView, SIGNAL(linkClicked(const QString&)), this, SLOT(linkClicked(const QString&)));
   SplasherDialogLayout->addWidget( SplasherTextView );
 
+  RemainingTime = new QLabel(this, "Time");
+  RemainingTime->setText("");
+  SplasherDialogLayout->addWidget(RemainingTime);
+
   ButtonOK = new QPushButton(this, "OK");
   ButtonOK->setFixedWidth(60);
   ButtonOK->setText("Ok");
@@ -287,13 +291,23 @@ FCSplashAbout::~FCSplashAbout()
 
 void FCSplashAbout::run()
 {
+  int sleep = 300;
+  int max = 100;
   int cnt = 0;
-  while (bRun && cnt++ < 100)
+  while (bRun && cnt++ < max)
   {
-    msleep(300);
+    msleep(sleep);
     SplasherTextView->scrollBy(0,1);
+
+    if ((max-cnt)*sleep <= 10000)
+    {
+      char szBuf[50];
+      sprintf(szBuf, "Closing this dialog in %d seconds...", (max-cnt)*sleep/1000);
+      RemainingTime->setText(szBuf);
+    }
   }
 
+  RemainingTime->setText("");
   hide();
 }
 
