@@ -50,7 +50,9 @@
 #include "DlgSettingsImp.h"
 #include "DlgSettings3DViewImp.h"
 #include "DlgGeneralImp.h"
+#include "DlgEditorImp.h"
 #include "Application.h"
+#include "Widgets.h"
 
 /* 
  *  Constructs a DlgPreferencesImp which is a child of 'parent', with the 
@@ -62,13 +64,22 @@
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgPreferences( parent, name, modal, fl ),FCWindowParameter(name), m_pCurPage(NULL), m_pCurTab(NULL)
 {
+  // disable sorting
+  ListView2->setSorting(-1);
   connect(ListView2, SIGNAL ( pressed ( QListViewItem * ) ), this, SLOT( prefPageClicked(QListViewItem * ) ));
 
+  // ADD YOUR PAGES HERE
+  //
+  //
   addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen");
   m_mGroupsItem["FreeCAD"]->setOpen(true);
   addPreferencePage(new FCDlgGeneral, "General");
   addPreferencePage(new FCDlgSettings, "Help Viewer");
   addPreferencePage(new FCDlgSettings3DView, "3D View");
+  addPreferencePage(new FCDlgEditorSettings, "Editor");
+
+  // show the first page
+  prefPageClicked(ListView2->firstChild());
 }
 
 /*  
@@ -101,7 +112,7 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const
 		m_pCurTab->addTab(page, name);
 
 		QPixmap pix = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
-		QListViewItem * item = new QListViewItem( m_mGroupsItem[getGroupName()], 0 );
+    QListViewItem * item = new QListViewItem( m_mGroupsItem[getGroupName()], FCListView::lastItem(ListView2) );
 		item->setText( 0, tr( name ) );
 		pix.resize(16, 16);
 		item->setPixmap( 0, pix );
