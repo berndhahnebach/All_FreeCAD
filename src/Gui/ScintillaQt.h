@@ -20,8 +20,16 @@
 #include "scintilla/Documents.h"
 #include "scintilla/Editor.h"
 
+#ifdef SCI_LEXER
+# include "scintilla/Accessor.h"
+# include "scintilla/PropSet.h"
+# include "scintilla/KeyWords.h"
+#endif
+
 #include "scintilla/ScintillaBase.h"
 #include "scintilla/UniConversion.h"
+
+#include "View.h"
 
 
 // forward declaration
@@ -61,8 +69,8 @@ class ScintillaQt : public ScintillaBase
 	  virtual void CreateCallTipWindow(PRectangle rc);
 	  virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
 	  virtual void ClaimSelection();
+    virtual void CopyToClipboard(const SelectionText &selectedText){}
 	  int KeyDefault(int key,int modifiers);
-	  void ReconfigureScrollBars();
 
     QString convertText(SelectionText* text);
     
@@ -80,15 +88,26 @@ class ScintillaQt : public ScintillaBase
 	  int wheelDelta; ///< Wheel delta from roll
   	bool hasOKText;
 
-	  QWidget *PWindow(Window &w)
-	  {
-		  return reinterpret_cast<QWidget *>(w.GetID());
-	  }
-
 	  FCScintEditor* m_pEditor;
 	  QTimer m_clTimer;
+
+  private:
+    class FCScintCallTip : public QWidget
+    {
+      public:
+	      FCScintCallTip(ScintillaQt* sci, QWidget* parent, const char * name=0);
+	      ~FCScintCallTip();
+
+      protected:
+	      void paintEvent(QPaintEvent* e);
+	      void mousePressEvent(QMouseEvent* e);
+
+      private:
+	      ScintillaQt *sciTE;
+    };
   
   friend class FCScintEditor;
+  friend class FCScintCallTip;
 };
 
 class FCScintEditor : public QWidget
@@ -101,6 +120,7 @@ class FCScintEditor : public QWidget
 
 	  long SendScintilla(unsigned int msg,unsigned long wParam = 0, long lParam = 0);
 	  virtual QSize sizeHint() const;
+    void openFile(const char* fileName);
 
   protected:
 	  bool eventFilter                   (QObject *o,QEvent *e);
@@ -111,6 +131,7 @@ class FCScintEditor : public QWidget
 	  virtual void mouseReleaseEvent     (QMouseEvent * e);
 	  virtual void mouseDoubleClickEvent (QMouseEvent * e);
 	  virtual void mouseMoveEvent        (QMouseEvent * e);
+    virtual void mouseWheelEvent       (QWheelEvent * e);
 
   private slots:
 	  void slotTimer();
@@ -125,6 +146,43 @@ class FCScintEditor : public QWidget
 	  QScrollBar * horScroll;
 
     friend class ScintillaQt;
+};
+
+class FCScintEditor;
+class FCScintillaDoc;
+class FCScintEditView : public FCFloatingView
+{
+  public:
+	  FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name);
+	  ~FCScintEditView();
+
+    FCScintEditor* GetEditor() const { return view; }
+
+  protected:
+    FCScintEditor* view;
+};
+
+class FCScintillaView : public FCFloatingChildView
+{
+  public:
+	  FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name);
+	  ~FCScintillaView();
+
+  protected:
+    virtual void closeEvent(QCloseEvent *e);
+};
+
+class FCScintillaDoc : public FCFloatingDoc
+{
+  Q_OBJECT
+
+  public:
+    FCScintillaDoc();
+    ~FCScintillaDoc();
+    void CreateView(const char* name);
+    bool Save   (void);
+    bool SaveAs (void);
+    bool Open   (void);
 };
 
 #endif

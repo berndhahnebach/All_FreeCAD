@@ -383,7 +383,7 @@ void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font_, int ybase, const c
 	SetClip(rc);
 	FillRectangle(rc, back);
 	DrawTextBase(rc, font_, ybase, s, len, fore);
-	m_pPainter->setClipping(FALSE);
+	m_pPainter->setClipping(false);
 }
 
 void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font_, int ybase, const char *s,int len, ColourAllocated fore)
@@ -920,6 +920,31 @@ double ElapsedTime::Duration(bool reset)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+class DynamicLibraryImpl : public DynamicLibrary {
+protected:
+public:
+	DynamicLibraryImpl(const char *modulePath) {
+	}
+
+	virtual ~DynamicLibraryImpl() {
+	}
+
+	// Use GetProcAddress to get a pointer to the relevant function.
+	virtual Function FindFunction(const char *name) {
+	return NULL;
+	}
+
+	virtual bool IsValid() {
+		return false;
+	}
+};
+
+DynamicLibrary *DynamicLibrary::Load(const char *modulePath) {
+	return static_cast<DynamicLibrary *>( new DynamicLibraryImpl(modulePath) );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 ColourDesired Platform::Chrome()
 {
 	return ColourDesired(0xe0,0xe0,0xe0);
@@ -962,16 +987,12 @@ bool Platform::IsKeyDown(int)
 
 long Platform::SendScintilla(WindowID w, unsigned int msg, unsigned long wParam, long lParam)
 {
-  //TODO
-  return 0;	
-  //return static_cast<ScintillaBase *>(PWidget(w)->parentWidget())->WndProc(msg,wParam,lParam);
+	return static_cast<FCScintEditor*>(PWidget(w)->parentWidget())->SendScintilla(msg,wParam,lParam);
 }
 
 long Platform::SendScintillaPointer(WindowID w, unsigned int msg, unsigned long wParam, void *lParam)
 {
-  //TODO
-  return 0;	
-  //return static_cast<ScintillaBase *>(PWidget(w)->parentWidget())->WndProc(msg,wParam,reinterpret_cast<long>(lParam));
+	return static_cast<FCScintEditor*>(PWidget(w)->parentWidget())->SendScintilla(msg,wParam,reinterpret_cast<long>(lParam));
 }
 
 bool Platform::IsDBCSLeadByte(int codepage,char ch)
@@ -1075,59 +1096,6 @@ void FCScintListBox::slotDoubleClicked(QListBoxItem* item)
 {
 	if (m_pXListbox && m_pXListbox->doubleClickAction)
 		m_pXListbox->doubleClickAction(m_pXListbox->doubleClickActionData);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-FCScintEditView::FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name)
-: FCFloatingView(pcDoc, parent, name)
-{
-  FCScintillaView* pcScintView = new FCScintillaView(this, ApplicationWindow::Instance,"EditView");
-  pcScintView->setCaption("Editor");
-	pcScintView->setTabCaption("Editor");
-	pcScintView->resize( 400, 300 );
-
-  view = new FCScintEditor(_pcFrame);
-  ApplicationWindow::Instance->addWindow(pcScintView);
-}
-
-FCScintEditView::~FCScintEditView()
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-FCScintillaView::FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name)
-  : FCFloatingChildView( pcView, parent, name )
-{
-}
-
-FCScintillaView::~FCScintillaView()
-{
-}
-
-void FCScintillaView::closeEvent(QCloseEvent *e)
-{
-  GetActiveView()->GetDocument()->CanClose(e);
-  if (e->isAccepted ())
-  {
-    FCFloatingChildView::closeEvent(e);
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-FCScintillaDoc::FCScintillaDoc()
-{
-}
-
-FCScintillaDoc::~FCScintillaDoc()
-{
-}
-
-void FCScintillaDoc::CreateView(const QString& s)
-{
-  view = new FCScintEditView(this, 0L, s.latin1());
 }
 
 #include "moc_PlatQt.cpp"

@@ -29,8 +29,6 @@
 #ifndef __FC_PLAT_QT_H__
 #define __FC_PLAT_QT_H__
 
-#include "View.h"
-
 /**
  *  Listbox for the editor based on scintilla
  */
@@ -48,38 +46,6 @@ class FCScintListBox : public QListBox
 
   private:
 	  ListBoxX* m_pXListbox;
-};
-
-class FCScintEditor;
-class FCScintillaDoc;
-class FCScintEditView : public FCFloatingView
-{
-  public:
-	  FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name);
-	  ~FCScintEditView();
-
-  protected:
-    FCScintEditor* view;
-};
-
-class FCScintillaView : public FCFloatingChildView
-{
-  public:
-	  FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name);
-	  ~FCScintillaView();
-
-  protected:
-    virtual void closeEvent(QCloseEvent *e);
-};
-
-class FCScintillaDoc : public FCFloatingDoc
-{
-  Q_OBJECT
-
-  public:
-    FCScintillaDoc();
-    ~FCScintillaDoc();
-    void CreateView(const QString& s);
 };
 
 #endif //__FC_PLAT_QT_H__

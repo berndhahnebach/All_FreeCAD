@@ -12,7 +12,19 @@
 #endif
 
 #include "ScintillaQt.h"
+#include "Application.h"
+#include "scintilla/SciLexer.h"
 
+
+static QWidget *PWidget(WindowID id)
+{
+	return reinterpret_cast<QWidget *>(id);
+}
+
+static QWidget *PWidget(Window &w) 
+{
+	return PWidget(w.GetID());
+}
 
 ScintillaQt::ScintillaQt(FCScintEditor* edit) 
  : m_pEditor(edit)
@@ -64,7 +76,7 @@ sptr_t ScintillaQt::WndProc(unsigned int iMessage,uptr_t wParam,sptr_t lParam)
 	{
   	case SCI_GRABFOCUS:
     {
-		  PWindow(wMain)->setFocus();
+		  PWidget(wMain)->setFocus();
 		  return 0;
     }
 
@@ -108,13 +120,13 @@ void ScintillaQt::SetMouseCapture(bool on)
   {
 		if (on)
 		{
-			PWindow(wMain)->grabMouse();
-			PWindow(wMain)->grabKeyboard();
+			PWidget(wMain)->grabMouse();
+			PWidget(wMain)->grabKeyboard();
 		}
 		else
 		{
-			PWindow(wMain)->releaseMouse();
-			PWindow(wMain)->releaseKeyboard();
+			PWidget(wMain)->releaseMouse();
+			PWidget(wMain)->releaseKeyboard();
 		}
   }
 
@@ -153,19 +165,6 @@ bool ScintillaQt::ModifyScrollBars(int nMax,int nPage)
 	m_pEditor->horScroll->setPageStep(scrollWidth / 10);
 
 	return true;
-}
-
-void ScintillaQt::ReconfigureScrollBars()
-{
-	if (horizontalScrollBarVisible)
-		m_pEditor->horScroll->show();
-	else
-		m_pEditor->horScroll->hide();
-
-	if (verticalScrollBarVisible)
-		m_pEditor->verScroll->show();
-	else
-		m_pEditor->verScroll->hide();
 }
 
 void ScintillaQt::NotifyChange()
@@ -236,6 +235,11 @@ void ScintillaQt::Paste()
 
 void ScintillaQt::CreateCallTipWindow(PRectangle rc)
 {
+	if (ct.wCallTip.Created() == false)
+		ct.wCallTip = ct.wDraw = new FCScintCallTip(this, m_pEditor);
+
+	PWidget(ct.wCallTip)->resize(rc.Width(),rc.Height());
+	ct.wCallTip.Show();
 }
 
 void ScintillaQt::AddToPopUp(const char *label,int cmd,bool enabled)
@@ -345,7 +349,7 @@ void ScintillaQt::paintEvent(QPaintEvent* e)
 
 	if (sw)
 	{
-		QPainter painter(PWindow(wMain));
+		QPainter painter(PWidget(wMain));
 		sw->Init(&painter,0);
 		sw->SetUnicodeMode(isUnicodeMode);
 		Paint(sw,rcPaint);
@@ -357,7 +361,7 @@ void ScintillaQt::paintEvent(QPaintEvent* e)
 			rcPaint = GetTextRectangle();
 			paintingAllText = true;
 			painter.end();
-			painter.begin(PWindow(wMain));
+			painter.begin(PWidget(wMain));
 			sw->Init(&painter,0);
 			sw->SetUnicodeMode(isUnicodeMode);
 			Paint(sw,rcPaint);
@@ -371,7 +375,6 @@ void ScintillaQt::paintEvent(QPaintEvent* e)
 }
 
 static bool lexersLinked = FALSE;
-
 
 FCScintEditor::FCScintEditor(QWidget *parent,const char *name,WFlags f)
 	: QWidget(parent,name,f), sciTE(0L)
@@ -405,6 +408,65 @@ FCScintEditor::FCScintEditor(QWidget *parent,const char *name,WFlags f)
 
 		lexersLinked = TRUE;
 	}
+
+  
+   const char font[] = "Verdana";
+   const char monospace[] = "Courier";
+   const short fontsize = 9;
+   const char keywords[] = "and assert break class continue def del elif else except exec "
+	                         "finally for from global if import in is lambda None not or "
+	                         "pass print raise return try while yield";
+
+   // set style bits, choose the right lexer (Lua) and set the keywords list
+   sciTE->WndProc(SCI_SETSTYLEBITS,5,0);
+   sciTE->WndProc(SCI_SETLEXER,SCLEX_PYTHON,0);
+   sciTE->WndProc(SCI_SETKEYWORDS,0,(sptr_t)keywords);
+   
+   // set up basic features (iguides on, tab=3, tabs-to-spaces, EOL=CRLF)
+   sciTE->WndProc(SCI_SETINDENTATIONGUIDES,1,0);
+   sciTE->WndProc(SCI_SETTABWIDTH,3,0);
+   sciTE->WndProc(SCI_SETUSETABS,0,0);
+   sciTE->WndProc(SCI_SETEOLMODE,SC_EOL_CRLF,0);
+
+   // now set up the styles (remember you have to set up font name for each style;
+   // if you fail to do so, bold/italics will not work (only color will work)
+   // !!colors are in format BGR!!
+
+   // style 32: default
+   sciTE->WndProc(SCI_STYLESETFONT,32, (sptr_t) font);
+   sciTE->WndProc(SCI_STYLESETSIZE,32, fontsize);
+   // style 0: whitespace
+   sciTE->WndProc(SCI_STYLESETFORE,0, 0x808080);
+   // style 1: comment (not used in Lua)
+   // style 2: line comment (green)
+   sciTE->WndProc(SCI_STYLESETFONT,2, (int)monospace);
+   sciTE->WndProc(SCI_STYLESETSIZE,2, fontsize);
+   sciTE->WndProc(SCI_STYLESETFORE,2, 0x00AA00);
+   // style 3: doc comment (grey???)
+   sciTE->WndProc(SCI_STYLESETFORE,3, 0x7F7F7F);      
+   // style 4: numbers (blue)
+   sciTE->WndProc(SCI_STYLESETFORE,4, 0xFF0000);
+   // style 5: keywords (black bold)
+   sciTE->WndProc(SCI_STYLESETFONT,5, (int)font);
+   sciTE->WndProc(SCI_STYLESETSIZE,5, (int)fontsize);
+   sciTE->WndProc(SCI_STYLESETFORE,5, 0x000000);
+   sciTE->WndProc(SCI_STYLESETBOLD,5, 1);
+   // style 6: double qouted strings (???)
+   sciTE->WndProc(SCI_STYLESETFORE,6, 0x7F007F);
+   // style 7: single quoted strings (???)
+   sciTE->WndProc(SCI_STYLESETFORE,7, 0x7F007F);
+   // style 8: UUIDs (IDL only, not used in Lua)
+   // style 9: preprocessor directives (not used in Lua 4)
+   // style 10: operators (black bold)
+   sciTE->WndProc(SCI_STYLESETFONT,10, (int)font);
+   sciTE->WndProc(SCI_STYLESETSIZE,10, fontsize);
+   sciTE->WndProc(SCI_STYLESETFORE,10, 0x000000);
+   sciTE->WndProc(SCI_STYLESETBOLD,10, 1);
+   // style 11: identifiers (leave to default)
+   // style 12: end of line where string is not closed (black on violet, eol-filled)
+   sciTE->WndProc(SCI_STYLESETFORE,12, 0x000000);
+   sciTE->WndProc(SCI_STYLESETBACK,12, 0xE0C0E0);
+   sciTE->WndProc(SCI_STYLESETEOLFILLED,12, 1);
 }
 
 FCScintEditor::~FCScintEditor()
@@ -412,12 +474,42 @@ FCScintEditor::~FCScintEditor()
 	delete sciTE;
 }
 
+void FCScintEditor::openFile(const char* fileName)
+{
+	sciTE->WndProc(SCI_CLEARALL, 0, 0);
+	sciTE->WndProc(SCI_SETSAVEPOINT, 0, 0);
+  sciTE->WndProc(SCI_CANCEL, 0, 0);
+  sciTE->WndProc(SCI_SETUNDOCOLLECTION, 0, 0);
+
+  QString line;
+  QFile file(fileName);
+   
+  if( !file.open(IO_ReadOnly))
+     return;
+
+  QTextStream in(&file);
+  QString text;
+
+  while( !in.atEnd() ){
+    line = in.readLine();
+    text = line + "\n";
+    sciTE->WndProc(SCI_ADDTEXT, text.length(), reinterpret_cast<sptr_t>(static_cast<const char *>(text.latin1())));
+  }
+
+
+  file.close();
+
+  sciTE->WndProc(SCI_SETUNDOCOLLECTION, 1, 0);
+	sciTE->WndProc(SCI_SETSAVEPOINT, 0, 0);
+	sciTE->WndProc(SCI_GOTOPOS, 0, 0);
+}
+
 long FCScintEditor::SendScintilla(unsigned int msg,unsigned long wParam, long lParam)
 {
 	return sciTE->WndProc(msg,wParam,lParam);
 }
 
-bool FCScintEditor::eventFilter(QObject *o, QEvent *e)
+bool FCScintEditor::eventFilter(QObject* o, QEvent* e)
 {
 	if (o != view)
 		return QWidget::eventFilter(o,e);
@@ -464,6 +556,10 @@ bool FCScintEditor::eventFilter(QObject *o, QEvent *e)
 
 	  case QEvent::Drop:
 		  sciTE->dropEvent(static_cast<QDropEvent *>(e));
+		  break;
+
+	  case QEvent::Wheel:
+		  mouseWheelEvent(static_cast<QWheelEvent *>(e));
 		  break;
 
 	  default:
@@ -513,6 +609,11 @@ void FCScintEditor::mousePressEvent(QMouseEvent * e)
 			sciTE->ButtonDown(pt, iClickTime, shift, ctrl, alt);
 			break;
 		}
+    // do the context menu stuff here
+    case RightButton:
+    {
+      sciTE->ContextMenu(Point(e->globalX(), e->globalY()));    
+    }
 
   	default:
 	  	break;
@@ -659,6 +760,16 @@ void FCScintEditor::keyPressEvent(QKeyEvent * e)
 		e->ignore();
 }
 
+void FCScintEditor::mouseWheelEvent(QWheelEvent * e)
+{
+	setFocus();
+
+	if (e->state() & ShiftButton)
+		QApplication::sendEvent(horScroll, e);
+	else 
+		QApplication::sendEvent(verScroll, e);
+}
+
 void FCScintEditor::slotVerScroll(int val)
 {
 	sciTE->ScrollTo(val);
@@ -677,6 +788,114 @@ QSize FCScintEditor::sizeHint() const
 		height += horScroll->sizeHint().height();
 
 	return QSize(sciTE->scrollWidth,height);
+}
+
+ScintillaQt::FCScintCallTip::FCScintCallTip(ScintillaQt* sci, QWidget* parent, const char * name) 
+: QWidget(parent,0,Qt::WType_TopLevel|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WStyle_Tool|Qt::WX11BypassWM), sciTE(sci)
+{
+	setFocusProxy(parent);
+}
+
+ScintillaQt::FCScintCallTip::~FCScintCallTip()
+{
+	setFocusProxy(0);
+}
+
+void ScintillaQt::FCScintCallTip::paintEvent(QPaintEvent* e)
+{
+	Surface *surfaceWindow = Surface::Allocate();
+
+  if (surfaceWindow)
+	{
+		QPainter p(this);
+		surfaceWindow->Init(&p,0);
+		sciTE->ct.PaintCT(surfaceWindow);
+		surfaceWindow->Release();
+		delete surfaceWindow;
+	}
+}
+
+void ScintillaQt::FCScintCallTip::mousePressEvent(QMouseEvent* e)
+{
+	Point pt;
+
+	pt.x = e->x();
+	pt.y = e->y();
+	sciTE->ct.MouseClick(pt);
+	sciTE->CallTipClick();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintEditView::FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name)
+: FCFloatingView(pcDoc, parent, name)
+{
+  FCScintillaView* pcScintView = new FCScintillaView(this, ApplicationWindow::Instance,"EditView");
+  pcScintView->setCaption("Editor");
+	pcScintView->setTabCaption("Editor");
+	pcScintView->resize( 400, 300 );
+
+  view = new FCScintEditor(_pcFrame);
+  ApplicationWindow::Instance->addWindow(pcScintView);
+}
+
+FCScintEditView::~FCScintEditView()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintillaView::FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name)
+  : FCFloatingChildView( pcView, parent, name )
+{
+}
+
+FCScintillaView::~FCScintillaView()
+{
+}
+
+void FCScintillaView::closeEvent(QCloseEvent *e)
+{
+  GetActiveView()->GetDocument()->CanClose(e);
+  if (e->isAccepted ())
+  {
+    FCFloatingChildView::closeEvent(e);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintillaDoc::FCScintillaDoc()
+{
+}
+
+FCScintillaDoc::~FCScintillaDoc()
+{
+}
+
+void FCScintillaDoc::CreateView(const char* name)
+{
+  view = new FCScintEditView(this, 0L, name);
+}
+
+bool FCScintillaDoc::Save(void)
+{
+  return true;
+}
+
+bool FCScintillaDoc::SaveAs(void)
+{
+  return true;
+}
+
+bool FCScintillaDoc::Open(void)
+{
+	QString name = QFileDialog::getOpenFileName( QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", view);
+	if ( name.isEmpty() ) 
+    return false;
+
+  ((FCScintEditView*)view)->GetEditor()->openFile(name.latin1());
+   return true;
 }
 
 #include "moc_ScintillaQt.cpp"

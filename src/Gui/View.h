@@ -144,10 +144,11 @@ class FCFloatingDoc : public QObject
     FCFloatingDoc() : bModified(false), view(0L) {}
     ~FCFloatingDoc() {}
 
-    bool Save(void) { return true; }
-    bool SaveAs(void) { return true; }
+    virtual bool Save   (void) { return true; }
+    virtual bool SaveAs (void) { return true; }
+    virtual bool Open   (void) { return true; }
 
-    virtual void CreateView(){}
+    virtual void CreateView(const char* name){}
     bool IsModified() const { return bModified; }
     void Undo(int iSteps) {}
     void Redo(int iSteps) {}
