@@ -33,6 +33,10 @@
 # include <list>
 # include <map>
 # include <queue>
+# ifdef FC_OS_WIN32
+#   include <io.h>
+#   include <windows.h>
+# endif
 #endif
 
 #include "Process.h"

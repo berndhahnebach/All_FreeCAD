@@ -52,6 +52,8 @@
 #	include <xercesc/framework/LocalFileFormatTarget.hpp>
 #	include <xercesc/parsers/XercesDOMParser.hpp>
 #	include <xercesc/util/XMLUni.hpp>
+# include <xercesc/util/XMLUniDefs.hpp>
+# include <xercesc/util/XMLString.hpp>
 #	include <xercesc/sax/ErrorHandler.hpp>
 #	include <xercesc/sax/SAXParseException.hpp>
 #	include <fcntl.h>
@@ -59,6 +61,7 @@
 #	include <sys/stat.h>
 #	ifdef FC_OS_WIN32
 #		include <io.h>
+#   include <sstream>
 #	endif
 #	include <stdio.h>
 #endif

@@ -48,6 +48,7 @@
 #	include <sys/stat.h>
 #	ifdef FC_OS_WIN32
 #		include <io.h>
+#   include <xercesc/sax/SAXParseException.hpp>
 #	endif
 #	include <stdio.h>
 #endif

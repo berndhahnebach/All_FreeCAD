@@ -33,12 +33,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <time.h>
-#	include "stdio.h"
+# include <time.h>
+# include <stdio.h>
 #   ifdef FC_OS_WIN32
-#	include "io.h"
-#  endif
-#	include "fcntl.h"
+# include <io.h>
+# include <windows.h>
+#   endif
+# include "fcntl.h"
 #endif
 
 #include "Console.h"

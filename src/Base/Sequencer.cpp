@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -49,8 +49,8 @@ SequencerBase& SequencerBase::Instance ()
 }
 
 SequencerBase::SequencerBase()
-  : _bCanceled(false), _nInstStarted(0), _nMaxInstStarted(1),
-    nProgress(0), nTotalSteps(0)
+  : nProgress(0), nTotalSteps(0),
+  _bCanceled(false), _nInstStarted(0), _nMaxInstStarted(1)
 {
   _setGlobalInstance();
 }
