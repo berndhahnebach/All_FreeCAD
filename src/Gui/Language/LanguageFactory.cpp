@@ -57,7 +57,7 @@ void LanguageFactoryInst::Destruct (void)
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
-
+/*
 bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 {
   bool ok = false;
@@ -104,12 +104,72 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
       QTranslator* t = new Translator( lang );
       t->load( qm, "." );
       dir.remove( qm );
-  
+
       qApp->installTranslator( t );
       ok = true;
     }
 
     dir.remove( ts );
+  }
+  catch (...)
+  {
+  }
+
+  return ok;
+}*/
+
+bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
+{
+  bool ok = false;
+
+  // make sure that producers are created
+  LanguageFactorySupplier::Instance();
+
+  try
+  {
+    QStringList IDs = getUniqueIDs( lang );
+
+    for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
+    {
+      PCharVector tv = (PCharVector) Produce((*it).latin1());
+
+      if ( !tv )
+      {
+        continue; // no data
+      }
+
+      // create temporary files
+      QString ts = "Language.ts";
+      QString qm = "Language.qm";
+      QFile file( ts );
+      file.open( IO_WriteOnly );
+      QTextStream out( &file );
+
+      RCharVector text = *tv;
+      for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
+        out << (*i);
+
+      // all messages written
+      file.close();
+
+      // and delete the files again
+      QDir dir;
+      if ( file.size() > 0 )
+      {
+        // build the translator messages
+        MetaTranslator mt;
+        mt.load( ts );
+        mt.release( qm );
+        QTranslator* t = new Translator( lang );
+        t->load( qm, "." );
+        dir.remove( qm );
+
+        qApp->installTranslator( t );
+        ok = true;
+      }
+
+      dir.remove( ts );
+    }
   }
   catch (...)
   {

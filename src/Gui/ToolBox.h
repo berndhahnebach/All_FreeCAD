@@ -98,6 +98,9 @@ signals:
    */
   void currentChanged ( int index );
 
+protected slots:
+  void languageChange();
+
 private:
   QToolBox* _pToolBox;
 };

@@ -179,7 +179,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
   // set defaults and the colums
   _pcListView->setSorting(-1,false);
-  _pcListView->addColumn(tr("Labels & Attr."));
+  _pcListView->addColumn(tr("Labels & Attributes"));
   _pcListView->setColumnWidthMode(0,QListView::Maximum);
 //  _pcListView->addColumn(tr("Value"));
 //  _pcListView->setColumnWidthMode(1,QListView::Manual );

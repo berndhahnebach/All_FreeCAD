@@ -50,11 +50,11 @@ StdCmdViewBottom::StdCmdViewBottom()
   :CppCommand("Std_ViewBottom")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Bottom";
-  sToolTipText  = "Set to bottom view";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Bottom");
+  sToolTipText  = QT_TR_NOOP("Set to bottom view");
+  sWhatsThis    = QT_TR_NOOP("Set to bottom view");
+  sStatusTip    = QT_TR_NOOP("Set to bottom view");
   sPixmap       = "view_bottom";
   iAccel        = 0;
 }
@@ -73,11 +73,11 @@ StdCmdViewFront::StdCmdViewFront()
   :CppCommand("Std_ViewFront")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Front";
-  sToolTipText  = "Set to front view";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Front");
+  sToolTipText  = QT_TR_NOOP("Set to front view");
+  sWhatsThis    = QT_TR_NOOP("Set to front view");
+  sStatusTip    = QT_TR_NOOP("Set to front view");
   sPixmap       = "view_front";
   iAccel        = 0;
 }
@@ -96,11 +96,11 @@ StdCmdViewLeft::StdCmdViewLeft()
   :CppCommand("Std_ViewLeft")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Left";
-  sToolTipText  = "Set to left view";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Left");
+  sToolTipText  = QT_TR_NOOP("Set to left view");
+  sWhatsThis    = QT_TR_NOOP("Set to left view");
+  sStatusTip    = QT_TR_NOOP("Set to left view");
   sPixmap       = "view_left";
   iAccel        = 0;
 }
@@ -119,11 +119,11 @@ StdCmdViewRear::StdCmdViewRear()
   :CppCommand("Std_ViewRear")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Rear";
-  sToolTipText  = "Set to rear view";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Rear");
+  sToolTipText  = QT_TR_NOOP("Set to rear view");
+  sWhatsThis    = QT_TR_NOOP("Set to rear view");
+  sStatusTip    = QT_TR_NOOP("Set to rear view");
   sPixmap       = "view_back";
   iAccel        = 0;
 }
@@ -142,11 +142,11 @@ StdCmdViewRight::StdCmdViewRight()
   :CppCommand("Std_ViewRight")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Right";
-  sToolTipText  = "Set to right view";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Right");
+  sToolTipText  = QT_TR_NOOP("Set to right view");
+  sWhatsThis    = QT_TR_NOOP("Set to right view");
+  sStatusTip    = QT_TR_NOOP("Set to right view");
   sPixmap       = "view_right";
   iAccel        = 0;
 }
@@ -165,11 +165,11 @@ StdCmdViewTop::StdCmdViewTop()
   :CppCommand("Std_ViewTop")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Top";
-  sToolTipText  = "Set to top view";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Top");
+  sToolTipText  = QT_TR_NOOP("Set to top view");
+  sWhatsThis    = QT_TR_NOOP("Set to top view");
+  sStatusTip    = QT_TR_NOOP("Set to top view");
   sPixmap       = "view_top";
   iAccel        = 0;
 }
@@ -188,11 +188,11 @@ StdCmdViewAxo::StdCmdViewAxo()
   :CppCommand("Std_ViewAxo")
 {
   sAppModule  = "";
-  sGroup      = "Standard-View";
-  sMenuText   = "Axometric";
-  sToolTipText= "Set to axometric view";
-  sWhatsThis  = sToolTipText;
-  sStatusTip  = sToolTipText;
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Axometric");
+  sToolTipText= QT_TR_NOOP("Set to axometric view");
+  sWhatsThis  = QT_TR_NOOP("Set to axometric view");
+  sStatusTip  = QT_TR_NOOP("Set to axometric view");
   sPixmap     = "view_axo";
   iAccel      = 0;
 }
@@ -211,11 +211,11 @@ StdCmdViewFitAll::StdCmdViewFitAll()
   :CppCommand("Std_ViewFitAll")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Fit all";
-  sToolTipText  = "Fits the whole content on the screen";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Fit all");
+  sToolTipText  = QT_TR_NOOP("Fits the whole content on the screen");
+  sWhatsThis    = QT_TR_NOOP("Fits the whole content on the screen");
+  sStatusTip    = QT_TR_NOOP("Fits the whole content on the screen");
   sPixmap       = "view_fitall";
   iAccel        = 0;
 }
@@ -240,11 +240,11 @@ StdCmdViewCreateOCC::StdCmdViewCreateOCC()
   :CppCommand("Std_ViewCreateOCC")
 {
   sAppModule  = "";
-  sGroup      = "Standard-View";
-  sMenuText   = "Create new OCC View";
-  sToolTipText= "Creates a new OpenCasCade view window for the active document";
-  sWhatsThis  = sToolTipText;
-  sStatusTip  = sToolTipText;
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Create new OCC View");
+  sToolTipText= QT_TR_NOOP("Creates a new OpenCasCade view window for the active document");
+  sWhatsThis  = QT_TR_NOOP("Creates a new OpenCasCade view window for the active document");
+  sStatusTip  = QT_TR_NOOP("Creates a new OpenCasCade view window for the active document");
   sPixmap     = "view_fitall";
   iAccel      = 0;
 }
@@ -268,11 +268,11 @@ StdCmdViewCreateInventor::StdCmdViewCreateInventor()
   :CppCommand("Std_ViewCreateInventor")
 {
   sAppModule  = "";
-  sGroup      = "Standard-View";
-  sMenuText   = "Create new Inventor View";
-  sToolTipText= "Creates a new Inventor view window for the active document";
-  sWhatsThis  = sToolTipText;
-  sStatusTip  = sToolTipText;
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Create new Inventor View");
+  sToolTipText= QT_TR_NOOP("Creates a new Inventor view window for the active document");
+  sWhatsThis  = QT_TR_NOOP("Creates a new Inventor view window for the active document");
+  sStatusTip  = QT_TR_NOOP("Creates a new Inventor view window for the active document");
   sPixmap     = "view_fitall";
   iAccel      = 0;
 }
@@ -296,11 +296,11 @@ StdCmdViewExample1::StdCmdViewExample1()
   :CppCommand("Std_ViewExample1")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Inventor example #1";
-  sToolTipText  = "Shows a 3D texture with manipulator";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Inventor example #1");
+  sToolTipText  = QT_TR_NOOP("Shows a 3D texture with manipulator");
+  sWhatsThis    = QT_TR_NOOP("Shows a 3D texture with manipulator");
+  sStatusTip    = QT_TR_NOOP("Shows a 3D texture with manipulator");
   sPixmap       = "Std_Tool1";
   iAccel        = 0;
 }
@@ -323,11 +323,11 @@ StdCmdViewExample2::StdCmdViewExample2()
   :CppCommand("Std_ViewExample2")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Inventor example #2";
-  sToolTipText  = "Shows spheres an dragglights";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Inventor example #2");
+  sToolTipText  = QT_TR_NOOP("Shows spheres an dragglights");
+  sWhatsThis    = QT_TR_NOOP("Shows spheres an dragglights");
+  sStatusTip    = QT_TR_NOOP("Shows spheres an dragglights");
   sPixmap       = "Std_Tool2";
   iAccel        = 0;
 }
@@ -351,11 +351,11 @@ StdCmdViewExample3::StdCmdViewExample3()
   :CppCommand("Std_ViewExample3")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Inventor example #3";
-  sToolTipText  = "Shows a animated texture";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Inventor example #3");
+  sToolTipText  = QT_TR_NOOP("Shows a animated texture");
+  sWhatsThis    = QT_TR_NOOP("Shows a animated texture");
+  sStatusTip    = QT_TR_NOOP("Shows a animated texture");
   sPixmap       = "Std_Tool3";
   iAccel        = 0;
 }
@@ -379,11 +379,11 @@ StdCmdViewIvDecorationOn::StdCmdViewIvDecorationOn()
   :CppCommand("Std_ViewIvDecorationOn")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Decoration on";
-  sToolTipText  = "Examiner viewer decoration on";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Decoration on");
+  sToolTipText  = QT_TR_NOOP("Examiner viewer decoration on");
+  sWhatsThis    = QT_TR_NOOP("Examiner viewer decoration on");
+  sStatusTip    = QT_TR_NOOP("Examiner viewer decoration on");
   sPixmap       = "Std_Tool4";
   iAccel        = 0;
 }
@@ -407,11 +407,11 @@ StdCmdViewIvDecorationOff::StdCmdViewIvDecorationOff()
   :CppCommand("Std_ViewIvDecorationOff")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Decoration Off";
-  sToolTipText  = "Examiner viewer decoration Off";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Decoration Off");
+  sToolTipText  = QT_TR_NOOP("Examiner viewer decoration Off");
+  sWhatsThis    = QT_TR_NOOP("Examiner viewer decoration Off");
+  sStatusTip    = QT_TR_NOOP("Examiner viewer decoration Off");
   sPixmap       = "Std_Tool5";
   iAccel        = 0;
 }
@@ -436,11 +436,11 @@ StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
   :CppCommand("Std_ViewIvStereoOff")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Stereo Off";
-  sToolTipText  = "switch stereo viewing off";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Stereo Off");
+  sToolTipText  = QT_TR_NOOP("Switch stereo viewing off");
+  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing off");
+  sStatusTip    = QT_TR_NOOP("Switch stereo viewing off");
   sPixmap       = "Std_Tool6";
   iAccel        = 0;
 }
@@ -465,11 +465,11 @@ StdCmdViewIvStereoOn::StdCmdViewIvStereoOn()
   :CppCommand("Std_ViewIvStereoOn")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Stereo On";
-  sToolTipText  = "switch stereo viewing on";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Stereo On");
+  sToolTipText  = QT_TR_NOOP("Switch stereo viewing on");
+  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing on");
+  sStatusTip    = QT_TR_NOOP("Switch stereo viewing on");
   sPixmap       = "Std_Tool7";
   iAccel        = 0;
 }
@@ -494,11 +494,11 @@ StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
   :CppCommand("Std_ViewIvIssueCamPos")
 {
   sAppModule    = "";
-  sGroup        = "Standard-View";
-  sMenuText     = "Issue camera position";
-  sToolTipText  = "Issue the camera posiotion to the console and to a macro, to easily recall this position";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Issue camera position");
+  sToolTipText  = QT_TR_NOOP("Issue the camera posiotion to the console and to a macro, to easily recall this position");
+  sWhatsThis    = QT_TR_NOOP("Issue the camera posiotion to the console and to a macro, to easily recall this position");
+  sStatusTip    = QT_TR_NOOP("Issue the camera posiotion to the console and to a macro, to easily recall this position");
   sPixmap       = "Std_Tool8";
   iAccel        = 0;
 }

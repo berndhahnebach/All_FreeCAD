@@ -33,6 +33,7 @@
 // INCLUDE YOUR LANGUAGE FILES HERE
 //
 #include "Language/FreeCAD_de.h"
+#include "Language/qt_de.h"
 
 /**
  * Register all languages to switch between them at any later time.
@@ -47,7 +48,8 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
   // ADD YOUR LANGUAGES HERE
   //
   //
-  new Gui::LanguageProducer("German", GetFreeCAD_de());
+  new Gui::LanguageProducer("Deutsch", GetFreeCAD_de());
+  new Gui::LanguageProducer("Deutsch", Getqt_de());
 }
 
 // ----------------------------------------------------

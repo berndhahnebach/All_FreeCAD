@@ -151,7 +151,7 @@ void Document::createView(const char* sType)
   }else
     Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
 
-  QString aName = tr("%1%2:%3").arg(tr("Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
+  QString aName = tr("%1%2:%3").arg(tr("Unnamed")).arg(_iDocId).arg(_iWinCount++);
 
 
   pcView3D->setCaption(aName);

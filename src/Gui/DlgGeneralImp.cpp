@@ -80,7 +80,7 @@ void DlgGeneralImp::insertLanguages()
 {
   QStringList list = Gui::LanguageFactory().getRegisteredLanguages();
 
-  Languages->insertItem(tr("English"));
+  Languages->insertItem("English");
 
   for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
   {

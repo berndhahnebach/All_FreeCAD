@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>396</height>
+            <height>405</height>
         </rect>
     </property>
     <property name="caption">
@@ -243,7 +243,10 @@
                                 <cstring>AllowDragMenu</cstring>
                             </property>
                             <property name="text">
-                                <string>Allow dragging of menu items</string>
+                                <string>Allow drag&amp;&amp;drop of menu items</string>
+                            </property>
+                            <property name="accel">
+                                <string></string>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>AllowDrag</cstring>

@@ -221,5 +221,23 @@ void ToolBox::setCurrentIndex ( int index )
   _pToolBox->setCurrentIndex( index );
 }
 
+/**
+ * If to a new language is switched this method gets called.
+ */
+void ToolBox::languageChange()
+{
+  DockWindow::languageChange();
+  
+  int ct = count();
+  for ( int i=0; i<ct; i++ )
+  {
+    QWidget* w = item( i );
+    if ( w )
+    {
+      setItemLabel( i, w->caption() );
+    }
+  }
+}
+
 
 #include "moc_ToolBox.cpp"

@@ -273,10 +273,10 @@ void CustomWidget::saveXML()
  * The \a label and \a newLine parameters are passed straight to QMainWindow::addDockWindow().
  * \a name and the widget flags \a f are passed on to the QDockWindow constructor.
  *
- * Use this constructor if you want to create torn-off (undocked, floating) toolbars or toolbars 
+ * Use this constructor if you want to create torn-off (undocked, floating) toolbars or toolbars
  * in the status bar.
  */
-CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, QWidget *parent, 
+CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, QWidget *parent,
                                bool newLine, const char * name, WFlags f, const char* type )
   : QToolBar(label, mainWindow, parent, newLine, name, f), CustomWidget(type, name)
 {
@@ -285,7 +285,7 @@ CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, Q
 }
 
 /**
- * Constructs an empty toolbar called \a name, of the type \a type, with parent \a parent, in its 
+ * Constructs an empty toolbar called \a name, of the type \a type, with parent \a parent, in its
  * parent's top dock area, without any label and without requiring a newline.
  */
 CustomToolBar::CustomToolBar ( QMainWindow * parent, const char * name, const char* type )
@@ -297,6 +297,14 @@ CustomToolBar::CustomToolBar ( QMainWindow * parent, const char * name, const ch
 
 CustomToolBar::~CustomToolBar()
 {
+}
+
+/**
+ * If to a new language is switched this method gets called.
+ */
+void CustomToolBar::languageChange()
+{
+  setLabel( tr( name() ) );
 }
 
 /**
@@ -1027,7 +1035,7 @@ void CustomWidgetManager::removePopupMenu( const QString& name )
   }
 }
 
-/** 
+/**
  * Removes menu items.
  */
 void CustomWidgetManager::removeMenuItems(const QString& type, const QStringList& items)
@@ -1095,7 +1103,7 @@ CustomToolBar* CustomWidgetManager::getToolBar( const QString& name )
   else
   {
 //    CustomToolBar *pcToolBar = new CustomToolBar( ApplicationWindow::Instance, name );
-    CustomToolBar *pcToolBar = new CustomToolBar( name, ApplicationWindow::Instance, 
+    CustomToolBar *pcToolBar = new CustomToolBar( name, ApplicationWindow::Instance,
                                           ApplicationWindow::Instance, false, name.latin1() );
     ApplicationWindow::Instance->addToolBar(pcToolBar);
     d->_clToolbars[ name ] = pcToolBar;
@@ -1118,7 +1126,7 @@ QPtrList<CustomToolBar> CustomWidgetManager::getToolBars()
   return aclToolbars;
 }
 
-/** 
+/**
  * Deletes the specified toolbar if it exists.
  */
 void CustomWidgetManager::removeToolBar( const QString& name )

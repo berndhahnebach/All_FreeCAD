@@ -1483,6 +1483,8 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
     Instance->d->_pcWidgetMgr->addCommandBar(psToolbarName, items);
     Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setRemovable(bRemovable!=0);
+    // Do not append this toolbar to the customDockWindows menu
+    Instance->setAppropriate(Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName), false);
   }catch(const Base::Exception& e) {
     PyErr_SetString(PyExc_AssertionError, e.what());		
     return NULL;

@@ -81,13 +81,13 @@ DEF_STD_CMD(StdCmdOpen);
 StdCmdOpen::StdCmdOpen()
   :CppCommand("Std_Open")
 {
-  // seting the 
+  // seting the
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Open";
-  sToolTipText  = "Open a Document or import Files";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Open");
+  sToolTipText  = QT_TR_NOOP("Open a Document or import Files");
+  sWhatsThis    = QT_TR_NOOP("Open a Document or import Files");
+  sStatusTip    = QT_TR_NOOP("Open a Document or import Files");
   sPixmap       = "Open";
   iAccel        = Qt::CTRL+Qt::Key_O;
 }
@@ -118,11 +118,11 @@ StdCmdNew::StdCmdNew()
 {
   // seting the 
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "New";
-  sToolTipText  = "Create a new empty Document";
-  sWhatsThis    = "Create a new empty Document";
-  sStatusTip    = "Create a new empty Document";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&New");
+  sToolTipText  = QT_TR_NOOP("Create a new empty Document");
+  sWhatsThis    = QT_TR_NOOP("Create a new empty Document");
+  sStatusTip    = QT_TR_NOOP("Create a new empty Document");
   sPixmap       = "New";
   iAccel        = Qt::CTRL+Qt::Key_N;
 }
@@ -144,11 +144,11 @@ StdCmdSave::StdCmdSave()
   :CppCommand("Std_Save")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Save";
-  sToolTipText  = "Save the active document";
-  sWhatsThis    = "Save the active document";
-  sStatusTip    = "Save the active document";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Save");
+  sToolTipText  = QT_TR_NOOP("Save the active document");
+  sWhatsThis    = QT_TR_NOOP("Save the active document");
+  sStatusTip    = QT_TR_NOOP("Save the active document");
   sPixmap       = "Save";
   iAccel        = Qt::CTRL+Qt::Key_S;
 }
@@ -180,11 +180,11 @@ StdCmdSaveAs::StdCmdSaveAs()
   :CppCommand("Std_SaveAs")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Save as...";
-  sToolTipText  = "Save the active document under a new file name";
-  sWhatsThis    = "Save the active document under a new file name";
-  sStatusTip    = "Save the active document under a new file name";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Save &As...");
+  sToolTipText  = QT_TR_NOOP("Save the active document under a new file name");
+  sWhatsThis    = QT_TR_NOOP("Save the active document under a new file name");
+  sStatusTip    = QT_TR_NOOP("Save the active document under a new file name");
   iAccel        = 0;
 }
 
@@ -213,11 +213,11 @@ StdCmdPrint::StdCmdPrint()
   :CppCommand("Std_Print")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Print...";
-  sToolTipText  = "Print the window";
-  sWhatsThis    = "Print the window";
-  sStatusTip    = "Print the window";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Print...");
+  sToolTipText  = QT_TR_NOOP("Print the window");
+  sWhatsThis    = QT_TR_NOOP("Print the window");
+  sStatusTip    = QT_TR_NOOP("Print the window");
   sPixmap       = "Print";
   iAccel        = Qt::CTRL+Qt::Key_P;;
 }
@@ -247,11 +247,11 @@ StdCmdQuit::StdCmdQuit()
   :CppCommand("Std_Quit")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Exit";
-  sToolTipText  = "Quits the application";
-  sWhatsThis    = "Quits the application";
-  sStatusTip    = "Quits the application";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("E&xit");
+  sToolTipText  = QT_TR_NOOP("Quits the application");
+  sWhatsThis    = QT_TR_NOOP("Quits the application");
+  sStatusTip    = QT_TR_NOOP("Quits the application");
   iAccel        = Qt::ALT+Qt::Key_F4;
 }
 
@@ -270,11 +270,11 @@ StdCmdUndo::StdCmdUndo()
   :CppCommand("Std_Undo")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Undo";
-  sToolTipText  = "Undo exactly one action";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Undo");
+  sToolTipText  = QT_TR_NOOP("Undo exactly one action");
+  sWhatsThis    = QT_TR_NOOP("Undo exactly one action");
+  sStatusTip    = QT_TR_NOOP("Undo exactly one action");
   sPixmap       = "Undo";
   iAccel        = Qt::CTRL+Qt::Key_Z;
 }
@@ -317,11 +317,11 @@ StdCmdRedo::StdCmdRedo()
   :CppCommand("Std_Redo")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Redo";
-  sToolTipText  = "Redoes a previously undid action";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Redo");
+  sToolTipText  = QT_TR_NOOP("Redoes a previously undid action");
+  sWhatsThis    = QT_TR_NOOP("Redoes a previously undid action");
+  sStatusTip    = QT_TR_NOOP("Redoes a previously undid action");
   sPixmap       = "Redo";
   iAccel        = Qt::CTRL+Qt::Key_Y;
 }
@@ -362,11 +362,11 @@ StdCmdWorkbench::StdCmdWorkbench()
   :CppCommand("Std_Workbench"), pcAction(NULL)
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Workbench";
-  sToolTipText  = "Switch between workbenches";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Workbench");
+  sToolTipText  = QT_TR_NOOP("Switch between workbenches");
+  sWhatsThis    = QT_TR_NOOP("Switch between workbenches");
+  sStatusTip    = QT_TR_NOOP("Switch between workbenches");
   sPixmap       = "FCIcon";
   iAccel        = 0;
 }
@@ -466,11 +466,11 @@ StdCmdMRU::StdCmdMRU()
   :CppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Recent files";
-  sToolTipText  = "Recent file list";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Recent files");
+  sToolTipText  = QT_TR_NOOP("Recent file list");
+  sWhatsThis    = QT_TR_NOOP("Recent file list");
+  sStatusTip    = QT_TR_NOOP("Recent file list");
   //	sPixmap			= "";
   iAccel        = 0;
 }
@@ -605,93 +605,49 @@ QStringList StdCmdMRU::recentFiles() const
   return _vMRU;
 }
 
-
 void StdCmdMRU::load()
-
 {
-
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
-
   if (hGrp->HasGroup("RecentFiles"))
-
   {
-
     hGrp = hGrp->GetGroup("RecentFiles");
-
     StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU"));
-
     if (pCmd)
-
     {
-
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
-
       pCmd->setMaxCount( maxCnt );
-
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
-
       for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
-
       {
-
         pCmd->addRecentFile( it->c_str() );
-
       }
-
     }
-
   }
-
 }
-
-
 
 void StdCmdMRU::save()
-
 {
-
   // save recent file list
-
   Command* pCmd = ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU");
-
   if (pCmd)
-
   {
-
     char szBuf[200];
-
     int i=0;
-
     FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
-
     hGrp->Clear();
-
     hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
 
-
-
     QStringList files = ((StdCmdMRU*)pCmd)->recentFiles();
-
     if ( files.size() > 0 )
-
     {
-
       for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
-
       {
-
         sprintf(szBuf, "MRU%d", i);
-
         hGrp->SetASCII(szBuf, (*it).latin1());
-
       }
-
     }
-
   }
-
 }
-
 
 //===========================================================================
 // Std_Cut
@@ -702,11 +658,11 @@ StdCmdCut::StdCmdCut()
   :CppCommand("Std_Cut")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Cut";
-  sToolTipText  = "Cut out";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Cut");
+  sToolTipText  = QT_TR_NOOP("Cut out");
+  sWhatsThis    = QT_TR_NOOP("Cut out");
+  sStatusTip    = QT_TR_NOOP("Cut out");
   sPixmap       = "Cut";
   iAccel        = Qt::CTRL+Qt::Key_X;
 }
@@ -730,11 +686,11 @@ StdCmdCopy::StdCmdCopy()
   :CppCommand("Std_Copy")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Copy";
-  sToolTipText  = "Copy operation";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("C&opy");
+  sToolTipText  = QT_TR_NOOP("Copy operation");
+  sWhatsThis    = QT_TR_NOOP("Copy operation");
+  sStatusTip    = QT_TR_NOOP("Copy operation");
   sPixmap       = "Copy";
   iAccel        = Qt::CTRL+Qt::Key_C;
 }
@@ -758,11 +714,11 @@ StdCmdPaste::StdCmdPaste()
   :CppCommand("Std_Paste")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Paste";
-  sToolTipText  = "Paste operation";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Paste");
+  sToolTipText  = QT_TR_NOOP("Paste operation");
+  sWhatsThis    = QT_TR_NOOP("Paste operation");
+  sStatusTip    = QT_TR_NOOP("Paste operation");
   sPixmap       = "Paste";
   iAccel        = Qt::CTRL+Qt::Key_V;
 }
@@ -785,12 +741,12 @@ DEF_STD_CMD(StdCmdAbout);
 StdCmdAbout::StdCmdAbout()
   :CppCommand("Std_About")
 {
-  sAppModule  = "";
-  sGroup      = "Standard";
-  sMenuText   = "About FreeCAD";
-  sToolTipText  = "About FreeCAD";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&About FreeCAD");
+  sToolTipText  = QT_TR_NOOP("About FreeCAD");
+  sWhatsThis    = QT_TR_NOOP("About FreeCAD");
+  sStatusTip    = QT_TR_NOOP("About FreeCAD");
 }
 
 void StdCmdAbout::activated(int iMsg)
@@ -808,11 +764,11 @@ StdCmdAboutQt::StdCmdAboutQt()
   :CppCommand("Std_AboutQt")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "About &Qt";
-  sToolTipText  = "About Qt";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("About &Qt");
+  sToolTipText  = QT_TR_NOOP("About Qt");
+  sWhatsThis    = QT_TR_NOOP("About Qt");
+  sStatusTip    = QT_TR_NOOP("About Qt");
 }
 
 void StdCmdAboutQt::activated(int iMsg)
@@ -829,11 +785,11 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
   :CppCommand("Std_TipOfTheDay")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Tip of the day...";
-  sToolTipText  = "Tip of the day";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Tip of the day...");
+  sToolTipText  = QT_TR_NOOP("Tip of the day");
+  sWhatsThis    = QT_TR_NOOP("Tip of the day");
+  sStatusTip    = QT_TR_NOOP("Tip of the day");
 }
 
 void StdCmdTipOfTheDay::activated(int iMsg)
@@ -850,12 +806,12 @@ StdCmdWhatsThis::StdCmdWhatsThis()
   :CppCommand("Std_WhatsThis")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "What's This?";
-  sToolTipText  = "What's This?";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&What's This?");
+  sToolTipText  = QT_TR_NOOP("What's This");
   //	sWhatsThis		= sToolTipText;
   sWhatsThis    = "";
-  sStatusTip    = sToolTipText;
+  sStatusTip    = QT_TR_NOOP("What's This");
   iAccel        = Qt::SHIFT+Qt::Key_F1;
   sPixmap       = "WhatsThis";
 }
@@ -874,11 +830,11 @@ StdCmdTileHor::StdCmdTileHor()
   :CppCommand("Std_TileHoricontal")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Tile &Horizontally";
-  sToolTipText  = "Tile the windows horizontally";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Tile &Horizontally");
+  sToolTipText  = QT_TR_NOOP("Tile the windows horizontally");
+  sWhatsThis    = QT_TR_NOOP("Tile the windows horizontally");
+  sStatusTip    = QT_TR_NOOP("Tile the windows horizontally");
   sPixmap       = "Std_WindowTileHor";
   iAccel        = 0;
 }
@@ -902,11 +858,11 @@ StdCmdTileVer::StdCmdTileVer()
   :CppCommand("Std_TileVertical")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "&Tile Vertically";
-  sToolTipText  = "Tile the windows vertically";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Tile Vertically");
+  sToolTipText  = QT_TR_NOOP("Tile the windows vertically");
+  sWhatsThis    = QT_TR_NOOP("Tile the windows vertically");
+  sStatusTip    = QT_TR_NOOP("Tile the windows vertically");
   sPixmap       = "Std_WindowTileVer";
   iAccel        = 0;
 }
@@ -930,11 +886,11 @@ StdCmdTilePra::StdCmdTilePra()
   :CppCommand("Std_TilePragmatic")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "&Cascade";
-  sToolTipText  = "Tile pragmatic";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Cascade");
+  sToolTipText  = QT_TR_NOOP("Tile pragmatic");
+  sWhatsThis    = QT_TR_NOOP("Tile pragmatic");
+  sStatusTip    = QT_TR_NOOP("Tile pragmatic");
   sPixmap       = "Std_WindowCascade";
   iAccel        = 0;
 }
@@ -958,11 +914,11 @@ StdCmdWindows::StdCmdWindows()
   :CppCommand("Std_Windows")
 {
   sAppModule    = "";
-  sGroup      = "Standard";
-  sMenuText   = "&Windows...";
-  sToolTipText  = "Windows list";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Windows...");
+  sToolTipText  = QT_TR_NOOP("Windows list");
+  sWhatsThis    = QT_TR_NOOP("Windows list");
+  sStatusTip    = QT_TR_NOOP("Windows list");
   //sPixmap     = "";
   iAccel        = 0;
 }
@@ -1008,11 +964,11 @@ StdCmdMDIToplevel::StdCmdMDIToplevel()
   :CppCommand("Std_MDIToplevel",Cmd_Toggle)
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "MDI seperate windows";
-  sToolTipText  = "Set the seperate window MDI mode";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("MDI seperate windows");
+  sToolTipText  = QT_TR_NOOP("Set the seperate window MDI mode");
+  sWhatsThis    = QT_TR_NOOP("Set the seperate window MDI mode");
+  sStatusTip    = QT_TR_NOOP("Set the seperate window MDI mode");
   sPixmap       = "TopLevel";
   iAccel        = 0;
 }
@@ -1037,11 +993,11 @@ StdCmdMDITabbed::StdCmdMDITabbed()
   :CppCommand("Std_MDITabed",Cmd_Toggle)
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "MDI tabed";
-  sToolTipText  = "Set the tabed MDI mode";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("MDI tabbed");
+  sToolTipText  = QT_TR_NOOP("Set the tabbed MDI mode");
+  sWhatsThis    = QT_TR_NOOP("Set the tabbed MDI mode");
+  sStatusTip    = QT_TR_NOOP("Set the tabbed MDI mode");
   sPixmap       = "TopLevel";
   iAccel        = 0;
 }
@@ -1065,12 +1021,12 @@ DEF_STD_CMD(StdCmdDlgParameter);
 StdCmdDlgParameter::StdCmdDlgParameter()
   :CppCommand("Std_DlgParameter")
 {
-  sAppModule  = "";
-  sGroup      = "Standard";
-  sMenuText   = "Edit parameters ...";
-  sToolTipText  = "Opens a Dialog to edit the parameters";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("E&dit parameters ...");
+  sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the parameters");
+  sWhatsThis    = QT_TR_NOOP("Opens a Dialog to edit the parameters");
+  sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the parameters");
   //sPixmap     = "settings";
   iAccel        = 0;
 }
@@ -1089,12 +1045,12 @@ DEF_STD_CMD(StdCmdDlgPreferences);
 StdCmdDlgPreferences::StdCmdDlgPreferences()
   :CppCommand("Std_DlgPreferences")
 {
-  sAppModule  = "";
-  sGroup      = "Standard";
-  sMenuText   = "Preferences ...";
-  sToolTipText  = "Opens a Dialog to edit the preferences";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Preferences ...");
+  sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the preferences");
+  sWhatsThis    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
+  sStatusTip    = QT_TR_NOOP("Opens a Dialog to edit the preferences");
   //sPixmap     = "settings";
   iAccel        = 0;
 }
@@ -1113,12 +1069,12 @@ DEF_STD_CMD_A(StdCmdDlgMacroRecord);
 StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
   :CppCommand("Std_DlgMacroRecord")
 {
-  sAppModule  = "";
-  sGroup      = "Standard";
-  sMenuText   = "Macro recording ...";
-  sToolTipText  = "Opens a Dialog to record a macro";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("&Macro recording ...");
+  sToolTipText  = QT_TR_NOOP("Opens a Dialog to record a macro");
+  sWhatsThis    = QT_TR_NOOP("Opens a Dialog to record a macro");
+  sStatusTip    = QT_TR_NOOP("Opens a Dialog to record a macro");
   sPixmap       = "Std_MacroRecord";
   iAccel        = 0;
 }
@@ -1143,11 +1099,11 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   :CppCommand("Std_DlgMacroExecute")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Execute macro ...";
-  sToolTipText  = "Opens a Dialog let you execute a redordet macro";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("E&xecute macro ...");
+  sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a redordet macro");
+  sWhatsThis    = QT_TR_NOOP("Opens a Dialog let you execute a redordet macro");
+  sStatusTip    = QT_TR_NOOP("Opens a Dialog let you execute a redordet macro");
   sPixmap       = "Std_MacroPlay";
   iAccel        = 0;
 }
@@ -1172,11 +1128,11 @@ StdCmdMacroStop::StdCmdMacroStop()
   :CppCommand("Std_DlgMacroStop")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Stop macro recording";
-  sToolTipText  = "Stop the a running macro recording sassion";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("S&top macro recording");
+  sToolTipText  = QT_TR_NOOP("Stop the a running macro recording sassion");
+  sWhatsThis    = QT_TR_NOOP("Stop the a running macro recording sassion");
+  sStatusTip    = QT_TR_NOOP("Stop the a running macro recording sassion");
   sPixmap       = "Std_MacroStop";
   iAccel        = 0;
 }
@@ -1200,11 +1156,11 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
   :CppCommand("Std_DlgCustomize")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Customize...";
-  sToolTipText  = "Customize toolbars and commandbars";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Cu&stomize...");
+  sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
+  sWhatsThis    = QT_TR_NOOP("Customize toolbars and commandbars");
+  sStatusTip    = QT_TR_NOOP("Customize toolbars and commandbars");
   //sPixmap     = "customize";
   iAccel        = 0;
 }
@@ -1224,11 +1180,11 @@ StdCmdCommandLine::StdCmdCommandLine()
   :CppCommand("Std_CommandLine")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Start command line...";
-  sToolTipText  = "Opens the command line in the console";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Start command &line...");
+  sToolTipText  = QT_TR_NOOP("Opens the command line in the console");
+  sWhatsThis    = QT_TR_NOOP("Opens the command line in the console");
+  sStatusTip    = QT_TR_NOOP("Opens the command line in the console");
   sPixmap       = "CommandLine";
   iAccel        = 0;
 }
@@ -1265,29 +1221,17 @@ void StdCmdCommandLine::activated(int iMsg)
 //===========================================================================
 // Std_OCAFBrowser
 //===========================================================================
-
-class StdCmdOCAFBrowse : public CppCommand
-{
-public:
-  StdCmdOCAFBrowse();
-//~StdCmdOCAFBrowse();
-  virtual void activated(int iMsg);
-  virtual bool isActive(void);
-private:
-#ifdef FC_USE_OCAFBROWSER
-  DebugBrowser cBrowser;
-#endif
-};
+DEF_STD_CMD_A(StdCmdOCAFBrowse);
 
 StdCmdOCAFBrowse::StdCmdOCAFBrowse()
   :CppCommand("Std_OCAFBrowser")
 {
   sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "Start raw document browser...";
-  sToolTipText  = "Starts a new window to deeply examine the document structure";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Start &raw document browser...");
+  sToolTipText  = QT_TR_NOOP("Starts a new window to deeply examine the document structure");
+  sWhatsThis    = QT_TR_NOOP("Starts a new window to deeply examine the document structure");
+  sStatusTip    = QT_TR_NOOP("Starts a new window to deeply examine the document structure");
   sPixmap       = "Copy";
   iAccel        = Qt::CTRL+Qt::Key_B;
 }
@@ -1295,6 +1239,7 @@ StdCmdOCAFBrowse::StdCmdOCAFBrowse()
 void StdCmdOCAFBrowse::activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
+  DebugBrowser cBrowser;
   cBrowser.DFBrowser(getAppWnd()->activeDocument()->getDocument()->GetOCCDoc());
 #else
   QMessageBox::information(getAppWnd(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"

@@ -125,6 +125,9 @@ protected:
 
   virtual void restorePreferences();
   virtual void savePreferences();
+
+protected slots:
+  void languageChange();
 };
 
 /**
