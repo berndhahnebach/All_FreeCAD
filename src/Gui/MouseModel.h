@@ -48,7 +48,7 @@ protected:
 class FCMouseModelStd :public FCMouseModel
 {
 public:
-	FCMouseModelStd(void){};
+	FCMouseModelStd(void);
 
 	virtual void mousePressEvent	( QMouseEvent *cEvent);
 	virtual void mouseReleaseEvent	( QMouseEvent *cEvent);

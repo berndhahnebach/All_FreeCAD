@@ -42,6 +42,11 @@ Handle_AIS_InteractiveContext &FCMouseModel::GetContext(void)
 
 // **** MouseModelStd ********************************************************
 
+FCMouseModelStd::FCMouseModelStd(void)
+	:mode(nothing)
+{
+};
+
 // Buttons to use
 #define OCC_ROTATION 		5 		// MidButton & RightButton
 #define OCC_PANNING  		4		// MidButton
