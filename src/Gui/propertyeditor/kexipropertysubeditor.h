@@ -54,7 +54,7 @@ public:
   //! Sets \a w as editor 's widget, ie the widget which events are filtered and which is resized.
   void  setWidget(QWidget *w);
 
-  //! \sa m_leaveTheSpaceForRevertButton description
+  /*! \sa m_leaveTheSpaceForRevertButton description */
   bool leavesTheSpaceForRevertButton() const { return m_leaveTheSpaceForRevertButton; }
 signals:
   //! Validate the input in the editor.

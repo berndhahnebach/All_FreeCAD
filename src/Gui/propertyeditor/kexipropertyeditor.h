@@ -103,7 +103,7 @@ public:
   void  setBuffer(PropertyBuffer *b);
   virtual QSize sizeHint() const;
 
-  //! \return editor item named with \a name or null if such item not found
+  /*! \return editor item named with \a name or null if such item not found. */
   PropertyEditorItem* item(const QString& name) const { return m_items[name]; }
 
 signals:

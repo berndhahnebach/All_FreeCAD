@@ -102,15 +102,15 @@ public:
 
   ~PropertyEditorItem();
 
-  //! \return item's name (ie property's name)
+  /*! \return item's name (ie property's name). */
   const QCString  name() { return m_property->name(); }
-  //! \return item's QVariant::Type (ie property's QVariant::Type)
+  /*! \return item's QVariant::Type (ie property's QVariant::Type). */
   QVariant::Type  type() { return m_property->type(); }
   //  //! \return item's current value
   //  QVariant  value() { return m_value; }
   //  //! \return item's old value (ie property's old value)
   //  QVariant  oldValue() { return m_oldvalue; }
-  //! \return a pointer to the property associated to this item.
+  /*! \return a pointer to the property associated to this item. */
   Property* property() { return m_property;}
 
   //  //! Sets item value to \a value.
@@ -125,7 +125,7 @@ public:
   */
   void updateChildrenValue();
 
-  //! \return true if the item has been modified.
+  /*! \return true if the item has been modified. */
   //  bool  modified() { return !(m_value==m_oldvalue);}
 
   /*! Updates text on of this item, for current property value.

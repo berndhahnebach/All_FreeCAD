@@ -117,10 +117,10 @@ public:
   /*! \return a child property for \a name, or NULL if there is not property with that name. */
   Property *child(const QCString& name);
 
-  //! \return property name.
+  /*! \return property name.*/
   QCString  name() const { return m_name; }
 
-  //! \return property value.
+  /*! \return property value. */
   QVariant  value() const;
 
   /*! \return property value converted to text that can be displayed.
@@ -154,7 +154,7 @@ public:
   */
   QVariant  oldValue() const { return m_oldValue; }
 
-  //! \return property i18n'ed description.
+  /*! \return property i18n'ed description. */
   QString desc() const { return m_desc; }
 
   /*! \return the QVariant::Type of property value and QVariant::StringList if this is a list property. */
@@ -184,7 +184,7 @@ public:
   */
   void setAutoSync(int sync) { m_autosync = sync; }
 
-  //! \return true if this preperty value is changed.
+  /*! \return true if this preperty value is changed. */
   bool changed() const;
 
   /*! Marks this property as changed if \a set is true, or unchanged if \a set is true. */
