@@ -161,6 +161,9 @@ ApplicationWindow::ApplicationWindow()
   // init the Inventor subsystem
   SoQt::init(this);
 
+
+  SoDB::init();
+
   d = new ApplicationWindowP;
   QVBox* vb = new QVBox( this );
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -580,12 +583,12 @@ void ApplicationWindow::setPaneText(int i, QString text)
 
 
 /// send Messages to the active view
-bool ApplicationWindow::sendMsgToActiveView(const char* pMsg)
+bool ApplicationWindow::sendMsgToActiveView(const char* pMsg, const char** ppReturn)
 {
   MDIView* pView = activeView();
 
   if(pView){
-    return pView->onMsg(pMsg);
+    return pView->onMsg(pMsg,ppReturn);
   }else
     return false;
 }

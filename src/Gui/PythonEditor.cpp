@@ -676,7 +676,7 @@ PythonEditView::~PythonEditView()
 /**
  * Runs the action specified by \a pMsg.
  */
-bool PythonEditView::onMsg(const char* pMsg)
+bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
 {
   if (strcmp(pMsg,"Save")==0){
     save();

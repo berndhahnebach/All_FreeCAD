@@ -131,7 +131,7 @@ MDIView::~MDIView()
 
 
 /// recife a message
-bool MDIView::onMsg(const char* pMsg)
+bool MDIView::onMsg(const char* pMsg,const char** ppReturn)
 {
   return false;
 }

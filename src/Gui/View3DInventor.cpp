@@ -181,7 +181,7 @@ const char *View3DInventor::getName(void)
   return "View3DInventor";
 }
 
-bool View3DInventor::onMsg(const char* pMsg)
+bool View3DInventor::onMsg(const char* pMsg,const char** ppReturn)
 {
   printf("Msg: %s View: %p\n",pMsg,this);
 

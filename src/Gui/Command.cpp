@@ -39,6 +39,7 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
+#include "WaitCursor.h"
 
 using Base::Interpreter;
 using namespace Gui;
@@ -223,6 +224,8 @@ void Command::toggleCommand(const char* sCmdName,bool bToggle)
 /// Updates the (active) document (propagate changes)
 void Command::updateActive(void)
 {
+  WaitCursor wc;
+
   getAppWnd()->activeDocument()->getDocument()->Recompute();
   //GetAppWnd()->UpdateActive();
 }

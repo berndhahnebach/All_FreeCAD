@@ -67,7 +67,7 @@ public:
   ~View3DInventorEx();
 
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg);
+  virtual bool onMsg(const char* pMsg, const char** ppReturn);
   virtual bool onHasMsg(const char* pMsg);
 
 
@@ -125,6 +125,23 @@ private:
   SoRotationXYZ * arrowrotation;
 };
 
+
+/** The Inventor viewer
+ *  
+class View3DInventor: public SoQtViewer
+{
+public:
+
+    View3DInventor (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true) 
+      :SoQtViewer (parent, name, embed, type, build)
+    {
+
+    }
+
+    ~View3DInventor(){}
+};
+
+ */
 
 } // namespace Gui
 

@@ -87,7 +87,7 @@ public:
   /** @name methodes for View handling */
   //@{
   /// send Messages to the active view
-  bool sendMsgToActiveView(const char* pMsg);
+  bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
   /// send Messages test to the active view
   bool sendHasMsgToActiveView(const char* pMsg);
   /// returns the active view or NULL

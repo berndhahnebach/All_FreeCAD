@@ -150,7 +150,7 @@ public:
   const char *getName(void){return "PythonEditView";}
   void onUpdate(void){};
 
-  bool onMsg(const char* pMsg);
+  bool onMsg(const char* pMsg,const char** ppReturn);
   bool onHasMsg(const char* pMsg);
 
   bool canClose(void);

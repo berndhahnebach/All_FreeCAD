@@ -21,33 +21,61 @@
  ***************************************************************************/
 
 
-#ifndef DLGSETTINGSMACROIMP_H
-#define DLGSETTINGSMACROIMP_H
+/*  Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
+ */
+#include "PreCompiled.h"
 
-#include "DlgSettingsMacro.h"
+#ifndef _PreComp_
+#endif
 
-namespace Gui {
-namespace Dialog {
+#include "DlgSettingsRayImp.h"
+#include <Gui/PrefWidgets.h>
+#include <Base/Console.h>
+
+using namespace RayGui;
 
 /**
- * The DlgSettingsMacroImp class implements a preference page to change settings
- * for macro stuff.
- * \author Jürgen Riegel
+ *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
  */
-class DlgSettingsMacroImp : public DlgSettingsMacro
-{ 
-  Q_OBJECT
+DlgSettingsRayImp::DlgSettingsRayImp( QWidget* parent,  const char* name, WFlags fl )
+    : DlgSettingsRay( parent, name, fl )
+{
+}
 
-public:
-  DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-  ~DlgSettingsMacroImp();
+/** 
+ *  Destroys the object and frees any allocated resources
+ */
+DlgSettingsRayImp::~DlgSettingsRayImp()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
 
-protected:
-  void saveSettings();
-  void loadSettings();
-};
 
-} // namespace Dialog
-} // namespace Gui
+void DlgSettingsRayImp::saveSettings()
+{
+  prefLineEdit1->onSave();
+  prefLineEdit2->onSave();
+  prefLineEdit3->onSave();
+  prefFloatSpinBox1->onSave();
+  prefCheckBox8->onSave();
+  prefCheckBox9->onSave();
+}
 
-#endif // DLGSETTINGSMACROIMP_H
+void DlgSettingsRayImp::loadSettings()
+{
+  prefLineEdit1->onRestore();
+  prefLineEdit2->onRestore();
+  prefLineEdit3->onRestore();
+  prefFloatSpinBox1->onRestore();
+  prefCheckBox8->onRestore();
+  prefCheckBox9->onRestore();
+}
+
+#include "DlgSettingsRay.cpp"
+#include "moc_DlgSettingsRay.cpp"
+#include "moc_DlgSettingsRayImp.cpp"

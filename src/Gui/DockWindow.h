@@ -57,7 +57,7 @@ public:
   /// returns the name of the view (important for messages)
   virtual const char *getName(void){ return "DockWindow"; };
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg){ return false; };
+  virtual bool onMsg(const char* pMsg,const char** ppReturn){ return false; };
   /// Mesage handler test
   virtual bool onHasMsg(const char* pMsg) { return false; };
   /// is called when the above function is called to handle document change stuff

@@ -70,7 +70,7 @@ public:
   ~MDIView3D();
 
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg);
+  virtual bool onMsg(const char* pMsg,const char** ppReturn);
   virtual const char *getName(void);
 
 
@@ -139,7 +139,7 @@ public:
 
   bool screenDump(Standard_CString theFile);
 
-  bool onMsg(const char* pMsg);
+  bool onMsg(const char* pMsg,const char** ppReturn);
 
 protected:
   // user interaction events (got mainly handled in the MouseModel classes)

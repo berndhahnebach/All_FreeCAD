@@ -24,7 +24,6 @@
 #ifndef __VIEWPROVIDER_H__
 #define __VIEWPROVIDER_H__
 
-
 #include "../Base/Factory.h"
 
 namespace App
@@ -143,7 +142,6 @@ class ViewProviderInventorProducer: public Base::AbstractProducer
 
 
 } // namespace Gui
-
 
 #endif // __VIEWPROVIDER_H__
 

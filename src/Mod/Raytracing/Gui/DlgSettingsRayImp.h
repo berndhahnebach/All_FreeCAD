@@ -21,33 +21,31 @@
  ***************************************************************************/
 
 
-#ifndef DLGSETTINGSMACROIMP_H
-#define DLGSETTINGSMACROIMP_H
+#ifndef __DlgSettingsRayImp_H
+#define __DlgSettingsRayImp_H
 
-#include "DlgSettingsMacro.h"
+#include "DlgSettingsRay.h"
 
-namespace Gui {
-namespace Dialog {
+namespace RayGui {
 
 /**
- * The DlgSettingsMacroImp class implements a preference page to change settings
- * for macro stuff.
+ * The DlgSettings3DViewImp class implements a preference page to change settings
+ * for the Inventor viewer.
  * \author Jürgen Riegel
  */
-class DlgSettingsMacroImp : public DlgSettingsMacro
+class DlgSettingsRayImp : public DlgSettingsRay
 { 
   Q_OBJECT
 
 public:
-  DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-  ~DlgSettingsMacroImp();
+  DlgSettingsRayImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~DlgSettingsRayImp();
 
 protected:
   void saveSettings();
   void loadSettings();
 };
 
-} // namespace Dialog
-} // namespace Gui
+} // namespace GuiRaytracing
 
-#endif // DLGSETTINGSMACROIMP_H
+#endif // __DlgSettingsRayImp_H

@@ -289,10 +289,11 @@ void Document::closeAllViews(void)
 bool Document::sendMsgToViews(const char* pMsg)
 {
   std::list<Gui::BaseView*>::iterator It;
+  const char** pReturnIgnore=0;
 
   for(It = _LpcViews.begin();It != _LpcViews.end();It++)
   {
-    if( (*It)->onMsg(pMsg))
+    if( (*It)->onMsg(pMsg,pReturnIgnore))
     {
       return true;
     }
@@ -300,7 +301,7 @@ bool Document::sendMsgToViews(const char* pMsg)
 
   for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
   {
-    if( (*It)->onMsg(pMsg))
+    if( (*It)->onMsg(pMsg,pReturnIgnore))
     {
       return true;
     }
@@ -310,10 +311,10 @@ bool Document::sendMsgToViews(const char* pMsg)
 }
 
 /// send Messages to all views
-bool Document::sendMsgToActiveView(const char* pMsg)
+bool Document::sendMsgToActiveView(const char* pMsg,const char** pReturn)
 {
   if(_pcActiveView)
-    return _pcActiveView->onMsg(pMsg);
+    return _pcActiveView->onMsg(pMsg,pReturn);
   else
     return false;
 }

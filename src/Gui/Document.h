@@ -95,8 +95,11 @@ public:
   //@{
   /// Creat a new View
   void createView(const char* sType); 
-  /// send Messages to the active view
-  bool sendMsgToActiveView(const char* pMsg);
+  /** send Messages to the active view 
+    * send a specific massage to the active view and is able to recive a
+    * return massage
+    */
+  bool sendMsgToActiveView(const char* pMsg, const char** pReturn=0);
   /// send Messages to all views
   bool sendMsgToViews(const char* pMsg);
   /// Attach a view (get called by the MDIView constructor)

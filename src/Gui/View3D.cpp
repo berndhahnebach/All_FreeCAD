@@ -80,11 +80,11 @@ const char *MDIView3D::getName(void)
   return "View3D";
 }
 
-bool MDIView3D::onMsg(const char* pMsg)
+bool MDIView3D::onMsg(const char* pMsg,const char** ppReturn)
 {
   //printf("Msg: %s View: %p\n",pMsg,this);
 
-  if (_pcView3D->onMsg(pMsg)) return true;
+  if (_pcView3D->onMsg(pMsg,ppReturn)) return true;
 //  if (_pcTree->OnMsg(pMsg))   return true;
 //assert(0);
   return false;
@@ -220,7 +220,7 @@ void View3D::hideEvent ( QHideEvent * cEvent )
   ApplicationWindow::Instance->setPaneText(2, QString(" Dimension"));
 }
  
-bool View3D::onMsg(const char* pMsg)
+bool View3D::onMsg(const char* pMsg,const char** ppReturn)
 {
   if(strcmp("ViewBottom",pMsg) == 0 ){
     _hView->SetProj(V3d_Zneg);

@@ -334,8 +334,11 @@ public:
   void setAccel      ( int   i        );
   //@}
 
+
   static void load();
+
   static void save();
+
 
 protected:
   /** @name Attributes 
@@ -428,58 +431,112 @@ private:
   std::map<std::string,Command*> _sCommands;
 };
 
+
+
 /**
+
  *  The workbench command
+
  *  @author Werner Mayer
+
  */
+
 class StdCmdWorkbench : public CppCommand
+
 {
+
 public:
+
   StdCmdWorkbench();
+
   void activated(int iMsg);
+
   QAction * createAction(void);
+
   void appendItem ( const QString& item );
+
   void activate( const QString& item );
+
   bool addTo(QWidget *);
 
+
+
 private:
+
   QActionGroup *pcAction;
+
 };
 
+
+
 /**
+
  *  The MRU command which does the handling of recent files.
+
  *  @author Werner Mayer
+
  */
+
 class StdCmdMRU : public CppCommand
+
 {
+
 public:
+
   StdCmdMRU();
+
   bool isActive(void){return true;}
+
   void activated(int iMsg);
+
+
 
   QAction * createAction(void);
 
+
+
   void addRecentFile ( const QString& item );
+
   void removeRecentFile ( const QString& item );
+
   void refresh();
 
+
+
   int  maxCount() const { return _nMaxItems; }
+
   void setMaxCount (int i) { _nMaxItems = i;    }
+
   
+
   QStringList recentFiles() const;
+
   std::string getResource(const char* sName) { return ""; }
 
+
+
   static void load();
+
   static void save();
 
+
+
 private:
+
   QString recentFileItem( const QString& fn );
+
   QStringList _vMRU;
+
   QActionGroup *pcAction;
+
   int _nMaxItems;
+
 };
 
+
+
 } // namespace Gui
+
 
 /** The Command Macro Standard
  *  This macro makes it easier to define a new command.

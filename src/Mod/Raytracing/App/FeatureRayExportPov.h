@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,33 +21,34 @@
  ***************************************************************************/
 
 
-#ifndef DLGSETTINGSMACROIMP_H
-#define DLGSETTINGSMACROIMP_H
 
-#include "DlgSettingsMacro.h"
+#ifndef __FeatureRayExportPov_H__
+#define __FeatureRayExportPov_H__
 
-namespace Gui {
-namespace Dialog {
 
-/**
- * The DlgSettingsMacroImp class implements a preference page to change settings
- * for macro stuff.
- * \author Jürgen Riegel
- */
-class DlgSettingsMacroImp : public DlgSettingsMacro
-{ 
-  Q_OBJECT
+#include "RayFeature.h"
 
+namespace Raytracing
+{
+
+
+class FeatureRayExportPov :public RayFeature
+{
 public:
-  DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-  ~DlgSettingsMacroImp();
 
-protected:
-  void saveSettings();
-  void loadSettings();
+	virtual void InitLabel(const TDF_Label &rcLabel);
+
+//	virtual bool MustExecute(const TFunction_Logbook& log);
+
+	virtual Standard_Integer Execute(TFunction_Logbook& log);
+
+	virtual void Validate(TFunction_Logbook& log);
+
 };
 
-} // namespace Dialog
-} // namespace Gui
 
-#endif // DLGSETTINGSMACROIMP_H
+
+}
+
+
+#endif // __FeatureRayExportPov_H__

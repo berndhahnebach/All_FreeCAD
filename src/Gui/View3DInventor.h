@@ -64,7 +64,7 @@ public:
   ~View3DInventor();
 
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg);
+  virtual bool onMsg(const char* pMsg,const char** ppReturn);
   virtual const char *getName(void);
 
   virtual void resizeEvent ( QResizeEvent * e);

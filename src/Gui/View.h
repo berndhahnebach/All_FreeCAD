@@ -95,7 +95,7 @@ public:
   /// returns the name of the view (important for messages)
   virtual const char *getName(void)=0;
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg)=0;
+  virtual bool onMsg(const char* pMsg, const char** ppReturn)=0;
   /// Mesage handler test
   virtual bool onHasMsg(const char* pMsg)=0;
   /// is called when the above function is called to handle document change stuff
@@ -157,7 +157,7 @@ public:
   virtual const char *getName(void)=0;
 
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg);
+  virtual bool onMsg(const char* pMsg,const char** ppReturn);
   /// Mesage handler test
   virtual bool onHasMsg(const char* pMsg);
   /// overvrit when checking on close state

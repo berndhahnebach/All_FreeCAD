@@ -58,9 +58,9 @@
 #include "Inventor/OCC/SoBrepShape.h"
 
 #include "View3DInventorExamples.h"
+#include "Tools.h"
 #include "ViewProvider.h"
 
-#include "Tools.h"
 #include "Icons/default_background.xpm"
 
 using namespace Gui;
@@ -79,6 +79,7 @@ View3DInventorEx::~View3DInventorEx()
 {
   //delete _viewer;
   pcSepRoot->unref();
+
   delete _viewer;
 }
 
@@ -167,6 +168,9 @@ void View3DInventorEx::setViewerDefaults(void)
 //  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
   _viewer->viewAll();
   _viewer->setDecoration(false);
+
+  _viewer->setSceneGraph(pcSepRoot);
+
 
 //  _viewer->setSceneGraph(new SoCone);
 //  _viewer->show();
@@ -280,7 +284,38 @@ const char *View3DInventorEx::getName(void)
   return "View3DInventorEx";
 }
 
-bool View3DInventorEx::onMsg(const char* pMsg)
+// buffer acrobatics for inventor ****************************************************
+static char * buffer;
+static size_t buffer_size = 0;
+static std::string cReturnString;
+
+static void *
+buffer_realloc(void * bufptr, size_t size)
+{
+  buffer = (char *)realloc(bufptr, size);
+  buffer_size = size;
+  return buffer;
+}
+
+static const std::string&
+buffer_writeaction(SoNode * root)
+{
+  SoOutput out;
+  buffer = (char *)malloc(1024);
+  buffer_size = 1024;
+  out.setBuffer(buffer, buffer_size, buffer_realloc);
+
+  SoWriteAction wa(&out);
+  wa.apply(root);
+
+  cReturnString =buffer;
+  free(buffer);
+  return cReturnString;
+}
+
+// **********************************************************************************
+
+bool View3DInventorEx::onMsg(const char* pMsg, const char** ppReturn)
 {
   if(strcmp("SetStereoOn",pMsg) == 0 ){
     _viewer->setStereoViewing(true);
@@ -315,6 +350,10 @@ bool View3DInventorEx::onMsg(const char* pMsg)
     AnimationTexture(root);
     _viewer->setSceneGraph(root);
     return true;
+  }else if(strcmp("GetCamera",pMsg) == 0 ){
+    SoCamera * Cam = _viewer->getCamera();
+    *ppReturn = buffer_writeaction(Cam).c_str();
+    return true;
   }else if(strcmp("ViewFit",pMsg) == 0 ){
     _viewer->viewAll();
     return true;
@@ -323,6 +362,7 @@ bool View3DInventorEx::onMsg(const char* pMsg)
 
   return false;
 }
+
 
 bool View3DInventorEx::onHasMsg(const char* pMsg)
 {
@@ -347,6 +387,8 @@ bool View3DInventorEx::onHasMsg(const char* pMsg)
   }else if(strcmp("Example3",pMsg) == 0 ){
     return true;
   }else if(strcmp("ViewFit",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("GetCamera",pMsg) == 0 ){
     return true;
   }
   return false;
