@@ -196,7 +196,7 @@ FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 : QTextBrowser(parent, name), highlighted(false)
 {
   setHScrollBarMode(QScrollView::AlwaysOff);
-  //setVScrollBarMode(QScrollView::AlwaysOff);
+  setVScrollBarMode(QScrollView::AlwaysOff);
   mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
@@ -429,6 +429,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclPathCombo->setAutoCompletion(true);
   pclPathCombo->setProperty( "minimumSize", QSize( 25, 25 ) );
   pclPathCombo->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+  pclPathCombo->hide();
 
   // the buttons' functionality
   pclButtonForward->setEnabled( false );

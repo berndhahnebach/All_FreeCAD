@@ -1147,7 +1147,7 @@ FCCmdOCAFBrowse::FCCmdOCAFBrowse()
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Copy";
-	iAccel			= Qt::CTRL+Qt::Key_C;
+	iAccel			= Qt::CTRL+Qt::Key_B;
 
 
 }

@@ -125,6 +125,10 @@ QString FCFileDialog::selectedFileName()
 {
   QString fn = selectedFile();
 
+  // if empty do nothing
+  if (fn.isEmpty())
+    return fn;
+
   // search for extension
   int pos = fn.findRev('.');
   if (pos == -1)

@@ -200,7 +200,7 @@ ApplicationWindow::ApplicationWindow()
 
   // ReportOutput View
   FCReportOutput* pcOutput = new FCReportOutput(this,"ReportOutput");
-  _pcWidgetMgr->addDockWindow("Report Output", pcOutput, "Command bar", KDockWidget::DockBottom);
+  _pcWidgetMgr->addDockWindow("Report Output", pcOutput, 0, KDockWidget::DockBottom, 90);
 
  	CreateStandardOperations();
 
