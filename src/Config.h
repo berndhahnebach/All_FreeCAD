@@ -43,6 +43,8 @@
 #define  FCstrstream            FCSTD::strstream
 #define  FCmake_pair            FCSTD::make_pair
 #define  FCfind                 FCSTD::find
+#define  FCmax                  FCSTD::max
+#define  FCmin                  FCSTD::min
 
 //**************************************************************************
 // Open CasCade

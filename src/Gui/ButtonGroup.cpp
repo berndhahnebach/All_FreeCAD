@@ -855,8 +855,11 @@ void FCCmdBar::rearrangeButtons( int w, int h )
 	bottomY = h - ((count - curPage)*_stackHeight);
 	
 	pBtn = pButtons->at( curPage );
-	pWidget = pBtn->widget();
-	pWidget->setGeometry( 0, topY, w, bottomY-topY );
+	if(pBtn)
+	{
+		pWidget = pBtn->widget();
+		pWidget->setGeometry( 0, topY, w, bottomY-topY );
+	}
 }
 
 
@@ -912,6 +915,12 @@ void FCCmdBar::paintEvent( QPaintEvent * )
 		pBtn = pButtons->first();
 	else
 		pBtn = pButtons->next();
+
+	if(!pBtn)
+	{
+		delete pPaint;
+		return;
+	}
 
 	brush.setColor( pBtn->selColor()->base() );
 	if( pBtn->pixmap() )

@@ -94,6 +94,7 @@ void FCDlgCustomize::slotGroupSelected(const QString & group)
     FCvector<FCCommand*> aCmds = m_alCmdGroups[group.latin1()];
     for (FCvector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
+      if ((*it)->GetAction())
       (void) new FCCmdViewItem(IconView1, (*it)->GetAction());
     }
   }

@@ -761,7 +761,10 @@ void FCCmdCommandLine::CmdProfile(char** sMenuText,char** sToolTipText,char** sW
 
 void FCCmdCommandLine::Activated(void)
 {
+	AppWnd()->showMinimized () ;
 	GetInterpreter().RunCommandLine("Console mode");
+	AppWnd()->showMaximized () ;
+
 }
 
 

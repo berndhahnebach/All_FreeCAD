@@ -28,7 +28,8 @@ class QToolBar;
 class FCView;
 class FCToolboxGroup;
 class FCAutoWaitCursor;
-
+class FCCmdBar;
+class FCHtmlView;
 
 /** The Bitmap Factory
   * the main purpos is to collect all build in Bitmaps and 
@@ -122,6 +123,11 @@ public:
 	void SetPaneText(int i, QString text);
 	FCProgressBar* GetProgressBar();
 
+	/// Activate a named workbench
+	void ActivateWorkbench(const char* name);
+	/// update the combo box when there are changes in the workbenches
+	void UpdateWorkbenchEntrys(void);
+
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------
@@ -130,20 +136,22 @@ public:
 	PYFUNCDEF_S(sToolbarAddTo);
 	PYFUNCDEF_S(sToolbarDelete);
 	PYFUNCDEF_S(sToolbarAddSeperator);
+
 	PYFUNCDEF_S(sCommandbarAddTo);
 	PYFUNCDEF_S(sCommandbarDelete);
 	PYFUNCDEF_S(sCommandbarAddSeperator);
 
+	PYFUNCDEF_S(sWorkbenchAdd);
+	PYFUNCDEF_S(sWorkbenchDelete);
+	PYFUNCDEF_S(sWorkbenchActivate);
+	PYFUNCDEF_S(sWorkbenchGet);
+
 	static PyMethodDef    Methods[]; 
  
 
-protected:
-	/// Handels all commands 
-	FCCommandManager _cCommandManager;
-	FCBmpFactory     _cBmpFactory;
-
 signals:
 	void sendQuit();
+    void timeEvent();
 
 // slots for the Application signals
 public slots:
@@ -152,6 +160,11 @@ public slots:
 protected: // Protected methods
    /** just fits the system menu button position to the menu position */
    virtual void resizeEvent ( QResizeEvent * );
+	/// Handels all commands 
+	FCCommandManager _cCommandManager;
+	FCBmpFactory     _cBmpFactory;
+	/// waiting cursor stuff 
+    void timerEvent( QTimerEvent * e){emit timeEvent();}
 
 // slots for the undo/redo dialog: (not implemented yet)
 protected slots:
@@ -161,6 +174,7 @@ protected slots:
     void updateRedo();
     void executeUndoRedo();
 
+	void OnWorkbenchChange( const QString & string);
 
 private:
 #	pragma warning( disable : 4251 )
@@ -172,22 +186,20 @@ private:
 	FCmap <FCstring,QToolBar*>     mpcToolBars;
 #	pragma warning( default : 4251 )
 	/// Active document
-	FCGuiDocument* _pcActiveDocument;
-	QPopupMenu*		_pcPopup;
-	FCUndoRedoDlg*	_pclUndoRedoWidget;
-	QComboBox *		_pcWorkbenchCombo;
-	QLabel *_pclSizeLabel, *_pclActionLabel;
-	FCProgressBar *_pclProgress;
+	FCGuiDocument*   _pcActiveDocument;
+	QPopupMenu*		 _pcPopup;
+	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+	QComboBox *		 _pcWorkbenchCombo;
+	QLabel *         _pclSizeLabel, *_pclActionLabel;
+	FCProgressBar *  _pclProgress;
+	FCCmdBar*        _pcCmdBar;
+	FCHtmlView*		 _pcHtmlView;
+	/// workbench python dictionary
+	PyObject*		 _pcWorkbenchDictionary;
+	QString			 _cActiveWorkbenchName;
 
-  // waiting cursor stuff 
-  protected:
-    void timerEvent( QTimerEvent * e)
-    {
-      emit timeEvent();
-    }
+
     
-  signals:
-    void timeEvent();
 };
 
 

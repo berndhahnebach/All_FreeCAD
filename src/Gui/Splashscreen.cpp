@@ -124,7 +124,7 @@ FCSplashScreen::FCSplashScreen( QWidget* parent,  const char* name)
   : FCSplashWidget( parent, name, QLabel::WDestructiveClose | 
                                   QLabel::WStyle_Customize  | 
                                   QLabel::WStyle_NoBorder   | 
-                                  QLabel::WStyle_StaysOnTop |
+//                                  QLabel::WStyle_StaysOnTop |
                                   QLabel::WType_Modal       )
 {
   int iHeight = 400; int iWidth = 496;

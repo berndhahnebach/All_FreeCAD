@@ -14,6 +14,9 @@
 #endif
 
 
+#include "../Base/Exception.h"
+#include "../Base/Interpreter.h"
+
 
 #include "Application.h"
 #include "Document.h"
@@ -52,6 +55,8 @@ ApplicationWindow::ApplicationWindow()
 
 	setCaption( "FreeCAD" );
 
+	_cActiveWorkbenchName="";
+
 	// start thread which observes the application and 
 	// sets/unsets the waiting cursor if necessary
 	FCAutoWaitCursor* waitCursor = &FCAutoWaitCursor::Instance();
@@ -62,6 +67,9 @@ ApplicationWindow::ApplicationWindow()
 	Instance = this;
 
 	stApp = this;
+
+	// instanciate the workbench dictionary
+	_pcWorkbenchDictionary = PyDict_New();
 
     // attach the console observer
 	GetConsole().AttacheObserver( new FCAppConsoleObserver(this) );
@@ -86,14 +94,14 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	FCCmdBar* pCmdBar = new FCCmdBar(this,"Cmd_Group");
-	pCmdBar->AddTestButtons();
-	AddDockWindow( "Command bar",pCmdBar);
+	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
+	//_pcCmdBar->AddTestButtons();
+	AddDockWindow( "Command bar",_pcCmdBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	QString home = QString("index.html");
-	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
-	AddDockWindow("Help bar", hv,"Command bar", KDockWidget::DockBottom);
+	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
+	AddDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
 
 	// misc stuff
     resize( 800, 600 );
@@ -104,17 +112,7 @@ ApplicationWindow::ApplicationWindow()
 
 ApplicationWindow::~ApplicationWindow()
 {
-	/*
-	myStdActions.clear();
-	myCasCadeTranslateActions.clear();
-	if(myImportPopup) delete myImportPopup;
-	if(myExportPopup) delete myExportPopup;
-	if(myWindowPopup) delete myWindowPopup;
-	if(myFilePopup) delete myFilePopup;
-	if(myCasCadeBar) delete myCasCadeBar;
-	if(myStdToolBar) delete myStdToolBar;
-//	if(ws) delete ws;
-*/
+
 }
 
 
@@ -163,7 +161,12 @@ QToolBar *ApplicationWindow::GetToolBar(const char* name)
 	if( It!=mpcToolBars.end() )
 		return It->second;
 	else
-		return mpcToolBars[name] = new FCToolBar( this, name );
+	{
+		QToolBar *pcToolBar = new FCToolBar( this, name );
+		mpcToolBars[name] = pcToolBar;
+		pcToolBar->show();
+		return pcToolBar;
+	}
 }
 
 /// Delete a named Toolbar
@@ -179,19 +182,19 @@ void ApplicationWindow::DelToolBar(const char* name)
 /// Get a named Command bar view or creat if not in
 FCToolboxGroup *ApplicationWindow::GetCommandBar(const char* name)
 {
-	FCCmdBar* pCmdBar = (FCCmdBar*) GetDockWindow("Cmd_Group");
-	FCToolboxGroup * p = pCmdBar->GetView(name);
+	//FCCmdBar* pCmdBar = (FCCmdBar*) GetDockWindow("Cmd_Group");
+	FCToolboxGroup * p = _pcCmdBar->GetView(name);
 	if(p)
 		return p;
 	else
-		return pCmdBar->CreateView(name);
+		return _pcCmdBar->CreateView(name);
 }
 
 /// Delete a named Command bar view
 void ApplicationWindow::DelCommandBar(const char* name)
 {
-	FCCmdBar* pCmdBar = (FCCmdBar*)GetDockWindow("Cmd_Group");
-	pCmdBar->DeleteView(name);
+	//FCCmdBar* pCmdBar = (FCCmdBar*)GetDockWindow("Cmd_Group");
+	_pcCmdBar->DeleteView(name);
 }
 
 /// Add a new named Dock Window
@@ -294,38 +297,13 @@ void ApplicationWindow::CreateTestOperations()
 	pcStdToolBar->addSeparator();
 
 	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
-	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
-	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Part"); 
-	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Assambly"); 
-	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"FEM"); 
-	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Renderer"); 
+//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
+//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
+	_cActiveWorkbenchName = "";
+	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
 
-/*	// test tool bar -----------------------------------------------------------------------
-    pcStdToolBar =  GetToolBar("Test Toolbar" );
-	_cCommandManager.AddTo("Std_MDIToplevel",pcStdToolBar);
-	_cCommandManager.AddTo("Std_MDITabed"   ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_MDINormal"  ,pcStdToolBar);
-	pcStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_TilePragmatic"  ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_TileVertical"   ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_TileHoricontal" ,pcStdToolBar);
-	pcStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_Test1"  ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_Test2"  ,pcStdToolBar);
 
-	// view tool bar -----------------------------------------------------------------------
-    pcStdToolBar =  GetToolBar("View Toolbar" );
-	_cCommandManager.AddTo("Std_ViewFitAll"  ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_ViewAxo"     ,pcStdToolBar);
-	pcStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_ViewFront"   ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_ViewRight"   ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_ViewTop"     ,pcStdToolBar);
-	pcStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_ViewRear"  ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_ViewLeft"  ,pcStdToolBar);
-	_cCommandManager.AddTo("Std_ViewBottom",pcStdToolBar);
-*/
+
 	// test tool bar -----------------------------------------------------------------------
     // populate a menu with all actions
     _pcPopup = new QPopupMenu( this );
@@ -471,6 +449,66 @@ void ApplicationWindow::exportImage()
 }
 
 
+void ApplicationWindow::OnWorkbenchChange( const QString & string)
+{
+	if(_cActiveWorkbenchName != string)
+	{
+//		try{
+			ActivateWorkbench(string.latin1());
+//		}
+//		catch(...){
+//			throw FCException("Error in initialising Workbench!");
+//		}
+
+	}
+}
+
+void ApplicationWindow::ActivateWorkbench(const char* name)
+{
+	// net buffer because of char* <-> const char*
+	char sBuf[1024];
+	assert(strlen(name) < 1022);
+
+	puts(name);
+
+	// close old workbench
+	if(_cActiveWorkbenchName != "")
+	{
+		strcpy(sBuf, _cActiveWorkbenchName.latin1());
+		PyObject* pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, sBuf);
+		assert(pcOldWorkbench);
+		GetInterpreter().RunMethode(pcOldWorkbench, "Stop");
+	}
+	// get the python workbench object from the dictionary
+	strcpy(sBuf, name);
+	PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, sBuf);
+
+	// test if the workbench in
+	assert(pcWorkbench);
+
+	// runing the start of the workbench object
+	GetInterpreter().RunMethode(pcWorkbench, "Start");
+
+	_cActiveWorkbenchName = name;
+
+	show();
+}
+
+void ApplicationWindow::UpdateWorkbenchEntrys(void)
+{
+	PyObject *key, *value;
+	int pos = 0;
+     
+	// remove all items from the combo box
+	_pcWorkbenchCombo->clear();
+
+	// insert all items
+	while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
+		/* do something interesting with the values... */
+		_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),PyString_AsString(key));
+	}
+
+}
 
 
 //**************************************************************************
@@ -478,12 +516,16 @@ void ApplicationWindow::exportImage()
 
 // FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
-	{"ToolbarAddTo",          (PyCFunction) ApplicationWindow::sToolbarAddTo,       1},
-	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,     1},
+	{"ToolbarAddTo",          (PyCFunction) ApplicationWindow::sToolbarAddTo,            1},
+	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
 	{"ToolbarAddSeperator",   (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
-	{"CommandbarAddTo",       (PyCFunction) ApplicationWindow::sCommandbarAddTo,       1},
-	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,     1},
-	{"CommandbarAddSeperator",(PyCFunction) ApplicationWindow::sCommandbarAddSeperator,     1},
+	{"CommandbarAddTo",       (PyCFunction) ApplicationWindow::sCommandbarAddTo,         1},
+	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
+	{"CommandbarAddSeperator",(PyCFunction) ApplicationWindow::sCommandbarAddSeperator,  1},
+	{"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
+	{"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
+	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
+	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -547,6 +589,50 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
         return NULL;                             // NULL triggers exception 
 	Instance->DelCommandBar(psToolbarName);
     return Py_None;
+}
+
+
+PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
+{
+	char*       psKey;
+	PyObject*   pcObject;
+	if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+	PyDict_SetItemString(Instance->_pcWorkbenchDictionary,psKey,pcObject);
+
+	Instance->UpdateWorkbenchEntrys();
+
+	return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sWorkbenchDelete)
+{
+	char*       psKey;
+	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+	PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
+
+    return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
+{
+	char*       psKey;
+	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+	Instance->ActivateWorkbench(psKey);
+    return Py_None;
+}
+
+PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	return Instance->_pcWorkbenchDictionary;
 }
 
 

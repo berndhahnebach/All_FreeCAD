@@ -16,11 +16,18 @@ class FCMouseModel
 {
 public:
 	FCMouseModel(void){};
-	virtual void initMouseModel(View3D *pcView3D);
+	void initMouseModel(View3D *pcView3D);
+	virtual void initMouseModel() = 0;
 	virtual void releaseMouseModel(void);
 
-	virtual void mousePressEvent		( QMouseEvent *cEvent) = 0;
-	virtual void mouseReleaseEvent		( QMouseEvent *cEvent) = 0;
+	void mousePressEvent		( QMouseEvent *cEvent);
+	void mouseReleaseEvent	( QMouseEvent *cEvent);
+	virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent) = 0;
+	virtual void mouseMiddlePressEvent	 ( QMouseEvent *cEvent) = 0;
+	virtual void mouseRightPressEvent		 ( QMouseEvent *cEvent) = 0;
+	virtual void mouseLeftReleaseEvent	 ( QMouseEvent *cEvent) = 0;
+	virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent) = 0;
+	virtual void mouseRightReleaseEvent	 ( QMouseEvent *cEvent) = 0;
 	virtual void mouseMoveEvent			( QMouseEvent *cEvent){};
 	virtual void mouseDoubleClickEvent	( QMouseEvent * ){};
 
@@ -38,6 +45,12 @@ public:
 	Handle_V3d_Viewer				&GetViewer (void);
 	Handle_AIS_InteractiveContext	&GetContext(void);
 
+protected:
+  void drawRect ( const QPoint& p1, const QPoint& p2, QPainter* p = NULL );
+  void drawNode ( int x, int y, int w, int h, QPainter* p = NULL );
+  void drawLine ( int x1, int y1, int x2, int y2, QPainter* p = NULL );
+  void drawCircle ( int x, int y, int r, QPainter* p = NULL );
+  void drawText ( int x, int y, const QString & str, QPainter* p = NULL );
 
 protected:
 	View3D *_pcView3D;
@@ -52,8 +65,15 @@ class FCMouseModelStd :public FCMouseModel
 public:
 	FCMouseModelStd(void);
 
+	virtual void initMouseModel();
 	virtual void mousePressEvent	( QMouseEvent *cEvent);
 	virtual void mouseReleaseEvent	( QMouseEvent *cEvent);
+	virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent);
+	virtual void mouseMiddlePressEvent	 ( QMouseEvent *cEvent);
+	virtual void mouseRightPressEvent		 ( QMouseEvent *cEvent);
+	virtual void mouseLeftReleaseEvent	 ( QMouseEvent *cEvent);
+	virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent);
+	virtual void mouseRightReleaseEvent	 ( QMouseEvent *cEvent);
 	virtual void mouseMoveEvent		( QMouseEvent *cEvent);
 	virtual void mouseDoubleClickEvent ( QMouseEvent * );
 	virtual void keyPressEvent		( QKeyEvent * );
@@ -80,9 +100,13 @@ class FCMouseModelPolyPicker : public FCMouseModelStd
     FCMouseModelPolyPicker();
     virtual ~FCMouseModelPolyPicker();
 
-    virtual void initMouseModel(View3D *pcView3D);
-    virtual void mousePressEvent	  ( QMouseEvent  * cEvent );
-    virtual void mouseReleaseEvent	( QMouseEvent  * cEvent );
+    virtual void initMouseModel();
+	  virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent);
+	  virtual void mouseMiddlePressEvent	 ( QMouseEvent *cEvent);
+	  virtual void mouseRightPressEvent		 ( QMouseEvent *cEvent);
+	  virtual void mouseLeftReleaseEvent	 ( QMouseEvent *cEvent);
+	  virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent);
+	  virtual void mouseRightReleaseEvent	 ( QMouseEvent *cEvent);
     virtual void wheelEvent			    ( QWheelEvent  * cEvent );
     virtual void mouseMoveEvent		  ( QMouseEvent  * cEvent );
     virtual void keyPressEvent		  ( QKeyEvent    * cEvent );
@@ -106,18 +130,47 @@ class FCMouseModelSelection : public FCMouseModelStd
     FCMouseModelSelection();
     virtual ~FCMouseModelSelection();
 
-  protected:
-    virtual void initMouseModel(View3D *pcView3D);
-    virtual void mousePressEvent	  ( QMouseEvent  * cEvent );
-    virtual void mouseReleaseEvent	( QMouseEvent  * cEvent );
+    virtual void initMouseModel();
+	  virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent);
+	  virtual void mouseMiddlePressEvent	 ( QMouseEvent *cEvent);
+	  virtual void mouseRightPressEvent		 ( QMouseEvent *cEvent);
+	  virtual void mouseLeftReleaseEvent	 ( QMouseEvent *cEvent);
+	  virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent);
+	  virtual void mouseRightReleaseEvent	 ( QMouseEvent *cEvent);
     virtual void wheelEvent			    ( QWheelEvent  * cEvent );
     virtual void mouseMoveEvent		  ( QMouseEvent  * cEvent );
     virtual void paintEvent         ( QPaintEvent  * cEvent );
     virtual void resizeEvent			  ( QResizeEvent * cEvent );
+  
   private:
-    void drawRect( QPainter* p, const QPoint& p1, const QPoint& p2 );
     QPoint _start, _last;
     bool m_bWorking;
+};
+
+class FCMouseModelCirclePick : public FCMouseModelStd 
+{
+  public:
+    FCMouseModelCirclePick();
+    virtual ~FCMouseModelCirclePick();
+
+    virtual void initMouseModel();
+  	virtual void releaseMouseModel();
+	  virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent);
+	  virtual void mouseMiddlePressEvent	 ( QMouseEvent *cEvent);
+	  virtual void mouseRightPressEvent		 ( QMouseEvent *cEvent);
+	  virtual void mouseLeftReleaseEvent	 ( QMouseEvent *cEvent);
+	  virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent);
+	  virtual void mouseRightReleaseEvent	 ( QMouseEvent *cEvent);
+    virtual void wheelEvent			    ( QWheelEvent  * cEvent );
+    virtual void mouseMoveEvent		  ( QMouseEvent  * cEvent );
+    virtual void paintEvent         ( QPaintEvent  * cEvent );
+    virtual void resizeEvent			  ( QResizeEvent * cEvent );
+
+  private:
+    void draw(const QPoint& point);
+
+    QPoint _last;
+    int    _nRadius;
 };
 
 #endif
