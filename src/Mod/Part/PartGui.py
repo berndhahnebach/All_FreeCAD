@@ -31,7 +31,4 @@ import FreeCAD
 import Part
 
 #imports the c++ module
-if (FreeCAD.GetDebugMode == 1):
-    import AppPartGuiD
-else:
-    import AppPartGui
+import AppPartGui

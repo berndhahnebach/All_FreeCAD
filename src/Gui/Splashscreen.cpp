@@ -100,7 +100,7 @@ FCSplashWidget::~FCSplashWidget()
 void FCSplashWidget::aboutToQuit()
 {
 #ifdef _DEBUG
-  printf("Terminating thread %s...\n", this->getName().latin1());
+  //printf("Terminating thread %s...\n", this->getName().latin1());
 #endif
   // terminate savely this thread
   if (running())

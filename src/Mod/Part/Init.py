@@ -25,6 +25,38 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
+
+class PartTemplate:
+	"Part template object"
+	def Start(self):
+		# switch to the right workbench
+		if(App.Gui == 1):
+			Log ('Switching to Part workbench')
+			Gui.WorkbenchActivate("Part design")
+		Log ('   Set up part document...\n')
+		#get the active document
+		Doc = App.DocGet()
+		Main = Doc.Main
+		
+		L1 = Main.GetLabel(1)
+		L1.GetLabel(1)
+		L1.GetLabel(2)
+		L1.GetLabel(3)
+		L2 = Main.GetLabel(2)
+		L3 = Main.GetLabel(3)
+		L3.GetLabel(1)
+		L3.GetLabel(2)
+		L3.GetLabel(3)
+		L4 = Main.GetLabel(4)
+		L5 = Main.GetLabel(5)
+		L6 = Main.GetLabel(6)
+		L6.GetLabel(1)
+		L6.GetLabel(2)
+		L6.GetLabel(3)
+		L7 = Main.GetLabel(7)
+            
+
+
 # Get the Parameter Group of this module
 ParGrp = App.ParamGet("Modules").GetGroup("Part")
 
@@ -34,4 +66,7 @@ ParGrp.SetString("DocTemplateName",  "Part")
 ParGrp.SetString("DocTemplateScript","TemplPart.py")
 ParGrp.SetString("WorkBenchName",    "Part Design")
 ParGrp.SetString("WorkBenchModule",  "PartWorkbench.py")
+
+App.TemplateAdd("Part",PartTemplate())
+
 

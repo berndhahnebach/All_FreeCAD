@@ -28,9 +28,5 @@
 #***************************************************************************/
 
 import FreeCAD
-
 # imports the C++ module
-if (FreeCAD.GetDebugMode == 1):
-    import AppPartD
-else:
-    import AppPart
+import AppPart

@@ -31,17 +31,6 @@
 
 void CreateCommands(void);
 
-/*
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
-					 )
-{
-    return TRUE;
-}
-
-*/
-
 
 /* module functions */
 static PyObject *                                 /* returns object */
@@ -69,17 +58,9 @@ static struct PyMethodDef hello_methods[] = {
 
 // python intry
 extern "C" {
-#ifdef _DEBUG
-void __declspec(dllexport) initAppPartGuiD() {
-#else
 void __declspec(dllexport) initAppPartGui() {
-#endif
 
-#ifdef _DEBUG
-	(void) Py_InitModule("AppPartGuiD", hello_methods);   /* mod name, table ptr */
-#else
 	(void) Py_InitModule("AppPartGui", hello_methods);   /* mod name, table ptr */
-#endif
 
 	GetConsole().Log("AppPartGui loaded\n");
 

@@ -175,6 +175,53 @@ void FCCmdPartTest2::Activated(void)
 
 }
 
+//===========================================================================
+// Part_Box
+//===========================================================================
+DEF_STD_CMD(FCCmdPartBox		,"Part_Box");
+
+void FCCmdPartBox::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+{
+	*sMenuText	  = "Box";
+	*sToolTipText = "Create or change a Box feature";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	*sPixmap      = "Part_Box";
+	iAccel = 0;
+}
+
+
+void FCCmdPartBox::Activated(void)
+{
+
+	DlgPartBoxImp cDlg(AppWnd(),"Part Box",true);
+	cDlg.exec();
+
+}
+
+//===========================================================================
+// Part_Box
+//===========================================================================
+DEF_STD_CMD(FCCmdPartCut		,"Part_Cut");
+
+void FCCmdPartCut::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+{
+	*sMenuText	  = "Cut";
+	*sToolTipText = "Create or change a Cut feature";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	*sPixmap      = "Part_Box";
+	iAccel = 0;
+}
+
+
+void FCCmdPartCut::Activated(void)
+{
+
+	DlgPartBoxImp cDlg(AppWnd(),"Part Box",true);
+	cDlg.exec();
+
+}
 
 
 
@@ -184,6 +231,8 @@ void CreateCommands(void)
 
 	rcCmdMgr.AddCommand(new FCCmdPartTest1());
 	rcCmdMgr.AddCommand(new FCCmdPartTest2());
+	rcCmdMgr.AddCommand(new FCCmdPartCut());
+	rcCmdMgr.AddCommand(new FCCmdPartBox());
 
 }
 

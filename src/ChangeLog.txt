@@ -121,3 +121,8 @@ Version: V0.1B30 Date: Thu Feb 06 20:47:18 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B31 Date: Fri Feb 07 22:26:22 2003 +++++++++++++++++++++++++++++++
 + ifdefs for QT 3 and 2.3 usage (werner)
+
+Version: V0.1B32 Date: Sun Feb 09 22:16:10 2003 +++++++++++++++++++++++++++++++
++ fix debug module loading
++ implementing startup config registrie and access functions in App.
++ implementing Doc Template logic and Part Template

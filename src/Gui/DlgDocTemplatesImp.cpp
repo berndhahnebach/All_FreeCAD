@@ -13,6 +13,7 @@
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
+#include "../App/Application.h"
 
 
 #include "Icons/Folder32.xpm"
@@ -26,14 +27,14 @@
 DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl ),FCWindow(name)
 {
-	std::vector<FCHandle<FCParameterGrp> > vhGrp = GetParameter()->GetGroup("Modules")->GetGroups();
+	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
     
 	QPixmap pixmap(Folder32);
 	QString str;
 	// cycling through the Templates
-	for(std::vector<FCHandle<FCParameterGrp> >::iterator i=vhGrp.begin();i!=vhGrp.end();i++)
+	for(std::vector<std::string>::iterator i=vTemplates.begin();i!=vTemplates.end();i++)
 	{
-		str = (*i)->GetASCII("DocTemplateName","").c_str();
+		str = (*i).c_str();
 		if(str != "")
 			new QIconViewItem ( TemplateIconView ,str,pixmap );
 	}

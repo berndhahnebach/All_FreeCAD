@@ -71,6 +71,9 @@ Log ('\nFreeCAD init running....\n')
 # init evera application by importing Init.py
 InitApplications()
 
+# set to no gui, is overwriten by InitGui
+App.Gui = 0
+
 Log ('\nFreeCAD init done\n')
    
     

@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../../../bin/AppPart.pyd"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../AppPart.pyd"
 
 !ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "APPPART_EXPORTS" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPart" /Yu"stdafx.h" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPart" /FR /Yu"stdafx.h" /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../../../bin/AppPartD.pyd" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../AppPart_d.pyd" /pdbtype:sept
 
 !ENDIF 
 
@@ -95,69 +95,25 @@ SOURCE=.\AppPart.cpp
 # Begin Source File
 
 SOURCE=.\FeaturePartBox.cpp
-
-!IF  "$(CFG)" == "AppPart - Win32 Release"
-
 # ADD CPP /YX"PreCompiled.h"
-
-!ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
-
-# ADD CPP /YX"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\FeaturePartBox.h
-
-!IF  "$(CFG)" == "AppPart - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\Libs.cpp
-
-!IF  "$(CFG)" == "AppPart - Win32 Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
-
-!ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
-
-# SUBTRACT CPP /YX /Yc /Yu
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\PreCompiled.cpp
-
-!IF  "$(CFG)" == "AppPart - Win32 Release"
-
 # ADD CPP /Yc"PreCompiled.h"
-
-!ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
-
-# ADD CPP /Yc"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
-
-!IF  "$(CFG)" == "AppPart - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # End Target
 # End Project

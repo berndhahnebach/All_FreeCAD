@@ -24,15 +24,6 @@
 #endif
 
 #include "../../../App/Application.h"
-/*
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
-					 )
-{
-    return TRUE;
-}
-*/
 
 #include <stdio.h>
 #include <python.h>
@@ -66,11 +57,7 @@ static struct PyMethodDef hello_methods[] = {
 
 // python intry
 extern "C" {
-#ifdef _DEBUG
-void __declspec(dllexport) initAppPartD() {
-#else
 void __declspec(dllexport) initAppPart() {
-#endif
 
 	(void) Py_InitModule("AppPart", hello_methods);   /* mod name, table ptr */
 

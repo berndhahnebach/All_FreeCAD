@@ -57,13 +57,14 @@
 // FreeCAD Gui header
 
 #ifdef  _FC_GUI_ENABLED_
-# include <qapplication.h>
-# include "../Gui/Application.h"
+#	include <qapplication.h>
+#	include "../Gui/Application.h"
 #	include "../Gui/GuiConsole.h"
-# include "../Gui/Splashscreen.h"
-#  ifdef WNT
-#    pragma comment(lib,"qt-mt230nc.lib")
-#  endif 
+#	include "../Gui/Splashscreen.h"
+#	ifdef WNT
+#		pragma comment(lib,"qt-mt230nc.lib")
+#	endif 
+#	include "GuiInitScript.h"
 #endif
 
 
@@ -88,27 +89,20 @@ char sFCUser[200];
 #include "InstallScript.h"
 
 #include <string>
-
+#include <map>
 
 // run control default action
 #ifdef _FC_GUI_ENABLED_
-	int RunMode = 0;
-#else
-	int RunMode = 1;
-#endif
-
-// some globals set by the commandline options or Init function
-std::string sFileName;
-const char*     sScriptName;
-/// set FreeCAD in the verbose mode
-bool bVerbose = false;
-/// The QT Application need to be set very early because of splasher
-#ifdef _FC_GUI_ENABLED_
+	/// The QT Application need to be set very early because of splasher
 	QApplication* pcQApp = NULL;
 	FCSplashScreen *splash = 0;
-#	include "GuiInitScript.h"
-
 #endif
+
+std::map<std::string,std::string> mConfig;
+
+
+// some globals set by the commandline options or Init function
+const char*     sScriptName;
 /// pointer to the system parameter (loaded in Init())
 FCParameterManager *pcSystemParameter;
 /// pointer to the user parameter (loaded in Init())
@@ -121,7 +115,7 @@ void Destruct(void);
 void ParsOptions(int argc, char ** argv);
 void CheckEnv(void);
 void PrintInitHelp(void);
-const char* ExtractPath(const char*);
+void ExtractPathAndUser(const char*);
 
 
 
@@ -134,14 +128,16 @@ int main( int argc, char ** argv )
 	try
 	{
 #	endif
-    // first check the environment variables
+		// extract home path
+		ExtractPathAndUser(argv[0]);
+
+		// first check the environment variables
 		CheckEnv();
 		// Initialization (phase 1)
 		Init(argc,argv);
 
 		// the FreeCAD Application
 
-		GetApplication().SetHomePath(ExtractPath(argv[0]));
 #	ifndef _DEBUG
 	}
 	// catch all OCC exceptions
@@ -186,9 +182,8 @@ int main( int argc, char ** argv )
 	try
 	{
 #	endif
-		switch(RunMode)
+		if(mConfig["RunMode"] == "Gui")
 		{
-		case 0:{
 		// run GUI
 #			ifdef _FC_GUI_ENABLED_
 				// A new QApplication
@@ -225,24 +220,27 @@ int main( int argc, char ** argv )
 #			else
 				GetConsole().Error("GUI mode not possible. This is a FreeCAD compiled without GUI. Use FreeCAD -c\n");
 #			endif
-				break;
 			}
-		case 1:
+		else if(mConfig["RunMode"] == "Cmd")
+		{
 			// Run the comandline interface
 			ret = GetInterpreter().RunCommandLine("Console mode");
-			break;
-		case 2:
+		}
+		else if(mConfig["RunMode"] == "Script")
+		{
 			// run a script
-			GetConsole().Log("Running script: %s\n",sFileName.c_str());
-			GetInterpreter().LaunchFile(sFileName.c_str());
-			break;
-		case 3:
+			GetConsole().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+			GetInterpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
+		}
+		else if(mConfig["RunMode"] == "Internal")
+		{
 			// run internal script
 			GetConsole().Log("Running internal script:\n");
 			GetInterpreter().Launch(sScriptName);
-			break;
-		default:
-			assert(0);
+		} else {
+		
+			GetConsole().Log("Unknown Run mode in main()?!?\n\n");
+			exit(1);
 		}
 #	ifndef _DEBUG
 	}
@@ -310,28 +308,37 @@ void Destruct(void)
  **/
 void Init(int argc, char ** argv )
 {
-  // extract home path
-  ExtractPath(argv[0]);
-  // make user specific parameter file
-  char* user = getenv("USERNAME");
-  if (user == NULL) user = getenv("USER");
-  if (user == NULL) user = "Anonymous";
-  sprintf(sFCUser, "FC%s.FCParam", user);
 
 
 	// Pars the options which have impact to the init process
 	ParsOptions(argc,argv);
 
+
+	// set some config defaults
+#	ifdef _FC_GUI_ENABLED_
+		mConfig["RunMode"] = "Gui";
+#	else
+		mConfig["RunMode"] = "Cmd";
+#	endif
+#	ifdef _DEBUG
+		mConfig["Debug"] = "1";
+#	else
+		mConfig["Debug"] = "0";
+#	endif
+	mConfig["UserParameter"]  += mConfig["HomePath"] + "FC" + mConfig["UserName"] + ".FCParam";
+	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
+
+
 	// Splasher phase ===========================================================
 	#	ifdef _FC_GUI_ENABLED_
-	// startup splasher
-	// when runnig in verbose mode no splasher
-	if ( ! bVerbose && RunMode == 0) 
-	{
-		pcQApp = new QApplication ( argc, argv );
-	  splash = new FCSplashScreen(QApplication::desktop());
-	  pcQApp->setMainWidget(splash);
-	}
+		// startup splasher
+		// when runnig in verbose mode no splasher
+		if ( ! (mConfig["Verbose"] == "Strict") && (mConfig["RunMode"] == "Gui") )
+		{
+			pcQApp = new QApplication ( argc, argv );
+			splash = new FCSplashScreen(QApplication::desktop());
+			pcQApp->setMainWidget(splash);
+		}
 	# endif
 
 	// init python
@@ -339,14 +346,14 @@ void Init(int argc, char ** argv )
 
 	// Init console ===========================================================
 	GetConsole().AttacheObserver(new FCCmdConsoleObserver());
-	if(bVerbose) GetConsole().SetMode(FCConsole::Verbose);
+	if(mConfig["Verbose"] == "Strict") GetConsole().SetMode(FCConsole::Verbose);
 	// file logging fcility
 #	ifdef _DEBUG
 		GetConsole().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
 #	endif
 
 	// Banner ===========================================================
-	if(!bVerbose)
+	if(!(mConfig["Verbose"] == "Strict"))
 		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
 	else
 		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
@@ -356,7 +363,7 @@ void Init(int argc, char ** argv )
 
 
 	// Init parameter sets ===========================================================
-	if(pcSystemParameter->LoadOrCreateDocument("AppParam.FCParam") && !bVerbose)
+	if(pcSystemParameter->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
 		GetConsole().Warning("   Parameter not existing, write initial one\n");
 		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
@@ -364,7 +371,7 @@ void Init(int argc, char ** argv )
 
 	}
 
-	if(pcUserParameter->LoadOrCreateDocument(sFCUser) && !bVerbose)
+	if(pcUserParameter->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
 		GetConsole().Warning("   User settings not existing, write initial one\n");
 		GetConsole().Message("   This Warning means normaly you running FreeCAD the first time\n"
@@ -384,8 +391,8 @@ void Init(int argc, char ** argv )
 	rcInterperter.Launch(FreeCADStartup);
 
 	// creating the application 
-	if(!bVerbose) GetConsole().Message("Create Application");
-	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter);
+	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Message("Create Application");
+	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
 
 	// starting the init script
 	rcInterperter.Launch(FreeCADInit);
@@ -395,7 +402,7 @@ void Init(int argc, char ** argv )
 //**************************************************************************
 // extracting the home path
 
-const char* ExtractPath(const char* sCall)
+void ExtractPathAndUser(const char* sCall)
 {
 	std::string Call(sCall);
 	static std::string Temp;
@@ -404,7 +411,15 @@ const char* ExtractPath(const char* sCall)
 
 	Temp.assign(Call,0,pos+1);
 
-	return Temp.c_str();
+	mConfig["HomePath"] = Temp.c_str();
+
+	// try to figure out the user
+	 char* user = getenv("USERNAME");
+	if (user == NULL) 
+		user = getenv("USER");
+	if (user == NULL) 
+		user = "Anonymous";
+	mConfig["UserName"] = user;
 
 }
 
@@ -529,17 +544,17 @@ void ParsOptions(int argc, char ** argv)
 					// Console with file
 					case 'f':  
 					case 'F':  
-						RunMode = 2;
+						mConfig["RunMode"] = "Cmd";
 						if(argc <= i+1)
 						{
 							GetConsole().Error("Expecting a file\n");  
 							GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
 						}
-						sFileName = argv[i+1];
+						mConfig["FileName"]= argv[i+1];
 						i++;
 						break;   
 					case '\0':  
-						RunMode = 1;
+						mConfig["RunMode"] = "Cmd";
 						break;   
 					default:  
 						GetConsole().Error("Invalid Input %s\n",argv[i]);  
@@ -547,36 +562,52 @@ void ParsOptions(int argc, char ** argv)
 						throw FCException("Comandline error(s)");  
 				};  
 				break;  
-			case 't': 
+/*			case 't': 
 			case 'T':  
 				switch (argv[i][2])  
 				{   
 					// run the test environment script
 					case 'e':  
 					case 'E':  
-						RunMode = 3;
+						mConfig["RunMode"] = "Internal";
 						sScriptName = FreeCADTestEnv;
 						break;   
 					case '0':  
 						// test script level 0
-						RunMode = 3;
+						mConfig["RunMode"] = "Internal";
 						sScriptName = FreeCADTest;
 						break;   
 					default:  
 						//default testing level 0
-						RunMode = 3;
+						mConfig["RunMode"] = "Internal";
 						sScriptName = FreeCADTest;
 						break;   
 				};  
-				break;  
-			case 'i': 
+				break;  */
+/*			case 'i': 
 			case 'I':  
 				RunMode = 3;
 				sScriptName = FreeCADInstall;
-				break;  
+				break;  */
 			case 'v': 
 			case 'V':  
-				bVerbose = true;
+				switch (argv[i][2])  
+				{   
+					// run the test environment script
+					case '1':  
+						mConfig["Verbose"] = "Loose";
+						sScriptName = FreeCADTestEnv;
+						break;   
+					case '\0':  
+						// test script level 0
+						mConfig["Verbose"] = "Strict";
+						break;   
+					default:  
+						//default testing level 0
+						GetConsole().Error("Invalid Verbose Option: %s\n",argv[i]); 
+						GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
+						throw FCException("Comandline error(s)");  
+				};  
 				break;  
 			case '?': 
 			case 'h': 

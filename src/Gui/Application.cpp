@@ -544,7 +544,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	char sBuf[1024];
 	assert(strlen(name) < 1022);
 
-	puts(name);
+//	puts(name);
 
 	// close old workbench
 	if(_cActiveWorkbenchName != "")
@@ -565,6 +565,18 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	GetInterpreter().RunMethode(pcWorkbench, "Start");
 
 	_cActiveWorkbenchName = name;
+
+	// set the combo box
+	if(_pcWorkbenchCombo->currentText() != name){
+		for(int i=0;i<_pcWorkbenchCombo->count();i++)
+		{
+			if(_pcWorkbenchCombo->text(i) == name)
+			{
+				_pcWorkbenchCombo->setCurrentItem(i);
+				break;
+			}
+		}
+	}
 
 	show();
 }
@@ -623,7 +635,16 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
 		return NULL;                             // NULL triggers exception 
 
 	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
-	Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+	try{
+		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+	}catch(FCException e) {
+		//e.ReportException();
+		PyErr_SetString(PyExc_AssertionError, e.what());		
+		return NULL;
+	}catch(...){
+		PyErr_SetString(PyExc_RuntimeError, "unknown error");
+		return NULL;
+	}
     return Py_None;
 } 
 
@@ -653,7 +674,16 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
 		return NULL;                             // NULL triggers exception 
 
 	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
-	Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+	try{
+		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+	}catch(FCException e) {
+		//e.ReportException();
+		PyErr_SetString(PyExc_AssertionError, e.what());		
+		return NULL;
+	}catch(...){
+		PyErr_SetString(PyExc_RuntimeError, "unknown error");
+		return NULL;
+	}
     return Py_None;
 } 
 

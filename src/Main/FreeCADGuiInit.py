@@ -197,13 +197,10 @@ Log ('FreeCAD gui init running....\n')
 
 # init the gui
 
+# signal that the gui is up
+App.Gui = 1
 
-#StdWrkb.Start()
-
-Temp2 = StandardWorkbench()
-
-Gui.WorkbenchAdd("<none>",Temp2)
-#Gui.WorkbenchAdd("<none>",StandardWorkbench())
+Gui.WorkbenchAdd("<none>",StandardWorkbench())
 
 # init modules
 InitApplications()

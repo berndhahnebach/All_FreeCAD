@@ -130,6 +130,9 @@ public:
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
 
+	/// Get for all possible tamplates
+	std::vector<std::string> GetAllTemplates(void);
+
 	FCParameterManager & GetSystemParameter(void) ;
 	FCParameterManager & GetUserParameter(void) ;
 	FCParameterManager & GetParameterSet(const char* sName);
@@ -160,8 +163,11 @@ public:
 	PYFUNCDEF_S(sGet);
 	PYFUNCDEF_S(sGetParam);
 	PYFUNCDEF_S(sGetVersion);
-	PYFUNCDEF_S(sGetHomePath);
-	PYFUNCDEF_S(sGetDebugMode);
+	PYFUNCDEF_S(sGetConfig);
+	PYFUNCDEF_S(sSetConfig);
+	PYFUNCDEF_S(sTemplateAdd);
+	PYFUNCDEF_S(sTemplateDelete);
+	PYFUNCDEF_S(sTemplateGet);
 
 	static PyMethodDef    Methods[]; 
 
@@ -174,7 +180,7 @@ public:
 	static FCApplication *_pcSingelton;
 
 	/// Constructor
-	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr);
+	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 	/// Destructor
 	~FCApplication();
 
@@ -205,6 +211,11 @@ private:
 	std::map<std::string,FCParameterManager *> mpcPramManager;
 	FCParameterManager *_pcSysParamMngr;
 	FCParameterManager *_pcUserParamMngr;
+	// map for Template objects
+	PyObject*		 _pcTemplateDictionary;
+
+	std::map<std::string,std::string> &_mConfig;
+
 };
 
 /// Singelton getter of the Applicaton

@@ -123,13 +123,17 @@ Handle_FCApplicationOCC::~Handle_FCApplicationOCC() {}
 //**************************************************************************
 // Construction and destruction
 
-FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr)
+FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
 	:_pcSysParamMngr(pcSysParamMngr),
-	 _pcUserParamMngr(pcUserParamMngr)
+	 _pcUserParamMngr(pcUserParamMngr),
+	 _mConfig(mConfig)
 {
 	_hApp = new FCApplicationOCC;
 	mpcPramManager["User parameter"] = pcUserParamMngr;
 	mpcPramManager["System parameter"] = pcSysParamMngr;
+
+	// instanciate the workbench dictionary
+	_pcTemplateDictionary = PyDict_New();
 
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCAD", FCApplication::Methods);
@@ -148,21 +152,35 @@ FCDocument* FCApplication::New(const char * Name)
 {
 	Handle_TDocStd_Document hDoc;
 	FCDocument*				pDoc;
+	PyObject* pcTemplate;
+
+	if(Name)
+	{
+		// net buffer because of char* <-> const char*
+		char sBuf[1024];
+		assert(strlen(Name) < 1022);
+
+		// get the python workbench object from the dictionary
+		strcpy(sBuf, Name);
+		pcTemplate = PyDict_GetItemString(_pcTemplateDictionary, sBuf);
+
+		// test if the template is valid
+		if(!pcTemplate)
+			return NULL;
+	}
 
 	_hApp->NewDocument("FreeCad-Std",hDoc);
 	//_hApp->NewDocument("MDTV-Standard",hDoc);
 	//_hApp->NewDocument("Standard",hDoc);
 	pDoc = new FCDocument(hDoc);
 
-/*	// Load module
-	if(!GetInterpreter().LoadModule(Name))
-	{
-		delete pDoc ;  
-		throw FCException("No doc module");
-	}
-*/	//pDoc->_INCREF();
+	// add the document to the internal list
+	pDoc->_INCREF();
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
+
+	// runing the start of the workbench object
+	if(Name) GetInterpreter().RunMethode(pcTemplate, "Start");
 
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);
@@ -268,21 +286,40 @@ const std::map<std::string,FCParameterManager *> & FCApplication::GetParameterSe
 	return mpcPramManager;
 }
 
+std::vector<std::string> FCApplication::GetAllTemplates(void)
+{
+	PyObject *key, *value;
+	int pos = 0;
+	std::vector<std::string> cTemp;
+     
+
+	// insert all items
+	while (PyDict_Next(_pcTemplateDictionary, &pos, &key, &value)) {
+		/* do something interesting with the values... */
+		cTemp.push_back(PyString_AsString(key));
+	}
+
+	return cTemp;
+}
+
 
 //**************************************************************************
 // Python stuff
 
 // FCApplication Methods						// Methods structure
 PyMethodDef FCApplication::Methods[] = {
-	{"DocNew",         (PyCFunction) FCApplication::sNew,         1},
-	{"DocOpen",        (PyCFunction) FCApplication::sOpen,        1},
-	{"DocSave"  ,      (PyCFunction) FCApplication::sSave,        1},
-	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,      1},
-	{"DocGet",         (PyCFunction) FCApplication::sGet,         1},
-	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,    1},
-	{"Version",        (PyCFunction) FCApplication::sGetVersion,  1},
-	{"GetHomePath",    (PyCFunction) FCApplication::sGetHomePath ,1},
-	{"GetDebugMode",   (PyCFunction) FCApplication::sGetDebugMode,1},
+	{"DocNew",         (PyCFunction) FCApplication::sNew,            1},
+	{"DocOpen",        (PyCFunction) FCApplication::sOpen,           1},
+	{"DocSave"  ,      (PyCFunction) FCApplication::sSave,           1},
+	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,         1},
+	{"DocGet",         (PyCFunction) FCApplication::sGet,            1},
+	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,       1},
+	{"Version",        (PyCFunction) FCApplication::sGetVersion,     1},
+	{"ConfigGet",      (PyCFunction) FCApplication::sGetConfig,      1},
+	{"ConfigSet",      (PyCFunction) FCApplication::sSetConfig,      1},
+	{"TemplateAdd",    (PyCFunction) FCApplication::sTemplateAdd,    1},
+	{"TemplateDelete", (PyCFunction) FCApplication::sTemplateDelete ,1},
+	{"TemplateGet",    (PyCFunction) FCApplication::sTemplateGet    ,1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -322,8 +359,16 @@ PYFUNCIMP_S(FCApplication,sNew)
         return NULL;                             // NULL triggers exception 
 
 	try{
-		return GetApplication().New(pstr);			 // process massage 
+		FCDocument*	pDoc = GetApplication().New(pstr);
+		if (pDoc)
+			return pDoc;
+		else
+		{
+			PyErr_SetString(PyExc_IOError, "Unknown Template");
+			return NULL;
+		}
 	}catch(...){
+		PyErr_SetString(PyExc_IOError, "Unknown Error in DocNew()");
 		return NULL;
 	}
 }
@@ -352,11 +397,13 @@ PYFUNCIMP_S(FCApplication,sSaveAs)
 
 PYFUNCIMP_S(FCApplication,sGet)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    char *pstr=0;
+    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	//Instance().Message("%s",pstr);				 // process massage 
+	if(pstr == 0)
+		return GetApplication().Active();
+
 	return Py_None;                              // None: no errors 
 }
 
@@ -372,24 +419,42 @@ PYFUNCIMP_S(FCApplication,sGetParam)
 }
 
 
-PYFUNCIMP_S(FCApplication,sGetHomePath)
+PYFUNCIMP_S(FCApplication,sGetConfig)
 {
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+	char *pstr=0;
+	char sBuf[1024];
+	char sBuf2[1024];
 
-	return Py_BuildValue("s",GetApplication().GetHomePath());
+    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	if(pstr) // if parameter give deticated group
+		return Py_BuildValue("s",GetApplication()._mConfig[pstr].c_str()); 
+	else
+	{
+		PyObject *pDict = PyDict_New();
+		for(std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++)
+		{
+			assert(strlen(It->second.c_str()) < 1022);
+			strcpy(sBuf, It->second.c_str());
+			assert(strlen(It->first.c_str()) < 1022);
+			strcpy(sBuf2, It->first.c_str());
+			PyDict_SetItemString(pDict,sBuf2,PyString_FromString(sBuf));
+		}
+		return pDict;
+		
+	}
 }
 
-PYFUNCIMP_S(FCApplication,sGetDebugMode)
+PYFUNCIMP_S(FCApplication,sSetConfig)
 {
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+	char *pstr,*pstr2;
 
-#ifdef _DEBUG
-	return Py_BuildValue("i",1);
-#else
-	return Py_BuildValue("i",0);
-#endif
+    if (!PyArg_ParseTuple(args, "ss", &pstr,&pstr2))  // convert args: Python->C 
+        return NULL; // NULL triggers exception 
+
+	GetApplication()._mConfig[pstr] = pstr2;
+
+	return Py_None;
 }
 
 PYFUNCIMP_S(FCApplication,sGetVersion)
@@ -415,7 +480,48 @@ PYFUNCIMP_S(FCApplication,sGetVersion)
 	return pList;
 }
 
+PYFUNCIMP_S(FCApplication,sTemplateAdd)
+{
+	char*       psKey;
+	PyObject*   pcObject;
+	if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
 
+	Py_INCREF(pcObject);
+
+	PyDict_SetItemString(GetApplication()._pcTemplateDictionary,psKey,pcObject);
+
+	return Py_None;
+} 
+
+PYFUNCIMP_S(FCApplication,sTemplateDelete)
+{
+	char*       psKey;
+	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+	PyDict_DelItemString(GetApplication()._pcTemplateDictionary,psKey);
+
+    return Py_None;
+} 
+/*
+PYFUNCIMP_S(FCApplication,sWorkbenchActivate)
+{
+	char*       psKey;
+	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+	Instance->ActivateWorkbench(psKey);
+    return Py_None;
+}
+*/
+PYFUNCIMP_S(FCApplication,sTemplateGet)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	return GetApplication()._pcTemplateDictionary;
+}
 
 //**************************************************************************
 // Singelton stuff
