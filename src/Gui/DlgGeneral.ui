@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>336</width>
+            <width>332</width>
             <height>359</height>
         </rect>
     </property>
@@ -121,6 +121,10 @@
                     <number>100</number>
                 </property>
                 <property>
+                    <name>orientation</name>
+                    <number>0</number>
+                </property>
+                <property>
                     <name>prefEntry</name>
                     <string>SpeedAnimationCmdBar</string>
                 </property>
@@ -141,8 +145,8 @@
         <class>FCSlider</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
-            <width>-1</width>
-            <height>-1</height>
+            <width>80</width>
+            <height>20</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -155,6 +159,11 @@
         <property type="Int">value</property>
         <property type="String">prefEntry</property>
         <property type="String">prefPath</property>
+        <property type="Int">tickInterval</property>
+        <property type="Bool">tracking</property>
+        <property type="Int">pageStep</property>
+        <property type="Int">lineStep</property>
+        <property type="Int">orientation</property>
     </customwidget>
 </customwidgets>
 <images>

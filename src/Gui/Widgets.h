@@ -229,4 +229,38 @@ class FCCheckListDlg : public QDialog
     QGridLayout* GroupBox1Layout;
 };
 
+/**
+ *  Color button
+ */
+class FCColorButton : public QButton
+{
+    Q_OBJECT
+
+    Q_PROPERTY( QColor color READ color WRITE setColor )
+ 
+ public:
+    FCColorButton( QWidget* parent = 0, const char* name = 0 );
+    FCColorButton( const QBrush& b, QWidget* parent = 0, const char* name = 0, WFlags f = 0 );
+    ~FCColorButton();
+
+    void setColor( const QColor& );
+    QColor color() const;
+
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
+    
+  public slots:
+    virtual void onChooseColor();
+
+  signals:
+    void changed();
+
+  protected:
+    void drawButton( QPainter* );
+    void drawButtonLabel( QPainter* );
+
+  private:
+    QColor col;
+};
+
 #endif // __FC_WIDGETS_H__

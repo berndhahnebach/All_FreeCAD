@@ -70,8 +70,6 @@ class FCWidgetPrefs : public FCParameterGrp::ObserverType
     virtual void setParamGrpPath(QString name);
     /// get the widget's preferences path
     QString getParamGrpPath() const;
-    /// use user parameter
-    void setUserParameter();
     /// return the handler
     FCWidgetPrefsHandler* getHandler();
     /// install a new handler

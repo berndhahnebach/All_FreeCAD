@@ -30,7 +30,15 @@
 #include "scintilla/UniConversion.h"
 
 #include "View.h"
+#include "../Base/Parameter.h"
+#include "../Base/Observer.h"
 
+#define SciQt_MARKER_BREAKPNT 0
+#define SciQt_MARKER_BOOKMARK 1
+#define SciQt_COMMENT         1
+#define SciQt_NUMBER          2
+#define SciQt_STRING          3
+#define SciQt_TEXT           11
 
 // forward declaration
 class FCScintillaEdit;
@@ -111,7 +119,7 @@ class ScintillaQt : public ScintillaBase
   friend class FCScintillaView;
 };
 
-class FCScintillaEdit : public QWidget
+class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
 {
 	Q_OBJECT
 
@@ -123,6 +131,27 @@ class FCScintillaEdit : public QWidget
 	  virtual QSize sizeHint() const;
     ScintillaQt* getTextEditor() const;
     bool toggleBreakpoint(int nLine);
+    void clearAllBreakpoints();
+    void setBreakpoint(int nLine);
+    void gotoLine(int nLine);
+    void grabFocus();
+    void setReadOnly(bool bReadOnly);
+    void gotoLastLine();
+    void setStackTraceLevel(int nLevel);
+    int  getCurrentLine();
+    QString getLine(int nLine);
+    CharacterRange getSelection();
+    void assignKey(int key, int mods, int cmd);
+    bool presentBookmark(int nLine);
+    void clearAllBookmarks();
+    bool toggleBookmark(int nLine);
+    void nextBookmark(bool forwardScan);
+    void gotoLineEnsureVisible(int nLine);
+  	void expand(int &line, bool doExpand, bool force = false, int visLevels = 0, int level = -1);
+    void foldChanged(int line, int levelNow, int levelPrev);
+    void foldAll();
+    bool clickMargin(int position, int modifiers);
+	  void OnChange(FCSubject<const char*> &rCaller,const char* rcReason);
 
   protected:
 	  bool eventFilter                   (QObject *o,QEvent *e);
@@ -137,6 +166,8 @@ class FCScintillaEdit : public QWidget
     virtual void mouseWheelEvent       (QWheelEvent * e);
 
     virtual bool focusNextPrevChild (bool next);
+
+    void loadSettings();
 
   private slots:
 	  void slotTimer();

@@ -35,13 +35,50 @@
 #include "Window.h"
 #include "PrefWidgets.h"
 
-class FCDlgEditorSettings : public FCDlgEditorSettingsBase, public FCWidgetPrefsManager
+class FCDlgEditorSettings : public FCDlgEditorSettingsBase, public FCWidgetPrefsManager, public FCWidgetPrefs
 {
   Q_OBJECT
 
   public:
     FCDlgEditorSettings( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCDlgEditorSettings();
+
+    void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
+
+  public slots:
+    void onAssignColor(const QString& name);
+    void onChosenColor();
+    void onChosenFont(const QString & item);
+
+  protected:
+    void restorePreferences();
+    void savePreferences();
+    std::map<QString, long> m_clColors;
 };
+
+class FCDefColorMap
+{
+	private:
+		// Singleton
+		FCDefColorMap(void);
+		~FCDefColorMap(void);
+
+		static FCDefColorMap *_pcSingleton;
+
+    std::map<QString, long> m_clDefColors;
+
+	public:
+    std::vector<QString> GetKeys() const;
+		long GetColor(const QString& name);
+		static void Destruct(void);
+		static FCDefColorMap &Instance(void);
+
+		friend FCDefColorMap &GetDefCol(void); 
+};
+
+inline FCDefColorMap &GetDefCol(void)
+{
+  return FCDefColorMap::Instance();
+}
 
 #endif // DLG_EDITOR_IMP_H

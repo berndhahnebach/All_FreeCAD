@@ -50,11 +50,6 @@
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
 {
-  m_sPrefGrp  = "User parameter:BaseApp/Windows/Widget Preferences";
-
-  if (name)
-    m_sPrefName = name;
-
   if (bInstall)
   {
     // install a handler for automation stuff
@@ -87,6 +82,14 @@ void FCWidgetPrefs::setEntryName(QString name)
 
 QString FCWidgetPrefs::getEntryName() const
 {
+#ifdef FC_DEBUG
+  if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
+  {
+    GetConsole().Warning("No valid widget name set!\n");
+    throw;
+  }
+#endif
+
   return m_sPrefName; 
 }
 
@@ -110,11 +113,6 @@ void FCWidgetPrefs::setParamGrpPath(QString name)
 QString FCWidgetPrefs::getParamGrpPath() const
 {
   return m_sPrefGrp; 
-}
-
-void FCWidgetPrefs::setUserParameter()
-{
-  hPrefGrp = getRootParamGrp();
 }
 
 FCWidgetPrefsHandler* FCWidgetPrefs::getHandler()
@@ -141,7 +139,7 @@ void FCWidgetPrefs::OnChange(FCSubject<const char*> &rCaller, const char * sReas
 
 FCParameterGrp::handle FCWidgetPrefs::getRootParamGrp()
 {
-  return GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup("Widget Preferences");
+  return GetApplication().GetUserParameter().GetGroup("BaseApp");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -196,9 +194,9 @@ void FCEditSpinBox::restorePreferences()
 
   double fVal;
   if (m_iAccuracy == 0)
-    fVal = (double)hPrefGrp->GetInt(getEntryName().latin1(), 0);
+    fVal = (double)hPrefGrp->GetInt(getEntryName().latin1(), value());
   else
-    fVal = (double)hPrefGrp->GetFloat(getEntryName().latin1(), 0.0f);
+    fVal = (double)hPrefGrp->GetFloat(getEntryName().latin1(), getValueFloat());
 
   setValueFloat(fVal);
 }
@@ -321,8 +319,8 @@ void FCLineEdit::restorePreferences()
     return;
   }
 
-  std::string text = hPrefGrp->GetASCII(getEntryName().latin1(), "");
-  setText(text.c_str());
+  std::string txt = hPrefGrp->GetASCII(getEntryName().latin1(), text().latin1());
+  setText(txt.c_str());
 }
 
 void FCLineEdit::savePreferences()
@@ -508,7 +506,7 @@ void FCCheckBox::restorePreferences()
     return;
   }
 
-  bool enable = hPrefGrp->GetBool(getEntryName().latin1(), false);
+  bool enable = hPrefGrp->GetBool(getEntryName().latin1(), isChecked());
   setChecked(enable);
 }
 
@@ -562,7 +560,7 @@ void FCRadioButton::restorePreferences()
     return;
   }
 
-  bool enable = hPrefGrp->GetBool(getEntryName().latin1(), false);
+  bool enable = hPrefGrp->GetBool(getEntryName().latin1(), isChecked());
   setChecked(enable);
 }
 
@@ -617,11 +615,11 @@ void FCSlider::restorePreferences()
   }
 
   FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
-  int o = hPrefs->GetInt("Orientation", 0);
+  int o = hPrefs->GetInt("Orientation", orientation());
   setOrientation(Qt::Orientation(o));
-  int min = hPrefs->GetInt("MinValue", 0);
-  int max = hPrefs->GetInt("MaxValue", 100);
-  int val = hPrefs->GetInt("Value", 0);
+  int min = hPrefs->GetInt("MinValue", minValue());
+  int max = hPrefs->GetInt("MaxValue", maxValue());
+  int val = hPrefs->GetInt("Value", value());
   setMinValue(min);
   setMaxValue(max);
   setValue(val);
@@ -745,7 +743,7 @@ void FCCustomWidget::init(const char* grp, const char* name)
 {
   _clWorkbench = ApplicationWindow::Instance->GetActiveWorkbench();
   setPrefName(_clWorkbench);
-  setUserParameter();
+  hPrefGrp = getRootParamGrp()->GetGroup("Workbenches")->GetGroup(_clWorkbench.latin1());
   hPrefGrp = hPrefGrp->GetGroup(grp);
   hPrefGrp = hPrefGrp->GetGroup(name);
   hPrefGrp->Attach(this);
@@ -1189,7 +1187,7 @@ bool FCCustomWidgetManager::init(const char* workbench)
 {
   bool bFound = false;
   FCParameterGrp::handle hGrp = FCWidgetPrefs::getRootParamGrp();
-  hGrp = hGrp->GetGroup(workbench);
+  hGrp = hGrp->GetGroup("Workbenches")->GetGroup(workbench);
 
   std::vector<FCParameterGrp::handle> hSubGrps;
   std::vector<FCParameterGrp::handle>::iterator it;

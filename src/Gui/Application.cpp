@@ -165,9 +165,9 @@ ApplicationWindow::ApplicationWindow()
 	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar, NULL, KDockWidget::DockRight, 100);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
+	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
-	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "Help_View");
+	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
 	_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 80);
 
 

@@ -660,4 +660,76 @@ void FCCheckListDlg::hide ()
   QDialog::hide();
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+
+FCColorButton::FCColorButton(QWidget* parent, const char* name)
+  : QButton( parent, name )
+{
+  setMinimumSize( minimumSizeHint() );
+  connect( this, SIGNAL(clicked()), SLOT(onChooseColor()));
+}
+
+FCColorButton::FCColorButton( const QBrush& b, QWidget* parent, const char* name, WFlags f )
+  : QButton( parent, name, f )
+{
+  col = b.color();
+  setMinimumSize( minimumSizeHint() );
+}
+
+FCColorButton::~FCColorButton()
+{
+}
+
+void FCColorButton::setColor( const QColor& c )
+{
+  col = c;
+  update();
+}
+
+QColor FCColorButton::color() const
+{
+  return col;
+}
+
+QSize FCColorButton::sizeHint() const
+{
+  return QSize( 50, 25 );
+}
+
+QSize FCColorButton::minimumSizeHint() const
+{
+  return QSize( 50, 25 );
+}
+
+void FCColorButton::drawButton( QPainter *paint )
+{
+  style().drawBevelButton( paint, 0, 0, width(), height(), colorGroup(), isDown() );
+  drawButtonLabel( paint );
+  if ( hasFocus() ) 
+  {
+   	style().drawFocusRect( paint, style().bevelButtonRect( 0, 0, width(), height()),
+		colorGroup(), &colorGroup().button() );
+  }
+}
+
+void FCColorButton::drawButtonLabel( QPainter *paint )
+{
+  QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
+		                                    : palette().disabled().buttonText();
+  paint->setPen( pen );
+	paint->setBrush( QBrush( col ) );
+
+  paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
+}
+
+void FCColorButton::onChooseColor()
+{
+  QColor c = QColorDialog::getColor( palette().active().background(), this );
+  if ( c.isValid() ) 
+  {
+    setColor( c );
+    emit changed();
+  }
+}
+
 #include "moc_Widgets.cpp"

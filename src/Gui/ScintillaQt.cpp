@@ -13,6 +13,7 @@
 
 #include "ScintillaQt.h"
 #include "Application.h"
+#include "DlgEditorImp.h"
 #include "scintilla/SciLexer.h"
 
 
@@ -446,19 +447,34 @@ FCScintillaEdit::FCScintillaEdit(QWidget *parent,const char *name,WFlags f)
 		lexersLinked = TRUE;
 	}
 
+  GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Editor")->Attach(this);
+  loadSettings();
+}
+
+FCScintillaEdit::~FCScintillaEdit()
+{
+  GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Editor")->Detach(this);
+	delete sciTE;
+}
+
+void FCScintillaEdit::OnChange(FCSubject<const char*> &rCaller,const char* rcReason)
+{
+  loadSettings();
+}
+
+void FCScintillaEdit::loadSettings()
+{  
+	FCParameterGrp::handle hPrefGrp;
+  hPrefGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Editor");
   
-  QColor col = Qt::red;
- 	long lStrings = (col.blue() << 16) | (col.green() << 8) | col.red();
-  col = Qt::blue;
-  long lKeywords = (col.blue() << 16) | (col.green() << 8) | col.red();
   const char font[] = "Verdana";
   const char monospace[] = "Courier";
-  const short fontsize = 9;
+  const short fontsize = hPrefGrp->GetInt("FontSize", 3) + 6;
   const char keywords[] = "and assert break class continue def del elif else except exec "
 	                        "finally for from global if import in is lambda None not or "
 	                        "pass print raise return try while yield";
 
-  // set style bits, choose the right lexer (Lua) and set the keywords list
+  // set style bits, choose the lexer and set the keywords list
   sciTE->WndProc(SCI_SETSTYLEBITS,5,0);
   sciTE->WndProc(SCI_SETLEXER,SCLEX_PYTHON,0);
   sciTE->WndProc(SCI_SETKEYWORDS,0,(sptr_t)keywords);
@@ -469,50 +485,56 @@ FCScintillaEdit::FCScintillaEdit(QWidget *parent,const char *name,WFlags f)
   sciTE->WndProc(SCI_SETUSETABS,0,0);
   sciTE->WndProc(SCI_SETEOLMODE,SC_EOL_CRLF,0);
 
-  // now set up the styles (remember you have to set up font name for each style;
-  // if you fail to do so, bold/italics will not work (only color will work)
-  // !!colors are in format BGR!!
-
   // style 32: default
   sciTE->WndProc(SCI_STYLESETFONT,32, (sptr_t) font);
   sciTE->WndProc(SCI_STYLESETSIZE,32, fontsize);
-  // style 0: whitespace
-  sciTE->WndProc(SCI_STYLESETFORE,0, 0x808080);
-  // style 1: comment (not used in Lua)
-  // style 2: line comment (green)
-  sciTE->WndProc(SCI_STYLESETFONT,2, (int)monospace);
-  sciTE->WndProc(SCI_STYLESETSIZE,2, fontsize);
-  sciTE->WndProc(SCI_STYLESETFORE,2, 0x00AA00);
-  // style 3: doc comment (grey???)
-  sciTE->WndProc(SCI_STYLESETFORE,3, lStrings);      
-  // style 4: numbers (blue)
-  sciTE->WndProc(SCI_STYLESETFORE,4, 0xFF0000);
-  // style 5: keywords (black bold)
+
+  // text color
+  sciTE->WndProc(SCI_STYLESETFORE,SciQt_TEXT, hPrefGrp->GetInt("Text", GetDefCol().GetColor("Text")));
+
+  // comment color
+  sciTE->WndProc(SCI_STYLESETFONT,SciQt_COMMENT, (int)monospace);
+  sciTE->WndProc(SCI_STYLESETSIZE,SciQt_COMMENT, fontsize);
+  sciTE->WndProc(SCI_STYLESETFORE,SciQt_COMMENT, hPrefGrp->GetInt("Comment", GetDefCol().GetColor("Comment")));
+
+  // number color
+  sciTE->WndProc(SCI_STYLESETFORE,SciQt_NUMBER, hPrefGrp->GetInt("Number", GetDefCol().GetColor("Number")));
+
+	// string color
+  sciTE->WndProc(SCI_STYLESETFORE,SciQt_STRING, hPrefGrp->GetInt("String", GetDefCol().GetColor("String")));      
+  
+	// keyword color
   sciTE->WndProc(SCI_STYLESETFONT,5, (int)font);
   sciTE->WndProc(SCI_STYLESETSIZE,5, (int)fontsize);
-  sciTE->WndProc(SCI_STYLESETFORE,5, lKeywords);
+  sciTE->WndProc(SCI_STYLESETFORE,5, hPrefGrp->GetInt("Keyword", GetDefCol().GetColor("Keyword")));
   sciTE->WndProc(SCI_STYLESETBOLD,5, 1);
-  // style 6: double qouted strings (???)
-  sciTE->WndProc(SCI_STYLESETFORE,6, 0x7F007F);
-  // style 7: single quoted strings (???)
-  sciTE->WndProc(SCI_STYLESETFORE,7, 0x7F007F);
-  // style 8: UUIDs (IDL only, not used in Lua)
-  // style 9: preprocessor directives (not used in Lua 4)
-  // style 10: operators (black bold)
-  sciTE->WndProc(SCI_STYLESETFONT,10, (int)font);
-  sciTE->WndProc(SCI_STYLESETSIZE,10, fontsize);
-  sciTE->WndProc(SCI_STYLESETFORE,10, 0x000000);
-  sciTE->WndProc(SCI_STYLESETBOLD,10, 1);
-  // style 11: identifiers (leave to default)
-  // style 12: end of line where string is not closed (black on violet, eol-filled)
-  sciTE->WndProc(SCI_STYLESETFORE,12, 0x000000);
-  sciTE->WndProc(SCI_STYLESETBACK,12, 0xE0C0E0);
-  sciTE->WndProc(SCI_STYLESETEOLFILLED,12, 1);
-}
 
-FCScintillaEdit::~FCScintillaEdit()
-{
-	delete sciTE;
+	// breakpoint color
+	sciTE->WndProc(SCI_MARKERDEFINE,  SciQt_MARKER_BREAKPNT, SC_MARK_CIRCLE);
+	sciTE->WndProc(SCI_MARKERSETFORE, SciQt_MARKER_BREAKPNT, hPrefGrp->GetInt("Breakpoint", GetDefCol().GetColor("Breakpoint")));
+	sciTE->WndProc(SCI_MARKERSETBACK, SciQt_MARKER_BREAKPNT, hPrefGrp->GetInt("Breakpoint", GetDefCol().GetColor("Breakpoint")));
+
+	// bookmark color
+	sciTE->WndProc(SCI_MARKERDEFINE,  SciQt_MARKER_BOOKMARK, SC_MARK_ARROW);
+	sciTE->WndProc(SCI_MARKERSETFORE, SciQt_MARKER_BOOKMARK, hPrefGrp->GetInt("Bookmark", GetDefCol().GetColor("Bookmark")));
+	sciTE->WndProc(SCI_MARKERSETBACK, SciQt_MARKER_BOOKMARK, hPrefGrp->GetInt("Bookmark", GetDefCol().GetColor("Bookmark")));
+
+	// line number
+	if (hPrefGrp->GetBool("EnableLineNumber", true))
+	{
+		sciTE->WndProc(SCI_SETMARGINTYPEN, 0, SC_MARGIN_NUMBER);
+		int pixelWidth = 3 * sciTE->WndProc(SCI_TEXTWIDTH, STYLE_LINENUMBER, (int)"9");
+		sciTE->WndProc(SCI_SETMARGINWIDTHN, 0, pixelWidth);
+  }
+  else
+  {
+		sciTE->WndProc(SCI_SETMARGINTYPEN, 0, 0);
+  }
+
+	// margin stuff
+	sciTE->WndProc(SCI_SETMARGINTYPEN,  1, SC_MARGIN_SYMBOL);
+	sciTE->WndProc(SCI_SETMARGINWIDTHN, 1, 10);
+	sciTE->WndProc(SCI_SETMARGINSENSITIVEN, 1, TRUE);
 }
 
 long FCScintillaEdit::SendScintilla(unsigned int msg,unsigned long wParam, long lParam)
@@ -735,6 +757,30 @@ void FCScintillaEdit::keyPressEvent(QKeyEvent * e)
 		  key = SCK_RETURN;
 		  break;
 
+    case Key_F9:
+      if (e->state() & ControlButton)
+      {
+        if (e->state() & ShiftButton)
+          clearAllBreakpoints();
+        else
+          GetConsole().Message("Disable breakpoint: not yet implemented\n");
+      }
+      else
+        toggleBreakpoint(getCurrentLine());
+      return;
+
+    case Key_F2:
+      if (e->state() & ControlButton)
+        if (e->state() & ShiftButton)
+          clearAllBookmarks();
+        else
+          toggleBookmark(getCurrentLine());
+      else if (e->state() & ShiftButton)
+        nextBookmark(false);
+      else
+        nextBookmark(true);
+      return;
+
 	  default:
 		  if (sciTE->IsUnicodeMode())
 		  {
@@ -824,14 +870,287 @@ ScintillaQt* FCScintillaEdit::getTextEditor() const
 
 bool FCScintillaEdit::toggleBreakpoint(int nLine)
 {
-	if ( sciTE->WndProc (SCI_MARKERGET, nLine-1,0) & 1 )
+	if ( sciTE->WndProc (SCI_MARKERGET, nLine,0) & 1 )
 	{
-		sciTE->WndProc(SCI_MARKERDELETE, nLine-1, 0);
+		sciTE->WndProc(SCI_MARKERDELETE, nLine, 0);
 		return false;
 	}
 	else
+  {
+  	sciTE->WndProc(SCI_MARKERADD, nLine, 0);
+	return true;
+  }
+}
 
-	sciTE->WndProc(SCI_MARKERADD, nLine-1, 0);
+void FCScintillaEdit::clearAllBreakpoints()
+{
+	sciTE->WndProc(SCI_MARKERDELETEALL, SciQt_MARKER_BREAKPNT, 0);
+}
+
+void FCScintillaEdit::setBreakpoint(int nLine)
+{
+	sciTE->WndProc(SCI_MARKERADD, nLine, 0);
+}
+
+void FCScintillaEdit::gotoLine(int nLine)
+{
+	sciTE->WndProc(SCI_GOTOLINE, nLine, 0);
+
+	sciTE->WndProc(SCI_MARKERDELETEALL, 1, 0);
+	sciTE->WndProc(SCI_MARKERADD, nLine, 1);
+}
+
+void FCScintillaEdit::grabFocus()
+{
+	sciTE->WndProc(SCI_GRABFOCUS, 0, 0);
+}
+
+void FCScintillaEdit::setReadOnly(bool bReadOnly)
+{
+	sciTE->WndProc(SCI_SETREADONLY, bReadOnly, 0);
+}
+
+QString FCScintillaEdit::getLine(int nLine)
+{
+	QString strLine;
+	int nLineLength = sciTE->WndProc(SCI_LINELENGTH, nLine, 0);
+  char* szBuf = new char[nLineLength];
+	if ( nLineLength>0 )
+	{
+		sciTE->WndProc(SCI_GETLINE, nLine, (int)szBuf);
+		strLine = szBuf;
+	}
+
+	return strLine;
+}
+
+void FCScintillaEdit::gotoLastLine()
+{
+	int nLine = sciTE->WndProc(SCI_GETLINECOUNT, 0, 0);
+	sciTE->WndProc(SCI_GOTOLINE, nLine-1, 0);
+}
+
+int FCScintillaEdit::getCurrentLine()
+{
+	return sciTE->WndProc(SCI_LINEFROMPOSITION, sciTE->WndProc(SCI_GETCURRENTPOS, 0, 0), 0);
+}
+
+void FCScintillaEdit::setStackTraceLevel(int nLevel)
+{
+	sciTE->WndProc(SCI_MARKERDELETEALL, 0, 0);
+	sciTE->WndProc(SCI_MARKERADD, nLevel, 0);
+}
+
+CharacterRange FCScintillaEdit::getSelection() 
+{
+	CharacterRange crange;
+	crange.cpMin = sciTE->WndProc(SCI_GETSELECTIONSTART, 0, 0);
+	crange.cpMax = sciTE->WndProc(SCI_GETSELECTIONEND, 0, 0);
+	return crange;
+}
+
+void FCScintillaEdit::assignKey(int key, int mods, int cmd) 
+{
+	sciTE->WndProc(SCI_ASSIGNCMDKEY,
+	           Platform::LongFromTwoShorts(static_cast<short>(key),
+	                                       static_cast<short>(mods)), cmd);
+}
+
+void FCScintillaEdit::clearAllBookmarks()
+{
+	sciTE->WndProc(SCI_MARKERDELETEALL, SciQt_MARKER_BOOKMARK, 0);
+}
+
+bool FCScintillaEdit::presentBookmark(int nLine) 
+{
+	if (nLine == -1)
+		nLine = getCurrentLine();
+	int state = sciTE->WndProc(SCI_MARKERGET, nLine, 0);
+	return state & (1 << SciQt_MARKER_BOOKMARK);
+}
+
+bool FCScintillaEdit::toggleBookmark(int nLine) 
+{
+	if ( sciTE->WndProc (SCI_MARKERGET, nLine,1) & 2 )
+  {
+		sciTE->WndProc(SCI_MARKERDELETE, nLine, 1);
+    return false;
+  }
+	else
+  {
+  	sciTE->WndProc(SCI_MARKERADD, nLine, 1);
+    return true;
+  }
+}
+
+void FCScintillaEdit::nextBookmark(bool forwardScan) 
+{
+	int nLine = getCurrentLine();
+	int sci_marker = SCI_MARKERNEXT;
+	int lineStart = nLine + 1;
+	int lineRetry = 0;
+	if (!forwardScan) 
+  {
+		lineStart = nLine - 1;
+		lineRetry = sciTE->WndProc(SCI_GETLINECOUNT, 0, 0L);
+		sci_marker = SCI_MARKERPREVIOUS;
+	}
+	int nextLine = sciTE->WndProc(sci_marker, lineStart, 1 << SciQt_MARKER_BOOKMARK);
+	if (nextLine < 0)
+		nextLine = sciTE->WndProc(sci_marker, lineRetry, 1 << SciQt_MARKER_BOOKMARK);
+	if (nextLine < 0 || nextLine == nLine)
+		GetConsole().Warning("No other bookmark\n");
+	else
+		gotoLineEnsureVisible(nextLine);
+}
+
+void FCScintillaEdit::gotoLineEnsureVisible(int nLine) 
+{
+	sciTE->WndProc(SCI_ENSUREVISIBLEENFORCEPOLICY, nLine, 0);
+	sciTE->WndProc(SCI_GOTOLINE, nLine, 0);
+}
+
+void FCScintillaEdit::foldChanged(int line, int levelNow, int levelPrev) 
+{
+	if (levelNow & SC_FOLDLEVELHEADERFLAG) 
+  {
+		if (!(levelPrev & SC_FOLDLEVELHEADERFLAG)) 
+    {
+			sciTE->WndProc(SCI_SETFOLDEXPANDED, line, 1);
+		}
+	} 
+  else if (levelPrev & SC_FOLDLEVELHEADERFLAG) 
+  {
+		if (!sciTE->WndProc(SCI_GETFOLDEXPANDED, line, 0)) 
+    {
+			expand(line, true, false, 0, levelPrev);
+		}
+	}
+}
+
+void FCScintillaEdit::expand(int &line, bool doExpand, bool force, int visLevels, int level) 
+{
+	int lineMaxSubord = sciTE->WndProc(SCI_GETLASTCHILD, line, level & SC_FOLDLEVELNUMBERMASK);
+	line++;
+	while (line <= lineMaxSubord) 
+  {
+		if (force) 
+    {
+			if (visLevels > 0)
+				sciTE->WndProc(SCI_SHOWLINES, line, line);
+			else
+				sciTE->WndProc(SCI_HIDELINES, line, line);
+		}
+    else 
+    {
+			if (doExpand)
+				sciTE->WndProc(SCI_SHOWLINES, line, line);
+		}
+		int levelLine = level;
+		if (levelLine == -1)
+			levelLine = sciTE->WndProc(SCI_GETFOLDLEVEL, line, 0);
+		if (levelLine & SC_FOLDLEVELHEADERFLAG) {
+			if (force) 
+      {
+				if (visLevels > 1)
+					sciTE->WndProc(SCI_SETFOLDEXPANDED, line, 1);
+				else
+					sciTE->WndProc(SCI_SETFOLDEXPANDED, line, 0);
+				expand(line, doExpand, force, visLevels - 1);
+			} 
+      else 
+      {
+				if (doExpand) 
+        {
+					if (!sciTE->WndProc(SCI_GETFOLDEXPANDED, line, 0))
+						sciTE->WndProc(SCI_SETFOLDEXPANDED, line, 1);
+					expand(line, true, force, visLevels - 1);
+				}
+        else 
+        {
+					expand(line, false, force, visLevels - 1);
+				}
+			}
+		} 
+    else 
+    {
+			line++;
+		}
+	}
+}
+
+void FCScintillaEdit::foldAll() 
+{
+	sciTE->WndProc(SCI_COLOURISE, 0, -1);
+	int maxLine = sciTE->WndProc(SCI_GETLINECOUNT, 0, 0);
+	bool expanding = true;
+	for (int lineSeek = 0; lineSeek < maxLine; lineSeek++) 
+  {
+		if (sciTE->WndProc(SCI_GETFOLDLEVEL, lineSeek, 0) & SC_FOLDLEVELHEADERFLAG) 
+    {
+			expanding = !sciTE->WndProc(SCI_GETFOLDEXPANDED, lineSeek, 0);
+			break;
+		}
+	}
+	for (int line = 0; line < maxLine; line++) 
+  {
+		int level = sciTE->WndProc(SCI_GETFOLDLEVEL, line, 0);
+		if ((level & SC_FOLDLEVELHEADERFLAG) && (SC_FOLDLEVELBASE == (level & SC_FOLDLEVELNUMBERMASK))) 
+    {
+			if (expanding) 
+      {
+				sciTE->WndProc(SCI_SETFOLDEXPANDED, line, 1);
+				expand(line, true, false, 0, level);
+				line--;
+			}
+      else 
+      {
+				int lineMaxSubord = sciTE->WndProc(SCI_GETLASTCHILD, line, -1);
+				sciTE->WndProc(SCI_SETFOLDEXPANDED, line, 0);
+				if (lineMaxSubord > line)
+					sciTE->WndProc(SCI_HIDELINES, line + 1, lineMaxSubord);
+			}
+		}
+	}
+}
+
+bool FCScintillaEdit::clickMargin(int position, int modifiers) 
+{
+	int lineClick = sciTE->WndProc(SCI_LINEFROMPOSITION, position, 0);
+	if ((modifiers & SCMOD_SHIFT) && (modifiers & SCMOD_CTRL)) 
+  {
+		foldAll();
+	} 
+  else 
+  {
+		int levelClick = sciTE->WndProc(SCI_GETFOLDLEVEL, lineClick, 0);
+		if (levelClick & SC_FOLDLEVELHEADERFLAG) 
+    {
+			if (modifiers & SCMOD_SHIFT) 
+      {
+				sciTE->WndProc(SCI_SETFOLDEXPANDED, lineClick, 1);
+				expand(lineClick, true, true, 100, levelClick);
+			} 
+      else if (modifiers & SCMOD_CTRL) 
+      {
+				if (sciTE->WndProc(SCI_GETFOLDEXPANDED, lineClick, 0)) 
+        {
+					sciTE->WndProc(SCI_SETFOLDEXPANDED, lineClick, 0);
+					expand(lineClick, false, true, 0, levelClick);
+				} 
+        else 
+        {
+					sciTE->WndProc(SCI_SETFOLDEXPANDED, lineClick, 1);
+					expand(lineClick, true, true, 100, levelClick);
+				}
+			} 
+      else 
+      {
+				sciTE->WndProc(SCI_TOGGLEFOLD, lineClick, 0);
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -892,7 +1211,7 @@ bool FCScintillaView::OnMsg(const char* pMsg)
 	return false;
 }
 
-// Mesage handler test
+// Message handler test
 bool FCScintillaView::OnHasMsg(const char* pMsg)
 {
 	if (strcmp(pMsg,"Save")==0)  return true;
@@ -994,6 +1313,9 @@ bool FCScintillaView::Open(void)
 void FCScintillaView::OpenFile (const QString& fileName)
 {
 	view->getTextEditor()->WndProc(SCI_CLEARALL, 0, 0);
+	view->getTextEditor()->WndProc(SCI_SETSAVEPOINT, 0, 0);
+  view->getTextEditor()->WndProc(SCI_CANCEL, 0, 0);
+  view->getTextEditor()->WndProc(SCI_SETUNDOCOLLECTION, 0, 0);
 
   QString line;
   _fileName = fileName;
