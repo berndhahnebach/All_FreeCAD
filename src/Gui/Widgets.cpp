@@ -154,6 +154,120 @@ QString FCFileDialog::selectedFileName()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+FCMessageBox::FCMessageBox(QWidget * parent, const char * name)
+	: QMessageBox(parent, name), checkBox(0L), layout(0L)
+{
+}
+
+FCMessageBox::FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1, 
+													 int button2, QWidget * parent, const char * name, bool modal, WFlags f)
+	: QMessageBox(caption, text, icon, button0, button1, button2, parent, name, modal, f), 
+		checkBox(0L), layout(0L)
+{
+	QString msg = tr("Do not show this message again");
+	QString entry = QString("NotShowDialog:%1").arg(text);
+
+	checkBox = new FCCheckBox(this, "FCCheckBox");
+	checkBox->setText( msg );
+	checkBox->setEntryName(entry);
+	checkBox->setParamGrpPath("User parameter:BaseApp/Windows/Dialogs");
+	checkBox->getHandler()->onRestore();
+
+	// if check throw an exception to avoid to show
+	// (exception is caught in the calling static function)
+	if (checkBox->isChecked())
+	{
+		delete checkBox;
+		checkBox = 0L;
+
+		throw QString("jjj");
+	}
+
+	layout = new QGridLayout(this, 1, 1, 50);
+	layout->addWidget(checkBox, 0, 0);
+}
+
+FCMessageBox::~FCMessageBox()
+{
+	if (checkBox)
+		checkBox->getHandler()->onSave();
+	delete checkBox;
+	delete layout;
+}
+
+int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text, 
+															int button0, int button1, int button2)
+{
+	FCMessageBox dlg(caption, text, Information, button0, button1, button2, parent,  "FCMessageBox");
+	dlg.exec();
+	return 0;
+}
+
+int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text, 
+															const QString & button0Text, const QString & button1Text, 
+															const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+{
+	int b[3];
+	b[0] = 1;
+	b[1] = !button1Text.isEmpty() ? 2 : 0;
+	b[2] = !button2Text.isEmpty() ? 3 : 0;
+
+	int i;
+	for( i=0; i<3; i++ ) 
+	{
+		if ( b[i] > 0  && defaultButtonNumber == i )
+			b[i] += QMessageBox::Default;
+		if ( b[i] > 0  && escapeButtonNumber == i )
+			b[i] += QMessageBox::Escape;
+	}
+
+	FCMessageBox* dlg=0L;
+	try{
+		dlg=new FCMessageBox( caption, text, Information, b[0], b[1], b[2], parent, "FCMessageBox");
+		if ( !button0Text.isEmpty() )
+			dlg->setButtonText(0, button0Text);
+		if ( !button1Text.isEmpty() )
+			dlg->setButtonText(1, button1Text);
+		if ( !button2Text.isEmpty() )
+			dlg->setButtonText(2, button2Text);
+		int res = dlg->exec();
+		delete dlg;
+		return (res-1);
+	} catch (...)
+	{
+		return -1;
+	}
+}
+
+int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text, 
+													 int button0, int button1, int button2 )
+{
+	return 0;
+}
+
+int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text, 
+													 const QString & button0Text, const QString & button1Text, 
+													 const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+{
+	return 0;
+}
+
+int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text, 
+														int button0, int button1, int button2 )
+{
+	return 0;
+}
+
+int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text, 
+														const QString & button0Text, const QString & button1Text, 
+														const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+{
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 class FCProgressBarPrivate
 {
   public:

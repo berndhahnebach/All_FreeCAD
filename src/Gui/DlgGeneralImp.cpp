@@ -94,7 +94,7 @@ void FCDlgGeneral::apply()
 {
 	if (QString::compare(Languages->currentText(), language) != 0)
 	{
-		QMessageBox::information(this, "Info", tr("To take effect on the new language restart FreeCAD, please"));
+		FCMessageBox::information(ApplicationWindow::Instance, "Info", tr("To take effect on the new language restart FreeCAD, please"));
 	  GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
 		("Language")->SetASCII("Language", Languages->currentText().latin1());
 	}

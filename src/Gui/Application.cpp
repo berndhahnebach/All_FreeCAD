@@ -95,7 +95,6 @@ static QWorkspace* stWs;
 
 
 ApplicationWindow* ApplicationWindow::Instance = 0L;
-FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 
 // Pimpl class
 struct ApplicationWindowP
@@ -167,9 +166,7 @@ ApplicationWindow::ApplicationWindow()
 
 	// start thread which observes the application and 
 	// sets/unsets the waiting cursor if necessary
-	FCAutoWaitCursor* waitCursor = &FCAutoWaitCursor::Instance();
-	connect(this, SIGNAL(timeEvent()), waitCursor, SLOT(timeEvent()));
-	startTimer(waitCursor->GetInterval() / 2);
+	FCAutoWaitCursor::Instance();
 
 	// global access 
 	Instance = this;
@@ -337,6 +334,8 @@ ApplicationWindow::~ApplicationWindow()
   }
 
   SaveWindowSettings();
+
+	FCAutoWaitCursor::Destruct();
 }
 
 
@@ -1520,12 +1519,14 @@ void FCGuiConsoleObserver::Log    (const char *)
 // FCAutoWaitCursor
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 
 void FCAutoWaitCursor::Destruct(void)
 {
 	// not initialized or double destruct!
 	assert(_pclSingleton);
 	delete _pclSingleton;
+	_pclSingleton = NULL;
 }
 
 FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
@@ -1533,105 +1534,111 @@ FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
 	// not initialized?
 	if(!_pclSingleton)
 	{
-
 #ifdef FC_OS_WIN32
 		_pclSingleton = new FCAutoWaitCursor(GetCurrentThreadId(), 100);
 #else
-		_pclSingleton = new FCAutoWaitCursor(100);
+		_pclSingleton = new FCAutoWaitCursor(0, 100);
 #endif
 	}
 
 	return *_pclSingleton;
 }
 
-// getter/setter
-int FCAutoWaitCursor::GetInterval()
+FCAutoWaitCursor::FCAutoWaitCursor(uint id, int i)
+	:main_threadid(id), nInterval(i), bRun(true)
 {
-  return iInterval;
+	start();
 }
 
-void FCAutoWaitCursor::SetInterval(int i)
+FCAutoWaitCursor::~FCAutoWaitCursor()
 {
-  iInterval = i;
+	bRun = false;
+	wait();
 }
 
 void FCAutoWaitCursor::SetWaitCursor()
 {
-#	ifdef FC_OS_WIN32 // win32 api functions
-		AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
-		SetCursor(LoadCursor(NULL, IDC_WAIT));
-#	endif
-}
-
-
-#ifdef FC_OS_WIN32 // windows os
-
-FCAutoWaitCursor::FCAutoWaitCursor(DWORD id, int i)
-	:main_threadid(id), iInterval(i)
-{
-	iAutoWaitCursorMaxCount = 3;
-	iAutoWaitCursorCounter  = 3;
-	bOverride = false;
-	start();
-}
-
+#ifdef FC_OS_WIN32 // win32 api functions
+	AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
+	SetCursor(LoadCursor(NULL, IDC_WAIT));
 #else
-
-FCAutoWaitCursor::FCAutoWaitCursor(int i)
-	: iInterval(i)
-{
-	iAutoWaitCursorMaxCount = 3;
-	iAutoWaitCursorCounter  = 3;
-	bOverride = false;
-	start();
-}
-
+	QApplication::setOverrideCursor(Qt::waitCursor);
 #endif
+}
 
 void FCAutoWaitCursor::run()
 {
-	while (true)
+	int step = 5;
+	int i=0;
+	QSize size;
+	QPoint pos;
+	bool ignore;
+	bool cursorset;
+
+#ifdef FC_OS_WIN32
+		HCURSOR hCursor = NULL;
+#endif
+
+	while (bRun)
 	{
 	  // set the thread sleeping
-	  msleep(iInterval);
+	  msleep(nInterval);
 
-	  // decrements the counter
-	  awcMutex.lock();
-	  if (iAutoWaitCursorCounter > 0)
-		iAutoWaitCursorCounter--;
-	  awcMutex.unlock();
-
-	  // set waiting cursor if the application is busy
-	  if (iAutoWaitCursorCounter == 0)
-	  {
-		// load the waiting cursor only once
-		if (bOverride == false)
+		// application seems to be busy
+		if (qApp->locked())
 		{
-		  SetWaitCursor();
-		  bOverride = true;
+			ignore = false;
+
+			// search for an active window
+			QWidget* w = qApp->focusWidget();
+			if ( w )
+			{
+				// is application really busy ?
+				//
+				// If you press a mouse button on the edge of
+				// a native window (under Windows OS) the application's
+				// message loop is blocked. Then look if the window
+				// is moved or resized, if so the appliaction is NOT busy.
+				// (But this cannot detect cases if the user clicks on a 
+				//  system menu button or doesn't move the mouse after clicking)
+				ignore = (size != w->size() || pos != w->pos());
+				size = w->size();
+				pos = w->pos();
+			}
+	
+			if (i<step && !ignore)
+			{
+				i++;
+				if (i==step)
+				{
+#	ifdef FC_OS_WIN32 // win32 api functions
+					AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
+					hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
+# else
+					QApplication::setOverrideCursor(Qt::waitCursor);
+#	endif
+					cursorset = true;
+				}
+			}
+			else if ( ignore && cursorset)
+			{
+				if (hCursor)
+				{
+#	ifdef FC_OS_WIN32 // win32 api functions
+					SetCursor(hCursor);
+# else
+					QApplication::restoreOverrideCursor();
+#	endif
+					cursorset = false;
+				}
+			}
 		}
-	  }
-	  // reset
-	  else if (bOverride == true)
-	  {
-		// you need not to restore the old cursor because 
-		// the application window does this for you :-))
-		bOverride = false;
-	  }
+		else
+		{
+			i=0;
+		}
 	}
 }
-
-
-void FCAutoWaitCursor::timeEvent()
-{
-  // NOTE: this slot must be connected with the timerEvent of your class
-  // increments the counter
-  awcMutex.lock();
-  if (iAutoWaitCursorCounter < iAutoWaitCursorMaxCount)
-    iAutoWaitCursorCounter++;
-  awcMutex.unlock();
-}
-
 
 
 //**************************************************************************

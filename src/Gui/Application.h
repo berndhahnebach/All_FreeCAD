@@ -278,52 +278,28 @@ protected:
  *  waiting cursor if the application is busy
  *  @author Werner Mayer
  */
-class GuiExport FCAutoWaitCursor : public QObject, public QThread
+class GuiExport FCAutoWaitCursor : public QThread
 {
+	public:
+		static void Destruct(void);
+		static FCAutoWaitCursor &Instance(void);
 
-	Q_OBJECT
+		void SetWaitCursor();
 
-public:
-	static void Destruct(void);
-	static FCAutoWaitCursor &Instance(void);
-	// getter/setter
-	int GetInterval();
-	void SetInterval(int i);
-  /// sets the wait cursor calling API methods of the OS
-	void SetWaitCursor();
-
-  // Singleton
-private:
-#ifdef FC_OS_WIN32 // windows os
-    FCAutoWaitCursor(DWORD id, int i);
-#else
-    FCAutoWaitCursor(int i);
-#endif
+		// Singleton
+	private:
+    FCAutoWaitCursor(uint id, int i);
+		~FCAutoWaitCursor();
 
     static FCAutoWaitCursor* _pclSingleton;
 
-protected:
+	protected:
     /// run the thread, decrement an internal counter
     void run();
 
-    QMutex awcMutex;
-    int iAutoWaitCursorCounter;
-    int iAutoWaitCursorMaxCount;
-    int iInterval;
-    bool bOverride;
-#ifdef FC_OS_WIN32
-  	DWORD main_threadid;
-#endif
-
-public slots:
-    /// increment the internal counter
-    void timeEvent();
+  	uint main_threadid;
+		int nInterval;
+		bool bRun;
 };
-
-
-
-
-
-
 
 #endif

@@ -82,6 +82,38 @@ class GuiExport FCFileDialog : public QFileDialog
     virtual void accept();
 };
 
+class GuiExport FCMessageBox : public QMessageBox
+{
+	public:
+		FCMessageBox(QWidget * parent=0, const char * name=0);
+		~FCMessageBox();
+
+		static int information(QWidget * parent, const QString & caption, const QString & text, 
+			int button0, int button1=0, int button2=0);
+		static int information(QWidget * parent, const QString & caption, const QString & text, 
+			const QString & button0Text = QString::null, const QString & button1Text = QString::null, 
+			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
+		static int warning ( QWidget * parent, const QString & caption, const QString & text, 
+			int button0, int button1, int button2=0 ); 
+		static int warning ( QWidget * parent, const QString & caption, const QString & text, 
+			const QString & button0Text = QString::null, const QString & button1Text = QString::null, 
+			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+		static int critical ( QWidget * parent, const QString & caption, const QString & text, 
+			int button0, int button1, int button2=0 );
+		static int critical ( QWidget * parent, const QString & caption, const QString & text, 
+			const QString & button0Text = QString::null, const QString & button1Text = QString::null, 
+			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+
+	protected:
+
+		// protected constructor
+		FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1, 
+			int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
+
+		class FCCheckBox* checkBox;
+		QGridLayout* layout;
+};
+
 /**  
  * FreeCAD's progressbar for long operations
  * If you call @ref Start() several times without calling
