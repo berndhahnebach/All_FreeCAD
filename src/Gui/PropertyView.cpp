@@ -40,6 +40,7 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
+#	include <qguardedptr.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

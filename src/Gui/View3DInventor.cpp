@@ -76,7 +76,7 @@ FCView3DInventor::~FCView3DInventor()
 {
   //delete _viewer;
 	pcSepRoot->unref();
-  
+
 }
 
 void FCView3DInventor::UpdatePrefs(void)
@@ -96,8 +96,8 @@ void FCView3DInventor::UpdatePrefs(void)
 
 }
 
-#include <inventor/nodes/SoCylinder.h>
-#include <inventor/nodes/SoTransform.h>
+#include <Inventor/nodes/SoCylinder.h>
+#include <Inventor/nodes/SoTransform.h>
 
 
 void FCView3DInventor::SetViewerDefaults(void)
