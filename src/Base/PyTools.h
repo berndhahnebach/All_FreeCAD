@@ -69,7 +69,7 @@ extern "C" {             /* a C library, but callable from C++ */
 
 #include <stdio.h>
 // Python
-#include <python.h>
+#include <Python.h>
 
 extern int PP_RELOAD;    /* 1=reload py modules when attributes referenced */
 extern int PP_DEBUG;     /* 1=start debugger when string/function/member run */
@@ -184,4 +184,4 @@ extern PyObject *PP_last_traceback;   /* saved exception traceback object */
 }
 #endif
 
-#endif (!PPEMBED_H)
+#endif /*PREEMBED_H*/

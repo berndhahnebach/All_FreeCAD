@@ -12,6 +12,8 @@
  ***************************************************************************/
 
 
+#ifndef __linux /* This is completely diffrent (minimalistic approach) */
+
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -19,7 +21,6 @@
 #	include "io.h"
 #	include "fcntl.h"
 #endif
-
 
 #include "GUIConsole.h"
 
@@ -91,3 +92,16 @@ void FCGUIConsole::Log  (const char *sLog)
 	printf("%s",sLog);
 }
 
+#else
+#include<iostream>
+#include "GuiConsole.h"
+/* Let's assume we are being run from a (virtual) console,
+   so cout and cerr don't go to nowhere.
+  TODO: mimick original code: opening PTYs, colors, ... */
+FCGUIConsole::FCGUIConsole (void) {cerr<<"Opening new GUIConsole..."<<endl;}
+FCGUIConsole::~FCGUIConsole (void) {cerr<<"GUIConsole closed"<<endl;}
+void FCGUIConsole::Message(const char *sMsg){cout<<sMsg;}
+void FCGUIConsole::Warning(const char *sWarn){cerr<<"Warning: "<<sWarn;}
+void FCGUIConsole::Error  (const char *sErr){cerr<<"Error: "<<sErr;}
+void FCGUIConsole::Log  (const char *sLog){cout<<"Log: "<<sLog;}
+#endif /* ifndef __linux */

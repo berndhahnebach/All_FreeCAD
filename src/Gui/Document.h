@@ -29,6 +29,11 @@
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_Viewer.hxx>
 
+#ifdef __linux
+#include <AIS_Trihedron.hxx>
+#include <Geom_Axis2Placement.hxx>
+#endif
+
 class ApplicationWindow;
 class FCDocument;
 class MDIWindow;

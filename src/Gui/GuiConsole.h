@@ -21,7 +21,8 @@
 #define __GUICONSOLE_H__
 
 #include "../Base/Export.h"
-#include "../base/Console.h"
+
+#include "../Base/Console.h"
 
 /** The console window class
  *  This class opens a console window when instaciated 

@@ -24,7 +24,7 @@
 
 #include "CommandStd.h"
 #include "DlgDocTemplatesImp.h"
-#include "Icons/Images.cpp"
+#include "Icons/images.cpp"
 #include "Application.h"
 
 

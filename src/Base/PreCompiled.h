@@ -21,7 +21,7 @@
 #include <stack>
 
 // Python
-#include <python.h>
+#include <Python.h>
 
 // OpenCasCade
 //#include <Standard_Failure.hxx>

@@ -4,8 +4,8 @@
 #include "../Base/Export.h"
 
 #include <qmainwindow.h>
-//#include <qaction.h>
-//#include <qworkspace.h>
+#include <qaction.h>
+#include <qworkspace.h>
 
 #include <qextmdimainfrm.h>
 

@@ -4,7 +4,7 @@
 #	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
-#	include <python.h>
+#       include <Python.h>
 #endif
 
 #include "DlgDocTemplatesImp.h"
@@ -106,5 +106,6 @@ void DlgDocTemplatesImp::IconDoubleClick(QIconViewItem* Item)
 }
 
 #include "DlgDocTemplatesImp_moc.cpp"
+
 
 

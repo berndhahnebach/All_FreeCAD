@@ -13,11 +13,10 @@
 #else
 #endif
 
-#include "../base/Console.h"
+#include "../Base/Console.h"
 
 #include "Command.h"
 #include "Application.h"
-
 
 #include "Icons/x.xpm"
 

@@ -13,12 +13,21 @@
 // At the termination of the contract, the software and all copies of this
 // software must be deleted.
 //
-#ifndef _TDataStd_Name_HeaderFile
-#define _TDataStd_Name_HeaderFile
+#ifdef __linux /* I don;t understand this. Why defining _TDataStd_Name_HeaderFile when it is not included??? */
+#  include<TDataStd_Name.hxx>
+#else
+#  ifndef _TDataStd_Name_HeaderFile
+#  define _TDataStd_Name_HeaderFile
+#endif
+
 
 #ifndef _Standard_HeaderFile
 #include <Standard.hxx>
 #endif
+
+
+
+
 #ifndef _Handle_TDataStd_Name_HeaderFile
 #include <Handle_TDataStd_Name.hxx>
 #endif
@@ -46,15 +55,22 @@ class TDF_RelocationTable;
 #include <Handle_TDF_Attribute.hxx>
 #endif
 
+
+
 class Standard_Transient;
 class Handle_Standard_Type;
 class Handle(TDF_Attribute);
 class TDataStd_Name;
 Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(TDataStd_Name);
 
+#ifdef __linux  /* FCAttribute undeclared */
+class FCAttribute;
+#endif
+
+
 /** Handle class for FCAttribute
  */
-class DocExport Handle_FCAttribute :public Handle(TDF_Attribute) 
+class DocExport Handle_FCAttribute :public Handle(TDF_Attribute)
 {
 public:
 	void* operator new(size_t,void* anAddress){return anAddress;}
@@ -67,7 +83,11 @@ public:
 
 	Handle_FCAttribute& operator=(const Handle(TDataStd_Name)& aHandle)
 	{
-		Assign(aHandle.Access());
+#ifdef __linux__  /*Access is protected*/
+		Assign(&(*aHandle));
+#else
+		Assign(aHandle.Access()); 
+#endif		
 		return *this;
 	}
 
@@ -79,7 +99,11 @@ public:
 
 	TDataStd_Name* operator->() 
 	{
+#ifdef __linux /* cannot convert `FCAttribute *' to `TDataStd_Name *' */
+		return (TDataStd_Name *)(ControlAccess());
+#else		
 		return (FCAttribute *)ControlAccess();
+#endif		
 	}
 
 	TDataStd_Name* operator->() const{return (FCAttribute *)ControlAccess();}

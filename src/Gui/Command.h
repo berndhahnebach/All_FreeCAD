@@ -21,7 +21,7 @@
 
 #include "../Base/Export.h"
 
-#include "../base/PyExport.h"
+#include "../Base/PyExport.h"
 #include <qaction.h>
 #include <string>
 #include <map>
@@ -148,6 +148,8 @@ private:
  *  This macro makes it easyer to define a new command.
  *  The parameters are the class name and the command name
  */
+//#ifndef aa__linux /* virtual does not compile */
+
 #define DEF_STD_CMD(X,Y) class X : public FCCommand \
 {\
 public:\
@@ -155,5 +157,19 @@ public:\
 	virtual void CmdProfile(char** sMenuText, char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel);\
 	virtual void Activated(void);\
 };
+
+/*#else
+
+#define DEF_STD_CMD(X,Y) class X : public FCCommand \
+{\
+public:\
+	X():FCCommand(Y){}\
+	void CmdProfile(char** sMenuText, char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel);\
+	void Activated(void);\
+};
+
+#endif //__linux*/
+
+
 
 #endif // __Command_h__

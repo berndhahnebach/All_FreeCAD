@@ -3,8 +3,11 @@
 #pragma warning( disable : 4786 )
 
 #include <stdio.h>
+
+#ifndef __linux
 #include <direct.h>
 #include <windows.h>
+#endif
 
 
 // FreeCAD Base header
@@ -21,13 +24,14 @@
 
 // FreeCAD Gui header
 #define _FC_GUI_ENABLED_
+
 #ifdef  _FC_GUI_ENABLED_
-#	include <qapplication.h>
-#	include "DlgSplasher.h"
-#	include "../Gui/Application.h"
-#	ifdef WNT
-#		pragma comment(lib,"qt-mt230nc.lib")
-#	endif
+#  include <qapplication.h>
+#  include "DlgSplasher.h"
+#  include "../Gui/Application.h"
+#  ifdef WNT
+#    pragma comment(lib,"qt-mt230nc.lib")
+#  endif 
 #endif
 
 
@@ -42,12 +46,17 @@ const char sBanner[] = \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
 
+#ifndef __linux
 // scriptings
 #include "InitScript.h"
 #include "TestScript.h"
 #include "TestEnvScript.h"
-
-
+#else
+// this might be a cleaner approach? (Besides path to scripts)
+const char FreeCADInit[]="execfile('./Main/FreeCADInit.py')";
+const char FreeCADTest[]="execfile('./Main/FreeCADTest.py')";
+const char FreeCADTestEnv[]="execfile('./Main/FreeCADTestEnv.py')";
+#endif
 
 // globals
 FCParameter *pcGlobalParameter;
@@ -56,7 +65,6 @@ FCParameter *pcGlobalParameter;
 int RunMode = 0;
 stlport::string sFileName;
 const char*     sScriptName;
-
 
 QApplication* pcQApp;
 // forwards
@@ -176,7 +184,10 @@ int main( int argc, char ** argv ) {
 	}
 
 	// Destruction phase ===========================================================
-	delete pcQApp;
+#ifdef __linux // what if we are running in a GUI-less mode?
+        if (pcQApp)
+#endif        
+        delete pcQApp;
 	delete pcGlobalParameter;
 
 	GetConsole().Log("FreeCAD completly terminated\n\n");
@@ -254,7 +265,6 @@ const char sEnvErrorText[] = \
 void CheckEnv(void)
 {
 	bool bFailure = false;
-
 	// set the resource env variables
 /*  dont work!!! keeps the path from registry
 	char  szString [256] ;
@@ -281,7 +291,27 @@ void CheckEnv(void)
 		GetConsole().Message("Environment (CSF_GRAPHICSHR) not set!\n");
 		bFailure = true;
 	}*/
-	if( ! getenv("CSF_MDTVFONTDIRECTORY") ){
+        
+        
+#define TEST_ENVVAR_EXISTS(envvar) \
+	if (!getenv(envvar)){ \
+          cerr<<"Environment variable "<<envvar<<" is not set!"<<endl; \
+          bFailure=true;\
+        }  
+        TEST_ENVVAR_EXISTS("CSF_GraphicShr")
+        TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory")
+        TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory")
+        TEST_ENVVAR_EXISTS("CSF_UnitsDefinition")
+        TEST_ENVVAR_EXISTS("CSF_UnitsLexicon")
+        TEST_ENVVAR_EXISTS("CSF_PluginDefaults")
+        TEST_ENVVAR_EXISTS("CSF_StandardDefaults")
+        if (bFailure) {    
+         	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText;
+		exit(0);
+        }
+#undef TEST_ENVVAR_EXISTS         
+        
+/*	if( ! getenv("CSF_MDTVFONTDIRECTORY") ){
 		printf("Environment (CSF_MDTVFONTDIRECTORY) not set!\n");
 		bFailure = true;
 	}
@@ -309,7 +339,7 @@ void CheckEnv(void)
 	if(bFailure){
 		printf("Environment Error(s)\n%s",sEnvErrorText);
 		exit(0);
-	}
+	}  */
 
 /*	
 	if(  getenv("CASROOT") )

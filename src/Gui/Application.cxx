@@ -14,9 +14,9 @@
 
 
 
-#include "Application.h"
-#include "Document.h"
-#include "CommandStd.h"
+#  include "Application.h"
+#  include "Document.h"
+#  include "CommandStd.h"
 
 #include "DlgDocTemplatesImp.h"
 #include "DlgUndoRedo.h"
@@ -196,8 +196,7 @@ void ApplicationWindow::slotPaste(void)
 
 
 
-
-#include "Icons/Images.cpp"
+#include "Icons/images.cpp"
 
 void ApplicationWindow::CreateTestOperations()
 {

@@ -137,7 +137,11 @@ unsigned long FCParameter::GetGroup(const char *cKey,FCParameter &cPara)
     unsigned long ulSize=0;
 
 	for(std::map<std::string,std::string>::iterator It=mData.begin();It!=mData.end();It++)
+#ifdef __linux
+        if(!(It->first).compare(std::string(cKey)))
+#else	
         if(!(It->first).compare(0,s,cKey))
+#endif	
 		{
             cPara.mData[std::string(It->first,s,It->first.size())] = It->second;
 			ulSize++;

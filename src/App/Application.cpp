@@ -25,7 +25,7 @@
 Standard_CString FCApplicationOCC::ResourcesName()
 {
 	//return Standard_CString ("Resources");
-	return Standard_CString ("Standard");
+	return Standard_CString ("Standard");	
 }
 
 void FCApplicationOCC::Formats(TColStd_SequenceOfExtendedString& Formats)

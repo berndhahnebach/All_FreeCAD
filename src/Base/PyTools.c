@@ -118,7 +118,11 @@ PP_Debug_Function(PyObject *func, PyObject *args)
     PyObject *presult;
 
     /* expand tuple at front */
+#ifdef __linux /* too many arguments to function int _PyTuple_Resize (Pyobject **, int) */
+    oops = _PyTuple_Resize(&args, (1 + PyTuple_Size(args))); 
+#else
     oops = _PyTuple_Resize(&args, (1 + PyTuple_Size(args)), 1); 
+#endif    
     oops |= PyTuple_SetItem(args, 0, func);   
     if (oops) 
         return NULL;                        /* "args = (funcobj,) + (arg,..)" */
@@ -172,6 +176,9 @@ PP_Run_Known_Callable(PyObject *object,               /* func|class|method */
  *****************************************************************************/
 
 #define MAX 1024
+/*
+__linux: This is dangerous. How about PY_EXCEPT_MAX?
+*/
 
 /* exception text is here after PP_Fetch_Error_Text call */
 char PP_last_error_type[MAX];           /* exception name text */
@@ -278,7 +285,11 @@ PP_Convert_Result(PyObject *presult, char *resFormat, void *resTarget)
     else {
         if (strcmp(resFormat, "O") != 0) {     /* free object unless exported */
             if (strcmp(resFormat, "s") == 0) { /* copy string: caller owns it */
-                char **target = resTarget;
+#ifdef __linux //cannot convert `void*' to `char **' in initialization
+                char **target = (char**) resTarget;
+#else
+                char **target = resTarget;                
+#endif                
                 *target = strdup(*target); 
             }
             Py_DECREF(presult);
@@ -332,9 +343,18 @@ PP_Set_Global(char *modname, char *varname, char *valfmt, ... /* cval(s) */)
 int PP_RELOAD = 0;    /* reload modules dynamically? */
 int PP_DEBUG  = 0;    /* debug embedded code with pdb? */
 
+
 char *PP_Init(char *modname) {
     Py_Initialize();                               /* init python if needed */
-    return modname == NULL? "__main__" : modname;  /* default to '__main__' */
+#ifdef __linux /* cannot convert `const char *' to `char *' in assignment */
+    if (modname!=NULL) return modname;
+    { /* we assume here that the caller frees allocated memory */
+      char* __main__=(char *)malloc(sizeof("__main__"));
+      return __main__="__main__";
+    }
+#else    
+    return modname == NULL ? "__main__" : modname;  /* default to '__main__' */
+#endif    
 }
 
 

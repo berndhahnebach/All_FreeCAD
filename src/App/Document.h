@@ -22,7 +22,7 @@
 
 #include "../Base/Export.h"
 
-#include "../base/PyExport.h"
+#include "../Base/PyExport.h"
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 

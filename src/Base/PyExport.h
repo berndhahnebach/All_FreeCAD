@@ -44,7 +44,7 @@ protected:
 #define PYFUNCIMP(Y,X) PyObject* Y::X (PyObject *self,PyObject *args,PyObject *kwd)
 
 
-#include <python.h>
+#include <Python.h>
 #include <iostream.h>
 
 /*------------------------------
@@ -53,8 +53,11 @@ protected:
 typedef const char * version;			// define "version"
 
 
-inline streq(const char *A, const char *B)	// define "streq"
+
+inline int streq(const char *A, const char *B)	// define "streq"
 { return strcmp(A,B) == 0;};
+
+#ifndef __linux // this is defined in STL already
 
 template <class T>				// min
 inline T min(const T& a, const T& b)
@@ -67,6 +70,8 @@ inline T max(const T& a, const T& b)
 {
 	return a > b ? a : b;
 }
+
+#endif
 
 inline void Assert(int expr, char *msg)		// C++ assert
 {

@@ -3,7 +3,7 @@
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
-#	include <python.h>
+#	include <Python.h>
 #endif
 
 #include "Console.h"

@@ -15,9 +15,16 @@
 #	include <TDataStd_Real.hxx>
 #endif
 
+#ifdef __linux
+#  include <TDataStd_Name.hxx>
+#  include <Handle_TDataStd_Name.hxx>
+#  include <TDataStd_Integer.hxx>
+#  include <Handle_TDataStd_Integer.hxx>
+#endif
+
 #include "Document.h"
-#include "../base/Console.h"
-#include "../base/Exception.h"
+#include "../Base/Console.h"
+#include "../Base/Exception.h"
 #include "Application.h"
 
 //===========================================================================
@@ -130,7 +137,11 @@ PyObject *FCLabel::_getattr(char *attr)				// __getattr__ function: note only ne
 			Handle(TDataStd_Name) NameAttr;
 			if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr))
 				//return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
+#ifdef __linux /* will "u" work? */
+				return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
+#else
 				return Py_BuildValue("s",NameAttr->Get()); 
+#endif				
 			else
 				return 0;
 		}else

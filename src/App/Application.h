@@ -103,7 +103,7 @@ protected:
  *  The root of the whole application
  *  @see FCDocument
  */
-class AppExport FCApplication :public FCPythonExport
+class AppExport FCApplication : public FCPythonExport
 {
 
 public:

@@ -28,6 +28,9 @@
 #	include <qrect.h>
 #	include <qvariant.h>
 #	include <qframe.h>
+#       ifdef __linux
+#          include <qapplication.h>
+#       endif
 #endif
 
 #include "DlgUndoRedo.h"
