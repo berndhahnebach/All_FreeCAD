@@ -30,6 +30,8 @@
 # ifdef FC_OS_WIN32
 #   include <windows.h>
 # endif
+# include <qapplication.h>
+# include <qimage.h>
 # include <GL/gl.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCone.h>
@@ -56,15 +58,18 @@
 
 #include "View3DInventorExamples.h"
 
+#include "Tools.h"
+#include "Icons/default_background.xpm"
+
 using namespace Gui;
 
-View3DInventorEx::View3DInventorEx( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
+View3DInventorEx::View3DInventorEx( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
 //  _viewer = new SoQtExaminerViewer(this);
-  _viewer = new Gui::MyExaminerViewer(this,"FreeCAD.png");
+  _viewer = new Gui::MyExaminerViewer(this/*,"FreeCAD.png"*/);
 
-  SetViewerDefaults();
+  setViewerDefaults();
 }
 
 View3DInventorEx::~View3DInventorEx()
@@ -73,7 +78,7 @@ View3DInventorEx::~View3DInventorEx()
   pcSepRoot->unref();
 }
 
-void View3DInventorEx::UpdatePrefs(void)
+void View3DInventorEx::updatePrefs(void)
 {
 
 
@@ -88,7 +93,7 @@ void View3DInventorEx::UpdatePrefs(void)
 }
 
 
-void View3DInventorEx::SetViewerDefaults(void)
+void View3DInventorEx::setViewerDefaults(void)
 {
   // create the root group
   pcSepRoot = new SoSeparator();
@@ -193,10 +198,10 @@ void View3DInventorEx::SetShape(void)
 
 }
 */
-void View3DInventorEx::Update(void)
+void View3DInventorEx::onUpdate(void)
 {
 
-  TDF_Label L = GetAppDocument()->GetActive();
+  TDF_Label L = getAppDocument()->GetActive();
 
   if(! L.IsNull())
   {
@@ -233,12 +238,12 @@ void View3DInventorEx::resizeEvent ( QResizeEvent * e)
 //  _pcFrame->resize(e->size());
 }
 
-const char *View3DInventorEx::GetName(void)
+const char *View3DInventorEx::getName(void)
 {
   return "View3DInventorEx";
 }
 
-bool View3DInventorEx::OnMsg(const char* pMsg)
+bool View3DInventorEx::onMsg(const char* pMsg)
 {
   if(strcmp("SetStereoOn",pMsg) == 0 ){
     _viewer->setStereoViewing(true);
@@ -282,7 +287,7 @@ bool View3DInventorEx::OnMsg(const char* pMsg)
   return false;
 }
 
-bool View3DInventorEx::OnHasMsg(const char* pMsg)
+bool View3DInventorEx::onHasMsg(const char* pMsg)
 {
   if(strcmp("SetStereoOn",pMsg) == 0 ){
     return true;
@@ -364,7 +369,22 @@ MyExaminerViewer::MyExaminerViewer(QWidget *parent, const char * filename)
   SoImage * img = new SoImage;
   img->vertAlignment = SoImage::HALF;
   img->horAlignment = SoImage::CENTER;
-  img->filename = filename;
+
+  if ( filename )
+  {
+    // if file specified load this file
+    img->filename = filename;
+  }
+  else
+  {
+    // otherwise take the default image and scale it up to desktop size
+    QImage image( default_background );
+
+    int w = QApplication::desktop()->width();
+    int h = QApplication::desktop()->height();
+    Tools::convert( image.smoothScale(w, h), img->image );
+  }
+
   this->bckgroundroot->addChild(img);
 
 

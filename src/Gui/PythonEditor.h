@@ -147,14 +147,14 @@ public:
 
   QTextEdit* editor() const { return textEdit; }
 
-  const char *GetName(void){return "PythonEditView";}
-  void Update(void){};
+  const char *getName(void){return "PythonEditView";}
+  void onUpdate(void){};
 
-  bool OnMsg(const char* pMsg);
-  bool OnHasMsg(const char* pMsg);
+  bool onMsg(const char* pMsg);
+  bool onHasMsg(const char* pMsg);
 
-  bool CanClose(void);
-  void Print( QPrinter* printer );
+  bool canClose(void);
+  void print( QPrinter* printer );
   void openFile (const QString& fileName);
 
   /** @name Standard actions of the editor */

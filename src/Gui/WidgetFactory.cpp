@@ -45,14 +45,14 @@ using namespace Gui;
 
 Gui::WidgetFactoryInst* Gui::WidgetFactoryInst::_pcSingleton = NULL;
 
-WidgetFactoryInst& WidgetFactoryInst::Instance()
+WidgetFactoryInst& WidgetFactoryInst::instance()
 {
   if (_pcSingleton == 0L)
     _pcSingleton = new WidgetFactoryInst;
   return *_pcSingleton;
 }
 
-void WidgetFactoryInst::Destruct ()
+void WidgetFactoryInst::destruct ()
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
@@ -141,7 +141,7 @@ QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent,
 
 WidgetFactorySupplier* WidgetFactorySupplier::_pcSingleton = 0L;
 
-WidgetFactorySupplier & WidgetFactorySupplier::Instance()
+WidgetFactorySupplier & WidgetFactorySupplier::instance()
 {
   // not initialized?
   if(!_pcSingleton)

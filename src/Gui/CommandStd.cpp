@@ -24,50 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <iostream>
-# include <stdio.h>
-# include <assert.h>
-# include <fcntl.h>
-# include <ctype.h>
-# include <typeinfo>
-# include <vector>
-# include <map>
-# include <string>
-# include <list>
-# include <set>
-# include <algorithm>
-# include <stack>
-# include <queue>
-# include <string>
-# include <limits.h>
 # if defined (_POSIX_C_SOURCE)
 #   undef  _POSIX_C_SOURCE
 # endif // (re-)defined in pyconfig.h
 # include <Python.h>
-# include <algorithm>
 # include <qapplication.h>
-# include <qaction.h>
-# include <qcombobox.h>
-# include <qcursor.h>
 # include <qstatusbar.h>
-# include <qthread.h>
 # include <qfiledialog.h>
-# include <qpainter.h>
-# include <qprocess.h>
 # include <qprinter.h>
-# include <qmessagebox.h>
-# include <qsplashscreen.h>
 # include <qtimer.h>
-# include <qtextbrowser.h>
-# include <qvalidator.h>
-# include <BRepPrimAPI_MakeBox.hxx>
-# include <BRepTools.hxx>
-# include <TopoDS_Shape.hxx>
-# include <TNaming_Builder.hxx>
-# include <TDataStd_Real.hxx>
-# include <Handle_TPrsStd_AISPresentation.hxx>
-# include <TNaming_NamedShape.hxx>
-# include <TPrsStd_AISPresentation.hxx>
 #endif
 
 #ifdef FC_USE_OCAFBROWSER
@@ -133,7 +98,7 @@ void StdCmdOpen::activated(int iMsg)
   if ( !f.isEmpty() ) {
     // the user selected a valid existing file
 //    GetApplication().Open(f.latin1());
-    getAppWnd()->AppendRecentFile(f.latin1());
+    getAppWnd()->appendRecentFile(f.latin1());
   } else {
     // the user cancelled the dialog
     getAppWnd()->statusBar()->message(QObject::tr("Opening aborted"));
@@ -190,7 +155,7 @@ void StdCmdSave::activated(int iMsg)
 {
   if( getActiveDocument() )
 //    DoCommand(Command::Doc,"FreeCAD.DocGetActive().Save()");		
-    getActiveDocument()->Save();
+    getActiveDocument()->save();
   else
     doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Save\")");
 //    getAppWnd()->SendMsgToActiveView("Save");
@@ -201,7 +166,7 @@ bool StdCmdSave::isActive(void)
   if( getActiveDocument() )
     return true;
   else
-    return getAppWnd()->SendHasMsgToActiveView("Save");
+    return getAppWnd()->sendHasMsgToActiveView("Save");
 }
 
 //===========================================================================
@@ -224,7 +189,7 @@ StdCmdSaveAs::StdCmdSaveAs()
 void StdCmdSaveAs::activated(int iMsg)
 {
   if( getActiveDocument() )
-    getActiveDocument()->SaveAs();
+    getActiveDocument()->saveAs();
   else
     doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SaveAs\")");
 }
@@ -234,7 +199,7 @@ bool StdCmdSaveAs::isActive(void)
   if( getActiveDocument() )
     return true;
   else
-    return getAppWnd()->SendHasMsgToActiveView("SaveAs");
+    return getAppWnd()->sendHasMsgToActiveView("SaveAs");
 }
 
 //===========================================================================
@@ -257,17 +222,17 @@ StdCmdPrint::StdCmdPrint()
 
 void StdCmdPrint::activated(int iMsg)
 {
-  if ( getAppWnd()->GetActiveView() )
+  if ( getAppWnd()->activeView() )
   {
     getAppWnd()->statusBar()->message("Printing...");
     QPrinter printer( QPrinter::HighResolution );
-    getAppWnd()->GetActiveView()->Print( &printer );
+    getAppWnd()->activeView()->print( &printer );
   }
 }
 
 bool StdCmdPrint::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Print");
+  return getAppWnd()->sendHasMsgToActiveView("Print");
 }
 
 //===========================================================================
@@ -315,12 +280,12 @@ StdCmdUndo::StdCmdUndo()
 void StdCmdUndo::activated(int iMsg)
 {
 //  ApplicationWindow::Instance->slotUndo();
-  getAppWnd()->SendMsgToActiveView("Undo");
+  getAppWnd()->sendMsgToActiveView("Undo");
 }
 
 bool StdCmdUndo::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Undo");
+  return getAppWnd()->sendHasMsgToActiveView("Undo");
 }
 
 QAction * StdCmdUndo::createAction(void)
@@ -362,12 +327,12 @@ StdCmdRedo::StdCmdRedo()
 void StdCmdRedo::activated(int iMsg)
 {
 //  ApplicationWindow::Instance->slotRedo();
-  getAppWnd()->SendMsgToActiveView("Redo");
+  getAppWnd()->sendMsgToActiveView("Redo");
 }
 
 bool StdCmdRedo::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Redo");
+  return getAppWnd()->sendHasMsgToActiveView("Redo");
 }
 
 QAction * StdCmdRedo::createAction(void)
@@ -409,7 +374,7 @@ StdCmdWorkbench::StdCmdWorkbench()
  */
 void StdCmdWorkbench::activated(int iMsg)
 {
-  std::vector<std::string> wb = ApplicationWindow::Instance->GetWorkbenches();
+  std::vector<std::string> wb = ApplicationWindow::Instance->workbenches();
   if (iMsg >= 0 && iMsg < int(wb.size()))
   {
     doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
@@ -443,7 +408,7 @@ QAction * StdCmdWorkbench::createAction(void)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
  
-  std::vector<std::string> items = ApplicationWindow::Instance->GetWorkbenches();
+  std::vector<std::string> items = ApplicationWindow::Instance->workbenches();
   for (std::vector<std::string>::iterator it = items.begin(); it!=items.end(); ++it)
     appendItem(it->c_str());
 
@@ -651,12 +616,12 @@ StdCmdCut::StdCmdCut()
 
 void StdCmdCut::activated(int iMsg)
 {
-  getAppWnd()->SendMsgToActiveView("Cut");
+  getAppWnd()->sendMsgToActiveView("Cut");
 }
 
 bool StdCmdCut::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Cut");
+  return getAppWnd()->sendHasMsgToActiveView("Cut");
 }
 
 //===========================================================================
@@ -679,12 +644,12 @@ StdCmdCopy::StdCmdCopy()
 
 void StdCmdCopy::activated(int iMsg)
 {
-  getAppWnd()->SendMsgToActiveView("Copy");
+  getAppWnd()->sendMsgToActiveView("Copy");
 }
 
 bool StdCmdCopy::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Copy");
+  return getAppWnd()->sendHasMsgToActiveView("Copy");
 }
 
 //===========================================================================
@@ -707,12 +672,12 @@ StdCmdPaste::StdCmdPaste()
 
 void StdCmdPaste::activated(int iMsg)
 {
-  getAppWnd()->SendMsgToActiveView("Paste");
+  getAppWnd()->sendMsgToActiveView("Paste");
 }
 
 bool StdCmdPaste::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Paste");
+  return getAppWnd()->sendHasMsgToActiveView("Paste");
 }
 
 //===========================================================================
@@ -776,7 +741,7 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
 
 void StdCmdTipOfTheDay::activated(int iMsg)
 {
-  getAppWnd()->ShowTipOfTheDay( true );
+  getAppWnd()->showTipOfTheDay( true );
 }
 
 //===========================================================================
@@ -1246,7 +1211,7 @@ void StdCmdDlgMacroRecord::activated(int iMsg)
 
 bool StdCmdDlgMacroRecord::isActive(void)
 {
-  return ! (getAppWnd()->GetMacroMngr()->isOpen());
+  return ! (getAppWnd()->macroManager()->isOpen());
 }
 
 //===========================================================================
@@ -1275,7 +1240,7 @@ void StdCmdDlgMacroExecute::activated(int iMsg)
 
 bool StdCmdDlgMacroExecute::isActive(void)
 {
-  return ! (getAppWnd()->GetMacroMngr()->isOpen());
+  return ! (getAppWnd()->macroManager()->isOpen());
 }
 
 //===========================================================================
@@ -1298,12 +1263,12 @@ StdCmdMacroStop::StdCmdMacroStop()
 
 void StdCmdMacroStop::activated(int iMsg)
 {
-  getAppWnd()->GetMacroMngr()->commit();
+  getAppWnd()->macroManager()->commit();
 }
 
 bool StdCmdMacroStop::isActive(void)
 {
-  return getAppWnd()->GetMacroMngr()->isOpen();
+  return getAppWnd()->macroManager()->isOpen();
 }
 
 //===========================================================================
@@ -1406,7 +1371,7 @@ StdCmdOCAFBrowse::StdCmdOCAFBrowse()
 void StdCmdOCAFBrowse::activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
-  cBrowser.DFBrowser(getAppWnd()->GetActiveDocument()->GetDocument()->GetOCCDoc());
+  cBrowser.DFBrowser(getAppWnd()->activeDocument()->getDocument()->GetOCCDoc());
 #else
   QMessageBox::information(getAppWnd(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
                                         "this feature is disabled.");
@@ -1415,14 +1380,14 @@ void StdCmdOCAFBrowse::activated(int iMsg)
 
 bool StdCmdOCAFBrowse::isActive(void)
 {
-  return getAppWnd()->GetActiveDocument() != 0;
+  return getAppWnd()->activeDocument() != 0;
 }
 
 namespace Gui {
 
 void CreateStdCommands(void)
 {
-  CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
 
   rcCmdMgr.addCommand(new StdCmdNew());
   rcCmdMgr.addCommand(new StdCmdOpen());

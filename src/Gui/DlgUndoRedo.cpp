@@ -24,11 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qapplication.h>
 # include <qlabel.h>
-# include <qpainter.h>
-# include <qstyle.h>
-# include <qvariant.h>
 #endif
 
 #include "DlgUndoRedo.h"
@@ -159,20 +155,20 @@ void UndoRedoDialog::onFetchInfo()
   pListBox->clear();
 
   std::vector<std::string> vecReUndos;
-  FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
+  Gui::Document* pcDoc = ApplicationWindow::Instance->activeDocument();
 
   if ( pcDoc )
   {
     if ( tMode == Undo ) 
-      vecReUndos = pcDoc->GetUndoVector();
+      vecReUndos = pcDoc->getUndoVector();
     else
-      vecReUndos = pcDoc->GetRedoVector();
+      vecReUndos = pcDoc->getRedoVector();
 
     for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
       pListBox->insertItem((*i).c_str());
     pTextLabel->setProperty( "text", tr( "Cancel" ) );
   }
-  else if ( dynamic_cast<PythonEditView*>(ApplicationWindow::Instance->GetActiveView()) )
+  else if ( dynamic_cast<PythonEditView*>(ApplicationWindow::Instance->activeView()) )
   {
     pTextLabel->setText( tr( "No info" ) );
   }

@@ -41,29 +41,28 @@
 #include "../Base/Console.h"
 
 
+using namespace Gui;
+
 GUIDDefs AttrNames[] = {
-	{0,0}
+  {0,0}
 };
 
 
-FCTreeLabel::FCTreeLabel( TreeView * parent)
-	:QListViewItem(parent->_pcListView),
-	 _pcDocument(parent->_pcDocument)
+TreeLabel::TreeLabel( TreeView * parent)
+  :QListViewItem(parent->_pcListView), _pcDocument(parent->_pcDocument)
 {
-	if(_pcDocument){
-		setText(0,QObject::tr("Main Label"));
-		setPixmap(0,*TreeView::pcLabelOpen);
-//		_hcLabel = parent->_pcDocument->GetDocument()->Main();
-		_hcTDFLabel = parent->_pcDocument->GetDocument()->Main();
-		BuildUp();
-		setOpen(true);
-	}else{
-		setPixmap(0,*TreeView::pcLabelClosed);
-		//setPixmap(new QPixmap(px));
-		setText(0,QObject::tr("No Active Document"));
-	}
-
-
+  if(_pcDocument){
+    setText(0,QObject::tr("Main Label"));
+    setPixmap(0,*TreeView::pcLabelOpen);
+  //  _hcLabel = parent->_pcDocument->GetDocument()->Main();
+    _hcTDFLabel = parent->_pcDocument->getDocument()->Main();
+    buildUp();
+    setOpen(true);
+  }else{
+    setPixmap(0,*TreeView::pcLabelClosed);
+    //setPixmap(new QPixmap(px));
+    setText(0,QObject::tr("No Active Document"));
+  }
 }
 
 /** Constructor
@@ -71,103 +70,99 @@ FCTreeLabel::FCTreeLabel( TreeView * parent)
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel )
+TreeLabel::TreeLabel( TreeLabel * parent, TDF_Label &hcLabel )
     : QListViewItem( parent ),
-	_hcTDFLabel(hcLabel),
-	_pcDocument(parent->_pcDocument)
+  _hcTDFLabel(hcLabel),
+  _pcDocument(parent->_pcDocument)
 {
-	QString cString;
+  QString cString;
 
-	cString.sprintf("Tag:%d",_hcTDFLabel.Tag());
-	setPixmap(0,*TreeView::pcLabelClosed);
-	setText(0,cString);
+  cString.sprintf("Tag:%d",_hcTDFLabel.Tag());
+  setPixmap(0,*TreeView::pcLabelClosed);
+  setText(0,cString);
 
-	BuildUp();
-
+  buildUp();
 }
 
-void FCTreeLabel::Update(void)
+void TreeLabel::update(void)
 {
-	//puts("Updtate");
+  //puts("Updtate");
 
 
-	/*
-	// quieck an dirty
-	if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !isOpen())
-	{
-		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
-		//	delete pItem;
+  /*
+  // quieck an dirty
+  if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !isOpen())
+  {
+    //for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
+    //  delete pItem;
 
-		std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+    std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
 
-		for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
-		{
-			new FCTreeLabel(this,*It);
-		}
+    for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+    {
+      new TreeLabel(this,*It);
+    }
 
-		setPixmap(0,*FCTree::pcLabelOpen);
+    setPixmap(0,*FCTree::pcLabelOpen);
 
-	}	
+  }
 */
 
 }
 
-void FCTreeLabel::BuildUp(void)
+void TreeLabel::buildUp(void)
 {
 
-/*	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+/*  std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
 
-	for(std::vector<FCPyHandle<FCLabel> >::reverse_iterator It=vpcLabels.rbegin();It != vpcLabels.rend(); It++)
-	{
-		new FCTreeLabel(this,*It);
-	}
+  for(std::vector<FCPyHandle<FCLabel> >::reverse_iterator It=vpcLabels.rbegin();It != vpcLabels.rend(); It++)
+  {
+    new TreeLabel(this,*It);
+  }
 
-	TDF_Label l = _hcLabel->GetOCCLabel();
-	
-	if( l.IsAttribute(TNaming_NamedShape::GetID()) )
-		(new QListViewItem(this,"Shape","1"))->setPixmap(0,*FCTree::pcAttribute);
-	if( l.IsAttribute(TDataStd_Integer::GetID()) )
-		(new QListViewItem(this,"Int","1"))->setPixmap(0,*FCTree::pcAttribute);
-	if( l.IsAttribute(TDataStd_Name::GetID()) )
-		(new QListViewItem(this,"String","1"))->setPixmap(0,*FCTree::pcAttribute);
+  TDF_Label l = _hcLabel->GetOCCLabel();
+
+  if( l.IsAttribute(TNaming_NamedShape::GetID()) )
+    (new QListViewItem(this,"Shape","1"))->setPixmap(0,*FCTree::pcAttribute);
+  if( l.IsAttribute(TDataStd_Integer::GetID()) )
+    (new QListViewItem(this,"Int","1"))->setPixmap(0,*FCTree::pcAttribute);
+  if( l.IsAttribute(TDataStd_Name::GetID()) )
+    (new QListViewItem(this,"String","1"))->setPixmap(0,*FCTree::pcAttribute);
 
 
-	if(childCount()>0)
-		setExpandable( TRUE );
+  if(childCount()>0)
+    setExpandable( TRUE );
 */
   }
 
-void FCTreeLabel::setOpen( bool o )
+void TreeLabel::setOpen( bool o )
 {
-	//puts("setOpen");
+  //puts("setOpen");
 
-	if(o)
-	{
-		setPixmap(0,*TreeView::pcLabelOpen);
+  if( o )
+  {
+    setPixmap(0,*TreeView::pcLabelOpen);
 
-		Update();
+    update();
 
-	}else{
-		setPixmap(0,*TreeView::pcLabelClosed);
-	}
+  }else{
+    setPixmap(0,*TreeView::pcLabelClosed);
+  }
 
-	QListViewItem::setOpen ( o );
-
+  QListViewItem::setOpen ( o );
 }
 
 
-void FCTreeLabel::setup()
+void TreeLabel::setup()
 {
-    //setExpandable( TRUE );
-    QListViewItem::setup();
+  //setExpandable( TRUE );
+  QListViewItem::setup();
 }
 
-void FCTreeLabel::activate ()
+void TreeLabel::activate ()
 {
-	//puts("Activated");
+  //puts("Activated");
 }
-
-
 
 
 QPixmap* TreeView::pcLabelOpen=0;
@@ -175,66 +170,64 @@ QPixmap* TreeView::pcLabelClosed=0;
 QPixmap* TreeView::pcAttribute=0;
 
 
-TreeView::TreeView(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
-	:DockView(pcDocument,parent,name)
+TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
+  :DockView(pcDocument,parent,name)
 {
   QGridLayout* layout = new QGridLayout( this );
-	_pcListView = new QListView(this,name);
+  _pcListView = new QListView(this,name);
   layout->addWidget( _pcListView, 0, 0 );
 
-	// set defaults and the colums
-	_pcListView->setSorting(-1,false);
-	_pcListView->addColumn(tr("Labels & Attr."));
-	_pcListView->setColumnWidthMode(0,QListView::Maximum);
-//	_pcListView->addColumn(tr("Value"));
-//	_pcListView->setColumnWidthMode(1,QListView::Manual );
+  // set defaults and the colums
+  _pcListView->setSorting(-1,false);
+  _pcListView->addColumn(tr("Labels & Attr."));
+  _pcListView->setColumnWidthMode(0,QListView::Maximum);
+//  _pcListView->addColumn(tr("Value"));
+//  _pcListView->setColumnWidthMode(1,QListView::Manual );
 
-	// retreive the Pixmaps
-	pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
-	pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
-	pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
-
-
-	// Add the first main label
-	_pcMainItem = new FCTreeLabel(this);
-
-	//_pcListView->setRootIsDecorated(true);
+  // retreive the Pixmaps
+  pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
+  pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
+  pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
 
 
+  // Add the first main label
+  _pcMainItem = new TreeLabel(this);
 
-	//_pcListView->setSize(200,400);
-    resize( 200, 400 );
+  //_pcListView->setRootIsDecorated(true);
 
-}
 
-void TreeView::Update(void)
-{
-	Base::Console().Log("Tree Updated\n");
-	
-	// quick and dirty so far
-	delete _pcMainItem;
-	_pcMainItem = new FCTreeLabel(this);
+
+  //_pcListView->setSize(200,400);
+  resize( 200, 400 );
 
 }
 
-void TreeView::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
+void TreeView::onUpdate(void)
 {
-//	Console().Log("Tree doc activated %p\n",pcNewDocument);
+  Base::Console().Log("Tree Updated\n");
 
-	if(pcOldDocument != pcNewDocument)
-	{
-		delete _pcMainItem;
-		_pcMainItem = new FCTreeLabel(this);
-	}
-
+  // quick and dirty so far
+  delete _pcMainItem;
+  _pcMainItem = new TreeLabel(this);
 }
 
-bool TreeView::OnMsg(const char* pMsg)
+void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
 {
-	//printf("MsgTree: %s View: %p\n",pMsg,this);
+//  Console().Log("Tree doc activated %p\n",pcNewDocument);
 
-	// no messages yet
-	return false;
+  if(pcOldDocument != pcNewDocument)
+  {
+    delete _pcMainItem;
+    _pcMainItem = new TreeLabel(this);
+  }
+}
+
+bool TreeView::onMsg(const char* pMsg)
+{
+  //printf("MsgTree: %s View: %p\n",pMsg,this);
+
+  // no messages yet
+  return false;
 }
 
 

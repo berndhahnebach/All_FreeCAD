@@ -27,9 +27,9 @@
 #include "DlgMacroRecord.h"
 #include "Window.h"
 
-class MacroManager;
 
 namespace Gui {
+class MacroManager;
 namespace Dialog {
 
 /**

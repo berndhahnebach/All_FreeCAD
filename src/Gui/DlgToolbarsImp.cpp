@@ -51,7 +51,7 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
   AvailableActions->setSorting( -1 );
   ToolbarActions->setSorting( -1 );
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
   for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
@@ -133,7 +133,7 @@ void DlgCustomToolbars::onNewActionChanged( QListViewItem *i )
 /** Shows all buttons of the toolbar */
 void DlgCustomToolbars::onItemActivated(const QString & name)
 {
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
   ToolbarActions->clear();
   Gui::CustomToolBar* it;
@@ -325,12 +325,12 @@ DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
 void DlgCustomToolbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
-  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar( text );
+  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getToolBar( text );
   toolbar->clearUp();
 
   const QObjectList* children = toolbar->children ();
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
   QStringList items;
   QListViewItem* item = ToolbarActions->firstChild();
@@ -380,7 +380,7 @@ void DlgCustomToolbarsImp::updateData()
 {
   ComboToolbars->clear();
   ToolbarActions->clear();
-  _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
+  _aclToolbars = ApplicationWindow::Instance->customWidgetManager()->getToolBars();
   Gui::CustomToolBar* it;
   for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
   {
@@ -402,13 +402,13 @@ void DlgCustomToolbarsImp::updateData()
 /** Creates new toolbar */
 void DlgCustomToolbarsImp::onCreateToolbar()
 {
-  QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countToolBars());
+  QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->customWidgetManager()->countToolBars());
   QString text = QInputDialog::getText( tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
                                       QLineEdit::Normal, def, 0, this );
 
   if (!text.isNull() && !text.isEmpty())
   {
-    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar( text );
+    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getToolBar( text );
     toolbar->show();
     _aclToolbars.append( toolbar );
     ComboToolbars->insertItem( text );
@@ -423,7 +423,7 @@ void DlgCustomToolbarsImp::onCreateToolbar()
 void DlgCustomToolbarsImp::onDeleteToolbar()
 {
   QValueList<CheckListItem> items;
-  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
+  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->customWidgetManager()->getToolBars();
   Gui::CustomToolBar* it;
   for ( it = tb.first(); it; it = tb.next() )
     items.append( qMakePair( QString(it->name()), it->canModify() ) );
@@ -436,7 +436,7 @@ void DlgCustomToolbarsImp::onDeleteToolbar()
     QStringList checked = checklists.getCheckedItems();
     for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
     {
-      ApplicationWindow::Instance->GetCustomWidgetManager()->removeToolBarFromSettings( (*it).latin1() );
+      ApplicationWindow::Instance->customWidgetManager()->removeToolBarFromSettings( (*it).latin1() );
     }
 
     updateData();

@@ -29,9 +29,6 @@
 #include "Inventor/Qt/viewers/SoQtViewer.h"
 
 class QMouseEvent;
-class FCGuiDocument;
-class View3D;
-class TreeView;
 class QSplitter;
 class QWidget;
 class QPushButton;
@@ -39,15 +36,19 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QWidgetStack;
 class QTabBar;
+class QVBox;
 class SoQtExaminerViewer;
 class SoQtViewer;
 
-class	SoSeparator;
-class	SoShapeHints;
-class	SoMaterial;
+class SoSeparator;
+class SoShapeHints;
+class SoMaterial;
 
 
 namespace Gui {
+class Document;
+class TreeView;
+class View3D;
 class MyView3DInventor;
 
 /** The 3D View Window
@@ -59,22 +60,22 @@ class View3DInventor: public MDIView
   Q_OBJECT
 
 public:
-  View3DInventor( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
   ~View3DInventor();
 
   /// Mesage handler
-  virtual bool OnMsg(const char* pMsg);
-  virtual const char *GetName(void);
+  virtual bool onMsg(const char* pMsg);
+  virtual const char *getName(void);
 
   virtual void resizeEvent ( QResizeEvent * e);
 
-  virtual void Update(void);
+  virtual void onUpdate(void);
 
-  void UpdatePrefs(void);
+  void updatePrefs(void);
 
-  void SetViewerDefaults(void);
+  void setViewerDefaults(void);
 
-  void SetShape(void);
+  void setShape(void);
 
 
 //signals:

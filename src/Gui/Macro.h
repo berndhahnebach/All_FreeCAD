@@ -31,9 +31,9 @@
 # include <set>
 #endif
 
-struct ApplicationWindowP;
 
 namespace Gui {
+struct ApplicationWindowP;
 
 /** Macro recording and play back management
  * The purpos of this class is to handle record 

@@ -104,6 +104,7 @@
 #include <TopoDS_Face.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
+#include <V3d_OrthographicView.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 
@@ -155,9 +156,11 @@
 
 
 #ifndef FC_OS_WIN32
-#include <Graphic3d_GraphicDevice.hxx>
+# include <Xw_Window.hxx>
+# include <Graphic3d_GraphicDevice.hxx>
 #else
-#include <Graphic3d_WNTGraphicDevice.hxx>
+# include <WNT_Window.hxx>
+# include <Graphic3d_WNTGraphicDevice.hxx>
 #endif
 
 #include <Python.h>
@@ -186,6 +189,7 @@
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
 #include <qftp.h>
+#include <qgl.h>
 #include <qhbox.h>
 #include <qheader.h>
 #include <qhttp.h>

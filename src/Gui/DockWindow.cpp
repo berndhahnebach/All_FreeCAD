@@ -30,8 +30,8 @@
 
 using namespace Gui;
 
-DockWindow::DockWindow( FCGuiDocument* pcDocument, QWidget *parent, const char *name, WFlags f)
-  :QWidget( parent,name,f ), FCBaseView( pcDocument ), _dw( 0L )
+DockWindow::DockWindow( Gui::Document* pcDocument, QWidget *parent, const char *name, WFlags f)
+  :QWidget( parent,name,f ), BaseView( pcDocument ), _dw( 0L )
 {
 }
 
@@ -67,7 +67,7 @@ void DockWindow::languageChange()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-DockView::DockView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, WFlags f )
+DockView::DockView( Gui::Document* pcDocument,QWidget* parent, const char* name, WFlags f )
   :DockWindow( pcDocument, parent, name, f)
 {
 }
@@ -78,12 +78,12 @@ DockView::~DockView()
 
 
 /// receive a message
-bool DockView::OnMsg(const char* pMsg)
+bool DockView::onMsg(const char* pMsg)
 {
   return false;
 }
 
-bool DockView::OnHasMsg(const char* pMsg)
+bool DockView::onHasMsg(const char* pMsg)
 {
   return false;
 }

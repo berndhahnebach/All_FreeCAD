@@ -64,7 +64,7 @@ DlgGeneralImp::~DlgGeneralImp()
  */
 void DlgGeneralImp::setMRUSize()
 {
-  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
   Command* pCmd = rclMan.getCommandByName("Std_MRU");
   if (pCmd)
   {
@@ -98,8 +98,8 @@ void DlgGeneralImp::saveSettings()
   FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
   hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
 
-  ApplicationWindow::Instance->UpdateStyle();
-  ApplicationWindow::Instance->UpdatePixmapsSize();
+  ApplicationWindow::Instance->updateStyle();
+  ApplicationWindow::Instance->updatePixmapsSize();
   setMRUSize();
   CommandLine().show();
 

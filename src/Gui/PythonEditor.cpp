@@ -676,7 +676,7 @@ PythonEditView::~PythonEditView()
 /**
  * Runs the action specified by \a pMsg.
  */
-bool PythonEditView::OnMsg(const char* pMsg)
+bool PythonEditView::onMsg(const char* pMsg)
 {
   if (strcmp(pMsg,"Save")==0){
     save();
@@ -715,7 +715,7 @@ bool PythonEditView::OnMsg(const char* pMsg)
  * Checks if the action \a pMsg is available. This is for enabling/disabling
  * the corresponding buttons or menu items for this action.
  */
-bool PythonEditView::OnHasMsg(const char* pMsg)
+bool PythonEditView::onHasMsg(const char* pMsg)
 {
   if (strcmp(pMsg,"Save")==0)  return true;
   if (strcmp(pMsg,"SaveAs")==0)  return true;
@@ -752,7 +752,7 @@ bool PythonEditView::OnHasMsg(const char* pMsg)
 }
 
 /** Checking on close state. */
-bool PythonEditView::CanClose(void)
+bool PythonEditView::canClose(void)
 {
   if ( !textEdit->isModified() )
     return true;
@@ -903,7 +903,7 @@ void PythonEditView::redo(void)
 /**
  * \todo: Shows the printer dialog.
  */
-void PythonEditView::Print( QPrinter* printer )
+void PythonEditView::print( QPrinter* printer )
 {
 #ifndef QT_NO_PRINTER
   int pageNo = 1;

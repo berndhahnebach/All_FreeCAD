@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FCview_h__
-#define __FCview_h__
+#ifndef __FCVIEW_H__
+#define __FCVIEW_H__
 
 
 #ifndef _PreComp_
@@ -34,15 +34,15 @@ namespace App
 {
   class Document;
 }
-class FCGuiDocument;
+
 class QSplitter;
-class QWidget;	
+class QWidget;
 class QPrinter;
 
 namespace Gui 
 {
-  class ViewProvider;
-}
+class Document;
+class ViewProvider;
 
 /** Base class of all windows belonging to a document
  *  there are two ways of belonging to a document. The 
@@ -51,79 +51,75 @@ namespace Gui
  *  the active document is changing. It also means that the view 
  *  belongs sometimes to no document at all!
  *  @see TreeView
- *  @see FCGuiDocument
+ *  @see Gui::Document
  *  @see ApplicationWindow
+ *  @author Jürgen Riegel
  */
-class FCBaseView
+class BaseView
 {
 public:
-	/** View constructor
-	  * Atach the view to the given document. If the document is NULL
-	  * the view will attach to the active document. Be aware! there isn't
-	  * allways a active document!
-	  */
-	FCBaseView( FCGuiDocument* pcDocument=0l);
-	/** View destructor
-	  * Detach the view from the document, if Atached!
-	  */
-	virtual ~FCBaseView();
+  /** View constructor
+   * Atach the view to the given document. If the document is NULL
+   * the view will attach to the active document. Be aware! there isn't
+   * allways a active document!
+   */
+  BaseView( Gui::Document* pcDocument=0l);
+  /** View destructor
+   * Detach the view from the document, if Atached!
+   */
+  virtual ~BaseView();
 
 
-	/** @name methodes used by the Application and the GuiDocument 
-	 */
-	//@{
-	/// sets the view to an oter document (called by ApplicationWindow)
-	void SetDocument(FCGuiDocument* pcDocument);
-	/// is send from the document in oder to close the document
-	void Close(void);
-	//@}
+  /** @name methodes used by the Application and the GuiDocument 
+   */
+  //@{
+  /// sets the view to an oter document (called by ApplicationWindow)
+  void setDocument(Gui::Document* pcDocument);
+  /// is send from the document in oder to close the document
+  void onClose(void);
+  //@}
 
-	
-
-	/// returns the document the view is attached to
-	FCGuiDocument* GetGuiDocument(){return _pcDocument;}
-	/// returns the document the view is attached to
-  App::Document* GetAppDocument();
-	/// indikates if the view is in passiv mode
-	bool IsPassiv(void){return bIsPassiv;}
+  /// returns the document the view is attached to
+  Gui::Document* getGuiDocument(){return _pcDocument;}
+  /// returns the document the view is attached to
+  App::Document* getAppDocument();
+  /// indikates if the view is in passiv mode
+  bool isPassiv(void){return bIsPassiv;}
 
 
-	/** @name methodes to overrride 
-	 */
-	//@{
-	/// get called when the document is updated
-	virtual void Update(void)=0;
-	/// returns the name of the view (important for messages)
-	virtual const char *GetName(void)=0;
-	/// Mesage handler
-	virtual bool OnMsg(const char* pMsg)=0;
-	/// Mesage handler test
-	virtual bool OnHasMsg(const char* pMsg)=0;
-	/// is called when the above function is called to handle document change stuff
-	virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument){};
-	/// overvrit when checking on close state
-	virtual bool CanClose(void){return true;}
-	//@}
+  /** @name methodes to overrride 
+   */
+  //@{
+  /// get called when the document is updated
+  virtual void onUpdate(void)=0;
+  /// returns the name of the view (important for messages)
+  virtual const char *getName(void)=0;
+  /// Mesage handler
+  virtual bool onMsg(const char* pMsg)=0;
+  /// Mesage handler test
+  virtual bool onHasMsg(const char* pMsg)=0;
+  /// is called when the above function is called to handle document change stuff
+  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument){};
+  /// overvrit when checking on close state
+  virtual bool canClose(void){return true;}
+  //@}
 
-	/** @name View provider handling 
-	 * View provider handle the visual apperance of things in the document
-	 * FreeCAD itself an all application modules can register View provider 
-	 * to visualize its new Features or Datatypes
-	 */
-	//@{
-	/// Register a new View provider
-  static void AddViewProvider(Gui::ViewProvider* pcProvider);
-	//@}
-
-
-
+  /** @name View provider handling 
+   * View provider handle the visual apperance of things in the document
+   * FreeCAD itself an all application modules can register View provider 
+   * to visualize its new Features or Datatypes
+   */
+  //@{
+  /// Register a new View provider
+  static void addViewProvider(Gui::ViewProvider* pcProvider);
+  //@}
 
 protected:
-    FCGuiDocument*	_pcDocument;
-	bool bIsDetached;
-	bool bIsPassiv;
+  Gui::Document*  _pcDocument;
+  bool bIsDetached;
+  bool bIsPassiv;
 
-	// view provider container
+  // view provider container
   static std::vector<Gui::ViewProvider*> _vpcViewProvider;
 };
 
@@ -134,62 +130,55 @@ protected:
  *  the active document is changing. It also means that the view 
  *  belongs sometimes to no document at all!
  *  @see TreeView
- *  @see FCGuiDocument
+ *  @see Gui::Document
  *  @see ApplicationWindow
+ *  @author Jürgen Riegel, Werner Mayer
  */
-class GuiExport MDIView : public QMainWindow,public FCBaseView
+class GuiExport MDIView : public QMainWindow,public BaseView
 {
-	Q_OBJECT;
+  Q_OBJECT;
 
 public:
-	/** View constructor
-	  * Atach the view to the given document. If the document is NULL
-	  * the view will attach to the active document. Be aware! there isn't
-	  * allways a active document!
-	  */
-	MDIView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	/** View destructor
-	  * Detach the view from the document, if Atached!
-	  */
-	~MDIView();
+  /** View constructor
+   * Atach the view to the given document. If the document is NULL
+   * the view will attach to the active document. Be aware! there isn't
+   * allways a active document!
+   */
+  MDIView( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  /** View destructor
+   * Detach the view from the document, if Atached!
+   */
+  ~MDIView();
 
-	/// get called when the document is updated
-	virtual void Update(void)=0;
+  /// get called when the document is updated
+  virtual void onUpdate(void)=0;
 
-	/// returns the name of the view (important for messages)
-	virtual const char *GetName(void)=0;
+  /// returns the name of the view (important for messages)
+  virtual const char *getName(void)=0;
 
-	/// Mesage handler
-	virtual bool OnMsg(const char* pMsg);
-	/// Mesage handler test
-	virtual bool OnHasMsg(const char* pMsg);
-	/// overvrit when checking on close state
-	virtual bool CanClose(void){return true;}
-	/// print function of the view
-	virtual void Print( QPrinter* printer );
+  /// Mesage handler
+  virtual bool onMsg(const char* pMsg);
+  /// Mesage handler test
+  virtual bool onHasMsg(const char* pMsg);
+  /// overvrit when checking on close state
+  virtual bool canClose(void){return true;}
+  /// print function of the view
+  virtual void print( QPrinter* printer );
 
   QSize minimumSizeHint () const;
 
 signals:
-	/// sends a message to the document
-//	void sendCloseView(MDIView* theView);
+  /// sends a message to the document
+//  void sendCloseView(MDIView* theView);
 
   void message(const QString&, int );
-	
-public slots:	
-	void SetActive(void);
+
+public slots:
+  void setActive(void);
 
 protected:
-	/// 
-	void closeEvent(QCloseEvent *e);
-
+  void closeEvent(QCloseEvent *e);
 };
-
-
-
-
-
-
 
 
 
@@ -261,4 +250,6 @@ private:
 };
 */
 
-#endif
+} // namespace Gui
+
+#endif // __FCVIEW_H__ 

@@ -41,13 +41,13 @@
 using namespace Gui;
 
 
-View3DInventor::View3DInventor( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
+View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
 //  _viewer = new SoQtExaminerViewer(this);
   _viewer = new MyView3DInventor(this);
 
-  SetViewerDefaults();
+  setViewerDefaults();
 }
 
 View3DInventor::~View3DInventor()
@@ -56,7 +56,7 @@ View3DInventor::~View3DInventor()
   pcSepRoot->unref();
 }
 
-void View3DInventor::UpdatePrefs(void)
+void View3DInventor::updatePrefs(void)
 {
 
     // Importing the User special ++++++++++++++++++++++++++++++++++++++++++++++++
@@ -72,7 +72,7 @@ void View3DInventor::UpdatePrefs(void)
 #include <Inventor/nodes/SoTransform.h>
 
 
-void View3DInventor::SetViewerDefaults(void)
+void View3DInventor::setViewerDefaults(void)
 {
   // create the root group
   pcSepRoot = new SoSeparator();
@@ -144,13 +144,13 @@ void View3DInventor::SetViewerDefaults(void)
   _viewer->show();
 }
 
-void View3DInventor::SetShape(void)
+void View3DInventor::setShape(void)
 {
   TopoDS_Shape cShape;
     SoBrepShape cShapeConverter;
 
 
-  assert(GetAppDocument());
+  assert(getAppDocument());
 
 
     //TDF_Label L = GetAppDocument()->Main()->GetOCCLabel();
@@ -176,12 +176,12 @@ void View3DInventor::resizeEvent ( QResizeEvent * e)
 //  _pcFrame->resize(e->size());
 }
 
-const char *View3DInventor::GetName(void)
+const char *View3DInventor::getName(void)
 {
   return "View3DInventor";
 }
 
-bool View3DInventor::OnMsg(const char* pMsg)
+bool View3DInventor::onMsg(const char* pMsg)
 {
   printf("Msg: %s View: %p\n",pMsg,this);
 
@@ -189,7 +189,7 @@ bool View3DInventor::OnMsg(const char* pMsg)
 }
 
 
-void View3DInventor::Update(void)
+void View3DInventor::onUpdate(void)
 {
 
 }

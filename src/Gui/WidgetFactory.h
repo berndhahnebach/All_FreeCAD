@@ -50,8 +50,8 @@ namespace Gui {
 class GuiExport WidgetFactoryInst : public Base::Factory
 {
 public:
-  static WidgetFactoryInst& Instance();
-  static void Destruct ();
+  static WidgetFactoryInst& instance();
+  static void destruct ();
 
   QWidget* createWidget (const char* sName, QWidget* parent=0) const;
   QWidget* createPrefWidget(const char* sName, QWidget* parent, const char* sPref);
@@ -65,7 +65,7 @@ private:
 
 inline GuiExport WidgetFactoryInst& WidgetFactory()
 {
-  return WidgetFactoryInst::Instance();
+  return WidgetFactoryInst::instance();
 }
 
 // --------------------------------------------------------------------
@@ -84,7 +84,7 @@ public:
    */
   WidgetProducer ()
   {
-    WidgetFactoryInst::Instance().AddProducer(typeid(CLASS).name(), this);
+    WidgetFactoryInst::instance().AddProducer(typeid(CLASS).name(), this);
   }
 
   virtual ~WidgetProducer (){}
@@ -114,7 +114,7 @@ public:
    */
   PrefPageProducer (const QString& group)
   {
-    WidgetFactoryInst::Instance().AddProducer( typeid(CLASS).name(), this );
+    WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
     Gui::Dialog::DlgPreferencesImp::addPage( typeid(CLASS).name(), group );
   }
 
@@ -145,7 +145,7 @@ public:
    */
   CustomPageProducer ()
   {
-    WidgetFactoryInst::Instance().AddProducer( typeid(CLASS).name(), this );
+    WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
     Gui::Dialog::DlgCustomizeImp::addPage( typeid(CLASS).name() );
   }
 
@@ -175,13 +175,13 @@ private:
   static WidgetFactorySupplier *_pcSingleton;
 
 public:
-  static WidgetFactorySupplier &Instance();
+  static WidgetFactorySupplier &instance();
   friend WidgetFactorySupplier &GetWidgetFactorySupplier();
 };
 
 inline WidgetFactorySupplier &GetWidgetFactorySupplier()
 {
-  return WidgetFactorySupplier::Instance();
+  return WidgetFactorySupplier::instance();
 }
 
 // ----------------------------------------------------

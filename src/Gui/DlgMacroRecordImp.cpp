@@ -55,7 +55,7 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool m
     _cMacroPath += PATHSEP;
 
   // get a pointer to the macro manager
-  _pcMacroMngr = ApplicationWindow::Instance->GetMacroMngr();
+  _pcMacroMngr = ApplicationWindow::Instance->macroManager();
 
   // check if a macro recording is in progress
   if(_pcMacroMngr->isOpen())

@@ -144,7 +144,7 @@ public:
   void Log (const char * s);
 
   /// returns the name for observer handling
-  const char* Name(void){return "ReportOutput";}
+  const char* getName(void){return "ReportOutput";}
 
   /** Restore the default font settings. */
   void restoreFont ();

@@ -88,7 +88,7 @@ void DlgCustomActionsImp::show()
 
 void DlgCustomActionsImp::showActions()
 {
-  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
   std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
   for (std::vector<Command*>::iterator it = aclCurMacros.begin(); it != aclCurMacros.end(); ++it)
   {
@@ -125,7 +125,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
   actionName->setText(i->text(0));
 
   // search for the command in the manager and if necessary in the temporary created ones
-  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
   Command* pCmd = rclMan.getCommandByName(i->text(0).latin1());
   MacroCommand* pScript = dynamic_cast<MacroCommand*>(pCmd);
 
@@ -184,7 +184,7 @@ void DlgCustomActionsImp::onAddCustomAction()
   }
 
   // search for the command in the manager
-  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
   Command* pCmd = rclMan.getCommandByName(actionName->text().latin1());
   MacroCommand* macro = dynamic_cast<MacroCommand*>(pCmd);
 
@@ -256,7 +256,7 @@ void DlgCustomActionsImp::onDelCustomAction()
       it++;
   }
 
-  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
   std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
   std::vector<Command*>::iterator it2;
 
@@ -353,7 +353,7 @@ void DlgCustomActionsImp::newActionName()
   QString sName;
   bool bUsed;
 
-  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
   std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
 
   do

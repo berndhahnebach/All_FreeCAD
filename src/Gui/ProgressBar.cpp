@@ -51,7 +51,7 @@ struct ProgressBarPrivate
 
 ProgressBar* ProgressBar::_pclSingleton = 0L;
 
-ProgressBar* ProgressBar::Instance()
+ProgressBar* ProgressBar::instance()
 {
   // not initialized?
   if ( !_pclSingleton )

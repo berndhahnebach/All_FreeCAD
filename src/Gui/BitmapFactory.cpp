@@ -37,7 +37,7 @@ using namespace Gui;
 
 BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = NULL;
 
-BitmapFactoryInst& BitmapFactoryInst::Instance(void)
+BitmapFactoryInst& BitmapFactoryInst::instance(void)
 {
   if (_pcSingleton == NULL)
   {
@@ -51,7 +51,7 @@ BitmapFactoryInst& BitmapFactoryInst::Instance(void)
   return *_pcSingleton;
 }
 
-void BitmapFactoryInst::Destruct (void)
+void BitmapFactoryInst::destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;

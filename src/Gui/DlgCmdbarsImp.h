@@ -26,9 +26,9 @@
 
 #include "DlgToolbarsImp.h"
 
-class Command;
 
 namespace Gui {
+class Command;
 class CustomToolBar;
 
 namespace Dialog {

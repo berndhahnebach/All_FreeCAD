@@ -24,19 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qfiledialog.h>
-#	include <qmessagebox.h>
-#	include <qstatusbar.h>
-#	include <qthread.h>
-#	include <qvbox.h>
-#	include <stack>
-#	ifndef FC_OS_WIN32
-#		include <Graphic3d_GraphicDevice.hxx>
-#	else
-#		include <Graphic3d_WNTGraphicDevice.hxx>
-#	endif
+# include <qfiledialog.h>
+# include <qmessagebox.h>
+# include <qstatusbar.h>
+# include <AIS_Trihedron.hxx>
+# include <Geom_Axis2Placement.hxx>
 # include <TNaming_NamedShape.hxx>
+# include <TPrsStd_AISViewer.hxx>
 #endif
 
 
@@ -48,166 +42,158 @@
 #include "View3DInventorEx.h"
 #include "BitmapFactory.h"
 
-int FCGuiDocument::_iDocCount = 0;
+using namespace Gui;
 
-FCGuiDocument::FCGuiDocument(App::Document* pcDocument,ApplicationWindow * app, const char * name)
-	:_iWinCount(1),
-	 _pcAppWnd(app),
-	 _pcDocument(pcDocument)
+int Document::_iDocCount = 0;
+
+Document::Document(App::Document* pcDocument,ApplicationWindow * app, const char * name)
+  :_iWinCount(1), _pcAppWnd(app), _pcDocument(pcDocument)
 {
   // new instance
   _iDocId = (++_iDocCount);
 
-	// keeping an Instance of this document as long as at least one window lives
-	_pcDocument->IncRef();
+  // keeping an Instance of this document as long as at least one window lives
+  _pcDocument->IncRef();
 
-	Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
+  Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
-	_pcDocument->Attach(this);
+  _pcDocument->Attach(this);
 
-	// seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
-	TCollection_ExtendedString a3DName("Visu3D");
-	_hViewer = Viewer(getenv("DISPLAY"),
-		              a3DName.ToExtString(),
-					  "",
-					  1000.0,
-					  V3d_XposYnegZpos,
-					  Standard_True,
-					  Standard_True);
-	TPrsStd_AISViewer::New(hcOcafDoc->Main(),_hViewer);
+  // seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
+  TCollection_ExtendedString a3DName("Visu3D");
+  _hViewer = Viewer(getenv("DISPLAY"),
+                  a3DName.ToExtString(),
+            "",
+            1000.0,
+            V3d_XposYnegZpos,
+            Standard_True,
+            Standard_True);
+  TPrsStd_AISViewer::New(hcOcafDoc->Main(),_hViewer);
 
-    _hViewer->Init();
-	_hViewer->SetDefaultLights();
-	_hViewer->SetLightOn();
+  _hViewer->Init();
+  _hViewer->SetDefaultLights();
+  _hViewer->SetLightOn();
 
-	// seting up a new interactive context +++++++++++++++++++++++++++++++++++++++++++++++
-	//_hContext =new AIS_InteractiveContext(_hViewer);
-	TPrsStd_AISViewer::Find(hcOcafDoc->Main(), _hContext);
-	_hContext->SetDisplayMode(AIS_Shaded);
+  // seting up a new interactive context +++++++++++++++++++++++++++++++++++++++++++++++
+  //_hContext =new AIS_InteractiveContext(_hViewer);
+  TPrsStd_AISViewer::Find(hcOcafDoc->Main(), _hContext);
+  _hContext->SetDisplayMode(AIS_Shaded);
 
-	// World coordinate system
-	Handle(AIS_Trihedron) hTrihedron;
-	hTrihedron = new AIS_Trihedron(new Geom_Axis2Placement(gp::XOY()));
-	_hContext->Display(hTrihedron);
-	_hContext->Deactivate(hTrihedron);
+  // World coordinate system
+  Handle(AIS_Trihedron) hTrihedron;
+  hTrihedron = new AIS_Trihedron(new Geom_Axis2Placement(gp::XOY()));
+  _hContext->Display(hTrihedron);
+  _hContext->Deactivate(hTrihedron);
 
-	// alwayes create at least one view
-	if(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetBool("UseInventorViewer",false) )
-		CreateView("View3DIv");
-	else
-		CreateView("");
-
+  // alwayes create at least one view
+  if(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetBool("UseInventorViewer",false) )
+    createView("View3DIv");
+  else
+    createView("");
 }
 
-FCGuiDocument::~FCGuiDocument()
+Document::~Document()
 {
 //	for(std::list<MDIView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 //		delete *It;
 
-	_pcDocument->Detach(this);
+  _pcDocument->Detach(this);
 
-	// remove the reverence from the object
-	_pcDocument->DecRef();
+  // remove the reverence from the object
+  _pcDocument->DecRef();
 }
 
-
-void FCGuiDocument::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
+void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
-  Base::Console().Log("FCGuiDocument::OnChange()");
+  Base::Console().Log("Document::OnChange()");
 
-  Update();
-
-
+  onUpdate();
 }
-
 
 /// Save the document
-bool FCGuiDocument::Save(void)
+bool Document::save(void)
 {
-	if(_pcDocument->IsSaved())
+  if(_pcDocument->IsSaved())
   {
-		GetDocument()->Save();
+    getDocument()->Save();
     return true;
   }
-	else
+  else
   {
-		return SaveAs();
+    return saveAs();
   }
 }
 
 /// Save the document under a new file name
-bool FCGuiDocument::SaveAs(void)
+bool Document::saveAs(void)
 {
-	GetAppWnd()->statusBar()->message(tr("Saving file under new filename..."));
-	QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", GetAppWnd());
-	if (!fn.isEmpty())
-	{
-		GetDocument()->SaveAs(fn.latin1());
+  getAppWnd()->statusBar()->message(tr("Saving file under new filename..."));
+  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getAppWnd());
+  if (!fn.isEmpty())
+  {
+    getDocument()->SaveAs(fn.latin1());
     return true;
-	}
-	else
-	{
-		GetAppWnd()->statusBar()->message(tr("Saving aborted"), 2000);
+  }
+  else
+  {
+    getAppWnd()->statusBar()->message(tr("Saving aborted"), 2000);
     return false;
-	}
+  }
 }
 
-void FCGuiDocument::CreateView(const char* sType) 
+void Document::createView(const char* sType) 
 {
   QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
-	MDIView* pcView3D;
-	if(strcmp(sType,"View3DIv") == 0){
+  MDIView* pcView3D;
+  if(strcmp(sType,"View3DIv") == 0){
     pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
-	}else{
-		pcView3D = new FCView3D(this,_pcAppWnd,"View3DOCC");
-	}
-	
-
-	QString aName = tr("%1%2:%3").arg(tr("Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
+  }else{
+    pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
+  }
 
 
-    pcView3D->setCaption(aName);
-    pcView3D->setIcon( FCIcon );
+  QString aName = tr("%1%2:%3").arg(tr("Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
+
+
+  pcView3D->setCaption(aName);
+  pcView3D->setIcon( FCIcon );
   pcView3D->resize( 400, 300 );
   _pcAppWnd->addWindow(pcView3D);
 }
 
-void FCGuiDocument::AttachView(FCBaseView* pcView, bool bPassiv)
+void Document::attachView(Gui::BaseView* pcView, bool bPassiv)
 {
-	if(!bPassiv)
-		_LpcViews.push_back(pcView);
-	else
-		_LpcPassivViews.push_back(pcView);
-
+  if(!bPassiv)
+    _LpcViews.push_back(pcView);
+  else
+    _LpcPassivViews.push_back(pcView);
 }
 
-
-void FCGuiDocument::DetachView(FCBaseView* pcView, bool bPassiv)
+void Document::detachView(Gui::BaseView* pcView, bool bPassiv)
 {
+  if(bPassiv)
+  {
+    _LpcPassivViews.remove(pcView);
+  }else{
+    _LpcViews.remove(pcView);
 
-	if(bPassiv)
-	{
-		_LpcPassivViews.remove(pcView);
-	}else{
-		_LpcViews.remove(pcView);
+  // last view?
+  if(_LpcViews.size() == 0)
+  {
+    // decouple a passiv views
+    std::list<Gui::BaseView*>::iterator It = _LpcPassivViews.begin();
+    while (It != _LpcPassivViews.end())
+    {
+      (*It)->setDocument(0);
+      It = _LpcPassivViews.begin();
+    }
 
-		// last view?
-		if(_LpcViews.size() == 0)
-		{
-			// decouple a passiv views
-			std::list<FCBaseView*>::iterator It = _LpcPassivViews.begin();
-			while (It != _LpcPassivViews.end())
-			{
-				(*It)->SetDocument(0);
-				It = _LpcPassivViews.begin();
-			}
-
-			_pcAppWnd->OnLastWindowClosed(this);
-		}
-	}
+    _pcAppWnd->onLastWindowClosed(this);
+    }
+  }
 }
 
-void FCGuiDocument::Update(void)
+void Document::onUpdate(void)
 {
 
 
@@ -215,130 +201,129 @@ void FCGuiDocument::Update(void)
 
   if(! L.IsNull()){
 
-    if(!_ActivePresentation.IsNull())
-	    _ActivePresentation->Display(0);
-	    //_hContext->Display(_ActivePresentation->GetAIS(),0);
- 	  // Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
+  if(!_ActivePresentation.IsNull())
+    _ActivePresentation->Display(0);
+    //_hContext->Display(_ActivePresentation->GetAIS(),0);
+  // Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
     if(!L.FindAttribute(TPrsStd_AISPresentation::GetID(),_ActivePresentation))
-	    _ActivePresentation = TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
-	  // Display it
-	  _ActivePresentation->Display(1);
-	  //_hContext->Display(_ActivePresentation->GetAIS(),1);
+      _ActivePresentation = TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+    // Display it
+    _ActivePresentation->Display(1);
+    //_hContext->Display(_ActivePresentation->GetAIS(),1);
   }
 
-	std::list<FCBaseView*>::iterator It;
+  std::list<Gui::BaseView*>::iterator It;
 
-	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
-	{
-		(*It)->Update();
-	}
+  for(It = _LpcViews.begin();It != _LpcViews.end();It++)
+  {
+    (*It)->onUpdate();
+  }
 
-	for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
-	{
-		(*It)->Update();
-	}
+  for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
+  {
+    (*It)->onUpdate();
+  }
 }
 
-bool FCGuiDocument::IsLastView(void)
+bool Document::isLastView(void)
 {
-	if(_LpcViews.size() <= 1)
-		return true;
+  if(_LpcViews.size() <= 1)
+    return true;
 
-	return false;
+  return false;
 }
 
 /** 
  *  This method check if the Document can close. It checks on 
  *  the save state of the document and is abel to abort the close!
  */
-void FCGuiDocument::CanClose ( QCloseEvent * e )
+void Document::canClose ( QCloseEvent * e )
 {
-	if(! _pcDocument->IsSaved()
-		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
-		&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
-	{
+  if(! _pcDocument->IsSaved()
+    && _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
+    && _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
+  {
 #   ifndef FC_DEBUG
-		  switch(QMessageBox::warning( GetActiveView(), tr("Unsaved document"),tr("Save document before close?"),
-			  tr("Yes"),tr("No"),tr("Cancel"),0,2))
-		  {
-		  case 0:
-			  //GetApplication().
-			  if (Save())
-  			  e->accept();
+      switch(QMessageBox::warning( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),
+        tr("Yes"),tr("No"),tr("Cancel"),0,2))
+      {
+      case 0:
+        //GetApplication().
+        if (save())
+          e->accept();
         else
           e->ignore();
-			  break;
-		  case 1:
-			  e->accept();
-			  break;
-		  case 2:
-			  break;
-		  }
+        break;
+      case 1:
+        e->accept();
+        break;
+      case 2:
+        break;
+      }
 #   else
       e->accept();
 #   endif
   }else
-		e->accept();
+    e->accept();
 }
 
-void FCGuiDocument::closeEvent ( QCloseEvent * e )
+void Document::closeEvent ( QCloseEvent * e )
 {
-	CanClose(e);
+  canClose(e);
 }
 
-void FCGuiDocument::CloseAllViews(void)
+void Document::closeAllViews(void)
 {
-	std::list<FCBaseView*>::iterator It;
+  std::list<Gui::BaseView*>::iterator It;
 
-	while ( (It = _LpcViews.begin()) != _LpcViews.end())
-	{
-		(*It)->Close();
-	}
-	
-	assert(_LpcViews.size() == 0);
+  while ( (It = _LpcViews.begin()) != _LpcViews.end())
+  {
+    (*It)->onClose();
+  }
+
+  assert(_LpcViews.size() == 0);
 }
 
 
 /// send Messages to the active view
-bool FCGuiDocument::SendMsgToViews(const char* pMsg)
+bool Document::sendMsgToViews(const char* pMsg)
 {
-	std::list<FCBaseView*>::iterator It;
+  std::list<Gui::BaseView*>::iterator It;
 
-	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
-	{
-		if( (*It)->OnMsg(pMsg))
-		{
-			return true;
-		}
-	}
+  for(It = _LpcViews.begin();It != _LpcViews.end();It++)
+  {
+    if( (*It)->onMsg(pMsg))
+    {
+      return true;
+    }
+  }
 
-	for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
-	{
-		if( (*It)->OnMsg(pMsg))
-		{
-			return true;
-		}
-	}
+  for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
+  {
+    if( (*It)->onMsg(pMsg))
+    {
+      return true;
+    }
+  }
 
-	return false;
+  return false;
 }
 
 /// send Messages to all views
-bool FCGuiDocument::SendMsgToActiveView(const char* pMsg)
+bool Document::sendMsgToActiveView(const char* pMsg)
 {
-
-	if(_pcActiveView)
-		return _pcActiveView->OnMsg(pMsg);
-	else
-		return false;
+  if(_pcActiveView)
+    return _pcActiveView->onMsg(pMsg);
+  else
+    return false;
 }
 
 
 
 /// Geter for the Active View
-MDIView* FCGuiDocument::GetActiveView(void)
+MDIView* Document::getActiveView(void)
 {
-	return _pcAppWnd->GetActiveView();
+  return _pcAppWnd->activeView();
 }
 
 
@@ -353,99 +338,95 @@ MDIView* FCGuiDocument::GetActiveView(void)
  *  operation default is the Command name.
  *  @see CommitCommand(),AbortCommand()
  */
-void FCGuiDocument::OpenCommand(const char* sName)
+void Document::openCommand(const char* sName)
 {
-	// check on double open Commands
-	assert(!GetDocument()->HasOpenCommand());
+  // check on double open Commands
+  assert(!getDocument()->HasOpenCommand());
 
-	listUndoNames.push_back(sName);
+  listUndoNames.push_back(sName);
 
-	GetDocument()->NewCommand();
-	
+  getDocument()->NewCommand();
 }
 
-void FCGuiDocument::CommitCommand(void)
+void Document::commitCommand(void)
 {
-	GetDocument()->CommitCommand();	
+  getDocument()->CommitCommand();	
 }
 
-void FCGuiDocument::AbortCommand(void)
+void Document::abortCommand(void)
 {
-	listUndoNames.pop_back();
+  listUndoNames.pop_back();
 
-	GetDocument()->AbortCommand();	
+  getDocument()->AbortCommand();	
 }
 
 /// Get an Undo string vector with the Undo names
-std::vector<std::string> FCGuiDocument::GetUndoVector(void)
+std::vector<std::string> Document::getUndoVector(void)
 {
-	std::vector<std::string> vecTemp;
+  std::vector<std::string> vecTemp;
 
-	//std::copy(listUndoNames.begin(),listUndoNames.end(),vecTemp.begin());
+  //std::copy(listUndoNames.begin(),listUndoNames.end(),vecTemp.begin());
 
-	for(std::list<std::string>::iterator It=listUndoNames.begin();It!=listUndoNames.end();It++)
-		vecTemp.push_back(*It);
+  for(std::list<std::string>::iterator It=listUndoNames.begin();It!=listUndoNames.end();It++)
+    vecTemp.push_back(*It);
 
-	return vecTemp;
+  return vecTemp;
 }
 
 /// Get an Redo string vector with the Redo names
-std::vector<std::string> FCGuiDocument::GetRedoVector(void)
+std::vector<std::string> Document::getRedoVector(void)
 {
-	std::vector<std::string> vecTemp;
+  std::vector<std::string> vecTemp;
 
-	std::copy(listRedoNames.begin(),listRedoNames.end(),vecTemp.begin());
+  std::copy(listRedoNames.begin(),listRedoNames.end(),vecTemp.begin());
 
-	return vecTemp;
+  return vecTemp;
 }
 
 /// Will UNDO  one or more steps
-void FCGuiDocument::Undo(int iSteps)
+void Document::undo(int iSteps)
 {
-
-	for (int i=0;i<iSteps;i++)
-	{
-		GetDocument()->Undo();
-	}
-
+  for (int i=0;i<iSteps;i++)
+  {
+    getDocument()->Undo();
+  }
 }
 
 /// Will REDO  one or more steps
-void FCGuiDocument::Redo(int iSteps)
+void Document::redo(int iSteps)
 {
-	for (int i=0;i<iSteps;i++)
-	{
-		GetDocument()->Undo();
-	}
-
+  for (int i=0;i<iSteps;i++)
+  {
+    getDocument()->Undo();
+  }
 }
 
 
 
 
-Handle(V3d_Viewer) FCGuiDocument::Viewer(const Standard_CString aDisplay,
-										 const Standard_ExtString aName,
-										 const Standard_CString aDomain,
-										 const Standard_Real ViewSize,
-										 const V3d_TypeOfOrientation ViewProj,
-										 const Standard_Boolean ComputedMode,
-										 const Standard_Boolean aDefaultComputedMode )
+Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
+                     const Standard_ExtString aName,
+                     const Standard_CString aDomain,
+                     const Standard_Real ViewSize,
+                     const V3d_TypeOfOrientation ViewProj,
+                     const Standard_Boolean ComputedMode,
+                     const Standard_Boolean aDefaultComputedMode )
 {
-#	ifndef FC_OS_WIN32
-		static Handle(Graphic3d_GraphicDevice) defaultdevice;
+# ifndef FC_OS_WIN32
+    static Handle(Graphic3d_GraphicDevice) defaultdevice;
 
-		if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_GraphicDevice(aDisplay);
-		return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
-								Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-								ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
-#	else
-		static Handle(Graphic3d_WNTGraphicDevice) defaultdevice;
+    if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_GraphicDevice(aDisplay);
+    return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
+                Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
+                ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
+# else
+    static Handle(Graphic3d_WNTGraphicDevice) defaultdevice;
 
-		if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_WNTGraphicDevice();
-		return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
-								Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-								ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
-#	endif  // FC_OS_WIN32
+    if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_WNTGraphicDevice();
+    return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
+                Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
+                ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
+# endif  // FC_OS_WIN32
 }
 
 

@@ -226,7 +226,7 @@ void StdCmdViewFitAll::activated(int iMsg)
 
 bool StdCmdViewFitAll::isActive(void)
 {
-	return getAppWnd()->SendHasMsgToActiveView("ViewFit");
+  return getAppWnd()->sendHasMsgToActiveView("ViewFit");
 }
 
 
@@ -250,7 +250,7 @@ StdCmdViewCreateOCC::StdCmdViewCreateOCC()
 
 void StdCmdViewCreateOCC::activated(int iMsg)
 {
-  getActiveDocument()->CreateView("View3DOcc");
+  getActiveDocument()->createView("View3DOcc");
 }
 
 bool StdCmdViewCreateOCC::isActive(void)
@@ -278,7 +278,7 @@ StdCmdViewCreateInventor::StdCmdViewCreateInventor()
 
 void StdCmdViewCreateInventor::activated(int iMsg)
 {
-  getActiveDocument()->CreateView("View3DIv");
+  getActiveDocument()->createView("View3DIv");
 }
 
 bool StdCmdViewCreateInventor::isActive(void)
@@ -311,7 +311,7 @@ void StdCmdViewExample1::activated(int iMsg)
 
 bool StdCmdViewExample1::isActive(void)
 {
-	return getAppWnd()->SendHasMsgToActiveView("Example1");
+  return getAppWnd()->sendHasMsgToActiveView("Example1");
 }
 //===========================================================================
 // Std_ViewExample2
@@ -338,7 +338,7 @@ void StdCmdViewExample2::activated(int iMsg)
 
 bool StdCmdViewExample2::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Example2");
+  return getAppWnd()->sendHasMsgToActiveView("Example2");
 }
 
 //===========================================================================
@@ -366,7 +366,7 @@ void StdCmdViewExample3::activated(int iMsg)
 
 bool StdCmdViewExample3::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("Example3");
+  return getAppWnd()->sendHasMsgToActiveView("Example3");
 }
 
 //===========================================================================
@@ -394,7 +394,7 @@ void StdCmdViewIvDecorationOn::activated(int iMsg)
 
 bool StdCmdViewIvDecorationOn::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("SetDecorationOn");
+  return getAppWnd()->sendHasMsgToActiveView("SetDecorationOn");
 }
 
 //===========================================================================
@@ -422,7 +422,7 @@ void StdCmdViewIvDecorationOff::activated(int iMsg)
 
 bool StdCmdViewIvDecorationOff::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("SetDecorationOff");
+  return getAppWnd()->sendHasMsgToActiveView("SetDecorationOff");
 }
 
 
@@ -451,7 +451,7 @@ void StdCmdViewIvStereoOff::activated(int iMsg)
 
 bool StdCmdViewIvStereoOff::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("SetStereoOff");
+  return getAppWnd()->sendHasMsgToActiveView("SetStereoOff");
 }
 
 
@@ -480,7 +480,7 @@ void StdCmdViewIvStereoOn::activated(int iMsg)
 
 bool StdCmdViewIvStereoOn::isActive(void)
 {
-  return getAppWnd()->SendHasMsgToActiveView("SetStereoOn");
+  return getAppWnd()->sendHasMsgToActiveView("SetStereoOn");
 }
 
 
@@ -496,7 +496,7 @@ namespace Gui {
 
 void CreateViewStdCommands(void)
 {
-  CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
 
   // views
   rcCmdMgr.addCommand(new StdCmdViewBottom());

@@ -26,9 +26,9 @@
 
 #include "DlgActions.h"
 
-class Command;
 
 namespace Gui {
+
 namespace Dialog {
 
 /** This class implements the creation of user defined actions executing a recorded macro.

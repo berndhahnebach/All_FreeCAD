@@ -24,13 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
+# include <assert.h>
 # include <string>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Selection.h"
 
+
+using namespace Gui;
 
 
 

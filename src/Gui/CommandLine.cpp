@@ -298,7 +298,7 @@ void CommandLineBase::dropEvent ( QDropEvent      * e )
     if (!action.isEmpty())
     {
       ActionDrag::actions.clear();
-      CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+      CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
       Command* pCmd = rclMan.getCommandByName(action.latin1());
 
       if (pCmd)

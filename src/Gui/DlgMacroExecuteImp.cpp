@@ -41,6 +41,7 @@
 #include "Macro.h"
 #include "PythonEditor.h"
 
+using namespace Gui;
 using namespace Gui::Dialog;
 
 /**
@@ -117,7 +118,7 @@ void DlgMacroExecuteImp::onExecute()
 
     QDir d( _cMacroPath.c_str() );
     QFileInfo fi( d, LineEditMacroName->text() );
-    ApplicationWindow::Instance->GetMacroMngr()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
+    ApplicationWindow::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
   }
 }
 

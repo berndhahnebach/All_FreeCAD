@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __TREE__
-#define __TREE__
+#ifndef __TREE_H_
+#define __TREE_H_
 
 #ifndef _PreComp_
 # include <qlistview.h>
@@ -34,85 +34,90 @@
 
 /// Forwards
 class FCLabel; 
-class TreeView;
-class FCGuiDocument;
 
+namespace Gui {
+class Document;
+class TreeView;
 
 struct GUIDDefs {
-    char	*Guid;
-    char	*Name;
+    char  *Guid;
+    char  *Name;
 };
-
 
 
 /** The link between the Tree and the shown Label.
  *  Every (shown) Label in the FCDocument class get it 
- *  associated FCTreeLabel which controls the visibility 
+ *  associated TreeLabel which controls the visibility 
  *  and the functions of the Label.
+ *  \author Jürgen Riegel
  */
-class FCTreeLabel : public QListViewItem
+class TreeLabel : public QListViewItem
 {
 public:
-	/// Constructor
-    FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel );
-    FCTreeLabel( TreeView * parent);
+  /// Constructor
+  TreeLabel( TreeLabel * parent, TDF_Label &hcLabel );
+  TreeLabel( TreeView * parent);
 
-    /// Opens the Leafs and generate them.
-    void setOpen( bool );
-    /// Im not realy sure whats this method do ;-).
-    void setup();
+  /// Opens the Leafs and generate them.
+  void setOpen( bool );
+  /// Im not realy sure whats this method do ;-).
+  void setup();
 
-    /// Delivers the pixmap that is shown.
+  /// Delivers the pixmap that is shown.
 //    const QPixmap *pixmap( int i ) const;
-    /// Sets the pixmap that will be shown.
+  /// Sets the pixmap that will be shown.
 //    void setPixmap( QPixmap *p );
 
-	void Update(void);
+  void update(void);
 
-	void BuildUp(void);
+  void buildUp(void);
 
 protected:
-	void activate (); 
-	TDF_Label _hcTDFLabel;
-	//FCPyHandle<FCLabel> _hcLabel;
+  void activate (); 
+  TDF_Label _hcTDFLabel;
+  //FCPyHandle<FCLabel> _hcLabel;
 
-    FCTreeLabel * _pcParent;
-	FCGuiDocument*  _pcDocument;
+  TreeLabel * _pcParent;
+  Gui::Document*  _pcDocument;
 
-//	bool _bOpend;
+//  bool _bOpend;
 };
 
 
 
-
+/** 
+ *  \author Jürgen Riegel
+ */
 class TreeView :public Gui::DockView
 {
-	Q_OBJECT
+  Q_OBJECT
+
 public:
-	TreeView(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
-	// App_Tree();
+  TreeView(Gui::Document*  pcDocument,QWidget *parent=0,const char *name=0);
+  // App_Tree();
 
-	bool OnMsg(const char* pMsg);
+  bool onMsg(const char* pMsg);
 
-	virtual const char *GetName(void){return "Raw Tree";}
-	
+  virtual const char *getName(void){return "Raw Tree";}
 
-	//void InitCascade(Handle(TDocStd_Document) hDoc);
-	friend class FCTreeLabel;
 
-	/// is called when the above function is called to handle document change stuff
-	virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);
-	/// get called when the document is changed or updated
-	virtual void Update(void);
+  //void InitCascade(Handle(TDocStd_Document) hDoc);
+  friend class TreeLabel;
+
+  /// is called when the above function is called to handle document change stuff
+  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);
+  /// get called when the document is changed or updated
+  virtual void onUpdate(void);
 
 
 protected:
-	QListView*		_pcListView;
-	QListViewItem*  _pcMainItem;
+  QListView*  _pcListView;
+  QListViewItem*  _pcMainItem;
 
-	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
+  static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 };
 
+} // namespace Gui
 
-#endif
+#endif // __TREE_H_
 

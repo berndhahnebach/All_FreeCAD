@@ -100,7 +100,7 @@ public:
   /**
   * Returns the sequencer object
   */
-  static ProgressBar* Instance();
+  static ProgressBar* instance();
   /** Starts the progress bar */
   bool start(const char* pszStr, unsigned long steps);
   /** Runs the next step */

@@ -24,15 +24,19 @@
 #ifndef __MOUSEMODEL_H__
 #define __MOUSEMODEL_H__
 
+#ifndef _PreComp_
+# include <qcursor.h>
+#endif
+
 // forwards
 class QMouseEvent;
 class QKeyEvent;
 class Handle_V3d_View;
 class Handle_V3d_Viewer;
 class Handle_AIS_InteractiveContext;
-class View3D;
 
 namespace Gui {
+class View3D;
 
 /**
  * The mouse model base class
@@ -74,10 +78,10 @@ public:
   virtual void resizeEvent        ( QResizeEvent * ){ draw(); };
 
   // Geter
-  View3D                  &GetView3D (void);
-  Handle_V3d_View         &GetView   (void);
-  Handle_V3d_Viewer       &GetViewer (void);
-  Handle_AIS_InteractiveContext &GetContext(void);
+  View3D                  &getView3D (void);
+  Handle_V3d_View         &getView   (void);
+  Handle_V3d_Viewer       &getViewer (void);
+  Handle_AIS_InteractiveContext &getContext(void);
 
 protected:
   /// drawing stuff

@@ -32,38 +32,38 @@
 #include "../Base/Parameter.h"
 #include "View.h"
 
-class ApplicationWindow;
 
 namespace Gui {
 
+class ApplicationWindow;
 class DockWindow;
 
 /** Father of all dockable windows.
  * @author Jürgen Riegel
  */
-class GuiExport DockWindow : public QWidget, public FCBaseView
+class GuiExport DockWindow : public QWidget, public BaseView
 {
   Q_OBJECT;
 
 public:
-  DockWindow ( FCGuiDocument* pcDocument=0l, QWidget *parent=0, const char *name=0, WFlags f=0 );
+  DockWindow ( Gui::Document* pcDocument=0l, QWidget *parent=0, const char *name=0, WFlags f=0 );
   ~DockWindow();
 
   /** @name methods to overrride 
    */
   //@{
   /// get called when the document is updated
-  virtual void Update(void){};
+  virtual void onUpdate(void){};
   /// returns the name of the view (important for messages)
-  virtual const char *GetName(void){ return "DockWindow"; };
+  virtual const char *getName(void){ return "DockWindow"; };
   /// Mesage handler
-  virtual bool OnMsg(const char* pMsg){ return false; };
+  virtual bool onMsg(const char* pMsg){ return false; };
   /// Mesage handler test
-  virtual bool OnHasMsg(const char* pMsg) { return false; };
+  virtual bool onHasMsg(const char* pMsg) { return false; };
   /// is called when the above function is called to handle document change stuff
-  virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument){};
+  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument){};
   /// overvrit when checking on close state
-  virtual bool CanClose(void){return true;}
+  virtual bool canClose(void){return true;}
   //@}
   void setCaption ( const QString & );
   void setDockWindow( QDockWindow* w );
@@ -84,7 +84,7 @@ private:
  *  the active document is changing. It also means that the view 
  *  belongs sometimes to no document at all!
  *  @see TreeView
- *  @see FCGuiDocument
+ *  @see Gui::Document
  *  @see ApplicationWindow
  *  @author Jürgen Riegel
  */
@@ -98,22 +98,22 @@ public:
     * the view will attach to the active document. Be aware! there isn't
     * allways a active document!
     */
-  DockView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, WFlags f=0 );
+  DockView( Gui::Document* pcDocument, QWidget* parent, const char* name, WFlags f=0 );
   /** View destructor
     * Detach the view from the document, if Atached!
     */
   ~DockView();
 
   /// get called when the document is updated
-  virtual void Update(void){};
+  virtual void onUpdate(void){};
 
   /// returns the name of the view (important for messages)
-  virtual const char *GetName(void)=0;
+  virtual const char *getName(void)=0;
 
   /// Mesage handler
-  virtual bool OnMsg(const char* pMsg);
+  virtual bool onMsg(const char* pMsg);
   /// Mesage handler test
-  virtual bool OnHasMsg(const char* pMsg);
+  virtual bool onHasMsg(const char* pMsg);
 
 
 signals:

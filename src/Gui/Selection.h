@@ -24,6 +24,8 @@
 #ifndef __SELECTION_H__
 #define __SELECTION_H__
 
+namespace Gui {
+
 /** The selection container
  * \author Jürgen Riegel
  */
@@ -42,6 +44,8 @@ public:
    */
   ~Selection();
 };
+
+} // namespace Gui
 
 
 #endif // __SELECTION_H_

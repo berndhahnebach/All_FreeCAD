@@ -24,54 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-// standard
-#	include <iostream>
-#	include <stdio.h>
-#	include <assert.h>
-#	include <fcntl.h>
-#	include <ctype.h>
-#	include <typeinfo>
-// STL
-#	include <vector>
-#	include <map>
-#	include <string>
-#	include <list>
-#	include <set>
-#	include <algorithm>
-#	include <stack>
-#	include <queue>
-#	include <string>
-// Python
-#	if defined (_POSIX_C_SOURCE)
-#		undef  _POSIX_C_SOURCE
-#	endif // (re-)defined in pyconfig.h
-#	include <Python.h>
-#	include <limits.h>
-#	include <algorithm>
-// Qt
-#	include <qapplication.h>
-#	include <qaction.h>
-#	include <qbuttongroup.h>
-#	include <qcombobox.h>
-#	include <qcursor.h>
-#	include <qlabel.h>
-#	include <qmenubar.h>
-#	include <qmessagebox.h>
-#	include <qpopupmenu.h>
-#	include <qprocess.h>
-#	include <qsplashscreen.h>
-#	include <qstatusbar.h>
-#	include <qstyle.h>
-#	include <qstylefactory.h>
-#	include <qsyntaxhighlighter.h>
-#	include <qtabbar.h>
-#	include <qtabwidget.h>
-#	include <qtextbrowser.h>
-#	include <qthread.h>
-#	include <qtimer.h>
-#	include <qtoolbar.h>
-#	include <qvbox.h>
-#	include <qworkspace.h>
+# include <qapplication.h>
+# include <qlabel.h>
+# include <qmenubar.h>
+# include <qstatusbar.h>
+# include <qstyle.h>
+# include <qstylefactory.h>
+# include <qtabbar.h>
+# include <qtimer.h>
+# include <qvbox.h>
 #endif
 
 
@@ -131,6 +92,8 @@ static ApplicationWindow* stApp;
 
 ApplicationWindow* ApplicationWindow::Instance = 0L;
 
+namespace Gui {
+
 // Pimpl class
 struct ApplicationWindowP
 {
@@ -138,8 +101,8 @@ struct ApplicationWindowP
     : toolbars(0L), viewbar(0L), _pcActiveDocument(0L),
     _bIsClosing(false), _bControlButton(false)
   {
-	  // create the macro manager
-	  _pcMacroMngr = new MacroManager();
+    // create the macro manager
+    _pcMacroMngr = new MacroManager();
   }
 
   ~ApplicationWindowP()
@@ -155,32 +118,33 @@ struct ApplicationWindowP
   Gui::CustomPopupMenu* windows;
   QValueList<int> wndIDs;
   std::map<int, QWidget*> mCheckBars;
-	/// list of all handled documents
- 	std::list<FCGuiDocument*>         lpcDocuments;
-	/// list of windows
-	std::map <std::string,FCWindow*> mpcDocWindows;
-	/// Active document
-	FCGuiDocument*   _pcActiveDocument;
+  /// list of all handled documents
+  std::list<Gui::Document*>         lpcDocuments;
+  /// list of windows
+  /// Active document
+  Gui::Document*   _pcActiveDocument;
   Gui::CustomWidgetManager*		 _pcWidgetMgr;
   Gui::DockWindowManager* _pcDockMgr;
-	MacroManager*  _pcMacroMngr;
-	QLabel *         _pclSizeLabel, *_pclActionLabel;
-	ToolBox*        _pcStackBar;
-	/// workbench python dictionary
-	PyObject*		 _pcWorkbenchDictionary;
-	QString			 _cActiveWorkbenchName;
-	QTimer *		 _pcActivityTimer; 
-	/// List of all registered views
-	std::list<FCBaseView*>					_LpcViews;
-	bool _bIsClosing;
+  MacroManager*  _pcMacroMngr;
+  QLabel *         _pclSizeLabel, *_pclActionLabel;
+  ToolBox*        _pcStackBar;
+  /// workbench python dictionary
+  PyObject*		 _pcWorkbenchDictionary;
+  QString			 _cActiveWorkbenchName;
+  QTimer *		 _pcActivityTimer; 
+  /// List of all registered views
+  std::list<Gui::BaseView*>					_LpcViews;
+  bool _bIsClosing;
   // store it if the CTRL button is pressed or released
   bool _bControlButton;
-	/// Handels all commands 
-	CommandManager _cCommandManager;
+  /// Handels all commands 
+  CommandManager _cCommandManager;
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
   QMap<QObject*, QTab*> _tabIds;
 };
+
+} // namespace Gui
 
 ApplicationWindow::ApplicationWindow()
     : QMainWindow( 0, "Main window", WDestructiveClose )
@@ -189,14 +153,14 @@ ApplicationWindow::ApplicationWindow()
   hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
 
   std::string language = hPGrp->GetASCII("Language", "English");
-	Gui::Translator::setLanguage( language.c_str() );
-	GetWidgetFactorySupplier();
+  Gui::Translator::setLanguage( language.c_str() );
+  GetWidgetFactorySupplier();
 
-	// seting up Python binding
-	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
+  // seting up Python binding
+  (void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
 
-	// init the Inventor subsystem
-	SoQt::init(this);
+  // init the Inventor subsystem
+  SoQt::init(this);
 
   d = new ApplicationWindowP;
   QVBox* vb = new QVBox( this );
@@ -213,93 +177,93 @@ ApplicationWindow::ApplicationWindow()
   connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
 
 //	setCaption( "Qt FreeCAD" );
-	setCaption( "FreeCAD" );
-	setIcon(QPixmap(FCIcon));
+  setCaption( "FreeCAD" );
+  setIcon(QPixmap(FCIcon));
 
-	d->_cActiveWorkbenchName="<none>";
+  d->_cActiveWorkbenchName="<none>";
 
-	// global access 
-	Instance = this;
+  // global access 
+  Instance = this;
 
-	stApp = this;
+  stApp = this;
 
-	// instanciate the workbench dictionary
-	d->_pcWorkbenchDictionary = PyDict_New();
+  // instanciate the workbench dictionary
+  d->_pcWorkbenchDictionary = PyDict_New();
 
     // attach the console observer
-	Base::Console().AttacheObserver( new GuiConsoleObserver(this) );
+  Base::Console().AttacheObserver( new GuiConsoleObserver(this) );
 
 
-	// setting up the Bitmap manager
+  // setting up the Bitmap manager
 //	QString tmpWb = _cActiveWorkbenchName;
 //	_cBmpFactory.GetPixmap("Function");
 /*
   QDir dir(GetApplication().GetHomePath()); 
   QString root = dir.path();
-	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
-	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
+  GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
+  GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
 
-	std::string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
+  std::string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
 
-	test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
+  test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
 */
 
-	// labels and progressbar
-	d->_pclActionLabel = new QLabel("", statusBar(), "Action");
-	d->_pclActionLabel->setFixedWidth(120);
-	statusBar()->addWidget(d->_pclActionLabel,0,true);
-	statusBar()->addWidget(ProgressBar::Instance(),0,true);
-	//ProgressBar::Instance().setFixedWidth(200);
-	d->_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
-	d->_pclSizeLabel->setFixedWidth(120);
-	statusBar()->addWidget(d->_pclSizeLabel,0,true);
+  // labels and progressbar
+  d->_pclActionLabel = new QLabel("", statusBar(), "Action");
+  d->_pclActionLabel->setFixedWidth(120);
+  statusBar()->addWidget(d->_pclActionLabel,0,true);
+  statusBar()->addWidget(ProgressBar::instance(),0,true);
+  //ProgressBar::Instance().setFixedWidth(200);
+  d->_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
+  d->_pclSizeLabel->setFixedWidth(120);
+  statusBar()->addWidget(d->_pclSizeLabel,0,true);
 
-	// update gui timer
-	d->_pcActivityTimer = new QTimer( this );
-    connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(UpdateCmdActivity()) );
+  // update gui timer
+  d->_pcActivityTimer = new QTimer( this );
+    connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(updateCmdActivity()) );
     d->_pcActivityTimer->start( 300, TRUE );
 
 
-	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
-	CommandLine().reparent(statusBar());
-	statusBar()->addWidget(&CommandLine(), 0, true);
+  // Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
+  CommandLine().reparent(statusBar());
+  statusBar()->addWidget(&CommandLine(), 0, true);
   statusBar()->message( tr("Ready"), 2001 );
 
-	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	d->_pcStackBar = new ToolBox(this,"Cmd_Group");
-  d->_pcWidgetMgr = new Gui::CustomWidgetManager(GetCommandManager(), d->_pcStackBar);
+  // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
+  d->_pcStackBar = new ToolBox(this,"Cmd_Group");
+  d->_pcWidgetMgr = new Gui::CustomWidgetManager(commandManager(), d->_pcStackBar);
   d->_pcDockMgr = new Gui::DockWindowManager();
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
-	// Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   QString home = DlgOnlineHelpImp::getStartpage();
-	HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
-	d->_pcDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
+  HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
+  d->_pcDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
 
 
-	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	TreeView* pcTree = new TreeView(0,this,"Raw_tree");
-	pcTree->setMinimumWidth(210);
+  // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+  TreeView* pcTree = new TreeView(0,this,"Raw_tree");
+  pcTree->setMinimumWidth(210);
   d->_pcDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
 
-	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
-	pcPropView->setMinimumWidth(210);
-	d->_pcDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
+  // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+  PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
+  pcPropView->setMinimumWidth(210);
+  d->_pcDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
 
-	// Report View
-	Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
+  // Report View
+  Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
   d->_pcDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
 
- 	CreateStandardOperations();
+  createStandardOperations();
 
-	
-	
-	// misc stuff
-  LoadWindowSettings();
+
+
+  // misc stuff
+  loadWindowSettings();
   //  resize( 800, 600 );
-	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
-	//setUsesBigPixmaps (true);
+  //setBackgroundPixmap(QPixmap((const char*)FCBackground));
+  //setUsesBigPixmaps (true);
 
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
 /*
@@ -382,7 +346,7 @@ ApplicationWindow::~ApplicationWindow()
     }
   }
 
-	SaveWindowSettings();
+  saveWindowSettings();
 }
 
 
@@ -392,21 +356,21 @@ ApplicationWindow::~ApplicationWindow()
 
 
 
-void ApplicationWindow::CreateStandardOperations()
+void ApplicationWindow::createStandardOperations()
 {
-	// register the application Standard commands from CommandStd.cpp
+  // register the application Standard commands from CommandStd.cpp
   Gui::CreateStdCommands();
   Gui::CreateViewStdCommands();
   Gui::CreateTestCommands();
 }
 
-void ApplicationWindow::Polish()
+void ApplicationWindow::onPolish()
 {
   d->viewbar  = d->_pcWidgetMgr->getPopupMenu("&View");
   d->viewbar->setCanModify(true);
   d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
 
-  connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(OnShowView(     )));
+  connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(onShowView(     )));
 
   d->windows = d->_pcWidgetMgr->getPopupMenu("&Windows");
   connect(d->windows, SIGNAL( aboutToShow()), this, SLOT( onWindowsMenuAboutToShow() ) );
@@ -419,7 +383,7 @@ bool ApplicationWindow::isCustomizable () const
 
 void ApplicationWindow::customize ()
 {
-  GetCommandManager().runCommandByName("Std_DlgCustomize");
+  commandManager().runCommandByName("Std_DlgCustomize");
 }
 
 void ApplicationWindow::tileHorizontal()
@@ -427,25 +391,25 @@ void ApplicationWindow::tileHorizontal()
   // primitive horizontal tiling
   QWidgetList windows = d->_pWorkspace->windowList();
   if ( !windows.count() )
-  	return;
+    return;
     
   int heightForEach = d->_pWorkspace->height() / windows.count();
   int y = 0;
   for ( int i = 0; i < int(windows.count()); ++i ) 
   {
-  	QWidget *window = windows.at(i);
-	  if ( window->testWState( WState_Maximized ) ) 
+    QWidget *window = windows.at(i);
+    if ( window->testWState( WState_Maximized ) ) 
     {
-	    // prevent flicker
-	    window->hide();
-	    window->showNormal();
-  	}
-  	
+      // prevent flicker
+      window->hide();
+      window->showNormal();
+    }
+
     int preferredHeight = window->minimumHeight()+window->parentWidget()->baseSize().height();
-	  int actHeight = QMAX(heightForEach, preferredHeight);
-	
-	  window->parentWidget()->setGeometry( 0, y, d->_pWorkspace->width(), actHeight );
-  	y += actHeight;
+    int actHeight = QMAX(heightForEach, preferredHeight);
+  
+    window->parentWidget()->setGeometry( 0, y, d->_pWorkspace->width(), actHeight );
+    y += actHeight;
   }
 }
 
@@ -459,10 +423,10 @@ void ApplicationWindow::cascade()
   d->_pWorkspace->cascade();
 }
 
-void ApplicationWindow::OnShowView()
+void ApplicationWindow::onShowView()
 {
   Gui::CustomPopupMenu* menu = d->viewbar;
-  menu->update(GetCommandManager());
+  menu->update(commandManager());
   menu->setCheckable(true);
   d->mCheckBars.clear();
 
@@ -489,7 +453,7 @@ void ApplicationWindow::OnShowView()
   QWidget* w = statusBar();
   int id = menu->insertItem( tr("Status bar"), this, SLOT( onToggleStatusBar() ) );
   d->mCheckBars[id] = w;
-	menu->setItemChecked(id, w->isVisible());
+  menu->setItemChecked(id, w->isVisible());
 }
 
 void ApplicationWindow::onToggleStatusBar()
@@ -503,23 +467,23 @@ void ApplicationWindow::onToggleStatusBar()
 
 void ApplicationWindow::OnDocNew(App::Document* pcDoc)
 {
-	d->lpcDocuments.push_back( new FCGuiDocument(pcDoc,this) );
+  d->lpcDocuments.push_back( new Gui::Document(pcDoc,this) );
 }
 
 void ApplicationWindow::OnDocDelete(App::Document* pcDoc)
 {
-	FCGuiDocument* pcGDoc;
+  Gui::Document* pcGDoc;
 
-	for(std::list<FCGuiDocument*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
-	{
-		if( ((*It)->GetDocument()) == pcDoc)
-		{
-			pcGDoc = *It;
-			d->lpcDocuments.erase(It);
-			delete pcGDoc;
-		}
-	}
-	
+  for(std::list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+  {
+    if( ((*It)->getDocument()) == pcDoc)
+    {
+      pcGDoc = *It;
+      d->lpcDocuments.erase(It);
+      delete pcGDoc;
+    }
+  }
+
 }
 
 void ApplicationWindow::addWindow( MDIView* view )
@@ -574,7 +538,7 @@ void ApplicationWindow::onWindowActivated( QWidget* w )
 {
   MDIView* view = dynamic_cast<MDIView*>(w);
   if ( !view ) return; // either no MDIView or no valid object
-  view->SetActive();
+  view->setActive();
 
   QMap<QObject*, QTab*>::Iterator it = d->_tabIds.find( view );
   if ( it != d->_tabIds.end() )
@@ -636,8 +600,8 @@ void ApplicationWindow::onWindowsMenuAboutToShow()
 
       if ( (act && d->wndIDs.size() < 10) || (!act && d->wndIDs.size() < 9))
       {
- 	      int id = windowsMenu->insertItem( txt, this, SLOT( onWindowsMenuActivated( int ) ), 0, -1, idx );
- 	      windowsMenu->setItemParameter( id, i );
+        int id = windowsMenu->insertItem( txt, this, SLOT( onWindowsMenuActivated( int ) ), 0, -1, idx );
+        windowsMenu->setItemParameter( id, i );
         windowsMenu->setItemChecked( id, d->_pWorkspace->activeWindow() == windows.at(i) );
         d->wndIDs.push_back( id );
       }
@@ -649,7 +613,7 @@ void ApplicationWindow::onWindowsMenuActivated( int id )
 {
   QWidget* w = d->_pWorkspace->windowList().at( id );
   if ( w )
-  	w->showNormal();
+    w->showNormal();
   w->setFocus();
 }
 
@@ -658,22 +622,22 @@ QWidgetList ApplicationWindow::windows( QWorkspace::WindowOrder order ) const
   return d->_pWorkspace->windowList( order );
 }
 
-void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
+void ApplicationWindow::onLastWindowClosed(Gui::Document* pcDoc)
 {
-	if(!d->_bIsClosing)
-	{
-		// GuiDocument has closed the last window and get destructed
-		d->lpcDocuments.remove(pcDoc);
-		//lpcDocuments.erase(pcDoc);
-		delete pcDoc;
-		
-		// last document closed?
-		if(d->lpcDocuments.size() == 0 )
-			// reset active document
-			SetActiveDocument(0);
+  if(!d->_bIsClosing)
+  {
+    // GuiDocument has closed the last window and get destructed
+    d->lpcDocuments.remove(pcDoc);
+    //lpcDocuments.erase(pcDoc);
+    delete pcDoc;
+
+    // last document closed?
+    if(d->lpcDocuments.size() == 0 )
+      // reset active document
+      setActiveDocument(0);
     else
-      SetActiveDocument(d->lpcDocuments.front());
-	}
+      setActiveDocument(d->lpcDocuments.front());
+  }
 }
 
 // set text to the pane
@@ -694,28 +658,28 @@ void ApplicationWindow::setPaneText(int i, QString text)
 
 
 /// send Messages to the active view
-bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
+bool ApplicationWindow::sendMsgToActiveView(const char* pMsg)
 {
-	MDIView* pView = GetActiveView();
+  MDIView* pView = activeView();
 
-	if(pView){
-		return pView->OnMsg(pMsg);
-	}else
-		return false;
+  if(pView){
+    return pView->onMsg(pMsg);
+  }else
+    return false;
 }
 
-bool ApplicationWindow::SendHasMsgToActiveView(const char* pMsg)
+bool ApplicationWindow::sendHasMsgToActiveView(const char* pMsg)
 {
-	MDIView* pView = GetActiveView();
+  MDIView* pView = activeView();
 
-	if(pView){
-		return pView->OnHasMsg(pMsg);
-	}else
-		return false;
+  if(pView){
+    return pView->onHasMsg(pMsg);
+  }else
+    return false;
 }
 
 
-MDIView* ApplicationWindow::GetActiveView(void)
+MDIView* ApplicationWindow::activeView(void)
 {
   MDIView * pView = reinterpret_cast <MDIView *> ( d->_pWorkspace->activeWindow() );
   return pView;
@@ -723,146 +687,140 @@ MDIView* ApplicationWindow::GetActiveView(void)
 
 
 /// Geter for the Active View
-FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
+Gui::Document* ApplicationWindow::activeDocument(void)
 {
-	return d->_pcActiveDocument;
-	/*
-	MDIView* pView = GetActiveView();
+  return d->_pcActiveDocument;
+  /*
+  MDIView* pView = GetActiveView();
 
-	if(pView)
-		return pView->GetGuiDocument();
-	else
-		return 0l;*/
+  if(pView)
+    return pView->GetGuiDocument();
+  else
+    return 0l;*/
 }
 
-void ApplicationWindow::SetActiveDocument(FCGuiDocument* pcDocument)
+void ApplicationWindow::setActiveDocument(Gui::Document* pcDocument)
 {
-	d->_pcActiveDocument=pcDocument;
+  d->_pcActiveDocument=pcDocument;
 
-	Console().Log("Activate Document (%p) \n",d->_pcActiveDocument);
+  Console().Log("Activate Document (%p) \n",d->_pcActiveDocument);
 
-	// notify all views attached to the application (not views belong to a special document)
-	for(std::list<FCBaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
-		(*It)->SetDocument(pcDocument);
-
+  // notify all views attached to the application (not views belong to a special document)
+  for(std::list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
+    (*It)->setDocument(pcDocument);
 }
 
-void ApplicationWindow::AttachView(FCBaseView* pcView)
+void ApplicationWindow::attachView(Gui::BaseView* pcView)
 {
-	d->_LpcViews.push_back(pcView);
+  d->_LpcViews.push_back(pcView);
 }
 
 
-void ApplicationWindow::DetachView(FCBaseView* pcView)
+void ApplicationWindow::detachView(Gui::BaseView* pcView)
 {
-	d->_LpcViews.remove(pcView);
+  d->_LpcViews.remove(pcView);
 }
 
-void ApplicationWindow::Update(void)
+void ApplicationWindow::onUpdate(void)
 {
-	// update all documents
-	for(std::list<FCGuiDocument*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
-	{
-		(*It)->Update();
-	}
-	// update all the independed views
-	for(std::list<FCBaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
-	{
-		(*It2)->Update();
-	}
-
+  // update all documents
+  for(std::list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+  {
+    (*It)->onUpdate();
+  }
+  // update all the independed views
+  for(std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
+  {
+    (*It2)->onUpdate();
+  }
 }
 
 /// get calld if a view gets activated, this manage the whole activation scheme
-void ApplicationWindow::ViewActivated(MDIView* pcView)
+void ApplicationWindow::viewActivated(MDIView* pcView)
 {
-
-	Console().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->GetName());
-	// set the new active document
-	if(pcView->IsPassiv())
-		SetActiveDocument(0);
-	else
-		SetActiveDocument(pcView->GetGuiDocument());
+  Console().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->getName());
+  // set the new active document
+  if(pcView->isPassiv())
+    setActiveDocument(0);
+  else
+    setActiveDocument(pcView->getGuiDocument());
 }
 
 
-void ApplicationWindow::UpdateActive(void)
+void ApplicationWindow::updateActive(void)
 {
-	GetActiveDocument()->Update();
+  activeDocument()->onUpdate();
 }
 
-
-void ApplicationWindow::OnUndo()
+void ApplicationWindow::onUndo()
 {
-	puts("ApplicationWindow::slotUndo()");
+  puts("ApplicationWindow::slotUndo()");
 }
 
-void ApplicationWindow::OnRedo()
+void ApplicationWindow::onRedo()
 {
-	puts("ApplicationWindow::slotRedo()");
-
+  puts("ApplicationWindow::slotRedo()");
 }
 
 void ApplicationWindow::closeEvent ( QCloseEvent * e )
 {
+  if(d->lpcDocuments.size() == 0)
+  {
+    e->accept();
+  }else{
+    // ask all documents if closable
+    for (std::list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+    {
+      (*It)->canClose ( e );
+  //			if(! e->isAccepted() ) break;
+      if(! e->isAccepted() ) return;
+    }
+  }
 
-	if(d->lpcDocuments.size() == 0)
-	{
-		e->accept();
-	}else{
-		// ask all documents if closable
-		for (std::list<FCGuiDocument*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-		{
-			(*It)->CanClose ( e );
-//			if(! e->isAccepted() ) break;
-			if(! e->isAccepted() ) return;
-		}
-	}
-
-	// ask all passiv views if closable
-	for (std::list<FCBaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
-	{
-		if((*It2)->CanClose() )
-			e->accept();
-		else 
-			e->ignore();
+  // ask all passiv views if closable
+  for (std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
+  {
+    if((*It2)->canClose() )
+      e->accept();
+    else 
+      e->ignore();
 
 //		if(! e->isAccepted() ) break;
-		if(! e->isAccepted() ) return;
-	}
+    if(! e->isAccepted() ) return;
+  }
 
-	if( e->isAccepted() )
-	{
-		d->_bIsClosing = true;
+  if( e->isAccepted() )
+  {
+    d->_bIsClosing = true;
 
-		std::list<FCGuiDocument*>::iterator It;
+    std::list<Gui::Document*>::iterator It;
 
-		// close all views belonging to a document
-		for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-		{
-			(*It)->CloseAllViews();
-		}
+    // close all views belonging to a document
+    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+    {
+      (*It)->closeAllViews();
+    }
 
-		//detache the passiv views
-		//SetActiveDocument(0);
-		std::list<FCBaseView*>::iterator It2 = d->_LpcViews.begin();
-		while (It2!=d->_LpcViews.end())
-		{
-			(*It2)->Close();
-			It2 = d->_LpcViews.begin();
-		}
+    //detache the passiv views
+    //SetActiveDocument(0);
+    std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
+    while (It2!=d->_LpcViews.end())
+    {
+      (*It2)->onClose();
+      It2 = d->_LpcViews.begin();
+    }
 
-		// remove all documents
-		for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-		{
-			delete(*It);
-		}
+    // remove all documents
+    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+    {
+      delete(*It);
+    }
 
-		d->_pcActivityTimer->stop();
+    d->_pcActivityTimer->stop();
 
-    ActivateWorkbench("<none>");
+    activateWorkbench("<none>");
     QMainWindow::closeEvent( e );
-	}
+  }
 }
 
 /**
@@ -870,26 +828,26 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
  *  python workbench object. If the workbench is allready active
  *  nothing get called!
  */
-void ApplicationWindow::ActivateWorkbench(const char* name)
+void ApplicationWindow::activateWorkbench(const char* name)
 {
-	// net buffer because of char* <-> const char*
-	Base::PyBuf Name(name);
+  // net buffer because of char* <-> const char*
+  Base::PyBuf Name(name);
 
-	// close old workbench
-	if(d->_cActiveWorkbenchName != "")
-	{
-		Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
-		PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
-		assert(pcOldWorkbench);
-    GetCustomWidgetManager()->hideToolBox();
-		Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
-	}
-	// get the python workbench object from the dictionary
-	PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
+  // close old workbench
+  if(d->_cActiveWorkbenchName != "")
+  {
+    Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
+    PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
+    assert(pcOldWorkbench);
+    customWidgetManager()->hideToolBox();
+    Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
+  }
+  // get the python workbench object from the dictionary
+  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
 
   try{
-	  // test if the workbench in
-	  assert(pcWorkbench);
+    // test if the workbench in
+    assert(pcWorkbench);
     if (!pcWorkbench)
     {
       QString exc = tr("Workbench '%1' does not exist").arg(name);
@@ -897,21 +855,21 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
     }
 
     // rename with new workbench before(!!!) calling "Start"
-	  d->_cActiveWorkbenchName = name;
+    d->_cActiveWorkbenchName = name;
 
-	  // running the start of the workbench object
-	  Interpreter().RunMethodVoid(pcWorkbench, "Start");
+    // running the start of the workbench object
+    Interpreter().RunMethodVoid(pcWorkbench, "Start");
     d->_pcWidgetMgr->update(name);
-    GetCustomWidgetManager()->showToolBox();
+    customWidgetManager()->showToolBox();
 
-	  // update the Std_Workbench command and its action object
+    // update the Std_Workbench command and its action object
     Command* pCmd = d->_cCommandManager.getCommandByName("Std_Workbench");
     if (pCmd)
     {
       ((StdCmdWorkbench*)pCmd)->activate( name );
     }
 
-	  show();
+    show();
   }
   catch (const Base::Exception& rclE)
   {
@@ -919,7 +877,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
   }
 }
 
-void ApplicationWindow::UpdateWorkbenchEntrys(void)
+void ApplicationWindow::updateWorkbenchEntrys(void)
 {
 //	PyObject *key, *value;
 //	int pos = 0;
@@ -938,20 +896,20 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 //  }
 }
 
-std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
+std::vector<std::string> ApplicationWindow::workbenches(void)
 {
-	PyObject *key, *value;
-	int pos = 0;
+  PyObject *key, *value;
+  int pos = 0;
   std::vector<std::string> wb;
-	// insert all items
-	while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
-		/* do something interesting with the values... */
-		wb.push_back(PyString_AsString(key));
-	}
+  // insert all items
+  while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
+    /* do something interesting with the values... */
+    wb.push_back(PyString_AsString(key));
+  }
   return wb;
 }
 
-void ApplicationWindow::AppendRecentFile(const char* file)
+void ApplicationWindow::appendRecentFile(const char* file)
 {
   Command* pCmd = d->_cCommandManager.getCommandByName("Std_MRU");
   if (pCmd)
@@ -960,24 +918,24 @@ void ApplicationWindow::AppendRecentFile(const char* file)
   }
 }
 
-void ApplicationWindow::UpdateCmdActivity()
+void ApplicationWindow::updateCmdActivity()
 {
-	static QTime cLastCall;
+  static QTime cLastCall;
 
-	if(cLastCall.elapsed() > 250 && isVisible () )
-	{
-		//puts("testActive");
-		d->_cCommandManager.testActive();
-		// remember last call
-		cLastCall.start();
-	}
+  if(cLastCall.elapsed() > 250 && isVisible () )
+  {
+    //puts("testActive");
+    d->_cCommandManager.testActive();
+    // remember last call
+    cLastCall.start();
+  }
 
-	d->_pcActivityTimer->start( 300, TRUE );	
+  d->_pcActivityTimer->start( 300, TRUE );	
 }
 
-void ApplicationWindow::LoadWindowSettings()
+void ApplicationWindow::loadWindowSettings()
 {
-  LoadDockWndSettings();
+  loadDockWndSettings();
 
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   int w = hGrp->GetInt("Width", 1024);
@@ -988,22 +946,22 @@ void ApplicationWindow::LoadWindowSettings()
   resize( w, h );
   move(x, y);
   if (max) showMaximized();
-	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
+  //setBackgroundPixmap(QPixmap((const char*)FCBackground));
 
-	UpdatePixmapsSize();
-	UpdateStyle();
+  updatePixmapsSize();
+  updateStyle();
 }
 
-void ApplicationWindow::UpdatePixmapsSize(void)
+void ApplicationWindow::updatePixmapsSize(void)
 {
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
   bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
   if (bigPixmaps != usesBigPixmaps())
-		setUsesBigPixmaps (bigPixmaps);
+    setUsesBigPixmaps (bigPixmaps);
 }
 
-void ApplicationWindow::UpdateStyle(void)
+void ApplicationWindow::updateStyle(void)
 {
   QStyle& curStyle = QApplication::style();
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
@@ -1014,13 +972,13 @@ void ApplicationWindow::UpdateStyle(void)
     return; // already set
   
   QStyle* newStyle = QStyleFactory::create( style );
-	if ( newStyle != 0 )
-	{
-  	QApplication::setStyle( newStyle );
-	}
+  if ( newStyle != 0 )
+  {
+    QApplication::setStyle( newStyle );
+  }
 }
 
-void ApplicationWindow::SaveWindowSettings()
+void ApplicationWindow::saveWindowSettings()
 {
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   if (isMaximized())
@@ -1036,10 +994,10 @@ void ApplicationWindow::SaveWindowSettings()
     hGrp->SetBool("Maximized", false);
   }
 
-  SaveDockWndSettings();
+  saveDockWndSettings();
 }
 
-void ApplicationWindow::LoadDockWndSettings()
+void ApplicationWindow::loadDockWndSettings()
 {
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   QString str = hGrp->GetASCII("Layout", "").c_str();
@@ -1099,7 +1057,7 @@ void ApplicationWindow::LoadDockWndSettings()
   readDockConfig(root);*/
 }
 
-void ApplicationWindow::SaveDockWndSettings()
+void ApplicationWindow::saveDockWndSettings()
 {
   QString str;
   QTextStream ts( &str, IO_WriteOnly );
@@ -1139,34 +1097,34 @@ void ApplicationWindow::SaveDockWndSettings()
   delete (datafile);*/
 }
 
-bool ApplicationWindow::IsClosing(void)
+bool ApplicationWindow::isClosing(void)
 {
   return d->_bIsClosing;
 }
 
-Gui::CustomWidgetManager* ApplicationWindow::GetCustomWidgetManager(void) 
+Gui::CustomWidgetManager* ApplicationWindow::customWidgetManager(void) 
 { 
   return d->_pcWidgetMgr; 
 }
 
-QString ApplicationWindow::GetActiveWorkbench(void)
+QString ApplicationWindow::activeWorkbench(void)
 {
   return d->_cActiveWorkbenchName;
 }
 
-MacroManager *ApplicationWindow::GetMacroMngr(void)
+MacroManager *ApplicationWindow::macroManager(void)
 {
   return d->_pcMacroMngr;
 }
 
-CommandManager &ApplicationWindow::GetCommandManager(void)
+CommandManager &ApplicationWindow::commandManager(void)
 {
   return d->_cCommandManager;
 }
 
 void ApplicationWindow::languageChange()
 {
-  CommandManager& rclMan = GetCommandManager();
+  CommandManager& rclMan = commandManager();
   std::vector<Command*> cmd = rclMan.getAllCommands();
   for ( std::vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
   {
@@ -1174,7 +1132,7 @@ void ApplicationWindow::languageChange()
   }
 
   // and finally update the menu bar since QMenuBar owns no "text" property
-  Gui::CustomWidgetManager* cw = GetCustomWidgetManager();
+  Gui::CustomWidgetManager* cw = customWidgetManager();
   const QMap<int, QString>& mi = cw->menuBarItems();
  
   QMenuBar* mb = menuBar();
@@ -1196,13 +1154,12 @@ QApplication* ApplicationWindow::_pcQApp = NULL ;
 QSplashScreen *ApplicationWindow::_splash = NULL;
 
 
-void ApplicationWindow::InitApplication(void)
+void ApplicationWindow::initApplication(void)
 {
 //	std::map<std::string,std::string> &Config = GetApplication().Config();
 
 
-	new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-
+  new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
 }
 
 void messageHandler( QtMsgType type, const char *msg )
@@ -1226,71 +1183,71 @@ void messageHandler( QtMsgType type, const char *msg )
 //  GuiConsoleObserver::bMute = mute;
 }
 
-void ApplicationWindow::RunApplication(void)
+void ApplicationWindow::runApplication(void)
 {
-	// A new QApplication
-	Console().Log("Creating GUI Application...\n");
-	// if application not yet created by the splasher
+  // A new QApplication
+  Console().Log("Creating GUI Application...\n");
+  // if application not yet created by the splasher
   int argc = App::Application::GetARGC();
   qInstallMsgHandler( messageHandler );
   if (!_pcQApp)  _pcQApp = new QApplication (argc, App::Application::GetARGV());
 
-	StartSplasher();
-	ApplicationWindow * mw = new ApplicationWindow();
-	_pcQApp->setMainWidget(mw);
+  startSplasher();
+  ApplicationWindow * mw = new ApplicationWindow();
+  _pcQApp->setMainWidget(mw);
 
-	// runing the Gui init script
-	Interpreter().Launch(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
-	// show the main window
-	Console().Log("Showing GUI Application...\n");
-	mw->Polish();
-	mw->show();
-	StopSplasher();
-	ShowTipOfTheDay();
+  // runing the Gui init script
+  Interpreter().Launch(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+  // show the main window
+  Console().Log("Showing GUI Application...\n");
+  mw->onPolish();
+  mw->show();
+  stopSplasher();
+  showTipOfTheDay();
 
-	_pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
+  _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
-	// run the Application event loop
-	Console().Log("Running event loop...\n");
-	_pcQApp->exec();
-	Console().Log("event loop left\n");
+  // run the Application event loop
+  Console().Log("Running event loop...\n");
+  _pcQApp->exec();
+  Console().Log("event loop left\n");
 }
 
-void ApplicationWindow::StartSplasher(void)
+void ApplicationWindow::startSplasher(void)
 {
-	// startup splasher
-	// when running in verbose mode no splasher
+  // startup splasher
+  // when running in verbose mode no splasher
   if ( ! (App::Application::Config()["Verbose"] == "Strict") && (App::Application::Config()["RunMode"] == "Gui") )
-	{
+  {
     FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 #ifdef FC_DEBUG
   bool splash = false;
 #else
   bool splash = true;
 #endif
-		if (hGrp->GetBool("AllowSplasher", splash))
-		{
-			QPixmap pixmap(( const char** ) splash_screen );
-			_splash = new SplashScreen( pixmap );
-			_splash->show();
-		}
-	}
+    if (hGrp->GetBool("AllowSplasher", splash))
+    {
+      QPixmap pixmap(( const char** ) splash_screen );
+      _splash = new SplashScreen( pixmap );
+      _splash->show();
+    }
+  }
 }
 
-void ApplicationWindow::StopSplasher(void)
+void ApplicationWindow::stopSplasher(void)
 {
-	if ( _splash )
-	{
-		_splash->finish( Instance );
-		delete _splash;
-		_splash = 0L;
-	}
+  if ( _splash )
+  {
+    _splash->finish( Instance );
+    delete _splash;
+    _splash = 0L;
+  }
 }
 
-void ApplicationWindow::ShowTipOfTheDay( bool force )
+void ApplicationWindow::showTipOfTheDay( bool force )
 {
-	// tip of the day?
-	FCParameterGrp::handle
+  // tip of the day?
+  FCParameterGrp::handle
   hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 
 #ifdef FC_DEBUG
@@ -1300,21 +1257,19 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
 #endif
 
   tip = hGrp->GetBool("Tipoftheday", tip);
-	if ( tip || force)
-	{
-		Gui::Dialog::DlgTipOfTheDayImp dlg(Instance, "Tipofday");
-		dlg.exec();
-	}
+  if ( tip || force)
+  {
+    Gui::Dialog::DlgTipOfTheDayImp dlg(Instance, "Tipofday");
+    dlg.exec();
+  }
 }
 
-void ApplicationWindow::Destruct(void)
+void ApplicationWindow::destruct(void)
 {
-	Console().Log("Destruct GuiApplication\n");
+  Console().Log("Destruct GuiApplication\n");
 
-	delete _pcQApp;
-
+  delete _pcQApp;
 }
-
 
 
 
@@ -1323,69 +1278,68 @@ void ApplicationWindow::Destruct(void)
 
 // FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
-	{"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
-	{"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
-	{"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
-	{"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
-	{"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},
-	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
-	{"CommandbarAppendItems", (PyCFunction) ApplicationWindow::sCommandbarAppendItems,   1},
-	{"CommandbarRemoveItems", (PyCFunction) ApplicationWindow::sCommandbarRemoveItems,   1},
-	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
-	{"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
-	{"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
-	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
-	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
-	{"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
-	{"CreateDialog",          (PyCFunction) ApplicationWindow::sCreateDialog,            1},
-	{"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
-	{"RunCommand",            (PyCFunction) ApplicationWindow::sRunCommand,              1},
-	{"SendMsgToActiveView",   (PyCFunction) ApplicationWindow::sSendActiveView,          1},
+  {"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
+  {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
+  {"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
+  {"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
+  {"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},
+  {"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
+  {"CommandbarAppendItems", (PyCFunction) ApplicationWindow::sCommandbarAppendItems,   1},
+  {"CommandbarRemoveItems", (PyCFunction) ApplicationWindow::sCommandbarRemoveItems,   1},
+  {"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
+  {"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
+  {"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
+  {"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
+  {"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
+  {"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
+  {"CreateDialog",          (PyCFunction) ApplicationWindow::sCreateDialog,            1},
+  {"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
+  {"RunCommand",            (PyCFunction) ApplicationWindow::sRunCommand,              1},
+  {"SendMsgToActiveView",   (PyCFunction) ApplicationWindow::sSendActiveView,          1},
 
-	{NULL, NULL}		/* Sentinel */
+  {NULL, NULL}		/* Sentinel */
 };
 
 PYFUNCIMP_S(ApplicationWindow,sSendActiveView)
 {
-	char *psCommandStr;
-	if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
-		return NULL;                                      // NULL triggers exception 
+  char *psCommandStr;
+  if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
 
-	if(!Instance->SendMsgToActiveView(psCommandStr))
+  if(!Instance->sendMsgToActiveView(psCommandStr))
     Base::Console().Warning("Unknown view command: %s\n",psCommandStr);
-	
 
-	Py_INCREF(Py_None);
-	return Py_None;
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
 {
-	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-		return NULL;                                      // NULL triggers exception 
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
 
-	qApp->processEvents();
-	
-	Py_INCREF(Py_None);
-	return Py_None;
+  qApp->processEvents();
+
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
 {
   char* fn = 0;
-	if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
-		return NULL;                                      // NULL triggers exception 
+  if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
 
-	PyObject* pPyResource=0L;
-	try{
-		pPyResource = new PyResource();
-		((PyResource*)pPyResource)->load(fn);
-	} catch (const Base::Exception& e)
-	{
+  PyObject* pPyResource=0L;
+  try{
+    pPyResource = new PyResource();
+    ((PyResource*)pPyResource)->load(fn);
+  } catch (const Base::Exception& e)
+  {
     PyErr_SetString(PyExc_AssertionError, e.what());
-	}
+  }
 
-	return pPyResource;
+  return pPyResource;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
@@ -1422,13 +1376,13 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
     Instance->d->_pcWidgetMgr->addPopupMenu(psMenuName, items, parent);
     Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(bRemovable!=0);
-	}catch(const Base::Exception& e) {
-		PyErr_SetString(PyExc_AssertionError, e.what());		
-		return NULL;
-	}catch(...){
-		PyErr_SetString(PyExc_RuntimeError, "unknown error");
-		return NULL;
-	}
+  }catch(const Base::Exception& e) {
+    PyErr_SetString(PyExc_AssertionError, e.what());		
+    return NULL;
+  }catch(...){
+    PyErr_SetString(PyExc_RuntimeError, "unknown error");
+    return NULL;
+  }
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1471,9 +1425,9 @@ PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
     char *psMenuName;
     if (!PyArg_ParseTuple(args, "s", &psMenuName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	Instance->GetCustomWidgetManager()->removePopupMenu(psMenuName);
+  Instance->customWidgetManager()->removePopupMenu(psMenuName);
 
-	Py_INCREF(Py_None);
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -1491,7 +1445,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
   if (!PyList_Check(pObject))
   {
     PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-		return NULL;                                      // NULL triggers exception 
+    return NULL;                                      // NULL triggers exception 
   }
 
   QStringList items;
@@ -1507,21 +1461,21 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
     items.push_back(pItem);
   }
 
-	try{
+  try{
     Instance->d->_pcWidgetMgr->addToolBar( psToolbarName, items );
     if (!bVisible)
       Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
     Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setRemovable(bRemovable!=0);
-	}catch(const Base::Exception& e) {
-		PyErr_SetString(PyExc_AssertionError, e.what());		
-		return NULL;
-	}catch(...){
-		PyErr_SetString(PyExc_RuntimeError, "unknown error");
-		return NULL;
-	}
+  }catch(const Base::Exception& e) {
+    PyErr_SetString(PyExc_AssertionError, e.what());		
+    return NULL;
+  }catch(...){
+    PyErr_SetString(PyExc_RuntimeError, "unknown error");
+    return NULL;
+  }
 
-	Py_INCREF(Py_None);
+  Py_INCREF(Py_None);
   return Py_None;
 } 
 
@@ -1535,7 +1489,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
   if (!PyList_Check(pObject))
   {
     PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-		return NULL;                             // NULL triggers exception 
+    return NULL;                             // NULL triggers exception 
   }
 
   QStringList items;
@@ -1552,9 +1506,9 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
   }
 
   Instance->d->_pcWidgetMgr->removeToolBarItems( psToolbarName, items );
-    
-	Py_INCREF(Py_None);
-	return Py_None;
+
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
@@ -1562,9 +1516,9 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
     char *psToolbarName;
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	Instance->GetCustomWidgetManager()->removeToolBar(psToolbarName);
+  Instance->customWidgetManager()->removeToolBar(psToolbarName);
 
-	Py_INCREF(Py_None);
+  Py_INCREF(Py_None);
     return Py_None;
 }
 
@@ -1581,7 +1535,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
   if (!PyList_Check(pObject))
   {
     PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-		return NULL;                                      // NULL triggers exception 
+    return NULL;                                      // NULL triggers exception 
   }
 
   QStringList items;
@@ -1597,19 +1551,19 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
     items.push_back(pItem);
   }
 
-	try{
+  try{
     Instance->d->_pcWidgetMgr->addCommandBar(psToolbarName, items);
     Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setRemovable(bRemovable!=0);
-	}catch(const Base::Exception& e) {
-		PyErr_SetString(PyExc_AssertionError, e.what());		
-		return NULL;
-	}catch(...){
-		PyErr_SetString(PyExc_RuntimeError, "unknown error");
-		return NULL;
-	}
+  }catch(const Base::Exception& e) {
+    PyErr_SetString(PyExc_AssertionError, e.what());		
+    return NULL;
+  }catch(...){
+    PyErr_SetString(PyExc_RuntimeError, "unknown error");
+    return NULL;
+  }
 
-	Py_INCREF(Py_None);
+  Py_INCREF(Py_None);
   return Py_None;
 } 
 
@@ -1623,7 +1577,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
   if (!PyList_Check(pObject))
   {
     PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-		return NULL;                             // NULL triggers exception 
+    return NULL;                             // NULL triggers exception 
   }
 
   QStringList items;
@@ -1641,8 +1595,8 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
 
   Instance->d->_pcWidgetMgr->removeCommandBarItems( psToolbarName, items );
 
-	Py_INCREF(Py_None);
-	return Py_None;
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
@@ -1651,53 +1605,53 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance->GetCustomWidgetManager()->removeCommandBar(psToolbarName);
-    
-	Py_INCREF(Py_None);
-	return Py_None;
+  Instance->customWidgetManager()->removeCommandBar(psToolbarName);
+  
+  Py_INCREF(Py_None);
+  return Py_None;
 }
 
 
 PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
 {
-	char*       psKey;
-	PyObject*   pcObject;
-	if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
+  char*       psKey;
+  PyObject*   pcObject;
+  if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
 
-	//Py_INCREF(pcObject);
+  //Py_INCREF(pcObject);
 
-	PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
+  PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
 
-	Instance->UpdateWorkbenchEntrys();
+  Instance->updateWorkbenchEntrys();
 
-	Py_INCREF(Py_None);
-	return Py_None;
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sWorkbenchDelete)
 {
-	char*       psKey;
-	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
+  char*       psKey;
+  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
 
-	PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
+  PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
 
-  Instance->UpdateWorkbenchEntrys();
+  Instance->updateWorkbenchEntrys();
 
-	Py_INCREF(Py_None);
+  Py_INCREF(Py_None);
   return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
 {
-	char*       psKey;
-	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
+  char*       psKey;
+  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
 
-	Instance->ActivateWorkbench(psKey);
+  Instance->activateWorkbench(psKey);
 
-	Py_INCREF(Py_None);
+  Py_INCREF(Py_None);
     return Py_None;
 }
 
@@ -1706,34 +1660,34 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	return Instance->d->_pcWorkbenchDictionary;
+  return Instance->d->_pcWorkbenchDictionary;
 }
 
 PYFUNCIMP_S(ApplicationWindow,sCommandAdd)
 {
-	char*       pName;
-	PyObject*   pcCmdObj;
-	if (!PyArg_ParseTuple(args, "sO", &pName,&pcCmdObj))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
+  char*       pName;
+  PyObject*   pcCmdObj;
+  if (!PyArg_ParseTuple(args, "sO", &pName,&pcCmdObj))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
 
-	//Py_INCREF(pcObject);
+  //Py_INCREF(pcObject);
 
-	ApplicationWindow::Instance->GetCommandManager().addCommand(new PythonCommand(pName,pcCmdObj));
+  ApplicationWindow::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj));
 
-	Py_INCREF(Py_None);
-	return Py_None;
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sRunCommand)
 {
-	char*       pName;
-	if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
+  char*       pName;
+  if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
 
-  ApplicationWindow::Instance->GetCommandManager().runCommandByName(pName);
+  ApplicationWindow::Instance->commandManager().runCommandByName(pName);
 
-	Py_INCREF(Py_None);
-	return Py_None;
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
 //**************************************************************************
@@ -1748,32 +1702,32 @@ bool GuiConsoleObserver::bMute = false;
 #endif
 
 GuiConsoleObserver::GuiConsoleObserver(ApplicationWindow *pcAppWnd)
-	:_pcAppWnd(pcAppWnd){}
+  :_pcAppWnd(pcAppWnd){}
 
 /// get calles when a Warning is issued
 void GuiConsoleObserver::Warning(const char *m)
 {
-	if(!bMute){
-	  QMessageBox::warning( _pcAppWnd, "Warning",m);
-		_pcAppWnd->statusBar()->message( m, 2001 );
-	}
+  if(!bMute){
+    QMessageBox::warning( _pcAppWnd, "Warning",m);
+    _pcAppWnd->statusBar()->message( m, 2001 );
+  }
 }
 
 /// get calles when a Message is issued
 void GuiConsoleObserver::Message(const char * m)
 {
-	if(!bMute)
-		_pcAppWnd->statusBar()->message( m, 2001 );
+  if(!bMute)
+    _pcAppWnd->statusBar()->message( m, 2001 );
 }
 
 /// get calles when a Error is issued
 void GuiConsoleObserver::Error  (const char *m)
 {
-	if(!bMute)
-	{
-	  QMessageBox::critical( _pcAppWnd, "Exception happens",m);
+  if(!bMute)
+  {
+    QMessageBox::critical( _pcAppWnd, "Exception happens",m);
     _pcAppWnd->statusBar()->message( m, 2001 );
-	}
+  }
 }
 
 /// get calles when a Log Message is issued

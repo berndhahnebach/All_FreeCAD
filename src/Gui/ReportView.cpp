@@ -27,7 +27,6 @@
 # include <qlayout.h>
 # include <qpopupmenu.h>
 # include <qtabwidget.h>
-# include <qvariant.h>
 #endif
 
 #include "ReportView.h"

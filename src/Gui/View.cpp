@@ -20,23 +20,10 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qapplication.h>
-#	include <qfiledialog.h>
-#	include <qgrid.h>
-#	include <qlayout.h>
-#	include <qmessagebox.h>
-#	include <qpushbutton.h>
-#	include <qsplitter.h>
-#	include <qtabbar.h>
-#	include <qthread.h>
-#	include <qtoolbar.h>
-#	include <qvbox.h>
-#	include <qwidgetstack.h>
 #endif
 
 
@@ -45,84 +32,85 @@
 #include "Application.h"
 
 
+using namespace Gui;
+
 //**************************************************************************
-// FCBaseView
+// BaseView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-std::vector<Gui::ViewProvider*> FCBaseView::_vpcViewProvider;
+std::vector<Gui::ViewProvider*> BaseView::_vpcViewProvider;
 
-FCBaseView::FCBaseView( FCGuiDocument* pcDocument)
+BaseView::BaseView( Gui::Document* pcDocument)
 :_pcDocument(pcDocument),
  bIsDetached(false)
 {
-	if(pcDocument){
-		pcDocument->AttachView(this);
-		bIsPassiv = false;
-	}else{
-		ApplicationWindow::Instance->AttachView(this);
-		bIsPassiv = true;
-	}
+  if(pcDocument){
+    pcDocument->attachView(this);
+    bIsPassiv = false;
+  }else{
+    ApplicationWindow::Instance->attachView(this);
+    bIsPassiv = true;
+  }
 }
 
-FCBaseView::~FCBaseView()
+BaseView::~BaseView()
 {
-//	assert (bIsDetached);
-	if(!bIsDetached && !ApplicationWindow::Instance->IsClosing() )
-	{
-		Close();
-	}
+//  assert (bIsDetached);
+  if(!bIsDetached && !ApplicationWindow::Instance->isClosing() )
+  {
+    onClose();
+  }
 }
 
-void FCBaseView::Close(void)
+void BaseView::onClose(void)
 {
-	if(bIsDetached) return;
+  if(bIsDetached) return;
 
-	if(bIsPassiv){
-		ApplicationWindow::Instance->DetachView(this);
-	}else{
-		if(_pcDocument)
-			_pcDocument->DetachView(this);
-	}
+  if(bIsPassiv){
+    ApplicationWindow::Instance->detachView(this);
+  }else{
+    if(_pcDocument)
+      _pcDocument->detachView(this);
+  }
 
-	_pcDocument = 0;
-	bIsDetached = true;
-	/*
-	if(_pcDocument)
-		_pcDocument->DetachView(this);
-	else
-		ApplicationWindow::Instance->DetachView(this);
+  _pcDocument = 0;
+  bIsDetached = true;
+  /*
+  if(_pcDocument)
+    _pcDocument->DetachView(this);
+  else
+    ApplicationWindow::Instance->DetachView(this);
 */
 }
 
-
-void FCBaseView::SetDocument(FCGuiDocument* pcDocument)
+void BaseView::setDocument(Gui::Document* pcDocument)
 {
-	FCGuiDocument* pcOldDocument;
-	// detach and attache the observer
-	if(_pcDocument)
-		_pcDocument->DetachView(this, true);
-	if(pcDocument)
-		pcDocument->AttachView(this,true);	
+  Gui::Document* pcOldDocument;
+  // detach and attache the observer
+  if(_pcDocument)
+    _pcDocument->detachView(this, true);
+  if(pcDocument)
+    pcDocument->attachView(this,true);	
 
-	// set the new document as the active one
-	pcOldDocument = _pcDocument;
-	_pcDocument = pcDocument;
-	
-	// tell the view
-	OnNewDocument(pcOldDocument,_pcDocument);
+  // set the new document as the active one
+  pcOldDocument = _pcDocument;
+  _pcDocument = pcDocument;
+
+  // tell the view
+  onNewDocument(pcOldDocument,_pcDocument);
 }
 
 /// returns the document the view is attached to
-App::Document* FCBaseView::GetAppDocument()
+App::Document* BaseView::getAppDocument()
 {
-	if(!_pcDocument) return 0;
-	return _pcDocument->GetDocument();
+  if(!_pcDocument) return 0;
+  return _pcDocument->getDocument();
 }
 
 /// Register a new View provider
-void FCBaseView::AddViewProvider(Gui::ViewProvider* pcProvider)
+void BaseView::addViewProvider(Gui::ViewProvider* pcProvider)
 {
-	_vpcViewProvider.push_back(pcProvider);
+  _vpcViewProvider.push_back(pcProvider);
 }
 
 
@@ -132,8 +120,8 @@ void FCBaseView::AddViewProvider(Gui::ViewProvider* pcProvider)
 
 
 
-MDIView::MDIView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
-	:QMainWindow(parent, name, wflags), FCBaseView(pcDocument)
+MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, const char* name, int wflags )
+  :QMainWindow(parent, name, wflags), BaseView(pcDocument)
 {
 }
 
@@ -143,45 +131,44 @@ MDIView::~MDIView()
 
 
 /// recife a message
-bool MDIView::OnMsg(const char* pMsg)
+bool MDIView::onMsg(const char* pMsg)
 {
-	return false;
+  return false;
 }
 
-bool MDIView::OnHasMsg(const char* pMsg)
+bool MDIView::onHasMsg(const char* pMsg)
 {
-	return false;
+  return false;
 }
 
 void MDIView::closeEvent(QCloseEvent *e)
 {
-	if(bIsPassiv){
-		if(CanClose() ){
-			e->accept();
-			QMainWindow::closeEvent(e);
-		}
-	}else{
-		if(GetGuiDocument()->IsLastView())
-		{
-			GetGuiDocument()->CanClose(e);
+  if(bIsPassiv){
+    if(canClose() ){
+      e->accept();
+      QMainWindow::closeEvent(e);
+    }
+  }else{
+    if(getGuiDocument()->isLastView())
+    {
+      getGuiDocument()->canClose(e);
 
-			if(e->isAccepted ())
-				QMainWindow::closeEvent(e);
-		}else
-			e->accept();
-	}
+      if(e->isAccepted ())
+        QMainWindow::closeEvent(e);
+    }else
+      e->accept();
+  }
 }
 
-
-void MDIView::SetActive(void)
+void MDIView::setActive(void)
 {
-	ApplicationWindow::Instance->ViewActivated(this);
+  ApplicationWindow::Instance->viewActivated(this);
 }
 
-void MDIView::Print( QPrinter* printer )
+void MDIView::print( QPrinter* printer )
 {
-	// print command specified but print methode not overriden!
-	assert(0);
+  // print command specified but print methode not overriden!
+  assert(0);
 }
 
 QSize MDIView::minimumSizeHint () const

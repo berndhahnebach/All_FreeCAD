@@ -57,10 +57,10 @@ DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
 void DlgCustomCmdbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
-  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommandBar(text.latin1());
+  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getCommandBar(text.latin1());
   toolbar->clearUp();
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
   QStringList items;
   QListViewItem* item = ToolbarActions->firstChild();
@@ -95,7 +95,7 @@ void DlgCustomCmdbarsImp::updateData()
 {
   ComboToolbars->clear();
   ToolbarActions->clear();
-  _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
+  _aclToolbars = ApplicationWindow::Instance->customWidgetManager()->getCommdandBars();
 
   Gui::CustomToolBar* bar;
   for ( bar = _aclToolbars.first(); bar; bar = _aclToolbars.next() )
@@ -118,13 +118,13 @@ void DlgCustomCmdbarsImp::updateData()
 /** Creates new commandbar */
 void DlgCustomCmdbarsImp::onCreateToolbar()
 {
-  QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCommandBars());
+  QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->customWidgetManager()->countCommandBars());
   QString text = QInputDialog::getText(tr("New commandbar"), tr("Specify the name of the new commandbar, please."),
                                       QLineEdit::Normal, def, 0, this);
 
   if (!text.isNull() && !text.isEmpty())
   {
-    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommandBar(text.latin1());
+    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getCommandBar(text.latin1());
     toolbar->show();
     _aclToolbars.append( toolbar );
     ComboToolbars->insertItem(text);
@@ -139,7 +139,7 @@ void DlgCustomCmdbarsImp::onCreateToolbar()
 void DlgCustomCmdbarsImp::onDeleteToolbar()
 {
   QValueList<CheckListItem> items;
-  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
+  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->customWidgetManager()->getCommdandBars();
   Gui::CustomToolBar* it;
   for ( it = tb.first(); it; it = tb.next() )
     items.append( qMakePair( QString(it->name()), it->canModify() ) );
@@ -152,7 +152,7 @@ void DlgCustomCmdbarsImp::onDeleteToolbar()
     QStringList checked = checklists.getCheckedItems();
     for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
     {
-      ApplicationWindow::Instance->GetCustomWidgetManager()->removeCommandBarFromSettings( (*it).latin1() );
+      ApplicationWindow::Instance->customWidgetManager()->removeCommandBarFromSettings( (*it).latin1() );
     }
 
     updateData();

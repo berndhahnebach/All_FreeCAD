@@ -27,12 +27,9 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qbitmap.h>
-# include <qdir.h>
-# include <qfileinfo.h>
-# include <qobjectlist.h>
+# include <qimage.h>
 # include <qpainter.h>
 # include <qpalette.h>
-# include <qtoolbar.h>
 #endif
 
 #include "Tools.h"
@@ -168,3 +165,106 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
   res.setMask( mask );
   return res;
 }
+
+void Tools::convert( const QImage& p, SoSFImage& img )
+{
+  SbVec2s size;
+  size[0] = p.width();
+  size[1] = p.height();
+
+  int buffersize = p.numBytes();
+  int numcomponents = buffersize / ( size[0] * size[1] );
+
+  // allocate image data
+  img.setValue(size, numcomponents, NULL);
+
+  unsigned char * bytes = img.startEditing(size, numcomponents);
+
+  int width  = (int)size[0];
+  int height = (int)size[1];
+
+  for (int y = 0; y < height; y++) 
+  {
+    unsigned char * line = 
+      &bytes[width*numcomponents*(height-(y+1))];
+    for (int x = 0; x < width; x++) 
+    {
+      QRgb rgb = p.pixel(x,y);
+      switch (numcomponents) 
+      {
+      default:
+        break;
+      case 1:
+        line[0] = qGray( rgb );
+        break;
+      case 2:
+        line[0] = qGray( rgb );
+        line[1] = qAlpha( rgb );
+        break;
+      case 3:
+        line[0] = qRed( rgb );
+        line[1] = qGreen( rgb );
+        line[2] = qBlue( rgb );
+        break;
+      case 4:
+        line[0] = qRed( rgb );
+        line[1] = qGreen( rgb );
+        line[2] = qBlue( rgb );
+        line[3] = qAlpha( rgb );
+        break;
+      }
+
+      line += numcomponents;
+    }
+  }
+
+  img.finishEditing();
+}
+
+void Tools::convert( const SoSFImage& p, QImage& img )
+{
+  SbVec2s size;
+  int numcomponents;
+
+  const unsigned char * bytes = p.getValue( size, numcomponents );
+  
+  int width  = (int)size[0];
+  int height = (int)size[1];
+
+  img.create(width, height, 32);
+
+  if (numcomponents == 2 || numcomponents == 4) 
+    img.setAlphaBuffer(TRUE);
+  else 
+    img.setAlphaBuffer(FALSE);
+
+  QRgb * bits = (QRgb*) img.bits();
+
+  for (int y = 0; y < height; y++) 
+  {
+    const unsigned char * line = 
+      &bytes[width*numcomponents*(height-(y+1))];
+    for (int x = 0; x < width; x++) 
+    {
+      switch (numcomponents) 
+      {
+      default:
+      case 1:
+        *bits++ = qRgb(line[0], line[0], line[0]);
+        break;
+      case 2:
+        *bits++ = qRgba(line[0], line[0], line[0], line[1]);
+        break;
+      case 3:
+        *bits++ = qRgb(line[0], line[1], line[2]);
+        break;
+      case 4:
+        *bits++ = qRgba(line[0], line[1], line[2], line[3]);
+        break;
+      }
+
+      line += numcomponents;
+    }
+  }
+}
+

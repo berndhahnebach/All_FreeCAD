@@ -77,7 +77,7 @@ ViewProviderTree::~ViewProviderTree()
 //**************************************************************************
 // provider methodes
 
-QListViewItem* ViewProviderTree::Create()
+QListViewItem* ViewProviderTree::create()
 {
   return 0;//new QListViewItem();
 }

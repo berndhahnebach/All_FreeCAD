@@ -51,8 +51,8 @@ public:
     BottomRight /**< Place to the bottom right corner */
   };
 
-  static BitmapFactoryInst& Instance(void);
-  static void Destruct (void);
+  static BitmapFactoryInst& instance(void);
+  static void destruct (void);
 
   /// Adds a path where pixmaps can be found
   void addPath(const char* sPath);
@@ -91,7 +91,7 @@ private:
 /// Get the global instance
 inline GuiExport BitmapFactoryInst& BitmapFactory(void)
 {
-  return BitmapFactoryInst::Instance();
+  return BitmapFactoryInst::instance();
 }
 
 } // namespace Gui

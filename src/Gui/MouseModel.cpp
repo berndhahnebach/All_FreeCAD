@@ -118,32 +118,32 @@ void MouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
   };
 }
 
-View3D& MouseModel::GetView3D(void) 
+View3D& MouseModel::getView3D(void) 
 { 
   // first init the MouseModel -> initMouseModel(View3D &View3D)
   assert (_pcView3D);
   return *_pcView3D;
 }
 
-Handle_V3d_View& MouseModel::GetView  (void) 
+Handle_V3d_View& MouseModel::getView  (void) 
 { 
   // first init the MouseModel -> initMouseModel(View3D &View3D)
   assert (_pcView3D);
-  return _pcView3D->GetView();
+  return _pcView3D->getView();
 }
 
-Handle_V3d_Viewer& MouseModel::GetViewer(void) 
+Handle_V3d_Viewer& MouseModel::getViewer(void) 
 {
   // first init the MouseModel -> initMouseModel(View3D &View3D)
   assert (_pcView3D);
-  return _pcView3D->GetViewer();
+  return _pcView3D->getViewer();
 }
 
-Handle_AIS_InteractiveContext& MouseModel::GetContext(void)
+Handle_AIS_InteractiveContext& MouseModel::getContext(void)
 {
   // first init the MouseModel -> initMouseModel(View3D &View3D)
   assert (_pcView3D);
-  return _pcView3D->GetContext();
+  return _pcView3D->getContext();
 }
 
 void MouseModel::drawRect( int x, int y, int w, int h, QPainter* p )
@@ -278,7 +278,7 @@ void MouseModelStd::mousePressEvent( QMouseEvent *cEvent)
   switch(cEvent->state() + cEvent->button())
   {
     case OCC_ROTATION:
-      GetView()->StartRotation(iX,iY);
+      getView()->StartRotation(iX,iY);
       mode = rotation;
       break;
     case OCC_PANNING:
@@ -294,7 +294,7 @@ void MouseModelStd::mousePressEvent( QMouseEvent *cEvent)
       mode = addselection;
       break;
     case OCC_SHOWPOPUP:
-      GetView3D().ShowPopup(iX,iY);
+      getView3D().showPopup(iX,iY);
       break;
     default:
       mode = nothing;
@@ -308,12 +308,12 @@ void MouseModelStd::mouseReleaseEvent( QMouseEvent *cEvent)
   switch(mode)
   {
     case selection:
-      GetContext()->MoveTo(cEvent->x(),cEvent->x(),GetView());
-      GetContext()->Select();
+      getContext()->MoveTo(cEvent->x(),cEvent->x(),getView());
+      getContext()->Select();
       break;
     case addselection:
-      GetContext()->MoveTo(cEvent->x(),cEvent->x(),GetView());
-      GetContext()->ShiftSelect();
+      getContext()->MoveTo(cEvent->x(),cEvent->x(),getView());
+      getContext()->ShiftSelect();
       break;
     default:
   ;
@@ -333,18 +333,18 @@ void MouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
     case nothing:
       break;
     case rotation:
-      GetView()->Rotation(cEvent->x(),cEvent->y());
+      getView()->Rotation(cEvent->x(),cEvent->y());
       break;
     case panning:
-      GetView()->Pan(cEvent->x()-iX,iY-cEvent->y()); // Use "Pan(...)" instead of "Panning(...)" !!!
+      getView()->Pan(cEvent->x()-iX,iY-cEvent->y()); // Use "Pan(...)" instead of "Panning(...)" !!!
       break;
     case zooming:
-      GetView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
+      getView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
       break;
     default:
       break;
   }
-  GetContext()->MoveTo(cEvent->x(),cEvent->y(),GetView());
+  getContext()->MoveTo(cEvent->x(),cEvent->y(),getView());
 
   iX = cEvent->x();
   iY = cEvent->y();
@@ -355,15 +355,15 @@ void MouseModelStd::wheelEvent ( QWheelEvent * cEvent)
   int zDelta = cEvent->delta()/3;
   //Console().Log("Wheel Delta=%d\n",zDelta);
   Quantity_Length fWidth, fHeight;
-  GetView()->Size(fWidth, fHeight);
+  getView()->Size(fWidth, fHeight);
   float fLog = float(log10(fWidth));
   int   nExp = int(fLog);
 
   // Zoom begrenzen
   if ((nExp > -6 && zDelta > 0) || (nExp < 8 && zDelta < 0))
   {
-    GetView()->Zoom(0,0,zDelta,0);
-    GetView3D().ShowDimension();
+    getView()->Zoom(0,0,zDelta,0);
+    getView3D().showDimension();
   }
   else if (zDelta > 0)
   {
@@ -471,7 +471,7 @@ void MouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
   switch (e->key())
   {
     case Qt::Key_Escape:
-      _pcView3D->PopMouseModel();
+      _pcView3D->popMouseModel();
       break;
     default:
       MouseModelStd::keyPressEvent(e);
@@ -493,7 +493,7 @@ void MouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
     m_bWorking = false;
   }
 
-  _pcView3D->PopMouseModel();
+  _pcView3D->popMouseModel();
 }
 
 // -----------------------------------------------------------------------------------
@@ -602,7 +602,7 @@ void MouseModelCirclePicker::terminate()
 void MouseModelCirclePicker::draw ()
 {
   char szBuf[20];
-  float fRad = float(_pcView3D->GetView()->Convert(Standard_Integer(_nRadius)));
+  float fRad = float(_pcView3D->getView()->Convert(Standard_Integer(_nRadius)));
 
   sprintf(szBuf, "%.2f", fRad);
   drawCircle(m_iXnew, m_iYnew, _nRadius);
@@ -611,7 +611,7 @@ void MouseModelCirclePicker::draw ()
 
 void MouseModelCirclePicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 {
-  _pcView3D->PopMouseModel();
+  _pcView3D->popMouseModel();
 }
 
 

@@ -54,7 +54,7 @@ public:
    * A constructor.
    * A more elaborate description of the constructor.
    */
-  PropertyView(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
+  PropertyView(Gui::Document*  pcDocument,QWidget *parent=0,const char *name=0);
 
   /**
    * A destructor.
@@ -62,14 +62,14 @@ public:
    */
   virtual ~PropertyView();
 
-  bool OnMsg(const char* pMsg);
+  bool onMsg(const char* pMsg);
 
-  virtual const char *GetName(void){return "PropertyView";}
+  virtual const char *getName(void){return "PropertyView";}
 
   /// is called when the above function is called to handle document change stuff
-  virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);
+  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);
   /// get called when the document is changed or updated
-  virtual void Update(void);
+  virtual void onUpdate(void);
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 

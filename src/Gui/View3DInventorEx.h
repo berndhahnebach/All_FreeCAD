@@ -31,9 +31,6 @@
 #endif
 
 class QMouseEvent;
-class FCGuiDocument;
-class View3D;
-class TreeView;
 class QSplitter;
 class QWidget;
 class QPushButton;
@@ -42,15 +39,18 @@ class QHBoxLayout;
 class QVBox;
 class QWidgetStack;
 class QTabBar;
-class View3DInventor;
 
-class SoSeparator ;
+class SoSeparator;
 class SoShapeHints;
-class SoMaterial	;
+class SoMaterial;
 class SoRotationXYZ;
 
 namespace Gui {
+class Document;
+class TreeView;
+class View3D;
 class MyExaminerViewer;
+class View3DInventor;
 
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
@@ -61,23 +61,23 @@ class View3DInventorEx: public MDIView
   Q_OBJECT
 
 public:
-  View3DInventorEx( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  View3DInventorEx( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
   ~View3DInventorEx();
 
   /// Mesage handler
-  virtual bool OnMsg(const char* pMsg);
-  virtual bool OnHasMsg(const char* pMsg);
+  virtual bool onMsg(const char* pMsg);
+  virtual bool onHasMsg(const char* pMsg);
 
 
-  virtual const char *GetName(void);
+  virtual const char *getName(void);
 
   virtual void resizeEvent ( QResizeEvent * e);
 
-  virtual void Update(void);
+  virtual void onUpdate(void);
 
-  void UpdatePrefs(void);
+  void updatePrefs(void);
 
-  void SetViewerDefaults(void);
+  void setViewerDefaults(void);
 
 //  void SetShape(void);
 
@@ -112,7 +112,7 @@ private:
 class MyExaminerViewer : public SoQtExaminerViewer {
 
 public:
-  MyExaminerViewer(QWidget *parent, const char * filename);
+  MyExaminerViewer(QWidget *parent, const char * filename=0);
   ~MyExaminerViewer();
 
 protected:

@@ -38,16 +38,16 @@ namespace App
   class Document;
 }
 
-class ApplicationWindow;
-class FCGuiDocument;
 class QAction;
-class MDIView;
 
 namespace Gui {
 
+class ApplicationWindow;
 class CommandManager;
 class Command;
 class ActionGroup;
+class Document;
+class MDIView;
 
 
 void CreateStdCommands(void);
@@ -102,7 +102,7 @@ public:
   /// Get pointer to the Application Window
   ApplicationWindow*  getAppWnd(void);   
   /// Get pointer to the active gui document
-  FCGuiDocument*  getActiveDocument(void);
+  Gui::Document*  getActiveDocument(void);
   /// Get ponter to the active CasCade document 
   App::Document*  getActiveOCCDocument(void);
   /// Get the FCAxtion object of this command
@@ -135,7 +135,7 @@ public:
   /// Updates the (active) document (propagate changes)
   void updateActive(void);
   /// Updates the (all or listed) documents (propagate changes)
-  void updateAll(std::list<FCGuiDocument*> cList);
+  void updateAll(std::list<Gui::Document*> cList);
   //@}
 
   /** @name Helper methodes to generate help pages */
@@ -531,7 +531,7 @@ public:\
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\
-    return ( getAppWnd()->GetActiveView() && strcmp( getAppWnd()->GetActiveView()->GetName(), "View3D" )  == 0)?true:false;\
+    return ( getAppWnd()->activeView() && strcmp( getAppWnd()->activeView()->getName(), "View3D" )  == 0)?true:false;\
   }\
 };
 

@@ -469,7 +469,7 @@ namespace Gui {
 
 void CreateTestCommands(void)
 {
-	CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+	CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new FCCmdTest1());
 	rcCmdMgr.addCommand(new FCCmdTest2());

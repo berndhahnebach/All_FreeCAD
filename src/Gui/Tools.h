@@ -27,9 +27,8 @@
 #ifndef _PreComp_
 # include <qstring.h>
 # include <qpixmap.h>
+# include <Inventor/fields/SoSFImage.h>
 #endif
-
-class QToolBar;
 
 namespace Gui {
 
@@ -73,6 +72,14 @@ public:
    * otherwise.
    */
   static QPixmap merge( const QPixmap& p1, const QPixmap& p2, bool vertical );
+
+  /** Converts a QImage into a SoSFImage to use it inside a SoImage node.
+   */
+  static void convert( const QImage& img, SoSFImage& out );
+
+  /** Converts a SoSFImage into a QImage.
+   */
+  static void convert( const SoSFImage& img, QImage& out );
 };
 
 template <class T>

@@ -62,7 +62,7 @@ public:
    */
   virtual ~ViewProviderTree();
 
-  QListViewItem* Create();
+  QListViewItem* create();
 };
 
 } // namespace Gui

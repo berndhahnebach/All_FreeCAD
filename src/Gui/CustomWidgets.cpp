@@ -104,7 +104,7 @@ void CustomWidget::savePreferences()
 
 void CustomWidget::init(const char* grp, const char* name)
 {
-  _clWorkbench = ApplicationWindow::Instance->GetActiveWorkbench();
+  _clWorkbench = ApplicationWindow::Instance->activeWorkbench();
   setEntryName( _clWorkbench.latin1() );
   hPrefGrp = getRootParamGrp()->GetGroup(_clWorkbench.latin1());
   hPrefGrp = hPrefGrp->GetGroup( grp )->GetGroup( name );
@@ -473,7 +473,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   for (;it2 != _clItems.end(); ++it2)
     items.push_back(*it2);
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
   _clItems = items;
 
@@ -576,7 +576,7 @@ void CustomPopupMenu::update( CommandManager& rclMgr )
 void CustomPopupMenu::dropEvent ( QDropEvent * e)
 {
   // create a new button
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
   Command* pCom = NULL;
 
   QStringList actions = ActionDrag::actions;
@@ -625,7 +625,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     QString txt = text(id);
 
     // find the corresponding command to this item
-    const std::map<std::string, Command*>& rclCmds = ApplicationWindow::Instance->GetCommandManager().getCommands();
+    const std::map<std::string, Command*>& rclCmds = ApplicationWindow::Instance->commandManager().getCommands();
 
     // search item with same text first
     for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
@@ -782,7 +782,7 @@ bool CustomWidgetManager::loadCustomWidegts( const QString& workbench )
  */
 bool CustomWidgetManager::update( const QString& workbench )
 {
-  QString wb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString wb = ApplicationWindow::Instance->activeWorkbench();
   std::map <QString,CustomPopupMenu*> clPopupMenus = d->_clPopupMenus;
   for (std::map <QString,CustomPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
   {
@@ -843,7 +843,7 @@ void CustomWidgetManager::addPopupMenu(const QString& type, const QStringList& d
 
   // append if these items are from another workbench
   QString oldWb = popup->getWorkbench();
-  QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString newWb = ApplicationWindow::Instance->activeWorkbench();
   if (oldWb != newWb)
   {
     FCParameterGrp::handle hPrefGrp;
@@ -990,7 +990,7 @@ void CustomWidgetManager::removeMenuItems(const QString& type, const QStringList
 {
   CustomPopupMenu* popup = getPopupMenu( type );
 
-  QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString newWb = ApplicationWindow::Instance->activeWorkbench();
   FCParameterGrp::handle hPrefGrp;
   hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Menus");
@@ -1021,7 +1021,7 @@ void CustomWidgetManager::addToolBar( const QString& type, const QStringList& de
 
   // append if these items are from another workbench
   QString oldWb = toolbar->getWorkbench();
-  QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString newWb = ApplicationWindow::Instance->activeWorkbench();
   if (oldWb != newWb)
   {
     FCParameterGrp::handle hPrefGrp;
@@ -1123,7 +1123,7 @@ void CustomWidgetManager::removeToolBarItems( const QString& type, const QString
 {
   CustomToolBar* tb = getToolBar( type );
 
-  QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString newWb = ApplicationWindow::Instance->activeWorkbench();
   FCParameterGrp::handle hPrefGrp;
   hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Toolbars");
@@ -1154,7 +1154,7 @@ void CustomWidgetManager::addCommandBar(const QString& type, const QStringList& 
 
   // append if these items are from another workbench
   QString oldWb = toolbar->getWorkbench();
-  QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString newWb = ApplicationWindow::Instance->activeWorkbench();
   if (oldWb != newWb)
   {
     FCParameterGrp::handle hPrefGrp;
@@ -1252,7 +1252,7 @@ void CustomWidgetManager::removeCommandBarItems(const QString& type, const QStri
 {
   CustomToolBar* tb = getCommandBar( type );
 
-  QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
+  QString newWb = ApplicationWindow::Instance->activeWorkbench();
   FCParameterGrp::handle hPrefGrp;
   hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Commandbars");

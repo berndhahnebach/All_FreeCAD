@@ -51,7 +51,7 @@ QPixmap* PropertyView::pcLabelOpen=0;
 QPixmap* PropertyView::pcLabelClosed=0;
 QPixmap* PropertyView::pcAttribute=0;
 
-PropertyView::PropertyView(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
+PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char *name)
   :DockView(pcDocument,parent,name)
 {
   setCaption( tr( "Property View" ) );
@@ -78,14 +78,14 @@ PropertyView::PropertyView(FCGuiDocument* pcDocument,QWidget *parent,const char 
   //_pcListView->setSize(200,400);
   resize( 200, 400 );
 
-  Update();
+  onUpdate();
 }
 
 PropertyView::~PropertyView()
 {
 }
 
-void PropertyView::Update(void)
+void PropertyView::onUpdate(void)
 {/*
   PropertyBuffer* buf = new PropertyBuffer(_pPropEditor, "Test");
 
@@ -126,11 +126,11 @@ void PropertyView::Update(void)
 //  Base::Console().Log("Property Updated\n");
 }
 
-void PropertyView::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
+void PropertyView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
 {
 }
 
-bool PropertyView::OnMsg(const char* pMsg)
+bool PropertyView::onMsg(const char* pMsg)
 {
   // no messages yet
   return false;

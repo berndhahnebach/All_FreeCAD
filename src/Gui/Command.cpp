@@ -24,11 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qdir.h>
-# include <qfileinfo.h>
-# include <qobjectlist.h>
-# include <qstatusbar.h>
-# include <qwhatsthis.h>
 #endif
 
 #include "Command.h"
@@ -88,16 +83,16 @@ ApplicationWindow *Command::getAppWnd(void)
   return ApplicationWindow::Instance;
 }
 
-FCGuiDocument* Command::getActiveDocument(void)
+Gui::Document* Command::getActiveDocument(void)
 {
-  return getAppWnd()->GetActiveDocument();
+  return getAppWnd()->activeDocument();
 }
 
-App::Document*	   Command::getActiveOCCDocument(void)
+App::Document* Command::getActiveOCCDocument(void)
 {
-  FCGuiDocument * pcDoc = getAppWnd()->GetActiveDocument();
+  Gui::Document * pcDoc = getAppWnd()->activeDocument();
   if(pcDoc)
-    return pcDoc->GetDocument();
+    return pcDoc->getDocument();
   else
     return 0l;
 }
@@ -122,12 +117,12 @@ void Command::activated ()
   {
     Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
     // set the application module type for the macro
-    getAppWnd()->GetMacroMngr()->setModule(sAppModule.c_str());
+    getAppWnd()->macroManager()->setModule(sAppModule.c_str());
     try{
       activated(0);
     }catch(...)
     {
-      Base::Console().Error("Command::activated()  Activate of Cmd faild");
+      Base::Console().Error("Command::activated()  Activate of Cmd failed\n");
     };
   }
 }
@@ -166,22 +161,22 @@ void Command::testActive(void)
 void Command::openCommand(const char* sCmdName)
 {
   // Using OpenCommand with no active document !
-  assert(getAppWnd()->GetActiveDocument());
+  assert(getAppWnd()->activeDocument());
 
   if(sCmdName)
-    getAppWnd()->GetActiveDocument()->OpenCommand(sCmdName);
+    getAppWnd()->activeDocument()->openCommand(sCmdName);
   else
-    getAppWnd()->GetActiveDocument()->OpenCommand(sName.c_str());
+    getAppWnd()->activeDocument()->openCommand(sName.c_str());
 }
 
 void Command::commitCommand(void)
 {
-  getAppWnd()->GetActiveDocument()->CommitCommand();
+  getAppWnd()->activeDocument()->commitCommand();
 }
 
 void Command::abortCommand(void)
 {
-  getAppWnd()->GetActiveDocument()->AbortCommand();
+  getAppWnd()->activeDocument()->abortCommand();
 }
 
 /// Run a App level Action 
@@ -195,9 +190,9 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     va_end(namelessVars);
 
   if(eType == Gui)
-    getAppWnd()->GetMacroMngr()->addLine(MacroManager::Gui,format);
+    getAppWnd()->macroManager()->addLine(MacroManager::Gui,format);
   else
-    getAppWnd()->GetMacroMngr()->addLine(MacroManager::Base,format);
+    getAppWnd()->macroManager()->addLine(MacroManager::Base,format);
   Interpreter().RunFCCommand(format);
 
   free (format);
@@ -206,7 +201,7 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 /// Activate an other Commands
 void Command::activateCommand(const char* sCmdName)
 {
-  Command* pcCmd = getAppWnd()->GetCommandManager().getCommandByName(sCmdName);
+  Command* pcCmd = getAppWnd()->commandManager().getCommandByName(sCmdName);
   if(pcCmd)
   {
     assert(!(pcCmd->isToggle()));
@@ -217,7 +212,7 @@ void Command::activateCommand(const char* sCmdName)
 /// Toggles other Commands
 void Command::toggleCommand(const char* sCmdName,bool bToggle)
 {
-  Command* pcCmd = getAppWnd()->GetCommandManager().getCommandByName(sCmdName);
+  Command* pcCmd = getAppWnd()->commandManager().getCommandByName(sCmdName);
   if(pcCmd)
   {
     assert(pcCmd->isToggle());
@@ -228,19 +223,19 @@ void Command::toggleCommand(const char* sCmdName,bool bToggle)
 /// Updates the (active) document (propagate changes)
 void Command::updateActive(void)
 {
-  getAppWnd()->GetActiveDocument()->GetDocument()->Recompute();
+  getAppWnd()->activeDocument()->getDocument()->Recompute();
   //GetAppWnd()->UpdateActive();
 }
 
 /// Updates the (all or listed) documents (propagate changes)
-void Command::updateAll(std::list<FCGuiDocument*> cList)
+void Command::updateAll(std::list<Gui::Document*> cList)
 {
   if(cList.size()>0)
   {
-    for(std::list<FCGuiDocument*>::iterator It= cList.begin();It!=cList.end();It++)
-      (*It)->Update();
+    for(std::list<Gui::Document*>::iterator It= cList.begin();It!=cList.end();It++)
+      (*It)->onUpdate();
   }else{
-    getAppWnd()->Update();
+    getAppWnd()->onUpdate();
   }
 }
 
@@ -340,7 +335,7 @@ void MacroCommand::activated(int iMsg)
 
   QDir d( cMacroPath.c_str() );
   QFileInfo fi( d, scriptName );
-  ApplicationWindow::Instance->GetMacroMngr()->run(MacroManager::File,( fi.filePath() ).latin1());
+  ApplicationWindow::Instance->macroManager()->run(MacroManager::File,( fi.filePath() ).latin1());
 }
 
 void MacroCommand::setScriptName ( const QString& s )

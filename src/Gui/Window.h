@@ -31,9 +31,9 @@
 #include "../Base/Parameter.h"
 #include "View.h"
 
-class ApplicationWindow;
-
 namespace Gui {
+
+class ApplicationWindow;
 
 /** Adapter class to the parameter of FreeCAD for all windows
  * Retrieve the parameter group of the specific window by the windowname.

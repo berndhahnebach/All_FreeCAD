@@ -24,158 +24,152 @@
 #ifndef __VIEW3D__
 #define __VIEW3D__
 
-#include <qgl.h>
-#include <AIS_InteractiveContext.hxx>
-#include <V3d_OrthographicView.hxx>
+#ifndef _PreComp_
+# include <stack>
+# include <qgl.h>
+# include <AIS_InteractiveContext.hxx>
+# include <V3d_OrthographicView.hxx>
 // some window system dependend
-#ifndef FC_OS_WIN32
-#	include <Xw_Window.hxx>
-#	include <Graphic3d_GraphicDevice.hxx>
-#else
-#	include <WNT_Window.hxx>
-#	include <Graphic3d_WNTGraphicDevice.hxx>
+# ifndef FC_OS_WIN32
+#   include <Xw_Window.hxx>
+#   include <Graphic3d_GraphicDevice.hxx>
+# else
+#   include <WNT_Window.hxx>
+#   include <Graphic3d_WNTGraphicDevice.hxx>
+# endif
 #endif
 
 #include "View.h"
 
 class QMouseEvent;
-class FCGuiDocument;
-class FCGuiDocument;
-class View3D;
-class TreeView;
 class QSplitter;
-class QWidget;		
-class QPushButton;	
-class QVBoxLayout;	
-class QHBoxLayout;	
+class QWidget;
+class QPushButton;
+class QVBoxLayout;
+class QHBoxLayout;
 class QWidgetStack;
 class QTabBar;
 
 namespace Gui {
+class Document;
+class TreeView;
+class View3D;
 class MouseModel;
-
-} // namespace Gui
 
 
 /** The 3D View Window
- *  It consist out of the 3DView and the tree
+ * It consist out of the 3DView and the tree
+ * \author Jürgen Riegel
  */
-class FCView3D: public MDIView
+class MDIView3D: public Gui::MDIView
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCView3D();
+  MDIView3D( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  ~MDIView3D();
 
-	/// Mesage handler
-	virtual bool OnMsg(const char* pMsg);
-	virtual const char *GetName(void);
+  /// Mesage handler
+  virtual bool onMsg(const char* pMsg);
+  virtual const char *getName(void);
 
 
-	virtual void Update(void);
+  virtual void onUpdate(void);
 
 
 //signals:
-	//void message(const QString&, int );
-	
+  //void message(const QString&, int );
+
 public slots:
-//	void closeEvent(QCloseEvent* e);        
-	void onWindowActivated ();
-	void setCursor(const QCursor&);
-	void dump();
+//  void closeEvent(QCloseEvent* e);        
+  void onWindowActivated ();
+  void setCursor(const QCursor&);
+  void dump();
 
 protected:
-	//void createViewActions();
+  //void createViewActions();
 private:
-	View3D*			_pcView3D;
-	QWidget*		_pcWidget;
-	QWidgetStack*	_pcWidgetStack;
-	QTabBar*		_pcTabBar;
-
+  View3D*     _pcView3D;
+  QWidget*    _pcWidget;
+  QWidgetStack* _pcWidgetStack;
+  QTabBar*    _pcTabBar;
 };
-
-
 
 /**
-  * The OpenCasCade Graphics rendering widget
-  *
-  * @author Juergen Riegel
-  * @version 0.1
-  */
-
-
+ * The OpenCasCade Graphics rendering widget
+ *
+ * @author Juergen Riegel
+ * @version 0.1
+ */
 class View3D: public QGLWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	/** construtor of 3DView. Does nothing importend, the
-	*  tricky stuff about the COpenCasCade init comes with InitCasCadeView()
-	* @param Handle(Graphic3d_GraphicDevice) OCC Graphic Device (DISPLAY0:0) comes from the Application
-	* @param Handle(V3d_Viewer) OCC Viewer (note: _not_ View) from the Document
-	* @param Handle(AIS_InteractiveContext) OCC Interactive Context comes from the Document
-	* @see QGLWidget InitCasCadeView
-	*/	
-	View3D(FCGuiDocument*  pcDocument,
-		   QWidget *parent, 
-		   const char *name="View3D", 
-		   WFlags f=WDestructiveClose
-	       );
-	/** Initialation of the OCC Graphics. Here is the bundling of the QGLWidget
-	* with the OCCGraphics3D_Window. Its very importend that the XWindow is fully
-	* showed bevor this function is called! There for its not done in the
-	* constructor
-	*/	
-	bool InitCasCadeView(void);
+  /** construtor of 3DView. Does nothing importend, the
+   * tricky stuff about the COpenCasCade init comes with InitCasCadeView()
+   * @param Handle(Graphic3d_GraphicDevice) OCC Graphic Device (DISPLAY0:0) comes from the Application
+   * @param Handle(V3d_Viewer) OCC Viewer (note: _not_ View) from the Document
+   * @param Handle(AIS_InteractiveContext) OCC Interactive Context comes from the Document
+   * @see QGLWidget InitCasCadeView
+   */
+  View3D(Gui::Document*  pcDocument, QWidget *parent, const char *name="View3D", WFlags f=WDestructiveClose );
 
-	// Managing MouseModels
-  void			PushMouseModel	(Gui::MouseModel *);
-	void			PopMouseModel	(void);
-  Gui::MouseModel*	GetMouseModel	(void);
+  /** Initialation of the OCC Graphics. Here is the bundling of the QGLWidget
+   * with the OCCGraphics3D_Window. Its very importend that the XWindow is fully
+   * showed bevor this function is called! There for its not done in the
+   * constructor
+   */
+  bool initCasCadeView(void);
 
-	// Confiniance Geter
-	Handle_V3d_View					&GetView   (void){return _hView;}
-	Handle_V3d_Viewer				&GetViewer (void){return _hViewer;}
-	Handle_AIS_InteractiveContext	&GetContext(void){return _hContext;}
+  // Managing MouseModels
+  void pushMouseModel (Gui::MouseModel *);
+  void popMouseModel (void);
+  Gui::MouseModel* getMouseModel	(void);
 
-	void ShowPopup(int x,int y);
-	void ShowDimension (void) const;
+  // Confiniance Geter
+  Handle_V3d_View &getView   (void){return _hView;}
+  Handle_V3d_Viewer &getViewer (void){return _hViewer;}
+  Handle_AIS_InteractiveContext &getContext(void){return _hContext;}
 
-	bool ScreenDump(Standard_CString theFile);
+  void showPopup(int x,int y);
+  void showDimension (void) const;
 
-	bool OnMsg(const char* pMsg);
+  bool screenDump(Standard_CString theFile);
+
+  bool onMsg(const char* pMsg);
 
 protected:
-	// user interaction events (got mainly handled in the MouseModel classes)
-	virtual void mousePressEvent       ( QMouseEvent * );
-	virtual void mouseReleaseEvent     ( QMouseEvent * );
-	virtual void mouseMoveEvent        ( QMouseEvent * );
-	virtual void mouseDoubleClickEvent ( QMouseEvent * );
-	virtual void keyPressEvent         ( QKeyEvent   * );
-	virtual void keyReleaseEvent       ( QKeyEvent   * );
-	virtual void wheelEvent            ( QWheelEvent * );
-	virtual void focusInEvent          ( QFocusEvent * );
-	virtual void hideEvent             ( QHideEvent  * );
+  // user interaction events (got mainly handled in the MouseModel classes)
+  virtual void mousePressEvent       ( QMouseEvent * );
+  virtual void mouseReleaseEvent     ( QMouseEvent * );
+  virtual void mouseMoveEvent        ( QMouseEvent * );
+  virtual void mouseDoubleClickEvent ( QMouseEvent * );
+  virtual void keyPressEvent         ( QKeyEvent   * );
+  virtual void keyReleaseEvent       ( QKeyEvent   * );
+  virtual void wheelEvent            ( QWheelEvent * );
+  virtual void focusInEvent          ( QFocusEvent * );
+  virtual void hideEvent             ( QHideEvent  * );
 
-	/** Update the view when paint event occur. */
-	virtual void paintEvent				      ( QPaintEvent * );
-	/** Update the view when resize event occur.  */
-	virtual void resizeEvent			      ( QResizeEvent* );
+  /** Update the view when paint event occur. */
+  virtual void paintEvent ( QPaintEvent * );
+  /** Update the view when resize event occur.  */
+  virtual void resizeEvent( QResizeEvent* );
 
-	
+
 private:
-	Handle(V3d_View)				_hView;
-	Handle(AIS_InteractiveContext)  _hContext;
-	Handle(V3d_Viewer)              _hViewer;
+  Handle(V3d_View)  _hView;
+  Handle(AIS_InteractiveContext)  _hContext;
+  Handle(V3d_Viewer)              _hViewer;
 
-	FCGuiDocument*  _pcDocument;
+  Gui::Document*  _pcDocument;
 
   std::stack<Gui::MouseModel *>      _cMouseStack;
-	
-	bool bIsInit;
-	
+
+  bool bIsInit;
 };
+
+} // namespace Gui
 
 #endif
 

@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlayout.h>
 #endif
 
 #include "PrefWidgets.h"
