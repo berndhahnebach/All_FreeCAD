@@ -790,7 +790,14 @@ void FCApplication::RunApplication()
 	{
 		// run a script
 		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-		Interpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
+		Interpreter().LaunchFile(mConfig["FileName"].c_str());
+	}
+	else if(mConfig["RunMode"] == "ScriptCmd")
+	{
+		// run a script
+		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+		Interpreter().LaunchFile(mConfig["FileName"].c_str());
+		Interpreter().RunCommandLine("FreeCAD Console mode");
 	}
 	else if(mConfig["RunMode"] == "Internal")
 	{
@@ -859,6 +866,7 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 	"  -h             Display this information\n"\
 	"  -c             Runs FreeCAD in console mode (no windows)\n"\
 	"  -cf file-name  Runs FreeCAD in server mode with script file-name\n"\
+	"  -cc file-name  Runs first the script an then console mode\n"\
 	"  -t0            Runs FreeCAD self test function\n"\
 	"  -v             Runs FreeCAD in verbose mode\n"\
 	"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
@@ -878,7 +886,17 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 					// Console with file
 					case 'f':  
 					case 'F':  
-						mConfig["RunMode"] = "Cmd";
+						mConfig["RunMode"] = "Script";
+						if(argc <= i+1)
+						{
+							Console().Error("Expecting a file\n");  
+							Console().Error("\nUsage: %s %s",argv[0],Usage);  
+						}
+						mConfig["FileName"]= argv[i+1];
+						i++;
+					case 'c':  
+					case 'C':  
+						mConfig["RunMode"] = "ScriptCmd";
 						if(argc <= i+1)
 						{
 							Console().Error("Expecting a file\n");  

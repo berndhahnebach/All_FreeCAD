@@ -64,15 +64,8 @@ Standard_Integer PartCutFeature::Execute(TFunction_Logbook& log)
   cout << GetFloatProperty("w") << endl;*/
 
   try{
-	// Build a Cut using the dimension and position attributes 
-	BRepPrimAPI_MakeBox mkBox( gp_Pnt(GetFloatProperty("x"), 
-                                    GetFloatProperty("y") ,
-                                    GetFloatProperty("z")), 
-                             GetFloatProperty("l"),
-                             GetFloatProperty("h"),
-                             GetFloatProperty("w"));
 
-  TopoDS_Shape ResultShape = mkBox.Shape();
+  TopoDS_Shape ResultShape;
 
 
 	SetShape(ResultShape);

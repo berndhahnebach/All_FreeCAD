@@ -64,6 +64,17 @@ Standard_Integer FeaturePartImportStep::Execute(TFunction_Logbook& log)
 
     STEPControl_Reader aReader;
     TopoDS_Shape aShape;
+
+    const char* FileName = GetStringProperty("FileName");
+
+    int i=open(FileName,O_RDONLY);
+	  if( i != -1)
+	  {
+		  close(i);
+	  }else{
+		  return 1;
+	  }
+
     
     Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
     if (aReader.ReadFile((const Standard_CString)GetStringProperty("FileName")) != IFSelect_RetDone)
