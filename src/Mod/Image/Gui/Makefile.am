@@ -17,7 +17,7 @@ libImageGui_la_SOURCES=\
 
 # the library search path.
 libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libImageGui_la_CPPFLAGS = -DImageAppExport=
+libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport= 
 
 libImageGui_la_LIBADD   = \
 		-lFreeCADGui \

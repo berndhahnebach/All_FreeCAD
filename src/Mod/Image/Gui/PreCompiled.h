@@ -33,8 +33,10 @@
 // Importing of App classes
 #ifdef FC_OS_WIN32
 # define ImageAppExport __declspec(dllimport)
+# define ImageGuiExport __declspec(dllexport)
 #else // for Linux
 # define ImageAppExport
+# define ImageGuiExport
 #endif
 
 // OpenCasCade Base

@@ -38,13 +38,13 @@ CmdImageOpen::CmdImageOpen()
 	:CppCommand("Image_Open")
 {
 	sAppModule		= "Image";
-	sGroup			= "Image";
-	sMenuText		= "Open";
-	sToolTipText	= "Image open image view function";
+	sGroup			  = QT_TR_NOOP("Image");
+	sMenuText		  = QT_TR_NOOP("Open");
+	sToolTipText	= QT_TR_NOOP("Image open image view function");
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Open";
-	iAccel			= Qt::CTRL+Qt::Key_O;
+	sPixmap			  = "Open";
+	iAccel			  = Qt::CTRL+Qt::Key_O;
 }
 
 
