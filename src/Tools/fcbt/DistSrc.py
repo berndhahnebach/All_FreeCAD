@@ -46,7 +46,7 @@ FileTools.cpallWithFilter('../../src',DistDir+DistSrc+'/src',FileTools.SetUpFilt
 
 #====================================================================
 # ziping a archiv
-os.popen("rar.exe a "+DistDir+DistBin+".rar "+ DistDir+DistBin)
+#os.popen("rar.exe a "+DistDir+DistBin+".rar "+ DistDir+DistBin)
 
-FileTools.rmall(DistDir+DistBin)
+#FileTools.rmall(DistDir+DistBin)
 

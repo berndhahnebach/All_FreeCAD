@@ -197,7 +197,7 @@ void FCView3DInventorEx::Update(void)
 	  TopoDS_Shape ShapeToView  = ShapeToViewName->Get();
 
 	  bool nurbs_enable = false;
-	  bool selection = false;
+	  bool selection = true;
 	  bool strip_enable = false;
 	  bool strip_color = false;
 	  
@@ -207,7 +207,7 @@ void FCView3DInventorEx::Update(void)
     cShapeConverter.SetShape(ShapeToView);
 
     SoSeparator * SepShapeRoot=new SoSeparator();
-	  if(cShapeConverter.Compute(SepShapeRoot))
+	  if(cShapeConverter.Compute2(SepShapeRoot))
       _viewer->setSceneGraph(SepShapeRoot);
     else
       Base::Console().Error("FCView3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");

@@ -70,6 +70,9 @@ Standard_Integer FeaturePartImportStep::Execute(TFunction_Logbook& log)
 
     const char* FileName = GetStringProperty("FileName");
 
+    if( *FileName == '\0') 
+      return 1;
+
     int i=open(FileName,O_RDONLY);
 	  if( i != -1)
 	  {

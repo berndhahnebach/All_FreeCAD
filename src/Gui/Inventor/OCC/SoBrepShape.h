@@ -24,6 +24,9 @@ public:
 	// Compute the mesh for Coin3d
 	Standard_Boolean Compute(SoSeparator* aRoot);
 
+	// Simplified version ;-)
+	Standard_Boolean Compute2(SoSeparator* aRoot);
+
 	// Set the filename of the Brep file
 	void SetFile(const char* aBrepFilePath);
 

@@ -220,8 +220,8 @@ void FCCommand::ToggleCommand(const char* sCmdName,bool bToggle)
 /// Updates the (active) document (propagate changes)
 void FCCommand::UpdateActive(void)
 {
-
-	GetAppWnd()->UpdateActive();
+  GetAppWnd()->GetActiveDocument()->GetDocument()->Recompute();
+	//GetAppWnd()->UpdateActive();
 }
 
 /// Updates the (all or listed) documents (propagate changes)

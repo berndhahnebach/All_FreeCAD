@@ -55,8 +55,7 @@
 
 //OpenCascade 4.0 headers
 
-
-#include <qmessagebox.h>
+#include "../Base/Console.h"
 
 
 #define MAX2(X, Y)	(  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
@@ -196,6 +195,124 @@ void SoBrepShape::SetDeflection(float defle)
 int SoBrepShape::GetNbStrips()
 {
 	return nbstrips;
+}
+
+/*******************************************  
+ *  Compute2
+ *******************************************/
+
+Standard_Boolean SoBrepShape::Compute2(SoSeparator* root)
+{
+		if(deflection==0) {
+			Bnd_Box B;
+			BRepBndLib::Add(myShape, B);
+			Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+			B.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+			deflection = MAX3( aXmax-aXmin , aYmax-aYmin , aZmax-aZmin) * 0.001 *4;
+		}
+
+    {
+
+			//----------------------------------
+			// Use BrepMesh to mesh the surface
+			//----------------------------------
+    
+			int error=0;
+			int errortri=0;
+			int error_dupl=0;
+			BRepMesh_IncrementalMesh MESH(myShape,deflection);
+			TopExp_Explorer ex;
+      {
+				for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
+					const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
+					TopLoc_Location aLoc;
+					Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
+					if(aPoly.IsNull()) error++;
+					else {
+      
+						gp_Trsf myTransf;
+						Standard_Boolean identity = true;
+						if(!aLoc.IsIdentity())  {
+							identity = false;
+							myTransf = aLoc.Transformation();
+						}
+
+						Standard_Integer nbNodesInFace = aPoly->NbNodes();
+						Standard_Integer nbTriInFace = aPoly->NbTriangles();
+		
+						SbVec3f* vertices = new SbVec3f[nbNodesInFace];
+						int32_t* cons = new int32_t[4*(nbTriInFace)];
+      
+						const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
+						const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+      
+						Standard_Integer i;
+						for(i=1;i<=nbTriInFace;i++) {
+						// Get the triangle
+	
+							Standard_Integer N1,N2,N3;
+							Triangles(i).Get(N1,N2,N3);
+	
+							gp_Pnt V1 = Nodes(N1);
+							gp_Pnt V2 = Nodes(N2);
+							gp_Pnt V3 = Nodes(N3);
+
+							if(!identity) {
+								V1.Transform(myTransf);
+								V2.Transform(myTransf);
+								V3.Transform(myTransf);
+							}
+
+							vertices[N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
+							vertices[N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
+							vertices[N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
+	
+							int j = i - 1;
+							N1--; N2--; N3--;
+							cons[4*j] = N1; cons[4*j+1] = N2; cons[4*j+2] = N3; cons[4*j+3] = SO_END_FACE_INDEX;
+						}
+      
+						// define vertices
+						SoCoordinate3 * coords = new SoCoordinate3;
+						coords->point.setValues(0,nbNodesInFace, vertices);
+						root->addChild(coords);
+      
+						// define the indexed face set
+
+						if(selection) {
+							SoLocateHighlight* h = new SoLocateHighlight();
+							SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+							faceset->coordIndex.setValues(0,4*nbTriInFace, cons);
+							h->addChild(faceset);
+							root->addChild(h);
+						}
+						else {
+							SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+							faceset->coordIndex.setValues(0,4*nbTriInFace, cons);
+							root->addChild(faceset);
+						}
+      
+						delete [] vertices;
+						delete [] cons;
+					}
+//					nbFaces++;
+//					ProgressBar1->setProgress(nbFaces);
+
+				}
+			}
+
+			if(error) {
+        Base::Console().Warning("Warning bad quality: %d faces cannot be meshed !\n",error);
+			}
+			if(errortri) {
+        Base::Console().Warning("Warning bad quality: %d triangles degenerated !\n",errortri);
+			}
+			if(error_dupl) {
+        Base::Console().Warning("Warning bad quality: %d ttriangles duplicated !\n",error_dupl);
+			}
+		
+		}
+	return 1;
 }
 
 /*******************************************  
@@ -901,7 +1018,7 @@ static int followStrip(int strip[], int *count, int last, int* final)
 					}		
 				else
 					{
-					printf("winding analysis failure\n");
+//					printf("winding analysis failure\n");
 					exit(1);
 					}
 
@@ -929,8 +1046,8 @@ static int followStrip(int strip[], int *count, int last, int* final)
         if(next == -1)
             break;
 
-	if(doPrintAddTriangles)
-	    fprintf(stdout, "adding %d to strip.\n", next);
+//	if(doPrintAddTriangles)
+//	    fprintf(stdout, "adding %d to strip.\n", next);
 
         strip[*count] = notSharedVertex(next, last);
 
@@ -1100,7 +1217,7 @@ int meshCreateStrips(bool MakeStrips,TColStd_SequenceOfInteger& Strips)
 		v2[Zi] = (verts[ts[t].v[0]].v[Zi] + verts[ts[t].v[1]].v[Zi] +
 		    verts[ts[t].v[2]].v[Zi]) / 3;
 
-		sprintf(str, "%d", t);
+//		sprintf(str, "%d", t);
 
 		drawText(v1, str);
 		drawLine(v1, v2);

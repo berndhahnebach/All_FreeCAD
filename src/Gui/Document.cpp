@@ -207,6 +207,7 @@ void FCGuiDocument::DetachView(FCBaseView* pcView, bool bPassiv)
 void FCGuiDocument::Update(void)
 {
 
+
   TDF_Label L = _pcDocument->GetActive();
 
   if(! L.IsNull()){
