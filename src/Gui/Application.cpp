@@ -35,11 +35,6 @@
 # include <qvbox.h>
 #endif
 
-#ifdef FC_OS_LINUX
-// TODO: Don't know where the header is!
-void itoa(int, char*, int){ }
-#endif
-
 // FreeCAD Base header
 #include "../Base/Console.h"
 #include "../Base/Interpreter.h"
@@ -1211,14 +1206,20 @@ void ApplicationWindow::runApplication(void)
   std::string File;
   for (unsigned short i=0; i<count; i++)
   {
-    // geting file name
+    // getting file name
+    std::ostringstream temp;
+    temp << "OpenFile" << i;
+
+#if 0
     std::string temp = "OpenFile";
     char buffer [10];
     itoa(i,buffer,10);
     temp += buffer;
-    File = App::Application::Config()[temp.c_str()];
+#endif
 
-    // try to open 
+    File = App::Application::Config()[temp.str()];
+
+    // try to open
     try{
       Console().Log("Open %s\n",File.c_str());
       mw->open(File.c_str());
