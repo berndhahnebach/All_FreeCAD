@@ -100,28 +100,34 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   SbVec3f lookat(0, 0, -1); // init to default view direction vector
   camrot.multVec(lookat, lookat);
 
-  //float Dist = Cam->focalDistance.getValue();
-  //lookat *= Dist;
-
   SbVec3f pos = Cam->position.getValue();
+
+  float Dist = Cam->focalDistance.getValue();
+  lookat *= Dist;
+  lookat += pos;
+
 
   std::stringstream out;
   out << "camera {\n"
       << "  location  <" << pos.getValue()[0]    <<"," << pos.getValue()[2]    <<"," << pos.getValue()[1]    <<">\n" 
-      << "  direction <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">\n" 
+      << "  look_at   <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">\n" 
       << "  up        <" << upvec.getValue()[0]  <<"," << upvec.getValue()[2]  <<"," << upvec.getValue()[1]  <<">\n" 
 //      << "  right     x*image_width/image_height\n"
       << "}\n";
 
   Base::Console().Log("Pov Camera out:\n%s",out.str().c_str());
-//camera {
-//    location <2300,650,-3000.1032> 
-//    location <600+clock,650,-3000.1032> 
-//    right     x*image_width/image_height
-//    look_at  center
-//    sky y
-//    angle 35
-//}
+
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("Preferences")->GetGroup("Mod")->GetGroup("Raytracing");
+  std::string cDir = hGrp->GetASCII("ProjectPath", "");
+  std::string cName = hGrp->GetASCII("CameraName", "StdCamera.inc");
+
+  std::string cFullName = cDir+cName;
+  Base::Console().Log("Using file name:%s",cFullName.c_str());
+
+  // open the file and write
+  std::ofstream fout((cDir+cName).c_str());
+  fout <<  out.str() << endl;
+  fout.close();
 
 
   // Bring ref-count of root-node back to zero to cause the

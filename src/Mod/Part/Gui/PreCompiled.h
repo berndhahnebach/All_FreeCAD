@@ -72,6 +72,18 @@
 #include <Bnd_Box.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <BRepTools.hxx>
+#include <BRepMesh_Discret.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Tool.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <TopoDS_Face.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <GCPnts_UniformDeflection.hxx>
+
 
 
 
@@ -213,6 +225,8 @@
 #include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/nodes/SoNormal.h>
+#include <Inventor/nodes/SoNormalBinding.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 
 #include <float.h>
