@@ -51,7 +51,7 @@ public:
 /** The command line class
  * \author Werner Mayer
  */
-class GuiExport CommandLineBase : public QComboBox, public FCWindowParameter
+class GuiExport CommandLineBase : public QComboBox, public WindowParameter
 {
   Q_OBJECT
 

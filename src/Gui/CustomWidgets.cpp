@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qlayout.h>
+# include <qmenubar.h>
 # include <qobjectlist.h>
 #endif
 
@@ -735,7 +737,6 @@ struct CustomWidgetManagerP
   std::map <CustomPopupMenu*,int>          _clPopupID;
   std::map <QString,CustomToolBar*>    _clToolbars;
   std::map <QString,CustomToolBar*>    _clCmdbars;
-  QMap <QString,FCDockWindow*> _clDocWindows;
   FCCommandManager&                    _clCmdMgr;
   ToolBox*                           _pclStackBar;
 };
@@ -1249,92 +1250,6 @@ void CustomWidgetManager::removeCommandBarItems(const QString& type, const QStri
 int CustomWidgetManager::countCommandBars()
 {
   return int(d->_clCmdbars.size());
-}
-
-/**
- * Adds a new dock window.
- */
-void CustomWidgetManager::addDockWindow( const QString& name,FCDockWindow *pcDocWindow, Qt::Dock pos )
-{
-  ApplicationWindow* pApp = ApplicationWindow::Instance;
-  d->_clDocWindows[ name ] = pcDocWindow;
-  QString str = name;
-  str += " dockable window";
-
-  QDockWindow* dw = new QDockWindow(pApp);
-  dw->setCloseMode(QDockWindow::Always);
-  dw->setCaption( name );
-  pcDocWindow->reparent(dw, QPoint());
-  dw->setWidget( pcDocWindow );
-  dw->setResizeEnabled(true);
-
-  switch (pos)
-  {
-  case Qt::DockTop:
-    dw->setHorizontallyStretchable(true);
-    break;
-  case Qt::DockLeft:
-    dw->setVerticallyStretchable(true);
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    pApp->setDockEnabled ( dw, Qt::DockBottom, false );
-    break;
-  case Qt::DockRight:
-    dw->setVerticallyStretchable(true);
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    pApp->setDockEnabled ( dw, Qt::DockBottom, false );
-    break;
-  case Qt::DockBottom:
-    dw->setHorizontallyStretchable(true);
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    pApp->setDockEnabled ( dw, Qt::DockLeft, false );
-    pApp->setDockEnabled ( dw, Qt::DockRight, false );
-    break;
-  default:
-    dw->setHorizontallyStretchable(true);
-    dw->setVerticallyStretchable(true);
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    break;
-  }
-  pApp->addDockWindow( dw, pos );
-}
-
-/**
- * Returns the dock window bar by name.
- * If it does not exist it returns 0.
- */
-FCDockWindow* CustomWidgetManager::getDockWindow( const QString& name )
-{
-  QMap <QString,FCDockWindow*>::Iterator It = d->_clDocWindows.find( name );
-
-  if (It!=d->_clDocWindows.end())
-    return It.data();
-  else
-    return 0L;
-}
-
-/**
- * Returns a vector of all dock windows.
- */
-QPtrList<FCDockWindow> CustomWidgetManager::getDockWindows()
-{
-  QPtrList<FCDockWindow> dockWindows;
-  for ( QMap <QString,FCDockWindow*>::Iterator It = d->_clDocWindows.begin(); It!=d->_clDocWindows.end(); ++It)
-    dockWindows.append( It.data() );
-
-  return dockWindows;
-}
-
-/**
- * Deletes the specified dock window if it exists.
- */
-void CustomWidgetManager::removeDockWindow( const QString& name )
-{
-  QMap <QString,FCDockWindow*>::Iterator It = d->_clDocWindows.find( name );
-  if( It!=d->_clDocWindows.end() )
-  {
-    delete It.data();
-    d->_clDocWindows.erase(It);
-  }
 }
 
 void CustomWidgetManager::show()

@@ -114,6 +114,7 @@ public:
   FCCommand* GetCommand() { return _pcCmd; }
   
   void activate( const QString& item );
+  void activate( int id);
 
 protected:
   virtual void addedTo ( QWidget * actionWidget, QWidget * container, QAction * a );

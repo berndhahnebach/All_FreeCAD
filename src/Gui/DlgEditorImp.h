@@ -49,7 +49,6 @@ public:
 public slots:
   void onDisplayColor(const QString& name);
   void onChosenColor();
-  void onChosenFont(const QString & item);
 
 private:
   void restorePreferences();

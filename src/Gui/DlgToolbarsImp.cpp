@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qinputdialog.h>
 # include <qobjectlist.h>
+# include <qpushbutton.h>
 #endif
 
 #include "DlgToolbarsImp.h"

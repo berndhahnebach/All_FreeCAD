@@ -33,16 +33,18 @@
 #define APPLICATION_H
 
 
-#include "qextmdi/qextmdimainfrm.h"
+#ifndef _PreComp_
+# include <string>
+# include <vector>
+# include <qmainwindow.h>
+# include <qworkspace.h>
+#endif
 
 #define  putpix()
 
 #include "../Base/Console.h"
 #include "../App/Application.h"
 
-#include <string>
-#include <vector>
-#include <qthread.h>
 
 class FCGuiDocument;
 class QComboBox;
@@ -54,7 +56,7 @@ class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
 class FCViewBar;
-class FCView;
+class MDIView;
 class FCCommandManager;
 class QSplashScreen;
 
@@ -65,7 +67,7 @@ class CustomWidgetManager;
 /** The Applcation main class
  *  This is the central class of the GUI 
  */
-class GuiExport ApplicationWindow: public QextMdiMainFrm, public FCApplicationObserver
+class GuiExport ApplicationWindow: public QMainWindow, public FCApplicationObserver
 {
     Q_OBJECT
  
@@ -82,6 +84,9 @@ public:
 	virtual void OnDocNew(FCDocument* pcDoc);
 	virtual void OnDocDelete(FCDocument* pcDoc);
 
+  void addWindow( MDIView* view );
+  QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
+
 	/// message when a GuiDocument is about to vanish
 	void OnLastWindowClosed(FCGuiDocument* pcDoc);
 
@@ -95,7 +100,7 @@ public:
 	/// send Messages test to the active view
 	bool SendHasMsgToActiveView(const char* pMsg);
 	/// returns the active view or NULL
-	FCView* GetActiveView(void);
+	MDIView* GetActiveView(void);
 	/// Geter for the Active View
 	FCGuiDocument* GetActiveDocument(void);
 	/// Attach a view (get called by the FCView constructor)
@@ -103,7 +108,7 @@ public:
 	/// Detach a view (get called by the FCView destructor)
 	void DetachView(FCBaseView* pcView);
 	/// get calld if a view gets activated, this manage the whole activation scheme
-	void ViewActivated(FCView* pcView);
+	void ViewActivated(MDIView* pcView);
 	/// call update to all docuemnts an all views (costly!)
 	void Update(void);
 	/// call update to all views of the active document
@@ -113,8 +118,6 @@ public:
 	/// call update to style
 	void UpdateStyle(void);
 	//@}
-  void setPalette(const QPalette&);
-  void setAreaPal(const QPalette&);
 
 	/// Set the active document
 	void SetActiveDocument(FCGuiDocument* pcDocument);
@@ -206,19 +209,18 @@ public:
 signals:
 	void sendQuit();
   void timeEvent();
+  void windowActivated( MDIView* );
 
 public:
   void Polish();
   bool isCustomizable () const;
   void customize ();
+  void tileHorizontal();
+  void tile();
+  void cascade();
 
 protected: // Protected methods
-	/** just fits the system menu button position to the menu position */
-	virtual void resizeEvent ( QResizeEvent * );
 	virtual void closeEvent ( QCloseEvent * e );
-  virtual void keyPressEvent ( QKeyEvent * e );
-  virtual void keyReleaseEvent ( QKeyEvent * e );
-  virtual bool focusNextPrevChild( bool next );
 	/// waiting cursor stuff 
 	void timerEvent( QTimerEvent * e){emit timeEvent();}
 
@@ -241,9 +243,13 @@ public slots:
 	void OnRedo();
 	//@}
 
-protected slots:
+private slots:
   void OnShowView();
-  void OnShowView(int);
+  void onWindowActivated( QWidget* );
+  void onWindowsMenuAboutToShow();
+  void onWindowsMenuActivated( int id );
+  void onWindowRemoved();
+  void onToggleStatusBar();
 
 private:
   struct ApplicationWindowP* d;

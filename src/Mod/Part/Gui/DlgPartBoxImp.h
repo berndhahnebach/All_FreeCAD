@@ -27,7 +27,7 @@
 #include "DlgPartBox.h"
 
 
-class DlgPartBoxImp : public DlgPartBox, public FCWindowParameter
+class DlgPartBoxImp : public DlgPartBox, public Gui::WindowParameter
 { 
     Q_OBJECT
 

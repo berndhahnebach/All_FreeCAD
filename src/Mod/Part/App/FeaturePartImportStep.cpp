@@ -23,10 +23,13 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
-  #include <STEPControl_Writer.hxx>
-  #include <STEPControl_Reader.hxx>
+# include <fcntl.h>
+# include <TopTools_HSequenceOfShape.hxx>
+# include <STEPControl_Writer.hxx>
+# include <STEPControl_Reader.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TFunction_Logbook.hxx>
 #endif
-
 
 #include "../../../Base/Console.h"
 #include "FeaturePartImportStep.h"

@@ -43,13 +43,16 @@
 #include "View3DInventor.h"
 #include "BitmapFactory.h"
 
-
+int FCGuiDocument::_iDocCount = 0;
 
 FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, const char * name)
-	:_iWinCount(0),
+	:_iWinCount(1),
 	 _pcAppWnd(app),
 	 _pcDocument(pcDocument)
 {
+  // new instance
+  _iDocId = (++_iDocCount);
+
 	// keeping an Instance of this document as long as at least one window lives
 	_pcDocument->IncRef();
 
@@ -93,7 +96,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 FCGuiDocument::~FCGuiDocument()
 {
-//	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
+//	for(std::list<MDIView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 //		delete *It;
 
 	_pcDocument->Detach(this);
@@ -142,34 +145,24 @@ bool FCGuiDocument::SaveAs(void)
 	}
 }
 
-
-
-
-//#include "Icons/FCIcon.xpm"
-
 void FCGuiDocument::CreateView(const char* sType) 
 {
   QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
-	FCView* pcView3D;
+	MDIView* pcView3D;
 	if(strcmp(sType,"View3DIv") == 0){
-		pcView3D = new FCView3DInventor(this,0L,"View3DIv");
+		pcView3D = new FCView3DInventor(this,_pcAppWnd,"View3DIv");
 	}else{
-		pcView3D = new FCView3D(this,0L,"View3DOCC");
+		pcView3D = new FCView3D(this,_pcAppWnd,"View3DOCC");
 	}
 	
 
-	QString aName = tr("%1:%2").arg(tr("Document")).arg(_iWinCount++);
+	QString aName = tr("%1%2:%3").arg(tr("Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
 
 
     pcView3D->setCaption(aName);
-	pcView3D->setTabCaption(aName);
     pcView3D->setIcon( FCIcon );
-	pcView3D->resize( 400, 300 );
-    if ( _LpcViews.size() == 1 )
-		_pcAppWnd->addWindow(pcView3D,QextMdi::StandardAdd);
-    else
-		_pcAppWnd->addWindow(pcView3D);
-
+  pcView3D->resize( 400, 300 );
+  _pcAppWnd->addWindow(pcView3D);
 }
 
 void FCGuiDocument::AttachView(FCBaseView* pcView, bool bPassiv)
@@ -240,7 +233,7 @@ void FCGuiDocument::CanClose ( QCloseEvent * e )
 		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
 		&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
 	{
-		switch(QMessageBox::warning( GetActiveView(), tr("Unsaved document"),tr("Save file before close?"),
+		switch(QMessageBox::warning( GetActiveView(), tr("Unsaved document"),tr("Save document before close?"),
 			tr("Yes"),tr("No"),tr("Cancel"),0,2))
 		{
 		case 0:
@@ -315,7 +308,7 @@ bool FCGuiDocument::SendMsgToActiveView(const char* pMsg)
 
 
 /// Geter for the Active View
-FCView* FCGuiDocument::GetActiveView(void)
+MDIView* FCGuiDocument::GetActiveView(void)
 {
 	return _pcAppWnd->GetActiveView();
 }

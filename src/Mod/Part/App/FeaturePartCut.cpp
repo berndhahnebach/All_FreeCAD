@@ -23,6 +23,8 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <TopoDS_Shape.hxx>
+# include <TFunction_Logbook.hxx>
 #endif
 
 

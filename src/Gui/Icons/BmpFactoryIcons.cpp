@@ -89,4 +89,5 @@ void RegisterIcons()
   rclBmpFactory.addXPM("view_zoom", view_zoom);
   rclBmpFactory.addXPM("WhatsThis", WhatsThis);
   rclBmpFactory.addXPM("Folder32", Folder32);
+  rclBmpFactory.addXPM("MacroEditor", MacroEditor);
 }

@@ -49,9 +49,9 @@ class MDIWindow;
  *  This is the document on GUI level. Its main responsibility is 
  *  keeping track off open windows for a document, handling the OCC
  *  interactiv context and warning on unsaved closes.
- *  All handled views on the document must inherit from FCView
+ *  All handled views on the document must inherit from MDIView
  *  @see FCDocument 
- *  @see FCView
+ *  @see MDIView
  */
 class GuiExport FCGuiDocument :public QObject, public FCDocument::ObserverType
 {
@@ -82,7 +82,7 @@ public:
 	/** @name methodes for activation handling */
 	//@{
 	/// Geter for the Active View
-	FCView* GetActiveView(void);
+	MDIView* GetActiveView(void);
 	//@}
 
 
@@ -95,9 +95,9 @@ public:
 	bool SendMsgToActiveView(const char* pMsg);
 	/// send Messages to all views
 	bool SendMsgToViews(const char* pMsg);
-	/// Attach a view (get called by the FCView constructor)
+	/// Attach a view (get called by the MDIView constructor)
 	void AttachView(FCBaseView* pcView, bool bPassiv=false);
-	/// Detach a view (get called by the FCView destructor)
+	/// Detach a view (get called by the MDIView destructor)
 	void DetachView(FCBaseView* pcView, bool bPassiv=false);
 	/// call update on attached all views
 	void Update(void);
@@ -134,7 +134,7 @@ public:
 	bool IsLastView(void);
 
 public slots:
-//	void slotCloseView(FCView* theView);
+//	void slotCloseView(MDIView* theView);
 
 
 private:
@@ -142,14 +142,16 @@ private:
 		const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj,
 		const Standard_Boolean ComputedMode,const Standard_Boolean aDefaultComputedMode );
 private:
-	int								_iWinCount;
+  static int _iDocCount;
+	int				 _iWinCount;
+  int        _iDocId;
 	ApplicationWindow*				_pcAppWnd;
 	/// List of all registered views
 	std::list<FCBaseView*>					_LpcViews;
 	/// List of all registered views
 	std::list<FCBaseView*>					_LpcPassivViews;
 	/// Active view
-	FCView*							_pcActiveView;
+	MDIView*							_pcActiveView;
 	Handle(V3d_Viewer)				_hViewer;
 	Handle(AIS_InteractiveContext)	_hContext;
 	// the doc/Document
@@ -164,7 +166,6 @@ private:
 	/// redo names list
 	std::list<std::string> listRedoNames;	
 	//@}
-
 };
 
 

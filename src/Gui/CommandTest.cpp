@@ -23,6 +23,7 @@
 # include <TopoDS_Shape.hxx>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <qwaitcondition.h>
 #endif
 
 #include "../Base/Exception.h"

@@ -36,7 +36,7 @@
 #include "Window.h"
 
 
-class DlgMacroExecuteImp : public DlgMacroExecute, public FCWindowParameter
+class DlgMacroExecuteImp : public DlgMacroExecute, public Gui::WindowParameter
 { 
     Q_OBJECT
 

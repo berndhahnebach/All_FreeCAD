@@ -40,12 +40,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <string>
-#	include <qaction.h>
 #	include <qfiledialog.h>
 #	include <qlineedit.h>
 #	include <qmessagebox.h>
-#	include <qthread.h>
+# include <qpushbutton.h>
 #endif
 
 #include "Macro.h"
@@ -61,7 +59,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroRecord( parent, name, modal, fl ),FCWindowParameter(name)
+    : DlgMacroRecord( parent, name, modal, fl ), WindowParameter(name)
 {
 	// get the parameter group of the "Macro Execute" Dialog
 	FCHandle<FCParameterGrp> h = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/");

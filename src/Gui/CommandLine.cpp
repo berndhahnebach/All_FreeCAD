@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qcursor.h>
 # include <qmessagebox.h>
+# include <qpopupmenu.h>
 #endif
 
 #include "CommandLine.h"
@@ -70,7 +71,7 @@ void ConsoleValidator::fixup ( QString & txt) const
  * it's also possible to drag and drop the command name from menus.
  */
 CommandLineBase::CommandLineBase(void)
-: QComboBox(true, NULL), FCWindowParameter("command line")
+: QComboBox(true, NULL), WindowParameter("command line")
 {
   // run commands
   _astrRunCmds.push_back("run");

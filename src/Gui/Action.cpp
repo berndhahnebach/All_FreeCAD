@@ -304,6 +304,32 @@ void ActionGroup::clear()
   delete l; // delete the list, not the objects
 }
 
+void ActionGroup::activate( int id)
+{
+  int pos = 0;
+  const QObjectList *l = children();
+  if ( l )
+  {
+    QObjectListIt it(*l);
+    QObject * obj;
+    while ( (obj=it.current()) != 0 ) 
+    {
+      QAction* act = dynamic_cast<QAction*>(obj);
+      if ( act )
+      {
+        if ( pos == id )
+        {
+          act->setOn( true );
+          break;
+        }
+      }
+
+      ++it;
+      ++pos;
+    }
+  }
+}
+
 void ActionGroup::activate( const QString& name )
 {
   const QObjectList *l = children();

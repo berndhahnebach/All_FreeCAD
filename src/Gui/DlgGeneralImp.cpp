@@ -23,6 +23,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <qapplication.h>
+# include <qstyle.h>
 # include <qstylefactory.h>
 #endif
 
@@ -44,13 +46,22 @@ using namespace Gui::Dialog;
 DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgGeneralBase( parent, name, fl )
 {
-#if QT_VERSION > 300
   // if you run this first time
   if (WindowStyle->count() == 0)
   {
-    WindowStyle->insertStringList(QStyleFactory::keys ());
+    QStringList styles = QStyleFactory::keys ();
+    WindowStyle->insertStringList( styles );
+    QString style = QApplication::style().name();
+    int pos = 0;
+    for ( QStringList::Iterator it = styles.begin(); it != styles.end(); ++it, ++pos )
+    {
+      if ( *it == style )
+      {
+        WindowStyle->setCurrentItem( pos );
+        break;
+      }
+    }
   }
-#endif
 
   // search for the language files
   std::string lang = GetApplication().GetUserParameter

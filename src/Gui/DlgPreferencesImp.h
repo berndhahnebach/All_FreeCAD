@@ -84,7 +84,7 @@ namespace Dialog {
  *
  * \author Werner Mayer, Jürgen Riegel
  */
-class GuiExport DlgPreferencesImp : public QDialog, public FCWindowParameter
+class GuiExport DlgPreferencesImp : public QDialog, public Gui::WindowParameter
 { 
 Q_OBJECT
 

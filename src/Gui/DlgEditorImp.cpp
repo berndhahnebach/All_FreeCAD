@@ -49,53 +49,32 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 
   append(EnableLineNumber->getHandler());
   append(EnableFolding->getHandler());
-  append(MyCustomWidget1_2->getHandler());
+  append(FontSize->getHandler());
+  append(FontDB->getHandler());
   append(getHandler());
 
   connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
-  connect(MyCustomWidget1, SIGNAL(changed ()), this, SLOT( onChosenColor()));
-  connect(ComboBox1, SIGNAL(activated ( const QString & ) ), this, SLOT( onChosenFont( const QString & )));
+  connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
 
-  if (MyCustomWidget1_2->count() == 0)
+  // if you run this first time
+  //
+  if (FontSize->count() == 0)
   {
-    MyCustomWidget1_2->insertItem("6");
-    MyCustomWidget1_2->insertItem("7");
-    MyCustomWidget1_2->insertItem("8");
-    MyCustomWidget1_2->insertItem("9");
-    MyCustomWidget1_2->insertItem("10");
-    MyCustomWidget1_2->insertItem("11");
-    MyCustomWidget1_2->insertItem("12");
+    for ( int i=5; i<20; i++)
+      FontSize->insertItem( QString::number( i ) );
+    FontSize->setCurrentItem( 4 );
   }
 
-  int fontsize = hPrefGrp->GetInt("FontSize", 3);
-  MyCustomWidget1_2->setCurrentItem(fontsize);
-
-  // fonts
-  QFontDatabase fdb;
-  QStringList familyNames = fdb.families( FALSE );
-  QStringList newList;
-  QString s;
-  QStringList::Iterator it = familyNames.begin();
-  QString item = hPrefGrp->GetASCII("Font", "Verdana").c_str();
-  int pos;
-
-  for(int k=0 ; it != familyNames.end() ; it++ ,k++)
+  if ( FontDB->count() == 0 )
   {
-    s = *it;
-    if ( s.contains('-') )
-    {
-      int i = s.find('-');
-      s = s.right( s.length() - i - 1 ) + " [" + s.left( i ) + "]";
-    }
+    // fonts
+    QFontDatabase fdb;
+    QStringList familyNames = fdb.families( FALSE );
+    QString item = hPrefGrp->GetASCII("Font", "Courier").c_str();
 
-    s[0] = s[0].upper();
-    if (s == item)
-      pos = k;
-    newList.append( s );
+    FontDB->insertStringList( familyNames );
+    FontDB->setCurrentText( item );
   }
-
-  ComboBox1->insertStringList( newList );
-  ComboBox1->setCurrentItem(pos);
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -148,7 +127,7 @@ void DlgSettingsEditorImp::onDisplayColor(const QString& name)
   int g = col >> 8;   col -= g << 8;
   int r = col;
 
-  MyCustomWidget1->setColor(QColor(r,g,b));
+  ColorBtn->setColor(QColor(r,g,b));
 }
 
 /** Updates the color map if a color was changed */
@@ -158,17 +137,11 @@ void DlgSettingsEditorImp::onChosenColor()
   if (text.isEmpty())
     return;
 
-  QColor col = MyCustomWidget1->color();
+  QColor col = ColorBtn->color();
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
   
   _mColors[text] = lcol;
-}
-
-/** Saves the chosen font, but it is disabled in this version */
-void DlgSettingsEditorImp::onChosenFont(const QString & item)
-{
-  hPrefGrp->SetASCII("Font", item.latin1());
 }
 
 // -------------------------------------------------------------------

@@ -126,6 +126,7 @@
 #include "Macro.h"
 #include "Themes.h"
 #include "ProgressBar.h"
+#include "Window.h" 
 
 #include "Inventor/Qt/SoQt.h"
 
@@ -166,6 +167,8 @@ struct ApplicationWindowP
 
   QPopupMenu* toolbars;
   Gui::CustomPopupMenu* viewbar;
+  Gui::CustomPopupMenu* windows;
+  QValueList<int> wndIDs;
   std::map<int, QWidget*> mCheckBars;
 	/// list of all handled documents
  	std::list<FCGuiDocument*>         lpcDocuments;
@@ -174,6 +177,7 @@ struct ApplicationWindowP
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;
   Gui::CustomWidgetManager*		 _pcWidgetMgr;
+  Gui::DockWindowManager* _pcDockMgr;
 	FCMacroManager*  _pcMacroMngr;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
 	ToolBox*        _pcStackBar;
@@ -188,10 +192,12 @@ struct ApplicationWindowP
   bool _bControlButton;
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
+  QWorkspace* _pWorkspace;
+  QTabBar* _tabs;
 };
 
 ApplicationWindow::ApplicationWindow()
-    : QextMdiMainFrm( 0, "Main window", WDestructiveClose )
+    : QMainWindow( 0, "Main window", WDestructiveClose )
 {
 	std::string language = GetApplication().GetUserParameter
 		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
@@ -206,8 +212,20 @@ ApplicationWindow::ApplicationWindow()
 	SoQt::init(this);
 
   d = new ApplicationWindowP;
+  QVBox* vb = new QVBox( this );
+  vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+  d->_pWorkspace = new QWorkspace( vb );
 
-	setCaption( "Qt-FreeCAD" );
+  QPixmap backgnd(( const char** ) background );
+  d->_pWorkspace->setPaletteBackgroundPixmap( backgnd );
+  d->_tabs = new QTabBar( vb );
+  d->_tabs->setShape( QTabBar::RoundedBelow );
+  d->_pWorkspace->setScrollBarsEnabled( true );
+  setCentralWidget( vb );
+  connect( d->_pWorkspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
+
+//	setCaption( "Qt FreeCAD" );
+	setCaption( "FreeCAD" );
 	setIcon(QPixmap(FCIcon));
 
 	d->_cActiveWorkbenchName="<none>";
@@ -262,28 +280,29 @@ ApplicationWindow::ApplicationWindow()
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	d->_pcStackBar = new ToolBox(this,"Cmd_Group");
   d->_pcWidgetMgr = new Gui::CustomWidgetManager(GetCommandManager(), d->_pcStackBar);
-  d->_pcWidgetMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
+  d->_pcDockMgr = new Gui::DockWindowManager();
+  d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
-	d->_pcWidgetMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
+	d->_pcDockMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	FCTree* pcTree = new FCTree(0,0,"Raw_tree");
+	TreeView* pcTree = new TreeView(0,this,"Raw_tree");
 	pcTree->setMinimumWidth(210);
-  d->_pcWidgetMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
+  d->_pcDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
 
 	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCPropertyView* pcPropView = new FCPropertyView(0,0,"PropertyView");
 	pcPropView->setMinimumWidth(210);
-	d->_pcWidgetMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
+	d->_pcDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
 
 	// Report View
 	Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
-  d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
+  d->_pcDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
 
  	CreateStandardOperations();
 
@@ -389,19 +408,18 @@ void ApplicationWindow::CreateStandardOperations()
 	CreateStdCommands();
 	CreateViewStdCommands();
 	CreateTestCommands();
-
-  setMenuForSDIModeSysButtons( menuBar());
 }
 
 void ApplicationWindow::Polish()
 {
-  d->viewbar  = d->_pcWidgetMgr->getPopupMenu("View");
+  d->viewbar  = d->_pcWidgetMgr->getPopupMenu("&View");
   d->viewbar->setCanModify(true);
   d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
 
   connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(OnShowView(     )));
-  connect(d->viewbar,  SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
-  connect(d->toolbars, SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
+
+  d->windows = d->_pcWidgetMgr->getPopupMenu("&Windows");
+  connect(d->windows, SIGNAL( aboutToShow()), this, SLOT( onWindowsMenuAboutToShow() ) );
 }
 
 bool ApplicationWindow::isCustomizable () const
@@ -412,6 +430,43 @@ bool ApplicationWindow::isCustomizable () const
 void ApplicationWindow::customize ()
 {
   GetCommandManager().RunCommandByName("Std_DlgCustomize");
+}
+
+void ApplicationWindow::tileHorizontal()
+{
+  // primitive horizontal tiling
+  QWidgetList windows = d->_pWorkspace->windowList();
+  if ( !windows.count() )
+  	return;
+    
+  int heightForEach = d->_pWorkspace->height() / windows.count();
+  int y = 0;
+  for ( int i = 0; i < int(windows.count()); ++i ) 
+  {
+  	QWidget *window = windows.at(i);
+	  if ( window->testWState( WState_Maximized ) ) 
+    {
+	    // prevent flicker
+	    window->hide();
+	    window->showNormal();
+  	}
+  	
+    int preferredHeight = window->minimumHeight()+window->parentWidget()->baseSize().height();
+	  int actHeight = QMAX(heightForEach, preferredHeight);
+	
+	  window->parentWidget()->setGeometry( 0, y, d->_pWorkspace->width(), actHeight );
+  	y += actHeight;
+  }
+}
+
+void ApplicationWindow::tile()
+{
+  d->_pWorkspace->tile();
+}
+
+void ApplicationWindow::cascade()
+{
+  d->_pWorkspace->cascade();
 }
 
 void ApplicationWindow::OnShowView()
@@ -438,54 +493,20 @@ void ApplicationWindow::OnShowView()
       menu->setItemChecked( id, dw->isVisible() );
     }
   }
-/*
-  // dock windows
-  std::vector<FCDockWindow*> windows = d->_pcWidgetMgr->getDockWindows();
-  for (std::vector<FCDockWindow*>::iterator it = windows.begin(); it!=windows.end(); ++it)
-  {
-    KDockWidget* w = manager()->getDockWidgetFromName((*it)->name());
-    if (w)
-    {
-      int id = menu->insertItem(tr(w->tabPageLabel()));
-      d->mCheckBars[id] = w;
-      if (w->isVisible())
-		    menu->setItemChecked(id, true);
-    }
-  }
-*/
+
   // status bar
   menu->insertSeparator();
   QWidget* w = statusBar();
-  int id = menu->insertItem(tr("Status bar"));
+  int id = menu->insertItem( tr("Status bar"), this, SLOT( onToggleStatusBar() ) );
   d->mCheckBars[id] = w;
 	menu->setItemChecked(id, w->isVisible());
 }
 
-void ApplicationWindow::OnShowView(int id)
+void ApplicationWindow::onToggleStatusBar()
 {
-  if (d->mCheckBars.find(id)==d->mCheckBars.end())
-    return; // not a dock window
-  if (!d->mCheckBars[id])
-    return; // no valid dock window
-
-  QPopupMenu* menu = (QPopupMenu*)sender();
-
-  if (menu->isItemChecked(id))
-  {
-    if (d->mCheckBars[id]->inherits("KDockWidget"))
-      ((KDockWidget*)d->mCheckBars[id])->changeHideShowState();
-    else
-      d->mCheckBars[id]->hide();
-  }
-  else
-  {
-    if (d->mCheckBars[id]->inherits("KDockWidget"))
-      ((KDockWidget*)d->mCheckBars[id])->changeHideShowState();
-    else
-      d->mCheckBars[id]->show();
-  }
+  QWidget* w = statusBar();
+  w->isVisible() ? w->hide() : w->show();
 }
-
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // document observers
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -511,6 +532,132 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 	
 }
 
+void ApplicationWindow::addWindow( MDIView* view )
+{
+  view->reparent( d->_pWorkspace, QPoint() );
+  connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
+  // show the very first window in maximized mode
+  if ( d->_pWorkspace->windowList().isEmpty() )
+    view->showMaximized();
+  else
+    view->show();
+/*
+  connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowRemoved() ) );
+
+  QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
+  int id=0;
+  for ( int i=0; i<(int)windows.count(); i++)
+  {
+    if ( view == windows.at( i ) )
+    {
+      id = i;
+      break;
+    }
+  }
+
+  QTab* tab = new QTab;
+  tab->setText( view->caption() );
+  tab->setIconSet( QPixmap( FCIcon ) );
+  tab->setIdentifier( id );
+  d->_tabs->addTab( tab );
+  d->_tabs->setToolTip( id, view->caption() );
+  d->_tabs->show();
+  d->_tabs->update();*/
+}
+
+void ApplicationWindow::onWindowRemoved()
+{
+  QStringList titles;
+  QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
+  for ( int i=0; i<(int)windows.count(); i++)
+  {
+    titles << windows.at( i )->caption();
+  }
+
+  for ( int j=0; j<(int)d->_tabs->count(); j++ )
+  {
+    QTab* tab = d->_tabs->tabAt( j );
+    QString txt = tab->text();
+    if ( titles.find( txt) == titles.end() )
+    {
+      d->_tabs->removeTab( tab );
+      if ( d->_tabs->count() == 0 )
+        d->_tabs->hide();
+      break;
+    }
+  }
+}
+
+void ApplicationWindow::onWindowActivated( QWidget* w )
+{
+  MDIView* view = dynamic_cast<MDIView*>(w);
+  emit windowActivated( view );
+
+  for ( int j=0; j<(int)d->_tabs->count(); j++ )
+  {
+    QTab* tab = d->_tabs->tabAt( j );
+    QString txt = tab->text();
+    if ( txt == view->caption() )
+    {
+      d->_tabs->setCurrentTab( tab );
+      break;
+    }
+  }
+}
+
+void ApplicationWindow::onWindowsMenuAboutToShow()
+{
+  QPopupMenu* windowsMenu = d->windows;
+  QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
+
+  // remove old window items first
+  while ( d->wndIDs.size() > 0 )
+  {
+    int id = d->wndIDs.front();
+    d->wndIDs.pop_front();
+    windowsMenu->removeItem( id );
+  }
+
+  // append new window items
+  if ( windows.count() > 0 )
+  {
+    // insert separator before last item 
+    int idx = windowsMenu->count() - 2;
+    int pos = windowsMenu->insertSeparator( idx );
+    d->wndIDs.push_back( pos );
+
+    bool act = false;
+    for ( int i = 0; i < int(windows.count()); ++i ) 
+    {
+      QString txt = QString("&%1 %2").arg( i+1 ).arg( windows.at(i)->caption() );
+      idx = windowsMenu->count() - 2;
+
+      act |= (d->_pWorkspace->activeWindow() == windows.at(i));
+
+      if ( (act && d->wndIDs.size() < 10) || (!act && d->wndIDs.size() < 9))
+      {
+ 	      int id = windowsMenu->insertItem( txt, this, SLOT( onWindowsMenuActivated( int ) ), 0, -1, idx );
+ 	      windowsMenu->setItemParameter( id, i );
+        windowsMenu->setItemChecked( id, d->_pWorkspace->activeWindow() == windows.at(i) );
+        d->wndIDs.push_back( id );
+      }
+    }
+  }
+}
+
+void ApplicationWindow::onWindowsMenuActivated( int id )
+{
+  QWidget* w = d->_pWorkspace->windowList().at( id );
+  if ( w )
+  	w->showNormal();
+  w->setFocus();
+}
+
+QWidgetList ApplicationWindow::windows( QWorkspace::WindowOrder order ) const
+{
+  return d->_pWorkspace->windowList( order );
+}
+
 void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 {
 	if(!d->_bIsClosing)
@@ -524,6 +671,8 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 		if(d->lpcDocuments.size() == 0 )
 			// reset active document
 			SetActiveDocument(0);
+    else
+      SetActiveDocument(d->lpcDocuments.front());
 	}
 }
 
@@ -547,7 +696,7 @@ void ApplicationWindow::SetPaneText(int i, QString text)
 /// send Messages to the active view
 bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
 {
-	FCView* pView = GetActiveView();
+	MDIView* pView = GetActiveView();
 
 	if(pView){
 		return pView->OnMsg(pMsg);
@@ -557,7 +706,7 @@ bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
 
 bool ApplicationWindow::SendHasMsgToActiveView(const char* pMsg)
 {
-	FCView* pView = GetActiveView();
+	MDIView* pView = GetActiveView();
 
 	if(pView){
 		return pView->OnHasMsg(pMsg);
@@ -566,10 +715,10 @@ bool ApplicationWindow::SendHasMsgToActiveView(const char* pMsg)
 }
 
 
-FCView* ApplicationWindow::GetActiveView(void)
+MDIView* ApplicationWindow::GetActiveView(void)
 {
-	FCView * pView = reinterpret_cast <FCView *> ( activeWindow() );
-	return pView;
+  MDIView * pView = reinterpret_cast <MDIView *> ( d->_pWorkspace->activeWindow() );
+  return pView;
 }
 
 
@@ -578,7 +727,7 @@ FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 {
 	return d->_pcActiveDocument;
 	/*
-	FCView* pView = GetActiveView();
+	MDIView* pView = GetActiveView();
 
 	if(pView)
 		return pView->GetGuiDocument();
@@ -625,7 +774,7 @@ void ApplicationWindow::Update(void)
 }
 
 /// get calld if a view gets activated, this manage the whole activation scheme
-void ApplicationWindow::ViewActivated(FCView* pcView)
+void ApplicationWindow::ViewActivated(MDIView* pcView)
 {
 
 	Console().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->GetName());
@@ -652,15 +801,6 @@ void ApplicationWindow::OnRedo()
 {
 	puts("ApplicationWindow::slotRedo()");
 
-}
-
-
-
-/** just additionally fits the system menu button position to the menu position */
-void ApplicationWindow::resizeEvent ( QResizeEvent *e)
-{
-   QextMdiMainFrm::resizeEvent( e);
-   setSysButtonsAtMenuPosition();
 }
 
 void ApplicationWindow::closeEvent ( QCloseEvent * e )
@@ -721,35 +861,8 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 		d->_pcActivityTimer->stop();
 
     ActivateWorkbench("<none>");
-		QextMdiMainFrm::closeEvent(e);
+    QMainWindow::closeEvent( e );
 	}
-}
-
-bool ApplicationWindow::focusNextPrevChild( bool next )
-{
-  if (d->_bControlButton)
-  {
-    if (next)
-      activateNextWin();
-    else
-      activatePrevWin();
-
-    return (activeWindow() != NULL);
-  }
-
-  return QextMdiMainFrm::focusNextPrevChild(next);
-}
-
-void ApplicationWindow::keyPressEvent ( QKeyEvent * e )
-{
-  d->_bControlButton = (e->state() &  ControlButton);
-  QextMdiMainFrm::keyPressEvent(e);
-}
-
-void ApplicationWindow::keyReleaseEvent ( QKeyEvent * e )
-{
-  d->_bControlButton = (e->state() &  ControlButton);
-  QextMdiMainFrm::keyReleaseEvent (e);
 }
 
 /**
@@ -867,8 +980,8 @@ void ApplicationWindow::LoadWindowSettings()
   LoadDockWndSettings();
 
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
-  int w = hGrp->GetInt("Width", 800);
-  int h = hGrp->GetInt("Height", 600);
+  int w = hGrp->GetInt("Width", 1024);
+  int h = hGrp->GetInt("Height", 768);
   int x = hGrp->GetInt("PosX", pos().x());
   int y = hGrp->GetInt("PosY", pos().y());
   bool max = hGrp->GetBool("Maximized", false);
@@ -1031,20 +1144,6 @@ void ApplicationWindow::SaveDockWndSettings()
   doc.save(textstream, 0);
   datafile->close();
   delete (datafile);*/
-}
-
-void ApplicationWindow::setPalette(const QPalette& pal)
-{
-  QextMdiMainFrm::setPalette(pal);
-  setAreaPal(pal);
-}
-
-void ApplicationWindow::setAreaPal(const QPalette& pal)
-{
-  m_pMdi->setMdiCaptionActiveBackColor(pal.disabled().background());
-  m_pMdi->setMdiCaptionActiveForeColor(pal.active().foreground());
-  m_pMdi->setMdiCaptionInactiveBackColor(pal.active().mid());
-  m_pMdi->setMdiCaptionInactiveForeColor(pal.disabled().light());
 }
 
 bool ApplicationWindow::IsClosing(void)

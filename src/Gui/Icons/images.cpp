@@ -2411,7 +2411,7 @@ static const char *view_zoom[]={
 "................"};
 
 /* XPM */
-static const char *WhatsThis[]={
+static const char *WhatsThis2[]={
 "24 24 7 1",
 ". c None",
 "d c #009ea5",
@@ -2445,6 +2445,35 @@ static const char *WhatsThis[]={
 "........................",
 "........................"};
 
+static const char * WhatsThis[] = {
+"24 24 3 1",
+"	c None",
+"o	c #000000",
+"a	c #000080",
+"........................",
+"........................",
+"........................",
+"........................",
+"....o        aaaaa      ",
+"....oo      aaa aaa     ",
+"....ooo    aaa   aaa    ",
+"....oooo   aa     aa    ",
+"....ooooo  aa     aa    ",
+"....oooooo  a    aaa    ",
+"....ooooooo     aaa     ",
+"....oooooooo   aaa      ",
+"....ooooooooo aaa       ",
+"....ooooo     aaa       ",
+"....oo ooo              ",
+"....o  ooo    aaa       ",
+"....    ooo   aaa       ",
+"....    ooo             ",
+"....     ooo            ",
+"....     ooo            ",
+"........................",
+"........................",
+"........................",
+"........................"};
 
 /*XPM*/
 const char* Folder32[] = { 
@@ -2491,3 +2520,29 @@ const char* Folder32[] = {
 "..................##ddd#b#####..",
 "....................##d#b###....",
 "......................####......"};
+
+/* XPM */
+const char* MacroEditor[] = {
+"12 16 6 1",
+" 	c #040404",
+".	c None",
+"X	c white",
+"o	c #808304",
+"O	c black",
+"+	c #f3f7f3",
+"       .....",
+" XXXXX  ....",
+" XXXXX X ...",
+" XXXXX XX ..",
+" XooXX    O.",
+" X+XXX+XXXO.",
+" XXXXXXXXXO.",
+" XoooXooXXO.",
+" XXXXXXXXXO.",
+" XXXXXXXXXO.",
+" XoXXoooXXO.",
+" XXXXXXXXXO.",
+"OXXXXXXXXXO.",
+"OXXXXXXXXXO.",
+"OOOOOOOOOOO.",
+"............"};

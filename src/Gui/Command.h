@@ -23,6 +23,7 @@
 #ifndef _PreComp_
 # include <qaction.h>
 # include <qstringlist.h>
+# include <qptrlist.h>
 # include <qtooltip.h>
 # include <string>
 # include <vector>
@@ -36,6 +37,7 @@ class FCGuiDocument;
 class FCDocument;
 class FCCommand;
 class QAction;
+class MDIView;
 
 namespace Gui {
 
@@ -532,7 +534,7 @@ private:
 };
 
 /**
- *  The MRU command which does the handling of recent files
+ *  The MRU command which does the handling of recent files.
  */
 class FCCmdMRU : public FCCppCommand
 {

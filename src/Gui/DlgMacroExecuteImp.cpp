@@ -39,22 +39,19 @@
  */
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qaction.h>
 #	include <qcombobox.h>
-#	include <qdialog.h>
 #	include <qdir.h>
 #	include <qfiledialog.h>
 #	include <qlineedit.h>
 #	include <qlistview.h>
-#	include <qscrollview.h>
-#	include <qthread.h>
-#	include <qtimer.h>
+# include <qpushbutton.h>
 #endif
 
 
 #include "DlgMacroExecuteImp.h"
 #include "../App/Application.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "Macro.h"
 #include "PythonEditor.h"
 
@@ -68,7 +65,7 @@ using namespace Gui;
  *  TRUE to construct a modal dialog.
  */
 DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroExecute( parent, name, modal, fl ),FCWindowParameter(name)
+    : DlgMacroExecute( parent, name, modal, fl ), WindowParameter(name)
 {
 	// retrieve the macro path from parameter or use the home path as default
 	_cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetASCII("MacroPath",GetApplication().GetHomePath());
@@ -159,11 +156,11 @@ void DlgMacroExecuteImp::OnEdit()
 	QDir dir(_cMacroPath.c_str());
 	QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
 	PythonEditView* edit = new PythonEditView(ApplicationWindow::Instance, "Editor");
-  ApplicationWindow::Instance->addWindow(edit,QextMdi::StandardAdd);
+  edit->setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
+	edit->setCaption( file );
+  edit->resize( 400, 300 );
+  ApplicationWindow::Instance->addWindow( edit );
 	edit->openFile(file);
-	edit->setCaption(file);
-	QString name = file.left(file.findRev('.'));
-	edit->setTabCaption(name);
   accept();
 }
 

@@ -38,7 +38,7 @@
 
 class FCCommand;
 
-class DlgDocTemplatesImp : virtual public DlgDocTemplates, public FCWindowParameter
+class DlgDocTemplatesImp : virtual public DlgDocTemplates, public Gui::WindowParameter
 { 
     Q_OBJECT
 
@@ -50,7 +50,7 @@ public:
 /*	// for linux one dummy constructor:
 #ifdef FC_OS_LINUX
 	DlgDocTemplatesImp(int dummy, QWidget* parent,  const char* name, bool modal, WFlags fl )
-		:FCWindowParameter(name){DlgDocTemplatesImp(parent,name,modal,fl);}
+		:WindowParameter(name){DlgDocTemplatesImp(parent,name,modal,fl);}
 #endif */
 
 public slots:

@@ -112,7 +112,7 @@ void PrefGroupItem::paint( QPainter *p )
  *  TRUE to construct a modal dialog.
  */
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : QDialog( parent, name, modal, fl ),FCWindowParameter(name), m_pCurTab(NULL)
+    : QDialog( parent, name, modal, fl ),WindowParameter(name), m_pCurTab(NULL)
 {
   if ( !name )
     setName( "DlgPreferences" );

@@ -32,6 +32,7 @@
 #	include <TFunction_Logbook.hxx>
 #	include <TFunction_DriverTable.hxx>
 #	include <TFunction_Function.hxx>
+# include <TNaming_Builder.hxx>
 #	include <Standard_GUID.hxx>
 #endif
 

@@ -36,10 +36,10 @@
 class QDoubleValidator;
 class QAction;
 class QMainWindow;
-class FCDockWindow;
 class FCCommandManager;
 
 namespace Gui {
+class DockWindow;
 class WidgetFactoryInst;
 
 namespace DockWnd {
@@ -157,7 +157,7 @@ private:
  * Class that manages the construction/destruction of all customizable widgets.
  * At destruction time of a custom widget its content will be written to preferences.
  * At construction time the content will be restored.
- * @see CustomToolBar, CustomPopupMenu and FCDockWindow
+ * @see CustomToolBar, CustomPopupMenu
  * \author Werner Mayer
  */
 class CustomWidgetManager
@@ -191,12 +191,6 @@ public:
   void removePopupMenu ( const QString& name );
   void removeMenuItems ( const QString& type, const QStringList& item );
   int countPopupMenus();
-
-  FCDockWindow* getDockWindow( const QString& name );
-  QPtrList<FCDockWindow> getDockWindows();
-  void removeDockWindow( const QString& name );
-  void addDockWindow( const QString& name, FCDockWindow *pcDocWindow, 
-                      Qt::Dock pos = Qt::DockUnmanaged );
 
   void show();
   void hide();

@@ -37,7 +37,7 @@
 
 class FCMacroManager;
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindowParameter
+class DlgMacroRecordImp : public DlgMacroRecord, public Gui::WindowParameter
 { 
     Q_OBJECT
 

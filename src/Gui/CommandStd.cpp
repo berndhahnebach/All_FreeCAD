@@ -41,6 +41,7 @@
 #	endif // (re-)defined in pyconfig.h
 #	include <Python.h>
 #	include <algorithm>
+# include <qapplication.h>
 #	include <qaction.h>
 #	include <qcombobox.h>
 #	include <qcursor.h>
@@ -77,6 +78,7 @@
 #include "HtmlView.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
+#include "View.h"
 
 #ifdef FC_USE_OCAFBROWSER
 #	include <DebugBrowser.hxx>
@@ -93,6 +95,7 @@
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
 #include "DlgSettingsImp.h"
+#include "DlgActivateWindowImp.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -231,8 +234,10 @@ FCCmdSaveAs::FCCmdSaveAs()
 
 void FCCmdSaveAs::Activated(int iMsg)
 {
+	if( GetActiveDocument() )
   	GetActiveDocument()->SaveAs();
-
+	else
+		DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"SaveAs\")");
 }
 
 bool FCCmdSaveAs::IsActive(void)
@@ -266,16 +271,8 @@ FCCmdPrint::FCCmdPrint()
 void FCCmdPrint::Activated(int iMsg)
 {
 	GetAppWnd()->statusBar()->message("Printing...");
-	QPrinter printer;
-	if (printer.setup(GetAppWnd()))
-	{
-		QPainter painter;
-		painter.begin(&printer);
-
-		GetAppWnd()->GetActiveView()->Print(painter);
-
-		painter.end();
-	}
+	QPrinter printer( QPrinter::HighResolution );
+	GetAppWnd()->GetActiveView()->Print( &printer );
 }
 
 bool FCCmdPrint::IsActive(void)
@@ -730,6 +727,27 @@ void FCCmdAbout::Activated(int iMsg)
 }
 
 //===========================================================================
+// Std_AboutQt
+//===========================================================================
+DEF_STD_CMD(FCCmdAboutQt);
+
+FCCmdAboutQt::FCCmdAboutQt()
+	:FCCppCommand("Std_AboutQt")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "About &Qt";
+	sToolTipText	= "About Qt";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+}
+
+void FCCmdAboutQt::Activated(int iMsg)
+{
+  qApp->aboutQt();
+}
+
+//===========================================================================
 // Std_TipOfTheDay
 //===========================================================================
 DEF_STD_CMD(FCCmdTipOfTheDay);
@@ -953,15 +971,15 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
 //===========================================================================
 // Std_TileHoricontal
 //===========================================================================
-DEF_STD_CMD(FCCmdTileHor);
+DEF_STD_CMD_A(FCCmdTileHor);
 
 FCCmdTileHor::FCCmdTileHor()
 	:FCCppCommand("Std_TileHoricontal")
 {
 	sAppModule		= "";
 	sGroup			= "Standard";
-	sMenuText		= "Tile Hor.";
-	sToolTipText	= "Tile the windows horizontal";
+	sMenuText		= "Tile &Horizontally";
+	sToolTipText	= "Tile the windows horizontally";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Std_WindowTileHor";
@@ -971,44 +989,54 @@ FCCmdTileHor::FCCmdTileHor()
 
 void FCCmdTileHor::Activated(int iMsg)
 {
-	GetAppWnd()->tileVertically ();
+	GetAppWnd()->tileHorizontal ();
+}
+
+bool FCCmdTileHor::IsActive(void)
+{
+	return !( GetAppWnd()->windows().isEmpty() );
 }
 
 //===========================================================================
 // Std_TileVertical
 //===========================================================================
-DEF_STD_CMD(FCCmdTileVer);
+DEF_STD_CMD_A(FCCmdTileVer);
 
 FCCmdTileVer::FCCmdTileVer()
 	:FCCppCommand("Std_TileVertical")
 {
 	sAppModule		= "";
 	sGroup			= "Standard";
-	sMenuText		= "Tile Ver.";
-	sToolTipText	= "Tile the windows vertical";
+	sMenuText		= "&Tile Vertically";
+	sToolTipText	= "Tile the windows vertically";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Std_WindowTileVer";
-	iAccel			= Qt::CTRL+Qt::Key_T;
+	iAccel			= 0;
 }
 
 
 void FCCmdTileVer::Activated(int iMsg)
 {
-	GetAppWnd()->tileAnodine ();
+	GetAppWnd()->tile();
+}
+
+bool FCCmdTileVer::IsActive(void)
+{
+	return !( GetAppWnd()->windows().isEmpty() );
 }
 
 //===========================================================================
 // Std_TilePragmatic
 //===========================================================================
-DEF_STD_CMD(FCCmdTilePra);
+DEF_STD_CMD_A(FCCmdTilePra);
 
 FCCmdTilePra::FCCmdTilePra()
 	:FCCppCommand("Std_TilePragmatic")
 {
 	sAppModule		= "";
 	sGroup			= "Standard";
-	sMenuText		= "Tile pragmatic";
+	sMenuText		= "&Cascade";
 	sToolTipText	= "Tile pragmatic";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
@@ -1018,7 +1046,36 @@ FCCmdTilePra::FCCmdTilePra()
 
 void FCCmdTilePra::Activated(int iMsg)
 {
-	GetAppWnd()->tilePragma();
+	GetAppWnd()->cascade();
+}
+
+bool FCCmdTilePra::IsActive(void)
+{
+	return !( GetAppWnd()->windows().isEmpty() );
+}
+
+//===========================================================================
+// Std_Windows
+//===========================================================================
+DEF_STD_CMD(FCCmdWindows);
+
+FCCmdWindows::FCCmdWindows()
+	:FCCppCommand("Std_Windows")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "&Windows...";
+	sToolTipText	= "Windows list";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+//	sPixmap			= "";
+	iAccel			= 0;
+}
+
+void FCCmdWindows::Activated(int iMsg)
+{
+  Gui::Dialog::DlgActivateWindowImp dlg( GetAppWnd(), "Windows", true );
+  dlg.exec();
 }
 
 /*
@@ -1071,10 +1128,10 @@ void FCCmdMDIToplevel::Activated(int iMsg)
 	if(iMsg){
 		// switches Tab mode off 
 		ToggleCommand("Std_MDITabed",false);
-		GetAppWnd()->switchToToplevelMode();
-	}else
+//		GetAppWnd()->switchToToplevelMode();
+	}//else
 		//GetAppWnd()->finishToplevelMode();
-		GetAppWnd()->switchToChildframeMode();
+//		GetAppWnd()->switchToChildframeMode();
 }
 
 //===========================================================================
@@ -1101,9 +1158,9 @@ void FCCmdMDITabed::Activated(int iMsg)
 	if(iMsg){
 		// switches Toplevel off 
 		ToggleCommand("Std_MDIToplevel",false);
-		GetAppWnd()->switchToTabPageMode();
-	}else
-		GetAppWnd()->switchToChildframeMode();
+//		GetAppWnd()->switchToTabPageMode();
+	}//else
+//		GetAppWnd()->switchToChildframeMode();
 }
 
 
@@ -1442,6 +1499,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdTileVer());
 	rcCmdMgr.AddCommand(new FCCmdTilePra());
 	rcCmdMgr.AddCommand(new FCCmdAbout());
+	rcCmdMgr.AddCommand(new FCCmdAboutQt());
 
 	rcCmdMgr.AddCommand(new FCCmdDlgParameter());
 	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
@@ -1458,6 +1516,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdOnlineHelp());
 	rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());
 	rcCmdMgr.AddCommand(new FCCmdTipOfTheDay());
+	rcCmdMgr.AddCommand(new FCCmdWindows());
 }
 
 

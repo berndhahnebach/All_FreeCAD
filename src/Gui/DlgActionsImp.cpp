@@ -25,6 +25,9 @@
 
 #ifndef _PreComp_
 # include <qaccel.h>
+# include <qlabel.h>
+# include <qpushbutton.h>
+# include <qtoolbutton.h>
 #endif
 
 #include "DlgActionsImp.h"

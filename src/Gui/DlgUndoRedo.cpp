@@ -24,10 +24,11 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
+# include <qlabel.h>
 # include <qpainter.h>
-# if QT_VERSION > 230
-#   include <qstyle.h>
-# endif
+# include <qstyle.h>
+# include <qvariant.h>
 #endif
 
 #include "DlgUndoRedo.h"
