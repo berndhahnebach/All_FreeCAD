@@ -89,6 +89,16 @@ public:
   /// overvrit when checking on close state
   virtual bool CanClose(void){return true;}
   //@}
+  void setCaption ( const QString & );
+  void setDockWindow( QDockWindow* w );
+  QDockWindow* dockWindow() const;
+
+protected slots:
+  virtual void languageChange();
+
+private:
+  QDockWindow* _dw;
+  QString _caption;
 };
 
 /** Base class of all windows belonging to a document

@@ -262,6 +262,25 @@ public:
     "elif" << "else" << "except" << "exec" << "finally" << "for" << "from" << "global" <<
     "if" << "import" << "in" << "is" << "lambda" << "None" << "not" << "or" << "pass" << "print" <<
     "raise" << "return" << "try" << "while" << "yield";
+
+    long col = GetDefCol().color( "Text" );
+    cNormalText     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Comment" );
+    cComment        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Block comment" );
+    cBlockcomment   = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "String" );
+    cLiteral        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Number" );
+    cNumber         = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Operator" );
+    cOperator       = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Keyword" );
+    cKeyword        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Class name" );
+    cClassName      = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Define name" );
+    cDefineName     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
   }
 
   QStringList keywords;

@@ -27,7 +27,6 @@
 # include <qapplication.h>
 # include <qobjectlist.h>
 # include <qmap.h>
-# include <qmenubar.h>
 # include <qmetaobject.h>
 # include <qstrlist.h>
 # include <qvariant.h>
@@ -35,9 +34,6 @@
 
 #include "Translator.h"
 #include "LanguageFactory.h"
-#include "../Application.h"
-#include "../Command.h"
-#include "../CustomWidgets.h"
 
 #include "../../Base/Console.h"
 
@@ -176,12 +172,12 @@ bool Translator::setLanguage ( const QString& lang )
   clear();
 
   bool ok = LanguageFactory().installLanguage( lang );
-
+/*
   QWidget* mw = qApp->mainWidget();
 
   // try to update all relevant properties
   if ( mw )
-  {/*
+  {
 
     if ( !mw ) return ok;
     QObjectList  *list = mw->queryList("QAction");
@@ -195,29 +191,8 @@ bool Translator::setLanguage ( const QString& lang )
     }
 
     delete list; // delete the list, not the objects
-*/
-    FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
-    std::vector<FCCommand*> cmd = rclMan.GetAllCommands();
-    for ( std::vector<FCCommand*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
-    {
-      (*it)->languageChange();
-    }
-
-    // and finally update the menu bar since QMenuBar owns no "text" property
-    Gui::CustomWidgetManager* cw = ApplicationWindow::Instance->GetCustomWidgetManager();
-    const QMap<int, QString>& mi = cw->menuBarItems();
-   
-    QMenuBar* mb = ApplicationWindow::Instance->menuBar();
-    uint cnt = mb->count();
-    for ( uint i=0; i<cnt; i++ )
-    {
-      int id = mb->idAt( i );
-      QMap<int, QString>::ConstIterator it = mi.find( id );
-      if ( it != mi.end() )
-        mb->changeItem( id, tr( it.data()/*mb->text( id )*/ ) );
-    }
   }
-
+*/
   return ok;
 }
 

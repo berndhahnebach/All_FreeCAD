@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qdir.h>
 # include <qfileinfo.h>
 # include <qlayout.h>
@@ -162,7 +163,7 @@ WidgetFactorySupplier & WidgetFactorySupplier::Instance()
  *  The dialog will be modal.
  */
 ContainerDialog::ContainerDialog( QWidget* templChild )
-    : QDialog( 0L, 0L, true, 0 )
+    : QDialog( qApp->mainWidget(), 0L, true, 0 )
 
 {
   setCaption( templChild->name() );
@@ -335,7 +336,7 @@ void PyResource::load( const char* name )
 
   QWidget* w=0;
   try{
-    w = QWidgetFactory::create( fn );
+    w = QWidgetFactory::create( fn, 0, qApp->mainWidget() );
   }catch(...){
     throw Base::Exception("Cannot create resource");
   }

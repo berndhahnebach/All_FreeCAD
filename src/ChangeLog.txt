@@ -500,3 +500,4 @@ Version: V0.1B107 Date: Tue Jan 11 11:16:46 2005 +++++++++++++++++++++++++++++++
 + PIMPLE document in class and py class
 + put the whole document python methodes with the macros and exceptions
 + removing doctype and put Feature handling into the document
++ Bug 1100780 fixed (no color in editor after first start)

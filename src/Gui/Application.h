@@ -241,6 +241,8 @@ public slots:
 	void OnUndo();
 	void OnRedo();
 	//@}
+protected slots:
+  virtual void languageChange();
 
 private slots:
   void OnShowView();

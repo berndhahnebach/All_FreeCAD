@@ -113,14 +113,9 @@ void DlgSettingsEditorImp::savePreferences()
  */
 void DlgSettingsEditorImp::onDisplayColor(const QString& name)
 {
-  long col = _mColors[name];
-
   // foreground color
-  int b = col >> 16;  col -= b << 16;
-  int g = col >> 8;   col -= g << 8;
-  int r = col;
-
-  ColorBtn->setColor(QColor(r,g,b));
+  long col = _mColors[name];
+  ColorBtn->setColor(QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff));
 }
 
 /** Updates the color map if a color was changed */

@@ -272,7 +272,7 @@ ApplicationWindow::ApplicationWindow()
 	// update gui timer
 	d->_pcActivityTimer = new QTimer( this );
     connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(UpdateCmdActivity()) );
-    d->_pcActivityTimer->start( 4000, TRUE );                 // 4 seconds single-shot (wait until the gui is up)
+    d->_pcActivityTimer->start( 300, TRUE );
 
 
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -287,7 +287,7 @@ ApplicationWindow::ApplicationWindow()
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	FCParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/HelpViewer");
+  FCParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
 	d->_pcDockMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
@@ -1180,6 +1180,30 @@ FCCommandManager &ApplicationWindow::GetCommandManager(void)
   return d->_cCommandManager;
 }
 
+void ApplicationWindow::languageChange()
+{
+  FCCommandManager& rclMan = GetCommandManager();
+  std::vector<FCCommand*> cmd = rclMan.GetAllCommands();
+  for ( std::vector<FCCommand*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
+  {
+    (*it)->languageChange();
+  }
+
+  // and finally update the menu bar since QMenuBar owns no "text" property
+  Gui::CustomWidgetManager* cw = GetCustomWidgetManager();
+  const QMap<int, QString>& mi = cw->menuBarItems();
+ 
+  QMenuBar* mb = menuBar();
+  uint cnt = mb->count();
+  for ( uint i=0; i<cnt; i++ )
+  {
+    int id = mb->idAt( i );
+    QMap<int, QString>::ConstIterator it = mi.find( id );
+    if ( it != mi.end() )
+      mb->changeItem( id, tr( it.data()/*mb->text( id )*/ ) );
+  }
+}
+
 //**************************************************************************
 // Init, Destruct and singelton
 
@@ -1223,9 +1247,9 @@ void ApplicationWindow::RunApplication(void)
 	// A new QApplication
 	Console().Log("Creating GUI Application...\n");
 	// if application not yet created by the splasher
-	int argc = App::Application::GetARGC();
+  int argc = App::Application::GetARGC();
   qInstallMsgHandler( messageHandler );
-	if (!_pcQApp)  _pcQApp = new QApplication (argc, App::Application::GetARGV());
+  if (!_pcQApp)  _pcQApp = new QApplication (argc, App::Application::GetARGV());
 
 	StartSplasher();
 	ApplicationWindow * mw = new ApplicationWindow();
@@ -1252,9 +1276,9 @@ void ApplicationWindow::StartSplasher(void)
 {
 	// startup splasher
 	// when running in verbose mode no splasher
-	if ( ! (App::Application::Config()["Verbose"] == "Strict") && (App::Application::Config()["RunMode"] == "Gui") )
+  if ( ! (App::Application::Config()["Verbose"] == "Strict") && (App::Application::Config()["RunMode"] == "Gui") )
 	{
-		FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 #ifdef FC_DEBUG
   bool splash = false;
 #else
@@ -1313,7 +1337,7 @@ void ApplicationWindow::Destruct(void)
 //**************************************************************************
 // Python stuff
 
-// Application Methods						// Methods structure
+// FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
 	{"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
 	{"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},

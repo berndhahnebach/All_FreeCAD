@@ -324,6 +324,21 @@
     </message>
 </context>
 <context>
+    <name>Gui::DockWindow</name>
+    <message>
+        <source>Help view</source>
+        <translation>Hilfefenster</translation>
+    </message>
+    <message>
+        <source>Property editor</source>
+        <translation>Eigenschaften</translation>
+    </message>
+    <message>
+        <source>Toolbox</source>
+        <translation>Werkzeugkasten</translation>
+    </message>
+</context>
+<context>
     <name>FCCmdAbout</name>
     <message>
         <source>Standard</source>

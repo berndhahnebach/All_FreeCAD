@@ -97,12 +97,35 @@ ApplicationWindow* WindowParameter::applicationWindow(void)
 // Construction/Destruction
 
 DockWindow::DockWindow( FCGuiDocument* pcDocument, QWidget *parent, const char *name, WFlags f)
-  :QWidget( parent,name,f ), FCBaseView( pcDocument )
+  :QWidget( parent,name,f ), FCBaseView( pcDocument ), _dw( 0L )
 {
 }
 
 DockWindow::~DockWindow()
 {
+}
+
+void DockWindow::setCaption ( const QString & s )
+{
+  if ( _dw )
+    _dw->setCaption( s );
+  _caption = s;
+}
+
+void DockWindow::setDockWindow( QDockWindow* w )
+{
+  _dw = w;
+}
+
+QDockWindow* DockWindow::dockWindow() const
+{
+  return _dw;
+}
+
+void DockWindow::languageChange()
+{
+  if ( _dw )
+    _dw->setCaption( tr( _caption ) );
 }
 
 //**************************************************************************
@@ -162,7 +185,8 @@ void DockWindowManager::addDockWindow( const QString& name, DockWindow *pcDocWin
 
   QDockWindow* dw = new QDockWindow(pApp);
   dw->setCloseMode(QDockWindow::Always);
-  dw->setCaption( name );
+  pcDocWindow->setDockWindow( dw );
+  pcDocWindow->setCaption( name );
   pcDocWindow->reparent(dw, QPoint());
   dw->setWidget( pcDocWindow );
   dw->setResizeEnabled(true);

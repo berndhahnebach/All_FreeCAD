@@ -32,6 +32,7 @@
 #include "Action.h"
 #include "Command.h"
 #include "DlgUndoRedo.h"
+#include "ToolBoxBar.h"
 
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -91,6 +92,8 @@ void Action::addedTo ( QWidget * actionWidget, QWidget * container )
     tb->setTextLabel( menuText() );
     tb->setUsesTextLabel( true );
     tb->setFixedHeight( 30 );
+
+    ((Gui::DockWnd::CommandBar*)container)->setDummyToLastItem();
   }
 }
 

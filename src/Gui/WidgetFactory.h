@@ -228,10 +228,13 @@ private:
  *
  * Furthermore it is possible to get or set values from any widgets inside
  * the parent widget or to connect a Python callback function with a widget.
- * \a Note: The callback function must have exactly one parameter.
+ * \remark The callback function must have exactly one parameter. This parameter
+ * points to the dialog you have just created.
  * \code
  * # define a callback function with one argument
  * def TestCall(obj):
+ *      # sets the value from lineedit if "Button_Name" was pressed
+ *      obj.SetValue("lineedit", "text", "Show this text here!")
  *      print "Button clicked"
  *
  * d = Gui.CreateDialog("test.ui")
