@@ -173,7 +173,7 @@ public:
 
 	static PyMethodDef    Methods[]; 
 
-	friend FCApplicationObserver;
+	friend class FCApplicationObserver;
 
 	/// Singelton functions
 	static void Destruct(void);

@@ -205,7 +205,7 @@ public:
 
 	static void Init(void);
 
-	friend FCParameterManager;
+	friend class FCParameterManager;
 
 	/// returns the name
 	const char* GetGroupName(void) {return _cName.c_str();}

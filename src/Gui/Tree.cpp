@@ -22,6 +22,7 @@
 
 #endif
 
+#include "Application.h"
 #include "Document.h"
 #include "../App/Document.h"
 #include "Tree.h"
@@ -46,6 +47,9 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
 		
 }
 
+#include "Icons/x.xpm"
+
+
 FCTreeLabel::FCTreeLabel( FCTree * parent)
 	:QListViewItem(parent->_pcListView),
 	 _pcDocument(parent->_pcDocument),
@@ -53,12 +57,16 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 {
 	if(_pcDocument){
 		setText(0,"Main Label");
+		setPixmap(0,*FCTree::pcLabelOpen);
 		_hcLabel = parent->_pcDocument->GetDocument()->Main();
 	}else{
+		setPixmap(0,*FCTree::pcLabelClosed);
+		//setPixmap(new QPixmap(px));
 		setText(0,"No Active Document");
 	}
 
-	Update();
+	setExpandable( TRUE );
+	//Update();
 	
 }
 
@@ -66,9 +74,11 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 /** Set the actuall pixmap
  *  @param px a QT pixmap object
  */
+/*
 void FCTreeLabel::setPixmap( QPixmap *px )
 {
     //pix = px;
+	QListViewItem::setPixmap(0,*px);
     setup();
     widthChanged( 0 );
     invalidateHeight();
@@ -85,6 +95,7 @@ const QPixmap *FCTreeLabel::pixmap( int i ) const
     //return pix;
 }
 
+  */
 void FCTreeLabel::Update(void)
 {
 	// quieck an dirty
@@ -187,53 +198,56 @@ void FCTreeLabel::activate ()
 
 
 
+
+QPixmap* FCTree::pcLabelOpen=0;
+QPixmap* FCTree::pcLabelClosed=0;
+QPixmap* FCTree::pcAttribute=0;
+
+
 FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 	:FCView(pcDocument,parent,name)
 {
-	_pcVBoxLayout = new QVBox(this);
 
-	_pcListView = new QListView(_pcVBoxLayout,name);
-	//_hDoc = hDoc;
-	//setRootIsDecorated(true);
+	_pcListView = new QListView(this,name);
+
+	// set defaults and the colums
 	_pcListView->setSorting(-1,false);
-
-	_pcListView->addColumn("Labels");
+	_pcListView->addColumn("Labels & Attr.");
 	_pcListView->setColumnWidthMode(0,QListView::Maximum);
 	_pcListView->addColumn("Value");
-	_pcListView->setColumnWidthMode(1,QListView::Maximum);
-	//addColumn("Attributes.");
+	_pcListView->setColumnWidthMode(1,QListView::Manual );
+	_pcListView->addColumn("Type");
+	_pcListView->setColumnWidthMode(1,QListView::Manual );
+
+	// retreive the Pixmaps
+	pcLabelOpen   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelClosed"));
+	pcLabelClosed = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelOpen"));
+	pcAttribute   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_Attr"));
+
 
 	// Add the first main label
-	new FCTreeLabel(this);
+	(new QListViewItem(_pcListView,"No Active Document"))->setPixmap(0,*pcLabelClosed);
+	//new FCTreeLabel(this);
+	//_pcListView->setRootIsDecorated(true);
 
 
-	/*
-	QListViewItem *tmp = new QListViewItem(this,"Part","no");
-	tmp->setOpen ( true );
-	new QListViewItem(tmp,"xy_Plane","no");
-	new QListViewItem(tmp,"yz_Plane","no");
-	new QListViewItem(tmp,"zx_Plane","no");
-	tmp = new QListViewItem(tmp,"PartBody","no");
-	new QListViewItem(tmp,"Thickness","no");
-	new QListViewItem(tmp,"Thickness.2","no");
-	new QListViewItem(tmp,"Split","no");
-	new QListViewItem(tmp,"usw","no");
-	tmp = new QListViewItem(tmp,"Empty","no");
-	tmp = new QListViewItem(tmp,"Empty","no");
-*/
-	//setSize(200,400);
+
+	//_pcListView->setSize(200,400);
+    resize( 200, 400 );
 
 }
 
 void FCTree::resizeEvent ( QResizeEvent * e) 
 {
-  _pcListView->resize(e->size());
+	// routing the resize event to the child
+  _pcVBoxLayout->resize(e->size());
 }
 
 bool FCTree::OnMsg(const char* pMsg)
 {
 	//printf("MsgTree: %s View: %p\n",pMsg,this);
 
+	// no messages yet
 	return false;
 }
 

@@ -59,5 +59,9 @@ MTL=midl.exe
 
 # Name "All - Win32 Release"
 # Name "All - Win32 Debug"
+# Begin Source File
+
+SOURCE=.\Gui\Application.cpp
+# End Source File
 # End Target
 # End Project

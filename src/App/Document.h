@@ -256,7 +256,7 @@ protected:
 		}
 	};
 	/// friend daclaration to allow access
-	friend FCLabel;
+	friend class FCLabel;
 	FCLabel *HasPyLabel(TDF_Label cLabel);
 	/// map of all existing python label wrappers (sorted)
 	std::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;

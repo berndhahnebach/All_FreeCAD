@@ -141,7 +141,7 @@ public:
 	/** @name interface used by the FCCommandManager and the FCAction */
 	//@{
 	/// FCCommandManager is a friend
-	friend FCCommandManager;
+	friend class FCCommandManager;
 	/// Get somtile called to check the state of the command
 	void TestActive(void);
 	/// get called by the FCAction

@@ -43,7 +43,7 @@ protected:
 	virtual void PyRegister(){};
 	virtual void PyInstance(){};
 
-	friend FCInterpreter;
+	friend class FCInterpreter;
 };
 
 /** Python static class macro for definition
@@ -111,11 +111,7 @@ inline void Assert(int expr, char *msg)		// C++ assert
 #define Py_Try(F) {if (!(F)) return NULL;}
 #define Py_Assert(A,E,M) {if (!(A)) {PyErr_SetString(E, M); return NULL;}}
 
-# if _MSC_VER >= 1300
 inline void Py_Fatal(char *M) {std::cout << M << std::endl; exit(-1);};
-# else
-inline void Py_Fatal(char *M) {cout << M << endl; exit(-1);};
-# endif
 
 /// This must be the first line of each PyC++ class
 #define Py_Header												\

@@ -1141,6 +1141,8 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName)
 			return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
 		if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
 			return QPixmap(d.path()+QDir::separator()+ sName + ".png");
+		if( QFile(d.path()+QDir::separator()+ sName + ".gif").exists() )
+			return QPixmap(d.path()+QDir::separator()+ sName + ".gif");
 	}
 
 	GetConsole().Warning("Can't find Pixmap:%s\n",sName);

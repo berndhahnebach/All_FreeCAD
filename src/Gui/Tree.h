@@ -47,9 +47,9 @@ public:
     void setup();
 
     /// Delivers the pixmap that is shown.
-    const QPixmap *pixmap( int i ) const;
+//    const QPixmap *pixmap( int i ) const;
     /// Sets the pixmap that will be shown.
-    void setPixmap( QPixmap *p );
+//    void setPixmap( QPixmap *p );
 
 	void Update(void);
 
@@ -89,6 +89,7 @@ protected:
 	QVBox*	_pcVBoxLayout;    
 	QListView*		_pcListView;
 
+	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 };
 
 
