@@ -104,7 +104,7 @@ open(PyObject *self, PyObject *args)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
     
-  Base::Console().Log("Open in Part with %s",strResult);
+  Base::Console().Log("Open in Part with %s",strResult.c_str());
 
 	Py_Return;    
 }
