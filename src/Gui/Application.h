@@ -263,6 +263,7 @@ protected:
 
 /** The FCAutoWaitCursor sets automatically the 
  *  waiting cursor if the application is busy
+ *  @author Werner Mayer
  */
 class GuiExport FCAutoWaitCursor : public QObject, public QThread
 {

@@ -91,6 +91,7 @@ private:
    static FCFactory* _pcSingleton;
    
 protected:
+#	pragma warning( disable : 4251 )
    FCmap<const FCstring, FCAbstractProducer*> _mpcProducers;
    
    FCFactory (void){}

@@ -11,15 +11,27 @@ class Handle_V3d_Viewer;
 class Handle_AIS_InteractiveContext;
 class View3D;
 
-
+/**
+ * The mouse model base class
+ * In derived classes you must implement the methods
+ * @ref initialize() and @ref terminate()
+ * For all drawing stuff you just have to reimplement
+ * the @ref draw() method. In general you need not do
+ * something else.
+ * \author Werner Mayer and Jürgen Riegel
+ */
 class FCMouseModel
 {
 public:
 	FCMouseModel(void){};
+  /// implement this in derived classes
 	virtual void initialize() = 0;
+  /// implement this in derived classes
 	virtual void terminate () = 0;
 	void initMouseModel(View3D *pcView3D);
 	void releaseMouseModel(void);
+  void moveMouseEvent (QMouseEvent *cEvent);
+  void wheelMouseEvent (QWheelEvent *cEvent);
 
 	void mousePressEvent		( QMouseEvent *cEvent);
 	void mouseReleaseEvent	( QMouseEvent *cEvent);
@@ -37,8 +49,8 @@ public:
 	virtual void keyPressEvent			( QKeyEvent * ){};
 	virtual void keyReleaseEvent		( QKeyEvent * ){}; 
 
-	virtual void paintEvent				( QPaintEvent * ){} ;
-	virtual void resizeEvent			( QResizeEvent * ) {};
+  virtual void paintEvent				( QPaintEvent * ){ draw(); } ;
+  virtual void resizeEvent			( QResizeEvent * ){ draw(); };
 	
 	// Geter
 	View3D							&GetView3D (void);
@@ -47,7 +59,9 @@ public:
 	Handle_AIS_InteractiveContext	&GetContext(void);
 
 protected:
-  void drawRect ( const QPoint& p1, const QPoint& p2, QPainter* p = NULL );
+  /// drawing stuff
+  virtual void draw (){};
+  void drawRect ( int x, int y, int w, int h, QPainter* p = NULL );
   void drawNode ( int x, int y, int w, int h, QPainter* p = NULL );
   void drawLine ( int x1, int y1, int x2, int y2, QPainter* p = NULL );
   void drawCircle ( int x, int y, int r, QPainter* p = NULL );
@@ -56,17 +70,25 @@ protected:
 protected:
 	View3D *_pcView3D;
   QCursor m_cPrevCursor;
+  int  m_iXold, m_iYold;
+  int  m_iXnew, m_iYnew;
 };
 
 
 
 
+/**
+ * The standard model class
+ * \author Jürgen Riegel
+ */
 class FCMouseModelStd :public FCMouseModel
 {
 public:
 	FCMouseModelStd(void);
 
+  /// do nothing
 	virtual void initialize();
+  /// do nothing
 	virtual void terminate();
 	virtual void mousePressEvent	( QMouseEvent *cEvent);
 	virtual void mouseReleaseEvent	( QMouseEvent *cEvent);
@@ -96,70 +118,84 @@ protected:
 	
 };
 
+/**
+ * The poly picker mouse model class
+ * Create a polygon
+ * \author Werner Mayer
+ */
 class FCMouseModelPolyPicker : public FCMouseModelStd
 {
   public:
     FCMouseModelPolyPicker();
     virtual ~FCMouseModelPolyPicker();
 
+    /// set the new mouse cursor
     virtual void initialize();
+    /// do nothing
   	virtual void terminate();
 	  virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent);
 	  virtual void mouseMiddlePressEvent	 ( QMouseEvent *cEvent);
 	  virtual void mouseRightPressEvent		 ( QMouseEvent *cEvent);
   	virtual void mouseDoubleClickEvent	 ( QMouseEvent *cEvent);
     virtual void wheelEvent			    ( QWheelEvent  * cEvent );
-    virtual void mouseMoveEvent		  ( QMouseEvent  * cEvent );
     virtual void keyPressEvent		  ( QKeyEvent    * cEvent );
-    virtual void paintEvent         ( QPaintEvent  * cEvent );
-    virtual void resizeEvent			  ( QResizeEvent * cEvent );
 
   protected:
+    /// draw the polygon
+    virtual void draw ();
     FCvector<QPoint> _cNodeVector;
-    int  m_iRadius;
+    int  m_iRadius, m_iNodes;
     bool m_bWorking, m_bDrawNodes;
-    int  m_iXold, m_iYold;
-    int  m_iXmin, 
-         m_iXmax, 
-         m_iYmin, 
-         m_iYmax; //extenst of the input vertices
 };
 
+/**
+ * The selection mouse model class
+ * Draws a rectangle for selection
+ * \author Werner Mayer
+ */
 class FCMouseModelSelection : public FCMouseModelStd 
 {
   public:
     FCMouseModelSelection();
     virtual ~FCMouseModelSelection();
 
+    /// do nothing
     virtual void initialize();
+    /// do nothing
   	virtual void terminate();
 	  virtual void mouseLeftPressEvent		 ( QMouseEvent *cEvent );
 	  virtual void mouseLeftReleaseEvent	 ( QMouseEvent *cEvent );
-    virtual void mouseMoveEvent		       ( QMouseEvent *cEvent );
+
+  protected:
+    /// draw the rectangle
+    virtual void draw ();
   
   private:
-    QPoint _start, _last;
     bool m_bWorking;
 };
 
-class FCMouseModelCirclePick : public FCMouseModelStd 
+/**
+ * The picker mouse model class
+ * \author Werner Mayer
+ */
+class FCMouseModelCirclePicker : public FCMouseModelStd 
 {
   public:
-    FCMouseModelCirclePick();
-    virtual ~FCMouseModelCirclePick();
+    FCMouseModelCirclePicker();
+    virtual ~FCMouseModelCirclePicker();
 
+    /// set the new mouse cursor
     virtual void initialize();
+    /// call the @ref draw() method to clear the view
   	virtual void terminate();
 	  virtual void mouseRightPressEvent( QMouseEvent  *cEvent );
     virtual void wheelEvent			     ( QWheelEvent  *cEvent );
-    virtual void mouseMoveEvent		   ( QMouseEvent  *cEvent );
-    virtual void paintEvent          ( QPaintEvent  *cEvent );
-    virtual void resizeEvent			   ( QResizeEvent *cEvent );
+
+  protected:
+    /// draw circle and text
+    virtual void draw ();
 
   private:
-    void draw(const QPoint& point);
-
-    QPoint _last;
     int    _nRadius;
 };
 

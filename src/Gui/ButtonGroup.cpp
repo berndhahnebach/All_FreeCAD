@@ -6,11 +6,11 @@
     email                : werner.wm.mayer@gmx.de
  ***************************************************************************/
 
-/** \file $RCSfile$
+/** \file ButtonGroup.cpp
  *  \brief The button group module
  *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
+ *  \version 0.1
+ *  \date    2003/01/06
  */
 
 
@@ -699,7 +699,7 @@ void FCToolboxButton::paint( QPainter *painter )
 
 
 /*!
-  \class QStackBar qstackbar.h
+  \class QStackBar
   \brief Implements a button-bar similar to that of MS Outlook
 
   Use this widget to implement multiple pages of widgets in a single vertical

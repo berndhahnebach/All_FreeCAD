@@ -34,7 +34,10 @@ class FCDocument;
 void CreateStdCommands(void);
 void CreateViewStdCommands(void);
 
-
+/**
+ * Allow Actions to be added to other widgets except of toolbars and menus
+ * @author Werner Mayer
+ */
 class GuiExport FCAction : public QAction
 {
   public:

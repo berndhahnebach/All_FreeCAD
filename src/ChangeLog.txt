@@ -92,3 +92,10 @@ Version: V0.1B25 Date: Sun Jan 19 18:20:51 2003 +++++++++++++++++++++++++++++++
   - Using new sstream on Linux (Vaclac)
   - fixing some case stuff in include (Vaclav)
 + some work on the main MouseModel (Werner)
+
+Version: V0.1B26 Date: Tue Jan 21 05:59:01 2003 +++++++++++++++++++++++++++++++
++ Preferences Widget Framework (Werner)
+  - New module WidgetFactory
+  - New modeul PrefWidget
+  
+  

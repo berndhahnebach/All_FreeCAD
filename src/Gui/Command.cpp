@@ -268,7 +268,7 @@ PyObject *FCAction::PyDo(PyObject *args)
 
 void FCCommandManager::AddCommand(FCCommand* pCom)
 {
-	_sCommands[pCom->Name()] = pCom;	
+	_sCommands[pCom->Name()] = pCom;	pCom->Init();
 }
 
 void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)

@@ -63,6 +63,8 @@
 //#include "CommandStd.h"
 //#include "CommandView.h"
 #include "Splashscreen.h"
+#include "WidgetFactory.h"
+#include "PrefWidgets.h"
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
@@ -372,6 +374,11 @@ void ApplicationWindow::CreateTestOperations()
 
 	setMenuForSDIModeSysButtons( menuBar());
 	 
+  // test for preference widget
+  FCEditSpinBox* sb = new FCEditSpinBox (pcStdToolBar, "Test");
+  sb->setSuffix(" mm");
+  GetWidgetFactorySupplier().GetWidget(typeid(FCEditSpinBox).name(), pcStdToolBar, "Test");
+  GetWidgetFactorySupplier().GetWidget(typeid(FCEditSpinBox).name(), pcStdToolBar, "Test");
 }
 
 /// send Messages to the active view

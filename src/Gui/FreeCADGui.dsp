@@ -931,6 +931,41 @@ SOURCE=.\PreCompiled.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PrefWidgets.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PrefWidgets.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\PrefWidgets.h
+InputName=PrefWidgets
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\PrefWidgets.h
+InputName=PrefWidgets
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\Splashscreen.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
@@ -1081,6 +1116,14 @@ InputName=View3D
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\WidgetFactory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\WidgetFactory.h
 # End Source File
 # Begin Source File
 

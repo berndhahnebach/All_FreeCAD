@@ -775,6 +775,28 @@ void FCCmdCommandLine::Activated(void)
 
 }
 
+//===========================================================================
+// Std_TestCommand
+//===========================================================================
+#include "PrefWidgets.h"
+DEF_STD_CMD(FCTestCmd,"Std_TestCmd");
+
+void FCTestCmd::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+{
+	*sMenuText	  = "test";
+	*sToolTipText = "test";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	*sPixmap      = "CommandLine";
+	iAccel = 0;
+}
+
+
+void FCTestCmd::Activated(void)
+{
+  TestDialog(AppWnd(), "test", true).exec();
+}
+
 
 
 void CreateStdCommands(void)
@@ -808,6 +830,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
 	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
+  rcCmdMgr.AddCommand(new FCTestCmd());
 
 }
 

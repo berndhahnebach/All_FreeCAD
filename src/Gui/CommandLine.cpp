@@ -6,11 +6,11 @@
     email                : werner.wm.mayer@gmx.de
  ***************************************************************************/
 
-/** \file $RCSfile$
+/** \file CommandLine.cpp
  *  \brief The command line module
  *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
+ *  \version 0.1
+ *  \date    2003/01/06
  */
 
 

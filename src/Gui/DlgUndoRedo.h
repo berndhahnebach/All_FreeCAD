@@ -1,10 +1,18 @@
 /***************************************************************************
-                          FCUndoRedoDlg.h  -  description
+                          DlgUndoRedo.h  -  description
                              -------------------
-    begin                : Die Apr 23 21:02:14 CEST 2002
+    begin                : 2002/04/23 21:02:44
     copyright            : (C) 2002 by Werner Mayer
-    email                : 
+    email                : werner.wm.mayer@gmx.de
  ***************************************************************************/
+
+/** \file DlgUndoRedo.h
+ *  \brief The undo/redo dialog module
+ *  \author Werner Mayer
+ *  \version 0.1
+ *  \date    2003/01/06
+ */
+
 
 /***************************************************************************
  *                                                                         *

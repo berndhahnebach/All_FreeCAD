@@ -227,7 +227,7 @@ bool View3D::InitCasCadeView(void)
 
 	// pushing the standard mouse model
 	PushMouseModel(new FCMouseModelStd);
-	PushMouseModel(new FCMouseModelCirclePick);
+	PushMouseModel(new FCMouseModelCirclePicker);
 	PushMouseModel(new FCMouseModelPolyPicker);
 
    	bIsInit = true;
@@ -242,11 +242,11 @@ void View3D::mouseDoubleClickEvent	( QMouseEvent *cEvent){_cMouseStack.top()->mo
 void View3D::keyPressEvent			( QKeyEvent	  *cEvent){_cMouseStack.top()->keyPressEvent( cEvent);        }
 void View3D::keyReleaseEvent		( QKeyEvent   *cEvent){_cMouseStack.top()->keyReleaseEvent( cEvent);      }
 void View3D::focusInEvent			( QFocusEvent *cEvent){ShowDimension();                                   }
-void View3D::wheelEvent				( QWheelEvent *cEvent){_cMouseStack.top()->wheelEvent( cEvent);}
+void View3D::wheelEvent				( QWheelEvent *cEvent){_cMouseStack.top()->wheelMouseEvent( cEvent);}
 void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 { 
 	QApplication::flushX(); 
-	_cMouseStack.top()->mouseMoveEvent( cEvent);
+	_cMouseStack.top()->moveMouseEvent( cEvent);
 }
 
 void View3D::hideEvent ( QHideEvent * cEvent )

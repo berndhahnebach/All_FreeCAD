@@ -6,11 +6,11 @@
     email                : werner.wm.mayer@gmx.de
  ***************************************************************************/
 
-/** \file $RCSfile$
+/** \file ButtonGroup.h
  *  \brief The button group module
  *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
+ *  \version 0.1
+ *  \date    2003/01/06
  */
 
 
@@ -239,10 +239,10 @@ Q_OBJECT;
 
 public:
 	FCCmdBar( QWidget *parent=0, const char *name=0 );
-  bool HasView(const char *sName);
 	virtual ~FCCmdBar();
 
   // toolbox handling
+  bool HasView(const char *sName);
   FCToolboxGroup* GetView(const char *sName);
   FCToolboxGroup* CreateView(const char *sName);
   void DeleteView(const char *sName);
