@@ -97,63 +97,17 @@ class GuiExport FCButtonGroup : public QButtonGroup
 #	pragma warning( disable : 4251 )
     std::map<int, QPixmap> m_Pixmaps;
 };
-/*
-class FCToolboxButton;
-class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
+
+class GuiExport FCToolboxBar : public FCToolBar
 {
   Q_OBJECT
 
   public:
-    FCToolboxGroup ( QWidget * parent=0, const char * name=0 );
-    FCToolboxGroup ( const QString & title, QWidget * parent=0, const char * name=0 );
-    ~FCToolboxGroup ();
-    QGridLayout* ButtonGroupLayout;
-
-    /// add a new widget
-    bool addWidget(QWidget* w, int i);
-    /// add a new toolbox button
-    bool addToolboxButton(FCToolboxButton* b, int i);
-    void loadUserDefButtons();
-
-  protected:
-    /// restore the preferences
-    virtual void restorePreferences();
-    /// save the preferences
-    virtual void savePreferences();
-    void initialize(QWidget* parent);
-    void paintEvent (QPaintEvent * e);
-    void mousePressEvent( QMouseEvent * );
-    /// allow drop buttons
-    void dropEvent ( QDropEvent * );
-    void dragEnterEvent ( QDragEnterEvent * );
-    void dragLeaveEvent ( QDragLeaveEvent * );
-    void dragMoveEvent ( QDragMoveEvent * );
-    std::vector<std::string> alDroppedActions;
-    QColor       m_Color;
-    QPopupMenu*  m_Popup;
-
-  protected slots:
-    void popupMenuAboutToShow();
-    void setNewBackgroundColor();
-    void resetBackgroundColor();
-
-  signals:
-    void signalMaximumWidth(int);
-};
-*/
-
-class FCToolBar;
-class FCToolboxButton;
-class GuiExport FCToolboxGroup : public FCToolBar
-{
-  Q_OBJECT
-
-  public:
-    FCToolboxGroup ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
-    virtual ~FCToolboxGroup ();
+    FCToolboxBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~FCToolboxBar ();
 
     /// set dummy widget to the end
-    void addedButton();
+    void addedButton(QString);
 
   protected:
     /// restore the preferences
@@ -175,64 +129,35 @@ class GuiExport FCToolboxGroup : public FCToolBar
     void destroyed();
 };
 
-class GuiExport FCToolboxButton : public QToolButton
+class GuiExport FCOutlookBar : public FCToolBar
 {
   Q_OBJECT
 
   public:
-    FCToolboxButton ( QWidget * parent=0, const char * name=0 );
-    FCToolboxButton ( const QString & title, const QString &tooltip = 0, QWidget *parent = 0, const char *name = 0 );
-    FCToolboxButton ( const QString & title, const QPixmap &pix, const QString &tooltip = 0, 
-                      QWidget *parent = 0, const char *name = 0 );
-    FCToolboxButton ( const QString & title, const QPixmap &pix, const QString &tooltip = 0,
-                      QObject *receiver = 0, const char *member = 0, QWidget *parent = 0, const char *name = 0 );
+    FCOutlookBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~FCOutlookBar ();
 
-    virtual ~FCToolboxButton();
-    
-    /// set text and pixmap
-    void setTextAndPixmap( const QString &text, const QPixmap &pix);
-    /// set text only
-    void setText(const char *text);
-    /// set pixmap only
-    void setPixmap( const QPixmap& pixmap );
-    /// set tooltip
-    void setTooltip( const QString& tooltip );
-    /// get text
-    const char *text() const; 
-    QSize sizeHint() const;
-    /// enable the button if enable is true
-    void enable(bool enable);
-    void showText(bool enable);
-    void makeDisabledPixmap();
-    void on(bool flag);
-    void toggle();
-    void setAction(QAction* action) { pLastAction = action; }
+    /// set dummy widget to the end
+    void addedButton(QString);
 
-  public slots:
-    void slotResizeButton(int);
-  
   protected:
-    // mouse events
-    void leaveEvent( QEvent *_ev );
-    void enterEvent( QEvent *_ev );
-    // drag'n'drop
-    void dropEvent ( QDropEvent * );
-    void dragEnterEvent ( QDragEnterEvent * );
-    void dragLeaveEvent ( QDragLeaveEvent * );
-    void dragMoveEvent ( QDragMoveEvent * );
+    /// restore the preferences
+    virtual void restorePreferences();
+    /// save the preferences
+    virtual void savePreferences();
+    void mousePressEvent( QMouseEvent * );
+    QColor       m_Color;
+    QPopupMenu*  m_Popup;
+    QWidget*     m_Dummy;
 
-    void drawButton( QPainter *_painter );
-    void drawButtonLabel( QPainter *_painter );
-    void paint( QPainter *_painter );
-    void paletteChange(const QPalette &);
-
-  private:
-    bool tbShowText;
-    bool raised;    
-    QString textLabel;
-    QPixmap enabledPixmap;
-    QPixmap disabledPixmap;
-    QAction* pLastAction;
+  protected slots:
+    void cleanupEventFilter();
+    void popupMenuAboutToShow();
+    void setNewBackgroundColor();
+    void resetBackgroundColor();
+  
+  signals:
+    void destroyed();
 };
 
 class QStackBarBtn : public QToolButton
@@ -259,7 +184,9 @@ class FCCmdBar : public FCDockWindow
   Q_OBJECT;
 
   public:
-	  FCCmdBar( QWidget *parent=0, const char *name=0 );
+    enum BarMode {TOOLBOX, OUTLOOK};
+
+    FCCmdBar( QWidget *parent=0, const char *name=0 );
 	  virtual ~FCCmdBar();
 
     void addPage( const QString &name, QWidget *page );
@@ -268,8 +195,8 @@ class FCCmdBar : public FCDockWindow
 
     // toolbox handling
     bool HasView(const char *sName);
-    FCToolboxGroup* GetView(const char *sName);
-    FCToolboxGroup* CreateView(const char *sName);
+    FCToolBar* GetView(const char *sName);
+    FCToolBar* CreateView(const char *sName, BarMode = TOOLBOX);
     void DeleteView(const char *sName);
 
   private slots:

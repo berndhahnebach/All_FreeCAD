@@ -21,8 +21,10 @@
 #include "Document.h"
 #include "ButtonGroup.h"
 #include "../Base/Exception.h"
+#include "../Base/Interpreter.h"
 
 #include "Icons/x.xpm"
+#include <qobjcoll.h>
 
 //===========================================================================
 // FCAction 
@@ -41,27 +43,26 @@ FCAction::~FCAction()
 
 bool FCAction::addTo(QWidget *w)
 {
-	if ( w->inherits( "FCToolboxGroup" ) ) 
-	{
-		FCToolboxButton* btn = new FCToolboxButton(menuText(), iconSet().pixmap(), toolTip(), w);
-		btn->setFixedHeight(32);
-		
-		connect( btn, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
-		connect( btn, SIGNAL( toggled(bool) ), this, SLOT( toolButtonToggled(bool) ) );
-		connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
-		// for disconnecting later
-		btn->setAction(this);
-		((FCToolboxGroup*)w)->addedButton();
-		return true;
-	}
-	else
-		return QAction::addTo(w);
+  if (QAction::addTo(w) == true)
+  {
+    if (w->inherits("FCToolboxBar"))
+    {
+  		((FCToolboxBar*)w)->addedButton(menuText());
+    }
+    else if (w->inherits("FCOutlookBar"))
+    {
+  		((FCOutlookBar*)w)->addedButton(menuText());
+    }
+  }
+  else
+    return false;
+
+  return true;
 }
 
 
 void FCAction::Activated () 
 {
-	puts("Activeted");
 	_pcCmd->activated();
 }
 void FCAction::Toggled ( bool b)
@@ -75,15 +76,10 @@ void FCAction::Toggled ( bool b)
 
 
 FCCommand::FCCommand(const char* name,CMD_Type eType)
-	:_eType(eType),_pcName(name),_pcAction(0)
+	:_eType(eType),sName(name),_pcAction(0)
 {
-	sAppModule		= 0;
-	sMenuText		= "No menu text! see CmdProfile()";
-	sToolTipText	= "No Tooltip text! see CmdProfile()";
-	sWhatsThis		= "";
-	sStatusTip		= "";
-	sPixmap         = NULL;
-	int iAccel = 0;
+	sAppModule		= "";
+	sGroup			= "";
 
 }
 
@@ -96,22 +92,6 @@ bool FCCommand::addTo(QWidget *pcWidget)
 	return _pcAction->addTo(pcWidget);
 }
 
-FCAction * FCCommand::CreateAction(void)
-{
-	FCAction *pcAction;
-
-	pcAction = new FCAction(this,ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
-	pcAction->setText(_pcName);
-	pcAction->setMenuText(_pcAction->tr(sMenuText));
-	pcAction->setToolTip(_pcAction->tr(sToolTipText));
-	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
-	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
-	if(sPixmap)
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
-	pcAction->setAccel(iAccel);
-
-	return pcAction;
-}
  
 ApplicationWindow *FCCommand::GetAppWnd(void)
 {
@@ -215,116 +195,143 @@ const char * FCCommand::EndCmdHelp(void)
 }
 
 
-/*
+//===========================================================================
+// FCCppCommand 
+//===========================================================================
+
+FCCppCommand::FCCppCommand(const char* name,CMD_Type eType)
+	:FCCommand(name,eType)
+{
+	sMenuText		="Not set!!";
+	sToolTipText	="Not set!!";
+	sWhatsThis		="Not set!!";
+	sStatusTip		="Not set!!";
+	sPixmap			=0;
+	iAccel			=0;
+
+}
+
+std::string FCCppCommand::GetResource(const char* sName)
+{
+
+	return "";
+
+}
 
 
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
+FCAction * FCCppCommand::CreateAction(void)
+{
+	FCAction *pcAction;
 
-PyTypeObject FCAction::Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,						
-	"FCAction",				
-	sizeof(FCAction),		
-	0,						
+	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction->setText(sName.c_str());
+	pcAction->setMenuText(_pcAction->tr(sMenuText));
+	pcAction->setToolTip(_pcAction->tr(sToolTipText));
+	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
+	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	if(sPixmap)
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+	pcAction->setAccel(iAccel);
+
+	return pcAction;
+}
+
+
+
+
+//===========================================================================
+// FCPythonCommand 
+//===========================================================================
+
+
+FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
+	:FCCommand(name),_pcPyCommand(pcPyCommand)
+{
+	Py_INCREF(_pcPyCommand);
+
+	// call the methode "GetResources()" of the command object
+	_pcPyResourceDict = GetInterpreter().RunMethodeObject(_pcPyCommand, "GetResources");
+	// check if the "GetResources()" methode returns a Dict object
+	if(! PyDict_Check(_pcPyResourceDict) ) 
+		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");	
+
+}
+
+std::string FCPythonCommand::GetResource(const char* sName)
+{
+	PyObject* pcTemp;
+	PyBuf ResName(sName);
+
+
+	// get the "MenuText" resource string 
+	pcTemp = PyDict_GetItemString(_pcPyResourceDict,ResName.str);
+	if(! pcTemp ) 
+		return std::string();
+	if(! PyString_Check(pcTemp) ) 
+		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
+
+	return std::string(PyString_AsString(pcTemp) );
+
+}
+
+
+void FCPythonCommand::Activated(int iMsg)
+{
+	GetInterpreter().RunMethodeVoid(_pcPyCommand, "Activated");
+}
+
+bool FCPythonCommand::IsActive(void)
+{
+	return true;
+}
+
+std::string FCPythonCommand::CmdHelpURL(void)
+{
+	PyObject* pcTemp;
+
+	pcTemp = GetInterpreter().RunMethodeObject(_pcPyCommand, "CmdHelpURL"); 
+
+	if(! pcTemp ) 
+		return std::string();
+	if(! PyString_Check(pcTemp) ) 
+		throw FCException("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
 	
-	PyDestructor,	  		
-	0,			 			
-	__getattr, 				
-	__setattr, 				
-	0,						
-	__repr,					
-	0,						
-	0,						
-	0,						
-	0,						
-	0,						
-};
-
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
-PyMethodDef FCAction::Methods[] = {
-  {"Do",         (PyCFunction) sPyDo,         Py_NEWARGS},
-
-  {NULL, NULL}	
-};
-
-//--------------------------------------------------------------------------
-// Parents structure
-//--------------------------------------------------------------------------
-PyParentObject FCAction::Parents[] = {&FCAction::Type, NULL};     
-
-//--------------------------------------------------------------------------
-// constructor
-//--------------------------------------------------------------------------
-FCAction::FCAction(const char* Name) 
- : QAction(),FCPyObject( &Type ),sName(Name)
-{
-	GetConsole().Log("Create Action %s\n",sName.c_str());
+	return std::string( PyString_AsString(pcTemp) );
 }
 
-PyObject *FCAction::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+void FCPythonCommand::CmdHelpPage(std::string &rcHelpPage)
 {
-  return new FCAction("");			// Make new Python-able object
-  //return 0;
+	PyObject* pcTemp;
+
+	pcTemp = GetInterpreter().RunMethodeObject(_pcPyCommand, "CmdHelpPage"); 
+
+	if(! pcTemp ) 
+		return ;
+	if(! PyString_Check(pcTemp) ) 
+		throw FCException("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
+	
+	rcHelpPage = PyString_AsString(pcTemp) ;
+
+
 }
 
-//--------------------------------------------------------------------------
-//  FCLabel destructor 
-//--------------------------------------------------------------------------
-FCAction::~FCAction()						// Everything handled in parent
+FCAction * FCPythonCommand::CreateAction(void)
 {
-	GetConsole().Log("Destroy Action %s\n",sName.c_str());
-} 
+	FCAction *pcAction;
 
-//--------------------------------------------------------------------------
-// FCLabel Attributes
-//--------------------------------------------------------------------------
-PyObject *FCAction::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-	try{
-		if (streq(attr, "Text"))						// accessable new state
-			return Py_BuildValue("s",text()); 
-		else
-			_getattr_up(FCPyObject); 						// send to parent
-	}catch(...){
-		GetConsole().Log("Exception in FCAction::_getattr()\n");
-		return 0;
-	}
-} 
+	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction->setText(sName.c_str());
+	pcAction->setMenuText(GetResource("MenuText").c_str());
+	pcAction->setToolTip(GetResource("ToolTip").c_str());
+	pcAction->setStatusTip(GetResource("StatusTip").c_str());
+	pcAction->setWhatsThis(GetResource("WhatsThis").c_str());
+	if(GetResource("Pixmap") != "")
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(GetResource("Pixmap").c_str()));
 
-int FCAction::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-	if (streq(attr, "Name"))						// settable new state
-		setText(PyString_AsString(value)); 
-		//TDataStd_Name::Set(_cLabel, (short*)PyUnicode_AsUnicode(value)); 
-	else  
- 
-		return FCPyObject::_setattr(attr, value);	// send up to parent
-	return 0;
-} 
+	return pcAction;
+}
 
-//--------------------------------------------------------------------------
-// Exported functions
-//--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-// Python wrappers
-//--------------------------------------------------------------------------
-
-PyObject *FCAction::PyDo(PyObject *args)
-{ 
-	int Tag;
-    if (!PyArg_ParseTuple(args, "i",&Tag ))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-	return new FCLabel( _cLabel.FindChild(Tag) );
-	return 0;
-} 
-
-*/
 
 //===========================================================================
 // FCCommandManager 

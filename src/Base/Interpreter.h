@@ -55,7 +55,8 @@ public:
 	int  RunCommandLine(char *prompt);
 	/// runs a python object methode with no return value and no arguments
 	void RunMethodeVoid(PyObject *pobject, const char *method);
-
+	/// runs a python object methode which returns a arbetrary object
+	PyObject* RunMethodeObject(PyObject *pobject, const char *method);
 	// singelton
 	static FCInterpreter &Instance(void);
 	static void Destruct(void);

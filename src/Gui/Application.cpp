@@ -245,14 +245,14 @@ void ApplicationWindow::DelToolBar(const char* name)
 	}
 }
 /// Get a named Command bar view or creat if not in
-FCToolboxGroup *ApplicationWindow::GetCommandBar(const char* name)
+FCToolBar *ApplicationWindow::GetCommandBar(const char* name)
 {
 	//FCCmdBar* pCmdBar = (FCCmdBar*) GetDockWindow("Cmd_Group");
 	if (_pcCmdBar->HasView(name))
 		return _pcCmdBar->GetView(name);
 	else
   {
-  	FCToolboxGroup* p = _pcCmdBar->CreateView(name);
+  	FCToolBar* p = _pcCmdBar->CreateView(name);
     _pcCmdBar->setCurPage(0);
 		return p;
   }
@@ -612,25 +612,27 @@ void ApplicationWindow::OnWorkbenchChange( const QString & string)
 	}
 }
 
+
+/**
+ *  Activate the named workbench by calling the methodes in the 
+ *  python workbench object. If the workbench is allready active
+ *  nothing get called!
+ */
 void ApplicationWindow::ActivateWorkbench(const char* name)
 {
 	// net buffer because of char* <-> const char*
-	char sBuf[1024];
-	assert(strlen(name) < 1022);
-
-//	puts(name);
+	PyBuf Name(name);
 
 	// close old workbench
 	if(_cActiveWorkbenchName != "")
 	{
-		strcpy(sBuf, _cActiveWorkbenchName.latin1());
-		PyObject* pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, sBuf);
+		PyBuf OldName ( _cActiveWorkbenchName.latin1());
+		PyObject* pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
 		GetInterpreter().RunMethodeVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
-	strcpy(sBuf, name);
-	PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, sBuf);
+	PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
 
 	// test if the workbench in
 	assert(pcWorkbench);
@@ -705,6 +707,7 @@ PyMethodDef ApplicationWindow::Methods[] = {
 	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
 	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
 	{"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
+	{"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -770,7 +773,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
 	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
 		return NULL;                                      // NULL triggers exception 
 
-	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
+	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
 	//pcBar->addSeparator(); not implemented yet
 
 	Py_INCREF(Py_None);
@@ -796,7 +799,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
 	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
+	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
 	try{
 		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
 	}catch(FCException e) {
@@ -887,6 +890,20 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
 	return Instance->_pcWorkbenchDictionary;
 }
 
+PYFUNCIMP_S(ApplicationWindow,sCommandAdd)
+{
+	char*       pName;
+	PyObject*   pcCmdObj;
+	if (!PyArg_ParseTuple(args, "sO", &pName,&pcCmdObj))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+	//Py_INCREF(pcObject);
+
+	ApplicationWindow::Instance->GetCommandManager().AddCommand(new FCPythonCommand(pName,pcCmdObj));
+
+	Py_INCREF(Py_None);
+	return Py_None;
+} 
 
 //**************************************************************************
 //**************************************************************************

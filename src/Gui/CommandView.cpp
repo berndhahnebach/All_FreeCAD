@@ -42,7 +42,7 @@
 //===========================================================================
 //DEF_STD_CMD(FCCmdViewBottom);
 
-class FCCmdViewBottom : public FCCommand 
+class FCCmdViewBottom : public FCCppCommand 
 {
 public:
 	FCCmdViewBottom();
@@ -53,9 +53,9 @@ public:
 
 
 FCCmdViewBottom::FCCmdViewBottom()
-	:FCCommand("Std_ViewBottom")
+	:FCCppCommand("Std_ViewBottom")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Bottom";
 	sToolTipText	= "Set to bottom view";
@@ -81,9 +81,9 @@ void FCCmdViewBottom::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewFront);
 
 FCCmdViewFront::FCCmdViewFront()
-	:FCCommand("Std_ViewFront")
+	:FCCppCommand("Std_ViewFront")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Front";
 	sToolTipText	= "Set to front view";
@@ -105,9 +105,9 @@ void FCCmdViewFront::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewLeft);
 
 FCCmdViewLeft::FCCmdViewLeft()
-	:FCCommand("Std_ViewLeft")
+	:FCCppCommand("Std_ViewLeft")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Left";
 	sToolTipText	= "Set to left view";
@@ -129,9 +129,9 @@ void FCCmdViewLeft::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewRear);
 
 FCCmdViewRear::FCCmdViewRear()
-	:FCCommand("Std_ViewRear")
+	:FCCppCommand("Std_ViewRear")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Rear";
 	sToolTipText	= "Set to rear view";
@@ -153,9 +153,9 @@ void FCCmdViewRear::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewRight);
 
 FCCmdViewRight::FCCmdViewRight()
-	:FCCommand("Std_ViewRight")
+	:FCCppCommand("Std_ViewRight")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Right";
 	sToolTipText	= "Set to right view";
@@ -177,9 +177,9 @@ void FCCmdViewRight::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewTop);
 
 FCCmdViewTop::FCCmdViewTop()
-	:FCCommand("Std_ViewTop")
+	:FCCppCommand("Std_ViewTop")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Top";
 	sToolTipText	= "Set to top view";
@@ -201,9 +201,9 @@ void FCCmdViewTop::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewAxo);
 
 FCCmdViewAxo::FCCmdViewAxo()
-	:FCCommand("Std_ViewAxo")
+	:FCCppCommand("Std_ViewAxo")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Axometric";
 	sToolTipText	= "Set to axometric view";
@@ -225,9 +225,9 @@ void FCCmdViewAxo::Activated(int iMsg)
 DEF_3DV_CMD(FCCmdViewFitAll);
 
 FCCmdViewFitAll::FCCmdViewFitAll()
-	:FCCommand("Std_ViewFitAll")
+	:FCCppCommand("Std_ViewFitAll")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-View";
 	sMenuText		= "Fit all";
 	sToolTipText	= "Fits the whole content on the screen";

@@ -165,3 +165,10 @@ Version: V0.1B40 Date: Tue Mar 04 21:53:02 2003 +++++++++++++++++++++++++++++++
 + Command groups
 + Command belonging to AppModules
 + Checking on unsaved files in close()
+
+Version: V0.1B41 Date: Sat Mar 08 19:16:05 2003 +++++++++++++++++++++++++++++++
++ again new resource concept for commands
++ python command object
++ test application 
+  - implemented some basic tests
+

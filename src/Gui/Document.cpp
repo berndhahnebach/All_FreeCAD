@@ -171,7 +171,9 @@ void FCGuiDocument::OnLastViewClosed(void)
  */
 void FCGuiDocument::closeEvent ( QCloseEvent * e )
 {
-	if(! _pcDocument->IsSaved() )
+	if(! _pcDocument->IsSaved()
+		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
+		&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
 	{
 		switch(QMessageBox::warning( _pcAppWnd, "Unsaved document","Save file bevore close?","Yes","No","Cancel",0,2))
 		{
@@ -186,7 +188,8 @@ void FCGuiDocument::closeEvent ( QCloseEvent * e )
 		case 2:
 			break;
 		}
-	}
+	}else
+		e->accept();
 
 //	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 //		(*It)->childWindowCloseRequest(e);

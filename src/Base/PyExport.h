@@ -454,4 +454,49 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 #define PYFUNCIMP_D(CLASS,DFUNC) PyObject* Y::X (PyObject *self,PyObject *args,PyObject *kwd)
 
 
+
+/** Python buffer helper class (const char* -> char*)
+ *  This class has the only purpos to handle non const char* in
+ *  python methodes. Unfortenatly python only use non const strings which
+ *  makes some problems when got only const strings. This class create 
+ *  a non const buffer from the const input and offer it outside. 
+ *  This is used often in methodes which use python function calls....
+ */
+class PyBuf
+{
+public:
+	/// default construction
+	PyBuf() : str(0) {}
+
+	/// construction with NULL terminated const string
+	PyBuf(const char* sString)
+	{
+		str = (char *) malloc(strlen(sString)+1);
+		strcpy(str,sString);
+	}
+
+	/// construction with arbitrary size (dangorous!!)
+	PyBuf(const void* sString, int size)
+	{
+		str = (char *) malloc(size+1);
+		strncpy(str,(const char*) sString,size);
+	}
+
+	operator =(const char* sString)
+	{
+		if(str) free(str);
+		str = (char *) malloc(strlen(sString)+1);
+		strcpy(str,sString);
+	}
+
+	~PyBuf()
+	{
+		free(str);
+	}
+
+	char *c_str(){return str;}
+
+	char *str;
+};
+
 #endif

@@ -56,7 +56,7 @@ class QComboBox;
 class FCDockWindow;
 class QToolBar;
 class FCView;
-class FCToolboxGroup;
+class FCToolboxBar;
 class FCAutoWaitCursor;
 class FCCmdBar;
 class FCHtmlView;
@@ -142,7 +142,7 @@ public:
 	void DelToolBar(const char* name);
 
 	// Get a named Command bar view or creat if not in
-	FCToolboxGroup *GetCommandBar(const char* name);
+	FCToolBar *GetCommandBar(const char* name);
 
 	/// Delete a named Command bar view
 	void DelCommandBar(const char* name);
@@ -186,6 +186,8 @@ public:
 	PYFUNCDEF_S(sWorkbenchGet);
 
 	PYFUNCDEF_S(sUpdateGui);
+
+	PYFUNCDEF_S(sCommandAdd);
 
 	static PyMethodDef    Methods[]; 
  

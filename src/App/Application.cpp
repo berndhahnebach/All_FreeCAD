@@ -157,12 +157,10 @@ FCDocument* FCApplication::New(const char * Name)
 	if(Name)
 	{
 		// net buffer because of char* <-> const char*
-		char sBuf[1024];
-		assert(strlen(Name) < 1022);
+		PyBuf NameBuf(Name);
 
 		// get the python template object from the dictionary
-		strcpy(sBuf, Name);
-		pcTemplate = PyDict_GetItemString(_pcTemplateDictionary, sBuf);
+		pcTemplate = PyDict_GetItemString(_pcTemplateDictionary, NameBuf.str);
 
 		// test if the template is valid
 		if(!pcTemplate)
@@ -452,8 +450,6 @@ PYFUNCIMP_S(FCApplication,sGetParam)
 PYFUNCIMP_S(FCApplication,sGetConfig)
 {
 	char *pstr=0;
-	char sBuf[1024];
-	char sBuf2[1024];
 
     if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
@@ -464,11 +460,8 @@ PYFUNCIMP_S(FCApplication,sGetConfig)
 		PyObject *pDict = PyDict_New();
 		for(std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++)
 		{
-			assert(strlen(It->second.c_str()) < 1022);
-			strcpy(sBuf, It->second.c_str());
-			assert(strlen(It->first.c_str()) < 1022);
-			strcpy(sBuf2, It->first.c_str());
-			PyDict_SetItemString(pDict,sBuf2,PyString_FromString(sBuf));
+			PyBuf Buf(It->second.c_str()),Buf2(It->first.c_str());
+			PyDict_SetItemString(pDict,Buf2.str,PyString_FromString(Buf.str));
 		}
 		return pDict;
 		

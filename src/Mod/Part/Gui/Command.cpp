@@ -47,7 +47,7 @@
 DEF_STD_CMD(FCCmdPartTest1);
 
 FCCmdPartTest1::FCCmdPartTest1()
-	:FCCommand("Part_Test1")
+	:FCCppCommand("Part_Test1")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -135,7 +135,7 @@ void FCCmdPartTest1::Activated(int iMsg)
 DEF_STD_CMD(FCCmdPartTest2);
 
 FCCmdPartTest2::FCCmdPartTest2()
-	:FCCommand("Part_Test2")
+	:FCCppCommand("Part_Test2")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -187,7 +187,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 DEF_STD_CMD(FCCmdPartBox);
 
 FCCmdPartBox::FCCmdPartBox()
-	:FCCommand("Part_Box")
+	:FCCppCommand("Part_Box")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -214,7 +214,7 @@ void FCCmdPartBox::Activated(int iMsg)
 DEF_STD_CMD(FCCmdPartCut);
 
 FCCmdPartCut::FCCmdPartCut()
-	:FCCommand("Part_Cut")
+	:FCCppCommand("Part_Cut")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";

@@ -61,35 +61,31 @@ FCInterpreter::~FCInterpreter()
 
 void FCInterpreter::Launch(const char *psCmd)
 {
-	int i = strlen(psCmd);
-	char *sBuf = (char*) malloc(i+2);
-	strcpy(sBuf,psCmd);
+	PyBuf Cmd(psCmd);
 
-	int ret = PyRun_SimpleString(sBuf);
-
-	free (sBuf);
+	int ret = PyRun_SimpleString(Cmd.str);
 
 	if(ret == -1) throw FCException("script failed");
 }
 
 void FCInterpreter::LaunchFile(const char*pxFileName)
 {
-	static char sBuf[_MAX_PATH];
-	strcpy(sBuf,pxFileName);
+	PyBuf FileName(pxFileName);
 	
-	FILE *fp = fopen(sBuf,"r");
+	FILE *fp = fopen(FileName.str,"r");
 	if(fp == NULL) 
 		throw FCException("File not found");
-	PyRun_SimpleFile(fp,sBuf);
+
+	PyRun_SimpleFile(fp,FileName.str);
+
 }
 
 bool FCInterpreter::LoadModule(const char* psModName)
 {
 	// buffer acrobatics
-	static char sBuf[_MAX_PATH];
-	strcpy(sBuf,psModName);
+	PyBuf ModName(psModName);
 
-	if(!PP_Load_Module(sBuf))
+	if(!PP_Load_Module(ModName.str))
 		return false;
 
 	return true;
@@ -136,28 +132,39 @@ int FCInterpreter::RunCommandLine(char *prompt)
 	return PP_Run_Command_Line(prompt);
 }
 
+/**
+ *  Runs a member methode of an object with no parameter and no return value
+ *  void (void). There are other methodes to run with returns
+ */
 void FCInterpreter::RunMethodeVoid(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
-	char sBuf[1024];
-	assert(strlen(method) < 1022);
-	strcpy(sBuf, method);
-
-	//PyObject *pcO;
-	//char *sBuf = strdup(method);
+	PyBuf Methode (method);
 
 	if(PP_Run_Method(pobject ,     // object
-		             sBuf,         // run method 
-			         0,			// no return type
+		             Methode.str,  // run method 
+			         0,			   // no return type
 				     0,		       // so no return object
 					 "()")		   // no arguments
 					 != 0)
-		throw FCException("Error runing FCInterpreter::RunMethode()");
+		throw FCException("Error runing FCInterpreter::RunMethodeVoid()");
 
 }
-/*
-void FCInterpreter::Register(FCPythonExport *pcPyExporter)
+
+PyObject* FCInterpreter::RunMethodeObject(PyObject *pobject, const char *method)
 {
-	pcPyExporter->PyRegister();
+	// net buffer because of char* <-> const char*
+	PyBuf Methode (method);
+
+	PyObject *pcO;
+
+	if(PP_Run_Method(pobject ,     // object
+		             Methode.str,  // run method 
+			         "O",		   // no return type
+				     &pcO,		   // so no return object
+					 "()")		   // no arguments
+					 != 0)
+		throw FCException("Error runing FCInterpreter::RunMethodeObject()");
+	
+	return pcO;
 }
-*/

@@ -83,8 +83,7 @@ void FCDlgCustomize::init()
 
   for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
-    // !!!! "Standard commands" muss durch Kategorie ersetzt werden
-    m_alCmdGroups["Standard commands"].push_back(it->second);
+    m_alCmdGroups[it->second->GetGroupName()].push_back(it->second);
   }
 
   // first and second tab
@@ -163,6 +162,8 @@ void FCDlgCustomize::slotToolBarSelected(const QString & name)
   {
     if (QMessageBox::information(this, "FreeCAD", "Do want to save your changes?", "Yes", "No", QString::null, 0) == 0)
       slotApply();
+    else
+      bChanged = false;
   }
 
   ToolbarActions->clear();

@@ -67,11 +67,11 @@ DEF_STD_CMD(FCCmdOpen);
 
 
 FCCmdOpen::FCCmdOpen()
-	:FCCommand("Std_Open")
+	:FCCppCommand("Std_Open")
 {
 
 	// seting the 
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Open";
 	sToolTipText	= "Open a Document or import Files";
@@ -105,11 +105,11 @@ void FCCmdOpen::Activated(int iMsg)
 DEF_STD_CMD(FCCmdNew);
 
 FCCmdNew::FCCmdNew()
-	:FCCommand("Std_New")
+	:FCCppCommand("Std_New")
 {
 
 	// seting the 
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "New";
 	sToolTipText	= "Create a new empty Document";
@@ -134,10 +134,10 @@ void FCCmdNew::Activated(int iMsg)
 DEF_STD_CMD(FCCmdSave);
 
 FCCmdSave::FCCmdSave()
-	:FCCommand("Std_Save")
+	:FCCppCommand("Std_Save")
 {
 
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Save";
 	sToolTipText	= "Save the active document";
@@ -159,9 +159,9 @@ void FCCmdSave::Activated(int iMsg)
 DEF_STD_CMD(FCCmdSaveAs);
 
 FCCmdSaveAs::FCCmdSaveAs()
-	:FCCommand("Std_SaveAs")
+	:FCCppCommand("Std_SaveAs")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Save as...";
 	sToolTipText	= "Save the active document under a new file name";
@@ -183,9 +183,9 @@ void FCCmdSaveAs::Activated(int iMsg)
 DEF_STD_CMD(FCCmdPrint );
 
 FCCmdPrint::FCCmdPrint()
-	:FCCommand("Std_Print")
+	:FCCppCommand("Std_Print")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Print...";
 	sToolTipText	= "Print the window";
@@ -219,9 +219,9 @@ void FCCmdPrint::Activated(int iMsg)
 DEF_STD_CMD(FCCmdQuit );
 
 FCCmdQuit::FCCmdQuit()
-	:FCCommand("Std_Quit")
+	:FCCppCommand("Std_Quit")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Exit";
 	sToolTipText	= "Quits the application";
@@ -243,9 +243,9 @@ void FCCmdQuit::Activated(int iMsg)
 DEF_STD_CMD(FCCmdUndo );
 
 FCCmdUndo::FCCmdUndo()
-	:FCCommand("Std_Undo")
+	:FCCppCommand("Std_Undo")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Undo";
 	sToolTipText	= "Undo exactly one action";
@@ -269,9 +269,9 @@ void FCCmdUndo::Activated(int iMsg)
 DEF_STD_CMD(FCCmdRedo);
 
 FCCmdRedo::FCCmdRedo()
-	:FCCommand("Std_Redo")
+	:FCCppCommand("Std_Redo")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Redo";
 	sToolTipText	= "Redoes a previosly undid action";
@@ -293,9 +293,9 @@ void FCCmdRedo::Activated(int iMsg)
 DEF_STD_CMD(FCCmdCut);
 
 FCCmdCut::FCCmdCut()
-	:FCCommand("Std_Cut")
+	:FCCppCommand("Std_Cut")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Cut";
 	sToolTipText	= "Cut out";
@@ -317,9 +317,9 @@ void FCCmdCut::Activated(int iMsg)
 DEF_STD_CMD(FCCmdCopy );
 
 FCCmdCopy::FCCmdCopy()
-	:FCCommand("Std_Copy")
+	:FCCppCommand("Std_Copy")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Copy";
 	sToolTipText	= "Copy operation";
@@ -341,9 +341,9 @@ void FCCmdCopy::Activated(int iMsg)
 DEF_STD_CMD(FCCmdPaste);
 
 FCCmdPaste::FCCmdPaste()
-	:FCCommand("Std_Paste")
+	:FCCppCommand("Std_Paste")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Paste";
 	sToolTipText	= "Paste operation";
@@ -365,9 +365,9 @@ void FCCmdPaste::Activated(int iMsg)
 DEF_STD_CMD(FCCmdAbout);
 
 FCCmdAbout::FCCmdAbout()
-	:FCCommand("Std_About")
+	:FCCppCommand("Std_About")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "About FreeCAD";
 	sToolTipText	= "About FreeCAD";
@@ -389,9 +389,9 @@ void FCCmdAbout::Activated(int iMsg)
 DEF_STD_CMD(FCCmdTest1);
 
 FCCmdTest1::FCCmdTest1()
-	:FCCommand("Std_Test1")
+	:FCCppCommand("Std_Test1")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test1";
 	sToolTipText	= "Test function 1";
@@ -473,9 +473,9 @@ void FCCmdTest1::Activated(int iMsg)
 DEF_STD_CMD(FCCmdTest2);
 
 FCCmdTest2::FCCmdTest2()
-	:FCCommand("Std_Test2")
+	:FCCppCommand("Std_Test2")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test2";
 	sToolTipText	= "Test function 2";
@@ -525,9 +525,9 @@ void FCCmdTest2::Activated(int iMsg)
 DEF_STD_CMD(FCCmdTileHor);
 
 FCCmdTileHor::FCCmdTileHor()
-	:FCCommand("Std_TileHoricontal")
+	:FCCppCommand("Std_TileHoricontal")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Tile Hor.";
 	sToolTipText	= "Tile the windows horizontal";
@@ -549,9 +549,9 @@ GetAppWnd()->expandHorizontal();
 DEF_STD_CMD(FCCmdTileVer);
 
 FCCmdTileVer::FCCmdTileVer()
-	:FCCommand("Std_TileVertical")
+	:FCCppCommand("Std_TileVertical")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Tile Ver.";
 	sToolTipText	= "Tile the windows vertical";
@@ -573,9 +573,9 @@ void FCCmdTileVer::Activated(int iMsg)
 DEF_STD_CMD(FCCmdTilePra);
 
 FCCmdTilePra::FCCmdTilePra()
-	:FCCommand("Std_TilePragmatic")
+	:FCCppCommand("Std_TilePragmatic")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Tile pragmatic";
 	sToolTipText	= "Tile pragmatic";
@@ -597,9 +597,9 @@ void FCCmdTilePra::Activated(int iMsg)
 DEF_STD_CMD(FCCmdMDINormal);
 
 FCCmdMDINormal::FCCmdMDINormal()
-	:FCCommand("Std_MDINormal")
+	:FCCppCommand("Std_MDINormal")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText	  = "MDI Normal";
 	sToolTipText = "Set the standard MDI mode";
@@ -621,9 +621,9 @@ void FCCmdMDINormal::Activated(int iMsg)
 DEF_STD_CMD(FCCmdMDIToplevel);
 
 FCCmdMDIToplevel::FCCmdMDIToplevel()
-	:FCCommand("Std_MDIToplevel")
+	:FCCppCommand("Std_MDIToplevel")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "MDI Toplevel";
 	sToolTipText	= "Set the top level MDI mode";
@@ -645,9 +645,9 @@ void FCCmdMDIToplevel::Activated(int iMsg)
 DEF_STD_CMD(FCCmdMDITabed);
 
 FCCmdMDITabed::FCCmdMDITabed()
-	:FCCommand("Std_MDITabed")
+	:FCCppCommand("Std_MDITabed")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "MDI tabed";
 	sToolTipText	= "Set the tabed MDI mode";
@@ -671,9 +671,9 @@ void FCCmdMDITabed::Activated(int iMsg)
 DEF_STD_CMD(FCCmdDlgParameter);
 
 FCCmdDlgParameter::FCCmdDlgParameter()
-	:FCCommand("Std_DlgParameter")
+	:FCCppCommand("Std_DlgParameter")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Edit parameters ...";
 	sToolTipText	= "Opens a Dialog to edit the parameters";
@@ -696,9 +696,9 @@ void FCCmdDlgParameter::Activated(int iMsg)
 DEF_STD_CMD(FCCmdDlgPreferences);
 
 FCCmdDlgPreferences::FCCmdDlgPreferences()
-	:FCCommand("Std_DlgPreferences")
+	:FCCppCommand("Std_DlgPreferences")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Preferences ...";
 	sToolTipText	= "Opens a Dialog to edit the preferences";
@@ -721,9 +721,9 @@ void FCCmdDlgPreferences::Activated(int iMsg)
 DEF_STD_CMD(FCCmdDlgMacroRecord);
 
 FCCmdDlgMacroRecord::FCCmdDlgMacroRecord()
-	:FCCommand("Std_DlgMacroRecord")
+	:FCCppCommand("Std_DlgMacroRecord")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Macro recording ...";
 	sToolTipText	= "Opens a Dialog to record a macro";
@@ -746,9 +746,9 @@ void FCCmdDlgMacroRecord::Activated(int iMsg)
 DEF_STD_CMD(FCCmdDlgMacroExecute);
 
 FCCmdDlgMacroExecute::FCCmdDlgMacroExecute()
-	:FCCommand("Std_DlgMacroExecute")
+	:FCCppCommand("Std_DlgMacroExecute")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Execute macro ...";
 	sToolTipText	= "Opens a Dialog let you execute a redordet macro";
@@ -772,9 +772,9 @@ void FCCmdDlgMacroExecute::Activated(int iMsg)
 DEF_STD_CMD(FCCmdDlgCustomize);
 
 FCCmdDlgCustomize::FCCmdDlgCustomize()
-	:FCCommand("Std_DlgCustomize")
+	:FCCppCommand("Std_DlgCustomize")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Customize...";
 	sToolTipText	= "Customize toolbars and button groups";
@@ -797,9 +797,9 @@ void FCCmdDlgCustomize::Activated(int iMsg)
 DEF_STD_CMD(FCCmdDlgSettings);
 
 FCCmdDlgSettings::FCCmdDlgSettings()
-	:FCCommand("Std_DlgSettings")
+	:FCCppCommand("Std_DlgSettings")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Settings...";
 	sToolTipText	= "Edit the program settings";
@@ -822,9 +822,9 @@ void FCCmdDlgSettings::Activated(int iMsg)
 DEF_STD_CMD(FCCmdCommandLine);
 
 FCCmdCommandLine::FCCmdCommandLine()
-	:FCCommand("Std_CommandLine")
+	:FCCppCommand("Std_CommandLine")
 {
-	sAppModule		= 0;
+	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Start command line...";
 	sToolTipText	= "Opens the command line in the console";

@@ -252,182 +252,8 @@ void FCButtonGroup::showText()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-//
-//FCToolboxGroup::FCToolboxGroup ( QWidget * parent, const char * name)
-//: QVButtonGroup(parent, name), FCWidgetPrefs(name)
-//{
-//  initialize(parent);
-//}
-//
-//FCToolboxGroup::FCToolboxGroup ( const QString & title, QWidget * parent, const char * name)
-//: QVButtonGroup("", parent, name), FCWidgetPrefs(title.latin1())
-//{
-//  initialize(parent);
-//}
-//
-//FCToolboxGroup::~FCToolboxGroup ()
-//{
-//  savePreferences();
-//}
-//
-//void FCToolboxGroup::restorePreferences()
-//{
-//  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
-//  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-//  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-//
-//  std::vector<std::string> items = hPGrp->GetASCIIs(getPrefName().latin1());
-//  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
-//  {
-//    sCommands[*it]->GetAction()->addTo(this);
-//  }
-//
-//  int r = hPGrp->GetInt("red", 255);
-//  int g = hPGrp->GetInt("green", 255);
-//  int b = hPGrp->GetInt("blue", 255);
-//  QColor color(r, g, b);
-////  if (color.isValid())
-////  {
-////    setPalette(QPalette(color, color));
-////    setBackgroundMode(PaletteLight);
-////  }
-//}
-//
-//void FCToolboxGroup::savePreferences()
-//{
-//  int i=0;
-//  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
-//  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
-//  {
-//    char szBuf[200];
-//    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-//    hPGrp->SetASCII(szBuf, it->c_str());
-//  }
-//
-//  hPGrp->SetInt("red", backgroundColor().red());
-//  hPGrp->SetInt("green", backgroundColor().green());
-//  hPGrp->SetInt("blue", backgroundColor().blue());
-//}
-//
-//void FCToolboxGroup::initialize(QWidget* parent)
-//{
-//  setColumnLayout(0, Qt::Vertical );
-//  setFrameStyle(QFrame::NoFrame);
-//  if (parent) parent->setMinimumWidth(40);
-//
-//  layout()->setSpacing( 0 );
-//  layout()->setMargin( 3 );
-//  ButtonGroupLayout = new QGridLayout( layout() );
-//  ButtonGroupLayout->setAlignment( Qt::AlignTop );
-//  ButtonGroupLayout->setSpacing( 1 );
-//  ButtonGroupLayout->setMargin( 1 );
-//  m_Color = backgroundColor();
-//
-//  setAcceptDrops(true);
-//  setFocusPolicy (ClickFocus);
-//
-//  m_Popup = new QPopupMenu(0L);
-//  m_Popup->setCheckable(true);
-//  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
-//}
-//
-//bool FCToolboxGroup::addWidget(QWidget* w, int i)
-//{
-//  if (!w)
-//    return false;
-//
-//  ButtonGroupLayout->addWidget(w, i, 0);
-//  
-//  // show if invisible
-//  if (!w->isVisible())
-//    w->show();
-//
-//  return true;
-//}
-//
-//bool FCToolboxGroup::addToolboxButton(FCToolboxButton* b, int i)
-//{
-//  connect(this, SIGNAL(signalMaximumWidth(int)), b, SLOT(slotResizeButton(int)));
-//  insert(b);
-//  return addWidget(b, i);
-//}
-//
-//void FCToolboxGroup::loadUserDefButtons()
-//{
-//  restorePreferences();
-//}
-//
-//void FCToolboxGroup::paintEvent (QPaintEvent * e)
-//{
-//  QRect rect = visibleRect();
-//  emit signalMaximumWidth(rect.width());
-//  QVButtonGroup::paintEvent(e);
-//}
-//
-//void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
-//{
-//  if (e->button() == LeftButton)
-//  {
-//  }
-//  else if (e->button() == RightButton)
-//  {
-//    m_Popup->exec(QCursor::pos());
-//  }
-//  else if (e->button() == MidButton)
-//  {
-//  }
-//}
-//
-//void FCToolboxGroup::dropEvent ( QDropEvent * e)
-//{
-//  QAction* pAction = FCActionDrag::pAction;
-//  if ( pAction ) 
-//  {
-//    pAction->addTo(this);
-//    alDroppedActions.push_back(pAction->name());
-//    FCActionDrag::pAction = NULL;
-//  }
-//}
-//
-//void FCToolboxGroup::dragEnterEvent ( QDragEnterEvent * e)
-//{
-//  e->accept(FCActionDrag::canDecode(e));
-//}
-//
-//void FCToolboxGroup::dragLeaveEvent ( QDragLeaveEvent * e)
-//{
-//}
-//
-//void FCToolboxGroup::dragMoveEvent ( QDragMoveEvent * e)
-//{
-//}
-//
-//void FCToolboxGroup::popupMenuAboutToShow()
-//{
-//  m_Popup->clear();
-//
-//  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
-//  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
-//  m_Popup->insertSeparator();
-//  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
-//}
-//
-//void FCToolboxGroup::setNewBackgroundColor()
-//{
-//  QColor color = QColorDialog::getColor ( backgroundColor(), this);
-//  if (color.isValid())
-//  {
-//    setPalette(QPalette(color, color));
-//  }
-//}
-//
-//void FCToolboxGroup::resetBackgroundColor()
-//{
-//  if (m_Color.isValid())
-//    setPalette(QPalette(m_Color, m_Color));
-//}
 
-FCToolboxGroup::FCToolboxGroup ( const QString & label, QWidget *w, const char * name, WFlags f )
+FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f)
 {
 #if QT_VER >= 300
@@ -442,19 +268,31 @@ FCToolboxGroup::FCToolboxGroup ( const QString & label, QWidget *w, const char *
   setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
 }
 
-FCToolboxGroup::~FCToolboxGroup ()
+FCToolboxBar::~FCToolboxBar ()
 {
 //  savePreferences();
   delete m_Popup;
   delete m_Dummy;
 }
 
-void FCToolboxGroup::addedButton()
+void FCToolboxBar::addedButton(QString text)
 {
+  const QObjectList *l = children();
+  QObjectListIt it(*l);
+  QObject* o = it.toLast();
+  if (o)
+  {
+    if (o->inherits("QToolButton"))
+    {
+      ((QToolButton*)o)->setTextLabel(text);
+      ((QToolButton*)o)->setUsesTextLabel(true);
+    }
+  }
+
   m_Dummy->reparent(this, QPoint(0,0));
 }
 
-void FCToolboxGroup::restorePreferences()
+void FCToolboxBar::restorePreferences()
 {
   FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
@@ -477,7 +315,7 @@ void FCToolboxGroup::restorePreferences()
 //  }
 }
 
-void FCToolboxGroup::savePreferences()
+void FCToolboxBar::savePreferences()
 {
   int i=0;
   FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
@@ -493,7 +331,7 @@ void FCToolboxGroup::savePreferences()
   hPGrp->SetInt("blue", backgroundColor().blue());
 }
 
-void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
+void FCToolboxBar::mousePressEvent( QMouseEvent * e )
 {
   if (e->button() == LeftButton)
   {
@@ -507,11 +345,11 @@ void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
   }
 }
 
-void FCToolboxGroup::cleanupEventFilter()
+void FCToolboxBar::cleanupEventFilter()
 {
 }
 
-void FCToolboxGroup::popupMenuAboutToShow()
+void FCToolboxBar::popupMenuAboutToShow()
 {
   m_Popup->clear();
 
@@ -521,7 +359,7 @@ void FCToolboxGroup::popupMenuAboutToShow()
   ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
 }
 
-void FCToolboxGroup::setNewBackgroundColor()
+void FCToolboxBar::setNewBackgroundColor()
 {
   QColor color = QColorDialog::getColor ( backgroundColor(), this);
   if (color.isValid())
@@ -530,7 +368,7 @@ void FCToolboxGroup::setNewBackgroundColor()
   }
 }
 
-void FCToolboxGroup::resetBackgroundColor()
+void FCToolboxBar::resetBackgroundColor()
 {
   if (m_Color.isValid())
     setPalette(QPalette(m_Color, m_Color));
@@ -538,323 +376,127 @@ void FCToolboxGroup::resetBackgroundColor()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-FCToolboxButton::FCToolboxButton( QWidget *parent, const char *name )
-: QToolButton( parent, name ), pLastAction(NULL)
+FCOutlookBar::FCOutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f)
 {
-  tbShowText = false;
-  raised = FALSE;
-  setFocusPolicy( NoFocus );
-  setTextAndPixmap (0, 0);
-  setAutoResize( TRUE );
-  setAcceptDrops ( true );
-  setMinimumHeight(32);
-  setBackgroundMode(PaletteLight);
+#if QT_VER >= 300
+	setFrameStyle( QFrame::NoFrame );
+#endif
+	setOrientation( Qt::Vertical );
+
+  m_Color = backgroundColor();
+  m_Popup = new QPopupMenu(0L);
+  m_Popup->setCheckable(true);
+  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
+  setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
 }
 
-FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, QWidget *parent, const char *name )
-: QToolButton( parent, name ), pLastAction(NULL)
+FCOutlookBar::~FCOutlookBar ()
 {
-  tbShowText = true;
-  raised = FALSE;
-  setFocusPolicy( NoFocus );
-  setTextAndPixmap (text, 0);
-  setTooltip(tooltip);
-  setAutoResize( TRUE );
-  setAcceptDrops ( true );
-  setMinimumHeight(32);
-  setBackgroundMode(PaletteLight);
+//  savePreferences();
+  delete m_Popup;
+  delete m_Dummy;
 }
 
-FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
-                                  QWidget *parent, const char *name )
-: QToolButton( parent, name ), pLastAction(NULL)
+void FCOutlookBar::addedButton(QString text)
 {
-  tbShowText = true;
-  raised = FALSE;
-  setFocusPolicy( NoFocus );
-  setTextAndPixmap (text, pix);
-  setTooltip(tooltip);
-  setAutoResize( TRUE );
-  setAcceptDrops ( true );
-  setMinimumHeight(32);
-  setBackgroundMode(PaletteLight);
-}
-
-FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
-                                  QObject *receiver, const char *member, QWidget *parent, const char *name )
-: QToolButton( parent, name ), pLastAction(NULL)
-{
-  tbShowText = true;
-  raised = FALSE;
-  setFocusPolicy( NoFocus );
-  setTextAndPixmap (text, pix);
-  setTooltip(tooltip);
-  // do the connection of the clicked() signal
-  if (receiver && member)
-      connect (this, SIGNAL(clicked ()), receiver, member);
-  setAutoResize( TRUE );
-  setAcceptDrops ( true );
-  setMinimumHeight(32);
-  setBackgroundMode(PaletteLight);
-}
-
-FCToolboxButton::~FCToolboxButton()
-{
-  enabledPixmap.resize(0,0);
-  disabledPixmap.resize(0,0);
-}
-
-void FCToolboxButton::setTextAndPixmap( const QString &text, const QPixmap &pix)
-{
-  setText(text);
-  setPixmap(pix);
-}
-
-void FCToolboxButton::setText(const char *t)
-{
-  textLabel = t;
-  repaint();
-}
-
-void FCToolboxButton::setPixmap( const QPixmap& pixmap )
-{
-  QToolButton::setPixmap(pixmap);
-  enabledPixmap=pixmap;
-  repaint();
-}
-
-void FCToolboxButton::setTooltip( const QString& tooltip )
-{
-  if (!tooltip.isNull() && !tooltip.isEmpty())
-    QToolTip::add (this, tooltip);
-}
-
-const char *FCToolboxButton::text() const
-{
-  return textLabel;
-}
-
-void FCToolboxButton::slotResizeButton(int width)
-{
-  setMaximumWidth(width);
-}
-
-QSize FCToolboxButton::sizeHint() const
-{
-  int w=0, h=0;
-
-  if (pixmap()) {
-    w = 5 + pixmap()->width();
-    h = 5 + pixmap()->height() ;
-  }
-
-  if (text()) {
-    w += fontMetrics().width(text()) + 10;
-    if (fontMetrics().height() > h)
-      h = fontMetrics().height();
-  }
-  if (w > 0 && h > 0)
-    return QSize(w, h);
-  else
-    return QSize(1,1);
-}
-
-void FCToolboxButton::enterEvent( QEvent* )
-{
-  if ( isEnabled() )
+  const QObjectList *l = children();
+  QObjectListIt it(*l);
+  QObject* o = it.toLast();
+  if (o)
   {
-    raised = TRUE;
-    setBackgroundMode(PaletteBackground);
-    repaint(FALSE);
-  }
-}
-
-void FCToolboxButton::leaveEvent( QEvent * )
-{
-  if( raised != FALSE )
-  {
-    raised = FALSE;
-    setBackgroundMode(PaletteLight);
-    repaint();
-  }
-}
-
-void FCToolboxButton::dropEvent ( QDropEvent * e)
-{
-  QAction* pAction = FCActionDrag::pAction;
-  if ( pAction )
-  {
-    setPixmap(pAction->iconSet().pixmap());
-    setText(pAction->menuText());
-    setTooltip(pAction->toolTip());
-
-    // disconnect last action first
-    if (pLastAction)
+    if (o->inherits("QToolButton"))
     {
-      disconnect( this, SIGNAL( clicked() ), pLastAction, SIGNAL( activated() ) );
-	    disconnect( this, SIGNAL( toggled(bool) ), pLastAction, SLOT( toolButtonToggled(bool) ) );
-	    disconnect( this, SIGNAL( destroyed() ), pLastAction, SLOT( objectDestroyed() ) );
-    }
-
-    pLastAction = pAction;
-    connect( this, SIGNAL( clicked() ), pAction, SIGNAL( activated() ) );
-	  connect( this, SIGNAL( toggled(bool) ), pAction, SLOT( toolButtonToggled(bool) ) );
-	  connect( this, SIGNAL( destroyed() ), pAction, SLOT( objectDestroyed() ) );
-
-    if (!isEnabled())
-    {
-      makeDisabledPixmap();
-      setPixmap(disabledPixmap);
+      QLabel* label = new QLabel(this);
+      label->setText(text);
+      label->setAlignment(AlignHCenter);
+      ((QWidget*)o)->setFixedSize(48,48);
     }
   }
+
+  m_Dummy->reparent(this, QPoint(0,0));
 }
 
-void FCToolboxButton::dragEnterEvent ( QDragEnterEvent * e)
+void FCOutlookBar::restorePreferences()
 {
-//  if (isEnabled())
-  e->accept(FCActionDrag::canDecode(e));
-}
+  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
-void FCToolboxButton::dragLeaveEvent ( QDragLeaveEvent * e)
-{
-}
-
-void FCToolboxButton::dragMoveEvent ( QDragMoveEvent * e)
-{
-}
-
-void FCToolboxButton::drawButton( QPainter *_painter )
-{
-  paint( _painter );
-}
-
-void FCToolboxButton::drawButtonLabel( QPainter *_painter )
-{
-  paint( _painter );
-}
-
-void FCToolboxButton::makeDisabledPixmap()
-{
-  QPalette pal = palette();
-  QColorGroup g = pal.disabled();
-
-  // Find the outline of the colored portion of the normal pixmap
-
-  QBitmap *pmm = (QBitmap*) enabledPixmap.mask();
-  QPixmap pm;
-  if (pmm != 0L)
+  std::vector<std::string> items = hPGrp->GetASCIIs(getPrefName().latin1());
+  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
   {
-    pmm->setMask( *pmm );
-    pm = *pmm;
-  }
-  else
-  {
-    pm.resize(enabledPixmap.size());
-    enabledPixmap.fill(this, 0, 0);
-  };
-
-  // Prepare the disabledPixmap for drawing
-
-  disabledPixmap.resize(enabledPixmap.size());
-  disabledPixmap.fill( g.background() );
-
-  // Draw the outline found above in highlight and then overlay a grey version
-  // for a cheesy 3D effect ! BTW. this is the way that Qt 1.2+ does it for
-  // Windows style
-
-  QPainter p;
-  p.begin( &disabledPixmap );
-  p.setPen( g.light() );
-  p.drawPixmap(1, 1, pm);
-  p.setPen( g.text() );
-  p.drawPixmap(0, 0, pm);
-  p.end();
-}
-
-void FCToolboxButton::paletteChange(const QPalette &)
-{
-  makeDisabledPixmap();
-  if ( !isEnabled() )
-    setPixmap( disabledPixmap );
-  repaint( TRUE );
-}
-
-void FCToolboxButton::on(bool flag)
-{
-  setOn(flag);
-  repaint();
-}
-
-void FCToolboxButton::toggle()
-{
-  setOn(!isOn());
-  repaint();
-}
-
-void FCToolboxButton::enable( bool enabled )
-{
-  setPixmap( (enabled ? enabledPixmap : disabledPixmap) );
-  setEnabled( enabled );
-}
-
-void FCToolboxButton::showText(bool enable)
-{
-  tbShowText = enable;
-  repaint();
-}
-
-void FCToolboxButton::paint( QPainter *painter )
-{
-  int dx=0, dy=0;
-  QFontMetrics fm(fontMetrics());
-
-  if ( isDown() || isOn() )
-  {
-#if QT_VER <= 230
-    if ( style() == WindowsStyle )
-#else
-    if ( style().inherits("QWindowsStyle") )
-#endif
-    	qDrawWinButton( painter, 0, 0, width(), height(), colorGroup(), TRUE );
-    else
-    	qDrawShadePanel( painter, 0, 0, width(), height(), colorGroup(), TRUE, 2, 0L );
-  }
-  else if ( raised )
-  {
-#if QT_VER <= 230
-    if ( style() == WindowsStyle )
-#else
-    if ( style().inherits("QWindowsStyle") )
-#endif
-    	qDrawWinButton( painter, 0, 0, width(), height(), colorGroup(), FALSE );
-    else
-    	qDrawShadePanel( painter, 0, 0, width(), height(), colorGroup(), FALSE, 2, 0L );
-  }
-  
-  if ( pixmap() )
-  {
-    //dx = ( width() - pixmap()->width() ) / 2;
-    dx = 5;
-    dy = ( height() - pixmap()->height() ) / 2;
-#if QT_VER <= 230
-    if ( isDown() && style() == WindowsStyle ) 
-#else
-    if ( isDown() && style().inherits("QWindowsStyle") )
-#endif
-    {
-    	dx++;
-	    dy++;
-    }
-
-    painter->drawPixmap( dx, dy, *pixmap() );
+    sCommands[*it]->GetAction()->addTo(this);
   }
 
-  if (text()&&tbShowText) 
+  int r = hPGrp->GetInt("red", 255);
+  int g = hPGrp->GetInt("green", 255);
+  int b = hPGrp->GetInt("blue", 255);
+  QColor color(r, g, b);
+//  if (color.isValid())
+//  {
+//    setPalette(QPalette(color, color));
+//    setBackgroundMode(PaletteLight);
+//  }
+}
+
+void FCOutlookBar::savePreferences()
+{
+  int i=0;
+  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
+  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
   {
-    dx = dx + (pixmap() ? pixmap()->width() : 0) + 5;
-    dy = dy + (pixmap() ? (pixmap()->height() / 2) : height()/2-2) + (fm.boundingRect(text()).height() / 2);
-    painter->drawText(dx, dy, text());
+    char szBuf[200];
+    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    hPGrp->SetASCII(szBuf, it->c_str());
   }
+
+  hPGrp->SetInt("red", backgroundColor().red());
+  hPGrp->SetInt("green", backgroundColor().green());
+  hPGrp->SetInt("blue", backgroundColor().blue());
+}
+
+void FCOutlookBar::mousePressEvent( QMouseEvent * e )
+{
+  if (e->button() == LeftButton)
+  {
+  }
+  else if (e->button() == RightButton)
+  {
+    m_Popup->exec(QCursor::pos());
+  }
+  else if (e->button() == MidButton)
+  {
+  }
+}
+
+void FCOutlookBar::cleanupEventFilter()
+{
+}
+
+void FCOutlookBar::popupMenuAboutToShow()
+{
+  m_Popup->clear();
+
+  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
+  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+  m_Popup->insertSeparator();
+  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
+}
+
+void FCOutlookBar::setNewBackgroundColor()
+{
+  QColor color = QColorDialog::getColor ( backgroundColor(), this);
+  if (color.isValid())
+  {
+    setPalette(QPalette(color, color));
+  }
+}
+
+void FCOutlookBar::resetBackgroundColor()
+{
+  if (m_Color.isValid())
+    setPalette(QPalette(m_Color, m_Color));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -992,11 +634,11 @@ void QStackBarBtn::drawButton( QPainter *p )
 
 static void set_background_mode( QWidget *top, QWidget::BackgroundMode bm )
 {
-  QObjectList *l = top->queryList( "QWidget" );
-  l->append( top );
-  for ( QObject *o = l->first(); o; o = l->next() )
-  	( (QWidget*)o )->setBackgroundMode( bm );
-  delete l;
+//  QObjectList *l = top->queryList( "QWidget" );
+//  l->append( top );
+//  for ( QObject *o = l->first(); o; o = l->next() )
+//  	( (QWidget*)o )->setBackgroundMode( bm );
+//  delete l;
 }
 
 /*!
@@ -1203,14 +845,14 @@ bool FCCmdBar::HasView(const char *sName)
   return false;
 }
 
-FCToolboxGroup* FCCmdBar::GetView(const char *sName)
+FCToolBar* FCCmdBar::GetView(const char *sName)
 {
   for (std::list<QStackBarBtn*>::iterator it = m_lButtons.begin(); it != m_lButtons.end(); ++it)
   {
     QStackBarBtn* b = (*it);
     if (b->text() == sName)
     {
-      return (FCToolboxGroup*)b->widget();
+      return (FCToolBar*)b->widget();
     }
   }
 
@@ -1221,9 +863,20 @@ FCToolboxGroup* FCCmdBar::GetView(const char *sName)
   return NULL;
 }
 
-FCToolboxGroup* FCCmdBar::CreateView(const char *sName)
+FCToolBar* FCCmdBar::CreateView(const char *sName, BarMode mode)
 {
-  FCToolboxGroup* bg = new FCToolboxGroup(sName, this, sName);
+  FCToolBar* bg;
+
+  switch (mode)
+  {
+  case TOOLBOX:
+    bg = new FCToolboxBar(sName, this, sName);
+    break;
+  case OUTLOOK:
+    bg = new FCOutlookBar(sName, this, sName);
+    break;
+  };
+  
   addPage( sName, bg );
   return bg;
 }

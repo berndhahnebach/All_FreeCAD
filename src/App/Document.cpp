@@ -230,10 +230,11 @@ PyObject *FCLabel::PyIsDifferent(PyObject *args)
 // Save the Document under a new Name
 void FCDocument::SaveAs (const char* Name)
 {
-	char path[512];
-	strcpy(path,Name);
+	// creat a non const buffer
+	PyBuf name(Name);
+
 	Handle(FCApplicationOCC) hApp = GetApplication().GetOCCApp();
-	if(hApp->SaveAs(_hDoc,(Standard_CString)path)==CDF_SS_Failure) 
+	if(hApp->SaveAs(_hDoc,(Standard_CString)name.str)==CDF_SS_Failure) 
 		throw FCException("SaveAs failed");
 }
 // Save the document under the name its been opened

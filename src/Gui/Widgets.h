@@ -168,6 +168,8 @@ class FCActionDrag : public QStoredDrag
  */
 class FCToolBar : public QToolBar, public FCWidgetPrefs
 {
+  Q_OBJECT
+
   public:
 #if QT_VER <= 230
     FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0 );
