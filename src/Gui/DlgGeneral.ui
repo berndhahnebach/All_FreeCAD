@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>272</width>
+            <width>268</width>
             <height>359</height>
         </rect>
     </property>
@@ -321,6 +321,50 @@
                     <property>
                         <name>valueFloat</name>
                         <number>4</number>
+                    </property>
+                </widget>
+                <spacer row="4"  column="2" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer3</cstring>
+                    </property>
+                    <property>
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="4"  column="0"  rowspan="1"  colspan="2" >
+                    <class>FCCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>SplashScreen</cstring>
+                    </property>
+                    <property>
+                        <name>checked</name>
+                        <bool>true</bool>
+                    </property>
+                    <property>
+                        <name>prefEntry</name>
+                        <string>AllowSplasher</string>
+                    </property>
+                    <property>
+                        <name>prefPath</name>
+                        <string>System parameter:BaseApp/WindowSettings</string>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Enable splashscreen at startup</string>
                     </property>
                 </widget>
             </grid>

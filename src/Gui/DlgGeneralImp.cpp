@@ -62,6 +62,7 @@ FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
   append(WindowStyle->getHandler());
   append(AllowDragMenu->getHandler());
   append(RecentFiles->getHandler());
+  append(SplashScreen->getHandler());
 
   connect(UsesBigPixmaps->getHandler(), SIGNAL(saved()), this, SLOT(onBigPixmaps()));
   connect(WindowStyle->getHandler(), SIGNAL(saved()), this, SLOT(onSetStyle()));
