@@ -486,7 +486,7 @@ void FCScintillaEdit::OnChange(FCSubject<const char*> &rCaller,const char* rcRea
   
   const char font[] = "Verdana";
   const char monospace[] = "Courier";
-  const short fontsize = rclGrp.GetInt("FontSize", 3) + 6;
+  const short fontsize = rclGrp.GetGroup("FontSize")->GetInt("currentItem", 3) + 6;
 
   // style 32: default
   SendScintilla(SCI_STYLESETFONT,32, (sptr_t) font);

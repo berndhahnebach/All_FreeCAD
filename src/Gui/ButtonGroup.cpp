@@ -958,7 +958,7 @@ void FCStackBar::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   if (strcmp(sReason, "SpeedAnimationCmdBar") == 0)
   {
-    FCParameterGrp::handle hGrp = rclGrp.GetGroup("Settings");
+    FCParameterGrp::handle hGrp = rclGrp.GetGroup("SpeedAnimationCmdBar");
     if (hGrp->GetInts("Value").size() == 0)
       hGrp->SetInt("Value", 100);
     m_lAnimCount = hGrp->GetInt("Value", 100);

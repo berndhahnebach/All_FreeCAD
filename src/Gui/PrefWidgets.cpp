@@ -373,12 +373,16 @@ void FCComboBox::restorePreferences()
     return;
   }
 
-  clear();
-  std::vector<std::string> items = hPrefGrp->GetASCIIs(getEntryName().latin1());
+  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(getEntryName().latin1());
+  std::vector<std::string> items = hPGrp->GetASCIIs("Item");
+  
+  if (items.size() > 0) 
+    clear();
+
   for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
     insertItem(it->c_str());
 
-  int item = hPrefGrp->GetInt(getEntryName().latin1(), 0);
+  int item = hPGrp->GetInt("currentItem", currentItem());
   setCurrentItem(item);
 }
 
@@ -390,14 +394,18 @@ void FCComboBox::savePreferences()
     return;
   }
 
-  for (int i = 0; i < count(); i++)
+  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(getEntryName().latin1());
+  hPGrp->Clear();
+
+  int size = int(count());
+  for (int i = 0; i < size; i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "%s%d", getEntryName().latin1(), i);
-    hPrefGrp->SetASCII(szBuf, text(i).latin1());
+    sprintf(szBuf, "Item%d", i);
+    hPGrp->SetASCII(szBuf, text(i).latin1());
   }
 
-  hPrefGrp->SetInt(getEntryName().latin1(), currentItem());
+  hPGrp->SetInt("currentItem", currentItem());
 }
 
 QString FCComboBox::getEntryName () const
@@ -439,12 +447,16 @@ void FCListBox::restorePreferences()
     return;
   }
 
-  clear();
-  std::vector<std::string> items = hPrefGrp->GetASCIIs(getEntryName().latin1());
+  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(getEntryName().latin1());
+  std::vector<std::string> items = hPGrp->GetASCIIs("Item");
+  
+  if (items.size() > 0) 
+    clear();
+
   for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
     insertItem(it->c_str());
 
-  int item = hPrefGrp->GetInt(getEntryName().latin1(), 0);
+  int item = hPGrp->GetInt("currentItem", currentItem());
   setCurrentItem(item);
 }
 
@@ -456,15 +468,18 @@ void FCListBox::savePreferences()
     return;
   }
 
+  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(getEntryName().latin1());
+  hPGrp->Clear();
+
   int size = int(count());
   for (int i = 0; i < size; i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "%s%d", getEntryName().latin1(), i);
-    hPrefGrp->SetASCII(szBuf, item(i)->text().latin1());
+    sprintf(szBuf, "Item%d", i);
+    hPGrp->SetASCII(szBuf, text(i).latin1());
   }
 
-  hPrefGrp->SetInt(getEntryName().latin1(), currentItem());
+  hPGrp->SetInt("currentItem", currentItem());
 }
 
 QString FCListBox::getEntryName () const
@@ -614,7 +629,7 @@ void FCSlider::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
+  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup(getEntryName().latin1());
   int o = hPrefs->GetInt("Orientation", orientation());
   setOrientation(Qt::Orientation(o));
   int min = hPrefs->GetInt("MinValue", minValue());
@@ -633,7 +648,7 @@ void FCSlider::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
+  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup(getEntryName().latin1());
   hPrefs->SetInt("Orientation", int(orientation()));
   hPrefs->SetInt("MinValue", minValue());
   hPrefs->SetInt("MaxValue", maxValue());
