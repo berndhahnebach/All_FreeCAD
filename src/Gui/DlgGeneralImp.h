@@ -46,6 +46,7 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCWidgetPrefsManager
   private slots:
     void onBigPixmaps();
     void onSetStyle();
+    void onSetMRUSize();
 };
 
 #endif // DLG_GENERAL_IMP_H

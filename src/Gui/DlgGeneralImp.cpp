@@ -65,6 +65,7 @@ FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
 
   connect(UsesBigPixmaps->getHandler(), SIGNAL(saved()), this, SLOT(onBigPixmaps()));
   connect(WindowStyle->getHandler(), SIGNAL(saved()), this, SLOT(onSetStyle()));
+  connect(RecentFiles->getHandler(), SIGNAL(saved()), this, SLOT(onSetMRUSize()));
 }
 
 /*  
@@ -92,6 +93,17 @@ void FCDlgGeneral::onSetStyle()
   {
     if (strcmp(newStyle->name(), curStyle.name()) != 0)
       QApplication::setStyle(newStyle);
+  }
+}
+
+void FCDlgGeneral::onSetMRUSize()
+{
+  FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
+  if (pCmd)
+  {
+    FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Recent files");
+    ((FCCmdMRU*)pCmd)->SetMaxItems(hGrp->GetInt("RecentFiles", 4));
   }
 }
 
