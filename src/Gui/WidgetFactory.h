@@ -30,7 +30,7 @@
 #define __FC_WIDGET_FACTORY_H__
 
 #include "../Base/Factory.h"
-#include "../Base/PyExport.h"
+#include "../Base/PyExportImp.h"
 #include "DlgPreferencesImp.h"
 
 /** The WidgetFactory singleton

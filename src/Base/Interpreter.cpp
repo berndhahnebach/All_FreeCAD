@@ -42,7 +42,7 @@
 #include "Interpreter.h"
 #include "PyTools.h"
 #include "Exception.h"
-
+#include "PyExportImp.h"
 
 char format2[1024];  //Warning! Can't go over 512 characters!!! 
 

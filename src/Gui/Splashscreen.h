@@ -58,9 +58,9 @@ class FCSplashScreen : public QSplashScreen
 /** About dialog */
 class AboutDlg : public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
+  public:
 		AboutDlg( QWidget* parent = 0, const char* name = 0 );
 		~AboutDlg();
 
@@ -68,15 +68,16 @@ class AboutDlg : public QDialog
 		QPushButton* pushButton1;
 		QLabel* textLabel1;
 
-	protected:
+  protected:
 		QGridLayout* Form1Layout;
 		QHBoxLayout* layout1;
 
-	protected slots:
+  protected slots:
 		void languageChange();
 
 	private:
 		QPixmap image0;
 };
+
 
 #endif // __SPLASHSCREEN_H__

@@ -31,6 +31,7 @@
 
 #include "Window.h"
 
+
 class PythonConsole;
 class FCReportOutput;
 class ReportHighlighter;

@@ -230,7 +230,7 @@ void FCCmdTest2::Activated(int iMsg)
 
 	GetConsole().Log("Using Doc: %p\n",pcDoc);
 
-    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
+    TDF_Label L = pcDoc->Main();
 
 	L = L.FindChild(1);
 
@@ -251,6 +251,201 @@ bool FCCmdTest2::IsActive(void)
   return (GetActiveOCCDocument()!=NULL);
 }
 
+//===========================================================================
+// Std_Test3
+//===========================================================================
+DEF_STD_CMD_A(FCCmdTest3);
+
+FCCmdTest3::FCCmdTest3()
+	:FCCppCommand("Std_Test3")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-Test";
+	sMenuText		= "Test3";
+	sToolTipText	= "Test function 3";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool3";
+	iAccel			= 0;
+}
+
+void FCCmdTest3::Activated(int iMsg)
+{
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+}
+
+
+bool FCCmdTest3::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
+
+//===========================================================================
+// Std_Test4
+//===========================================================================
+
+DEF_STD_CMD_A(FCCmdTest4);
+
+FCCmdTest4::FCCmdTest4()
+	:FCCppCommand("Std_Test4")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-Test";
+	sMenuText		= "Test4";
+	sToolTipText	= "Test function 4";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool4";
+	iAccel			= 0;
+}
+
+void FCCmdTest4::Activated(int iMsg)
+{
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+}
+
+
+bool FCCmdTest4::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
+
+//===========================================================================
+// Std_Test5
+//===========================================================================
+DEF_STD_CMD_A(FCCmdTest5);
+
+FCCmdTest5::FCCmdTest5()
+	:FCCppCommand("Std_Test5")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-Test";
+	sMenuText		= "Test5";
+	sToolTipText	= "Test function 5";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool5";
+	iAccel			= 0;
+}
+
+void FCCmdTest5::Activated(int iMsg)
+{
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+}
+
+
+bool FCCmdTest5::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
+
+
+//===========================================================================
+// Std_Test6
+//===========================================================================
+DEF_STD_CMD_A(FCCmdTest6);
+
+FCCmdTest6::FCCmdTest6()
+	:FCCppCommand("Std_Test6")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-Test";
+	sMenuText		= "Test6";
+	sToolTipText	= "Test function 6";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool6";
+	iAccel			= 0;
+}
+
+void FCCmdTest6::Activated(int iMsg)
+{
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+}
+
+
+bool FCCmdTest6::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
+
+
+//===========================================================================
+// Std_Test7
+//===========================================================================
+DEF_STD_CMD_A(FCCmdTest7);
+
+FCCmdTest7::FCCmdTest7()
+	:FCCppCommand("Std_Test7")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-Test";
+	sMenuText		= "Test7";
+	sToolTipText	= "Test function 7";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool7";
+	iAccel			= 0;
+}
+
+void FCCmdTest7::Activated(int iMsg)
+{
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+}
+
+
+bool FCCmdTest7::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
+
+
+//===========================================================================
+// Std_Test8
+//===========================================================================
+DEF_STD_CMD_A(FCCmdTest8);
+
+FCCmdTest8::FCCmdTest8()
+	:FCCppCommand("Std_Test8")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-Test";
+	sMenuText		= "Test8";
+	sToolTipText	= "Test function 8";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool8";
+	iAccel			= 0;
+}
+
+void FCCmdTest8::Activated(int iMsg)
+{
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+}
+
+
+bool FCCmdTest8::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
 
 
 void CreateTestCommands(void)
@@ -259,6 +454,12 @@ void CreateTestCommands(void)
 
 	rcCmdMgr.AddCommand(new FCCmdTest1());
 	rcCmdMgr.AddCommand(new FCCmdTest2());
+	rcCmdMgr.AddCommand(new FCCmdTest3());
+	rcCmdMgr.AddCommand(new FCCmdTest4());
+	rcCmdMgr.AddCommand(new FCCmdTest5());
+	rcCmdMgr.AddCommand(new FCCmdTest6());
+	rcCmdMgr.AddCommand(new FCCmdTest7());
+	rcCmdMgr.AddCommand(new FCCmdTest8());
 }
 
 

@@ -210,13 +210,23 @@ SOURCE=.\PyExport.h
 SOURCE=.\PyTools.c
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
-# Begin Source File
 
+# Begin Source File
 SOURCE=.\PyTools.h
 # End Source File
-# Begin Source File
 
+# Begin Source File
+SOURCE=.\PyExportImp.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=.\PyExportImp.h
+# End Source File
+
+
+# Begin Source File
 SOURCE=.\Sequencer.cpp
+
 # End Source File
 # Begin Source File
 

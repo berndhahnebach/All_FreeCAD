@@ -51,7 +51,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	 _pcDocument(pcDocument)
 {
 	// keeping an Instance of this document as long as at least one window lives
-	_pcDocument->_INCREF();
+	_pcDocument->IncRef();
 
 	Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
@@ -99,7 +99,7 @@ FCGuiDocument::~FCGuiDocument()
 	_pcDocument->Detach(this);
 
 	// remove the reverence from the object
-	_pcDocument->_DECREF();
+	_pcDocument->DecRef();
 }
 
 

@@ -377,8 +377,8 @@ class FCHtmlViewPrivate
 FCHtmlViewPrivate::FCHtmlViewPrivate()
  :	bBackward(false),
 	bForward(false),
-	bHistory(false),
-	bBookm(false),
+  bHistory(false), 
+	bBookm(false), 
 	selectedURL()
 {
 }

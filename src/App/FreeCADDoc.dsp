@@ -224,20 +224,22 @@ SOURCE=.\Function.h
 # Begin Source File
 
 SOURCE=.\Geometry2D.cpp
-# ADD CPP /Yu"PreCompiled.h"
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=.\Geometry2D.h
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=.\Geometry3D.cpp
-# ADD CPP /Yu"PreCompiled.h"
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=.\Geometry3D.h
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 

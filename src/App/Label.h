@@ -22,7 +22,7 @@
 
 
 
-#include "../Base/PyExport.h"
+#include "../Base/PyExportImp.h"
 //#include "../Base/Observer.h"
 //#include <TDocStd_Document.hxx>
 //#include <TDF_Label.hxx>
@@ -43,6 +43,7 @@
 
 class FCDocument;
 class FCFeature;
+class FCLabelPy;
 
 
 /** The OCC Label wrapper class
@@ -51,10 +52,9 @@ class FCFeature;
  *  Nodes and Leavs
  *  @see FCDocument
  */
-class AppExport FCLabel :public FCPyObject
+/*
+class AppExport FCLabel :public FCPyExport
 {
-	/** always start with Py_Header */
-	Py_Header;
 
 public:
 
@@ -64,9 +64,7 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructer 
-	FCLabel(const TDF_Label &hLabel,FCDocument *pcDocument, PyTypeObject *T = &Type);
-	/// for Construction in python 
-	static PyObject *PyMake(PyObject *, PyObject *);
+	FCLabel(const TDF_Label &hLabel,FCDocument *pcDocument);
 	/// Destruction 
 	~FCLabel();
 
@@ -101,23 +99,10 @@ public:
 	/// Gets the OCC Label
 	TDF_Label GetOCCLabel(void){return _cLabel;}
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
+	FCPyObject *GetPyObject(void);
 
-	PyObject *_getattr(char *attr);				// __getattr__ function
-	// getter setter
-	int _setattr(char *attr, PyObject *value);	// __setattr__ function
-	// methods
-	PyObject *PyGetLabel(PyObject *args);	// Python wrapper
-	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((FCLabel*)self)->PyGetLabel(args);};
-	PYFUNCDEF_D (FCLabel,PyHasChildren);
-	PYFUNCDEF_D (FCLabel,PyGetName);
-	PYFUNCDEF_D (FCLabel,PyAttributeCount);
-	PYFUNCDEF_D (FCLabel,PyChildrenCount);
-	PYFUNCDEF_D (FCLabel,PyGetRoot);
-	PYFUNCDEF_D (FCLabel,PyGetFather);
-
+	friend FCLabelPy;
+	friend FCDocument;
 
 protected:
 
@@ -129,6 +114,62 @@ protected:
 	//---------------------------------------------------------------------
 	// helper methodes          +++++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------
+	bool _FindLabelByName(const char* sName, TDF_Label &rcLabel);
+
+	FCLabelPy *_pcPyObject;
+	
+};
+
+
+*/
+
+/** The OCC Label wrapper class
+ *  This class wrapps the functionality of the TDFSdt_Label of OCC. 
+ *  Its used for building up hirachy in a OCC document by representing
+ *  Nodes and Leavs
+ *  @see FCDocument
+ */
+class AppExport FCLabelPy :public FCPyObject
+{
+	/** always start with Py_Header */
+	Py_Header;
+
+public:
+
+
+	//---------------------------------------------------------------------
+	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	/// Constructer 
+	FCLabelPy(TDF_Label cLabel, PyTypeObject *T = &Type);
+	/// for Construction in python 
+	static PyObject *PyMake(PyObject *, PyObject *);
+	/// Destruction 
+	~FCLabelPy();
+
+
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	PyObject *_getattr(char *attr);				// __getattr__ function
+	// getter setter
+	int _setattr(char *attr, PyObject *value);	// __setattr__ function
+	// methods
+	PyObject *PyGetLabel(PyObject *args);	// Python wrapper
+	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((FCLabelPy*)self)->PyGetLabel(args);};
+	PYFUNCDEF_D (FCLabelPy,PyHasChildren);
+//	PYFUNCDEF_D (FCLabelPy,PyGetName);
+	PYFUNCDEF_D (FCLabelPy,PyAttributeCount);
+	PYFUNCDEF_D (FCLabelPy,PyChildrenCount);
+//	PYFUNCDEF_D (FCLabelPy,PyGetRoot);
+//	PYFUNCDEF_D (FCLabelPy,PyGetFather);
+
+private:
+	//FCLabel *_pcLabel;
+	TDF_Label _cLabel;
+
 	bool _FindLabelByName(const char* sName, TDF_Label &rcLabel);
 
 };

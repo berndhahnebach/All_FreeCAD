@@ -17,7 +17,7 @@
 
 #ifndef _FCApplication_
 #define _FCApplication_
-#include "../Base/PyExport.h"
+#include "../Base/PyExportImp.h"
 #include "../Base/Parameter.h"
 
 
@@ -102,7 +102,7 @@ protected:
  *  The root of the whole application
  *  @see FCDocument
  */
-class AppExport FCApplication : public FCPythonExport
+class AppExport FCApplication //: public FCPythonExport
 {
 
 public:

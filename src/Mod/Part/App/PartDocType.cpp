@@ -73,7 +73,7 @@ FCPartDocType::~FCPartDocType()
 
 void FCPartDocType::Init (FCDocument *pcDoc)
 {
-	FCPyHandle<FCLabel> hcMainLabel = pcDoc->Main();
+/*	FCPyHandle<FCLabel> hcMainLabel = pcDoc->Main();
 
 	FCPyHandle<FCLabel> hcPosLabel = hcMainLabel->GetLabel("Pos");
 	  FCPyHandle<FCLabel> hcXYLabel  = hcPosLabel->GetLabel("XY");
@@ -82,7 +82,7 @@ void FCPartDocType::Init (FCDocument *pcDoc)
 
 	FCPyHandle<FCLabel> hcBodyLabel = hcMainLabel->GetLabel("Body");
 	  FCPyHandle<FCLabel> hcMainBodyLabel = hcMainLabel->GetLabel("MainBody");
-
+*/
 
 }
 

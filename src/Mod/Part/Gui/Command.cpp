@@ -102,7 +102,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 
 	GetConsole().Log("Using Doc: %p\n",pcDoc);
 
-    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
+    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main());
 
 	L = L.FindChild(1);
 

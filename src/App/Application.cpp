@@ -178,9 +178,9 @@ FCDocument* FCApplication::New(const char * Name)
 {
 	Handle_TDocStd_Document hDoc;
 	FCDocument*				pDoc;
-	PyObject* pcTemplate;
+//	PyObject* pcTemplate;
 
-	if(Name)
+/*	if(Name)
 	{
 		// net buffer because of char* <-> const char*
 		PyBuf NameBuf(Name);
@@ -191,7 +191,7 @@ FCDocument* FCApplication::New(const char * Name)
 		// test if the template is valid
 		if(!pcTemplate)
 			return NULL;
-	}
+	}*/
 
 	_hApp->NewDocument("FreeCad-Std",hDoc);
 	//_hApp->NewDocument("MDTV-Standard",hDoc);
@@ -199,15 +199,16 @@ FCDocument* FCApplication::New(const char * Name)
 	pDoc = new FCDocument(hDoc);
 
 	// add the document to the internal list
-	pDoc->_INCREF();
+//	pDoc->IncRef();
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
 
+	/* obsolete
 	// runing the start of the workbench object
 	if(Name)
 	{
 		GetInterpreter().RunMethodVoid(pcTemplate, "Start");
-	}
+	}*/
 
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);
@@ -253,7 +254,7 @@ FCDocument* FCApplication::Open(const char * Name)
 	
 	// Creating a FreeCAD Document
 	pDoc = new FCDocument(hDoc);
-	pDoc->_INCREF();
+	pDoc->IncRef();
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
 
@@ -383,7 +384,7 @@ PYFUNCIMP_S(FCApplication,sOpen)
          
 	try {
 		// return new document		
-		return GetApplication().Open(pstr); 	
+		return (GetApplication().Open(pstr)->GetPyObject()); 	
 	}	
 	catch(FCException e) {
 		PyErr_SetString(PyExc_IOError, e.what());
@@ -411,7 +412,7 @@ PYFUNCIMP_S(FCApplication,sNew)
 	try{
 		FCDocument*	pDoc = GetApplication().New(pstr);
 		if (pDoc)
-			return pDoc;
+			return pDoc->GetPyObject();
 		else
 		{
 			PyErr_SetString(PyExc_IOError, "Unknown Template");
@@ -454,7 +455,7 @@ PYFUNCIMP_S(FCApplication,sGet)
         return NULL;                             // NULL triggers exception 
 
 	if(pstr == 0)
-		return GetApplication().Active();
+		return GetApplication().Active()->GetPyObject();
 
 	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 

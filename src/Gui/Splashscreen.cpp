@@ -137,12 +137,12 @@ void FCSplashScreen::drawContents ( QPainter * painter )
 // ------------------------------------------------------------------------------
 
 AboutDlg::AboutDlg( QWidget* parent, const char* name )
-    : QDialog( parent, name, true,	QLabel::WStyle_Customize  | 
-																		QLabel::WStyle_NoBorder   | 
-																		QLabel::WType_Modal       ),
+	: QDialog( parent, name, true,	QLabel::WStyle_Customize  | 
+	                                QLabel::WStyle_NoBorder   | 
+	                                QLabel::WType_Modal       ),
       image0( (const char **) splash_screen )
 {
-	if ( !name )
+  if ( !name )
 		setName( "AboutDlg" );
 	Form1Layout = new QGridLayout( this, 1, 1, 11, 6, "AboutDlgLayout"); 
 
@@ -219,6 +219,7 @@ void AboutDlg::languageChange()
     "</table>"
     "</body></html>").arg(FCVersionMajor).arg(FCVersionMinor).arg(FCVersionBuild).arg(FCVersionDisDa);
     textLabel1->setText( SplasherText );
+
 }
 
 #include "moc_Splashscreen.cpp"

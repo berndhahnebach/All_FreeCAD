@@ -377,12 +377,12 @@ bool FCProgressBar::start(const char* pszStr, int steps)
 	setTotalSteps(_nTotalSteps);
 
 	if ( _nInstStarted == 1 )
-	{
+  {
 		enterControlEvents();
     d->nElapsed = 0;
     d->measureTime.start();
 		d->cWaitCursor = new FCWaitingCursor;
-	}
+  }
 	else // if (_nMaxInstStarted == _nInstStarted)
     d->measureTime.restart();
 
@@ -441,6 +441,7 @@ void FCProgressBar::setText (const char* pszTxt)
 	QString txt = pszTxt ? pszTxt : "";
   ApplicationWindow::Instance->statusBar()->message(txt);
 }
+
 
 void FCProgressBar::drawContents( QPainter *p )
 {

@@ -174,7 +174,7 @@ void FCView3DInventor::SetShape(void)
 	assert(GetAppDocument());
 
 
-    TDF_Label L = GetAppDocument()->Main()->GetOCCLabel();
+    //TDF_Label L = GetAppDocument()->Main()->GetOCCLabel();
 
 
 

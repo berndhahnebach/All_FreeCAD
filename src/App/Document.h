@@ -43,9 +43,10 @@
 
 class FCDocument;
 class FCLabel;
+class FCLabelPy;
 class FCDocType;
-
-
+class FCDocumentPy; // the python document class
+class FCApplication;
 
 /** transport the changes of the Document 
  *  This class transport closer information what was changed in a 
@@ -74,14 +75,11 @@ class AppExport FCDocChanges
  *  Application. Only the Application can Open or destroy a document.
  *  @see FCLabel
  */
-class AppExport FCDocument : public FCPyObject, public FCSubject<const FCDocChanges&>
+class AppExport FCDocument :public FCPyExport, public FCSubject<const FCDocChanges&>
 {
-	/// always start with Py_Header
-	Py_Header;
 
 public:
-	FCDocument(const Handle_TDocStd_Document &hDoc, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
+	FCDocument(const Handle_TDocStd_Document &hDoc);
 
 	~FCDocument();
 
@@ -107,14 +105,14 @@ public:
 	/// Get the path of a saved document (UNICODE)
 	const short* GetPath() const;
 	/// Get the Main Label of the document
-	FCPyHandle<FCLabel> Main();
+	TDF_Label Main();
 	/// Test if the document is empty
 	bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.
 	bool IsValid() const;
 	/// Set a special Label as modified
-	void SetModified(FCLabel* L);
-	/// /// Remove all modifications. After this call The document becomesagain Valid.
+	//void SetModified(FCPyHandle<FCLabel> L);
+	/// /// Remove all modifications. After this call The document becomes again Valid.
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
 	void Recompute();
@@ -163,12 +161,18 @@ public:
 	//@}
 
 	
+
 	/// Returns the storage string of the document.
 	const short* StorageFormat() const;
 	/// Change the storage format of the document.
 	void ChangeStorageFormat(const short* sStorageFormat) ;
 
-/* Not mapped so far:
+
+	virtual FCPyObject *GetPyObject(void);
+
+	
+	
+	/* Not mapped so far:
 virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Integer aReferenceIdentifier,const Standard_Address aModifContext) ;
   void SetData(const Handle(TDF_Data)& data) ;
   Handle_TDF_Data GetData() const;
@@ -179,44 +183,15 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
   Standard_Boolean PerformDeltaCompaction() ;
   void UpdateReferences(const TCollection_AsciiString& aDocEntry) ;
 */
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PyObject *PyUndo(PyObject *args);		// Python wrapper
-	static PyObject *sPyUndo(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyUndo(args);};
-	PyObject *PyRedo(PyObject *args);		// Python wrapper
-	static PyObject *sPyRedo(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyRedo(args);};
-	PyObject *PyClearUndos(PyObject *args);		// Python wrapper
-	static PyObject *sPyClearUndos(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyClearUndos(args);};
-	PyObject *PySaveAs(PyObject *args);		// Python wrapper
-	static PyObject *sPySaveAs(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PySaveAs(args);};
-	PyObject *PySave(PyObject *args);		// Python wrapper
-	static PyObject *sPySave(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PySave(args);};
-	PyObject *PySetModified(PyObject *args);		// Python wrapper
-	static PyObject *sPySetModified(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PySetModified(args);};
-	PyObject *PyPurgeModified(PyObject *args);		// Python wrapper
-	static PyObject *sPyPurgeModified(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyPurgeModified(args);};
-	PyObject *PyNewCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyNewCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyNewCommand(args);};
-	PyObject *PyOpenCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyOpenCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyOpenCommand(args);};
-	PyObject *PyCommitCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyCommitCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyCommitCommand(args);};
-	PyObject *PyAbortCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyAbortCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyAbortCommand(args);};
-	PyObject *PyRecompute(PyObject *args);		// Python wrapper
-	static PyObject *sPyRecompute(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyRecompute(args);};
-
-
+	friend FCDocumentPy;
+	//friend FCLabelPy;
+	friend FCApplication;
 
 protected:
 	/** @name atributes and methodes for label handling
 	 */
-	//@{
+/*	//@{
 	/// less funktion for the map sorting of TDF_Labels
 	struct LabelLess{
 		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2) const
@@ -227,14 +202,17 @@ protected:
 	};
 	/// friend daclaration to allow access
 	friend class FCLabel;
-	FCLabel *HasPyLabel(TDF_Label cLabel);
-	/// handle to the OCC document
-	Handle_TDocStd_Document _hDoc;
+	FCPyHandle<FCLabel> HasLabel(TDF_Label cLabel);
 	/// map of all existing python label wrappers (sorted)
-	std::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
-	FCLabel *						_pcMain;
+	std::map <TDF_Label,FCPyHandle<FCLabel>,LabelLess> mcLabelMap;
+	FCPyHandle<FCLabel> _hcMain;
 	//@}
+*/	
+	/// handle to the OCC document 
+	Handle_TDocStd_Document _hDoc;
 
+	// pointer to the python class
+	FCDocumentPy *_pcDocPy;
 
 
 };

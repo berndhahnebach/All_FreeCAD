@@ -83,7 +83,7 @@ public:
  *  the logging on or off, or treat Warnings as Errors, and so on...
  *  @see FCConsoleObserver
  */
-class BaseExport FCConsole :public FCPythonExport
+class BaseExport FCConsole //:public FCPythonExport
 {
 
 public:

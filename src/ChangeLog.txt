@@ -407,6 +407,6 @@ Version: V0.1B87 Date: Thu Jun 03 23:47:13 2004 +++++++++++++++++++++++++++++++
 + load settings at startup made in preferences
 + use Qt splashscreen
 
-Version: V0.1B88 Date: Thu Jul 15 17:53:14 2004 +++++++++++++++++++++++++++++++
-+ most of gcc compiler warnings fixed
-+ Tip of the day dialog added
+Version: V0.1B89 Date: Fri Aug 20 19:03:18 2004 +++++++++++++++++++++++++++++++
++ pimple App/Application and App/Document
++ change python export

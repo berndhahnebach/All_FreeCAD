@@ -37,7 +37,7 @@
 
 // Std. configurations
 
-#include "../Base/PyExport.h"
+#include "../Base/PyExportImp.h"
 
 
 #include <TopoDS_Shape.hxx>

@@ -572,14 +572,14 @@ public:\
 class FCCmdUndo : public FCCppCommand
 {
 public:
-	FCCmdUndo();
+	  FCCmdUndo();
 	void Activated(int iMsg);
-	bool IsActive(void);
-	QWidget* GetWidget();
-	FCAction * CreateAction(void);
+    bool IsActive(void);
+    QWidget* GetWidget();
+  	FCAction * CreateAction(void);
 
 private:
-	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 /**
@@ -588,14 +588,14 @@ private:
 class FCCmdRedo : public FCCppCommand
 {
 public:
-	FCCmdRedo();
+	  FCCmdRedo();
 	void Activated(int iMsg);
-	bool IsActive(void);
-	QWidget* GetWidget();
-	FCAction * CreateAction(void);
+    bool IsActive(void);
+    QWidget* GetWidget();
+  	FCAction * CreateAction(void);
 
 private:
-	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 /**
@@ -604,18 +604,18 @@ private:
 class FCCmdWorkbench : public FCCppCommand
 {
 public:
-	FCCmdWorkbench();
+	  FCCmdWorkbench();
 	void Activated(int iMsg);
-	FCAction * CreateAction(void);
-	void AddItem (const char* item);
-	void RemItem (const char* item);
-	void Clear();
-	void UpdateAction(int i);
-	void UpdateAction(const char* item);
-	bool addTo(QWidget *);
+  	FCAction * CreateAction(void);
+    void AddItem (const char* item);
+    void RemItem (const char* item);
+    void Clear();
+    void UpdateAction(int i);
+    void UpdateAction(const char* item);
+	  bool addTo(QWidget *);
 
 private:
-	FCMultiAction *pcAction;
+    FCMultiAction *pcAction;
 };
 
 /**
@@ -624,23 +624,23 @@ private:
 class FCCmdMRU : public FCCppCommand
 {
 public:
-	FCCmdMRU();
+	  FCCmdMRU();
 	bool IsActive(void){return true;}
 	void Activated(int iMsg);
-	FCAction * CreateAction(void);
-	void AddItem (const char* item);
-	void RemItem (const char* item);
-	void Clear();
-	int  GetMaxItems()      { return nMaxItems; }
-	void SetMaxItems(int i) { nMaxItems = i;    }
-	std::vector<std::string> GetItems() const;
+  	FCAction * CreateAction(void);
+    void AddItem (const char* item);
+    void RemItem (const char* item);
+    void Clear();
+    int  GetMaxItems()      { return nMaxItems; }
+    void SetMaxItems(int i) { nMaxItems = i;    }
+    std::vector<std::string> GetItems() const;
 	std::string GetResource(const char* sName) { return ""; }
 
 private:
-	QString GetFileName(const char* name);
-	std::vector<std::string> _vMRU;
-	FCMultiAction *pcAction;
-	int nMaxItems;
+    QString GetFileName(const char* name);
+    std::vector<std::string> _vMRU;
+    FCMultiAction *pcAction;
+    int nMaxItems;
 };
 
 #endif // __Command_h__

@@ -17,7 +17,7 @@
 #endif
 
 #include "Attribute.h"
-#include "../Base/PyExport.h"
+#include "../Base/PyExportImp.h"
 
 
 

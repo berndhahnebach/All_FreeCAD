@@ -64,7 +64,7 @@ class StandardWorkbench ( Workbench ):
 		Gui.ToolbarAppendItems("Standard views",list, 0)
 
 		Log ('   Set up commandbar...\n')
-		list = ["Std_Test1", "Std_Test2"]
+		list = ["Std_Test1", "Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
 		Gui.CommandbarAppendItems("TestTools", list, 0)
 
 		list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator", "Std_ViewFront",
@@ -136,9 +136,12 @@ def InitMenues():
 	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Std_About", "Std_WhatsThis"]
 	Gui.MenuAppendItems("Help", list, 0, 0)
 
+	list = ["Std_Test1","Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
+	Gui.MenuAppendItems("Test Commands", list, 0, 0)
+
 def InitCmdBar():
 	Log ('   Set up command bar...\n')
-	list = ["Std_Test1","Std_Test2"]
+	list = ["Std_Test1","Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
 	Gui.CommandbarAppendItems("TestTools", list, 0)
 
 	list = ["Std_ViewFitAll","Std_ViewAxo","Separator","Std_ViewFront","Std_ViewRight",

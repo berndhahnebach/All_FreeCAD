@@ -46,7 +46,7 @@
  *  strictly after the OCC rules. It includes also a lot algorithems from oter
  *  packages like BRepTools and BRepBuilder. Also iterators and so on.
  */
-class AppExport FCGeometry2D :public FCPyObject
+class AppExport FCGeometry2D :public FCPyExport
 {
 	// always start with Py_Header 
 	Py_Header;

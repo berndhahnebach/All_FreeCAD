@@ -44,7 +44,8 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 	if(_pcDocument){
 		setText(0,QObject::tr("Main Label"));
 		setPixmap(0,*FCTree::pcLabelOpen);
-		_hcLabel = parent->_pcDocument->GetDocument()->Main();
+//		_hcLabel = parent->_pcDocument->GetDocument()->Main();
+		_hcTDFLabel = parent->_pcDocument->GetDocument()->Main();
 		BuildUp();
 		setOpen(true);
 	}else{
@@ -61,14 +62,14 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
+FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel )
     : QListViewItem( parent ),
-	_hcLabel(hcLabel),
-	_pcDocument(parent->_pcDocument)
+	_pcDocument(parent->_pcDocument),
+	_hcTDFLabel(hcLabel)
 {
 	QString cString;
 
-	cString.sprintf("Tag:%d",_hcLabel->GetOCCLabel().Tag());
+	cString.sprintf("Tag:%d",_hcTDFLabel.Tag());
 	setPixmap(0,*FCTree::pcLabelClosed);
 	setText(0,cString);
 
@@ -105,7 +106,7 @@ void FCTreeLabel::Update(void)
 void FCTreeLabel::BuildUp(void)
 {
 
-	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+/*	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
 
 	for(std::vector<FCPyHandle<FCLabel> >::reverse_iterator It=vpcLabels.rbegin();It != vpcLabels.rend(); It++)
 	{
@@ -124,7 +125,8 @@ void FCTreeLabel::BuildUp(void)
 
 	if(childCount()>0)
 		setExpandable( TRUE );
-}
+*/
+  }
 
 void FCTreeLabel::setOpen( bool o )
 {

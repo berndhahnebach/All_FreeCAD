@@ -50,6 +50,8 @@
 
 #include "../Base/Sequencer.h"
 
+#include "../Base/Sequencer.h"
+
 class QHBoxLayout;
 class QTime;
 class QGridLayout;

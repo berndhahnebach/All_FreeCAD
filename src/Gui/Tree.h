@@ -46,7 +46,7 @@ class FCTreeLabel : public QListViewItem
 {
 public:
 	/// Constructor
-    FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel );
+    FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel );
     FCTreeLabel( FCTree * parent);
 
     /// Opens the Leafs and generate them.
@@ -65,7 +65,8 @@ public:
 
 protected:
 	void activate (); 
-	FCPyHandle<FCLabel> _hcLabel;
+	TDF_Label _hcTDFLabel;
+	//FCPyHandle<FCLabel> _hcLabel;
 
     FCTreeLabel * _pcParent;
 	FCGuiDocument*  _pcDocument;
