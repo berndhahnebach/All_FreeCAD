@@ -50,11 +50,14 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
   tab = new QTabWidget( this, "TabWidget" );
   tab->setProperty( "tabPosition", (int)QTabWidget::Bottom );
   tab->setProperty( "tabShape", (int)QTabWidget::Triangular );
+  tabLayout->addWidget( tab, 0, 0 );
 
 
   mle = new FCReportOutput( tab, "LogOutput" );
   tab->insertTab( mle, tr( "Output" ) );
-  tabLayout->addWidget( tab, 0, 0 );
+
+	FCPythonConsole* pyc = new FCPythonConsole(tab, "PythonConsole");
+	tab->insertTab(pyc, "Python");
 }
 
 /*  

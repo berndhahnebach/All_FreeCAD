@@ -374,3 +374,9 @@ Version: V0.1B79 Date: Thu Dec 18 21:48:48 2003 +++++++++++++++++++++++++++++++
 + included tkinter into libPack
 + using PyUnit and unittestgui.py in test framework
 
+
+Version: V0.1B80 Date: Wed Jan 07 13:36:29 2004 +++++++++++++++++++++++++++++++
++ initial Python binding using Qt's WidgetFactory framework
++ Scintilla-Binding reimplemented
++ Autowaitcursor improved
++ a first version of python console added

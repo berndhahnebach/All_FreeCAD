@@ -54,7 +54,7 @@ class QTabWidget;
  * append(<objectname>->getHandler());
  * to use the full automation
  */
-class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
+class GuiExport FCDlgPreferencesImp : public QDialog, public FCWindowParameter
 { 
     Q_OBJECT
 

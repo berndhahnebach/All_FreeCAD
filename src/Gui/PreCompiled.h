@@ -206,9 +206,6 @@
 #include <qsplitter.h> 
 #include <qstatusbar.h>
 #include <qstyle.h>
-#ifdef FC_OS_LINUX
-#  include <qstylefactory.h>
-#endif
 #include <qtabbar.h>
 #include <qtextbrowser.h> 
 #include <qtextstream.h>
@@ -228,6 +225,7 @@
 #include <qworkspace.h>
 #if QT_VERSION > 300
 # include <qprocess.h>
+# include <qstylefactory.h>
 #endif
 
 

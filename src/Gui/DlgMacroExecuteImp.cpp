@@ -47,7 +47,7 @@
 #include "../App/Application.h"
 #include "Application.h"
 #include "Macro.h"
-#include "ScintillaQt.h"
+#include "SciEditor.h"
 
 /* 
  *  Constructs a DlgMacroExecuteImp which is a child of 'parent', with the 

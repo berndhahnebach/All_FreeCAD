@@ -160,21 +160,7 @@ void* FCLanguageProducer::Produce (void) const
 	return (void*)(&mLanguageFile);
 }
 
-// ----------------------------------------------------
-
-// INCLUDE YOUR LANGUAGE FILES HERE
-//
-#include "FreeCAD_de.h"
-
 FCLanguageFactorySupplier* FCLanguageFactorySupplier::_pcSingleton = 0L;
-
-FCLanguageFactorySupplier::FCLanguageFactorySupplier()
-{
-  // ADD YOUR LANGUAGES HERE
-  //
-  //
-	new FCLanguageProducer("German", GetFreeCAD_de());
-}
 
 FCLanguageFactorySupplier & FCLanguageFactorySupplier::Instance(void)
 {

@@ -31,7 +31,7 @@
 
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
-#include "../Base/Console.h"
+#include "Widgets.h"
 #include "DlgPreferencesImp.h"
 #include "DlgSettingsImp.h"
 #include "DlgSettings3DViewImp.h"
@@ -39,6 +39,17 @@
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
 #include "DlgOnlineHelpImp.h"
+
+#include "../Base/Console.h"
+#include "../Base/Exception.h"
+
+#if QT_VERSION >= 300
+#	include <qwidgetfactory.h>
+# ifdef FC_OS_WIN32
+#		pragma comment(lib,"qui.lib")
+#		pragma warning( disable : 4098 )
+#	endif
+#endif
 
 
 FCWidgetFactory* FCWidgetFactory::_pcSingleton = NULL;
@@ -56,7 +67,7 @@ void FCWidgetFactory::Destruct (void)
     delete _pcSingleton;
 }
 
-QWidget* FCWidgetFactory::ProduceWidget (const char* sName) const
+QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) const
 {
 	QWidget* w = (QWidget*)Produce(sName);
 
@@ -65,6 +76,8 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName) const
   {
 #ifdef FC_DEBUG
     GetConsole().Warning("\"%s\" is not registered\n", sName);
+#else
+    GetConsole().Log("\"%s\" is not registered\n", sName);
 #endif
     return NULL;
   }
@@ -77,10 +90,16 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName) const
   {
 #ifdef FC_DEBUG
     GetConsole().Error("%s does not inherit from \"QWidget\"\n", sName);
+#else
+    GetConsole().Log("%s does not inherit from \"QWidget\"\n", sName);
 #endif
 		delete w;
 		return NULL;
   }
+
+  // set the parent to the widget 
+	if (parent)
+	  w->reparent(parent, QPoint(0,0));
 
   return w;
 }
@@ -115,19 +134,36 @@ QWidget* FCWidgetFactory::ProducePrefWidget(const char* sName, QWidget* parent, 
 
 // ----------------------------------------------------
 
-template <class CLASS>
-FCWidgetProducer<CLASS>::FCWidgetProducer (const QString& caption) : mCaption(caption)
+#if QT_VERSION >= 300
+class FCQtWidgetFactory : public QWidgetFactory
 {
-	FCWidgetFactory::Instance().AddProducer(/*typeid(CLASS).name()*/mCaption.latin1(), this);
-	FCDlgPreferencesImp::addPage(caption);
+	public:
+		FCQtWidgetFactory() : QWidgetFactory(){}
+		~FCQtWidgetFactory(){}
+
+		QWidget* createWidget( const QString & className, QWidget * parent, const char * name ) const
+		{
+			QString cname = QString("class %1").arg(className);
+			return GetWidgetFactory().ProduceWidget(cname.latin1(), parent);
+		}
+};
+#endif
+
+// ----------------------------------------------------
+
+template <class CLASS>
+FCWidgetProducer<CLASS>::FCWidgetProducer ()
+{
+	FCWidgetFactory::Instance().AddProducer(typeid(CLASS).name(), this);
 }
 
 // ----------------------------------------------------
 
 template <class CLASS>
-FCPrefWidgetProducer<CLASS>::FCPrefWidgetProducer ()
+FCPrefPageProducer<CLASS>::FCPrefPageProducer (const QString& caption) : mCaption(caption)
 {
-	FCWidgetFactory::Instance().AddProducer(typeid(CLASS).name(), this);
+	FCWidgetFactory::Instance().AddProducer(mCaption.latin1(), this);
+	FCDlgPreferencesImp::addPage(caption);
 }
 
 // ----------------------------------------------------
@@ -140,24 +176,31 @@ FCWidgetFactorySupplier::FCWidgetFactorySupplier()
   //
   //
 	FCDlgPreferencesImp::addGroup( QObject::tr("FreeCAD") );
-  new FCWidgetProducer<FCDlgGeneral>       ( QObject::tr("General"     ) );
-  new FCWidgetProducer<FCDlgEditorSettings>( QObject::tr("Editor"      ) );
-  new FCWidgetProducer<FCDlgSettingsMacro> ( QObject::tr("Macros"      ) );
-  new FCWidgetProducer<FCOnlineHelp>       ( QObject::tr("Online help" ) );
+  new FCPrefPageProducer<FCDlgGeneral>       ( QObject::tr("General"     ) );
+  new FCPrefPageProducer<FCDlgEditorSettings>( QObject::tr("Editor"      ) );
+  new FCPrefPageProducer<FCDlgSettingsMacro> ( QObject::tr("Macros"      ) );
+  new FCPrefPageProducer<FCOnlineHelp>       ( QObject::tr("Online help" ) );
 	FCDlgPreferencesImp::addGroup( QObject::tr("Viewer") );
-  new FCWidgetProducer<FCDlgSettings>      ( QObject::tr("Help Viewer" ) );
-  new FCWidgetProducer<FCDlgSettings3DView>( QObject::tr("3D View"     ) );
+  new FCPrefPageProducer<FCDlgSettings>      ( QObject::tr("Help Viewer" ) );
+  new FCPrefPageProducer<FCDlgSettings3DView>( QObject::tr("3D View"     ) );
 
 	// ADD YOUR PREFERENCE WIDGETS HERE
 	//
 	//
-	new FCPrefWidgetProducer<FCPrefSpinBox>;
-	new FCPrefWidgetProducer<FCLineEdit>;
-	new FCPrefWidgetProducer<FCComboBox>;
-	new FCPrefWidgetProducer<FCListBox>;
-	new FCPrefWidgetProducer<FCCheckBox>;
-	new FCPrefWidgetProducer<FCRadioButton>;
-	new FCPrefWidgetProducer<FCSlider>;
+	new FCWidgetProducer<FCPrefSpinBox>;
+	new FCWidgetProducer<FCLineEdit>;
+	new FCWidgetProducer<FCComboBox>;
+	new FCWidgetProducer<FCListBox>;
+	new FCWidgetProducer<FCCheckBox>;
+	new FCWidgetProducer<FCRadioButton>;
+	new FCWidgetProducer<FCSlider>;
+	new FCWidgetProducer<FCCmdView>;
+	new FCWidgetProducer<FCAccelLineEdit>;
+	new FCWidgetProducer<FCColorButton>;
+
+#if QT_VERSION >= 300
+	QWidgetFactory::addWidgetFactory(new FCQtWidgetFactory);
+#endif
 }
 
 FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
@@ -169,4 +212,133 @@ FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
 	}
 
   return *_pcSingleton;
+}
+
+// ----------------------------------------------------
+
+FCContainerDialog::FCContainerDialog( QWidget* templChild )
+    : QDialog( 0L, 0L, true, 0 )
+
+{
+	setCaption( templChild->name() );
+	setName( templChild->name() );
+
+	setSizeGripEnabled( TRUE );
+	MyDialogLayout = new QGridLayout( this, 1, 1, 11, 6, "MyDialogLayout"); 
+
+	buttonOk = new QPushButton( this, "buttonOk" );
+	buttonOk->setText( tr( "&OK" ) );
+	buttonOk->setAutoDefault( TRUE );
+	buttonOk->setDefault( TRUE );
+
+	MyDialogLayout->addWidget( buttonOk, 1, 0 );
+	QSpacerItem* spacer = new QSpacerItem( 210, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+	MyDialogLayout->addItem( spacer, 1, 1 );
+
+	buttonCancel = new QPushButton( this, "buttonCancel" );
+	buttonCancel->setText( tr( "&Cancel" ) );
+	buttonCancel->setAutoDefault( TRUE );
+
+	MyDialogLayout->addWidget( buttonCancel, 1, 2 );
+
+	templChild->reparent(this, QPoint());
+
+	MyDialogLayout->addMultiCellWidget( templChild, 0, 0, 0, 2 );
+	resize( QSize(307, 197).expandedTo(minimumSizeHint()) );
+
+	// signals and slots connections
+	connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
+	connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+}
+
+FCContainerDialog::~FCContainerDialog()
+{
+}
+
+// ----------------------------------------------------
+
+FCPythonResource* FCPythonResource::_pcSingleton = NULL;
+
+FCPythonResource& FCPythonResource::Instance(void)
+{
+  if (_pcSingleton == NULL)
+    _pcSingleton = new FCPythonResource;
+  return *_pcSingleton;
+}
+
+void FCPythonResource::Destruct (void)
+{
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
+
+FCPythonResource::FCPythonResource()
+{
+	// setting up Python binding 
+	(void) Py_InitModule("FreeCADRes", FCPythonResource::Methods);
+}
+
+//**************************************************************************
+// Python stuff
+
+// FCPythonResource Methods						// Methods structure
+PyMethodDef FCPythonResource::Methods[] = {
+	{"GetInput",       (PyCFunction) FCPythonResource::sGetInput,        1},
+
+  {NULL, NULL}		/* Sentinel */
+};
+
+PYFUNCIMP_S(FCPythonResource,sGetInput)
+{
+	char *psUIFile;
+	if (!PyArg_ParseTuple(args, "s", &psUIFile))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+#if QT_VERSION < 300
+	GetConsole().Error("Qt version is too old!\n");
+	return NULL;
+#else
+	QWidget* w=NULL;
+	try{
+		QString file = psUIFile;
+		w = QWidgetFactory::create(file);
+	}catch(...){
+		PyErr_SetString(PyExc_RuntimeError, "Cannot create resource");
+		return NULL;
+	}
+
+	try{
+		QDialog* dlg = NULL;
+		if (w->inherits("QDialog"))
+		{
+			dlg = (QDialog*)w;
+		}
+		else
+		{
+			dlg = new FCContainerDialog(w);
+		}
+
+		dlg->exec();
+
+		QString input="";
+		QObjectList *l = dlg->queryList( "QLineEdit" );
+		QObjectListIt it( *l );
+		QObject *obj;
+
+		while ( (obj = it.current()) != 0 ) {
+				// for each found object...
+				++it;
+				input = ((QLineEdit*)obj)->text();
+		}
+		delete l; // delete the list, not the objects
+		delete dlg;
+
+		PyObject *pItem;
+		pItem = PyString_FromString(input.latin1());
+
+		return pItem;
+	} catch (...){
+		return NULL;
+	}
+#endif
 }

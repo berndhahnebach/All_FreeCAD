@@ -51,7 +51,7 @@
 #include "scintilla/Platform.h"
 #include "scintilla/XPM.h"
 #include "../Base/Console.h"
-#include "ScintillaQt.h"
+#include "SciEditor.h"
 
 
 // globals
@@ -1030,12 +1030,12 @@ bool Platform::IsKeyDown(int)
 
 long Platform::SendScintilla(WindowID w, unsigned int msg, unsigned long wParam, long lParam)
 {
-	return static_cast<FCScintillaEdit*>(PWidget(w)->parentWidget())->SendScintilla(msg,wParam,lParam);
+	return static_cast<SciTEBase*>(PWidget(w)->parentWidget())->SendScintilla(msg,wParam,lParam);
 }
 
 long Platform::SendScintillaPointer(WindowID w, unsigned int msg, unsigned long wParam, void *lParam)
 {
-	return static_cast<FCScintillaEdit*>(PWidget(w)->parentWidget())->SendScintilla(msg,wParam,reinterpret_cast<long>(lParam));
+	return static_cast<SciTEBase*>(PWidget(w)->parentWidget())->SendScintilla(msg,wParam,reinterpret_cast<long>(lParam));
 }
 
 bool Platform::IsDBCSLeadByte(int codepage,char ch)

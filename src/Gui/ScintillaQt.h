@@ -78,7 +78,7 @@
 #define SciQt_STRINGEOL      13
 
 // forward declaration
-class FCScintillaEdit;
+class SciTEBase;
 
 /**
  * The Qt binding to the Scintilla editor
@@ -93,15 +93,22 @@ class FCScintillaEdit;
  *
  * The source code can be downloaded at <a href="http://www.scintilla.org"></a>. 
  */
-class ScintillaQt : public ScintillaBase
+class ScintillaQt : public QObject, public ScintillaBase
 {
+	Q_OBJECT
+
   public:
     /** construction */
-	  ScintillaQt(FCScintillaEdit* edit);
+	  ScintillaQt(SciTEBase* edit);
 	  virtual ~ScintillaQt();
 
     /** Sends messages to Scintilla */
 	  virtual sptr_t WndProc(unsigned int iMessage,uptr_t wParam, sptr_t lParam);
+		bool eventFilter(QObject* o, QEvent* e);
+		bool event(QEvent* e);
+		QSize sizeHint() const;
+		void showHScroll(bool);
+		void showVScroll(bool);
 
   private:
 	  virtual void Initialise();
@@ -133,13 +140,21 @@ class ScintillaQt : public ScintillaBase
 	  int KeyDefault(int key,int modifiers);
 
     QString convertText(SelectionText* text);
-    
+
   protected:
     void paintEvent(QPaintEvent* e);
 	  void dragEnterEvent(QDragEnterEvent* e);
 	  void dragMoveEvent(QDragMoveEvent* e);
 	  void dragLeaveEvent(QDragLeaveEvent* e);
 	  void dropEvent(QDropEvent* e);
+	  void mouseDoubleClickEvent (QMouseEvent * e);
+		void resizeEvent(QResizeEvent * e);
+		void keyPressEvent(QKeyEvent * e);
+		void mousePressEvent(QMouseEvent * e);
+		void mouseReleaseEvent(QMouseEvent * e);
+		void mouseMoveEvent(QMouseEvent * e);
+		void mouseWheelEvent(QWheelEvent * e);
+		void timerEvent(QTimerEvent * e);
 
   private:
     bool lastKeyDownConsumed;
@@ -148,150 +163,32 @@ class ScintillaQt : public ScintillaBase
 	  int wheelDelta; ///< Wheel delta from roll
   	bool hasOKText;
 
-	  FCScintillaEdit* m_pEditor;
+	  SciTEBase* m_pEditor;
 	  QTimer m_clTimer;
+		QTime  m_clClick;
+	  QWidget    * view;
+
+	private slots:
+		void onContextMenu(int);
+		void onTimer();
+	  void onVScroll  (int value);
+	  void onHScroll  (int value);
 
   private:
-    class FCScintCallTip : public QWidget
+    class ScintCallTip : public QWidget
     {
       public:
-	      FCScintCallTip(ScintillaQt* sci, QWidget* parent, const char * name=0);
-	      ~FCScintCallTip();
+	      ScintCallTip(CallTip* ct, ScintillaQt* sci, QWidget* parent, const char * name=0);
+	      ~ScintCallTip();
 
       protected:
 	      void paintEvent(QPaintEvent* e);
 	      void mousePressEvent(QMouseEvent* e);
 
       private:
+				CallTip*  callTip;
 	      ScintillaQt *sciTE;
     };
-  
-  friend class FCScintillaEdit;
-  friend class FCScintCallTip;
-  friend class FCScintillaView;
-};
-
-/**
- * The Qt editor embedding Scintilla 
- */
-class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
-{
-	Q_OBJECT
-
-  public:
-	  FCScintillaEdit(QWidget *parent = 0,const char *name = 0, WFlags f = 0);
-	  virtual ~FCScintillaEdit();
-
-    /** Sends messages to Scintilla */
-	  long SendScintilla(unsigned int msg,unsigned long wParam = 0, long lParam = 0);
-	  virtual QSize sizeHint() const;
-    ScintillaQt* getTextEditor() const;
-    bool toggleBreakpoint(int nLine);
-    void clearAllBreakpoints();
-    void setBreakpoint(int nLine);
-    void gotoLine(int nLine);
-    void grabFocus();
-    void setReadOnly(bool bReadOnly);
-    void gotoLastLine();
-    void setStackTraceLevel(int nLevel);
-    int  getCurrentLine();
-    QString getLine(int nLine);
-    CharacterRange getSelection();
-    void assignKey(int key, int mods, int cmd);
-    bool presentBookmark(int nLine);
-    void clearAllBookmarks();
-    bool toggleBookmark(int nLine);
-    void nextBookmark(bool forwardScan);
-    void gotoLineEnsureVisible(int nLine);
-  	void expand(int &line, bool doExpand, bool force = false, int visLevels = 0, int level = -1);
-    void foldChanged(int line, int levelNow, int levelPrev);
-    void foldAll();
-    void toggleFold(int nLine);
-    bool clickMargin(int position, int modifiers);
-	  void OnChange(FCSubject<const char*> &rCaller,const char* rcReason);
-
-  protected:
-	  bool eventFilter                   (QObject *o,QEvent *e);
-	  virtual void keyPressEvent         (QKeyEvent   * e);
-    virtual void keyReleaseEvent       (QKeyEvent   * e);
-	  virtual void focusInEvent          (QFocusEvent * e);
-	  virtual void focusOutEvent         (QFocusEvent * e);
-	  virtual void mousePressEvent       (QMouseEvent * e);
-	  virtual void mouseReleaseEvent     (QMouseEvent * e);
-	  virtual void mouseDoubleClickEvent (QMouseEvent * e);
-	  virtual void mouseMoveEvent        (QMouseEvent * e);
-    virtual void mouseWheelEvent       (QWheelEvent * e);
-
-    virtual bool focusNextPrevChild (bool next);
-
-    void loadSettings();
-    void DefineMarker(int marker, int markerType, long fore, long back);
-
-  private slots:
-	  void slotTimer();
-	  void slotVerScroll  (int value);
-	  void slotHorScroll  (int value);
-	  void slotContextMenu(int cmd);
-
-  private:
-	  ScintillaQt* sciTE;
-	  QWidget    * view;
-	  QScrollBar * verScroll;
-	  QScrollBar * horScroll;
-    bool _bControlButton;
-
-    friend class ScintillaQt;
-};
-
-/**
- * A special view class which sends the messages from the application to
- * the Scintilla editor and embeds the editor in a window
- */
-class FCScintillaView : public FCView
-{
-	public:
-	  FCScintillaView( QWidget* parent, const char* name);
-	  ~FCScintillaView();
-
-    FCScintillaEdit* GetEditor() const { return view; }
-
-    virtual const char *GetName(void){return "Scintilla";}
-		virtual void Update(void){};
-
-		/** Mesage handler.
-     * Runs the action specified by pMsg.
-     */
-		virtual bool OnMsg(const char* pMsg);
-		/** Mesage handler test
-     * Checks if the action pMsg is available. This is for enabling/disabling
-     * the corresponding buttons or menu items for this action.
-     */
-		virtual bool OnHasMsg(const char* pMsg);
-		/** checking on close state */
-		virtual bool CanClose(void);
-		virtual void Print(QPainter& cPrinter);
-    void OpenFile (const QString& fileName);
-
-    /** @name Standard actions of the editor */
-    //@{
-    bool Save   (void);
-    bool SaveAs (void);
-    bool Open   (void);
-		void Cut    (void);
-		void Copy   (void);
-		void Paste  (void);
-    void Undo   (void);
-    void Redo   (void);
-    //@}
-
-    
-    void saveFile();
-    bool isAlreadySavedBefore();
-    QString _fileName;
-
-	protected:
-		virtual void resizeEvent(QResizeEvent* e);
-    FCScintillaEdit* view;
 };
 
 #endif

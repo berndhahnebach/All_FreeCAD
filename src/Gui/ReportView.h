@@ -30,6 +30,7 @@
 #define __FC_REPORT_VIEW_H__
 
 #include "Window.h"
+#include "SciEditor.h"
 
 class FCReportOutput;
 class FCReportOutputPrivate;

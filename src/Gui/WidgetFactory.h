@@ -30,6 +30,7 @@
 #define __FC_WIDGET_FACTORY_H__
 
 #include "../Base/Factory.h"
+#include "../Base/PyExport.h"
 
 /** The WidgetFactory singleton
   */
@@ -40,7 +41,7 @@ class GuiExport FCWidgetFactory : public FCFactory
 		static void Destruct (void);
 
     /// produce the widget using the factory
-		QWidget* ProduceWidget (const char* sName) const;
+		QWidget* ProduceWidget (const char* sName, QWidget* parent=0) const;
     QWidget* ProducePrefWidget(const char* sName, QWidget* parent, const char* sPref);
 
 	private:
@@ -58,17 +59,31 @@ inline GuiExport FCWidgetFactory& GetWidgetFactory(void)
 // --------------------------------------------------------------------
 
 template <class CLASS>
-# if _MSC_VER >= 1300
 class FCWidgetProducer: public FCAbstractProducer
-# else
-class GuiExport FCWidgetProducer: public FCAbstractProducer
-# endif
 {
 	public:
 		/// Constructor
-		FCWidgetProducer (const QString& caption);
+		FCWidgetProducer ();
 
 		virtual ~FCWidgetProducer (void){}
+
+		/// Produce an instance
+		virtual void* Produce (void) const
+		{ 
+			return (void*)(new CLASS);
+		}
+};
+
+// --------------------------------------------------------------------
+
+template <class CLASS>
+class FCPrefPageProducer: public FCAbstractProducer
+{
+	public:
+		/// Constructor
+		FCPrefPageProducer (const QString& caption);
+
+		virtual ~FCPrefPageProducer (void){}
 
 		/// Produce an instance
 		virtual void* Produce (void) const
@@ -78,28 +93,6 @@ class GuiExport FCWidgetProducer: public FCAbstractProducer
 
 	private:
 		QString mCaption;
-};
-
-// --------------------------------------------------------------------
-
-template <class CLASS>
-# if _MSC_VER >= 1300
-class FCPrefWidgetProducer: public FCAbstractProducer
-# else
-class GuiExport FCPrefWidgetProducer: public FCAbstractProducer
-# endif
-{
-	public:
-		/// Constructor
-		FCPrefWidgetProducer ();
-
-		virtual ~FCPrefWidgetProducer (void){}
-
-		/// Produce an instance
-		virtual void* Produce (void) const
-		{ 
-			return (void*)(new CLASS);
-		}
 };
 
 // --------------------------------------------------------------------
@@ -122,6 +115,50 @@ class FCWidgetFactorySupplier
 inline FCWidgetFactorySupplier &GetWidgetFactorySupplier(void)
 {
   return FCWidgetFactorySupplier::Instance();
+}
+
+// ----------------------------------------------------
+
+class FCContainerDialog : public QDialog
+{
+	public:
+		FCContainerDialog( QWidget* templChild );
+		~FCContainerDialog();
+
+		QPushButton* buttonOk;
+		QPushButton* buttonCancel;
+
+	protected:
+		QGridLayout* MyDialogLayout;
+};
+
+// ----------------------------------------------------
+
+class GuiExport FCPythonResource : public FCPythonExport
+{
+	public:
+		static FCPythonResource& Instance(void);
+		static void Destruct (void);
+
+	private:
+		static FCPythonResource* _pcSingleton;
+
+		FCPythonResource();
+		~FCPythonResource(){}
+
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	// static python wrapper of the exported functions
+	PYFUNCDEF_S(sGetInput);
+
+	static PyMethodDef    Methods[]; 
+};
+
+inline GuiExport FCPythonResource& GetResource(void)
+{
+	return FCPythonResource::Instance();
 }
 
 #endif // __FC_WIDGET_FACTORY_H__

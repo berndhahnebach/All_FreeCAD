@@ -33,6 +33,7 @@
 
 
 #include <stdio.h>
+#include <list>
 
 #ifdef FC_OS_LINUX
 #	include <unistd.h>

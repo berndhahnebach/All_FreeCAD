@@ -162,10 +162,8 @@ FCSplashScreen::FCSplashScreen( QWidget* parent,  const char* name)
 
   SplasherProgress = new QProgressBar( this, "SplasherProgress" );
   SplasherProgress->setProperty( "progress", 0 );
-#ifdef FC_OS_LINUX
-#	warning style setting skipped here
-#else
-    SplasherProgress->setStyle(new QMotifStyle);
+#if QT_VERSION > 300
+  SplasherProgress->setStyle(QStyleFactory::create("motif"));
 #endif
   SplasherDialogLayout->addWidget( SplasherProgress );
 

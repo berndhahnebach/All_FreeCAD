@@ -62,18 +62,6 @@ class FCCommandManager;
 
 
 
-/** 
- * The Style Factory
- */
-
-class FCStyleFactory
-{
-  public:
-    static QStringList styles();
-    static QStyle* createStyle( const QString& );
-    static bool isCurrentStyle( QStyle* s );
-};
-
 /** The Applcation main class
  *  This is the central class of the GUI 
  */
@@ -297,9 +285,15 @@ class GuiExport FCAutoWaitCursor : public QThread
     /// run the thread, decrement an internal counter
     void run();
 
+		QMutex mutex;
   	uint main_threadid;
 		int nInterval;
+		bool bActive;
 		bool bRun;
+
+	private:
+		class FCAutoWaitCursorP* d;
+		friend class FCAutoWaitCursorP;
 };
 
 #endif

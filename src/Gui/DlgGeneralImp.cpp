@@ -54,11 +54,13 @@
 FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgGeneralBase( parent, name, fl )
 {
+#if QT_VERSION > 300
   // if you run this first time
   if (WindowStyle->count() == 0)
   {
-    WindowStyle->insertStringList(FCStyleFactory::styles());
+    WindowStyle->insertStringList(QStyleFactory::keys ());
   }
+#endif
 
 	// search for the language files
 	std::string lang = GetApplication().GetUserParameter
@@ -111,13 +113,19 @@ void FCDlgGeneral::onBigPixmaps()
 void FCDlgGeneral::onSetStyle()
 {
   QStyle& curStyle = QApplication::style();
-  QStyle* newStyle = FCStyleFactory::createStyle(WindowStyle->currentText());
+	QString styleName = WindowStyle->currentText();
 
-  if (newStyle != NULL)
-  {
-    if (strcmp(newStyle->name(), curStyle.name()) != 0)
-      QApplication::setStyle(newStyle);
-  }
+	if (strcmp(styleName.latin1(), curStyle.name()) != 0)
+	{
+#if QT_VERSION > 300
+	  QStyle* newStyle = QStyleFactory::create(styleName);
+
+		if (newStyle != NULL)
+		{
+			QApplication::setStyle(newStyle);
+		}
+#endif
+	}
 }
 
 void FCDlgGeneral::onSetMRUSize()

@@ -151,6 +151,7 @@ ApplicationWindow::ApplicationWindow()
 		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
 		("Language")->GetASCII("Language", "English");
 	GetLanguageFactory().SetLanguage(language.c_str());
+	GetWidgetFactorySupplier();
 
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
@@ -1519,6 +1520,23 @@ void FCGuiConsoleObserver::Log    (const char *)
 // FCAutoWaitCursor
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+class FCAutoWaitCursorP : public QWidget
+{
+	public:
+		FCAutoWaitCursorP() : QWidget(0L)
+		{
+		}
+
+	protected:
+		void customEvent(QCustomEvent* e)
+		{
+			// if this method is called the message loop is not blocked
+			FCAutoWaitCursor::Instance().mutex.lock();
+			FCAutoWaitCursor::Instance().bActive = true;
+			FCAutoWaitCursor::Instance().mutex.unlock();
+		}
+};
+
 FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 
 void FCAutoWaitCursor::Destruct(void)
@@ -1545,8 +1563,9 @@ FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
 }
 
 FCAutoWaitCursor::FCAutoWaitCursor(uint id, int i)
-	:main_threadid(id), nInterval(i), bRun(true)
+	:main_threadid(id), nInterval(i), bRun(true),bActive(true)
 {
+	d = new FCAutoWaitCursorP;
 	start();
 }
 
@@ -1557,6 +1576,7 @@ FCAutoWaitCursor::~FCAutoWaitCursor()
 #endif
 	bRun = false;
 	wait();
+	delete d;
 }
 
 void FCAutoWaitCursor::SetWaitCursor()
@@ -1610,14 +1630,31 @@ void FCAutoWaitCursor::run()
 			if (i<step && !ignore)
 			{
 				i++;
+
+				// seems to be busy, so send an event to the dummy widget
+				if (i==step-2)
+				{
+					mutex.lock();
+					bActive = false;
+					mutex.unlock();
+
+					// send custom event to make sure that the application is really busy
+					QApplication::postEvent(d, new QCustomEvent(346789));
+				}
+
 				if (i==step)
 				{
+					if (bActive == false)
+					{
 #	ifdef FC_OS_WIN32 // win32 api functions
-					hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
+						hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
 # else
-					QApplication::setOverrideCursor(Qt::waitCursor);
+						QApplication::setOverrideCursor(Qt::waitCursor);
 #	endif
-					cursorset = true;
+						cursorset = true;
+					}
+					else
+						i = 0;
 				}
 			}
 			else if ( ignore && cursorset)
@@ -1646,87 +1683,6 @@ void FCAutoWaitCursor::run()
 //**************************************************************************
 // FCAppConsoleObserver
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-
-QStringList FCStyleFactory::styles()
-{
-  QStringList list;
-
-  if ( !list.contains( "Windows" ) )
-	  list << "Windows";
-  if ( !list.contains( "Motif" ) )
-    list << "Motif";
-  if ( !list.contains( "CDE" ) )
-    list << "CDE";
-  if ( !list.contains( "MotifPlus" ) )
-  	list << "MotifPlus";
-  if ( !list.contains( "Platinum" ) )
-  	list << "Platinum";
-  if ( !list.contains( "SGI" ) )
-  	list << "SGI";
-  if ( !list.contains( "Metal" ) )
-  	list << "Metal";
-  if ( !list.contains( "Norwegian Wood" ) )
-  	list << "Norwegian Wood";
-  if ( !list.contains( "Step" ) )
-  	list << "Step";
-
-  return list;
-}
-
-QStyle* FCStyleFactory::createStyle( const QString& s)
-{
-#ifdef FC_OS_LINUX
-  return QStyleFactory::create(s);
-#else
-  QStyle* ret = NULL;
-  QString style = s.lower();
-
-  if ( style == "windows" )
-    ret = new QWindowsStyle;
-  else if ( style == "motif" )
-    ret = new QMotifStyle;
-  else if ( style == "cde" )
-    ret = new QCDEStyle;
-  else if ( style == "motifplus" )
-    ret = new QMotifPlusStyle;
-  else if ( style == "platinum" )
-    ret = new QPlatinumStyle;
-  else if ( style == "sgi" )
-    ret = new QSGIStyle;
-#endif
-#if QT_VERSION < 300
-
-  else if ( style == "metal" )
-    ret = new MetalStyle;
-  else if ( style == "norwegian wood" )
-    ret = new NorwegianWoodStyle;
-  else if ( style == "step" )
-    ret = new StepStyle;
-
-#endif
-
-  if(ret)
-  	ret->setName(s);
-
-  return ret;
-}
-
-bool FCStyleFactory::isCurrentStyle( QStyle* s )
-{
-  if (!s)
-    return false;
-
-  QString s1 = s->className();
-  QString s2 = QApplication::style().className();
-
-  return s1 == s2;
-}
-
-
 
 
 #include "moc_Application.cpp"

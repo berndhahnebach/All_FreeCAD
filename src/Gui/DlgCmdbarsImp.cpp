@@ -324,13 +324,12 @@ void FCDlgCustomCmdbarsImp::slotMoveDownAction()
 void FCDlgCustomCmdbarsImp::slotCreateCmdBar()
 {
   QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
-#if QT_VERSION <= 230
   QString text = QInputDialog::getText(tr("New command bar"), tr("Specify the name of the new command bar, please."),
-                                       def, 0, this);
-#else
-  QString text = QInputDialog::getText(tr("New command bar", "Specify the name of the new command bar, please."), QLineEdit::Normal,
-                                       def, 0, this);
+#if QT_VERSION > 230
+																			QLineEdit::Normal,
 #endif
+                                      def, 0, this);
+
   if (!text.isNull() && !text.isEmpty())
   {
     FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());

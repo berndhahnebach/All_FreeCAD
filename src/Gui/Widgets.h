@@ -265,7 +265,7 @@ class FCDlgCreateToolOrCmdBar : public QDialog
 class FCAccelLineEdit : public QLineEdit
 {
   public:
-    FCAccelLineEdit ( QWidget * parent, const char * name=0 );
+    FCAccelLineEdit ( QWidget * parent=0, const char * name=0 );
 
   protected:
      void keyPressEvent ( QKeyEvent * e);
