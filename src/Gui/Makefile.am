@@ -272,6 +272,7 @@ EXTRA_DIST = \
 		Icons/developers.h \
 		Icons/FCIcon.xpm \
 		Icons/images.cpp \
+		Icons/Icons.h \
 		Icons/ParamDlgImgs.h \
 		Language/linguist/LICENSE \
 		Language/linguist/metatranslator.cpp \
@@ -279,6 +280,7 @@ EXTRA_DIST = \
 		Language/FreeCAD.po \
 		Language/FreeCAD_de.ts \
 		Language/FreeCAD_fr.ts \
+		Language/qt_de.ts \
 		DlgActions.ui \
 		DlgActivateWindow.ui \
 		DlgAuthorization.ui \
