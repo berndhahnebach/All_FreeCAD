@@ -208,6 +208,7 @@
 #include <qstatusbar.h>
 #include <qstyle.h>
 #include <qtabbar.h>
+#include <qtabwidget.h>
 #include <qtextbrowser.h>
 #include <qtextstream.h>
 #include <qthread.h>

@@ -262,7 +262,7 @@ WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
 
-libFreeCADGui_a_LDADD   = -lpython2.3 -lxerces-c -lqt-mt -lCoin
+libFreeCADGui_a_LDADD   = -lpython2.3 -lxerces-c -lqt-mt -lqui -lCoin
 
 #moc_DlgMacros.cpp
 
