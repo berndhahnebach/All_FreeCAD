@@ -33,148 +33,166 @@
 
 
 
+inline EnvPrint(const char* sMsg)
+{
+	//cout << sMsg << endl;
+}
 
 /** Test if a Variable exist
   */
-#define TEST_ENVVAR_EXISTS(envvar,bFailure) \
-	if (!getenv(envvar)){ \
-          cerr<<"Environment variable "<<envvar<<" is not set!"<<endl; \
-          bFailure = true;\
+inline TestEnvExists(const char* sEnvName,bool &bFailure) 
+{
+	if (!getenv(sEnvName)){ 
+          cerr<<"Environment variable "<<sEnvName<<" is not set!"<<endl; 
+          bFailure = true;
         }  
-
-#define FIND_HOME_PATH(_Call,_Into)\
-	std::string Call(_Call), TempHomePath;\
-	std::string::size_type pos = Call.find_last_of(PATHSEP);\
-	TempHomePath.assign(Call,0,pos+1);\
-	_Into = TempHomePath.c_str();
+}
 
 
-#define GET_FREECADLIB(_Into) \
-  std::string TempLibPath = getenv("FREECADLIB") ? getenv("FREECADLIB") : "";\
-	if(*(TempLibPath.rbegin()) != PATHSEP )\
-		TempLibPath += PATHSEP;\
-	cout << "FREECADLIB=" << TempLibPath << endl;\
-	_Into = TempLibPath;
+inline std::string FindHomePath(const char* sCall)
+{
+	std::string Call(sCall), TempHomePath;
+	std::string::size_type pos = Call.find_last_of(PATHSEP);
+	TempHomePath.assign(Call,0,pos+1);
+	return TempHomePath;
+}
 
-#define SET_PLUGINDEFAULTS(_Path)\
-	std::string sTempString;\
-	sTempString += "CSF_StandardDefaults=";\
-	sTempString += _Path;\
-	putenv (sTempString.c_str());\
-	cout << sTempString << endl;\
-	sTempString.clear();\
-	sTempString += "CSF_PluginDefaults=";\
-	sTempString += _Path;\
-	putenv (sTempString.c_str());\
-	cout << sTempString << endl;\
+inline std::string GetFreeCADLib(void) 
+{
+	std::string TempLibPath = getenv("FREECADLIB");
+	if(*(TempLibPath.rbegin()) != PATHSEP )
+		TempLibPath += PATHSEP;
+	EnvPrint(TempLibPath.c_str());
+	return TempLibPath;
+}
+
+
+inline SetPluginDefaults(const char* sPath)
+{
+	std::string sTempString;
+
+	sTempString += "CSF_StandardDefaults=";
+	sTempString += sPath;
+	putenv (sTempString.c_str());
+	EnvPrint(sTempString.c_str());
 	sTempString.clear();
+	sTempString += "CSF_PluginDefaults=";
+	sTempString += sPath;
+	putenv (sTempString.c_str());
+	EnvPrint(sTempString.c_str());
+}
 
-#define SET_PYTHON_TO_FREECADLIB(_Lib)\
-	std::string sTempString2;\
-	if(_Lib != "")\
-	{\
-		sTempString2 += "PYTHONPATH=";\
-		sTempString2 += _Lib;\
-		sTempString2 += "res";\
-		sTempString2 += PATHSEP;\
-		sTempString2 += "pylibs23";\
-		sTempString2 += PATHSEP;\
-		putenv (sTempString2.c_str());\
-		cout << sTempString2 << endl;\
-		sTempString2.clear();\
+
+inline void SetPythonToFreeCADLib(const char* sLib)
+{
+	std::string sTempString2;
+	if(std::string(sLib) != "")
+	{
+		sTempString2 += "PYTHONPATH=";
+		sTempString2 += sLib;
+		sTempString2 += "res";
+		sTempString2 += PATHSEP;
+		sTempString2 += "pylibs";
+		sTempString2 += PATHSEP;
+		putenv (sTempString2.c_str());
+		EnvPrint(sTempString2.c_str());
+		sTempString2.clear();
 	}
+}
 
 
-#define SET_CASCADE_TO_FREECADLIB(_Lib)\
-	std::string sTempString3;\
-	if(_Lib != "")\
-	{\
-		/* CSF_MDTVFontDirectory */ \
-		sTempString3 += "CSF_MDTVFontDirectory=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_LANGUAGE */ \
-		sTempString3 += "CSF_LANGUAGE=";\
-		sTempString3 += "us";\
-		/* CSF_SHMessage */ \
-		sTempString3 += "CSF_SHMessage=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_MDTVTexturesDirectory */ \
-		sTempString3 += "CSF_MDTVTexturesDirectory=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_XCAFDefaults */ \
-		sTempString3 += "CSF_XCAFDefaults=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_GraphicShr */ \
-		sTempString3 += "CSF_GraphicShr=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "dll";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "TKOpenGl.dll";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_UnitsLexicon */ \
-		sTempString3 += "CSF_UnitsLexicon=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "Lexi_Expr.dat";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_UnitsDefinition */ \
-		sTempString3 += "CSF_UnitsDefinition=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "Units.dat";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_IGESDefaults */ \
-		sTempString3 += "CSF_IGESDefaults=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
-		/* CSF_STEPDefaults */ \
-		sTempString3 += "CSF_STEPDefaults=";\
-		sTempString3 += _Lib;\
-		sTempString3 += "res";\
-		sTempString3 += PATHSEP;\
-		sTempString3 += "OpenCascade51";\
-		putenv (sTempString3.c_str());\
-		cout << sTempString3 << endl;\
-		sTempString3.clear();\
+inline SetCasCadeToFreeCADLib(const char* sLib)
+{
+	std::string sTempString3;
+	if(std::string(sLib) != "")
+	{
+		/* CSF_MDTVFontDirectory */ 
+		sTempString3 += "CSF_MDTVFontDirectory=";
+		sTempString3 += sLib;
+		sTempString3 += "res";
+		sTempString3 += PATHSEP;
+		sTempString3 += "OpenCascade";
+		putenv (sTempString3.c_str());
+		EnvPrint(sTempString3.c_str());
+		sTempString3.clear();
+		/* CSF_LANGUAGE */ 
+		sTempString3 += "CSF_LANGUAGE=";
+		sTempString3 += "us";
+		/* CSF_SHMessage */ 
+		sTempString3 += "CSF_SHMessage=";
+		sTempString3 += sLib;
+		sTempString3 += "res";
+		sTempString3 += PATHSEP;
+		sTempString3 += "OpenCascade";
+		putenv (sTempString3.c_str());
+		EnvPrint(sTempString3.c_str());
+		sTempString3.clear();
+		/* CSF_MDTVTexturesDirectory */  
+		sTempString3 += "CSF_MDTVTexturesDirectory="; 
+		sTempString3 += sLib; 
+		sTempString3 += "res"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "OpenCascade"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
+		/* CSF_XCAFDefaults */  
+		sTempString3 += "CSF_XCAFDefaults="; 
+		sTempString3 += sLib; 
+		sTempString3 += "res"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "OpenCascade"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
+		/* CSF_GraphicShr */  
+		sTempString3 += "CSF_GraphicShr="; 
+		sTempString3 += sLib; 
+		sTempString3 += "dll"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "TKOpenGl.dll"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
+		/* CSF_UnitsLexicon */  
+		sTempString3 += "CSF_UnitsLexicon="; 
+		sTempString3 += sLib; 
+		sTempString3 += "res"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "OpenCascade"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "Lexi_Expr.dat"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
+		/* CSF_UnitsDefinition */  
+		sTempString3 += "CSF_UnitsDefinition="; 
+		sTempString3 += sLib; 
+		sTempString3 += "res"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "OpenCascade"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "Units.dat"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
+		/* CSF_IGESDefaults */  
+		sTempString3 += "CSF_IGESDefaults="; 
+		sTempString3 += sLib; 
+		sTempString3 += "res"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "OpenCascade"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
+		/* CSF_STEPDefaults */  
+		sTempString3 += "CSF_STEPDefaults="; 
+		sTempString3 += sLib; 
+		sTempString3 += "res"; 
+		sTempString3 += PATHSEP; 
+		sTempString3 += "OpenCascade"; 
+		putenv (sTempString3.c_str()); 
+		EnvPrint(sTempString3.c_str()); 
+		sTempString3.clear(); 
 	}
+}

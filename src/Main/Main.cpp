@@ -432,10 +432,10 @@ void Destruct(void)
 void ExtractPathAndUser(const char* sCall)
 {
 	// find home path
-	FIND_HOME_PATH(sCall,mConfig["HomePath"])
+	mConfig["HomePath"] = FindHomePath(sCall);
 
 	// try to figure out if using FreeCADLib
-	GET_FREECADLIB(mConfig["FreeCADLib"])
+	mConfig["FreeCADLib"] = GetFreeCADLib();
 
 	// try to figure out the user
 	char* user = getenv("USERNAME");
@@ -472,50 +472,27 @@ void CheckEnv(void)
 {
 
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SET_PLUGINDEFAULTS(mConfig["HomePath"]);
+	SetPluginDefaults(mConfig["HomePath"].c_str());
 
 	// sets the python environment variables if the FREECADLIB variable is defined
-	SET_PYTHON_TO_FREECADLIB(mConfig["FreeCADLib"]);
+	SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
 
 	// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-	SET_CASCADE_TO_FREECADLIB(mConfig["FreeCADLib"]);
+	SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
 
 	cout << flush;
 	
     bool bFailure=false;  
         
-	TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory",bFailure)
-    TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory",bFailure)
-    TEST_ENVVAR_EXISTS("CSF_UnitsDefinition",bFailure)
-    TEST_ENVVAR_EXISTS("CSF_UnitsLexicon",bFailure)
+	TestEnvExists("CSF_MdtvFontDirectory",bFailure);
+    TestEnvExists("CSF_MdtvTexturesDirectory",bFailure);
+    TestEnvExists("CSF_UnitsDefinition",bFailure);
+    TestEnvExists("CSF_UnitsLexicon",bFailure);
 
     if (bFailure) {    
      	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
 		exit(1);
     }
-
-         
-/*	
-	if(  getenv("CASROOT") )
-	{
-		RSstring CasRoot = getenv("CASROOT");
-		TRACE("Environment CASROOT defined, using Cascade from %s\n",CasRoot.c_str());
-		_putenv(("CSF_GRAPHICSHR="+CasRoot+"\\Windows_NT\\dll\\opengl.dll").c_str());
-		_putenv(("CSF_MDTVFONTDIRECTORY="+CasRoot+"\\src\\FontMFT\\").c_str());
-		_putenv(("CSF_MDTVTEXTURESDIRECTORY="+CasRoot+"\\src\\Textures\\").c_str());
-		_putenv(("CSF_UNITSDEFINITION="+CasRoot+"\\src\\UnitsAPI\\Units.dat").c_str());
-		_putenv(("CSF_UNITSLEXICON="+CasRoot+"\\src\\UnitsAPI\\Lexi_Expr.dat").c_str());
-	}else
-	{
-		TRACE("Environment CASROOT NOT defined, using Cascade from intallation\n");
-		_putenv("CSF_GRAPHICSHR=.\\opengl.dll");
-		TRACE("CSF_GRAPHICSHR=%s\n",getenv("CSF_GRAPHICSHR"));
-		_putenv("CSF_MDTVFONTDIRECTORY=.\\data\\");
-		_putenv("CSF_MDTVTEXTURESDIRECTORY=.\\data\\");
-		_putenv("CSF_UNITSDEFINITION=.\\data\\Units.dat");
-		_putenv("CSF_UNITSLEXICON=.\\data\\Lexi_Expr.dat");
-	}
-*/
 
 }
 
@@ -655,8 +632,10 @@ void __declspec(dllexport) initFreeCADDCmdPy() {
 #else
 void __declspec(dllexport) initFreeCADCmdPy() {
 #endif
-
-	GetApplication();
+	GetConsole();
+	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
+	printf("hallo");
+	cout << "hallo";
 	return;
 }
 }

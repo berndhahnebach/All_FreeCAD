@@ -63,22 +63,24 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 		char  szDirectory [256] ;
 
 		getcwd (szDirectory,sizeof szDirectory);
-		if (szDirectory[strlen(szDirectory)-1] != '\\') {
-			strcat(szDirectory,"\\");
-		}
+//		if (szDirectory[strlen(szDirectory)-1] != '\\') {
+//			strcat(szDirectory,"\\");
+//		}
 		
+		EnvPrint("App");
+
 		std::string Temp;
 		// try to figure out if using FreeCADLib
-		GET_FREECADLIB(Temp)
+		Temp = GetFreeCADLib();
 
 		// sets the python environment variables if the FREECADLIB variable is defined
-		SET_PYTHON_TO_FREECADLIB(Temp);
+		SetPythonToFreeCADLib(Temp.c_str());
 
 		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SET_CASCADE_TO_FREECADLIB(Temp);
+		SetCasCadeToFreeCADLib(Temp.c_str());
 
 
-		SET_PLUGINDEFAULTS(szDirectory);
+		SetPluginDefaults(szDirectory);
 
 		
 		break;
