@@ -1,13 +1,3 @@
-/** \file Observer.h
- *  \brief Observer facility of FreeCAD
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here the definition of the Observer pattern implementation of FreeCAD. 
- *  Its used in several classes of FreeCAD for message distribution and 
- *  class observation.
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
