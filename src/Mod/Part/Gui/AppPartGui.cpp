@@ -36,6 +36,9 @@
 #include "ViewProvider.h"
 #include "DlgSettings3DViewPartImp.h"
 
+#include "Part_de.h"
+#include <Gui/Language/LanguageFactory.h>
+
 using namespace PartGui;
 
 void CreateCommands(void);
@@ -94,6 +97,7 @@ void ModuleExport initPartGui() {
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( QObject::tr( "Part design" ) );
+  new Gui::LanguageProducer("Deutsch", GetPart_de());
 
 
 	return;

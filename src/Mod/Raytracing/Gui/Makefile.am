@@ -6,7 +6,8 @@ BUILT_SOURCES=\
 		DlgSettingsRay.h \
 		moc_DlgSettingsRay.cpp \
 		moc_DlgSettingsRayImp.cpp \
-		FreeCADpov.h
+		FreeCADpov.h \
+		Raytracing_de.h 
 
 libRaytracingGui_la_SOURCES=\
 		AppRaytracingGui.cpp \
@@ -38,6 +39,10 @@ moc_%.cpp: %.h
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+
+# rule for translation files using python script :
+%.h: %.ts
+	$(PYTHON) ../../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
 
 FreeCADpov.h: FreeCADpov
 	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@

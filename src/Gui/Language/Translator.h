@@ -54,6 +54,7 @@ public:
 
   static QString getFindSourceText( const QString& );
   static bool setLanguage ( const QString& );
+  static void installLanguage();
   static QString currentLanguage();
 
 private:

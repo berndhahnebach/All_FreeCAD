@@ -37,6 +37,8 @@
 
 #include "DlgPartImportIgesImp.h"
 
+using namespace PartGui;
+
 /* 
  *  Constructs a DlgPartImportIges which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

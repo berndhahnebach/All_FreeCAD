@@ -17,7 +17,8 @@ BUILT_SOURCES=\
 		moc_DlgPartImportStep.cpp \
 		moc_DlgPartImportStepImp.cpp \
 		moc_DlgSettings3DViewPart.cpp \
-		moc_DlgSettings3DViewPartImp.cpp
+		moc_DlgSettings3DViewPartImp.cpp \
+		Part_de.h
 
 libPartGui_la_SOURCES=\
 		AppPartGui.cpp \
@@ -37,7 +38,7 @@ libPartGui_la_SOURCES=\
 
 # the library search path.
 libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport= 
+libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libPartGui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -57,6 +58,10 @@ moc_%.cpp: %.h
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+
+# rule for translation files using python script :
+%.h: %.ts
+	$(PYTHON) ../../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App

@@ -49,7 +49,7 @@ public:
   //@}
 
   /** Installs the specified language \a lang if available */
-  bool installLanguage (const QString& lang ) const;
+  bool installLanguage ( const QString& lang ) const;
   /** Gets all translated messages to language \a lang. */
   QValueList<QTranslatorMessage> messages( const QString& lang ) const;
   /**
@@ -69,8 +69,13 @@ private:
   LanguageFactoryInst(){}
   ~LanguageFactoryInst(){}
 
+  bool installTranslator ( const QString& lang ) const;
+
   /// several files for the same language (important for language files from modules)
   std::map<QString, int> _mCntLanguageFiles;
+
+  // friends
+  friend class LanguageProducer;
 };
 
 /** Returns the global LanguageFactoryInst object */

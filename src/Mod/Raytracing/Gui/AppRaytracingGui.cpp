@@ -35,6 +35,9 @@
 
 #include "DlgSettingsRayImp.h"
 
+#include "Raytracing_de.h"
+#include <Gui/Language/LanguageFactory.h>
+
 void CreateCommands(void);
 
 using namespace RayGui;
@@ -85,6 +88,7 @@ void ModuleExport initRaytracingGui() {
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( QObject::tr( "Raytracing" ) );
+  new Gui::LanguageProducer("Deutsch", GetRaytracing_de());
 
 
 

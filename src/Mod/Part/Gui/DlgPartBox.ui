@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgPartBox</class>
+<class>PartGui::DlgPartBox</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>DlgPartBox</cstring>
+        <cstring>PartGui::DlgPartBox</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -245,19 +245,19 @@
     <connection>
         <sender>OKButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPartBox</receiver>
+        <receiver>PartGui::DlgPartBox</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>ApplyButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPartBox</receiver>
+        <receiver>PartGui::DlgPartBox</receiver>
         <slot>OnApply()</slot>
     </connection>
     <connection>
         <sender>CancelButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPartBox</receiver>
+        <receiver>PartGui::DlgPartBox</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>

@@ -161,6 +161,15 @@ QString Translator::getFindSourceText( const QString& msg )
 }
 
 /**
+ * Creates the one and only language factory instance if not already created and installs
+ * the matching translator objects to the specified language in the preferences.
+ */
+void Translator::installLanguage()
+{
+  LanguageFactory();
+}
+
+/**
  * \remark It seems to be sufficient to update QAction objects and QMenuBar items only.
  * The languageChange() method of Qt designer generated dialogs is called automatically.
  * \bug When we try to update all kind of QObject class and have pressed the "Apply" button

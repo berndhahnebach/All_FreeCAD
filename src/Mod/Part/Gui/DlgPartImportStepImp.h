@@ -26,6 +26,8 @@
 #include "DlgPartImportStep.h"
 
 
+namespace PartGui {
+
 class DlgPartImportStepImp : public DlgPartImportStep
 { 
     Q_OBJECT
@@ -39,5 +41,7 @@ public slots:
     virtual void onChooseFileName();
 
 };
+
+} // namespace PartGui
 
 #endif // DlgPartImportStepImp_H

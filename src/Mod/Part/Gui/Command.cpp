@@ -72,7 +72,7 @@ FCCmdPartTest1::FCCmdPartTest1()
 void FCCmdPartTest1::activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
 	cDlg.exec();
 
 
@@ -189,7 +189,7 @@ FCCmdPartBox::FCCmdPartBox()
 void FCCmdPartBox::activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
 	if ( cDlg.exec()== QDialog::Accepted )
   {
     openCommand("Part Box Create");
@@ -287,7 +287,7 @@ FCCmdPartCut::FCCmdPartCut()
 void FCCmdPartCut::activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
 	cDlg.exec();
 
 }

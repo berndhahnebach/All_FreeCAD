@@ -1339,13 +1339,11 @@ Möchten Sie die Datei überschreiben?</translation>
     <context>
         <name>Gui::NetworkRetriever</name>
         <message>
-            <source>Download started...
-</source>
+            <source>Download started...</source>
             <translation>Download wurde gestarted...</translation>
         </message>
         <message>
-            <source>Download finished.
-</source>
+            <source>Download finished.</source>
             <translation>Download wurde beendet.</translation>
         </message>
         <message>
@@ -1361,13 +1359,11 @@ Möchten Sie die Datei überschreiben?</translation>
             <translation>Rechner '%1' konnte nicht gefunden werden.</translation>
         </message>
         <message>
-            <source>Download failed.
-</source>
+            <source>Download failed.</source>
             <translation>Download ist fehlgeschlagen.</translation>
         </message>
         <message>
-            <source>Download was canceled.
-</source>
+            <source>Download was canceled.</source>
             <translation>Download wurde abgebrochen.</translation>
         </message>
     </context>
@@ -1460,13 +1456,11 @@ Möchten Sie die Datei überschreiben?</translation>
             <translation type="obsolete" >Öffnen abgebrochen</translation>
         </message>
         <message>
-            <source>Cannot zoom in any more
-</source>
+            <source>Cannot zoom in any more</source>
             <translation>Kann nicht weiter hineinzoomen</translation>
         </message>
         <message>
-            <source>Cannot zoom out any more
-</source>
+            <source>Cannot zoom out any more</source>
             <translation>Kann nicht weiter herauszoomen</translation>
         </message>
         <message>
@@ -1541,6 +1535,66 @@ Möchten Sie die Datei überschreiben?</translation>
         </message>
     </context>
     <context>
+        <name>StdCmdActivateNextWindow</name>
+        <message>
+            <source>Standard</source>
+            <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Ne&amp;xt</source>
+            <translation>Nächs&amp;tes Fenster</translation>
+        </message>
+        <message>
+            <source>Activate next window</source>
+            <translation>Nächstes Fenster aktivieren</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdActivatePrevWindow</name>
+        <message>
+            <source>Standard</source>
+            <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Pre&amp;vious</source>
+            <translation>&amp;Vorheriges Fenster</translation>
+        </message>
+        <message>
+            <source>Activate previous window</source>
+            <translation>Vorheriges Fenster aktivieren</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdCloseActiveWindow</name>
+        <message>
+            <source>Standard</source>
+            <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Cl&amp;ose</source>
+            <translation>S&amp;chließen</translation>
+        </message>
+        <message>
+            <source>Close active window</source>
+            <translation>Aktives Fenster schließen</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdCloseAllWindows</name>
+        <message>
+            <source>Standard</source>
+            <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Close Al&amp;l</source>
+            <translation>Alles sc&amp;hließen</translation>
+        </message>
+        <message>
+            <source>Close all windows</source>
+            <translation>Alle Fenster schließen</translation>
+        </message>
+    </context>
+    <context>
         <name>StdCmdCommandLine</name>
         <message>
             <source>Standard</source>
@@ -1611,8 +1665,8 @@ Möchten Sie die Datei überschreiben?</translation>
             <translation>Mak&amp;ro ausführen...</translation>
         </message>
         <message>
-            <source>Opens a Dialog let you execute a redordet macro</source>
-            <translation>Öffnet Dialog zur Makroaufnahme</translation>
+            <source>Opens a Dialog let you execute a recorded macro</source>
+            <translation>Öffnet Dialog zur Ausführung eines Makros</translation>
         </message>
     </context>
     <context>
@@ -1732,7 +1786,7 @@ Möchten Sie die Datei überschreiben?</translation>
         </message>
         <message>
             <source>Create a new empty Document</source>
-            <translation>Erstelle neues Dokument</translation>
+            <translation>Neues Dokument erstellen</translation>
         </message>
     </context>
     <context>
@@ -1814,7 +1868,7 @@ Möchten Sie die Datei überschreiben?</translation>
         </message>
         <message>
             <source>Quits the application</source>
-            <translation>Beendet die Anwendung</translation>
+            <translation>Anwendung beenden</translation>
         </message>
     </context>
     <context>
@@ -1829,7 +1883,7 @@ Möchten Sie die Datei überschreiben?</translation>
         </message>
         <message>
             <source>Redoes a previously undid action</source>
-            <translation>Stellt die letzte rückgängig gemachte Aktion wieder her</translation>
+            <translation>Zuletzt rückgängig gemachte Aktion wiederherstellen</translation>
         </message>
     </context>
     <context>
@@ -2080,7 +2134,7 @@ Möchten Sie die Datei überschreiben?</translation>
         </message>
         <message>
             <source>Decoration Off</source>
-            <translation>Dekoration ein</translation>
+            <translation>Dekoration aus</translation>
         </message>
         <message>
             <source>Examiner viewer decoration Off</source>

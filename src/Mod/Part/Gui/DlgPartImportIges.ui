@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgPartImportIges</class>
+<class>PartGui::DlgPartImportIges</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>DlgPartImportIges</cstring>
+        <cstring>PartGui::DlgPartImportIges</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -141,19 +141,19 @@
     <connection>
         <sender>OKButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPartImportIges</receiver>
+        <receiver>PartGui::DlgPartImportIges</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>CancelButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPartImportIges</receiver>
+        <receiver>PartGui::DlgPartImportIges</receiver>
         <slot>reject()</slot>
     </connection>
     <connection>
         <sender>SearchFile</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPartImportIges</receiver>
+        <receiver>PartGui::DlgPartImportIges</receiver>
         <slot>onChooseFileName()</slot>
     </connection>
 </connections>

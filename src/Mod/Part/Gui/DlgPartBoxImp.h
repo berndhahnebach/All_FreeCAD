@@ -25,6 +25,7 @@
 
 #include "DlgPartBox.h"
 
+namespace PartGui {
 
 class DlgPartBoxImp : public DlgPartBox
 { 
@@ -38,5 +39,7 @@ public slots:
     void OnApply();
 
 };
+
+} // namespace PartGui
 
 #endif // DLGPARTBOX_H

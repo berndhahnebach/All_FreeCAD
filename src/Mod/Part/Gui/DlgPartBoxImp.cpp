@@ -33,6 +33,8 @@
 
 #include "DlgPartBoxImp.h"
 
+using namespace PartGui;
+
 /* 
  *  Constructs a DlgPartBox which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

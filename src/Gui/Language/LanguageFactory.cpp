@@ -36,6 +36,8 @@
 #include "Translator.h"
 #include "linguist/metatranslator.h"
 #include "../Base/Console.h"
+#include "../Base/Parameter.h"
+#include "../App/Application.h"
 
 typedef std::vector<const char*>  TCharVector;
 typedef std::vector<const char*>* PCharVector;
@@ -48,7 +50,11 @@ LanguageFactoryInst* LanguageFactoryInst::_pcSingleton = NULL;
 LanguageFactoryInst& LanguageFactoryInst::Instance(void)
 {
   if (_pcSingleton == NULL)
+  {
     _pcSingleton = new LanguageFactoryInst;
+    // make sure that producers are created
+    LanguageFactorySupplier::Instance();
+  }
   return *_pcSingleton;
 }
 
@@ -122,53 +128,13 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 {
   bool ok = false;
 
-  // make sure that producers are created
-  LanguageFactorySupplier::Instance();
-
   try
   {
     QStringList IDs = getUniqueIDs( lang );
 
     for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
     {
-      PCharVector tv = (PCharVector) Produce((*it).latin1());
-
-      if ( !tv )
-      {
-        continue; // no data
-      }
-
-      // create temporary files
-      QString ts = "Language.ts";
-      QString qm = "Language.qm";
-      QFile file( ts );
-      file.open( IO_WriteOnly );
-      QTextStream out( &file );
-
-      RCharVector text = *tv;
-      for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
-        out << (*i);
-
-      // all messages written
-      file.close();
-
-      // and delete the files again
-      QDir dir;
-      if ( file.size() > 0 )
-      {
-        // build the translator messages
-        MetaTranslator mt;
-        mt.load( ts );
-        mt.release( qm );
-        QTranslator* t = new Translator( lang );
-        t->load( qm, "." );
-        dir.remove( qm );
-
-        qApp->installTranslator( t );
-        ok = true;
-      }
-
-      dir.remove( ts );
+      ok |= installTranslator( *it );
     }
   }
   catch (...)
@@ -178,12 +144,51 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
   return ok;
 }
 
+bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
+{
+  PCharVector tv = (PCharVector) Produce(lang.latin1());
+
+  bool ok=false;
+  if ( !tv )
+    return false; // no data
+
+  // create temporary files
+  QString ts = "Language.ts";
+  QString qm = "Language.qm";
+  QFile file( ts );
+  file.open( IO_WriteOnly );
+  QTextStream out( &file );
+
+  RCharVector text = *tv;
+  for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
+    out << (*i);
+
+  // all messages written
+  file.close();
+
+  // and delete the files again
+  QDir dir;
+  if ( file.size() > 0 )
+  {
+    // build the translator messages
+    MetaTranslator mt;
+    mt.load( ts );
+    mt.release( qm );
+    QTranslator* t = new Translator( lang );
+    t->load( qm, "." );
+    dir.remove( qm );
+
+    qApp->installTranslator( t );
+    ok = true;
+  }
+
+  dir.remove( ts );
+  return ok;
+}
+
 QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lang ) const
 {
   QValueList<QTranslatorMessage> msgs;
-
-  // make sure that producers are created
-  LanguageFactorySupplier::Instance();
 
   // create temporary files
   QString fn = "Language.ts";
@@ -283,7 +288,17 @@ LanguageProducer::LanguageProducer (const QString& language, const std::vector<c
  : mLanguageFile(languageFile)
 {
   LanguageFactoryInst& f = LanguageFactoryInst::Instance();
-  f.AddProducer(f.createUniqueID(language).latin1(), this);
+  QString id = f.createUniqueID(language);
+  f.AddProducer(id.latin1(), this);
+
+  // install the registered module if it provides the current language
+  FCParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
+  QString lang = hPGrp->GetASCII("Language", "English").c_str();
+  if ( lang == language )
+  {
+    f.installTranslator( id );
+  }
 }
 
 void* LanguageProducer::Produce (void) const
