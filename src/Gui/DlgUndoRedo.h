@@ -26,7 +26,7 @@
 
 #ifndef _PreComp_
 # include <qlistbox.h>
-# include <qframe.h>
+# include <qpopupmenu.h>
 # include <qtoolbutton.h>
 #endif
 
@@ -44,14 +44,14 @@ namespace Dialog {
 /** This class implements an extension of QListBox.
  * If you select an item all items above are selected automatically.
  * This behaviour is known of the Undo/Redo dialog of a lot of applications.
- * @see UndoRedoDlg
+ * @see UndoRedoDialog
  * \author Werner Mayer.
  */
-class UndoRedoList : public QListBox
+class UndoRedoStack : public QListBox
 {
 public:
-  UndoRedoList( QWidget * parent=0, const char * name=0, WFlags f=0);
-  virtual ~UndoRedoList();
+  UndoRedoStack( QWidget * parent=0, const char * name=0, WFlags f=0);
+  virtual ~UndoRedoStack();
 
   void mouseMoveEvent ( QMouseEvent * e );
   void mousePressEvent (QMouseEvent* e);
@@ -62,7 +62,7 @@ public:
 /** This class implements the undo/redo dialog.
  * \author Werner Mayer
  */
-class UndoRedoDialog : public QFrame
+class UndoRedoDialog : public QPopupMenu
 { 
     Q_OBJECT
 
@@ -73,78 +73,47 @@ public:
     Redo  /**< Redo mode */
   };
 
- UndoRedoDialog( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
- virtual ~UndoRedoDialog();
+  UndoRedoDialog( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
+  virtual ~UndoRedoDialog();
 
   void setMode(TMode tMode);
   TMode getMode() const;
-  void updateUndoRedoList();
 
 signals:
   /** This signal is emitted by the @ref onSelected() slot */
   void clickedListBox();
 
-protected:
-  void fetchUndoRedoInfo();
-
 protected slots:
-  void onSelChangeUndoRedoList();
+  void onSelChangeUndoRedoStack();
   void onSelected();
+  void onFetchInfo();
 
 protected:
   QLabel*          pTextLabel; /**< Text label to show the number of onSelected items. */
-  UndoRedoList*    pListBox; /**< List containing the undo/redo information. */
+  UndoRedoStack*   pListBox; /**< List containing the undo/redo information. */
   TMode            tMode; /**< Either it's a undo or a redo list. */
 };
 
 // ------------------------------------------------------------
 
-class ToolButtonDropDownPrivate;
+class UndoRedoButtonPrivate;
 
-/** Drop down button
- * This class implements the behaviour of buttons with an additional smaller button
- * (drop-down button). Such buttons are usually used as undo/redo-buttons in a lot
- * of Windows programs.
+/**
+ * The UndoRedoButton class implements a tool button with a popup menu appearing when
+ * the button with the arrow is clicked.
+ * Such buttons are usually used as undo/redo-buttons in a lot of GUI applications.
  * \author Werner Mayer
  */
-class ToolButtonDropDown : public QToolButton
+class UndoRedoButton : public QToolButton
 {
   Q_OBJECT
 
 public:
-  ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
-  ~ToolButtonDropDown ();
-
-  QSize sizeHint() const;
-  void setWidget(QWidget* pWidget);
-  QWidget* getWidget();
-
-signals
-  /** This signal is emitted when @ref onPopupWidget() is called */:
-  void updateWidgetSignal();
-
-protected slots:
-  void onPopupWidget();
-
-protected:
-  /** @name overwritten methods from base class
-   */
-  //@{
-  void enterEvent         ( QEvent      * e );
-  void leaveEvent         ( QEvent      * e );
-  void mousePressEvent    ( QMouseEvent * e );
-  void mouseReleaseEvent  ( QMouseEvent * e );
-  void drawButton         ( QPainter    * p );
-  void drawButtonLabel    ( QPainter    * p );
-  void paintEvent         ( QPaintEvent * e ); 
-  //@}
-
-  QWidget* pWidget; /**< This widget arises when clicking on drop-down button */
+  UndoRedoButton( QWidget * parent,  const char * name = 0 );
+  ~UndoRedoButton ();
 
 private:
-  /** Draws the arrow for the drop down button */ 
-  void drawArrow( QPainter *, bool, int, int, int, int, const QColorGroup &, bool, const QBrush* = NULL);
-  ToolButtonDropDownPrivate* d; /**< for internal use only */
+  UndoRedoButtonPrivate* d; /**< for internal use only */
 };
 
 } // namespace Dialog

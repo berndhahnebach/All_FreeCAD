@@ -39,7 +39,7 @@
 
 using namespace Gui;
 
-QPixmap Tools::resize(int w, int h, QPixmap p)
+QPixmap Tools::resize(int w, int h, const QPixmap& p)
 {
   QPixmap pix = p;
 
@@ -63,7 +63,7 @@ QPixmap Tools::resize(int w, int h, QPixmap p)
   return pm;
 }
 
-QPixmap Tools::fillUp(int w, int h, QPixmap p)
+QPixmap Tools::fillUp(int w, int h, const QPixmap& p)
 {
   if (p.width() == 0 || p.height() == 0)
     w = 1;
@@ -97,11 +97,12 @@ QPixmap Tools::fillUp(int w, int h, QPixmap p)
   return pm;
 }
 
-QPixmap Tools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
+QPixmap Tools::fillOpaqueRect(int x, int y, int w, int h, const QPixmap& p)
 {
   if (!p.mask())
     return p; // sorry, but cannot do anything
 
+  QPixmap pix = p;
   QBitmap b = *p.mask();
 
   // modify the mask
@@ -110,16 +111,17 @@ QPixmap Tools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
   pt.fillRect(x, y, w, h, Qt::color1); // make opaque
   pt.end();
 
-  p.setMask(b);
+  pix.setMask(b);
 
-  return p;
+  return pix;
 }
 
-QPixmap Tools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
+QPixmap Tools::fillTransparentRect(int x, int y, int w, int h, const QPixmap& p)
 {
   if (!p.mask())
     return p; // sorry, but cannot do anything
 
+  QPixmap pix = p;
   QBitmap b = *p.mask();
 
   // modify the mask
@@ -128,9 +130,43 @@ QPixmap Tools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
   pt.fillRect(x, y, w, h, Qt::color0); // make transparent
   pt.end();
 
-  p.setMask(b);
+  pix.setMask(b);
 
-  return p;
+  return pix;
+}
+
+QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
+{
+  int width = 0;
+  int height = 0;
+
+  int x = 0;
+  int y = 0;
+
+  if ( vertical )
+  {
+    y = p1.height();
+    width  = QMAX( p1.width(), p2.width() );
+    height = p1.height() + p2.height();
+  }
+  else
+  {
+    x = p1.width();
+    width  = p1.width() + p2.width();
+    height = QMAX( p1.height(), p2.height() );
+  }
+
+  QPixmap res( width, height );
+  QBitmap mask( width, height );
+
+  bitBlt( &res,  0, 0, &p1 );
+  bitBlt( &mask, 0, 0, p1.mask() );
+
+  bitBlt( &res, x, y, &p2 );
+  bitBlt( &mask, x, y, p2.mask() );
+
+  res.setMask( mask );
+  return res;
 }
 
 int Tools::getURLType(const QString& url)

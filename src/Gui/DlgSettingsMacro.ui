@@ -1,13 +1,10 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>DlgSettingsMacro</class>
-<widget>
-    <class>QWidget</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QWidget">
+    <property name="name">
         <cstring>DlgSettingsMacro</cstring>
     </property>
-    <property>
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
@@ -15,153 +12,132 @@
             <height>382</height>
         </rect>
     </property>
-    <property>
-        <name>caption</name>
-        <string>Macro recording settings</string>
+    <property name="caption">
+        <string>Macro</string>
     </property>
     <vbox>
-        <property>
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property>
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget>
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox">
+            <property name="name">
                 <cstring>GroupBox6</cstring>
             </property>
-            <property>
-                <name>title</name>
+            <property name="title">
                 <string>Macro recording settings</string>
             </property>
             <vbox>
-                <property>
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property>
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QGroupBox">
+                    <property name="name">
                         <cstring>GroupBox8</cstring>
                     </property>
-                    <property>
-                        <name>title</name>
+                    <property name="title">
                         <string>Macro path</string>
                     </property>
                     <hbox>
-                        <property>
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>11</number>
                         </property>
-                        <property>
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>Gui::PrefLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="Gui::PrefLineEdit">
+                            <property name="name">
                                 <cstring>MacroPath</cstring>
                             </property>
-                            <property>
-                                <name>sizePolicy</name>
+                            <property name="sizePolicy">
                                 <sizepolicy>
                                     <hsizetype>1</hsizetype>
                                     <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
-                            <property>
-                                <name>prefEntry</name>
+                            <property name="prefEntry" stdset="0">
                                 <cstring>FilePath</cstring>
                             </property>
-                            <property>
-                                <name>prefPath</name>
+                            <property name="prefPath" stdset="0">
                                 <cstring>User parameter:BaseApp/Macro</cstring>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QPushButton</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="QPushButton">
+                            <property name="name">
                                 <cstring>SaveBtn</cstring>
                             </property>
-                            <property>
-                                <name>sizePolicy</name>
+                            <property name="sizePolicy">
                                 <sizepolicy>
                                     <hsizetype>4</hsizetype>
                                     <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
-                            <property>
-                                <name>text</name>
+                            <property name="text">
                                 <string>...</string>
                             </property>
                         </widget>
                     </hbox>
                 </widget>
-                <widget>
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QGroupBox">
+                    <property name="name">
                         <cstring>GroupBox7</cstring>
                     </property>
-                    <property>
-                        <name>title</name>
+                    <property name="title">
                         <string>Gui commands</string>
                     </property>
                     <grid>
-                        <property>
-                            <name>margin</name>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
                             <number>11</number>
                         </property>
-                        <property>
-                            <name>spacing</name>
+                        <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget row="0"  column="0" >
-                            <class>Gui::PrefCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="Gui::PrefCheckBox" row="0" column="0">
+                            <property name="name">
                                 <cstring>PrefCheckBox_RecordGui</cstring>
                             </property>
-                            <property>
-                                <name>prefEntry</name>
+                            <property name="prefEntry" stdset="0">
                                 <cstring>RecordGui</cstring>
                             </property>
-                            <property>
-                                <name>prefPath</name>
+                            <property name="prefPath" stdset="0">
                                 <cstring>User parameter:BaseApp/Macro</cstring>
                             </property>
-                            <property>
-                                <name>text</name>
+                            <property name="text" stdset="0">
                                 <string>Recording gui commands</string>
                             </property>
                         </widget>
-                        <widget row="1"  column="0" >
-                            <class>Gui::PrefCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
+                        <widget class="Gui::PrefCheckBox" row="1" column="0">
+                            <property name="name">
                                 <cstring>PrefCheckBox_GuiAsComment</cstring>
                             </property>
-                            <property>
-                                <name>prefEntry</name>
+                            <property name="prefEntry" stdset="0">
                                 <cstring>GuiAsComment</cstring>
                             </property>
-                            <property>
-                                <name>prefPath</name>
+                            <property name="prefPath" stdset="0">
                                 <cstring>User parameter:BaseApp/Macro</cstring>
                             </property>
-                            <property>
-                                <name>text</name>
+                            <property name="text" stdset="0">
                                 <string>Record as comment</string>
                             </property>
                         </widget>
@@ -173,6 +149,29 @@
 </widget>
 <customwidgets>
     <customwidget>
+        <class>Gui::PrefCheckBox</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>80</width>
+            <height>20</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <signal>toggled(bool)</signal>
+        <property type="String">text</property>
+        <property type="Bool">checked</property>
+        <property type="Bool">tristate</property>
+        <property type="Bool">enabled</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
+    </customwidget>
+    <customwidget>
         <class>Gui::PrefLineEdit</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
@@ -183,41 +182,18 @@
         <sizepolicy>
             <hordata>5</hordata>
             <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
         <property type="CString">prefEntry</property>
         <property type="CString">prefPath</property>
-    </customwidget>
-    <customwidget>
-        <class>Gui::PrefCheckBox</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>100</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
-        <signal>toggled(bool)</signal>
         <property type="String">text</property>
-        <property type="Bool">checked</property>
-        <property type="Bool">tristate</property>
-        <property type="Bool">enabled</property>
-        <property type="CString">prefEntry</property>
-        <property type="CString">prefPath</property>
     </customwidget>
 </customwidgets>
 <images>
-    <image>
-        <name>image0</name>
-        <data format="XPM.GZ" length="1352">789ca5d3596fda401007f0773e8585df5045ea6b6dabea83399c8323242452a5aa0fb3578004305738a27ef77a769654904a55d5e1f24ffff5e29db52f6aceb741cfa95d54566b588f852346b0746a72339deebffff8fa56a9fabe53bec3d4f1aa9f2ad5ba239cfe7ca6f078571ebb9f4d2181e8877e8acc88cc0389740d93200901d924b29447488ef49228651c9913638fd20132f062c9cd54b78669c2882d4b100c299021445ee4233532f299c702a4348423af8929a373ef2c4198055e2159003e51197226e922b7c83838b247049066aa47439e4022904b642212457c25729066e627641aa62c0d912f960accf21b86420434f8de325631b28384e8c8b5a104a0b62f88dcf6ea9228380d1e2179c47deaf3de92110f44a169f0d45072a0a9c6968a3824ca5869e404299808a8b1cf9631b16ba85440835748c9caed350bdc1055accdffde182aa929ed1315a77486541a5fc83651c7daf00159c24e3537d49a535a586a62fd8ff51f890b27e51e130ea25cc0ef921a3825e58df7341abfd764f2fc022629bb359dcd8b935ab8e6b193cb5971562bf38c815ad3199b57fcdeee8addb6b0c99e061e32fadd959ff7a4d1cc5aed43d6ca2fcf93abeb9bac73c8ba9dfc3ce9e4cdac87b365e749de284cd2ff90dc665999e4adc1dd49224745fbbedbefb7fbc3a1bd6a5a8f2b460fe72ba51ed4e1f14300c75e2f5627ad5994fbf097fdf9d7ddfef9a5f20b95f7627f</data>
-    </image>
-    <image>
-        <name>image1</name>
-        <data format="XPM.GZ" length="2157">789ccdd2594fdb4010c0f1f77c0a0bbfa16a88d7c7daaafa0084b35ce186aa0fdef52e492001820384aadfbdb3b38355a110fa52b5d91cfa65fe766cc74b8bc1f9c16eb0b8d47aa8cbbaaf03dd2bc7c16235190ea7dfbe7ff9d15a1022c067960562e1536ba15b073ad8bb1d1907e820c2363dc8abec84bd4cce1b1f34cec96bec9c7dee1cb5dd226f91f348477e1e3a8b48b44544de27172261976c2d0af257e7386a7ce41db763df2b76c23e231768df5b76ced6ce8948a2842e06acb353f695732ad234f5de21978d1fd9455a922be72cced22c263f91155a917bec82bde92c63994adfaf90952ca49ff7d9153b72ce1359e50979db3b17ec1bb2ce4bf66e634deeb20dfbd8b9487253f8de907551167e7eeb5ca6a52853f2809db11fc855e376e38a3c64973c1f35f6f343b6616f38ab5465caf717ce3ad3b1f2f3bb57eb8c7cc296ec17b2695cb3157bd2d8dfefd76ccb16ce5556c595ef4fd9927d49369562df37f6db8f9d8d34b191e4942d79fefc6a63c919d9ba6fc8b2b19fefb115cfa78dfd3c665b76ee6ca58dd9c9abaddfbe604bef10c8d62a4b7d18b2ad77b7fef3f53ff710e22a41bd591a2a30eff416aea0f766f56100d733fb12eb1b18c288d6006ee9f30eee613cb357b8b707a861f2db7a84277886e9bbfd90aa1a5ee8b307cbb8c5746edfc763f0fb5e8155e8e0d9ceeb47b006ebb081f526b61dd882ed0ff6ff15ab1d3054afc12e9eedde9c7e00fbd81d60e9fa2efecefc7e088770446d078ee104cffcf4837e82d7fd0ccef148dc399fcce9355e9b0bb8c423684384eff720b01e430cc9ccbec2a3bf841432bc22125f99fb672187228499bd816b9c4fdfac046fc3f05fdcff7fa5fff9b9f50b3afa46fc</data>
+    <image name="image0">
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
     </image>
 </images>
 <connections>
@@ -227,6 +203,14 @@
         <receiver>DlgSettingsMacro</receiver>
         <slot>chooseDir()</slot>
     </connection>
-    <slot access="public">chooseDir()</slot>
 </connections>
+<slots>
+    <slot>chooseDir()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>gui::preflineedit.h</includehint>
+    <includehint>gui::prefcheckbox.h</includehint>
+    <includehint>gui::prefcheckbox.h</includehint>
+</includehints>
 </UI>

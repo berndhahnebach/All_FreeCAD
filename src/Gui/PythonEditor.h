@@ -142,7 +142,7 @@ public:
 
   bool OnMsg(const char* pMsg);
   bool OnHasMsg(const char* pMsg);
-  
+
   bool CanClose(void);
   void Print( QPrinter* printer );
   void openFile (const QString& fileName);
@@ -160,6 +160,9 @@ public:
   //@}
 
   bool isSavedOnce();
+
+  QStringList undoActions() const;
+  QStringList redoActions() const;
 
 private:
   void saveFile();

@@ -27,6 +27,7 @@
 # include <qcheckbox.h>
 # include <qfile.h>
 # include <qlabel.h>
+# include <qlayout.h>
 # include <qtextstream.h>
 #endif
 
@@ -50,6 +51,11 @@ DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool mo
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
   bool tips = hGrp->GetBool("Tipoftheday", true);
   checkShowTips->setChecked(tips);
+
+  // Since the resize mode of DlgTipOfTheDayBase does not
+  // work properly so set this by hand 
+  setMinimumSize(QSize(320, 250));
+  layout()->setResizeMode( QLayout::FreeResize );
 
   reload();
   onNext();

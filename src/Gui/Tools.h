@@ -45,7 +45,7 @@ public:
    * will be placed in the center. The border area will be filled
    * up with current style's base color. 
    */
-  static QPixmap fillUp(int w, int h, QPixmap p);
+  static QPixmap fillUp(int w, int h, const QPixmap& p);
 
   /** Creates an opaque area in a pixmap
    * This is useful for drawing a pixmap into 
@@ -53,7 +53,7 @@ public:
    * opaque in every pixel, otherwise it is not 
    * possible to draw into.
    */
-  static QPixmap fillOpaqueRect(int x, int y, int w, int h, QPixmap p);
+  static QPixmap fillOpaqueRect(int x, int y, int w, int h, const QPixmap& p);
 
   /** Creates a transparent area in a pixmap
    * This is useful for resizing a pixmap. The
@@ -61,12 +61,18 @@ public:
    * by making transparent the whole area and by making 
    * opaque the area of the original pixmap.
    */
-  static QPixmap fillTransparentRect(int x, int y, int w, int h, QPixmap p);
+  static QPixmap fillTransparentRect(int x, int y, int w, int h, const QPixmap& p);
 
   /** Does the same as @ref fillUp() but does not move the pixmap
    * to the center.
    */
-  static QPixmap resize(int w, int h, QPixmap p);
+  static QPixmap resize(int w, int h, const QPixmap& p);
+
+  /** Merges the two pixmaps  \a p1 and \a p2 to one pixmap in
+   * vertical order if \a vertical is true, in horizontal order 
+   * otherwise.
+   */
+  static QPixmap merge( const QPixmap& p1, const QPixmap& p2, bool vertical );
 
   /** Returns whether the given url is a:
    * 0: an existing file

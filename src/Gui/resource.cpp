@@ -61,6 +61,11 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 #include "DlgSettingsMacroImp.h"
 #include "DlgOnlineHelpImp.h"
 
+#include "DlgToolbarsImp.h"
+#include "DlgActionsImp.h"
+#include "DlgCmdbarsImp.h"
+#include "DlgCommandsImp.h"
+
 using namespace Gui;
 using namespace Gui::Dialog;
 
@@ -72,14 +77,20 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-  Gui::Dialog::DlgPreferencesImp::addGroup    ( QObject::tr("FreeCAD"     ) );
-  new PrefPageProducer<DlgGeneralImp>         ( QObject::tr("General"     ) );
-  new PrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr("Editor"      ) );
-  new PrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr("Macros"      ) );
-  new PrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr("Online help" ) );
-  Gui::Dialog::DlgPreferencesImp::addGroup    ( QObject::tr("Viewer"      ) );
-  new PrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr("Help Viewer" ) );
-  new PrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr("3D View"     ) );
+  new PrefPageProducer<DlgGeneralImp>         ( QObject::tr( "FreeCAD" ) );
+  new PrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr( "FreeCAD" ) );
+  new PrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr( "FreeCAD" ) );
+  new PrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr( "FreeCAD" ) );
+  new PrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr( "Viewer"  ) );
+  new PrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr( "Viewer"  ) );
+
+  // ADD YOUR CUSTOMIZE PAGES HERE
+  //
+  //
+  new CustomPageProducer<DlgCustomCommandsImp>;
+  new CustomPageProducer<DlgCustomToolbarsImp>;
+  new CustomPageProducer<DlgCustomCmdbarsImp>;
+  new CustomPageProducer<DlgCustomActionsImp>;
 
   // ADD YOUR PREFERENCE WIDGETS HERE
   //

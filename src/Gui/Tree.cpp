@@ -223,27 +223,6 @@ void TreeView::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDo
 
 }
 
-
-void TreeView::resizeEvent ( QResizeEvent * e) 
-{
-  DockView::resizeEvent( e );return;
-	// routing the resize event to the child
-
- 	_pcListView->resize(e->size());
-
-    QSize vs = _pcListView->viewportSize( 0, _pcListView->contentsHeight() );
-
-	_pcListView->header()->sectionSize( 1 );
-    int ns = vs.width() - _pcListView->header()->sectionSize( 0 );
-    if ( ns < 16 )
-	ns = 16;
-	
-    _pcListView->header()->resizeSection( 1, ns );
-    _pcListView->header()->repaint( _pcListView->header()->width() - _pcListView->header()->sectionSize( 1 ), 0, _pcListView->header()->sectionSize( 1 ), _pcListView->header()->height() );
-
-
-}
-
 bool TreeView::OnMsg(const char* pMsg)
 {
 	//printf("MsgTree: %s View: %p\n",pMsg,this);

@@ -328,6 +328,8 @@ int FCDocument::GetAvailableRedos() const
 void FCDocument::Recompute()
 {
   _hDoc->Recompute(); 
+
+  Notify(FCDocChanges());
 }
 
 /// Returns the storage string of the document.

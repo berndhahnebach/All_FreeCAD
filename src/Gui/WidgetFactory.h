@@ -33,6 +33,7 @@
 #include "../Base/Factory.h"
 #include "../Base/PyExportImp.h"
 #include "DlgPreferencesImp.h"
+#include "DlgCustomizeImp.h"
 
 class QPushButton;
 class QGridLayout;
@@ -111,10 +112,10 @@ public:
   /** 
    * Register a special type of preference page to the WidgetFactoryInst.
    */
-  PrefPageProducer (const QString& caption)  : mCaption(caption)
+  PrefPageProducer (const QString& group)
   {
-    WidgetFactoryInst::Instance().AddProducer(mCaption.latin1(), this);
-    Gui::Dialog::DlgPreferencesImp::addPage(caption);
+    WidgetFactoryInst::Instance().AddProducer( typeid(CLASS).name(), this );
+    Gui::Dialog::DlgPreferencesImp::addPage( typeid(CLASS).name(), group );
   }
 
   virtual ~PrefPageProducer (){}
@@ -126,9 +127,37 @@ public:
   {
     return (void*)(new CLASS);
   }
+};
 
-private:
-  QString mCaption;
+// --------------------------------------------------------------------
+
+/**
+ * The CustomPageProducer class is a value-based template class that provides 
+ * the ability to create custom pages dynamically. 
+ * \author Werner Mayer
+ */
+template <class CLASS>
+class CustomPageProducer: public Base::AbstractProducer
+{
+public:
+  /** 
+   * Register a special type of customize page to the WidgetFactoryInst.
+   */
+  CustomPageProducer ()
+  {
+    WidgetFactoryInst::Instance().AddProducer( typeid(CLASS).name(), this );
+    Gui::Dialog::DlgCustomizeImp::addPage( typeid(CLASS).name() );
+  }
+
+  virtual ~CustomPageProducer (){}
+
+  /** 
+   * Creates an instance of the specified widget.
+   */
+  virtual void* Produce () const
+  {
+    return (void*)(new CLASS);
+  }
 };
 
 // --------------------------------------------------------------------

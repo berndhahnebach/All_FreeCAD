@@ -110,19 +110,13 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
   FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
   hPrefGrp = hPrefGrp->GetGroup("Windows")->GetGroup("Editor");
 
-  FCParameterGrp::handle hPrefSize = hPrefGrp->GetGroup("FontSize");
-  int cur = hPrefSize->GetInt( "currentItem" );
-  QString pattern = QString("Item%1").arg(cur);
-  QString txt = hPrefSize->GetASCII( pattern.latin1() ).c_str();
+  QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
 
   bool ok;
   int size = txt.toInt(&ok);
   if ( !ok ) size = 9; 
 
-  FCParameterGrp::handle hPrefFont = hPrefGrp->GetGroup("FontDB");
-  cur = hPrefFont->GetInt( "currentItem" );
-  pattern = QString("Item%1").arg(cur);
-  QString font = hPrefFont->GetASCII( pattern.latin1(), "Courier" ).c_str();
+  QString font = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
 
   QFont serifFont( font, size, QFont::Normal );
   setFont(serifFont);
@@ -953,3 +947,22 @@ bool PythonEditView::isSavedOnce()
 {
   return (!_fileName.isEmpty());
 }
+
+/**
+ * \Todo: Get the undo history.
+ */
+QStringList PythonEditView::undoActions() const
+{
+  QStringList lst;
+  return lst;
+}
+
+/**
+ * \Todo: Get the redo history.
+ */
+QStringList PythonEditView::redoActions() const
+{
+  QStringList lst;
+  return lst;
+}
+

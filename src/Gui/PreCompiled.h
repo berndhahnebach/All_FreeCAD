@@ -116,6 +116,8 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Poly_Connect.hxx>
 #include <BRepBuilderAPI_NurbsConvert.hxx>
+#include <TFunction_Logbook.hxx>
+
 
 // OCAF
 #include <TDF_Label.hxx>

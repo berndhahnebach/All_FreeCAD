@@ -29,6 +29,7 @@
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <TPrsStd_AISViewer.hxx>
+#include <TPrsStd_AISPresentation.hxx>
 
 #include "../Base/PyExport.h"
 #include "../App/Document.h"
@@ -157,6 +158,8 @@ private:
 	// the doc/Document
 	FCDocument*						_pcDocument;
 	Base::PyHandle<FCDocument>	    _hcDocument;
+
+  Handle(TPrsStd_AISPresentation) _ActivePresentation;
 
 	/** @name attributes for the UNDO REDO facility
 	 */

@@ -33,10 +33,12 @@
 #	else
 #		include <Graphic3d_WNTGraphicDevice.hxx>
 #	endif
+# include <TNaming_NamedShape.hxx>
 #endif
 
 
 #include "../App/Document.h"
+#include "../App/DocType.h"
 #include "Application.h"
 #include "Document.h"
 #include "View3D.h"
@@ -87,7 +89,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	_hContext->Deactivate(hTrihedron);
 
 	// alwayes create at least one view
-	if(GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/View")->GetBool("UseInventorViewer",true) )
+	if(GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/View")->GetBool("UseInventorViewer",false) )
 		CreateView("View3DIv");
 	else
 		CreateView("");
@@ -108,7 +110,9 @@ FCGuiDocument::~FCGuiDocument()
 
 void FCGuiDocument::OnChange(FCDocument::SubjectType &rCaller,FCDocument::MessageType Reason)
 {
+  Base::Console().Log("FCGuiDocument::OnChange()");
 
+  Update();
 
 
 }
@@ -202,6 +206,17 @@ void FCGuiDocument::DetachView(FCBaseView* pcView, bool bPassiv)
 
 void FCGuiDocument::Update(void)
 {
+
+  TDF_Label L = dynamic_cast<App::DocTypeStd*>(_pcDocument->GetDocType())->GetActive();
+
+  if(! L.IsNull()){
+
+ 	  // Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
+	  _ActivePresentation = TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+	  // Display it
+	  _ActivePresentation->Display(1);
+  }
+
 	std::list<FCBaseView*>::iterator It;
 
 	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
