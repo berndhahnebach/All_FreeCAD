@@ -450,3 +450,5 @@ Version: V0.1B98 Date: Fri Nov 12 18:31:46 2004 +++++++++++++++++++++++++++++++
 
 Version: V0.1B99 Date: Fri Nov 26 22:40:56 2004 +++++++++++++++++++++++++++++++
 + replace QextMDI by own impl. using QWorkspace and QDockWindow
++ Tabbar added to the bottom of the workspace area
+

@@ -108,7 +108,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
 
   // fourth page
   //
-  insertTab(new Gui::Dialog::DlgCustomActionsImp( tabWidget, "tab" ), tr("Actions"));
+  insertTab(new Gui::Dialog::DlgCustomActionsImp( tabWidget, "tab" ), tr("Macros"));
 
 
   FCDlgCustomizeBaseLayout->addWidget( tabWidget, 0, 0 );

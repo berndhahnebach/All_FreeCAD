@@ -28,6 +28,8 @@
 #include "PropertyPage.h"
 
 namespace Gui {
+class PythonSyntaxHighlighter;
+
 namespace Dialog {
 
 /** This class implements a preferences page for the editor settings.
@@ -56,6 +58,7 @@ private:
 
 private:
   std::map<QString, long> _mColors; /**< Color map containing color settings */
+  Gui::PythonSyntaxHighlighter* pythonSyntax;
 
   DlgSettingsEditorImp( const DlgSettingsEditorImp & );
   DlgSettingsEditorImp& operator=( const DlgSettingsEditorImp & );

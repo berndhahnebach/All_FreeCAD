@@ -23,13 +23,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <string>
-# include <list>
-# include <vector>
 # include <qdir.h>
 # include <qpainter.h>
-# include <qpixmap.h>
-# include <qtoolbar.h>
 #endif
 
 #include "BitmapFactory.h"
@@ -64,12 +59,12 @@ void BitmapFactoryInst::Destruct (void)
 
 void BitmapFactoryInst::addPath(const char* sPath)
 {
-  _vsPaths.push_back(sPath);
+  _vsPaths.push_back( sPath );
 }
 
 void BitmapFactoryInst::removePath(const char* sPath)
 {
-  _vsPaths.erase(std::find<std::vector<std::string>::iterator,std::string>(_vsPaths.begin(),_vsPaths.end(),sPath));
+  _vsPaths.erase( _vsPaths.find( sPath ) );
 }
 
 void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
@@ -85,16 +80,16 @@ void BitmapFactoryInst::removeXPM(const char* sName)
 QPixmap BitmapFactoryInst::pixmap(const char* sName)
 {
   // first try to find it in the build in XPM
-  std::map<std::string,const char**>::const_iterator It = _mpXPM.find(sName);
+  QMap<QString,const char**>::ConstIterator It = _mpXPM.find(sName);
 
   if(It != _mpXPM.end())
-    return QPixmap(It->second);
+    return QPixmap( It.data() );
 
   // try to find it in the given directorys
-  for(std::vector<std::string>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
+  for ( QStringList::ConstIterator It2 = _vsPaths.begin(); It2 != _vsPaths.end(); It2++ )
   {
     // list dir
-    QDir d( (*It2).c_str() );
+    QDir d( *It2 );
     if( QFile(d.path()+QDir::separator() + sName +".bmp").exists() )
       return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
     if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
@@ -143,4 +138,14 @@ QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position
   pt.end();
 
   return p;
+}
+
+QStringList BitmapFactoryInst::pixmapNames() const
+{
+  QStringList names;
+  for ( QMap<QString,const char**>::ConstIterator It = _mpXPM.begin(); It != _mpXPM.end(); ++It )
+  {
+    names << It.key();
+  }
+  return names;
 }

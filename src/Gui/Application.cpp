@@ -194,6 +194,7 @@ struct ApplicationWindowP
 	FCCommandManager _cCommandManager;
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
+  QMap<QObject*, QTab*> _tabIds;
 };
 
 ApplicationWindow::ApplicationWindow()
@@ -214,15 +215,16 @@ ApplicationWindow::ApplicationWindow()
   d = new ApplicationWindowP;
   QVBox* vb = new QVBox( this );
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-  d->_pWorkspace = new QWorkspace( vb );
+  d->_pWorkspace = new QWorkspace( vb, "workspace" );
 
   QPixmap backgnd(( const char** ) background );
   d->_pWorkspace->setPaletteBackgroundPixmap( backgnd );
-  d->_tabs = new QTabBar( vb );
+  d->_tabs = new QTabBar( vb, "tabBar" );
   d->_tabs->setShape( QTabBar::RoundedBelow );
   d->_pWorkspace->setScrollBarsEnabled( true );
   setCentralWidget( vb );
   connect( d->_pWorkspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
+  connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
 
 //	setCaption( "Qt FreeCAD" );
 	setCaption( "FreeCAD" );
@@ -534,6 +536,7 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 
 void ApplicationWindow::addWindow( MDIView* view )
 {
+  // make workspace parent of view
   view->reparent( d->_pWorkspace, QPoint() );
   connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
   // show the very first window in maximized mode
@@ -541,66 +544,70 @@ void ApplicationWindow::addWindow( MDIView* view )
     view->showMaximized();
   else
     view->show();
-/*
-  connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowRemoved() ) );
 
-  QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
-  int id=0;
-  for ( int i=0; i<(int)windows.count(); i++)
-  {
-    if ( view == windows.at( i ) )
-    {
-      id = i;
-      break;
-    }
-  }
+  // being informed when the view is destroyed
+  connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
 
+  // add a new tab to our tabbar
   QTab* tab = new QTab;
+  d->_tabIds[ view ] = tab;
   tab->setText( view->caption() );
-  tab->setIconSet( QPixmap( FCIcon ) );
-  tab->setIdentifier( id );
+  if ( view->icon() )
+    tab->setIconSet( *view->icon() );
+  d->_tabs->setToolTip( d->_tabs->count(), view->caption() );
   d->_tabs->addTab( tab );
-  d->_tabs->setToolTip( id, view->caption() );
   d->_tabs->show();
-  d->_tabs->update();*/
+  d->_tabs->update();
+  d->_tabs->blockSignals( true ); // avoid that selected() signal is emitted
+  d->_tabs->setCurrentTab( tab );
+  d->_tabs->blockSignals( false );
 }
 
-void ApplicationWindow::onWindowRemoved()
+void ApplicationWindow::onWindowDestroyed()
 {
-  QStringList titles;
-  QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
-  for ( int i=0; i<(int)windows.count(); i++)
-  {
-    titles << windows.at( i )->caption();
-  }
+  QObject* obj = (QObject*)sender();
+  QMap<QObject*, QTab*>::Iterator it = d->_tabIds.find( obj );
 
-  for ( int j=0; j<(int)d->_tabs->count(); j++ )
+  if ( it != d->_tabIds.end() )
   {
-    QTab* tab = d->_tabs->tabAt( j );
-    QString txt = tab->text();
-    if ( titles.find( txt) == titles.end() )
-    {
-      d->_tabs->removeTab( tab );
-      if ( d->_tabs->count() == 0 )
-        d->_tabs->hide();
-      break;
-    }
+    QTab* tab = it.data();
+    d->_tabs->removeTab( tab );
+    if ( d->_tabs->count() == 0 )
+      d->_tabs->hide();
   }
 }
 
 void ApplicationWindow::onWindowActivated( QWidget* w )
 {
   MDIView* view = dynamic_cast<MDIView*>(w);
-  emit windowActivated( view );
+  if ( !view ) return; // either no MDIView or no valid object
+  view->SetActive();
 
-  for ( int j=0; j<(int)d->_tabs->count(); j++ )
+  QMap<QObject*, QTab*>::Iterator it = d->_tabIds.find( view );
+  if ( it != d->_tabIds.end() )
   {
-    QTab* tab = d->_tabs->tabAt( j );
-    QString txt = tab->text();
-    if ( txt == view->caption() )
+    QTab* tab = it.data();
+    d->_tabs->blockSignals( true ); // avoid that selected() signal is emitted
+    d->_tabs->setCurrentTab( tab );
+    d->_tabs->blockSignals( false );
+  }
+}
+
+void ApplicationWindow::onTabSelected( int i)
+{
+  QTab* tab = d->_tabs->tab( i );
+  if ( tab )
+  {
+    // get appropriate MDIView
+    for ( QMap<QObject*, QTab*>::ConstIterator it = d->_tabIds.begin(); it != d->_tabIds.end(); ++it )
     {
-      d->_tabs->setCurrentTab( tab );
-      break;
+      if ( it.data() == tab )
+      {
+        MDIView* view = dynamic_cast<MDIView*>(it.key());
+        if ( !view ) return; // either no MDIView or no valid object
+        view->setFocus();
+        break;
+      }
     }
   }
 }

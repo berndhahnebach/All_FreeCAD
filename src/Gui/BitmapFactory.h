@@ -27,10 +27,9 @@
 #include "../Base/Factory.h"
 
 #ifndef _PreComp_
-# include <map>
-# include <string>
-# include <vector>
+# include <qmap.h>
 # include <qpixmap.h>
+# include <qstringlist.h>
 #endif
 
 namespace Gui {
@@ -70,6 +69,10 @@ public:
    * The the smaller pixmap is drawn into the bigger pixmap.
    */
   QPixmap pixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
+  /** Returns the names of all registered pixmaps.
+   * To get the appropriate pixmaps call pixmap() for each name.
+   */
+  QStringList pixmapNames() const;
 
 private:
   static BitmapFactoryInst* _pcSingleton;
@@ -77,8 +80,8 @@ private:
   BitmapFactoryInst(){}
   ~BitmapFactoryInst(){}
 
-  std::map<std::string,const char**> _mpXPM;
-  std::vector<std::string>          _vsPaths;
+  QMap<QString,const char**> _mpXPM;
+  QStringList _vsPaths;
 };
 
 /// Get the global instance

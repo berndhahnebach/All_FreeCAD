@@ -57,6 +57,9 @@ DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, const char* name, b
     listBox2->setCurrentItem( active );
 
   listBox2->setFocus();
+
+  connect( listBox2, SIGNAL( doubleClicked ( QListBoxItem * ) ), this, SLOT( accept() ) );
+  connect( listBox2, SIGNAL( returnPressed ( QListBoxItem * ) ), this, SLOT( accept() ) );
 }
 
 /** Destroys the object and frees any allocated resources */

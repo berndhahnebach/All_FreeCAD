@@ -278,6 +278,69 @@ PythonSyntaxHighlighter::~PythonSyntaxHighlighter()
   delete d;
 }
 
+/** Sets the color \a col to the paragraph type \a type. 
+ * Afterwards relighlight() is called, therefore you should
+ * not call this method very often because the whóle text has
+ * to be rehighlighted.
+ */
+void PythonSyntaxHighlighter::setColor( Paragraph type, const QColor& col )
+{
+  switch ( type )
+  {
+  case Normal:
+    d->cNormalText = col;
+    break;
+  case Comment:
+    d->cComment = col;
+    break;
+  case Blockcomment:
+    d->cBlockcomment = col;
+    break;
+  case Literal:
+    d->cLiteral = col;
+    break;
+  case Number:
+    d->cNumber = col;
+    break;
+  case Operator:
+    d->cOperator = col;
+    break;
+  case Keywords:
+    d->cKeyword = col;
+    break;
+  default:
+    break;
+  }
+  rehighlight();
+}
+
+/** Sets the color \a col to the paragraph type \a type. 
+ * This method is provided for convenience to specify the paragraph type
+ * by its name.
+ */
+void PythonSyntaxHighlighter::setColor( const QString& type, const QColor& col )
+{
+  if ( type == "Text" )
+    d->cNormalText = col;
+  else if ( type == "Comment" )
+    d->cComment = col;
+  else if ( type == "Block comment" )
+    d->cBlockcomment = col;
+  else if ( type == "Number" )
+    d->cNumber = col;
+  else if ( type == "String" )
+    d->cLiteral = col;
+  else if ( type == "Keyword" )
+    d->cKeyword = col;
+  else if ( type == "Class name" )
+    d->cClassName = col;
+  else if ( type == "Define name" )
+    d->cDefineName = col;
+  else if ( type == "Operator" )
+    d->cOperator = col;
+  rehighlight();
+}
+
 /**
  * If \a b is set to true the following input to the editor is highlighted as error.
  */

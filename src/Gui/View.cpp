@@ -131,9 +131,6 @@ void FCBaseView::AddViewProvider(ViewProvider* pcProvider)
 MDIView::MDIView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
 	:QMainWindow(parent, name, wflags), FCBaseView(pcDocument)
 {
-	// sends the activation signal to the view, which set the active document and view in ApplicationWindow
-	connect(ApplicationWindow::Instance, SIGNAL(windowActivated(MDIView*)), this, SLOT(SetActive()));
-
 }
 
 MDIView::~MDIView()

@@ -85,110 +85,6 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="1" column="1">
-            <property name="name">
-                <cstring>GroupBox2</cstring>
-            </property>
-            <property name="title">
-                <string>Window settings</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="Gui::PrefCheckBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>EnableLineNumber</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
-                    </property>
-                    <property name="checked" stdset="0">
-                        <bool>true</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>EnableLineNumber</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
-                    </property>
-                    <property name="text" stdset="0">
-                        <string>Enable line numbers</string>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox" row="1" column="0">
-                    <property name="name">
-                        <cstring>EnableFolding</cstring>
-                    </property>
-                    <property name="checked" stdset="0">
-                        <bool>true</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>EnableFolding</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
-                    </property>
-                    <property name="text" stdset="0">
-                        <string>Enable folding</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox" row="0" column="1">
-            <property name="name">
-                <cstring>GroupBox7</cstring>
-            </property>
-            <property name="title">
-                <string>Language:</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QComboBox" row="1" column="0">
-                    <item>
-                        <property name="text">
-                            <string>Python</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>XML</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>Languages</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>TextLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Select language:</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
         <widget class="QGroupBox" row="1" column="0">
             <property name="name">
                 <cstring>GroupBox1</cstring>
@@ -334,6 +230,102 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QGroupBox" row="0" column="1">
+            <property name="name">
+                <cstring>GroupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Window settings</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="Gui::PrefCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>EnableLineNumber</cstring>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>TabFocus</enum>
+                    </property>
+                    <property name="checked" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>EnableLineNumber</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>Enable line numbers</string>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox" row="1" column="0">
+                    <property name="name">
+                        <cstring>EnableFolding</cstring>
+                    </property>
+                    <property name="checked" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>EnableFolding</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>Enable folding</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="1" column="1">
+            <property name="name">
+                <cstring>GroupBox2_2</cstring>
+            </property>
+            <property name="title">
+                <string>Sample</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QTextEdit" row="0" column="0">
+                    <property name="name">
+                        <cstring>textEdit1</cstring>
+                    </property>
+                    <property name="text">
+                        <string># Short Python sample
+import sys
+def foo(begin, end):
+	i=begin
+	while (i&lt;end):
+		print i
+		i=i+1
+		print "Text"
+
+foo(0, 20)
+</string>
+                    </property>
+                    <property name="wordWrap">
+                        <enum>WidgetWidth</enum>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
     </grid>
 </widget>
 <customwidgets>
@@ -413,8 +405,8 @@
 <includehints>
     <includehint>gui::prefcombobox.h</includehint>
     <includehint>gui::prefcombobox.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
     <includehint>gui::colorbutton.h</includehint>
+    <includehint>gui::prefcheckbox.h</includehint>
+    <includehint>gui::prefcheckbox.h</includehint>
 </includehints>
 </UI>

@@ -209,7 +209,6 @@ public:
 signals:
 	void sendQuit();
   void timeEvent();
-  void windowActivated( MDIView* );
 
 public:
   void Polish();
@@ -248,8 +247,9 @@ private slots:
   void onWindowActivated( QWidget* );
   void onWindowsMenuAboutToShow();
   void onWindowsMenuActivated( int id );
-  void onWindowRemoved();
+  void onWindowDestroyed();
   void onToggleStatusBar();
+  void onTabSelected( int i);
 
 private:
   struct ApplicationWindowP* d;

@@ -57,7 +57,7 @@ private slots:
   void onAddCustomAction();
   /** Deletes a custom action */
   void onDelCustomAction();
-  /** Opens a file dialog to select a pixmap */
+  /** Opens a iconview to select a pixmap */
   void onCustomActionPixmap();
 
 private:
@@ -75,7 +75,7 @@ private:
 
 private:
   bool bShown; /**< For internal use only*/
-  QString m_sPixmap; /**< Path of the specified pixmap */
+  QString m_sPixmap; /**< Name of the specified pixmap */
   std::vector<FCCommand*> _aclNewMacros; /**< All temporary created actions */
   std::vector<FCCommand*> _aclDelMacros; /**< All temporary deleted actions */
 };

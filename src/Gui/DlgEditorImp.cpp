@@ -30,6 +30,7 @@
 #endif
 
 #include "DlgEditorImp.h"
+#include "PythonEditor.h"
 
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -75,12 +76,16 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
     FontDB->insertStringList( familyNames );
     FontDB->setCurrentText( item );
   }
+
+  pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
+  
 }
 
 /** Destroys the object and frees any allocated resources */
 DlgSettingsEditorImp::~DlgSettingsEditorImp()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
+  delete pythonSyntax;
 }
 
 /** No implementation */
@@ -99,7 +104,7 @@ void DlgSettingsEditorImp::restorePreferences()
     _mColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().color(*it));
   }
 
-  Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
+//  Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
 }
 
 /** Saves the color map */
@@ -110,7 +115,7 @@ void DlgSettingsEditorImp::savePreferences()
     hPrefGrp->SetInt(it->first.latin1(), it->second);
   }
 
-  hPrefGrp->SetInt("Lexer", Languages->currentItem());
+//  hPrefGrp->SetInt("Lexer", Languages->currentItem());
 }
 
 /** Searches for the corresponding color value to \e name in @ref DefColorMap and
@@ -142,6 +147,7 @@ void DlgSettingsEditorImp::onChosenColor()
 
   
   _mColors[text] = lcol;
+  pythonSyntax->setColor( text, col );
 }
 
 // -------------------------------------------------------------------

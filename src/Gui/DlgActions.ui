@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Actions</string>
+        <string>Macros</string>
     </property>
     <grid>
         <property name="name">
@@ -30,7 +30,7 @@
                 <cstring>GroupBox7</cstring>
             </property>
             <property name="title">
-                <string>Setup Custom Actions</string>
+                <string>Setup Custom Macros</string>
             </property>
             <grid>
                 <property name="name">
@@ -81,7 +81,7 @@
                 <widget class="QListView" row="0" column="0" rowspan="10" colspan="1">
                     <column>
                         <property name="text">
-                            <string>Custom Actions</string>
+                            <string>Custom Macros</string>
                         </property>
                         <property name="clickable">
                             <bool>false</bool>
@@ -319,7 +319,7 @@
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1ddec44f503c0ae2a154410f53d0ed20e2bf6bdb656dd6861dd23d9a66591b0587fd1654235ebded6f0edcd53e419d87ae7b1f4f9b8f906d0bfe012317426a70b07bdc2f3ec77f8ed6b89559061a0343d06a124cc105596482585094bc0ae599b04646c9018926491b2205e140c485cace25755c175d0a967b622ff900b8cc9c7d29af594ea722d589167f813aa852ba07d94b9dce296e883fe7bb163f23896753</data>
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
     </image>
 </images>
 <tabstops>
@@ -335,6 +335,6 @@
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>accellineedit.h</includehint>
+    <includehint>gui::accellineedit.h</includehint>
 </includehints>
 </UI>

@@ -25,14 +25,16 @@
 
 #ifndef _PreComp_
 # include <qaccel.h>
+# include <qdir.h>
+# include <qiconview.h>
 # include <qlabel.h>
+# include <qlayout.h>
 # include <qpushbutton.h>
 # include <qtoolbutton.h>
 #endif
 
 #include "DlgActionsImp.h"
 #include "Application.h"
-#include "FileDialog.h"
 #include "Tools.h"
 #include "Command.h"
 #include "BitmapFactory.h"
@@ -283,10 +285,6 @@ void DlgCustomActionsImp::onAddCustomAction()
 
   if (!m_sPixmap.isEmpty())
     macro->SetPixmap(m_sPixmap.latin1());
-//  if (!m_sPixmap.isEmpty())
-//  macro->SetHelpPage("");
-//  if (!m_sPixmap.isEmpty())
-//  macro->SetHelpURL("");
   if (!actionAccel->text().isEmpty())
     macro->SetAccel(QAccel::stringToKey(actionAccel->text()));
   actionAccel->clear();
@@ -346,14 +344,73 @@ void DlgCustomActionsImp::onDelCustomAction()
 
 void DlgCustomActionsImp::onCustomActionPixmap()
 {
-  QString pixPath = FileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm *.gif *.png *.bmp)",this, "", 
-    tr("Choose a Pixmap"));
-  if (!pixPath.isEmpty())
+  // create a dialog showing all pixmaps
+  //
+  QDialog* dlg = new QDialog(this, "Dialog", true);
+  dlg->setCaption( tr("Choose pixmap") );
+  dlg->setSizeGripEnabled( true );
+  QGridLayout* layout = new QGridLayout( dlg, 1, 1, 11, 6 ); 
+
+  QIconView* iconView = new QIconView( dlg );
+  iconView->setItemsMovable( false );
+  iconView->setWordWrapIconText( false );
+  iconView->setResizeMode(QIconView::Adjust);
+  iconView->setGridX(50);
+  iconView->setGridY(50);
+  layout->addWidget( iconView, 0, 0 );
+
+  QIconViewItem* item;
+  QStringList names = BitmapFactory().pixmapNames();
+  for ( QStringList::Iterator it = names.begin(); it != names.end(); ++it )
   {
-    m_sPixmap = pixPath.mid(pixPath.findRev("/") + 1);
-    m_sPixmap = m_sPixmap.left(m_sPixmap.findRev("."));
-    PixmapLabel->setPixmap(QPixmap(pixPath));
+    item = new QIconViewItem( iconView );
+    item->setPixmap( BitmapFactory().pixmap( (*it).latin1() ) );
+    item->setText( *it );
   }
+
+  QHBoxLayout* hbox = new QHBoxLayout( 0, 0, 6 ); 
+
+  // Ok button
+  QPushButton* buttonOk = new QPushButton( dlg, "buttonOk" );
+  buttonOk->setAutoDefault( true );
+  buttonOk->setDefault( true );
+  buttonOk->setText( tr( "&OK" ) );
+  buttonOk->setAccel( QKeySequence( QString::null ) );
+  hbox->addWidget( buttonOk );
+
+  QSpacerItem* spacer = new QSpacerItem( 50, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  hbox->addItem( spacer );
+
+  // Cancel button
+  QPushButton* buttonCancel = new QPushButton( dlg, "buttonCancel" );
+  buttonCancel->setAutoDefault( true );
+  hbox->addWidget( buttonCancel );
+  buttonCancel->setText( tr( "&Cancel" ) );
+  buttonCancel->setAccel( QKeySequence( QString::null ) );
+
+  layout->addLayout( hbox, 1, 0 );
+  dlg->resize( QSize(400, 280) );
+  
+  // signals and slots connections
+  connect( buttonOk, SIGNAL( clicked() ), dlg, SLOT( accept() ) );
+  connect( buttonCancel, SIGNAL( clicked() ), dlg, SLOT( reject() ) );
+  connect( iconView, SIGNAL( clicked ( QIconViewItem * ) ), dlg, SLOT( accept() ) );
+
+  dlg->exec();
+
+  if ( dlg->result() == QDialog::Accepted )
+  {
+    QIconViewItem* item = iconView->currentItem();
+
+    if ( item )
+    {
+      m_sPixmap = item->text();
+      PixmapLabel->setPixmap( *item->pixmap() );
+    }
+  }
+
+  // delete this dialog with all its children
+  delete dlg;
 }
 
 void DlgCustomActionsImp::newActionName()

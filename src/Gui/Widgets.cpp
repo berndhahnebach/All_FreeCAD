@@ -416,6 +416,7 @@ void CreateToolBarDialog::accept ()
 AccelLineEdit::AccelLineEdit ( QWidget * parent, const char * name )
   : QLineEdit(parent, name)
 {
+  setText(tr("none"));
 }
 
 /**
@@ -424,30 +425,50 @@ AccelLineEdit::AccelLineEdit ( QWidget * parent, const char * name )
 void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
 {
   QString txt;
-  clear();
+  setText(tr("none"));
 
   if (e->ascii() == 0)
     return; // only meta key pressed
 
+  int key = e->key();
+
+  // I hope this works for every keyboard
+  if ( key == Key_mu )
+    key = Key_M;
+  else if ( key == Key_At )
+    key = Key_Q;
+
+  // ignore these keys
+  if ( key < Key_0 || key > Key_Z )
+     return;
+
   switch(e->state())
   {
   case ControlButton:
-    txt += QAccel::keyToString(CTRL+e->key());
+    txt += QAccel::keyToString(CTRL+key);
     setText(txt);
     break;
   case ControlButton+AltButton:
-    txt += QAccel::keyToString(CTRL+ALT+e->key());
+    txt += QAccel::keyToString(CTRL+ALT+key);
     setText(txt);
     break;
   case ControlButton+ShiftButton:
-    txt += QAccel::keyToString(CTRL+SHIFT+e->key());
+    txt += QAccel::keyToString(CTRL+SHIFT+key);
     setText(txt);
     break;
   case ControlButton+AltButton+ShiftButton:
-    txt += QAccel::keyToString(CTRL+ALT+SHIFT+e->key());
+    txt += QAccel::keyToString(CTRL+ALT+SHIFT+key);
     setText(txt);
     break;
-  default:
+  case AltButton:
+  case ShiftButton:
+    break;
+  default:// CTRL
+    if ( key != Key_Backspace && key != Key_Delete)
+    {
+      txt += QAccel::keyToString(CTRL+key);
+      setText(txt);
+    }
     break;
   }
 }
