@@ -30,11 +30,13 @@
 
 // STL 
 #include <string>
+#include <list>
 #include <map>
 #include <vector>
 #include <set>
 #include <stack>
 #include <strstream>
+#include <queue>
 
 #include <iostream>
 
