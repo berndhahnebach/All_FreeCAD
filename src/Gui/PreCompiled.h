@@ -25,6 +25,7 @@
 #include <list>
 #include <set>
 #include <algorithm>
+#include <stack>
 
 // OpenCasCade Base
 #include <Standard_Failure.hxx>

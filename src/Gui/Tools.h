@@ -69,4 +69,16 @@ class FCTools
     static void clearToolButtons(QToolBar* tb);
 };
 
+template <class T>
+const T& FCmax (const T& a, const T& b)
+{
+  return (a > b ? a : b);
+}
+
+template <class T>
+const T& FCmin (const T& a, const T& b)
+{
+  return (a < b ? a : b);
+}
+
 #endif // __FC_TOOLS_H__

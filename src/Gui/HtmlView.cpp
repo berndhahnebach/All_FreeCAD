@@ -40,7 +40,6 @@
 #include "Application.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
-#include "../Base/Documentation.h"
 #ifndef FC_OS_LINUX
 #include <direct.h>
 #endif
@@ -54,8 +53,9 @@
 #  define _chdir chdir
 #endif
 
+
+#include <qvaluestack.h>
 #include <qstylesheet.h>
-#include <qsimplerichtext.h>
 
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
@@ -191,11 +191,258 @@ static unsigned char cm_bits[] = {		// cursor bitmap mask
  0xf0,0x3f,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
 
-//// FCTextBrowser //////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+
+class FCTextBrowserPrivate
+{
+  public:
+    enum TMode {Backward, Forward, None};
+
+    FCTextBrowserPrivate();
+
+    QValueStack<QString> fdStack;
+    QValueStack<QString> bdStack;
+    QCursor * cursor;
+    bool highlighted;
+
+    bool getType (const QString& url, TDocType type);
+    TMode tMode;
+    int minWidth;
+};
+
+FCTextBrowserPrivate::FCTextBrowserPrivate()
+{
+  tMode = FCTextBrowserPrivate::None;
+  minWidth = 1000;
+}
+
+bool FCTextBrowserPrivate::getType(const QString& url, TDocType type)
+{
+  if (url.find(".html", 0, false) != -1)
+  {
+    type = Html;
+    return true;
+  }
+  else if (url.find(".tex", 0, false) != -1)
+  {
+    type = Tech; // LaTeX
+    return true;
+  }
+  else if(url.find(".script", 0, false) != -1)
+  {
+    type = Script;
+    return true;
+  }
+
+  return false;
+}
+
+// --------------------------------------------------------------------------
+
+class FCBrowserFactoryData
+{
+  private:
+    FCBrowserFactoryData();
+    ~FCBrowserFactoryData();
+    static FCBrowserFactoryData *_pcSingleton;
+
+  public:
+	  static void Destruct(void);
+	  static FCBrowserFactoryData &Instance();
+    QStringList mPaths;
+    QStringList mRoots;
+};
+
+FCBrowserFactoryData * FCBrowserFactoryData::_pcSingleton = 0;
+
+void FCBrowserFactoryData::Destruct(void)
+{
+  assert(_pcSingleton);
+	delete _pcSingleton;
+}
+
+FCBrowserFactoryData & FCBrowserFactoryData::Instance()
+{
+	if(!_pcSingleton)
+	{
+		_pcSingleton = new FCBrowserFactoryData;
+	}
+
+  return *_pcSingleton;
+}
+
+FCBrowserFactoryData::FCBrowserFactoryData()
+{
+}
+
+FCBrowserFactoryData::~FCBrowserFactoryData()
+{
+}
+
+// --------------------------------------------------------------------------
+
+class FCDocumentationSource : public QStoredDrag
+{
+  public:
+    FCDocumentationSource( const char * mimeType, QString path, TDocType type )
+      : QStoredDrag(mimeType, 0L, 0), mPath(path), mType(type)
+    {
+      QStringList paths = FCBrowserFactoryData::Instance().mPaths;
+      QStringList roots = FCBrowserFactoryData::Instance().mRoots;
+      QString s;
+      unsigned int i = 0;
+      for (QStringList::Iterator it = paths.begin(); it!=paths.end(); ++it, ++i)
+      {
+        s = *it; s = s.left(s.length()-1);
+        if (mPath.startsWith(s))
+        {
+          mPath = mPath.right(mPath.length() - s.length() - 1);
+          mRoot = *roots.at(i);
+          break;
+        }
+      }
+    }
+
+    QByteArray encodedData (const char* data) const
+    {
+      QString fn = QObject::tr("%1%2").arg(mRoot).arg(mPath);
+      int pos = fn.findRev('.'); fn = fn.left(pos);
+
+      std::string text = GetDocumentationManager().Retrive(fn.latin1(), mType );
+      QCString test = text.c_str();
+
+      if (test.isEmpty())
+      {
+        test = QObject::tr(
+        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+        "<html>"
+        "<head>"
+        "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">"
+        "<title>FreeCAD Main Index</title>"
+        "</head>"
+        "<body bgcolor=\"#ffffff\">"
+        "<table cellpadding=2 cellspacing=1 border=0  width=100% bgcolor=#E5E5E5 >"
+        "<tr>"
+        "<th bgcolor=#FFCC66 width=33%%>"
+        "<h1>:-(</h1>"
+        "<h2>Sorry, but cannot load the file because the doc manager failed to convert it into HTML.</h2>"
+        "<h1>:-(</h1>"
+        "</th>"
+        "</tr>"
+        "</table>"
+        "</body></html>");
+      }
+
+      return test;
+    }
+
+  private:
+    TDocType mType;
+    QString  mPath;
+    QString  mRoot;
+};
+
+// --------------------------------------------------------------------------
+
+FCBrowserSourceFactory::FCBrowserSourceFactory()
+: QMimeSourceFactory()
+{
+  FCBrowserFactoryData::Instance();
+}
+
+FCBrowserSourceFactory::~FCBrowserSourceFactory()
+{
+  FCBrowserFactoryData::Destruct();
+}
+
+const QMimeSource* FCBrowserSourceFactory::data(const QString& abs_name) const
+{
+  if (canConvertToHTML(abs_name))
+  {
+    TDocType type=Html;
+    FCTextBrowserPrivate d;
+    d.getType(abs_name, type);
+
+    QString path = abs_name;
+    int pos = path.findRev('/'); if (pos == -1) pos = path.findRev('\\'); 
+
+#ifdef FC_OS_WIN32
+    path = path.left(pos);
+    path += '\\';
+#else
+    path = path.left(pos+1);
+#endif
+
+    if (FCBrowserFactoryData::Instance().mPaths.find(path) == FCBrowserFactoryData::Instance().mPaths.end())
+    {
+      FCBrowserFactoryData::Instance().mPaths.append(path);
+      QString root = QObject::tr("FCDoc:/%1/").arg(path);
+      FCBrowserFactoryData::Instance().mRoots.append(root);
+      GetDocumentationManager().AddProvider(new FCDocProviderDirectory(root.latin1(),path.latin1()));
+    }
+   
+    return new FCDocumentationSource("text/html;charset=iso8859-1", abs_name, type);
+  }
+  else
+    return QMimeSourceFactory::data(abs_name);
+}
+
+QString FCBrowserSourceFactory::makeAbsolute(const QString& abs_or_rel_name, const QString& context) const
+{
+  return QMimeSourceFactory::makeAbsolute(abs_or_rel_name, context);
+}
+
+void FCBrowserSourceFactory::setText( const QString& abs_name, const QString& text )
+{
+  QMimeSourceFactory::setText(abs_name, text);
+}
+
+void FCBrowserSourceFactory::setImage( const QString& abs_name, const QImage& im )
+{
+  QMimeSourceFactory::setImage(abs_name, im);
+}
+
+void FCBrowserSourceFactory::setPixmap( const QString& abs_name, const QPixmap& pm )
+{
+  QMimeSourceFactory::setPixmap(abs_name, pm);
+}
+
+void FCBrowserSourceFactory::setData( const QString& abs_name, QMimeSource* data )
+{
+  QMimeSourceFactory::setData(abs_name, data);
+}
+
+void FCBrowserSourceFactory::setFilePath( const QStringList& s)
+{
+  QMimeSourceFactory::setFilePath(s);
+}
+
+QStringList FCBrowserSourceFactory::filePath() const
+{
+  return QMimeSourceFactory::filePath();
+}
+
+void FCBrowserSourceFactory::setExtensionType( const QString& ext, const char* mimetype )
+{
+  QMimeSourceFactory::setExtensionType(ext, mimetype);
+}
+
+bool FCBrowserSourceFactory::canConvertToHTML (const QString& url)
+{
+  TDocType type=Html;
+  FCTextBrowserPrivate d;
+  return d.getType(url, type);
+}
+
+// --------------------------------------------------------------------------
 
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
-: QTextBrowser(parent, name), highlighted(false)
+: QTextBrowser(parent, name)
 {
+  d = new FCTextBrowserPrivate;
+
+  setMimeSourceFactory(new FCBrowserSourceFactory);
+
   setHScrollBarMode(QScrollView::AlwaysOff);
   setVScrollBarMode(QScrollView::AlwaysOff);
   mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
@@ -204,19 +451,21 @@ FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 
   QBitmap cb( cb_width, cb_height, cb_bits, TRUE );
   QBitmap cm( cm_width, cm_height, cm_bits, TRUE );
-  cursor = new QCursor ( cb, cm, 1, 1 );			// create bitmap cursor
+  d->highlighted = false;
+  d->cursor = new QCursor ( cb, cm, 1, 1 );			// create bitmap cursor
 
   connect(this, SIGNAL(highlighted(const QString&)), this, SLOT(onHighlighted(const QString&)));
+  viewport()->setAcceptDrops( TRUE );
 }
 
 FCTextBrowser::~FCTextBrowser()
 {
-  delete cursor;
+  delete d;
 }
 
 void FCTextBrowser::onHighlighted(const QString& s)
 {
-  highlighted = !s.isEmpty();
+  d->highlighted = !s.isEmpty();
 }
 
 void FCTextBrowser::setSource (const QString & name)
@@ -230,6 +479,7 @@ void FCTextBrowser::setSource (const QString & name)
     mark = name.mid( hash+1 );
   }
 
+  QString url = mimeSourceFactory()->makeAbsolute( source, context() );
   QString txt;
 
   if (!source.isEmpty()) 
@@ -255,12 +505,73 @@ void FCTextBrowser::setSource (const QString & name)
     }
   }
 
+  if ( !mark.isEmpty() ) 
+  {
+	  url += "#";
+	  url += mark;
+  }
+
+  if (d->bdStack.isEmpty() || d->bdStack.top() != url)
+    d->bdStack.push(url);
+
+  int bdStackCount = (int)d->bdStack.count();
+  if ( d->bdStack.top() == url )
+  	bdStackCount--;
+
+  if (d->tMode == FCTextBrowserPrivate::None)
+    d->fdStack.clear();
+  int fdStackCount = (int)d->fdStack.count();
+  if ( d->fdStack.top() == url )
+  	fdStackCount--;
+
   QTextBrowser::setSource(name);
+
+  emit backwardAvailable( bdStackCount > 0 );
+  emit forwardAvailable( fdStackCount > 0 );
 }
 
 void FCTextBrowser::setText (const QString & contents, const QString & context)
 {
   QTextBrowser::setText(contents, context);
+}
+
+void FCTextBrowser::backward()
+{
+  if ( d->bdStack.count() <= 1)
+  	return;
+
+  d->fdStack.push( d->bdStack.pop() );
+
+  d->tMode = FCTextBrowserPrivate::Backward;
+  setSource( d->bdStack.pop() );
+  d->tMode = FCTextBrowserPrivate::None;
+  emit forwardAvailable( true );
+}
+
+void FCTextBrowser::forward()
+{
+  if ( d->fdStack.isEmpty() )
+  	return;
+  
+  d->tMode = FCTextBrowserPrivate::Forward;
+  setSource( d->fdStack.pop() );
+  d->tMode = FCTextBrowserPrivate::None;
+  emit forwardAvailable( !d->fdStack.isEmpty() );
+}
+
+void FCTextBrowser::setMinWidthToReach (int width)
+{
+  d->minWidth = width;
+}
+
+void FCTextBrowser::viewportResizeEvent (QResizeEvent* e)
+{
+  if (e->size().width() > d->minWidth)
+    emit minWidthReached(true);
+  else
+    minWidthReached(false);
+
+  QTextBrowser::viewportResizeEvent(e);
 }
 
 void FCTextBrowser::viewportMousePressEvent (QMouseEvent * e)
@@ -279,8 +590,53 @@ void FCTextBrowser::viewportMouseMoveEvent  (QMouseEvent * e)
 {
   QTextBrowser::viewportMouseMoveEvent(e);
   // avoid using the ugly Qt cursor ;-)
-  if (highlighted)
-    viewport()->setCursor( *cursor );
+  if (d->highlighted)
+    viewport()->setCursor( *d->cursor );
+}
+
+void FCTextBrowser::contentsDropEvent(QDropEvent  * e)
+{
+  if (QUriDrag::canDecode(e))
+  {
+    QStrList fn;
+    QUriDrag::decode(e, fn);
+    QString file = fn.first();
+
+    // wrong device separator
+    int pos = file.find("%7c");
+    if (pos != -1)
+      file.replace(pos, 3, ":");
+
+    // delete the 'file:' prefix
+    if (file.startsWith("file:///"))
+      file = file.right(file.length() - 8);
+    setSource(file);
+  }
+  else if (QTextDrag::canDecode(e))
+  {
+    QString file;
+    QTextDrag::decode(e, file);
+    QFileInfo info(file);
+
+    if (info.isFile())
+      setSource(file);
+    else if (QStyleSheet::mightBeRichText(file))
+      setText(file);
+  }
+}
+
+void FCTextBrowser::viewportDropEvent( QDropEvent* e )
+{
+  if (QUriDrag::canDecode(e) || QTextDrag::canDecode(e))
+    QTextBrowser::viewportDropEvent(e);
+}
+
+void FCTextBrowser::viewportDragEnterEvent  (QDragEnterEvent * e)
+{
+  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
+  e->accept(can);
+  if (can)
+    QTextBrowser::viewportDragEnterEvent(e);
 }
 
 //// FCHtmlViewValidator //////////////////////////////////////////////////////
@@ -367,6 +723,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   // create the actual browser
   //
   pclBrowser = new FCTextBrowser(this, "FCHelpViewer");
+  pclBrowser->setMinWidthToReach(240);
   // set the path where the factory is looking for if you set a new source
   pclBrowser->mimeSourceFactory()->setFilePath( m_strDocDir ); 
   pclBrowser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
@@ -437,6 +794,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonBack->setEnabled( false );
   connect(pclButtonBack,    SIGNAL(clicked()),                     pclBrowser,       SLOT(backward()));
   connect(pclBrowser,       SIGNAL(backwardAvailable(bool) ),      pclButtonBack,    SLOT(setEnabled(bool) ) );
+  connect(pclBrowser,       SIGNAL(minWidthReached  (bool)),       this, SLOT(onMinWidthReached(bool)));
   connect(pclButtonForward, SIGNAL(clicked()),                     pclBrowser,       SLOT(forward()));
   connect(pclBrowser,       SIGNAL(forwardAvailable(bool) ),       pclButtonForward, SLOT(setEnabled(bool) ) );
   connect(pclButtonHome,    SIGNAL(clicked()),                     pclBrowser,       SLOT(home()));
@@ -1082,6 +1440,13 @@ void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
   }
 }
 
+void FCHtmlView::onMinWidthReached (bool show)
+{
+  if (show)
+    pclPathCombo->show();
+  else
+    pclPathCombo->hide();
+}
 
 //// FCWhatsThis //////////////////////////////////////////////////////
 
@@ -1341,37 +1706,15 @@ void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, c
 {
   currentText = text;
 
-  // add here the following file types!!!
-  bool showHtml = false;
-  TDocType type;
-  if (currentText.find(".html", 0, false) != -1)
-  {
-    showHtml = true;
-    type = Html;
-  }
-  else if (currentText.find(".tex", 0, false) != -1)
-  {
-    showHtml = true;
-    type = Tech; // LaTeX
-  }
-  else if(currentText.find(".script", 0, false) != -1)
-  {
-    showHtml = true;
-    type = Script;
-  }
-
-  if (showHtml)
+  TDocType type=Html;
+  if (FCBrowserSourceFactory::canConvertToHTML(text) || currentText.findRev(".html") != -1)
   {
     // get text of the url 
     QWidget* w = ApplicationWindow::Instance->GetCustomWidgetManager()->getDockWindow("Help bar");
     if (w->inherits("FCHtmlView"))
     {
-      QString fn = tr("FCDoc:/%1").arg(currentText);
-      int pos = fn.findRev('.'); fn = fn.left(pos);
-
       FCHtmlView* help = (FCHtmlView*)w;
-      std::string text = GetDocumentationManager().Retrive(fn.latin1(), type );
-      help->getBrowser()->setText(text.c_str());
+      help->getBrowser()->setSource(text);
     }
   }
   else

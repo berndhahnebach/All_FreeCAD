@@ -137,9 +137,15 @@ QString FCFileDialog::selectedFileName()
     QString filt = selectedFilter();
     int dot = filt.find('*');
     int blank = filt.find(' ', dot);
+    int brack = filt.find(')', dot);
     if (dot != -1 && blank != -1)
     {
       QString sub = filt.mid(dot+1, blank-dot-1);
+      fn = fn + sub;
+    }
+    else if (dot != -1 && brack != -1)
+    {
+      QString sub = filt.mid(dot+1, brack-dot-1);
       fn = fn + sub;
     }
   }
@@ -815,6 +821,7 @@ class FCSpinBoxPrivate
   public:
     FCSpinBoxPrivate();
     bool pressed;
+    int nY, nStep;
 };
 
 FCSpinBoxPrivate::FCSpinBoxPrivate()
@@ -852,15 +859,15 @@ void FCSpinBox::mouseMoveEvent ( QMouseEvent* e )
   if (QWidget::mouseGrabber() == this)
   {
     // get "speed" of mouse move
-    int mult = nY - e->y();
+    int mult = d->nY - e->y();
 
-    int nValue = value() + mult * nStep;
+    int nValue = value() + mult * d->nStep;
     if (nValue <= maxValue())
       setValue ( nValue );
     else
       setValue ( maxValue() );
 
-    nY = e->y();
+    d->nY = e->y();
   }
   else
     QSpinBox::mouseMoveEvent(e);
@@ -875,19 +882,19 @@ void FCSpinBox::mousePressEvent   ( QMouseEvent* e )
 
   if (nMax == INT_MAX || nMin == -INT_MAX)
   {
-    nStep = 100;
+    d->nStep = 100;
   }
   else
   {
     int nRange = nMax - nMin;
     int nHeight = QApplication::desktop()->height();
     if (nRange > nHeight)
-      nStep = int(nRange / nHeight);
+      d->nStep = int(nRange / nHeight);
     else
-      nStep = 1;
+      d->nStep = 1;
   }
 
-  nY = e->y();
+  d->nY = e->y();
 }
 
 void FCSpinBox::mouseReleaseEvent ( QMouseEvent* e )

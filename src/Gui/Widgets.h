@@ -336,7 +336,6 @@ class FCSpinBox : public QSpinBox
     bool eventFilter       ( QObject* o, QEvent* e );
 
   private:
-    int nY, nStep;
     FCSpinBoxPrivate* d;
 };
 

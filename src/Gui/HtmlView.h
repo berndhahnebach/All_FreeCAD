@@ -32,11 +32,36 @@
 //#include <qtextbrowser.h>
 //#include <qvalidator.h>
 //#include <qcombobox.h>
+#include <qmime.h>
 #include "Window.h"
+#include "../Base/Documentation.h"
+
+/**
+ * An special implementation of the mime source factory
+ */
+class FCBrowserSourceFactory : public QMimeSourceFactory
+{
+  public:
+    FCBrowserSourceFactory();
+    virtual ~FCBrowserSourceFactory();
+
+    virtual const QMimeSource* data(const QString& abs_name) const;
+    virtual QString makeAbsolute(const QString& abs_or_rel_name, const QString& context) const;
+    virtual void setText( const QString& abs_name, const QString& text );
+    virtual void setImage( const QString& abs_name, const QImage& im );
+    virtual void setPixmap( const QString& abs_name, const QPixmap& pm );
+    virtual void setData( const QString& abs_name, QMimeSource* data );
+    virtual void setFilePath( const QStringList& );
+    virtual QStringList filePath() const;
+    virtual void setExtensionType( const QString& ext, const char* mimetype );
+
+    static bool canConvertToHTML (const QString& url);
+};
 
 /**
  * An extension of the 'QTextBrowser' class
  */
+class FCTextBrowserPrivate;
 class FCTextBrowser : public QTextBrowser
 {
   Q_OBJECT
@@ -48,20 +73,31 @@ class FCTextBrowser : public QTextBrowser
     virtual void setText (const QString & contents, const QString & context=QString::null);
     virtual void setSource (const QString & name);
 
+    virtual void backward();
+    virtual void forward();
+
+    void setMinWidthToReach (int);
+
   signals:
     /// show the popup menu
     void showPopupMenu();
     /// start an external browser to display complex web sites
     void startExtBrowser(QString);
+    void minWidthReached (bool);
 
   protected slots:
     void onHighlighted(const QString&);
 
   protected:
+    virtual void viewportResizeEvent     (QResizeEvent* e);
     virtual void viewportMousePressEvent (QMouseEvent * e);
     virtual void viewportMouseMoveEvent  (QMouseEvent * e);
-    QCursor * cursor;
-    bool highlighted;
+    virtual void contentsDropEvent       (QDropEvent  * e);
+    virtual void viewportDragEnterEvent  (QDragEnterEvent * e);
+    virtual void viewportDropEvent       (QDropEvent  * e);
+
+  private:
+    FCTextBrowserPrivate* d;
 };
 
 /**
@@ -136,6 +172,7 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     void ShowPopupMenu();
     void StartScriptOrBrowser(QString text);
     void StartExtBrowser(QString);
+    void onMinWidthReached (bool);
 
   protected:
     void init ();

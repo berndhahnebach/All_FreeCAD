@@ -175,6 +175,7 @@ FCLogOutput::FCLogOutput(QWidget* parent, const char* name)
   onClear();
   setHScrollBarMode(QScrollView::AlwaysOff);
 
+  setText("<qt>FreeCAD output.</qt>");
   GetConsole().AttacheObserver(this);
 }
 
@@ -191,19 +192,20 @@ void FCLogOutput::appendLog(const char * s, const char * color)
   if (color)
   {
     if (strchr(s, '\n') != NULL)
-      qs = tr("<font color=\"%1\">%2</font>\n<p>").arg(color).arg(s);
+      qs = tr("<font color=\"%1\">%2</font>\n<br/>").arg(color).arg(s);
     else
       qs = tr("<font color=\"%1\">%2</font>").arg(color).arg(s);
   }
   else
   {
     if (strchr(s, '\n') != NULL)
-      qs = tr("%1<p>").arg(s);
+      qs = tr("%1<br/>").arg(s);
     else
       qs = tr("%1").arg(s);
   }
   
-  setText(text() + qs);
+  append(qs);
+  setContentsPos(0, contentsHeight());
 }
 
 void FCLogOutput::Warning(const char * s)
@@ -213,7 +215,7 @@ void FCLogOutput::Warning(const char * s)
 
 void FCLogOutput::Message(const char * s)
 {
-  appendLog(s, "green");
+  appendLog(s);
 }
 
 void FCLogOutput::Error  (const char * s)
@@ -223,7 +225,7 @@ void FCLogOutput::Error  (const char * s)
 
 void FCLogOutput::Log (const char * s)
 {
-  appendLog(s);
+  // ignore this
 }
 
 bool FCLogOutput::event( QEvent* ev )
@@ -260,20 +262,22 @@ void FCLogOutput::viewportMousePressEvent (QMouseEvent * e)
 
 void FCLogOutput::onClear()
 {
-  setText("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
+//  setText("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
+  setText("");
 }
 
 void FCLogOutput::onSaveAs()
 {
-  QString fn = FCFileDialog::getSaveFileName(QString::null,"HTML Files (*.html *.htm);;Plain Text Files (*.txt *.log)",
-                                             this, QString("Save Report Output"));
+//  QString fn = FCFileDialog::getSaveFileName(QString::null,"RTF Files (*.rtf);;Plain Text Files (*.txt *.log)",
+//                                             this, QString("Save Report Output"));
+  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", this, QString("Save Report Output"));
   if (!fn.isEmpty())
   {
     int dot = fn.find('.');
     if (dot != -1)
     {
       QString ext = fn.right(fn.length() - dot - 1).lower();
-      if (ext == QString("html") || ext == QString("htm"))
+      if (ext == QString("rtf"))
       {
         QFile f(fn);
         if (f.open(IO_WriteOnly))

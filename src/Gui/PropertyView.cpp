@@ -45,10 +45,12 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Widgets.h"
 #include "PropertyView.h"
+#include "Tools.h"
 
 #include "Application.h"
 #include "HtmlView.h"
 #include "../Base/Console.h"
+#include "../App/Properties.h"
 
 /* XPM */
 static const char * resetproperty_xpm[] = {
@@ -76,6 +78,13 @@ FCPropertyViewItem::FCPropertyViewItem( FCPropertyListView *l, FCPropertyViewIte
   changed = false;
   setText( 1, "" );
   resetButton = 0;
+  val = 0L;
+}
+
+FCPropertyViewItem::~FCPropertyViewItem()
+{
+  delete val;
+  val = NULL;
 }
 
 void FCPropertyViewItem::setOpen( bool b )
@@ -263,12 +272,17 @@ void FCPropertyViewItem::updateBackColor()
   	backColor = FCPropertyView::cBackColor1;
 }
 
-void FCPropertyViewItem::setValue( const QVariant &v )
+void FCPropertyViewItem::setValue( FCProperty* v )
 {
-  val = v;
+  updateItem ( v );
+  if (val != v)
+  {
+    delete val;
+    val = v;
+  }
 }
 
-QVariant FCPropertyViewItem::value() const
+FCProperty* FCPropertyViewItem::value() const
 {
   return val;
 }
@@ -436,36 +450,29 @@ void FCPropertyViewItem::updateResetButtonState()
 //{
 //}
 
-FCPropertyViewItem* FCPropertyViewItem::createPropertyItem( const QVariant &v, const char* propName )
+FCPropertyViewItem* FCPropertyViewItem::createPropertyItem( FCProperty* v, const char* propName )
 {
+  if (!v) return 0L;
+
   FCPropertyViewItem* item=0L;
-  switch (v.type())
-  {
-    case QVariant::Int:
-      item = new FCPropertyViewIntItem(listview, this, propName, true);
-      break;
-    case QVariant::UInt:
-      item = new FCPropertyViewIntItem(listview, this, propName, false);
-      break;
-    case QVariant::Double:
-      item = new FCPropertyViewFloatItem(listview, this, propName, true);
-      break;
-    case QVariant::Bool:
-      item = new FCPropertyViewBoolItem(listview, this, propName);
-      break;
-    case QVariant::CString:
-      item = new FCPropertyViewTextItem(listview, this, propName, false, false, false);
-      break;
-    case QVariant::StringList:
-      item = new FCPropertyViewListItem(listview, this, propName, false);
-      break;
-    case QVariant::List:
-      item = new FCPropertyViewCoordItem(listview, this, propName);
-      break;
-    case QVariant::Color:
-      item = new FCPropertyViewColorItem(listview, this, propName, true);
-      break;
-  }
+  const char* type = v->GetType();
+
+  if (strcmp(type, "Int") == 0)
+    item = new FCPropertyViewIntItem(listview, this, propName, true);
+  else if (strcmp(type, "UInt") == 0)
+    item = new FCPropertyViewIntItem(listview, this, propName, false);
+  else if (strcmp(type, "Float") == 0)
+    item = new FCPropertyViewFloatItem(listview, this, propName, true);
+  else if (strcmp(type, "String") == 0)
+    item = new FCPropertyViewTextItem(listview, this, propName, false, false);
+  else if (strcmp(type, "StringList") == 0)
+    item = new FCPropertyViewListItem(listview, this, propName, false);
+  else if (strcmp(type, "Bool") == 0)
+    item = new FCPropertyViewBoolItem(listview, this, propName);
+  else if (strcmp(type, "Color") == 0)
+    item = new FCPropertyViewColorItem(listview, this, propName, true);
+//  else if (strcmp(type, "Coord") == 0)
+//    item = new FCPropertyViewCoordItem(listview, this, propName);
 
   if (item)
     item->setValue(v);
@@ -487,38 +494,43 @@ FCPropertyViewIntItem::~FCPropertyViewIntItem()
   spinBox = 0L;
 }
 
-void FCPropertyViewIntItem::setValue( const QVariant &v )
+void FCPropertyViewIntItem::updateItem( FCProperty* v )
 {
   if ( ( !hasSubItems() || !isOpen() ) && value() == v )
   	return;
+
+  FCPropertyInteger* prop = dynamic_cast<FCPropertyInteger*>(v);
+  assert(prop);
 
   if ( spinBox ) 
   {
 	  getSpinBox()->blockSignals( true );
 	  if ( signedValue )
-      getSpinBox()->setValue( v.toInt() );
+      getSpinBox()->setValue( prop->GetValue() );
 	  else
-      getSpinBox()->setValue( v.toUInt() );
+      getSpinBox()->setValue( FCmax<long>(0,prop->GetValue()) );
 	  getSpinBox()->blockSignals( false );
   }
 
   if ( signedValue )
-    setText( 1, QString::number( v.toInt() ) );
+    setText( 1, prop->GetAsString () );
   else
-    setText( 1, QString::number( v.toUInt() ) );
-  FCPropertyViewItem::setValue( v );
+    setText( 1, QString::number( FCmax<long>(0,prop->GetValue()) ) );
 }
 
 void FCPropertyViewIntItem::showView()
 {
+  FCPropertyInteger* prop = dynamic_cast<FCPropertyInteger*>(value());
+  assert(prop);
+
   FCPropertyViewItem::showView();
   if ( !spinBox ) 
   {
   	getSpinBox()->blockSignals( true );
 	  if ( signedValue )
-	    getSpinBox()->setValue( value().toInt() );
+	    getSpinBox()->setValue( prop->GetValue() );
   	else
-	    getSpinBox()->setValue( value().toUInt() );
+	    getSpinBox()->setValue( FCmax<long>(0,prop->GetValue()) );
 	  getSpinBox()->blockSignals( false );
   }
 
@@ -540,13 +552,17 @@ void FCPropertyViewIntItem::hideView()
 
 void FCPropertyViewIntItem::onSetValue()
 {
+  FCPropertyInteger* prop = dynamic_cast<FCPropertyInteger*>(value());
+  assert(prop);
+
   if ( !spinBox )
   	return;
   setText( 1, QString::number( getSpinBox()->value() ) );
   if ( signedValue )
-  	FCPropertyViewItem::setValue( getSpinBox()->value() );
+  	prop->SetValue( getSpinBox()->value() );
   else
-	  FCPropertyViewItem::setValue( (uint)getSpinBox()->value() );
+	  prop->SetValue ( (uint)getSpinBox()->value() );
+
   notify();
 }
 
@@ -582,38 +598,43 @@ FCPropertyViewFloatItem::~FCPropertyViewFloatItem()
   spinBox = 0L;
 }
 
-void FCPropertyViewFloatItem::setValue( const QVariant &v )
+void FCPropertyViewFloatItem::updateItem( FCProperty* v )
 {
   if ( ( !hasSubItems() || !isOpen() ) && value() == v )
   	return;
+
+  FCPropertyFloat* prop = dynamic_cast<FCPropertyFloat*> (v);
+  assert(prop);
 
   if ( spinBox ) 
   {
 	  getSpinBox()->blockSignals( true );
 	  if ( signedValue )
-      getSpinBox()->setValueFloat( v.toDouble() );
+      getSpinBox()->setValueFloat( prop->GetValue() );
 	  else
-      getSpinBox()->setValueFloat( v.toDouble() );
+      getSpinBox()->setValueFloat( FCmax<double>(0.0,prop->GetValue()) );
 	  getSpinBox()->blockSignals( false );
   }
 
   if ( signedValue )
-    setText( 1, QString::number( v.toDouble() ) );
+    setText( 1, prop->GetAsString() );
   else
-    setText( 1, QString::number( v.toDouble() ) );
-  FCPropertyViewItem::setValue( v );
+    setText( 1, QString::number( FCmax<double>(0.0,prop->GetValue()) ) );
 }
 
 void FCPropertyViewFloatItem::showView()
 {
+  FCPropertyFloat* prop = dynamic_cast<FCPropertyFloat*> (value());
+  assert(prop);
+
   FCPropertyViewItem::showView();
   if ( !spinBox ) 
   {
   	getSpinBox()->blockSignals( true );
 	  if ( signedValue )
-	    getSpinBox()->setValueFloat( value().toDouble() );
+	    getSpinBox()->setValueFloat( prop->GetValue() );
   	else
-	    getSpinBox()->setValueFloat( value().toDouble() );
+	    getSpinBox()->setValueFloat( FCmax<double>(0.0,prop->GetValue()) );
 	  getSpinBox()->blockSignals( false );
   }
 
@@ -635,13 +656,17 @@ void FCPropertyViewFloatItem::hideView()
 
 void FCPropertyViewFloatItem::onSetValue()
 {
+  FCPropertyFloat* prop = dynamic_cast<FCPropertyFloat*>(value());
+  assert(prop);
+
   if ( !spinBox )
   	return;
   setText( 1, QString::number( getSpinBox()->valueFloat() ) );
   if ( signedValue )
-  	FCPropertyViewItem::setValue( getSpinBox()->valueFloat() );
+	  prop->SetValue( getSpinBox()->valueFloat() );
   else
-	  FCPropertyViewItem::setValue( getSpinBox()->valueFloat() );
+	  prop->SetValue( FCmax<double>(0.0, getSpinBox()->valueFloat()) );
+
   notify();
 }
 
@@ -678,42 +703,46 @@ FCPropertyViewBoolItem::~FCPropertyViewBoolItem()
   comb = 0;
 }
 
-void FCPropertyViewBoolItem::setValue( const QVariant &v )
+void FCPropertyViewBoolItem::updateItem( FCProperty* v )
 {
   if ( ( !hasSubItems() || !isOpen() ) && value() == v )
   	return;
 
+  FCPropertyBool* prop = dynamic_cast<FCPropertyBool*> (v);
+  assert(prop);
+
   if ( comb ) 
   {
   	combo()->blockSignals( true );
-	  if ( v.toBool() )
+	  if ( prop->GetValue() )
 	    combo()->setCurrentItem( 1 );
 	  else
 	    combo()->setCurrentItem( 0 );
 	  combo()->blockSignals( false );
   }
 
-  QString tmp = tr( "True" );
-  if ( !v.toBool() )
-	  tmp = tr( "False" );
-  setText( 1, tmp );
-  FCPropertyViewItem::setValue( v );
+  setText( 1, prop->GetAsString() );
 }
 
 void FCPropertyViewBoolItem::toggle()
 {
-  bool b = value().toBool();
-  setValue( QVariant( !b, 0 ) );
+  FCPropertyBool* prop = dynamic_cast<FCPropertyBool*> (value());
+  assert(prop);
+
+  prop->SetValue(!prop->GetValue());
   onSetValue();
 }
 
 void FCPropertyViewBoolItem::showView()
 {
+  FCPropertyBool* prop = dynamic_cast<FCPropertyBool*> (value());
+  assert(prop);
+
   FCPropertyViewItem::showView();
   if ( !comb ) 
   {
   	combo()->blockSignals( true );
-	  if ( value().toBool() )
+	  if ( prop->GetValue() )
 	    combo()->setCurrentItem( 1 );
 	  else
 	    combo()->setCurrentItem( 0 );
@@ -738,11 +767,14 @@ void FCPropertyViewBoolItem::hideView()
 
 void FCPropertyViewBoolItem::onSetValue()
 {
+  FCPropertyBool* prop = dynamic_cast<FCPropertyBool*> (value());
+  assert(prop);
+
   if ( !comb )
   	return;
   setText( 1, combo()->currentText() );
-  bool b = combo()->currentItem() == 0;
-  FCPropertyViewItem::setValue( QVariant( b, 0 ) );
+  bool b = combo()->currentItem() == 1;
+  prop->SetValue(b);
   notify();
 }
 
@@ -761,17 +793,10 @@ QComboBox *FCPropertyViewBoolItem::combo()
 
 /////////////////////////////////////////////////////////////////////////////
 
-static QString to_string( const QVariant &v, bool accel )
-{
-  if ( !accel )
-  	return v.toString();
-  return QAccel::keyToString( v.toInt() );
-}
-
 FCPropertyViewTextItem::FCPropertyViewTextItem( FCPropertyListView *l, FCPropertyViewItem *after,
-				    const char* propName, bool comment, bool multiLine, bool a )
+				    const char* propName, bool comment, bool multiLine )
   : FCPropertyViewItem( l, after, propName ), withComment( comment ),
-    hasMultiLines( multiLine ), accel( a )
+    hasMultiLines( multiLine )
 {
   lin = 0;
   box = 0;
@@ -785,22 +810,25 @@ FCPropertyViewTextItem::~FCPropertyViewTextItem()
   box = 0;
 }
 
-void FCPropertyViewTextItem::setValue( const QVariant &v )
+void FCPropertyViewTextItem::updateItem( FCProperty* v )
 {
   if ( ( !hasSubItems() || !isOpen() ) && value() == v )
   	return;
+
+  FCPropertyString* prop = dynamic_cast<FCPropertyString*>(v);
+  assert(prop);
+
   if ( lin ) 
   {
 	  lined()->blockSignals( true );
 	  int oldCursorPos;
 	  oldCursorPos = lin->cursorPosition();
-	  lined()->setText( to_string( v, accel ) );
+	  lined()->setText( prop->GetString() );
 	  lin->setCursorPosition( oldCursorPos );
 	  lined()->blockSignals( false );
   }
 
-  setText( 1, to_string( v, accel ) );
-  FCPropertyViewItem::setValue( v );
+  setText( 1, prop->GetString() );
 }
 
 void FCPropertyViewTextItem::setChanged( bool b, bool updateDb )
@@ -820,8 +848,11 @@ void FCPropertyViewTextItem::showView()
   FCPropertyViewItem::showView();
   if ( !lin ) 
   {
+    FCPropertyString* prop = dynamic_cast<FCPropertyString*>(value());
+    assert(prop);
+
 	  lined()->blockSignals( true );
-	  lined()->setText( to_string( value(), accel ) );
+	  lined()->setText( prop->GetString() );
 	  lined()->blockSignals( false );
   }
 
@@ -873,13 +904,11 @@ void FCPropertyViewTextItem::childValueChanged( FCPropertyViewItem *child )
 
 void FCPropertyViewTextItem::onSetValue()
 {
+  FCPropertyString* prop = dynamic_cast<FCPropertyString*>(value());
+  assert(prop);
+
   setText( 1, lined()->text() );
-  QVariant v;
-  if ( accel )
-  	v = QAccel::stringToKey( lined()->text() );
-  else
-	  v = lined()->text();
-  FCPropertyViewItem::setValue( v );
+  prop->SetString(lined()->text().latin1());
   notify();
 }
 
@@ -889,7 +918,10 @@ void FCPropertyViewTextItem::getText()
   if ( !txt.isEmpty() ) 
   {
 	  setText( 1, txt );
-	  FCPropertyViewItem::setValue( txt );
+    FCPropertyString* prop = dynamic_cast<FCPropertyString*> (value());
+    assert(prop);
+
+    prop->SetString(txt.latin1());
 	  notify();
 	  lined()->blockSignals( true );
 	  lined()->setText( txt );
@@ -935,7 +967,7 @@ QLineEdit *FCPropertyViewTextItem::lined()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
+/*
 FCPropertyViewCoordItem::FCPropertyViewCoordItem( FCPropertyListView *l, FCPropertyViewItem *after, 
 				    const char* propName )
   : FCPropertyViewItem( l, after, propName )
@@ -949,7 +981,7 @@ FCPropertyViewCoordItem::~FCPropertyViewCoordItem()
   lin = 0;
 }
 
-void FCPropertyViewCoordItem::setValue( const QVariant &v )
+void FCPropertyViewCoordItem::setValue( FCProperty* v )
 {
   if ( ( !hasSubItems() || !isOpen() ) && value() == v )
   	return;
@@ -1052,18 +1084,18 @@ void FCPropertyViewCoordItem::initChildren()
 
 void FCPropertyViewCoordItem::childValueChanged( FCPropertyViewItem *child )
 {
-  QValueList<QVariant> list;
-
-  FCPropertyViewItem *item = 0;
-  for ( int i = 0; i < childCount(); ++i ) 
-  {
-    item = FCPropertyViewItem::child( i );
-	  list.append(item->value());
-  }
-
-  setValue( list );
-   
-  notify();
+//  QValueList<QVariant> list;
+//
+//  FCPropertyViewItem *item = 0;
+//  for ( int i = 0; i < childCount(); ++i ) 
+//  {
+//    item = FCPropertyViewItem::child( i );
+//	  list.append(item->value());
+//  }
+//
+//  setValue( list );
+//   
+//  notify();
 }
 
 QLineEdit *FCPropertyViewCoordItem::lined()
@@ -1076,7 +1108,7 @@ QLineEdit *FCPropertyViewCoordItem::lined()
   lin->hide();
   return lin;
 }
-
+*/
 /////////////////////////////////////////////////////////////////////////////
 
 FCPropertyViewListItem::FCPropertyViewListItem( FCPropertyListView *l, FCPropertyViewItem *after, 
@@ -1093,28 +1125,41 @@ FCPropertyViewListItem::~FCPropertyViewListItem()
   comb = 0;
 }
 
-void FCPropertyViewListItem::setValue( const QVariant &v )
+void FCPropertyViewListItem::updateItem( FCProperty* v )
 {
+  FCPropertyList* prop = dynamic_cast<FCPropertyList*> (v);
+  assert(prop);
+
+  QStringList list;
+  const std::vector<std::string>& rList = prop->GetValue();
   if ( comb ) 
   {
+    for (std::vector<std::string>::const_iterator it = rList.begin(); it!=rList.end(); ++it)
+      list.append(it->c_str());
 	  combo()->blockSignals( true );
 	  combo()->clear();
-	  combo()->insertStringList( v.toStringList() );
+	  combo()->insertStringList( list );
 	  combo()->blockSignals( false );
   }
 
-  setText( 1, v.toStringList().first() );
-  FCPropertyViewItem::setValue( v );
+  setText( 1, rList.front().c_str() );
 }
 
 void FCPropertyViewListItem::showView()
 {
+  FCPropertyList* prop = dynamic_cast<FCPropertyList*> (value());
+  assert(prop);
+
   FCPropertyViewItem::showView();
   if ( !comb ) 
   {
+    QStringList list;
+    const std::vector<std::string>& rList = prop->GetValue();
+    for (std::vector<std::string>::const_iterator it = rList.begin(); it!=rList.end(); ++it)
+      list.append(it->c_str());
 	  combo()->blockSignals( true );
 	  combo()->clear();
-	  combo()->insertStringList( value().toStringList() );
+	  combo()->insertStringList( list );
 	  combo()->blockSignals( false );
   }
 
@@ -1122,13 +1167,18 @@ void FCPropertyViewListItem::showView()
   if ( !combo()->isVisible()  || !combo()->hasFocus() ) 
   {
 	  combo()->show();
+    combo()->setCurrentItem(prop->GetCurrentItem());
 	  setFocus( combo() );
   }
 }
 
 void FCPropertyViewListItem::hideView()
 {
+  FCPropertyList* prop = dynamic_cast<FCPropertyList*> (value());
+  assert(prop);
+
   FCPropertyViewItem::hideView();
+  prop->SetCurrentItem(combo()->currentItem());
   combo()->hide();
   delete comb;
   comb = 0L;
@@ -1144,11 +1194,18 @@ void FCPropertyViewListItem::setCurrentItem( const QString &s )
   if ( comb && currentItem().lower() == s.lower() )
    	return;
 
+  FCPropertyList* prop = dynamic_cast<FCPropertyList*> (value());
+  assert(prop);
+
   if ( !comb ) 
   {
+    QStringList list;
+    const std::vector<std::string>& rList = prop->GetValue();
+    for (std::vector<std::string>::const_iterator it = rList.begin(); it!=rList.end(); ++it)
+      list.append(it->c_str());
 	  combo()->blockSignals( true );
 	  combo()->clear();
-	  combo()->insertStringList( value().toStringList() );
+	  combo()->insertStringList( list );
 	  combo()->blockSignals( false );
   }
 
@@ -1170,11 +1227,18 @@ void FCPropertyViewListItem::setCurrentItem( int i )
   if ( comb && i == combo()->currentItem() )
   	return;
 
+  FCPropertyList* prop = dynamic_cast<FCPropertyList*> (value());
+  assert(prop);
+
   if ( !comb ) 
   {
+    QStringList list;
+    const std::vector<std::string>& rList = prop->GetValue();
+    for (std::vector<std::string>::const_iterator it = rList.begin(); it!=rList.end(); ++it)
+      list.append(it->c_str());
 	  combo()->blockSignals( true );
 	  combo()->clear();
-	  combo()->insertStringList( value().toStringList() );
+	  combo()->insertStringList( list );
 	  combo()->blockSignals( false );
   }
 
@@ -1194,10 +1258,13 @@ void FCPropertyViewListItem::onSetValue()
   if ( !comb )
   	return;
   setText( 1, combo()->currentText() );
-  QStringList lst;
+  std::vector<std::string> lst;
   for ( uint i = 0; i < combo()->listBox()->count(); ++i )
-  	lst << combo()->listBox()->item( i )->text();
-  FCPropertyViewItem::setValue( lst );
+  	lst.push_back(combo()->listBox()->item( i )->text().latin1());
+  FCPropertyList* prop = dynamic_cast<FCPropertyList*> (value());
+  assert(prop);
+
+  prop->SetValue(lst);
   notify();
   oldInt = currentIntItem();
   oldString = currentItem();
@@ -1236,16 +1303,18 @@ FCPropertyViewColorItem::~FCPropertyViewColorItem()
   delete (QHBox*)box;
 }
 
-void FCPropertyViewColorItem::setValue( const QVariant &v )
+void FCPropertyViewColorItem::updateItem( FCProperty* v )
 {
   if ( ( !hasSubItems() || !isOpen() ) && value() == v )
   	return;
 
+  FCPropertyColor* prop = dynamic_cast<FCPropertyColor*> (v);
+  assert(prop);
+
   QString s;
-  setText( 1, v.toColor().name() );
+  setText( 1, QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()).name() );
   boxColor();
-  colorPrev->setBackgroundColor( v.toColor() );
-  FCPropertyViewItem::setValue( v );
+  colorPrev->setBackgroundColor( QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()) );
 }
 
 bool FCPropertyViewColorItem::hasCustomContents() const
@@ -1260,9 +1329,12 @@ bool FCPropertyViewColorItem::hasSubItems() const
 
 void FCPropertyViewColorItem::drawCustomContents( QPainter *p, const QRect &r )
 {
+  FCPropertyColor* prop = dynamic_cast<FCPropertyColor*> (value());
+  assert(prop);
+
   p->save();
   p->setPen( QPen( black, 1 ) );
-  p->setBrush( val.toColor() );
+  p->setBrush( QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()) );
   p->drawRect( r.x() + 2, r.y() + 2, r.width() - 5, r.height() - 5 );
   p->restore();
 }
@@ -1297,38 +1369,55 @@ void FCPropertyViewColorItem::createChildren()
 void FCPropertyViewColorItem::initChildren()
 {
   FCPropertyViewItem *item = 0;
+  FCPropertyColor* prop = dynamic_cast<FCPropertyColor*> (value());
+  assert(prop);
+
   for ( int i = 0; i < childCount(); ++i ) 
   {
   	item = FCPropertyViewItem::child( i );
 	  if ( item->name() == tr( "Red" ) )
-	    item->setValue( val.toColor().red() );
+	    item->setValue( new FCPropertyInteger(prop->GetRed()) );
   	else if ( item->name() == tr( "Green" ) )
-	    item->setValue( val.toColor().green() );
+	    item->setValue( new FCPropertyInteger(prop->GetGreen()) );
 	  else if ( item->name() == tr( "Blue" ) )
-	    item->setValue( val.toColor().blue() );
+	    item->setValue( new FCPropertyInteger(prop->GetBlue()) );
   }
 }
 
 void FCPropertyViewColorItem::childValueChanged( FCPropertyViewItem *child )
 {
-  QColor c( val.toColor() );
-  if ( child->name() == tr( "Red" ) )
-	  c.setRgb( child->value().toInt(), c.green(), c.blue() );
-  else if ( child->name() == tr( "Green" ) )
-	  c.setRgb( c.red(), child->value().toInt(), c.blue() );
-  else if ( child->name() == tr( "Blue" ) )
-	  c.setRgb( c.red(), c.green(), child->value().toInt() );
+  FCPropertyColor* prop = dynamic_cast<FCPropertyColor*> (value());
+  assert(prop);
 
-  setValue( c );
+  QColor c( QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()) );
+  if ( child->name() == tr( "Red" ) )
+	  c.setRgb( ((FCPropertyInteger*)child->value())->GetValue(), c.green(), c.blue() );
+  else if ( child->name() == tr( "Green" ) )
+	  c.setRgb( c.red(), ((FCPropertyInteger*)child->value())->GetValue(), c.blue() );
+  else if ( child->name() == tr( "Blue" ) )
+	  c.setRgb( c.red(), c.green(), ((FCPropertyInteger*)child->value())->GetValue() );
+
+  prop->SetRed(c.red());
+  prop->SetGreen(c.green());
+  prop->SetBlue(c.blue());
+  updateItem( prop );
   notify();
 }
 
 void FCPropertyViewColorItem::getColor()
 {
-  QColor c = QColorDialog::getColor( val.asColor(), listview );
+  FCPropertyColor* prop = dynamic_cast<FCPropertyColor*> (value());
+  assert(prop);
+
+  QColor c = QColorDialog::getColor( QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()), listview );
   if ( c.isValid() ) 
   {
-	  setValue( c );
+    prop->SetRed(c.red());
+    prop->SetGreen(c.green());
+    prop->SetBlue(c.blue());
+    boxColor();
+    colorPrev->setBackgroundColor( QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()) );
+	  updateItem( prop );
 	  notify();
   }
 }
@@ -1357,7 +1446,9 @@ QHBox* FCPropertyViewColorItem::boxColor()
   box->installEventFilter( listview );
   connect( button, SIGNAL( clicked() ), this, SLOT( getColor() ) );
 
-  colorPrev->setBackgroundColor( val.toColor() );
+  FCPropertyColor* prop = (FCPropertyColor*) value();
+  if (prop)
+    colorPrev->setBackgroundColor( QColor(prop->GetRed(), prop->GetGreen(), prop->GetBlue()) );
 
   return box;
 }
@@ -1568,27 +1659,31 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
   // some examples how to use the ProprtyViewItem-Framework
   //
   //
-	FCPropertyViewItem* pcItem;
+	FCPropertyViewItem* pcItem=0L;
 	
-  QValueList<QVariant> list;
-  list.append(10.89);
-  list.append(-0.7);
+  std::vector<std::string> list;
+  list.push_back("10.89");
+  list.push_back("-10.7");
   pcItem = new FCPropertyViewColorItem( _pcListView, NULL, "Color", true  );
-  pcItem->setValue(Qt::red);
+  pcItem->setValue(new FCPropertyColor(255, 0, 0));
 	pcItem = new FCPropertyViewIntItem  ( _pcListView, pcItem,   "Integer", true );
-  pcItem->setValue(37);
+  pcItem->setValue( new FCPropertyInteger( 37 ) );
   pcItem = new FCPropertyViewFloatItem( _pcListView, pcItem, "Float", true );
-  pcItem->setValue(-3.14);
-  pcItem = new FCPropertyViewTextItem ( _pcListView, pcItem, "Text", false, false, false);
-  pcItem->setValue("FreeCAD");
-  pcItem = new FCPropertyViewCoordItem( _pcListView, pcItem, "Coord2D" );
-  pcItem->setValue(list);
-  pcItem = new FCPropertyViewCoordItem( _pcListView, pcItem, "Coord3D" );
-  list.append(2.6);
-  pcItem->setValue(list);
-  pcItem->createPropertyItem(list, "Automatic");
-  list.prepend("Text");
-  pcItem->createPropertyItem(list, "Misc");
+  pcItem->setValue( new FCPropertyFloat( -3.14 ) );
+  pcItem = new FCPropertyViewTextItem ( _pcListView, pcItem, "Text", false, false);
+  pcItem->setValue( new FCPropertyString( "FreeCAD" ) );
+  pcItem = new FCPropertyViewListItem ( _pcListView, pcItem, "List", false);
+  pcItem->setValue( new FCPropertyList( list ) );
+  pcItem = new FCPropertyViewBoolItem ( _pcListView, pcItem, "Boolean");
+  pcItem->setValue( new FCPropertyBool ( false ) );
+//  pcItem = new FCPropertyViewCoordItem( _pcListView, pcItem, "Coord2D" );
+//  pcItem->setValue(list);
+//  pcItem = new FCPropertyViewCoordItem( _pcListView, pcItem, "Coord3D" );
+//  list.append(2.6);
+//  pcItem->setValue(list);
+//  pcItem->createPropertyItem(list, "Automatic");
+//  list.prepend("Text");
+//  pcItem->createPropertyItem(list, "Misc");
 
   // Add the first main label
 //	_pcMainItem = new FCTreeLabel(this);

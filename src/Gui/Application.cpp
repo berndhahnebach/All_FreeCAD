@@ -56,6 +56,7 @@
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
+#include "../App/Application.h"
 
 #if QT_VER != QT_VERSION
 //#	error "QT Version missmatch, please set the right version in src/Config.h line 92"
@@ -146,7 +147,7 @@ ApplicationWindow::ApplicationWindow()
 	_cBmpFactory.AddPath("../Icons");
 //	_cBmpFactory.GetPixmap("Function");
 
-  QDir dir(QDir::currentDirPath()); dir.cdUp();
+  QDir dir(GetApplication().GetHomePath()); dir.cdUp();
   QString root = dir.path();
 	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
 	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
@@ -181,7 +182,7 @@ ApplicationWindow::ApplicationWindow()
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	_pcStackBar = new FCStackBar(this,"Cmd_Group");
 	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcStackBar);
-	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar, NULL, KDockWidget::DockRight, 100);
+	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar, NULL, KDockWidget::DockRight, 83);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
@@ -389,7 +390,9 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.clear();
 		defaultMenus.push_back("Std_CommandLine");
 		defaultMenus.push_back("Std_DlgParameter");
+#ifdef FC_USE_OCAFBROWSER
 		defaultMenus.push_back("Std_OCAFBrowser");
+#endif
 		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_DlgMacroRecord");
 		defaultMenus.push_back("Std_DlgMacroStop");
@@ -493,6 +496,11 @@ void ApplicationWindow::OnShowView()
 
 void ApplicationWindow::OnShowView(int id)
 {
+  if (mCheckBars.find(id)==mCheckBars.end())
+    return; // not a dock window
+  if (!mCheckBars[id])
+    return; // no valid dock window
+
   QPopupMenu* menu = (QPopupMenu*)sender();
 
   if (menu->isItemChecked(id))

@@ -40,6 +40,7 @@ class QPixmap;
 class QListView;
 class FCPropertyView;
 class FCPropertyListView;
+class FCProperty;
 
 /** The link between the ProperyView and the shown Property.
  */
@@ -48,6 +49,7 @@ class FCPropertyViewItem : public QListViewItem
   public:
     /// Constructor
     FCPropertyViewItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName);
+    virtual ~FCPropertyViewItem();
 
     /// Opens the Leafs and generate them.
     void setOpen( bool );
@@ -66,8 +68,8 @@ class FCPropertyViewItem : public QListViewItem
     void paintFocus( QPainter *p, const QColorGroup &cg, const QRect &r );
     void updateBackColor();
 
-    virtual void setValue( const QVariant &v );
-    QVariant value() const;
+    void setValue( FCProperty* v );
+    FCProperty* value() const;
     virtual void setChanged( bool b, bool updateDb = TRUE );
     virtual bool hasCustomContents() const;
     virtual bool hasSubItems() const;
@@ -93,7 +95,7 @@ class FCPropertyViewItem : public QListViewItem
     virtual void initChildren();
     virtual void childValueChanged( FCPropertyViewItem *child );
 
-    FCPropertyViewItem* createPropertyItem( const QVariant &v, const char* propName );
+    FCPropertyViewItem* createPropertyItem( FCProperty* v, const char* propName );
     /// Delivers the pixmap that is shown.
 //    const QPixmap *pixmap( int i ) const;
     /// Sets the pixmap that will be shown.
@@ -102,10 +104,10 @@ class FCPropertyViewItem : public QListViewItem
 //  	void BuildUp(void);
 
   protected:
+    virtual void updateItem ( FCProperty* v ) = 0;
 	  void activate (); 
     QColor backgroundColor();
     bool open, changed;
-    QVariant val;
 
     QColor backColor;
     FCPropertyListView* listview;
@@ -115,6 +117,7 @@ class FCPropertyViewItem : public QListViewItem
     void createResetButton();
     void updateResetButtonState();
 
+    FCProperty* val;
     QString propertyName;
     QPushButton *resetButton;
     FCPropertyViewItem *property;
@@ -129,9 +132,11 @@ class FCPropertyViewIntItem : public QObject,	public FCPropertyViewItem
     FCPropertyViewIntItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName, bool s);
     ~FCPropertyViewIntItem();
 
-    virtual void setValue( const QVariant &v );
     virtual void showView();
     virtual void hideView();
+
+  protected:
+    virtual void updateItem ( FCProperty* v );
 
   private slots:
     void onSetValue();
@@ -150,9 +155,11 @@ class FCPropertyViewFloatItem : public QObject,	public FCPropertyViewItem
     FCPropertyViewFloatItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName, bool s);
     ~FCPropertyViewFloatItem();
 
-    virtual void setValue( const QVariant &v );
     virtual void showView();
     virtual void hideView();
+
+  protected:
+    virtual void updateItem ( FCProperty* v );
 
   private slots:
     void onSetValue();
@@ -171,10 +178,12 @@ class FCPropertyViewBoolItem : public QObject, public FCPropertyViewItem
     FCPropertyViewBoolItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName );
     ~FCPropertyViewBoolItem();
 
-    virtual void setValue( const QVariant &v );
     virtual void toggle();
     virtual void showView();
     virtual void hideView();
+
+  protected:
+    virtual void updateItem ( FCProperty* v );
 
   private slots:
     void onSetValue();
@@ -190,10 +199,9 @@ class FCPropertyViewTextItem : public QObject, public FCPropertyViewItem
 
   public:
     FCPropertyViewTextItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName, 
-          bool comment, bool multiLine, bool a = FALSE );
+          bool comment, bool multiLine);
     ~FCPropertyViewTextItem();
 
-    virtual void setValue( const QVariant &v );
     virtual void setChanged( bool b, bool updateDb = TRUE );
     virtual bool hasSubItems() const;
     
@@ -204,6 +212,9 @@ class FCPropertyViewTextItem : public QObject, public FCPropertyViewItem
     virtual void initChildren();
     virtual void childValueChanged( FCPropertyViewItem *child );
 
+  protected:
+    virtual void updateItem ( FCProperty* v );
+
   private slots:
     void onSetValue();
     void getText();
@@ -213,9 +224,9 @@ class FCPropertyViewTextItem : public QObject, public FCPropertyViewItem
     QGuardedPtr<QLineEdit> lin;
     QGuardedPtr<QHBox> box;
     QPushButton *button;
-    bool withComment, hasMultiLines, accel;
+    bool withComment, hasMultiLines;
 };
-
+/*
 class FCPropertyViewCoordItem : public QObject, public FCPropertyViewItem
 {
     Q_OBJECT
@@ -224,7 +235,7 @@ class FCPropertyViewCoordItem : public QObject, public FCPropertyViewItem
     FCPropertyViewCoordItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName );
     ~FCPropertyViewCoordItem();
 
-    virtual void setValue( const QVariant &v );
+    virtual void setValue( FCProperty* v );
     virtual bool hasSubItems() const;
 
     virtual void showView();
@@ -238,7 +249,7 @@ class FCPropertyViewCoordItem : public QObject, public FCPropertyViewItem
     QLineEdit *lined();
     QGuardedPtr<QLineEdit> lin;
 };
-
+*/
 class FCPropertyViewListItem : public QObject, public FCPropertyViewItem
 {
     Q_OBJECT
@@ -247,7 +258,6 @@ class FCPropertyViewListItem : public QObject, public FCPropertyViewItem
     FCPropertyViewListItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName, bool editable );
     ~FCPropertyViewListItem();
 
-    virtual void setValue( const QVariant &v );
 
     virtual void showView();
     virtual void hideView();
@@ -256,6 +266,9 @@ class FCPropertyViewListItem : public QObject, public FCPropertyViewItem
     int currentIntItem() const;
     void setCurrentItem( const QString &s );
     void setCurrentItem( int i );
+
+  protected:
+    virtual void updateItem ( FCProperty* v );
 
   private slots:
     void onSetValue();
@@ -276,7 +289,6 @@ class FCPropertyViewColorItem : public QObject, public FCPropertyViewItem
     FCPropertyViewColorItem( FCPropertyListView *l, FCPropertyViewItem *after, const char* propName, bool children );
     ~FCPropertyViewColorItem();
 
-    virtual void setValue( const QVariant &v );
     virtual bool hasCustomContents() const;
     virtual bool hasSubItems() const;
     virtual void drawCustomContents( QPainter *p, const QRect &r );
@@ -287,6 +299,9 @@ class FCPropertyViewColorItem : public QObject, public FCPropertyViewItem
     virtual void createChildren();
     virtual void initChildren();
     virtual void childValueChanged( FCPropertyViewItem *child );
+
+  protected:
+    virtual void updateItem ( FCProperty* v );
 
   private slots:
     void getColor();
@@ -325,7 +340,7 @@ class FCPropertyListView : public QListView
     void resizeEvent( QResizeEvent *e );
     void keyPressEvent ( QKeyEvent * e );
     void paintEmptyArea( QPainter *p, const QRect &r );
-    bool addPropertyItem( FCPropertyViewItem *&item, const QCString &name, QVariant::Type t );
+    bool addPropertyItem( FCPropertyViewItem *&item, const QCString &name, const char* type );
 
   private:
     FCPropertyView *propView;
