@@ -106,7 +106,7 @@ extern "C" {
 
 		Application::InitApplication();
 
-		Application::DumpConfig();
+		Application::LogStatus();
 
 
 		return;

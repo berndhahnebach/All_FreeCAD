@@ -210,7 +210,7 @@ public:
 	static void Destruct(void);
 	static void InitConfig(int argc, char ** argv, const char * sHomePath  );
 	static void InitApplication(void);
-	static void DumpConfig(void);
+	static void LogStatus(void);
 	static void SetRunMode(const char*);
 	static void RunApplication(void);
 //	static Application &Instance(void);

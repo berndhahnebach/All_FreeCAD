@@ -510,6 +510,7 @@ void Application::InitConfig(int argc, char ** argv, const char * sHomePath )
 	// capture path
 	SaveEnv("PATH");
 
+  LogStatus();
 
 }
 
@@ -593,9 +594,13 @@ void Application::RunApplication()
 
 }
 
-void Application::DumpConfig()
+void Application::LogStatus()
 {
+  SYSTEMTIME time;
 
+  GetSystemTime(&time);
+
+  Console().Log("Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
 	for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
 	{
 		Console().Log("  %s\t= %s\n",It->first.c_str(),It->second.c_str());
@@ -714,6 +719,8 @@ void Application::ParsOptions(int argc, char ** argv)
 						mConfig["LoggingFileName"]= argv[i+1];
 						i++;
             break;
+					case '\0':  
+						break;   
 					default:  
             std::cerr << "Invalid Input " << argv[i] << std::endl;  
 						std::cerr << "\nUsage: " << argv[0] << Usage;

@@ -407,7 +407,7 @@ PyObject *ConsoleSingelton::sPySetStatus(PyObject *self,			// static python wrap
 {
   char *pstr1;
   char *pstr2;
-  int  *Bool;
+  int  Bool;
   if (!PyArg_ParseTuple(args, "ssi", &pstr1, &pstr2,&Bool))   // convert args: Python->C 
     return NULL;                                              // NULL triggers exception 
 
@@ -416,17 +416,21 @@ PyObject *ConsoleSingelton::sPySetStatus(PyObject *self,			// static python wrap
     if(pObs)
     {
       if(strcmp(pstr2,"Log") == 0)
-        pObs->bLog = (*Bool==0)?false:true;   				 
+        pObs->bLog = (Bool==0)?false:true;   				 
       else if(strcmp(pstr2,"Wrn") == 0)
-        pObs->bWrn = (*Bool==0)?false:true;  				 
+        pObs->bWrn = (Bool==0)?false:true;  				 
       else if(strcmp(pstr2,"Msg") == 0)
-        pObs->bMsg = (*Bool==0)?false:true;   				 
+        pObs->bMsg = (Bool==0)?false:true;   				 
       else if(strcmp(pstr2,"Err") == 0)
-        pObs->bErr = (*Bool==0)?false:true;   				 
-    }
+        pObs->bErr = (Bool==0)?false:true;  
+ 			else 
+        Py_Error(PyExc_Exception,"Unknown Message Type (use Log,Err,Msg or Wrn)");
 
-    Py_INCREF(Py_None);
-    return Py_None;
+      Py_INCREF(Py_None);
+      return Py_None;
+    }else{
+ 		  Py_Error(PyExc_Exception,"Unknown Console Type");                     
+    }
 
 	}PY_CATCH;
 }
