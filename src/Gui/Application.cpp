@@ -226,7 +226,7 @@ ApplicationWindow::ApplicationWindow()
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
 	GetCmdLine().SetParent(statusBar());
 	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
-    statusBar()->message( tr("Ready"), 2001 );
+  statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	d->_pcStackBar = new FCStackBar(this,"Cmd_Group");
@@ -1105,7 +1105,8 @@ PyMethodDef ApplicationWindow::Methods[] = {
 	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
 	{"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
 	{"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
-	{"SendMsgToActiveView",        (PyCFunction) ApplicationWindow::sSendActiveView,          1},
+	{"RunCommand",            (PyCFunction) ApplicationWindow::sRunCommand,              1},
+	{"SendMsgToActiveView",   (PyCFunction) ApplicationWindow::sSendActiveView,          1},
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -1464,6 +1465,18 @@ PYFUNCIMP_S(ApplicationWindow,sCommandAdd)
 	//Py_INCREF(pcObject);
 
 	ApplicationWindow::Instance->GetCommandManager().AddCommand(new FCPythonCommand(pName,pcCmdObj));
+
+	Py_INCREF(Py_None);
+	return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sRunCommand)
+{
+	char*       pName;
+	if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
+		return NULL;										// NULL triggers exception 
+
+  ApplicationWindow::Instance->GetCommandManager().RunCommandByName(pName);
 
 	Py_INCREF(Py_None);
 	return Py_None;

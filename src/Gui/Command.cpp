@@ -910,6 +910,14 @@ FCCommand* FCCommandManager::GetCommandByActionText(const char* sName)
   return NULL;
 }
 
+void FCCommandManager::RunCommandByName (const char* sName)
+{
+  FCCommand* pCmd = GetCommandByName(sName);
+
+  if (pCmd)
+    pCmd->activated();
+}
+
 void FCCommandManager::TestActive(void)
 {
 	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)

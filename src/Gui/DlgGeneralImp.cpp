@@ -41,6 +41,7 @@
 #include "Application.h"
 #include "PrefWidgets.h"
 #include "Command.h"
+#include "CommandLine.h"
 
 /* 
  *  Constructs a FCDlgGeneral which is a child of 'parent', with the 
@@ -64,10 +65,13 @@ FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
   append(AllowDragMenu->getHandler());
   append(RecentFiles->getHandler());
   append(SplashScreen->getHandler());
+  append(ShowCmdLine->getHandler());
+  append(SizeCmdLine->getHandler());
 
   connect(UsesBigPixmaps->getHandler(), SIGNAL(saved()), this, SLOT(onBigPixmaps()));
   connect(WindowStyle->getHandler(), SIGNAL(saved()), this, SLOT(onSetStyle()));
   connect(RecentFiles->getHandler(), SIGNAL(saved()), this, SLOT(onSetMRUSize()));
+  connect(ShowCmdLine->getHandler(), SIGNAL(saved()), this, SLOT(onSetCmdLineVisible()));
 }
 
 /*  
@@ -107,6 +111,16 @@ void FCDlgGeneral::onSetMRUSize()
     FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Recent files");
     ((FCCmdMRU*)pCmd)->SetMaxItems(hGrp->GetInt("RecentFiles", 4));
   }
+}
+
+void FCDlgGeneral::onSetCmdLineVisible()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  bool show = hGrp->GetBool("ShowCmdLine", true);
+  if (show)
+    GetCmdLine().show();
+  else
+    GetCmdLine().hide();
 }
 
 #include "DlgGeneral.cpp"

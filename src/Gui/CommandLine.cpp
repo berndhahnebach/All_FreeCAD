@@ -82,7 +82,7 @@ FCCommandLine::FCCommandLine(void)
   _astrRunCmds.push_back("execfile");
 
   ReadCmdList();
-  //setFixedWidth(400);
+  setMaximumWidth(400);
   setMinimumWidth(200);
   setAutoCompletion ( true );
   setValidator(new FCConsoleValidator(this));
@@ -98,8 +98,11 @@ FCCommandLine::~FCCommandLine(void)
 void FCCommandLine::SaveCmdList()
 {
   // write the recent commands into file
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().
+          GetGroup("BaseApp")->GetGroup("WindowSettings");
+  int iMaxCnt = hGrp->GetInt("SizeCmdLine", 20);
+
   FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
-  int iMaxCnt = hCmdGrp->GetInt("MaxCommands", 20);
 
   // copy from list box first
   std::list<std::string> alCmdList;
@@ -170,7 +173,7 @@ void FCCommandLine::slotLaunchCommand()
 #ifndef FC_DEBUG
   catch (...)
   {
-    QMessageBox::critical(this, "Error", "A really nesty error occurred in runing the script");
+    QMessageBox::critical(this, "Error", "A really nesty error occurred in running the script");
   }
 #endif
 
@@ -287,7 +290,7 @@ void FCCommandLine::dropEvent      ( QDropEvent      * e )
 
       if (pCmd)
       {
-        lineEdit()->setText("Not yet implemented");
+        lineEdit()->setText(tr("Gui.RunCommand(\"%1\")").arg(pCmd->GetName()));
       }
     }
   }
@@ -305,24 +308,36 @@ void FCCommandLine::dragEnterEvent ( QDragEnterEvent * e )
 
 bool FCCommandLine::eventFilter       ( QObject* o, QEvent* e )
 {
-  if ( o != lineEdit() )
-  	return false;
-
-  // get the editor's mouse events
-  switch (e->type())
+  if ( o == lineEdit() )
   {
-    case QEvent::DragEnter:
-      // divert the event to combo box (itself)
-      if (acceptDrops())
-        dragEnterEvent ((QDragEnterEvent*)e);
-      break;
-    case QEvent::Drop:
-      if (acceptDrops())
-        dropEvent ((QDropEvent*)e);
-      break;
+    // get the editor's mouse events
+    switch (e->type())
+    {
+      case QEvent::DragEnter:
+        // divert the event to combo box (itself)
+        if (acceptDrops())
+          dragEnterEvent ((QDragEnterEvent*)e);
+        break;
+      case QEvent::Drop:
+        if (acceptDrops())
+          dropEvent ((QDropEvent*)e);
+        break;
+    }
   }
 
   return QComboBox::eventFilter(o, e);
+}
+
+void FCCommandLine::show()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().
+    GetGroup("BaseApp")->GetGroup("WindowSettings");
+  bool show = (hGrp->GetBool("ShowCmdLine", true));
+
+  if ( !show )
+    QComboBox::hide();
+  else
+    QComboBox::show();
 }
 
 #include "moc_CommandLine.cpp"

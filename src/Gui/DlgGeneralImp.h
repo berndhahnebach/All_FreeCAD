@@ -63,6 +63,9 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCPreferencePage
      * @see FCCmdMRU
      */
     void onSetMRUSize();
+    /** Shows/hides the command line 
+     */
+    void onSetCmdLineVisible();
 };
 
 #endif // DLG_GENERAL_IMP_H

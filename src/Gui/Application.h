@@ -227,6 +227,7 @@ public:
 
 	PYFUNCDEF_S(sUpdateGui);
 
+	PYFUNCDEF_S(sRunCommand);
 	PYFUNCDEF_S(sCommandAdd);
 
 	static PyMethodDef    Methods[]; 

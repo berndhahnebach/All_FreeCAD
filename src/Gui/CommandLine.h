@@ -82,7 +82,7 @@ protected:
 
 public:
   bool eventFilter       ( QObject* o, QEvent* e );
-
+  void show();
   void SetParent(QWidget* parent);
 	static void Destruct(void);
 	static FCCommandLine &Instance(void);

@@ -506,6 +506,11 @@ public:
 	 */
 	FCCommand* GetCommandByActionText(const char* sName);
 
+  /**  
+   * Runs the command
+   */
+  void RunCommandByName (const char* sName);
+
 	/// method is OBSOLET use GetModuleCommands() or GetAllCommands() 
 	const std::map<std::string, FCCommand*>& GetCommands() { return _sCommands; }
 	/// get frequently called by the AppWnd to check the commands are active
