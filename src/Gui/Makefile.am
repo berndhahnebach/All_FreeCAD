@@ -1,4 +1,4 @@
-noinst_LIBRARIES=libFreeCADGui.a
+pkglib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
 moc_Application.cpp \
@@ -22,7 +22,6 @@ moc_DlgMacroExecute.cpp \
 moc_DlgMacroExecuteImp.cpp \
 moc_DlgMacroRecord.cpp \
 moc_DlgMacroRecordImp.cpp \
-moc_DlgMacros.cpp \
 moc_DlgOnlineHelp.cpp \
 moc_DlgOnlineHelpImp.cpp \
 moc_DlgParameter.cpp \
@@ -73,8 +72,6 @@ DlgMacroExecute.cpp \
 DlgMacroExecute.h \
 DlgMacroRecord.cpp \
 DlgMacroRecord.h \
-DlgMacros.cpp \
-DlgMacros.h \
 DlgOnlineHelp.cpp \
 DlgOnlineHelp.h \
 DlgParameter.cpp \
@@ -114,7 +111,7 @@ Language/FreeCAD_de.h
 
 #scintilla/ExternalLexer.cpp
 
-libFreeCADGui_a_SOURCES=\
+libFreeCADGui_la_SOURCES=\
 scintilla/AutoComplete.cpp \
 scintilla/CallTip.cpp \
 scintilla/CellBuffer.cpp \
@@ -229,7 +226,6 @@ DlgEditorImp.cpp \
 DlgGeneralImp.cpp \
 DlgMacroExecuteImp.cpp \
 DlgMacroRecordImp.cpp \
-DlgMacros.cpp \
 DlgOnlineHelpImp.cpp \
 DlgParameterImp.cpp \
 DlgPreferencesImp.cpp \
@@ -262,9 +258,8 @@ WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
 
-libFreeCADGui_a_LDADD   = -lpython2.3 -lxerces-c -lqt-mt -lqui -lCoin
+libFreeCADGui_la_LDADD   = -lpython2.3 -lxerces-c -lqt-mt -lqui -lCoin
 
-#moc_DlgMacros.cpp
 
 # special rule for moc_private_HtmlView.cpp
 moc_private_%.cpp: %.cpp

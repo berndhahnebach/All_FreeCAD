@@ -1,7 +1,7 @@
 
-noinst_LIBRARIES=libFreeCADApp.a
+pkglib_LTLIBRARIES=libFreeCADApp.la
 
-libFreeCADApp_a_SOURCES=\
+libFreeCADApp_la_SOURCES=\
 Application.cpp  Document.cpp  DocType.cpp DocTypeAttr.cpp FeatureAttr.cpp Geometry2D.cpp  Parameter.cpp    Topology.cpp\
 Attribute.cpp    Feature.cpp   Geometry3D.cpp  PreCompiled.cpp\
 Function.cpp  Label.cpp Libs.cpp        Properties.cpp\
@@ -11,4 +11,4 @@ Document.h   Label.h  Geometry2D.h  PreCompiled.h
 
 #LDADD=../Base/libFreeCADBase.a
 
-libFreeCADApp_a_LDADD   = -lpython2.3 -lxerces-c
+libFreeCADApp_la_LDADD   = -lpython2.3 -lxerces-c

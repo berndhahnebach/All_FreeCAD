@@ -1,5 +1,5 @@
-bin_PROGRAMS=fc
-fc_SOURCES= \
+bin_PROGRAMS=freecad
+freecad_SOURCES= \
 	Main.cpp \
 	PreCompiled.cpp
 
@@ -27,13 +27,17 @@ moc_%.cpp: %.h
 
 #OCCLIBS=-L$(OCCDIR)/Linux/lib -L.
 
+# the library search path.
+freecad_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries)
+
 LDADD=\
-	../Base/libFreeCADBase.a \
-	../App/libFreeCADApp.a \
-	../Gui/libFreeCADGui.a \
+	-lFreeCADBase \
+	-lFreeCADApp \
+	-lFreeCADGui \
 	-lpython@fc_py_ver@ \
 	-lxerces-c \
 	-lqt-mt \
+	-lqui \
 	-lCoin \
 -lPAppStdPlugin \
 -lPTKernel \

@@ -18,7 +18,9 @@ AC_LANG_CPLUSPLUS
 ##############################
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_RANLIB
+AC_ENABLE_SHARED(yes)
+AC_ENABLE_STATIC(no)
+AC_PROG_LIBTOOL
 
 ## SET DEFINES
 ##############################
