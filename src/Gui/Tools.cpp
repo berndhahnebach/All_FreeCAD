@@ -36,7 +36,6 @@
 #include "Tools.h"
 #include <qobjcoll.h>
 
-
 QPixmap FCTools::resize(int w, int h, QPixmap p)
 {
   QPixmap pix = p;
@@ -75,8 +74,13 @@ QPixmap FCTools::fillUp(int w, int h, QPixmap p)
 
   QPixmap pm;
   pm.resize(w,h);
-  pm.fill(g.base());
 
+#if 0 // the fillTransparentRect() method is not yet implemented correctly
+  pm = fillTransparentRect(0, 0, w, h, pm);
+  pm = fillOpaqueRect(x, y, p.width(), p.height(), pm);
+#else
+  pm.fill(g.base());
+#endif
   QPainter pt;
   pt.begin( &pm );
   pt.setPen( g.light() );
@@ -100,4 +104,42 @@ void FCTools::clearToolButtons(QToolBar* tb)
   	    delete obj;
     }
   }
+}
+
+QPixmap FCTools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
+{
+  if (!p.mask())
+    return p; // sorry, but cannot do anything
+
+  QBitmap b = *p.mask();
+
+  // make a opaque pixmap
+  QPixmap p2 (w,h);
+  p2.fill();
+
+  // modify the mask
+  bitBlt(&b, x, y, &p2, 0, 0, w, h, Qt::CopyROP, false);
+
+  p.setMask(b);
+  
+  return p;
+}
+
+QPixmap FCTools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
+{
+  if (!p.mask())
+    return p; // sorry, but cannot do anything
+
+  QBitmap b = *p.mask();
+
+  // make a transparent pixmap ???
+  QPixmap p2 (w,h);
+  p2.fill();
+
+  // modify the mask
+  bitBlt(&b, x, y, &p2, 0, 0, w, h, Qt::CopyROP, false);
+
+  p.setMask(b);
+  
+  return p;
 }

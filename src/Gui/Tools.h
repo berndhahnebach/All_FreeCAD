@@ -43,10 +43,28 @@ class FCTools
      * up with current style's base color. 
      */
     static QPixmap fillUp(int w, int h, QPixmap p);
+
+    /** Creates an opaque area in a pixmap
+     * This is useful for drawing a pixmap into 
+     * another pixmap. But therefore this area must be
+     * opaque in every pixel, otherwise it is not 
+     * possible to draw into.
+     */
+    static QPixmap fillOpaqueRect(int x, int y, int w, int h, QPixmap p);
+
+    /** Creates a transparent area in a pixmap
+     * This is useful for resizing a pixmap. The
+     * new space of the pixmap can be made transparent
+     * by making transparent the whole area and by making 
+     * opaque the area of the original pixmap.
+     */
+    static QPixmap fillTransparentRect(int x, int y, int w, int h, QPixmap p);
+
     /** Does the same as @ref fillUp() but does not move the pixmap
      * to the center.
      */
     static QPixmap resize(int w, int h, QPixmap p);
+    
     /** Clears only the tool buttons and the separators of a toolbar */
     static void clearToolButtons(QToolBar* tb);
 };
