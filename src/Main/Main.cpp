@@ -31,6 +31,8 @@
 
 #include "PreCompiled.h"
 
+#error "This main is depricated use MainGui, MainCmd or MainPy instead!!"
+
 #ifdef FC_LINUX
 #if HAVE_CONFIG_H
 #	include <autoconfig.h>
