@@ -505,18 +505,18 @@ void CheckEnv(void)
 	}
 
 	cout << flush;
-	
-    bool bFailure=false;  
-        
-	TestEnvExists("CSF_MdtvFontDirectory",bFailure);
-    TestEnvExists("CSF_MdtvTexturesDirectory",bFailure);
-    TestEnvExists("CSF_UnitsDefinition",bFailure);
-    TestEnvExists("CSF_UnitsLexicon",bFailure);
 
-    if (bFailure) {    
-     	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
+	bool bFailure=false;
+
+	TestEnvExists("CSF_MDTVFontDirectory",bFailure);
+	TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
+	TestEnvExists("CSF_UnitsDefinition",bFailure);
+	TestEnvExists("CSF_UnitsLexicon",bFailure);
+
+	if (bFailure) {
+     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
 		exit(1);
-    }
+	}
 
 }
 
