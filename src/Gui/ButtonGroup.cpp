@@ -620,10 +620,9 @@ FCStackBar::FCStackBar( QWidget *parent, const char *name )
   try
   {
     // attach the command bar to its preferences
-    std::string strGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
-    std::string strSlider    = "SpeedAnimationCmdBar";
-    GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Attach(this);
-    GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Notify(0);
+    const char* strGroupPath = "User parameter:BaseApp/Windows/CmdBar";
+    GetApplication().GetParameterGroupByPath(strGroupPath)->Attach(this);
+    GetApplication().GetParameterGroupByPath(strGroupPath)->Notify("SpeedAnimationCmdBar");
   }
   catch(/*const*/ FCException& rclE)
   {
@@ -639,9 +638,8 @@ FCStackBar::FCStackBar( QWidget *parent, const char *name )
 FCStackBar::~FCStackBar()
 {
   // detach the command bar
-  std::string strGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
-  std::string strSlider    = "SpeedAnimationCmdBar";
-  GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Detach(this);
+  const char* strGroupPath = "User parameter:BaseApp/Windows/CmdBar";
+  GetApplication().GetParameterGroupByPath(strGroupPath)->Detach(this);
   m_mButtonView.clear();
   delete m_pLayout;
 }
@@ -958,8 +956,7 @@ void FCStackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
 void FCStackBar::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
-  std::string name = rclGrp.GetGroupName();
-  if (name == "SpeedAnimationCmdBar")
+  if (strcmp(sReason, "SpeedAnimationCmdBar") == 0)
   {
     FCParameterGrp::handle hGrp = rclGrp.GetGroup("Settings");
     if (hGrp->GetInts("Value").size() == 0)

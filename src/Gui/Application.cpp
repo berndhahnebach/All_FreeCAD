@@ -185,7 +185,7 @@ ApplicationWindow::ApplicationWindow()
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	//setUsesBigPixmaps (true);
 
-  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetGroup("Macros");
+  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
   std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
   for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
   {
@@ -514,15 +514,8 @@ bool ApplicationWindow::SendHasMsgToActiveView(const char* pMsg)
 
 FCView* ApplicationWindow::GetActiveView(void)
 {
-  // check if the is an active window and if it inherits "FCViewContainer"
-  // (there exists also windows which do NOT inherit "FCViewContainer")
-  // e.g. "FCFloatingChildView"
-//  if (!activeWindow() || !activeWindow()->inherits("FCViewContainer"))
-//    return 0;
-
 	FCView * pView = reinterpret_cast <FCView *> ( activeWindow() );
 	return pView;
-
 }
 
 
