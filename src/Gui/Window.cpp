@@ -19,6 +19,7 @@
  
 
 #include "PreCompiled.h"
+#include <qtabwidget.h>
 
 
 #ifndef _PreComp_
@@ -128,6 +129,175 @@ FCViewContainer::~FCViewContainer()
 }
 */
 
+/* 
+ *  Constructs a FCReportOutput which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ */
+FCReportOutput::FCReportOutput( QWidget* parent,  const char* name, WFlags fl )
+    : FCDockWindow( parent, name, fl )
+{
+  if ( !name )
+  	setName( "FCReportOutput" );
 
+  resize( 529, 162 ); 
+  tabLayout = new QGridLayout( this ); 
+  tabLayout->setSpacing( 0 );
+  tabLayout->setMargin( 0 );
+
+  tab = new QTabWidget( this, "TabWidget" );
+  tab->setProperty( "tabPosition", (int)QTabWidget::Bottom );
+  tab->setProperty( "tabShape", (int)QTabWidget::Triangular );
+
+
+  mle = new FCLogOutput( tab, "LogOutput" );
+  tab->insertTab( mle, tr( "Output" ) );
+  tabLayout->addWidget( tab, 0, 0 );
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+FCReportOutput::~FCReportOutput()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
+// ----------------------------------------------------------
+
+FCLogOutput::FCLogOutput(QWidget* parent, const char* name)
+ : QTextBrowser(parent, name)
+{
+  QFont _font(  font() );
+  _font.setFamily( "Courier" );
+  _font.setPointSize( 10 );
+  _font.setBold( TRUE );
+  setFont( _font ); 
+  onClear();
+  setHScrollBarMode(QScrollView::AlwaysOff);
+
+  GetConsole().AttacheObserver(this);
+}
+
+FCLogOutput::~FCLogOutput()
+{
+  GetConsole().DetacheObserver(this);
+}
+
+void FCLogOutput::appendLog(const char * s, const char * color)
+{
+  alOriginal.push_back(s);
+  QString qs;
+
+  if (color)
+  {
+    if (strchr(s, '\n') != NULL)
+      qs = tr("<font color=\"%1\">%2</font>\n<p>").arg(color).arg(s);
+    else
+      qs = tr("<font color=\"%1\">%2</font>").arg(color).arg(s);
+  }
+  else
+  {
+    if (strchr(s, '\n') != NULL)
+      qs = tr("%1<p>").arg(s);
+    else
+      qs = tr("%1").arg(s);
+  }
+  
+  setText(text() + qs);
+}
+
+void FCLogOutput::Warning(const char * s)
+{
+  appendLog(s, "orange");
+}
+
+void FCLogOutput::Message(const char * s)
+{
+  appendLog(s, "green");
+}
+
+void FCLogOutput::Error  (const char * s)
+{
+  appendLog(s, "red");
+}
+
+void FCLogOutput::Log (const char * s)
+{
+  appendLog(s);
+}
+
+bool FCLogOutput::event( QEvent* ev )
+{
+  bool ret = QWidget::event( ev ); 
+  if ( ev->type() == QEvent::ApplicationFontChange ) 
+  {
+	  QFont _font(  font() );
+	  _font.setFamily( "Courier" );
+	  _font.setPointSize( 10 );
+	  _font.setBold( TRUE );
+	  setFont( _font ); 
+  }
+  
+  return ret;
+}
+
+void FCLogOutput::viewportMousePressEvent (QMouseEvent * e)
+{
+  if (e->button() == RightButton)
+  {
+    QPopupMenu menu;
+    menu.insertItem("Copy" , this, SLOT(copy()));
+    menu.insertItem("Clear", this, SLOT(onClear()));
+    menu.insertSeparator();
+    menu.insertItem("Select All", this, SLOT(selectAll()));
+    menu.insertSeparator();
+    menu.insertItem("Save As...", this, SLOT(onSaveAs()));
+    menu.exec(e->globalPos());
+  }
+  else
+    QTextBrowser::viewportMousePressEvent(e);
+}
+
+void FCLogOutput::onClear()
+{
+  setText("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
+}
+
+void FCLogOutput::onSaveAs()
+{
+  QString fn = FCFileDialog::getSaveFileName(QString::null,"HTML Files (*.html *.htm);;Plain Text Files (*.txt *.log)",
+                                             this, QString("Save Report Output"));
+  if (!fn.isEmpty())
+  {
+    int dot = fn.find('.');
+    if (dot != -1)
+    {
+      QString ext = fn.right(fn.length() - dot - 1).lower();
+      if (ext == QString("html") || ext == QString("htm"))
+      {
+        QFile f(fn);
+        if (f.open(IO_WriteOnly))
+        {
+          QTextStream t (&f);
+          t << text();
+          f.close();
+        }
+      }
+      else if (ext == QString("txt") || ext == QString("log"))
+      {
+        QFile f(fn);
+        if (f.open(IO_WriteOnly))
+        {
+          QTextStream t (&f);
+          for (std::vector<QString>::iterator it = alOriginal.begin(); it != alOriginal.end(); ++it)
+          {
+            t << *it;
+          }
+          f.close();
+        }
+      }
+    }
+  }
+}
 
 #include "moc_Window.cpp"

@@ -33,10 +33,10 @@
 #define APPLICATION_H
 
 
-#include <qmainwindow.h>
-#include <qaction.h>
-#include <qworkspace.h>
-#include <qthread.h>
+//#include <qmainwindow.h>
+//#include <qaction.h>
+//#include <qworkspace.h>
+//#include <qthread.h>
 
 #include "qextmdi/qextmdimainfrm.h"
 

@@ -198,6 +198,10 @@ ApplicationWindow::ApplicationWindow()
 	pcPropView->setMinimumWidth(210);
 	_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
+  // ReportOutput View
+  FCReportOutput* pcOutput = new FCReportOutput(this,"ReportOutput");
+  _pcWidgetMgr->addDockWindow("Report Output", pcOutput, "Command bar", KDockWidget::DockBottom);
+
  	CreateStandardOperations();
 
 	
