@@ -726,7 +726,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   d->m_FCscript = QString::null/*"FCScript://"*/;
 
   // find the home directory of the online manual
-  d->m_strDocDir = GetDocDirectory();
+  d->m_strDocDir = GetDocDirectory() + PATHSEP;
 
   QString home = d->m_strDocDir;
 
@@ -967,14 +967,12 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
+	QString home(GetApplication().GetHomePath()); 
+  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "/Doc/free-cad.sourceforge.net/").c_str();
 
-  QDir dir (path);
-  dir.convertToAbs();
-  path = dir.path();
-  path.append("/");
+  QDir dir (home + path);
 
-  if (QDir().exists(path) == false)
+  if (dir.exists() == false)
   {
 		QString msg = tr("Couldn't find the path for the Online help.\n");
 		bool bMute = FCGuiConsoleObserver::bMute;
@@ -983,7 +981,7 @@ QString FCHtmlView::GetDocDirectory()
 	  FCGuiConsoleObserver::bMute = bMute;
   }
 
-  return path;
+  return dir.path();
 }
 
 QString FCHtmlView::GetScriptDirectory()

@@ -42,7 +42,7 @@ class Test1Cmd:
         TestApp.TestUnit()
 
     def GetResources(self):
-        return {'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}
+        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}
 
 class Test2Cmd:
     "Test2 commando object"
@@ -50,7 +50,7 @@ class Test2Cmd:
         FreeCAD.PrintLog("TEst2 in python activated")
 
     def GetResources(self):
-        return {'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}
+        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 2', 'ToolTip': 'First very important Test!!!'}
 
 class TestAllCmd:
     "Test all commando object"
@@ -58,7 +58,7 @@ class TestAllCmd:
         TestApp.TestAll()
 
     def GetResources(self):
-        return {'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
+        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
 
 class TestDocCmd:
     "Document test commando object"
@@ -66,7 +66,8 @@ class TestDocCmd:
         TestApp.TestDoc()
 
     def GetResources(self):
-        return {'MenuText': 'Test Document',
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test Document',
                 'ToolTip' : 'Test the document (creation, save, load and destruction)'}
 
 class TestParameterHeavy:
@@ -75,7 +76,9 @@ class TestParameterHeavy:
         TestApp.TestParameterHeavy(100)
 
     def GetResources(self):
-        return {'Heavy parameter test': 'Test parameter heavy',
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test Parameter',
+        		'Heavy parameter test': 'Test parameter heavy',
                 'Test parameter very long' : 'Test parameter very long'}
 
 class TestBaseCmd:
@@ -84,7 +87,8 @@ class TestBaseCmd:
         TestApp.TestBase()
 
     def GetResources(self):
-        return {'MenuText': 'Test base',
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test base',
                 'ToolTip' : 'Test the basic functions of FreeCAD'}
 
 class TestWorkbenchCmd:
@@ -104,7 +108,8 @@ class TestWorkbenchCmd:
 	        i=i+1
 
     def GetResources(self):
-        return {'MenuText': 'Test workbench',
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test workbench',
                 'ToolTip' : 'Test the switching of workbenches in FreeCAD'}
 
 #---------------------------------------------------------------------------
