@@ -1154,7 +1154,7 @@ void ApplicationWindow::InitApplication(void)
 //	std::map<std::string,std::string> &Config = GetApplication().Config();
 
 
-	new FCScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+	new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
 
 }
 
@@ -1171,7 +1171,7 @@ void ApplicationWindow::RunApplication(void)
 	_pcQApp->setMainWidget(mw);
 
 	// runing the Gui init script
-	Interpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
+	Interpreter().Launch(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
 	// show the main window
 	Console().Log("Showing GUI Application...\n");
 	mw->Polish();

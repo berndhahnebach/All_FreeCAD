@@ -33,7 +33,7 @@
 
 /** The LanguageFactory singleton
   */
-class GuiExport FCLanguageFactory : public FCFactory
+class GuiExport FCLanguageFactory : public Base::Factory
 {
 	public:
 		static FCLanguageFactory& Instance(void);
@@ -61,7 +61,7 @@ inline GuiExport FCLanguageFactory& GetLanguageFactory(void)
 
 // --------------------------------------------------------------------
 
-class GuiExport FCLanguageProducer : public FCAbstractProducer
+class GuiExport FCLanguageProducer : public Base::AbstractProducer
 {
 	public:
 		/// Constructor

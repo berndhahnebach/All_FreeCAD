@@ -16,160 +16,196 @@
 #	include <Standard_GUID.hxx>
 #endif
 
+#include "../Base/PyExportImp.h"
+#include "../Base/Console.h"
+using Base::Console;
+
+
 #include "Feature.h"
 
+using namespace App;
+
+//===========================================================================
+// FeaturePy - Python wrapper 
+//===========================================================================
+
+/** The DocTypeStd python class 
+ */
+class AppExport FeaturePy :public FCPyObject
+{
+	/// always start with Py_Header
+	Py_Header;
+
+public:
+	FeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+
+	~FeaturePy();
+
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+
+
+private:
+	Feature *_pcFeature;
+
+};
+
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
+
+PyTypeObject FeaturePy::Type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,						/*ob_size*/
+	"FeaturePy",				/*tp_name*/
+	sizeof(FeaturePy),			/*tp_basicsize*/
+	0,						/*tp_itemsize*/
+	/* methods */
+	PyDestructor,	  		/*tp_dealloc*/
+	0,			 			/*tp_print*/
+	__getattr, 				/*tp_getattr*/
+	__setattr, 				/*tp_setattr*/
+	0,						/*tp_compare*/
+	__repr,					/*tp_repr*/
+	0,						/*tp_as_number*/
+	0,						/*tp_as_sequence*/
+	0,						/*tp_as_mapping*/
+	0,						/*tp_hash*/
+	0,						/*tp_call */
+};
+
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
+PyMethodDef FeaturePy::Methods[] = {
+//  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
+
+  {NULL, NULL}		/* Sentinel */
+};
+
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject FeaturePy::Parents[] = {&FCPyObject::Type, NULL};     
+
+//--------------------------------------------------------------------------
+//t constructor
+//--------------------------------------------------------------------------
+FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
+: FCPyObject( T), _pcFeature(pcFeature)
+{
+	//Base::Console().Log("Create FeaturePy: %p \n",this);
+}
+
+PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  //return new FeaturePy(name, n, tau, gamma);			// Make new Python-able object
+	return 0;
+}
+
+FCPyObject *Feature::GetPyObject(void)
+{
+	return new FeaturePy(this);
+}
+
+
+//--------------------------------------------------------------------------
+// destructor 
+//--------------------------------------------------------------------------
+FeaturePy::~FeaturePy()						// Everything handled in parent
+{
+//	Base::Console().Log("Destroy FeaturePy: %p \n",this);
+} 
+
+
+//--------------------------------------------------------------------------
+// FeaturePy representation
+//--------------------------------------------------------------------------
+PyObject *FeaturePy::_repr(void)
+{
+	return Py_BuildValue("s", "FreeCAD Document");
+}
+//--------------------------------------------------------------------------
+// FeaturePy Attributes
+//--------------------------------------------------------------------------
+PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+{ 
+	try{
+		if (streq(attr, "XXXX"))						
+			return Py_BuildValue("i",1); 
+		else
+			_getattr_up(FCPyObject); 						
+	}catch(...){
+		Py_Error(PyExc_Exception,"Error in get Attribute");
+	}
+} 
+
+int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+	if (streq(attr, "XXXX")){						// settable new state
+		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
+		return 1;
+	}else  
+		return FCPyObject::_setattr(attr, value); 	// send up to parent
+} 
 
 
 
-
-
-
-
-
-
-
-
-
-
+//--------------------------------------------------------------------------
+// Python wrappers
+//--------------------------------------------------------------------------
 /*
-
-
-// **************************************************************************
-// **************************************************************************
-// Handle_FCFeature
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Handle_FCFeature::~Handle_FCFeature() {}
-
-Standard_EXPORT Handle_Standard_Type& FCFeature_Type_()
-{
-
-  static Handle_Standard_Type aType1 = STANDARD_TYPE(FCAttribute);
- if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCAttribute);
-  static Handle_Standard_Type aType2 = STANDARD_TYPE(TDF_Attribute);
-  if ( aType2.IsNull()) aType2 = STANDARD_TYPE(TDF_Attribute);
-  static Handle_Standard_Type aType3 = STANDARD_TYPE(MMgt_TShared);
-  if ( aType3.IsNull()) aType3 = STANDARD_TYPE(MMgt_TShared);
-  static Handle_Standard_Type aType4 = STANDARD_TYPE(Standard_Transient);
-  if ( aType4.IsNull()) aType4 = STANDARD_TYPE(Standard_Transient);
-
-
-  static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,aType4,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("FCFeature",
-			                                 sizeof(FCFeature),
-			                                 1,
-			                                 (Standard_Address)_Ancestors,
-			                                 (Standard_Address)NULL);
-
-  return _aType;
-}
-
-// DownCast method
-//   allow safe downcasting
-//
-const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transient)& AnObject)
-{
-  Handle(FCFeature) _anOtherObject;
-
-  if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(FCFeature))) {
-       _anOtherObject = Handle(FCFeature)((Handle(FCFeature)&)AnObject);
-     }
-  }
-
-  return _anOtherObject ;
-}
-
-
-
-
-// **************************************************************************
-// **************************************************************************
-// FCFeature
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-//=======================================================================
-//function : GetID
-//purpose  : 
-//=======================================================================
-
-const Standard_GUID& FCFeature::GetID () 
-{
-  static Standard_GUID FCFeatureID("F46EEE9A-F770-4eae-A832-C55ECD5F8FE2");
-  return FCFeatureID;
-}
-
-//=======================================================================
-//function : Set
-//purpose  : 
-//=======================================================================
-Handle_FCFeature FCFeature::Set(const TDF_Label& label,const TCollection_ExtendedString& string) 
-{
-  Handle(FCFeature) N;
-  if (!label.FindAttribute(FCFeature::GetID(), N)) { 
-    N = new FCFeature ();   
-    label.AddAttribute(N);
-  }
-  N->Set(string);    
-  return N;  
-}
-
-FCFeature::FCFeature () {}
-FCFeature::~FCFeature () {}
-
-void FCFeature::Set (const TCollection_ExtendedString& S) 
-{
- 
-  Backup();
-  myString2 = S;
-  //TCollection_ExtendedString tmpS(S);
-  //tmpS.RemoveAll(':');
-  //myString = tmpS;
-  //myEmpty = Standard_False;
-}
-
-TCollection_ExtendedString FCFeature::Get () const {return myString2;}
-
-const Standard_GUID& FCFeature::ID () const { return GetID(); }
-
-
-Handle(TDF_Attribute) FCFeature::NewEmpty () const
-{  
-  return new FCFeature(); 
-}
-
-void FCFeature::Restore(const Handle(TDF_Attribute)& with) 
-{
-  myString2 = Handle(FCFeature)::DownCast (with)->Get();
-}
-
-
-void FCFeature::Paste (const Handle(TDF_Attribute)& into,
-		           const Handle(TDF_RelocationTable)& RT) const
-{
-  Handle(FCFeature)::DownCast (into)->Set (myString2);
-}
-
-
-Standard_OStream& FCFeature::Dump (Standard_OStream& anOS) const
-{
-  TDF_Attribute::Dump(anOS);
-  anOS << " Name=|"<<myString2<<"|"<<endl;
-  return anOS;
-}
-
-const Handle(Standard_Type)& FCFeature::DynamicType() const 
+PyObject *FeaturePy::PyUndo(PyObject *args)
 { 
-  return STANDARD_TYPE(FCFeature) ; 
-}
-
-Standard_Boolean FCFeature::IsKind(const Handle(Standard_Type)& AType) const 
-{ 
-  return (STANDARD_TYPE(FCFeature) == AType || TDF_Attribute::IsKind(AType)); 
-}
-
+	_pcDoc->Undo(); 
+	Py_Return; 
+} 
 */
 
 
+
+//===========================================================================
+// FeatureFactorySingleton - Factory for Features
+//===========================================================================
+
+
+
+FeatureFactorySingleton* FeatureFactorySingleton::_pcSingleton = NULL;
+
+FeatureFactorySingleton& FeatureFactorySingleton::Instance(void)
+{
+  if (_pcSingleton == NULL)
+    _pcSingleton = new FeatureFactorySingleton;
+  return *_pcSingleton;
+}
+
+void FeatureFactorySingleton::Destruct (void)
+{
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
+
+Feature* FeatureFactorySingleton::Produce (const char* sName) const
+{
+	Feature* w = (Feature*)Produce(sName);
+
+  // this Feature class is not registered
+  if (!w)
+  {
+#ifdef FC_DEBUG
+    Console().Warning("\"%s\" is not registered\n", sName);
+#else
+    Console().Log("\"%s\" is not registered\n", sName);
+#endif
+    return NULL;
+  }
+
+  return w;
+}
 

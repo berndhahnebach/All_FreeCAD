@@ -35,7 +35,7 @@
 
 /** The WidgetFactory singleton
   */
-class GuiExport FCWidgetFactory : public FCFactory
+class GuiExport FCWidgetFactory : public Base::Factory
 {
 	public:
 		static FCWidgetFactory& Instance(void);
@@ -60,7 +60,7 @@ inline GuiExport FCWidgetFactory& GetWidgetFactory(void)
 // --------------------------------------------------------------------
 
 template <class CLASS>
-class FCWidgetProducer: public FCAbstractProducer
+class FCWidgetProducer: public Base::AbstractProducer
 {
 	public:
 		/// Constructor
@@ -81,7 +81,7 @@ class FCWidgetProducer: public FCAbstractProducer
 // --------------------------------------------------------------------
 
 template <class CLASS>
-class FCPrefPageProducer: public FCAbstractProducer
+class FCPrefPageProducer: public Base::AbstractProducer
 {
 	public:
 		/// Constructor

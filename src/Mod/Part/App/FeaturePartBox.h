@@ -40,7 +40,7 @@
 
 
 
-class PartBoxFeature :public FCFeature
+class PartBoxFeature :public App::Feature
 {
 	virtual bool MustExecute(const TFunction_Logbook& log) const;
 

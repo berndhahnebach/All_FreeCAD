@@ -36,7 +36,7 @@
   * hold all paths for the extern bitmaps (files) to serve
   * as a single point of accessing bitmaps in FreeCAD
   */
-class GuiExport FCBitmapFactory : public FCFactory
+class GuiExport FCBitmapFactory : public Base::Factory
 {
 	public:
 		enum Position

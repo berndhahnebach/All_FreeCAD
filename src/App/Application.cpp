@@ -758,8 +758,8 @@ void FCApplication::InitApplication(void)
 
 	// interpreter and Init script ==========================================================
 	// register scripts
-	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
-	new FCScriptProducer( "FreeCADTest",    FreeCADTest    );
+	new ScriptProducer( "FreeCADInit",    FreeCADInit    );
+	new ScriptProducer( "FreeCADTest",    FreeCADTest    );
 
 
 	// creating the application
@@ -768,7 +768,7 @@ void FCApplication::InitApplication(void)
 
 
 	// starting the init script
-	Interpreter().Launch(GetScriptFactory().ProduceScript("FreeCADInit"));
+	Interpreter().Launch(Base::ScriptFactory().ProduceScript("FreeCADInit"));
 
 
 }
@@ -792,7 +792,7 @@ void FCApplication::RunApplication()
 	{
 		// run internal script
 		Console().Log("Running internal script:\n");
-		Interpreter().Launch(GetScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
+		Interpreter().Launch(Base::ScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
 
 		//!!! Interpreter().Launch(sScriptName);
 	} else {
