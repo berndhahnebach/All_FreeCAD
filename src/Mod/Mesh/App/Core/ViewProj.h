@@ -62,7 +62,7 @@ public:
   inline Vector3D operator()(const Vector3D &rclPt) const;
   inline Vector3D inverse (const Vector2D &rclPt) const;
 
-  Matrix4D GetProjectionMatrix (void) const { return _clMtx; }
+  Matrix4D getProjectionMatrix (void) const { return _clMtx; }
 
 protected:
   Matrix4D _clMtx, _clMtxInv;

@@ -29,73 +29,69 @@
 namespace Mesh {
 
 class Vector3D;
-class AppMeshExport MeshHelpPoint
+
+/**
+ * Helper class for points.
+ */
+struct AppMeshExport MeshHelpPoint
 {
-    public:
-    inline void Set (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt);
+  inline void Set (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt);
 
-    public:
-    inline bool operator < (const MeshHelpPoint &rclObj) const;
-    public:
-    inline bool operator == (const MeshHelpPoint &rclObj) const;
+  inline bool operator < (const MeshHelpPoint &rclObj) const;
+  inline bool operator == (const MeshHelpPoint &rclObj) const;
 
-    public:
-    unsigned long Index (void) const
-    { return _ulInd >> 2; }
-    public:
-    unsigned long Corner (void) const
-    { return _ulInd & 3; }
+  unsigned long Index (void) const
+  { return _ulInd >> 2; }
 
-    public:
-    MeshPoint _clPt;
-    public:
-    unsigned long     _ulInd;
+  unsigned long Corner (void) const
+  { return _ulInd & 3; }
+
+  MeshPoint _clPt;
+  unsigned long     _ulInd;
 };
 
-class MeshPointBuilder: public std::vector<MeshHelpPoint>
+/**
+ * Helper class for list of points.
+ */
+struct MeshPointBuilder: public std::vector<MeshHelpPoint>
 {
-     public:
-     inline void Add (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt);
+  inline void Add (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt);
 };
 
-class AppMeshExport MeshHelpBuilderEdge
+/**
+ * Helper class for edges.
+ */
+struct AppMeshExport MeshHelpBuilderEdge
 {
-    public:
-    unsigned long Side (void) const
-    { return _ulFIndex & 3; }
-    public:
-    unsigned long Index (void) const
-    { return _ulFIndex >> 2; }
+  unsigned long Side (void) const
+  { return _ulFIndex & 3; }
 
-    public:
-    inline void Set (unsigned long ulInd1, unsigned long ulInd2,
-                                           unsigned long ulSide, unsigned long ulFInd);
+  unsigned long Index (void) const
+  { return _ulFIndex >> 2; }
 
-    public:
-    inline bool operator < (const MeshHelpBuilderEdge &rclObj) const;
-    public:
-    inline bool operator == (const MeshHelpBuilderEdge &rclObj) const;
-    
-    public:
-    inline bool operator != (const MeshHelpBuilderEdge &rclObj) const;
+  inline void Set (unsigned long ulInd1, unsigned long ulInd2,
+                                         unsigned long ulSide, unsigned long ulFInd);
 
-    public:
-    unsigned long  _ulFIndex;   // Facet-Index
-    public:
-    unsigned long  _aulInd[2];   // Punkt-Index
+  inline bool operator < (const MeshHelpBuilderEdge &rclObj) const;
+
+  inline bool operator == (const MeshHelpBuilderEdge &rclObj) const;
+  
+
+  inline bool operator != (const MeshHelpBuilderEdge &rclObj) const;
+
+  unsigned long  _ulFIndex;    // facet index
+  unsigned long  _aulInd[2];   // point index
 };
 
-class MeshEdgeBuilder: public std::vector<MeshHelpBuilderEdge>
+/**
+ * Helper class to build up list of edges.
+ */
+struct MeshEdgeBuilder: public std::vector<MeshHelpBuilderEdge>
 {
-    public:
-    typedef std::vector<MeshHelpBuilderEdge>::iterator  _TIterator;
-
-    public:
-    inline void Add (unsigned long ulInd1, unsigned long ulInd2, unsigned long ulSide, unsigned long ulFInd);
+  typedef std::vector<MeshHelpBuilderEdge>::iterator  _TIterator;
+  inline void Add (unsigned long ulInd1, unsigned long ulInd2, unsigned long ulSide, unsigned long ulFInd);
 };
 
-class Vector3D;
-#include "Elements.h"
 inline void MeshHelpPoint::Set (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt)
 {
   _ulInd = (ulFacet << 2) | ulCorner;

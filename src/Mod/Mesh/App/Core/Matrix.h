@@ -33,9 +33,6 @@
 
 namespace Mesh {
 
-class CGeoLine;
-
-
 class   Matrix4D;
 typedef Matrix4D* PMatrix4D;
 typedef Matrix4D& RMatrix4D;
@@ -78,7 +75,6 @@ class AppMeshExport Matrix4D
     void SetRotY      (float fAngle);
     void SetRotZ      (float fAngle);
     void SetRotLine   (const Vector3D& rclVct, float fAngle);
-    void SetRotLine   (CGeoLine& rclLine, float fAngle);
     void Inverse      (void);
 	  void InverseGauss (void);
     void Transpose    (void);

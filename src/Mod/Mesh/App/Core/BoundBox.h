@@ -58,33 +58,49 @@ public:
   float MaxY;
   float MaxZ;
   //@}
-   
-  inline BoundBox3D (float fMinX = FLOAT_MAX, float fMinY = FLOAT_MAX,
-                     float fMinZ = FLOAT_MAX, float fMaxX = -FLOAT_MAX,
-                     float fMaxY = -FLOAT_MAX, float fMaxZ = -FLOAT_MAX);
+  
+  /** Buils box from pairs of x,y,z values. */
+  inline explicit BoundBox3D ( float fMinX =  FLOAT_MAX, float fMinY =  FLOAT_MAX,
+                               float fMinZ =  FLOAT_MAX, float fMaxX = -FLOAT_MAX,
+                               float fMaxY = -FLOAT_MAX, float fMaxZ = -FLOAT_MAX );
   BoundBox3D (const BoundBox3D &rcBB) { *this = rcBB; }
+  /** Builds box from an array of points. */
   inline BoundBox3D (const Vector3D *pclVect, unsigned long ulCt);
 
-  BoundBox3D (RVector3D rcVector, float fDistance);
+  /** Defines a bounding box around the center \a rcCnt with the 
+   * distances \a fDistance in each coordinate.
+   */
+  BoundBox3D (RVector3D rcCnt, float fDistance);
   ~BoundBox3D ();
  
-  // Assignment
+  /// Assignment operator 
   inline BoundBox3D& operator = (const BoundBox3D &rcBound);
  
-  /** Functions for intersection, cuttíng and union of bboxes */
+  /** Methods for intersection, cuttíng and union of bounding boxes */
   //@{
+  /** Checks for intersection. */
   inline bool operator && (const BoundBox3D &rcBB);
+  /** Checks for intersection. */
   inline bool operator && (const BoundBox2D &rcBB);
+  /** Computes the intersection between two bounding boxes.
+   * The result is also a bounding box.
+   */
   BoundBox3D operator & (RBoundBox3D rcBB);
+  /** Appends the point to the box. The box can grow but not shrink. */
   inline BoundBox3D& operator &= (const Vector3D &rclVect);
+  /** The union of two bounding boxes. */
   BoundBox3D operator | (RBoundBox3D rcBB);
   //@}
  
   /** Test methods */
   //@{
+  /** Checks if this point lays inside the box. */
   inline bool IsInBox (const Vector3D &rcVct) const;
+  /** Checks if this 3D box lays inside the box. */
   inline bool IsInBox (const BoundBox3D &rcBB) const;
+  /** Checks if this 2D box lays inside the box. */
   inline bool IsInBox (const BoundBox2D &rcbb) const;
+  /** Checks whether the bounding box is valid. */
   bool IsValid (void);
   //@}
 
@@ -94,38 +110,58 @@ public:
   BoundBox3D CalcOctant (BoundBox3D::OCTANT Octant);
 
   enum SIDE { LEFT =0, RIGHT=1, TOP=2, BOTTOM=3, FRONT=4, BACK=5, INVALID=255 };
+
+  /**
+   * Returns the corner point \a usPoint.
+   * 0: front,bottom,left    1: front,bottom,right
+   * 2: front,top,right      3: front,top,left
+   * 4: back,bottom,left     5: back,bottom,right 
+   * 6: back,top,right       7: back,top,left 
+   */
   inline Vector3D CalcPoint (unsigned short usPoint) const;
-  bool IsCutLine (CGeoLine & rclLine, float fTolerance = 0.0f);
+  /** Checks if this plane specified by (point,normal) cuts this box. */
   inline bool IsCutPlane (const Vector3D &rclBase, const Vector3D &rclNormal) const;
   
-
+  /** Projects the box onto a plane and returns a 2D box. */
   BoundBox2D ProjectBox(const ViewProjMethod *rclP) const;
 
+  /** Returns the center.of the box. */
   inline Vector3D CalcCenter (void) const;
   inline float CalcDiagonalLength (void) const;
   void Flush (void);
   
+  /** Enlarges the box with factor \a fLen. */
   inline void Enlarge (float fLen);   
+  /** Shrinks the box with factor \a fLen. */
   inline void Shrink  (float fLen);   
 
+  /** Calculates expansion in x-direction. */
   inline float LengthX (void) const;
+  /** Calculates expansion in y-direction. */
   inline float LengthY (void) const;
+  /** Calculates expansion in z-direction. */
   inline float LengthZ (void) const;
+  /** Moves in x-direction. */
   inline void MoveX (float f);
+  /** Moves in y-direction. */
   inline void MoveY (float f);
+  /** Moves in z-direction. */
   inline void MoveZ (float f);
+  /** Scales in x-direction. */
   inline void ScaleX (float f);
+  /** Scales in y-direction. */
   inline void ScaleY (float f);
+  /** Scales in z-direction. */
   inline void ScaleZ (float f);
  
+  /** Prints the values to stdout. */
   void Print (void);
-  unsigned long GetMemSpace (void);
 
-  friend DataStream& operator<< (DataStream& ors,
-                               RBoundBox3D rclBound);
-  friend DataStream& operator>> (DataStream& irs,
-                               RBoundBox3D rclBound);
+  friend DataStream& operator<< (DataStream& ors, RBoundBox3D rclBound);
+  friend DataStream& operator>> (DataStream& irs, RBoundBox3D rclBound);
+  /** Writes the box to the stream. */
   DataStream& SaveData (DataStream &ofs);
+  /** Reads the box from the stream. */
   DataStream& LoadData (DataStream &ifs);
 };
 

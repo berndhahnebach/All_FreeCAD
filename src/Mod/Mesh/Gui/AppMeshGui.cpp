@@ -25,25 +25,18 @@
 #ifndef _PreComp_
 #endif
 
-
 #include <Base/Interpreter.h>
-
 #include <Base/Parameter.h>
-
-
 #include <Base/Console.h>
 
 #include <App/Application.h>
-#include <Gui/Application.h>
 
+#include <Gui/Application.h>
 
 #include "ViewProvider.h"
 
 
-
-
 void CreateCommands(void);
-
 
 /* module functions */
 static PyObject *                                 /* returns object */
@@ -65,30 +58,27 @@ static struct PyMethodDef hello_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
 
-
-
-
-
 /* Python entry */
 extern "C" {
 void GuiMeshExport initMeshGui() {
+  if ( !Gui::ApplicationWindow::Instance )
+  {
+    (void) Py_InitModule("MeshGui", 0);   /* mod name, table ptr */
+    Base::Console().Error("Cannot load AppMeshGui\n");
+    return;
+  }
 
   (void) Py_InitModule("MeshGui", hello_methods);   /* mod name, table ptr */
+
   // load needed modules
-
   Base::Interpreter().loadModule("Mesh");
-
-
   Base::Console().Log("AppMeshGui loaded\n");
-
 
   // instanciating the commands
   CreateCommands();
 
   // Register view provider
-
   Gui::ViewProviderInventorFactory().AddProducer("MeshImportSTL", new Gui::ViewProviderInventorProducer<MeshGui::ViewProviderInventorMesh>);
-
 
   return;
 }

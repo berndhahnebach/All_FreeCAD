@@ -1303,8 +1303,6 @@ void ApplicationWindow::destruct(void)
  */
 void ApplicationWindow::dropEvent ( QDropEvent      * e )
 {
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
-
   if ( QUriDrag::canDecode(e) )
   {
     QStringList fn;

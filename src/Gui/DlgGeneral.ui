@@ -356,26 +356,6 @@
                                     </property>
                                 </widget>
                                 <widget class="Gui::PrefComboBox">
-                                    <item>
-                                        <property name="text">
-                                            <string>Part design</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Import</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Raytracing</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>&lt;none&gt;</string>
-                                        </property>
-                                    </item>
                                     <property name="name">
                                         <cstring>AutoloadModuleCombo</cstring>
                                     </property>
@@ -411,6 +391,8 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <tabstops>
     <tabstop>Languages</tabstop>
     <tabstop>UsesBigPixmaps</tabstop>

@@ -75,6 +75,9 @@ public:
   void onSave();
   void onRestore();
 
+  void setKeepPreference( bool );
+  bool isKeepPreference() const;
+
 protected:
   /** Restores the preferences
    * Must be reimplemented in any subclasses.
@@ -91,6 +94,7 @@ protected:
 private:
   QCString m_sPrefName;
   QCString m_sPrefGrp;
+  bool m_bKeepPref;
 
   // friends
   friend class Gui::WidgetFactoryInst;

@@ -36,7 +36,7 @@ using namespace Gui;
 /** Constructs a preference widget. 
  */
 PrefWidget::PrefWidget()
- : WindowParameter("")
+ : WindowParameter(""), m_bKeepPref(false)
 {
 }
 
@@ -127,6 +127,23 @@ void PrefWidget::onRestore()
     qWarning( "No parameter group specified!" );
 #endif
   restorePreferences();
+}
+
+/**
+ * If \a b is true the preferences that are set to this widget will be kept, if \a b
+ * is false the preferences are lost after calling the onRestore() method.
+ */
+void PrefWidget::setKeepPreference( bool b )
+{
+  m_bKeepPref = b;
+}
+
+/**
+ * Returns true if the preferences are kept, false otherwise.
+ */
+bool PrefWidget::isKeepPreference() const
+{
+  return m_bKeepPref;
 }
 
 // --------------------------------------------------------------------
@@ -365,16 +382,25 @@ void PrefComboBox::restorePreferences()
   }
 
   FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
-  std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
-  if (items.size() > 0)
-    clear();
+  if ( !isKeepPreference() )
+  {
+    std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
-  for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
-    insertItem(it->c_str());
+    if (items.size() > 0)
+      clear();
 
-  int item = hPGrp->GetInt("currentItem", currentItem());
-  setCurrentItem(item);
+    for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
+      insertItem(it->c_str());
+
+    int item = hPGrp->GetInt("currentItem", currentItem());
+    setCurrentItem(item);
+  }
+  else
+  {
+    QString txt = hPGrp->GetASCII("currentText", currentText().latin1() ).c_str();
+    setCurrentText( txt );
+  }
 }
 
 void PrefComboBox::savePreferences()
@@ -388,15 +414,22 @@ void PrefComboBox::savePreferences()
   FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   hPGrp->Clear();
 
-  int size = int(count());
-  for (int i = 0; i < size; i++)
+  if ( !isKeepPreference() )
   {
-    char szBuf[200];
-    sprintf(szBuf, "Item%d", i);
-    hPGrp->SetASCII(szBuf, text(i).latin1());
-  }
+    int size = int(count());
+    for (int i = 0; i < size; i++)
+    {
+      char szBuf[200];
+      sprintf(szBuf, "Item%d", i);
+      hPGrp->SetASCII(szBuf, text(i).latin1());
+    }
 
-  hPGrp->SetInt("currentItem", currentItem());
+    hPGrp->SetInt("currentItem", currentItem());
+  }
+  else
+  {
+    hPGrp->SetASCII("currentText", currentText().latin1());
+  }
 }
 
 QCString PrefComboBox::entryName () const

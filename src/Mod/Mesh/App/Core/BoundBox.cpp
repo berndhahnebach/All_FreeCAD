@@ -23,10 +23,12 @@
 
 #include "PreCompiled.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <limits.h>
+#ifndef _PreComp_
+# include <stdio.h>
+# include <string>
+# include <math.h>
+# include <limits.h>
+#endif
 
 #include "Definitions.h"
 #include "BoundBox.h"
@@ -45,11 +47,9 @@ BoundBox3D::BoundBox3D (RVector3D rcVector, float fDistance)
   MaxZ = rcVector.z + fDistance;
 }
 
-
 BoundBox3D::~BoundBox3D ()
 {
 }
-
 
 BoundBox3D BoundBox3D::operator & (RBoundBox3D rcBB)
 {
@@ -191,11 +191,6 @@ DataStream & BoundBox3D::SaveData (DataStream &ofs)
 DataStream & BoundBox3D::LoadData (DataStream &ifs)
 {
   return ifs >> MinX >> MaxX >> MinY >> MaxY >> MinZ >> MaxZ;
-}
-
-unsigned long BoundBox3D::GetMemSpace (void)
-{
-  return sizeof(BoundBox3D);
 }
 
 BoundBox2D BoundBox3D::ProjectBox(const ViewProjMethod *pclP) const

@@ -50,6 +50,13 @@ using namespace Gui::Dialog;
 DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgGeneralBase( parent, name, fl )
 {
+  // fills the combo box with all available workbenches
+  //
+  QStringList work = ApplicationWindow::Instance->workbenches();
+  work.sort();
+  // do not save the content but the current item only
+  AutoloadModuleCombo->setKeepPreference( true );
+  AutoloadModuleCombo->insertStringList( work );
 }
 
 /** 
