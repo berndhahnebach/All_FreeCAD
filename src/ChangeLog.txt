@@ -295,3 +295,11 @@ Version: V0.1B64 Date: Sun Jun 15 01:20:15 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B65 Date: Sat Jul 12 11:44:20 2003 +++++++++++++++++++++++++++++++
 + finssh doc framework for basic use
+
+Version: V0.1B66 Date: Sun Jul 13 17:15:34 2003 +++++++++++++++++++++++++++++++
++ draw transparent the additional area of resized pixmaps
++ draw a pixmap over another pixmap
++ a special spin box setting the value by mouse move
++ reimplementation of the WhatsThis framework
++ several commands
++ improved drag and drop for the commandline
