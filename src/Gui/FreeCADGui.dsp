@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADGui - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FreeCADGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -1424,6 +1424,297 @@ InputName=HtmlView
 
 # End Source File
 # End Group
+# Begin Group "Scintilla"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\scintilla\AutoComplete.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\AutoComplete.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\CallTip.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\CallTip.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\CellBuffer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\CellBuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\ContractionState.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\ContractionState.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\DocumentAccessor.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\DocumentAccessor.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Documents.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Documents.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Editor.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Editor.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Indicator.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Indicator.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\KeyMap.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\KeyMap.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\KeyWords.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexAda.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexAsm.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexAVE.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexBaan.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexBullant.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexConf.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexCPP.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexCrontab.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexCSS.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexEiffel.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexFortran.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexHTML.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexLisp.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexLua.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexMatlab.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexOthers.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexPascal.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexPerl.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexPOV.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexPython.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexRuby.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexSQL.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LexVB.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LineMarker.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\LineMarker.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\PropSet.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\RESearch.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\RESearch.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\ScintillaBase.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\ScintillaBase.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Style.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\Style.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\StyleContext.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\StyleContext.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\SVector.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\UniConversion.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\UniConversion.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\ViewStyle.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\ViewStyle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\WindowAccessor.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\XPM.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\scintilla\XPM.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Application.cpp
@@ -1568,6 +1859,11 @@ SOURCE=.\MouseModel.cpp
 # Begin Source File
 
 SOURCE=.\MouseModel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlatQt.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
