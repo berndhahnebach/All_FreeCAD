@@ -240,7 +240,7 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 void FCTree::resizeEvent ( QResizeEvent * e) 
 {
 	// routing the resize event to the child
-  _pcVBoxLayout->resize(e->size());
+  _pcListView->resize(e->size());
 }
 
 bool FCTree::OnMsg(const char* pMsg)

@@ -174,13 +174,16 @@ class QStackBarBtn : public QToolButton
     QWidget* w;
 };
 
-class FCCmdBar : public FCWindow
+class FCCmdBar : public FCWindow, public FCObserver
 {
   Q_OBJECT;
 
   public:
     FCCmdBar( QWidget *parent=0, const char *name=0 );
 	  virtual ~FCCmdBar();
+    
+    // observers method
+    void OnChange(FCSubject &rCaller);
 
     // toolbox handling
     bool addView(QWidget* w, const QString &name);
@@ -198,6 +201,7 @@ class FCCmdBar : public FCWindow
     void animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage);
 
   private:
+    bool                           m_bAnimated;
     long                           m_lAnimCount;
     int                            m_iCurHeight;
     int                            m_iNewHeight;

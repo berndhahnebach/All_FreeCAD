@@ -227,9 +227,6 @@ public slots:
 	//@{
 	void slotUndo();
 	void slotRedo();
-	void updateUndo();
-	void updateRedo();
-	void executeUndoRedo();
 	//@}
 	void OnWorkbenchChange( const QString & string);
 
@@ -244,7 +241,6 @@ private:
 	FCGuiDocument*   _pcActiveDocument;
 	FCCustomWidgetManager*		 _pcWidgetMgr;
 	FCMacroManager*  _pcMacroMngr;
-	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 	QComboBox *		 _pcWorkbenchCombo;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
 	FCProgressBar *  _pclProgress;

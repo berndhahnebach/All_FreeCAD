@@ -42,6 +42,7 @@
 #include "ButtonGroup.h"
 #include "Application.h"
 #include "DlgCustomizeImp.h"
+#include "../Base/Exception.h"
 
 
 FCButtonGroup::FCButtonGroup(QWidget * parent, const char * name)
@@ -624,10 +625,24 @@ void QStackBarBtn::drawButton( QPainter *p )
 FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
 	: FCWindow( parent, name )
 {
-    m_pCurPage  = NULL;
-    m_pLastBtn = NULL,
-    m_pLayout   = new QVBoxLayout( this );
-    m_lAnimCount = 10;
+  m_pCurPage  = NULL;
+  m_pLastBtn = NULL,
+  m_pLayout   = new QVBoxLayout( this );
+  m_lAnimCount = 0;
+  m_bAnimated = false;
+
+  try
+  {
+    // attach the command bar to its preferences
+    std::string strGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
+    std::string strSlider    = "SpeedAnimationCmdBar";
+    GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Attach(this);
+    GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Notify();
+  }
+  catch(/*const*/ FCException& rclE)
+  {
+    QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
+  }
 }
 
 /*!
@@ -637,6 +652,10 @@ FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
 */
 FCCmdBar::~FCCmdBar()
 {
+  // detach the command bar
+  std::string strGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
+  std::string strSlider    = "SpeedAnimationCmdBar";
+  GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Detach(this);
   m_mButtonView.clear();
   delete m_pLayout;
 }
@@ -798,7 +817,7 @@ void FCCmdBar::buttonClicked()
   if (m_mButtonView.find( tb ) != m_mButtonView.end())
     page = m_mButtonView[tb];
 
-  if ( !page || m_pCurPage == page )
+  if ( !page || m_pCurPage == page || m_bAnimated == true)
   	return;
   
   tb->setSelected( true );
@@ -844,13 +863,14 @@ void FCCmdBar::updatePages()
 
 void FCCmdBar::timerEvent ( QTimerEvent * )
 {
-  if (m_pAnimCurPage->height() > 10)
+  if (m_pAnimCurPage->height() > m_lAnimCount)
   {
-    m_pAnimCurPage->setFixedHeight(m_pAnimCurPage->height() - 10);
-    m_pAnimNewPage->setFixedHeight(m_pAnimNewPage->height() + 10);
+    m_pAnimCurPage->setFixedHeight(m_pAnimCurPage->height() - m_lAnimCount);
+    m_pAnimNewPage->setFixedHeight(m_pAnimNewPage->height() + m_lAnimCount);
   }
   else
   {
+    m_bAnimated = false;
     killTimers();
     m_pAnimCurPage->setMaximumHeight(1000);
     m_pAnimCurPage->setMinimumHeight(0);
@@ -880,7 +900,25 @@ void FCCmdBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
   m_pAnimNewPage->setFixedHeight(0);
   m_pAnimNewPage->show();
 
-  startTimer(m_lAnimCount);
+  m_bAnimated = true;
+  startTimer(5);
+}
+
+void FCCmdBar::OnChange(FCSubject &rCaller)
+{
+  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  std::string name = rclGrp.GetGroupName();
+  if (name == "SpeedAnimationCmdBar")
+  {
+    FCParameterGrp::handle hGrp = rclGrp.GetGroup("Settings");
+    if (hGrp->GetInts("Value").size() == 0)
+      hGrp->SetInt("Value", 100);
+    m_lAnimCount = hGrp->GetInt("Value", 100);
+    if (m_lAnimCount == hGrp->GetInt("MaxValue", 100))
+      m_lAnimCount = 0;
+    else if (m_lAnimCount == hGrp->GetInt("MinValue", 0))
+      m_lAnimCount = 5;
+  }
 }
 
 #include "moc_ButtonGroup.cpp"

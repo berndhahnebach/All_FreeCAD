@@ -40,6 +40,7 @@
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qstring.h>
+#include <qslider.h>
 
 // forward declarations
 class FCWidgetPrefsHandler;
@@ -259,6 +260,23 @@ class FCRadioButton : public QRadioButton, public FCWidgetPrefs
   public:
     FCRadioButton ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCRadioButton();
+
+  protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
+};
+
+/**
+ *
+ */
+class FCSlider : public QSlider, public FCWidgetPrefs
+{
+    Q_OBJECT
+
+  public:
+    FCSlider ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCSlider();
 
   protected:
     // restore from/save to parameters

@@ -164,7 +164,9 @@ ApplicationWindow::ApplicationWindow()
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	//
+	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
+ 	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
+
 
 	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
 	//AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
@@ -293,10 +295,7 @@ void ApplicationWindow::CreateTestOperations()
 	CreateStdCommands();
 	CreateViewStdCommands();
 
-	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
-	//connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
-
-    // populate a tool bar with some actions
+  // populate a tool bar with some actions
 
   bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
 	// default toolbars -----------------------------------------------------------------------
@@ -317,17 +316,11 @@ void ApplicationWindow::CreateTestOperations()
     defToolbar.push_back("Std_Copy");
     defToolbar.push_back("Std_Paste");
     defToolbar.push_back("Separator");
+    defToolbar.push_back("Std_Undo");
+    defToolbar.push_back("Std_Redo");
+    defToolbar.push_back("Separator");
     _pcWidgetMgr->addToolBar("file operations", defToolbar);
   }
-
-	// Undo/Redo Toolbutton
-	QToolButton* button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
-	connect(button, SIGNAL(clicked()), this, SLOT(slotUndo()));
-	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateUndo()));
-	button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
-	connect(button, SIGNAL(clicked()), this, SLOT(slotRedo()));
-	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateRedo()));
-	pcStdToolBar->addSeparator();
 	
 	// add the workbench combo to the main toolbar
 	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
@@ -419,26 +412,6 @@ FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 
 
 
-void ApplicationWindow::updateUndo()
-{
-	puts("ApplicationWindow::updateUndo()");
-	if (_pclUndoRedoWidget)
-	{
-		_pclUndoRedoWidget->setMode(FCUndoRedoDlg::Undo);
-		_pclUndoRedoWidget->updateUndoRedoList();
-	}
-}
-
-void ApplicationWindow::updateRedo()
-{
-	puts("ApplicationWindow::updateRedo()");
-	if (_pclUndoRedoWidget)
-	{
-		_pclUndoRedoWidget->setMode(FCUndoRedoDlg::Redo);
-		_pclUndoRedoWidget->updateUndoRedoList();
-	}
-}
-
 void ApplicationWindow::slotUndo()
 {
 	puts("ApplicationWindow::slotUndo()");
@@ -450,56 +423,6 @@ void ApplicationWindow::slotRedo()
 
 }
 
-
-void ApplicationWindow::executeUndoRedo()
-{
-#if 0
-  bool b=true; int bi=200;
-  bool c=true; int ci=5;
-
-  GetProgressBar()->Start("text", bi, b);
-  for (int i=0; i<bi; i++)
-  {
-    QWaitCondition().wait(i*20);
-
-    GetProgressBar()->Start("Hallo", ci, c);
-    for (int j=0;j<ci;j++)
-    {
-      QWaitCondition().wait(j*10);
-      GetProgressBar()->Next();
-    }
-    GetProgressBar()->Stop();
-
-    GetProgressBar()->Next();
-  }
-
-  GetProgressBar()->Stop();
-#else
-	bool b=true; int bi=50;
-	bool c=true; int ci=20;
-	try{
-		GetProgressBar()->Start("Very long operation", bi, b);
-		for (int i=0; i<bi; i++)
-		{
-		  QWaitCondition().wait(i*10);
-
-		  GetProgressBar()->Start("Hallo", ci, c);
-		  for (int j=0;j<ci;j++)
-		  {
-			QWaitCondition().wait(j*20);
-			GetProgressBar()->Next();
-		  }
-		  GetProgressBar()->Stop();
-
-		  GetProgressBar()->Next();
-		}
-
-		GetProgressBar()->Stop();
-	}catch(...)
-	{
-	}
-#endif
-}
 
 
 /** just additionally fits the system menu button position to the menu position */

@@ -137,16 +137,16 @@ void FCGuiDocument::CreateView(const char* sType)
 //	aName.sprintf("%s:%d",_pcDocument->GetName(),_iWinCount++);
 	aName.sprintf("%s:%d","Document",_iWinCount++);
 
-	FCSingelView* pcSingelView = new FCSingelView(w,_pcAppWnd,"3DView");
+	FCSingleView* pcSingleView = new FCSingleView(w,_pcAppWnd,"3DView");
 
-    pcSingelView->setCaption(aName);
-	pcSingelView->setTabCaption(aName);
-    pcSingelView->setIcon( FCIcon );
-	pcSingelView->resize( 400, 300 );
+    pcSingleView->setCaption(aName);
+	pcSingleView->setTabCaption(aName);
+    pcSingleView->setIcon( FCIcon );
+	pcSingleView->resize( 400, 300 );
     if ( _LpcViews.size() == 1 )
-		_pcAppWnd->addWindow(pcSingelView,QextMdi::StandardAdd);
+		_pcAppWnd->addWindow(pcSingleView,QextMdi::StandardAdd);
     else
-		_pcAppWnd->addWindow(pcSingelView);
+		_pcAppWnd->addWindow(pcSingleView);
 
 }
 

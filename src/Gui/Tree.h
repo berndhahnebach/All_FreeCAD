@@ -86,7 +86,6 @@ public:
 	friend FCTreeLabel;
 
 protected:
-	QVBox*	_pcVBoxLayout;    
 	QListView*		_pcListView;
 
 	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;

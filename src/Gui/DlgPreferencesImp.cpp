@@ -49,6 +49,7 @@
 #endif
 #include "DlgPreferencesImp.h"
 #include "DlgSettingsImp.h"
+#include "DlgGeneralImp.h"
 #include "Application.h"
 
 /* 
@@ -66,7 +67,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
   FCBmpFactory& rclBF = ApplicationWindow::Instance->GetBmpFactory();
   QPixmap pix = rclBF.GetPixmap("function");
   addPreferenceGroup("FreeCAD", pix);
-  addPreferencePage(new QWidget, "General");
+  addPreferencePage(new FCDlgGeneral, "General");
   addPreferencePage(new FCDlgSettings, "Help Viewer", pix);
 }
 

@@ -387,6 +387,39 @@ void FCRadioButton::savePreferences()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+FCSlider::FCSlider ( QWidget * parent, const char * name )
+: QSlider(parent, name), FCWidgetPrefs(name)
+{
+}
+
+FCSlider::~FCSlider()
+{
+}
+
+void FCSlider::restorePreferences()
+{
+  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
+  int o = hPrefs->GetInt("Orientation", 0);
+  setOrientation(Qt::Orientation(o));
+  int min = hPrefs->GetInt("MinValue", 0);
+  int max = hPrefs->GetInt("MaxValue", 100);
+  int val = hPrefs->GetInt("Value", 0);
+  setMinValue(min);
+  setMaxValue(max);
+  setValue(val);
+}
+
+void FCSlider::savePreferences()
+{
+  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
+  hPrefs->SetInt("Orientation", int(orientation()));
+  hPrefs->SetInt("MinValue", minValue());
+  hPrefs->SetInt("MaxValue", maxValue());
+  hPrefs->SetInt("Value", value());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 std::vector<QAction*> FCActionDrag::actions;
 
 FCActionDrag::FCActionDrag ( QAction* action, QWidget * dragSource , const char * name  )

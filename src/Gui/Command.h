@@ -21,6 +21,7 @@
 
 
 #include "../Base/PyExport.h"
+#include "DlgUndoRedo.h"
 #include <qaction.h>
 #include <string>
 #include <map>
@@ -49,13 +50,61 @@ public:
 
 	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
 	virtual bool addTo(QWidget *);
+  FCCommand* GetCommand() { return _pcCmd; }
 
 public slots:
 	void Activated ();
 	void Toggled   (bool); 
+
+protected slots:
+  void slotToolButtonToggled( bool on );
+  void slotClearStatusText();
+  void slotShowStatusText( const QString& text );
+
 private:
 	FCCommand *_pcCmd;
+};
 
+/**
+ * Special action for the undo button
+ * @author Werner Mayer
+ */
+class GuiExport FCUndoAction : public FCAction
+{
+	Q_OBJECT
+public:
+	FCUndoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE )
+    : FCAction(pcCmd, parent, name, toggle)
+  {
+    tipGroup = new QToolTipGroup(0);
+  }
+
+  ~FCUndoAction(){ delete tipGroup; }
+	bool addTo(QWidget *);
+
+private:
+  QToolTipGroup* tipGroup;
+};
+
+/**
+ * Special action for the redo button
+ * @author Werner Mayer
+ */
+class GuiExport FCRedoAction : public FCAction
+{
+	Q_OBJECT
+public:
+	FCRedoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE )
+    : FCAction(pcCmd, parent, name, toggle)
+  {
+    tipGroup = new QToolTipGroup(0);
+  }
+
+  ~FCRedoAction(){ delete tipGroup; }
+	bool addTo(QWidget *);
+
+private:
+  QToolTipGroup* tipGroup;
 };
 
 
@@ -334,6 +383,33 @@ public:\
 		{\
 			return GetAppWnd()->GetActiveView() && strcmp( GetAppWnd()->GetActiveView()->GetName(), "View3D" ) == 0?true:false;\
 		}\
+};
+
+/** Some special commands
+ *  The undo/redo commands
+ */
+class FCCmdUndo : public FCCppCommand
+{
+  public:
+	  FCCmdUndo();
+	  virtual void Activated(int iMsg);
+    QWidget* GetWidget();
+  	FCAction * CreateAction(void);
+
+  private:
+  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+};
+
+class FCCmdRedo : public FCCppCommand
+{
+  public:
+	  FCCmdRedo();
+	  virtual void Activated(int iMsg);
+    QWidget* GetWidget();
+  	FCAction * CreateAction(void);
+
+  private:
+  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 #endif // __Command_h__

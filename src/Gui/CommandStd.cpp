@@ -240,8 +240,6 @@ void FCCmdQuit::Activated(int iMsg)
 // Std_Undo
 //===========================================================================
 
-DEF_STD_CMD(FCCmdUndo );
-
 FCCmdUndo::FCCmdUndo()
 	:FCCppCommand("Std_Undo")
 {
@@ -253,20 +251,40 @@ FCCmdUndo::FCCmdUndo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Undo";
 	iAccel			= Qt::CTRL+Qt::Key_Z;
+  _pclUndoRedoWidget = new FCUndoRedoDlg(ApplicationWindow::Instance, "Undo");
 }
 
 
 void FCCmdUndo::Activated(int iMsg)
 {
-
+  ApplicationWindow::Instance->slotUndo();
 }
 
+QWidget* FCCmdUndo::GetWidget()
+{
+  return _pclUndoRedoWidget;
+}
+
+FCAction * FCCmdUndo::CreateAction(void)
+{
+	FCAction *pcAction;
+
+	pcAction = new FCUndoAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction->setText(_pcAction->tr(sMenuText));
+	pcAction->setMenuText(_pcAction->tr(sMenuText));
+	pcAction->setToolTip(_pcAction->tr(sToolTipText));
+	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
+	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	if(sPixmap)
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+	pcAction->setAccel(iAccel);
+
+	return pcAction;
+}
 
 //===========================================================================
 // Std_Redo
 //===========================================================================
-
-DEF_STD_CMD(FCCmdRedo);
 
 FCCmdRedo::FCCmdRedo()
 	:FCCppCommand("Std_Redo")
@@ -274,17 +292,40 @@ FCCmdRedo::FCCmdRedo()
 	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Redo";
-	sToolTipText	= "Redoes a previosly undid action";
+	sToolTipText	= "Redoes a previously undid action";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Redo";
 	iAccel			= Qt::CTRL+Qt::Key_Y;
+	_pclUndoRedoWidget = new FCUndoRedoDlg(ApplicationWindow::Instance, "Redo");
 }
 
 
 void FCCmdRedo::Activated(int iMsg)
 {
+  ApplicationWindow::Instance->slotRedo();
+}
 
+QWidget* FCCmdRedo::GetWidget()
+{
+  return _pclUndoRedoWidget;
+}
+
+FCAction * FCCmdRedo::CreateAction(void)
+{
+	FCAction *pcAction;
+
+	pcAction = new FCRedoAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction->setText(_pcAction->tr(sMenuText));
+	pcAction->setMenuText(_pcAction->tr(sMenuText));
+	pcAction->setToolTip(_pcAction->tr(sToolTipText));
+	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
+	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	if(sPixmap)
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+	pcAction->setAccel(iAccel);
+
+	return pcAction;
 }
 
 //===========================================================================

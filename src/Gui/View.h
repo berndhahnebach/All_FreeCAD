@@ -62,13 +62,13 @@ private:
 /** The singel view container class
  *  This class can handle one FCView instances 
  */
-class FCSingelView: public FCViewContainer
+class FCSingleView: public FCViewContainer
 {
 	Q_OBJECT;
 
 public:
-	FCSingelView( FCView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCSingelView();
+	FCSingleView( FCView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	~FCSingleView();
 
 	virtual void resizeEvent ( QResizeEvent * e);
 

@@ -34,11 +34,10 @@ FCAction::FCAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool 
 {
 	connect( this, SIGNAL( activated() ) , this, SLOT( Activated() ) );
 	connect( this, SIGNAL( toggled(bool) )   , this, SLOT( Toggled(bool) )   );
-
 }
 
 FCAction::~FCAction()
-{
+{ 
 }
 
 bool FCAction::addTo(QWidget *w)
@@ -60,6 +59,38 @@ bool FCAction::addTo(QWidget *w)
   return true;
 }
 
+void FCAction::slotToolButtonToggled( bool on )
+{
+  if ( !isToggleAction() )
+	  return;
+  setOn( on );
+}
+
+void FCAction::slotShowStatusText( const QString& text )
+{
+  QObject* par;
+  if ( ( par = parent() ) && par->inherits( "QActionGroup" ) )
+	  par = par->parent();
+
+  if ( !par || !par->isWidgetType() )
+	  return;
+
+  QObjectList* l = ( (QWidget*)par )->topLevelWidget()->queryList("QStatusBar");
+  for ( QStatusBar* bar = (QStatusBar*) l->first(); bar; bar = (QStatusBar*)l->next() ) 
+  {
+	  if ( text.isEmpty() )
+	    bar->clear();
+	  else
+	    bar->message( text );
+  }
+
+  delete l;
+}
+
+void FCAction::slotClearStatusText()
+{
+  slotShowStatusText( QString::null );
+}
 
 void FCAction::Activated () 
 {
@@ -69,6 +100,88 @@ void FCAction::Toggled ( bool b)
 {
 	_pcCmd->toggled(b);
 } 
+
+//===========================================================================
+// FCUndoAction 
+//===========================================================================
+
+bool FCUndoAction::addTo(QWidget* w)
+{
+  if (w->inherits("QToolBar"))
+  {
+    QWidget* dlg = ((FCCmdUndo*)GetCommand())->GetWidget();
+
+	  QToolButton* button = new FCToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+    button->setToggleButton( isToggleAction() );
+    button->setIconSet( iconSet() );
+
+    // do this before the tool tip stuff
+    if (w->inherits("FCToolboxBar"))
+    {
+  		((FCToolboxBar*)w)->addedButton(menuText());
+      button->setTextLabel(menuText());
+      button->setUsesTextLabel(true);
+    }
+    else if (w->inherits("FCOutlookBar"))
+    {
+  		((FCOutlookBar*)w)->addedButton(menuText());
+      button->setTextLabel(menuText());
+      button->setUsesTextLabel(true);
+    }
+
+    QToolTip::add( button, toolTip(), tipGroup, statusTip() );
+    QWhatsThis::add(button, whatsThis());
+    connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
+    connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
+	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
+	  connect( tipGroup, SIGNAL( removeTip() ), this, SLOT(slotClearStatusText()) );
+
+    return true;
+  }
+
+  return FCAction::addTo(w);
+}
+
+//===========================================================================
+// FCRedoAction 
+//===========================================================================
+
+bool FCRedoAction::addTo(QWidget* w)
+{
+  if (w->inherits("QToolBar"))
+  {
+    QWidget* dlg = ((FCCmdRedo*)GetCommand())->GetWidget();
+
+	  QToolButton* button = new FCToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+    button->setToggleButton( isToggleAction() );
+    button->setIconSet( iconSet() );
+
+    // do this before the tool tip stuff
+    if (w->inherits("FCToolboxBar"))
+    {
+  		((FCToolboxBar*)w)->addedButton(menuText());
+      button->setTextLabel(menuText());
+      button->setUsesTextLabel(true);
+    }
+    else if (w->inherits("FCOutlookBar"))
+    {
+  		((FCOutlookBar*)w)->addedButton(menuText());
+      button->setTextLabel(menuText());
+      button->setUsesTextLabel(true);
+    }
+
+    QToolTip::add( button, toolTip(), tipGroup, statusTip() );
+    QWhatsThis::add(button, whatsThis());
+    connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
+    connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
+	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
+	  connect( tipGroup, SIGNAL( removeTip() ), this, SLOT(slotClearStatusText()) );
+
+    return true;
+  }
+
+  return FCAction::addTo(w);
+}
 
 //===========================================================================
 // FCCommand 

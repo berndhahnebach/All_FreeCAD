@@ -106,7 +106,7 @@ FCDoubleView::~FCDoubleView()
 
 
 
-FCSingelView::FCSingelView(FCView* pcView, QWidget* parent, const char* name, int wflags )
+FCSingleView::FCSingleView(FCView* pcView, QWidget* parent, const char* name, int wflags )
     :FCViewContainer(parent, name, wflags),
 	 _pcView(pcView)
 {	
@@ -128,13 +128,13 @@ FCSingelView::FCSingelView(FCView* pcView, QWidget* parent, const char* name, in
 	
 }
 
-void FCSingelView::resizeEvent ( QResizeEvent * e) 
+void FCSingleView::resizeEvent ( QResizeEvent * e) 
 {
   _pcView->resize(e->size());
 }
 
 
-FCSingelView::~FCSingelView()
+FCSingleView::~FCSingleView()
 {
  
 }
@@ -145,6 +145,7 @@ FCViewBar::FCViewBar( FCView* pcView, QWidget* parent, const char* name, int wfl
 	:FCWindow(parent,name,wflags),
 	 _pcView(pcView)
 {
+  assert(_pcView);
 	assert(_pcView);
 
 	_pcView->reparent(this,wflags,QPoint(0,0));
