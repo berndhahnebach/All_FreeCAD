@@ -63,8 +63,10 @@ const char FreeCADTest[]="execfile('./Main/FreeCADTest.py')";
 const char FreeCADTestEnv[]="execfile('./Main/FreeCADTestEnv.py')";
 #endif
 
+void PrintInitHelp(void);
+
 // globals
-FCParameter *pcGlobalParameter;
+FCParameterManager *pcGlobalParameter;
 
 // run control
 int RunMode = 0;
@@ -77,14 +79,6 @@ void Init(int argc, char ** argv );
 void ParsOptions(int argc, char ** argv);
 void CheckEnv(void);
 
-void PrintInitHelp(void)
-{
-	cerr << endl << endl
-		 << "  An Initializing error was cought. That means mainly" << endl
-		 << "  FreeCAD is not proper installed. Type \"FreeCAD -TestEnvironment\""<< endl
-		 << "  to gets hints whats wrong." << endl << endl
-		 << "  Good luck ;-)" << endl << endl;
-}
 
 int main( int argc, char ** argv ) {
 
@@ -223,7 +217,7 @@ void Init(int argc, char ** argv )
 	// Banner
 	GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel\n\n%s",sBanner);
 
-	pcGlobalParameter = new FCParameter();
+	pcGlobalParameter = new FCParameterManager();
 
 	ParsOptions(argc,argv);
 
@@ -465,5 +459,14 @@ void ParsOptions(int argc, char ** argv)
 	}  
 }  
 
+
+void PrintInitHelp(void)
+{
+	cerr << endl << endl
+		 << "  An Initializing error was cought. That means mainly" << endl
+		 << "  FreeCAD is not proper installed. Type \"FreeCAD -TestEnvironment\""<< endl
+		 << "  to gets hints whats wrong." << endl << endl
+		 << "  Good luck ;-)" << endl << endl;
+}
 
 
