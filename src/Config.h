@@ -99,14 +99,18 @@
 /// enabels the use of the OCC DocumentBrowser
 #define FC_USE_OCAFBROWSER
 
-#ifdef FC_DEBUG
-#	define DEBUG 1
-#else
-#	undef  DEBUG 
-# ifndef NDEBUG
-#	 define NDEBUG
-# endif
+
+#ifdef FC_OCC_DEBUG
+#	ifdef FC_DEBUG
+#		define DEBUG 1
+#	else
+#		undef  DEBUG 
+#	ifndef NDEBUG
+#		define NDEBUG
+#	endif
+#	endif
 #endif
+
 
 //**************************************************************************
 // QT
