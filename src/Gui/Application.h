@@ -62,40 +62,6 @@ class FCCommandManager;
 
 
 
-/** The Bitmap Factory
-  * the main purpos is to collect all build in Bitmaps and 
-  * hold all paths for the extern bitmaps (files) to serve
-  * as a single point of axcesing bitmaps in FreeCAD
-  */
-class FCBmpFactory
-{
-public:
-  enum Position
-  {
-    TopLeft, TopRight, BottomLeft, BottomRight
-  };
-
-  FCBmpFactory(void);
-	~FCBmpFactory();
-	/// Adds a path were pixmaps can be found
-	void AddPath(const char* sPath);
-	/// Remove a path from the list of pixmap paths
-	void RemovePath(const char* sPath);
-
-	/// Add a build in XPM pixmap under a given name
-	void AddXPM(const char* sName, const char** pXPM);
-	/// Remove a build in pixmap by a given name
-	void RemoveXPM(const char* sName);
-
-	/// retrive a pixmap by name
-	QPixmap GetPixmap(const char* sName);
-  QPixmap GetPixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
-
-protected:
-	std::map<std::string,const char**> _mpXPM;
-	std::vector<std::string>          _vsPaths;
-};
-
 /** 
  * The Style Factory
  */
@@ -169,9 +135,6 @@ public:
 	
 	/// Returns the widget manager
 	FCCustomWidgetManager* GetCustomWidgetManager(void);
-
-	/// Reference to the bitmap factory
-	FCBmpFactory     &GetBmpFactory(void);
 
 	/** @name status bar handling */
 	//@{	

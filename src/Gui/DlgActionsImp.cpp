@@ -44,6 +44,7 @@
 #include "Command.h"
 #include "Widgets.h"
 #include <qtabwidget.h>
+#include "BitmapFactory.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,9 +180,7 @@ void FCDlgCustomActionsImp::slotCustomActionsDoubleClicked( QListViewItem *i )
     actionToolTip->setText(pScript->GetToolTipText());
     actionStatus->setText(pScript->GetStatusTip());
     actionAccel->setText(QAccel::keyToString(pScript->GetAccel()));
-    FCBmpFactory bmp;
-	  bmp.AddPath("../../FreeCADIcons");
-	  bmp.AddPath("../Icons");
+    FCBitmapFactory& bmp = GetBitmapFactory();
     PixmapLabel->clear();
     if (QString(pScript->GetPixmap()).length() > 2)
     {

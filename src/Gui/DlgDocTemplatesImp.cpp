@@ -15,6 +15,7 @@
 #include "../App/Application.h"
 #include "Command.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 
 
 //#include "Icons/Folder32.xpm"
@@ -32,7 +33,7 @@ DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  con
 {
 	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
     
-	QPixmap pixmap(_pcCmd->GetAppWnd()->GetBmpFactory().GetPixmap("Folder32"));
+	QPixmap pixmap(GetBitmapFactory().GetPixmap("Folder32"));
 	QString str;
 	// cycling through the Templates
 	for(std::vector<std::string>::iterator i=vTemplates.begin();i!=vTemplates.end();i++)

@@ -49,6 +49,7 @@
 
 #include "Application.h"
 #include "HtmlView.h"
+#include "BitmapFactory.h"
 #include "../Base/Console.h"
 #include "../App/Properties.h"
 
@@ -1664,9 +1665,9 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
 	_pcListView->setColumnWidth(1,100);
 
 	// retrieve the Pixmaps
-	pcLabelOpen   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelClosed"));
-	pcLabelClosed = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelOpen"));
-	pcAttribute   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_Attr"));
+	pcLabelOpen   = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_LabelClosed"));
+	pcLabelClosed = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_LabelOpen"));
+	pcAttribute   = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_Attr"));
 
 
   // some examples how to use the ProprtyViewItem-Framework

@@ -48,9 +48,9 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCPreferencePage
     ~FCDlgGeneral();
 
   protected:
-    void onChooseLanguage(const QString&);
-		QStringList onSearchForLanguageFiles();
-		void onSelectLanguageItem();
+		void onSearchForLanguages();
+		void onChooseLanguage(const QString&);
+		void apply();
 
   private slots:
     /** Looks in the system parameters for the entry "BigPixmaps".
@@ -73,8 +73,7 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCPreferencePage
     void onSetCmdLineVisible();
 
 	private:
-		QStringList languageFiles;
-		bool newLanguage;
+		QString language;
 };
 
 #endif // DLG_GENERAL_IMP_H

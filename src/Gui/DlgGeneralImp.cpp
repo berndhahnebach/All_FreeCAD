@@ -42,6 +42,7 @@
 #include "PrefWidgets.h"
 #include "Command.h"
 #include "CommandLine.h"
+#include "Language/LanguageFactory.h"
 
 /* 
  *  Constructs a FCDlgGeneral which is a child of 'parent', with the 
@@ -51,7 +52,7 @@
  *  TRUE to construct a modal dialog.
  */
 FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
-    : FCDlgGeneralBase( parent, name, fl ), newLanguage(false)
+    : FCDlgGeneralBase( parent, name, fl )
 {
   // if you run this first time
   if (WindowStyle->count() == 0)
@@ -60,8 +61,11 @@ FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
   }
 
 	// search for the language files
-	Languages->insertStringList(onSearchForLanguageFiles());
-	onSelectLanguageItem();
+	std::string lang = GetApplication().GetUserParameter
+		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
+		("Language")->GetASCII("Language", "English");
+	language = tr(lang.c_str());
+	onSearchForLanguages();
 
   append(SpeedAnimationCmdBar->getHandler());
   append(UsesBigPixmaps->getHandler());
@@ -84,6 +88,16 @@ FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
 FCDlgGeneral::~FCDlgGeneral()
 {
     // no need to delete child widgets, Qt does it all for us
+}
+
+void FCDlgGeneral::apply()
+{
+	if (QString::compare(Languages->currentText(), language) != 0)
+	{
+		QMessageBox::information(this, "Info", tr("To take effect on the new language restart FreeCAD, please"));
+	  GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
+		("Language")->SetASCII("Language", Languages->currentText().latin1());
+	}
 }
 
 void FCDlgGeneral::onBigPixmaps()
@@ -127,54 +141,27 @@ void FCDlgGeneral::onSetCmdLineVisible()
     GetCmdLine().hide();
 }
 
-void FCDlgGeneral::onChooseLanguage(const QString& s)
+void FCDlgGeneral::onChooseLanguage(const QString&)
 {
-	if (languageFiles.find(s) != languageFiles.end())
-	{
-		QString file = s;
-		
-		QTranslator translator(0);
-		translator.load(file, ".");
-		translator.save("FreeCAD.qm");
-
-		QMessageBox::information(this, "Info", tr("To take effect on the new language restart FreeCAD, please"));
-	}
+	setModified(true);
 }
 
-QStringList FCDlgGeneral::onSearchForLanguageFiles()
+void FCDlgGeneral::onSearchForLanguages()
 {
-	languageFiles.clear();
-	languageFiles.append(tr("English (Default)"));
-	QStringList s = QDir(".", "*.qm").entryList("*.qm");
-	s.remove("FreeCAD.qm");
-	languageFiles += s;
-	return languageFiles;
-}
+	QStringList list = GetLanguageFactory().GetRegisteredLanguages();
 
-void FCDlgGeneral::onSelectLanguageItem()
-{
-	unsigned int size=0;
-	QFileInfo fi;
-	fi.setFile("FreeCAD.qm");
-	if (fi.exists() && fi.isFile())
+	int pos = 0;
+	Languages->insertItem(tr("English"));
+
+	int i=1;
+	for (QStringList::Iterator it = list.begin(); it != list.end(); ++it, ++i)
 	{
-		size = fi.size();
+		Languages->insertItem(*it);
+		if (QString::compare(*it, language) == 0)
+			pos = i;
 	}
 
-	int item = 0;
-	for (QStringList::Iterator it = languageFiles.begin(); it!=languageFiles.end(); ++it, ++item)
-	{
-		fi.setFile(*it);
-		if (fi.exists() && fi.isFile())
-		{
-			// compare the size of the two files
-			if (fi.size() == size)
-			{
-				Languages->setCurrentItem(item);
-				break;
-			}
-		}
-	}
+	Languages->setCurrentItem(pos);
 }
 
 #include "DlgGeneral.cpp"

@@ -345,3 +345,9 @@ Version: V0.1B75 Date: Sat Nov 01 18:38:15 2003 +++++++++++++++++++++++++++++++
 + Tools to make Binary and Setup distributions
 + Internationalization is now supported
 
+
+Version: V0.1B76 Date: Sat Nov 08 14:47:32 2003 +++++++++++++++++++++++++++++++
++ spent own module for BitmapFactory
++ make internationalization much more flexible and compile all the *.ts files
+  into the application (no need of *.qm files at runtime any more)
++ new factory for scripts, widgets and languages

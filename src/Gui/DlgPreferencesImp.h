@@ -39,43 +39,6 @@
 class QTabWidget;
 
 /**
- * This class is the container class which handles all the preference pages
- * @see class FCDlgPreferencesImp
- *//*
-class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
-{ 
-    Q_OBJECT
-
-  public:
-    DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgPreferencesImp();
-	/// Add a preferences page group
-    void addPreferenceGroup(const char* name, const char* Pixmap = "PrefTree_GroupClosed");
-	/// Add a page
-    void addPreferencePage(QWidget* page, const char* name, const char* group = 0L, const char* Pixmap = "PrefTree_PrefPage");
-
-  protected:
-    QTabWidget* getPreferenceGroup(const char* name);
-    QTabWidget* getOrAddPreferenceGroup(const char* name);
-    std::string getGroupName() const;
-    std::string getPageName() const;
-    void connectWidget(QWidget* page) const;
-
-  private:
-    std::map<std::string, int> m_mGroupsID;
-    std::map<std::string, QListViewItem*> m_mGroupsItem;
-    QTabWidget                          * m_pCurTab;
-    QWidget                             * m_pCurPage;
-
-    std::map <std::string, std::pair<QListViewItem*, QWidget*> >  m_mPages;
-
-  private slots:
-    void prefPageClicked(QListViewItem * item );
-    void prefPageClicked(QWidget * item );
-
-};
-*/
-/**
  * This class is a 2nd implementation of the container class.
  * It uses a listbox for the groups instead of a listview.
  * 
@@ -96,20 +59,13 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
     Q_OBJECT
 
   public:
+		static void addPage(const QString& name);
+		static void addGroup(const QString& name);
+
     /// construction
     FCDlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     /// destruction
     ~FCDlgPreferencesImp();
-
-    /** Adds a new preference group */
-    void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-    
-    /**
-     * Adds a new preference page to the current group
-     * Before the first call of this method @ref addPreferenceGroup must be called
-     * otherwise the preference pages will be lost.
-     */
-    void addPreferencePage(QWidget* page, const QString& name);
 
   protected slots:
     /// click the OK button
@@ -120,6 +76,15 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
     void onCancel();
 
   protected:
+    /** Adds a new preference group */
+    void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
+    
+    /**
+     * Adds a new preference page to the current group
+     * Before the first call of this method @ref addPreferenceGroup must be called
+     * otherwise the preference pages will be lost.
+     */
+    void addPreferencePage(QWidget* page, const QString& name);
     /// for internal use only
     QTabWidget* getPreferenceGroup(int id);
     /// for internal use only
@@ -141,6 +106,8 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
   private:
     std::map<QString, int> m_mGroupIDs;
     QTabWidget               * m_pCurTab;
+
+		static std::vector<QString> aclPages;
 
   private slots:
     /// for internal use only

@@ -32,41 +32,68 @@
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
 #include "../Base/Console.h"
-#include "../Base/Factory.h"
+#include "DlgPreferencesImp.h"
+#include "DlgSettingsImp.h"
+#include "DlgSettings3DViewImp.h"
+#include "DlgGeneralImp.h"
+#include "DlgEditorImp.h"
+#include "DlgSettingsMacroImp.h"
+#include "DlgOnlineHelpImp.h"
 
 
-FCWidgetFactorySupplier* FCWidgetFactorySupplier::_pcSingleton = 0L;
+FCWidgetFactory* FCWidgetFactory::_pcSingleton = NULL;
 
-FCWidgetFactorySupplier::FCWidgetFactorySupplier()
+FCWidgetFactory& FCWidgetFactory::Instance(void)
 {
-  new FCFactoryProducer<FCPrefSpinBox>;
-}
-
-FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
-{
-	// not initialized?
-	if(!_pcSingleton)
-	{
-		_pcSingleton = new FCWidgetFactorySupplier;
-	}
-
+  if (_pcSingleton == NULL)
+    _pcSingleton = new FCWidgetFactory;
   return *_pcSingleton;
 }
 
-QWidget* FCWidgetFactorySupplier::GetWidget(const char* sClassName, QWidget* parent, const char* sPref)
+void FCWidgetFactory::Destruct (void)
 {
-  void* p = GetFactory().Produce(sClassName);
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
+
+QWidget* FCWidgetFactory::ProduceWidget (const char* sName) const
+{
+	QWidget* w = (QWidget*)Produce(sName);
+
   // this widget class is not registered
-  if (!p)
+  if (!w)
   {
 #ifdef FC_DEBUG
-    GetConsole().Warning("\"%s\" is not registered\n", sClassName);
+    GetConsole().Warning("\"%s\" is not registered\n", sName);
 #endif
     return NULL;
   }
 
+  try
+  {
+    dynamic_cast<QWidget*>(w);
+  }
+  catch (...)
+  {
+#ifdef FC_DEBUG
+    GetConsole().Error("%s does not inherit from \"QWidget\"\n", sName);
+#endif
+		delete w;
+		return NULL;
+  }
+
+  return w;
+}
+
+
+QWidget* FCWidgetFactory::ProducePrefWidget(const char* sName, QWidget* parent, const char* sPref)
+{
+  QWidget* w = ProduceWidget(sName);
+  // this widget class is not registered
+  if (!w)
+    return NULL; // no valid QWidget object
+
   // set the parent to the widget 
-  QWidget* w = (QWidget*)p;
   w->reparent(parent, QPoint(0,0));
 
   try
@@ -79,7 +106,67 @@ QWidget* FCWidgetFactorySupplier::GetWidget(const char* sClassName, QWidget* par
 #ifdef FC_DEBUG
     GetConsole().Error("%s does not inherit from \"FCWidgetPrefs\"\n", w->className());
 #endif
+		delete w;
+		return NULL;
   }
 
   return w;
+}
+
+// ----------------------------------------------------
+
+template <class CLASS>
+FCWidgetProducer<CLASS>::FCWidgetProducer (const QString& caption) : mCaption(caption)
+{
+	FCWidgetFactory::Instance().AddProducer(/*typeid(CLASS).name()*/mCaption.latin1(), this);
+	FCDlgPreferencesImp::addPage(caption);
+}
+
+// ----------------------------------------------------
+
+template <class CLASS>
+FCPrefWidgetProducer<CLASS>::FCPrefWidgetProducer ()
+{
+	FCWidgetFactory::Instance().AddProducer(typeid(CLASS).name(), this);
+}
+
+// ----------------------------------------------------
+
+FCWidgetFactorySupplier* FCWidgetFactorySupplier::_pcSingleton = 0L;
+
+FCWidgetFactorySupplier::FCWidgetFactorySupplier()
+{
+  // ADD YOUR PREFERENCFE PAGES HERE
+  //
+  //
+	FCDlgPreferencesImp::addGroup("FreeCAD");
+  new FCWidgetProducer<FCDlgGeneral>       ("General"     );
+  new FCWidgetProducer<FCDlgEditorSettings>("Editor"      );
+  new FCWidgetProducer<FCDlgSettingsMacro> ("Macros"      );
+  new FCWidgetProducer<FCOnlineHelp>       ("Online help" );
+	FCDlgPreferencesImp::addGroup("Viewer");
+  new FCWidgetProducer<FCDlgSettings>      ("Help Viewer" );
+  new FCWidgetProducer<FCDlgSettings3DView>("3D View"     );
+
+	// ADD YOUR PREFERENCE WIDGETS HERE
+	//
+	//
+	new FCPrefWidgetProducer<FCPrefSpinBox>;
+	new FCPrefWidgetProducer<FCLineEdit>;
+	new FCPrefWidgetProducer<FCComboBox>;
+	new FCPrefWidgetProducer<FCListBox>;
+	new FCPrefWidgetProducer<FCCheckBox>;
+	new FCPrefWidgetProducer<FCRadioButton>;
+	new FCPrefWidgetProducer<FCSlider>;
+}
+
+FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
+{
+	// not initialized?
+	if(!_pcSingleton)
+	{
+		_pcSingleton = new FCWidgetFactorySupplier;
+	}
+
+  return *_pcSingleton;
 }

@@ -75,7 +75,6 @@
 #include "PrefWidgets.h"
 #include "Command.h"
 #include "Tree.h"
-#include "Tools.h"
 #include "PropertyView.h"
 
 #include "CommandLine.h"
@@ -89,8 +88,7 @@
 
 #include "Inventor/Qt/SoQt.h"
 
-#include "Icons/images.cpp"
-#include "Icons/BmpFactoryIcons.cpp"
+#include "Language/LanguageFactory.h"
 
 static ApplicationWindow* stApp;
 static QWorkspace* stWs;
@@ -145,12 +143,16 @@ struct ApplicationWindowP
   bool _bControlButton;
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
-	FCBmpFactory     _cBmpFactory;
 };
 
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose )
 {
+	std::string language = GetApplication().GetUserParameter
+		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
+		("Language")->GetASCII("Language", "English");
+	GetLanguageFactory().SetLanguage(language.c_str());
+
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
 
@@ -174,8 +176,6 @@ ApplicationWindow::ApplicationWindow()
 
 	stApp = this;
 
-  RegisterIcons();
-
 	// instanciate the workbench dictionary
 	d->_pcWorkbenchDictionary = PyDict_New();
 
@@ -185,8 +185,6 @@ ApplicationWindow::ApplicationWindow()
 
 	// setting up the Bitmap manager
 //	QString tmpWb = _cActiveWorkbenchName;
-	d->_cBmpFactory.AddPath("../../FreeCADIcons");
-	d->_cBmpFactory.AddPath("../Icons");
 //	_cBmpFactory.GetPixmap("Function");
 /*
   QDir dir(GetApplication().GetHomePath()); dir.cdUp();
@@ -1076,11 +1074,6 @@ FCCommandManager &ApplicationWindow::GetCommandManager(void)
   return d->_cCommandManager;
 }
 
-FCBmpFactory& ApplicationWindow::GetBmpFactory(void)
-{
-  return d->_cBmpFactory;
-}
-
 //**************************************************************************
 // Python stuff
 
@@ -1642,103 +1635,6 @@ void FCAutoWaitCursor::timeEvent()
 //**************************************************************************
 // FCAppConsoleObserver
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-FCBmpFactory::FCBmpFactory(void)
-{
-
-}
-
-FCBmpFactory::~FCBmpFactory()
-{
-
-}
-
-
-void FCBmpFactory::AddPath(const char* sPath)
-{
-	_vsPaths.push_back(sPath);
-}
-
-void FCBmpFactory::RemovePath(const char* sPath)
-{
-	_vsPaths.erase(std::find<std::vector<std::string>::iterator,std::string>(_vsPaths.begin(),_vsPaths.end(),sPath));
-}
-
-
-void FCBmpFactory::AddXPM(const char* sName, const char** pXPM)
-{
-	_mpXPM[sName] = pXPM;
-}
-
-void FCBmpFactory::RemoveXPM(const char* sName)
-{
-	_mpXPM.erase(sName);
-}
-
-
-QPixmap FCBmpFactory::GetPixmap(const char* sName)
-{
-
-	// first try to find it in the build in XPM
-	std::map<std::string,const char**>::const_iterator It = _mpXPM.find(sName);
-
-	if(It != _mpXPM.end())
-		return QPixmap(It->second);
-
-	// try to find it in the given directorys
-	for(std::vector<std::string>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
-	{
-		// list dir
-		QDir d( (*It2).c_str() );
-		if( QFile(d.path()+QDir::separator() + sName +".bmp").exists() )
-			return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
-		if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
-			return QPixmap(d.path()+QDir::separator()+ sName + ".png");
-		if( QFile(d.path()+QDir::separator()+ sName + ".gif").exists() )
-			return QPixmap(d.path()+QDir::separator()+ sName + ".gif");
-	}
-
-	GetConsole().Warning("Can't find Pixmap:%s\n",sName);
-
-	return QPixmap(px);
-
-}
-
-QPixmap FCBmpFactory::GetPixmap(const char* sName, const char* sMask, Position pos)
-{
-  QPixmap p1 = GetPixmap(sName);
-  QPixmap p2 = GetPixmap(sMask);
-
-  int x = 0, y = 0;
-
-  switch (pos)
-  {
-    case TopLeft:
-      break;
-    case TopRight:
-      x = p1.width () - p2.width ();
-      break;
-    case BottomLeft:
-      y = p1.height() - p2.height();
-      break;
-    case BottomRight:
-      x = p1.width () - p2.width ();
-      y = p1.height() - p2.height();
-      break;
-  }
-
-  QPixmap p = p1;
-  p = FCTools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
-
-  QPainter pt;
-  pt.begin( &p );
-  pt.setPen(Qt::NoPen);
-  pt.drawRect(x, y, p2.width(), p2.height());
-  pt.drawPixmap(x, y, p2);
-  pt.end();
-
-  return p;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

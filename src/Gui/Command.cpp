@@ -22,6 +22,7 @@
 #include "HtmlView.h"
 #include "Macro.h"
 #include "DlgUndoRedo.h"
+#include "BitmapFactory.h"
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
@@ -164,7 +165,7 @@ bool FCMultiAction::addTo(QWidget *w)
   	connect( combo, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
   	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
     combo->setMinimumWidth(130);
-    QPixmap FCIcon = ApplicationWindow::Instance->GetBmpFactory().GetPixmap("FCIcon");
+    QPixmap FCIcon = GetBitmapFactory().GetPixmap("FCIcon");
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
     {
       combo->insertItem(FCIcon, it->c_str());
@@ -221,7 +222,7 @@ void FCMultiAction::setItems(const std::vector<std::string>& items)
 void FCMultiAction::insertItem(const char* item)
 {
   mItems.push_back(item);
-  QPixmap FCIcon = ApplicationWindow::Instance->GetBmpFactory().GetPixmap("FCIcon");
+  QPixmap FCIcon = GetBitmapFactory().GetPixmap("FCIcon");
   for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
   {
     if ((*it)->inherits("QComboBox"))
@@ -628,7 +629,7 @@ FCAction * FCCppCommand::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -670,7 +671,7 @@ FCAction * FCScriptCommand::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(_sStatusTip.c_str()));
 	pcAction->setWhatsThis(QObject::tr(_sWhatsThis.c_str()));
 	if(_sPixmap!="")
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(_sPixmap.c_str()));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(_sPixmap.c_str()));
 	pcAction->setAccel(_iAccel);
 
 	return pcAction;
@@ -786,7 +787,7 @@ FCAction * FCPythonCommand::CreateAction(void)
 	pcAction->setStatusTip(GetResource("StatusTip").c_str());
 	pcAction->setWhatsThis(GetResource("WhatsThis").c_str());
 	if(GetResource("Pixmap") != "")
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(GetResource("Pixmap").c_str()));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(GetResource("Pixmap").c_str()));
 
 	return pcAction;
 }

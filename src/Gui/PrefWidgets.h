@@ -103,7 +103,7 @@ class FCWidgetPrefs : public FCParameterGrp::ObserverType
     QString m_sPrefGrp;
 
     // friends
-    friend class FCWidgetFactorySupplier;
+    friend class FCWidgetFactory;
     friend class FCWidgetPrefsHandler;
 };
 

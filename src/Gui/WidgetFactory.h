@@ -29,6 +29,81 @@
 #ifndef __FC_WIDGET_FACTORY_H__
 #define __FC_WIDGET_FACTORY_H__
 
+#include "../Base/Factory.h"
+
+/** The WidgetFactory singleton
+  */
+class GuiExport FCWidgetFactory : public FCFactory
+{
+	public:
+		static FCWidgetFactory& Instance(void);
+		static void Destruct (void);
+
+    /// produce the widget using the factory
+		QWidget* ProduceWidget (const char* sName) const;
+    QWidget* ProducePrefWidget(const char* sName, QWidget* parent, const char* sPref);
+
+	private:
+		static FCWidgetFactory* _pcSingleton;
+
+		FCWidgetFactory(){}
+		~FCWidgetFactory(){}
+};
+
+inline GuiExport FCWidgetFactory& GetWidgetFactory(void)
+{
+	return FCWidgetFactory::Instance();
+}
+
+// --------------------------------------------------------------------
+
+template <class CLASS>
+# if _MSC_VER >= 1300
+class FCWidgetProducer: public FCAbstractProducer
+# else
+class GuiExport FCWidgetProducer: public FCAbstractProducer
+# endif
+{
+	public:
+		/// Constructor
+		FCWidgetProducer (const QString& caption);
+
+		virtual ~FCWidgetProducer (void){}
+
+		/// Produce an instance
+		virtual void* Produce (void) const
+		{ 
+			return (void*)(new CLASS);
+		}
+
+	private:
+		QString mCaption;
+};
+
+// --------------------------------------------------------------------
+
+template <class CLASS>
+# if _MSC_VER >= 1300
+class FCPrefWidgetProducer: public FCAbstractProducer
+# else
+class GuiExport FCPrefWidgetProducer: public FCAbstractProducer
+# endif
+{
+	public:
+		/// Constructor
+		FCPrefWidgetProducer ();
+
+		virtual ~FCPrefWidgetProducer (void){}
+
+		/// Produce an instance
+		virtual void* Produce (void) const
+		{ 
+			return (void*)(new CLASS);
+		}
+};
+
+// --------------------------------------------------------------------
+
 /** 
  * The widget factory supplier class
  */
@@ -42,10 +117,6 @@ class FCWidgetFactorySupplier
   public:
   	static FCWidgetFactorySupplier &Instance(void);
 	  friend FCWidgetFactorySupplier &GetWidgetFactorySupplier(void); 
-
-  public:
-    /// produce the widget using the factory
-    QWidget* GetWidget(const char* sClassName, QWidget* parent, const char* sPref);
 };
 
 inline FCWidgetFactorySupplier &GetWidgetFactorySupplier(void)

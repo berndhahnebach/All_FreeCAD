@@ -46,225 +46,15 @@
 #if QT_VERSION >= 230
 # include <qlistview.h>
 #endif
+#include "WidgetFactory.h"
 #include "DlgPreferencesImp.h"
-#include "DlgSettingsImp.h"
-#include "DlgSettings3DViewImp.h"
-#include "DlgGeneralImp.h"
-#include "DlgEditorImp.h"
-#include "DlgSettingsMacroImp.h"
-#include "DlgOnlineHelpImp.h"
+#include "PropertyPage.h"
 #include "Application.h"
 #include "Tools.h"
 #include "Widgets.h"
+#include "BitmapFactory.h"
 
-/* 
- *  Constructs a DlgPreferencesImp which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
- *//*
-DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPreferences( parent, name, modal, fl ),FCWindowParameter(name), m_pCurPage(NULL), m_pCurTab(NULL)
-{
-  // disable sorting
-  ListView2->setSorting(-1);
-  connect(ListView2, SIGNAL ( pressed ( QListViewItem * ) ), this, SLOT( prefPageClicked(QListViewItem * ) ));
-
-  // ADD YOUR PAGES HERE
-  //
-  //
-  addPreferenceGroup("Viewer", "PrefTree_GroupClosed");
-  m_mGroupsItem["Viewer"]->setOpen(true);
-  addPreferencePage(new FCDlgSettings, "Help Viewer");
-  addPreferencePage(new FCDlgSettings3DView, "3D View");
-
-  addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen");
-  m_mGroupsItem["FreeCAD"]->setOpen(true);
-  addPreferencePage(new FCDlgGeneral, "General");
-  addPreferencePage(new FCDlgEditorSettings, "Editor");
-  addPreferencePage(new FCDlgSettingsMacro,  "Macros");
-
-  // show the first page
-  prefPageClicked(ListView2->firstChild());
-}
-*/
-/*  
- *  Destroys the object and frees any allocated resources
- *//*
-DlgPreferencesImp::~DlgPreferencesImp()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-void DlgPreferencesImp::addPreferenceGroup(const char* name, const char* Pixmap)
-{
-  QPixmap pix = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
-  m_pCurTab = getOrAddPreferenceGroup(name);
-  pix.resize(16, 16);
-  m_mGroupsItem[name]->setPixmap(0, pix);
-}
-
-
-void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const char* group, const char* Pixmap)
-{
-	if(group)
-	{
-		m_pCurTab = getOrAddPreferenceGroup(group);
-		m_pCurTab->addTab(page, name);
-	}
-
-	if (m_pCurTab)
-	{
-		m_pCurTab->addTab(page, name);
-
-		QPixmap pix = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
-    QListViewItem * item = new QListViewItem( m_mGroupsItem[getGroupName()], FCListView::lastItem(ListView2) );
-		item->setText( 0, tr( name ) );
-		pix.resize(16, 16);
-		item->setPixmap( 0, pix );
-
-		// concatenate the two strings (to an unique one)
-		std::string cname = getGroupName() + std::string(name);
-		m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
-		page->hide();
-
-		connectWidget(page);
-	}
-}
-*/
-/*
-void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const char* group)
-{
-  m_pCurTab = getOrAddPreferenceGroup(group);
-  m_pCurTab->addTab(page, name);
-
-  QListViewItem * item = new QListViewItem( m_mGroupsItem[group], 0 );
-  item->setText( 0, tr( name ) );
-
-  // concatenate the two strings (to an unique one)
-  std::string cname = std::string(group) + std::string(name);
-  m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
-  page->hide();
-
-  connectWidget(page);
-}
-*/
-
-/*
-QTabWidget* DlgPreferencesImp::getPreferenceGroup(const char* name)
-{
-  // already inside
-  if (m_mGroupsID.find(name) != m_mGroupsID.end())
-  {
-    return (QTabWidget*)tabWidgetStack->widget(m_mGroupsID[name]);
-  }
-
-  return NULL;
-}
-
-QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const char* name)
-{
-  // already inside
-  if (m_mGroupsID.find(name) != m_mGroupsID.end())
-  {
-    return (QTabWidget*)tabWidgetStack->widget(m_mGroupsID[name]);
-  }
-
-  int iSize = m_mGroupsID.size();
-  m_mGroupsID[name] = iSize;
-  m_mGroupsItem[name] = new QListViewItem(ListView2, 0);
-  m_mGroupsItem[name]->setText(0, tr(name));
-  QTabWidget* tabWidget = new QTabWidget;
-  tabWidgetStack->addWidget(tabWidget, iSize);
-  connect(tabWidget, SIGNAL (  currentChanged ( QWidget * ) ), this, SLOT( prefPageClicked(QWidget * ) ));
-
-  return tabWidget;
-}
-
-void DlgPreferencesImp::prefPageClicked(QListViewItem * item )
-{
-  if (m_pCurPage)
-    m_pCurPage->hide();
-
-  if (!item) return;
-
-  // if subitem get the parent
-  QListViewItem* parent;
-  QListViewItem* child;
-  std::string str;
-  if ((parent = item->parent()) != NULL)
-  {
-    m_pCurTab = getPreferenceGroup(parent->text(0).latin1());
-    str = (parent->text(0) + item->text(0)).latin1();
-  }
-  else if((child = item->firstChild()) != NULL)
-  {
-    prefPageClicked(child);
-    return;
-  }
-  else return;
-
-  if (!m_pCurTab)
-    return;
-
-  if (m_mPages.find(str) != m_mPages.end())
-  {
-    tabWidgetStack->raiseWidget(m_pCurTab);
-    m_pCurPage = m_mPages[str].second;
-    m_pCurTab->showPage(m_pCurPage);
-  }
-}
-
-void DlgPreferencesImp::prefPageClicked(QWidget * widget )
-{
-  for (std::map <std::string, std::pair<QListViewItem*, QWidget*> >::iterator it = m_mPages.begin(); 
-       it != m_mPages.end(); ++it)
-       {
-         if (it->second.second == widget)
-         {
-           ListView2->setSelected(it->second.first, true);
-           return;
-         }
-       }
-}
-
-std::string DlgPreferencesImp::getGroupName() const
-{
-  int id = tabWidgetStack->id(m_pCurTab);
-  for (std::map<std::string, int>::const_iterator it = m_mGroupsID.begin(); it != m_mGroupsID.end(); ++it)
-  {
-    if (it->second == id)
-      return it->first;
-  }
-
-  return "";
-}
-
-std::string DlgPreferencesImp::getPageName() const
-{
-  return std::string(m_pCurTab->tabLabel(m_pCurTab->currentPage()).latin1());
-}
-
-void DlgPreferencesImp::connectWidget(QWidget* page) const
-{
-  // the dialog itself
-//  connect(PushButton13, SIGNAL(clicked()), page, SLOT(save()));//OK
-//  connect(PushButton14, SIGNAL(clicked()), page, SLOT(save()));//Apply
-
-  if (dynamic_cast<FCPreferencePage*>(page) != NULL)
-  {
-    // and its preference widgets
-    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCPreferencePage*>(page)->getHandlers();
-    for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
-    {
-      connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
-      connect(PushButton14, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply
-    }
-  }
-}
-*/
-///////////////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------
 
 class PrefGroupItem : public QListBoxItem 
 {
@@ -381,18 +171,20 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
 
   connect(ListBox, SIGNAL ( highlighted ( int ) ), this, SLOT( prefPageClicked( int ) ));
 
-  // ADD YOUR PAGES HERE
-  //
-  //
-  addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen", "PrefTree_GroupClosed");
-  addPreferencePage(new FCDlgGeneral, tr("General"));
-  addPreferencePage(new FCDlgEditorSettings, tr("Editor"));
-  addPreferencePage(new FCDlgSettingsMacro,  tr("Macros"));
-  addPreferencePage(new FCOnlineHelp,  tr("Online help"));
-
-  addPreferenceGroup(tr("Viewer"),  "PrefTree_GroupOpen", "PrefTree_GroupClosed");
-  addPreferencePage(new FCDlgSettings, tr("Help Viewer"));
-  addPreferencePage(new FCDlgSettings3DView, tr("3D View"));
+	// make sure that pages are ready to create
+	GetWidgetFactorySupplier();
+	for (std::vector<QString>::iterator it = aclPages.begin(); it!=aclPages.end(); ++it)
+	{
+		if ((*it).startsWith("Group_"))
+		{
+			QString s = (*it).mid(6);
+		  addPreferenceGroup(s, "PrefTree_GroupOpen", "PrefTree_GroupClosed");
+		}
+		else
+		{
+			addPreferencePage(GetWidgetFactory().ProduceWidget(*it), tr(*it));
+		}
+	}
 
   // show the first page
   ListBox->setCurrentItem(0);
@@ -406,6 +198,19 @@ FCDlgPreferencesImp::~FCDlgPreferencesImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
+std::vector<QString> FCDlgPreferencesImp::aclPages;
+void FCDlgPreferencesImp::addPage(const QString& name)
+{
+	aclPages.push_back(name);
+}
+
+void FCDlgPreferencesImp::addGroup(const QString& name)
+{
+	QString s = "Group_";
+	s += name;
+	aclPages.push_back(s);
+}
+
 void FCDlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   m_pCurTab = getOrAddPreferenceGroup(name, Pixmap, Pixmap2);
@@ -413,7 +218,7 @@ void FCDlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pi
 
 void FCDlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 {
-	if (m_pCurTab)
+	if (m_pCurTab && page)
 	{
 		m_pCurTab->addTab(page, name);
 
@@ -436,8 +241,8 @@ QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, co
     return (QTabWidget*)tabWidgetStack->widget(m_mGroupIDs[name]);
   }
 
-  QPixmap pixSel   = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
-  QPixmap pixUnsel = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap2);
+  QPixmap pixSel   = GetBitmapFactory().GetPixmap(Pixmap);
+  QPixmap pixUnsel = GetBitmapFactory().GetPixmap(Pixmap2);
 
   int iSize = m_mGroupIDs.size();
   m_mGroupIDs[name] = iSize;

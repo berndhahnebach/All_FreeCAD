@@ -26,6 +26,7 @@
 #include "../App/Document.h"
 #include "../App/Label.h"
 #include "Tree.h"
+#include "BitmapFactory.h"
 
 
 
@@ -175,9 +176,9 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 	_pcListView->setColumnWidthMode(1,QListView::Manual );
 
 	// retreive the Pixmaps
-	pcLabelOpen   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelClosed"));
-	pcLabelClosed = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelOpen"));
-	pcAttribute   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_Attr"));
+	pcLabelOpen   = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_LabelClosed"));
+	pcLabelClosed = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_LabelOpen"));
+	pcAttribute   = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_Attr"));
 
 
 	// Add the first main label

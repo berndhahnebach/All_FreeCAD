@@ -50,6 +50,7 @@
 #include "../Base/Parameter.h"
 #include "../Base/Exception.h"
 #include "../Base/EnvMacros.h"
+#include "../Base/Factory.h"
 
 // FreeCAD doc header
 #include "../App/Application.h"
@@ -127,6 +128,15 @@ void ExtractPathAndUser(const char*);
 
 int main( int argc, char ** argv ) 
 {
+	// register scripts
+	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
+	new FCScriptProducer( "FreeCADTest",    FreeCADTest    );
+	new FCScriptProducer( "FreeCADTestEnv", FreeCADTestEnv );
+	new FCScriptProducer( "FreeCADStartup", FreeCADStartup );
+	new FCScriptProducer( "FreeCADInstall", FreeCADInstall );
+#ifdef  _FC_GUI_ENABLED_
+	new FCScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+#endif
 
   // Init phase ===========================================================
 #	ifndef FC_DEBUG
@@ -195,17 +205,12 @@ int main( int argc, char ** argv )
 				GetConsole().Log("Creating GUI Application...\n");
 				// if application not yet created
 				if (!pcQApp)  pcQApp = new QApplication ( argc, argv );
-				
-				static QTranslator *translator = 0;
-				translator = new QTranslator( 0 );
-				translator->load("FreeCAD.qm", ".");
-				qApp->installTranslator(translator);
 
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
 
 				// runing the Gui init script
-				GetInterpreter().Launch(FreeCADGuiInit);
+				GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
 
 				// show the main window
 				GetConsole().Log("Showing GUI Application...\n");
@@ -376,7 +381,7 @@ void Init(int argc, char ** argv )
 	//rcInterperter.Launch("print 'Python started'\n");
 	
 	// starting the startup script
-	rcInterperter.Launch(FreeCADStartup);
+	rcInterperter.Launch(GetScriptFactory().ProduceScript("FreeCADStartup"));
 
 	// creating the application 
 	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
@@ -399,7 +404,7 @@ void Init(int argc, char ** argv )
 # endif
 
 	// starting the init script
-	rcInterperter.Launch(FreeCADInit);
+	rcInterperter.Launch(GetScriptFactory().ProduceScript("FreeCADInit"));
 
 }
 
@@ -596,7 +601,7 @@ void ParsOptions(int argc, char ** argv)
 					// run the test environment script
 					case '1':  
 						mConfig["Verbose"] = "Loose";
-						sScriptName = FreeCADTestEnv;
+						sScriptName = GetScriptFactory().ProduceScript("FreeCADTestEnv");
 						break;   
 					case '\0':  
 						// test script level 0

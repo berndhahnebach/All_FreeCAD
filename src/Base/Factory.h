@@ -39,84 +39,96 @@
 #include"../Config.h"
 
 /// Abstract base class of all producers
-class  BaseExport FCAbstractProducer
-{ 
-    public:
-    virtual void* Produce (void) const = 0;
+class BaseExport FCAbstractProducer
+{
+	public:
+		virtual void* Produce (void) const = 0;
 };
 
 
  
-/** The Factory singelton
-  * This class has the purpos to produce at runtime instances of 
-  * of class not known at compile time. It holds a map of so called
-  * producers which are abel to pruce an instance of a special class.
-  * Producer can be registert by runtime through e.g. Application modueles
+/**
+  * This class has the purpose to produce at runtime instances 
+  * of classes not known at compile time. It holds a map of so called
+  * producers which are able to produce an instance of a special class.
+  * Producer can be registered at runtime through e.g. application modules
   */
 class BaseExport FCFactory
 {
-public:
-   /// produce a class with the given name
-   void* Produce (const char* sClassName) const;
-   /// Adds a new prducer instance
-   void AddProducer (const char* sClassName, FCAbstractProducer *pcProducer);
-   /// destruction 
-   ~FCFactory ();
+	public:
+		/// Adds a new prducer instance
+		void AddProducer (const char* sClassName, FCAbstractProducer *pcProducer);
+	protected:
+		/// produce a class with the given name
+		void* Produce (const char* sClassName) const;
 
-   static FCFactory& Instance(void);
-   static void Destruct (void);
-   
-private:
-   static FCFactory* _pcSingleton;
-   
-protected:
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #endif
 # if _MSC_VER >= 1300
-   std::map<std::string, FCAbstractProducer*> _mpcProducers;
+	   std::map<std::string, FCAbstractProducer*> _mpcProducers;
 # else
-   std::map<const std::string, FCAbstractProducer*> _mpcProducers;
+		 std::map<const std::string, FCAbstractProducer*> _mpcProducers;
 # endif
    
-   FCFactory (void){}
-
+		/// construction
+		FCFactory (void){}
+		/// destruction 
+		virtual ~FCFactory ();
 };
 
-inline BaseExport FCFactory& GetFactory(void)
+// --------------------------------------------------------------------
+
+/** The ScriptFactory singleton
+  */
+class BaseExport FCScriptFactory : public FCFactory
 {
-	return FCFactory::Instance();
+	public:
+		static FCScriptFactory& Instance(void);
+		static void Destruct (void);
+
+		const char* ProduceScript (const char* sScriptName) const;
+
+	private:
+		static FCScriptFactory* _pcSingleton;
+
+		FCScriptFactory(){}
+		~FCScriptFactory(){}
+};
+
+inline BaseExport FCScriptFactory& GetScriptFactory(void)
+{
+	return FCScriptFactory::Instance();
 }
 
+// --------------------------------------------------------------------
+
 /** Producer template class
-  * this is a conviniance template to produce very easy a pruducer instance
+  * this is a convenience template to produce very easy a producer instance
   * for the use in the FCFactory class.
   * \code
   * \endcode
   * @see FCFactory
   */
-template <class CLASS>
-# if _MSC_VER >= 1300
-class FCFactoryProducer: public FCAbstractProducer
-# else
-class BaseExport FCFactoryProducer: public FCAbstractProducer
-# endif
+class BaseExport FCScriptProducer: public FCAbstractProducer
 {
-															  /// Constructor
 public:
-	FCFactoryProducer (void)
+	/// Constructor
+	FCScriptProducer (const char* name, const char* script) : mScript(script)
 	{
-		FCFactory::Instance().AddProducer(typeid(CLASS).name(), this);
+		FCScriptFactory::Instance().AddProducer(name, this);
 	}
 
-	virtual ~FCFactoryProducer (void){}
+	virtual ~FCScriptProducer (void){}
 
-	/// Produce a instance
+	/// Produce an instance
 	virtual void* Produce (void) const
 	{ 
-	  return (void*)(new CLASS);
+	  return (void*)mScript;
 	}
 
+	private:
+		const char* mScript;
 };
 
 #endif

@@ -45,6 +45,7 @@
 #include "Command.h"
 #include "HtmlView.h"
 #include "DlgUndoRedo.h"
+#include "BitmapFactory.h"
 
 #ifdef FC_USE_OCAFBROWSER
 #	include <DebugBrowser.hxx>
@@ -317,7 +318,7 @@ FCAction * FCCmdUndo::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -369,7 +370,7 @@ FCAction * FCCmdRedo::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -428,7 +429,7 @@ FCAction * FCCmdWorkbench::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
   pcAction->setItems(ApplicationWindow::Instance->GetWorkbenches());
@@ -510,7 +511,7 @@ FCAction * FCCmdMRU::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;

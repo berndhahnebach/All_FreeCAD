@@ -1,7 +1,7 @@
 
 void RegisterIcons()
 {
-  FCBmpFactory& rclBmpFactory = ApplicationWindow::Instance->GetBmpFactory();
+  FCBitmapFactory& rclBmpFactory = GetBitmapFactory();
   rclBmpFactory.AddXPM("px", px);
   rclBmpFactory.AddXPM("App_Parameter", App_Parameter);
   rclBmpFactory.AddXPM("CommandLine", CommandLine);

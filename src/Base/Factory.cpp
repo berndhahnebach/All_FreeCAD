@@ -41,24 +41,8 @@
 
 
 #include "Factory.h"
+#include "Console.h"
 
-
-FCFactory* FCFactory::_pcSingleton = NULL;
-
-
-
-FCFactory& FCFactory::Instance(void)
-{
-  if (_pcSingleton == NULL)
-    _pcSingleton = new FCFactory;
-  return *_pcSingleton;
-}
-/// destruction of singelton only needed for debuging
-void FCFactory::Destruct (void)
-{
-  if (_pcSingleton != NULL)
-    delete _pcSingleton;
-}
 
 FCFactory::~FCFactory ()
 {
@@ -90,3 +74,36 @@ void FCFactory::AddProducer (const char *sClassName, FCAbstractProducer *pcProdu
   _mpcProducers[sClassName] = pcProducer;
 }
 
+// ----------------------------------------------------
+
+FCScriptFactory* FCScriptFactory::_pcSingleton = NULL;
+
+
+
+FCScriptFactory& FCScriptFactory::Instance(void)
+{
+  if (_pcSingleton == NULL)
+    _pcSingleton = new FCScriptFactory;
+  return *_pcSingleton;
+}
+
+void FCScriptFactory::Destruct (void)
+{
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
+
+const char* FCScriptFactory::ProduceScript (const char* sScriptName) const
+{
+	const char* script = (const char*)Produce(sScriptName);
+
+	if ( !script )
+	{
+#ifdef FC_DEBUG
+		GetConsole().Warning("\"%s\" is not registered\n", sScriptName);
+#endif
+		return ""; // no data
+	}
+
+	return script;
+}

@@ -35,6 +35,7 @@
 #include "Document.h"
 #include "View3D.h"
 #include "View3DInventor.h"
+#include "BitmapFactory.h"
 
 
 
@@ -142,7 +143,7 @@ bool FCGuiDocument::SaveAs(void)
 
 void FCGuiDocument::CreateView(const char* sType) 
 {
-  QPixmap FCIcon = _pcAppWnd->GetBmpFactory().GetPixmap("FCIcon");
+  QPixmap FCIcon = GetBitmapFactory().GetPixmap("FCIcon");
 	FCView* pcView3D;
 	if(strcmp(sType,"View3DIv") == 0){
 		pcView3D = new FCView3DInventor(this,0L,"View3DIv");
