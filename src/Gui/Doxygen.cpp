@@ -16,3 +16,19 @@
     \brief The namespace of the FreeCAD dialogs
 */
 
+
+/*! \namespace Gui::DockWnd
+    \brief The namespace of the dockable windows of FreeCAD
+*/
+
+/*! \namespace Gui::Kexi
+    \brief The namespace of the Kexi property editor for FreeCAD
+*/
+
+/*! \namespace QextMdi
+    \brief The namespace of the QextMdi stuff
+*/
+
+/*! \namespace KParts
+    \brief The namespace of the QextMdi stuff
+*/

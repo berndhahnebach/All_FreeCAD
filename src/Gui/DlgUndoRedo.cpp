@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -24,25 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qaction.h>
-# include <qapplication.h>
-# include <qlabel.h>
-# include <qlayout.h>
 # include <qpainter.h>
-# include <qrect.h>
-# include <qthread.h>
-# include <qtooltip.h>
-# include <qvariant.h>
-# include <qwhatsthis.h>
+# if QT_VERSION > 230
+#   include <qstyle.h>
+# endif
 #endif
 
 #include "DlgUndoRedo.h"
 #include "Application.h"
 #include "Document.h"
-
-#if QT_VERSION > 230
-# include <qstyle.h>
-#endif
 
 using namespace Gui::Dialog;
 
@@ -426,21 +416,12 @@ void ToolButtonDropDown::drawButtonLabel( QPainter * p )
   int sy = 0;
   int x, y, w, h;
   int x2, y2, w2, h2;
-#if QT_VERSION <= 230
-  style().toolButtonRect(width()-19, 0, 19, height() ).rect( &x, &y, &w, &h );
-  style().toolButtonRect(0, 0, width()-19, height() ).rect( &x2, &y2, &w2, &h2 );
-#else
   style().visualRect(QRect(width()-19, 0, 19, height()), this).rect( &x, &y, &w, &h );
   style().visualRect(QRect(0, 0, width()-19, height()), this ).rect( &x2, &y2, &w2, &h2 );
-#endif
 
   if (isDown() || isOn()) 
   {
-#if QT_VERSION <= 230
-    style().getButtonShift(sx, sy);
-#else
     //TODO
-#endif
     x+=sx;
     y+=sy;
   }
@@ -453,50 +434,28 @@ void ToolButtonDropDown::drawButtonLabel( QPainter * p )
 
   if ( !text().isNull() ) 
   {
-#if QT_VERSION <= 230
-    style().drawItem( p, x2, y2, w2, h2, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
-#else
     style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
-#endif
   } 
   else 
   {
     QPixmap pm;
     if ( usesBigPixmap() ) 
     {
-#if QT_VERSION < 300
-      if ( !isEnabled() )
-        pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Disabled );
-      else if ( uses3D() )
-        pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Active );
-      else
-        pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Normal );
-#else
       if ( !isEnabled() )
         pm = iconSet().pixmap( QIconSet::Large, QIconSet::Disabled );
       else if ( uses3D() )
         pm = iconSet().pixmap( QIconSet::Large, QIconSet::Active );
       else
         pm = iconSet().pixmap( QIconSet::Large, QIconSet::Normal );
-#endif
     }
     else
     {
-#if QT_VERSION < 300
-      if ( !isEnabled() )
-        pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Disabled );
-      else if ( uses3D() )
-        pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Active );
-      else
-        pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Normal );
-#else
       if ( !isEnabled() )
         pm = iconSet().pixmap( QIconSet::Small, QIconSet::Disabled );
       else if ( uses3D() )
         pm = iconSet().pixmap( QIconSet::Small, QIconSet::Active );
       else
         pm = iconSet().pixmap( QIconSet::Small, QIconSet::Normal );
-#endif
     }
 
     if ( usesTextLabel() )
@@ -504,58 +463,30 @@ void ToolButtonDropDown::drawButtonLabel( QPainter * p )
       int fh = fontMetrics().height();
       if (isDown()&&d->bActButton&&!d->bDropDown)
       {
-#if QT_VERSION <= 230
-        style().drawItem( p, x2+1, y2+1, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#else
         style().drawItem( p, QRect(x2+1, y2+1, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#endif
         p->setFont( font() );
-#if QT_VERSION <= 230
-        style().drawItem( p, x2+1, h2+1 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
-#else
         style().drawItem( p, QRect(x2+1, h2+1 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
-#endif
       }
       else
       {
-#if QT_VERSION <= 230
-        style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#else
         style().drawItem( p, QRect(x2, y2, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#endif
         p->setFont( font() );
-#if QT_VERSION <= 230
-        style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
-#else
         style().drawItem( p, QRect(x2, h2 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
-#endif
       }
     } 
     else 
     {
       if (isDown()&&d->bActButton&&!d->bDropDown)
-#if QT_VERSION <= 230
-        style().drawItem( p, x2+1, y2+1, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#else
         style().drawItem( p, QRect(x2+1, y2+1, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#endif
       else
-#if QT_VERSION <= 230
-        style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#else
         style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-#endif
     }
   }
 
   // draw vertical separator line if entered
   if (d->bEntered)
   {
-#if QT_VERSION <= 230
-    style().drawSeparator(p, width()-19, y2-1, width()-19, y2+h2,colorGroup());
-#else
-    style().drawPrimitive( QStyle::PE_Separator, p, QRect( width()-19, y2-1, width()-19, y2+h2 ),	colorGroup() );
-#endif
+    style().drawPrimitive( QStyle::PE_Separator, p, QRect( width()-19, y2-1, width()-19, y2+h2 ),  colorGroup() );
   }
 }
 

@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -33,15 +33,17 @@
 # include <qlistbox.h>
 # include <qwidgetstack.h>
 # include <qtabwidget.h>
-# include <qlistview.h>
 # include <qpainter.h>
-# include <qtabwidget.h>
 #endif
-#include "WidgetFactory.h"
+
 #include "DlgPreferencesImp.h"
+#include "WidgetFactory.h"
 #include "PropertyPage.h"
-#include "Widgets.h"
 #include "BitmapFactory.h"
+
+#ifdef FC_DEBUG
+# include "../Base/Console.h" 
+#endif
 
 using namespace Gui::Dialog;
 

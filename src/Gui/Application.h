@@ -208,12 +208,13 @@ signals:
 
 public:
   void Polish();
+  bool isCustomizable () const;
+  void customize ();
 
 protected: // Protected methods
 	/** just fits the system menu button position to the menu position */
 	virtual void resizeEvent ( QResizeEvent * );
 	virtual void closeEvent ( QCloseEvent * e );
-	virtual bool eventFilter( QObject* o, QEvent *e );
   virtual void keyPressEvent ( QKeyEvent * e );
   virtual void keyReleaseEvent ( QKeyEvent * e );
   virtual bool focusNextPrevChild( bool next );

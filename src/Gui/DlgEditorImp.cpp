@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -23,14 +23,13 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qbutton.h>
 # include <qfontdatabase.h>
-# include <qlabel.h>
-# include <qstringlist.h>
+# ifdef FC_OS_WIN32
+#   include <assert.h>
+#	endif
 #endif
 
 #include "DlgEditorImp.h"
-#include "Widgets.h"
 
 using namespace Gui::Dialog;
 
@@ -113,11 +112,11 @@ void DlgSettingsEditorImp::OnChange(FCSubject<const char*> &rCaller, const char 
 /** Restores the color map */
 void DlgSettingsEditorImp::restorePreferences()
 {
-  std::vector<QString> names = GetDefCol().GetKeys();
+  std::vector<QString> names = GetDefCol().keys();
 
   for (std::vector<QString>::iterator it = names.begin(); it!=names.end(); ++it)
   {
-    _mColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().GetColor(*it));
+    _mColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().color(*it));
   }
 
   Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
@@ -247,7 +246,7 @@ DefColorMap &DefColorMap::Instance(void)
 }
 
 /** Returns the corresponding color value to the given setting name */ 
-long DefColorMap::GetColor(const QString& name)
+long DefColorMap::color(const QString& name)
 {
   if (m_clDefColors.find(name) != m_clDefColors.end())
     return m_clDefColors[name];
@@ -256,7 +255,7 @@ long DefColorMap::GetColor(const QString& name)
 }
 
 /** Returns the names of all settings */
-std::vector<QString> DefColorMap::GetKeys() const
+std::vector<QString> DefColorMap::keys() const
 {
   std::vector<QString> keys;
 

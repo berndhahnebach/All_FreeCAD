@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -25,11 +25,14 @@
 
 #ifndef _PreComp_
 # include <qcheckbox.h>
+# include <qfile.h>
+# include <qtextstream.h>
 #endif
 
-#include "../Base/Parameter.h"
-#include "Application.h"
 #include "DlgTipOfTheDayImp.h"
+#include "Application.h"
+
+#include "../Base/Parameter.h"
 
 using namespace Gui::Dialog;
 
@@ -40,12 +43,15 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name )
-  : DlgTipOfTheDayBase( parent, name, true, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
+DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool modal, WFlags fl )
+  : DlgTipOfTheDayBase( parent, name, modal, fl | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
 {
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
   bool tips = hGrp->GetBool("Tipoftheday", true);
   checkShowTips->setChecked(tips);
+
+  reload();
+  onNext();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -55,10 +61,50 @@ DlgTipOfTheDayImp::~DlgTipOfTheDayImp()
   hGrp->SetBool("Tipoftheday", checkShowTips->isChecked());
 }
 
-/** Show next tip taking from database */
+/** Shows next tip taken from the Tip-of-the-day site. */
 void DlgTipOfTheDayImp::onNext()
 {
-  textTip->setText("Tip of the day");
+  _iCurrentTip = ( _iCurrentTip + 1 ) % _lTips.size();
+  textTip->setText( _lTips[_iCurrentTip] );
+}
+
+/** Reloads all tips from Tip-of-the-day site. */
+void DlgTipOfTheDayImp::reload()
+{
+  // search for the Wiki Tip-of-the-day site
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().
+                                GetGroup("BaseApp")->GetGroup("WindowSettings");
+
+  QString home = GetApplication().GetHomePath();
+  QString path = hGrp->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
+  QString file = home + path + "index.php@TipOfTheDay.html";
+
+  QFile f ( file );
+  QTextStream txt( &f );
+
+  if ( f.open( IO_ReadOnly ) )
+  {
+    do
+    {
+      QString inp = txt.readLine();
+      if (inp.startsWith("<li> "))
+      {
+        _lTips << inp;
+      }
+    }
+    while ( !txt.eof() );
+  }
+
+  _iCurrentTip = 0;
+
+  // show standard tip if site is not found
+  if ( _lTips.empty() )
+  {
+    _lTips << QString("If you want to make use of the Tip-of-the-day you must download "
+                      "FreeCAD's online help from <a href=""http://free-cad.sourceforge.net/index.html"">"
+                      "http://free-cad.sourceforge.net/index.html</a>."
+                      "To download the online help press Help -> Download online help.");
+  }
 }
 
 #include "DlgTipOfTheDay.cpp"

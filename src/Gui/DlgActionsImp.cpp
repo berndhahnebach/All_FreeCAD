@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -25,23 +25,12 @@
 
 #ifndef _PreComp_
 # include <qaccel.h>
-# include <qaction.h>
-# include <qbutton.h>
-# include <qcombobox.h>
-# include <qcursor.h>
-# include <qfiledialog.h>
-# include <qiconview.h>
-# include <qlabel.h>
-# include <qmessagebox.h>
-# include <qtabwidget.h>
-# include <qthread.h>
 #endif
 
 #include "DlgActionsImp.h"
 #include "Application.h"
 #include "Tools.h"
 #include "Command.h"
-#include "Widgets.h"
 #include "BitmapFactory.h"
 
 using namespace Gui::Dialog;

@@ -20,6 +20,13 @@
 #define __Command_h__
 
 
+#ifndef _PreComp_
+# include <qaction.h>
+# include <qtooltip.h>
+# include <string>
+# include <vector>
+#endif
+
 #include "../Base/PyExport.h"
 
 class FCCommandManager;
@@ -27,8 +34,12 @@ class ApplicationWindow;
 class FCGuiDocument;
 class FCDocument;
 class FCCommand;
+class QAction;
 
 namespace Gui {
+
+class ActionGroup;
+
 namespace Dialog {
 
 class UndoRedoDialog;
@@ -40,114 +51,6 @@ class UndoRedoDialog;
 void CreateStdCommands(void);
 void CreateViewStdCommands(void);
 void CreateTestCommands(void);
-
-/**
- * Allow actions to be added to other widgets except of toolbars and menus
- * @author Werner Mayer
- */
-class GuiExport FCAction : public QAction
-{
-	Q_OBJECT
-public:
-	FCAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
-	virtual ~FCAction();
-
-	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
-	virtual bool addTo(QWidget *);
-  bool removeFrom ( QWidget * w );
-  FCCommand* GetCommand() { return _pcCmd; }
-
-public slots:
-	void Activated ();
-	void Toggled   (bool); 
-  void setEnabled ( bool ) ;
-
-protected slots:
-  void slotToolButtonToggled( bool on );
-  void slotClearStatusText();
-  void slotShowStatusText( const QString& text );
-  void slotDestroyed();
-
-protected:
-  std::vector<QWidget*> widgets;
-
-private:
-	FCCommand *_pcCmd;
-};
-
-/**
- * Allow several actions to add to a toolbar or menu.
- * For menus a submenu will be created for toolbars a combo box.
- * @author Werner Mayer
- */
-class GuiExport FCMultiAction : public FCAction
-{
-	Q_OBJECT
-public:
-	FCMultiAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
-	virtual ~FCMultiAction();
-
-	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
-	virtual bool addTo(QWidget *);
-  void setItems(const std::vector<std::string>& items);
-  void insertItem(const char* item);
-  void removeItem(const char* item);
-  void activate(int);
-  void activate(QString);
-  void clear();
-
-public slots:
-	void activated (int i);
-
-private slots:
-  void onAboutToShow();
-
-protected:
-  std::vector<std::string> mItems;
-};
-
-/**
- * Special action for the undo button
- * @author Werner Mayer
- */
-class GuiExport FCUndoAction : public FCAction
-{
-	Q_OBJECT
-public:
-	FCUndoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE )
-    : FCAction(pcCmd, parent, name, toggle)
-  {
-    tipGroup = new QToolTipGroup(0);
-  }
-
-  ~FCUndoAction(){ delete tipGroup; }
-	bool addTo(QWidget *);
-
-private:
-  QToolTipGroup* tipGroup;
-};
-
-/**
- * Special action for the redo button
- * @author Werner Mayer
- */
-class GuiExport FCRedoAction : public FCAction
-{
-	Q_OBJECT
-public:
-	FCRedoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE )
-    : FCAction(pcCmd, parent, name, toggle)
-  {
-    tipGroup = new QToolTipGroup(0);
-  }
-
-  ~FCRedoAction(){ delete tipGroup; }
-	bool addTo(QWidget *);
-
-private:
-  QToolTipGroup* tipGroup;
-};
-
 
 /// Type of Commands
 enum CMD_Type { 
@@ -183,7 +86,7 @@ public:
 	/// Get the help page
 	virtual void CmdHelpPage(std::string &rcHelpPage){return;}
 	/// Creates the used FCAction
-	virtual FCAction * CreateAction(void)=0;
+	virtual QAction * CreateAction(void)=0;
 	/// returns the resource values
 	virtual std::string GetResource(const char* sName)=0;
 	//@}
@@ -198,7 +101,7 @@ public:
 	/// Get ponter to the active CasCade document 
 	FCDocument*			GetActiveOCCDocument(void);
 	/// Get the FCAxtion object of this command
-	FCAction*           GetAction();
+	QAction*           GetAction();
 	//@}
 
 	/** @name Helper methodes for the UNDO REDO handling */
@@ -279,7 +182,7 @@ protected:
 	std::string sAppModule;
 	std::string sGroup;
 	std::string sName;
-	FCAction *_pcAction;
+	QAction *_pcAction;
 	CMD_Type _eType;
 	//@}
 
@@ -314,7 +217,7 @@ public:
 	/// Overite this methode if your Cmd is not always active
 	virtual bool IsActive(void){return true;}
 	/// Creates the used FCAction
-	virtual FCAction * CreateAction(void);
+	virtual QAction * CreateAction(void);
 	/// returns the resource values
 	virtual std::string GetResource(const char* sName);
 
@@ -365,7 +268,7 @@ public:
 	/// Get the help page
 	virtual void CmdHelpPage(std::string &rcHelpPage);
 	/// Creates the used FCAction
-	virtual FCAction * CreateAction(void);
+	virtual QAction * CreateAction(void);
 	/// returns the resource values
 	virtual std::string GetResource(const char* sName);
 	//@}
@@ -405,7 +308,7 @@ public:
 	/// Get the help page
 	virtual void CmdHelpPage(std::string &rcHelpPage);
 	/// Creates the used FCAction
-	virtual FCAction * CreateAction(void);
+	virtual QAction * CreateAction(void);
 	/// returns the resource values
 	virtual std::string GetResource(const char* sName);
 	//@}
@@ -588,7 +491,7 @@ public:
 	void Activated(int iMsg);
     bool IsActive(void);
     QWidget* GetWidget();
-  	FCAction * CreateAction(void);
+  	QAction * CreateAction(void);
 
 private:
 	Gui::Dialog::UndoRedoDialog*	 _pclUndoRedoWidget;
@@ -604,7 +507,7 @@ public:
 	void Activated(int iMsg);
     bool IsActive(void);
     QWidget* GetWidget();
-  	FCAction * CreateAction(void);
+  	QAction * CreateAction(void);
 
 private:
 	Gui::Dialog::UndoRedoDialog*	 _pclUndoRedoWidget;
@@ -618,7 +521,7 @@ class FCCmdWorkbench : public FCCppCommand
 public:
 	  FCCmdWorkbench();
 	void Activated(int iMsg);
-  	FCAction * CreateAction(void);
+  	QAction * CreateAction(void);
     void AddItem (const char* item);
     void RemItem (const char* item);
     void Clear();
@@ -627,7 +530,7 @@ public:
 	  bool addTo(QWidget *);
 
 private:
-    FCMultiAction *pcAction;
+  Gui::ActionGroup *pcAction;
 };
 
 /**
@@ -639,7 +542,7 @@ public:
 	  FCCmdMRU();
 	bool IsActive(void){return true;}
 	void Activated(int iMsg);
-  	FCAction * CreateAction(void);
+  	QAction * CreateAction(void);
     void AddItem (const char* item);
     void RemItem (const char* item);
     void Clear();
@@ -651,7 +554,7 @@ public:
 private:
     QString GetFileName(const char* name);
     std::vector<std::string> _vMRU;
-    FCMultiAction *pcAction;
+    Gui::ActionGroup *pcAction;
     int nMaxItems;
 };
 

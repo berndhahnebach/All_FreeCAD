@@ -117,10 +117,11 @@
 #include "PropertyView.h"
 
 #include "CommandLine.h"
+#include "DlgCustomizeImp.h"
 #include "DlgDocTemplatesImp.h"
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
-#include "ButtonGroup.h"
+#include "ToolBox.h"
 #include "HtmlView.h"
 #include "ReportView.h"
 #include "Macro.h"
@@ -134,7 +135,7 @@
 
 using Base::Console;
 using Base::Interpreter;
-using Gui::ProgressBar;
+using namespace Gui;
 using namespace Gui::DockWnd;
 
 
@@ -148,7 +149,7 @@ ApplicationWindow* ApplicationWindow::Instance = 0L;
 struct ApplicationWindowP
 {
   ApplicationWindowP()
-    : toolbars(0L), cmdbars(0L), viewbar(0L), _pcActiveDocument(0L),
+    : toolbars(0L), viewbar(0L), _pcActiveDocument(0L),
     _bIsClosing(false), _bControlButton(false)
   {
 	  // create the macro manager
@@ -159,13 +160,11 @@ struct ApplicationWindowP
   {
     viewbar = 0L;
     delete toolbars;
-    delete cmdbars;
     delete _pcWidgetMgr;
     delete _pcMacroMngr;
   }
 
   QPopupMenu* toolbars;
-  QPopupMenu* cmdbars;
   FCPopupMenu* viewbar;
   std::map<int, QWidget*> mCheckBars;
 	/// list of all handled documents
@@ -177,7 +176,7 @@ struct ApplicationWindowP
 	FCCustomWidgetManager*		 _pcWidgetMgr;
 	FCMacroManager*  _pcMacroMngr;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
-	StackBar*        _pcStackBar;
+	ToolBox*        _pcStackBar;
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
@@ -256,31 +255,31 @@ ApplicationWindow::ApplicationWindow()
 
 
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
-	GetCmdLine().SetParent(statusBar());
-	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
+	CommandLine().reparent(statusBar());
+	statusBar()->addWidget(&CommandLine(), 0, true);
   statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	d->_pcStackBar = new StackBar(this,"Cmd_Group");
+	d->_pcStackBar = new ToolBox(this,"Cmd_Group");
 	d->_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), d->_pcStackBar);
-	d->_pcWidgetMgr->addDockWindow( "Command bar",d->_pcStackBar, NULL, KDockWidget::DockRight, 83);
+	d->_pcWidgetMgr->addDockWindow( "Toolbox",d->_pcStackBar, NULL, KDockWidget::DockRight, 83);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
-	d->_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 40);
+	d->_pcWidgetMgr->addDockWindow("Help view", pcHtmlView,"Toolbox", /*KDockWidget::DockBottom*/KDockWidget::DockRight, 40);
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCTree* pcTree = new FCTree(0,0,"Raw_tree");
 	pcTree->setMinimumWidth(210);
-	d->_pcWidgetMgr->addDockWindow("Tree bar", pcTree,0, KDockWidget::DockLeft, 0);
+	d->_pcWidgetMgr->addDockWindow("Tree view", pcTree,0, KDockWidget::DockLeft, 0);
 
 	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCPropertyView* pcPropView = new FCPropertyView(0,0,"PropertyView");
 	pcPropView->setMinimumWidth(210);
-	d->_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
+	d->_pcWidgetMgr->addDockWindow("Property editor", pcPropView,"Tree view", /*KDockWidget::DockBottom*/KDockWidget::DockLeft, 60);
 
 	// Report View
 	Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
@@ -399,12 +398,21 @@ void ApplicationWindow::Polish()
   d->viewbar  = d->_pcWidgetMgr->getPopupMenu("View");
   d->viewbar->setCanModify(true);
   d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
-  d->cmdbars  = new QPopupMenu(d->viewbar, "Cmdbars");
 
   connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(OnShowView(     )));
   connect(d->viewbar,  SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
   connect(d->toolbars, SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
-  connect(d->cmdbars,  SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
+}
+
+bool ApplicationWindow::isCustomizable () const
+{
+  return true;
+}
+
+void ApplicationWindow::customize ()
+{
+	Gui::Dialog::DlgCustomizeImp cDlg(this,"CustomizeDialog",true);
+	cDlg.exec();
 }
 
 void ApplicationWindow::OnShowView()
@@ -415,44 +423,23 @@ void ApplicationWindow::OnShowView()
   d->mCheckBars.clear();
 
   // toolbars
-  {
-    QPopupMenu* m = d->toolbars;
-    m->clear();
-    std::vector<FCToolBar*> tb = d->_pcWidgetMgr->getToolBars();
-    for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
-    {
-      int id = m->insertItem(tr((*it)->name()));
-      d->mCheckBars[id] = *it;
-      if ((*it)->isVisible())
-		    m->setItemChecked(id, true);
-    }
-
-    m->insertSeparator();
-    int id = m->insertItem(tr("Taskbar"));
-    d->mCheckBars[id] = m_pTaskBar;
-    if (m_pTaskBar->isVisible())
-		  m->setItemChecked(id, true);
-
-    menu->insertItem(tr("Toolbars"), m);
-  }
-
-  // command bars
-  {
-    QPopupMenu* m = d->cmdbars;
-    m->clear();
-    std::vector<FCToolBar*> tb = d->_pcWidgetMgr->getCmdBars();
-    for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
-    {
-      int id = m->insertItem(tr((*it)->name()));
-      d->mCheckBars[id] = *it;
-      if (d->_pcStackBar->isPageVisible(*it))
-		    m->setItemChecked(id, true);
-    }
-
-    menu->insertItem(tr("Commandbars"), m);
-  }
+  menu->insertItem(tr("Toolbars"), createDockWindowMenu( OnlyToolBars ));
   menu->insertSeparator();
 
+  connect( menu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
+
+  QPtrList<QDockWindow> wnds = dockWindows ();
+  QDockWindow* dw;
+  for ( dw = wnds.first(); dw; dw = wnds.next() )
+  {
+    if ( !dw->inherits("QToolBar") )
+    {
+      QString label = dw->caption();
+      int id = menu->insertItem( label, dw, SLOT( toggleVisible() ) );
+      menu->setItemChecked( id, dw->isVisible() );
+    }
+  }
+/*
   // dock windows
   std::vector<FCDockWindow*> windows = d->_pcWidgetMgr->getDockWindows();
   for (std::vector<FCDockWindow*>::iterator it = windows.begin(); it!=windows.end(); ++it)
@@ -466,14 +453,13 @@ void ApplicationWindow::OnShowView()
 		    menu->setItemChecked(id, true);
     }
   }
-
+*/
   // status bar
   menu->insertSeparator();
   QWidget* w = statusBar();
   int id = menu->insertItem(tr("Status bar"));
   d->mCheckBars[id] = w;
-  if (w->isVisible())
-		menu->setItemChecked(id, true);
+	menu->setItemChecked(id, w->isVisible());
 }
 
 void ApplicationWindow::OnShowView(int id)
@@ -489,8 +475,6 @@ void ApplicationWindow::OnShowView(int id)
   {
     if (d->mCheckBars[id]->inherits("KDockWidget"))
       ((KDockWidget*)d->mCheckBars[id])->changeHideShowState();
-    else if (d->_pcStackBar->hasView(d->mCheckBars[id]))
-      d->_pcStackBar->hidePage(d->mCheckBars[id]);
     else
       d->mCheckBars[id]->hide();
   }
@@ -498,8 +482,6 @@ void ApplicationWindow::OnShowView(int id)
   {
     if (d->mCheckBars[id]->inherits("KDockWidget"))
       ((KDockWidget*)d->mCheckBars[id])->changeHideShowState();
-    else if (d->_pcStackBar->hasView(d->mCheckBars[id]))
-      d->_pcStackBar->showPage(d->mCheckBars[id]);
     else
       d->mCheckBars[id]->show();
   }
@@ -744,66 +726,6 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 	}
 }
 
-bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
-{
-  // show menu with all available toolbars
-  if (isDockMenuEnabled () && e->type() == QEvent::MouseButtonPress && o == this && ((QMouseEvent*)e)->button() == RightButton)
-  {
-    QPoint p = ((QMouseEvent*)e)->globalPos();
-    QPopupMenu menu;
-    menu.setCheckable(true);
-
-    std::map<int, QToolBar*> toolb;
-
-    std::vector<FCToolBar*> aclToolBars = d->_pcWidgetMgr->getToolBars();
-	  for (std::vector<FCToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
-    {
-      int id = menu.insertItem(tr((*It)->name()));
-      QToolBar* tb = *It;
-      toolb[id] = tb;
-      if (tb->isVisible())
-		    menu.setItemChecked(id, true);
-    }
-    if (m_pTaskBar)
-    {
-      int id = menu.insertItem(tr("Taskbar"));
-      toolb[id] = m_pTaskBar;
-      if (m_pTaskBar->isVisible())
-		    menu.setItemChecked(id, true);
-    }
-
-    menu.insertSeparator();
-    int lineUp1 = menu.insertItem( tr( "Line Up Toolbars (compact)" ) );
-    int lineUp2 = menu.insertItem( tr( "Line Up Toolbars (normal)" ) );
-
-    int id = menu.exec(p);
-    if (id == lineUp1) 
-    {
-    	lineUpToolBars(false);
-    } 
-    else if (id == lineUp2) 
-    {
-    	lineUpToolBars(true);
-    } 
-    else if (toolb.find(id) != toolb.end()) 
-    {
-      QToolBar* tb = toolb[id];
-      if (menu.isItemChecked(id))
-      {
-        tb->hide();
-      }
-      else 
-      {
-        tb->show();
-    	}
-    }
-    
-    return true;
-  }
-
-  return QextMdiMainFrm::eventFilter(o, e);
-}
-
 bool ApplicationWindow::focusNextPrevChild( bool next )
 {
   if (d->_bControlButton)
@@ -847,6 +769,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 		Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
 		PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
+    GetCustomWidgetManager()->hide();
 		Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
@@ -867,6 +790,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	  // running the start of the workbench object
 	  Interpreter().RunMethodVoid(pcWorkbench, "Start");
     d->_pcWidgetMgr->update(name);
+    GetCustomWidgetManager()->show();
 
 	  // update the Std_Workbench command and its action object
     FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
@@ -1012,6 +936,15 @@ void ApplicationWindow::SaveWindowSettings()
 
 void ApplicationWindow::LoadDockWndSettings()
 {
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  QString str = hGrp->GetASCII("Layout", "").c_str();
+
+  if ( !str.isEmpty() )
+  {
+    QTextStream ts( &str, IO_ReadOnly );
+    ts >> *this;
+  }
+/*
   // open file
   std::string FileName(GetApplication().GetHomePath());
   FileName += "FreeCAD.xml";
@@ -1058,11 +991,18 @@ void ApplicationWindow::LoadDockWndSettings()
     return;
   }
 
-  readDockConfig(root);
+  readDockConfig(root);*/
 }
 
 void ApplicationWindow::SaveDockWndSettings()
 {
+  QString str;
+  QTextStream ts( &str, IO_WriteOnly );
+  ts << *this;
+
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  hGrp->SetASCII("Layout", str.latin1());
+/*
   // save dock window settings
   QDomDocument doc("DockWindows");
 
@@ -1091,7 +1031,7 @@ void ApplicationWindow::SaveDockWndSettings()
   QTextStream textstream(datafile);
   doc.save(textstream, 0);
   datafile->close();
-  delete (datafile);
+  delete (datafile);*/
 }
 
 void ApplicationWindow::setPalette(const QPalette& pal)

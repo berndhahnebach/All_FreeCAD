@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -24,20 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qaction.h>
-# include <qbutton.h>
-# include <qcursor.h>
-# include <qmessagebox.h>
-# include <qiconview.h>
-# include <qfiledialog.h>
-# include <qcombobox.h>
-# include <qlabel.h>
-# include <qthread.h>
 #endif
 
 #include "DlgCommandsImp.h"
 #include "Application.h"
-#include "Tools.h"
 #include "Command.h"
 
 using namespace Gui::Dialog;
@@ -57,7 +47,7 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
 
   apply();
 
-  connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(onDescription(QString)));
+  connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
   connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();

@@ -20,44 +20,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <iostream>
-#	include <stdio.h>
-#	include <assert.h>
-#	include <fcntl.h>
-#	include <ctype.h>
-#	include <typeinfo>
-#	include <vector>
-#	include <map>
-#	include <string>
-#	include <list>
-#	include <set>
-#	include <algorithm>
-#	include <stack>
-#	include <queue>
-#	include <string>
-#	if defined (_POSIX_C_SOURCE)
-#		undef  _POSIX_C_SOURCE
-#	endif // (re-)defined in pyconfig.h
-#	include <Python.h>
-#	include <limits.h>
-#	include <algorithm>
-#	include <qaction.h>
-#	include <qcursor.h>
-#	include <qstatusbar.h>
-#	include <qfiledialog.h>
-#	include <qprinter.h>
-#	include <qmessagebox.h>
-#	include <qthread.h>
-#	include <BRepPrimAPI_MakeBox.hxx>
-#	include <BRepTools.hxx>
-#	include <TopoDS_Shape.hxx>
-#	include <TNaming_Builder.hxx>
-#	include <TDataStd_Real.hxx>
-#	include <Handle_TPrsStd_AISPresentation.hxx>
-#	include <TNaming_NamedShape.hxx>
-#	include <TPrsStd_AISPresentation.hxx>
-#	include <Inventor/nodes/SoMaterial.h>
-#	include <Inventor/nodes/SoShapeHints.h>
+# include <TopoDS_Shape.hxx>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoShapeHints.h>
 #endif
 
 #include "../Base/Exception.h"
@@ -70,7 +35,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
-// build in Inventor
+
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
 #include "Inventor/Qt/SoQt.h"
 #include "Inventor/OCC/SoBrepShape.h"

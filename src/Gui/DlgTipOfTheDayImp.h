@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -26,20 +26,42 @@
 
 #include "DlgTipOfTheDay.h"
 
+#ifndef _PreComp_
+# include <qstringlist.h>
+#endif
+
 namespace Gui {
 namespace Dialog {
 
 /** Implementation of the well-known Tip-of-the-day dialog.
+ *
+ * All the tips are read from the Tip-of-the-day site located in the documentation
+ * directory of this installation.
+ *
+ * To download the latest online documentation you just have to press 
+ * "Download online help" in the help menu. If you cannot compile these sources it is
+ * also possible to use the program \a wget specifying the options -r, -k, -E and the
+ * URL of the homepage of FreeCAD.
+ *
+ * For more details have a look at the FreeCAD homepage (http://free-cad.sourceforge.net/index.html).
+ *
+ * You can simply append a new tip by clicking the "EditText" hyperlink
+ * and writing a text, e.g: "** this is a new tip"
+ *
  * \author Werner Mayer
  */
 class DlgTipOfTheDayImp : public DlgTipOfTheDayBase
 {
 public:
-  DlgTipOfTheDayImp( QWidget* parent = 0, const char* name = 0);
+  DlgTipOfTheDayImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgTipOfTheDayImp();
 
-public slots:
+  void reload();
   void onNext();
+
+private:
+  QStringList _lTips;
+  int _iCurrentTip;
 };
 
 } // namespace Dialog

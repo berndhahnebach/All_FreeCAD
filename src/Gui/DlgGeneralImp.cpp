@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -23,21 +23,11 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qaction.h>
-# include <qbutton.h>
-# include <qmessagebox.h>
-# include <qiconview.h>
-# include <qfiledialog.h>
-# include <qcombobox.h>
-# include <qlabel.h>
-# include <qstyle.h>
 # include <qstylefactory.h>
-# include <qthread.h>
 #endif
 
 #include "DlgGeneralImp.h"
 #include "Application.h"
-#include "PrefWidgets.h"
 #include "Command.h"
 #include "CommandLine.h"
 #include "Language/LanguageFactory.h"
@@ -69,7 +59,6 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
   language = tr(lang.c_str());
   onSearchForLanguages();
 
-  append(SpeedAnimationCmdBar->getHandler());
   append(UsesBigPixmaps->getHandler());
   append(WindowStyle->getHandler());
   append(AllowDragMenu->getHandler());
@@ -140,11 +129,11 @@ void DlgGeneralImp::onSetMRUSize()
  */
 void DlgGeneralImp::onSetCmdLineVisible()
 {
-  GetCmdLine().show();
+  CommandLine().show();
 }
 
-/** ??? */
-void DlgGeneralImp::onChooseLanguage(const QString&)
+/** \todo */
+void DlgGeneralImp::onChangeLanguage(const QString&)
 {
   setModified(true);
 }

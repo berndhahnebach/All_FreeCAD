@@ -68,6 +68,7 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 #include "../App/Document.h"
+#include "Action.h"
 #include "Process.h"
 #include "Application.h"
 #include "Document.h"
@@ -96,6 +97,7 @@
 
 using Base::Console;
 using Base::Sequencer;
+using namespace Gui;
 
 
 
@@ -342,11 +344,11 @@ QWidget* FCCmdUndo::GetWidget()
   return _pclUndoRedoWidget;
 }
 
-FCAction * FCCmdUndo::CreateAction(void)
+QAction * FCCmdUndo::CreateAction(void)
 {
-	FCAction *pcAction;
+	QAction *pcAction;
 
-	pcAction = new FCUndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new UndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -394,11 +396,11 @@ QWidget* FCCmdRedo::GetWidget()
   return _pclUndoRedoWidget;
 }
 
-FCAction * FCCmdRedo::CreateAction(void)
+QAction * FCCmdRedo::CreateAction(void)
 {
-	FCAction *pcAction;
+	QAction *pcAction;
 
-	pcAction = new FCRedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new RedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -455,9 +457,9 @@ void FCCmdWorkbench::UpdateAction(const char* item)
   pcAction->activate(QString(item));
 }
 
-FCAction * FCCmdWorkbench::CreateAction(void)
+QAction * FCCmdWorkbench::CreateAction(void)
 {
-	pcAction = new FCMultiAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -537,9 +539,9 @@ void FCCmdMRU::Activated(int iMsg)
   }
 }
 
-FCAction * FCCmdMRU::CreateAction(void)
+QAction * FCCmdMRU::CreateAction(void)
 {
-	pcAction = new FCMultiAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));

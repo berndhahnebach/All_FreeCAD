@@ -11,32 +11,22 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <string>
-#	include <vector>
-#	include <qaction.h>
-#	include <qbuttongroup.h>
-#	include <qcursor.h>
-#	include <qobjectlist.h>
-#	include <qprocess.h>
-#	include <qstatusbar.h>
-#	include <qtextbrowser.h>
-#	include <qthread.h>
-#	include <qtooltip.h>
-#	include <qvalidator.h>
-#	include <qwhatsthis.h>
+# include <qobjectlist.h>
+# include <qstatusbar.h>
+# include <qwhatsthis.h>
 #endif
 
-#include "../Base/Console.h"
-
 #include "Command.h"
+#include "Action.h"
 #include "Application.h"
 #include "Document.h"
-#include "ButtonGroup.h"
+#include "ToolBoxBar.h"
 #include "HtmlView.h"
 #include "Macro.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
 
+#include "../Base/Console.h"
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
@@ -44,366 +34,6 @@ using Base::Interpreter;
 using namespace Gui;
 using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
-
-//===========================================================================
-// FCAction 
-//===========================================================================
-FCAction::FCAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle)
-:QAction(parent, name, toggle),_pcCmd(pcCmd)
-{
-	connect( this, SIGNAL( activated() ) , this, SLOT( Activated() ) );
-	connect( this, SIGNAL( toggled(bool) )   , this, SLOT( Toggled(bool) )   );
-}
-
-FCAction::~FCAction()
-{ 
-}
-
-bool FCAction::addTo(QWidget *w)
-{
-  if (QAction::addTo(w) == true)
-  {
-    // connect html help with widget
-    const QObjectList *l = w->children();
-	if(l!=0)
-	{
-		QObjectListIt it(*l);
-		QObject* o = it.toLast();
-		if (o && o->isWidgetType())
-		{
-		  FCWhatsThis::add((QWidget*)o, whatsThis());
-		}
-	}
-
-    if (w->inherits("Gui::CommandBar"))
-    {
-  		((CommandBar*)w)->addedButton(menuText());
-    }
-  }
-  else
-    return false;
-
-  return true;
-}
-
-bool FCAction::removeFrom ( QWidget * w )
-{
-  QWidget* o;
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!=widgets.end(); ++it)
-  {
-    if ((*it)->parentWidget() == w)
-    {
-      o = *it;
-      widgets.erase(it);
-  		disconnect( o, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-      delete o;
-    }
-  }
-
-  return QAction::removeFrom(w);
-}
-
-void FCAction::slotToolButtonToggled( bool on )
-{
-  if ( !isToggleAction() )
-	  return;
-  setOn( on );
-}
-
-void FCAction::slotShowStatusText( const QString& text )
-{
-  QObject* par;
-  if ( ( par = parent() ) && par->inherits( "QActionGroup" ) )
-	  par = par->parent();
-
-  if ( !par || !par->isWidgetType() )
-	  return;
-
-  QObjectList* l = ( (QWidget*)par )->topLevelWidget()->queryList("QStatusBar");
-  for ( QStatusBar* bar = (QStatusBar*) l->first(); bar; bar = (QStatusBar*)l->next() ) 
-  {
-	  if ( text.isEmpty() )
-	    bar->clear();
-	  else
-	    bar->message( text );
-  }
-
-  delete l;
-}
-
-void FCAction::slotClearStatusText()
-{
-  slotShowStatusText( QString::null );
-
-}
-
-void FCAction::slotDestroyed()
-{
-  const QWidget* w = (QWidget*)sender();
-  std::vector<QWidget*>::iterator it;
-  if ((it = std::find(widgets.begin(), widgets.end(), w)) != widgets.end())
-    widgets.erase(it);
-}
-
-void FCAction::Activated () 
-{
-	_pcCmd->activated();
-}
-
-void FCAction::Toggled ( bool b)
-{
-	_pcCmd->toggled(b);
-} 
-
-void FCAction::setEnabled ( bool b) 
-{
-  QAction::setEnabled(b);
-  // update all widgets containing this action
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!=widgets.end(); ++it)
-  {
-    (*it)->setEnabled(b);
-  }
-}
-
-//===========================================================================
-// FCMultiAction 
-//===========================================================================
-FCMultiAction::FCMultiAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle)
-:FCAction(pcCmd, parent, name, toggle)
-{
-}
-
-FCMultiAction::~FCMultiAction()
-{ 
-}
-
-bool FCMultiAction::addTo(QWidget *w)
-{
-  if (w->inherits("QToolBar"))
-  {
-    QComboBox* combo = new QComboBox(w, "Combo");
-    widgets.push_back(combo);
-  	connect( combo, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-  	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
-    combo->setMinimumWidth(130);
-    QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
-    for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
-    {
-      combo->insertItem(FCIcon, it->c_str());
-    }
-
-    if (w->inherits("Gui::CommandBar"))
-    {
-  		((CommandBar*)w)->addedButton(menuText());
-    }
-  }
-  else if (w->inherits("QPopupMenu"))
-  {
-    QPopupMenu* popup = new QPopupMenu(w, "Menu");
-    widgets.push_back(popup);
-  	connect( popup, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-    connect( popup, SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ));
-  	connect( popup, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
-
-//    if (iconSet().isNull())
-      ((QPopupMenu*)w)->insertItem(text(), popup);
-//    else
-//      ((QPopupMenu*)w)->insertItem(iconSet().pixmap(), mName.c_str(), popup);
-  }
-  else
-    return false;
-
-  return true;
-}
-
-void FCMultiAction::onAboutToShow()
-{
-  // fill up just before showing the menu 
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QPopupMenu"))
-    {
-      QPopupMenu* popup = (QPopupMenu*)(*it);
-      popup->clear();
-
-      int i=0;
-      for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it, i++)
-      {
-        popup->insertItem(/*QPixmap(FCIcon), */it->c_str(), i);
-      }
-    }
-  }
-}
-
-void FCMultiAction::setItems(const std::vector<std::string>& items)
-{
-  mItems = items;
-}
-
-void FCMultiAction::insertItem(const char* item)
-{
-  mItems.push_back(item);
-  QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      combo->insertItem(FCIcon, item);
-    }
-  }
-}
-
-void FCMultiAction::removeItem(const char* item)
-{
-  std::vector<std::string>::iterator ii = std::find(mItems.begin(), mItems.end(), std::string(item));
-  if (ii != mItems.end()) mItems.erase(ii);
-
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      for (int i = 0; i<combo->count(); i++)
-      {
-        if (combo->text(i) == QString(item))
-        {
-          combo->removeItem(i);
-          break;
-        }
-      }
-    }
-  }
-}
-
-void FCMultiAction::clear()
-{
-  mItems.clear();
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      combo->clear();
-    }
-  }
-}
-
-void FCMultiAction::activate(int i)
-{
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      if (combo->currentItem() != i)
-        combo->setCurrentItem(i);
-    }
-  }
-}
-
-void FCMultiAction::activate(QString name)
-{
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-	    if (combo->currentText() != name)
-      {
-		    for(int i=0;i<combo->count();i++)
-		    {
-			    if (combo->text(i) == name)
-			    {
-				    combo->setCurrentItem(i);
-				    break;
-			    }
-		    }
-	    }
-    }
-  }
-}
-
-void FCMultiAction::activated (int i)
-{
-  GetCommand()->Activated(i);
-}
-
-//===========================================================================
-// FCUndoAction 
-//===========================================================================
-
-bool FCUndoAction::addTo(QWidget* w)
-{
-  if (w->inherits("QToolBar"))
-  {
-    QWidget* dlg = ((FCCmdUndo*)GetCommand())->GetWidget();
-
-		QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
-    button->setToggleButton( isToggleAction() );
-    button->setIconSet( iconSet() );
-
-    // do this before the tool tip stuff
-    if (w->inherits("Gui::CommandBar"))
-    {
-  		((CommandBar*)w)->addedButton(menuText());
-      button->setTextLabel(menuText());
-      button->setUsesTextLabel(true);
-    }
-
-    QToolTip::add( button, toolTip(), tipGroup, statusTip() );
-    QWhatsThis::add(button, whatsThis());
-    FCWhatsThis::add(button, whatsThis());
-  	connect( button, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-    connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
-    connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
-	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
-	  connect( tipGroup, SIGNAL( removeTip() ), this, SLOT(slotClearStatusText()) );
-    widgets.push_back(button);
-
-    return true;
-  }
-
-  return FCAction::addTo(w);
-}
-
-//===========================================================================
-// FCRedoAction 
-//===========================================================================
-
-bool FCRedoAction::addTo(QWidget* w)
-{
-  if (w->inherits("QToolBar"))
-  {
-    QWidget* dlg = ((FCCmdRedo*)GetCommand())->GetWidget();
-
-		QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
-    button->setToggleButton( isToggleAction() );
-    button->setIconSet( iconSet() );
-
-    // do this before the tool tip stuff
-    if (w->inherits("Gui::CommandBar"))
-    {
-  		((CommandBar*)w)->addedButton(menuText());
-      button->setTextLabel(menuText());
-      button->setUsesTextLabel(true);
-    }
-
-    QToolTip::add( button, toolTip(), tipGroup, statusTip() );
-    QWhatsThis::add(button, whatsThis());
-    FCWhatsThis::add(button, whatsThis());
-  	connect( button, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-    connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
-    connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
-	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
-	  connect( tipGroup, SIGNAL( removeTip() ), this, SLOT(slotClearStatusText()) );
-    widgets.push_back(button);
-
-    return true;
-  }
-
-  return FCAction::addTo(w);
-}
 
 //===========================================================================
 // FCCommand
@@ -454,7 +84,7 @@ FCDocument*	   FCCommand::GetActiveOCCDocument(void)
 		return 0l;
 }
 
-FCAction* FCCommand::GetAction() 
+QAction* FCCommand::GetAction() 
 { 
 	if (!_pcAction)
 		_pcAction = CreateAction();
@@ -639,11 +269,11 @@ std::string FCCppCommand::GetResource(const char* sName)
 }
 
 
-FCAction * FCCppCommand::CreateAction(void)
+QAction * FCCppCommand::CreateAction(void)
 {
-	FCAction *pcAction;
+	QAction *pcAction;
 
-	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -681,11 +311,11 @@ std::string FCScriptCommand::GetResource(const char* sName)
 }
 
 
-FCAction * FCScriptCommand::CreateAction(void)
+QAction * FCScriptCommand::CreateAction(void)
 {
-	FCAction *pcAction;
+	QAction *pcAction;
 
-	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(QObject::tr(_sMenuText.c_str()));
 	pcAction->setMenuText(QObject::tr(_sMenuText.c_str()));
 	pcAction->setToolTip(QObject::tr(_sToolTipText.c_str()));
@@ -801,11 +431,11 @@ void FCPythonCommand::CmdHelpPage(std::string &rcHelpPage)
 
 }
 
-FCAction * FCPythonCommand::CreateAction(void)
+QAction * FCPythonCommand::CreateAction(void)
 {
-	FCAction *pcAction;
+	QAction *pcAction;
 
-	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(sName.c_str());
 	pcAction->setMenuText(GetResource("MenuText").c_str());
 	pcAction->setToolTip(GetResource("ToolTip").c_str());

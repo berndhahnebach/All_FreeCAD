@@ -16,24 +16,22 @@
  *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qcursor.h>
-#	include <qthread.h>
 #endif
 
 
+#include "Command.h"
 #include "Application.h"
 #include "View.h"
-#include "../Base/Exception.h"
-#include "../App/Document.h"
 #include "Document.h"
 
+#include "../Base/Exception.h"
+#include "../App/Document.h"
 
-#include "Command.h"
+
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,26 +1,17 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qcursor.h>
-#	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qlineedit.h>
-#	include <qtooltip.h>
-#	include <qthread.h>
 #endif
 
 #include "DlgDocTemplatesImp.h"
-#include "../Base/PyTools.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#include "../App/Application.h"
 #include "Command.h"
 #include "Application.h"
 #include "BitmapFactory.h"
 
+#include "../App/Application.h"
 
 //#include "Icons/Folder32.xpm"
 /* 

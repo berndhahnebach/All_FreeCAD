@@ -155,11 +155,19 @@
                                     <blue>255</blue>
                                 </color>
                             </property>
+                            <property name="font">
+                                <font>
+                                    <pointsize>10</pointsize>
+                                </font>
+                            </property>
                             <property name="text">
                                 <string>Tip of the day</string>
                             </property>
                             <property name="alignment">
                                 <set>WordBreak|AlignVCenter</set>
+                            </property>
+                            <property name="indent">
+                                <number>5</number>
                             </property>
                         </widget>
                     </vbox>
