@@ -159,18 +159,19 @@ ApplicationWindow::ApplicationWindow()
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	_pcStackBar = new FCStackBar(this,"Cmd_Group");
 	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcStackBar);
-	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar);
+	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar, NULL, KDockWidget::DockRight, 100);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
 	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
-	_pcWidgetMgr->addDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
+	_pcWidgetMgr->addDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom, 80);
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	_pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
-	_pcWidgetMgr->addDockWindow("Tree bar", _pcViewBar,0, KDockWidget::DockLeft);
+  _pcViewBar->setMinimumWidth(210);
+	_pcWidgetMgr->addDockWindow("Tree bar", _pcViewBar,0, KDockWidget::DockLeft, 0);
 
  	CreateStandardOperations();
 
@@ -329,13 +330,8 @@ void ApplicationWindow::CreateStandardOperations()
 
   connect(_pcWidgetMgr->getPopupMenu("View"), SIGNAL(aboutToShow()), this, SLOT(OnShowView()));
   connect(_pcWidgetMgr->getPopupMenu("View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
-
-
-//  std::vector<std::string> Menus;
-//  Menus.push_back("Std_Cut");
-//  Menus.push_back("Std_Copy");
-//  Menus.push_back("Std_Paste");
-//  _pcWidgetMgr->addPopupMenu("Hallo2", Menus, "?");
+  connect(_pcWidgetMgr->getPopupMenu("Toolbars", "View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
+  connect(_pcWidgetMgr->getPopupMenu("Command bars", "View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
 
 	setMenuForSDIModeSysButtons( menuBar());
 	_cActiveWorkbenchName = "<none>";
@@ -347,6 +343,41 @@ void ApplicationWindow::OnShowView()
   menu->clear();
   menu->setCheckable(true);
   mCheckBars.clear();
+
+  // toolbars
+  {
+    QPopupMenu* m = _pcWidgetMgr->getPopupMenu("Toolbars", "View");
+    m->clear();
+    std::vector<FCToolBar*> tb = _pcWidgetMgr->getToolBars();
+    for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
+    {
+      int id = m->insertItem((*it)->name());
+      mCheckBars[id] = *it;
+      if ((*it)->isVisible())
+		    m->setItemChecked(id, true);
+    }
+
+    m->insertSeparator();
+    int id = m->insertItem("Taskbar");
+    mCheckBars[id] = m_pTaskBar;
+    if (m_pTaskBar->isVisible())
+		  m->setItemChecked(id, true);
+  }
+
+  // command bars
+  {
+    QPopupMenu* m = _pcWidgetMgr->getPopupMenu("Command bars", "View");
+    m->clear();
+    std::vector<FCToolBar*> tb = _pcWidgetMgr->getCmdBars();
+    for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
+    {
+      int id = m->insertItem((*it)->name());
+      mCheckBars[id] = *it;
+      if (_pcStackBar->isPageVisible(*it))
+		    m->setItemChecked(id, true);
+    }
+  }
+  menu->insertSeparator();
 
   // dock windows
   std::vector<FCWindow*> windows = _pcWidgetMgr->getDockWindows();
@@ -373,12 +404,14 @@ void ApplicationWindow::OnShowView()
 
 void ApplicationWindow::OnShowView(int id)
 {
-  QPopupMenu* menu = _pcWidgetMgr->getPopupMenu("View");
+  QPopupMenu* menu = (QPopupMenu*)sender();
 
   if (menu->isItemChecked(id))
   {
     if (mCheckBars[id]->inherits("KDockWidget"))
       ((KDockWidget*)mCheckBars[id])->changeHideShowState();
+    else if (_pcStackBar->hasView(mCheckBars[id]))
+      _pcStackBar->hidePage(mCheckBars[id]);
     else
       mCheckBars[id]->hide();
   }
@@ -386,6 +419,8 @@ void ApplicationWindow::OnShowView(int id)
   {
     if (mCheckBars[id]->inherits("KDockWidget"))
       ((KDockWidget*)mCheckBars[id])->changeHideShowState();
+    else if (_pcStackBar->hasView(mCheckBars[id]))
+      _pcStackBar->showPage(mCheckBars[id]);
     else
       mCheckBars[id]->show();
   }
