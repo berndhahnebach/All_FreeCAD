@@ -29,10 +29,9 @@
 #ifndef _PreComp_
 #	include <TColStd_SequenceOfExtendedString.hxx>
 #	include <TCollection_ExtendedString.hxx>
+# include <iostream>
 # ifdef FC_OS_LINUX
 # include <time.h>
-// TODO: Don't know where the header is!
-void itoa(int, char*, int){ }
 # endif
 #endif
 
@@ -602,12 +601,18 @@ void Application::runApplication()
   std::string File;
   for (unsigned short i=0; i<count; i++)
   {
-    // geting file name
+    // getting file name
+    std::ostringstream temp;
+    temp << "OpenFile" << i;
+
+#if 0
     std::string temp = "OpenFile";
     char buffer [10];
     itoa(i,buffer,10);
     temp += buffer;
-    FileInfo File(mConfig[temp.c_str()].c_str());
+#endif
+
+    FileInfo File(mConfig[temp.str()].c_str());
 
     std::string Ext = File.extension();
 
@@ -869,22 +874,30 @@ void Application::ParsOptions(int argc, char ** argv)
 		{ 
       // store all file (URLS) names to open
       if(OpenFileCount < 56534){
+
+        std::ostringstream temp;
+        temp << "OpenFile" << OpenFileCount;
+#if 0
         std::string temp = "OpenFile";
         char buffer [10];
         itoa(OpenFileCount,buffer,10);
         temp += buffer;
-        mConfig[temp] = argv[i];
+#endif
+        mConfig[temp.str()] = argv[i];
         OpenFileCount++;
       }else{
         std::cerr << "\nTo many arguments! All arguments above 56534 will be ignored!!";
       }
 
     }
-	} 
+	}
+  std::ostringstream buffer;
+  buffer << OpenFileCount;
+#if 0
   char buffer [10];
   itoa(OpenFileCount,buffer,10);
-
-  mConfig["OpenFileCount"] = buffer;  
+#endif
+  mConfig["OpenFileCount"] = buffer.str();
 
 }  
 
