@@ -24,31 +24,33 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
-//#include <qprogressbar.h>
+
+#ifndef _PreComp_
+# include <qprogressbar.h>
 //#include <qlabel.h>
-//#include <qiconview.h>
+# include <qiconview.h>
 //#include <qdragobject.h>
 //#include <qstatusbar.h>
 //#include <qtoolbar.h>
-//#include <qfiledialog.h>
+# include <qfiledialog.h>
+# include <qmessagebox.h>
 //#include <qvariant.h>
 //#include <qdialog.h>
-//#include <qspinbox.h>
-//#if QT_VERSION > 230
-//# include <qlistview.h>
-//# include <qlineedit.h>
-//#endif
+# include <qspinbox.h>
+# include <qlistview.h>
+# include <qlineedit.h>
+#endif
 
-class QHBoxLayout; 
+class QHBoxLayout;
 class QTime;
 
 /**
  * Using the Qt's open/save dialogs with own adjustments
- * In this implementation a waitcursor will additionally 
+ * In this implementation a waitcursor will additionally
  * be set.
  * @see FCAutoWaitCursor
  */
@@ -62,17 +64,17 @@ class GuiExport FCFileDialog : public QFileDialog
 				                            QWidget *parent = 0, const char* name = 0 );
     static QString getOpenFileName( const QString &initially, const QString &filter,
 				                            QWidget *parent, const char* name, const QString& caption );
-    static QString getSaveFileName ( const QString & initially = QString::null, 
-                                     const QString & filter = QString::null, QWidget * parent = 0, 
+    static QString getSaveFileName ( const QString & initially = QString::null,
+                                     const QString & filter = QString::null, QWidget * parent = 0,
                                      const char * name = 0 );
-    static QString getSaveFileName ( const QString & initially, const QString & filter, 
+    static QString getSaveFileName ( const QString & initially, const QString & filter,
                                      QWidget * parent, const char * name, const QString & caption );
-    static QString getSaveFileName ( const QString & initially, const QString & filter, 
-                                     QWidget * parent, const QString & caption ); 
+    static QString getSaveFileName ( const QString & initially, const QString & filter,
+                                     QWidget * parent, const QString & caption );
 
   public:
     FCFileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
-    FCFileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null, 
+    FCFileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null,
                   QWidget* parent = 0, const char* name = 0, bool modal = false);
     virtual ~FCFileDialog();
 
@@ -88,37 +90,37 @@ class GuiExport FCMessageBox : public QMessageBox
 		FCMessageBox(QWidget * parent=0, const char * name=0);
 		~FCMessageBox();
 
-		static int information(QWidget * parent, const QString & caption, const QString & text, 
+		static int information(QWidget * parent, const QString & caption, const QString & text,
 			int button0, int button1=0, int button2=0);
-		static int information(QWidget * parent, const QString & caption, const QString & text, 
-			const QString & button0Text = QString::null, const QString & button1Text = QString::null, 
+		static int information(QWidget * parent, const QString & caption, const QString & text,
+			const QString & button0Text = QString::null, const QString & button1Text = QString::null,
 			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
-		static int warning ( QWidget * parent, const QString & caption, const QString & text, 
-			int button0, int button1, int button2=0 ); 
-		static int warning ( QWidget * parent, const QString & caption, const QString & text, 
-			const QString & button0Text = QString::null, const QString & button1Text = QString::null, 
-			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
-		static int critical ( QWidget * parent, const QString & caption, const QString & text, 
+		static int warning ( QWidget * parent, const QString & caption, const QString & text,
 			int button0, int button1, int button2=0 );
-		static int critical ( QWidget * parent, const QString & caption, const QString & text, 
-			const QString & button0Text = QString::null, const QString & button1Text = QString::null, 
+		static int warning ( QWidget * parent, const QString & caption, const QString & text,
+			const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+		static int critical ( QWidget * parent, const QString & caption, const QString & text,
+			int button0, int button1, int button2=0 );
+		static int critical ( QWidget * parent, const QString & caption, const QString & text,
+			const QString & button0Text = QString::null, const QString & button1Text = QString::null,
 			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
 
 	protected:
 
 		// protected constructor
-		FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1, 
+		FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
 			int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
 
 		class FCCheckBox* checkBox;
 		QGridLayout* layout;
 };
 
-/**  
+/**
  * FreeCAD's progressbar for long operations
  * If you call @ref Start() several times without calling
- * @ref Stop() before the number of new steps will be added 
- * to the number of current steps, i.e. nevertheless the 
+ * @ref Stop() before the number of new steps will be added
+ * to the number of current steps, i.e. nevertheless the
  * progress bar will run only once.
  */
 class FCProgressBarPrivate;
@@ -141,11 +143,11 @@ class FCProgressBar : public QProgressBar
   private:
 	  /** @name for internal use only */
     //@{
-    /** Checks if the ESC button was pressed 
+    /** Checks if the ESC button was pressed
      *  If ESC @ref interrupt() is called.
      */
     bool isInterrupted();
-    /**  
+    /**
      * Throws an exception to stop the pending operation.
      */
     void interrupt();
@@ -179,6 +181,7 @@ class FCListView : public QListView
  *  Icon items used by the 'FCCmdView' and 'FCDlgCustomize' classes
  */
 class FCCmdViewItemPrivate;
+class QAction;
 
 class FCCmdViewItem : public QIconViewItem
 {
@@ -275,7 +278,7 @@ class FCAccelLineEdit : public QLineEdit
  *  A dialog having a checklist inside.
  */
 class FCCheckListDlg : public QDialog
-{ 
+{
     Q_OBJECT
 
   public:
@@ -345,7 +348,7 @@ class FCColorButton : public QButton
 };
 
 /**
- * A special spinbox: augment or diminish the value by moving up or down 
+ * A special spinbox: augment or diminish the value by moving up or down
  * keeping the left mouse button pressed
  */
 class FCSpinBoxPrivate;
