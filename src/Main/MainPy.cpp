@@ -35,12 +35,11 @@
 #endif
 
 #ifdef FC_LINUX
-#	include <autoconfig.h>
 #	include <unistd.h>
 #endif
 
 #if HAVE_CONFIG_H
-#	include <autoconfig.h>
+#	include <config.h>
 #endif // HAVE_CONFIG_H
 
 #include <stdio.h>

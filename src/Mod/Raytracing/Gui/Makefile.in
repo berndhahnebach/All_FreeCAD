@@ -146,7 +146,8 @@ BUILT_SOURCES = \
 		DlgSettingsRay.cpp \
 		DlgSettingsRay.h \
 		moc_DlgSettingsRay.cpp \
-		moc_DlgSettingsRayImp.cpp
+		moc_DlgSettingsRayImp.cpp \
+		FreeCADpov.h
 
 
 libRaytracingGui_la_SOURCES = \
@@ -491,6 +492,9 @@ moc_%.cpp: %.h
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+
+FreeCADpov.h: FreeCADpov
+	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

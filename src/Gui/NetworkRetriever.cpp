@@ -294,11 +294,22 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
   wget->clearArguments();
   wget->setExecutable( "wget" );
 
-  // set output directory
+  // since the wget option '--directory-prefix' seems not to work as expected
+  // and QProcess::setWorkingDirectory() fails if the 'doc' directory doesn't
+  // exist we must check for this and create it if needed.
   if ( !d->dir.isEmpty() )
   {
     QDir dir(d->dir);
-    (*wget) << QString("--directory-prefix=%1").arg( dir.path() );
+    if ( dir.exists( d->dir, true ) == false )
+    {
+      if ( dir.mkdir( d->dir, true ) == false)
+      {
+        Base::Console().Error("Directory '%s' could not be created.", d->dir.latin1());
+        return true; // please, no error message
+      }
+    }
+
+    wget->setWorkingDirectory( dir );
   }
 
   // user authentification
@@ -344,7 +355,19 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
   // start URL
   (*wget)<< startUrl;
 
+#ifdef FC_OS_LINUX
+  // on Linux it seems that we have to change cwd
+  QString cwd = QDir::currentDirPath ();
+  if ( !d->dir.isEmpty() )
+  {
+    QDir::setCurrent(d->dir);
+  }
+
   bool ok = wget->start();
+  QDir::setCurrent( cwd );
+#else
+  bool ok = wget->start();
+#endif
 
   return ok;
 }
@@ -450,7 +473,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
     bool ok = wget->startDownload( url.c_str() );
     if ( ok == false )
       Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
-    else
+    else if ( wget->isDownloading() )
       getAction()->setMenuText(tr("Stop %1").arg(sMenuText));
   }
   else // kill the process now
