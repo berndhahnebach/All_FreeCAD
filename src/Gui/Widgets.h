@@ -38,6 +38,7 @@
 #include <qfiledialog.h>
 #include <qvariant.h>
 #include <qdialog.h>
+#include <qspinbox.h>
 #if QT_VERSION > 230
 # include <qlistview.h>
 # include <qlineedit.h>
@@ -296,6 +297,27 @@ class FCColorButton : public QButton
 
   private:
     QColor col;
+};
+
+/**
+ * A special spinbox: augment or diminish the value by moving up or down 
+ * keeping the left mouse button pressed
+ */
+class FCSpinBox : public QSpinBox
+{
+  public:
+    FCSpinBox ( QWidget* parent, const char* name = 0 );
+    FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
+    virtual ~FCSpinBox(){}
+
+  protected:
+    void mouseMoveEvent    ( QMouseEvent* e );
+    void mousePressEvent   ( QMouseEvent* e );
+    void mouseReleaseEvent ( QMouseEvent* e );
+    bool eventFilter       ( QObject* o, QEvent* e );
+
+  private:
+    int nY, nStep;
 };
 
 #endif // __FC_WIDGETS_H__

@@ -742,4 +742,80 @@ void FCColorButton::onChooseColor()
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+
+FCSpinBox::FCSpinBox ( QWidget* parent, const char* name )
+ : QSpinBox (parent, name)
+{
+  setMouseTracking(true);
+}
+
+FCSpinBox::FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
+ : QSpinBox(minValue, maxValue, step, parent, name)
+{
+  setMouseTracking(true);
+}
+
+void FCSpinBox::mouseMoveEvent ( QMouseEvent* e )
+{
+  if (QWidget::mouseGrabber() == this)
+  {
+    // get "speed" of mouse move
+    int mult = nY - e->y();
+
+    int nValue = value() + mult * nStep;
+    if (nValue <= maxValue())
+      setValue ( nValue );
+    else
+      setValue ( maxValue() );
+
+    nY = e->y();
+  }
+}
+
+void FCSpinBox::mousePressEvent   ( QMouseEvent* e )
+{
+  int nMax = maxValue();
+  int nMin = minValue();
+
+  if (nMax == INT_MAX || nMin == -INT_MAX)
+  {
+    nStep = 100;
+  }
+  else
+  {
+    int nRange = nMax - nMin;
+    int nHeight = QApplication::desktop()->height();
+    if (nRange > nHeight)
+      nStep = int(nRange / nHeight);
+    else
+      nStep = 1;
+  }
+
+  nY = e->y();
+  grabMouse();
+}
+
+void FCSpinBox::mouseReleaseEvent ( QMouseEvent* e )
+{
+  releaseMouse();
+}
+
+bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
+{
+  if ( o != editor() )
+  	return false;
+
+  // get the editor's mouse events
+  switch (e->type())
+  {
+    case QEvent::MouseButtonPress:
+      // divert the event to spin box (itself)
+      mousePressEvent ((QMouseEvent*)e);
+      break;
+  }
+
+  return QSpinBox::eventFilter(o, e);
+}
+
 #include "moc_Widgets.cpp"
