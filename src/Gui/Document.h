@@ -57,10 +57,10 @@ public:
 
 
 	/// Save the document
-	void Save(void);
+	bool Save(void);
 
 	/// Save the document under a new file name
-	void SaveAs(void);
+	bool SaveAs(void);
 
 	/// Observer message from the App doc
 	virtual void OnChange(FCSubject &rCaller);
