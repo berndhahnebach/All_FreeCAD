@@ -1,10 +1,3 @@
-/** \file Exception.cpp
- *  \brief Template file to copy for own files
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -45,36 +38,36 @@
 using namespace Base;
 
 
-FCException::FCException(void)
+Exception::Exception(void)
 {
   _sErrMsg = "FreeCAD Exception";
 }
 
-FCException::FCException(const FCException &inst)
+Exception::Exception(const Exception &inst)
 {
 	SetMessage(inst._sErrMsg.c_str());
 }
 
 
-FCException::FCException(const char * sMessage)
+Exception::Exception(const char * sMessage)
 {
   SetMessage(sMessage);
   ReportException();
 }
 
 
-FCException &FCException::operator=(const FCException &inst)
+Exception &Exception::operator=(const Exception &inst)
 {
   SetMessage(inst._sErrMsg.c_str());
   return *this;
 }
 
-const char* FCException::what(void) const throw()
+const char* Exception::what(void) const throw()
 {
 	return _sErrMsg.c_str();
 }
 
-void FCException::ReportException (void) const
+void Exception::ReportException (void) const
 {
 	Console().Error("\nException (%s): %s \n",Console().Time(),what());
 }

@@ -779,7 +779,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
     if (!pcWorkbench)
     {
       QString exc = tr("Workbench '%1' does not exist").arg(name);
-      throw FCException(exc.latin1());
+      throw Base::Exception(exc.latin1());
     }
 
     // rename with new workbench before(!!!) calling "Start"
@@ -799,7 +799,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 
 	  show();
   }
-  catch (const FCException& rclE)
+  catch (const Base::Exception& rclE)
   {
     Console().Error("%s\n", rclE.what());
   }
@@ -1227,7 +1227,7 @@ PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
 	try{
 		pPyResource = new FCPyResource();
 		((FCPyResource*)pPyResource)->load(fn);
-	} catch (const FCException& e)
+	} catch (const Base::Exception& e)
 	{
     PyErr_SetString(PyExc_AssertionError, e.what());
 	}
@@ -1269,7 +1269,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
     Instance->d->_pcWidgetMgr->addPopupMenu(psMenuName, aclItems, parent);
     Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(bRemovable!=0);
-	}catch(const FCException& e) {
+	}catch(const Base::Exception& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){
@@ -1360,7 +1360,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
       Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
     Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setRemovable(bRemovable!=0);
-	}catch(const FCException& e) {
+	}catch(const Base::Exception& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){
@@ -1448,7 +1448,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
     Instance->d->_pcWidgetMgr->addCmdBar(psToolbarName, aclItems);
     Instance->d->_pcWidgetMgr->getCmdBar(psToolbarName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getCmdBar(psToolbarName)->setRemovable(bRemovable!=0);
-	}catch(const FCException& e) {
+	}catch(const Base::Exception& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){

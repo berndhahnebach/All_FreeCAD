@@ -1,10 +1,3 @@
-/** \file FCDocType.cpp
- *  \brief document type system
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2000 - 2003                 *
  *                                                                         *
@@ -187,7 +180,7 @@ Feature *DocTypeStd::AddFeature(const char* sName)
 		// name
 		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) sName ));
 		// the rest of the setup do the feature itself
-		pcFeature->InitLabel(FeatureLabel);
+		pcFeature->AttachLabel(FeatureLabel);
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
 

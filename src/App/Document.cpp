@@ -85,6 +85,8 @@ public:
 	static PyObject *sPyAbortCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyAbortCommand(args);};
 	PyObject *PyRecompute(PyObject *args);		// Python wrapper
 	static PyObject *sPyRecompute(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyRecompute(args);};
+	PyObject *PyDump(PyObject *args);		// Python wrapper
+	static PyObject *sPyDump(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyDump(args);};
 
 
 
@@ -161,7 +163,7 @@ void FCDocument::SaveAs (const char* Name)
 
 	Handle(FCApplicationOCC) hApp = GetApplication().GetOCCApp();
 	if(hApp->SaveAs(_hDoc,(Standard_CString)name.str)==CDF_SS_Failure) 
-		throw FCException("SaveAs failed");
+		throw Base::Exception("SaveAs failed");
 }
 // Save the document under the name its been opened
 void FCDocument::Save (void)
@@ -352,6 +354,11 @@ FCLabel *FCDocument::HasLabel(TDF_Label cLabel)
 
 */
 
+void FCDocument::Dump(void)
+{
+  _hDoc->Main().Dump(std::cout);
+}
+
 Base::FCPyObject * FCDocument::GetPyObject(void)
 {
 	return _pcDocPy;
@@ -402,6 +409,7 @@ PyMethodDef FCDocumentPy::Methods[] = {
   {"OpenCommand",  (PyCFunction) sPyOpenCommand,  Py_NEWARGS},
   {"CommitCommand",(PyCFunction) sPyCommitCommand,Py_NEWARGS},
   {"Recompute",    (PyCFunction) sPyRecompute,    Py_NEWARGS},
+  {"Dump",         (PyCFunction) sPyDump,         Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -500,6 +508,12 @@ int FCDocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function
 PyObject *FCDocumentPy::PyDocType(PyObject *args)
 { 
 	return _pcDoc->GetDocType()->GetPyObject();
+}
+ 
+PyObject *FCDocumentPy::PyDump(PyObject *args)
+{ 
+	_pcDoc->Dump();
+	Py_Return; 
 } 
 
 PyObject *FCDocumentPy::PyUndo(PyObject *args)

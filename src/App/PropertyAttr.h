@@ -40,6 +40,7 @@ namespace App
 {
 
 class PropertyAttr;
+class Property;
 
 
 /** Handle class for PropertyAttr
@@ -99,12 +100,12 @@ public:
 	AppExport void Restore(const Handle(TDF_Attribute)& with) ;
 
 	/// Set data
-	AppExport void Set(const TCollection_ExtendedString& S) ;
+	AppExport void Set(Property *Prop) ;
 	/// Get data
-	AppExport TCollection_ExtendedString Get() const;
+	AppExport Property *Get() const;
 
 	/// not shure
-	AppExport static  Handle_PropertyAttr Set(const TDF_Label& label,const TCollection_ExtendedString& string) ;
+	AppExport static  Handle_PropertyAttr Set(const TDF_Label& label,Property *Prop) ;
 
 	/// Get the unique ID of the Attribute
 	AppExport const Standard_GUID& ID() const;
@@ -127,7 +128,7 @@ public:
 private: 
 
 	/// Data member string
-	TCollection_ExtendedString myString2;
+	Property *_Property;
 
 };
 

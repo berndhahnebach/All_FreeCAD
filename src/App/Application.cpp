@@ -239,25 +239,25 @@ FCDocument* FCApplication::Open(const char * Name)
 		case CDF_RS_OK:
 			break;
 		case CDF_RS_UnknownDocument:
-			throw FCException("Unknown Document");
+      throw Base::Exception("Unknown Document");
 		case CDF_RS_AlreadyRetrieved:
-			throw FCException("Already Retrieved");
+			throw Base::Exception("Already Retrieved");
 		case CDF_RS_AlreadyRetrievedAndModified:
-			throw FCException("AlreadyRetrievedAndModified");
+			throw Base::Exception("AlreadyRetrievedAndModified");
 		case CDF_RS_NoDriver:
-			throw FCException("NoDriver");
+			throw Base::Exception("NoDriver");
 		case CDF_RS_NoVersion:
-			throw FCException("NoVersion");
+			throw Base::Exception("NoVersion");
 		case CDF_RS_NoModel:
-			throw FCException("NoModel");
+			throw Base::Exception("NoModel");
 		case CDF_RS_TypeNotFoundInSchema:
-			throw FCException("TypeNotFoundInSchema");
+			throw Base::Exception("TypeNotFoundInSchema");
 		case CDF_RS_UnrecognizedFileFormat:
-			throw FCException("UnrecognizedFileFormat");
+			throw Base::Exception("UnrecognizedFileFormat");
 		case CDF_RS_PermissionDenied:
-			throw FCException("PermissionDenied");
+			throw Base::Exception("PermissionDenied");
 		default:
-			throw FCException("Unknown open error");
+			throw Base::Exception("Unknown open error");
 	}
 	
 	// Creating a FreeCAD Document
@@ -347,7 +347,7 @@ FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sNa
 	// is there a path seperator ?
 	if(pos == std::string::npos)
 	{
-		throw FCException("FCApplication::GetParameterGroupByPath() no parameter set name specified");
+		throw Base::Exception("FCApplication::GetParameterGroupByPath() no parameter set name specified");
 	} 
 	// assigning the parameter set name
     cTemp.assign(cName,0,pos);
@@ -356,7 +356,7 @@ FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sNa
 	// test if name is valid
 	std::map<std::string,FCParameterManager *>::iterator It = mpcPramManager.find(cTemp.c_str());
 	if (It == mpcPramManager.end())
-		throw FCException("FCApplication::GetParameterGroupByPath() unknown parameter set name specified");
+		throw Base::Exception("FCApplication::GetParameterGroupByPath() unknown parameter set name specified");
 
 	return It->second->GetGroup(cName.c_str());
 }
@@ -395,7 +395,7 @@ PYFUNCIMP_S(FCApplication,sOpen)
 		// return new document
 		return (GetApplication().Open(pstr)->GetPyObject());
 	}
-	catch(FCException e) {
+	catch(Base::Exception e) {
 		PyErr_SetString(PyExc_IOError, e.what());
 		return 0L;
 	}
@@ -893,7 +893,7 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 					default:  
 						Console().Error("Invalid Input %s\n",argv[i]);  
 						Console().Error("\nUsage: %s %s",argv[0],Usage);  
-						throw FCException("Comandline error(s)");  
+						throw Base::Exception("Comandline error(s)");  
 				};  
 				break;  
 			case 't': 
@@ -953,7 +953,7 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 		{ 
 			Console().Error("Illegal command line argument #%d, %s\n",i,argv[i]); 
 			Console().Error("\nUsage: %s %s",argv[0],Usage); 
-			throw FCException("Comandline error(s)");  
+			throw Base::Exception("Comandline error(s)");  
 		} 
 	}  
 }  

@@ -165,6 +165,8 @@ public:
 	//@}
 
 
+  /// Dumps the Document to stdout
+  void Dump(void);
 
 	/// Returns the storage string of the document.
 	const short* StorageFormat() const;

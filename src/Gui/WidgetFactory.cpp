@@ -296,7 +296,7 @@ void FCPyResource::load(const char* name)
   QFileInfo fi(fn);
 
   if (!fi.exists())
-    throw FCException(QString("Cannot find file %1").arg(fn));
+    throw Base::Exception(QString("Cannot find file %1").arg(fn));
 
 #if QT_VERSION < 300
   throw FCException("Qt version is too old!\n");
@@ -305,7 +305,7 @@ void FCPyResource::load(const char* name)
   try{
     w = QWidgetFactory::create(fn);
   }catch(...){
-    throw FCException("Cannot create resource");
+    throw Base::Exception("Cannot create resource");
   }
 
   if (w->inherits("QDialog"))

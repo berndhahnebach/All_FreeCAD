@@ -446,7 +446,7 @@ void ProgressBar::abort()
 
   bool bMute = GuiConsoleObserver::bMute;
   GuiConsoleObserver::bMute = true;
-  FCException exc("Aborting...");
+  Base::Exception exc("Aborting...");
   GuiConsoleObserver::bMute = bMute;
   throw exc;
 }

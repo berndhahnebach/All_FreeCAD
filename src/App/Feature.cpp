@@ -1,9 +1,25 @@
-/** \file $RCSfile$
- *  \brief The attribute module
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
+/***************************************************************************
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
 
 #include "PreCompiled.h"
 
@@ -21,6 +37,7 @@
 
 #include "../Base/PyExportImp.h"
 #include "../Base/Console.h"
+#include "../Base/Exception.h"
 using Base::Console;
 
 
@@ -36,19 +53,58 @@ using namespace App;
 // Feature
 //===========================================================================
 
+Feature::Feature(void)
+:_nextFreeLabel(1)
+{
+
+}
+	
+void Feature::SetShape(TopoDS_Shape &Shape)
+{
+ 	TNaming_Builder B(_cFeatureLabel);
+	B.Generated(Shape);
+}
+
 
 void Feature::AddProperty(const char *Type, const char *Name, const char *InitString)
 {
+  Property *Prop;
+
 	if(	Base::streq(Type, "Float") )
 	{
-		Property *Prop = new PropertyFloat();
+		Prop = new PropertyFloat();
 		Prop->Set(InitString);
 	}
 
-	Handle(PropertyAttr) PropAttr = new PropertyAttr();
+	TDF_Label L = _cFeatureLabel.FindChild(_nextFreeLabel);
+  // remember for search effecience
+  _PropertiesMap[Name] = _nextFreeLabel;
+  _nextFreeLabel++;
+
+
+	TDataStd_Name::Set(L,TCollection_ExtendedString((Standard_CString) Name ));
+	PropertyAttr ::Set(L,Prop);
 
 }
 
+
+Property &Feature::GetProperty(const char *Name)
+{
+  TDF_Label L = _cFeatureLabel.FindChild(_PropertiesMap[Name]);
+
+  Handle(PropertyAttr) PropAttr;
+
+ 	if (!L.FindAttribute(PropertyAttr::GetID(), PropAttr )) 
+    throw Base::Exception("Feature::GetProperty() Internal error, no PropertyAttr attached to label");
+
+
+  return *(PropAttr->Get());
+}
+
+double Feature::GetFloatProperty(const char *Name)
+{
+    return dynamic_cast<PropertyFloat&>(GetProperty(Name)).GetValue();
+}
 
 
 void Feature::AttachLabel(const TDF_Label &rcLabel)

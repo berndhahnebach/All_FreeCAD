@@ -887,7 +887,7 @@ void FCHtmlView::init()
     GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableHistory");
     GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
     GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfBookmarks");
-  }catch(const FCException& rclE)
+  }catch(const Base::Exception& rclE)
   {
     QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
   }

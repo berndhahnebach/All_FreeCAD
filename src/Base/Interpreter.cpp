@@ -66,7 +66,7 @@ void InterpreterSingleton::Launch(const char *psCmd)
 
 	int ret = PyRun_SimpleString(Cmd.str);
 
-	if(ret == -1) throw FCException("script failed");
+	if(ret == -1) throw Exception("script failed");
 }
 
 void InterpreterSingleton::LaunchFile(const char*pxFileName)
@@ -75,7 +75,7 @@ void InterpreterSingleton::LaunchFile(const char*pxFileName)
 	
 	FILE *fp = fopen(FileName.str,"r");
 	if(fp == NULL) 
-		throw FCException("File not found");
+		throw Exception("File not found");
 
 
 	PyRun_SimpleFile(fp,FileName.str);
@@ -90,7 +90,7 @@ bool InterpreterSingleton::LoadModule(const char* psModName)
 
 	module = PP_Load_Module(ModName.str);
 
-	if(!module ) throw FCException("InterpreterSingleton::LoadModule(): Module not loaded!");
+	if(!module ) throw Exception("InterpreterSingleton::LoadModule(): Module not loaded!");
 
 	Py_XINCREF(module);
 
@@ -156,7 +156,7 @@ void InterpreterSingleton::RunMethodVoid(PyObject *pobject, const char *method)
 				     0,		       // so no return object
 					 "()")		   // no arguments
 					 != 0)
-		throw FCException("Error running InterpreterSingleton::RunMethodeVoid()");
+		throw Exception("Error running InterpreterSingleton::RunMethodeVoid()");
 
 }
 
@@ -173,7 +173,7 @@ PyObject* InterpreterSingleton::RunMethodObject(PyObject *pobject, const char *m
 				     &pcO,		   // return object
 					 "()")		   // no arguments
 					 != 0)
-		throw FCException("Error runing InterpreterSingleton::RunMethodeObject()");
+		throw Exception("Error runing InterpreterSingleton::RunMethodeObject()");
 	
 	return pcO;
 }
@@ -189,13 +189,13 @@ void InterpreterSingleton::RunMethod(PyObject *pobject, const char *method,
 
     pmeth = PyObject_GetAttrString(pobject, cMethod.str);  
     if (pmeth == NULL)                             /* get callable object */
-        throw FCException("Error runing InterpreterSingleton::RunMethod() methode not defined");                                 /* bound method? has self */
+        throw Exception("Error runing InterpreterSingleton::RunMethod() methode not defined");                                 /* bound method? has self */
 
 	pargs = Py_VaBuildValue(cArgfmt.str, argslist);     /* args: c->python */
 
     if (pargs == NULL) {
         Py_DECREF(pmeth);
-        throw FCException("InterpreterSingleton::RunMethod() wrong arguments");
+        throw Exception("InterpreterSingleton::RunMethod() wrong arguments");
     }
     
 	presult = PyEval_CallObject(pmeth, pargs);   /* run interpreter */
@@ -205,7 +205,7 @@ void InterpreterSingleton::RunMethod(PyObject *pobject, const char *method,
 	if(PP_Convert_Result(presult, cResfmt.str, cresult)!= 0)
 	{
 		PyErr_Print();
-		throw FCException("Error runing InterpreterSingleton::RunMethod() exception in called methode");
+		throw Exception("Error runing InterpreterSingleton::RunMethod() exception in called methode");
 	}
 }
 

@@ -365,7 +365,7 @@ FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
 	_pcPyResourceDict = Interpreter().RunMethodObject(_pcPyCommand, "GetResources");
 	// check if the "GetResources()" methode returns a Dict object
 	if(! PyDict_Check(_pcPyResourceDict) )
-		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
+		throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
 
 }
 
@@ -380,7 +380,7 @@ std::string FCPythonCommand::GetResource(const char* sName)
 	if(! pcTemp )
 		return std::string();
 	if(! PyString_Check(pcTemp) )
-		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
+		throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
 
 	return std::string(PyString_AsString(pcTemp) );
 
@@ -391,7 +391,7 @@ void FCPythonCommand::Activated(int iMsg)
 {
 	try{
 		Interpreter().RunMethodVoid(_pcPyCommand, "Activated");
-	}catch (FCException e){
+	}catch (Base::Exception e){
 		Base::Console().Error("Running the python command %s faild,try to resume",sName.c_str());
 	}
 }
@@ -410,7 +410,7 @@ std::string FCPythonCommand::CmdHelpURL(void)
 	if(! pcTemp ) 
 		return std::string();
 	if(! PyString_Check(pcTemp) ) 
-		throw FCException("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
+		throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
 	
 	return std::string( PyString_AsString(pcTemp) );
 }
@@ -424,7 +424,7 @@ void FCPythonCommand::CmdHelpPage(std::string &rcHelpPage)
 	if(! pcTemp ) 
 		return ;
 	if(! PyString_Check(pcTemp) ) 
-		throw FCException("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
+		throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
 	
 	rcHelpPage = PyString_AsString(pcTemp) ;
 

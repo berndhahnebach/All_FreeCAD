@@ -199,7 +199,7 @@ StackBar::StackBar( QWidget *parent, const char *name )
     GetApplication().GetParameterGroupByPath(strGroupPath)->Attach(this);
     GetApplication().GetParameterGroupByPath(strGroupPath)->Notify("SpeedAnimationCmdBar");
   }
-  catch(const FCException& rclE)
+  catch(const Base::Exception& rclE)
   {
     QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
   }

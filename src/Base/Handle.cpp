@@ -48,7 +48,7 @@
 #include "Handle.h"
 #include "Exception.h"
 
-
+using namespace Base;
 
 //**************************************************************************
 // Construction/Destruction
@@ -64,7 +64,7 @@ FCHandled::FCHandled()
 FCHandled::~FCHandled()
 {
 	if(_lRefCount != 0)
-		throw FCException("handled deleted with Rerferences!!!!!\n");
+		throw Exception("handled deleted with Rerferences!!!!!\n");
 }
 
 
@@ -90,7 +90,7 @@ void  FCHandled::DettachRef(void* pHandle)
 		}
 		catch(...)
 		{
-			throw FCException("FChandled freed twice !!!!!\n");
+			throw Exception("FChandled freed twice !!!!!\n");
 		}
 	}
 }

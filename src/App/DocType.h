@@ -1,10 +1,3 @@
-/** \file DocType.h
- *  \brief The document type system
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2000 - 2003                 *   
  *                                                                         *

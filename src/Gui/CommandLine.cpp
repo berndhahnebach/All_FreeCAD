@@ -175,7 +175,7 @@ void CommandLineBase::onLaunchCommand()
     if (!flag)
       Interpreter().Launch(text(currentItem()).latin1());
   }
-  catch (const FCException& rclE)
+  catch (const Base::Exception& rclE)
   {
     QString txt = rclE.what();
     QString err = QString("'%1' is not defined!").arg(text(currentItem()));

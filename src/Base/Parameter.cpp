@@ -1012,7 +1012,7 @@ void FCParameterManager::Init(void)
 				 << pMsg;
 			delete [] pMsg;
 //#ifdef FC_OS_LINUX
-			throw FCException(err.str().c_str());
+			throw Exception(err.str().c_str());
 //#else
 //			throw FCException(err.str());
 //#endif
@@ -1096,7 +1096,7 @@ int  FCParameterManager::LoadDocument(const char* sFileName)
 
 	_pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
 
-	if(!_pGroupNode) throw FCException("Malformed Parameter document: Root group not found");
+	if(!_pGroupNode) throw Exception("Malformed Parameter document: Root group not found");
 	
 	return 1;
 }

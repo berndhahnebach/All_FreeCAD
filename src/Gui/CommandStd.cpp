@@ -533,7 +533,7 @@ void FCCmdMRU::Activated(int iMsg)
   {
     try{
       DoCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].c_str());
-    }catch(const FCException&){
+    }catch(const Base::Exception&){
       RemItem(_vMRU[iMsg].c_str());
     }
   }
@@ -918,7 +918,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
           }
         }
       } 
-      catch (const FCException&)
+      catch (const Base::Exception&)
       {
         // if ESC is pressed simply ignore this exception
       }

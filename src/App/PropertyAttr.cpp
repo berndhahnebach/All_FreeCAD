@@ -32,6 +32,7 @@
 #endif
 
 #include "PropertyAttr.h"
+#include "Property.h"
 
 using namespace App;
 
@@ -105,32 +106,32 @@ const Standard_GUID& PropertyAttr::GetID ()
 //function : Set
 //purpose  : 
 //=======================================================================
-Handle_PropertyAttr PropertyAttr::Set(const TDF_Label& label,const TCollection_ExtendedString& string) 
+Handle_PropertyAttr PropertyAttr::Set(const TDF_Label& label,Property *Prop) 
 {
   Handle(PropertyAttr) N;
   if (!label.FindAttribute(PropertyAttr::GetID(), N)) { 
     N = new PropertyAttr ();   
     label.AddAttribute(N);
   }
-  N->Set(string);    
+  N->Set(Prop);    
   return N;  
 }
 
 PropertyAttr::PropertyAttr () {}
 PropertyAttr::~PropertyAttr () {}
 
-void PropertyAttr::Set (const TCollection_ExtendedString& S) 
+void PropertyAttr::Set (Property *Prop) 
 {
  
   Backup();
-  myString2 = S;
+  _Property = Prop;
   //TCollection_ExtendedString tmpS(S);
   //tmpS.RemoveAll(':');
   //myString = tmpS;
   //myEmpty = Standard_False;
 }
 
-TCollection_ExtendedString PropertyAttr::Get () const {return myString2;}
+Property *PropertyAttr::Get () const {return _Property;}
 
 const Standard_GUID& PropertyAttr::ID () const { return GetID(); }
 
@@ -142,21 +143,23 @@ Handle(TDF_Attribute) PropertyAttr::NewEmpty () const
 
 void PropertyAttr::Restore(const Handle(TDF_Attribute)& with) 
 {
-  myString2 = Handle(PropertyAttr)::DownCast (with)->Get();
+	throw;
+  //myString2 = Handle(PropertyAttr)::DownCast (with)->Get();
 }
 
 
 void PropertyAttr::Paste (const Handle(TDF_Attribute)& into,
 		           const Handle(TDF_RelocationTable)& RT) const
 {
-  Handle(PropertyAttr)::DownCast (into)->Set (myString2);
+	throw;
+  //Handle(PropertyAttr)::DownCast (into)->Set (myString2);
 }
 
 
 Standard_OStream& PropertyAttr::Dump (Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
-  anOS << " Name=|"<<myString2<<"|"<<endl;
+  anOS << " Name=|"<<_Property->GetType()<<"| Value=|"<< _Property->GetAsString()<<endl;
   return anOS;
 }
 

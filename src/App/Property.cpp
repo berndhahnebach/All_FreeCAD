@@ -212,7 +212,7 @@ PropertyFloat::~PropertyFloat()
 
 void PropertyFloat::Set(const char* Str)
 {
-
+  SetValue(atof(Str));
 }
 
 const char* PropertyFloat::GetAsString(void)

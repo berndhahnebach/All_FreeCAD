@@ -1,9 +1,3 @@
-/** \file Exception.h
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
@@ -33,18 +27,19 @@
 #include <exception>
 #include <string>
 
+namespace Base
+{
 
-
-class BaseExport FCException: public std::exception
+class BaseExport Exception: public std::exception
 {
 
 public:
-	FCException(const char * sMessage);
-    FCException(void);
-    FCException(const FCException &inst);
-    virtual ~FCException() throw() {}
+	Exception(const char * sMessage);
+  Exception(void);
+  Exception(const Exception &inst);
+  virtual ~Exception() throw() {}
 
-	FCException &operator=(const FCException &inst);
+	Exception &operator=(const Exception &inst);
   
     virtual const char* what(void) const throw();
   
@@ -61,12 +56,13 @@ protected:
    
 
 
-inline void FCException::SetMessage(const char * sMessage)
+inline void Exception::SetMessage(const char * sMessage)
 {
   _sErrMsg = sMessage;  
 }
 
 
+} //namespace Base
 
 #endif
 

@@ -151,7 +151,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
         if (!cmd.isEmpty())
           Base::Interpreter().Launch(cmd.latin1());
       }
-      catch (const FCException& exc)
+      catch (const Base::Exception& exc)
       {
         setColor(Qt::red);
         pythonSyntax->highlightError(true);

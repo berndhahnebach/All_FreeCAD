@@ -1,21 +1,25 @@
-/** \file FeaturePartBox.cpp
- *  \brief 
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
 /***************************************************************************
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Jürgen Riegel 2002                                                    *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
+
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
@@ -32,7 +36,12 @@ void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("PartBoxFeature::InitLabel()\n");
 
-	AddProperty("Float","X","0.0");
+	AddProperty("Float","x","0.0");
+	AddProperty("Float","y","0.0");
+	AddProperty("Float","z","0.0");
+	AddProperty("Float","l","100.0");
+	AddProperty("Float","h","100.0");
+	AddProperty("Float","w","100.0");
 
 }
 
@@ -43,10 +52,37 @@ bool PartBoxFeature::MustExecute(const TFunction_Logbook& log) const
 	return false;
 }
 
-Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log) const
+Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
 {
 	Base::Console().Log("PartBoxFeature::Execute()\n");
-	return 0;
+
+/*  cout << GetFloatProperty("x") << endl;
+  cout << GetFloatProperty("y") << endl;
+  cout << GetFloatProperty("z") << endl;
+  cout << GetFloatProperty("l") << endl;
+  cout << GetFloatProperty("h") << endl;
+  cout << GetFloatProperty("w") << endl;*/
+
+  try{
+	// Build a box using the dimension and position attributes 
+	BRepPrimAPI_MakeBox mkBox( gp_Pnt(GetFloatProperty("x"), 
+                                    GetFloatProperty("y") ,
+                                    GetFloatProperty("z")), 
+                             GetFloatProperty("l"),
+                             GetFloatProperty("h"),
+                             GetFloatProperty("w"));
+
+  TopoDS_Shape ResultShape = mkBox.Shape();
+
+
+	SetShape(ResultShape);
+
+  }
+  catch(...){
+    return 1;
+  }
+
+  return 0;
 }
 
 

@@ -106,7 +106,7 @@ Standard_Boolean Function::MustExecute(const TFunction_Logbook& log) const
 	Handle(FeatureAttr) myFeatureAttr;
 	// Get the Feature Attribute of this label
 	if(! Label().FindAttribute(FeatureAttr::GetID(), myFeatureAttr )) 
-		throw FCException("Function::Execute():Wrong document Strukture");
+		throw Base::Exception("Function::Execute():Wrong document Strukture");
 	
 	// call the Exectute of the App::Feature
 	return myFeatureAttr->Get()->MustExecute(log);
@@ -132,7 +132,7 @@ Standard_Integer Function::Execute(TFunction_Logbook& log) const
 	Handle(FeatureAttr) myFeatureAttr;
 	// Get the Feature Attribute of this label
 	if(! Label().FindAttribute(FeatureAttr::GetID(), myFeatureAttr )) 
-		throw FCException("Function::Execute():Wrong document Strukture");
+		throw Base::Exception("Function::Execute():Wrong document Strukture");
 	
 	// call the Exectute of the App::Feature
 	return myFeatureAttr->Get()->Execute(log);

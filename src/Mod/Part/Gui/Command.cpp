@@ -122,7 +122,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 	// Boeser Fehler ;-)
 	catch(...){
 		AbortCommand();
-	  throw new FCException("Error loading BREP file");
+    throw new Base::Exception("Error loading BREP file");
 	}
 
 	TNaming_Builder B(L);
