@@ -159,6 +159,8 @@ void FCCmdPartTest2::Activated(int iMsg)
 
     TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
 
+	L = L.FindChild(1);
+
 	BRep_Builder aBuilder;
 	TopoDS_Shape ResultShape;
 
@@ -185,6 +187,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 	// Display it
 	hcPrs->Display(1);
 
+	UpdateActive();
 }
 
 //===========================================================================

@@ -29,6 +29,12 @@ class FCTree;
 class FCGuiDocument;
 
 
+struct GUIDDefs {
+    char	*Guid;
+    char	*Name;
+};
+
+
 
 /** The link between the Tree and the shown Label.
  *  Every (shown) Label in the FCDocument class get it 
@@ -54,7 +60,7 @@ public:
 
 	void Update(void);
 
-
+	void BuildUp(void);
 
 protected:
 	void activate (); 
@@ -63,7 +69,7 @@ protected:
     FCTreeLabel * _pcParent;
 	FCGuiDocument*  _pcDocument;
 
-	bool _bOpend;
+//	bool _bOpend;
 };
 
 

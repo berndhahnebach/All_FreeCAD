@@ -28,6 +28,30 @@
 
 
 
+GUIDDefs AttrNames[] = {
+	{0,0}
+};
+
+
+FCTreeLabel::FCTreeLabel( FCTree * parent)
+	:QListViewItem(parent->_pcListView),
+	 _pcDocument(parent->_pcDocument)
+{
+	if(_pcDocument){
+		setText(0,"Main Label");
+		setPixmap(0,*FCTree::pcLabelOpen);
+		_hcLabel = parent->_pcDocument->GetDocument()->Main();
+		BuildUp();
+		setOpen(true);
+	}else{
+		setPixmap(0,*FCTree::pcLabelClosed);
+		//setPixmap(new QPixmap(px));
+		setText(0,"No Active Document");
+	}
+
+	
+}
+
 /** Constructor
  *  Instanciate the class with his parent (in the tree) and the
  *  acociated FCLabel.
@@ -36,46 +60,26 @@
 FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
     : QListViewItem( parent ),
 	_pcDocument(parent->_pcDocument),
-	_hcLabel(hcLabel),
-	_bOpend(false)
+	_hcLabel(hcLabel)
 {
 	QString cString;
 
 	cString.sprintf("Tag:%d",_hcLabel->GetOCCLabel().Tag());
 	setPixmap(0,*FCTree::pcLabelClosed);
 	setText(0,cString);
+
+	BuildUp();
 		
 }
 
-#include "Icons/x.xpm"
-
-
-FCTreeLabel::FCTreeLabel( FCTree * parent)
-	:QListViewItem(parent->_pcListView),
-	 _pcDocument(parent->_pcDocument),
-	 _bOpend(false)
-{
-	if(_pcDocument){
-		setText(0,"Main Label");
-		setPixmap(0,*FCTree::pcLabelOpen);
-		_hcLabel = parent->_pcDocument->GetDocument()->Main();
-		setOpen(true);
-	}else{
-		setPixmap(0,*FCTree::pcLabelClosed);
-		//setPixmap(new QPixmap(px));
-		setText(0,"No Active Document");
-	}
-
-	setExpandable( TRUE );
-	//Update();
-	
-}
-
-
 void FCTreeLabel::Update(void)
 {
+	//puts("Updtate");
+
+
+	/*
 	// quieck an dirty
-	if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !_bOpend)
+	if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !isOpen())
 	{
 		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
 		//	delete pItem;
@@ -87,78 +91,53 @@ void FCTreeLabel::Update(void)
 			new FCTreeLabel(this,*It);
 		}
 
-		_bOpend = true;
 		setPixmap(0,*FCTree::pcLabelOpen);
 
 	}	
+*/
+
+}
+
+void FCTreeLabel::BuildUp(void)
+{
+
+	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+
+	for(std::vector<FCPyHandle<FCLabel> >::reverse_iterator It=vpcLabels.rbegin();It != vpcLabels.rend(); It++)
+	{
+		new FCTreeLabel(this,*It);
+	}
+
+	TDF_Label l = _hcLabel->GetOCCLabel();
+	
+	if( l.IsAttribute(TNaming_NamedShape::GetID()) )
+		(new QListViewItem(this,"Shape","1"))->setPixmap(0,*FCTree::pcAttribute);
+	if( l.IsAttribute(TDataStd_Integer::GetID()) )
+		(new QListViewItem(this,"Int","1"))->setPixmap(0,*FCTree::pcAttribute);
+	if( l.IsAttribute(TDataStd_Name::GetID()) )
+		(new QListViewItem(this,"String","1"))->setPixmap(0,*FCTree::pcAttribute);
 
 
+	if(childCount()>0)
+		setExpandable( TRUE );
 }
 
 void FCTreeLabel::setOpen( bool o )
 {
-	puts("setOpen");
-	// quieck an dirty
-	if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && o && !_bOpend)
+	//puts("setOpen");
+
+	if(o)
 	{
-		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
-		//	delete pItem;
+		setPixmap(0,*FCTree::pcLabelOpen);
 
-		std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+		Update();
+	
+	}else{
+		setPixmap(0,*FCTree::pcLabelClosed);
+	}
 
-		for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
-		{
-			new FCTreeLabel(this,*It);
-		}
-
-		_bOpend = true;
-
-	}	
 	QListViewItem::setOpen ( o );
 	
-	
-	/*    if ( o )
-	setPixmap( folderOpen );
-    else
-	setPixmap( folderClosed );
-
-    if ( o && !childCount() ) {
-	QString s( fullName() );
-	QDir thisDir( s );
-	if ( !thisDir.isReadable() ) {
-	    readable = FALSE;
-	    setExpandable( FALSE );
-	    return;
-	}
-
-	listView()->setUpdatesEnabled( FALSE );
-	const QFileInfoList * files = thisDir.entryInfoList();
-	if ( files ) {
-	    QFileInfoListIterator it( *files );
-	    QFileInfo * fi;
-	    while( (fi=it.current()) != 0 ) {
-		++it;
-		if ( fi->fileName() == "." || fi->fileName() == ".." )
-		    ; // nothing
-		else if ( fi->isSymLink() && !showDirsOnly ) {
-		    FileItem *item = new FileItem( this, fi->fileName(),
-						     "Symbolic Link" );
-		    item->setPixmap( fileNormal );
-		}
-		else if ( fi->isDir() )
-		    (void)new Directory( this, fi->fileName() );
-		else if ( !showDirsOnly ) {
-		    FileItem *item
-			= new FileItem( this, fi->fileName(),
-					     fi->isFile()?"File":"Special" );
-		    item->setPixmap( fileNormal );
-		}
-	    }
-	}
-	listView()->setUpdatesEnabled( TRUE );
-    }
-    QListViewItem::setOpen( o );
-	*/
 }
 
 
@@ -170,7 +149,7 @@ void FCTreeLabel::setup()
 
 void FCTreeLabel::activate ()
 {
-	puts("Activated");
+	//puts("Activated");
 }
 
 
@@ -193,8 +172,6 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 	_pcListView->setColumnWidthMode(0,QListView::Maximum);
 	_pcListView->addColumn("Value");
 	_pcListView->setColumnWidthMode(1,QListView::Manual );
-	_pcListView->addColumn("Type");
-	_pcListView->setColumnWidthMode(1,QListView::Manual );
 
 	// retreive the Pixmaps
 	pcLabelOpen   = new QPixmap(ApplicationWindow::Instance->GetBmpFactory().GetPixmap("RawTree_LabelClosed"));
@@ -203,9 +180,8 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 
 	// Add the first main label
-//	(_pcMainItem = new QListViewItem(_pcListView,"No Active Document"))->setPixmap(0,*pcLabelClosed);
 	_pcMainItem = new FCTreeLabel(this);
-	//new FCTreeLabel(this);
+
 	//_pcListView->setRootIsDecorated(true);
 
 
@@ -217,7 +193,12 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 void FCTree::Update(void)
 {
-	GetConsole().Log("Tree Updated\n");	
+	GetConsole().Log("Tree Updated\n");
+	
+	// quick and dirty so far
+	delete _pcMainItem;
+	_pcMainItem = new FCTreeLabel(this);
+
 }
 
 void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
@@ -228,17 +209,6 @@ void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocu
 	{
 		delete _pcMainItem;
 		_pcMainItem = new FCTreeLabel(this);
-/*
-		if(!pcNewDocument)
-		{
-			_pcMainItem = new QListViewItem(_pcListView,"No Active Document");
-			_pcMainItem->setPixmap(0,*pcLabelClosed);
-
-		}
-		else
-			_pcMainItem = new FCTreeLabel(this);
-
-*/
 	}
 
 }
@@ -257,9 +227,6 @@ bool FCTree::OnMsg(const char* pMsg)
 	// no messages yet
 	return false;
 }
-
-
-//Tree:: Tree(){};
 
 
 #include "moc_Tree.cpp"

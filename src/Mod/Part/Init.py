@@ -50,6 +50,9 @@ class PartTemplate:
 		L1.GetLabel(1)
 		L1.GetLabel(2)
 		L1.GetLabel(3)
+		L1.Int = 1
+		L1.Real = 1.0
+		L1.Name = "Hallo"
 		L2 = Main.GetLabel(2)
 		L3 = Main.GetLabel(3)
 		L3.GetLabel(1)
