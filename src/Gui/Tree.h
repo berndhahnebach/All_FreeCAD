@@ -93,6 +93,7 @@ public:
 
 protected:
 	QListView*		_pcListView;
+	QListViewItem*  _pcMainItem;
 
 	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 };

@@ -42,6 +42,7 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
 	QString cString;
 
 	cString.sprintf("Tag:%d",_hcLabel->GetOCCLabel().Tag());
+	setPixmap(0,*FCTree::pcLabelClosed);
 	setText(0,cString);
 		
 }
@@ -58,6 +59,7 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 		setText(0,"Main Label");
 		setPixmap(0,*FCTree::pcLabelOpen);
 		_hcLabel = parent->_pcDocument->GetDocument()->Main();
+		setOpen(true);
 	}else{
 		setPixmap(0,*FCTree::pcLabelClosed);
 		//setPixmap(new QPixmap(px));
@@ -86,6 +88,7 @@ void FCTreeLabel::Update(void)
 		}
 
 		_bOpend = true;
+		setPixmap(0,*FCTree::pcLabelOpen);
 
 	}	
 
@@ -200,7 +203,8 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 
 	// Add the first main label
-	(new QListViewItem(_pcListView,"No Active Document"))->setPixmap(0,*pcLabelClosed);
+//	(_pcMainItem = new QListViewItem(_pcListView,"No Active Document"))->setPixmap(0,*pcLabelClosed);
+	_pcMainItem = new FCTreeLabel(this);
 	//new FCTreeLabel(this);
 	//_pcListView->setRootIsDecorated(true);
 
@@ -219,6 +223,24 @@ void FCTree::Update(void)
 void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
 {
 	GetConsole().Log("Tree doc activated %p\n",pcNewDocument);
+
+	if(pcOldDocument != pcNewDocument)
+	{
+		delete _pcMainItem;
+		_pcMainItem = new FCTreeLabel(this);
+/*
+		if(!pcNewDocument)
+		{
+			_pcMainItem = new QListViewItem(_pcListView,"No Active Document");
+			_pcMainItem->setPixmap(0,*pcLabelClosed);
+
+		}
+		else
+			_pcMainItem = new FCTreeLabel(this);
+
+*/
+	}
+
 }
 
 
