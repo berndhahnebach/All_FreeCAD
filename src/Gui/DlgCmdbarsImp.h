@@ -41,16 +41,16 @@ namespace Dialog {
 
 /**
  * This class implements the creation of user defined command bars.
- * @see CDlgCustomToolbars
- * @see CDlgCustomToolbarsImp
+ * @see DlgCustomToolbars
+ * @see DlgCustomToolbarsImp
  */
-class CDlgCustomCmdbarsImp : public CDlgCustomToolbars
+class DlgCustomCmdbarsImp : public DlgCustomToolbars
 { 
   Q_OBJECT
 
 public:
-	CDlgCustomCmdbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~CDlgCustomCmdbarsImp();
+	DlgCustomCmdbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgCustomCmdbarsImp();
 
 protected:
 	/** Adds created or removes deleted command bars */

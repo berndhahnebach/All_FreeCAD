@@ -42,13 +42,13 @@ namespace Dialog {
  * So you can specify to use a proxy if necessary and some more stuff.
  * @see FCPreferencePage
  */
-class CDlgOnlineHelpImp : public CDlgOnlineHelpBase, public Gui::Dialog::PreferencePage
+class DlgOnlineHelpImp : public DlgOnlineHelpBase, public Gui::Dialog::PreferencePage
 {
 Q_OBJECT
 
 public:
-	CDlgOnlineHelpImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~CDlgOnlineHelpImp();
+	DlgOnlineHelpImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgOnlineHelpImp();
 };
 
 } // namespace Dialog

@@ -52,7 +52,7 @@ class FCCommandManager;
 
 namespace Gui {
 namespace DockWnd {
-class CStackBar;
+class StackBar;
 
 } // namespace DockWnd
 } // namespace Gui
@@ -510,7 +510,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
 class FCCustomWidgetManager
 {
   public:
-    FCCustomWidgetManager(FCCommandManager& rclMgr, Gui::DockWnd::CStackBar* pCmdBar);
+    FCCustomWidgetManager(FCCommandManager& rclMgr, Gui::DockWnd::StackBar* pCmdBar);
     ~FCCustomWidgetManager();
 
     /** Loads the custom widgets depending on the given 

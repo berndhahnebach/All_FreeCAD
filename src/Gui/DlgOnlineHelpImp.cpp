@@ -38,8 +38,8 @@
 
 using namespace Gui::Dialog;
 
-CDlgOnlineHelpImp::CDlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl )
-: CDlgOnlineHelpBase(parent, name, fl)
+DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl )
+: DlgOnlineHelpBase(parent, name, fl)
 {
   append(UseProxy->getHandler());
   append(DownloadURL->getHandler());
@@ -48,7 +48,7 @@ CDlgOnlineHelpImp::CDlgOnlineHelpImp( QWidget* parent, const char* name, WFlags 
   setModified(true);
 }
 
-CDlgOnlineHelpImp::~CDlgOnlineHelpImp()
+DlgOnlineHelpImp::~DlgOnlineHelpImp()
 {
 }
 

@@ -53,8 +53,8 @@
 
 using namespace Gui::Dialog;
 
-CDlgCustomActionsImp::CDlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
-: CDlgCustomActionsBase(parent, name, fl), bShown( false )
+DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
+: DlgCustomActionsBase(parent, name, fl), bShown( false )
 {
   // search for all macros
   std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
@@ -75,14 +75,14 @@ CDlgCustomActionsImp::CDlgCustomActionsImp( QWidget* parent, const char* name, W
   connect(CustomActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onCustomActionsDoubleClicked(QListViewItem*)));
 }
 
-CDlgCustomActionsImp::~CDlgCustomActionsImp()
+DlgCustomActionsImp::~DlgCustomActionsImp()
 {
 	cancel();
 }
 
-void CDlgCustomActionsImp::show()
+void DlgCustomActionsImp::show()
 {
-  CDlgCustomActionsBase::show();
+  DlgCustomActionsBase::show();
   if (actionMacros->count() == 0 && bShown == false)
   {
 		bShown = true;
@@ -90,7 +90,7 @@ void CDlgCustomActionsImp::show()
   }
 }
 
-void CDlgCustomActionsImp::showPixmaps()
+void DlgCustomActionsImp::showPixmaps()
 {
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
@@ -105,7 +105,7 @@ void CDlgCustomActionsImp::showPixmaps()
   }
 }
 
-void CDlgCustomActionsImp::apply()
+void DlgCustomActionsImp::apply()
 {
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   std::vector<FCCommand*>::iterator it;
@@ -125,7 +125,7 @@ void CDlgCustomActionsImp::apply()
   _aclDelMacros.clear();
 }
 
-void CDlgCustomActionsImp::cancel()
+void DlgCustomActionsImp::cancel()
 {
 	// delete all temporary created commands again as they were not appended to the command manager
   std::vector<FCCommand*>::iterator it;
@@ -137,7 +137,7 @@ void CDlgCustomActionsImp::cancel()
 	_aclNewMacros.clear();
 }
 
-void CDlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
+void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
 {
   bool canDelete = FALSE;
   QListViewItemIterator it = CustomActions->firstChild();
@@ -154,7 +154,7 @@ void CDlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
   buttonDelete->setEnabled( canDelete || ( i && i->isSelected() ) );
 }
 
-void CDlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
+void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
 {
 	if ( !i ) return; // no valid item
 
@@ -200,17 +200,16 @@ void CDlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
     actionToolTip->setText(pScript->GetToolTipText());
     actionStatus->setText(pScript->GetStatusTip());
     actionAccel->setText(QAccel::keyToString(pScript->GetAccel()));
-		Gui::CBitmapFactory& bmp = Gui::BitmapFactory();
     PixmapLabel->clear();
     if (QString(pScript->GetPixmap()).length() > 2)
     {
-      QPixmap p = bmp.GetPixmap(pScript->GetPixmap());
+      QPixmap p = Gui::BitmapFactory().GetPixmap(pScript->GetPixmap());
       PixmapLabel->setPixmap(p);
     }
   }
 }
 
-void CDlgCustomActionsImp::onAddCustomAction()
+void DlgCustomActionsImp::onAddCustomAction()
 {
   if (actionName->text().isEmpty())
   {
@@ -298,7 +297,7 @@ void CDlgCustomActionsImp::onAddCustomAction()
   setModified(true);
 }
 
-void CDlgCustomActionsImp::onDelCustomAction()
+void DlgCustomActionsImp::onDelCustomAction()
 {
 	// remove item from list view
   QString itemText;
@@ -346,7 +345,7 @@ void CDlgCustomActionsImp::onDelCustomAction()
   setModified(true);
 }
 
-void CDlgCustomActionsImp::onCustomActionPixmap()
+void DlgCustomActionsImp::onCustomActionPixmap()
 {
   QString pixPath = FileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm *.gif *.png *.bmp)",this, "", 
 		tr("Choose a Pixmap"));
@@ -358,7 +357,7 @@ void CDlgCustomActionsImp::onCustomActionPixmap()
   }
 }
 
-void CDlgCustomActionsImp::newActionName()
+void DlgCustomActionsImp::newActionName()
 {
 	int id = 0;
 	QString sName;

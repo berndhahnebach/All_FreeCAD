@@ -43,13 +43,13 @@ namespace Dialog {
 /**
  * This class implements the creation of user defined toolbars.
  */
-class CDlgCustomToolbars : public CDlgCustomToolbarsBase, public Gui::Dialog::CPropertyPage
+class DlgCustomToolbars : public DlgCustomToolbarsBase, public Gui::Dialog::PropertyPage
 { 
   Q_OBJECT
 
   protected:
-    CDlgCustomToolbars( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    virtual ~CDlgCustomToolbars();
+    DlgCustomToolbars( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    virtual ~DlgCustomToolbars();
 
   protected:
     virtual void apply();
@@ -81,16 +81,16 @@ class CDlgCustomToolbars : public CDlgCustomToolbarsBase, public Gui::Dialog::CP
 
 /**
  * This class implements the creation of user defined command bars.
- * @see CDlgCustomToolbars
- * @see CDlgCustomCmdbarsImp
+ * @see DlgCustomToolbars
+ * @see DlgCustomCmdbarsImp
  */
-class CDlgCustomToolbarsImp : public CDlgCustomToolbars
+class DlgCustomToolbarsImp : public DlgCustomToolbars
 { 
   Q_OBJECT
 
 public:
-	CDlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~CDlgCustomToolbarsImp();
+	DlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgCustomToolbarsImp();
 
 protected:
 	/** Adds created or removes deleted toolbars */

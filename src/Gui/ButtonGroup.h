@@ -41,22 +41,22 @@ namespace Gui {
 
 // forward declaration
 namespace DockWnd {
-class CStackBar;
+class StackBar;
 } // namespace DockWnd
 
 /** The button group class
  */
-class GuiExport CButtonGroup : public QButtonGroup
+class GuiExport ButtonGroup : public QButtonGroup
 {
   Q_OBJECT
   public:
     /** @name Construction/destruction */
     //@{
-	  CButtonGroup(QWidget * parent=0, const char * name=0);
-    CButtonGroup(const QString & title, QWidget * parent=0, const char * name=0);
-    CButtonGroup(int columns, Orientation o, QWidget * parent=0, const char * name=0);
-    CButtonGroup(int columns, Orientation o, const QString & title, QWidget * parent=0, const char * name=0);
-	  ~CButtonGroup(void);
+	  ButtonGroup(QWidget * parent=0, const char * name=0);
+    ButtonGroup(const QString & title, QWidget * parent=0, const char * name=0);
+    ButtonGroup(int columns, Orientation o, QWidget * parent=0, const char * name=0);
+    ButtonGroup(int columns, Orientation o, const QString & title, QWidget * parent=0, const char * name=0);
+	  ~ButtonGroup(void);
     //@}
 
     // overwrite method from base class
@@ -90,13 +90,13 @@ class GuiExport CButtonGroup : public QButtonGroup
 
 /** The command bar base class
  */
-class GuiExport CCommandBar : public FCToolBar
+class GuiExport CommandBar : public FCToolBar
 {
   Q_OBJECT
 
   public:
-    CCommandBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
-    virtual ~CCommandBar ();
+    CommandBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~CommandBar ();
 
     virtual void clearAll();
     /// set dummy widget to the end
@@ -117,13 +117,13 @@ class GuiExport CCommandBar : public FCToolBar
 
 /** A special implementation of command bar
  */
-class GuiExport CToolboxBar : public CCommandBar
+class GuiExport ToolboxBar : public CommandBar
 {
   Q_OBJECT
 
   public:
-    CToolboxBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
-    virtual ~CToolboxBar ();
+    ToolboxBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~ToolboxBar ();
     /// set dummy widget to the end
     virtual void addedButton(QString);
 };
@@ -131,25 +131,25 @@ class GuiExport CToolboxBar : public CCommandBar
 /** Another special implementation of command bar
  * The bar seems like the Outlook bar.
  */
-class GuiExport COutlookBar : public CCommandBar
+class GuiExport OutlookBar : public CommandBar
 {
   Q_OBJECT
 
   public:
-    COutlookBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
-    virtual ~COutlookBar ();
+    OutlookBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~OutlookBar ();
     /// set dummy widget to the end
     virtual void addedButton(QString);
 };
 
 /** QStackBarBtn class.
- * Each QStackBarBtn object corresponds to a @ref CStackBar's widget.
+ * Each QStackBarBtn object corresponds to a @ref StackBar's widget.
  */
 class QStackBarBtn : public QToolButton
 {
   public:
-    QStackBarBtn( DockWnd::CStackBar *parent, const char *name );
-    QStackBarBtn( QWidget *object, DockWnd::CStackBar *parent, const char *name );
+    QStackBarBtn( DockWnd::StackBar *parent, const char *name );
+    QStackBarBtn( QWidget *object, DockWnd::StackBar *parent, const char *name );
     ~QStackBarBtn();
 
     void setSelected( bool b );
@@ -164,21 +164,21 @@ class QStackBarBtn : public QToolButton
   private:
     bool bIsSelected;
     QWidget* w;
-		DockWnd::CStackBar* pStackBar;
+		DockWnd::StackBar* pStackBar;
 };
 
 namespace DockWnd {
 
-/** CStackBar class
+/** StackBar class
  * To the stack bar you can add any type of QWidget objects.
  */
-class CStackBar : public FCDockWindow, public FCParameterGrp::ObserverType
+class StackBar : public FCDockWindow, public FCParameterGrp::ObserverType
 {
   Q_OBJECT;
 
   public:
-    CStackBar( QWidget *parent=0, const char *name=0 );
-	  virtual ~CStackBar();
+    StackBar( QWidget *parent=0, const char *name=0 );
+	  virtual ~StackBar();
     
     // observers method
     void OnChange(FCSubject<const char*> &rCaller,const char* sReason);

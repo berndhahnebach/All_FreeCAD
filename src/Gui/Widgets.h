@@ -113,6 +113,10 @@ class GuiExport FCMessageBox : public QMessageBox
 		QGridLayout* layout;
 };
 
+namespace Gui {
+
+struct ProgressBarPrivate;
+
 /**
  * FreeCAD's progressbar for long operations
  * If you call @ref Start() several times without calling
@@ -120,15 +124,13 @@ class GuiExport FCMessageBox : public QMessageBox
  * to the number of current steps, i.e. nevertheless the
  * progress bar will run only once.
  */
-struct FCProgressBarPrivate;
-
-class FCProgressBar : public QProgressBar, public Base::CSequencer
+class ProgressBar : public QProgressBar, public Base::SequencerBase
 {
   public:
 	  /**
 		 * Returns the sequencer object
 		 */
-		static FCProgressBar* Instance();
+		static ProgressBar* Instance();
     /** Starts the progress bar */
     bool start(const char* pszStr, unsigned long steps);
     /** Does the next step */
@@ -142,9 +144,9 @@ class FCProgressBar : public QProgressBar, public Base::CSequencer
 
   private:
     /** construction */
-    FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+    ProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
 		/** Destruction */
-    ~FCProgressBar ();
+    ~ProgressBar ();
 	  /** @name for internal use only */
     //@{
 		/** Puts text to the status bar */
@@ -156,15 +158,17 @@ class FCProgressBar : public QProgressBar, public Base::CSequencer
 		/** Throws an exception to stop the pending operation. */
     void abort();
     /** Resets the sequencer */
-    void resetBar();
+    void resetData();
     /** Draws the content of the progress bar */
-    void drawContents( QPainter *p );
+//    void drawContents( QPainter *p );
     /** Reimplemented */
     bool setIndicator ( QString & indicator, int progress, int totalSteps );
     //@}
-    FCProgressBarPrivate* d;
-		static FCProgressBar* _pclSingleton; 
+    ProgressBarPrivate* d;
+		static ProgressBar* _pclSingleton; 
 };
+
+} // namespace Gui
 
 /**
  * List view class
@@ -420,22 +424,6 @@ class FCFloatSpinBox : public FCSpinBox
 
   private:
     FCFloatSpinBoxPrivate* d;
-};
-
-class FCAnimation : public QLabel
-{
-  public:
-    static FCAnimation* Instance();
-    static void Destruct();
-
-    void startAnimation();
-    void stopAnimation();
-
-  private:
-    FCAnimation(QWidget * parent, const char * name = 0, WFlags f = 0);
-    virtual ~FCAnimation();
-
-    static FCAnimation* _pcSingleton;
 };
 
 //} // namespace Gui

@@ -7,10 +7,10 @@
 using namespace Gui::Dialog;
 
 /* 
- *  Constructs a CDlgSettingsMacroImp which is a child of 'parent', with the 
+ *  Constructs a DlgSettingsMacroImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-CDlgSettingsMacroImp::CDlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
+DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettingsMacro( parent, name, fl )
 {
 	append(FCCheckBox_GuiAsComment   ->getHandler());
@@ -21,13 +21,13 @@ CDlgSettingsMacroImp::CDlgSettingsMacroImp( QWidget* parent,  const char* name, 
 /*  
  *  Destroys the object and frees any allocated resources
  */
-CDlgSettingsMacroImp::~CDlgSettingsMacroImp()
+DlgSettingsMacroImp::~DlgSettingsMacroImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
 
-void CDlgSettingsMacroImp::ChooseDir()
+void DlgSettingsMacroImp::ChooseDir()
 {
 	QString cPath = QFileDialog::getExistingDirectory ();
 

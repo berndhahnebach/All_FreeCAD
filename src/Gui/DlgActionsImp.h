@@ -45,15 +45,15 @@ namespace Dialog {
  * @see FCScriptCommand
  * @see FCCommand
  */
-class CDlgCustomActionsImp : public CDlgCustomActionsBase, public Gui::Dialog::CPropertyPage
+class DlgCustomActionsImp : public DlgCustomActionsBase, public Gui::Dialog::PropertyPage
 { 
 Q_OBJECT
 
 public:
 	/** construction */
-	CDlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	DlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
 	/** destruction */
-	~CDlgCustomActionsImp();
+	~DlgCustomActionsImp();
 
 	/** 
 	 * Displays this page. If no macros were found a message box

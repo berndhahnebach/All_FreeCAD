@@ -1251,7 +1251,7 @@ void FCPopupMenu::savePreferences()
 
 struct FCCustomWidgetManagerP
 {
-  FCCustomWidgetManagerP(FCCommandManager& rclMgr, CStackBar* pStackBar)
+  FCCustomWidgetManagerP(FCCommandManager& rclMgr, StackBar* pStackBar)
     : _clCmdMgr(rclMgr), _pclStackBar(pStackBar)
   {
   }
@@ -1263,10 +1263,10 @@ struct FCCustomWidgetManagerP
   std::map <std::string,FCToolBar*>    _clCmdbars;
   std::map <std::string,FCDockWindow*> _clDocWindows;
   FCCommandManager&                    _clCmdMgr;
-  CStackBar*                           _pclStackBar;
+  StackBar*                           _pclStackBar;
 };
 
-FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, CStackBar* pStackBar)
+FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, StackBar* pStackBar)
 {
   d = new FCCustomWidgetManagerP(rclMgr, pStackBar);
 }
@@ -1647,7 +1647,7 @@ FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
 		return It->second;
 	else
 	{
-    FCToolBar *pcToolBar = new CToolboxBar( name, d->_pclStackBar, name );
+    FCToolBar *pcToolBar = new ToolboxBar( name, d->_pclStackBar, name );
 		d->_clCmdbars[name] = pcToolBar;
     d->_pclStackBar->addView(pcToolBar, name);
 		return pcToolBar;

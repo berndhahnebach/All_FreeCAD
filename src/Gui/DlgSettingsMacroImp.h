@@ -5,15 +5,15 @@
 namespace Gui {
 namespace Dialog {
 
-class CDlgSettingsMacroImp : public DlgSettingsMacro, public Gui::Dialog::PreferencePage
+class DlgSettingsMacroImp : public DlgSettingsMacro, public Gui::Dialog::PreferencePage
 { 
     Q_OBJECT
 
     virtual void ChooseDir();
 
 public:
-    CDlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~CDlgSettingsMacroImp();
+    DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~DlgSettingsMacroImp();
 
 };
 

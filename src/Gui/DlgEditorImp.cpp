@@ -42,14 +42,14 @@
 using namespace Gui::Dialog;
 
 /*
- *  Constructs a CDlgEditorSettings which is a child of 'parent', with the
+ *  Constructs a DlgEditorSettingsImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-CDlgEditorSettings::CDlgEditorSettings( QWidget* parent,  const char* name, WFlags fl )
-    : CDlgEditorSettingsBase( parent, name, fl )
+DlgEditorSettingsImp::DlgEditorSettingsImp( QWidget* parent,  const char* name, WFlags fl )
+    : DlgEditorSettingsBase( parent, name, fl )
 {
   setParamGrpPath("User parameter:BaseApp/Windows/Editor");
   setEntryName("Editor");
@@ -108,17 +108,17 @@ CDlgEditorSettings::CDlgEditorSettings( QWidget* parent,  const char* name, WFla
 /*  
  *  Destroys the object and frees any allocated resources
  */
-CDlgEditorSettings::~CDlgEditorSettings()
+DlgEditorSettingsImp::~DlgEditorSettingsImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void CDlgEditorSettings::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void DlgEditorSettingsImp::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
   // just do nothing
 }
 
-void CDlgEditorSettings::restorePreferences()
+void DlgEditorSettingsImp::restorePreferences()
 {
   std::vector<QString> names = GetDefCol().GetKeys();
 
@@ -130,7 +130,7 @@ void CDlgEditorSettings::restorePreferences()
   Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
 }
 
-void CDlgEditorSettings::savePreferences()
+void DlgEditorSettingsImp::savePreferences()
 {
   for (std::map<QString, long>::iterator it = m_clColors.begin(); it!=m_clColors.end(); ++it)
   {
@@ -140,7 +140,7 @@ void CDlgEditorSettings::savePreferences()
   hPrefGrp->SetInt("Lexer", Languages->currentItem());
 }
 
-void CDlgEditorSettings::onAssignColor(const QString& name)
+void DlgEditorSettingsImp::onAssignColor(const QString& name)
 {
   long col = m_clColors[name];
 
@@ -152,7 +152,7 @@ void CDlgEditorSettings::onAssignColor(const QString& name)
   MyCustomWidget1->setColor(QColor(r,g,b));
 }
 
-void CDlgEditorSettings::onChosenColor()
+void DlgEditorSettingsImp::onChosenColor()
 {
   QString text = ListBox1->currentText();
   if (text.isEmpty())
@@ -165,16 +165,16 @@ void CDlgEditorSettings::onChosenColor()
   m_clColors[text] = lcol;
 }
 
-void CDlgEditorSettings::onChosenFont(const QString & item)
+void DlgEditorSettingsImp::onChosenFont(const QString & item)
 {
   hPrefGrp->SetASCII("Font", item.latin1());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-CDefColorMap *CDefColorMap::_pcSingleton = NULL;
+DefColorMap *DefColorMap::_pcSingleton = NULL;
 
-CDefColorMap::CDefColorMap(void)
+DefColorMap::DefColorMap(void)
 {
 
   QColor col;
@@ -219,29 +219,29 @@ CDefColorMap::CDefColorMap(void)
   m_clDefColors["String"]         = lStrings;
 }
 
-CDefColorMap::~CDefColorMap(void)
+DefColorMap::~DefColorMap(void)
 {
 }
 
-void CDefColorMap::Destruct(void)
+void DefColorMap::Destruct(void)
 {
 	// not initialized or double destruct!
   assert(_pcSingleton);
 	delete _pcSingleton;
 }
 
-CDefColorMap &CDefColorMap::Instance(void)
+DefColorMap &DefColorMap::Instance(void)
 {
 	// not initialized?
 	if(!_pcSingleton)
 	{
-		_pcSingleton = new CDefColorMap;
+		_pcSingleton = new DefColorMap;
 	}
 
   return *_pcSingleton;
 }
 
-long CDefColorMap::GetColor(const QString& name)
+long DefColorMap::GetColor(const QString& name)
 {
 	if (m_clDefColors.find(name) != m_clDefColors.end())
 		return m_clDefColors[name];
@@ -249,7 +249,7 @@ long CDefColorMap::GetColor(const QString& name)
 		return 0;
 }
 
-std::vector<QString> CDefColorMap::GetKeys() const
+std::vector<QString> DefColorMap::GetKeys() const
 {
   std::vector<QString> keys;
 

@@ -43,11 +43,11 @@ namespace Dialog {
  * This class implements an extension of @ref QListBox.
  * If you select an item all items above will be selected automatically.
  */
-class CUndoRedoList : public QListBox
+class UndoRedoList : public QListBox
 {
 public:
-	CUndoRedoList( QWidget * parent=0, const char * name=0, WFlags f=0);
-	virtual ~CUndoRedoList(){};
+	UndoRedoList( QWidget * parent=0, const char * name=0, WFlags f=0);
+	virtual ~UndoRedoList(){};
 
 	/** 
 	 * If the left mouse button is pressed and depending on the moving direction
@@ -63,14 +63,14 @@ public:
 /**
  * This class implements the undo/redo dialog.
  */
-class CUndoRedoDlg : public QFrame
+class UndoRedoDlg : public QFrame
 { 
     Q_OBJECT
 public:
 	enum TMode {Undo, Redo};
 
-	CUndoRedoDlg( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
-	virtual ~CUndoRedoDlg();
+	UndoRedoDlg( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
+	virtual ~UndoRedoDlg();
 
 	/** Sets the mode (Undo, Redo) */
 	void setMode(TMode tMode);
@@ -98,7 +98,7 @@ protected slots:
 
 protected:
 	QLabel*          _pTextLabel; /**< Text label to show the number of selected items */
-	CUndoRedoList*   _pListBox; /**< List containing the undo/redo info */
+	UndoRedoList*   _pListBox; /**< List containing the undo/redo info */
 	TMode            _tMode; /**< Either it's a undo or a redo list */
 };
 
@@ -110,15 +110,15 @@ protected:
  * (drop-down button). Such buttons are usually used as undo/redo-buttons in a lot
  * of Windows programs.
  */
-class CToolButtonDropDownPrivate;
-class CToolButtonDropDown : public QToolButton
+class ToolButtonDropDownPrivate;
+class ToolButtonDropDown : public QToolButton
 {
   Q_OBJECT
 
 public:
 	// constructor/destructor
-	CToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
-	~CToolButtonDropDown ();
+	ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
+	~ToolButtonDropDown ();
 
 	/** Returns the size hint of a normal button plus extra space for the drop down button */
 	QSize sizeHint() const;
@@ -156,7 +156,7 @@ protected:
 private:
 	/** Draws the arrow for the drop down button */
 	void drawArrow( QPainter *, bool, int, int, int, int, const QColorGroup &, bool, const QBrush* = NULL);
-	CToolButtonDropDownPrivate* d; /**< for internal use only */
+	ToolButtonDropDownPrivate* d; /**< for internal use only */
 };
 
 } // namespace Dialog

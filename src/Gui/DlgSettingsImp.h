@@ -41,13 +41,13 @@ namespace Dialog {
  * This class implements the settings for the help-viewer
  * @see class HtmlView
  */
-class CDlgSettingsHtmlViewImp : public CDlgSettingsBase, public Gui::Dialog::PreferencePage
+class DlgSettingsHtmlViewImp : public DlgSettingsBase, public Gui::Dialog::PreferencePage
 {
 Q_OBJECT
 
 public:
-	CDlgSettingsHtmlViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~CDlgSettingsHtmlViewImp();
+	DlgSettingsHtmlViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgSettingsHtmlViewImp();
 };
 
 } // namespace Dialog

@@ -63,6 +63,8 @@
 # include <qstyle.h>
 #endif
 
+using Gui::ProgressBar;
+
 
 QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter,
                           				     QWidget *parent, const char* name )
@@ -276,44 +278,47 @@ int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QS
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-struct FCProgressBarPrivate
+namespace Gui {
+struct ProgressBarPrivate
 {
   int nElapsed; // in milliseconds
 	int nRemaining;
   QTime measureTime;
 	FCWaitingCursor* cWaitCursor;
 };
+}
 
-FCProgressBar* FCProgressBar::_pclSingleton = 0L; 
+ProgressBar* ProgressBar::_pclSingleton = 0L; 
 
-FCProgressBar* FCProgressBar::Instance()
+ProgressBar* ProgressBar::Instance()
 {
 	// not initialized?
 	if ( !_pclSingleton )
 	{
-		_pclSingleton = new FCProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
+		_pclSingleton = new ProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
 	}
 
 	return _pclSingleton;
 }
 
-FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
-: QProgressBar (parent, name, f), CSequencer()
+ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
+: QProgressBar (parent, name, f), SequencerBase()
 {
-  d = new FCProgressBarPrivate;
+  d = new Gui::ProgressBarPrivate;
 	d->cWaitCursor = 0L;
 
   setFixedWidth(120);
   // this style is very nice ;-)
-  setIndicatorFollowsStyle(false);
+//  setIndicatorFollowsStyle(false);
+  hide();
 }
 
-FCProgressBar::~FCProgressBar ()
+ProgressBar::~ProgressBar ()
 {
   delete d;
 }
 
-void FCProgressBar::enterControlEvents()
+void ProgressBar::enterControlEvents()
 {
   QWidgetList  *list = QApplication::allWidgets();
   QWidgetListIt it( *list );         // iterate over the widgets
@@ -326,7 +331,7 @@ void FCProgressBar::enterControlEvents()
   delete list;                      // delete the list, not the widgets
 }
 
-void FCProgressBar::leaveControlEvents()
+void ProgressBar::leaveControlEvents()
 {
   QWidgetList  *list = QApplication::allWidgets();
   QWidgetListIt it( *list );         // iterate over the widgets
@@ -339,7 +344,7 @@ void FCProgressBar::leaveControlEvents()
   delete list;                      // delete the list, not the widgets
 }
 
-bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
+bool ProgressBar::eventFilter(QObject* o, QEvent* e)
 {
 	if (isRunning() && e != 0L)
 	{
@@ -352,7 +357,7 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 				if (ke->key() == Qt::Key_Escape)
 				{
 					// cancel the operation
-					_bCanceled = true;
+					tryToCancel();
 				}
 
 				return true;
@@ -382,36 +387,37 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 	return QProgressBar::eventFilter(o, e);
 }
 
-bool FCProgressBar::start(const char* pszStr, unsigned long steps)
+bool ProgressBar::start(const char* pszStr, unsigned long steps)
 {
 	// base stuff
-	bool ret = CSequencer::start(pszStr, steps);
+	bool ret = SequencerBase::start(pszStr, steps);
 
-	setTotalSteps(_nTotalSteps);
+	setTotalSteps(nTotalSteps);
 
-	if ( _nInstStarted == 1 )
+	if ( pendingOperations() == 1 )
   {
+    show();
 		enterControlEvents();
     d->nElapsed = 0;
     d->measureTime.start();
 		d->cWaitCursor = new FCWaitingCursor;
   }
-	else // if (_nMaxInstStarted == _nInstStarted)
+	else
     d->measureTime.restart();
 
 	return ret;
 }
 
-bool FCProgressBar::next()
+bool ProgressBar::next()
 {
   if (!wasCanceled())
 	{
-    setProgress(_nProgress++);
+    setProgress(nProgress++);
 
 		// estimate the remaining time in milliseconds
 		int diff = d->measureTime.restart();
 		d->nElapsed += diff;
-		d->nRemaining = d->nElapsed * ( totalSteps() - _nProgress ) / _nProgress;
+		d->nRemaining = d->nElapsed * ( totalSteps() - nProgress ) / nProgress;
 	}
 	else
 	{
@@ -421,25 +427,26 @@ bool FCProgressBar::next()
 
 	qApp->processEvents();
 
-	return _nProgress < _nTotalSteps;
+	return nProgress < nTotalSteps;
 }
 
-void FCProgressBar::resetBar()
+void ProgressBar::resetData()
 {
   reset();
   setTotalSteps(0);
   setProgress(-1);
+  hide();
 	delete d->cWaitCursor;
 	d->cWaitCursor = 0L;
 	leaveControlEvents();
 
-	CSequencer::resetBar();
+	SequencerBase::resetData();
 }
 
-void FCProgressBar::abort()
+void ProgressBar::abort()
 {
   //resets
-  resetBar();
+  resetData();
 
 	bool bMute = GuiConsoleObserver::bMute;
   GuiConsoleObserver::bMute = true;
@@ -448,15 +455,15 @@ void FCProgressBar::abort()
   throw exc;
 }
 
-void FCProgressBar::setText (const char* pszTxt)
+void ProgressBar::setText (const char* pszTxt)
 {
 	// print message to the statusbar
 	QString txt = pszTxt ? pszTxt : "";
   ApplicationWindow::Instance->statusBar()->message(txt);
 }
 
-
-void FCProgressBar::drawContents( QPainter *p )
+/*
+void ProgressBar::drawContents( QPainter *p )
 {
   const int total_steps = totalSteps();
   const int progress_val = progress();
@@ -494,41 +501,54 @@ void FCProgressBar::drawContents( QPainter *p )
 #endif
 	p->drawText( bar, AlignCenter, progress_str );
 }
-
-bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
+*/
+bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
 {
-	if (QProgressBar::setIndicator(indicator, progress, totalSteps) == false)
+  return QProgressBar::setIndicator(indicator, progress, totalSteps);
+/*
+  if ( totalSteps == 0 )
+    return QProgressBar::setIndicator(indicator, progress, totalSteps);
+  bool ret = false;
+  if (progress != -1)
 	{
-		if (progress != -1)
-		{
-			int nRemaining = d->nRemaining;
-			nRemaining /= 1000;
+		int nRemaining = d->nRemaining;
+		nRemaining /= 1000;
 
-			// get time format
-			int second = nRemaining %  60; nRemaining /= 60;
-			int minute = nRemaining %  60; nRemaining /= 60;
-			int hour   = nRemaining %  60;
-			QString h,m,s;
-			if (hour < 10)   
-				h = QString("0%1").arg(hour);
-			else
-				h = QString("%1").arg(hour);
-			if (minute < 10) 
-				m = QString("0%1").arg(minute);
-			else
-				m = QString("%1").arg(minute);
-			if (second < 10) 
-				s = QString("0%1").arg(second);
-			else
-				s = QString("%1").arg(second);
+		// get time format
+		int second = nRemaining %  60; nRemaining /= 60;
+		int minute = nRemaining %  60; nRemaining /= 60;
+		int hour   = nRemaining %  60;
+		QString h,m,s;
+		if (hour < 10)   
+			h = QString("0%1").arg(hour);
+		else
+			h = QString("%1").arg(hour);
+		if (minute < 10) 
+			m = QString("0%1").arg(minute);
+		else
+			m = QString("%1").arg(minute);
+		if (second < 10) 
+			s = QString("0%1").arg(second);
+		else
+			s = QString("%1").arg(second);
 
-			// nice formating for output
-			int steps = (100 * progress) / totalSteps;
-			indicator = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
-		}
+		// nice formating for output
+		int steps = (100 * progress) / totalSteps;
+		QString ind = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
+
+    if (ind != indicator)
+    {
+      indicator = ind;
+      ret = true;
+    }
 	}
+  else
+  {
+    indicator = QString::null;
+  }
 
-	return true;
+	return ret;
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1247,56 +1267,6 @@ double FCFloatSpinBox::valueFloat() const
 void FCFloatSpinBox::stepChange () 
 {
   FCSpinBox::stepChange();
-}
-
-// --------------------------------------------------------
-
-FCAnimation* FCAnimation::_pcSingleton = 0L;
-
-void FCAnimation::Destruct(void)
-{
-	// not initialized or double destruct!
-  assert(_pcSingleton);
-	delete _pcSingleton;
-}
-
-FCAnimation* FCAnimation::Instance(void)
-{
-	// not initialized?
-	if(!_pcSingleton)
-	{
-		_pcSingleton = new FCAnimation(NULL, "Animation");
-	}
-
-  return _pcSingleton;
-}
-
-FCAnimation::FCAnimation(QWidget * parent, const char * name, WFlags f)
-  : QLabel(parent, name, f)
-{
-  setFixedWidth(50);
-  hide();
-}
-
-FCAnimation::~FCAnimation()
-{
-}
-
-void FCAnimation::startAnimation()
-{
-#ifndef QGIF_H
-  setText("Download");
-#else
-  setMovie(QMovie("trolltech.gif"));
-#endif
-#if QT_VERSION > 300
-  setMovie(QMovie("trolltech.gif"));
-#endif
-}
-
-void FCAnimation::stopAnimation()
-{
-  setText("");
 }
 
 #include "moc_Widgets.cpp"

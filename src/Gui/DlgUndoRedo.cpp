@@ -52,12 +52,12 @@
 
 using namespace Gui::Dialog;
 
-CUndoRedoList::CUndoRedoList( QWidget * parent, const char * name, WFlags f)
+UndoRedoList::UndoRedoList( QWidget * parent, const char * name, WFlags f)
   : QListBox(parent, name, f)
 {
 }
 
-void CUndoRedoList::mouseMoveEvent ( QMouseEvent * e )
+void UndoRedoList::mouseMoveEvent ( QMouseEvent * e )
 {
   if (e->state() == NoButton)
     return;
@@ -82,7 +82,7 @@ void CUndoRedoList::mouseMoveEvent ( QMouseEvent * e )
   }
 }
 
-void CUndoRedoList::mousePressEvent (QMouseEvent* e)
+void UndoRedoList::mousePressEvent (QMouseEvent* e)
 {
   QListBox::mousePressEvent(e);
 
@@ -104,15 +104,15 @@ void CUndoRedoList::mousePressEvent (QMouseEvent* e)
 // ------------------------------------------------------------
 
 /*
- *  Constructs a CUndoRedoDlg which is a child of 'parent', with the 
+ *  Constructs a UndoRedoDlg which is a child of 'parent', with the 
  *  name 'name'.' 
  */
-CUndoRedoDlg::CUndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
+UndoRedoDlg::UndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
     : QFrame( parent, name, WType_Popup),
       _tMode(tMode)
 {
   if ( !name )
-  	setName( "CUndoRedoDlg" );
+  	setName( "UndoRedoDlg" );
   resize( 160, 140 ); 
 
   setFrameStyle( WinPanel | Raised );
@@ -125,7 +125,7 @@ CUndoRedoDlg::CUndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
   _pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
 
 
-  _pListBox = new CUndoRedoList( this, "ListBox" );
+  _pListBox = new UndoRedoList( this, "ListBox" );
   _pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
   _pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
   _pListBox->setSelectionMode(QListBox::Multi);
@@ -139,12 +139,12 @@ CUndoRedoDlg::CUndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
 /*  
  *  Destroys the object and frees any allocated resources
  */
-CUndoRedoDlg::~CUndoRedoDlg()
+UndoRedoDlg::~UndoRedoDlg()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-void CUndoRedoDlg::fetchUndoRedoInfo() 
+void UndoRedoDlg::fetchUndoRedoInfo() 
 {
 	std::vector<std::string> vecReUndos;
 	FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
@@ -165,7 +165,7 @@ void CUndoRedoDlg::fetchUndoRedoInfo()
 
 }
 
-void CUndoRedoDlg::selChangeUndoRedoList() 
+void UndoRedoDlg::selChangeUndoRedoList() 
 {
   // close the listbox
 //  close();
@@ -178,23 +178,23 @@ void CUndoRedoDlg::selChangeUndoRedoList()
   _pTextLabel->setText(text);
 }
 
-void CUndoRedoDlg::setMode(TMode tMode)
+void UndoRedoDlg::setMode(TMode tMode)
 {
   _tMode = tMode;
 }
 
-CUndoRedoDlg::TMode CUndoRedoDlg::getMode() const
+UndoRedoDlg::TMode UndoRedoDlg::getMode() const
 {
   return _tMode;
 }
 
-void CUndoRedoDlg::updateUndoRedoList()
+void UndoRedoDlg::updateUndoRedoList()
 {
   _pListBox->clear();
   fetchUndoRedoInfo();
 }
 
-void CUndoRedoDlg::selected()
+void UndoRedoDlg::selected()
 {
   close();
   emit clickedListBox();
@@ -286,16 +286,16 @@ static const char *pArrow[]={
 namespace Gui {
 namespace Dialog {
 
-class CToolButtonDropDownPrivate
+class ToolButtonDropDownPrivate
 {
   public:
-    CToolButtonDropDownPrivate();
+    ToolButtonDropDownPrivate();
     bool bEntered;
     bool bDropDown;
     bool bActButton;
 };
 
-CToolButtonDropDownPrivate::CToolButtonDropDownPrivate()
+ToolButtonDropDownPrivate::ToolButtonDropDownPrivate()
   : bEntered(false), bDropDown(false), bActButton(false)
 {
 }
@@ -303,22 +303,22 @@ CToolButtonDropDownPrivate::CToolButtonDropDownPrivate()
 } // namespace Dialog
 } // namespace Gui
 
-CToolButtonDropDown::CToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
+ToolButtonDropDown::ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
   : QToolButton(parent, name), _pWidget(pWidget)
 {
-  d = new CToolButtonDropDownPrivate;
+  d = new ToolButtonDropDownPrivate;
 
   // set the pixmap onto the button
   setIconSet(rclPixmap);
   setAutoRaise(true);
 }
 
-CToolButtonDropDown::~CToolButtonDropDown()
+ToolButtonDropDown::~ToolButtonDropDown()
 {
   delete d;
 }
 
-void CToolButtonDropDown::popupWidget()
+void ToolButtonDropDown::popupWidget()
 {
   // popup the widget
   if (_pWidget)
@@ -353,17 +353,17 @@ void CToolButtonDropDown::popupWidget()
   }
 }
 
-void CToolButtonDropDown::setWidget(QWidget* pWidget)
+void ToolButtonDropDown::setWidget(QWidget* pWidget)
 {
   _pWidget = pWidget;
 }
 
-QWidget* CToolButtonDropDown::getWidget()
+QWidget* ToolButtonDropDown::getWidget()
 {
   return _pWidget;
 }
 
-void CToolButtonDropDown::drawButton( QPainter * p )
+void ToolButtonDropDown::drawButton( QPainter * p )
 {
   QToolButton::drawButton(p);
 
@@ -392,7 +392,7 @@ void CToolButtonDropDown::drawButton( QPainter * p )
   }
 }
 
-void CToolButtonDropDown::drawButtonLabel( QPainter * p )
+void ToolButtonDropDown::drawButtonLabel( QPainter * p )
 {
   // get draw areas for the arrow and the actual icon
   int sx = 0;
@@ -532,7 +532,7 @@ void CToolButtonDropDown::drawButtonLabel( QPainter * p )
   }
 }
 
-void CToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w, int h, 
+void ToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w, int h, 
                                       const QColorGroup &g, bool enabled, const QBrush *fill )
 {
   QPointArray a;
@@ -570,7 +570,7 @@ void CToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w
   p->setPen( savePen );
 }
 
-QSize CToolButtonDropDown::sizeHint() const
+QSize ToolButtonDropDown::sizeHint() const
 {
   // take extra space for the drop down area
   QSize s = QToolButton::sizeHint();
@@ -578,26 +578,26 @@ QSize CToolButtonDropDown::sizeHint() const
   return s;
 }
 
-void CToolButtonDropDown::enterEvent ( QEvent * e )
+void ToolButtonDropDown::enterEvent ( QEvent * e )
 {
   d->bEntered = true;
   QToolButton::enterEvent(e);
 }
 
-void CToolButtonDropDown::leaveEvent(QEvent* e)
+void ToolButtonDropDown::leaveEvent(QEvent* e)
 {
   d->bEntered = false;
   QToolButton::leaveEvent(e);
 }
 
-void CToolButtonDropDown::paintEvent( QPaintEvent *e )
+void ToolButtonDropDown::paintEvent( QPaintEvent *e )
 {
   if (d->bEntered)
     d->bEntered = isEnabled();
   QToolButton::paintEvent(e);
 }
 
-void CToolButtonDropDown::mousePressEvent( QMouseEvent *e )
+void ToolButtonDropDown::mousePressEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
   	return;
@@ -617,7 +617,7 @@ void CToolButtonDropDown::mousePressEvent( QMouseEvent *e )
   QToolButton::mousePressEvent(e);
 }
 
-void CToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
+void ToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
   	return;

@@ -42,13 +42,13 @@ namespace Dialog {
 /**
  * Shows an overview of all available commands of all groups and modules.
  */
-class CDlgCustomCommandsImp : public CDlgCustomCommandsBase, public Gui::Dialog::CPropertyPage
+class DlgCustomCommandsImp : public DlgCustomCommandsBase, public Gui::Dialog::PropertyPage
 { 
   Q_OBJECT
 
 public:
-	CDlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~CDlgCustomCommandsImp();
+	DlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgCustomCommandsImp();
 
 protected:
 	void apply();

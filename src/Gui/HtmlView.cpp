@@ -748,7 +748,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclBrowser = new FCTextBrowser(this, "FCHelpViewer");
   pclBrowser->setMinWidthToReach(240);
   // set the path where the factory is looking for if you set a new source
-  pclBrowser->mimeSourceFactory()->setFilePath( d->m_strDocDir ); 
+  pclBrowser->mimeSourceFactory()->setFilePath( d->m_strDocDir );
   pclBrowser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
   connect(pclBrowser, SIGNAL(textChanged()), this, SLOT(TextChanged()));
   connect(pclBrowser, SIGNAL(startExtBrowser(QString)), this, SLOT(StartExtBrowser(QString)));
@@ -968,7 +968,7 @@ void FCHtmlView::SetForwardAvailable( bool b)
 QString FCHtmlView::GetDocDirectory()
 {
 	QString home(GetApplication().GetHomePath()); 
-  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "/Doc/free-cad.sourceforge.net/").c_str();
+  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
 
   QDir dir (home + path);
 
@@ -1052,7 +1052,7 @@ void FCHtmlView::TextChanged()
   // insert new item into the combo box
   //
   //
-  if ( pclBrowser->documentTitle().isNull() ) 
+  if ( pclBrowser->documentTitle().isNull() )
   {
   	setCaption( d->m_strCaption + pclBrowser->context() );
 	  d->selectedURL = pclBrowser->context();

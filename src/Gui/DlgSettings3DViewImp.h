@@ -38,7 +38,7 @@
 namespace Gui {
 namespace Dialog {
 
-class CDlgSettings3DViewImp : public DlgSettings3DView, public Gui::Dialog::PreferencePage
+class DlgSettings3DViewImp : public DlgSettings3DView, public Gui::Dialog::PreferencePage
 { 
     Q_OBJECT
 
@@ -48,8 +48,8 @@ class CDlgSettings3DViewImp : public DlgSettings3DView, public Gui::Dialog::Pref
 
 
 public:
-    CDlgSettings3DViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~CDlgSettings3DViewImp();
+    DlgSettings3DViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~DlgSettings3DViewImp();
 
 };
 

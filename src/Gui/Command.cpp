@@ -75,9 +75,9 @@ bool FCAction::addTo(QWidget *w)
 		}
 	}
 
-    if (w->inherits("Gui::CCommandBar"))
+    if (w->inherits("Gui::CommandBar"))
     {
-  		((CCommandBar*)w)->addedButton(menuText());
+  		((CommandBar*)w)->addedButton(menuText());
     }
   }
   else
@@ -192,9 +192,9 @@ bool FCMultiAction::addTo(QWidget *w)
       combo->insertItem(FCIcon, it->c_str());
     }
 
-    if (w->inherits("Gui::CCommandBar"))
+    if (w->inherits("Gui::CommandBar"))
     {
-  		((CCommandBar*)w)->addedButton(menuText());
+  		((CommandBar*)w)->addedButton(menuText());
     }
   }
   else if (w->inherits("QPopupMenu"))
@@ -339,14 +339,14 @@ bool FCUndoAction::addTo(QWidget* w)
   {
     QWidget* dlg = ((FCCmdUndo*)GetCommand())->GetWidget();
 
-		QToolButton* button = new CToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+		QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
     button->setToggleButton( isToggleAction() );
     button->setIconSet( iconSet() );
 
     // do this before the tool tip stuff
-    if (w->inherits("Gui::CCommandBar"))
+    if (w->inherits("Gui::CommandBar"))
     {
-  		((CCommandBar*)w)->addedButton(menuText());
+  		((CommandBar*)w)->addedButton(menuText());
       button->setTextLabel(menuText());
       button->setUsesTextLabel(true);
     }
@@ -377,14 +377,14 @@ bool FCRedoAction::addTo(QWidget* w)
   {
     QWidget* dlg = ((FCCmdRedo*)GetCommand())->GetWidget();
 
-		QToolButton* button = new CToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+		QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
     button->setToggleButton( isToggleAction() );
     button->setIconSet( iconSet() );
 
     // do this before the tool tip stuff
-    if (w->inherits("Gui::CCommandBar"))
+    if (w->inherits("Gui::CommandBar"))
     {
-  		((CCommandBar*)w)->addedButton(menuText());
+  		((CommandBar*)w)->addedButton(menuText());
       button->setTextLabel(menuText());
       button->setUsesTextLabel(true);
     }

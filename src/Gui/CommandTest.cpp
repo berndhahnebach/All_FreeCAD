@@ -392,8 +392,8 @@ FCCmdTest7::FCCmdTest7()
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
-	sMenuText		= "Test7";
-	sToolTipText	= "Test function 7";
+	sMenuText		= "Test progress bar";
+	sToolTipText	= "Test progress bar";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Std_Tool7";
@@ -402,16 +402,28 @@ FCCmdTest7::FCCmdTest7()
 
 void FCCmdTest7::Activated(int iMsg)
 {
+	try
+	{
+		unsigned long steps = 1000;
+		Base::Sequencer().start("Starting progress bar", 0);
+		
+		for (unsigned long i=0; i<steps;i++)
+		{
+			Base::Sequencer().next();
+			QWaitCondition().wait(30);
+		}
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
-	if(!pcDoc) return;
-
+		Base::Sequencer().stop();
+	}
+	catch (...)
+	{
+	}
 }
 
 
 bool FCCmdTest7::IsActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+	return ( !Base::Sequencer().isRunning() );
 }
 
 

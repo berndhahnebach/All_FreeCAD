@@ -42,21 +42,21 @@
 
 using namespace Gui::Dialog;
 
-CDlgTipOfTheDayImp::CDlgTipOfTheDayImp( QWidget* parent, const char* name )
-	: CDlgTipOfTheDayBase( parent, name, true, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
+DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name )
+	: DlgTipOfTheDayBase( parent, name, true, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
 {
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
   bool tips = hGrp->GetBool("Tipoftheday", true);
 	checkShowTips->setChecked(tips);
 }
 
-CDlgTipOfTheDayImp::~CDlgTipOfTheDayImp()
+DlgTipOfTheDayImp::~DlgTipOfTheDayImp()
 {
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
   hGrp->SetBool("Tipoftheday", checkShowTips->isChecked());
 }
 
-void CDlgTipOfTheDayImp::onNext()
+void DlgTipOfTheDayImp::onNext()
 {
 	textTip->setText("Tip of the day");
 }

@@ -57,7 +57,7 @@ namespace Dialog {
  * append(<objectname>->getHandler());
  * to use the full automation
  */
-class GuiExport CDlgPreferencesImp : public QDialog, public FCWindowParameter
+class GuiExport DlgPreferencesImp : public QDialog, public FCWindowParameter
 { 
 Q_OBJECT
 
@@ -65,7 +65,7 @@ public:
 	/**
 	 * Adds a new preference page. The preference pages are also
 	 * registered with their captions in the FCWidgetFactory to
-	 * produce them at construction time of CDlgPreferencesImp.
+	 * produce them at construction time of DlgPreferencesImp.
 	 * All new added pages are mapped to the last added group.
 	 * @addGroup
 	 * @see FCWidgetFactory
@@ -76,9 +76,9 @@ public:
 	static void addGroup(const QString& name);
 
 	/// construction
-	CDlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+	DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
 	/// destruction
-	~CDlgPreferencesImp();
+	~DlgPreferencesImp();
 
 protected slots:
 	/// click the OK button

@@ -51,7 +51,7 @@
 using namespace Gui;
 using namespace Gui::DockWnd;
 
-CButtonGroup::CButtonGroup(QWidget * parent, const char * name)
+ButtonGroup::ButtonGroup(QWidget * parent, const char * name)
 : QButtonGroup(parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
   pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
@@ -62,7 +62,7 @@ CButtonGroup::CButtonGroup(QWidget * parent, const char * name)
   initialize();
 }
 
-CButtonGroup::CButtonGroup(const QString & title, QWidget * parent, const char * name)
+ButtonGroup::ButtonGroup(const QString & title, QWidget * parent, const char * name)
 : QButtonGroup(title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
   pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
@@ -73,7 +73,7 @@ CButtonGroup::CButtonGroup(const QString & title, QWidget * parent, const char *
   initialize();
 }
 
-CButtonGroup::CButtonGroup(int columns, Orientation o, QWidget * parent, const char * name)
+ButtonGroup::ButtonGroup(int columns, Orientation o, QWidget * parent, const char * name)
 : QButtonGroup(columns, o, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
   pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
@@ -84,7 +84,7 @@ CButtonGroup::CButtonGroup(int columns, Orientation o, QWidget * parent, const c
   initialize();
 }
 
-CButtonGroup::CButtonGroup(int columns, Orientation o, const QString & title, QWidget * parent, const char * name)
+ButtonGroup::ButtonGroup(int columns, Orientation o, const QString & title, QWidget * parent, const char * name)
 : QButtonGroup(columns, o, title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
   pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
@@ -95,11 +95,11 @@ CButtonGroup::CButtonGroup(int columns, Orientation o, const QString & title, QW
   initialize();
 }
 
-CButtonGroup::~CButtonGroup(void)
+ButtonGroup::~ButtonGroup(void)
 {
 }
 
-void CButtonGroup::initialize()
+void ButtonGroup::initialize()
 {
   m_Color = backgroundColor();
 
@@ -111,7 +111,7 @@ void CButtonGroup::initialize()
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
 }
 
-void CButtonGroup::resizeEvent (QResizeEvent * e)
+void ButtonGroup::resizeEvent (QResizeEvent * e)
 {
   QButtonGroup::resizeEvent(e);
 
@@ -130,7 +130,7 @@ void CButtonGroup::resizeEvent (QResizeEvent * e)
   }
 }
 
-void CButtonGroup::resizeColumns(void)
+void ButtonGroup::resizeColumns(void)
 {
   int cols, rows;
   int h = height();
@@ -164,7 +164,7 @@ void CButtonGroup::resizeColumns(void)
   m_iHeight = height();
 }
 
-void CButtonGroup::mousePressEvent( QMouseEvent * e )
+void ButtonGroup::mousePressEvent( QMouseEvent * e )
 {
   if (e->button() == LeftButton)
   {
@@ -184,7 +184,7 @@ void CButtonGroup::mousePressEvent( QMouseEvent * e )
   }
 }
 
-void CButtonGroup::popupMenuAboutToShow()
+void ButtonGroup::popupMenuAboutToShow()
 {
   m_Popup->clear();
 
@@ -205,7 +205,7 @@ void CButtonGroup::popupMenuAboutToShow()
   m_Popup->insertItem(tr("Reset background color"), this, SLOT(resetBackgroundColor()));
 }
 
-void CButtonGroup::setNewBackgroundColor()
+void ButtonGroup::setNewBackgroundColor()
 {
   QColor color = QColorDialog::getColor ( backgroundColor(), this);
   if (color.isValid())
@@ -214,13 +214,13 @@ void CButtonGroup::setNewBackgroundColor()
   }
 }
 
-void CButtonGroup::resetBackgroundColor()
+void ButtonGroup::resetBackgroundColor()
 {
   if (m_Color.isValid())
     setPalette(QPalette(m_Color, m_Color));
 }
 
-void CButtonGroup::showIcons()
+void ButtonGroup::showIcons()
 {
   int cnt = count();
 
@@ -237,7 +237,7 @@ void CButtonGroup::showIcons()
   m_Pixmaps.clear();
 }
 
-void CButtonGroup::showText()
+void ButtonGroup::showText()
 {
   m_Pixmaps.clear();
   int cnt = count();
@@ -260,7 +260,7 @@ void CButtonGroup::showText()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-CCommandBar::CCommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar")
 {
   // remove immediately from main window again
@@ -278,19 +278,19 @@ CCommandBar::CCommandBar ( const QString & label, QWidget *w, const char * name,
   bSaveColor = true;
 }
 
-CCommandBar::~CCommandBar ()
+CommandBar::~CommandBar ()
 {
   delete m_Popup;
   delete m_Dummy;
 }
 
-void CCommandBar::clearAll()
+void CommandBar::clearAll()
 {
   FCToolBar::clearAll();
   m_Dummy = NULL;
 }
 
-void CCommandBar::addedButton(QString text)
+void CommandBar::addedButton(QString text)
 {
 #if QT_VERSION > 230
   delete m_Dummy;
@@ -304,7 +304,7 @@ void CCommandBar::addedButton(QString text)
 #endif
 }
 
-void CCommandBar::mousePressEvent( QMouseEvent * e )
+void CommandBar::mousePressEvent( QMouseEvent * e )
 {
   if (e->button() == LeftButton)
   {
@@ -318,11 +318,11 @@ void CCommandBar::mousePressEvent( QMouseEvent * e )
   }
 }
 
-void CCommandBar::cleanupEventFilter()
+void CommandBar::cleanupEventFilter()
 {
 }
 
-void CCommandBar::popupMenuAboutToShow()
+void CommandBar::popupMenuAboutToShow()
 {
   m_Popup->clear();
 
@@ -332,7 +332,7 @@ void CCommandBar::popupMenuAboutToShow()
   ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
 }
 
-void CCommandBar::setNewBackgroundColor()
+void CommandBar::setNewBackgroundColor()
 {
   QColor color = QColorDialog::getColor ( backgroundColor(), this);
   if (color.isValid())
@@ -341,7 +341,7 @@ void CCommandBar::setNewBackgroundColor()
   }
 }
 
-void CCommandBar::resetBackgroundColor()
+void CommandBar::resetBackgroundColor()
 {
   if (m_Color.isValid())
     setPalette(QPalette(m_Color, m_Color));
@@ -349,16 +349,16 @@ void CCommandBar::resetBackgroundColor()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-CToolboxBar::CToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: CCommandBar(label, w, name, f)
+ToolboxBar::ToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+: CommandBar(label, w, name, f)
 {
 }
 
-CToolboxBar::~CToolboxBar ()
+ToolboxBar::~ToolboxBar ()
 {
 }
 
-void CToolboxBar::addedButton(QString text)
+void ToolboxBar::addedButton(QString text)
 {
   const QObjectList *l = children();
   QObjectListIt it(*l);
@@ -373,21 +373,21 @@ void CToolboxBar::addedButton(QString text)
     }
   }
 
-  CCommandBar::addedButton(text);
+  CommandBar::addedButton(text);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-COutlookBar::COutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: CCommandBar(label, w, name, f)
+OutlookBar::OutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+: CommandBar(label, w, name, f)
 {
 }
 
-COutlookBar::~COutlookBar ()
+OutlookBar::~OutlookBar ()
 {
 }
 
-void COutlookBar::addedButton(QString text)
+void OutlookBar::addedButton(QString text)
 {
   const QObjectList *l = children();
   QObjectListIt it(*l);
@@ -403,7 +403,7 @@ void COutlookBar::addedButton(QString text)
     }
   }
 
-  CCommandBar::addedButton(text);
+  CommandBar::addedButton(text);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -414,7 +414,7 @@ void COutlookBar::addedButton(QString text)
  * This constructor allows you to set the name of the button, and tell it
  * what widget it shall contain.  It also sets the default colors.
  */
-QStackBarBtn::QStackBarBtn( QWidget *object, CStackBar *parent, const char *name ) 
+QStackBarBtn::QStackBarBtn( QWidget *object, StackBar *parent, const char *name ) 
  : QToolButton( parent, name ), bIsSelected( false ), w(object), pStackBar(parent)
 {
   setBackgroundMode( PaletteLight ); 
@@ -426,7 +426,7 @@ QStackBarBtn::QStackBarBtn( QWidget *object, CStackBar *parent, const char *name
  * This constructor differs from the above one only in that you cannot
  * specify what widget the button shall contain.
  */
-QStackBarBtn::QStackBarBtn( CStackBar *parent, const char *name ) 
+QStackBarBtn::QStackBarBtn( StackBar *parent, const char *name ) 
  : QToolButton( parent, name ), bIsSelected( false ), pStackBar(parent)
 {
   setBackgroundMode( PaletteLight ); 
@@ -579,7 +579,7 @@ void QStackBarBtn::mousePressEvent ( QMouseEvent * e )
 /////////////////////////////////////////////////////////////////////////////////////
 
 /*!
-  \class CStackBar
+  \class StackBar
   \brief Implements a button-bar similar to that of MS Outlook
 
   Use this widget to implement multiple pages of widgets in a single vertical
@@ -592,10 +592,10 @@ void QStackBarBtn::mousePressEvent ( QMouseEvent * e )
   
 \code
 
-	CStackBar *sb;
+	StackBar *sb;
 	QListBox *l1;
 	
-	sb = new CStackBar(pParent, NULL);
+	sb = new StackBar(pParent, NULL);
 	l1 = new QListBox *l1 = new QListBox( sb );
 	
 	l1->insertItem("Item 1");
@@ -615,7 +615,7 @@ void QStackBarBtn::mousePressEvent ( QMouseEvent * e )
  * \brief Default constructor
  *
  */
-CStackBar::CStackBar( QWidget *parent, const char *name )
+StackBar::StackBar( QWidget *parent, const char *name )
 	: FCDockWindow( parent, name )
 {
   m_pCurPage  = NULL;
@@ -642,7 +642,7 @@ CStackBar::CStackBar( QWidget *parent, const char *name )
  *
  * Destroys the list of QStackBarBtns
 */
-CStackBar::~CStackBar()
+StackBar::~StackBar()
 {
   // detach the command bar
   const char* strGroupPath = "User parameter:BaseApp/Windows/CmdBar";
@@ -652,11 +652,11 @@ CStackBar::~CStackBar()
 }
 
 /*!
- * \brief Add a new page to the CStackBar
+ * \brief Add a new page to the StackBar
  *
  * Call this to add a new page to the widget.
 */
-bool CStackBar::addView(QWidget* page, const QString &name)
+bool StackBar::addView(QWidget* page, const QString &name)
 {
   if (!page)
 	{
@@ -709,7 +709,7 @@ bool CStackBar::addView(QWidget* page, const QString &name)
  *
  * Checks if there is a widget with the name 'sName' contained by the widget list
 */
-bool CStackBar::hasView(QWidget* w)
+bool StackBar::hasView(QWidget* w)
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -724,11 +724,11 @@ bool CStackBar::hasView(QWidget* w)
 }
 
 /*!
- * \brief Remove a page from the CStackBar
+ * \brief Remove a page from the StackBar
  *
  * Call this to remove a page from the widget.
 */
-bool CStackBar::remView(QWidget* w)
+bool StackBar::remView(QWidget* w)
 {
   bool bSucceed = false;
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
@@ -762,7 +762,7 @@ bool CStackBar::remView(QWidget* w)
  * Call this to set the current page.  The widget will refresh and
  * rearrange itself.
  */
-bool CStackBar::showView(QWidget* w)
+bool StackBar::showView(QWidget* w)
 {
   bool bSucced = false;
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
@@ -785,7 +785,7 @@ bool CStackBar::showView(QWidget* w)
   return bSucced;
 }
 
-QWidget* CStackBar::showedView()
+QWidget* StackBar::showedView()
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -801,7 +801,7 @@ QWidget* CStackBar::showedView()
   return NULL;
 }
 
-void CStackBar::showPage(QWidget* w)
+void StackBar::showPage(QWidget* w)
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -820,7 +820,7 @@ void CStackBar::showPage(QWidget* w)
   }
 }
 
-void CStackBar::hidePage(QWidget* w)
+void StackBar::hidePage(QWidget* w)
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -840,7 +840,7 @@ void CStackBar::hidePage(QWidget* w)
   }
 }
 
-bool CStackBar::isPageVisible(QWidget* w)
+bool StackBar::isPageVisible(QWidget* w)
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -853,7 +853,7 @@ bool CStackBar::isPageVisible(QWidget* w)
   return false;
 }
 
-QStackBarBtn* CStackBar::firstPageVisible()
+QStackBarBtn* StackBar::firstPageVisible()
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -866,7 +866,7 @@ QStackBarBtn* CStackBar::firstPageVisible()
   return NULL;
 }
 
-void CStackBar::buttonClicked()
+void StackBar::buttonClicked()
 {
   QStackBarBtn *tb = (QStackBarBtn*)sender();
   QScrollView *page = NULL;
@@ -902,11 +902,11 @@ void CStackBar::buttonClicked()
 }
 
 /*!
- * \brief Updates the CStackBar
+ * \brief Updates the StackBar
  *
  * Duh
 */
-void CStackBar::updatePages()
+void StackBar::updatePages()
 {
   bool after = false;
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
@@ -917,7 +917,7 @@ void CStackBar::updatePages()
   }
 }
 
-void CStackBar::timerEvent ( QTimerEvent * )
+void StackBar::timerEvent ( QTimerEvent * )
 {
   if (m_pAnimCurPage->height() > m_lAnimCount)
   {
@@ -941,7 +941,7 @@ void CStackBar::timerEvent ( QTimerEvent * )
   }
 }
 
-void CStackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
+void StackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
 {
   if (!pCurPage || !pNewPage)
     return; // one page is invalid
@@ -960,7 +960,7 @@ void CStackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
   startTimer(5);
 }
 
-void CStackBar::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
+void StackBar::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   if (strcmp(sReason, "SpeedAnimationCmdBar") == 0)

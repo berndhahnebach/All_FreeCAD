@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI>
-<class>CDlgGeneralBase</class>
+<class>DlgGeneralBase</class>
 <widget>
     <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>CDlgGeneralBase</cstring>
+        <cstring>DlgGeneralBase</cstring>
     </property>
     <property>
         <name>geometry</name>
@@ -634,7 +634,7 @@
     <connection>
         <sender>Languages</sender>
         <signal>activated(const QString&amp;)</signal>
-        <receiver>CDlgGeneralBase</receiver>
+        <receiver>DlgGeneralBase</receiver>
         <slot>onChooseLanguage(const QString&amp;)</slot>
     </connection>
     <slot access="protected">onChooseLanguage(const QString&amp;)</slot>

@@ -43,10 +43,10 @@
 using namespace Gui::DockWnd;
 
 /*
- *  Constructs a CReportView which is a child of 'parent', with the 
+ *  Constructs a ReportView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-CReportView::CReportView( QWidget* parent,  const char* name, WFlags fl )
+ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
     : FCDockWindow( parent, name, fl )
 {
   if ( !name )
@@ -73,7 +73,7 @@ CReportView::CReportView( QWidget* parent,  const char* name, WFlags fl )
 /*  
  *  Destroys the object and frees any allocated resources
  */
-CReportView::~CReportView()
+ReportView::~ReportView()
 {
     // no need to delete child widgets, Qt does it all for us
 }

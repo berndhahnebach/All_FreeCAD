@@ -41,11 +41,11 @@ namespace Dialog {
 /** 
  * Implementation of the well-known Tip-of-the-day dialog.
  */
-class CDlgTipOfTheDayImp : public CDlgTipOfTheDayBase
+class DlgTipOfTheDayImp : public DlgTipOfTheDayBase
 {
 	public:
-		CDlgTipOfTheDayImp( QWidget* parent = 0, const char* name = 0);
-		~CDlgTipOfTheDayImp();
+		DlgTipOfTheDayImp( QWidget* parent = 0, const char* name = 0);
+		~DlgTipOfTheDayImp();
 
 		/** Show next tip taking from database */
 		void onNext();

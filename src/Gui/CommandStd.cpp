@@ -95,6 +95,7 @@
 #include "DlgSettingsImp.h"
 
 using Base::Console;
+using Base::Sequencer;
 
 
 
@@ -321,7 +322,7 @@ FCCmdUndo::FCCmdUndo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Undo";
 	iAccel			= Qt::CTRL+Qt::Key_Z;
-  _pclUndoRedoWidget = new Gui::Dialog::CUndoRedoDlg(ApplicationWindow::Instance, "Undo");
+  _pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Undo");
 }
 
 
@@ -373,7 +374,7 @@ FCCmdRedo::FCCmdRedo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Redo";
 	iAccel			= Qt::CTRL+Qt::Key_Y;
-	_pclUndoRedoWidget = new Gui::Dialog::CUndoRedoDlg(ApplicationWindow::Instance, "Redo");
+	_pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Redo");
 }
 
 
@@ -813,7 +814,7 @@ void FCCmdOnlineHelp::Activated(int iMsg)
   {
     FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
     std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
-    std::string prx = hGrp->GetASCII("ProxyText", "http://prx:8080");
+    std::string prx = hGrp->GetASCII("ProxyText", "");
     bool bUseProxy  = hGrp->GetBool ("UseProxy", false);
 
     if (bUseProxy)
@@ -858,7 +859,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     case FCBaseProcess::processStarted:
     {
       Console().Message("Download started...\n");
-      FCAnimation::Instance()->startAnimation();
+      Sequencer().start("Download online help", 0);
     } break;
 
     // 'exited' signal
@@ -870,7 +871,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
         QMessageBox::information(ApplicationWindow::Instance, "Download Online help", "Download finished.");
       }
 
-      FCAnimation::Instance()->stopAnimation();
+      Sequencer().stop();
     } break;
 
     // 'failed' signal
@@ -886,7 +887,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     case FCBaseProcess::processKilled:
     {
       Console().Warning("Download was canceled.\n");
-      FCAnimation::Instance()->stopAnimation();
+      Sequencer().stop();
     } break;
 
     // 'output' signal or 'error output' signal
@@ -895,6 +896,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     {
       try
       {
+        Sequencer().next();
         std::string msg = process->message();
 
         // search for an error message
@@ -904,6 +906,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
           int pos2 = msg.find('.', pos);
           std::string substr = msg.substr(pos+8, pos2-pos-8+1);
           fail = true;
+          Sequencer().stop();
           Console().Error("%s\n", substr.c_str());
 
           if (process->isRunning())
@@ -1140,7 +1143,7 @@ FCCmdDlgPreferences::FCCmdDlgPreferences()
 
 void FCCmdDlgPreferences::Activated(int iMsg)
 {
-	Gui::Dialog::CDlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
+	Gui::Dialog::DlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
 	cDlg.exec();
 }
 
@@ -1256,7 +1259,7 @@ FCCmdDlgCustomize::FCCmdDlgCustomize()
 
 void FCCmdDlgCustomize::Activated(int iMsg)
 {
-	Gui::Dialog::CDlgCustomizeImp cDlg(GetAppWnd(),"CustomizeDialog",true);
+	Gui::Dialog::DlgCustomizeImp cDlg(GetAppWnd(),"CustomizeDialog",true);
 	cDlg.exec();
 }
 

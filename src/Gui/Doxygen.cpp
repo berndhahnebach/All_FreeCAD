@@ -11,4 +11,8 @@
   and so on......
 */
 
-namespace Gui {}
+
+/*! \namespace Gui::Dialog
+    \brief The namespace of the FreeCAD dialogs
+*/
+
