@@ -60,7 +60,7 @@ FCUndoRedoList::FCUndoRedoList( QWidget * parent, const char * name, WFlags f)
 {
 }
 
-/* 
+/*
  *  Constructs a FCUndoRedoDlg which is a child of 'parent', with the 
  *  name 'name'.' 
  */
@@ -432,24 +432,42 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   	QPixmap pm;
 	  if ( usesBigPixmap() ) 
     {
+#if QT_VERSION < 300
 	    if ( !isEnabled() )
 		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Disabled );
 	    else if ( uses3D() )
 		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Active );
 	    else
 		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Normal );
-	  } 
-    else 
+#else
+	    if ( !isEnabled() )
+		    pm = iconSet().pixmap( QIconSet::Large, QIconSet::Disabled );
+	    else if ( uses3D() )
+		    pm = iconSet().pixmap( QIconSet::Large, QIconSet::Active );
+	    else
+		    pm = iconSet().pixmap( QIconSet::Large, QIconSet::Normal );
+#endif
+	  }
+    else
     {
+#if QT_VERSION < 300
 	    if ( !isEnabled() )
     		pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Disabled );
 	    else if ( uses3D() )
 		    pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Active );
 	    else
 		    pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Normal );
+#else
+	    if ( !isEnabled() )
+    		    pm = iconSet().pixmap( QIconSet::Small, QIconSet::Disabled );
+	    else if ( uses3D() )
+		    pm = iconSet().pixmap( QIconSet::Small, QIconSet::Active );
+	    else
+		    pm = iconSet().pixmap( QIconSet::Small, QIconSet::Normal );
+#endif
 	  }
 
-  	if ( usesTextLabel() ) 
+  	if ( usesTextLabel() )
     {
 	    int fh = fontMetrics().height();
       if (isDown()&&d->bActButton&&!d->bDropDown)

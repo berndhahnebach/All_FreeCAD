@@ -30,8 +30,9 @@
 #define __FC_WIDGETS_H__
 
 #ifndef _PreComp_
+# include <qbutton.h>
 # include <qprogressbar.h>
-//#include <qlabel.h>
+# include <qlabel.h>
 # include <qiconview.h>
 //#include <qdragobject.h>
 //#include <qstatusbar.h>
@@ -39,10 +40,12 @@
 # include <qfiledialog.h>
 # include <qmessagebox.h>
 //#include <qvariant.h>
-//#include <qdialog.h>
+# include <qdialog.h>
 # include <qspinbox.h>
 # include <qlistview.h>
 # include <qlineedit.h>
+# include <string>
+# include <vector>
 #endif
 
 class QHBoxLayout;
@@ -288,7 +291,7 @@ class FCCheckListDlg : public QDialog
     /** set all items to be shown in the list */
     void setItems(const std::vector<std::string>& items);
     /** get all checked items */
-    std::vector<int> getCheckedItems(); 
+    std::vector<int> getCheckedItems();
     void show ();
     void hide ();
 
@@ -313,7 +316,7 @@ class FCColorButton : public QButton
     Q_OBJECT
 
     Q_PROPERTY( QColor color READ color WRITE setColor )
- 
+
  public:
     /// construction
     FCColorButton( QWidget* parent = 0, const char* name = 0 );

@@ -224,6 +224,5 @@ void ParameterLabelGroup::activate ()
 
 
 #include "DlgParameter.cpp"
-
 #include "moc_DlgParameter.cpp"
 #include "moc_DlgParameterImp.cpp"

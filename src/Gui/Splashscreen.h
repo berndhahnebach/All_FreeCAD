@@ -31,9 +31,9 @@
 #ifndef __SPLASHSCREEN_H__
 #define __SPLASHSCREEN_H__
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QLabel;
 class QProgressBar;
 class QTextView;
@@ -84,7 +84,7 @@ class GuiExport FCSplashWidget : public QLabel, public QThread
 
 /** Splasher at startup */
 class GuiExport FCSplashScreen : public FCSplashWidget
-{ 
+{
   Q_OBJECT
 
   public:
@@ -103,7 +103,7 @@ class GuiExport FCSplashScreen : public FCSplashWidget
 
 /** Splasher for the help dialog */
 class GuiExport FCSplashAbout : public FCSplashWidget
-{ 
+{
   Q_OBJECT
 
   public:

@@ -108,4 +108,3 @@ void DlgDocTemplatesImp::IconDoubleClick(QIconViewItem* Item)
 #include "moc_DlgDocTemplatesImp.cpp"
 
 
-

@@ -95,15 +95,19 @@ void PrefGroupItem::paint( QPainter *p )
   f.setBold(true);
   p->setFont(f);
   p->drawText( tx, 40, text() );
+#if QT_VERSION < 300
   if ( selected() )
+#else
+  if ( isSelected() )
+#endif
 	  p->drawPixmap( (w-pm_Sel.width())/2+10, 10, pm_Sel );
   else
     p->drawPixmap( (w-pm_Unsel.width())/2+10, 10, pm_Unsel );
 }
 
-/* 
- *  Constructs a FCDlgPreferencesImp which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+/*
+ *  Constructs a FCDlgPreferencesImp which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
@@ -113,13 +117,13 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
 {
   if ( !name )
   	setName( "DlgPreferences" );
-  resize( 574, 457 ); 
+  resize( 574, 457 );
   setProperty( "caption", tr( "Preferences" ) );
-  DlgPreferencesLayout = new QGridLayout( this ); 
+  DlgPreferencesLayout = new QGridLayout( this );
   DlgPreferencesLayout->setSpacing( 6 );
   DlgPreferencesLayout->setMargin( 11 );
 
-  Layout6 = new QGridLayout; 
+  Layout6 = new QGridLayout;
   Layout6->setSpacing( 6 );
   Layout6->setMargin( 0 );
 

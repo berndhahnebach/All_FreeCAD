@@ -158,7 +158,6 @@ void DlgMacroRecordImp::File()
 
 
 #include "DlgMacroRecord.cpp"
-
 #include "moc_DlgMacroRecord.cpp"
 #include "moc_DlgMacroRecordImp.cpp"
 

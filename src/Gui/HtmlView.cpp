@@ -45,6 +45,7 @@
 #endif
 
 #include "HtmlView.h"
+#include "HtmlViewP.h"
 #include "Process.h"
 #include "Application.h"
 #include "PrefWidgets.h"
@@ -1513,57 +1514,6 @@ void FCHtmlView::onMinWidthReached (bool show)
 
 //// FCWhatsThis //////////////////////////////////////////////////////
 
-class FCWhatsThisPrivate: public QObject
-{
-  Q_OBJECT
-
-  public:
-
-    struct FCWhatsThisItem : public QShared
-    {
-  	  FCWhatsThisItem() : QShared() { whatsthis = 0; }
-      ~FCWhatsThisItem() {}
-	    QString txt;
-	    FCWhatsThis* whatsthis;
-    };
-
-    enum TMode { Inactive, Active };
-
-    // create and clear the WhatsThis object
-    static void clearWhatsThis();
-    static void createWhatsThis();
-
-    FCWhatsThisPrivate();
-    ~FCWhatsThisPrivate();
-
-    bool eventFilter( QObject *, QEvent * );
-
-    FCWhatsThisItem* item( QWidget * widget );
-    void add( QWidget * widget, FCWhatsThis* special );
-    void add( QWidget * widget, const QString& text );
-
-    // show the help
-    void showWhatsThis( QWidget *, const QString&, const QPoint&  );
-    void leaveWhatsThisMode();
-
-    // members
-    std::map<QWidget*, FCWhatsThisItem*> mWidgetItem;
-    std::map<QWidget*, QWidget*> topLevelWidget;
-    TMode mode;
-
-    QCursor * cursor;
-    QString currentText;
-
-  private slots:
-    void removeWidget()
-    {
-  	  const QObject* o = sender();
-	    if ( o->isWidgetType() )
-	      FCWhatsThis::remove((QWidget*)o);
-    }
-};
-
-
 static FCWhatsThisPrivate * hh = NULL;
 
 
@@ -1883,5 +1833,5 @@ void FCWhatsThis::leaveWhatsThisMode( const QString& text, const QPoint& pos )
 }
 
 #include "moc_HtmlView.cpp"
-#include "moc_private_HtmlView.cpp"
+#include "moc_HtmlViewP.cpp"
 

@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 /** \file $RCSfile$
- *  \brief 
+ *  \brief
  *  \author Werner Mayer
  *  \version $Revision$
  *  \date    $Date$

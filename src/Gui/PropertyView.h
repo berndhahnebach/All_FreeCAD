@@ -6,7 +6,7 @@
  */
 
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -17,12 +17,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -34,6 +34,14 @@
 #define __PROPTERYVIEW_H__
 
 #include "View.h"
+
+#ifndef _PreComp_
+#if QT_VERSION < 300
+#	include <qlist.h>
+#  else
+#	include <qptrlist.h>
+#  endif
+#endif
 
 class QPixmap;
 class QListView;
@@ -124,7 +132,11 @@ class FCPropertyViewItem : public QListViewItem
     QString propertyName;
     QPushButton *resetButton;
     FCPropertyViewItem *property;
+#if QT_VERSION < 300
     QList<FCPropertyViewItem> children;
+#else
+    QPtrList<FCPropertyViewItem> children;
+#endif
 };
 
 class FCPropertyViewIntItem : public QObject,	public FCPropertyViewItem

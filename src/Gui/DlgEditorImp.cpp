@@ -31,16 +31,17 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #	include <qbutton.h>
+#	include <qfontdatabase.h>
 #	include <qlabel.h>
+#	include <qstringlist.h>
 #endif
 
 #include "DlgEditorImp.h"
-#include <qfontdatabase.h>
 #include "Widgets.h"
 
-/* 
- *  Constructs a FCDlgEditorSettings which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+/*
+ *  Constructs a FCDlgEditorSettings which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
@@ -83,15 +84,15 @@ FCDlgEditorSettings::FCDlgEditorSettings( QWidget* parent,  const char* name, WF
   QString item = hPrefGrp->GetASCII("Font", "Verdana").c_str();
   int pos;
 
-  for(int k=0 ; it != familyNames.end() ; it++ ,k++) 
+  for(int k=0 ; it != familyNames.end() ; it++ ,k++)
   {
   	s = *it;
-	  if ( s.contains('-') ) 
+	  if ( s.contains('-') )
     {
 	    int i = s.find('-');
 	    s = s.right( s.length() - i - 1 ) + " [" + s.left( i ) + "]";
 	  }
-    
+
     s[0] = s[0].upper();
     if (s == item)
       pos = k;
