@@ -787,6 +787,11 @@ void FCCustomWidget::setItems(const std::vector<std::string>& items)
   _clItems = items;
 }
 
+void FCCustomWidget::addItem(const std::string& item)
+{
+  _clItems.push_back(item);
+}
+
 void FCCustomWidget::loadXML()
 {
   restorePreferences();

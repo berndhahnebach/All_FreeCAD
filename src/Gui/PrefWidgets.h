@@ -403,6 +403,7 @@ class FCCustomWidget : public FCWidgetPrefs
     bool hasCustomItems();
     std::vector<std::string> getItems();
     void setItems(const std::vector<std::string>& items);
+    void addItem(const std::string& item);
     void loadXML();
     void saveXML();
     virtual void update(FCCommandManager& rclMgr) = 0;
