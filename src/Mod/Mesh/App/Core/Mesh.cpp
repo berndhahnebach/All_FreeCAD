@@ -23,7 +23,6 @@
 
 #include "PreCompiled.h"
 
-#include <function.h>
 #include <map>
 
 #include "Helpers.h"

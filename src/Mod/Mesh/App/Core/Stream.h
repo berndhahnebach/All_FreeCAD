@@ -138,19 +138,11 @@ class AppMeshExport FileStream : public DataStream
   public:
     FileStream (const char *pszName,
         //standartparameter auskommentiert wegen VC++ internel compiler error
-#ifdef FC_OS_WIN32
-        std::ios::open_mode om /*= reinterpret_cast <std::ios::open_mode>(std::ios::in  | std::ios::out)*/);
-#else
-        std::ios::openmode om);
-#endif
+        std::ios::openmode om /*= reinterpret_cast <std::ios::open_mode>(std::ios::in  | std::ios::out)*/);
     FileStream (void);
     virtual ~FileStream (void);
 
-#ifdef FC_OS_WIN32
-    bool Open (const char* pszName, std::ios::open_mode om = (std::ios::open_mode)(std::ios::in | std::ios::out));
-#else
     bool Open (const char* pszName, std::ios::openmode om = (std::ios::openmode)(std::ios::in | std::ios::out));
-#endif
     void  Close (void);
 
     void Flush (void);

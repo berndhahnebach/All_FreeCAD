@@ -226,11 +226,7 @@ FileStream::FileStream (void)
   pfs = NULL;
 }
 
-#ifdef FC_OS_WIN32
-FileStream::FileStream (const char *pszName, std::ios::open_mode om)
-#else
 FileStream::FileStream (const char *pszName, std::ios::openmode om)
-#endif
 	: DataStream ()
 {
   pfs = NULL;
@@ -253,11 +249,7 @@ FileStream::~FileStream (void)
 }
 
 /*$$$*/
-#ifdef FC_OS_WIN32
-bool FileStream::Open (const char* pszName, std::ios::open_mode om)
-#else
 bool FileStream::Open (const char* pszName, std::ios::openmode om)
-#endif
 /*------------------------------------------------------
  Beschreibung : Oeffnet eine Datei
  Parameter    : pszName : Dateiname

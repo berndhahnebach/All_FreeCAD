@@ -46,7 +46,8 @@ CmdMeshImportSTL::CmdMeshImportSTL()
   sAppModule    = "Mesh";
   sGroup        = "Mesh";
   sMenuText     = "Import Mesh";
-  sToolTipText  = "Create or change an Import Mesh feature";
+//  sToolTipText  = "Create or change an Import Mesh feature";
+  sToolTipText  = "Open STL files from File|Open, please!";
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Open";
@@ -70,9 +71,9 @@ void CmdMeshImportSTL::activated(int iMsg)
 
 bool CmdMeshImportSTL::isActive(void)
 {
-	if( getActiveDocument() )
-		return true;
-	else
+//	if( getActiveDocument() )
+//		return true;
+//	else
 		return false;
 }
 
