@@ -10,9 +10,9 @@ FreeCAD Build Tool
 Usage:
    fcbt <command name> [command parameter]
 possible commands are:
- - DistSrc         (DS)   Build a source Distr. of the aktuall source tree
- - DistBin         (DB)   Build a binary Distr. of the aktuall source tree
- - DistSetup       (DI)   Build a Setup Distr. of the aktuall source tree
+ - DistSrc         (DS)   Build a source Distr. of the current source tree
+ - DistBin         (DB)   Build a binary Distr. of the current source tree
+ - DistSetup       (DI)   Build a Setup Distr. of the current source tree
  - DistAll         (DA)   Run all three above modules
  - BuildDoc        (BD)   Create the documentation (source docs)
  - NextBuildNumber (NBN)  Increase the Build Number of this Version 

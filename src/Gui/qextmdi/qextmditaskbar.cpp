@@ -138,7 +138,7 @@ QString QextMdiTaskBarButton::actualText() const
 //####################################################################
 
 QextMdiTaskBar::QextMdiTaskBar(QextMdiMainFrm *parent,QMainWindow::ToolBarDock dock)
-:  KToolBar( parent, "QextMdiTaskBar", /*honor_style*/ FALSE, /*readConfig*/ TRUE)
+:  KToolBar( parent, /*"QextMdiTaskBar"*/"Task bar", /*honor_style*/ FALSE, /*readConfig*/ TRUE)
    ,m_pCurrentFocusedWindow(0)
    ,m_pStretchSpace(0)
    ,m_layoutIsPending(FALSE)
