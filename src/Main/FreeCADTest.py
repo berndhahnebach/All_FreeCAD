@@ -27,15 +27,29 @@ Doc = App.DocNew("Part")
 i = Doc.UndoLimit
 i = Doc.AvailableUndos
 i = Doc.AvailableRedos
-s = Doc.Name
 
 Main = Doc.Main #getting the main label of the document 
-
+L1 = Main.GetLabel(1)
+L1 = Main.GetLabel(1)
+L1 = Main.GetLabel(1)
+L1 = Main.GetLabel(1)
+L1 = Main.GetLabel(1)
+L1 = Main.GetLabel(1)
+L2 = Main.GetLabel(2)
+L3 = Main.GetLabel(3)
+L4 = Main.GetLabel(4)
+L5 = Main.GetLabel(5)
+L6 = Main.GetLabel(6)
+L7 = Main.GetLabel(7)
+L1.Int = 1
+L1.Real = 1.0
+L1.Name = "Hallo"
 
 
 SavePath = TempPath + os.sep + "Test.std"
 Log("   Save and Open the document to: " + SavePath + "\n")
 Doc.SaveAs(SavePath)
+Log( Doc.Path + Doc.Name)
 
 
 

@@ -26,6 +26,10 @@
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 
+#include <map>
+
+class FCDocument;
+
 /** The OCC Label wrapper class
  *  This class wrapps the functionality of the TDFSdt_Label of OCC. 
  *  Its used for building up hirachy in a OCC document by representing
@@ -45,7 +49,7 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructer 
-	FCLabel(const TDF_Label &hLabel, PyTypeObject *T = &Type);
+	FCLabel(const TDF_Label &hLabel,FCDocument *pcDocument, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 	/// Destruction 
@@ -56,8 +60,11 @@ public:
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
-	/// Geter for the OCC Label
-	TDF_Label GetLabel(void){return _cLabel;}	// Geter for the handled OCC class
+	/// Gets a child label
+	FCLabel* GetLabel(int);
+
+	/// Gets the OCC Label
+	TDF_Label GetOCCLabel(void){return _cLabel;}
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -71,9 +78,12 @@ public:
 	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((FCLabel*)self)->PyGetLabel(args);};
 
 protected:
+
 #	pragma warning( disable : 4251 )
 	/// The OCC Label
 	TDF_Label _cLabel;
+	/// Pointer to the FCDocument where the label comes from 
+	FCDocument *_pcDocument;
 #	pragma warning( default : 4251 )
 
 };
@@ -114,7 +124,7 @@ public:
 	/// Get the path of a saved document (UNICODE)
 	const short* GetPath() const;
 	/// Get the Main Label of the document
-	FCLabel *Main() const;
+	FCLabel *Main();
 	/// Test if the document is empty
 	bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.
@@ -189,9 +199,49 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 	static PyObject *sPySaveAs(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PySaveAs(args);};
 	PyObject *PySave(PyObject *args);		// Python wrapper
 	static PyObject *sPySave(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PySave(args);};
+	PyObject *PySetModified(PyObject *args);		// Python wrapper
+	static PyObject *sPySetModified(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PySetModified(args);};
+	PyObject *PyPurgeModified(PyObject *args);		// Python wrapper
+	static PyObject *sPyPurgeModified(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyPurgeModified(args);};
+	PyObject *PyNewCommand(PyObject *args);		// Python wrapper
+	static PyObject *sPyNewCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyNewCommand(args);};
+	PyObject *PyOpenCommand(PyObject *args);		// Python wrapper
+	static PyObject *sPyOpenCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyOpenCommand(args);};
+	PyObject *PyCommitCommand(PyObject *args);		// Python wrapper
+	static PyObject *sPyCommitCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyCommitCommand(args);};
+	PyObject *PyAbortCommand(PyObject *args);		// Python wrapper
+	static PyObject *sPyAbortCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyAbortCommand(args);};
+	PyObject *PyRecompute(PyObject *args);		// Python wrapper
+	static PyObject *sPyRecompute(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyRecompute(args);};
 
 protected:
+
+	friend FCLabel;
+	FCLabel *HasPyLabel(TDF_Label cLabel);
+
+	/// less funktion for the map sorting of TDF_Labels
+	struct sless{
+		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2)
+		{
+/* just for debugs
+			unsigned long l1,l2,l3,l4,l5,l6;
+			l1 = (unsigned short) cLabel1.Depth();
+			l2 = (unsigned short) cLabel1.Tag();
+			l3 = (l1<<16)|l2 ;
+			l4 = (unsigned short) cLabel2.Depth();
+			l5 = (unsigned short) cLabel2.Tag();
+			l6 = (l4<<16)|l5 ;
+
+			return l3 < l6;*/
+			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
+				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
+		}
+	};
+
 #	pragma warning( disable : 4251 )
+	/// map of all existing python label wrappers (sorted)
+	stlport::map <TDF_Label,FCLabel*,sless> mcLabelMap;
+	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
 #	pragma warning( default : 4251 )
 

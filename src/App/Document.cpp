@@ -25,6 +25,16 @@
 //===========================================================================
 
 //--------------------------------------------------------------------------
+// Exported functions
+//--------------------------------------------------------------------------
+
+FCLabel* FCLabel::GetLabel(int iN)
+{
+	return _pcDocument->HasPyLabel( _cLabel.FindChild(iN));
+}
+
+
+//--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
 
@@ -65,10 +75,14 @@ PyParentObject FCLabel::Parents[] = {&FCLabel::Type, NULL};
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCLabel::FCLabel(const TDF_Label &cLabel, PyTypeObject *T) 
- : _cLabel(cLabel),FCPyObject( T)
+FCLabel::FCLabel(const TDF_Label &cLabel,FCDocument *pcDocument, PyTypeObject *T) 
+ : _cLabel(cLabel),_pcDocument(pcDocument),FCPyObject( T)
 {
 	GetConsole().Log("Create Label %p\n",this);
+	
+    printf("Tag. %d\n",cLabel.Tag());
+    printf("Depth. %d\n",cLabel.Depth());
+
 }
 
 PyObject *FCLabel::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -91,14 +105,15 @@ FCLabel::~FCLabel()						// Everything handled in parent
 PyObject *FCLabel::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	try{
-		if (streq(attr, "AttributeCount"))						// accessable new state
+		// Access the number of attributes at this label
+		if (streq(attr, "AttributeCount"))						
 			return Py_BuildValue("i", _cLabel.NbAttributes()); 
-		else if (streq(attr, "ChildrenCount"))						// accessable new state
+		else if (streq(attr, "ChildrenCount"))					
 			return Py_BuildValue("i", _cLabel.NbChildren()); 
-		else if (streq(attr, "Root"))						// accessable new state
-			return new FCLabel( _cLabel.Root()); 
-		else if (streq(attr, "Father"))						// accessable new state
-			return new FCLabel( _cLabel.Father()); 
+		else if (streq(attr, "Root"))						
+			return _pcDocument->HasPyLabel( _cLabel.Root()); 
+		else if (streq(attr, "Father"))						
+			return _pcDocument->HasPyLabel( _cLabel.Father()); 
 		else if (streq(attr, "Real")){
 			Handle(TDataStd_Real) RealAttr;
 			if(_cLabel.FindAttribute(TDataStd_Real::GetID(),RealAttr))
@@ -141,9 +156,6 @@ int FCLabel::_setattr(char *attr, PyObject *value) 	// __setattr__ function: not
 	return 0;
 } 
 
-//--------------------------------------------------------------------------
-// Exported functions
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 // Python wrappers
@@ -154,8 +166,9 @@ PyObject *FCLabel::PyGetLabel(PyObject *args)
 	int Tag;
     if (!PyArg_ParseTuple(args, "i",&Tag ))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-
-	return new FCLabel( _cLabel.FindChild(Tag) );
+	FCLabel *pcL = GetLabel( Tag);
+	pcL->_INCREF();
+	return pcL;
 } 
 
 /*
@@ -180,104 +193,6 @@ PyObject *FCLabel::PyIsDifferent(PyObject *args)
 // FCDocument - Wrapper for the TDocStd_Document class
 //===========================================================================
 
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
-
-PyTypeObject FCDocument::Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,						/*ob_size*/
-	"FCDocument",				/*tp_name*/
-	sizeof(FCDocument),			/*tp_basicsize*/
-	0,						/*tp_itemsize*/
-	/* methods */
-	PyDestructor,	  		/*tp_dealloc*/
-	0,			 			/*tp_print*/
-	__getattr, 				/*tp_getattr*/
-	__setattr, 				/*tp_setattr*/
-	0,						/*tp_compare*/
-	__repr,					/*tp_repr*/
-	0,						/*tp_as_number*/
-	0,						/*tp_as_sequence*/
-	0,						/*tp_as_mapping*/
-	0,						/*tp_hash*/
-	0,						/*tp_call */
-};
-
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
-PyMethodDef FCDocument::Methods[] = {
-  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-  {"Redo",         (PyCFunction) sPyRedo,         Py_NEWARGS},
-  {"ClearUndos",   (PyCFunction) sPyClearUndos,   Py_NEWARGS},
-  {"SaveAs",       (PyCFunction) sPySaveAs,       Py_NEWARGS},
-  {"Save",         (PyCFunction) sPySave,         Py_NEWARGS},
-
-  {NULL, NULL}		/* Sentinel */
-};
-
-//--------------------------------------------------------------------------
-// Parents structure
-//--------------------------------------------------------------------------
-PyParentObject FCDocument::Parents[] = {&FCPyObject::Type, NULL};     
-
-//--------------------------------------------------------------------------
-//t constructor
-//--------------------------------------------------------------------------
-FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc, PyTypeObject *T) 
- : _hDoc(hDoc),FCPyObject( T)
-{
-	GetConsole().Log("Create Document %p\n",this);
-}
-
-PyObject *FCDocument::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
-{
-  //return new FCDocument(name, n, tau, gamma);			// Make new Python-able object
-	return 0;
-}
-
-//--------------------------------------------------------------------------
-// destructor 
-//--------------------------------------------------------------------------
-FCDocument::~FCDocument()						// Everything handled in parent
-{
-	GetConsole().Log("Destroy Document %p\n",this);
-} 
-
-//--------------------------------------------------------------------------
-// FCDocument Attributes
-//--------------------------------------------------------------------------
-PyObject *FCDocument::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-	try{
-		if (streq(attr, "UndoLimit"))						// accessable new state
-			return Py_BuildValue("i", _hDoc->GetUndoLimit()); 
-		else if (streq(attr, "AvailableUndos"))						// accessable new state
-			return Py_BuildValue("i", _hDoc->GetAvailableUndos()); 
-		else if (streq(attr, "AvailableRedos"))						// accessable new state
-			return Py_BuildValue("i", _hDoc->GetAvailableRedos()); 
-		else if (streq(attr, "Name"))						// accessable new state
-			return Py_BuildValue("s", _hDoc->GetName()); 
-		else if (streq(attr, "Path"))						// accessable new state
-			return Py_BuildValue("s", _hDoc->GetPath()); 
-		else if (streq(attr, "Main"))						// accessable new state
-			return new FCLabel( _hDoc->Main()); 
-		else
-			_getattr_up(FCPyObject); 						// send to parent
-	}catch(...){
-		Py_Error(PyExc_Exception,"Error in get Attribute");
-	}
-} 
-
-int FCDocument::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-	if (streq(attr, "UndoLimit")){						// settable new state
-		_hDoc->SetUndoLimit(PyInt_AsLong(value)); 
-		return 1;
-	}else  
-		return FCPyObject::_setattr(attr, value); 	// send up to parent
-} 
 
 //--------------------------------------------------------------------------
 // Exported functions
@@ -325,15 +240,15 @@ const short* FCDocument::GetPath() const
 }
 
 /// Get the Main Label of the document
-FCLabel *FCDocument::Main() const
+FCLabel *FCDocument::Main() 
 {
 	static FCLabel *_pcMain = 0;
 
 	if(!_pcMain){
-		_pcMain = new FCLabel(_hDoc->Main());
+		_pcMain = new FCLabel(_hDoc->Main(),this);
 		_pcMain->_INCREF();
+		mcLabelMap[_hDoc->Main()] = _pcMain;
 	}
-
 	return  _pcMain;
 }
 
@@ -352,7 +267,7 @@ bool FCDocument::IsValid() const
 /// Set a special Labe as modified
 void FCDocument::SetModified(FCLabel* L)
 {
-  _hDoc->SetModified(L->GetLabel()); 
+  _hDoc->SetModified(L->GetOCCLabel()); 
 }
 
 /// Remove all modifications. After this call The document becomesagain Valid.
@@ -448,6 +363,148 @@ void FCDocument::ChangeStorageFormat(const short* sStorageFormat)
 }
 
 
+FCLabel *FCDocument::HasPyLabel(TDF_Label cLabel)
+{
+	FCLabel *pcL;
+	stlport::map <TDF_Label,FCLabel*,sless>::iterator It;
+	
+	// find a FCLabel if possible
+	It = mcLabelMap.find(cLabel);
+
+	// if not
+	if(It == mcLabelMap.end())
+	{
+		// create a new label and append it to the map
+		pcL = new FCLabel(cLabel,this);
+		mcLabelMap[cLabel] = pcL;
+		// taking care that python not delete the object
+		pcL->_INCREF();
+		return pcL;
+	}
+	// if yes return the found FCLabel
+	return It->second;
+
+}
+
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
+
+PyTypeObject FCDocument::Type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,						/*ob_size*/
+	"FCDocument",				/*tp_name*/
+	sizeof(FCDocument),			/*tp_basicsize*/
+	0,						/*tp_itemsize*/
+	/* methods */
+	PyDestructor,	  		/*tp_dealloc*/
+	0,			 			/*tp_print*/
+	__getattr, 				/*tp_getattr*/
+	__setattr, 				/*tp_setattr*/
+	0,						/*tp_compare*/
+	__repr,					/*tp_repr*/
+	0,						/*tp_as_number*/
+	0,						/*tp_as_sequence*/
+	0,						/*tp_as_mapping*/
+	0,						/*tp_hash*/
+	0,						/*tp_call */
+};
+
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
+PyMethodDef FCDocument::Methods[] = {
+  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
+  {"Redo",         (PyCFunction) sPyRedo,         Py_NEWARGS},
+  {"ClearUndos",   (PyCFunction) sPyClearUndos,   Py_NEWARGS},
+  {"SaveAs",       (PyCFunction) sPySaveAs,       Py_NEWARGS},
+  {"Save",         (PyCFunction) sPySave,         Py_NEWARGS},
+  {"SetModified",  (PyCFunction) sPySetModified,  Py_NEWARGS},
+  {"PurgeModified",(PyCFunction) sPyPurgeModified,Py_NEWARGS},
+  {"NewCommand",   (PyCFunction) sPyNewCommand,   Py_NEWARGS},
+  {"OpenCommand",  (PyCFunction) sPyOpenCommand,  Py_NEWARGS},
+  {"CommitCommand",(PyCFunction) sPyCommitCommand,Py_NEWARGS},
+  {"Recompute",    (PyCFunction) sPyRecompute,    Py_NEWARGS},
+
+  {NULL, NULL}		/* Sentinel */
+};
+
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject FCDocument::Parents[] = {&FCPyObject::Type, NULL};     
+
+//--------------------------------------------------------------------------
+//t constructor
+//--------------------------------------------------------------------------
+FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc, PyTypeObject *T) 
+ : _hDoc(hDoc),FCPyObject( T)
+{
+	GetConsole().Log("Create Document %p\n",this);
+}
+
+PyObject *FCDocument::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  //return new FCDocument(name, n, tau, gamma);			// Make new Python-able object
+	return 0;
+}
+
+//--------------------------------------------------------------------------
+// destructor 
+//--------------------------------------------------------------------------
+FCDocument::~FCDocument()						// Everything handled in parent
+{
+	GetConsole().Log("Destroy Document %p\n",this);
+} 
+
+//--------------------------------------------------------------------------
+// FCDocument Attributes
+//--------------------------------------------------------------------------
+PyObject *FCDocument::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+{ 
+	try{
+		if (streq(attr, "UndoLimit"))						
+			return Py_BuildValue("i", GetUndoLimit()); 
+		else if (streq(attr, "AvailableUndos"))				
+			return Py_BuildValue("i", GetAvailableUndos()); 
+		else if (streq(attr, "AvailableRedos"))				
+			return Py_BuildValue("i", GetAvailableRedos()); 
+		else if (streq(attr, "Name"))						
+			return Py_BuildValue("u", GetName()); 
+		else if (streq(attr, "Path"))						
+			return Py_BuildValue("u", GetPath()); 
+		else if (streq(attr, "Main")){
+			Main()->_INCREF();
+			return Main(); }
+		else if (streq(attr, "IsEmpty"))					
+			return Py_BuildValue("u", IsEmpty()?1:0); 
+		else if (streq(attr, "IsValid"))					
+			return Py_BuildValue("u", IsValid()?1:0); 
+		else if (streq(attr, "HasOpenCommand"))				
+			return Py_BuildValue("u", HasOpenCommand()?1:0);
+		else if (streq(attr, "StorageFormat"))						
+			return Py_BuildValue("u", StorageFormat()); 
+		else
+			_getattr_up(FCPyObject); 						
+	}catch(...){
+		Py_Error(PyExc_Exception,"Error in get Attribute");
+	}
+} 
+
+int FCDocument::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+	if (streq(attr, "UndoLimit")){						// settable new state
+		SetUndoLimit(PyInt_AsLong(value)); 
+		return 1;
+	}else if (streq(attr, "StorageFormat")){						// settable new state
+		ChangeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
+		return 1;
+	}else  
+		return FCPyObject::_setattr(attr, value); 	// send up to parent
+} 
+
+
+
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
@@ -484,3 +541,48 @@ PyObject *FCDocument::PySave(PyObject *args)
 	Save(); 
 	Py_Return; 
 } 
+
+
+PyObject *FCDocument::PySetModified(PyObject *args)
+{ 
+	assert(0);
+	Save(); 
+	Py_Return; 
+} 
+	
+PyObject *FCDocument::PyPurgeModified(PyObject *args)
+{ 
+	PurgeModified(); 
+	Py_Return; 
+} 
+	
+PyObject *FCDocument::PyNewCommand(PyObject *args)
+{ 
+	NewCommand(); 
+	Py_Return; 
+} 
+		
+PyObject *FCDocument::PyOpenCommand(PyObject *args)
+{ 
+	OpenCommand(); 
+	Py_Return; 
+} 
+	
+PyObject *FCDocument::PyCommitCommand(PyObject *args)
+{ 
+	CommitCommand(); 
+	Py_Return; 
+} 
+	
+PyObject *FCDocument::PyAbortCommand(PyObject *args)
+{ 
+	AbortCommand(); 
+	Py_Return; 
+} 
+	
+PyObject *FCDocument::PyRecompute(PyObject *args)
+{ 
+	Recompute(); 
+	Py_Return; 
+} 
+		
