@@ -22,6 +22,8 @@
 #pragma warning( disable : 4251 )
 
 #include <TDocStd_Application.hxx>
+#include <TDataStd_Name.hxx>
+#include <string>
 #include <vector>
 #include <set>
 #include <map>

@@ -104,7 +104,7 @@ bool bVerbose = false;
 #ifdef _FC_GUI_ENABLED_
 	QApplication* pcQApp = NULL;
 	FCSplashScreen *splash = 0;
-#	include "InitGuiScript.h"
+#	include "GuiInitScript.h"
 
 #endif
 /// pointer to the system parameter (loaded in Init())
@@ -133,8 +133,7 @@ int main( int argc, char ** argv )
 #	endif
     // first check the environment variables
 		CheckEnv();
-
-		// Ínitialization (phase 1)
+		// Initialization (phase 1)
 		Init(argc,argv);
 
 		// the FreeCAD Application
@@ -350,9 +349,7 @@ void Init(int argc, char ** argv )
 	{
 		GetConsole().Warning("   Parameter not existing, write initial one\n");
 		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
-		                     "   configuration was deleted or moved. You have to reinstall FreeCAD\n"
-		                     "   by typing FreeCAD -i. This build up the standard configuration and\n"
-		                     "   install all present modules. \n");
+		                     "   configuration was deleted or moved.Build up the standard configuration.\n");
 
 	}
 
@@ -413,10 +410,14 @@ void CheckEnv(void)
 	char  szDirectory [256] ;
 
 	getcwd (szDirectory,sizeof szDirectory);
-	if (szDirectory[strlen(szDirectory)-1] != '\\') {
-		strcat(szDirectory,"\\");
+#	ifdef WNT	
+#		define PATHSEP "\\"
+#	else
+#		define PATHSEP "/"
+#	endif
+	if (szDirectory[strlen(szDirectory)-1] != PATHSEP[0]) {
+		strcat(szDirectory,PATHSEP);
 	}
-	
 	sprintf(szString,"CSF_StandardDefaults=%s",szDirectory);
 	putenv (szString);
 //	cout<<szString<<endl;

@@ -33,6 +33,7 @@
 Log ("FreeCAD test running...\n\n")
 
 TempPath = os.getenv('TEMP')
+if not TempPath: TempPath='.'
 Log ('Using temp path: ' + TempPath + '\n')
 
 # Basics +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

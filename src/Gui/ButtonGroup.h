@@ -43,9 +43,12 @@
 #include <qfont.h>
 #include <qpalette.h>
 #include <qpixmap.h>
+#include <qcombobox.h>
+#include <qscrollbar.h>
+#include <qscrollview.h>
 
 #include "CommandLine.h"
-#include "window.h"
+#include "Window.h"
 
 // forward declaration
 class QAction;
@@ -236,6 +239,7 @@ Q_OBJECT;
 
 public:
 	FCCmdBar( QWidget *parent=0, const char *name=0 );
+  bool HasView(const char *sName);
 	virtual ~FCCmdBar();
 
   // toolbox handling

@@ -118,11 +118,9 @@ PP_Debug_Function(PyObject *func, PyObject *args)
     PyObject *presult;
 
     /* expand tuple at front */
-#ifdef __linux /* too many arguments to function int _PyTuple_Resize (Pyobject **, int) */
-    oops = _PyTuple_Resize(&args, (1 + PyTuple_Size(args))); 
-#else
+    // it seems that some versions of python want just 2 arguments; in that
+    // case, remove trailing 1
     oops = _PyTuple_Resize(&args, (1 + PyTuple_Size(args)), 1); 
-#endif    
     oops |= PyTuple_SetItem(args, 0, func);   
     if (oops) 
         return NULL;                        /* "args = (funcobj,) + (arg,..)" */

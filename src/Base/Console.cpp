@@ -36,7 +36,9 @@
 #else
 #	include <time.h>
 #	include "stdio.h"
+#   ifdef WNT
 #	include "io.h"
+#  endif
 #	include "fcntl.h"
 #endif
 

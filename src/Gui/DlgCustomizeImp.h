@@ -1,5 +1,5 @@
 /***************************************************************************
-                          DlgCustomizeImpl.h  -  description
+                          DlgCustomizeImp.h  -  description
                              -------------------
     begin                : 2002/08/19 21:11:52
     copyright            : (C) 2002 by Werner Mayer

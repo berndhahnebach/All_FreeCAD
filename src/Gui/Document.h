@@ -29,11 +29,9 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_Viewer.hxx>
-
-#ifdef __linux
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
-#endif
+#include <TPrsStd_AISViewer.hxx>
 
 #include "../Base/PyExport.h"
 #include "../App/Document.h"

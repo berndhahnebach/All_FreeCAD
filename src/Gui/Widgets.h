@@ -28,11 +28,14 @@
 
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
-#include "window.h"
+#include "Window.h"
 #include <qprogressbar.h>
 #include <qlabel.h>
 #include <qiconview.h>
 #include <qdragobject.h>
+#include <qstatusbar.h>
+#include <qtoolbar.h>
+#include <qfiledialog.h>
 
 class QHBoxLayout; 
 class QTime;

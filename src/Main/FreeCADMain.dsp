@@ -95,8 +95,8 @@ SOURCE=.\FreeCADGuiInit.py
 # Begin Custom Build - Building InitGuiScript.h
 InputPath=.\FreeCADGuiInit.py
 
-"InitGuiScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADGuiInit.py InitGuiScript.h
+"GuiInitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h
 
 # End Custom Build
 
@@ -105,8 +105,8 @@ InputPath=.\FreeCADGuiInit.py
 # Begin Custom Build - Building InitGuiScript.h
 InputPath=.\FreeCADGuiInit.py
 
-"InitGuiScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADGuiInit.py InitGuiScript.h
+"GuiInitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h
 
 # End Custom Build
 

@@ -73,8 +73,8 @@ class ParameterLabelGroup : public QListViewItem
 {
 public:
 	/// Constructor
-    ParameterLabelGroup( ParameterLabelGroup * parent, FCHandle<FCParameterGrp> &hcGrp );
-	ParameterLabelGroup( QListView* parent, FCHandle<FCParameterGrp> &hcGrp);
+    ParameterLabelGroup( ParameterLabelGroup * parent, const FCHandle<FCParameterGrp> &hcGrp );
+	ParameterLabelGroup( QListView* parent, const FCHandle<FCParameterGrp> &hcGrp);
     /// Opens the Leafs and generate them.
     //void setOpen( bool );
 

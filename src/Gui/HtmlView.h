@@ -31,7 +31,8 @@
  
 #include <qtextbrowser.h>
 #include <qvalidator.h>
-#include "window.h"
+#include <qcombobox.h>
+#include "Window.h"
 
 class FCTextBrowser : public QTextBrowser
 {

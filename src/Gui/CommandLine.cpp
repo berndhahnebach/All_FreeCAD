@@ -33,6 +33,9 @@
 #	include "PreCompiled.h"
 #else
 #	include <qclipboard.h>
+#	include <qscrollbar.h>
+#	include <qcombobox.h>
+#	include <qmessagebox.h>
 #endif
 
 #include "CommandLine.h"
@@ -140,7 +143,7 @@ void FCCommandLine::slotLaunchCommand()
   catch (const FCException& rclE)
   {
     FCstring txt = (const_cast<FCException&>(rclE)).what();
-    FCstring err = "'" + text(currentItem()) + "' is not defined!";
+    FCstring err = "'" + FCstring(text(currentItem())) + "' is not defined!";
     QMessageBox::warning(this, txt.c_str(), err.c_str());
   }
   catch (...)

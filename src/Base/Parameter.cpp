@@ -50,12 +50,14 @@
 #	include <xercesc/dom/DOMImplementationLS.hpp>
 #	include <xercesc/dom/DOMWriter.hpp>
 #	include <xercesc/framework/StdOutFormatTarget.hpp>
+#	include <xercesc/framework/LocalFileFormatTarget.hpp>
 #	include <xercesc/parsers/XercesDOMParser.hpp>
 #	include <xercesc/util/XMLUni.hpp>
 #endif
 
 static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Auto;
 
+#include <fcntl.h>
 
 #include "Parameter.h"
 #include "Exception.h"
@@ -152,7 +154,7 @@ bool FCParameterGrp::GetBool(const char* Name, bool bPreset)
 	// if not return preset
 	if(!pcElem) return bPreset;
 	// if yes check the value and return
-	if(strcmp(StrX(pcElem->getAttribute(X("Value"))).c_str(),"1"))
+	if(strcmp(StrX(pcElem->getAttribute(XStr("Value").unicodeForm())).c_str(),"1"))
 		return false;
 	else
 		return true;	
@@ -163,7 +165,7 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCBool",Name);
 	// and set the vaue
-	pcElem->setAttribute(X("Value"), X(bValue?"1":"0"));
+	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(bValue?"1":"0").unicodeForm());
 }
 
 FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
@@ -179,7 +181,7 @@ FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
-			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str(),"1"))
+			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),"1"))
 				vrValues.push_back(false);
 			else
 				vrValues.push_back(true);	
@@ -203,7 +205,7 @@ FCmap<FCstring,bool> FCParameterGrp::GetBoolMap(const char * sFilter)
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
-			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str(),"1"))
+			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),"1"))
 				vrValues[Name] = (false);
 			else
 				vrValues[Name] = (true);	
@@ -221,7 +223,7 @@ long FCParameterGrp::GetInt(const char* Name, long lPreset)
 	// if not return preset
 	if(!pcElem) return lPreset;
 	// if yes check the value and return
-	return atol (StrX(pcElem->getAttribute(X("Value"))).c_str());
+	return atol (StrX(pcElem->getAttribute(XStr("Value").unicodeForm())).c_str());
 }
 
 void  FCParameterGrp::SetInt(const char* Name, long lValue)
@@ -231,7 +233,7 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCInt",Name);
 	// and set the vaue
 	sprintf(cBuf,"%d",lValue);
-	pcElem->setAttribute(X("Value"), X(cBuf));
+	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 }
 
 FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
@@ -247,7 +249,7 @@ FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
-			vrValues.push_back( atol (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+			vrValues.push_back( atol (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCInt") ;
 	}
@@ -268,7 +270,7 @@ FCmap<FCstring,long> FCParameterGrp::GetIntMap(const char * sFilter)
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
-			vrValues[Name] = ( atol (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+			vrValues[Name] = ( atol (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCInt") ;
 	}
@@ -283,7 +285,7 @@ double FCParameterGrp::GetFloat(const char* Name, double dPreset)
 	// if not return preset
 	if(!pcElem) return dPreset;
 	// if yes check the value and return
-	return atof (StrX(pcElem->getAttribute(X("Value"))).c_str());
+	return atof (StrX(pcElem->getAttribute(XStr("Value").unicodeForm())).c_str());
 }
 
 void  FCParameterGrp::SetFloat(const char* Name, double dValue)
@@ -293,7 +295,7 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCFloat",Name);
 	// and set the value
 	sprintf(cBuf,"%f",dValue);
-	pcElem->setAttribute(X("Value"), X(cBuf));
+	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 }
 
 FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
@@ -309,7 +311,7 @@ FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
-			vrValues.push_back( atof (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+			vrValues.push_back( atof (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCFloat");
 	}
@@ -330,7 +332,7 @@ FCmap<FCstring,double> FCParameterGrp::GetFloatMap(const char * sFilter)
 		// check on filter condition
 		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
-			vrValues[Name] = ( atof (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+			vrValues[Name] = ( atof (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCFloat");
 	}
@@ -361,10 +363,10 @@ void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
     if (!pcElem2)
     {
 		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
-		DOMText *pText = pDocument->createTextNode(X(sValue));
+		DOMText *pText = pDocument->createTextNode(XStr(sValue).unicodeForm());
 		pcElem->appendChild(pText);
 	}else{
-		pcElem2->setNodeValue(X(sValue));
+		pcElem2->setNodeValue(XStr(sValue).unicodeForm());
 	}
 }
 
@@ -506,8 +508,8 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 	{
 		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
 
-		pcElem = pDocument->createElement(X(Type));
-		pcElem-> setAttribute(X("Name"), X(Name));
+		pcElem = pDocument->createElement(XStr(Type).unicodeForm());
+		pcElem-> setAttribute(XStr("Name").unicodeForm(), XStr(Name).unicodeForm());
 		Start->appendChild(pcElem);
 	}
 	
@@ -614,7 +616,11 @@ void FCParameterManager::Init(void)
 				 << "  Exception message:"
 				 << pMsg;
 			delete [] pMsg;
+#ifdef __linux
+			throw FCException(err.str().c_str());
+#else
 			throw FCException(err.str());
+#endif
 		}
 		Init = true;
 	}
@@ -625,10 +631,10 @@ void FCParameterManager::Init(void)
 
 bool FCParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-	int i=_open(sFileName,_O_RDONLY);
+	int i=open(sFileName,_O_RDONLY);
 	if( i != -1)
 	{
-		_close(i);
+		close(i);
 		LoadDocument(sFileName);
 		return false;
 	}else{
@@ -788,16 +794,16 @@ void  FCParameterManager::SaveDocument(const char* sFileName)
 void  FCParameterManager::CreateDocument(void)
 {
 	// creating a document from screatch
-	DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+	DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(XStr("Core").unicodeForm());
 	_pDocument = impl->createDocument(
-                    0,                    // root element namespace URI.
-                    X("FCParameters"),         // root element name
-                    0);                   // document type object (DTD).
+                    0,                                          // root element namespace URI.
+                    XStr("FCParameters").unicodeForm(),         // root element name
+                    0);                                         // document type object (DTD).
 
 	// creating the node for the root group
 	DOMElement* rootElem = _pDocument->getDocumentElement();
-	_pGroupNode = _pDocument->createElement(X("FCParamGroup"));
-	((DOMElement*)_pGroupNode)->setAttribute(X("Name"), X("Root"));
+	_pGroupNode = _pDocument->createElement(XStr("FCParamGroup").unicodeForm());
+	((DOMElement*)_pGroupNode)->setAttribute(XStr("Name").unicodeForm(), XStr("Root").unicodeForm());
 	rootElem->appendChild(_pGroupNode);
 
 	
@@ -1045,7 +1051,7 @@ PyObject *FCPyParameterGrp::PyGetString(PyObject *args)
 	char *  str="";
     if (!PyArg_ParseTuple(args, "s|d", &pstr,&str))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	return Py_BuildValue("i",_cParamGrp->GetASCII(pstr,str));
+	return Py_BuildValue("i",_cParamGrp->GetASCII(pstr,str).c_str());
 } 
 
 

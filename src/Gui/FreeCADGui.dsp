@@ -146,19 +146,18 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=.\DlgCustomizeImpl.cpp
-# ADD CPP /YX"PreCompiled.h"
+SOURCE=.\DlgCustomizeImp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DlgCustomizeImpl.h
+SOURCE=.\DlgCustomizeImp.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.
-InputPath=.\DlgCustomizeImpl.h
-InputName=DlgCustomizeImpl
+InputPath=.\DlgCustomizeImp.h
+InputName=DlgCustomizeImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
@@ -169,8 +168,8 @@ InputName=DlgCustomizeImpl
 
 # Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.
-InputPath=.\DlgCustomizeImpl.h
-InputName=DlgCustomizeImpl
+InputPath=.\DlgCustomizeImp.h
+InputName=DlgCustomizeImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
@@ -790,8 +789,7 @@ InputName=HtmlView
 # End Group
 # Begin Source File
 
-SOURCE=.\Application.cxx
-# ADD CPP /YX"PreCompiled.h"
+SOURCE=.\Application.cpp
 # End Source File
 # Begin Source File
 
@@ -867,8 +865,7 @@ SOURCE=.\DllMain.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Document.cxx
-# ADD CPP /YX"PreCompiled.h"
+SOURCE=.\Document.cpp
 # End Source File
 # Begin Source File
 
@@ -1123,8 +1120,7 @@ InputName=Widgets
 # End Source File
 # Begin Source File
 
-SOURCE=.\Window.cxx
-# ADD CPP /YX"PreCompiled.h"
+SOURCE=.\Window.cpp
 # End Source File
 # Begin Source File
 

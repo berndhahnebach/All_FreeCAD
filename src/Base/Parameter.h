@@ -40,9 +40,13 @@
 
 
 // Include files
+#ifdef __linux
+#  include <sstream>
+#endif
 #include <map>
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #include <xercesc/dom/DOMWriterFilter.hpp>
 #include <vector>
@@ -459,7 +463,7 @@ private :
     XMLCh*   fUnicodeForm;
 };
 
-#define X(str) XStr(str).unicodeForm()
+//#define (str) XStr(str).unicodeForm()
 
 
 #endif

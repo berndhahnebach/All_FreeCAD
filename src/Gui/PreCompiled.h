@@ -67,6 +67,14 @@
 //#include <STEPControl_Writer.hxx>
 //#include <STEPControl_Reader.hxx>
 #include <BRepTools.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepTools.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TNaming_Builder.hxx>
+#include <TDataStd_Real.hxx>
+#include <Handle_TPrsStd_AISPresentation.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TPrsStd_AISPresentation.hxx>
 
 
 

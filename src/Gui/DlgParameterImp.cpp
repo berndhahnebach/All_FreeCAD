@@ -44,6 +44,7 @@
 #	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
+#	include <qcombobox.h>
 #       include <Python.h>
 #endif
 
@@ -151,14 +152,14 @@ void DlgParameter::OnParameterSetChange(const QString& rcString)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  
 
-ParameterLabelGroup::ParameterLabelGroup( ParameterLabelGroup * parent, FCHandle<FCParameterGrp> &hcGrp )
+ParameterLabelGroup::ParameterLabelGroup( ParameterLabelGroup * parent, const FCHandle<FCParameterGrp> &hcGrp )
     : QListViewItem( parent ),
 	_hcGrp(hcGrp)
 {
 	FillUp();	
 }
 
-ParameterLabelGroup::ParameterLabelGroup( QListView* parent, FCHandle<FCParameterGrp> &hcGrp)
+ParameterLabelGroup::ParameterLabelGroup( QListView* parent, const FCHandle<FCParameterGrp> &hcGrp)
     : QListViewItem( parent ),
 	_hcGrp(hcGrp)
 {

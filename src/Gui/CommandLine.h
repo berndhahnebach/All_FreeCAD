@@ -35,7 +35,7 @@
 #include <qlineedit.h>
 #include <list>
 #include <string>
-#include "window.h"
+#include "Window.h"
 #include <qwindowsstyle.h>
 #include <qvalidator.h>
 

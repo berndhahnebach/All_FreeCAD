@@ -1,5 +1,5 @@
 /***************************************************************************
-                          DlgCustomizeImpl.cpp  -  description
+                          DlgCustomizeImp.cpp  -  description
                              -------------------
     begin                : 2002/08/19 21:11:52
     copyright            : (C) 2002 by Werner Mayer
@@ -35,10 +35,11 @@
 #	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
+#	include <qcombobox.h>
 #       include <Python.h>
 #endif
 
-#include "dlgcustomizeimpl.h"
+#include "DlgCustomizeImp.h"
 #include "Application.h"
 
 /* 
@@ -102,4 +103,4 @@ void FCDlgCustomize::slotGroupSelected(const QString & group)
 
 #include "DlgCustomize.cpp"
 #include "moc_DlgCustomize.cpp"
-#include "moc_DlgCustomizeImpl.cpp"
+#include "moc_DlgCustomizeImp.cpp"

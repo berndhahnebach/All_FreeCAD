@@ -11,8 +11,10 @@
 // Std. configurations
 
 // needed header
-#include <python.h>
+#include <Python.h>
 #include <iostream>
+
+#include<typeinfo>
 
 // forward
 class FCInterpreter;

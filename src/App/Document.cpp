@@ -234,7 +234,7 @@ void FCDocument::SaveAs (const char* Name)
 	strcpy(path,Name);
 	Handle(FCApplicationOCC) hApp = GetApplication().GetOCCApp();
 	if(hApp->SaveAs(_hDoc,(Standard_CString)path)==CDF_SS_Failure) 
-		throw FCException("SaveAs fialed");
+		throw FCException("SaveAs failed");
 }
 // Save the document under the name its been opened
 void FCDocument::Save (void)

@@ -29,10 +29,11 @@
 
 
 
-
+#include <TDataStd_Name.hxx>
 #ifndef _Handle_TDataStd_Name_HeaderFile
 #include <Handle_TDataStd_Name.hxx>
 #endif
+
 
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Attribute.hxx>

@@ -26,6 +26,7 @@
 #include "../Base/PyExport.h"
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_ChildIterator.hxx>
 
 #include <map>
 #include <vector>

@@ -1,7 +1,8 @@
 #!/bin/bash
 # You should have to change just next 2 (uncommented) lines.
-OCCDIR=$HOME/OCC
-LD_LIBRARY_PATH=$OCCDIR/Linux/lib:$HOME/software/qextmdi/lib
+OCCDIR=$HOME/software/OCC
+export LD_LIBRARY_PATH=$OCCDIR/Linux/lib:$HOME/software/qextmdi/lib:/usr/local/lib:/usr/X11R6/lib
+export XERCESCROOT=/usr/local
 CASROOT=$OCCDIR
 export CSF_MdtvFontDirectory=$OCCDIR/src/FontMFT/
 export CSF_MdtvTexturesDirectory=$OCCDIR/src/Textures/
@@ -10,4 +11,9 @@ export CSF_UnitsLexicon=$OCCDIR/src/UnitsAPI/Lexi_Expr.dat
 export CSF_PluginDefaults=$OCCDIR/src/XCAFResources
 export CSF_StandardDefaults=$OCCDIR/src/StdResource
 export CSF_GraphicShr=$OCCDIR/Linux/lib/libTKOpenGl.so
-./freecad
+
+export TEMP=$HOME/temp
+
+./freecad $1 $2 $3 $4 $5
+
+#resource a148e300-5740-11d1-a904-080036aaa103.Location

@@ -21,6 +21,7 @@
 #include <qpopupmenu.h>
 #include <qlistbox.h>
 #include <qtoolbutton.h>
+#include <qhbox.h>
 
 
 class QVBoxLayout; 

@@ -1,5 +1,6 @@
 
 // Handling for precompiled headers
+
 #include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
@@ -7,9 +8,12 @@
 #	include <qevent.h>
 #	include <assert.h>
 #	include "qapplication.h"
+#	include <qpainter.h>
 #endif
 
 #include "MouseModel.h"
+
+
 #include "View3D.h"
  
 
@@ -19,11 +23,14 @@ void FCMouseModel::initMouseModel(View3D *pcView3D)
   m_cPrevCursor = _pcView3D->cursor();
 
   // do initialization of your mousemodel
-  initMouseModel();
+  initialize();
 }
 
 void FCMouseModel::releaseMouseModel()
 {
+  // do termination of your mousemodel
+  terminate();
+
   _pcView3D->setCursor(m_cPrevCursor);
 }
 
@@ -164,7 +171,11 @@ FCMouseModelStd::FCMouseModelStd(void)
 {
 };
 
-void FCMouseModelStd::initMouseModel()
+void FCMouseModelStd::initialize()
+{
+}
+
+void FCMouseModelStd::terminate()
 {
 }
 
@@ -350,9 +361,13 @@ FCMouseModelPolyPicker::FCMouseModelPolyPicker()
   m_bDrawNodes = true;
 }
 
-void FCMouseModelPolyPicker::initMouseModel()
+void FCMouseModelPolyPicker::initialize()
 {
   _pcView3D->setCursor(QCursor(CrossCursor));
+}
+
+void FCMouseModelPolyPicker::terminate()
+{
 }
 
 FCMouseModelPolyPicker::~FCMouseModelPolyPicker()
@@ -390,32 +405,6 @@ void FCMouseModelPolyPicker::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
 }
 
 void FCMouseModelPolyPicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
-{
-  QPoint point = cEvent->pos();
-
-  if( m_bWorking )
-  {
-    if (_cNodeVector.size() == 0) return; // no node
-    unsigned long ulLast = _cNodeVector.size() - 1;
-    m_bWorking = false;
-    // clear old line first
-    drawLine(m_iXmax,m_iYmax,m_iXold,m_iYold );
-    // draw new line
-    drawLine(_cNodeVector[ulLast].x(), _cNodeVector[ulLast].y(), _cNodeVector[0].x(), _cNodeVector[0].y());
-  }
-  else // right click twice
-    _pcView3D->PopMouseModel();
-}
-
-void FCMouseModelPolyPicker::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelPolyPicker::mouseMiddleReleaseEvent ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelPolyPicker::mouseRightReleaseEvent	 ( QMouseEvent *cEvent)
 {
 }
 
@@ -479,6 +468,24 @@ void FCMouseModelPolyPicker::paintEvent ( QPaintEvent *e )
   }
 }
 
+void FCMouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
+{
+  QPoint point = cEvent->pos();
+
+  if( m_bWorking )
+  {
+    if (_cNodeVector.size() == 0) return; // no node
+    unsigned long ulLast = _cNodeVector.size() - 1;
+    m_bWorking = false;
+    // clear old line first
+    drawLine(m_iXmax,m_iYmax,m_iXold,m_iYold );
+    // draw new line
+    drawLine(_cNodeVector[ulLast].x(), _cNodeVector[ulLast].y(), _cNodeVector[0].x(), _cNodeVector[0].y());
+  }
+
+  _pcView3D->PopMouseModel();
+}
+
 void FCMouseModelPolyPicker::resizeEvent ( QResizeEvent * e)
 {
   // the polygon becomes invalid and must be done again
@@ -497,19 +504,11 @@ FCMouseModelSelection::~FCMouseModelSelection()
 {
 }
 
-void FCMouseModelSelection::initMouseModel()
+void FCMouseModelSelection::initialize()
 {
 }
 
-void FCMouseModelSelection::wheelEvent( QWheelEvent  * cEvent )
-{
-}
-
-void FCMouseModelSelection::paintEvent ( QPaintEvent  * cEvent )
-{
-}
-
-void FCMouseModelSelection::resizeEvent ( QResizeEvent * cEvent )
+void FCMouseModelSelection::terminate()
 {
 }
 
@@ -519,26 +518,10 @@ void FCMouseModelSelection::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
   _start = _last = cEvent->pos();
 }
 
-void FCMouseModelSelection::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelSelection::mouseRightPressEvent		 ( QMouseEvent *cEvent)
-{
-}
-
 void FCMouseModelSelection::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
 {
   drawRect( _start, _last );
   m_bWorking = false;
-}
-
-void FCMouseModelSelection::mouseMiddleReleaseEvent ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelSelection::mouseRightReleaseEvent	 ( QMouseEvent *cEvent)
-{
 }
 
 void FCMouseModelSelection::mouseMoveEvent( QMouseEvent* e )
@@ -600,42 +583,21 @@ FCMouseModelCirclePick::~FCMouseModelCirclePick()
 {
 }
 
-void FCMouseModelCirclePick::initMouseModel()
+void FCMouseModelCirclePick::initialize()
 {
   QPixmap p(xpm_cursor);
   QCursor cursor( p );
   _pcView3D->setCursor(cursor);
 }
 
-void FCMouseModelCirclePick::releaseMouseModel()
+void FCMouseModelCirclePick::terminate()
 {
   draw(_last);
-  FCMouseModel::releaseMouseModel();
-}
-
-void FCMouseModelCirclePick::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelCirclePick::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
-{
 }
 
 void FCMouseModelCirclePick::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 {
   _pcView3D->PopMouseModel();
-}
-
-void FCMouseModelCirclePick::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelCirclePick::mouseMiddleReleaseEvent ( QMouseEvent *cEvent)
-{
-}
-
-void FCMouseModelCirclePick::mouseRightReleaseEvent	 ( QMouseEvent *cEvent)
-{
 }
 
 void FCMouseModelCirclePick::wheelEvent			    ( QWheelEvent  * cEvent )

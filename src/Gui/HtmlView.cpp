@@ -31,17 +31,27 @@
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
-#	include <qbuttongroup.h>
 #	include <qurl.h>
+#	include <qbuttongroup.h>
+#	include <qmessagebox.h>
 #	include <ctype.h>
 #endif
 
 #include "HtmlView.h"
 #include "Application.h"
 #include "../Base/Interpreter.h"
+#ifndef __linux
 #include <direct.h>
+#endif
 
-
+#ifdef __linux
+#  include<unistd.h> //for chdir
+#  include<stdlib.h> //for system
+#  ifdef _chdir
+#    warning _chdir already defined, cross thumbs
+#  endif
+#  define _chdir chdir
+#endif
 
 
 /* XPM */
@@ -668,6 +678,14 @@ void FCHtmlView::StartExtBrowser(QString url)
 
 void FCHtmlView::StartBrowser(QString path, QString protocol)
 {
+#ifdef __linux
+  QString url = path.mid(protocol.length());
+  if (system("mozilla "+url)!=0){
+    char msgBuf[512];
+    sprintf(msgBuf, "Hey, where is your browser? (Change it in %s:%d)", __FILE__,__LINE__);
+    QMessageBox::critical(this, "Browser", msgBuf);
+  }  
+#else
   QString url = path.mid(protocol.length());
 
   QString browser = GetBrowserDirectory();
@@ -702,10 +720,12 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
     sprintf(szBuf, "Sorry, cannot start '%s'", browser.latin1());
     QMessageBox::critical(this, "Browser", szBuf);
   }
+#endif  
 }
 
 void FCHtmlView::StartScript(QString path, QString protocol)
 {
+
   QString currPath = QDir::currentDirPath();
   _chdir(GetScriptDirectory().latin1());
 

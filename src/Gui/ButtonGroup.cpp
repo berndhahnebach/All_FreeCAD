@@ -40,9 +40,9 @@
 #	include <qcolordialog.h>
 #endif
 
-#include "buttongroup.h"
+#include "ButtonGroup.h"
 #include "Application.h"
-#include "DlgCustomizeImpl.h"
+#include "DlgCustomizeImp.h"
 
 
 FCButtonGroup::FCButtonGroup(QWidget * parent, const char * name)
@@ -766,6 +766,28 @@ FCCmdBar::~FCCmdBar()
 	delete pButtons;
 }
 
+bool FCCmdBar::HasView(const char *sName)
+{
+  if (!pButtons) 
+  {
+#ifdef _DEBUG
+    puts("Invalid button list");
+#endif
+    return NULL; // no valid list object
+  }
+
+  for (QListIterator<QStackBarBtn> it(*pButtons); it.current(); ++it)
+  {
+    QWidget* w = (*it)->widget();
+    if (alViews.find(w) != alViews.end() && (*it)->label() == sName)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 FCToolboxGroup* FCCmdBar::GetView(const char *sName)
 {
   if (!pButtons) 
@@ -1197,7 +1219,7 @@ void FCCmdBar::setButtonHeight( int i )
 }
 
 #include "Icons/x.xpm"
-#include "Icons/Images.cpp"
+#include "Icons/images.cpp"
 
 void FCCmdBar::AddTestButtons(void)
 {

@@ -80,3 +80,15 @@ Version: V0.1B23 Date: Fri Jan 10 17:43:13 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B24 Date: Sun Jan 12 22:15:29 2003 +++++++++++++++++++++++++++++++
 + switching workbenches
+
+Version: V0.1B25 Date: Sun Jan 19 18:20:51 2003 +++++++++++++++++++++++++++++++
++ Big Linux port patch from Vaclav
+  - some fixes on implicite type conversion (Vaclav)
+  - moving all .cxx to .cpp mainly in gui
+  - moving DlgCusomizeImpl to Imp
+  - and InitGui to GuiInit
+  - rmoving X() macro (trouble on Linux)
+  - Linux Gui console (Vaclav)
+  - Using new sstream on Linux (Vaclac)
+  - fixing some case stuff in include (Vaclav)
++ some work on the main MouseModel (Werner)

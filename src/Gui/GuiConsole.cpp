@@ -14,6 +14,9 @@
 
 
 #include "../Config.h"
+
+#ifndef __linux
+
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -22,12 +25,11 @@
 #	include "fcntl.h"
 #endif
 
-#include "GUIConsole.h"
+#include "GuiConsole.h"
 
 
 const UINT FCGUIConsole::s_nMaxLines = 1000;
 UINT       FCGUIConsole::s_nRefCount = 0;
-
 
 /** Constructor
  *  Open a Top level Window and redirect the 
@@ -93,3 +95,14 @@ void FCGUIConsole::Log  (const char *sLog)
 	printf("%s",sLog);
 }
 
+#else /* __linux */
+#include <iostream>
+#include "GuiConsole.h"
+// safely ignore FCGUIConsole::s_nMaxLines and  FCGUIConsole::s_nRefCount
+FCGUIConsole::~FCGUIConsole (void) {}
+void FCGUIConsole::Message(const char *sMsg) { cout<<sMsg; }
+void FCGUIConsole::Warning(const char *sWarn){ cerr<<"Warning: "<<sWarn; }
+void FCGUIConsole::Error  (const char *sErr) { cerr<<"Error: "<<sErr;}
+void FCGUIConsole::Log  (const char *sLog)   { clog<<sLog;}
+
+#endif

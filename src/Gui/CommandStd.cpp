@@ -21,6 +21,18 @@
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
+#	include <qstatusbar.h>
+#	include <qfiledialog.h>
+#	include <qprinter.h>
+#	include <qmessagebox.h>
+#	include <BRepPrimAPI_MakeBox.hxx>
+#	include <BRepTools.hxx>
+#	include <TopoDS_Shape.hxx>
+#	include <TNaming_Builder.hxx>
+#	include <TDataStd_Real.hxx>
+#	include <Handle_TPrsStd_AISPresentation.hxx>
+#	include <TNaming_NamedShape.hxx>
+#	include <TPrsStd_AISPresentation.hxx>
 #endif
 
 #include "../Base/Exception.h"
@@ -37,13 +49,9 @@
 #include "DlgMacroExecuteImp.h"
 #include "DlgMacroRecordImp.h"
 #include "DlgPreferencesImp.h"
-#include "DlgCustomizeImpl.h"
+#include "DlgCustomizeImp.h"
 #include "Icons/images.cpp"
 #include "Icons/x.xpm"
-
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TNaming_Builder.hxx>
 
 
 

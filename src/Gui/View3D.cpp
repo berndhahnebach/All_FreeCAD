@@ -24,6 +24,11 @@
 #	include <Standard_Failure.hxx>
 #	include <qapplication.h>
 #	include <qpopupmenu.h>
+#	include <qvbox.h>
+#	include <qsplitter.h>
+#	include <qtabbar.h>
+#	include <qfiledialog.h>
+#	include <qmessagebox.h>
 #endif
 
 #include "Application.h"

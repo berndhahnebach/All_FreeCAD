@@ -19,7 +19,12 @@
 #	define __STL_DEBUG
 #endif
 
+#ifdef __linux
+#  define FCSTD std
+#else
 #define FCSTD stlport
+#endif
+
 // containers
 #define  FCvector               FCSTD::vector
 #define  FCset                  FCSTD::set
@@ -40,7 +45,11 @@
 #define  FCcerr                 FCSTD::cerr
 #define  FCendl                 FCSTD::endl
 #define  FCofstream             FCSTD::ofstream
-#define  FCstrstream            FCSTD::strstream
+#ifdef __linux
+#  define FCstrstream           FCSTD::ostringstream
+#else
+#  define FCstrstream           FCSTD::strstream
+#endif
 #define  FCmake_pair            FCSTD::make_pair
 #define  FCfind                 FCSTD::find
 #define  FCmax                  FCSTD::max
