@@ -47,6 +47,7 @@
 #include "../App/Application.h"
 #include "Application.h"
 #include "Macro.h"
+#include "PlatQt.h"
 
 /* 
  *  Constructs a DlgMacroExecuteImp which is a child of 'parent', with the 
@@ -141,7 +142,10 @@ void DlgMacroExecuteImp::OnCreate()
 
 void DlgMacroExecuteImp::OnEdit()
 {
-    qWarning( "DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*) not yet implemented!" ); 
+  FCScintillaDoc* doc = new FCScintillaDoc;
+  doc->CreateView("Editor");
+  accept();
+//    qWarning( "DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*) not yet implemented!" ); 
 }
 
 void DlgMacroExecuteImp::OnDelete()
