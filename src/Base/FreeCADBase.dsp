@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADBase" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADBase - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak" CFG="FreeCADBase - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FreeCADBase - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADBase - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FREECADBASE_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCBase" /YX"PreCompiled.h" /FD /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCBase" /Yu"PreCompiled.h" /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FREECADBASE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /D "_USRDLL" /D "FCBase" /D "FC_DEBUG" /FR /YX"PreCompiled.h" /FD /GZ /c
+# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /D "_USRDLL" /D "FCBase" /D "FC_DEBUG" /FR /Yu"PreCompiled.h" /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -91,15 +91,6 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\Console.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -108,20 +99,11 @@ SOURCE=.\Console.h
 # Begin Source File
 
 SOURCE=.\DllMain.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Exception.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -130,15 +112,6 @@ SOURCE=.\Exception.h
 # Begin Source File
 
 SOURCE=.\Factory.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -147,15 +120,6 @@ SOURCE=.\Factory.h
 # Begin Source File
 
 SOURCE=.\FileTemplate.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -164,15 +128,6 @@ SOURCE=.\FileTemplate.h
 # Begin Source File
 
 SOURCE=.\Handle.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -181,15 +136,6 @@ SOURCE=.\Handle.h
 # Begin Source File
 
 SOURCE=.\Interpreter.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -198,20 +144,11 @@ SOURCE=.\Interpreter.h
 # Begin Source File
 
 SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Observer.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -220,15 +157,6 @@ SOURCE=.\Observer.h
 # Begin Source File
 
 SOURCE=.\Parameter.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -246,15 +174,6 @@ SOURCE=.\PreCompiled.h
 # Begin Source File
 
 SOURCE=.\PyExport.cpp
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -263,15 +182,7 @@ SOURCE=.\PyExport.h
 # Begin Source File
 
 SOURCE=.\PyTools.c
-
-!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
-
-# SUBTRACT CPP /YX
-
-!ENDIF 
-
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="FreeCADApp"
+	Name="AppImport"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
+			OutputDirectory=".\.."
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -20,15 +20,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
-				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="3"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Release/FreeCADDoc.pch"
+				PrecompiledHeaderFile=".\Release/AppImport.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -39,19 +37,19 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="TKPCAF.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../bin/FreeCADApp.dll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="../Import.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\Release/FreeCADApp.pdb"
-				ImportLibrary=".\Release/FreeCADApp.lib"/>
+				ProgramDatabaseFile=".\../Import.pdb"
+				ImportLibrary=".\../Import.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/FreeCADDoc.tlb"/>
+				TypeLibraryName=".\../AppImport.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -61,7 +59,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Culture="1031"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -69,7 +67,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
+			OutputDirectory=".\.."
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -77,14 +75,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				OptimizeForProcessor="2"
-				PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG"
+				PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="3"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Debug/FreeCADDoc.pch"
+				PrecompiledHeaderFile=".\Debug/AppImport.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -98,19 +94,19 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../../bin/FreeCADAppD.dll"
+				OutputFile="../Import_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/FreeCADAppD.pdb"
-				ImportLibrary=".\Debug/FreeCADAppD.lib"/>
+				ProgramDatabaseFile=".\../Import_d.pdb"
+				ImportLibrary=".\../Import_d.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/FreeCADDoc.tlb"/>
+				TypeLibraryName=".\../AppImport.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -120,7 +116,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Culture="1031"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -129,49 +125,7 @@
 	</Configurations>
 	<Files>
 		<File
-			RelativePath=".\Application.cpp">
-		</File>
-		<File
-			RelativePath=".\Application.h">
-		</File>
-		<File
-			RelativePath=".\Attribute.cpp">
-		</File>
-		<File
-			RelativePath=".\Attribute.h">
-		</File>
-		<File
-			RelativePath=".\DllMain.cpp">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Document.cpp">
-		</File>
-		<File
-			RelativePath=".\Document.h">
-		</File>
-		<File
-			RelativePath=".\Geometry2D.cpp">
-		</File>
-		<File
-			RelativePath=".\Geometry2D.h">
-		</File>
-		<File
-			RelativePath=".\Geometry3D.cpp">
-		</File>
-		<File
-			RelativePath=".\Geometry3D.h">
+			RelativePath=".\AppImport.cpp">
 		</File>
 		<File
 			RelativePath=".\Libs.cpp">
@@ -205,12 +159,6 @@
 		</File>
 		<File
 			RelativePath=".\PreCompiled.h">
-		</File>
-		<File
-			RelativePath=".\Topology.cpp">
-		</File>
-		<File
-			RelativePath=".\Topology.h">
 		</File>
 	</Files>
 	<Globals>
