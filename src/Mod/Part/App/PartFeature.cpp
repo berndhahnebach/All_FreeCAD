@@ -64,6 +64,16 @@ void PartFeature::SetShape(TopoDS_Shape &Shape)
 	B.Generated(Shape);
 }
 
+TopoDS_Shape PartFeature::GetShape(void)
+{
+  Handle(TNaming_NamedShape) ShapeToViewName;
+  if (!( _cFeatureLabel.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))
+    throw;
+
+  // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
+  return ShapeToViewName->Get();
+
+}
 
 
 

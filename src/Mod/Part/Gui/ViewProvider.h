@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,38 +21,43 @@
  ***************************************************************************/
 
 
+#ifndef __VIEWPROVIDERPART_H__
+#define __VIEWPROVIDERPART_H__
 
-#ifndef __FeaturePartImportIges_H__
-#define __FeaturePartImportIges_H__
-
-
-#include "PartFeature.h"
-
-namespace Part
-{
+#include "../../../Gui/ViewProvider.h"
 
 
-class FeaturePartImportIges :public PartFeature
+class TopoDS_Shape;
+class SoSeparator;
+
+namespace PartGui {
+
+
+class ViewProviderInventorPart:public Gui::ViewProviderInventor
 {
 public:
+  /**
+   * A constructor.
+   * A more elaborate description of the constructor.
+   */
+  ViewProviderInventorPart();
 
-	virtual void InitLabel(const TDF_Label &rcLabel);
+  /**
+   * A destructor.
+   * A more elaborate description of the destructor.
+   */
+  virtual ~ViewProviderInventorPart();
 
-//	virtual bool MustExecute(const TFunction_Logbook& log);
+  virtual SoNode* create(App::Feature *pcFeature);
 
-	virtual Standard_Integer Execute(TFunction_Logbook& log);
+protected:
+  static Standard_Boolean ComputeFaces(SoSeparator* root, const TopoDS_Shape &myShape, float deflection=0);
 
-	virtual void Validate(TFunction_Logbook& log);
 
-  /// Returns the Name/Type of the feature
-  virtual const char *Type(void){return "PartImportIges";};
 };
 
+} // namespace PartGui
 
 
-}
+#endif // __VIEWPROVIDERPART_H__
 
-
-
-
-#endif // __FeaturePartImportIges_H__

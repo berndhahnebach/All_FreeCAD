@@ -375,5 +375,13 @@ SOURCE=.\PreCompiled.cpp
 
 SOURCE=.\PreCompiled.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.h
+# End Source File
 # End Target
 # End Project

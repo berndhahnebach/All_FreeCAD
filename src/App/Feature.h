@@ -64,6 +64,9 @@ public:
 	/// Get called by the framework when the label is attached to the document
 	void AttachLabel(const TDF_Label &rcLabel);
 
+  /// Returns the Name/Type of the feature
+  virtual const char *Type(void)=0;
+
 	/** @name methodes used for recalculation (update) */
 	//@{
 	/** MustExecute

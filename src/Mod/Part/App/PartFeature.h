@@ -28,11 +28,25 @@
 
 //#include <Base/Factory.h>
 //#include <Base/PyExport.h>
-#include <App/Feature.h>
+#include "../../../App/Feature.h"
 
 class TFunction_Logbook;
 class FCPyObject;
 class FeaturePy;
+
+
+#ifdef FC_OS_WIN32
+#	ifdef FCAppPart
+#		define AppPartExport  __declspec(dllexport)
+#	else
+#		define AppPartExport  __declspec(dllimport)
+#	endif
+#else
+#	ifndef AppPartExport
+#		define AppPartExport
+# endif
+#endif
+
 
 namespace Part
 {
@@ -41,7 +55,7 @@ class Property;
 
 /** Base class of all Feature classes in FreeCAD
  */
-class PartFeature: public App::Feature
+class AppPartExport PartFeature: public App::Feature
 {
 public:
 	/// Constructor
@@ -87,6 +101,11 @@ public:
 	 *  
 	 */
   void SetShape(TopoDS_Shape &Shape);
+  
+	/** Get the actual result shape
+	 *  
+	 */
+  TopoDS_Shape GetShape(void);
   
 	//@}
 

@@ -44,6 +44,8 @@ public:
 
 	virtual void Validate(TFunction_Logbook& log);
 
+  /// Returns the Name/Type of the feature
+  virtual const char *Type(void){return "PartImportStep";};
 };
 
 

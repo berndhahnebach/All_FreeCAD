@@ -25,6 +25,15 @@
 #define __VIEWPROVIDER_H__
 
 
+#include "../Base/Factory.h"
+
+namespace App
+{
+  class Feature;
+}
+
+class SoNode;
+
 namespace Gui {
 
 /** Base class of all view provider
@@ -64,6 +73,73 @@ public:
 
   QListViewItem* create();
 };
+
+
+class GuiExport ViewProviderInventor:public ViewProvider
+{
+public:
+  /**
+   * A constructor.
+   * A more elaborate description of the constructor.
+   */
+  ViewProviderInventor();
+
+  /**
+   * A destructor.
+   * A more elaborate description of the destructor.
+   */
+  virtual ~ViewProviderInventor();
+
+  virtual SoNode* create(App::Feature *pcFeature)=0;
+};
+
+
+/** The FeatureFactory singleton
+  */
+class GuiExport ViewProviderInventorFactorySingleton : public Base::Factory
+{
+public:
+	static ViewProviderInventorFactorySingleton& Instance(void);
+	static void Destruct (void);
+
+    /// produce the ViewProvider using the factory
+	ViewProviderInventor *Produce (const char* sName) const;
+
+private:
+	static ViewProviderInventorFactorySingleton* _pcSingleton;
+
+	ViewProviderInventorFactorySingleton(){}
+	~ViewProviderInventorFactorySingleton(){}
+};
+
+inline GuiExport ViewProviderInventorFactorySingleton& ViewProviderInventorFactory(void)
+{
+	return ViewProviderInventorFactorySingleton::Instance();
+}
+
+// --------------------------------------------------------------------
+
+template <class CLASS>
+class ViewProviderInventorProducer: public Base::AbstractProducer
+{
+	public:
+		/// Constructor
+		ViewProviderInventorProducer ()
+		{
+			Gui::ViewProviderInventorFactory().AddProducer(typeid(CLASS).name(), this);
+		}
+
+		virtual ~ViewProviderInventorProducer (void){}
+
+		/// Produce an instance
+		virtual void* Produce (void) const
+		{ 
+			return (void*)(new CLASS);
+		}
+};
+
+
+
 
 } // namespace Gui
 

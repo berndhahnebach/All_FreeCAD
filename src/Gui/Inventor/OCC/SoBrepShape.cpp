@@ -282,6 +282,7 @@ Standard_Boolean SoBrepShape::Compute2(SoSeparator* root)
 
 						if(selection) {
 							SoLocateHighlight* h = new SoLocateHighlight();
+              h->color.setValue((float)0.2,(float)0.2,(float)1);
 							SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
 							faceset->coordIndex.setValues(0,4*nbTriInFace, cons);
 							h->addChild(faceset);

@@ -50,6 +50,7 @@
 #include "View3DInventorEx.h"
 #include "Document.h"
 #include "../App/Label.h"
+#include "../App/Feature.h"
 #include "../Base/Console.h"
 
 // build in Inventor
@@ -57,6 +58,7 @@
 #include "Inventor/OCC/SoBrepShape.h"
 
 #include "View3DInventorExamples.h"
+#include "ViewProvider.h"
 
 #include "Tools.h"
 #include "Icons/default_background.xpm"
@@ -66,7 +68,8 @@ using namespace Gui;
 View3DInventorEx::View3DInventorEx( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
-//  _viewer = new SoQtExaminerViewer(this);
+  pcActViewProvider = 0l;
+  
   _viewer = new Gui::MyExaminerViewer(this/*,"FreeCAD.png"*/);
 
   setViewerDefaults();
@@ -164,8 +167,8 @@ void View3DInventorEx::setViewerDefaults(void)
   _viewer->viewAll();
   _viewer->setDecoration(false);
 
-  _viewer->setSceneGraph(new SoCone);
-  _viewer->show();
+//  _viewer->setSceneGraph(new SoCone);
+//  _viewer->show();
 
   _viewer->show();
 }
@@ -201,6 +204,38 @@ void View3DInventorEx::SetShape(void)
 void View3DInventorEx::onUpdate(void)
 {
 
+  App::Feature *pcActFeature = getAppDocument()->GetActiveFeature();
+
+  if(pcActFeature)
+  {
+    std::string cName = pcActFeature->Type();
+    // check if still the same ViewProvider
+    if(cName == cViewProviderName && pcActViewProvider)
+    {
+      // if the same just calculate the new representation
+      SoNode* Node = pcActViewProvider->create(pcActFeature);
+      _viewer->setSceneGraph(Node);
+    }else{
+      // if not create the new ViewProvider
+      if (pcActViewProvider) 
+        delete pcActViewProvider;
+      pcActViewProvider = ViewProviderInventorFactory().Produce(pcActFeature->Type());
+      if(pcActViewProvider)
+      {
+        // if succesfully created set the right name an calculate the view
+        cViewProviderName = pcActFeature->Type();
+        SoNode* Node = pcActViewProvider->create(pcActFeature);
+        _viewer->setSceneGraph(Node);
+      }else{
+        Base::Console().Warning("View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",pcActFeature->Type());
+        cViewProviderName = "";
+      }
+    }
+
+  }
+
+
+/*
   TDF_Label L = getAppDocument()->GetActive();
 
   if(! L.IsNull())
@@ -228,7 +263,7 @@ void View3DInventorEx::onUpdate(void)
     else
       Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
   }
-
+*/
 }
 
 

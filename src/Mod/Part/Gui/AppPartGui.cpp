@@ -26,7 +26,10 @@
 #include "../../../Base/Console.h"
 
 #include "../../../Gui/Application.h"
+#include "../../../Gui/ViewProvider.h"
 #include "../../../Gui/Macro.h"
+
+#include "ViewProvider.h"
 
 void CreateCommands(void);
 
@@ -70,6 +73,12 @@ void ModuleExport initPartGui() {
 
 	App::GetApplication();
   Gui::ApplicationWindow::Instance->macroManager()->setModule("Part");
+
+  // Register view provider
+  Gui::ViewProviderInventorFactory().AddProducer("PartBox"       ,new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFactory().AddProducer("PartCut"       ,new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFactory().AddProducer("PartImportStep",new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFactory().AddProducer("PartImportIges",new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
 
 	// instanciating the commands
 	CreateCommands();

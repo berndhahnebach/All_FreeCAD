@@ -28,6 +28,7 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "../Base/Console.h"
 #include "ViewProvider.h"
 #include "Tree.h"
 
@@ -81,3 +82,64 @@ QListViewItem* ViewProviderTree::create()
 {
   return 0;//new QListViewItem();
 }
+
+
+//**************************************************************************
+//**************************************************************************
+// Seperator for additional classes
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+       
+ViewProviderInventor::ViewProviderInventor()
+{
+
+}
+
+
+ViewProviderInventor::~ViewProviderInventor()
+{
+
+}
+
+
+
+//===========================================================================
+// FeatureFactorySingleton - Factory for Features
+//===========================================================================
+
+
+
+ViewProviderInventorFactorySingleton* ViewProviderInventorFactorySingleton::_pcSingleton = NULL;
+
+ViewProviderInventorFactorySingleton& ViewProviderInventorFactorySingleton::Instance(void)
+{
+  if (_pcSingleton == NULL)
+    _pcSingleton = new ViewProviderInventorFactorySingleton;
+  return *_pcSingleton;
+}
+
+void ViewProviderInventorFactorySingleton::Destruct (void)
+{
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
+
+ViewProviderInventor* ViewProviderInventorFactorySingleton::Produce (const char* sName) const
+{
+	ViewProviderInventor* w = (ViewProviderInventor*)Factory::Produce(sName);
+
+  // this Feature class is not registered
+  if (!w)
+  {
+#ifdef FC_DEBUG
+    Base::Console().Warning("\"%s\" ViewProvider is not registered\n", sName);
+#else
+    Base::Console().Log("\"%s\" ViewProvider is not registered\n", sName);
+#endif
+    return NULL;
+  }
+
+  return w;
+}
+

@@ -51,6 +51,8 @@ class TreeView;
 class View3D;
 class MyExaminerViewer;
 class View3DInventor;
+class ViewProviderInventor;
+
 
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
@@ -99,13 +101,12 @@ protected:
   SoSeparator * pcSepAxis;
   SoShapeHints* pcShapeHint; 
   SoMaterial	* pcShapeMaterial;
+
+  std::string            cViewProviderName;
+  ViewProviderInventor * pcActViewProvider;
+
 private:
-//  SoQtExaminerViewer * _viewer;
   MyExaminerViewer * _viewer;
-  QWidget*      _pcWidget;
-  QVBox*        _pcFrame;
-  QWidgetStack* _pcWidgetStack;
-  QTabBar*      _pcTabBar;
 };
 
 
@@ -124,23 +125,6 @@ private:
   SoRotationXYZ * arrowrotation;
 };
 
-
-/** The Inventor viewer
- *  
-class View3DInventor: public SoQtViewer
-{
-public:
-
-    View3DInventor (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true) 
-      :SoQtViewer (parent, name, embed, type, build)
-    {
-
-    }
-
-    ~View3DInventor(){}
-};
-
- */
 
 } // namespace Gui
 
