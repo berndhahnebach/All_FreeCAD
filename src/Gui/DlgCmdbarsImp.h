@@ -51,6 +51,8 @@ class FCDlgCustomCmdbarsImp : public FCDlgCustomCmdbars, public FCPropertyPage
     void slotCmdBarSelected(const QString &);
     /// creates new cmdbar
     void slotCreateCmdBar();
+    /// deletes cmdbar
+    void slotDeleteCmdBar();
     /// adds a new action by double click
     void slotDblClickAddAction(QListViewItem*);
     /// adds a new action

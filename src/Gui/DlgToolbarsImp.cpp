@@ -35,7 +35,7 @@
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
+# include <Python.h>
 #endif
 
 #include "DlgToolbarsImp.h"
@@ -79,6 +79,7 @@ FCDlgCustomToolbarsImp::FCDlgCustomToolbarsImp( QWidget* parent, const char* nam
 
   connect(ComboToolbars, SIGNAL(activated ( const QString & )), this, SLOT(slotToolBarSelected(const QString &)));
   connect(CreateToolbar, SIGNAL(clicked()), this, SLOT(slotCreateToolBar()));
+  connect(DeleteToolbar, SIGNAL(clicked()), this, SLOT(slotDeleteToolBar()));
 
   m_aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
   for (std::vector<FCToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
@@ -129,8 +130,8 @@ void FCDlgCustomToolbarsImp::apply()
     if (pCom != NULL)
     {
       found = true;
-      pCom->GetAction()->addTo(toolbar);
-      items.push_back(pCom->GetName());
+      if (pCom->addTo(toolbar))
+        items.push_back(pCom->GetName());
     }
 
     if (!found)
@@ -338,12 +339,50 @@ void FCDlgCustomToolbarsImp::slotMoveDownAction()
 
 void FCDlgCustomToolbarsImp::slotCreateToolBar()
 {
-  QString text = ToolbarName->text();
-  ToolbarName->clear();
-  FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(text.latin1());
-  toolbar->show();
-  m_aclToolbars.push_back(toolbar);
-  ComboToolbars->insertItem(text);
+  QString def = tr("toolbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countToolBars());
+#if QT_VERSION <= 230
+  QString text = QInputDialog::getText("New toolbar", "Specify the name of the new toolbar, please.",
+                                       def, 0, this);
+#else
+  QString text = QInputDialog::getText("New toolbar", "Specify the name of the new toolbar, please.",  QLineEdit::Normal,
+                                       def, 0, this);
+#endif
+  if (!text.isNull() && !text.isEmpty())
+  {
+    FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(text.latin1());
+    toolbar->show();
+    m_aclToolbars.push_back(toolbar);
+    ComboToolbars->insertItem(text);
+  }
+}
+
+void FCDlgCustomToolbarsImp::slotDeleteToolBar()
+{
+  std::vector<std::string> items;
+  std::vector<FCToolBar*> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
+  for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
+    items.push_back((*it)->name());
+
+  FCCheckListDlg checklists(this, "", true) ;
+  checklists.setCaption( "Delete selected toolbars" );
+  checklists.setItems(items);
+  if (checklists.exec())
+  {
+    std::vector<int> checked = checklists.getCheckedItems();
+    for (std::vector<int>::iterator it = checked.begin(); it!=checked.end(); ++it)
+    {
+      ApplicationWindow::Instance->GetCustomWidgetManager()->delToolBar(items[*it].c_str());
+    }
+
+    ComboToolbars->clear();
+    m_aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
+    for (std::vector<FCToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
+    {
+      ComboToolbars->insertItem((*it3)->name());
+    }
+
+    slotToolBarSelected(ComboToolbars->text(0));
+  }
 }
 
 void FCDlgCustomToolbarsImp::slotDblClickAddAction(QListViewItem* item)

@@ -51,6 +51,8 @@ class FCDlgCustomToolbarsImp : public FCDlgCustomToolbars, public FCPropertyPage
     void slotToolBarSelected(const QString &);
     /// creates new toolbar
     void slotCreateToolBar();
+    /// deletes toolbar
+    void slotDeleteToolBar();
     /// adds a new action by double click
     void slotDblClickAddAction(QListViewItem*);
     /// adds a new action

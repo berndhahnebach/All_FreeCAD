@@ -35,7 +35,7 @@
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
+# include <Python.h>
 #endif
 
 #include "DlgCmdbarsImp.h"
@@ -43,6 +43,7 @@
 #include "Tools.h"
 #include <qobjcoll.h>
 #include <qtabwidget.h>
+#include "Widgets.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +80,7 @@ FCDlgCustomCmdbarsImp::FCDlgCustomCmdbarsImp( QWidget* parent, const char* name,
 
   connect(ComboCmdbars, SIGNAL(activated ( const QString & )), this, SLOT(slotCmdBarSelected(const QString &)));
   connect(CreateCmdbar, SIGNAL(clicked()), this, SLOT(slotCreateCmdBar()));
+  connect(DeleteCmdbar, SIGNAL(clicked()), this, SLOT(slotDeleteCmdBar()));
 
   m_aclCmdbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
   for (std::vector<FCToolBar*>::iterator it3 = m_aclCmdbars.begin(); it3 != m_aclCmdbars.end(); ++it3)
@@ -125,8 +127,8 @@ void FCDlgCustomCmdbarsImp::apply()
     FCCommand* pCom = cCmdMgr.GetCommandByActionText(item->text(0).latin1());
     if (pCom != NULL)
     {
-      pCom->GetAction()->addTo(toolbar);
-      items.push_back(pCom->GetName());
+      if (pCom->addTo(toolbar))
+        items.push_back(pCom->GetName());
     }
   }
 
@@ -321,12 +323,50 @@ void FCDlgCustomCmdbarsImp::slotMoveDownAction()
 
 void FCDlgCustomCmdbarsImp::slotCreateCmdBar()
 {
-  QString text = CmdbarName->text();
-  CmdbarName->clear();
-  FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());
-  toolbar->show();
-  m_aclCmdbars.push_back(toolbar);
-  ComboCmdbars->insertItem(text);
+  QString def = tr("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
+#if QT_VERSION <= 230
+  QString text = QInputDialog::getText("New command bar", "Specify the name of the new command bar, please.",
+                                       def, 0, this);
+#else
+  QString text = QInputDialog::getText("New command bar", "Specify the name of the new command bar, please.", QLineEdit::Normal,
+                                       def, 0, this);
+#endif
+  if (!text.isNull() && !text.isEmpty())
+  {
+    FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());
+    toolbar->show();
+    m_aclCmdbars.push_back(toolbar);
+    ComboCmdbars->insertItem(text);
+  }
+}
+
+void FCDlgCustomCmdbarsImp::slotDeleteCmdBar()
+{
+  std::vector<std::string> items;
+  std::vector<FCToolBar*> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
+  for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
+    items.push_back((*it)->name());
+
+  FCCheckListDlg checklists(this, "", true) ;
+  checklists.setCaption( "Delete selected command bars" );
+  checklists.setItems(items);
+  if (checklists.exec())
+  {
+    std::vector<int> checked = checklists.getCheckedItems();
+    for (std::vector<int>::iterator it = checked.begin(); it!=checked.end(); ++it)
+    {
+      ApplicationWindow::Instance->GetCustomWidgetManager()->delCmdBar(items[*it].c_str());
+    }
+
+    ComboCmdbars->clear();
+    m_aclCmdbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
+    for (std::vector<FCToolBar*>::iterator it3 = m_aclCmdbars.begin(); it3 != m_aclCmdbars.end(); ++it3)
+    {
+      ComboCmdbars->insertItem((*it3)->name());
+    }
+
+    slotCmdBarSelected(ComboCmdbars->text(0));
+  }
 }
 
 void FCDlgCustomCmdbarsImp::slotDblClickAddAction(QListViewItem* item)

@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>409</width>
-            <height>285</height>
+            <width>400</width>
+            <height>328</height>
         </rect>
     </property>
     <property>
@@ -61,11 +61,79 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget row="2"  column="2" >
+                <widget row="6"  column="0" >
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>buttonLeft</cstring>
+                        <cstring>CreateToolbar</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Create bar</string>
+                    </property>
+                </widget>
+                <widget row="6"  column="1" >
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>DeleteToolbar</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Delete bar</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="0"  rowspan="6"  colspan="2" >
+                    <class>QListView</class>
+                    <column>
+                        <property>
+                            <name>text</name>
+                            <string>Available Actions</string>
+                        </property>
+                        <property>
+                            <name>clickable</name>
+                            <bool>false</bool>
+                        </property>
+                        <property>
+                            <name>resizeable</name>
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>AvailableActions</cstring>
+                    </property>
+                    <property>
+                        <name>selectionMode</name>
+                        <enum>Extended</enum>
+                    </property>
+                </widget>
+                <spacer row="0"  column="2" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer13</cstring>
+                    </property>
+                    <property>
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="1"  column="2" >
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>buttonRight</cstring>
                     </property>
                     <property>
                         <name>enabled</name>
@@ -87,54 +155,35 @@
                         <pixmap>image0</pixmap>
                     </property>
                     <property>
-                        <name>autoDefault</name>
-                        <bool>true</bool>
-                    </property>
-                    <property>
-                        <name>default</name>
-                        <bool>false</bool>
-                    </property>
-                    <property>
                         <name>toolTip</name>
-                        <string>Move left</string>
+                        <string>Move right</string>
                     </property>
                     <property>
                         <name>whatsThis</name>
-                        <string>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</string>
+                        <string>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</string>
                     </property>
                 </widget>
-                <widget row="6"  column="3" >
-                    <class>QComboBox</class>
-                    <property stdset="1">
+                <spacer row="5"  column="2" >
+                    <property>
                         <name>name</name>
-                        <cstring>ComboToolbars</cstring>
+                        <cstring>Spacer63_2</cstring>
                     </property>
                     <property>
-                        <name>minimumSize</name>
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
                         <size>
-                            <width>140</width>
-                            <height>0</height>
+                            <width>20</width>
+                            <height>20</height>
                         </size>
                     </property>
-                </widget>
-                <widget row="6"  column="0" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>CreateToolbar</cstring>
-                    </property>
-                    <property>
-                        <name>text</name>
-                        <string>Create new toolbar</string>
-                    </property>
-                </widget>
-                <widget row="6"  column="1"  rowspan="1"  colspan="2" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>ToolbarName</cstring>
-                    </property>
-                </widget>
+                </spacer>
                 <widget row="3"  column="2" >
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -169,27 +218,6 @@
                         <string>&lt;b&gt;Move the selected item up.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</string>
                     </property>
                 </widget>
-                <spacer row="5"  column="2" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer63_2</cstring>
-                    </property>
-                    <property>
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property>
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget row="4"  column="2" >
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -228,11 +256,11 @@
                         <string>&lt;b&gt;Move the selected item down.&lt;/b&gt;&lt;p&gt;The item will be moved within the hierarchy level.&lt;/p&gt;</string>
                     </property>
                 </widget>
-                <widget row="1"  column="2" >
+                <widget row="2"  column="2" >
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>buttonRight</cstring>
+                        <cstring>buttonLeft</cstring>
                     </property>
                     <property>
                         <name>enabled</name>
@@ -254,37 +282,55 @@
                         <pixmap>image3</pixmap>
                     </property>
                     <property>
+                        <name>autoDefault</name>
+                        <bool>true</bool>
+                    </property>
+                    <property>
+                        <name>default</name>
+                        <bool>false</bool>
+                    </property>
+                    <property>
                         <name>toolTip</name>
-                        <string>Move right</string>
+                        <string>Move left</string>
                     </property>
                     <property>
                         <name>whatsThis</name>
-                        <string>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</string>
+                        <string>&lt;b&gt;Move the selected item one level up.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</string>
                     </property>
                 </widget>
-                <widget row="0"  column="0"  rowspan="6"  colspan="2" >
-                    <class>QListView</class>
-                    <column>
-                        <property>
-                            <name>text</name>
-                            <string>Available Actions</string>
-                        </property>
-                        <property>
-                            <name>clickable</name>
-                            <bool>false</bool>
-                        </property>
-                        <property>
-                            <name>resizeable</name>
-                            <bool>true</bool>
-                        </property>
-                    </column>
-                    <property stdset="1">
+                <spacer row="6"  column="2" >
+                    <property>
                         <name>name</name>
-                        <cstring>AvailableActions</cstring>
+                        <cstring>Spacer13_2</cstring>
                     </property>
                     <property>
-                        <name>selectionMode</name>
-                        <enum>Extended</enum>
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="6"  column="3" >
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>ComboToolbars</cstring>
+                    </property>
+                    <property>
+                        <name>minimumSize</name>
+                        <size>
+                            <width>140</width>
+                            <height>0</height>
+                        </size>
                     </property>
                 </widget>
                 <widget row="0"  column="3"  rowspan="6"  colspan="1" >
@@ -312,27 +358,6 @@
                         <enum>Extended</enum>
                     </property>
                 </widget>
-                <spacer row="0"  column="2" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer13</cstring>
-                    </property>
-                    <property>
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property>
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </grid>
         </widget>
     </grid>
@@ -340,7 +365,7 @@
 <images>
     <image>
         <name>image0</name>
-        <data format="XPM.GZ" length="1055">789c65d25f6fa2401000f0773f05913773b1202c422ef7a056ebffda3e5dd2f461d95d2aa2605129dea5dfbdbb336373a7460dbf9961665cbc6b59bf570bab75d7381cf931159658f3d26ac9d36e777e79fdf5b7d174034bbf7dfdddfcd168b62d612d8b5c99eb677d6d3ba12792c47069e83a5ea820fb88f47dcc8e80dfc563a4ef2481e19448d99e61c7f184648603e4a5d5191831863c187a2e6312e60e91818bd90930620eb67a400611666b43dfed52ab059007ae80e215910969f884ec4a2c9e1bb24e20313b4386d4ea1ec8431ad4370c3a5d164371818ca8f80f9047119e4645a441b661d70b23dc2a4772ba774de448098c438983b648eee243c9880a8b37c8b883fc300c3d4d58a3240698e5c098336c951a46bea0ec89486b2440a1b3d0ea0d29a9786f184b457c3714ecc21d504a5a3236944ad192c250058a061d91095101f59dc8f6d5eb3b66f39b188f05bf8a49a192ab3abdc8db5afe17d3f3d24d66b7b9e436dfdaf014762acdb3bcd826fbfdfbbe3cc0911c4f599e57599a7e94ebbc3ec3832f373a545545613e750ffe2a837b1dca87a3c179f8500fc73063329de992b9948b496f395ee02ef3c7baa8681779d979357a9addfcb6fef3d4be3983fef236f6ef597dfe6c7c016080f871</data>
+        <data format="XPM.GZ" length="1175">789c65d24b6fda401000e03bbfc2c2375411fc583f54f510d204688040020949d5c37ad7368eb14978242455ff7b3d0f9002960ffe66676647bb3e6b18b3d1c0689cd5d61bb9c994a1e6726534f4b6283e7efff9f1b756b73ca37a856b58f56fb57ad350c67059c6f03dadbecd56cb769304386606c41ed00a1c157bc05ba0dd725c2d8037443788b1d51019ba8af808742c1126583b38103bf7899e20de2143d1521a3822ee57bb4cae7d02ba96d0947c8f944247c809d1b3140e7941f4054df50b286cdfd2c86b62c01bcd90d20f29f99d18685a2d819eed0bda2825865cbb434a9fc7d0c440d0183f89219f46fb40aced10a545cc80be23b9b34446412815f08118f29026515a74471f4c491b29664cad7260e0441ef11959d552f21571bfba6472ab05935b15c0eab63979ce94c418a914275f12b54ddc00a55b113b9f1f88ab095269aefd24c6bcba0546aef6a8768dd49a877c3b109357c498878c804a27bcef2b93575f80904a6c1e3d5f62a63c8d454a9fc4e224d527b5f338d31493cfa6a9cd6653e68b459196185bbebcaed6ebcdf62d5779be78dfe1ad7e16c5bc88cf0b054ffb027fa9cbab5c6559072259daede1efddb9eef607c39b51156af7c7582b7bb777939d9465bb0a4defbfcef2900ea693a3f966fdf1e478e647c83a8a3d95a767b03fab7fdf6bff01e3b51256</data>
     </image>
     <image>
         <name>image1</name>
@@ -352,7 +377,7 @@
     </image>
     <image>
         <name>image3</name>
-        <data format="XPM.GZ" length="1175">789c65d24b6fda401000e03bbfc2c2375411fc583f54f510d204688040020949d5c37ad7368eb14978242455ff7b3d0f9002960ffe66676647bb3e6b18b3d1c0689cd5d61bb9c994a1e6726534f4b6283e7efff9f1b756b73ca37a856b58f56fb57ad350c67059c6f03dadbecd56cb769304386606c41ed00a1c157bc05ba0dd725c2d8037443788b1d51019ba8af808742c1126583b38103bf7899e20de2143d1521a3822ee57bb4cae7d02ba96d0947c8f944247c809d1b3140e7941f4054df50b286cdfd2c86b62c01bcd90d20f29f99d18685a2d819eed0bda2825865cbb434a9fc7d0c440d0183f89219f46fb40aced10a545cc80be23b9b34446412815f08118f29026515a74471f4c491b29664cad7260e0441ef11959d552f21571bfba6472ab05935b15c0eab63979ce94c418a914275f12b54ddc00a55b113b9f1f88ab095269aefd24c6bcba0546aef6a8768dd49a877c3b109357c498878c804a27bcef2b93575f80904a6c1e3d5f62a63c8d454a9fc4e224d527b5f338d31493cfa6a9cd6653e68b459196185bbebcaed6ebcdf62d5779be78dfe1ad7e16c5bc88cf0b054ffb027fa9cbab5c6559072259daede1efddb9eef607c39b51156af7c7582b7bb777939d9465bb0a4defbfcef2900ea693a3f966fdf1e478e647c83a8a3d95a767b03fab7fdf6bff01e3b51256</data>
+        <data format="XPM.GZ" length="1055">789c65d25f6fa2401000f0773f05913773b1202c422ef7a056ebffda3e5dd2f461d95d2aa2605129dea5dfbdbb336373a7460dbf9961665cbc6b59bf570bab75d7381cf931159658f3d26ac9d36e777e79fdf5b7d174034bbf7dfdddfcd168b62d612d8b5c99eb677d6d3ba12792c47069e83a5ea820fb88f47dcc8e80dfc563a4ef2481e19448d99e61c7f184648603e4a5d5191831863c187a2e6312e60e91818bd90930620eb67a400611666b43dfed52ab059007ae80e215910969f884ec4a2c9e1bb24e20313b4386d4ea1ec8431ad4370c3a5d164371818ca8f80f9047119e4645a441b661d70b23dc2a4772ba774de448098c438983b648eee243c9880a8b37c8b883fc300c3d4d58a3240698e5c098336c951a46bea0ec89486b2440a1b3d0ea0d29a9786f184b457c3714ecc21d504a5a3236944ad192c250058a061d91095101f59dc8f6d5eb3b66f39b188f05bf8a49a192ab3abdc8db5afe17d3f3d24d66b7b9e436dfdaf014762acdb3bcd826fbfdfbbe3cc0911c4f599e57599a7e94ebbc3ec3832f373a545545613e750ffe2a837b1dca87a3c179f8500fc73063329de992b9948b496f395ee02ef3c7baa8681779d979357a9addfcb6fef3d4be3983fef236f6ef597dfe6c7c016080f871</data>
     </image>
 </images>
 </UI>
