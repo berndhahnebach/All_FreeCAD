@@ -136,16 +136,14 @@ libPart_la_SOURCES = \
 		AppPart.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartBox.h \
-    FeaturePartCut.cpp \
-    FeaturePartCut.h \
-    FeaturePartImportIges.cpp \
-    FeaturePartImportIges.h \
-    FeaturePartImportStep.cpp \
-    FeaturePartImportStep.h \
-		PartDocType.cpp \
-		PartDocType.h \
-    PartFeature.cpp \
-    PartFeature.h
+		FeaturePartCut.cpp \
+		FeaturePartCut.h \
+		FeaturePartImportIges.cpp \
+		FeaturePartImportIges.h \
+		FeaturePartImportStep.cpp \
+		FeaturePartImportStep.h \
+		PartFeature.cpp \
+		PartFeature.h
 
 
 # the library search path.
@@ -154,11 +152,11 @@ libPart_la_LDFLAGS = -L../../../App $(all_libraries)
 libPart_la_LIBADD = \
 		-lFreeCADBase \
 		-lFreeCADApp \
-    -lTKService \
-    -lTKSTEP \
-    -lTKIGES \
-    -lTKShHealing \
-    -lTKXSBase
+		-lTKService \
+		-lTKSTEP \
+		-lTKIGES \
+		-lTKShHealing \
+		-lTKXSBase
 
 
 # set the include path found by configure
@@ -171,7 +169,7 @@ LTLIBRARIES = $(pkglib_LTLIBRARIES)
 libPart_la_DEPENDENCIES =
 am_libPart_la_OBJECTS = AppPart.lo FeaturePartBox.lo FeaturePartCut.lo \
 	FeaturePartImportIges.lo FeaturePartImportStep.lo \
-	PartDocType.lo PartFeature.lo
+	PartFeature.lo
 libPart_la_OBJECTS = $(am_libPart_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -182,7 +180,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartCut.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportIges.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportStep.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PartDocType.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PartFeature.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -254,7 +251,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartCut.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportIges.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportStep.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartDocType.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartFeature.Plo@am__quote@
 
 distclean-depend:

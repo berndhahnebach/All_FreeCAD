@@ -11,8 +11,6 @@ libPart_la_SOURCES=\
 		FeaturePartImportIges.h \
 		FeaturePartImportStep.cpp \
 		FeaturePartImportStep.h \
-		PartDocType.cpp \
-		PartDocType.h \
 		PartFeature.cpp \
 		PartFeature.h
 
