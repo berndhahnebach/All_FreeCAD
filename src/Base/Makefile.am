@@ -13,7 +13,6 @@ libFreeCADBase_la_SOURCES=\
 		Observer.h \
 		Parameter.h \
 		PreCompiled.h \
-		Process.h \
 		PyExport.h \
 		PyExportImp.h \
 		PyTools.h \
@@ -30,7 +29,6 @@ libFreeCADBase_la_SOURCES=\
 		Parameter.cpp \
 		ParameterPy.cpp \
 		PreCompiled.cpp \
-		Process.cpp \
 		PyExport.cpp \
 		PyExportImp.cpp \
 		PyTools.c \

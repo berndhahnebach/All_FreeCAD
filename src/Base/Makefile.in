@@ -147,7 +147,6 @@ libFreeCADBase_la_SOURCES = \
 		Observer.h \
 		Parameter.h \
 		PreCompiled.h \
-		Process.h \
 		PyExport.h \
 		PyExportImp.h \
 		PyTools.h \
@@ -164,7 +163,6 @@ libFreeCADBase_la_SOURCES = \
 		Parameter.cpp \
 		ParameterPy.cpp \
 		PreCompiled.cpp \
-		Process.cpp \
 		PyExport.cpp \
 		PyExportImp.cpp \
 		PyTools.c \
@@ -188,7 +186,7 @@ libFreeCADBase_la_DEPENDENCIES =
 am_libFreeCADBase_la_OBJECTS = Console.lo Documentation.lo Doxygen.lo \
 	Exception.lo Factory.lo FileTemplate.lo Handle.lo \
 	Interpreter.lo Observer.lo Parameter.lo ParameterPy.lo \
-	PreCompiled.lo Process.lo PyExport.lo PyExportImp.lo PyTools.lo \
+	PreCompiled.lo PyExport.lo PyExportImp.lo PyTools.lo \
 	Sequencer.lo
 libFreeCADBase_la_OBJECTS = $(am_libFreeCADBase_la_OBJECTS)
 
@@ -203,7 +201,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Interpreter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Observer.Plo ./$(DEPDIR)/Parameter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ParameterPy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo ./$(DEPDIR)/Process.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PyExport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PyExportImp.Plo ./$(DEPDIR)/PyTools.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Sequencer.Plo
@@ -284,7 +282,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parameter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterPy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Process.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyExport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyExportImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyTools.Plo@am__quote@
