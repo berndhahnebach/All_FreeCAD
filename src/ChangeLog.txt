@@ -65,3 +65,8 @@ Version: V0.1B19 Date: Sat Jan 04 12:23:49 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B20 Date: Mon Jan 06 11:31:16 2003 +++++++++++++++++++++++++++++++
 + Clean up Gui.dsp
 + split up std commands 
+
+Version: V0.1B21 Date: Mon Jan 06 20:53:48 2003 +++++++++++++++++++++++++++++++
++ Building up Part Application 
++ starting Test Application
++ Adding FCFactory in Base

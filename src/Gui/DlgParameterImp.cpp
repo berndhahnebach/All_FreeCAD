@@ -63,7 +63,7 @@
  *  Constructs a DlgParameter 
  */
 DlgParameter::DlgParameter( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : ParameterDialog( parent, name, modal, fl ),_pcMainLabel(0L)
+    : ParameterDialog( parent, name, modal, fl ),_pcMainLabel(0L),FCWindow(name)
 {
 	const FCmap<FCstring,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
 

@@ -52,7 +52,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroExecute( parent, name, modal, fl )
+    : DlgMacroExecute( parent, name, modal, fl ),FCWindow(name)
 {
 }
 

@@ -59,6 +59,7 @@
 #	pragma comment(lib,"TKCDF.lib")
 	// QT extension
 #	pragma comment(lib,"qextmdi.lib")
+#	pragma comment(lib,"qt-mt230nc.lib")
 
 #else
 //#	error "Dont compile this file on UNIX!"

@@ -1,4 +1,4 @@
-/** \file DlgMacroRecordImp.h
+/** \file DlgPartBoxImp.h
  *  \brief  
  *  \author $Author$
  *  \version $Revision$
@@ -30,24 +30,24 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#ifndef DLGMACRORECORDIMP_H
-#define DLGMACRORECORDIMP_H
-#include "DlgMacroRecord.h"
-#include "Window.h"
+#ifndef DLGPARTBOXIMP_H
+#define DLGPARTBOXIMP_H
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindow
+#include "../../../Gui/Window.h"
+#include "DlgPartBox.h"
+
+
+class DlgPartBoxImp : public DlgPartBox, public FCWindow
 { 
     Q_OBJECT
 
 public:
-    DlgMacroRecordImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgMacroRecordImp();
+    DlgPartBoxImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~DlgPartBoxImp();
 
 public slots:
-    void OnTieCommandBar();
-    void OnTieToolBar();
-    void OnTieKeyboard();
+    void OnApply();
 
 };
 
-#endif // DLGMACRORECORDIMP_H
+#endif // DLGPARTBOX_H

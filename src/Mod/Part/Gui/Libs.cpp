@@ -1,9 +1,12 @@
-/** \file DlgMacroRecordImp.h
- *  \brief  
+/** \file Libs.cpp
+ *  \brief Include all needed libs on Windows
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *   
+ *  Here all the libs get includet by a #pragma dirctive.
+ *  Unfortunatly there is nothin comperable on UNIX, so there
+ *  you have to use compiler -l staments, which are somwere deep
+ *  in the Makefile.
  */
 
 /***************************************************************************
@@ -30,24 +33,35 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#ifndef DLGMACRORECORDIMP_H
-#define DLGMACRORECORDIMP_H
-#include "DlgMacroRecord.h"
-#include "Window.h"
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindow
-{ 
-    Q_OBJECT
+// === Including of libs: ============================================================================
+#include "../../../Config.h"
+#ifdef WNT
+#	pragma comment(lib,"TKernel.lib")
+#	pragma comment(lib,"TKMath.lib")
+#	pragma comment(lib,"TKService.lib")
+#	pragma comment(lib,"TKGeomAlgo.lib")
+#	pragma comment(lib,"TKGeomBase.lib")
+#	pragma comment(lib,"TKG2d.lib")
+#	pragma comment(lib,"TKG3d.lib")
+#	pragma comment(lib,"TKBRep.lib")
+#	pragma comment(lib,"TKTopAlgo.lib")
+#	pragma comment(lib,"TKPrim.lib")
+	// OpenCasCade Std IO
+#	pragma comment(lib,"TKIGESStd.lib")
+#	pragma comment(lib,"TKShHealingStd.lib")
+#	pragma comment(lib,"TKSTEPStd.lib")
+	// OpenCascade View
+#	pragma comment(lib,"TKV2d.lib")
+#	pragma comment(lib,"TKV3d.lib")
+	// Application Framwork OCAF
+#	pragma comment(lib,"TKCAF.lib")
+#	pragma comment(lib,"TKCDF.lib")
+	// QT extension
+#	pragma comment(lib,"qextmdi.lib")
+#	pragma comment(lib,"qt-mt230nc.lib")
 
-public:
-    DlgMacroRecordImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgMacroRecordImp();
+#else
+//#	error "Dont compile this file on UNIX!"
+#endif
 
-public slots:
-    void OnTieCommandBar();
-    void OnTieToolBar();
-    void OnTieKeyboard();
-
-};
-
-#endif // DLGMACRORECORDIMP_H

@@ -1,4 +1,4 @@
-/** \file DlgMacroRecordImp.h
+/** \file DlgPartBoxImp.cpp
  *  \brief  
  *  \author $Author$
  *  \version $Revision$
@@ -30,24 +30,49 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#ifndef DLGMACRORECORDIMP_H
-#define DLGMACRORECORDIMP_H
-#include "DlgMacroRecord.h"
-#include "Window.h"
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindow
-{ 
-    Q_OBJECT
+/** Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
+ */
+#include "../../../Config.h"
+#ifdef _PreComp_
+#	include "PreCompiled.h"
+#else
+#endif
 
-public:
-    DlgMacroRecordImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgMacroRecordImp();
+#include "DlgPartBoxImp.h"
 
-public slots:
-    void OnTieCommandBar();
-    void OnTieToolBar();
-    void OnTieKeyboard();
+/* 
+ *  Constructs a DlgPartBox which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
+DlgPartBoxImp::DlgPartBoxImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+    : DlgPartBox( parent, name, modal, fl ), FCWindow(name)
+{
+}
 
-};
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+DlgPartBoxImp::~DlgPartBoxImp()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
 
-#endif // DLGMACRORECORDIMP_H
+/* 
+ * public slot
+ */
+void DlgPartBoxImp::OnApply()
+{
+    qWarning( "DlgPartBox::OnApply() not yet implemented!" ); 
+}
+
+#include "DlgPartBox.cpp"
+#include "moc_DlgPartBox.cpp"
+#include "moc_DlgPartBoxImp.cpp"

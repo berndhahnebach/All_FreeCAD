@@ -1,7 +1,5 @@
 # FreeCAD init script of the part module  
 # (c) 2001 Jürgen Riegel
-#
-# 
 
 #***************************************************************************
 #*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
@@ -37,5 +35,3 @@ ParGrp.SetString("DocTemplateScript","TemplPart.py")
 ParGrp.SetString("WorkBenchName",    "Part Design")
 ParGrp.SetString("WorkBenchModule",  "PartWorkbench.py")
 
-# mark the installation done
-ParGrp.SetBool("Installed",1)

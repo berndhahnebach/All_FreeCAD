@@ -49,7 +49,7 @@ def InitApplications():
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
 			Log('      Init: ' + Dir + '... ')
 			ModGrp = ModPar.GetGroup(Dir)
-			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Install.py")
+			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if ( os.path.exists(InstallFile) ):
 				execfile(InstallFile)
 				Log('done\n')

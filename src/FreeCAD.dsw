@@ -3,6 +3,39 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "All"=.\All.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMain
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMainCmd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMainPy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppPartGui"=.\MOD\PART\GUI\AppPartGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "FreeCADApp"=.\App\FreeCADDoc.dsp - Package Owner=<4>
 
 Package=<5>

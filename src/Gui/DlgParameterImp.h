@@ -36,10 +36,11 @@
 
 #include "DlgParameter.h"
 #include "../Base/Parameter.h"
+#include "Window.h"
 
 class 	ParameterLabelGroup;
 
-class DlgParameter : public ParameterDialog
+class DlgParameter : public ParameterDialog, public FCWindow
 { 
     Q_OBJECT
 

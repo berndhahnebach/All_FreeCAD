@@ -1,8 +1,7 @@
-# FreeCAD install script of the part module  
-# (c) 2001 Jürgen Riegel
+# FreeCAD MakeNewBuildNbr script  
+# (c) 2002 Jürgen Riegel
 #
-# Searching and installing new packages and set up the environment at first
-# start.
+# Increase the Build Number in Version.h
 
 #***************************************************************************
 #*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
@@ -28,15 +27,17 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
-# Get the Parameter Group of this module
-ParGrp = App.ParamGet("Modules").GetGroup("Part")
+import time
 
-# Set the needed information
-ParGrp.SetString("HelpIndex","Part/Help/index.html")
-ParGrp.SetString("DocTemplateName","Part")
-ParGrp.SetString("DocTemplateScript","TemplPart.py")
-ParGrp.SetString("WorkBenchName","Part Design")
-ParGrp.SetString("WorkBenchModule","PartWorkbench.py")
+# reading the last Version information
+[FCVersionMajor,FCVersionMinor,FCVersionBuild,FCVersionDisDa] = open("../Version.h",'r').readlines()
 
-# mark the installation done
-ParGrp.SetBool("Installed",1)
+# increasing build number
+BuildNumber = int(FCVersionBuild[23:-1]) +1
+
+# writing new Version.h File
+open("../Version.h",'w').writelines([FCVersionMajor,FCVersionMinor,FCVersionBuild[:23]+`BuildNumber`+'\n',FCVersionDisDa[:23]+ '"'+time.asctime()+'"'])
+
+# writing the ChangeLog.txt
+open("../ChangeLog.txt",'a').write("\nVersion: V"+FCVersionMajor[23:-1]+"."+FCVersionMinor[23:-1]+"B"+`BuildNumber`+" Date: "+time.asctime()+' +++++++++++++++++++++++++++++++\n')
+

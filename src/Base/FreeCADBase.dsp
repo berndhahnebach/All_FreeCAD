@@ -119,6 +119,14 @@ SOURCE=.\Exception.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Factory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Factory.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\FileTemplate.cpp
 # End Source File
 # Begin Source File

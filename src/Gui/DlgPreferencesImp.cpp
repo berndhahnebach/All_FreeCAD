@@ -52,7 +52,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPrefernces( parent, name, modal, fl )
+    : DlgPrefernces( parent, name, modal, fl ),FCWindow(name)
 {
 }
 
