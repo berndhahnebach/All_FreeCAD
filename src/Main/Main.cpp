@@ -313,11 +313,6 @@ void Destruct(void)
 void Init(int argc, char ** argv )
 {
 
-
-	// Pars the options which have impact to the init process
-	ParsOptions(argc,argv);
-
-
 	// set some config defaults
 #	ifdef _FC_GUI_ENABLED_
 		mConfig["RunMode"] = "Gui";
@@ -329,6 +324,11 @@ void Init(int argc, char ** argv )
 #	else
 		mConfig["Debug"] = "0";
 #	endif
+
+	// Pars the options which have impact to the init process
+	ParsOptions(argc,argv);
+
+
 	mConfig["UserParameter"]  += mConfig["HomePath"] + "FC" + mConfig["UserName"] + ".FCParam";
 	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
 

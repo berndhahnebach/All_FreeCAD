@@ -151,3 +151,7 @@ Version: V0.1B36 Date: Sat Feb 22 18:12:19 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B37 Date: Tue Feb 25 20:29:19 2003 +++++++++++++++++++++++++++++++
 + massiv improved costomize dialog (werner)
   - sorting position of toolbars
+
+Version: V0.1B38 Date: Thu Feb 27 22:19:35 2003 +++++++++++++++++++++++++++++++
++ fix of memory leack in CmdBar (werner)
++ start rebulding FCCommand framework

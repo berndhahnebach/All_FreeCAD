@@ -27,11 +27,14 @@
 //===========================================================================
 // FCAction 
 //===========================================================================
-FCAction::FCAction ( QObject * parent, const char * name, bool toggle)
-:QAction(parent, name, toggle)
+FCAction::FCAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle)
+:QAction(parent, name, toggle),_pcCmd(pcCmd)
 {
-}
+	connect( this, SIGNAL( activated() ) , this, SLOT( Activated() ) );
+	connect( this, SIGNAL( toggled(bool) )   , this, SLOT( Toggled(bool) )   );
 
+}
+/*
 FCAction::FCAction ( const QString & text, const QIconSet & icon, const QString & menuText, int accel, QObject * parent, const char * name, bool toggle)
 :QAction(text, icon, menuText, accel, parent, name, toggle)
 {
@@ -41,7 +44,7 @@ FCAction::FCAction ( const QString & text, const QString & menuText, int accel, 
 :QAction(text, menuText, accel, parent, name, toggle)
 {
 }
-
+*/
 FCAction::~FCAction()
 {
 }
@@ -50,9 +53,8 @@ bool FCAction::addTo(QWidget *w)
 {
   if ( w->inherits( "FCToolboxGroup" ) ) 
   {
-    FCToolboxGroup* bg = (FCToolboxGroup*)w;
 	  FCToolboxButton* btn = new FCToolboxButton(menuText(), iconSet().pixmap(), toolTip(), w);
-    bg->addToolboxButton(btn, bg->count());
+    btn->setFixedHeight(32);
 	  connect( btn, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
 	  connect( btn, SIGNAL( toggled(bool) ), this, SLOT( toolButtonToggled(bool) ) );
 	  connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
@@ -63,6 +65,17 @@ bool FCAction::addTo(QWidget *w)
   else
     return QAction::addTo(w);
 }
+
+
+void FCAction::Activated () 
+{
+	puts("Activeted");
+	_pcCmd->activated();
+}
+void FCAction::Toggled ( bool b)
+{
+	_pcCmd->toggled(b);
+} 
 
 //===========================================================================
 // FCCommand 
@@ -79,7 +92,7 @@ void FCCommand::Init(void)
 {
 	if(_pcAction) return;
 	// create a action with the Application as parent (shortcuts)
-	_pcAction = new FCAction(ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
+	_pcAction = new FCAction(this,ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
 
 	// set standard profile here
 	char*  sMenuText,*sToolTipText,*sWhatsThis,*sStatusTip,*sPixMap;
@@ -103,8 +116,8 @@ void FCCommand::Init(void)
 		_pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixMap));
 	_pcAction->setAccel(iAccel);
 
-	connect( _pcAction, SIGNAL( activated() ) , this, SLOT( activated() ) );
-	connect( _pcAction, SIGNAL( toggled(bool) )   , this, SLOT( toggled(bool) )   );
+	//connect( _pcAction, SIGNAL( activated() ) , this, SLOT( activated() ) );
+	//connect( _pcAction, SIGNAL( toggled(bool) )   , this, SLOT( toggled(bool) )   );
 
 }
 

@@ -50,6 +50,7 @@
 
 #include "CommandLine.h"
 #include "Window.h"
+#include "Widgets.h"
 #include "PrefWidgets.h"
 
 // forward declaration
@@ -96,7 +97,7 @@ class GuiExport FCButtonGroup : public QButtonGroup
 #	pragma warning( disable : 4251 )
     std::map<int, QPixmap> m_Pixmaps;
 };
-
+/*
 class FCToolboxButton;
 class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
 {
@@ -138,6 +139,36 @@ class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
 
   signals:
     void signalMaximumWidth(int);
+};
+*/
+
+class FCToolBar;
+class FCToolboxButton;
+class GuiExport FCToolboxGroup : public FCToolBar
+{
+  Q_OBJECT
+
+  public:
+    FCToolboxGroup ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~FCToolboxGroup ();
+
+  protected:
+    /// restore the preferences
+    virtual void restorePreferences();
+    /// save the preferences
+    virtual void savePreferences();
+    void mousePressEvent( QMouseEvent * );
+    QColor       m_Color;
+    QPopupMenu*  m_Popup;
+
+  protected slots:
+    void cleanupEventFilter();
+    void popupMenuAboutToShow();
+    void setNewBackgroundColor();
+    void resetBackgroundColor();
+  
+  signals:
+    void destroyed();
 };
 
 class GuiExport FCToolboxButton : public QToolButton

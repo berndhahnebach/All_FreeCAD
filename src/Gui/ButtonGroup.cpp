@@ -252,22 +252,198 @@ void FCButtonGroup::showText()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
+//
+//FCToolboxGroup::FCToolboxGroup ( QWidget * parent, const char * name)
+//: QVButtonGroup(parent, name), FCWidgetPrefs(name)
+//{
+//  initialize(parent);
+//}
+//
+//FCToolboxGroup::FCToolboxGroup ( const QString & title, QWidget * parent, const char * name)
+//: QVButtonGroup("", parent, name), FCWidgetPrefs(title.latin1())
+//{
+//  initialize(parent);
+//}
+//
+//FCToolboxGroup::~FCToolboxGroup ()
+//{
+//  savePreferences();
+//}
+//
+//void FCToolboxGroup::restorePreferences()
+//{
+//  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
+//  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+//  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
+//
+//  std::vector<std::string> items = hPGrp->GetASCIIs(getPrefName().latin1());
+//  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
+//  {
+//    sCommands[*it]->GetAction()->addTo(this);
+//  }
+//
+//  int r = hPGrp->GetInt("red", 255);
+//  int g = hPGrp->GetInt("green", 255);
+//  int b = hPGrp->GetInt("blue", 255);
+//  QColor color(r, g, b);
+////  if (color.isValid())
+////  {
+////    setPalette(QPalette(color, color));
+////    setBackgroundMode(PaletteLight);
+////  }
+//}
+//
+//void FCToolboxGroup::savePreferences()
+//{
+//  int i=0;
+//  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
+//  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
+//  {
+//    char szBuf[200];
+//    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+//    hPGrp->SetASCII(szBuf, it->c_str());
+//  }
+//
+//  hPGrp->SetInt("red", backgroundColor().red());
+//  hPGrp->SetInt("green", backgroundColor().green());
+//  hPGrp->SetInt("blue", backgroundColor().blue());
+//}
+//
+//void FCToolboxGroup::initialize(QWidget* parent)
+//{
+//  setColumnLayout(0, Qt::Vertical );
+//  setFrameStyle(QFrame::NoFrame);
+//  if (parent) parent->setMinimumWidth(40);
+//
+//  layout()->setSpacing( 0 );
+//  layout()->setMargin( 3 );
+//  ButtonGroupLayout = new QGridLayout( layout() );
+//  ButtonGroupLayout->setAlignment( Qt::AlignTop );
+//  ButtonGroupLayout->setSpacing( 1 );
+//  ButtonGroupLayout->setMargin( 1 );
+//  m_Color = backgroundColor();
+//
+//  setAcceptDrops(true);
+//  setFocusPolicy (ClickFocus);
+//
+//  m_Popup = new QPopupMenu(0L);
+//  m_Popup->setCheckable(true);
+//  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
+//}
+//
+//bool FCToolboxGroup::addWidget(QWidget* w, int i)
+//{
+//  if (!w)
+//    return false;
+//
+//  ButtonGroupLayout->addWidget(w, i, 0);
+//  
+//  // show if invisible
+//  if (!w->isVisible())
+//    w->show();
+//
+//  return true;
+//}
+//
+//bool FCToolboxGroup::addToolboxButton(FCToolboxButton* b, int i)
+//{
+//  connect(this, SIGNAL(signalMaximumWidth(int)), b, SLOT(slotResizeButton(int)));
+//  insert(b);
+//  return addWidget(b, i);
+//}
+//
+//void FCToolboxGroup::loadUserDefButtons()
+//{
+//  restorePreferences();
+//}
+//
+//void FCToolboxGroup::paintEvent (QPaintEvent * e)
+//{
+//  QRect rect = visibleRect();
+//  emit signalMaximumWidth(rect.width());
+//  QVButtonGroup::paintEvent(e);
+//}
+//
+//void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
+//{
+//  if (e->button() == LeftButton)
+//  {
+//  }
+//  else if (e->button() == RightButton)
+//  {
+//    m_Popup->exec(QCursor::pos());
+//  }
+//  else if (e->button() == MidButton)
+//  {
+//  }
+//}
+//
+//void FCToolboxGroup::dropEvent ( QDropEvent * e)
+//{
+//  QAction* pAction = FCActionDrag::pAction;
+//  if ( pAction ) 
+//  {
+//    pAction->addTo(this);
+//    alDroppedActions.push_back(pAction->name());
+//    FCActionDrag::pAction = NULL;
+//  }
+//}
+//
+//void FCToolboxGroup::dragEnterEvent ( QDragEnterEvent * e)
+//{
+//  e->accept(FCActionDrag::canDecode(e));
+//}
+//
+//void FCToolboxGroup::dragLeaveEvent ( QDragLeaveEvent * e)
+//{
+//}
+//
+//void FCToolboxGroup::dragMoveEvent ( QDragMoveEvent * e)
+//{
+//}
+//
+//void FCToolboxGroup::popupMenuAboutToShow()
+//{
+//  m_Popup->clear();
+//
+//  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
+//  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+//  m_Popup->insertSeparator();
+//  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
+//}
+//
+//void FCToolboxGroup::setNewBackgroundColor()
+//{
+//  QColor color = QColorDialog::getColor ( backgroundColor(), this);
+//  if (color.isValid())
+//  {
+//    setPalette(QPalette(color, color));
+//  }
+//}
+//
+//void FCToolboxGroup::resetBackgroundColor()
+//{
+//  if (m_Color.isValid())
+//    setPalette(QPalette(m_Color, m_Color));
+//}
 
-FCToolboxGroup::FCToolboxGroup ( QWidget * parent, const char * name)
-: QVButtonGroup(parent, name), FCWidgetPrefs(name)
+FCToolboxGroup::FCToolboxGroup ( const QString & label, QWidget *w, const char * name, WFlags f )
+: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f)
 {
-  initialize(parent);
-}
+#if QT_VER >= 300
+	setFrameStyle( QFrame::NoFrame );
+#endif
+	setOrientation( Qt::Vertical );
 
-FCToolboxGroup::FCToolboxGroup ( const QString & title, QWidget * parent, const char * name)
-: QVButtonGroup("", parent, name), FCWidgetPrefs(title.latin1())
-{
-  initialize(parent);
+  m_Color = backgroundColor();
+  m_Popup = new QPopupMenu(0L);
+  m_Popup->setCheckable(true);
+  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
 }
 
 FCToolboxGroup::~FCToolboxGroup ()
 {
-  savePreferences();
+//  savePreferences();
 }
 
 void FCToolboxGroup::restorePreferences()
@@ -309,61 +485,6 @@ void FCToolboxGroup::savePreferences()
   hPGrp->SetInt("blue", backgroundColor().blue());
 }
 
-void FCToolboxGroup::initialize(QWidget* parent)
-{
-  setColumnLayout(0, Qt::Vertical );
-  setFrameStyle(QFrame::NoFrame);
-  if (parent) parent->setMinimumWidth(40);
-
-  layout()->setSpacing( 0 );
-  layout()->setMargin( 3 );
-  ButtonGroupLayout = new QGridLayout( layout() );
-  ButtonGroupLayout->setAlignment( Qt::AlignTop );
-  ButtonGroupLayout->setSpacing( 1 );
-  ButtonGroupLayout->setMargin( 1 );
-  m_Color = backgroundColor();
-
-  setAcceptDrops(true);
-  setFocusPolicy (ClickFocus);
-
-  m_Popup = new QPopupMenu(0L);
-  m_Popup->setCheckable(true);
-  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
-}
-
-bool FCToolboxGroup::addWidget(QWidget* w, int i)
-{
-  if (!w)
-    return false;
-
-  ButtonGroupLayout->addWidget(w, i, 0);
-  
-  // show if invisible
-  if (!w->isVisible())
-    w->show();
-
-  return true;
-}
-
-bool FCToolboxGroup::addToolboxButton(FCToolboxButton* b, int i)
-{
-  connect(this, SIGNAL(signalMaximumWidth(int)), b, SLOT(slotResizeButton(int)));
-  insert(b);
-  return addWidget(b, i);
-}
-
-void FCToolboxGroup::loadUserDefButtons()
-{
-  restorePreferences();
-}
-
-void FCToolboxGroup::paintEvent (QPaintEvent * e)
-{
-  QRect rect = visibleRect();
-  emit signalMaximumWidth(rect.width());
-  QVButtonGroup::paintEvent(e);
-}
-
 void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
 {
   if (e->button() == LeftButton)
@@ -378,27 +499,7 @@ void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
   }
 }
 
-void FCToolboxGroup::dropEvent ( QDropEvent * e)
-{
-  QAction* pAction = FCActionDrag::pAction;
-  if ( pAction ) 
-  {
-    pAction->addTo(this);
-    alDroppedActions.push_back(pAction->name());
-    FCActionDrag::pAction = NULL;
-  }
-}
-
-void FCToolboxGroup::dragEnterEvent ( QDragEnterEvent * e)
-{
-  e->accept(FCActionDrag::canDecode(e));
-}
-
-void FCToolboxGroup::dragLeaveEvent ( QDragLeaveEvent * e)
-{
-}
-
-void FCToolboxGroup::dragMoveEvent ( QDragMoveEvent * e)
+void FCToolboxGroup::cleanupEventFilter()
 {
 }
 
@@ -1090,7 +1191,7 @@ FCToolboxGroup* FCCmdBar::GetView(const char *sName)
 
 FCToolboxGroup* FCCmdBar::CreateView(const char *sName)
 {
-  FCToolboxGroup* bg = new FCToolboxGroup(sName, this);
+  FCToolboxGroup* bg = new FCToolboxGroup(sName, this, sName);
   addPage( sName, bg );
   return bg;
 }

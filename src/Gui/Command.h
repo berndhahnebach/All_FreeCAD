@@ -30,6 +30,8 @@ class FCCommandManager;
 class ApplicationWindow;
 class FCGuiDocument;
 class FCDocument;
+class FCCommand;
+
 
 void CreateStdCommands(void);
 void CreateViewStdCommands(void);
@@ -40,52 +42,23 @@ void CreateViewStdCommands(void);
  */
 class GuiExport FCAction : public QAction
 {
-  public:
-    FCAction ( QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
-    FCAction ( const QString & text, const QIconSet & icon, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
-    FCAction ( const QString & text, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
-    virtual ~FCAction();
-
-    /// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
-    virtual bool addTo(QWidget *);
-};
-/*
-class GuiExport FCAction :public FCPyObject, public QAction
-{
-	Py_Header;			// always start with Py_Header
-
-
-//	Q_OBJECT
-
-
+	Q_OBJECT
 public:
-	FCAction(const char* Name);
+	FCAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+//	FCAction ( const QString & text, const QIconSet & icon, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
+//	FCAction ( const QString & text, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
+	virtual ~FCAction();
 
-	~FCAction();
+	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
+	virtual bool addTo(QWidget *);
 
-	static PyObject *PyMake(PyObject *, PyObject *);
-
-	// signals from QT ++++++++++++++++++++++++++++++++++++++++++++++++++++
-	virtual void activated (); 
-	virtual void toggled ( bool );
-
-	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	void Do(void);								// Geter for the handled OCC class
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	PyObject *_getattr(char *attr);				// __getattr__ function
-	// geter setter
-	int _setattr(char *attr, PyObject *value);	// __setattr__ function
-	// methods
-	PyObject *PyDo(PyObject *args);	// Python wrapper
-	static PyObject *sPyDo(PyObject *self, PyObject *args, PyObject *kwd){return ((FCAction*)self)->PyDo(args);};
-
-protected:
-
-	std::string sName;
+public slots:
+	void Activated ();
+	void Toggled   (bool); 
+private:
+	FCCommand *_pcCmd;
 
 };
-
-*/
 
 
 enum CMD_Type { 
@@ -94,21 +67,16 @@ enum CMD_Type {
 };
 
 
-/** The CommandManager class
+/** The Command class
  *  This class manage all available commands in FreeCAD. All 
  *  Commands will registered here, also commands from Application
  *  modules. Also activation / deactivation, Icons Tooltips and so
  *  on are handles here. Further the Building of Toolbars and (Context) 
  *  menus is implemented here.
- *  @see FCCommand
+ *  @see FCCommandManager
  */
-class GuiExport FCCommand :/*public FCPyObject,*/ public QObject
+class GuiExport FCCommand 
 {
-	//Py_Header;			// always start with Py_Header
-
-
-	Q_OBJECT			// also a QT Object
-
 public:
 
 	FCCommand(const char* name,CMD_Type eType=Cmd_Normal);
@@ -134,10 +102,9 @@ public:
 	FCGuiDocument* GetActiveDocument(void);
 	FCDocument*	   GetActiveOCCDocument(void);
 
-  FCAction* GetAction() { return _pcAction; }
-  const char* GetName() { return _pcName; }
+	FCAction* GetAction() { return _pcAction; }
+	const char* GetName() { return _pcName; }
 
-private slots:
 	virtual void activated (); 
 	virtual void toggled ( bool ); 
 
