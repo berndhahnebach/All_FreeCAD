@@ -21,8 +21,8 @@
 
 /* Modifications for FreeCAD from 06-13-2004
 		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
-		+ added class CListViewItem
-		+ KexiPropertyEditorItem inherits from CListViewItem instead of KListViewItem
+		+ added class ListViewItem
+		+ KexiPropertyEditorItem inherits from ListViewItem instead of KListViewItem
 		+ use QListView instead of KListView
 */
 
@@ -35,29 +35,29 @@
 
 #include "kexiproperty.h"
 
-class GuiExport CListViewItem : public QListViewItem
+class GuiExport ListViewItem : public QListViewItem
 {
 	public:
-		CListViewItem ( QListView * parent ) : QListViewItem(parent)
+		ListViewItem ( QListView * parent ) : QListViewItem(parent)
 		{
 		}
-		CListViewItem ( QListViewItem * parent ) : QListViewItem ( parent )
+		ListViewItem ( QListViewItem * parent ) : QListViewItem ( parent )
 		{
 		}
-		CListViewItem ( QListView * parent, QListViewItem * after ) : QListViewItem ( parent, after )
+		ListViewItem ( QListView * parent, QListViewItem * after ) : QListViewItem ( parent, after )
 		{
 		}
-		CListViewItem ( QListViewItem * parent, QListViewItem * after ) : QListViewItem(parent, after)
+		ListViewItem ( QListViewItem * parent, QListViewItem * after ) : QListViewItem(parent, after)
 		{
 		} 
-		CListViewItem ( QListView * parent, QString label1, QString label2 = QString::null, 
+		ListViewItem ( QListView * parent, QString label1, QString label2 = QString::null, 
 										QString label3 = QString::null, QString label4 = QString::null, 
 										QString label5 = QString::null, QString label6 = QString::null, 
 										QString label7 = QString::null, QString label8 = QString::null )
 		: QListViewItem (parent, label1, label2, label3, label4, label5, label6, label7, label8)
 		{
 		}
-		CListViewItem ( QListViewItem * parent, QListViewItem * after, QString label1, 
+		ListViewItem ( QListViewItem * parent, QListViewItem * after, QString label1, 
 										QString label2 = QString::null, QString label3 = QString::null, 
 										QString label4 = QString::null, QString label5 = QString::null, 
 										QString label6 = QString::null, QString label7 = QString::null, 
@@ -76,7 +76,7 @@ class GuiExport CListViewItem : public QListViewItem
     It also takes care of drawing custom contents.
  **/
  //! An item in KexiPropertyEditorItem associated to a property
-class GuiExport KexiPropertyEditorItem : public CListViewItem
+class GuiExport KexiPropertyEditorItem : public ListViewItem
 {
 	public:
 		typedef QDict<KexiPropertyEditorItem> Dict;

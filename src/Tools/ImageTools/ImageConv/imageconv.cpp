@@ -172,7 +172,7 @@ void CImageConvApp::CreateBmpFactory()
   tw << "\n";
   tw << "void RegisterIcons()\n";
   tw << "{\n";
-  tw << "  FCBitmapFactory& rclBmpFactory = GetBitmapFactory();\n";
+  tw << "  Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();\n";
   tw << "}\n";
   fw.close();
 }

@@ -101,7 +101,7 @@ spHelper::keyToValue(const QString &key)
 
 KexiPropertyEditorItem::KexiPropertyEditorItem(KexiPropertyEditorItem *par, KexiProperty *property,
 	KexiPropertyEditorItem *after)
- : CListViewItem(par, after, property->desc().isEmpty() ? property->name() : property->desc()
+ : ListViewItem(par, after, property->desc().isEmpty() ? property->name() : property->desc()
 	, property->valueText())
 {
 	m_order = parent()->childCount();
@@ -130,7 +130,7 @@ KexiPropertyEditorItem::KexiPropertyEditorItem(KexiPropertyEditorItem *par, Kexi
 }
 
 KexiPropertyEditorItem::KexiPropertyEditorItem(QListView *par, const QString &text)
- : CListViewItem(par, text, "")
+ : ListViewItem(par, text, "")
 {
 	m_order = listView()->childCount();
 	//	m_value = "";
@@ -249,7 +249,7 @@ void
 KexiPropertyEditorItem::paintBranches(QPainter *p, const QColorGroup &cg, int w, int y, int h)
 {
 	p->eraseRect(0,0,w,h);
-	CListViewItem *item = (CListViewItem*)firstChild();
+	ListViewItem *item = (ListViewItem*)firstChild();
 	if(!item)
 		return;
 
@@ -279,7 +279,7 @@ KexiPropertyEditorItem::paintBranches(QPainter *p, const QColorGroup &cg, int w,
 		}
 
 		p->translate(0, item->totalHeight());
-		item = (CListViewItem*)item->nextSibling();
+		item = (ListViewItem*)item->nextSibling();
 	}
 	p->restore();
 }
