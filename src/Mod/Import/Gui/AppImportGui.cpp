@@ -72,11 +72,11 @@ void ModuleExport initImportGui() {
 	Base::Console().Log("ImportGui loaded\n");
 
 	// load the commands
-  ApplicationWindow::Instance->GetMacroMngr()->addLine(Gui::MacroManager::Base,"import Import");
+  Gui::ApplicationWindow::Instance->macroManager()->addLine(Gui::MacroManager::Base,"import Import");
 	Base::Interpreter().RunFCCommand("import Import");
 
   App::GetApplication();
-	ApplicationWindow::Instance;
+  Gui::ApplicationWindow::Instance;
 
 	// instanciating the commands
 	CreateCommands();

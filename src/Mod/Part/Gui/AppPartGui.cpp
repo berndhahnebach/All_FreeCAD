@@ -69,7 +69,7 @@ void ModuleExport initPartGui() {
 	Base::Console().Log("AppPartGui loaded\n");
 
 	App::GetApplication();
-	ApplicationWindow::Instance->GetMacroMngr()->setModule("Part");
+  Gui::ApplicationWindow::Instance->macroManager()->setModule("Part");
 
 	// instanciating the commands
 	CreateCommands();

@@ -67,7 +67,8 @@ void DlgPartImportIgesImp::OnApply()
 
 void DlgPartImportIgesImp::onChooseFileName()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", ApplicationWindow::Instance);
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
 	if (! fn.isEmpty() )
 	{
     FileName->setText(fn);

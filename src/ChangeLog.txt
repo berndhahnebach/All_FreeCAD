@@ -532,3 +532,4 @@ Version: V0.1B112 Date: Mon Jan 31 01:57:33 2005 +++++++++++++++++++++++++++++++
 Version: V0.1B113 Date: Fri Feb 11 00:47:38 2005 +++++++++++++++++++++++++++++++
 + realize code guidelines in Gui
 + Patch 1119485 inserted
++ Method to class Tools added to convert between SbSFImage and QImage

@@ -71,7 +71,7 @@ void ModuleExport init_TEMPLATE_Gui() {
   Base::Console().Log("App_TEMPLATE_Gui loaded\n");
 
   App::GetApplication();
-  ApplicationWindow::Instance;
+  Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
   CreateCommands();

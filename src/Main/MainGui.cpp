@@ -102,7 +102,7 @@ int main( int argc, char ** argv )
 
 	App::Application::InitApplication();
 
-	ApplicationWindow::InitApplication();
+  Gui::ApplicationWindow::initApplication();
 
 	// dumps the configuration to the console
 //	Application::DumpConfig();
@@ -112,9 +112,9 @@ int main( int argc, char ** argv )
 	if(App::GetApplication().Config()["RunMode"] == "Gui")
 	{
 	// run GUI
-		ApplicationWindow::RunApplication();
+    Gui::ApplicationWindow::runApplication();
 
-		ApplicationWindow::Destruct();
+    Gui::ApplicationWindow::destruct();
 
 	} else {
 

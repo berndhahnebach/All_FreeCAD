@@ -65,6 +65,6 @@ void Cmd_TEMPLATE_Test::activated(int iMsg)
 
 void CreateCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new Cmd_TEMPLATE_Test());
 }

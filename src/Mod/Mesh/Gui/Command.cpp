@@ -23,10 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <BRepPrimAPI_MakeBox.hxx>
-#	include <TopoDS_Shape.hxx>
-#	include <TNaming_Builder.hxx>
+# include <qaction.h>
+# include <BRepPrimAPI_MakeBox.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TNaming_Builder.hxx>
 #endif
 
 #include "../../../Base/Exception.h"
@@ -66,6 +66,6 @@ void FCCmdMeshTest::activated(int iMsg)
 
 void CreateCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new FCCmdMeshTest());
 }

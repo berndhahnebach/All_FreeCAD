@@ -77,14 +77,14 @@ void FCCmdImportReadBREP::activated(int iMsg)
 
 bool FCCmdImportReadBREP::isActive(void)
 {
-	return getAppWnd()->GetActiveDocument() != 0;
+	return getAppWnd()->activeDocument() != 0;
 }
 
 
 
 void CreateCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new FCCmdImportReadBREP());
 }

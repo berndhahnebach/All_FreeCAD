@@ -393,7 +393,7 @@ bool PartImportIges::isActive(void)
 
 void CreateCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new FCCmdPartTest1());
 	rcCmdMgr.addCommand(new FCCmdPartTest2());

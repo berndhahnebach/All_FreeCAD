@@ -71,7 +71,7 @@ void ModuleExport initMeshGui() {
   Base::Console().Log("AppMeshGui loaded\n");
 
   App::GetApplication();
-  ApplicationWindow::Instance;
+  Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
   CreateCommands();
