@@ -152,6 +152,9 @@ class GuiExport FCToolboxGroup : public FCToolBar
     FCToolboxGroup ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
     virtual ~FCToolboxGroup ();
 
+    /// set dummy widget to the end
+    void addedButton();
+
   protected:
     /// restore the preferences
     virtual void restorePreferences();
@@ -160,6 +163,7 @@ class GuiExport FCToolboxGroup : public FCToolBar
     void mousePressEvent( QMouseEvent * );
     QColor       m_Color;
     QPopupMenu*  m_Popup;
+    QWidget*     m_Dummy;
 
   protected slots:
     void cleanupEventFilter();
@@ -278,11 +282,15 @@ class FCCmdBar : public FCDockWindow
 
   private:
     long                           m_lAnimCount;
+    int                            m_iCurHeight;
+    int                            m_iNewHeight;
     QVBoxLayout                  * m_pLayout;
     QWidget                      * m_pCurPage;
-    QStackBarBtn                 * m_pLastPage;
+    QWidget                      * m_pAnimNewPage;
+    QWidget                      * m_pAnimCurPage;
+    QStackBarBtn                 * m_pLastBtn;
     std::list<QStackBarBtn*>       m_lButtons;
-    std::map <QWidget*, QWidget*>  m_mViews;
+    std::map <QWidget*, QWidget*>  m_mButtonView;
 };
 
 #endif // __BUTTON_GROUP_H__

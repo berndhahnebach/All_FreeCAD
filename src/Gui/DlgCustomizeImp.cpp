@@ -98,7 +98,7 @@ void FCDlgCustomize::init()
     for (std::vector<FCCommand*>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
     {
       QListViewItem* item = new QListViewItem(itemNode,FCListView::lastItem(AvailableActions), (*it3)->GetAction()->menuText());
-      QPixmap pix = (*it3)->GetAction()->iconSet().pixmap();
+      QPixmap pix = (*it3)->GetAction()->iconSet().pixmap(QIconSet::Large,true);
       item->setPixmap(0, FCTools::resize(24,24,pix));
       itemNode->insertItem(item);
     }
@@ -185,7 +185,7 @@ void FCDlgCustomize::slotToolBarSelected(const QString & name)
           {
             FCCommand* pCom = sCommands[bname.latin1()];
             QListViewItem* item = new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), pCom->GetAction()->menuText());
-            QPixmap pix = pCom->GetAction()->iconSet().pixmap();
+            QPixmap pix = pCom->GetAction()->iconSet().pixmap(QIconSet::Large,true);
             item->setPixmap(0, FCTools::resize(24,24,pix));
             ToolbarActions->insertItem(item);
           }

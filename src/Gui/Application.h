@@ -202,6 +202,7 @@ protected: // Protected methods
 	/** just fits the system menu button position to the menu position */
 	virtual void resizeEvent ( QResizeEvent * );
 	virtual void closeEvent ( QCloseEvent * e );
+  virtual bool eventFilter( QObject* o, QEvent *e );
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
 	FCBmpFactory     _cBmpFactory;

@@ -155,3 +155,6 @@ Version: V0.1B37 Date: Tue Feb 25 20:29:19 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B38 Date: Thu Feb 27 22:19:35 2003 +++++++++++++++++++++++++++++++
 + fix of memory leack in CmdBar (werner)
 + start rebulding FCCommand framework
+
+Version: V0.1B39 Date: Mon Mar 03 12:32:14 2003 +++++++++++++++++++++++++++++++
++ include werners patch

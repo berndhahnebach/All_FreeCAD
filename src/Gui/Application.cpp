@@ -529,6 +529,58 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
   QextMdiMainFrm::closeEvent(e);
 }
 
+bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
+{
+  // show menu with all available toolbars
+  if (isDockMenuEnabled () && e->type() == QEvent::MouseButtonPress && ((QMouseEvent*)e)->button() == RightButton)
+  {
+    QPoint p = ((QMouseEvent*)e)->globalPos();
+    QPopupMenu menu;
+    menu.setCheckable(true);
+
+    std::map<int, QToolBar*> toolb;
+
+	  for (std::map <std::string,QToolBar*>::iterator It = mpcToolBars.begin(); It != mpcToolBars.end(); ++It)
+    {
+      int id = menu.insertItem(It->first.c_str());
+      QToolBar* tb = It->second;
+      toolb[id] = tb;
+      if (tb->isVisible())
+		    menu.setItemChecked(id, true);
+    }
+
+    menu.insertSeparator();
+    int lineUp1 = menu.insertItem( tr( "Line Up Toolbars (compact)" ) );
+    int lineUp2 = menu.insertItem( tr( "Line Up Toolbars (normal)" ) );
+
+    int id = menu.exec(p);
+    if (id == lineUp1) 
+    {
+    	lineUpToolBars(false);
+    } 
+    else if (id == lineUp2) 
+    {
+    	lineUpToolBars(true);
+    } 
+    else if (toolb.find(id) != toolb.end()) 
+    {
+      QToolBar* tb = toolb[id];
+      if (menu.isItemChecked(id))
+      {
+        tb->hide();
+      }
+      else 
+      {
+        tb->show();
+    	}
+    }
+    
+    return true;
+  }
+
+  return QextMdiMainFrm::eventFilter(o, e);
+}
+
 void ApplicationWindow::exportImage()
 {
   //FCView* w = (FCView*) stWs->activeWindow();

@@ -439,11 +439,19 @@ FCToolboxGroup::FCToolboxGroup ( const QString & label, QWidget *w, const char *
   m_Popup = new QPopupMenu(0L);
   m_Popup->setCheckable(true);
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
+  setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
 }
 
 FCToolboxGroup::~FCToolboxGroup ()
 {
 //  savePreferences();
+  delete m_Popup;
+  delete m_Dummy;
+}
+
+void FCToolboxGroup::addedButton()
+{
+  m_Dummy->reparent(this, QPoint(0,0));
 }
 
 void FCToolboxGroup::restorePreferences()
@@ -592,6 +600,8 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const
 
 FCToolboxButton::~FCToolboxButton()
 {
+  enabledPixmap.resize(0,0);
+  disabledPixmap.resize(0,0);
 }
 
 void FCToolboxButton::setTextAndPixmap( const QString &text, const QPixmap &pix)
@@ -879,9 +889,6 @@ QStackBarBtn::QStackBarBtn( QWidget *parent, const char *name )
  */
 QStackBarBtn::~QStackBarBtn()
 {
-  if (w)
-    delete w;
-  w = NULL;
 }
 
 /*!
@@ -1033,7 +1040,7 @@ FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
 	: FCDockWindow( parent, name )
 {
     m_pCurPage  = NULL;
-    m_pLastPage = NULL,
+    m_pLastBtn = NULL,
     m_pLayout   = new QVBoxLayout( this );
     m_lAnimCount = 10;
 }
@@ -1046,6 +1053,8 @@ FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
 FCCmdBar::~FCCmdBar()
 {
   m_lButtons.clear();
+  m_mButtonView.clear();
+  delete m_pLayout;
 }
 
 /*!
@@ -1078,16 +1087,16 @@ void FCCmdBar::addPage( const QString &name, QWidget *page )
   sv->setFrameStyle( QFrame::NoFrame );
   sv->verticalScrollBar()->setStyle(new FCWindowsStyle);
   page->show();
-  m_mViews[button] = sv;
+  m_mButtonView[button] = sv;
   m_pLayout->addWidget( button );
   m_pLayout->addWidget( sv );
   button->show();
 
-  if ( m_mViews.size() == 1 ) 
+  if ( m_mButtonView.size() == 1 ) 
   {
   	m_pCurPage  = sv;
-	  m_pLastPage = button;
-	  m_pLastPage->setSelected( true );
+	  m_pLastBtn = button;
+	  m_pLastBtn->setSelected( true );
 	  sv->show();
 	  set_background_mode( m_pCurPage, PaletteLight );
   } 
@@ -1104,18 +1113,18 @@ void FCCmdBar::buttonClicked()
 {
   QStackBarBtn *tb = (QStackBarBtn*)sender();
   QWidget *page = NULL;
-  if (m_mViews.find( tb ) != m_mViews.end())
-    page = m_mViews[tb];
+  if (m_mButtonView.find( tb ) != m_mButtonView.end())
+    page = m_mButtonView[tb];
 
   if ( !page || m_pCurPage == page )
   	return;
   
   tb->setSelected( true );
   
-  if ( m_pLastPage )
-	  m_pLastPage->setSelected( false );
+  if ( m_pLastBtn )
+	  m_pLastBtn->setSelected( false );
     
-  m_pLastPage = tb;
+  m_pLastBtn = tb;
 
   if ( m_pCurPage )
 	  m_pCurPage->hide();
@@ -1123,7 +1132,10 @@ void FCCmdBar::buttonClicked()
   if (m_pCurPage != page)
   {
     if (m_lAnimCount > 0)
+    {
       animatePageScroll(m_pCurPage, page);
+      return;
+    }
   }
 
   m_pCurPage = page;
@@ -1144,12 +1156,32 @@ void FCCmdBar::updatePages()
   {
     (*it)->setBackgroundMode( !after ? PaletteBackground : PaletteLight );
     (*it)->update();
-    after = (*it) == m_pLastPage;
+    after = (*it) == m_pLastBtn;
   }
 }
 
 void FCCmdBar::timerEvent ( QTimerEvent * )
 {
+  if (m_pAnimCurPage->height() > 10)
+  {
+    m_pAnimCurPage->setFixedHeight(m_pAnimCurPage->height() - 10);
+    m_pAnimNewPage->setFixedHeight(m_pAnimNewPage->height() + 10);
+  }
+  else
+  {
+    killTimers();
+    m_pAnimCurPage->setMaximumHeight(1000);
+    m_pAnimCurPage->setMinimumHeight(0);
+    m_pAnimNewPage->setMaximumHeight(1000);
+    m_pAnimNewPage->setMinimumHeight(0);
+    ((QScrollView*)m_pAnimCurPage)->setVScrollBarMode(QScrollView::Auto);
+    ((QScrollView*)m_pAnimNewPage)->setVScrollBarMode(QScrollView::Auto);
+    m_pAnimCurPage->hide();
+    m_pAnimNewPage->show();
+    m_pCurPage = m_pAnimNewPage;
+    set_background_mode( m_pCurPage, PaletteLight );
+    updatePages();
+  }
 }
 
 /*!
@@ -1242,6 +1274,16 @@ void FCCmdBar::setCurPage( int i )
 void FCCmdBar::remPage( QStackBarBtn * b)
 {
 	m_lButtons.remove( b );
+  std::map <QWidget*, QWidget*>::iterator it;
+
+  // delete also the corresponding scroll view
+  if ( (it=m_mButtonView.find(b)) != m_mButtonView.end())
+  {
+    QWidget* w = m_mButtonView[b];
+    m_mButtonView.erase(it);
+    delete w;
+  }
+
   delete b;
   if (m_lButtons.size() == 0)
     hide();
@@ -1249,6 +1291,18 @@ void FCCmdBar::remPage( QStackBarBtn * b)
 
 void FCCmdBar::animatePageScroll(QWidget* pCurPage, QWidget* pNewPage)
 {
+  m_pAnimNewPage = pNewPage;
+  m_pAnimCurPage = pCurPage;
+  m_iCurHeight   = m_pAnimCurPage->height();
+  m_iNewHeight   = m_pAnimNewPage->height();
+
+  ((QScrollView*)m_pAnimCurPage)->setVScrollBarMode(QScrollView::AlwaysOff);
+  ((QScrollView*)m_pAnimNewPage)->setVScrollBarMode(QScrollView::AlwaysOff);
+  m_pAnimCurPage->show();
+  m_pAnimNewPage->setFixedHeight(0);
+  m_pAnimNewPage->show();
+
+  startTimer(m_lAnimCount);
 }
 
 #include "moc_ButtonGroup.cpp"
