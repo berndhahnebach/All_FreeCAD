@@ -41,6 +41,7 @@
 #endif
 
 #include "buttongroup.h"
+#include "Application.h"
 
 
 FCButtonGroup::FCButtonGroup(QWidget * parent, const char * name)
@@ -1179,36 +1180,19 @@ void FCCmdBar::AddTestButtons(void)
 	}
 
   // insert viewing toolbar
-  FCToolboxButton* btn;
 	FCToolboxGroup* view = new FCToolboxGroup("", stack);
 	stack->addPage( new QStackBarBtn( "Viewing", view->pScrollWidget ) );
 
-  // fit all
-  btn = new FCToolboxButton("Fit all", QPixmap(view_fitall), "Fit all objects", view);
-  view->addToolboxButton(btn, 0);
-  // front
-  btn = new FCToolboxButton("Front", QPixmap(view_front), "Front", view);
-  view->addToolboxButton(btn, 1);
-  // top
-  btn = new FCToolboxButton("Top", QPixmap(view_top), "Top", view);
-  view->addToolboxButton(btn, 2);
-  // right
-  btn = new FCToolboxButton("Right", QPixmap(view_right), "Right", view);
-  view->addToolboxButton(btn, 3);
-  // rear
-  btn = new FCToolboxButton("Rear", QPixmap(view_back), "Rear", view);
-  view->addToolboxButton(btn, 4);
-  // bottom
-  btn = new FCToolboxButton("Bottom", QPixmap(view_bottom), "Bottom", view);
-  view->addToolboxButton(btn, 5);
-  // left
-  btn = new FCToolboxButton("Left", QPixmap(view_left), "Left", view);
-  view->addToolboxButton(btn, 6);
-  // axo
-  btn = new FCToolboxButton("Axometric", QPixmap(view_axo), "Axometric", view);
-  view->addToolboxButton(btn, 7);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewFitAll"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewAxo"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewFront"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewRight"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewTop"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewRear"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewLeft"  ,view);
+	ApplicationWindow::Instance->GetCommandManager().AddTo("Std_ViewBottom"  ,view);
 
-  stack->setCurPage(4);
+	stack->setCurPage(4);
 }
 
 

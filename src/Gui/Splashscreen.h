@@ -43,6 +43,7 @@ class GuiExport FCSplashWidget : public QLabel, public QThread
     virtual void run() = 0;
     virtual QString getName() = 0;
     void hideEvent ( QHideEvent * e);
+#pragma warning(disable : 4251)
     FCmap<FCstring, FCpair<FCstring, QPixmap> > _aclDevelopers;
 
   protected slots:

@@ -62,7 +62,10 @@ ApplicationWindow::ApplicationWindow()
 	CreateTestOperations();
 	//createCasCadeOperations();
 
-  // labels
+  // labels and progressbar
+  _pclProgress = new FCProgressBar(statusBar(), "Sequencer");
+  _pclProgress->setFixedWidth(200);
+  statusBar()->addWidget(_pclProgress,0,true);
   _pclActionLabel = new QLabel("Ready", statusBar(), "Action");
   _pclActionLabel->setFixedWidth(120);
   statusBar()->addWidget(_pclActionLabel,0,true);
@@ -83,7 +86,7 @@ ApplicationWindow::ApplicationWindow()
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	QString home = QString("index.html");
 	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
-	AddDockWindow("Help bar", hv,"Command bar");
+	AddDockWindow("Help bar", hv,"Command bar", KDockWidget::DockBottom);
 
 	// misc stuff
     resize( 800, 600 );
@@ -211,6 +214,11 @@ void ApplicationWindow::SetPaneText(int i, QString text)
     _pclActionLabel->setText(text);
   else if (i==2)
     _pclSizeLabel->setText(text);
+}
+
+FCProgressBar* ApplicationWindow::GetProgressBar()
+{
+  return _pclProgress;
 }
 
 
@@ -374,7 +382,49 @@ void ApplicationWindow::updateRedo()
 
 void ApplicationWindow::executeUndoRedo()
 {
-  QWaitCondition().wait(5000);
+#if 0
+  bool b=true; int bi=20;
+  bool c=true; int ci=5;
+
+  GetProgressBar()->Start("text", bi, b);
+  for (int i=0; i<bi; i++)
+  {
+    QWaitCondition().wait(i*20);
+
+    GetProgressBar()->Start("Hallo", ci, c);
+    for (int j=0;j<ci;j++)
+    {
+      QWaitCondition().wait(j*10);
+      GetProgressBar()->Next();
+    }
+    GetProgressBar()->Stop();
+
+    GetProgressBar()->Next();
+  }
+
+  GetProgressBar()->Stop();
+#else
+  bool b=true; int bi=5;
+  bool c=true; int ci=20;
+
+  GetProgressBar()->Start("text", bi, b);
+  for (int i=0; i<bi; i++)
+  {
+    QWaitCondition().wait(i*10);
+
+    GetProgressBar()->Start("Hallo", ci, c);
+    for (int j=0;j<ci;j++)
+    {
+      QWaitCondition().wait(j*20);
+      GetProgressBar()->Next();
+    }
+    GetProgressBar()->Stop();
+
+    GetProgressBar()->Next();
+  }
+
+  GetProgressBar()->Stop();
+#endif
 }
 
 

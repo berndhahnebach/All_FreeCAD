@@ -160,7 +160,7 @@ void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 	if ((nExp > -6 && zDelta > 0) || (nExp < 8 && zDelta < 0))
 	{
 		GetView()->Zoom(0,0,zDelta,0);
-    GetView3D().PostHandleMovement();
+    GetView3D().ShowDimension();
 	}
 	else if (zDelta > 0)
 	{

@@ -16,6 +16,7 @@ class QToolBar;
 #include "../Base/Console.h"
 #include "../App/Application.h"
 #include "Command.h"
+#include "Widgets.h"
 #include <list>
 
 class FCGuiDocument;
@@ -81,6 +82,7 @@ public:
 
   // set text to the pane
   void SetPaneText(int i, QString text);
+  FCProgressBar* GetProgressBar();
 
 
 
@@ -123,6 +125,7 @@ private:
 	FCUndoRedoDlg*	_pclUndoRedoWidget;
 	QComboBox *		_pcWorkbenchCombo;
   QLabel *_pclSizeLabel, *_pclActionLabel;
+  FCProgressBar *_pclProgress;
 
   // waiting cursor stuff 
   protected:

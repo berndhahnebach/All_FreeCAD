@@ -147,9 +147,7 @@ public:
 	Handle_AIS_InteractiveContext	&GetContext(void){return _hContext;}
 
 	void ShowPopup(int x,int y);
-	void PrintDimensions (void) const;
-	void PostHandleMovement (/*TViewChange tChange*/);
-	void PreHandleMovement (/*TViewChange tChange*/);
+	void ShowDimension (void) const;
 
 	bool ScreenDump(Standard_CString theFile);
 
@@ -157,15 +155,15 @@ public:
 
 protected:
 	// user interaction events (got mainly handled in the MouseModel classes)
-	virtual void mousePressEvent		( QMouseEvent * );
-	virtual void mouseReleaseEvent		( QMouseEvent * );
-	virtual void mouseMoveEvent			( QMouseEvent * );
+	virtual void mousePressEvent		    ( QMouseEvent * );
+	virtual void mouseReleaseEvent		  ( QMouseEvent * );
+	virtual void mouseMoveEvent			    ( QMouseEvent * );
 	virtual void mouseDoubleClickEvent	( QMouseEvent * );
-	virtual void keyPressEvent			( QKeyEvent   * );
-	virtual void keyReleaseEvent		( QKeyEvent   * );
-	virtual void wheelEvent				( QWheelEvent * );
-	virtual void focusInEvent			( QFocusEvent * );
-	virtual void hideEvent				( QHideEvent  * );
+	virtual void keyPressEvent			    ( QKeyEvent   * );
+	virtual void keyReleaseEvent		    ( QKeyEvent   * );
+	virtual void wheelEvent				      ( QWheelEvent * );
+	virtual void focusInEvent			      ( QFocusEvent * );
+	virtual void hideEvent				      ( QHideEvent  * );
 
 	/** Update the view when paint event occur. */
 	virtual void paintEvent				      ( QPaintEvent * );

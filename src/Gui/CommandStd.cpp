@@ -794,6 +794,6 @@ void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWh
 
 void FCCmdViewFitAll::Activated(void)
 {
-	AppWnd()->SendMsgToActiveView("ViewFitAll");
+	AppWnd()->SendMsgToActiveView("ViewFit");
 }
 

@@ -35,3 +35,8 @@ Version: V0.1B13 Date: Thu Dec 26 19:58:57 2002 +++++++++++++++++++++++++++++++
 + View Commands
 + switching StdViews from slots to Messages
 + try fixing Dock windows
+
+Version: V0.1B14 Date: Mon Dec 30 12:42:22 2002 +++++++++++++++++++++++++++++++
++ coupling FCaction on FCCmdBar (Werner)
++ New group functions in FCParameter (Juergen)
++ Progress Bar (Werner)

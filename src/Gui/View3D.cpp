@@ -212,11 +212,12 @@ bool View3D::InitCasCadeView(void)
 	_hView->MustBeResized();
 	_hView->Update();
 	_hView->SetAntialiasingOn();
-	_hView->SetBackgroundColor(Quantity_NOC_DARKKHAKI);
-_hView->SetBackgroundColor(Quantity_NOC_DARKOLIVEGREEN);
+//	_hView->SetBackgroundColor(Quantity_NOC_DARKKHAKI);
+//	_hView->SetBackgroundColor(Quantity_NOC_DARKOLIVEGREEN);
 //	_hView->SetBackgroundColor(Quantity_NOC_DARKORCHID);
 //	_hView->SetBackgroundColor(Quantity_NOC_DARKORCHID);
 //	_hView->SetBackgroundColor(Quantity_NOC_DARKSEAGREEN);
+	_hView->SetBackgroundColor(Quantity_NOC_BLACK);
 
 
 	// pushing the standard mouse model
@@ -228,25 +229,22 @@ _hView->SetBackgroundColor(Quantity_NOC_DARKOLIVEGREEN);
 }
 
 
-void View3D::mousePressEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mousePressEvent( cEvent);}
-void View3D::mouseReleaseEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mouseReleaseEvent( cEvent);}
+void View3D::mousePressEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mousePressEvent( cEvent);      }
+void View3D::mouseReleaseEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mouseReleaseEvent( cEvent);    }
 void View3D::mouseDoubleClickEvent	( QMouseEvent *cEvent){_cMouseStack.top()->mouseDoubleClickEvent( cEvent);}
-void View3D::keyPressEvent			( QKeyEvent	  *cEvent){_cMouseStack.top()->keyPressEvent( cEvent);}
-void View3D::keyReleaseEvent		( QKeyEvent   *cEvent){_cMouseStack.top()->keyReleaseEvent( cEvent);}
-void View3D::focusInEvent ( QFocusEvent * cEvent)
-{
-  PrintDimensions();
-}
-
-void View3D::hideEvent ( QHideEvent * cEvent )
-{
-  ApplicationWindow::getApplication()->SetPaneText(2, QString("Dimension"));
-}
-void View3D::wheelEvent             ( QWheelEvent *cEvent){_cMouseStack.top()->wheelEvent( cEvent);}
+void View3D::keyPressEvent			( QKeyEvent	  *cEvent){_cMouseStack.top()->keyPressEvent( cEvent);        }
+void View3D::keyReleaseEvent		( QKeyEvent   *cEvent){_cMouseStack.top()->keyReleaseEvent( cEvent);      }
+void View3D::focusInEvent			( QFocusEvent *cEvent){ShowDimension();                                   }
+void View3D::wheelEvent				( QWheelEvent *cEvent){_cMouseStack.top()->wheelEvent( cEvent);}
 void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 { 
 	QApplication::flushX(); 
 	_cMouseStack.top()->mouseMoveEvent( cEvent);
+}
+
+void View3D::hideEvent ( QHideEvent * cEvent )
+{
+	ApplicationWindow::getApplication()->SetPaneText(2, QString("Dimension"));
 }
  
 bool View3D::OnMsg(const char* pMsg)
@@ -324,79 +322,45 @@ void View3D::ShowPopup(int x, int y)
 	pcMenu->exec(QCursor::pos());
 }
 
-void View3D::PrintDimensions (void) const
+void View3D::ShowDimension (void) const
 {
   Quantity_Length fWidth, fHeight;
   _hView->Size(fWidth, fHeight);
   
-  float fLog = float(log10(fWidth)), fFac;
+  float fLog = float(log10(fWidth)), fFactor;
   int   nExp = int(fLog);
-  char  szUnit[20];
+  char  szDim[20];
   
   if (nExp >= 6)
   {
-    fFac = 1.0e+6f;
-    strcpy(szUnit, "km");
+    fFactor = 1.0e+6f;
+    strcpy(szDim, "km");
   }
   else if (nExp >= 3)
   {
-    fFac = 1.0e+3f;
-    strcpy(szUnit, "m");
+    fFactor = 1.0e+3f;
+    strcpy(szDim, "m");
   }
   else if ((nExp >= 0) && (fLog > 0.0f))
   {
-    fFac = 1.0e+0f;
-    strcpy(szUnit, "mm");
+    fFactor = 1.0e+0f;
+    strcpy(szDim, "mm");
   }
   else if (nExp >= -3)
   {
-    fFac = 1.0e-3f;
-    strcpy(szUnit, "um");
+    fFactor = 1.0e-3f;
+    strcpy(szDim, "um");
   }
   else 
   {
-    fFac = 1.0e-6f;
-    strcpy(szUnit, "nm");
+    fFactor = 1.0e-6f;
+    strcpy(szDim, "nm");
   }
   
-  char szOut[100];
-  sprintf(szOut, "%.2f x %.2f %s", fWidth / fFac, fHeight / fFac, szUnit);
+  char szSize[100];
+  sprintf(szSize, "%.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
   
-  ApplicationWindow::getApplication()->SetPaneText(2, QString(szOut));
-}
-
-void View3D::PostHandleMovement (/*TViewChange tChange*/)
-{
-//  switch (tChange)
-//  {
-//    case ZOOM:
-//      PrintViewerPosition();
-//      UpdateFlags();
-//      PrintDimensions();
-//      UpdateViewPosition();
-//      break;
-//
-//    case PAN:
-//      PrintViewerPosition();
-//      UpdateFlags();
-//      UpdateViewPosition();
-//      break;
-//
-//    case ROTATE:
-//      PrintViewerPosition();
-//      UpdateFlags();
-//      UpdateViewPosition();
-//      break;
-//
-//    case RESIZE:
-      PrintDimensions();
-//      UpdateViewPosition();
-//      break;
-//  }
-}
-
-void View3D::PreHandleMovement (/*TViewChange tChange*/)
-{
+  ApplicationWindow::getApplication()->SetPaneText(2, QString(szSize));
 }
 
 

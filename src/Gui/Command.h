@@ -30,6 +30,17 @@ class FCCommandManager;
 class ApplicationWindow;
 class FCGuiDocument;
 class FCDocument;
+
+class GuiExport FCAction : public QAction
+{
+  public:
+    FCAction ( QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+    FCAction ( const QString & text, const QIconSet & icon, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
+    FCAction ( const QString & text, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
+    virtual ~FCAction();
+
+    virtual bool addTo(QWidget *);
+};
 /*
 class GuiExport FCAction :public FCPyObject, public QAction
 {
@@ -122,7 +133,7 @@ private slots:
 
 private:
 	const char* _pcName;
-	QAction *_pcAction;
+	FCAction *_pcAction;
 	CMD_Type _eType;
 };
 

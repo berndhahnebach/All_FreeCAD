@@ -163,6 +163,28 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 	pcElem->setAttribute(X("Value"), X(bValue?"1":"0"));
 }
 
+FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
+{
+	FCvector<bool>  vrValues;
+	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	while( pcTemp = FindNextElement(pcTemp,"FCBool") )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		{
+			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str(),"1"))
+				vrValues.push_back(false);
+			else
+				vrValues.push_back(true);	
+		}
+	}
+
+	return vrValues;
+}
+
 long FCParameterGrp::GetInt(const char* Name, long lPreset)
 {
 	// check if Element in group
@@ -183,6 +205,25 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	pcElem->setAttribute(X("Value"), X(cBuf));
 }
 
+FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
+{
+	FCvector<long>  vrValues;
+	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	while( pcTemp = FindNextElement(pcTemp,"FCInt") )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		{
+			vrValues.push_back( atol (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+		}
+	}
+
+	return vrValues;
+}
+
 double FCParameterGrp::GetFloat(const char* Name, double dPreset)
 {
 	// check if Element in group
@@ -201,6 +242,25 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	// and set the value
 	sprintf(cBuf,"%f",dValue);
 	pcElem->setAttribute(X("Value"), X(cBuf));
+}
+
+FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
+{
+	FCvector<double>  vrValues;
+	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	while( pcTemp = FindNextElement(pcTemp,"FCFloat") )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		{
+			vrValues.push_back( atof (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+		}
+	}
+
+	return vrValues;
 }
 
 
@@ -262,6 +322,28 @@ FCstring FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
 		return FCstring(StrX(pcElem2->getNodeValue()).c_str());	
 	else
 		return FCstring(pPreset);
+}
+
+FCvector<FCstring> FCParameterGrp::GetASCIIs(const char * sFilter)
+{
+	FCvector<FCstring>  vrValues;
+	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	while( pcTemp = FindNextElement(pcTemp,"FCText") )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		{
+			// retrive the text element
+			DOMNode *pcElem2 = pcTemp->getFirstChild();
+			if (pcElem2)
+				vrValues.push_back( FCstring(StrX(pcElem2->getNodeValue()).c_str()) );
+		}
+	}
+
+	return vrValues;
 }
 
 

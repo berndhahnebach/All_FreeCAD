@@ -116,14 +116,19 @@ public:
 
 	void  SetBool(const char* Name, bool bValue);
 
+	FCvector<bool> GetBools(const char * sFilter = NULL);
+
 	long GetInt(const char* Name, long lPreset=0);
 
 	void  SetInt(const char* Name, long lValue);
+
+	FCvector<long> GetInts(const char * sFilter = NULL);
 
 	double GetFloat(const char* Name, double dPreset=0.0);
 
 	void  SetFloat(const char* Name, double dValue);
 
+	FCvector<double> GetFloats(const char * sFilter = NULL);
 
 	void  SetBlob(const char* Name, void *pValue, long lLength);
 
@@ -135,6 +140,12 @@ public:
 
 	FCstring GetASCII(const char* Name, const char * pPreset=NULL);
 
+	/** Return all string elements in this group as a vector of strings
+	 *  Its also possible to set a filter criteria.
+	 *  @param sFilter only strings which name includes sFilter are put in the vector
+	 *  @return FCvector of FCstrings
+	 */
+	FCvector<FCstring> GetASCIIs(const char * sFilter = NULL);
 
 	static void Init(void);
 

@@ -19,9 +19,47 @@
 #include "Command.h"
 #include "Application.h"
 #include "Document.h"
+#include "ButtonGroup.h"
 
 #include "Icons/x.xpm"
 
+//===========================================================================
+// FCAction 
+//===========================================================================
+FCAction::FCAction ( QObject * parent, const char * name, bool toggle)
+:QAction(parent, name, toggle)
+{
+}
+
+FCAction::FCAction ( const QString & text, const QIconSet & icon, const QString & menuText, int accel, QObject * parent, const char * name, bool toggle)
+:QAction(text, icon, menuText, accel, parent, name, toggle)
+{
+}
+
+FCAction::FCAction ( const QString & text, const QString & menuText, int accel, QObject * parent, const char * name, bool toggle)
+:QAction(text, menuText, accel, parent, name, toggle)
+{
+}
+
+FCAction::~FCAction()
+{
+}
+
+bool FCAction::addTo(QWidget *w)
+{
+  if ( w->inherits( "FCToolboxGroup" ) ) 
+  {
+    FCToolboxGroup* bg = (FCToolboxGroup*)w;
+	  FCToolboxButton* btn = new FCToolboxButton(menuText(), iconSet().pixmap(), toolTip(), w);
+    bg->addToolboxButton(btn, bg->count());
+	  connect( btn, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
+	  connect( btn, SIGNAL( toggled(bool) ), this, SLOT( toolButtonToggled(bool) ) );
+	  connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
+    return true;
+  }
+  else
+    return QAction::addTo(w);
+}
 
 //===========================================================================
 // FCCommand 
@@ -37,7 +75,7 @@ FCCommand::FCCommand(const char* name,CMD_Type eType)
 void FCCommand::Init(void)
 {
 	// create a action with the Application as parent (shortcuts)
-	_pcAction = new QAction(ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
+	_pcAction = new FCAction(ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
 
 	// set standard profile here
 	char*  sMenuText,*sToolTipText,*sWhatsThis,*sStatusTip;
