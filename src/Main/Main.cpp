@@ -80,8 +80,10 @@ const char sBanner[] = \
 
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
+#include "InitGuiScript.h"
 #include "TestScript.h"
 #include "TestEnvScript.h"
+#include "StartupScript.h"
 #include "InstallScript.h"
 
 #include <string>
@@ -192,13 +194,17 @@ int main( int argc, char ** argv )
 				if (!pcQApp)  pcQApp = new QApplication ( argc, argv );
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
-				ApplicationWindow::Instance->setCaption( "FreeCAD" );
 
+				// runing the Gui init script
+				GetInterpreter().Launch(FreeCADGuiInit);
+
+				// show the main window
 				GetConsole().Log("Showing GUI Application...\n");
 				mw->show();
 				pcQApp->connect( pcQApp, SIGNAL(lastWindowClosed()), pcQApp, SLOT(quit()) );
-				// run the Application event loop
-				GetConsole().Log("Running event loop...\n");
+
+
+				// close splasher
 				if (splash)
 				{
 				  // wait a short moment
@@ -206,6 +212,9 @@ int main( int argc, char ** argv )
 				  // if splasher is still busy terminate it
 				  splash->bRun = false;
 				}
+
+				// run the Application event loop
+				GetConsole().Log("Running event loop...\n");
 				ret = pcQApp->exec();
 				GetConsole().Log("event loop left\n");
 				delete pcQApp;
@@ -316,23 +325,26 @@ void Init(int argc, char ** argv )
 
 	// init python
 	GetInterpreter();
-	// std console (Also init the python bindings)
-	//GetConsole().AttacheObserver(new FCGUIConsole());
+
+	// Init console ===========================================================
 	GetConsole().AttacheObserver(new FCCmdConsoleObserver());
+	if(bVerbose) GetConsole().SetMode(FCConsole::Verbose);
 	// file logging fcility
 #	ifdef _DEBUG
 		GetConsole().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
 #	endif
 
-	// Banner
+	// Banner ===========================================================
 	if(!bVerbose)
-		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel\n\n%s",sBanner);
+		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
+	else
+		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
 
 	pcSystemParameter = new FCParameterManager();
 	pcUserParameter = new FCParameterManager();
 
-	//pcGlobalParameter->CreateDocument();
 
+	// Init parameter sets ===========================================================
 	if(pcSystemParameter->LoadOrCreateDocument("AppParam.FCParam") && !bVerbose)
 	{
 		GetConsole().Warning("   Parameter not existing, write initial one\n");
@@ -353,16 +365,21 @@ void Init(int argc, char ** argv )
 	}
 
 	
+	// interpreter and Init script ==========================================================
 	// Start the python interpreter
 	FCInterpreter &rcInterperter = GetInterpreter();
 	rcInterperter.SetComLineArgs(argc,argv);
-	rcInterperter.Launch("print 'Python started'\n");
+	//rcInterperter.Launch("print 'Python started'\n");
 	
-	// starting the init script
-	rcInterperter.Launch(FreeCADInit);
+	// starting the startup script
+	rcInterperter.Launch(FreeCADStartup);
 
 	// creating the application 
+	if(!bVerbose) GetConsole().Message("Create Application");
 	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter);
+
+	// starting the init script
+	rcInterperter.Launch(FreeCADInit);
 
 }
 

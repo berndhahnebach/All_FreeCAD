@@ -45,11 +45,16 @@ ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
       _pcActiveDocument(NULL)
 {
-  // start thread which observes the application and 
-  // sets/unsets the waiting cursor if necessary
-  FCAutoWaitCursor* waitCursor = &FCAutoWaitCursor::Instance();
-  connect(this, SIGNAL(timeEvent()), waitCursor, SLOT(timeEvent()));
-  startTimer(waitCursor->GetInterval() / 2);
+	// seting up Python binding 
+	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
+
+	setCaption( "FreeCAD" );
+
+	// start thread which observes the application and 
+	// sets/unsets the waiting cursor if necessary
+	FCAutoWaitCursor* waitCursor = &FCAutoWaitCursor::Instance();
+	connect(this, SIGNAL(timeEvent()), waitCursor, SLOT(timeEvent()));
+	startTimer(waitCursor->GetInterval() / 2);
 
 	// global access 
 	Instance = this;
@@ -62,16 +67,16 @@ ApplicationWindow::ApplicationWindow()
 	CreateTestOperations();
 	//createCasCadeOperations();
 
-  // labels and progressbar
-  _pclProgress = new FCProgressBar(statusBar(), "Sequencer");
-  _pclProgress->setFixedWidth(200);
-  statusBar()->addWidget(_pclProgress,0,true);
-  _pclActionLabel = new QLabel("Ready", statusBar(), "Action");
-  _pclActionLabel->setFixedWidth(120);
-  statusBar()->addWidget(_pclActionLabel,0,true);
-  _pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
-  _pclSizeLabel->setFixedWidth(120);
-  statusBar()->addWidget(_pclSizeLabel,0,true);
+	// labels and progressbar
+	_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
+	//_pclProgress->setFixedWidth(200);
+	statusBar()->addWidget(_pclProgress,0,true);
+	//_pclActionLabel = new QLabel("Ready", statusBar(), "Action");
+	//_pclActionLabel->setFixedWidth(120);
+	//statusBar()->addWidget(_pclActionLabel,0,true);
+	_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
+	_pclSizeLabel->setFixedWidth(120);
+	statusBar()->addWidget(_pclSizeLabel,0,true);
 
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
 	GetCmdLine().SetParent(statusBar());
@@ -272,7 +277,7 @@ void ApplicationWindow::CreateTestOperations()
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"FEM"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Renderer"); 
 
-	// test tool bar -----------------------------------------------------------------------
+/*	// test tool bar -----------------------------------------------------------------------
     pcStdToolBar =  GetToolBar("Test Toolbar" );
 	_cCommandManager.AddTo("Std_MDIToplevel",pcStdToolBar);
 	_cCommandManager.AddTo("Std_MDITabed"   ,pcStdToolBar);
@@ -297,7 +302,7 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_ViewRear"  ,pcStdToolBar);
 	_cCommandManager.AddTo("Std_ViewLeft"  ,pcStdToolBar);
 	_cCommandManager.AddTo("Std_ViewBottom",pcStdToolBar);
-
+*/
 	// test tool bar -----------------------------------------------------------------------
     // populate a menu with all actions
     _pcPopup = new QPopupMenu( this );
@@ -383,7 +388,7 @@ void ApplicationWindow::updateRedo()
 void ApplicationWindow::executeUndoRedo()
 {
 #if 0
-  bool b=true; int bi=20;
+  bool b=true; int bi=200;
   bool c=true; int ci=5;
 
   GetProgressBar()->Start("text", bi, b);
@@ -404,10 +409,10 @@ void ApplicationWindow::executeUndoRedo()
 
   GetProgressBar()->Stop();
 #else
-  bool b=true; int bi=5;
+  bool b=true; int bi=50;
   bool c=true; int ci=20;
 
-  GetProgressBar()->Start("text", bi, b);
+  GetProgressBar()->Start("Very long operation", bi, b);
   for (int i=0; i<bi; i++)
   {
     QWaitCondition().wait(i*10);
@@ -436,19 +441,57 @@ void ApplicationWindow::resizeEvent ( QResizeEvent *e)
 }
 
 
-
-ApplicationWindow* ApplicationWindow::getApplication()
-{
-	return stApp;
-}
-
-
 void ApplicationWindow::exportImage()
 {
   //FCView* w = (FCView*) stWs->activeWindow();
   //w->dump();
 }
 
+
+
+
+//**************************************************************************
+// Python stuff
+
+// FCApplication Methods						// Methods structure
+PyMethodDef ApplicationWindow::Methods[] = {
+	{"ToolbarAddTo",         (PyCFunction) ApplicationWindow::sToolbarAddTo,       1},
+	{"ToolbarDelete",        (PyCFunction) ApplicationWindow::sToolbarDelete,     1},
+	{"ToolbarAddSeperator",  (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
+
+	{NULL, NULL}		/* Sentinel */
+};
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarAddSeperator)
+{
+	char *psToolbarName;
+	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+		return NULL;                                      // NULL triggers exception 
+
+	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
+	pcBar->addSeparator();
+	return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
+{
+	char *psToolbarName,*psCmdName;
+	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
+	Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+    return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
+{
+    char *psToolbarName;
+    if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	Instance->DelToolBar(psToolbarName);
+    return Py_None;
+}
 
 
 //**************************************************************************
@@ -484,6 +527,5 @@ void FCAppConsoleObserver::Error  (const char *m)
 void FCAppConsoleObserver::Log    (const char *)
 {
 }
-
 
 #include "Application_moc.cpp"

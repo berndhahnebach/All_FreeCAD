@@ -1,5 +1,5 @@
-# FreeCAD init module  
-# (c) 2001 Jürgen Riegel
+# FreeCAD gui init module  
+# (c) 2003 Jürgen Riegel
 #
 # Gathering all the information to start FreeCAD
 # This is the second one of three init scripts, the third one
@@ -31,46 +31,52 @@
 
 
 # imports the one and only
-import FreeCAD
+import FreeCAD, FreeCADGui
+
+# shortcuts
+Gui = FreeCADGui
 
 
+def InitToolbars():
+	Log ('   Set up toolbars...\n')
+	# test tool bar
+	Gui.ToolbarAddTo("TestTools","Std_MDIToplevel")
+	Gui.ToolbarAddTo("TestTools","Std_MDITabed")
+	Gui.ToolbarAddTo("TestTools","Std_MDINormal")
+	Gui.ToolbarAddSeperator("TestTools")
+	Gui.ToolbarAddTo("TestTools","Std_TilePragmatic")
+	Gui.ToolbarAddTo("TestTools","Std_TileVertical")
+	Gui.ToolbarAddTo("TestTools","Std_TileHoricontal")
+	Gui.ToolbarAddSeperator("TestTools")
+	Gui.ToolbarAddTo("TestTools","Std_Test1")
+	Gui.ToolbarAddTo("TestTools","Std_Test2")
+	# test tool bar
+	Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")
+	Gui.ToolbarAddTo("Standard views","Std_ViewAxo")
+	Gui.ToolbarAddSeperator("Standard views")
+	Gui.ToolbarAddTo("Standard views","Std_ViewFront")
+	Gui.ToolbarAddTo("Standard views","Std_ViewRight")
+	Gui.ToolbarAddTo("Standard views","Std_ViewTop")
+	Gui.ToolbarAddSeperator("Standard views")
+	Gui.ToolbarAddTo("Standard views","Std_ViewRear")
+	Gui.ToolbarAddTo("Standard views","Std_ViewLeft")
+	Gui.ToolbarAddTo("Standard views","Std_ViewBottom")
+	
 
-def InitApplications():
-	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = '../src/Mod'
-	Log("   Using "+ModDir+" as module path!\n")
-	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
-	sys.path.append( ModDir )
-	ModDirs = dircache.listdir(ModDir)
-	#print ModDirs
-	Log('   Searching modules...\n')
-	ModPar = App.ParamGet("Modules")
-	for Dir in ModDirs:
-		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('      Init: ' + Dir + '... ')
-			ModGrp = ModPar.GetGroup(Dir)
-			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Install.py")
-			if ( os.path.exists(InstallFile) ):
-				execfile(InstallFile)
-				Log('done\n')
-			else:
-				Wrn("Init.py not found! "+Dir+" not initialized!\n")
+def InitMenues():
+	Log ('   Set up menues...\n')
 
-#			else:
-#				FreeCAD.PrintMessage('new! install it...\n')
-#				InstallFile = os.path.join(os.path.join(ModDir,Dir),"Install.py")
-#				if ( os.path.exists(InstallFile) ):
-#					execfile(InstallFile)
-#				else:
-#					Wrn("         Install.py not found! "+Dir+" not installed!\n")
+def InitCmdBar():
+	Log ('   Set up command bar...\n')
 
+Log ('FreeCAD gui init running....\n')
 
-Log ('\nFreeCAD init running....\n')
+# init the gui
+InitMenues()
+InitToolbars()
+InitCmdBar()
 
-# init evera application by importing Init.py
-InitApplications()
-
-Log ('\nFreeCAD init done\n')
+Log ('\nFreeCAD gui init done\n')
    
     
 

@@ -104,6 +104,15 @@ public:
 	void AttacheObserver(FCConsoleObserver *pcObserver);
 	/// Detache an Observer from FCConsole
 	void DetacheObserver(FCConsoleObserver *pcObserver);
+	/// enumaration for the console modes
+	enum ConsoleMode{
+		Verbose = 1,	// supress Log messages
+		} ;
+
+	/// Change mode
+	void SetMode(ConsoleMode m);
+	/// Change mode
+	void UnsetMode(ConsoleMode m);
 	 
 protected:
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -113,6 +122,8 @@ protected:
 	static PyObject *sPyWarning(PyObject *self,PyObject *args,PyObject *kwd);
 	static PyObject *sPyError  (PyObject *self,PyObject *args,PyObject *kwd);
 	static PyMethodDef    Methods[]; 
+
+	bool _bVerbose;
 
 private:
 	// Singelton!

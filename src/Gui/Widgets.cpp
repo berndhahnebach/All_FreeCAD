@@ -122,7 +122,7 @@ void FCProgressBar::Start(QString txt, int steps, bool& flag)
 
   // print message to the satusbar
   if (iStartedProgresses == 1)
-    ApplicationWindow::getApplication()->statusBar()->message(txt);
+    ApplicationWindow::Instance->statusBar()->message(txt);
 }
 
 void FCProgressBar::Next()
@@ -183,47 +183,60 @@ void FCProgressBar::drawContents( QPainter *p )
 
 bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
 {
-  if (QProgressBar::setIndicator(indicator, progress, totalSteps) == false)
-  {
-    if (progress != -1)
-    {
-      // recalc remaining time every iTimeStep steps
-      if (progress % iTimeStep == 0 && progress > 0)
-      {
-        // difference in ms
-        int diff = measureTime.restart();
-        iTotalTime += diff;
-        // remaining time in s
-        diff *= (totalSteps - progress) / iTimeStep;
-        diff /= 1000;
+	if (QProgressBar::setIndicator(indicator, progress, totalSteps) == false)
+	{
+		if (progress != -1)
+		{
+			// recalc remaining time every iTimeStep steps
+			if (progress % iTimeStep == 0 && progress > 0)
+			{
+				// difference in ms
+				int diff = measureTime.restart();
+				iTotalTime += diff;
+				// remaining time in s
+				diff *= (totalSteps - progress) / iTimeStep;
+				diff /= 1000;
 
-#ifdef _DEBUG
-        printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
-#endif
+#				ifdef _DEBUG
+				printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
+#				endif
 
-//        if (bSeveralInstances == false)
-        {
-          // get time format
-          int second = diff %  60; diff /= 60;
-          int minute = diff %  60; diff /= 60;
-          int hour   = diff %  60;
-          QString h,m,s;
-          if (hour < 10)   h = tr("0%1").arg(hour);
-          else             h = tr("%1").arg(hour);
-          if (minute < 10) m = tr("0%1").arg(minute);
-          else             m = tr("%1").arg(minute);
-          if (second < 10) s = tr("0%1").arg(second);
-          else             s = tr("%1").arg(second);
+//				if (bSeveralInstances == false)
+				{
+					// get time format
+					int second = diff %  60; diff /= 60;
+					int minute = diff %  60; diff /= 60;
+					int hour   = diff %  60;
+					QString h,m,s;
+					if (hour < 10)   
+						h = tr("0%1").arg(hour);
+					else
+						h = tr("%1").arg(hour);
+					if (minute < 10) 
+						m = tr("0%1").arg(minute);
+					else
+						m = tr("%1").arg(minute);
+					if (second < 10) 
+						s = tr("0%1").arg(second);
+					else
+						s = tr("%1").arg(second);
 
-          remainingTime = tr("(rem. %1:%2:%3)").arg(h).arg(m).arg(s);
-        }
-      }
+					// nice formating for output
+					if(hour == 0)
+						if(minute == 0)
+							remainingTime = tr("(%1 s)").arg(s);
+						else
+							remainingTime = tr("(%1'%2 min)").arg(m).arg(s);
+					else
+						remainingTime = tr("(%1:%2 h)").arg(h).arg(m);
+				}
+			}
 
-      char szBuf[200];
-      sprintf(szBuf, "%d %% %s", (100 * progress) / totalSteps, remainingTime.latin1());
-      indicator = szBuf;
-    }
-  }
+			char szBuf[200];
+			sprintf(szBuf, "%d %% %s", (100 * progress) / totalSteps, remainingTime.latin1());
+			indicator = szBuf;
+		}
+	}
 
-  return true;
+	return true;
 }

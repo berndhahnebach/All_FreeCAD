@@ -83,7 +83,7 @@ void FCSplashWidget::aboutToQuit()
 void FCSplashWidget::hideEvent ( QHideEvent * e )
 {
 #ifdef _DEBUG
-  printf("%s goes sleeping...\n", this->getName().latin1());
+  //printf("%s goes sleeping...\n", this->getName().latin1());
 #endif
   QWidget::hideEvent ( e );
 }

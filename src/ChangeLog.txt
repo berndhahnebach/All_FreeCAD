@@ -40,3 +40,9 @@ Version: V0.1B14 Date: Mon Dec 30 12:42:22 2002 +++++++++++++++++++++++++++++++
 + coupling FCaction on FCCmdBar (Werner)
 + New group functions in FCParameter (Juergen)
 + Progress Bar (Werner)
+
+Version: V0.1B15 Date: Wed Jan 01 17:09:53 2003 +++++++++++++++++++++++++++++++
++ Changing the install prozess
++ implementing the Python toolbar bindings
++ Split Init.py in Init and Startup
++ Finish verbose mode (-v)

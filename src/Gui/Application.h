@@ -42,8 +42,6 @@ public:
 	/// destruction
     ~ApplicationWindow();
 
-	static ApplicationWindow* getApplication();
-
 	void CreateTestOperations();
 
 	// Observer
@@ -80,11 +78,21 @@ public:
 	/// Delete (or only remove) a named Dock Window
 	void          DelDockWindow(const char* name, bool bOnlyRemove = false);
 
-  // set text to the pane
-  void SetPaneText(int i, QString text);
-  FCProgressBar* GetProgressBar();
+	// set text to the pane
+	void SetPaneText(int i, QString text);
+	FCProgressBar* GetProgressBar();
 
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
 
+	// static python wrapper of the exported functions
+	PYFUNCDEF_S(sToolbarAddTo);
+	PYFUNCDEF_S(sToolbarDelete);
+	PYFUNCDEF_S(sToolbarAddSeperator);
+
+	static PyMethodDef    Methods[]; 
+ 
 
 protected:
 	/// Handels all commands 
@@ -124,8 +132,8 @@ private:
 	QPopupMenu*		_pcPopup;
 	FCUndoRedoDlg*	_pclUndoRedoWidget;
 	QComboBox *		_pcWorkbenchCombo;
-  QLabel *_pclSizeLabel, *_pclActionLabel;
-  FCProgressBar *_pclProgress;
+	QLabel *_pclSizeLabel, *_pclActionLabel;
+	FCProgressBar *_pclProgress;
 
   // waiting cursor stuff 
   protected:

@@ -74,7 +74,8 @@ FCCommandLine::FCCommandLine(void)
   // hide the botton from combo box
   setStyle(new FCWindowsStyle);
   ReadCmdList();
-  setFixedWidth(400);
+  //setFixedWidth(400);
+  setMinimumWidth(200);
   setAutoCompletion ( true );
   setValidator(new FCConsoleValidator(this));
   connect(lineEdit(), SIGNAL(returnPressed ()), this, SLOT(slotLaunchCommand()));

@@ -54,6 +54,7 @@ char format[1024];  //Warning! Can't go over 512 characters!!!
 
 
 FCConsole::FCConsole(void)
+	:_bVerbose(false)
 {
 
 }
@@ -69,6 +70,22 @@ FCConsole::~FCConsole()
 //**************************************************************************
 // methodes
 
+/**  
+ *  sets the console in a special mode
+ */
+void FCConsole::SetMode(ConsoleMode m)
+{
+	if(m && Verbose)
+		_bVerbose = true;
+}
+/**  
+ *  unsets the console from a special mode
+ */
+void FCConsole::UnsetMode(ConsoleMode m)
+{
+	if(m && Verbose)
+		_bVerbose = false;
+}
 
 /** Prints a Message
  *  This method issues a Message. 
@@ -161,11 +178,14 @@ void FCConsole::Error( const char *pMsg, ... )
 
 void FCConsole::Log( const char *pMsg, ... )
 {
-    va_list namelessVars;
-    va_start(namelessVars, pMsg);  // Get the "..." vars
-    vsprintf(format, pMsg, namelessVars);
-    va_end(namelessVars);
-	NotifyLog(format);
+	if (!_bVerbose)
+	{
+		va_list namelessVars;
+		va_start(namelessVars, pMsg);  // Get the "..." vars
+		vsprintf(format, pMsg, namelessVars);
+		va_end(namelessVars);
+		NotifyLog(format);
+	}
 }
 
 

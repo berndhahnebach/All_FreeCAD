@@ -250,13 +250,13 @@ void FCCmdQuit::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThi
 
 void FCCmdQuit::Activated(void)
 {
-  if (ApplicationWindow::getApplication()->GetActiveView() == NULL)
+  if (ApplicationWindow::Instance->GetActiveView() == NULL)
   {
     qApp->quit();
     return;
   }
 
-  int iButton = QMessageBox::warning(ApplicationWindow::getApplication(), 
+  int iButton = QMessageBox::warning(ApplicationWindow::Instance, 
                                      "FreeCAD", "Save changes to file?", "Yes", "No", "Cancel", 0);
   if (iButton == 1) // no
     qApp->quit();

@@ -88,6 +88,33 @@ SOURCE=.\freecad.rc
 # End Source File
 # Begin Source File
 
+SOURCE=.\FreeCADGuiInit.py
+
+!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+
+# Begin Custom Build - Building InitGuiScript.h
+InputPath=.\FreeCADGuiInit.py
+
+"InitGuiScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADGuiInit.py InitGuiScript.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+
+# Begin Custom Build - Building InitGuiScript.h
+InputPath=.\FreeCADGuiInit.py
+
+"InitGuiScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADGuiInit.py InitGuiScript.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\FreeCADInit.py
 
 !IF  "$(CFG)" == "FreeCADMain - Win32 Release"
@@ -134,6 +161,33 @@ InputPath=.\FreeCADInstall.py
 
 "InstallScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\FreeCADStartup.py
+
+!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+
+# Begin Custom Build - Building StartupScript.h
+InputPath=.\FreeCADStartup.py
+
+"StartupScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADStartup.py StartupScript.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+
+# Begin Custom Build - Building StartupScript.h
+InputPath=.\FreeCADStartup.py
+
+"StartupScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADStartup.py StartupScript.h
 
 # End Custom Build
 
