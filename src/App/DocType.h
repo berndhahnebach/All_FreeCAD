@@ -35,6 +35,9 @@
 
 class FCDocument;
 class FCPyObject;
+#include "../Base/PyExport.h"
+
+class DocTypeStdPy;
 
 namespace App {
 
@@ -67,7 +70,7 @@ public:
 	virtual const char *GetTypeName(void);
 
 	/// returns the python wrapper
-	virtual FCPyObject *GetPyObject(void)=0;
+	virtual Base::FCPyObject *GetPyObject(void)=0;
 	//@}
 
 	
@@ -85,7 +88,7 @@ public:
  *  If not choosed a special DocType (e.g. From a module) the 
  *  Standard DocType object get in place in the document
  */
-class AppExport DocTypeStd: public DocType
+class AppExport DocTypeStd: public DocType, public Base::PyHandler
 {
 public:
 
@@ -103,7 +106,7 @@ public:
 	virtual const char *GetTypeName(void);
 
 	/// returns the python wrapper
-	virtual FCPyObject *GetPyObject(void);
+	virtual Base::FCPyObject *GetPyObject(void);
 	//@}
 
 	/** @name Document handling  */
@@ -130,6 +133,9 @@ protected:
 	TDF_Label _lFeature;
 	int       _iNextFreeFeature;
 	TDF_Label _lActiveFeature;
+
+	/// The one and only python object of this DocTypeStd object
+	DocTypeStdPy *_pcDocTypeStdPy;
 
 };
 

@@ -80,7 +80,7 @@ class AppExport FCDocChanges
  *  Application. Only the Application can Open or destroy a document.
  *  @see FCLabel
  */
-class AppExport FCDocument :public FCPyExport, public FCSubject<const FCDocChanges&>
+class AppExport FCDocument :public Base::PyHandler, public FCSubject<const FCDocChanges&>
 {
 
 public:
@@ -172,7 +172,7 @@ public:
 	void ChangeStorageFormat(const short* sStorageFormat) ;
 
 
-	virtual FCPyObject *GetPyObject(void);
+	virtual Base::FCPyObject *GetPyObject(void);
 
 
 

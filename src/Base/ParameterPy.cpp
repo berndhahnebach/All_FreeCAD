@@ -63,7 +63,7 @@
 #include "Console.h"
 #include "PyExportImp.h"
 
-
+using namespace Base;
 
 //**************************************************************************
 //**************************************************************************
@@ -74,7 +74,7 @@
 
 /** The ParameterGrp wrapper class
  */
-class FCPyParameterGrp :public FCPyObject
+class FCPyParameterGrp :public Base::FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;

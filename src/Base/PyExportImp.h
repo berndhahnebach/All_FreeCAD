@@ -23,9 +23,6 @@
 
 #include<typeinfo>
 
-// forward
-class FCInterpreter;
-
 
 
 /** Python static class macro for definition
@@ -66,6 +63,8 @@ class FCInterpreter;
 //typedef const char * version;			// define "version"
 
 
+namespace Base
+{
 
 inline int streq(const char *A, const char *B)	// define "streq"
 { return strcmp(A,B) == 0;};
@@ -80,24 +79,26 @@ inline void Assert(int expr, char *msg)		// C++ assert
     };
 }
 
-
+}
 /*------------------------------
  * Python defines
 ------------------------------*/
 
 /// some basic python macros
-#define Py_NEWARGS 1			
+#define Py_NEWARGS 1
+/// return with no retrnvalue if nothin happens			
 #define Py_Return Py_INCREF(Py_None); return Py_None;	
-
+/// returns an error
 #define Py_Error(E, M)   {PyErr_SetString(E, M); return NULL;}
+/// checks on a condition and returns an error on failure
 #define Py_Try(F) {if (!(F)) return NULL;}
+/// assert which returns with an error on failure
 #define Py_Assert(A,E,M) {if (!(A)) {PyErr_SetString(E, M); return NULL;}}
 
-inline void Py_Fatal(char *M) 
-{
-	std::cout << M << std::endl; 
-	exit(-1);
-};
+
+/// Define the PyParent Object
+typedef PyTypeObject * PyParentObject;			
+
 
 /// This must be the first line of each PyC++ class
 #define Py_Header												\
@@ -127,8 +128,9 @@ inline void Py_Fatal(char *M)
 /*------------------------------
  * FCPyObject
 ------------------------------*/
-/// Define the PyParent Object
-typedef PyTypeObject * PyParentObject;			
+
+namespace Base
+{
 
 
 /** The FCPyObject class, exports the class as a python type
@@ -137,7 +139,20 @@ typedef PyTypeObject * PyParentObject;
  *  very importand because nearly all imported classes in FreeCAD
  *  are visible in python for Macro recording and Automation purpose.
  *  The FCDocument is a good expample for a exported class.
+ *  There are some conviniance macros to makes it easear to inheriting
+ *  from this class and defining new methodes exported to python.
+ *  PYFUNCDEF_D defines a new exported methode.
+ *  PYFUNCIMP_D defines the implementation of the new exported methode.
+ *  In the implementation you can use Py_Return, Py_Error, Py_Try and Py_Assert.
+ *  PYMETHODEDEF makes the entry in the python methodes tabel.
  *  @see FCDocument
+ *  @see PYFUNCDEF_D
+ *  @see PYFUNCIMP_D
+ *  @see PYMETHODEDEF
+ *  @see Py_Return
+ *  @see Py_Error
+ *  @see Py_Try
+ *  @see Py_Assert  
  */
 class BaseExport FCPyObject : public PyObject 
 {				
@@ -247,8 +262,35 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
  * @see PYFUNCDEF_D
  * @see FCPyObject
  */
-#define PYFUNCIMP_D(CLASS,DFUNC) PyObject* Y::X (PyObject *self,PyObject *args,PyObject *kwd)
+#define PYFUNCIMP_D(CLASS,DFUNC) PyObject* CLASS::DFUNC (PyObject *args)
 
+
+
+/** Python dynamic class macro for the methode list
+ * used to fill the methode list of a class derived from FCPyObject.
+ * Its a pure confiniance macro. You can also do
+ * it by hand if you want. It looks like that:
+ * \code
+ * PyMethodDef DocTypeStdPy::Methods[] = {
+ * 	{"AddFeature",    (PyCFunction) sAddFeature,    Py_NEWARGS},
+ * 	{"RemoveFeature", (PyCFunction) sRemoveFeature, Py_NEWARGS},
+ *	{NULL, NULL}		
+ * };
+ * \endcode
+ * instead of:
+ * \code
+ * PyMethodDef DocTypeStdPy::Methods[] = {
+ *	PYMETHODEDEF(AddFeature)
+ *	PYMETHODEDEF(RemoveFeature)
+ *	{NULL, NULL}		
+ * };
+ * \endcode
+ * see PYFUNCDEF_D for details 
+ * @param FUNC is the object method get defined
+ * @see PYFUNCDEF_D
+ * @see FCPyObject
+ */
+#define PYMETHODEDEF(FUNC)	{"FUNC",(PyCFunction) s##FUNC,Py_NEWARGS},
 
 
 /** Python buffer helper class (const char* -> char*)
@@ -295,5 +337,8 @@ public:
 
 	char *str;
 };
+
+
+} // namespace Base
 
 #endif

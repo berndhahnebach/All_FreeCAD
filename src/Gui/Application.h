@@ -40,11 +40,9 @@
 #include "../Base/Console.h"
 #include "../App/Application.h"
 
-#ifndef _PreComp_
-#	include <string>
-#	include <vector>
-#	include <qthread.h>
-#endif
+#include <string>
+#include <vector>
+#include <qthread.h>
 
 class FCGuiDocument;
 class QComboBox;

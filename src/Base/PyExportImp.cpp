@@ -44,6 +44,8 @@
 
 #include "PyExportImp.h"
 
+using namespace Base;
+
 /*------------------------------
  * FCPyObject Type		-- Every class, even the abstract one should have a Type
 ------------------------------*/

@@ -126,7 +126,7 @@ PyObject *FCTopoShape::_getattr(char *attr)				// __getattr__ function: note onl
 { 
 	try{
 		// Access the number of attributes at this label
-		if (streq(attr, "AttributeCount"))
+		if (Base::streq(attr, "AttributeCount"))
 		{
 			return Py_BuildValue("i", 1); 
 		}else
@@ -139,7 +139,7 @@ PyObject *FCTopoShape::_getattr(char *attr)				// __getattr__ function: note onl
 
 int FCTopoShape::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (streq(attr, "Real"))						// settable new state
+	if (Base::streq(attr, "Real"))						// settable new state
 		; 
 	else  
 		return FCPyObject::_setattr(attr, value);	// send up to parent

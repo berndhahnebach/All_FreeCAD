@@ -129,7 +129,7 @@ protected:
  *  Nodes and Leavs
  *  @see FCDocument
  */
-class AppExport FCLabelPy :public FCPyObject
+class AppExport FCLabelPy :public Base::FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;

@@ -27,26 +27,22 @@
 #endif
 
 // forward
-class FCInterpreter;
-class FCPyObject;
+//class FCInterpreter;
 typedef struct _object PyObject;
 
 
-/** The FCPythonExport class, exports the class as a python type
- *  FCPythonExport is the base class for all C++ classes which
- *  need to get exported into the python name space. Note: only
- *  the class is exported! Not objects! If you want export objects
- *  you need to use FCPyObject.
- *  \par
- *  A good example for exporting a class is the FCApplication. To
- *  minimize the work two macros are providet for method definition
- *  (PYFUNCDEF_S) and implementation (PYFUNCIMP_S).
- *  @see FCPyObject
- *  @see FCApplication
- *  @see PYFUNCDEF_S
- *  @see PYFUNCIMP_S
+namespace Base
+{
+class FCPyObject;
+
+/** The PyHandler class
+ *  This class is the base class of all FreeCAD classes
+ *  which export into the python space. This class handles the 
+ *  creation referencing of the python export object.
+ *  @see PyHandle
+ *  @
  */
-class BaseExport FCPyExport
+class BaseExport PyHandler
 {
 public:
 	void IncRef(void);
@@ -68,7 +64,7 @@ public:
  *  @see FCPyObject,FCDocument 
  */
 template <class HandledType>
-class FCPyHandle
+class PyHandle
 {
 public:
 	//**************************************************************************
@@ -79,7 +75,7 @@ public:
 	 *  instead using a overwriten new operator in the
 	 *  HandledType class! But is not easy to inforce!
 	 */
-	FCPyHandle(HandledType *ToHandel=0L)
+	PyHandle(HandledType *ToHandel=0L)
 		:_pHandels(ToHandel)
 	{
 		if(_pHandels)
@@ -87,7 +83,7 @@ public:
 	}
 
 	/// Copy constructor 
-	FCPyHandle(const FCPyHandle <HandledType> &ToHandel)
+	PyHandle(const PyHandle <HandledType> &ToHandel)
 		:_pHandels(ToHandel._pHandels)
 	{
 		if(_pHandels)
@@ -99,7 +95,7 @@ public:
 	 *  if was the last one, the referenced object to 
 	 *  destruct! 
 	 */
-	~FCPyHandle()
+	~PyHandle()
 	{
 		if(_pHandels)
 			_pHandels->DecRef();
@@ -109,7 +105,7 @@ public:
 	// operator implementation
 
 	// assign operator from a pointer
-	FCPyHandle <HandledType>  &operator=(const HandledType* other)
+	PyHandle <HandledType>  &operator=(const HandledType* other)
 	{		
 		if(_pHandels)
 			_pHandels->DecRef();
@@ -120,7 +116,7 @@ public:
 	}
 
 	// assign operator from a unknown pointer
-	FCPyHandle <HandledType>  &operator=(const void* other)
+	PyHandle <HandledType>  &operator=(const void* other)
 	{		
 		if(_pHandels)
 			_pHandels->DecRef();
@@ -135,7 +131,7 @@ public:
 	}
 
 	// assign operator from a handle
-	FCPyHandle <HandledType>  &operator=(const FCPyHandle <HandledType> &other)
+	PyHandle <HandledType>  &operator=(const PyHandle <HandledType> &other)
 	{
 		if(_pHandels)
 			_pHandels->DecRef();
@@ -172,13 +168,13 @@ public:
 	/** lower operator
 	 *  needed for sorting in maps and sets
 	 */
-	bool operator<(const FCPyHandle<HandledType> &other) const
+	bool operator<(const PyHandle<HandledType> &other) const
 	{
 		return _pHandels<&other;
 	}
 
 	/// equal operator
-	bool operator==(const FCPyHandle<HandledType> &other) const
+	bool operator==(const PyHandle<HandledType> &other) const
 	{
 		return _pHandels==&other;
 	}
@@ -240,6 +236,6 @@ private:
 };
 
 
-
+} // namespace Base
 
 #endif

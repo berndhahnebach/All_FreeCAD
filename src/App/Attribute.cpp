@@ -27,7 +27,7 @@
  *  This base class can represent every Attribute!
  *  @see FCDocument,FCLabel
  */
-class FCPyAttribute :public FCPyObject
+class FCPyAttribute :public Base::FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;

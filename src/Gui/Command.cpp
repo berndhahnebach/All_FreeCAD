@@ -739,7 +739,7 @@ FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
 std::string FCPythonCommand::GetResource(const char* sName)
 {
 	PyObject* pcTemp;
-	PyBuf ResName(sName);
+	Base::PyBuf ResName(sName);
 
 
 	// get the "MenuText" resource string

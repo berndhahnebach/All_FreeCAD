@@ -538,7 +538,7 @@ bool FCPyResource::connect(const char* sender, const char* signal, PyObject* cb)
 
 // ----------------------------------------------------
 
-FCSignalConnect::FCSignalConnect( FCPyObject* res, PyObject* cb, QObject* sender)
+FCSignalConnect::FCSignalConnect( Base::FCPyObject* res, PyObject* cb, QObject* sender)
  : myResource(res), myCallback(cb), mySender(sender)
 {
 }

@@ -23,6 +23,7 @@
 #define _Feature_h_
 
 #include "../Base/Factory.h"
+#include "../Base/PyExport.h"
 
 
 class TFunction_Logbook;
@@ -36,9 +37,9 @@ namespace App
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppExport Feature
+class AppExport Feature: public Base::PyHandler
 {
-protected:
+public:
 
 	/** @name methodes used for reclculation (update) */
 	//@{
@@ -65,7 +66,7 @@ protected:
 	virtual void Validate(TFunction_Logbook& log) const=0;
 	//@}
 
-	virtual FCPyObject *GetPyObject(void);
+	virtual Base::FCPyObject *GetPyObject(void);
 
 
 };

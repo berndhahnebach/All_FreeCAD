@@ -55,6 +55,38 @@ using namespace App;
 
 
 //===========================================================================
+// TpyeStdPy - Python wrapper 
+//===========================================================================
+
+/** The DocTypeStd python class 
+ */
+class AppExport DocTypeStdPy :public Base::FCPyObject
+{
+	/// always start with Py_Header
+	Py_Header;
+
+public:
+	DocTypeStdPy(DocTypeStd *pcDocTypeStd, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+
+	~DocTypeStdPy();
+
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	PYFUNCDEF_D(DocTypeStdPy,AddFeature)
+
+private:
+	DocTypeStd *_pcDocTypeStd;
+
+};
+
+
+//===========================================================================
 // DocType 
 //===========================================================================
 
@@ -91,6 +123,7 @@ const char *DocType::GetTypeName(void)
 DocTypeStd::DocTypeStd()
 : DocType()
 {
+	_pcDocTypeStdPy = new DocTypeStdPy(this);
 
 }
 
@@ -104,6 +137,14 @@ const char *DocTypeStd::GetTypeName(void)
 {
 	return "Std";
 }
+
+Base::FCPyObject *DocTypeStd::GetPyObject(void)
+{
+	return _pcDocTypeStdPy;
+}
+
+
+
 
 void DocTypeStd::Init (FCDocument *pcDoc)
 {
@@ -148,32 +189,6 @@ Feature *DocTypeStd::AddFeature(const char* sName)
 // TpyeStdPy - Python wrapper 
 //===========================================================================
 
-/** The DocTypeStd python class 
- */
-class AppExport DocTypeStdPy :public FCPyObject
-{
-	/// always start with Py_Header
-	Py_Header;
-
-public:
-	DocTypeStdPy(DocTypeStd *pcDocTypeStd, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~DocTypeStdPy();
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-
-
-private:
-	DocTypeStd *_pcDocTypeStd;
-
-};
 
 //--------------------------------------------------------------------------
 // Type structure
@@ -203,9 +218,9 @@ PyTypeObject DocTypeStdPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef DocTypeStdPy::Methods[] = {
-//  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-
-  {NULL, NULL}		/* Sentinel */
+//	{"AddFeature",         (PyCFunction) sAddFeature,         Py_NEWARGS},
+	PYMETHODEDEF(AddFeature)
+	{NULL, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -226,11 +241,6 @@ PyObject *DocTypeStdPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrap
 {
   //return new DocTypeStdPy(name, n, tau, gamma);			// Make new Python-able object
 	return 0;
-}
-
-FCPyObject *DocTypeStd::GetPyObject(void)
-{
-	return new DocTypeStdPy(this);
 }
 
 
@@ -256,7 +266,7 @@ PyObject *DocTypeStdPy::_repr(void)
 PyObject *DocTypeStdPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	try{
-		if (streq(attr, "XXXX"))						
+		if (Base::streq(attr, "XXXX"))						
 			return Py_BuildValue("i",1); 
 		else
 			_getattr_up(FCPyObject); 						
@@ -267,7 +277,7 @@ PyObject *DocTypeStdPy::_getattr(char *attr)				// __getattr__ function: note on
 
 int DocTypeStdPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (streq(attr, "XXXX")){						// settable new state
+	if (Base::streq(attr, "XXXX")){						// settable new state
 		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
 		return 1;
 	}else  
@@ -286,3 +296,12 @@ PyObject *DocTypeStdPy::PyUndo(PyObject *args)
 	Py_Return; 
 } 
 */
+
+PYFUNCIMP_D(DocTypeStdPy,AddFeature)
+{
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	return _pcDocTypeStd->AddFeature(pstr)->GetPyObject();
+}

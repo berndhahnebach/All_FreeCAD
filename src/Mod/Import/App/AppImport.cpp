@@ -40,7 +40,7 @@ Info(PyObject *self, PyObject *args)              /* self unused in modules */
     
 	strResult += "The Import module\n";
 
-    PyBuf bufTemp(strResult.c_str());
+	Base::PyBuf bufTemp(strResult.c_str());
 	return Py_BuildValue("s", bufTemp.str);   /* convert C -> Python */
     
 }

@@ -31,7 +31,7 @@
 #include "DocTypeAttr.h"
 
 using Base::Console;
-
+using Base::streq;
 using namespace App;
 
 
@@ -41,7 +41,7 @@ using namespace App;
 
 /** The Document python class 
  */
-class AppExport FCDocumentPy :public FCPyObject
+class AppExport FCDocumentPy :public Base::FCPyObject
 {
 	/// always start with Py_Header
 	Py_Header;
@@ -157,7 +157,7 @@ DocType *FCDocument::GetDocType(void)
 void FCDocument::SaveAs (const char* Name)
 {
 	// creat a non const buffer
-	PyBuf name(Name);
+	Base::PyBuf name(Name);
 
 	Handle(FCApplicationOCC) hApp = GetApplication().GetOCCApp();
 	if(hApp->SaveAs(_hDoc,(Standard_CString)name.str)==CDF_SS_Failure) 
@@ -352,7 +352,7 @@ FCLabel *FCDocument::HasLabel(TDF_Label cLabel)
 
 */
 
-FCPyObject * FCDocument::GetPyObject(void)
+Base::FCPyObject * FCDocument::GetPyObject(void)
 {
 	return _pcDocPy;
 }

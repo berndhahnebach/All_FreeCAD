@@ -29,6 +29,7 @@
 #include "Function.h"
 
 using Base::Console;
+using Base::streq;
 
 
 /*
@@ -242,7 +243,7 @@ PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only 
 { 
 	try{
 		// Access the number of attributes at this label
-		if (streq(attr, "AttributeCount"))						
+		if (Base::streq(attr, "AttributeCount"))						
 			return Py_BuildValue("i", _cLabel.NbAttributes()); 
 		else if (streq(attr, "ChildrenCount"))					
 			return Py_BuildValue("i", _cLabel.NbChildren()); 

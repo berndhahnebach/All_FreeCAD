@@ -45,14 +45,15 @@
 #include "PyExport.h"
 #include "PyExportImp.h"
 
+using namespace Base;
 
 
-void FCPyExport::IncRef(void)
+void PyHandler::IncRef(void)
 {
 	GetPyObject()->_INCREF();
 }
 
-void FCPyExport::DecRef(void)
+void PyHandler::DecRef(void)
 {
 	GetPyObject()->_DECREF();
 }

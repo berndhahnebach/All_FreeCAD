@@ -142,7 +142,7 @@ class FCContainerDialog : public QDialog
 
 // ----------------------------------------------------
 
-class FCPyResource : public FCPyObject
+class FCPyResource : public Base::FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -180,7 +180,7 @@ class FCSignalConnect : public QObject
 	Q_OBJECT
 
 	public:
-		FCSignalConnect( FCPyObject* res, PyObject* cb, QObject* sender);
+		FCSignalConnect( Base::FCPyObject* res, PyObject* cb, QObject* sender);
 		~FCSignalConnect();
 
 	public slots:

@@ -31,7 +31,7 @@ using namespace App;
 
 /** The DocTypeStd python class 
  */
-class AppExport FeaturePy :public FCPyObject
+class AppExport FeaturePy :public Base::FCPyObject
 {
 	/// always start with Py_Header
 	Py_Header;
@@ -109,7 +109,7 @@ PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 	return 0;
 }
 
-FCPyObject *Feature::GetPyObject(void)
+Base::FCPyObject *Feature::GetPyObject(void)
 {
 	return new FeaturePy(this);
 }
@@ -137,7 +137,7 @@ PyObject *FeaturePy::_repr(void)
 PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	try{
-		if (streq(attr, "XXXX"))						
+		if (Base::streq(attr, "XXXX"))						
 			return Py_BuildValue("i",1); 
 		else
 			_getattr_up(FCPyObject); 						
@@ -148,7 +148,7 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (streq(attr, "XXXX")){						// settable new state
+	if (Base::streq(attr, "XXXX")){						// settable new state
 		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
 		return 1;
 	}else  

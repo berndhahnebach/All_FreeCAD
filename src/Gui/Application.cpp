@@ -847,12 +847,12 @@ void ApplicationWindow::keyReleaseEvent ( QKeyEvent * e )
 void ApplicationWindow::ActivateWorkbench(const char* name)
 {
 	// net buffer because of char* <-> const char*
-	PyBuf Name(name);
+	Base::PyBuf Name(name);
 
 	// close old workbench
 	if(d->_cActiveWorkbenchName != "")
 	{
-		PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
+		Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
 		PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
 		Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
