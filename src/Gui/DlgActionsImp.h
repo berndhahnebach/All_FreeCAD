@@ -25,7 +25,6 @@
 #define DLGACTIONS_IMP_H
 
 #include "DlgActions.h"
-#include "PropertyPage.h"
 
 class FCCommand;
 
@@ -39,7 +38,7 @@ namespace Dialog {
  * @see FCCommand
  * \author Werner Mayer
  */
-class DlgCustomActionsImp : public DlgCustomActionsBase, public Gui::Dialog::PropertyPage
+class DlgCustomActionsImp : public DlgCustomActionsBase
 { 
 Q_OBJECT
 

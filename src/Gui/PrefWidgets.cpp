@@ -34,18 +34,11 @@
 using Base::Console;
 using namespace Gui;
 
-/** Constructs a preference widget with the name \a name. If \a bInstall
- * is true a PrefWidgetHandler is installed. By default \a bInstall is set 
- * to true.
+/** Constructs a preference widget. 
  */
-PrefWidget::PrefWidget( bool bInstall )
- : WindowParameter(""), pHandler(0L)
+PrefWidget::PrefWidget()
+ : WindowParameter("")
 {
-  if (bInstall)
-  {
-    // install a handler for automation stuff
-    pHandler = new PrefWidgetHandler(this);
-  }
 }
 
 /**
@@ -55,7 +48,6 @@ PrefWidget::~PrefWidget()
 {
   if (getWindowParameter().IsValid())
     getWindowParameter()->Detach(this);
-  delete pHandler;
 }
 
 /** Sets the preference name to \a name. */
@@ -98,19 +90,6 @@ QCString PrefWidget::paramGrpPath() const
   return m_sPrefGrp;
 }
 
-/** Returns the last installed handler. */
-PrefWidgetHandler* PrefWidget::getHandler()
-{
-  return pHandler;
-}
-
-/** Installs a new handler \a h. */
-void PrefWidget::installHandler(PrefWidgetHandler* h)
-{
-  delete pHandler;
-  pHandler = h;
-}
-
 /** 
  * This method is called if one ore more values in the parameter settings are changed 
  * where getParamGrp() points to. 
@@ -124,39 +103,37 @@ void PrefWidget::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
     restorePreferences();
 }
 
-// --------------------------------------------------------------------
-
-PrefWidgetHandler::PrefWidgetHandler( PrefWidget* p ) : pPref(p)
-{
-}
-
 /**
- * Saves the current preferences of the managed preference widget and emits 
- * the saved() signal..
+ * Saves the current preferences of the widget.
  * All preference widget attached to the same parameter group are notified.
  */
-void PrefWidgetHandler::onSave()
+void PrefWidget::onSave()
 {
-  pPref->savePreferences();
-  if ( pPref->getWindowParameter().IsValid() )
-    pPref->getWindowParameter()->Notify( pPref->entryName() );
-
-  emit saved();
+  savePreferences();
+  if ( getWindowParameter().IsValid() )
+    getWindowParameter()->Notify( entryName() );
+#ifdef FC_DEBUG
+  else
+    qFatal( "No parameter group specified!" );
+#endif
 }
 
 /**
- * Restores the preferences of the managed widget and emits the restored() signal.
+ * Restores the preferences of the widget.
  */
-void PrefWidgetHandler::onRestore()
+void PrefWidget::onRestore()
 {
-  pPref->restorePreferences();
-  emit restored();
+#ifdef FC_DEBUG
+  if ( getWindowParameter().IsNull() )
+    qWarning( "No parameter group specified!" );
+#endif
+  restorePreferences();
 }
 
 // --------------------------------------------------------------------
 
 PrefSpinBox::PrefSpinBox ( QWidget * parent, const char * name )
-  : SpinBox(parent, name), PrefWidget(name)
+  : SpinBox(parent, name), PrefWidget()
 {
 }
 
@@ -210,7 +187,7 @@ void PrefSpinBox::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefFloatSpinBox::PrefFloatSpinBox ( QWidget * parent, const char * name )
-  : FloatSpinBox(parent, name), PrefWidget(name)
+  : FloatSpinBox(parent, name), PrefWidget()
 {
 }
 
@@ -264,7 +241,7 @@ void PrefFloatSpinBox::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefLineEdit::PrefLineEdit ( QWidget * parent, const char * name )
-  : QLineEdit(parent, name), PrefWidget(name)
+  : QLineEdit(parent, name), PrefWidget()
 {
 }
 
@@ -318,7 +295,7 @@ void PrefLineEdit::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefFileChooser::PrefFileChooser ( QWidget * parent, const char * name )
-  : FileChooser(parent, name), PrefWidget(name)
+  : FileChooser(parent, name), PrefWidget()
 {
 }
 
@@ -372,7 +349,7 @@ void PrefFileChooser::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefComboBox::PrefComboBox ( QWidget * parent, const char * name )
-  : QComboBox(parent, name), PrefWidget(name)
+  : QComboBox(parent, name), PrefWidget()
 {
 }
 
@@ -446,7 +423,7 @@ void PrefComboBox::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefListBox::PrefListBox ( QWidget * parent, const char * name, WFlags f )
-  : QListBox(parent, name, f), PrefWidget(name)
+  : QListBox(parent, name, f), PrefWidget()
 {
 }
 
@@ -520,7 +497,7 @@ void PrefListBox::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefCheckBox::PrefCheckBox ( QWidget * parent, const char * name )
-  : QCheckBox(parent, name), PrefWidget(name)
+  : QCheckBox(parent, name), PrefWidget()
 {
   setText( name );
 }
@@ -575,7 +552,7 @@ void PrefCheckBox::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefRadioButton::PrefRadioButton ( QWidget * parent, const char * name )
-  : QRadioButton(parent, name), PrefWidget(name)
+  : QRadioButton(parent, name), PrefWidget()
 {
   setText( name );
 }
@@ -630,7 +607,7 @@ void PrefRadioButton::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefSlider::PrefSlider ( QWidget * parent, const char * name )
-  : QSlider(parent, name), PrefWidget(name)
+  : QSlider(parent, name), PrefWidget()
 {
 }
 
@@ -695,7 +672,7 @@ void PrefSlider::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefColorButton::PrefColorButton ( QWidget * parent, const char * name )
-  : ColorButton(parent, name), PrefWidget(name)
+  : ColorButton(parent, name), PrefWidget()
 {
 }
 

@@ -77,7 +77,7 @@ CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, 
   checkBox->setText( msg );
   checkBox->setEntryName( entry.latin1() );
   checkBox->setParamGrpPath( path.latin1() );
-  checkBox->getHandler()->onRestore();
+  checkBox->onRestore();
 
   // if checked throw an exception to avoid to show
   // (exception is caught in the calling static function)
@@ -99,7 +99,7 @@ CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, 
 CheckMessageBox::~CheckMessageBox()
 {
   if (checkBox)
-    checkBox->getHandler()->onSave();
+    checkBox->onSave();
   delete checkBox;
   delete layout;
 }

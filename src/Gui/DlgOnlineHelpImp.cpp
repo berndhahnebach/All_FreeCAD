@@ -27,6 +27,7 @@
 #endif
 
 #include "DlgOnlineHelpImp.h"
+#include "PrefWidgets.h"
 
 #include "../Base/Parameter.h"
 #include "../App/Application.h"
@@ -43,17 +44,11 @@ using namespace Gui::Dialog;
 DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl )
 : DlgOnlineHelpBase(parent, name, fl)
 {
-  append(UseProxy->getHandler());
-  append(DownloadURL->getHandler());
-  append(PrefLineEdit2->getHandler());
-  append(prefStartPage->getHandler());
   prefStartPage->setFilter( "All Html files (*.html *.htm)" );
   if ( prefStartPage->fileName().isEmpty() )
   {
     prefStartPage->setFileName( getStartpage() );
   }
-
-  append(prefExtBrowser->getHandler());
 }
 
 /** 
@@ -84,6 +79,24 @@ QString DlgOnlineHelpImp::getStartpage()
   }
 
   return home;
+}
+
+void DlgOnlineHelpImp::saveSettings()
+{
+  PrefLineEdit2->onSave();
+  UseProxy->onSave();
+  DownloadURL->onSave();
+  prefExtBrowser->onSave();
+  prefStartPage->onSave();
+}
+
+void DlgOnlineHelpImp::loadSettings()
+{
+  PrefLineEdit2->onRestore();
+  UseProxy->onRestore();
+  DownloadURL->onRestore();
+  prefExtBrowser->onRestore();
+  prefStartPage->onRestore();
 }
 
 #include "DlgOnlineHelp.cpp"

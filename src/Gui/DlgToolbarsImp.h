@@ -25,7 +25,6 @@
 #define DLGTOOLBARS_IMP_H
 
 #include "DlgToolbars.h"
-#include "PropertyPage.h"
 
 #ifndef _PreComp_
 # include <map>
@@ -35,7 +34,7 @@
 class FCCommand;
 
 namespace Gui {
-class Gui::CustomToolBar;
+class CustomToolBar;
 
 namespace Dialog {
 
@@ -47,7 +46,7 @@ namespace Dialog {
  * 
  * \author Werner Mayer
  */
-class DlgCustomToolbars : public DlgCustomToolbarsBase, public Gui::Dialog::PropertyPage
+class DlgCustomToolbars : public DlgCustomToolbarsBase
 { 
   Q_OBJECT
 

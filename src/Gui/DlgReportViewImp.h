@@ -25,7 +25,6 @@
 #define DLG_REPORT_VIEW_IMP
 
 #include "DlgReportView.h"
-#include "PropertyPage.h"
 
 #ifndef _PreComp_
 #endif
@@ -35,14 +34,17 @@ namespace Dialog {
 
 /** The DlgReportViewImp class implements the available settings for the 
  * report output window to change.
- *  @see PreferencePage
  * \author Werner Mayer
  */
-class DlgReportViewImp : public DlgReportViewBase, public Gui::Dialog::PreferencePage
+class DlgReportViewImp : public DlgReportViewBase
 {
 public:
   DlgReportViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgReportViewImp();
+
+protected:
+  void saveSettings();
+  void loadSettings();
 };
 
 } // namespace Dialog

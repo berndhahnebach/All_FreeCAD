@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FC_PREF_WIDGETS_H__
-#define __FC_PREF_WIDGETS_H__
+#ifndef PREF_WIDGETS_H__
+#define PREF_WIDGETS_H__
 
 #include "../Base/Parameter.h"
 #include "Widgets.h"
@@ -47,29 +47,33 @@ class FCCommandManager;
 
 namespace Gui {
 class WidgetFactoryInst;
-class PrefWidgetHandler;
 
 /** The preference widget class.
  * If you want to extend a QWidget class to save/restore its data
  * you just have to derive from this class and implement the methods 
  * restorePreferences() and savePreferences().
  *
- * @see PrefWidgetHandler
+ * To restore and save the settings of any widgets in own dialogs you have
+ * call onRestore() e.g. in the dialog's constructor and call onSave() e.g.
+ * in accept() for each widget you want to enable this mechanism. 
+ * 
+ * For more information of how to use these widgets in normal container widgets 
+ * which are again in a dialog refer to the description of Gui::Dialog::DlgPreferencesImp.
+ *
  * \author Werner Mayer
  */
 class GuiExport PrefWidget : public WindowParameter
 {
 public:
   virtual void setEntryName( const QCString& name );
-  QCString entryName() const;
+  virtual QCString entryName() const;
 
   virtual void setParamGrpPath( const QCString& path );
-  QCString paramGrpPath() const;
-
-  void installHandler(PrefWidgetHandler*);
-  PrefWidgetHandler* getHandler();
+  virtual QCString paramGrpPath() const;
 
   virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
+  void onSave();
+  void onRestore();
 
 protected:
   /** Restores the preferences
@@ -81,115 +85,15 @@ protected:
    */
   virtual void savePreferences()    = 0;
 
-  PrefWidget( bool bInstall=true );
+  PrefWidget();
   virtual ~PrefWidget();
 
 private:
-  PrefWidgetHandler* pHandler;
   QCString m_sPrefName;
   QCString m_sPrefGrp;
 
   // friends
   friend class Gui::WidgetFactoryInst;
-  friend class PrefWidgetHandler;
-};
-
-/** The PrefWidgetHandler class allows you to connect the slots
- * @ref onSave() and @ref onRestore() to signals of your classes.
- * @see PrefWidget
- * \author Werner Mayer
- */
-class GuiExport PrefWidgetHandler : public QObject
-{
-  Q_OBJECT
-
-protected:
-  PrefWidgetHandler( PrefWidget* p );
-
-public slots:
-  virtual void onSave();
-  virtual void onRestore();
-
-signals:
-  /** This signal is emitted after onSave() was called */
-  void saved();
-  /** This signal is emitted after onRestore() was called */
-  void restored();
-
-protected:
-  /** Pointer to PrefWidget object managed by this class. */
-  PrefWidget* pPref; 
-
-  //friends
-  friend class PrefWidget;
-  friend class PrefWidgetManager;
-};
-
-/** Container class for storing several @ref PrefWidgetHandler objects.
- * To restore and save the settings of any widgets in own dialogs you have to derive
- * your dialog class from PrefWidgetManager and call append() e.g. in the dialog's 
- * constructor for each widget you want to enable this mechanism.
- *
- * At destruction time you can call PrefWidgetHandler::onSave() for each registered handler
- * to save the preferences of the used widgets.
- * You also have the possibility to connect the onSave() slot to any signals you prefer.
- *
- * \code
- * class MyDialog : public QDialog, public PrefWidgetManager
- * {
- * public:
- *    MyDialog( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 )
- *    {
- *       // register the widgets' handlers to load and save their preferences
- *       append( _listBox ->getHandler() );
- *       append( _listEdit->getHandler() );
- *    }
- *
- *    ~MyDialog()
- *    {
- *      std::vector<PrefWidgetHandler*> handler(getHandlers());
- *      for ( std::vector<PrefWidgetHandler*>::iterator it = handler.begin(); it != handler.end(); ++it)
- *      {
- *        (*it)->onSave();
- *      }
- *    }
- * ...
- *   PrefListBox*  _listBox;
- *   PrefLineEdit* _lineEdit;
- * };
- * \endcode
- * @see Gui::Dialog::DlgPreferencesImp
- *
- * \author Werner Mayer
- */
-class GuiExport PrefWidgetManager
-{
-public:
-  std::vector<PrefWidgetHandler*> getHandlers()
-  {
-    return m_aHandlers;
-  }
-
-  /**
-   * Appends the PrefWidgetHandler \a handler and restores the preferences
-   * of the widget managed by \a handler.
-   */
-  void append( PrefWidgetHandler* handler )
-  {
-    if (handler)
-    {
-#ifdef FC_DEBUG
-      if (handler->pPref->getWindowParameter().IsNull())
-        qFatal( "No parameter group specified!" );
-#endif
-      handler->onRestore();
-      m_aHandlers.push_back(handler);
-    }
-  }
-
-protected:
-  /** Vector of all registered handlers. */
-  std::vector<PrefWidgetHandler*> m_aHandlers;
 };
 
 /** The PrefSpinBox class.

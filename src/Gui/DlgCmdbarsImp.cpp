@@ -30,6 +30,7 @@
 #include "DlgCmdbarsImp.h"
 #include "Application.h"
 #include "Command.h"
+#include "CustomWidgets.h"
 
 using namespace Gui::Dialog;
 

@@ -36,19 +36,23 @@ namespace Dialog {
 /**
  * This class implements a dialog containing several preference pages.
  * 
- * Each preference page can be created by the Qt Designer selecting the "Widget" item
- * in the project dialog.
- * For automation of saving or loading the settings of the elements of such a page
- * (e.g. combo boxes, line edits, check boxes, ...) you can make use of the classes
- * inherited by @ref PrefWidget class like:
- * PrefSpinBox, PrefLineEdit, PrefComboBox, PrefListBox, PrefCheckBox, PrefRadioButton and
- * PrefSlider
+ * To append your own page you just have to take note of these points:
  *
- * The implementation class must inherit from the Qt-generated class and @ref PreferencePage.
- * For each element inside your page you want to save or load its settings automatically, you 
- * have to call append(<objectname>->getHandler()) in the constructor of your class. Furthermore
- * you have to make sure to have specified the "prefEntry" and "prefPath" properties for each element
- * in the Qt designer.
+ * \li Each preference page can be created by the Qt Designer selecting the "Widget" item
+ * in the project dialog.
+ *
+ * \li To save or load the widgets' settings automatically (e.g. combo boxes, line edits, 
+ * check boxes, ...) you can make use of the classes inherited from @ref PrefWidget such as:
+ * PrefSpinBox, PrefLineEdit, PrefComboBox, PrefListBox, PrefCheckBox, PrefRadioButton and
+ * PrefSlider. If you have compiled and installed the library under src/Tools/plugins/widgets
+ * to QTDIR/plugins/designer you should see the new category "Preferences". 
+ * Moreover you have to make sure to have specified the "prefEntry" and "prefPath" properties for each 
+ * preference widget you have used inside your form in Qt Designer.
+ *
+ * \li For each widget inside your page - you want to save or load - you have to call 
+ * <objectname>->onSave() or <objectname>->onRestore(). The best way to this is either to 
+ * define the protected slots saveSettings() and loadSettings() in your form and overwrite
+ * them in a subclass or define these slots in this subclass diretly. 
  *
  * See the example below for more details:
  *
@@ -70,19 +74,33 @@ namespace Dialog {
  *    PrefCheckBox* myCheckBox;
  * };
  * \endcode
- * In the derived class you just have to append these elements
+ * In the derived class you just have to implement the methods saveSettings() and loadSettings()
+ * in the following way:.
  * \code
- *  class MyPrefPageImp : public MyPrefPage, public Gui::Dialog::PreferencePage
+ *  class MyPrefPageImp : public MyPrefPage
  *  {
  *  public:
  *    MyPrefPageImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 )
  *    {
- *      append( myLineEdit->getHandler() );
- *      append( myCheckBox->getHandler() );
+ *    }
+ *  protected slots:
+ *    void saveSettings()
+ *    {
+ *      myLineEdit->onSave();
+ *      myCheckBox->onSave();
+ *    }
+ *    void loadSettings();
+ *    {
+ *      myLineEdit->onRestore();
+ *      myCheckBox->onRestore();
  *    }
  * };
  * \endcode
  *
+ * \li Now you have to make the widget factory to know your class by adding the line
+ * new PrefPageProducer<MyPrefPageImp>  ( QObject::tr( "My category"  ) );
+ *
+ * \see PrefWidget
  * \author Werner Mayer, Jürgen Riegel
  */
 class GuiExport DlgPreferencesImp : public DlgPreferences
@@ -95,6 +113,10 @@ public:
   DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgPreferencesImp();
 
+protected:
+  void accept();
+  void apply();
+
 private:
   /** @name for internal use only */
   //@{
@@ -104,7 +126,6 @@ private:
   void addPreferencePage( QWidget* page );
   QTabWidget* getPreferenceGroup(int id);
   QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-  void connectWidget(QWidget* page) const;
   //@}
 
 private:

@@ -24,6 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qobjectlist.h>
+# include <qwidget.h>
+# include <qvaluelist.h>
 #endif
 
 #include "PropertyPage.h"
@@ -56,19 +59,19 @@ void PropertyPage::reset()
 {
 }
 
-/** Returns whether the page was modified or not */
+/** Returns whether the page was modified or not. */
 bool PropertyPage::isModified()
 {
   return bChanged;
 }
 
-/** Sets the page to be modified */
+/** Sets the page to be modified. */
 void PropertyPage::setModified(bool b)
 {
   bChanged = b;
 }
 
-/** Applies all changes calling @ref apply() and reset the modified state */
+/** Applies all changes calling @ref apply() and resets the modified state. */
 void PropertyPage::onApply()
 {
   if (isModified())
@@ -77,7 +80,7 @@ void PropertyPage::onApply()
   setModified(false);
 }
 
-/** Discards all changes calling @ref apply() and reset the modified state */
+/** Discards all changes calling @ref cancel() and resets the modified state. */
 void PropertyPage::onCancel()
 {
   if (isModified())
@@ -87,14 +90,8 @@ void PropertyPage::onCancel()
   }
 }
 
-// -----------------------------------------------------------------
-
-/** Construction */
-PreferencePage::PreferencePage()
+/** Resets to the default values. */
+void PropertyPage::onReset()
 {
-}
-
-/** Destruction */
-PreferencePage::~PreferencePage()
-{
+  reset();
 }

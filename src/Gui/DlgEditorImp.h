@@ -25,7 +25,6 @@
 #define DLG_EDITOR_IMP_H
 
 #include "DlgEditor.h"
-#include "PropertyPage.h"
 
 namespace Gui {
 class PythonSyntaxHighlighter;
@@ -34,11 +33,9 @@ namespace Dialog {
 
 /** This class implements a preferences page for the editor settings.
  *  Here you can change differnt color settings and font for the editors.
- *  @see class PreferencePage
- *  @see class PrefWidget
  *  \author Werner Mayer
  */
-class DlgSettingsEditorImp : public DlgEditorSettingsBase, public PreferencePage, public PrefWidget
+class DlgSettingsEditorImp : public DlgEditorSettingsBase
 {
 Q_OBJECT
 
@@ -46,15 +43,13 @@ public:
   DlgSettingsEditorImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgSettingsEditorImp();
 
-  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
-
 public slots:
   void onDisplayColor(const QString& name);
   void onChosenColor();
 
-private:
-  void restorePreferences();
-  void savePreferences();
+protected:
+  void saveSettings();
+  void loadSettings();
 
 private:
   std::map<QString, long> _mColors; /**< Color map containing color settings */

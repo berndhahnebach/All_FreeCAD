@@ -28,6 +28,7 @@
 #endif
 
 #include "DlgEditorImp.h"
+#include "PrefWidgets.h"
 #include "PythonEditor.h"
 
 using namespace Gui;
@@ -45,13 +46,6 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 {
   pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
 
-  setParamGrpPath("Editor");
-  setEntryName("Editor");
-
-  append(EnableLineNumber->getHandler());
-  append(EnableFolding->getHandler());
-  append(getHandler()); // this dialog
-
   connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
   connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
   ListBox1->setCurrentItem(0);
@@ -62,48 +56,6 @@ DlgSettingsEditorImp::~DlgSettingsEditorImp()
 {
   // no need to delete child widgets, Qt does it all for us
   delete pythonSyntax;
-}
-
-/** No implementation */
-void DlgSettingsEditorImp::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
-{
-  // just do nothing
-}
-
-/** Restores the color map */
-void DlgSettingsEditorImp::restorePreferences()
-{
-  QStringList names = GetDefCol().keys();
-
-  for ( QStringList::Iterator it = names.begin(); it!=names.end(); ++it)
-  {
-    _mColors[*it] = getWindowParameter()->GetInt( (*it).latin1(), GetDefCol().color(*it));
-    long col = GetDefCol().color( *it );
-    QColor color;
-    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    pythonSyntax->setColor( *it, color );
-  }
-
-  // fill up font styles
-  //
-  QFontDatabase fdb;
-  QStringList familyNames = fdb.families( FALSE );
-  FontDB->insertStringList( familyNames );
-
-  FontSize->setCurrentText( getWindowParameter()->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
-  FontDB  ->setCurrentText( getWindowParameter()->GetASCII( "Font", "Courier" ).c_str() );
-}
-
-/** Saves the color map */
-void DlgSettingsEditorImp::savePreferences()
-{
-  for (std::map<QString, long>::iterator it = _mColors.begin(); it!=_mColors.end(); ++it)
-  {
-    getWindowParameter()->SetInt(it->first.latin1(), it->second);
-  }
-
-  getWindowParameter()->SetASCII( "FontSize", FontSize->currentText().latin1() );
-  getWindowParameter()->SetASCII( "Font", FontDB->currentText().latin1() );
 }
 
 /** Searches for the corresponding color value to \e name in @ref DefColorMap and
@@ -131,6 +83,50 @@ void DlgSettingsEditorImp::onChosenColor()
   
   _mColors[text] = lcol;
   pythonSyntax->setColor( text, col );
+}
+
+void DlgSettingsEditorImp::saveSettings()
+{
+  EnableLineNumber->onSave();
+  EnableFolding->onSave();
+
+  // Saves the color map
+  FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("Editor");
+  for (std::map<QString, long>::iterator it = _mColors.begin(); it!=_mColors.end(); ++it)
+  {
+    hGrp->SetInt(it->first.latin1(), it->second);
+  }
+
+  hGrp->SetASCII( "FontSize", FontSize->currentText().latin1() );
+  hGrp->SetASCII( "Font", FontDB->currentText().latin1() );
+}
+
+void DlgSettingsEditorImp::loadSettings()
+{
+  EnableLineNumber->onRestore();
+  EnableFolding->onRestore();
+
+  // Restores the color map
+  QStringList names = GetDefCol().keys();
+
+  FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("Editor");
+  for ( QStringList::Iterator it = names.begin(); it!=names.end(); ++it)
+  {
+    _mColors[*it] = hGrp->GetInt( (*it).latin1(), GetDefCol().color(*it));
+    long col = GetDefCol().color( *it );
+    QColor color;
+    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    pythonSyntax->setColor( *it, color );
+  }
+
+  // fill up font styles
+  //
+  QFontDatabase fdb;
+  QStringList familyNames = fdb.families( FALSE );
+  FontDB->insertStringList( familyNames );
+
+  FontSize->setCurrentText( hGrp->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
+  FontDB  ->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
 }
 
 // -------------------------------------------------------------------

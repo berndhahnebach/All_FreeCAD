@@ -25,7 +25,6 @@
 #define __DLGSETTINGS3DVIEWIMP_H
 
 #include "DlgSettings3DView.h"
-#include "PropertyPage.h"
 
 namespace Gui {
 namespace Dialog {
@@ -35,7 +34,7 @@ namespace Dialog {
  * for the Inventor viewer.
  * \author Jürgen Riegel
  */
-class DlgSettings3DViewImp : public DlgSettings3DView, public Gui::Dialog::PreferencePage
+class DlgSettings3DViewImp : public DlgSettings3DView
 { 
   Q_OBJECT
 
@@ -45,6 +44,8 @@ public:
 
 protected:
   virtual void warnInventor(bool);
+  void saveSettings();
+  void loadSettings();
 };
 
 } // namespace Dialog

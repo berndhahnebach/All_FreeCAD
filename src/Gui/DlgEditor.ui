@@ -405,5 +405,14 @@ foo(0, 20)
     <tabstop>EnableFolding</tabstop>
     <tabstop>textEdit1</tabstop>
 </tabstops>
+<slots>
+    <slot access="protected">saveSettings()</slot>
+    <slot access="protected">loadSettings()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+</includehints>
 </UI>

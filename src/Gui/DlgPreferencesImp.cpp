@@ -35,7 +35,7 @@
 # include <qwidgetstack.h>
 # include <qtabwidget.h>
 # include <qpainter.h>
-# include <qpushbutton.h>
+# include <qmetaobject.h>
 #endif
 
 #include "DlgPreferencesImp.h"
@@ -187,7 +187,9 @@ void DlgPreferencesImp::addPreferencePage( QWidget* page )
 
     page->hide();
 
-    connectWidget(page);
+  	int index = page->metaObject()->findSlot( "loadSettings()", TRUE );
+	  if ( index >= 0 )
+		  page->qt_invoke( index, 0 );
   }
 }
 
@@ -227,21 +229,29 @@ void DlgPreferencesImp::onPrefPageClicked(int item)
   tabWidgetStack->raiseWidget( _pCurTab );
 }
 
-void DlgPreferencesImp::connectWidget(QWidget* page) const
+void DlgPreferencesImp::accept()
 {
-  if (dynamic_cast<PreferencePage*>(page) != NULL)
+  apply();
+  DlgPreferences::accept();
+}
+
+void DlgPreferencesImp::apply()
+{
+  for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
   {
-    // and its preference widgets
-    std::vector<PrefWidgetHandler*> aHandlers = dynamic_cast<PreferencePage*>(page)->getHandlers();
-    for (std::vector<PrefWidgetHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
+    QTabWidget* tab = getPreferenceGroup( it.data() );
+    int ct = tab->count();
+
+    for ( int i=0; i<ct; i++ )
     {
-      connect(buttonOk,    SIGNAL(clicked()), *it, SLOT(onSave()));//OK
-      connect(buttonApply, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply
+      QWidget* page = tab->page( i );
+  		int index = page->metaObject()->findSlot( "saveSettings()", TRUE );
+	  	if ( index >= 0 )
+		    page->qt_invoke( index, 0 );
     }
   }
 }
 
-// compiling the mocs and the Dlg
 #include "DlgPreferences.cpp"
 #include "moc_DlgPreferences.cpp"
 #include "moc_DlgPreferencesImp.cpp"

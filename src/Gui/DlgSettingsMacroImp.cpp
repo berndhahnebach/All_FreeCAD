@@ -28,7 +28,7 @@
 #endif
 
 #include "DlgSettingsMacroImp.h"
-#include "FileDialog.h"
+#include "PrefWidgets.h"
 #include "../App/Application.h"
 
 using namespace Gui::Dialog;
@@ -40,10 +40,6 @@ using namespace Gui::Dialog;
 DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
   : DlgSettingsMacro( parent, name, fl )
 {
-  append(PrefCheckBox_GuiAsComment->getHandler());
-  append(PrefCheckBox_RecordGui   ->getHandler());
-  append(MacroPath                ->getHandler());
-
   if ( MacroPath->fileName().isEmpty() )
   {
     QDir d(App::GetApplication().GetHomePath());
@@ -57,6 +53,20 @@ DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WF
 DlgSettingsMacroImp::~DlgSettingsMacroImp()
 {
   // no need to delete child widgets, Qt does it all for us
+}
+
+void DlgSettingsMacroImp::saveSettings()
+{
+  MacroPath->onSave();
+  PrefCheckBox_RecordGui->onSave();
+  PrefCheckBox_GuiAsComment->onSave();
+}
+
+void DlgSettingsMacroImp::loadSettings()
+{
+  MacroPath->onRestore();
+  PrefCheckBox_RecordGui->onRestore();
+  PrefCheckBox_GuiAsComment->onRestore();
 }
 
 

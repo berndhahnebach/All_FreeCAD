@@ -31,10 +31,7 @@
 
 #include "DlgCustomizeImp.h"
 #include "Application.h"
-#include "Tools.h"
-#include "PropertyPage.h"
 #include "WidgetFactory.h"
-#include "../Base/Console.h"
 
 using namespace Gui::Dialog;
 

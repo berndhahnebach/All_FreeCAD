@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #include "BitmapFactory.h"
+#include "CustomWidgets.h"
 #include "WidgetFactory.h"
 #include "Language/LanguageFactory.h"
 

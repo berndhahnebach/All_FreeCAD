@@ -235,6 +235,18 @@
 </tabstops>
 <slots>
     <slot>warnInventor(bool)</slot>
+    <slot access="protected">loadSettings()</slot>
+    <slot access="protected">saveSettings()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+</includehints>
 </UI>

@@ -26,7 +26,6 @@
 
 #ifndef _PreComp_
 # include <qdialog.h>
-# include <vector>
 #endif
 
 class QTabWidget;

@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "Command.h"
 #include "CommandLine.h"
+#include "PrefWidgets.h"
 #include "Language/LanguageFactory.h"
 #include "Language/Translator.h"
 
@@ -47,16 +48,6 @@ using namespace Gui::Dialog;
 DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgGeneralBase( parent, name, fl )
 {
-  setParamGrpPath("General");
-  setEntryName("General");
-
-  append(UsesBigPixmaps->getHandler());
-  append(AllowDragMenu->getHandler());
-  append(RecentFiles->getHandler());
-  append(SplashScreen->getHandler());
-  append(ShowCmdLine->getHandler());
-  append(SizeCmdLine->getHandler());
-  append(getHandler()); // this dialog
 }
 
 /** 
@@ -65,45 +56,6 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
 DlgGeneralImp::~DlgGeneralImp()
 {
     // no need to delete child widgets, Qt does it all for us
-}
-
-void DlgGeneralImp::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
-{
-}
-
-/** Restores the color map */
-void DlgGeneralImp::restorePreferences()
-{
-  // fill up styles
-  //
-  QStringList styles = QStyleFactory::keys ();
-  WindowStyle->insertStringList( styles );
-  QString style = QApplication::style().name();
-  WindowStyle->setCurrentText( style );
-
-  // search for the language files
-  QString language = getWindowParameter()->GetASCII("Language", "English").c_str();
-  insertLanguages();
-  Languages->setCurrentText( language );
-}
-
-/** Saves the color map */
-void DlgGeneralImp::savePreferences()
-{
-  getWindowParameter()->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
-
-  ApplicationWindow::Instance->UpdateStyle();
-  ApplicationWindow::Instance->UpdatePixmapsSize();
-  setMRUSize();
-  CommandLine().show();
-
-  QString language = getWindowParameter()->GetASCII("Language", "English").c_str();
-  if ( QString::compare( Languages->currentText(), language ) != 0 )
-  {
-//    CheckMessageBox::information(ApplicationWindow::Instance, "Info", tr("To take effect on the new language restart FreeCAD, please."));
-    getWindowParameter()->SetASCII("Language", Languages->currentText().latin1());
-    Gui::Translator::setLanguage( Languages->currentText() );
-  }
 }
 
 /** Sets the size of the recent file list (MRU) in the
@@ -116,7 +68,7 @@ void DlgGeneralImp::setMRUSize()
   FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
   if (pCmd)
   {
-    FCParameterGrp::handle hGrp = getParameter()->GetGroup("RecentFiles");
+    FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("RecentFiles");
     ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }
@@ -132,6 +84,54 @@ void DlgGeneralImp::insertLanguages()
   {
     Languages->insertItem(*it);
   }
+}
+
+void DlgGeneralImp::saveSettings()
+{
+  RecentFiles->onSave();
+  SplashScreen->onSave();
+  ShowCmdLine->onSave();
+  SizeCmdLine->onSave();
+  AllowDragMenu->onSave();
+  UsesBigPixmaps->onSave();
+
+  FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
+
+  ApplicationWindow::Instance->UpdateStyle();
+  ApplicationWindow::Instance->UpdatePixmapsSize();
+  setMRUSize();
+  CommandLine().show();
+
+  QString language = hGrp->GetASCII("Language", "English").c_str();
+  if ( QString::compare( Languages->currentText(), language ) != 0 )
+  {
+    hGrp->SetASCII("Language", Languages->currentText().latin1());
+    Gui::Translator::setLanguage( Languages->currentText() );
+  }
+}
+
+void DlgGeneralImp::loadSettings()
+{
+  RecentFiles->onRestore();
+  SplashScreen->onRestore();
+  ShowCmdLine->onRestore();
+  SizeCmdLine->onRestore();
+  AllowDragMenu->onRestore();
+  UsesBigPixmaps->onRestore();
+
+  // fill up styles
+  //
+  QStringList styles = QStyleFactory::keys ();
+  WindowStyle->insertStringList( styles );
+  QString style = QApplication::style().name();
+  WindowStyle->setCurrentText( style );
+
+  // search for the language files
+  FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  QString language = hGrp->GetASCII("Language", "English").c_str();
+  insertLanguages();
+  Languages->setCurrentText( language );
 }
 
 #include "DlgGeneral.cpp"

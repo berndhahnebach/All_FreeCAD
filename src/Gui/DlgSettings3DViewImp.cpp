@@ -33,7 +33,7 @@
 #endif
 
 #include "DlgSettings3DViewImp.h"
-#include "FileDialog.h"
+#include "PrefWidgets.h"
 #include "../Base/Console.h"
 
 using namespace Gui::Dialog;
@@ -45,14 +45,6 @@ using namespace Gui::Dialog;
 DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettings3DView( parent, name, fl )
 {
-  append(UseAntialiasing->getHandler());
-  append(PrefCheckBox_UseInventorViewer->getHandler());
-  append(CheckBox_CornerCoordSystem->getHandler());
-  append(CheckBox_ShowFPS->getHandler());
-  append(CheckBox_UseSimpleBackground->getHandler());
-  append(CheckBox_ShowViewerDecoration->getHandler());
-  append(PrefLineEdit_UserDefinedViewer->getHandler());
-  append(CheckBox_UseAutoRotation->getHandler());
 }
 
 /** 
@@ -70,6 +62,30 @@ void DlgSettings3DViewImp::warnInventor(bool b)
 {
   if ( b )
     Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
+}
+
+void DlgSettings3DViewImp::saveSettings()
+{
+  PrefCheckBox_UseInventorViewer->onSave();
+  CheckBox_CornerCoordSystem->onSave();
+  CheckBox_ShowFPS->onSave();
+  CheckBox_UseSimpleBackground->onSave();
+  CheckBox_ShowViewerDecoration->onSave();
+  CheckBox_UseAutoRotation->onSave();
+  PrefLineEdit_UserDefinedViewer->onSave();
+  UseAntialiasing->onSave();
+}
+
+void DlgSettings3DViewImp::loadSettings()
+{
+  PrefCheckBox_UseInventorViewer->onRestore();
+  CheckBox_CornerCoordSystem->onRestore();
+  CheckBox_ShowFPS->onRestore();
+  CheckBox_UseSimpleBackground->onRestore();
+  CheckBox_ShowViewerDecoration->onRestore();
+  CheckBox_UseAutoRotation->onRestore();
+  PrefLineEdit_UserDefinedViewer->onRestore();
+  UseAntialiasing->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

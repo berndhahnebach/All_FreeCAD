@@ -27,6 +27,7 @@
 #endif
 
 #include "DlgReportViewImp.h"
+#include "PrefWidgets.h"
 
 
 using namespace Gui::Dialog;
@@ -41,13 +42,6 @@ using namespace Gui::Dialog;
 DlgReportViewImp::DlgReportViewImp( QWidget* parent, const char* name, WFlags fl )
 : DlgReportViewBase(parent, name, fl)
 {
-  append(checkLogging->getHandler());
-  append(checkWarning->getHandler());
-  append(checkError->getHandler());
-  append(colorText->getHandler());
-  append(colorLogging->getHandler());
-  append(colorWarning->getHandler());
-  append(colorError->getHandler());
 }
 
 /** 
@@ -55,6 +49,28 @@ DlgReportViewImp::DlgReportViewImp( QWidget* parent, const char* name, WFlags fl
  */
 DlgReportViewImp::~DlgReportViewImp()
 {
+}
+
+void DlgReportViewImp::saveSettings()
+{
+  checkLogging->onSave();
+  checkWarning->onSave();
+  checkError->onSave();
+  colorText->onSave();
+  colorLogging->onSave();
+  colorWarning->onSave();
+  colorError->onSave();
+}
+
+void DlgReportViewImp::loadSettings()
+{
+  checkLogging->onRestore();
+  checkWarning->onRestore();
+  checkError->onRestore();
+  colorText->onRestore();
+  colorLogging->onRestore();
+  colorWarning->onRestore();
+  colorError->onRestore();
 }
 
 #include "DlgReportView.cpp"

@@ -34,38 +34,41 @@
                     <property name="name">
                         <cstring>checkLogging</cstring>
                     </property>
+                    <property name="text">
+                        <string>Shoot log messages</string>
+                    </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>checkLogging</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>OutputWindow</cstring>
                     </property>
-                    <property name="text" stdset="0">
-                        <string>Shoot log messages</string>
-                    </property>
                 </widget>
                 <widget class="Gui::PrefCheckBox">
                     <property name="name">
                         <cstring>checkWarning</cstring>
                     </property>
-                    <property name="checked" stdset="0">
-                        <bool>true</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>checkWarning</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OutputWindow</cstring>
-                    </property>
-                    <property name="text" stdset="0">
+                    <property name="text">
                         <string>Shoot warnings</string>
                     </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>checkWarning</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>OutputWindow</cstring>
+                    </property>
                 </widget>
                 <widget class="Gui::PrefCheckBox">
                     <property name="name">
                         <cstring>checkError</cstring>
                     </property>
-                    <property name="checked" stdset="0">
+                    <property name="text">
+                        <string>Shoot error messages</string>
+                    </property>
+                    <property name="checked">
                         <bool>true</bool>
                     </property>
                     <property name="prefEntry" stdset="0">
@@ -73,9 +76,6 @@
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>OutputWindow</cstring>
-                    </property>
-                    <property name="text" stdset="0">
-                        <string>Shoot error messages</string>
                     </property>
                 </widget>
             </vbox>
@@ -128,6 +128,9 @@
                             <property name="name">
                                 <cstring>colorText</cstring>
                             </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>colorText</cstring>
                             </property>
@@ -174,7 +177,10 @@
                             <property name="name">
                                 <cstring>colorLogging</cstring>
                             </property>
-                            <property name="color" stdset="0">
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="color">
                                 <color>
                                     <red>0</red>
                                     <green>0</green>
@@ -227,7 +233,10 @@
                             <property name="name">
                                 <cstring>colorWarning</cstring>
                             </property>
-                            <property name="color" stdset="0">
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="color">
                                 <color>
                                     <red>255</red>
                                     <green>170</green>
@@ -280,7 +289,10 @@
                             <property name="name">
                                 <cstring>colorError</cstring>
                             </property>
-                            <property name="color" stdset="0">
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="color">
                                 <color>
                                     <red>255</red>
                                     <green>0</green>
@@ -317,5 +329,18 @@
         </spacer>
     </vbox>
 </widget>
+<slots>
+    <slot access="protected">loadSettings()</slot>
+    <slot access="protected">saveSettings()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+    <includehint>PrefWidgets.h</includehint>
+</includehints>
 </UI>

@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qaccel.h>
+# include <qcombobox.h>
 # include <qdir.h>
 # include <qiconview.h>
 # include <qlabel.h>
@@ -38,6 +39,7 @@
 #include "Tools.h"
 #include "Command.h"
 #include "BitmapFactory.h"
+#include "Widgets.h"
 
 using namespace Gui::Dialog;
 
@@ -377,4 +379,4 @@ void DlgCustomActionsImp::newActionName()
 
 #include "DlgActions.cpp"
 #include "moc_DlgActions.cpp"
-#include "moc_DlgActionsImp.cpp"
+#include "moc_DlgActionsImp.cpp" 

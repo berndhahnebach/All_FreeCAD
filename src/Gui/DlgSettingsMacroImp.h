@@ -25,7 +25,6 @@
 #define DLGSETTINGSMACROIMP_H
 
 #include "DlgSettingsMacro.h"
-#include "PropertyPage.h"
 
 namespace Gui {
 namespace Dialog {
@@ -35,13 +34,17 @@ namespace Dialog {
  * for macro stuff.
  * \author Jürgen Riegel
  */
-class DlgSettingsMacroImp : public DlgSettingsMacro, public Gui::Dialog::PreferencePage
+class DlgSettingsMacroImp : public DlgSettingsMacro
 { 
   Q_OBJECT
 
 public:
   DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgSettingsMacroImp();
+
+protected:
+  void saveSettings();
+  void loadSettings();
 };
 
 } // namespace Dialog

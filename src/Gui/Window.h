@@ -49,7 +49,7 @@ public:
   void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
   /// get the parameters
-  FCParameterGrp::handle getParameter(void);
+  static FCParameterGrp::handle getParameter(void);
   /// return the parameter group of this window
   FCParameterGrp::handle getWindowParameter(void);
 

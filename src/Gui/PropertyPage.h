@@ -30,23 +30,20 @@ namespace Gui {
 namespace Dialog {
 
 /** Base class for property pages.
- * The pages of @ref DlgCustomizeImp and @ref DlgPreferencesImp
- * should inherit from PropertyPage to use apply/cancel mechanism.
- * Inherited classes should reimplement @ref apply() and
- * @ref cancel().
  * \author Werner Mayer
  */
 class GuiExport PropertyPage
 {
 protected:
   PropertyPage();
+  virtual ~PropertyPage();
 
 public:
-  virtual ~PropertyPage();
   bool isModified();
   void setModified(bool b);
   void onApply();
   void onCancel();
+  void onReset();
 
 protected:
   virtual void apply();
@@ -55,17 +52,6 @@ protected:
 
 private:
   bool bChanged; /**< for internal use only */
-};
-
-/** Base class for all preference pages.
- * @see PropertyPage
- * \author Werner Mayer
- */
-class GuiExport PreferencePage : public PropertyPage, public PrefWidgetManager
-{
-public:
-  PreferencePage();
-  virtual ~PreferencePage();
 };
 
 } // namespace Dialog

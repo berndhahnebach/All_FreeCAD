@@ -25,18 +25,16 @@
 #define DLG_ONLINE_HELP_IMP_H
 
 #include "DlgOnlineHelp.h"
-#include "PropertyPage.h"
 
 namespace Gui {
 namespace Dialog {
 
 /** This class implements the dialog for downloading the online documentation.
  * Moreover it allows to specify location of the start page an an external browser.
- *  Here you can specify to use a proxy if necessary and some more stuff.
- *  @see PreferencePage
- *  \author Werner Mayer
+ * Here you can specify to use a proxy if necessary and some more stuff.
+ * \author Werner Mayer
  */
-class DlgOnlineHelpImp : public DlgOnlineHelpBase, public Gui::Dialog::PreferencePage
+class DlgOnlineHelpImp : public DlgOnlineHelpBase
 {
 Q_OBJECT
 
@@ -45,6 +43,10 @@ public:
   ~DlgOnlineHelpImp();
 
   static QString getStartpage();
+
+protected:
+  void saveSettings();
+  void loadSettings();
 };
 
 } // namespace Dialog

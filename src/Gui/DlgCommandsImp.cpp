@@ -25,11 +25,13 @@
 
 #ifndef _PreComp_
 # include <qlabel.h>
+# include <qlistbox.h>
 #endif
 
 #include "DlgCommandsImp.h"
 #include "Application.h"
 #include "Command.h"
+#include "Widgets.h"
 
 using namespace Gui::Dialog;
 

@@ -27,12 +27,14 @@
 # include <qinputdialog.h>
 # include <qobjectlist.h>
 # include <qpushbutton.h>
+# include <vector>
 #endif
 
 #include "DlgToolbarsImp.h"
 #include "Application.h"
 #include "Tools.h"
 #include "Command.h"
+#include "CustomWidgets.h"
 
 using namespace Gui::Dialog;
 

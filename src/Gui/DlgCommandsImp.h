@@ -25,7 +25,6 @@
 #define DLGCOMMANDS_IMP_H
 
 #include "DlgCommands.h"
-#include "PropertyPage.h"
 
 #ifndef _PreComp_
 # include <qmap.h>
@@ -43,7 +42,7 @@ namespace Dialog {
  * customize your own toolbars or commandbars.
  * \author Werner Mayer
  */
-class DlgCustomCommandsImp : public DlgCustomCommandsBase, public Gui::Dialog::PropertyPage
+class DlgCustomCommandsImp : public DlgCustomCommandsBase
 { 
   Q_OBJECT
 

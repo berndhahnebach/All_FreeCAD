@@ -46,7 +46,7 @@ using namespace Gui::DockWnd;
  * Creates a custom widget with the group \a grp and its subgroup \a name.
  */
 CustomWidget::CustomWidget(const char* grp, const char * name)
-    : PrefWidget(false), _bCanModify(true), _bCanRemovable(true)
+    : PrefWidget(), _bCanModify(true), _bCanRemovable(true)
 {
   init(grp, name);
 }

@@ -120,6 +120,12 @@
                             <height>0</height>
                         </size>
                     </property>
+                    <property name="frameShape">
+                        <enum>StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
                 </widget>
                 <widget class="QWidgetStack">
                     <property name="name">
@@ -165,6 +171,12 @@
         <receiver>Gui::Dialog::DlgPreferences</receiver>
         <slot>onPrefPageClicked(int)</slot>
     </connection>
+    <connection>
+        <sender>buttonApply</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgPreferences</receiver>
+        <slot>apply()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>listBox</tabstop>
@@ -174,6 +186,7 @@
 </tabstops>
 <slots>
     <slot access="protected">onPrefPageClicked(int)</slot>
+    <slot access="protected">apply()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
