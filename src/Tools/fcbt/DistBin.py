@@ -52,10 +52,10 @@ FileTools.cpallWithFilter('../../src/Mod',DistDir+DistBin+'/Mod',FileTools.SetUp
 #====================================================================
 # copy top level files
 
-FileTools.cpfile("../Doc/README.html",DistDir+DistBin+"/README.html")
-FileTools.cpfile("../Doc/INSTALL.html",DistDir+DistBin+"/INSTALL.html")
-FileTools.cpfile("../Doc/LICENSE.GPL.html",DistDir+DistBin+"/LICENSE.GPL.html")
-FileTools.cpfile("../Doc/LICENSE.LGPL.html",DistDir+DistBin+"/LICENSE.LGPL.html")
+#FileTools.cpfile("../Doc/README.html",DistDir+DistBin+"/README.html")
+#FileTools.cpfile("../Doc/INSTALL.html",DistDir+DistBin+"/INSTALL.html")
+#FileTools.cpfile("../Doc/LICENSE.GPL.html",DistDir+DistBin+"/LICENSE.GPL.html")
+#FileTools.cpfile("../Doc/LICENSE.LGPL.html",DistDir+DistBin+"/LICENSE.LGPL.html")
 #DistTools.cpfile("../Tools/BuildTool.py",DistDir+DistBin+"/BuildTool.py")
 
 #====================================================================
