@@ -43,30 +43,204 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "../Base/PyExportImp.h"
+#include "../Base/Console.h"
+
+
 #include "DocType.h"
 
 
-
+using App::DocType;
+using App::DocTypeStd;
 
 
 //**************************************************************************
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCDocType::FCDocType()
+DocType::DocType()
 {
 
 }
 
-FCDocType::~FCDocType()
+DocType::~DocType()
 {
 
 }
 
 
-const char *FCDocType::GetTypeName(void)
+const char *DocType::GetTypeName(void)
 {
 	return "Base";
 }
 
 
+//**************************************************************************
+// Construction/Destruction
+
+// here the implemataion! description should take place in the header file!
+DocTypeStd::DocTypeStd()
+: DocType()
+{
+
+}
+
+DocTypeStd::~DocTypeStd()
+{
+
+}
+
+
+const char *DocTypeStd::GetTypeName(void)
+{
+	return "Std";
+}
+
+void DocTypeStd::Init (FCDocument *pcDoc)
+{
+
+}
+
+
+//===========================================================================
+// TpyeStdPy - Python wrapper 
+//===========================================================================
+
+/** The DocTypeStd python class 
+ */
+class AppExport DocTypeStdPy :public FCPyObject
+{
+	/// always start with Py_Header
+	Py_Header;
+
+public:
+	DocTypeStdPy(DocTypeStd *pcDocTypeStd, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+
+	~DocTypeStdPy();
+
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+
+
+private:
+	DocTypeStd *_pcDocTypeStd;
+
+};
+
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
+
+PyTypeObject DocTypeStdPy::Type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,						/*ob_size*/
+	"DocTypeStdPy",				/*tp_name*/
+	sizeof(DocTypeStdPy),			/*tp_basicsize*/
+	0,						/*tp_itemsize*/
+	/* methods */
+	PyDestructor,	  		/*tp_dealloc*/
+	0,			 			/*tp_print*/
+	__getattr, 				/*tp_getattr*/
+	__setattr, 				/*tp_setattr*/
+	0,						/*tp_compare*/
+	__repr,					/*tp_repr*/
+	0,						/*tp_as_number*/
+	0,						/*tp_as_sequence*/
+	0,						/*tp_as_mapping*/
+	0,						/*tp_hash*/
+	0,						/*tp_call */
+};
+
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
+PyMethodDef DocTypeStdPy::Methods[] = {
+//  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
+
+  {NULL, NULL}		/* Sentinel */
+};
+
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject DocTypeStdPy::Parents[] = {&FCPyObject::Type, NULL};     
+
+//--------------------------------------------------------------------------
+//t constructor
+//--------------------------------------------------------------------------
+DocTypeStdPy::DocTypeStdPy(DocTypeStd *pcDocTypeStd, PyTypeObject *T)
+: FCPyObject( T), _pcDocTypeStd(pcDocTypeStd)
+{
+	//Base::Console().Log("Create DocTypeStdPy: %p \n",this);
+}
+
+PyObject *DocTypeStdPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  //return new DocTypeStdPy(name, n, tau, gamma);			// Make new Python-able object
+	return 0;
+}
+
+FCPyObject *DocTypeStd::GetPyObject(void)
+{
+	return new DocTypeStdPy(this);
+}
+
+
+//--------------------------------------------------------------------------
+// destructor 
+//--------------------------------------------------------------------------
+DocTypeStdPy::~DocTypeStdPy()						// Everything handled in parent
+{
+//	Base::Console().Log("Destroy DocTypeStdPy: %p \n",this);
+} 
+
+
+//--------------------------------------------------------------------------
+// DocTypeStdPy representation
+//--------------------------------------------------------------------------
+PyObject *DocTypeStdPy::_repr(void)
+{
+	return Py_BuildValue("s", "FreeCAD Document");
+}
+//--------------------------------------------------------------------------
+// DocTypeStdPy Attributes
+//--------------------------------------------------------------------------
+PyObject *DocTypeStdPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+{ 
+	try{
+		if (streq(attr, "XXXX"))						
+			return Py_BuildValue("i",1); 
+		else
+			_getattr_up(FCPyObject); 						
+	}catch(...){
+		Py_Error(PyExc_Exception,"Error in get Attribute");
+	}
+} 
+
+int DocTypeStdPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+	if (streq(attr, "XXXX")){						// settable new state
+		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
+		return 1;
+	}else  
+		return FCPyObject::_setattr(attr, value); 	// send up to parent
+} 
+
+
+
+//--------------------------------------------------------------------------
+// Python wrappers
+//--------------------------------------------------------------------------
+/*
+PyObject *DocTypeStdPy::PyUndo(PyObject *args)
+{ 
+	_pcDoc->Undo(); 
+	Py_Return; 
+} 
+*/

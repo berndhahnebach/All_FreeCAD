@@ -34,12 +34,14 @@
 #define __FCDocType_H__
 
 class FCDocument;
+class FCPyObject;
 
+namespace App {
 
 /** Base class of Document type objects
 
  */
-class AppExport FCDocType
+class AppExport DocType
 {
 public:
 
@@ -47,12 +49,12 @@ public:
 	/**
 	 * A constructor.
 	 */
-	FCDocType();
+	DocType();
 
 	/**
 	 * A destructor.
 	 */
-	virtual ~FCDocType();
+	virtual ~DocType();
 
 	/**
 	 * sets up the document
@@ -64,8 +66,48 @@ public:
 	 */
 	virtual const char *GetTypeName(void);
 
+	virtual FCPyObject *GetPyObject(void)=0;
 
 };
 
+
+/** Standard Document type objects
+ *  If not choosed a special DocType (e.g. From a module) the 
+ *  Standard DocType object get in place in the document
+ */
+class AppExport DocTypeStd: public DocType
+{
+public:
+
+       
+	/**
+	 * A constructor.
+	 */
+	DocTypeStd();
+
+	/**
+	 * A destructor.
+	 */
+	virtual ~DocTypeStd();
+
+	/**
+	 * sets up the document
+	 */
+	virtual void Init (FCDocument *pcDoc);
+
+	/**
+	 * sets up the document
+	 */
+	virtual const char *GetTypeName(void);
+
+
+	virtual FCPyObject *GetPyObject(void);
+
+
+
+};
+
+
+} //namespace App
 
 #endif // __FCDocType_H__

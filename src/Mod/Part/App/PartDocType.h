@@ -39,11 +39,16 @@
 
 #include <App/DocType.h>
 
+using App::DocTypeStd;
+
+
+namespace Part
+{
 
 
 /** The Part document type class
   */
-class FCPartDocType: public FCDocType
+class PartDocType: public DocTypeStd
 {
 public:
 
@@ -52,13 +57,13 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCPartDocType();
+	PartDocType();
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	~FCPartDocType();
+	~PartDocType();
 
 	/**
 	 * sets up the document
@@ -68,10 +73,13 @@ public:
 	/**
 	 * return the type name 
 	 */
-	virtual const char *FCPartDocType::GetTypeName(void);
+	virtual const char *PartDocType::GetTypeName(void);
+
+	virtual FCPyObject *GetPyObject(void);
+
 };
 
 
-
+} // namespace Part
 
 #endif // __PartDocType_H__

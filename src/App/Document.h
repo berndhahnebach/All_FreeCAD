@@ -47,6 +47,11 @@ class FCLabelPy;
 class FCDocType;
 class FCDocumentPy; // the python document class
 class FCApplication;
+namespace App
+{
+	class DocType;
+}
+
 
 /** transport the changes of the Document
  *  This class transport closer information what was changed in a
@@ -87,8 +92,8 @@ public:
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
-	void InitType(FCDocType *pcDocType);
-	FCDocType *GetDocType(void);
+	void InitType(App::DocType *pcDocType);
+	App::DocType *GetDocType(void);
 
 	//---------------------------------------------------------------------
 	// CasCade exported functions goes here +++++++++++++++++++++++++++++++++++++++
@@ -118,7 +123,6 @@ public:
 	void Recompute();
 	/// Get the OCC Document Handle
 	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
-
 
 	/** @name methodes for the UNDO REDO handling
 	 *  this methodes are usaly used by the GUI document! Its not intended

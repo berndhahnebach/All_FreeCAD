@@ -37,6 +37,10 @@ Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(TDataStd_Name);
 
 
 class FCDocTypeAttr;
+namespace App
+{
+	class DocType;
+}
 
 
 /** Handle class for FCDocTypeAttr
@@ -81,12 +85,12 @@ class FCDocTypeAttr : public FCAttribute
 public:
 
 	/// Constructor
-	AppExport FCDocTypeAttr(FCDocType *pcDocType = 0);
+	AppExport FCDocTypeAttr(App::DocType *pcDocType = 0);
 	/// Destructor
 	AppExport ~FCDocTypeAttr();
 
 	/// Delivers the type object of the Object
-	AppExport FCDocType *GetType(void);
+	AppExport App::DocType *GetType(void);
 
 	/// Delivers the GUID of the Object
 	AppExport static const Standard_GUID& GetID() ;
@@ -99,12 +103,12 @@ public:
 	AppExport void Restore(const Handle(TDF_Attribute)& with) ;
 
 	/// Set data
-	AppExport void Set(FCDocType *pcDocType) ;
+	AppExport void Set(App::DocType *pcDocType) ;
 	/// Get data
-	AppExport FCDocType *Get() const;
+	AppExport App::DocType *Get() const;
 
 	/// not shure
-	AppExport static  Handle_FCDocTypeAttr Set(const TDF_Label& label,FCDocType *pcDocType) ;
+	AppExport static  Handle_FCDocTypeAttr Set(const TDF_Label& label,App::DocType *pcDocType) ;
 
 	/// Get the unique ID of the Attribute
 	AppExport const Standard_GUID& ID() const;
@@ -127,7 +131,7 @@ public:
 private: 
 
 	/// Data member string
-	FCDocType *_pcDocType;
+	App::DocType *_pcDocType;
 
 };
 

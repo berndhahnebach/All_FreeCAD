@@ -21,6 +21,8 @@
 
 #include "Document.h"
 #include "Label.h"
+
+#include "../Base/PyExport.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 #include "Application.h"
@@ -29,6 +31,8 @@
 #include "DocTypeAttr.h"
 
 using Base::Console;
+
+using namespace App;
 
 
 //===========================================================================
@@ -55,6 +59,8 @@ public:
 	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	PyObject *PyDocType(PyObject *args);		// Python wrapper
+	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyDocType(args);};
 	PyObject *PyUndo(PyObject *args);		// Python wrapper
 	static PyObject *sPyUndo(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyUndo(args);};
 	PyObject *PyRedo(PyObject *args);		// Python wrapper
@@ -112,25 +118,35 @@ FCDocument::~FCDocument()
 
 
 
-void FCDocument::InitType(FCDocType *pcDocType)
+void FCDocument::InitType(App::DocType *pcDocType)
 {
 	// attach the type object
+
+	FCDocTypeAttr::Set(Main(),pcDocType);
+
+	
 	//Main()->GetOCCLabel().AddAttribute(new FCDocTypeAttr(pcDocType));
 
 	// set up document
-	//pcDocType->Init(this);
+	pcDocType->Init(this);
 
 }
 
 
-FCDocType *FCDocument::GetDocType(void)
+DocType *FCDocument::GetDocType(void)
 {
-/*	Handle(FCDocTypeAttr) TSR;
+	Handle_FCDocTypeAttr hAttr;
+
+	Main().FindAttribute(FCDocTypeAttr::GetID(),hAttr);
+
+	return hAttr->Get();
+
+	
+	/*	Handle(FCDocTypeAttr) TSR;
 	if (!Main()->GetOCCLabel().FindAttribute(FCDocTypeAttr::GetID(), TSR )) 
 		return 0;
 
 	return TSR->Get();*/
-	return 0;
 }
 
 //--------------------------------------------------------------------------
@@ -341,6 +357,7 @@ FCPyObject * FCDocument::GetPyObject(void)
 	return _pcDocPy;
 }
 
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -373,6 +390,7 @@ PyTypeObject FCDocumentPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef FCDocumentPy::Methods[] = {
+  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
   {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
   {"Redo",         (PyCFunction) sPyRedo,         Py_NEWARGS},
   {"ClearUndos",   (PyCFunction) sPyClearUndos,   Py_NEWARGS},
@@ -399,6 +417,7 @@ PyParentObject FCDocumentPy::Parents[] = {&FCPyObject::Type, NULL};
 FCDocumentPy::FCDocumentPy(FCDocument *pcDoc, PyTypeObject *T)
  : FCPyObject( T), _pcDoc(pcDoc)
 {
+	Base::Console().Log("Create FCDocumentPy (%d)\n",this);
 
 }
 
@@ -477,6 +496,11 @@ int FCDocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
+
+PyObject *FCDocumentPy::PyDocType(PyObject *args)
+{ 
+	return _pcDoc->GetDocType()->GetPyObject();
+} 
 
 PyObject *FCDocumentPy::PyUndo(PyObject *args)
 { 

@@ -31,6 +31,8 @@
 #include "PartDocType.h"
 
 using Base::Console;
+using namespace Part;
+
 
 /* module functions */
 static PyObject *                                 /* returns object */
@@ -73,13 +75,13 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
 		if(!doc) return Py_None;
 
 		Console().Log("Doc init\n");
-		FCPartDocType *pcType = new FCPartDocType();
+		PartDocType *pcType = new PartDocType();
 		doc->InitType(pcType);
 
 		Console().Log("Type Get\n");
 		if(strcmp(doc->GetDocType()->GetTypeName(),"Part")==0)
 		{
-			pcType = dynamic_cast<FCPartDocType*>( doc->GetDocType() );
+			pcType = dynamic_cast<PartDocType*>( doc->GetDocType() );
 			Console().Log("Part doc detected\n");
 
 		}

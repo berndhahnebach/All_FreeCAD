@@ -53,6 +53,7 @@
 #include "PartDocType.h"
 
 
+using Part::PartDocType;
 
 
 
@@ -60,18 +61,18 @@
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCPartDocType::FCPartDocType()
+PartDocType::PartDocType()
 {
 
 }
 
-FCPartDocType::~FCPartDocType()
+PartDocType::~PartDocType()
 {
 
 }
 
 
-void FCPartDocType::Init (FCDocument *pcDoc)
+void PartDocType::Init (FCDocument *pcDoc)
 {
 /*	FCPyHandle<FCLabel> hcMainLabel = pcDoc->Main();
 
@@ -86,7 +87,15 @@ void FCPartDocType::Init (FCDocument *pcDoc)
 
 }
 
-const char *FCPartDocType::GetTypeName(void)
+const char *PartDocType::GetTypeName(void)
 {
 	return "Part";
 }
+
+
+FCPyObject *PartDocType::GetPyObject(void)
+{
+	return 0;
+	//return new DocTypeStdPy(this);
+}
+

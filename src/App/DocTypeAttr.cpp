@@ -17,7 +17,9 @@
 #endif
 
 #include "DocTypeAttr.h"
-
+#include "DocType.h"
+using App::DocType;
+using App::DocTypeStd;
 
 //**************************************************************************
 //**************************************************************************
@@ -75,7 +77,7 @@ const Handle(FCDocTypeAttr) Handle(FCDocTypeAttr)::DownCast(const Handle(Standar
 
 
 /// Constructor
-FCDocTypeAttr::FCDocTypeAttr(FCDocType *pcDocType)
+FCDocTypeAttr::FCDocTypeAttr(DocType *pcDocType)
 :_pcDocType(pcDocType)
 {
 
@@ -84,7 +86,7 @@ FCDocTypeAttr::FCDocTypeAttr(FCDocType *pcDocType)
 FCDocTypeAttr::~FCDocTypeAttr () {}
 
 
-FCDocType *FCDocTypeAttr::GetType(void)
+DocType *FCDocTypeAttr::GetType(void)
 {
 	return _pcDocType;
 }
@@ -104,7 +106,7 @@ const Standard_GUID& FCDocTypeAttr::GetID ()
 //function : Set
 //purpose  : 
 //=======================================================================
-Handle_FCDocTypeAttr FCDocTypeAttr::Set(const TDF_Label& label,FCDocType *pcDocType) 
+Handle_FCDocTypeAttr FCDocTypeAttr::Set(const TDF_Label& label,DocType *pcDocType) 
 {
   Handle(FCDocTypeAttr) N;
   if (!label.FindAttribute(FCDocTypeAttr::GetID(), N)) { 
@@ -116,14 +118,14 @@ Handle_FCDocTypeAttr FCDocTypeAttr::Set(const TDF_Label& label,FCDocType *pcDocT
 }
 
 
-void FCDocTypeAttr::Set (FCDocType *pcDocType) 
+void FCDocTypeAttr::Set (DocType *pcDocType) 
 {
  
   Backup();
   _pcDocType = pcDocType;
 }
 
-FCDocType * FCDocTypeAttr::Get () const {return _pcDocType;}
+DocType * FCDocTypeAttr::Get () const {return _pcDocType;}
 
 const Standard_GUID& FCDocTypeAttr::ID () const { return GetID(); }
 

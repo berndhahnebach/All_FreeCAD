@@ -18,8 +18,11 @@
 
 #include "Application.h"
 #include "Document.h"
-// FreeCAD Base header
 #include "Function.h"
+#include "DocTypeAttr.h"
+#include "DocType.h"
+
+// FreeCAD Base header
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
@@ -53,7 +56,7 @@ const char *       FCApplication::VersionTime  = __TIME__;
 
 //using Base::GetConsole;
 using namespace Base;
-
+using namespace App;
 
 
 Standard_CString FCApplicationOCC::ResourcesName()
@@ -182,6 +185,8 @@ FCDocument* FCApplication::New(const char * Name)
 	FCDocument*				pDoc;
 //	PyObject* pcTemplate;
 
+	Base::Console().Log("FCApplication::New(%s)\n",Name);
+
 /*	if(Name)
 	{
 		// net buffer because of char* <-> const char*
@@ -205,13 +210,10 @@ FCDocument* FCApplication::New(const char * Name)
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
 
-	/* obsolete
-	// runing the start of the workbench object
-	if(Name)
-	{
-		Interpreter().RunMethodVoid(pcTemplate, "Start");
-	}*/
+	// creat the type object
+	DocTypeStd *pDocType = new DocTypeStd();
 
+	pDoc->InitType(pDocType);
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);
 
