@@ -629,30 +629,19 @@ void FCTextBrowser::contentsDropEvent(QDropEvent  * e)
 {
   if (QUriDrag::canDecode(e))
   {
-    QStrList fn;
-    QUriDrag::decode(e, fn);
+    QStringList fn;
+    QUriDrag::decodeLocalFiles(e, fn);
     QString file = fn.first();
-
-    // wrong device separator
-    int pos = file.find("%7c");
-    if (pos != -1)
-      file.replace(pos, 3, ":");
-
-    // delete the 'file:' prefix
-    if (file.startsWith("file:///"))
-      file = file.right(file.length() - 8);
-    setSource(file);
+    QFileInfo info(file);
+    if (info.exists() && info.isFile())
+      setSource(file);
   }
   else if (QTextDrag::canDecode(e))
   {
-    QString file;
-    QTextDrag::decode(e, file);
-    QFileInfo info(file);
-
-    if (info.isFile())
-      setSource(file);
-    else if (QStyleSheet::mightBeRichText(file))
-      setText(file);
+    QString text;
+    QTextDrag::decode(e, text);
+    if (QStyleSheet::mightBeRichText(text))
+      setText(text);
   }
 }
 
@@ -666,8 +655,8 @@ void FCTextBrowser::viewportDragEnterEvent  (QDragEnterEvent * e)
 {
   bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
   e->accept(can);
-  if (can)
-    QTextBrowser::viewportDragEnterEvent(e);
+//  if (can)
+//    QTextBrowser::viewportDragEnterEvent(e);
 }
 
 //// FCHtmlViewValidator //////////////////////////////////////////////////////

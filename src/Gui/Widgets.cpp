@@ -236,9 +236,16 @@ void FCProgressBar::Stop ()
   d->iStartedProgresses--;
   if (d->iStartedProgresses == 0)
   {
-    reset();
+    Reset();
     d->bSeveralInstances = false;
   }
+}
+
+void FCProgressBar::Reset()
+{
+  reset();
+  setTotalSteps(0);
+  setProgress(-1);
 }
 
 bool FCProgressBar::isInterrupted()
@@ -267,7 +274,7 @@ bool FCProgressBar::isInterrupted()
 void FCProgressBar::interrupt()
 {
   //resets
-  reset();
+  Reset();
   d->bSeveralInstances = false;
   d->iStartedProgresses = 0;
 

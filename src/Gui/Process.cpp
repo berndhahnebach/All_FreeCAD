@@ -310,6 +310,9 @@ void FCProcess::timeout()
     {
 	    Notify(processExited);
   	}
+
+    // avoid to notify twice
+    notifyOnExit = false;
   }
 }
 

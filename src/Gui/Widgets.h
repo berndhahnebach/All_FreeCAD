@@ -104,6 +104,8 @@ class FCProgressBar : public QProgressBar
     void Next();
     /** Stops the sequencer */
     void Stop ();
+    /** Resets the sequencer */
+    void Reset();
 
   private:
 	  /** @name for internal use only */

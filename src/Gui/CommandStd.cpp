@@ -846,7 +846,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
         std::string msg = process->message();
 
 #ifdef FC_DEBUG
-        GetConsole().Message(msg.c_str());
+        GetConsole().Log(msg.c_str());
 #endif
 
         // search for an error message
