@@ -56,13 +56,6 @@ class StandardWorkbench ( Workbench ):
 #		"Std_CommandLine"]
 #		Gui.ToolbarAppendItems("TestTools", list, 0)
 
-		# test tool bar
-		list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator",
-		"Std_ViewFront","Std_ViewFront","Std_ViewRight",
-		"Std_ViewTop", "Separator", "Std_ViewRear", "Std_ViewLeft",
-		"Std_ViewBottom"]
-		Gui.ToolbarAppendItems("Standard views",list, 0)
-
 		Log ('   Set up commandbar...\n')
 		list = ["Std_Test1", "Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
 		Gui.CommandbarAppendItems("TestTools", list, 0)
@@ -89,12 +82,21 @@ class StandardWorkbench ( Workbench ):
 def InitToolbars():
 	Log ('   Set up toolbars...\n')
 
+	# standard file tool bar
 	list = ["Std_New", "Std_Open", "Std_Save", "Std_Print", "Separator", "Std_Cut","Std_Copy",
 	"Std_Paste", "Separator", "Std_Undo", "Std_Redo", "Separator", "Std_Workbench","Std_WhatsThis"]
 	Gui.ToolbarAppendItems("file operations", list, 0, 0)
 
+	# macro tool bar
 	list = ["Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute"]
 	Gui.ToolbarAppendItems("Macro recording", list, 0, 0, 0)
+
+	# view tool bar
+	list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator",
+	"Std_ViewFront","Std_ViewFront","Std_ViewRight",
+	"Std_ViewTop", "Separator", "Std_ViewRear", "Std_ViewLeft",
+	"Std_ViewBottom"]
+	Gui.ToolbarAppendItems("Standard views",list, 0, 0)
 
 #	# test tool bar
 #	list = ["Std_MDIToplevel","TestTools","Std_MDITabed","Std_MDINormal",

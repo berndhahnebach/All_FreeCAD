@@ -174,17 +174,7 @@ void UndoRedoDialog::onFetchInfo()
   }
   else if ( dynamic_cast<PythonEditView*>(ApplicationWindow::Instance->GetActiveView()) )
   {
-    PythonEditView* editView = dynamic_cast<PythonEditView*>(ApplicationWindow::Instance->GetActiveView());
-
-    QStringList stack;
-    if ( tMode == Undo ) 
-      stack = editView->undoActions();
-    else
-      stack = editView->redoActions();
-
-    for ( QStringList::Iterator it = stack.begin(); it != stack.end(); it++ )
-      pListBox->insertItem( *it );
-    pTextLabel->setText( tr( "Cancel" ) );
+    pTextLabel->setText( tr( "No info" ) );
   }
   else
   {
@@ -223,59 +213,7 @@ void UndoRedoDialog::onSelected()
   emit clickedListBox();
 }
 
-/* XPM */
-static const char *pUndo[]={
-"20 17 6 1",
-"b c #000000",
-"a c #d4d0c8",
-"# c None",
-". c None",
-"d c None",
-"c c #f5f4f2",
-".##################.",
-"#..................#",
-"#........bbbb......#",
-"#......bb....bb....#",
-"#..b..b........b...#",
-"#..bbb..........b..#",
-"#..bbb..........b..#",
-"#..bbbb.........b..#",
-"#...............b..#",
-"#..............b...#",
-"#............bb....#",
-"#..................#",
-"#.bbbbbbbbb.b.b.b..#",
-"#.bbbbbbbbb.b.b.b..#",
-"#..................#",
-"#..................#",
-"cddddddddddddddddddc"};
-
-/* XPM */
-static const char *pRedo[]={
-"20 17 6 1",
-"b c #000000",
-"a c #d4d0c8",
-"# c None",
-". c None",
-"d c None",
-"c c #f5f4f2",
-".##################.",
-"#..................#",
-"#......bbbb........#",
-"#....bb....bb......#",
-"#...b........b..b..#",
-"#..b..........bbb..#",
-"#..b..........bbb..#",
-"#..b.........bbbb..#",
-"#..b...............#",
-"#...b..............#",
-"#....bb............#",
-"#..................#",
-"#..b.b.b.bbbbbbbbb.#",
-"#..b.b.b.bbbbbbbbb.#",
-"#..................#",
-"#..................#",
-"cddddddddddddddddddc"};
+// ------------------------------------------------------------
 
 namespace Gui {
 namespace Dialog {
