@@ -40,12 +40,11 @@
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
-
+// build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
 #include "Inventor/Qt/SoQt.h"
 #include "Inventor/OCC/SoBrepShape.h"
-#include <inventor/SoInput.h>
-#include <inventor/nodes/SoSeparator.h>
+
 
 #include "Macro.h"
 
@@ -80,13 +79,6 @@ void FCCmdTest1::Activated(int iMsg)
 
 	//OpenCommand("Test1 - Box");
 
-    // Initialize SoQt and Inventor API libraries. 
-	static bool bInit=false;
-	if(!bInit)
-	{
-		SoQt::init(GetAppWnd());
-		bInit=true;
-	}
   
 #if 0
 	// get open file name
@@ -152,9 +144,8 @@ void FCCmdTest1::Activated(int iMsg)
     SoQtExaminerViewer * viewer = new SoQtExaminerViewer();
     viewer->setSceneGraph(root);
 	viewer->setFeedbackVisibility(true);
-	viewer->setFeedbackSize(30);
+	viewer->setFeedbackSize(20);
 	viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-	viewer->setAutoClipping(true);
 
     viewer->show();
   

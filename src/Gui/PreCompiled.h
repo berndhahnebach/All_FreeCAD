@@ -108,6 +108,8 @@
 #include <Poly_Connect.hxx>
 #include <BRepBuilderAPI_NurbsConvert.hxx>
 
+
+// extern inventor
 #include <Inventor/SbColor.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h> 
 #include <Inventor/actions/SoGetPrimitiveCountAction.h> 
@@ -130,6 +132,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
+#include <inventor/SoInput.h>
 
 
 

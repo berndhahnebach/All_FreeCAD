@@ -39,6 +39,11 @@ class FCDlgSettings3DView : public DlgSettings3DView, public FCWidgetPrefsManage
 { 
     Q_OBJECT
 
+
+    virtual void ChooseDir();
+    virtual void WarnInventor(bool);
+
+
 public:
     FCDlgSettings3DView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCDlgSettings3DView();

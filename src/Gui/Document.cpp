@@ -34,6 +34,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "View3D.h"
+#include "View3DInventor.h"
 
 
 
@@ -76,7 +77,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	_hContext->Deactivate(hTrihedron);
 
 	// alwayes create at least one view
-	CreateView("View3D");
+	CreateView("View3DInv");
 
 }
 
@@ -138,8 +139,12 @@ bool FCGuiDocument::SaveAs(void)
 
 void FCGuiDocument::CreateView(const char* sType) 
 {
-
-    FCView3D* pcView3D = new FCView3D(this,0L,"View3D");
+	FCView* pcView3D;
+	if(strcmp(sType,"View3DOcc") == 0){
+		pcView3D = new FCView3D(this,0L,"View3D");
+	}else{
+		pcView3D = new FCView3DInventor(this,0L,"View3DIv");
+	}
 	
 
 	QString aName;

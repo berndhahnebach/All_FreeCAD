@@ -44,6 +44,8 @@
 
 #include "PrefWidgets.h"
 #include "DlgSettings3DViewImp.h"
+#include "Widgets.h"
+#include "../Base/Console.h"
 
 /* 
  *  Constructs a FCDlgSettings3DViewImp which is a child of 'parent', with the 
@@ -53,6 +55,14 @@ FCDlgSettings3DView::FCDlgSettings3DView( QWidget* parent,  const char* name, WF
     : DlgSettings3DView( parent, name, fl )
 {
 	append(UseAntialiasing->getHandler());
+	append(FCCheckBox_UseInventorViewer->getHandler());
+	append(CheckBox_CornerCoordSystem->getHandler());
+	append(CheckBox_ShowFPS->getHandler());
+	append(CheckBox_UseSimpleBackground->getHandler());
+	append(CheckBox_ShowViewerDecoration->getHandler());
+	append(FCLineEdit_UserDefinedViewerExt->getHandler());
+	append(CheckBox_UseAutoRotation->getHandler());
+
 }
 
 /*  
@@ -62,6 +72,21 @@ FCDlgSettings3DView::~FCDlgSettings3DView()
 {
     // no need to delete child widgets, Qt does it all for us
 }
+
+void FCDlgSettings3DView::ChooseDir()
+{
+	QString cPath = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)");
+
+	FCLineEdit_UserDefinedViewerExt->setText(cPath.latin1());
+}
+
+void  FCDlgSettings3DView::WarnInventor(bool b)
+{
+	if(b)
+		GetConsole().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
+}
+
+
 
 #include "DlgSettings3DView.cpp"
 #include "moc_DlgSettings3DView.cpp"

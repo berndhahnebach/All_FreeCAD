@@ -81,6 +81,8 @@
 #include "Macro.h"
 #include "Themes.h"
 
+#include "Inventor/Qt/SoQt.h"
+
 #include "Icons/images.cpp"
 #include "Icons/FCIcon.xpm"
 #include "Icons/x.xpm"
@@ -105,6 +107,10 @@ ApplicationWindow::ApplicationWindow()
 {
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
+
+	// init the Inventor subsystem
+	SoQt::init(this);
+
 
 	setCaption( "FreeCAD" );
 
@@ -1293,8 +1299,10 @@ FCGuiConsoleObserver::FCGuiConsoleObserver(ApplicationWindow *pcAppWnd)
 /// get calles when a Warning is issued
 void FCGuiConsoleObserver::Warning(const char *m)
 {
-	if(!bMute)
+	if(!bMute){
+		QMessageBox::information( _pcAppWnd, "Warning",m);
 		_pcAppWnd->statusBar()->message( m, 2001 );
+	}
 }
 
 /// get calles when a Message is issued
@@ -1309,7 +1317,7 @@ void FCGuiConsoleObserver::Error  (const char *m)
 {
 	if(!bMute)
 	{
-		QMessageBox::information( _pcAppWnd, "Exception happens",m);
+		QMessageBox::critical( _pcAppWnd, "Exception happens",m);
 		_pcAppWnd->statusBar()->message( m, 2001 );
 	}
 }

@@ -11,9 +11,9 @@
 FCDlgSettingsMacro::FCDlgSettingsMacro( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettingsMacro( parent, name, fl )
 {
-  append(FCCheckBox2->getHandler());
-  append(FCCheckBox3->getHandler());
-	append(MacroPath->getHandler());
+	append(FCCheckBox_GuiAsComment   ->getHandler());
+	append(FCCheckBox_RecordGui      ->getHandler());
+	append(MacroPath      ->getHandler());
 }
 
 /*  

@@ -105,6 +105,13 @@ void FCBaseView::SetDocument(FCGuiDocument* pcDocument)
 	OnNewDocument(pcOldDocument,_pcDocument);
 }
 
+/// returns the document the view is attached to
+FCDocument* FCBaseView::GetAppDocument()
+{
+	if(!_pcDocument) return 0;
+	return _pcDocument->GetDocument();
+}
+
 
 //**************************************************************************
 // FCView
@@ -167,6 +174,7 @@ void FCView::Print(QPainter& cPrinter)
 	// print command specified but print methode not overriden!
 	assert(0);
 }
+
 
 
 //**************************************************************************

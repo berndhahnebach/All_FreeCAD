@@ -34,7 +34,7 @@
 #include "View3D.h"
 #include "MouseModel.h"
 #include "Document.h"
-#include "Tree.h"
+//#include "Tree.h"
 
 
 // global graphic device (set in DocWindow)
