@@ -48,6 +48,8 @@
 # include <vector>
 #endif
 
+#include "../Base/Sequencer.h"
+
 class QHBoxLayout;
 class QTime;
 class QGridLayout;
@@ -126,24 +128,16 @@ class GuiExport FCMessageBox : public QMessageBox
  */
 struct FCProgressBarPrivate;
 
-class FCProgressBar : public QProgressBar
+class FCProgressBar : public QProgressBar, public Sequencer
 {
   public:
     /// construction
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
-    virtual ~FCProgressBar ();
+    ~FCProgressBar ();
     /** Starts the progress bar */
-    void start(QString txt, int steps);
+    bool start(const char* pszStr, int steps);
     /** Does the next step */
-    void next();
-    /** Stops the sequencer */
-    void stop ();
-		/** Checks if the bar is running*/
-		bool isRunning() const;
-		/** Return true if the operation was canceled by press ESC, 
-		 * false otherwise
-		 */
-    bool wasCanceled() const;
+    bool next();
 
 		/** Handles all incoming events while the
 		 * progress bar is running. All key and mouse
@@ -152,18 +146,20 @@ class FCProgressBar : public QProgressBar
 		bool eventFilter(QObject* o, QEvent* e);
 
   private:
+	  /** @name for internal use only */
+    //@{
+		/** Puts text to the status bar */ 
+		void setText (const char* pszTxt);
 		/** Get the events under control */
 		void enterControlEvents();
 		/** Lose the control over incoming events*/
 		void leaveControlEvents();
-	  /** @name for internal use only */
-    //@{
 		/** Throws an exception to stop the pending operation. */
     void abort();
     /** Resets the sequencer */
-    void clear();
+    void resetBar();
     /** Draws the content of the progress bar */
-    virtual void drawContents( QPainter *p );
+    void drawContents( QPainter *p );
     /** Reimplemented */
     bool setIndicator ( QString & indicator, int progress, int totalSteps );
     //@}

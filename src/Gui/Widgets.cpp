@@ -278,31 +278,21 @@ int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QS
 
 struct FCProgressBarPrivate
 {
-  int nSteps;
   int nElapsed; // in milliseconds
 	int nRemaining;
-  int nStarted;
-	int nMaxProg;
-	bool bCanceled;
   QTime measureTime;
-	std::list<int> aValues;
-	std::map<int , int> events;
 	FCWaitingCursor* cWaitCursor;
 };
 
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
-: QProgressBar (parent, name, f)
+: QProgressBar (parent, name, f), Sequencer()
 {
   d = new FCProgressBarPrivate;
+	d->cWaitCursor = 0L;
 
   setFixedWidth(120);
   // this style is very nice ;-)
   setIndicatorFollowsStyle(false);
-  // so far there are no sequencer started
-  d->nStarted = 0;
-	d->nMaxProg = 1;
-	d->bCanceled = false;
-	d->cWaitCursor = 0L;
 }
 
 FCProgressBar::~FCProgressBar ()
@@ -349,7 +339,7 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 				if (ke->key() == Qt::Key_Escape)
 				{
 					// cancel the operation
-					d->bCanceled = true;
+					_bCanceled = true;
 				}
 
 				return true;
@@ -379,53 +369,36 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 	return QProgressBar::eventFilter(o, e);
 }
 
-// NOTE: for each call of this method you must call the
-//       corresponding stop method
-void FCProgressBar::start(QString txt, int steps)
+bool FCProgressBar::start(const char* pszStr, int steps)
 {
-  // increment the size called this method
-  d->nStarted++;
+	// base stuff
+	bool ret = Sequencer::start(pszStr, steps);
 
-  // several sequencer started
-  if (d->nStarted > d->nMaxProg)
-  {
-		// calculate the number of iterations
-		// using Horner scheme
-		d->aValues.push_front(steps);
-		steps = 1;
-		for (std::list<int>::iterator it=d->aValues.begin(); it!=d->aValues.end();++it)
-			steps = steps * (*it) + 1;
-		steps -= 1;
+	setTotalSteps(_nTotalSteps);
 
-	  setTotalSteps(steps);
-		d->nMaxProg = d->nStarted;
-    d->measureTime.restart();
-  }
-  else if (d->nStarted == 1)
-  {
+	if ( _nInstStarted == 1 )
+	{
 		enterControlEvents();
-		d->aValues.push_front(steps);
-	  setTotalSteps(steps);
     d->nElapsed = 0;
-    d->nSteps = 0;
     d->measureTime.start();
-		d->bCanceled = false;
 		d->cWaitCursor = new FCWaitingCursor;
-	  // print message to the statusbar
-    ApplicationWindow::Instance->statusBar()->message(txt);
-  }
+	}
+	else // if (_nMaxInstStarted == _nInstStarted)
+    d->measureTime.restart();
+
+	return ret;
 }
 
-void FCProgressBar::next()
+bool FCProgressBar::next()
 {
   if (!wasCanceled())
 	{
-    setProgress(d->nSteps++);
+    setProgress(_nProgress++);
 
 		// estimate the remaining time in milliseconds
 		int diff = d->measureTime.restart();
 		d->nElapsed += diff;
-		d->nRemaining = d->nElapsed * ( totalSteps() - d->nSteps ) / d->nSteps;
+		d->nRemaining = d->nElapsed * ( totalSteps() - _nProgress ) / _nProgress;
 	}
 	else
 	{
@@ -434,52 +407,39 @@ void FCProgressBar::next()
 	}
 
 	qApp->processEvents();
+
+	return _nProgress < _nTotalSteps;
 }
 
-void FCProgressBar::stop ()
-{
-  d->nStarted--;
-  if (d->nStarted == 0)
-  {
-    clear();
-  }
-}
-
-bool FCProgressBar::isRunning() const
-{
-	return d->nStarted > 0;
-}
-
-void FCProgressBar::clear()
+void FCProgressBar::resetBar()
 {
   reset();
   setTotalSteps(0);
   setProgress(-1);
-  d->nStarted = 0;
-	d->nMaxProg = 1;
-	d->aValues.clear();
 	delete d->cWaitCursor;
 	d->cWaitCursor = 0L;
 	leaveControlEvents();
-}
 
-bool FCProgressBar::wasCanceled() const
-{
-	return d->bCanceled;
+	Sequencer::resetBar();
 }
 
 void FCProgressBar::abort()
 {
-	for (std::map<int, int>::iterator it = d->events.begin(); it!=d->events.end(); ++it)
-		printf("%d=%d\n", it->first, it->second);
   //resets
-  clear();
+  resetBar();
 
 	bool bMute = FCGuiConsoleObserver::bMute;
   FCGuiConsoleObserver::bMute = true;
   FCException exc("Aborting...");
   FCGuiConsoleObserver::bMute = bMute;
   throw exc;
+}
+
+void FCProgressBar::setText (const char* pszTxt)
+{
+	// print message to the statusbar
+	QString txt = pszTxt ? pszTxt : "";
+  ApplicationWindow::Instance->statusBar()->message(txt);
 }
 
 void FCProgressBar::drawContents( QPainter *p )
