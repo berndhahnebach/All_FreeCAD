@@ -281,7 +281,7 @@ void FCToolboxGroup::initialize(QWidget* parent)
   if (parent) parent->setMinimumWidth(40);
 
   layout()->setSpacing( 0 );
-  layout()->setMargin( 0 );
+  layout()->setMargin( 3 );
   ButtonGroupLayout = new QGridLayout( layout() );
   ButtonGroupLayout->setAlignment( Qt::AlignTop );
   ButtonGroupLayout->setSpacing( 1 );
@@ -299,10 +299,7 @@ void FCToolboxGroup::initialize(QWidget* parent)
 
 void FCToolboxGroup::slotRedrawScrollBar(int v)
 {
-//  int maxV = pScrollWidget->verticalScrollBar()->maxValue();
-//  int minV = pScrollWidget->verticalScrollBar()->minValue();
-//  if (v == maxV || v == minV)
-    pScrollWidget->verticalScrollBar()->repaint();
+  pScrollWidget->verticalScrollBar()->repaint();
 }
 
 bool FCToolboxGroup::addWidget(QWidget* w, int i)
@@ -317,6 +314,7 @@ bool FCToolboxGroup::addWidget(QWidget* w, int i)
 bool FCToolboxGroup::addToolboxButton(FCToolboxButton* b, int i)
 {
   connect(this, SIGNAL(signalMaximumWidth(int)), b, SLOT(slotResizeButton(int)));
+  insert(b);
   return addWidget(b, i);
 }
 
@@ -393,43 +391,47 @@ void FCToolboxGroup::resetBackgroundColor()
 FCToolboxButton::FCToolboxButton( QWidget *parent, const char *name )
 : QToolButton( parent, name )
 {
+  tbShowText = false;
   raised = FALSE;
   setFocusPolicy( NoFocus );
   setTextAndPixmap (0, 0);
   setAutoResize( TRUE );
   setAcceptDrops ( true );
-  setMinimumHeight(24);
+  setMinimumHeight(32);
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, QWidget *parent, const char *name )
 : QToolButton( parent, name )
 {
+  tbShowText = true;
   raised = FALSE;
   setFocusPolicy( NoFocus );
   setTextAndPixmap (text, 0);
   setTooltip(tooltip);
   setAutoResize( TRUE );
   setAcceptDrops ( true );
-  setMinimumHeight(24);
+  setMinimumHeight(32);
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
                                   QWidget *parent, const char *name )
 : QToolButton( parent, name )
 {
+  tbShowText = true;
   raised = FALSE;
   setFocusPolicy( NoFocus );
   setTextAndPixmap (text, pix);
   setTooltip(tooltip);
   setAutoResize( TRUE );
   setAcceptDrops ( true );
-  setMinimumHeight(24);
+  setMinimumHeight(32);
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
                                   QObject *receiver, const char *member, QWidget *parent, const char *name )
 : QToolButton( parent, name )
 {
+  tbShowText = true;
   raised = FALSE;
   setFocusPolicy( NoFocus );
   setTextAndPixmap (text, pix);
@@ -439,7 +441,7 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const
       connect (this, SIGNAL(clicked ()), receiver, member);
   setAutoResize( TRUE );
   setAcceptDrops ( true );
-  setMinimumHeight(24);
+  setMinimumHeight(32);
 }
 
 FCToolboxButton::~FCToolboxButton()
@@ -448,9 +450,8 @@ FCToolboxButton::~FCToolboxButton()
 
 void FCToolboxButton::setTextAndPixmap( const QString &text, const QPixmap &pix)
 {
-  textLabel=text;
-  enabledPixmap=pix;
-  repaint();
+  setText(text);
+  setPixmap(pix);
 }
 
 void FCToolboxButton::setText(const char *t)
@@ -549,7 +550,7 @@ void FCToolboxButton::dropEvent ( QDropEvent * e)
   QString str;
   if ( QTextDrag::decode( e, str ) ) 
   {
-	  setTooltip( str );
+	  setText( str );
 	  setMinimumSize( minimumSize().expandedTo( sizeHint() ) );
 	  return;
   }
@@ -563,7 +564,6 @@ void FCToolboxButton::dropEvent ( QDropEvent * e)
 //    makeDisabledPixmap();
 //    enable(isEnabled());
 //  	setMinimumSize( minimumSize().expandedTo( sizeHint() ) );
-//    setMaximumHeight(32);
 	  return;
   }
 }
@@ -1140,9 +1140,7 @@ void FCCmdBar::AddTestButtons(void)
 	  stack->addPage( new QStackBarBtn( "Toolbox", mle->pScrollWidget ) );
 	  for (int i=0; i<=20;i++)
 	  {
-			FCToolboxButton* b0 = new FCToolboxButton( /*DownArrow,*/ mle, "text" );
-//			b0->setTextLabel("Hallo Welt", true);
-			b0->setFixedHeight(24);
+			FCToolboxButton* b0 = new FCToolboxButton( mle, "text" );
       b0->setTooltip(tr("Tooltip"));
       b0->showText(true);
       if (i!=4)
@@ -1176,78 +1174,38 @@ void FCCmdBar::AddTestButtons(void)
         b0->makeDisabledPixmap();
         b0->enable(false);
       }
-			mle->insert(b0);
       mle->addToolboxButton(b0, i);
-//      mle->ButtonGroupLayout->addWidget(b0, i, 0);
     }
 	}
+
   // insert viewing toolbar
   FCToolboxButton* btn;
 	FCToolboxGroup* view = new FCToolboxGroup("", stack);
 	stack->addPage( new QStackBarBtn( "Viewing", view->pScrollWidget ) );
 
   // fit all
-  btn = new FCToolboxButton(view);
-  btn->setText("Fit all");
-  btn->setTooltip("Fit all objects");
-  btn->setPixmap(QPixmap(view_fitall));
-  view->insert(btn);
+  btn = new FCToolboxButton("Fit all", QPixmap(view_fitall), "Fit all objects", view);
   view->addToolboxButton(btn, 0);
-
   // front
-  btn = new FCToolboxButton(view);
-  btn->setText("Front");
-  btn->setTooltip("Front");
-  btn->setPixmap(QPixmap(view_front));
-  view->insert(btn);
+  btn = new FCToolboxButton("Front", QPixmap(view_front), "Front", view);
   view->addToolboxButton(btn, 1);
-
   // top
-  btn = new FCToolboxButton(view);
-  btn->setText("Top");
-  btn->setTooltip("Top");
-  btn->setPixmap(QPixmap(view_top));
-  view->insert(btn);
+  btn = new FCToolboxButton("Top", QPixmap(view_top), "Top", view);
   view->addToolboxButton(btn, 2);
-
   // right
-  btn = new FCToolboxButton(view);
-  btn->setText("Right");
-  btn->setTooltip("Right");
-  btn->setPixmap(QPixmap(view_right));
-  view->insert(btn);
+  btn = new FCToolboxButton("Right", QPixmap(view_right), "Right", view);
   view->addToolboxButton(btn, 3);
-
   // rear
-  btn = new FCToolboxButton(view);
-  btn->setText("Rear");
-  btn->setTooltip("Rear");
-  btn->setPixmap(QPixmap(view_back));
-  view->insert(btn);
+  btn = new FCToolboxButton("Rear", QPixmap(view_back), "Rear", view);
   view->addToolboxButton(btn, 4);
-
   // bottom
-  btn = new FCToolboxButton(view);
-  btn->setText("Bottom");
-  btn->setTooltip("Bottom");
-  btn->setPixmap(QPixmap(view_bottom));
-  view->insert(btn);
+  btn = new FCToolboxButton("Bottom", QPixmap(view_bottom), "Bottom", view);
   view->addToolboxButton(btn, 5);
-
   // left
-  btn = new FCToolboxButton(view);
-  btn->setText("Left");
-  btn->setTooltip("Left");
-  btn->setPixmap(QPixmap(view_left));
-  view->insert(btn);
+  btn = new FCToolboxButton("Left", QPixmap(view_left), "Left", view);
   view->addToolboxButton(btn, 6);
-
   // axo
-  btn = new FCToolboxButton(view);
-  btn->setText("Axometric");
-  btn->setTooltip("Axometric");
-  btn->setPixmap(QPixmap(view_axo));
-  view->insert(btn);
+  btn = new FCToolboxButton("Axometric", QPixmap(view_axo), "Axometric", view);
   view->addToolboxButton(btn, 7);
 
   stack->setCurPage(4);

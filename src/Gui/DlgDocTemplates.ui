@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>296</width>
+            <width>292</width>
             <height>255</height>
         </rect>
     </property>
@@ -195,12 +195,6 @@
         <slot>Validate()</slot>
     </connection>
     <connection>
-        <sender>PushButton4</sender>
-        <signal>pressed()</signal>
-        <receiver>DlgDocTemplates</receiver>
-        <slot>ChoseFile()</slot>
-    </connection>
-    <connection>
         <sender>TemplateIconView</sender>
         <signal>doubleClicked(QIconViewItem*)</signal>
         <receiver>DlgDocTemplates</receiver>
@@ -211,6 +205,12 @@
         <signal>selectionChanged(QIconViewItem*)</signal>
         <receiver>DlgDocTemplates</receiver>
         <slot>ViewChange(QIconViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>PushButton4</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgDocTemplates</receiver>
+        <slot>ChoseFile()</slot>
     </connection>
     <slot access="public">ChoseFile()</slot>
     <slot access="public">IconDoubleClick(QIconViewItem*)</slot>

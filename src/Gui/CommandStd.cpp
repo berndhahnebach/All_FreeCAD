@@ -348,7 +348,7 @@ void FCCmdTileHor::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhats
 
 void FCCmdTileHor::Activated(void)
 {
-
+AppWnd()->expandHorizontal();
 }
 
 //===========================================================================
@@ -368,7 +368,7 @@ void FCCmdTileVer::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhats
 
 void FCCmdTileVer::Activated(void)
 {
-
+AppWnd()->expandVertical();
 }
 
 //===========================================================================
@@ -388,7 +388,7 @@ void FCCmdTilePra::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhats
 
 void FCCmdTilePra::Activated(void)
 {
-
+AppWnd()->tilePragma();
 }
 
 //===========================================================================

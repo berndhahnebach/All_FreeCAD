@@ -175,6 +175,7 @@ View3D::View3D(FCGuiDocument*  pcDocument,
 
 	// rest of the init for OCC is done after the Window is 
 	// created (show()) in InitCasCadeView()
+  setFocusPolicy (ClickFocus);
 }
 
 bool View3D::InitCasCadeView(void)
@@ -221,6 +222,15 @@ void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 	_cMouseStack.top()->mouseMoveEvent( cEvent);
 }
  
+void View3D::focusInEvent  ( QFocusEvent * )
+{
+  puts("focus in (OpenGL window)");
+}
+
+void View3D::focusOutEvent ( QFocusEvent * )
+{
+  puts("focus out (OpenGL window)");
+}
 
 void View3D::ShowPopup(int x, int y)
 {

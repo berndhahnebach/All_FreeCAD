@@ -171,7 +171,7 @@ class GuiExport FCToolboxButton : public QToolButton
   private:
     bool tbShowText;
     bool raised;    
-    const char *textLabel;
+    QString textLabel;
     QPixmap enabledPixmap;
     QPixmap disabledPixmap;
 };

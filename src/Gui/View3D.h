@@ -158,6 +158,8 @@ protected:
 	virtual void keyPressEvent			( QKeyEvent * );
 	virtual void keyReleaseEvent		( QKeyEvent * ); 
 	virtual void wheelEvent             ( QWheelEvent * );
+	virtual void focusInEvent  ( QFocusEvent * ) ;
+	virtual void focusOutEvent ( QFocusEvent * ) ;
 
 	/** Update the view when paint event occur. */
 	virtual void paintEvent				(QPaintEvent * ) ;

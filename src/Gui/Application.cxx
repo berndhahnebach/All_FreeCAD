@@ -25,6 +25,9 @@
 #include "ButtonGroup.h"
 #include "HtmlView.h"
 
+#include "Icons/images.cpp"
+#include "icons/FCIcon.xpm"
+//#include "icons/FCBackground.xpm"
 
 //#include "FreeCADAbout.h"
   
@@ -58,16 +61,16 @@ ApplicationWindow::ApplicationWindow()
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	FCCmdBar* pCmdBar = new FCCmdBar(this,"Cmd_Group");
 	pCmdBar->AddTestButtons();
-	addToolWindow( pCmdBar, KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
+	AddDockWindow( "Command bar",pCmdBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	QString home = QString("index.html");
 	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
-	addToolWindow( hv, KDockWidget::DockBottom, pCmdBar, 70, "Help", "Help");
+	AddDockWindow("Help bar", hv);
 
 	// misc stuff
     resize( 800, 600 );
-	//setBackgroundPixmap(QPixmap(Background3));
+	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	//setUsesBigPixmaps (true);
 
 }
@@ -121,6 +124,65 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 	delete pcDoc;	
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// toolbar and dock window handling
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/// Get a named Toolbar or creat if not in
+QToolBar *ApplicationWindow::GetToolBar(const char* name)
+{
+	//FCmap <FCstring,QToolBar*>     mpcToolBars;
+	FCmap <FCstring,QToolBar*>::iterator It = mpcToolBars.find(name);
+	if( It!=mpcToolBars.end() )
+		return It->second;
+	else
+		return mpcToolBars[name] = new QToolBar( this, name );
+}
+
+/// Delete a named Toolbar
+void ApplicationWindow::DelToolBar(const char* name)
+{
+	FCmap <FCstring,QToolBar*>::iterator It = mpcToolBars.find(name);
+	if( It!=mpcToolBars.end() )
+	{
+		delete It->second;
+		mpcToolBars.erase(It);
+	}
+}
+
+/// Add a new named Dock Window
+void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow,KDockWidget::DockPosition pos , int percent)
+{
+	// 	FCmap <FCstring,FCDockWindow*> mpcDocWindows;
+	mpcDocWindows[name] = pcDocWindow;
+	QString str = name;
+	str += " dockable window";
+	addToolWindow( pcDocWindow, pos, m_pMdi, percent, str, name);
+}
+
+/// Gets you a registered Dock Window back
+FCDockWindow *ApplicationWindow::GetDockWindow(const char* name)
+{
+	FCmap <FCstring,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
+	if( It!=mpcDocWindows.end() )
+		return It->second;
+	else
+		return 0l;
+}
+
+/// Delete (or only remove) a named Dock Window
+void ApplicationWindow::DelDockWindow(const char* name, bool bOnlyRemove)
+{
+	FCmap <FCstring,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
+	if( It!=mpcDocWindows.end() )
+	{
+		if(!bOnlyRemove) delete It->second;
+		mpcDocWindows.erase(It);
+	}
+}
+
+
+
 
 
 
@@ -129,7 +191,6 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-#include "Icons/images.cpp"
 
 void ApplicationWindow::CreateTestOperations()
 {
@@ -148,47 +209,63 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddCommand(new FCCmdMDINormal());
 	_cCommandManager.AddCommand(new FCCmdMDIToplevel());
 	_cCommandManager.AddCommand(new FCCmdMDITabed());
+	_cCommandManager.AddCommand(new FCCmdTileHor());
+	_cCommandManager.AddCommand(new FCCmdTileVer());
+	_cCommandManager.AddCommand(new FCCmdTilePra());
+	_cCommandManager.AddCommand(new FCCmdTest1());
+	_cCommandManager.AddCommand(new FCCmdTest2());
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
 
     // populate a tool bar with some actions
 
-    _pcStdToolBar = new QToolBar( this, "file operations" );
-    _pcStdToolBar->setLabel( "File" );
-	_cCommandManager.AddTo("Std_New",_pcStdToolBar);
-	_cCommandManager.AddTo("Std_Open",_pcStdToolBar);
-	_cCommandManager.AddTo("Std_Save",_pcStdToolBar);
-	_cCommandManager.AddTo("Std_Print",_pcStdToolBar);
-	_pcStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_Cut",_pcStdToolBar);
-	_cCommandManager.AddTo("Std_Copy",_pcStdToolBar);
-	_cCommandManager.AddTo("Std_Paste",_pcStdToolBar);
-	_pcStdToolBar->addSeparator();
+	// Standard tool bar -----------------------------------------------------------------------
+    QToolBar *pcStdToolBar =  GetToolBar("file operations");
+    //_pcStdToolBar->setLabel( "File" );
+	_cCommandManager.AddTo("Std_New",pcStdToolBar);
+	_cCommandManager.AddTo("Std_Open",pcStdToolBar);
+	_cCommandManager.AddTo("Std_Save",pcStdToolBar);
+	_cCommandManager.AddTo("Std_Print",pcStdToolBar);
+	pcStdToolBar->addSeparator();
+	_cCommandManager.AddTo("Std_Cut",pcStdToolBar);
+	_cCommandManager.AddTo("Std_Copy",pcStdToolBar);
+	_cCommandManager.AddTo("Std_Paste",pcStdToolBar);
+	pcStdToolBar->addSeparator();
 	// Undo/Redo Toolbutton
-	QToolButton* button = new QToolButtonDropDown(_pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
+	QToolButton* button = new QToolButtonDropDown(pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotUndo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateUndo()));
 
-	button = new QToolButtonDropDown(_pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
+	button = new QToolButtonDropDown(pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotRedo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateRedo()));
 
-	_pcStdToolBar->addSeparator();
+	pcStdToolBar->addSeparator();
 
-#	include "icons/FCIcon.xpm"
-	_pcWorkbenchCombo = new QComboBox(_pcStdToolBar);
+	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
+	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Part"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Assambly"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"FEM"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Renderer"); 
 
-	_cCommandManager.AddTo("Std_MDIToplevel",_pcStdToolBar);
-	_cCommandManager.AddTo("Std_MDITabed"   ,_pcStdToolBar);
-	_cCommandManager.AddTo("Std_MDINormal"  ,_pcStdToolBar);
+	// test tool bar -----------------------------------------------------------------------
+    pcStdToolBar =  GetToolBar("Test Toolbar" );
+	_cCommandManager.AddTo("Std_MDIToplevel",pcStdToolBar);
+	_cCommandManager.AddTo("Std_MDITabed"   ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_MDINormal"  ,pcStdToolBar);
+	pcStdToolBar->addSeparator();
+	_cCommandManager.AddTo("Std_TilePragmatic"  ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_TileVertical"   ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_TileHoricontal" ,pcStdToolBar);
+	pcStdToolBar->addSeparator();
+	_cCommandManager.AddTo("Std_Test1"  ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_Test2"  ,pcStdToolBar);
 
+
+	// test tool bar -----------------------------------------------------------------------
     // populate a menu with all actions
-
     _pcPopup = new QPopupMenu( this );
     menuBar()->insertItem( "File", _pcPopup) ;
 	_cCommandManager.AddTo("Std_New",_pcPopup);
