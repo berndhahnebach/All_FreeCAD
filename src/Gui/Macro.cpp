@@ -40,6 +40,8 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
+#	include <string>
+#	include <stdio.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -92,10 +94,10 @@ void FCMacroManager::Commit(void)
 	_sMacroInProgress += _sName;
 	_sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
-	ofstream file(_sName.c_str());
-	
+	std::ofstream file(_sName.c_str());
+
 	file << 	_sMacroInProgress.c_str();
-	
+
 	GetConsole().Log("FCMacroManager::Commit()\n%s\n",_sMacroInProgress.c_str());
 
 	_sMacroInProgress = "";

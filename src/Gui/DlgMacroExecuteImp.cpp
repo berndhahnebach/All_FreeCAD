@@ -39,7 +39,16 @@
  */
 #include "PreCompiled.h"
 #ifndef _PreComp_
-
+#	include <qaction.h>
+#	include <qcombobox.h>
+#	include <qdialog.h>
+#	include <qdir.h>
+#	include <qfiledialog.h>
+#	include <qlineedit.h>
+#	include <qlistview.h>
+#	include <qscrollview.h>
+#	include <qthread.h>
+#	include <qtimer.h>
 #endif
 
 

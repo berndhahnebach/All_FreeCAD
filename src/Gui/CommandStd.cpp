@@ -20,10 +20,37 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <iostream.h>
+#	include <stdio.h>
+#	include <assert.h>
+#	include <fcntl.h>
+#	include <ctype.h>
+#	include <typeinfo>
+#	include <vector>
+#	include <map>
+#	include <string>
+#	include <list>
+#	include <set>
+#	include <algorithm>
+#	include <stack>
+#	include <queue>
+#	include <string>
+#	include <Python.h>
+#	include <limits.h>
+#	include <algorithm>
+#	include <qaction.h>
+#	include <qcombobox.h>
+#	include <qcursor.h>
 #	include <qstatusbar.h>
+#	include <qthread.h>
 #	include <qfiledialog.h>
+#	include <qpainter.h>
+#	include <qprocess.h>
 #	include <qprinter.h>
 #	include <qmessagebox.h>
+#	include <qtimer.h>
+#	include <qtextbrowser.h>
+#	include <qvalidator.h>
 #	include <BRepPrimAPI_MakeBox.hxx>
 #	include <BRepTools.hxx>
 #	include <TopoDS_Shape.hxx>

@@ -99,9 +99,9 @@ void FCGUIConsole::Log  (const char *sLog)
 
 // safely ignore FCGUIConsole::s_nMaxLines and  FCGUIConsole::s_nRefCount
 FCGUIConsole::~FCGUIConsole (void) {}
-void FCGUIConsole::Message(const char *sMsg) { cout<<sMsg; }
-void FCGUIConsole::Warning(const char *sWarn){ cerr<<"Warning: "<<sWarn; }
-void FCGUIConsole::Error  (const char *sErr) { cerr<<"Error: "<<sErr;}
-void FCGUIConsole::Log  (const char *sLog)   { clog<<sLog;}
+void FCGUIConsole::Message(const char *sMsg) { std::cout<<sMsg; }
+void FCGUIConsole::Warning(const char *sWarn){ std::cerr<<"Warning: "<<sWarn; }
+void FCGUIConsole::Error  (const char *sErr) { std::cerr<<"Error: "<<sErr;}
+void FCGUIConsole::Log  (const char *sLog)   { std::clog<<sLog;}
 
 #endif /* FC_OS_LINUX */

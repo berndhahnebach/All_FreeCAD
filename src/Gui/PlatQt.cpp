@@ -29,16 +29,17 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qapplication.h>
-# include <qstring.h>
-# include <qwidget.h>
-# include <qlistbox.h>
-# include <qpopupmenu.h>
-# include <qcursor.h>
-# include <qpixmap.h>
-# include <qdatetime.h>
-# include <qpainter.h>
-# include <qfont.h>
+#	include <qapplication.h>
+#	include <qstring.h>
+#	include <qwidget.h>
+#	include <qlistbox.h>
+#	include <qpopupmenu.h>
+#	include <qcursor.h>
+#	include <qpixmap.h>
+#	include <qdatetime.h>
+#	include <qpainter.h>
+#	include <qfont.h>
+#	include <qtimer.h>
 #endif
 
 #include <stdio.h>
@@ -46,7 +47,6 @@
 #include <string.h>
 
 #include "PlatQt.h"
-#include "Application.h"
 #include "Document.h"
 #include "scintilla/Platform.h"
 #include "scintilla/XPM.h"

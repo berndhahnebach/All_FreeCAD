@@ -28,6 +28,13 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#	include <list>
+#	include <string>
+#	include <vector>
+#	include <qlistbox.h>
+#	include <qobjectlist.h>
+#endif
 
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"

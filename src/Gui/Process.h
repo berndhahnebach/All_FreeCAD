@@ -37,7 +37,9 @@
 #else // QT_VERSION < 300
 
 #ifndef FC_OS_WIN32
+#if QT_VERSION < 300
 #	error "Does not contain QProcess. Please use Qt 3.x.x"
+#endif
 #endif
 
 class FCProcess : public QObject, public FCBaseProcess

@@ -28,11 +28,17 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#	include <qscrollview.h>
+#	include <qtabwidget.h>
+#	include <qtextbrowser.h>
+#	include <qtimer.h>
+#endif
+
 #include "ReportView.h"
 #include "Widgets.h"
-#include <qtabwidget.h>
 
-/* 
+/*
  *  Constructs a FCReportOutput which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */

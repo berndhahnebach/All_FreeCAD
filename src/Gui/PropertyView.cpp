@@ -40,7 +40,33 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
+#	include <vector.h>
+#	include <qaction.h>
+#	include <qbutton.h>
+#	include <qbuttongroup.h>
+#	include <qcolordialog.h>
+#	include <qcombobox.h>
+#	include <qcursor.h>
 #	include <qguardedptr.h>
+#	include <qhbox.h>
+#	include <qheader.h>
+#	include <qinputdialog.h>
+#	include <qlabel.h>
+#	include <qlayout.h>
+#	include <qlistbox.h>
+#	include <qmessagebox.h>
+#	include <qtextbrowser.h>
+#	include <qobjectlist.h>
+#	include <qpainter.h>
+#	include <qprocess.h>
+#	include <qstyle.h>
+#	include <qtabbar.h>
+#	include <qthread.h>
+#	include <qurl.h>
+#	include <qvalidator.h>
+#	include <qwhatsthis.h>
+#	include <qworkspace.h>
+#	include <ctype.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -136,7 +162,7 @@ void FCPropertyViewItem::setFocus( QWidget *w )
 {
   QWorkspace *ws = 0;
   QWidget *wid = listview->propertyView();
-  while ( wid ) 
+  while ( wid )
   {
 	  if ( wid->inherits( "QWorkspace" ) )
 	    break;
@@ -248,14 +274,14 @@ void FCPropertyViewItem::paintBranches( QPainter * p, const QColorGroup & cg, in
   QColorGroup g( cg );
   g.setColor( QColorGroup::Base, backgroundColor() );
   QListViewItem::paintBranches( p, g, w, y, h, s );
-}	
+}
 #else
 void FCPropertyViewItem::paintBranches( QPainter * p, const QColorGroup & cg, int w, int y, int h )
 {
   QColorGroup g( cg );
   g.setColor( QColorGroup::Base, backgroundColor() );
   QListViewItem::paintBranches( p, g, w, y, h );
-}	
+}
 #endif
 
 void FCPropertyViewItem::paintFocus( QPainter *p, const QColorGroup &cg, const QRect &r )

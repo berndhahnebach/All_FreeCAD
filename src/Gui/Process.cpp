@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 /** \file Process.cpp
- *  \brief 
+ *  \brief
  *  \author Werner Mayer
  *  \version 0.1
  *  \date    2003/01/06
@@ -30,11 +30,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qprocess.h>
+#	include <qstring.h>
+#	include <string>
 #endif
 
-#include "Process.h"
 #include "../Base/Console.h"
-#include <string>
+#include "../Base/Observer.h"
+#include "Process.h"
 
 
 #if QT_VERSION > 300

@@ -31,11 +31,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qbutton.h>
 #	include <qmessagebox.h>
-#	include <qiconview.h> 
+#	include <qiconview.h>
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-# include <Python.h>
+#	include <qlayout.h>
+#	include <qlabel.h>
+#	include <vector>
 #endif
 
 #include "DlgCustomizeImp.h"
@@ -43,7 +46,6 @@
 #include "DlgActionsImp.h"
 #include "DlgCmdbarsImp.h"
 #include "DlgCommandsImp.h"
-#include "Application.h"
 #include "Tools.h"
 //#include <qobjcoll.h>
 #include <qtabwidget.h>

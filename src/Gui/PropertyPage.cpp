@@ -30,6 +30,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qbutton.h>
+#	include <qlabel.h>
+#	include <qlayout.h>
 #endif
 
 #include "PropertyPage.h"

@@ -1,13 +1,13 @@
 /** \file Application.cpp
- *  \brief  
+ *  \brief
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *   
+ *
  */
 
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -18,12 +18,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -32,25 +32,54 @@
 
 
 /** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
+ *  on some compilers the precompiled header option gain significant compile
+ *  time! So every external header (libs and system) should included in
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+// standard
+#	include <iostream.h>
+#	include <stdio.h>
+#	include <assert.h>
+#	include <fcntl.h>
+#	include <ctype.h>
+#	include <typeinfo>
+// STL
+#	include <vector>
+#	include <map>
+#	include <string>
+#	include <list>
+#	include <set>
 #	include <algorithm>
+#	include <stack>
+#	include <queue>
+#	include <string>
+// Python
+#	include <Python.h>
+#	include <limits.h>
+#	include <algorithm>
+// Qt
 #	include <qapplication.h>
+#	include <qaction.h>
+#	include <qbuttongroup.h>
+#	include <qcursor.h>
 #	include <qvbox.h>
 #	include <qworkspace.h>
 #	include <qstatusbar.h>
 #	include <qmenubar.h>
 #	include <qmessagebox.h>
 #	include <qtoolbar.h>
+#	include <qprocess.h>
 #	include <qpopupmenu.h>
 #	include <qcombobox.h>
 #	include <qstatusbar.h>
+#	include <qtabbar.h>
+#	include <qtextbrowser.h>
+#	include <qthread.h>
+#	include <qtimer.h>
 #endif
 
 
@@ -100,7 +129,7 @@ ApplicationWindow* ApplicationWindow::Instance = 0L;
 struct ApplicationWindowP
 {
   ApplicationWindowP()
-    : toolbars(0L), cmdbars(0L), viewbar(0L), _pcActiveDocument(0L), 
+    : toolbars(0L), cmdbars(0L), viewbar(0L), _pcActiveDocument(0L),
     _bIsClosing(false), _bControlButton(false)
   {
 	  // create the macro manager

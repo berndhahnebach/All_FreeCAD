@@ -20,17 +20,19 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qvbox.h>
-#	include <qtoolbar.h>
-#	include <qfiledialog.h>
+#	include <qaction.h>
 #	include <qapplication.h>
-#	include <qmessagebox.h>
-#	include <qsplitter.h>
-#	include <qwidgetstack.h>
-#	include <qpushbutton.h>
-#	include <qtabbar.h>
-#	include <qlayout.h>
+#	include <qfiledialog.h>
 #	include <qgrid.h>
+#	include <qlayout.h>
+#	include <qmessagebox.h>
+#	include <qpushbutton.h>
+#	include <qsplitter.h>
+#	include <qtabbar.h>
+#	include <qthread.h>
+#	include <qtoolbar.h>
+#	include <qvbox.h>
+#	include <qwidgetstack.h>
 #endif
 
 

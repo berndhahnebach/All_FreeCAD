@@ -20,14 +20,18 @@
 #ifndef _PreComp_
 #	include <iostream>
 #	include <stdio.h>
+#	include <stack>
 #	include <Standard_Failure.hxx>
 #	include <qapplication.h>
+#	include <qaction.h>
+#	include <qcursor.h>
+#	include <qfiledialog.h>
+#	include <qmessagebox.h>
 #	include <qpopupmenu.h>
 #	include <qvbox.h>
 #	include <qsplitter.h>
 #	include <qtabbar.h>
-#	include <qfiledialog.h>
-#	include <qmessagebox.h>
+#	include <qthread.h>
 #endif
 
 #include "Application.h"
@@ -138,12 +142,12 @@ void FCView3D::dump()
 	if ( !file.isNull() ) {
 	  QApplication::setOverrideCursor( Qt::waitCursor );
 	  if(!_pcView3D->ScreenDump( (const Standard_CString) file.latin1())) {
-	    QApplication::restoreOverrideCursor();                
+	    QApplication::restoreOverrideCursor();
 	    QMessageBox::information ( qApp->mainWidget(),"TIT_ERROR", "INF_ERROR", "BTN_OK",
 		  		       QString::null, QString::null, 0, 0);
 	    qApp->processEvents();  /* update desktop */	
 	  } else 
-	    QApplication::restoreOverrideCursor();                
+	    QApplication::restoreOverrideCursor();
 	}
 }
 
@@ -228,7 +232,7 @@ void View3D::focusInEvent			( QFocusEvent *cEvent){ShowDimension();             
 void View3D::wheelEvent				( QWheelEvent *cEvent){_cMouseStack.top()->wheelMouseEvent( cEvent);}
 void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 { 
-	QApplication::flushX(); 
+	QApplication::flushX();
 	_cMouseStack.top()->moveMouseEvent( cEvent);
 }
 

@@ -32,10 +32,14 @@
 
 #include "../Version.h"
 #ifndef _PreComp_
+#	include <qapplication.h>
 #	include <qmessagebox.h>
-#	include <qiconview.h> 
+#	include <qiconview.h>
 #	include <qfiledialog.h>
-# include <Python.h>
+#	include <qlabel.h>
+#	include <qstylefactory.h>
+#	include <qtextbrowser.h>
+#	include <qthread.h>
 #endif
 
 #include "Splashscreen.h"

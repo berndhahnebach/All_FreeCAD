@@ -30,8 +30,22 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <vector>
+#	include <qaction.h>
+#	include <qaccel.h>
+#	include <qbutton.h>
+#	include <qcolordialog.h>
+#	include <qcursor.h>
+#	include <qgroupbox.h>
+#	include <qlabel.h>
+#	include <qlayout.h>
+#	include <qmovie.h>
+#	include <qpainter.h>
+#	include <qstatusbar.h>
 #	include <qstring.h>
+#	include <qthread.h>
 #	include <qurl.h>
+#	include <qvalidator.h>
 #	include <ctype.h>
 #endif
 

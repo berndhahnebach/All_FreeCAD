@@ -1,13 +1,13 @@
 /** \file DlgPreferncesImp.cpp
- *  \brief  
+ *  \brief
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *   
+ *
  */
 
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -18,12 +18,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -32,25 +32,24 @@
 
 
 /** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
+ *  on some compilers the precompiled header option gain significant compile
+ *  time! So every external header (libs and system) should included in
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#endif
-#include <qwidgetstack.h>
-#include <qtabwidget.h>
-#if QT_VERSION >= 230
-# include <qlistview.h>
+#	include <qlistbox.h>
+#	include <qwidgetstack.h>
+#	include <qtabwidget.h>
+#	include <qlistview.h>
+#	include <qpainter.h>
+#	include <qtabwidget.h>
 #endif
 #include "WidgetFactory.h"
 #include "DlgPreferencesImp.h"
 #include "PropertyPage.h"
-#include "Application.h"
-#include "Tools.h"
 #include "Widgets.h"
 #include "BitmapFactory.h"
 

@@ -20,6 +20,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <qcursor.h>
+#	include <qthread.h>
 #endif
 
 

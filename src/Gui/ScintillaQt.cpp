@@ -40,7 +40,6 @@
 #endif
 
 #include "ScintillaQt.h"
-#include "Application.h"
 #include "DlgEditorImp.h"
 #include "scintilla/SciLexer.h"
 

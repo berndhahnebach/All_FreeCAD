@@ -31,10 +31,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qpainter.h>
-# include <qstyle.h>
-# include <qapplication.h>
-# include <qcolordialog.h>
+#	include <qaction.h>
+#	include <qapplication.h>
+#	include <qbuttongroup.h>
+#	include <qcolordialog.h>
+#	include <qcursor.h>
+#	include <qpainter.h>
+#	include <qstyle.h>
+#	include <qthread.h>
 #endif
 
 #include <qobjectlist.h>

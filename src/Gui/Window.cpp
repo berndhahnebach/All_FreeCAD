@@ -19,10 +19,10 @@
  
 
 #include "PreCompiled.h"
-#include <qtabwidget.h>
-
-
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <qtabwidget.h>
+#	include <qthread.h>
 #endif
 
 

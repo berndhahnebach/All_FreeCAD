@@ -30,9 +30,17 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qurl.h>
+#	include <qaction.h>
 #	include <qbuttongroup.h>
+#	include <qcombobox.h>
+#	include <qcursor.h>
 #	include <qmessagebox.h>
+#	include <qtextbrowser.h>
+#	include <qprocess.h>
+#	include <qthread.h>
+#	include <qurl.h>
+#	include <qvalidator.h>
+#	include <qwhatsthis.h>
 #	include <ctype.h>
 #endif
 
@@ -1635,7 +1643,7 @@ FCWhatsThisPrivate::FCWhatsThisItem* FCWhatsThisPrivate::item( QWidget * widget 
   mWidgetItem[widget] = i;
   QWidget * t = widget->topLevelWidget();
   
-  if ( topLevelWidget.find( t ) == topLevelWidget.end() ) 
+  if ( topLevelWidget.find( t ) == topLevelWidget.end() )
   {
 	  topLevelWidget[t] = t;
 	  t->installEventFilter( this );
@@ -1715,7 +1723,7 @@ bool FCWhatsThisPrivate::eventFilter( QObject * o, QEvent * e )
       {
   	    QKeyEvent* kev = (QKeyEvent*)e;
 
-	      if (kev->key() == Qt::Key_Escape) 
+	      if (kev->key() == Qt::Key_Escape)
         {
       		leaveWhatsThisMode();
 		      return true;
@@ -1764,7 +1772,7 @@ void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, c
   TDocType type=Html;
   if (FCBrowserSourceFactory::canConvertToHTML(text) || currentText.findRev(".html") != -1)
   {
-    // get text of the url 
+    // get text of the url
     QWidget* w = ApplicationWindow::Instance->GetCustomWidgetManager()->getDockWindow("Help bar");
     if (w->inherits("FCHtmlView"))
     {

@@ -28,6 +28,15 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#	include <string>
+#	include <list>
+#	include <vector>
+#	include <qdir.h>
+#	include <qpainter.h>
+#	include <qpixmap.h>
+#	include <qtoolbar.h>
+#endif
 
 #include "BitmapFactory.h"
 #include "Tools.h"

@@ -11,6 +11,45 @@
 *************************************************************/
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <qfont.h>
+# include <Standard.hxx>
+# include <BRepAdaptor_Surface.hxx>
+# include <BRep_Builder.hxx>
+# include <BRep_Tool.hxx>
+# include <BRepTools.hxx>
+# include <Bnd_Box.hxx>
+# include <BRepBndLib.hxx>
+# include <BRepBuilderAPI_NurbsConvert.hxx>
+# include <BRepMesh_IncrementalMesh.hxx>
+# include <Geom_BSplineSurface.hxx>
+# include <Geom_Surface.hxx>
+# include <TopExp_Explorer.hxx>
+# include <TColStd_ListOfReal.hxx>
+# include <TColStd_ListIteratorOfListOfReal.hxx>
+# include <TColStd_Array1OfReal.hxx>
+# include <TColgp_Array1OfPnt2d.hxx>
+# include <TColgp_Array1OfPnt.hxx>
+# include <TColgp_Array2OfPnt.hxx>
+# include <Poly_Triangulation.hxx>
+# include <gp_Pnt.hxx>
+# include <gp_Pnt2d.hxx>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoComplexity.h>
+# include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoCoordinate4.h>
+# include <Inventor/nodes/SoIndexedFaceSet.h>
+# include <Inventor/nodes/SoIndexedTriangleStripSet.h>
+# include <Inventor/nodes/SoLocateHighlight.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoMaterialBinding.h>
+# include <Inventor/nodes/SoNurbsSurface.h>
+# include <Inventor/nodes/SoSelection.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoShape.h>
+# include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/SoInput.h>
+#endif
 
 #include "SoBrepShape.h"
 
@@ -23,7 +62,7 @@
 #define MAX2(X, Y)	(  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
 #define MAX3(X, Y, Z)	( MAX2 ( MAX2(X,Y) , Z) )
 
-/*******************************************  
+/*******************************************
  *  Compute normal of vertex on a surface
  *******************************************/
 
@@ -37,7 +76,7 @@ void ComputeNormal(const BRepAdaptor_Surface& SF,
 	SF.D1(V1_2d.X(),V1_2d.Y(),V1,T1,T2);
 	Normal = T1.Crossed(T2);
 	Standard_Real x = Normal.Magnitude();
-	if (x > 1.e-10) 
+	if (x > 1.e-10)
 		Normal.Multiply(1/x);
 	else {
 		Normal.SetCoord(1/2.,0,0);
@@ -45,7 +84,7 @@ void ComputeNormal(const BRepAdaptor_Surface& SF,
 	}
 }
 
-/*******************************************  
+/*******************************************
  *  Add a vertex with normal for strip algo
  *******************************************/
 

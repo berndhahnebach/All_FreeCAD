@@ -30,11 +30,16 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <qbutton.h>
 #	include <qmessagebox.h>
-#	include <qiconview.h> 
+#	include <qiconview.h>
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-# include <Python.h>
+#	include <qlabel.h>
+#	include <qstyle.h>
+#	include <qstylefactory.h>
+#	include <qthread.h>
 #endif
 
 #include "DlgGeneralImp.h"

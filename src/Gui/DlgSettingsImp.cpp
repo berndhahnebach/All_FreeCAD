@@ -31,15 +31,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qbutton.h>
 #	include <qmessagebox.h>
-#	include <qiconview.h> 
+#	include <qiconview.h>
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
+#	include <qlabel.h>
 #endif
 
 #include "DlgSettingsImp.h"
-#include "Application.h"
 #include "PrefWidgets.h"
 
 /* 

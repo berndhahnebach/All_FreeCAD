@@ -24,10 +24,24 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#	include <qaction.h>
+#	include <qapplication.h>
+#	include <qscrollbar.h>
+#	include <qpopupmenu.h>
+#	include <qstring.h>
+#	include <qtimer.h>
+#	include <qclipboard.h>
+#	include <qdragobject.h>
+#	include <qpainter.h>
+#	include <qscrollview.h>
+#	include <qthread.h>
+#endif
+
 #include "SciEditor.h"
 #include "Application.h"
 #include "scintilla/SciLexer.h"

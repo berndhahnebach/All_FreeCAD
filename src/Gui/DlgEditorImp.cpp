@@ -30,6 +30,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#	include <qbutton.h>
+#	include <qlabel.h>
 #endif
 
 #include "DlgEditorImp.h"

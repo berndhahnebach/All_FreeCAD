@@ -11,6 +11,19 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <string>
+#	include <vector>
+#	include <qaction.h>
+#	include <qbuttongroup.h>
+#	include <qcursor.h>
+#	include <qobjectlist.h>
+#	include <qprocess.h>
+#	include <qstatusbar.h>
+#	include <qtextbrowser.h>
+#	include <qthread.h>
+#	include <qtooltip.h>
+#	include <qvalidator.h>
+#	include <qwhatsthis.h>
 #endif
 
 #include "../Base/Console.h"

@@ -1,10 +1,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <qcursor.h>
 #	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
-#       include <Python.h>
+#	include <qlineedit.h>
+#	include <qtooltip.h>
+#	include <qthread.h>
 #endif
 
 #include "DlgDocTemplatesImp.h"

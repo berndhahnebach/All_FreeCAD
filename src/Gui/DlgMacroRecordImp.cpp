@@ -40,6 +40,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <string>
+#	include <qaction.h>
+#	include <qfiledialog.h>
+#	include <qlineedit.h>
+#	include <qmessagebox.h>
+#	include <qthread.h>
 #endif
 
 #include "Macro.h"

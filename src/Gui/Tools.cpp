@@ -24,13 +24,21 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 #include "PreCompiled.h"
 
 
 #ifndef _PreComp_
-# include <qpixmap.h>
+#	include <qapplication.h>
+#	include <qbitmap.h>
+#	include <qdir.h>
+#	include <qfileinfo.h>
+#	include <qobjectlist.h>
+#	include <qpainter.h>
+#	include <qpalette.h>
+#	include <qpixmap.h>
+#	include <qtoolbar.h>
 #endif
 
 #include "Tools.h"

@@ -28,7 +28,15 @@
 
 
 #include "PreCompiled.h"
-
+#ifndef _PreComp_
+# include <qapplication.h>
+# include <qstring.h>
+# include <qstringlist.h>
+# include <qfile.h>
+# include <qdir.h>
+# include <vector>
+# include <map>
+#endif
 #include "../Base/Console.h"
 #include "LanguageFactory.h"
 #include "linguist/metatranslator.h"

@@ -18,12 +18,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -33,21 +33,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <iostream>
-#	include <stdio.h>
-#	include <Standard_Failure.hxx>
-#	include <qapplication.h>
-#	include <qpopupmenu.h>
 #	include <qvbox.h>
-#	include <qsplitter.h>
-#	include <qtabbar.h>
-#	include <qfiledialog.h>
-#	include <qmessagebox.h>
+#	include <Inventor/nodes/SoMaterial.h>
+#	include <Inventor/nodes/SoShapeHints.h>
 #endif
 
-#include "Application.h"
 #include "View3DInventor.h"
-#include "MouseModel.h"
 #include "Document.h"
 #include "../App/Label.h"
 

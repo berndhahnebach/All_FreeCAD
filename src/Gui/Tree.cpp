@@ -18,10 +18,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-
+#	include <TDataStd_Integer.hxx>
+#	include <TDataStd_Name.hxx>
+#	include <TNaming_NamedShape.hxx>
+#	include <qheader.h>
 #endif
 
-#include "Application.h"
 #include "Document.h"
 #include "../App/Document.h"
 #include "../App/Label.h"
@@ -133,13 +135,13 @@ void FCTreeLabel::setOpen( bool o )
 		setPixmap(0,*FCTree::pcLabelOpen);
 
 		Update();
-	
+
 	}else{
 		setPixmap(0,*FCTree::pcLabelClosed);
 	}
 
 	QListViewItem::setOpen ( o );
-	
+
 }
 
 

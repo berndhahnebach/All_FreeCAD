@@ -30,11 +30,11 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#	include <qbutton.h>
+#	include <qlabel.h>
 #endif
 
 #include "DlgOnlineHelpImp.h"
-#include "Application.h"
-#include "Process.h"
 
 FCOnlineHelp::FCOnlineHelp( QWidget* parent, const char* name, WFlags fl )
 : FCOnlineHelpBase(parent, name, fl)

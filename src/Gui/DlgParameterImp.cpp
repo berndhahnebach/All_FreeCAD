@@ -44,7 +44,6 @@
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
 #endif
 
 #include "DlgParameterImp.h"

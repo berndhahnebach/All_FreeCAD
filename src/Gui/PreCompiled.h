@@ -2,6 +2,7 @@
 #define __PRECOMPILED_GUI__
 
 #include "../Config.h"
+#ifdef _PreComp_
 
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
@@ -118,15 +119,15 @@
 
 // extern inventor
 #include <Inventor/SbColor.h>
-#include <Inventor/actions/SoBoxHighlightRenderAction.h> 
-#include <Inventor/actions/SoGetPrimitiveCountAction.h> 
+#include <Inventor/actions/SoBoxHighlightRenderAction.h>
+#include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/nodes/SoBaseColor.h>
-#include <Inventor/nodes/SoComplexity.h> 
+#include <Inventor/nodes/SoComplexity.h>
 #include <Inventor/nodes/SoCoordinate3.h>
-#include <Inventor/nodes/SoCoordinate4.h> 
+#include <Inventor/nodes/SoCoordinate4.h>
 #include <Inventor/nodes/SoEnvironment.h>
 #include <Inventor/nodes/SoExtSelection.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -148,7 +149,7 @@
 #else
 #include <Graphic3d_WNTGraphicDevice.hxx>
 #endif
- 
+
 #include <Python.h>
 #ifdef FC_OS_WIN32
 #	include <windows.h>
@@ -172,7 +173,7 @@
 #include <qframe.h>
 #include <qhbox.h>
 #include <qheader.h>
-#include <qiconview.h> 
+#include <qiconview.h>
 #include <qimage.h>
 #include <qinputdialog.h>
 #include <qkeycode.h>
@@ -191,7 +192,7 @@
 #include <qobjectlist.h>
 #include <qpaintdevicemetrics.h>
 #include <qpainter.h>
-#include <qpalette.h> 
+#include <qpalette.h>
 #include <qpixmap.h>
 #include <qpopupmenu.h>
 #include <qprinter.h>
@@ -203,15 +204,15 @@
 #include <qscrollbar.h>
 #include <qslider.h>
 #include <qspinbox.h>
-#include <qsplitter.h> 
+#include <qsplitter.h>
 #include <qstatusbar.h>
 #include <qstyle.h>
 #include <qtabbar.h>
-#include <qtextbrowser.h> 
+#include <qtextbrowser.h>
 #include <qtextstream.h>
 #include <qthread.h>
 #include <qtimer.h>
-#include <qtoolbar.h> 
+#include <qtoolbar.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
 #include <qtranslator.h>
@@ -238,6 +239,7 @@
 #	include <qplatinumstyle.h>
 #endif
 
+#endif //_PreComp_
 
 
-#endif 
+#endif

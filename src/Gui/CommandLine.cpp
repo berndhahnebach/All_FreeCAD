@@ -31,10 +31,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qaction.h>
 #	include <qclipboard.h>
 #	include <qscrollbar.h>
 #	include <qcombobox.h>
+#	include <qcursor.h>
 #	include <qmessagebox.h>
+#	include <qthread.h>
 #endif
 
 #include "CommandLine.h"

@@ -20,10 +20,31 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <iostream.h>
+#	include <stdio.h>
+#	include <assert.h>
+#	include <fcntl.h>
+#	include <ctype.h>
+#	include <typeinfo>
+#	include <vector>
+#	include <map>
+#	include <string>
+#	include <list>
+#	include <set>
+#	include <algorithm>
+#	include <stack>
+#	include <queue>
+#	include <string>
+#	include <Python.h>
+#	include <limits.h>
+#	include <algorithm>
+#	include <qaction.h>
+#	include <qcursor.h>
 #	include <qstatusbar.h>
 #	include <qfiledialog.h>
 #	include <qprinter.h>
 #	include <qmessagebox.h>
+#	include <qthread.h>
 #	include <BRepPrimAPI_MakeBox.hxx>
 #	include <BRepTools.hxx>
 #	include <TopoDS_Shape.hxx>
@@ -32,6 +53,8 @@
 #	include <Handle_TPrsStd_AISPresentation.hxx>
 #	include <TNaming_NamedShape.hxx>
 #	include <TPrsStd_AISPresentation.hxx>
+#	include <Inventor/nodes/SoMaterial.h>
+#	include <Inventor/nodes/SoShapeHints.h>
 #endif
 
 #include "../Base/Exception.h"
@@ -83,7 +106,7 @@ void FCCmdTest1::Activated(int iMsg)
 
 	//OpenCommand("Test1 - Box");
 
-  
+
 #if 0
 	// get open file name
 	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)", GetAppWnd() );
@@ -93,7 +116,7 @@ void FCCmdTest1::Activated(int iMsg)
     SoInput in;
     SbBool ok = in.openFile(fn.latin1());
     if (!ok) { return; }
-  
+
     // ..and import it.
     SoSeparator * root = SoDB::readAll(&in);
 #else

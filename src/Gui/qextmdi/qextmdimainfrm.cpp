@@ -30,6 +30,7 @@
 #ifndef _PreComp_
 #include <qcursor.h>
 #include <qclipboard.h>
+#include <qobjectlist.h>
 #endif
 
 #ifndef NO_KDE2
@@ -813,7 +814,7 @@ bool QextMdiMainFrm::event( QEvent* e)
    // the main widget the should know this too. Unfortunately there seems to
    // be no way to catch the move start / move stop situations for the main
    // widget in a clean way. (There is no MouseButtonPress/Release or 
-   // something like that.) Therefore we do the following: When we get the 
+   // something like that.) Therefore we do the following: When we get the
    // "first" move event we start a timer and interprete it as "drag begin".
    // If we get the next move event and the timer is running we restart the 
    // timer and don't do anything else. If the timer elapses (this meens we

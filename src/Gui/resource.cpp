@@ -29,6 +29,13 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+#	include <list>
+#	include <string>
+#	include <vector>
+#	include <qlistbox.h>
+#endif
+
 #include "BitmapFactory.h"
 #include "WidgetFactory.h"
 #include "Language/LanguageFactory.h"

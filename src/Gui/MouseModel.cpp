@@ -35,10 +35,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qevent.h>
 #	include <assert.h>
-#	include "qapplication.h"
+#	include <stack>
+#	include <vector>
+#	include <qapplication.h>
+#	include <qcursor.h>
+#	include <qevent.h>
 #	include <qpainter.h>
+#	include <qvbox.h>
 #endif
 
 #include "MouseModel.h"

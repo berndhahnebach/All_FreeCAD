@@ -30,22 +30,35 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <qbutton.h>
+#	include <qbuttongroup.h>
+#	include <qcombobox.h>
+#	include <qcursor.h>
+#	include <qlabel.h>
+#	include <qlayout.h>
+#	include <qobjectlist.h>
+#	include <qmessagebox.h>
+#	include <qprocess.h>
 #	include <qstring.h>
+#	include <qtextbrowser.h>
+#	include <qthread.h>
 #	include <qurl.h>
+#	include <qvalidator.h>
+#	include <qwhatsthis.h>
 #	include <ctype.h>
+#	include <cmath>
 #endif
 
 #include "PrefWidgets.h"
 #include "Application.h"
-#include "Command.h"
-#include "WidgetFactory.h"
 #include "ButtonGroup.h"
+#include "Command.h"
 #include "HtmlView.h"
+#include "WidgetFactory.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
-#include <cmath>
-#include <qvalidator.h>
 
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
@@ -91,7 +104,7 @@ QString FCWidgetPrefs::getEntryName() const
   }
 #endif
 
-  return m_sPrefName; 
+  return m_sPrefName;
 }
 
 void FCWidgetPrefs::setParamGrpPath(QString name)

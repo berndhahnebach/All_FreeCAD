@@ -21,7 +21,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <qfiledialog.h>
+#	include <qmessagebox.h>
 #	include <qstatusbar.h>
+#	include <qthread.h>
+#	include <qvbox.h>
+#	include <stack>
 #	ifndef FC_OS_WIN32
 #		include <Graphic3d_GraphicDevice.hxx>
 #	else

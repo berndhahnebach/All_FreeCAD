@@ -27,18 +27,19 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qlabel.h>
-#	include <qlistbox.h>
-#	include <qlayout.h>
-#	include <qvariant.h>
-#	include <qtooltip.h>
-#	include <qwhatsthis.h>
-#	include <qrect.h>
-#	include <qvariant.h>
+#	include <qaction.h>
+#	include <qapplication.h>
 #	include <qframe.h>
-#       ifdef FC_OS_LINUX
-#          include <qapplication.h>
-#       endif
+#	include <qlabel.h>
+#	include <qlayout.h>
+#	include <qlistbox.h>
+#	include <qpainter.h>
+#	include <qrect.h>
+#	include <qthread.h>
+#	include <qtoolbutton.h>
+#	include <qtooltip.h>
+#	include <qvariant.h>
+#	include <qwhatsthis.h>
 #endif
 
 #include "DlgUndoRedo.h"
