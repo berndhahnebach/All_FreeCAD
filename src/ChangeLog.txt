@@ -181,3 +181,6 @@ Version: V0.1B43 Date: Sun Mar 16 22:32:35 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B44 Date: Wed Mar 19 21:41:52 2003 +++++++++++++++++++++++++++++++
 + deletion of Parameter and Grps
 + Observer delete notification 
+
+Version: V0.1B45 Date: Thu Mar 20 21:05:21 2003 +++++++++++++++++++++++++++++++
++ Testframe for Parameter and removal

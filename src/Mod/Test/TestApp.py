@@ -38,6 +38,8 @@ import FreeCAD, os
 def TestAll():
     FreeCAD.PrintMessage("Checking on basic stuff\n")
     TestBase()
+    FreeCAD.PrintMessage("Checking on Parameters\n")
+    TestParameter()
     FreeCAD.PrintMessage("Checking on document\n")
     TestDoc()
 
@@ -91,5 +93,45 @@ def TestBase():
     FreeCAD.PrintError("   Printing error\n")
     FreeCAD.PrintWarning("   Printing warning\n")
     FreeCAD.PrintLog("   Printing Log\n")
+
+def TestParameter():
+    # Parameter testing
+    TestPar = FreeCAD.ParamGet("System parameter:Test")
+    FreeCAD.PrintLog("Test:")
+    for i in range(50):
+        FreeCAD.PrintLog(`i`+",")
+        TestPar.SetFloat(`i`,4711.4711)
+        TestPar.SetInt(`i`,4711)
+        TestPar.SetBool(`i`,1)
+        Temp = TestPar.GetGroup(`i`)
+        for l in range(50):
+            Temp.SetFloat(`l`,4711.4711)
+            Temp.SetInt(`l`,4711)
+            Temp.SetBool(`l`,1)
+    FreeCAD.PrintLog("\n")
+    #check on special conditions
+    TestPar = FreeCAD.ParamGet("System parameter:Test/44")
+    # check on Int
+    if(TestPar.GetInt("44") == 4711):
+        FreeCAD.PrintLog("Int OK\n")
+    else:
+        FreeCAD.PrintLog("Error reading back Int")
+        raise
+    # check on float
+    if(TestPar.GetFloat("44") == 4711.4711):
+        FreeCAD.PrintLog("Float OK\n")
+    else:
+        FreeCAD.PrintLog("Error reading back Float")
+        raise
+    # check on Bool
+    if(TestPar.GetBool("44") == 1):
+        FreeCAD.PrintLog("Bool OK\n")
+    else:
+        FreeCAD.PrintLog("Error reading back Bool")
+        raise
+    #remove all
+    TestPar = FreeCAD.ParamGet("System parameter:Test")
+    TestPar.Clear()
+
 
 
