@@ -220,6 +220,11 @@ protected: // Protected methods
 	virtual void resizeEvent ( QResizeEvent * );
 	virtual void closeEvent ( QCloseEvent * e );
 	virtual bool eventFilter( QObject* o, QEvent *e );
+  virtual void keyPressEvent ( QKeyEvent * e );
+  virtual void keyReleaseEvent ( QKeyEvent * e );
+  virtual bool focusNextPrevChild( bool next );
+  // store it if the CTRL button is pressed or released
+  bool _bControlButton;
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
 	FCBmpFactory     _cBmpFactory;

@@ -97,7 +97,8 @@ FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
       _pcActiveDocument(NULL),
-	  _bIsClosing(false)
+	  _bIsClosing(false),
+    _bControlButton(false)
 {
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
@@ -700,6 +701,33 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
   }
 
   return QextMdiMainFrm::eventFilter(o, e);
+}
+
+bool ApplicationWindow::focusNextPrevChild( bool next )
+{
+  if (_bControlButton)
+  {
+    if (next)
+      activateNextWin();
+    else
+      activatePrevWin();
+
+    return (activeWindow() != NULL);
+  }
+
+  return QextMdiMainFrm::focusNextPrevChild(next);
+}
+
+void ApplicationWindow::keyPressEvent ( QKeyEvent * e )
+{
+  _bControlButton = (e->state() &  ControlButton);
+  QextMdiMainFrm::keyPressEvent(e);
+}
+
+void ApplicationWindow::keyReleaseEvent ( QKeyEvent * e )
+{
+  _bControlButton = (e->state() &  ControlButton);
+  QextMdiMainFrm::keyReleaseEvent (e);
 }
 
 /**
