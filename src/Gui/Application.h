@@ -213,6 +213,8 @@ protected: // Protected methods
   virtual void closeEvent ( QCloseEvent * e );
   /// waiting cursor stuff 
   void timerEvent( QTimerEvent * e){emit timeEvent();}
+  void dropEvent        ( QDropEvent        * e );
+  void dragEnterEvent   ( QDragEnterEvent   * e );
 
   // windows stuff
   void loadWindowSettings();

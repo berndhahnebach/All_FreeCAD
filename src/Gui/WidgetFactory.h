@@ -25,13 +25,14 @@
 #define __FC_WIDGET_FACTORY_H__
 
 #ifndef _PreComp_
-# include <qwidgetfactory.h>
 # include <qdialog.h>
 # include <vector>
 #endif
 
-#include "../Base/Factory.h"
-#include "../Base/PyExportImp.h"
+# include <qwidgetfactory.h>
+
+#include <Base/Factory.h>
+#include <Base/PyExportImp.h>
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
 

@@ -262,6 +262,9 @@ ApplicationWindow::ApplicationWindow()
   createStandardOperations();
   MacroCommand::load();
 
+  // accept drops on the window, get handled in dropEvent, dragEnterEvent   
+  setAcceptDrops(true);
+
   // misc stuff
   loadWindowSettings();
   // load recent file list
@@ -1199,7 +1202,67 @@ void ApplicationWindow::destruct(void)
   delete _pcQApp;
 }
 
+/**
+ * Drops the event \a e and writes the right Python command.
+ */
+void ApplicationWindow::dropEvent ( QDropEvent      * e )
+{
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
 
+  if ( QUriDrag::canDecode(e) )
+  {
+    QStringList fn;
+    QUriDrag::decodeLocalFiles(e, fn);
+    QString file = fn.first();
+    QFileInfo info(file);
+    if ( info.exists() && info.isFile() )
+    {
+      std::string Com;
+      std::string Ending = info.extension(false).latin1();
+
+
+      if(EndingMap.find(Ending) == EndingMap.end())
+      {
+        Com += "App.Open(";
+        Com += info.absFilePath().latin1();
+        Com += ")";
+        Base::Console().Log("OpenCMD: App.Open(\"%s\")",info.absFilePath().latin1());
+      }else{
+        Com += "import ";
+        Com += EndingMap.find(Ending)->second.c_str();
+        Com += "\n";
+        Com += EndingMap.find(Ending)->second.c_str();
+        Com += ".open(\"";
+        Com += info.absFilePath().latin1();
+        Com += "\")";
+        Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),info.absFilePath().latin1());
+      }    
+
+      macroManager()->addLine(MacroManager::Base,Com.c_str());
+      Interpreter().RunFCCommand(Com.c_str());
+    }
+  }else
+    ApplicationWindow::dropEvent(e);
+}
+
+void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
+{
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+
+  if ( QUriDrag::canDecode(e) )
+  {
+    QStringList fn;
+    QUriDrag::decodeLocalFiles(e, fn);
+    QString f = fn.first();
+    
+    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+
+    if(EndingMap.find(Ending) != EndingMap.end())
+      e->accept();
+  }else 
+    e->ignore();
+
+}
 
 //**************************************************************************
 // Python stuff

@@ -1,11 +1,19 @@
 #ifndef __PRECOMPILED__
+
 #define __PRECOMPILED__
+
+
 
 #include "../../../Config.h"
 
+
+
 #ifdef _PreComp_
 
+
+
 /// here get the warnings of to long specifieres disabled (needet for VC6)
+
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
 # pragma warning( disable : 4503 )
@@ -13,15 +21,20 @@
 #endif
 
 // Importing of App classes
+
 #ifdef FC_OS_WIN32
 # define AppPartExport __declspec(dllimport)
 #else // for Linux
 # define AppPartExport
 #endif
 
+
+
 // standard
+
 #include <stdio.h>
 #include <assert.h>
+
 
 // STL
 #include <algorithm>
@@ -37,7 +50,6 @@
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
-
 
 // OpenCascade View
 #include <BRep_Builder.hxx>
@@ -116,8 +128,9 @@
 #include <GCPnts_UniformDeflection.hxx>
 
 
-
 #endif //_PreComp_
 
 #endif
+
+
 

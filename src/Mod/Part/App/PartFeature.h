@@ -28,7 +28,7 @@
 
 //#include <Base/Factory.h>
 //#include <Base/PyExport.h>
-#include "../../../App/Feature.h"
+#include <App/Feature.h>
 
 class TFunction_Logbook;
 class PyObjectBase;

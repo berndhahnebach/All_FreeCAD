@@ -37,6 +37,8 @@
 #include <App/Application.h>
 #include <App/Topology.h>
 
+#include "FeatureImportStep.h"
+#include "FeatureImportIges.h"
 
 
 /* registration table  */
@@ -57,7 +59,8 @@ void ModuleExport initImport() {
   // load dependend module
   Base::Interpreter().LoadModule("Part");
 
-  App::GetApplication();
+	App::FeatureFactory().AddProducer("ImportStep",new App::FeatureProducer<Import::FeatureImportStep>);
+	App::FeatureFactory().AddProducer("ImportIges",new App::FeatureProducer<Import::FeatureImportIges>);
 
 	Base::Console().Log("Import loaded\n");
 

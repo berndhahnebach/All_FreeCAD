@@ -11,12 +11,21 @@
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+
 // Importing of App classes
+
 #ifdef FC_OS_WIN32
 # define AppPartExport __declspec(dllimport)
 #else // for Linux
 # define AppPartExport
 #endif
+
+#ifdef FC_OS_WIN32
+# define AppPartGuiExport __declspec(dllexport)
+#else // for Linux
+# define AppPartGuiExport
+#endif
+
 
 // standard
 #include <iostream>
@@ -90,8 +99,6 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_UniformDeflection.hxx>
-
-
 
 
 #ifndef FC_OS_WIN32

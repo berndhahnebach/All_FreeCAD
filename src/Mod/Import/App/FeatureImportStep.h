@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,56 +21,38 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
 
-#include "../../../Gui/ViewProvider.h"
-
-
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-
-namespace PartGui {
+#ifndef __FeatureImportStep_H__
+#define __FeatureImportStep_H__
 
 
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventor
+#include <Mod/Part/App/PartFeature.h>
+
+namespace Import
+{
+
+
+  class FeatureImportStep :public Part::PartFeature
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderInventorPart();
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderInventorPart();
+	virtual void InitLabel(const TDF_Label &rcLabel);
 
-  virtual SoNode* create(App::Feature *pcFeature);
+//	virtual bool MustExecute(const TFunction_Logbook& log);
 
-protected:
-  Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
+	virtual Standard_Integer Execute(TFunction_Logbook& log);
 
-  void             transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+	virtual void Validate(TFunction_Logbook& log);
 
-  // setings stuff
-  FCParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
-
-
+  /// Returns the Name/Type of the feature
+  virtual const char *Type(void){return "PartImportStep";};
 };
 
-} // namespace PartGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+}
 
+
+
+
+#endif // __FeatureImportStep_H__

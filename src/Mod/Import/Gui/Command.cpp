@@ -77,6 +77,110 @@ bool FCCmdImportReadBREP::isActive(void)
 	return getAppWnd()->activeDocument() != 0;
 }
 
+//===========================================================================
+// PartImportStep
+//===========================================================================
+DEF_STD_CMD_A(ImportStep);
+
+ImportStep::ImportStep()
+	:CppCommand("Part_ImportStep")
+{
+	sAppModule		= "Part";
+	sGroup			  = "Part";
+	sMenuText		  = "Import STEP";
+	sToolTipText	= "Create or change a Import STEP feature";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			  = "Save";
+	iAccel			  = 0;
+}
+
+
+void ImportStep::activated(int iMsg)
+{
+
+
+//  DlgPartImportStepImp cDlg(getAppWnd(),"Part import STEP",true);
+//  if ( cDlg.exec() == QDialog::Accepted )
+
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
+  {
+    openCommand("Part ImportSTEP Create");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"ImportStep\")");
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+//	  DoCommand(Doc,"App.DocGet().Update()");
+    commitCommand();
+  
+    updateActive();
+
+
+  }
+}
+
+bool ImportStep::isActive(void)
+{
+	if( getActiveDocument() )
+		return true;
+	else
+		return false;
+
+}
+
+
+//===========================================================================
+// ImportIges
+//===========================================================================
+DEF_STD_CMD_A(ImportIges);
+
+ImportIges::ImportIges()
+	:CppCommand("Import_Iges")
+{
+	sAppModule		= "Import";
+	sGroup			= "Part";
+	sMenuText		= "Import IGES";
+	sToolTipText	= "Create or change a Import IGES feature";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Save";
+	iAccel			= 0;
+}
+
+
+void ImportIges::activated(int iMsg)
+{
+
+//  DlgPartImportIgesImp cDlg(getAppWnd(),"Part import IGES",true);
+//  if ( cDlg.exec() == QDialog::Accepted )
+
+  
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
+  {
+    openCommand("ImportIGES Create");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"ImportIges\")");
+//	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+	  doCommand(Doc,"App.DocGet().Update()");
+    commitCommand();
+  
+    updateActive();
+  }
+
+
+}
+
+bool ImportIges::isActive(void)
+{
+	if( getActiveDocument() )
+		return true;
+	else
+		return false;
+
+}
+
 
 
 void CreateCommands(void)

@@ -11,12 +11,24 @@
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+
+// Importing of App classes
+
+#ifdef FC_OS_WIN32
+# define AppPartExport __declspec(dllimport)
+#else // for Linux
+# define AppPartExport
+#endif
+
+
 // standard
 #include <list>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
 #include <assert.h>
+#include <io.h>
+#include <fcntl.h>
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
@@ -199,9 +211,9 @@
 // IO
 #include <IGESControl_Controller.hxx>
 #include <IGESControl_Writer.hxx>
-//#include <IGESControl_Reader.hxx>
+#include <IGESControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
-//#include <STEPControl_Reader.hxx>
+#include <STEPControl_Reader.hxx>
 
 
 #endif //_PreComp_

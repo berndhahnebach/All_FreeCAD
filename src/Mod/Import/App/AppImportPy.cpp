@@ -35,6 +35,9 @@
 #include <Base/Interpreter.h>
 
 #include <App/Application.h>
+#include <App/Document.h>
+#include <App/Feature.h>
+#include <App/Property.h>
 #include <App/Topology.h>
 
 
@@ -43,13 +46,41 @@
 static PyObject *                        
 open(PyObject *self, PyObject *args)     
 {                                        
-	std::string strResult;
-
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
     
-  Base::Console().Log("Open in Import with %s",strResult);
+  Base::Console().Log("Open in Import with %s",Name);
+
+  // extract ending
+  std::string cEnding(Name);
+  unsigned int pos = cEnding.find_last_of('.');
+  if(pos == cEnding.size())
+    Py_Error(PyExc_Exception,"no file ending");
+  cEnding.erase(0,pos+1);
+
+  if(cEnding == "stp" || cEnding == "step")
+  {
+    // create new document and add Import feature
+    App::Document *pcDoc = App::GetApplication().New();
+    App::Feature *pcFeature = pcDoc->AddFeature("ImportStep");
+    pcFeature->GetProperty("FileName").Set(Name);
+    pcFeature->TouchProperty("FileName");
+    pcDoc->Recompute();
+
+  }else if(cEnding == "igs" || cEnding == "iges")
+  {
+    // create new document and add Import feature
+    App::Document *pcDoc = App::GetApplication().New();
+    App::Feature *pcFeature = pcDoc->AddFeature("ImportIges");
+    pcFeature->GetProperty("FileName").Set(Name);
+    pcFeature->TouchProperty("FileName");
+    pcDoc->Recompute();
+
+  }else
+
+    Py_Error(PyExc_Exception,"unknown file ending");
+
 
 	Py_Return;    
 }

@@ -107,6 +107,22 @@ SOURCE=.\AppImportPy.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeatureImportIges.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureImportIges.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureImportStep.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureImportStep.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
