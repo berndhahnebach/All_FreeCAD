@@ -37,8 +37,6 @@
 
 // Std. configurations
 
-#include "PyExport.h"
-
 #include <string>
 #include <map>
 

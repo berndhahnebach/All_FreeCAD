@@ -52,12 +52,14 @@
 #	include <xercesc/framework/LocalFileFormatTarget.hpp>
 #	include <xercesc/parsers/XercesDOMParser.hpp>
 #	include <xercesc/util/XMLUni.hpp>
-#endif
+#	include <xercesc/sax/ErrorHandler.hpp>
 #	include <fcntl.h>
 #	include <sys/types.h>
 #	include <sys/stat.h>
 #	include <io.h>
 #	include <stdio.h>
+#endif
+
 
 #include <fcntl.h>
 #ifdef FC_OS_LINUX
@@ -67,6 +69,253 @@
 #include "Parameter.h"
 #include "Exception.h"
 #include "Console.h"
+
+
+#ifdef XERCES_HAS_CPP_NAMESPACE
+	using namespace xercesc;
+#endif
+
+
+
+class DOMTreeErrorReporter : public ErrorHandler
+{
+public:
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    DOMTreeErrorReporter() :
+       fSawErrors(false)
+    {
+    }
+
+    ~DOMTreeErrorReporter()
+    {
+    }
+
+
+    // -----------------------------------------------------------------------
+    //  Implementation of the error handler interface
+    // -----------------------------------------------------------------------
+    void warning(const SAXParseException& toCatch);
+    void error(const SAXParseException& toCatch);
+    void fatalError(const SAXParseException& toCatch);
+    void resetErrors();
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    bool getSawErrors() const;
+
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fSawErrors
+    //      This is set if we get any errors, and is queryable via a getter
+    //      method. Its used by the main code to suppress output if there are
+    //      errors.
+    // -----------------------------------------------------------------------
+    bool    fSawErrors;
+};
+
+// ---------------------------------------------------------------------------
+//  This is a simple class that lets us do easy (though not terribly efficient)
+//  trancoding of XMLCh data to local code page for display.
+// ---------------------------------------------------------------------------
+class StrX
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    StrX(const XMLCh* const toTranscode);
+
+    ~StrX();
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const char* c_str() const;
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fLocalForm
+    //      This is the local code page form of the string.
+    // -----------------------------------------------------------------------
+    char*   fLocalForm;
+};
+
+inline std::ostream& operator<<(std::ostream& target, const StrX& toDump)
+{
+    target << toDump.c_str();
+    return target;
+}
+
+
+class DOMPrintFilter : public DOMWriterFilter {
+public:
+
+    /** @name Constructors */
+	DOMPrintFilter(unsigned long whatToShow = DOMNodeFilter::SHOW_ALL);
+    //@{
+
+    /** @name Destructors */
+	~DOMPrintFilter(){};
+    //@{
+
+	/** @ interface from DOMWriterFilter */
+	virtual short acceptNode(const DOMNode*) const;
+    //@{
+
+	virtual unsigned long getWhatToShow() const {return fWhatToShow;};
+
+	virtual void          setWhatToShow(unsigned long toShow) {fWhatToShow = toShow;};
+
+private:
+	// unimplemented copy ctor and assignement operator
+	DOMPrintFilter(const DOMPrintFilter&);
+	DOMPrintFilter & operator = (const DOMPrintFilter&);
+
+	unsigned long fWhatToShow;   
+
+};
+
+class DOMPrintErrorHandler : public DOMErrorHandler
+{
+public:
+
+    DOMPrintErrorHandler(){};
+    ~DOMPrintErrorHandler(){};
+
+    /** @name The error handler interface */
+    bool handleError(const DOMError& domError);
+    void resetErrors(){};
+
+private :
+    /* Unimplemented constructors and operators */ 
+    DOMPrintErrorHandler(const DOMErrorHandler&);
+    void operator=(const DOMErrorHandler&);
+    
+};
+
+
+
+// ---------------------------------------------------------------------------
+//  This is a simple class that lets us do easy (though not terribly efficient)
+//  trancoding of char* data to XMLCh data.
+// ---------------------------------------------------------------------------
+class XStr
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    XStr(const char* const toTranscode);
+
+    ~XStr();
+
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const XMLCh* unicodeForm() const;
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fUnicodeForm
+    //      This is the Unicode XMLCh format of the string.
+    // -----------------------------------------------------------------------
+    XMLCh*   fUnicodeForm;
+};
+
+
+
+
+inline bool DOMTreeErrorReporter::getSawErrors() const
+{
+    return fSawErrors;
+}
+
+
+
+
+
+
+/** The ParameterGrp wrapper class
+ */
+class FCPyParameterGrp :public FCPyObject
+{
+	/** always start with Py_Header */
+	Py_Header;
+
+public:
+
+
+	//---------------------------------------------------------------------
+	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	/// Constructor 
+	FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
+	/// for Construction in python 
+	static PyObject *PyMake(PyObject *, PyObject *);
+	/// Destruction 
+	~FCPyParameterGrp();
+
+	//---------------------------------------------------------------------
+	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	PyObject *_getattr(char *attr);				// __getattr__ function
+	// getter setter
+	int _setattr(char *attr, PyObject *value);	// __setattr__ function
+	// methods
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetGrp);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemGrp);
+	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
+	PYFUNCDEF_D (FCPyParameterGrp,PyHasGroup);
+	PYFUNCDEF_D (FCPyParameterGrp,PyIsEmpty);
+
+	PYFUNCDEF_D (FCPyParameterGrp,PySetBool);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetBool);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemBool);
+
+	PYFUNCDEF_D (FCPyParameterGrp,PySetInt);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetInt);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemInt);
+
+	PYFUNCDEF_D (FCPyParameterGrp,PySetFloat);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetFloat);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemFloat);
+
+	PYFUNCDEF_D (FCPyParameterGrp,PySetString);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetString);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemString);
+
+
+protected:
+
+	/// Pointer to the FCDocument where the label comes from 
+	FCHandle<FCParameterGrp> _cParamGrp;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -705,6 +954,12 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 	}
 	
 	return pcElem;
+}
+
+PyObject* FCParameterGrp::GetPyObject(void)
+{
+
+	return new FCPyParameterGrp(FCHandle<FCParameterGrp>(this)); 
 }
 	
 

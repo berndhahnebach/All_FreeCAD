@@ -1,10 +1,8 @@
-/** \file Geometry3D.h
- *  \brief FileTemplate example header
+/** \file Documentation.cpp
+ *  \brief This module handels the retraivel and editing of build in documentation 
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *  Here a example of a file layout for FreeCAD.
- *  @see Parameter.cpp
  */
 
 /***************************************************************************
@@ -30,68 +28,65 @@
  *                                                                         *
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
+ 
 
-
-#ifndef __GEOMETRY3D_H__
-#define __GEOMETRY3D_H__
-
-// Std. configurations
-
-#include "../Base/PyExport.h"
-
-#include <TopoDS_Shape.hxx>
-
-
-/** The TopoDSShape wrapper class
- *  This class wrapps the functionality of the Topology package. It wrapps not
- *  strictly after the OCC rules. It includes also a lot algorithems from oter
- *  packages like BRepTools and BRepBuilder. Also iterators and so on.
+/** Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
  */
-class AppExport FCGeometry3D :public FCPyObject
-{
-	/** always start with Py_Header */
-	Py_Header;
+#include "PreCompiled.h"
 
-public:
-
-	/// Constructer 
-	FCGeometry3D(const TopoDS_Shape &cShape, PyTypeObject *T = &Type);
-	/// for Construction in python 
-	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~FCGeometry3D();
-
-
-	//---------------------------------------------------------------------
-	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-
-	/// Gets the OCC Label
-	TopoDS_Shape GetTopoShape(void){return _cTopoShape;}
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	PyObject *_getattr(char *attr);				// __getattr__ function
-	// getter setter
-	int _setattr(char *attr, PyObject *value);	// __setattr__ function
-	// methods
-
-	PYFUNCDEF_D (FCGeometry3D,PyHasChild);
-
-
-protected:
-
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
+#ifndef _PreComp_
+#	include <assert.h>
 #endif
-	/// The OCC Label
-	TopoDS_Shape _cTopoShape;
 
-};
-
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "Documentation.h"
 
 
 
-#endif // __TOPOLOGY_H__
+
+
+//**************************************************************************
+// Construction/Destruction
+
+
+FCDocumentationProvider::FCDocumentationProvider(const char* sRootPath)
+:_cRootPath(sRootPath)
+{
+	// last char of root path has to be always the path seperator '/' !!!
+	assert((*(_cRootPath.rbegin())) == '/');
+}
+	
+
+FCDocumentationProvider::~FCDocumentationProvider(void)
+{
+
+}
+
+
+//**************************************************************************
+//**************************************************************************
+// FCDocumentationManager
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+std::string FCDocumentationManager::Retrive(const char * URL, TDocType& rtWhichType )
+{
+	return std::string();
+}
+
+void FCDocumentationManager::Save(const char * URL,const char* sDoc, TDocType tWhichType )
+{
+
+}
+
+
+void FCDocumentationManager::AddProvider(FCDocumentationProvider* pcProvider)
+{
+	mpcProviderMap[pcProvider->GetRootPath()] = pcProvider;
+}
+
+

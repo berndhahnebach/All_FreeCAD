@@ -439,7 +439,7 @@ PYFUNCIMP_S(FCApplication,sGetParam)
         return NULL;                             // NULL triggers exception 
 
 	try{
-		return new FCPyParameterGrp(GetApplication().GetParameterGroupByPath(pstr)); 
+		return GetApplication().GetParameterGroupByPath(pstr)->GetPyObject(); 
 	}catch(...)
 	{
 		PyErr_SetString(PyExc_IOError, "GetParam faild!\nusage:\n   GetParam\"(SetName:GroupName_1/GroupName_2/.../GroupName_n)");

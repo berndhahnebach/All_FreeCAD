@@ -162,14 +162,14 @@ int main( int argc, char ** argv )
 		exit(20);
 	}
 	// catch XML exceptions
-	catch (XMLException& e)
+/*	catch (XMLException& e)
 	{
 		GetConsole().Error("Application init failed:");
 		GetConsole().Error(StrX(e.getMessage()).c_str());
 		PrintInitHelp();
 		exit(30);
 	}
-
+*/
 	// catch all the (nasty) rest
 	catch(...)
 	{

@@ -37,10 +37,10 @@
 
 // Std. configurations
 
-#include "PyExport.h"
+//#include "PyExport.h"
 
-#include <string>
-#include <map>
+//#include <string>
+//#include <map>
 
 
 /** A test class. A more elaborate class description.

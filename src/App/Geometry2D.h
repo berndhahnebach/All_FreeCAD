@@ -39,9 +39,6 @@
 
 #include "../Base/PyExport.h"
 
-//#include <string>
-//#include <map>
-
 #include <TopoDS_Shape.hxx>
 
 /** The TopoDSShape wrapper class

@@ -66,7 +66,6 @@ class Handle(TDF_Attribute);
 class TDataStd_Name;
 Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(TDataStd_Name);
 
-#include "../Base/PyExport.h"
 
 
 class FCAttribute;
@@ -163,48 +162,6 @@ private:
 
 
 
-/** The OCC Attribute wrapper class
- *  This class wraps the functionality of the TDF_Attribute of OCC. 
- *  This base class can represent every Attribute!
- *  @see FCDocument,FCLabel
- */
-class AppExport FCPyAttribute :public FCPyObject
-{
-	/** always start with Py_Header */
-	Py_Header;
-
-public:
- 
-	//---------------------------------------------------------------------
-	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	/// Constructor 
-	FCPyAttribute (const Handle(TDF_Attribute) &hAttribute, PyTypeObject *T = &Type);
-	/// for Construction in python 
-	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~FCPyAttribute();
-
-	//---------------------------------------------------------------------
-	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	PyObject *_getattr(char *attr);				// __getattr__ function
-	// getter setter
-	int _setattr(char *attr, PyObject *value);	// __setattr__ function
-	// methods
-	PYFUNCDEF_D (FCPyAttribute,PyGetId);
-
-protected:
-
-	/// handle to the Attribute 
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#endif
-	Handle(TDF_Attribute) _hAttribute;
-
-};
 
 
 #endif
