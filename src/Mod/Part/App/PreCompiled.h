@@ -111,7 +111,6 @@
 #include <TDataStd_Comment.hxx>
 
 #include <BRepBuilderAPI.hxx>
-#include <BRepAlgoAPI.hxx>
 
 #include <BRepTools.hxx>
 #include <Standard_DefineHandle.hxx> 

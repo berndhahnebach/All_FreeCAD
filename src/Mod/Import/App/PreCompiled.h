@@ -111,7 +111,6 @@
 #include <TDataStd_Comment.hxx>
 
 #include <BRepBuilderAPI.hxx>
-#include <BRepAlgoAPI.hxx>
 
 #include <BRepTools.hxx>
 #include <Standard_DefineHandle.hxx> 
@@ -195,9 +194,9 @@
 // IO
 #include <IGESControl_Controller.hxx>
 #include <IGESControl_Writer.hxx>
-#include <IGESControl_Reader.hxx>
+//#include <IGESControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
-#include <STEPControl_Reader.hxx>
+//#include <STEPControl_Reader.hxx>
 
 
 

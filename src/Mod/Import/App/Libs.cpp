@@ -26,9 +26,7 @@
 #	pragma comment(lib,"TKCDF.lib")
 	// IO
 #	pragma comment(lib,"TKIGES.lib")
-#	pragma comment(lib,"TKIGESStd.lib")
 #	pragma comment(lib,"TKSTEP.lib")
-#	pragma comment(lib,"TKSTEPStd.lib")
 
 #endif
 
