@@ -534,3 +534,5 @@ Version: V0.1B113 Date: Fri Feb 11 00:47:38 2005 +++++++++++++++++++++++++++++++
 + Patch 1119485 inserted
 + Method to class Tools added to convert between SbSFImage and QImage
 + Encapsulation of 'wget' in NetworkRetriever
++ RFE 1100311 Message if wget cannot be found
+
