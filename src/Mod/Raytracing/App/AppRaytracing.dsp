@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="AppMeshGui" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="AppRaytracing" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=AppMeshGui - Win32 Debug
+CFG=AppRaytracing - Win32 Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "AppMeshGui.mak".
+!MESSAGE NMAKE /f "AppRaytracing.mak".
 !MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "AppMeshGui.mak" CFG="AppMeshGui - Win32 Debug"
+!MESSAGE NMAKE /f "AppRaytracing.mak" CFG="AppRaytracing - Win32 Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "AppMeshGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "AppMeshGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppRaytracing - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppRaytracing - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -38,12 +38,12 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
+# PROP Output_Dir ".."
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "APPMeshGUI_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppMeshGui" /Yu"PreCompiled.h" /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "APPRaytracing_EXPORTS" /Yu"stdafx.h" /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppRaytracing" /Yu"PreCompiled.h" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
@@ -53,9 +53,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../MeshGui.pyd"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../Raytracing.pyd"
 
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -64,12 +64,12 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
+# PROP Output_Dir ".."
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "APPMeshGUI_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "_USRDLL" /D "FCAppMeshGui" /D "FC_DEBUG" /FR /Yu"PreCompiled.h" /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "APPRaytracing_EXPORTS" /Yu"stdafx.h" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /D "_USRDLL" /D "FCAppRaytracing" /D "FC_DEBUG" /FR /Yu"PreCompiled.h" /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -79,18 +79,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../MeshGui_d.pyd" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../Raytracing_d.pyd" /pdbtype:sept
 
 !ENDIF 
 
 # Begin Target
 
-# Name "AppMeshGui - Win32 Release"
-# Name "AppMeshGui - Win32 Debug"
-# Begin Group "Dialogs"
-
-# PROP Default_Filter ""
-# End Group
+# Name "AppRaytracing - Win32 Release"
+# Name "AppRaytracing - Win32 Debug"
 # Begin Group "Libs"
 
 # PROP Default_Filter ""
@@ -98,9 +94,9 @@ LINK32=link.exe
 
 SOURCE=..\..\..\..\lib\FreeCADApp.lib
 
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
 
 # PROP Exclude_From_Build 1
 
@@ -111,11 +107,11 @@ SOURCE=..\..\..\..\lib\FreeCADApp.lib
 
 SOURCE=..\..\..\..\lib\FreeCADAppD.lib
 
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
 
 !ENDIF 
 
@@ -124,9 +120,9 @@ SOURCE=..\..\..\..\lib\FreeCADAppD.lib
 
 SOURCE=..\..\..\..\lib\FreeCADBase.lib
 
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
 
 # PROP Exclude_From_Build 1
 
@@ -137,37 +133,11 @@ SOURCE=..\..\..\..\lib\FreeCADBase.lib
 
 SOURCE=..\..\..\..\lib\FreeCADBaseD.lib
 
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
 
 # PROP Exclude_From_Build 1
 
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADGui.lib
-
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADGuiD.lib
-
-!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
 
 !ENDIF 
 
@@ -175,11 +145,7 @@ SOURCE=..\..\..\..\lib\FreeCADGuiD.lib
 # End Group
 # Begin Source File
 
-SOURCE=.\AppMeshGui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Command.cpp
+SOURCE=.\AppRaytracing.cpp
 # End Source File
 # Begin Source File
 
@@ -194,6 +160,14 @@ SOURCE=.\PreCompiled.cpp
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\RayFeature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\RayFeature.h
 # End Source File
 # End Target
 # End Project

@@ -254,6 +254,7 @@ void View3DInventorEx::onUpdate(void)
 
     SoBrepShape cShapeConverter;
 
+    cShapeConverter.SetDeflection(0.5);
     cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
     cShapeConverter.SetShape(ShapeToView);
 
