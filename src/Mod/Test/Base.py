@@ -25,7 +25,7 @@
 import FreeCAD, os, unittest
 
 class ConsoleTestCase(unittest.TestCase):
-    def runTest():
+    def testPrint(self):
         FreeCAD.PrintMessage("   Printing message\n")
         FreeCAD.PrintError("   Printing error\n")
         FreeCAD.PrintWarning("   Printing warning\n")
@@ -37,7 +37,7 @@ class ParameterTestCase(unittest.TestCase):
         self.TestPar = FreeCAD.ParamGet("System parameter:Test")
         
     def testGroup(self):
-        FreeCAD.PrintLog("Base::ParameterTestCase::testGroup\n")
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testGroup\n")
         # check on Group creation
         Temp = self.TestPar.GetGroup("44")
         self.failUnless(self.TestPar.HasGroup("44"),"Test on created group failed")
@@ -48,7 +48,7 @@ class ParameterTestCase(unittest.TestCase):
 
         #check on special conditions
     def testInt(self):
-        FreeCAD.PrintLog("Base::ParameterTestCase::testInt\n")
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testInt\n")
         #Temp = FreeCAD.ParamGet("System parameter:Test/44")
         # check on Int
         self.TestPar.SetInt("44",4711)
@@ -59,7 +59,7 @@ class ParameterTestCase(unittest.TestCase):
         
 
     def testBool(self):
-        FreeCAD.PrintLog("Base::ParameterTestCase::testBool\n")
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testBool\n")
         # check on Int
         self.TestPar.SetBool("44",1)
         self.failUnless(self.TestPar.GetBool("44") == 1,"In and out error at Bool")
@@ -68,7 +68,7 @@ class ParameterTestCase(unittest.TestCase):
         self.failUnless(self.TestPar.GetBool("44",0) == 0,"Deletion error at Bool")
 
     def testFloat(self):
-        FreeCAD.PrintLog("Base::ParameterTestCase::testFloat\n")
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testFloat\n")
         #Temp = FreeCAD.ParamGet("System parameter:Test/44")
         # check on Int
         self.TestPar.SetFloat("44",4711.4711)
@@ -79,7 +79,7 @@ class ParameterTestCase(unittest.TestCase):
 
     def testNesting(self):
         # Parameter testing
-        FreeCAD.PrintLog("Base::ParameterTestCase::testNesting\n")
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testNesting\n")
         for i in range(50):
             self.TestPar.SetFloat(`i`,4711.4711)
             self.TestPar.SetInt(`i`,4711)

@@ -1,12 +1,3 @@
-/** \file Parameter.cpp
- *  \brief The base::parameter module
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here is the implementation of the parameter mimic.
- *  @see Parameter.h FCParameter FCParameterManager
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *

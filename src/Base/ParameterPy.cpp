@@ -1,12 +1,3 @@
-/** \file ParameterPy.cpp
- *  \brief The base::parameter module python bindings
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here is the implementation of the parameter mimic.
- *  @see Parameter.h FCParameter FCParameterManager
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -445,12 +436,9 @@ PyObject *FCPyParameterGrp::PyIsEmpty(PyObject *args)
 
 PyObject *FCPyParameterGrp::PyHasGroup(PyObject *args)
 {
-  int dummy1;
 	char *pstr;
-  int dummy2;
-  
-  if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
 	
 	return Py_BuildValue("i",_cParamGrp->HasGroup(pstr));
 } 

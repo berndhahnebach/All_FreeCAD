@@ -47,6 +47,10 @@ def TestText(s):
     r = unittest.TextTestRunner()
     r.run(s)
 
+def Test(s):
+    TestText(s)
+    
+
 def TestGui(s):
     import unittestgui
     import sys

@@ -490,3 +490,6 @@ Version: V0.1B105 Date: Mon Jan 03 16:06:30 2005 +++++++++++++++++++++++++++++++
 + Translator class added
 + .ts files updated
 + Change language on the fly
+
+Version: V0.1B106 Date: Mon Jan 10 11:16:24 2005 +++++++++++++++++++++++++++++++
++ fixed Bug 1099103 by fixing HasGroup in ParameterPy
