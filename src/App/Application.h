@@ -30,6 +30,7 @@
 class FCDocument;
 class FCApplicationOCC;
 class FCApplicationObserver;
+class FCParameterManager;
 
 
 Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCApplicationOCC);
@@ -126,6 +127,8 @@ public:
 	void SetActive(FCDocument* pDoc);
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
+
+	FCParameterManager & GetParameter(void) {return *_pcParamMngr;}
 	
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -139,16 +142,20 @@ public:
 	PYFUNCDEF(sGet);
 	static PyMethodDef    Methods[]; 
 
-private:
-	/// Constructor
-	FCApplication(void);
-	/// Destructor
-	~FCApplication();
+	friend FCApplicationObserver;
+
 	/// Singelton functions
 	static void Destruct(void);
-	static FCApplication &Instance(void);
-	static FCApplication *_pcSingelton;
+//	static FCApplication &Instance(void);
 	friend FCApplication &GetApplication(void); 
+	static FCApplication *_pcSingelton;
+
+	/// Constructor
+	FCApplication(FCParameterManager *pcParamMngr);
+	/// Destructor
+	~FCApplication();
+
+private:
 
 	/// Attach an Observer to monitor the Application
 	void AttacheObserver(FCApplicationObserver *pcObserver);
@@ -159,9 +166,8 @@ private:
 	/// Notify the Obervers on a deleted Doc
 	void NotifyDocDelete(FCDocument* pcDoc);
 	/// The Observer is a friend of the Application
-	friend FCApplicationObserver;
 
-	// OCC Application
+private:
 	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
 	/// Handles the FCDocument (and python) objects;
@@ -169,11 +175,12 @@ private:
 	/// The container of all attached Obervers
 	stlport::set<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
+	FCParameterManager *_pcParamMngr;
 };
 
 /// Singelton getter of the Applicaton
 inline FCApplication &GetApplication(void){
-	return FCApplication::Instance();
+	return *FCApplication::_pcSingelton;
 }
 
 

@@ -21,6 +21,7 @@
 #include "Document.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
+#include "../Base/Parameter.h"
 
 
 Standard_CString FCApplicationOCC::ResourcesName()
@@ -106,7 +107,8 @@ Handle_FCApplicationOCC::~Handle_FCApplicationOCC() {}
 //**************************************************************************
 // Construction and destruction
 
-FCApplication::FCApplication(void)
+FCApplication::FCApplication(FCParameterManager *pcParamMngr)
+	:_pcParamMngr(pcParamMngr)
 {
 	_hApp = new FCApplicationOCC;
 }
@@ -327,10 +329,11 @@ void FCApplication::Destruct(void)
 	assert(_pcSingelton);
 	delete _pcSingelton;
 }
-
+/*
 FCApplication & FCApplication::Instance(void)
 {
 	// not initialized?
+	assert(_pcSingelton);
 	if(!_pcSingelton)
 	{
 		_pcSingelton = new FCApplication();
@@ -338,7 +341,7 @@ FCApplication & FCApplication::Instance(void)
 	}
 	return *_pcSingelton;
 }
-
+*/
 //**************************************************************************
 // Observer stuff
 

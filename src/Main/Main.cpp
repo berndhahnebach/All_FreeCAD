@@ -274,6 +274,9 @@ void Init(int argc, char ** argv )
 	// starting the init script
 	rcInterperter.Launch(FreeCADInit);
 
+	// creating the application 
+	FCApplication::_pcSingelton = new FCApplication(pcGlobalParameter);
+
 }
 
 //**************************************************************************

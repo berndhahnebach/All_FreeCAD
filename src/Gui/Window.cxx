@@ -25,6 +25,8 @@
 
 
 #include "Window.h"
+#include "../App/Application.h"
+
 
 //**************************************************************************
 //**************************************************************************
@@ -37,9 +39,20 @@
 
 FCWindow::FCWindow(const char *name)
 {
+	FCHandle<FCParametrGrp> h;
+
 	// not allowed to use a FCWindow without a name, see the constructor of a FCDockWindow or a other QT Widget
 	assert(name);
 	printf("Instancieate:%s\n",name);
+
+	// geting the group for the window
+	h = GetApplication().GetParameter().GetGroup("BaseApp");
+	h = h->GetGroup("Windows");
+	_handle = h->GetGroup(name);
+
+	_handle->SetBool("Works",true);
+	bool bTest = _handle->GetBool("Works");
+
 
 }
 
@@ -49,6 +62,10 @@ FCWindow::~FCWindow()
 }
 
 
+FCParametrGrp::handle & FCWindow::GetParam(void)
+{
+	return _handle;
+}
 
 
 //**************************************************************************

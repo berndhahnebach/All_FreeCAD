@@ -23,6 +23,7 @@
 
 #include <qwidget.h>
 #include <qextmdichildview.h>
+#include "../Base/Parameter.h"
 class FCGuiDocument;
 
 
@@ -37,7 +38,11 @@ public:
 	FCWindow(const char *name);
 	~FCWindow();
 
+	FCParametrGrp::handle &GetParam(void);
+
 private:
+	FCParametrGrp::handle _handle;
+
 
 };
 
