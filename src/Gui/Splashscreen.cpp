@@ -183,6 +183,9 @@ void FCSplashScreen::run()
   }
 
   hide();
+
+  // set the main window to active now
+  qApp->mainWidget()->setActiveWindow();
 }
 
 QString FCSplashScreen::getName()
