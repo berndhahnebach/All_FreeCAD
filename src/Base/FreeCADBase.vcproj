@@ -16,18 +16,17 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;WNT;CLSPEC;FCBase"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FCBase"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="3"
 				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile=".\Release/FreeCADBase.pch"
 				AssemblerListingLocation=".\Release/"
@@ -74,17 +73,16 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="_DEBUG;_USRDLL;WNT;CLSPEC;FCBase"
+				PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="3"
 				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile=".\Debug/FreeCADBase.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -138,15 +136,21 @@
 		</File>
 		<File
 			RelativePath=".\DllMain.cpp">
-		</File>
-		<File
-			RelativePath=".\Exception.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\Exception.cpp">
 		</File>
 		<File
 			RelativePath=".\Exception.h">
@@ -177,6 +181,18 @@
 		</File>
 		<File
 			RelativePath=".\Libs.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Observer.cpp">
@@ -216,6 +232,12 @@
 		</File>
 		<File
 			RelativePath=".\PyTools.c">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
