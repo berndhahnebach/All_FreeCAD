@@ -48,7 +48,7 @@ using namespace Gui::Dialog;
 DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool modal, WFlags fl )
   : DlgTipOfTheDayBase( parent, name, modal, fl | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   bool tips = hGrp->GetBool("Tipoftheday", true);
   checkShowTips->setChecked(tips);
 
@@ -64,7 +64,7 @@ DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool mo
 /** Destroys the object and frees any allocated resources */
 DlgTipOfTheDayImp::~DlgTipOfTheDayImp()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   hGrp->SetBool("Tipoftheday", checkShowTips->isChecked());
 }
 
@@ -79,8 +79,8 @@ void DlgTipOfTheDayImp::onNext()
 void DlgTipOfTheDayImp::reload()
 {
   // search for the Wiki Tip-of-the-day site
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().
-                                GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().
+                                GetGroup("BaseApp")->GetGroup("Preferences");
 
   QString home = GetApplication().GetHomePath();
   QString path = hGrp->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();

@@ -201,7 +201,7 @@ ApplicationWindow::ApplicationWindow()
     : QMainWindow( 0, "Main window", WDestructiveClose )
 {
   FCParameterGrp::handle hPGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hPGrp = hPGrp->GetGroup("Windows")->GetGroup("General");
+  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
 
   std::string language = hPGrp->GetASCII("Language", "English");
 	Gui::LanguageFactory().setLanguage( language.c_str() );
@@ -287,7 +287,7 @@ ApplicationWindow::ApplicationWindow()
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
+	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
 	d->_pcDockMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
@@ -337,10 +337,10 @@ ApplicationWindow::ApplicationWindow()
   }
 
   // load recent file list
-  hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp");
-  if (hGrp->HasGroup("Recent files"))
+  hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  if (hGrp->HasGroup("RecentFiles"))
   {
-    hGrp = hGrp->GetGroup("Recent files");
+    hGrp = hGrp->GetGroup("RecentFiles");
     FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
     if (pCmd)
     {
@@ -380,7 +380,7 @@ ApplicationWindow::~ApplicationWindow()
   {
     char szBuf[200];
     int i=0;
-    FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Recent files");
+    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("RecentFiles");
     hGrp->Clear();
     hGrp->GetInt("RecentFiles", ((FCCmdMRU*)pCmd)->maxCount());
 
@@ -992,7 +992,7 @@ void ApplicationWindow::LoadWindowSettings()
 {
   LoadDockWndSettings();
 
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   int w = hGrp->GetInt("Width", 1024);
   int h = hGrp->GetInt("Height", 768);
   int x = hGrp->GetInt("PosX", pos().x());
@@ -1010,7 +1010,7 @@ void ApplicationWindow::LoadWindowSettings()
 void ApplicationWindow::UpdatePixmapsSize(void)
 {
   FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hGrp = hGrp->GetGroup("Windows")->GetGroup("General");
+  hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
   bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
   if (bigPixmaps != usesBigPixmaps())
 		setUsesBigPixmaps (bigPixmaps);
@@ -1020,7 +1020,7 @@ void ApplicationWindow::UpdateStyle(void)
 {
   QStyle& curStyle = QApplication::style();
   FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hGrp = hGrp->GetGroup("Windows")->GetGroup("General");
+  hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
 
   QString style = hGrp->GetASCII( "WindowStyle", curStyle.name() ).c_str();
   if ( style == QString( curStyle.name() ) )
@@ -1035,7 +1035,7 @@ void ApplicationWindow::UpdateStyle(void)
 
 void ApplicationWindow::SaveWindowSettings()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   if (isMaximized())
   {
     hGrp->SetBool("Maximized", true);
@@ -1054,7 +1054,7 @@ void ApplicationWindow::SaveWindowSettings()
 
 void ApplicationWindow::LoadDockWndSettings()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   QString str = hGrp->GetASCII("Layout", "").c_str();
 
   if ( !str.isEmpty() )
@@ -1118,7 +1118,7 @@ void ApplicationWindow::SaveDockWndSettings()
   QTextStream ts( &str, IO_WriteOnly );
   ts << *this;
 
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   hGrp->SetASCII("Layout", str.latin1());
 /*
   // save dock window settings
@@ -1229,7 +1229,7 @@ void ApplicationWindow::StartSplasher(void)
 	// when running in verbose mode no splasher
 	if ( ! (FCApplication::Config()["Verbose"] == "Strict") && (FCApplication::Config()["RunMode"] == "Gui") )
 	{
-		FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup("General");
+		FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 		if (hGrp->GetBool("AllowSplasher", true))
 		{
 			QPixmap pixmap(( const char** ) splash_screen );
@@ -1253,7 +1253,7 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
 {
 	// tip of the day?
 	FCParameterGrp::handle
-  hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   bool tips = hGrp->GetBool("Tipoftheday", true);
 	if ( tips || force)
 	{
@@ -1703,7 +1703,9 @@ GuiConsoleObserver::GuiConsoleObserver(ApplicationWindow *pcAppWnd)
 void GuiConsoleObserver::Warning(const char *m)
 {
 	if(!bMute){
-		QMessageBox::warning( _pcAppWnd, "Warning",m);
+#   ifndef FC_DEBUG
+		  QMessageBox::warning( _pcAppWnd, "Warning",m);
+#   endif
 		_pcAppWnd->statusBar()->message( m, 2001 );
 	}
 }
@@ -1720,8 +1722,10 @@ void GuiConsoleObserver::Error  (const char *m)
 {
 	if(!bMute)
 	{
-		QMessageBox::critical( _pcAppWnd, "Exception happens",m);
-		_pcAppWnd->statusBar()->message( m, 2001 );
+#   ifndef FC_DEBUG
+		  QMessageBox::critical( _pcAppWnd, "Exception happens",m);
+#   endif
+    _pcAppWnd->statusBar()->message( m, 2001 );
 	}
 }
 

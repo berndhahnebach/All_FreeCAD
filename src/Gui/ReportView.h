@@ -118,8 +118,15 @@ public:
   /** Does not do anything */
   void Log (const char * s);
 
-  /** Restore the default font settings */
+  /** Restore the default font settings. */
   void restoreFont ();
+
+  /** Returns true whether errors are reported. */ 
+  bool isError() const;
+  /** Returns true whether warnings are reported. */ 
+  bool isWarning() const;
+  /** Returns true whether log messages are reported. */ 
+  bool isLogging() const;
 
 protected:
   /** For internal use only */
@@ -130,9 +137,16 @@ protected:
 public slots:
   /** Save the report messages into a file. */
   void onSaveAs();
+  /** Toggles the report of errors. */
+  void onToggleError();
+  /** Toggles the report of warnings. */
+  void onToggleWarning();
+  /** Toggles the report of log messages. */
+  void onToggleLogging();
 
 private:
   ReportHighlighter* reportHl; /**< Syntax highlighter */
+  bool _err, _warn, _logg;
 };
 
 } // namespace DockWnd

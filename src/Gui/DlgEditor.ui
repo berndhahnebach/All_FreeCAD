@@ -329,7 +329,7 @@
                         <cstring>EnableLineNumber</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
+                        <cstring>User parameter:BaseApp/Preferences/Editor</cstring>
                     </property>
                     <property name="text" stdset="0">
                         <string>Enable line numbers</string>
@@ -346,7 +346,7 @@
                         <cstring>EnableFolding</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
+                        <cstring>User parameter:BaseApp/Preferences/Editor</cstring>
                     </property>
                     <property name="text" stdset="0">
                         <string>Enable folding</string>

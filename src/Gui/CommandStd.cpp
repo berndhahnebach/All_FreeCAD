@@ -830,7 +830,8 @@ void FCCmdOnlineHelp::Activated(int iMsg)
   // process is not running yet
   if (!process->isRunning())
   {
-    FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+    hGrp = hGrp->GetGroup("Preferences")->GetGroup("OnlineHelp");
     std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
     std::string prx = hGrp->GetASCII("ProxyText", "");
     bool bUseProxy  = hGrp->GetBool ("UseProxy", false);

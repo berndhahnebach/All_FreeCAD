@@ -65,7 +65,7 @@ using namespace Gui;
  *  TRUE to construct a modal dialog.
  */
 DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroExecute( parent, name, modal, fl ), WindowParameter(name)
+    : DlgMacroExecute( parent, name, modal, fl )
 {
 	// retrieve the macro path from parameter or use the home path as default
 	_cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetASCII("MacroPath",GetApplication().GetHomePath());

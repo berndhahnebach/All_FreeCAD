@@ -33,11 +33,10 @@
 #ifndef DLGMACRORECORDIMP_H
 #define DLGMACRORECORDIMP_H
 #include "DlgMacroRecord.h"
-#include "Window.h"
 
 class FCMacroManager;
 
-class DlgMacroRecordImp : public DlgMacroRecord, public Gui::WindowParameter
+class DlgMacroRecordImp : public DlgMacroRecord
 { 
     Q_OBJECT
 

@@ -110,7 +110,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -129,7 +129,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/HelpViewer</cstring>
                             </property>
                         </widget>
                         <widget row="0"  column="0" >
@@ -197,7 +197,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -260,7 +260,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -323,7 +323,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -342,7 +342,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>text</name>

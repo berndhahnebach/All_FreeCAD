@@ -51,8 +51,8 @@ WindowParameter::WindowParameter(const char *name)
   //printf("Instanceate:%s\n",name);
 
   // geting the group for the window
-  h = GetApplication().GetSystemParameter().GetGroup("BaseApp");
-  h = h->GetGroup("Windows");
+  h = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  h = h->GetGroup("Preferences");
   //h = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/");
 
   _handle = h->GetGroup(name);

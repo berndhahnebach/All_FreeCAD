@@ -143,6 +143,9 @@ libImportGui_la_SOURCES = \
 libImportGui_la_LDFLAGS = -L../App $(all_libraries)
 
 libImportGui_la_LIBADD = \
+		-lTKPrim \
+		-lTKV2d \
+		-lTKV3d \
 		-lFreeCADGui \
 		-lImport
 

@@ -195,7 +195,7 @@ StackBar::StackBar( QWidget *parent, const char *name )
   try
   {
     // attach the command bar to its preferences
-    const char* strGroupPath = "User parameter:BaseApp/Windows/CmdBar";
+    const char* strGroupPath = "User parameter:BaseApp/Preferences/CmdBar";
     GetApplication().GetParameterGroupByPath(strGroupPath)->Attach(this);
     GetApplication().GetParameterGroupByPath(strGroupPath)->Notify("SpeedAnimationCmdBar");
   }

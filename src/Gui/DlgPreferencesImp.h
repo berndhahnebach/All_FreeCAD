@@ -25,7 +25,6 @@
 #define DLGPREFERENCESIMP_H
 
 #include "DlgPreferences.h"
-#include "Window.h"
 
 // forward declaration
 class QTabWidget;
@@ -59,9 +58,9 @@ namespace Dialog {
  *    MyPrefPage( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 )
  *    {
  *      myLineEdit->setProperty( "prefEntry", "lineedit" );
- *      myLineEdit->setProperty( "prefPath", "System parameter:BaseApp/WindowSettings" );
+ *      myLineEdit->setProperty( "prefPath", "User parameter:BaseApp/Preferences" );
  *      myCheckBox->setProperty( "prefEntry", "checkbox" );
- *      myCheckBox->setProperty( "prefPath", "System parameter:BaseApp/WindowSettings" );
+ *      myCheckBox->setProperty( "prefPath", "User parameter:BaseApp/Preferences" );
  *      ...
  *    }
  *
@@ -84,7 +83,7 @@ namespace Dialog {
  *
  * \author Werner Mayer, Jürgen Riegel
  */
-class GuiExport DlgPreferencesImp : public DlgPreferences, public Gui::WindowParameter
+class GuiExport DlgPreferencesImp : public DlgPreferences
 { 
 Q_OBJECT
 

@@ -538,7 +538,7 @@ void CustomToolBar::savePreferences()
 CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char* menu )
   : QPopupMenu(parent, name), CustomWidget("Menus", name), _bAllowDrag(false)
 {
-  _hCommonGrp = GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings");
+  _hCommonGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General");
   _hCommonGrp->Attach(this);
   // allow drag and drop
   //  setAcceptDrops(true);

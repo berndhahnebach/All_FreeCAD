@@ -36,7 +36,7 @@
                 <cstring>ProxyText</cstring>
             </property>
             <property name="prefPath" stdset="0">
-                <cstring>System parameter:BaseApp/WindowSettings</cstring>
+                <cstring>User parameter:BaseApp/Preferences/OnlineHelp</cstring>
             </property>
         </widget>
         <widget class="Gui::PrefCheckBox">
@@ -50,7 +50,7 @@
                 <cstring>UseProxy</cstring>
             </property>
             <property name="prefPath" stdset="0">
-                <cstring>System parameter:BaseApp/WindowSettings</cstring>
+                <cstring>User parameter:BaseApp/Preferences/OnlineHelp</cstring>
             </property>
             <property name="text" stdset="0">
                 <string>Use proxy</string>
@@ -78,7 +78,7 @@
                 <cstring>DownloadURL</cstring>
             </property>
             <property name="prefPath" stdset="0">
-                <cstring>System parameter:BaseApp/WindowSettings</cstring>
+                <cstring>User parameter:BaseApp/Preferences/OnlineHelp</cstring>
             </property>
             <property name="text" stdset="0">
                 <string>http://free-cad.sourceforge.net/index.html</string>
@@ -109,7 +109,7 @@
                 <string>OnlineDocDir</string>
             </property>
             <property name="prefPath" stdset="0">
-                <cstring>System parameter:BaseApp/WindowSettings</cstring>
+                <cstring>User parameter:BaseApp/Preferences/OnlineHelp</cstring>
             </property>
             <property name="text" stdset="0">
                 <string>/doc/free-cad.sourceforge.net/</string>

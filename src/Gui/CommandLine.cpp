@@ -346,7 +346,7 @@ bool CommandLineBase::eventFilter       ( QObject* o, QEvent* e )
 void CommandLineBase::show()
 {
   FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().
-    GetGroup("BaseApp")->GetGroup("Windows")->GetGroup("General");
+    GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   bool show = (hGrp->GetBool("ShowCmdLine", true));
 
   if ( !show )

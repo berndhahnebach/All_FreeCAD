@@ -36,7 +36,6 @@
 
 #include "DlgParameter.h"
 #include "../Base/Parameter.h"
-#include "Window.h"
 
 #if QT_VERSION > 230
 # include <qlistview.h>
@@ -44,7 +43,7 @@
 
 class 	ParameterLabelGroup;
 
-class DlgParameter : public ParameterDialog, public Gui::WindowParameter
+class DlgParameter : public ParameterDialog
 { 
     Q_OBJECT
 

@@ -106,7 +106,7 @@ int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOf
   }
   else if (type == LogText)
   {
-    setFormat(lastPos, text.length()-lastPos, Qt::black);
+    setFormat(lastPos, text.length()-lastPos, Qt::blue);
   }
 
   lastPos = text.length()-1;
@@ -127,7 +127,7 @@ void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
  *  name 'name' and widget flags set to 'f' 
  */
 ReportOutput::ReportOutput(QWidget* parent, const char* name)
- : QTextEdit(parent, name)
+ : QTextEdit(parent, name), _err(true), _warn(true), _logg(false)
 {
   reportHl = new ReportHighlighter(this);
 
@@ -164,8 +164,11 @@ void ReportOutput::restoreFont()
 
 void ReportOutput::Warning(const char * s)
 {
-  reportHl->setParagraphType(ReportHighlighter::Warning);
-  append(s);
+  if ( _warn )
+  {
+    reportHl->setParagraphType(ReportHighlighter::Warning);
+    append(s);
+  }
 }
 
 void ReportOutput::Message(const char * s)
@@ -176,13 +179,20 @@ void ReportOutput::Message(const char * s)
 
 void ReportOutput::Error  (const char * s)
 {
-  reportHl->setParagraphType(ReportHighlighter::Error);
-  append(s);
+  if ( _err )
+  {
+    reportHl->setParagraphType(ReportHighlighter::Error);
+    append(s);
+  }
 }
 
 void ReportOutput::Log (const char * s)
 {
-  // ignore this
+  if ( _logg )
+  {
+    reportHl->setParagraphType(ReportHighlighter::LogText);
+    append(s);
+  }
 }
 
 bool ReportOutput::event( QEvent* ev )
@@ -199,6 +209,18 @@ bool ReportOutput::event( QEvent* ev )
 QPopupMenu * ReportOutput::createPopupMenu ( const QPoint & pos )
 {
   QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+  
+  QPopupMenu* sub = new QPopupMenu( menu );
+  int id;
+  id = sub->insertItem( tr("Logging"), this, SLOT( onToggleLogging() ) );
+  sub->setItemChecked( id, _logg );
+  id = sub->insertItem( tr("Warning"), this, SLOT( onToggleWarning() ) );
+  sub->setItemChecked( id, _warn );
+  id = sub->insertItem( tr("Error"  ), this, SLOT( onToggleError  () ) );
+  sub->setItemChecked( id, _err );
+  menu->insertItem( tr("Options"), sub, -1, 0 );
+  menu->insertSeparator( 1 );
+
   menu->insertItem(tr("Clear"), this, SLOT(clear()));
   menu->insertSeparator();
   menu->insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
@@ -223,6 +245,36 @@ void ReportOutput::onSaveAs()
       }
     }
   }
+}
+
+bool ReportOutput::isError() const
+{
+  return _err;
+}
+
+bool ReportOutput::isWarning() const
+{
+  return _warn;
+}
+
+bool ReportOutput::isLogging() const
+{
+  return _logg;
+}
+
+void ReportOutput::onToggleError()
+{
+  _err = _err ? false : true;
+}
+
+void ReportOutput::onToggleWarning()
+{
+  _warn = _warn ? false : true;
+}
+
+void ReportOutput::onToggleLogging()
+{
+  _logg = _logg ? false : true;
 }
 
 #include "moc_ReportView.cpp"

@@ -46,7 +46,7 @@ using namespace Gui::Dialog;
 DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgGeneralBase( parent, name, fl )
 {
-  setParamGrpPath("User parameter:BaseApp/Windows/General");
+  setParamGrpPath("User parameter:BaseApp/Preferences/General");
   setEntryName("General");
 
   append(UsesBigPixmaps->getHandler());
@@ -105,7 +105,7 @@ void DlgGeneralImp::savePreferences()
 }
 
 /** Sets the size of the recent file list (MRU) in the
- * system parameters.
+ * user parameters.
  * @see FCCmdMRU
  */
 void DlgGeneralImp::setMRUSize()
@@ -114,7 +114,7 @@ void DlgGeneralImp::setMRUSize()
   FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
   if (pCmd)
   {
-    FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Recent files");
+    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("RecentFiles");
     ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }

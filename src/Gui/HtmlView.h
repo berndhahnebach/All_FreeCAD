@@ -138,7 +138,7 @@ protected slots:
  * The HTML viewer class
  */
 class FCHtmlViewPrivate;
-class GuiExport FCHtmlView : public Gui::DockWindow, public Gui::WindowParameter, public FCParameterGrp::ObserverType, public FCProcess::ObserverType
+class GuiExport FCHtmlView : public Gui::DockWindow, public Gui::WindowParameter, public FCProcess::ObserverType
 {
   Q_OBJECT
 

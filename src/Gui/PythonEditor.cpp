@@ -108,7 +108,7 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
 {
   // set font
   FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hPrefGrp = hPrefGrp->GetGroup("Windows")->GetGroup("Editor");
+  hPrefGrp = hPrefGrp->GetGroup("Preferences")->GetGroup("Editor");
 
   QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
 
@@ -226,7 +226,7 @@ public:
 
     // set colors
     FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-    hPrefGrp = hPrefGrp->GetGroup("Windows")->GetGroup("Editor");
+    hPrefGrp = hPrefGrp->GetGroup("Preferences")->GetGroup("Editor");
 
     long c;
     c = hPrefGrp->GetInt("Text", GetDefCol().color("Text"));

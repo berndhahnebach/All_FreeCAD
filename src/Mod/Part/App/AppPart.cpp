@@ -32,6 +32,7 @@
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
+#include "FeaturePartImportIges.h"
 
 using Base::Console;
 using namespace Part;
@@ -125,6 +126,7 @@ void ModuleExport initPart() {
 	App::FeatureFactory().AddProducer("PartBox"       ,new App::FeatureProducer<Part::PartBoxFeature>);
 	App::FeatureFactory().AddProducer("PartCut"       ,new App::FeatureProducer<Part::PartCutFeature>);
 	App::FeatureFactory().AddProducer("PartImportStep",new App::FeatureProducer<Part::FeaturePartImportStep>);
+	App::FeatureFactory().AddProducer("PartImportIges",new App::FeatureProducer<Part::FeaturePartImportIges>);
 
 	return;
 }

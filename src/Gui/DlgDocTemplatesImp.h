@@ -34,11 +34,10 @@
 #ifndef DLGDOCTEMPLATESIMP_H
 #define DLGDOCTEMPLATESIMP_H
 #include "DlgDocTemplates.h"
-#include "Window.h"
 
 class FCCommand;
 
-class DlgDocTemplatesImp : virtual public DlgDocTemplates, public Gui::WindowParameter
+class DlgDocTemplatesImp : virtual public DlgDocTemplates
 { 
     Q_OBJECT
 

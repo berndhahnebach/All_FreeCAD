@@ -138,6 +138,8 @@ libPart_la_SOURCES = \
 		FeaturePartBox.h \
     FeaturePartCut.cpp \
     FeaturePartCut.h \
+    FeaturePartImportIges.cpp \
+    FeaturePartImportIges.h \
     FeaturePartImportStep.cpp \
     FeaturePartImportStep.h \
 		PartDocType.cpp \
@@ -168,7 +170,8 @@ LTLIBRARIES = $(pkglib_LTLIBRARIES)
 
 libPart_la_DEPENDENCIES =
 am_libPart_la_OBJECTS = AppPart.lo FeaturePartBox.lo FeaturePartCut.lo \
-	FeaturePartImportStep.lo PartDocType.lo PartFeature.lo
+	FeaturePartImportIges.lo FeaturePartImportStep.lo \
+	PartDocType.lo PartFeature.lo
 libPart_la_OBJECTS = $(am_libPart_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -177,6 +180,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppPart.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartCut.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportIges.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportStep.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PartDocType.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PartFeature.Plo
@@ -248,6 +252,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppPart.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartCut.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportIges.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportStep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartDocType.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartFeature.Plo@am__quote@

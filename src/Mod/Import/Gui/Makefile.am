@@ -4,13 +4,16 @@ pkglib_LTLIBRARIES=libImportGui.la
 # BUILT_SOURCES=\
 #
 libImportGui_la_SOURCES=\
-	AppImportGui.cpp \
-	Command.cpp
+		AppImportGui.cpp \
+		Command.cpp
 
 # the library search path.
 libImportGui_la_LDFLAGS = -L../App $(all_libraries)
 
 libImportGui_la_LIBADD   = \
+		-lTKPrim \
+		-lTKV2d \
+		-lTKV3d \
 		-lFreeCADGui \
 		-lImport
 

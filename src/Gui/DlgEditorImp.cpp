@@ -45,7 +45,7 @@ using namespace Gui::Dialog;
 DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgEditorSettingsBase( parent, name, fl )
 {
-  setParamGrpPath("User parameter:BaseApp/Windows/Editor");
+  setParamGrpPath("User parameter:BaseApp/Preferences/Editor");
   setEntryName("Editor");
 
   append(EnableLineNumber->getHandler());

@@ -42,7 +42,7 @@ class DockWindow;
  * Retrive the parameter group of the specific window
  * by the windowname.
  */
-class GuiExport WindowParameter 
+class GuiExport WindowParameter : public FCParameterGrp::ObserverType
 {
 public:
   WindowParameter(const char *name);
@@ -59,8 +59,6 @@ public:
 
 private:
   FCParameterGrp::handle _handle;
-
-
 };
 
 

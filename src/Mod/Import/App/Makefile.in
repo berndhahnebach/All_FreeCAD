@@ -140,6 +140,8 @@ libImport_la_SOURCES = \
 libImport_la_LDFLAGS = -L../../../App $(all_libraries)
 
 libImport_la_LIBADD = \
+		-lTKIGES \
+		-lTKSTEP \
 		-lFreeCADBase \
 		-lFreeCADApp
 

@@ -33,10 +33,9 @@
 #ifndef DLGMACROEXECUTEIMP_H
 #define DLGMACROEXECUTEIMP_H
 #include "DlgMacroExecute.h"
-#include "Window.h"
 
 
-class DlgMacroExecuteImp : public DlgMacroExecute, public Gui::WindowParameter
+class DlgMacroExecuteImp : public DlgMacroExecute
 { 
     Q_OBJECT
 

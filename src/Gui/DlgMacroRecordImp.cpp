@@ -59,7 +59,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroRecord( parent, name, modal, fl ), WindowParameter(name)
+    : DlgMacroRecord( parent, name, modal, fl )
 {
 	// get the parameter group of the "Macro Execute" Dialog
 	FCHandle<FCParameterGrp> h = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/");

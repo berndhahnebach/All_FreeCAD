@@ -79,7 +79,7 @@
                                 <cstring>RecentFiles</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>System parameter:BaseApp/Recent files</cstring>
+                                <cstring>User parameter:BaseApp/RecentFiles</cstring>
                             </property>
                             <property name="valueFloat" stdset="0">
                                 <number>4</number>
@@ -96,7 +96,7 @@
                                 <cstring>AllowSplasher</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Windows/General</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Enable splashscreen at startup</string>
@@ -174,7 +174,7 @@
                                 <cstring>ShowCmdLine</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Windows/General</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Show command line</string>
@@ -188,7 +188,7 @@
                                 <cstring>SizeCmdLine</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>System parameter:BaseApp/Windows/CommandLine</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/CommandLine</cstring>
                             </property>
                             <property name="valueFloat" stdset="0">
                                 <number>20</number>
@@ -246,7 +246,7 @@
                                 <cstring>AllowDrag</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Allow dragging of menu items</string>
@@ -282,7 +282,7 @@
                                 <cstring>BigPixmaps</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Windows/General</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Use big pixmaps</string>

@@ -111,6 +111,14 @@ SOURCE=.\FeaturePartCut.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeaturePartImportIges.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartImportIges.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\FeaturePartImportStep.cpp
 # End Source File
 # Begin Source File

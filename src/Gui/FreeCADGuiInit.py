@@ -61,8 +61,7 @@ class StandardWorkbench ( Workbench ):
 		Gui.CommandbarAppendItems("TestTools", list, 0)
 
 		list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator", "Std_ViewFront",
-		"Std_ViewRight","Std_ViewTop","Separator","Std_ViewRear","Std_ViewLeft",
-		"Std_ViewBottom"]
+		"Std_ViewRight","Std_ViewTop","Separator","Std_ViewRear","Std_ViewLeft","Std_ViewBottom"]
 		Gui.CommandbarAppendItems("Standard views", list, 0)
 
 		list = ["Std_DlgParameter","Std_DlgPreferences","Std_DlgMacroRecord",
@@ -93,9 +92,8 @@ def InitToolbars():
 
 	# view tool bar
 	list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator",
-	"Std_ViewFront","Std_ViewFront","Std_ViewRight",
-	"Std_ViewTop", "Separator", "Std_ViewRear", "Std_ViewLeft",
-	"Std_ViewBottom"]
+	"Std_ViewFront","Std_ViewRight","Std_ViewTop", 
+	"Separator", "Std_ViewRear", "Std_ViewLeft","Std_ViewBottom"]
 	Gui.ToolbarAppendItems("Standard views",list, 0, 0)
 
 #	# test tool bar

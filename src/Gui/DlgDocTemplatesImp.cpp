@@ -23,7 +23,6 @@
  */
 DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl ),
-	  WindowParameter(name),
 	  _pcCmd(pcCmd)
 {
 	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();

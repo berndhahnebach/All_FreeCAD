@@ -108,7 +108,7 @@ void PrefGroupItem::paint( QPainter *p )
  *  TRUE to construct a modal dialog.
  */
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPreferences( parent, name, modal, fl ),WindowParameter(name), _pCurTab(0L)
+    : DlgPreferences( parent, name, modal, fl ), _pCurTab(0L)
 {
   tabWidgetStack->removeWidget( WStackPage ); // remove the damned dummy widget
 

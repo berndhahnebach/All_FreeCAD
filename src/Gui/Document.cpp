@@ -89,7 +89,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	_hContext->Deactivate(hTrihedron);
 
 	// alwayes create at least one view
-	if(GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/View")->GetBool("UseInventorViewer",false) )
+	if(GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetBool("UseInventorViewer",false) )
 		CreateView("View3DIv");
 	else
 		CreateView("");
@@ -248,23 +248,27 @@ void FCGuiDocument::CanClose ( QCloseEvent * e )
 		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
 		&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
 	{
-		switch(QMessageBox::warning( GetActiveView(), tr("Unsaved document"),tr("Save document before close?"),
-			tr("Yes"),tr("No"),tr("Cancel"),0,2))
-		{
-		case 0:
-			//GetApplication().
-			if (Save())
-  			e->accept();
-      else
-        e->ignore();
-			break;
-		case 1:
-			e->accept();
-			break;
-		case 2:
-			break;
-		}
-	}else
+#   ifndef FC_DEBUG
+		  switch(QMessageBox::warning( GetActiveView(), tr("Unsaved document"),tr("Save document before close?"),
+			  tr("Yes"),tr("No"),tr("Cancel"),0,2))
+		  {
+		  case 0:
+			  //GetApplication().
+			  if (Save())
+  			  e->accept();
+        else
+          e->ignore();
+			  break;
+		  case 1:
+			  e->accept();
+			  break;
+		  case 2:
+			  break;
+		  }
+#   else
+      e->accept();
+#   endif
+  }else
 		e->accept();
 }
 
