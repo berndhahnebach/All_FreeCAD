@@ -29,7 +29,6 @@
 
 
 #include "../../../Gui/Icons/images.cpp"
-#include "../../../Gui/Icons/x.xpm"
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
