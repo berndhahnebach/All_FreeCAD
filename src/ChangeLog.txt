@@ -244,3 +244,9 @@ Version: V0.1B57 Date: Fri Apr 25 16:18:12 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B58 Date: Thu May 01 20:40:24 2003 +++++++++++++++++++++++++++++++
 + patch from werner 
 + precompiled header (werner)
+
+Version: V0.1B59 Date: Thu May 17 15:40:24 2003 +++++++++++++++++++++++++++++++
++ scintilla added
++ pragmas set for windows only
++ bug fixed in Buttongroug
++ add string for CustomWidget where to store
