@@ -43,7 +43,7 @@ SequencerBase& SequencerBase::Instance ()
   // not initialized?
   if ( _aclInstances.size() == 0 )
   {
-    new SequencerBase();
+    new ConsoleSequencer();
   }
 
   return *_aclInstances.back();
