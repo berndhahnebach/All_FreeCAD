@@ -81,15 +81,70 @@ Jürgen Riegel 2002
 %Chapter 2: Installation
 \chapter{Installation}
 
+At the moment there is no installation tool either on UNIX 
+nor on Windows. Its to early because FreeCAD is in heavy 
+development. Despite this there are two ways to install 
+FreeCAD, for development or usage, on Unix and Windows.
+
 \section{On Unixes}
+
+FreeCAD is not ported so far, sorry ;-)
 
 \subsection{Environment}
 
 
 \section{On Windows}
 
+There is no Installer yet, so you have to install every component of 
+FreeCAD itself. There are:
+\begin{itemize}
+\item Open CasCade
+You need to install OpenCasCade 4.0 Release found on www.opencascade.org. Just run 
+the installer and everything will be seted up properly. 
+\item QT Free Edition for Windows
+Trolltech realeasd a free of charge version of QT for Window 2.3 called "Free Edition" 
+which you can download at www.troll.no. The installer will install everything needed.
+\item qextmdi
+is a small library from Falk Brettschneider which gifs a QT Application an modern MDI look
+with lockable windows and so on. There is no installer (as I know) so you have to get the 
+DLL (qextmdi.dll) or you need to compile it yourself. If you download the Tarball from
+the FreeCAD Project page the qextmdi.dll shut be included for convenient.
+\end{itemize}
+
+When you interested in doing development in FreeCAD you need some additional stuff:
+\begin{itemize}
+\item Visual Studio 6.0 
+You need the Microsoft compiler because of the QT Free Edition is nor available for
+other compilers (e.g. Cygwin) and you can not mix C++ libs of different compilers!
+\item Python debug libs
+you need to download the python debug libs from the vendor of your python installation
+\item Doxygen
+is used for the source code documentation (of the Framework) you don't need it when 
+you don't write documentation for your code, which is not really a good idea ;-)
+\item miktex
+is a latex package for windows and is used to generate the printable documentation for 
+FreeCAD 
+\end{itemize}
+
+After all is set and done you finally need the Tarball or .zip of FreeCAD itself.
+Just unpack it to a place convenient for you and start the FreeCAD.exe with the 
+switch -CheckEnv which checks if all the needed Environment variabels are set and
+all Files at the right place. If not FreeCAD will tell you what to do. 
+
+If the Executabel not even start because of a missing DLL check the if all the needed
+libs properly installed and all DLL's in the path.
+
 \subsection{Register as Server}
 
+If you want to use FreeCAD with the Windows automation (COM, DCOM) you need 
+WinPython installed, for example Active State Python. Then run once FreeCAD -register
+which introduce the server GUIDs in the registry and stops. After that you can start 
+FreeCAD over the standard automation interface from the windows scripting host or other
+COM aware application like Excel and so on. If there is an error during the registration 
+process you have maybe the wrong python installed.
+
+If you want the registry keys removes just call FreeCAD -deregister, pretty obvious, 
+isn't it ;-)
 
 
 %***********************************************
@@ -129,17 +184,28 @@ Jürgen Riegel 2002
 
 \section {Command line arguments}
 
+\section {Licence}
+
+ Most of FreeCAD is under the Term of the GNU LGPL. I know that
+the licence of an open source project is always a matter of lot of
+emotions. So in the Specification and Design Guide is detailed discussion
+why I choose the LGPL.
+
+Anyway you shut have received a copy of the LGPL with this Documentation. If
+not you can get it from the Project Web Page or from the Free Software Foundation.
+
 \section {Contribution}
 
 Thanks to Werner Mayer for his help on various things (like picture conversion)
 
 Thanks goes also to Trolltech for releasing the great QT Toolkit for Open Source 
-development.
+development. After all the years MfC is the developing with QT pure fun!
 
 Thanks to Matra Datavision which makes this project possible in the first place by
 releasing CasCade as Open Source.
 
-Thanks Guido van Rossum for Python.
+Thanks Guido van Rossum for Python (dispide the distigtuan between Types and Classes,
+which gave me a lot headage ;-).
 
 
 

@@ -60,23 +60,26 @@
 
 
 %***********************************************
-%Kapitel 1: Einleitung
+%chapter 1: Introduction
 \chapter{Introduction}
 
 With the release of Open CasCade in 2000 the opportunity was given to use 
 this gift to plan an implement the first fully featured free 3D CAD system 
 for mechanical engineering. For me was the point my experience on the CasCade 
-Kernel. Without experience in profession work one would have great trouble to 
+Kernel. Without experience in professional work one would have great trouble to 
 get into the concepts and algorithms of the CasCade Kernel as a whole. So my 
 plan is to provide a framework which utilize the important packages of the 
 CasCade Kernel (topology, Visualization, OCAF, I/O) and make it possible for 
 people to provide functionality at here own level of skills. Anyway, to program 
 a application with the size and the function richness of a CAD package on 
-your own is perfectly impossible.
+your own is perfectly impossible. So my hope is that this project atract developers
+all over the world to contribute.
 
 Also for me it's a interesting thing, since I'm involved in programming a CasCade
- application (in the field of reverse engineering) at DaimlerChrysler, to use the 
- lessons I've learned  and introduce them in a completely new design.
+application (in the field of reverse engineering) at DaimlerChrysler, to use the 
+lessons I've learned  and introduce them in a completely new design. This work is
+done in my spare time and in no way related to DaimlerChrysler or the Research 
+department of DC I'm curently working. 
 
 Jürgen Riegel 2000
 
@@ -159,6 +162,26 @@ only a basic framework to allow application modules to register and offer
 functions to the user. So the FreeCAD executable is best named as a "framework" 
 for embedding the functions.
  
+ 
+\section {Licence}
+
+I know that the discussion on the "right" licence for open source occupied a significant
+portion of internet bandwidth. I chooses the LGPL for most of the project and I
+know the pro and cons about the LGPL and will now give you some reasons for that decision.
+
+FreeCAD is a mixture of a Library and an Application, so the GPL would be a little bit 
+strong for that. It would prevent write commercial modules for FreeCAD because it would 
+prevent linking with the FreeCAD base libs. You may ask why commercial modules at all? 
+Therefore Linux is good example. Would Linux be so successful when the GNU C Library would 
+be GPL and therefore prevent linking against non GPL Applications? And although I love the 
+freedom of Linux I want to use the very good NVIDIA driver. And I understand and accept 
+the reasons of NVIDIA not give away here driver code. We all work for companies and need 
+payment or at least foot. So for me a coexistence of open source and closed source 
+software is a good thing. I would like to see someone write a Catia import/export 
+processor for FreeCAD and distribute it for free or for some money. I don't like to 
+force him to give more away as he want to. That wouldn't be good for him and for 
+FreeCAD.
+
 
 %***********************************************
 
