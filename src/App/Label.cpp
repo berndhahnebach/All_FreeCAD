@@ -1,11 +1,26 @@
 /***************************************************************************
-                          FCApplication.cpp  -  description
-                             -------------------
-    begin                : Tue Jan 2 2001
-    copyright            : (C) 2001 by Juergen Riegel
-    email                : juergen.riegel@web.de
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License (LGPL)   *
+ *   as published by the Free Software Foundation; either version 2 of     *
+ *   the License, or (at your option) any later version.                   *
+ *   for detail see the LICENCE text file.                                 *
+ *                                                                         *
+ *   FreeCAD is distributed in the hope that it will be useful,            *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
+ *                                                                         *
+ *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
-
 
 #include "PreCompiled.h"
 
@@ -241,7 +256,7 @@ FCLabelPy::~FCLabelPy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	try{
+	PY_TRY{
 		// Access the number of attributes at this label
 		if (Base::streq(attr, "AttributeCount"))						
 			return Py_BuildValue("i", _cLabel.NbAttributes()); 
@@ -265,21 +280,23 @@ PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only 
 				return 0;
 		}else if (streq(attr, "Name")){
 			Handle(TDataStd_Name) NameAttr;
-			if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr))
+      if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr)){
 				//return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
 #ifdef FC_OS_LINUX /* will "u" work? */ // u is unicode as ToExtString is!
 				return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
 #else
 				return Py_BuildValue("s",NameAttr->Get()); 
 #endif				
-			else
+      }else{
 				return 0;
-		}else
+      }
+    }else
 			_getattr_up(FCPyObject); 						// send to parent
-	}catch(...){
-		Console().Log("Exception in FCLabelPy::_getattr()\n");
-		return 0;
-	}
+
+  }PY_CATCH;
+		
+  return 0;
+
 } 
 
 int FCLabelPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state

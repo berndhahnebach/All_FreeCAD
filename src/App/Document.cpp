@@ -471,7 +471,7 @@ PyObject *FCDocumentPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *FCDocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	try{
+	PY_TRY{
 		if (streq(attr, "UndoLimit"))						
 			return Py_BuildValue("i", _pcDoc->GetUndoLimit()); 
 		else if (streq(attr, "AvailableUndos"))				
@@ -496,9 +496,7 @@ PyObject *FCDocumentPy::_getattr(char *attr)				// __getattr__ function: note on
 			return Py_BuildValue("u", _pcDoc->StorageFormat()); 
 		else
 			_getattr_up(FCPyObject); 						
-	}catch(...){
-		Py_Error(PyExc_Exception,"Error in get Attribute");
-	}
+	}PY_CATCH;
 } 
 
 int FCDocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state

@@ -340,7 +340,7 @@ PropertyString::~PropertyString()
 
 void PropertyString::Set(const char* Str)
 {
-
+  _cValue = Str;
 }
 
 const char* PropertyString::GetAsString(void)

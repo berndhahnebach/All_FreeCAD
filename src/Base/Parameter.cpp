@@ -1377,7 +1377,7 @@ StrX::StrX(const XMLCh* const toTranscode)
 
 StrX::~StrX()
 {
-    delete [] fLocalForm;
+    //delete [] fLocalForm;
 }
 
 
@@ -1404,7 +1404,7 @@ XStr::XStr(const char* const toTranscode)
 
 XStr::~XStr()
 {
-    delete [] fUnicodeForm;
+    //delete [] fUnicodeForm;
 }
 
 

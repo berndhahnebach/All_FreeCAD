@@ -2591,6 +2591,402 @@ python ..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputD
 				RelativePath="propertyeditor\propertyeditorlist.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="Widget"
+			Filter="">
+			<File
+				RelativePath="CommandLine.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CommandLine.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CustomWidgets.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CustomWidgets.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="FileDialog.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="FileDialog.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="PrefWidgets.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="PrefWidgets.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ProgressBar.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ProgressBar.h">
+			</File>
+			<File
+				RelativePath="SpinBox.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="SpinBox.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Splashscreen.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Splashscreen.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="WidgetFactory.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="WidgetFactory.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Widgets.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Widgets.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Window.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Window.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+						Outputs="$(InputDir)moc_$(InputName).cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
 		<File
 			RelativePath="Application.cpp">
 			<FileConfiguration
@@ -2654,47 +3050,6 @@ python ..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputD
 		</File>
 		<File
 			RelativePath="BitmapFactory.h">
-		</File>
-		<File
-			RelativePath="CommandLine.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="CommandLine.h">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="DllMain.cpp">
@@ -2921,47 +3276,6 @@ python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h
 			RelativePath="PreCompiled.h">
 		</File>
 		<File
-			RelativePath="PrefWidgets.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="PrefWidgets.h">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="Process.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
@@ -3088,47 +3402,6 @@ python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h
 		</File>
 		<File
 			RelativePath="Selection.h">
-		</File>
-		<File
-			RelativePath="Splashscreen.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Splashscreen.h">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Themes.cpp">
@@ -3403,129 +3676,6 @@ python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h
 		</File>
 		<File
 			RelativePath="WaitCursor.h">
-		</File>
-		<File
-			RelativePath="WidgetFactory.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="WidgetFactory.h">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Widgets.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Widgets.h">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Window.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG;SCI_LEXER;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui;SCI_LEXER;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Window.h">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
-"
-					Outputs="$(InputDir)moc_$(InputName).cpp"/>
-			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

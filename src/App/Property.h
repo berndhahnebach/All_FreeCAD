@@ -118,7 +118,7 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	PropertyInteger(long lValue, long lMax=LONG_MAX, long lMin=LONG_MIN, long lStep=1);
+	PropertyInteger(long lValue=0, long lMax=LONG_MAX, long lMin=LONG_MIN, long lStep=1);
 
 	/**
 	 * A destructor.
@@ -269,7 +269,7 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	PropertyString(const char* sValue, const char* sConstraint="");
+	PropertyString(const char* sValue="", const char* sConstraint="");
 
 	/**
 	 * A destructor.
@@ -338,7 +338,7 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	PropertyBool(bool lValue);
+	PropertyBool(bool lValue=false);
 
 	/**
 	 * A destructor.
@@ -480,7 +480,7 @@ public:
 
 	/** Sets the property throug a init string
 	 */
-	virtual void Set(const char* Str);
+	virtual void Set(const char* Str="");
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers

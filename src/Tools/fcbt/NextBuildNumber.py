@@ -35,6 +35,10 @@ import time
 # increasing build number
 BuildNumber = int(FCVersionBuild[23:-1]) +1
 
+print "New Buildnumber is:"
+print BuildNumber
+print "\n"
+
 # writing new Version.h File
 open("../Version.h",'w').writelines([FCVersionMajor,FCVersionMinor,FCVersionBuild[:23]+`BuildNumber`+'\n',FCVersionDisDa[:23]+ '"'+time.asctime()+'"'])
 

@@ -510,6 +510,29 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath="Plugin">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Plugin.h"
+					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+python ..\Tools\PythonToCPP.py Plugin Plugin.h
+"
+					Outputs="Plugin.h"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Plugin.h"
+					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+python ..\Tools\PythonToCPP.py Plugin Plugin.h
+"
+					Outputs="Plugin.h"/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp">
 			<FileConfiguration
 				Name="Release|Win32">
@@ -573,6 +596,29 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 		</File>
 		<File
 			RelativePath="PropertyAttr.h">
+		</File>
+		<File
+			RelativePath="Standard">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Standard.h"
+					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+python ..\Tools\PythonToCPP.py Standard Standard.h
+"
+					Outputs="Standard.h"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Building Standard.h"
+					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+python ..\Tools\PythonToCPP.py Standard Standard.h
+"
+					Outputs="Standard.h"/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Topology.cpp">

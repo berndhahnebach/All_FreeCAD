@@ -452,3 +452,6 @@ Version: V0.1B99 Date: Fri Nov 26 22:40:56 2004 +++++++++++++++++++++++++++++++
 + replace QextMDI by own impl. using QWorkspace and QDockWindow
 + Tabbar added to the bottom of the workspace area
 
+Version: V0.1B100 Date: Mon Nov 29 19:40:56 2004 +++++++++++++++++++++++++++++++
++ set up new exception handling for python call back
++ implement std property acces in App::Feature

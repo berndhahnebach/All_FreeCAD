@@ -83,6 +83,16 @@ int main( int argc, char ** argv )
 		sHomePath = FindHomePathUnix(argv[0]);
 #	endif
 
+		// try to figure out if using FreeCADLib
+		std::string Temp = GetFreeCADLib(sHomePath.c_str());
+
+		// sets all needed varables if a FreeCAD LibPack is found
+		if(Temp != "")
+		{
+			EnvPrint("MeinGui Set Python ++++++++++++++++++++++++++++++++++++++++++++++");
+			// sets the python environment variables if the FREECADLIB variable is defined
+			SetPythonToFreeCADLib(Temp.c_str());
+		}
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with gui if not overridden in InitConfig...
 	FCApplication::SetRunMode("Gui");

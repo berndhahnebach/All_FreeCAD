@@ -418,7 +418,7 @@ PYFUNCIMP_S(FCApplication,sNew)
     if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	try{
+	PY_TRY{
 		FCDocument*	pDoc = GetApplication().New(pstr);
 		if (pDoc)
 			return pDoc->GetPyObject();
@@ -427,10 +427,7 @@ PYFUNCIMP_S(FCApplication,sNew)
 			PyErr_SetString(PyExc_IOError, "Unknown Template");
 			return NULL;
 		}
-	}catch(...){
-		PyErr_SetString(PyExc_IOError, "Unknown Error in DocNew()");
-		return NULL;
-	}
+	}PY_CATCH;
 }
 
 
@@ -476,13 +473,9 @@ PYFUNCIMP_S(FCApplication,sGetParam)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	try{
+	PY_TRY{
 		return GetPyObject(GetApplication().GetParameterGroupByPath(pstr)); 
-	}catch(...)
-	{
-		PyErr_SetString(PyExc_IOError, "GetParam faild!\nusage:\n   GetParam\"(SetName:GroupName_1/GroupName_2/.../GroupName_n)");
-		return NULL;
-	}
+	}PY_CATCH;
 }
 
 
@@ -640,15 +633,6 @@ void FCApplication::Destruct(void)
 
 
 
-#ifdef FC_DEBUG
-#	define DBGTRY try	{
-#	define DBGCATCH(X) }catch(...) { X }
-#else
-#	define DBGTRY
-#	define DBGCATCH(X)  
-#endif
-
-
 void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 {
 	
@@ -685,12 +669,12 @@ void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 	ParsOptions(argc,argv);
 
 
-	DBGTRY
+	DBG_TRY
 		// init python
 		Interpreter().SetComLineArgs(argc,argv);
-	DBGCATCH(puts("error init Interpreter\n");exit(1);)
+	DBG_CATCH(puts("error init Interpreter\n");exit(1);)
 
-	DBGTRY
+	DBG_TRY
 		// Init console ===========================================================
 		Console().AttacheObserver(new CmdConsoleObserver());
 		if(mConfig["Verbose"] == "Strict") Console().SetMode(ConsoleSingelton::Verbose);
@@ -698,7 +682,7 @@ void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 		#	ifdef FC_DEBUG
 			Console().AttacheObserver(new LoggingConsoleObserver("FreeCAD.log"));
 		#	endif
-	DBGCATCH(puts("error init console\n");exit(2);)
+	DBG_CATCH(puts("error init console\n");exit(2);)
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))

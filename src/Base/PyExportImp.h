@@ -314,6 +314,113 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 #define PYMETHODEDEF(FUNC)	{"" #FUNC "",(PyCFunction) s##FUNC,Py_NEWARGS},
 
 
+
+/** Exceptionhandling for python callback functions
+ * Is a conviniance macro to manage the exception handling of python callback
+ * function defined in classes inhereting FCPyObject and using PYMETHODEDEF .
+ * You can automate this:
+ * \code
+ * PYFUNCIMP_D(DocTypeStdPy,AddFeature)
+ * {
+ *   char *pstr;
+ *   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+ *      return NULL;                             // NULL triggers exception 
+ * 
+ *   try {
+ *     Feature *pcFtr = _pcDocTypeStd->AddFeature(pstr);
+ *   }catch(...)                                                        \
+ *   {                                                                 \
+ * 	 	Py_Error(PyExc_Exception,"Unknown C++ exception");          \
+ *   }catch(FCException e) ..... // and so on....                                                               \
+ * }
+ * \endcode
+ * with that:
+ * \code
+ * PYFUNCIMP_D(DocTypeStdPy,AddFeature)
+ * {
+ *   char *pstr;
+ *   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+ *      return NULL;                             // NULL triggers exception 
+ * 
+ *  PY_TRY {
+ *    Feature *pcFtr = _pcDocTypeStd->AddFeature(pstr);
+ *  }PY_CATCH;
+ * }
+ * \endcode
+ * this catch maps all of the FreeCAD standard exception to a clear output for the 
+ * Python exception.
+ * @see PYMETHODEDEF
+ * @see FCPyObject
+ */
+#define PY_TRY	try 
+
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+/// see docu of PY_TRY 
+#  define PY_CATCH catch(Base::Exception &e)                          \
+    {                                                                 \
+          std::string str;                                            \
+          str += "FreeCAD exception thrown (";                        \
+          str += e.what();                                            \
+          str += ")";                                                 \
+          e.ReportException();                                        \
+    		  Py_Error(PyExc_Exception,str.c_str());                      \
+    }                                                                 \
+    catch(std::exception &e)                                          \
+    {                                                                 \
+          std::string str;                                            \
+          str += "FC++ exception thrown (";                           \
+          str += e.what();                                            \
+          str += ")";                                                 \
+          Base::Console().Error(str.c_str());                         \
+    		  Py_Error(PyExc_Exception,str.c_str());                      \
+    }                                                                 \
+    catch(Standard_Failure)                                           \
+    {                                                                 \
+		      Handle(Standard_Failure) e = Standard_Failure::Caught();    \
+          std::string str;                                            \
+          str += "OCC exception thrown (";                            \
+          str += e->GetMessageString();                               \
+          str += ")\n";                                               \
+          Base::Console().Error(str.c_str());                         \
+    		  Py_Error(PyExc_Exception,str.c_str());                      \
+    }                                                                 \
+    catch(...)                                                        \
+    {                                                                 \
+    		  Py_Error(PyExc_Exception,"Unknown C++ exception");          \
+    }   
+                                                              
+#else
+/// see docu of PY_TRY 
+#  define PY_CATCH catch(Base::Exception &e)                          \
+    {                                                                 \
+          std::string str;                                            \
+          str += "FreeCAD exception thrown (";                        \
+          str += e.what();                                            \
+          str += ")";                                                 \
+          e.ReportException();                                        \
+    		  Py_Error(PyExc_Exception,str.c_str());                      \
+    }                                                                 \
+    catch(Standard_Failure)                                           \
+    {                                                                 \
+		      Handle(Standard_Failure) e = Standard_Failure::Caught();    \
+          std::string str;                                            \
+          str += "OCC exception thrown (";                            \
+          str += e->GetMessageString();                               \
+          str += ")\n";                                               \
+          Base::Console().Error(str.c_str());                         \
+    		  Py_Error(PyExc_Exception,str.c_str());                      \
+	  }  
+                                                             
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+
+
+
+
+
+
+
+
+
 /** Python buffer helper class (const char* -> char*)
  *  This class has the only purpos to handle non const char* in
  *  python methodes. Unfortenatly python only use non const strings which
@@ -362,4 +469,4 @@ public:
 
 } // namespace Base
 
-#endif
+#endif // __PYEXPORTIMP_H__

@@ -52,7 +52,7 @@ Exception::Exception(const Exception &inst)
 Exception::Exception(const char * sMessage)
 {
   SetMessage(sMessage);
-  ReportException();
+//  ReportException();
 }
 
 

@@ -41,23 +41,29 @@
 #	include <vector>
 #endif
 
+#ifdef FC_OS_LINUX
+#	define ENV_INLINE inline
+#else
+#	define ENV_INLINE __forceinline
+#endif
 
+#define FC_VERBOSE
 
-inline void EnvPrint(const char* sVar, const char* sVal)
+ENV_INLINE void EnvPrint(const char* sVar, const char* sVal)
 {
-#ifdef FC_VERBOSE
+#ifndef FC_VERBOSE
 	std::cout << sVar << "=" << sVal  << std::endl;
 #endif
 }
 
-inline void EnvPrint(const char* sMsg)
+ENV_INLINE void EnvPrint(const char* sMsg)
 {
-#ifdef FC_VERBOSE
+#ifndef FC_VERBOSE
 	std::cout << sMsg << std::endl;
 #endif
 }
 
-inline void SetEnvironment(const char* sVar, const char* sVal)
+ENV_INLINE void SetEnvironment(const char* sVar, const char* sVal)
 {
 #if defined (FC_OS_LINUX)
 	setenv(sVar, sVal, 1);
@@ -68,12 +74,13 @@ inline void SetEnvironment(const char* sVar, const char* sVal)
 	env += "=";
 	env += sVal;
 	putenv (env.c_str());
+	//SetEnvironmentVariable(sVar,sVal);
 #endif
 }
 
 /** Test if a Variable exist
   */
-inline void TestEnvExists(const char* sEnvName,bool &bFailure)
+ENV_INLINE void TestEnvExists(const char* sEnvName,bool &bFailure)
 {
 	if (!getenv(sEnvName)){
           std::cerr<<"Environment variable "<<sEnvName<<" is not set!"<<std::endl;
@@ -81,7 +88,7 @@ inline void TestEnvExists(const char* sEnvName,bool &bFailure)
         }
 }
 
-inline void SimplifyPath(std::string& sPath)
+ENV_INLINE void SimplifyPath(std::string& sPath)
 {
 	// remove all unnecessary '/./' from sPath
 	std::string sep; sep += PATHSEP;
@@ -104,7 +111,7 @@ inline void SimplifyPath(std::string& sPath)
 }
 
 #ifdef FC_OS_LINUX
-inline std::string FindHomePathUnix(const char* sCall)
+ENV_INLINE std::string FindHomePathUnix(const char* sCall)
 {
 	std::string argv = sCall;
 	std::string absPath;
@@ -206,7 +213,7 @@ inline std::string FindHomePathUnix(const char* sCall)
 	return homePath;
 }
 
-inline std::string FindPyHomePathUnix(const char* sCall)
+ENV_INLINE std::string FindPyHomePathUnix(const char* sCall)
 {
 	std::string argv = sCall;
 	std::string absPath;
@@ -283,7 +290,7 @@ inline std::string FindPyHomePathUnix(const char* sCall)
 #endif
 
 #ifdef FC_OS_WIN32
-inline std::string FindHomePathWin32(HANDLE hModule)
+ENV_INLINE std::string FindHomePathWin32(HANDLE hModule)
 {
 	char  szFileName [MAX_PATH] ;
 	GetModuleFileName((HMODULE)hModule,
@@ -306,7 +313,7 @@ inline std::string FindHomePathWin32(HANDLE hModule)
 #endif
 
 
-inline std::string GetFreeCADLib(const char* sHomePath)
+ENV_INLINE std::string GetFreeCADLib(const char* sHomePath)
 {
 	EnvPrint("GetFreeCADLib ----------------");
 
@@ -337,7 +344,7 @@ inline std::string GetFreeCADLib(const char* sHomePath)
 }
 
 
-inline void SetPluginDefaults(const char* sPath)
+ENV_INLINE void SetPluginDefaults(const char* sPath)
 {
 	EnvPrint("OCC Plugins ------------------");
 
@@ -353,7 +360,7 @@ inline void SetPluginDefaults(const char* sPath)
 }
 
 
-inline void SetPythonToFreeCADLib(const char* sLib)
+ENV_INLINE void SetPythonToFreeCADLib(const char* sLib)
 {
 	EnvPrint("Python Vars ------------------");
 
@@ -391,7 +398,7 @@ inline void SetPythonToFreeCADLib(const char* sLib)
 }
 
 
-inline void SetCasCadeToFreeCADLib(const char* sLib)
+ENV_INLINE void SetCasCadeToFreeCADLib(const char* sLib)
 {
 	EnvPrint("OCC Vars ---------------------");
 
@@ -490,7 +497,7 @@ inline void SetCasCadeToFreeCADLib(const char* sLib)
 }
 
 
-inline void PrintPath(void)
+ENV_INLINE void PrintPath(void)
 {
 	char * p = getenv("PATH");
 	if ( p != NULL )

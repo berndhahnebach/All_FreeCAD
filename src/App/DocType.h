@@ -112,7 +112,12 @@ public:
 
 	/** @name Feature handling  */
 	//@{
+  /// Add a feature (by name) to this document and set it active
 	Feature *AddFeature(const char* sName);
+  /// Returns the active Feature of this document
+	Feature *GetActiveFeature(void);
+  /// Updates the document (recalculate)
+  void UpdateDoc(void);
 	//@}
 
 	/** @name State handling  */
@@ -126,6 +131,8 @@ protected:
 	TDF_Label _lFeature;
 	int       _iNextFreeFeature;
 	TDF_Label _lActiveFeature;
+
+  FCDocument *_pcDoc;
 
 	/// The one and only python object of this DocTypeStd object
 	DocTypeStdPy *_pcDocTypeStdPy;

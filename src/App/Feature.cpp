@@ -73,11 +73,25 @@ void Feature::AddProperty(const char *Type, const char *Name, const char *InitSt
 {
   Property *Prop;
 
-	if(	Base::streq(Type, "Float") )
+	
+  if(	Base::streq(Type, "Float") )
 	{
 		Prop = new PropertyFloat();
 		Prop->Set(InitString);
+  } else if(	Base::streq(Type, "String") )
+	{
+		Prop = new PropertyString();
+		Prop->Set(InitString);
+  } else if(	Base::streq(Type, "Int") )
+	{
+		Prop = new PropertyInteger();
+		Prop->Set(InitString);
+  } else if(	Base::streq(Type, "Bool") )
+	{
+		Prop = new PropertyBool();
+		Prop->Set(InitString);
 	}
+
 
 	TDF_Label L = _cFeatureLabel.FindChild(_nextFreeLabel);
   // remember for search effecience
@@ -143,8 +157,9 @@ void Feature::AttachLabel(const TDF_Label &rcLabel)
 
 	InitLabel(_cFeatureLabel);
 
-    if (myFunctionDriver->Execute(log))
-		Base::Console().Error("Feature::InitLabel()");
+   if (myFunctionDriver->Execute(log))
+//		Base::Console().Error("Feature::InitLabel()");
+		Base::Console().Log("Feature::InitLabel() Initial Execute Fails (not bad at all ;-)\n");
 
 }
 
@@ -194,6 +209,11 @@ public:
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 	PYFUNCDEF_D(FeaturePy,AddFeature)
 
+
+	//---------------------------------------------------------------------
+	// helpers for python exports goes here +++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+  void SetProperty(const char *attr, PyObject *value);
 
 private:
   Feature *_pcFeature;
@@ -288,7 +308,7 @@ PyObject *FeaturePy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	try{
+	PY_TRY{
 		if (Base::streq(attr, "XXXX"))						
 			return Py_BuildValue("i",1); 
 		else
@@ -297,9 +317,7 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
         return Py_BuildValue("s", _pcFeature->GetProperty(attr).GetAsString());
       else
 			  _getattr_up(FCPyObject); 						
-	}catch(...){
-		Py_Error(PyExc_Exception,"Error in get Attribute");
-	}
+	}PY_CATCH;
 } 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
@@ -311,10 +329,7 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
       // search in PropertyList
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){
         try{
-          //char sBuf[256];
-          //sprintf(sBuf,"%f",PyFloat_AsDouble(value));
-          //_pcFeature->GetProperty(attr).Set(sBuf);
-          (dynamic_cast<PropertyFloat&>(_pcFeature->GetProperty(attr))).SetValue(PyFloat_AsDouble(value));
+          SetProperty(attr,value);
         }catch(...){
           return 1;
         }
@@ -323,6 +338,20 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
 			  return FCPyObject::_setattr(attr, value); 						
 } 
 
+void FeaturePy::SetProperty(const char *attr, PyObject *value)
+{
+  //char sBuf[256];
+  //sprintf(sBuf,"%f",PyFloat_AsDouble(value));
+  //_pcFeature->GetProperty(attr).Set(sBuf);
+  if( PyObject_TypeCheck(value, &PyFloat_Type) )
+    (dynamic_cast<PropertyFloat&>(_pcFeature->GetProperty(attr))).SetValue(PyFloat_AsDouble(value));
+  else if( PyObject_TypeCheck(value, &PyInt_Type) )
+    (dynamic_cast<PropertyInteger&>(_pcFeature->GetProperty(attr))).SetValue(PyInt_AsLong(value));
+  else if( PyObject_TypeCheck(value, &PyString_Type) )
+    (dynamic_cast<PropertyString&>(_pcFeature->GetProperty(attr))).Set(PyString_AsString(value));
+  else
+    throw Base::Exception("Not fiting type");
+}
 
 
 //--------------------------------------------------------------------------

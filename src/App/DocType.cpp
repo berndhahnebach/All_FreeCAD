@@ -40,6 +40,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "../Base/PyExportImp.h"
 #include "../Base/Console.h"
+#include "../Base/Exception.h"
 
 #include "Document.h"
 #include "DocType.h"
@@ -74,6 +75,8 @@ public:
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 	PYFUNCDEF_D(DocTypeStdPy,AddFeature)
+	PYFUNCDEF_D(DocTypeStdPy,GetActiveFeature)
+	PYFUNCDEF_D(DocTypeStdPy,Update)
 
 private:
 	DocTypeStd *_pcDocTypeStd;
@@ -148,6 +151,8 @@ void DocTypeStd::Init (FCDocument *pcDoc)
 {
 	Base::Console().Log("Initialising Doc: %p trough DocTypeStd\n",pcDoc);
 
+  _pcDoc = pcDoc;
+
 	TDF_Label lMain = pcDoc->Main();
 
 	_lBase    = lMain.FindChild(1);
@@ -191,6 +196,25 @@ Feature *DocTypeStd::AddFeature(const char* sName)
 
 }
 
+Feature *DocTypeStd::GetActiveFeature(void)
+{
+  // checks if there is no active Feature
+  if(_lActiveFeature.IsNull()) 
+    return 0;
+
+  Handle(FeatureAttr) hFeat;
+  
+  if(! _lActiveFeature.FindAttribute(FeatureAttr::GetID(),hFeat))
+    throw Base::Exception("DocTypeStd::GetActiveFeature() internal error, feature attribute missing\n");
+  
+  return hFeat->Get();
+}
+
+void DocTypeStd::UpdateDoc(void)
+{
+  _pcDoc->Recompute();
+
+}
 
 //===========================================================================
 // TpyeStdPy - Python wrapper
@@ -227,6 +251,8 @@ PyTypeObject DocTypeStdPy::Type = {
 PyMethodDef DocTypeStdPy::Methods[] = {
 //	{"AddFeature",         (PyCFunction) sAddFeature,         Py_NEWARGS},
 	PYMETHODEDEF(AddFeature)
+	PYMETHODEDEF(GetActiveFeature)
+	PYMETHODEDEF(Update)
 	{NULL, NULL}		/* Sentinel */
 };
 
@@ -272,14 +298,12 @@ PyObject *DocTypeStdPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *DocTypeStdPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	try{
+	PY_TRY{
 		if (Base::streq(attr, "XXXX"))						
 			return Py_BuildValue("i",1); 
 		else
 			_getattr_up(FCPyObject); 						
-	}catch(...){
-		Py_Error(PyExc_Exception,"Error in get Attribute");
-	}
+	}PY_CATCH;
 } 
 
 int DocTypeStdPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
@@ -310,9 +334,41 @@ PYFUNCIMP_D(DocTypeStdPy,AddFeature)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Feature *pcFtr = _pcDocTypeStd->AddFeature(pstr);
-	if(pcFtr)
-		return pcFtr->GetPyObject();
-	else
-		Py_Error(PyExc_Exception,"No Feature with this name!");
+  PY_TRY {
+	  Feature *pcFtr = _pcDocTypeStd->AddFeature(pstr);
+	  if(pcFtr)
+		  return pcFtr->GetPyObject();
+	  else
+		  Py_Error(PyExc_Exception,"No Feature with this name!");
+  }PY_CATCH;
+}
+
+
+PYFUNCIMP_D(DocTypeStdPy,GetActiveFeature)
+{
+	
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  PY_TRY {
+	  Feature *pcFtr = _pcDocTypeStd->GetActiveFeature();
+	  if(pcFtr)
+		  return pcFtr->GetPyObject();
+	  else
+		  Py_Error(PyExc_Exception,"No active Feature");
+  } PY_CATCH;
+}
+
+
+PYFUNCIMP_D(DocTypeStdPy,Update)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+  PY_TRY{
+	  _pcDocTypeStd->UpdateDoc();
+  
+    Py_Return;
+  }PY_CATCH;
+
 }

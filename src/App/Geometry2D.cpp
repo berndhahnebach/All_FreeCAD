@@ -123,17 +123,15 @@ FCGeometry2D::~FCGeometry2D()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *FCGeometry2D::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	try{
+	PY_TRY{
 		// Access the number of attributes at this label
 		if (streq(attr, "AttributeCount"))
 		{
 			return Py_BuildValue("i", 1); 
 		}else
 			_getattr_up(FCPyObject); 						// send to parent
-	}catch(...){
-		Console().Log("Exception in FCGeometry2D::_getattr()\n");
-		return 0;
-	}
+	}PY_CATCH;
+	return 0;
 } 
 
 int FCGeometry2D::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state

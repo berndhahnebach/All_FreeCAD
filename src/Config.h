@@ -214,16 +214,20 @@
 #	define COIN_DLL
 #endif
 
+
 //**************************************************************************
-// QextMdi
+// Exception handling
 
-#ifndef NO_KDE2
-#	define NO_KDE2
-#endif
-
-//#define QT_NO_COMPAT
-#ifdef FCGui
-#	define MAKEDLL_QEXTMDI
+// dont catch a c++ exception in DEBUG!
+#ifdef FC_DEBUG
+#  define DONT_CATCH_CXX_EXCEPTIONS 1
+#	 define DBG_TRY
+#	 define DBG_CATCH(X)  
+#else
+/// used to switch a catch with the debug state
+#	 define DBG_TRY try	{
+/// see docu DBGTRY
+#	 define DBG_CATCH(X) }catch(...) { X }
 #endif
 
 
