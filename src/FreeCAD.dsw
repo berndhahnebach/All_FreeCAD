@@ -59,6 +59,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name AppRaytracing
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppTest
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -233,6 +236,18 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name FreeCADBase
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppTest"=.\Mod\Test\AppTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
