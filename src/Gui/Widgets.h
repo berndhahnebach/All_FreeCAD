@@ -114,9 +114,9 @@ private:
 
 /**
  * This class allows to drag one or more items which
- * correspond to a FCCommand object. The dragged items you
+ * correspond to a Command object. The dragged items you
  * can drop onto a @ref Gui::CustomToolBar object
- * @see CommandViewItem, FCCommand
+ * @see CommandViewItem, Command
  * \author Werner Mayer
  */
 class GuiExport CommandIconView : public QIconView
@@ -136,38 +136,6 @@ protected slots:
 signals:
   /** Emits this signal if selection has changed. */
   void emitSelectionChanged( const QString& );
-};
-
-// ------------------------------------------------------------------------------
-
-/**
- * The CreateToolBarDialog class provides a dialog to create a new
- * toolbar or commandbar.
- * \author Werner Mayer
- */
-class GuiExport CreateToolBarDialog : public QDialog
-{
-  Q_OBJECT
-
-public:
-  CreateToolBarDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-  ~CreateToolBarDialog();
-
-public slots:
-  void accept ();
-
-private:
-  QGridLayout* CreateToolBarDialogLayout;
-  QGridLayout* GroupBox1Layout;
-  QHBoxLayout* Layout2;
-
-  QGroupBox* GroupBox1;
-  QLabel* TextLabel;
-  QLineEdit* LineEditName;
-  QCheckBox* CheckCreateCmdBar;
-  QCheckBox* CheckCreateToolBar;
-  QPushButton* buttonOk;
-  QPushButton* buttonCancel;
 };
 
 // ------------------------------------------------------------------------------

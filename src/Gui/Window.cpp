@@ -57,6 +57,7 @@ WindowParameter::~WindowParameter()
 {
 }
 
+/** Sets the group of the window to \a name */
 bool WindowParameter::setGroupName( const char* name )
 {
   if ( _handle.IsValid() )
@@ -77,6 +78,10 @@ FCParameterGrp::handle  WindowParameter::getWindowParameter(void)
   return _handle;
 }
 
+/** 
+ * Returns a handle to the parameter group to the user parameter 
+ * under BaseApp/Preferences.
+ */
 FCParameterGrp::handle  WindowParameter::getParameter(void)
 {
   return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");

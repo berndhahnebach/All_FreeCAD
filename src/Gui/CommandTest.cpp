@@ -60,7 +60,7 @@ using namespace Gui;
 DEF_STD_CMD_A(FCCmdTest1);
 
 FCCmdTest1::FCCmdTest1()
-  :FCCppCommand("Std_Test1")
+  :CppCommand("Std_Test1")
 {
   sAppModule    = "";
   sGroup        = "Standard-Test";
@@ -72,11 +72,11 @@ FCCmdTest1::FCCmdTest1()
   iAccel        = Qt::CTRL+Qt::Key_T;
 }
 
-void FCCmdTest1::Activated(int iMsg)
+void FCCmdTest1::activated(int iMsg)
 {
 #if 0
 	// get open file name
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)", GetAppWnd() );
+	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)", getAppWnd() );
 	if ( fn.isEmpty() ) return;
 
     // Open the argument file..
@@ -88,7 +88,7 @@ void FCCmdTest1::Activated(int iMsg)
     SoSeparator * root = SoDB::readAll(&in);
 #else
 	// get open file name
-	QString fn = FileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", GetAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", getAppWnd() );
 	if ( fn.isEmpty() ) return;
 
     // Open the argument file..
@@ -160,7 +160,7 @@ void FCCmdTest1::Activated(int iMsg)
 
 }
 
-bool FCCmdTest1::IsActive(void)
+bool FCCmdTest1::isActive(void)
 {
   //return (GetActiveOCCDocument()!=NULL);
   return true;
@@ -172,7 +172,7 @@ bool FCCmdTest1::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest2);
 
 FCCmdTest2::FCCmdTest2()
-	:FCCppCommand("Std_Test2")
+	:CppCommand("Std_Test2")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -186,10 +186,10 @@ FCCmdTest2::FCCmdTest2()
 
 #include <TFunction_Function.hxx>
 
-void FCCmdTest2::Activated(int iMsg)
+void FCCmdTest2::activated(int iMsg)
 {
 
-  App::Document *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
 	Base::Console().Log("Using Doc: %p\n",pcDoc);
@@ -210,9 +210,9 @@ void FCCmdTest2::Activated(int iMsg)
 
 }
 
-bool FCCmdTest2::IsActive(void)
+bool FCCmdTest2::isActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+  return (getActiveOCCDocument()!=NULL);
 }
 
 //===========================================================================
@@ -221,7 +221,7 @@ bool FCCmdTest2::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest3);
 
 FCCmdTest3::FCCmdTest3()
-	:FCCppCommand("Std_Test3")
+	:CppCommand("Std_Test3")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -233,18 +233,18 @@ FCCmdTest3::FCCmdTest3()
 	iAccel			= 0;
 }
 
-void FCCmdTest3::Activated(int iMsg)
+void FCCmdTest3::activated(int iMsg)
 {
 
-  App::Document *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
 
 
-bool FCCmdTest3::IsActive(void)
+bool FCCmdTest3::isActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+  return (getActiveOCCDocument()!=NULL);
 }
 
 //===========================================================================
@@ -254,7 +254,7 @@ bool FCCmdTest3::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest4);
 
 FCCmdTest4::FCCmdTest4()
-	:FCCppCommand("Std_Test4")
+	:CppCommand("Std_Test4")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -266,18 +266,18 @@ FCCmdTest4::FCCmdTest4()
 	iAccel			= 0;
 }
 
-void FCCmdTest4::Activated(int iMsg)
+void FCCmdTest4::activated(int iMsg)
 {
 
-  App::Document *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
 
 
-bool FCCmdTest4::IsActive(void)
+bool FCCmdTest4::isActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+  return (getActiveOCCDocument()!=NULL);
 }
 
 //===========================================================================
@@ -286,7 +286,7 @@ bool FCCmdTest4::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest5);
 
 FCCmdTest5::FCCmdTest5()
-	:FCCppCommand("Std_Test5")
+	:CppCommand("Std_Test5")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -298,18 +298,18 @@ FCCmdTest5::FCCmdTest5()
 	iAccel			= 0;
 }
 
-void FCCmdTest5::Activated(int iMsg)
+void FCCmdTest5::activated(int iMsg)
 {
 
-  App::Document *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
 
 
-bool FCCmdTest5::IsActive(void)
+bool FCCmdTest5::isActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+  return (getActiveOCCDocument()!=NULL);
 }
 
 
@@ -319,7 +319,7 @@ bool FCCmdTest5::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest6);
 
 FCCmdTest6::FCCmdTest6()
-	:FCCppCommand("Std_Test6")
+	:CppCommand("Std_Test6")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -331,18 +331,18 @@ FCCmdTest6::FCCmdTest6()
 	iAccel			= 0;
 }
 
-void FCCmdTest6::Activated(int iMsg)
+void FCCmdTest6::activated(int iMsg)
 {
 
-  App::Document *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
 
 
-bool FCCmdTest6::IsActive(void)
+bool FCCmdTest6::isActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+  return (getActiveOCCDocument()!=NULL);
 }
 
 
@@ -352,7 +352,7 @@ bool FCCmdTest6::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest7);
 
 FCCmdTest7::FCCmdTest7()
-	:FCCppCommand("Std_Test7")
+	:CppCommand("Std_Test7")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -364,7 +364,7 @@ FCCmdTest7::FCCmdTest7()
 	iAccel			= 0;
 }
 
-void FCCmdTest7::Activated(int iMsg)
+void FCCmdTest7::activated(int iMsg)
 {
 	try
 	{
@@ -385,7 +385,7 @@ void FCCmdTest7::Activated(int iMsg)
 }
 
 
-bool FCCmdTest7::IsActive(void)
+bool FCCmdTest7::isActive(void)
 {
 	return ( !Base::Sequencer().isRunning() );
 }
@@ -397,7 +397,7 @@ bool FCCmdTest7::IsActive(void)
 DEF_STD_CMD_A(FCCmdTest8);
 
 FCCmdTest8::FCCmdTest8()
-	:FCCppCommand("Std_Test8")
+	:CppCommand("Std_Test8")
 {
 	sAppModule		= "";
 	sGroup			= "Standard-Test";
@@ -409,7 +409,7 @@ FCCmdTest8::FCCmdTest8()
 	iAccel			= 0;
 }
 
-void FCCmdTest8::Activated(int iMsg)
+void FCCmdTest8::activated(int iMsg)
 {
 	try
 	{
@@ -459,25 +459,29 @@ void FCCmdTest8::Activated(int iMsg)
 }
 
 
-bool FCCmdTest8::IsActive(void)
+bool FCCmdTest8::isActive(void)
 {
 	return ( !Base::Sequencer().isRunning() );
 }
 
 
+namespace Gui {
+
 void CreateTestCommands(void)
 {
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+	CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-	rcCmdMgr.AddCommand(new FCCmdTest1());
-	rcCmdMgr.AddCommand(new FCCmdTest2());
-	rcCmdMgr.AddCommand(new FCCmdTest3());
-	rcCmdMgr.AddCommand(new FCCmdTest4());
-	rcCmdMgr.AddCommand(new FCCmdTest5());
-	rcCmdMgr.AddCommand(new FCCmdTest6());
-	rcCmdMgr.AddCommand(new FCCmdTest7());
-	rcCmdMgr.AddCommand(new FCCmdTest8());
+	rcCmdMgr.addCommand(new FCCmdTest1());
+	rcCmdMgr.addCommand(new FCCmdTest2());
+	rcCmdMgr.addCommand(new FCCmdTest3());
+	rcCmdMgr.addCommand(new FCCmdTest4());
+	rcCmdMgr.addCommand(new FCCmdTest5());
+	rcCmdMgr.addCommand(new FCCmdTest6());
+	rcCmdMgr.addCommand(new FCCmdTest7());
+	rcCmdMgr.addCommand(new FCCmdTest8());
 }
+
+} // namespace Gui
 
 
 

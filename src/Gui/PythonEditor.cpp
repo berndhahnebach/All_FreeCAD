@@ -238,7 +238,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
     }
     break;
   }
-
+/*
   // cursor must not be inside the text of the last command
   int para; int idx;
   getCursorPosition(&para, &idx);
@@ -246,6 +246,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
   {
     setCursorPosition(lastPara, idx);
   }
+*/
 }
 
 // ------------------------------------------------------------------------

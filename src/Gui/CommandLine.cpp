@@ -298,12 +298,12 @@ void CommandLineBase::dropEvent ( QDropEvent      * e )
     if (!action.isEmpty())
     {
       ActionDrag::actions.clear();
-      FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
-      FCCommand* pCmd = rclMan.GetCommandByName(action.latin1());
+      CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+      Command* pCmd = rclMan.getCommandByName(action.latin1());
 
       if (pCmd)
       {
-        lineEdit()->setText(QString("Gui.RunCommand(\"%1\")").arg(pCmd->GetName()));
+        lineEdit()->setText(QString("Gui.RunCommand(\"%1\")").arg(pCmd->getName()));
       }
     }
   }

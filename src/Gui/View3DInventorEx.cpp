@@ -28,6 +28,9 @@
 //# include <qvbox.h>
 //# include <TopoDS_Shape.hxx>
 # include <TNaming_NamedShape.hxx>
+# ifdef FC_OS_WIN32
+#   include <windows.h>
+# endif
 # include <GL/gl.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCone.h>

@@ -41,6 +41,7 @@
 #include "Document.h"
 //#include "Tree.h"
 
+using namespace Gui;
 
 // global graphic device (set in DocWindow)
 #ifdef FC_OS_WIN32
@@ -281,27 +282,27 @@ bool View3D::OnMsg(const char* pMsg)
 
 void View3D::ShowPopup(int x, int y)
 {
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+	CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
 	QPopupMenu *pcMenu = new QPopupMenu;
 	QPopupMenu *pcSubMenu = new QPopupMenu;
 
 	// view menu -----------------------------------------------------------------------
-	rcCmdMgr.AddTo("Std_ViewFitAll"  ,pcSubMenu);
-	rcCmdMgr.AddTo("Std_ViewAxo"     ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewFitAll"  ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewAxo"     ,pcSubMenu);
 	pcSubMenu->insertSeparator();
-	rcCmdMgr.AddTo("Std_ViewFront"   ,pcSubMenu);
-	rcCmdMgr.AddTo("Std_ViewRight"   ,pcSubMenu);
-	rcCmdMgr.AddTo("Std_ViewTop" ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewFront"   ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewRight"   ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewTop" ,pcSubMenu);
 	pcSubMenu->insertSeparator();
-	rcCmdMgr.AddTo("Std_ViewRear"  ,pcSubMenu);
-	rcCmdMgr.AddTo("Std_ViewLeft"  ,pcSubMenu);
-	rcCmdMgr.AddTo("Std_ViewBottom",pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewRear"  ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewLeft"  ,pcSubMenu);
+	rcCmdMgr.addTo("Std_ViewBottom",pcSubMenu);
 
 	
 	// Popup menu -----------------------------------------------------------------------
 
-	rcCmdMgr.AddTo("Std_ViewFitAll",pcMenu);
+	rcCmdMgr.addTo("Std_ViewFitAll",pcMenu);
 
 	pcMenu->insertItem("Std Views",pcSubMenu);
 	

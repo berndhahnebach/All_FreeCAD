@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <assert.h>
 # include <qapplication.h>
 # include <qcursor.h>
 # include <qlineedit.h>

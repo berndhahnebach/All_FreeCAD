@@ -30,9 +30,9 @@
 # include <qmap.h>
 #endif
 
-class FCCommand;
 
 namespace Gui {
+class Command;
 namespace Dialog {
 
 /** Shows an overview of all available commands of all groups and modules.

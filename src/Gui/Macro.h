@@ -37,7 +37,7 @@ struct ApplicationWindowP;
 
 /** Macro recording and play back management
  * The purpos of this class is to handle record 
- * function calls from a FCCommand and save it in
+ * function calls from a Command and save it in
  * a macro file (so far). 
  */
 class GuiExport FCMacroManager

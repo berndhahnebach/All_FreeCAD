@@ -43,9 +43,9 @@
 class QDoubleValidator;
 class QAction;
 class QMainWindow;
-class FCCommandManager;
 
 namespace Gui {
+class CommandManager;
 class WidgetFactoryInst;
 
 /** The preference widget class.

@@ -192,7 +192,7 @@ struct ApplicationWindowP
   // store it if the CTRL button is pressed or released
   bool _bControlButton;
 	/// Handels all commands 
-	FCCommandManager _cCommandManager;
+	CommandManager _cCommandManager;
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
   QMap<QObject*, QTab*> _tabIds;
@@ -342,7 +342,7 @@ ApplicationWindow::ApplicationWindow()
   if (hGrp->HasGroup("RecentFiles"))
   {
     hGrp = hGrp->GetGroup("RecentFiles");
-    FCCmdMRU* pCmd = dynamic_cast<FCCmdMRU*>(d->_cCommandManager.GetCommandByName("Std_MRU"));
+    StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(d->_cCommandManager.getCommandByName("Std_MRU"));
     if (pCmd)
     {
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
@@ -358,12 +358,12 @@ ApplicationWindow::ApplicationWindow()
 
 ApplicationWindow::~ApplicationWindow()
 {
-  std::vector<FCCommand*> macros = d->_cCommandManager.GetModuleCommands("Macro");
+  std::vector<Command*> macros = d->_cCommandManager.getModuleCommands("Macro");
   if (macros.size() > 0)
   {
     FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
 /*
-    for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
+    for (std::vector<Command*>::iterator it = macros.begin(); it!=macros.end(); ++it )
     {
       MacroCommand* pScript = (MacroCommand*)(*it);
       FCParameterGrp::handle hMacro = hGrp->GetGroup(pScript->GetName());
@@ -378,16 +378,16 @@ ApplicationWindow::~ApplicationWindow()
   }
 
   // save recent file list
-  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
+  Command* pCmd = d->_cCommandManager.getCommandByName("Std_MRU");
   if (pCmd)
   {
     char szBuf[200];
     int i=0;
     FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
     hGrp->Clear();
-    hGrp->SetInt("RecentFiles", ((FCCmdMRU*)pCmd)->maxCount());
+    hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
 
-    QStringList files = ((FCCmdMRU*)pCmd)->recentFiles();
+    QStringList files = ((StdCmdMRU*)pCmd)->recentFiles();
     if ( files.size() > 0 )
     {
       for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
@@ -411,9 +411,9 @@ ApplicationWindow::~ApplicationWindow()
 void ApplicationWindow::CreateStandardOperations()
 {
 	// register the application Standard commands from CommandStd.cpp
-	CreateStdCommands();
-	CreateViewStdCommands();
-	CreateTestCommands();
+  Gui::CreateStdCommands();
+  Gui::CreateViewStdCommands();
+  Gui::CreateTestCommands();
 }
 
 void ApplicationWindow::Polish()
@@ -435,7 +435,7 @@ bool ApplicationWindow::isCustomizable () const
 
 void ApplicationWindow::customize ()
 {
-  GetCommandManager().RunCommandByName("Std_DlgCustomize");
+  GetCommandManager().runCommandByName("Std_DlgCustomize");
 }
 
 void ApplicationWindow::tileHorizontal()
@@ -921,10 +921,10 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
     GetCustomWidgetManager()->showToolBox();
 
 	  // update the Std_Workbench command and its action object
-    FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
+    Command* pCmd = d->_cCommandManager.getCommandByName("Std_Workbench");
     if (pCmd)
     {
-      ((FCCmdWorkbench*)pCmd)->activate( name );
+      ((StdCmdWorkbench*)pCmd)->activate( name );
     }
 
 	  show();
@@ -940,16 +940,16 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 //	PyObject *key, *value;
 //	int pos = 0;
 //     
-//  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
+//  Command* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
 //  if (pCmd)
 //  {
 //  	// remove all items from the command
-//    ((FCCmdWorkbench*)pCmd)->Clear();
+//    ((StdCmdWorkbench*)pCmd)->Clear();
 //
 //  	// insert all items
 //    while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
 //		  /* do something interesting with the values... */
-//      ((FCCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
+//      ((StdCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
 //	  }
 //  }
 }
@@ -969,10 +969,10 @@ std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
 
 void ApplicationWindow::AppendRecentFile(const char* file)
 {
-  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
+  Command* pCmd = d->_cCommandManager.getCommandByName("Std_MRU");
   if (pCmd)
   {
-    ((FCCmdMRU*)pCmd)->addRecentFile(file);
+    ((StdCmdMRU*)pCmd)->addRecentFile(file);
   }
 }
 
@@ -983,7 +983,7 @@ void ApplicationWindow::UpdateCmdActivity()
 	if(cLastCall.elapsed() > 250 && isVisible () )
 	{
 		//puts("testActive");
-		d->_cCommandManager.TestActive();
+		d->_cCommandManager.testActive();
 		// remember last call
 		cLastCall.start();
 	}
@@ -1175,16 +1175,16 @@ FCMacroManager *ApplicationWindow::GetMacroMngr(void)
   return d->_pcMacroMngr;
 }
 
-FCCommandManager &ApplicationWindow::GetCommandManager(void)
+CommandManager &ApplicationWindow::GetCommandManager(void)
 {
   return d->_cCommandManager;
 }
 
 void ApplicationWindow::languageChange()
 {
-  FCCommandManager& rclMan = GetCommandManager();
-  std::vector<FCCommand*> cmd = rclMan.GetAllCommands();
-  for ( std::vector<FCCommand*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
+  CommandManager& rclMan = GetCommandManager();
+  std::vector<Command*> cmd = rclMan.getAllCommands();
+  for ( std::vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
   {
     (*it)->languageChange();
   }
@@ -1734,7 +1734,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandAdd)
 
 	//Py_INCREF(pcObject);
 
-	ApplicationWindow::Instance->GetCommandManager().AddCommand(new FCPythonCommand(pName,pcCmdObj));
+	ApplicationWindow::Instance->GetCommandManager().addCommand(new PythonCommand(pName,pcCmdObj));
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1746,7 +1746,7 @@ PYFUNCIMP_S(ApplicationWindow,sRunCommand)
 	if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
 		return NULL;										// NULL triggers exception 
 
-  ApplicationWindow::Instance->GetCommandManager().RunCommandByName(pName);
+  ApplicationWindow::Instance->GetCommandManager().runCommandByName(pName);
 
 	Py_INCREF(Py_None);
 	return Py_None;

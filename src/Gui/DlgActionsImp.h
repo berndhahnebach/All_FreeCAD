@@ -26,7 +26,7 @@
 
 #include "DlgActions.h"
 
-class FCCommand;
+class Command;
 
 namespace Gui {
 namespace Dialog {
@@ -35,7 +35,7 @@ namespace Dialog {
  * It is possible to use these actions in own toolbars or commandbars.
  * @see Gui::Action
  * @see MacroCommand
- * @see FCCommand
+ * @see Command
  * \author Werner Mayer
  */
 class DlgCustomActionsImp : public DlgCustomActionsBase

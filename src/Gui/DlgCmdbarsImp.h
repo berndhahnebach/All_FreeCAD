@@ -26,7 +26,7 @@
 
 #include "DlgToolbarsImp.h"
 
-class FCCommand;
+class Command;
 
 namespace Gui {
 class CustomToolBar;

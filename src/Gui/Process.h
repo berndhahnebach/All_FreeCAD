@@ -28,6 +28,8 @@
 # include <qprocess.h>
 #endif
 
+#include "../Base/Observer.h"
+
 namespace Gui {
 
 /** 

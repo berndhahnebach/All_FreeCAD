@@ -1,11 +1,24 @@
 /***************************************************************************
-                          Command.cpp  -  description
-                             -------------------
-    begin                : Tue Jan 2 2002
-    copyright            : (C) 2001 by Juergen Riegel
-    email                : juergen.riegel@web.de
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
  ***************************************************************************/
-
 
 
 #include "PreCompiled.h"
@@ -38,105 +51,104 @@ using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
 
 //===========================================================================
-// FCCommand
+// Command
 //===========================================================================
 
 
-FCCommand::FCCommand(const char* name,CMD_Type eType)
-	: sName(name),_pcAction(0),_eType(eType)
+Command::Command(const char* name,CMD_Type eType)
+  : sName(name),_pcAction(0),_eType(eType)
 {
-	sAppModule		= "";
-	sGroup			= "";
-
+  sAppModule  = "";
+  sGroup      = "";
 }
 
-FCCommand::~FCCommand()
+Command::~Command()
 {
   delete _pcAction;
 }
 
-bool FCCommand::addTo(QWidget *pcWidget)
+bool Command::addTo(QWidget *pcWidget)
 {
-	if (!_pcAction)
-		_pcAction = CreateAction();
+  if (!_pcAction)
+    _pcAction = createAction();
 
-	return _pcAction->addTo(pcWidget);
+  return _pcAction->addTo(pcWidget);
 }
 
-bool FCCommand::removeFrom(QWidget *pcWidget)
+bool Command::removeFrom(QWidget *pcWidget)
 {
-	if (!_pcAction)
+  if (!_pcAction)
     return false;
-	return _pcAction->removeFrom(pcWidget);
+  return _pcAction->removeFrom(pcWidget);
 }
 
  
-ApplicationWindow *FCCommand::GetAppWnd(void)
+ApplicationWindow *Command::getAppWnd(void)
 {
-	return ApplicationWindow::Instance;
+  return ApplicationWindow::Instance;
 }
 
-FCGuiDocument* FCCommand::GetActiveDocument(void)
+FCGuiDocument* Command::getActiveDocument(void)
 {
-	return GetAppWnd()->GetActiveDocument();
+  return getAppWnd()->GetActiveDocument();
 }
 
-App::Document*	   FCCommand::GetActiveOCCDocument(void)
+App::Document*	   Command::getActiveOCCDocument(void)
 {
-	FCGuiDocument * pcDoc = GetAppWnd()->GetActiveDocument();
-	if(pcDoc)
-		return pcDoc->GetDocument();
-	else
-		return 0l;
+  FCGuiDocument * pcDoc = getAppWnd()->GetActiveDocument();
+  if(pcDoc)
+    return pcDoc->GetDocument();
+  else
+    return 0l;
 }
 
-QAction* FCCommand::GetAction() 
+QAction* Command::getAction() 
 { 
-	if (!_pcAction)
-		_pcAction = CreateAction();
+  if (!_pcAction)
+    _pcAction = createAction();
 
-	return _pcAction; 
+  return _pcAction; 
 }
 
-bool FCCommand::IsToggle(void)
+bool Command::isToggle(void)
 {
-	return (_eType&Cmd_Toggle) != 0; 
+  return (_eType&Cmd_Toggle) != 0; 
 }
 
 
-void FCCommand::activated ()
+void Command::activated ()
 {
-	if(_eType == Cmd_Normal)
-	{
-		Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
+  if(_eType == Cmd_Normal)
+  {
+    Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
     // set the application module type for the macro
-    GetAppWnd()->GetMacroMngr()->SetModule(sAppModule.c_str());
+    getAppWnd()->GetMacroMngr()->SetModule(sAppModule.c_str());
     try{
-      Activated(0);
+      activated(0);
     }catch(...)
     {
-      Base::Console().Error("FCCommand::activated()  Activate of Cmd faild");
+      Base::Console().Error("Command::activated()  Activate of Cmd faild");
     };
-	}
+  }
 }
-void FCCommand::toggled (bool b)
+void Command::toggled (bool b)
 {
-	if(_eType == Cmd_Toggle)
-	{
-		Base::Console().Log("Toggled %s\n",_pcAction->text().latin1());
-		if(b)
-			Activated(1);
-		else
-			Activated(0);
-	}
+  if(_eType == Cmd_Toggle)
+  {
+    Base::Console().Log("Toggled %s\n",_pcAction->text().latin1());
+    if(b)
+      activated(1);
+    else
+      activated(0);
+  }
 }
 
-void FCCommand::TestActive(void)
+void Command::testActive(void)
 {
-	if(!_pcAction) return;
-	
-	bool bActive = IsActive();
-	_pcAction->setEnabled ( bActive );
+  if(!_pcAction) return;
+
+  bool bActive = isActive();
+  _pcAction->setEnabled ( bActive );
 }
 
 
@@ -151,90 +163,85 @@ void FCCommand::TestActive(void)
  *  operation default is the Command name.
  *  @see CommitCommand(),AbortCommand()
  */
-void FCCommand::OpenCommand(const char* sCmdName)
+void Command::openCommand(const char* sCmdName)
 {
-	// Using OpenCommand with no active document !
-	assert(GetAppWnd()->GetActiveDocument());
+  // Using OpenCommand with no active document !
+  assert(getAppWnd()->GetActiveDocument());
 
-	if(sCmdName)
-		GetAppWnd()->GetActiveDocument()->OpenCommand(sCmdName);
-	else
-		GetAppWnd()->GetActiveDocument()->OpenCommand(sName.c_str());
-
+  if(sCmdName)
+    getAppWnd()->GetActiveDocument()->OpenCommand(sCmdName);
+  else
+    getAppWnd()->GetActiveDocument()->OpenCommand(sName.c_str());
 }
 
-void FCCommand::CommitCommand(void)
+void Command::commitCommand(void)
 {
-	GetAppWnd()->GetActiveDocument()->CommitCommand();
+  getAppWnd()->GetActiveDocument()->CommitCommand();
 }
 
-void FCCommand::AbortCommand(void)
+void Command::abortCommand(void)
 {
-	GetAppWnd()->GetActiveDocument()->AbortCommand();
+  getAppWnd()->GetActiveDocument()->AbortCommand();
 }
 
 /// Run a App level Action 
-void FCCommand::DoCommand(DoCmd_Type eType,const char* sCmd,...)
+void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 {
-	// temp buffer
-	char* format = (char*) malloc(strlen(sCmd)+1024);
+  // temp buffer
+  char* format = (char*) malloc(strlen(sCmd)+1024);
     va_list namelessVars;
     va_start(namelessVars, sCmd);  // Get the "..." vars
     vsprintf(format, sCmd, namelessVars);
     va_end(namelessVars);
 
-	if(eType == Gui)
-		GetAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Gui,format);
-	else
-		GetAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Base,format);
-	Interpreter().RunFCCommand(format);
+  if(eType == Gui)
+    getAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Gui,format);
+  else
+    getAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Base,format);
+  Interpreter().RunFCCommand(format);
 
-	free (format);
-
+  free (format);
 }
 
 /// Activate an other Commands
-void FCCommand::ActivateCommand(const char* sCmdName)
+void Command::activateCommand(const char* sCmdName)
 {
-	FCCommand* pcCmd = GetAppWnd()->GetCommandManager().GetCommandByName(sCmdName);
-	if(pcCmd)
-	{
-		assert(!(pcCmd->IsToggle()));
-		pcCmd->Activated(0);
-	}
-
+  Command* pcCmd = getAppWnd()->GetCommandManager().getCommandByName(sCmdName);
+  if(pcCmd)
+  {
+    assert(!(pcCmd->isToggle()));
+    pcCmd->activated(0);
+  }
 }
 
 /// Toggles other Commands
-void FCCommand::ToggleCommand(const char* sCmdName,bool bToggle)
+void Command::toggleCommand(const char* sCmdName,bool bToggle)
 {
-	FCCommand* pcCmd = GetAppWnd()->GetCommandManager().GetCommandByName(sCmdName);
-	if(pcCmd)
-	{
-		assert(pcCmd->IsToggle());
-		pcCmd->_pcAction->setOn(bToggle?1:0);
-	}
-
+  Command* pcCmd = getAppWnd()->GetCommandManager().getCommandByName(sCmdName);
+  if(pcCmd)
+  {
+    assert(pcCmd->isToggle());
+    pcCmd->_pcAction->setOn(bToggle?1:0);
+  }
 }
 
 /// Updates the (active) document (propagate changes)
-void FCCommand::UpdateActive(void)
+void Command::updateActive(void)
 {
-  GetAppWnd()->GetActiveDocument()->GetDocument()->Recompute();
-	//GetAppWnd()->UpdateActive();
+  getAppWnd()->GetActiveDocument()->GetDocument()->Recompute();
+  //GetAppWnd()->UpdateActive();
 }
 
 /// Updates the (all or listed) documents (propagate changes)
-void FCCommand::UpdateAll(std::list<FCGuiDocument*> cList)
+void Command::updateAll(std::list<FCGuiDocument*> cList)
 {
-	if(cList.size()>0)
-	{
-		for(std::list<FCGuiDocument*>::iterator It= cList.begin();It!=cList.end();It++)
-			(*It)->Update();
-	}else{
-		GetAppWnd()->Update();
-	}
-
+  if(cList.size()>0)
+  {
+    for(std::list<FCGuiDocument*>::iterator It= cList.begin();It!=cList.end();It++)
+      (*It)->Update();
+  }else{
+    getAppWnd()->Update();
+  }
 }
 
 //--------------------------------------------------------------------------
@@ -242,71 +249,69 @@ void FCCommand::UpdateAll(std::list<FCGuiDocument*> cList)
 //--------------------------------------------------------------------------
 
 /// returns the begin of a online help page
-const char * FCCommand::BeginCmdHelp(void)
+const char * Command::beginCmdHelp(void)
 {
-	return  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
-			"<html>\n"
-			"<head>\n"
-			"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n"
-			"<title>FreeCAD Main Index</title>\n"
-			"</head>\n"
-			"<body bgcolor=\"#ffffff\">\n\n";
+  return  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
+      "<html>\n"
+      "<head>\n"
+      "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n"
+      "<title>FreeCAD Main Index</title>\n"
+      "</head>\n"
+      "<body bgcolor=\"#ffffff\">\n\n";
 }
 /// returns the end of a online help page
-const char * FCCommand::EndCmdHelp(void)
+const char * Command::endCmdHelp(void)
 {
-	return "</body></html>\n\n";
+  return "</body></html>\n\n";
 }
 
 //===========================================================================
 // FCCppCommand 
 //===========================================================================
 
-FCCppCommand::FCCppCommand(const char* name,CMD_Type eType)
-	:FCCommand(name,eType)
+CppCommand::CppCommand(const char* name,CMD_Type eType)
+  :Command(name,eType)
 {
-	sMenuText		  = "";
-	sToolTipText	= "";
-	sWhatsThis		= "";
-	sStatusTip		= "";
-  sPixmap			  = QString::null;
-	iAccel			  = 0;
+  sMenuText     = "";
+  sToolTipText  = "";
+  sWhatsThis    = "";
+  sStatusTip    = "";
+  sPixmap       = QString::null;
+  iAccel        = 0;
 }
 
-std::string FCCppCommand::GetResource(const char* sName)
+std::string CppCommand::getResource(const char* sName)
 {
-
-	return "";
-
+  return "";
 }
 
 
-QAction * FCCppCommand::CreateAction(void)
+QAction * CppCommand::createAction(void)
 {
-	QAction *pcAction;
+  QAction *pcAction;
 
-	pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(QObject::tr(sMenuText));
-	pcAction->setMenuText(QObject::tr(sMenuText));
-	pcAction->setToolTip(QObject::tr(sToolTipText));
-	pcAction->setStatusTip(QObject::tr(sStatusTip));
-	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-	pcAction->setAccel(iAccel);
+  pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
 
-	return pcAction;
+  return pcAction;
 }
 
-void FCCppCommand::languageChange()
+void CppCommand::languageChange()
 {
   if ( _pcAction )
   {
-	  _pcAction->setText(QObject::tr(sMenuText));
-	  _pcAction->setMenuText(QObject::tr(sMenuText));
-	  _pcAction->setToolTip(QObject::tr(sToolTipText));
-	  _pcAction->setStatusTip(QObject::tr(sStatusTip));
-	  _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+    _pcAction->setText(QObject::tr(sMenuText));
+    _pcAction->setMenuText(QObject::tr(sMenuText));
+    _pcAction->setToolTip(QObject::tr(sToolTipText));
+    _pcAction->setStatusTip(QObject::tr(sStatusTip));
+    _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
   }
 }
 
@@ -316,19 +321,19 @@ void FCCppCommand::languageChange()
 //===========================================================================
 
 MacroCommand::MacroCommand(const char* name)
-	:FCCppCommand(name,Cmd_Normal)
+  :CppCommand(name,Cmd_Normal)
 {
   sAppModule    = "";
   sGroup        = "Macros";
 }
 
-void MacroCommand::Activated(int iMsg)
+void MacroCommand::activated(int iMsg)
 {
-//	OpenCommand("Excecute Macro");
+//  OpenCommand("Excecute Macro");
 //
-//	DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
+//  DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
 //
-//	void CommitCommand(void);
+//  void CommitCommand(void);
   std::string cMacroPath = App::GetApplication().GetParameterGroupByPath
     ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
     App::GetApplication().GetHomePath());
@@ -338,19 +343,19 @@ void MacroCommand::Activated(int iMsg)
   ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,( fi.filePath() ).latin1());
 }
 
-void MacroCommand::SetScriptName ( const QString& s )
+void MacroCommand::setScriptName ( const QString& s )
 {
   scriptName = s;
 }
 
-void MacroCommand::SetWhatsThis( const QString& s )
+void MacroCommand::setWhatsThis( const QString& s )
 {
   sWhatsThis = s;
   if ( _pcAction )
     _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 }
 
-void MacroCommand::SetMenuText( const QString& s )
+void MacroCommand::setMenuText( const QString& s )
 {
   sMenuText = s;
   if ( _pcAction )
@@ -360,21 +365,21 @@ void MacroCommand::SetMenuText( const QString& s )
   }
 }
 
-void MacroCommand::SetToolTipText( const QString& s )
+void MacroCommand::setToolTipText( const QString& s )
 {
   sToolTipText = s;
   if ( _pcAction )
     _pcAction->setToolTip(QObject::tr(sToolTipText));
 }
 
-void MacroCommand::SetStatusTip( const QString& s )
+void MacroCommand::setStatusTip( const QString& s )
 {
   sStatusTip = s;
   if ( _pcAction )
     _pcAction->setStatusTip(QObject::tr(sStatusTip));
 }
 
-void MacroCommand::SetPixmap( const QString& s )
+void MacroCommand::setPixmap( const QString& s )
 {
   sPixmap = s;
   if ( _pcAction )
@@ -386,7 +391,7 @@ void MacroCommand::SetPixmap( const QString& s )
   }
 }
 
-void MacroCommand::SetAccel(int i)
+void MacroCommand::setAccel(int i)
 {
   iAccel = i;
   if ( _pcAction )
@@ -398,204 +403,200 @@ void MacroCommand::SetAccel(int i)
 //===========================================================================
 
 
-FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
-	:FCCommand(name),_pcPyCommand(pcPyCommand)
+PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
+  :Command(name),_pcPyCommand(pcPyCommand)
 {
-	Py_INCREF(_pcPyCommand);
+  Py_INCREF(_pcPyCommand);
 
-	// call the methode "GetResources()" of the command object
-	_pcPyResourceDict = Interpreter().RunMethodObject(_pcPyCommand, "GetResources");
-	// check if the "GetResources()" methode returns a Dict object
-	if(! PyDict_Check(_pcPyResourceDict) )
-		throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
-
+  // call the methode "GetResources()" of the command object
+  _pcPyResourceDict = Interpreter().RunMethodObject(_pcPyCommand, "GetResources");
+  // check if the "GetResources()" methode returns a Dict object
+  if(! PyDict_Check(_pcPyResourceDict) )
+    throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
 }
 
-std::string FCPythonCommand::GetResource(const char* sName)
+std::string PythonCommand::getResource(const char* sName)
 {
-	PyObject* pcTemp;
-	Base::PyBuf ResName(sName);
+  PyObject* pcTemp;
+  Base::PyBuf ResName(sName);
 
 
-	// get the "MenuText" resource string
-	pcTemp = PyDict_GetItemString(_pcPyResourceDict,ResName.str);
-	if(! pcTemp )
-		return std::string();
-	if(! PyString_Check(pcTemp) )
-		throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
+  // get the "MenuText" resource string
+  pcTemp = PyDict_GetItemString(_pcPyResourceDict,ResName.str);
+  if(! pcTemp )
+    return std::string();
+  if(! PyString_Check(pcTemp) )
+    throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
 
-	return std::string(PyString_AsString(pcTemp) );
-
-}
-
-
-void FCPythonCommand::Activated(int iMsg)
-{
-	try{
-		Interpreter().RunMethodVoid(_pcPyCommand, "Activated");
-	}catch (Base::Exception e){
-		Base::Console().Error("Running the python command %s failed,try to resume",sName.c_str());
-	}
-}
-
-bool FCPythonCommand::IsActive(void)
-{
-	return true;
-}
-
-std::string FCPythonCommand::CmdHelpURL(void)
-{
-	PyObject* pcTemp;
-
-	pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpURL"); 
-
-	if(! pcTemp ) 
-		return std::string();
-	if(! PyString_Check(pcTemp) ) 
-		throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
-	
-	return std::string( PyString_AsString(pcTemp) );
-}
-
-void FCPythonCommand::CmdHelpPage(std::string &rcHelpPage)
-{
-	PyObject* pcTemp;
-
-	pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpPage"); 
-
-	if(! pcTemp ) 
-		return ;
-	if(! PyString_Check(pcTemp) ) 
-		throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
-	
-	rcHelpPage = PyString_AsString(pcTemp) ;
-
-
-}
-
-QAction * FCPythonCommand::CreateAction(void)
-{
-	QAction *pcAction;
-
-	pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(sName.c_str());
-	pcAction->setMenuText(GetResource("MenuText").c_str());
-	pcAction->setToolTip(GetResource("ToolTip").c_str());
-	pcAction->setStatusTip(GetResource("StatusTip").c_str());
-	pcAction->setWhatsThis(GetResource("WhatsThis").c_str());
-	if(GetResource("Pixmap") != "")
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(GetResource("Pixmap").c_str()));
-
-	return pcAction;
+  return std::string(PyString_AsString(pcTemp) );
 }
 
 
-
-//===========================================================================
-// FCCommandManager 
-//===========================================================================
-
-
-void FCCommandManager::AddCommand(FCCommand* pCom)
+void PythonCommand::activated(int iMsg)
 {
-	_sCommands[pCom->GetName()] = pCom;//	pCom->Init();
-}
-
-void FCCommandManager::RemoveCommand(FCCommand* pCom)
-{
-	std::map <std::string,FCCommand*>::iterator It = _sCommands.find(pCom->GetName());
-  if (It != _sCommands.end())
-  {
-		delete It->second;
-		_sCommands.erase(It);
+  try{
+    Interpreter().RunMethodVoid(_pcPyCommand, "Activated");
+  }catch (Base::Exception e){
+    Base::Console().Error("Running the python command %s failed,try to resume",sName.c_str());
   }
 }
 
-void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
+bool PythonCommand::isActive(void)
+{
+  return true;
+}
+
+std::string PythonCommand::cmdHelpURL(void)
+{
+  PyObject* pcTemp;
+
+  pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpURL"); 
+
+  if(! pcTemp ) 
+    return std::string();
+  if(! PyString_Check(pcTemp) ) 
+    throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
+  
+  return std::string( PyString_AsString(pcTemp) );
+}
+
+void PythonCommand::cmdHelpPage(std::string &rcHelpPage)
+{
+  PyObject* pcTemp;
+
+  pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpPage"); 
+
+  if(! pcTemp ) 
+    return ;
+  if(! PyString_Check(pcTemp) ) 
+    throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
+
+  rcHelpPage = PyString_AsString(pcTemp) ;
+}
+
+QAction * PythonCommand::createAction(void)
+{
+  QAction *pcAction;
+
+  pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction->setText(sName.c_str());
+  pcAction->setMenuText(getResource("MenuText").c_str());
+  pcAction->setToolTip(getResource("ToolTip").c_str());
+  pcAction->setStatusTip(getResource("StatusTip").c_str());
+  pcAction->setWhatsThis(getResource("WhatsThis").c_str());
+  if(getResource("Pixmap") != "")
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(getResource("Pixmap").c_str()));
+
+  return pcAction;
+}
+
+
+
+//===========================================================================
+// CommandManager 
+//===========================================================================
+
+
+void CommandManager::addCommand(Command* pCom)
+{
+  _sCommands[pCom->getName()] = pCom;//	pCom->Init();
+}
+
+void CommandManager::removeCommand(Command* pCom)
+{
+  std::map <std::string,Command*>::iterator It = _sCommands.find(pCom->getName());
+  if (It != _sCommands.end())
+  {
+    delete It->second;
+    _sCommands.erase(It);
+  }
+}
+
+void CommandManager::addTo(const char* Name,QWidget *pcWidget)
 {
   if (_sCommands.find(Name) == _sCommands.end())
   {
-	  Base::Console().Error("FCCommandManager::AddTo() try to add an unknown command (%s) to a widget!\n",Name);
+    Base::Console().Error("CommandManager::AddTo() try to add an unknown command (%s) to a widget!\n",Name);
   }
   else
   {
-	  FCCommand* pCom = _sCommands[Name];
-	  pCom->addTo(pcWidget);
+    Command* pCom = _sCommands[Name];
+    pCom->addTo(pcWidget);
   }
 }
 
-void FCCommandManager::RemoveFrom(const char* Name,QWidget *pcWidget)
+void CommandManager::removeFrom(const char* Name,QWidget *pcWidget)
 {
   if (_sCommands.find(Name) != _sCommands.end())
   {
-	  FCCommand* pCom = _sCommands[Name];
-	  pCom->removeFrom(pcWidget);
+    Command* pCom = _sCommands[Name];
+    pCom->removeFrom(pcWidget);
   }
 }
 
-std::vector <FCCommand*> FCCommandManager::GetModuleCommands(const char *sModName)
+std::vector <Command*> CommandManager::getModuleCommands(const char *sModName)
 {
-	std::vector <FCCommand*> vCmds;
+  std::vector <Command*> vCmds;
 
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
-	{
-		if( strcmp(It->second->GetAppModuleName(),sModName) == 0)
-			vCmds.push_back(It->second);
-	}
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  {
+    if( strcmp(It->second->getAppModuleName(),sModName) == 0)
+      vCmds.push_back(It->second);
+  }
 
-	return vCmds;
+  return vCmds;
 }
 
-std::string FCCommandManager::GetAppModuleName(QAction* pAction)
+std::string CommandManager::getAppModuleName(QAction* pAction)
 {
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
-	{
-    if ( It->second->GetAction() == pAction )
-      return It->second->GetAppModuleName();
-	}
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
+  {
+    if ( It->second->getAction() == pAction )
+      return It->second->getAppModuleName();
+  }
 
   return "Not found";
 }
 
-std::string FCCommandManager::GetAppModuleNameByName(const char* sName)
+std::string CommandManager::getAppModuleNameByName(const char* sName)
 {
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
-	{
-    if ( strcmp(It->second->GetName(), sName) == 0 )
-      return It->second->GetAppModuleName();
-	}
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
+  {
+    if ( strcmp(It->second->getName(), sName) == 0 )
+      return It->second->getAppModuleName();
+  }
 
   return "Not found";
 }
 
-std::vector <FCCommand*> FCCommandManager::GetAllCommands(void)
+std::vector <Command*> CommandManager::getAllCommands(void)
 {
-	std::vector <FCCommand*> vCmds;
+  std::vector <Command*> vCmds;
 
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
-	{
-		vCmds.push_back(It->second);
-	}
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  {
+    vCmds.push_back(It->second);
+  }
 
-	return vCmds;
+  return vCmds;
 }
 
-std::vector <FCCommand*> FCCommandManager::GetGroupCommands(const char *sGrpName)
+std::vector <Command*> CommandManager::getGroupCommands(const char *sGrpName)
 {
-	std::vector <FCCommand*> vCmds;
+  std::vector <Command*> vCmds;
 
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
-	{
-		if( strcmp(It->second->GetGroupName(),sGrpName) == 0)
-			vCmds.push_back(It->second);
-	}
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  {
+    if( strcmp(It->second->getGroupName(),sGrpName) == 0)
+      vCmds.push_back(It->second);
+  }
 
-	return vCmds;
+  return vCmds;
 }
 
-FCCommand* FCCommandManager::GetCommandByName(const char* sName)
+Command* CommandManager::getCommandByName(const char* sName)
 {
-  FCCommand* pCom = NULL;
+  Command* pCom = NULL;
   if (_sCommands.find(sName) != _sCommands.end())
   {
     pCom = _sCommands[sName];
@@ -604,34 +605,34 @@ FCCommand* FCCommandManager::GetCommandByName(const char* sName)
   return pCom;
 }
 
-FCCommand* FCCommandManager::GetCommandByActionText(const char* sName)
+Command* CommandManager::getCommandByActionText(const char* sName)
 {
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
-	{
-    if (It->second->GetAction())
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  {
+    if (It->second->getAction())
     {
-      if (It->second->GetAction()->text() == sName)
+      if (It->second->getAction()->text() == sName)
       {
         return It->second;
       }
     }
-	}
+  }
 
   return NULL;
 }
 
-void FCCommandManager::RunCommandByName (const char* sName)
+void CommandManager::runCommandByName (const char* sName)
 {
-  FCCommand* pCmd = GetCommandByName(sName);
+  Command* pCmd = getCommandByName(sName);
 
   if (pCmd)
     pCmd->activated();
 }
 
-void FCCommandManager::TestActive(void)
+void CommandManager::testActive(void)
 {
-	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
-	{
-		It->second->TestActive();
-	}
+  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  {
+    It->second->testActive();
+  }
 }

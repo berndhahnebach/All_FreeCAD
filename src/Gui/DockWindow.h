@@ -38,7 +38,8 @@ namespace Gui {
 
 class DockWindow;
 
-/** father of all FreeCAD windows (execept the view containers)
+/** Father of all dockable windows.
+ * @author Jürgen Riegel
  */
 class GuiExport DockWindow : public QWidget, public FCBaseView
 {
@@ -48,7 +49,7 @@ public:
   DockWindow ( FCGuiDocument* pcDocument=0l, QWidget *parent=0, const char *name=0, WFlags f=0 );
   ~DockWindow();
 
-  /** @name methodes to overrride 
+  /** @name methods to overrride 
    */
   //@{
   /// get called when the document is updated
@@ -85,6 +86,7 @@ private:
  *  @see TreeView
  *  @see FCGuiDocument
  *  @see ApplicationWindow
+ *  @author Jürgen Riegel
  */
 class GuiExport DockView : public DockWindow
 {

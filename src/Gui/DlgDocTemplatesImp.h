@@ -26,9 +26,9 @@
 
 #include "DlgDocTemplates.h"
 
-class FCCommand;
 
 namespace Gui {
+class Command;
 namespace Dialog {
 
 /** 
@@ -41,7 +41,7 @@ class DlgDocTemplatesImp : virtual public DlgDocTemplates
     Q_OBJECT
 
 public:
-  DlgDocTemplatesImp( FCCommand* pcCmd,QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgDocTemplatesImp( Gui::Command* pcCmd,QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgDocTemplatesImp();
 
 public:
@@ -54,7 +54,7 @@ protected:
   virtual void onIconDoubleClicked( QIconViewItem* );
 
 protected:
-  FCCommand* _pcCmd;
+  Gui::Command* _pcCmd;
 };
 
 } // namespace Dialog

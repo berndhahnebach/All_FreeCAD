@@ -1,28 +1,32 @@
-/** \file CommandStd.h
- *  \brief The implementation of the standrd Commands
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
 /***************************************************************************
+ *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Jürgen Riegel 2002                                                    *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <BRepPrimAPI_MakeBox.hxx>
-#	include <TopoDS_Shape.hxx>
-#	include <TNaming_Builder.hxx>
+# include <qaction.h>
+# include <BRepPrimAPI_MakeBox.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TNaming_Builder.hxx>
 #endif
 
 #include "../../../Base/Exception.h"
@@ -37,32 +41,30 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// FCCmd_TEMPLATE_Test THIS IS JUST A TEST COMMAND
+// Cmd_TEMPLATE_Test THIS IS JUST A TEST COMMAND
 //===========================================================================
-DEF_STD_CMD(FCCmd_TEMPLATE_Test);
+DEF_STD_CMD(Cmd_TEMPLATE_Test);
 
-FCCmd_TEMPLATE_Test::FCCmd_TEMPLATE_Test()
-	:FCCppCommand("_TEMPLATE__Test")
+Cmd_TEMPLATE_Test::Cmd_TEMPLATE_Test()
+  :CppCommand("_TEMPLATE__Test")
 {
-	sAppModule		= "_TEMPLATE_";
-	sGroup			= "_TEMPLATE_";
-	sMenuText		= "Test1";
-	sToolTipText	= "_TEMPLATE_ Test function";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Test1";
-	iAccel			= Qt::CTRL+Qt::Key_T;
+  sAppModule    = "_TEMPLATE_";
+  sGroup        = "_TEMPLATE_";
+  sMenuText     = "Test1";
+  sToolTipText  = "_TEMPLATE_ Test function";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Test1";
+  iAccel        = Qt::CTRL+Qt::Key_T;
 }
 
-
-void FCCmd_TEMPLATE_Test::Activated(int iMsg)
+void Cmd_TEMPLATE_Test::activated(int iMsg)
 {
   Base::Console().Message("Hello, World!\n");
 }
 
 void CreateCommands(void)
 {
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-
-	rcCmdMgr.AddCommand(new FCCmd_TEMPLATE_Test());
+  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  rcCmdMgr.addCommand(new Cmd_TEMPLATE_Test());
 }

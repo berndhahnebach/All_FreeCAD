@@ -35,7 +35,7 @@
 #include "../Base/Exception.h"
 #include "../App/Document.h"
 
-
+using namespace Gui;
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -46,7 +46,7 @@
 DEF_3DV_CMD(StdCmdViewBottom)
 
 StdCmdViewBottom::StdCmdViewBottom()
-  :FCCppCommand("Std_ViewBottom")
+  :CppCommand("Std_ViewBottom")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -58,9 +58,9 @@ StdCmdViewBottom::StdCmdViewBottom()
   iAccel        = 0;
 }
 
-void StdCmdViewBottom::Activated(int iMsg)
+void StdCmdViewBottom::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewBottom\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewBottom\")");
 }
 
 //===========================================================================
@@ -69,7 +69,7 @@ void StdCmdViewBottom::Activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewFront);
 
 StdCmdViewFront::StdCmdViewFront()
-  :FCCppCommand("Std_ViewFront")
+  :CppCommand("Std_ViewFront")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -81,9 +81,9 @@ StdCmdViewFront::StdCmdViewFront()
   iAccel        = 0;
 }
 
-void StdCmdViewFront::Activated(int iMsg)
+void StdCmdViewFront::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFront\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFront\")");
 }
 
 //===========================================================================
@@ -92,7 +92,7 @@ void StdCmdViewFront::Activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewLeft);
 
 StdCmdViewLeft::StdCmdViewLeft()
-  :FCCppCommand("Std_ViewLeft")
+  :CppCommand("Std_ViewLeft")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -104,9 +104,9 @@ StdCmdViewLeft::StdCmdViewLeft()
   iAccel        = 0;
 }
 
-void StdCmdViewLeft::Activated(int iMsg)
+void StdCmdViewLeft::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewLeft\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewLeft\")");
 }
 
 //===========================================================================
@@ -115,7 +115,7 @@ void StdCmdViewLeft::Activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewRear);
 
 StdCmdViewRear::StdCmdViewRear()
-  :FCCppCommand("Std_ViewRear")
+  :CppCommand("Std_ViewRear")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -127,9 +127,9 @@ StdCmdViewRear::StdCmdViewRear()
   iAccel        = 0;
 }
 
-void StdCmdViewRear::Activated(int iMsg)
+void StdCmdViewRear::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRear\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRear\")");
 }
 
 //===========================================================================
@@ -138,7 +138,7 @@ void StdCmdViewRear::Activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewRight);
 
 StdCmdViewRight::StdCmdViewRight()
-  :FCCppCommand("Std_ViewRight")
+  :CppCommand("Std_ViewRight")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -150,9 +150,9 @@ StdCmdViewRight::StdCmdViewRight()
   iAccel        = 0;
 }
 
-void StdCmdViewRight::Activated(int iMsg)
+void StdCmdViewRight::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRight\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRight\")");
 }
 
 //===========================================================================
@@ -161,7 +161,7 @@ void StdCmdViewRight::Activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewTop);
 
 StdCmdViewTop::StdCmdViewTop()
-  :FCCppCommand("Std_ViewTop")
+  :CppCommand("Std_ViewTop")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -173,9 +173,9 @@ StdCmdViewTop::StdCmdViewTop()
   iAccel        = 0;
 }
 
-void StdCmdViewTop::Activated(int iMsg)
+void StdCmdViewTop::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewTop\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewTop\")");
 }
 
 //===========================================================================
@@ -184,7 +184,7 @@ void StdCmdViewTop::Activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewAxo);
 
 StdCmdViewAxo::StdCmdViewAxo()
-  :FCCppCommand("Std_ViewAxo")
+  :CppCommand("Std_ViewAxo")
 {
   sAppModule  = "";
   sGroup      = "Standard-View";
@@ -196,9 +196,9 @@ StdCmdViewAxo::StdCmdViewAxo()
   iAccel      = 0;
 }
 
-void StdCmdViewAxo::Activated(int iMsg)
+void StdCmdViewAxo::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewAxo\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewAxo\")");
 }
 
 //===========================================================================
@@ -207,7 +207,7 @@ void StdCmdViewAxo::Activated(int iMsg)
 DEF_STD_CMD_A(StdCmdViewFitAll);
 
 StdCmdViewFitAll::StdCmdViewFitAll()
-  :FCCppCommand("Std_ViewFitAll")
+  :CppCommand("Std_ViewFitAll")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -219,14 +219,14 @@ StdCmdViewFitAll::StdCmdViewFitAll()
   iAccel        = 0;
 }
 
-void StdCmdViewFitAll::Activated(int iMsg)
+void StdCmdViewFitAll::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
 }
 
-bool StdCmdViewFitAll::IsActive(void)
+bool StdCmdViewFitAll::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("ViewFit");
+	return getAppWnd()->SendHasMsgToActiveView("ViewFit");
 }
 
 
@@ -236,7 +236,7 @@ bool StdCmdViewFitAll::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewCreateOCC);
 
 StdCmdViewCreateOCC::StdCmdViewCreateOCC()
-  :FCCppCommand("Std_ViewCreateOCC")
+  :CppCommand("Std_ViewCreateOCC")
 {
   sAppModule  = "";
   sGroup      = "Standard-View";
@@ -248,14 +248,14 @@ StdCmdViewCreateOCC::StdCmdViewCreateOCC()
   iAccel      = 0;
 }
 
-void StdCmdViewCreateOCC::Activated(int iMsg)
+void StdCmdViewCreateOCC::activated(int iMsg)
 {
-  GetActiveDocument()->CreateView("View3DOcc");
+  getActiveDocument()->CreateView("View3DOcc");
 }
 
-bool StdCmdViewCreateOCC::IsActive(void)
+bool StdCmdViewCreateOCC::isActive(void)
 {
-  return (GetActiveDocument()!=NULL);
+  return (getActiveDocument()!=NULL);
 }
 
 //===========================================================================
@@ -264,7 +264,7 @@ bool StdCmdViewCreateOCC::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewCreateInventor);
 
 StdCmdViewCreateInventor::StdCmdViewCreateInventor()
-  :FCCppCommand("Std_ViewCreateInventor")
+  :CppCommand("Std_ViewCreateInventor")
 {
   sAppModule  = "";
   sGroup      = "Standard-View";
@@ -276,14 +276,14 @@ StdCmdViewCreateInventor::StdCmdViewCreateInventor()
   iAccel      = 0;
 }
 
-void StdCmdViewCreateInventor::Activated(int iMsg)
+void StdCmdViewCreateInventor::activated(int iMsg)
 {
-  GetActiveDocument()->CreateView("View3DIv");
+  getActiveDocument()->CreateView("View3DIv");
 }
 
-bool StdCmdViewCreateInventor::IsActive(void)
+bool StdCmdViewCreateInventor::isActive(void)
 {
-  return (GetActiveDocument()!=NULL);
+  return (getActiveDocument()!=NULL);
 }
 
 //===========================================================================
@@ -292,7 +292,7 @@ bool StdCmdViewCreateInventor::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewExample1);
 
 StdCmdViewExample1::StdCmdViewExample1()
-  :FCCppCommand("Std_ViewExample1")
+  :CppCommand("Std_ViewExample1")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -304,14 +304,14 @@ StdCmdViewExample1::StdCmdViewExample1()
   iAccel        = 0;
 }
 
-void StdCmdViewExample1::Activated(int iMsg)
+void StdCmdViewExample1::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"Example1\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Example1\")");
 }
 
-bool StdCmdViewExample1::IsActive(void)
+bool StdCmdViewExample1::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Example1");
+	return getAppWnd()->SendHasMsgToActiveView("Example1");
 }
 //===========================================================================
 // Std_ViewExample2
@@ -319,7 +319,7 @@ bool StdCmdViewExample1::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewExample2);
 
 StdCmdViewExample2::StdCmdViewExample2()
-  :FCCppCommand("Std_ViewExample2")
+  :CppCommand("Std_ViewExample2")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -331,14 +331,14 @@ StdCmdViewExample2::StdCmdViewExample2()
   iAccel        = 0;
 }
 
-void StdCmdViewExample2::Activated(int iMsg)
+void StdCmdViewExample2::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"Example2\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Example2\")");
 }
 
-bool StdCmdViewExample2::IsActive(void)
+bool StdCmdViewExample2::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Example2");
+  return getAppWnd()->SendHasMsgToActiveView("Example2");
 }
 
 //===========================================================================
@@ -347,7 +347,7 @@ bool StdCmdViewExample2::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewExample3);
 
 StdCmdViewExample3::StdCmdViewExample3()
-  :FCCppCommand("Std_ViewExample3")
+  :CppCommand("Std_ViewExample3")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -359,14 +359,14 @@ StdCmdViewExample3::StdCmdViewExample3()
   iAccel        = 0;
 }
 
-void StdCmdViewExample3::Activated(int iMsg)
+void StdCmdViewExample3::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"Example3\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Example3\")");
 }
 
-bool StdCmdViewExample3::IsActive(void)
+bool StdCmdViewExample3::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Example3");
+  return getAppWnd()->SendHasMsgToActiveView("Example3");
 }
 
 //===========================================================================
@@ -375,7 +375,7 @@ bool StdCmdViewExample3::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewIvDecorationOn);
 
 StdCmdViewIvDecorationOn::StdCmdViewIvDecorationOn()
-  :FCCppCommand("Std_ViewIvDecorationOn")
+  :CppCommand("Std_ViewIvDecorationOn")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -387,14 +387,14 @@ StdCmdViewIvDecorationOn::StdCmdViewIvDecorationOn()
   iAccel        = 0;
 }
 
-void StdCmdViewIvDecorationOn::Activated(int iMsg)
+void StdCmdViewIvDecorationOn::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"SetDecorationOn\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetDecorationOn\")");
 }
 
-bool StdCmdViewIvDecorationOn::IsActive(void)
+bool StdCmdViewIvDecorationOn::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("SetDecorationOn");
+  return getAppWnd()->SendHasMsgToActiveView("SetDecorationOn");
 }
 
 //===========================================================================
@@ -403,7 +403,7 @@ bool StdCmdViewIvDecorationOn::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewIvDecorationOff);
 
 StdCmdViewIvDecorationOff::StdCmdViewIvDecorationOff()
-  :FCCppCommand("Std_ViewIvDecorationOff")
+  :CppCommand("Std_ViewIvDecorationOff")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -415,14 +415,14 @@ StdCmdViewIvDecorationOff::StdCmdViewIvDecorationOff()
   iAccel        = 0;
 }
 
-void StdCmdViewIvDecorationOff::Activated(int iMsg)
+void StdCmdViewIvDecorationOff::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"SetDecorationOff\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetDecorationOff\")");
 }
 
-bool StdCmdViewIvDecorationOff::IsActive(void)
+bool StdCmdViewIvDecorationOff::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("SetDecorationOff");
+  return getAppWnd()->SendHasMsgToActiveView("SetDecorationOff");
 }
 
 
@@ -432,7 +432,7 @@ bool StdCmdViewIvDecorationOff::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoOff);
 
 StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
-  :FCCppCommand("Std_ViewIvStereoOff")
+  :CppCommand("Std_ViewIvStereoOff")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -444,14 +444,14 @@ StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
   iAccel        = 0;
 }
 
-void StdCmdViewIvStereoOff::Activated(int iMsg)
+void StdCmdViewIvStereoOff::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoOff\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoOff\")");
 }
 
-bool StdCmdViewIvStereoOff::IsActive(void)
+bool StdCmdViewIvStereoOff::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("SetStereoOff");
+  return getAppWnd()->SendHasMsgToActiveView("SetStereoOff");
 }
 
 
@@ -461,7 +461,7 @@ bool StdCmdViewIvStereoOff::IsActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoOn);
 
 StdCmdViewIvStereoOn::StdCmdViewIvStereoOn()
-  :FCCppCommand("Std_ViewIvStereoOn")
+  :CppCommand("Std_ViewIvStereoOn")
 {
   sAppModule    = "";
   sGroup        = "Standard-View";
@@ -473,14 +473,14 @@ StdCmdViewIvStereoOn::StdCmdViewIvStereoOn()
   iAccel        = 0;
 }
 
-void StdCmdViewIvStereoOn::Activated(int iMsg)
+void StdCmdViewIvStereoOn::activated(int iMsg)
 {
-  DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoOn\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoOn\")");
 }
 
-bool StdCmdViewIvStereoOn::IsActive(void)
+bool StdCmdViewIvStereoOn::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("SetStereoOn");
+  return getAppWnd()->SendHasMsgToActiveView("SetStereoOn");
 }
 
 
@@ -492,32 +492,36 @@ bool StdCmdViewIvStereoOn::IsActive(void)
 //===========================================================================
 
 
+namespace Gui {
+
 void CreateViewStdCommands(void)
 {
-  FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
   // views
-  rcCmdMgr.AddCommand(new StdCmdViewBottom());
-  rcCmdMgr.AddCommand(new StdCmdViewFront());
-  rcCmdMgr.AddCommand(new StdCmdViewLeft());
-  rcCmdMgr.AddCommand(new StdCmdViewRear());
-  rcCmdMgr.AddCommand(new StdCmdViewRight());
-  rcCmdMgr.AddCommand(new StdCmdViewTop());
-  rcCmdMgr.AddCommand(new StdCmdViewAxo());
-  rcCmdMgr.AddCommand(new StdCmdViewFitAll());
+  rcCmdMgr.addCommand(new StdCmdViewBottom());
+  rcCmdMgr.addCommand(new StdCmdViewFront());
+  rcCmdMgr.addCommand(new StdCmdViewLeft());
+  rcCmdMgr.addCommand(new StdCmdViewRear());
+  rcCmdMgr.addCommand(new StdCmdViewRight());
+  rcCmdMgr.addCommand(new StdCmdViewTop());
+  rcCmdMgr.addCommand(new StdCmdViewAxo());
+  rcCmdMgr.addCommand(new StdCmdViewFitAll());
 
-  rcCmdMgr.AddCommand(new StdCmdViewExample1());
-  rcCmdMgr.AddCommand(new StdCmdViewExample2());
-  rcCmdMgr.AddCommand(new StdCmdViewExample3());
+  rcCmdMgr.addCommand(new StdCmdViewExample1());
+  rcCmdMgr.addCommand(new StdCmdViewExample2());
+  rcCmdMgr.addCommand(new StdCmdViewExample3());
 
-  rcCmdMgr.AddCommand(new StdCmdViewIvDecorationOff());
-  rcCmdMgr.AddCommand(new StdCmdViewIvDecorationOn());
+  rcCmdMgr.addCommand(new StdCmdViewIvDecorationOff());
+  rcCmdMgr.addCommand(new StdCmdViewIvDecorationOn());
 
-  rcCmdMgr.AddCommand(new StdCmdViewIvStereoOn());
-  rcCmdMgr.AddCommand(new StdCmdViewIvStereoOff());
+  rcCmdMgr.addCommand(new StdCmdViewIvStereoOn());
+  rcCmdMgr.addCommand(new StdCmdViewIvStereoOff());
 
-  rcCmdMgr.AddCommand(new StdCmdViewCreateOCC());
-  rcCmdMgr.AddCommand(new StdCmdViewCreateInventor());
+  rcCmdMgr.addCommand(new StdCmdViewCreateOCC());
+  rcCmdMgr.addCommand(new StdCmdViewCreateInventor());
 }
+
+} // namespace Gui
 
 

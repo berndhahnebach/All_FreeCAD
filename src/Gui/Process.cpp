@@ -32,7 +32,6 @@
 #endif
 
 #include "../Base/Console.h"
-#include "../Base/Observer.h"
 #include "Process.h"
 
 using namespace Gui;
@@ -44,13 +43,13 @@ Process::Process( QObject *parent, const char *name)
 }
 
 Process::Process( const QString& arg0, QObject *parent, const char *name )
-: QProcess(arg0, parent, name)
+: QProcess( arg0, parent, name )
 {
   init();
 }
 
 Process::Process( const QStringList& args, QObject *parent, const char *name )
-: QProcess(args, parent, name)
+: QProcess( args, parent, name )
 {
   init();
 }
@@ -107,7 +106,7 @@ QString Process::systemWarning( int code, const char* pMsg)
   }
 
   if (!lpMsgBuf)
-    return "";
+    return QString::null;
 
   // Process any inserts in lpMsgBuf.
   // ...
@@ -135,10 +134,10 @@ bool Process::setExecutable( const QString& proc )
 
 QString Process::executable () const
 {
-  if (arguments().size() > 0)
+  if ( arguments().size() > 0 )
     return (arguments()[0]);
   else
-    return "";
+    return QString::null;
 }
 
 Process& Process::operator<<(const QString& arg)
@@ -152,10 +151,10 @@ bool Process::start( QStringList *e )
   if (e)
   {
     clearEnvironment();
-    for (QStringList::Iterator it = e->begin(); it!=e->end(); ++it)
+    for ( QStringList::Iterator it = e->begin(); it!=e->end(); ++it )
     {
       int pos = (*it).find('=');
-      if (pos)
+      if ( pos )
       {
         QString var = (*it).left(pos);
         QString val = (*it).right( (*it).length() - pos - 1 );
@@ -167,7 +166,7 @@ bool Process::start( QStringList *e )
   if (env.size() > 0)
     setupEnvironment();
 
-  if (QProcess::start())
+  if ( QProcess::start() )
   {
     Notify( Process::processStarted );
     return true;
@@ -237,7 +236,7 @@ bool Process::appendToPath (const QString& path)
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", env["PATH"].latin1(), path.latin1());
 #else
-    Console().Warning("Not yet implemented!\n");
+    Base::Console().Warning("Not yet implemented!\n");
 #endif
     env["PATH"] = szPath;
   }
@@ -248,7 +247,7 @@ bool Process::appendToPath (const QString& path)
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", getenv("PATH"), path.latin1());
 #else
-    Console().Warning("Not yet implemented!\n");
+    Base::Console().Warning("Not yet implemented!\n");
 #endif
     env["PATH"] = szPath;
   }
@@ -281,7 +280,7 @@ void Process::setupEnvironment()
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     setenv(it.key().latin1(), it.data().latin1(), 1);
 #else
-    Console().Warning("Not yet implemented!\n");
+    Base::Console().Warning("Not yet implemented!\n");
 #endif
   }
 }

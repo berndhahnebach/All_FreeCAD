@@ -293,7 +293,7 @@ CustomToolBar::~CustomToolBar()
  * If this toolbar can be modified it is rebuild using the command manager \a rclMgr, 
  * otherwise nothing happens.
  */
-void CustomToolBar::update( FCCommandManager& rclMgr )
+void CustomToolBar::update( CommandManager& rclMgr )
 {
   if (!canModify())
     return; // no need to read again
@@ -304,7 +304,7 @@ void CustomToolBar::update( FCCommandManager& rclMgr )
     if (*it == "Separator")
       addSeparator();
     else
-      rclMgr.AddTo( (*it).latin1(), this );
+      rclMgr.addTo( (*it).latin1(), this );
   }
 
   // get also the commands from other workbenches
@@ -317,7 +317,7 @@ void CustomToolBar::update( FCCommandManager& rclMgr )
       if ( *it == "Separator" )
         addSeparator();
       else
-        rclMgr.AddTo( (*it).latin1(), this );
+        rclMgr.addTo( (*it).latin1(), this );
     }
   }
 }
@@ -390,8 +390,8 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   {
     /*    // create a new button
         //
-        FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-        FCCommand* pCom = NULL;
+        CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+        Command* pCom = NULL;
         std::vector<QString> actions = ActionDrag::actions;
         for (std::vector<QString>::iterator it = actions.begin(); it != actions.end(); ++it)
         {
@@ -473,7 +473,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   for (;it2 != _clItems.end(); ++it2)
     items.push_back(*it2);
 
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
   _clItems = items;
 
@@ -544,7 +544,7 @@ void CustomPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sRe
  * If this menu can be modified it is rebuild using the command manager \a rclMgr, 
  * otherwise nothing happens.
  */
-void CustomPopupMenu::update( FCCommandManager& rclMgr )
+void CustomPopupMenu::update( CommandManager& rclMgr )
 {
   if (!canModify())
     return; // no need to read again
@@ -555,7 +555,7 @@ void CustomPopupMenu::update( FCCommandManager& rclMgr )
     if ( *it == "Separator" )
       insertSeparator();
     else
-      rclMgr.AddTo( (*it).latin1(), this );
+      rclMgr.addTo( (*it).latin1(), this );
   }
 
   // get also the commands from other workbenches
@@ -568,7 +568,7 @@ void CustomPopupMenu::update( FCCommandManager& rclMgr )
       if ( *it == "Separator" )
         insertSeparator();
       else
-        rclMgr.AddTo( (*it).latin1(), this );
+        rclMgr.addTo( (*it).latin1(), this );
     }
   }
 }
@@ -576,13 +576,13 @@ void CustomPopupMenu::update( FCCommandManager& rclMgr )
 void CustomPopupMenu::dropEvent ( QDropEvent * e)
 {
   // create a new button
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  FCCommand* pCom = NULL;
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Command* pCom = NULL;
 
   QStringList actions = ActionDrag::actions;
   for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
   {
-    pCom = cCmdMgr.GetCommandByName( (*it).latin1() );
+    pCom = cCmdMgr.getCommandByName( (*it).latin1() );
     if (pCom != NULL)
     {
       if (pCom->addTo(this))
@@ -625,17 +625,17 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     QString txt = text(id);
 
     // find the corresponding command to this item
-    const std::map<std::string, FCCommand*>& rclCmds = ApplicationWindow::Instance->GetCommandManager().GetCommands();
+    const std::map<std::string, Command*>& rclCmds = ApplicationWindow::Instance->GetCommandManager().getCommands();
 
     // search item with same text first
-    for (std::map<std::string, FCCommand*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
+    for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
     {
-      QAction* a = it->second->GetAction();
+      QAction* a = it->second->getAction();
       if (a != NULL)
       {
         if ( a->menuText() == txt )
         {
-          ActionDrag *ad = new ActionDrag( it->second->GetName(), this );
+          ActionDrag *ad = new ActionDrag( it->second->getName(), this );
 
           if (pix)
             ad->setPixmap(QPixmap(*pix),QPoint(8,8));
@@ -647,19 +647,19 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
 
     // if nothing found search item with similar text
 #ifdef FC_OS_LINUX
-    for (std::map<std::string, FCCommand*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
+    for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
 #else
     for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
 #endif
     {
-      QAction* a = it->second->GetAction();
+      QAction* a = it->second->getAction();
       if (a != NULL)
       {
         // check if menu item starts with txt
         // both strings need not to be equal (because of accelarators)
         if ( txt.startsWith(a->menuText()) )
         {
-          ActionDrag *ad = new ActionDrag( it->second->GetName(), this );
+          ActionDrag *ad = new ActionDrag( it->second->getName(), this );
 
           if (pix)
             ad->setPixmap(QPixmap(*pix),QPoint(8,8));
@@ -695,7 +695,7 @@ void CustomPopupMenu::savePreferences()
 namespace Gui {
 struct CustomWidgetManagerP
 {
-  CustomWidgetManagerP(FCCommandManager& rclMgr, ToolBox* pStackBar)
+  CustomWidgetManagerP(CommandManager& rclMgr, ToolBox* pStackBar)
       : _clCmdMgr(rclMgr), _pclStackBar(pStackBar)
   {
   }
@@ -706,12 +706,12 @@ struct CustomWidgetManagerP
   std::map <QString,CustomToolBar*>    _clToolbars;
   std::map <QString,CustomToolBar*>    _clCmdbars;
   QMap<int, QString>                 _menuBarItem;
-  FCCommandManager&                    _clCmdMgr;
+  CommandManager&                    _clCmdMgr;
   ToolBox*                           _pclStackBar;
 };
 } // namespace Gui
 
-CustomWidgetManager::CustomWidgetManager(FCCommandManager& rclMgr, ToolBox* pStackBar)
+CustomWidgetManager::CustomWidgetManager(CommandManager& rclMgr, ToolBox* pStackBar)
 {
   d = new CustomWidgetManagerP(rclMgr, pStackBar);
 }

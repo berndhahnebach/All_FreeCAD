@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __Windows_h__
-#define __Windows_h__
+#ifndef __WINDOW_H__
+#define __WINDOW_H__
 
 
 #ifndef _PreComp_
@@ -35,9 +35,9 @@ class ApplicationWindow;
 
 namespace Gui {
 
-/** Adapter class to the parameter of FreeCAD for all Windows
- * Retrive the parameter group of the specific window
- * by the windowname.
+/** Adapter class to the parameter of FreeCAD for all windows
+ * Retrieve the parameter group of the specific window by the windowname.
+ * @author Jürgen Riegel
  */
 class GuiExport WindowParameter : public FCParameterGrp::ObserverType
 {
@@ -61,4 +61,4 @@ private:
 
 } // namespace Gui
 
-#endif
+#endif // __WINDOW_H__

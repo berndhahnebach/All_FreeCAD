@@ -56,11 +56,11 @@ class QPopupMenu;
 class QToolBar;
 class FCViewBar;
 class MDIView;
-class FCCommandManager;
 class QSplashScreen;
 
 namespace Gui{
 class CustomWidgetManager;
+class CommandManager;
 namespace DockWnd {
 class HelpView;
 } //namespace DockWnd
@@ -128,7 +128,7 @@ public:
 	bool IsClosing(void);
 
 	/// Reference to the command manager
-	FCCommandManager &GetCommandManager(void);
+  Gui::CommandManager &GetCommandManager(void);
 	
 	/// Returns the widget manager
   Gui::CustomWidgetManager* GetCustomWidgetManager(void);

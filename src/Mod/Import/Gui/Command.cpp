@@ -43,7 +43,7 @@ using Gui::FileDialog;
 DEF_STD_CMD_A(FCCmdImportReadBREP);
 
 FCCmdImportReadBREP::FCCmdImportReadBREP()
-	:FCCppCommand("Import_ReadBREP")
+	:CppCommand("Import_ReadBREP")
 {
 	sAppModule		= "Import";
 	sGroup			= "Import";
@@ -56,37 +56,37 @@ FCCmdImportReadBREP::FCCmdImportReadBREP()
 }
 
 
-void FCCmdImportReadBREP::Activated(int iMsg)
+void FCCmdImportReadBREP::activated(int iMsg)
 {
 
-	OpenCommand("Read BREP");
+	openCommand("Read BREP");
 
-	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", getAppWnd() );
 	if ( fn.isEmpty() )
 	{
-		AbortCommand();
+		abortCommand();
 		return;
 	}
 
 
-	DoCommand(Doc,"TopoShape = Import.ReadBREP(\"%s\")",fn.latin1());
+	doCommand(Doc,"TopoShape = Import.ReadBREP(\"%s\")",fn.latin1());
 
 
-	CommitCommand();
+	commitCommand();
 }
 
-bool FCCmdImportReadBREP::IsActive(void)
+bool FCCmdImportReadBREP::isActive(void)
 {
-	return GetAppWnd()->GetActiveDocument() != 0;
+	return getAppWnd()->GetActiveDocument() != 0;
 }
 
 
 
 void CreateCommands(void)
 {
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-	rcCmdMgr.AddCommand(new FCCmdImportReadBREP());
+	rcCmdMgr.addCommand(new FCCmdImportReadBREP());
 }
 
 

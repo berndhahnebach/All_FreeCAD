@@ -111,7 +111,7 @@ protected:
  *  @see FCGuiDocument
  *  @see ApplicationWindow
  */
-class MDIView : public QMainWindow,public FCBaseView
+class GuiExport MDIView : public QMainWindow,public FCBaseView
 {
 	Q_OBJECT;
 

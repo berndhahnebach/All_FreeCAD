@@ -36,10 +36,10 @@
 class QDoubleValidator;
 class QAction;
 class QMainWindow;
-class FCCommandManager;
 
 namespace Gui {
 class DockWindow;
+class CommandManager;
 class WidgetFactoryInst;
 
 namespace DockWnd {
@@ -69,7 +69,7 @@ public:
   virtual void setCanModify(bool b);
   bool canModify() const;
   
-  virtual void update( FCCommandManager& rclMgr ) = 0;
+  virtual void update( CommandManager& rclMgr ) = 0;
   QString getWorkbench();
   virtual ~CustomWidget();
 
@@ -109,7 +109,7 @@ public:
   virtual ~CustomToolBar();
 
   virtual void clearUp();
-  void update( FCCommandManager& rclMgr );
+  void update( CommandManager& rclMgr );
   void setCanModify( bool b );
 
 public:
@@ -136,7 +136,7 @@ class CustomPopupMenu : public QPopupMenu, public CustomWidget
 public:
   CustomPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
   virtual ~CustomPopupMenu();
-  void update( FCCommandManager& rclMgr );
+  void update( CommandManager& rclMgr );
   virtual void OnChange( FCSubject<const char*> &rCaller, const char * sReason );
 
 protected:
@@ -165,7 +165,7 @@ private:
 class CustomWidgetManager
 {
 public:
-  CustomWidgetManager( FCCommandManager& rclMgr, Gui::DockWnd::ToolBox* pCmdBar );
+  CustomWidgetManager( CommandManager& rclMgr, Gui::DockWnd::ToolBox* pCmdBar );
   ~CustomWidgetManager();
 
   bool loadCustomWidegts( const QString& workbench );

@@ -45,7 +45,7 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
+DlgDocTemplatesImp::DlgDocTemplatesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl ), _pcCmd(pcCmd)
 {
   std::vector<std::string> vTemplates = App::GetApplication().GetAllTemplates();
@@ -88,9 +88,9 @@ void DlgDocTemplatesImp::onValidate()
   QString sTemplate = LineEdit1->text();
 
   if (sTemplate.isEmpty())
-    _pcCmd->DoCommand(FCCommand::Doc,"FreeCAD.DocNew()");		
+    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.DocNew()");		
   else
-    _pcCmd->DoCommand(FCCommand::Doc,"FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
+    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
 
   accept();
 }

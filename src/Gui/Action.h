@@ -30,10 +30,10 @@
 # include <qtooltip.h>
 #endif
 
-class FCCommand;
 
 namespace Gui 
 {
+class Command;
 
 /**
  * Class for drag and drop a 'QAction' object
@@ -61,7 +61,7 @@ class GuiExport Action : public QAction
   Q_OBJECT
 
 public:
-  Action ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  Action ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   virtual ~Action();
 
   virtual void addedTo ( QWidget * actionWidget, QWidget * container );
@@ -70,14 +70,14 @@ public:
   
   void setEnabled  ( bool ) ;
 
-  FCCommand* GetCommand() { return _pcCmd; }
+  Command* command() { return _pcCmd; }
 
 public slots:
   void onActivated ();
   void onToggled   ( bool ); 
 
 private:
-  FCCommand *_pcCmd;
+  Command *_pcCmd;
 };
 
 // --------------------------------------------------------------------
@@ -92,7 +92,7 @@ class GuiExport ActionGroup : public QActionGroup
   Q_OBJECT
 
 public:
-  ActionGroup ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
+  ActionGroup ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
   virtual ~ActionGroup();
 
   virtual bool addTo( QWidget * w );
@@ -101,7 +101,7 @@ public:
   void removeAction ( QAction* act );
   void clear();
 
-  FCCommand* GetCommand() { return _pcCmd; }
+  Command* command() { return _pcCmd; }
   
   void activate( const QString& item );
   void activate( int id);
@@ -117,7 +117,7 @@ private slots:
   void onActivated ();
 
 private:
-  FCCommand *_pcCmd;
+  Command *_pcCmd;
 };
 
 // --------------------------------------------------------------------
@@ -132,7 +132,7 @@ class GuiExport UndoRedoAction : public Action
   Q_OBJECT
 
 public:
-  UndoRedoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  UndoRedoAction ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   virtual ~UndoRedoAction();
   
   void addedTo ( QWidget * actionWidget, QWidget * container );
@@ -149,7 +149,7 @@ class GuiExport UndoAction : public UndoRedoAction
   Q_OBJECT
 
 public:
-  UndoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  UndoAction ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   ~UndoAction();
 };
 
@@ -164,7 +164,7 @@ class GuiExport RedoAction : public UndoRedoAction
   Q_OBJECT
 
 public:
-  RedoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  RedoAction ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   ~RedoAction();
 };
 

@@ -31,9 +31,9 @@
 # include <vector>
 #endif
 
-class FCCommand;
 
 namespace Gui {
+class Command;
 class CustomToolBar;
 
 namespace Dialog {
@@ -71,7 +71,7 @@ protected slots:
 
 protected:
   /** Groups of commands */
-  std::map<std::string, std::vector<FCCommand*> > _alCmdGroups;
+  std::map<std::string, std::vector<Command*> > _alCmdGroups;
   /** List of all toolbars */
   QPtrList<Gui::CustomToolBar>                _aclToolbars;
 };

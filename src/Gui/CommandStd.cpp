@@ -1,69 +1,77 @@
-/** \file CommandStd.h
- *  \brief The implementation of the standrd Commands
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
 /***************************************************************************
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Jürgen Riegel 2002                                                    *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
- 
+
+
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <iostream>
-#	include <stdio.h>
-#	include <assert.h>
-#	include <fcntl.h>
-#	include <ctype.h>
-#	include <typeinfo>
-#	include <vector>
-#	include <map>
-#	include <string>
-#	include <list>
-#	include <set>
-#	include <algorithm>
-#	include <stack>
-#	include <queue>
-#	include <string>
-#	include <limits.h>
-#	if defined (_POSIX_C_SOURCE)
-#		undef  _POSIX_C_SOURCE
-#	endif // (re-)defined in pyconfig.h
-#	include <Python.h>
-#	include <algorithm>
+# include <iostream>
+# include <stdio.h>
+# include <assert.h>
+# include <fcntl.h>
+# include <ctype.h>
+# include <typeinfo>
+# include <vector>
+# include <map>
+# include <string>
+# include <list>
+# include <set>
+# include <algorithm>
+# include <stack>
+# include <queue>
+# include <string>
+# include <limits.h>
+# if defined (_POSIX_C_SOURCE)
+#   undef  _POSIX_C_SOURCE
+# endif // (re-)defined in pyconfig.h
+# include <Python.h>
+# include <algorithm>
 # include <qapplication.h>
-#	include <qaction.h>
-#	include <qcombobox.h>
-#	include <qcursor.h>
-#	include <qstatusbar.h>
-#	include <qthread.h>
-#	include <qfiledialog.h>
-#	include <qpainter.h>
-#	include <qprocess.h>
-#	include <qprinter.h>
-#	include <qmessagebox.h>
-#	include <qsplashscreen.h>
-#	include <qtimer.h>
-#	include <qtextbrowser.h>
-#	include <qvalidator.h>
-#	include <BRepPrimAPI_MakeBox.hxx>
-#	include <BRepTools.hxx>
-#	include <TopoDS_Shape.hxx>
-#	include <TNaming_Builder.hxx>
-#	include <TDataStd_Real.hxx>
-#	include <Handle_TPrsStd_AISPresentation.hxx>
-#	include <TNaming_NamedShape.hxx>
-#	include <TPrsStd_AISPresentation.hxx>
+# include <qaction.h>
+# include <qcombobox.h>
+# include <qcursor.h>
+# include <qstatusbar.h>
+# include <qthread.h>
+# include <qfiledialog.h>
+# include <qpainter.h>
+# include <qprocess.h>
+# include <qprinter.h>
+# include <qmessagebox.h>
+# include <qsplashscreen.h>
+# include <qtimer.h>
+# include <qtextbrowser.h>
+# include <qvalidator.h>
+# include <BRepPrimAPI_MakeBox.hxx>
+# include <BRepTools.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TNaming_Builder.hxx>
+# include <TDataStd_Real.hxx>
+# include <Handle_TPrsStd_AISPresentation.hxx>
+# include <TNaming_NamedShape.hxx>
+# include <TPrsStd_AISPresentation.hxx>
+#endif
+
+#ifdef FC_USE_OCAFBROWSER
+# include <DebugBrowser.hxx>
 #endif
 
 #include "../Base/Exception.h"
@@ -80,13 +88,6 @@
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
 #include "View.h"
-
-#ifdef FC_USE_OCAFBROWSER
-#	include <DebugBrowser.hxx>
-#endif
-
-
-
 
 #include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
@@ -108,350 +109,339 @@ using namespace Gui;
 // Std_Open
 //===========================================================================
 
-DEF_STD_CMD(FCCmdOpen);
+DEF_STD_CMD(StdCmdOpen);
 
-
-FCCmdOpen::FCCmdOpen()
-	:FCCppCommand("Std_Open")
+StdCmdOpen::StdCmdOpen()
+  :CppCommand("Std_Open")
 {
-
-	// seting the 
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Open";
-	sToolTipText	= "Open a Document or import Files";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap         = "Open";
-	iAccel      = Qt::CTRL+Qt::Key_O;
-
+  // seting the 
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Open";
+  sToolTipText  = "Open a Document or import Files";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Open";
+  iAccel        = Qt::CTRL+Qt::Key_O;
 }
 
-
-void FCCmdOpen::Activated(int iMsg)
+void StdCmdOpen::activated(int iMsg)
 {
-	GetAppWnd()->statusBar()->message(QObject::tr("Opening file..."));
+  getAppWnd()->statusBar()->message(QObject::tr("Opening file..."));
 
-	QString f = QFileDialog::getOpenFileName( QString::null, "FreeCAD Standard (*.FCStd);;OpenCasCade (*.std)", GetAppWnd() );
-	if ( !f.isEmpty() ) {
-		// the user selected a valid existing file
-//		GetApplication().Open(f.latin1());
-    GetAppWnd()->AppendRecentFile(f.latin1());
-	} else {
-		// the user cancelled the dialog
-		GetAppWnd()->statusBar()->message(QObject::tr("Opening aborted"));
-	}
+  QString f = QFileDialog::getOpenFileName( QString::null, "FreeCAD Standard (*.FCStd);;OpenCasCade (*.std)", getAppWnd() );
+  if ( !f.isEmpty() ) {
+    // the user selected a valid existing file
+//    GetApplication().Open(f.latin1());
+    getAppWnd()->AppendRecentFile(f.latin1());
+  } else {
+    // the user cancelled the dialog
+    getAppWnd()->statusBar()->message(QObject::tr("Opening aborted"));
+  }
 }
 
 //===========================================================================
 // Std_New
 //===========================================================================
 
-DEF_STD_CMD(FCCmdNew);
+DEF_STD_CMD(StdCmdNew);
 
-FCCmdNew::FCCmdNew()
-	:FCCppCommand("Std_New")
+StdCmdNew::StdCmdNew()
+  :CppCommand("Std_New")
 {
-
-	// seting the 
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "New";
-	sToolTipText	= "Create a new empty Document";
-	sWhatsThis		= "Create a new empty Document";
-	sStatusTip		= "Create a new empty Document";
-	sPixmap         = "New";
-	iAccel      = Qt::CTRL+Qt::Key_N;
-
+  // seting the 
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "New";
+  sToolTipText  = "Create a new empty Document";
+  sWhatsThis    = "Create a new empty Document";
+  sStatusTip    = "Create a new empty Document";
+  sPixmap       = "New";
+  iAccel        = Qt::CTRL+Qt::Key_N;
 }
 
-
-void FCCmdNew::Activated(int iMsg)
+void StdCmdNew::activated(int iMsg)
 {
-//  DlgDocTemplatesImp cDlg(this,GetAppWnd(),"Template Dialog",true);
+//  DlgDocTemplatesImp cDlg(this,getAppWnd(),"Template Dialog",true);
 //  cDlg.exec();
 
-	DoCommand(FCCommand::Gui,"App.DocNew()");
-
-
+  doCommand(Command::Gui,"App.DocNew()");
 }
 
 //===========================================================================
 // Std_Save
 //===========================================================================
-DEF_STD_CMD_A(FCCmdSave);
+DEF_STD_CMD_A(StdCmdSave);
 
-FCCmdSave::FCCmdSave()
-	:FCCppCommand("Std_Save")
+StdCmdSave::StdCmdSave()
+  :CppCommand("Std_Save")
 {
-
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Save";
-	sToolTipText	= "Save the active document";
-	sWhatsThis		= "Save the active document";
-	sStatusTip		= "Save the active document";
-	sPixmap			= "Save";
-	iAccel			= Qt::CTRL+Qt::Key_S;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Save";
+  sToolTipText  = "Save the active document";
+  sWhatsThis    = "Save the active document";
+  sStatusTip    = "Save the active document";
+  sPixmap       = "Save";
+  iAccel        = Qt::CTRL+Qt::Key_S;
 }
 
-
-void FCCmdSave::Activated(int iMsg)
+void StdCmdSave::activated(int iMsg)
 {
-	if( GetActiveDocument() )
-//		DoCommand(FCCommand::Doc,"FreeCAD.DocGetActive().Save()");		
-		GetActiveDocument()->Save();
-	else
-		DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"Save\")");
-//		GetAppWnd()->SendMsgToActiveView("Save");
+  if( getActiveDocument() )
+//    DoCommand(Command::Doc,"FreeCAD.DocGetActive().Save()");		
+    getActiveDocument()->Save();
+  else
+    doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Save\")");
+//    getAppWnd()->SendMsgToActiveView("Save");
 }
 
-bool FCCmdSave::IsActive(void)
+bool StdCmdSave::isActive(void)
 {
-	if( GetActiveDocument() )
-		return true;
-	else
-		return GetAppWnd()->SendHasMsgToActiveView("Save");
-
+  if( getActiveDocument() )
+    return true;
+  else
+    return getAppWnd()->SendHasMsgToActiveView("Save");
 }
 
 //===========================================================================
 // Std_SaveAs
 //===========================================================================
-DEF_STD_CMD_A(FCCmdSaveAs);
+DEF_STD_CMD_A(StdCmdSaveAs);
 
-FCCmdSaveAs::FCCmdSaveAs()
-	:FCCppCommand("Std_SaveAs")
+StdCmdSaveAs::StdCmdSaveAs()
+  :CppCommand("Std_SaveAs")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Save as...";
-	sToolTipText	= "Save the active document under a new file name";
-	sWhatsThis		= "Save the active document under a new file name";
-	sStatusTip		= "Save the active document under a new file name";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Save as...";
+  sToolTipText  = "Save the active document under a new file name";
+  sWhatsThis    = "Save the active document under a new file name";
+  sStatusTip    = "Save the active document under a new file name";
+  iAccel        = 0;
 }
 
-
-void FCCmdSaveAs::Activated(int iMsg)
+void StdCmdSaveAs::activated(int iMsg)
 {
-	if( GetActiveDocument() )
-  	GetActiveDocument()->SaveAs();
-	else
-		DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"SaveAs\")");
+  if( getActiveDocument() )
+    getActiveDocument()->SaveAs();
+  else
+    doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SaveAs\")");
 }
 
-bool FCCmdSaveAs::IsActive(void)
+bool StdCmdSaveAs::isActive(void)
 {
-	if( GetActiveDocument() )
-		return true;
-	else
-		return GetAppWnd()->SendHasMsgToActiveView("SaveAs");
-
+  if( getActiveDocument() )
+    return true;
+  else
+    return getAppWnd()->SendHasMsgToActiveView("SaveAs");
 }
 
 //===========================================================================
 // Std_Print
 //===========================================================================
-DEF_STD_CMD_A(FCCmdPrint );
+DEF_STD_CMD_A(StdCmdPrint );
 
-FCCmdPrint::FCCmdPrint()
-	:FCCppCommand("Std_Print")
+StdCmdPrint::StdCmdPrint()
+  :CppCommand("Std_Print")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Print...";
-	sToolTipText	= "Print the window";
-	sWhatsThis		= "Print the window";
-	sStatusTip		= "Print the window";
-	sPixmap			= "Print";
-	iAccel			= Qt::CTRL+Qt::Key_P;;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Print...";
+  sToolTipText  = "Print the window";
+  sWhatsThis    = "Print the window";
+  sStatusTip    = "Print the window";
+  sPixmap       = "Print";
+  iAccel        = Qt::CTRL+Qt::Key_P;;
 }
 
-
-void FCCmdPrint::Activated(int iMsg)
+void StdCmdPrint::activated(int iMsg)
 {
-  if ( GetAppWnd()->GetActiveView() )
+  if ( getAppWnd()->GetActiveView() )
   {
-    GetAppWnd()->statusBar()->message("Printing...");
+    getAppWnd()->statusBar()->message("Printing...");
     QPrinter printer( QPrinter::HighResolution );
-    GetAppWnd()->GetActiveView()->Print( &printer );
+    getAppWnd()->GetActiveView()->Print( &printer );
   }
 }
 
-bool FCCmdPrint::IsActive(void)
+bool StdCmdPrint::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Print");
+  return getAppWnd()->SendHasMsgToActiveView("Print");
 }
 
 //===========================================================================
 // Std_Quit
 //===========================================================================
 
-DEF_STD_CMD(FCCmdQuit );
+DEF_STD_CMD(StdCmdQuit );
 
-FCCmdQuit::FCCmdQuit()
-	:FCCppCommand("Std_Quit")
+StdCmdQuit::StdCmdQuit()
+  :CppCommand("Std_Quit")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Exit";
-	sToolTipText	= "Quits the application";
-	sWhatsThis		= "Quits the application";
-	sStatusTip		= "Quits the application";
-	iAccel			= Qt::ALT+Qt::Key_F4;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Exit";
+  sToolTipText  = "Quits the application";
+  sWhatsThis    = "Quits the application";
+  sStatusTip    = "Quits the application";
+  iAccel        = Qt::ALT+Qt::Key_F4;
 }
 
-
-void FCCmdQuit::Activated(int iMsg)
+void StdCmdQuit::activated(int iMsg)
 {
   ApplicationWindow::Instance->close();
 }
-
 
 //===========================================================================
 // Std_Undo
 //===========================================================================
 
-DEF_STD_CMD_AC(FCCmdUndo );
+DEF_STD_CMD_AC(StdCmdUndo);
 
-FCCmdUndo::FCCmdUndo()
-	:FCCppCommand("Std_Undo")
+StdCmdUndo::StdCmdUndo()
+  :CppCommand("Std_Undo")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Undo";
-	sToolTipText	= "Undo exactly one action";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Undo";
-	iAccel			= Qt::CTRL+Qt::Key_Z;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Undo";
+  sToolTipText  = "Undo exactly one action";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Undo";
+  iAccel        = Qt::CTRL+Qt::Key_Z;
 }
 
-
-void FCCmdUndo::Activated(int iMsg)
+void StdCmdUndo::activated(int iMsg)
 {
 //  ApplicationWindow::Instance->slotUndo();
-	GetAppWnd()->SendMsgToActiveView("Undo");
+  getAppWnd()->SendMsgToActiveView("Undo");
 }
 
-bool FCCmdUndo::IsActive(void)
+bool StdCmdUndo::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Undo");
+  return getAppWnd()->SendHasMsgToActiveView("Undo");
 }
 
-QAction * FCCmdUndo::CreateAction(void)
+QAction * StdCmdUndo::createAction(void)
 {
-	QAction *pcAction;
+  QAction *pcAction;
 
-	pcAction = new UndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(QObject::tr(sMenuText));
-	pcAction->setMenuText(QObject::tr(sMenuText));
-	pcAction->setToolTip(QObject::tr(sToolTipText));
-	pcAction->setStatusTip(QObject::tr(sStatusTip));
-	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-	pcAction->setAccel(iAccel);
+  pcAction = new UndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
 
-	return pcAction;
+  return pcAction;
 }
 
 //===========================================================================
 // Std_Redo
 //===========================================================================
 
-DEF_STD_CMD_AC(FCCmdRedo );
+DEF_STD_CMD_AC(StdCmdRedo );
 
-FCCmdRedo::FCCmdRedo()
-	:FCCppCommand("Std_Redo")
+StdCmdRedo::StdCmdRedo()
+  :CppCommand("Std_Redo")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Redo";
-	sToolTipText	= "Redoes a previously undid action";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Redo";
-	iAccel			= Qt::CTRL+Qt::Key_Y;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Redo";
+  sToolTipText  = "Redoes a previously undid action";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Redo";
+  iAccel        = Qt::CTRL+Qt::Key_Y;
 }
 
-
-void FCCmdRedo::Activated(int iMsg)
+void StdCmdRedo::activated(int iMsg)
 {
 //  ApplicationWindow::Instance->slotRedo();
-	GetAppWnd()->SendMsgToActiveView("Redo");
+  getAppWnd()->SendMsgToActiveView("Redo");
 }
 
-bool FCCmdRedo::IsActive(void)
+bool StdCmdRedo::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Redo");
+  return getAppWnd()->SendHasMsgToActiveView("Redo");
 }
 
-QAction * FCCmdRedo::CreateAction(void)
+QAction * StdCmdRedo::createAction(void)
 {
-	QAction *pcAction;
+  QAction *pcAction;
 
-	pcAction = new RedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(QObject::tr(sMenuText));
-	pcAction->setMenuText(QObject::tr(sMenuText));
-	pcAction->setToolTip(QObject::tr(sToolTipText));
-	pcAction->setStatusTip(QObject::tr(sStatusTip));
-	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-	pcAction->setAccel(iAccel);
+  pcAction = new RedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
 
-	return pcAction;
+  return pcAction;
 }
 
 //===========================================================================
 // Std_Workbench
 //===========================================================================
 
-FCCmdWorkbench::FCCmdWorkbench()
-	:FCCppCommand("Std_Workbench"), pcAction(NULL)
+StdCmdWorkbench::StdCmdWorkbench()
+  :CppCommand("Std_Workbench"), pcAction(NULL)
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Workbench";
-	sToolTipText	= "Switch between workbenches";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "FCIcon";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Workbench";
+  sToolTipText  = "Switch between workbenches";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "FCIcon";
+  iAccel        = 0;
 }
 
-// Todo
-void FCCmdWorkbench::Activated(int iMsg)
+/**
+ * Activates the workbench at the position \a iMsg.
+ */
+void StdCmdWorkbench::activated(int iMsg)
 {
   std::vector<std::string> wb = ApplicationWindow::Instance->GetWorkbenches();
   if (iMsg >= 0 && iMsg < int(wb.size()))
   {
-    DoCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
+    doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
   }
 }
 
-void FCCmdWorkbench::activate ( const QString& item )
+/**
+ * Activates the workbench with the name \a item.
+ */
+void StdCmdWorkbench::activate ( const QString& item )
 {
   if (!pcAction) 
-    CreateAction();
+    createAction();
   dynamic_cast<ActionGroup*>(pcAction)->activate( item );
 }
 
-QAction * FCCmdWorkbench::CreateAction(void)
+/**
+ * Creates the QAction object containing all workbenches.
+ */
+QAction * StdCmdWorkbench::createAction(void)
 {
   pcAction = new ActionGroup( this, ApplicationWindow::Instance, sName.c_str(), true );
   pcAction->setExclusive( true );
   pcAction->setUsesDropDown( true );
-	pcAction->setText(QObject::tr(sMenuText));
-	pcAction->setMenuText(QObject::tr(sMenuText));
-	pcAction->setToolTip(QObject::tr(sToolTipText));
-	pcAction->setStatusTip(QObject::tr(sStatusTip));
-	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-	pcAction->setAccel(iAccel);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
  
   std::vector<std::string> items = ApplicationWindow::Instance->GetWorkbenches();
   for (std::vector<std::string>::iterator it = items.begin(); it!=items.end(); ++it)
@@ -460,7 +450,10 @@ QAction * FCCmdWorkbench::CreateAction(void)
   return pcAction;
 }
 
-void FCCmdWorkbench::appendItem ( const QString& item )
+/**
+ * Append a new workbench with \a item to the list of workbenches.
+ */
+void StdCmdWorkbench::appendItem ( const QString& item )
 {
   if ( pcAction )
   {
@@ -474,64 +467,72 @@ void FCCmdWorkbench::appendItem ( const QString& item )
 }
 
 /** 
- * Can only add to the "standard file" toolbar. This is because the command changes the workbenches
- * and so there will be several toolbars/cmdbars be deleted. If the corresponding combobox were
- * inside such a toolbar/cmdbar FreeCAD crashes.
+ * Can only be added to the "standard file" toolbar. This is because this command changes the workbenches
+ * and so there will several toolbars/cmdbars be deleted. If the corresponding combobox were
+ * inside such a toolbar/cmdbar FreeCAD would crash.
  */
-bool FCCmdWorkbench::addTo(QWidget *w)
+bool StdCmdWorkbench::addTo(QWidget *w)
 {
   if (!w->inherits("QToolBar") || QString(w->name()) != QString("file operations"))
   {
     char szBuf[200];
-    sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", GetName());
+    sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", getName());
     QMessageBox::information(ApplicationWindow::Instance, "Warning", szBuf);
     return false;
   }
 
-  return FCCommand::addTo(w);
+  return Command::addTo(w);
 }
 
 //===========================================================================
 // Std_MRU
 //===========================================================================
 
-FCCmdMRU::FCCmdMRU()
-	:FCCppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)
+StdCmdMRU::StdCmdMRU()
+  :CppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Recent files";
-	sToolTipText	= "Recent file list";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-//	sPixmap			= "";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Recent files";
+  sToolTipText  = "Recent file list";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  //	sPixmap			= "";
+  iAccel        = 0;
 }
 
-void FCCmdMRU::Activated(int iMsg)
+/**
+ * Opens the recent file at position \a iMsg in the menu.
+ * If the file does not exist or cannot be loaded this item is removed
+ * from the list.
+ */
+void StdCmdMRU::activated(int iMsg)
 {
   if (iMsg >= 0 && iMsg < int(_vMRU.size()))
   {
     try{
-      DoCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].latin1());
+      doCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].latin1());
     }catch(const Base::Exception&){
       removeRecentFile( _vMRU[iMsg] );
     }
   }
 }
 
-QAction * FCCmdMRU::CreateAction(void)
+/**
+ * Creates the QAction object containing the recent files.
+ */
+QAction * StdCmdMRU::createAction(void)
 {
-	pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(), false );
+  pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(), false );
   pcAction->setUsesDropDown( true );
-	pcAction->setText(QObject::tr(sMenuText));
-	pcAction->setMenuText(QObject::tr(sMenuText));
-	pcAction->setToolTip(QObject::tr(sToolTipText));
-	pcAction->setStatusTip(QObject::tr(sStatusTip));
-	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-	if(sPixmap)
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-	pcAction->setAccel(iAccel);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
 
   addRecentFile( "Test 123" );
   addRecentFile( "Test 231" );
@@ -540,10 +541,13 @@ QAction * FCCmdMRU::CreateAction(void)
   addRecentFile( "Test 321" );
   addRecentFile( "Test 213" );
 
-	return pcAction;
+  return pcAction;
 }
 
-void FCCmdMRU::addRecentFile ( const QString& item )
+/**
+ * Adds the recent file item with name \a item.
+ */
+void StdCmdMRU::addRecentFile ( const QString& item )
 {
   if ( _vMRU.contains( item ) )
     return; // already inserted
@@ -561,7 +565,10 @@ void FCCmdMRU::addRecentFile ( const QString& item )
   refresh();
 }
 
-void FCCmdMRU::removeRecentFile ( const QString& item )
+/**
+ * Removes the recent file item with name \a item.
+ */
+void StdCmdMRU::removeRecentFile ( const QString& item )
 {
   QStringList::Iterator it = _vMRU.find(item);
   if ( it != _vMRU.end() )
@@ -571,7 +578,10 @@ void FCCmdMRU::removeRecentFile ( const QString& item )
   }
 }
 
-void FCCmdMRU::refresh()
+/**
+ * Refreshes the list of the known recent files.
+ */
+void StdCmdMRU::refresh()
 {
   if ( pcAction )
   {
@@ -588,7 +598,10 @@ void FCCmdMRU::refresh()
   }
 }
 
-QString FCCmdMRU::recentFileItem( const QString& fn )
+/** 
+ * Creates the text of an item for the recent files menu.
+ */
+QString StdCmdMRU::recentFileItem( const QString& fn )
 {
   int ct = _vMRU.findIndex( fn ) + 1;
 
@@ -610,7 +623,10 @@ QString FCCmdMRU::recentFileItem( const QString& fn )
   return file;
 }
 
-QStringList FCCmdMRU::recentFiles() const
+/** 
+ * Returns a list of the recent files.
+ */
+QStringList StdCmdMRU::recentFiles() const
 {
   return _vMRU;
 }
@@ -618,128 +634,126 @@ QStringList FCCmdMRU::recentFiles() const
 //===========================================================================
 // Std_Cut
 //===========================================================================
-DEF_STD_CMD_A(FCCmdCut);
+DEF_STD_CMD_A(StdCmdCut);
 
-FCCmdCut::FCCmdCut()
-	:FCCppCommand("Std_Cut")
+StdCmdCut::StdCmdCut()
+  :CppCommand("Std_Cut")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Cut";
-	sToolTipText	= "Cut out";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Cut";
-	iAccel			= Qt::CTRL+Qt::Key_X;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Cut";
+  sToolTipText  = "Cut out";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Cut";
+  iAccel        = Qt::CTRL+Qt::Key_X;
 }
 
-
-void FCCmdCut::Activated(int iMsg)
+void StdCmdCut::activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("Cut");
+  getAppWnd()->SendMsgToActiveView("Cut");
 }
 
-bool FCCmdCut::IsActive(void)
+bool StdCmdCut::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Cut");
+  return getAppWnd()->SendHasMsgToActiveView("Cut");
 }
 
 //===========================================================================
 // Std_Copy
 //===========================================================================
-DEF_STD_CMD_A(FCCmdCopy );
+DEF_STD_CMD_A(StdCmdCopy);
 
-FCCmdCopy::FCCmdCopy()
-	:FCCppCommand("Std_Copy")
+StdCmdCopy::StdCmdCopy()
+  :CppCommand("Std_Copy")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Copy";
-	sToolTipText	= "Copy operation";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Copy";
-	iAccel			= Qt::CTRL+Qt::Key_C;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Copy";
+  sToolTipText  = "Copy operation";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Copy";
+  iAccel        = Qt::CTRL+Qt::Key_C;
 }
 
-
-void FCCmdCopy::Activated(int iMsg)
+void StdCmdCopy::activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("Copy");
+  getAppWnd()->SendMsgToActiveView("Copy");
 }
 
-bool FCCmdCopy::IsActive(void)
+bool StdCmdCopy::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Copy");
+  return getAppWnd()->SendHasMsgToActiveView("Copy");
 }
 
 //===========================================================================
 // Std_Paste
 //===========================================================================
-DEF_STD_CMD_A(FCCmdPaste);
+DEF_STD_CMD_A(StdCmdPaste);
 
-FCCmdPaste::FCCmdPaste()
-	:FCCppCommand("Std_Paste")
+StdCmdPaste::StdCmdPaste()
+  :CppCommand("Std_Paste")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Paste";
-	sToolTipText	= "Paste operation";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Paste";
-	iAccel			= Qt::CTRL+Qt::Key_V;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Paste";
+  sToolTipText  = "Paste operation";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Paste";
+  iAccel        = Qt::CTRL+Qt::Key_V;
 }
 
-
-void FCCmdPaste::Activated(int iMsg)
+void StdCmdPaste::activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("Paste");
+  getAppWnd()->SendMsgToActiveView("Paste");
 }
-bool FCCmdPaste::IsActive(void)
+
+bool StdCmdPaste::isActive(void)
 {
-	return GetAppWnd()->SendHasMsgToActiveView("Paste");
+  return getAppWnd()->SendHasMsgToActiveView("Paste");
 }
 
 //===========================================================================
 // Std_About
 //===========================================================================
-DEF_STD_CMD(FCCmdAbout);
+DEF_STD_CMD(StdCmdAbout);
 
-FCCmdAbout::FCCmdAbout()
-	:FCCppCommand("Std_About")
+StdCmdAbout::StdCmdAbout()
+  :CppCommand("Std_About")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "About FreeCAD";
-	sToolTipText	= "About FreeCAD";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
+  sAppModule  = "";
+  sGroup      = "Standard";
+  sMenuText   = "About FreeCAD";
+  sToolTipText  = "About FreeCAD";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
 }
 
-void FCCmdAbout::Activated(int iMsg)
+void StdCmdAbout::activated(int iMsg)
 {
-	AboutDialog dlg( GetAppWnd() );
+  AboutDialog dlg( getAppWnd() );
   dlg.exec();
 }
 
 //===========================================================================
 // Std_AboutQt
 //===========================================================================
-DEF_STD_CMD(FCCmdAboutQt);
+DEF_STD_CMD(StdCmdAboutQt);
 
-FCCmdAboutQt::FCCmdAboutQt()
-	:FCCppCommand("Std_AboutQt")
+StdCmdAboutQt::StdCmdAboutQt()
+  :CppCommand("Std_AboutQt")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "About &Qt";
-	sToolTipText	= "About Qt";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "About &Qt";
+  sToolTipText  = "About Qt";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
 }
 
-void FCCmdAboutQt::Activated(int iMsg)
+void StdCmdAboutQt::activated(int iMsg)
 {
   qApp->aboutQt();
 }
@@ -747,44 +761,44 @@ void FCCmdAboutQt::Activated(int iMsg)
 //===========================================================================
 // Std_TipOfTheDay
 //===========================================================================
-DEF_STD_CMD(FCCmdTipOfTheDay);
+DEF_STD_CMD(StdCmdTipOfTheDay);
 
-FCCmdTipOfTheDay::FCCmdTipOfTheDay()
-	:FCCppCommand("Std_TipOfTheDay")
+StdCmdTipOfTheDay::StdCmdTipOfTheDay()
+  :CppCommand("Std_TipOfTheDay")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Tip of the day...";
-	sToolTipText	= "Tip of the day";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Tip of the day...";
+  sToolTipText  = "Tip of the day";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
 }
 
-void FCCmdTipOfTheDay::Activated(int iMsg)
+void StdCmdTipOfTheDay::activated(int iMsg)
 {
-	GetAppWnd()->ShowTipOfTheDay( true );
+  getAppWnd()->ShowTipOfTheDay( true );
 }
 
 //===========================================================================
 // Std_WhatsThis
 //===========================================================================
-DEF_STD_CMD(FCCmdWhatsThis);
+DEF_STD_CMD(StdCmdWhatsThis);
 
-FCCmdWhatsThis::FCCmdWhatsThis()
-	:FCCppCommand("Std_WhatsThis")
+StdCmdWhatsThis::StdCmdWhatsThis()
+  :CppCommand("Std_WhatsThis")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "What's This?";
-	sToolTipText	= "What's This?";
-//	sWhatsThis		= sToolTipText;
-	sWhatsThis		= "";
-	sStatusTip		= sToolTipText;
-	iAccel			= Qt::SHIFT+Qt::Key_F1;
-	sPixmap			= "WhatsThis";
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "What's This?";
+  sToolTipText  = "What's This?";
+  //	sWhatsThis		= sToolTipText;
+  sWhatsThis    = "";
+  sStatusTip    = sToolTipText;
+  iAccel        = Qt::SHIFT+Qt::Key_F1;
+  sPixmap       = "WhatsThis";
 }
 
-void FCCmdWhatsThis::Activated(int iMsg)
+void StdCmdWhatsThis::activated(int iMsg)
 {
   QWhatsThis::enterWhatsThisMode();
 }
@@ -793,13 +807,13 @@ void FCCmdWhatsThis::Activated(int iMsg)
 // Std_OnlineHelp
 //===========================================================================
 
-class FCCmdOnlineHelp : public FCCppCommand, public Gui::Process::ObserverType
+class StdCmdOnlineHelp : public CppCommand, public Gui::Process::ObserverType
 {
 public:
-	FCCmdOnlineHelp();
-  virtual ~FCCmdOnlineHelp();
-	virtual void Activated(int iMsg);
-	virtual bool IsActive(void);
+  StdCmdOnlineHelp();
+  virtual ~StdCmdOnlineHelp();
+  virtual void activated(int iMsg);
+  virtual bool isActive(void);
   virtual void OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason);
 
 private:
@@ -808,15 +822,15 @@ private:
   int pages;
 };
 
-FCCmdOnlineHelp::FCCmdOnlineHelp()
-	:FCCppCommand("Std_OnlineHelp")
+StdCmdOnlineHelp::StdCmdOnlineHelp()
+  :CppCommand("Std_OnlineHelp")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Download online help";
-	sToolTipText	= "Download FreeCAD's online help";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Download online help";
+  sToolTipText  = "Download FreeCAD's online help";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
 
   // FreeCAD's online documentation needs 763 (progress bar) 
   // steps to download.
@@ -827,13 +841,13 @@ FCCmdOnlineHelp::FCCmdOnlineHelp()
   process->Attach(this);
 }
 
-FCCmdOnlineHelp::~FCCmdOnlineHelp()
+StdCmdOnlineHelp::~StdCmdOnlineHelp()
 {
   process->Detach(this);
   delete process;
 }
 
-void FCCmdOnlineHelp::Activated(int iMsg)
+void StdCmdOnlineHelp::activated(int iMsg)
 {
   // process is not running yet
   if (!process->isRunning())
@@ -865,17 +879,17 @@ void FCCmdOnlineHelp::Activated(int iMsg)
   }
 
   if (process->isRunning())
-    GetAction()->setMenuText(QObject::tr("Stop %1").arg(sMenuText));
+    getAction()->setMenuText(QObject::tr("Stop %1").arg(sMenuText));
   else
-    GetAction()->setMenuText(sMenuText);
+    getAction()->setMenuText(sMenuText);
 }
 
-bool FCCmdOnlineHelp::IsActive(void)
+bool StdCmdOnlineHelp::isActive(void)
 {
   return true;
 }
 
-void FCCmdOnlineHelp::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason)
+void StdCmdOnlineHelp::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason)
 {
   if (&rCaller != process)
     return;
@@ -960,7 +974,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gu
 
   // resets menu text
   if (!process->isRunning())
-    GetAction()->setMenuText(sMenuText);
+    getAction()->setMenuText(sMenuText);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -969,110 +983,108 @@ void FCCmdOnlineHelp::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gu
 //===========================================================================
 // Std_TileHoricontal
 //===========================================================================
-DEF_STD_CMD_A(FCCmdTileHor);
+DEF_STD_CMD_A(StdCmdTileHor);
 
-FCCmdTileHor::FCCmdTileHor()
-	:FCCppCommand("Std_TileHoricontal")
+StdCmdTileHor::StdCmdTileHor()
+  :CppCommand("Std_TileHoricontal")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Tile &Horizontally";
-	sToolTipText	= "Tile the windows horizontally";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_WindowTileHor";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Tile &Horizontally";
+  sToolTipText  = "Tile the windows horizontally";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_WindowTileHor";
+  iAccel        = 0;
 }
 
-
-void FCCmdTileHor::Activated(int iMsg)
+void StdCmdTileHor::activated(int iMsg)
 {
-	GetAppWnd()->tileHorizontal ();
+  getAppWnd()->tileHorizontal ();
 }
 
-bool FCCmdTileHor::IsActive(void)
+bool StdCmdTileHor::isActive(void)
 {
-	return !( GetAppWnd()->windows().isEmpty() );
+  return !( getAppWnd()->windows().isEmpty() );
 }
 
 //===========================================================================
 // Std_TileVertical
 //===========================================================================
-DEF_STD_CMD_A(FCCmdTileVer);
+DEF_STD_CMD_A(StdCmdTileVer);
 
-FCCmdTileVer::FCCmdTileVer()
-	:FCCppCommand("Std_TileVertical")
+StdCmdTileVer::StdCmdTileVer()
+  :CppCommand("Std_TileVertical")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "&Tile Vertically";
-	sToolTipText	= "Tile the windows vertically";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_WindowTileVer";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "&Tile Vertically";
+  sToolTipText  = "Tile the windows vertically";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_WindowTileVer";
+  iAccel        = 0;
 }
 
-
-void FCCmdTileVer::Activated(int iMsg)
+void StdCmdTileVer::activated(int iMsg)
 {
-	GetAppWnd()->tile();
+  getAppWnd()->tile();
 }
 
-bool FCCmdTileVer::IsActive(void)
+bool StdCmdTileVer::isActive(void)
 {
-	return !( GetAppWnd()->windows().isEmpty() );
+  return !( getAppWnd()->windows().isEmpty() );
 }
 
 //===========================================================================
 // Std_TilePragmatic
 //===========================================================================
-DEF_STD_CMD_A(FCCmdTilePra);
+DEF_STD_CMD_A(StdCmdTilePra);
 
-FCCmdTilePra::FCCmdTilePra()
-	:FCCppCommand("Std_TilePragmatic")
+StdCmdTilePra::StdCmdTilePra()
+  :CppCommand("Std_TilePragmatic")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "&Cascade";
-	sToolTipText	= "Tile pragmatic";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_WindowCascade";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "&Cascade";
+  sToolTipText  = "Tile pragmatic";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_WindowCascade";
+  iAccel        = 0;
 }
 
-void FCCmdTilePra::Activated(int iMsg)
+void StdCmdTilePra::activated(int iMsg)
 {
-	GetAppWnd()->cascade();
+  getAppWnd()->cascade();
 }
 
-bool FCCmdTilePra::IsActive(void)
+bool StdCmdTilePra::isActive(void)
 {
-	return !( GetAppWnd()->windows().isEmpty() );
+  return !( getAppWnd()->windows().isEmpty() );
 }
 
 //===========================================================================
 // Std_Windows
 //===========================================================================
-DEF_STD_CMD(FCCmdWindows);
+DEF_STD_CMD(StdCmdWindows);
 
-FCCmdWindows::FCCmdWindows()
-	:FCCppCommand("Std_Windows")
+StdCmdWindows::StdCmdWindows()
+  :CppCommand("Std_Windows")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "&Windows...";
-	sToolTipText	= "Windows list";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-//	sPixmap			= "";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup      = "Standard";
+  sMenuText   = "&Windows...";
+  sToolTipText  = "Windows list";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  //sPixmap     = "";
+  iAccel        = 0;
 }
 
-void FCCmdWindows::Activated(int iMsg)
+void StdCmdWindows::activated(int iMsg)
 {
-  Gui::Dialog::DlgActivateWindowImp dlg( GetAppWnd(), "Windows", true );
+  Gui::Dialog::DlgActivateWindowImp dlg( getAppWnd(), "Windows", true );
   dlg.exec();
 }
 
@@ -1080,442 +1092,373 @@ void FCCmdWindows::Activated(int iMsg)
 //===========================================================================
 // Std_MDINormal
 //===========================================================================
-DEF_STD_CMD(FCCmdMDINormal);
+DEF_STD_CMD(StdCmdMDINormal);
 
-FCCmdMDINormal::FCCmdMDINormal()
-	:FCCppCommand("Std_MDINormal")
+StdCmdMDINormal::StdCmdMDINormal()
+  :CppCommand("Std_MDINormal")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText	  = "MDI Normal";
-	sToolTipText = "Set the standard MDI mode";
-	sWhatsThis   = sToolTipText;
-	sStatusTip   = sToolTipText;
-	sPixmap      = "Paste";
-	iAccel = 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "MDI Normal";
+  sToolTipText  = "Set the standard MDI mode";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Paste";
+  iAccel        = 0;
 }
 
 
-void FCCmdMDINormal::Activated(int iMsg)
+void StdCmdMDINormal::Activated(int iMsg)
 {
-	GetAppWnd()->switchToChildframeMode();
+  getAppWnd()->switchToChildframeMode();
 }
 */
 
 //===========================================================================
 // Std_MDIToplevel
 //===========================================================================
-DEF_STD_CMD(FCCmdMDIToplevel);
+DEF_STD_CMD(StdCmdMDIToplevel);
 
-FCCmdMDIToplevel::FCCmdMDIToplevel()
-	:FCCppCommand("Std_MDIToplevel",Cmd_Toggle)
+StdCmdMDIToplevel::StdCmdMDIToplevel()
+  :CppCommand("Std_MDIToplevel",Cmd_Toggle)
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "MDI seperate windows";
-	sToolTipText	= "Set the seperate window MDI mode";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "TopLevel";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "MDI seperate windows";
+  sToolTipText  = "Set the seperate window MDI mode";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "TopLevel";
+  iAccel        = 0;
 }
 
-
-void FCCmdMDIToplevel::Activated(int iMsg)
+void StdCmdMDIToplevel::activated(int iMsg)
 {
-	if(iMsg){
-		// switches Tab mode off 
-		ToggleCommand("Std_MDITabed",false);
-//		GetAppWnd()->switchToToplevelMode();
-	}//else
-		//GetAppWnd()->finishToplevelMode();
-//		GetAppWnd()->switchToChildframeMode();
+  if(iMsg){
+    // switches Tab mode off 
+    toggleCommand("Std_MDITabed",false);
+//    getAppWnd()->switchToToplevelMode();
+  }//else
+    //getAppWnd()->finishToplevelMode();
+//    getAppWnd()->switchToChildframeMode();
 }
 
 //===========================================================================
 // Std_MDITabed
 //===========================================================================
-DEF_STD_CMD(FCCmdMDITabed);
+DEF_STD_CMD(StdCmdMDITabbed);
 
-FCCmdMDITabed::FCCmdMDITabed()
-	:FCCppCommand("Std_MDITabed",Cmd_Toggle)
+StdCmdMDITabbed::StdCmdMDITabbed()
+  :CppCommand("Std_MDITabed",Cmd_Toggle)
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "MDI tabed";
-	sToolTipText	= "Set the tabed MDI mode";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "TopLevel";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "MDI tabed";
+  sToolTipText  = "Set the tabed MDI mode";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "TopLevel";
+  iAccel        = 0;
 }
 
-
-void FCCmdMDITabed::Activated(int iMsg)
+void StdCmdMDITabbed::activated(int iMsg)
 {
-	if(iMsg){
-		// switches Toplevel off 
-		ToggleCommand("Std_MDIToplevel",false);
-//		GetAppWnd()->switchToTabPageMode();
-	}//else
-//		GetAppWnd()->switchToChildframeMode();
+  if(iMsg){
+    // switches Toplevel off 
+    toggleCommand("Std_MDIToplevel",false);
+//    getAppWnd()->switchToTabPageMode();
+  }//else
+//    getAppWnd()->switchToChildframeMode();
 }
-
 
 
 //===========================================================================
 // Std_DlgParameter
 //===========================================================================
-DEF_STD_CMD(FCCmdDlgParameter);
+DEF_STD_CMD(StdCmdDlgParameter);
 
-FCCmdDlgParameter::FCCmdDlgParameter()
-	:FCCppCommand("Std_DlgParameter")
+StdCmdDlgParameter::StdCmdDlgParameter()
+  :CppCommand("Std_DlgParameter")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Edit parameters ...";
-	sToolTipText	= "Opens a Dialog to edit the parameters";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	//sPixmap			= "settings";
-	iAccel			= 0;
+  sAppModule  = "";
+  sGroup      = "Standard";
+  sMenuText   = "Edit parameters ...";
+  sToolTipText  = "Opens a Dialog to edit the parameters";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  //sPixmap     = "settings";
+  iAccel        = 0;
 }
 
-
-void FCCmdDlgParameter::Activated(int iMsg)
+void StdCmdDlgParameter::activated(int iMsg)
 {
-  Gui::Dialog::DlgParameterImp cDlg(GetAppWnd(),"ParameterDialog",true);
-	cDlg.exec();
+  Gui::Dialog::DlgParameterImp cDlg(getAppWnd(),"ParameterDialog",true);
+  cDlg.exec();
 }
 
 //===========================================================================
 // Std_DlgPreferences
 //===========================================================================
-DEF_STD_CMD(FCCmdDlgPreferences);
+DEF_STD_CMD(StdCmdDlgPreferences);
 
-FCCmdDlgPreferences::FCCmdDlgPreferences()
-	:FCCppCommand("Std_DlgPreferences")
+StdCmdDlgPreferences::StdCmdDlgPreferences()
+  :CppCommand("Std_DlgPreferences")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Preferences ...";
-	sToolTipText	= "Opens a Dialog to edit the preferences";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	//sPixmap			= "settings";
-	iAccel			= 0;
+  sAppModule  = "";
+  sGroup      = "Standard";
+  sMenuText   = "Preferences ...";
+  sToolTipText  = "Opens a Dialog to edit the preferences";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  //sPixmap     = "settings";
+  iAccel        = 0;
 }
 
-
-void FCCmdDlgPreferences::Activated(int iMsg)
+void StdCmdDlgPreferences::activated(int iMsg)
 {
-	Gui::Dialog::DlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
-	cDlg.exec();
+  Gui::Dialog::DlgPreferencesImp cDlg(getAppWnd(),"Preferences Dialog",true);
+  cDlg.exec();
 }
 
 //===========================================================================
 // Std_DlgMacroRecord
 //===========================================================================
-DEF_STD_CMD_A(FCCmdDlgMacroRecord);
+DEF_STD_CMD_A(StdCmdDlgMacroRecord);
 
-FCCmdDlgMacroRecord::FCCmdDlgMacroRecord()
-	:FCCppCommand("Std_DlgMacroRecord")
+StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
+  :CppCommand("Std_DlgMacroRecord")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Macro recording ...";
-	sToolTipText	= "Opens a Dialog to record a macro";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_MacroRecord";
-	iAccel			= 0;
+  sAppModule  = "";
+  sGroup      = "Standard";
+  sMenuText   = "Macro recording ...";
+  sToolTipText  = "Opens a Dialog to record a macro";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_MacroRecord";
+  iAccel        = 0;
 }
 
-
-void FCCmdDlgMacroRecord::Activated(int iMsg)
+void StdCmdDlgMacroRecord::activated(int iMsg)
 {
-  Gui::Dialog::DlgMacroRecordImp cDlg(GetAppWnd(),"ParameterDialog",true);
-	cDlg.exec();
+  Gui::Dialog::DlgMacroRecordImp cDlg(getAppWnd(),"ParameterDialog",true);
+  cDlg.exec();
 }
 
-bool FCCmdDlgMacroRecord::IsActive(void)
+bool StdCmdDlgMacroRecord::isActive(void)
 {
-	return ! (GetAppWnd()->GetMacroMngr()->IsOpen());
+  return ! (getAppWnd()->GetMacroMngr()->IsOpen());
 }
 
 //===========================================================================
 // Std_DlgMacroExecute
 //===========================================================================
-DEF_STD_CMD_A(FCCmdDlgMacroExecute);
+DEF_STD_CMD_A(StdCmdDlgMacroExecute);
 
-FCCmdDlgMacroExecute::FCCmdDlgMacroExecute()
-	:FCCppCommand("Std_DlgMacroExecute")
+StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
+  :CppCommand("Std_DlgMacroExecute")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Execute macro ...";
-	sToolTipText	= "Opens a Dialog let you execute a redordet macro";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_MacroPlay";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Execute macro ...";
+  sToolTipText  = "Opens a Dialog let you execute a redordet macro";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_MacroPlay";
+  iAccel        = 0;
 }
 
-
-void FCCmdDlgMacroExecute::Activated(int iMsg)
+void StdCmdDlgMacroExecute::activated(int iMsg)
 {
-  Gui::Dialog::DlgMacroExecuteImp cDlg(GetAppWnd(),"Macro Execute",true);
-	cDlg.exec();
+  Gui::Dialog::DlgMacroExecuteImp cDlg(getAppWnd(),"Macro Execute",true);
+  cDlg.exec();
 }
 
-bool FCCmdDlgMacroExecute::IsActive(void)
+bool StdCmdDlgMacroExecute::isActive(void)
 {
-	return ! (GetAppWnd()->GetMacroMngr()->IsOpen());
+  return ! (getAppWnd()->GetMacroMngr()->IsOpen());
 }
-
 
 //===========================================================================
 // Std_MacroStop
 //===========================================================================
-DEF_STD_CMD_A(FCCmdMacroStop);
+DEF_STD_CMD_A(StdCmdMacroStop);
 
-FCCmdMacroStop::FCCmdMacroStop()
-	:FCCppCommand("Std_DlgMacroStop")
+StdCmdMacroStop::StdCmdMacroStop()
+  :CppCommand("Std_DlgMacroStop")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Stop macro recording";
-	sToolTipText	= "Stop the a running macro recording sassion";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_MacroStop";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Stop macro recording";
+  sToolTipText  = "Stop the a running macro recording sassion";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_MacroStop";
+  iAccel        = 0;
 }
 
-
-void FCCmdMacroStop::Activated(int iMsg)
+void StdCmdMacroStop::activated(int iMsg)
 {
-	GetAppWnd()->GetMacroMngr()->Commit();
+  getAppWnd()->GetMacroMngr()->Commit();
 }
 
-bool FCCmdMacroStop::IsActive(void)
+bool StdCmdMacroStop::isActive(void)
 {
-	return GetAppWnd()->GetMacroMngr()->IsOpen();
+  return getAppWnd()->GetMacroMngr()->IsOpen();
 }
-
 
 //===========================================================================
 // Std_DlgCustomize
 //===========================================================================
-DEF_STD_CMD(FCCmdDlgCustomize);
+DEF_STD_CMD(StdCmdDlgCustomize);
 
-FCCmdDlgCustomize::FCCmdDlgCustomize()
-	:FCCppCommand("Std_DlgCustomize")
+StdCmdDlgCustomize::StdCmdDlgCustomize()
+  :CppCommand("Std_DlgCustomize")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Customize...";
-	sToolTipText	= "Customize toolbars and commandbars";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	//sPixmap			= "customize";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Customize...";
+  sToolTipText  = "Customize toolbars and commandbars";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  //sPixmap     = "customize";
+  iAccel        = 0;
 }
 
-
-void FCCmdDlgCustomize::Activated(int iMsg)
+void StdCmdDlgCustomize::activated(int iMsg)
 {
-	Gui::Dialog::DlgCustomizeImp cDlg(GetAppWnd(),"CustomizeDialog",true);
-	cDlg.exec();
-}
-
-//===========================================================================
-// Std_DlgSettings
-//===========================================================================
-DEF_STD_CMD(FCCmdDlgSettings);
-
-FCCmdDlgSettings::FCCmdDlgSettings()
-	:FCCppCommand("Std_DlgSettings")
-{
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Settings...";
-	sToolTipText	= "Edit the program settings";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	//sPixmap			= "settings";
-	iAccel			= 0;
-}
-
-
-void FCCmdDlgSettings::Activated(int iMsg)
-{
-//	FCDlgSettings cDlg(GetAppWnd(),"SettingsDialog",true);
-//	cDlg.exec();
+  Gui::Dialog::DlgCustomizeImp cDlg(getAppWnd(),"CustomizeDialog",true);
+  cDlg.exec();
 }
 
 //===========================================================================
 // Std_CommandLine
 //===========================================================================
-DEF_STD_CMD(FCCmdCommandLine);
+DEF_STD_CMD(StdCmdCommandLine);
 
-FCCmdCommandLine::FCCmdCommandLine()
-	:FCCppCommand("Std_CommandLine")
+StdCmdCommandLine::StdCmdCommandLine()
+  :CppCommand("Std_CommandLine")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Start command line...";
-	sToolTipText	= "Opens the command line in the console";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "CommandLine";
-	iAccel			= 0;
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Start command line...";
+  sToolTipText  = "Opens the command line in the console";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "CommandLine";
+  iAccel        = 0;
 }
 
-
-void FCCmdCommandLine::Activated(int iMsg)
+void StdCmdCommandLine::activated(int iMsg)
 {
-	bool show = GetAppWnd()->isMaximized ();
-	bool mute = GuiConsoleObserver::bMute;
+  bool show = getAppWnd()->isMaximized ();
+  bool mute = GuiConsoleObserver::bMute;
 
-	GetAppWnd()->showMinimized () ;
-	qApp->processEvents();
+  getAppWnd()->showMinimized () ;
+  qApp->processEvents();
 
-	GuiConsoleObserver::bMute = true;
-	Base::Interpreter().RunCommandLine("Console mode");
-	GuiConsoleObserver::bMute = mute;
+  GuiConsoleObserver::bMute = true;
+  Base::Interpreter().RunCommandLine("Console mode");
+  GuiConsoleObserver::bMute = mute;
 
 #ifdef Q_WS_X11
-	// On X11 this may not work. For further information see QWidget::showMaximized
-	//
-	// workaround for X11
-	GetAppWnd()->hide();
-	GetAppWnd()->show();
+  // On X11 this may not work. For further information see QWidget::showMaximized
+  //
+  // workaround for X11
+  getAppWnd()->hide();
+  getAppWnd()->show();
 #endif
 
-	// pop up the main window
-	show ? GetAppWnd()->showMaximized () : GetAppWnd()->showNormal () ;
-	qApp->processEvents();
+  // pop up the main window
+  show ? getAppWnd()->showMaximized () : getAppWnd()->showNormal () ;
+  qApp->processEvents();
 }
-
-
-//===========================================================================
-// Std_CreateToolOrCmdBar
-//===========================================================================
-DEF_STD_CMD(FCCmdCreateToolOrCmdBar);
-
-FCCmdCreateToolOrCmdBar::FCCmdCreateToolOrCmdBar()
-	:FCCppCommand("Std_CreateToolOrCmdBar")
-{
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Create tool-/cmdbar";
-	sToolTipText	= "Create toolbar and/or commandbar";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "CommandLine";
-	iAccel			= 0;
-}
-
-
-void FCCmdCreateToolOrCmdBar::Activated(int iMsg)
-{
-  CreateToolBarDialog dlg(GetAppWnd(),"CreateToolbarDialog",true);
-  dlg.exec();
-}
-
 
 //===========================================================================
 // Std_OCAFBrowser
 //===========================================================================
 
-class FCCmdOCAFBrowse : public FCCppCommand
+class StdCmdOCAFBrowse : public CppCommand
 {
 public:
-	FCCmdOCAFBrowse();
-//	~FCCmdOCAFBrowse();
-	virtual void Activated(int iMsg);
-	virtual bool IsActive(void);
+  StdCmdOCAFBrowse();
+//~StdCmdOCAFBrowse();
+  virtual void activated(int iMsg);
+  virtual bool isActive(void);
 private:
 #ifdef FC_USE_OCAFBROWSER
-	DebugBrowser cBrowser;
+  DebugBrowser cBrowser;
 #endif
 };
 
-FCCmdOCAFBrowse::FCCmdOCAFBrowse()
-	:FCCppCommand("Std_OCAFBrowser")
+StdCmdOCAFBrowse::StdCmdOCAFBrowse()
+  :CppCommand("Std_OCAFBrowser")
 {
-	sAppModule		= "";
-	sGroup			= "Standard";
-	sMenuText		= "Start raw document browser...";
-	sToolTipText	= "Starts a new window to deeply examine the document structure";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Copy";
-	iAccel			= Qt::CTRL+Qt::Key_B;
-
-
+  sAppModule    = "";
+  sGroup        = "Standard";
+  sMenuText     = "Start raw document browser...";
+  sToolTipText  = "Starts a new window to deeply examine the document structure";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Copy";
+  iAccel        = Qt::CTRL+Qt::Key_B;
 }
 
-void FCCmdOCAFBrowse::Activated(int iMsg)
+void StdCmdOCAFBrowse::activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
-	cBrowser.DFBrowser(GetAppWnd()->GetActiveDocument()->GetDocument()->GetOCCDoc());
+  cBrowser.DFBrowser(getAppWnd()->GetActiveDocument()->GetDocument()->GetOCCDoc());
 #else
-	QMessageBox::information(GetAppWnd(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
-											   "this feature is disabled.");
+  QMessageBox::information(getAppWnd(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
+                                        "this feature is disabled.");
 #endif
 }
 
-bool FCCmdOCAFBrowse::IsActive(void)
+bool StdCmdOCAFBrowse::isActive(void)
 {
-	return GetAppWnd()->GetActiveDocument() != 0;
+  return getAppWnd()->GetActiveDocument() != 0;
 }
 
-
+namespace Gui {
 
 void CreateStdCommands(void)
 {
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-	rcCmdMgr.AddCommand(new FCCmdNew());
-	rcCmdMgr.AddCommand(new FCCmdOpen());
+  rcCmdMgr.addCommand(new StdCmdNew());
+  rcCmdMgr.addCommand(new StdCmdOpen());
 
-	rcCmdMgr.AddCommand(new FCCmdSave());
-	rcCmdMgr.AddCommand(new FCCmdSaveAs());
-	rcCmdMgr.AddCommand(new FCCmdUndo());
-	rcCmdMgr.AddCommand(new FCCmdRedo());
-	rcCmdMgr.AddCommand(new FCCmdPrint());
-	rcCmdMgr.AddCommand(new FCCmdQuit());
-	rcCmdMgr.AddCommand(new FCCmdCut());
-	rcCmdMgr.AddCommand(new FCCmdCopy());
-	rcCmdMgr.AddCommand(new FCCmdPaste());
-//	rcCmdMgr.AddCommand(new FCCmdMDINormal());
-	rcCmdMgr.AddCommand(new FCCmdMDIToplevel());
-	rcCmdMgr.AddCommand(new FCCmdMDITabed());
-	rcCmdMgr.AddCommand(new FCCmdTileHor());
-	rcCmdMgr.AddCommand(new FCCmdTileVer());
-	rcCmdMgr.AddCommand(new FCCmdTilePra());
-	rcCmdMgr.AddCommand(new FCCmdAbout());
-	rcCmdMgr.AddCommand(new FCCmdAboutQt());
+  rcCmdMgr.addCommand(new StdCmdSave());
+  rcCmdMgr.addCommand(new StdCmdSaveAs());
+  rcCmdMgr.addCommand(new StdCmdUndo());
+  rcCmdMgr.addCommand(new StdCmdRedo());
+  rcCmdMgr.addCommand(new StdCmdPrint());
+  rcCmdMgr.addCommand(new StdCmdQuit());
+  rcCmdMgr.addCommand(new StdCmdCut());
+  rcCmdMgr.addCommand(new StdCmdCopy());
+  rcCmdMgr.addCommand(new StdCmdPaste());
+  //rcCmdMgr.addCommand(new StdCmdMDINormal());
+  rcCmdMgr.addCommand(new StdCmdMDIToplevel());
+  rcCmdMgr.addCommand(new StdCmdMDITabbed());
+  rcCmdMgr.addCommand(new StdCmdTileHor());
+  rcCmdMgr.addCommand(new StdCmdTileVer());
+  rcCmdMgr.addCommand(new StdCmdTilePra());
+  rcCmdMgr.addCommand(new StdCmdAbout());
+  rcCmdMgr.addCommand(new StdCmdAboutQt());
 
-	rcCmdMgr.AddCommand(new FCCmdDlgParameter());
-	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
-	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
-	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
-	rcCmdMgr.AddCommand(new FCCmdMacroStop());
-	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
-	rcCmdMgr.AddCommand(new FCCmdDlgSettings());
-	rcCmdMgr.AddCommand(new FCCmdCommandLine());
-	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
-	rcCmdMgr.AddCommand(new FCCmdWorkbench());
-	rcCmdMgr.AddCommand(new FCCmdMRU());
-	rcCmdMgr.AddCommand(new FCCmdWhatsThis());
-	rcCmdMgr.AddCommand(new FCCmdOnlineHelp());
-	rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());
-	rcCmdMgr.AddCommand(new FCCmdTipOfTheDay());
-	rcCmdMgr.AddCommand(new FCCmdWindows());
+  rcCmdMgr.addCommand(new StdCmdDlgParameter());
+  rcCmdMgr.addCommand(new StdCmdDlgPreferences());
+  rcCmdMgr.addCommand(new StdCmdDlgMacroRecord());
+  rcCmdMgr.addCommand(new StdCmdDlgMacroExecute());
+  rcCmdMgr.addCommand(new StdCmdMacroStop());
+  rcCmdMgr.addCommand(new StdCmdDlgCustomize());
+  rcCmdMgr.addCommand(new StdCmdCommandLine());
+  rcCmdMgr.addCommand(new StdCmdWorkbench());
+  rcCmdMgr.addCommand(new StdCmdMRU());
+  rcCmdMgr.addCommand(new StdCmdWhatsThis());
+  rcCmdMgr.addCommand(new StdCmdOnlineHelp());
+  rcCmdMgr.addCommand(new StdCmdOCAFBrowse());
+  rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
+  rcCmdMgr.addCommand(new StdCmdWindows());
 }
 
-
-
+} // namespace Gui

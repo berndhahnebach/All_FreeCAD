@@ -60,7 +60,7 @@ void DlgCustomCmdbarsImp::apply()
   Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommandBar(text.latin1());
   toolbar->clearUp();
 
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
   QStringList items;
   QListViewItem* item = ToolbarActions->firstChild();
@@ -73,11 +73,11 @@ void DlgCustomCmdbarsImp::apply()
       continue;
     }
 
-    FCCommand* pCom = cCmdMgr.GetCommandByActionText(item->text(0).latin1());
+    Command* pCom = cCmdMgr.getCommandByActionText(item->text(0).latin1());
     if (pCom != NULL)
     {
       if (pCom->addTo(toolbar))
-        items.push_back( pCom->GetName() );
+        items.push_back( pCom->getName() );
     }
   }
 

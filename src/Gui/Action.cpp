@@ -72,7 +72,7 @@ bool ActionDrag::decode ( const QMimeSource * e, QString&  action )
  * Constructs an action called \a name with parent \a parent. It also stores a pointer
  * to the command object.
  */
-Action::Action ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle)
+Action::Action ( Command* pcCmd,QObject * parent, const char * name, bool toggle)
 :QAction(parent, name, toggle),_pcCmd(pcCmd)
 {
   connect( this, SIGNAL( activated() ) ,  this, SLOT( onActivated()   ) );
@@ -139,7 +139,7 @@ void Action::setEnabled ( bool b)
 
 // --------------------------------------------------------------------
 
-ActionGroup::ActionGroup ( FCCommand* pcCmd,QObject * parent, const char * name, bool exclusive )
+ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent, const char * name, bool exclusive )
 :QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
 {
   connect( this, SIGNAL( selected(QAction*) ), this, SLOT( onActivated(QAction*) ) );
@@ -284,7 +284,7 @@ void ActionGroup::onActivated ()
 
 void ActionGroup::onActivated (int i)
 {
-  GetCommand()->Activated(i);
+  command()->activated(i);
 }
 
 void ActionGroup::onActivated ( QAction* act )
@@ -302,7 +302,7 @@ void ActionGroup::onActivated ( QAction* act )
       {
         if ( obj == act )
         {
-          GetCommand()->Activated( id );
+          command()->activated( id );
           break;
         }
 
@@ -316,7 +316,7 @@ void ActionGroup::onActivated ( QAction* act )
 
 // --------------------------------------------------------------------
 
-UndoRedoAction::UndoRedoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
+UndoRedoAction::UndoRedoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
   : Action(pcCmd, parent, name, toggle)
 {
 }
@@ -342,7 +342,7 @@ void UndoRedoAction::addedTo ( QWidget * actionWidget, QWidget * container )
 
 // --------------------------------------------------------------------
 
-UndoAction::UndoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
+UndoAction::UndoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
   : UndoRedoAction(pcCmd, parent, name, toggle)
 {
 }
@@ -353,7 +353,7 @@ UndoAction::~UndoAction()
 
 // --------------------------------------------------------------------
 
-RedoAction::RedoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
+RedoAction::RedoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
   : UndoRedoAction(pcCmd, parent, name, toggle)
 {
 }

@@ -55,13 +55,13 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
   connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
   connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
 
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
   QMap<QString, int> cmdGroups;
-  for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
+  for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
-    cmdGroups[ it->second->GetGroupName() ]++;
+    cmdGroups[ it->second->getGroupName() ]++;
   }
 
   for ( QMap<QString, int>::Iterator it2 = cmdGroups.begin(); it2 != cmdGroups.end(); ++it2)
@@ -88,11 +88,11 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
 {
   IconView1->clear();
  
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::vector<FCCommand*> aCmds = cCmdMgr.GetGroupCommands( group.latin1() );
-  for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
+  CommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.latin1() );
+  for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
   {
-    (void) new Gui::CommandViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
+    (void) new Gui::CommandViewItem(IconView1, (*it)->getName(), (*it)->getAction());
   }
 }
 
@@ -103,8 +103,8 @@ void DlgCustomCommandsImp::showEvent( QShowEvent* e )
   // try to update the command view
   if ( !ComboBoxCategory->findItem("Macros", 0) )
   {
-    FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
-    std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
+    CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+    std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
     if ( aclCurMacros.size() > 0)
     {
       ComboBoxCategory->insertItem("Macros");

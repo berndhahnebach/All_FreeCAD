@@ -60,16 +60,16 @@ DlgGeneralImp::~DlgGeneralImp()
 
 /** Sets the size of the recent file list (MRU) in the
  * user parameters.
- * @see FCCmdMRU
+ * @see StdCmdMRU
  */
 void DlgGeneralImp::setMRUSize()
 {
-  FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
-  FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
+  CommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+  Command* pCmd = rclMan.getCommandByName("Std_MRU");
   if (pCmd)
   {
     FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("RecentFiles");
-    ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
+    ((StdCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }
 

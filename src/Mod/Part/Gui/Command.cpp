@@ -59,7 +59,7 @@ using Gui::FileDialog;
 DEF_STD_CMD(FCCmdPartTest1);
 
 FCCmdPartTest1::FCCmdPartTest1()
-	:FCCppCommand("Part_Test1")
+	:CppCommand("Part_Test1")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -72,10 +72,10 @@ FCCmdPartTest1::FCCmdPartTest1()
 }
 
 
-void FCCmdPartTest1::Activated(int iMsg)
+void FCCmdPartTest1::activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(GetAppWnd(),"Part Box",true);
+	DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
 	cDlg.exec();
 
 
@@ -87,7 +87,7 @@ void FCCmdPartTest1::Activated(int iMsg)
 DEF_STD_CMD(FCCmdPartTest2);
 
 FCCmdPartTest2::FCCmdPartTest2()
-	:FCCppCommand("Part_Test2")
+	:CppCommand("Part_Test2")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -100,14 +100,14 @@ FCCmdPartTest2::FCCmdPartTest2()
 }
 
 
-void FCCmdPartTest2::Activated(int iMsg)
+void FCCmdPartTest2::activated(int iMsg)
 {
 
-  App::Document *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
 
-	OpenCommand("Test Load Part");
+	openCommand("Test Load Part");
 
 	Base::Console().Log("Using Doc: %p\n",pcDoc);
 
@@ -118,10 +118,10 @@ void FCCmdPartTest2::Activated(int iMsg)
 	BRep_Builder aBuilder;
 	TopoDS_Shape ResultShape;
 
-	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", getAppWnd() );
 	if ( fn.isEmpty() )
 	{
-		AbortCommand();
+		abortCommand();
 		return;
 	}
  
@@ -130,7 +130,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 	}
 	// Boeser Fehler ;-)
 	catch(...){
-		AbortCommand();
+		abortCommand();
     throw new Base::Exception("Error loading BREP file");
 	}
 
@@ -141,7 +141,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 	// Display it
 	hcPrs->Display(1);
 
-	UpdateActive();
+	updateActive();
 }
 
 //===========================================================================
@@ -150,7 +150,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 DEF_STD_CMD(CmdPartNewDoc);
 
 CmdPartNewDoc::CmdPartNewDoc()
-	:FCCppCommand("Part_NewDoc")
+	:CppCommand("Part_NewDoc")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -162,11 +162,11 @@ CmdPartNewDoc::CmdPartNewDoc()
 	iAccel			  = 0;
 }
 
-void CmdPartNewDoc::Activated(int iMsg)
+void CmdPartNewDoc::activated(int iMsg)
 {
-	DoCommand(Doc,"d = App.DocNew()");
+	doCommand(Doc,"d = App.DocNew()");
 
-  UpdateActive();
+  updateActive();
 }
 
 
@@ -176,7 +176,7 @@ void CmdPartNewDoc::Activated(int iMsg)
 DEF_STD_CMD_A(FCCmdPartBox);
 
 FCCmdPartBox::FCCmdPartBox()
-	:FCCppCommand("Part_Box")
+	:CppCommand("Part_Box")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -189,33 +189,33 @@ FCCmdPartBox::FCCmdPartBox()
 }
 
 
-void FCCmdPartBox::Activated(int iMsg)
+void FCCmdPartBox::activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(GetAppWnd(),"Part Box",true);
+	DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
 	if ( cDlg.exec()== QDialog::Accepted )
   {
-    OpenCommand("Part Box Create");
-	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
-	  DoCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
-	  DoCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
-	  DoCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
-	  DoCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
-	  DoCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
-	  DoCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
+    openCommand("Part Box Create");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
+	  doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
+	  doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
+	  doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
+	  doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
+	  doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
+	  doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
 //	  DoCommand(Doc,"App.DocGet().Update()");
-    CommitCommand();
+    commitCommand();
   
-    UpdateActive();
+    updateActive();
 
 
   }
 
 }
 
-bool FCCmdPartBox::IsActive(void)
+bool FCCmdPartBox::isActive(void)
 {
-	if( GetActiveDocument() )
+	if( getActiveDocument() )
 		return true;
 	else
 		return false;
@@ -228,7 +228,7 @@ bool FCCmdPartBox::IsActive(void)
 DEF_STD_CMD_A(FCCmdPartBox2);
 
 FCCmdPartBox2::FCCmdPartBox2()
-	:FCCppCommand("Part_Box2")
+	:CppCommand("Part_Box2")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -241,27 +241,27 @@ FCCmdPartBox2::FCCmdPartBox2()
 }
 
 
-void FCCmdPartBox2::Activated(int iMsg)
+void FCCmdPartBox2::activated(int iMsg)
 {
-  OpenCommand("PartBox Create");
+  openCommand("PartBox Create");
 
-	DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
-	DoCommand(Doc,"f.x = 0.0");
-	DoCommand(Doc,"f.y = 0.0");
-	DoCommand(Doc,"f.z = 0.0");
-	DoCommand(Doc,"f.l = 100.0");
-	DoCommand(Doc,"f.w = 100.0");
-	DoCommand(Doc,"f.h = 100.0");
+	doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
+	doCommand(Doc,"f.x = 0.0");
+	doCommand(Doc,"f.y = 0.0");
+	doCommand(Doc,"f.z = 0.0");
+	doCommand(Doc,"f.l = 100.0");
+	doCommand(Doc,"f.w = 100.0");
+	doCommand(Doc,"f.h = 100.0");
  // DoCommand(Doc,"App.DocGet().Update()");
 
-  UpdateActive();
+  updateActive();
 
-  CommitCommand();
+  commitCommand();
 }
 
-bool FCCmdPartBox2::IsActive(void)
+bool FCCmdPartBox2::isActive(void)
 {
-	if( GetActiveDocument() )
+	if( getActiveDocument() )
 		return true;
 	else
 		return false;
@@ -274,7 +274,7 @@ bool FCCmdPartBox2::IsActive(void)
 DEF_STD_CMD(FCCmdPartCut);
 
 FCCmdPartCut::FCCmdPartCut()
-	:FCCppCommand("Part_Cut")
+	:CppCommand("Part_Cut")
 {
 	sAppModule    = "Part";
 	sGroup			  = "Part";
@@ -287,10 +287,10 @@ FCCmdPartCut::FCCmdPartCut()
 }
 
 
-void FCCmdPartCut::Activated(int iMsg)
+void FCCmdPartCut::activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(GetAppWnd(),"Part Box",true);
+	DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
 	cDlg.exec();
 
 }
@@ -301,7 +301,7 @@ void FCCmdPartCut::Activated(int iMsg)
 DEF_STD_CMD_A(PartImportStep);
 
 PartImportStep::PartImportStep()
-	:FCCppCommand("Part_ImportStep")
+	:CppCommand("Part_ImportStep")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -314,28 +314,28 @@ PartImportStep::PartImportStep()
 }
 
 
-void PartImportStep::Activated(int iMsg)
+void PartImportStep::activated(int iMsg)
 {
 
 
-  DlgPartImportStepImp cDlg(GetAppWnd(),"Part import STEP",true);
+  DlgPartImportStepImp cDlg(getAppWnd(),"Part import STEP",true);
   if ( cDlg.exec() == QDialog::Accepted )
   {
-    OpenCommand("Part ImportSTEP Create");
-	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\")");
-	  DoCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
+    openCommand("Part ImportSTEP Create");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\")");
+	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
 //	  DoCommand(Doc,"App.DocGet().Update()");
-    CommitCommand();
+    commitCommand();
   
-    UpdateActive();
+    updateActive();
 
 
   }
 }
 
-bool PartImportStep::IsActive(void)
+bool PartImportStep::isActive(void)
 {
-	if( GetActiveDocument() )
+	if( getActiveDocument() )
 		return true;
 	else
 		return false;
@@ -349,7 +349,7 @@ bool PartImportStep::IsActive(void)
 DEF_STD_CMD_A(PartImportIges);
 
 PartImportIges::PartImportIges()
-	:FCCppCommand("Part_ImportIges")
+	:CppCommand("Part_ImportIges")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -362,27 +362,27 @@ PartImportIges::PartImportIges()
 }
 
 
-void PartImportIges::Activated(int iMsg)
+void PartImportIges::activated(int iMsg)
 {
 
-  DlgPartImportIgesImp cDlg(GetAppWnd(),"Part import IGES",true);
+  DlgPartImportIgesImp cDlg(getAppWnd(),"Part import IGES",true);
   if ( cDlg.exec() == QDialog::Accepted )
   {
-    OpenCommand("Part ImportIGES Create");
-	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\")");
-	  DoCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
-	  DoCommand(Doc,"App.DocGet().Update()");
-    CommitCommand();
+    openCommand("Part ImportIGES Create");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\")");
+	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
+	  doCommand(Doc,"App.DocGet().Update()");
+    commitCommand();
   
-    UpdateActive();
+    updateActive();
   }
 
 
 }
 
-bool PartImportIges::IsActive(void)
+bool PartImportIges::isActive(void)
 {
-	if( GetActiveDocument() )
+	if( getActiveDocument() )
 		return true;
 	else
 		return false;
@@ -393,16 +393,16 @@ bool PartImportIges::IsActive(void)
 
 void CreateCommands(void)
 {
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  Gui::CommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-	rcCmdMgr.AddCommand(new FCCmdPartTest1());
-	rcCmdMgr.AddCommand(new FCCmdPartTest2());
-	rcCmdMgr.AddCommand(new FCCmdPartCut());
-	rcCmdMgr.AddCommand(new FCCmdPartBox());
-	rcCmdMgr.AddCommand(new FCCmdPartBox2());
-	rcCmdMgr.AddCommand(new PartImportIges());
-	rcCmdMgr.AddCommand(new PartImportStep());
-	rcCmdMgr.AddCommand(new CmdPartNewDoc());
+	rcCmdMgr.addCommand(new FCCmdPartTest1());
+	rcCmdMgr.addCommand(new FCCmdPartTest2());
+	rcCmdMgr.addCommand(new FCCmdPartCut());
+	rcCmdMgr.addCommand(new FCCmdPartBox());
+	rcCmdMgr.addCommand(new FCCmdPartBox2());
+	rcCmdMgr.addCommand(new PartImportIges());
+	rcCmdMgr.addCommand(new PartImportStep());
+	rcCmdMgr.addCommand(new CmdPartNewDoc());
 
 }
 
