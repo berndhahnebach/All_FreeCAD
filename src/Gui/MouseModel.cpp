@@ -295,7 +295,7 @@ void FCMouseModelStd::mouseReleaseEvent( QMouseEvent *cEvent)
 
 void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 {
-#	ifndef WNT
+#	ifndef FC_OS_WIN32
 		QApplication::flushX();
 #	endif
 

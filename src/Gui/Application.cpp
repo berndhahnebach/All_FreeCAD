@@ -57,6 +57,10 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
+#if QT_VER != QT_VERSION
+#	error "QT Version missmatch, please set the right version in src/Config.h line 92"
+#endif
+
 
 #include "Application.h"
 #include "Document.h"
@@ -141,7 +145,8 @@ ApplicationWindow::ApplicationWindow()
 	AddDockWindow( "Command bar",_pcCmdBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	QString home = QString("index.html");
+  FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
+  QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
 	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
 	AddDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
 
@@ -357,7 +362,6 @@ void ApplicationWindow::CreateTestOperations()
 //	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
 	_cActiveWorkbenchName = "";
   ((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
-  ((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
 	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
 
 
@@ -526,11 +530,11 @@ void ApplicationWindow::OnWorkbenchChange( const QString & string)
 {
 	if(_cActiveWorkbenchName != string)
 	{
-#ifndef _DEBUG
+#ifndef FC_DEBUG
 		try{
 #endif
 			ActivateWorkbench(string.latin1());
-#ifndef _DEBUG
+#ifndef FC_DEBUG
 		}
 		catch(...){
 			throw FCException("Error in initialising Workbench!");
@@ -607,14 +611,12 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 PyMethodDef ApplicationWindow::Methods[] = {
 	{"ToolbarAddTo",          (PyCFunction) ApplicationWindow::sToolbarAddTo,            1},
 	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
-	{"ToolbarLoadSettings",   (PyCFunction) ApplicationWindow::sToolbarLoadSettings,     1},
 	{"ToolbarAddSeperator",   (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
 	{"ToolbarLoadSettings",   (PyCFunction) ApplicationWindow::sToolbarLoadSettings,     1},
 	{"CommandbarAddTo",       (PyCFunction) ApplicationWindow::sCommandbarAddTo,         1},
 	{"CommandbarLoadSettings",(PyCFunction) ApplicationWindow::sCommandbarLoadSettings,  1},
 	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
 	{"CommandbarAddSeperator",(PyCFunction) ApplicationWindow::sCommandbarAddSeperator,  1},
-	{"CommandbarLoadSettings",(PyCFunction) ApplicationWindow::sCommandbarLoadSettings,  1},
 	{"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
 	{"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
 	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
@@ -681,7 +683,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarLoadSettings)
 		return NULL;                             // NULL triggers exception 
 
 	FCToolBar * pcBar = (FCToolBar*)Instance->GetToolBar(psToolbarName);
-  pcBar->loadUserDefButtons();
+	pcBar->loadUserDefButtons();
     return Py_None;
 } 
 
@@ -830,7 +832,7 @@ FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
 	if(!_pclSingleton)
 	{
 
-#ifdef WNT
+#ifdef FC_OS_WIN32
 		_pclSingleton = new FCAutoWaitCursor(GetCurrentThreadId(), 100);
 #else
 		_pclSingleton = new FCAutoWaitCursor(100);
@@ -853,14 +855,14 @@ void FCAutoWaitCursor::SetInterval(int i)
 
 void FCAutoWaitCursor::SetWaitCursor()
 {
-#	ifdef WNT // win32 api functions
+#	ifdef FC_OS_WIN32 // win32 api functions
 		AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
 		SetCursor(LoadCursor(NULL, IDC_WAIT));
 #	endif
 }
 
 
-#ifdef WNT // windows os
+#ifdef FC_OS_WIN32 // windows os
 
 FCAutoWaitCursor::FCAutoWaitCursor(DWORD id, int i)
 	:main_threadid(id), iInterval(i)

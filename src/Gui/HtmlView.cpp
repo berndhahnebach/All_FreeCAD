@@ -40,6 +40,7 @@
 #include "HtmlView.h"
 #include "Application.h"
 #include "../Base/Interpreter.h"
+#include "../Base/Exception.h"
 #ifndef __linux
 #include <direct.h>
 #endif
@@ -281,9 +282,12 @@ void FCHtmlComboBox::slotKeyPressReturn()
  */
 FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* name, WFlags fl )
     : FCDockWindow( parent, name, fl ), pclPathCombo( 0 ), selectedURL(), 
-      bHistory(true), bBookm(true), bBackward(false), bForward(false)
+      bHistory(false), bBookm(false), bBackward(false), bForward(false)
 
 {
+  //initialize
+  init();
+
   m_strCaption = "FCHelpViewer - ";
   m_FCdoc = "FCdoc://";
   m_FCext = "FCext://";
@@ -433,6 +437,26 @@ FCHtmlView::~FCHtmlView()
     SaveBookmarks();
 }
 
+void FCHtmlView::init()
+{
+  try{
+    // attach the help viewer to its preferences
+    aStrGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
+    aStrGroups.push_back("EnableBookmarks");
+    aStrGroups.push_back("EnableHistory");
+    aStrGroups.push_back("NbOfHistoryItems");
+    aStrGroups.push_back("NbOfBookmarks");
+    for (std::vector<std::string>::iterator it = aStrGroups.begin(); it != aStrGroups.end(); ++it)
+    {
+      GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Attach(this);
+      GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Notify();
+    }
+  }catch(/*const*/ FCException& rclE)
+  {
+    QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
+  }
+}
+
 void FCHtmlView::SetEnableHistory  (bool b)
 {
   bHistory = b;
@@ -542,7 +566,8 @@ QString FCHtmlView::GetScriptDirectory()
 
 QString FCHtmlView::GetBrowserDirectory()
 {
-  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
+//  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
+  QString browser = GetApplication().GetParameterGroupByPath((aStrGroupPath + "LineEditBrowser").c_str())->GetASCII("LineEditBrowser", "").c_str();
   if (browser.isEmpty())
   {
     QMessageBox::information(this, "External browser", "Please search for an external browser.");
@@ -551,7 +576,8 @@ QString FCHtmlView::GetBrowserDirectory()
     if (browser.isEmpty())
       QMessageBox::warning(this, "External browser", "No external browser found.");
     else
-      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
+//      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
+      GetApplication().GetParameterGroupByPath((aStrGroupPath + "LineEditBrowser").c_str())->SetASCII("LineEditBrowser", browser.latin1());
   }
 
   return browser;
@@ -711,7 +737,7 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
 	sprintf(szPath,"Path=%s",sPath.latin1());
 	putenv (szPath);
 
-#ifdef WNT
+#ifdef FC_OS_WIN32
   if (WinExec(szBuf, SW_SHOW) < 32) // windows
 #else
   if (system(szBuf) != 0) // other OS (not windows)
@@ -842,8 +868,7 @@ void FCHtmlView::SaveHistory()
 {
   // write the history items into file
   FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
-  int iMaxCnt = hHistGrp->GetInt("Max History items", 20);
-  while ( int(mHistory.size()) > iMaxCnt )
+  while ( int(mHistory.size()) > iMaxHist )
 	  mHistory.erase( mHistory.begin() );
 
   long i=0;
@@ -859,8 +884,7 @@ void FCHtmlView::SaveBookmarks()
 {
   // write the bookmark items into file
   FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
-  int iMaxCnt = hBookmGrp->GetInt("Max Bookmark items", 20);
-  while ( int(mBookmarks.size()) > iMaxCnt )
+  while ( int(mBookmarks.size()) > iMaxBookm )
 	  mBookmarks.erase( mBookmarks.begin() );
 
   long i=0;
@@ -981,6 +1005,34 @@ void FCHtmlView::CheckBookmarks()
   CreateBookmarkPopup();
 
   QMessageBox::information(this, "FreeCAD", "All bookmarks are uptodate");
+}
+
+void FCHtmlView::OnChange(FCSubject &rCaller)
+{
+  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  std::string name = rclGrp.GetGroupName();
+  std::vector<std::string>::iterator pos;
+  if (( pos = std::find(aStrGroups.begin(), aStrGroups.end(), name)) != aStrGroups.end())
+  {
+    int i = pos - aStrGroups.begin();
+    switch (i)
+    {
+    case 0:
+      bBookm = rclGrp.GetBool(name.c_str(), false);
+      break;
+    case 1:
+      bHistory = rclGrp.GetBool(name.c_str(), false);
+      break;
+    case 2:
+      iMaxHist = rclGrp.GetInt(name.c_str(), 20);
+      if (!bHistory) iMaxHist = 0;
+      break;
+    case 3:
+      iMaxBookm = rclGrp.GetInt(name.c_str(), 20);
+      if (!bBookm) iMaxBookm = 0;
+      break;
+    };
+  }
 }
 
 

@@ -1074,7 +1074,7 @@ FCToolboxGroup* FCCmdBar::GetView(const char *sName)
     }
   }
 
-#ifdef _DEBUG
+#ifdef FC_DEBUG
     printf("Widget %s not found\n", sName);
 #endif
 
@@ -1099,7 +1099,7 @@ void FCCmdBar::DeleteView(const char *sName)
     }
   }
 
-#ifdef _DEBUG
+#ifdef FC_DEBUG
     printf("Widget %s not found\n", sName);
 #endif
 }

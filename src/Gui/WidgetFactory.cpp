@@ -61,7 +61,7 @@ QWidget* FCWidgetFactorySupplier::GetWidget(const char* sClassName, QWidget* par
   // this widget class is not registered
   if (!p)
   {
-#ifdef _DEBUG
+#ifdef FC_DEBUG
     GetConsole().Warning("\"%s\" is not registered\n", sClassName);
 #endif
     return NULL;
@@ -78,7 +78,7 @@ QWidget* FCWidgetFactorySupplier::GetWidget(const char* sClassName, QWidget* par
   }
   catch (...)
   {
-#ifdef _DEBUG
+#ifdef FC_DEBUG
     GetConsole().Error("%s does not inherit from \"FCWidgetPrefs\"\n", w->className());
 #endif
   }

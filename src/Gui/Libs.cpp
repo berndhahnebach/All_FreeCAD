@@ -36,7 +36,7 @@
 
 // === Including of libs: ============================================================================
 #include "../Config.h"
-#ifdef WNT
+#ifdef FC_OS_WIN32
 #	pragma comment(lib,"TKernel.lib")
 #	pragma comment(lib,"TKMath.lib")
 #	pragma comment(lib,"TKService.lib")
@@ -55,7 +55,7 @@
 #	pragma comment(lib,"TKCDF.lib")
 	// QT extension
 #	pragma comment(lib,"qextmdi.lib")
-#	pragma comment(lib,"qt-mt230nc.lib")
+#	pragma comment(lib,QTLIBNAME)
 
 #else
 //#	error "Dont compile this file on UNIX!"

@@ -10,7 +10,7 @@
 // === Incuding of libs: ============================================================================
 
 #include "../Config.h"
-#ifdef WNT
+#ifdef FC_OS_WIN32
 	// STLport
 //#	ifndef __STL_DEBUG
 //#		pragma comment(lib,"stlport_vc6.lib")

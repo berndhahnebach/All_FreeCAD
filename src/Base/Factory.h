@@ -49,7 +49,11 @@ class  BaseExport FCAbstractProducer
   * @see FCFactory
   */
 template <class CLASS>
+# if _MSC_VER >= 1300
+class FCFactoryProducer: public FCAbstractProducer
+# else
 class BaseExport FCFactoryProducer: public FCAbstractProducer
+# endif
 {
 															  /// Constructor
 public:
@@ -92,7 +96,11 @@ private:
    
 protected:
 #	pragma warning( disable : 4251 )
+# if _MSC_VER >= 1300
+   std::map<std::string, FCAbstractProducer*> _mpcProducers;
+# else
    std::map<const std::string, FCAbstractProducer*> _mpcProducers;
+# endif
    
    FCFactory (void){}
 

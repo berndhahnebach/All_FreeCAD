@@ -147,7 +147,7 @@ PyObject *FCLabel::_getattr(char *attr)				// __getattr__ function: note only ne
 			Handle(TDataStd_Name) NameAttr;
 			if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr))
 				//return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
-#ifdef __linux /* will "u" work? */ // u is unicode as ToExtString is!
+#ifdef FC_OS_LINUX /* will "u" work? */ // u is unicode as ToExtString is!
 				return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
 #else
 				return Py_BuildValue("s",NameAttr->Get()); 

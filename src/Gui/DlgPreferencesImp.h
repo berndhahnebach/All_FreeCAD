@@ -35,7 +35,7 @@
 #include "DlgPreferences.h"
 #include "Window.h"
 
-class QTabWidget;
+// forward declaration
 class QTabWidget;
 
 class DlgPreferencesImp : public DlgPreferences, public FCWindow
@@ -56,6 +56,7 @@ class DlgPreferencesImp : public DlgPreferences, public FCWindow
     QTabWidget* getOrAddPreferenceGroup(const char* name);
     std::string getGroupName() const;
     std::string getPageName() const;
+    void connectWidget(QWidget* page) const;
 
   private:
     std::map<std::string, int> m_mGroupsID;

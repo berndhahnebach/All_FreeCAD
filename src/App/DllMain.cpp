@@ -34,7 +34,7 @@
 
 // === Incuding of libs: ============================================================================
 #include "../Config.h"
-#ifndef WNT
+#ifndef FC_OS_WIN32
 #	error "Dont compile that file on UNIX!"
 #endif
 

@@ -37,9 +37,9 @@
 
 // === Incuding of libs: ============================================================================
 #include "../Config.h"
-#ifdef WNT
+#ifdef FC_OS_WIN32
 #	pragma comment(lib,"python21.lib")
-#	ifdef _DEBUG
+#	ifdef FC_DEBUG
 #		pragma comment(lib,"xerces-c_2D.lib")
 #	else
 #		pragma comment(lib,"xerces-c_2.lib")

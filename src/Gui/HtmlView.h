@@ -93,7 +93,7 @@ class FCHtmlComboBox : public QComboBox
 /**
  * The HTML viewer class
  */
-class GuiExport FCHtmlView : public FCDockWindow
+class GuiExport FCHtmlView : public FCDockWindow, public FCObserver
 { 
     Q_OBJECT
 
@@ -109,6 +109,8 @@ class GuiExport FCHtmlView : public FCDockWindow
     bool SetMaxHistory (long lCnt);
     /// set the limit for the bookmarks
     bool SetMaxBookmarks (long lCnt);
+    /// observers method
+    virtual void OnChange(FCSubject &rCaller);
 
   protected slots:
     void SetBackwardAvailable( bool );
@@ -127,6 +129,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     void StartExtBrowser(QString);
 
   protected:
+    void init ();
     virtual QString GetRelativeURL (const QString& path) const;
     virtual QString GetAbsoluteURL (const QString& path) const;
     virtual QString GetDocDirectory();
@@ -143,10 +146,13 @@ class GuiExport FCHtmlView : public FCDockWindow
     virtual void StartBrowser(QString path, QString protocol);
 
 #	pragma warning( disable : 4251 )
+    std::string aStrGroupPath;
+    std::vector<std::string> aStrGroups;
     QString        m_FCdoc, m_FCext, m_FCscript;
     std::map<int, QString> mHistory, mBookmarks;
     bool bBackward, bForward;
     bool bHistory, bBookm;
+    int  iMaxHist, iMaxBookm;
     QButtonGroup*  pclButtonGrp;
     QToolButton*   pclButtonBack;
     QToolButton*   pclButtonForward;

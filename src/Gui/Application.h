@@ -42,9 +42,6 @@
 
 
 #define  putpix()
-class FCUndoRedoDlg;
-class QPopupMenu;
-class QToolBar;
 
 #include "../Base/Console.h"
 #include "../App/Application.h"
@@ -63,6 +60,9 @@ class FCToolboxGroup;
 class FCAutoWaitCursor;
 class FCCmdBar;
 class FCHtmlView;
+class FCUndoRedoDlg;
+class QPopupMenu;
+class QToolBar;
 
 /** The Bitmap Factory
   * the main purpos is to collect all build in Bitmaps and 
@@ -162,6 +162,8 @@ public:
 	void ActivateWorkbench(const char* name);
 	/// update the combo box when there are changes in the workbenches
 	void UpdateWorkbenchEntrys(void);
+	/// returns the name of the active workbench
+	QString GetActiveWorkbech(void){return _cActiveWorkbenchName;}
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -195,22 +197,22 @@ public slots:
 	void exportImage();
 
 protected: // Protected methods
-   /** just fits the system menu button position to the menu position */
-   virtual void resizeEvent ( QResizeEvent * );
-   virtual void closeEvent ( QCloseEvent * e );
+	/** just fits the system menu button position to the menu position */
+	virtual void resizeEvent ( QResizeEvent * );
+	virtual void closeEvent ( QCloseEvent * e );
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
 	FCBmpFactory     _cBmpFactory;
 	/// waiting cursor stuff 
-    void timerEvent( QTimerEvent * e){emit timeEvent();}
+	void timerEvent( QTimerEvent * e){emit timeEvent();}
 
 // slots for the undo/redo dialog: (not implemented yet)
 protected slots:
-    void slotUndo(){};
-    void slotRedo(){};
-    void updateUndo();
-    void updateRedo();
-    void executeUndoRedo();
+	void slotUndo(){};
+	void slotRedo(){};
+	void updateUndo();
+	void updateRedo();
+	void executeUndoRedo();
 
 	void OnWorkbenchChange( const QString & string);
 
@@ -236,8 +238,6 @@ private:
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
 
-
-    
 };
 
 
@@ -289,7 +289,7 @@ public:
 
   // Singleton
 private:
-#ifdef WNT // windows os
+#ifdef FC_OS_WIN32 // windows os
     FCAutoWaitCursor(DWORD id, int i);
 #else
     FCAutoWaitCursor(int i);
@@ -306,7 +306,7 @@ protected:
     int iAutoWaitCursorMaxCount;
     int iInterval;
     bool bOverride;
-#ifdef WNT
+#ifdef FC_OS_WIN32
   	DWORD main_threadid;
 #endif
 

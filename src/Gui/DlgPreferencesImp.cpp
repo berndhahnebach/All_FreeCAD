@@ -44,10 +44,9 @@
 #endif
 #include <qwidgetstack.h>
 #include <qtabwidget.h>
-#include <qwidgetstack.h>
-#include "DlgSettingsImp.h"
-#include "Application.h"
-#include <qtabwidget.h>
+#if QT_VER >= 230
+# include <qlistview.h>
+#endif
 #include "DlgPreferencesImp.h"
 #include "DlgSettingsImp.h"
 #include "Application.h"
@@ -69,6 +68,14 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
   addPreferenceGroup("FreeCAD", pix);
   addPreferencePage(new QWidget, "General");
   addPreferencePage(new FCDlgSettings, "Help Viewer", pix);
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+DlgPreferencesImp::~DlgPreferencesImp()
+{
+    // no need to delete child widgets, Qt does it all for us
 }
 
 void DlgPreferencesImp::addPreferenceGroup(const char* name)
@@ -98,15 +105,7 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name)
     m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
     page->hide();
 
-    if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
-    {
-      std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
-      for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
-      {
-        connect(PushButton13, SIGNAL(clicked()), *it, SLOT(save()));//OK
-        connect(PushButton14, SIGNAL(clicked()), *it, SLOT(save()));//Apply
-      }
-    }
+    connectWidget(page);
   }
 }
 
@@ -127,15 +126,7 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const
     m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
     page->hide();
 
-    if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
-    {
-      std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
-      for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
-      {
-        connect(PushButton13, SIGNAL(clicked()), *it, SLOT(save()));//OK
-        connect(PushButton14, SIGNAL(clicked()), *it, SLOT(save()));//Apply
-      }
-    }
+    connectWidget(page);
   }
 }
 
@@ -152,15 +143,7 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const
   m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
   page->hide();
 
-  if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
-  {
-    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
-    for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
-    {
-      connect(PushButton13, SIGNAL(clicked()), *it, SLOT(save()));//OK
-      connect(PushButton14, SIGNAL(clicked()), *it, SLOT(save()));//Apply
-    }
-  }
+  connectWidget(page);
 }
 
 QTabWidget* DlgPreferencesImp::getPreferenceGroup(const char* name)
@@ -257,18 +240,23 @@ std::string DlgPreferencesImp::getPageName() const
   return m_pCurTab->tabLabel(m_pCurTab->currentPage());
 }
 
-/*  
- *  Destroys the object and frees any allocated resources
- */
-DlgPreferencesImp::~DlgPreferencesImp()
+void DlgPreferencesImp::connectWidget(QWidget* page) const
 {
-    // no need to delete child widgets, Qt does it all for us
+  // the dialog itself
+//  connect(PushButton13, SIGNAL(clicked()), page, SLOT(save()));//OK
+//  connect(PushButton14, SIGNAL(clicked()), page, SLOT(save()));//Apply
+
+  if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
+  {
+    // and its preference widgets
+    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
+    for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
+    {
+      connect(PushButton13, SIGNAL(clicked()), *it, SLOT(save()));//OK
+      connect(PushButton14, SIGNAL(clicked()), *it, SLOT(save()));//Apply
+    }
+  }
 }
-
-
-
-
-
 
 // compiling the mocs and the Dlg
 #include "DlgPreferences.cpp"

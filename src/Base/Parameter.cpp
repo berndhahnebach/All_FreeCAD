@@ -649,7 +649,7 @@ void FCParameterManager::Init(void)
 
 		catch(const XMLException& toCatch)
 		{
-#ifdef __linux
+#ifdef FC_OS_LINUX
 			std::sstream err;
 #else
 			std::strstream err;
@@ -659,7 +659,7 @@ void FCParameterManager::Init(void)
 				 << "  Exception message:"
 				 << pMsg;
 			delete [] pMsg;
-#ifdef __linux
+#ifdef FC_OS_LINUX
 			throw FCException(err.str().c_str());
 #else
 			throw FCException(err.str());
@@ -966,7 +966,7 @@ PyObject *FCPyParameterGrp::_getattr(char *attr)				// __getattr__ function: not
 			Handle(TDataStd_Name) NameAttr;
 			if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr))
 				//return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
-#ifdef __linux // u is unicode as ToExtString is!
+#ifdef FC_OS_LINUX // u is unicode as ToExtString is!
 				return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
 #else
 				return Py_BuildValue("s",NameAttr->Get()); 

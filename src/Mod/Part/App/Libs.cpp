@@ -10,7 +10,7 @@
 // === Incuding of libs: ============================================================================
 
 #include "../../../Config.h"
-#ifdef WNT
+#ifdef FC_OS_WIN32
 #	pragma comment(lib,"TKernel.lib")
 #	pragma comment(lib,"TKMath.lib")
 #	pragma comment(lib,"TKService.lib")

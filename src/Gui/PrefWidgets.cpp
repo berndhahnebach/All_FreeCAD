@@ -67,7 +67,7 @@ FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bAttach) : pHandler(NULL)
 FCWidgetPrefs::~FCWidgetPrefs()
 {
   hPrefGrp->Detach(this);
-#ifdef _DEBUG
+#ifdef FC_DEBUG
   if (m_sPrefName == "_____default_____")
   {
     GetConsole().Warning("Wrong widget name!. It must not be \"_____default_____\"\n");

@@ -99,7 +99,7 @@ FCSplashWidget::~FCSplashWidget()
 
 void FCSplashWidget::aboutToQuit()
 {
-#ifdef _DEBUG
+#ifdef FC_DEBUG
   //printf("Terminating thread %s...\n", this->getName().latin1());
 #endif
   // terminate savely this thread
@@ -112,7 +112,7 @@ void FCSplashWidget::aboutToQuit()
 
 void FCSplashWidget::hideEvent ( QHideEvent * e )
 {
-#ifdef _DEBUG
+#ifdef FC_DEBUG
   //printf("%s goes sleeping...\n", this->getName().latin1());
 #endif
   QWidget::hideEvent ( e );

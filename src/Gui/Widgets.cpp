@@ -210,7 +210,7 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 				diff /= 1000;
 
 				GetConsole().Log("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
-//#				ifdef _DEBUG
+//#				ifdef FC_DEBUG
 //				printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
 //#				endif
 

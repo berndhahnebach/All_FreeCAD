@@ -39,7 +39,7 @@
 
 
 // global graphic device (set in DocWindow)
-#ifdef WNT
+#ifdef FC_OS_WIN32
 	extern Handle_Graphic3d_WNTGraphicDevice	hGraphicDevice;
 #else
 	extern Handle_Graphic3d_GraphicDevice		hGraphicDevice;
@@ -206,7 +206,7 @@ bool View3D::InitCasCadeView(void)
 	// Now some window specific tasks		
 	try{
 		// create a new OCC Window from the OCC Graphic device and the win ID of the QT OpenGL Render Window
-#		ifdef WNT
+#		ifdef FC_OS_WIN32
 			Handle(WNT_Window) hWindow = new WNT_Window(Handle(Graphic3d_WNTGraphicDevice)::DownCast(_hContext->CurrentViewer()->Device()),winId());//WNT_GraphicDevice
 #		else
 			Handle(Xw_Window) hWindow  = new Xw_Window (Handle(Graphic3d_GraphicDevice)::DownCast(_hContext->CurrentViewer()->Device()),winId());

@@ -66,13 +66,21 @@ void FCFactory::Destruct (void)
 
 FCFactory::~FCFactory ()
 {
+# if _MSC_VER >= 1300
+  for (std::map<std::string, FCAbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
+# else
   for (std::map<const std::string, FCAbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
+# endif
     delete pI->second;
 }
 
 void* FCFactory::Produce (const char *sClassName) const
 {
+# if _MSC_VER >= 1300
+  std::map<std::string, FCAbstractProducer*>::const_iterator pProd;
+# else
   std::map<const std::string, FCAbstractProducer*>::const_iterator pProd;
+# endif
 
   pProd = _mpcProducers.find(sClassName);
   if (pProd != _mpcProducers.end())

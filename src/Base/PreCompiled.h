@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <time.h>
 #include "fcntl.h"
-#ifdef WNT
+#ifdef FC_OS_WIN32
 #	include <windows.h>
 #endif
 

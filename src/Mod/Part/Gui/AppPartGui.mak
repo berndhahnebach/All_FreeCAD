@@ -66,7 +66,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPartGui.bsc" 
@@ -136,7 +136,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_USRDLL" /D "FCAppPartGui" /D "FC_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPartGui.bsc" 
@@ -322,7 +322,7 @@ SOURCE=.\AppPartGui.cpp
 
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
-CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 "$(INTDIR)\AppPartGui.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -332,7 +332,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_USRDLL" /D "FCAppPartGui" /D "FC_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\AppPartGui.obj"	"$(INTDIR)\AppPartGui.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -346,7 +346,7 @@ SOURCE=.\Command.cpp
 
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
-CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 "$(INTDIR)\Command.obj" : $(SOURCE) "$(INTDIR)" ".\DlgPartBoxImp.h" ".\DlgPartBox.h"
 	$(CPP) @<<
@@ -356,7 +356,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_USRDLL" /D "FCAppPartGui" /D "FC_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\Command.obj"	"$(INTDIR)\Command.sbr" : $(SOURCE) "$(INTDIR)" ".\DlgPartBoxImp.h" ".\DlgPartBox.h"
 	$(CPP) @<<
@@ -411,7 +411,7 @@ SOURCE=.\DlgPartBoxImp.cpp
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 
-"$(INTDIR)\DlgPartBoxImp.obj"	"$(INTDIR)\DlgPartBoxImp.sbr" : $(SOURCE) "$(INTDIR)" ".\DlgPartBoxImp.h" ".\DlgPartBox.h" ".\moc_DlgPartBoxImp.cpp" ".\DlgPartBox.cpp" ".\moc_DlgPartBox.cpp"
+"$(INTDIR)\DlgPartBoxImp.obj"	"$(INTDIR)\DlgPartBoxImp.sbr" : $(SOURCE) "$(INTDIR)" ".\DlgPartBox.cpp" ".\moc_DlgPartBox.cpp" ".\DlgPartBoxImp.h" ".\DlgPartBox.h" ".\moc_DlgPartBoxImp.cpp"
 
 
 !ENDIF 
@@ -450,7 +450,7 @@ SOURCE=.\Libs.cpp
 
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
-CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppPartGui" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 "$(INTDIR)\Libs.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -460,7 +460,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /FR"$(INTDIR)\\" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_USRDLL" /D "FCAppPartGui" /D "FC_DEBUG" /FR"$(INTDIR)\\" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\Libs.obj"	"$(INTDIR)\Libs.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -474,7 +474,7 @@ SOURCE=.\PreCompiled.cpp
 
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
-CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /Yc"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /Yc"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 "$(INTDIR)\PreCompiled.obj"	"$(INTDIR)\AppPartGui.pch" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -484,7 +484,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /Yc"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_USRDLL" /D "FCAppPartGui" /D "FC_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AppPartGui.pch" /Yc"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\PreCompiled.obj"	"$(INTDIR)\PreCompiled.sbr"	"$(INTDIR)\AppPartGui.pch" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<

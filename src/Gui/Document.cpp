@@ -23,7 +23,7 @@
 #	include "PreCompiled.h"
 #else
 #	include <qstatusbar.h>
-#	ifndef WNT
+#	ifndef FC_OS_WIN32
 #		include <Graphic3d_GraphicDevice.hxx>
 #	else
 #		include <Graphic3d_WNTGraphicDevice.hxx>
@@ -184,7 +184,7 @@ Handle(V3d_Viewer) FCGuiDocument::Viewer(const Standard_CString aDisplay,
 										 const Standard_Boolean ComputedMode,
 										 const Standard_Boolean aDefaultComputedMode )
 {
-#	ifndef WNT
+#	ifndef FC_OS_WIN32
 		static Handle(Graphic3d_GraphicDevice) defaultdevice;
 
 		if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_GraphicDevice(aDisplay);
@@ -198,7 +198,7 @@ Handle(V3d_Viewer) FCGuiDocument::Viewer(const Standard_CString aDisplay,
 		return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
 								Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
 								ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
-#	endif  // WNT
+#	endif  // FC_OS_WIN32
 }
 
 

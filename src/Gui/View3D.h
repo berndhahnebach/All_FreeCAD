@@ -37,7 +37,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_OrthographicView.hxx>
 // some window system dependend
-#ifndef WNT
+#ifndef FC_OS_WIN32
 #	include <Xw_Window.hxx>
 #	include <Graphic3d_GraphicDevice.hxx>
 #else

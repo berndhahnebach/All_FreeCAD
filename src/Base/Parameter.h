@@ -40,7 +40,7 @@
 
 
 // Include files
-#ifdef __linux
+#ifdef FC_OS_LINUX
 #  include <sstream>
 #endif
 #include <map>

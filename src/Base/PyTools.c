@@ -175,7 +175,7 @@ PP_Run_Known_Callable(PyObject *object,               /* func|class|method */
 
 #define MAX 1024
 /*
-__linux: This is dangerous. How about PY_EXCEPT_MAX?
+FC_OS_LINUX: This is dangerous. How about PY_EXCEPT_MAX?
 */
 
 /* exception text is here after PP_Fetch_Error_Text call */
@@ -283,11 +283,8 @@ PP_Convert_Result(PyObject *presult, char *resFormat, void *resTarget)
     else {
         if (strcmp(resFormat, "O") != 0) {     /* free object unless exported */
             if (strcmp(resFormat, "s") == 0) { /* copy string: caller owns it */
-//#ifdef __linux //cannot convert `void*' to `char **' in initialization
                 char **target = (char**) resTarget;
-//#else
-//                char **target = resTarget;                
-//#endif                
+            
                 *target = strdup(*target); 
             }
             Py_DECREF(presult);

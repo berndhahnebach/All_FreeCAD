@@ -61,8 +61,8 @@
 #	include "../Gui/Application.h"
 #	include "../Gui/GuiConsole.h"
 #	include "../Gui/Splashscreen.h"
-#	ifdef WNT
-#		pragma comment(lib,"qt-mt230nc.lib")
+#	ifdef FC_OS_WIN32
+#		pragma comment(lib,QTLIBNAME)
 #	endif 
 #	include "GuiInitScript.h"
 #endif
@@ -124,7 +124,7 @@ int main( int argc, char ** argv )
 {
 
   // Init phase ===========================================================
-#	ifndef _DEBUG
+#	ifndef FC_DEBUG
 	try
 	{
 #	endif
@@ -138,7 +138,7 @@ int main( int argc, char ** argv )
 
 		// the FreeCAD Application
 
-#	ifndef _DEBUG
+#	ifndef FC_DEBUG
 	}
 	// catch all OCC exceptions
 	catch(Standard_Failure e)
@@ -178,7 +178,7 @@ int main( int argc, char ** argv )
 	// Run phase ===========================================================
 
 	int ret;
-#	ifndef _DEBUG
+#	ifndef FC_DEBUG
 	try
 	{
 #	endif
@@ -242,7 +242,7 @@ int main( int argc, char ** argv )
 			GetConsole().Log("Unknown Run mode in main()?!?\n\n");
 			exit(1);
 		}
-#	ifndef _DEBUG
+#	ifndef FC_DEBUG
 	}
 	catch(Standard_Failure e)
 	{
@@ -266,14 +266,14 @@ int main( int argc, char ** argv )
 	// Destruction phase ===========================================================
 
 	GetConsole().Log("FreeCAD terminating...\n\n");
-#	ifndef _DEBUG
+#	ifndef FC_DEBUG
 	try
 	{
 #	endif
 		// cleans up 
 		Destruct();
 
-#	ifndef _DEBUG
+#	ifndef FC_DEBUG
 	}
 	catch(...)
 	{
@@ -320,7 +320,7 @@ void Init(int argc, char ** argv )
 #	else
 		mConfig["RunMode"] = "Cmd";
 #	endif
-#	ifdef _DEBUG
+#	ifdef FC_DEBUG
 		mConfig["Debug"] = "1";
 #	else
 		mConfig["Debug"] = "0";
@@ -348,7 +348,7 @@ void Init(int argc, char ** argv )
 	GetConsole().AttacheObserver(new FCCmdConsoleObserver());
 	if(mConfig["Verbose"] == "Strict") GetConsole().SetMode(FCConsole::Verbose);
 	// file logging fcility
-#	ifdef _DEBUG
+#	ifdef FC_DEBUG
 		GetConsole().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
 #	endif
 
@@ -452,7 +452,7 @@ void CheckEnv(void)
 	char  szDirectory [256] ;
 
 	getcwd (szDirectory,sizeof szDirectory);
-#	ifdef WNT	
+#	ifdef FC_OS_WIN32	
 #		define PATHSEP "\\"
 #	else
 #		define PATHSEP "/"
@@ -645,7 +645,7 @@ void PrintInitHelp(void)
 BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved){return TRUE;}
 
 extern "C" {
-#ifdef _DEBUG
+#ifdef FC_DEBUG
 void __declspec(dllexport) initFreeCADDCmdPy() {
 #else
 void __declspec(dllexport) initFreeCADCmdPy() {

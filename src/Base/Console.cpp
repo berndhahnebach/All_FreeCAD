@@ -36,7 +36,7 @@
 #else
 #	include <time.h>
 #	include "stdio.h"
-#   ifdef WNT
+#   ifdef FC_OS_WIN32
 #	include "io.h"
 #  endif
 #	include "fcntl.h"
@@ -374,11 +374,11 @@ void FCLoggingConsoleObserver::Log    (const char *sLog)
 
 void FCCmdConsoleObserver::Warning(const char *sWarn)
 {
-#	ifdef WNT
+#	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN| FOREGROUND_BLUE);
 #	endif
 	printf("%s",sWarn);
-#	ifdef WNT
+#	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 #	endif
 
@@ -391,22 +391,22 @@ void FCCmdConsoleObserver::Message(const char *sMsg)
 
 void FCCmdConsoleObserver::Error  (const char *sErr) 
 {
-#	ifdef WNT
+#	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_INTENSITY );
 #	endif
 	printf("%s",sErr);
-#	ifdef WNT
+#	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 #	endif
 }
 
 void FCCmdConsoleObserver::Log    (const char *sErr) 
 {
-#	ifdef WNT
+#	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED |FOREGROUND_GREEN);
 #	endif
 	printf("%s",sErr);
-#	ifdef WNT
+#	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 #	endif
 }
