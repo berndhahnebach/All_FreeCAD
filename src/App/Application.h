@@ -230,7 +230,6 @@ public:
 	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 	/// Destructor
 	~FCApplication();
-	static void InitApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 
 	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 private:

@@ -1322,7 +1322,6 @@ void FCCmdCreateToolOrCmdBar::Activated(int iMsg)
 //===========================================================================
 // Std_OCAFBrowser
 //===========================================================================
-#ifdef FC_USE_OCAFBROWSER
 
 class FCCmdOCAFBrowse : public FCCppCommand
 {
@@ -1356,7 +1355,10 @@ void FCCmdOCAFBrowse::Activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
 	cBrowser.DFBrowser(GetAppWnd()->GetActiveDocument()->GetDocument()->GetOCCDoc());
-#endif	
+#else
+	QMessageBox::information(GetAppWnd(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
+											   "this feature is disabled.");
+#endif
 }
 
 bool FCCmdOCAFBrowse::IsActive(void)
@@ -1364,7 +1366,6 @@ bool FCCmdOCAFBrowse::IsActive(void)
 	return GetAppWnd()->GetActiveDocument() != 0;
 }
 
-#endif
 
 
 void CreateStdCommands(void)
@@ -1401,14 +1402,10 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
 	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
 	rcCmdMgr.AddCommand(new FCCmdWorkbench());
-  rcCmdMgr.AddCommand(new FCCmdMRU());
-  rcCmdMgr.AddCommand(new FCCmdWhatsThis());
-  rcCmdMgr.AddCommand(new FCCmdOnlineHelp());
-
-#	ifdef FC_USE_OCAFBROWSER
-		rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());
-#	endif
-
+	rcCmdMgr.AddCommand(new FCCmdMRU());
+	rcCmdMgr.AddCommand(new FCCmdWhatsThis());
+	rcCmdMgr.AddCommand(new FCCmdOnlineHelp());
+	rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());
 }
 
 

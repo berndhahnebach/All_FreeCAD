@@ -93,12 +93,6 @@
 #include "../App/Application.h"
 #include "../Gui/Splashscreen.h"
 
-
-#if QT_VER != QT_VERSION
-//#	error "QT Version missmatch, please set the right version in src/Config.h line 92"
-#endif
-
-
 #include "Application.h"
 #include "Document.h"
 #include "View.h"
@@ -281,11 +275,9 @@ ApplicationWindow::ApplicationWindow()
 	pcPropView->setMinimumWidth(210);
 	d->_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
-  // Report View
-  #ifndef FC_OS_LINUX
-  FCReportView* pcOutput = new FCReportView(this,"ReportView");
-  d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
-  #endif
+	// Report View
+	FCReportView* pcOutput = new FCReportView(this,"ReportView");
+	d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
 
  	CreateStandardOperations();
 

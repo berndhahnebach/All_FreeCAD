@@ -48,8 +48,8 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
   if ( !name )
   	setName( "FCReportOutput" );
 
-  resize( 529, 162 ); 
-  tabLayout = new QGridLayout( this ); 
+  resize( 529, 162 );
+  tabLayout = new QGridLayout( this );
   tabLayout->setSpacing( 0 );
   tabLayout->setMargin( 0 );
 
@@ -62,8 +62,8 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
   mle = new FCReportOutput( tab, "LogOutput" );
   tab->insertTab( mle, tr( "Output" ) );
 
-	FCPythonConsole* pyc = new FCPythonConsole(tab, "PythonConsole");
-	tab->insertTab(pyc, "Python");
+//	FCPythonConsole* pyc = new FCPythonConsole(tab, "PythonConsole");
+//	tab->insertTab(pyc, "Python");
 }
 
 /*  

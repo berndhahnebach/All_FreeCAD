@@ -22,7 +22,11 @@
 #define PLAT_FOX 0
 #define PLAT_QT 0
 
-#if defined(QT_VER)
+#if defined(QT_VERSION)
+#undef PLAT_QT
+#define PLAT_QT 1
+
+#elif defined(FC_OS_LINUX)
 #undef PLAT_QT
 #define PLAT_QT 1
 

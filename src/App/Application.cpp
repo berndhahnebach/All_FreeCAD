@@ -709,14 +709,6 @@ void FCApplication::InitApplication(void)
 
 }
 
-void FCApplication::InitApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
-{
-	if (FCApplication::_pcSingelton == 0L)
-	{
-		FCApplication::_pcSingelton = new FCApplication(pcSysParamMngr, pcUserParamMngr,mConfig);
-	}
-}
-
 void FCApplication::RunApplication()
 {
 

@@ -13,13 +13,21 @@
 
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
+#	endif
 #elif defined(__MWERKS__) && defined(__INTEL__)
+#	ifndef FC_OS_WIN32
 #	define FC_OS_WIN32
+#	endif
 #elif defined(linux) || defined(__linux) || defined(__linux__)
+#	ifndef FC_OS_LINUX
 #	define FC_OS_LINUX
-#elif defined(CYGWIN) 
+#	endif
+#elif defined(CYGWIN)
+#	ifndef FC_OS_CYGWIN
 #	define FC_OS_CYGWIN
+#	endif
 //#elif defined(sun) || defined(__sun) || defined(__sun__)
 //#	if defined(__SVR4)
 //#		define _FC_OS_SOLARIS
@@ -44,7 +52,7 @@
 #	error "FreeCAD was not ported to this os yet. For help see free-cad.sourceforge.net"
 #endif
 
-#	ifdef FC_OS_WIN32	
+#	ifdef FC_OS_WIN32
 #		define PATHSEP '\\'
 #	else
 #		define PATHSEP '/'
@@ -101,7 +109,7 @@
 
 #define CSFDB
 
-/// enabels the use of the OCC DocumentBrowser
+/// enables the use of the OCC DocumentBrowser
 #ifndef FC_OS_LINUX
 #	define FC_USE_OCAFBROWSER
 #endif
@@ -111,7 +119,7 @@
 #	ifdef FC_DEBUG
 #		define DEBUG 1
 #	else
-#		undef  DEBUG 
+#		undef  DEBUG
 #	ifndef NDEBUG
 #		define NDEBUG
 #	endif
@@ -200,12 +208,17 @@
 //**************************************************************************
 // Coin3D
 
-#define COIN_DLL
+#ifndef COIN_DLL
+#	define COIN_DLL
+#endif
 
 //**************************************************************************
-// QTextMdi
+// QextMdi
 
-#define NO_KDE2
+#ifndef NO_KDE2
+#	define NO_KDE2
+#endif
+
 //#define QT_NO_COMPAT
 #ifdef FCGui
 #	define MAKEDLL_QEXTMDI
@@ -231,10 +244,18 @@
 #		define GuiExport  __declspec(dllimport)
 #	endif
 #else
-#	define DocExport
-#	define BaseExport 
-#	define GuiExport
-#	define AppExport
+#	ifndef DocExport
+#		define DocExport
+#	endif
+#	ifndef BaseExport
+#		define BaseExport
+#	endif
+#	ifndef GuiExport
+#		define GuiExport
+#	endif
+#	ifndef AppExport
+#		define AppExport
+#	endif
 #endif
 
 

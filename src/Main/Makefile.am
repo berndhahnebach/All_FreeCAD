@@ -1,28 +1,28 @@
 bin_PROGRAMS=FreeCAD
 FreeCAD_SOURCES= \
-	Main.cpp \
+	MainGui.cpp \
 	PreCompiled.cpp
 
-
-BUILT_SOURCES=\
-	InitScript.h \
-	TestScript.h \
-	GuiInitScript.h
-
+#
+#BUILT_SOURCES=\
+#	InitScript.h \
+#	TestScript.h \
+#	GuiInitScript.h
+#
 # rule for Qt MetaObject Compiler:
-moc_%.cpp: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
-
+#moc_%.cpp: %.h
+#	cd $(@D) && $(MOC) $(<F) -o $(@F)
+#
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
-	cd $(@D) && $(UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
-
-%Script.h: FreeCAD%.py
-	../Tools/PythonToCPP.py $(<F) $@
-
+#%.h: %.ui
+#	cd $(@D) && $(UIC) $(<F) -o $(@F)
+#%.cpp: %.h %.ui
+#	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
+#
+#%Script.h: FreeCAD%.py
+#	../Tools/PythonToCPP.py $(<F) $@
+#
 
 
 #OCCLIBS=-L$(OCCDIR)/Linux/lib -L.
@@ -72,6 +72,7 @@ LDADD=\
 	-lxerces-c \
 	-lpython@fc_py_ver@ \
 	-lCoin \
+	-lSoQt \
 	-lFreeCADBase \
 	-lFreeCADApp \
 	-lFreeCADGui

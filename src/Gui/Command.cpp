@@ -835,7 +835,7 @@ void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
 {
   if (_sCommands.find(Name) == _sCommands.end())
   {
-		GetConsole().Error("FCCommandManager::AddTo() try to add a unknown command (%s) to a widget!\n",Name);
+		GetConsole().Error("FCCommandManager::AddTo() try to add an unknown command (%s) to a widget!\n",Name);
   }
   else
   {

@@ -86,15 +86,6 @@ DlgSettingsMacro.cpp \
 DlgSettingsMacro.h \
 DlgToolbars.cpp \
 DlgToolbars.h \
-Inventor/Qt/viewers/moc_SoQtExaminerViewerP.cpp \
-Inventor/Qt/viewers/moc_SoQtFullViewerP.cpp \
-Inventor/Qt/viewers/moc_SoQtPlaneViewerP.cpp \
-Inventor/Qt/widgets/moc_QtNativePopupMenu.cpp \
-Inventor/Qt/widgets/moc_SoQtGLArea.cpp \
-Inventor/Qt/widgets/moc_SoQtThumbWheel.cpp \
-Inventor/Qt/moc_SoQtP.cpp \
-Inventor/Qt/moc_SoQtComponentP.cpp \
-Inventor/Qt/moc_SoQtGLWidgetP.cpp \
 qextmdi/moc_dummykmainwindow.cpp \
 qextmdi/moc_dummykpartsdockmainwindow.cpp \
 qextmdi/moc_dummyktoolbar.cpp \
@@ -171,41 +162,6 @@ qextmdi/qextmdimainfrm.cpp \
 qextmdi/qextmditaskbar.cpp \
 \
 Inventor/OCC/SoBrepShape.cpp \
-Inventor/Qt/devices/6DOFEvents.cpp \
-Inventor/Qt/devices/SoGuiDevice.cpp \
-Inventor/Qt/devices/SoQtDevice.cpp \
-Inventor/Qt/devices/SoQtInputFocus.cpp \
-Inventor/Qt/devices/SoQtInputFocus1.cpp \
-Inventor/Qt/devices/SoQtKeyboard.cpp \
-Inventor/Qt/devices/SoQtKeyboard1.cpp \
-Inventor/Qt/devices/SoQtMouse.cpp \
-Inventor/Qt/devices/SoQtMouse1.cpp \
-Inventor/Qt/devices/SoQtSpaceball.cpp \
-Inventor/Qt/devices/SoQtSpaceball1.cpp \
-Inventor/Qt/viewers/ExaminerViewer.cpp \
-Inventor/Qt/viewers/FullViewer.cpp \
-Inventor/Qt/viewers/PlaneViewer.cpp \
-Inventor/Qt/viewers/SoQtConstrainedViewer.cpp \
-Inventor/Qt/viewers/SoQtExaminerViewer.cpp \
-Inventor/Qt/viewers/SoQtFlyViewer.cpp \
-Inventor/Qt/viewers/SoQtFullViewer.cpp \
-Inventor/Qt/viewers/SoQtPlaneViewer.cpp \
-Inventor/Qt/viewers/SoQtViewer.cpp \
-Inventor/Qt/widgets/QtNativePopupMenu.cpp \
-Inventor/Qt/widgets/SoAnyThumbWheel.cpp \
-Inventor/Qt/widgets/SoQtGLArea.cpp \
-Inventor/Qt/widgets/SoQtPopupMenu.cpp \
-Inventor/Qt/widgets/SoQtThumbWheel.cpp \
-Inventor/Qt/SoAny.cpp \
-Inventor/Qt/SoGuiGLWidgetCommon.cpp \
-Inventor/Qt/SoQt.cpp \
-Inventor/Qt/SoQtCommon.cpp \
-Inventor/Qt/SoQtComponent.cpp \
-Inventor/Qt/SoQtComponentCommon.cpp \
-Inventor/Qt/SoQtCursor.cpp \
-Inventor/Qt/SoQtGLWidget.cpp \
-Inventor/Qt/SoQtObject.cpp \
-Inventor/Qt/SoQtRenderArea.cpp \
 \
 Language/LanguageFactory.cpp \
 \
@@ -248,12 +204,14 @@ ReportView.cpp \
 resource.cpp \
 SciEditor.cpp \
 ScintillaQt.cpp \
+Selection.cpp \
 Splashscreen.cpp \
 Tools.cpp \
 Tree.cpp \
 View.cpp \
 View3D.cpp \
 View3DInventor.cpp \
+ViewProvider.cpp \
 WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
@@ -279,6 +237,7 @@ libFreeCADGui_la_LDADD   =\
 		-lTKCAF \
 		-lTKCDF \
 		-lCoin \
+		-lSoQt \
 		-lFreeCADBase \
 		-lFreeCADApp
 
