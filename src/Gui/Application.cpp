@@ -79,6 +79,7 @@
 #include "ButtonGroup.h"
 #include "HtmlView.h"
 #include "Macro.h"
+#include "Themes.h"
 
 #include "Icons/images.cpp"
 #include "Icons/FCIcon.xpm"
@@ -870,11 +871,20 @@ void ApplicationWindow::LoadWindowSettings()
   int x = hGrp->GetInt("PosX", pos().x());
   int y = hGrp->GetInt("PosY", pos().y());
   bool max = hGrp->GetBool("Maximized", false);
+  bool big = hGrp->GetBool("BigPixmaps", false);
+  QString style = "Windows";
+  std::vector<std::string> styles = hGrp->GetGroup("WindowStyle")->GetASCIIs("Item");
+  long pos = hGrp->GetGroup("WindowStyle")->GetInt("currentItem", 0);
+  if (long(styles.size()) > pos)
+    style = styles[pos].c_str();
+  QStyle* s = FCStyleFactory::createStyle(style);
   resize( w, h );
   move(x, y);
   if (max) showMaximized();
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
-	//setUsesBigPixmaps (true);
+	setUsesBigPixmaps (big);
+  if (s)
+    QApplication::setStyle(s);
 }
 
 void ApplicationWindow::SaveWindowSettings()
@@ -1349,7 +1359,59 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName)
 
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
+QStringList FCStyleFactory::styles()
+{
+  QStringList list;
+
+  if ( !list.contains( "Windows" ) )
+	  list << "Windows";
+  if ( !list.contains( "Motif" ) )
+    list << "Motif";
+  if ( !list.contains( "CDE" ) )
+    list << "CDE";
+  if ( !list.contains( "MotifPlus" ) )
+  	list << "MotifPlus";
+  if ( !list.contains( "Platinum" ) )
+  	list << "Platinum";
+  if ( !list.contains( "SGI" ) )
+  	list << "SGI";
+  if ( !list.contains( "Metal" ) )
+  	list << "Metal";
+  if ( !list.contains( "Norwegian Wood" ) )
+  	list << "Norwegian Wood";
+
+  return list;
+}
+
+QStyle* FCStyleFactory::createStyle( const QString& s)
+{
+  QStyle* ret = NULL;
+  QString style = s.lower();
+
+  if ( style == "windows" )
+    ret = new QWindowsStyle;
+  else if ( style == "motif" )
+    ret = new QMotifStyle;
+  else if ( style == "cde" )
+    ret = new QCDEStyle;
+  else if ( style == "motifplus" )
+    ret = new QMotifPlusStyle;
+  else if ( style == "platinum" )
+    ret = new QPlatinumStyle;
+  else if ( style == "sgi" )
+    ret = new QSGIStyle;
+  else if ( style == "metal" )
+    ret = new MetalStyle;
+  else if ( style == "norwegian wood" )
+    ret = new NorwegianWoodStyle;
+
+  if(ret)
+  	ret->setName(s);
+
+  return ret;
+}
 
 
 

@@ -51,7 +51,18 @@
 FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgGeneralBase( parent, name, fl )
 {
+  // if you run this first time
+  if (WindowStyle->count() == 0)
+  {
+    WindowStyle->insertStringList(FCStyleFactory::styles());
+  }
+
   append(SpeedAnimationCmdBar->getHandler());
+  append(UsesBigPixmaps->getHandler());
+  append(WindowStyle->getHandler());
+
+  connect(UsesBigPixmaps->getHandler(), SIGNAL(saved()), this, SLOT(onBigPixmaps()));
+  connect(WindowStyle->getHandler(), SIGNAL(saved()), this, SLOT(onSetStyle()));
 }
 
 /*  
@@ -60,6 +71,26 @@ FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
 FCDlgGeneral::~FCDlgGeneral()
 {
     // no need to delete child widgets, Qt does it all for us
+}
+
+void FCDlgGeneral::onBigPixmaps()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
+  if (bigPixmaps != ApplicationWindow::Instance->usesBigPixmaps())
+    ApplicationWindow::Instance->setUsesBigPixmaps(bigPixmaps);
+}
+
+void FCDlgGeneral::onSetStyle()
+{
+  QStyle& curStyle = QApplication::style();
+  QStyle* newStyle = FCStyleFactory::createStyle(WindowStyle->currentText());
+
+  if (newStyle != NULL)
+  {
+    if (strcmp(newStyle->name(), curStyle.name()) != 0)
+      QApplication::setStyle(newStyle);
+  }
 }
 
 #include "DlgGeneral.cpp"

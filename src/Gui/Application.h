@@ -96,6 +96,15 @@ protected:
 	std::vector<std::string>          _vsPaths;
 };
 
+/** 
+ * The Style Factory
+ */
+class FCStyleFactory
+{
+  public:
+    static QStringList styles();
+    static QStyle* createStyle( const QString& );
+};
 
 /** The Applcation main class
  *  This is the central class of the GUI 

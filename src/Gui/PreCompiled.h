@@ -138,6 +138,12 @@
 #include <qtextbrowser.h> 
 #include <qurl.h>
 #include <qinputdialog.h>
+#include <qmotifstyle.h>
+#include <qcdestyle.h>
+#include <qmotifplusstyle.h>
+#include <qwindowsstyle.h>
+#include <qplatinumstyle.h>
+#include <qsgistyle.h>
 
 
 // help system

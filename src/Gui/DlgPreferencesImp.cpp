@@ -253,8 +253,8 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
     std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
     for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
     {
-      connect(PushButton13, SIGNAL(clicked()), *it, SLOT(save()));//OK
-      connect(PushButton14, SIGNAL(clicked()), *it, SLOT(save()));//Apply
+      connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
+      connect(PushButton14, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply
     }
   }
 }

@@ -120,9 +120,13 @@ class FCWidgetPrefsHandler : public QObject
 
   public slots:
     /// save
-    virtual void save();
+    virtual void onSave();
     /// restore
-    virtual void restore();
+    virtual void onRestore();
+
+  signals:
+    void saved();
+    void restored();
 
   protected:
     FCWidgetPrefs* pPref;
@@ -148,7 +152,7 @@ class FCWidgetPrefsManager
 				if (handler->pPref->getParamGrp().IsNull())
 					throw;
 #endif
-				handler->restore();
+				handler->onRestore();
 				m_aHandlers.push_back(handler);
 			}
 		}

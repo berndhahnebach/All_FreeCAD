@@ -148,16 +148,19 @@ FCWidgetPrefsHandler::FCWidgetPrefsHandler(FCWidgetPrefs* p) : pPref(p)
 {
 }
 
-void FCWidgetPrefsHandler::save()
+void FCWidgetPrefsHandler::onSave()
 {
   pPref->savePreferences();
   if (pPref->getParamGrp().IsValid())
     pPref->getParamGrp()->Notify(pPref->getEntryName().latin1());
+
+  emit saved();
 }
 
-void FCWidgetPrefsHandler::restore()
+void FCWidgetPrefsHandler::onRestore()
 {
   pPref->restorePreferences();
+  emit restored();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1014,8 +1017,8 @@ void FCToolBar::restorePreferences()
     QColor color(r, g, b);
     if (color.isValid())
     {
-      setPalette(QPalette(color, color));
-      setBackgroundMode(PaletteBackground);
+//      setPalette(QPalette(color, color));
+//      setBackgroundMode(PaletteBackground);
     }
   }
 

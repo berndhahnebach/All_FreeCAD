@@ -279,12 +279,18 @@ void FCCommandLine::mousePressEvent ( QMouseEvent * e )
 
 void FCCommandLine::enterEvent ( QEvent * e)
 {
-  setStyle(new QWindowsStyle);
+  if (arrowRect().contains( mapFromGlobal(QCursor::pos()) ))
+    setStyle(&QApplication::style());
 }
 
 void FCCommandLine::leaveEvent ( QEvent * e)
 {
   setStyle(new FCWindowsStyle);
+}
+
+QRect FCCommandLine::arrowRect() const
+{
+  return QRect( width() - 2 - 16, 2, 16, height() - 4 );
 }
 
 FCCmdLineEdit::FCCmdLineEdit(QWidget * parent, const char * name)

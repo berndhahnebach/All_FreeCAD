@@ -192,6 +192,9 @@ protected slots:
   void slotOpenConsole();
   /// launch the command
   void slotLaunchCommand();
+
+private:
+  QRect FCCommandLine::arrowRect() const;
 };
 
 inline FCCommandLine &GetCmdLine(void)

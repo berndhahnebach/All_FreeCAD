@@ -42,6 +42,10 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCWidgetPrefsManager
   public:
     FCDlgGeneral( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCDlgGeneral();
+
+  private slots:
+    void onBigPixmaps();
+    void onSetStyle();
 };
 
 #endif // DLG_GENERAL_IMP_H
