@@ -27,6 +27,7 @@
 #include "View.h"
 #include "../Base/Exception.h"
 #include "../App/Document.h"
+#include "Document.h"
 
 
 #include "Icons/images.cpp"
@@ -243,6 +244,70 @@ void FCCmdViewFitAll::Activated(int iMsg)
 }
 
 
+//===========================================================================
+// Std_ViewCreateOCC
+//===========================================================================
+DEF_STD_CMD_A(FCCmdViewCreateOCC);
+
+FCCmdViewCreateOCC::FCCmdViewCreateOCC()
+	:FCCppCommand("Std_ViewCreateOCC")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-View";
+	sMenuText		= "Create new OCC View";
+	sToolTipText	= "Creates a new OpenCasCade view window for the active document";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_fitall";
+	iAccel			= 0;
+}
+
+
+void FCCmdViewCreateOCC::Activated(int iMsg)
+{
+	GetActiveDocument()->CreateView("View3DOcc");
+}
+
+bool FCCmdViewCreateOCC::IsActive(void)
+{
+  return (GetActiveDocument()!=NULL);
+}
+
+//===========================================================================
+// Std_ViewCreateInventor
+//===========================================================================
+DEF_STD_CMD_A(FCCmdViewCreateInventor);
+
+FCCmdViewCreateInventor::FCCmdViewCreateInventor()
+	:FCCppCommand("Std_ViewCreateInventor")
+{
+	sAppModule		= "";
+	sGroup			= "Standard-View";
+	sMenuText		= "Create new Inventor View";
+	sToolTipText	= "Creates a new Inventor view window for the active document";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_fitall";
+	iAccel			= 0;
+}
+
+
+void FCCmdViewCreateInventor::Activated(int iMsg)
+{
+	GetActiveDocument()->CreateView("View3DIv");
+}
+
+bool FCCmdViewCreateInventor::IsActive(void)
+{
+  return (GetActiveDocument()!=NULL);
+}
+
+
+//===========================================================================
+// Instanciation
+//===========================================================================
+
+
 void CreateViewStdCommands(void)
 {
 	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
@@ -257,6 +322,8 @@ void CreateViewStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdViewAxo());
 	rcCmdMgr.AddCommand(new FCCmdViewFitAll());
 
+	rcCmdMgr.AddCommand(new FCCmdViewCreateOCC());
+	rcCmdMgr.AddCommand(new FCCmdViewCreateInventor());
 }
 
 

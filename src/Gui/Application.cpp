@@ -374,6 +374,10 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.push_back("Std_DlgPreferences");
     _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
 
+		defaultMenus.clear();
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_ViewCreateInventor");
+		defaultMenus.push_back("Std_ViewCreateOCC");
     _pcWidgetMgr->addPopupMenu("View");
   
 		defaultMenus.clear();
@@ -384,6 +388,9 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.push_back("Std_DlgMacroRecord");
 		defaultMenus.push_back("Std_DlgMacroStop");
 		defaultMenus.push_back("Std_DlgMacroExecute");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_ViewCreateInventor");
+		defaultMenus.push_back("Std_ViewCreateOCC");
 		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_DlgCustomize");
 		defaultMenus.push_back("Std_DlgPreferences");

@@ -140,10 +140,10 @@ bool FCGuiDocument::SaveAs(void)
 void FCGuiDocument::CreateView(const char* sType) 
 {
 	FCView* pcView3D;
-	if(strcmp(sType,"View3DOcc") == 0){
-		pcView3D = new FCView3D(this,0L,"View3D");
-	}else{
+	if(strcmp(sType,"View3DIv") == 0){
 		pcView3D = new FCView3DInventor(this,0L,"View3DIv");
+	}else{
+		pcView3D = new FCView3D(this,0L,"View3DOCC");
 	}
 	
 
