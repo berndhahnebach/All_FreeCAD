@@ -15,7 +15,7 @@ ds = os.sep
 
 #====================================================================
 # script asume to run in src/Doc
-os.chdir("e:/Develop/FreeCADWin/src/Doc")
+#os.chdir("e:/Develop/FreeCADWin/src/Doc")
 LogFile = open("MakeDoc.log",'w')
 if not os.path.isdir("../../Doc"):
     os.mkdir("../../Doc")
@@ -109,6 +109,12 @@ FCFileTools.cpfile("Design_Specification.pdf","../../../doc/Manuals/Design_Speci
 text = os.popen("pdflatex Manual.tex").read()
 LogFile.write(text)
 FCFileTools.cpfile("Manual.pdf","../../../doc/Manuals/Manual.pdf")
+
+#====================================================================
+sys.stdout.write (' done\n  copy online help ...')
+if not os.path.isdir("../../../Doc/Online"):
+    os.mkdir("../../../Doc/Online")
+FCFileTools.cpall("Online","../../../Doc/Online")
 
 #====================================================================
 sys.stdout.write (' done\n  Clean up temporary files ...')

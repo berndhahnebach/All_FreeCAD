@@ -59,6 +59,6 @@
 #	pragma comment(lib,"qextmdi.lib")
 
 #else
-#	error "Dont compile this file on UNIX!"
+//#	error "Dont compile this file on UNIX!"
 #endif
 

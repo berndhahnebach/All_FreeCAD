@@ -1,6 +1,14 @@
+/***************************************************************************
+                          CommandLine.h  -  description
+                             -------------------
+    begin                : 2002/08/06 19:52:20
+    copyright            : (C) 2002 by Werner Mayer
+    email                : werner.wm.mayer@gmx.de
+ ***************************************************************************/
+
 /** \file $RCSfile$
  *  \brief The command line module
- *  \author $Author$
+ *  \author Werner Mayer
  *  \version $Revision$
  *  \date    $Date$
  */
@@ -16,7 +24,7 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 
 
@@ -31,11 +39,15 @@
 
 #include "../Base/Export.h"
 #include <qlineedit.h>
+#include <list>
+#include <string>
 
 /** The command line class
  */
 class GuiExport FCCommandLine : public QLineEdit
 {
+  Q_OBJECT
+
 private:
 	// Singleton
 	FCCommandLine(void);
@@ -43,11 +55,26 @@ private:
 
 	static FCCommandLine *_pcSingleton;
 
+protected:
+  void keyPressEvent ( QKeyEvent * e );
+  void mouseDoubleClickEvent ( QMouseEvent * e );
+  void wheelEvent ( QWheelEvent * e );
+  void PopupCmdList ();
+  void ScrollUp();
+  void ScrollDown();
+
 public:
   void SetParent(QWidget* parent);
 	static void Destruct(void);
 	static FCCommandLine &Instance(void);
 	friend FCCommandLine &GetCmdLine(void); 
+
+protected slots:
+  void SetCmdText( QListBoxItem * item);
+
+private:
+  stlport::list<stlport::string> _alCmdList;
+  stlport::list<stlport::string>::iterator _TIterator;
 };
 
 inline FCCommandLine &GetCmdLine(void)
@@ -55,5 +82,20 @@ inline FCCommandLine &GetCmdLine(void)
   return FCCommandLine::Instance();
 }
 
+/** A special list box used by the command line class
+ */
+class GuiExport FCCommandListBox : public QListBox
+{
+  Q_OBJECT
+
+public:
+  FCCommandListBox( QWidget * parent=0, const char * name=0, WFlags f=0);
+
+protected:
+  void keyPressEvent ( QKeyEvent * e );
+
+protected slots:
+  void Close();
+};
 
 #endif // __COMMAND_LINE_H__

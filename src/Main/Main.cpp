@@ -33,7 +33,6 @@
 
 #ifdef  _FC_GUI_ENABLED_
 #  include <qapplication.h>
-#  include "DlgSplasher.h"
 #  include "../Gui/Application.h"
 #  ifdef WNT
 #    pragma comment(lib,"qt-mt230nc.lib")
@@ -267,16 +266,6 @@ void Init(int argc, char ** argv )
 	ParsOptions(argc,argv);
 
 	
-
-	/*
-	if(RunMode=0)
-	{*/
-	//	pcQApp = new QApplication ( argc, argv );
-	/*	SplasherDialog * pcSplasher = new SplasherDialog();
-		//pcQApp->setMainWidget(pcSplasher);
-		pcSplasher->show();
-	}*/
-
 	// Start the python interpreter
 	FCInterpreter &rcInterperter = GetInterpreter();
 	rcInterperter.SetComLineArgs(argc,argv);
@@ -284,12 +273,6 @@ void Init(int argc, char ** argv )
 	
 	// starting the init script
 	rcInterperter.Launch(FreeCADInit);
-
-	/*
-	if(RunMode=0)
-	{
-		delete pcSplasher;
-	}*/
 
 }
 

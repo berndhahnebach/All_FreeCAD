@@ -22,6 +22,8 @@
 #include "DlgDocTemplatesImp.h"
 #include "DlgUndoRedo.h"
 #include "ButtonGroup.h"
+#include "HtmlView.h"
+
 
 #include "Icons/x.xpm"
 //#include "FreeCADAbout.h"
@@ -57,12 +59,18 @@ ApplicationWindow::ApplicationWindow()
 	CreateTestOperations();
 	//createCasCadeOperations();
 
+	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
 	GetCmdLine().SetParent(statusBar());
 	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
-
     statusBar()->message( tr("Ready"), 2001 );
     resize( 800, 600 );
 
+	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	QString home = QString("E:\\Develop\\Projekte\\FreeCADWin\\Doc\\Online\\index.html");
+	FCHtmlView* hv = new FCHtmlView(home, ".",this);
+	addToolWindow( hv, KDockWidget::DockRight, m_pMdi, 70, "Help", "Help");
+
+	// Button Group +++++++++++++++++++++++++++++++++++++++++++++++++++
 	QStackBar* stack = new QStackBar;
 	FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
 	stack->addPage( new QStackBarBtn( "Test", mle ) );
@@ -79,17 +87,7 @@ ApplicationWindow::ApplicationWindow()
 	  b0->setTextLabel("Hallo Welt", true);
 	  b0->setFixedSize(32, 32);
 	  mle->insert(b0);
-
-/*	  if (i==12)
-	  {
-		b0->setProperty( "pixmap", QPixmap(px) );
-		connect(b0, SIGNAL(clicked()), this, SLOT(close()));
-	  }*/
 	}
-
-//	QTextBrowser *pBrowser = new QTextBrowser();
-//	pBrowser->setText(FreeCADAbout);
-//	addToolWindow( pBrowser, KDockWidget::DockRight, m_pMdi, 70, "Help", "Help");
 
 
 }

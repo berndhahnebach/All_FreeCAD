@@ -93,82 +93,6 @@ PostBuild_Cmds=copy Debug\FreeCADD.exe ..\..\bin
 # Name "FreeCADMain - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\DlgSplasher.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DlgSplasher.h
-
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
-
-# Begin Custom Build - mocing $(InputPath)
-InputPath=.\DlgSplasher.h
-
-"DlgSplasher_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o DlgSplasher_moc.cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
-
-# Begin Custom Build - mocing $(InputPath)
-InputPath=.\DlgSplasher.h
-
-"DlgSplasher_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o DlgSplasher_moc.cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\DlgSplasher.ui
-
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
-
-# Begin Custom Build - uic for $(InputPath)
-InputPath=.\DlgSplasher.ui
-
-BuildCmds= \
-	%QTDIR%\bin\uic -o DlgSplasher.h $(InputPath) \
-	%QTDIR%\bin\uic -o DlgSplasher.cpp -impl DlgSplasher.h $(InputPath) \
-	
-
-"DlgSplasher.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"DlgSplasher.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
-
-# Begin Custom Build - uic for $(InputPath)
-InputPath=.\DlgSplasher.ui
-
-BuildCmds= \
-	%QTDIR%\bin\uic -o DlgSplasher.h $(InputPath) \
-	%QTDIR%\bin\uic -o DlgSplasher.cpp -impl DlgSplasher.h $(InputPath) \
-	
-
-"DlgSplasher.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"DlgSplasher.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\DlgSplasher_moc.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\FreeCADInit.py
 
 !IF  "$(CFG)" == "FreeCADMain - Win32 Release"
@@ -282,10 +206,6 @@ SOURCE=.\Libs.cpp
 # Begin Source File
 
 SOURCE=.\Main.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Gui\x.bmp
 # End Source File
 # End Target
 # End Project

@@ -1,5 +1,13 @@
+/***************************************************************************
+                          ButtonGroup.h  -  description
+                             -------------------
+    begin                : 2002/08/19 21:11:52
+    copyright            : (C) 2002 by Werner Mayer
+    email                : werner.wm.mayer@gmx.de
+ ***************************************************************************/
+
 /** \file $RCSfile$
- *  \brief The command line module
+ *  \brief The button group module
  *  \author Werner Mayer
  *  \version $Revision$
  *  \date    $Date$
@@ -16,7 +24,8 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
+
+
 
 
 #ifndef __BUTTON_GROUP_H__
