@@ -3108,6 +3108,45 @@ SOURCE=.\Inventor\Qt\SoQtRenderArea.cpp
 SOURCE=.\Inventor\Qt\SoQtRenderArea.h
 # End Source File
 # End Group
+# Begin Group "Language"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Language\FreeCAD_de.ts
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Building FreeCAD_de.h
+InputPath=.\Language\FreeCAD_de.ts
+
+"FreeCAD_de.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\tstocpp.py FreeCAD_de.ts FreeCAD_de.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Building FreeCAD_de.h
+InputPath=.\Language\FreeCAD_de.ts
+
+"FreeCAD_de.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\tstocpp.py FreeCAD_de.ts FreeCAD_de.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Language\LanguageFactory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Language\LanguageFactory.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Application.cpp
@@ -3143,6 +3182,14 @@ InputName=Application
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\BitmapFactory.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\BitmapFactory.h
 # End Source File
 # Begin Source File
 
