@@ -24,39 +24,18 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <vector>
-# include <qaction.h>
 # include <qaccel.h>
-# include <qbutton.h>
 # include <qcolordialog.h>
 # include <qcursor.h>
 # include <qgroupbox.h>
-# include <qlabel.h>
-# include <qlayout.h>
-# include <qmovie.h>
 # include <qpainter.h>
-# include <qstatusbar.h>
-# include <qstring.h>
-# include <qthread.h>
-# include <qurl.h>
-# include <qvalidator.h>
-# include <qwidgetlist.h>
-# include <ctype.h>
+# include <qstyle.h>
 #endif
 
 #include "Widgets.h"
 #include "Application.h"
 #include "Action.h"
 #include "CustomWidgets.h"
-#include "WaitCursor.h"
-#include "../Base/Exception.h"
-
-#include <qlayout.h>
-#include <qdatetime.h>
-
-#if QT_VERSION > 230
-# include <qstyle.h>
-#endif
 
 using namespace Gui;
 
