@@ -64,6 +64,7 @@
 
 #include "Application.h"
 #include "Document.h"
+#include "View.h"
 //#include "CommandStd.h"
 //#include "CommandView.h"
 #include "Splashscreen.h"
@@ -166,14 +167,14 @@ ApplicationWindow::ApplicationWindow()
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
-	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
-	_pcWidgetMgr->addDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom, 80);
+	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "Help_View");
+	_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 80);
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	_pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
-  _pcViewBar->setMinimumWidth(210);
-	_pcWidgetMgr->addDockWindow("Tree bar", _pcViewBar,0, KDockWidget::DockLeft, 0);
+	FCTree* pcTree = new FCTree(0,0,"Raw_tree");
+	pcTree->setMinimumWidth(210);
+	_pcWidgetMgr->addDockWindow("Tree bar", pcTree,0, KDockWidget::DockLeft, 0);
 
  	CreateStandardOperations();
 
@@ -204,8 +205,6 @@ ApplicationWindow::~ApplicationWindow()
 {
   delete _pcWidgetMgr;
   delete _pcMacroMngr;
-  delete _pcHtmlView;
-  delete _pcViewBar;
   FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetGroup("Macros");
   std::vector<FCCommand*> macros = _cCommandManager.GetModuleCommands("Macro");
   for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
@@ -382,8 +381,8 @@ void ApplicationWindow::OnShowView()
   menu->insertSeparator();
 
   // dock windows
-  std::vector<FCWindow*> windows = _pcWidgetMgr->getDockWindows();
-  for (std::vector<FCWindow*>::iterator it = windows.begin(); it!=windows.end(); ++it)
+  std::vector<FCDockWindow*> windows = _pcWidgetMgr->getDockWindows();
+  for (std::vector<FCDockWindow*>::iterator it = windows.begin(); it!=windows.end(); ++it)
   {
     KDockWidget* w = manager()->getDockWidgetFromName((*it)->name());
     if (w)
@@ -497,26 +496,32 @@ bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
 	FCView* pView = GetActiveView();
 
 	if(pView){
-		pView->OnMsg(pMsg);
-		return true;
+		return pView->OnMsg(pMsg);
 	}else
 		return false;
 }
+
+bool ApplicationWindow::SendHasMsgToActiveView(const char* pMsg)
+{
+	FCView* pView = GetActiveView();
+
+	if(pView){
+		return pView->OnHasMsg(pMsg);
+	}else
+		return false;
+}
+
 
 FCView* ApplicationWindow::GetActiveView(void)
 {
   // check if the is an active window and if it inherits "FCViewContainer"
   // (there exists also windows which do NOT inherit "FCViewContainer")
   // e.g. "FCFloatingChildView"
-  if (!activeWindow() || !activeWindow()->inherits("FCViewContainer"))
-    return 0;
+//  if (!activeWindow() || !activeWindow()->inherits("FCViewContainer"))
+//    return 0;
 
-	FCViewContainer * pViewContainer = reinterpret_cast <FCViewContainer *> ( activeWindow() );
-
-	if(pViewContainer)
-		return pViewContainer->GetActiveView();
-	else
-		return 0;
+	FCView * pView = reinterpret_cast <FCView *> ( activeWindow() );
+	return pView;
 
 }
 
@@ -538,22 +543,22 @@ void ApplicationWindow::SetActiveDocument(FCGuiDocument* pcDocument)
 {
 	_pcActiveDocument=pcDocument;
 
-	GetConsole().Log("Activate (%p) \n",_pcActiveDocument);
+	GetConsole().Log("Activate Document (%p) \n",_pcActiveDocument);
 
 	// notify all views attached to the application (not views belong to a special document)
-	for(std::list<FCView*>::iterator It=_LpcViews.begin();It!=_LpcViews.end();It++)
+	for(std::list<FCBaseView*>::iterator It=_LpcViews.begin();It!=_LpcViews.end();It++)
 		(*It)->SetDocument(pcDocument);
 
 }
 
-void ApplicationWindow::AttachView(FCView* pcView)
+void ApplicationWindow::AttachView(FCBaseView* pcView)
 {
 	_LpcViews.push_back(pcView);
 
 }
 
 
-void ApplicationWindow::DetachView(FCView* pcView)
+void ApplicationWindow::DetachView(FCBaseView* pcView)
 {
 
 	_LpcViews.remove(pcView);
@@ -567,7 +572,7 @@ void ApplicationWindow::Update(void)
 		(*It)->Update();
 	}
 	// update all the independed views
-	for(std::list<FCView*>::iterator It2 = _LpcViews.begin();It2 != _LpcViews.end();It2++)
+	for(std::list<FCBaseView*>::iterator It2 = _LpcViews.begin();It2 != _LpcViews.end();It2++)
 	{
 		(*It2)->Update();
 	}
@@ -577,8 +582,13 @@ void ApplicationWindow::Update(void)
 /// get calld if a view gets activated, this manage the whole activation scheme
 void ApplicationWindow::ViewActivated(FCView* pcView)
 {
+
+	GetConsole().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->GetName());
 	// set the new active document
-	SetActiveDocument(pcView->GetGuiDocument());
+	if(pcView->IsPassiv())
+		SetActiveDocument(0);
+	else
+		SetActiveDocument(pcView->GetGuiDocument());
 }
 
 
@@ -615,11 +625,23 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 	{
 		e->accept();
 	}else{
+		// ask all documents if closable
 		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
 		{
 			(*It)->CanClose ( e );
 			if(! e->isAccepted() ) break;
 		}
+	}
+
+	// ask all passiv views if closable
+	for (std::list<FCBaseView*>::iterator It2 = _LpcViews.begin();It2!=_LpcViews.end();It2++)
+	{
+		if((*It2)->CanClose() )
+			e->accept();
+		else 
+			e->ignore();
+
+		if(! e->isAccepted() ) break;
 	}
 
 	if( e->isAccepted() )
@@ -628,10 +650,22 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
 		std::list<FCGuiDocument*>::iterator It;
 
+		// close all views belonging to a document
 		for (It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
 		{
 			(*It)->CloseAllViews();
 		}
+
+		//detache the passiv views
+		//SetActiveDocument(0);
+		It2 = _LpcViews.begin();
+		while (It2!=_LpcViews.end())
+		{
+			(*It2)->Close();
+			It2 = _LpcViews.begin();
+		}
+
+		// remove all documents
 		for (It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
 		{
 			delete(*It);

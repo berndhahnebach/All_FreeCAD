@@ -609,7 +609,7 @@ void QStackBarBtn::mousePressEvent ( QMouseEvent * e )
  *
  */
 FCStackBar::FCStackBar( QWidget *parent, const char *name )
-	: FCWindow( parent, name )
+	: FCDockWindow( parent, name )
 {
   m_pCurPage  = NULL;
   m_pLastBtn = NULL,

@@ -139,34 +139,25 @@ bool FCGuiDocument::SaveAs(void)
 void FCGuiDocument::CreateView(const char* sType) 
 {
 
-    FCView3D* w = new FCView3D(this,0L,"View3D");
+    FCView3D* pcView3D = new FCView3D(this,0L,"View3D");
 	
-	// add to the view list of document
-	//_LpcViews.push_back(w);
-	// add to the view list of Application window
-
-	//connect( w, SIGNAL( message(const QString&, int) ), _pcAppWnd->statusBar(), SLOT( message(const QString&, int )) );
-	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(onCloseView(FCView*)));
-	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(slotCloseView(FCView*)));
 
 	QString aName;
-//	aName.sprintf("%s:(%d)",_pcDocument->GetName(),_iWinCount++);
 	aName.sprintf("%s:%d","Document",_iWinCount++);
 
-	FCSingleView* pcSingleView = new FCSingleView(w,_pcAppWnd,"3DView");
 
-    pcSingleView->setCaption(aName);
-	pcSingleView->setTabCaption(aName);
-    pcSingleView->setIcon( FCIcon );
-	pcSingleView->resize( 400, 300 );
+    pcView3D->setCaption(aName);
+	pcView3D->setTabCaption(aName);
+    pcView3D->setIcon( FCIcon );
+	pcView3D->resize( 400, 300 );
     if ( _LpcViews.size() == 1 )
-		_pcAppWnd->addWindow(pcSingleView,QextMdi::StandardAdd);
+		_pcAppWnd->addWindow(pcView3D,QextMdi::StandardAdd);
     else
-		_pcAppWnd->addWindow(pcSingleView);
+		_pcAppWnd->addWindow(pcView3D);
 
 }
 
-void FCGuiDocument::AttachView(FCView* pcView, bool bPassiv)
+void FCGuiDocument::AttachView(FCBaseView* pcView, bool bPassiv)
 {
 	if(!bPassiv)
 		_LpcViews.push_back(pcView);
@@ -176,7 +167,7 @@ void FCGuiDocument::AttachView(FCView* pcView, bool bPassiv)
 }
 
 
-void FCGuiDocument::DetachView(FCView* pcView, bool bPassiv)
+void FCGuiDocument::DetachView(FCBaseView* pcView, bool bPassiv)
 {
 
 	if(bPassiv)
@@ -189,7 +180,7 @@ void FCGuiDocument::DetachView(FCView* pcView, bool bPassiv)
 		if(_LpcViews.size() == 0)
 		{
 			// decouple a passiv views
-			std::list<FCView*>::iterator It = _LpcPassivViews.begin();
+			std::list<FCBaseView*>::iterator It = _LpcPassivViews.begin();
 			while (It != _LpcPassivViews.end())
 			{
 				(*It)->SetDocument(0);
@@ -203,7 +194,7 @@ void FCGuiDocument::DetachView(FCView* pcView, bool bPassiv)
 
 void FCGuiDocument::Update(void)
 {
-	std::list<FCView*>::iterator It;
+	std::list<FCBaseView*>::iterator It;
 
 	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
 	{
@@ -260,7 +251,7 @@ void FCGuiDocument::closeEvent ( QCloseEvent * e )
 
 void FCGuiDocument::CloseAllViews(void)
 {
-	std::list<FCView*>::iterator It;
+	std::list<FCBaseView*>::iterator It;
 
 	while ( (It = _LpcViews.begin()) != _LpcViews.end())
 	{
@@ -276,7 +267,7 @@ bool FCGuiDocument::SendMsgToViews(const char* pMsg)
 {
 
 	bool bResult = false;
-	std::list<FCView*>::iterator It;
+	std::list<FCBaseView*>::iterator It;
 
 	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
 	{

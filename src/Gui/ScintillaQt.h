@@ -153,27 +153,46 @@ class FCScintEditor : public QWidget
 };
 
 class FCScintEditor;
-class FCScintillaDoc;
-class FCScintEditView : public FCFloatingView
+//class FCScintillaDoc;
+
+class FCScintEditView : public FCView
 {
-  public:
-	  FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name);
+public:
+	  FCScintEditView( QWidget* parent, const char* name);
 	  ~FCScintEditView();
 
     FCScintEditor* GetEditor() const { return view; }
 
-  protected:
+    virtual const char *GetName(void){return "Scintilla";}
+	virtual void Update(void){};
+
+	/// Mesage handler
+	virtual bool OnMsg(const char* pMsg);
+	/// Mesage handler test
+	virtual bool OnHasMsg(const char* pMsg);
+	/// checking on close state
+	virtual bool CanClose(void);
+
+
+    bool Save   (void);
+    bool SaveAs (void);
+    bool Open   (void);
+	virtual void Print(QPainter& cPrinter);
+	void Cut(void){}
+	void Copy(void){}
+	void Paste(void){}
+
+protected:
+	virtual void resizeEvent(QResizeEvent* e);
     FCScintEditor* view;
 };
-
-class FCScintillaView : public FCFloatingChildView
+/*
+class FCScintillaView : public FCFloatingView
 {
   public:
 	  FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name);
 	  ~FCScintillaView();
 
-  protected:
-    virtual void closeEvent(QCloseEvent *e);
 };
 
 class FCScintillaDoc : public FCFloatingDoc
@@ -188,5 +207,5 @@ class FCScintillaDoc : public FCFloatingDoc
     bool SaveAs (void);
     bool Open   (void);
 };
-
+*/
 #endif

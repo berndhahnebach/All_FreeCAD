@@ -167,7 +167,7 @@ class QStackBarBtn : public QToolButton
     FCStackBar* pStackBar;
 };
 
-class FCStackBar : public FCWindow, public FCParameterGrp::ObserverType
+class FCStackBar : public FCDockWindow, public FCParameterGrp::ObserverType
 {
   Q_OBJECT;
 

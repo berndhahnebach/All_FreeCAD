@@ -1482,9 +1482,9 @@ int FCCustomWidgetManager::countPopupMenus()
   return int(_clPopupMenus.size());
 }
 
-FCWindow* FCCustomWidgetManager::getDockWindow(const char* name)
+FCDockWindow* FCCustomWidgetManager::getDockWindow(const char* name)
 {
-	std::map <std::string,FCWindow*>::iterator It = _clDocWindows.find(name);
+	std::map <std::string,FCDockWindow*>::iterator It = _clDocWindows.find(name);
 
   if (It!=_clDocWindows.end())
 		return It->second;
@@ -1492,10 +1492,10 @@ FCWindow* FCCustomWidgetManager::getDockWindow(const char* name)
 		return NULL;
 }
 
-std::vector<FCWindow*> FCCustomWidgetManager::getDockWindows()
+std::vector<FCDockWindow*> FCCustomWidgetManager::getDockWindows()
 {
-  std::vector<FCWindow*> dockWindows;
-  for (std::map <std::string,FCWindow*>::iterator It = _clDocWindows.begin(); It!=_clDocWindows.end(); ++It)
+  std::vector<FCDockWindow*> dockWindows;
+  for (std::map <std::string,FCDockWindow*>::iterator It = _clDocWindows.begin(); It!=_clDocWindows.end(); ++It)
     dockWindows.push_back(It->second);
 
   return dockWindows;
@@ -1503,7 +1503,7 @@ std::vector<FCWindow*> FCCustomWidgetManager::getDockWindows()
 
 void FCCustomWidgetManager::delDockWindow(const char* name)
 {
-	std::map <std::string,FCWindow*>::iterator It = _clDocWindows.find(name);
+	std::map <std::string,FCDockWindow*>::iterator It = _clDocWindows.find(name);
 	if( It!=_clDocWindows.end() )
 	{
 		delete It->second;
@@ -1511,7 +1511,7 @@ void FCCustomWidgetManager::delDockWindow(const char* name)
 	}
 }
 
-void FCCustomWidgetManager::addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos, int percent)
+void FCCustomWidgetManager::addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos, int percent)
 {
   ApplicationWindow* pApp = ApplicationWindow::Instance;
 	_clDocWindows[name] = pcDocWindow;
@@ -1520,7 +1520,7 @@ void FCCustomWidgetManager::addDockWindow(const char* name,FCWindow *pcDocWindow
 
   if (sCompanion)
 	{
-		FCWindow* pcWnd = getDockWindow(sCompanion);
+		FCDockWindow* pcWnd = getDockWindow(sCompanion);
 		assert(pcWnd);
 		pApp->addToolWindow( pcDocWindow, pos, pcWnd, percent, str, name);
 	}

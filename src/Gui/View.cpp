@@ -39,43 +39,56 @@
 #include "Application.h"
 
 
-//#	include <qgrid.h>
+//**************************************************************************
+// FCBaseView
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-FCView::FCView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
-	:FCWindow(parent, name, wflags),
-	 _pcDocument(pcDocument),
-	 bIsDetached(false)
+FCBaseView::FCBaseView( FCGuiDocument* pcDocument)
+:_pcDocument(pcDocument),
+ bIsDetached(false)
 {
-	if(pcDocument)
+	if(pcDocument){
 		pcDocument->AttachView(this);
-	else
+		bIsPassiv = false;
+	}else{
 		ApplicationWindow::Instance->AttachView(this);
-}
-
-FCView::~FCView()
-{
-	if(!bIsDetached)
-	{
-		if(_pcDocument)
-			_pcDocument->DetachView(this);
-		else
-			ApplicationWindow::Instance->DetachView(this);
+		bIsPassiv = true;
 	}
 }
 
-void FCView::Close(void)
+FCBaseView::~FCBaseView()
 {
+//	assert (bIsDetached);
+	if(!bIsDetached && !ApplicationWindow::Instance->IsClosing() )
+	{
+		Close();
+	}
+}
+
+void FCBaseView::Close(void)
+{
+	if(bIsDetached) return;
+
+	if(bIsPassiv){
+		ApplicationWindow::Instance->DetachView(this);
+	}else{
+		if(_pcDocument)
+			_pcDocument->DetachView(this);
+	}
+
+	_pcDocument = 0;
+	bIsDetached = true;
+	/*
 	if(_pcDocument)
 		_pcDocument->DetachView(this);
 	else
 		ApplicationWindow::Instance->DetachView(this);
-
-	bIsDetached = true;
+*/
 }
 
 
-void FCView::SetDocument(FCGuiDocument* pcDocument)
+void FCBaseView::SetDocument(FCGuiDocument* pcDocument)
 {
 	FCGuiDocument* pcOldDocument;
 	// detach and attache the observer
@@ -92,122 +105,102 @@ void FCView::SetDocument(FCGuiDocument* pcDocument)
 	OnNewDocument(pcOldDocument,_pcDocument);
 }
 
+
+//**************************************************************************
+// FCView
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+FCView::FCView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
+	:QextMdiChildView(parent, name, wflags),
+	 FCBaseView(pcDocument)
+{
+	// sends the activation signal to the view, which set the active document and view in ApplicationWindow
+	connect(this, SIGNAL(activated(QextMdiChildView*)), this, SLOT(SetActive()));
+
+}
+
+FCView::~FCView()
+{
+}
+
+
 /// recife a message
 bool FCView::OnMsg(const char* pMsg)
 {
 	return false;
 }
 
-	
-void FCView::ViewMsg(const char* pMsg)
+bool FCView::OnHasMsg(const char* pMsg)
 {
-	OnMsg(pMsg);
+	return false;
 }
+
+void FCView::closeEvent(QCloseEvent *e)
+{
+	if(bIsPassiv){
+		if(CanClose() ){
+			e->accept();
+			QextMdiChildView::closeEvent(e);
+		}
+	}else{
+		if(GetGuiDocument()->IsLastView())
+		{
+			GetGuiDocument()->CanClose(e);
+
+			if(e->isAccepted ())
+				QextMdiChildView::closeEvent(e);
+		}else
+			e->accept();
+	}
+}
+
 
 void FCView::SetActive(void)
 {
 	ApplicationWindow::Instance->ViewActivated(this);
 }
 
-
-
-FCDoubleView::FCDoubleView(FCView* pcView1, FCView* pcView2, QWidget* parent, const char* name, int wflags )
-    :FCViewContainer(parent, name, wflags),
-	 _pcView1(pcView1),
-	 _pcView2(pcView2)
+void FCView::Print(QPainter& cPrinter)
 {
-	// set up one splitter for the whole area	
-    QVBoxLayout* pcMainLayout = new QVBoxLayout(this);
-	//pcMainLayout->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-	_pcSplitter = new QSplitter( QSplitter::Horizontal, this, "Main");
-	pcMainLayout->addWidget(_pcSplitter);
-
-	// set up first widget
-	QVBox* pcLayoutView1 = new QVBox( _pcSplitter );
-	pcView1->reparent(pcLayoutView1,wflags,QPoint(0,0));
-	pcLayoutView1->setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
-
-	// set up first widget
-	QVBox* pcLayoutView2 = new QVBox( _pcSplitter );
-	pcView1->reparent(pcLayoutView2,wflags,QPoint(0,0));
-	pcLayoutView2->setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
-
-	
-	// set the splitter behavior
-	_pcSplitter->setResizeMode(pcLayoutView1,QSplitter::KeepSize);
-	QValueList<int> size;
-	size.append(180);
-	size.append(100);
-	_pcSplitter->setSizes (size);
-	
+	// print command specified but print methode not overriden!
+	assert(0);
 }
 
-FCDoubleView::~FCDoubleView()
+
+//**************************************************************************
+// FCDockView
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+FCDockView::FCDockView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
+	:FCDockWindow(parent, name, wflags),
+	 FCBaseView(pcDocument)
 {
- 
+}
+
+FCDockView::~FCDockView()
+{
+}
+
+
+/// recife a message
+bool FCDockView::OnMsg(const char* pMsg)
+{
+	return false;
+}
+
+bool FCDockView::OnHasMsg(const char* pMsg)
+{
+	return false;
 }
 
 
 
-FCSingleView::FCSingleView(FCView* pcView, QWidget* parent, const char* name, int wflags )
-    :FCViewContainer(parent, name, wflags),
-	 _pcView(pcView)
-{
-
-	// sends the activation signal to the view, which set the active document and view in ApplicationWindow
-	connect(this, SIGNAL(activated(QextMdiChildView*)), pcView, SLOT(SetActive()));
-
-	// reparent the View to the ViewContainer
-	_pcView->reparent(this,wflags,QPoint(0,0));
-
-	
-}
-
-
-void FCSingleView::resizeEvent ( QResizeEvent * e) 
-{
-	// sends the rezise event to the view (reparent dont set the proper conection?!?!)
-	_pcView->resize(e->size());
-}
-
-void FCSingleView::closeEvent(QCloseEvent *e)
-{
-	if(_pcView->GetGuiDocument()->IsLastView())
-	{
-		_pcView->GetGuiDocument()->CanClose(e);
-
-		if(e->isAccepted ())
-			QextMdiChildView::closeEvent(e);
-	}else
-		e->accept();
-}
-
-
-FCSingleView::~FCSingleView()
-{
- 
-}
-
-
-
-FCViewBar::FCViewBar( FCView* pcView, QWidget* parent, const char* name, int wflags )
-	:FCWindow(parent,name,wflags),
-	 _pcView(pcView)
-{
-  assert(_pcView);
-	_pcView->reparent(this,wflags,QPoint(0,0));
-	resize( 130, 600 );
-}
-
-FCViewBar::~FCViewBar()
-{
-
-}
-
-void FCViewBar::resizeEvent ( QResizeEvent * e) 
-{
-  _pcView->resize(e->size());
-}
+//**************************************************************************
+// FCFloatingDoc
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 void FCFloatingDoc::CanClose(QCloseEvent * e )
@@ -228,8 +221,14 @@ void FCFloatingDoc::CanClose(QCloseEvent * e )
 	}
 }
 
+//**************************************************************************
+// FCFloatingView
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 FCFloatingView::FCFloatingView(FCFloatingDoc* pcDoc, QWidget* parent, const char* name, int wflags)
-  : FCWindow(parent, name, wflags), _pcDocument(pcDoc)
+  : FCView(0,parent, name, wflags),
+    _pcDocument(pcDoc)
 {
 	_pcFrame = new QVBox (this);
   _pcFrame->setSpacing ( 6 );

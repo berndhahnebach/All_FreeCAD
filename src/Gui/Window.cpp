@@ -95,7 +95,7 @@ ApplicationWindow* FCWindowParameter::GetAppWnd(void)
 //**************************************************************************
 // Construction/Destruction
 
-FCWindow::FCWindow(QWidget *parent, const char *name, WFlags f)
+FCDockWindow::FCDockWindow(QWidget *parent, const char *name, WFlags f)
 	:QWidget(parent,name,f),
 	FCWindowParameter(name)
 {
@@ -103,7 +103,7 @@ FCWindow::FCWindow(QWidget *parent, const char *name, WFlags f)
 }
 
 
-FCWindow::~FCWindow()
+FCDockWindow::~FCDockWindow()
 {
 
 }
@@ -117,7 +117,7 @@ FCWindow::~FCWindow()
 
 //**************************************************************************
 // Construction/Destruction
-
+/*
 FCViewContainer::FCViewContainer(QWidget* parent, const char* name, int wflags )
     :QextMdiChildView( parent, name, wflags ),
 	 FCWindowParameter(name)
@@ -129,7 +129,7 @@ FCViewContainer::~FCViewContainer()
 {
   
 }
-
+*/
 
 
 

@@ -75,7 +75,7 @@ protected:
 
 
 
-class FCTree :public FCView
+class FCTree :public FCDockView
 {
 	Q_OBJECT
 public:

@@ -161,7 +161,7 @@ QPixmap* FCTree::pcAttribute=0;
 
 
 FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
-	:FCView(pcDocument,parent,name)
+	:FCDockView(pcDocument,parent,name)
 {
 
 	_pcListView = new QListView(this,name);
@@ -203,7 +203,7 @@ void FCTree::Update(void)
 
 void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
 {
-	GetConsole().Log("Tree doc activated %p\n",pcNewDocument);
+//	GetConsole().Log("Tree doc activated %p\n",pcNewDocument);
 
 	if(pcOldDocument != pcNewDocument)
 	{

@@ -21,11 +21,11 @@
 
 
 #include "../Base/PyExport.h"
-#include "DlgUndoRedo.h"
 #include <qaction.h>
 #include <string>
 #include <map>
 #include <list>
+#include "DlgUndoRedo.h"
 
 class FCCommandManager;
 class ApplicationWindow;
@@ -400,15 +400,15 @@ public:
 
 	/** @name Methodes to get the propertys of the Script Command */
 	//@{
-	const char* GetScriptName		()	{return _sScriptName. c_str();}
-	const char* GetMenuText		  ()	{return _sMenuText.   c_str();}
-	const char* GetToolTipText	()	{return _sToolTipText.c_str();}
-	const char* GetWhatsThis		()	{return _sWhatsThis.  c_str();}
-	const char* GetStatusTip		()	{return _sStatusTip.  c_str();}
-	const char* GetPixmap		    ()	{return _sPixmap.     c_str();}
-	const char* GetHelpPage	    ()	{return _sHelpPage.   c_str();}
-	const char* GetHelpURL		  ()	{return _sHelpURL.    c_str();}
-	int         GetAccel		    ()	{return _iAccel;              }
+	const char* GetScriptName ()	{return _sScriptName. c_str();}
+	const char* GetMenuText   ()	{return _sMenuText.   c_str();}
+	const char* GetToolTipText()	{return _sToolTipText.c_str();}
+	const char* GetWhatsThis  ()	{return _sWhatsThis.  c_str();}
+	const char* GetStatusTip  ()	{return _sStatusTip.  c_str();}
+	const char* GetPixmap     ()	{return _sPixmap.     c_str();}
+	const char* GetHelpPage   ()	{return _sHelpPage.   c_str();}
+	const char* GetHelpURL    ()	{return _sHelpURL.    c_str();}
+	int         GetAccel      ()	{return _iAccel;              }
 	//@}
 	/** @name Methodes to set the propertys of the Script Command */
 	//@{
@@ -535,9 +535,10 @@ public:\
 	virtual void Activated(int iMsg);\
 	virtual bool IsActive(void)\
 		{\
-			return GetAppWnd()->GetActiveView() && strcmp( GetAppWnd()->GetActiveView()->GetName(), "View3D" ) == 0?true:false;\
+			return ( GetAppWnd()->GetActiveView() && strcmp( GetAppWnd()->GetActiveView()->GetName(), "View3D" )  == 0)?true:false;\
 		}\
 };
+
 
 /** Some special commands
  *  The undo/redo commands

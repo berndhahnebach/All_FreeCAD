@@ -49,7 +49,7 @@ class QDoubleValidator;
 class FCWidgetFactorySupplier;
 class QAction;
 class FCStackBar;
-class FCWindow;
+class FCDockWindow;
 
 /** The widget preference class
  *  If you want to extend a QWidget class to save/restore data
@@ -479,10 +479,10 @@ class FCCustomWidgetManager
     int countPopupMenus();
 
     // dockable windows
-    FCWindow* getDockWindow(const char* name);
-    std::vector<FCWindow*> getDockWindows();
+    FCDockWindow* getDockWindow(const char* name);
+    std::vector<FCDockWindow*> getDockWindows();
     void delDockWindow(const char* name);
-	  void addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,
+	void addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,
                        KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 50);
 
     void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);
@@ -497,7 +497,7 @@ class FCCustomWidgetManager
     std::map <std::string,FCPopupMenu*> _clPopupMenus;
     std::map <std::string,FCToolBar*>   _clToolbars;
     std::map <std::string,FCToolBar*>   _clCmdbars;
-	  std::map <std::string,FCWindow*>    _clDocWindows;
+	  std::map <std::string,FCDockWindow*>    _clDocWindows;
     std::vector<std::string>            _clDefaultItems;
     FCCommandManager&                   _clCmdMgr;
   	FCStackBar*                         _pclStackBar;

@@ -3,6 +3,7 @@
  ** Lexer for ESCRIPT
  **/
 // Copyright 2003 by Patrizio Bekerle (patrizio@bekerle.com)
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

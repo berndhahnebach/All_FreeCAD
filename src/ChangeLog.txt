@@ -273,3 +273,11 @@ Version: V0.1B62 Date: Thu May 29 12:22:37 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B63 Date: Thu May 29 12:22:37 2003 +++++++++++++++++++++++++++++++
 + Settings dialog for Scintilla
 + switch between several view by clicking CTRL+Tab
+
+Version: V0.1B62 Date: Sat May 31 11:53:56 2003 +++++++++++++++++++++++++++++++
++ redesign of Document view modell
+  + removing ViewContainer
+  + adding the OnHasMsg methodes 
+  + switching some stdCommands to message stile to allow views with own document
+  + moving scintila to a passiv view modell
+

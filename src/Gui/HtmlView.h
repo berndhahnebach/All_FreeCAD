@@ -93,7 +93,7 @@ class FCHtmlComboBox : public QComboBox
 /**
  * The HTML viewer class
  */
-class GuiExport FCHtmlView : public FCWindow, public FCParameterGrp::ObserverType
+class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::ObserverType
 { 
     Q_OBJECT
 

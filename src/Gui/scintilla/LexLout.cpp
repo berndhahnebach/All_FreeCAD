@@ -4,6 +4,7 @@
  **/
 // Copyright 2003 by Kein-Hong Man <mkh@pl.jaring.my>
 // The License.txt file describes the conditions under which this software may be distributed.
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

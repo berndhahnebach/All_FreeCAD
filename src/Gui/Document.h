@@ -98,9 +98,9 @@ public:
 	/// send Messages to all views
 	bool SendMsgToViews(const char* pMsg);
 	/// Attach a view (get called by the FCView constructor)
-	void AttachView(FCView* pcView, bool bPassiv=false);
+	void AttachView(FCBaseView* pcView, bool bPassiv=false);
 	/// Detach a view (get called by the FCView destructor)
-	void DetachView(FCView* pcView, bool bPassiv=false);
+	void DetachView(FCBaseView* pcView, bool bPassiv=false);
 	/// call update on attached all views
 	void Update(void);
 	/// close all attached views in order to close the gui document
@@ -147,9 +147,9 @@ private:
 	int								_iWinCount;
 	ApplicationWindow*				_pcAppWnd;
 	/// List of all registered views
-	std::list<FCView*>					_LpcViews;
+	std::list<FCBaseView*>					_LpcViews;
 	/// List of all registered views
-	std::list<FCView*>					_LpcPassivViews;
+	std::list<FCBaseView*>					_LpcPassivViews;
 	/// Active view
 	FCView*							_pcActiveView;
 	Handle(V3d_Viewer)				_hViewer;

@@ -43,7 +43,6 @@
 #include "Splashscreen.h"
 #include "Command.h"
 
-
 #include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
 #include "DlgMacroExecuteImp.h"
@@ -131,7 +130,7 @@ void FCCmdNew::Activated(int iMsg)
 //===========================================================================
 // Std_Save
 //===========================================================================
-DEF_STD_CMD(FCCmdSave);
+DEF_STD_CMD_A(FCCmdSave);
 
 FCCmdSave::FCCmdSave()
 	:FCCppCommand("Std_Save")
@@ -150,13 +149,25 @@ FCCmdSave::FCCmdSave()
 
 void FCCmdSave::Activated(int iMsg)
 {
-	GetActiveDocument()->Save();
+	if( GetActiveDocument() )
+		GetActiveDocument()->Save();
+	else
+		GetAppWnd()->SendMsgToActiveView("Save");
+}
+
+bool FCCmdSave::IsActive(void)
+{
+	if( GetActiveDocument() )
+		return true;
+	else
+		return GetAppWnd()->SendHasMsgToActiveView("Save");
+
 }
 
 //===========================================================================
 // Std_SaveAs
 //===========================================================================
-DEF_STD_CMD(FCCmdSaveAs);
+DEF_STD_CMD_A(FCCmdSaveAs);
 
 FCCmdSaveAs::FCCmdSaveAs()
 	:FCCppCommand("Std_SaveAs")
@@ -177,10 +188,19 @@ void FCCmdSaveAs::Activated(int iMsg)
 
 }
 
+bool FCCmdSaveAs::IsActive(void)
+{
+	if( GetActiveDocument() )
+		return true;
+	else
+		return GetAppWnd()->SendHasMsgToActiveView("SaveAs");
+
+}
+
 //===========================================================================
 // Std_Print
 //===========================================================================
-DEF_STD_CMD(FCCmdPrint );
+DEF_STD_CMD_A(FCCmdPrint );
 
 FCCmdPrint::FCCmdPrint()
 	:FCCppCommand("Std_Print")
@@ -205,11 +225,15 @@ void FCCmdPrint::Activated(int iMsg)
 		QPainter painter;
 		painter.begin(&printer);
 
-		///////////////////////////////////////////////////////////////////
-		// TODO: Define printing by using the QPainter methods here
+		GetAppWnd()->GetActiveView()->Print(painter);
 
 		painter.end();
 	}
+}
+
+bool FCCmdPrint::IsActive(void)
+{
+	return GetAppWnd()->SendHasMsgToActiveView("Print");
 }
 
 //===========================================================================
@@ -235,6 +259,7 @@ void FCCmdQuit::Activated(int iMsg)
 {
   ApplicationWindow::Instance->close();
 }
+
 
 //===========================================================================
 // Std_Undo
@@ -428,7 +453,7 @@ bool FCCmdWorkbench::addTo(QWidget *w)
 //===========================================================================
 // Std_Cut
 //===========================================================================
-DEF_STD_CMD(FCCmdCut);
+DEF_STD_CMD_A(FCCmdCut);
 
 FCCmdCut::FCCmdCut()
 	:FCCppCommand("Std_Cut")
@@ -446,13 +471,18 @@ FCCmdCut::FCCmdCut()
 
 void FCCmdCut::Activated(int iMsg)
 {
+	GetAppWnd()->SendMsgToActiveView("Cut");
+}
 
+bool FCCmdCut::IsActive(void)
+{
+	return GetAppWnd()->SendHasMsgToActiveView("Cut");
 }
 
 //===========================================================================
 // Std_Copy
 //===========================================================================
-DEF_STD_CMD(FCCmdCopy );
+DEF_STD_CMD_A(FCCmdCopy );
 
 FCCmdCopy::FCCmdCopy()
 	:FCCppCommand("Std_Copy")
@@ -470,13 +500,18 @@ FCCmdCopy::FCCmdCopy()
 
 void FCCmdCopy::Activated(int iMsg)
 {
+	GetAppWnd()->SendMsgToActiveView("Copy");
+}
 
+bool FCCmdCopy::IsActive(void)
+{
+	return GetAppWnd()->SendHasMsgToActiveView("Copy");
 }
 
 //===========================================================================
 // Std_Paste
 //===========================================================================
-DEF_STD_CMD(FCCmdPaste);
+DEF_STD_CMD_A(FCCmdPaste);
 
 FCCmdPaste::FCCmdPaste()
 	:FCCppCommand("Std_Paste")
@@ -494,7 +529,11 @@ FCCmdPaste::FCCmdPaste()
 
 void FCCmdPaste::Activated(int iMsg)
 {
-
+	GetAppWnd()->SendMsgToActiveView("Paste");
+}
+bool FCCmdPaste::IsActive(void)
+{
+	return GetAppWnd()->SendHasMsgToActiveView("Paste");
 }
 
 //===========================================================================

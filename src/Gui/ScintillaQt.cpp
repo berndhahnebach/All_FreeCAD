@@ -847,40 +847,117 @@ void ScintillaQt::FCScintCallTip::mousePressEvent(QMouseEvent* e)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-FCScintEditView::FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name)
-: FCFloatingView(pcDoc, parent, name)
+FCScintEditView::FCScintEditView( QWidget* parent, const char* name)
+: FCView(0,parent, name)  
 {
-  FCScintillaView* pcScintView = new FCScintillaView(this, ApplicationWindow::Instance,"EditView");
-  pcScintView->setCaption("Editor");
-	pcScintView->setTabCaption("Editor");
-	pcScintView->resize( 400, 300 );
+//	FCScintillaView* pcScintView = new FCScintillaView(this, ApplicationWindow::Instance,"EditView");
+	setCaption("Editor");
+	setTabCaption("Editor");
+	resize( 400, 300 );
 
-  view = new FCScintEditor(_pcFrame);
-  ApplicationWindow::Instance->addWindow(pcScintView);
+ // view = new FCScintEditor(_pcFrame);
+	view = new FCScintEditor(this);
 }
 
 FCScintEditView::~FCScintEditView()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+void FCScintEditView::resizeEvent(QResizeEvent* e)
+{
+	view->resize(e->size().width(),e->size().height());
+	FCView::resizeEvent( e);
+}
 
+bool FCScintEditView::OnMsg(const char* pMsg)
+{
+	if (strcmp(pMsg,"Save")==0){
+		Save();
+		return true;
+	}
+	if (strcmp(pMsg,"Cut")==0){
+		Cut();
+		return true;
+	}
+	if (strcmp(pMsg,"Copy")==0){
+		Copy();
+		return true;
+	}
+	if (strcmp(pMsg,"Paste")==0){
+		Paste();
+		return true;
+	}
+
+	GetConsole().Log("FCScintEditView::OnMsg() unhandled \"%s\"\n",pMsg);
+	return false;
+}
+
+	/// Mesage handler test
+bool FCScintEditView::OnHasMsg(const char* pMsg)
+{
+	if (strcmp(pMsg,"Save")==0)  return true;
+	if (strcmp(pMsg,"Print")==0) return true;
+	if (strcmp(pMsg,"Cut")==0)   return true;
+	if (strcmp(pMsg,"Copy")==0)  return true;
+	if (strcmp(pMsg,"Paste")==0) return true;
+	return false;
+}
+
+bool FCScintEditView::CanClose(void)
+{
+
+	switch(QMessageBox::warning( 0, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
+	{
+	case 0:
+		//GetApplication().
+		if (Save())
+  			return true;
+		else
+			return false;
+	case 1:
+		return true;
+	case 2:
+		return false;
+	default:
+		return false;
+	}
+}
+
+bool FCScintEditView::Save(void)
+{
+  return true;
+}
+
+bool FCScintEditView::SaveAs(void)
+{
+  return true;
+}
+
+bool FCScintEditView::Open(void)
+{
+	QString name = QFileDialog::getOpenFileName( QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", view);
+	if ( name.isEmpty() ) 
+		return false;
+
+	view->openFile(name.latin1());
+	return true;
+}
+
+void FCScintEditView::Print(QPainter& cPrinter)
+{
+	// no printing yet ;-)
+	assert(0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+/*
 FCScintillaView::FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name)
-  : FCFloatingChildView( pcView, parent, name )
+  : FCFloatingView( pcView, parent, name )
 {
 }
 
 FCScintillaView::~FCScintillaView()
 {
-}
-
-void FCScintillaView::closeEvent(QCloseEvent *e)
-{
-  GetActiveView()->GetDocument()->CanClose(e);
-  if (e->isAccepted ())
-  {
-    FCFloatingChildView::closeEvent(e);
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -917,5 +994,5 @@ bool FCScintillaDoc::Open(void)
   ((FCScintEditView*)view)->GetEditor()->openFile(name.latin1());
    return true;
 }
-
+*/
 #include "moc_ScintillaQt.cpp"

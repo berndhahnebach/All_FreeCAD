@@ -56,7 +56,7 @@ class FCGuiDocument;
 class QComboBox;
 class FCWindow;
 class QToolBar;
-class FCView;
+class FCBaseView;
 class FCToolboxBar;
 class FCAutoWaitCursor;
 class FCStackBar;
@@ -127,14 +127,16 @@ public:
 	//@{
 	/// send Messages to the active view
 	bool SendMsgToActiveView(const char* pMsg);
+	/// send Messages test to the active view
+	bool SendHasMsgToActiveView(const char* pMsg);
 	/// returns the active view or NULL
 	FCView* GetActiveView(void);
 	/// Geter for the Active View
 	FCGuiDocument* GetActiveDocument(void);
 	/// Attach a view (get called by the FCView constructor)
-	void AttachView(FCView* pcView);
+	void AttachView(FCBaseView* pcView);
 	/// Detach a view (get called by the FCView destructor)
-	void DetachView(FCView* pcView);
+	void DetachView(FCBaseView* pcView);
 	/// get calld if a view gets activated, this manage the whole activation scheme
 	void ViewActivated(FCView* pcView);
 	/// call update to all docuemnts an all views (costly!)
@@ -261,14 +263,14 @@ private:
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
 	FCProgressBar *  _pclProgress;
 	FCStackBar*        _pcStackBar;
-	FCHtmlView*		 _pcHtmlView;
-  FCViewBar *    _pcViewBar;
+//	FCHtmlView*		 _pcHtmlView;
+//	FCViewBar *	     _pcViewBar;
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
 	QTimer *		 _pcActivityTimer; 
 	/// List of all registered views
-	std::list<FCView*>					_LpcViews;
+	std::list<FCBaseView*>					_LpcViews;
 
 	bool _bIsClosing;
 

@@ -142,10 +142,8 @@ void DlgMacroExecuteImp::OnCreate()
 
 void DlgMacroExecuteImp::OnEdit()
 {
-  FCScintillaDoc* doc = new FCScintillaDoc;
-  doc->CreateView("Editor");
+  ApplicationWindow::Instance->addWindow(new FCScintEditView(ApplicationWindow::Instance, "Editor"),QextMdi::StandardAdd);
   accept();
-//    qWarning( "DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*) not yet implemented!" ); 
 }
 
 void DlgMacroExecuteImp::OnDelete()

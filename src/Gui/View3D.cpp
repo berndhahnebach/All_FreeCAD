@@ -67,19 +67,20 @@ void FCView3D::resizeEvent ( QResizeEvent * e)
   _pcFrame->resize(e->size());
 }
 
+/*
 
 void FCView3D::closeEvent(QCloseEvent* e)
 {
-/*
-  int iButton = QMessageBox::warning(this, "FreeCAD", "Save changes to file?", "Yes", "No", "Cancel", 0);
-  if (iButton != 1) // yes/cancel
-    return;
-*/
+
+//  int iButton = QMessageBox::warning(this, "FreeCAD", "Save changes to file?", "Yes", "No", "Cancel", 0);
+//  if (iButton != 1) // yes/cancel
+//    return;
+
 
 	emit sendCloseView(this);
 //	QextMdiChildView::closeEvent(e);
 }
-
+*/
 const char *FCView3D::GetName(void)
 {
 	return "View3D";

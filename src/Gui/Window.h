@@ -57,13 +57,13 @@ private:
 
 /** father of all FreeCAD windows (execept the view containers)
  */
-class GuiExport FCWindow:public QWidget, public FCWindowParameter 
+class GuiExport FCDockWindow:public QWidget, public FCWindowParameter 
 {
 	Q_OBJECT;
 
 public:
-	FCWindow(QWidget *parent=0, const char *name=0, WFlags f=0 );
-	~FCWindow();
+	FCDockWindow(QWidget *parent=0, const char *name=0, WFlags f=0 );
+	~FCDockWindow();
 
 private:
 
@@ -77,6 +77,7 @@ private:
 
 /** Father of all view container classes
  */
+/*
 class FCViewContainer: public QextMdiChildView, public FCWindowParameter
 {
 	Q_OBJECT;
@@ -91,7 +92,7 @@ private:
 
 };
 
-
+*/
 
 
 
