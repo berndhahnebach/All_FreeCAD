@@ -42,7 +42,7 @@
 #ifndef _PreComp_
 #endif
 
-#include "PrefWidgets.h"
+#include "PropertyPage.h"
 #include "DlgSettings3DViewImp.h"
 #include "Widgets.h"
 #include "../Base/Console.h"

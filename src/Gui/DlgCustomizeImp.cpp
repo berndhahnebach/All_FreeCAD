@@ -50,48 +50,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-FCPropertyPage::FCPropertyPage() 
-{
-  bChanged = false;
-}
-
-void FCPropertyPage::apply()
-{
-}
-
-void FCPropertyPage::cancel()
-{
-}
-
-bool FCPropertyPage::isModified()
-{
-  return bChanged;
-}
-
-void FCPropertyPage::setModified(bool b)
-{
-  bChanged = b;
-}
-
-void FCPropertyPage::slotApply()
-{
-  if (isModified())
-    apply();
-
-  setModified(false);
-}
-
-void FCPropertyPage::slotCancel()
-{
-  if (isModified())
-  {
-    cancel();
-    setModified(false);
-  }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
 /* 
  *  Constructs a FCDlgCustomize which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
@@ -177,9 +135,9 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
 
   // connections
   //
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
-  connect(buttonApply, SIGNAL(clicked()), this, SLOT(slotApply()));
-  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(slotCancel()));
+  connect(buttonOk, SIGNAL(clicked()), this, SLOT(onOK()));
+  connect(buttonApply, SIGNAL(clicked()), this, SLOT(onApply()));
+  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(onCancel()));
 }
 
 /*  
@@ -203,16 +161,16 @@ void FCDlgCustomize::insertTab (QWidget* w, QString name)
   tabPages.push_back(w);
 }
 
-void FCDlgCustomize::slotOK()
+void FCDlgCustomize::onOK()
 {
-  slotApply();
+  onApply();
 }
 
-void FCDlgCustomize::slotApply()
+void FCDlgCustomize::onApply()
 {
   QWidget* page = tabWidget->currentPage();
   if (dynamic_cast<FCPropertyPage*>(page) != NULL)
-     (dynamic_cast<FCPropertyPage*>(page))->slotApply();
+     (dynamic_cast<FCPropertyPage*>(page))->onApply();
 
 # ifdef FC_DEBUG
   else
@@ -220,12 +178,12 @@ void FCDlgCustomize::slotApply()
 #endif
 }
 
-void FCDlgCustomize::slotCancel()
+void FCDlgCustomize::onCancel()
 {
   for (std::vector<QWidget*>::iterator it = tabPages.begin(); it != tabPages.end(); ++it)
   {
     if (dynamic_cast<FCPropertyPage*>(*it) != NULL)
-       (dynamic_cast<FCPropertyPage*>(*it))->slotCancel();
+       (dynamic_cast<FCPropertyPage*>(*it))->onCancel();
 
 # ifdef FC_DEBUG
     else

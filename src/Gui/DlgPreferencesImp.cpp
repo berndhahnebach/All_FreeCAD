@@ -52,6 +52,7 @@
 #include "DlgGeneralImp.h"
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
+#include "DlgOnlineHelpImp.h"
 #include "Application.h"
 #include "Tools.h"
 #include "Widgets.h"
@@ -62,7 +63,7 @@
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
- */
+ *//*
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgPreferences( parent, name, modal, fl ),FCWindowParameter(name), m_pCurPage(NULL), m_pCurTab(NULL)
 {
@@ -87,10 +88,10 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
   // show the first page
   prefPageClicked(ListView2->firstChild());
 }
-
+*/
 /*  
  *  Destroys the object and frees any allocated resources
- */
+ *//*
 DlgPreferencesImp::~DlgPreferencesImp()
 {
     // no need to delete child widgets, Qt does it all for us
@@ -131,7 +132,7 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const
 		connectWidget(page);
 	}
 }
-
+*/
 /*
 void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const char* group)
 {
@@ -150,7 +151,7 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const
 }
 */
 
-
+/*
 QTabWidget* DlgPreferencesImp::getPreferenceGroup(const char* name)
 {
   // already inside
@@ -251,10 +252,10 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
 //  connect(PushButton13, SIGNAL(clicked()), page, SLOT(save()));//OK
 //  connect(PushButton14, SIGNAL(clicked()), page, SLOT(save()));//Apply
 
-  if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
+  if (dynamic_cast<FCPreferencePage*>(page) != NULL)
   {
     // and its preference widgets
-    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
+    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCPreferencePage*>(page)->getHandlers();
     for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
     {
       connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
@@ -262,7 +263,7 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
     }
   }
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 class PrefGroupItem : public QListBoxItem 
@@ -367,8 +368,11 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
   DlgPreferencesLayout->addWidget( tabWidgetStack, 0, 1 );
 
   // signals and slots connections
-  connect( PushButton13, SIGNAL( clicked() ), this, SLOT( accept() ) );
-  connect( PushButton15, SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( PushButton13, SIGNAL( clicked() ), this, SLOT( accept  () ) );
+  connect( PushButton15, SIGNAL( clicked() ), this, SLOT( accept  () ) );
+  connect( PushButton13, SIGNAL( clicked() ), this, SLOT( onOK    () ) );
+  connect( PushButton14, SIGNAL( clicked() ), this, SLOT( onApply () ) );
+  connect( PushButton15, SIGNAL( clicked() ), this, SLOT( onCancel() ) );
 
   // tab order
   setTabOrder( ListBox, PushButton13 );
@@ -384,6 +388,7 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
   addPreferencePage(new FCDlgGeneral, "General");
   addPreferencePage(new FCDlgEditorSettings, "Editor");
   addPreferencePage(new FCDlgSettingsMacro,  "Macros");
+  addPreferencePage(new FCOnlineHelp,  "Online help");
 
   addPreferenceGroup("Viewer",  "PrefTree_GroupOpen", "PrefTree_GroupClosed");
   addPreferencePage(new FCDlgSettings, "Help Viewer");
@@ -456,16 +461,38 @@ void FCDlgPreferencesImp::prefPageClicked(int item)
 
 void FCDlgPreferencesImp::connectWidget(QWidget* page) const
 {
-  if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
+  if (dynamic_cast<FCPreferencePage*>(page) != NULL)
   {
     // and its preference widgets
-    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
+    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCPreferencePage*>(page)->getHandlers();
     for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
     {
       connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
       connect(PushButton14, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply
     }
   }
+}
+
+void FCDlgPreferencesImp::onOK()
+{
+  onApply();
+}
+
+void FCDlgPreferencesImp::onApply()
+{
+  QWidget* page = m_pCurTab->currentPage();
+  if (dynamic_cast<FCPreferencePage*>(page) != NULL)
+     (dynamic_cast<FCPreferencePage*>(page))->onApply();
+
+# ifdef FC_DEBUG
+  else
+    GetConsole().Warning("Added page does not inherit from class FCPreferencePage");
+#endif
+}
+
+void FCDlgPreferencesImp::onCancel()
+{
+  // not yet implemented
 }
 
 // compiling the mocs and the Dlg

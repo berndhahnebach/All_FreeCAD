@@ -33,14 +33,14 @@
 
 #include "DlgGeneral.h"
 #include "Window.h"
-#include "PrefWidgets.h"
+#include "PropertyPage.h"
 
 /**
  * This class implements the settings for the application
  * like style, size of pixmaps, size of recent file list and so on
  * @see class ApplicationWindow
  */
-class FCDlgGeneral : public FCDlgGeneralBase, public FCWidgetPrefsManager
+class FCDlgGeneral : public FCDlgGeneralBase, public FCPreferencePage
 {
   Q_OBJECT
 

@@ -90,11 +90,14 @@ class GuiExport FCFileDialog : public QFileDialog
  * to the number of current steps, i.e. nevertheless the 
  * progress bar will run only once.
  */
+class FCProgressBarPrivate;
+
 class FCProgressBar : public QProgressBar
 {
   public:
     /// construction
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+    virtual ~FCProgressBar ();
     /** Starts the progress bar */
     void Start(QString txt, int steps, bool& flag);
     /** Does the next step */
@@ -118,14 +121,7 @@ class FCProgressBar : public QProgressBar
     /** Reimplemented */
     bool setIndicator ( QString & indicator, int progress, int totalSteps );
     //@}
-    bool bSeveralInstances;
-    int iStep;
-    int iTimeStep;
-    int iTotalTime;
-    int iFirstTotal;
-    int iStartedProgresses;
-    QTime   measureTime;
-    QString remainingTime;
+    FCProgressBarPrivate* d;
 };
 
 /**
@@ -149,6 +145,8 @@ class FCListView : public QListView
 /**
  *  Icon items used by the 'FCCmdView' and 'FCDlgCustomize' classes
  */
+class FCCmdViewItemPrivate;
+
 class FCCmdViewItem : public QIconViewItem
 {
   public:
@@ -159,8 +157,7 @@ class FCCmdViewItem : public QIconViewItem
     QString GetAction();
 
   protected:
-    QString sAction;
-    QString description;
+    FCCmdViewItemPrivate* d;
 };
 
 /**
@@ -332,6 +329,7 @@ class FCSpinBox : public QSpinBox
     void mouseMoveEvent    ( QMouseEvent* e );
     void mousePressEvent   ( QMouseEvent* e );
     void mouseReleaseEvent ( QMouseEvent* e );
+    void wheelEvent        ( QWheelEvent* e );
     void focusOutEvent     ( QFocusEvent* e );
     bool eventFilter       ( QObject* o, QEvent* e );
 
@@ -341,6 +339,7 @@ class FCSpinBox : public QSpinBox
 
 /** The FCFloatSpinBox class
  */
+class FCFloatSpinBoxPrivate;
 class FCFloatSpinBox : public FCSpinBox
 {
     Q_OBJECT
@@ -376,10 +375,7 @@ class FCFloatSpinBox : public FCSpinBox
     void valueFloatChanged(double value);
 
   private:
-    QDoubleValidator* m_pValidator;
-    int               m_iDecimals;
-    double            m_fDivisor;
-    double            m_fEpsilon;
+    FCFloatSpinBoxPrivate* d;
 };
 
 #endif // __FC_WIDGETS_H__

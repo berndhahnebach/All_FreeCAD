@@ -32,7 +32,10 @@
 #define DLGCMDBARS_IMP_H
 
 #include "DlgCmdbars.h"
-#include "DlgCustomizeImp.h"
+#include "PropertyPage.h"
+
+class FCCommand;
+class FCToolBar;
 
 /**
  * This class implements the creation of user defined command bars.

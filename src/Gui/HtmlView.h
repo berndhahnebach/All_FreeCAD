@@ -136,6 +136,7 @@ class FCHtmlComboBox : public QComboBox
 /**
  * The HTML viewer class
  */
+class FCHtmlViewPrivate;
 class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::ObserverType
 { 
     Q_OBJECT
@@ -191,12 +192,6 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     virtual void StartScript (QString path, QString protocol);
     virtual void StartBrowser(QString path, QString protocol);
 
-    std::string aStrGroupPath;
-    QString        m_FCdoc, m_FCext, m_FCscript;
-    std::map<int, QString> mHistory, mBookmarks;
-    bool bBackward, bForward;
-    bool bHistory, bBookm;
-    int  iMaxHist, iMaxBookm;
     QButtonGroup*  pclButtonGrp;
     QToolButton*   pclButtonBack;
     QToolButton*   pclButtonForward;
@@ -204,14 +199,14 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     QToolButton*   pclButtonOpen;
     FCHtmlComboBox*pclPathCombo;
     FCTextBrowser* pclBrowser;
-    QString        selectedURL;
-    QString        m_strDocDir;
-    QString        m_strCaption;
     QGridLayout*   pclFormLayout;
     QHBoxLayout*   pclButtonGrpLayout;
     QPopupMenu*    pclPopup;
     QPopupMenu*    pclHistory;
     QPopupMenu*    pclBookm;
+
+  private:
+    FCHtmlViewPrivate* d;
 };
 
 

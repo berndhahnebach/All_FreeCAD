@@ -36,6 +36,7 @@
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
+#include "../Base/Process.h"
 #include "../App/Document.h"
 #include "Application.h"
 #include "Document.h"
@@ -707,6 +708,29 @@ void FCCmdWhatsThis::Activated(int iMsg)
   FCWhatsThis::enterWhatsThisMode();
 }
 
+//===========================================================================
+// Std_OnlineHelp
+//===========================================================================
+DEF_STD_CMD(FCCmdOnlineHelp);
+
+FCCmdOnlineHelp::FCCmdOnlineHelp()
+	:FCCppCommand("Std_OnlineHelp")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Download online help";
+	sToolTipText	= "Download FreeCAD's online help";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+}
+
+void FCCmdOnlineHelp::Activated(int iMsg)
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
+  GetProcessor().RunProcess("wget -r -k -E %s", url.c_str());
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -914,7 +938,7 @@ FCCmdDlgPreferences::FCCmdDlgPreferences()
 
 void FCCmdDlgPreferences::Activated(int iMsg)
 {
-	FCDlgPreferencesImp cDlg(GetAppWnd(),"Prefernces Dialog",true);
+	FCDlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
 	cDlg.exec();
 }
 
@@ -1201,6 +1225,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdWorkbench());
   rcCmdMgr.AddCommand(new FCCmdMRU());
   rcCmdMgr.AddCommand(new FCCmdWhatsThis());
+  rcCmdMgr.AddCommand(new FCCmdOnlineHelp());
 
 #	ifdef FC_USE_OCAFBROWSER
 		rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());

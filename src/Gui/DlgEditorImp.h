@@ -33,13 +33,13 @@
 
 #include "DlgEditor.h"
 #include "Window.h"
-#include "PrefWidgets.h"
+#include "PropertyPage.h"
 
 /**
  * This class implements the settings for the editor
  * @see class FCScintillaEdit
  */
-class FCDlgEditorSettings : public FCDlgEditorSettingsBase, public FCWidgetPrefsManager, public FCWidgetPrefs
+class FCDlgEditorSettings : public FCDlgEditorSettingsBase, public FCPreferencePage, public FCWidgetPrefs
 {
   Q_OBJECT
 

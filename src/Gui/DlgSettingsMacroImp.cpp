@@ -1,7 +1,7 @@
 #include "PreCompiled.h"
 
 #include "Window.h"
-#include "PrefWidgets.h"
+#include "PropertyPage.h"
 #include "DlgSettingsMacroImp.h"
 
 /* 

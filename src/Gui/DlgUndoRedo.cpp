@@ -283,9 +283,25 @@ static const char *pArrow[]={
 ".............#",
 ".............#"};
 
-FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
-  : QToolButton(parent, name), _pWidget(pWidget), bEntered(false), bDropDown(false), bActButton(false)
+class FCToolButtonDropDownPrivate
 {
+  public:
+    FCToolButtonDropDownPrivate();
+    bool bEntered;
+    bool bDropDown;
+    bool bActButton;
+};
+
+FCToolButtonDropDownPrivate::FCToolButtonDropDownPrivate()
+  : bEntered(false), bDropDown(false), bActButton(false)
+{
+}
+
+FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
+  : QToolButton(parent, name), _pWidget(pWidget)
+{
+  d = new FCToolButtonDropDownPrivate;
+
   // set the pixmap onto the button
   setIconSet(rclPixmap);
   setAutoRaise(true);
@@ -293,6 +309,7 @@ FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclP
 
 FCToolButtonDropDown::~FCToolButtonDropDown()
 {
+  delete d;
 }
 
 void FCToolButtonDropDown::popupWidget()
@@ -347,7 +364,7 @@ void FCToolButtonDropDown::drawButton( QPainter * p )
   if (isDown())
   {
     // drop down area
-    if (bDropDown && !bActButton)
+    if (d->bDropDown && !d->bActButton)
     {
 	    p->setPen( white );
 	    p->drawLine( 0, 0, 0, height() );
@@ -396,7 +413,7 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   }
 
   // draw drop down arrow
-  if (isDown()&&bActButton&&!bDropDown)
+  if (isDown()&&d->bActButton&&!d->bDropDown)
     drawArrow( p,  isDown(), x+w-15-1, y-1, 15, h, colorGroup(), isEnabled() );
   else
     drawArrow( p,  isDown(), x+w-15, y, 15, h, colorGroup(), isEnabled() );
@@ -434,7 +451,7 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   	if ( usesTextLabel() ) 
     {
 	    int fh = fontMetrics().height();
-      if (isDown()&&bActButton&&!bDropDown)
+      if (isDown()&&d->bActButton&&!d->bDropDown)
       {
 #if QT_VERSION <= 230
 	      style().drawItem( p, x2+1, y2+1, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
@@ -465,7 +482,7 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
  	  } 
     else 
     {
-      if (isDown()&&bActButton&&!bDropDown)
+      if (isDown()&&d->bActButton&&!d->bDropDown)
 #if QT_VERSION <= 230
   	    style().drawItem( p, x2+1, y2+1, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #else
@@ -481,7 +498,7 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   }
 
   // draw vertical separator line if entered
-  if (bEntered)
+  if (d->bEntered)
   {
 #if QT_VERSION <= 230
     style().drawSeparator(p, width()-19, y2-1, width()-19, y2+h2,colorGroup());
@@ -539,20 +556,20 @@ QSize FCToolButtonDropDown::sizeHint() const
 
 void FCToolButtonDropDown::enterEvent ( QEvent * e )
 {
-  bEntered = true;
+  d->bEntered = true;
   QToolButton::enterEvent(e);
 }
 
 void FCToolButtonDropDown::leaveEvent(QEvent* e)
 {
-  bEntered = false;
+  d->bEntered = false;
   QToolButton::leaveEvent(e);
 }
 
 void FCToolButtonDropDown::paintEvent( QPaintEvent *e )
 {
-  if (bEntered)
-    bEntered = isEnabled();
+  if (d->bEntered)
+    d->bEntered = isEnabled();
   QToolButton::paintEvent(e);
 }
 
@@ -564,13 +581,13 @@ void FCToolButtonDropDown::mousePressEvent( QMouseEvent *e )
   // check which area is pressed
   if (QRect(width()-20, 0, 20, height()).contains(e->pos()))
   {
-    bDropDown = true;
-    bActButton = false;
+    d->bDropDown = true;
+    d->bActButton = false;
   }
   else
   {
-    bDropDown = false;
-    bActButton = true;
+    d->bDropDown = false;
+    d->bActButton = true;
   }
 
   QToolButton::mousePressEvent(e);
@@ -582,7 +599,7 @@ void FCToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
   	return;
 
   // check which area is pressed
-  if (bDropDown && !bActButton)
+  if (d->bDropDown && !d->bActButton)
   {
     if (hitButton(e->pos()))
       popupWidget();

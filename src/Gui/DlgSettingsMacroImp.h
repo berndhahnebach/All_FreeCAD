@@ -2,7 +2,7 @@
 #define DLGSETTINGSMACROIMP_H
 #include "DlgSettingsMacro.h"
 
-class FCDlgSettingsMacro : public DlgSettingsMacro, public FCWidgetPrefsManager
+class FCDlgSettingsMacro : public DlgSettingsMacro, public FCPreferencePage
 { 
     Q_OBJECT
 

@@ -274,6 +274,94 @@ InputName=DlgGeneralImp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DlgOnlineHelp.ui
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgOnlineHelp.ui
+InputName=DlgOnlineHelp
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgOnlineHelp.ui
+InputName=DlgOnlineHelp
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgOnlineHelpImp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgOnlineHelpImp.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DlgOnlineHelpImp.h
+InputName=DlgOnlineHelpImp
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DlgOnlineHelpImp.h
+InputName=DlgOnlineHelpImp
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\DlgPreferences.ui
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
@@ -1417,6 +1505,14 @@ InputName=DlgUndoRedo
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\PropertyPage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyPage.h
+# End Source File
 # End Group
 # Begin Group "Command"
 
@@ -1546,6 +1642,55 @@ BuildCmds= \
 InputDir=.
 InputPath=.\HtmlView.h
 InputName=HtmlView
+
+BuildCmds= \
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\moc_private_$(InputName).cpp \
+	
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_private_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReportView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ReportView.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\ReportView.h
+InputName=ReportView
+
+BuildCmds= \
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\moc_private_$(InputName).cpp \
+	
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_private_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\ReportView.h
+InputName=ReportView
 
 BuildCmds= \
 	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \

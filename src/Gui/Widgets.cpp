@@ -154,18 +154,37 @@ QString FCFileDialog::selectedFileName()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+class FCProgressBarPrivate
+{
+  public:
+    bool bSeveralInstances;
+    int iStep;
+    int iTimeStep;
+    int iTotalTime;
+    int iFirstTotal;
+    int iStartedProgresses;
+    QTime   measureTime;
+    QString remainingTime;
+};
 
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
 : QProgressBar (parent, name, f)
 {
+  d = new FCProgressBarPrivate;
+
   setFixedWidth(120);
   // this style is very nice ;-)
   setIndicatorFollowsStyle(false);
   // update the string after timestep steps
-  iTimeStep = 1;
+  d->iTimeStep = 1;
   // so far there are no sequencer started
-  iStartedProgresses = 0;
-  bSeveralInstances = false;
+  d->iStartedProgresses = 0;
+  d->bSeveralInstances = false;
+}
+
+FCProgressBar::~FCProgressBar ()
+{
+  delete d;
 }
 
 // NOTE: for each call of this method you must call the
@@ -173,7 +192,7 @@ FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
 void FCProgressBar::Start(QString txt, int steps, bool& flag)
 {
   // increment the size called this method
-  iStartedProgresses++;
+  d->iStartedProgresses++;
 
   // if you call this method in a for loop
   // the steps size is regarded only once 
@@ -183,42 +202,42 @@ void FCProgressBar::Start(QString txt, int steps, bool& flag)
   flag = false;
 
   // several sequencer started
-  if (iStartedProgresses > 1)
+  if (d->iStartedProgresses > 1)
   {
-    bSeveralInstances = true;
+    d->bSeveralInstances = true;
     steps *= totalSteps();
     setTotalSteps(steps);
-    iTimeStep = totalSteps() / iFirstTotal; 
-    measureTime.restart();
+    d->iTimeStep = totalSteps() / d->iFirstTotal; 
+    d->measureTime.restart();
   }
   else
   {
-    iTotalTime = 0;
-    iStep = 0;
-    remainingTime = "";
-    iFirstTotal = steps;
+    d->iTotalTime = 0;
+    d->iStep = 0;
+    d->remainingTime = "";
+    d->iFirstTotal = steps;
     setTotalSteps(steps);
-    measureTime.start();
+    d->measureTime.start();
   }
 
   // print message to the satusbar
-  if (iStartedProgresses == 1)
+  if (d->iStartedProgresses == 1)
     ApplicationWindow::Instance->statusBar()->message(txt);
 }
 
 void FCProgressBar::Next()
 {
   if (!isInterrupted())
-    setProgress(iStep++);
+    setProgress(d->iStep++);
 }
 
 void FCProgressBar::Stop ()
 {
-  iStartedProgresses--;
-  if (iStartedProgresses == 0)
+  d->iStartedProgresses--;
+  if (d->iStartedProgresses == 0)
   {
     reset();
-    bSeveralInstances = false;
+    d->bSeveralInstances = false;
   }
 }
 
@@ -249,8 +268,8 @@ void FCProgressBar::interrupt()
 {
   //resets
   reset();
-  bSeveralInstances = false;
-  iStartedProgresses = 0;
+  d->bSeveralInstances = false;
+  d->iStartedProgresses = 0;
 
   FCGuiConsoleObserver::bMute = true;
   FCException exc("Aborting...");
@@ -306,13 +325,13 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 		if (progress != -1)
 		{
 			// recalc remaining time every iTimeStep steps
-			if (progress % iTimeStep == 0 && progress > 0)
+			if (progress % d->iTimeStep == 0 && progress > 0)
 			{
 				// difference in ms
-				int diff = measureTime.restart();
-				iTotalTime += diff;
+				int diff = d->measureTime.restart();
+				d->iTotalTime += diff;
 				// remaining time in s
-				diff *= (totalSteps - progress) / iTimeStep;
+				diff *= (totalSteps - progress) / d->iTimeStep;
 				diff /= 1000;
 
 				GetConsole().Log("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
@@ -343,16 +362,16 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 					// nice formating for output
 					if(hour == 0)
 						if(minute == 0)
-							remainingTime = tr("(%1s)").arg(s);
+							d->remainingTime = tr("(%1s)").arg(s);
 						else
-							remainingTime = tr("(%1' %2s)").arg(m).arg(s);
+							d->remainingTime = tr("(%1' %2s)").arg(m).arg(s);
 					else
-						remainingTime = tr("(%1h %2min)").arg(h).arg(m);
+						d->remainingTime = tr("(%1h %2min)").arg(h).arg(m);
 				}
 			}
 
 			char szBuf[200];
-			sprintf(szBuf, "%d %% %s", (100 * progress) / totalSteps, remainingTime.latin1());
+			sprintf(szBuf, "%d %% %s", (100 * progress) / totalSteps, d->remainingTime.latin1());
 			indicator = szBuf;
 		}
 	}
@@ -410,25 +429,34 @@ QListViewItem* FCListView::lastItem (QListView* listview)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+class FCCmdViewItemPrivate
+{
+  public:
+    QString sAction;
+    QString description;
+};
+
 FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct)
 : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
 {
-  sAction = Action;
-  description = pAct->toolTip();
+  d = new FCCmdViewItemPrivate;
+  d->sAction = Action;
+  d->description = pAct->toolTip();
 }
 
 FCCmdViewItem::~FCCmdViewItem ()
 {
+  delete d;
 }
 
 QString FCCmdViewItem::text() const
 {
-  return description;
+  return d->description;
 }
 
 QString FCCmdViewItem::GetAction()
 {
-  return sAction;
+  return d->sAction;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -910,6 +938,12 @@ void FCSpinBox::focusOutEvent ( QFocusEvent* e )
     releaseMouse();
 }
 
+void FCSpinBox::wheelEvent ( QWheelEvent* e )
+{
+  if (isEnabled()) 
+    QSpinBox::wheelEvent(e);
+}
+
 bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
 {
   if ( o != editor() )
@@ -941,11 +975,28 @@ bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
 
 // -------------------------------------------------------------
 
+class FCFloatSpinBoxPrivate
+{
+  public:
+    FCFloatSpinBoxPrivate(){}
+    ~FCFloatSpinBoxPrivate()
+    {
+      delete m_pValidator; 
+    }
+
+    QDoubleValidator* m_pValidator;
+    int               m_iDecimals;
+    double            m_fDivisor;
+    double            m_fEpsilon;
+};
+
 FCFloatSpinBox::FCFloatSpinBox ( QWidget * parent, const char * name )
 : FCSpinBox(parent, name)
 {
-  m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
-  setValidator(m_pValidator);
+  d = new FCFloatSpinBoxPrivate;
+
+  d->m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
+  setValidator(d->m_pValidator);
   
   setDecimals(0);
 }
@@ -953,85 +1004,87 @@ FCFloatSpinBox::FCFloatSpinBox ( QWidget * parent, const char * name )
 FCFloatSpinBox::FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
 : FCSpinBox(minValue, maxValue, step, parent, name)
 {
-  m_pValidator = new QDoubleValidator((double)minValue, (double)maxValue, 2, this, name );
-  setValidator(m_pValidator);
+  d = new FCFloatSpinBoxPrivate;
+
+  d->m_pValidator = new QDoubleValidator((double)minValue, (double)maxValue, 2, this, name );
+  setValidator(d->m_pValidator);
 
   setDecimals(0);
 }
 
 FCFloatSpinBox::~FCFloatSpinBox() 
 {
-  delete m_pValidator; 
+  delete d;
 }
 
 int FCFloatSpinBox::decimals() const
 {
-  return m_iDecimals;
+  return d->m_iDecimals;
 }
 
 void FCFloatSpinBox::setDecimals(int i)
 {
-  m_iDecimals = i;
-  m_fDivisor = int(pow(10.0, double(m_iDecimals)));
-  m_fEpsilon = 1.0 / pow(10.0, double(m_iDecimals+1));
+  d->m_iDecimals = i;
+  d->m_fDivisor = int(pow(10.0, double(d->m_iDecimals)));
+  d->m_fEpsilon = 1.0 / pow(10.0, double(d->m_iDecimals+1));
 
   if (maxValue() <  INT_MAX)
-    QSpinBox::setMaxValue(int(maxValue() * m_fDivisor));
+    FCSpinBox::setMaxValue(int(maxValue() * d->m_fDivisor));
   if (minValue() > -INT_MAX)
-    QSpinBox::setMinValue(int(minValue() * m_fDivisor));
+    FCSpinBox::setMinValue(int(minValue() * d->m_fDivisor));
 }
 
 double FCFloatSpinBox::valueFloat() const
 { 
-  return QSpinBox::value() / double(m_fDivisor); 
+  return FCSpinBox::value() / double(d->m_fDivisor); 
 }
 
 void FCFloatSpinBox::setMinValueFloat(double value)
 { 
-  QSpinBox::setMinValue(int(m_fDivisor * value)); 
+  FCSpinBox::setMinValue(int(d->m_fDivisor * value)); 
 }
 
 void FCFloatSpinBox::setMaxValueFloat(double value)
 { 
-  QSpinBox::setMaxValue(int(m_fDivisor * value)); 
+  FCSpinBox::setMaxValue(int(d->m_fDivisor * value)); 
 }
 
 double FCFloatSpinBox::minValueFloat () const
 {
-  return QSpinBox::minValue() / double(m_fDivisor); 
+  return FCSpinBox::minValue() / double(d->m_fDivisor); 
 }
 
 double FCFloatSpinBox::maxValueFloat () const
 {
-  return QSpinBox::maxValue() / double(m_fDivisor); 
+  return FCSpinBox::maxValue() / double(d->m_fDivisor); 
 }
 
 QString FCFloatSpinBox::mapValueToText(int value)
 { 
-  return QString::number(double(value) / m_fDivisor, 'f', m_iDecimals); 
+  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_iDecimals); 
 }
 
 int FCFloatSpinBox::mapTextToValue(bool*)
 { 
-  double fEps = value() > 0.0 ? m_fEpsilon : -m_fEpsilon;
-  return int(text().toDouble() * m_fDivisor + fEps); 
+  double fEps = value() > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
+  return int(text().toDouble() * d->m_fDivisor + fEps); 
 }
 
 void FCFloatSpinBox::valueChange()
 {
-  QSpinBox::valueChange();
-  emit valueFloatChanged( QSpinBox::value() / double(m_fDivisor) );
+  FCSpinBox::valueChange();
+  emit valueFloatChanged( FCSpinBox::value() / double(d->m_fDivisor) );
 }
 
 void FCFloatSpinBox::setValueFloat(double value)
 { 
-  double fEps = value > 0.0 ? m_fEpsilon : -m_fEpsilon;
-  QSpinBox::setValue(int(m_fDivisor * value + fEps)); 
+  double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
+  FCSpinBox::setValue(int(d->m_fDivisor * value + fEps)); 
 }
 
 void FCFloatSpinBox::stepChange () 
 {
-  QSpinBox::stepChange();
+  FCSpinBox::stepChange();
 }
 
 #include "moc_Widgets.cpp"

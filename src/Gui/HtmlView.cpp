@@ -40,6 +40,7 @@
 #include "Application.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
+#include "../Base/Process.h"
 #ifndef FC_OS_LINUX
 #include <direct.h>
 #endif
@@ -342,6 +343,32 @@ class FCDocumentationSource : public QStoredDrag
     QString  mRoot;
 };
 
+// --------------------------------------------------------------------------
+
+class FCHtmlViewPrivate
+{
+  public:
+    FCHtmlViewPrivate();
+
+    std::string aStrGroupPath;
+    QString        m_FCdoc, m_FCext, m_FCscript;
+    std::map<int, QString> mHistory, mBookmarks;
+    bool bBackward, bForward;
+    bool bHistory, bBookm;
+    int  iMaxHist, iMaxBookm;
+    QString        selectedURL;
+    QString        m_strDocDir;
+    QString        m_strCaption;
+};
+
+FCHtmlViewPrivate::FCHtmlViewPrivate()
+:	selectedURL(), 
+  bHistory(false), 
+	bBookm(false), 
+	bBackward(false), 
+	bForward(false)
+{
+}
 // --------------------------------------------------------------------------
 
 FCBrowserSourceFactory::FCBrowserSourceFactory()
@@ -690,26 +717,22 @@ void FCHtmlComboBox::slotKeyPressReturn()
  *  name 'name' and widget flags set to 'f' 
  */
 FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* name, WFlags fl )
-    : FCDockWindow( parent, name, fl ),
-	  pclPathCombo( 0 ), 
-	  selectedURL(), 
-      bHistory(false), 
-	  bBookm(false), 
-	  bBackward(false), 
-	  bForward(false)
+    : FCDockWindow( parent, name, fl ), pclPathCombo( 0 )
 {
+  d = new FCHtmlViewPrivate;
+
   //initialize
   init();
 
-  m_strCaption = "FCHelpViewer - ";
-  m_FCdoc = "FCdoc://";
-  m_FCext = "FCext://";
-  m_FCscript = "FCScript://";
+  d->m_strCaption = "FCHelpViewer - ";
+  d->m_FCdoc = "FCdoc://";
+  d->m_FCext = "FCext://";
+  d->m_FCscript = "FCScript://";
 
   // find the home directory of the online manual
-  m_strDocDir = GetDocDirectory();
+  d->m_strDocDir = GetDocDirectory();
 
-  QString home = m_strDocDir;
+  QString home = d->m_strDocDir;
 
   // this is the complete URL of the start page
   // WARNING: home_ must NOT contain an absolute pathname but a relative 
@@ -725,7 +748,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclBrowser = new FCTextBrowser(this, "FCHelpViewer");
   pclBrowser->setMinWidthToReach(240);
   // set the path where the factory is looking for if you set a new source
-  pclBrowser->mimeSourceFactory()->setFilePath( m_strDocDir ); 
+  pclBrowser->mimeSourceFactory()->setFilePath( d->m_strDocDir ); 
   pclBrowser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
   connect(pclBrowser, SIGNAL(textChanged()), this, SLOT(TextChanged()));
   connect(pclBrowser, SIGNAL(startExtBrowser(QString)), this, SLOT(StartExtBrowser(QString)));
@@ -847,23 +870,25 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 FCHtmlView::~FCHtmlView()
 {
     // no need to delete child widgets, Qt does it all for us
-  if (bHistory)
+  if (d->bHistory)
     SaveHistory();
-  if (bBookm)
+  if (d->bBookm)
     SaveBookmarks();
-  GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Detach(this);
+  GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Detach(this);
+
+  delete d;
 }
 
 void FCHtmlView::init()
 {
   try{
     // attach the help viewer to its preferences
-    aStrGroupPath = "User parameter:BaseApp/Windows/HelpViewer";
-    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Attach(this);
-    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("EnableBookmarks");
-    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("EnableHistory");
-    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
-    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("NbOfBookmarks");
+    d->aStrGroupPath = "User parameter:BaseApp/Windows/HelpViewer";
+    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Attach(this);
+    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableBookmarks");
+    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableHistory");
+    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
+    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfBookmarks");
   }catch(const FCException& rclE)
   {
     QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
@@ -872,24 +897,24 @@ void FCHtmlView::init()
 
 void FCHtmlView::SetEnableHistory  (bool b)
 {
-  bHistory = b;
+  d->bHistory = b;
 }
 
 void FCHtmlView::SetEnableBookmarks(bool b)
 {
-  bBookm = b;
+  d->bBookm = b;
 }
 
 void FCHtmlView::RefreshPage()
 {
   // sorry, but this isn't the best implementation 
   // for reload of a page ;-)
-  if (bBackward)
+  if (d->bBackward)
   {
     pclBrowser->backward();
     pclBrowser->forward();
   }
-  else if (bForward)
+  else if (d->bForward)
   {
     pclBrowser->forward();
     pclBrowser->backward();
@@ -913,21 +938,21 @@ void FCHtmlView::PopupMenuAboutToShow()
   else
   {
     int iBack = pclPopup->insertItem(QPixmap(back_pixmap), "Back", pclBrowser, SLOT(backward()));
-    pclPopup->setItemEnabled(iBack, bBackward);
+    pclPopup->setItemEnabled(iBack, d->bBackward);
     int iForw = pclPopup->insertItem(QPixmap(forward_pixmap), "Forward", pclBrowser, SLOT(forward()));
-    pclPopup->setItemEnabled(iForw, bForward);
+    pclPopup->setItemEnabled(iForw, d->bForward);
     pclPopup->insertItem(QPixmap(home_pixmap), "Home", pclBrowser, SLOT(home()));
     pclPopup->insertSeparator();
     pclPopup->insertItem("Refresh", this, SLOT(RefreshPage()));
     pclPopup->insertSeparator();
-    if (bHistory == true)
+    if (d->bHistory == true)
       pclPopup->insertItem("History", pclHistory);
-    if (bBookm == true)
+    if (d->bBookm == true)
     {
       CreateBookmarkPopup();
       pclPopup->insertItem("Bookmarks", pclBookm);
     }
-    if (bHistory == true || bBookm == true)
+    if (d->bHistory == true || d->bBookm == true)
       pclPopup->insertSeparator();
   }
 
@@ -936,13 +961,13 @@ void FCHtmlView::PopupMenuAboutToShow()
 
 void FCHtmlView::SetBackwardAvailable( bool b)
 {
-  bBackward = b;
+  d->bBackward = b;
   pclButtonBack->setEnabled(b);
 }
 
 void FCHtmlView::SetForwardAvailable( bool b)
 {
-  bForward = b;
+  d->bForward = b;
   pclButtonForward->setEnabled(b);
 }
 
@@ -980,7 +1005,7 @@ QString FCHtmlView::GetScriptDirectory()
 QString FCHtmlView::GetBrowserDirectory()
 {
 //  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
-  QString browser = GetApplication().GetParameterGroupByPath((aStrGroupPath + "LineEditBrowser").c_str())->GetASCII("LineEditBrowser", "").c_str();
+  QString browser = GetApplication().GetParameterGroupByPath((d->aStrGroupPath + "LineEditBrowser").c_str())->GetASCII("LineEditBrowser", "").c_str();
   if (browser.isEmpty())
   {
     QMessageBox::information(this, "External browser", "Please search for an external browser.");
@@ -990,7 +1015,7 @@ QString FCHtmlView::GetBrowserDirectory()
       QMessageBox::warning(this, "External browser", "No external browser found.");
     else
 //      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
-      GetApplication().GetParameterGroupByPath((aStrGroupPath + "LineEditBrowser").c_str())->SetASCII("LineEditBrowser", browser.latin1());
+      GetApplication().GetParameterGroupByPath((d->aStrGroupPath + "LineEditBrowser").c_str())->SetASCII("LineEditBrowser", browser.latin1());
   }
 
   return browser;
@@ -1002,10 +1027,10 @@ QString FCHtmlView::GetRelativeURL (const QString& rcAbsPath) const
   QString sCurrDir = cRelPath.lower();
 
   // is this a pathname inside the online manual
-  if (sCurrDir.startsWith(m_strDocDir.lower()) == true)
+  if (sCurrDir.startsWith(d->m_strDocDir.lower()) == true)
   {
-    QString relativeURL = cRelPath.mid(m_strDocDir.length());
-    relativeURL.prepend( m_FCdoc );
+    QString relativeURL = cRelPath.mid(d->m_strDocDir.length());
+    relativeURL.prepend( d->m_FCdoc );
     cRelPath = relativeURL;
   }
 
@@ -1018,10 +1043,10 @@ QString FCHtmlView::GetAbsoluteURL (const QString& rcRelPath) const
   QString sCurrDir = cAbsPath.lower();
 
   // generate an absolute URL from a relative one
-  if (sCurrDir.startsWith(m_FCdoc.lower()) == true)
+  if (sCurrDir.startsWith(d->m_FCdoc.lower()) == true)
   {
-    QString absoluteURL = cAbsPath.mid(m_FCdoc.length());
-    absoluteURL.prepend(m_strDocDir);
+    QString absoluteURL = cAbsPath.mid(d->m_FCdoc.length());
+    absoluteURL.prepend(d->m_strDocDir);
     cAbsPath = absoluteURL;
   }
 
@@ -1035,24 +1060,24 @@ void FCHtmlView::TextChanged()
   //
   if ( pclBrowser->documentTitle().isNull() ) 
   {
-  	setCaption( m_strCaption + pclBrowser->context() );
-	  selectedURL = pclBrowser->context();
+  	setCaption( d->m_strCaption + pclBrowser->context() );
+	  d->selectedURL = pclBrowser->context();
   }
   else 
   {
-  	setCaption( m_strCaption + pclBrowser->documentTitle() ) ;
-	  selectedURL = pclBrowser->documentTitle();
+  	setCaption( d->m_strCaption + pclBrowser->documentTitle() ) ;
+	  d->selectedURL = pclBrowser->documentTitle();
   }
 
-  selectedURL = GetRelativeURL(selectedURL);
+  d->selectedURL = GetRelativeURL(d->selectedURL);
 
-  if ( !selectedURL.isEmpty() && pclPathCombo ) 
+  if ( !d->selectedURL.isEmpty() && pclPathCombo ) 
   {
   	bool exists = FALSE;
 	  int i;
 	  for ( i = 0; i < pclPathCombo->count(); ++i ) 
     {
-	    if ( pclPathCombo->text( i ) == selectedURL ) 
+	    if ( pclPathCombo->text( i ) == d->selectedURL ) 
       {
   	  	exists = TRUE;
 	  	  break;
@@ -1060,15 +1085,15 @@ void FCHtmlView::TextChanged()
 	  }
   	if ( !exists ) 
     {
-	    pclPathCombo->insertItem( selectedURL, 0 );
+	    pclPathCombo->insertItem( d->selectedURL, 0 );
 	    pclPathCombo->setCurrentItem( 0 );
-      if (bHistory)
-  	    mHistory[pclHistory->insertItem(selectedURL, mHistory.size())] = selectedURL;
+      if (d->bHistory)
+  	    d->mHistory[pclHistory->insertItem(d->selectedURL, d->mHistory.size())] = d->selectedURL;
   	} 
     else
 	    pclPathCombo->setCurrentItem( i );
 
-    selectedURL = QString::null;
+    d->selectedURL = QString::null;
   }
 }
 
@@ -1099,14 +1124,14 @@ void FCHtmlView::StartScriptOrBrowser(QString path)
   QString lpath  = path.lower();
 
   // start a script
-  if (lpath.startsWith(m_FCscript.lower()) == true)
+  if (lpath.startsWith(d->m_FCscript.lower()) == true)
   {
-    StartScript(path, m_FCscript);
+    StartScript(path, d->m_FCscript);
   }
   // start an external browser
-  else if (lpath.startsWith(m_FCext.lower()) == true)
+  else if (lpath.startsWith(d->m_FCext.lower()) == true)
   {
-    StartBrowser(path, m_FCext);
+    StartBrowser(path, d->m_FCext);
   }
 }
 
@@ -1117,14 +1142,16 @@ void FCHtmlView::StartExtBrowser(QString url)
 
 void FCHtmlView::StartBrowser(QString path, QString protocol)
 {
-#ifdef FC_OS_LINUX
-  QString url = path.mid(protocol.length());
-  if (system("mozilla "+url)!=0){
-    char msgBuf[512];
-    sprintf(msgBuf, "Hey, where is your browser? (Change it in %s:%d)", __FILE__,__LINE__);
-    QMessageBox::critical(this, "Browser", msgBuf);
-  }  
-#else
+//#ifdef FC_OS_LINUX
+//  QString url = path.mid(protocol.length());
+//  char szBuf[512];
+//  sprintf(szBuf, "mozilla %s", url.latin1());
+//  if (!GetProcessor().RunProcess(szBuf)){
+//    char msgBuf[512];
+//    sprintf(msgBuf, "Hey, where is your browser? (Change it in %s:%d)", __FILE__,__LINE__);
+//    QMessageBox::critical(this, "Browser", msgBuf);
+//  }  
+//#else
   QString url = path.mid(protocol.length());
 
   QString browser = GetBrowserDirectory();
@@ -1132,7 +1159,6 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
     return;
 
   char szBuf[500];
-  char szPath[5000];
 
   // split into absolute path and filename
   QString sPath = browser;
@@ -1143,28 +1169,17 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
   sprintf(szBuf, "%s %s", browser.latin1(), url.latin1());
 
   // append the path of your favorite browser to global path
-  //
-  sprintf(szPath, "%s;%s", getenv("Path"), sPath.latin1());
-	SetEnvironmentVariable ( "Path",szPath);
-  sPath = QString(szPath);
-	sprintf(szPath,"Path=%s",sPath.latin1());
-	putenv (szPath);
-
-#ifdef FC_OS_WIN32
-  if (WinExec(szBuf, SW_SHOW) < 32) // windows
-#else
-  if (system(szBuf) != 0) // other OS (not windows)
-#endif
+  GetProcessor().AppendToPath(sPath.latin1());
+  if (!GetProcessor().RunProcess(szBuf))
   {
     sprintf(szBuf, "Sorry, cannot start '%s'", browser.latin1());
     QMessageBox::critical(this, "Browser", szBuf);
   }
-#endif  
+//#endif  
 }
 
 void FCHtmlView::StartScript(QString path, QString protocol)
 {
-
   QString currPath = QDir::currentDirPath();
   _chdir(GetScriptDirectory().latin1());
 
@@ -1184,7 +1199,7 @@ void FCHtmlView::StartScript(QString path, QString protocol)
 
   _chdir(path.latin1());
 
-  if (system(szBuf) != 0)
+  if (!GetProcessor().RunProcess(szBuf))
   {
     sprintf(szBuf, "Sorry, cannot run file '%s'.", script.latin1());
     QMessageBox::critical(this, "Script", szBuf);
@@ -1205,7 +1220,7 @@ void FCHtmlView::PathSelected( const QString & path )
 
   // if you want to start a script or a browser do nothing here
   // NOTE: to start a script or browser you must press Return/Enter
-  if (lpath.startsWith(m_FCscript.lower()) || lpath.startsWith(m_FCext.lower()))
+  if (lpath.startsWith(d->m_FCscript.lower()) || lpath.startsWith(d->m_FCext.lower()))
     return;
 
   // add new path if it is not inserted yet
@@ -1217,7 +1232,7 @@ void FCHtmlView::PathSelected( const QString & path )
 
   // insert to the history
   bool exists = FALSE;
-  for ( std::map<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it ) 
+  for ( std::map<int, QString>::iterator it = d->mHistory.begin(); it != d->mHistory.end(); ++it ) 
   {
   	if ( it->second == path ) 
     {
@@ -1228,8 +1243,8 @@ void FCHtmlView::PathSelected( const QString & path )
 
   if ( !exists )
   {
-    if (bHistory)
-    	mHistory[pclHistory->insertItem(path, mHistory.size())] = path;
+    if (d->bHistory)
+    	d->mHistory[pclHistory->insertItem(path, d->mHistory.size())] = path;
   }
 }
 
@@ -1260,7 +1275,7 @@ void FCHtmlView::ReadHistory()
   int i=0;
   for (std::vector<std::string>::iterator it = hist.begin(); it != hist.end(); ++it, i++)
   {
-    mHistory[i] = it->c_str();
+    d->mHistory[i] = it->c_str();
   }
 }
 
@@ -1273,7 +1288,7 @@ void FCHtmlView::ReadBookmarks()
   int i=0;
   for (std::vector<std::string>::iterator it = bookm.begin(); it != bookm.end(); ++it, i++)
   {
-    mBookmarks[i] = it->c_str();
+    d->mBookmarks[i] = it->c_str();
   }
 }
 
@@ -1281,11 +1296,11 @@ void FCHtmlView::SaveHistory()
 {
   // write the history items into file
   FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
-  while ( int(mHistory.size()) > iMaxHist )
-	  mHistory.erase( mHistory.begin() );
+  while ( int(d->mHistory.size()) > d->iMaxHist )
+	  d->mHistory.erase( d->mHistory.begin() );
 
   long i=0;
-  for (std::map<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it, i++)
+  for (std::map<int, QString>::iterator it = d->mHistory.begin(); it != d->mHistory.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "History %d", i);
@@ -1297,11 +1312,11 @@ void FCHtmlView::SaveBookmarks()
 {
   // write the bookmark items into file
   FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
-  while ( int(mBookmarks.size()) > iMaxBookm )
-	  mBookmarks.erase( mBookmarks.begin() );
+  while ( int(d->mBookmarks.size()) > d->iMaxBookm )
+	  d->mBookmarks.erase( d->mBookmarks.begin() );
 
   long i=0;
-  for (std::map<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it, i++)
+  for (std::map<int, QString>::iterator it = d->mBookmarks.begin(); it != d->mBookmarks.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "Bookmark %d", i);
@@ -1311,29 +1326,29 @@ void FCHtmlView::SaveBookmarks()
 
 void FCHtmlView::HistChosen( int i )
 {
-  if ( mHistory.find( i ) != mHistory.end() )
-  	pclBrowser->setSource( GetAbsoluteURL( mHistory[ i ] ));
+  if ( d->mHistory.find( i ) != d->mHistory.end() )
+  	pclBrowser->setSource( GetAbsoluteURL( d->mHistory[ i ] ));
 }
 
 void FCHtmlView::BookmChosen( int i )
 {
-  if ( mBookmarks.find( i ) != mBookmarks.end() )
+  if ( d->mBookmarks.find( i ) != d->mBookmarks.end() )
   {
-    QString sBookm = mBookmarks[ i ];
+    QString sBookm = d->mBookmarks[ i ];
    	pclBrowser->setSource( sBookm );
   }
 }
 
 void FCHtmlView::AddBookmark()
 {
-  if (bBookm)
+  if (d->bBookm)
   {
     bool bFound = false;
     QString txt = caption();
     QString path = pclPathCombo->currentText();
     path = GetAbsoluteURL(path);
 
-    for ( std::map<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it )
+    for ( std::map<int, QString>::iterator it = d->mBookmarks.begin(); it != d->mBookmarks.end(); ++it )
     {
       if (it->second == path)
       {
@@ -1344,7 +1359,7 @@ void FCHtmlView::AddBookmark()
 
     if (bFound == false)
     {
-      mBookmarks[pclBookm->insertItem(txt, mBookmarks.size())] = path;
+      d->mBookmarks[pclBookm->insertItem(txt, d->mBookmarks.size())] = path;
     }
   }
 }
@@ -1352,8 +1367,8 @@ void FCHtmlView::AddBookmark()
 void FCHtmlView::CreateBookmarkPopup()
 {
   pclBookm->clear();
-  std::map<int, QString> tmp = mBookmarks;
-  mBookmarks.clear();
+  std::map<int, QString> tmp = d->mBookmarks;
+  d->mBookmarks.clear();
 
   pclBookm->insertItem( tr( "Add Bookmark" ), this, SLOT( AddBookmark() ) );
   if (tmp.size() > 0)
@@ -1363,28 +1378,28 @@ void FCHtmlView::CreateBookmarkPopup()
   int i = 0;
   for (std::map<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
   {
-    QString txt = m_strCaption + it->second;
-    int iPos = pclBookm->insertItem(m_strCaption + it->second, i++);
-    mBookmarks[iPos] = it->second;
+    QString txt = d->m_strCaption + it->second;
+    int iPos = pclBookm->insertItem(d->m_strCaption + it->second, i++);
+    d->mBookmarks[iPos] = it->second;
   }
 }
 
 void FCHtmlView::CreateHistoryPopup()
 {
   pclHistory->clear();
-  std::map<int, QString> tmp = mHistory;
-  mHistory.clear();
+  std::map<int, QString> tmp = d->mHistory;
+  d->mHistory.clear();
 
   for (std::map<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
   {
-	  mHistory[pclHistory->insertItem(it->second, mHistory.size())] = it->second;
+	  d->mHistory[pclHistory->insertItem(it->second, d->mHistory.size())] = it->second;
     AddToPath(GetAbsoluteURL(it->second));
   }
 }
 
 void FCHtmlView::CheckBookmarks()
 {
-  if (mBookmarks.size() == 0)
+  if (d->mBookmarks.size() == 0)
     return;
 
   int iButton = QMessageBox::information(this, "FreeCAD", "All unavailable bookmarks will be deleted\n"
@@ -1394,7 +1409,7 @@ void FCHtmlView::CheckBookmarks()
     return;
 
   std::map<int, QString> mChecked;
-  for (std::map<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it)
+  for (std::map<int, QString>::iterator it = d->mBookmarks.begin(); it != d->mBookmarks.end(); ++it)
   {
     const QMimeSource * mime = pclBrowser->mimeSourceFactory()->data(it->second);
     if (mime == NULL)
@@ -1413,8 +1428,8 @@ void FCHtmlView::CheckBookmarks()
       mChecked[it->first] = it->second;
   }
 
-  mBookmarks.clear();
-  mBookmarks = mChecked;
+  d->mBookmarks.clear();
+  d->mBookmarks = mChecked;
   CreateBookmarkPopup();
 
   QMessageBox::information(this, "FreeCAD", "All bookmarks are uptodate");
@@ -1425,18 +1440,18 @@ void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
 
   if (strcmp(sReason, "EnableBookmarks") == 0)
-    bBookm = rclGrp.GetBool(sReason, false);
+    d->bBookm = rclGrp.GetBool(sReason, false);
   else if (strcmp(sReason, "EnableHistory") == 0)
-    bHistory = rclGrp.GetBool(sReason, false);
+    d->bHistory = rclGrp.GetBool(sReason, false);
   else if (strcmp(sReason, "NbOfHistoryItems") == 0)
   {
-    iMaxHist = rclGrp.GetInt(sReason, 20);
-    if (!bHistory) iMaxHist = 0;
+    d->iMaxHist = rclGrp.GetInt(sReason, 20);
+    if (!d->bHistory) d->iMaxHist = 0;
   }
   else if (strcmp(sReason, "NbOfBookmarks") == 0)
   {
-    iMaxBookm = rclGrp.GetInt(sReason, 20);
-    if (!bBookm) iMaxBookm = 0;
+    d->iMaxBookm = rclGrp.GetInt(sReason, 20);
+    if (!d->bBookm) d->iMaxBookm = 0;
   }
 }
 

@@ -33,7 +33,6 @@ class QHBoxLayout;
 class QGridLayout; 
 class QMultiLineEdit;
 class QTabWidget;
-class FCLogOutput;
 
 
 /** Adapter class to the parameter of FreeCAD for all Windows
@@ -77,46 +76,6 @@ private:
 
 };
 
-
-class FCReportOutput : public FCDockWindow
-{ 
-    Q_OBJECT
-
-  public:
-    FCReportOutput( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCReportOutput();
-
-  protected:
-    QTabWidget* tab;
-    QGridLayout* tabLayout;
-    FCLogOutput* mle;
-};
-
-class FCLogOutput : public QTextBrowser, public FCConsoleObserver
-{
-  Q_OBJECT
-
-  public:
-    FCLogOutput(QWidget* parent=0, const char* name=0);
-    virtual ~FCLogOutput();
-
-    void Warning(const char * s);
-	  void Message(const char * s);
-    void Error  (const char * s);
-	  void Log (const char * s);
-
-  protected:
-    void appendLog(const char * s, const char * color = 0);
-    bool event( QEvent* ev );
-    void viewportMousePressEvent (QMouseEvent * e);
-
-  public slots:
-    void onClear();
-    void onSaveAs();
-
-  private:
-    std::vector<QString> alOriginal;
-};
 
 
 

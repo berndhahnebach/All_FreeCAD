@@ -82,6 +82,7 @@
 #include "DlgUndoRedo.h"
 #include "ButtonGroup.h"
 #include "HtmlView.h"
+#include "ReportView.h"
 #include "Macro.h"
 #include "Themes.h"
 
@@ -201,9 +202,9 @@ ApplicationWindow::ApplicationWindow()
 	pcPropView->setMinimumWidth(210);
 	_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
-  // ReportOutput View
-  FCReportOutput* pcOutput = new FCReportOutput(this,"ReportOutput");
-  _pcWidgetMgr->addDockWindow("Report Output", pcOutput, 0, KDockWidget::DockBottom, 90);
+  // Report View
+  FCReportView* pcOutput = new FCReportView(this,"ReportView");
+  _pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
 
  	CreateStandardOperations();
 
@@ -415,6 +416,7 @@ void ApplicationWindow::CreateStandardOperations()
 		_pcWidgetMgr->addPopupMenu("Windows", defaultMenus);
   
 		defaultMenus.clear();
+		defaultMenus.push_back("Std_OnlineHelp");
 		defaultMenus.push_back("Std_About");
 		defaultMenus.push_back("Std_WhatsThis");
 		_pcWidgetMgr->addPopupMenu("?", defaultMenus);

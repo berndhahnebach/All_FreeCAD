@@ -32,7 +32,9 @@
 #define DLGACTIONS_IMP_H
 
 #include "DlgActions.h"
-#include "DlgCustomizeImp.h"
+#include "PropertyPage.h"
+
+class FCCommand;
 
 /**
  * This class implements the creation of user defined commands executing a recorded macro.

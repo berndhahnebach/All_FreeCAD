@@ -102,6 +102,7 @@ class FCUndoRedoDlg : public QFrame
  * (drop-down button). Such buttons are usually used as undo/redo-buttons in a lot
  * of Windows programs.
  */
+class FCToolButtonDropDownPrivate;
 class FCToolButtonDropDown : public QToolButton
 {
   Q_OBJECT
@@ -139,15 +140,13 @@ class FCToolButtonDropDown : public QToolButton
     void drawButtonLabel( QPainter * p );
     void paintEvent     ( QPaintEvent *e ); 
 
-    bool bEntered;
-    bool bDropDown;
-    bool bActButton;
     // show this widget when clicking on drop-down button
     QWidget* _pWidget;
 
   private:
     /** Draws the arrow for the drop down button */
     void drawArrow( QPainter *, bool, int, int, int, int, const QColorGroup &, bool, const QBrush* = NULL);
+    FCToolButtonDropDownPrivate* d;
 };
 
 

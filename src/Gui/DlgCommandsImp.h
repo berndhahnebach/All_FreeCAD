@@ -32,7 +32,9 @@
 #define DLGCOMMANDS_IMP_H
 
 #include "DlgCommands.h"
-#include "DlgCustomizeImp.h"
+#include "PropertyPage.h"
+
+class FCCommand;
 
 class FCDlgCustomCommandsImp : public FCDlgCustomCommands, public FCPropertyPage
 { 

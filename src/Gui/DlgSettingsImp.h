@@ -33,13 +33,13 @@
 
 #include "DlgSettings.h"
 #include "Window.h"
-#include "PrefWidgets.h"
+#include "PropertyPage.h"
 
 /**
  * This class implements the settings for the help-viewer
  * @see class FCHtmlView
  */
-class FCDlgSettings : public FCDlgSettingsBase, public FCWidgetPrefsManager
+class FCDlgSettings : public FCDlgSettingsBase, public FCPreferencePage
 {
   Q_OBJECT
 

@@ -41,7 +41,7 @@ class QTabWidget;
 /**
  * This class is the container class which handles all the preference pages
  * @see class FCDlgPreferencesImp
- */
+ *//*
 class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
 { 
     Q_OBJECT
@@ -74,7 +74,7 @@ class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
     void prefPageClicked(QWidget * item );
 
 };
-
+*/
 /**
  * This class is a 2nd implementation of the container class.
  * It uses a listbox for the groups instead of a listview.
@@ -86,7 +86,7 @@ class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
  * @ref FCWidgetPrefs classes like:
  * FCEditSpinBox, FCLineEdit, FCComboBox, FCListBox, FCCheckBox, FCRadioButton and FCSlider
  *
- * Your implementation class must inherit the Qt-generated class and @ref FCWidgetPrefsManager.
+ * Your implementation class must inherit the Qt-generated class and @ref FCPreferencePage.
  * In the constructor of your class you must call for each object in your page
  * append(<objectname>->getHandler());
  * to use the full automation
@@ -110,6 +110,14 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
      * otherwise the preference pages will be lost.
      */
     void addPreferencePage(QWidget* page, const char* name);
+
+  protected slots:
+    /// click the OK button
+    void onOK();
+    /// click the Apply button
+    void onApply();
+    /// click the Cancel button
+    void onCancel();
 
   protected:
     /// for internal use only

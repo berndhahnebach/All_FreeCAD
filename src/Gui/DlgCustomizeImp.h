@@ -33,36 +33,7 @@
 
 #include "Window.h"
 
-class FCCommand;
-class FCToolBar;
 class QTabWidget;
-
-/** Base class for property pages.
- * The pages of @ref FCDlgCustomize should
- * inherit FCPropertyPage to use apply/cancel mechanism.
- * Inherited classes should reimplement @ref apply() and
- * @ref cancel().
- */
-class FCPropertyPage
-{
-  protected:
-    FCPropertyPage();
-
-  public:
-    virtual ~FCPropertyPage() {}
-    bool isModified();
-    void setModified(bool b);
-    void slotApply();
-    void slotCancel();
-
-  protected:
-    virtual void apply();
-    virtual void cancel();
-
-  private:
-    bool bChanged;
-};
-
 
 /**
  * Dialog which contains all available commands and separate
@@ -81,11 +52,11 @@ class FCDlgCustomize : public QDialog
 
   protected slots:
     /// click the OK button
-    void slotOK();
+    void onOK();
     /// click the Apply button
-    void slotApply();
+    void onApply();
     /// click the Cancel button
-    void slotCancel();
+    void onCancel();
 
   protected:
     QPushButton* buttonHelp;
