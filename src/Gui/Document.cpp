@@ -147,8 +147,7 @@ void Document::createView(const char* sType)
   }else if(strcmp(sType,"View3DOCC") == 0){
     pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
   }else
-    Base::Console().Error("Document::createView() Unknown view type: %s\n",sType);
-
+    Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
 
   QString aName = tr("%1%2:%3").arg(tr("Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
 

@@ -8,7 +8,7 @@ libImportGui_la_SOURCES=\
 		Command.cpp
 
 # the library search path.
-libImportGui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImportGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libImportGui_la_LIBADD   = \
 		-lTKPrim \
@@ -34,3 +34,9 @@ moc_%.cpp: %.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f ImportGui.so && \
+		$(LN_S) lib/libImportGui.so ImportGui.so

@@ -177,7 +177,7 @@ libPartGui_la_SOURCES = \
 
 
 # the library search path.
-libPartGui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libPartGui_la_LIBADD = \
 		-lFreeCADGui \
@@ -463,7 +463,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-data-local
 
 install-exec-am: install-libLTLIBRARIES
 
@@ -497,12 +497,12 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 	distclean-compile distclean-depend distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am info \
 	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-info-am \
+	install-data-local install-exec install-exec-am install-info \
+	install-info-am install-libLTLIBRARIES install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool pdf \
+	pdf-am ps ps-am tags uninstall uninstall-am uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
 
@@ -520,6 +520,12 @@ moc_%.cpp: %.h
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f PartGui.so && \
+		$(LN_S) lib/libPartGui.so PartGui.so
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -8,7 +8,7 @@ lib_TEMPLATE_Gui_la_SOURCES=\
 		Command.cpp
 
 # the library search path.
-lib_TEMPLATE_Gui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+lib_TEMPLATE_Gui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 lib_TEMPLATE_Gui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -31,3 +31,9 @@ moc_%.cpp: %.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f _TEMPLATE_Gui.so && \
+		$(LN_S) lib/lib_TEMPLATE_Gui.so _TEMPLATE_Gui.so

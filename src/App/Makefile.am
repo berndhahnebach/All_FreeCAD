@@ -2,50 +2,49 @@
 lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
-	InitScript.h \
-	TestScript.h \
-  Plugin.h \
-  Standard.h
+		InitScript.h \
+		TestScript.h \
+		Plugin.h \
+		Standard.h
 
 libFreeCADApp_la_SOURCES=\
-		Application.h \
-		Attribute.h \
-		DocTypeAttr.h \
-		Document.h \
-		DocumentPy.h \
-		Feature.h \
-		FeatureAttr.h \
-		Function.h \
-		Label.h \
-		Parameter.h \
-		PreCompiled.h \
-		Property.h \
-    PropertyAttr.h \
-		Topology.h \
 		Application.cpp \
+		Application.h \
 		ApplicationPy.cpp \
 		Attribute.cpp \
+		Attribute.h \
 		DocTypeAttr.cpp \
+		DocTypeAttr.h \
 		Document.cpp \
+		Document.h \
 		DocumentPy.cpp \
+		DocumentPy.h \
 		Doxygen.cpp \
 		Feature.cpp \
+		Feature.h \
 		FeatureAttr.cpp \
+		FeatureAttr.h \
 		Function.cpp \
+		Function.h \
 		Label.cpp \
+		Label.h \
 		PreCompiled.cpp \
+		PreCompiled.h \
 		Property.cpp \
-    PropertyAttr.cpp \
-		Topology.cpp
+		Property.h \
+		PropertyAttr.cpp \
+		PropertyAttr.h \
+		Topology.cpp \
+		Topology.h
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 Standard.h: Standard
-	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 Plugin.h: Plugin
-	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -68,3 +67,12 @@ libFreeCADApp_la_LIBADD   = \
 INCLUDES= $(all_includes)
 
 CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		FreeCADInit.py \
+		FreeCADTest.py \
+		Plugin \
+		Standard
+
+
+

@@ -142,195 +142,304 @@ target_alias = @target_alias@
 lib_LTLIBRARIES = libFreeCADGui.la
 
 BUILT_SOURCES = \
-moc_Action.cpp \
-moc_Application.cpp \
-moc_ButtonGroup.cpp \
-moc_CommandLine.cpp \
-moc_CustomWidgets.cpp \
-moc_DlgActions.cpp \
-moc_DlgActionsImp.cpp \
-moc_DlgActivateWindow.cpp \
-moc_DlgAuthorization.cpp \
-moc_DlgCmdbarsImp.cpp \
-moc_DlgCommands.cpp \
-moc_DlgCommandsImp.cpp \
-moc_DlgCustomizeImp.cpp \
-moc_DlgDocTemplates.cpp\
-moc_DlgDocTemplatesImp.cpp \
-moc_DlgEditor.cpp \
-moc_DlgEditorImp.cpp \
-moc_DlgGeneral.cpp \
-moc_DlgGeneralImp.cpp \
-moc_DlgMacroExecute.cpp \
-moc_DlgMacroExecuteImp.cpp \
-moc_DlgMacroRecord.cpp \
-moc_DlgMacroRecordImp.cpp \
-moc_DlgOnlineHelp.cpp \
-moc_DlgOnlineHelpImp.cpp \
-moc_DlgParameter.cpp \
-moc_DlgParameterImp.cpp \
-moc_DlgPreferences.cpp \
-moc_DlgPreferencesImp.cpp \
-moc_DlgReportView.cpp \
-moc_DlgSettings3DView.cpp \
-moc_DlgSettings3DViewImp.cpp \
-moc_DlgSettingsMacro.cpp \
-moc_DlgSettingsMacroImp.cpp \
-moc_DlgTipOfTheDay.cpp \
-moc_DlgToolbars.cpp \
-moc_DlgToolbarsImp.cpp \
-moc_DlgUndoRedo.cpp \
-moc_DockWindow.cpp \
-moc_Document.cpp \
-moc_FileDialog.cpp \
-moc_HelpView.cpp \
-moc_NetworkRetriever.cpp \
-moc_PrefWidgets.cpp \
-moc_Process.cpp \
-moc_PythonEditor.cpp \
-moc_ReportView.cpp \
-moc_SpinBox.cpp \
-moc_Splashscreen.cpp \
-moc_StackBar.cpp \
-moc_TextEdit.cpp \
-moc_ToolBox.cpp \
-moc_ToolBoxBar.cpp \
-moc_Tree.cpp \
-moc_View.cpp\
-moc_View3D.cpp \
-moc_View3DInventor.cpp \
-moc_View3DInventorEx.cpp \
-moc_WidgetFactory.cpp \
-moc_Widgets.cpp \
-DlgActions.cpp \
-DlgActions.h \
-DlgActivateWindow.cpp \
-DlgActivateWindow.h \
-DlgAuthorization.cpp \
-DlgAuthorization.h \
-DlgCommands.cpp \
-DlgCommands.h \
-DlgDocTemplates.cpp \
-DlgDocTemplates.h \
-DlgEditor.cpp \
-DlgEditor.h \
-DlgGeneral.cpp \
-DlgGeneral.h \
-DlgMacroExecute.cpp \
-DlgMacroExecute.h \
-DlgMacroRecord.cpp \
-DlgMacroRecord.h \
-DlgOnlineHelp.cpp \
-DlgOnlineHelp.h \
-DlgParameter.cpp \
-DlgParameter.h \
-DlgPreferences.cpp \
-DlgPreferences.h \
-DlgReportView.cpp \
-DlgReportView.h \
-DlgSettings3DView.cpp \
-DlgSettings3DView.h \
-DlgSettingsMacro.cpp \
-DlgSettingsMacro.h \
-DlgTipOfTheDay.cpp \
-DlgTipOfTheDay.h \
-DlgToolbars.cpp \
-DlgToolbars.h \
-propertyeditor/moc_propertyeditor.cpp \
-propertyeditor/moc_propertyeditorfile.cpp \
-propertyeditor/moc_propertyeditorfont.cpp \
-propertyeditor/moc_propertyeditorinput.cpp \
-propertyeditor/moc_propertyeditoritem.cpp \
-propertyeditor/knuminput.moc \
-propertyeditor/knumvalidator.moc \
-Language/FreeCAD_de.h \
-Language/moc_Translator.cpp \
-GuiInitScript.h
+		moc_Action.cpp \
+		moc_Application.cpp \
+		moc_ButtonGroup.cpp \
+		moc_CommandLine.cpp \
+		moc_CustomWidgets.cpp \
+		moc_DlgActions.cpp \
+		moc_DlgActionsImp.cpp \
+		moc_DlgActivateWindow.cpp \
+		moc_DlgAuthorization.cpp \
+		moc_DlgCmdbarsImp.cpp \
+		moc_DlgCommands.cpp \
+		moc_DlgCommandsImp.cpp \
+		moc_DlgCustomizeImp.cpp \
+		moc_DlgDocTemplates.cpp\
+		moc_DlgDocTemplatesImp.cpp \
+		moc_DlgEditor.cpp \
+		moc_DlgEditorImp.cpp \
+		moc_DlgGeneral.cpp \
+		moc_DlgGeneralImp.cpp \
+		moc_DlgMacroExecute.cpp \
+		moc_DlgMacroExecuteImp.cpp \
+		moc_DlgMacroRecord.cpp \
+		moc_DlgMacroRecordImp.cpp \
+		moc_DlgOnlineHelp.cpp \
+		moc_DlgOnlineHelpImp.cpp \
+		moc_DlgParameter.cpp \
+		moc_DlgParameterImp.cpp \
+		moc_DlgPreferences.cpp \
+		moc_DlgPreferencesImp.cpp \
+		moc_DlgReportView.cpp \
+		moc_DlgSettings3DView.cpp \
+		moc_DlgSettings3DViewImp.cpp \
+		moc_DlgSettingsMacro.cpp \
+		moc_DlgSettingsMacroImp.cpp \
+		moc_DlgTipOfTheDay.cpp \
+		moc_DlgToolbars.cpp \
+		moc_DlgToolbarsImp.cpp \
+		moc_DlgUndoRedo.cpp \
+		moc_DockWindow.cpp \
+		moc_Document.cpp \
+		moc_FileDialog.cpp \
+		moc_HelpView.cpp \
+		moc_NetworkRetriever.cpp \
+		moc_PrefWidgets.cpp \
+		moc_Process.cpp \
+		moc_PythonEditor.cpp \
+		moc_ReportView.cpp \
+		moc_SpinBox.cpp \
+		moc_Splashscreen.cpp \
+		moc_StackBar.cpp \
+		moc_TextEdit.cpp \
+		moc_ToolBox.cpp \
+		moc_ToolBoxBar.cpp \
+		moc_Tree.cpp \
+		moc_View.cpp\
+		moc_View3D.cpp \
+		moc_View3DInventor.cpp \
+		moc_View3DInventorEx.cpp \
+		moc_WidgetFactory.cpp \
+		moc_Widgets.cpp \
+		DlgActions.cpp \
+		DlgActions.h \
+		DlgActivateWindow.cpp \
+		DlgActivateWindow.h \
+		DlgAuthorization.cpp \
+		DlgAuthorization.h \
+		DlgCommands.cpp \
+		DlgCommands.h \
+		DlgDocTemplates.cpp \
+		DlgDocTemplates.h \
+		DlgEditor.cpp \
+		DlgEditor.h \
+		DlgGeneral.cpp \
+		DlgGeneral.h \
+		DlgMacroExecute.cpp \
+		DlgMacroExecute.h \
+		DlgMacroRecord.cpp \
+		DlgMacroRecord.h \
+		DlgOnlineHelp.cpp \
+		DlgOnlineHelp.h \
+		DlgParameter.cpp \
+		DlgParameter.h \
+		DlgPreferences.cpp \
+		DlgPreferences.h \
+		DlgReportView.cpp \
+		DlgReportView.h \
+		DlgSettings3DView.cpp \
+		DlgSettings3DView.h \
+		DlgSettingsMacro.cpp \
+		DlgSettingsMacro.h \
+		DlgTipOfTheDay.cpp \
+		DlgTipOfTheDay.h \
+		DlgToolbars.cpp \
+		DlgToolbars.h \
+		propertyeditor/moc_propertyeditor.cpp \
+		propertyeditor/moc_propertyeditorfile.cpp \
+		propertyeditor/moc_propertyeditorfont.cpp \
+		propertyeditor/moc_propertyeditorinput.cpp \
+		propertyeditor/moc_propertyeditoritem.cpp \
+		propertyeditor/knuminput.moc \
+		propertyeditor/knumvalidator.moc \
+		Language/FreeCAD_de.h \
+		Language/moc_Translator.cpp \
+		GuiInitScript.h
 
 
 libFreeCADGui_la_SOURCES = \
-propertyeditor/propertyeditor.cpp \
-propertyeditor/propertyeditoritem.cpp \
-propertyeditor/propertyeditordate.cpp \
-propertyeditor/propertyeditorfile.cpp \
-propertyeditor/propertyeditorfont.cpp \
-propertyeditor/propertyeditorinput.cpp \
-propertyeditor/propertyeditorlist.cpp \
-propertyeditor/knuminput.cpp \
-propertyeditor/knumvalidator.cpp \
-\
-Inventor/OCC/SoBrepShape.cpp \
-\
-Language/LanguageFactory.cpp \
-Language/Translator.cpp \
-\
-Action.cpp \
-Application.cpp \
-BitmapFactory.cpp \
-ButtonGroup.cpp \
-CommandLine.cpp \
-Command.cpp \
-CommandStd.cpp  \
-CommandTest.cpp \
-CommandView.cpp \
-CustomWidgets.cpp \
-DlgActionsImp.cpp \
-DlgActivateWindowImp.cpp \
-DlgCmdbarsImp.cpp \
-DlgCommandsImp.cpp \
-DlgCustomizeImp.cpp \
-DlgDocTemplatesImp.cpp \
-DlgEditorImp.cpp \
-DlgGeneralImp.cpp \
-DlgMacroExecuteImp.cpp \
-DlgMacroRecordImp.cpp \
-DlgOnlineHelpImp.cpp \
-DlgParameterImp.cpp \
-DlgPreferencesImp.cpp \
-DlgReportViewImp.cpp \
-DlgSettings3DViewImp.cpp \
-DlgSettingsMacroImp.cpp \
-DlgTipOfTheDayImp.cpp \
-DlgToolbarsImp.cpp \
-DlgUndoRedo.cpp \
-DockWindow.cpp \
-Document.cpp \
-Doxygen.cpp \
-FileDialog.cpp \
-GuiConsole.cpp \
-HelpView.cpp \
-Macro.cpp \
-MouseModel.cpp \
-NetworkRetriever.cpp \
-PreCompiled.cpp \
-PrefWidgets.cpp \
-Process.cpp \
-ProgressBar.cpp \
-PropertyPage.cpp \
-PropertyView.cpp \
-PythonEditor.cpp \
-ReportView.cpp \
-resource.cpp \
-Selection.cpp \
-SpinBox.cpp \
-Splashscreen.cpp \
-StackBar.cpp \
-TextEdit.cpp \
-ToolBox.cpp \
-ToolBoxBar.cpp \
-Tools.cpp \
-Tree.cpp \
-View.cpp \
-View3D.cpp \
-View3DInventor.cpp \
-View3DInventorEx.cpp \
-View3DInventorExamples.cpp \
-ViewProvider.cpp \
-WaitCursor.cpp \
-WhatsThis.cpp \
-WidgetFactory.cpp \
-Widgets.cpp \
-Window.cpp
+		propertyeditor/propertyeditor.cpp \
+		propertyeditor/propertyeditor.h \
+		propertyeditor/propertyeditoritem.cpp \
+		propertyeditor/propertyeditoritem.h \
+		propertyeditor/propertyeditordate.cpp \
+		propertyeditor/propertyeditordate.h \
+		propertyeditor/propertyeditorfile.cpp \
+		propertyeditor/propertyeditorfile.h \
+		propertyeditor/propertyeditorfont.cpp \
+		propertyeditor/propertyeditorfont.h \
+		propertyeditor/propertyeditorinput.cpp \
+		propertyeditor/propertyeditorinput.h \
+		propertyeditor/propertyeditorlist.cpp \
+		propertyeditor/propertyeditorlist.h \
+		propertyeditor/knuminput.cpp \
+		propertyeditor/knuminput.h \
+		propertyeditor/knumvalidator.cpp \
+		propertyeditor/knumvalidator.h \
+		\
+		Inventor/OCC/SoBrepShape.cpp \
+		Inventor/OCC/SoBrepShape.h \
+		\
+		Language/LanguageFactory.cpp \
+		Language/LanguageFactory.h \
+		Language/Translator.cpp \
+		Language/Translator.h \
+		\
+		Action.cpp \
+		Action.h \
+		Application.cpp \
+		Application.h \
+		BitmapFactory.cpp \
+		BitmapFactory.h \
+		ButtonGroup.cpp \
+		ButtonGroup.h \
+		CommandLine.cpp \
+		CommandLine.h \
+		Command.cpp \
+		Command.h \
+		CommandStd.cpp  \
+		CommandTest.cpp \
+		CommandView.cpp \
+		CustomWidgets.cpp \
+		CustomWidgets.h \
+		DlgActionsImp.cpp \
+		DlgActionsImp.h \
+		DlgActivateWindowImp.cpp \
+		DlgActivateWindowImp.h \
+		DlgCmdbarsImp.cpp \
+		DlgCmdbarsImp.h \
+		DlgCommandsImp.cpp \
+		DlgCommandsImp.h \
+		DlgCustomizeImp.cpp \
+		DlgCustomizeImp.h \
+		DlgDocTemplatesImp.cpp \
+		DlgDocTemplatesImp.h \
+		DlgEditorImp.cpp \
+		DlgEditorImp.h \
+		DlgGeneralImp.cpp \
+		DlgGeneralImp.h \
+		DlgMacroExecuteImp.cpp \
+		DlgMacroExecuteImp.h \
+		DlgMacroRecordImp.cpp \
+		DlgMacroRecordImp.h \
+		DlgOnlineHelpImp.cpp \
+		DlgOnlineHelpImp.h \
+		DlgParameterImp.cpp \
+		DlgParameterImp.h \
+		DlgPreferencesImp.cpp \
+		DlgPreferencesImp.h \
+		DlgReportViewImp.cpp \
+		DlgReportViewImp.h \
+		DlgSettings3DViewImp.cpp \
+		DlgSettings3DViewImp.h \
+		DlgSettingsMacroImp.cpp \
+		DlgSettingsMacroImp.h \
+		DlgTipOfTheDayImp.cpp \
+		DlgTipOfTheDayImp.h \
+		DlgToolbarsImp.cpp \
+		DlgToolbarsImp.h \
+		DlgUndoRedo.cpp \
+		DlgUndoRedo.h \
+		DockWindow.cpp \
+		DockWindow.h \
+		Document.cpp \
+		Document.h \
+		Doxygen.cpp \
+		FileDialog.cpp \
+		FileDialog.h \
+		GuiConsole.cpp \
+		GuiConsole.h \
+		HelpView.cpp \
+		HelpView.h \
+		Macro.cpp \
+		Macro.h \
+		MouseModel.cpp \
+		MouseModel.h \
+		NetworkRetriever.cpp \
+		NetworkRetriever.h \
+		PreCompiled.cpp \
+		PreCompiled.h \
+		PrefWidgets.cpp \
+		PrefWidgets.h \
+		Process.cpp \
+		Process.h \
+		ProgressBar.cpp \
+		ProgressBar.h \
+		PropertyPage.cpp \
+		PropertyPage.h \
+		PropertyView.cpp \
+		PropertyView.h \
+		PythonEditor.cpp \
+		PythonEditor.h \
+		ReportView.cpp \
+		ReportView.h \
+		resource.cpp \
+		Selection.cpp \
+		Selection.h \
+		SpinBox.cpp \
+		SpinBox.h \
+		Splashscreen.cpp \
+		Splashscreen.h \
+		StackBar.cpp \
+		StackBar.h \
+		TextEdit.cpp \
+		TextEdit.h \
+		ToolBox.cpp \
+		ToolBox.h \
+		ToolBoxBar.cpp \
+		ToolBoxBar.h \
+		Tools.cpp \
+		Tools.h \
+		Tree.cpp \
+		Tree.h \
+		View.cpp \
+		View.h \
+		View3D.cpp \
+		View3D.h \
+		View3DInventor.cpp \
+		View3DInventor.h \
+		View3DInventorEx.cpp \
+		View3DInventorEx.h \
+		View3DInventorExamples.cpp \
+		View3DInventorExamples.h \
+		ViewProvider.cpp \
+		ViewProvider.h \
+		WaitCursor.cpp \
+		WaitCursor.h \
+		WhatsThis.cpp \
+		WhatsThis.h \
+		WidgetFactory.cpp \
+		WidgetFactory.h \
+		Widgets.cpp \
+		Widgets.h \
+		Window.cpp \
+		Window.h
+
+
+EXTRA_DIST = \
+		Icons/BmpFactoryIcons.cpp \
+		Icons/default_background.xpm \
+		Icons/developers.h \
+		Icons/FCIcon.xpm \
+		Icons/images.cpp \
+		Icons/ParamDlgImgs.h \
+		Language/linguist/LICENSE \
+		Language/linguist/metatranslator.cpp \
+		Language/linguist/metatranslator.h \
+		Language/FreeCAD.po \
+		Language/FreeCAD_de.ts \
+		Language/FreeCAD_fr.ts \
+		DlgActions.ui \
+		DlgActivateWindow.ui \
+		DlgAuthorization.ui \
+		DlgCommands.ui \
+		DlgDocTemplates.ui \
+		DlgEditor.ui \
+		DlgGeneral.ui \
+		DlgMacroExecute.ui \
+		DlgMacroRecord.ui \
+		DlgMacros.ui \
+		DlgOnlineHelp.ui \
+		DlgParameter.ui \
+		DlgPreferences.ui \
+		DlgReportView.ui \
+		DlgSettings3DView.ui \
+		DlgSettingsMacro.ui \
+		DlgSplasher.ui \
+		DlgTipOfTheDay.ui \
+		DlgToolbars.ui \
+		FreeCADGuiInit.py
 
 
 # the library search path.
@@ -472,6 +581,13 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(libFreeCADGui_la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
@@ -1105,6 +1221,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/Icons $(distdir)/Language $(distdir)/Language/linguist
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -1243,10 +1360,10 @@ moc_%.cpp: %.h
 
 # rule for translation files using python script :
 %.h: %.ts
-	cd $(@D) && $(PYTHON) ../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
+	cd $(@D) && $(PYTHON) $(top_srcdir)/../Tools/tstocpp.py $(<F)  $(@F) $(*F)
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -140,6 +140,16 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = Base App Gui Main
+
+EXTRA_DIST = \
+		ChangeLog.txt \
+		Config.h \
+		copying.lib \
+		README.Linux \
+		Version.h \
+		Mod \
+		Tools
+
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

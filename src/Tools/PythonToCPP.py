@@ -16,7 +16,9 @@ else:
 
 lines = file.readlines()
 
-out.write("const char " + sys.argv[1][:-3] + "[] =")
+# We want to use this script for files in another directory, so we extract the actual file name
+fn = os.path.basename(sys.argv[1])
+out.write("const char " + fn[:-3] + "[] =")
 
 for line in lines:
     # remove new line

@@ -378,22 +378,15 @@ void StdCmdWorkbench::activated(int iMsg)
 {
   std::vector<std::string> wb = ApplicationWindow::Instance->workbenches();
 
-
-
   try{
     if (iMsg >= 0 && iMsg < int(wb.size()))
     {
       doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
     }
-
   }
-
   catch(const Base::Exception&)
-
   {
-
     // just do nothing because for sure the exception has already been reported
-
   }
 }
 
@@ -402,7 +395,7 @@ void StdCmdWorkbench::activated(int iMsg)
  */
 void StdCmdWorkbench::activate ( const QString& item )
 {
-  if (!pcAction) 
+  if (!pcAction)
     createAction();
   dynamic_cast<ActionGroup*>(pcAction)->activate( item );
 }

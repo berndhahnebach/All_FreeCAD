@@ -8,7 +8,7 @@ libMeshGui_la_SOURCES=\
 		Command.cpp
 
 # the library search path.
-libMeshGui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libMeshGui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -31,3 +31,9 @@ moc_%.cpp: %.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f MeshGui.so && \
+		$(LN_S) lib/libMeshGui.so MeshGui.so

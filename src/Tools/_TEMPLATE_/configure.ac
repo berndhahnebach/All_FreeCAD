@@ -44,6 +44,7 @@ AC_PROG_CC
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
 AC_PROG_LIBTOOL
+AC_PROG_LN_S
 
 ## *************************************************************************
 ##
@@ -237,31 +238,23 @@ BNV_HAVE_QT
 
 AC_CHECKING([FreeCAD base libs])
 
-AC_ARG_WITH(fc-libs,
-	AC_HELP_STRING([--with-fc-libs], [Path of the library files of the FreeCAD base.]),
-	[fc_fc_libs=$withval],
-	[fc_fc_libs=../../../bin])
-
-AC_CHECK_FILE($fc_fc_libs/libFreeCADBase.so,,
+AC_CHECK_FILE(../../Base/.libs/libFreeCADBase.so,,
 	[AC_MSG_ERROR([
 	**** Could not find libFreeCADBase.so library files.
 	 Please build FreeCAD first. ****
 	 ])])
 
-AC_CHECK_FILE($fc_fc_libs/libFreeCADApp.so,,
+AC_CHECK_FILE(../../App/.libs/libFreeCADApp.so,,
 	[AC_MSG_ERROR([
 	**** Could not find libFreeCADApp.so library files.
 	 Please build FreeCAD first. ****
 	 ])])
 
-AC_CHECK_FILE($fc_fc_libs/libFreeCADGui.so,,
+AC_CHECK_FILE(../../Gui/.libs/libFreeCADGui.so,,
 	[AC_MSG_ERROR([
 	**** Could not find libFreeCADGui.so library files.
 	 Please build FreeCAD first. ****
 	 ])])
-
-#all_libraries="$all_libraries -L../$fc_fc_libs"
-all_libraries="$all_libraries -L$fc_fc_libs"
 
 # **************************************************************************
 

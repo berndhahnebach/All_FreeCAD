@@ -34,7 +34,7 @@ libPartGui_la_SOURCES=\
 		ViewProvider.h
 
 # the library search path.
-libPartGui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libPartGui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -57,3 +57,9 @@ moc_%.cpp: %.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f PartGui.so && \
+		$(LN_S) lib/libPartGui.so PartGui.so

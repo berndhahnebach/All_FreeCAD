@@ -113,6 +113,7 @@ void GUIConsole::Log  (const char *sLog)
 #else /* FC_OS_LINUX */
 
 // safely ignore GUIConsole::s_nMaxLines and  GUIConsole::s_nRefCount
+GUIConsole::GUIConsole (void) {}
 GUIConsole::~GUIConsole (void) {}
 void GUIConsole::Message(const char *sMsg) { std::cout<<sMsg; }
 void GUIConsole::Warning(const char *sWarn){ std::cerr<<"Warning: "<<sWarn; }

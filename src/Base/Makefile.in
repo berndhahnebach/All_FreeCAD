@@ -143,37 +143,37 @@ target_alias = @target_alias@
 lib_LTLIBRARIES = libFreeCADBase.la
 
 libFreeCADBase_la_SOURCES = \
-		Console.h \
-		Documentation.h \
-		EnvMacros.h \
-		Exception.h \
-		Factory.h \
-		FileTemplate.h \
-		Handle.h \
-		Interpreter.h \
-		Observer.h \
-		Parameter.h \
-		PreCompiled.h \
-		PyExport.h \
-		PyExportImp.h \
-		PyTools.h \
-		Sequencer.h \
 		Console.cpp \
+		Console.h \
 		Documentation.cpp \
+		Documentation.h \
 		Doxygen.cpp \
+		EnvMacros.h \
 		Exception.cpp \
+		Exception.h \
 		Factory.cpp \
+		Factory.h \
 		FileTemplate.cpp \
+		FileTemplate.h \
 		Handle.cpp \
+		Handle.h \
 		Interpreter.cpp \
+		Interpreter.h \
 		Observer.cpp \
+		Observer.h \
 		Parameter.cpp \
+		Parameter.h \
 		ParameterPy.cpp \
 		PreCompiled.cpp \
+		PreCompiled.h \
 		PyExport.cpp \
+		PyExport.h \
 		PyExportImp.cpp \
+		PyExportImp.h \
 		PyTools.c \
-		Sequencer.cpp
+		PyTools.h \
+		Sequencer.cpp \
+		Sequencer.h
 
 
 libFreeCADBase_la_LIBADD = -lpython@fc_py_ver@ -lxerces-c

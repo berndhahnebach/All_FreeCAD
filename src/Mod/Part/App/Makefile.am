@@ -15,7 +15,7 @@ libPart_la_SOURCES=\
 		PartFeature.h
 
 # the library search path.
-libPart_la_LDFLAGS = -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPart_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libPart_la_LIBADD   = \
 		-lFreeCADBase \
@@ -28,3 +28,9 @@ libPart_la_LIBADD   = \
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f Part.so && \
+		$(LN_S) lib/libPart.so Part.so

@@ -1,12 +1,12 @@
 # Mesh gui init module
-# (c) 2003 Juergen Riegel
+# (c) 2004 Werner Mayer
 #
 # Gathering all the information to start FreeCAD
 # This is the second one of three init scripts, the third one
 # runs when the gui is up
 
 #***************************************************************************
-#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                        *
+#*   (c) Werner Mayer <werner.wm.mayer@gmx.de> 2004                        *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -26,7 +26,7 @@
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
-#*   Juergen Riegel 2002                                                   *
+#*   Werner Mayer 2004                                                     *
 #***************************************************************************/
 
 

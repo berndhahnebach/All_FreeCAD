@@ -10,7 +10,7 @@ libRaytracing_la_SOURCES=\
 
 
 # the library search path.
-libRaytracing_la_LDFLAGS = -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libRaytracing_la_LIBADD   = \
 		-lFreeCADBase \
@@ -19,3 +19,9 @@ libRaytracing_la_LIBADD   = \
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f Raytracing.so && \
+		$(LN_S) lib/libRaytracing.so Raytracing.so

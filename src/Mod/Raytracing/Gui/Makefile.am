@@ -15,7 +15,7 @@ libRaytracingGui_la_SOURCES=\
 		DlgSettingsRayImp.h
 
 # the library search path.
-libRaytracingGui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libRaytracingGui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -41,3 +41,9 @@ FreeCADpov.h: FreeCADpov
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+# We need this softlink for Python to load
+install-data-local:
+		cd $(prefix) && \
+		rm -f RaytracingGui.so && \
+		$(LN_S) lib/libRaytracingGui.so RaytracingGui.so
