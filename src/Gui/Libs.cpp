@@ -54,8 +54,10 @@
 #	pragma comment(lib,"TKCAF.lib")
 #	pragma comment(lib,"TKCDF.lib")
 	// QT extension
-//#	pragma comment(lib,"qextmdi.lib")
 #	pragma comment(lib,QTLIBNAME)
+
+#	pragma comment(lib,INVENTORLIBNAME)
+#	pragma comment(lib,"OpenGL32.lib")
 
 #else
 //#	error "Dont compile this file on UNIX!"

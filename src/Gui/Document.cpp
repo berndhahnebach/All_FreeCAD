@@ -92,7 +92,7 @@ FCGuiDocument::~FCGuiDocument()
 }
 
 
-void FCGuiDocument::OnChange(FCSubject &rCaller)
+void FCGuiDocument::OnChange(FCDocument::SubjectType &rCaller,FCDocument::MessageType Reason)
 {
 
 

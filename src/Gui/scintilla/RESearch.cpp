@@ -30,6 +30,9 @@
  * Modification history:
  *
  * $Log$
+ * Revision 1.1  2003/05/17 14:09:03  wmayer
+ * scintilla added
+ *
  * Revision 1.9  2003/03/21 10:36:08  nyamatongwe
  * Detect patterns too long in regular expression search.
  *
@@ -234,6 +237,7 @@
  *	compile:	BOT 1 CHR f CHR o CLO ANY END EOT 1 CHR - REF 1 END
  *	matches:	foo-foo fo-fo fob-fob foobar-foobar ...
  */
+#include "../../Config.h"
 
 #include "RESearch.h"
 

@@ -4,6 +4,7 @@
  **/
 // Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // This file is in the public domain.
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

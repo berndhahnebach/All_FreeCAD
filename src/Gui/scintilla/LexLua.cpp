@@ -6,6 +6,7 @@
  ** Folder by Alexey Yutkin.
  ** Modified by Marcos E. Wurzius & Philippe Lhoste
  **/
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

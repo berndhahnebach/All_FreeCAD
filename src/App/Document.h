@@ -31,6 +31,16 @@
 #include <map>
 #include <vector>
 
+#ifdef FC_OS_WIN32
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#	pragma warning( disable : 4290 )  // not implemented throw specification
+#	pragma warning( disable : 4275 )  
+#endif
+
+
+
 class FCDocument;
 
 /** The OCC Label wrapper class
@@ -97,6 +107,20 @@ protected:
 
 };
 
+/** transport the changes of the Document 
+ *  This class transport closer information what was changed in a 
+ *  document. Its a optional information and not all commands set this
+ *  information. If not set all observer of the document assume a full change
+ *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only 
+ *  a small parameter whas changed. There for one can use this class and make the 
+ *  update of the document much faster!
+ *@see FCDocument
+ *@see FCObserver
+ *@bug not implemented so far...!
+*/
+class AppExport FCDocChanges
+{
+};
 
 
 
@@ -110,7 +134,7 @@ protected:
  *  Application. Only the Application can Open or destroy a document.
  *  @see FCLabel
  */
-class AppExport FCDocument :public FCPyObject, public FCSubject
+class AppExport FCDocument :public FCPyObject, public FCSubject<const FCDocChanges&>
 {
 	/// always start with Py_Header
 	Py_Header;

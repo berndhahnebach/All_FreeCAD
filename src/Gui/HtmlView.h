@@ -93,7 +93,7 @@ class FCHtmlComboBox : public QComboBox
 /**
  * The HTML viewer class
  */
-class GuiExport FCHtmlView : public FCWindow, public FCObserver
+class GuiExport FCHtmlView : public FCWindow, public FCParameterGrp::ObserverType
 { 
     Q_OBJECT
 
@@ -110,7 +110,7 @@ class GuiExport FCHtmlView : public FCWindow, public FCObserver
     /// set the limit for the bookmarks
     bool SetMaxBookmarks (long lCnt);
     /// observers method
-    virtual void OnChange(FCSubject &rCaller);
+    virtual void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
 
   protected slots:
     void SetBackwardAvailable( bool );

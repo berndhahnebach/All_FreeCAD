@@ -40,7 +40,7 @@
 
 #include <set>
 
-class FCSubject;
+template <class MessageType> class FCSubject;
 
 
 /** Observer class
@@ -50,6 +50,7 @@ class FCSubject;
  *  Attach itself to the observed object.
  *  @see FCSubject
  */
+template <class _MessageType>
 class BaseExport FCObserver
 {
 public:
@@ -59,27 +60,27 @@ public:
 	 * A constructor.
 	 * No special function so far.
 	 */
-	FCObserver();
+	FCObserver(){};
 
 	/**
 	 * A destructor.
 	 * No special function so far.
 	 */
-	virtual ~FCObserver();
+	virtual ~FCObserver(){};
 
 	/**
 	 * This method need to be reimplemented from the concrete Observer
 	 * and get called by the observed class
 	 * @param pCaller a referenc to the calling object
 	 */
-	virtual void OnChange(FCSubject &rCaller)=0;
+	virtual void OnChange(FCSubject<_MessageType> &rCaller,_MessageType rcReason)=0;
 
 	/**
 	 * This method need to be reimplemented from the concrete Observer
 	 * and get called by the observed class
 	 * @param pCaller a referenc to the calling object
 	 */
-	virtual void OnDestroy(FCSubject &rCaller){}
+	virtual void OnDestroy(FCSubject<_MessageType> &rCaller){}
 };
 
 /** Subject class
@@ -89,22 +90,37 @@ public:
  *  Attach itself to the observed object.
  *  @see FCObserver
  */
+template <class _MessageType>
 class BaseExport FCSubject
 {
 public:
 
+	typedef  FCObserver<_MessageType> ObserverType;
+	typedef  _MessageType             MessageType;
+	typedef  FCSubject<_MessageType>  SubjectType;   
        
 	/**
 	 * A constructor.
 	 * No special function so far.
 	 */
-	FCSubject();
+	FCSubject(){};
 
 	/**
 	 * A destructor.
 	 * No special function so far.
 	 */
-	~FCSubject();
+	~FCSubject()
+	{
+	  if (_ObserverSet.size() > 0)
+	  {
+		printf("Not detached all observers yet\n");
+		throw;
+	  }
+	//	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+	//  {
+	//    (*Iter)->OnDestroy(*this);   // send OnChange-signal
+	//  }
+	}
 
 	/** Attach an Observer
 	 * Attach an Observer to the list of Observers which get   
@@ -112,7 +128,10 @@ public:
 	 * @param ToObserv A pointer to a concrete Observer
 	 * @see Notify
 	 */
-	void Attach(FCObserver *ToObserv);
+	void Attach(FCObserver<_MessageType> *ToObserv)
+	{
+		_ObserverSet.insert(ToObserv);
+	}
 
 	/** Detach an Observer
 	 * Detach an Observer from the list of Observers which get   
@@ -120,7 +139,10 @@ public:
 	 * @param ToObserv A pointer to a concrete Observer
 	 * @see Notify
 	 */
-	void Detach(FCObserver *ToObserv);
+	void Detach(FCObserver<_MessageType> *ToObserv)
+	{
+		_ObserverSet.erase(ToObserv);
+	}
 
 	/** Notify all Observers
 	 * Send a message to all Observers attached to this subject.
@@ -128,14 +150,18 @@ public:
 	 * Oberserver and Subject.
 	 * @see Notify
 	 */
-	void Notify(void);
+	void Notify(_MessageType rcReason)
+	{
+		for(std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+			(*Iter)->OnChange(*this,rcReason);   // send OnChange-signal
+	}
 
 protected:
-	/// Vector of attached observers
 #ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
 #endif
-	std::set<FCObserver *> _ObserverSet;
+	/// Vector of attached observers
+	std::set<FCObserver <_MessageType> *> _ObserverSet;
 
 };
 

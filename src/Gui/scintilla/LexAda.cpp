@@ -4,6 +4,7 @@
  **/
 // Copyright 2002 by Sergey Koshcheyev <sergey.k@seznam.cz>
 // The License.txt file describes the conditions under which this software may be distributed.
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <ctype.h>

@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADGui - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "FreeCADGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib /nologo /dll /machine:I386 /out:"../../bin/FreeCADGui.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../../bin/FreeCADGui.dll"
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib /nologo /dll /debug /machine:I386 /out:"../../bin/FreeCADGuiD.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../bin/FreeCADGuiD.dll"
 
 !ENDIF 
 
@@ -2161,6 +2161,608 @@ InputName=qextmditaskbar
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Group "Inventor"
+
+# PROP Default_Filter ""
+# Begin Group "Devices"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\6DOFEvents.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\6DOFEvents.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoGuiDevice.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoGuiDeviceP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoGuiInputFocus.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoGuiKeyboardP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoGuiMouseP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoGuiSpaceballP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtDevice.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtDevice.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtDeviceP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtInputFocus.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtInputFocus.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtInputFocus1.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtKeyboard.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtKeyboard.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtKeyboard1.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtMouse.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtMouse.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtMouse1.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtSpaceball.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtSpaceball.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtSpaceball1.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\devices\SoQtSpaceballP.h
+# End Source File
+# End Group
+# Begin Group "Viewers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\ExaminerViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\FullViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\PlaneViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoGuiExaminerViewerP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoGuiFullViewerP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoGuiPlaneViewerP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtConstrainedViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtConstrainedViewer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtExaminerViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtExaminerViewer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtExaminerViewerP.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\viewers
+InputPath=.\Inventor\Qt\viewers\SoQtExaminerViewerP.h
+InputName=SoQtExaminerViewerP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\viewers
+InputPath=.\Inventor\Qt\viewers\SoQtExaminerViewerP.h
+InputName=SoQtExaminerViewerP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtFlyViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtFlyViewer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtFullViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtFullViewer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtFullViewerP.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\viewers
+InputPath=.\Inventor\Qt\viewers\SoQtFullViewerP.h
+InputName=SoQtFullViewerP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\viewers
+InputPath=.\Inventor\Qt\viewers\SoQtFullViewerP.h
+InputName=SoQtFullViewerP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtPlaneViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtPlaneViewer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtPlaneViewerP.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\viewers
+InputPath=.\Inventor\Qt\viewers\SoQtPlaneViewerP.h
+InputName=SoQtPlaneViewerP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\viewers
+InputPath=.\Inventor\Qt\viewers\SoQtPlaneViewerP.h
+InputName=SoQtPlaneViewerP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtViewer.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\viewers\SoQtViewer.h
+# End Source File
+# End Group
+# Begin Group "Widgets"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\QtNativePopupMenu.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\QtNativePopupMenu.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\widgets
+InputPath=.\Inventor\Qt\widgets\QtNativePopupMenu.h
+InputName=QtNativePopupMenu
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\widgets
+InputPath=.\Inventor\Qt\widgets\QtNativePopupMenu.h
+InputName=QtNativePopupMenu
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoAnyThumbWheel.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoAnyThumbWheel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoQtGLArea.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoQtGLArea.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoQtPopupMenu.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoQtPopupMenu.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\widgets
+InputPath=.\Inventor\Qt\widgets\SoQtPopupMenu.h
+InputName=SoQtPopupMenu
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\widgets
+InputPath=.\Inventor\Qt\widgets\SoQtPopupMenu.h
+InputName=SoQtPopupMenu
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoQtThumbWheel.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\widgets\SoQtThumbWheel.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\widgets
+InputPath=.\Inventor\Qt\widgets\SoQtThumbWheel.h
+InputName=SoQtThumbWheel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt\widgets
+InputPath=.\Inventor\Qt\widgets\SoQtThumbWheel.h
+InputName=SoQtThumbWheel
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoAny.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoAny.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoGuiComponentP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoGuiGLWidgetCommon.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoGuiP.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQt.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtCommon.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtComponent.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtComponent.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtComponentCommon.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtComponentP.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt
+InputPath=.\Inventor\Qt\SoQtComponentP.h
+InputName=SoQtComponentP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt
+InputPath=.\Inventor\Qt\SoQtComponentP.h
+InputName=SoQtComponentP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtCursor.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtCursor.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtGLWidget.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtGLWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtGLWidgetP.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt
+InputPath=.\Inventor\Qt\SoQtGLWidgetP.h
+InputName=SoQtGLWidgetP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt
+InputPath=.\Inventor\Qt\SoQtGLWidgetP.h
+InputName=SoQtGLWidgetP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtObject.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtObject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtP.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt
+InputPath=.\Inventor\Qt\SoQtP.h
+InputName=SoQtP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Inventor\Qt
+InputPath=.\Inventor\Qt\SoQtP.h
+InputName=SoQtP
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtRenderArea.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\Inventor\Qt\SoQtRenderArea.h
 # End Source File
 # End Group
 # Begin Source File

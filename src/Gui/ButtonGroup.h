@@ -167,7 +167,7 @@ class QStackBarBtn : public QToolButton
     FCStackBar* pStackBar;
 };
 
-class FCStackBar : public FCWindow, public FCObserver
+class FCStackBar : public FCWindow, public FCParameterGrp::ObserverType
 {
   Q_OBJECT;
 
@@ -176,7 +176,7 @@ class FCStackBar : public FCWindow, public FCObserver
 	  virtual ~FCStackBar();
     
     // observers method
-    void OnChange(FCSubject &rCaller);
+    void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
 
     // toolbox handling
     bool addView(QWidget* w, const QString &name);

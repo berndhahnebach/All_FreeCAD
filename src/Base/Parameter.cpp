@@ -80,7 +80,7 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
   * Does not much 
   */
 FCParameterGrp::FCParameterGrp(DOMElement *GroupNode,const char* sName)	
-	: FCHandled(), FCSubject(),_pGroupNode(GroupNode)
+	: FCHandled(), FCSubject<const char*>(),_pGroupNode(GroupNode)
 {
 	if(sName) _cName=sName;
 }
@@ -232,7 +232,7 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 	// and set the vaue
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(bValue?"1":"0").unicodeForm());
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 std::vector<bool> FCParameterGrp::GetBools(const char * sFilter)
@@ -302,7 +302,7 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	sprintf(cBuf,"%d",lValue);
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 std::vector<long> FCParameterGrp::GetInts(const char * sFilter)
@@ -366,7 +366,7 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	sprintf(cBuf,"%f",dValue);
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 std::vector<double> FCParameterGrp::GetFloats(const char * sFilter)
@@ -440,7 +440,7 @@ void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
 		pcElem2->setNodeValue(XStr(sValue).unicodeForm());
 	}
 	// trigger observer
-	Notify();
+	Notify(Name);
 
 }
 
@@ -539,7 +539,7 @@ void FCParameterGrp::RemoveGrp(const char* Name)
 	else
 		_pGroupNode->removeChild(pcElem); 	
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 void FCParameterGrp::RemoveASCII(const char* Name)
@@ -552,7 +552,7 @@ void FCParameterGrp::RemoveASCII(const char* Name)
 	else
 		_pGroupNode->removeChild(pcElem); 	
 	// trigger observer
-	Notify();
+	Notify(Name);
 
 }
 
@@ -567,7 +567,7 @@ void FCParameterGrp::RemoveBool(const char* Name)
 		_pGroupNode->removeChild(pcElem); 	
 
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 void FCParameterGrp::RemoveBlob(const char* Name)
@@ -594,7 +594,7 @@ void FCParameterGrp::RemoveFloat(const char* Name)
 		_pGroupNode->removeChild(pcElem); 	
 
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 void FCParameterGrp::RemoveInt(const char* Name)
@@ -608,7 +608,7 @@ void FCParameterGrp::RemoveInt(const char* Name)
 		_pGroupNode->removeChild(pcElem); 	
 
 	// trigger observer
-	Notify();
+	Notify(Name);
 }
 
 void FCParameterGrp::Clear(void)
@@ -629,7 +629,7 @@ void FCParameterGrp::Clear(void)
 		_pGroupNode->removeChild(*It);
 
 	// trigger observer
-	Notify();
+	Notify(0);
 }
 
 

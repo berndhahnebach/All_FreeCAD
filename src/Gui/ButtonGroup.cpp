@@ -623,7 +623,7 @@ FCStackBar::FCStackBar( QWidget *parent, const char *name )
     std::string strGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
     std::string strSlider    = "SpeedAnimationCmdBar";
     GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Attach(this);
-    GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Notify();
+    GetApplication().GetParameterGroupByPath((strGroupPath + strSlider).c_str())->Notify(0);
   }
   catch(/*const*/ FCException& rclE)
   {
@@ -955,7 +955,7 @@ void FCStackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
   startTimer(5);
 }
 
-void FCStackBar::OnChange(FCSubject &rCaller)
+void FCStackBar::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   std::string name = rclGrp.GetGroupName();

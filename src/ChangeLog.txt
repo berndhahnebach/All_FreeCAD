@@ -261,3 +261,8 @@ Version: V0.1B60 Date: Wed May 21 21:18:53 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B61 Date: Sat May 24 17:35:52 2003 +++++++++++++++++++++++++++++++
 + binding for scintilla
+
+Version: V0.1B61 Date: Mon May 26 08:22:28 2003 +++++++++++++++++++++++++++++++
++ switching the observer to templates
++ adding SoQt to the source
+- becaus of the template observer the M$ STL dont work any more

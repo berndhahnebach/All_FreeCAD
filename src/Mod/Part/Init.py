@@ -48,23 +48,11 @@ class PartTemplate:
 		
 		L1 = Main.GetLabel(1)
 		L1.GetLabel(1)
-		L1.GetLabel(2)
-		L1.GetLabel(3)
 		L1.Int = 1
 		L1.Real = 1.0
 		L1.Name = "Hallo"
-		L2 = Main.GetLabel(2)
-		L3 = Main.GetLabel(3)
-		L3.GetLabel(1)
-		L3.GetLabel(2)
-		L3.GetLabel(3)
-		L4 = Main.GetLabel(4)
-		L5 = Main.GetLabel(5)
-		L6 = Main.GetLabel(6)
-		L6.GetLabel(1)
-		L6.GetLabel(2)
-		L6.GetLabel(3)
-		L7 = Main.GetLabel(7)
+		L2 = L1.GetLabel(1)
+		L3 = L1.GetLabel(2)
             
 
 

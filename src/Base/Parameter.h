@@ -40,6 +40,14 @@
 #include "Handle.h"
 #include "Observer.h"
 
+#ifdef FC_OS_WIN32
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#	pragma warning( disable : 4290 )  // not implemented throw specification
+#	pragma warning( disable : 4275 )  
+#endif
+
 
 // Include files
 #ifdef FC_OS_LINUX
@@ -114,7 +122,7 @@ public:
  *  kind of preferences and so on.
  *  @see FCParameterManager
  */
-class  BaseExport FCParameterGrp	: public FCHandled,public FCSubject
+class  BaseExport FCParameterGrp	: public FCHandled,public FCSubject <const char*>
 {
 
 

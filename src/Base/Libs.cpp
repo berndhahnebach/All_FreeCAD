@@ -37,13 +37,10 @@
 
 // === Incuding of libs: ============================================================================
 #include "../Config.h"
+
 #ifdef FC_OS_WIN32
-#	pragma comment(lib,"python21.lib")
-#	ifdef FC_DEBUG
-#		pragma comment(lib,"xerces-c_2D.lib")
-#	else
-#		pragma comment(lib,"xerces-c_2.lib")
-#	endif
+#	pragma comment(lib,PYLIBNAME)
+#	pragma comment(lib,DOMLIBNAME)
 #else
 #	error "Dont compile that file on UNIX!"
 #endif

@@ -133,7 +133,7 @@ FCParameterGrp::handle FCWidgetPrefs::getParamGrp()
   return hPrefGrp;
 }
 
-void FCWidgetPrefs::OnChange(FCSubject &rCaller)
+void FCWidgetPrefs::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
   restorePreferences();
 }
@@ -153,7 +153,7 @@ void FCWidgetPrefsHandler::save()
 {
   pPref->savePreferences();
   if (pPref->getParamGrp().IsValid())
-    pPref->getParamGrp()->Notify();
+    pPref->getParamGrp()->Notify(0);
 }
 
 void FCWidgetPrefsHandler::restore()

@@ -452,7 +452,7 @@ void FCHtmlView::init()
     for (std::vector<std::string>::iterator it = aStrGroups.begin(); it != aStrGroups.end(); ++it)
     {
       GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Attach(this);
-      GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Notify();
+      GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Notify(0);
     }
   }catch(/*const*/ FCException& rclE)
   {
@@ -1010,7 +1010,7 @@ void FCHtmlView::CheckBookmarks()
   QMessageBox::information(this, "FreeCAD", "All bookmarks are uptodate");
 }
 
-void FCHtmlView::OnChange(FCSubject &rCaller)
+void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   std::string name = rclGrp.GetGroupName();

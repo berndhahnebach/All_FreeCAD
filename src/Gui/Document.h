@@ -35,6 +35,14 @@
 #include "../Base/PyExport.h"
 #include "../App/Document.h"
 
+#ifdef FC_OS_WIN32
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#	pragma warning( disable : 4290 )  // not implemented throw specification
+#	pragma warning( disable : 4275 )  
+#endif
+
 class ApplicationWindow;
 class MDIWindow;
 
@@ -47,7 +55,7 @@ class MDIWindow;
  *  @see FCDocument 
  *  @see FCView
  */
-class GuiExport FCGuiDocument :public QObject, public FCObserver
+class GuiExport FCGuiDocument :public QObject, public FCDocument::ObserverType
 {
 	Q_OBJECT
 
@@ -63,7 +71,7 @@ public:
 	bool SaveAs(void);
 
 	/// Observer message from the App doc
-	virtual void OnChange(FCSubject &rCaller);
+	virtual void OnChange(FCDocument::SubjectType &rCaller,FCDocument::MessageType Reason);
 
 	/// Geter for the Application 
 	ApplicationWindow*				GetAppWnd(){return _pcAppWnd;}	

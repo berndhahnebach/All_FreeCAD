@@ -51,13 +51,18 @@
 // class FCObserver
 
 
-
+/*
 //**************************************************************************
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCObserver::FCObserver(){}
+template <class MessageType>
+FCObserver::FCObserver()
+{
 
+}
+
+template <class MessageType>
 FCObserver::~FCObserver()
 {
 
@@ -107,10 +112,10 @@ void FCSubject::Detach(FCObserver *ToObserv)
 	_ObserverSet.erase(ToObserv);
 }
 
-void FCSubject::Notify(void)
+void FCSubject::Notify(MessageType rcReason)
 {
 	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
-        (*Iter)->OnChange(*this);   // send OnChange-signal
+        (*Iter)->OnChange(*this,rcReason);   // send OnChange-signal
 }
 
-
+*/

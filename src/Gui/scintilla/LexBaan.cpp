@@ -5,6 +5,7 @@
  **/
 // Copyright 2001- by Vamsi Potluru <vamsi@who.net> & Praveen Ambekar <ambekarpraveen@yahoo.com>
 // The License.txt file describes the conditions under which this software may be distributed.
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

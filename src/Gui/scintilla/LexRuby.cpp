@@ -4,6 +4,7 @@
  **/
 // Copyright 2001- by Clemens Wyss <wys@helbling.ch>
 // The License.txt file describes the conditions under which this software may be distributed.
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -4,6 +4,7 @@
  ** Written by Laurent le Tynevez
  ** Updated by Simon Steele <s.steele@pnotepad.org> September 2002
  **/
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

@@ -4,6 +4,7 @@
  **/
 // Copyright 2003 by Steven te Brinke <steven.t.b@zonnet.nl>
 // The License.txt file describes the conditions under which this software may be distributed.
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>

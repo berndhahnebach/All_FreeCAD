@@ -59,7 +59,7 @@ class FCWindow;
  *  @see FCWidgetPrefsHandler
  *  @see FCWidgetFactorySupplier
  */
-class FCWidgetPrefs : public FCObserver
+class FCWidgetPrefs : public FCParameterGrp::ObserverType
 {
   public:
     /// changes the preference name
@@ -79,7 +79,7 @@ class FCWidgetPrefs : public FCObserver
     /// get the handle to the parameter group
     FCParameterGrp::handle getParamGrp();
     /// observers method
-    virtual void OnChange(FCSubject &rCaller);
+    virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
     /// get the handle to the root parameter group
     static FCParameterGrp::handle getRootParamGrp();
 

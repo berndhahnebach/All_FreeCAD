@@ -6,6 +6,7 @@
 // The License.txt file describes the conditions under which this software may be distributed.
 
 // Maintain a dictionary of properties
+#include "../../Config.h"
 
 #include <stdlib.h>
 #include <string.h>
