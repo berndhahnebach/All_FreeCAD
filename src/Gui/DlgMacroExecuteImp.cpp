@@ -56,7 +56,7 @@
 #include "../App/Application.h"
 #include "Application.h"
 #include "Macro.h"
-#include "SciEditor.h"
+#include "PythonEditor.h"
 
 /* 
  *  Constructs a DlgMacroExecuteImp which is a child of 'parent', with the 
@@ -68,7 +68,7 @@
 DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgMacroExecute( parent, name, modal, fl ),FCWindowParameter(name)
 {
-	// retrive the macro path from parameter or use the home path as default
+	// retrieve the macro path from parameter or use the home path as default
 	_cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetASCII("MacroPath",GetApplication().GetHomePath());
 
 	ComboBoxPath->insertItem(_cMacroPath.c_str());
@@ -154,8 +154,9 @@ void DlgMacroExecuteImp::OnEdit()
 	QListViewItem* item = MacrosListView->selectedItem();
 	if (!item) return;
 
-	QString file = item->text(0);
-	FCScintillaView* edit = new FCScintillaView(ApplicationWindow::Instance, "Editor");
+	QDir dir(_cMacroPath.c_str());
+	QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
+	PythonView* edit = new PythonView(ApplicationWindow::Instance, "Editor");
   ApplicationWindow::Instance->addWindow(edit,QextMdi::StandardAdd);
 	edit->OpenFile(file);
 	edit->setCaption(file);

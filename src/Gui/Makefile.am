@@ -200,6 +200,7 @@ PrefWidgets.cpp \
 Process.cpp \
 PropertyPage.cpp \
 PropertyView.cpp \
+PythonEditor.cpp \
 ReportView.cpp \
 resource.cpp \
 SciEditor.cpp \

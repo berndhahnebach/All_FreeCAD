@@ -202,6 +202,7 @@
 #include <qradiobutton.h>
 #include <qrangecontrol.h>
 #include <qrect.h>
+#include <qregexp.h>
 #include <qscrollbar.h>
 #include <qslider.h>
 #include <qspinbox.h>
@@ -209,8 +210,10 @@
 #include <qsplitter.h>
 #include <qstatusbar.h>
 #include <qstyle.h>
+#include <qsyntaxhighlighter.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
+#include <qtextedit.h>
 #include <qtextbrowser.h>
 #include <qtextstream.h>
 #include <qthread.h>

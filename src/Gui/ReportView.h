@@ -30,8 +30,8 @@
 #define __FC_REPORT_VIEW_H__
 
 #include "Window.h"
-#include "SciEditor.h"
 
+class PythonConsole;
 class FCReportOutput;
 class FCReportOutputPrivate;
 
@@ -45,8 +45,8 @@ class FCReportView : public FCDockWindow
 
   protected:
     QTabWidget* tab;
-    QGridLayout* tabLayout;
     FCReportOutput* mle;
+		PythonConsole* pyc;
 };
 
 class GuiExport FCReportOutput : public QTextBrowser, public FCConsoleObserver

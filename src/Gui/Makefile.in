@@ -334,6 +334,7 @@ PrefWidgets.cpp \
 Process.cpp \
 PropertyPage.cpp \
 PropertyView.cpp \
+PythonEditor.cpp \
 ReportView.cpp \
 resource.cpp \
 SciEditor.cpp \
@@ -413,10 +414,11 @@ am_libFreeCADGui_la_OBJECTS = AutoComplete.lo CallTip.lo CellBuffer.lo \
 	DlgSettingsMacroImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
 	Document.lo GuiConsole.lo HtmlView.lo Macro.lo MouseModel.lo \
 	PlatQt.lo PrefWidgets.lo Process.lo PropertyPage.lo \
-	PropertyView.lo ReportView.lo resource.lo SciEditor.lo \
-	ScintillaQt.lo Selection.lo Splashscreen.lo Tools.lo Tree.lo \
-	View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
-	WaitCursor.lo WidgetFactory.lo Widgets.lo Window.lo
+	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
+	SciEditor.lo ScintillaQt.lo Selection.lo Splashscreen.lo \
+	Tools.lo Tree.lo View.lo View3D.lo View3DInventor.lo \
+	ViewProvider.lo WaitCursor.lo WidgetFactory.lo Widgets.lo \
+	Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -477,6 +479,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PropSet.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyPage.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyView.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PythonEditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/RESearch.Plo ./$(DEPDIR)/ReportView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/SciEditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ScintillaBase.Plo \
@@ -638,6 +641,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropSet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyPage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyView.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PythonEditor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RESearch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReportView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SciEditor.Plo@am__quote@

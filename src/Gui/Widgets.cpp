@@ -46,12 +46,14 @@
 #	include <qthread.h>
 #	include <qurl.h>
 #	include <qvalidator.h>
+#	include <qwidgetlist.h>
 #	include <ctype.h>
 #endif
 
 #include "Widgets.h"
 #include "Application.h"
 #include "PrefWidgets.h"
+#include "WaitCursor.h"
 #include "../Base/Exception.h"
 
 #include <qlayout.h>
@@ -279,8 +281,11 @@ struct FCProgressBarPrivate
 	int nRemaining;
   int nStarted;
 	int nMaxProg;
+	bool bCanceled;
   QTime measureTime;
 	std::list<int> aValues;
+	std::map<int , int> events;
+	FCWaitingCursor* cWaitCursor;
 };
 
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
@@ -294,11 +299,78 @@ FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
   // so far there are no sequencer started
   d->nStarted = 0;
 	d->nMaxProg = 1;
+	d->bCanceled = false;
+	d->cWaitCursor = 0L;
 }
 
 FCProgressBar::~FCProgressBar ()
 {
   delete d;
+}
+
+void FCProgressBar::enterControlEvents()
+{
+  QWidgetList  *list = QApplication::allWidgets();
+  QWidgetListIt it( *list );         // iterate over the widgets
+  QWidget * w;
+  while ( (w=it.current()) != 0 ) {  // for each widget...
+      ++it;
+			if (w != this)
+	      w->installEventFilter(this);
+  }
+  delete list;                      // delete the list, not the widgets
+}
+
+void FCProgressBar::leaveControlEvents()
+{
+  QWidgetList  *list = QApplication::allWidgets();
+  QWidgetListIt it( *list );         // iterate over the widgets
+  QWidget * w;
+  while ( (w=it.current()) != 0 ) {  // for each widget...
+      ++it;
+			if (w != this)
+	      w->removeEventFilter(this);
+  }
+  delete list;                      // delete the list, not the widgets
+}
+
+bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
+{
+	if (isRunning() && e != 0L)
+	{
+		switch ( e->type() )
+		{
+			// check for ESC
+			case QEvent::KeyPress:
+			{
+				QKeyEvent* ke = (QKeyEvent*)e;
+				if (ke->key() == Qt::Key_Escape)
+				{
+					// cancel the operation
+					d->bCanceled = true;
+				}
+
+				return true;
+			} break;
+
+			// ignore alle these events
+			case QEvent::KeyRelease:
+			case QEvent::Enter:
+			case QEvent::Leave:
+			{
+				return true;
+			} break;
+
+			// do a system beep and ignore the event
+			case QEvent::MouseButtonPress:
+			{
+				QApplication::beep();
+				return true;
+			} break;
+		}
+	}
+
+	return QProgressBar::eventFilter(o, e);
 }
 
 // NOTE: for each call of this method you must call the
@@ -325,11 +397,14 @@ void FCProgressBar::start(QString txt, int steps)
   }
   else if (d->nStarted == 1)
   {
+		enterControlEvents();
 		d->aValues.push_front(steps);
 	  setTotalSteps(steps);
     d->nElapsed = 0;
     d->nSteps = 0;
     d->measureTime.start();
+		d->bCanceled = false;
+		d->cWaitCursor = new FCWaitingCursor;
 	  // print message to the statusbar
     ApplicationWindow::Instance->statusBar()->message(txt);
   }
@@ -337,7 +412,7 @@ void FCProgressBar::start(QString txt, int steps)
 
 void FCProgressBar::next()
 {
-  if (!isInterrupted())
+  if (!wasCanceled())
 	{
     setProgress(d->nSteps++);
 
@@ -346,6 +421,13 @@ void FCProgressBar::next()
 		d->nElapsed += diff;
 		d->nRemaining = d->nElapsed * ( totalSteps() - d->nSteps ) / d->nSteps;
 	}
+	else
+	{
+		// force to abort the operation
+		abort();
+	}
+
+	qApp->processEvents();
 }
 
 void FCProgressBar::stop ()
@@ -357,6 +439,11 @@ void FCProgressBar::stop ()
   }
 }
 
+bool FCProgressBar::isRunning() const
+{
+	return d->nStarted > 0;
+}
+
 void FCProgressBar::clear()
 {
   reset();
@@ -365,39 +452,27 @@ void FCProgressBar::clear()
   d->nStarted = 0;
 	d->nMaxProg = 1;
 	d->aValues.clear();
+	delete d->cWaitCursor;
+	d->cWaitCursor = 0L;
+	leaveControlEvents();
 }
 
-bool FCProgressBar::isInterrupted()
+bool FCProgressBar::wasCanceled() const
 {
-#ifdef  FC_OS_WIN32
-  MSG  tMSG;
-
-  // Escape button pressed ?
-  while (PeekMessage(&tMSG, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_REMOVE) == TRUE)
-  {
-    TranslateMessage(&tMSG);
-    if (tMSG.message == WM_KEYDOWN)
-    {
-      if (tMSG.wParam == VK_ESCAPE)
-      {
-        interrupt();
-        return true;
-      }
-    }
-  }
-#endif
-
-  return false;
+	return d->bCanceled;
 }
 
-void FCProgressBar::interrupt()
+void FCProgressBar::abort()
 {
+	for (std::map<int, int>::iterator it = d->events.begin(); it!=d->events.end(); ++it)
+		printf("%d=%d\n", it->first, it->second);
   //resets
   clear();
 
+	bool bMute = FCGuiConsoleObserver::bMute;
   FCGuiConsoleObserver::bMute = true;
   FCException exc("Aborting...");
-  FCGuiConsoleObserver::bMute = false;
+  FCGuiConsoleObserver::bMute = bMute;
   throw exc;
 }
 

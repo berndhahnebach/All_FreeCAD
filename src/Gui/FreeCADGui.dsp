@@ -1625,16 +1625,9 @@ InputDir=.
 InputPath=.\HtmlView.h
 InputName=HtmlView
 
-BuildCmds= \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\moc_private_$(InputName).cpp \
-	
-
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
-"$(InputDir)\moc_private_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
@@ -1644,16 +1637,9 @@ InputDir=.
 InputPath=.\HtmlView.h
 InputName=HtmlView
 
-BuildCmds= \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\moc_private_$(InputName).cpp \
-	
-
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
-"$(InputDir)\moc_private_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
 # End Custom Build
 
 !ENDIF 
@@ -1705,16 +1691,9 @@ InputDir=.
 InputPath=.\ReportView.h
 InputName=ReportView
 
-BuildCmds= \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\moc_private_$(InputName).cpp \
-	
-
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
-"$(InputDir)\moc_private_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
@@ -1724,330 +1703,13 @@ InputDir=.
 InputPath=.\ReportView.h
 InputName=ReportView
 
-BuildCmds= \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).cpp -o $(InputDir)\moc_private_$(InputName).cpp \
-	
-
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
-"$(InputDir)\moc_private_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
 # End Custom Build
 
 !ENDIF 
 
-# End Source File
-# End Group
-# Begin Group "Scintilla"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\scintilla\AutoComplete.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\AutoComplete.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\CallTip.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\CallTip.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\CellBuffer.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\CellBuffer.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ContractionState.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ContractionState.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\DocumentAccessor.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\DocumentAccessor.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Documents.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Documents.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Editor.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Editor.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ExternalLexer.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ExternalLexer.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Indicator.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Indicator.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\KeyMap.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\KeyMap.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\KeyWords.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexAda.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexAsm.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexAVE.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexBaan.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexBullant.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexConf.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexCPP.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexCrontab.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexCSS.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexEiffel.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexEScript.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexFortran.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexHTML.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexLisp.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexLout.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexLua.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexMatlab.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexOthers.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexPascal.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexPerl.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexPOV.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexPython.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexRuby.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexSQL.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LexVB.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LineMarker.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\LineMarker.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\PropSet.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\RESearch.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\RESearch.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ScintillaBase.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ScintillaBase.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Style.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\Style.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\StyleContext.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\StyleContext.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\SVector.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\UniConversion.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\UniConversion.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ViewStyle.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\ViewStyle.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\WindowAccessor.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\XPM.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\scintilla\XPM.h
 # End Source File
 # End Group
 # Begin Group "qextmdi"
@@ -2746,42 +2408,6 @@ SOURCE=.\MouseModel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\PlatQt.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\PlatQt.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\PlatQt.h
-InputName=PlatQt
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\PlatQt.h
-InputName=PlatQt
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File
@@ -2929,78 +2555,15 @@ InputName=PropertyView
 # End Source File
 # Begin Source File
 
+SOURCE=.\PythonEditor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PythonEditor.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\resource.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\SciEditor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\SciEditor.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\SciEditor.h
-InputName=SciEditor
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\SciEditor.h
-InputName=SciEditor
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\ScintillaQt.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\ScintillaQt.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\ScintillaQt.h
-InputName=ScintillaQt
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\ScintillaQt.h
-InputName=ScintillaQt
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

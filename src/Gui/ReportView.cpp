@@ -37,6 +37,7 @@
 
 #include "ReportView.h"
 #include "Widgets.h"
+#include "PythonEditor.h"
 
 /*
  *  Constructs a FCReportOutput which is a child of 'parent', with the 
@@ -49,7 +50,7 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
   	setName( "FCReportOutput" );
 
   resize( 529, 162 );
-  tabLayout = new QGridLayout( this );
+  QGridLayout* tabLayout = new QGridLayout( this );
   tabLayout->setSpacing( 0 );
   tabLayout->setMargin( 0 );
 
@@ -62,8 +63,8 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
   mle = new FCReportOutput( tab, "LogOutput" );
   tab->insertTab( mle, tr( "Output" ) );
 
-//	FCPythonConsole* pyc = new FCPythonConsole(tab, "PythonConsole");
-//	tab->insertTab(pyc, "Python");
+	pyc = new PythonConsole(tab, "PythonConsole");
+	tab->insertTab(pyc, "Python");
 }
 
 /*  

@@ -137,20 +137,30 @@ class FCProgressBar : public QProgressBar
     void next();
     /** Stops the sequencer */
     void stop ();
+		/** Checks if the bar is running*/
+		bool isRunning() const;
+		/** Return true if the operation was canceled by press ESC, 
+		 * false otherwise
+		 */
+    bool wasCanceled() const;
+
+		/** Handles all incoming events while the
+		 * progress bar is running. All key and mouse
+		 * events are ignored to block user input.
+		 */
+		bool eventFilter(QObject* o, QEvent* e);
 
   private:
+		/** Get the events under control */
+		void enterControlEvents();
+		/** Lose the control over incoming events*/
+		void leaveControlEvents();
 	  /** @name for internal use only */
     //@{
-    /** Checks if the ESC button was pressed
-     *  If ESC @ref interrupt() is called.
-     */
-    bool isInterrupted();
+		/** Throws an exception to stop the pending operation. */
+    void abort();
     /** Resets the sequencer */
     void clear();
-    /**
-     * Throws an exception to stop the pending operation.
-     */
-    void interrupt();
     /** Draws the content of the progress bar */
     virtual void drawContents( QPainter *p );
     /** Reimplemented */

@@ -531,7 +531,11 @@ void FCTextBrowser::setSource (const QString & name)
 			int type = FCTools::getURLType(source);
 			if ( type == 1 )
 			{
-				QMessageBox::information(this, tr("File not found"), tr("File %1 does not exist.").arg(source));
+				QString msg = tr("File %1 does not exist.\n").arg(source);
+				bool bMute = FCGuiConsoleObserver::bMute;
+				FCGuiConsoleObserver::bMute = true;
+				GetConsole().Error(msg.latin1());
+				FCGuiConsoleObserver::bMute = bMute;
 				setText(tr("File not found"));
 				return;
 			}
@@ -999,20 +1003,11 @@ QString FCHtmlView::GetDocDirectory()
 
   if (QDir().exists(path) == false)
   {
-    int ans = QMessageBox::warning(this, tr("Path not found"),	tr("Couldn't find the path for the Online help."));
-    /*
-         "Propably, you should run the python script 'MakeDoc.py' before.\n"
-				 "Do you want to start this script now?"), tr("Yes"), tr("No"),QString::null, 0);
-		if (ans == 0)
-		{
-			QDir d(QDir::currentDirPath());
-			d.cdUp(); d.cd("src/Tools");
-			QString file = d.absPath() + "/MakeDoc.py";
-			try{
-				GetInterpreter().LaunchFile(file.latin1());
-			}catch(...){
-			}
-		}*/
+		QString msg = tr("Couldn't find the path for the Online help.\n");
+		bool bMute = FCGuiConsoleObserver::bMute;
+		FCGuiConsoleObserver::bMute = true;
+		GetConsole().Error(msg.latin1());
+	  FCGuiConsoleObserver::bMute = bMute;
   }
 
   return path;
