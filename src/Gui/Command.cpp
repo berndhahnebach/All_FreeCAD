@@ -26,9 +26,6 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
-//#include "Icons/FCIcon.xpm"
-//#include "Icons/x.xpm"
-
 //===========================================================================
 // FCAction 
 //===========================================================================

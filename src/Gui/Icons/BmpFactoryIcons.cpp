@@ -2,6 +2,7 @@
 void RegisterIcons()
 {
   FCBmpFactory& rclBmpFactory = ApplicationWindow::Instance->GetBmpFactory();
+  rclBmpFactory.AddXPM("px", px);
   rclBmpFactory.AddXPM("App_Parameter", App_Parameter);
   rclBmpFactory.AddXPM("CommandLine", CommandLine);
   rclBmpFactory.AddXPM("Copy", Copy);

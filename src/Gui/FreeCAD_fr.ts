@@ -39,6 +39,50 @@
         <source>Status bar</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Macro recording</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Standard views</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>File operations</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Special ops</source>
+        <translation type='obsolete'></translation>
+    </message>
+    <message>
+        <source>Command bar</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Help bar</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Property View</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Report View</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Tree bar</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>file operations</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Special Ops</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>DlgDocTemplates</name>
@@ -191,11 +235,11 @@
     </message>
     <message>
         <source>UseInventorViewer</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>UseInventorViewer</translation>
     </message>
     <message>
         <source>User parameter:BaseApp/Windows/View</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>User parameter:BaseApp/Windows/View</translation>
     </message>
     <message>
         <source>Use the Inventor viewer as default</source>
@@ -207,7 +251,7 @@
     </message>
     <message>
         <source>CornerCoordSystem</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>CornerCoordSystem</translation>
     </message>
     <message>
         <source>Show coordinate system in the corner</source>
@@ -215,7 +259,7 @@
     </message>
     <message>
         <source>ShowFPS</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>ShowFPS</translation>
     </message>
     <message>
         <source>Show FPS Count</source>
@@ -223,7 +267,7 @@
     </message>
     <message>
         <source>UseSimpleBackground</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>UseSimpleBackground</translation>
     </message>
     <message>
         <source>Use simple background</source>
@@ -231,7 +275,7 @@
     </message>
     <message>
         <source>ShowViewerDecoration</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>ShowViewerDecoration</translation>
     </message>
     <message>
         <source>User defined inventor file (*.iv) for special viewer functions:</source>
@@ -239,7 +283,7 @@
     </message>
     <message>
         <source>UserDefinedViewerExt</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>UserDefinedViewerExt</translation>
     </message>
     <message>
         <source>...</source>
@@ -247,7 +291,7 @@
     </message>
     <message>
         <source>UseAutoRotation</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>UseAutoRotation</translation>
     </message>
     <message>
         <source>Use auto rotation</source>
@@ -259,7 +303,7 @@
     </message>
     <message>
         <source>UseAntialiasing</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>UseAntialiasing</translation>
     </message>
     <message>
         <source>Using anti aliasing</source>
@@ -278,11 +322,11 @@
     </message>
     <message>
         <source>FilePath</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>FilePath</translation>
     </message>
     <message>
         <source>User parameter:BaseApp/Macro</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>User parameter:BaseApp/Macro</translation>
     </message>
     <message>
         <source>...</source>
@@ -294,7 +338,7 @@
     </message>
     <message>
         <source>RecordGui</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>RecordGui</translation>
     </message>
     <message>
         <source>Recording gui commands</source>
@@ -302,7 +346,7 @@
     </message>
     <message>
         <source>GuiAsComment</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>GuiAsComment</translation>
     </message>
     <message>
         <source>Record as comment</source>
@@ -976,7 +1020,7 @@
     <name>FCCustomWidgetManager</name>
     <message>
         <source>File</source>
-        <translation type='unfinished'></translation>
+        <translation>Fichier</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -1207,11 +1251,11 @@
     </message>
     <message>
         <source>Yes</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>Oui</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>Non</translation>
     </message>
     <message>
         <source>New command bar</source>
@@ -1387,11 +1431,11 @@
     </message>
     <message>
         <source>FontSize</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>FontSize</translation>
     </message>
     <message>
         <source>User parameter:BaseApp/Windows/Editor</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>User parameter:BaseApp/Windows/Editor</translation>
     </message>
     <message>
         <source>Font:</source>
@@ -1403,15 +1447,15 @@
     </message>
     <message>
         <source>EnableLineNumber</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>EnableLineNumber</translation>
     </message>
     <message>
         <source>Enable line numbers</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>Enable line numbers</translation>
     </message>
     <message>
         <source>EnableFolding</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>EnableFolding</translation>
     </message>
     <message>
         <source>Enable folding</source>
@@ -1517,15 +1561,15 @@
     </message>
     <message>
         <source>System parameter:BaseApp/Recent files</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>System parameter:BaseApp/Recent files</translation>
     </message>
     <message>
         <source>AllowSplasher</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>AllowSplasher</translation>
     </message>
     <message>
         <source>System parameter:BaseApp/WindowSettings</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>System parameter:BaseApp/WindowSettings</translation>
     </message>
     <message>
         <source>Enable splashscreen at startup</source>
@@ -1541,7 +1585,7 @@
     </message>
     <message>
         <source>ShowCmdLine</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>ShowCmdLine</translation>
     </message>
     <message>
         <source>Show command line</source>
@@ -1549,7 +1593,7 @@
     </message>
     <message>
         <source>SizeCmdLine</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>SizeCmdLine</translation>
     </message>
     <message>
         <source>Size of history</source>
@@ -1561,7 +1605,7 @@
     </message>
     <message>
         <source>AllowDrag</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>AllowDrag</translation>
     </message>
     <message>
         <source>Allow dragging of menu items</source>
@@ -1573,7 +1617,7 @@
     </message>
     <message>
         <source>BigPixmaps</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>BigPixmaps</translation>
     </message>
     <message>
         <source>Use big pixmaps</source>
@@ -1581,7 +1625,7 @@
     </message>
     <message>
         <source>WindowStyle</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>WindowStyle</translation>
     </message>
     <message>
         <source>Window style:</source>
@@ -1589,7 +1633,7 @@
     </message>
     <message>
         <source>Command bar</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Slow</source>
@@ -1601,11 +1645,11 @@
     </message>
     <message>
         <source>SpeedAnimationCmdBar</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>SpeedAnimationCmdBar</translation>
     </message>
     <message>
         <source>User parameter:BaseApp/Windows/CmdBar</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>User parameter:BaseApp/Windows/CmdBar</translation>
     </message>
     <message>
         <source>Language</source>
@@ -1613,6 +1657,10 @@
     </message>
     <message>
         <source>Choose language:</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Animation speed of command bar</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1675,7 +1723,7 @@
     </message>
     <message>
         <source>Other</source>
-        <translation type='unfinished'></translation>
+        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>External browser</source>
@@ -1683,19 +1731,19 @@
     </message>
     <message>
         <source>LineEditURL</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>LineEditURL</translation>
     </message>
     <message>
         <source>User parameter:BaseApp/Windows/HelpViewer</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>User parameter:BaseApp/Windows/HelpViewer</translation>
     </message>
     <message>
         <source>index.php.html</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>index.php.html</translation>
     </message>
     <message>
         <source>LineEditBrowser</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>LineEditBrowser</translation>
     </message>
     <message>
         <source>Start URL</source>
@@ -1707,7 +1755,7 @@
     </message>
     <message>
         <source>EnableBookmarks</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>EnableBookmarks</translation>
     </message>
     <message>
         <source>Enable bookmarks</source>
@@ -1719,7 +1767,7 @@
     </message>
     <message>
         <source>NbOfBookmarks</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>NbOfBookmarks</translation>
     </message>
     <message>
         <source>History</source>
@@ -1731,14 +1779,18 @@
     </message>
     <message>
         <source>NbOfHistoryItems</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>NbOfHistoryItems</translation>
     </message>
     <message>
         <source>EnableHistory</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>EnableHistory</translation>
     </message>
     <message>
         <source>Enable history</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Other stuff</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1907,7 +1959,7 @@ Continue ?</source>
     <name>FCOnlineHelpBase</name>
     <message>
         <source>OnlineHelp</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>OnlineHelp</translation>
     </message>
     <message>
         <source>Download online help:</source>
@@ -1915,27 +1967,27 @@ Continue ?</source>
     </message>
     <message>
         <source>DownloadURL</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>DownloadURL</translation>
     </message>
     <message>
         <source>System parameter:BaseApp/WindowSettings</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>System parameter:BaseApp/WindowSettings</translation>
     </message>
     <message>
         <source>http://free-cad.sourceforge.net/index.html</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>http://free-cad.sourceforge.net/index.html</translation>
     </message>
     <message>
         <source>ProxyText</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>ProxyText</translation>
     </message>
     <message>
         <source>http://prx:8080</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>http://prx:8080</translation>
     </message>
     <message>
         <source>UseProxy</source>
-        <translation type='unfinished'></translation>
+        <translation type='unfinished'>UseProxy</translation>
     </message>
     <message>
         <source>Use proxy</source>
@@ -2051,6 +2103,17 @@ Continue ?</source>
     <name>FCSplashAbout</name>
     <message>
         <source>Closing this dialog in %1 seconds...</source>
+        <translation type='unfinished'></translation>
+    </message>
+</context>
+<context>
+    <name>FCStackBar</name>
+    <message>
+        <source>Standard views</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Special Ops</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -2201,6 +2264,10 @@ Do you want to start your favourite external browser instead?</source>
     </message>
     <message>
         <source>Opening aborted</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Help</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

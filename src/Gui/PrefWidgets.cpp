@@ -1425,7 +1425,7 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
         d->_iSeparator = ApplicationWindow::Instance->menuBar()->insertSeparator();
         id = d->_clPopupID[It->second];
         ApplicationWindow::Instance->menuBar()->removeItem(id);
-        id = ApplicationWindow::Instance->menuBar()->insertItem( "Help", It->second );
+        id = ApplicationWindow::Instance->menuBar()->insertItem( QObject::tr("Help"), It->second );
         d->_clPopupID[It->second] = id;
       }
     }

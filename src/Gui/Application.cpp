@@ -91,12 +91,6 @@
 
 #include "Icons/images.cpp"
 #include "Icons/BmpFactoryIcons.cpp"
-#include "Icons/x.xpm"
-//#include "Icons/FCBackground.xpm"
-
-//#include "FreeCADAbout.h"
-  
-//#include "Icons/Background3.xpm"
 
 static ApplicationWindow* stApp;
 static QWorkspace* stWs;
@@ -391,7 +385,7 @@ void ApplicationWindow::OnShowView()
     std::vector<FCToolBar*> tb = d->_pcWidgetMgr->getToolBars();
     for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
     {
-      int id = m->insertItem((*it)->name());
+      int id = m->insertItem(tr((*it)->name()));
       d->mCheckBars[id] = *it;
       if ((*it)->isVisible())
 		    m->setItemChecked(id, true);
@@ -413,7 +407,7 @@ void ApplicationWindow::OnShowView()
     std::vector<FCToolBar*> tb = d->_pcWidgetMgr->getCmdBars();
     for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
     {
-      int id = m->insertItem((*it)->name());
+      int id = m->insertItem(tr((*it)->name()));
       d->mCheckBars[id] = *it;
       if (d->_pcStackBar->isPageVisible(*it))
 		    m->setItemChecked(id, true);
@@ -430,7 +424,7 @@ void ApplicationWindow::OnShowView()
     KDockWidget* w = manager()->getDockWidgetFromName((*it)->name());
     if (w)
     {
-      int id = menu->insertItem(w->tabPageLabel());
+      int id = menu->insertItem(tr(w->tabPageLabel()));
       d->mCheckBars[id] = w;
       if (w->isVisible())
 		    menu->setItemChecked(id, true);
@@ -733,7 +727,7 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
     std::vector<FCToolBar*> aclToolBars = d->_pcWidgetMgr->getToolBars();
 	  for (std::vector<FCToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
     {
-      int id = menu.insertItem((*It)->name());
+      int id = menu.insertItem(tr((*It)->name()));
       QToolBar* tb = *It;
       toolb[id] = tb;
       if (tb->isVisible())

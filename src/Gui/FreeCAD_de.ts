@@ -39,6 +39,50 @@
         <source>Status bar</source>
         <translation>Statuszeile</translation>
     </message>
+    <message>
+        <source>Macro recording</source>
+        <translation>Makroaufnahme</translation>
+    </message>
+    <message>
+        <source>Standard views</source>
+        <translation>Standardansichten</translation>
+    </message>
+    <message>
+        <source>File operations</source>
+        <translation type='obsolete'>Datei-Werkzeugleiste</translation>
+    </message>
+    <message>
+        <source>Special ops</source>
+        <translation type='obsolete'>Spezielle Befehle</translation>
+    </message>
+    <message>
+        <source>Command bar</source>
+        <translation>Befehlsleiste</translation>
+    </message>
+    <message>
+        <source>Help bar</source>
+        <translation>Hilfefenster</translation>
+    </message>
+    <message>
+        <source>Property View</source>
+        <translation>Eigenschaftsfenster</translation>
+    </message>
+    <message>
+        <source>Report View</source>
+        <translation>Ausgabefenster</translation>
+    </message>
+    <message>
+        <source>Tree bar</source>
+        <translation>Baumansicht</translation>
+    </message>
+    <message>
+        <source>file operations</source>
+        <translation>Datei-Werkzeugleiste</translation>
+    </message>
+    <message>
+        <source>Special Ops</source>
+        <translation>Spezielle Operatoren</translation>
+    </message>
 </context>
 <context>
     <name>DlgDocTemplates</name>
@@ -1156,7 +1200,7 @@
     </message>
     <message>
         <source>Current Actions</source>
-        <translation>Verfügbare Aktionen</translation>
+        <translation>Verwendete Aktionen</translation>
     </message>
     <message>
         <source>Available Actions</source>
@@ -1298,7 +1342,7 @@
     </message>
     <message>
         <source>Current Actions</source>
-        <translation>Verfügbare Aktionen</translation>
+        <translation>Verwendete Aktionen</translation>
     </message>
 </context>
 <context>
@@ -1589,7 +1633,7 @@
     </message>
     <message>
         <source>Command bar</source>
-        <translation>Befehlsleiste</translation>
+        <translation type='obsolete'>Befehlsleiste</translation>
     </message>
     <message>
         <source>Slow</source>
@@ -1614,6 +1658,10 @@
     <message>
         <source>Choose language:</source>
         <translation>Sprache auswählen</translation>
+    </message>
+    <message>
+        <source>Animation speed of command bar</source>
+        <translation>Animationsgeschwindigkeit der Befehlsleiste</translation>
     </message>
 </context>
 <context>
@@ -1675,7 +1723,7 @@
     </message>
     <message>
         <source>Other</source>
-        <translation>Andere</translation>
+        <translation type='obsolete'>Andere</translation>
     </message>
     <message>
         <source>External browser</source>
@@ -1699,7 +1747,7 @@
     </message>
     <message>
         <source>Start URL</source>
-        <translation>Start URL</translation>
+        <translation>Startseite</translation>
     </message>
     <message>
         <source>Bookmarks</source>
@@ -1740,6 +1788,10 @@
     <message>
         <source>Enable history</source>
         <translation>Verlauf aktivieren</translation>
+    </message>
+    <message>
+        <source>Other stuff</source>
+        <translation>Weitere Einstellungen</translation>
     </message>
 </context>
 <context>
@@ -1942,7 +1994,7 @@ Möchten Sie es löschen?</translation>
     </message>
     <message>
         <source>Use proxy</source>
-        <translation>Proxy benutzen</translation>
+        <translation>Proxy verwenden</translation>
     </message>
 </context>
 <context>
@@ -2055,6 +2107,17 @@ Möchten Sie es löschen?</translation>
     <message>
         <source>Closing this dialog in %1 seconds...</source>
         <translation>Dieser Dialog wird in %1 Sekunden geschlossen...</translation>
+    </message>
+</context>
+<context>
+    <name>FCStackBar</name>
+    <message>
+        <source>Standard views</source>
+        <translation>Standardansichten</translation>
+    </message>
+    <message>
+        <source>Special Ops</source>
+        <translation>Spezielle Operatoren</translation>
     </message>
 </context>
 <context>
@@ -2206,6 +2269,10 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
     <message>
         <source>Opening aborted</source>
         <translation>Öffnen abgebrochen</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
 </context>
 <context>

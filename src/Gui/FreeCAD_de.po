@@ -182,3 +182,22 @@ QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "View" )
 QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Tools" )
 QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Windows" )
 QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Help" )
+QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Help" )
+
+
+#Application.cpp
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Macro recording" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Standard views" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "file operations" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Special Ops" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Command bar" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Help bar" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Property View" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Report View" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Help bar" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Tree bar" )
+
+
+#Buttongroup.cpp
+QT_TRANSLATE_NOOP( "FCStackBar", "Standard views" )
+QT_TRANSLATE_NOOP( "FCStackBar", "Special Ops" )

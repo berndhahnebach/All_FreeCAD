@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>417</width>
+            <width>413</width>
             <height>473</height>
         </rect>
     </property>
@@ -276,13 +276,6 @@
                     <property>
                         <name>enabled</name>
                         <bool>true</bool>
-                    </property>
-                    <property>
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>3</vsizetype>
-                        </sizepolicy>
                     </property>
                 </widget>
             </grid>

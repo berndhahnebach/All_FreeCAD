@@ -664,7 +664,7 @@ bool FCStackBar::addView(QWidget* page, const QString &name)
   page->setBackgroundMode( PaletteBackground );
   QStackBarBtn *button = new QStackBarBtn( this, name.latin1() );
   button->setWidget(page);
-  button->setText( name );
+  button->setText( tr(name) );
   button->setFixedHeight( button->sizeHint().height() );
   connect( button, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
   QScrollView *sv = new QScrollView( this );

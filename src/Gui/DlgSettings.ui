@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>346</width>
+            <width>342</width>
             <height>360</height>
         </rect>
     </property>
@@ -76,7 +76,7 @@
                     </property>
                     <property>
                         <name>title</name>
-                        <string>Other</string>
+                        <string>Other stuff</string>
                     </property>
                     <grid>
                         <property>
@@ -464,5 +464,7 @@
         <receiver>NbOfHistoryItems</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
+    <slot access="public">ChooseDir()</slot>
+    <slot access="public">WarnInventor(bool)</slot>
 </connections>
 </UI>
