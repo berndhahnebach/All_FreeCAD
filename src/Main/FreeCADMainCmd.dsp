@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="FreeCADMain" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="FreeCADMainCmd" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** NICHT BEARBEITEN **
 
-# TARGTYPE "Win32 (x86) Console Application" 0x0103
+# TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=FreeCADMain - Win32 Debug
+CFG=FreeCADMainCmd - Win32 Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "FreeCADMain.mak".
+!MESSAGE NMAKE /f "FreeCADMainCmd.mak".
 !MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "FreeCADMain.mak" CFG="FreeCADMain - Win32 Debug"
+!MESSAGE NMAKE /f "FreeCADMainCmd.mak" CFG="FreeCADMainCmd - Win32 Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "FreeCADMain - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "FreeCADMain - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "FreeCADMainCmd - Win32 Release" (basierend auf  "Win32 (x86) Application")
+!MESSAGE "FreeCADMainCmd - Win32 Debug" (basierend auf  "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -26,9 +26,10 @@ CFG=FreeCADMain - Win32 Debug
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+!IF  "$(CFG)" == "FreeCADMainCmd - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -38,59 +39,61 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "../../bin"
-# PROP Intermediate_Dir "Release"
+# PROP Intermediate_Dir "ReleaseCmd"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "WNT" /D "_FC_GUI_ENABLED_" /Fr /YX /FD /c
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_MBCS" /D "WNT" /D "_CONSOLE" /YX /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"../../bin/FreeCAD.exe"
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"..\..\bin\FreeCADCmd.exe"
+# SUBTRACT LINK32 /pdb:none
 
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+!ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "FreeCADMain___Win32_Debug"
-# PROP BASE Intermediate_Dir "FreeCADMain___Win32_Debug"
+# PROP BASE Output_Dir "Debug"
+# PROP BASE Intermediate_Dir "Debug"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "../../bin"
-# PROP Intermediate_Dir "Debug"
+# PROP Intermediate_Dir "DebugCmd"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "WNT" /D "_FC_GUI_ENABLED_" /FR /YX /FD /GZ /c
+# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /D "_DEBUG" /D "_MBCS" /D "WNT" /D "_CONSOLE" /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../bin/FreeCADD.exe" /pdbtype:sept
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"..\..\bin\FreeCADCmdD.exe" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 
 # Begin Target
 
-# Name "FreeCADMain - Win32 Release"
-# Name "FreeCADMain - Win32 Debug"
-# Begin Source File
-
-SOURCE=.\freecad.rc
-# End Source File
+# Name "FreeCADMainCmd - Win32 Release"
+# Name "FreeCADMainCmd - Win32 Debug"
 # Begin Source File
 
 SOURCE=.\FreeCADInit.py
 
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+!IF  "$(CFG)" == "FreeCADMainCmd - Win32 Release"
 
 # Begin Custom Build - Building InitScript.h
 InputPath=.\FreeCADInit.py
@@ -100,7 +103,7 @@ InputPath=.\FreeCADInit.py
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+!ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
 
 # Begin Custom Build - Building InitScript.h
 InputPath=.\FreeCADInit.py
@@ -117,7 +120,7 @@ InputPath=.\FreeCADInit.py
 
 SOURCE=.\FreeCADInstall.py
 
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+!IF  "$(CFG)" == "FreeCADMainCmd - Win32 Release"
 
 # Begin Custom Build - Building InstallScript.h
 InputPath=.\FreeCADInstall.py
@@ -127,7 +130,7 @@ InputPath=.\FreeCADInstall.py
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+!ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
 
 # Begin Custom Build - Building InstallScript.h
 InputPath=.\FreeCADInstall.py
@@ -144,7 +147,7 @@ InputPath=.\FreeCADInstall.py
 
 SOURCE=.\FreeCADTest.py
 
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+!IF  "$(CFG)" == "FreeCADMainCmd - Win32 Release"
 
 # Begin Custom Build - Building TestScript.h
 InputPath=.\FreeCADTest.py
@@ -154,7 +157,7 @@ InputPath=.\FreeCADTest.py
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+!ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
 
 # Begin Custom Build - Building TestScript.h
 InputPath=.\FreeCADTest.py
@@ -171,7 +174,7 @@ InputPath=.\FreeCADTest.py
 
 SOURCE=.\FreeCADTestEnv.py
 
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+!IF  "$(CFG)" == "FreeCADMainCmd - Win32 Release"
 
 # Begin Custom Build - Building TestEnvScript.h
 InputPath=.\FreeCADTestEnv.py
@@ -181,7 +184,7 @@ InputPath=.\FreeCADTestEnv.py
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+!ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
 
 # Begin Custom Build - Building TestEnvScript.h
 InputPath=.\FreeCADTestEnv.py
@@ -193,10 +196,6 @@ InputPath=.\FreeCADTestEnv.py
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\icon.ico
 # End Source File
 # Begin Source File
 

@@ -82,6 +82,7 @@ class GuiExport FCButtonGroup : public QButtonGroup
     int m_iWidth, m_iHeight;
     QColor       m_Color;
     QPopupMenu*  m_Popup;
+#	pragma warning( disable : 4251 )
     FCmap<int, QPixmap> m_Pixmaps;
 };
 

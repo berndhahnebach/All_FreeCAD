@@ -212,13 +212,15 @@ public:
 	// getter setter
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 	// methods
-	PYFUNCDEF_D (FCPyParametrGrp,PyGetGrp,sPyGetGrp);
-//	PyObject *PyGetGrp(PyObject *args);	// Python wrapper
-//	static PyObject *sPyGetGrp(PyObject *self, PyObject *args, PyObject *kwd){return ((FCPyParametrGrp*)self)->PyGetGrp(args);};
-	PyObject *PySetBool(PyObject *args);	// Python wrapper
-	static PyObject *sPySetBool(PyObject *self, PyObject *args, PyObject *kwd){return ((FCPyParametrGrp*)self)->PySetBool(args);};
-	PyObject *PyGetBool(PyObject *args);	// Python wrapper
-	static PyObject *sPyGetBool(PyObject *self, PyObject *args, PyObject *kwd){return ((FCPyParametrGrp*)self)->PyGetBool(args);};
+	PYFUNCDEF_D (FCPyParametrGrp,PyGetGrp);
+	PYFUNCDEF_D (FCPyParametrGrp,PySetBool);
+	PYFUNCDEF_D (FCPyParametrGrp,PyGetBool);
+	PYFUNCDEF_D (FCPyParametrGrp,PySetInt);
+	PYFUNCDEF_D (FCPyParametrGrp,PyGetInt);
+	PYFUNCDEF_D (FCPyParametrGrp,PySetFloat);
+	PYFUNCDEF_D (FCPyParametrGrp,PyGetFloat);
+	PYFUNCDEF_D (FCPyParametrGrp,PySetString);
+	PYFUNCDEF_D (FCPyParametrGrp,PyGetString);
 
 protected:
 

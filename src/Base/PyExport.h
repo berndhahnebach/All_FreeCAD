@@ -239,8 +239,8 @@ class BaseExport FCPyObject : public PyObject
  * @see PYFUNCIMP_D
  * @see FCPyObject
  */
-#define PYFUNCDEF_D(CLASS,DFUNC,SFUNC)	PyObject * DFUNC (PyObject *args);	\
-static PyObject * SFUNC (PyObject *self, PyObject *args, PyObject *kwd){return (( CLASS *)self)-> DFUNC (args);};
+#define PYFUNCDEF_D(CLASS,DFUNC)	PyObject * DFUNC (PyObject *args);	\
+static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){return (( CLASS *)self)-> DFUNC (args);};
 
 /** Python dynamic class macro for implementation
  * used to set up a impementation for PYFUNCDEF_D definition.

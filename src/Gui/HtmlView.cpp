@@ -381,8 +381,9 @@ void FCHtmlView::SetForwardAvailable( bool b)
   pclButtonForward->setEnabled(b);
 }
 
-QString FCHtmlView::GetHelpDirectory() const
+QString FCHtmlView::GetHelpDirectory()
 {
+	/* aus den Parametern
   // find the current directory of the online manual
   QString sCurrDir;
   QDir cCurrDirectory;
@@ -403,6 +404,8 @@ QString FCHtmlView::GetHelpDirectory() const
   sCurrDir.append("/src/Doc/Online/");
 
   return sCurrDir;
+  */
+	return QString(GetParameter()->GetASCII("HelpDir","../src/Doc/Online/").c_str());
 }
 
 QString FCHtmlView::GetRelativeURL (const QString& rcAbsPath) const
@@ -553,12 +556,7 @@ void FCHtmlView::PathSelected( const QString &_path )
 
 bool FCHtmlView::SetMaxHistory (long lCnt)
 {
-  FCParametrGrp::handle hParamGrp = GetParam();
-  if (hParamGrp.IsNull())
-    return false;
-  FCParametrGrp::handle hHistGrp = hParamGrp->GetGroup("History");
-  if (hHistGrp.IsNull())
-    return false;
+  FCParametrGrp::handle hHistGrp = GetParameter()->GetGroup("History");
 
   hHistGrp->SetInt("Max History items", lCnt);
 
@@ -567,8 +565,7 @@ bool FCHtmlView::SetMaxHistory (long lCnt)
 
 void FCHtmlView::ReadHistory()
 {
-  FCParametrGrp::handle hParamGrp = GetParam();
-  FCParametrGrp::handle hHistGrp = hParamGrp->GetGroup("History");
+  FCParametrGrp::handle hHistGrp = GetParameter()->GetGroup("History");
 
   int iCnt = hHistGrp->GetInt("History items");
 
@@ -583,7 +580,7 @@ void FCHtmlView::ReadHistory()
 
 void FCHtmlView::ReadBookmarks()
 {
-  FCParametrGrp::handle hBookmGrp = GetParam()->GetGroup("Bookmarks");
+  FCParametrGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
 
   int iCnt = hBookmGrp->GetInt("Bookmark items");
 
@@ -598,7 +595,7 @@ void FCHtmlView::ReadBookmarks()
 
 void FCHtmlView::SaveHistory()
 {
-  FCParametrGrp::handle hHistGrp = GetParam()->GetGroup("History");
+  FCParametrGrp::handle hHistGrp = GetParameter()->GetGroup("History");
 
   int iMaxCnt = hHistGrp->GetInt("Max History items", 20);
 
@@ -618,7 +615,7 @@ void FCHtmlView::SaveHistory()
 
 void FCHtmlView::SaveBookmarks()
 {
-  FCParametrGrp::handle hBookmGrp = GetParam()->GetGroup("Bookmarks");
+  FCParametrGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
 
   hBookmGrp->SetInt("Bookmark items", mBookmarks.size());
 

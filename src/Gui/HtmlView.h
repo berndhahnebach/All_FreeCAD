@@ -84,7 +84,7 @@ class GuiExport FCHtmlView : public FCDockWindow
   protected:
     virtual QString GetRelativeURL (const QString& path) const;
     virtual QString GetAbsoluteURL (const QString& path) const;
-    virtual QString GetHelpDirectory() const;
+    virtual QString GetHelpDirectory();
     virtual void ReadHistory();
     virtual void ReadBookmarks();
     virtual void SaveHistory();
@@ -93,6 +93,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     virtual void CreateBookmarkPopup();
     virtual void AddToPath (const QString& path);
 
+#	pragma warning( disable : 4251 )
     FCmap<int, QString> mHistory, mBookmarks;
     bool bBackward, bForward;
     bool bHistory, bBookm;

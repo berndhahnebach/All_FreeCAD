@@ -84,7 +84,7 @@ typedef enum {
 /*  ppembed-modules.c: load,access module objects  */
 /***************************************************/
 
-extern char     *PP_Init(char *modname);
+extern char *PP_Init(char *modname);
 extern int       PP_Make_Dummy_Module(char *modname);
 extern PyObject *PP_Load_Module(char *modname);
 extern PyObject *PP_Load_Attribute(char *modname, char *attrname);

@@ -63,7 +63,7 @@ FCWindow::~FCWindow()
 }
 
 
-FCParametrGrp::handle & FCWindow::GetParam(void)
+FCParametrGrp::handle & FCWindow::GetParameter(void)
 {
 	return _handle;
 }

@@ -622,6 +622,12 @@ PyMethodDef FCPyParametrGrp::Methods[] = {
   {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS},
   {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS},
   {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS},
+  {"SetInt",           (PyCFunction) sPySetInt,          Py_NEWARGS},
+  {"GetInt",           (PyCFunction) sPyGetInt,          Py_NEWARGS},
+  {"SetFloat",         (PyCFunction) sPySetFloat,        Py_NEWARGS},
+  {"GetFloat",         (PyCFunction) sPyGetFloat,        Py_NEWARGS},
+  {"SetString",        (PyCFunction) sPySetString,       Py_NEWARGS},
+  {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -758,6 +764,63 @@ PyObject *FCPyParametrGrp::PyGetBool(PyObject *args)
     if (!PyArg_ParseTuple(args, "s|i", &pstr,&Bool))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	return Py_BuildValue("i",_cParamGrp->GetBool(pstr,Bool!=0));
+} 
+
+PyObject *FCPyParametrGrp::PySetInt(PyObject *args)
+{ 
+	char *pstr;
+	long  Int;
+    if (!PyArg_ParseTuple(args, "si", &pstr,&Int))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->SetInt(pstr,Int);
+	Py_Return; 
+} 
+
+PyObject *FCPyParametrGrp::PyGetInt(PyObject *args)
+{ 
+	char *pstr;
+	long  Int=0;
+    if (!PyArg_ParseTuple(args, "s|i", &pstr,&Int))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	return Py_BuildValue("i",_cParamGrp->GetInt(pstr,Int));
+} 
+
+PyObject *FCPyParametrGrp::PySetFloat(PyObject *args)
+{ 
+	char *pstr;
+	double  Float;
+    if (!PyArg_ParseTuple(args, "sd", &pstr,&Float))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->SetFloat(pstr,Float);
+	Py_Return; 
+} 
+
+PyObject *FCPyParametrGrp::PyGetFloat(PyObject *args)
+{ 
+	char *pstr;
+	double  Float=0.0;
+    if (!PyArg_ParseTuple(args, "s|d", &pstr,&Float))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	return Py_BuildValue("i",_cParamGrp->GetFloat(pstr,Float));
+} 
+
+PyObject *FCPyParametrGrp::PySetString(PyObject *args)
+{ 
+	char *pstr;
+	char *  str;
+    if (!PyArg_ParseTuple(args, "ss", &pstr,&str))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->SetASCII(pstr,str);
+	Py_Return; 
+} 
+
+PyObject *FCPyParametrGrp::PyGetString(PyObject *args)
+{ 
+	char *pstr;
+	char *  str="";
+    if (!PyArg_ParseTuple(args, "s|d", &pstr,&str))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	return Py_BuildValue("i",_cParamGrp->GetASCII(pstr,str));
 } 
 
 
