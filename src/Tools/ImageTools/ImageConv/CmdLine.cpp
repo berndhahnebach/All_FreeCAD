@@ -33,7 +33,9 @@
 // #include "stdafx.h"
 
 #include "CmdLine.h"
-#include "crtdbg.h"
+#ifdef  Q_WS_WIN
+#	include "crtdbg.h"
+#endif
 
 /*------------------------------------------------------
   int CCmdLine::SplitLine(int argc, char **argv)
@@ -140,7 +142,11 @@ bool CCmdLine::IsSwitch(const char *pParam)
    {
       // allow negative numbers as arguments.
       // ie., don't count them as switches
+#ifdef  Q_WS_WIN
       return (!isdigit(pParam[1]));
+#else
+      return true;
+#endif
    }
    else
    {
