@@ -60,8 +60,8 @@ DlgSettings3DViewImp::~DlgSettings3DViewImp()
  */
 void DlgSettings3DViewImp::warnInventor(bool b)
 {
-  if ( b )
-    Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
+//  if ( b )
+//    Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
 }
 
 void DlgSettings3DViewImp::saveSettings()

@@ -201,6 +201,7 @@
 #include <Inventor/nodes/SoCoordinate4.h>
 #include <Inventor/nodes/SoCube.h>
 #include <Inventor/nodes/SoCylinder.h>
+#include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoEnvironment.h>
 #include <Inventor/nodes/SoExtSelection.h>
 #include <Inventor/nodes/SoFaceSet.h>
@@ -214,6 +215,7 @@
 #include <Inventor/nodes/SoMaterialBinding.h>
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
+#include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoQuadMesh.h>
 #include <Inventor/nodes/SoRotationXYZ.h>
 #include <Inventor/nodes/SoSelection.h>

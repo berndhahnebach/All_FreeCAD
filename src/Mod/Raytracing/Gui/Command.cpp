@@ -24,10 +24,18 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qaction.h>
-# include <BRepPrimAPI_MakeBox.hxx>
-# include <TopoDS_Shape.hxx>
-# include <TNaming_Builder.hxx>
 # include <AIS_InteractiveContext.hxx>
+# include <BRep_Tool.hxx>
+# include <BRepMesh_IncrementalMesh.hxx>
+# include <BRepPrimAPI_MakeBox.hxx>
+# include <GeomAPI_ProjectPointOnSurf.hxx>
+# include <GeomLProp_SLProps.hxx>
+# include <gp_Pnt.hxx>
+# include <Poly_Triangulation.hxx>
+# include <TNaming_Builder.hxx>
+# include <TopExp_Explorer.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Shape.hxx>
 #endif
 
 #include <Base/Exception.h>
@@ -38,10 +46,6 @@
 #include <Gui/FileDialog.h>
 #include <Gui/View.h>
 #include <Gui/ProgressBar.h>
-
-
-
-#include <Gui/Icons/images.cpp>
 
 
 #include <Inventor/SoInput.h>
@@ -260,7 +264,8 @@ void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** verte
     try {
       Handle_Geom_Surface Surface = BRep_Tool::Surface(aFace);
 
-      GeomAPI_ProjectPointOnSurf ProPntSrf(gp_Pnt((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]), Surface);
+      gp_Pnt vertex((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]);
+      GeomAPI_ProjectPointOnSurf ProPntSrf(vertex, Surface);
       Standard_Real fU, fV; ProPntSrf.Parameters(1, fU, fV);
 
       GeomLProp_SLProps clPropOfFace(Surface, fU, fV, 2, gp::Resolution());
@@ -357,10 +362,10 @@ void CmdRaytracingWritePart::activated(int iMsg)
     // writing per vertex normals
          << "  normal_vectors {" << endl
          << "    " << nbNodesInFace << "," << endl;
-    for( i=0;i < nbNodesInFace;i++) {
-      fout << "    <" << vertexnormals[i][0] << ","
-                      << vertexnormals[i][2] << ","
-                      << vertexnormals[i][1] << ">," 
+    for(int j=0;j < nbNodesInFace;j++) {
+      fout << "    <" << vertexnormals[j][0] << ","
+                      << vertexnormals[j][2] << ","
+                      << vertexnormals[j][1] << ">,"
            << endl;
     }
 
@@ -368,8 +373,8 @@ void CmdRaytracingWritePart::activated(int iMsg)
     // writing triangle indices
          << "  face_indices {" << endl
          << "    " << nbTriInFace << "," << endl;
-    for( i=0;i < nbTriInFace;i++) {
-      fout << "    <" << cons[3*i] << ","<< cons[3*i+2] << ","<< cons[3*i+1] << ">," << endl;
+    for(int k=0;k < nbTriInFace;k++) {
+      fout << "    <" << cons[3*k] << ","<< cons[3*k+2] << ","<< cons[3*k+1] << ">," << endl;
     }
     // end of face
     fout << "  }" << endl

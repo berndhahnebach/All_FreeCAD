@@ -165,6 +165,9 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
   getWindowParameter()->Attach( this );
 
   getWindowParameter()->NotifyAll();
+
+  // scroll to bottom at startup to make sure that last appended text is visible
+  scrollToBottom();
 }
 
 /**

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>335</width>
-            <height>346</height>
+            <height>348</height>
         </rect>
     </property>
     <property name="caption">
@@ -201,6 +201,8 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>UseProxy</sender>
@@ -228,11 +230,11 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

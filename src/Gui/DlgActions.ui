@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>523</width>
-            <height>381</height>
+            <height>383</height>
         </rect>
     </property>
     <property name="caption">
@@ -317,6 +317,8 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>buttonNew</sender>
@@ -369,4 +371,7 @@
     <slot access="protected">onCustomActionPixmap()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>Gui/Widgets.h</includehint>
+</includehints>
 </UI>

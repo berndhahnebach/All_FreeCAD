@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>389</width>
-            <height>363</height>
+            <height>365</height>
         </rect>
     </property>
     <property name="caption">
@@ -170,8 +170,8 @@
         </widget>
     </grid>
 </widget>
-<tabstops>
-</tabstops>
+<customwidgets>
+</customwidgets>
 <slots>
     <slot>warnInventor(bool)</slot>
     <slot access="protected">loadSettings()</slot>
@@ -179,9 +179,9 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

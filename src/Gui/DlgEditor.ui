@@ -411,8 +411,8 @@ foo(0, 20)
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/Widgets.h</includehint>
 </includehints>
 </UI>

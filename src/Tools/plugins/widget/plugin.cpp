@@ -469,7 +469,7 @@ QIconSet CustomWidgetPlugin::iconSet( const QString& feature ) const
 
 QString CustomWidgetPlugin::includeFile( const QString& feature ) const
 {
-  if ( feature.startsWith( "Gui::" ) )
+  if ( feature.startsWith( "Gui::Pref" ) )
     return "Gui/PrefWidgets.h";
   else if ( feature == "Gui::FileChooser" )
   	return "Gui/FileDialog.h";

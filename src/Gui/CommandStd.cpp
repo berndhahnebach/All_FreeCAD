@@ -376,9 +376,16 @@ StdCmdWorkbench::StdCmdWorkbench()
 void StdCmdWorkbench::activated(int iMsg)
 {
   std::vector<std::string> wb = ApplicationWindow::Instance->workbenches();
-  if (iMsg >= 0 && iMsg < int(wb.size()))
+
+  try{
+    if (iMsg >= 0 && iMsg < int(wb.size()))
+    {
+      doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
+    }
+  }
+  catch(const Base::Exception&)
   {
-    doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
+    // just do nothing because for sure the exception has already been reported
   }
 }
 

@@ -223,6 +223,9 @@
                     <property name="enabled">
                         <bool>true</bool>
                     </property>
+                    <property name="resizeMode">
+                        <enum>AllColumns</enum>
+                    </property>
                 </widget>
             </grid>
         </widget>

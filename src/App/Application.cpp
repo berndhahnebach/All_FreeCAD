@@ -414,6 +414,13 @@ void Application::Destruct(void)
 	// not initialized or doubel destruct!
 	assert(_pcSingelton);
 	delete _pcSingelton;
+
+  // We must detach from console and delete the observer to save our file
+  if ( _pConsoleObserverFile )
+  {
+    Console().DetacheObserver(_pConsoleObserverFile);
+    delete _pConsoleObserverFile; _pConsoleObserverFile = 0;
+  }
 }
 
 
@@ -715,7 +722,7 @@ void Application::ParsOptions(int argc, char ** argv)
 				mConfig["LoggingFile"] = "1";
 				mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
 				switch (argv[i][2])  
-				{   
+				{
 					// Console with file
 					case 'f':  
 					case 'F':  

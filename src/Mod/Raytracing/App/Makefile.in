@@ -133,15 +133,20 @@ target_alias = @target_alias@
 pkglib_LTLIBRARIES = libRaytracing.la
 
 libRaytracing_la_SOURCES = \
-	AppRaytracing.cpp
+		AppRaytracing.cpp \
+		FeatureRayExportPov.cpp \
+		FeatureRayExportPov.h \
+		RayFeature.cpp \
+		RayFeature.h
 
 
 # the library search path.
-libRaytracing_la_LDFLAGS = -L../../../App $(all_libraries)
+libRaytracing_la_LDFLAGS = -L../../../App -L../../Part $(all_libraries)
 
 libRaytracing_la_LIBADD = \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+		-lPart
 
 
 # set the include path found by configure
@@ -152,13 +157,16 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 
 libRaytracing_la_DEPENDENCIES =
-am_libRaytracing_la_OBJECTS = AppRaytracing.lo
+am_libRaytracing_la_OBJECTS = AppRaytracing.lo FeatureRayExportPov.lo \
+	RayFeature.lo
 libRaytracing_la_OBJECTS = $(am_libRaytracing_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracing.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracing.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FeatureRayExportPov.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/RayFeature.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -166,6 +174,13 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(libRaytracing_la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
@@ -218,6 +233,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracing.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureRayExportPov.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RayFeature.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

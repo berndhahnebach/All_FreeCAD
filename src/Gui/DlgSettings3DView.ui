@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>389</width>
-            <height>363</height>
+            <width>395</width>
+            <height>365</height>
         </rect>
     </property>
     <property name="caption">
@@ -215,6 +215,8 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>PrefCheckBox_UseInventorViewer</sender>
@@ -240,13 +242,13 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

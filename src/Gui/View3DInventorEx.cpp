@@ -45,6 +45,7 @@
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoTransform.h>
 # include <Inventor/nodes/SoTranslation.h>
+# include <Inventor/actions/SoWriteAction.h>
 #endif
 
 #include "View3DInventorEx.h"
@@ -358,7 +359,45 @@ bool View3DInventorEx::onMsg(const char* pMsg, const char** ppReturn)
     _viewer->viewAll();
     return true;
   }
-  return false;
+  else if(strcmp("ViewBottom",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-1, 0, 0, 0);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewFront",pMsg) == 0 ){
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-root, 0, 0, -root);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewLeft",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewRear",pMsg) == 0 ){
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0, root, root, 0);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewRight",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewTop",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0, 0, 0, 1);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewAxo",pMsg) == 0 ){
+    float root = (float)(sqrt(3.0)/4.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-0.333333f, -0.166666f, -0.333333f, -root);
+    _viewer->viewAll();
+    return true;
+  }
 
   return false;
 }

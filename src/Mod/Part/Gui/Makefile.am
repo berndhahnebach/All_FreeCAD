@@ -8,12 +8,16 @@ BUILT_SOURCES=\
 		DlgPartImportIges.h \
 		DlgPartImportStep.cpp \
 		DlgPartImportStep.h \
+		DlgSettings3DViewPart.cpp \
+		DlgSettings3DViewPart.h \
 		moc_DlgPartBox.cpp \
 		moc_DlgPartBoxImp.cpp \
 		moc_DlgPartImportIges.cpp \
 		moc_DlgPartImportIgesImp.cpp \
 		moc_DlgPartImportStep.cpp \
-		moc_DlgPartImportStepImp.cpp
+		moc_DlgPartImportStepImp.cpp \
+		moc_DlgSettings3DViewPart.cpp \
+		moc_DlgSettings3DViewPartImp.cpp
 
 libPartGui_la_SOURCES=\
 		AppPartGui.cpp \
@@ -23,7 +27,11 @@ libPartGui_la_SOURCES=\
 		DlgPartImportIgesImp.cpp \
 		DlgPartImportIgesImp.h \
 		DlgPartImportStepImp.cpp \
-		DlgPartImportStepImp.h
+		DlgPartImportStepImp.h \
+		DlgSettings3DViewPartImp.cpp \
+		DlgSettings3DViewPartImp.h \
+		ViewProvider.cpp \
+		ViewProvider.h
 
 # the library search path.
 libPartGui_la_LDFLAGS = -L../App $(all_libraries)

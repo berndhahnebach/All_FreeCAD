@@ -561,7 +561,7 @@ public:\
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\
-    return ( getAppWnd()->activeView() && strcmp( getAppWnd()->activeView()->getName(), "View3D" )  == 0)?true:false;\
+    return ( getAppWnd()->activeView() && QString( getAppWnd()->activeView()->getName()).contains( "View3D" )  > 0)?true:false;\
   }\
 };
 

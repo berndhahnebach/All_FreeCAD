@@ -25,10 +25,31 @@
 
 #ifndef _PreComp_
 # include <qlistview.h>
+# include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoIndexedFaceSet.h>
+# include <Inventor/nodes/SoLocateHighlight.h>
+# include <Inventor/nodes/SoNormal.h>
+# include <Inventor/nodes/SoNormalBinding.h>
+# include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <BRepMesh_IncrementalMesh.hxx>
+# include <BRep_Tool.hxx>
+# include <GeomAPI_ProjectPointOnSurf.hxx>
+# include <GeomLProp_SLProps.hxx>
+# include <gp_Trsf.hxx>
+# include <Poly_Array1OfTriangle.hxx>
+# include <Poly_Triangulation.hxx>
+# include <TColgp_Array1OfPnt.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Face.hxx>
+# include <TopoDS_Shape.hxx>
+# include <TopExp_Explorer.hxx>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "../../../Base/Console.h"
+#include <Base/Console.h>
 
 #include "ViewProvider.h"
 
@@ -36,9 +57,6 @@
 //#include "Tree.h"
 
 
-#include <Inventor/nodes/SoPointSet.h>
-#include <Inventor/nodes/SoDrawStyle.h>
-#include <Inventor/nodes/SoPointSet.h>
 
 using namespace PartGui;
 
@@ -279,7 +297,8 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
     try {
       Handle_Geom_Surface Surface = BRep_Tool::Surface(aFace);
 
-      GeomAPI_ProjectPointOnSurf ProPntSrf(gp_Pnt((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]), Surface);
+      gp_Pnt vertex((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]);
+      GeomAPI_ProjectPointOnSurf ProPntSrf(vertex, Surface);
       Standard_Real fU, fV; ProPntSrf.Parameters(1, fU, fV);
 
       GeomLProp_SLProps clPropOfFace(Surface, fU, fV, 2, gp::Resolution());

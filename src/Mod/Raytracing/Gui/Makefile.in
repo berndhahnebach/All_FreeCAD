@@ -132,11 +132,18 @@ target_alias = @target_alias@
 
 pkglib_LTLIBRARIES = libRaytracingGui.la
 
-# BUILT_SOURCES=\
-#
+BUILT_SOURCES = \
+		DlgSettingsRay.cpp \
+		DlgSettingsRay.h \
+		moc_DlgSettingsRay.cpp \
+		moc_DlgSettingsRayImp.cpp
+
+
 libRaytracingGui_la_SOURCES = \
-	AppRaytracingGui.cpp \
-	Command.cpp
+		AppRaytracingGui.cpp \
+		Command.cpp \
+		DlgSettingsRayImp.cpp \
+		DlgSettingsRayImp.h
 
 
 # the library search path.
@@ -155,14 +162,16 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 
 libRaytracingGui_la_DEPENDENCIES =
-am_libRaytracingGui_la_OBJECTS = AppRaytracingGui.lo Command.lo
+am_libRaytracingGui_la_OBJECTS = AppRaytracingGui.lo Command.lo \
+	DlgSettingsRayImp.lo
 libRaytracingGui_la_OBJECTS = $(am_libRaytracingGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracingGui.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Command.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/Command.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsRayImp.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -171,11 +180,19 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(libRaytracingGui_la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libRaytracingGui_la_SOURCES)
 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -223,6 +240,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracingGui.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsRayImp.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -356,7 +374,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES)
 
 installdirs:
@@ -386,6 +405,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-pkglibLTLIBRARIES \

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>411</width>
-            <height>284</height>
+            <height>286</height>
         </rect>
     </property>
     <property name="caption">
@@ -115,10 +115,15 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <tabstops>
     <tabstop>ComboBoxCategory</tabstop>
     <tabstop>IconView1</tabstop>
     <tabstop>TextLabel</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>Gui/Widgets.h</includehint>
+</includehints>
 </UI>

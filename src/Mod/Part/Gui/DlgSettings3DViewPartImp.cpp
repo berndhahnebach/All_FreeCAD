@@ -69,6 +69,7 @@ void DlgSettings3DViewPartImp::saveSettings()
   prefFloatSpinBox1->onSave();
   prefCheckBox8->onSave();
   prefCheckBox9->onSave();
+  prefColorButton1->onSave();
 }
 
 void DlgSettings3DViewPartImp::loadSettings()
@@ -76,6 +77,7 @@ void DlgSettings3DViewPartImp::loadSettings()
   prefFloatSpinBox1->onRestore();
   prefCheckBox8->onRestore();
   prefCheckBox9->onRestore();
+  prefColorButton1->onRestore();
 }
 
 #include "DlgSettings3DViewPart.cpp"

@@ -139,12 +139,16 @@ BUILT_SOURCES = \
 		DlgPartImportIges.h \
 		DlgPartImportStep.cpp \
 		DlgPartImportStep.h \
+		DlgSettings3DViewPart.cpp \
+		DlgSettings3DViewPart.h \
 		moc_DlgPartBox.cpp \
 		moc_DlgPartBoxImp.cpp \
 		moc_DlgPartImportIges.cpp \
 		moc_DlgPartImportIgesImp.cpp \
 		moc_DlgPartImportStep.cpp \
-		moc_DlgPartImportStepImp.cpp
+		moc_DlgPartImportStepImp.cpp \
+		moc_DlgSettings3DViewPart.cpp \
+		moc_DlgSettings3DViewPartImp.cpp
 
 
 libPartGui_la_SOURCES = \
@@ -155,7 +159,11 @@ libPartGui_la_SOURCES = \
 		DlgPartImportIgesImp.cpp \
 		DlgPartImportIgesImp.h \
 		DlgPartImportStepImp.cpp \
-		DlgPartImportStepImp.h
+		DlgPartImportStepImp.h \
+		DlgSettings3DViewPartImp.cpp \
+		DlgSettings3DViewPartImp.h \
+		ViewProvider.cpp \
+		ViewProvider.h
 
 
 # the library search path.
@@ -175,7 +183,8 @@ LTLIBRARIES = $(pkglib_LTLIBRARIES)
 
 libPartGui_la_DEPENDENCIES =
 am_libPartGui_la_OBJECTS = AppPartGui.lo Command.lo DlgPartBoxImp.lo \
-	DlgPartImportIgesImp.lo DlgPartImportStepImp.lo
+	DlgPartImportIgesImp.lo DlgPartImportStepImp.lo \
+	DlgSettings3DViewPartImp.lo ViewProvider.lo
 libPartGui_la_OBJECTS = $(am_libPartGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -185,7 +194,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Command.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgPartBoxImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportIgesImp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportStepImp.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportStepImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgSettings3DViewPartImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -257,6 +268,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartBoxImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportIgesImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportStepImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettings3DViewPartImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

@@ -440,9 +440,15 @@ PyObject *ConsoleSingelton::sPySetStatus(PyObject *self,			// static python wrap
 
 ConsoleObserverFile::ConsoleObserverFile(const char *sFileName)
 	:cFileStream(sFileName)
-{}
+{
+  if ( !cFileStream.is_open() )
+    printf("Cannot open log file '%s'.\n", sFileName);
+}
 
-ConsoleObserverFile::~ConsoleObserverFile(){};
+ConsoleObserverFile::~ConsoleObserverFile()
+{
+  cFileStream.close();
+}
 
 void ConsoleObserverFile::Warning(const char *sWarn)
 {

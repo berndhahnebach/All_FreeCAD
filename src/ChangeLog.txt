@@ -542,3 +542,5 @@ Version: V0.1B114 Date: Sun Feb 13 17:07:39 2005 +++++++++++++++++++++++++++++++
 + Check default parameter in FCParameterGrp::GetASCII() and use "" if it is 0
 + enhanced NetworkRetriever
 + loading/saving of user defined macros
++ Logging into file is working under Linux now
++ RFE 1149922 implemented (Autoscrolling at startup)

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>432</width>
-            <height>402</height>
+            <height>404</height>
         </rect>
     </property>
     <property name="caption">
@@ -329,18 +329,20 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <slots>
     <slot access="protected">loadSettings()</slot>
     <slot access="protected">saveSettings()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
-    <includehint>PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

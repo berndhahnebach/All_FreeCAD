@@ -758,6 +758,17 @@ void ApplicationWindow::activateWorkbench(const char* name)
   // net buffer because of char* <-> const char*
   Base::PyBuf Name(name);
 
+  // get the python workbench object from the dictionary
+  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
+
+  // test if the workbench exists
+  if ( !pcWorkbench )
+  {
+    QString exc = tr("Workbench '%1' does not exist").arg( name );
+    Console().Error("%s\n", exc.latin1());
+    return;
+  }
+
   // close old workbench
   if(d->_cActiveWorkbenchName != "")
   {
@@ -767,18 +778,8 @@ void ApplicationWindow::activateWorkbench(const char* name)
     customWidgetManager()->hideToolBox();
     Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
   }
-  // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
 
   try{
-    // test if the workbench in
-    assert(pcWorkbench);
-    if (!pcWorkbench)
-    {
-      QString exc = tr("Workbench '%1' does not exist").arg(name);
-      throw Base::Exception(exc.latin1());
-    }
-
     // rename with new workbench before(!!!) calling "Start"
     d->_cActiveWorkbenchName = name;
 
@@ -796,9 +797,9 @@ void ApplicationWindow::activateWorkbench(const char* name)
 
     show();
   }
-  catch (const Base::Exception& rclE)
+  catch (const Base::Exception&)
   {
-    Console().Error("%s\n", rclE.what());
+    // do nothing here
   }
 }
 

@@ -28,7 +28,9 @@
 
 
 class TopoDS_Shape;
+class TopoDS_Face;
 class SoSeparator;
+class SbVec3f;
 
 namespace PartGui {
 

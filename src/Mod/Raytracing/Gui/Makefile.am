@@ -1,11 +1,17 @@
 
 pkglib_LTLIBRARIES=libRaytracingGui.la
 
-# BUILT_SOURCES=\
-#
+BUILT_SOURCES=\
+		DlgSettingsRay.cpp \
+		DlgSettingsRay.h \
+		moc_DlgSettingsRay.cpp \
+		moc_DlgSettingsRayImp.cpp
+
 libRaytracingGui_la_SOURCES=\
-	AppRaytracingGui.cpp \
-	Command.cpp
+		AppRaytracingGui.cpp \
+		Command.cpp \
+		DlgSettingsRayImp.cpp \
+		DlgSettingsRayImp.h
 
 # the library search path.
 libRaytracingGui_la_LDFLAGS = -L../App $(all_libraries)
