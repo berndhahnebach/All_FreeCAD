@@ -39,7 +39,6 @@
 #include "../Config.h"
 
 #ifdef FC_OS_WIN32
-//#	pragma comment(lib,PYLIBNAME)
 #	pragma comment(lib,DOMLIBNAME)
 #	pragma comment(lib,"TKernel.lib")
 #else

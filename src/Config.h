@@ -76,11 +76,6 @@
 
 
 //**************************************************************************
-// Python
-
-#define PYLIBNAME "python21.lib"
-
-//**************************************************************************
 // Xerces
 
 #ifdef FC_DEBUG
@@ -129,25 +124,8 @@
 
 //**************************************************************************
 // QT
-#define QT_VER 321
-
-// for .NET you must use Qt version 3.x
-#ifdef FC_OS_WIN32
-#	if (_MSC_VER >= 1300) && (QT_VER < 300)
-#		error "For visual Studio 7.0 use QT 3.x"
-#	endif
-#endif
-
-// qt lib name
-#if QT_VER == 230
-#	define QTLIBNAME "qt-mt230nc.lib"
-#elif QT_VER == 311
-#	define QTLIBNAME "qt-mteval311.lib"
-#elif QT_VER == 321
-#	define QTLIBNAME "qt-mtnc321.lib"
-#else
-#	define QTLIBNAME "qt.lib"
-#endif
+#define QTLIBNAME "qt-mtnc321.lib"
+//#define QTLIBNAME "qt-mt.lib"
 
 
 #define QT_DLL
@@ -155,19 +133,23 @@
 #define QT_ALTERNATE_QTSMANIP
 
 //**************************************************************************
+// Coin3D
+
+#ifndef COIN_DLL
+#	define COIN_DLL
+#endif
+#define INVENTORLIBNAME "coin2.lib"
+
+//**************************************************************************
 // SoQt
 
-//#define SOQT_INTERNAL
-//#define SOQT_MAKE_DLL 1
-//#define __COIN_SOQT__
-//#define SOQT_DEBUG 1
-
-#define INVENTORLIBNAME "coin2.lib"
 #define SOQTLIBNAME     "soqt1.lib"
 
 #ifdef FC_OS_WIN32
 
-#define SOQT_DLL
+#ifndef SOQT_DLL
+# define SOQT_DLL
+#endif
 
 	/* Define to use GetEnvironmentVariable() instead of getenv() */
 //#	define HAVE_GETENVIRONMENTVARIABLE 1
@@ -195,23 +177,7 @@
 //#	define HAVE_SYS_TYPES_H 1
 	/* Define to 1 if you have the <windows.h> header file. */
 //#	define HAVE_WINDOWS_H 1
-	/* Define to the major version of SoQt */
-//#	define SOQT_MAJOR_VERSION 1
-	/* Define to the micro version of SoQt */
-//#	define SOQT_MICRO_VERSION 2
-	/* Define to the minor version of SoQt */
-//#	define SOQT_MINOR_VERSION 0
-	/* Version string for SoQt */
-//#	define SOQT_VERSION "1.0.2"
 
-#endif
-
-
-//**************************************************************************
-// Coin3D
-
-#ifndef COIN_DLL
-#	define COIN_DLL
 #endif
 
 
