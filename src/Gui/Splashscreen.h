@@ -45,7 +45,7 @@ class QProgressBar;
 class QTextView;
 
 /**
- * text browser for the help dialog
+ * text browser for the about dialog
  */
 class FCSplashBrowser : public QTextBrowser
 {
@@ -53,14 +53,18 @@ class FCSplashBrowser : public QTextBrowser
 
   public:
     FCSplashBrowser(QWidget * parent=0, const char * name=0);
+    /** Emits the signal @ref linkClicked */
     void setSource ( const QString & name );
 
   signals:
+    /** This signal is emitted by @ref setSource() */
     void linkClicked(const QString& txt);
 };
 
 /**
- * splash widget base class
+ * Abstract base class for Splashers.
+ * This splasher runs in an own thread
+ * @see QThread
  */
 class GuiExport FCSplashWidget : public QLabel, public QThread
 {
@@ -84,7 +88,7 @@ class GuiExport FCSplashWidget : public QLabel, public QThread
     void aboutToQuit();
 };
 
-// splasher at startup
+/** Splasher at startup */
 class GuiExport FCSplashScreen : public FCSplashWidget
 { 
   Q_OBJECT
@@ -103,7 +107,7 @@ class GuiExport FCSplashScreen : public FCSplashWidget
     QProgressBar* SplasherProgress;
 };
 
-// splasher for the help dialog
+/** Splasher for the help dialog */
 class GuiExport FCSplashAbout : public FCSplashWidget
 { 
   Q_OBJECT

@@ -1,3 +1,31 @@
+/***************************************************************************
+                          ScintillaQt.h  -  description
+                             -------------------
+    begin                : 2002/12/20 10:47:44
+    copyright            : (C) 2002 by Werner Mayer
+    email                : werner.wm.mayer@gmx.de
+ ***************************************************************************/
+
+/** \file ScintillaQt.h
+ *  \brief A Qt port to the scintilla library
+ *  \author Werner Mayer
+ *  \version 0.1
+ *  \date    2003/01/06
+ */
+
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *   for detail see the LICENCE text file.                                 *
+ *   Werner Mayer 2002                                                     *
+ *                                                                         *
+ ***************************************************************************/
+ 
+
 #ifndef SCINTILLAQT_H
 #define	SCINTILLAQT_H
 
@@ -52,12 +80,27 @@
 // forward declaration
 class FCScintillaEdit;
 
+/**
+ * The Qt binding to the Scintilla editor
+ * Scintilla is a free source code editing component. It comes with complete source code 
+ * and a license that permits use in any free project or commercial product. 
+ * As well as features found in standard text editing components, Scintilla includes features 
+ * especially useful when editing and debugging source code. These include support for syntax 
+ * styling, error indicators, code completion and call tips. The selection margin can contain 
+ * markers like those used in debuggers to indicate breakpoints and the current line. 
+ * Styling choices are more open than with many editors, allowing the use of proportional fonts, 
+ * bold and italics, multiple foreground and background colours and multiple fonts. 
+ *
+ * The source code can be downloaded at <a href="http://www.scintilla.org"></a>. 
+ */
 class ScintillaQt : public ScintillaBase
 {
   public:
+    /** construction */
 	  ScintillaQt(FCScintillaEdit* edit);
 	  virtual ~ScintillaQt();
 
+    /** Sends messages to Scintilla */
 	  virtual sptr_t WndProc(unsigned int iMessage,uptr_t wParam, sptr_t lParam);
 
   private:
@@ -128,6 +171,9 @@ class ScintillaQt : public ScintillaBase
   friend class FCScintillaView;
 };
 
+/**
+ * The Qt editor embedding Scintilla 
+ */
 class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
 {
 	Q_OBJECT
@@ -136,6 +182,7 @@ class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
 	  FCScintillaEdit(QWidget *parent = 0,const char *name = 0, WFlags f = 0);
 	  virtual ~FCScintillaEdit();
 
+    /** Sends messages to Scintilla */
 	  long SendScintilla(unsigned int msg,unsigned long wParam = 0, long lParam = 0);
 	  virtual QSize sizeHint() const;
     ScintillaQt* getTextEditor() const;
@@ -196,6 +243,10 @@ class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
     friend class ScintillaQt;
 };
 
+/**
+ * A special view class which sends the messages from the application to
+ * the Scintilla editor and embeds the editor in a window
+ */
 class FCScintillaView : public FCView
 {
 	public:
@@ -207,15 +258,22 @@ class FCScintillaView : public FCView
     virtual const char *GetName(void){return "Scintilla";}
 		virtual void Update(void){};
 
-		/// Mesage handler
+		/** Mesage handler.
+     * Runs the action specified by pMsg.
+     */
 		virtual bool OnMsg(const char* pMsg);
-		/// Mesage handler test
+		/** Mesage handler test
+     * Checks if the action pMsg is available. This is for enabling/disabling
+     * the corresponding buttons or menu items for this action.
+     */
 		virtual bool OnHasMsg(const char* pMsg);
-		/// checking on close state
+		/** checking on close state */
 		virtual bool CanClose(void);
 		virtual void Print(QPainter& cPrinter);
     void OpenFile (const QString& fileName);
 
+    /** @name Standard actions of the editor */
+    //@{
     bool Save   (void);
     bool SaveAs (void);
     bool Open   (void);
@@ -224,6 +282,7 @@ class FCScintillaView : public FCView
 		void Paste  (void);
     void Undo   (void);
     void Redo   (void);
+    //@}
 
     
     void saveFile();

@@ -284,23 +284,26 @@ class PrefGroupItem : public QListBoxItem
 PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
     : QListBoxItem( parent ), pm_Unsel( p1 ), pm_Sel( p2 )
 {
-    setText( name );
+  setText( name );
 }
 
 int PrefGroupItem::height( const QListBox * ) const
 {
-    return 50;
+  return 50;
 }
 
 int PrefGroupItem::width( const QListBox * )  const
 {
-    return 75;
+  return 75;
 }
 
 void PrefGroupItem::paint( QPainter *p )
 {
   int w = width( listBox() );
   int tx = (w-p->fontMetrics().boundingRect(text()).width())/2+10;
+  QFont f = p->font();
+  f.setBold(true);
+  p->setFont(f);
   p->drawText( tx, 40, text() );
   if ( selected() )
 	  p->drawPixmap( (w-pm_Sel.width())/2+10, 10, pm_Sel );
@@ -387,7 +390,6 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
   addPreferencePage(new FCDlgSettings3DView, "3D View");
 
   // show the first page
-//  prefPageClicked(0);
   ListBox->setCurrentItem(0);
 }
 

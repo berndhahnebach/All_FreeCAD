@@ -174,9 +174,9 @@ protected:
   void enterEvent ( QEvent * );
   void leaveEvent ( QEvent * );
   QPopupMenu* CreatePopupMenu();
-  /// import old commands from the preferences
+  /** import old commands from the preferences */
   void ReadCmdList();
-  /// export new commands into the preferences
+  /** export new commands into the preferences */
   void SaveCmdList();
 
 public:
@@ -187,10 +187,11 @@ public:
 	friend FCCommandLine &GetCmdLine(void); 
 
 protected slots:
-  /// clear all new commands
+  /** clear all new commands */
   void slotClearConsole();
+  /** open the console */
   void slotOpenConsole();
-  /// launch the command
+  /** launch the command */
   void slotLaunchCommand();
 
 private:

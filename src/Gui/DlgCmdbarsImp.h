@@ -34,6 +34,9 @@
 #include "DlgCmdbars.h"
 #include "DlgCustomizeImp.h"
 
+/**
+ * This class implements the creation of user defined command bars.
+ */
 class FCDlgCustomCmdbarsImp : public FCDlgCustomCmdbars, public FCPropertyPage
 { 
   Q_OBJECT

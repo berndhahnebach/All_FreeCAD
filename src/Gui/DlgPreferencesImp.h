@@ -1,8 +1,8 @@
 /** \file DlgPreferencesImp.h
  *  \brief  
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author Juergen Riegel, Werner Mayer
+ *  \version 1.7
+ *  \date    2003/06/20 19:36:36
  *   
  */
 
@@ -38,6 +38,10 @@
 // forward declaration
 class QTabWidget;
 
+/**
+ * This class is the container class which handles all the preference pages
+ * @see class FCDlgPreferencesImp
+ */
 class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
 { 
     Q_OBJECT
@@ -71,22 +75,52 @@ class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
 
 };
 
+/**
+ * This class is a 2nd implementation of the container class.
+ * It uses a listbox for the groups instead of a listview.
+ * 
+ * The single preference pages can be made by the Qt Designer. 
+ * For a new page you must take the "QWidget" entry.
+ * For automation of saving/loading of the elements of such a page
+ * (e.g. combo boxes, line edits, check boxes, ...) you can use the
+ * @ref FCWidgetPrefs classes like:
+ * FCEditSpinBox, FCLineEdit, FCComboBox, FCListBox, FCCheckBox, FCRadioButton and FCSlider
+ *
+ * Your implementation class must inherit the Qt-generated class and @ref FCWidgetPrefsManager.
+ * In the constructor of your class you must call for each object in your page
+ * append(<objectname>->getHandler());
+ * to use the full automation
+ */
 class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
 { 
     Q_OBJECT
 
   public:
+    /// construction
     FCDlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    /// destruction
     ~FCDlgPreferencesImp();
 
+    /** Adds a new preference group */
     void addPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2);
+    
+    /**
+     * Adds a new preference page to the current group
+     * Before the first call of this method @ref addPreferenceGroup must be called
+     * otherwise the preference pages will be lost.
+     */
     void addPreferencePage(QWidget* page, const char* name);
 
   protected:
+    /// for internal use only
     QTabWidget* getPreferenceGroup(int id);
+    /// for internal use only
     QTabWidget* getOrAddPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2);
+    /// for internal use only
     void connectWidget(QWidget* page) const;
 
+	  /** @name buttons and stack, ... */
+	  //@{	
     QPushButton* PushButton14;
     QPushButton* PushButton15;
     QPushButton* PushButton13;
@@ -94,12 +128,14 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
     QWidgetStack* tabWidgetStack;
     QGridLayout* DlgPreferencesLayout;
     QGridLayout* Layout6;
+    //@}
 
   private:
     std::map<std::string, int> m_mGroupIDs;
     QTabWidget               * m_pCurTab;
 
   private slots:
+    /// for internal use only
     void prefPageClicked(int item );
 };
 

@@ -35,6 +35,10 @@
 #include "Window.h"
 #include "PrefWidgets.h"
 
+/**
+ * This class implements the settings for the help-viewer
+ * @see class FCHtmlView
+ */
 class FCDlgSettings : public FCDlgSettingsBase, public FCWidgetPrefsManager
 {
   Q_OBJECT

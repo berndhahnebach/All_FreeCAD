@@ -35,6 +35,10 @@
 #include "Window.h"
 #include "PrefWidgets.h"
 
+/**
+ * This class implements the settings for the editor
+ * @see class FCScintillaEdit
+ */
 class FCDlgEditorSettings : public FCDlgEditorSettingsBase, public FCWidgetPrefsManager, public FCWidgetPrefs
 {
   Q_OBJECT
@@ -43,19 +47,34 @@ class FCDlgEditorSettings : public FCDlgEditorSettingsBase, public FCWidgetPrefs
     FCDlgEditorSettings( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCDlgEditorSettings();
 
+    /** Does not do anything */
     void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
   public slots:
+    /** Assign the color to the FCColorButton object.
+     * To get the color it searches for the color
+     * in the @ref FCDefColorMap before.
+     */
     void onAssignColor(const QString& name);
+    /** Updates the color map if a color was changed */
     void onChosenColor();
+    /** Sets the font, but it is disabled in this version */
     void onChosenFont(const QString & item);
 
   protected:
+    /** Restores the color map */
     void restorePreferences();
+    /** Saves the color map */
     void savePreferences();
     std::map<QString, long> m_clColors;
 };
 
+/** 
+ * This class implements a color map of QString->QColor.
+ * A string does not represent the name of the color itself
+ * but it represents the "setting" the color is assigned to
+ * (e.g. text color, keyword color, ...)
+ */
 class FCDefColorMap
 {
 	private:

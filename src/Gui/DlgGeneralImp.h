@@ -35,6 +35,11 @@
 #include "Window.h"
 #include "PrefWidgets.h"
 
+/**
+ * This class implements the settings for the application
+ * like style, size of pixmaps, size of recent file list and so on
+ * @see class ApplicationWindow
+ */
 class FCDlgGeneral : public FCDlgGeneralBase, public FCWidgetPrefsManager
 {
   Q_OBJECT
@@ -44,8 +49,20 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCWidgetPrefsManager
     ~FCDlgGeneral();
 
   private slots:
+    /** Looks in the system parameters for the entry "BigPixmaps".
+     * If it is true the tool buttons in the main window are set to use big pixmaps, 
+     * and small pixmaps if "BigPixmaps" is false.
+     * @see ApplicationWindow, QMainWindow
+     */
     void onBigPixmaps();
+    /** Sets the application's style
+     * @see QStyle, QApplication
+     */
     void onSetStyle();
+    /** Sets the size of the recent file list (MRU) in the
+     * system parameters.
+     * @see FCCmdMRU
+     */
     void onSetMRUSize();
 };
 

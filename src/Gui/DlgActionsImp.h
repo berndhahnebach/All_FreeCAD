@@ -34,17 +34,25 @@
 #include "DlgActions.h"
 #include "DlgCustomizeImp.h"
 
+/**
+ * This class implements the creation of user defined commands executing a recorded macro.
+ */
 class FCDlgCustomActionsImp : public FCDlgCustomActions, public FCPropertyPage
 { 
   Q_OBJECT
 
   public:
+    /// construction
     FCDlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    /// destruction
     ~FCDlgCustomActionsImp();
 
+    /// shows the page
     void show();
 
   protected:
+    //@{
+    /// for internal use only
     void init();
     void apply();
     void cancel();
@@ -64,6 +72,7 @@ class FCDlgCustomActionsImp : public FCDlgCustomActions, public FCPropertyPage
     void slotDelCustomAction();
     /// select a pixmap
     void slotCustomActionPixmap();
+    //@}
 };
 
 #endif

@@ -37,6 +37,12 @@ class FCCommand;
 class FCToolBar;
 class QTabWidget;
 
+/** Base class for property pages.
+ * The pages of @ref FCDlgCustomize should
+ * inherit FCPropertyPage to use apply/cancel mechanism.
+ * Inherited classes should reimplement @ref apply() and
+ * @ref cancel().
+ */
 class FCPropertyPage
 {
   protected:

@@ -47,7 +47,10 @@ class QHBoxLayout;
 class QTime;
 
 /**
- *  Using the Qt's open/save dialogs with own adjustments
+ * Using the Qt's open/save dialogs with own adjustments
+ * In this implementation a waitcursor will additionally 
+ * be set.
+ * @see FCAutoWaitCursor
  */
 class GuiExport FCFileDialog
 {
@@ -64,7 +67,7 @@ class GuiExport FCFileDialog
                                      QWidget * parent, const char * name, const QString & caption );
 };
 
-/*  
+/**  
  * FreeCAD's progressbar for long operations
  * If you call @ref Start() several times without calling
  * @ref Stop() before the number of new steps will be added 
@@ -74,19 +77,31 @@ class GuiExport FCFileDialog
 class FCProgressBar : public QProgressBar
 {
   public:
+    /// construction
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
-    /// start the progress bar
+    /** Starts the progress bar */
     void Start(QString txt, int steps, bool& flag);
-    /// do the next step
+    /** Does the next step */
     void Next();
-    /// stop the sequencer
+    /** Stops the sequencer */
     void Stop ();
 
-  protected:
+  private:
+	  /** @name for internal use only */
+    //@{
+    /** Checks if the ESC button was pressed 
+     *  If ESC @ref interrupt() is called.
+     */
     bool isInterrupted();
+    /**  
+     * Throws an exception to stop the pending operation.
+     */
     void interrupt();
+    /** Draws the content of the progress bar */
     virtual void drawContents( QPainter *p );
+    /** Reimplemented */
     bool setIndicator ( QString & indicator, int progress, int totalSteps );
+    //@}
     bool bSeveralInstances;
     int iStep;
     int iTimeStep;
@@ -98,7 +113,9 @@ class FCProgressBar : public QProgressBar
 };
 
 /**
- *  List view class
+ * List view class
+ * This class also has a method to get the last
+ * element of the tree. @see lastItem()
  */
 class FCListView : public QListView
 {
@@ -131,7 +148,11 @@ class FCCmdViewItem : public QIconViewItem
 };
 
 /**
- *  Icon view class
+ * Icon view class
+ * This class allows to drag one or more items which
+ * correspond to a FreeCAD command. The dragged items you
+ * can drop onto a @ref FCToolBar object
+ * @see FCCmdViewItem, FCCommand
  */
 class FCCmdView : public QIconView
 {
@@ -142,9 +163,11 @@ class FCCmdView : public QIconView
     virtual ~FCCmdView ();
 
   protected:
+    /** Allows to drag an item */
     QDragObject * dragObject ();
 
   protected slots:
+    /// for internal use only
     void slotSelectionChanged(QIconViewItem * item);
 
   signals:
@@ -189,7 +212,9 @@ class FCDlgCreateToolOrCmdBar : public QDialog
 };
 
 /**
- *  Line accelerator
+ * Line accelerator
+ * A special implementation of QLineEdit useful
+ * for pressing shortcuts.
  */
 class FCAccelLineEdit : public QLineEdit
 {
@@ -201,7 +226,7 @@ class FCAccelLineEdit : public QLineEdit
 };
 
 /**
- *  Check list
+ *  A dialog having a checklist inside.
  */
 class FCCheckListDlg : public QDialog
 { 
@@ -211,7 +236,9 @@ class FCCheckListDlg : public QDialog
     FCCheckListDlg( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~FCCheckListDlg();
 
+    /** set all items to be shown in the list */
     void setItems(const std::vector<std::string>& items);
+    /** get all checked items */
     std::vector<int> getCheckedItems(); 
     void show ();
     void hide ();
@@ -230,7 +257,7 @@ class FCCheckListDlg : public QDialog
 };
 
 /**
- *  Color button
+ *  Implementation of a color button
  */
 class FCColorButton : public QButton
 {
@@ -239,24 +266,32 @@ class FCColorButton : public QButton
     Q_PROPERTY( QColor color READ color WRITE setColor )
  
  public:
+    /// construction
     FCColorButton( QWidget* parent = 0, const char* name = 0 );
     FCColorButton( const QBrush& b, QWidget* parent = 0, const char* name = 0, WFlags f = 0 );
+    /// destruction
     ~FCColorButton();
 
+    /** set the color */
     void setColor( const QColor& );
+    /** get the current color */
     QColor color() const;
 
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
     
   public slots:
+    /** opens the @ref QColorDialog dialog to select a new color */
     virtual void onChooseColor();
 
   signals:
+    /** emits this signal when color is changed */
     void changed();
 
   protected:
+    /// for internal use only
     void drawButton( QPainter* );
+    /// for internal use only
     void drawButtonLabel( QPainter* );
 
   private:

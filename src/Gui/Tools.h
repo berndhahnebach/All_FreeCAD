@@ -31,11 +31,23 @@
 
 class QPixmap;
 
+/**
+ * A helper class
+ */
 class FCTools
 {
   public:
-    static QPixmap resize(int w, int h, QPixmap p);
+    /** Resizes the area of a pixmap
+     * If the size is greater than the old one the pixmap
+     * will be placed in the center. The border area will be filled
+     * up with current style's base color. 
+     */
     static QPixmap fillUp(int w, int h, QPixmap p);
+    /** Does the same as @ref fillUp() but does not move the pixmap
+     * to the center.
+     */
+    static QPixmap resize(int w, int h, QPixmap p);
+    /** Clears only the tool buttons and the separators of a toolbar */
     static void clearToolButtons(QToolBar* tb);
 };
 

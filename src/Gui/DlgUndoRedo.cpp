@@ -100,10 +100,6 @@ FCUndoRedoDlg::~FCUndoRedoDlg()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/** 
- *  This methode fetch the Undo / Redo infromation from the 
- *  active document and shows it in the Undo redo dialog.
- */
 void FCUndoRedoDlg::init() 
 {
 	std::vector<std::string> vecReUndos;
@@ -124,10 +120,6 @@ void FCUndoRedoDlg::init()
 	}
 
 }
-
-
-
-
 
 void FCUndoRedoList::mouseMoveEvent ( QMouseEvent * e )
 {
@@ -172,9 +164,6 @@ void FCUndoRedoList::mousePressEvent (QMouseEvent* e)
     }
   }
 }
-
-
-
 
 void FCUndoRedoDlg::selChangeUndoRedoList() 
 {

@@ -34,6 +34,9 @@
 #include "DlgToolbars.h"
 #include "DlgCustomizeImp.h"
 
+/**
+ * This class implements the creation of user defined toolbars.
+ */
 class FCDlgCustomToolbarsImp : public FCDlgCustomToolbars, public FCPropertyPage
 { 
   Q_OBJECT

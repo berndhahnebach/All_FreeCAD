@@ -62,29 +62,33 @@ class FCDockWindow;
 class FCWidgetPrefs : public FCParameterGrp::ObserverType
 {
   public:
-    /// changes the preference name
+    /** changes the preference name */
     virtual void setEntryName(QString name);
-    /// get the widget's name in preferences
+    /** get the widget's name in preferences */
     QString getEntryName() const;
-    /// changes the preference path
+    /** changes the preference path */
     virtual void setParamGrpPath(QString name);
-    /// get the widget's preferences path
+    /** get the widget's preferences path */
     QString getParamGrpPath() const;
-    /// return the handler
+    /** return the handler */
     FCWidgetPrefsHandler* getHandler();
-    /// install a new handler
+    /** install a new handler */
     void installHandler(FCWidgetPrefsHandler*);
-    /// get the handle to the parameter group
+    /** get the handle to the parameter group */
     FCParameterGrp::handle getParamGrp();
-    /// observers method
+    /** observers method */
     virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
-    /// get the handle to the root parameter group
+    /** get the handle to the root parameter group */
     static FCParameterGrp::handle getRootParamGrp();
 
   protected:
-    /// restore the preferences
+    /** Restore the preferences
+     * Must be reimplemented in subclasses
+     */
     virtual void restorePreferences() = 0;
-    /// save the preferences
+    /** Save the preferences
+     * Must be reimplemented in subclasses
+     */
     virtual void savePreferences()    = 0;
     /// constructor
     FCWidgetPrefs(const char * name = 0, bool bInstall=true);
@@ -125,7 +129,9 @@ class FCWidgetPrefsHandler : public QObject
     virtual void onRestore();
 
   signals:
+    /// emits this signal when @ref onSave() was called
     void saved();
+    /// emits this signal when @ref onRestore() was called
     void restored();
 
   protected:
@@ -136,6 +142,9 @@ class FCWidgetPrefsHandler : public QObject
 		friend class FCWidgetPrefsManager;
 };
 
+/** Container class for storing several 
+ * @ref FCWidgetPrefsHandler objects.
+ */
 class FCWidgetPrefsManager
 {
   public:
@@ -214,7 +223,7 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
 };
 
 /**
- *
+ * FCLineEdit
  */
 class FCLineEdit : public QLineEdit, public FCWidgetPrefs
 {
@@ -242,7 +251,7 @@ class FCLineEdit : public QLineEdit, public FCWidgetPrefs
 };
 
 /**
- *
+ * FCComboBox
  */
 class FCComboBox : public QComboBox, public FCWidgetPrefs
 {
@@ -270,7 +279,7 @@ class FCComboBox : public QComboBox, public FCWidgetPrefs
 };
 
 /**
- *
+ * FCListBox
  */
 class FCListBox : public QListBox, public FCWidgetPrefs
 {
@@ -298,7 +307,7 @@ class FCListBox : public QListBox, public FCWidgetPrefs
 };
 
 /**
- *
+ * FCCheckBox
  */
 class FCCheckBox : public QCheckBox, public FCWidgetPrefs
 {
@@ -326,7 +335,7 @@ class FCCheckBox : public QCheckBox, public FCWidgetPrefs
 };
 
 /**
- *
+ * FCRadioButton
  */
 class FCRadioButton : public QRadioButton, public FCWidgetPrefs
 {
@@ -354,7 +363,7 @@ class FCRadioButton : public QRadioButton, public FCWidgetPrefs
 };
 
 /**
- *
+ * FCSlider
  */
 class FCSlider : public QSlider, public FCWidgetPrefs
 {
@@ -397,23 +406,41 @@ class FCActionDrag : public QStoredDrag
     static std::vector<QString> actions;
 };
 
+/**
+ * This abstract class is part of the framework providing 
+ * methods for a user defined configuration of toolbars and menus
+ */
 class FCCustomWidget : public FCWidgetPrefs
 {
   public:
+    /** Returns true if items are set, otherwise false */
     bool hasCustomItems();
+    /** Returns a list of set items */
     std::vector<std::string> getItems();
+    /** Sets the given items to current */
     void setItems(const std::vector<std::string>& items);
+    /** Appends a single item */
     void addItem(const std::string& item);
+    /** Calls @ref restorePreferences() 
+     * So it is possible to call the load routine from outside
+     */
     void loadXML();
+    /** Calls @ref savePreferences()
+     * So it is possible to call the save routine from outside
+     */
     void saveXML();
     virtual void update(FCCommandManager& rclMgr) = 0;
+    /** Returns the acive workbench at creation time of this object */
     QString getWorkbench();
     virtual ~FCCustomWidget();
 
   protected:
     FCCustomWidget(const char* grp, const char * name);
+    /// reimplementation
     virtual void restorePreferences();
+    /// reimplementation
     virtual void savePreferences();
+    /// for internal use only
     void init(const char* grp, const char* name);
 
     std::vector<std::string> _clItems;
@@ -447,6 +474,9 @@ class FCToolBar : public QToolBar, public FCCustomWidget
     bool bSaveColor;
 };
 
+/**
+ *  Menu class that knows 'drag and drop'
+ */
 class FCPopupMenu : public QPopupMenu, public FCCustomWidget
 {
   Q_OBJECT
@@ -469,47 +499,97 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
     bool    bAllowDrag;
 };
 
+/**
+ * Class that manages the construction/destruction of all customizable objects.
+ * At destruction of a custom widget its content will be written to preferences.
+ * At construction the content will be restored.
+ * @see FCToolBar, FCPopupMenu and FCDockWindow
+ */
 class FCCustomWidgetManager
 {
   public:
     FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pCmdBar);
     ~FCCustomWidgetManager();
 
+    /** Initializes the custom widgets depending on the given workbench */
     bool init(const char* workbench);
+    /** Updates the custom widgets depending on the given workbench */
     bool update(const char* workbench);
+    /** Clears all custom widgets and reload it from preferences */
     bool update();
 
     // toolbars
+    /** Returns the toolbar by name
+     * If it does not exist it will be created
+     */
     FCToolBar* getToolBar(const char* name);
+    /** returns a vector of all toolbars */
     std::vector<FCToolBar*> getToolBars();
+    /** Deletes the specified toolbar if it exists */
     void delToolBar(const char* name);
+    /** Get the number of toolbars */
     int countToolBars();
 
     // command bars
+    /** Returns the command bar by name
+     * If it does not exist it will be created
+     */
     FCToolBar* getCmdBar(const char* name);
+    /** returns a vector of all command bars */
     std::vector<FCToolBar*> getCmdBars();
+    /** Deletes the specified command bar if it exists */
     void delCmdBar(const char* name);
+    /** Get the number of command bars */
     int countCmdBars();
 
     // menus
+    /** Returns the menu bar by name
+     * If it does not exist it will be created. If parent is not NULL
+     * the menu with the name 'parent' is the father. Otherwise
+     * the menu will be put in the application's menu bar.
+     */
     FCPopupMenu* getPopupMenu(const char* name, const char* parent = 0);
+    /** returns a vector of all menus */
     std::vector<FCPopupMenu*> getPopupMenus();
+    /** Deletes the specified menu if it exists */
     void delPopupMenu(const char* name);
+    /** Get the number of menus */
     int countPopupMenus();
 
     // dockable windows
+    /** Returns the dock window bar by name
+     * If it does not exist it returns NULL
+     */
     FCDockWindow* getDockWindow(const char* name);
+    /** returns a vector of all dock windows */
     std::vector<FCDockWindow*> getDockWindows();
+    /** Deletes the specified dock window if it exists */
     void delDockWindow(const char* name);
+    /** Adds a new dock window */
 		void addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,
                        KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 50);
 
+    /** Adds new menu with its items and its parent */
     void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);
+    /** Adds new menu with its parent The items are set before creation of the menu.
+     * @see addItem(const std::string&)
+     */
     void addPopupMenu (const std::string& type, const char* parent = 0);
+    /** Adds new tool bar with its items */
     void addToolBar   (const std::string& type, const std::vector<std::string>& defIt);
+    /** Adds new toolbar The items are set before creation of the menu.
+     * @see addItem(const std::string&)
+     */
     void addToolBar   (const std::string& type);
+    /** Adds new command bar with its items */
     void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt);
+    /** Adds new command bar The items are set before creation of the menu.
+     * @see addItem(const std::string&)
+     */
     void addCmdBar    (const std::string& type);
+    /** Adds a single item to temporary buffer. The item is not yet assigned
+     * to a concrete custom widget at this time 
+     */
     void addItem      (const std::string& item);
 
   protected:

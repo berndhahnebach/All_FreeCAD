@@ -63,11 +63,14 @@ class GuiExport FCButtonGroup : public QButtonGroup
 {
   Q_OBJECT
   public:
+    /** @name Construction/destruction */
+    //@{
 	  FCButtonGroup(QWidget * parent=0, const char * name=0);
     FCButtonGroup(const QString & title, QWidget * parent=0, const char * name=0);
     FCButtonGroup(int columns, Orientation o, QWidget * parent=0, const char * name=0);
     FCButtonGroup(int columns, Orientation o, const QString & title, QWidget * parent=0, const char * name=0);
 	  ~FCButtonGroup(void);
+    //@}
 
     // overwrite method from base class
     void resizeEvent (QResizeEvent * e);
@@ -98,6 +101,8 @@ class GuiExport FCButtonGroup : public QButtonGroup
     std::map<int, QPixmap> m_Pixmaps;
 };
 
+/** The command bar base class
+ */
 class GuiExport FCCommandBar : public FCToolBar
 {
   Q_OBJECT
@@ -123,6 +128,8 @@ class GuiExport FCCommandBar : public FCToolBar
     void resetBackgroundColor();
 };
 
+/** A special implementation of command bar
+ */
 class GuiExport FCToolboxBar : public FCCommandBar
 {
   Q_OBJECT
@@ -134,6 +141,9 @@ class GuiExport FCToolboxBar : public FCCommandBar
     virtual void addedButton(QString);
 };
 
+/** Another special implementation of command bar
+ * The bar seems like the Outlook bar.
+ */
 class GuiExport FCOutlookBar : public FCCommandBar
 {
   Q_OBJECT
@@ -145,6 +155,9 @@ class GuiExport FCOutlookBar : public FCCommandBar
     virtual void addedButton(QString);
 };
 
+/** QStackBarBtn class.
+ * Each QStackBarBtn object corresponds to a @ref FCStackBar's widget.
+ */
 class QStackBarBtn : public QToolButton
 {
   public:
@@ -167,6 +180,9 @@ class QStackBarBtn : public QToolButton
     FCStackBar* pStackBar;
 };
 
+/** FCStackBar class
+ * To the stack bar you can add any type of QWidget objects.
+ */
 class FCStackBar : public FCDockWindow, public FCParameterGrp::ObserverType
 {
   Q_OBJECT;
@@ -178,7 +194,8 @@ class FCStackBar : public FCDockWindow, public FCParameterGrp::ObserverType
     // observers method
     void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
 
-    // toolbox handling
+    /** @name toolbox handling */
+    //@{
     bool addView(QWidget* w, const QString &name);
     bool hasView(QWidget* w);
     bool remView(QWidget* w);
@@ -187,6 +204,7 @@ class FCStackBar : public FCDockWindow, public FCParameterGrp::ObserverType
     void hidePage(QWidget* w);
     bool isPageVisible(QWidget* w);
     QWidget* showedView();
+    //@}
 
   private slots:
     void buttonClicked();

@@ -39,7 +39,7 @@ void CreateViewStdCommands(void);
 void CreateTestCommands(void);
 
 /**
- * Allow Actions to be added to other widgets except of toolbars and menus
+ * Allow actions to be added to other widgets except of toolbars and menus
  * @author Werner Mayer
  */
 class GuiExport FCAction : public QAction
@@ -73,6 +73,8 @@ private:
 };
 
 /**
+ * Allow several actions to add to a toolbar or menu.
+ * For menus a submenu will be created for toolbars a combo box.
  * @author Werner Mayer
  */
 class GuiExport FCMultiAction : public FCAction
@@ -557,6 +559,9 @@ class FCCmdUndo : public FCCppCommand
   	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
+/**
+ *  The undo/redo commands
+ */
 class FCCmdRedo : public FCCppCommand
 {
   public:
@@ -570,6 +575,9 @@ class FCCmdRedo : public FCCppCommand
   	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
+/**
+ *  The workbench command
+ */
 class FCCmdWorkbench : public FCCppCommand
 {
   public:
@@ -587,7 +595,9 @@ class FCCmdWorkbench : public FCCppCommand
     FCMultiAction *pcAction;
 };
 
-/// Recent file list
+/**
+ *  The MRU command which does the handling of recent files
+ */
 class FCCmdMRU : public FCCppCommand
 {
   public:
