@@ -18,10 +18,14 @@
 
 #include "Application.h"
 #include "Document.h"
+// FreeCAD Base header
 #include "Function.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
+#include "../Base/Console.h"
+#include "../Base/EnvMacros.h"
+#include "../Base/Factory.h"
 
 // static members
 #include "../Version.h"
@@ -37,6 +41,17 @@ const char *       FCApplication::VersionDisDa = FCVersionDisDa;
 const char *       FCApplication::VersionDate  = __DATE__;
 /// Build date
 const char *       FCApplication::VersionTime  = __TIME__;
+
+
+// the standard and plugin file of FreeCAD
+#include "Standard.h"
+#include "Plugin.h"
+
+// scriptings (scripts are build in but can be overriden by command line option)
+#include "InitScript.h"
+#include "TestScript.h"
+
+
 
 
 Standard_CString FCApplicationOCC::ResourcesName()
@@ -124,20 +139,24 @@ Handle_FCApplicationOCC::~Handle_FCApplicationOCC() {}
 // FCApplication
 //==========================================================================
 
+FCParameterManager *FCApplication::_pcSysParamMngr;
+FCParameterManager *FCApplication::_pcUserParamMngr;
+
+std::map<std::string,std::string> FCApplication::mConfig;
 
 
 //**************************************************************************
 // Construction and destruction
 
 FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
-	:_pcSysParamMngr(pcSysParamMngr),
-	 _pcUserParamMngr(pcUserParamMngr),
+	://_pcSysParamMngr(pcSysParamMngr),
+	 //_pcUserParamMngr(pcUserParamMngr),
 	 _mConfig(mConfig),
 	 _pActiveDoc(0)
 {
 	_hApp = new FCApplicationOCC;
-	mpcPramManager["User parameter"] = pcUserParamMngr;
-	mpcPramManager["System parameter"] = pcSysParamMngr;
+	mpcPramManager["User parameter"] = _pcSysParamMngr;
+	mpcPramManager["System parameter"] = _pcUserParamMngr;
 
 	// instanciate the workbench dictionary
 	_pcTemplateDictionary = PyDict_New();
@@ -562,30 +581,375 @@ PYFUNCIMP_S(FCApplication,sTemplateGet)
 }
 
 //**************************************************************************
-// Singelton stuff
+// Init, Destruct and singelton
 
 FCApplication * FCApplication::_pcSingelton = 0;
+
+int FCApplication::_argc;
+char ** FCApplication::_argv;
 
 
 void FCApplication::Destruct(void)
 {
+		// saving system parameter
+	GetConsole().Log("Saving system parameter...");
+	_pcSysParamMngr->SaveDocument(mConfig["SystemParameter"].c_str());
+	// saving the User parameter
+	GetConsole().Log("done\nSaving user parameter...");
+	_pcUserParamMngr->SaveDocument(mConfig["UserParameter"].c_str());
+	GetConsole().Log("done\n");
+	// clean up
+	delete _pcSysParamMngr;
+	delete _pcUserParamMngr;
+
 	// not initialized or doubel destruct!
 	assert(_pcSingelton);
 	delete _pcSingelton;
 }
-/*
-FCApplication & FCApplication::Instance(void)
+
+
+
+#ifdef FC_DEBUG
+#	define DBGTRY try	{
+#	define DBGCATCH(X) }catch(...) { X }
+#else
+#	define DBGTRY
+#	define DBGCATCH(X)  
+#endif
+
+
+void FCApplication::InitConfig(int argc, char ** argv )
 {
-	// not initialized?
-	assert(_pcSingelton);
-	if(!_pcSingelton)
-	{
-		_pcSingelton = new FCApplication();
-		
-	}
-	return *_pcSingelton;
+	static const char sBanner[] = \
+"  #####                 ####  ###   ####  \n" \
+"  #                    #      # #   #   # \n" \
+"  #     ##  #### ####  #     #   #  #   # \n" \
+"  ####  # # #  # #  #  #     #####  #   # \n" \
+"  #     #   #### ####  #    #     # #   # \n" \
+"  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
+"  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
+
+	_argc = argc;
+	_argv = argv;
+
+	// extract home path
+	ExtractPathAndUser(argv[0]);
+
+	// first check the environment variables
+	CheckEnv();
+
+#	ifdef FC_DEBUG
+		mConfig["Debug"] = "1";
+#	else
+		mConfig["Debug"] = "0";
+#	endif
+
+	// Pars the options which have impact to the init process
+	ParsOptions(argc,argv);
+
+
+	DBGTRY
+		// init python
+		GetInterpreter().SetComLineArgs(argc,argv);
+	DBGCATCH(puts("error init Interpreter\n");exit(1);)
+
+	DBGTRY
+		// Init console ===========================================================
+		GetConsole().AttacheObserver(new FCCmdConsoleObserver());
+		if(mConfig["Verbose"] == "Strict") GetConsole().SetMode(FCConsole::Verbose);
+		// file logging fcility
+		#	ifdef FC_DEBUG
+			GetConsole().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
+		#	endif
+	DBGCATCH(puts("error init console\n");exit(2);)
+	
+	// Banner ===========================================================
+	if(!(mConfig["Verbose"] == "Strict"))
+		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
+	else
+		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
+
+
+	LoadParameters();
+
 }
-*/
+
+void FCApplication::SetRunMode(const char* s)
+{
+	mConfig["RunMode"] = s;
+}
+
+
+void FCApplication::InitApplication(void)
+{
+	// checking on the plugin files of OpenCasCade
+	std::fstream cTempStream;
+	cTempStream.open((mConfig["HomePath"]+"\\Plugin").c_str(),ios::out);
+	cTempStream << Plu ;
+	cTempStream.close();
+	cTempStream.open((mConfig["HomePath"]+"\\Standard").c_str(),ios::out);
+	cTempStream << Stand ;
+	cTempStream.close();
+
+	
+	// interpreter and Init script ==========================================================
+	// register scripts
+	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
+	new FCScriptProducer( "FreeCADTest",    FreeCADTest    );
+
+
+	// creating the application
+	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
+	FCApplication::_pcSingelton = new FCApplication(0,0,mConfig);
+
+
+	// starting the init script
+	GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADInit"));
+
+
+}
+
+void FCApplication::RunApplication()
+{
+
+	if(mConfig["RunMode"] == "Cmd")
+	{
+		// Run the comandline interface
+		int ret = GetInterpreter().RunCommandLine("Console mode");
+	}
+	else if(mConfig["RunMode"] == "Script")
+	{
+		// run a script
+		GetConsole().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+		GetInterpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
+	}
+	else if(mConfig["RunMode"] == "Internal")
+	{
+		// run internal script
+		GetConsole().Log("Running internal script:\n");
+		GetInterpreter().Launch(GetScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
+
+		//!!! GetInterpreter().Launch(sScriptName);
+	} else {
+
+		GetConsole().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());
+		exit(1);
+	}
+
+}
+
+
+void FCApplication::LoadParameters(void)
+{
+	// create standard parameter sets
+	_pcSysParamMngr = new FCParameterManager();
+	_pcUserParamMngr = new FCParameterManager();
+
+		// Init parameter sets ===========================================================
+	mConfig["UserParameter"]  += mConfig["HomePath"] + "FC" + mConfig["UserName"] + ".FCParam";
+	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
+
+	//puts(mConfig["HomePath"].c_str());
+	//puts(mConfig["UserParameter"].c_str());
+	//puts(mConfig["SystemParameter"].c_str());
+
+	if(_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
+	{
+		GetConsole().Warning("   Parameter not existing, write initial one\n");
+		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
+		                     "   configuration was deleted or moved.Build up the standard configuration.\n");
+
+	}
+
+	if(_pcUserParamMngr->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
+	{
+		GetConsole().Warning("   User settings not existing, write initial one\n");
+		GetConsole().Message("   This Warning means normaly you running FreeCAD the first time\n"
+		                     "   or your configuration was deleted or moved. The system defaults\n"
+		                     "   will be reestablished for you.\n");
+
+	}
+}
+
+
+void FCApplication::ParsOptions(int argc, char ** argv)
+{
+	static const char Usage[] = \
+	" [Options] files..."\
+	"Options:\n"\
+	"  -h             Display this information\n"\
+	"  -c             Runs FreeCAD in console mode (no windows)\n"\
+	"  -cf file-name  Runs FreeCAD in server mode with script file-name\n"\
+	"  -t0            Runs FreeCAD self test function\n"\
+	"  -v             Runs FreeCAD in verbose mode\n"\
+	"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
+	"";
+	// scan command line arguments for user input. 
+	for (int i = 1; i < argc; i++) 
+	{ 
+		if (*argv[i] == '-' ) 
+		{ 
+			switch (argv[i][1]) 
+			{ 
+			// Console modes 
+			case 'c': 
+			case 'C':  
+				switch (argv[i][2])  
+				{   
+					// Console with file
+					case 'f':  
+					case 'F':  
+						mConfig["RunMode"] = "Cmd";
+						if(argc <= i+1)
+						{
+							GetConsole().Error("Expecting a file\n");  
+							GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
+						}
+						mConfig["FileName"]= argv[i+1];
+						i++;
+						break;   
+					case '\0':  
+						mConfig["RunMode"] = "Cmd";
+						break;   
+					default:  
+						GetConsole().Error("Invalid Input %s\n",argv[i]);  
+						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
+						throw FCException("Comandline error(s)");  
+				};  
+				break;  
+			case 't': 
+			case 'T':  
+				switch (argv[i][2])  
+				{   
+					case '0':  
+						// test script level 0
+						mConfig["RunMode"] = "Internal";
+						mConfig["ScriptFileName"] = "FreeCADTest";
+						//sScriptName = FreeCADTest;
+						break;   
+					default:  
+						//default testing level 0
+						mConfig["RunMode"] = "Internal";
+						mConfig["ScriptFileName"] = "FreeCADTest";
+						//sScriptName = FreeCADTest;
+						break;   
+				};  
+				break;  
+			case 'v': 
+			case 'V':  
+				switch (argv[i][2])  
+				{   
+					// run the test environment script
+					case '1':  
+						mConfig["Verbose"] = "Loose";
+						//sScriptName = GetScriptFactory().ProduceScript("FreeCADTestEnv");
+						break;   
+					case '\0':  
+					case '0':  
+						// test script level 0
+						mConfig["Verbose"] = "Strict";
+						break;   
+					default:  
+						//default testing level 0
+						mConfig["Verbose"] = "Strict";
+						//GetConsole().Error("Invalid Verbose Option: %s\n",argv[i]); 
+						//GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
+						//throw FCException("Comandline error(s)");  
+				};  
+				break;  
+			case '?': 
+			case 'h': 
+			case 'H': 
+				printf("\nUsage: %s %s",argv[0],Usage);
+				exit(0);
+				//throw FCException("Comandline break");  
+				break;  
+			default: 
+				printf("Invalid Option: %s\n",argv[i]); 
+				printf("\nUsage: %s %s",argv[0],Usage); 
+				exit(1);
+			} 
+		} 
+		else  
+		{ 
+			GetConsole().Error("Illegal command line argument #%d, %s\n",i,argv[i]); 
+			GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
+			throw FCException("Comandline error(s)");  
+		} 
+	}  
+}  
+
+
+void FCApplication::ExtractPathAndUser(const char* sCall)
+{
+	// find home path
+	mConfig["HomePath"] = FindHomePath(sCall);
+	// find home path
+	mConfig["BinPath"] = FindBinPath(sCall);
+
+	// try to figure out if using FreeCADLib
+	mConfig["FreeCADLib"] = GetFreeCADLib(mConfig["HomePath"].c_str());
+
+	// try to figure out the user
+	char* user = getenv("USERNAME");
+	if (user == NULL)
+		user = getenv("USER");
+	if (user == NULL)
+		user = "Anonymous";
+	mConfig["UserName"] = user;
+
+	PrintPath();
+
+}
+
+const char sEnvErrorText1[] = \
+"It seems some of the variables needed by FreeCAD are not set\n"\
+"or wrong set. This regards the Open CasCade or python variables:\n"\
+"CSF_GRAPHICSHR=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
+"CSF_MDTVFONTDIRECTORY=C:\\CasRoot\\src\\FontMFT\\\n"\
+"CSF_MDTVTEXTURESDIRECTORY=C:\\CasRoot\\src\\Textures\\\n"\
+"CSF_UNITSDEFINITION=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
+"CSF_UNITSLEXICON=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
+"Please reinstall python or OpenCasCade!\n\n";
+
+const char sEnvErrorText2[] = \
+"It seems some of the variables needed by FreeCAD are not set\n"\
+"or wrong set. This regards the Open CasCade variables:\n"\
+"XXX=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
+"Please reinstall XXX!\n\n";
+
+
+void FCApplication::CheckEnv(void)
+{
+
+	// set the OpenCasCade plugin variables to the FreeCAD bin path.
+	SetPluginDefaults(mConfig["HomePath"].c_str());
+
+	// sets all needed varables if a FreeCAD LibPack is found
+	if(mConfig["FreeCADLib"] != "")
+	{
+		// sets the python environment variables if the FREECADLIB variable is defined
+		SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
+
+		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
+		SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
+	}
+
+	cout << flush;
+
+	bool bFailure=false;
+
+	TestEnvExists("CSF_MDTVFontDirectory",bFailure);
+	TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
+	TestEnvExists("CSF_UnitsDefinition",bFailure);
+	TestEnvExists("CSF_UnitsLexicon",bFailure);
+
+	if (bFailure) {
+     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
+		exit(1);
+	}
+
+}
 //**************************************************************************
 // Observer stuff
 

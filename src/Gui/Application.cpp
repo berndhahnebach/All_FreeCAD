@@ -83,9 +83,16 @@
 #endif
 
 
-#include "../Base/Exception.h"
+// FreeCAD Base header
+#include "../Base/Console.h"
 #include "../Base/Interpreter.h"
+#include "../Base/Parameter.h"
+#include "../Base/Exception.h"
+#include "../Base/EnvMacros.h"
+#include "../Base/Factory.h"
 #include "../App/Application.h"
+#include "../Gui/Splashscreen.h"
+
 
 #if QT_VER != QT_VERSION
 //#	error "QT Version missmatch, please set the right version in src/Config.h line 92"
@@ -118,6 +125,9 @@
 #include "Inventor/Qt/SoQt.h"
 
 #include "Language/LanguageFactory.h"
+
+#include "GuiInitScript.h"
+
 
 static ApplicationWindow* stApp;
 static QWorkspace* stWs;
@@ -1105,6 +1115,93 @@ FCCommandManager &ApplicationWindow::GetCommandManager(void)
 {
   return d->_cCommandManager;
 }
+
+//**************************************************************************
+// Init, Destruct and singelton
+
+QApplication* ApplicationWindow::_pcQApp = NULL ;
+
+FCSplashScreen *ApplicationWindow::_splash = NULL;
+
+
+void ApplicationWindow::InitApplication(void)
+{
+	std::map<std::string,std::string> &Config = GetApplication().Config();
+
+
+	new FCScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+
+}
+
+void ApplicationWindow::RunApplication(void)
+{
+	// A new QApplication
+	GetConsole().Log("Creating GUI Application...\n");
+	// if application not yet created by the splasher
+	int argc = FCApplication::GetARGC();
+	if (!_pcQApp)  _pcQApp = new QApplication (argc, FCApplication::GetARGV());
+
+	ApplicationWindow * mw = new ApplicationWindow();
+	_pcQApp->setMainWidget(mw);
+
+	// runing the Gui init script
+	GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
+
+	// show the main window
+	GetConsole().Log("Showing GUI Application...\n");
+	mw->Polish();
+	mw->show();
+	_pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
+
+
+	// close splasher
+	if (_splash)
+	{
+	  // wait a short moment
+	  QWaitCondition().wait(1000);
+	  // if splasher is still busy terminate it
+	  _splash->bRun = false;
+	}
+
+	// run the Application event loop
+	GetConsole().Log("Running event loop...\n");
+	int ret = _pcQApp->exec();
+	GetConsole().Log("event loop left\n");
+}
+
+
+void ApplicationWindow::StartSplasher(void)
+{
+	// startup splasher
+	// when runnig in verbose mode no splasher
+	if ( ! (FCApplication::Config()["Verbose"] == "Strict") && (FCApplication::Config()["RunMode"] == "Gui") )
+		{
+		FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+		if (hGrp->GetBool("AllowSplasher", true))
+		{
+			int argc = FCApplication::GetARGC();
+			_pcQApp = new QApplication ( argc, FCApplication::GetARGV() );
+			_splash = new FCSplashScreen(QApplication::desktop());
+			_pcQApp->setMainWidget(_splash);
+		}
+	}
+
+
+}
+
+
+
+
+void ApplicationWindow::Destruct(void)
+{
+	GetConsole().Log("Destruct GuiApplication\n");
+
+	delete _pcQApp;
+
+}
+
+
+
 
 //**************************************************************************
 // Python stuff

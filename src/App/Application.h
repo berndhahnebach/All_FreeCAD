@@ -24,10 +24,6 @@
 
 #include <TDocStd_Application.hxx>
 #include <TDataStd_Name.hxx>
-#include <string>
-#include <vector>
-#include <set>
-#include <map>
 
 
 class FCDocument;
@@ -116,6 +112,8 @@ public:
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
+	/** @name methodes for document handling */
+	//@{
 	/// Creates a new document with a template
 	FCDocument* New(const char * Name=0l);
 	/// Open an existing document from a file
@@ -130,16 +128,31 @@ public:
 	void SetActive(FCDocument* pDoc);
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
-
 	/// Get for all possible tamplates
 	std::vector<std::string> GetAllTemplates(void);
+	//@}
+	
 
+
+	/** @name methodes for parameter handling */
+	//@{
 	FCParameterManager &                                GetSystemParameter(void) ;
 	FCParameterManager &                                GetUserParameter(void) ;
 	FCParameterManager &                                GetParameterSet(const char* sName);
 	const std::map<std::string,FCParameterManager *> &  GetParameterSetList(void);
 	FCHandle<FCParameterGrp>                            GetParameterGroupByPath(const char* sName);
+	//@}
 	
+private:
+	/** @name member for parameter */
+	//@{
+	static FCParameterManager *_pcSysParamMngr;
+	static FCParameterManager *_pcUserParamMngr;
+	//@}
+
+
+	/** @name static members for build time information, will be set bei the preprocesor. */
+	//@{
 	/// Major version nummber
 	const static unsigned int VersionMajor;
 	/// Minor version nummber
@@ -152,6 +165,7 @@ public:
 	const static char *    	  VersionTime;
 	/// Build time
 	const static char *    	  VersionDisDa;
+	//@}
 	
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -175,12 +189,43 @@ public:
 
 	friend class FCApplicationObserver;
 
-	/// Singelton functions
+public:
+	/** @name Init, Destruct an Access methodes */
+	//@{
 	static void Destruct(void);
+	static void InitConfig(int argc, char ** argv );
+	static void InitApplication(void);
+	static void SetRunMode(const char*);
+	static void RunApplication(void);
 //	static FCApplication &Instance(void);
 	friend FCApplication &GetApplication(void); 
-	static FCApplication *_pcSingelton;
+	static std::map<std::string,std::string> &Config(void){return mConfig;}
+	static int GetARGC(void){return _argc;}
+	static char** GetARGV(void){return _argv;}
+	//@}
 
+private:
+	/** @name Init, Destruct an Access methodes */
+	//@{
+	// the one and only pointer to the application object
+	static FCApplication *_pcSingelton;
+	/// argument helper function
+	static void ParsOptions(int argc, char ** argv);
+	/// checks if the environment is allreight
+	static void CheckEnv(void);
+	/// print the help massage
+	static void PrintInitHelp(void);
+	/// figure out some things
+	static void ExtractPathAndUser(const char*);
+	/// load the user and system parameter set
+	static void LoadParameters(void);
+	/// startup configuration container
+	static std::map<std::string,std::string> mConfig;
+	static int _argc;
+	static char ** _argv;
+	//@}
+
+public:
 	/// Constructor
 	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 	/// Destructor
@@ -189,6 +234,8 @@ public:
 	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 private:
 
+	/** @name Singelton functions */
+	//@{
 	/// Attach an Observer to monitor the Application
 	void AttacheObserver(FCApplicationObserver *pcObserver);
 	/// Detache an monitoring Observer
@@ -198,6 +245,8 @@ private:
 	/// Notify the Obervers on a deleted Doc
 	void NotifyDocDelete(FCDocument* pcDoc);
 	/// The Observer is a friend of the Application
+	//@}
+
 
 	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
@@ -208,8 +257,6 @@ private:
 	FCDocument* _pActiveDoc;
 
 	std::map<std::string,FCParameterManager *> mpcPramManager;
-	FCParameterManager *_pcSysParamMngr;
-	FCParameterManager *_pcUserParamMngr;
 	// map for Template objects
 	PyObject*		 _pcTemplateDictionary;
 

@@ -36,6 +36,7 @@
 #include<typeinfo>
 #include<string>
 #include<map>
+#include<list>
 #include"../Config.h"
 
 /// Abstract base class of all producers

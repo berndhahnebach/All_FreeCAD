@@ -30,6 +30,10 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
+#ifdef FC_OS_WIN32
+#	include <direct.h>
+#	include <windows.h>
+#endif
 
 
 

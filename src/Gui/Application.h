@@ -43,7 +43,6 @@
 #ifndef _PreComp_
 #	include <string>
 #	include <vector>
-#	include <qmutex.h>
 #	include <qthread.h>
 #endif
 
@@ -65,6 +64,7 @@ class FCCustomWidgetManager;
 class FCProgressBar;
 class FCView;
 class FCCommandManager;
+class FCSplashScreen;
 
 
 
@@ -156,8 +156,22 @@ public:
 	FCMacroManager *GetMacroMngr(void);
 
 
+public:
+	/** @name Init, Destruct an Access methodes */
+	//@{
+	static void InitApplication(void);
+	static void RunApplication(void);
+	static void StartSplasher(void);
+	static void Destruct(void);
+
+	//@}
+
+private:
+	static 	QApplication* _pcQApp ;
+	static 	FCSplashScreen *_splash;
 
 
+public:
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------

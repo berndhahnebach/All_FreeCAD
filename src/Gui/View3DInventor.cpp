@@ -158,7 +158,6 @@ void FCView3DInventor::SetViewerDefaults(void)
 	_viewer->setFeedbackVisibility(true);
 	_viewer->setFeedbackSize(20);
 	_viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-	_viewer->setAutoClipping(true);
 	_viewer->viewAll();
 	_viewer->setDecoration(false);
 
