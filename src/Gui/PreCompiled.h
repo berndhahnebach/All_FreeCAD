@@ -203,6 +203,7 @@
 #include <qsgistyle.h>
 #include <qlistbox.h>
 #include <qlistview.h>
+#include <qspinbox.h>
 
 
 // help system
