@@ -21,7 +21,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_RANLIB
 
-## !!! TODO !!! Try to find these things below automatically 
+## !!! TODO !!! Try to find these things below automatically
 ## Checks for libraries.
 ##############################
 all_includes="$all_includes -I/usr/local/include/python2.3"
@@ -29,6 +29,24 @@ all_libraries="$all_libraries -L/usr/local/lib"
 AC_SUBST(all_includes)
 AC_SUBST(all_libraries)
 
+## SET DEFINES
+##############################
+AC_DEFINE_UNQUOTED(HAVE_GETENVIRONMENTVARIABLE, 1, [Define to use GetEnvironmentVariable() instead of getenv()])
+AC_DEFINE_UNQUOTED(HAVE_GL_GL_H, 1, [define if the GL header should be included as GL/gl.h])
+AC_DEFINE_UNQUOTED(HAVE_QGLFORMAT_EQ_OP, 1, [Define this to 1 if operator==(QGLFormat&, QGLFormat&) is available])
+AC_DEFINE_UNQUOTED(HAVE_QGLFORMAT_SETOVERLAY, 1, [Define this to 1 if QGLFormat::setOverlay() is available])
+AC_DEFINE_UNQUOTED(HAVE_QGLWIDGET_SETAUTOBUFFERSWAP, 1, [Define this to 1 if QGLWidget::setAutoBufferSwap() is available])
+AC_DEFINE_UNQUOTED(HAVE_QT_KEYPAD_DEFINE, 1, [Define this if Qt::Keypad is available])
+AC_DEFINE_UNQUOTED(HAVE_QWIDGET_SHOWFULLSCREEN, 1, [Define this if QWidget::showFullScreen() is available])
+AC_DEFINE_UNQUOTED(HAVE_SOCAMERA_SETSTEREOMODE, 1, [Define to enable use of Inventor feature])
+AC_DEFINE_UNQUOTED(HAVE_SOKEYBOARDEVENT_DELETE, 1, [Define to enable use of Inventor feature])
+AC_DEFINE_UNQUOTED(HAVE_SOMOUSEBUTTONEVENT_BUTTON5, 1, [Define to enable use of Inventor feature])
+AC_DEFINE_UNQUOTED(HAVE_SOPOLYGONOFFSET, 1, [Define to enable use of the Open Inventor SoPolygonOffset node])
+AC_DEFINE_UNQUOTED(HAVE_SYS_TYPES_H, 1, [Define to 1 if you have the <sys/types.h> header file.])
+AC_DEFINE_UNQUOTED(SOQT_MAJOR_VERSION, 1, [Define to the major version of SoQt])
+AC_DEFINE_UNQUOTED(SOQT_MICRO_VERSION, 2, [Define to the micro version of SoQt])
+AC_DEFINE_UNQUOTED(SOQT_MINOR_VERSION, 0, [Define to the minor version of SoQt])
+AC_DEFINE_UNQUOTED(SOQT_VERSION, "1.0.2", [Version string for SoQt])
 
 ## PTHREADS
 ##############################

@@ -87,10 +87,28 @@ DlgSettingsMacro.cpp \
 DlgSettingsMacro.h \
 DlgToolbars.cpp \
 DlgToolbars.h \
-qextmdi/dummykmainwindow.h \
-qextmdi/dummykpartsdockmainwindow.h \
-qextmdi/dummyktoolbar.h \
-qextmdi/kdockwidget.h
+Inventor/Qt/viewers/moc_SoQtExaminerViewerP.cpp \
+Inventor/Qt/viewers/moc_SoQtFullViewerP.cpp \
+Inventor/Qt/viewers/moc_SoQtPlaneViewerP.cpp \
+Inventor/Qt/widgets/moc_QtNativePopupMenu.cpp \
+Inventor/Qt/widgets/moc_SoQtGLArea.cpp \
+Inventor/Qt/widgets/moc_SoQtThumbWheel.cpp \
+Inventor/Qt/moc_SoQtP.cpp \
+Inventor/Qt/moc_SoQtComponentP.cpp \
+Inventor/Qt/moc_SoQtGLWidgetP.cpp \
+qextmdi/moc_dummykmainwindow.cpp \
+qextmdi/moc_dummykpartsdockmainwindow.cpp \
+qextmdi/moc_dummyktoolbar.cpp \
+qextmdi/kdocktabctl.moc \
+qextmdi/kdockwidget.moc \
+qextmdi/kdockwidget_private.moc \
+qextmdi/qextmdichildarea.moc \
+qextmdi/qextmdichildfrm.moc \
+qextmdi/qextmdichildfrmcaption.moc \
+qextmdi/qextmdichildview.moc \
+qextmdi/qextmdimainfrm.moc \
+qextmdi/qextmditaskbar.moc \
+Language/FreeCAD_de.h
 
 #scintilla/ExternalLexer.cpp
 
@@ -224,6 +242,10 @@ Window.cpp
 moc_%.cpp: %.h
 	cd $(@D) && $(MOC) $(<F) -o $(@F)
 
+# rule for Qt MetaObject Compiler:
+%.moc: %.h
+	cd $(@D) && $(MOC) $(<F) -o $(@F)
+
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 %.h: %.ui
@@ -231,6 +253,9 @@ moc_%.cpp: %.h
 %.cpp: %.h %.ui
 	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
+# rule for translation files using python script :
+%.h: %.ts
+	cd $(@D) && python ../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
 
 
 # set the include path found by configure
