@@ -379,38 +379,49 @@ void FCCmdConsoleObserver::Warning(const char *sWarn)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN| FOREGROUND_BLUE);
+#	else
+	printf("\033[1;33m");
 #	endif
 	printf("%s",sWarn);
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+#	else
+	printf("\033[0m");
 #	endif
-
 }
 
-void FCCmdConsoleObserver::Message(const char *sMsg) 
+void FCCmdConsoleObserver::Message(const char *sMsg)
 {
 	printf("%s",sMsg);
 }
 
-void FCCmdConsoleObserver::Error  (const char *sErr) 
+void FCCmdConsoleObserver::Error  (const char *sErr)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_INTENSITY );
+#	else
+	printf("\033[1;31m");
 #	endif
 	printf("%s",sErr);
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+#	else
+	printf("\033[0m");
 #	endif
 }
 
-void FCCmdConsoleObserver::Log    (const char *sErr) 
+void FCCmdConsoleObserver::Log    (const char *sErr)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED |FOREGROUND_GREEN);
+#	else
+	printf("\033[1;36m");
 #	endif
 	printf("%s",sErr);
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+#	else
+	printf("\033[0m");
 #	endif
 }
 
