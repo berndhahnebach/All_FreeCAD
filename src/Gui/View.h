@@ -3,6 +3,7 @@
 
 
 #include "Window.h"
+#include "qextmdi/qextmdichildview.h"
 
 class FCGuiDocument;
 class FCDocument;

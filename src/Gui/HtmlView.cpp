@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -24,18 +24,20 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qbuttongroup.h>
-#	include <qcombobox.h>
-#	include <qcursor.h>
-#	include <qmessagebox.h>
-#	include <qtextbrowser.h>
-#	include <qprocess.h>
-#	include <qthread.h>
-#	include <qurl.h>
-#	include <qvalidator.h>
-#	include <qwhatsthis.h>
-#	include <ctype.h>
+# include <qaction.h>
+# include <qbuttongroup.h>
+# include <qcursor.h>
+# include <qmessagebox.h>
+# include <qprocess.h>
+# include <qstylesheet.h>
+# include <qthread.h>
+# include <qurl.h>
+# include <qvaluestack.h>
+# include <qwhatsthis.h>
+# include <ctype.h>
+# ifdef FC_OS_WIN32
+#   include <windows.h>
+# endif
 #endif
 
 #include "HtmlView.h"
@@ -48,133 +50,130 @@
 #include "../Base/Exception.h"
 #include "../Base/Documentation.h"
 #ifndef FC_OS_LINUX
-#include <direct.h>
+# include <direct.h>
 #endif
 
 #ifdef FC_OS_LINUX
-#  include<unistd.h> //for chdir
-#  include<stdlib.h> //for system
-#  ifdef _chdir
-#    warning _chdir already defined, cross thumbs
-#  endif
-#  define _chdir chdir
+# include<unistd.h> //for chdir
+# include<stdlib.h> //for system
+# ifdef _chdir
+#   warning _chdir already defined, cross thumbs
+# endif
+# define _chdir chdir
 #endif
 
-
-#include <qvaluestack.h>
-#include <qstylesheet.h>
 
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
 /* See http://www.kde.org */
 static const char* back_pixmap[]={
-"16 16 5 1",
-"# c #000000",
-"a c #ffffff",
-"c c #808080",
-"b c #c0c0c0",
-". c None",
-"................",
-".......#........",
-"......##........",
-".....#a#........",
-"....#aa########.",
-"...#aabaaaaaaa#.",
-"..#aabbbbbbbbb#.",
-"...#abbbbbbbbb#.",
-"...c#ab########.",
-"....c#a#ccccccc.",
-".....c##c.......",
-"......c#c.......",
-".......cc.......",
-"........c.......",
-"................",
-"......................"};
+                                   "16 16 5 1",
+                                   "# c #000000",
+                                   "a c #ffffff",
+                                   "c c #808080",
+                                   "b c #c0c0c0",
+                                   ". c None",
+                                   "................",
+                                   ".......#........",
+                                   "......##........",
+                                   ".....#a#........",
+                                   "....#aa########.",
+                                   "...#aabaaaaaaa#.",
+                                   "..#aabbbbbbbbb#.",
+                                   "...#abbbbbbbbb#.",
+                                   "...c#ab########.",
+                                   "....c#a#ccccccc.",
+                                   ".....c##c.......",
+                                   "......c#c.......",
+                                   ".......cc.......",
+                                   "........c.......",
+                                   "................",
+                                   "......................"};
 
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
 /* See http://www.kde.org */
 static const char* forward_pixmap[]={
-"16 16 5 1",
-"# c #000000",
-"a c #ffffff",
-"c c #808080",
-"b c #c0c0c0",
-". c None",
-"................",
-"................",
-".........#......",
-".........##.....",
-".........#a#....",
-"..########aa#...",
-"..#aaaaaaabaa#..",
-"..#bbbbbbbbbaa#.",
-"..#bbbbbbbbba#..",
-"..########ba#c..",
-"..ccccccc#a#c...",
-"........c##c....",
-"........c#c.....",
-"........cc......",
-"........c.......",
-"................",
-"................"};
+                                      "16 16 5 1",
+                                      "# c #000000",
+                                      "a c #ffffff",
+                                      "c c #808080",
+                                      "b c #c0c0c0",
+                                      ". c None",
+                                      "................",
+                                      "................",
+                                      ".........#......",
+                                      ".........##.....",
+                                      ".........#a#....",
+                                      "..########aa#...",
+                                      "..#aaaaaaabaa#..",
+                                      "..#bbbbbbbbbaa#.",
+                                      "..#bbbbbbbbba#..",
+                                      "..########ba#c..",
+                                      "..ccccccc#a#c...",
+                                      "........c##c....",
+                                      "........c#c.....",
+                                      "........cc......",
+                                      "........c.......",
+                                      "................",
+                                      "................"};
 
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
 /* See http://www.kde.org */
 static const char* home_pixmap[]={
-"16 16 4 1",
-"# c #000000",
-"a c #ffffff",
-"b c #c0c0c0",
-". c None",
-"........... ....",
-"   ....##.......",
-"..#...####......",
-"..#..#aabb#.....",
-"..#.#aaaabb#....",
-"..##aaaaaabb#...",
-"..#aaaaaaaabb#..",
-".#aaaaaaaaabbb#.",
-"###aaaaaaaabb###",
-"..#aaaaaaaabb#..",
-"..#aaa###aabb#..",
-"..#aaa#.#aabb#..",
-"..#aaa#.#aabb#..",
-"..#aaa#.#aabb#..",
-"..#aaa#.#aabb#..",
-"..#####.######..",
-"................"};
+                                   "16 16 4 1",
+                                   "# c #000000",
+                                   "a c #ffffff",
+                                   "b c #c0c0c0",
+                                   ". c None",
+                                   "........... ....",
+                                   "   ....##.......",
+                                   "..#...####......",
+                                   "..#..#aabb#.....",
+                                   "..#.#aaaabb#....",
+                                   "..##aaaaaabb#...",
+                                   "..#aaaaaaaabb#..",
+                                   ".#aaaaaaaaabbb#.",
+                                   "###aaaaaaaabb###",
+                                   "..#aaaaaaaabb#..",
+                                   "..#aaa###aabb#..",
+                                   "..#aaa#.#aabb#..",
+                                   "..#aaa#.#aabb#..",
+                                   "..#aaa#.#aabb#..",
+                                   "..#aaa#.#aabb#..",
+                                   "..#####.######..",
+                                   "................"};
 
 /* XPM */
 static const char *open_pixmap[] = {
-"16 16 5 1",
-"# c #000000",
-"c c #808000",
-". c None",
-"b c #ffffff",
-"a c #ffffff",
-"..........###...",
-".........#...#.#",
-"..............##",
-"..###........###",
-".#aba#######....",
-".#babababab#....",
-".#ababababa#....",
-".#baba##########",
-".#aba#ccccccccc#",
-".#ba#ccccccccc#.",
-".#a#ccccccccc#..",
-".##ccccccccc#...",
-".###########....",
-"................",
-"................",
-"................"};
+                                     "16 16 5 1",
+                                     "# c #000000",
+                                     "c c #808000",
+                                     ". c None",
+                                     "b c #ffffff",
+                                     "a c #ffffff",
+                                     "..........###...",
+                                     ".........#...#.#",
+                                     "..............##",
+                                     "..###........###",
+                                     ".#aba#######....",
+                                     ".#babababab#....",
+                                     ".#ababababa#....",
+                                     ".#baba##########",
+                                     ".#aba#ccccccccc#",
+                                     ".#ba#ccccccccc#.",
+                                     ".#a#ccccccccc#..",
+                                     ".##ccccccccc#...",
+                                     ".###########....",
+                                     "................",
+                                     "................",
+                                     "................"};
 /*
 // looks like MS cursor for hyperlinks
 #define cb_width  32
 #define cb_height 32
-static unsigned char cb_bits[] = {		// cursor bitmap
+static unsigned char cb_bits[] = {    // cursor bitmap
  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
  0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x48,0x00,0x00,0x00,0x48,
  0x00,0x00,0x00,0x48,0x00,0x00,0x00,0x48,0x00,0x00,0x00,0xc8,0x01,0x00,0x00,
@@ -187,7 +186,7 @@ static unsigned char cb_bits[] = {		// cursor bitmap
 
 #define cm_width  32
 #define cm_height 32
-static unsigned char cm_bits[] = {		// cursor bitmap mask
+static unsigned char cm_bits[] = {    // cursor bitmap mask
  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
  0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x78,
  0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0xf8,0x01,0x00,0x00,
@@ -202,17 +201,17 @@ static unsigned char cm_bits[] = {		// cursor bitmap mask
 
 class FCTextBrowserPrivate
 {
-  public:
-    enum TMode {Backward, Forward, None};
+public:
+  enum TMode {Backward, Forward, None};
 
-    FCTextBrowserPrivate();
+  FCTextBrowserPrivate();
 
-    QValueStack<QString> fdStack;
-    QValueStack<QString> bdStack;
+  QValueStack<QString> fdStack;
+  QValueStack<QString> bdStack;
 
-    bool getType (const QString& url, TDocType type);
-    TMode tMode;
-    int minWidth;
+  bool getType (const QString& url, TDocType type);
+  TMode tMode;
+  int minWidth;
 };
 
 FCTextBrowserPrivate::FCTextBrowserPrivate()
@@ -246,16 +245,16 @@ bool FCTextBrowserPrivate::getType(const QString& url, TDocType type)
 
 class FCBrowserFactoryData
 {
-  private:
-    FCBrowserFactoryData();
-    ~FCBrowserFactoryData();
-    static FCBrowserFactoryData *_pcSingleton;
+private:
+  FCBrowserFactoryData();
+  ~FCBrowserFactoryData();
+  static FCBrowserFactoryData *_pcSingleton;
 
-  public:
-	  static void Destruct(void);
-	  static FCBrowserFactoryData &Instance();
-    QStringList mPaths;
-    QStringList mRoots;
+public:
+  static void Destruct(void);
+  static FCBrowserFactoryData &Instance();
+  QStringList mPaths;
+  QStringList mRoots;
 };
 
 FCBrowserFactoryData * FCBrowserFactoryData::_pcSingleton = 0;
@@ -263,15 +262,15 @@ FCBrowserFactoryData * FCBrowserFactoryData::_pcSingleton = 0;
 void FCBrowserFactoryData::Destruct(void)
 {
   assert(_pcSingleton);
-	delete _pcSingleton;
+  delete _pcSingleton;
 }
 
 FCBrowserFactoryData & FCBrowserFactoryData::Instance()
 {
-	if(!_pcSingleton)
-	{
-		_pcSingleton = new FCBrowserFactoryData;
-	}
+  if(!_pcSingleton)
+  {
+    _pcSingleton = new FCBrowserFactoryData;
+  }
 
   return *_pcSingleton;
 }
@@ -288,97 +287,97 @@ FCBrowserFactoryData::~FCBrowserFactoryData()
 
 class FCDocumentationSource : public QStoredDrag
 {
-  public:
-    FCDocumentationSource( const char * mimeType, QString path, TDocType type )
+public:
+  FCDocumentationSource( const char * mimeType, QString path, TDocType type )
       : QStoredDrag(mimeType, 0L, 0), mPath(path), mType(type)
+  {
+    QStringList paths = FCBrowserFactoryData::Instance().mPaths;
+    QStringList roots = FCBrowserFactoryData::Instance().mRoots;
+    QString s;
+    unsigned int i = 0;
+    for (QStringList::Iterator it = paths.begin(); it!=paths.end(); ++it, ++i)
     {
-      QStringList paths = FCBrowserFactoryData::Instance().mPaths;
-      QStringList roots = FCBrowserFactoryData::Instance().mRoots;
-      QString s;
-      unsigned int i = 0;
-      for (QStringList::Iterator it = paths.begin(); it!=paths.end(); ++it, ++i)
+      s = *it; s = s.left(s.length()-1);
+      if (mPath.startsWith(s))
       {
-        s = *it; s = s.left(s.length()-1);
-        if (mPath.startsWith(s))
-        {
-          mPath = mPath.right(mPath.length() - s.length() - 1);
-          mRoot = *roots.at(i);
-          break;
-        }
+        mPath = mPath.right(mPath.length() - s.length() - 1);
+        mRoot = *roots.at(i);
+        break;
       }
     }
+  }
 
-    QByteArray encodedData (const char* data) const
+  QByteArray encodedData (const char* data) const
+  {
+    QString fn = QString("%1%2").arg(mRoot).arg(mPath);
+    int pos = fn.findRev('.'); fn = fn.left(pos);
+
+    std::string text = GetDocumentationManager().Retrive(fn.latin1(), mType );
+    QCString test = text.c_str();
+
+    if (test.isEmpty())
     {
-      QString fn = QString("%1%2").arg(mRoot).arg(mPath);
-      int pos = fn.findRev('.'); fn = fn.left(pos);
-
-      std::string text = GetDocumentationManager().Retrive(fn.latin1(), mType );
-      QCString test = text.c_str();
-
-      if (test.isEmpty())
-      {
-        test = QString(
-        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
-        "<html>"
-        "<head>"
-        "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">"
-        "<title>FreeCAD Main Index</title>"
-        "</head>"
-        "<body bgcolor=\"#ffffff\">"
-        "<table cellpadding=2 cellspacing=1 border=0  width=100% bgcolor=#E5E5E5 >"
-        "<tr>"
-        "<th bgcolor=#FFCC66 width=33%%>"
-        "<h1>:-(</h1>"
-        "<h2>Sorry, but cannot load the file because the doc manager failed to convert it into HTML.</h2>"
-        "<h1>:-(</h1>"
-        "</th>"
-        "</tr>"
-        "</table>"
-        "</body></html>");
-      }
-
-      return test;
+      test = QString(
+               "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+               "<html>"
+               "<head>"
+               "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">"
+               "<title>FreeCAD Main Index</title>"
+               "</head>"
+               "<body bgcolor=\"#ffffff\">"
+               "<table cellpadding=2 cellspacing=1 border=0  width=100% bgcolor=#E5E5E5 >"
+               "<tr>"
+               "<th bgcolor=#FFCC66 width=33%%>"
+               "<h1>:-(</h1>"
+               "<h2>Sorry, but cannot load the file because the doc manager failed to convert it into HTML.</h2>"
+               "<h1>:-(</h1>"
+               "</th>"
+               "</tr>"
+               "</table>"
+               "</body></html>");
     }
 
-  private:
-    QString  mRoot;
-    QString  mPath;
-    TDocType mType;
+    return test;
+  }
+
+private:
+  QString  mRoot;
+  QString  mPath;
+  TDocType mType;
 };
 
 // --------------------------------------------------------------------------
 
 class FCHtmlViewPrivate
 {
-  public:
-    FCHtmlViewPrivate();
+public:
+  FCHtmlViewPrivate();
 
-    std::string aStrGroupPath;
-    QString        m_FCdoc, m_FCext, m_FCscript;
-    std::map<int, QString> mHistory, mBookmarks;
-    bool bBackward, bForward;
-    bool bHistory, bBookm;
-    int  iMaxHist, iMaxBookm;
-    QString        selectedURL;
-    QString        m_strDocDir;
-    QString        m_strCaption;
-    FCProcess      m_Process;
+  std::string aStrGroupPath;
+  QString        m_FCdoc, m_FCext, m_FCscript;
+  std::map<int, QString> mHistory, mBookmarks;
+  bool bBackward, bForward;
+  bool bHistory, bBookm;
+  int  iMaxHist, iMaxBookm;
+  QString        selectedURL;
+  QString        m_strDocDir;
+  QString        m_strCaption;
+  FCProcess      m_Process;
 };
 
 FCHtmlViewPrivate::FCHtmlViewPrivate()
- :	bBackward(false),
-	bForward(false),
-	bHistory(false),
-	bBookm(false),
-	selectedURL()
+    :  bBackward(false),
+    bForward(false),
+    bHistory(false),
+    bBookm(false),
+    selectedURL()
 {
 }
 
 // --------------------------------------------------------------------------
 
 FCBrowserSourceFactory::FCBrowserSourceFactory()
-: QMimeSourceFactory()
+    : QMimeSourceFactory()
 {
   FCBrowserFactoryData::Instance();
 }
@@ -397,7 +396,7 @@ const QMimeSource* FCBrowserSourceFactory::data(const QString& abs_name) const
     d.getType(abs_name, type);
 
     QString path = abs_name;
-    int pos = path.findRev('/'); if (pos == -1) pos = path.findRev('\\'); 
+    int pos = path.findRev('/'); if (pos == -1) pos = path.findRev('\\');
 
 #ifdef FC_OS_WIN32
     path = path.left(pos);
@@ -413,7 +412,7 @@ const QMimeSource* FCBrowserSourceFactory::data(const QString& abs_name) const
       FCBrowserFactoryData::Instance().mRoots.append(root);
       GetDocumentationManager().AddProvider(new FCDocProviderDirectory(root.latin1(),path.latin1()));
     }
-   
+
     return new FCDocumentationSource("text/html;charset=iso8859-1", abs_name, type);
   }
   else
@@ -470,11 +469,11 @@ bool FCBrowserSourceFactory::canConvertToHTML (const QString& url)
 // --------------------------------------------------------------------------
 
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
-: QTextBrowser(parent, name)
+    : QTextBrowser(parent, name)
 {
   d = new FCTextBrowserPrivate;
 
-//  setMimeSourceFactory(new FCBrowserSourceFactory);
+  //  setMimeSourceFactory(new FCBrowserSourceFactory);
 
   setHScrollBarMode(QScrollView::AlwaysOff);
   setVScrollBarMode(QScrollView::AlwaysOff);
@@ -482,7 +481,7 @@ FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
   mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
 
-	setAcceptDrops( TRUE );
+  setAcceptDrops( TRUE );
   viewport()->setAcceptDrops( TRUE );
 }
 
@@ -496,7 +495,7 @@ void FCTextBrowser::setSource (const QString & name)
   QString source = name;
   QString mark;
   int hash = name.find('#');
-  if ( hash != -1) 
+  if ( hash != -1)
   {
     source  = name.left( hash );
     mark = name.mid( hash+1 );
@@ -505,45 +504,45 @@ void FCTextBrowser::setSource (const QString & name)
   QString url = mimeSourceFactory()->makeAbsolute( source, context() );
   QString txt;
 
-  if (!source.isEmpty()) 
+  if (!source.isEmpty())
   {
     const QMimeSource* mime = mimeSourceFactory()->data(source, context());
     if (mime == NULL)
     {
-			int type = FCTools::getURLType(source);
-			if ( type == 1 )
-			{
-				QString msg = tr("File %1 does not exist.\n").arg(source);
-				bool bMute = GuiConsoleObserver::bMute;
-				GuiConsoleObserver::bMute = true;
-				Base::Console().Error(msg.latin1());
-				GuiConsoleObserver::bMute = bMute;
-				setText(tr("File not found"));
-				return;
-			}
-			else if ( type == 2 )
-			{
-				QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
-				if (QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0) == 0)
-					emit startExtBrowser(name);
-				return;
-			}
-	  }
-	  else 
-	  {
-  	  if (QTextDrag::decode(mime, txt) == false) 
-  	  {
-				QString msg = tr("Can't decode '%1'").arg(source);
+      int type = FCTools::getURLType(source);
+      if ( type == 1 )
+      {
+        QString msg = tr("File %1 does not exist.\n").arg(source);
+        bool bMute = GuiConsoleObserver::bMute;
+        GuiConsoleObserver::bMute = true;
+        Base::Console().Error(msg.latin1());
+        GuiConsoleObserver::bMute = bMute;
+        setText(tr("File not found"));
+        return;
+      }
+      else if ( type == 2 )
+      {
+        QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
+        if (QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0) == 0)
+          emit startExtBrowser(name);
+        return;
+      }
+    }
+    else
+    {
+      if (QTextDrag::decode(mime, txt) == false)
+      {
+        QString msg = tr("Can't decode '%1'").arg(source);
         QMessageBox::information(this, "FreeCAD", msg);
         return;
-	    }
+      }
     }
   }
 
-  if ( !mark.isEmpty() ) 
+  if ( !mark.isEmpty() )
   {
-	  url += "#";
-	  url += mark;
+    url += "#";
+    url += mark;
   }
 
   if (d->bdStack.isEmpty() || d->bdStack.top() != url)
@@ -551,13 +550,13 @@ void FCTextBrowser::setSource (const QString & name)
 
   int bdStackCount = (int)d->bdStack.count();
   if ( d->bdStack.top() == url )
-  	bdStackCount--;
+    bdStackCount--;
 
   if (d->tMode == FCTextBrowserPrivate::None)
     d->fdStack.clear();
   int fdStackCount = (int)d->fdStack.count();
   if ( d->fdStack.top() == url )
-  	fdStackCount--;
+    fdStackCount--;
 
   QTextBrowser::setSource(name);
 
@@ -573,7 +572,7 @@ void FCTextBrowser::setText (const QString & contents, const QString & context)
 void FCTextBrowser::backward()
 {
   if ( d->bdStack.count() <= 1)
-  	return;
+    return;
 
   d->fdStack.push( d->bdStack.pop() );
 
@@ -586,8 +585,8 @@ void FCTextBrowser::backward()
 void FCTextBrowser::forward()
 {
   if ( d->fdStack.isEmpty() )
-  	return;
-  
+    return;
+
   d->tMode = FCTextBrowserPrivate::Forward;
   setSource( d->fdStack.pop() );
   d->tMode = FCTextBrowserPrivate::None;
@@ -613,7 +612,7 @@ void FCTextBrowser::viewportMousePressEvent (QMouseEvent * e)
 {
   if (e->button() == RightButton)
   {
-    // show the popup menu 
+    // show the popup menu
     // (you have to connect this signal with a slot in your class)
     emit showPopupMenu();
   }
@@ -644,21 +643,21 @@ void FCTextBrowser::contentsDropEvent(QDropEvent  * e)
 void FCTextBrowser::contentsDragEnterEvent  (QDragEnterEvent * e)
 {
   bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
-	if ( !can )
-	  e->ignore();
+  if ( !can )
+    e->ignore();
 }
 
 void FCTextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
 {
   bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
-	if ( !can )
-	  e->ignore();
+  if ( !can )
+    e->ignore();
 }
 
 //// FCHtmlViewValidator //////////////////////////////////////////////////////
 
 FCHtmlViewValidator::FCHtmlViewValidator ( QWidget * parent, const char * name )
-: QValidator(parent, name)
+    : QValidator(parent, name)
 {
 }
 
@@ -681,14 +680,14 @@ void FCHtmlViewValidator::fixup ( QString & txt) const
 //// FCHtmlComboBox //////////////////////////////////////////////////////
 
 FCHtmlComboBox::FCHtmlComboBox ( QWidget * parent, const char * name)
-: QComboBox(parent, name)
+    : QComboBox(parent, name)
 {
   setValidator(new FCHtmlViewValidator(this));
   connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(slotKeyPressReturn));
 }
 
 FCHtmlComboBox::FCHtmlComboBox ( bool rw, QWidget * parent, const char * name)
-: QComboBox(rw, parent, name)
+    : QComboBox(rw, parent, name)
 {
   setValidator(new FCHtmlViewValidator(this));
   connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(slotKeyPressReturn()));
@@ -701,7 +700,7 @@ void FCHtmlComboBox::slotKeyPressReturn()
 
 //// FCHtmlView //////////////////////////////////////////////////////
 
-/* 
+/*
  *  Constructs a FCHtmlView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
@@ -749,7 +748,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 
   // set the start page now
   if (!home.isEmpty())
-  	pclBrowser->setSource(home);
+    pclBrowser->setSource(home);
 
   // the browser's functionality
   connect( pclBrowser, SIGNAL(backwardAvailable(bool)), this, SLOT(SetBackwardAvailable(bool)));
@@ -775,32 +774,32 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonBack->setProperty("minimumSize", QSize(25, 25));
   pclButtonBack->setProperty("text", tr( "..." ) );
   pclButtonBack->setProperty("pixmap", QPixmap(back_pixmap));
-	pclButtonBack->setAutoRaise(true);
-	QToolTip::add(pclButtonBack, tr("Previous"));
+  pclButtonBack->setAutoRaise(true);
+  QToolTip::add(pclButtonBack, tr("Previous"));
 
   // the 'Forward' button
   pclButtonForward = new QToolButton( pclButtonGrp, tr("Forward") );
   pclButtonForward->setProperty( "minimumSize", QSize( 25, 25 ) );
   pclButtonForward->setProperty( "text", tr( "..." ) );
   pclButtonForward->setProperty( "pixmap", QPixmap(forward_pixmap) );
-	pclButtonForward->setAutoRaise(true);
-	QToolTip::add(pclButtonForward, tr("Next"));
+  pclButtonForward->setAutoRaise(true);
+  QToolTip::add(pclButtonForward, tr("Next"));
 
   // the 'Home' button
   pclButtonHome = new QToolButton( pclButtonGrp, tr("Home") );
   pclButtonHome->setProperty( "minimumSize", QSize( 25, 25 ) );
   pclButtonHome->setProperty( "text", tr( "..." ) );
   pclButtonHome->setProperty( "pixmap", QPixmap(home_pixmap) );
-	pclButtonHome->setAutoRaise(true);
-	QToolTip::add(pclButtonHome, tr("Home"));
+  pclButtonHome->setAutoRaise(true);
+  QToolTip::add(pclButtonHome, tr("Home"));
 
   // the 'Open' button
   pclButtonOpen = new QToolButton( pclButtonGrp, tr("Open") );
   pclButtonOpen->setProperty( "minimumSize", QSize( 25, 25 ) );
   pclButtonOpen->setProperty( "text", tr( "..." ) );
   pclButtonOpen->setProperty( "pixmap", QPixmap(open_pixmap) );
-	pclButtonOpen->setAutoRaise(true);
-	QToolTip::add(pclButtonOpen, tr("Open"));
+  pclButtonOpen->setAutoRaise(true);
+  QToolTip::add(pclButtonOpen, tr("Open"));
 
   // the 'Path' combo box
   pclPathCombo = new FCHtmlComboBox( true, pclButtonGrp, "Paths" );
@@ -826,7 +825,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   // make the layout of the browser
   //
   //
-  pclFormLayout = new QGridLayout( this ); 
+  pclFormLayout = new QGridLayout( this );
   pclFormLayout->setSpacing( 1 );
   pclFormLayout->setMargin ( 1 );
 
@@ -849,7 +848,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   // create instances of the popup menus
   //
   pclPopup   = new QPopupMenu(0L);
-  pclHistory = new QPopupMenu(0L); 
+  pclHistory = new QPopupMenu(0L);
   pclBookm   = new QPopupMenu(0L);
   // insert the history & bookmarks to the menu
   SetMaxHistory(5);
@@ -862,12 +861,12 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   connect( pclBookm, SIGNAL( activated( int ) ),   this, SLOT( BookmChosen( int ) ) );
 }
 
-/*  
+/*
  *  Destroys the object and frees any allocated resources
  */
 FCHtmlView::~FCHtmlView()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
   d->m_Process.Detach(this);
   if (d->bHistory)
     SaveHistory();
@@ -906,7 +905,7 @@ void FCHtmlView::SetEnableBookmarks(bool b)
 
 void FCHtmlView::RefreshPage()
 {
-	pclBrowser->reload();
+  pclBrowser->reload();
 }
 
 void FCHtmlView::ShowPopupMenu()
@@ -961,18 +960,18 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-	QString home(GetApplication().GetHomePath()); 
+  QString home(GetApplication().GetHomePath());
   QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
 
   QDir dir (home + path);
 
   if (dir.exists() == false)
   {
-		QString msg = tr("Couldn't find the path for the Online help.\n");
-		bool bMute = GuiConsoleObserver::bMute;
-		GuiConsoleObserver::bMute = true;
-		Base::Console().Error(msg.latin1());
-	  GuiConsoleObserver::bMute = bMute;
+    QString msg = tr("Couldn't find the path for the Online help.\n");
+    bool bMute = GuiConsoleObserver::bMute;
+    GuiConsoleObserver::bMute = true;
+    Base::Console().Error(msg.latin1());
+    GuiConsoleObserver::bMute = bMute;
   }
 
   return dir.path();
@@ -992,7 +991,7 @@ QString FCHtmlView::GetScriptDirectory()
 
 QString FCHtmlView::GetBrowserDirectory()
 {
-//  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
+  //  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
   QString browser = GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->GetASCII("LineEditBrowser", "").c_str();
   if (browser.isEmpty())
   {
@@ -1002,7 +1001,7 @@ QString FCHtmlView::GetBrowserDirectory()
     if (browser.isEmpty())
       QMessageBox::warning(this, tr("External browser"), tr("No external browser found."));
     else
-//      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
+      //      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
       GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", browser.latin1());
   }
 
@@ -1048,38 +1047,38 @@ void FCHtmlView::TextChanged()
   //
   if ( pclBrowser->documentTitle().isNull() )
   {
-  	setCaption( d->m_strCaption + pclBrowser->context() );
-	  d->selectedURL = pclBrowser->context();
+    setCaption( d->m_strCaption + pclBrowser->context() );
+    d->selectedURL = pclBrowser->context();
   }
-  else 
+  else
   {
-  	setCaption( d->m_strCaption + pclBrowser->documentTitle() ) ;
-	  d->selectedURL = pclBrowser->documentTitle();
+    setCaption( d->m_strCaption + pclBrowser->documentTitle() ) ;
+    d->selectedURL = pclBrowser->documentTitle();
   }
 
   d->selectedURL = GetRelativeURL(d->selectedURL);
 
-  if ( !d->selectedURL.isEmpty() && pclPathCombo ) 
+  if ( !d->selectedURL.isEmpty() && pclPathCombo )
   {
-  	bool exists = FALSE;
-	  int i;
-	  for ( i = 0; i < pclPathCombo->count(); ++i ) 
+    bool exists = FALSE;
+    int i;
+    for ( i = 0; i < pclPathCombo->count(); ++i )
     {
-	    if ( pclPathCombo->text( i ) == d->selectedURL ) 
+      if ( pclPathCombo->text( i ) == d->selectedURL )
       {
-  	  	exists = TRUE;
-	  	  break;
-	    }
-	  }
-  	if ( !exists ) 
+        exists = TRUE;
+        break;
+      }
+    }
+    if ( !exists )
     {
-	    pclPathCombo->insertItem( d->selectedURL, 0 );
-	    pclPathCombo->setCurrentItem( 0 );
+      pclPathCombo->insertItem( d->selectedURL, 0 );
+      pclPathCombo->setCurrentItem( 0 );
       if (d->bHistory)
-  	    d->mHistory[pclHistory->insertItem(d->selectedURL, d->mHistory.size())] = d->selectedURL;
-  	} 
+        d->mHistory[pclHistory->insertItem(d->selectedURL, d->mHistory.size())] = d->selectedURL;
+    }
     else
-	    pclPathCombo->setCurrentItem( i );
+      pclPathCombo->setCurrentItem( i );
 
     d->selectedURL = QString::null;
   }
@@ -1090,7 +1089,7 @@ void FCHtmlView::OpenFile()
 #ifndef QT_NO_FILEDIALOG
   QString fn = QFileDialog::getOpenFileName( QString::null, QString::null, this );
   if ( !fn.isEmpty() )
-  	pclBrowser->setSource( fn );
+    pclBrowser->setSource( fn );
 #endif
 }
 
@@ -1175,12 +1174,12 @@ void FCHtmlView::StartScript(QString path, QString protocol)
   FCProcess proc("python"); proc << script.latin1();
   if (!proc.start())
   {
-		QString msg = tr("Sorry, cannot run file '%1'.").arg(script);
+    QString msg = tr("Sorry, cannot run file '%1'.").arg(script);
     QMessageBox::critical(this, "Script", msg);
   }
   else
   {
-		QString msg = tr("'%1' done successfully.").arg(script);
+    QString msg = tr("'%1' done successfully.").arg(script);
     QMessageBox::information(this, "Script", msg);
   }
 
@@ -1206,19 +1205,19 @@ void FCHtmlView::PathSelected( const QString & path )
 
   // insert to the history
   bool exists = FALSE;
-  for ( std::map<int, QString>::iterator it = d->mHistory.begin(); it != d->mHistory.end(); ++it ) 
+  for ( std::map<int, QString>::iterator it = d->mHistory.begin(); it != d->mHistory.end(); ++it )
   {
-  	if ( it->second == path ) 
+    if ( it->second == path )
     {
-	    exists = TRUE;
-	    break;
-  	}
+      exists = TRUE;
+      break;
+    }
   }
 
   if ( !exists )
   {
     if (d->bHistory)
-    	d->mHistory[pclHistory->insertItem(path, d->mHistory.size())] = path;
+      d->mHistory[pclHistory->insertItem(path, d->mHistory.size())] = path;
   }
 }
 
@@ -1271,7 +1270,7 @@ void FCHtmlView::SaveHistory()
   // write the history items into file
   FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
   while ( int(d->mHistory.size()) > d->iMaxHist )
-	  d->mHistory.erase( d->mHistory.begin() );
+    d->mHistory.erase( d->mHistory.begin() );
 
   long i=0;
   for (std::map<int, QString>::iterator it = d->mHistory.begin(); it != d->mHistory.end(); ++it, i++)
@@ -1287,7 +1286,7 @@ void FCHtmlView::SaveBookmarks()
   // write the bookmark items into file
   FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
   while ( int(d->mBookmarks.size()) > d->iMaxBookm )
-	  d->mBookmarks.erase( d->mBookmarks.begin() );
+    d->mBookmarks.erase( d->mBookmarks.begin() );
 
   long i=0;
   for (std::map<int, QString>::iterator it = d->mBookmarks.begin(); it != d->mBookmarks.end(); ++it, i++)
@@ -1301,7 +1300,7 @@ void FCHtmlView::SaveBookmarks()
 void FCHtmlView::HistChosen( int i )
 {
   if ( d->mHistory.find( i ) != d->mHistory.end() )
-  	pclBrowser->setSource( GetAbsoluteURL( d->mHistory[ i ] ));
+    pclBrowser->setSource( GetAbsoluteURL( d->mHistory[ i ] ));
 }
 
 void FCHtmlView::BookmChosen( int i )
@@ -1309,7 +1308,7 @@ void FCHtmlView::BookmChosen( int i )
   if ( d->mBookmarks.find( i ) != d->mBookmarks.end() )
   {
     QString sBookm = d->mBookmarks[ i ];
-   	pclBrowser->setSource( sBookm );
+    pclBrowser->setSource( sBookm );
   }
 }
 
@@ -1366,7 +1365,7 @@ void FCHtmlView::CreateHistoryPopup()
 
   for (std::map<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
   {
-	  d->mHistory[pclHistory->insertItem(it->second, d->mHistory.size())] = it->second;
+    d->mHistory[pclHistory->insertItem(it->second, d->mHistory.size())] = it->second;
     AddToPath(GetAbsoluteURL(it->second));
   }
 }
@@ -1377,7 +1376,7 @@ void FCHtmlView::CheckBookmarks()
     return;
 
   int iButton = QMessageBox::information(this, "FreeCAD", tr("All unavailable bookmarks will be deleted\n"
-                           "Continue ?"), tr("Yes"), tr("No"), QString::null, 1);
+                                         "Continue ?"), tr("Yes"), tr("No"), QString::null, 1);
 
   if (iButton != 0) // not Ok pressed
     return;
@@ -1388,7 +1387,7 @@ void FCHtmlView::CheckBookmarks()
     const QMimeSource * mime = pclBrowser->mimeSourceFactory()->data(it->second);
     if (mime == NULL)
     {
-			QString msg = tr("%1 is unavailable.\n Do you want to delete it?").arg(it->second.latin1());
+      QString msg = tr("%1 is unavailable.\n Do you want to delete it?").arg(it->second.latin1());
       iButton = QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0);
 
       if (iButton != 0)
@@ -1436,29 +1435,29 @@ void FCHtmlView::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess:
   // observe incoming signals
   switch (rcReason)
   {
-    case FCBaseProcess::processStarted:
-      break;
-    case FCBaseProcess::processFailed:
+  case FCBaseProcess::processStarted:
+    break;
+  case FCBaseProcess::processFailed:
     {
-      QMessageBox::critical(this, "Browser", 
+      QMessageBox::critical(this, "Browser",
 #ifdef FC_OS_WIN32
-      FCBaseProcess::SystemWarning(GetLastError(), d->m_Process.executable().c_str()).c_str());
+                            FCBaseProcess::SystemWarning(GetLastError(), d->m_Process.executable().c_str()).c_str());
 #else
-      QObject::tr("Cannot start '%1'").arg(d->m_Process.executable().c_str()));
+                            QObject::tr("Cannot start '%1'").arg(d->m_Process.executable().c_str()));
 #endif
     } break;
-    case FCBaseProcess::processExited:
-      break;
-    case FCBaseProcess::processKilled:
-      break;
-    case FCBaseProcess::receivedStdout:
-      break;
-    case FCBaseProcess::receivedStderr:
-      break;
-    case FCBaseProcess::wroteStdin:
-      break;
-    case FCBaseProcess::launchFinished:
-      break;
+  case FCBaseProcess::processExited:
+    break;
+  case FCBaseProcess::processKilled:
+    break;
+  case FCBaseProcess::receivedStdout:
+    break;
+  case FCBaseProcess::receivedStderr:
+    break;
+  case FCBaseProcess::wroteStdin:
+    break;
+  case FCBaseProcess::launchFinished:
+    break;
   }
 }
 
@@ -1478,57 +1477,57 @@ static FCWhatsThisPrivate * hh = NULL;
 #define cursor_mask_width 32
 #define cursor_mask_height 32
 static unsigned char cursor_mask_bits[] = {
-  0x01, 0x00, 0x00, 0x00, 0x03, 0xf0, 0x07, 0x00, 0x07, 0xf8, 0x0f, 0x00,
-  0x0f, 0xfc, 0x1f, 0x00, 0x1f, 0x3e, 0x1f, 0x00, 0x3f, 0x3e, 0x1f, 0x00,
-  0x7f, 0x3e, 0x1f, 0x00, 0xff, 0x3e, 0x1f, 0x00, 0xff, 0x9d, 0x0f, 0x00,
-  0xff, 0xc3, 0x07, 0x00, 0xff, 0xe7, 0x03, 0x00, 0x7f, 0xe0, 0x03, 0x00,
-  0xf7, 0xe0, 0x03, 0x00, 0xf3, 0xe0, 0x03, 0x00, 0xe1, 0xe1, 0x03, 0x00,
-  0xe0, 0xe1, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00,
-  0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
+      0x01, 0x00, 0x00, 0x00, 0x03, 0xf0, 0x07, 0x00, 0x07, 0xf8, 0x0f, 0x00,
+      0x0f, 0xfc, 0x1f, 0x00, 0x1f, 0x3e, 0x1f, 0x00, 0x3f, 0x3e, 0x1f, 0x00,
+      0x7f, 0x3e, 0x1f, 0x00, 0xff, 0x3e, 0x1f, 0x00, 0xff, 0x9d, 0x0f, 0x00,
+      0xff, 0xc3, 0x07, 0x00, 0xff, 0xe7, 0x03, 0x00, 0x7f, 0xe0, 0x03, 0x00,
+      0xf7, 0xe0, 0x03, 0x00, 0xf3, 0xe0, 0x03, 0x00, 0xe1, 0xe1, 0x03, 0x00,
+      0xe0, 0xe1, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00,
+      0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
 
 #define cursor_bits_width 32
 #define cursor_bits_height 32
 static unsigned char cursor_bits_bits[] = {
-  0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x05, 0xf0, 0x07, 0x00,
-  0x09, 0x18, 0x0e, 0x00, 0x11, 0x1c, 0x0e, 0x00, 0x21, 0x1c, 0x0e, 0x00,
-  0x41, 0x1c, 0x0e, 0x00, 0x81, 0x1c, 0x0e, 0x00, 0x01, 0x01, 0x07, 0x00,
-  0x01, 0x82, 0x03, 0x00, 0xc1, 0xc7, 0x01, 0x00, 0x49, 0xc0, 0x01, 0x00,
-  0x95, 0xc0, 0x01, 0x00, 0x93, 0xc0, 0x01, 0x00, 0x21, 0x01, 0x00, 0x00,
-  0x20, 0xc1, 0x01, 0x00, 0x40, 0xc2, 0x01, 0x00, 0x40, 0x02, 0x00, 0x00,
-  0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
+      0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x05, 0xf0, 0x07, 0x00,
+      0x09, 0x18, 0x0e, 0x00, 0x11, 0x1c, 0x0e, 0x00, 0x21, 0x1c, 0x0e, 0x00,
+      0x41, 0x1c, 0x0e, 0x00, 0x81, 0x1c, 0x0e, 0x00, 0x01, 0x01, 0x07, 0x00,
+      0x01, 0x82, 0x03, 0x00, 0xc1, 0xc7, 0x01, 0x00, 0x49, 0xc0, 0x01, 0x00,
+      0x95, 0xc0, 0x01, 0x00, 0x93, 0xc0, 0x01, 0x00, 0x21, 0x01, 0x00, 0x00,
+      0x20, 0xc1, 0x01, 0x00, 0x40, 0xc2, 0x01, 0x00, 0x40, 0x02, 0x00, 0x00,
+      0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
 
 FCWhatsThisPrivate::FCWhatsThisPrivate()
-  : QObject( 0, "Whats This object" )
+    : QObject( 0, "Whats This object" )
 {
   qAddPostRoutine( clearWhatsThis );
   hh = this;
   mode = Inactive;
   cursor = new QCursor( QBitmap( cursor_bits_width, cursor_bits_height, cursor_bits_bits, true ),
-			                  QBitmap( cursor_mask_width, cursor_mask_height, cursor_mask_bits, true ), 1, 1 );
+                        QBitmap( cursor_mask_width, cursor_mask_height, cursor_mask_bits, true ), 1, 1 );
 }
 
 FCWhatsThisPrivate::~FCWhatsThisPrivate()
 {
   if ( mode == Active )
-  	QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 
   FCWhatsThisItem* i;
   QWidget * w;
   for (std::map<QWidget*, FCWhatsThisItem*>::iterator it=mWidgetItem.begin(); it != mWidgetItem.end(); ++it)
   {
-	  w = it->first;
+    w = it->first;
     i = it->second;
-	  i->deref();
-	  if ( !i->count )
-	    delete i;
+    i->deref();
+    if ( !i->count )
+      delete i;
   }
   mWidgetItem.clear();
   topLevelWidget.clear();
@@ -1543,18 +1542,18 @@ FCWhatsThisPrivate::FCWhatsThisItem* FCWhatsThisPrivate::item( QWidget * widget 
   FCWhatsThisItem * i = NULL;
   if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
     i = hh->mWidgetItem[widget];
- 
+
   if ( i )
-  	FCWhatsThis::remove( widget );
-  
+    FCWhatsThis::remove( widget );
+
   i = new FCWhatsThisItem;
   mWidgetItem[widget] = i;
   QWidget * t = widget->topLevelWidget();
-  
+
   if ( topLevelWidget.find( t ) == topLevelWidget.end() )
   {
-	  topLevelWidget[t] = t;
-	  t->installEventFilter( this );
+    topLevelWidget[t] = t;
+    t->installEventFilter( this );
   }
 
   connect( widget, SIGNAL(destroyed()), this, SLOT(removeWidget()) );
@@ -1564,88 +1563,88 @@ FCWhatsThisPrivate::FCWhatsThisItem* FCWhatsThisPrivate::item( QWidget * widget 
 bool FCWhatsThisPrivate::eventFilter( QObject * o, QEvent * e )
 {
   if ( !o || !e )
-  	return false;
+    return false;
 
-  switch( mode ) 
+  switch( mode )
   {
-    case Inactive:
- 	    if ( e->type() == QEvent::Accel && ((QKeyEvent *)e)->key() == Key_F1 &&
- 	         o->isWidgetType() && ((QKeyEvent *)e)->state() == ShiftButton ) 
+  case Inactive:
+    if ( e->type() == QEvent::Accel && ((QKeyEvent *)e)->key() == Key_F1 &&
+         o->isWidgetType() && ((QKeyEvent *)e)->state() == ShiftButton )
+    {
+      QWidget * w = ((QWidget *)o)->focusWidget();
+      FCWhatsThisPrivate::FCWhatsThisItem* i = NULL;
+      if (w && (mWidgetItem.find(w) != mWidgetItem.end()))
       {
- 	      QWidget * w = ((QWidget *)o)->focusWidget();
-        FCWhatsThisPrivate::FCWhatsThisItem* i = NULL;
-        if (w && (mWidgetItem.find(w) != mWidgetItem.end()))
-        {
+        i = mWidgetItem[w];
+      }
+      if ( i && !i->txt.isNull() )
+      {
+        if ( i->whatsthis )
+          showWhatsThis( w, i->whatsthis->text( QPoint(0,0) ), w->mapToGlobal( w->rect().center() ) );
+        else
+          showWhatsThis( w, i->txt, w->mapToGlobal( w->rect().center() ));
+
+        ((QKeyEvent *)e)->accept();
+        return true;
+      }
+    }
+    break;
+  case Active:
+    if ( e->type() == QEvent::MouseButtonPress && o->isWidgetType() )
+    {
+      QWidget * w = (QWidget *) o;
+      if ( ( (QMouseEvent*)e)->button() == RightButton )
+        return false;
+      if ( w->customWhatsThis() )
+        return false;
+      FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
+      while( w && !i )
+      {
+        if (mWidgetItem.find(w) != mWidgetItem.end())
           i = mWidgetItem[w];
-        }
- 	      if ( i && !i->txt.isNull() ) 
-        {
-      		if ( i->whatsthis )
-		        showWhatsThis( w, i->whatsthis->text( QPoint(0,0) ), w->mapToGlobal( w->rect().center() ) );
-      		else
-    		    showWhatsThis( w, i->txt, w->mapToGlobal( w->rect().center() ));
-		  
-          ((QKeyEvent *)e)->accept();
-      		return true;
- 	      }
- 	    }
-	    break;
-    case Active:
-    	if ( e->type() == QEvent::MouseButtonPress && o->isWidgetType() ) 
-      {
-  	    QWidget * w = (QWidget *) o;
-	      if ( ( (QMouseEvent*)e)->button() == RightButton )
-		      return false; 
-  	    if ( w->customWhatsThis() )
-	      	return false;
-	      FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
-	      while( w && !i ) 
-        {
-          if (mWidgetItem.find(w) != mWidgetItem.end())
-            i = mWidgetItem[w];
-		      if ( !i )
-		        w = w->parentWidget();
-	      }
+        if ( !i )
+          w = w->parentWidget();
+      }
 
-  	    leaveWhatsThisMode();
-	      if (!i )
-      		return true;
-  	    QPoint pos =  ((QMouseEvent*)e)->pos();
-	      if ( i->whatsthis )
-		      showWhatsThis( w, i->whatsthis->text( pos ), w->mapToGlobal(pos) );
-	      else
-      		showWhatsThis( w, i->txt, w->mapToGlobal(pos) );
-	      return true;
-	    } 
-      else if ( e->type() == QEvent::MouseButtonRelease ) 
-      {
-  	    if ( ( (QMouseEvent*)e)->button() == RightButton )
-	      	return false; 
-  	    return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
-	    } 
-      else if ( e->type() == QEvent::MouseMove ) 
-      {
-  	    return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
-    	} 
-      else if ( e->type() == QEvent::KeyPress ) 
-      {
-  	    QKeyEvent* kev = (QKeyEvent*)e;
+      leaveWhatsThisMode();
+      if (!i )
+        return true;
+      QPoint pos =  ((QMouseEvent*)e)->pos();
+      if ( i->whatsthis )
+        showWhatsThis( w, i->whatsthis->text( pos ), w->mapToGlobal(pos) );
+      else
+        showWhatsThis( w, i->txt, w->mapToGlobal(pos) );
+      return true;
+    }
+    else if ( e->type() == QEvent::MouseButtonRelease )
+    {
+      if ( ( (QMouseEvent*)e)->button() == RightButton )
+        return false;
+      return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
+    }
+    else if ( e->type() == QEvent::MouseMove )
+    {
+      return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
+    }
+    else if ( e->type() == QEvent::KeyPress )
+    {
+      QKeyEvent* kev = (QKeyEvent*)e;
 
-	      if (kev->key() == Qt::Key_Escape)
-        {
-      		leaveWhatsThisMode();
-		      return true;
-  	    }
-	      else if ( kev->key() == Key_Menu || ( kev->key() == Key_F10 && kev->state() == ShiftButton ) )
-		      return false;
-        else if ( kev->state() == kev->stateAfter() && kev->key() != Key_Meta )
-      		leaveWhatsThisMode();
-	    } 
-      else if ( e->type() == QEvent::MouseButtonDblClick ) 
+      if (kev->key() == Qt::Key_Escape)
       {
-  	    return true;
-	    }
-    	break;
+        leaveWhatsThisMode();
+        return true;
+      }
+      else if ( kev->key() == Key_Menu || ( kev->key() == Key_F10 && kev->state() == ShiftButton ) )
+        return false;
+      else if ( kev->state() == kev->stateAfter() && kev->key() != Key_Meta )
+        leaveWhatsThisMode();
+    }
+    else if ( e->type() == QEvent::MouseButtonDblClick )
+    {
+      return true;
+    }
+    break;
   }
 
   return FALSE;
@@ -1654,7 +1653,7 @@ bool FCWhatsThisPrivate::eventFilter( QObject * o, QEvent * e )
 void FCWhatsThisPrivate::createWhatsThis()
 {
   if ( !hh )
-  	hh = new FCWhatsThisPrivate();
+    hh = new FCWhatsThisPrivate();
 }
 
 void FCWhatsThisPrivate::clearWhatsThis()
@@ -1668,8 +1667,8 @@ void FCWhatsThisPrivate::leaveWhatsThisMode()
   if ( mode == Active )
   {
     QApplication::restoreOverrideCursor();
-  	mode = Inactive;
-	  qApp->removeEventFilter( this );
+    mode = Inactive;
+    qApp->removeEventFilter( this );
   }
 }
 
@@ -1721,11 +1720,11 @@ void FCWhatsThis::remove( QWidget * widget )
   if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
     i = hh->mWidgetItem[widget];
   if ( !i )
-  	return;
+    return;
   hh->mWidgetItem.erase( widget );
   i->deref();
   if ( !i->count )
-	  delete i;
+    delete i;
 }
 
 QString FCWhatsThis::textFor( QWidget * widget, const QPoint& pos)
@@ -1735,7 +1734,7 @@ QString FCWhatsThis::textFor( QWidget * widget, const QPoint& pos)
   if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
     i = hh->mWidgetItem[widget];
   if (!i)
-  	return QString::null;
+    return QString::null;
   return i->whatsthis? i->whatsthis->text( pos ) : i->txt;
 }
 
@@ -1746,7 +1745,7 @@ FCWhatsThis::FCWhatsThis( QWidget * widget)
 }
 
 FCWhatsThis::FCWhatsThis( QWidget * widget, QString url)
- : m_sURL(url)
+    : m_sURL(url)
 {
   FCWhatsThisPrivate::createWhatsThis();
   hh->add(widget,this);
@@ -1765,29 +1764,29 @@ QString FCWhatsThis::text( const QPoint & )
 void FCWhatsThis::enterWhatsThisMode()
 {
   FCWhatsThisPrivate::createWhatsThis();
-  
-  if ( hh->mode == FCWhatsThisPrivate::Inactive ) 
+
+  if ( hh->mode == FCWhatsThisPrivate::Inactive )
   {
-	  QApplication::setOverrideCursor( *hh->cursor, false );
-	  hh->mode = FCWhatsThisPrivate::Active;
-	  qApp->installEventFilter( hh );
+    QApplication::setOverrideCursor( *hh->cursor, false );
+    hh->mode = FCWhatsThisPrivate::Active;
+    qApp->installEventFilter( hh );
   }
 }
 
 bool FCWhatsThis::inWhatsThisMode()
 {
   if (!hh)
-	  return false;
+    return false;
   return hh->mode == FCWhatsThisPrivate::Active;
 }
 
 void FCWhatsThis::leaveWhatsThisMode( const QString& text, const QPoint& pos )
 {
   if ( !inWhatsThisMode() )
-  	return;
+    return;
   hh->leaveWhatsThisMode();
   if ( !text.isNull() )
-  	hh->showWhatsThis( 0, text, pos );
+    hh->showWhatsThis( 0, text, pos );
 }
 
 #include "moc_HtmlView.cpp"

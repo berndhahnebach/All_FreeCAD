@@ -6,9 +6,9 @@
 
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#	pragma warning( disable : 4503 )
-#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+# pragma warning( disable : 4251 )
+# pragma warning( disable : 4503 )
+# pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
 // standard
@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <assert.h>
 #ifdef FC_OS_WIN32
-#	include <io.h>
+# include <io.h>
 #endif
 #include <fcntl.h>
 #include <ctype.h>
@@ -152,7 +152,7 @@
 
 #include <Python.h>
 #ifdef FC_OS_WIN32
-#	include <windows.h>
+# include <windows.h>
 #endif
 #include <limits.h>
 
@@ -166,6 +166,7 @@
 #include <qclipboard.h>
 #include <qcolordialog.h>
 #include <qcombobox.h>
+#include <qdatetimeedit.h>
 #include <qdragobject.h>
 #include <qdrawutil.h>
 #include <qevent.h>
@@ -173,6 +174,7 @@
 #include <qfiledialog.h>
 #include <qframe.h>
 #include <qfontdatabase.h>
+#include <qfontdialog.h>
 #include <qhbox.h>
 #include <qheader.h>
 #include <qiconview.h>
@@ -211,6 +213,7 @@
 #include <qsplitter.h>
 #include <qstatusbar.h>
 #include <qstyle.h>
+#include <qstylesheet.h>
 #include <qsyntaxhighlighter.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
@@ -220,11 +223,13 @@
 #include <qthread.h>
 #include <qtimer.h>
 #include <qtoolbar.h>
+#include <qtoolbox.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
 #include <qtranslator.h>
 #include <qurl.h>
 #include <qvalidator.h>
+#include <qvaluestack.h>
 #include <qvariant.h>
 #include <qvbox.h>
 #include <qwhatsthis.h>
@@ -238,12 +243,12 @@
 
 
 #ifdef FC_OS_WIN32
-#	include <qcdestyle.h>
-#	include <qmotifplusstyle.h>
-#	include <qmotifstyle.h>
-#	include <qwindowsstyle.h>
-#	include <qsgistyle.h>
-#	include <qplatinumstyle.h>
+# include <qcdestyle.h>
+# include <qmotifplusstyle.h>
+# include <qmotifstyle.h>
+# include <qwindowsstyle.h>
+# include <qsgistyle.h>
+# include <qplatinumstyle.h>
 #endif
 
 #endif //_PreComp_

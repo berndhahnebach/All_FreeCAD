@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -24,24 +24,24 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <vector>
-#	include <qaction.h>
-#	include <qaccel.h>
-#	include <qbutton.h>
-#	include <qcolordialog.h>
-#	include <qcursor.h>
-#	include <qgroupbox.h>
-#	include <qlabel.h>
-#	include <qlayout.h>
-#	include <qmovie.h>
-#	include <qpainter.h>
-#	include <qstatusbar.h>
-#	include <qstring.h>
-#	include <qthread.h>
-#	include <qurl.h>
-#	include <qvalidator.h>
-#	include <qwidgetlist.h>
-#	include <ctype.h>
+# include <vector>
+# include <qaction.h>
+# include <qaccel.h>
+# include <qbutton.h>
+# include <qcolordialog.h>
+# include <qcursor.h>
+# include <qgroupbox.h>
+# include <qlabel.h>
+# include <qlayout.h>
+# include <qmovie.h>
+# include <qpainter.h>
+# include <qstatusbar.h>
+# include <qstring.h>
+# include <qthread.h>
+# include <qurl.h>
+# include <qvalidator.h>
+# include <qwidgetlist.h>
+# include <ctype.h>
 #endif
 
 #include "Widgets.h"
@@ -61,48 +61,48 @@ using Gui::ProgressBar;
 
 
 QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter,
-                          				     QWidget *parent, const char* name )
+                                     QWidget *parent, const char* name )
 {
-    return getOpenFileName( startWith, filter, parent, name, QString::null  );
+  return getOpenFileName( startWith, filter, parent, name, QString::null  );
 }
 
-QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent, 
-                                       const char* name, const QString& caption )
+QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent,
+                                     const char* name, const QString& caption )
 {
   return QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
 }
 
 QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter,
-                          				     QWidget *parent, const char* name )
+                                     QWidget *parent, const char* name )
 {
-    return getSaveFileName( startWith, filter, parent, name, QString::null  );
+  return getSaveFileName( startWith, filter, parent, name, QString::null  );
 }
 
-QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent, 
-                                       const char* name, const QString& caption )
+QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent,
+                                     const char* name, const QString& caption )
 {
   return QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
 }
 
-QString FileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, 
-                                        const QString & caption )
+QString FileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent,
+                                      const QString & caption )
 {
   FileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
   fd.setCaption(caption);
   if ( fd.exec() )
-	  return fd.selectedFileName();
-	else
-		return QString("");
+    return fd.selectedFileName();
+  else
+    return QString("");
 }
 
 FileDialog::FileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
-: QFileDialog(parent, name, modal)
+    : QFileDialog(parent, name, modal)
 {
 }
 
-FileDialog::FileDialog (Mode mode, const QString& dirName, const QString& filter, 
-                            QWidget* parent, const char* name, bool modal)
- : QFileDialog(dirName, filter, parent, name, modal)
+FileDialog::FileDialog (Mode mode, const QString& dirName, const QString& filter,
+                        QWidget* parent, const char* name, bool modal)
+    : QFileDialog(dirName, filter, parent, name, modal)
 {
   setMode(mode);
 }
@@ -117,7 +117,7 @@ void FileDialog::accept()
 
   if (QFile(fn).exists() && mode() == AnyFile)
   {
-		QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
+    QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
     if (QMessageBox::information(this, "Existing file", msg, "Yes", "No", QString::null, 1) == 0)
       QFileDialog::accept();
   }
@@ -160,114 +160,114 @@ QString FileDialog::selectedFileName()
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCMessageBox::FCMessageBox(QWidget * parent, const char * name)
-	: QMessageBox(parent, name), checkBox(0L), layout(0L)
+    : QMessageBox(parent, name), checkBox(0L), layout(0L)
 {
 }
 
-FCMessageBox::FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1, 
-													 int button2, QWidget * parent, const char * name, bool modal, WFlags f)
-	: QMessageBox(caption, text, icon, button0, button1, button2, parent, name, modal, f), 
-		checkBox(0L), layout(0L)
+FCMessageBox::FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
+                           int button2, QWidget * parent, const char * name, bool modal, WFlags f)
+    : QMessageBox(caption, text, icon, button0, button1, button2, parent, name, modal, f),
+    checkBox(0L), layout(0L)
 {
-	QString msg = tr("Do not show this message again");
-	QString entry = QString("NotShowDialog:%1").arg(text);
+  QString msg = tr("Do not show this message again");
+  QString entry = QString("NotShowDialog:%1").arg(text);
 
-	checkBox = new FCCheckBox(this, "FCCheckBox");
-	checkBox->setText( msg );
-	checkBox->setEntryName(entry);
-	checkBox->setParamGrpPath("User parameter:BaseApp/Windows/Dialogs");
-	checkBox->getHandler()->onRestore();
+  checkBox = new FCCheckBox(this, "FCCheckBox");
+  checkBox->setText( msg );
+  checkBox->setEntryName(entry);
+  checkBox->setParamGrpPath("User parameter:BaseApp/Windows/Dialogs");
+  checkBox->getHandler()->onRestore();
 
-	// if check throw an exception to avoid to show
-	// (exception is caught in the calling static function)
-	if (checkBox->isChecked())
-	{
-		delete checkBox;
-		checkBox = 0L;
+  // if check throw an exception to avoid to show
+  // (exception is caught in the calling static function)
+  if (checkBox->isChecked())
+  {
+    delete checkBox;
+    checkBox = 0L;
 
-		throw QString("jjj");
-	}
+    throw QString("jjj");
+  }
 
-	layout = new QGridLayout(this, 1, 1, 50);
-	layout->addWidget(checkBox, 0, 0);
+  layout = new QGridLayout(this, 1, 1, 50);
+  layout->addWidget(checkBox, 0, 0);
 }
 
 FCMessageBox::~FCMessageBox()
 {
-	if (checkBox)
-		checkBox->getHandler()->onSave();
-	delete checkBox;
-	delete layout;
+  if (checkBox)
+    checkBox->getHandler()->onSave();
+  delete checkBox;
+  delete layout;
 }
 
-int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text, 
-															int button0, int button1, int button2)
+int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text,
+                              int button0, int button1, int button2)
 {
-	FCMessageBox dlg(caption, text, Information, button0, button1, button2, parent,  "FCMessageBox");
-	dlg.exec();
-	return 0;
+  FCMessageBox dlg(caption, text, Information, button0, button1, button2, parent,  "FCMessageBox");
+  dlg.exec();
+  return 0;
 }
 
-int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text, 
-															const QString & button0Text, const QString & button1Text, 
-															const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text,
+                              const QString & button0Text, const QString & button1Text,
+                              const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
 {
-	int b[3];
-	b[0] = 1;
-	b[1] = !button1Text.isEmpty() ? 2 : 0;
-	b[2] = !button2Text.isEmpty() ? 3 : 0;
+  int b[3];
+  b[0] = 1;
+  b[1] = !button1Text.isEmpty() ? 2 : 0;
+  b[2] = !button2Text.isEmpty() ? 3 : 0;
 
-	int i;
-	for( i=0; i<3; i++ ) 
-	{
-		if ( b[i] > 0  && defaultButtonNumber == i )
-			b[i] += QMessageBox::Default;
-		if ( b[i] > 0  && escapeButtonNumber == i )
-			b[i] += QMessageBox::Escape;
-	}
+  int i;
+  for( i=0; i<3; i++ )
+  {
+    if ( b[i] > 0  && defaultButtonNumber == i )
+      b[i] += QMessageBox::Default;
+    if ( b[i] > 0  && escapeButtonNumber == i )
+      b[i] += QMessageBox::Escape;
+  }
 
-	FCMessageBox* dlg=0L;
-	try{
-		dlg=new FCMessageBox( caption, text, Information, b[0], b[1], b[2], parent, "FCMessageBox");
-		if ( !button0Text.isEmpty() )
-			dlg->setButtonText(0, button0Text);
-		if ( !button1Text.isEmpty() )
-			dlg->setButtonText(1, button1Text);
-		if ( !button2Text.isEmpty() )
-			dlg->setButtonText(2, button2Text);
-		int res = dlg->exec();
-		delete dlg;
-		return (res-1);
-	} catch (...)
-	{
-		return -1;
-	}
+  FCMessageBox* dlg=0L;
+  try{
+    dlg=new FCMessageBox( caption, text, Information, b[0], b[1], b[2], parent, "FCMessageBox");
+    if ( !button0Text.isEmpty() )
+      dlg->setButtonText(0, button0Text);
+    if ( !button1Text.isEmpty() )
+      dlg->setButtonText(1, button1Text);
+    if ( !button2Text.isEmpty() )
+      dlg->setButtonText(2, button2Text);
+    int res = dlg->exec();
+    delete dlg;
+    return (res-1);
+  } catch (...)
+  {
+    return -1;
+  }
 }
 
-int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text, 
-													 int button0, int button1, int button2 )
+int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
+                            int button0, int button1, int button2 )
 {
-	return 0;
+  return 0;
 }
 
-int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text, 
-													 const QString & button0Text, const QString & button1Text, 
-													 const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
+                            const QString & button0Text, const QString & button1Text,
+                            const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
 {
-	return 0;
+  return 0;
 }
 
-int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text, 
-														int button0, int button1, int button2 )
+int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
+                             int button0, int button1, int button2 )
 {
-	return 0;
+  return 0;
 }
 
-int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text, 
-														const QString & button0Text, const QString & button1Text, 
-														const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
+                             const QString & button0Text, const QString & button1Text,
+                             const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
 {
-	return 0;
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -276,34 +276,34 @@ namespace Gui {
 struct ProgressBarPrivate
 {
   int nElapsed; // in milliseconds
-	int nRemaining;
+  int nRemaining;
   QTime measureTime;
-	FCWaitingCursor* cWaitCursor;
+  FCWaitingCursor* cWaitCursor;
 };
 }
 
-ProgressBar* ProgressBar::_pclSingleton = 0L; 
+ProgressBar* ProgressBar::_pclSingleton = 0L;
 
 ProgressBar* ProgressBar::Instance()
 {
-	// not initialized?
-	if ( !_pclSingleton )
-	{
-		_pclSingleton = new ProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
-	}
+  // not initialized?
+  if ( !_pclSingleton )
+  {
+    _pclSingleton = new ProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
+  }
 
-	return _pclSingleton;
+  return _pclSingleton;
 }
 
 ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
-: QProgressBar (parent, name, f), SequencerBase()
+    : QProgressBar (parent, name, f), SequencerBase()
 {
   d = new Gui::ProgressBarPrivate;
-	d->cWaitCursor = 0L;
+  d->cWaitCursor = 0L;
 
   setFixedWidth(120);
   // this style is very nice ;-)
-//  setIndicatorFollowsStyle(false);
+  //  setIndicatorFollowsStyle(false);
   hide();
 }
 
@@ -318,9 +318,9 @@ void ProgressBar::enterControlEvents()
   QWidgetListIt it( *list );         // iterate over the widgets
   QWidget * w;
   while ( (w=it.current()) != 0 ) {  // for each widget...
-      ++it;
-			if (w != this)
-	      w->installEventFilter(this);
+    ++it;
+    if (w != this)
+      w->installEventFilter(this);
   }
   delete list;                      // delete the list, not the widgets
 }
@@ -331,97 +331,99 @@ void ProgressBar::leaveControlEvents()
   QWidgetListIt it( *list );         // iterate over the widgets
   QWidget * w;
   while ( (w=it.current()) != 0 ) {  // for each widget...
-      ++it;
-			if (w != this)
-	      w->removeEventFilter(this);
+    ++it;
+    if (w != this)
+      w->removeEventFilter(this);
   }
   delete list;                      // delete the list, not the widgets
 }
 
 bool ProgressBar::eventFilter(QObject* o, QEvent* e)
 {
-	if (isRunning() && e != 0L)
-	{
-		switch ( e->type() )
-		{
-			// check for ESC
-			case QEvent::KeyPress:
-			{
-				QKeyEvent* ke = (QKeyEvent*)e;
-				if (ke->key() == Qt::Key_Escape)
-				{
-					// cancel the operation
-					tryToCancel();
-				}
+  if (isRunning() && e != 0L)
+  {
+    switch ( e->type() )
+    {
+      // check for ESC
+    case QEvent::KeyPress:
+      {
+        QKeyEvent* ke = (QKeyEvent*)e;
+        if (ke->key() == Qt::Key_Escape)
+        {
+          // cancel the operation
+          tryToCancel();
+        }
 
-				return true;
-			} break;
+        return true;
+      } break;
 
-			// ignore alle these events
-			case QEvent::KeyRelease:
-			case QEvent::Enter:
-			case QEvent::Leave:
-			{
-				return true;
-			} break;
+      // ignore alle these events
+    case QEvent::KeyRelease:
+    case QEvent::Enter:
+    case QEvent::Leave:
+    case QEvent::Close:
+    case QEvent::MouseButtonDblClick:
+      {
+        return true;
+      } break;
 
-			// do a system beep and ignore the event
-			case QEvent::MouseButtonPress:
-			{
-				QApplication::beep();
-				return true;
-			} break;
+      // do a system beep and ignore the event
+    case QEvent::MouseButtonPress:
+      {
+        QApplication::beep();
+        return true;
+      } break;
 
-			default:
-			{
-			}  break;
-		}
-	}
+    default:
+      {
+      }  break;
+    }
+  }
 
-	return QProgressBar::eventFilter(o, e);
+  return QProgressBar::eventFilter(o, e);
 }
 
 bool ProgressBar::start(const char* pszStr, unsigned long steps)
 {
-	// base stuff
-	bool ret = SequencerBase::start(pszStr, steps);
+  // base stuff
+  bool ret = SequencerBase::start(pszStr, steps);
 
-	setTotalSteps(nTotalSteps);
+  setTotalSteps(nTotalSteps);
 
-	if ( pendingOperations() == 1 )
+  if ( pendingOperations() == 1 )
   {
     show();
-		enterControlEvents();
+    enterControlEvents();
     d->nElapsed = 0;
     d->measureTime.start();
-		d->cWaitCursor = new FCWaitingCursor;
+    d->cWaitCursor = new FCWaitingCursor;
   }
-	else
+  else
     d->measureTime.restart();
 
-	return ret;
+  return ret;
 }
 
 bool ProgressBar::next()
 {
   if (!wasCanceled())
-	{
+  {
     setProgress(nProgress++);
 
-		// estimate the remaining time in milliseconds
-		int diff = d->measureTime.restart();
-		d->nElapsed += diff;
-		d->nRemaining = d->nElapsed * ( totalSteps() - nProgress ) / nProgress;
-	}
-	else
-	{
-		// force to abort the operation
-		abort();
-	}
+    // estimate the remaining time in milliseconds
+    int diff = d->measureTime.restart();
+    d->nElapsed += diff;
+    d->nRemaining = d->nElapsed * ( totalSteps() - nProgress ) / nProgress;
+  }
+  else
+  {
+    // force to abort the operation
+    abort();
+  }
 
-	qApp->processEvents();
+  qApp->processEvents();
 
-	return nProgress < nTotalSteps;
+  return nProgress < nTotalSteps;
 }
 
 void ProgressBar::resetData()
@@ -430,11 +432,11 @@ void ProgressBar::resetData()
   setTotalSteps(0);
   setProgress(-1);
   hide();
-	delete d->cWaitCursor;
-	d->cWaitCursor = 0L;
-	leaveControlEvents();
+  delete d->cWaitCursor;
+  d->cWaitCursor = 0L;
+  leaveControlEvents();
 
-	SequencerBase::resetData();
+  SequencerBase::resetData();
 }
 
 void ProgressBar::abort()
@@ -442,7 +444,7 @@ void ProgressBar::abort()
   //resets
   resetData();
 
-	bool bMute = GuiConsoleObserver::bMute;
+  bool bMute = GuiConsoleObserver::bMute;
   GuiConsoleObserver::bMute = true;
   FCException exc("Aborting...");
   GuiConsoleObserver::bMute = bMute;
@@ -451,8 +453,8 @@ void ProgressBar::abort()
 
 void ProgressBar::setText (const char* pszTxt)
 {
-	// print message to the statusbar
-	QString txt = pszTxt ? pszTxt : "";
+  // print message to the statusbar
+  QString txt = pszTxt ? pszTxt : "";
   ApplicationWindow::Instance->statusBar()->message(txt);
 }
 
@@ -461,21 +463,21 @@ void ProgressBar::drawContents( QPainter *p )
 {
   const int total_steps = totalSteps();
   const int progress_val = progress();
-  QString	progress_str;
+  QString progress_str;
 
   setIndicator ( progress_str, progress_val, total_steps );
 
   const QRect bar = contentsRect();
 
-	if (total_steps) 
+  if (total_steps) 
   {
-	  int u = bar.width();
-	  int pw;
+    int u = bar.width();
+    int pw;
 
     if ( u > 0 && progress_val >= INT_MAX / u && total_steps >= u )
-  		pw = (u * (progress_val / u)) / (total_steps / u);
-	  else
-	  	pw = bar.width() * progress_val / total_steps;
+      pw = (u * (progress_val / u)) / (total_steps / u);
+    else
+      pw = bar.width() * progress_val / total_steps;  
 
     p->setPen( colorGroup().highlightedText() );
     p->setClipRect( bar.x(), bar.y(), pw, bar.height() );
@@ -483,66 +485,66 @@ void ProgressBar::drawContents( QPainter *p )
     p->drawText( bar, AlignCenter, progress_str );
 
     p->setClipRect( bar.x()+pw, bar.y(), bar.width()-pw, bar.height() );
-	}
+  }
 
-	if ( progress_val != total_steps )
+  if ( progress_val != total_steps )
     p->fillRect( bar, colorGroup().brush( QColorGroup::Background ) );
 
 #if QT_VERSION <= 230
-	p->setPen( style()==MotifStyle? colorGroup().foreground() : colorGroup().text() );
+  p->setPen( style()==MotifStyle? colorGroup().foreground() : colorGroup().text() );
 #else
   p->setPen( style().isA("QMotifStyle")? colorGroup().foreground() : colorGroup().text());
 #endif
-	p->drawText( bar, AlignCenter, progress_str );
+  p->drawText( bar, AlignCenter, progress_str );
 }
 */
 bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
 {
   return QProgressBar::setIndicator(indicator, progress, totalSteps);
-/*
-  if ( totalSteps == 0 )
-    return QProgressBar::setIndicator(indicator, progress, totalSteps);
-  bool ret = false;
-  if (progress != -1)
-	{
-		int nRemaining = d->nRemaining;
-		nRemaining /= 1000;
-
-		// get time format
-		int second = nRemaining %  60; nRemaining /= 60;
-		int minute = nRemaining %  60; nRemaining /= 60;
-		int hour   = nRemaining %  60;
-		QString h,m,s;
-		if (hour < 10)   
-			h = QString("0%1").arg(hour);
-		else
-			h = QString("%1").arg(hour);
-		if (minute < 10) 
-			m = QString("0%1").arg(minute);
-		else
-			m = QString("%1").arg(minute);
-		if (second < 10) 
-			s = QString("0%1").arg(second);
-		else
-			s = QString("%1").arg(second);
-
-		// nice formating for output
-		int steps = (100 * progress) / totalSteps;
-		QString ind = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
-
-    if (ind != indicator)
+  /*
+    if ( totalSteps == 0 )
+      return QProgressBar::setIndicator(indicator, progress, totalSteps);
+    bool ret = false;
+    if (progress != -1)
     {
-      indicator = ind;
-      ret = true;
-    }
-	}
-  else
-  {
-    indicator = QString::null;
-  }
+      int nRemaining = d->nRemaining;
+      nRemaining /= 1000;
 
-	return ret;
-*/
+      // get time format
+      int second = nRemaining %  60; nRemaining /= 60;
+      int minute = nRemaining %  60; nRemaining /= 60;
+      int hour   = nRemaining %  60;
+      QString h,m,s;
+      if (hour < 10)   
+        h = QString("0%1").arg(hour);
+      else
+        h = QString("%1").arg(hour);
+      if (minute < 10) 
+        m = QString("0%1").arg(minute);
+      else
+        m = QString("%1").arg(minute);
+      if (second < 10) 
+        s = QString("0%1").arg(second);
+      else
+        s = QString("%1").arg(second);
+
+      // nice formating for output
+      int steps = (100 * progress) / totalSteps;
+      QString ind = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
+
+      if (ind != indicator)
+      {
+        indicator = ind;
+        ret = true;
+      }
+    }
+    else
+    {
+      indicator = QString::null;
+    }
+
+    return ret;
+  */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -562,15 +564,15 @@ FCListView::~FCListView ()
 QListViewItem* FCListView::lastItem () const
 {
   QListViewItem* item = firstChild();
-  if ( item ) 
+  if ( item )
   {
-  	while ( item->nextSibling() || item->firstChild() ) 
+    while ( item->nextSibling() || item->firstChild() )
     {
-	    if ( item->nextSibling() )
-    		item = item->nextSibling();
-	    else
-		    item = item->firstChild();
-  	}
+      if ( item->nextSibling() )
+        item = item->nextSibling();
+      else
+        item = item->firstChild();
+    }
   }
 
   return item;
@@ -579,15 +581,15 @@ QListViewItem* FCListView::lastItem () const
 QListViewItem* FCListView::lastItem (QListView* listview)
 {
   QListViewItem* item = listview->firstChild();
-  if ( item ) 
+  if ( item )
   {
-  	while ( item->nextSibling() || item->firstChild() ) 
+    while ( item->nextSibling() || item->firstChild() )
     {
-	    if ( item->nextSibling() )
-    		item = item->nextSibling();
-	    else
-		    item = item->firstChild();
-  	}
+      if ( item->nextSibling() )
+        item = item->nextSibling();
+      else
+        item = item->firstChild();
+    }
   }
 
   return item;
@@ -597,13 +599,13 @@ QListViewItem* FCListView::lastItem (QListView* listview)
 
 class FCCmdViewItemPrivate
 {
-  public:
-    QString sAction;
-    QString description;
+public:
+  QString sAction;
+  QString description;
 };
 
 FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct)
-: QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
+    : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
 {
   d = new FCCmdViewItemPrivate;
   d->sAction = Action;
@@ -628,7 +630,7 @@ QString FCCmdViewItem::GetAction()
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCCmdView::FCCmdView ( QWidget * parent, const char * name, WFlags f )
-: QIconView(parent, name, f)
+    : QIconView(parent, name, f)
 {
   // settings for the view showing the icons
   setResizeMode(Adjust);
@@ -656,14 +658,14 @@ QDragObject * FCCmdView::dragObject ()
 {
   FCActionDrag::actions.clear();
   if ( !currentItem() )
-      return 0;
+    return 0;
 
   bool bFirst = true;
   FCActionDrag *ad=NULL;
   //  QPoint orig = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
-  for ( QIconViewItem *item = firstItem(); item; item = item->nextItem() ) 
+  for ( QIconViewItem *item = firstItem(); item; item = item->nextItem() )
   {
-    if ( item->isSelected() ) 
+    if ( item->isSelected() )
     {
       if (typeid(*item) == typeid(FCCmdViewItem))
       {
@@ -671,8 +673,8 @@ QDragObject * FCCmdView::dragObject ()
         if (bFirst)
         {
           bFirst = false;
-          ad->setPixmap( *currentItem()->pixmap(), QPoint( currentItem()->pixmapRect().width() / 2, 
-                                                           currentItem()->pixmapRect().height() / 2 ) );
+          ad->setPixmap( *currentItem()->pixmap(), QPoint( currentItem()->pixmapRect().width() / 2,
+                         currentItem()->pixmapRect().height() / 2 ) );
         }
       }
     }
@@ -681,7 +683,7 @@ QDragObject * FCCmdView::dragObject ()
   return ad;
 }
 
-/* 
+/*
  *  Constructs a FCDlgCreateToolOrCmdBar which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
@@ -691,89 +693,89 @@ QDragObject * FCCmdView::dragObject ()
 FCDlgCreateToolOrCmdBar::FCDlgCreateToolOrCmdBar( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
-    if ( !name )
-	setName( "FCDlgCreateToolOrCmdBar" );
-    resize( 242, 179 ); 
-    setProperty( "caption", tr( "Create Toolbar and/or Command bar" ) );
-    setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-    FCDlgCreateToolOrCmdBarLayout = new QGridLayout( this ); 
-    FCDlgCreateToolOrCmdBarLayout->setSpacing( 6 );
-    FCDlgCreateToolOrCmdBarLayout->setMargin( 11 );
+  if ( !name )
+    setName( "FCDlgCreateToolOrCmdBar" );
+  resize( 242, 179 );
+  setProperty( "caption", tr( "Create Toolbar and/or Command bar" ) );
+  setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
+  FCDlgCreateToolOrCmdBarLayout = new QGridLayout( this );
+  FCDlgCreateToolOrCmdBarLayout->setSpacing( 6 );
+  FCDlgCreateToolOrCmdBarLayout->setMargin( 11 );
 
-    GroupBox1 = new QGroupBox( this, "GroupBox1" );
-    GroupBox1->setProperty( "title", tr( "Toolbar/Command bar" ) );
-    GroupBox1->setColumnLayout(0, Qt::Vertical );
-    GroupBox1->layout()->setSpacing( 0 );
-    GroupBox1->layout()->setMargin( 0 );
-    GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
-    GroupBox1Layout->setAlignment( Qt::AlignTop );
-    GroupBox1Layout->setSpacing( 6 );
-    GroupBox1Layout->setMargin( 11 );
+  GroupBox1 = new QGroupBox( this, "GroupBox1" );
+  GroupBox1->setProperty( "title", tr( "Toolbar/Command bar" ) );
+  GroupBox1->setColumnLayout(0, Qt::Vertical );
+  GroupBox1->layout()->setSpacing( 0 );
+  GroupBox1->layout()->setMargin( 0 );
+  GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
+  GroupBox1Layout->setAlignment( Qt::AlignTop );
+  GroupBox1Layout->setSpacing( 6 );
+  GroupBox1Layout->setMargin( 11 );
 
-    TextLabel = new QLabel( GroupBox1, "TextLabel" );
-    TextLabel->setProperty( "text", tr( "Name:" ) );
+  TextLabel = new QLabel( GroupBox1, "TextLabel" );
+  TextLabel->setProperty( "text", tr( "Name:" ) );
 
-    GroupBox1Layout->addWidget( TextLabel, 0, 0 );
+  GroupBox1Layout->addWidget( TextLabel, 0, 0 );
 
-    LineEditName = new QLineEdit( GroupBox1, "LineEditName" );
+  LineEditName = new QLineEdit( GroupBox1, "LineEditName" );
 
-    GroupBox1Layout->addWidget( LineEditName, 1, 0 );
+  GroupBox1Layout->addWidget( LineEditName, 1, 0 );
 
-    CheckCreateCmdBar = new QCheckBox( GroupBox1, "CheckCreateCmdBar" );
-    CheckCreateCmdBar->setProperty( "text", tr( "Create command bar" ) );
-    CheckCreateCmdBar->setProperty( "checked", QVariant( TRUE, 0 ) );
+  CheckCreateCmdBar = new QCheckBox( GroupBox1, "CheckCreateCmdBar" );
+  CheckCreateCmdBar->setProperty( "text", tr( "Create command bar" ) );
+  CheckCreateCmdBar->setProperty( "checked", QVariant( TRUE, 0 ) );
 
-    GroupBox1Layout->addWidget( CheckCreateCmdBar, 3, 0 );
+  GroupBox1Layout->addWidget( CheckCreateCmdBar, 3, 0 );
 
-    CheckCreateToolBar = new QCheckBox( GroupBox1, "CheckCreateToolBar" );
-    CheckCreateToolBar->setProperty( "text", tr( "Create toolbar" ) );
-    CheckCreateToolBar->setProperty( "checked", QVariant( TRUE, 0 ) );
+  CheckCreateToolBar = new QCheckBox( GroupBox1, "CheckCreateToolBar" );
+  CheckCreateToolBar->setProperty( "text", tr( "Create toolbar" ) );
+  CheckCreateToolBar->setProperty( "checked", QVariant( TRUE, 0 ) );
 
-    GroupBox1Layout->addWidget( CheckCreateToolBar, 2, 0 );
+  GroupBox1Layout->addWidget( CheckCreateToolBar, 2, 0 );
 
-    FCDlgCreateToolOrCmdBarLayout->addWidget( GroupBox1, 0, 0 );
+  FCDlgCreateToolOrCmdBarLayout->addWidget( GroupBox1, 0, 0 );
 
-    Layout2 = new QHBoxLayout; 
-    Layout2->setSpacing( 6 );
-    Layout2->setMargin( 0 );
+  Layout2 = new QHBoxLayout;
+  Layout2->setSpacing( 6 );
+  Layout2->setMargin( 0 );
 
-    buttonOk = new QPushButton( this, "buttonOk" );
-    buttonOk->setProperty( "text", tr( "&OK" ) );
-    buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-    buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
-    Layout2->addWidget( buttonOk );
-    QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-    Layout2->addItem( spacer );
+  buttonOk = new QPushButton( this, "buttonOk" );
+  buttonOk->setProperty( "text", tr( "&OK" ) );
+  buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+  buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
+  Layout2->addWidget( buttonOk );
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  Layout2->addItem( spacer );
 
-    buttonCancel = new QPushButton( this, "buttonCancel" );
-    buttonCancel->setProperty( "text", tr( "&Cancel" ) );
-    buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-    Layout2->addWidget( buttonCancel );
+  buttonCancel = new QPushButton( this, "buttonCancel" );
+  buttonCancel->setProperty( "text", tr( "&Cancel" ) );
+  buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+  Layout2->addWidget( buttonCancel );
 
-    FCDlgCreateToolOrCmdBarLayout->addLayout( Layout2, 2, 0 );
-    QSpacerItem* spacer_2 = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
-    FCDlgCreateToolOrCmdBarLayout->addItem( spacer_2, 1, 0 );
+  FCDlgCreateToolOrCmdBarLayout->addLayout( Layout2, 2, 0 );
+  QSpacerItem* spacer_2 = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  FCDlgCreateToolOrCmdBarLayout->addItem( spacer_2, 1, 0 );
 
-    // signals and slots connections
-    connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
-    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  // signals and slots connections
+  connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
 
-    // tab order
-    setTabOrder( LineEditName, CheckCreateToolBar );
-    setTabOrder( CheckCreateToolBar, CheckCreateCmdBar );
-    setTabOrder( CheckCreateCmdBar, buttonOk );
-    setTabOrder( buttonOk, buttonCancel );
+  // tab order
+  setTabOrder( LineEditName, CheckCreateToolBar );
+  setTabOrder( CheckCreateToolBar, CheckCreateCmdBar );
+  setTabOrder( CheckCreateCmdBar, buttonOk );
+  setTabOrder( buttonOk, buttonCancel );
 }
 
-/*  
+/*
  *  Destroys the object and frees any allocated resources
  */
 FCDlgCreateToolOrCmdBar::~FCDlgCreateToolOrCmdBar()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-void FCDlgCreateToolOrCmdBar::accept () 
+void FCDlgCreateToolOrCmdBar::accept ()
 {
   QString txt = LineEditName->text();
   if (CheckCreateToolBar->isChecked())
@@ -786,39 +788,39 @@ void FCDlgCreateToolOrCmdBar::accept ()
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCAccelLineEdit::FCAccelLineEdit ( QWidget * parent, const char * name )
-: QLineEdit(parent, name)
+    : QLineEdit(parent, name)
 {
 }
 
 void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
 {
-	QString txt;
-	clear();
+  QString txt;
+  clear();
 
-	if (e->ascii() == 0)
-		 return; // only meta key pressed
+  if (e->ascii() == 0)
+    return; // only meta key pressed
 
-	switch(e->state())
-	{
-		case ControlButton:
-			txt += QAccel::keyToString(CTRL+e->key());
-			setText(txt);
-			break;
-		case ControlButton+AltButton:
-			txt += QAccel::keyToString(CTRL+ALT+e->key());
-			setText(txt);
-			break;
-		case ControlButton+ShiftButton:
-			txt += QAccel::keyToString(CTRL+SHIFT+e->key());
-			setText(txt);
-			break;
-		case ControlButton+AltButton+ShiftButton:
-			txt += QAccel::keyToString(CTRL+ALT+SHIFT+e->key());
-			setText(txt);
-			break;
-		default:
-			break;
-	}
+  switch(e->state())
+  {
+  case ControlButton:
+    txt += QAccel::keyToString(CTRL+e->key());
+    setText(txt);
+    break;
+  case ControlButton+AltButton:
+    txt += QAccel::keyToString(CTRL+ALT+e->key());
+    setText(txt);
+    break;
+  case ControlButton+ShiftButton:
+    txt += QAccel::keyToString(CTRL+SHIFT+e->key());
+    setText(txt);
+    break;
+  case ControlButton+AltButton+ShiftButton:
+    txt += QAccel::keyToString(CTRL+ALT+SHIFT+e->key());
+    setText(txt);
+    break;
+  default:
+    break;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -833,67 +835,67 @@ void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
 FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
-    if ( !name )
-	setName( "FCCheckListDlg" );
-    resize( 402, 270 );
-    setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-    FCCheckListDlgLayout = new QGridLayout( this );
-    FCCheckListDlgLayout->setSpacing( 6 );
-    FCCheckListDlgLayout->setMargin( 11 );
+  if ( !name )
+    setName( "FCCheckListDlg" );
+  resize( 402, 270 );
+  setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
+  FCCheckListDlgLayout = new QGridLayout( this );
+  FCCheckListDlgLayout->setSpacing( 6 );
+  FCCheckListDlgLayout->setMargin( 11 );
 
-    Layout2 = new QHBoxLayout;
-    Layout2->setSpacing( 6 );
-    Layout2->setMargin( 0 );
+  Layout2 = new QHBoxLayout;
+  Layout2->setSpacing( 6 );
+  Layout2->setMargin( 0 );
 
-    buttonOk = new QPushButton( this, "buttonOk" );
-    buttonOk->setProperty( "text", tr( "&OK" ) );
-    buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-    buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
-    Layout2->addWidget( buttonOk );
-    QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-    Layout2->addItem( spacer );
+  buttonOk = new QPushButton( this, "buttonOk" );
+  buttonOk->setProperty( "text", tr( "&OK" ) );
+  buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+  buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
+  Layout2->addWidget( buttonOk );
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  Layout2->addItem( spacer );
 
-    buttonCancel = new QPushButton( this, "buttonCancel" );
-    buttonCancel->setProperty( "text", tr( "&Cancel" ) );
-    buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-    Layout2->addWidget( buttonCancel );
+  buttonCancel = new QPushButton( this, "buttonCancel" );
+  buttonCancel->setProperty( "text", tr( "&Cancel" ) );
+  buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+  Layout2->addWidget( buttonCancel );
 
-    FCCheckListDlgLayout->addLayout( Layout2, 1, 0 );
+  FCCheckListDlgLayout->addLayout( Layout2, 1, 0 );
 
-    GroupBox1 = new QGroupBox( this, "GroupBox1" );
-    GroupBox1->setColumnLayout(0, Qt::Vertical );
-    GroupBox1->layout()->setSpacing( 0 );
-    GroupBox1->layout()->setMargin( 0 );
-    GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
-    GroupBox1Layout->setAlignment( Qt::AlignTop );
-    GroupBox1Layout->setSpacing( 6 );
-    GroupBox1Layout->setMargin( 11 );
+  GroupBox1 = new QGroupBox( this, "GroupBox1" );
+  GroupBox1->setColumnLayout(0, Qt::Vertical );
+  GroupBox1->layout()->setSpacing( 0 );
+  GroupBox1->layout()->setMargin( 0 );
+  GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
+  GroupBox1Layout->setAlignment( Qt::AlignTop );
+  GroupBox1Layout->setSpacing( 6 );
+  GroupBox1Layout->setMargin( 11 );
 
-    ListView = new QListView( GroupBox1, "ListView" );
-    ListView->addColumn( "Items" );
-    ListView->setRootIsDecorated( TRUE );
+  ListView = new QListView( GroupBox1, "ListView" );
+  ListView->addColumn( "Items" );
+  ListView->setRootIsDecorated( TRUE );
 
-    GroupBox1Layout->addWidget( ListView, 0, 0 );
+  GroupBox1Layout->addWidget( ListView, 0, 0 );
 
-    FCCheckListDlgLayout->addWidget( GroupBox1, 0, 0 );
+  FCCheckListDlgLayout->addWidget( GroupBox1, 0, 0 );
 
-    // signals and slots connections
-    connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
-    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  // signals and slots connections
+  connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
 }
 
-/*  
+/*
  *  Destroys the object and frees any allocated resources
  */
 FCCheckListDlg::~FCCheckListDlg()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
 void FCCheckListDlg::setItems(const std::vector<std::string>& items)
 {
-	for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
-		this->items.push_back(std::make_pair<std::string, bool>(*it, true));
+  for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
+    this->items.push_back(std::make_pair<std::string, bool>(*it, true));
 }
 
 void FCCheckListDlg::setItems(const std::vector<std::pair<std::string, bool> >& items)
@@ -910,8 +912,8 @@ void FCCheckListDlg::show ()
 {
   for (std::vector<std::pair<std::string, bool> >::iterator it = items.begin(); it!=items.end(); ++it)
   {
-		QCheckListItem* item = new QCheckListItem( ListView, it->first.c_str(), QCheckListItem::CheckBox );
-		item->setEnabled(it->second);
+    QCheckListItem* item = new QCheckListItem( ListView, it->first.c_str(), QCheckListItem::CheckBox );
+    item->setEnabled(it->second);
   }
 
   QDialog::show();
@@ -921,12 +923,12 @@ void FCCheckListDlg::hide ()
 {
   QListViewItemIterator it = ListView->firstChild();
 
-  for ( ; it.current(); it++) 
+  for ( ; it.current(); it++)
   {
-    if ( ((QCheckListItem*)it.current())->isOn() ) 
+    if ( ((QCheckListItem*)it.current())->isOn() )
     {
       checked.push_back(((QCheckListItem*)it.current())->text().latin1());
-	  }
+    }
   }
 
   QDialog::hide();
@@ -935,14 +937,14 @@ void FCCheckListDlg::hide ()
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCColorButton::FCColorButton(QWidget* parent, const char* name)
-  : QButton( parent, name )
+    : QButton( parent, name )
 {
   setMinimumSize( minimumSizeHint() );
   connect( this, SIGNAL(clicked()), SLOT(onChooseColor()));
 }
 
 FCColorButton::FCColorButton( const QBrush& b, QWidget* parent, const char* name, WFlags f )
-  : QButton( parent, name, f )
+    : QButton( parent, name, f )
 {
   col = b.color();
   setMinimumSize( minimumSizeHint() );
@@ -978,18 +980,18 @@ void FCColorButton::drawButton( QPainter *paint )
 #if QT_VERSION <= 230
   style().drawBevelButton( paint, 0, 0, width(), height(), colorGroup(), isDown() );
   drawButtonLabel( paint );
-  if ( hasFocus() ) 
+  if ( hasFocus() )
   {
-   	style().drawFocusRect( paint, style().bevelButtonRect( 0, 0, width(), height()),
-		colorGroup(), &colorGroup().button() );
+    style().drawFocusRect( paint, style().bevelButtonRect( 0, 0, width(), height()),
+                           colorGroup(), &colorGroup().button() );
   }
 #else
   style().drawPrimitive( QStyle::PE_ButtonBevel, paint, QRect(0, 0, width(), height()), colorGroup());
   drawButtonLabel( paint );
-  if ( hasFocus() ) 
+  if ( hasFocus() )
   {
     style().drawPrimitive( QStyle::PE_FocusRect, paint, style().subRect( QStyle::SR_PushButtonContents, this),
-		colorGroup() );
+                           colorGroup() );
   }
 #endif
 }
@@ -997,9 +999,9 @@ void FCColorButton::drawButton( QPainter *paint )
 void FCColorButton::drawButtonLabel( QPainter *paint )
 {
   QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
-		                                    : palette().disabled().buttonText();
+                   : palette().disabled().buttonText();
   paint->setPen( pen );
-	paint->setBrush( QBrush( col ) );
+  paint->setBrush( QBrush( col ) );
 
   paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
 }
@@ -1018,10 +1020,10 @@ void FCColorButton::onChooseColor()
 
 class FCSpinBoxPrivate
 {
-  public:
-    FCSpinBoxPrivate();
-    bool pressed;
-    int nY, nStep;
+public:
+  FCSpinBoxPrivate();
+  bool pressed;
+  int nY, nStep;
 };
 
 FCSpinBoxPrivate::FCSpinBoxPrivate()
@@ -1032,14 +1034,14 @@ FCSpinBoxPrivate::FCSpinBoxPrivate()
 // -----------------------------------------------------------------------------------
 
 FCSpinBox::FCSpinBox ( QWidget* parent, const char* name )
- : QSpinBox (parent, name)
+    : QSpinBox (parent, name)
 {
   setMouseTracking(true);
   d = new FCSpinBoxPrivate;
 }
 
 FCSpinBox::FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
- : QSpinBox(minValue, maxValue, step, parent, name)
+    : QSpinBox(minValue, maxValue, step, parent, name)
 {
   setMouseTracking(true);
   d = new FCSpinBoxPrivate;
@@ -1119,30 +1121,30 @@ void FCSpinBox::wheelEvent ( QWheelEvent* e )
 bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
 {
   if ( o != editor() )
-  	return false;
+    return false;
 
   // get the editor's mouse events
   switch (e->type())
   {
     // redirect the events to spin box (itself)
-    case QEvent::MouseButtonPress:
-      mousePressEvent ((QMouseEvent*)e);
-      break;
+  case QEvent::MouseButtonPress:
+    mousePressEvent ((QMouseEvent*)e);
+    break;
 
-    case QEvent::MouseButtonRelease:
-      mouseReleaseEvent ((QMouseEvent*)e);
-      break;
+  case QEvent::MouseButtonRelease:
+    mouseReleaseEvent ((QMouseEvent*)e);
+    break;
 
-    case QEvent::MouseMove:
-      mouseMoveEvent ((QMouseEvent*)e);
-      break;
+  case QEvent::MouseMove:
+    mouseMoveEvent ((QMouseEvent*)e);
+    break;
 
-    case QEvent::FocusOut:
-      focusOutEvent ((QFocusEvent*)e);
-      break;
+  case QEvent::FocusOut:
+    focusOutEvent ((QFocusEvent*)e);
+    break;
 
-    default:
-      break;
+  default:
+    break;
   }
 
   return QSpinBox::eventFilter(o, e);
@@ -1152,31 +1154,31 @@ bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
 
 class FCFloatSpinBoxPrivate
 {
-  public:
-    FCFloatSpinBoxPrivate(){}
-    ~FCFloatSpinBoxPrivate()
-    {
-      delete m_pValidator; 
-    }
+public:
+  FCFloatSpinBoxPrivate(){}
+  ~FCFloatSpinBoxPrivate()
+  {
+    delete m_pValidator;
+  }
 
-    QDoubleValidator* m_pValidator;
-    double            m_fDivisor;
-    double            m_fEpsilon;
+  QDoubleValidator* m_pValidator;
+  double            m_fDivisor;
+  double            m_fEpsilon;
 };
 
 FCFloatSpinBox::FCFloatSpinBox ( QWidget * parent, const char * name )
-: FCSpinBox(parent, name)
+    : FCSpinBox(parent, name)
 {
   d = new FCFloatSpinBoxPrivate;
 
   d->m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
   setValidator(d->m_pValidator);
-  
+
   setDecimals(0);
 }
 
 FCFloatSpinBox::FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
-: FCSpinBox(minValue, maxValue, step, parent, name)
+    : FCSpinBox(minValue, maxValue, step, parent, name)
 {
   d = new FCFloatSpinBoxPrivate;
 
@@ -1186,7 +1188,7 @@ FCFloatSpinBox::FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* 
   setDecimals(0);
 }
 
-FCFloatSpinBox::~FCFloatSpinBox() 
+FCFloatSpinBox::~FCFloatSpinBox()
 {
   delete d;
 }
@@ -1205,37 +1207,37 @@ void FCFloatSpinBox::setDecimals(uint i)
 
 void FCFloatSpinBox::setMinValueFloat(double value)
 {
-	double fMax = d->m_fDivisor * value;
-	fMax = std::max<double>(fMax, (double)-INT_MAX);
-  FCSpinBox::setMinValue(int(fMax)); 
+  double fMax = d->m_fDivisor * value;
+  fMax = std::max<double>(fMax, (double)-INT_MAX);
+  FCSpinBox::setMinValue(int(fMax));
 }
 
 void FCFloatSpinBox::setMaxValueFloat(double value)
 {
-	double fMin = d->m_fDivisor * value;
-	fMin = std::min<double>(fMin, (double)INT_MAX);
-  FCSpinBox::setMaxValue(int(fMin)); 
+  double fMin = d->m_fDivisor * value;
+  fMin = std::min<double>(fMin, (double)INT_MAX);
+  FCSpinBox::setMaxValue(int(fMin));
 }
 
 double FCFloatSpinBox::minValueFloat () const
 {
-  return FCSpinBox::minValue() / double(d->m_fDivisor); 
+  return FCSpinBox::minValue() / double(d->m_fDivisor);
 }
 
 double FCFloatSpinBox::maxValueFloat () const
 {
-  return FCSpinBox::maxValue() / double(d->m_fDivisor); 
+  return FCSpinBox::maxValue() / double(d->m_fDivisor);
 }
 
 QString FCFloatSpinBox::mapValueToText(int value)
 {
-  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_pValidator->decimals()); 
+  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_pValidator->decimals());
 }
 
 int FCFloatSpinBox::mapTextToValue(bool* b)
 {
   double fEps = value() > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  return int(text().toDouble() * d->m_fDivisor + fEps); 
+  return int(text().toDouble() * d->m_fDivisor + fEps);
 }
 
 void FCFloatSpinBox::valueChange()
@@ -1247,18 +1249,18 @@ void FCFloatSpinBox::valueChange()
 void FCFloatSpinBox::setValueFloat(double value)
 {
   double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-	double fValue = d->m_fDivisor * value + fEps;
-	fValue = std::min<double>(fValue, (double) INT_MAX);
-	fValue = std::max<double>(fValue, (double)-INT_MAX);
-  FCSpinBox::setValue(int(fValue)); 
+  double fValue = d->m_fDivisor * value + fEps;
+  fValue = std::min<double>(fValue, (double) INT_MAX);
+  fValue = std::max<double>(fValue, (double)-INT_MAX);
+  FCSpinBox::setValue(int(fValue));
 }
 
 double FCFloatSpinBox::valueFloat() const
 {
-  return FCSpinBox::value() / double(d->m_fDivisor); 
+  return FCSpinBox::value() / double(d->m_fDivisor);
 }
 
-void FCFloatSpinBox::stepChange () 
+void FCFloatSpinBox::stepChange ()
 {
   FCSpinBox::stepChange();
 }

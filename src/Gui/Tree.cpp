@@ -24,12 +24,14 @@
 #	include <qheader.h>
 #endif
 
-#include "Document.h"
-#include "../App/Document.h"
-#include "../App/Label.h"
 #include "Tree.h"
+#include "Document.h"
 #include "BitmapFactory.h"
 
+#include "../App/Document.h"
+#include "../App/Label.h"
+
+#include "../Base/Console.h"
 
 
 GUIDDefs AttrNames[] = {

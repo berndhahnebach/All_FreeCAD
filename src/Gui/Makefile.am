@@ -1,9 +1,9 @@
 lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
+moc_Action.cpp \
 moc_Application.cpp \
 moc_ButtonGroup.cpp \
-moc_Command.cpp \
 moc_CommandLine.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
@@ -45,6 +45,9 @@ moc_ProcessQt.cpp \
 moc_PropertyView.cpp \
 moc_ReportView.cpp \
 moc_Splashscreen.cpp \
+moc_StackBar.cpp \
+moc_ToolBox.cpp \
+moc_ToolBoxBar.cpp \
 moc_Tree.cpp \
 moc_View.cpp\
 moc_View3D.cpp \
@@ -138,6 +141,7 @@ Inventor/OCC/SoBrepShape.cpp \
 \
 Language/LanguageFactory.cpp \
 \
+Action.cpp \
 Application.cpp \
 BitmapFactory.cpp \
 ButtonGroup.cpp \
@@ -178,6 +182,9 @@ ReportView.cpp \
 resource.cpp \
 Selection.cpp \
 Splashscreen.cpp \
+StackBar.cpp \
+ToolBox.cpp \
+ToolBoxBar.cpp \
 Tools.cpp \
 Tree.cpp \
 View.cpp \

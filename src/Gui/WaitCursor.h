@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -25,13 +25,13 @@
 #define DLG_WAIT_CURSOR_H
 
 #ifndef _PreComp_
-#	include <string>
-#	include <vector>
-#	include <qthread.h>
+# include <string>
+# include <vector>
+# include <qthread.h>
 #endif
 
 
-/** 
+/**
  * This class sets a waiting cursor automatically while a  slow operation is running. 
  * Therefore you have just to  create an instance of FCWaitingCursor before the time 
  * consuming operation.
@@ -41,7 +41,7 @@
  * \code:
  * FCWaitingCursor ac;
  * ...
- * ...								 // slow operation
+ * ...                   // slow operation
  * ...
  * \endcode
  *  
@@ -55,31 +55,31 @@
  * \code:
  * FCWaitingCursor ac;
  * ...
- * ...								 // 1st slow operation
+ * ...                   // 1st slow operation
  * ac.restoreCursor();
  * ...
- * ...                 // some dialog stuff
+ * ...                  // some dialog stuff
  * ac.setWaitCursor();
  * ...
- * ...								 // 2nd slow operation
+ * ...                  // 2nd slow operation
  * \endcode
  *  
  * @author Werner Mayer
  */
 class GuiExport FCWaitingCursor : public QThread
 {
-	public:
-		 FCWaitingCursor();
-		~FCWaitingCursor();
+public:
+  FCWaitingCursor();
+  ~FCWaitingCursor();
 
-		void setWaitCursor();
-		void restoreCursor();
-		int  minimumDuration();
-		void setMinimumDuration ( int ms );
+  void setWaitCursor();
+  void restoreCursor();
+  int  minimumDuration();
+  void setMinimumDuration ( int ms );
 
-	private:
-		void run();
-		struct FCWaitingCursorP* d;
+private:
+  void run();
+  struct FCWaitingCursorP* d;
 };
 
 /**
@@ -95,32 +95,32 @@ class GuiExport FCWaitingCursor : public QThread
  */
 class GuiExport FCAutoWaitCursor : public QThread
 {
-	public:
-		static void Destruct(void);
-		static FCAutoWaitCursor &Instance(void);
+public:
+  static void Destruct(void);
+  static FCAutoWaitCursor &Instance(void);
 
-		void SetWaitCursor();
+  void SetWaitCursor();
 
-		// Singleton
-	private:
-		 FCAutoWaitCursor(uint id, int i);
-		~FCAutoWaitCursor();
+  // Singleton
+private:
+  FCAutoWaitCursor(uint id, int i);
+  ~FCAutoWaitCursor();
 
-		static FCAutoWaitCursor* _pclSingleton;
+  static FCAutoWaitCursor* _pclSingleton;
 
-	protected:
-		/// run the thread, decrement an internal counter
-		void run();
+protected:
+  /// run the thread, decrement an internal counter
+  void run();
 
-		QMutex mutex;
-		uint main_threadid;
-		int nInterval;
-		bool bActive;
-		bool bRun;
+  QMutex mutex;
+  uint main_threadid;
+  int nInterval;
+  bool bActive;
+  bool bRun;
 
-	private:
-		class FCAutoWaitCursorP* d;
-		friend class FCAutoWaitCursorP;
+private:
+  class FCAutoWaitCursorP* d;
+  friend class FCAutoWaitCursorP;
 };
 
 #endif

@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -25,15 +25,15 @@
 
 
 #ifndef _PreComp_
-#	include <qapplication.h>
-#	include <qbitmap.h>
-#	include <qdir.h>
-#	include <qfileinfo.h>
-#	include <qobjectlist.h>
-#	include <qpainter.h>
-#	include <qpalette.h>
-#	include <qpixmap.h>
-#	include <qtoolbar.h>
+# include <qapplication.h>
+# include <qbitmap.h>
+# include <qdir.h>
+# include <qfileinfo.h>
+# include <qobjectlist.h>
+# include <qpainter.h>
+# include <qpalette.h>
+# include <qpixmap.h>
+# include <qtoolbar.h>
 #endif
 
 #include "Tools.h"
@@ -41,7 +41,7 @@
 QPixmap FCTools::resize(int w, int h, QPixmap p)
 {
   QPixmap pix = p;
-  
+
   if (pix.width() == 0 || pix.height() == 0)
     return pix; // do not resize a null pixmap
 
@@ -110,7 +110,7 @@ QPixmap FCTools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
   pt.end();
 
   p.setMask(b);
-  
+
   return p;
 }
 
@@ -128,51 +128,51 @@ QPixmap FCTools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
   pt.end();
 
   p.setMask(b);
-  
+
   return p;
 }
 
 void FCTools::clearToolButtons(QToolBar* tb)
 {
   if ( !tb->children() )
-  	return;
+    return;
   QObjectListIt it( *tb->children() );
   QObject * obj;
-  while( (obj=it.current()) != 0 ) 
+  while( (obj=it.current()) != 0 )
   {
-  	++it;
-	  if ( obj->isWidgetType() )
+    ++it;
+    if ( obj->isWidgetType() )
     {
       if ( obj->inherits("QToolButton") || obj->inherits("QToolBarSeparator") )
-  	    delete obj;
+        delete obj;
     }
   }
 }
 
 int FCTools::getURLType(const QString& url)
 {
-	QFileInfo fi(url);
+  QFileInfo fi(url);
 
-	// valid and existing file
-	if (fi.isFile() && fi.exists())
-		return 0;
+  // valid and existing file
+  if (fi.isFile() && fi.exists())
+    return 0;
 
-	QString s = url.lower();
-	const QFileInfoList* roots = QDir::drives();
-	QListIterator<QFileInfo> i(*roots);
-	QFileInfo* pfi;
-	while ( (pfi = *i) ) 
-	{
-		QString fp = pfi->filePath().lower();
-		++i;
-		if ( s.startsWith( fp ) )
-			return 1;
-	}
+  QString s = url.lower();
+  const QFileInfoList* roots = QDir::drives();
+  QListIterator<QFileInfo> i(*roots);
+  QFileInfo* pfi;
+  while ( (pfi = *i) )
+  {
+    QString fp = pfi->filePath().lower();
+    ++i;
+    if ( s.startsWith( fp ) )
+      return 1;
+  }
 
-	return 2;
+  return 2;
 }
 
 QString FCTools::i18n(const QString& s)
 {
-	return QObject::tr(s);
+  return QObject::tr(s);
 }

@@ -16,20 +16,23 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include "stdio.h"
-#	ifdef FC_OS_WIN32
-#		include "io.h"
-#	endif
-#	include "fcntl.h"
-#	include <iostream>
+# include "stdio.h"
+# ifdef FC_OS_WIN32
+#   include "io.h"
+# endif
+# ifdef FC_OS_WIN32
+#   include <windows.h>
+# endif
+# include "fcntl.h"
+# include <iostream>
 #endif
 
 #include "GuiConsole.h"
 
 #ifndef FC_OS_LINUX
 
-const UINT FCGUIConsole::s_nMaxLines = 1000;
-UINT       FCGUIConsole::s_nRefCount = 0;
+const unsigned int FCGUIConsole::s_nMaxLines = 1000;
+unsigned int       FCGUIConsole::s_nRefCount = 0;
 
 /** Constructor
  *  Open a Top level Window and redirect the 

@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -25,6 +25,10 @@
 #define __QT_PROCESS_QT__H__
 
 #if QT_VERSION > 300
+
+#ifndef _PreComp_
+# include <qprocess.h>
+#endif
 
 class FCProcess : public QProcess, public FCSubject <int>
 {

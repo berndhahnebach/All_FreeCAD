@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -23,10 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <list>
-#	include <string>
-#	include <vector>
-#	include <qlistbox.h>
+# include <list>
+# include <string>
+# include <vector>
+# include <qlistbox.h>
 #endif
 
 #include "BitmapFactory.h"
@@ -45,12 +45,12 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
   // ADD ALL PIXMAPS TO THE FACTORY AUTOMATICALLY
   //
   //
-	Gui::BitmapFactory();
+  Gui::BitmapFactory();
 
   // ADD YOUR LANGUAGES HERE
   //
   //
-	new Gui::LanguageProducer("German", GetFreeCAD_de());
+  new Gui::LanguageProducer("German", GetFreeCAD_de());
 }
 
 // ----------------------------------------------------
@@ -72,26 +72,26 @@ FCWidgetFactorySupplier::FCWidgetFactorySupplier()
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-	Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("FreeCAD"     ) );
+  Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("FreeCAD"     ) );
   new FCPrefPageProducer<DlgGeneralImp>         ( QObject::tr("General"     ) );
   new FCPrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr("Editor"      ) );
   new FCPrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr("Macros"      ) );
   new FCPrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr("Online help" ) );
-	Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("Viewer"      ) );
+  Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("Viewer"      ) );
   new FCPrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr("Help Viewer" ) );
   new FCPrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr("3D View"     ) );
 
-	// ADD YOUR PREFERENCE WIDGETS HERE
-	//
-	//
-	new FCWidgetProducer<FCPrefSpinBox>;
-	new FCWidgetProducer<FCLineEdit>;
-	new FCWidgetProducer<FCComboBox>;
-	new FCWidgetProducer<FCListBox>;
-	new FCWidgetProducer<FCCheckBox>;
-	new FCWidgetProducer<FCRadioButton>;
-	new FCWidgetProducer<FCSlider>;
-	new FCWidgetProducer<FCCmdView>;
-	new FCWidgetProducer<FCAccelLineEdit>;
-	new FCWidgetProducer<FCColorButton>;
+  // ADD YOUR PREFERENCE WIDGETS HERE
+  //
+  //
+  new FCWidgetProducer<FCPrefSpinBox>;
+  new FCWidgetProducer<FCLineEdit>;
+  new FCWidgetProducer<FCComboBox>;
+  new FCWidgetProducer<FCListBox>;
+  new FCWidgetProducer<FCCheckBox>;
+  new FCWidgetProducer<FCRadioButton>;
+  new FCWidgetProducer<FCSlider>;
+  new FCWidgetProducer<FCCmdView>;
+  new FCWidgetProducer<FCAccelLineEdit>;
+  new FCWidgetProducer<FCColorButton>;
 }

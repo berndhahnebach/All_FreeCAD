@@ -40,7 +40,7 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
-#	include <vector.h>
+#	include <vector>
 #	include <qaction.h>
 #	include <qbutton.h>
 #	include <qbuttongroup.h>
@@ -84,6 +84,10 @@
 #include "propertyeditor/kexipropertyeditor.h"
 #include "propertyeditor/kexipropertybuffer.h"
 
+using Gui::Kexi::PropertyEditor;
+using Gui::Kexi::PropertyBuffer;
+using Gui::Kexi::Property;
+
 //**************************************************************************
 //**************************************************************************
 // FCPropertyView
@@ -110,7 +114,7 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
 	pTabs->setTabShape(QTabWidget::Triangular);
   pLayout->addWidget( pTabs, 0, 0 );
 
-	_pPropEditor = new KexiPropertyEditor( pTabs );
+	_pPropEditor = new PropertyEditor( pTabs );
 	pTabs->insertTab(_pPropEditor, "Properties");
 
 	// retrieve the Pixmaps
@@ -130,23 +134,23 @@ FCPropertyView::~FCPropertyView()
 
 void FCPropertyView::Update(void)
 {
-	KexiPropertyBuffer* buf = new KexiPropertyBuffer(_pPropEditor, "Test");
+	PropertyBuffer* buf = new PropertyBuffer(_pPropEditor, "Test");
 
 	// append sample properties
-	buf->add(new KexiProperty("Boolean", QVariant(true,1)));
-	buf->add(new KexiProperty("Integer", 9));
-	buf->add(new KexiProperty("String", QString("Hallo")));
-	buf->add(new KexiProperty("Double", 3.14));
-	buf->add(new KexiProperty("Font", QFont()));
-	buf->add(new KexiProperty("Pixmap", QPixmap()));
-	buf->add(new KexiProperty("Color", Qt::blue));
-	buf->add(new KexiProperty("Time", QTime()));
-	buf->add(new KexiProperty("Cursor", QCursor()));
-	buf->add(new KexiProperty("CString", QCString("Hallo")));
-	buf->add(new KexiProperty("Date time", QDateTime()));
-	buf->add(new KexiProperty("Date", QDate()));
+	buf->add(new Property("Boolean", QVariant(true,1)));
+	buf->add(new Property("Integer", 9));
+	buf->add(new Property("String", QString("Hallo")));
+	buf->add(new Property("Double", 3.14));
+	buf->add(new Property("Font", QFont()));
+	buf->add(new Property("Pixmap", QPixmap()));
+	buf->add(new Property("Color", Qt::blue));
+	buf->add(new Property("Time", QTime()));
+	buf->add(new Property("Cursor", QCursor()));
+	buf->add(new Property("CString", QCString("Hallo")));
+	buf->add(new Property("Date time", QDateTime()));
+	buf->add(new Property("Date", QDate()));
 	QStringList l; l << "Hallo" << "Hallo2";
-	buf->add(new KexiProperty("List", "Test", l, l, "Descr."));
+	buf->add(new Property("List", "Test", l, l, "Descr."));
 	_pPropEditor->setBuffer(buf);
 
 //	Base::Console().Log("Property Updated\n");

@@ -20,15 +20,12 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qtabwidget.h>
-#	include <qthread.h>
 #endif
 
-
-#include "../Base/Console.h"
 #include "Window.h"
 #include "Application.h"
+
+#include "../Base/Console.h"
 #include "../App/Application.h"
 
 

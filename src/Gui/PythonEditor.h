@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -27,8 +27,8 @@
 #include "View.h"
 
 #ifndef _PreComp_
-#	include <qtextedit.h>
-#	include <qsyntaxhighlighter.h>
+# include <qtextedit.h>
+# include <qsyntaxhighlighter.h>
 #endif
 
 class PythonSyntaxHighlighter;
@@ -36,66 +36,66 @@ class PythonSyntaxHighlighterP;
 
 class GuiExport PythonWindow : public QTextEdit
 {
-	protected:
-		PythonWindow(QWidget *parent = 0,const char *name = 0);
-		virtual ~PythonWindow();
+protected:
+  PythonWindow(QWidget *parent = 0,const char *name = 0);
+  virtual ~PythonWindow();
 
-	protected:
-		virtual void keyPressEvent(QKeyEvent * e);
-		int nInsertTabs;
+protected:
+  virtual void keyPressEvent(QKeyEvent * e);
+  int nInsertTabs;
 
-	protected:
-		PythonSyntaxHighlighter* pythonSyntax;
+protected:
+  PythonSyntaxHighlighter* pythonSyntax;
 };
 
 class GuiExport PythonEditor : public PythonWindow
 {
-	public:
-		PythonEditor(QWidget *parent = 0,const char *name = 0);
-		~PythonEditor();
+public:
+  PythonEditor(QWidget *parent = 0,const char *name = 0);
+  ~PythonEditor();
 };
 
 class GuiExport PythonConsole : public PythonWindow
 {
-	public:
-		PythonConsole(QWidget *parent = 0,const char *name = 0);
-		~PythonConsole();
+public:
+  PythonConsole(QWidget *parent = 0,const char *name = 0);
+  ~PythonConsole();
 
-	protected:
-		void keyPressEvent(QKeyEvent * e);
-		int lastPara;
+protected:
+  void keyPressEvent(QKeyEvent * e);
+  int lastPara;
 };
 
 class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
 {
-	protected: 
-		enum Paragraph { 
-			Normal       = 0, 
-			Comment      = 1, 
-			Blockcomment = 2, 
-			Literal      = 3, 
-			Number       = 4, 
-			Operator     = 5,
-			Keywords     = 6
-		};
+protected:
+  enum Paragraph {
+    Normal       = 0,
+    Comment      = 1,
+    Blockcomment = 2,
+    Literal      = 3,
+    Number       = 4,
+    Operator     = 5,
+    Keywords     = 6
+  };
 
-	public:
-		PythonSyntaxHighlighter(QTextEdit* );
-		~PythonSyntaxHighlighter();
+public:
+  PythonSyntaxHighlighter(QTextEdit* );
+  ~PythonSyntaxHighlighter();
 
-		int highlightParagraph ( const QString & text, int endStateOfLastPara );
-		void highlightError (bool b);
+  int highlightParagraph ( const QString & text, int endStateOfLastPara );
+  void highlightError (bool b);
 
-	private:
-		int highlightLiterals( const QString&, int& from, int endStateOfLastPara );
-		int highlightBlockComments( const QString&, int& from, int endStateOfLastPara );
-		int highlightComments( const QString&, int& from, int endStateOfLastPara );
-		int highlightOperators( const QString&, int& from, int endStateOfLastPara );
-		int highlightNumbers( const QString&, int& from, int endStateOfLastPara );
-		int highlightNormalText( const QString&, int& from, int endStateOfLastPara );
-		int highlightKeywords( const QString&, int& from, int endStateOfLastPara );
+private:
+  int highlightLiterals( const QString&, int& from, int endStateOfLastPara );
+  int highlightBlockComments( const QString&, int& from, int endStateOfLastPara );
+  int highlightComments( const QString&, int& from, int endStateOfLastPara );
+  int highlightOperators( const QString&, int& from, int endStateOfLastPara );
+  int highlightNumbers( const QString&, int& from, int endStateOfLastPara );
+  int highlightNormalText( const QString&, int& from, int endStateOfLastPara );
+  int highlightKeywords( const QString&, int& from, int endStateOfLastPara );
 
-		PythonSyntaxHighlighterP* d;
+  PythonSyntaxHighlighterP* d;
 };
 
 /**
@@ -104,48 +104,48 @@ class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
  */
 class PythonView : public FCView
 {
-	public:
-	  PythonView( QWidget* parent, const char* name);
-	  ~PythonView();
+public:
+  PythonView( QWidget* parent, const char* name);
+  ~PythonView();
 
-    QTextEdit* GetEditor() const { return textEdit; }
+  QTextEdit* GetEditor() const { return textEdit; }
 
-    const char *GetName(void){return "Scintilla";}
-		void Update(void){};
+  const char *GetName(void){return "Scintilla";}
+  void Update(void){};
 
-		/** Mesage handler.
+  /** Mesage handler.
      * Runs the action specified by pMsg.
      */
-		bool OnMsg(const char* pMsg);
-		/** Mesage handler test
+  bool OnMsg(const char* pMsg);
+  /** Mesage handler test
      * Checks if the action pMsg is available. This is for enabling/disabling
      * the corresponding buttons or menu items for this action.
      */
-		bool OnHasMsg(const char* pMsg);
-		/** checking on close state */
-		bool CanClose(void);
-		void Print(QPainter& cPrinter);
-    void OpenFile (const QString& fileName);
+  bool OnHasMsg(const char* pMsg);
+  /** checking on close state */
+  bool CanClose(void);
+  void Print(QPainter& cPrinter);
+  void OpenFile (const QString& fileName);
 
-    /** @name Standard actions of the editor */
-    //@{
-    bool Save   (void);
-    bool SaveAs (void);
-    bool Open   (void);
-		void Cut    (void);
-		void Copy   (void);
-		void Paste  (void);
-    void Undo   (void);
-    void Redo   (void);
-    //@}
+  /** @name Standard actions of the editor */
+  //@{
+  bool Save   (void);
+  bool SaveAs (void);
+  bool Open   (void);
+  void Cut    (void);
+  void Copy   (void);
+  void Paste  (void);
+  void Undo   (void);
+  void Redo   (void);
+  //@}
 
-    
-    void saveFile();
-    bool isAlreadySavedBefore();
-    QString _fileName;
 
-	protected:
-    QTextEdit* textEdit;
+  void saveFile();
+  bool isAlreadySavedBefore();
+  QString _fileName;
+
+protected:
+  QTextEdit* textEdit;
 };
 
 #endif // __PYTHON_EDITOR_H__

@@ -135,9 +135,9 @@ target_alias = @target_alias@
 lib_LTLIBRARIES = libFreeCADGui.la
 
 BUILT_SOURCES = \
+moc_Action.cpp \
 moc_Application.cpp \
 moc_ButtonGroup.cpp \
-moc_Command.cpp \
 moc_CommandLine.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
@@ -179,6 +179,9 @@ moc_ProcessQt.cpp \
 moc_PropertyView.cpp \
 moc_ReportView.cpp \
 moc_Splashscreen.cpp \
+moc_StackBar.cpp \
+moc_ToolBox.cpp \
+moc_ToolBoxBar.cpp \
 moc_Tree.cpp \
 moc_View.cpp\
 moc_View3D.cpp \
@@ -272,6 +275,7 @@ Inventor/OCC/SoBrepShape.cpp \
 \
 Language/LanguageFactory.cpp \
 \
+Action.cpp \
 Application.cpp \
 BitmapFactory.cpp \
 ButtonGroup.cpp \
@@ -312,6 +316,9 @@ ReportView.cpp \
 resource.cpp \
 Selection.cpp \
 Splashscreen.cpp \
+StackBar.cpp \
+ToolBox.cpp \
+ToolBoxBar.cpp \
 Tools.cpp \
 Tree.cpp \
 View.cpp \
@@ -369,7 +376,7 @@ am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	kexipropertysubeditor.lo propertyeditordate.lo \
 	propertyeditorfile.lo propertyeditorfont.lo \
 	propertyeditorinput.lo propertyeditorlist.lo knuminput.lo \
-	knumvalidator.lo SoBrepShape.lo LanguageFactory.lo \
+	knumvalidator.lo SoBrepShape.lo LanguageFactory.lo Action.lo \
 	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
 	Command.lo CommandStd.lo CommandTest.lo CommandView.lo \
 	DlgActionsImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
@@ -381,7 +388,8 @@ am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	DlgUndoRedo.lo Document.lo GuiConsole.lo HtmlView.lo Macro.lo \
 	MouseModel.lo PrefWidgets.lo Process.lo PropertyPage.lo \
 	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
-	Selection.lo Splashscreen.lo Tools.lo Tree.lo View.lo View3D.lo \
+	Selection.lo Splashscreen.lo StackBar.lo ToolBox.lo \
+	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
 	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
 	WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
@@ -389,7 +397,8 @@ libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Application.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Action.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Application.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/BitmapFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ButtonGroup.Plo ./$(DEPDIR)/Command.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandLine.Plo \
@@ -425,7 +434,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ReportView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Selection.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/SoBrepShape.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Splashscreen.Plo ./$(DEPDIR)/Tools.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Splashscreen.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/StackBar.Plo ./$(DEPDIR)/ToolBox.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ToolBoxBar.Plo ./$(DEPDIR)/Tools.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Tree.Plo ./$(DEPDIR)/View.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3D.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
@@ -515,6 +526,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Action.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Application.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitmapFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ButtonGroup.Plo@am__quote@
@@ -556,6 +568,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Selection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoBrepShape.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Splashscreen.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StackBar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBox.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBoxBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tools.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View.Plo@am__quote@

@@ -45,7 +45,14 @@
 
 class QPixmap;
 class FCProperty;
-class KexiPropertyEditor;
+
+namespace Gui {
+namespace Kexi {
+
+class PropertyEditor;
+
+} // namespace Kexi
+} // namespace Gui
 
 /** A test class. A more elaborate class description.
  */
@@ -77,7 +84,7 @@ class FCPropertyView :public FCDockView
   	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
   private:
-    KexiPropertyEditor * _pPropEditor;;
+    Gui::Kexi::PropertyEditor * _pPropEditor;;
 };
 
 #endif // __PROPTERYVIEW_H__

@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -56,56 +56,56 @@ class QGridLayout;
  */
 class GuiExport FileDialog : public QFileDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	static QString getOpenFileName( const QString &initially = QString::null, const QString &filter = QString::null, QWidget *parent = 0, const char* name = 0 );
-	static QString getOpenFileName( const QString &initially, const QString &filter, QWidget *parent, const char* name, const QString& caption );
-	static QString getSaveFileName ( const QString & initially = QString::null, const QString & filter = QString::null, QWidget * parent = 0, const char * name = 0 );
-	static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const char * name, const QString & caption );
-	static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const QString & caption );
+  static QString getOpenFileName( const QString &initially = QString::null, const QString &filter = QString::null, QWidget *parent = 0, const char* name = 0 );
+  static QString getOpenFileName( const QString &initially, const QString &filter, QWidget *parent, const char* name, const QString& caption );
+  static QString getSaveFileName ( const QString & initially = QString::null, const QString & filter = QString::null, QWidget * parent = 0, const char * name = 0 );
+  static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const char * name, const QString & caption );
+  static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const QString & caption );
 
 public:
-	FileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
-	FileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null, QWidget* parent = 0, const char* name = 0, bool modal = false);
-	virtual ~FileDialog();
+  FileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
+  FileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null, QWidget* parent = 0, const char* name = 0, bool modal = false);
+  virtual ~FileDialog();
 
-	QString selectedFileName();
+  QString selectedFileName();
 
 protected slots:
-	virtual void accept();
+  virtual void accept();
 };
 
 class GuiExport FCMessageBox : public QMessageBox
 {
-	public:
-		FCMessageBox(QWidget * parent=0, const char * name=0);
-		~FCMessageBox();
+public:
+  FCMessageBox(QWidget * parent=0, const char * name=0);
+  ~FCMessageBox();
 
-		static int information(QWidget * parent, const QString & caption, const QString & text,
-			int button0, int button1=0, int button2=0);
-		static int information(QWidget * parent, const QString & caption, const QString & text,
-			const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
-		static int warning ( QWidget * parent, const QString & caption, const QString & text,
-			int button0, int button1, int button2=0 );
-		static int warning ( QWidget * parent, const QString & caption, const QString & text,
-			const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
-		static int critical ( QWidget * parent, const QString & caption, const QString & text,
-			int button0, int button1, int button2=0 );
-		static int critical ( QWidget * parent, const QString & caption, const QString & text,
-			const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-			const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+  static int information(QWidget * parent, const QString & caption, const QString & text,
+                         int button0, int button1=0, int button2=0);
+  static int information(QWidget * parent, const QString & caption, const QString & text,
+                         const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                         const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
+  static int warning ( QWidget * parent, const QString & caption, const QString & text,
+                       int button0, int button1, int button2=0 );
+  static int warning ( QWidget * parent, const QString & caption, const QString & text,
+                       const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                       const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+  static int critical ( QWidget * parent, const QString & caption, const QString & text,
+                        int button0, int button1, int button2=0 );
+  static int critical ( QWidget * parent, const QString & caption, const QString & text,
+                        const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                        const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
 
-	protected:
+protected:
 
-		// protected constructor
-		FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
-			int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
+  // protected constructor
+  FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
+               int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
 
-		class FCCheckBox* checkBox;
-		QGridLayout* layout;
+  class FCCheckBox* checkBox;
+  QGridLayout* layout;
 };
 
 namespace Gui {
@@ -121,46 +121,46 @@ struct ProgressBarPrivate;
  */
 class ProgressBar : public QProgressBar, public Base::SequencerBase
 {
-  public:
-	  /**
-		 * Returns the sequencer object
-		 */
-		static ProgressBar* Instance();
-    /** Starts the progress bar */
-    bool start(const char* pszStr, unsigned long steps);
-    /** Does the next step */
-    bool next();
+public:
+  /**
+  * Returns the sequencer object
+  */
+  static ProgressBar* Instance();
+  /** Starts the progress bar */
+  bool start(const char* pszStr, unsigned long steps);
+  /** Does the next step */
+  bool next();
 
-		/** Handles all incoming events while the
-		 * progress bar is running. All key and mouse
-		 * events are ignored to block user input.
-		 */
-		bool eventFilter(QObject* o, QEvent* e);
+  /** Handles all incoming events while the
+   * progress bar is running. All key and mouse
+   * events are ignored to block user input.
+   */
+  bool eventFilter(QObject* o, QEvent* e);
 
-  private:
-    /** construction */
-    ProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
-		/** Destruction */
-    ~ProgressBar ();
-	  /** @name for internal use only */
-    //@{
-		/** Puts text to the status bar */
-		void setText (const char* pszTxt);
-		/** Get the events under control */
-		void enterControlEvents();
-		/** Lose the control over incoming events*/
-		void leaveControlEvents();
-		/** Throws an exception to stop the pending operation. */
-    void abort();
-    /** Resets the sequencer */
-    void resetData();
-    /** Draws the content of the progress bar */
-//    void drawContents( QPainter *p );
-    /** Reimplemented */
-    bool setIndicator ( QString & indicator, int progress, int totalSteps );
-    //@}
-    ProgressBarPrivate* d;
-		static ProgressBar* _pclSingleton; 
+private:
+  /** construction */
+  ProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+  /** Destruction */
+  ~ProgressBar ();
+  /** @name for internal use only */
+  //@{
+  /** Puts text to the status bar */
+  void setText (const char* pszTxt);
+  /** Get the events under control */
+  void enterControlEvents();
+  /** Lose the control over incoming events*/
+  void leaveControlEvents();
+  /** Throws an exception to stop the pending operation. */
+  void abort();
+  /** Resets the sequencer */
+  void resetData();
+  /** Draws the content of the progress bar */
+  //    void drawContents( QPainter *p );
+  /** Reimplemented */
+  bool setIndicator ( QString & indicator, int progress, int totalSteps );
+  //@}
+  ProgressBarPrivate* d;
+  static ProgressBar* _pclSingleton;
 };
 
 } // namespace Gui
@@ -174,13 +174,13 @@ class FCListView : public QListView
 {
   Q_OBJECT
 
-  public:
-    FCListView ( QWidget * parent, const char * name, WFlags f );
-    FCListView ( QWidget * parent = 0, const char * name = 0 );
-    virtual ~FCListView (); 
+public:
+  FCListView ( QWidget * parent, const char * name, WFlags f );
+  FCListView ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~FCListView ();
 
-    QListViewItem * lastItem () const;
-    static QListViewItem * lastItem (QListView*);
+  QListViewItem * lastItem () const;
+  static QListViewItem * lastItem (QListView*);
 };
 
 /**
@@ -191,15 +191,15 @@ class QAction;
 
 class FCCmdViewItem : public QIconViewItem
 {
-  public:
-    FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct );
-    virtual ~FCCmdViewItem ();
+public:
+  FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct );
+  virtual ~FCCmdViewItem ();
 
-    QString text() const;
-    QString GetAction();
+  QString text() const;
+  QString GetAction();
 
-  protected:
-    FCCmdViewItemPrivate* d;
+protected:
+  FCCmdViewItemPrivate* d;
 };
 
 /**
@@ -213,25 +213,25 @@ class FCCmdView : public QIconView
 {
   Q_OBJECT
 
-  public:
-    FCCmdView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
-    virtual ~FCCmdView ();
+public:
+  FCCmdView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  virtual ~FCCmdView ();
 
-  protected:
-    /** Allows to drag an item */
-    QDragObject * dragObject ();
+protected:
+  /** Allows to drag an item */
+  QDragObject * dragObject ();
 
-  protected slots:
-    /// for internal use only
-    void slotSelectionChanged(QIconViewItem * item);
+protected slots:
+  /// for internal use only
+  void slotSelectionChanged(QIconViewItem * item);
 
-  signals:
-    void emitSelectionChanged(QString);
+signals:
+  void emitSelectionChanged(const QString&);
 };
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QCheckBox;
 class QGroupBox;
 class QLabel;
@@ -242,28 +242,28 @@ class QPushButton;
  *  Toolbar/command bar creation class
  */
 class FCDlgCreateToolOrCmdBar : public QDialog
-{ 
-    Q_OBJECT
+{
+  Q_OBJECT
 
-  public:
-    FCDlgCreateToolOrCmdBar( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~FCDlgCreateToolOrCmdBar();
+public:
+  FCDlgCreateToolOrCmdBar( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~FCDlgCreateToolOrCmdBar();
 
-    QGroupBox* GroupBox1;
-    QLabel* TextLabel;
-    QLineEdit* LineEditName;
-    QCheckBox* CheckCreateCmdBar;
-    QCheckBox* CheckCreateToolBar;
-    QPushButton* buttonOk;
-    QPushButton* buttonCancel;
+  QGroupBox* GroupBox1;
+  QLabel* TextLabel;
+  QLineEdit* LineEditName;
+  QCheckBox* CheckCreateCmdBar;
+  QCheckBox* CheckCreateToolBar;
+  QPushButton* buttonOk;
+  QPushButton* buttonCancel;
 
-  protected slots:
-    void accept ();
+protected slots:
+  void accept ();
 
-  protected:
-    QGridLayout* FCDlgCreateToolOrCmdBarLayout;
-    QGridLayout* GroupBox1Layout;
-    QHBoxLayout* Layout2;
+protected:
+  QGridLayout* FCDlgCreateToolOrCmdBarLayout;
+  QGridLayout* GroupBox1Layout;
+  QHBoxLayout* Layout2;
 };
 
 /**
@@ -273,11 +273,11 @@ class FCDlgCreateToolOrCmdBar : public QDialog
  */
 class FCAccelLineEdit : public QLineEdit
 {
-  public:
-    FCAccelLineEdit ( QWidget * parent=0, const char * name=0 );
+public:
+  FCAccelLineEdit ( QWidget * parent=0, const char * name=0 );
 
-  protected:
-     void keyPressEvent ( QKeyEvent * e);
+protected:
+  void keyPressEvent ( QKeyEvent * e);
 };
 
 /**
@@ -285,31 +285,31 @@ class FCAccelLineEdit : public QLineEdit
  */
 class FCCheckListDlg : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  public:
-    FCCheckListDlg( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~FCCheckListDlg();
+public:
+  FCCheckListDlg( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~FCCheckListDlg();
 
-    /** set all items to be shown in the list */
-    void setItems(const std::vector<std::string>& items);
-    void setItems(const std::vector<std::pair<std::string, bool> >& items);
-    /** get all checked items */
-    std::vector<std::string> getCheckedItems() const;
-    void show ();
-    void hide ();
+  /** set all items to be shown in the list */
+  void setItems(const std::vector<std::string>& items);
+  void setItems(const std::vector<std::pair<std::string, bool> >& items);
+  /** get all checked items */
+  std::vector<std::string> getCheckedItems() const;
+  void show ();
+  void hide ();
 
-  protected:
-    std::vector<std::pair<std::string, bool> > items;
-    std::vector<std::string> checked;
+protected:
+  std::vector<std::pair<std::string, bool> > items;
+  std::vector<std::string> checked;
 
-    QPushButton* buttonOk;
-    QPushButton* buttonCancel;
-    QGroupBox* GroupBox1;
-    QListView* ListView;
-    QGridLayout* FCCheckListDlgLayout;
-    QHBoxLayout* Layout2;
-    QGridLayout* GroupBox1Layout;
+  QPushButton* buttonOk;
+  QPushButton* buttonCancel;
+  QGroupBox* GroupBox1;
+  QListView* ListView;
+  QGridLayout* FCCheckListDlgLayout;
+  QHBoxLayout* Layout2;
+  QGridLayout* GroupBox1Layout;
 };
 
 /**
@@ -317,41 +317,41 @@ class FCCheckListDlg : public QDialog
  */
 class FCColorButton : public QButton
 {
-    Q_OBJECT
+  Q_OBJECT
 
-    Q_PROPERTY( QColor color READ color WRITE setColor )
+  Q_PROPERTY( QColor color READ color WRITE setColor )
 
- public:
-    /// construction
-    FCColorButton( QWidget* parent = 0, const char* name = 0 );
-    FCColorButton( const QBrush& b, QWidget* parent = 0, const char* name = 0, WFlags f = 0 );
-    /// destruction
-    ~FCColorButton();
+public:
+  /// construction
+  FCColorButton( QWidget* parent = 0, const char* name = 0 );
+  FCColorButton( const QBrush& b, QWidget* parent = 0, const char* name = 0, WFlags f = 0 );
+  /// destruction
+  ~FCColorButton();
 
-    /** set the color */
-    void setColor( const QColor& );
-    /** get the current color */
-    QColor color() const;
+  /** set the color */
+  void setColor( const QColor& );
+  /** get the current color */
+  QColor color() const;
 
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
-    
-  public slots:
-    /** opens the QColorDialog dialog to select a new color */
-    virtual void onChooseColor();
+  QSize sizeHint() const;
+  QSize minimumSizeHint() const;
 
-  signals:
-    /** emits this signal when color is changed */
-    void changed();
+public slots:
+  /** opens the QColorDialog dialog to select a new color */
+  virtual void onChooseColor();
 
-  protected:
-    /// for internal use only
-    void drawButton( QPainter* );
-    /// for internal use only
-    void drawButtonLabel( QPainter* );
+signals:
+  /** emits this signal when color is changed */
+  void changed();
 
-  private:
-    QColor col;
+protected:
+  /// for internal use only
+  void drawButton( QPainter* );
+  /// for internal use only
+  void drawButtonLabel( QPainter* );
+
+private:
+  QColor col;
 };
 
 /**
@@ -363,21 +363,21 @@ class FCSpinBox : public QSpinBox
 {
   Q_OBJECT // this is important for the inherited classes
 
-  public:
-    FCSpinBox ( QWidget* parent, const char* name = 0 );
-    FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
-    virtual ~FCSpinBox();
+public:
+  FCSpinBox ( QWidget* parent, const char* name = 0 );
+  FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
+  virtual ~FCSpinBox();
 
-  protected:
-    void mouseMoveEvent    ( QMouseEvent* e );
-    void mousePressEvent   ( QMouseEvent* e );
-    void mouseReleaseEvent ( QMouseEvent* e );
-    void wheelEvent        ( QWheelEvent* e );
-    void focusOutEvent     ( QFocusEvent* e );
-    bool eventFilter       ( QObject* o, QEvent* e );
+protected:
+  void mouseMoveEvent    ( QMouseEvent* e );
+  void mousePressEvent   ( QMouseEvent* e );
+  void mouseReleaseEvent ( QMouseEvent* e );
+  void wheelEvent        ( QWheelEvent* e );
+  void focusOutEvent     ( QFocusEvent* e );
+  bool eventFilter       ( QObject* o, QEvent* e );
 
-  private:
-    FCSpinBoxPrivate* d;
+private:
+  FCSpinBoxPrivate* d;
 };
 
 /** The FCFloatSpinBox class
@@ -385,40 +385,40 @@ class FCSpinBox : public QSpinBox
 class FCFloatSpinBoxPrivate;
 class FCFloatSpinBox : public FCSpinBox
 {
-    Q_OBJECT
+  Q_OBJECT
 
-    Q_PROPERTY( uint   decimals        READ decimals      WRITE setDecimals      )
-    Q_PROPERTY( double valueFloat      READ valueFloat    WRITE setValueFloat    )
-    Q_PROPERTY( double maxValueFloat   READ maxValueFloat WRITE setMaxValueFloat )
-    Q_PROPERTY( double minValueFloat   READ minValueFloat WRITE setMinValueFloat )
+  Q_PROPERTY( uint   decimals        READ decimals      WRITE setDecimals      )
+  Q_PROPERTY( double valueFloat      READ valueFloat    WRITE setValueFloat    )
+  Q_PROPERTY( double maxValueFloat   READ maxValueFloat WRITE setMaxValueFloat )
+  Q_PROPERTY( double minValueFloat   READ minValueFloat WRITE setMinValueFloat )
 
-  public:
-    FCFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
-    FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
-    virtual ~FCFloatSpinBox();
+public:
+  FCFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
+  FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
+  virtual ~FCFloatSpinBox();
 
-    uint   decimals () const;
-    void   setDecimals ( uint );
-    double minValueFloat () const;
-    void   setMinValueFloat ( double );
-    double maxValueFloat () const;
-    void   setMaxValueFloat ( double );
-    double valueFloat () const;
+  uint   decimals () const;
+  void   setDecimals ( uint );
+  double minValueFloat () const;
+  void   setMinValueFloat ( double );
+  double maxValueFloat () const;
+  void   setMaxValueFloat ( double );
+  double valueFloat () const;
 
-  public slots:
-    void  setValueFloat ( double );
+public slots:
+  void  setValueFloat ( double );
 
-  protected:
-    virtual QString mapValueToText(int value);
-    virtual int mapTextToValue(bool* ok);
-    virtual void valueChange();
-    void stepChange();
+protected:
+  virtual QString mapValueToText(int value);
+  virtual int mapTextToValue(bool* ok);
+  virtual void valueChange();
+  void stepChange();
 
-  signals:
-    void valueFloatChanged(double value);
+signals:
+  void valueFloatChanged(double value);
 
-  private:
-    FCFloatSpinBoxPrivate* d;
+private:
+  FCFloatSpinBoxPrivate* d;
 };
 
 //} // namespace Gui

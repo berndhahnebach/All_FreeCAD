@@ -33,9 +33,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qvbox.h>
-#	include <Inventor/nodes/SoMaterial.h>
-#	include <Inventor/nodes/SoShapeHints.h>
+# include <qvbox.h>
+# include <TopoDS_Shape.hxx>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoShapeHints.h>
 #endif
 
 #include "View3DInventor.h"

@@ -20,19 +20,13 @@
 #define __Windows_h__
 
 
-#include <qwidget.h>
-#include "qextmdi/qextmdichildview.h"
-#include "../Base/Parameter.h"
-#include "../Base/Console.h"
+#ifndef _PreComp_
+# include <qwidget.h>
+#endif
 
-class FCGuiDocument;
+#include "../Base/Parameter.h"
+
 class ApplicationWindow;
-class FCView;
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
-class QMultiLineEdit;
-class QTabWidget;
 
 
 /** Adapter class to the parameter of FreeCAD for all Windows

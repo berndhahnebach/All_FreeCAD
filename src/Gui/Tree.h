@@ -19,7 +19,10 @@
 #ifndef __TREE__
 #define __TREE__
 
-#include <qlistview.h>
+#ifndef _PreComp_
+# include <qlistview.h>
+# include <TDF_Label.hxx>
+#endif
 
 #include "../Base/PyExport.h"
 #include "View.h"

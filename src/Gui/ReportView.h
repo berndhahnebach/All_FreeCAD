@@ -4,7 +4,7 @@
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           * 
+ *   modify it under the terms of the GNU Library General Public           *
  *   License as published by the Free Software Foundation; either          *
  *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
@@ -24,9 +24,16 @@
 #ifndef __FC_REPORT_VIEW_H__
 #define __FC_REPORT_VIEW_H__
 
+#ifndef _PreComp_
+# include <qsyntaxhighlighter.h>
+# include <qtextedit.h>
+#endif
+
 #include "Window.h"
+#include "../Base/Console.h"
 
 class PythonConsole;
+class QTabWidget;
 
 namespace Gui {
 namespace DockWnd {
