@@ -1,4 +1,4 @@
-# FreeCAD init module  
+# FreeCAD init module
 # (c) 2001 Jürgen Riegel
 #
 # Gathering all the information to start FreeCAD
@@ -41,18 +41,19 @@ except:
 
 def InitDocumentation():
 	# Checking on FreeCAD documentation path ++++++++++++++++++++++++++++++++++++++++++
-	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc'):	
-		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net'):	
+	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc'):
+		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net'):
 			FreeCAD.ConfigSet("DocPath",FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net')
 
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
+	ModDir = '../src/Mod'
 	#print FreeCAD.ConfigGet("HomePath")
-	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):	
+	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):
 		ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
 	else:
-		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Mod'):	
+		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Mod'):
 			ModDir = FreeCAD.ConfigGet("HomePath")+'src\\Mod'
 	sys.path.append( '..\\bin' )
 	Log("   Using "+ModDir+" as module path!\n")
