@@ -788,6 +788,11 @@ bool FCCustomWidgetManager::init(const char* workbench)
   {
     addCmdBar((*it)->GetGroupName());
   }
+  if (_clCmdbars.size() > 0)
+  {
+    if (_pclCmdBar->showedView() == NULL)
+      _pclCmdBar->showView(_clCmdbars.begin()->second);
+  }
 
   hSubGrps = hToolGrp->GetGroups();
   bFound |= (hSubGrps.size() > 0);
@@ -966,6 +971,7 @@ void FCCustomWidgetManager::delToolBar(const char* name)
 	if( It!=_clToolbars.end() )
 	{
     It->second->saveXML();
+    ApplicationWindow::Instance->removeToolBar(It->second);
 		delete It->second;
 		_clToolbars.erase(It);
 	}
@@ -973,14 +979,16 @@ void FCCustomWidgetManager::delToolBar(const char* name)
 
 FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
 {
-	if (_pclCmdBar->HasView(name))
-		return _pclCmdBar->GetView(name);
+	std::map <std::string,FCToolBar*>::iterator It = _clCmdbars.find(name);
+	if( It!=_clCmdbars.end() )
+		return It->second;
 	else
-  {
-  	FCToolBar* p = _pclCmdBar->CreateView(name);
-    _pclCmdBar->setCurPage(0);
-		return p;
-  }
+	{
+    FCToolBar *pcToolBar = new FCToolboxBar( name, _pclCmdBar, name );
+		_clCmdbars[name] = pcToolBar;
+    _pclCmdBar->addView(pcToolBar, name);
+		return pcToolBar;
+	}
 }
 
 std::vector<FCToolBar*> FCCustomWidgetManager::getCmdBars()
@@ -996,14 +1004,13 @@ std::vector<FCToolBar*> FCCustomWidgetManager::getCmdBars()
 
 void FCCustomWidgetManager::delCmdBar(const char* name)
 {
-  return; // BUG beim Löschen von CmdBars!!!
-  std::map <std::string,FCToolBar*>::iterator it = _clCmdbars.find(name);
-  if (it != _clCmdbars.end())
-  {
-    it->second->saveXML();
-    _clCmdbars.erase(it);
-  }
-	_pclCmdBar->DeleteView(name);
+	std::map <std::string,FCToolBar*>::iterator It = _clCmdbars.find(name);
+	if( It!=_clCmdbars.end() )
+	{
+    It->second->saveXML();
+    _pclCmdBar->remView(It->second);
+		_clCmdbars.erase(It);
+	}
 }
 
 FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* parent)

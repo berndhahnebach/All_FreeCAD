@@ -36,460 +36,56 @@
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
+# include <Python.h>
 #endif
 
 #include "DlgCustomizeImp.h"
+#include "DlgToolbarsImp.h"
+#include "DlgActionsImp.h"
+#include "DlgCmdbarsImp.h"
+#include "DlgCommandsImp.h"
 #include "Application.h"
 #include "Tools.h"
 #include <qobjcoll.h>
 #include <qtabwidget.h>
 
-FCDlgCustomToolbarsImp::FCDlgCustomToolbarsImp( QWidget* parent, const char* name, WFlags fl )
-: FCDlgCustomToolbars(parent, name, fl), bChanged(false)
-{
-  AvailableActions->setSorting( -1 );
-  AvailableActions->setColumnWidthMode(0, QListView::Maximum);
-  ToolbarActions->setSorting( -1 );
-  ToolbarActions->setColumnWidthMode(0, QListView::Maximum);
-
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-  for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
-  {
-    m_alCmdGroups[it->second->GetGroupName()].push_back(it->second);
-  }
-  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
-  {
-    QListViewItem* itemNode = new QListViewItem(AvailableActions, it2->first.c_str());
-    itemNode->setOpen(true);
-    for (std::vector<FCCommand*>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
-    {
-      QListViewItem* item = new QListViewItem(itemNode,FCListView::lastItem(AvailableActions), (*it3)->GetAction()->menuText());
-      QPixmap pix = (*it3)->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
-      item->setPixmap(0, FCTools::resize(24,24,pix));
-      itemNode->insertItem(item);
-    }
-
-    AvailableActions->insertItem(itemNode);
-  }
-
-  AvailableActions->insertItem(new QListViewItem(AvailableActions, "<Separator>"));
-
-  connect(ComboToolbars, SIGNAL(activated ( const QString & )), this, SLOT(slotToolBarSelected(const QString &)));
-  connect(CreateToolbar, SIGNAL(clicked()), this, SLOT(slotCreateToolBar()));
-  m_aclToolbars = ApplicationWindow::Instance->GetToolBars();
-
-  for (std::vector<QToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
-  {
-    ComboToolbars->insertItem((*it3)->name());
-  }
-
-  slotToolBarSelected(ComboToolbars->text(0));
-
-  // connections
-  //
-  connect(buttonRight, SIGNAL(clicked()), this, SLOT(slotAddAction()));
-  connect(buttonLeft, SIGNAL(clicked()), this, SLOT(slotRemoveAction()));
-  connect(buttonUp, SIGNAL(clicked()), this, SLOT(slotMoveUpAction()));
-  connect(buttonDown, SIGNAL(clicked()), this, SLOT(slotMoveDownAction()));
-  connect(AvailableActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotAvailableActionsChanged(QListViewItem*)));
-  connect(AvailableActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotDblClickAddAction(QListViewItem*)));
-  connect(ToolbarActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotCurrentActionsChanged(QListViewItem*)));
-}
-
-FCDlgCustomToolbarsImp::~FCDlgCustomToolbarsImp()
-{
-}
-
-void FCDlgCustomToolbarsImp::apply()
-{
-  QString text = ComboToolbars->currentText();
-  QToolBar* toolbar = ApplicationWindow::Instance->GetToolBar(text.latin1());
-
-  FCTools::clearToolButtons(toolbar);
-  const QObjectList* children = toolbar->children ();
-
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  QListViewItem* item = ToolbarActions->firstChild();
-  for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
-  {
-    if (item->text(0) == "<Separator>")
-    {
-      toolbar->addSeparator ();
-      continue;
-    }
-
-    bool found = false;
-    for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
-    {
-      if (item->text(0) == it->second->GetAction()->menuText())
-      {
-        it->second->GetAction()->addTo(toolbar);
-        found = true;
-        break;
-      }
-    }
-
-    if (!found)
-    {
-      for (QObjectListIt it2(*children); it2.current(); ++it2)
-      {
-        if (it2.current()->isWidgetType())
-        {
-          QWidget* w = (QWidget*)it2.current();
-          w->reparent(toolbar,QPoint(0,0));
-          break;
-        }
-      }
-    }
-  }
-}
-
-void FCDlgCustomToolbarsImp::slotAvailableActionsChanged( QListViewItem *i )
-{
-  bool canAdd = FALSE;
-  QListViewItemIterator it = AvailableActions->firstChild();
-
-  for ( ; it.current(); it++ ) 
-  {
-    if ( it.current()->isSelected() ) 
-    {
-	    canAdd = TRUE;
-	    break;
-	  }
-  }
-
-  buttonRight->setEnabled( canAdd || ( i && i->isSelected() ) );
-}
-
-void FCDlgCustomToolbarsImp::slotCurrentActionsChanged( QListViewItem *i )
-{
-  buttonUp->setEnabled( (bool) (i && i->itemAbove()) );
-  buttonDown->setEnabled( (bool) (i && i->itemBelow()) );
-
-  bool canRemove = FALSE;
-  QListViewItemIterator it = ToolbarActions->firstChild();
-  for ( ; it.current(); it++ ) 
-  {
-  	if ( it.current()->isSelected() ) 
-    {
-	    canRemove = TRUE;
-	    break;
-  	}
-  }
-
-  buttonLeft->setEnabled( canRemove || ( i && i->isSelected() ) );
-}
-
-void FCDlgCustomToolbarsImp::slotToolBarSelected(const QString & name)
-{
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  if (bChanged)
-  {
-    if (QMessageBox::information(this, "FreeCAD", "Do want to save your changes?", "Yes", "No", QString::null, 0) == 0)
-      apply();
-    else
-      bChanged = false;
-  }
-
-  ToolbarActions->clear();
-
-  for (std::vector<QToolBar*>::iterator it = m_aclToolbars.begin(); it != m_aclToolbars.end(); ++it)
-  {
-    if ((*it)->name() == name)
-    {
-      const QObjectList* children = (*it)->children ();
-      for (QObjectListIt it2(*children); it2.current(); ++it2)
-      {
-        QString bname = it2.current()->name();
-        if (it2.current()->inherits("QToolButton"))
-        {
-          QToolButton* b = (QToolButton*)it2.current();
-          bname = b->textLabel();
-          if (bname.isNull() || bname.isEmpty())
-            continue;
-          if (sCommands.find(bname.latin1()) != sCommands.end())
-          {
-            FCCommand* pCom = sCommands[bname.latin1()];
-            QListViewItem* item = new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), pCom->GetAction()->menuText());
-            QPixmap pix = pCom->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
-            item->setPixmap(0, FCTools::resize(24,24,pix));
-            ToolbarActions->insertItem(item);
-          }
-        }
-        else if (it2.current()->isWidgetType())
-        {
-          if (bname.contains("separator", false) > 0)
-          {
-            ToolbarActions->insertItem(new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), "<Separator>"));
-          }
-          else
-          {
-            QListViewItem* item = new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), it2.current()->className());
-            QPixmap pix = ApplicationWindow::Instance->GetBmpFactory().GetPixmap("trolltech");
-            item->setPixmap(0, FCTools::resize(24,24,pix));
-            ToolbarActions->insertItem(item);
-          }
-        }
-      }
-      break;
-    }
-  }
-}
-
-void FCDlgCustomToolbarsImp::slotAddAction()
-{
-  bChanged = true;
-  QListView *src = AvailableActions;
-
-  bool addKids = FALSE;
-  QListViewItem *nextSibling = 0;
-  QListViewItem *nextParent = 0;
-  QListViewItemIterator it = src->firstChild();
-  for ( ; it.current(); it++ ) 
-  {
-	  if ( it.current() == nextSibling )
-     addKids = FALSE;
-
-  	if ( it.current()->isSelected() ) 
-    {
-	    if ( it.current()->childCount() == 0 ) 
-      {
-		    // Selected, no children
-		    QListViewItem *i = new QListViewItem( ToolbarActions, FCListView::lastItem(ToolbarActions) );
-		    i->setText( 0, it.current()->text(0) );
-        if (it.current()->pixmap(0) != NULL)
-        {
-          QPixmap pix = *(it.current()->pixmap(0));
-  	    	i->setPixmap( 0,  FCTools::resize(24,24,pix));
-        }
-		    ToolbarActions->setCurrentItem( i );
-		    ToolbarActions->ensureItemVisible( i );
-	    } 
-      else if ( !addKids ) 
-      {
-		    addKids = TRUE;
-		    nextSibling = it.current()->nextSibling();
-		    nextParent = it.current()->parent();
-		    while ( nextParent && !nextSibling ) 
-        {
-		      nextSibling = nextParent->nextSibling();
-		      nextParent = nextParent->parent();
-		    }
-	    }
-	  } 
-    else if ( (it.current()->childCount() == 0) && addKids ) 
-    {
-	    // Leaf node, and we _do_ process children
-	    QListViewItem *i = new QListViewItem( ToolbarActions, FCListView::lastItem(ToolbarActions) );
-	    i->setText( 0, it.current()->text(0) );
-      if (it.current()->pixmap(0) != NULL)
-      {
-        QPixmap pix = *(it.current()->pixmap(0));
-  	    i->setPixmap( 0, FCTools::resize(24,24,pix) );
-      }
-	    ToolbarActions->setCurrentItem( i );
-	    ToolbarActions->ensureItemVisible( i );
-  	}
-  }
-}
-
-void FCDlgCustomToolbarsImp::slotRemoveAction()
-{
-  bChanged = true;
-  QListViewItemIterator it = ToolbarActions->firstChild();
-  while ( it.current() ) 
-  {
-	  if ( it.current()->isSelected() )
-     delete it.current();
-	  else
-     it++;
-  }
-}
-
-void FCDlgCustomToolbarsImp::slotMoveUpAction()
-{
-  bChanged = true;
-  QListViewItem *next = 0;
-  QListViewItem *item = ToolbarActions->firstChild();
-
-  for ( int i = 0; i < ToolbarActions->childCount(); ++i ) 
-  {
-  	next = item->itemBelow();
-	  if ( item->isSelected() && (i > 0) && !item->itemAbove()->isSelected() )
-	    item->itemAbove()->moveItem( item );
-	  item = next;
-  }
-}
-
-void FCDlgCustomToolbarsImp::slotMoveDownAction()
-{
-  bChanged = true;
-  int count = ToolbarActions->childCount();
-  QListViewItem *next = 0;
-  QListViewItem *item = FCListView::lastItem(ToolbarActions);;
-
-  for ( int i = 0; i < count; ++i ) 
-  {
-	  next = item->itemAbove();
-	  if ( item->isSelected() && (i > 0) && !item->itemBelow()->isSelected() )
-      item->moveItem( item->itemBelow() );
-	  item = next;
-  }
-}
-
-void FCDlgCustomToolbarsImp::slotCreateToolBar()
-{
-  QString text = ToolbarName->text();
-  ToolbarName->clear();
-  QToolBar* toolbar = ApplicationWindow::Instance->GetToolBar(text.latin1());
-  toolbar->show();
-  m_aclToolbars.push_back(toolbar);
-  ComboToolbars->insertItem(text);
-}
-
-void FCDlgCustomToolbarsImp::slotDblClickAddAction(QListViewItem* item)
-{
-  if (item && item->childCount()==0)
-    slotAddAction();
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-FCDlgCustomCommandsImp::FCDlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
-: FCDlgCustomCommands(parent, name, fl), bChanged(false)
+FCPropertyPage::FCPropertyPage() 
 {
-  connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(slotDescription(QString)));
-  connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(slotGroupSelected(const QString &)));
-
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
-  {
-    m_alCmdGroups[it->second->GetGroupName()].push_back(it->second);
-  }
-
-  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
-  {
-    ComboBoxCategory->insertItem(it2->first.c_str());
-  }
-
-  ComboBoxCategory->setCurrentItem(0);
+  bChanged = false;
 }
 
-FCDlgCustomCommandsImp::~FCDlgCustomCommandsImp()
+void FCPropertyPage::apply()
 {
 }
 
-void FCDlgCustomCommandsImp::apply()
+void FCPropertyPage::cancel()
 {
 }
 
-void FCDlgCustomCommandsImp::slotDescription(QString txt)
+bool FCPropertyPage::isModified()
 {
-  TextLabel->setText(txt);
+  return bChanged;
 }
 
-void FCDlgCustomCommandsImp::slotGroupSelected(const QString & group)
+void FCPropertyPage::setModified(bool b)
 {
-  IconView1->clear();
- 
-  // group of commands found
-  if (m_alCmdGroups.find(group.latin1()) != m_alCmdGroups.end())
-  {
-    std::vector<FCCommand*> aCmds = m_alCmdGroups[group.latin1()];
-    for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
-    {
-      if ((*it)->GetAction())
-      (void) new FCCmdViewItem(IconView1, (*it)->GetAction());
-    }
-  }
+  bChanged = b;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-FCDlgCustomActionsImp::FCDlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
-: FCDlgCustomActions(parent, name, fl), bChanged(false)
+void FCPropertyPage::slotApply()
 {
-  // connections
-  //
-  connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotAddCustomAction()));
-  connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDelCustomAction()));
-  connect(actionPixmapButton, SIGNAL(clicked()), this, SLOT(slotCustomActionPixmap()));
-  connect(CustomActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotCustomActionsChanged(QListViewItem*)));
+  if (isModified())
+    apply();
+
+  setModified(false);
 }
 
-FCDlgCustomActionsImp::~FCDlgCustomActionsImp()
+void FCPropertyPage::slotCancel()
 {
-}
-
-void FCDlgCustomActionsImp::apply()
-{
-}
-
-void FCDlgCustomActionsImp::slotCustomActionsChanged( QListViewItem *i )
-{
-  bool canDelete = FALSE;
-  QListViewItemIterator it = CustomActions->firstChild();
-
-  for ( ; it.current(); it++ ) 
-  {
-    if ( it.current()->isSelected() ) 
-    {
-      actionName->setText(it.current()->text(0));
-	    canDelete = TRUE;
-	    break;
-	  }
-  }
-
-  buttonDelete->setEnabled( canDelete || ( i && i->isSelected() ) );
-}
-
-void FCDlgCustomActionsImp::slotAddCustomAction()
-{
-  if (actionName->text().isEmpty())
-  {
-    QMessageBox::warning(this, "Empty name","Please specify an action name first");
-    return;
-  }
-
-  QListViewItem* item = new QListViewItem(CustomActions,FCListView::lastItem(CustomActions), actionName->text());
-  if (PixmapLabel->pixmap() != NULL)
-  {
-    QPixmap p = *PixmapLabel->pixmap();
-    item->setPixmap(0, FCTools::resize(24,24,p));
-  }
-  actionName->clear();
-  actionToolTip->clear();
-  actionStatus->clear();
-}
-
-void FCDlgCustomActionsImp::slotDelCustomAction()
-{
-  bChanged = true;
-  QListViewItemIterator it = CustomActions->firstChild();
-  while ( it.current() ) 
-  {
-	  if ( it.current()->isSelected() )
-     delete it.current();
-	  else
-     it++;
-  }
-}
-
-void FCDlgCustomActionsImp::slotCustomActionPixmap()
-{
-  QString pix = FCFileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm)",this, "", "Choose a Pixmap");
-  if (!pix.isEmpty())
-  {
-    PixmapLabel->setPixmap(QPixmap(pix));
-  }
+  cancel();
+  setModified(false);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -547,22 +143,22 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
   // insert new tabs here !!!
   //
   //
-  QWidget* tab;
+  
   // first page
   //
-  tab = new FCDlgCustomCommandsImp( tabWidget, "tab" );
-  tabWidget->insertTab( tab, tr( "Commands" ) );
-  tabPages.push_back(tab);
+  insertTab(new FCDlgCustomCommandsImp( tabWidget, "tab" ), tr("Commands"));
+  
   // second page
   //
-  tab = new FCDlgCustomToolbarsImp( tabWidget, "tab" );
-  tabWidget->insertTab( tab, tr( "Toolbars" ) );
-  tabPages.push_back(tab);
+  insertTab(new FCDlgCustomToolbarsImp( tabWidget, "tab" ), tr("Toolbars"));
+  
   // third page
   //
-  tab = new FCDlgCustomActionsImp( tabWidget, "tab" );
-  tabWidget->insertTab( tab, tr( "Actions" ) );
-  tabPages.push_back(tab);
+  insertTab(new FCDlgCustomCmdbarsImp( tabWidget, "tab" ), tr("Command bars"));
+
+  // fourth page
+  //
+  insertTab(new FCDlgCustomActionsImp( tabWidget, "tab" ), tr("Actions"));
 
 
   FCDlgCustomizeBaseLayout->addWidget( tabWidget, 0, 0 );
@@ -581,6 +177,7 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
   //
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
   connect(buttonApply, SIGNAL(clicked()), this, SLOT(slotApply()));
+  connect(buttonCancel, SIGNAL(clicked()), this, SLOT(slotCancel()));
 }
 
 /*  
@@ -595,6 +192,15 @@ FCDlgCustomize::~FCDlgCustomize()
   tabPages.clear();
 }
 
+void FCDlgCustomize::insertTab (QWidget* w, QString name)
+{
+  w->reparent(tabWidget, QPoint(0,0));
+  tabWidget->insertTab( w, name );
+
+  // registrate the new page
+  tabPages.push_back(w);
+}
+
 void FCDlgCustomize::slotOK()
 {
   slotApply();
@@ -602,13 +208,29 @@ void FCDlgCustomize::slotOK()
 
 void FCDlgCustomize::slotApply()
 {
+  QWidget* page = tabWidget->currentPage();
+  if (dynamic_cast<FCPropertyPage*>(page) != NULL)
+     (dynamic_cast<FCPropertyPage*>(page))->slotApply();
+
+# ifdef _DEBUG
+  else
+    GetConsole().Warning("Added page does not inherit from class FCPropertyPage");
+#endif
 }
 
+void FCDlgCustomize::slotCancel()
+{
+  for (std::vector<QWidget*>::iterator it = tabPages.begin(); it != tabPages.end(); ++it)
+  {
+    if (dynamic_cast<FCPropertyPage*>(*it) != NULL)
+       (dynamic_cast<FCPropertyPage*>(*it))->slotCancel();
 
-#include "DlgActions.cpp"
-#include "DlgCommands.cpp"
-#include "DlgToolbars.cpp"
-#include "moc_DlgActions.cpp"
-#include "moc_DlgCommands.cpp"
-#include "moc_DlgToolbars.cpp"
+# ifdef _DEBUG
+    else
+      GetConsole().Warning("Added page does not inherit from class FCPropertyPage");
+#endif
+
+  }
+}
+
 #include "moc_DlgCustomizeImp.cpp"

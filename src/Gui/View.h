@@ -92,6 +92,7 @@ public:
 
 	virtual FCView* GetView(void){return _pcView;}
 
+protected:
 	virtual void resizeEvent ( QResizeEvent * e);
 
 private:

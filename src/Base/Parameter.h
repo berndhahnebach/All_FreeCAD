@@ -37,6 +37,8 @@
 
 // Std. configurations
 #include "PyExport.h"
+#include "Handle.h"
+#include "Observer.h"
 
 
 // Include files
@@ -44,20 +46,28 @@
 #  include <sstream>
 #endif
 #include <map>
+#include <vector>
+
+// DOM XML stuff
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #include <xercesc/dom/DOMWriterFilter.hpp>
-#include <vector>
-class DOMDocument;
+#ifdef XERCES_HAS_CPP_NAMESPACE
+	using namespace xercesc;
+	namespace xercesc{
+#endif
+		class DOMNode;
+		class DOMElement;
+		class DOMDocument;
+#ifdef XERCES_HAS_CPP_NAMESPACE
+	}
+#endif
 
-#include "Handle.h"
-#include "Observer.h"
 
-class DOMNode;
-class DOMElement;
 class FCParameterManager;
+
 
 /*
 class BaseExport FCParameterIterator

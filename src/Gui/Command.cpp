@@ -387,6 +387,32 @@ std::vector <FCCommand*> FCCommandManager::GetAllCommands(void)
 	return vCmds;
 }
 
+FCCommand* FCCommandManager::GetCommandByName(const char* sName)
+{
+  FCCommand* pCom = NULL;
+  if (_sCommands.find(sName) != _sCommands.end())
+  {
+    pCom = _sCommands[sName];
+  }
+
+  return pCom;
+}
+
+FCCommand* FCCommandManager::GetCommandByActionText(const char* sName)
+{
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+	{
+    if (It->second->GetAction())
+    {
+      if (It->second->GetAction()->text() == sName)
+      {
+        return It->second;
+      }
+    }
+	}
+
+  return NULL;
+}
 
 void FCCommandManager::TestActive(void)
 {

@@ -162,6 +162,7 @@ class QStackBarBtn : public QToolButton
     ~QStackBarBtn();
 
     void setSelected( bool b );
+    bool isSelected ();
     void setWidget(QWidget* widget);
     QWidget* widget();
 
@@ -178,20 +179,15 @@ class FCCmdBar : public FCWindow
   Q_OBJECT;
 
   public:
-    enum BarMode {TOOLBOX, OUTLOOK};
-
     FCCmdBar( QWidget *parent=0, const char *name=0 );
 	  virtual ~FCCmdBar();
 
-    void addPage( const QString &name, QWidget *page );
-    void remPage( QStackBarBtn * );
-  	void setCurPage( int );
-
     // toolbox handling
-    bool HasView(const char *sName);
-    FCToolBar* GetView(const char *sName);
-    FCToolBar* CreateView(const char *sName, BarMode = TOOLBOX);
-    void DeleteView(const char *sName);
+    bool addView(QWidget* w, const QString &name);
+    bool hasView(QWidget* w);
+    bool remView(QWidget* w);
+  	bool showView(QWidget* w);
+    QWidget* showedView();
 
   private slots:
     void buttonClicked();
@@ -199,19 +195,19 @@ class FCCmdBar : public FCWindow
   private:
     void updatePages();
     void timerEvent ( QTimerEvent * e);
-    void animatePageScroll(QWidget* pCurPage, QWidget* pNewPage);
+    void animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage);
 
   private:
     long                           m_lAnimCount;
     int                            m_iCurHeight;
     int                            m_iNewHeight;
     QVBoxLayout                  * m_pLayout;
-    QWidget                      * m_pCurPage;
-    QWidget                      * m_pAnimNewPage;
-    QWidget                      * m_pAnimCurPage;
+    QScrollView                  * m_pCurPage;
+    QScrollView                  * m_pAnimNewPage;
+    QScrollView                  * m_pAnimCurPage;
     QStackBarBtn                 * m_pLastBtn;
-    std::list<QStackBarBtn*>       m_lButtons;
-    std::map <QWidget*, QWidget*>  m_mButtonView;
+    std::map <QStackBarBtn*, 
+              QScrollView*>        m_mButtonView;
 };
 
 #endif // __BUTTON_GROUP_H__

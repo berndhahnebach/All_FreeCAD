@@ -285,6 +285,20 @@ public:
 	 */
 	std::vector <FCCommand*> GetAllCommands(void);
 
+  /** Returns the command registered in the manager with the name sName
+   *  If nothing is found it returns a null pointer 
+	 *  @see FCCommand
+	 */
+	FCCommand* GetCommandByName(const char* sName);
+
+  /** Returns the command registered in the manager with the 
+   *  action text sName (not its name! for this 
+   *  @see GetCommandByName(const char*))
+   *  If nothing is found it returns a null pointer 
+	 *  @see FCCommand
+	 */
+	FCCommand* GetCommandByActionText(const char* sName);
+
 	/// method is OBSOLET use GetModuleCommands() or GetAllCommands() 
 	const std::map<std::string, FCCommand*>& GetCommands() { return _sCommands; }
 	/// get frequently called by the AppWnd to check the commands are active

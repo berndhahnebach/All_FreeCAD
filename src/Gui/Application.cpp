@@ -160,8 +160,8 @@ ApplicationWindow::ApplicationWindow()
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw tree"),this,"Raw Tree View");
-	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
+	//FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
+	//AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
 
 	// misc stuff
     resize( 800, 600 );
@@ -210,41 +210,8 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// toolbar and dock window handling
+// dock window handling
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-/// Get a named Toolbar or creat if not in
-QToolBar *ApplicationWindow::GetToolBar(const char* name)
-{
-  return _pcWidgetMgr->getToolBar(name);
-}
-
-std::vector<QToolBar*> ApplicationWindow::GetToolBars()
-{
-  std::vector<QToolBar*> tb;
-  std::vector<FCToolBar*> tbs = _pcWidgetMgr->getToolBars();
-
-  for (std::vector<FCToolBar*>::iterator it = tbs.begin(); it != tbs.end(); ++it)
-    tb.push_back(*it);
-  return tb;
-}
-
-/// Delete a named Toolbar
-void ApplicationWindow::DelToolBar(const char* name)
-{
-  _pcWidgetMgr->delToolBar(name);
-}
-/// Get a named Command bar view or creat if not in
-FCToolBar *ApplicationWindow::GetCommandBar(const char* name)
-{
-  return _pcWidgetMgr->getCmdBar(name);
-}
-
-/// Delete a named Command bar view
-void ApplicationWindow::DelCommandBar(const char* name)
-{
-  _pcWidgetMgr->delCmdBar(name);
-}
 
 /// Add a new named Dock Window
 void ApplicationWindow::AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
@@ -328,7 +295,7 @@ void ApplicationWindow::CreateTestOperations()
 	// default toolbars -----------------------------------------------------------------------
   //
   // populate toolbars with all default actions
-  QToolBar *pcStdToolBar =  GetToolBar("file operations");
+  QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
   //_pcStdToolBar->setLabel( "File" );
 
   if (!bInit)
@@ -568,8 +535,8 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
 
     std::map<int, QToolBar*> toolb;
 
-    std::vector<QToolBar*> aclToolBars = GetToolBars();
-	  for (std::vector<QToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
+    std::vector<FCToolBar*> aclToolBars = _pcWidgetMgr->getToolBars();
+	  for (std::vector<FCToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
     {
       int id = menu.insertItem((*It)->name());
       QToolBar* tb = *It;
@@ -795,7 +762,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
     char *psToolbarName;
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	Instance->DelToolBar(psToolbarName);
+	Instance->GetCustomWidgetManager()->delToolBar(psToolbarName);
 
 	Py_INCREF(Py_None);
     return Py_None;
@@ -806,8 +773,6 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
 	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
 		return NULL;                                      // NULL triggers exception 
 
-//	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
-//	pcBar->addSeparator(); not implemented yet
   Instance->_pcWidgetMgr->addItem("Separator");
 
 	Py_INCREF(Py_None);
@@ -856,7 +821,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance->DelCommandBar(psToolbarName);
+	Instance->GetCustomWidgetManager()->delCmdBar(psToolbarName);
     
 	Py_INCREF(Py_None);
 	return Py_None;

@@ -131,22 +131,11 @@ public:
 
 	/// Reference to the command manager
 	FCCommandManager &GetCommandManager(void){return _cCommandManager;}
+  /// Returns the widget manager
+  FCCustomWidgetManager* GetCustomWidgetManager(void) { return _pcWidgetMgr; }
 
 	/// Referenc to the bitmap factory
 	FCBmpFactory     &GetBmpFactory(void){return _cBmpFactory;}
-
-	/// Get a named Toolbar or creat if not in
-	QToolBar *GetToolBar(const char* name);
-	/// Get all toolbars
-	std::vector<QToolBar*> GetToolBars(); 
-	/// Delete a named Toolbar
-	void DelToolBar(const char* name);
-
-	// Get a named Command bar view or creat if not in
-	FCToolBar *GetCommandBar(const char* name);
-
-	/// Delete a named Command bar view
-	void DelCommandBar(const char* name);
 
 	/// Add a new named Dock Window
 	void          AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);

@@ -31,94 +31,29 @@
 #ifndef DLGCUSTOMIZE_H
 #define DLGCUSTOMIZE_H
 
-#include "DlgToolbars.h"
-#include "DlgCommands.h"
-#include "DlgActions.h"
 #include "Window.h"
 
 class FCCommand;
+class FCToolBar;
 class QTabWidget;
 
-class FCDlgCustomToolbarsImp : public FCDlgCustomToolbars
-{ 
-  Q_OBJECT
+class FCPropertyPage
+{
+  protected:
+    FCPropertyPage();
 
   public:
-    FCDlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgCustomToolbarsImp();
-
-  protected slots:
-    /// shows all buttons of the toolbar
-    void slotToolBarSelected(const QString &);
-    /// creates new toolbar
-    void slotCreateToolBar();
-    /// adds a new action by double click
-    void slotDblClickAddAction(QListViewItem*);
-    /// adds a new action
-    void slotAddAction();
-    /// removes an action
-    void slotRemoveAction();
-    /// moves up an action
-    void slotMoveUpAction();
-    /// moves down an action
-    void slotMoveDownAction();
-    /// enables/disables buttons for change
-    void slotCurrentActionsChanged( QListViewItem *i );
-    /// enables/disables buttons for change
-    void slotAvailableActionsChanged( QListViewItem *i );
-    // applies changes
-    void apply();
+    virtual ~FCPropertyPage() {}
+    bool isModified();
+    void setModified(bool b);
+    void slotApply();
+    void slotCancel();
 
   protected:
-    // groups of commands
-    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
-    std::vector<QToolBar*>                          m_aclToolbars;
-    bool bChanged;
-};
+    virtual void apply();
+    virtual void cancel();
 
-class FCDlgCustomCommandsImp : public FCDlgCustomCommands
-{ 
-  Q_OBJECT
-
-  public:
-    FCDlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgCustomCommandsImp();
-
-  protected slots:
-    /// shows the description for the corresponding command
-    void slotDescription(QString);
-    /// show all commands of this category
-    void slotGroupSelected(const QString &);
-    // applies changes
-    void apply();
-
-  protected:
-    // groups of commands
-    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
-    bool bChanged;
-};
-
-class FCDlgCustomActionsImp : public FCDlgCustomActions
-{ 
-  Q_OBJECT
-
-  public:
-    FCDlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgCustomActionsImp();
-
-  protected slots:
-    /// enables/disables buttons for change
-    void slotCustomActionsChanged( QListViewItem *i );
-    /// adds a custom action
-    void slotAddCustomAction();
-    /// deletes a custom action
-    void slotDelCustomAction();
-    /// select a pixmap
-    void slotCustomActionPixmap();
-    // applies changes
-    void apply();
-
-  protected:
+  private:
     bool bChanged;
 };
 
@@ -136,20 +71,22 @@ class FCDlgCustomize : public QDialog
   public:
     FCDlgCustomize( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~FCDlgCustomize();
-
-    QPushButton* buttonHelp;
-    QPushButton* buttonApply;
-    QPushButton* buttonOk;
-    QPushButton* buttonCancel;
-    QTabWidget* tabWidget;
+    void insertTab (QWidget* w, QString name);
 
   protected slots:
     /// click the OK button
     void slotOK();
     /// click the Apply button
     void slotApply();
+    /// click the Cancel button
+    void slotCancel();
 
   protected:
+    QPushButton* buttonHelp;
+    QPushButton* buttonApply;
+    QPushButton* buttonOk;
+    QPushButton* buttonCancel;
+    QTabWidget* tabWidget;
     QGridLayout* FCDlgCustomizeBaseLayout;
     QHBoxLayout* Layout;
     std::vector<QWidget*> tabPages;

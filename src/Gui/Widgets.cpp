@@ -511,9 +511,9 @@ void FCDlgCreateToolOrCmdBar::accept ()
 {
   QString txt = LineEditName->text();
   if (CheckCreateToolBar->isChecked())
-    ApplicationWindow::Instance->GetToolBar(txt.latin1());
+    ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(txt.latin1());
   if (CheckCreateCmdBar->isChecked())
-    ApplicationWindow::Instance->GetCommandBar(txt.latin1());
+    ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(txt.latin1());
   QDialog::accept();
 }
 
