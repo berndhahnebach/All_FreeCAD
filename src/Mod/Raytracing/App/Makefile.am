@@ -1,12 +1,24 @@
 
 lib_LTLIBRARIES=libRaytracing.la
 
+BUILT_SOURCES=\
+		FreeCADpov.h
+
 libRaytracing_la_SOURCES=\
 		AppRaytracing.cpp \
+		AppRaytracingPy.cpp \
 		FeatureRayExportPov.cpp \
 		FeatureRayExportPov.h \
+		PovTools.cpp \
+		PovTools.h \
+		PreCompiled.cpp \
+		PreCompiled.h \
 		RayFeature.cpp \
 		RayFeature.h
+
+
+FreeCADpov.h: FreeCADpov
+	$(PYTHON) $(top_srcdir)/../../Tools/PythonToCPP.py $(<F) $@
 
 
 # the library search path.

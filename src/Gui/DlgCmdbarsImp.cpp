@@ -34,6 +34,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgCustomCmdbarsImp */
+
 /**
  *  Constructs a DlgCustomCmdbarsImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'

@@ -24,6 +24,14 @@
 #ifndef _PovTools_h_
 #define _PovTools_h_
 
+#ifndef _PreComp_
+# include <gp_Vec.hxx>
+# include <vector>
+#endif
+
+class TopoDS_Shape;
+class TopoDS_Face;
+
 namespace Raytracing
 {
 

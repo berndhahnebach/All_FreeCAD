@@ -45,6 +45,7 @@
 
 using namespace Gui;
 
+/* TRANSLATOR Gui::CheckMessageBox */
 
 /**
  * Constructs a message box with no text and a button with the label "OK".
@@ -356,6 +357,8 @@ QDragObject * CommandIconView::dragObject ()
 
 // ------------------------------------------------------------------------------
 
+/* TRANSLATOR Gui::AccelLineEdit */
+
 /**
  * Constructs a line edit with no text.
  * The \a parent and \a name arguments are sent to the QLineEdit constructor.
@@ -421,6 +424,8 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
 }
 
 // ------------------------------------------------------------------------------
+
+/* TRANSLATOR Gui::CheckListDialog */
 
 /**
  *  Constructs a CheckListDialog which is a child of 'parent', with the

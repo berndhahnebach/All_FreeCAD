@@ -653,6 +653,8 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
 
 // ------------------------------------------------------------------------
 
+/* TRANSLATOR Gui::PythonEditView */
+
 /**
  *  Constructs a PythonEditView which is a child of 'parent', with the
  *  name 'name'.

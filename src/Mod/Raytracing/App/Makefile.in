@@ -142,10 +142,19 @@ target_alias = @target_alias@
 
 lib_LTLIBRARIES = libRaytracing.la
 
+BUILT_SOURCES = \
+		FreeCADpov.h
+
+
 libRaytracing_la_SOURCES = \
 		AppRaytracing.cpp \
+		AppRaytracingPy.cpp \
 		FeatureRayExportPov.cpp \
 		FeatureRayExportPov.h \
+		PovTools.cpp \
+		PovTools.h \
+		PreCompiled.cpp \
+		PreCompiled.h \
 		RayFeature.cpp \
 		RayFeature.h
 
@@ -167,15 +176,18 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libRaytracing_la_DEPENDENCIES =
-am_libRaytracing_la_OBJECTS = AppRaytracing.lo FeatureRayExportPov.lo \
-	RayFeature.lo
+am_libRaytracing_la_OBJECTS = AppRaytracing.lo AppRaytracingPy.lo \
+	FeatureRayExportPov.lo PovTools.lo PreCompiled.lo RayFeature.lo
 libRaytracing_la_OBJECTS = $(am_libRaytracing_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracing.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/AppRaytracingPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeatureRayExportPov.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PovTools.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/RayFeature.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -196,7 +208,8 @@ DIST_SOURCES = $(libRaytracing_la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libRaytracing_la_SOURCES)
 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -243,7 +256,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracing.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracingPy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureRayExportPov.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PovTools.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RayFeature.Plo@am__quote@
 
 distclean-depend:
@@ -378,7 +394,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES)
 
 installdirs:
@@ -408,6 +425,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -468,6 +486,9 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 	pdf-am ps ps-am tags uninstall uninstall-am uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
+
+FreeCADpov.h: FreeCADpov
+	$(PYTHON) $(top_srcdir)/../../Tools/PythonToCPP.py $(<F) $@
 
 # We need this softlink for Python to load
 install-data-local:

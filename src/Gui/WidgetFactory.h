@@ -194,6 +194,8 @@ inline WidgetFactorySupplier &GetWidgetFactorySupplier()
  */
 class ContainerDialog : public QDialog
 {
+  Q_OBJECT
+
 public:
   ContainerDialog( QWidget* templChild );
   ~ContainerDialog();

@@ -132,6 +132,8 @@ void SplashScreen::drawContents ( QPainter * painter )
 
 // ------------------------------------------------------------------------------
 
+/* TRANSLATOR Gui::AboutDialog */
+
 /**
  *  Constructs a AboutDialog which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'WStyle_Customize|WStyle_NoBorder|WType_Modal'
@@ -190,7 +192,7 @@ AboutDialog::~AboutDialog()
  */
 void AboutDialog::languageChange()
 {
-  pushButton1->setText( tr( "&OK" ) );
+  pushButton1->setText( tr( "&Ok" ) );
   pushButton1->setAccel( QKeySequence( tr( "Alt+O" ) ) );
   QString SplasherText = QString(
                            "<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">"

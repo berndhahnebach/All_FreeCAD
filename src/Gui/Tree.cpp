@@ -169,7 +169,7 @@ QPixmap* TreeView::pcLabelOpen=0;
 QPixmap* TreeView::pcLabelClosed=0;
 QPixmap* TreeView::pcAttribute=0;
 
-
+/* TRANSLATOR Gui::TreeView */
 TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
   :DockView(pcDocument,parent,name)
 {

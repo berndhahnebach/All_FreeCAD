@@ -153,7 +153,9 @@ libPart_la_SOURCES = \
 		FeaturePartImportStep.cpp \
 		FeaturePartImportStep.h \
 		PartFeature.cpp \
-		PartFeature.h
+		PartFeature.h \
+		PartFeaturePy.cpp \
+		PartFeaturePy.h
 
 
 # the library search path.
@@ -179,7 +181,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libPart_la_DEPENDENCIES =
 am_libPart_la_OBJECTS = AppPart.lo FeaturePartBox.lo FeaturePartCut.lo \
 	FeaturePartImportIges.lo FeaturePartImportStep.lo \
-	PartFeature.lo
+	PartFeature.lo PartFeaturePy.lo
 libPart_la_OBJECTS = $(am_libPart_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -190,7 +192,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartCut.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportIges.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportStep.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PartFeature.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/PartFeature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PartFeaturePy.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -262,6 +265,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportIges.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportStep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartFeature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartFeaturePy.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

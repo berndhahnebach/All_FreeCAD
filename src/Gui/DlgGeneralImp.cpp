@@ -38,6 +38,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgGeneralImp */
+
 /**
  *  Constructs a DlgGeneralImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

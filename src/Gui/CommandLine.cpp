@@ -67,6 +67,8 @@ void ConsoleValidator::fixup ( QString & txt) const
 
 // --------------------------------------------------------------------
 
+/* TRANSLATOR Gui::CommandLineBase */
+
 /**
  * Constructs the command line. It's possible to run Python scripts from there;
  * it's also possible to drag and drop the command name from menus.

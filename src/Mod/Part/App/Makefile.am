@@ -12,7 +12,9 @@ libPart_la_SOURCES=\
 		FeaturePartImportStep.cpp \
 		FeaturePartImportStep.h \
 		PartFeature.cpp \
-		PartFeature.h
+		PartFeature.h \
+		PartFeaturePy.cpp \
+		PartFeaturePy.h
 
 # the library search path.
 libPart_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

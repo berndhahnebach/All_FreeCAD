@@ -208,6 +208,7 @@ int __stdcall WinMain(HINSTANCE hInstance,
   } 
   free(argv); 
 
-  return retVal;; 
-} 
-#endif 
+  return retVal;;
+}
+
+#endif

@@ -42,6 +42,7 @@
 using Gui::PreviewLabel;
 using namespace Gui::PropertyEditor;
 
+/* TRANSLATOR Gui::PropertyEditor::FileEditorItem */
 
 FileEditorItem::FileEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -94,6 +95,8 @@ void FileEditorItem::onChangeFile()
 }
 
 // ======================================================================
+
+/* TRANSLATOR Gui::PropertyEditor::PixmapEditorItem */
 
 PixmapEditorItem::PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )

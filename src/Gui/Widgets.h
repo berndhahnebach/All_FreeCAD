@@ -51,6 +51,8 @@ class CommandViewItemPrivate;
  */
 class GuiExport CheckMessageBox : public QMessageBox
 {
+  Q_OBJECT
+
 public:
   CheckMessageBox(QWidget * parent=0, const char * name=0);
   ~CheckMessageBox();

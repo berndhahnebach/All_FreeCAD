@@ -43,6 +43,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgCustomActionsImp */
+
 /**
  *  Constructs a DlgCustomActionsImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'

@@ -36,6 +36,8 @@
 using namespace Gui;
 using namespace Gui::DockWnd;
 
+/* TRANSLATOR Gui::DockWnd::ReportView */
+
 /**
  *  Constructs a ReportView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
@@ -144,6 +146,8 @@ void ReportHighlighter::setErrorColor( const QColor& col )
 }
 
 // ----------------------------------------------------------
+
+/* TRANSLATOR Gui::DockWnd::ReportOutput */
 
 /**
  *  Constructs a ReportOutput which is a child of 'parent', with the 

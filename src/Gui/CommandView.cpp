@@ -506,7 +506,7 @@ StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
 void StdCmdViewIvIssueCamPos::activated(int iMsg)
 {
   std::string Temp,Temp2;
-  int pos;
+  unsigned int pos;
 
   const char* ppReturn=0;
   getAppWnd()->sendMsgToActiveView("GetCamera",&ppReturn);
@@ -515,9 +515,9 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
   Temp2 = ppReturn;
   pos = Temp2.find_first_of("\n");
   Temp2.erase(0,pos);
-  
+
   // remove all returns
-  while((pos=Temp2.find('\n')) != std::string::npos) 
+  while((pos=Temp2.find('\n')) != std::string::npos)
     Temp2.replace(pos,1," ");
 
   // build up the command string

@@ -51,6 +51,8 @@ QPixmap* PropertyView::pcLabelOpen=0;
 QPixmap* PropertyView::pcLabelClosed=0;
 QPixmap* PropertyView::pcAttribute=0;
 
+/* TRANSLATOR Gui::DockWnd::PropertyView */
+
 PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char *name)
   :DockView(pcDocument,parent,name)
 {

@@ -40,6 +40,8 @@
 using namespace Gui;
 
 
+/* TRANSLATOR Gui::FileDialog */
+
 QString FileDialog::getOpenFileName ( const QString & startWith, const QString & filter, QWidget * parent,
                                       const char* name, const QString & caption, const QString& buttonText )
 {
@@ -231,6 +233,8 @@ void ImagePreview::drawContents( QPainter *p, int clipx, int clipy, int clipw, i
 
 // ======================================================================
 
+/* TRANSLATOR Gui::PreviewLabel */
+
 /**
  * Constructs a preview label called \a name with the parent \a parent.
  */
@@ -307,6 +311,8 @@ const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
 }
 
 // --------------------------------------------------------------------
+
+/* TRANSLATOR Gui::FileChooser */
 
 /**
  * Constructs a file chooser called \a name with the parent \a parent.

@@ -38,6 +38,8 @@
 
 using namespace Gui::DockWnd;
 
+/* TRANSLATOR Gui::DockWnd::ButtonGroup */
+
 /** 
  * Constructs a button group with no title. 
  */

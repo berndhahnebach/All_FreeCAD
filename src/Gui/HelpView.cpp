@@ -193,6 +193,7 @@ void HelpSourceFactory::setExtensionType( const QString& ext, const char* mimety
 
 // --------------------------------------------------------------------------
 
+/* TRANSLATOR Gui::DockWnd::TextBrowser */
 TextBrowser::TextBrowser(QWidget * parent, const char * name)
   : QTextBrowser(parent, name)
 {
@@ -416,6 +417,8 @@ void TextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
 }
 
 // --------------------------------------------------------------------
+
+/* TRANSLATOR Gui::DockWnd::HelpView */
 
 /**
  *  Constructs a HelpView which is a child of 'parent', with the 

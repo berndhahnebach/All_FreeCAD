@@ -92,6 +92,8 @@ private:
  */
 class PreviewLabel : public QWidget, public QFilePreview
 {
+  Q_OBJECT
+
 public:
   PreviewLabel( QWidget *parent=0, const char* name =0 );
 

@@ -141,6 +141,8 @@ private:
  */
 class GuiExport PythonEditView : public MDIView
 {
+  Q_OBJECT
+
 public:
   PythonEditView( QWidget* parent, const char* name);
   ~PythonEditView();

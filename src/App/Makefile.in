@@ -166,6 +166,12 @@ libFreeCADApp_la_SOURCES = \
 		Feature.h \
 		FeatureAttr.cpp \
 		FeatureAttr.h \
+		FeatureDataProvider.cpp \
+		FeatureDataProvider.h \
+		FeatureDataProviderPy.cpp \
+		FeatureDataProviderPy.h \
+		FeaturePy.cpp \
+		FeaturePy.h \
 		Function.cpp \
 		Function.h \
 		Label.cpp \
@@ -218,7 +224,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libFreeCADApp_la_DEPENDENCIES =
 am_libFreeCADApp_la_OBJECTS = Application.lo ApplicationPy.lo \
 	Attribute.lo DocTypeAttr.lo Document.lo DocumentPy.lo \
-	Doxygen.lo Feature.lo FeatureAttr.lo Function.lo Label.lo \
+	Doxygen.lo Feature.lo FeatureAttr.lo FeatureDataProvider.lo \
+	FeatureDataProviderPy.lo FeaturePy.lo Function.lo Label.lo \
 	PreCompiled.lo Property.lo PropertyAttr.lo Topology.lo
 libFreeCADApp_la_OBJECTS = $(am_libFreeCADApp_la_OBJECTS)
 
@@ -232,8 +239,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/DocumentPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/Feature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeatureAttr.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Function.Plo ./$(DEPDIR)/Label.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FeatureDataProvider.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FeatureDataProviderPy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FeaturePy.Plo ./$(DEPDIR)/Function.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Label.Plo ./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Property.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyAttr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Topology.Plo
@@ -312,6 +321,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureAttr.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureDataProvider.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureDataProviderPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Function.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@

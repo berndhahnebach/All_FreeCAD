@@ -145,6 +145,8 @@ struct ApplicationWindowP
 
 } // namespace Gui
 
+/* TRANSLATOR Gui::ApplicationWindow */
+
 ApplicationWindow::ApplicationWindow()
     : QMainWindow( 0, "Main window", WDestructiveClose )
 {

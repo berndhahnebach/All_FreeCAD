@@ -44,6 +44,8 @@
 
 using namespace Gui;
 
+/* TRANSLATOR Gui::Document */
+
 int Document::_iDocCount = 0;
 
 Document::Document(App::Document* pcDocument,ApplicationWindow * app, const char * name)

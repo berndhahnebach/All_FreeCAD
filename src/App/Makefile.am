@@ -24,6 +24,12 @@ libFreeCADApp_la_SOURCES=\
 		Feature.h \
 		FeatureAttr.cpp \
 		FeatureAttr.h \
+		FeatureDataProvider.cpp \
+		FeatureDataProvider.h \
+		FeatureDataProviderPy.cpp \
+		FeatureDataProviderPy.h \
+		FeaturePy.cpp \
+		FeaturePy.h \
 		Function.cpp \
 		Function.h \
 		Label.cpp \

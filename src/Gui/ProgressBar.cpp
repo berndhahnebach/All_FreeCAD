@@ -49,6 +49,8 @@ struct ProgressBarPrivate
 };
 }
 
+/* TRANSLATOR Gui::ProgressBar */
+
 ProgressBar* ProgressBar::_pclSingleton = 0L;
 
 ProgressBar* ProgressBar::instance()

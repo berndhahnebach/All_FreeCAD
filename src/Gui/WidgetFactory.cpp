@@ -158,6 +158,8 @@ WidgetFactorySupplier & WidgetFactorySupplier::instance()
 
 // ----------------------------------------------------
 
+/* TRANSLATOR Gui::ContainerDialog */
+
 /**
  *  Constructs a ContainerDialog which embeds the child \a templChild.
  *  The dialog will be modal.

@@ -37,6 +37,8 @@ using namespace Gui::Dialog;
 
 QStringList DlgCustomizeImp::_pages;
 
+/* TRANSLATOR Gui::Dialog::DlgCustomizeImp */
+
 /**
  *  Constructs a DlgCustomizeImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

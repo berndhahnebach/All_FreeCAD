@@ -68,6 +68,8 @@ struct NetworkRetrieverP
 
 } // namespace Gui
 
+/* TRANSLATOR Gui::NetworkRetriever */
+
 NetworkRetriever::NetworkRetriever( QObject * parent, const char * name )
 : QObject( parent, name )
 {

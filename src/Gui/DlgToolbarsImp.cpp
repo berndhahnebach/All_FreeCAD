@@ -303,6 +303,8 @@ void DlgCustomToolbars::onDoubleClickedAction(QListViewItem* item)
 
 // -------------------------------------------------------------
 
+/* TRANSLATOR Gui::Dialog::DlgCustomToolbarsImp */
+
 /**
  *  Constructs a DlgCustomToolbarsImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
