@@ -1,0 +1,160 @@
+# This is a Qt message file in .po format.  Each msgid starts with
+# a scope.  This scope should *NOT* be translated - eg. translating
+# from French to English, "Foo::Bar" would be translated to "Pub",
+# not "Foo::Pub".
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2001-01-16 07:49:20 CET\n"
+"PO-Revision-Date: YYYY-MM-DD\n"
+"Last-Translator: FULLNAME <EMAIL@ADDRESS>\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+
+#: ../src/qextmdichildfrm.cpp:1065
+msgid "QextMdiChildFrm::&Close"
+msgstr "Sch&ließen"
+
+#: ../src/qextmdichildfrm.cpp:1054
+msgid "QextMdiChildFrm::&Maximize"
+msgstr "Ma&ximieren"
+
+#: ../src/qextmdichildfrm.cpp:1056
+msgid "QextMdiChildFrm::&Minimize"
+msgstr "&Minimieren"
+
+#: ../src/qextmdichildfrm.cpp:1034
+msgid "QextMdiChildFrm::&Move"
+msgstr "&Verschieben"
+
+#: ../src/qextmdichildfrm.cpp:1060
+msgid "QextMdiChildFrm::&Resize"
+msgstr "&Größe ändern"
+
+#: ../src/qextmdichildfrm.cpp:1052
+msgid "QextMdiChildFrm::&Restore"
+msgstr "&Wiederherstellen"
+
+#: ../src/qextmdichildfrm.cpp:1063
+msgid "QextMdiChildFrm::&Undock"
+msgstr "&Abdocken"
+
+#: ../src/qextmdichildfrm.cpp:1037
+msgid "QextMdiChildFrm::M&aximize"
+msgstr "Ma&ximieren"
+
+#: ../src/qextmdichildfrm.cpp:1036
+msgid "QextMdiChildFrm::M&inimize"
+msgstr "Mi&nimieren"
+
+#: ../src/qextmdichildfrm.cpp:1058
+msgid "QextMdiChildFrm::M&ove"
+msgstr "&Verschieben"
+
+#: ../src/qextmdichildfrm.cpp:1035
+msgid "QextMdiChildFrm::R&esize"
+msgstr "&Größe ändern"
+
+#: ../src/qextmdichildfrmcaption.cpp:49
+msgid "QextMdiChildFrmCaption::Unnamed"
+msgstr "Unbenannt"
+
+#: ../src/qextmdichildview.cpp:79
+msgid "QextMdiChildView::Unnamed"
+msgstr "Unbenannt"
+
+#: ../src/qextmdimainfrm.cpp:1449
+msgid "QextMdiMainFrm::&Close"
+msgstr "Sch&ließen"
+
+#: ../src/qextmdimainfrm.cpp:1492
+msgid "QextMdiMainFrm::&Dock/Undock..."
+msgstr "&Docken/abdocken..."
+
+#: ../src/qextmdimainfrm.cpp:1462
+msgid "QextMdiMainFrm::&MDI Mode..."
+msgstr "&MDI Modus..."
+
+#: ../src/qextmdimainfrm.cpp:1456
+msgid "QextMdiMainFrm::&Minimize All"
+msgstr "Alle &minimieren"
+
+#: ../src/qextmdimainfrm.cpp:1482
+msgid "QextMdiMainFrm::&Tile..."
+msgstr "&Anordnen..."
+
+#: ../src/qextmdimainfrm.cpp:1464
+msgid "QextMdiMainFrm::&Toplevel mode"
+msgstr "&Toplevel-Modus"
+
+#: ../src/qextmdimainfrm.cpp:1465
+msgid "QextMdiMainFrm::C&hildframe mode"
+msgstr "&Rahmenfenster-Modus"
+
+#: ../src/qextmdimainfrm.cpp:1484
+msgid "QextMdiMainFrm::Ca&scade windows"
+msgstr "Überla&ppend"
+
+#: ../src/qextmdimainfrm.cpp:1485
+msgid "QextMdiMainFrm::Cascade &maximized"
+msgstr "Überlappend ma&ximieren"
+
+#: ../src/qextmdimainfrm.cpp:1450
+msgid "QextMdiMainFrm::Close &All"
+msgstr "Alle &schließen"
+
+#: ../src/qextmdimainfrm.cpp:659
+msgid "QextMdiMainFrm::Close"
+msgstr "Schließen"
+
+#: ../src/qextmdimainfrm.cpp:657
+msgid "QextMdiMainFrm::Dock"
+msgstr "&Docken"
+
+#: ../src/qextmdimainfrm.cpp:1487
+msgid "QextMdiMainFrm::Expand &horizontally"
+msgstr "&Horizontal maximieren"
+
+#: ../src/qextmdimainfrm.cpp:1486
+msgid "QextMdiMainFrm::Expand &vertically"
+msgstr "&Vertikal maximieren"
+
+#: ../src/qextmdimainfrm.cpp:655
+msgid "QextMdiMainFrm::Maximize"
+msgstr "Maximieren"
+
+#: ../src/qextmdimainfrm.cpp:656
+msgid "QextMdiMainFrm::Minimize"
+msgstr "Minimieren"
+
+#: ../src/qextmdimainfrm.cpp:662
+msgid "QextMdiMainFrm::Operations"
+msgstr "Operationen"
+
+#: ../src/qextmdimainfrm.cpp:654
+msgid "QextMdiMainFrm::Restore"
+msgstr "Wiederherstellen"
+
+#: ../src/qextmdimainfrm.cpp:1466
+msgid "QextMdiMainFrm::Ta&b Page mode"
+msgstr "Ta&bultorseitenmodus"
+
+#: ../src/qextmdimainfrm.cpp:1488
+msgid "QextMdiMainFrm::Tile &non-overlapped"
+msgstr "&Nichtüberlappend anordnen"
+
+#: ../src/qextmdimainfrm.cpp:1489
+msgid "QextMdiMainFrm::Tile overla&pped"
+msgstr "Überla&ppend anordnen"
+
+#: ../src/qextmdimainfrm.cpp:1490
+msgid "QextMdiMainFrm::Tile v&ertically"
+msgstr "V&ertikal anordnen"
+
+#: ../src/qextmdimainfrm.cpp:651
+msgid "QextMdiMainFrm::Undock"
+msgstr "Abdocken"
+
+#: ../src/qextmdimainfrm.cpp:639
+msgid "QextMdiMainFrm::Window"
+msgstr "Fenster"
+

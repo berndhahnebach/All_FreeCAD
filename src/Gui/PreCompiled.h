@@ -112,6 +112,7 @@
 #include <qmessagebox.h>
 #include <qmultilinedit.h>
 #include <qnamespace.h>
+#include <qobjectlist.h>
 #include <qpaintdevicemetrics.h>
 #include <qpainter.h>
 #include <qpalette.h> 
@@ -132,6 +133,7 @@
 #include <qvbox.h>
 #include <qwidget.h>
 #include <qworkspace.h>
+#include <qwidgetstack.h>
 #include <qtextbrowser.h> 
 #include <qurl.h>
 #include <qinputdialog.h>

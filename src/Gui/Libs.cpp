@@ -54,7 +54,7 @@
 #	pragma comment(lib,"TKCAF.lib")
 #	pragma comment(lib,"TKCDF.lib")
 	// QT extension
-#	pragma comment(lib,"qextmdi.lib")
+//#	pragma comment(lib,"qextmdi.lib")
 #	pragma comment(lib,QTLIBNAME)
 
 #else

@@ -35,7 +35,7 @@
 #	endif
 	// QT extension
 #	ifdef _FC_GUI_ENABLED_
-#		pragma comment(lib,"qextmdi.lib")
+//#		pragma comment(lib,"qextmdi.lib")
 #	endif
 
 #endif

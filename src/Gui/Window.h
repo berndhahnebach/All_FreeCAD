@@ -21,7 +21,7 @@
 
 
 #include <qwidget.h>
-#include <qextmdichildview.h>
+#include "qextmdi/qextmdichildview.h"
 #include "../Base/Parameter.h"
 
 class FCGuiDocument;

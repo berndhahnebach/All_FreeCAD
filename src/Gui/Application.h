@@ -38,7 +38,7 @@
 #include <qworkspace.h>
 #include <qthread.h>
 
-#include <qextmdimainfrm.h>
+#include "qextmdi/qextmdimainfrm.h"
 
 
 #define  putpix()

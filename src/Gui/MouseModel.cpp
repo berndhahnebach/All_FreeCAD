@@ -593,8 +593,10 @@ void FCMouseModelCirclePicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
   _pcView3D->PopMouseModel();
 }
 
+
 void FCMouseModelCirclePicker::wheelEvent			    ( QWheelEvent  * cEvent )
 {
-  int delta = cEvent->delta();
-  _nRadius = std::max<int>(5, _nRadius + delta / 10);
+	int delta = cEvent->delta();
+	_nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
+
 }

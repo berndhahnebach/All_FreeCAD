@@ -109,6 +109,10 @@
 // QTextMdi
 
 #define NO_KDE2
+//#define QT_NO_COMPAT
+#ifdef FCGui
+#	define MAKEDLL_QEXTMDI
+#endif
 
 
 //**************************************************************************

@@ -33,7 +33,7 @@
 #include "../Base/Parameter.h"
 #include "Command.h"
 
-#include <qextmdimainfrm.h>
+#include "qextmdi/qextmdimainfrm.h"
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qradiobutton.h>

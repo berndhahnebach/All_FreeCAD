@@ -20,8 +20,6 @@
 class FCInterpreter;
 
 
-
-
 /** The FCPythonExport class, exports the class as a python type
  *  FCPythonExport is the base class for all C++ classes which
  *  need to get exported into the python name space. Note: only
@@ -111,7 +109,11 @@ inline void Assert(int expr, char *msg)		// C++ assert
 #define Py_Try(F) {if (!(F)) return NULL;}
 #define Py_Assert(A,E,M) {if (!(A)) {PyErr_SetString(E, M); return NULL;}}
 
-inline void Py_Fatal(char *M) {std::cout << M << std::endl; exit(-1);};
+inline void Py_Fatal(char *M) 
+{
+	std::cout << M << std::endl; 
+	exit(-1);
+};
 
 /// This must be the first line of each PyC++ class
 #define Py_Header												\

@@ -250,3 +250,7 @@ Version: V0.1B59 Date: Thu May 17 15:40:24 2003 +++++++++++++++++++++++++++++++
 + pragmas set for windows only
 + bug fixed in Buttongroug
 + add string for CustomWidget where to store
+
+Version: V0.1B59 Date: Sun May 18 11:03:48 2003 +++++++++++++++++++++++++++++++
++ qextmdi added
++ some changes in close flow, still not finished
