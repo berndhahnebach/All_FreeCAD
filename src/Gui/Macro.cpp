@@ -45,6 +45,8 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Macro.h"
+#include "../Base/Interpreter.h"
+
 
 
 
@@ -53,7 +55,9 @@
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCMacroManager::FCMacroManager(){}
+FCMacroManager::FCMacroManager()
+:_bIsOpen(false)
+{}
 
 FCMacroManager::~FCMacroManager(){}
 
@@ -63,9 +67,67 @@ FCMacroManager::~FCMacroManager(){}
 
 void FCMacroManager::Open(MacroType eType,const char *sName)
 {
+	// check 
+	assert(!_bIsOpen);
+	assert(eType == File);
+
+	_sName = sName;
+
+	if(_sName.find(".FCMacro") == std::string::npos)
+		_sName += ".FCMacro";
+
+
+	_sMacroInProgress += "# Macro Begin: ";
+	_sMacroInProgress += _sName;
+	_sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+	//sMacroInProgress += "def Macro:\n\n";
+
+	_bIsOpen = true;
+}
+
+/// close (and save) the recording sassion
+void FCMacroManager::Commit(void)
+{
+	_sMacroInProgress += "# Macro End: ";
+	_sMacroInProgress += _sName;
+	_sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+	ofstream file(_sName.c_str());
+	
+	file << 	_sMacroInProgress.c_str();
+	
+	_sMacroInProgress = "";
+	_sName = "";
+
+	_bIsOpen = false;
+}
+
+
+/// cancels the recording sassion
+void FCMacroManager::Cancel(void)
+{
+	_sMacroInProgress = "";
+	_sName = "";
+
+	_bIsOpen = false;
 	
 	
 }
+
+void FCMacroManager::AddLine(const char* sLine)
+{
+	//sMacroInProgress += "\t" + sLine + "\n";		
+	_sMacroInProgress += sLine;		
+	_sMacroInProgress += "\n";		
+}
+
+
+void FCMacroManager::Run(MacroType eType,const char *sName)
+{
+	GetInterpreter().LaunchFile(sName);
+}
+
+
 
 
 //**************************************************************************

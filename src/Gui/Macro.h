@@ -80,13 +80,31 @@ public:
 	 */
 	void Open(MacroType eType,const char *sName);
 
+	/// close (and save) the recording sassion
+	void Commit(void);
+
+	/// cancels the recording sassion
+	void Cancel(void);
+
+	/// indicates if a macro recording in in progress
+	bool IsOpen(void){return _bIsOpen;}
+
+	void AddLine(const char* sLine);
+
+	void Run(MacroType eType,const char *sName);
+
 	friend class ApplicationWindow;
 
 protected:
 
 #	pragma warning( disable : 4251 )
 	/** Container for the macro */
-	std::string sMacroInProgress;
+	std::string _sMacroInProgress;
+
+	/// name of the macro
+	std::string _sName;
+
+	bool _bIsOpen;
  
 };
 

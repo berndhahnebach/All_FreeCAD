@@ -50,6 +50,7 @@ public:
 
 	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
 	virtual bool addTo(QWidget *);
+  bool removeFrom ( QWidget * w );
   FCCommand* GetCommand() { return _pcCmd; }
 
 public slots:
@@ -61,6 +62,7 @@ protected slots:
   void slotToolButtonToggled( bool on );
   void slotClearStatusText();
   void slotShowStatusText( const QString& text );
+  void slotDestroyed();
 
 protected:
   std::vector<QWidget*> widgets;
@@ -84,7 +86,7 @@ public:
   void setItems(const std::vector<std::string>& items);
   void setName(const char* name);
 
-public slots:
+signals:
 	void activated (int i);
 
 protected:
@@ -196,10 +198,10 @@ public:
 	void AbortCommand(void);
 	/// types of application level actions for DoCommand()
 	enum DoCmd_Type {
-		// Action alters the document
-		Document,
+		/// Action alters the document
+		Doc,
 		/// Action alters only the application
-		Application,
+		App,
 		/// Action alters only the Gui
 		Gui
 	};
@@ -419,6 +421,18 @@ private:
 public:\
 	X();\
 	virtual void Activated(int iMsg);\
+};
+
+/** The Command Macro Standard + IsActive()
+ *  This macro makes it easyer to define a new command.
+ *  The parameters are the class name
+ */
+#define DEF_STD_CMD_A(X) class X : public FCCppCommand \
+{\
+public:\
+	X();\
+	virtual void Activated(int iMsg);\
+	virtual bool IsActive(void);\
 };
 
 /** The Command Macro view

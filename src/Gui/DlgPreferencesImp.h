@@ -45,11 +45,10 @@ class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
   public:
     DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~DlgPreferencesImp();
-    void addPreferenceGroup(const char* name);
-    void addPreferenceGroup(const char* name, const QPixmap& p);
-    void addPreferencePage(QWidget* page, const char* name);
-    void addPreferencePage(QWidget* page, const char* name, const QPixmap& p);
-    void addPreferencePage(QWidget* page, const char* name, const char* group);
+	/// Add a preferences page group
+    void addPreferenceGroup(const char* name, const char* Pixmap = "PrefTree_GroupClosed");
+	/// Add a page
+    void addPreferencePage(QWidget* page, const char* name, const char* group = 0L, const char* Pixmap = "PrefTree_PrefPage");
 
   protected:
     QTabWidget* getPreferenceGroup(const char* name);

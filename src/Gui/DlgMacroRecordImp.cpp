@@ -43,7 +43,10 @@
 #else
 #endif
 
+#include "Macro.h"
+#include "Application.h"
 #include "DlgMacroRecordImp.h"
+
 
 /* 
  *  Constructs a DlgMacroRecordImp which is a child of 'parent', with the 
@@ -55,6 +58,23 @@
 DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgMacroRecord( parent, name, modal, fl ),FCWindowParameter(name)
 {
+	// get the parameter group of the "Macro Execute" Dialog
+	FCHandle<FCParameterGrp> h = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/");
+	// get the macro home path
+	_cMacroPath = h->GetASCII("MacroPath",GetApplication().GetHomePath());
+	// get a pointer to the macro manager
+	_pcMacroMngr = ApplicationWindow::Instance->GetMacroMngr();
+
+	// check if a macro recording is in progress
+	if(_pcMacroMngr->IsOpen())
+	{
+		PushButtonStart->setEnabled(false);
+
+	}else{
+		PushButtonStop->setEnabled(false);
+
+
+	}
 }
 
 /*  
@@ -85,6 +105,49 @@ void DlgMacroRecordImp::OnTieToolBar()
 void DlgMacroRecordImp::OnTieKeyboard()
 {
     qWarning( "DlgMacroRecordImp::OnTieKeyboard() not yet implemented!" ); 
+}
+
+void DlgMacroRecordImp::Cancel()
+{
+	if(_pcMacroMngr->IsOpen())
+	{
+		_pcMacroMngr->Cancel();
+	}
+	reject();
+}
+
+void DlgMacroRecordImp::Start()
+{
+	// test if the path already set
+	if(LineEditPath->text().isEmpty())
+	{
+		QMessageBox::information( ApplicationWindow::Instance, "FreeCAD - Macro recorder",
+		                                       "Specifie first a place to save\n");
+		reject();
+	}else{
+		// open the macro recording
+		_pcMacroMngr->Open(FCMacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
+		accept();
+	}
+}
+
+void DlgMacroRecordImp::Stop()
+{
+	if(_pcMacroMngr->IsOpen())
+	{
+		// ends the macrorecording and save the file...
+		_pcMacroMngr->Commit();
+		accept();
+	}
+}
+
+void DlgMacroRecordImp::File()
+{
+	QString fn = QFileDialog::getSaveFileName(0, "FreeCAD script (*.FCScript)", ApplicationWindow::Instance);
+	if (!fn.isEmpty())
+	{
+		LineEditPath->setText ( fn );
+	}
 }
 
 

@@ -20,6 +20,8 @@
 #include "Application.h"
 #include "Document.h"
 #include "ButtonGroup.h"
+#include "Macro.h"
+
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
@@ -58,6 +60,24 @@ bool FCAction::addTo(QWidget *w)
     return false;
 
   return true;
+
+}
+
+bool FCAction::removeFrom ( QWidget * w )
+{
+  QWidget* o;
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!=widgets.end(); ++it)
+  {
+    if ((*it)->parentWidget() == w)
+    {
+      o = *it;
+      widgets.erase(it);
+  		disconnect( o, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
+      delete o;
+    }
+  }
+
+  return QAction::removeFrom(w);
 }
 
 void FCAction::slotToolButtonToggled( bool on )
@@ -91,7 +111,17 @@ void FCAction::slotShowStatusText( const QString& text )
 void FCAction::slotClearStatusText()
 {
   slotShowStatusText( QString::null );
+
 }
+
+void FCAction::slotDestroyed()
+{
+  const QWidget* w = (QWidget*)sender();
+  std::vector<QWidget*>::iterator it;
+  if ((it = std::find(widgets.begin(), widgets.end(), w)) != widgets.end())
+    widgets.erase(it);
+}
+
 
 void FCAction::Activated () 
 {
@@ -103,6 +133,7 @@ void FCAction::Toggled ( bool b)
 } 
 
 void FCAction::setEnabled ( bool b) 
+
 {
   QAction::setEnabled(b);
   // update all widgets containing this action
@@ -130,7 +161,8 @@ bool FCMultiAction::addTo(QWidget *w)
   {
     QComboBox* combo = new QComboBox(w, "Combo");
     widgets.push_back(combo);
-  	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
+  	connect( combo, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
+  	connect( combo, SIGNAL(  activated(int) )   , this, SIGNAL( activated(int) )   );
     combo->setMinimumWidth(130);
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
     {
@@ -141,7 +173,8 @@ bool FCMultiAction::addTo(QWidget *w)
   {
     QPopupMenu* popup = new QPopupMenu(w, "Menu");
     widgets.push_back(popup);
-  	connect( popup, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
+  	connect( popup, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
+  	connect( popup, SIGNAL(  activated(int) )   , this, SIGNAL( activated(int) )   );
 
     if (iconSet().isNull())
       ((QPopupMenu*)w)->insertItem(mName.c_str(), popup);
@@ -168,11 +201,6 @@ void FCMultiAction::setItems(const std::vector<std::string>& items)
 void FCMultiAction::setName(const char* name)
 {
   mName = name;
-}
-
-void FCMultiAction::activated (int i) 
-{
-  ApplicationWindow::Instance->OnWorkbenchChange(mItems[i].c_str());
 }
 
 //===========================================================================
@@ -205,6 +233,7 @@ bool FCUndoAction::addTo(QWidget* w)
 
     QToolTip::add( button, toolTip(), tipGroup, statusTip() );
     QWhatsThis::add(button, whatsThis());
+  	connect( button, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
     connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
     connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
 	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
@@ -247,6 +276,7 @@ bool FCRedoAction::addTo(QWidget* w)
 
     QToolTip::add( button, toolTip(), tipGroup, statusTip() );
     QWhatsThis::add(button, whatsThis());
+  	connect( button, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
     connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
     connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
 	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
@@ -384,6 +414,8 @@ void FCCommand::DoCommand(DoCmd_Type eType,const char* sCmd,...)
     vsprintf(format, sCmd, namelessVars);
     va_end(namelessVars);
 
+	GetInterpreter().RunFCCommand(format);
+	GetAppWnd()->GetMacroMngr()->AddLine(format);
 
 	free (format);
 

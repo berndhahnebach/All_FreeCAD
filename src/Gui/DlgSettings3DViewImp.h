@@ -1,4 +1,4 @@
-/** \file DlgMacroRecordImp.h
+/** \file DlgSettings3DViewImp.h
  *  \brief  
  *  \author $Author$
  *  \version $Revision$
@@ -30,34 +30,19 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#ifndef DLGMACRORECORDIMP_H
-#define DLGMACRORECORDIMP_H
-#include "DlgMacroRecord.h"
-#include "Window.h"
 
-class FCMacroManager;
+#ifndef FCDLGSETTINGS3DVIEWIMP_H
+#define FCDLGSETTINGS3DVIEWIMP_H
+#include "DlgSettings3DView.h"
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindowParameter
+class FCDlgSettings3DView : public DlgSettings3DView
 { 
     Q_OBJECT
 
 public:
-    DlgMacroRecordImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgMacroRecordImp();
+    FCDlgSettings3DView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~FCDlgSettings3DView();
 
-public slots:
-    virtual void OnTieCommandBar();
-    virtual void OnTieToolBar();
-    virtual void OnTieKeyboard();
-    virtual void Cancel();
-    virtual void Start();
-    virtual void Stop();
-    virtual void File();
-
-protected:
-	/// conviniance pointer
-	FCMacroManager* _pcMacroMngr; 
-	std::string _cMacroPath;
 };
 
-#endif // DLGMACRORECORDIMP_H
+#endif // FCDLGSETTINGS3DVIEWIMP_H

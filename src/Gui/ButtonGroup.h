@@ -121,9 +121,6 @@ class GuiExport FCToolboxBar : public FCToolBar
     void popupMenuAboutToShow();
     void setNewBackgroundColor();
     void resetBackgroundColor();
-  
-  signals:
-    void destroyed();
 };
 
 class GuiExport FCOutlookBar : public FCToolBar
@@ -149,9 +146,6 @@ class GuiExport FCOutlookBar : public FCToolBar
     void popupMenuAboutToShow();
     void setNewBackgroundColor();
     void resetBackgroundColor();
-  
-  signals:
-    void destroyed();
 };
 
 class QStackBarBtn : public QToolButton

@@ -25,6 +25,7 @@
 #include "../Base/Parameter.h"
 
 class FCGuiDocument;
+class ApplicationWindow;
 class FCView;
 
 
@@ -44,6 +45,8 @@ public:
 	FCParameterGrp::handle GetParameter(void);
 	/// return the parameter group of this window
 	FCParameterGrp::handle GetWindowParameter(void);
+
+	ApplicationWindow* GetAppWnd(void);
 
 private:
 #	pragma warning( disable : 4251 )

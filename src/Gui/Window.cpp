@@ -27,6 +27,7 @@
 
 #include "../Base/Console.h"
 #include "Window.h"
+#include "Application.h"
 #include "../App/Application.h"
 
 
@@ -51,10 +52,10 @@ FCWindowParameter::FCWindowParameter(const char *name)
 	// geting the group for the window
 	h = GetApplication().GetSystemParameter().GetGroup("BaseApp");
 	h = h->GetGroup("Windows");
+	//h = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/");
+
 	_handle = h->GetGroup(name);
 
-	_handle->SetBool("Works",true);
-	bool bTest = _handle->GetBool("Works");
 
 
 }
@@ -80,7 +81,10 @@ FCParameterGrp::handle  FCWindowParameter::GetParameter(void)
 	return GetApplication().GetUserParameter().GetGroup("BaseApp");
 }
 
-
+ApplicationWindow* FCWindowParameter::GetAppWnd(void)
+{
+	return ApplicationWindow::Instance;
+}
 
 //**************************************************************************
 //**************************************************************************

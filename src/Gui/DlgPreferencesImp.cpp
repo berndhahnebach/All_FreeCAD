@@ -49,6 +49,7 @@
 #endif
 #include "DlgPreferencesImp.h"
 #include "DlgSettingsImp.h"
+#include "DlgSettings3DViewImp.h"
 #include "DlgGeneralImp.h"
 #include "Application.h"
 
@@ -64,11 +65,11 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
 {
   connect(ListView2, SIGNAL ( pressed ( QListViewItem * ) ), this, SLOT( prefPageClicked(QListViewItem * ) ));
 
-  FCBmpFactory& rclBF = ApplicationWindow::Instance->GetBmpFactory();
-  QPixmap pix = rclBF.GetPixmap("function");
-  addPreferenceGroup("FreeCAD", pix);
+  addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen");
+  m_mGroupsItem["FreeCAD"]->setOpen(true);
   addPreferencePage(new FCDlgGeneral, "General");
-  addPreferencePage(new FCDlgSettings, "Help Viewer", pix);
+  addPreferencePage(new FCDlgSettings, "Help Viewer");
+  addPreferencePage(new FCDlgSettings3DView, "3D View");
 }
 
 /*  
@@ -79,58 +80,43 @@ DlgPreferencesImp::~DlgPreferencesImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgPreferencesImp::addPreferenceGroup(const char* name)
+void DlgPreferencesImp::addPreferenceGroup(const char* name, const char* Pixmap)
 {
-  m_pCurTab = getOrAddPreferenceGroup(name);
-}
-
-void DlgPreferencesImp::addPreferenceGroup(const char* name, const QPixmap& p)
-{
-  QPixmap pix = p;
+  QPixmap pix = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
   m_pCurTab = getOrAddPreferenceGroup(name);
   pix.resize(16, 16);
   m_mGroupsItem[name]->setPixmap(0, pix);
 }
 
-void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name)
+
+void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const char* group, const char* Pixmap)
 {
-  if (m_pCurTab)
-  {
-    m_pCurTab->addTab(page, name);
+	if(group)
+	{
+		m_pCurTab = getOrAddPreferenceGroup(group);
+		m_pCurTab->addTab(page, name);
+	}
 
-    QListViewItem * item = new QListViewItem( m_mGroupsItem[getGroupName()], 0 );
-    item->setText( 0, tr( name ) );
+	if (m_pCurTab)
+	{
+		m_pCurTab->addTab(page, name);
 
-    // concatenate the two strings (to an unique one)
-    std::string cname = getGroupName() + std::string(name);
-    m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
-    page->hide();
+		QPixmap pix = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
+		QListViewItem * item = new QListViewItem( m_mGroupsItem[getGroupName()], 0 );
+		item->setText( 0, tr( name ) );
+		pix.resize(16, 16);
+		item->setPixmap( 0, pix );
 
-    connectWidget(page);
-  }
+		// concatenate the two strings (to an unique one)
+		std::string cname = getGroupName() + std::string(name);
+		m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
+		page->hide();
+
+		connectWidget(page);
+	}
 }
 
-void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const QPixmap& p)
-{
-  if (m_pCurTab)
-  {
-    m_pCurTab->addTab(page, name);
-
-    QPixmap pix = p;
-    QListViewItem * item = new QListViewItem( m_mGroupsItem[getGroupName()], 0 );
-    item->setText( 0, tr( name ) );
-    pix.resize(16, 16);
-    item->setPixmap( 0, pix );
-
-    // concatenate the two strings (to an unique one)
-    std::string cname = getGroupName() + std::string(name);
-    m_mPages[cname] = std::make_pair<QListViewItem*, QWidget*>(item, page);
-    page->hide();
-
-    connectWidget(page);
-  }
-}
-
+/*
 void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const char* group)
 {
   m_pCurTab = getOrAddPreferenceGroup(group);
@@ -146,6 +132,8 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const char* name, const
 
   connectWidget(page);
 }
+*/
+
 
 QTabWidget* DlgPreferencesImp::getPreferenceGroup(const char* name)
 {

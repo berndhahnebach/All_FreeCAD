@@ -43,6 +43,9 @@
 #else
 #endif
 #include "DlgMacroExecuteImp.h"
+#include "../App/Application.h"
+#include "Application.h"
+#include "Macro.h"
 
 /* 
  *  Constructs a DlgMacroExecuteImp which is a child of 'parent', with the 
@@ -54,6 +57,12 @@
 DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgMacroExecute( parent, name, modal, fl ),FCWindowParameter(name)
 {
+	// retrive the macro path from parameter or use the home path as default
+	_cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
+
+	ComboBoxPath->insertItem(_cMacroPath.c_str());
+	// Fill the List box
+	FillList();
 }
 
 /*  
@@ -64,34 +73,86 @@ DlgMacroExecuteImp::~DlgMacroExecuteImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
+void DlgMacroExecuteImp::FillList(void)
+{
+    // lists all files in macro path
+    QDir d( _cMacroPath.c_str(),"*.FCMacro" );
+
+	// clean old entries
+	MacrosListView->clear();
+	// fill up with the directory
+    for (unsigned int i=0; i<d.count(); i++ )
+        new QListViewItem( MacrosListView, d[i], "FCMacro file" );
+
+}
+
+void DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem* pcListViewItem)
+{
+    LineEditMacroName->setText(pcListViewItem->text(0));
+	
+	ExecuteButton->setEnabled(true);
+	EditButton->setEnabled(true);
+	DeleteButton->setEnabled(true);
+
+}
+
+void DlgMacroExecuteImp::OnListDoubleClicked(QListViewItem* pcListViewItem)
+{
+    LineEditMacroName->setText(pcListViewItem->text(0));
+	accept();
+	ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,(_cMacroPath + LineEditMacroName->text().latin1()).c_str());
+}
+
+
 /* 
  * public slot
  */
 void DlgMacroExecuteImp::OnExecute()
 {
-    qWarning( "DlgMacroExecuteImp::OnExecute() not yet implemented!" ); 
+	if(!(LineEditMacroName->text().isEmpty() ) )
+	{
+		accept();
+		ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,(_cMacroPath + LineEditMacroName->text().latin1()).c_str());
+	}
 }
 /* 
  * public slot
  */
 void DlgMacroExecuteImp::OnNewFolder()
 {
-    qWarning( "DlgMacroExecuteImp::OnNewFolder() not yet implemented!" ); 
+    QString fn = QFileDialog::getExistingDirectory (_cMacroPath.c_str(), ApplicationWindow::Instance);
+	if (!fn.isEmpty())
+	{
+		_cMacroPath = fn.latin1();
+		// combo box
+		ComboBoxPath->insertItem(fn);
+		// save the path in the parameters
+		GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->SetASCII("MacroPath",fn.latin1());
+		// fill the list box
+		FillList();
+	}
 }
-/* 
- * public slot
- */
-void DlgMacroExecuteImp::OnRecord()
-{
-    qWarning( "DlgMacroExecuteImp::OnRecord() not yet implemented!" ); 
-}
-/* 
- * public slot
- */
-void DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*)
+
+void DlgMacroExecuteImp::OnCreate()
 {
     qWarning( "DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*) not yet implemented!" ); 
 }
+
+void DlgMacroExecuteImp::OnEdit()
+{
+    qWarning( "DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*) not yet implemented!" ); 
+}
+
+void DlgMacroExecuteImp::OnDelete()
+{
+    qWarning( "DlgMacroExecuteImp::OnNewListItemPicked(QListViewItem*) not yet implemented!" ); 
+}
+
+
+
+
+
+
 
 // compile the mocs and Dialog
 #include "DlgMacroExecute.cpp"

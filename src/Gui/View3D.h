@@ -80,9 +80,8 @@ public:
 
 	virtual void resizeEvent ( QResizeEvent * e);
 
-signals:
+//signals:
 	//void message(const QString&, int );
-	void sendCloseView(FCView* theView);
 	
 public slots:
 	void closeEvent(QCloseEvent* e);        

@@ -290,14 +290,14 @@ class FCSlider : public QSlider, public FCWidgetPrefs
 class FCActionDrag : public QStoredDrag
 {
   public:
-    FCActionDrag ( QAction* action = 0, QWidget * dragSource = 0, const char * name = 0 );
+    FCActionDrag ( QString action, QWidget * dragSource = 0, const char * name = 0 );
     virtual ~FCActionDrag ();
 
     static bool canDecode ( const QMimeSource * e );
-    static bool decode ( const QMimeSource * e, QAction*&  a );
+    static bool decode ( const QMimeSource * e, QString&  action );
 
   public:
-    static std::vector<QAction*> actions;
+    static std::vector<QString> actions;
 };
 
 class FCCustomWidget : public FCWidgetPrefs
@@ -329,13 +329,13 @@ class FCToolBar : public QToolBar, public FCCustomWidget
   Q_OBJECT
 
   public:
-#if QT_VERSION <= 230
-    FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0, const char* type = "Toolbars" );
-#endif
     FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0, const char* type = "Toolbars" );
     FCToolBar ( QMainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
     virtual ~FCToolBar();
     virtual void clearAll();
+
+  public:
+    static bool isAllowed(QWidget* w);
 
   protected:
     void dropEvent ( QDropEvent * );

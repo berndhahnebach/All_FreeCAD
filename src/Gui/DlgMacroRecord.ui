@@ -11,15 +11,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>331</width>
-            <height>316</height>
+            <width>310</width>
+            <height>171</height>
         </rect>
     </property>
     <property>
         <name>caption</name>
         <string>Macro recording</string>
     </property>
-    <vbox>
+    <hbox>
         <property>
             <name>margin</name>
             <number>11</number>
@@ -32,9 +32,9 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout12</cstring>
+                <cstring>Layout9</cstring>
             </property>
-            <hbox>
+            <vbox>
                 <property>
                     <name>margin</name>
                     <number>0</number>
@@ -44,167 +44,23 @@
                     <number>6</number>
                 </property>
                 <widget>
-                    <class>QLayoutWidget</class>
+                    <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout9</cstring>
+                        <cstring>TextLabel1</cstring>
                     </property>
-                    <vbox>
-                        <property>
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property>
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Macro name:</string>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QLineEdit</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>LineEdit2</cstring>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QGroupBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>GroupBox4</cstring>
-                            </property>
-                            <property>
-                                <name>title</name>
-                                <string>Tie macro:</string>
-                            </property>
-                            <grid>
-                                <property>
-                                    <name>margin</name>
-                                    <number>11</number>
-                                </property>
-                                <property>
-                                    <name>spacing</name>
-                                    <number>6</number>
-                                </property>
-                                <widget row="0"  column="0" >
-                                    <class>QPushButton</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>PushButton9</cstring>
-                                    </property>
-                                    <property>
-                                        <name>text</name>
-                                        <string></string>
-                                    </property>
-                                    <property>
-                                        <name>pixmap</name>
-                                        <pixmap>image0</pixmap>
-                                    </property>
-                                </widget>
-                                <widget row="0"  column="2" >
-                                    <class>QPushButton</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>PushButton10</cstring>
-                                    </property>
-                                    <property>
-                                        <name>text</name>
-                                        <string></string>
-                                    </property>
-                                    <property>
-                                        <name>pixmap</name>
-                                        <pixmap>image1</pixmap>
-                                    </property>
-                                </widget>
-                                <widget row="0"  column="1" >
-                                    <class>QPushButton</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>PushButton9_2</cstring>
-                                    </property>
-                                    <property>
-                                        <name>text</name>
-                                        <string></string>
-                                    </property>
-                                    <property>
-                                        <name>pixmap</name>
-                                        <pixmap>image0</pixmap>
-                                    </property>
-                                </widget>
-                                <widget row="1"  column="0" >
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>TextLabel4</cstring>
-                                    </property>
-                                    <property>
-                                        <name>text</name>
-                                        <string>Tool bar</string>
-                                    </property>
-                                    <property>
-                                        <name>alignment</name>
-                                        <set>AlignCenter</set>
-                                    </property>
-                                    <property>
-                                        <name>hAlign</name>
-                                    </property>
-                                </widget>
-                                <widget row="1"  column="1" >
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>TextLabel5</cstring>
-                                    </property>
-                                    <property>
-                                        <name>text</name>
-                                        <string>Command bar</string>
-                                    </property>
-                                    <property>
-                                        <name>alignment</name>
-                                        <set>AlignCenter</set>
-                                    </property>
-                                    <property>
-                                        <name>hAlign</name>
-                                    </property>
-                                </widget>
-                                <widget row="1"  column="2" >
-                                    <class>QLabel</class>
-                                    <property stdset="1">
-                                        <name>name</name>
-                                        <cstring>TextLabel6</cstring>
-                                    </property>
-                                    <property>
-                                        <name>text</name>
-                                        <string>Keyboard</string>
-                                    </property>
-                                    <property>
-                                        <name>alignment</name>
-                                        <set>AlignCenter</set>
-                                    </property>
-                                    <property>
-                                        <name>hAlign</name>
-                                    </property>
-                                </widget>
-                            </grid>
-                        </widget>
-                    </vbox>
+                    <property>
+                        <name>text</name>
+                        <string>Macro name:</string>
+                    </property>
                 </widget>
                 <widget>
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout11</cstring>
+                        <cstring>Layout8</cstring>
                     </property>
-                    <vbox>
+                    <hbox>
                         <property>
                             <name>margin</name>
                             <number>0</number>
@@ -214,51 +70,146 @@
                             <number>6</number>
                         </property>
                         <widget>
-                            <class>QPushButton</class>
+                            <class>QLineEdit</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>PushButton11</cstring>
+                                <cstring>LineEditPath</cstring>
                             </property>
                             <property>
-                                <name>text</name>
-                                <string>OK</string>
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                </sizepolicy>
                             </property>
                         </widget>
-                        <widget>
-                            <class>QPushButton</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>PushButton12</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Cancel</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property>
-                                <name>name</name>
-                                <cstring>Spacer3</cstring>
-                            </property>
-                            <property>
-                                <name>orientation</name>
-                                <enum>Vertical</enum>
-                            </property>
-                            <property>
-                                <name>sizeType</name>
-                                <enum>Fixed</enum>
-                            </property>
-                            <property>
-                                <name>sizeHint</name>
-                                <size>
-                                    <width>20</width>
-                                    <height>50</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </vbox>
+                    </hbox>
                 </widget>
-            </hbox>
+                <widget>
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox4</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Tie macro:</string>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="0" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>PushButton9</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>true</bool>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string></string>
+                            </property>
+                            <property>
+                                <name>pixmap</name>
+                                <pixmap>image0</pixmap>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="2" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>PushButton10</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string></string>
+                            </property>
+                            <property>
+                                <name>pixmap</name>
+                                <pixmap>image1</pixmap>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="1" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>PushButton9_2</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string></string>
+                            </property>
+                            <property>
+                                <name>pixmap</name>
+                                <pixmap>image0</pixmap>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel4</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Tool bar</string>
+                            </property>
+                            <property>
+                                <name>alignment</name>
+                                <set>AlignCenter</set>
+                            </property>
+                            <property>
+                                <name>hAlign</name>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="1" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel5</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Command bar</string>
+                            </property>
+                            <property>
+                                <name>alignment</name>
+                                <set>AlignCenter</set>
+                            </property>
+                            <property>
+                                <name>hAlign</name>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="2" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel6</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Keyboard</string>
+                            </property>
+                            <property>
+                                <name>alignment</name>
+                                <set>AlignCenter</set>
+                            </property>
+                            <property>
+                                <name>hAlign</name>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </vbox>
         </widget>
         <widget>
             <class>QLayoutWidget</class>
@@ -266,7 +217,7 @@
                 <name>name</name>
                 <cstring>Layout5</cstring>
             </property>
-            <grid>
+            <vbox>
                 <property>
                     <name>margin</name>
                     <number>0</number>
@@ -275,76 +226,63 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget row="1"  column="0" >
-                    <class>QComboBox</class>
-                    <item>
-                        <property>
-                            <name>text</name>
-                            <string>User preferences</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property>
-                            <name>text</name>
-                            <string>System preferences</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property>
-                            <name>text</name>
-                            <string>Document</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property>
-                            <name>text</name>
-                            <string>File</string>
-                        </property>
-                    </item>
+                <widget>
+                    <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>ComboBox2</cstring>
-                    </property>
-                </widget>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel3</cstring>
+                        <cstring>PushButtonStart</cstring>
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Save in:</string>
+                        <string>Start</string>
                     </property>
                 </widget>
-                <widget row="2"  column="0" >
-                    <class>QLabel</class>
+                <widget>
+                    <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>TextLabel2</cstring>
+                        <cstring>PushButtonStop</cstring>
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Description:</string>
+                        <string>Stop</string>
                     </property>
                 </widget>
-                <widget row="3"  column="0" >
-                    <class>QMultiLineEdit</class>
-                    <property stdset="1">
+                <spacer>
+                    <property>
                         <name>name</name>
-                        <cstring>MultiLineEdit2</cstring>
+                        <cstring>Spacer3</cstring>
                     </property>
                     <property>
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>7</vsizetype>
-                        </sizepolicy>
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Fixed</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>50</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>PushButtonCancel</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Cancel</string>
                     </property>
                 </widget>
-            </grid>
+            </vbox>
         </widget>
-    </vbox>
+    </hbox>
 </widget>
 <images>
     <image>
@@ -376,29 +314,37 @@
         <slot>OnTieKeyboard()</slot>
     </connection>
     <connection>
-        <sender>PushButton11</sender>
+        <sender>PushButtonStart</sender>
         <signal>clicked()</signal>
         <receiver>DlgMacroRecord</receiver>
-        <slot>accept()</slot>
+        <slot>Start()</slot>
     </connection>
     <connection>
-        <sender>PushButton12</sender>
+        <sender>PushButtonStop</sender>
         <signal>clicked()</signal>
         <receiver>DlgMacroRecord</receiver>
-        <slot>reject()</slot>
+        <slot>Stop()</slot>
     </connection>
+    <connection>
+        <sender>PushButtonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroRecord</receiver>
+        <slot>Cancel()</slot>
+    </connection>
+    <slot access="public">Cancel()</slot>
     <slot access="public">OnTieCommandBar()</slot>
-    <slot access="public">OnTieToolBar()</slot>
     <slot access="public">OnTieKeyboard()</slot>
+    <slot access="public">OnTieToolBar()</slot>
+    <slot access="public">Start()</slot>
+    <slot access="public">Stop()</slot>
+    <slot access="public">File()</slot>
 </connections>
 <tabstops>
-    <tabstop>LineEdit2</tabstop>
+    <tabstop>LineEditPath</tabstop>
     <tabstop>PushButton9</tabstop>
     <tabstop>PushButton9_2</tabstop>
     <tabstop>PushButton10</tabstop>
-    <tabstop>PushButton11</tabstop>
-    <tabstop>PushButton12</tabstop>
-    <tabstop>ComboBox2</tabstop>
-    <tabstop>MultiLineEdit2</tabstop>
+    <tabstop>PushButtonStart</tabstop>
+    <tabstop>PushButtonCancel</tabstop>
 </tabstops>
 </UI>

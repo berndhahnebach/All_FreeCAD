@@ -420,12 +420,12 @@ void FCSlider::savePreferences()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-std::vector<QAction*> FCActionDrag::actions;
+std::vector<QString> FCActionDrag::actions;
 
-FCActionDrag::FCActionDrag ( QAction* action, QWidget * dragSource , const char * name  )
+FCActionDrag::FCActionDrag ( QString action, QWidget * dragSource , const char * name  )
 : QStoredDrag("FCActionDrag", dragSource, name)
 {
-  // store the QAction object
+  // store the QAction name
   actions.push_back(action);
 }
 
@@ -438,11 +438,11 @@ bool FCActionDrag::canDecode ( const QMimeSource * e )
   return e->provides( "FCActionDrag" );
 }
 
-bool FCActionDrag::decode ( const QMimeSource * e, QAction*&  a )
+bool FCActionDrag::decode ( const QMimeSource * e, QString&  action )
 {
   if (actions.size() > 0)
   {
-    a = *actions.begin();
+    action = *actions.begin();
     return true;
   }
 
@@ -527,17 +527,6 @@ void FCCustomWidget::saveXML()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-# if QT_VERSION <= 230
-  FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
-                         bool newLine, const char * name, const char* type )
-  : QToolBar(label, parent, pos, newLine, name), FCCustomWidget(type, name)
-  {
-    // allow drag and drop
-    setAcceptDrops(true);
-    bSaveColor = false;
-  }
-# endif
-
 FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine, 
                        const char * name, WFlags f, const char* type )
 : QToolBar(label, parent, w, newLine, name, f), FCCustomWidget(type, name)
@@ -560,6 +549,30 @@ FCToolBar::~FCToolBar()
   savePreferences();
 }
 
+bool FCToolBar::isAllowed(QWidget* w)
+{
+  if (!w)
+    return false; // no valid widget
+
+  // this extensible of course ;-)
+  //
+  if (w->inherits("QToolButton") )
+    return true;
+  else if (w->inherits("QComboBox"))
+    return true;
+  else if (w->inherits("QSpinBox"))
+    return true;
+  else if (w->inherits("QLineEdit"))
+    return true;
+  else if (w->inherits("QToolBarSeparator"))
+    return true;
+  else if (w->inherits("QHBox")) // drop down buttons
+    return true;
+
+  // all other types of widget are not allowed
+  return false;
+}
+
 void FCToolBar::clearAll()
 {
   clear();
@@ -568,7 +581,7 @@ void FCToolBar::clearAll()
 void FCToolBar::dropEvent ( QDropEvent * e)
 {
   // store all widgets in STL vector 
-  // because of the better handling ;-)
+  // because of the familiar handling ;-)
   std::vector<QWidget*> childs;
   if ( children() )
   {
@@ -579,47 +592,116 @@ void FCToolBar::dropEvent ( QDropEvent * e)
   	  ++it;
 	    if ( obj->isWidgetType() )
       {
-        childs.push_back((QWidget*)obj);
+        // check if widget type is OK
+        if (isAllowed((QWidget*)obj))
+          childs.push_back((QWidget*)obj);
       }
     }
   }
 
-  // find right position for the new button
+  // check if the number of found (filtered) widgets 
+  // is the same as the number of items
+  //
+  // different sizes ->just append at the end
+  if (childs.size() != _clItems.size())
+  {
+    // create a new button
+    //
+    FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+    FCCommand* pCom = NULL;
+    std::vector<QString> actions = FCActionDrag::actions;
+    for (std::vector<QString>::iterator it = actions.begin(); it != actions.end(); ++it)
+    {
+      pCom = cCmdMgr.GetCommandByName(it->latin1());
+      if (pCom != NULL)
+      {
+        pCom->GetAction()->addTo(this);
+        _clItems.push_back(it->latin1());
+      }
+    }
+
+    FCActionDrag::actions.clear();
+
+    return;
+  }
+
+  // assume 0: horizontal
+  //        1: vertical
+  Qt::Orientation orient;
+
+#if QT_VERSION <= 230
+  orient = orientation();
+#else
+  // Note: orientation() seems to work not properly in Qt 3.x
+  QBoxLayout* layout = boxLayout ();
+  if (!layout)
+    return;
+
+  if (layout->direction() == QBoxLayout::Up || 
+      layout->direction() == QBoxLayout::Down)
+  {
+    // this is vertical
+    orient = Qt::Vertical;
+  }
+  else
+  {
+    orient = Qt::Horizontal;
+  }
+#endif
+
+  // find right position for the new widget(s)
+  std::vector<std::string> items;
+  std::vector<std::string>::iterator it2 = _clItems.begin();
   QPoint pt = e->pos();
   int pos=0;
-  for (std::vector<QWidget*>::iterator it = childs.begin(); it != childs.end(); ++it)
+  for (std::vector<QWidget*>::iterator it = childs.begin(); it != childs.end(); ++it, ++it2)
   {
-    if (orientation () == Qt::Horizontal)
+    if (orient == Qt::Horizontal)
     {
       pos += (*it)->width();
       if (pos >= pt.x())
         break;
+      else
+        items.push_back(*it2);
     }
     else
     {
       pos += (*it)->height();
       if (pos >= pt.y())
         break;
+      else
+        items.push_back(*it2);
     }
   }
 
-  // create a new button
-  std::vector<QAction*> actions = FCActionDrag::actions;
-  for (std::vector<QAction*>::iterator it2 = actions.begin(); it2 != actions.end(); ++it2)
+  // append the dropped items
+  std::vector<QString> actions = FCActionDrag::actions;
+  for (std::vector<QString>::iterator it3 = actions.begin(); it3 != actions.end(); ++it3)
   {
-    QAction* pAction = *it2;
-    if ( pAction ) 
-    {
-      pAction->addTo(this);
-      _clItems.push_back(pAction->name());
-    }
+    items.push_back(it3->latin1());
   }
+
   FCActionDrag::actions.clear();
 
-  // insert the rest of the "old" children after the new button
-  for (; it != childs.end(); ++it)
+  // and now append the rest of the old items
+  for (;it2 != _clItems.end(); ++it2)
+    items.push_back(*it2);
+
+  // clear all and rebuild it again 
+  //
+  _clItems.clear();
+  _clItems = items;
+
+  clearAll();
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  FCCommand* pCom = NULL;
+  for (it2 = _clItems.begin(); it2!=_clItems.end(); ++it2)
   {
-    (*it)->reparent(this, QPoint(0,0));
+    pCom = cCmdMgr.GetCommandByName(it2->c_str());
+    if (pCom != NULL)
+    {
+      pCom->GetAction()->addTo(this);
+    }
   }
 }
 
@@ -686,16 +768,20 @@ FCPopupMenu::~FCPopupMenu()
 void FCPopupMenu::dropEvent ( QDropEvent * e)
 {
   // create a new button
-  std::vector<QAction*> actions = FCActionDrag::actions;
-  for (std::vector<QAction*>::iterator it = actions.begin(); it != actions.end(); ++it)
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  FCCommand* pCom = NULL;
+
+  std::vector<QString> actions = FCActionDrag::actions;
+  for (std::vector<QString>::iterator it = actions.begin(); it != actions.end(); ++it)
   {
-    QAction* pAction = *it;
-    if ( pAction ) 
+    pCom = cCmdMgr.GetCommandByName(it->latin1());
+    if (pCom != NULL)
     {
-      pAction->addTo(this);
-      _clItems.push_back(pAction->name());
+      pCom->GetAction()->addTo(this);
+      _clItems.push_back(it->latin1());
     }
   }
+
   FCActionDrag::actions.clear();
 }
 
@@ -739,7 +825,12 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
       {
         if ( a->menuText() == txt )
         {
-          FCActionDrag *ad = new FCActionDrag( a, this );
+          FCActionDrag *ad = new FCActionDrag( it->second->GetName(), this );
+
+# if QT_VERSION <= 230 // set python command to clipboard (not available yet)
+          QApplication::clipboard()->setData(new QTextDrag("Not yet implemented"));
+# endif
+
           if (pix)
             ad->setPixmap(QPixmap(*pix),QPoint(8,8));
           ad->dragCopy();
@@ -758,7 +849,12 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
         // both strings need not to be equal (because of accelarators)
         if ( txt.startsWith(a->menuText()) )
         {
-          FCActionDrag *ad = new FCActionDrag( a, this );
+          FCActionDrag *ad = new FCActionDrag( it->second->GetName(), this );
+
+# if QT_VERSION <= 230 // set python command to clipboard (not available yet)
+          QApplication::clipboard()->setData(new QTextDrag("Not yet implemented"));
+# endif
+
           if (pix)
             ad->setPixmap(QPixmap(*pix),QPoint(8,8));
           ad->dragCopy();

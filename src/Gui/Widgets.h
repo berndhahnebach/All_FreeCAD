@@ -118,14 +118,14 @@ class FCListView : public QListView
 class FCCmdViewItem : public QIconViewItem
 {
   public:
-    FCCmdViewItem ( QIconView * parent, QAction* pAct );
+    FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct );
     virtual ~FCCmdViewItem ();
 
     QString text() const;
-    QAction* GetAction();
+    QString GetAction();
 
   protected:
-    QAction * pAction;
+    QString sAction;
     QString description;
 };
 

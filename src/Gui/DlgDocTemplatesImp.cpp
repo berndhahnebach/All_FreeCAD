@@ -14,6 +14,7 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 #include "../App/Application.h"
+#include "Command.h"
 
 
 #include "Icons/Folder32.xpm"
@@ -24,8 +25,10 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgDocTemplates( parent, name, modal, fl ),FCWindowParameter(name)
+DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
+    : DlgDocTemplates( parent, name, modal, fl ),
+	  FCWindowParameter(name),
+	  _pcCmd(pcCmd)
 {
 	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
     
@@ -68,9 +71,9 @@ void DlgDocTemplatesImp::Validate()
 	QString sTemplate = LineEdit1->text();
 
 	if (sTemplate.isEmpty())
-		GetInterpreter().RunFCCommand("FreeCAD.DocNew()");		
+		_pcCmd->DoCommand(FCCommand::Doc,"FreeCAD.DocNew()");		
 	else
-		GetInterpreter().RunFCCommand("FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
+		_pcCmd->DoCommand(FCCommand::Doc,"FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
 	
 	accept();
 }

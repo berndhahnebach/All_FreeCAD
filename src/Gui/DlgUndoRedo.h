@@ -124,6 +124,7 @@ class FCToolButtonDropDown : public QToolButton
     // overwrite methods from base class
     virtual void enterEvent(QEvent* e);
     virtual void leaveEvent(QEvent* e);
+    virtual void drawButton( QPainter * p );
 
   protected slots:
     // popup the window
@@ -144,6 +145,7 @@ class FCToolButtonDropDown : public QToolButton
   protected:
     // show this widget when clicking on drop-down button
     QWidget* _pWidget;
+    bool bRaise;
 };
 
 

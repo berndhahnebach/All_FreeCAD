@@ -339,11 +339,11 @@ QListViewItem* FCListView::lastItem (QListView* listview)
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QAction* pAct )
+FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct)
 : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
 {
-  pAction = pAct;
-  description = pAction->toolTip();
+  sAction = Action;
+  description = pAct->toolTip();
 }
 
 FCCmdViewItem::~FCCmdViewItem ()
@@ -355,9 +355,9 @@ QString FCCmdViewItem::text() const
   return description;
 }
 
-QAction* FCCmdViewItem::GetAction()
+QString FCCmdViewItem::GetAction()
 {
-  return pAction;
+  return sAction;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

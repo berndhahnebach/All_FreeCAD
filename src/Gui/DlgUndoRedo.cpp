@@ -46,6 +46,10 @@
 #include "Application.h"
 #include "Document.h"
 
+#if QT_VERSION > 230
+# include <qstyle.h>
+#endif
+
 
 
 
@@ -314,6 +318,7 @@ FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclP
 
   // connect the 'clicked()' signal
   connect(_pDropDown, SIGNAL( clicked()), this, SLOT(popupWidget()));
+  bRaise = false;
 }
 
 FCToolButtonDropDown::FCToolButtonDropDown( QWidget * parent, const char * name)
@@ -324,6 +329,7 @@ FCToolButtonDropDown::FCToolButtonDropDown( QWidget * parent, const char * name)
   setFixedWidth(15);
   // set the pixmap onto the drop-down button
   setIconSet(QPixmap(pArrow));
+  bRaise = false;
 }
 
 FCToolButtonDropDown::~FCToolButtonDropDown()
@@ -335,6 +341,7 @@ FCToolButtonDropDown::~FCToolButtonDropDown()
 
 void FCToolButtonDropDown::enterEvent ( QEvent * e )
 {
+  bRaise = true;
   // do the things of the base class
   QToolButton::enterEvent(e);
   // emit a signal with this event to the other button
@@ -343,6 +350,7 @@ void FCToolButtonDropDown::enterEvent ( QEvent * e )
 
 void FCToolButtonDropDown::leaveEvent ( QEvent * e ) 
 {
+  bRaise = false;
   // do the things of the base class
   QToolButton::leaveEvent(e);
   // emit a signal with this event to the other button
@@ -353,12 +361,14 @@ void FCToolButtonDropDown::leaveEvent ( QEvent * e )
 
 void FCToolButtonDropDown::enterEventSlot(QEvent* e)
 {
+  bRaise = true;
   // process the event
   QToolButton::enterEvent(e);
 }
 
 void FCToolButtonDropDown::leaveEventSlot(QEvent* e)
 {
+  bRaise = false;
   // process the event
   QToolButton::leaveEvent(e);
 }
@@ -437,6 +447,50 @@ bool FCToolButtonDropDown::autoRaiseEx () const
   if (_pDropDown != NULL)
     return _pDropDown->autoRaise() && autoRaise();
   return autoRaise();
+}
+
+void FCToolButtonDropDown::drawButton( QPainter * p )
+{
+
+#if QT_VERSION >= 300
+
+  QStyle::SCFlags controls = QStyle::SC_ToolButton;
+  QStyle::SCFlags active = QStyle::SC_None;
+
+  if (isDown())
+	  active |= QStyle::SC_ToolButton;
+
+  QStyle::SFlags flags = QStyle::Style_Default;
+  if (isEnabled())
+	  flags |= QStyle::Style_Enabled;
+  if (hasFocus())
+	  flags |= QStyle::Style_HasFocus;
+  if (isDown())
+	  flags |= QStyle::Style_Down;
+  if (isOn())
+	  flags |= QStyle::Style_On;
+  if (autoRaise()) 
+  {
+	  flags |= QStyle::Style_AutoRaise;
+  	if (bRaise) 
+    {
+      flags |= QStyle::Style_MouseOver;
+	    if (! isOn() && ! isDown())
+		    flags |= QStyle::Style_Raised;
+  	}
+  } 
+  else if (! isOn() && ! isDown())
+  	flags |= QStyle::Style_Raised;
+
+  style().drawComplexControl(QStyle::CC_ToolButton, p, this, rect(), colorGroup(),
+			       flags, controls, active, QStyleOption());
+
+  drawButtonLabel(p);
+
+#else // < QT 3.x
+    QToolButton::drawButton(p);
+#endif
+
 }
 
 #include "moc_DlgUndoRedo.cpp"

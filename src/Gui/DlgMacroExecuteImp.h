@@ -34,6 +34,8 @@
 #define DLGMACROEXECUTEIMP_H
 #include "DlgMacroExecute.h"
 #include "Window.h"
+#include <string>
+
 
 class DlgMacroExecuteImp : public DlgMacroExecute, public FCWindowParameter
 { 
@@ -43,12 +45,20 @@ public:
     DlgMacroExecuteImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~DlgMacroExecuteImp();
 
-public slots:
-    void OnExecute();
-    void OnNewFolder();
-    void OnRecord();
-    void OnNewListItemPicked(QListViewItem*);
+	void FillList(void);
 
+public slots:
+    virtual void OnExecute();
+    virtual void OnNewFolder();
+    virtual void OnNewListItemPicked(QListViewItem*);
+    virtual void OnCreate();
+    virtual void OnEdit();
+    virtual void OnDelete();
+    virtual void OnListDoubleClicked(QListViewItem*);
+
+
+protected:
+	std::string _cMacroPath;
 };
 
 #endif // DLGMACROEXECUTEIMP_H

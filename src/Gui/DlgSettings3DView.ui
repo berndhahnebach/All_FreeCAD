@@ -1,0 +1,120 @@
+<!DOCTYPE UI><UI>
+<class>DlgSettings3DView</class>
+<widget>
+    <class>QWidget</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>DlgSettings3DView</cstring>
+    </property>
+    <property>
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>377</width>
+            <height>324</height>
+        </rect>
+    </property>
+    <property>
+        <name>caption</name>
+        <string>3DView settings</string>
+    </property>
+    <vbox>
+        <property>
+            <name>margin</name>
+            <number>11</number>
+        </property>
+        <property>
+            <name>spacing</name>
+            <number>6</number>
+        </property>
+        <widget>
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox12</cstring>
+            </property>
+            <property>
+                <name>title</name>
+                <string>3DView settings</string>
+            </property>
+            <vbox>
+                <property>
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox13</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Anti aliasing</string>
+                    </property>
+                    <hbox>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>UseAntialiasing</cstring>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel1</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Using anti aliasing</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>FCCheckBox</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <signal>toggled(bool)</signal>
+        <property type="String">text</property>
+        <property type="Bool">checked</property>
+        <property type="Bool">tristate</property>
+        <property type="Bool">enabled</property>
+    </customwidget>
+</customwidgets>
+<images>
+    <image>
+        <name>image0</name>
+        <data format="XPM.GZ" length="2157">789ccdd2594fdb4010c0f1f77c0a0bbfa16a88d7c7daaafa0084b35ce186aa0fdef52e492001820384aadfbdb3b38355a110fa52b5d91cfa65fe766cc74b8bc1f9c16eb0b8d47aa8cbbaaf03dd2bc7c16235190ea7dfbe7ff9d15a1022c067960562e1536ba15b073ad8bb1d1907e820c2363dc8abec84bd4cce1b1f34cec96bec9c7dee1cb5dd226f91f348477e1e3a8b48b44544de27172261976c2d0af257e7386a7ce41db763df2b76c23e231768df5b76ced6ce8948a2842e06acb353f695732ad234f5de21978d1fd9455a922be72cced22c263f91155a917bec82bde92c63994adfaf90952ca49ff7d9153b72ce1359e50979db3b17ec1bb2ce4bf66e634deeb20dfbd8b9487253f8de907551167e7eeb5ca6a52853f2809db11fc855e376e38a3c64973c1f35f6f343b6616f38ab5465caf717ce3ad3b1f2f3bb57eb8c7cc296ec17b2695cb3157bd2d8dfefd76ccb16ce5556c595ef4fd9927d49369562df37f6db8f9d8d34b191e4942d79fefc6a63c919d9ba6fc8b2b19fefb115cfa78dfd3c665b76ee6ca58dd9c9abaddfbe604bef10c8d62a4b7d18b2ad77b7fef3f53ff710e22a41bd591a2a30eff416aea0f766f56100d733fb12eb1b18c288d6006ee9f30eee613cb357b8b707a861f2db7a84277886e9bbfd90aa1a5ee8b307cbb8c5746edfc763f0fb5e8155e8e0d9ceeb47b006ebb081f526b61dd882ed0ff6ff15ab1d3054afc12e9eedde9c7e00fbd81d60e9fa2efecefc7e088770446d078ee104cffcf4837e82d7fd0ccef148dc399fcce9355e9b0bb8c423684384eff720b01e430cc9ccbec2a3bf841432bc22125f99fb672187228499bd816b9c4fdfac046fc3f05fdcff7fa5fff9b9f50b3afa46fc</data>
+    </image>
+</images>
+</UI>

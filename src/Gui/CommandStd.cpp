@@ -49,6 +49,7 @@
 #include "DlgParameterImp.h"
 #include "DlgMacroExecuteImp.h"
 #include "DlgMacroRecordImp.h"
+#include "Macro.h"
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
 #include "DlgSettingsImp.h"
@@ -123,7 +124,7 @@ FCCmdNew::FCCmdNew()
 
 void FCCmdNew::Activated(int iMsg)
 {
-  DlgDocTemplatesImp cDlg(GetAppWnd(),"Template Dialog",true);
+  DlgDocTemplatesImp cDlg(this,GetAppWnd(),"Template Dialog",true);
   cDlg.exec();
 
 }
@@ -574,14 +575,14 @@ FCCmdTileHor::FCCmdTileHor()
 	sToolTipText	= "Tile the windows horizontal";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "TileHorizontal";
+	sPixmap			= "Std_WindowTileHor";
 	iAccel			= 0;
 }
 
 
 void FCCmdTileHor::Activated(int iMsg)
 {
-GetAppWnd()->expandHorizontal();
+	GetAppWnd()->tileVertically ();
 }
 
 //===========================================================================
@@ -598,14 +599,14 @@ FCCmdTileVer::FCCmdTileVer()
 	sToolTipText	= "Tile the windows vertical";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "TileVertical";
+	sPixmap			= "Std_WindowTileVer";
 	iAccel			= Qt::CTRL+Qt::Key_T;
 }
 
 
 void FCCmdTileVer::Activated(int iMsg)
 {
-	GetAppWnd()->expandVertical();
+	GetAppWnd()->tileAnodine ();
 }
 
 //===========================================================================
@@ -622,7 +623,7 @@ FCCmdTilePra::FCCmdTilePra()
 	sToolTipText	= "Tile pragmatic";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Paste";
+	sPixmap			= "Std_WindowCascade";
 	iAccel			= 0;
 }
 
@@ -771,7 +772,7 @@ void FCCmdDlgPreferences::Activated(int iMsg)
 //===========================================================================
 // Std_DlgMacroRecord
 //===========================================================================
-DEF_STD_CMD(FCCmdDlgMacroRecord);
+DEF_STD_CMD_A(FCCmdDlgMacroRecord);
 
 FCCmdDlgMacroRecord::FCCmdDlgMacroRecord()
 	:FCCppCommand("Std_DlgMacroRecord")
@@ -782,7 +783,7 @@ FCCmdDlgMacroRecord::FCCmdDlgMacroRecord()
 	sToolTipText	= "Opens a Dialog to record a macro";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Record";
+	sPixmap			= "Std_MacroRecord";
 	iAccel			= 0;
 }
 
@@ -793,10 +794,15 @@ void FCCmdDlgMacroRecord::Activated(int iMsg)
 	cDlg.exec();
 }
 
+bool FCCmdDlgMacroRecord::IsActive(void)
+{
+	return ! (GetAppWnd()->GetMacroMngr()->IsOpen());
+}
+
 //===========================================================================
 // Std_DlgMacroExecute
 //===========================================================================
-DEF_STD_CMD(FCCmdDlgMacroExecute);
+DEF_STD_CMD_A(FCCmdDlgMacroExecute);
 
 FCCmdDlgMacroExecute::FCCmdDlgMacroExecute()
 	:FCCppCommand("Std_DlgMacroExecute")
@@ -807,7 +813,7 @@ FCCmdDlgMacroExecute::FCCmdDlgMacroExecute()
 	sToolTipText	= "Opens a Dialog let you execute a redordet macro";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Play";
+	sPixmap			= "Std_MacroPlay";
 	iAccel			= 0;
 }
 
@@ -816,6 +822,41 @@ void FCCmdDlgMacroExecute::Activated(int iMsg)
 {
 	DlgMacroExecuteImp cDlg(GetAppWnd(),"Macro Execute",true);
 	cDlg.exec();
+}
+
+bool FCCmdDlgMacroExecute::IsActive(void)
+{
+	return ! (GetAppWnd()->GetMacroMngr()->IsOpen());
+}
+
+
+//===========================================================================
+// Std_MacroStop
+//===========================================================================
+DEF_STD_CMD_A(FCCmdMacroStop);
+
+FCCmdMacroStop::FCCmdMacroStop()
+	:FCCppCommand("Std_DlgMacroStop")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Stop macro recording";
+	sToolTipText	= "Stop the a running macro recording sassion";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_MacroStop";
+	iAccel			= 0;
+}
+
+
+void FCCmdMacroStop::Activated(int iMsg)
+{
+	GetAppWnd()->GetMacroMngr()->Commit();
+}
+
+bool FCCmdMacroStop::IsActive(void)
+{
+	return GetAppWnd()->GetMacroMngr()->IsOpen();
 }
 
 
@@ -961,6 +1002,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
+	rcCmdMgr.AddCommand(new FCCmdMacroStop());
 	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
 	rcCmdMgr.AddCommand(new FCCmdDlgSettings());
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());

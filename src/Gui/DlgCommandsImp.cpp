@@ -118,7 +118,7 @@ void FCDlgCustomCommandsImp::slotGroupSelected(const QString & group)
     for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
       if ((*it)->GetAction())
-      (void) new FCCmdViewItem(IconView1, (*it)->GetAction());
+      (void) new FCCmdViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
     }
   }
 }

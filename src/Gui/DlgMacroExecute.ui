@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>348</width>
+            <width>344</width>
             <height>316</height>
         </rect>
     </property>
@@ -66,7 +66,7 @@
                             </property>
                             <property>
                                 <name>enabled</name>
-                                <bool>false</bool>
+                                <bool>true</bool>
                             </property>
                             <property>
                                 <name>text</name>
@@ -114,6 +114,10 @@
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>ExecuteButton</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
                             </property>
                             <property>
                                 <name>text</name>
@@ -171,7 +175,11 @@
                             <class>QLineEdit</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>LineEdit2</cstring>
+                                <cstring>LineEditMacroName</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
                             </property>
                         </widget>
                         <widget>
@@ -208,6 +216,10 @@
                                 <name>name</name>
                                 <cstring>MacrosListView</cstring>
                             </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>true</bool>
+                            </property>
                         </widget>
                     </vbox>
                 </widget>
@@ -234,7 +246,7 @@
                             <class>QComboBox</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>ComboBox2</cstring>
+                                <cstring>ComboBoxPath</cstring>
                             </property>
                             <property>
                                 <name>enabled</name>
@@ -290,7 +302,7 @@
                     </property>
                     <property>
                         <name>enabled</name>
-                        <bool>false</bool>
+                        <bool>true</bool>
                     </property>
                     <property>
                         <name>text</name>
@@ -315,25 +327,64 @@
         <slot>OnNewFolder()</slot>
     </connection>
     <connection>
+        <sender>CreateButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnCreate()</slot>
+    </connection>
+    <connection>
+        <sender>DeleteButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnDelete()</slot>
+    </connection>
+    <connection>
+        <sender>EditButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnEdit()</slot>
+    </connection>
+    <connection>
+        <sender>DoneButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>ExecuteButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnExecute()</slot>
+    </connection>
+    <connection>
+        <sender>MacrosListView</sender>
+        <signal>doubleClicked(QListViewItem*)</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnListDoubleClicked(QListViewItem*)</slot>
+    </connection>
+    <connection>
         <sender>MacrosListView</sender>
         <signal>selectionChanged(QListViewItem*)</signal>
         <receiver>DlgMacroExecute</receiver>
         <slot>OnNewListItemPicked(QListViewItem*)</slot>
     </connection>
+    <slot access="public">OnCreate()</slot>
+    <slot access="public">OnDelete()</slot>
+    <slot access="public">OnEdit()</slot>
     <slot access="public">OnExecute()</slot>
     <slot access="public">OnNewFolder()</slot>
-    <slot access="public">OnRecord()</slot>
     <slot access="public">OnNewListItemPicked(QListViewItem*)</slot>
+    <slot access="public">OnListDoubleClicked(QListViewItem*)</slot>
 </connections>
 <tabstops>
-    <tabstop>LineEdit2</tabstop>
+    <tabstop>LineEditMacroName</tabstop>
     <tabstop>MacrosListView</tabstop>
     <tabstop>ExecuteButton</tabstop>
     <tabstop>CancelButton</tabstop>
     <tabstop>CreateButton</tabstop>
     <tabstop>DeleteButton</tabstop>
     <tabstop>EditButton</tabstop>
-    <tabstop>ComboBox2</tabstop>
+    <tabstop>ComboBoxPath</tabstop>
     <tabstop>DestButton</tabstop>
     <tabstop>DoneButton</tabstop>
 </tabstops>

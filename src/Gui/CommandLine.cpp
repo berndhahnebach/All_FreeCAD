@@ -296,22 +296,18 @@ FCCmdLineEdit::FCCmdLineEdit(QWidget * parent, const char * name)
 
 void FCCmdLineEdit::dropEvent  ( QDropEvent * e)
 {
-  QAction *a=NULL;
-  if (FCActionDrag::decode(e, a))
+  QString action;
+  if (FCActionDrag::decode(e, action))
   {
-    if (a != NULL)
+    if (!action.isEmpty())
     {
       FCActionDrag::actions.clear();
       FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
-      std::vector <FCCommand*> cmds = rclMan.GetAllCommands();
+      FCCommand* pCmd = rclMan.GetCommandByName(action.latin1());
 
-      for (std::vector<FCCommand*>::iterator it = cmds.begin(); it!=cmds.end(); ++it)
+      if (pCmd)
       {
-        if ((*it)->GetAction() == a)
-        {
-          setText((*it)->GetName());
-          break;
-        }
+        setText("Not yet implemented");
       }
     }
   }

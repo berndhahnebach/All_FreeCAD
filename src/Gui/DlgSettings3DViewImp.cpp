@@ -1,4 +1,4 @@
-/** \file DlgMacroRecordImp.h
+/** \file DlgSettings3DViewImp.cpp
  *  \brief  
  *  \author $Author$
  *  \version $Revision$
@@ -27,37 +27,40 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
+ *   Juergen Riegel 2003                                                   *
  ***************************************************************************/
 
-#ifndef DLGMACRORECORDIMP_H
-#define DLGMACRORECORDIMP_H
-#include "DlgMacroRecord.h"
-#include "Window.h"
 
-class FCMacroManager;
+/** Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
+ */
+#include "../Config.h"
+#ifdef _PreComp_
+#	include "PreCompiled.h"
+#else
+#endif
+#include "DlgSettings3DViewImp.h"
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindowParameter
-{ 
-    Q_OBJECT
+/* 
+ *  Constructs a FCDlgSettings3DViewImp which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ */
+FCDlgSettings3DView::FCDlgSettings3DView( QWidget* parent,  const char* name, WFlags fl )
+    : DlgSettings3DView( parent, name, fl )
+{
+}
 
-public:
-    DlgMacroRecordImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgMacroRecordImp();
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+FCDlgSettings3DView::~FCDlgSettings3DView()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
 
-public slots:
-    virtual void OnTieCommandBar();
-    virtual void OnTieToolBar();
-    virtual void OnTieKeyboard();
-    virtual void Cancel();
-    virtual void Start();
-    virtual void Stop();
-    virtual void File();
-
-protected:
-	/// conviniance pointer
-	FCMacroManager* _pcMacroMngr; 
-	std::string _cMacroPath;
-};
-
-#endif // DLGMACRORECORDIMP_H
+#include "DlgSettings3DView.cpp"
+#include "moc_DlgSettings3DView.cpp"
+#include "moc_DlgSettings3DViewImp.cpp"

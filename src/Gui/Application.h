@@ -110,7 +110,7 @@ public:
 	/// destruction
     ~ApplicationWindow();
 
-	void CreateTestOperations();
+	void CreateStandardOperations();
 
 	// Observer
 	virtual void OnDocNew(FCDocument* pcDoc);

@@ -126,6 +126,15 @@ ApplicationWindow::ApplicationWindow()
 	// create the macro manager
 	_pcMacroMngr = new FCMacroManager();
 
+	// setting up the Bitmap manager
+//	QString tmpWb = _cActiveWorkbenchName;
+	_cActiveWorkbenchName = "Standard";
+	_cBmpFactory.AddPath("../../FreeCADIcons");
+	_cBmpFactory.AddPath("../Icons");
+//	_cBmpFactory.GetPixmap("Function");
+
+
+
 	// labels and progressbar
 	_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
 	//_pclProgress->setFixedWidth(200);
@@ -149,6 +158,7 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
+	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
 	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
 	AddDockWindow( "Command bar",_pcCmdBar);
 
@@ -164,7 +174,7 @@ ApplicationWindow::ApplicationWindow()
 	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
 
  	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
- 	CreateTestOperations();
+ 	CreateStandardOperations();
 
 	
 	
@@ -182,6 +192,127 @@ ApplicationWindow::~ApplicationWindow()
 }
 
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// creating std commands
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+void ApplicationWindow::CreateStandardOperations()
+{
+
+	// register the application Standard commands from CommandStd.cpp
+	CreateStdCommands();
+	CreateViewStdCommands();
+
+	// populate a tool bar with some actions
+
+	bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
+	// default toolbars -----------------------------------------------------------------------
+	//
+	// populate toolbars with all default actions
+	QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
+	//_pcStdToolBar->setLabel( "File" );
+
+	if (!bInit)
+	{
+		std::vector<std::string> defToolbar;
+		defToolbar.push_back("Std_New");
+		defToolbar.push_back("Std_Open");
+		defToolbar.push_back("Std_Save");
+		defToolbar.push_back("Std_Print");
+		defToolbar.push_back("Separator");
+		defToolbar.push_back("Std_Cut");
+		defToolbar.push_back("Std_Copy");
+		defToolbar.push_back("Std_Paste");
+		defToolbar.push_back("Separator");
+		defToolbar.push_back("Std_Undo");
+		defToolbar.push_back("Std_Redo");
+		defToolbar.push_back("Separator");
+		_pcWidgetMgr->addToolBar("file operations", defToolbar);
+
+		defToolbar.clear();
+		defToolbar.push_back("Std_DlgMacroRecord");
+		defToolbar.push_back("Std_DlgMacroStop");
+		defToolbar.push_back("Std_DlgMacroExecute");
+		_pcWidgetMgr->addToolBar("Macro recording", defToolbar);
+		// hide
+		_pcWidgetMgr->getCmdBar("Macro recording")->hide();
+
+	}
+	
+	// add the workbench combo to the main toolbar
+	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
+//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
+//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
+//	_cActiveWorkbenchName = "";
+	_pcWorkbenchCombo->setMinimumWidth(130);
+	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
+
+
+
+	// default menu bar -----------------------------------------------------------------------
+	//
+	// populate menus with all default actions
+	if (!bInit)
+	{
+		std::vector<std::string> defaultMenus;
+		defaultMenus.push_back("Std_New");
+		defaultMenus.push_back("Std_Open");
+		defaultMenus.push_back("Std_Save");
+		defaultMenus.push_back("Std_SaveAs");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_Print");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_Quit");
+		_pcWidgetMgr->addPopupMenu("File", defaultMenus);
+
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_Cut");
+		defaultMenus.push_back("Std_Copy");
+		defaultMenus.push_back("Std_Paste");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_Undo");
+		defaultMenus.push_back("Std_Redo");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_DlgPreferences");
+    _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
+  
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_CommandLine");
+		defaultMenus.push_back("Std_DlgParameter");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_DlgMacroRecord");
+		defaultMenus.push_back("Std_DlgMacroStop");
+		defaultMenus.push_back("Std_DlgMacroExecute");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_DlgCustomize");
+		defaultMenus.push_back("Std_DlgPreferences");
+		_pcWidgetMgr->addPopupMenu("Tools", defaultMenus);
+
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_TileHoricontal");
+		defaultMenus.push_back("Std_TileVertical");
+		defaultMenus.push_back("Std_TilePragmatic");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_MDIToplevel");
+		defaultMenus.push_back("Std_MDITabed");
+		_pcWidgetMgr->addPopupMenu("Windows", defaultMenus);
+  
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_About");
+		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
+	}
+
+//  std::vector<std::string> Menus;
+//  Menus.push_back("Std_Cut");
+//  Menus.push_back("Std_Copy");
+//  Menus.push_back("Std_Paste");
+//  _pcWidgetMgr->addPopupMenu("Hallo2", Menus, "?");
+
+	setMenuForSDIModeSysButtons( menuBar());
+	_cActiveWorkbenchName = "<none>";
+}
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -274,122 +405,6 @@ FCProgressBar* ApplicationWindow::GetProgressBar()
 
 
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// creating std commands
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-void ApplicationWindow::CreateTestOperations()
-{
-	QString tmpWb = _cActiveWorkbenchName;
-	_cActiveWorkbenchName = "Standard";
-	_cBmpFactory.AddPath("../../FreeCADIcons");
-	_cBmpFactory.AddPath("../Icons");
-	_cBmpFactory.GetPixmap("Function");
-
-	// register the application Standard commands from CommandStd.cpp
-	CreateStdCommands();
-	CreateViewStdCommands();
-
-	// populate a tool bar with some actions
-
-	bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
-	// default toolbars -----------------------------------------------------------------------
-	//
-	// populate toolbars with all default actions
-	QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
-	//_pcStdToolBar->setLabel( "File" );
-
-	if (!bInit)
-	{
-		std::vector<std::string> defToolbar;
-		defToolbar.push_back("Std_New");
-		defToolbar.push_back("Std_Open");
-		defToolbar.push_back("Std_Save");
-		defToolbar.push_back("Std_Print");
-		defToolbar.push_back("Separator");
-		defToolbar.push_back("Std_Cut");
-		defToolbar.push_back("Std_Copy");
-		defToolbar.push_back("Std_Paste");
-		defToolbar.push_back("Separator");
-		defToolbar.push_back("Std_Undo");
-		defToolbar.push_back("Std_Redo");
-		defToolbar.push_back("Separator");
-		_pcWidgetMgr->addToolBar("file operations", defToolbar);
-	}
-	
-	// add the workbench combo to the main toolbar
-	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
-//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
-//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
-//	_cActiveWorkbenchName = "";
-	_pcWorkbenchCombo->setMinimumWidth(130);
-	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
-
-
-
-	// default menu bar -----------------------------------------------------------------------
-	//
-	// populate menus with all default actions
-	if (!bInit)
-	{
-		std::vector<std::string> defaultMenus;
-		defaultMenus.push_back("Std_New");
-		defaultMenus.push_back("Std_Open");
-		defaultMenus.push_back("Std_Save");
-		defaultMenus.push_back("Std_SaveAs");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_Print");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_Quit");
-		_pcWidgetMgr->addPopupMenu("File", defaultMenus);
-
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_Cut");
-		defaultMenus.push_back("Std_Copy");
-		defaultMenus.push_back("Std_Paste");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_Undo");
-		defaultMenus.push_back("Std_Redo");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_DlgPreferences");
-	   _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
-  
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_CommandLine");
-		defaultMenus.push_back("Std_DlgParameter");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_DlgMacroRecord");
-		defaultMenus.push_back("Std_DlgMacroExecute");
-		defaultMenus.push_back("Std_DlgCustomize");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_DlgPreferences");
-		_pcWidgetMgr->addPopupMenu("Tools", defaultMenus);
-
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_TileHoricontal");
-		defaultMenus.push_back("Std_TileVertical");
-		defaultMenus.push_back("Std_TilePragmatic");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_MDIToplevel");
-		defaultMenus.push_back("Std_MDITabed");
-		_pcWidgetMgr->addPopupMenu("Windows", defaultMenus);
-  
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_About");
-		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
-	}
-
-//  std::vector<std::string> Menus;
-//  Menus.push_back("Std_Cut");
-//  Menus.push_back("Std_Copy");
-//  Menus.push_back("Std_Paste");
-//  _pcWidgetMgr->addPopupMenu("Hallo2", Menus, "?");
-
-	setMenuForSDIModeSysButtons( menuBar());
-	_cActiveWorkbenchName = tmpWb;
-}
 
 /// send Messages to the active view
 bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
@@ -473,7 +488,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
 {
   // show menu with all available toolbars
-  if (isDockMenuEnabled () && e->type() == QEvent::MouseButtonPress && ((QMouseEvent*)e)->button() == RightButton)
+  if (isDockMenuEnabled () && e->type() == QEvent::MouseButtonPress && o == this && ((QMouseEvent*)e)->button() == RightButton)
   {
     QPoint p = ((QMouseEvent*)e)->globalPos();
     QPopupMenu menu;
@@ -488,6 +503,13 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
       QToolBar* tb = *It;
       toolb[id] = tb;
       if (tb->isVisible())
+		    menu.setItemChecked(id, true);
+    }
+    if (m_pTaskBar)
+    {
+      int id = menu.insertItem("Taskbar");
+      toolb[id] = m_pTaskBar;
+      if (m_pTaskBar->isVisible())
 		    menu.setItemChecked(id, true);
     }
 

@@ -36,18 +36,22 @@
 #include "DlgDocTemplates.h"
 #include "Window.h"
 
+class FCCommand;
+
 class DlgDocTemplatesImp : virtual public DlgDocTemplates, public FCWindowParameter
 { 
     Q_OBJECT
 
 public:
 
-    DlgDocTemplatesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    DlgDocTemplatesImp( FCCommand* pcCmd,QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~DlgDocTemplatesImp();
 
 	// for linux one dummy constructor:
+#ifdef FC_OS_LINUX
 	DlgDocTemplatesImp(int dummy, QWidget* parent,  const char* name, bool modal, WFlags fl )
 		:FCWindowParameter(name){DlgDocTemplatesImp(parent,name,modal,fl);}
+#endif
 
 public slots:
     virtual void ChoseFile();
@@ -55,6 +59,9 @@ public slots:
     virtual void ViewChange(QIconViewItem*);
     virtual void EditFile();
     virtual void IconDoubleClick(QIconViewItem*);
+
+protected:
+	FCCommand* _pcCmd;
 };
 
 #endif // DLGDOCTEMPLATESIMP_H
