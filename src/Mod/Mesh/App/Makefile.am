@@ -2,7 +2,9 @@
 lib_LTLIBRARIES=libMesh.la
 
 libMesh_la_SOURCES=\
-		AppMesh.cpp
+		AppMesh.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 
 # the library search path.

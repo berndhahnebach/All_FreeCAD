@@ -7,8 +7,6 @@ BUILT_SOURCES=\
 libRaytracing_la_SOURCES=\
 		AppRaytracing.cpp \
 		AppRaytracingPy.cpp \
-		FeatureRayExportPov.cpp \
-		FeatureRayExportPov.h \
 		PovTools.cpp \
 		PovTools.h \
 		PreCompiled.cpp \

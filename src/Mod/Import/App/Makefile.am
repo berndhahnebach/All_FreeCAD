@@ -2,7 +2,10 @@
 lib_LTLIBRARIES=libImport.la
 
 libImport_la_SOURCES=\
-		AppImport.cpp
+		AppImport.cpp \
+		AppImportPy.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 
 # the library search path.

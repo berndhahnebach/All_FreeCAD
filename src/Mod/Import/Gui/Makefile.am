@@ -5,7 +5,9 @@ lib_LTLIBRARIES=libImportGui.la
 #
 libImportGui_la_SOURCES=\
 		AppImportGui.cpp \
-		Command.cpp
+		Command.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 # the library search path.
 libImportGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

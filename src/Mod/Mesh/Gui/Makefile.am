@@ -5,7 +5,9 @@ lib_LTLIBRARIES=libMeshGui.la
 #
 libMeshGui_la_SOURCES=\
 		AppMeshGui.cpp \
-		Command.cpp
+		Command.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 # the library search path.
 libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

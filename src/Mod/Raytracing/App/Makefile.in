@@ -149,8 +149,6 @@ BUILT_SOURCES = \
 libRaytracing_la_SOURCES = \
 		AppRaytracing.cpp \
 		AppRaytracingPy.cpp \
-		FeatureRayExportPov.cpp \
-		FeatureRayExportPov.h \
 		PovTools.cpp \
 		PovTools.h \
 		PreCompiled.cpp \
@@ -177,7 +175,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libRaytracing_la_DEPENDENCIES =
 am_libRaytracing_la_OBJECTS = AppRaytracing.lo AppRaytracingPy.lo \
-	FeatureRayExportPov.lo PovTools.lo PreCompiled.lo RayFeature.lo
+	PovTools.lo PreCompiled.lo RayFeature.lo
 libRaytracing_la_OBJECTS = $(am_libRaytracing_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -185,7 +183,6 @@ depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracing.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/AppRaytracingPy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/FeatureRayExportPov.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PovTools.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/RayFeature.Plo
@@ -257,7 +254,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracing.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracingPy.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureRayExportPov.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PovTools.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RayFeature.Plo@am__quote@

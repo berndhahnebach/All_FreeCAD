@@ -12,7 +12,9 @@ libRaytracingGui_la_SOURCES=\
 		AppRaytracingGui.cpp \
 		Command.cpp \
 		DlgSettingsRayImp.cpp \
-		DlgSettingsRayImp.h
+		DlgSettingsRayImp.h \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 # the library search path.
 libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -47,3 +49,5 @@ install-data-local:
 		cd $(prefix) && \
 		rm -f RaytracingGui.so && \
 		$(LN_S) lib/libRaytracingGui.so RaytracingGui.so
+
+CLEANFILES = $(BUILT_SOURCES)

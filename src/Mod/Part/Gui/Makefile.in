@@ -172,6 +172,8 @@ libPartGui_la_SOURCES = \
 		DlgPartImportStepImp.h \
 		DlgSettings3DViewPartImp.cpp \
 		DlgSettings3DViewPartImp.h \
+		PreCompiled.cpp \
+		PreCompiled.h \
 		ViewProvider.cpp \
 		ViewProvider.h
 
@@ -186,6 +188,8 @@ libPartGui_la_LIBADD = \
 
 # set the include path found by configure
 INCLUDES = $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+CLEANFILES = $(BUILT_SOURCES)
 subdir = Gui
 mkinstalldirs = $(SHELL) $(top_srcdir)/../../mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -194,7 +198,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libPartGui_la_DEPENDENCIES =
 am_libPartGui_la_OBJECTS = AppPartGui.lo Command.lo DlgPartBoxImp.lo \
 	DlgPartImportIgesImp.lo DlgPartImportStepImp.lo \
-	DlgSettings3DViewPartImp.lo ViewProvider.lo
+	DlgSettings3DViewPartImp.lo PreCompiled.lo ViewProvider.lo
 libPartGui_la_OBJECTS = $(am_libPartGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -206,6 +210,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportIgesImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportStepImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettings3DViewPartImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -279,6 +284,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportIgesImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportStepImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettings3DViewPartImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
 
 distclean-depend:
@@ -437,6 +443,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)

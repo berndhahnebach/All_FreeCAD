@@ -30,6 +30,8 @@ libPartGui_la_SOURCES=\
 		DlgPartImportStepImp.h \
 		DlgSettings3DViewPartImp.cpp \
 		DlgSettings3DViewPartImp.h \
+		PreCompiled.cpp \
+		PreCompiled.h \
 		ViewProvider.cpp \
 		ViewProvider.h
 
@@ -63,3 +65,5 @@ install-data-local:
 		cd $(prefix) && \
 		rm -f PartGui.so && \
 		$(LN_S) lib/libPartGui.so PartGui.so
+
+CLEANFILES = $(BUILT_SOURCES)

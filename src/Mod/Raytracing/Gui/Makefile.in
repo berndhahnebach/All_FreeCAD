@@ -154,7 +154,9 @@ libRaytracingGui_la_SOURCES = \
 		AppRaytracingGui.cpp \
 		Command.cpp \
 		DlgSettingsRayImp.cpp \
-		DlgSettingsRayImp.h
+		DlgSettingsRayImp.h \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 
 # the library search path.
@@ -167,6 +169,8 @@ libRaytracingGui_la_LIBADD = \
 
 # set the include path found by configure
 INCLUDES = $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+
+CLEANFILES = $(BUILT_SOURCES)
 subdir = Gui
 mkinstalldirs = $(SHELL) $(top_srcdir)/../../mkinstalldirs
 CONFIG_CLEAN_FILES =
@@ -174,7 +178,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libRaytracingGui_la_DEPENDENCIES =
 am_libRaytracingGui_la_OBJECTS = AppRaytracingGui.lo Command.lo \
-	DlgSettingsRayImp.lo
+	DlgSettingsRayImp.lo PreCompiled.lo
 libRaytracingGui_la_OBJECTS = $(am_libRaytracingGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -182,7 +186,8 @@ depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracingGui.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Command.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsRayImp.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsRayImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -252,6 +257,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracingGui.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsRayImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -409,6 +415,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
