@@ -35,7 +35,6 @@
 #include "Window.h"
 
 #ifdef FC_OS_LINUX
-#	include <qwindowsstyle.h>
 #	include <qvalidator.h>
 #	include <qlineedit.h>
 #endif
