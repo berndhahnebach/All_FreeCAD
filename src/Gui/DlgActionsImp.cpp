@@ -62,10 +62,6 @@ FCDlgCustomActionsImp::FCDlgCustomActionsImp( QWidget* parent, const char* name,
 	actionMacros->clear();
   for (unsigned int i=0; i<d.count(); i++ )
     actionMacros->insertItem(d[i]);
-  if (actionMacros->count() == 0)
-  {
-    QMessageBox::warning(this, "No macro","No macros found");
-  }
 
   init();
 
@@ -80,6 +76,15 @@ FCDlgCustomActionsImp::FCDlgCustomActionsImp( QWidget* parent, const char* name,
 
 FCDlgCustomActionsImp::~FCDlgCustomActionsImp()
 {
+}
+
+void FCDlgCustomActionsImp::show()
+{
+  FCDlgCustomActions::show();
+  if (actionMacros->count() == 0)
+  {
+    QMessageBox::warning(this, "No macro","No macros found");
+  }
 }
 
 void FCDlgCustomActionsImp::init()
