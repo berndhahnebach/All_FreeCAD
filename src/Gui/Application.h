@@ -62,8 +62,10 @@ class FCAutoWaitCursor;
 class FCCmdBar;
 class FCHtmlView;
 class FCUndoRedoDlg;
+class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
+
 
 /** The Bitmap Factory
   * the main purpos is to collect all build in Bitmaps and 
@@ -124,36 +126,52 @@ public:
 	bool SendMsgToActiveView(const char* pMsg);
 	/// returns the active view or NULL
 	FCView* GetActiveView(void);
-
 	/// Geter for the Active View
 	FCGuiDocument* GetActiveDocument(void);
 
 
 	/// Reference to the command manager
 	FCCommandManager &GetCommandManager(void){return _cCommandManager;}
-  /// Returns the widget manager
-  FCCustomWidgetManager* GetCustomWidgetManager(void) { return _pcWidgetMgr; }
+	
+	/// Returns the widget manager
+	FCCustomWidgetManager* GetCustomWidgetManager(void) { return _pcWidgetMgr; }
 
 	/// Referenc to the bitmap factory
 	FCBmpFactory     &GetBmpFactory(void){return _cBmpFactory;}
 
+	/** @name dock window handling */
+	//@{	
 	/// Add a new named Dock Window
 	void          AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);
 	/// Gets you a registered Dock Window back
 	FCWindow *    GetDockWindow(const char* name);
 	/// Delete (or only remove) a named Dock Window
 	void          DelDockWindow(const char* name, bool bOnlyRemove = false);
+	//@}
 
-	// set text to the pane
+	/** @name status bar handling */
+	//@{	
+	/// set text to the pane
 	void SetPaneText(int i, QString text);
+	/// gets a pointer to the Progress bar
 	FCProgressBar* GetProgressBar();
+	//@}
 
+	/** @name workbench handling */
+	//@{	
 	/// Activate a named workbench
 	void ActivateWorkbench(const char* name);
 	/// update the combo box when there are changes in the workbenches
 	void UpdateWorkbenchEntrys(void);
 	/// returns the name of the active workbench
 	QString GetActiveWorkbench(void){return _cActiveWorkbenchName;}
+	//@}
+
+	/// Get macro manager
+	FCMacroManager *GetMacroMngr(void){return _pcMacroMngr;}
+
+
+
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -225,6 +243,7 @@ private:
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;
 	FCCustomWidgetManager*		 _pcWidgetMgr;
+	FCMacroManager*  _pcMacroMngr;
 	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 	QComboBox *		 _pcWorkbenchCombo;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;

@@ -1300,6 +1300,14 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Macro.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Macro.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MouseModel.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File

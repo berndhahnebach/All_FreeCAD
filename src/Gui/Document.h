@@ -100,8 +100,6 @@ public:
 	void Undo(int iSteps);
 	/// Will REDO  one or more steps
 	void Redo(int iSteps) ;
-
-
 	//@}
 
 

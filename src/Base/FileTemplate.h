@@ -143,6 +143,17 @@ public:
 	 */
 	virtual void testMeToo(char c1,char c2) = 0;
 
+	/** @name a group of methodes */
+	//@{
+	/// I am mthode one
+	virtual void One(void)=0;
+	/// I am mthode Two
+	virtual void Two(void)=0;
+	/// I am mthode Three
+	virtual void Three(void)=0;
+	//@}
+
+
 	/** 
 	 * a public variable.
 	 * Details.
@@ -154,6 +165,10 @@ public:
 	 * Details.
 	 */
 	int (*handler)(int a,int b);
+
+	// VC6 warns a DLL interface, ignor!
+#	pragma warning( disable : 4251 )
+	std::string something;
 
 };
 

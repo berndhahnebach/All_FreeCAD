@@ -77,6 +77,7 @@
 #include "DlgUndoRedo.h"
 #include "ButtonGroup.h"
 #include "HtmlView.h"
+#include "Macro.h"
 
 #include "Icons/images.cpp"
 #include "Icons/FCIcon.xpm"
@@ -122,10 +123,12 @@ ApplicationWindow::ApplicationWindow()
     // attach the console observer
 	GetConsole().AttacheObserver( new FCGuiConsoleObserver(this) );
 
-	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
-  _pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
+	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
 	CreateTestOperations();
 	//createCasCadeOperations();
+
+	// create the macro manager
+	_pcMacroMngr = new FCMacroManager();
 
 	// labels and progressbar
 	_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
@@ -150,6 +153,7 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
+	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
 	AddDockWindow( "Command bar",_pcCmdBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -160,7 +164,9 @@ ApplicationWindow::ApplicationWindow()
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	//FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
+	//
+
+	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
 	//AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
 
 	// misc stuff
@@ -173,6 +179,7 @@ ApplicationWindow::ApplicationWindow()
 ApplicationWindow::~ApplicationWindow()
 {
   delete _pcWidgetMgr;
+  delete _pcMacroMngr;
 }
 
 
@@ -809,7 +816,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
 	if (!PyArg_ParseTuple(args, "s", &psCmdbarName))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-  Instance->_pcWidgetMgr->addCmdBar(psCmdbarName);
+	Instance->_pcWidgetMgr->addCmdBar(psCmdbarName);
 
 	Py_INCREF(Py_None);
 	return Py_None;

@@ -145,6 +145,8 @@ FCViewBar::FCViewBar( FCView* pcView, QWidget* parent, const char* name, int wfl
 	:FCWindow(parent,name,wflags),
 	 _pcView(pcView)
 {
+	assert(_pcView);
+
 	_pcView->reparent(this,wflags,QPoint(0,0));
 	resize( 130, 600 );
 }
