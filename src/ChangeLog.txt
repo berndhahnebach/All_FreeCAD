@@ -398,3 +398,6 @@ Version: V0.1B84 Date: Wed Apr 07 15:59:56 2004 +++++++++++++++++++++++++++++++
 Version: V0.1B85 Date: Sun Apr 18 01:22:41 2004 +++++++++++++++++++++++++++++++
 + Configure script finished, FreeCAD is now running under Linux :-)),
    start linux port of the modules now
+
+Version: V0.1B86 Date: Thu May 06 21:15:32 2004 +++++++++++++++++++++++++++++++
++ removed EnvPrints and put it in Config

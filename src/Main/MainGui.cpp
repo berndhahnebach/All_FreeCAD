@@ -82,6 +82,8 @@ int main( int argc, char ** argv )
 
 	ApplicationWindow::InitApplication();
 
+	// dumps the configuration to the console
+//	FCApplication::DumpConfig();
 
 	// Run phase ===========================================================
 

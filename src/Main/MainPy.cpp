@@ -89,6 +89,8 @@ extern "C" {
 
 		FCApplication::InitApplication();
 
+		FCApplication::DumpConfig();
+
 
 		return;
 	} //InitFreeCAD....

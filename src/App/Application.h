@@ -195,6 +195,7 @@ public:
 	static void Destruct(void);
 	static void InitConfig(int argc, char ** argv );
 	static void InitApplication(void);
+	static void DumpConfig(void);
 	static void SetRunMode(const char*);
 	static void RunApplication(void);
 //	static FCApplication &Instance(void);
@@ -219,6 +220,8 @@ private:
 	static void ExtractPathAndUser(const char*);
 	/// load the user and system parameter set
 	static void LoadParameters(void);
+	/// puts the given env variable in the config
+	static void SaveEnv(const char *);
 	/// startup configuration container
 	static std::map<std::string,std::string> mConfig;
 	static int _argc;

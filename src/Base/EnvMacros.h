@@ -43,12 +43,12 @@
 
 inline void EnvPrint(const char* sVar, const char* sVal)
 {
-	cout << sVar << "=" << sVal  << endl;
+	//cout << sVar << "=" << sVal  << endl;
 }
 
 inline void EnvPrint(const char* sMsg)
 {
-	cout << sMsg << endl;
+	//cout << sMsg << endl;
 }
 
 inline void SetEnvironment(const char* sVar, const char* sVal)

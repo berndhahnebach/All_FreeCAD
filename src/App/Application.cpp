@@ -629,6 +629,7 @@ void FCApplication::InitConfig(int argc, char ** argv )
 "  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
+	
 	_argc = argc;
 	_argv = argv;
 
@@ -672,11 +673,39 @@ void FCApplication::InitConfig(int argc, char ** argv )
 
 	LoadParameters();
 
+	// capture python variables
+	SaveEnv("PYTHONPATH");
+	SaveEnv("TCL_LIBRARY");
+	SaveEnv("TCLLIBPATH");
+
+	// capture CasCade variables
+	SaveEnv("CSF_MDTVFontDirectory");
+	SaveEnv("CSF_MDTVTexturesDirectory");
+	SaveEnv("CSF_UnitsDefinition");
+	SaveEnv("CSF_UnitsLexicon");
+	SaveEnv("CSF_StandardDefaults");
+	SaveEnv("CSF_PluginDefaults");
+	SaveEnv("CSF_LANGUAGE");
+	SaveEnv("CSF_SHMessage");
+	SaveEnv("CSF_XCAFDefaults");
+	SaveEnv("CSF_GraphicShr");
+	SaveEnv("CSF_IGESDefaults");
+	SaveEnv("CSF_STEPDefaults");
+
+	// capture path
+	SaveEnv("PATH");
+
+
 }
 
 void FCApplication::SetRunMode(const char* s)
 {
 	mConfig["RunMode"] = s;
+}
+
+void FCApplication::SaveEnv(const char* s)
+{
+	mConfig[s] = getenv(s);
 }
 
 
@@ -734,6 +763,15 @@ void FCApplication::RunApplication()
 
 		GetConsole().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());
 		exit(1);
+	}
+
+}
+
+void FCApplication::DumpConfig()
+{
+	for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
+	{
+		GetConsole().Log("  %s\t= %s\n",It->first.c_str(),It->second.c_str());
 	}
 
 }
