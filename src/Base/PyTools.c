@@ -434,13 +434,17 @@ PP_Load_Attribute(char *modname, char *attrname)
 
 
 /* extra ops */
-int 
+int
 PP_Run_Command_Line(char *prompt)
 {
     int res;               /* interact with python, in "__main__" */
     Py_Initialize();       /* in the program's "stdio" window     */
     if (prompt != NULL)
+#ifdef FC_OS_LINUX
+        printf("[%s <Ctrl-D exits>]\n", prompt);
+#else
         printf("[%s <ctrl-z and Enter exits>]\n", prompt);
+#endif
     res = PyRun_InteractiveLoop(stdin, "<stdin>");
     return res;
 }

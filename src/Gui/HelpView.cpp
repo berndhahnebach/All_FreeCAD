@@ -48,6 +48,8 @@
 #include "FileDialog.h"
 #include "Process.h"
 #include "WhatsThis.h"
+#include "Action.h"
+#include "Command.h"
 
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -400,18 +402,38 @@ void TextBrowser::contentsDropEvent(QDropEvent  * e)
     if ( QStyleSheet::mightBeRichText(text) )
       setText(text);
   }
+  else if ( ActionDrag::canDecode(e) )
+  {
+    // extracts the appropriate command's help url
+    QString action;
+    if ( ActionDrag::decode(e, action) )
+    {
+      if ( !action.isEmpty() )
+      {
+        ActionDrag::actions.clear();
+        CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
+        Command* pCmd = rclMan.getCommandByName(action.latin1());
+        if (pCmd)
+        {
+          /// @todo
+          // show this dummy url
+          setSource( "index.php@copy=CompileOnLinux.html"/*pCmd->cmdHelpURL().c_str()*/ );
+        }
+      }
+    }
+  }
 }
 
 void TextBrowser::contentsDragEnterEvent  (QDragEnterEvent * e)
 {
-  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
+  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e) || ActionDrag::canDecode(e);
   if ( !can )
     e->ignore();
 }
 
 void TextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
+  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e) || ActionDrag::canDecode(e);
   if ( !can )
     e->ignore();
 }

@@ -63,8 +63,7 @@ extern "C" {
 void GuiMeshExport initMeshGui() {
   if ( !Gui::ApplicationWindow::Instance )
   {
-    (void) Py_InitModule("MeshGui", 0);   /* mod name, table ptr */
-    Base::Console().Error("Cannot load AppMeshGui\n");
+    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
     return;
   }
 
