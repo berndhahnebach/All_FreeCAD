@@ -170,7 +170,7 @@ int main( int argc, char ** argv )
 	// catch all FC exceptions
 	catch(const FCException& e)
 	{
-		GetConsole().Error("Application init failed:");
+		Console().Error("Application init failed:");
 		e.ReportException();
 		PrintInitHelp();
 		exit(20);
@@ -178,8 +178,8 @@ int main( int argc, char ** argv )
 	// catch XML exceptions
 /*	catch (XMLException& e)
 	{
-		GetConsole().Error("Application init failed:");
-		GetConsole().Error(StrX(e.getMessage()).c_str());
+		Console().Error("Application init failed:");
+		Console().Error(StrX(e.getMessage()).c_str());
 		PrintInitHelp();
 		exit(30);
 	}
@@ -187,7 +187,7 @@ int main( int argc, char ** argv )
 	// catch all the (nasty) rest
 	catch(...)
 	{
-		GetConsole().Error("Application init failed, because of a really nesty (unknown) error...");
+		Console().Error("Application init failed, because of a really nesty (unknown) error...");
 		PrintInitHelp();
 		exit(40);
 	}
@@ -206,7 +206,7 @@ int main( int argc, char ** argv )
 		// run GUI
 #			ifdef _FC_GUI_ENABLED_
 				// A new QApplication
-				GetConsole().Log("Creating GUI Application...\n");
+				Console().Log("Creating GUI Application...\n");
 				// if application not yet created
 				if (!pcQApp)  pcQApp = new QApplication ( argc, argv );
 
@@ -217,7 +217,7 @@ int main( int argc, char ** argv )
 				GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
 
 				// show the main window
-				GetConsole().Log("Showing GUI Application...\n");
+				Console().Log("Showing GUI Application...\n");
         mw->Polish();
 				mw->show();
 				pcQApp->connect( pcQApp, SIGNAL(lastWindowClosed()), pcQApp, SLOT(quit()) );
@@ -233,13 +233,13 @@ int main( int argc, char ** argv )
 				}
 
 				// run the Application event loop
-				GetConsole().Log("Running event loop...\n");
+				Console().Log("Running event loop...\n");
 				ret = pcQApp->exec();
-				GetConsole().Log("event loop left\n");
+				Console().Log("event loop left\n");
 				delete pcQApp;
 
 #			else
-				GetConsole().Error("GUI mode not possible. This is a FreeCAD compiled without GUI. Use FreeCAD -c\n");
+				Console().Error("GUI mode not possible. This is a FreeCAD compiled without GUI. Use FreeCAD -c\n");
 #			endif
 			}
 		else if(mConfig["RunMode"] == "Cmd")
@@ -250,43 +250,43 @@ int main( int argc, char ** argv )
 		else if(mConfig["RunMode"] == "Script")
 		{
 			// run a script
-			GetConsole().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+			Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
 			GetInterpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
 		}
 		else if(mConfig["RunMode"] == "Internal")
 		{
 			// run internal script
-			GetConsole().Log("Running internal script:\n");
+			Console().Log("Running internal script:\n");
 			GetInterpreter().Launch(sScriptName);
 		} else {
 
-			GetConsole().Log("Unknown Run mode in main()?!?\n\n");
+			Console().Log("Unknown Run mode in main()?!?\n\n");
 			exit(1);
 		}
 #	ifndef FC_DEBUG
 	}
 	catch(Standard_Failure e)
 	{
-		GetConsole().Error("Running the application failed, OCC exception caught:\n");
+		Console().Error("Running the application failed, OCC exception caught:\n");
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
 		cout << "An exception was caught " << E << endl;
 		exit(4);
 	}
 	catch(const FCException& e)
 	{
-		GetConsole().Error("Running the application failed:\n");
+		Console().Error("Running the application failed:\n");
 		e.ReportException();
 		exit(5);
 	}
 	catch(...)
 	{
-		GetConsole().Error("Running the application failed, because of a really nesty (unknown) error...\n\n");
+		Console().Error("Running the application failed, because of a really nesty (unknown) error...\n\n");
 		exit(6);
 	}
 #	endif
 
 	// Destruction phase ===========================================================
-	GetConsole().Log("FreeCAD terminating...\n\n");
+	Console().Log("FreeCAD terminating...\n\n");
 #	ifndef FC_DEBUG
 	try
 	{
@@ -298,11 +298,11 @@ int main( int argc, char ** argv )
 	}
 	catch(...)
 	{
-		GetConsole().Error("Destruction of the application failed, because of a really nesty (unknown) error...\n\n");
+		Console().Error("Destruction of the application failed, because of a really nesty (unknown) error...\n\n");
 		exit(6);
 	}
 #	endif
-	GetConsole().Log("FreeCAD completely terminated\n\n");
+	Console().Log("FreeCAD completely terminated\n\n");
 
 	return 0;
 }
@@ -346,18 +346,18 @@ void Init(int argc, char ** argv )
 	GetInterpreter();
 
 	// Init console ===========================================================
-	GetConsole().AttacheObserver(new FCCmdConsoleObserver());
-	if(mConfig["Verbose"] == "Strict") GetConsole().SetMode(FCConsole::Verbose);
+	Console().AttacheObserver(new FCCmdConsoleObserver());
+	if(mConfig["Verbose"] == "Strict") Console().SetMode(FCConsole::Verbose);
 	// file logging fcility
 #	ifdef FC_DEBUG
-		GetConsole().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
+		Console().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
 #	endif
 
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
-		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
+		Console().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
 	else
-		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
+		Console().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
 
 	pcSystemParameter = new FCParameterManager();
 	pcUserParameter = new FCParameterManager();
@@ -366,16 +366,16 @@ void Init(int argc, char ** argv )
 	// Init parameter sets ===========================================================
 	if(pcSystemParameter->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
-		GetConsole().Warning("   Parameter not existing, write initial one\n");
-		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
+		Console().Warning("   Parameter not existing, write initial one\n");
+		Console().Message("   This Warning means normaly FreeCAD running the first time or the\n"
 		                     "   configuration was deleted or moved.Build up the standard configuration.\n");
 
 	}
 
 	if(pcUserParameter->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
-		GetConsole().Warning("   User settings not existing, write initial one\n");
-		GetConsole().Message("   This Warning means normaly you running FreeCAD the first time\n"
+		Console().Warning("   User settings not existing, write initial one\n");
+		Console().Message("   This Warning means normaly you running FreeCAD the first time\n"
 		                     "   or your configuration was deleted or moved. The system defaults\n"
 		                     "   will be reestablished for you.\n");
 
@@ -404,7 +404,7 @@ void Init(int argc, char ** argv )
 	cTempStream.close();
 
 	// creating the application
-	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
+	if(!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application");
 	FCApplication::InitApplication(pcSystemParameter,pcUserParameter,mConfig);
 
 	// Splasher phase ===========================================================
@@ -434,12 +434,12 @@ void Init(int argc, char ** argv )
 void Destruct(void)
 {
 	// saving system parameter
-	GetConsole().Log("Saving system parameter...");
+	Console().Log("Saving system parameter...");
 	pcSystemParameter->SaveDocument(mConfig["SystemParameter"].c_str());
 	// saving the User parameter
-	GetConsole().Log("done\nSaving user parameter...");
+	Console().Log("done\nSaving user parameter...");
 	pcUserParameter->SaveDocument(mConfig["UserParameter"].c_str());
-	GetConsole().Log("done\n");
+	Console().Log("done\n");
 	// clean up
 	delete pcSystemParameter;
 	delete pcUserParameter;
@@ -556,8 +556,8 @@ void ParsOptions(int argc, char ** argv)
 						mConfig["RunMode"] = "Cmd";
 						if(argc <= i+1)
 						{
-							GetConsole().Error("Expecting a file\n");
-							GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+							Console().Error("Expecting a file\n");
+							Console().Error("\nUsage: %s %s",argv[0],Usage);
 						}
 						mConfig["FileName"]= argv[i+1];
 						i++;
@@ -566,8 +566,8 @@ void ParsOptions(int argc, char ** argv)
 						mConfig["RunMode"] = "Cmd";
 						break;
 					default:
-						GetConsole().Error("Invalid Input %s\n",argv[i]);
-						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+						Console().Error("Invalid Input %s\n",argv[i]);
+						Console().Error("\nUsage: %s %s",argv[0],Usage);
 						throw FCException("Comandline error(s)");
 				};
 				break;
@@ -603,27 +603,27 @@ void ParsOptions(int argc, char ** argv)
 						break;
 					default:
 						//default testing level 0
-						GetConsole().Error("Invalid Verbose Option: %s\n",argv[i]);
-						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+						Console().Error("Invalid Verbose Option: %s\n",argv[i]);
+						Console().Error("\nUsage: %s %s",argv[0],Usage);
 						throw FCException("Comandline error(s)");
 				};
 				break;
 			case '?':
 			case 'h':
 			case 'H':
-				GetConsole().Message("\nUsage: %s %s",argv[0],Usage);
+				Console().Message("\nUsage: %s %s",argv[0],Usage);
 				throw FCException("Comandline break");
 				break;
 			default:
-				GetConsole().Error("Invalid Option: %s\n",argv[i]);
-				GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+				Console().Error("Invalid Option: %s\n",argv[i]);
+				Console().Error("\nUsage: %s %s",argv[0],Usage);
 				throw FCException("Comandline error(s)");
 			}
 		}
 		else
 		{
-			GetConsole().Error("Illegal command line argument #%d, %s\n",i,argv[i]);
-			GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+			Console().Error("Illegal command line argument #%d, %s\n",i,argv[i]);
+			Console().Error("\nUsage: %s %s",argv[0],Usage);
 			throw FCException("Comandline error(s)");
 		}
 	}
@@ -649,7 +649,7 @@ void __declspec(dllexport) initFreeCADDCmdPy() {
 #else
 void __declspec(dllexport) initFreeCADCmdPy() {
 #endif
-	GetConsole();
+	Console();
 	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
 	printf("hallo");
 	cout << "hallo";

@@ -45,14 +45,15 @@
 #include <fstream> 
 #include <set>
  
+namespace Base {
 
 /** The console observer class
  *  This class distribute the Messages issued to the FCConsole class. 
  *  If you need to catch some of the Messages you need to inherit from
  *  this class and implement some of the methodes.
- *  @see FCConsole
+ *  @see Console
   */
-class BaseExport FCConsoleObserver
+class BaseExport ConsoleObserver
 {
 public:
 	/// get calles when a Warning is issued
@@ -81,9 +82,9 @@ public:
  *  \par
  *  FCConsole is abel to switch between several modes to, e.g. switch
  *  the logging on or off, or treat Warnings as Errors, and so on...
- *  @see FCConsoleObserver
+ *  @see ConsoleObserver
  */
-class BaseExport FCConsole //:public FCPythonExport
+class BaseExport ConsoleSingelton //:public FCPythonExport
 {
 
 public:
@@ -101,9 +102,9 @@ public:
 	/// Delivers a time/date string 
 	const char* Time(void);
 	/// Attach an Observer to FCConsole
-	void AttacheObserver(FCConsoleObserver *pcObserver);
+	void AttacheObserver(ConsoleObserver *pcObserver);
 	/// Detache an Observer from FCConsole
-	void DetacheObserver(FCConsoleObserver *pcObserver);
+	void DetacheObserver(ConsoleObserver *pcObserver);
 	/// enumaration for the console modes
 	enum ConsoleMode{
 		Verbose = 1,	// supress Log messages
@@ -115,7 +116,7 @@ public:
 	void UnsetMode(ConsoleMode m);
 
 	/// singelton 
-	static FCConsole &Instance(void);
+	static ConsoleSingelton &Instance(void);
 
 protected:
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -129,13 +130,13 @@ protected:
 	bool _bVerbose;
 
 	// Singelton!
-	FCConsole(void);
-	virtual ~FCConsole();
+	ConsoleSingelton(void);
+	virtual ~ConsoleSingelton();
 
 private:
 	// singelton
 	static void Destruct(void);
-	static FCConsole *_pcSingelton;
+	static ConsoleSingelton *_pcSingelton;
 
 	// observer processing 
 	void NotifyMessage(const char *sMsg);
@@ -146,23 +147,29 @@ private:
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #endif
-	std::set<FCConsoleObserver * > _aclObservers;
+	std::set<ConsoleObserver * > _aclObservers;
 
 };
 
-inline FCConsole &GetConsole(void){
-	return FCConsole::Instance();
+/** Access to the Console
+ *  
+ */  
+inline ConsoleSingelton &Console(void){
+	return ConsoleSingelton::Instance();
 }
 
 
 //=========================================================================
 // some special observers
 
-class BaseExport FCLoggingConsoleObserver : public FCConsoleObserver
+/** The LoggingConsoleObserver class
+ *  This class is used by the main modules to write Console messages and logs to a file
+ */  
+class BaseExport LoggingConsoleObserver : public ConsoleObserver
 {
 public:
-	FCLoggingConsoleObserver(const char *sFileName);
-	virtual ~FCLoggingConsoleObserver();
+	LoggingConsoleObserver(const char *sFileName);
+	virtual ~LoggingConsoleObserver();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg);
 	virtual void Error  (const char *sErr);
@@ -172,8 +179,10 @@ protected:
 	std::ofstream cFileStream;
 };
 
-// simple print observer
-class BaseExport FCCmdConsoleObserver: public FCConsoleObserver
+/** The CmdConsoleObserver class
+ *  This class is used by the main modules to write Console messages and logs the system con.
+ */
+class BaseExport CmdConsoleObserver: public ConsoleObserver
 {
 public:
 	virtual void Warning(const char *sWarn);
@@ -182,5 +191,7 @@ public:
 	virtual void Log    (const char *sErr); 
 };
 
+
+} // namespace Base 
 
 #endif

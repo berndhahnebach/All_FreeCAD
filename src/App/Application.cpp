@@ -51,6 +51,8 @@ const char *       FCApplication::VersionTime  = __TIME__;
 #include "InitScript.h"
 #include "TestScript.h"
 
+//using Base::GetConsole;
+using namespace Base;
 
 
 
@@ -613,13 +615,14 @@ char ** FCApplication::_argv;
 
 void FCApplication::Destruct(void)
 {
+
 		// saving system parameter
-	GetConsole().Log("Saving system parameter...");
+	Console().Log("Saving system parameter...");
 	_pcSysParamMngr->SaveDocument(mConfig["SystemParameter"].c_str());
 	// saving the User parameter
-	GetConsole().Log("done\nSaving user parameter...");
+	Console().Log("done\nSaving user parameter...");
 	_pcUserParamMngr->SaveDocument(mConfig["UserParameter"].c_str());
-	GetConsole().Log("done\n");
+	Console().Log("done\n");
 	// clean up
 	delete _pcSysParamMngr;
 	delete _pcUserParamMngr;
@@ -642,6 +645,7 @@ void FCApplication::Destruct(void)
 
 void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 {
+	
 	static const char sBanner[] = \
 "  #####                 ####  ###   ####  \n" \
 "  #                    #      # #   #   # \n" \
@@ -682,19 +686,19 @@ void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 
 	DBGTRY
 		// Init console ===========================================================
-		GetConsole().AttacheObserver(new FCCmdConsoleObserver());
-		if(mConfig["Verbose"] == "Strict") GetConsole().SetMode(FCConsole::Verbose);
+		Console().AttacheObserver(new CmdConsoleObserver());
+		if(mConfig["Verbose"] == "Strict") Console().SetMode(ConsoleSingelton::Verbose);
 		// file logging fcility
 		#	ifdef FC_DEBUG
-			GetConsole().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
+			Console().AttacheObserver(new LoggingConsoleObserver("FreeCAD.log"));
 		#	endif
 	DBGCATCH(puts("error init console\n");exit(2);)
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
-		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
+		Console().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n%s",sBanner);
 	else
-		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
+		Console().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
 
 
 	LoadParameters();
@@ -739,6 +743,7 @@ void FCApplication::SaveEnv(const char* s)
 
 void FCApplication::InitApplication(void)
 {
+
 	// checking on the plugin files of OpenCasCade
 	std::fstream cTempStream;
 	cTempStream.open((mConfig["HomePath"]+PATHSEP+"Plugin").c_str(),ios::out);
@@ -756,7 +761,7 @@ void FCApplication::InitApplication(void)
 
 
 	// creating the application
-	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
+	if(!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application");
 	FCApplication::_pcSingelton = new FCApplication(0,0,mConfig);
 
 
@@ -769,6 +774,7 @@ void FCApplication::InitApplication(void)
 void FCApplication::RunApplication()
 {
 
+
 	if(mConfig["RunMode"] == "Cmd")
 	{
 		// Run the comandline interface
@@ -777,19 +783,19 @@ void FCApplication::RunApplication()
 	else if(mConfig["RunMode"] == "Script")
 	{
 		// run a script
-		GetConsole().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
 		GetInterpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
 	}
 	else if(mConfig["RunMode"] == "Internal")
 	{
 		// run internal script
-		GetConsole().Log("Running internal script:\n");
+		Console().Log("Running internal script:\n");
 		GetInterpreter().Launch(GetScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
 
 		//!!! GetInterpreter().Launch(sScriptName);
 	} else {
 
-		GetConsole().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());
+		Console().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());
 		exit(1);
 	}
 
@@ -797,9 +803,10 @@ void FCApplication::RunApplication()
 
 void FCApplication::DumpConfig()
 {
+
 	for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
 	{
-		GetConsole().Log("  %s\t= %s\n",It->first.c_str(),It->second.c_str());
+		Console().Log("  %s\t= %s\n",It->first.c_str(),It->second.c_str());
 	}
 
 }
@@ -821,16 +828,16 @@ void FCApplication::LoadParameters(void)
 
 	if(_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
-		GetConsole().Warning("   Parameter not existing, write initial one\n");
-		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
+		Console().Warning("   Parameter not existing, write initial one\n");
+		Console().Message("   This Warning means normaly FreeCAD running the first time or the\n"
 		                     "   configuration was deleted or moved.Build up the standard configuration.\n");
 
 	}
 
 	if(_pcUserParamMngr->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
-		GetConsole().Warning("   User settings not existing, write initial one\n");
-		GetConsole().Message("   This Warning means normaly you running FreeCAD the first time\n"
+		Console().Warning("   User settings not existing, write initial one\n");
+		Console().Message("   This Warning means normaly you running FreeCAD the first time\n"
 		                     "   or your configuration was deleted or moved. The system defaults\n"
 		                     "   will be reestablished for you.\n");
 
@@ -868,8 +875,8 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 						mConfig["RunMode"] = "Cmd";
 						if(argc <= i+1)
 						{
-							GetConsole().Error("Expecting a file\n");  
-							GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
+							Console().Error("Expecting a file\n");  
+							Console().Error("\nUsage: %s %s",argv[0],Usage);  
 						}
 						mConfig["FileName"]= argv[i+1];
 						i++;
@@ -878,8 +885,8 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 						mConfig["RunMode"] = "Cmd";
 						break;   
 					default:  
-						GetConsole().Error("Invalid Input %s\n",argv[i]);  
-						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
+						Console().Error("Invalid Input %s\n",argv[i]);  
+						Console().Error("\nUsage: %s %s",argv[0],Usage);  
 						throw FCException("Comandline error(s)");  
 				};  
 				break;  
@@ -918,8 +925,8 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 					default:  
 						//default testing level 0
 						mConfig["Verbose"] = "Strict";
-						//GetConsole().Error("Invalid Verbose Option: %s\n",argv[i]); 
-						//GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
+						//Console().Error("Invalid Verbose Option: %s\n",argv[i]); 
+						//Console().Error("\nUsage: %s %s",argv[0],Usage); 
 						//throw FCException("Comandline error(s)");  
 				};  
 				break;  
@@ -938,8 +945,8 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 		} 
 		else  
 		{ 
-			GetConsole().Error("Illegal command line argument #%d, %s\n",i,argv[i]); 
-			GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
+			Console().Error("Illegal command line argument #%d, %s\n",i,argv[i]); 
+			Console().Error("\nUsage: %s %s",argv[0],Usage); 
 			throw FCException("Comandline error(s)");  
 		} 
 	}  

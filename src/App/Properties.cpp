@@ -626,7 +626,7 @@ const char* FCPropertyList::GetAsString(void)
   {
     if (pos+it->length() >= DBL_DIG)
     {
-//      GetConsole().Warning("FCPropertyList: List too long\n");
+//      Console().Warning("FCPropertyList: List too long\n");
       break;
     }
   	pos += sprintf(sBuf+pos,"%s ",it->c_str());

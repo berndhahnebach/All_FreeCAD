@@ -10,40 +10,45 @@ FreeCAD Build Tool
 Usage:
    fcbt <module name> [module parameter]
 possible modules are:
- - DistSrc       Build a source Distribution of the aktuall source tree
- - DistBin       Build a binary Distribution of the aktuall source tree
- - DistSetup     Build a Setup Distribution of the aktuall source tree
- - DistAll       Run all three above modules
- - BuildDoc      Create the documentation (source docs)
- - CreateModule  Insert a new FreeCAD Module in the module directory
+ - DistSrc         (DS)   Build a source Distr. of the aktuall source tree
+ - DistBin         (DB)   Build a binary Distr. of the aktuall source tree
+ - DistSetup       (DI)   Build a Setup Distr. of the aktuall source tree
+ - DistAll         (DA)   Run all three above modules
+ - BuildDoc        (BD)   Create the documentation (source docs)
+ - NextBuildNumber (NBN)  Increase the Build Number of this Version 
+ - CreateModule    (CM)   Insert a new FreeCAD Module in the module directory
 
 For help on the modules type:
   fcbt <module name> ?
 
-Jürgen Riegel 2004
+Input Command:
 """
 
 if(len(sys.argv) < 2):
 	sys.stdout.write(help1)
-	sys.exit(1)
-
-Cmd = string.lower(sys.argv[1])
-
-
-if Cmd == "distsrc":
-	import fcbt.DistSrc
-elif Cmd == "distbin":
-	import fcbt.DistBin
-elif Cmd == "distsetup":
-	import fcbt.DistSetup
-elif Cmd == "distall":
-	import fcbt.DistSrc
-	import fcbt.DistBin
-	import fcbt.DistSetup
-elif Cmd == "builddoc":
-	import fcbt.BuildDoc
+	CmdRaw = sys.stdin.readline()[:-1]
 else:
-	print sys.argv[1] + " is an unknown command!\n"
+	CmdRaw = sys.argv[1]
+	
+Cmd = string.lower(CmdRaw)
+
+
+if Cmd == "distsrc" or Cmd == "ds" :
+	import fcbt.DistSrc
+elif Cmd == "distbin" or Cmd == "db":
+	import fcbt.DistBin
+elif Cmd == "distsetup" or Cmd == "di":
+	import fcbt.DistSetup
+elif Cmd == "distall" or Cmd == "da":
+	import fcbt.DistSrc
+	import fcbt.DistBin
+	import fcbt.DistSetup
+elif Cmd == "builddoc" or Cmd == "bd":
+	import fcbt.BuildDoc
+elif Cmd == "nextbuildnumber" or Cmd == "nbn":
+	import fcbt.NextBuildNumber
+else:
+	print CmdRaw + " is an unknown command!\n"
 	sys.exit(1)
 
 	

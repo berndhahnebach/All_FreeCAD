@@ -76,7 +76,7 @@ void FCLanguageFactory::SetLanguage (const QString& sName)
 			if ( !tv )
 			{
 #ifdef FC_DEBUG
-				GetConsole().Warning("\"%s\" is not registered\n", sName.latin1());
+				Base::Console().Warning("\"%s\" is not registered\n", sName.latin1());
 #endif
 				continue; // no data
 			}

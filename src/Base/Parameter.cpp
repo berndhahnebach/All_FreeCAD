@@ -78,6 +78,7 @@
 	using namespace xercesc;
 #endif
 
+using namespace Base;
 
 //**************************************************************************
 //**************************************************************************
@@ -811,7 +812,7 @@ void FCParameterGrp::Clear(void)
 	std::map <std::string ,FCHandle<FCParameterGrp> >::iterator It1;
 	for(It1 = _GroupMap.begin();It1!=_GroupMap.end();It1++)
 		if(!(It1->second.IsLastRef()))
-			GetConsole().Warning("FCParameterGrp::Clear(): Group clear with active references");
+			Console().Warning("FCParameterGrp::Clear(): Group clear with active references");
 	// remove group handles
 	_GroupMap.clear();
 

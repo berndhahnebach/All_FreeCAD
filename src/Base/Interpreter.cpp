@@ -46,6 +46,8 @@
 
 char format2[1024];  //Warning! Can't go over 512 characters!!! 
 
+using namespace Base;
+
 
 FCInterpreter::FCInterpreter()
 {
@@ -104,7 +106,7 @@ void FCInterpreter::RunFCCommand(const char * psCom,...)
     va_end(namelessVars);
 	assert(strlen(psCom) < 800);
 	// loging
-	GetConsole().Log("Run Com: %s\n",format2);
+	Console().Log("Run Com: %s\n",format2);
 
 	Launch(format2);
 }

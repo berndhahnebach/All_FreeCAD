@@ -94,7 +94,7 @@
 #include "DlgCustomizeImp.h"
 #include "DlgSettingsImp.h"
 
-
+using Base::Console;
 
 
 
@@ -854,7 +854,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     // 'started' signal
     case FCBaseProcess::processStarted:
     {
-      GetConsole().Message("Download started...\n");
+      Console().Message("Download started...\n");
       FCAnimation::Instance()->startAnimation();
     } break;
 
@@ -863,7 +863,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     {
       if (!fail)
       {
-        GetConsole().Message("Download finished.\n");
+        Base::Console().Message("Download finished.\n");
         QMessageBox::information(ApplicationWindow::Instance, "Download Online help", "Download finished.");
       }
 
@@ -875,14 +875,14 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     {
 #ifdef FC_OS_WIN32
       std::string msg = FCBaseProcess::SystemWarning(GetLastError(), process->executable().c_str());
-      GetConsole().Warning("%s\n", msg.c_str());
+      Console().Warning("%s\n", msg.c_str());
 #endif
     } break;
 
     // 'killed' signal
     case FCBaseProcess::processKilled:
     {
-      GetConsole().Warning("Download was canceled.\n");
+      Console().Warning("Download was canceled.\n");
       FCAnimation::Instance()->stopAnimation();
     } break;
 
@@ -901,7 +901,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
           int pos2 = msg.find('.', pos);
           std::string substr = msg.substr(pos+8, pos2-pos-8+1);
           fail = true;
-          GetConsole().Error("%s\n", substr.c_str());
+          Console().Error("%s\n", substr.c_str());
 
           if (process->isRunning())
           {
@@ -1304,14 +1304,14 @@ FCCmdCommandLine::FCCmdCommandLine()
 void FCCmdCommandLine::Activated(int iMsg)
 {
 	bool show = GetAppWnd()->isMaximized ();
-	bool mute = FCGuiConsoleObserver::bMute;
+	bool mute = GuiConsoleObserver::bMute;
 
 	GetAppWnd()->showMinimized () ;
 	qApp->processEvents();
 
-	FCGuiConsoleObserver::bMute = true;
+	GuiConsoleObserver::bMute = true;
 	GetInterpreter().RunCommandLine("Console mode");
-	FCGuiConsoleObserver::bMute = mute;
+	GuiConsoleObserver::bMute = mute;
 
 #ifdef Q_WS_X11
 	// On X11 this may not work. For further information see QWidget::showMaximized

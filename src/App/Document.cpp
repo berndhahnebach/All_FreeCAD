@@ -28,7 +28,7 @@
 #include "DocType.h"
 #include "DocTypeAttr.h"
 
-
+using Base::Console;
 
 
 //===========================================================================
@@ -99,14 +99,14 @@ FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc)
  : _hDoc(hDoc)
 {
 	_pcDocPy = new FCDocumentPy(this);
-	GetConsole().Log("Create Document: %p Py: %p\n",this,_pcDocPy);
+	Console().Log("Create Document: %p Py: %p\n",this,_pcDocPy);
 
 }
 
 FCDocument::~FCDocument()
 {
 	_hDoc.Nullify();
-	GetConsole().Log("Destroy Document %p\n",this);
+	Console().Log("Destroy Document %p\n",this);
 }
 
 
@@ -413,7 +413,7 @@ PyObject *FCDocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrap
 //--------------------------------------------------------------------------
 FCDocumentPy::~FCDocumentPy()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy PyDocument: %p \n",this);
+	Console().Log("Destroy PyDocument: %p \n",this);
 
 } 
 

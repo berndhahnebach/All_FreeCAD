@@ -91,7 +91,7 @@ void ModuleExport initImport() {
 
 	GetApplication();
 
-	GetConsole().Log("Import loaded\n");
+	Base::Console().Log("Import loaded\n");
 
 	return;
 }

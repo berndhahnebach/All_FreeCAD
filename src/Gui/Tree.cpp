@@ -199,7 +199,7 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 void FCTree::Update(void)
 {
-	GetConsole().Log("Tree Updated\n");
+	Base::Console().Log("Tree Updated\n");
 	
 	// quick and dirty so far
 	delete _pcMainItem;
@@ -209,7 +209,7 @@ void FCTree::Update(void)
 
 void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
 {
-//	GetConsole().Log("Tree doc activated %p\n",pcNewDocument);
+//	Console().Log("Tree doc activated %p\n",pcNewDocument);
 
 	if(pcOldDocument != pcNewDocument)
 	{

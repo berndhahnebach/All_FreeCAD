@@ -467,7 +467,7 @@ void FCCommand::activated ()
 {
 	if(_eType == Cmd_Normal)
 	{
-		GetConsole().Log("Activate %s\n",_pcAction->text().latin1());
+		Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
 		Activated(0);
 	}
 }
@@ -475,7 +475,7 @@ void FCCommand::toggled (bool b)
 {
 	if(_eType == Cmd_Toggle)
 	{
-		GetConsole().Log("Toggled %s\n",_pcAction->text().latin1());
+		Base::Console().Log("Toggled %s\n",_pcAction->text().latin1());
 		if(b)
 			Activated(1);
 		else
@@ -757,7 +757,7 @@ void FCPythonCommand::Activated(int iMsg)
 	try{
 		GetInterpreter().RunMethodVoid(_pcPyCommand, "Activated");
 	}catch (FCException e){
-		GetConsole().Error("Running the python command %s faild,try to resume",sName.c_str());
+		Base::Console().Error("Running the python command %s faild,try to resume",sName.c_str());
 	}
 }
 
@@ -838,7 +838,7 @@ void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
 {
   if (_sCommands.find(Name) == _sCommands.end())
   {
-		GetConsole().Error("FCCommandManager::AddTo() try to add an unknown command (%s) to a widget!\n",Name);
+	  Base::Console().Error("FCCommandManager::AddTo() try to add an unknown command (%s) to a widget!\n",Name);
   }
   else
   {

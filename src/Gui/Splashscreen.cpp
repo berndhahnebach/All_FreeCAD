@@ -58,18 +58,18 @@
 #include "../Base/Console.h"
 
 
-class FCSplashObserver : public FCConsoleObserver
+class FCSplashObserver : public Base::ConsoleObserver
 {
   public:
     FCSplashObserver(QSplashScreen* splasher=0, const char* name=0)
 			: splash(splasher)
 		{
-		  GetConsole().AttacheObserver(this);
+			Base::Console().AttacheObserver(this);
 		}
     
 		virtual ~FCSplashObserver()
 		{
-		  GetConsole().DetacheObserver(this);
+		  Base::Console().DetacheObserver(this);
 		}
 
     void Warning(const char * s)

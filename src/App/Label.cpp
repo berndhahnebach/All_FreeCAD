@@ -28,6 +28,7 @@
 #include "Attribute.h"
 #include "Function.h"
 
+using Base::Console;
 
 
 /*
@@ -41,7 +42,7 @@ FCLabel::FCLabel(const TDF_Label &cLabel,FCDocument *pcDocument)
 {
 	_pcPyObject = new FCLabelPy(this);
 
-	GetConsole().Log("Create Label %p Py: %p Tag: %d Depth: %d\n",this,_pcPyObject,cLabel.Tag(),cLabel.Depth());
+	Console().Log("Create Label %p Py: %p Tag: %d Depth: %d\n",this,_pcPyObject,cLabel.Tag(),cLabel.Depth());
 	
     //printf("Tag. %d\n",cLabel.Tag());
     //printf("Depth. %d\n",cLabel.Depth());
@@ -54,7 +55,7 @@ FCLabel::FCLabel(const TDF_Label &cLabel,FCDocument *pcDocument)
 //--------------------------------------------------------------------------
 FCLabel::~FCLabel()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy Label %p\n",this);
+	Console().Log("Destroy Label %p\n",this);
 } 
 
 
@@ -217,7 +218,7 @@ PyParentObject FCLabelPy::Parents[] = {&FCLabelPy::Type, NULL};
 FCLabelPy::FCLabelPy(TDF_Label cLabel, PyTypeObject *T)
  : FCPyObject( T), _cLabel(cLabel)
 {
-	GetConsole().Log("Create LabelPy: %p \n",this);
+	Console().Log("Create LabelPy: %p \n",this);
 }
 
 PyObject *FCLabelPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -231,7 +232,7 @@ PyObject *FCLabelPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 //--------------------------------------------------------------------------
 FCLabelPy::~FCLabelPy()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy LabelPy: %p \n",this);
+	Console().Log("Destroy LabelPy: %p \n",this);
 } 
 
 //--------------------------------------------------------------------------
@@ -275,7 +276,7 @@ PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only 
 		}else
 			_getattr_up(FCPyObject); 						// send to parent
 	}catch(...){
-		GetConsole().Log("Exception in FCLabelPy::_getattr()\n");
+		Console().Log("Exception in FCLabelPy::_getattr()\n");
 		return 0;
 	}
 } 

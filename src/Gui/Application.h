@@ -267,10 +267,10 @@ private:
  *  @see FCConsole
  *  @see FCConsoleObserver
  */
-class FCGuiConsoleObserver: public FCConsoleObserver
+ class GuiConsoleObserver: public Base::ConsoleObserver
 {
 public:
-	FCGuiConsoleObserver(ApplicationWindow *pcAppWnd);
+	GuiConsoleObserver(ApplicationWindow *pcAppWnd);
 		
 	/// get calles when a Warning is issued
 	virtual void Warning(const char *m);

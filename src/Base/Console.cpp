@@ -43,7 +43,7 @@
 
 #include "Console.h"
 
-
+using namespace Base;
 
 
 
@@ -54,15 +54,15 @@ char format[4024];  //Warning! Can't go over 512 characters!!!
 // Construction destruction
 
 
-FCConsole::FCConsole(void)
+ConsoleSingelton::ConsoleSingelton(void)
 	:_bVerbose(false)
 {
 
 }
 
-FCConsole::~FCConsole()
+ConsoleSingelton::~ConsoleSingelton()
 {
-	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         delete (*Iter);   
 
 }
@@ -74,7 +74,7 @@ FCConsole::~FCConsole()
 /**  
  *  sets the console in a special mode
  */
-void FCConsole::SetMode(ConsoleMode m)
+void ConsoleSingelton::SetMode(ConsoleMode m)
 {
 	if(m && Verbose)
 		_bVerbose = true;
@@ -82,7 +82,7 @@ void FCConsole::SetMode(ConsoleMode m)
 /**  
  *  unsets the console from a special mode
  */
-void FCConsole::UnsetMode(ConsoleMode m)
+void ConsoleSingelton::UnsetMode(ConsoleMode m)
 {
 	if(m && Verbose)
 		_bVerbose = false;
@@ -96,13 +96,13 @@ void FCConsole::UnsetMode(ConsoleMode m)
  *  \par
  *  You can use a printf like interface like:
  *  \code
- *  GetConsole().Message("Doing somthing important %d times\n",i);
+ *  Console().Message("Doing somthing important %d times\n",i);
  *  \endcode
  *  @see Warning
  *  @see Error
  *  @see Log
  */
-void FCConsole::Message( const char *pMsg, ... )
+void ConsoleSingelton::Message( const char *pMsg, ... )
 {
     va_list namelessVars;
     va_start(namelessVars, pMsg);  // Get the "..." vars
@@ -120,13 +120,13 @@ void FCConsole::Message( const char *pMsg, ... )
  *  \par
  *  You can use a printf like interface like:
  *  \code
- *  GetConsole().Warning("Some defects in %s, loading anyway\n",str);
+ *  Console().Warning("Some defects in %s, loading anyway\n",str);
  *  \endcode
  *  @see Message
  *  @see Error
  *  @see Log
  */
-void FCConsole::Warning( const char *pMsg, ... )
+void ConsoleSingelton::Warning( const char *pMsg, ... )
 {
     va_list namelessVars;
     va_start(namelessVars, pMsg);  // Get the "..." vars
@@ -144,13 +144,13 @@ void FCConsole::Warning( const char *pMsg, ... )
  *  \par
  *  You can use a printf like interface like:
  *  \code
- *  GetConsole().Error("Somthing realy bad in %s happend\n",str);
+ *  Console().Error("Somthing realy bad in %s happend\n",str);
  *  \endcode
  *  @see Message
  *  @see Warning
  *  @see Log
  */
-void FCConsole::Error( const char *pMsg, ... )
+void ConsoleSingelton::Error( const char *pMsg, ... )
 {
     va_list namelessVars;
     va_start(namelessVars, pMsg);  // Get the "..." vars
@@ -169,7 +169,7 @@ void FCConsole::Error( const char *pMsg, ... )
  *  \par
  *  You can use a printf like interface like:
  *  \code
- *  GetConsole().Log("Exectue part %d in algorithem %s\n",i,str);
+ *  Console().Log("Exectue part %d in algorithem %s\n",i,str);
  *  \endcode
  *  @see Message
  *  @see Warning
@@ -177,7 +177,7 @@ void FCConsole::Error( const char *pMsg, ... )
  */
 
 
-void FCConsole::Log( const char *pMsg, ... )
+void ConsoleSingelton::Log( const char *pMsg, ... )
 {
 	if (!_bVerbose)
 	{
@@ -195,7 +195,7 @@ void FCConsole::Log( const char *pMsg, ... )
  *  use that for Log() calls to make time stamps.
  *  @return Const string with the date/time
  */
-const char* FCConsole::Time(void)
+const char* ConsoleSingelton::Time(void)
 {
 	struct tm *newtime;
 	time_t aclock;
@@ -211,13 +211,13 @@ const char* FCConsole::Time(void)
 //**************************************************************************
 // Observer stuff
 
-/** Attach an Observer to FCConsole
- *  Use this method to attache a FCConsoleObserver derived class to 
+/** Attach an Observer to Console
+ *  Use this method to attache a ConsoleObserver derived class to 
  *  the Console. After the observer is attached all Messages will also
  *  forwardet to it.
- *  @see FCConsoleObserver
+ *  @see ConsoleObserver
  */
-void FCConsole::AttacheObserver(FCConsoleObserver *pcObserver)
+void ConsoleSingelton::AttacheObserver(ConsoleObserver *pcObserver)
 {
 	// double insert !!
 	assert(_aclObservers.find(pcObserver) == _aclObservers.end() );
@@ -225,35 +225,35 @@ void FCConsole::AttacheObserver(FCConsoleObserver *pcObserver)
 	_aclObservers.insert(pcObserver);
 }
 
-/** Detache an Observer to FCConsole
- *  Use this method to detache a FCConsoleObserver derived class.
+/** Detache an Observer to Console
+ *  Use this method to detache a ConsoleObserver derived class.
  *  After detache you can destruct the Observer or reinsert it later.
- *  @see FCConsoleObserver
+ *  @see ConsoleObserver
  */
-void FCConsole::DetacheObserver(FCConsoleObserver *pcObserver)
+void ConsoleSingelton::DetacheObserver(ConsoleObserver *pcObserver)
 {
 	_aclObservers.erase(pcObserver);
 }
 
 
-void FCConsole::NotifyMessage(const char *sMsg)
+void ConsoleSingelton::NotifyMessage(const char *sMsg)
 {
-	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Message(sMsg);   // send string to the listener
 }
-void FCConsole::NotifyWarning(const char *sMsg)
+void ConsoleSingelton::NotifyWarning(const char *sMsg)
 {
-	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Warning(sMsg);   // send string to the listener
 }
-void FCConsole::NotifyError(const char *sMsg)
+void ConsoleSingelton::NotifyError(const char *sMsg)
 {
-	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Error(sMsg);   // send string to the listener
 }
-void FCConsole::NotifyLog(const char *sMsg)
+void ConsoleSingelton::NotifyLog(const char *sMsg)
 {
-	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Log(sMsg);   // send string to the listener
 }
 
@@ -261,23 +261,23 @@ void FCConsole::NotifyLog(const char *sMsg)
 //**************************************************************************
 // Singelton stuff
 
-FCConsole * FCConsole::_pcSingelton = 0;
+ConsoleSingelton * ConsoleSingelton::_pcSingelton = 0;
 
 
-void FCConsole::Destruct(void)
+void ConsoleSingelton::Destruct(void)
 {
 	// not initialized or doubel destruct!
 	assert(_pcSingelton);
 	delete _pcSingelton;
 }
 
-FCConsole & FCConsole::Instance(void)
+ConsoleSingelton & ConsoleSingelton::Instance(void)
 {
 	// not initialized?
 	if(!_pcSingelton)
 	{
-		_pcSingelton = new FCConsole();
-		(void) Py_InitModule("FreeCAD", FCConsole::Methods);
+		_pcSingelton = new ConsoleSingelton();
+		(void) Py_InitModule("FreeCAD", ConsoleSingelton::Methods);
 	}
 	return *_pcSingelton;
 }
@@ -286,18 +286,18 @@ FCConsole & FCConsole::Instance(void)
 //**************************************************************************
 // Python stuff
 
-// FCConsole Methods						// Methods structure
-PyMethodDef FCConsole::Methods[] = {
-	{"PrintMessage",         (PyCFunction) FCConsole::sPyMessage,         1},
-	{"PrintLog",             (PyCFunction) FCConsole::sPyLog,             1},
-	{"PrintError"  ,         (PyCFunction) FCConsole::sPyError,           1},
-	{"PrintWarning",         (PyCFunction) FCConsole::sPyWarning,         1},
+// ConsoleSingelton Methods						// Methods structure
+PyMethodDef ConsoleSingelton::Methods[] = {
+	{"PrintMessage",         (PyCFunction) ConsoleSingelton::sPyMessage,         1},
+	{"PrintLog",             (PyCFunction) ConsoleSingelton::sPyLog,             1},
+	{"PrintError"  ,         (PyCFunction) ConsoleSingelton::sPyError,           1},
+	{"PrintWarning",         (PyCFunction) ConsoleSingelton::sPyWarning,         1},
 
   {NULL, NULL}		/* Sentinel */
 };
 
 
-PyObject *FCConsole::sPyMessage(PyObject *self,			// static python wrapper
+PyObject *ConsoleSingelton::sPyMessage(PyObject *self,			// static python wrapper
 								PyObject *args, 
 								PyObject *kwd)
 {
@@ -309,7 +309,7 @@ PyObject *FCConsole::sPyMessage(PyObject *self,			// static python wrapper
 	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
-PyObject *FCConsole::sPyWarning(PyObject *self,			// static python wrapper
+PyObject *ConsoleSingelton::sPyWarning(PyObject *self,			// static python wrapper
 								PyObject *args, 
 								PyObject *kwd)
 {
@@ -321,7 +321,7 @@ PyObject *FCConsole::sPyWarning(PyObject *self,			// static python wrapper
 	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
-PyObject *FCConsole::sPyError(PyObject *self,			// static python wrapper
+PyObject *ConsoleSingelton::sPyError(PyObject *self,			// static python wrapper
 								PyObject *args, 
 								PyObject *kwd)
 {
@@ -333,7 +333,7 @@ PyObject *FCConsole::sPyError(PyObject *self,			// static python wrapper
 	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
-PyObject *FCConsole::sPyLog(PyObject *self,			// static python wrapper
+PyObject *ConsoleSingelton::sPyLog(PyObject *self,			// static python wrapper
 							PyObject *args, 
 							PyObject *kwd)
 {
@@ -349,33 +349,33 @@ PyObject *FCConsole::sPyLog(PyObject *self,			// static python wrapper
 //=========================================================================
 // some special observers
 
-FCLoggingConsoleObserver::FCLoggingConsoleObserver(const char *sFileName)
+LoggingConsoleObserver::LoggingConsoleObserver(const char *sFileName)
 	:cFileStream(sFileName)
 {}
 
-FCLoggingConsoleObserver::~FCLoggingConsoleObserver(){};
+LoggingConsoleObserver::~LoggingConsoleObserver(){};
 
-void FCLoggingConsoleObserver::Warning(const char *sWarn)
+void LoggingConsoleObserver::Warning(const char *sWarn)
 {
 	cFileStream << sWarn;
 }
-void FCLoggingConsoleObserver::Message(const char *sMsg)
+void LoggingConsoleObserver::Message(const char *sMsg)
 {
 	cFileStream << sMsg;
 }
 
-void FCLoggingConsoleObserver::Error  (const char *sErr)
+void LoggingConsoleObserver::Error  (const char *sErr)
 {
 	cFileStream << sErr;
 }
 
-void FCLoggingConsoleObserver::Log    (const char *sLog)
+void LoggingConsoleObserver::Log    (const char *sLog)
 {
 	cFileStream << sLog;
 }
 
 
-void FCCmdConsoleObserver::Warning(const char *sWarn)
+void CmdConsoleObserver::Warning(const char *sWarn)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN| FOREGROUND_BLUE);
@@ -390,12 +390,12 @@ void FCCmdConsoleObserver::Warning(const char *sWarn)
 #	endif
 }
 
-void FCCmdConsoleObserver::Message(const char *sMsg)
+void CmdConsoleObserver::Message(const char *sMsg)
 {
 	printf("%s",sMsg);
 }
 
-void FCCmdConsoleObserver::Error  (const char *sErr)
+void CmdConsoleObserver::Error  (const char *sErr)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_INTENSITY );
@@ -410,7 +410,7 @@ void FCCmdConsoleObserver::Error  (const char *sErr)
 #	endif
 }
 
-void FCCmdConsoleObserver::Log    (const char *sErr)
+void CmdConsoleObserver::Log    (const char *sErr)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED |FOREGROUND_GREEN);

@@ -196,7 +196,7 @@ bool FCProcess::appendToPath (const char* path)
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", env["PATH"].c_str(), path);
 #else
-    GetConsole().Warning("Not yet implemented!\n");
+    Console().Warning("Not yet implemented!\n");
 #endif
     env["PATH"] = szPath;
   }
@@ -207,7 +207,7 @@ bool FCProcess::appendToPath (const char* path)
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", getenv("PATH"), path);
 #else
-    GetConsole().Warning("Not yet implemented!\n");
+    Console().Warning("Not yet implemented!\n");
 #endif
     env["PATH"] = szPath;
   }
@@ -240,7 +240,7 @@ void FCProcess::setupEnvironment()
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     setenv(it->first.c_str(), it->second.c_str(), 1);
 #else
-    GetConsole().Warning("Not yet implemented!\n");
+    Console().Warning("Not yet implemented!\n");
 #endif
   }
 }

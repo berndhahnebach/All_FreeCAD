@@ -177,7 +177,7 @@ void FCDlgCustomize::onApply()
 
 # ifdef FC_DEBUG
   else
-    GetConsole().Warning("Added page does not inherit from class FCPropertyPage");
+	  Base::Console().Warning("Added page does not inherit from class FCPropertyPage");
 #endif
 }
 
@@ -190,7 +190,7 @@ void FCDlgCustomize::onCancel()
 
 # ifdef FC_DEBUG
     else
-      GetConsole().Warning("Added page does not inherit from class FCPropertyPage");
+		Base::Console().Warning("Added page does not inherit from class FCPropertyPage");
 #endif
 
   }

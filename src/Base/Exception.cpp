@@ -42,6 +42,8 @@
 #include "Exception.h"
 #include "Console.h"
 
+using namespace Base;
+
 
 FCException::FCException(void)
 {
@@ -74,5 +76,5 @@ const char* FCException::what(void) const throw()
 
 void FCException::ReportException (void) const
 {
-	GetConsole().Error("\nException (%s): %s \n",GetConsole().Time(),what());
+	Console().Error("\nException (%s): %s \n",Console().Time(),what());
 }

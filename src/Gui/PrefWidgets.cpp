@@ -59,7 +59,7 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
-
+using Base::Console;
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
 {
@@ -77,7 +77,7 @@ FCWidgetPrefs::~FCWidgetPrefs()
 #ifdef FC_DEBUG
   if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
   {
-    GetConsole().Warning("No valid widget name set!\n");
+	  Base::Console().Warning("No valid widget name set!\n");
     throw;
   }
 #endif
@@ -99,7 +99,7 @@ QString FCWidgetPrefs::getEntryName() const
 #ifdef FC_DEBUG
   if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
   {
-    GetConsole().Warning("No valid widget name set!\n");
+	  Base::Console().Warning("No valid widget name set!\n");
     throw;
   }
 #endif
@@ -114,7 +114,7 @@ void FCWidgetPrefs::setParamGrpPath(QString name)
 #ifdef FC_DEBUG
 	if (hPrefGrp.IsValid())
 	{
-		GetConsole().Warning("Widget already attached\n");
+		Base::Console().Warning("Widget already attached\n");
 		hPrefGrp->Detach(this);
 	}
 #endif
@@ -192,7 +192,7 @@ void FCPrefSpinBox::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -209,7 +209,7 @@ void FCPrefSpinBox::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -254,7 +254,7 @@ void FCLineEdit::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -266,7 +266,7 @@ void FCLineEdit::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -308,7 +308,7 @@ void FCComboBox::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -329,7 +329,7 @@ void FCComboBox::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -382,7 +382,7 @@ void FCListBox::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -403,7 +403,7 @@ void FCListBox::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -456,7 +456,7 @@ void FCCheckBox::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -468,7 +468,7 @@ void FCCheckBox::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -510,7 +510,7 @@ void FCRadioButton::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -522,7 +522,7 @@ void FCRadioButton::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -564,7 +564,7 @@ void FCSlider::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -583,7 +583,7 @@ void FCSlider::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -661,7 +661,7 @@ void FCCustomWidget::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot restore!\n");
+    Console().Warning("Cannot restore!\n");
     return;
   }
 
@@ -678,7 +678,7 @@ void FCCustomWidget::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
-    GetConsole().Warning("Cannot save!\n");
+    Console().Warning("Cannot save!\n");
     return;
   }
 
@@ -930,7 +930,7 @@ void FCToolBar::dropEvent ( QDropEvent * e)
       }
     }
 */
-    GetConsole().Log("Cannot drop item(s). The size of found items"
+    Console().Log("Cannot drop item(s). The size of found items"
                      " is different to the size of stored items\n");
     FCActionDrag::actions.clear();
 
@@ -1213,7 +1213,7 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     }
 
     // error
-    GetConsole().Warning("No corresponding Action object found\n");
+    Console().Warning("No corresponding Action object found\n");
   }
   else
     QPopupMenu::mouseMoveEvent(e);

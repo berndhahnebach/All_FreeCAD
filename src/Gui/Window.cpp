@@ -68,7 +68,7 @@ FCWindowParameter::~FCWindowParameter()
 
 void FCWindowParameter::OnParameterChanged(void)
 {
-	GetConsole().Warning("FCWindowParameter::OnParameterChanged(): Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
+	Base::Console().Warning("FCWindowParameter::OnParameterChanged(): Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
 }
 
 

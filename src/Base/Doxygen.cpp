@@ -12,3 +12,15 @@
   <a href="http://free-cad.sourceforge.net">here</a>.
 */
 
+
+
+/*! \namespace Base
+    \brief The namespace of the FreeCAD Base library
+
+    This namespace includes most of the basic functions of FreeCAD like
+	- Console srvices
+	- Interpreter (Python binding)
+	- Parameter handling
+
+  and so on......
+*/

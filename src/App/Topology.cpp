@@ -46,6 +46,7 @@
 #include "../Base/Exception.h"
 #include "../Base/Console.h"
 
+using Base::Console;
 
 
 //===========================================================================
@@ -102,7 +103,7 @@ PyParentObject FCTopoShape::Parents[] = {&FCTopoShape::Type, NULL};
 FCTopoShape::FCTopoShape(const TopoDS_Shape &cShape, PyTypeObject *T) 
  : FCPyObject( T), _cTopoShape(cShape)
 {
-	GetConsole().Log("Create TopoShape %p\n",this);
+	Console().Log("Create TopoShape %p\n",this);
 }
 
 PyObject *FCTopoShape::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -115,7 +116,7 @@ PyObject *FCTopoShape::PyMake(PyObject *ignored, PyObject *args)	// Python wrapp
 //--------------------------------------------------------------------------
 FCTopoShape::~FCTopoShape()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy TopoShape %p\n",this);
+	Console().Log("Destroy TopoShape %p\n",this);
 } 
 
 //--------------------------------------------------------------------------
@@ -131,7 +132,7 @@ PyObject *FCTopoShape::_getattr(char *attr)				// __getattr__ function: note onl
 		}else
 			_getattr_up(FCPyObject); 						// send to parent
 	}catch(...){
-		GetConsole().Log("Exception in FCTopoShape::_getattr()\n");
+		Console().Log("Exception in FCTopoShape::_getattr()\n");
 		return 0;
 	}
 } 

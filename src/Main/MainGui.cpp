@@ -110,12 +110,12 @@ int main( int argc, char ** argv )
 
 
 	// Destruction phase ===========================================================
-	GetConsole().Log("FreeCAD terminating...\n\n");
+	Base::Console().Log("FreeCAD terminating...\n\n");
 
 	// cleans up 
 	FCApplication::Destruct();
 
-	GetConsole().Log("FreeCAD completely terminated\n\n");
+	Base::Console().Log("FreeCAD completely terminated\n\n");
 
 	return 0;
 }

@@ -100,7 +100,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 
 	OpenCommand("Test Load Part");
 
-	GetConsole().Log("Using Doc: %p\n",pcDoc);
+	Base::Console().Log("Using Doc: %p\n",pcDoc);
 
     TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main());
 

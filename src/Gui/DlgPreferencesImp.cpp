@@ -294,7 +294,7 @@ void FCDlgPreferencesImp::onApply()
 
 # ifdef FC_DEBUG
   else
-    GetConsole().Warning("Added page does not inherit from class FCPreferencePage");
+	  Base::Console().Warning("Added page does not inherit from class FCPreferencePage");
 #endif
 }
 

@@ -364,7 +364,7 @@ void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 {
 	int zDelta = cEvent->delta()/3;
-	//GetConsole().Log("Wheel Delta=%d\n",zDelta);
+	//Console().Log("Wheel Delta=%d\n",zDelta);
 	Quantity_Length fWidth, fHeight;
 	GetView()->Size(fWidth, fHeight);
 	float fLog = float(log10(fWidth));
@@ -378,11 +378,11 @@ void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 	}
 	else if (zDelta > 0)
 	{
-		GetConsole().Message(QObject::tr("Cannot zoom in any more\n").latin1());
+		Base::Console().Message(QObject::tr("Cannot zoom in any more\n").latin1());
 	}
 	else
 	{
-		GetConsole().Message(QObject::tr("Cannot zoom out any more\n").latin1());
+		Base::Console().Message(QObject::tr("Cannot zoom out any more\n").latin1());
 	}
 }
 

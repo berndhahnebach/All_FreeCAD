@@ -30,6 +30,7 @@
 
 #include "PartDocType.h"
 
+using Base::Console;
 
 /* module functions */
 static PyObject *                                 /* returns object */
@@ -66,20 +67,20 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
         return NULL;                              /* null=raise exception */
     else {
 
-		GetConsole().Log("Part.Temp() is runing ....\n");
+		Console().Log("Part.Temp() is runing ....\n");
 
 		FCDocument *doc = GetApplication().Active();
 		if(!doc) return Py_None;
 
-		GetConsole().Log("Doc init\n");
+		Console().Log("Doc init\n");
 		FCPartDocType *pcType = new FCPartDocType();
 		doc->InitType(pcType);
 
-		GetConsole().Log("Type Get\n");
+		Console().Log("Type Get\n");
 		if(strcmp(doc->GetDocType()->GetTypeName(),"Part")==0)
 		{
 			pcType = dynamic_cast<FCPartDocType*>( doc->GetDocType() );
-			GetConsole().Log("Part doc detected\n");
+			Console().Log("Part doc detected\n");
 
 		}
 
@@ -113,7 +114,7 @@ void ModuleExport initPart() {
 
 	GetApplication();
 
-	GetConsole().Log("AppPart loaded\n");
+	Console().Log("AppPart loaded\n");
 
 	return;
 }

@@ -133,12 +133,12 @@ FCReportOutput::FCReportOutput(QWidget* parent, const char* name)
   setHScrollBarMode(QScrollView::AlwaysOff);
 
   insert("FreeCAD output.\n");
-  GetConsole().AttacheObserver(this);
+  Base::Console().AttacheObserver(this);
 }
 
 FCReportOutput::~FCReportOutput()
 {
-  GetConsole().DetacheObserver(this);
+	Base::Console().DetacheObserver(this);
 	delete reportHl;
 }
 

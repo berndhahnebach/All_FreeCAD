@@ -132,6 +132,8 @@
 
 #include "GuiInitScript.h"
 
+using Base::Console;
+
 
 static ApplicationWindow* stApp;
 //static QWorkspace* stWs;
@@ -218,7 +220,7 @@ ApplicationWindow::ApplicationWindow()
 	d->_pcWorkbenchDictionary = PyDict_New();
 
     // attach the console observer
-	GetConsole().AttacheObserver( new FCGuiConsoleObserver(this) );
+	Base::Console().AttacheObserver( new GuiConsoleObserver(this) );
 
 
 	// setting up the Bitmap manager
@@ -614,7 +616,7 @@ void ApplicationWindow::SetActiveDocument(FCGuiDocument* pcDocument)
 {
 	d->_pcActiveDocument=pcDocument;
 
-	GetConsole().Log("Activate Document (%p) \n",d->_pcActiveDocument);
+	Console().Log("Activate Document (%p) \n",d->_pcActiveDocument);
 
 	// notify all views attached to the application (not views belong to a special document)
 	for(std::list<FCBaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
@@ -652,7 +654,7 @@ void ApplicationWindow::Update(void)
 void ApplicationWindow::ViewActivated(FCView* pcView)
 {
 
-	GetConsole().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->GetName());
+	Console().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->GetName());
 	// set the new active document
 	if(pcView->IsPassiv())
 		SetActiveDocument(0);
@@ -884,7 +886,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
   }
   catch (const FCException& rclE)
   {
-    GetConsole().Error("%s\n", rclE.what());
+    Console().Error("%s\n", rclE.what());
   }
 }
 
@@ -1024,11 +1026,11 @@ void ApplicationWindow::LoadDockWndSettings()
   if (!datafile->open(IO_ReadOnly)) 
   {
     // error opening file
-    bool bMute = FCGuiConsoleObserver::bMute;
-    FCGuiConsoleObserver::bMute = true;
-    GetConsole().Warning((tr("Error: Cannot open file '%1' "
+    bool bMute = GuiConsoleObserver::bMute;
+    GuiConsoleObserver::bMute = true;
+    Console().Warning((tr("Error: Cannot open file '%1' "
                              "(Maybe you're running FreeCAD the first time)\n").arg(FileName.c_str())));
-    FCGuiConsoleObserver::bMute = bMute;
+    GuiConsoleObserver::bMute = bMute;
     datafile->close();
     delete (datafile);
     return;
@@ -1038,7 +1040,7 @@ void ApplicationWindow::LoadDockWndSettings()
   QDomDocument doc("DockWindows");
   if (!doc.setContent(datafile)) 
   {
-    GetConsole().Warning("Error:  is not a valid file\n");
+    Console().Warning("Error:  is not a valid file\n");
     datafile->close();
     delete (datafile);
     return;
@@ -1051,7 +1053,7 @@ void ApplicationWindow::LoadDockWndSettings()
   if (doc.doctype().name() != "DockWindows") 
   {
     // wrong file type
-    GetConsole().Warning("Error: is not a valid file\n");
+    Console().Warning("Error: is not a valid file\n");
     return;
   }
 
@@ -1059,7 +1061,7 @@ void ApplicationWindow::LoadDockWndSettings()
   if (root.attribute("application") != QString("FreeCAD")) 
   {
     // right file type, wrong application
-    GetConsole().Warning("Error: wrong file\n");
+    Console().Warning("Error: wrong file\n");
     return;
   }
 
@@ -1086,7 +1088,7 @@ void ApplicationWindow::SaveDockWndSettings()
   if (!datafile->open(IO_WriteOnly)) 
   {
     // error opening file
-    GetConsole().Warning("Error: Cannot open file\n");
+    Console().Warning("Error: Cannot open file\n");
     datafile->close();
     delete (datafile);
     return;
@@ -1158,7 +1160,7 @@ void ApplicationWindow::InitApplication(void)
 void ApplicationWindow::RunApplication(void)
 {
 	// A new QApplication
-	GetConsole().Log("Creating GUI Application...\n");
+	Console().Log("Creating GUI Application...\n");
 	// if application not yet created by the splasher
 	int argc = FCApplication::GetARGC();
 	if (!_pcQApp)  _pcQApp = new QApplication (argc, FCApplication::GetARGV());
@@ -1170,7 +1172,7 @@ void ApplicationWindow::RunApplication(void)
 	// runing the Gui init script
 	GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
 	// show the main window
-	GetConsole().Log("Showing GUI Application...\n");
+	Console().Log("Showing GUI Application...\n");
 	mw->Polish();
 	mw->show();
 	StopSplasher();
@@ -1179,9 +1181,9 @@ void ApplicationWindow::RunApplication(void)
 	_pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
 	// run the Application event loop
-	GetConsole().Log("Running event loop...\n");
+	Console().Log("Running event loop...\n");
 	_pcQApp->exec();
-	GetConsole().Log("event loop left\n");
+	Console().Log("event loop left\n");
 }
 
 void ApplicationWindow::StartSplasher(void)
@@ -1225,7 +1227,7 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
 
 void ApplicationWindow::Destruct(void)
 {
-	GetConsole().Log("Destruct GuiApplication\n");
+	Console().Log("Destruct GuiApplication\n");
 
 	delete _pcQApp;
 
@@ -1655,13 +1657,13 @@ PYFUNCIMP_S(ApplicationWindow,sRunCommand)
 // FCAppConsoleObserver
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-bool FCGuiConsoleObserver::bMute = false;
+bool GuiConsoleObserver::bMute = false;
 
-FCGuiConsoleObserver::FCGuiConsoleObserver(ApplicationWindow *pcAppWnd)
+GuiConsoleObserver::GuiConsoleObserver(ApplicationWindow *pcAppWnd)
 	:_pcAppWnd(pcAppWnd){}
 
 /// get calles when a Warning is issued
-void FCGuiConsoleObserver::Warning(const char *m)
+void GuiConsoleObserver::Warning(const char *m)
 {
 	if(!bMute){
 		QMessageBox::warning( _pcAppWnd, "Warning",m);
@@ -1670,14 +1672,14 @@ void FCGuiConsoleObserver::Warning(const char *m)
 }
 
 /// get calles when a Message is issued
-void FCGuiConsoleObserver::Message(const char * m)
+void GuiConsoleObserver::Message(const char * m)
 {
 	if(!bMute)
 		_pcAppWnd->statusBar()->message( m, 2001 );
 }
 
 /// get calles when a Error is issued
-void FCGuiConsoleObserver::Error  (const char *m)
+void GuiConsoleObserver::Error  (const char *m)
 {
 	if(!bMute)
 	{
@@ -1687,7 +1689,7 @@ void FCGuiConsoleObserver::Error  (const char *m)
 }
 
 /// get calles when a Log Message is issued
-void FCGuiConsoleObserver::Log    (const char *)
+void GuiConsoleObserver::Log    (const char *)
 {
 }
 

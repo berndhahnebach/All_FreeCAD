@@ -195,7 +195,7 @@ PyParentObject FCPyParameterGrp::Parents[] = {&FCPyObject::Type,&FCPyParameterGr
 FCPyParameterGrp::FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T ) 
  : FCPyObject( T),_cParamGrp(rcParamGrp)
 {
-	//GetConsole().Log("Create Param Group %p\n",this);
+	//Console().Log("Create Param Group %p\n",this);
 }
 
 PyObject *FCPyParameterGrp::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -209,7 +209,7 @@ PyObject *FCPyParameterGrp::PyMake(PyObject *ignored, PyObject *args)	// Python 
 //--------------------------------------------------------------------------
 FCPyParameterGrp::~FCPyParameterGrp()						// Everything handled in parent
 {
-	//GetConsole().Log("Destroy ParameterGrp %p\n",this);
+	//Console().Log("Destroy ParameterGrp %p\n",this);
 } 
 
 //--------------------------------------------------------------------------
@@ -254,7 +254,7 @@ PyObject *FCPyParameterGrp::_getattr(char *attr)				// __getattr__ function: not
 		}else*/
 			_getattr_up(FCPyObject); 						// send to parent
 /*	}catch(...){
-		GetConsole().Log("Exception in FCPyParametrGrp::_getattr()\n");
+		Console().Log("Exception in FCPyParametrGrp::_getattr()\n");
 		return 0;
 	}*/
 		return 0;

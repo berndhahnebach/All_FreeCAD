@@ -428,10 +428,10 @@ void FCProgressBar::abort()
   //resets
   resetBar();
 
-	bool bMute = FCGuiConsoleObserver::bMute;
-  FCGuiConsoleObserver::bMute = true;
+	bool bMute = GuiConsoleObserver::bMute;
+  GuiConsoleObserver::bMute = true;
   FCException exc("Aborting...");
-  FCGuiConsoleObserver::bMute = bMute;
+  GuiConsoleObserver::bMute = bMute;
   throw exc;
 }
 

@@ -109,7 +109,7 @@ QPixmap FCBitmapFactory::GetPixmap(const char* sName)
 			return QPixmap(d.path()+QDir::separator()+ sName + ".gif");
 	}
 
-	GetConsole().Warning("Can't find Pixmap:%s\n",sName);
+	Base::Console().Warning("Can't find Pixmap:%s\n",sName);
 
 	return QPixmap(px);
 

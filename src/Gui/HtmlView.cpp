@@ -520,10 +520,10 @@ void FCTextBrowser::setSource (const QString & name)
 			if ( type == 1 )
 			{
 				QString msg = tr("File %1 does not exist.\n").arg(source);
-				bool bMute = FCGuiConsoleObserver::bMute;
-				FCGuiConsoleObserver::bMute = true;
-				GetConsole().Error(msg.latin1());
-				FCGuiConsoleObserver::bMute = bMute;
+				bool bMute = GuiConsoleObserver::bMute;
+				GuiConsoleObserver::bMute = true;
+				Base::Console().Error(msg.latin1());
+				GuiConsoleObserver::bMute = bMute;
 				setText(tr("File not found"));
 				return;
 			}
@@ -975,10 +975,10 @@ QString FCHtmlView::GetDocDirectory()
   if (dir.exists() == false)
   {
 		QString msg = tr("Couldn't find the path for the Online help.\n");
-		bool bMute = FCGuiConsoleObserver::bMute;
-		FCGuiConsoleObserver::bMute = true;
-		GetConsole().Error(msg.latin1());
-	  FCGuiConsoleObserver::bMute = bMute;
+		bool bMute = GuiConsoleObserver::bMute;
+		GuiConsoleObserver::bMute = true;
+		Base::Console().Error(msg.latin1());
+	  GuiConsoleObserver::bMute = bMute;
   }
 
   return dir.path();

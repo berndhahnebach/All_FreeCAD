@@ -73,7 +73,7 @@ class GuiExport ReportHighlighter : public QSyntaxHighlighter
 		int lastPar;
 };
 
-class GuiExport FCReportOutput : public QTextEdit, public FCConsoleObserver
+class GuiExport FCReportOutput : public QTextEdit, public Base::ConsoleObserver
 {
   Q_OBJECT
 

@@ -50,6 +50,7 @@
 #	endif
 #endif
 
+using Base::Console;
 
 FCWidgetFactory* FCWidgetFactory::_pcSingleton = NULL;
 
@@ -74,9 +75,9 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) con
   if (!w)
   {
 #ifdef FC_DEBUG
-    GetConsole().Warning("\"%s\" is not registered\n", sName);
+    Console().Warning("\"%s\" is not registered\n", sName);
 #else
-    GetConsole().Log("\"%s\" is not registered\n", sName);
+    Console().Log("\"%s\" is not registered\n", sName);
 #endif
     return NULL;
   }
@@ -85,15 +86,15 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) con
   {
     const char* cName = dynamic_cast<QWidget*>(w)->className();
 #ifdef FC_DEBUG
-    GetConsole().Log("Widget of type '%s' created.\n", cName);
+    Console().Log("Widget of type '%s' created.\n", cName);
 #endif
   }
   catch (...)
   {
 #ifdef FC_DEBUG
-    GetConsole().Error("%s does not inherit from \"QWidget\"\n", sName);
+    Console().Error("%s does not inherit from \"QWidget\"\n", sName);
 #else
-    GetConsole().Log("%s does not inherit from \"QWidget\"\n", sName);
+    Console().Log("%s does not inherit from \"QWidget\"\n", sName);
 #endif
 		delete w;
 		return NULL;
@@ -124,7 +125,7 @@ QWidget* FCWidgetFactory::ProducePrefWidget(const char* sName, QWidget* parent, 
   catch (...)
   {
 #ifdef FC_DEBUG
-    GetConsole().Error("%s does not inherit from \"FCWidgetPrefs\"\n", w->className());
+    Console().Error("%s does not inherit from \"FCWidgetPrefs\"\n", w->className());
 #endif
 		delete w;
 		return NULL;

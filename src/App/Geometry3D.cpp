@@ -102,7 +102,7 @@ PyParentObject FCGeometry3D::Parents[] = {&FCGeometry3D::Type, NULL};
 FCGeometry3D::FCGeometry3D(const TopoDS_Shape &cShape, PyTypeObject *T) 
  : FCPyObject( T), _cTopoShape(cShape)
 {
-	GetConsole().Log("Create TopoShape %p\n",this);
+	Console().Log("Create TopoShape %p\n",this);
 }
 
 PyObject *FCGeometry3D::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -115,7 +115,7 @@ PyObject *FCGeometry3D::PyMake(PyObject *ignored, PyObject *args)	// Python wrap
 //--------------------------------------------------------------------------
 FCGeometry3D::~FCGeometry3D()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy TopoShape %p\n",this);
+	Console().Log("Destroy TopoShape %p\n",this);
 } 
 
 //--------------------------------------------------------------------------
@@ -131,7 +131,7 @@ PyObject *FCGeometry3D::_getattr(char *attr)				// __getattr__ function: note on
 		}else
 			_getattr_up(FCPyObject); 						// send to parent
 	}catch(...){
-		GetConsole().Log("Exception in FCGeometry3D::_getattr()\n");
+		Console().Log("Exception in FCGeometry3D::_getattr()\n");
 		return 0;
 	}
 } 

@@ -38,6 +38,10 @@
 #include "Process.h"
 #include "Console.h"
 
+
+using namespace Base;
+
+
 class FCBaseProcessPrivate
 {
   public:
@@ -194,7 +198,7 @@ std::string FCBaseProcess::SystemWarning( int code, const char* pMsg)
 FCBaseProcess::FCBaseProcess()
 {
 #ifndef FC_OS_WIN32
-  GetConsole().Error("Not yet implemented for other OS as Windows");
+  Console().Error("Not yet implemented for other OS as Windows");
   throw;
 #endif
   d = new FCBaseProcessPrivate;
@@ -204,7 +208,7 @@ FCBaseProcess::FCBaseProcess()
 FCBaseProcess::FCBaseProcess(const char* proc)
 {
 #ifndef FC_OS_WIN32
-  GetConsole().Error("Not yet implemented for other OS as Windows");
+  Console().Error("Not yet implemented for other OS as Windows");
   throw;
 #endif
   d = new FCBaseProcessPrivate;
@@ -258,7 +262,7 @@ bool FCBaseProcess::appendToPath (const char* path)
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", d->env["PATH"].c_str(), path);
 #else
-  GetConsole().Warning("Not yet implemented!\n");
+  Console().Warning("Not yet implemented!\n");
   return false;
 #endif
     d->env["PATH"] = szPath;
@@ -270,7 +274,7 @@ bool FCBaseProcess::appendToPath (const char* path)
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", getenv("PATH"), path);
 #else
-  GetConsole().Warning("Not yet implemented!\n");
+  Console().Warning("Not yet implemented!\n");
   return false;
 #endif
     d->env["PATH"] = szPath;
@@ -408,7 +412,7 @@ void FCBaseProcess::setupEnvironment()
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     setenv(it->first.c_str(), it->second.c_str(), 1);
 #else
-    GetConsole().Warning("Not yet implemented!\n");
+    Console().Warning("Not yet implemented!\n");
 #endif
   }
 }
@@ -420,7 +424,7 @@ bool FCBaseProcess::start (bool notifyOnExit)
 
   if (d->args.size() < 1)
   {
-    GetConsole().Warning("No executable specified\n");
+    Console().Warning("No executable specified\n");
     return false;
   }
 
@@ -458,7 +462,7 @@ bool FCBaseProcess::start (bool notifyOnExit)
   pos = 0;
   if (d->env.size())
     setupEnvironment();
-//    GetConsole().Error("Setting environment for new process does not yet work");
+//    Console().Error("Setting environment for new process does not yet work");
 //  char szTmp[5000];
 //  for (std::map<std::string, std::string>::iterator sit = d->env.begin(); sit!=d->env.end(); ++sit)
 //  {
@@ -475,7 +479,7 @@ bool FCBaseProcess::start (bool notifyOnExit)
 //  szEnv[pos+3] = '\0';
 
 #ifdef FC_DEBUG
-//  GetConsole().Log(szEnv);
+//  Console().Log(szEnv);
 #endif
 
   // Creating a child process and passing a master process made
@@ -492,7 +496,7 @@ bool FCBaseProcess::start (bool notifyOnExit)
 		d->hChildProcess = OpenProcess(SYNCHRONIZE,FALSE,d->pInfo->dwProcessId); 
 
 #ifdef FC_DEBUG
-    GetConsole().Log("Running %s\n",arguments);
+    Console().Log("Running %s\n",arguments);
 #endif
 
     Notify(processStarted);
@@ -501,7 +505,7 @@ bool FCBaseProcess::start (bool notifyOnExit)
   {
     d->delProcessInfo();
 #ifdef FC_DEBUG
-    GetConsole().Log("Running %s failed\n",d->args.front().c_str()); 
+    Console().Log("Running %s failed\n",d->args.front().c_str()); 
 #endif
 
     Notify(processFailed);
@@ -738,9 +742,9 @@ void FCBaseProcess::onReceiveData (bool stdoutput)
 //#ifdef FC_DEBUG
 //      int code = GetLastError();
 //      if ( fd == 1 )
-//        GetConsole().Error("Standard output: %s\n", SystemWarning(code).c_str());
+//        Console().Error("Standard output: %s\n", SystemWarning(code).c_str());
 //      else if ( fd == 2 )
-//        GetConsole().Error("Standard error output: %s\n", SystemWarning(code).c_str());
+//        Console().Error("Standard error output: %s\n", SystemWarning(code).c_str());
 //#endif
   	return;
   }

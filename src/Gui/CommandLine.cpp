@@ -138,7 +138,7 @@ void FCCommandLine::ReadCmdList()
     }
     catch(...)
     {
-      GetConsole().Error("Invalid entry found\n");
+		Base::Console().Error("Invalid entry found\n");
     }
   }
 

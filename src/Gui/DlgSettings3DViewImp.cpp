@@ -86,7 +86,7 @@ void FCDlgSettings3DView::ChooseDir()
 void  FCDlgSettings3DView::WarnInventor(bool b)
 {
 	if(b)
-		GetConsole().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
+		Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
 }
 
 

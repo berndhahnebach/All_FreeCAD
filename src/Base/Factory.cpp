@@ -47,6 +47,8 @@
 #include "Factory.h"
 #include "Console.h"
 
+using namespace Base;
+
 
 FCFactory::~FCFactory ()
 {
@@ -137,7 +139,7 @@ const char* FCScriptFactory::ProduceScript (const char* sScriptName) const
 	if ( !script )
 	{
 #ifdef FC_DEBUG
-		GetConsole().Warning("\"%s\" is not registered\n", sScriptName);
+		Console().Warning("\"%s\" is not registered\n", sScriptName);
 #endif
 		return ""; // no data
 	}

@@ -69,7 +69,7 @@ void ModuleExport initImportGui() {
 
 	(void) Py_InitModule("ImportGui", hello_methods);   /* mod name, table ptr */
 
-	GetConsole().Log("ImportGui loaded\n");
+	Base::Console().Log("ImportGui loaded\n");
 
 	// load the commands
 	ApplicationWindow::Instance->GetMacroMngr()->AddLine(FCMacroManager::Base,"import Import");

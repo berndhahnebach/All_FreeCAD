@@ -33,7 +33,7 @@
  *  over the FCConsole class is allowec!
  *  @see FCConsole
  */
-class GuiExport FCGUIConsole :public FCConsoleObserver
+class GuiExport FCGUIConsole :public Base::ConsoleObserver
 {
   public:
     /// Constructor

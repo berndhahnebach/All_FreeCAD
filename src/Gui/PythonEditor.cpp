@@ -139,7 +139,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 			QString txt = text(para-1);
 			if (txt.isEmpty() || txt == " ")
 			{
-				bool bMute = FCGuiConsoleObserver::bMute;
+				bool bMute = GuiConsoleObserver::bMute;
 
 				try
 				{
@@ -155,7 +155,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 					lastPara = para;
 
 					// launch the command now
-					FCGuiConsoleObserver::bMute = true;
+					GuiConsoleObserver::bMute = true;
 					if (!cmd.isEmpty())
 					GetInterpreter().Launch(cmd.latin1());
 				}
@@ -167,7 +167,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 					pythonSyntax->highlightError(false);
 				}
 
-				FCGuiConsoleObserver::bMute = bMute;
+				GuiConsoleObserver::bMute = bMute;
 			}
 		  break;
 	}
@@ -542,7 +542,7 @@ bool PythonView::OnMsg(const char* pMsg)
 		return true;
 	}
 
-	GetConsole().Log("FCScintillaView::OnMsg() unhandled \"%s\"\n",pMsg);
+	Base::Console().Log("FCScintillaView::OnMsg() unhandled \"%s\"\n",pMsg);
 	return false;
 }
 

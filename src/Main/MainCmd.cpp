@@ -50,6 +50,9 @@
 #include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 
+using Base::Console;
+
+
 // FreeCAD doc header
 #include "../App/Application.h"
 
@@ -91,12 +94,12 @@ int main( int argc, char ** argv )
 
 
 	// Destruction phase ===========================================================
-	GetConsole().Log("FreeCAD terminating...\n\n");
+	Console().Log("FreeCAD terminating...\n\n");
 
 	// cleans up 
 	FCApplication::Destruct();
 
-	GetConsole().Log("FreeCAD completely terminated\n\n");
+	Console().Log("FreeCAD completely terminated\n\n");
 
 	return 0;
 }
