@@ -1,7 +1,4 @@
-#include "PreCompiled.h"
 /**********************************************************************
-**
-** $Id$
 **
 ** KIntValidator, KFloatValidator:
 **   Copyright (C) 1999 Glen Parker <glenebob@nwlink.com>
@@ -25,17 +22,24 @@
 *****************************************************************************/
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ include FreeCAD's PreCompiled header stuff
-		+ comment out use of KDE classes
+    + include FreeCAD's PreCompiled header stuff
+    + comment out use of KDE classes
 */
 
-#include <qwidget.h>
-#include <qstring.h>
+
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
+# include <qwidget.h>
+# include <qstring.h>
+#endif
 
 #include "knumvalidator.h"
 //#include <klocale.h>
 //#include <kglobal.h>
 //#include <kdebug.h>
+
+using namespace Gui;
 
 ///////////////////////////////////////////////////////////////
 //  Implementation of KIntValidator
@@ -125,8 +129,8 @@ void KIntValidator::setRange ( int bottom, int top )
   _min = bottom;
   _max = top;
 
-	if (_max < _min)
-		_max = _min;
+  if (_max < _min)
+    _max = _min;
 }
 
 void KIntValidator::setBase ( int base )
@@ -155,6 +159,8 @@ int KIntValidator::base () const
 //  Implementation of KFloatValidator
 //
 
+namespace Gui {
+
 class KFloatValidatorPrivate
 {
 public:
@@ -167,6 +173,7 @@ public:
     bool acceptLocalizedNumbers;
 };
 
+} // namespace Gui
 
 KFloatValidator::KFloatValidator ( QWidget * parent, const char * name )
   : QValidator(parent, name)
@@ -277,8 +284,8 @@ void KFloatValidator::setRange ( double bottom, double top )
   _min = bottom;
   _max = top;
 
-	if (_max < _min)
-		_max = _min;
+  if (_max < _min)
+    _max = _min;
 }
 
 double KFloatValidator::bottom () const
@@ -298,12 +305,16 @@ double KFloatValidator::top () const
 //  Implementation of KDoubleValidator
 //
 
-class KDoubleValidator::Private {
+namespace Gui {
+
+class Private {
 public:
   Private( bool accept=true ) : acceptLocalizedNumbers( accept ) {}
 
   bool acceptLocalizedNumbers;
 };
+
+} // namespace Gui
 
 KDoubleValidator::KDoubleValidator( QObject * parent, const char * name )
   : QDoubleValidator( parent, name ), d( 0 )
@@ -312,7 +323,7 @@ KDoubleValidator::KDoubleValidator( QObject * parent, const char * name )
 }
 
 KDoubleValidator::KDoubleValidator( double bottom, double top, int decimals,
-				    QObject * parent, const char * name )
+            QObject * parent, const char * name )
   : QDoubleValidator( bottom, top, decimals, parent, name ), d( 0 )
 {
   d = new Private();
@@ -320,7 +331,7 @@ KDoubleValidator::KDoubleValidator( double bottom, double top, int decimals,
 
 KDoubleValidator::~KDoubleValidator()
 {
-	delete d;
+  delete d;
 }
 
 bool KDoubleValidator::acceptLocalizedNumbers() const {
@@ -348,29 +359,29 @@ QValidator::State KDoubleValidator::validate( QString & input, int & p ) const {
     // first, delete p's and t's:
     if ( !p.isEmpty() )
       for ( int idx = s.find( p ) ; idx >= 0 ; idx = s.find( p, idx ) )
-	s.remove( idx, p.length() );
-	
+  s.remove( idx, p.length() );
+
 
     if ( !t.isEmpty() )
       for ( int idx = s.find( t ) ; idx >= 0 ; idx = s.find( t, idx ) )
-	s.remove( idx, t.length() );
+  s.remove( idx, t.length() );
 
     // then, replace the d's and n's
     if ( ( !n.isEmpty() && n.find('.') != -1 ) ||
-	 ( !d.isEmpty() && d.find('-') != -1 ) ) {
+   ( !d.isEmpty() && d.find('-') != -1 ) ) {
       // make sure we don't replace something twice:
 //      kdWarning() << "KDoubleValidator: decimal symbol contains '-' or "
-//		     "negative sign contains '.' -> improve algorithm" << endl;
+//         "negative sign contains '.' -> improve algorithm" << endl;
       return Invalid;
     }
 
     if ( !d.isEmpty() && d != "." )
       for ( int idx = s.find( d ) ; idx >= 0 ; idx = s.find( d, idx + 1 ) )
-	s.replace( idx, d.length(), ".");
+  s.replace( idx, d.length(), ".");
 
     if ( !n.isEmpty() && n != "-" )
       for ( int idx = s.find( n ) ; idx >= 0 ; idx = s.find( n, idx + 1 ) )
-	s.replace( idx, n.length(), "-" );
+  s.replace( idx, n.length(), "-" );
   }*/
 
   return base::validate( s, p );

@@ -22,96 +22,106 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
-		+ PropComboBox inherits from QComboBox instead of KComboBox
-		+ use QListBox instead of KListBox
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + PropComboBox inherits from QComboBox instead of KComboBox
+    + use QListBox instead of KListBox
 
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef PROPERTYEDITORLIST_H
 #define PROPERTYEDITORLIST_H
 
-#include <qcombobox.h>
+#ifndef _PreComp_
+# include <qcombobox.h>
+#endif
 
 #include "kexipropertysubeditor.h"
 
-class QComboBox;
 class QStringList;
-class KexiProperty;
 class QListBox;
+
+namespace Gui {
+namespace Kexi {
+
+class Property;
 
 class GuiExport PropComboBox : public QComboBox
 {
-	Q_OBJECT
-	
-	public:
-		PropComboBox(QWidget *parent, bool multi);
-		~PropComboBox() {;}
-		
-		virtual bool eventFilter(QObject *o, QEvent *e);
-		void setSelected(const QStringList &list);
-		QStringList getSelected();
-	
-	public slots:
-		void updateEdit();
-		void hideList();
-		
-	protected:
-		QListBox *m_listbox;
-		bool m_eventFilterEnabled : 1;
+Q_OBJECT
+
+public:
+  PropComboBox(QWidget *parent, bool multi);
+  ~PropComboBox() {;}
+
+  virtual bool eventFilter(QObject *o, QEvent *e);
+  void setSelected(const QStringList &list);
+  QStringList getSelected();
+ 
+public slots:
+  void updateEdit();
+  void hideList();
+
+protected:
+  QListBox *m_listbox;
+  bool m_eventFilterEnabled : 1;
 };
 
-class GuiExport PropertyEditorList : public KexiPropertySubEditor
+class GuiExport PropertyEditorList : public PropertySubEditor
 {
-	Q_OBJECT
+Q_OBJECT
 
-	public:
-		PropertyEditorList(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorList() {;}
+public:
+  PropertyEditorList(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorList() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		
-		void setList(QStringList l);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void valueChanged();
+  void setList(QStringList l);
 
-	protected:
-		PropComboBox		*m_combo;
+protected slots:
+  void valueChanged();
+
+protected:
+  PropComboBox  *m_combo;
 };
 
-class GuiExport PropertyEditorMultiList : public KexiPropertySubEditor
+class GuiExport PropertyEditorMultiList : public PropertySubEditor
 {
-	Q_OBJECT
+Q_OBJECT
 
-	public:
-		PropertyEditorMultiList(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorMultiList() {;}
+public:
+  PropertyEditorMultiList(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorMultiList() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		
-		void setList(QStringList l);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void valueChanged();
+  void setList(QStringList l);
 
-	protected:
-		PropComboBox		*m_combo;
+protected slots:
+  void valueChanged();
+
+protected:
+  PropComboBox  *m_combo;
 };
 
 class GuiExport PropertyEditorCursor : public PropertyEditorList
 {
-	Q_OBJECT
+Q_OBJECT
 
-	public:
-		PropertyEditorCursor(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorCursor() {;}
+public:
+  PropertyEditorCursor(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorCursor() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 
 #endif

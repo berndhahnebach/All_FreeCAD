@@ -27,14 +27,18 @@
 #ifndef K_NUMINPUT_H
 #define K_NUMINPUT_H
 
-#include <qwidget.h>
-#include <qspinbox.h>
+#ifndef _PreComp_
+# include <qwidget.h>
+# include <qspinbox.h>
+#endif
 
 class QLabel;
 class QSlider;
 class QLineEdit;
 class QLayout;
 class QValidator;
+
+namespace Gui {
 
 class KIntSpinBox;
 
@@ -153,6 +157,10 @@ private:
 };
 
 /* ------------------------------------------------------------------------ */
+
+class KIntNumInputPrivate;
+class KDoubleNumInputPrivate;
+class Private;
 
 /**
  * KIntNumInput combines a @ref QSpinBox and optionally a @ref QSlider
@@ -394,7 +402,6 @@ private:
 protected:
     virtual void virtual_hook( int id, void* data );
 private:
-    class KIntNumInputPrivate;
     KIntNumInputPrivate *d;
 };
 
@@ -469,7 +476,7 @@ public:
      * @since 3.1
      */
     KDoubleNumInput(double lower, double upper, double value, double step=0.01,
-		    int precision=2, QWidget *parent=0, const char *name=0);
+        int precision=2, QWidget *parent=0, const char *name=0);
 
     /**
      * destructor
@@ -504,8 +511,8 @@ public:
      * @since 3.1
      */
     KDoubleNumInput(KNumInput* below,
-		    double lower, double upper, double value, double step=0.02,
-		    int precision=2, QWidget *parent=0, const char *name=0);
+        double lower, double upper, double value, double step=0.02,
+        int precision=2, QWidget *parent=0, const char *name=0);
 
     /**
      * @return the current value.
@@ -677,7 +684,7 @@ protected:
     friend class KDoubleLine;
 private:
     void init(double value, double lower, double upper,
-	      double step, int precision);
+    double step, int precision);
     double mapSliderToSpin(int) const;
     void updateLegacyMembers();
     // ### no longer used, remove when BIC allowed:
@@ -689,7 +696,6 @@ private:
 protected:
     virtual void virtual_hook( int id, void* data );
 private:
-    class KDoubleNumInputPrivate;
     KDoubleNumInputPrivate *d;
 };
 
@@ -849,7 +855,7 @@ public:
       [@p lower,@p upper], @ref lineStep @p step, @ref precision @p
       precision and initial value @p value. */
   KDoubleSpinBox( double lower, double upper, double step, double value,
-		  int precision=2, QWidget * parent=0, const char * name=0 );
+  int precision=2, QWidget * parent=0, const char * name=0 );
 
   virtual ~KDoubleSpinBox();
 
@@ -940,8 +946,9 @@ private:
   void updateValidator();
   int maxPrecision() const;
 
-  class Private;
   Private * d;
 };
+
+} // namespace Gui
 
 #endif // K_NUMINPUT_H

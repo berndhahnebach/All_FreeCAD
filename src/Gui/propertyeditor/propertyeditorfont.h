@@ -18,12 +18,15 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
-		+ use QPushButton instead of KPushButton
-		+ use QPushButton with QLabel instead of KColorButton
-		+ replace method PropertyEditorColor::valueChanged(const QColor &)
-			with PropertyEditorColor::selectColor()
-		+ added method PropertyEditorColor::resizeEvent(QResizeEvent*)
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + use QPushButton instead of KPushButton
+    + use QPushButton with QLabel instead of KColorButton
+    + replace method PropertyEditorColor::valueChanged(const QColor &)
+      with PropertyEditorColor::selectColor()
+    + added method PropertyEditorColor::resizeEvent(QResizeEvent*)
+
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef PROPERTYEDITORFONT_H
@@ -34,53 +37,60 @@
 class QLabel;
 class QPushButton;
 class QResizeEvent;
-class KexiProperty;
 
-class GuiExport PropertyEditorFont : public KexiPropertySubEditor
+namespace Gui {
+namespace Kexi {
+
+class Property;
+
+class GuiExport PropertyEditorFont : public PropertySubEditor
 {
-	Q_OBJECT
+Q_OBJECT
 
-	public:
-		PropertyEditorFont(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorFont() {;}
+public:
+  PropertyEditorFont(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorFont() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		
-		void resizeEvent(QResizeEvent *ev);
-		virtual bool eventFilter(QObject* watched, QEvent* e);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void selectFont();
+  void resizeEvent(QResizeEvent *ev);
+  virtual bool eventFilter(QObject* watched, QEvent* e);
 
-	protected:
-		QLabel		*m_label;
-		QPushButton	*m_button;
-		QFont		m_font;
+protected slots:
+  void selectFont();
+
+protected:
+  QLabel    *m_label;
+  QPushButton *m_button;
+  QFont   m_font;
 };
 
 
-class GuiExport PropertyEditorColor : public KexiPropertySubEditor
+class GuiExport PropertyEditorColor : public PropertySubEditor
 {
-	Q_OBJECT
+Q_OBJECT
 
-	public:
-		PropertyEditorColor(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorColor() {;}
+public:
+  PropertyEditorColor(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorColor() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		void resizeEvent(QResizeEvent *ev);
-		bool			eventFilter(QObject* watched, QEvent* e);
-		
-	protected slots:
-		void selectColor();
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
+  void resizeEvent(QResizeEvent *ev);
+  bool  eventFilter(QObject* watched, QEvent* e);
 
-	protected:
-		QLabel		*m_label;
-		QPushButton	*m_button;
-		QColor		m_color;
+protected slots:
+  void selectColor();
+
+protected:
+  QLabel  *m_label;
+  QPushButton *m_button;
+  QColor  m_color;
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 #endif
 

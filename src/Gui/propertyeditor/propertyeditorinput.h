@@ -19,9 +19,12 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
-		+ use QLineEdit instead of KLineEdit
-		+ use QComboBox for PropertyEditorBool instead of a toggable QToolButton
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + use QLineEdit instead of KLineEdit
+    + use QComboBox for PropertyEditorBool instead of a toggable QToolButton
+
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef PROPERTYEDITORINPUT_H
@@ -34,106 +37,113 @@
 
 class QLineEdit;
 class QComboBox;
-class KexiProperty;
 class QToolButton;
-class QEvent; 
+class QEvent;
 
-class GuiExport PropertyEditorInput : public KexiPropertySubEditor
+namespace Gui {
+namespace Kexi {
+
+class Property;
+
+class GuiExport PropertyEditorInput : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorInput(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorInput() {;}
+public:
+  PropertyEditorInput(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorInput() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void			slotTextChanged(const QString &text);
+protected slots:
+  void  slotTextChanged(const QString &text);
 
-	protected:
-		QLineEdit		*m_lineedit;
+protected:
+  QLineEdit *m_lineedit;
 };
 
 //INT
 
 class GuiExport PropIntSpinBox : public KIntSpinBox
 {
-	Q_OBJECT
-	
-	public:
-	PropIntSpinBox(int lower, int upper, int step, int value, int base, QWidget *parent, const char *name);
-	virtual bool eventFilter(QObject *o, QEvent *e);
-	~PropIntSpinBox() {;}
+  Q_OBJECT
+
+public:
+  PropIntSpinBox(int lower, int upper, int step, int value, int base, QWidget *parent, const char *name);
+  virtual bool eventFilter(QObject *o, QEvent *e);
+  ~PropIntSpinBox() {;}
 };
 
-class GuiExport PropertyEditorSpin : public KexiPropertySubEditor
+class GuiExport PropertyEditorSpin : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorSpin(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorSpin() {;}
+public:
+  PropertyEditorSpin(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorSpin() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void			valueChange(int);
-		
-	protected:
-		KIntSpinBox		*m_spinBox;
+protected slots:
+  void  valueChange(int);
+
+protected:
+  KIntSpinBox *m_spinBox;
 };
 
 
 //DOUBLE
 class GuiExport PropDoubleSpinBox : public KDoubleSpinBox
 {
-	Q_OBJECT
-	
-	public:
-	PropDoubleSpinBox(QWidget *parent);
-	virtual bool eventFilter(QObject *o, QEvent *e);
-	~PropDoubleSpinBox() {;}
+  Q_OBJECT
+
+public:
+  PropDoubleSpinBox(QWidget *parent);
+  virtual bool eventFilter(QObject *o, QEvent *e);
+  ~PropDoubleSpinBox() {;}
 };
 
-class GuiExport PropertyEditorDblSpin : public KexiPropertySubEditor
+class GuiExport PropertyEditorDblSpin : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorDblSpin(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorDblSpin() {;}
+public:
+  PropertyEditorDblSpin(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorDblSpin() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-	
-	protected slots:
-		void			valueChange(int);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected:
-		KDoubleSpinBox		*m_spinBox;
+protected slots:
+  void  valueChange(int);
+
+protected:
+  KDoubleSpinBox  *m_spinBox;
 };
 
 //BOOL EDITOR
 
-class GuiExport PropertyEditorBool : public KexiPropertySubEditor
+class GuiExport PropertyEditorBool : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorBool(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorBool() {;}
+public:
+  PropertyEditorBool(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorBool() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		
-	protected slots:
-		void			setState(int state);
-		
-	protected:
-		QComboBox		*m_toggle;
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
+
+protected slots:
+  void  setState(int state);
+
+protected:
+  QComboBox *m_toggle;
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 #endif

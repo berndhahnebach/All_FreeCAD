@@ -1,4 +1,3 @@
-#include "PreCompiled.h"
 /* This file is part of the KDE project
    Copyright (C) 2002   Lucijan Busch <lucijan@gmx.at>
 
@@ -19,95 +18,102 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ include FreeCAD's PreCompiled header stuff
-		+ comment out use of KDE class kDebug
-		+ use QListView(Item) instead of KListView(Item)
+    + include FreeCAD's PreCompiled header stuff
+    + comment out use of KDE class kDebug
+    + use QListView(Item) instead of KListView(Item)
 */
 
-#include <qvariant.h>
-#include <qlistview.h>
+
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
+# include <qvariant.h>
+# include <qlistview.h>
+#endif
 //#include <kdebug.h>
 //#include <klistview.h>
 
 #include "kexipropertysubeditor.h"
 
-KexiPropertySubEditor::KexiPropertySubEditor(QWidget *parent, KexiProperty *property, const char *name)
- : QWidget(parent, name)
+using namespace Gui::Kexi;
+
+PropertySubEditor::PropertySubEditor(QWidget *parent, Property *property, const char *name)
+    : QWidget(parent, name)
 {
-	m_childWidget = 0;
-	m_property = property;
-	m_leaveTheSpaceForRevertButton = false;
+  m_childWidget = 0;
+  m_property = property;
+  m_leaveTheSpaceForRevertButton = false;
 }
 
 bool
-KexiPropertySubEditor::eventFilter(QObject* watched, QEvent* e)
+PropertySubEditor::eventFilter(QObject* watched, QEvent* e)
 {
-	if(e->type() == QEvent::KeyPress)
-	{
-		QKeyEvent* ev = static_cast<QKeyEvent*>(e);
-		if(ev->key() == Key_Escape)
-		{
-			emit reject(this);
-			return true;
-		}
-		else if((ev->key() == Key_Return) || (ev->key() == Key_Enter))
-		{
-			emit accept(this);
-			return true;
-		}
-		QListView *list = (QListView*) parentWidget()->parentWidget();
-		QListViewItem *item = (QListViewItem*)list->itemAt(mapToParent(QPoint(2,2)));
-		
-		if(ev->key()==Key_Up && ev->state()!=ControlButton)
-		{
-			if(item->itemAbove())
-			list->setCurrentItem(item->itemAbove());
-			return true;
-		}
-		else if(ev->key()==Key_Down && ev->state()!=ControlButton)
-		{
-			if(item->itemBelow())
-			list->setCurrentItem(item->itemBelow());
-			return true;
-		}
-	}
+  if(e->type() == QEvent::KeyPress)
+  {
+    QKeyEvent* ev = static_cast<QKeyEvent*>(e);
+    if(ev->key() == Key_Escape)
+    {
+      emit reject(this);
+      return true;
+    }
+    else if((ev->key() == Key_Return) || (ev->key() == Key_Enter))
+    {
+      emit accept(this);
+      return true;
+    }
+    QListView *list = (QListView*) parentWidget()->parentWidget();
+    QListViewItem *item = (QListViewItem*)list->itemAt(mapToParent(QPoint(2,2)));
 
-	return false;
+    if(ev->key()==Key_Up && ev->state()!=ControlButton)
+    {
+      if(item->itemAbove())
+        list->setCurrentItem(item->itemAbove());
+      return true;
+    }
+    else if(ev->key()==Key_Down && ev->state()!=ControlButton)
+    {
+      if(item->itemBelow())
+        list->setCurrentItem(item->itemBelow());
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void
-KexiPropertySubEditor::resizeEvent(QResizeEvent *ev)
+PropertySubEditor::resizeEvent(QResizeEvent *ev)
 {
-	if(m_childWidget)
-	{
-		m_childWidget->resize(ev->size());
-	}
+  if(m_childWidget)
+  {
+    m_childWidget->resize(ev->size());
+  }
 }
 
 void
-KexiPropertySubEditor::setWidget(QWidget *w)
+PropertySubEditor::setWidget(QWidget *w)
 {
-	m_childWidget = w;
-	setFocusProxy(m_childWidget);
-	m_childWidget->installEventFilter(this);
-//	if (m_childWidget->inherits("QFrame")) {
-//		static_cast<QFrame*>(m_childWidget)->setFrameStyle( QFrame::Box | QFrame::Plain );
-//	}
+  m_childWidget = w;
+  setFocusProxy(m_childWidget);
+  m_childWidget->installEventFilter(this);
+  //  if (m_childWidget->inherits("QFrame")) {
+  //    static_cast<QFrame*>(m_childWidget)->setFrameStyle( QFrame::Box | QFrame::Plain );
+  //  }
 }
 
 QVariant
-KexiPropertySubEditor::value()
+PropertySubEditor::value()
 {
-	return QVariant("");
+  return QVariant("");
 }
 
 void
-KexiPropertySubEditor::setValue(const QVariant &value)
+PropertySubEditor::setValue(const QVariant &value)
 {
-	return;
+  return;
 }
 
-KexiPropertySubEditor::~KexiPropertySubEditor()
+PropertySubEditor::~PropertySubEditor()
 {
 }
 

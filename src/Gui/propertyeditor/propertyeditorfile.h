@@ -18,72 +18,85 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
-		+ use QUrl instead of KURL
-		+	use QPushButton instead of KPushButton
-		+ use QLineEdit instead of KLineEdit
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + use QUrl instead of KURL
+    + use QPushButton instead of KPushButton
+    + use QLineEdit instead of KLineEdit
+
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef PROPERTYEDITORFILE_H
 #define PROPERTYEDITORFILE_H
 
+#ifndef _PreComp_
+# include <qurl.h>
+#endif
+
 #include "kexipropertysubeditor.h"
-#include <qurl.h>
 
 class QLineEdit;
 class QPushButton;
 class QResizeEvent;
 class QLabel;
+
+namespace Gui {
+namespace Kexi {
+
 class KexiProperty;
 
-class GuiExport PropertyEditorFile : public KexiPropertySubEditor
+class GuiExport PropertyEditorFile : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorFile(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorFile() {;}
+public:
+  PropertyEditorFile(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorFile() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		
-		void setFilter(QString filter, bool add);
-		void resizeEvent(QResizeEvent *ev);
-		bool eventFilter(QObject* watched, QEvent* e);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void selectFile();
+  void setFilter(QString filter, bool add);
+  void resizeEvent(QResizeEvent *ev);
+  bool eventFilter(QObject* watched, QEvent* e);
 
-	protected:
-		QLineEdit	*m_lineedit;
-		QPushButton	*m_button;
-		QUrl		m_url;
-		QString 	m_filter;
+protected slots:
+  void selectFile();
+
+protected:
+  QLineEdit *m_lineedit;
+  QPushButton *m_button;
+  QUrl    m_url;
+  QString   m_filter;
 };
 
 
-class GuiExport PropertyEditorPixmap : public KexiPropertySubEditor
+class GuiExport PropertyEditorPixmap : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorPixmap(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorPixmap();
+public:
+  PropertyEditorPixmap(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorPixmap();
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
-		virtual bool		eventFilter(QObject *o, QEvent *e);
-		void			resizeEvent(QResizeEvent *ev);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
+  virtual bool  eventFilter(QObject *o, QEvent *e);
+  void  resizeEvent(QResizeEvent *ev);
 
-	protected slots:
-		void selectFile();
-		
-	private:
-		QPushButton	*m_button;
-		QUrl		m_url;
-		QLabel		*m_label;
-		QLabel		*m_popup;
+protected slots:
+  void selectFile();
+
+private:
+  QPushButton *m_button;
+  QUrl    m_url;
+  QLabel  *m_label;
+  QLabel  *m_popup;
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 
 #endif

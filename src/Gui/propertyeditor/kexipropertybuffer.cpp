@@ -1,4 +1,3 @@
-#include "PreCompiled.h"
 /* This file is part of the KDE project
    Copyright (C) 2003 Lucijan Busch <lucijan@gmx.at>
    Copyright (C) 2003 Cedric Pasteur <cedric.pasteur@free.fr>
@@ -21,91 +20,98 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ include FreeCAD's PreCompiled header stuff
-		+ comment out use of KDE class kDebug
+    + include FreeCAD's PreCompiled header stuff
+    + comment out use of KDE class kDebug
 */
 
-//#include <kdebug.h>
 
-#include <qdatetime.h>
+
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
+# include <qdatetime.h>
+#endif
 
 #include "kexipropertybuffer.h"
+//#include <kdebug.h>
 
-KexiPropertyBuffer::KexiPropertyBuffer(QObject *parent, const QString &type_name)
- : QObject(parent, type_name.latin1())
-	,QAsciiDict<KexiProperty>(101, false)
-	,m_typeName( type_name )
+using namespace Gui::Kexi;
+
+PropertyBuffer::PropertyBuffer(QObject *parent, const QString &type_name)
+    : QObject(parent, type_name.latin1())
+    ,QAsciiDict<Property>(101, false)
+    ,m_typeName( type_name )
 {
-	setAutoDelete( true );
+  setAutoDelete( true );
 }
 
-KexiPropertyBuffer::~KexiPropertyBuffer()
+PropertyBuffer::~PropertyBuffer()
 {
-	emit destroying();
-}
-
-void
-KexiPropertyBuffer::changeProperty(const QCString &property, const QVariant &value)
-{
-	KexiProperty *prop = find(property);
-	if (!prop)
-		return;
-
-//	kdDebug() << "KexiPropertyBuffer::changeProperty(): changing: " << property 
-//		<< " from '" << (prop->value().toString().isNull() ? QString("NULL") : prop->value().toString())
-//		<< "' to '" << (value.toString().isNull() ? QString("NULL") : value.toString()) << "'" << endl;
-/*
-	bool ch = false;
-	if (prop->value().type()==QVariant::DateTime
-		|| prop->value().type()==QVariant::Time) {
-		//for date and datetime types: compare with strings, because there 
-		//can be miliseconds difference
-		ch = prop->value().toString() != value.toString();
-	}
-	else {
-		ch = prop->value() != value;
-	}
-
-	if (prop->value().type()==QVariant::String) {
-		//property is also changed for string type, if one of value is empty and other isn't
-		if (prop->value().toString().isEmpty() != value.toString().isEmpty())
-			ch = true;
-	}
-
-	if (ch) {
-		prop->setValue(value);
-		emit propertyChanged(*this, *prop);
-	}*/
-	prop->setValue(value);
+  emit destroying();
 }
 
 void
-KexiPropertyBuffer::add(KexiProperty *property)
+PropertyBuffer::changeProperty(const QCString &property, const QVariant &value)
 {
-	property->m_buf = this;
-	insert(property->name(), property);
-	m_list.append( property );
+  Property *prop = find(property);
+  if (!prop)
+    return;
+
+  //kdDebug() << "PropertyBuffer::changeProperty(): changing: " << property
+  //          << " from '" << (prop->value().toString().isNull() ? QString("NULL") : prop->value().toString())
+  //          << "' to '" << (value.toString().isNull() ? QString("NULL") : value.toString()) << "'" << endl;
+  /*
+    bool ch = false;
+    if (prop->value().type()==QVariant::DateTime
+      || prop->value().type()==QVariant::Time) {
+      //for date and datetime types: compare with strings, because there 
+      //can be miliseconds difference
+      ch = prop->value().toString() != value.toString();
+    }
+    else {
+      ch = prop->value() != value;
+    }
+
+    if (prop->value().type()==QVariant::String) {
+      //property is also changed for string type, if one of value is empty and other isn't
+      if (prop->value().toString().isEmpty() != value.toString().isEmpty())
+        ch = true;
+    }
+
+    if (ch) {
+      prop->setValue(value);
+      emit propertyChanged(*this, *prop);
+    }*/
+  prop->setValue(value);
 }
 
-void KexiPropertyBuffer::clear()
+void
+PropertyBuffer::add(Property *property)
 {
-	m_list.clear();
-	QAsciiDict<KexiProperty>::clear();
+  property->m_buf = this;
+  insert(property->name(), property);
+  m_list.append( property );
 }
 
-void KexiPropertyBuffer::debug()
+void PropertyBuffer::clear()
 {
-//	kdDebug() << "KexiPropertyBuffer: typeName='" << m_typeName << "'" << endl;
-	if (isEmpty()) {
-//		kdDebug() << "<EMPTY>" << endl;
-		return;
-	}
-//	kdDebug() << count() << " properties:" << endl;
+  m_list.clear();
+  QAsciiDict<Property>::clear();
+}
 
-	KexiProperty::ListIterator it(m_list);
-	for (;it.current();++it) {
-		it.current()->debug();
-	}
+void PropertyBuffer::debug()
+{
+  //  kdDebug() << "PropertyBuffer: typeName='" << m_typeName << "'" << endl;
+  if (isEmpty()) {
+    //kdDebug() << "<EMPTY>" << endl;
+    return;
+  }
+  //  kdDebug() << count() << " properties:" << endl;
+
+  Property::ListIterator it(m_list);
+  for (;it.current();++it) {
+    it.current()->debug();
+  }
 }
 
 #include "kexipropertybuffer.moc"

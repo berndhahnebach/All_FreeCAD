@@ -1,4 +1,3 @@
-#include "PreCompiled.h"
 // -*- c-basic-offset: 4 -*-
 /*
  * knuminput.cpp
@@ -30,24 +29,30 @@
  */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ include FreeCAD's PreCompiled header stuff
-		+ comment out use of KDE classes
+    + include FreeCAD's PreCompiled header stuff
+    + comment out use of KDE classes
 */
+
+
+#include "PreCompiled.h"
 
 //#include <config.h>
 #ifdef HAVE_LIMITS_H
-#include <limits.h>
+# include <limits.h>
 #endif
-#include <assert.h>
-#include <math.h>
-#include <algorithm>
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qsize.h>
-#include <qslider.h>
-#include <qspinbox.h>
-#include <qstyle.h>
+#ifndef _PreComp_
+# include <assert.h>
+# include <math.h>
+# include <algorithm>
+
+# include <qlabel.h>
+# include <qlineedit.h>
+# include <qsize.h>
+# include <qslider.h>
+# include <qspinbox.h>
+# include <qstyle.h>
+#endif
 
 //#include <kglobal.h>
 //#include <klocale.h>
@@ -55,6 +60,8 @@
 
 #include "knumvalidator.h"
 #include "knuminput.h"
+
+using namespace Gui;
 
 static inline int calcDiffByTen( int x, int y ) {
     // calculate ( x - y ) / 10 without overflowing ints:
@@ -271,15 +278,18 @@ void KIntSpinBox::setEditFocus(bool mark)
 
 // ----------------------------------------------------------------------------
 
-class KIntNumInput::KIntNumInputPrivate {
+namespace Gui {
+
+class KIntNumInputPrivate {
 public:
     int referencePoint;
     short blockRelative;
     KIntNumInputPrivate( int r )
-	: referencePoint( r ),
-	  blockRelative( 0 ) {}
+  : referencePoint( r ),
+    blockRelative( 0 ) {}
 };
 
+} // namespace Gui
 
 KIntNumInput::KIntNumInput(KNumInput* below, int val, QWidget* parent,
                            int _base, const char* name)
@@ -308,7 +318,7 @@ void KIntNumInput::init(int val, int _base)
     m_spin->setValidator(new KIntValidator(this, _base, "KNumInput::KIntValidtr"));
     connect(m_spin, SIGNAL(valueChanged(int)), SLOT(spinValueChanged(int)));
     connect(this, SIGNAL(valueChanged(int)),
-	    SLOT(slotEmitRelativeValueChanged(int)));
+      SLOT(slotEmitRelativeValueChanged(int)));
 
     setFocusProxy(m_spin);
     layout(true);
@@ -348,19 +358,19 @@ void KIntNumInput::setRange(int lower, int upper, int step, bool slider)
     step = m_spin->lineStep(); // maybe QRangeControl didn't like out lineStep?
 
     if(slider) {
-	if (m_slider)
-	    m_slider->setRange(lower, upper);
-	else {
-	    m_slider = new QSlider(lower, upper, step, m_spin->value(),
-				   QSlider::Horizontal, this);
-	    m_slider->setTickmarks(QSlider::Below);
-	    connect(m_slider, SIGNAL(valueChanged(int)),
-		    m_spin, SLOT(setValue(int)));
-	}
+  if (m_slider)
+      m_slider->setRange(lower, upper);
+  else {
+      m_slider = new QSlider(lower, upper, step, m_spin->value(),
+         QSlider::Horizontal, this);
+      m_slider->setTickmarks(QSlider::Below);
+      connect(m_slider, SIGNAL(valueChanged(int)),
+        m_spin, SLOT(setValue(int)));
+}
 
-	// calculate (upper-lower)/10 without overflowing int's:
+  // calculate (upper-lower)/10 without overflowing int's:
         int major = calcDiffByTen( upper, lower );
-	if ( major==0 ) major = step; // #### workaround Qt bug in 2.1-beta4
+  if ( major==0 ) major = step; // #### workaround Qt bug in 2.1-beta4
 
         m_slider->setSteps(step, major);
         m_slider->setTickInterval(major);
@@ -486,7 +496,7 @@ void KIntNumInput::resizeEvent(QResizeEvent* e)
 
 KIntNumInput::~KIntNumInput()
 {
-	delete d;
+  delete d;
 }
 
 void KIntNumInput::setValue(int val)
@@ -533,16 +543,20 @@ void KIntNumInput::setLabel(const QString & label, int a)
 
 // ----------------------------------------------------------------------------
 
-class KDoubleNumInput::KDoubleNumInputPrivate {
+namespace Gui {
+
+class KDoubleNumInputPrivate {
 public:
     KDoubleNumInputPrivate( double r )
-	: spin( 0 ),
-	  referencePoint( r ),
-	  blockRelative ( 0 ) {}
+  : spin( 0 ),
+    referencePoint( r ),
+    blockRelative ( 0 ) {}
     KDoubleSpinBox * spin;
     double referencePoint;
     short blockRelative;
 };
+
+} // namespace Gui
 
 KDoubleNumInput::KDoubleNumInput(QWidget *parent, const char *name)
     : KNumInput(parent, name)
@@ -551,17 +565,17 @@ KDoubleNumInput::KDoubleNumInput(QWidget *parent, const char *name)
 }
 
 KDoubleNumInput::KDoubleNumInput(double lower, double upper, double value,
-				 double step, int precision, QWidget* parent,
-				 const char *name)
+         double step, int precision, QWidget* parent,
+         const char *name)
     : KNumInput(parent, name)
 {
     init(value, lower, upper, step, precision);
 }
 
 KDoubleNumInput::KDoubleNumInput(KNumInput *below,
-				 double lower, double upper, double value,
-				 double step, int precision, QWidget* parent,
-				 const char *name)
+         double lower, double upper, double value,
+         double step, int precision, QWidget* parent,
+         const char *name)
     : KNumInput(below, parent, name)
 {
     init(value, lower, upper, step, precision);
@@ -582,7 +596,7 @@ KDoubleNumInput::KDoubleNumInput(KNumInput* below, double value, QWidget* parent
 
 KDoubleNumInput::~KDoubleNumInput()
 {
-	delete d;
+  delete d;
 }
 
 // ### remove when BIC changes are allowed again:
@@ -600,7 +614,7 @@ void KDoubleNumInput::resetEditBox() {
 
 
 void KDoubleNumInput::init(double value, double lower, double upper,
-			   double step, int precision )
+         double step, int precision )
 {
     // ### init no longer used members:
     edit = 0;
@@ -612,12 +626,12 @@ void KDoubleNumInput::init(double value, double lower, double upper,
     d = new KDoubleNumInputPrivate( value );
 
     d->spin = new KDoubleSpinBox( lower, upper, step, value, precision,
-				  this, "KDoubleNumInput::d->spin" );
+          this, "KDoubleNumInput::d->spin" );
     setFocusProxy(d->spin);
     connect( d->spin, SIGNAL(valueChanged(double)),
-	     this, SIGNAL(valueChanged(double)) );
+       this, SIGNAL(valueChanged(double)) );
     connect( this, SIGNAL(valueChanged(double)),
-	     this, SLOT(slotEmitRelativeValueChanged(double)) );
+       this, SLOT(slotEmitRelativeValueChanged(double)) );
 
     updateLegacyMembers();
 
@@ -670,7 +684,7 @@ QSize KDoubleNumInput::minimumSizeHint() const
         h += 4 + m_sizeLabel.height();
     else
         // label is in the same row as the other widgets
-	h = QMAX(h, m_sizeLabel.height() + 2);
+  h = QMAX(h, m_sizeLabel.height() + 2);
 
     w = m_slider ? m_slider->sizeHint().width() + 8 : 0;
     w += m_colw1 + m_colw2;
@@ -737,37 +751,37 @@ void KDoubleNumInput::setRange(double lower, double upper, double step,
                                                            bool slider)
 {
     if( m_slider ) {
-	// don't update the slider to avoid an endless recursion
-	QSpinBox * spin = d->spin;
-	disconnect(spin, SIGNAL(valueChanged(int)),
-		m_slider, SLOT(setValue(int)) );
+  // don't update the slider to avoid an endless recursion
+  QSpinBox * spin = d->spin;
+  disconnect(spin, SIGNAL(valueChanged(int)),
+    m_slider, SLOT(setValue(int)) );
     }
     d->spin->setRange( lower, upper, step, d->spin->precision() );
 
     if(slider) {
-	// upcast to base type to get the min/maxValue in int form:
-	QSpinBox * spin = d->spin;
+  // upcast to base type to get the min/maxValue in int form:
+  QSpinBox * spin = d->spin;
         int slmax = spin->maxValue();
-	int slmin = spin->minValue();
+  int slmin = spin->minValue();
         int slvalue = spin->value();
-	int slstep = spin->lineStep();
+  int slstep = spin->lineStep();
         if (m_slider) {
             m_slider->setRange(slmin, slmax);
-	    m_slider->setLineStep(slstep);
+      m_slider->setLineStep(slstep);
             m_slider->setValue(slvalue);
         } else {
             m_slider = new QSlider(slmin, slmax, slstep, slvalue,
                                    QSlider::Horizontal, this);
             m_slider->setTickmarks(QSlider::Below);
-	    // feedback line: when one moves, the other moves, too:
+      // feedback line: when one moves, the other moves, too:
             connect(m_slider, SIGNAL(valueChanged(int)),
                     SLOT(sliderMoved(int)) );
         }
-	connect(spin, SIGNAL(valueChanged(int)),
-			m_slider, SLOT(setValue(int)) );
-	// calculate ( slmax - slmin ) / 10 without overflowing ints:
-	int major = calcDiffByTen( slmax, slmin );
-	if ( !major ) major = slstep; // ### needed?
+  connect(spin, SIGNAL(valueChanged(int)),
+      m_slider, SLOT(setValue(int)) );
+  // calculate ( slmax - slmin ) / 10 without overflowing ints:
+  int major = calcDiffByTen( slmax, slmin );
+  if ( !major ) major = slstep; // ### needed?
         m_slider->setTickInterval(major);
     } else {
         delete m_slider;
@@ -882,7 +896,10 @@ void KDoubleNumInput::setLabel(const QString & label, int a)
 // 4. upperInt = upper * factor;
 // 5. lower = lowerInt * basicStep;
 // 6. upper = upperInt * basicStep;
-class KDoubleSpinBox::Private {
+
+namespace Gui {
+
+class Private {
 public:
   Private( int precision=1 )
     : mPrecision( precision ),
@@ -905,14 +922,14 @@ public:
     const double f = factor();
     if ( value > double(INT_MAX) / f ) {
 //      kdWarning() << "KDoubleSpinBox: can't represent value " << value
-//		  << "in terms of fixed-point numbers with precision "
-//		  << mPrecision << endl;
+//      << "in terms of fixed-point numbers with precision "
+//      << mPrecision << endl;
       *ok = false;
       return INT_MAX;
     } else if ( value < double(INT_MIN) / f ) {
 //      kdWarning() << "KDoubleSpinBox: can't represent value " << value
-//		  << "in terms of fixed-point numbers with precision "
-//		  << mPrecision << endl;
+//      << "in terms of fixed-point numbers with precision "
+//      << mPrecision << endl;
       *ok = false;
       return INT_MIN;
     } else {
@@ -929,6 +946,8 @@ public:
   KDoubleValidator * mValidator;
 };
 
+} // namespace Gui
+
 KDoubleSpinBox::KDoubleSpinBox( QWidget * parent, const char * name )
   : QSpinBox( parent, name )
 {
@@ -938,8 +957,8 @@ KDoubleSpinBox::KDoubleSpinBox( QWidget * parent, const char * name )
 }
 
 KDoubleSpinBox::KDoubleSpinBox( double lower, double upper, double step,
-				double value, int precision,
-				QWidget * parent, const char * name )
+        double value, int precision,
+        QWidget * parent, const char * name )
   : QSpinBox( parent, name )
 {
   editor()->setAlignment( Qt::AlignRight );
@@ -965,7 +984,7 @@ void KDoubleSpinBox::setAcceptLocalizedNumbers( bool accept ) {
 }
 
 void KDoubleSpinBox::setRange( double lower, double upper, double step,
-			       int precision ) {
+             int precision ) {
   lower = kMin(upper, lower);
   upper = kMax(upper, lower);
   setPrecision( precision, true ); // disable bounds checking, since
@@ -1011,13 +1030,13 @@ double KDoubleSpinBox::value() const {
 void KDoubleSpinBox::setValue( double value ) {
     if ( value == this->value() ) return;
     if ( value < minValue() )
-	base::setValue( base::minValue() );
+  base::setValue( base::minValue() );
     else if ( value > maxValue() )
-	base::setValue( base::maxValue() );
+  base::setValue( base::maxValue() );
     else {
-	bool ok = false;
-	base::setValue( d->mapToInt( value, &ok ) );
-	assert( ok );
+  bool ok = false;
+  base::setValue( d->mapToInt( value, &ok ) );
+  assert( ok );
     }
 }
 
@@ -1091,7 +1110,7 @@ void KDoubleSpinBox::slotValueChanged( int value ) {
 void KDoubleSpinBox::updateValidator() {
   if ( !d->mValidator ) {
     d->mValidator =  new KDoubleValidator( minValue(), maxValue(), precision(),
-					   this, "d->mValidator" );
+             this, "d->mValidator" );
     base::setValidator( d->mValidator );
   } else
     d->mValidator->setRange( minValue(), maxValue(), precision() );

@@ -18,7 +18,10 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef PROPERTYEDITORDATE_H
@@ -26,7 +29,6 @@
 
 #include "kexipropertysubeditor.h"
 
-class KexiProperty;
 class QDateEdit;
 class QTimeEdit;
 class QDateTimeEdit;
@@ -34,61 +36,69 @@ class QDate;
 class QTime;
 class QDateTime;
 
-class GuiExport PropertyEditorDate : public KexiPropertySubEditor
+namespace Gui {
+namespace Kexi {
+
+class Property;
+
+class GuiExport PropertyEditorDate : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorDate(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorDate() {;}
+public:
+  PropertyEditorDate(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorDate() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void			valueChanged(const QDate&);
+protected slots:
+  void  valueChanged(const QDate&);
 
-	protected:
-		QDateEdit	*m_dateedit;
+protected:
+  QDateEdit *m_dateedit;
 };
 
 
-class GuiExport PropertyEditorTime : public KexiPropertySubEditor
+class GuiExport PropertyEditorTime : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorTime(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorTime() {;}
+public:
+  PropertyEditorTime(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorTime() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void			valueChanged(const QTime&);
+protected slots:
+  void  valueChanged(const QTime&);
 
-	protected:
-		QTimeEdit	*m_timeedit;
+protected:
+  QTimeEdit *m_timeedit;
 };
 
 
-class GuiExport PropertyEditorDateTime : public KexiPropertySubEditor
+class GuiExport PropertyEditorDateTime : public PropertySubEditor
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		PropertyEditorDateTime(QWidget *parent, KexiProperty *property, const char *name=0);
-		~PropertyEditorDateTime() {;}
+public:
+  PropertyEditorDateTime(QWidget *parent, Property *property, const char *name=0);
+  ~PropertyEditorDateTime() {;}
 
-		virtual QVariant	value();
-		virtual	void 		setValue(const QVariant &value);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-	protected slots:
-		void			valueChanged(const QDateTime&);
+protected slots:
+  void  valueChanged(const QDateTime&);
 
-	protected:
-		QDateTimeEdit	*m_datetime;
+protected:
+  QDateTimeEdit *m_datetime;
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 #endif
 

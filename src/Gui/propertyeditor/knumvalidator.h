@@ -1,7 +1,5 @@
 /**********************************************************************
 **
-** $Id$
-**
 ** Copyright (C) 1999 Glen Parker <glenebob@nwlink.com>
 ** Copyright (C) 2002 Marc Mutz <mutz@kde.org>
 **
@@ -24,10 +22,16 @@
 #ifndef __KNUMVALIDATOR_H
 #define __KNUMVALIDATOR_H
 
-#include <qvalidator.h>
+#ifndef _PreComp_
+# include <qvalidator.h>
+#endif
 
 class QWidget;
 class QString;
+
+namespace Gui {
+
+class Private;
 
 /**
  *  @ref QValidator for integers.
@@ -187,7 +191,7 @@ public:
       top] and a precision of @p decimals decimals after the decimal
       point.  */
   KDoubleValidator( double bottom, double top, int decimals,
-		    QObject * parent, const char * name=0 );
+        QObject * parent, const char * name=0 );
   /** Destructs the validator.
    */
   virtual ~KDoubleValidator();
@@ -202,8 +206,9 @@ public:
 
 private:
   typedef QDoubleValidator base;
-  class Private;
   Private * d;
 };
+
+} // namespace Gui
 
 #endif

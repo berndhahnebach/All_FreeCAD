@@ -18,52 +18,64 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef KEXIPROPERTYSUBEDITOR_H
 #define KEXIPROPERTYSUBEDITOR_H
 
-#include <qwidget.h>
+#ifndef _PreComp_
+# include <qwidget.h>
+#endif
 
-class KexiProperty;
 
-//! The base class for all editors used in KexiPropertyEditor.
- 
-class GuiExport KexiPropertySubEditor : public QWidget
+namespace Gui {
+namespace Kexi {
+
+class Property;
+
+//! The base class for all editors used in PropertyEditor.
+
+class GuiExport PropertySubEditor : public QWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		KexiPropertySubEditor(QWidget *parent, KexiProperty *property, const char *name=0);
-		~KexiPropertySubEditor();
+public:
+  PropertySubEditor(QWidget *parent, Property *property, const char *name=0);
+  ~PropertySubEditor();
 
-		virtual bool		eventFilter(QObject* watched, QEvent* e);
-		virtual QVariant	value();
-		virtual void		setValue(const QVariant &value);
+  virtual bool  eventFilter(QObject* watched, QEvent* e);
+  virtual QVariant  value();
+  virtual void  setValue(const QVariant &value);
 
-		//! Sets \a w as editor 's widget, ie the widget which events are filtered and which is resized.
-		void			setWidget(QWidget *w);
+  //! Sets \a w as editor 's widget, ie the widget which events are filtered and which is resized.
+  void  setWidget(QWidget *w);
 
-		//! \sa m_leaveTheSpaceForRevertButton description
-		bool leavesTheSpaceForRevertButton() const { return m_leaveTheSpaceForRevertButton; }
-	signals:
-		//! Validate the input in the editor.
-		void			accept(KexiPropertySubEditor *);
-		//! Do not validate the contents of the editor.
-		void			reject(KexiPropertySubEditor *);
-		//! The editor's value has changed.
-		void			changed(KexiPropertySubEditor *);
+  //! \sa m_leaveTheSpaceForRevertButton description
+  bool leavesTheSpaceForRevertButton() const { return m_leaveTheSpaceForRevertButton; }
+signals:
+  //! Validate the input in the editor.
+  void  accept(PropertySubEditor *);
+  //! Do not validate the contents of the editor.
+  void  reject(PropertySubEditor *);
+  //! The editor's value has changed.
+  void  changed(PropertySubEditor *);
 
-	protected:
-		virtual void		resizeEvent(QResizeEvent *ev);
+protected:
+  virtual void  resizeEvent(QResizeEvent *ev);
 
-		KexiProperty *m_property;
-		QWidget *m_childWidget;
-		/*! true if there should be left space at the right hand for the Revert Button
-		 False by default. Integer editor (spinbox) sets this to true to avoid spin 
-		 arrows clicking inconvenience. */
-		bool m_leaveTheSpaceForRevertButton;
+  Property *m_property;
+  QWidget *m_childWidget;
+  /*! true if there should be left space at the right hand for the Revert Button
+   False by default. Integer editor (spinbox) sets this to true to avoid spin 
+   arrows clicking inconvenience. */
+  bool m_leaveTheSpaceForRevertButton;
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 #endif

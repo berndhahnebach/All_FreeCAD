@@ -19,86 +19,97 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+
+   Modifications for FreeCAD from 10-19-2004
+    + use namespace Gui::Kexi instead of prefix
 */
 
 #ifndef PROPERTYBUFFER_H
 #define PROPERTYBUFFER_H
 
-#include <qobject.h>
-#include <qdict.h>
-#include <qptrvector.h>
+#ifndef _PreComp_
+# include <qobject.h>
+# include <qdict.h>
+# include <qptrvector.h>
+#endif
 
 #include "kexiproperty.h"
 
-/** This class is a QDict<KexiProperty> which holds properties to be shown in
+namespace Gui {
+namespace Kexi {
+
+/** This class is a QDict<Property> which holds properties to be shown in
     Property Editor. Properties are indexed by their names, case insensitively.
-    \sa KexiPropertyEditor for help on how to use KexiPropertyBuffer.
-    \sa KexiProperty to see how to create properties.
+    \sa PropertyEditor for help on how to use PropertyBuffer.
+    \sa Property to see how to create properties.
 **/
-class GuiExport KexiPropertyBuffer : public QObject, public KexiProperty::Dict
+class GuiExport PropertyBuffer : public QObject, public Property::Dict
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	public:
-		typedef QPtrVector<KexiPropertyBuffer> Vector;
+public:
+  typedef QPtrVector<PropertyBuffer> Vector;
 
-		/*! Creates an empty KexiPropertyBuffer, i.e. a QMap<QString, KexiProperty>.
-		 \a type_name means a name of this property buffer type. See typeName() description
-		 for more information on type names.
-		*/
-		KexiPropertyBuffer(QObject *parent, const QString &type_name);
+  /*! Creates an empty PropertyBuffer, i.e. a QMap<QString, Property>.
+   \a type_name means a name of this property buffer type. See typeName() description
+   for more information on type names.
+  */
+  PropertyBuffer(QObject *parent, const QString &type_name);
 
-		virtual ~KexiPropertyBuffer();
+  virtual ~PropertyBuffer();
 
-		/*! \return an ordered list of properties */
-		KexiProperty::List* list() { return &m_list; }
+  /*! \return an ordered list of properties */
+  Property::List* list() { return &m_list; }
 
-		/*! Add \a property to buffer with property->name() as key in QMap.
-		 Same as insert(\a property->name(), \a property).
-		 The \a property object will be owned by this buffer.
-		*/
-		void add(KexiProperty *property);
+  /*! Add \a property to buffer with property->name() as key in QMap.
+   Same as insert(\a property->name(), \a property).
+   The \a property object will be owned by this buffer.
+  */
+  void add(Property *property);
 
-		/* Change the value of property whose key is \a property to \a value.
-		  By default, it only calls KexiProperty::setValue().
-		*/
-		virtual void changeProperty(const QCString &property, const QVariant &value);
+  /* Change the value of property whose key is \a property to \a value.
+    By default, it only calls Property::setValue().
+  */
+  virtual void changeProperty(const QCString &property, const QVariant &value);
 
-		/* A name of this property buffer type, that is usable when
-		 we want to know if two property buffer objects have the same type.
-		 For example, \a type_name may be "KexiDB::Field::Integer" for property buffer
-		 for given selected field of type integer, in "Alter Table Dialog".
-		 This avoids e.g. reloading of all KexiPropertyEditor's contents.
-		 Also, this allows to know if two property-buffer objects are compatible
-		 by their property sets.
-		 For comparing purposes, type names are case insensitive.
-		*/
-		QString typeName() const { return m_typeName; }
+  /* A name of this property buffer type, that is usable when
+   we want to know if two property buffer objects have the same type.
+   For example, \a type_name may be "DB::Field::Integer" for property buffer
+   for given selected field of type integer, in "Alter Table Dialog".
+   This avoids e.g. reloading of all PropertyEditor's contents.
+   Also, this allows to know if two property-buffer objects are compatible
+   by their property sets.
+   For comparing purposes, type names are case insensitive.
+  */
+  QString typeName() const { return m_typeName; }
 
-		/*! Removes all properties from the buffer and destroys them. */
-		virtual void clear();
+  /*! Removes all properties from the buffer and destroys them. */
+  virtual void clear();
 
-		void debug();
+  void debug();
 
-	signals:
-		/*! This signal is emitted when \a property has changed
-		   (i.e. when changeProperty() was called).
-		*/
-		void propertyChanged(KexiPropertyBuffer &buf, KexiProperty &property);//const QString &property, const QVariant &value);
+signals:
+  /*! This signal is emitted when \a property has changed
+     (i.e. when changeProperty() was called).
+  */
+  void propertyChanged(PropertyBuffer &buf, Property &property);//const QString &property, const QVariant &value);
 
-		/*! Parameterless version of the above method. */
-		void propertyChanged();
-		
-		void propertyReset(KexiPropertyBuffer &buf, KexiProperty &property);
+  /*! Parameterless version of the above method. */
+  void propertyChanged();
 
-		void destroying();
+  void propertyReset(PropertyBuffer &buf, Property &property);
 
-	protected:
-		QString m_typeName;
-		KexiProperty::List m_list;
+  void destroying();
 
-	friend class KexiProperty;
+protected:
+  QString m_typeName;
+  Property::List m_list;
+
+  friend class Property;
 };
+
+} // namespace Kexi
+} // namespace Gui
 
 #endif

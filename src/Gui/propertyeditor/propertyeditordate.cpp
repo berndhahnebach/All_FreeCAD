@@ -1,4 +1,3 @@
-#include "PreCompiled.h"
 /* This file is part of the KDE project
    Copyright (C) 2003 Cedric Pasteur <cedric.pasteur@free.fr>
 
@@ -19,114 +18,120 @@
 */
 
 /* Modifications for FreeCAD from 06-13-2004
-		+ include FreeCAD's PreCompiled header stuff
-		+ comment out use of KDE classes
+    + include FreeCAD's PreCompiled header stuff
+    + comment out use of KDE classes
 */
 
+
+#include "PreCompiled.h"
 //#include <klocale.h>
-#include <qdatetimeedit.h>
+#ifndef _PreComp_
+# include <qdatetimeedit.h>
+#endif
 
 #include "propertyeditordate.h"
 #include "kexiproperty.h"
 
 //DATE CHOOSER
 
-PropertyEditorDate::PropertyEditorDate(QWidget *parent, KexiProperty *property, const char *name)
- : KexiPropertySubEditor(parent, property, name)
+using namespace Gui::Kexi;
+
+PropertyEditorDate::PropertyEditorDate(QWidget *parent, Property *property, const char *name)
+    : PropertySubEditor(parent, property, name)
 {
-//	m_leaveTheSpaceForRevertButton = false;
-	m_leaveTheSpaceForRevertButton = true;
-	m_dateedit = new QDateEdit(property->value().asDate(), this);
-	m_dateedit->resize(width(), height());
-	m_dateedit->show();
-	setWidget(m_dateedit);
-	
-	connect(m_dateedit, SIGNAL(valueChanged(const QDate&)), this, SLOT(valueChanged(const QDate&)));
+  //m_leaveTheSpaceForRevertButton = false;
+  m_leaveTheSpaceForRevertButton = true;
+  m_dateedit = new QDateEdit(property->value().asDate(), this);
+  m_dateedit->resize(width(), height());
+  m_dateedit->show();
+  setWidget(m_dateedit);
+
+  connect(m_dateedit, SIGNAL(valueChanged(const QDate&)), this, SLOT(valueChanged(const QDate&)));
 }
 
 QVariant
 PropertyEditorDate::value()
 {
-	return QVariant(m_dateedit->date());
+  return QVariant(m_dateedit->date());
 }
 
 void
 PropertyEditorDate::setValue(const QVariant &value)
 {
-	m_dateedit->setDate(value.toDate());
+  m_dateedit->setDate(value.toDate());
 }
 
 void
 PropertyEditorDate::valueChanged(const QDate &date)
 {
-	emit changed(this);
+  emit changed(this);
 }
 
 //TIME CHOOSER
 
-PropertyEditorTime::PropertyEditorTime(QWidget *parent, KexiProperty *property, const char *name)
- : KexiPropertySubEditor(parent, property, name)
+PropertyEditorTime::PropertyEditorTime(QWidget *parent, Property *property, const char *name)
+    : PropertySubEditor(parent, property, name)
 {
-//	m_leaveTheSpaceForRevertButton = false;
-	m_leaveTheSpaceForRevertButton = true;
-	m_timeedit = new QTimeEdit(property->value().asTime(), this);
-	m_timeedit->resize(width(), height());
-	m_timeedit->show();
-	setWidget(m_timeedit);
-	
-	connect(m_timeedit, SIGNAL(valueChanged(const QTime&)), this, SLOT(valueChanged(const QTime&)));
+  //m_leaveTheSpaceForRevertButton = false;
+  m_leaveTheSpaceForRevertButton = true;
+  m_timeedit = new QTimeEdit(property->value().asTime(), this);
+  m_timeedit->resize(width(), height());
+  m_timeedit->show();
+  setWidget(m_timeedit);
+
+  connect(m_timeedit, SIGNAL(valueChanged(const QTime&)), this, SLOT(valueChanged(const QTime&)));
 }
 
 QVariant
 PropertyEditorTime::value()
 {
-	return QVariant(m_timeedit->time());
+  return QVariant(m_timeedit->time());
 }
 
 void
 PropertyEditorTime::setValue(const QVariant &value)
 {
-	m_timeedit->setTime(value.toTime());
+  m_timeedit->setTime(value.toTime());
 }
 
 void
 PropertyEditorTime::valueChanged(const QTime &time)
 {
-	emit changed(this);
+  emit changed(this);
 }
 
 
 // DATE/TIME CHOOSER
 
-PropertyEditorDateTime::PropertyEditorDateTime(QWidget *parent, KexiProperty *property, const char *name)
- : KexiPropertySubEditor(parent, property, name)
+PropertyEditorDateTime::PropertyEditorDateTime(QWidget *parent, Property *property, const char *name)
+    : PropertySubEditor(parent, property, name)
 {
-//	m_leaveTheSpaceForRevertButton = false;
-	m_leaveTheSpaceForRevertButton = true;
-	m_datetime = new QDateTimeEdit(property->value().asDateTime(), this);
-	m_datetime->resize(width(), height());
-	m_datetime->show();
-	setWidget(m_datetime);
-	
-	connect(m_datetime, SIGNAL(valueChanged(const QDateTime&)), this, SLOT(valueChanged(const QDateTime&)));
+  //m_leaveTheSpaceForRevertButton = false;
+  m_leaveTheSpaceForRevertButton = true;
+  m_datetime = new QDateTimeEdit(property->value().asDateTime(), this);
+  m_datetime->resize(width(), height());
+  m_datetime->show();
+  setWidget(m_datetime);
+
+  connect(m_datetime, SIGNAL(valueChanged(const QDateTime&)), this, SLOT(valueChanged(const QDateTime&)));
 }
 
 QVariant
 PropertyEditorDateTime::value()
 {
-	return QVariant(m_datetime->dateTime());
+  return QVariant(m_datetime->dateTime());
 }
 
 void
 PropertyEditorDateTime::setValue(const QVariant &value)
 {
-	m_datetime->setDateTime(value.toDateTime());
+  m_datetime->setDateTime(value.toDateTime());
 }
 
 void
 PropertyEditorDateTime::valueChanged(const QDateTime &dateTime)
 {
-	emit changed(this);
+  emit changed(this);
 }
 
 
