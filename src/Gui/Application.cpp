@@ -267,8 +267,6 @@ ApplicationWindow::ApplicationWindow()
 
   // misc stuff
   loadWindowSettings();
-  // load recent file list
-  StdCmdMRU::load();
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -276,6 +274,8 @@ ApplicationWindow::~ApplicationWindow()
   // save macros
   MacroCommand::save();
   // save recent file list
+  // Note: the recent files are restored in StdCmdMRU::createAction(), because we need
+  //       an valid instance of StdCmdMRU to do this
   StdCmdMRU::save();
   saveWindowSettings();
 }

@@ -510,10 +510,43 @@ void StdCmdMRU::activated(int iMsg)
 {
   if (iMsg >= 0 && iMsg < int(_vMRU.size()))
   {
+    // fill the list of registered endings
+    const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+    std::string EndingList;
+  
+    EndingList = "All suported formats (*.FCStd;*.std";
+
+    std::map<std::string,std::string>::const_iterator It;
+    for(It=EndingMap.begin();It != EndingMap.end();It++)
+    {
+      EndingList += ";*." + It->first;
+    }
+
+    EndingList += ");;FreeCAD Standard (*.FCStd;*.std));;";
+
+    for(It=EndingMap.begin();It != EndingMap.end();It++)
+    {
+      EndingList += It->second + " (*." + It->first + ");;";
+    }
+    EndingList += "All files (*.*)";
+  
+
+    QString f = _vMRU[iMsg];
+    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+
     try{
-      doCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].latin1());
+      if ( EndingMap.find(Ending) == EndingMap.end() )
+      {
+        doCommand(Doc,"App.Open(\"%s\")",strToPython(f.latin1()).c_str());
+        Base::Console().Log("OpenCMD: App.Open(\"%s\")",strToPython(f.latin1()).c_str());
+      }else{
+        doCommand(Doc,"import %s",EndingMap.find(Ending)->second.c_str());
+        doCommand(Doc,"%s.open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
+        Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
+      }
+      addRecentFile( f );
     }catch(const Base::Exception&){
-      removeRecentFile( _vMRU[iMsg] );
+      removeRecentFile( f );
     }
   }
 }
@@ -534,12 +567,8 @@ QAction * StdCmdMRU::createAction(void)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
 
-  addRecentFile( "Test 123" );
-  addRecentFile( "Test 231" );
-  addRecentFile( "Test 231" );
-  addRecentFile( "Test 132" );
-  addRecentFile( "Test 321" );
-  addRecentFile( "Test 213" );
+  // load recent file list
+  StdCmdMRU::load();
 
   return pcAction;
 }
@@ -550,7 +579,7 @@ QAction * StdCmdMRU::createAction(void)
 void StdCmdMRU::addRecentFile ( const QString& item )
 {
   if ( _vMRU.contains( item ) )
-    return; // already inserted
+    removeRecentFile( item ); // already inserted
 
   if ( _nMaxItems > (int)_vMRU.size() )
   {
@@ -643,7 +672,9 @@ void StdCmdMRU::load()
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
       pCmd->setMaxCount( maxCnt );
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
-      for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
+
+      // append the items in reverse mode to prevent the order
+      for (std::vector<std::string>::reverse_iterator it = MRU.rbegin(); it!=MRU.rend();++it)
       {
         pCmd->addRecentFile( it->c_str() );
       }
