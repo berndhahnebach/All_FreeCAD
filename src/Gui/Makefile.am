@@ -219,7 +219,7 @@ Window.cpp
 # the library search path.
 libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(all_libraries)
 
-libFreeCADGui_la_LDADD   =\
+libFreeCADGui_la_LIBADD   =\
 		-lqui\
 		-lqt-mt \
 		-lTKernel \
@@ -258,10 +258,10 @@ moc_%.cpp: %.h
 
 # rule for translation files using python script :
 %.h: %.ts
-	cd $(@D) && python ../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
+	cd $(@D) && $(PYTHON) ../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
 
 %Script.h: FreeCAD%.py
-	../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
 
 
 # set the include path found by configure

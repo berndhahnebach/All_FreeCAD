@@ -19,6 +19,11 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <BRepTools.hxx>
+#	include <Handle_TPrsStd_AISPresentation.hxx>
+#	include <TNaming_NamedShape.hxx>
+#	include <TPrsStd_AISPresentation.hxx>
 #endif
 
 #include "../../../Base/Exception.h"
@@ -118,12 +123,12 @@ void FCCmdPartTest2::Activated(int iMsg)
 	catch(...){
 		AbortCommand();
 	  throw new FCException("Error loading BREP file");
-	}  
+	}
 
 	TNaming_Builder B(L);
 	B.Generated(ResultShape);
 
-	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID());
 	// Display it
 	hcPrs->Display(1);
 

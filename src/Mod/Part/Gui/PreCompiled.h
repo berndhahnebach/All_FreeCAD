@@ -3,6 +3,7 @@
 
 #include "../../../Config.h"
 
+#ifdef _PreComp_
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
@@ -25,8 +26,11 @@
 #include <string>
 #include <set>
 
-#include <python.h>
-#include <windows.h>
+#include <Python.h>
+
+#ifdef FC_OS_WIN32
+#	include <windows.h>
+#endif
 
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
@@ -143,8 +147,5 @@
 #include <qwindowsstyle.h>
 #include <qworkspace.h>
 
-
-
-
-
+#endif
 #endif 

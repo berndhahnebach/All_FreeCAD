@@ -32,7 +32,7 @@ libFreeCADBase_la_SOURCES=\
 		PyExport.cpp \
 		PyTools.c
 
-libFreeCADBase_la_LDADD   =  -lpython@fc_py_ver@ -lxerces-c
+libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c
 
 # set the include path found by configure
 INCLUDES= $(all_includes)

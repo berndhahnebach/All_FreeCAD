@@ -198,10 +198,11 @@ ApplicationWindow::ApplicationWindow()
 
 	d->_cActiveWorkbenchName="<none>";
 
-	// start thread which observes the application and 
+	// start thread which observes the application and
 	// sets/unsets the waiting cursor if necessary
+#ifndef NO_FC_THREAD
 	FCAutoWaitCursor::Instance();
-
+#endif
 	// global access 
 	Instance = this;
 
@@ -367,9 +368,10 @@ ApplicationWindow::~ApplicationWindow()
     }
   }
 
-  SaveWindowSettings();
-
+	SaveWindowSettings();
+#ifndef NO_FC_THREAD
 	FCAutoWaitCursor::Destruct();
+#endif
 }
 
 

@@ -43,7 +43,7 @@ libFreeCADApp_la_SOURCES=\
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries)
 
-libFreeCADApp_la_LDADD   = \
+libFreeCADApp_la_LIBADD   = \
 		-lTKernel \
 		-lTKMath \
 		-lTKService \

@@ -22,7 +22,7 @@
 #endif
 
 #include <stdio.h>
-#include <python.h>
+#include <Python.h>
 
 #include <Base/Console.h>
 #include <App/Application.h>
@@ -50,11 +50,11 @@ static PyObject *                                 /* returns object */
 Box(PyObject *self, PyObject *args)               /* self unused in modules */
 {                                                 /* args from python call */
 	double  Float1,Float2,Float3,Float4,Float5,Float6;
-    if (!PyArg_ParseTuple(args, "(dddddd)",&Float1,&Float2,&Float3,&Float4,&Float5,&Float6))     // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, "(dddddd)",&Float1,&Float2,&Float3,&Float4,&Float5,&Float6))     // convert args: Python->C
         return NULL;                              /* null=raise exception */
     else {
 
-        
+
 		return Py_None;                           /* convert C -> Python */
     }
 }
@@ -62,7 +62,7 @@ Box(PyObject *self, PyObject *args)               /* self unused in modules */
 static PyObject *                                 /* returns object */
 Temp(PyObject *self, PyObject *args)               /* self unused in modules */
 {                                                 /* args from python call */
-    if (!PyArg_ParseTuple(args, ""))            // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, ""))            // convert args: Python->C
         return NULL;                              /* null=raise exception */
     else {
 
@@ -80,9 +80,9 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
 		{
 			pcType = dynamic_cast<FCPartDocType*>( doc->GetDocType() );
 			GetConsole().Log("Part doc detected\n");
-		
+
 		}
-		
+
 		return Py_None;                           /* convert C -> Python */
     }
 }
@@ -101,6 +101,7 @@ static struct PyMethodDef hello_methods[] = {
 
 
 // python intry
+#ifdef FC_OS_WIN32
 extern "C" {
 void __declspec(dllexport) initPart() {
 
@@ -115,3 +116,4 @@ void __declspec(dllexport) initPart() {
 
 
 } // extern "C" {
+#endif

@@ -12,6 +12,9 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `pthread' library (-lpthread). */
+#undef HAVE_LIBPTHREAD
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
@@ -30,18 +33,6 @@
 /* Define this if QWidget::showFullScreen() is available */
 #undef HAVE_QWIDGET_SHOWFULLSCREEN
 
-/* Define to enable use of Inventor feature */
-#undef HAVE_SOCAMERA_SETSTEREOMODE
-
-/* Define to enable use of Inventor feature */
-#undef HAVE_SOKEYBOARDEVENT_DELETE
-
-/* Define to enable use of Inventor feature */
-#undef HAVE_SOMOUSEBUTTONEVENT_BUTTON5
-
-/* Define to enable use of the Open Inventor SoPolygonOffset node */
-#undef HAVE_SOPOLYGONOFFSET
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
@@ -53,6 +44,9 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the <strstream.h> header file. */
+#undef HAVE_STRSTREAM_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -83,18 +77,6 @@
 
 /* Define if you want to use the lexer framework */
 #undef SCI_LEXER
-
-/* Define to the major version of SoQt */
-#undef SOQT_MAJOR_VERSION
-
-/* Define to the micro version of SoQt */
-#undef SOQT_MICRO_VERSION
-
-/* Define to the minor version of SoQt */
-#undef SOQT_MINOR_VERSION
-
-/* Version string for SoQt */
-#undef SOQT_VERSION
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(FreeCAD,cvs,[Juergen Riegel],freecad)
+AC_INIT(FreeCAD,0.184,[Juergen Riegel],freecad)
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([autoconfig.h])
 #AC_CANONICAL_HOST
@@ -12,6 +12,7 @@ AC_LANG_CPLUSPLUS
 ## REQUIRED HEADERS
 ##############################
 #AC_CHECK_HEADERS([sstream argp.h],,[AC_MSG_ERROR([This header is needed. Bye.])])
+AC_CHECK_HEADERS([strstream.h],,[AC_MSG_ERROR([This header is needed. Bye.])])
 
 
 ## CHECKS FOR PROGRAMS
@@ -31,29 +32,12 @@ AC_DEFINE_UNQUOTED(HAVE_QGLFORMAT_SETOVERLAY, 1, [Define this to 1 if QGLFormat:
 AC_DEFINE_UNQUOTED(HAVE_QGLWIDGET_SETAUTOBUFFERSWAP, 1, [Define this to 1 if QGLWidget::setAutoBufferSwap() is available])
 AC_DEFINE_UNQUOTED(HAVE_QT_KEYPAD_DEFINE, 1, [Define this if Qt::Keypad is available])
 AC_DEFINE_UNQUOTED(HAVE_QWIDGET_SHOWFULLSCREEN, 1, [Define this if QWidget::showFullScreen() is available])
-AC_DEFINE_UNQUOTED(HAVE_SOCAMERA_SETSTEREOMODE, 1, [Define to enable use of Inventor feature])
-AC_DEFINE_UNQUOTED(HAVE_SOKEYBOARDEVENT_DELETE, 1, [Define to enable use of Inventor feature])
-AC_DEFINE_UNQUOTED(HAVE_SOMOUSEBUTTONEVENT_BUTTON5, 1, [Define to enable use of Inventor feature])
-AC_DEFINE_UNQUOTED(HAVE_SOPOLYGONOFFSET, 1, [Define to enable use of the Open Inventor SoPolygonOffset node])
 AC_DEFINE_UNQUOTED(HAVE_SYS_TYPES_H, 1, [Define to 1 if you have the <sys/types.h> header file.])
-AC_DEFINE_UNQUOTED(SOQT_MAJOR_VERSION, 1, [Define to the major version of SoQt])
-AC_DEFINE_UNQUOTED(SOQT_MICRO_VERSION, 2, [Define to the micro version of SoQt])
-AC_DEFINE_UNQUOTED(SOQT_MINOR_VERSION, 0, [Define to the minor version of SoQt])
-AC_DEFINE_UNQUOTED(SOQT_VERSION, "1.0.2", [Version string for SoQt])
 AC_DEFINE_UNQUOTED(SCI_LEXER,1, [Define if you want to use the lexer framework])
 
-## PTHREADS
-##############################
-#AC_CHECK_HEADER([pthread.h])
-#AC_CHECK_LIB([pthread],[pthread_create])
-#if test "$ac_cv_header_pthread_h" != yes -o \
-#        "$ac_cv_lib_pthread_pthread_create" != yes; then
-#  AC_MSG_ERROR([POSIX threads (pthreads) not working. Bye.])
-#else
-#  # this is apparently needed for some versions of autoconf/automake
-#  LIBS="-lpthread $LIBS"
-#  CXXFLAGS="$CXXFLAGS -D_REENTRANT"
-#fi
+## DEFAULT INCLUDE/LIB PATHS
+all_includes="$all_includes -I/usr/include -I/usr/local/include"
+all_libraries="$all_libraries -L/usr/lib -L/usr/local/lib"
 
 
 #rumor_alsa=no
@@ -93,132 +77,231 @@ AC_DEFINE_UNQUOTED(SCI_LEXER,1, [Define if you want to use the lexer framework])
 ## Checking for libraries.
 ##############################
 
+# checking for Python
+# **************************************************************************
 AC_CHECKING([Python])
 fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
 if test x$fc_py_ver = x; then
 	AC_MSG_ERROR([cannot find python, bye...])
 fi;
 
-AC_ARG_WITH(python-prefix,[  --with-python-prefix],
-	[fc_py_prefix=$withval],
-	[fc_py_prefix=/usr])
-AC_ARG_WITH(python-includes,[  --with-python-includes],
+AC_ARG_WITH(python-includes,
+	AC_HELP_STRING([--with-python-includes], [Path of the header files of your Python installation]),
 	[fc_py_incs=$withval],
-	[fc_py_incs=$fc_py_prefix/include/python$fc_py_ver])
-AC_ARG_WITH(python-libs,[  --with-python-libs],
+	[fc_py_incs=/usr/include/python$fc_py_ver])
+
+AC_CHECK_FILE($fc_py_incs/Python.h,,
+	[AC_CHECK_FILE(/usr/local/include/python$fc_py_ver/Python.h,[fc_py_incs=/usr/local/include/python$fc_py_ver],
+	[AC_MSG_ERROR([
+	**** Could not find Python header files.
+	 Please check your installation. ****
+	 ])])])
+
+AC_ARG_WITH(python-libs,
+	AC_HELP_STRING([--with-python-libs], [Path of the library files of your Python installation]),
 	[fc_py_libs=$withval],
-	[fc_py_libs=$fc_py_prefix/lib])
+	[fc_py_libs=/usr/lib])
 
-AC_MSG_RESULT([
-Python $fc_py_ver: $fc_py_prefix : $fc_py_incs : $fc_py_libs
-])
+AC_CHECK_FILE($fc_py_libs/libpython$fc_py_ver.so,,
+	[AC_CHECK_FILE(/usr/local/lib/libpython$fc_py_ver.so,[fc_py_libs=/usr/local/lib],
+	[AC_MSG_ERROR([
+	**** Could not find Python library files.
+	 Please check your installation. ****
+	 ])])])
 
+all_includes="$all_includes -I$fc_py_incs"
+all_libraries="$all_libraries -L$fc_py_libs"
+AC_MSG_RESULT([Python $fc_py_ver : $fc_py_incs : $fc_py_libs])
+
+# checking for OpenCascade
 # **************************************************************************
 
 AC_CHECKING([OpenCascade])
-AC_ARG_WITH(OCC-prefix,[  --with-OCC-prefix],
-	[fc_occ_prefix=$withval],
-	[fc_occ_prefix=/usr])
-AC_ARG_WITH(OCC-includes,[  --with-OCC-includes],
+AC_ARG_WITH(OCC-includes,
+	AC_HELP_STRING([--with-OCC-includes], [Path of the header files of your OpenCascade installation]),
 	[fc_occ_incs=$withval],
-	[fc_occ_incs=$fc_occ_prefix/include/OCC])
-AC_ARG_WITH(OCC-libs,[  --with-OCC-libs],
+	[fc_occ_incs=/usr/include/OCC])
+
+AC_CHECK_FILE($fc_occ_incs/Standard.hxx,,
+	[AC_MSG_ERROR([
+	**** Could not find OpenCascade header files.
+	 Please check your installation. ****
+	 ])])
+
+AC_ARG_WITH(OCC-libs,
+	AC_HELP_STRING([--with-OCC-libs], [Path of the library files of your OpenCascade installation]),
 	[fc_occ_libs=$withval],
-	[fc_occ_libs=$fc_occ_prefix/lib])
+	[fc_occ_libs=/usr/lib/OCC])
 
-AC_MSG_RESULT([
-OpenCascade $fc_occ_ver: $fc_occ_prefix : $fc_occ_incs : $fc_occ_libs
-])
+AC_CHECK_FILE($fc_occ_libs/libTKernel.so,,
+	[AC_MSG_ERROR([
+	**** Could not find OpenCascade library files.
+	 Please check your installation. ****
+	 ])])
 
+all_includes="$all_includes -I$fc_occ_incs"
+all_libraries="$all_libraries -L$fc_occ_libs"
+AC_MSG_RESULT([OpenCascade $fc_occ_incs : $fc_occ_libs])
+
+# checking for xerces-c
 # **************************************************************************
 
 AC_CHECKING([xerces-c])
-AC_ARG_WITH(XERCES-prefix,[  --with-XERCES-prefix],
-	[fc_xerces_prefix=$withval],
-	[fc_xerces_prefix=/usr])
-AC_ARG_WITH(XERCES-includes,[  --with-XERCES-includes],
-	[fc_xerces_incs=$withval],
-	[fc_xerces_incs=$fc_xerces_prefix/include/])
-AC_ARG_WITH(XERCES-libs,[  --with-XERCES-libs],
-	[fc_xerces_libs=$withval],
-	[fc_xerces_libs=$fc_xerces_prefix/lib])
+AC_ARG_WITH(xercesc-includes,
+	AC_HELP_STRING([--with-xercesc-includes], [Path of the header files of your xerces-c installation]),
+	[fc_xer_incs=$withval],
+	[fc_xer_incs=/usr/include])
 
-AC_MSG_RESULT([
-Xerces-c $fc_xerces_ver: $fc_xerces_prefix : $fc_xerces_incs : $fc_xerces_libs
-])
+AC_CHECK_FILE($fc_xer_incs/xercesc,,
+	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include],
+	[AC_MSG_ERROR([
+	**** Could not find xerces-c header files.
+	 Please check your installation. ****
+	 ])])])
 
+AC_ARG_WITH(xercesc-libs,
+	AC_HELP_STRING([--with-xercesc-libs], [Path of the library files of your xerces-c installation]),
+	[fc_xer_libs=$withval],
+	[fc_xer_libs=/usr/lib])
+
+AC_CHECK_FILE($fc_xer_libs/libxerces-c.so,,
+	[AC_CHECK_FILE(/usr/local/lib/libxerces-c.so,[fc_xer_libs=/usr/local/lib],
+	[AC_MSG_ERROR([
+	**** Could not find xerces-c library files.
+	 Please check your installation. ****
+	 ])])])
+
+all_includes="$all_includes -I$fc_xer_incs"
+all_libraries="$all_libraries -L$fc_xer_libs"
+AC_MSG_RESULT([xerces-c $fc_xer_incs : $fc_xer_libs])
+
+# checking for Coin
 # **************************************************************************
 
 AC_CHECKING([Coin])
-AC_ARG_WITH(coin-prefix,[  --with-coin-prefix],
-	[fc_coin_prefix=$withval],
-	[fc_coin_prefix=/usr])
-AC_ARG_WITH(coin-includes,[  --with-coin-includes],
+AC_ARG_WITH(coin-includes,
+	AC_HELP_STRING([--with-coin-includes], [Path of the header files of your Coin installation]),
 	[fc_coin_incs=$withval],
-	[fc_coin_incs=$fc_coin_prefix/include/])
-AC_ARG_WITH(coin-libs,[  --with-coin-libs],
+	[fc_coin_incs=/usr/include])
+
+AC_CHECK_FILE($fc_coin_incs/Inventor,,
+	[AC_CHECK_FILE(/usr/local/include/Inventor,[fc_coin_incs=/usr/local/include],
+	[AC_MSG_ERROR([
+	**** Could not find Coin header files.
+	 Please check your installation. ****
+	 ])])])
+
+AC_ARG_WITH(coin-libs,
+	AC_HELP_STRING([--with-coin-libs], [Path of the library files of your Coin installation]),
 	[fc_coin_libs=$withval],
-	[fc_coin_libs=$fc_coin_prefix/lib])
+	[fc_coin_libs=/usr/lib])
 
-AC_MSG_RESULT([
-Coin $fc_coin_ver: $fc_coin_prefix : $fc_coin_incs : $fc_coin_libs
-])
+AC_CHECK_FILE($fc_coin_libs/libCoin.so,,
+	[AC_CHECK_FILE(/usr/local/lib/libCoin.so,[fc_coin_libs=/usr/local/lib],
+	[AC_MSG_ERROR([
+	**** Could not find Coin library files.
+	 Please check your installation. ****
+	 ])])])
 
+all_includes="$all_includes -I$fc_coin_incs"
+all_libraries="$all_libraries -L$fc_coin_libs"
+AC_MSG_RESULT([Coin $fc_coin_incs : $fc_coin_libs])
+
+# checking for SoQt
 # **************************************************************************
 
 AC_CHECKING([SoQt])
-AC_ARG_WITH(soqt-prefix,[  --with-soqt-prefix],
-	[fc_soqt_prefix=$withval],
-	[fc_soqt_prefix=/usr])
-AC_ARG_WITH(soqt-includes,[  --with-soqt-includes],
+AC_ARG_WITH(soqt-includes,
+	AC_HELP_STRING([--with-soqt-includes], [Path of the header files of your SoQt installation]),
 	[fc_soqt_incs=$withval],
-	[fc_soqt_incs=$fc_soqt_prefix/include/])
-AC_ARG_WITH(soqt-libs,[  --with-soqt-libs],
-	[fc_soqt_libs=$withval],
-	[fc_soqt_libs=$fc_soqt_prefix/lib])
+	[fc_soqt_incs=/usr/include])
 
-AC_MSG_RESULT([
-SoQt $fc_soqt_prefix : $fc_soqt_incs : $fc_soqt_libs
-])
+AC_CHECK_FILE($fc_coin_incs/Inventor/Qt,,
+	[AC_CHECK_FILE(/usr/local/include/Inventor/Qt,[fc_soqt_incs=/usr/local/include],
+	[AC_MSG_ERROR([
+	**** Could not find SoQt header files.
+	 Please check your installation. ****
+	 ])])])
+
+AC_ARG_WITH(soqt-libs,
+	AC_HELP_STRING([--with-soqt-libs], [Path of the library files of your SoQt installation]),
+	[fc_soqt_libs=$withval],
+	[fc_soqt_libs=/usr/lib])
+
+AC_CHECK_FILE($fc_soqt_libs/libSoQt.so,,
+	[AC_CHECK_FILE(/usr/local/lib/libSoQt.so,[fc_soqt_libs=/usr/local/lib],
+	[AC_MSG_ERROR([
+	**** Could not find SoQt library files.
+	 Please check your installation. ****
+	 ])])])
+
+all_includes="$all_includes -I$fc_soqt_incs"
+all_libraries="$all_libraries -L$fc_soqt_libs"
+AC_MSG_RESULT([SoQt $fc_soqt_incs : $fc_soqt_libs])
 
 # **************************************************************************
 
-all_includes="$all_includes -I$fc_py_incs -I$fc_occ_incs -I$fc_xerces_incs -I$fc_coin_incs -I$fc_soqt_incs"
-all_libraries="$all_libraries -L$fc_py_libs -L$fc_occ_libs -L$fc_xerces_libs -L$fc_coin_libs -L$fc_soqt_libs"
 AC_SUBST(all_includes)
 AC_SUBST(all_libraries)
 
-# **************************************************************************
 # Check if you want to use GUI, or not
-want_gui=true
+# **************************************************************************
+
 AC_ARG_ENABLE([gui],
-  AC_HELP_STRING([--enable-gui], [Enable GUI (you can disable this feature to use FreeCAD as server)]),
+  AC_HELP_STRING([--enable-gui], [Enable GUI (you can disable this feature to use FreeCAD in server mode)]),
   [case $enableval in
-    no | false) want_gui=false ;;
-    *)          want_gui=true ;;
+    no | false) fc_set_gui=false ;;
+    *)          fc_set_gui=true ;;
   esac],
-  [want_gui=true])
-#echo "want_gui="$want_gui
-if $want_gui; then
-	CPPFLAGS="-D_FC_GUI_ENABLED_"
+  [fc_set_gui=true])
+
+if $fc_set_gui; then
+	CPPFLAGS="$CPPFLAGS -D_FC_GUI_ENABLED_"
+fi
+
+# Check if you want to have debug info, or not
+# **************************************************************************
+
+AC_ARG_ENABLE([debug],
+  AC_HELP_STRING([--enable-debug], [Enable debug information]),
+  [case $enableval in
+    no | false) fc_set_debug=false ;;
+    *)          fc_set_debug=true ;;
+  esac],
+  [fc_set_debug=true])
+
+if $fc_set_debug; then
+	CPPFLAGS="$CPPFLAGS -g"
+fi
+
+# Check if you want thread support, or not
+# **************************************************************************
+
+AC_ARG_ENABLE([thread],
+  AC_HELP_STRING([--enable-thread], [Enable thread support]),
+  [case $enableval in
+    no | false) fc_set_thread=false ;;
+    *)          fc_set_thread=true ;;
+  esac],
+  [fc_set_thread=true])
+if $fc_set_thread; then
+	AC_CHECK_HEADER([pthread.h])
+	AC_CHECK_LIB([pthread],[pthread_create])
+	if test "$ac_cv_header_pthread_h" != yes -o \
+        	"$ac_cv_lib_pthread_pthread_create" != yes; then
+  		AC_MSG_ERROR([POSIX threads (pthreads) not working. Bye.])
+	else
+#	 	this is apparently needed for some versions of autoconf/automake
+#		LIBS="-lpthread $LIBS"
+#		CXXFLAGS="$CXXFLAGS -D_REENTRANT"
+		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+		LDFLAGS="-lpthread"
+	fi
+else
+	CPPFLAGS="$CPPFLAGS -DNO_FC_THREAD"
 fi
 
 # **************************************************************************
-# Check if you want thread support, or not
-want_thread=true
-AC_ARG_ENABLE([thread],
-  AC_HELP_STRING([--enable-thread], [Enable Thread support]),
-  [case $enableval in
-    no | false) want_thread=false ;;
-    *)          want_thread=true ;;
-  esac],
-  [want_thread=true])
-#echo "want_gui="$want_gui
-if $want_thread; then
-	CPPFLAGS="$CPPFLAGS -D_REENTRANT"
-	LDFLAGS="-lpthread"
-fi
-
 
 # -DNO_KDE2 -DQT_THREAD_SUPPORT already defined in Config.h
 CPPFLAGS="$CPPFLAGS $all_includes  -I/usr/include -I/usr/local/include -I$QTDIR/include  -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  -DFC_OS_LINUX"
@@ -227,11 +310,18 @@ CXXFLAGS="$all_libraries -L/usr/lib -L/usr/local/lib -Wno-deprecated -D__DEBUG__
 LDFLAGS="-L$all_libraries"
 AC_SUBST([MOC],[moc])
 AC_SUBST([UIC],[uic])
+AC_SUBST([PYTHON],[python])
 AC_SUBST([fc_py_ver])
 
 AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
 AC_OUTPUT
 
+echo ""
+echo "FreeCAD configuration settings:"
+echo "  Python version:            "$fc_py_ver
+echo "  Graphical User Interface:  "$fc_set_gui
+echo "  Debug info enabled:        "$fc_set_debug
+echo "  Thread support enabled:    "$fc_set_thread
 echo ""
 echo "Now, run 'make' to build FreeCAD."
 echo ""
