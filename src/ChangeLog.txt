@@ -289,3 +289,6 @@ Version: V0.1B64 Date: Sun Jun 15 01:20:15 2003 +++++++++++++++++++++++++++++++
 + improvements in drawing dropdown button
 + allow to disable drag of menu items
 + bug fixed in load/save of window settings
++ Inventor Test command
++ Inventor BREP binding
++ examiner viewer

@@ -41,6 +41,11 @@
 #include "Document.h"
 #include "Command.h"
 
+#include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
+#include "Inventor/Qt/SoQt.h"
+#include "Inventor/OCC/SoBrepShape.h"
+#include <inventor/SoInput.h>
+#include <inventor/nodes/SoSeparator.h>
 
 #include "Macro.h"
 
@@ -70,77 +75,110 @@ FCCmdTest1::FCCmdTest1()
 
 void FCCmdTest1::Activated(int iMsg)
 {
-  // A data structure for our box:
-  // the box itself is attached to the BoxLabel label (as his name and his function attribute) 
-  // its arguments (dimensions: width, length and height; and position: x, y, z) 
-  // are attached to the child labels of the box:
-  //
-  // 0:1 Box Label ---> Name --->  Named shape ---> Function
-  //       |
-  //     0:1:1 -- Width Label
-  //       |
-  //     0:1:2 -- Length Label
-  //       |
-  //     0:1:3 -- Height Label
-  //       |
-  //     0:1:4 -- X Label
-  //       |
-  //     0:1:5 -- Y Label
-  //       |
-  //     0:1:6 -- Z Label
+	//FCDocument *pcDoc = GetActiveOCCDocument();
+	//if(!pcDoc) return;
 
-	// Create a new label in the data structure for the box
-	FCDocument *pcDoc = GetActiveOCCDocument();
-	if(!pcDoc) return;
+	//OpenCommand("Test1 - Box");
 
-	OpenCommand("Test1 - Box");
+    // Initialize SoQt and Inventor API libraries. 
+	static bool bInit=false;
+	if(!bInit)
+	{
+		SoQt::init(GetAppWnd());
+		bInit=true;
+	}
+  
+#if 0
+	// get open file name
+	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)", GetAppWnd() );
+	if ( fn.isEmpty() ) return;
 
-    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
+    // Open the argument file..
+    SoInput in;
+    SbBool ok = in.openFile(fn.latin1());
+    if (!ok) { return; }
+  
+    // ..and import it.
+    SoSeparator * root = SoDB::readAll(&in);
+#else
+	// get open file name
+	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", GetAppWnd() );
+	if ( fn.isEmpty() ) return;
 
-	// Create the data structure : Set the dimensions, position and name attributes
-	TDataStd_Real::Set(L.FindChild(1), 1);
-	TDataStd_Real::Set(L.FindChild(2), 2);
-	TDataStd_Real::Set(L.FindChild(3), 3);
-	TDataStd_Real::Set(L.FindChild(4), 4);
-	TDataStd_Real::Set(L.FindChild(5), 5);
-	TDataStd_Real::Set(L.FindChild(6), 6);
-	TDataStd_Name::Set(L, "hallo");
+    // Open the argument file..
+    SoBrepShape in;
+    in.SetFile(fn.latin1());
 
-	// Instanciate a TSampleOcafFunction_BoxDriver and add it to the TFunction_DriverTable
-//	Handle(TSampleOcafFunction_BoxDriver) myBoxDriver = new TSampleOcafFunction_BoxDriver();
-//	TFunction_DriverTable::Get()->AddDriver(Standard_GUID("BoxDriver"), myBoxDriver);
-	// Instanciate a TFunction_Function attribute connected to the current box driver
-	// and attach it to the data structure as an attribute of the Box Label
-//	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L,Standard_GUID("BoxDriver"));
+	SoSeparator * root = new SoSeparator();
+	SoShapeHints * hints = new SoShapeHints;
+	hints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
 
-	// Initialize and execute the box driver (look at the "Execute()" code)
-//    TFunction_Logbook log;
-//	myBoxDriver->Init(L);
-//    if (myBoxDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
+	// color management
+	QColor Col1(236,212,156);
+	QColor Col(128,128,128);
+
+	QColor DifCol=Col1;
+	QColor AmbCol=Col1;
+	QColor SpeCol=Col;
+	QColor EmCol(0,0,0);
+
+	SoMaterial *aMat = new SoMaterial;
+	aMat->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
+	aMat->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
+	aMat->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
+	aMat->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
+	root->addChild(aMat);
+
+	root->renderCaching = SoSeparator::ON;
+	root->addChild(hints);
+
+	_putenv( "COIN_SHOW_FPS_COUNTER=1" );
+
+	bool nurbs_enable = false;
+	bool selection = false;
+	bool strip_enable = false;
+	bool strip_color = false;
+
+	in.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
+	in.Compute(root);
+	
+#endif
+
+    if (root == NULL) { return ; }
+    root->ref();
+  
+    // Use the ExaminerViewer, for a nice interface for 3D model
+    // inspection.
+    SoQtExaminerViewer * viewer = new SoQtExaminerViewer();
+    viewer->setSceneGraph(root);
+	viewer->setFeedbackVisibility(true);
+	viewer->setFeedbackSize(30);
+	viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
+	viewer->setAutoClipping(true);
+
+    viewer->show();
+  
+    // Pop up the main window.
+//    SoQt::show(mainwin);
+    // Loop until exit.
+//   SoQt::mainLoop();
+  
+    // Clean up resources.
+    //delete viewer;
+    //root->unref();
 
 
-	// Make a box
- 	BRepPrimAPI_MakeBox mkBox( gp_Pnt(1, 2 ,3), 4, 5 ,6);
-	TopoDS_Shape ResultShape = mkBox.Shape();
 
+    //CommitCommand();
 
-	// Build a TNaming_NamedShape using built box
-	TNaming_Builder B(L);
-	B.Generated(ResultShape);
-
-	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
-	// Display it
-	hcPrs->Display(1);
-
-    CommitCommand();
-
-	UpdateActive();
+	//UpdateActive();
 
 }
 
 bool FCCmdTest1::IsActive(void)
 {
-  return (GetActiveOCCDocument()!=NULL);
+  //return (GetActiveOCCDocument()!=NULL);
+  return true;
 }
 
 //===========================================================================
