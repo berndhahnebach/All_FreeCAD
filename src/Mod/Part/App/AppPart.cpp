@@ -43,7 +43,7 @@ static PyObject *                                 /* returns object */
 message(PyObject *self, PyObject *args)           /* self unused in modules */
 {                                                 /* args from python call */
     char *fromPython, result[64];
-    if (! PyArg_Parse(args, "(s)", &fromPython))  /* convert Python -> C */
+    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
         return NULL;                              /* null=raise exception */
     else {
         strcpy(result, "Hello, ");                /* build up C string */

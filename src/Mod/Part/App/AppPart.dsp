@@ -148,6 +148,14 @@ SOURCE=.\PartFeature.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PartFeaturePy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PartFeaturePy.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File

@@ -24,22 +24,55 @@
 #ifndef _PovTools_h_
 #define _PovTools_h_
 
+namespace Raytracing
+{
+
+/// helper class to store a complete camera position
+class CamDef
+{
+public:
+  CamDef(const gp_Vec& cCamPos,
+         const gp_Vec& cCamDir,
+         const gp_Vec& cLookAt,
+         const gp_Vec& cUp)
+         :
+CamPos(cCamPos),
+CamDir(cCamDir),
+LookAt(cLookAt),
+Up(cUp)
+{}
+
+  CamDef(const CamDef& copyMe) {this->operator=(copyMe);}
+
+  const CamDef& operator=(const CamDef& copyMe)
+  {
+    CamPos = copyMe.CamPos;
+    CamDir = copyMe.CamDir;
+    LookAt = copyMe.LookAt;
+    Up     = copyMe.Up;
+
+    return *this;
+  }
+
+
+  gp_Vec CamPos;
+  gp_Vec CamDir;
+  gp_Vec LookAt;
+  gp_Vec Up;
+
+};
+
 
 class PovTools
 {
+public:
   /// writes the given camera position as povray defines in a file
   static void writeCamera(const char*   FileName, 
-                     const gp_Vec& CamPos,
-                     const gp_Vec& CamDir,
-                     const gp_Vec& LookAt,
-                     const gp_Vec& Up);
+                          const CamDef& Cam);
 
   /// writes the given camera positions as povray defines in a file
   static void writeCameraVec(const char*                FileName, 
-                        const std::vector<gp_Vec>& CamPos,
-                        const std::vector<gp_Vec>& CamDir,
-                        const std::vector<gp_Vec>& LookAt,
-                        const std::vector<gp_Vec>& Up);
+                             const std::vector<CamDef>& CamVec);
 
 
   /// write a given shape as povray file to disk
@@ -55,6 +88,6 @@ class PovTools
 };
 
 
-
+} // namespace Raytracing
 
 #endif // _PovTools_h_

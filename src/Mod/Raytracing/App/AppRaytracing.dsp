@@ -101,6 +101,39 @@ SOURCE=.\AppRaytracing.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\AppRaytracingPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FreeCADpov
+
+!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
+
+# Begin Custom Build - Building FreeCADpov.h
+InputPath=.\FreeCADpov
+
+"FreeCADpov.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
+
+# Begin Custom Build - Building FreeCADpov.h
+InputPath=.\FreeCADpov
+
+"FreeCADpov.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

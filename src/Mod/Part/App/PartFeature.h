@@ -47,6 +47,9 @@ class FeaturePy;
 # endif
 #endif
 
+namespace Base{
+  class PyObjectBase;
+}
 
 namespace Part
 {
@@ -110,6 +113,7 @@ public:
 	//@}
 
 
+  virtual Base::PyObjectBase *PartFeature::GetPyObject(void);
 
 };
 
