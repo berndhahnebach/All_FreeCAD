@@ -37,10 +37,10 @@
 #endif
 
 #include "HtmlView.h"
+#include "Process.h"
 #include "Application.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
-#include "../Base/Process.h"
 #ifndef FC_OS_LINUX
 #include <direct.h>
 #endif
@@ -359,6 +359,7 @@ class FCHtmlViewPrivate
     QString        selectedURL;
     QString        m_strDocDir;
     QString        m_strCaption;
+    FCProcess      m_Process;
 };
 
 FCHtmlViewPrivate::FCHtmlViewPrivate()
@@ -369,6 +370,7 @@ FCHtmlViewPrivate::FCHtmlViewPrivate()
 	bForward(false)
 {
 }
+
 // --------------------------------------------------------------------------
 
 FCBrowserSourceFactory::FCBrowserSourceFactory()
@@ -514,9 +516,11 @@ void FCTextBrowser::setSource (const QString & name)
     const QMimeSource* mime = mimeSourceFactory()->data(source, context());
     if (mime == NULL)
     {
+#if 0
       char szBuf[200];
       sprintf(szBuf, "Can't load '%s'.\nDo you want to start your favourite external browser instead?", source.latin1());
       if (QMessageBox::information(this, "FreeCAD", szBuf, "Yes", "No", QString::null, 0) == 0)
+#endif
         emit startExtBrowser(name);
       return;
 	  }
@@ -720,6 +724,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
     : FCDockWindow( parent, name, fl ), pclPathCombo( 0 )
 {
   d = new FCHtmlViewPrivate;
+  d->m_Process.Attach(this);
 
   //initialize
   init();
@@ -870,6 +875,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 FCHtmlView::~FCHtmlView()
 {
     // no need to delete child widgets, Qt does it all for us
+  d->m_Process.Detach(this);
   if (d->bHistory)
     SaveHistory();
   if (d->bBookm)
@@ -1005,7 +1011,7 @@ QString FCHtmlView::GetScriptDirectory()
 QString FCHtmlView::GetBrowserDirectory()
 {
 //  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
-  QString browser = GetApplication().GetParameterGroupByPath((d->aStrGroupPath + "LineEditBrowser").c_str())->GetASCII("LineEditBrowser", "").c_str();
+  QString browser = GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->GetASCII("LineEditBrowser", "").c_str();
   if (browser.isEmpty())
   {
     QMessageBox::information(this, "External browser", "Please search for an external browser.");
@@ -1015,7 +1021,7 @@ QString FCHtmlView::GetBrowserDirectory()
       QMessageBox::warning(this, "External browser", "No external browser found.");
     else
 //      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
-      GetApplication().GetParameterGroupByPath((d->aStrGroupPath + "LineEditBrowser").c_str())->SetASCII("LineEditBrowser", browser.latin1());
+      GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", browser.latin1());
   }
 
   return browser;
@@ -1142,40 +1148,27 @@ void FCHtmlView::StartExtBrowser(QString url)
 
 void FCHtmlView::StartBrowser(QString path, QString protocol)
 {
-//#ifdef FC_OS_LINUX
-//  QString url = path.mid(protocol.length());
-//  char szBuf[512];
-//  sprintf(szBuf, "mozilla %s", url.latin1());
-//  if (!GetProcessor().RunProcess(szBuf)){
-//    char msgBuf[512];
-//    sprintf(msgBuf, "Hey, where is your browser? (Change it in %s:%d)", __FILE__,__LINE__);
-//    QMessageBox::critical(this, "Browser", msgBuf);
-//  }  
-//#else
   QString url = path.mid(protocol.length());
 
   QString browser = GetBrowserDirectory();
   if (browser.isEmpty())
     return;
-
-  char szBuf[500];
-
+#if 0
   // split into absolute path and filename
   QString sPath = browser;
   sPath   = sPath.left(sPath.findRev("/") + 1);
   browser = browser.mid(browser.findRev("/") + 1);
 
-  // create the command to execute
-  sprintf(szBuf, "%s %s", browser.latin1(), url.latin1());
-
   // append the path of your favorite browser to global path
-  GetProcessor().AppendToPath(sPath.latin1());
-  if (!GetProcessor().RunProcess(szBuf))
-  {
-    sprintf(szBuf, "Sorry, cannot start '%s'", browser.latin1());
-    QMessageBox::critical(this, "Browser", szBuf);
-  }
-//#endif  
+  d->m_Process.appendToPath(sPath.latin1());
+#endif
+  // create the command to execute
+  d->m_Process.setExecutable(browser.latin1());
+  d->m_Process << url.latin1();
+
+  if (!d->m_Process.start())
+    // delete the invalid entry
+    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", "" );
 }
 
 void FCHtmlView::StartScript(QString path, QString protocol)
@@ -1195,11 +1188,11 @@ void FCHtmlView::StartScript(QString path, QString protocol)
   script = script.mid(script.findRev("/") + 1);
 
   char szBuf[500];
-  sprintf(szBuf, "python %s", script.latin1());
 
   _chdir(path.latin1());
 
-  if (!GetProcessor().RunProcess(szBuf))
+  FCProcess proc("python"); proc << script.latin1();
+  if (!proc.start())
   {
     sprintf(szBuf, "Sorry, cannot run file '%s'.", script.latin1());
     QMessageBox::critical(this, "Script", szBuf);
@@ -1435,7 +1428,7 @@ void FCHtmlView::CheckBookmarks()
   QMessageBox::information(this, "FreeCAD", "All bookmarks are uptodate");
 }
 
-void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
+void FCHtmlView::OnChange(FCSubject<FCParameterGrp::MessageType> &rCaller,FCParameterGrp::MessageType sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
 
@@ -1452,6 +1445,40 @@ void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
   {
     d->iMaxBookm = rclGrp.GetInt(sReason, 20);
     if (!d->bBookm) d->iMaxBookm = 0;
+  }
+}
+
+void FCHtmlView::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason)
+{
+  if (&d->m_Process != &rCaller)
+    return;
+
+  // observe incoming signals
+  switch (rcReason)
+  {
+    case FCBaseProcess::processStarted:
+      break;
+    case FCBaseProcess::processFailed:
+    {
+      QMessageBox::critical(this, "Browser", 
+#ifdef FC_OS_WIN32
+      FCBaseProcess::SystemWarning(GetLastError(), d->m_Process.executable().c_str()).c_str());
+#else
+      QObject::tr("Cannot start '%1'").arg(d->m_Process.executable().c_str()));
+#endif
+    } break;
+    case FCBaseProcess::processExited:
+      break;
+    case FCBaseProcess::processKilled:
+      break;
+    case FCBaseProcess::receivedStdout:
+      break;
+    case FCBaseProcess::receivedStderr:
+      break;
+    case FCBaseProcess::wroteStdin:
+      break;
+    case FCBaseProcess::launchFinished:
+      break;
   }
 }
 

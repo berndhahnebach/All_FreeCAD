@@ -36,8 +36,8 @@
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
-#include "../Base/Process.h"
 #include "../App/Document.h"
+#include "Process.h"
 #include "Application.h"
 #include "Document.h"
 #include "Widgets.h"
@@ -711,7 +711,21 @@ void FCCmdWhatsThis::Activated(int iMsg)
 //===========================================================================
 // Std_OnlineHelp
 //===========================================================================
-DEF_STD_CMD(FCCmdOnlineHelp);
+
+class FCCmdOnlineHelp : public FCCppCommand, public FCProcess::ObserverType
+{
+public:
+	FCCmdOnlineHelp();
+  virtual ~FCCmdOnlineHelp();
+	virtual void Activated(int iMsg);
+	virtual bool IsActive(void);
+  virtual void OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason);
+
+private:
+  FCProcess* process;
+  bool fail;
+  int pages;
+};
 
 FCCmdOnlineHelp::FCCmdOnlineHelp()
 	:FCCppCommand("Std_OnlineHelp")
@@ -722,13 +736,168 @@ FCCmdOnlineHelp::FCCmdOnlineHelp()
 	sToolTipText	= "Download FreeCAD's online help";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
+
+  // FreeCAD's online doc contains about 425 pages
+  // this value is for initialization of the progress bar
+  pages = 425;
+
+  process = new FCProcess;
+  process->Attach(this);
+}
+
+FCCmdOnlineHelp::~FCCmdOnlineHelp()
+{
+  process->Detach(this);
+  delete process;
 }
 
 void FCCmdOnlineHelp::Activated(int iMsg)
 {
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
   std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
-  GetProcessor().RunProcess("wget -r -k -E %s", url.c_str());
+  std::string prx = hGrp->GetASCII("ProxyText", "http://prx:8080");
+  bool bUseProxy  = hGrp->GetBool ("UseProxy", false);
+
+  if (bUseProxy)
+    process->setEnvironment("http_proxy", prx.c_str());
+  else
+    process->unsetEnvironment("http_proxy");
+
+  process->clearArguments();
+  process->setExecutable("wget");
+  *process << "-r" << "-k" << "-E" << url.c_str();
+  process->start();
+  fail = false;
+}
+
+bool FCCmdOnlineHelp::IsActive(void)
+{
+  return !process->isRunning();
+}
+
+void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason)
+{
+  if (&rCaller != process)
+    return;
+
+  switch (rcReason)
+  {
+    // 'started' signal
+    case FCBaseProcess::processStarted:
+    {
+      GetConsole().Message("Download started...\n");
+      ApplicationWindow::Instance->GetProgressBar()->Start("wget", pages);
+    } break;
+
+
+
+
+    // 'exited' signal
+    case FCBaseProcess::processExited:
+    {
+      if (!fail)
+      {
+#ifndef FC_DEBUG
+        GetConsole().Message("Download finished.\n");
+#endif
+        QMessageBox::information(ApplicationWindow::Instance, "Download Online help", "Download finished.");
+      }
+
+      ApplicationWindow::Instance->GetProgressBar()->Stop();
+    } break;
+
+
+
+
+    // 'failed' signal
+    case FCBaseProcess::processFailed:
+    {
+#ifdef FC_OS_WIN32
+      std::string msg = FCBaseProcess::SystemWarning(GetLastError(), process->executable().c_str());
+      GetConsole().Warning("%s\n", msg.c_str());
+#endif
+    } break;
+
+
+
+
+    // 'killed' signal
+    case FCBaseProcess::processKilled:
+    {
+      GetConsole().Warning("Download was canceled\n.");
+      ApplicationWindow::Instance->GetProgressBar()->Stop();
+    } break;
+
+
+
+
+    // 'output' signal
+    case FCBaseProcess::receivedStdout:
+      break;
+
+
+
+
+    // 'error output' signal
+    case FCBaseProcess::receivedStderr:
+    {
+      try
+      {
+        std::string msg = process->message();
+
+#ifdef FC_DEBUG
+        GetConsole().Message(msg.c_str());
+#endif
+
+        // search for an error message
+        int pos;
+        if ((pos = msg.find("failed: ")) != std::string::npos)
+        {
+          int pos2 = msg.find('.', pos);
+          std::string substr = msg.substr(pos+8, pos2-pos-8+1);
+          fail = true;
+#ifdef FC_DEBUG
+          QMessageBox::critical(ApplicationWindow::Instance, "Download failed", substr.c_str());
+#else
+          GetConsole().Error("%s\n", substr.c_str());
+#endif
+        }
+
+        ApplicationWindow::Instance->GetProgressBar()->Next();
+
+        process->writeToStdin("TestInput\n");
+      } 
+      catch (const FCException&)
+      {
+        if (process->isRunning())
+        {
+#if QT_VERSION < 300
+          process->kill();
+#else
+          process->tryTerminate();
+          QTimer::singleShot( 2000, process, SLOT( kill() ) );
+#endif
+        }
+      }
+    } break;
+
+
+
+
+    // 'wroteStdin' signal
+    case FCBaseProcess::wroteStdin:
+#ifdef FC_DEBUG
+      GetConsole().Log("TestMessage");
+#endif
+      break;
+
+
+
+
+    // 'launch' signal
+    case FCBaseProcess::launchFinished:
+      break;
+  }
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -35,6 +35,7 @@
 #include <qmime.h>
 #include "Window.h"
 #include "../Base/Documentation.h"
+#include "Process.h"
 
 /**
  * An special implementation of the mime source factory
@@ -137,7 +138,7 @@ class FCHtmlComboBox : public QComboBox
  * The HTML viewer class
  */
 class FCHtmlViewPrivate;
-class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::ObserverType
+class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::ObserverType, public FCProcess::ObserverType
 { 
     Q_OBJECT
 
@@ -153,8 +154,9 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     bool SetMaxHistory (long lCnt);
     /// set the limit for the bookmarks
     bool SetMaxBookmarks (long lCnt);
-    /// observers method
-    virtual void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
+    /// observers methods
+    void OnChange (FCSubject<FCParameterGrp::MessageType> &rCaller,FCParameterGrp::MessageType rcReason);
+    void OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason);
     /// returns the actual browser
     FCTextBrowser* getBrowser() const { return pclBrowser; }
 

@@ -1341,7 +1341,7 @@ FCGuiConsoleObserver::FCGuiConsoleObserver(ApplicationWindow *pcAppWnd)
 void FCGuiConsoleObserver::Warning(const char *m)
 {
 	if(!bMute){
-		QMessageBox::information( _pcAppWnd, "Warning",m);
+		QMessageBox::warning( _pcAppWnd, "Warning",m);
 		_pcAppWnd->statusBar()->message( m, 2001 );
 	}
 }

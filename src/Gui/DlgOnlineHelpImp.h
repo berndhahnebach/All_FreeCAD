@@ -42,9 +42,6 @@ class FCOnlineHelp : public FCOnlineHelpBase, public FCPreferencePage
   public:
     FCOnlineHelp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCOnlineHelp();
-
-  protected:
-    void apply();
 };
 
 #endif //DLG_ONLINE_HELP_IMP_H

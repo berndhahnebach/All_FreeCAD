@@ -99,7 +99,7 @@ class FCProgressBar : public QProgressBar
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
     virtual ~FCProgressBar ();
     /** Starts the progress bar */
-    void Start(QString txt, int steps, bool& flag);
+    void Start(QString txt, int steps/*, bool& flag*/);
     /** Does the next step */
     void Next();
     /** Stops the sequencer */

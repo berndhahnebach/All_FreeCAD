@@ -26,6 +26,7 @@
 #include <set>
 #include <algorithm>
 #include <stack>
+#include <queue>
 
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
@@ -210,6 +211,9 @@
 #include <qwidgetstack.h>
 #include <qwindowsstyle.h>
 #include <qworkspace.h>
+#if QT_VERSION > 300
+# include <qprocess.h>
+#endif
 
 
 

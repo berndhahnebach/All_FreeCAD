@@ -189,17 +189,17 @@ FCProgressBar::~FCProgressBar ()
 
 // NOTE: for each call of this method you must call the
 //       corresponding stop method
-void FCProgressBar::Start(QString txt, int steps, bool& flag)
+void FCProgressBar::Start(QString txt, int steps/*, bool& flag*/)
 {
   // increment the size called this method
   d->iStartedProgresses++;
 
   // if you call this method in a for loop
   // the steps size is regarded only once 
-  if (!flag || steps == 0)
-    return;
-
-  flag = false;
+//  if (!flag || steps == 0)
+//    return;
+//
+//  flag = false;
 
   // several sequencer started
   if (d->iStartedProgresses > 1)
@@ -334,7 +334,9 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 				diff *= (totalSteps - progress) / d->iTimeStep;
 				diff /= 1000;
 
+#ifdef FC_DEBUG
 				GetConsole().Log("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
+#endif
 //#				ifdef FC_DEBUG
 //				printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
 //#				endif

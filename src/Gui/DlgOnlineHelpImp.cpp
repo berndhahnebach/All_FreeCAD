@@ -34,7 +34,7 @@
 
 #include "DlgOnlineHelpImp.h"
 #include "Application.h"
-#include "../Base/Process.h"
+#include "Process.h"
 
 FCOnlineHelp::FCOnlineHelp( QWidget* parent, const char* name, WFlags fl )
 : FCOnlineHelpBase(parent, name, fl)
@@ -48,14 +48,6 @@ FCOnlineHelp::FCOnlineHelp( QWidget* parent, const char* name, WFlags fl )
 
 FCOnlineHelp::~FCOnlineHelp()
 {
-}
-
-void FCOnlineHelp::apply()
-{
-  if (UseProxy->isChecked())
-    GetProcessor().SetEnvironment("http_proxy", FCLineEdit2->text().latin1());
-  else
-    GetProcessor().UnsetEnvironment("http_proxy");
 }
 
 #include "DlgOnlineHelp.cpp"
