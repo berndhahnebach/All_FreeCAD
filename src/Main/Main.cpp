@@ -153,7 +153,7 @@ int main( int argc, char ** argv )
 		exit(10);
 	}
 	// catch all FC exceptions
-	catch(FCException e)
+	catch(const FCException& e)
 	{
 		GetConsole().Error("Application init failed:");
 		e.ReportException();
@@ -255,7 +255,7 @@ int main( int argc, char ** argv )
 		cout << "An exception was caught " << E << endl;
 		exit(4);
 	}
-	catch(FCException e)
+	catch(const FCException& e)
 	{
 		GetConsole().Error("Running the application failed:\n");
 		e.ReportException();
