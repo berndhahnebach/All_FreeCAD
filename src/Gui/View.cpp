@@ -77,11 +77,19 @@ void FCView::Close(void)
 
 void FCView::SetDocument(FCGuiDocument* pcDocument)
 {
+	FCGuiDocument* pcOldDocument;
+	// detach and attache the observer
 	if(_pcDocument)
-		_pcDocument->DetachView(this);
+		_pcDocument->DetachView(this, true);
 	if(pcDocument)
-		pcDocument->AttachView(this);	
-	Update();
+		pcDocument->AttachView(this,true);	
+
+	// set the new document as the active one
+	pcOldDocument = _pcDocument;
+	_pcDocument = pcDocument;
+	
+	// tell the view
+	OnNewDocument(pcOldDocument,_pcDocument);
 }
 
 /// recife a message
@@ -170,7 +178,8 @@ void FCSingleView::closeEvent(QCloseEvent *e)
 
 		if(e->isAccepted ())
 			QextMdiChildView::closeEvent(e);
-	}
+	}else
+		e->accept();
 }
 
 

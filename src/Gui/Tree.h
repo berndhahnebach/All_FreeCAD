@@ -85,6 +85,9 @@ public:
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
 	friend FCTreeLabel;
 
+	/// is called when the above function is called to handle document change stuff
+	virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);
+	/// get called when the document is changed or updated
 	virtual void Update(void);
 
 

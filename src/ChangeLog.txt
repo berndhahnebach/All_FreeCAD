@@ -256,3 +256,5 @@ Version: V0.1B59 Date: Sun May 18 11:03:48 2003 +++++++++++++++++++++++++++++++
 + some changes in close flow, still not finished
 + fix close stuff!
 
+Version: V0.1B60 Date: Wed May 21 21:18:53 2003 +++++++++++++++++++++++++++++++
++ finishing close, save and update stuff

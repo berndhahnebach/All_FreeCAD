@@ -143,6 +143,8 @@ public:
 	void UpdateActive(void);
 	//@}
 
+	/// Set the active document
+	void SetActiveDocument(FCGuiDocument* pcDocument);
 
 	/// true when the application shuting down
 	bool IsClosing(void){return _bIsClosing;}
@@ -172,7 +174,7 @@ public:
 	void UpdateWorkbenchEntrys(void);
 	/// returns the name of the active workbench
 	QString GetActiveWorkbench(void){return _cActiveWorkbenchName;}
-  std::vector<std::string> GetWorkbenches(void);
+	std::vector<std::string> GetWorkbenches(void);
 	//@}
 
 	/// Get macro manager

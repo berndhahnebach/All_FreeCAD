@@ -166,27 +166,51 @@ void FCGuiDocument::CreateView(const char* sType)
 
 }
 
-void FCGuiDocument::AttachView(FCView* pcView)
+void FCGuiDocument::AttachView(FCView* pcView, bool bPassiv)
 {
-	_LpcViews.push_back(pcView);
+	if(!bPassiv)
+		_LpcViews.push_back(pcView);
+	else
+		_LpcPassivViews.push_back(pcView);
 
 }
 
 
-void FCGuiDocument::DetachView(FCView* pcView)
+void FCGuiDocument::DetachView(FCView* pcView, bool bPassiv)
 {
 
-	_LpcViews.remove(pcView);
-	// last view?
-	if(_LpcViews.size() == 0)
+	if(bPassiv)
 	{
-		_pcAppWnd->OnLastWindowClosed(this);
+		_LpcPassivViews.remove(pcView);
+	}else{
+		_LpcViews.remove(pcView);
+
+		// last view?
+		if(_LpcViews.size() == 0)
+		{
+			// decouple a passiv views
+			std::list<FCView*>::iterator It = _LpcPassivViews.begin();
+			while (It != _LpcPassivViews.end())
+			{
+				(*It)->SetDocument(0);
+				It = _LpcPassivViews.begin();
+			}
+
+			_pcAppWnd->OnLastWindowClosed(this);
+		}
 	}
 }
 
 void FCGuiDocument::Update(void)
 {
-	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end();It++)
+	std::list<FCView*>::iterator It;
+
+	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
+	{
+		(*It)->Update();
+	}
+
+	for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
 	{
 		(*It)->Update();
 	}
@@ -252,17 +276,25 @@ bool FCGuiDocument::SendMsgToViews(const char* pMsg)
 {
 
 	bool bResult = false;
+	std::list<FCView*>::iterator It;
 
-	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end();It++)
+	for(It = _LpcViews.begin();It != _LpcViews.end();It++)
 	{
 		if( (*It)->OnMsg(pMsg))
 		{
-			bResult = true;
-			break;
+			return true;
 		}
 	}
 
-	return bResult;
+	for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
+	{
+		if( (*It)->OnMsg(pMsg))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /// send Messages to all views

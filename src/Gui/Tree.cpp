@@ -211,6 +211,17 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 }
 
+void FCTree::Update(void)
+{
+	GetConsole().Log("Tree Updated\n");	
+}
+
+void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
+{
+	GetConsole().Log("Tree doc activated %p\n",pcNewDocument);
+}
+
+
 void FCTree::resizeEvent ( QResizeEvent * e) 
 {
 	// routing the resize event to the child
@@ -223,11 +234,6 @@ bool FCTree::OnMsg(const char* pMsg)
 
 	// no messages yet
 	return false;
-}
-
-void FCTree::Update(void)
-{
-
 }
 
 

@@ -459,7 +459,12 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 		// GuiDocument has closed the last window and get destructed
 		lpcDocuments.remove(pcDoc);
 		//lpcDocuments.erase(pcDoc);
-		delete pcDoc;	
+		delete pcDoc;
+		
+		// last document closed?
+		if(lpcDocuments.size() == 0 )
+			// reset active document
+			SetActiveDocument(0);
 	}
 }
 
@@ -512,12 +517,26 @@ FCView* ApplicationWindow::GetActiveView(void)
 /// Geter for the Active View
 FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 {
+	return _pcActiveDocument;
+	/*
 	FCView* pView = GetActiveView();
 
 	if(pView)
 		return pView->GetGuiDocument();
 	else
-		return 0l;
+		return 0l;*/
+}
+
+void ApplicationWindow::SetActiveDocument(FCGuiDocument* pcDocument)
+{
+	_pcActiveDocument=pcDocument;
+
+	GetConsole().Log("Activate (%p) \n",_pcActiveDocument);
+
+	// notify all views attached to the application (not views belong to a special document)
+	for(std::list<FCView*>::iterator It=_LpcViews.begin();It!=_LpcViews.end();It++)
+		(*It)->SetDocument(pcDocument);
+
 }
 
 void ApplicationWindow::AttachView(FCView* pcView)
@@ -551,8 +570,10 @@ void ApplicationWindow::Update(void)
 /// get calld if a view gets activated, this manage the whole activation scheme
 void ApplicationWindow::ViewActivated(FCView* pcView)
 {
-	GetConsole().Log("Deactivate (%p) Activate (%p) \n",_pcActiveDocument,_pcActiveDocument=pcView->GetGuiDocument());
+	// set the new active document
+	SetActiveDocument(pcView->GetGuiDocument());
 }
+
 
 void ApplicationWindow::UpdateActive(void)
 {

@@ -38,12 +38,14 @@ public:
 	/// sets the view to an oter document (called by ApplicationWindow)
 	void SetDocument(FCGuiDocument* pcDocument);
 
-	/// get called when the document is changed or updated
+	/// is called when the above function is called to handle document change stuff
+	virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument){};
+	/// get called when the document is updated
 	virtual void Update(void)=0;
 
 	/// returns the document the view is attached to
 	FCGuiDocument* GetGuiDocument(){return _pcDocument;}
-
+	/// returns the name of the view (important for messages)
 	virtual const char *GetName(void)=0;
 
 	/// Mesage handler
