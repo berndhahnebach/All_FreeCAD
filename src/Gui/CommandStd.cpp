@@ -1305,16 +1305,20 @@ void FCCmdCommandLine::Activated(int iMsg)
 {
 	bool b = GetAppWnd()->isMaximized ();
 	GetAppWnd()->showMinimized () ;
-	// set the Gui console observer mute
-	FCGuiConsoleObserver::bMute = true;
+	qApp->processEvents();
 	GetInterpreter().RunCommandLine("Console mode");
-	// unmute the Gui console observer 
-	FCGuiConsoleObserver::bMute = true;
-	// pop up the main window
-	GetAppWnd()->showMaximized () ;
-	// restore the former mode
-	if (!b) GetAppWnd()->showNormal () ;
 
+#ifdef Q_WS_X11
+	// On X11 this may not work. For further information see QWidget::showMaximized
+	//
+	// workaround for X11
+	GetAppWnd()->hide();
+	GetAppWnd()->show();
+#endif
+
+	// pop up the main window
+	b ? GetAppWnd()->showMaximized () : GetAppWnd()->showNormal () ;
+	qApp->processEvents();
 }
 
 
