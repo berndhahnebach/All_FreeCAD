@@ -24,7 +24,7 @@
 #ifndef __LANGUAGE_FACTORY_H__
 #define __LANGUAGE_FACTORY_H__
 
-#include "../Base/Factory.h"
+#include <Base/Factory.h>
 
 #ifndef _PreComp_
 # include <qtranslator.h>

@@ -34,19 +34,6 @@ class TFunction_Logbook;
 class PyObjectBase;
 class FeaturePy;
 
-
-#ifdef FC_OS_WIN32
-#	ifdef FCAppPart
-#		define AppPartExport  __declspec(dllexport)
-#	else
-#		define AppPartExport  __declspec(dllimport)
-#	endif
-#else
-#	ifndef AppPartExport
-#		define AppPartExport
-# endif
-#endif
-
 namespace Base{
   class PyObjectBase;
 }

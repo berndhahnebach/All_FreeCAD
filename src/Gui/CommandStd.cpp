@@ -1239,6 +1239,9 @@ StdCmdOCAFBrowse::StdCmdOCAFBrowse()
 void StdCmdOCAFBrowse::activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
+# ifdef _MSC_VER
+#   pragma warning(disable: 4101)
+# endif
   DebugBrowser cBrowser;
   cBrowser.DFBrowser(getAppWnd()->activeDocument()->getDocument()->GetOCCDoc());
 #else

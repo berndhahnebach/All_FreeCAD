@@ -234,12 +234,15 @@ void Translator::updateProperty( QObject* obj )
  */
 void Translator::clear()
 {
+  // Note: Use here a "while" instead of a "for" loop since we remove the translator 
+  // in its destructor from the global list, otherwise the iterator will become invalid
   Translator* mf;
-  for ( mf = _instances.first(); mf; mf = _instances.next() )
+  while ( _instances.count() > 0 )
   {
+    mf = _instances.first();
     qApp->removeTranslator( mf );
     delete mf;
-	}
+  }
 }
 
 /** 
