@@ -112,6 +112,7 @@ class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
     bool addWidget(QWidget* w, int i);
     /// add a new toolbox button
     bool addToolboxButton(FCToolboxButton* b, int i);
+    void loadUserDefButtons();
 
   protected:
     /// restore the preferences

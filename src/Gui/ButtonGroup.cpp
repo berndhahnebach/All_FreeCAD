@@ -253,13 +253,13 @@ void FCButtonGroup::showText()
 /////////////////////////////////////////////////////////////////////////////////////
 
 FCToolboxGroup::FCToolboxGroup ( QWidget * parent, const char * name)
-: QVButtonGroup(parent, name)
+: QVButtonGroup(parent, name), FCWidgetPrefs(name)
 {
   initialize(parent);
 }
 
 FCToolboxGroup::FCToolboxGroup ( const QString & title, QWidget * parent, const char * name)
-: QVButtonGroup(title, parent, name)
+: QVButtonGroup("", parent, name), FCWidgetPrefs(title.latin1())
 {
   initialize(parent);
 }
@@ -271,25 +271,41 @@ FCToolboxGroup::~FCToolboxGroup ()
 
 void FCToolboxGroup::restorePreferences()
 {
+  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
-  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  std::vector<std::string> items = hPGrp->GetASCIIs(getPrefName().latin1());
   for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
   {
     sCommands[*it]->GetAction()->addTo(this);
   }
+
+  int r = hPGrp->GetInt("red", 255);
+  int g = hPGrp->GetInt("green", 255);
+  int b = hPGrp->GetInt("blue", 255);
+  QColor color(r, g, b);
+//  if (color.isValid())
+//  {
+//    setPalette(QPalette(color, color));
+//    setBackgroundMode(PaletteLight);
+//  }
 }
 
 void FCToolboxGroup::savePreferences()
 {
   int i=0;
+  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
   for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPrefGrp->SetASCII(szBuf, it->c_str());
+    hPGrp->SetASCII(szBuf, it->c_str());
   }
+
+  hPGrp->SetInt("red", backgroundColor().red());
+  hPGrp->SetInt("green", backgroundColor().green());
+  hPGrp->SetInt("blue", backgroundColor().blue());
 }
 
 void FCToolboxGroup::initialize(QWidget* parent)
@@ -312,8 +328,6 @@ void FCToolboxGroup::initialize(QWidget* parent)
   m_Popup = new QPopupMenu(0L);
   m_Popup->setCheckable(true);
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
-
-  restorePreferences();
 }
 
 bool FCToolboxGroup::addWidget(QWidget* w, int i)
@@ -335,6 +349,11 @@ bool FCToolboxGroup::addToolboxButton(FCToolboxButton* b, int i)
   connect(this, SIGNAL(signalMaximumWidth(int)), b, SLOT(slotResizeButton(int)));
   insert(b);
   return addWidget(b, i);
+}
+
+void FCToolboxGroup::loadUserDefButtons()
+{
+  restorePreferences();
 }
 
 void FCToolboxGroup::paintEvent (QPaintEvent * e)
@@ -419,6 +438,7 @@ FCToolboxButton::FCToolboxButton( QWidget *parent, const char *name )
   setAutoResize( TRUE );
   setAcceptDrops ( true );
   setMinimumHeight(32);
+  setBackgroundMode(PaletteLight);
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, QWidget *parent, const char *name )
@@ -432,6 +452,7 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, Q
   setAutoResize( TRUE );
   setAcceptDrops ( true );
   setMinimumHeight(32);
+  setBackgroundMode(PaletteLight);
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
@@ -446,6 +467,7 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const
   setAutoResize( TRUE );
   setAcceptDrops ( true );
   setMinimumHeight(32);
+  setBackgroundMode(PaletteLight);
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
@@ -463,6 +485,7 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const
   setAutoResize( TRUE );
   setAcceptDrops ( true );
   setMinimumHeight(32);
+  setBackgroundMode(PaletteLight);
 }
 
 FCToolboxButton::~FCToolboxButton()
@@ -1060,7 +1083,7 @@ FCToolboxGroup* FCCmdBar::GetView(const char *sName)
 
 FCToolboxGroup* FCCmdBar::CreateView(const char *sName)
 {
-  FCToolboxGroup* bg = new FCToolboxGroup("", this);
+  FCToolboxGroup* bg = new FCToolboxGroup(sName, this);
   addPage( sName, bg );
   return bg;
 }

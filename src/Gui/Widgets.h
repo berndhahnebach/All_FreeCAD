@@ -158,6 +158,7 @@ class FCToolBar : public QToolBar, public FCWidgetPrefs
     FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0 );
     FCToolBar ( QMainWindow * parent = 0, const char * name = 0 );
     virtual ~FCToolBar();
+    void loadUserDefButtons();
 
   protected:
     void dropEvent ( QDropEvent * );

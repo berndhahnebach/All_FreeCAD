@@ -46,7 +46,7 @@
 
 
 
-FCWidgetPrefs::FCWidgetPrefs(const char * name) : pHandler(NULL)
+FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bAttach) : pHandler(NULL)
 {
   m_sPrefGrp = "Widget Preferences";
   m_sPrefName = "_____default_____";
@@ -55,7 +55,7 @@ FCWidgetPrefs::FCWidgetPrefs(const char * name) : pHandler(NULL)
     m_sPrefName = name;
 
   setUseUserParameter();
-  if (hPrefGrp.IsValid())
+  if (hPrefGrp.IsValid() && bAttach)
   {
     hPrefGrp->Attach(this);
   }
@@ -67,6 +67,13 @@ FCWidgetPrefs::FCWidgetPrefs(const char * name) : pHandler(NULL)
 FCWidgetPrefs::~FCWidgetPrefs()
 {
   hPrefGrp->Detach(this);
+#ifdef _DEBUG
+  if (m_sPrefName == "_____default_____")
+  {
+    GetConsole().Warning("Wrong widget name!. It must not be \"_____default_____\"\n");
+    throw;
+  }
+#endif
 }
 
 void FCWidgetPrefs::setPrefName(QString pref)

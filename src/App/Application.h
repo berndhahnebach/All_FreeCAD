@@ -18,6 +18,8 @@
 #ifndef _FCApplication_
 #define _FCApplication_
 #include "../Base/PyExport.h"
+#include "../Base/Parameter.h"
+
 
 #pragma warning( disable : 4251 )
 
@@ -32,7 +34,6 @@
 class FCDocument;
 class FCApplicationOCC;
 class FCApplicationObserver;
-class FCParameterManager;
 
 
 Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCApplicationOCC);
@@ -133,10 +134,11 @@ public:
 	/// Get for all possible tamplates
 	std::vector<std::string> GetAllTemplates(void);
 
-	FCParameterManager & GetSystemParameter(void) ;
-	FCParameterManager & GetUserParameter(void) ;
-	FCParameterManager & GetParameterSet(const char* sName);
-	const std::map<std::string,FCParameterManager *> &GetParameterSetList(void);
+	FCParameterManager &                                GetSystemParameter(void) ;
+	FCParameterManager &                                GetUserParameter(void) ;
+	FCParameterManager &                                GetParameterSet(const char* sName);
+	const std::map<std::string,FCParameterManager *> &  GetParameterSetList(void);
+	FCHandle<FCParameterGrp>                            GetParameterGroupByPath(const char* sName);
 	
 	/// Major version nummber
 	const static unsigned int VersionMajor;

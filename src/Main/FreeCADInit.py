@@ -44,7 +44,7 @@ def InitApplications():
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
 	Log('   Searching modules...\n')
-	ModPar = App.ParamGet("Modules")
+	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
 			Log('      Init: ' + Dir + '... ')
@@ -72,7 +72,7 @@ Log ('\nFreeCAD init running....\n')
 InitApplications()
 
 # set to no gui, is overwriten by InitGui
-App.Gui = 0
+App.GuiUp = 0
 
 Log ('\nFreeCAD init done\n')
    

@@ -35,14 +35,39 @@
 #include "DlgPreferences.h"
 #include "Window.h"
 
+class QTabWidget;
+class QTabWidget;
 
-class DlgPreferencesImp : public DlgPrefernces, public FCWindow
+class DlgPreferencesImp : public DlgPreferences, public FCWindow
 { 
     Q_OBJECT
 
-public:
+  public:
     DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~DlgPreferencesImp();
+    void addPreferenceGroup(const char* name);
+    void addPreferenceGroup(const char* name, const QPixmap& p);
+    void addPreferencePage(QWidget* page, const char* name);
+    void addPreferencePage(QWidget* page, const char* name, const QPixmap& p);
+    void addPreferencePage(QWidget* page, const char* name, const char* group);
+
+  protected:
+    QTabWidget* getPreferenceGroup(const char* name);
+    QTabWidget* getOrAddPreferenceGroup(const char* name);
+    std::string getGroupName() const;
+    std::string getPageName() const;
+
+  private:
+    std::map<std::string, int> m_mGroupsID;
+    std::map<std::string, QListViewItem*> m_mGroupsItem;
+    QTabWidget                          * m_pCurTab;
+    QWidget                             * m_pCurPage;
+
+    std::map <std::string, std::pair<QListViewItem*, QWidget*> >  m_mPages;
+
+  private slots:
+    void prefPageClicked(QListViewItem * item );
+    void prefPageClicked(QWidget * item );
 
 };
 

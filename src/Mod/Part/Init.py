@@ -58,7 +58,7 @@ class PartTemplate:
 
 
 # Get the Parameter Group of this module
-ParGrp = App.ParamGet("Modules").GetGroup("Part")
+ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Part")
 
 # Set the needed information
 ParGrp.SetString("HelpIndex",        "Part/Help/index.html")

@@ -50,8 +50,8 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-FCDlgSettings::FCDlgSettings( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : FCDlgSettingsBase( parent, name, modal, fl )
+FCDlgSettings::FCDlgSettings( QWidget* parent,  const char* name, WFlags fl )
+    : FCDlgSettingsBase( parent, name, fl )
 {
   EnableBookmarks->getHandler()->restore();
   EnableHistory->getHandler()->restore();
@@ -59,12 +59,13 @@ FCDlgSettings::FCDlgSettings( QWidget* parent,  const char* name, bool modal, WF
   NbOfHistoryItems->getHandler()->restore();
   LineEditURL->getHandler()->restore();
   LineEditBrowser->getHandler()->restore();
-  connect( buttonOk, SIGNAL( clicked() ), EnableBookmarks->getHandler(), SLOT( save() ) );
-  connect( buttonOk, SIGNAL( clicked() ), EnableHistory->getHandler(), SLOT( save() ) );
-  connect( buttonOk, SIGNAL( clicked() ), NbOfBookmarks->getHandler(), SLOT( save() ) );
-  connect( buttonOk, SIGNAL( clicked() ), NbOfHistoryItems->getHandler(), SLOT( save() ) );
-  connect( buttonOk, SIGNAL( clicked() ), LineEditURL->getHandler(), SLOT( save() ) );
-  connect( buttonOk, SIGNAL( clicked() ), LineEditBrowser->getHandler(), SLOT( save() ) );
+
+  m_aHandlers.push_back(EnableBookmarks->getHandler());
+  m_aHandlers.push_back(EnableHistory->getHandler());
+  m_aHandlers.push_back(NbOfBookmarks->getHandler());
+  m_aHandlers.push_back(NbOfHistoryItems->getHandler());
+  m_aHandlers.push_back(LineEditURL->getHandler());
+  m_aHandlers.push_back(LineEditBrowser->getHandler());
 }
 
 /*  

@@ -641,7 +641,7 @@ void FCCmdDlgParameter::CmdProfile(char** sMenuText,char** sToolTipText,char** s
 	*sToolTipText = "Opens a Dialog to edit the parameters";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_fitall";
+	*sPixmap      = "settings";
 	iAccel = 0;
 }
 
@@ -663,7 +663,7 @@ void FCCmdDlgPreferences::CmdProfile(char** sMenuText,char** sToolTipText,char**
 	*sToolTipText = "Opens a Dialog to edit the preferences";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_fitall";
+	*sPixmap      = "settings";
 	iAccel = 0;
 }
 
@@ -759,8 +759,8 @@ void FCCmdDlgSettings::CmdProfile(char** sMenuText,char** sToolTipText,char** sW
 
 void FCCmdDlgSettings::Activated(void)
 {
-	FCDlgSettings cDlg(AppWnd(),"SettingsDialog",true);
-	cDlg.exec();
+//	FCDlgSettings cDlg(AppWnd(),"SettingsDialog",true);
+//	cDlg.exec();
 }
 
 //===========================================================================
@@ -781,11 +781,17 @@ void FCCmdCommandLine::CmdProfile(char** sMenuText,char** sToolTipText,char** sW
 
 void FCCmdCommandLine::Activated(void)
 {
-  bool b = AppWnd()->isMaximized ();
+	bool b = AppWnd()->isMaximized ();
 	AppWnd()->showMinimized () ;
+	// set the Gui console observer mute
+	FCGuiConsoleObserver::bMute = true;
 	GetInterpreter().RunCommandLine("Console mode");
+	// unmute the Gui console observer 
+	FCGuiConsoleObserver::bMute = true;
+	// pop up the main window
 	AppWnd()->showMaximized () ;
-  if (!b) AppWnd()->showNormal () ;
+	// restore the former mode
+	if (!b) AppWnd()->showNormal () ;
 
 }
 

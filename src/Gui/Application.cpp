@@ -114,7 +114,7 @@ ApplicationWindow::ApplicationWindow()
 	_pcWorkbenchDictionary = PyDict_New();
 
     // attach the console observer
-	GetConsole().AttacheObserver( new FCAppConsoleObserver(this) );
+	GetConsole().AttacheObserver( new FCGuiConsoleObserver(this) );
 
 	CreateTestOperations();
 	//createCasCadeOperations();
@@ -356,6 +356,8 @@ void ApplicationWindow::CreateTestOperations()
 //	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
 //	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
 	_cActiveWorkbenchName = "";
+  ((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
+  ((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
 	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
 
 
@@ -605,10 +607,14 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 PyMethodDef ApplicationWindow::Methods[] = {
 	{"ToolbarAddTo",          (PyCFunction) ApplicationWindow::sToolbarAddTo,            1},
 	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
+	{"ToolbarLoadSettings",   (PyCFunction) ApplicationWindow::sToolbarLoadSettings,     1},
 	{"ToolbarAddSeperator",   (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
+	{"ToolbarLoadSettings",   (PyCFunction) ApplicationWindow::sToolbarLoadSettings,     1},
 	{"CommandbarAddTo",       (PyCFunction) ApplicationWindow::sCommandbarAddTo,         1},
+	{"CommandbarLoadSettings",(PyCFunction) ApplicationWindow::sCommandbarLoadSettings,  1},
 	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
 	{"CommandbarAddSeperator",(PyCFunction) ApplicationWindow::sCommandbarAddSeperator,  1},
+	{"CommandbarLoadSettings",(PyCFunction) ApplicationWindow::sCommandbarLoadSettings,  1},
 	{"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
 	{"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
 	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
@@ -664,7 +670,19 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
 
 	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
 	//pcBar->addSeparator(); not implemented yet
+
 	return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarLoadSettings)
+{
+	char *psToolbarName;
+	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	FCToolBar * pcBar = (FCToolBar*)Instance->GetToolBar(psToolbarName);
+  pcBar->loadUserDefButtons();
+    return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
@@ -681,6 +699,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){
+
 		PyErr_SetString(PyExc_RuntimeError, "unknown error");
 		return NULL;
 	}
@@ -695,6 +714,16 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
 	Instance->DelCommandBar(psToolbarName);
     return Py_None;
 }
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
+{
+	char *psCmdbarName;
+	if (!PyArg_ParseTuple(args, "s", &psCmdbarName))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+  Instance->GetCommandBar(psCmdbarName)->loadUserDefButtons();
+  return Py_None;
+} 
 
 
 PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
@@ -748,32 +777,37 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
 // FCAppConsoleObserver
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+bool FCGuiConsoleObserver::bMute = false;
 
-
-FCAppConsoleObserver::FCAppConsoleObserver(ApplicationWindow *pcAppWnd)
+FCGuiConsoleObserver::FCGuiConsoleObserver(ApplicationWindow *pcAppWnd)
 	:_pcAppWnd(pcAppWnd){}
 
 /// get calles when a Warning is issued
-void FCAppConsoleObserver::Warning(const char *m)
+void FCGuiConsoleObserver::Warning(const char *m)
 {
-	_pcAppWnd->statusBar()->message( m, 2001 );
+	if(!bMute)
+		_pcAppWnd->statusBar()->message( m, 2001 );
 }
 
 /// get calles when a Message is issued
-void FCAppConsoleObserver::Message(const char * m)
+void FCGuiConsoleObserver::Message(const char * m)
 {
-	_pcAppWnd->statusBar()->message( m, 2001 );
+	if(!bMute)
+		_pcAppWnd->statusBar()->message( m, 2001 );
 }
 
 /// get calles when a Error is issued
-void FCAppConsoleObserver::Error  (const char *m)
+void FCGuiConsoleObserver::Error  (const char *m)
 {
-	QMessageBox::information( _pcAppWnd, "Exception happens",m);
-	_pcAppWnd->statusBar()->message( m, 2001 );
+	if(!bMute)
+	{
+		QMessageBox::information( _pcAppWnd, "Exception happens",m);
+		_pcAppWnd->statusBar()->message( m, 2001 );
+	}
 }
 
 /// get calles when a Log Message is issued
-void FCAppConsoleObserver::Log    (const char *)
+void FCGuiConsoleObserver::Log    (const char *)
 {
 }
 

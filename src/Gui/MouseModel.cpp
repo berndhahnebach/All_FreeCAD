@@ -12,6 +12,7 @@
 #endif
 
 #include "MouseModel.h"
+#include "../Base/Console.h"
 
 
 #include "View3D.h"
@@ -332,7 +333,8 @@ void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 
 void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 {
-	int zDelta = cEvent->delta();
+	int zDelta = cEvent->delta()/3;
+	//GetConsole().Log("Wheel Delta=%d\n",zDelta);
 	Quantity_Length fWidth, fHeight;
 	GetView()->Size(fWidth, fHeight);
 	float fLog = float(log10(fWidth));
@@ -346,11 +348,11 @@ void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 	}
 	else if (zDelta > 0)
 	{
-		//GetConsole().Message("Cannot zoom in any more\n");
+		GetConsole().Message("Cannot zoom in any more\n");
 	}
 	else
 	{
-		//GetConsole().Message("Cannot zoom out any more\n");
+		GetConsole().Message("Cannot zoom out any more\n");
 	}
 }
 

@@ -291,8 +291,8 @@ int main( int argc, char ** argv )
  */
 void Destruct(void)
 {
-	pcSystemParameter->SaveDocument("AppParam.FCParam");
-	pcUserParameter->SaveDocument(sFCUser);
+	pcSystemParameter->SaveDocument(mConfig["SystemParameter"].c_str());
+	pcUserParameter->SaveDocument(mConfig["UserParameter"].c_str());
 	delete pcSystemParameter;
 	delete pcUserParameter;
 }

@@ -120,7 +120,7 @@ sys.path.append( ModDir )
 ModDirs = dircache.listdir(ModDir)
 #print ModDirs
 Msg('   Searching modules...\n')
-ModPar = App.ParamGet("Modules")
+ModPar = App.ParamGet("System parameter:Modules")
 for Dir in ModDirs:
 	if ( Dir != 'CVS'):
 		FreeCAD.PrintMessage('      Found: ' + Dir + '... ')
@@ -137,7 +137,7 @@ for Dir in ModDirs:
 				
 			
 
-App.ParamGet().SetBool("Installed",1)
+App.ParamGet("System parameter:Modules").SetBool("Installed",1)
 
 Log("FreeCAD Install done\n")
 

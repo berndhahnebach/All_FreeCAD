@@ -26,7 +26,7 @@
 #***************************************************************************/
 
 # Get the Parameter Group of this module
-ParGrp = App.ParamGet("Modules").GetGroup("Sketcher")
+ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Sketcher")
 
 # Set the needed information
 #ParGrp.SetString("HelpIndex",        "Part/Help/index.html")

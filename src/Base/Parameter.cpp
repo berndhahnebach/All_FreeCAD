@@ -101,6 +101,43 @@ FCParameterGrp::~FCParameterGrp()
 
 FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 {
+	std::string cName = Name;
+
+	std::string::size_type pos = cName.find('/');
+
+	// is there a path seperator ?
+	if(pos == std::string::npos)
+	{
+		return _GetGroup(Name);
+	}
+	else if(pos == cName.size())
+	{
+		// ending slash! cut it away
+		cName.erase(pos);
+		return _GetGroup(cName.c_str());
+	} else if(pos == 0)
+	{
+		// a leading slash is not handled (root unknown)
+		//throw FCException("FCParameterGrp::GetGroup() leading slash not allowed");
+		// remove leading slash
+		cName.erase(0,1);
+		// subsequent call
+		return GetGroup(cName.c_str());
+	} else {
+		// path, split the first path
+		std::string cTemp;
+		// geting the first part
+		cTemp.assign(cName,0,pos);
+		// removing the first part from the original
+		cName.erase(0,pos+1);
+		//sbsequent call
+		return _GetGroup(cTemp.c_str())->GetGroup(cName.c_str());
+	}
+
+}
+
+FCHandle<FCParameterGrp> FCParameterGrp::_GetGroup(const char* Name)
+{
 	FCHandle<FCParameterGrp> rParamGrp;
 	DOMElement *pcTemp;
 
@@ -119,6 +156,7 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 	_GroupMap[Name] = rParamGrp;
 
 	return rParamGrp;
+
 }
 
 std::vector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)

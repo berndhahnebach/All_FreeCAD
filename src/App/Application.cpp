@@ -302,6 +302,29 @@ std::vector<std::string> FCApplication::GetAllTemplates(void)
 	return cTemp;
 }
 
+FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sName)
+{
+	std::string cName = sName,cTemp;
+
+	std::string::size_type pos = cName.find(':');
+
+	// is there a path seperator ?
+	if(pos == std::string::npos)
+	{
+		throw FCException("FCApplication::GetParameterGroupByPath() no parameter set name specified");
+	} 
+	// assigning the parameter set name
+    cTemp.assign(cName,0,pos);
+	cName.erase(0,pos+1);
+
+	// test if name is valid
+	std::map<std::string,FCParameterManager *>::iterator It = mpcPramManager.find(cTemp.c_str());
+	if (It == mpcPramManager.end())
+		throw FCException("FCApplication::GetParameterGroupByPath() unknown parameter set name specified");
+
+	return It->second->GetGroup(cName.c_str());
+}
+
 
 //**************************************************************************
 // Python stuff
@@ -410,12 +433,16 @@ PYFUNCIMP_S(FCApplication,sGet)
 PYFUNCIMP_S(FCApplication,sGetParam)
 {
     char *pstr=0;
-    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	if(pstr) // if parameter give deticated group
-		return new FCPyParameterGrp(GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
-	else
-		return new FCPyParameterGrp(GetApplication().GetSystemParameter().GetGroup("BaseApp"));  
+
+	try{
+		return new FCPyParameterGrp(GetApplication().GetParameterGroupByPath(pstr)); 
+	}catch(...)
+	{
+		PyErr_SetString(PyExc_IOError, "GetParam faild!\nusage:\n   GetParam\"(SetName:GroupName_1/GroupName_2/.../GroupName_n)");
+		return NULL;
+	}
 }
 
 

@@ -33,13 +33,14 @@
 
 #include "DlgSettings.h"
 #include "Window.h"
+#include "PrefWidgets.h"
 
-class FCDlgSettings : public FCDlgSettingsBase
+class FCDlgSettings : public FCDlgSettingsBase, public FCWidgetPrefsManager
 {
   Q_OBJECT
 
   public:
-    FCDlgSettings( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    FCDlgSettings( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCDlgSettings();
 };
 

@@ -1,7 +1,7 @@
 <!DOCTYPE UI><UI>
 <class>FCDlgSettingsBase</class>
 <widget>
-    <class>QDialog</class>
+    <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
         <cstring>FCDlgSettingsBase</cstring>
@@ -11,17 +11,13 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>549</width>
-            <height>403</height>
+            <width>374</width>
+            <height>360</height>
         </rect>
     </property>
     <property>
         <name>caption</name>
-        <string>Settings</string>
-    </property>
-    <property>
-        <name>sizeGripEnabled</name>
-        <bool>true</bool>
+        <string>Form1</string>
     </property>
     <grid>
         <property>
@@ -32,366 +28,33 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget row="0"  column="1" >
-            <class>QTabWidget</class>
+        <widget row="0"  column="0" >
+            <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>tabWidget</cstring>
+                <cstring>GroupBoxBrowser</cstring>
             </property>
-            <widget>
-                <class>QWidget</class>
-                <property stdset="1">
-                    <name>name</name>
-                    <cstring>Widget10</cstring>
-                </property>
-                <attribute>
-                    <name>title</name>
-                    <string>Html view</string>
-                </attribute>
-                <grid>
-                    <property>
-                        <name>margin</name>
-                        <number>11</number>
-                    </property>
-                    <property>
-                        <name>spacing</name>
-                        <number>6</number>
-                    </property>
-                    <widget row="0"  column="0" >
-                        <class>QGroupBox</class>
-                        <property stdset="1">
-                            <name>name</name>
-                            <cstring>GroupBoxBrowser</cstring>
-                        </property>
-                        <property>
-                            <name>title</name>
-                            <string>Browser Settings</string>
-                        </property>
-                        <grid>
-                            <property>
-                                <name>margin</name>
-                                <number>11</number>
-                            </property>
-                            <property>
-                                <name>spacing</name>
-                                <number>6</number>
-                            </property>
-                            <spacer row="3"  column="0" >
-                                <property>
-                                    <name>name</name>
-                                    <cstring>Spacer9</cstring>
-                                </property>
-                                <property>
-                                    <name>orientation</name>
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property>
-                                    <name>sizeType</name>
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget row="4"  column="0" >
-                                <class>QGroupBox</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>GroupBoxOther</cstring>
-                                </property>
-                                <property>
-                                    <name>title</name>
-                                    <string>Other</string>
-                                </property>
-                                <grid>
-                                    <property>
-                                        <name>margin</name>
-                                        <number>11</number>
-                                    </property>
-                                    <property>
-                                        <name>spacing</name>
-                                        <number>6</number>
-                                    </property>
-                                    <widget row="2"  column="0" >
-                                        <class>QLabel</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>TextLabelBrowser</cstring>
-                                        </property>
-                                        <property>
-                                            <name>text</name>
-                                            <string>External browser</string>
-                                        </property>
-                                    </widget>
-                                    <widget row="3"  column="0" >
-                                        <class>FCLineEdit</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>LineEditBrowser</cstring>
-                                        </property>
-                                    </widget>
-                                    <widget row="1"  column="0" >
-                                        <class>FCLineEdit</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>LineEditURL</cstring>
-                                        </property>
-                                    </widget>
-                                    <widget row="0"  column="0" >
-                                        <class>QLabel</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>TextLabelURL</cstring>
-                                        </property>
-                                        <property>
-                                            <name>text</name>
-                                            <string>Start URL</string>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <spacer row="1"  column="0" >
-                                <property>
-                                    <name>name</name>
-                                    <cstring>Spacer11</cstring>
-                                </property>
-                                <property>
-                                    <name>orientation</name>
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property>
-                                    <name>sizeType</name>
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property>
-                                    <name>sizeHint</name>
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                            <widget row="0"  column="0" >
-                                <class>QGroupBox</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>GroupBoxBookmarks</cstring>
-                                </property>
-                                <property>
-                                    <name>title</name>
-                                    <string>Bookmarks</string>
-                                </property>
-                                <grid>
-                                    <property>
-                                        <name>margin</name>
-                                        <number>11</number>
-                                    </property>
-                                    <property>
-                                        <name>spacing</name>
-                                        <number>6</number>
-                                    </property>
-                                    <widget row="0"  column="0" >
-                                        <class>FCCheckBox</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>EnableBookmarks</cstring>
-                                        </property>
-                                        <property>
-                                            <name>text</name>
-                                            <string>Enable bookmarks</string>
-                                        </property>
-                                    </widget>
-                                    <widget row="0"  column="2" >
-                                        <class>QLabel</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>TextLabelBookmarks</cstring>
-                                        </property>
-                                        <property>
-                                            <name>text</name>
-                                            <string>Max. number of bookmarks</string>
-                                        </property>
-                                    </widget>
-                                    <widget row="0"  column="3" >
-                                        <class>FCEditSpinBox</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>NbOfBookmarks</cstring>
-                                        </property>
-                                        <property>
-                                            <name>enabled</name>
-                                            <bool>false</bool>
-                                        </property>
-                                        <property>
-                                            <name>accuracy</name>
-                                            <number>0</number>
-                                        </property>
-                                        <property>
-                                            <name>lineStep</name>
-                                            <number>1</number>
-                                        </property>
-                                        <property>
-                                            <name>valueFloat</name>
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <spacer row="0"  column="1" >
-                                        <property>
-                                            <name>name</name>
-                                            <cstring>Spacer5</cstring>
-                                        </property>
-                                        <property>
-                                            <name>orientation</name>
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property>
-                                            <name>sizeType</name>
-                                            <enum>Expanding</enum>
-                                        </property>
-                                        <property>
-                                            <name>sizeHint</name>
-                                            <size>
-                                                <width>20</width>
-                                                <height>20</height>
-                                            </size>
-                                        </property>
-                                    </spacer>
-                                </grid>
-                            </widget>
-                            <widget row="2"  column="0" >
-                                <class>QGroupBox</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>GroupBoxHistory</cstring>
-                                </property>
-                                <property>
-                                    <name>title</name>
-                                    <string>History</string>
-                                </property>
-                                <grid>
-                                    <property>
-                                        <name>margin</name>
-                                        <number>11</number>
-                                    </property>
-                                    <property>
-                                        <name>spacing</name>
-                                        <number>6</number>
-                                    </property>
-                                    <widget row="0"  column="2" >
-                                        <class>QLabel</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>TextLabelHistory</cstring>
-                                        </property>
-                                        <property>
-                                            <name>text</name>
-                                            <string>Max. number of history items</string>
-                                        </property>
-                                    </widget>
-                                    <spacer row="0"  column="1" >
-                                        <property>
-                                            <name>name</name>
-                                            <cstring>Spacer6</cstring>
-                                        </property>
-                                        <property>
-                                            <name>orientation</name>
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property>
-                                            <name>sizeType</name>
-                                            <enum>Expanding</enum>
-                                        </property>
-                                        <property>
-                                            <name>sizeHint</name>
-                                            <size>
-                                                <width>20</width>
-                                                <height>20</height>
-                                            </size>
-                                        </property>
-                                    </spacer>
-                                    <widget row="0"  column="3" >
-                                        <class>FCEditSpinBox</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>NbOfHistoryItems</cstring>
-                                        </property>
-                                        <property>
-                                            <name>enabled</name>
-                                            <bool>false</bool>
-                                        </property>
-                                        <property>
-                                            <name>accuracy</name>
-                                            <number>0</number>
-                                        </property>
-                                        <property>
-                                            <name>lineStep</name>
-                                            <number>1</number>
-                                        </property>
-                                        <property>
-                                            <name>valueFloat</name>
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <widget row="0"  column="0" >
-                                        <class>FCCheckBox</class>
-                                        <property stdset="1">
-                                            <name>name</name>
-                                            <cstring>EnableHistory</cstring>
-                                        </property>
-                                        <property>
-                                            <name>text</name>
-                                            <string>Enable history</string>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                        </grid>
-                    </widget>
-                </grid>
-            </widget>
-        </widget>
-        <widget row="1"  column="0"  rowspan="1"  colspan="2" >
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout1</cstring>
+            <property>
+                <name>title</name>
+                <string>Browser Settings</string>
             </property>
-            <hbox>
+            <grid>
                 <property>
                     <name>margin</name>
-                    <number>0</number>
+                    <number>11</number>
                 </property>
                 <property>
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>buttonHelp</cstring>
-                    </property>
-                    <property>
-                        <name>text</name>
-                        <string>&amp;Help</string>
-                    </property>
-                    <property>
-                        <name>autoDefault</name>
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <spacer>
+                <spacer row="3"  column="0" >
                     <property>
                         <name>name</name>
-                        <cstring>Horizontal Spacing2</cstring>
+                        <cstring>Spacer9</cstring>
                     </property>
                     <property>
                         <name>orientation</name>
-                        <enum>Horizontal</enum>
+                        <enum>Vertical</enum>
                     </property>
                     <property>
                         <name>sizeType</name>
@@ -405,56 +68,259 @@
                         </size>
                     </property>
                 </spacer>
-                <widget>
-                    <class>QPushButton</class>
+                <widget row="4"  column="0" >
+                    <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>buttonApply</cstring>
+                        <cstring>GroupBoxOther</cstring>
                     </property>
                     <property>
-                        <name>text</name>
-                        <string>&amp;Apply</string>
+                        <name>title</name>
+                        <string>Other</string>
                     </property>
-                    <property>
-                        <name>autoDefault</name>
-                        <bool>true</bool>
-                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="2"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabelBrowser</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>External browser</string>
+                            </property>
+                        </widget>
+                        <widget row="3"  column="0" >
+                            <class>FCLineEdit</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>LineEditBrowser</cstring>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="0" >
+                            <class>FCLineEdit</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>LineEditURL</cstring>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabelURL</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Start URL</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <widget>
-                    <class>QPushButton</class>
+                <spacer row="1"  column="0" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer11</cstring>
+                    </property>
+                    <property>
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="0"  column="0" >
+                    <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>buttonOk</cstring>
+                        <cstring>GroupBoxBookmarks</cstring>
                     </property>
                     <property>
-                        <name>text</name>
-                        <string>&amp;OK</string>
+                        <name>title</name>
+                        <string>Bookmarks</string>
                     </property>
-                    <property>
-                        <name>autoDefault</name>
-                        <bool>true</bool>
-                    </property>
-                    <property>
-                        <name>default</name>
-                        <bool>true</bool>
-                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>EnableBookmarks</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Enable bookmarks</string>
+                            </property>
+                        </widget>
+                        <spacer row="0"  column="1" >
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer5</cstring>
+                            </property>
+                            <property>
+                                <name>orientation</name>
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property>
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget row="0"  column="2" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabelBookmarks</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Max. number of bookmarks</string>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="3" >
+                            <class>FCEditSpinBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>NbOfBookmarks</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>accuracy</name>
+                                <number>0</number>
+                            </property>
+                            <property>
+                                <name>lineStep</name>
+                                <number>1</number>
+                            </property>
+                            <property>
+                                <name>valueFloat</name>
+                                <number>10</number>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <widget>
-                    <class>QPushButton</class>
+                <widget row="2"  column="0" >
+                    <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>buttonCancel</cstring>
+                        <cstring>GroupBoxHistory</cstring>
                     </property>
                     <property>
-                        <name>text</name>
-                        <string>&amp;Cancel</string>
+                        <name>title</name>
+                        <string>History</string>
                     </property>
-                    <property>
-                        <name>autoDefault</name>
-                        <bool>true</bool>
-                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="2" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabelHistory</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Max. number of history items</string>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="3" >
+                            <class>FCEditSpinBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>NbOfHistoryItems</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>accuracy</name>
+                                <number>0</number>
+                            </property>
+                            <property>
+                                <name>lineStep</name>
+                                <number>1</number>
+                            </property>
+                            <property>
+                                <name>valueFloat</name>
+                                <number>10</number>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>EnableHistory</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Enable history</string>
+                            </property>
+                        </widget>
+                        <spacer row="0"  column="1" >
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer6</cstring>
+                            </property>
+                            <property>
+                                <name>orientation</name>
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property>
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </grid>
                 </widget>
-            </hbox>
+            </grid>
         </widget>
     </grid>
 </widget>
@@ -488,7 +354,7 @@
             <hordata>5</hordata>
             <verdata>5</verdata>
         </sizepolicy>
-        <pixmap>image0</pixmap>
+        <pixmap>image1</pixmap>
     </customwidget>
     <customwidget>
         <class>FCCheckBox</class>
@@ -502,7 +368,7 @@
             <hordata>5</hordata>
             <verdata>5</verdata>
         </sizepolicy>
-        <pixmap>image0</pixmap>
+        <pixmap>image2</pixmap>
         <signal>toggled(bool)</signal>
         <property type="String">text</property>
         <property type="Bool">checked</property>
@@ -513,32 +379,28 @@
 <images>
     <image>
         <name>image0</name>
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1ddec44f503c0ae2a154410f53d0ed20e2bf6bdb656dd6861dd23d9a66591b0587fd1654235ebded6f0edcd53e419d87ae7b1f4f9b8f906d0bfe012317426a70b07bdc2f3ec77f8ed6b89559061a0343d06a124cc105596482585094bc0ae599b04646c9018926491b2205e140c485cace25755c175d0a967b622ff900b8cc9c7d29af594ea722d589167f813aa852ba07d94b9dce296e883fe7bb163f23896753</data>
+        <data format="XPM.GZ" length="3758">789c9596db53153f12c7dffd2b28fbcddaeadfcc642633a9ad7d40400405455091ad7de85c46402e0a87ebd6feef9b7c3b52ded8aa3dade7d4c774279dbec5bf9e2dedbfdd5a7af6d793cb852c8ec25238948ba567f1eaf4f4ee9ffffac7bf9f3cedbaa5fca7b576a97bfab7274f77164b6169fbfc2c15a0eb0cd4345ddb39f051e5aef3e0adca4699fb070e60a9dc77b1b078e57e1a67d8a7ca321970541e9c833e3795bdb4b0d7f38d992c98e6cad10a58cf3779bf06fa87ca43507b7e533909ce13f5afb746f4bc096c6d2f7aff0df068076526f06c5cdf635ded672b5efdf950b86d1ed854f6ca12c09d313de2235fc1c6b861c4fead721f478df747651b3c924397e0def43dfca58bcad3007f7850b6b1ea7f035b9306f82fe7e0d1366e82fe4bf064bd683ed51f3ff49a1f46beba6618ad85fd31d898b157fb116cc7c983690176bdd1fbd0e7cac96a7dbc05cbe046f58794b3bdc6f30cec47ef359fb84f17fa59ede5061c7b6fb55ed43e8eb1ea23be5d1a5365dccf3499f57ebbe06e9ceb3af6cbe5d478e483f6c0c3d8cb80f350ff66b4c1e97d0ec06eeabdfa8ffb9930b51ef9e283ca36a0fe08f136319fa7f7bb07a769aceb7785fb767241ebe50bd84c5299c1fde403f2c9cbe07112aff9c17dfb693003f2435de1a175268019fd3158db59dc87de814767eb3afa6d70b6d17ee26d70723e687c4e0adbcec5a0f1db07f76e0e1aaf1df0e092ea33fa396f9e058cfab55186a0fd8efab6b9fb82ce03d4e7388ca1f62bfc19ed1827ad5fd4df388a8beadf3a78125126077612a2d603ea6b94ccb09735f09ccb53fbf77de1c9f85c3260c46b8a2e88c6e35ed98f51f3f9a1f214f57eb7e054046c0bbbc64bd4f8607eb8d67b653e05772ee9fca137ca591ffb09f2ed8ccb5780fe96f2f775467db9a108ecd72a47d1f8ac3eb0ce33f8e7acf34eeb6343596c9d079fc0a34f51e7c70a789256b4be5f80bd74cabca71c9aa8f58ef88b9159f763c43f67774c1a6ff8534ef3eaef1578943a8f6453d91baff146ff89f3439d1fc7cac125dc87715fc107ebcf957daffd2aca29db6b3ccf9483d5fc12f2e31b6fb5ff05f9f56d11ec8ff7217bdb55ffd06fbe0fdfe3ff1a6c8b60fda2f258fdc5fccbd5d2263d4ff79bfc1c707fde510e4ded37f8e75d11ec972a8bfac778dffc5c048cfac8d68dce0b467c425b04e7211fa10b26e87c41fe83893904d047ffa21dd57fcc9b3085396abf619ee4db1abd2fbdafdc47b5477c43cc0356dfc3e5ca53d2f9b55d794e5a1fa8b7d8c41a7fc1f9b12d82fd562b4fda5f82f91cbbe86abcf7959399d53fd44f1c529b34bf9867714c2669bc50cfd1a551f519f51b7d9a668d0ff217e722e04de524b3be9778af5293fcacf3e3f481357f78bff3e95dadc7cdca2669bcf1ff93d4a7a8fb09dee7fcd86601a3bf922d02fd57600c10acc3dfe48a607fb577733b6bff215f29cc66d6f716ef49c2078cf72ccdf3306bfc30dfb3b6d1fb30ce9f6d119c775a799af53cc4771e6757edf1fecf52040c7f518eda3f88d71c8a60fda2720e2918efe59c8a8031df677c0aef2c8a30b1fc0f21d5527df6f95f02474e8f48e4396bf807fda29df8331ff2d11fe498bff0099fb2a87ef6a4689ff1397fe56fbfc9055ff282aff89a6f98a02ff9bcdbacfdbb6e913bbee7657ece2bbcca52f513affd71efb2fb0b5ee797bcc19bfcea07fdd78feebec5dbfc86dff20ebffb497f97f7a0f19e3fe4ef5dfec8fb79f74f79f7036eb8e58e0df73fe87fe421eb591e7962474c44c297e42950a444337da6433afac99fac4fc7f9ef173aa1d3fc7bc60b3aa7aff48d2ee892167445d7bfea17a11bbacddf7774cf57b44ccf698556698d5ed0fa1ff577e9257e1d6dd026afd02b7a5de5156dfdae9ff7bd2dde147f689bded05bdaa177b44b7bf4fe27fd5d2a71f9401fb33f4cfbf4890ea8a1963a3e20433d0d647ff487469a78bf7c975fde2397adaf72699697c84b791cd22ffeff2ed7b9853ecba11cc9b17c91935fe2f9079153399373f92adfe4422e1ff215f950168f9c7025d77223b7722277b51e723dcb7daebfc74e5896e7b42e2bb2aaf55cfa45d61ea9b77c02afc88b2cebdffba5f6e38dbc7ccc423664537bf8ffeef7fffcfdc97f01946e7bc4</data>
+    </image>
+    <image>
+        <name>image1</name>
+        <data format="XPM.GZ" length="1487">789ca5d3d96eda501006e07b9ec20a775195d8c70bb6aa5e0427900db26f54bd386bc84288032481aaef5effbf216d48a5aaea0cdba7e12c9e63afaf7a97871d6f75bd361acbf18df6745f3e79ab6632184cbf7efbf2bdb6228457bee2d40b563ed556d63ced75870f16bf67e5efbacf006545110903e61593406ab04eaa504529b845ea24551cbb0d0669c35711784c660b1e90b2115454a48a65a2c073300c1a4e71a133324d23c54db64897a69afbd76094c6619c800e8c9344243168c82c29770dee912a8babb117a4cea496e02e983464a0b9902535129c820d5132038fc8444a23c09074a94a39760ca61609be565499e1420330139995dcc6351923c14d32d3bee1d813526b611c78453a1d59f6b9034aa163cba90ec958372c77352233152b9ed14e452d6d083e930c30005580049b15b5b36c6c9f144870834c90e0039921c11bd22141bfa269582e74076a1f09de920112bc27d977b04b3a1b584e35018d30f34ebe90a18d1cc7ee931a099e92c64ac7dbac473aab1cfb3c042d036c93cec58e330bd02548f0919448f092d448f089b448b020197cc4fe18ff51991fda22ea8b8a92dad8dfc238a9aa8ad4f6ba7ff316b777f703c94a5ddb87e163f12b9e8a6254e7d36fc6c3622926bc78699fab112faff89cce8ad9b4985736aa3f36f3ea7b56bedf2a9b5b79abddcc5bdb3bcb95ddbdfdbcd3ccbb9d83e5cae1f6567e84d9f2e5caf149c1cae987ca599e9795e3d6f9c5bb8ae95fb6afbabd5ebbe7fbf35d57d753de7c62f94aab1eacc9f043412e7a3d9abc6bcda83c87bf9ccfbf9ef68fcfb59ff4e37dd9</data>
+    </image>
+    <image>
+        <name>image2</name>
+        <data format="XPM.GZ" length="2878">789ccdd5594f23471007f0773e8545bda1a8d673cf28ca0397318701c31ede8df2d0d33d0318b0c107d72adf3dddffea6d292b63e5254aa69645bfe99a9eea6bf8b0d5199d0f3a5b1f36e60bb5b8d11d7dad669d2db3bcbf7ffdfd8fdfbe6f6cc671c7fe8ba2a8136ffeb2b1395c7474e7743a691c7864415d5ccec470dc8dbcafe1ccdec991ffc53beda6f0195c768b6e81fc3658c157b0b277c404d72ef07c176eaca5fdd9398a6db5289653d8b880f17c1cb980158c0bcf37701517b1d457c3c6055c3827ddb8f1d670ea02cf4fe02c4912e9ef092e933ca9907fe56d0336ce69ec028ee022cd53793fe62f2b5cc0255c5a67f081b70df81cae3395613e18e3c93317f057b8c8f35cfabb814b17701fae6c86f814ae5dc08973e12ee9ef335c156521f963d8b8802fe1c65ad667cfb98c8ab694f9cfe0d8064c2f302eb4dfc375a94ad91f58afd2d83ba887507fd9d8c0fb68ea5c456553c97c623f55b8e00aae2b5549ff736715ab48c97a2de154252a81b13e2ab777b09f79162ce3bf850b17c8df854b9b21ef7b852bdb2eebb9f02e7dfb31acec1d9c0fbaf356beff49b09c9f3c58d6ef3118fd91f45f87e72f8225ff9b77ad64fcd360a9e72158f6cf3258e61beba18cd24aa33d76ae331768df76d6a94e6a59ffa71fd6723ed0bfce5cc0981f9d5bcbfc0ce052175ae663ec6d03c67875652df3b11f2cf59f78575ac6fb2958c6bb172cf9582f3b981fdef156de6f706d2defdbf6ae7dfbc76099af5eb09c17aca7c685fa51af49ece744f63bfa379949bd67c1b21f518fa94c29edfc1c2ce709df27a35cc038afa67619f0a1776d643e70be9ac805daf1fd6dd226f1ee05cbfb8fe0a2c94c8be70fbd8b46fac7feb5c7af6864bd06c1721e4e8225ffd6bb6c64fde7c1f2bc0e967a87c1b27e528f72817c7cff1a77c9fec4f7af8dda6e83bf4fd4f7b601a3bf366bd356c687f3d12a1730be57ad71217fecfe79fc9ff3995871cdfaa730dc70bb325ff1155ff3cd4f31e65bbe5b995fdbec7b9ef0941ff891673ce7052ff9899ff96565beb6bdbdf21b6ff30eeff21eef738f0fb8cf877cf46efeb1cde9f1090ff0fb94cff89c876bf22ff8d2d6d3e38ffc893ff3171ef1d7b5f9dfb8cb11c7b6a2c4e68e38e56c6d7ece85cd2ab9e211311129aa49bf9f4f861a9bd9d2155ddbdf3734b6f9b76bf2efe89e26a86444537aa0479ad17c4dfe827bb4a4277aa6173743f44a6fefd663784cdbb4632bd8a53dfb7f4dfbb6f71e1d507f657ec3b774484774cc433ab13f033aa5333aa7215daccc6ff98e5ff8e8ef417dbaa0cbff62ffff2bf97ffebaf117f4e0deb4</data>
     </image>
 </images>
 <connections>
     <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>FCDlgSettingsBase</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>FCDlgSettingsBase</receiver>
-        <slot>reject()</slot>
+        <sender>EnableBookmarks</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>NbOfBookmarks</receiver>
+        <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
         <sender>EnableHistory</sender>
         <signal>toggled(bool)</signal>
         <receiver>NbOfHistoryItems</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>EnableBookmarks</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>NbOfBookmarks</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>

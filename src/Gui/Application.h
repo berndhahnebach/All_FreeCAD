@@ -171,9 +171,11 @@ public:
 	PYFUNCDEF_S(sToolbarAddTo);
 	PYFUNCDEF_S(sToolbarDelete);
 	PYFUNCDEF_S(sToolbarAddSeperator);
+	PYFUNCDEF_S(sToolbarLoadSettings);
 
 	PYFUNCDEF_S(sCommandbarAddTo);
 	PYFUNCDEF_S(sCommandbarDelete);
+	PYFUNCDEF_S(sCommandbarLoadSettings);
 	PYFUNCDEF_S(sCommandbarAddSeperator);
 
 	PYFUNCDEF_S(sWorkbenchAdd);
@@ -246,10 +248,10 @@ private:
  *  @see FCConsole
  *  @see FCConsoleObserver
  */
-class FCAppConsoleObserver: public FCConsoleObserver
+class FCGuiConsoleObserver: public FCConsoleObserver
 {
 public:
-	FCAppConsoleObserver(ApplicationWindow *pcAppWnd);
+	FCGuiConsoleObserver(ApplicationWindow *pcAppWnd);
 		
 	/// get calles when a Warning is issued
 	virtual void Warning(const char *m);
@@ -259,6 +261,9 @@ public:
 	virtual void Error  (const char *m);
 	/// get calles when a Log Message is issued
 	virtual void Log    (const char *);
+
+	/// Mutes the Observer, no Dialog Box will appear
+	static bool bMute;
 protected:
 	ApplicationWindow* _pcAppWnd;
 };

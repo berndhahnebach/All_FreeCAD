@@ -358,7 +358,6 @@ bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
   {
     // allow drag and drop
     setAcceptDrops(true);
-    restorePreferences();
   }
 # endif
 
@@ -368,7 +367,6 @@ FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, b
 {
   // allow drag and drop
   setAcceptDrops(true);
-  restorePreferences();
 }
 
 FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
@@ -376,12 +374,16 @@ FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
 {
   // allow drag and drop
   setAcceptDrops(true);
-  restorePreferences();
 }
 
 FCToolBar::~FCToolBar()
 {
   savePreferences();
+}
+
+void FCToolBar::loadUserDefButtons()
+{
+  restorePreferences();
 }
 
 void FCToolBar::dropEvent ( QDropEvent * e)
@@ -414,7 +416,7 @@ void FCToolBar::restorePreferences()
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
-  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  std::vector<std::string> items = hPrefGrp->GetGroup("Toolbar")->GetASCIIs(getPrefName().latin1());
   for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
   {
     sCommands[*it]->GetAction()->addTo(this);
@@ -428,7 +430,7 @@ void FCToolBar::savePreferences()
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPrefGrp->SetASCII(szBuf, it->c_str());
+    hPrefGrp->GetGroup("Toolbar")->SetASCII(szBuf, it->c_str());
   }
 }
 

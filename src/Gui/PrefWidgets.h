@@ -77,7 +77,7 @@ class FCWidgetPrefs : public FCObserver
     /// save the preferences
     virtual void savePreferences()    = 0;
     /// constructor
-    FCWidgetPrefs(const char * name = 0);
+    FCWidgetPrefs(const char * name = 0, bool bAttach=true);
     /// destructor
     virtual ~FCWidgetPrefs();
 
@@ -120,6 +120,18 @@ class FCWidgetPrefsHandler : public QObject
 
     //friends
     friend class FCWidgetPrefs;
+};
+
+class FCWidgetPrefsManager
+{
+  public:
+    std::vector<FCWidgetPrefsHandler*> getHandlers()
+    {
+      return m_aHandlers;
+    }
+
+  protected:
+    std::vector<FCWidgetPrefsHandler*> m_aHandlers;
 };
 
 /** The FCEditSpinBox class

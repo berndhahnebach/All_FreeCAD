@@ -66,6 +66,7 @@ class StandardWorkbench ( Workbench ):
 		Gui.ToolbarAddTo("TestTools","Std_DlgCustomize")
 		Gui.ToolbarAddSeperator("TestTools")
 		Gui.ToolbarAddTo("TestTools","Std_CommandLine")
+		Gui.ToolbarLoadSettings("TestTools")
 
 		# test tool bar
 		Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")
@@ -78,10 +79,13 @@ class StandardWorkbench ( Workbench ):
 		Gui.ToolbarAddTo("Standard views","Std_ViewRear")
 		Gui.ToolbarAddTo("Standard views","Std_ViewLeft")
 		Gui.ToolbarAddTo("Standard views","Std_ViewBottom")
+		Gui.ToolbarLoadSettings("Standard views")
+
 
 		Log ('   Set up commandbar...\n')
 		Gui.CommandbarAddTo("TestTools","Std_Test1")
 		Gui.CommandbarAddTo("TestTools","Std_Test2")
+		Gui.CommandbarLoadSettings("TestTools")
 
 		Gui.CommandbarAddTo("Standard views","Std_ViewFitAll")
 		Gui.CommandbarAddTo("Standard views","Std_ViewAxo")
@@ -93,6 +97,7 @@ class StandardWorkbench ( Workbench ):
 		Gui.CommandbarAddTo("Standard views","Std_ViewRear")
 		Gui.CommandbarAddTo("Standard views","Std_ViewLeft")
 		Gui.CommandbarAddTo("Standard views","Std_ViewBottom")
+		Gui.CommandbarLoadSettings("Standard views");
 
 		Gui.CommandbarAddTo("Special Ops","Std_DlgParameter")
 		Gui.CommandbarAddTo("Special Ops","Std_DlgPreferences")
@@ -100,6 +105,7 @@ class StandardWorkbench ( Workbench ):
 		Gui.CommandbarAddTo("Special Ops","Std_DlgMacroExecute")
 		Gui.CommandbarAddTo("Special Ops","Std_DlgCustomize")
 		Gui.CommandbarAddTo("Special Ops","Std_CommandLine")
+		Gui.CommandbarLoadSettings("Special Ops")
 
 		Log ('   Set up menues...\n')
 	def Stop(self):
@@ -131,6 +137,7 @@ def InitToolbars():
 	Gui.ToolbarAddTo("TestTools","Std_DlgCustomize")
 	Gui.ToolbarAddSeperator("TestTools")
 	Gui.ToolbarAddTo("TestTools","Std_CommandLine")
+	Gui.ToolbarLoadSettings("TestTools")
 
 	# test tool bar
 	Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")
@@ -143,6 +150,7 @@ def InitToolbars():
 	Gui.ToolbarAddTo("Standard views","Std_ViewRear")
 	Gui.ToolbarAddTo("Standard views","Std_ViewLeft")
 	Gui.ToolbarAddTo("Standard views","Std_ViewBottom")
+	Gui.ToolbarLoadSettings("Standard views")
 	
 
 def InitMenues():
@@ -152,6 +160,7 @@ def InitCmdBar():
 	Log ('   Set up command bar...\n')
 	Gui.CommandbarAddTo("TestTools","Std_Test1")
 	Gui.CommandbarAddTo("TestTools","Std_Test2")
+	Gui.CommandbarLoadSettings("TestTools")
 
 	Gui.CommandbarAddTo("Standard views","Std_ViewFitAll")
 	Gui.CommandbarAddTo("Standard views","Std_ViewAxo")
@@ -163,6 +172,7 @@ def InitCmdBar():
 	Gui.CommandbarAddTo("Standard views","Std_ViewRear")
 	Gui.CommandbarAddTo("Standard views","Std_ViewLeft")
 	Gui.CommandbarAddTo("Standard views","Std_ViewBottom")
+	Gui.CommandbarLoadSettings("Standard views")
 
 	Gui.CommandbarAddTo("Special Ops","Std_DlgParameter")
 	Gui.CommandbarAddTo("Special Ops","Std_DlgPreferences")
@@ -170,6 +180,7 @@ def InitCmdBar():
 	Gui.CommandbarAddTo("Special Ops","Std_DlgMacroExecute")
 	Gui.CommandbarAddTo("Special Ops","Std_DlgCustomize")
 	Gui.CommandbarAddTo("Special Ops","Std_CommandLine")
+	Gui.CommandbarLoadSettings("Special Ops")
 
 
 
@@ -181,7 +192,7 @@ def InitApplications():
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
 	Log('   Searching modules...\n')
-	ModPar = App.ParamGet("Modules")
+	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
 			Log('      Init: ' + Dir + '... ')
@@ -198,7 +209,8 @@ Log ('FreeCAD gui init running....\n')
 # init the gui
 
 # signal that the gui is up
-App.Gui = 1
+App.GuiUp = 1
+App.Gui = FreeCADGui
 
 Gui.WorkbenchAdd("<none>",StandardWorkbench())
 

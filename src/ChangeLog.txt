@@ -126,3 +126,9 @@ Version: V0.1B32 Date: Sun Feb 09 22:16:10 2003 +++++++++++++++++++++++++++++++
 + fix debug module loading
 + implementing startup config registrie and access functions in App.
 + implementing Doc Template logic and Part Template
+
+Version: V0.1B33 Date: Fri Feb 14 19:58:58 2003 +++++++++++++++++++++++++++++++
++ dynamic cinfiguration dialog (Werner)
+  - first preference dialog for the html view
++ Full path parameter implemented
++ some fixes in config registry

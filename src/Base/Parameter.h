@@ -164,6 +164,13 @@ public:
 
 	friend FCParameterManager;
 
+	/// returns the name
+	const char* GetGroupName(void) {return _cName.c_str();}
+
+protected:
+	/// helper function for GetGroup
+	FCHandle<FCParameterGrp> _GetGroup(const char* Name);
+
 	DOMElement *FindNextElement(DOMNode *Prev, const char* Type);
 
 	/** Find an element specified by Type and Name
@@ -181,10 +188,6 @@ public:
 	 */
 	DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name);
 
-	/// returns the name
-	const char* GetGroupName(void) {return _cName.c_str();}
-
-protected:
 
 	/// DOM Node of the Base node of this group
 	DOMElement *_pGroupNode;
