@@ -27,6 +27,7 @@ libMesh_la_SOURCES=\
 		Core/Vector3D.h \
 		Core/ViewProj.h \
 		AppMesh.cpp \
+		AppMeshPy.cpp \
 		FeatureMeshImportSTL.cpp \
 		FeatureMeshImportSTL.h \
 		MeshFeature.cpp \

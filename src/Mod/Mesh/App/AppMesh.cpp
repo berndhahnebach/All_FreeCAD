@@ -33,51 +33,16 @@
 
 #include "FeatureMeshImportSTL.h"
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
-
-/* module functions */
-static PyObject *                        
-open(PyObject *self, PyObject *args)     
-{                                        
-	std::string strResult;
-
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-
-  Base::Console().Log("Open in Mesh with %s",strResult.c_str());
-
-	Py_Return;    
-}
-
 
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       
-    {"open",    open,    1},       
-    {NULL, NULL}                   /* end of table marker */
-};
-
+extern struct PyMethodDef Mesh_Import_methods[];
 
 
 /* Python entry */
 extern "C" {
 void AppMeshExport initMesh() {
 
-  (void) Py_InitModule("Mesh", hello_methods);   /* mod name, table ptr */
+  (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
 
   Base::Console().Log("AppMesh loaded\n");
 	App::FeatureFactory().AddProducer("MeshImportSTL",new App::FeatureProducer<Mesh::FeatureMeshImportSTL>);

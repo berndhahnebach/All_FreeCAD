@@ -201,6 +201,10 @@ SOURCE=.\AppMesh.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\AppMeshPy.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\FeatureMeshImportSTL.cpp
 # End Source File
 # Begin Source File
