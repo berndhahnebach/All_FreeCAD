@@ -151,9 +151,9 @@ void ReportHighlighter::setErrorColor( const QColor& col )
  *  name 'name' and widget flags set to 'f' 
  */
 ReportOutput::ReportOutput(QWidget* parent, const char* name)
- : QTextEdit(parent, name), WindowParameter("OutputWindow"), 
-   _err(true), _warn(true), _logg(false)
+ : QTextEdit(parent, name), WindowParameter("OutputWindow")
 {
+  bLog = false;
   reportHl = new ReportHighlighter(this);
 
   restoreFont();
@@ -193,11 +193,8 @@ void ReportOutput::restoreFont()
 
 void ReportOutput::Warning(const char * s)
 {
-  if ( _warn )
-  {
-    reportHl->setParagraphType(ReportHighlighter::Warning);
-    append(s);
-  }
+  reportHl->setParagraphType(ReportHighlighter::Warning);
+  append(s);
 }
 
 void ReportOutput::Message(const char * s)
@@ -208,20 +205,14 @@ void ReportOutput::Message(const char * s)
 
 void ReportOutput::Error  (const char * s)
 {
-  if ( _err )
-  {
-    reportHl->setParagraphType(ReportHighlighter::Error);
-    append(s);
-  }
+  reportHl->setParagraphType(ReportHighlighter::Error);
+  append(s);
 }
 
 void ReportOutput::Log (const char * s)
 {
-  if ( _logg )
-  {
-    reportHl->setParagraphType(ReportHighlighter::LogText);
-    append(s);
-  }
+  reportHl->setParagraphType(ReportHighlighter::LogText);
+  append(s);
 }
 
 bool ReportOutput::event( QEvent* ev )
@@ -242,11 +233,11 @@ QPopupMenu * ReportOutput::createPopupMenu ( const QPoint & pos )
   QPopupMenu* sub = new QPopupMenu( menu );
   int id;
   id = sub->insertItem( tr("Logging"), this, SLOT( onToggleLogging() ) );
-  sub->setItemChecked( id, _logg );
+  sub->setItemChecked( id, bLog );
   id = sub->insertItem( tr("Warning"), this, SLOT( onToggleWarning() ) );
-  sub->setItemChecked( id, _warn );
+  sub->setItemChecked( id, bWrn );
   id = sub->insertItem( tr("Error"  ), this, SLOT( onToggleError  () ) );
-  sub->setItemChecked( id, _err );
+  sub->setItemChecked( id, bErr );
   menu->insertItem( tr("Options"), sub, -1, 0 );
   menu->insertSeparator( 1 );
 
@@ -278,35 +269,36 @@ void ReportOutput::onSaveAs()
 
 bool ReportOutput::isError() const
 {
-  return _err;
+  return bErr;
 }
 
 bool ReportOutput::isWarning() const
 {
-  return _warn;
+  return bWrn;
 }
 
 bool ReportOutput::isLogging() const
 {
-  return _logg;
+  return bLog;
 }
+
 
 void ReportOutput::onToggleError()
 {
-  _err = _err ? false : true;
-  getWindowParameter()->SetBool( "checkError", _err );
+  bErr = bErr ? false : true;
+  getWindowParameter()->SetBool( "checkError", bErr );
 }
 
 void ReportOutput::onToggleWarning()
 {
-  _warn = _warn ? false : true;
-  getWindowParameter()->SetBool( "checkWarning", _warn );
+  bWrn = bWrn ? false : true;
+  getWindowParameter()->SetBool( "checkWarning", bWrn );
 }
 
 void ReportOutput::onToggleLogging()
 {
-  _logg = _logg ? false : true;
-  getWindowParameter()->SetBool( "checkLogging", _logg );
+  bLog = bLog ? false : true;
+  getWindowParameter()->SetBool( "checkLogging", bLog );
 }
 
 void ReportOutput::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
@@ -314,15 +306,15 @@ void ReportOutput::OnChange(FCSubject<const char*> &rCaller, const char * sReaso
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   if (strcmp(sReason, "checkLogging") == 0)
   {
-    _logg = rclGrp.GetBool( sReason, _logg );
+    bLog = rclGrp.GetBool( sReason, bLog );
   }
   else if (strcmp(sReason, "checkWarning") == 0)
   {
-    _warn = rclGrp.GetBool( sReason, _warn );
+    bWrn = rclGrp.GetBool( sReason, bWrn );
   }
   else if (strcmp(sReason, "checkError") == 0)
   {
-    _err = rclGrp.GetBool( sReason, _err );
+    bErr = rclGrp.GetBool( sReason, bErr );
   }
   else if (strcmp(sReason, "colorText") == 0)
   {

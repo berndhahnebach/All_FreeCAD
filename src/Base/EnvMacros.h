@@ -1,11 +1,3 @@
-/** \file EnvMacros.h
- *  \brief Macros to handle environment checking and seting
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  We use macros here because every DLL has to implement the functions because of undefined loading time...
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *
  *                                                                         *

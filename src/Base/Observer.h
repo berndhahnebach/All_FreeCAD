@@ -81,6 +81,13 @@ public:
 	 * @param pCaller a referenc to the calling object
 	 */
 	virtual void OnDestroy(FCSubject<_MessageType> &rCaller){}
+
+  /**
+	 * This method can be reimplemented from the concrete Observer
+	 * and returns the name of the observer. Needed to use the Get 
+   * Methode of the Subject.
+	 */
+	virtual const char *Name(void){return 0L;}
 };
 
 /** Subject class
@@ -154,6 +161,21 @@ public:
 	{
 		for(typename std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
 			(*Iter)->OnChange(*this,rcReason);   // send OnChange-signal
+	}
+
+	/** Get an Observer by name
+	 * Get a observer by name if the observer reimplements the Name() mthode.
+	 * @see Observer
+	 */
+	FCObserver<_MessageType> * Get(const char *Name)
+	{
+    const char* OName;
+		for(typename std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+    {
+			OName = (*Iter)->Name(*this,rcReason);   // get the name
+      if(OName && strcmp(OName,Name) == 0)
+        return *Iter;
+    }
 	}
 
 protected:

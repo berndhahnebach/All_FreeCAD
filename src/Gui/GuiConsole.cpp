@@ -43,6 +43,8 @@ FCGUIConsole::FCGUIConsole (void)
 {
   if (!s_nRefCount++)
   {
+    bLog = false;
+
     CONSOLE_SCREEN_BUFFER_INFO csbi;
 
     ::AllocConsole();

@@ -46,6 +46,8 @@ class GuiExport FCGUIConsole :public Base::ConsoleObserver
 	virtual void Message(const char *sMsg);
 	virtual void Error  (const char *sErr);
 	virtual void Log    (const char *sErr);
+  const char* Name(void){return "GUIConsole";}
+
 	//@}
 
 

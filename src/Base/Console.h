@@ -56,6 +56,8 @@ namespace Base {
 class BaseExport ConsoleObserver
 {
 public:
+  ConsoleObserver()
+    :bErr(true),bMsg(true),bLog(true),bWrn(true) {}
 	/// get calles when a Warning is issued
 	virtual void Warning(const char *){};
 	/// get calles when a Message is issued
@@ -64,6 +66,11 @@ public:
 	virtual void Error  (const char *)=0;
 	/// get calles when a Log Message is issued
 	virtual void Log    (const char *){};
+
+  virtual const char *Name(void){return 0L;}
+  
+  bool bErr,bMsg,bLog,bWrn;
+  
 };
 
 
@@ -121,10 +128,12 @@ public:
 protected:
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	// static python wrapper of the exported functions
-	static PyObject *sPyLog    (PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyMessage(PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyWarning(PyObject *self,PyObject *args,PyObject *kwd);
-	static PyObject *sPyError  (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPyLog      (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPyMessage  (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPyWarning  (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPyError    (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPySetStatus(PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPyGetStatus(PyObject *self,PyObject *args,PyObject *kwd);
 	static PyMethodDef    Methods[]; 
 
 	bool _bVerbose;
@@ -143,6 +152,10 @@ private:
 	void NotifyWarning(const char *sMsg);
 	void NotifyError  (const char *sMsg);
 	void NotifyLog    (const char *sMsg);
+
+  // retraivel of an observer by name
+  ConsoleObserver *Get(const char *Name);
+
 	// observer list
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
@@ -166,15 +179,16 @@ inline ConsoleSingelton &Console(void){
 /** The LoggingConsoleObserver class
  *  This class is used by the main modules to write Console messages and logs to a file
  */  
-class BaseExport LoggingConsoleObserver : public ConsoleObserver
+class BaseExport ConsoleObserverFile : public ConsoleObserver
 {
 public:
-	LoggingConsoleObserver(const char *sFileName);
-	virtual ~LoggingConsoleObserver();
+	ConsoleObserverFile(const char *sFileName);
+	virtual ~ConsoleObserverFile();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg);
 	virtual void Error  (const char *sErr);
 	virtual void Log    (const char *sLog);
+  const char* Name(void){return "File";}
 
 protected:
 	std::ofstream cFileStream;
@@ -183,13 +197,17 @@ protected:
 /** The CmdConsoleObserver class
  *  This class is used by the main modules to write Console messages and logs the system con.
  */
-class BaseExport CmdConsoleObserver: public ConsoleObserver
+class BaseExport ConsoleObserverStd: public ConsoleObserver
 {
 public:
+  ConsoleObserverStd();
+  virtual ~ConsoleObserverStd();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg); 
 	virtual void Error  (const char *sErr); 
 	virtual void Log    (const char *sErr); 
+  const char* Name(void){return "Console";}
+
 };
 
 

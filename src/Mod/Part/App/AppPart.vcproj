@@ -211,6 +211,29 @@
 			RelativePath="FeaturePartCut.h">
 		</File>
 		<File
+			RelativePath="FeaturePartImportIges.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCAppPart;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPart;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeaturePartImportIges.h">
+		</File>
+		<File
 			RelativePath="FeaturePartImportStep.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
@@ -254,29 +277,6 @@
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPart;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="PartDocType.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="_USRDLL;FCAppPart;FC_DEBUG;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPart;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="PartDocType.h">
 		</File>
 		<File
 			RelativePath="PartFeature.cpp">

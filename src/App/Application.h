@@ -25,6 +25,12 @@
 #include <TDocStd_Application.hxx>
 #include <TDataStd_Name.hxx>
 
+namespace Base 
+{
+  class ConsoleObserverStd; 
+  class ConsoleObserverFile;
+}
+
 namespace App
 {
 
@@ -32,7 +38,6 @@ namespace App
 class Document;
 class ApplicationOCC;
 class ApplicationObserver;
-
 
 Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(ApplicationOCC);
 
@@ -267,6 +272,9 @@ private:
 
 	std::map<std::string,std::string> &_mConfig;
 	App::Document* _pActiveDoc;
+
+  static Base::ConsoleObserverStd  *_pConsoleObserverStd;
+  static Base::ConsoleObserverFile *_pConsoleObserverFile;
 };
 
 /// Singelton getter of the Applicaton

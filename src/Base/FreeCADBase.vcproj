@@ -418,27 +418,6 @@
 			RelativePath="PreCompiled.h">
 		</File>
 		<File
-			RelativePath="Process.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Process.h">
-		</File>
-		<File
 			RelativePath="PyExport.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">

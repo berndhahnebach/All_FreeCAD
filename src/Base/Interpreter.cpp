@@ -1,12 +1,3 @@
-/** \file Interpreter.cpp
- *  \brief The base::interpreter module
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here is the implementation of the interpreter.
- *  @see Interpreter.h 
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *

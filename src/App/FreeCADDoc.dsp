@@ -100,6 +100,10 @@ SOURCE=.\Application.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ApplicationPy.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Attribute.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File

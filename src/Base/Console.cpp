@@ -43,6 +43,8 @@
 #endif
 
 #include "Console.h"
+#include "Exception.h"
+#include "PyExportImp.h"
 
 using namespace Base;
 
@@ -240,23 +242,40 @@ void ConsoleSingelton::DetacheObserver(ConsoleObserver *pcObserver)
 void ConsoleSingelton::NotifyMessage(const char *sMsg)
 {
 	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
-        (*Iter)->Message(sMsg);   // send string to the listener
+    if((*Iter)->bMsg)
+      (*Iter)->Message(sMsg);   // send string to the listener
 }
 void ConsoleSingelton::NotifyWarning(const char *sMsg)
 {
 	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
-        (*Iter)->Warning(sMsg);   // send string to the listener
+    if((*Iter)->bWrn)
+      (*Iter)->Warning(sMsg);   // send string to the listener
 }
 void ConsoleSingelton::NotifyError(const char *sMsg)
 {
 	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
-        (*Iter)->Error(sMsg);   // send string to the listener
+    if((*Iter)->bErr)
+      (*Iter)->Error(sMsg);   // send string to the listener
 }
 void ConsoleSingelton::NotifyLog(const char *sMsg)
 {
 	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
-        (*Iter)->Log(sMsg);   // send string to the listener
+    if((*Iter)->bLog)
+      (*Iter)->Log(sMsg);   // send string to the listener
 }
+
+ConsoleObserver *ConsoleSingelton::Get(const char *Name)
+{
+  const char* OName;
+	for(std::set<ConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+  {
+		OName = (*Iter)->Name();   // get the name
+    if(OName && strcmp(OName,Name) == 0)
+        return *Iter;
+  }
+  return 0;
+}
+
 
 
 //**************************************************************************
@@ -293,6 +312,8 @@ PyMethodDef ConsoleSingelton::Methods[] = {
 	{"PrintLog",             (PyCFunction) ConsoleSingelton::sPyLog,             1},
 	{"PrintError"  ,         (PyCFunction) ConsoleSingelton::sPyError,           1},
 	{"PrintWarning",         (PyCFunction) ConsoleSingelton::sPyWarning,         1},
+	{"SetStatus",            (PyCFunction) ConsoleSingelton::sPySetStatus,       1},
+	{"GetStatus",            (PyCFunction) ConsoleSingelton::sPyGetStatus,       1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -306,10 +327,13 @@ PyObject *ConsoleSingelton::sPyMessage(PyObject *self,			// static python wrappe
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance().Message("%s",pstr);				 // process massage 
-	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors 
+	PY_TRY{
+  	Instance().Message("%s",pstr);				 // process massage 
+  	Py_INCREF(Py_None);
+  	return Py_None;                              // None: no errors 
+	}PY_CATCH;
 }
+
 PyObject *ConsoleSingelton::sPyWarning(PyObject *self,			// static python wrapper
 								PyObject *args, 
 								PyObject *kwd)
@@ -318,9 +342,11 @@ PyObject *ConsoleSingelton::sPyWarning(PyObject *self,			// static python wrappe
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance().Warning("%s",pstr);				 // process massage 
-	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors 
+	PY_TRY{
+  	Instance().Warning("%s",pstr);				 // process massage 
+  	Py_INCREF(Py_None);
+  	return Py_None;                              // None: no errors 
+	}PY_CATCH;
 }
 PyObject *ConsoleSingelton::sPyError(PyObject *self,			// static python wrapper
 								PyObject *args, 
@@ -330,10 +356,13 @@ PyObject *ConsoleSingelton::sPyError(PyObject *self,			// static python wrapper
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance().Error("%s",pstr);				 // process massage 
-	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors 
+	PY_TRY{
+  	Instance().Error("%s",pstr);				 // process massage 
+  	Py_INCREF(Py_None);
+  	return Py_None;                              // None: no errors 
+	}PY_CATCH;
 }
+
 PyObject *ConsoleSingelton::sPyLog(PyObject *self,			// static python wrapper
 							PyObject *args, 
 							PyObject *kwd)
@@ -342,41 +371,114 @@ PyObject *ConsoleSingelton::sPyLog(PyObject *self,			// static python wrapper
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance().Log("%s",pstr);   				 // process massage 
-	Py_INCREF(Py_None);
+	PY_TRY{
+  	Instance().Log("%s",pstr);   				 // process massage 
+  	Py_INCREF(Py_None);
     return Py_None;
+	}PY_CATCH;
+}
+
+PyObject *ConsoleSingelton::sPyGetStatus(PyObject *self,			// static python wrapper
+							PyObject *args, 
+							PyObject *kwd)
+{
+    char *pstr1;
+    char *pstr2;
+    if (!PyArg_ParseTuple(args, "ss", &pstr1, &pstr2))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	PY_TRY{
+    bool b;
+    ConsoleObserver *pObs = Instance().Get(pstr1);
+    if(!pObs)
+    {
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+
+    if(strcmp(pstr2,"Log") == 0)
+      b = pObs->bLog;   				 
+    else if(strcmp(pstr2,"Wrn") == 0)
+      b = pObs->bWrn;   				 
+    else if(strcmp(pstr2,"Msg") == 0)
+      b = pObs->bMsg;   				 
+    else if(strcmp(pstr2,"Err") == 0)
+      b = pObs->bErr;   				 
+    
+    return Py_BuildValue("i",b?1:0);
+	}PY_CATCH;
+}
+
+PyObject *ConsoleSingelton::sPySetStatus(PyObject *self,			// static python wrapper
+							PyObject *args, 
+							PyObject *kwd)
+{
+  char *pstr1;
+  char *pstr2;
+  int  *Bool;
+  if (!PyArg_ParseTuple(args, "ssi", &pstr1, &pstr2,&Bool))   // convert args: Python->C 
+    return NULL;                                              // NULL triggers exception 
+
+	PY_TRY{
+    ConsoleObserver *pObs = Instance().Get(pstr1);
+    if(pObs)
+    {
+      if(strcmp(pstr2,"Log") == 0)
+        pObs->bLog = (*Bool==0)?false:true;   				 
+      else if(strcmp(pstr2,"Wrn") == 0)
+        pObs->bWrn = (*Bool==0)?false:true;  				 
+      else if(strcmp(pstr2,"Msg") == 0)
+        pObs->bMsg = (*Bool==0)?false:true;   				 
+      else if(strcmp(pstr2,"Err") == 0)
+        pObs->bErr = (*Bool==0)?false:true;   				 
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+	}PY_CATCH;
 }
 
 //=========================================================================
 // some special observers
 
-LoggingConsoleObserver::LoggingConsoleObserver(const char *sFileName)
+ConsoleObserverFile::ConsoleObserverFile(const char *sFileName)
 	:cFileStream(sFileName)
 {}
 
-LoggingConsoleObserver::~LoggingConsoleObserver(){};
+ConsoleObserverFile::~ConsoleObserverFile(){};
 
-void LoggingConsoleObserver::Warning(const char *sWarn)
+void ConsoleObserverFile::Warning(const char *sWarn)
 {
 	cFileStream << sWarn;
 }
-void LoggingConsoleObserver::Message(const char *sMsg)
+void ConsoleObserverFile::Message(const char *sMsg)
 {
 	cFileStream << sMsg;
 }
 
-void LoggingConsoleObserver::Error  (const char *sErr)
+void ConsoleObserverFile::Error  (const char *sErr)
 {
 	cFileStream << sErr;
 }
 
-void LoggingConsoleObserver::Log    (const char *sLog)
+void ConsoleObserverFile::Log    (const char *sLog)
 {
 	cFileStream << sLog;
 }
 
 
-void CmdConsoleObserver::Warning(const char *sWarn)
+ConsoleObserverStd::ConsoleObserverStd()
+{
+  bLog = false;
+}
+
+ConsoleObserverStd::~ConsoleObserverStd()
+{
+}
+
+
+void ConsoleObserverStd::Warning(const char *sWarn)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN| FOREGROUND_BLUE);
@@ -391,12 +493,12 @@ void CmdConsoleObserver::Warning(const char *sWarn)
 #	endif
 }
 
-void CmdConsoleObserver::Message(const char *sMsg)
+void ConsoleObserverStd::Message(const char *sMsg)
 {
 	printf("%s",sMsg);
 }
 
-void CmdConsoleObserver::Error  (const char *sErr)
+void ConsoleObserverStd::Error  (const char *sErr)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_INTENSITY );
@@ -411,7 +513,7 @@ void CmdConsoleObserver::Error  (const char *sErr)
 #	endif
 }
 
-void CmdConsoleObserver::Log    (const char *sErr)
+void ConsoleObserverStd::Log    (const char *sErr)
 {
 #	ifdef FC_OS_WIN32
 	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED |FOREGROUND_GREEN);

@@ -143,6 +143,9 @@ public:
   /** Does not do anything */
   void Log (const char * s);
 
+  /// returns the name for observer handling
+  const char* Name(void){return "ReportOutput";}
+
   /** Restore the default font settings. */
   void restoreFont ();
 
@@ -171,7 +174,6 @@ public slots:
 
 private:
   ReportHighlighter* reportHl; /**< Syntax highlighter */
-  bool _err, _warn, _logg;
 };
 
 } // namespace DockWnd

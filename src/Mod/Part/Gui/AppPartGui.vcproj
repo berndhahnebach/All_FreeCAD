@@ -241,6 +241,134 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath="DlgPartImportIges.ui">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;
+%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;
+%qtdir%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;
+%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;
+%qtdir%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DlgPartImportIgesImp.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPartGui;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCAppPartGui;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DlgPartImportIgesImp.h">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DlgPartImportStep.ui">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;
+%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;
+%qtdir%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Uic&apos;ing $(InputName).ui ..."
+					CommandLine="%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;
+%qtdir%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;
+%qtdir%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DlgPartImportStepImp.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPartGui;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCAppPartGui;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DlgPartImportStepImp.h">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Moc&apos;ing $(InputName).h ..."
+					CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;
+"
+					Outputs="$(InputDir)moc_$(InputName).cpp"/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="Libs.cpp">
 			<FileConfiguration
 				Name="Release|Win32">

@@ -1,11 +1,3 @@
-/** \file DllMain.cpp
- *  \brief initialize the dll when loaded
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Set some env variables from OCC for FreeCAD
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
