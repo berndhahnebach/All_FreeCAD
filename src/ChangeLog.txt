@@ -265,4 +265,7 @@ Version: V0.1B61 Date: Sat May 24 17:35:52 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B61 Date: Mon May 26 08:22:28 2003 +++++++++++++++++++++++++++++++
 + switching the observer to templates
 + adding SoQt to the source
-- becaus of the template observer the M$ STL dont work any more
+- because of the template observer the M$ STL dont work any more
+
+Version: V0.1B62 Date: Thu May 29 12:22:37 2003 +++++++++++++++++++++++++++++++
++ updated to new version of Scintilla (1.53)
