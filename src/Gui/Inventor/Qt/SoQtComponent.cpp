@@ -228,8 +228,14 @@ SoQtComponentP::eventFilter(QObject * obj, QEvent * e)
       PUBLIC(this)->sizeChanged(this->storesize);
     }
     else if (obj == (QObject *)this->widget) {
+
+#if QT_VERSION >= 300
+      // in older Qt version there will be an endless loop here
       this->storesize.setValue(r->size().width(), r->size().height());
       PUBLIC(this)->sizeChanged(this->storesize);
+
+#endif
+
     }
   }
   // Detect visibility changes.
