@@ -22,7 +22,7 @@
 #define PLAT_FOX 0
 #define PLAT_QT 0
 
-#if defined(QT)
+#if defined(QT_VER)
 #undef PLAT_QT
 #define PLAT_QT 1
 

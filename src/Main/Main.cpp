@@ -32,6 +32,7 @@
 #include "PreCompiled.h"
 
 
+#include <autoconfig.h>
 #include <stdio.h>
 #include <list>
 
@@ -64,12 +65,16 @@
 
 // FreeCAD Gui header
 #ifdef  _FC_GUI_ENABLED_
+#	ifndef _PreComp_
+#		include <qtextbrowser.h>
+#		include <qthread.h>
+#	endif
 #	include "../Gui/Application.h"
 #	include "../Gui/GuiConsole.h"
 #	include "../Gui/Splashscreen.h"
 #	ifdef FC_OS_WIN32
 #		pragma comment(lib,QTLIBNAME)
-#	endif 
+#	endif
 #	include "GuiInitScript.h"
 #endif
 // scriptings (scripts are build in but can be overriden by command line option)
@@ -392,7 +397,7 @@ void Init(int argc, char ** argv )
 	cTempStream << Stand ;
 	cTempStream.close();
 
-	// creating the application 
+	// creating the application
 	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
 	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
 
@@ -450,9 +455,9 @@ void ExtractPathAndUser(const char* sCall)
 
 	// try to figure out the user
 	char* user = getenv("USERNAME");
-	if (user == NULL) 
+	if (user == NULL)
 		user = getenv("USER");
-	if (user == NULL) 
+	if (user == NULL)
 		user = "Anonymous";
 	mConfig["UserName"] = user;
 
@@ -606,7 +611,7 @@ void ParsOptions(int argc, char ** argv)
 			default: 
 				GetConsole().Error("Invalid Option: %s\n",argv[i]); 
 				GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
-				throw FCException("Comandline error(s)");  
+				throw FCException("Comandline error(s)");
 			} 
 		} 
 		else  

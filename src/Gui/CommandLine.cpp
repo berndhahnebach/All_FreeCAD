@@ -166,14 +166,14 @@ void FCCommandLine::slotLaunchCommand()
   }
   catch (const FCException& rclE)
   {
-    std::string txt = rclE.what();
-    std::string err = "'" + std::string(text(currentItem())) + "' is not defined!";
-    QMessageBox::warning(this, txt.c_str(), err.c_str());
+    QString txt = rclE.what();
+    QString err = QString("'%1' is not defined!").arg(text(currentItem()));
+    QMessageBox::warning(this, txt, err);
   }
 #ifndef FC_DEBUG
   catch (...)
   {
-    QMessageBox::critical(this, tr("Error"), tr("A really nesty error occurred in running the script"));
+    QMessageBox::critical(this, tr("Error"), tr("A really nesty error occurred in the running script"));
   }
 #endif
 

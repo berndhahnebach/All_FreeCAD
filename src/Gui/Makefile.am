@@ -11,6 +11,7 @@ moc_DlgCmdbars.cpp \
 moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
 moc_DlgCommandsImp.cpp \
+moc_DlgCustomizeImp.cpp \
 moc_DlgDocTemplates.cpp\
 moc_DlgDocTemplatesImp.cpp \
 moc_DlgEditor.cpp \
@@ -55,6 +56,7 @@ moc_View3DInventor.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 moc_Window.cpp \
+moc_private_HtmlView.cpp \
 DlgActions.cpp \
 DlgActions.h \
 DlgCmdbars.cpp \
@@ -120,10 +122,35 @@ scintilla/ContractionState.cpp \
 scintilla/DocumentAccessor.cpp \
 scintilla/Documents.cpp \
 scintilla/Editor.cpp \
+scintilla/ExternalLexer.cpp \
 scintilla/Indicator.cpp \
 scintilla/KeyMap.cpp \
 scintilla/KeyWords.cpp \
+scintilla/LexAda.cpp \
+scintilla/LexAsm.cpp \
+scintilla/LexAVE.cpp \
+scintilla/LexBaan.cpp \
+scintilla/LexBullant.cpp \
+scintilla/LexConf.cpp \
+scintilla/LexCPP.cpp \
+scintilla/LexCrontab.cpp \
+scintilla/LexCSS.cpp \
+scintilla/LexEiffel.cpp \
+scintilla/LexEScript.cpp \
+scintilla/LexFortran.cpp \
+scintilla/LexHTML.cpp \
+scintilla/LexLisp.cpp \
+scintilla/LexLout.cpp \
+scintilla/LexLua.cpp \
+scintilla/LexMatlab.cpp \
+scintilla/LexOthers.cpp \
+scintilla/LexPascal.cpp \
+scintilla/LexPerl.cpp \
+scintilla/LexPOV.cpp \
 scintilla/LexPython.cpp \
+scintilla/LexRuby.cpp \
+scintilla/LexSQL.cpp \
+scintilla/LexVB.cpp \
 scintilla/LineMarker.cpp \
 scintilla/PropSet.cpp \
 scintilla/RESearch.cpp \
@@ -196,6 +223,7 @@ CommandView.cpp \
 DlgActionsImp.cpp \
 DlgCmdbarsImp.cpp \
 DlgCommandsImp.cpp \
+DlgCustomizeImp.cpp \
 DlgDocTemplatesImp.cpp \
 DlgEditorImp.cpp \
 DlgGeneralImp.cpp \
@@ -234,9 +262,13 @@ WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
 
+libFreeCADGui_a_LDADD   = -lpython2.3 -lxerces-c -lqt-mt -lCoin
 
 #moc_DlgMacros.cpp
 
+# special rule for moc_private_HtmlView.cpp
+moc_private_%.cpp: %.cpp
+	cd $(@D) && $(MOC) $(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h

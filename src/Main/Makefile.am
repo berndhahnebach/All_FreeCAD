@@ -1,18 +1,13 @@
 bin_PROGRAMS=fc
 fc_SOURCES= \
-	Libs.cpp \
-	Main.cpp
+	Main.cpp \
+	PreCompiled.cpp
 
 
 BUILT_SOURCES=\
-	DlgSplasher.h \
-	moc_DlgSplasher.cpp \
-	\
 	InitScript.h \
 	TestScript.h \
-	TestEnvScript.h \
-	StartupScript.h \
-	InstallScript.h
+	GuiInitScript.h
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -22,7 +17,7 @@ moc_%.cpp: %.h
 # (it adds path to #include automatically, so cd before calling it)
 %.h: %.ui
 	cd $(@D) && $(UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui 
+%.cpp: %.h %.ui
 	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
 %Script.h: FreeCAD%.py
@@ -30,7 +25,7 @@ moc_%.cpp: %.h
 
 
 
-#OCCLIBS=-L$(OCCDIR)/Linux/lib -L. 
+#OCCLIBS=-L$(OCCDIR)/Linux/lib -L.
 
 LDADD=\
 	../Base/libFreeCADBase.a \
@@ -38,6 +33,8 @@ LDADD=\
 	../Gui/libFreeCADGui.a \
 	-lpython@fc_py_ver@ \
 	-lxerces-c \
+	-lqt-mt \
+	-lCoin \
 -lPAppStdPlugin \
 -lPTKernel \
 -lTKBO \
@@ -73,7 +70,7 @@ LDADD=\
 -lTKXCAFSchema \
 -lTKXDEIGES \
 -lTKXDESTEP \
--lTKXSBase	
+-lTKXSBase
 
 # -lTKIGESStd
 # -lTKPAppStd

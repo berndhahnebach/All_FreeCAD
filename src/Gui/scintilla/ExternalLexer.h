@@ -11,7 +11,13 @@
 #if PLAT_WIN
 #define EXT_LEXER_DECL __stdcall
 #elif PLAT_GTK
-#define EXT_LEXER_DECL 
+#define EXT_LEXER_DECL
+#elif PLAT_QT
+#ifdef _MSC_VER
+#define EXT_LEXER_DECL __stdcall
+#else
+#define EXT_LEXER_DECL
+#endif
 #endif
 
 // External Lexer function definitions...

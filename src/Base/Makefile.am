@@ -11,14 +11,14 @@ Doxygen.cpp        Handle.cpp        Parameter.cpp    PyTools.c\
 Exception.cpp      Handle.h          Parameter.h      PyTools.h\
 FileTemplate.cpp   FileTemplate.h    Process.cpp      Process.h
 
-libFreeCADBase_a_LDADD   = -L/usr/local/lib -lpython2.3 -L/usr/local/lib -lxerces-c
+libFreeCADBase_a_LDADD   =  -lpython2.3 -lxerces-c
 
 #libFreeCADBase_a_LIBADD   = -L/usr/local/lib -lpython2.3 -L/usr/local/lib -lxerces-c
 
 # set the include path found by configure
 INCLUDES= $(all_includes)
- 
+
 # the library search path.
-#libFreeCADBase_a_LDFLAGS = $(all_libraries) 
-#libFreeCADBase_a_LIBADD = $(all_libraries) 
-                                                                                
+#libFreeCADBase_a_LDFLAGS = $(all_libraries)
+#libFreeCADBase_a_LIBADD = $(all_libraries)
+

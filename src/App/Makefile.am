@@ -10,3 +10,5 @@ Attribute.h    DocType.h DocTypeAttr.h Function.h    Parameter.h    Topology.h\
 Document.h   Label.h  Geometry2D.h  PreCompiled.h
 
 #LDADD=../Base/libFreeCADBase.a
+
+libFreeCADApp_a_LDADD   = -lpython2.3 -lxerces-c

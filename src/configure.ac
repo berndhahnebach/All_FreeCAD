@@ -3,7 +3,6 @@
 
 AC_PREREQ(2.57)
 AC_INIT(FreeCAD,cvs,[Juergen Riegel],freecad)
-#AM_INIT_AUTOMAKE([dist-bzip2 no-texinfo.tex])
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([autoconfig.h])
 #AC_CANONICAL_HOST
@@ -20,14 +19,6 @@ AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_RANLIB
-
-## !!! TODO !!! Try to find these things below automatically
-## Checks for libraries.
-##############################
-all_includes="$all_includes -I/usr/local/include/python2.3"
-all_libraries="$all_libraries -L/usr/local/lib"
-AC_SUBST(all_includes)
-AC_SUBST(all_libraries)
 
 ## SET DEFINES
 ##############################
@@ -47,6 +38,7 @@ AC_DEFINE_UNQUOTED(SOQT_MAJOR_VERSION, 1, [Define to the major version of SoQt])
 AC_DEFINE_UNQUOTED(SOQT_MICRO_VERSION, 2, [Define to the micro version of SoQt])
 AC_DEFINE_UNQUOTED(SOQT_MINOR_VERSION, 0, [Define to the minor version of SoQt])
 AC_DEFINE_UNQUOTED(SOQT_VERSION, "1.0.2", [Version string for SoQt])
+AC_DEFINE_UNQUOTED(SCI_LEXER,1, [Define if you want to use the lexer framework])
 
 ## PTHREADS
 ##############################
@@ -95,19 +87,23 @@ AC_DEFINE_UNQUOTED(SOQT_VERSION, "1.0.2", [Version string for SoQt])
 #  rumor_guile=yes
 #fi
 
+##
+## Checking for libraries.
+##############################
+
 AC_CHECKING([Python])
 fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
 if test x$fc_py_ver = x; then
 	AC_MSG_ERROR([cannot find python, bye...])
 fi;
 
-AC_ARG_WITH(python-prefix,[--with-python-prefix],
+AC_ARG_WITH(python-prefix,[  --with-python-prefix],
 	[fc_py_prefix=$withval],
 	[fc_py_prefix=/usr])
-AC_ARG_WITH(python-includes,[--with-python-includes],
+AC_ARG_WITH(python-includes,[  --with-python-includes],
 	[fc_py_incs=$withval],
 	[fc_py_incs=$fc_py_prefix/include/python$fc_py_ver])
-AC_ARG_WITH(python-libs,[--with-python-libs],
+AC_ARG_WITH(python-libs,[  --with-python-libs],
 	[fc_py_libs=$withval],
 	[fc_py_libs=$fc_py_prefix/lib])
 
@@ -115,13 +111,52 @@ AC_MSG_RESULT([
 Python $fc_py_ver: $fc_py_prefix : $fc_py_incs : $fc_py_libs
 ])
 
+# **************************************************************************
+
+AC_CHECKING([OpenCascade])
+AC_ARG_WITH(OpenCascade-prefix,[  --with-OpenCascade-prefix],
+	[fc_occ_prefix=$withval],
+	[fc_occ_prefix=/usr])
+AC_ARG_WITH(OpenCascade-includes,[  --with-OpenCascade-includes],
+	[fc_occ_incs=$withval],
+	[fc_occ_incs=$fc_occ_prefix/include/OCC])
+AC_ARG_WITH(OpenCascade-libs,[  --with-OpenCascade-libs],
+	[fc_occ_libs=$withval],
+	[fc_occ_libs=$fc_occ_prefix/lib])
+
+AC_MSG_RESULT([
+OpenCascade $fc_occ_ver: $fc_occ_prefix : $fc_occ_incs : $fc_occ_libs
+])
+
+# **************************************************************************
+
+all_includes="$all_includes -I$fc_py_incs -I$fc_occ_incs"
+all_libraries="$all_libraries -L$fc_py_libs -L$fc_occ_libs"
+AC_SUBST(all_includes)
+AC_SUBST(all_libraries)
+
+# **************************************************************************
+# Check if you want to use GUI, or not
+
+want_gui=true
+AC_ARG_ENABLE([gui],
+  AC_HELP_STRING([--enable-gui], [Enable GUI (you can disable this feature to use FreeCAD as server)]),
+  [case $enableval in
+    no | false) want_gui=false ;;
+    *)          want_gui=true ;;
+  esac],
+  [want_gui=true])
+echo "want_gui="$want_gui
+if $want_gui; then
+	AC_DEFINE_UNQUOTED(_FC_GUI_ENABLED_,1, [Define if you want to use the GUI])
+fi
+
 
 # -DNO_KDE2 -DQT_THREAD_SUPPORT already defined in Config.h
-#CPPFLAGS="-I/usr/include/qt3 -I/home/vaclav/build/OpenCASCADE-5.0/ros/inc -I/usr/include/xercesc -I$fc_py_incs -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
-CPPFLAGS="-I /usr/local/include/Inventor -I/usr/local/include/python2.3 -I/usr/include/qt3 -I/usr/local/include -I/home/werner/project/Cas5.1/ros/inc/ -I/usr/include/xercesc -I$fc_py_incs -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
+CPPFLAGS="$all_includes  -I/usr/include -I/usr/local/include -I$QTDIR/include  -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
 CXX=g++-3.2
-CXXFLAGS="-Wno-deprecated -D__DEBUG__"
-LDFLAGS="-L/usr/local/lib/OCC-5.0"
+CXXFLAGS="$all_libraries -L/usr/lib -L/usr/local/lib -Wno-deprecated -D__DEBUG__ -L$QTDIR/lib -frtti"
+LDFLAGS="-L$all_libraries"
 AC_SUBST([MOC],[moc])
 AC_SUBST([UIC],[uic])
 AC_SUBST([fc_py_ver])
