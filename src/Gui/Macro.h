@@ -66,6 +66,12 @@ public:
 		  Doc   /**< Teh macro belongs to the Document and will be saved and restored with the Document */  
 		 }; 
 
+	/** Line type enumeration  */
+	enum LineType { 
+		  Base,  /**< The line effects the Gui (FreeCADGui) */  
+		  Gui,   /**< The line effects only the document and Application (FreeCAD) */    
+		 }; 
+
 
 	/** Opens a new Macro recording sassion
 	 * Starts a sassion with the Type and the Name of the Macro.
@@ -89,7 +95,7 @@ public:
 	/// indicates if a macro recording in in progress
 	bool IsOpen(void){return _bIsOpen;}
 
-	void AddLine(const char* sLine);
+	void AddLine(LineType Type,const char* sLine);
 
 	void Run(MacroType eType,const char *sName);
 

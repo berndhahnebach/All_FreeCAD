@@ -83,9 +83,13 @@ bool FCInterpreter::LoadModule(const char* psModName)
 {
 	// buffer acrobatics
 	PyBuf ModName(psModName);
+	PyObject *module;
 
-	if(!PP_Load_Module(ModName.str))
-		return false;
+	module = PP_Load_Module(ModName.str);
+
+	if(!module ) throw FCException("FCInterpreter::LoadModule(): Module not loaded!");
+
+	Py_XINCREF(module);
 
 	return true;
 }

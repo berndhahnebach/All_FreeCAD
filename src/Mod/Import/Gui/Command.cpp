@@ -41,7 +41,7 @@
 //===========================================================================
 // Import_Box
 //===========================================================================
-DEF_STD_CMD(FCCmdImportReadBREP);
+DEF_STD_CMD_A(FCCmdImportReadBREP);
 
 FCCmdImportReadBREP::FCCmdImportReadBREP()
 	:FCCppCommand("Import_ReadBREP")
@@ -76,6 +76,10 @@ void FCCmdImportReadBREP::Activated(int iMsg)
 	CommitCommand();
 }
 
+bool FCCmdImportReadBREP::IsActive(void)
+{
+	return GetAppWnd()->GetActiveDocument() != 0;
+}
 
 
 

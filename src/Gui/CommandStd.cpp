@@ -378,9 +378,9 @@ void FCCmdWorkbench::Activated(int iMsg)
   std::vector<std::string> wb = ApplicationWindow::Instance->GetWorkbenches();
   if (iMsg >= 0 && iMsg < int(wb.size()))
   {
-    char szBuf[200];
-    sprintf(szBuf, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
-    DoCommand(Gui, szBuf);
+    //char szBuf[200];
+    //sprintf(szBuf, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
+    DoCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
     UpdateAction(iMsg);
   }
 }

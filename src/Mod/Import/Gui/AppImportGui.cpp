@@ -24,8 +24,11 @@
 
 #include "../../../App/Application.h"
 #include "../../../Base/Console.h"
+#include "../../../Base/Interpreter.h"
 
 #include "../../../Gui/Application.h"
+#include "../../../Gui/Macro.h"
+
 
 void CreateCommands(void);
 
@@ -61,6 +64,10 @@ void __declspec(dllexport) initImportGui() {
 	(void) Py_InitModule("ImportGui", hello_methods);   /* mod name, table ptr */
 
 	GetConsole().Log("ImportGui loaded\n");
+
+	// load the commands
+	ApplicationWindow::Instance->GetMacroMngr()->AddLine(FCMacroManager::Base,"import Import");
+	GetInterpreter().RunFCCommand("import Import");
 
 	GetApplication();
 	ApplicationWindow::Instance;

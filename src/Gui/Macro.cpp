@@ -45,6 +45,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Macro.h"
 #include "../Base/Interpreter.h"
+#include "../Base/Console.h"
 
 
 
@@ -95,10 +96,13 @@ void FCMacroManager::Commit(void)
 	
 	file << 	_sMacroInProgress.c_str();
 	
+	GetConsole().Log("FCMacroManager::Commit()\n%s\n",_sMacroInProgress.c_str());
+
 	_sMacroInProgress = "";
 	_sName = "";
 
 	_bIsOpen = false;
+
 }
 
 
@@ -113,9 +117,11 @@ void FCMacroManager::Cancel(void)
 	
 }
 
-void FCMacroManager::AddLine(const char* sLine)
+void FCMacroManager::AddLine(LineType Type,const char* sLine)
 {
-	//sMacroInProgress += "\t" + sLine + "\n";		
+	//sMacroInProgress += "\t" + sLine + "\n";
+	if(Type == Gui) 
+			_sMacroInProgress += "#";	
 	_sMacroInProgress += sLine;		
 	_sMacroInProgress += "\n";		
 }

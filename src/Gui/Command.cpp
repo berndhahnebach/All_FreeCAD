@@ -462,6 +462,9 @@ void FCCommand::TestActive(void)
  */
 void FCCommand::OpenCommand(const char* sCmdName)
 {
+	// Using OpenCommand with no active document !
+	assert(GetAppWnd()->GetActiveDocument());
+
 	if(sCmdName)
 		GetAppWnd()->GetActiveDocument()->OpenCommand(sCmdName);
 	else
@@ -489,8 +492,11 @@ void FCCommand::DoCommand(DoCmd_Type eType,const char* sCmd,...)
     vsprintf(format, sCmd, namelessVars);
     va_end(namelessVars);
 
+	if(eType == Gui)
+		GetAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Gui,format);
+	else
+		GetAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Base,format);
 	GetInterpreter().RunFCCommand(format);
-	GetAppWnd()->GetMacroMngr()->AddLine(format);
 
 	free (format);
 
