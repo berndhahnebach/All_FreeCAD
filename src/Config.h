@@ -129,7 +129,7 @@
 
 //**************************************************************************
 // QT
-#define QT_VER 230
+#define QT_VER 321
 
 // for .NET you must use Qt version 3.x
 #ifdef FC_OS_WIN32
@@ -143,6 +143,8 @@
 #	define QTLIBNAME "qt-mt230nc.lib"
 #elif QT_VER == 311
 #	define QTLIBNAME "qt-mteval311.lib"
+#elif QT_VER == 321
+#	define QTLIBNAME "qt-mtnc321.lib"
 #else
 #	define QTLIBNAME "qt.lib"
 #endif

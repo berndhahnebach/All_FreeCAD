@@ -156,12 +156,12 @@ SOURCE=.\FeatureAttr.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Main\FreeCADInit.py
+SOURCE=.\FreeCADInit.py
 
 !IF  "$(CFG)" == "FreeCADApp - Win32 Release"
 
 # Begin Custom Build - Building InitScript.h
-InputPath=..\Main\FreeCADInit.py
+InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
@@ -172,7 +172,7 @@ InputPath=..\Main\FreeCADInit.py
 !ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
 
 # Begin Custom Build - Building InitScript.h
-InputPath=..\Main\FreeCADInit.py
+InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
@@ -185,12 +185,12 @@ InputPath=..\Main\FreeCADInit.py
 # End Source File
 # Begin Source File
 
-SOURCE=..\Main\FreeCADTest.py
+SOURCE=.\FreeCADTest.py
 
 !IF  "$(CFG)" == "FreeCADApp - Win32 Release"
 
 # Begin Custom Build - Building TestScript.h
-InputPath=..\Main\FreeCADTest.py
+InputPath=.\FreeCADTest.py
 
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
@@ -201,7 +201,7 @@ InputPath=..\Main\FreeCADTest.py
 !ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
 
 # Begin Custom Build - Building TestScript.h
-InputPath=..\Main\FreeCADTest.py
+InputPath=.\FreeCADTest.py
 
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 

@@ -1203,7 +1203,7 @@ void ApplicationWindow::Destruct(void)
 // FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
 	{"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
-  {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
+	{"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
 	{"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
 	{"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
 	{"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},

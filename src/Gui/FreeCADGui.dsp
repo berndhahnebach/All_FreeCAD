@@ -2685,12 +2685,12 @@ InputName=Document
 # End Source File
 # Begin Source File
 
-SOURCE=..\Main\FreeCADGuiInit.py
+SOURCE=.\FreeCADGuiInit.py
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
 # Begin Custom Build - Building InitGuiScript.h
-InputPath=..\Main\FreeCADGuiInit.py
+InputPath=.\FreeCADGuiInit.py
 
 "GuiInitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
@@ -2701,7 +2701,7 @@ InputPath=..\Main\FreeCADGuiInit.py
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
 # Begin Custom Build - Building InitGuiScript.h
-InputPath=..\Main\FreeCADGuiInit.py
+InputPath=.\FreeCADGuiInit.py
 
 "GuiInitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
