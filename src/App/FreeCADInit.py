@@ -57,21 +57,23 @@ def InitApplications():
 			ModDir = FreeCAD.ConfigGet("HomePath")+'src\\Mod'
 	sys.path.append( '..\\bin' )
 	sys.path.append( ModDir )
-	Log("   Using "+ModDir+" as module path!\n")
+	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Tools'):
+		sys.path.append( FreeCAD.ConfigGet("HomePath")+'src\\Tools' )
+#	Log("   Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
-	Log('   Searching modules...\n')
+#	Log('   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('      Init: ' + Dir + '... ')
+#			Log('      Init: ' + Dir + '... ')
 			ModGrp = ModPar.GetGroup(Dir)
 			sys.path.append( os.path.join(ModDir,Dir) )
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if ( os.path.exists(InstallFile) ):
 				execfile(InstallFile)
-				Log('done\n')
+#				Log('done\n')
 			else:
 				Wrn("Init.py not found! "+Dir+" not initialized!\n")
 

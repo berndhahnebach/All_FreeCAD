@@ -167,15 +167,15 @@ def InitApplications():
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
-	Log('   Searching modules...\n')
+#	Log('   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('      Init: ' + Dir + '... ')
+#			Log('      Init: ' + Dir + '... ')
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
 			if ( os.path.exists(InstallFile) ):
 				execfile(InstallFile)
-				Log('done\n')
+#				Log('done\n')
 			else:
 				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
 
@@ -201,4 +201,4 @@ InitToolbars()
 Gui.WorkbenchActivate("<none>")
 
 
-Log ('\nFreeCAD gui init done\n')
+Log ('FreeCAD gui init done\n')

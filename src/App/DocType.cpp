@@ -126,11 +126,13 @@ DocTypeStd::DocTypeStd()
 : DocType()
 {
 	_pcDocTypeStdPy = new DocTypeStdPy(this);
+	//_pcDocTypeStdPy->_INCREF();
 
 }
 
 DocTypeStd::~DocTypeStd()
 {
+	_pcDocTypeStdPy->_DECREF();
 
 }
 
@@ -142,6 +144,7 @@ const char *DocTypeStd::GetTypeName(void)
 
 Base::FCPyObject *DocTypeStd::GetPyObject(void)
 {
+	_pcDocTypeStdPy->_INCREF();
 	return _pcDocTypeStdPy;
 }
 
@@ -177,13 +180,16 @@ Feature *DocTypeStd::AddFeature(const char* sName)
 
 	if(pcFeature)
 	{
+		// next free label
+		TDF_Label FeatureLabel = _lFeature.FindChild(_iNextFreeFeature++);
 		// mount the feature on its place
-		FeatureAttr::Set(_lFeature.FindChild(_iNextFreeFeature),pcFeature);
+		FeatureAttr::Set(FeatureLabel,pcFeature);
+		// name
+		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) sName ));
 		// the rest of the setup do the feature itself
-		pcFeature->InitLabel(_lFeature.FindChild(_iNextFreeFeature));
+		pcFeature->InitLabel(FeatureLabel);
 		// update the pointer
-		_lActiveFeature = _lFeature.FindChild(_iNextFreeFeature);
-		_iNextFreeFeature++;
+		_lActiveFeature = FeatureLabel;
 
 		// return the feature
 		return pcFeature;
@@ -242,7 +248,7 @@ PyParentObject DocTypeStdPy::Parents[] = {&FCPyObject::Type, NULL};
 DocTypeStdPy::DocTypeStdPy(DocTypeStd *pcDocTypeStd, PyTypeObject *T)
 : FCPyObject( T), _pcDocTypeStd(pcDocTypeStd)
 {
-	//Base::Console().Log("Create DocTypeStdPy: %p \n",this);
+	Base::Console().Log("Create DocTypeStdPy: %p \n",this);
 }
 
 PyObject *DocTypeStdPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -257,7 +263,7 @@ PyObject *DocTypeStdPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrap
 //--------------------------------------------------------------------------
 DocTypeStdPy::~DocTypeStdPy()						// Everything handled in parent
 {
-//	Base::Console().Log("Destroy DocTypeStdPy: %p \n",this);
+	Base::Console().Log("Destroy DocTypeStdPy: %p \n",this);
 } 
 
 

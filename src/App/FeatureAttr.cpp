@@ -109,7 +109,9 @@ FeatureAttr::~FeatureAttr () {}
 void FeatureAttr::Set (Feature  * S) 
 {
  
-  Backup();
+	_pcFeature = S;
+
+//  Backup();
 //  myString2 = S;
   //TCollection_ExtendedString tmpS(S);
   //tmpS.RemoveAll(':');
@@ -117,7 +119,10 @@ void FeatureAttr::Set (Feature  * S)
   //myEmpty = Standard_False;
 }
 
-Feature  *FeatureAttr::Get () const {return _pcFeature;}
+Feature  *FeatureAttr::Get () const 
+{
+	return _pcFeature;
+}
 
 const Standard_GUID& FeatureAttr::ID () const { return GetID(); }
 

@@ -149,7 +149,7 @@ void FCPropertyView::Update(void)
 	buf->add(new KexiProperty("List", "Test", l, l, "Descr."));
 	_pPropEditor->setBuffer(buf);
 
-	Base::Console().Log("Property Updated\n");
+//	Base::Console().Log("Property Updated\n");
 }
 
 void FCPropertyView::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)

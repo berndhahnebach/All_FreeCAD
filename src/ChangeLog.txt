@@ -424,3 +424,6 @@ Version: V0.1B91 Date: Tue Sep 21 15:34:55 2004 +++++++++++++++++++++++++++++++
 Version: V0.1B92 Date: Sun Oct 03 17:55:31 2004 +++++++++++++++++++++++++++++++
 + using namespaces in several modules in Gui now
 + documentation
+
+Version: V0.1B93 Date: Thu Oct 14 21:55:08 2004 +++++++++++++++++++++++++++++++
++ features now inserted in the document and get called by a function

@@ -44,6 +44,8 @@ namespace Part
 
 class PartBoxFeature :public App::Feature
 {
+	virtual void InitLabel(const TDF_Label &rcLabel);
+
 	virtual bool MustExecute(const TFunction_Logbook& log) const;
 
 	virtual Standard_Integer Execute(TFunction_Logbook& log) const;

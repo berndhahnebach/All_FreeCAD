@@ -48,8 +48,10 @@
 #endif
 
 #include "../Base/Console.h"
+#include "../Base/Exception.h"
 
 #include "Function.h"
+#include "FeatureAttr.h"
 #include "Feature.h"
 
 using namespace App;
@@ -101,31 +103,14 @@ Standard_Boolean Function::MustExecute(const TFunction_Logbook& log) const
 {
 	Base::Console().Log("Function::MustExecute()\n");
 
-	//return _pcFeature->MustExecute(log);
-  return Standard_False;
+	Handle(FeatureAttr) myFeatureAttr;
+	// Get the Feature Attribute of this label
+	if(! Label().FindAttribute(FeatureAttr::GetID(), myFeatureAttr )) 
+		throw FCException("Function::Execute():Wrong document Strukture");
+	
+	// call the Exectute of the App::Feature
+	return myFeatureAttr->Get()->MustExecute(log);
 
-/*
-  // If the object's label is modified:
-  if (log.IsModified(Label())) return Standard_True; 
-
-  // Cut (in our simple case) has two arguments: The original shape, and the tool shape.
-  // They are on the child labels of the cut's label:
-  // So, OriginalNShape  - is attached to the first  child label
-  //     ToolNShape - is attached to the second child label,
-  //     .
-  // Let's check them:
-  Handle(TDF_Reference) OriginalRef;
-  Label().FindChild(1).FindAttribute(TDF_Reference::GetID(),OriginalRef);
-  if (log.IsModified(OriginalRef->Get()))   return Standard_True; // Original shape.
-
-  Handle(TDF_Reference) ToolRef;
-  Label().FindChild(2).FindAttribute(TDF_Reference::GetID(),ToolRef);
-  if (log.IsModified(ToolRef->Get()))   return Standard_True; // Tool shape.
-  
-  // if there are no any modifications concerned the cut,
-  // it's not necessary to recompute (to call the method Execute()):
-  return Standard_False;
-  */
 }
 
 //=======================================================================
@@ -143,47 +128,16 @@ Standard_Boolean Function::MustExecute(const TFunction_Logbook& log) const
 Standard_Integer Function::Execute(TFunction_Logbook& log) const
 {
 	Base::Console().Log("Function::Execute()\n");
-//	return _pcFeature->Execute(log);
-   return Standard_False;
 
-	// Let's get the arguments (OriginalNShape, ToolNShape of the object):
+	Handle(FeatureAttr) myFeatureAttr;
+	// Get the Feature Attribute of this label
+	if(! Label().FindAttribute(FeatureAttr::GetID(), myFeatureAttr )) 
+		throw FCException("Function::Execute():Wrong document Strukture");
+	
+	// call the Exectute of the App::Feature
+	return myFeatureAttr->Get()->Execute(log);
 
-	// First, we have to retrieve the TDF_Reference attributes to obtain the root labels of the OriginalNShape and the ToolNShape:
-/*	Handle(TDF_Reference)  OriginalRef, ToolRef;
-	if (!Label().FindChild(1).FindAttribute(TDF_Reference::GetID(), OriginalRef )) return 1;
-	TDF_Label OriginalLab = OriginalRef->Get();
-	if (!Label().FindChild(2).FindAttribute(TDF_Reference::GetID(), ToolRef)) return 1;
-	TDF_Label ToolLab = ToolRef->Get();
-
-	// Get the TNaming_NamedShape attributes of these labels
-	Handle(TNaming_NamedShape) OriginalNShape, ToolNShape;
-	if (!( OriginalLab.FindAttribute(TNaming_NamedShape::GetID(),OriginalNShape) ))
-		Standard_Failure::Raise("TOcaf_Commands::CutObjects");		
-	if (!( ToolLab.FindAttribute(TNaming_NamedShape::GetID(),ToolNShape) ))
-		Standard_Failure::Raise("TOcaf_Commands::CutObjects");		
-
-	// Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
-	TopoDS_Shape OriginalShape  = OriginalNShape->Get();
-	TopoDS_Shape ToolShape = ToolNShape->Get();
-
-// STEP 2:
-	// Let's call for algorithm computing a cut operation:
-	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
-	// Let's check if the Cut has been successfull:
-	if (!mkCut.IsDone()) 
-	{
-		MessageBox(0,"Cut not done.","Cut Function Driver",MB_ICONERROR);
-		return 2;
-	}
-	TopoDS_Shape ResultShape = mkCut.Shape();
-
-	// Build a TNaming_NamedShape using built cut
-	TNaming_Builder B(Label());
-	B.Modify( OriginalShape, ResultShape);
-// That's all:
-  // If there are no any mistakes we return 0:
-	return 0;
-  */
+	
 }
 
 

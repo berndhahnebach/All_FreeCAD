@@ -35,9 +35,14 @@ using namespace App;
 //===========================================================================
 
 
-void Feature::InitLabel(const TDF_Label &rcLabel)
+void Feature::AttachLabel(const TDF_Label &rcLabel)
 {
 	_cFeatureLabel = rcLabel;
+
+	// Add the one and only FreeCAD FunctionDriver to the driver Tabel !!! Move to APPinit !!!
+	Handle(TFunction_Driver) myDriver = new Function();
+	TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
+
 
 	// Instanciate a TFunction_Function attribute connected to the current box driver
 	// and attach it to the data structure as an attribute of the Box Label
@@ -51,10 +56,12 @@ void Feature::InitLabel(const TDF_Label &rcLabel)
 	if(!TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver)) 
 		myFunctionDriver;
 	
-	//myFunctionDriver->Init(_cFeatureLabel);
+	myFunctionDriver->Init(_cFeatureLabel);
 
-    //if (myFunctionDriver->Execute(log)) 
-	//	Base::Console().Error("Feature::InitLabel()");
+	InitLabel(_cFeatureLabel);
+
+    if (myFunctionDriver->Execute(log)) 
+		Base::Console().Error("Feature::InitLabel()");
 
 }
 
@@ -138,7 +145,7 @@ PyParentObject FeaturePy::Parents[] = {&FCPyObject::Type, NULL};
 FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
 : FCPyObject( T), _pcFeature(pcFeature)
 {
-	//Base::Console().Log("Create FeaturePy: %p \n",this);
+	Base::Console().Log("Create FeaturePy: %p \n",this);
 }
 
 PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -158,7 +165,7 @@ Base::FCPyObject *Feature::GetPyObject(void)
 //--------------------------------------------------------------------------
 FeaturePy::~FeaturePy()						// Everything handled in parent
 {
-//	Base::Console().Log("Destroy FeaturePy: %p \n",this);
+	Base::Console().Log("Destroy FeaturePy: %p \n",this);
 } 
 
 

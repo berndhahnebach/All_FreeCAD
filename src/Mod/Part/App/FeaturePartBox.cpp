@@ -28,6 +28,13 @@
 
 using namespace Part;
 
+void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
+{
+	Base::Console().Log("PartBoxFeature::InitLabel()\n");
+
+}
+
+
 bool PartBoxFeature::MustExecute(const TFunction_Logbook& log) const
 {
 	Base::Console().Log("PartBoxFeature::MustExecute()\n");
@@ -37,7 +44,7 @@ bool PartBoxFeature::MustExecute(const TFunction_Logbook& log) const
 Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log) const
 {
 	Base::Console().Log("PartBoxFeature::Execute()\n");
-	return 1;
+	return 0;
 }
 
 
