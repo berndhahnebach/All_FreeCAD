@@ -194,6 +194,7 @@ class FCStackBar : public FCWindow, public FCObserver
 
   private:
     void updatePages();
+    QStackBarBtn* firstPageVisible();
     void timerEvent ( QTimerEvent * e);
     void animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage);
 

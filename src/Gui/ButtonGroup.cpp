@@ -802,7 +802,10 @@ void FCStackBar::showPage(QWidget* w)
   {
     if (it->first->widget() == w)
     {
+      QStackBarBtn* page = firstPageVisible();
       it->first->show();
+      if (!page)
+        it->first->animateClick();
     }
   }
 }
@@ -813,12 +816,15 @@ void FCStackBar::hidePage(QWidget* w)
   {
     if (it->first->widget() == w)
     {
-      if (!it->first->isSelected())
+      it->first->hide();
+      if (it->first->isSelected())
       {
-        it->first->hide();
+        QStackBarBtn* page = firstPageVisible();
+        if (page)
+          page->animateClick();
+        else
+          it->second->hide();
       }
-      else
-        QMessageBox::information(this, "Cannot hide","Cannot hide active window");
     }
   }
 }
@@ -834,6 +840,19 @@ bool FCStackBar::isPageVisible(QWidget* w)
   }
 
   return false;
+}
+
+QStackBarBtn* FCStackBar::firstPageVisible()
+{
+  for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  {
+    if (it->first->isVisible())
+    {
+      return it->first;
+    }
+  }
+
+  return NULL;
 }
 
 void FCStackBar::buttonClicked()
