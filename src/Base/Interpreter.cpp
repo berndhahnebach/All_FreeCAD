@@ -75,6 +75,7 @@ void FCInterpreter::LaunchFile(const char*pxFileName)
 	if(fp == NULL) 
 		throw FCException("File not found");
 
+
 	PyRun_SimpleFile(fp,FileName.str);
 
 }
@@ -96,12 +97,15 @@ bool FCInterpreter::LoadModule(const char* psModName)
 
 void FCInterpreter::RunFCCommand(const char * psCom,...)
 {
+	// va stuff
     va_list namelessVars;
     va_start(namelessVars, psCom);  // Get the "..." vars
     vsprintf(format2, psCom, namelessVars);
     va_end(namelessVars);
 	assert(strlen(psCom) < 800);
+	// loging
 	GetConsole().Log("Run Com: %s\n",format2);
+
 	Launch(format2);
 }
 
@@ -201,4 +205,28 @@ void FCInterpreter::RunMethod(PyObject *pobject, const char *method,
 		PyErr_Print();
 		throw FCException("Error runing FCInterpreter::RunMethod() exception in called methode");
 	}
+}
+
+
+void FCInterpreter::DbgObserveFile(const char* sFileName)
+{
+	if(sFileName)
+		_cDebugFileName = sFileName;
+	else
+		_cDebugFileName = "";
+}
+
+void FCInterpreter::DbgSetBreakPoint(unsigned int uiLineNumber)
+{
+
+}
+
+void FCInterpreter::DbgUnsetBreakPoint(unsigned int uiLineNumber)
+{
+
+}
+
+void FCInterpreter::DbgStep(void)
+{
+
 }

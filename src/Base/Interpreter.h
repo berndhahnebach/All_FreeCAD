@@ -34,9 +34,11 @@
 #ifndef __INTERPRETER_H__
 #define __INTERPRETER_H__
 
-#include<Python.h>
-
+#include <Python.h>
+#include <string>
 // Std. configurations
+
+
 
 class BaseExport FCInterpreter
 {
@@ -60,6 +62,20 @@ public:
 	void RunMethod(PyObject *pobject, const char *method,
                    const char *resfmt=0,   void *cresult=0,   
                    const char *argfmt="()",   ...  );
+
+	/** @name methodes for debuging facility
+	 */
+	//@{
+	/// sets the file name which should be debuged
+	void DbgObserveFile(const char* sFileName="");
+	/// sets a break point to a special line number in the actual file
+	void DbgSetBreakPoint(unsigned int uiLineNumber);
+	/// unsets a break point to a special line number in the actual file
+	void DbgUnsetBreakPoint(unsigned int uiLineNumber);
+	/// One step further
+	void DbgStep(void);
+	//@}
+
 	// singelton
 	static FCInterpreter &Instance(void);
 	static void Destruct(void);
@@ -69,9 +85,10 @@ protected:
 
 	// singelton
 	static FCInterpreter *_pcSingelton;
-	friend FCInterpreter &GetInterpreter(void); 
-
-
+	friend FCInterpreter &GetInterpreter(void);
+	
+	std::string _cDebugFileName;
+	
 };
 
 
