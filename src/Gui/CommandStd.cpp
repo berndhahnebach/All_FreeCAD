@@ -737,9 +737,10 @@ FCCmdOnlineHelp::FCCmdOnlineHelp()
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 
-  // FreeCAD's online doc contains about 425 pages
-  // this value is for initialization of the progress bar
-  pages = 425;
+  // FreeCAD's online documentation needs 763 (progress bar) 
+  // steps to download.
+  // This value is for initialization of the progress bar
+  pages = 763;
 
   process = new FCProcess;
   process->Attach(this);
@@ -753,26 +754,43 @@ FCCmdOnlineHelp::~FCCmdOnlineHelp()
 
 void FCCmdOnlineHelp::Activated(int iMsg)
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
-  std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
-  std::string prx = hGrp->GetASCII("ProxyText", "http://prx:8080");
-  bool bUseProxy  = hGrp->GetBool ("UseProxy", false);
+  // process is not running yet
+  if (!process->isRunning())
+  {
+    FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+    std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
+    std::string prx = hGrp->GetASCII("ProxyText", "http://prx:8080");
+    bool bUseProxy  = hGrp->GetBool ("UseProxy", false);
 
-  if (bUseProxy)
-    process->setEnvironment("http_proxy", prx.c_str());
+    if (bUseProxy)
+      process->setEnvironment("http_proxy", prx.c_str());
+    else
+      process->unsetEnvironment("http_proxy");
+
+    process->clearArguments();
+    process->setExecutable("wget");
+    *process << "-r" << "-k" << "-E" << url.c_str();
+    process->start();
+    fail = false;
+  }
+  else // kill the process now
+  {
+    if (process->isRunning())
+    {
+      process->tryTerminate();
+      QTimer::singleShot( 2000, process, SLOT( kill() ) );
+    }
+  }
+
+  if (process->isRunning())
+    GetAction()->setMenuText(QObject::tr("Stop %1").arg(sMenuText));
   else
-    process->unsetEnvironment("http_proxy");
-
-  process->clearArguments();
-  process->setExecutable("wget");
-  *process << "-r" << "-k" << "-E" << url.c_str();
-  process->start();
-  fail = false;
+    GetAction()->setMenuText(sMenuText);
 }
 
 bool FCCmdOnlineHelp::IsActive(void)
 {
-  return !process->isRunning();
+  return true;
 }
 
 void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason)
@@ -786,28 +804,20 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     case FCBaseProcess::processStarted:
     {
       GetConsole().Message("Download started...\n");
-      ApplicationWindow::Instance->GetProgressBar()->Start("wget", pages);
+      FCAnimation::Instance()->startAnimation();
     } break;
-
-
-
 
     // 'exited' signal
     case FCBaseProcess::processExited:
     {
       if (!fail)
       {
-#ifndef FC_DEBUG
         GetConsole().Message("Download finished.\n");
-#endif
         QMessageBox::information(ApplicationWindow::Instance, "Download Online help", "Download finished.");
       }
 
-      ApplicationWindow::Instance->GetProgressBar()->Stop();
+      FCAnimation::Instance()->stopAnimation();
     } break;
-
-
-
 
     // 'failed' signal
     case FCBaseProcess::processFailed:
@@ -818,36 +828,20 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
 #endif
     } break;
 
-
-
-
     // 'killed' signal
     case FCBaseProcess::processKilled:
     {
-      GetConsole().Warning("Download was canceled\n.");
-      ApplicationWindow::Instance->GetProgressBar()->Stop();
+      GetConsole().Warning("Download was canceled.\n");
+      FCAnimation::Instance()->stopAnimation();
     } break;
 
-
-
-
-    // 'output' signal
+    // 'output' signal or 'error output' signal
     case FCBaseProcess::receivedStdout:
-      break;
-
-
-
-
-    // 'error output' signal
     case FCBaseProcess::receivedStderr:
     {
       try
       {
         std::string msg = process->message();
-
-#ifdef FC_DEBUG
-        GetConsole().Log(msg.c_str());
-#endif
 
         // search for an error message
         int pos;
@@ -856,48 +850,33 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
           int pos2 = msg.find('.', pos);
           std::string substr = msg.substr(pos+8, pos2-pos-8+1);
           fail = true;
-#ifdef FC_DEBUG
-          QMessageBox::critical(ApplicationWindow::Instance, "Download failed", substr.c_str());
-#else
           GetConsole().Error("%s\n", substr.c_str());
-#endif
+
+          if (process->isRunning())
+          {
+            process->tryTerminate();
+            QTimer::singleShot( 2000, process, SLOT( kill() ) );
+          }
         }
-
-        ApplicationWindow::Instance->GetProgressBar()->Next();
-
-        process->writeToStdin("TestInput\n");
       } 
       catch (const FCException&)
       {
-        if (process->isRunning())
-        {
-#if QT_VERSION < 300
-          process->kill();
-#else
-          process->tryTerminate();
-          QTimer::singleShot( 2000, process, SLOT( kill() ) );
-#endif
-        }
+        // if ESC is pressed simply ignore this exception
       }
     } break;
 
-
-
-
-    // 'wroteStdin' signal
+   // 'wroteStdin' signal
     case FCBaseProcess::wroteStdin:
-#ifdef FC_DEBUG
-      GetConsole().Log("TestMessage");
-#endif
       break;
-
-
-
 
     // 'launch' signal
     case FCBaseProcess::launchFinished:
       break;
   }
+
+  // resets menu text
+  if (!process->isRunning())
+    GetAction()->setMenuText(sMenuText);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

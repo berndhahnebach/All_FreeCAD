@@ -325,3 +325,6 @@ Version: V0.1B70 Date: Sun Aug 17 16:06:28 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B71 Date: Sun Sep 14 17:38:19 2003 +++++++++++++++++++++++++++++++
 + make a template application; just run MakeApp.py with application name
+
+Version: V0.1B72 Date: Wed Sep 24 19:06:32 2003 +++++++++++++++++++++++++++++++
++ make customizable widget framework much more flexible (from python)

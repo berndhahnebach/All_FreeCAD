@@ -101,6 +101,7 @@
 #include <qmessagebox.h>
 #include <qmotifplusstyle.h>
 #include <qmotifstyle.h>
+#include <qmovie.h>
 #include <qmultilinedit.h>
 #include <qnamespace.h>
 #include <qobjectlist.h>

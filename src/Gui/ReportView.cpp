@@ -103,16 +103,22 @@ void FCReportOutput::appendLog(const char * s, const char * color)
 
   if (color)
   {
+#if QT_VERSION < 300
     if (strchr(s, '\n') != NULL)
       qs = tr("<font color=\"%1\">%2</font>\n<br/>").arg(color).arg(s);
     else
       qs = tr("<font color=\"%1\">%2</font>").arg(color).arg(s);
+#else
+      qs = tr("%1").arg(s);
+#endif
   }
   else
   {
+#if QT_VERSION < 300
     if (strchr(s, '\n') != NULL)
       qs = tr("%1<br/>").arg(s);
     else
+#endif
       qs = tr("%1").arg(s);
   }
   

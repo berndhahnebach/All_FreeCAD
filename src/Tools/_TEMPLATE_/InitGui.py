@@ -43,12 +43,12 @@ class _TEMPLATE_Workbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up _TEMPLATE_ toolbar...\n')
-			Gui.ToolbarAddTo("_TEMPLATE_Tools","_TEMPLATE__Test")
-			Gui.ToolbarLoadSettings("_TEMPLATE_Tools")
+			list = ["_TEMPLATE__Test"]
+			Gui.ToolbarAppendItems("_TEMPLATE_Tools", list, 0)
 
 			Log ('   Set up _TEMPLATE_ commandbar...\n')
-			Gui.CommandbarAddTo("_TEMPLATE_Tools","_TEMPLATE__Test")
-			Gui.CommandbarLoadSettings("_TEMPLATE_Tools")
+			list = ["_TEMPLATE__Test"]
+			Gui.CommandbarAppendItems("_TEMPLATE_Tools", list, 0)
 
 			Log ('   Set up _TEMPLATE_ menues...\n')
 

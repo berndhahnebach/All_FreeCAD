@@ -202,6 +202,7 @@ int main( int argc, char ** argv )
 
 				// show the main window
 				GetConsole().Log("Showing GUI Application...\n");
+        mw->Polish();
 				mw->show();
 				pcQApp->connect( pcQApp, SIGNAL(lastWindowClosed()), pcQApp, SLOT(quit()) );
 

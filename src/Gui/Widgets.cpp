@@ -1096,4 +1096,54 @@ void FCFloatSpinBox::stepChange ()
   FCSpinBox::stepChange();
 }
 
+// --------------------------------------------------------
+
+FCAnimation* FCAnimation::_pcSingleton = 0L;
+
+void FCAnimation::Destruct(void)
+{
+	// not initialized or double destruct!
+  assert(_pcSingleton);
+	delete _pcSingleton;
+}
+
+FCAnimation* FCAnimation::Instance(void)
+{
+	// not initialized?
+	if(!_pcSingleton)
+	{
+		_pcSingleton = new FCAnimation(NULL, "Animation");
+	}
+
+  return _pcSingleton;
+}
+
+FCAnimation::FCAnimation(QWidget * parent, const char * name, WFlags f)
+  : QLabel(parent, name, f)
+{
+  setFixedWidth(50);
+  hide();
+}
+
+FCAnimation::~FCAnimation()
+{
+}
+
+void FCAnimation::startAnimation()
+{
+#ifndef QGIF_H
+  setText("Download");
+#else
+  setMovie(QMovie("trolltech.gif"));
+#endif
+#if QT_VERSION < 300
+  setMovie(QMovie("trolltech.gif"));
+#endif
+}
+
+void FCAnimation::stopAnimation()
+{
+  setText("");
+}
+
 #include "moc_Widgets.cpp"

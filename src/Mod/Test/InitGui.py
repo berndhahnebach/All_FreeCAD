@@ -40,20 +40,12 @@ class TestWorkbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up Test toolbar...\n')
-			Gui.ToolbarAddTo("TestTools","Test_Test1")
-			Gui.ToolbarAddTo("TestTools","Test_Test2")
-			Gui.ToolbarAddTo("TestTools","Test_TestAll")
-			Gui.ToolbarAddTo("TestTools","Test_TestDoc")
-			Gui.ToolbarAddTo("TestTools","Test_TestBase")
-			Gui.ToolbarLoadSettings("TestTools")
+			list = ["Test_Test1","Test_Test2","Test_TestAll","Test_TestDoc","Test_TestBase"]
+			Gui.ToolbarAppendItems("TestTools",list,0)
 
 			Log ('   Set up Test commandbar...\n')
-			Gui.CommandbarAddTo("TestTools","Test_Test1")
-			Gui.CommandbarAddTo("TestTools","Test_Test2")
- 			Gui.CommandbarAddTo("TestTools","Test_TestAll")
-			Gui.CommandbarAddTo("TestTools","Test_TestDoc")
-			Gui.CommandbarAddTo("TestTools","Test_TestBase")
-			Gui.CommandbarLoadSettings("TestTools")
+			list = ["Test_Test1","Test_Test2","Test_TestAll","Test_TestDoc","Test_TestBase"]
+			Gui.CommandbarAppendItems("TestTools",list,0)
                             
 			Log ('   Set up Test menues...\n')
 

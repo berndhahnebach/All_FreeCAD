@@ -30,7 +30,6 @@
 #ifndef _PreComp_
 #include <qcursor.h>
 #include <qclipboard.h>
-#include <qobjcoll.h>
 #endif
 
 #ifndef NO_KDE2

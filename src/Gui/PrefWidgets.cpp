@@ -45,7 +45,6 @@
 
 #include <cmath>
 #include <qvalidator.h>
-#include <qobjcoll.h>
 
 
 
@@ -635,7 +634,7 @@ bool FCActionDrag::decode ( const QMimeSource * e, QString&  action )
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCCustomWidget::FCCustomWidget(const char* grp, const char * name)
-: FCWidgetPrefs(name, false)
+: FCWidgetPrefs(name, false), _bRemovable(true)
 {
   init(grp, name);
 }
@@ -710,9 +709,33 @@ void FCCustomWidget::setItems(const std::vector<std::string>& items)
   _clItems = items;
 }
 
-void FCCustomWidget::addItem(const std::string& item)
+void FCCustomWidget::appendItems(const std::vector<std::string>& item)
 {
-  _clItems.push_back(item);
+  for (std::vector<std::string>::const_iterator it = item.begin(); it != item.end(); ++it)
+    _clItems.push_back(*it);
+}
+
+void FCCustomWidget::removeItems(const std::vector<std::string>& item)
+{
+  unsigned long startPos;
+  for (std::vector<std::string>::const_iterator it = item.begin(); it != item.end(); ++it)
+  {
+    startPos = _clItems.size() - item.size();
+    std::vector<std::string>::iterator pos;
+    pos = std::find(_clItems.begin() + startPos, _clItems.end(), *it);
+    if (pos != _clItems.end())
+      _clItems.erase(pos);
+  }
+}
+
+void FCCustomWidget::setRemovable(bool b)
+{
+  _bRemovable = b;
+}
+
+bool FCCustomWidget::isRemovable() const
+{
+  return _bRemovable;
 }
 
 void FCCustomWidget::loadXML()
@@ -750,6 +773,9 @@ FCToolBar::~FCToolBar()
 
 void FCToolBar::update(FCCommandManager& rclMgr)
 {
+  if (!isRemovable())
+    return; // no need to read again
+
   clearAll();
   for (std::vector<std::string>::iterator it = _clItems.begin(); it != _clItems.end(); ++it)
   {
@@ -765,7 +791,7 @@ bool FCToolBar::isAllowed(QWidget* w)
   if (!w)
     return false; // no valid widget
 
-  // this extensible of course ;-)
+  // this is extensible of course ;-)
   //
   if (w->inherits("QToolButton") )
     return true;
@@ -1133,23 +1159,42 @@ void FCPopupMenu::savePreferences()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pStackBar)
-  :_clCmdMgr(rclMgr), _pclStackBar(pStackBar)
+struct FCCustomWidgetManagerP
 {
+  FCCustomWidgetManagerP(FCCommandManager& rclMgr, FCStackBar* pStackBar)
+    : _clCmdMgr(rclMgr), _pclStackBar(pStackBar)
+  {
+  }
+
+  std::map <std::string,FCPopupMenu*>  _clPopupMenus;
+  std::map <FCPopupMenu*,int>          _clPopupID;
+  std::map <std::string,FCToolBar*>    _clToolbars;
+  std::map <std::string,FCToolBar*>    _clCmdbars;
+  std::map <std::string,FCDockWindow*> _clDocWindows;
+  FCCommandManager&                    _clCmdMgr;
+  FCStackBar*                          _pclStackBar;
+};
+
+FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pStackBar)
+{
+  d = new FCCustomWidgetManagerP(rclMgr, pStackBar);
 }
 
 FCCustomWidgetManager::~FCCustomWidgetManager()
 {
-  for (std::map <std::string,FCPopupMenu*>::iterator it1 = _clPopupMenus.begin(); it1 != _clPopupMenus.end(); ++it1)
+  for (std::map <std::string,FCPopupMenu*>::iterator it1 = d->_clPopupMenus.begin(); it1 != d->_clPopupMenus.end(); ++it1)
     it1->second->saveXML();
-  for (std::map <std::string,FCToolBar*>::iterator it2 = _clToolbars.begin(); it2 != _clToolbars.end(); ++it2)
+  for (std::map <std::string,FCToolBar*>::iterator it2 = d->_clToolbars.begin(); it2 != d->_clToolbars.end(); ++it2)
     it2->second->saveXML();
-  for (std::map <std::string,FCToolBar*>::iterator it3 = _clCmdbars.begin(); it3 != _clCmdbars.end(); ++it3)
+  for (std::map <std::string,FCToolBar*>::iterator it3 = d->_clCmdbars.begin(); it3 != d->_clCmdbars.end(); ++it3)
     it3->second->saveXML();
+
+  delete d;d=NULL;
 }
 
-bool FCCustomWidgetManager::init(const char* workbench)
+bool FCCustomWidgetManager::loadCustomWidegts(const char* workbench)
 {
+  std::vector<std::string> dummy;
   bool bFound = false;
   FCParameterGrp::handle hGrp = FCWidgetPrefs::getRootParamGrp();
   hGrp = hGrp->GetGroup("Workbenches")->GetGroup(workbench);
@@ -1164,19 +1209,19 @@ bool FCCustomWidgetManager::init(const char* workbench)
   bFound |= (hSubGrps.size() > 0);
   for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
   {
-    addCmdBar((*it)->GetGroupName());
+    addCmdBar((*it)->GetGroupName(), dummy);
   }
-  if (_clCmdbars.size() > 0)
+  if (d->_clCmdbars.size() > 0)
   {
-    if (_pclStackBar->showedView() == NULL)
-      _pclStackBar->showView(_clCmdbars.begin()->second);
+    if (d->_pclStackBar->showedView() == NULL)
+      d->_pclStackBar->showView(d->_clCmdbars.begin()->second);
   }
 
   hSubGrps = hToolGrp->GetGroups();
   bFound |= (hSubGrps.size() > 0);
   for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
   {
-    addToolBar((*it)->GetGroupName());
+    addToolBar((*it)->GetGroupName(), dummy);
   }
 
   hSubGrps = hMenuGrp->GetGroups();
@@ -1184,9 +1229,9 @@ bool FCCustomWidgetManager::init(const char* workbench)
   for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
   {
     if ((*it)->GetASCII("Parent Menu", "nix") != "nix")
-      addPopupMenu((*it)->GetGroupName(), (*it)->GetASCII("Parent Menu").c_str());
+      addPopupMenu((*it)->GetGroupName(), dummy, (*it)->GetASCII("Parent Menu").c_str());
     else
-      addPopupMenu((*it)->GetGroupName());
+      addPopupMenu((*it)->GetGroupName(), dummy);
   }
 
   return bFound;
@@ -1195,57 +1240,65 @@ bool FCCustomWidgetManager::init(const char* workbench)
 bool FCCustomWidgetManager::update(const char* workbench)
 {
   QString wb = ApplicationWindow::Instance->GetActiveWorkbench();
-  std::map <std::string,FCPopupMenu*> clPopupMenus = _clPopupMenus;
+  std::map <std::string,FCPopupMenu*> clPopupMenus = d->_clPopupMenus;
   for (std::map <std::string,FCPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
   {
-    if (wb != it1->second->getWorkbench() && it1->second->getWorkbench() != "Standard")
+    if (wb != it1->second->getWorkbench())
       delPopupMenu(it1->first.c_str());
   }
-  std::map <std::string,FCToolBar*> clToolbars = _clToolbars;
+  std::map <std::string,FCToolBar*> clToolbars = d->_clToolbars;
   for (std::map <std::string,FCToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
   {
-    if (wb != it2->second->getWorkbench() && it2->second->getWorkbench() != "Standard")
+    if (wb != it2->second->getWorkbench())
       delToolBar(it2->first.c_str());
   }
-  std::map <std::string,FCToolBar*> clCmdbars = _clCmdbars;
+  std::map <std::string,FCToolBar*> clCmdbars = d->_clCmdbars;
   for (std::map <std::string,FCToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
   {
-    if (wb != it3->second->getWorkbench() && it3->second->getWorkbench() != "Standard")
+    if (wb != it3->second->getWorkbench())
       delCmdBar(it3->first.c_str());
   }
 
-  return init(workbench);
+  return loadCustomWidegts(workbench);
 }
 
 bool FCCustomWidgetManager::update()
 {
   // clear the content of all custom widgets and read it from preferences again
   //
-  std::map <std::string,FCPopupMenu*> clPopupMenus = _clPopupMenus;
+  std::map <std::string,FCPopupMenu*> clPopupMenus = d->_clPopupMenus;
   for (std::map <std::string,FCPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
   {
     it1->second->loadXML();
-    it1->second->update(_clCmdMgr);
+    it1->second->update(d->_clCmdMgr);
   }
-  std::map <std::string,FCToolBar*> clToolbars = _clToolbars;
+  std::map <std::string,FCToolBar*> clToolbars = d->_clToolbars;
   for (std::map <std::string,FCToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
   {
     it2->second->loadXML();
-    it2->second->update(_clCmdMgr);
+    it2->second->update(d->_clCmdMgr);
   }
-  std::map <std::string,FCToolBar*> clCmdbars = _clCmdbars;
+  std::map <std::string,FCToolBar*> clCmdbars = d->_clCmdbars;
   for (std::map <std::string,FCToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
   {
     it3->second->loadXML();
-    it3->second->update(_clCmdMgr);
+    it3->second->update(d->_clCmdMgr);
   }
 
   return true;
 }
 
-void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vector<std::string>& defIt, const char* parent)
+void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vector<std::string>& defIt, 
+                                         const char* parent, bool force)
 {
   FCPopupMenu* popup = getPopupMenu(type.c_str(), parent);
+
+  if (force)
+  {
+    popup->appendItems(defIt);
+    popup->update(d->_clCmdMgr);
+    return;
+  }
 
   popup->loadXML();
   if (!popup->hasCustomItems())
@@ -1253,67 +1306,79 @@ void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vec
     popup->setItems(defIt);
   }
 
-  popup->update(_clCmdMgr);
+  popup->update(d->_clCmdMgr);
 }
 
-void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vector<std::string>& defIt)
+void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vector<std::string>& defIt, bool force)
 {
   FCToolBar* toolbar = getToolBar(type.c_str());
 
+  if (force)
+  {
+    toolbar->appendItems(defIt);
+    toolbar->update(d->_clCmdMgr);
+    return;
+  }
+
   toolbar->loadXML();
   if (!toolbar->hasCustomItems())
   {
     toolbar->setItems(defIt);
   }
 
-  toolbar->update(_clCmdMgr);
+  toolbar->update(d->_clCmdMgr);
 }
 
-void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector<std::string>& defIt)
+void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector<std::string>& defIt, bool force)
 {
   FCToolBar* toolbar = getCmdBar(type.c_str());
 
+  if (force)
+  {
+    toolbar->appendItems(defIt);
+    toolbar->update(d->_clCmdMgr);
+    return;
+  }
+
   toolbar->loadXML();
   if (!toolbar->hasCustomItems())
   {
     toolbar->setItems(defIt);
   }
 
-  toolbar->update(_clCmdMgr);
+  toolbar->update(d->_clCmdMgr);
 }
 
-void FCCustomWidgetManager::addItem(const std::string& item)
+void FCCustomWidgetManager::removeMenuItems(const std::string& type, const std::vector<std::string>& items)
 {
-  _clDefaultItems.push_back(item);
+  FCPopupMenu* popup = getPopupMenu(type.c_str());
+  popup->FCCustomWidget::removeItems(items);
+  popup->update(d->_clCmdMgr);
 }
 
-void FCCustomWidgetManager::addToolBar(const std::string& type)
+void FCCustomWidgetManager::removeToolBarItems(const std::string& type, const std::vector<std::string>& items)
 {
-  addToolBar(type, _clDefaultItems);
-  _clDefaultItems.clear();
+  FCToolBar* tb = getToolBar(type.c_str());
+  tb->FCCustomWidget::removeItems(items);
+  tb->update(d->_clCmdMgr);
 }
 
-void FCCustomWidgetManager::addCmdBar(const std::string& type)
+void FCCustomWidgetManager::removeCmdBarItems(const std::string& type, const std::vector<std::string>& items)
 {
-  addCmdBar(type, _clDefaultItems);
-  _clDefaultItems.clear();
-}
-
-void FCCustomWidgetManager::addPopupMenu(const std::string& type, const char* parent)
-{
-  addPopupMenu(type, _clDefaultItems, parent);
-  _clDefaultItems.clear();
+  FCToolBar* tb = getCmdBar(type.c_str());
+  tb->FCCustomWidget::removeItems(items);
+  tb->update(d->_clCmdMgr);
 }
 
 FCToolBar* FCCustomWidgetManager::getToolBar(const char* name)
 {
-	std::map <std::string,FCToolBar*>::iterator It = _clToolbars.find(name);
-	if( It!=_clToolbars.end() )
+	std::map <std::string,FCToolBar*>::iterator It = d->_clToolbars.find(name);
+	if( It!=d->_clToolbars.end() )
 		return It->second;
 	else
 	{
     FCToolBar *pcToolBar = new FCToolBar( ApplicationWindow::Instance, name );
-		_clToolbars[name] = pcToolBar;
+		d->_clToolbars[name] = pcToolBar;
 		pcToolBar->show();
 		return pcToolBar;
 	}
@@ -1322,7 +1387,7 @@ FCToolBar* FCCustomWidgetManager::getToolBar(const char* name)
 std::vector<FCToolBar*> FCCustomWidgetManager::getToolBars()
 {
   std::vector<FCToolBar*> aclToolbars;
-	for (std::map <std::string,FCToolBar*>::iterator It = _clToolbars.begin(); It != _clToolbars.end(); ++It)
+	for (std::map <std::string,FCToolBar*>::iterator It = d->_clToolbars.begin(); It != d->_clToolbars.end(); ++It)
   {
     aclToolbars.push_back(It->second);
   }
@@ -1332,31 +1397,33 @@ std::vector<FCToolBar*> FCCustomWidgetManager::getToolBars()
 
 void FCCustomWidgetManager::delToolBar(const char* name)
 {
-	std::map <std::string,FCToolBar*>::iterator It = _clToolbars.find(name);
-	if( It!=_clToolbars.end() )
+	std::map <std::string,FCToolBar*>::iterator It = d->_clToolbars.find(name);
+	if( It!=d->_clToolbars.end() )
 	{
+    if (!It->second->isRemovable())
+      return; // cannot be removed
     It->second->saveXML();
     ApplicationWindow::Instance->removeToolBar(It->second);
 		delete It->second;
-		_clToolbars.erase(It);
+		d->_clToolbars.erase(It);
 	}
 }
 
 int FCCustomWidgetManager::countToolBars()
 {
-  return int(_clToolbars.size());
+  return int(d->_clToolbars.size());
 }
 
 FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
 {
-	std::map <std::string,FCToolBar*>::iterator It = _clCmdbars.find(name);
-	if( It!=_clCmdbars.end() )
+	std::map <std::string,FCToolBar*>::iterator It = d->_clCmdbars.find(name);
+	if( It!=d->_clCmdbars.end() )
 		return It->second;
 	else
 	{
-    FCToolBar *pcToolBar = new FCToolboxBar( name, _pclStackBar, name );
-		_clCmdbars[name] = pcToolBar;
-    _pclStackBar->addView(pcToolBar, name);
+    FCToolBar *pcToolBar = new FCToolboxBar( name, d->_pclStackBar, name );
+		d->_clCmdbars[name] = pcToolBar;
+    d->_pclStackBar->addView(pcToolBar, name);
 		return pcToolBar;
 	}
 }
@@ -1364,7 +1431,7 @@ FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
 std::vector<FCToolBar*> FCCustomWidgetManager::getCmdBars()
 {
   std::vector<FCToolBar*> aclCmdbars;
-	for (std::map <std::string,FCToolBar*>::iterator It = _clCmdbars.begin(); It != _clCmdbars.end(); ++It)
+	for (std::map <std::string,FCToolBar*>::iterator It = d->_clCmdbars.begin(); It != d->_clCmdbars.end(); ++It)
   {
     aclCmdbars.push_back(It->second);
   }
@@ -1374,47 +1441,57 @@ std::vector<FCToolBar*> FCCustomWidgetManager::getCmdBars()
 
 void FCCustomWidgetManager::delCmdBar(const char* name)
 {
-	std::map <std::string,FCToolBar*>::iterator It = _clCmdbars.find(name);
-	if( It!=_clCmdbars.end() )
+	std::map <std::string,FCToolBar*>::iterator It = d->_clCmdbars.find(name);
+	if( It!=d->_clCmdbars.end() )
 	{
+    if (!It->second->isRemovable())
+      return; // cannot be removed
     It->second->saveXML();
-    _pclStackBar->remView(It->second);
-		_clCmdbars.erase(It);
+    d->_pclStackBar->remView(It->second);
+		d->_clCmdbars.erase(It);
 	}
 }
 
 int FCCustomWidgetManager::countCmdBars()
 {
-  return int(_clCmdbars.size());
+  return int(d->_clCmdbars.size());
 }
 
 FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* parent)
 {
-	std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.find(name);
-	if( It!=_clPopupMenus.end() )
-  {
-    // insert it again into another popup menu
-    if (parent != 0)
+	std::map <std::string,FCPopupMenu*>::iterator It = d->_clPopupMenus.find(name);
+	if ( It!=d->_clPopupMenus.end() )
     {
-      FCPopupMenu *pParent = getPopupMenu(parent);
-      pParent->insertItem(name, It->second);
-    }
-
 		return It->second;
   }
-	else if (parent == 0)
+	else if (parent == 0 || strcmp(parent,"") == 0)
 	{
     FCPopupMenu *pcPopup = new FCPopupMenu( ApplicationWindow::Instance, name );
-		_clPopupMenus[name] = pcPopup;
-    ApplicationWindow::Instance->menuBar()->insertItem( name, pcPopup );
+		d->_clPopupMenus[name] = pcPopup;
+    int id = ApplicationWindow::Instance->menuBar()->insertItem( name, pcPopup );
+    d->_clPopupID[pcPopup] = id;
+    // search for the "?" menu remove it and insert it to the end
+    It = d->_clPopupMenus.find("?");
+    // not found or just inserted
+    if ( It!=d->_clPopupMenus.end() && strcmp(name, "?") != 0)
+    {
+      // get old id remove it from the menubar insert immediately and
+      // set the new id
+      id = d->_clPopupID[It->second];
+      ApplicationWindow::Instance->menuBar()->removeItem(id);
+      id = ApplicationWindow::Instance->menuBar()->insertItem( "?", It->second );
+      d->_clPopupID[It->second] = id;
+    }
+
 		return pcPopup;
 	}
   else
   {
     FCPopupMenu *pParent = getPopupMenu(parent);
     FCPopupMenu *pcPopup = new FCPopupMenu( pParent, name, parent );
-		_clPopupMenus[name] = pcPopup;
-    pParent->insertItem(name, pcPopup);
+		d->_clPopupMenus[name] = pcPopup;
+    int id = pParent->insertItem(name, pcPopup);
+    d->_clPopupID[pcPopup] = id;
 		return pcPopup;
   }
 }
@@ -1422,7 +1499,7 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
 std::vector<FCPopupMenu*> FCCustomWidgetManager::getPopupMenus()
 {
   std::vector<FCPopupMenu*> aclMenus;
-	for (std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.begin(); It != _clPopupMenus.end(); ++It)
+	for (std::map <std::string,FCPopupMenu*>::iterator It = d->_clPopupMenus.begin(); It != d->_clPopupMenus.end(); ++It)
   {
     aclMenus.push_back(It->second);
   }
@@ -1432,25 +1509,50 @@ std::vector<FCPopupMenu*> FCCustomWidgetManager::getPopupMenus()
 
 void FCCustomWidgetManager::delPopupMenu(const char* name)
 {
-	std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.find(name);
-	if( It!=_clPopupMenus.end() )
+	std::map <std::string,FCPopupMenu*>::iterator It = d->_clPopupMenus.find(name);
+	if( It!=d->_clPopupMenus.end() )
 	{
+    if (!It->second->isRemovable())
+      return; // cannot be removed
+
     It->second->saveXML();
+    if (strcmp(It->second->parentWidget()->className(), ApplicationWindow::Instance->className()) == 0)
+    {
+      // remove properly from menubar
+      int id = d->_clPopupID[It->second];
+      ApplicationWindow::Instance->menuBar()->removeItem(id);
+
+#ifdef FC_DEBUG
+    printf("%s removed from menubar\n", name);
+#endif
+    }
+    else if (strcmp(It->second->parentWidget()->className(), It->second->className()) == 0)
+    {
+      // remove properly from parent menu
+      FCPopupMenu* pParent = (FCPopupMenu*)It->second->parentWidget();
+      int id = d->_clPopupID[It->second];
+      pParent->removeItem(id);
+
+#ifdef FC_DEBUG
+    printf("%s removed from parent menu\n", name);
+#endif
+    }
+
 		delete It->second;
-		_clPopupMenus.erase(It);
+		d->_clPopupMenus.erase(It);
 	}
 }
 
 int FCCustomWidgetManager::countPopupMenus()
 {
-  return int(_clPopupMenus.size());
+  return int(d->_clPopupMenus.size());
 }
 
 FCDockWindow* FCCustomWidgetManager::getDockWindow(const char* name)
 {
-	std::map <std::string,FCDockWindow*>::iterator It = _clDocWindows.find(name);
+	std::map <std::string,FCDockWindow*>::iterator It = d->_clDocWindows.find(name);
 
-  if (It!=_clDocWindows.end())
+  if (It!=d->_clDocWindows.end())
 		return It->second;
 	else
 		return NULL;
@@ -1459,7 +1561,7 @@ FCDockWindow* FCCustomWidgetManager::getDockWindow(const char* name)
 std::vector<FCDockWindow*> FCCustomWidgetManager::getDockWindows()
 {
   std::vector<FCDockWindow*> dockWindows;
-  for (std::map <std::string,FCDockWindow*>::iterator It = _clDocWindows.begin(); It!=_clDocWindows.end(); ++It)
+  for (std::map <std::string,FCDockWindow*>::iterator It = d->_clDocWindows.begin(); It!=d->_clDocWindows.end(); ++It)
     dockWindows.push_back(It->second);
 
   return dockWindows;
@@ -1467,18 +1569,18 @@ std::vector<FCDockWindow*> FCCustomWidgetManager::getDockWindows()
 
 void FCCustomWidgetManager::delDockWindow(const char* name)
 {
-	std::map <std::string,FCDockWindow*>::iterator It = _clDocWindows.find(name);
-	if( It!=_clDocWindows.end() )
+	std::map <std::string,FCDockWindow*>::iterator It = d->_clDocWindows.find(name);
+	if( It!=d->_clDocWindows.end() )
 	{
 		delete It->second;
-		_clDocWindows.erase(It);
+		d->_clDocWindows.erase(It);
 	}
 }
 
 void FCCustomWidgetManager::addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos, int percent)
 {
   ApplicationWindow* pApp = ApplicationWindow::Instance;
-	_clDocWindows[name] = pcDocWindow;
+	d->_clDocWindows[name] = pcDocWindow;
 	QString str = name;
 	str += " dockable window";
 

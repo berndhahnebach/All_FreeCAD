@@ -48,139 +48,106 @@ class StandardWorkbench ( Workbench ):
 	"Standard workbench object"
 	def Start(self):
 		Log ('   Set up toolbar...\n')
-#		Gui.ToolbarAddTo("TestTools","Std_MDIToplevel")
-#		Gui.ToolbarAddTo("TestTools","Std_MDITabed")
-#		Gui.ToolbarAddTo("TestTools","Std_MDINormal")
-#		Gui.ToolbarAddSeperator("TestTools")
-#		Gui.ToolbarAddTo("TestTools","Std_TilePragmatic")
-#		Gui.ToolbarAddTo("TestTools","Std_TileVertical")
-#		Gui.ToolbarAddTo("TestTools","Std_TileHoricontal")
-#		Gui.ToolbarAddSeperator("TestTools")
-#		Gui.ToolbarAddTo("TestTools","Std_Test1")
-#		Gui.ToolbarAddTo("TestTools","Std_Test2")
-#		Gui.ToolbarAddSeperator("TestTools")
-#		Gui.ToolbarAddTo("TestTools","Std_DlgParameter")
-#		Gui.ToolbarAddTo("TestTools","Std_DlgPreferences")
-#		Gui.ToolbarAddTo("TestTools","Std_DlgMacroRecord")
-#		Gui.ToolbarAddTo("TestTools","Std_DlgMacroExecute")
-#		Gui.ToolbarAddTo("TestTools","Std_DlgCustomize")
-#		Gui.ToolbarAddSeperator("TestTools")
-#		Gui.ToolbarAddTo("TestTools","Std_CommandLine")
-#		Gui.ToolbarLoadSettings("TestTools")
+
+#		list = ["Std_MDIToplevel","Std_MDITabed","Std_MDINormal","Separator",
+#		"Std_TilePragmatic","Std_TileVertical","Std_TileHoricontal","Separator",
+#		"Std_Test1","Std_Test2","Separator","Std_DlgParameter","Std_DlgPreferences",
+#		"Std_DlgMacroRecord","Std_DlgMacroExecute","Std_DlgCustomize","Separator",
+#		"Std_CommandLine"]
+#		Gui.ToolbarAppendItems("TestTools", list, 0)
 
 		# test tool bar
-		Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")
-		Gui.ToolbarAddTo("Standard views","Std_ViewAxo")
-		Gui.ToolbarAddSeperator("Standard views")
-		Gui.ToolbarAddTo("Standard views","Std_ViewFront")
-		Gui.ToolbarAddTo("Standard views","Std_ViewRight")
-		Gui.ToolbarAddTo("Standard views","Std_ViewTop")
-		Gui.ToolbarAddSeperator("Standard views")
-		Gui.ToolbarAddTo("Standard views","Std_ViewRear")
-		Gui.ToolbarAddTo("Standard views","Std_ViewLeft")
-		Gui.ToolbarAddTo("Standard views","Std_ViewBottom")
-		Gui.ToolbarLoadSettings("Standard views")
-
+		list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator",
+		"Std_ViewFront","Std_ViewFront","Std_ViewRight",
+		"Std_ViewTop", "Separator", "Std_ViewRear", "Std_ViewLeft",
+		"Std_ViewBottom"]
+		Gui.ToolbarAppendItems("Standard views",list, 0)
 
 		Log ('   Set up commandbar...\n')
-		Gui.CommandbarAddTo("TestTools","Std_Test1")
-		Gui.CommandbarAddTo("TestTools","Std_Test2")
-		Gui.CommandbarLoadSettings("TestTools")
+		list = ["Std_Test1", "Std_Test2"]
+		Gui.CommandbarAppendItems("TestTools", list, 0)
 
-		Gui.CommandbarAddTo("Standard views","Std_ViewFitAll")
-		Gui.CommandbarAddTo("Standard views","Std_ViewAxo")
-		Gui.CommandbarAddSeperator("Standard views")
-		Gui.CommandbarAddTo("Standard views","Std_ViewFront")
-		Gui.CommandbarAddTo("Standard views","Std_ViewRight")
-		Gui.CommandbarAddTo("Standard views","Std_ViewTop")
-		Gui.CommandbarAddSeperator("Standard views")
-		Gui.CommandbarAddTo("Standard views","Std_ViewRear")
-		Gui.CommandbarAddTo("Standard views","Std_ViewLeft")
-		Gui.CommandbarAddTo("Standard views","Std_ViewBottom")
-		Gui.CommandbarLoadSettings("Standard views");
+		list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator", "Std_ViewFront",
+		"Std_ViewRight","Std_ViewTop","Separator","Std_ViewRear","Std_ViewLeft",
+		"Std_ViewBottom"]
+		Gui.CommandbarAppendItems("Standard views", list, 0)
 
-		Gui.CommandbarAddTo("Special Ops","Std_DlgParameter")
-		Gui.CommandbarAddTo("Special Ops","Std_DlgPreferences")
-		Gui.CommandbarAddTo("Special Ops","Std_DlgMacroRecord")
-		Gui.CommandbarAddTo("Special Ops","Std_DlgMacroExecute")
-		Gui.CommandbarAddTo("Special Ops","Std_DlgCustomize")
-		Gui.CommandbarAddTo("Special Ops","Std_CommandLine")
-		Gui.CommandbarLoadSettings("Special Ops")
+		list = ["Std_DlgParameter","Std_DlgPreferences","Std_DlgMacroRecord",
+		"Std_DlgMacroExecute","Std_DlgCustomize","Std_CommandLine"]
+		Gui.CommandbarAppendItems("Special Ops", list, 0)
 
 		Log ('   Set up menues...\n')
+
 	def Stop(self):
-		Log ('   Stoping workbench...\n')
+		Log ('   Stopping workbench...\n')
 		Gui.CommandbarDelete("Special Ops")
 		Gui.CommandbarDelete("TestTools")
 		Gui.CommandbarDelete("Standard views")
 		Gui.ToolbarDelete("Standard views")
-		Gui.ToolbarDelete("TestTools")
+#		Gui.ToolbarDelete("TestTools")
 		
 def InitToolbars():
 	Log ('   Set up toolbars...\n')
-	# test tool bar
-	Gui.ToolbarAddTo("TestTools","Std_MDIToplevel")
-	Gui.ToolbarAddTo("TestTools","Std_MDITabed")
-	Gui.ToolbarAddTo("TestTools","Std_MDINormal")
-	Gui.ToolbarAddSeperator("TestTools")
-	Gui.ToolbarAddTo("TestTools","Std_TilePragmatic")
-	Gui.ToolbarAddTo("TestTools","Std_TileVertical")
-	Gui.ToolbarAddTo("TestTools","Std_TileHoricontal")
-	Gui.ToolbarAddSeperator("TestTools")
-	Gui.ToolbarAddTo("TestTools","Std_Test1")
-	Gui.ToolbarAddTo("TestTools","Std_Test2")
-	Gui.ToolbarAddSeperator("TestTools")
-	Gui.ToolbarAddTo("TestTools","Std_DlgParameter")
-	Gui.ToolbarAddTo("TestTools","Std_DlgPreferences")
-	Gui.ToolbarAddTo("TestTools","Std_DlgMacroRecord")
-	Gui.ToolbarAddTo("TestTools","Std_DlgMacroExecute")
-	Gui.ToolbarAddTo("TestTools","Std_DlgCustomize")
-	Gui.ToolbarAddSeperator("TestTools")
-	Gui.ToolbarAddTo("TestTools","Std_CommandLine")
-	Gui.ToolbarLoadSettings("TestTools")
 
-	# test tool bar
-	Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")
-	Gui.ToolbarAddTo("Standard views","Std_ViewAxo")
-	Gui.ToolbarAddSeperator("Standard views")
-	Gui.ToolbarAddTo("Standard views","Std_ViewFront")
-	Gui.ToolbarAddTo("Standard views","Std_ViewRight")
-	Gui.ToolbarAddTo("Standard views","Std_ViewTop")
-	Gui.ToolbarAddSeperator("Standard views")
-	Gui.ToolbarAddTo("Standard views","Std_ViewRear")
-	Gui.ToolbarAddTo("Standard views","Std_ViewLeft")
-	Gui.ToolbarAddTo("Standard views","Std_ViewBottom")
-	Gui.ToolbarLoadSettings("Standard views")
+	list = ["Std_New", "Std_Open", "Std_Save", "Std_Print", "Separator", "Std_Cut","Std_Copy",
+	"Std_Paste", "Separator", "Std_Undo", "Std_Redo", "Separator", "Std_Workbench","Std_WhatsThis"]
+	Gui.ToolbarAppendItems("file operations", list, 0, 1, 0)
+
+	list = ["Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute"]
+	Gui.ToolbarAppendItems("Macro recording", list, 0, 0, 0)
+
+#	# test tool bar
+#	list = ["Std_MDIToplevel","TestTools","Std_MDITabed","Std_MDINormal",
+#	"Separator","Std_TilePragmatic","Std_TileVertical","Std_TileHoricontal",
+#	"Separator","Std_Test1","Std_Test2","Separator","Std_DlgParameter",
+#	"Std_DlgPreferences","Std_DlgMacroRecord","Std_DlgMacroExecute","Std_DlgCustomize",
+#	"Separator","Std_CommandLine"]
+#	Gui.ToolbarAppendItems("TestTools", list, 0)
+#
+#	# test tool bar
+#	list = ["Std_ViewFitAll","Std_ViewAxo","Separator","Std_ViewFront",
+#	"Std_ViewRight","Std_ViewTop","Std_ViewRear","Std_ViewLeft","Std_ViewBottom"]
+#	Gui.ToolbarAppendItems("Standard views", list, 0)
 	
 
 def InitMenues():
 	Log ('   Set up menues...\n')
 
+	list = ["Std_New", "Std_Open", "Std_Save", "Std_SaveAs", "Separator", "Std_Print",
+	"Separator","Std_MRU","Separator", "Std_Quit"]
+	Gui.MenuAppendItems("File", list, 0, 0)
+
+	list = ["Std_Cut", "Std_Copy", "Std_Paste", "Separator", "Std_Undo", "Std_Redo",
+	"Separator", "Std_DlgPreferences"]
+	Gui.MenuAppendItems("Edit", list, 0, 0)
+
+	list = ["Std_ViewCreateInventor", "Std_ViewCreateOCC","Separator"]
+	Gui.MenuAppendItems("View", list, 0, 0)
+
+	list = ["Std_CommandLine", "Std_DlgParameter", "Std_OCAFBrowser", "Separator",
+	"Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute", "Separator",
+	"Std_ViewCreateInventor", "Std_ViewCreateOCC", "Separator", "Std_DlgCustomize", "Std_DlgPreferences"]
+	Gui.MenuAppendItems("Tools", list, 0, 0)
+
+	list = ["Std_TileHoricontal", "Std_TileVertical", "Std_TilePragmatic", "Separator", 
+	"Std_MDIToplevel", "Std_MDITabed"]
+	Gui.MenuAppendItems("Windows", list, 0, 0)
+
+	list = ["Std_OnlineHelp", "Std_About", "Std_WhatsThis"]
+	Gui.MenuAppendItems("?", list, 0, 0)
+
 def InitCmdBar():
 	Log ('   Set up command bar...\n')
-	Gui.CommandbarAddTo("TestTools","Std_Test1")
-	Gui.CommandbarAddTo("TestTools","Std_Test2")
-	Gui.CommandbarLoadSettings("TestTools")
+	list = ["Std_Test1","Std_Test2"]
+	Gui.CommandbarAppendItems("TestTools", list, 0)
 
-	Gui.CommandbarAddTo("Standard views","Std_ViewFitAll")
-	Gui.CommandbarAddTo("Standard views","Std_ViewAxo")
-	Gui.CommandbarAddSeperator("Standard views")
-	Gui.CommandbarAddTo("Standard views","Std_ViewFront")
-	Gui.CommandbarAddTo("Standard views","Std_ViewRight")
-	Gui.CommandbarAddTo("Standard views","Std_ViewTop")
-	Gui.CommandbarAddSeperator("Standard views")
-	Gui.CommandbarAddTo("Standard views","Std_ViewRear")
-	Gui.CommandbarAddTo("Standard views","Std_ViewLeft")
-	Gui.CommandbarAddTo("Standard views","Std_ViewBottom")
-	Gui.CommandbarLoadSettings("Standard views")
+	list = ["Std_ViewFitAll","Std_ViewAxo","Separator","Std_ViewFront","Std_ViewRight",
+	"Std_ViewTop","Separator","Std_ViewRear","Std_ViewLeft","Std_ViewBottom"]
+	Gui.CommandbarAppendItems("Standard views", list, 0)
 
-	Gui.CommandbarAddTo("Special Ops","Std_DlgParameter")
-	Gui.CommandbarAddTo("Special Ops","Std_DlgPreferences")
-	Gui.CommandbarAddTo("Special Ops","Std_DlgMacroRecord")
-	Gui.CommandbarAddTo("Special Ops","Std_DlgMacroExecute")
-	Gui.CommandbarAddTo("Special Ops","Std_DlgCustomize")
-	Gui.CommandbarAddTo("Special Ops","Std_CommandLine")
-	Gui.CommandbarLoadSettings("Special Ops")
+	list = ["Std_DlgParameter","Std_DlgPreferences","Std_DlgMacroRecord","Std_DlgMacroExecute",
+	"Std_DlgCustomize","Std_CommandLine"]
+	Gui.CommandbarAppendItems("Special Ops",list,0)
 
 
 
@@ -217,15 +184,12 @@ Gui.WorkbenchAdd("<none>",StandardWorkbench())
 # init modules
 InitApplications()
 
+InitMenues()
+InitToolbars()
+#InitCmdBar()
+
 # set standard workbench
 Gui.WorkbenchActivate("<none>")
 
-#InitMenues()
-#InitToolbars()
-#InitCmdBar()
 
 Log ('\nFreeCAD gui init done\n')
-   
-    
-
-

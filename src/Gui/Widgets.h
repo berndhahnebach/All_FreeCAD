@@ -380,4 +380,20 @@ class FCFloatSpinBox : public FCSpinBox
     FCFloatSpinBoxPrivate* d;
 };
 
+class FCAnimation : public QLabel
+{
+  public:
+    static FCAnimation* Instance();
+    static void Destruct();
+
+    void startAnimation();
+    void stopAnimation();
+
+  private:
+    FCAnimation(QWidget * parent, const char * name = 0, WFlags f = 0);
+    virtual ~FCAnimation();
+
+    static FCAnimation* _pcSingleton;
+};
+
 #endif // __FC_WIDGETS_H__

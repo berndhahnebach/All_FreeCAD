@@ -44,12 +44,12 @@ class ImportWorkbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up Import toolbar...\n')
-			Gui.ToolbarAddTo("ImportTools","Import_ReadBREP")
-			Gui.ToolbarLoadSettings("ImportTools")
+			list = ["Import_ReadBREP"]
+			Gui.ToolbarAppendItems("ImportTools", list, 0)
 
 			Log ('   Set up Import commandbar...\n')
-			Gui.CommandbarAddTo("ImportTools","Import_ReadBREP")
-			Gui.CommandbarLoadSettings("ImportTools")
+			list = ["Import_ReadBREP"]
+			Gui.CommandbarAppendItems("ImportTools", list, 0)
 			
 			Log ('   Set up Import menues...\n')
 

@@ -27,7 +27,6 @@
 
 #include "Icons/FCIcon.xpm"
 #include "Icons/x.xpm"
-#include <qobjcoll.h>
 
 //===========================================================================
 // FCAction 

@@ -104,6 +104,26 @@ static QWorkspace* stWs;
 ApplicationWindow* ApplicationWindow::Instance = 0L;
 FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 
+// Pimpl class
+struct ApplicationWindowP
+{
+  ApplicationWindowP()
+    : toolbars(0L), cmdbars(0L), viewbar(0L)
+  {
+  }
+
+  ~ApplicationWindowP()
+  {
+    viewbar = 0L;
+    delete toolbars;
+    delete cmdbars;
+  }
+
+  QPopupMenu* toolbars;
+  QPopupMenu* cmdbars;
+  FCPopupMenu* viewbar;
+};
+
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
       _pcActiveDocument(NULL),
@@ -116,6 +136,7 @@ ApplicationWindow::ApplicationWindow()
 	// init the Inventor subsystem
 	SoQt::init(this);
 
+  d = new ApplicationWindowP;
 
 	setCaption( "Qt-FreeCAD" );
 
@@ -158,6 +179,9 @@ ApplicationWindow::ApplicationWindow()
 	test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
 
 
+  // animation
+  FCAnimation::Instance()->reparent(statusBar(), QPoint());
+  statusBar()->addWidget(FCAnimation::Instance(),0,true);
 	// labels and progressbar
 	_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
 	//_pclProgress->setFixedWidth(200);
@@ -317,13 +341,13 @@ void ApplicationWindow::CreateStandardOperations()
 
 	// populate a tool bar with some actions
 
-	bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
+//	bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
 	// default toolbars -----------------------------------------------------------------------
 	//
 	// populate toolbars with all default actions
-	QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
+//	QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
 	//_pcStdToolBar->setLabel( "File" );
-
+/*
 	if (!bInit)
 	{
 		std::vector<std::string> defToolbar;
@@ -351,12 +375,12 @@ void ApplicationWindow::CreateStandardOperations()
 		// hide
 		_pcWidgetMgr->getToolBar("Macro recording")->hide();
 
-	}
+	}*/
 	
 	// default menu bar -----------------------------------------------------------------------
 	//
 	// populate menus with all default actions
-	if (!bInit)
+/*	if (!bInit)
 	{
 		std::vector<std::string> defaultMenus;
 		defaultMenus.push_back("Std_New");
@@ -420,27 +444,34 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.push_back("Std_About");
 		defaultMenus.push_back("Std_WhatsThis");
 		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
-	}
-
-  connect(_pcWidgetMgr->getPopupMenu("View"), SIGNAL(aboutToShow()), this, SLOT(OnShowView()));
-  connect(_pcWidgetMgr->getPopupMenu("View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
-  connect(_pcWidgetMgr->getPopupMenu("Toolbars", "View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
-  connect(_pcWidgetMgr->getPopupMenu("Command bars", "View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
+	}*/
 
 	setMenuForSDIModeSysButtons( menuBar());
 	_cActiveWorkbenchName = "<none>";
 }
 
+void ApplicationWindow::Polish()
+{
+  d->viewbar  = _pcWidgetMgr->getPopupMenu("View");
+  d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
+  d->cmdbars  = new QPopupMenu(d->viewbar, "Cmdbars");
+
+  connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(OnShowView(     )));
+  connect(d->viewbar,  SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
+  connect(d->toolbars, SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
+  connect(d->cmdbars,  SIGNAL(activated ( int )), this, SLOT(OnShowView( int )));
+}
+
 void ApplicationWindow::OnShowView()
 {
-  FCPopupMenu* menu = _pcWidgetMgr->getPopupMenu("View");
+  FCPopupMenu* menu = d->viewbar;
   menu->update(GetCommandManager());
   menu->setCheckable(true);
   mCheckBars.clear();
 
   // toolbars
   {
-    QPopupMenu* m = _pcWidgetMgr->getPopupMenu("Toolbars", "View");
+    QPopupMenu* m = d->toolbars;
     m->clear();
     std::vector<FCToolBar*> tb = _pcWidgetMgr->getToolBars();
     for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
@@ -456,11 +487,13 @@ void ApplicationWindow::OnShowView()
     mCheckBars[id] = m_pTaskBar;
     if (m_pTaskBar->isVisible())
 		  m->setItemChecked(id, true);
+
+    menu->insertItem("Toolbars", m);
   }
 
   // command bars
   {
-    QPopupMenu* m = _pcWidgetMgr->getPopupMenu("Command bars", "View");
+    QPopupMenu* m = d->cmdbars;
     m->clear();
     std::vector<FCToolBar*> tb = _pcWidgetMgr->getCmdBars();
     for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
@@ -470,6 +503,8 @@ void ApplicationWindow::OnShowView()
       if (_pcStackBar->isPageVisible(*it))
 		    m->setItemChecked(id, true);
     }
+
+    menu->insertItem("Commandbars", m);
   }
   menu->insertSeparator();
 
@@ -766,6 +801,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
 		_pcActivityTimer->stop();
 
+    ActivateWorkbench("<none>");
 		QextMdiMainFrm::closeEvent(e);
 	}
 }
@@ -1102,14 +1138,15 @@ void ApplicationWindow::setAreaPal(const QPalette& pal)
 
 // FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
-	{"ToolbarAddTo",          (PyCFunction) ApplicationWindow::sToolbarAddTo,            1},
+	{"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
+  {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
+	{"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
+	{"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
+	{"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},
 	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
-	{"ToolbarAddSeperator",   (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
-	{"ToolbarLoadSettings",   (PyCFunction) ApplicationWindow::sToolbarLoadSettings,     1},
-	{"CommandbarAddTo",       (PyCFunction) ApplicationWindow::sCommandbarAddTo,         1},
-	{"CommandbarLoadSettings",(PyCFunction) ApplicationWindow::sCommandbarLoadSettings,  1},
+	{"CommandbarAppendItems", (PyCFunction) ApplicationWindow::sCommandbarAppendItems,   1},
+	{"CommandbarRemoveItems", (PyCFunction) ApplicationWindow::sCommandbarRemoveItems,   1},
 	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
-	{"CommandbarAddSeperator",(PyCFunction) ApplicationWindow::sCommandbarAddSeperator,  1},
 	{"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
 	{"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
 	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
@@ -1144,30 +1181,122 @@ PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
 	return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sToolbarAddSeperator)
+PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
 {
-	char *psToolbarName;
-	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
-		return NULL;                                      // NULL triggers exception 
+  PyObject* pObject;
+  char* psMenuName;
+  char* parent = 0;
+  int bForce;
+  int bRemovable = 1;
+  // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "sOi|is", &psMenuName, &pObject, &bForce,
+                                        &bRemovable, &parent ))     
+    return NULL;                             // NULL triggers exception 
+  if (!PyList_Check(pObject))
+    return NULL;                             // NULL triggers exception 
 
-//	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
-//	pcBar->addSeparator();
-  Instance->_pcWidgetMgr->addItem("Separator");
+  std::vector<std::string> aclItems;
+  int nSize = PyList_Size(pObject);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pObject, i);
+    if (!PyString_Check(item))
+      continue;
 
-	Py_INCREF(Py_None);
-	return Py_None;
+    char* pItem = PyString_AsString(item);
+
+    aclItems.push_back(pItem);
+  }
+
+  try{
+    Instance->_pcWidgetMgr->addPopupMenu(psMenuName, aclItems, parent, bForce);
+    if (!bRemovable)
+      Instance->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(false);
+	}catch(const FCException& e) {
+		PyErr_SetString(PyExc_AssertionError, e.what());		
+		return NULL;
+	}catch(...){
+		PyErr_SetString(PyExc_RuntimeError, "unknown error");
+		return NULL;
+	}
+
+  Py_INCREF(Py_None);
+  return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
+PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
 {
-	char *psToolbarName,*psCmdName;
-	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
+  PyObject* pObject;
+  char* psMenuName;
+  if (!PyArg_ParseTuple(args, "sO", &psMenuName, 
+                                     &pObject))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  if (!PyList_Check(pObject))
+    return NULL;                             // NULL triggers exception 
 
-//	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
+  std::vector<std::string> aclItems;
+  int nSize = PyList_Size(pObject);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pObject, i);
+    if (!PyString_Check(item))
+      continue;
+
+    char* pItem = PyString_AsString(item);
+
+    aclItems.push_back(pItem);
+  }
+
+  Instance->_pcWidgetMgr->removeMenuItems(psMenuName, aclItems);
+
+  Py_INCREF(Py_None);
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
+{
+    char *psMenuName;
+    if (!PyArg_ParseTuple(args, "s", &psMenuName))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	Instance->GetCustomWidgetManager()->delPopupMenu(psMenuName);
+
+	Py_INCREF(Py_None);
+    return Py_None;
+}
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
+{
+  PyObject* pObject;
+  char* psToolbarName;
+  int bForce;
+  int bVisible=1;
+  int bRemovable=1;
+  // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "sOi|ii", &psToolbarName, &pObject, &bForce,
+                                        &bVisible, &bRemovable))     
+    return NULL;                             // NULL triggers exception 
+  if (!PyList_Check(pObject))
+		return NULL;                                      // NULL triggers exception 
+
+  std::vector<std::string> aclItems;
+  int nSize = PyList_Size(pObject);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pObject, i);
+    if (!PyString_Check(item))
+      continue;
+
+    char* pItem = PyString_AsString(item);
+
+    aclItems.push_back(pItem);
+  }
+
 	try{
-//		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
-    Instance->_pcWidgetMgr->addItem(psCmdName);
+    Instance->_pcWidgetMgr->addToolBar(psToolbarName, aclItems, bForce);
+    if (!bVisible)
+      Instance->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
+    if (!bRemovable)
+      Instance->_pcWidgetMgr->getToolBar(psToolbarName)->setRemovable(false);
 	}catch(const FCException& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
@@ -1180,13 +1309,30 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
     return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sToolbarLoadSettings)
+PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
 {
-	char *psToolbarName;
-	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+  PyObject* pObject;
+  char* psToolbarName;
+  if (!PyArg_ParseTuple(args, "sO", &psToolbarName, 
+                                     &pObject))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  if (!PyList_Check(pObject))
 		return NULL;                             // NULL triggers exception 
 
-  Instance->_pcWidgetMgr->addToolBar(psToolbarName);
+  std::vector<std::string> aclItems;
+  int nSize = PyList_Size(pObject);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pObject, i);
+    if (!PyString_Check(item))
+      continue;
+
+    char* pItem = PyString_AsString(item);
+
+    aclItems.push_back(pItem);
+  }
+
+  Instance->_pcWidgetMgr->removeToolBarItems(psToolbarName, aclItems);
     
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1202,34 +1348,41 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
 	Py_INCREF(Py_None);
     return Py_None;
 }
-PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
 {
-	char *psToolbarName;
-	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+  PyObject* pObject;
+  char* psToolbarName;
+  int bForce;
+  int bRemovable = 1;
+  // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "sOi|i", &psToolbarName, &pObject,
+                                     &bForce, &bRemovable))     
+    return NULL;                             // NULL triggers exception 
+  if (!PyList_Check(pObject))
 		return NULL;                                      // NULL triggers exception 
 
-  Instance->_pcWidgetMgr->addItem("Separator");
+  std::vector<std::string> aclItems;
+  int nSize = PyList_Size(pObject);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pObject, i);
+    if (!PyString_Check(item))
+      continue;
 
-	Py_INCREF(Py_None);
-	return Py_None;
-} 
+    char* pItem = PyString_AsString(item);
 
-PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
-{
-	char *psToolbarName,*psCmdName;
-	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
+    aclItems.push_back(pItem);
+  }
 
-//	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
 	try{
-//		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
-    Instance->_pcWidgetMgr->addItem(psCmdName);
+    Instance->_pcWidgetMgr->addCmdBar(psToolbarName, aclItems, bForce);
+    if (!bRemovable)
+      Instance->_pcWidgetMgr->getCmdBar(psToolbarName)->setRemovable(false);
 	}catch(const FCException& e) {
-		//e.ReportException();
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){
-
 		PyErr_SetString(PyExc_RuntimeError, "unknown error");
 		return NULL;
 	}
@@ -1238,13 +1391,30 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
     return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
+PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
 {
-	char *psCmdbarName;
-	if (!PyArg_ParseTuple(args, "s", &psCmdbarName))     // convert args: Python->C 
+  PyObject* pObject;
+  char* psToolbarName;
+  if (!PyArg_ParseTuple(args, "sO", &psToolbarName, 
+                                     &pObject))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  if (!PyList_Check(pObject))
 		return NULL;                             // NULL triggers exception 
 
-	Instance->_pcWidgetMgr->addCmdBar(psCmdbarName);
+  std::vector<std::string> aclItems;
+  int nSize = PyList_Size(pObject);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pObject, i);
+    if (!PyString_Check(item))
+      continue;
+
+    char* pItem = PyString_AsString(item);
+
+    aclItems.push_back(pItem);
+  }
+
+  Instance->_pcWidgetMgr->removeCmdBarItems(psToolbarName, aclItems);
 
 	Py_INCREF(Py_None);
 	return Py_None;

@@ -34,7 +34,6 @@
 #endif
 
 #include "Tools.h"
-#include <qobjcoll.h>
 
 QPixmap FCTools::resize(int w, int h, QPixmap p)
 {

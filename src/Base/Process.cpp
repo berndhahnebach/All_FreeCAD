@@ -285,7 +285,7 @@ void FCBaseProcess::unsetEnvironment (const char* var)
   std::map<std::string, std::string>::iterator it = d->env.find(var);
   if (it != d->env.end())
   {
-    d->env.erase(it);
+    d->env[var] = "";
   }
 #endif
 }

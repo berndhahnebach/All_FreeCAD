@@ -211,15 +211,17 @@ public:
 	//---------------------------------------------------------------------
 
 	// static python wrapper of the exported functions
-	PYFUNCDEF_S(sToolbarAddTo);
-	PYFUNCDEF_S(sToolbarDelete);
-	PYFUNCDEF_S(sToolbarAddSeperator);
-	PYFUNCDEF_S(sToolbarLoadSettings);
+	PYFUNCDEF_S(sMenuAppendItems); // append items
+	PYFUNCDEF_S(sMenuRemoveItems); // remove items
+	PYFUNCDEF_S(sMenuDelete);      // delete the whole menu
 
-	PYFUNCDEF_S(sCommandbarAddTo);
+	PYFUNCDEF_S(sToolbarAppendItems);
+	PYFUNCDEF_S(sToolbarRemoveItems);
+	PYFUNCDEF_S(sToolbarDelete);
+
+	PYFUNCDEF_S(sCommandbarAppendItems);
+	PYFUNCDEF_S(sCommandbarRemoveItems);
 	PYFUNCDEF_S(sCommandbarDelete);
-	PYFUNCDEF_S(sCommandbarLoadSettings);
-	PYFUNCDEF_S(sCommandbarAddSeperator);
 
 	PYFUNCDEF_S(sWorkbenchAdd);
 	PYFUNCDEF_S(sWorkbenchDelete);
@@ -239,6 +241,8 @@ signals:
 	void sendQuit();
     void timeEvent();
 
+public:
+  void Polish();
 
 protected: // Protected methods
 	/** just fits the system menu button position to the menu position */
@@ -306,6 +310,7 @@ private:
   // friends
   //
   friend class FCCustomWidgetManager;
+  struct ApplicationWindowP* d;
 };
 
 

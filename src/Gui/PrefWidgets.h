@@ -395,8 +395,10 @@ class FCCustomWidget : public FCWidgetPrefs
     std::vector<std::string> getItems();
     /** Sets the given items to current */
     void setItems(const std::vector<std::string>& items);
-    /** Appends a single item */
-    void addItem(const std::string& item);
+    /** Appends several items */
+    void appendItems(const std::vector<std::string>& item);
+    /** Removes several items */
+    void removeItems(const std::vector<std::string>& item);
     /** Calls @ref restorePreferences() 
      * So it is possible to call the load routine from outside
      */
@@ -405,6 +407,15 @@ class FCCustomWidget : public FCWidgetPrefs
      * So it is possible to call the save routine from outside
      */
     void saveXML();
+    /** Sets the 'removable' property to b 
+     * After switching to a new workbench the customizable
+     * widgets of the old workbench (toolbars, command bars and menus 
+     * (currently disabled)) normally will be deleted. To avoid this
+     * you can set this property to 'false'. The default is 'true'..
+     */
+    void setRemovable(bool b);
+    /** Returns whether the widget is removable or not */
+    bool isRemovable() const;
     virtual void update(FCCommandManager& rclMgr) = 0;
     /** Returns the acive workbench at creation time of this object */
     QString getWorkbench();
@@ -421,6 +432,7 @@ class FCCustomWidget : public FCWidgetPrefs
 
     std::vector<std::string> _clItems;
     QString                  _clWorkbench;
+    bool                     _bRemovable;
 };
 
 /**
@@ -488,8 +500,10 @@ class FCCustomWidgetManager
     FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pCmdBar);
     ~FCCustomWidgetManager();
 
-    /** Initializes the custom widgets depending on the given workbench */
-    bool init(const char* workbench);
+    /** Loads the custom widgets depending on the given 
+     * workbench from the preferences 
+     */
+    bool loadCustomWidegts(const char* workbench);
     /** Updates the custom widgets depending on the given workbench */
     bool update(const char* workbench);
     /** Clears all custom widgets and reload it from preferences */
@@ -502,8 +516,17 @@ class FCCustomWidgetManager
     FCToolBar* getToolBar(const char* name);
     /** returns a vector of all toolbars */
     std::vector<FCToolBar*> getToolBars();
+    /** Adds new toolbar with its items 
+     * After adding the new toolbar it searches for its items in 
+     * the preferences. If it has found any items it uses these instead of 
+     * the given in 'defIt'. If force is set to true the toolbar takes the
+     * given items anyway.
+     */
+    void addToolBar   (const std::string& type, const std::vector<std::string>& defIt, bool force=false);
     /** Deletes the specified toolbar if it exists */
     void delToolBar(const char* name);
+    /** Removes toolbar items */
+    void removeToolBarItems (const std::string& type, const std::vector<std::string>& item);
     /** Get the number of toolbars */
     int countToolBars();
 
@@ -514,8 +537,17 @@ class FCCustomWidgetManager
     FCToolBar* getCmdBar(const char* name);
     /** returns a vector of all command bars */
     std::vector<FCToolBar*> getCmdBars();
+    /** Adds new command bar with its items 
+     * After adding the new command bar it searches for its items in 
+     * the preferences. If it has found any items it uses these instead of 
+     * the given in 'defIt'. If force is set to true the toolbar takes the
+     * given items anyway.
+     */
+    void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt, bool force=false);
     /** Deletes the specified command bar if it exists */
     void delCmdBar(const char* name);
+    /** Removes command bar items */
+    void removeCmdBarItems (const std::string& type, const std::vector<std::string>& item);
     /** Get the number of command bars */
     int countCmdBars();
 
@@ -528,8 +560,13 @@ class FCCustomWidgetManager
     FCPopupMenu* getPopupMenu(const char* name, const char* parent = 0);
     /** returns a vector of all menus */
     std::vector<FCPopupMenu*> getPopupMenus();
+    /** Adds new menu with its items and its parent */
+    void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, 
+                       const char* parent = 0,  bool force=false);
     /** Deletes the specified menu if it exists */
     void delPopupMenu(const char* name);
+    /** Removes menu items */
+    void removeMenuItems (const std::string& type, const std::vector<std::string>& item);
     /** Get the number of menus */
     int countPopupMenus();
 
@@ -546,37 +583,8 @@ class FCCustomWidgetManager
 		void addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,
                        KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 50);
 
-    /** Adds new menu with its items and its parent */
-    void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);
-    /** Adds new menu with its parent The items are set before creation of the menu.
-     * @see addItem(const std::string&)
-     */
-    void addPopupMenu (const std::string& type, const char* parent = 0);
-    /** Adds new tool bar with its items */
-    void addToolBar   (const std::string& type, const std::vector<std::string>& defIt);
-    /** Adds new toolbar The items are set before creation of the menu.
-     * @see addItem(const std::string&)
-     */
-    void addToolBar   (const std::string& type);
-    /** Adds new command bar with its items */
-    void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt);
-    /** Adds new command bar The items are set before creation of the menu.
-     * @see addItem(const std::string&)
-     */
-    void addCmdBar    (const std::string& type);
-    /** Adds a single item to temporary buffer. The item is not yet assigned
-     * to a concrete custom widget at this time 
-     */
-    void addItem      (const std::string& item);
-
-  protected:
-    std::map <std::string,FCPopupMenu*> _clPopupMenus;
-    std::map <std::string,FCToolBar*>   _clToolbars;
-    std::map <std::string,FCToolBar*>   _clCmdbars;
-	  std::map <std::string,FCDockWindow*>    _clDocWindows;
-    std::vector<std::string>            _clDefaultItems;
-    FCCommandManager&                   _clCmdMgr;
-  	FCStackBar*                         _pclStackBar;
+  private:
+    struct FCCustomWidgetManagerP* d;
 };
 
 #endif // __FC_PREF_WIDGETS_H__

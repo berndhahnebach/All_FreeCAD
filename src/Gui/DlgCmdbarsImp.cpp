@@ -41,7 +41,6 @@
 #include "DlgCmdbarsImp.h"
 #include "Application.h"
 #include "Tools.h"
-#include <qobjcoll.h>
 #include <qtabwidget.h>
 #include "Widgets.h"
 

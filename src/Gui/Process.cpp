@@ -103,21 +103,25 @@ FCProcess& FCProcess::operator<<(const char * arg)
 
 bool FCProcess::start( QStringList *e )
 {
-  QStringList* environment = e;
-  QStringList list;
-  if (!environment && env.size() > 0)
+  if (e)
   {
-    QString s;
-    for (std::map<std::string, std::string>::iterator it = env.begin(); it!=env.end(); ++it)
+    clearEnvironment();
+    for (QStringList::Iterator it = e->begin(); it!=e->end(); ++it)
     {
-      s = QObject::tr("%1=%2").arg(it->first.c_str()).arg(it->second.c_str());
-      list.append(s);
+      int pos = (*it).find('=');
+      if (pos)
+      {
+        QString var = (*it).left(pos);
+        QString val = (*it).right( (*it).length() - pos - 1 );
+        setEnvironment(var.latin1(), val.latin1());
+      }
     }
-
-    environment = &list;
   }
 
-  if (QProcess::start(environment))
+  if (env.size() > 0)
+    setupEnvironment();
+
+  if (QProcess::start())
   {
     Notify(FCBaseProcess::processStarted);
     return true;
@@ -213,12 +217,28 @@ void FCProcess::setEnvironment (const char* var, const char* val)
   env[var] = val;
 }
 
+void FCProcess::clearEnvironment()
+{
+  env.clear();
+}
+
 void FCProcess::unsetEnvironment (const char* var)
 {
-  std::map<std::string, std::string>::iterator it = env.find(var);
-  if (it != env.end())
+  env[var] = "";
+}
+
+void FCProcess::setupEnvironment()
+{
+  std::map<std::string, std::string>::iterator it;
+  for (it = env.begin(); it != env.end(); ++it)
   {
-    env.erase(it);
+#ifdef FC_OS_WIN32
+    ::SetEnvironmentVariable (it->first.c_str(), it->second.c_str());
+#elif FC_OS_LINUX || FC_OS_CYGWIN
+    setenv(it->first.c_str(), it->second.c_str(), 1);
+#else
+    GetConsole().Warning("Not yet implemented!\n");
+#endif
   }
 }
 

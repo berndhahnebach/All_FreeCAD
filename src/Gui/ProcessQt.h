@@ -52,6 +52,7 @@ class FCProcess : public QProcess, public FCSubject <int>
 
     bool appendToPath (const char* path);
     void setEnvironment (const char* var, const char* val);
+    void clearEnvironment ();
     void unsetEnvironment (const char* var);
 
   private slots:
@@ -63,6 +64,7 @@ class FCProcess : public QProcess, public FCSubject <int>
 
   private:
     void init();
+    void setupEnvironment();
     std::map<std::string, std::string> env;
     std::string data;
 };
