@@ -75,7 +75,6 @@ LIB_REVISION = @LIB_REVISION@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MOC = @MOC@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -85,12 +84,20 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PYTHON = @PYTHON@
+QT_CXXFLAGS = @QT_CXXFLAGS@
+QT_DIR = @QT_DIR@
+QT_LIBS = @QT_LIBS@
+QT_MOC = @QT_MOC@
+QT_UIC = @QT_UIC@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-UIC = @UIC@
 VERSION = @VERSION@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
@@ -327,11 +334,10 @@ Window.cpp
 
 
 # the library search path.
-libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADGui_la_LIBADD = \
 		-lqui\
-		-lqt-mt \
 		-lTKernel \
 		-lTKMath \
 		-lTKService \
@@ -353,12 +359,12 @@ libFreeCADGui_la_LIBADD = \
 
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I./Inventor/Qt
+INCLUDES = $(all_includes) $(QT_CXXFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)
 subdir = Gui
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/autoconfig.h
+CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
@@ -1222,18 +1228,18 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 %.h: %.ui
-	cd $(@D) && $(UIC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
-	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
+	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
 # rule for translation files using python script :
 %.h: %.ts

@@ -150,9 +150,17 @@
 //#define QTLIBNAME "qt-mt.lib"
 
 
-#define QT_DLL
-#define QT_THREAD_SUPPORT
-#define QT_ALTERNATE_QTSMANIP
+#ifndef QT_DLL
+# define QT_DLL
+#endif
+
+#ifndef QT_THREAD_SUPPORT
+# define QT_THREAD_SUPPORT
+#endif
+
+#ifndef QT_ALTERNATE_QTSMANIP
+# define QT_ALTERNATE_QTSMANIP
+#endif
 
 //**************************************************************************
 // Coin3D

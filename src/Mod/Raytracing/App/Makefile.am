@@ -1,5 +1,5 @@
 
-pkglib_LTLIBRARIES=libRaytracing.la
+lib_LTLIBRARIES=libRaytracing.la
 
 libRaytracing_la_SOURCES=\
 		AppRaytracing.cpp \
@@ -10,7 +10,7 @@ libRaytracing_la_SOURCES=\
 
 
 # the library search path.
-libRaytracing_la_LDFLAGS = -L../../../App -L../../Part $(all_libraries)
+libRaytracing_la_LDFLAGS = -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libRaytracing_la_LIBADD   = \
 		-lFreeCADBase \

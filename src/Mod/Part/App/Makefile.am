@@ -1,5 +1,5 @@
 
-pkglib_LTLIBRARIES=libPart.la
+lib_LTLIBRARIES=libPart.la
 
 libPart_la_SOURCES=\
 		AppPart.cpp \
@@ -15,7 +15,7 @@ libPart_la_SOURCES=\
 		PartFeature.h
 
 # the library search path.
-libPart_la_LDFLAGS = -L../../../App $(all_libraries)
+libPart_la_LDFLAGS = -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libPart_la_LIBADD   = \
 		-lFreeCADBase \

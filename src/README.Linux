@@ -8,28 +8,24 @@ o Python (http://www.python.org), I have 2.3
 o Qt (http://www.trolltech.no), >= 3.2.x, I have 3.2.1
 o Coin3D (http://www.coin3d.org), >= 2.x, I have 2.2.1
 o SoQt (http://www.coin3d.org), >= 1.x, I have 1.0.2
-o OpenCascade (http://www.opencascade.org), you need >=5.0 here
+o OpenCascade (http://www.opencascade.org), you need >=5.1 here
 o Xerces-c (downloads http://xml.apache.org/dist/xerces-c/), mine is 2.4
 
-For the build process of FreeCAD we make use of configure scripts. 
+For the build process of FreeCAD we make use of configure scripts.
 To have an overview of all options type in ./configure --help, first.
 
 If you have installed all libraries above into standard paths you need
 not any options at all. Unless you have installed any library into a
-non-standard path, then make use of the --with-XXX-includes or --with-XXX-libs 
+non-standard path, then make use of the --with-XXX-includes or --with-XXX-libs
 options, please. (XXX stands for the corresponding library.)
 
-Once you have built the sources successfully you can use the fc.sh shell script
-to start FreeCAD. Therefore you should have set correct paths in fc.sh.
-It is a shell wrapper for running FreeCAD. It is not at all robust, you _have to_ 
-run it from the top directory (which contains, among others, Main and Mod). 
-Then run ./fc.sh, from a console, of course, as you will see many interesting messages.
+Note: To specify FreeCAD's root directory it is recommended to use the '--prefix' option
+only from the configure script but not the --bindir, --libdir, ... options, because
+at startup FreeCAD makes assumptions where its lib-, doc-, .. directories reside.
 
-All significant changes made to the sources can be found by the keyword __linux,
-either in preprocessor conditions or in comments. (If you happen to use
-a c-preprocessor that does not #define __linux or you have turned it off,
-#define it manually, otherwise compilation will fail (e.g. #include<windows.h>,
-obviously)). 
+Once you have built the sources successfully using 'make' you can with 'make install'
+install FreeCAD onto your machine whereever you want. Go to the directory FreeCAD/bin
+and just type in ./FreeCAD.
 
 If you know how to work with GNU autoconf, feel free to contribute improvements
 to our configuration scripts --- that would be great.

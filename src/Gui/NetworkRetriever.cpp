@@ -270,7 +270,7 @@ void NetworkRetriever::setOutputDirectory( const QString& dir )
 }
 
 /**
- * wget starts to download \a startUrl and all referenced pages. 
+ * wget starts to download \a startUrl and all referenced pages.
  */
 bool NetworkRetriever::startDownload( const QString& startUrl )
 {
@@ -294,8 +294,12 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
   wget->clearArguments();
   wget->setExecutable( "wget" );
 
-  // set cwd
-  wget->setWorkingDirectory( QDir( d->dir ) );
+  // set output directory
+  if ( !d->dir.isEmpty() )
+  {
+    QDir dir(d->dir);
+    (*wget) << QString("--directory-prefix=%1").arg( dir.path() );
+  }
 
   // user authentification
   if ( !d->proxy.isEmpty() )
@@ -432,7 +436,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
       if ( bAuthor )
       {
         DlgAuthorization dlg( getAppWnd() );
-        
+
         if ( dlg.exec() == QDialog::Accepted )
         {
           username = dlg.username->text();

@@ -1,14 +1,14 @@
 
-pkglib_LTLIBRARIES=libMeshGui.la
+lib_LTLIBRARIES=libMeshGui.la
 
 # BUILT_SOURCES=\
 #
 libMeshGui_la_SOURCES=\
-	AppMeshGui.cpp \
-	Command.cpp
+		AppMeshGui.cpp \
+		Command.cpp
 
 # the library search path.
-libMeshGui_la_LDFLAGS = -L../App $(all_libraries)
+libMeshGui_la_LDFLAGS = -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libMeshGui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -16,18 +16,18 @@ libMeshGui_la_LIBADD   = \
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 %.h: %.ui
-	cd $(@D) && $(UIC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
-	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
+	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I../../../ -I../App
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App

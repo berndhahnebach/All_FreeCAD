@@ -192,11 +192,10 @@ Widgets.cpp \
 Window.cpp
 
 # the library search path.
-libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADGui_la_LIBADD   =\
 		-lqui\
-		-lqt-mt \
 		-lTKernel \
 		-lTKMath \
 		-lTKService \
@@ -218,18 +217,18 @@ libFreeCADGui_la_LIBADD   =\
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 %.h: %.ui
-	cd $(@D) && $(UIC) $(<F) -o $(@F)
+	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
 %.cpp: %.h %.ui
-	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
+	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
 # rule for translation files using python script :
 %.h: %.ts
@@ -240,6 +239,6 @@ moc_%.cpp: %.h
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I./Inventor/Qt
+INCLUDES= $(all_includes) $(QT_CXXFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)

@@ -31,9 +31,6 @@
 #include "../../../Gui/Command.h"
 #include "../../../Gui/FileDialog.h"
 
-
-#include "../../../Gui/Icons/images.cpp"
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 using Gui::FileDialog;
 

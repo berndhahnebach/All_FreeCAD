@@ -1,12 +1,12 @@
 
-pkglib_LTLIBRARIES=libImport.la
+lib_LTLIBRARIES=libImport.la
 
 libImport_la_SOURCES=\
 		AppImport.cpp
 
 
 # the library search path.
-libImport_la_LDFLAGS = -L../../../App $(all_libraries)
+libImport_la_LDFLAGS = $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libImport_la_LIBADD   = \
 		-lTKIGES \

@@ -1,5 +1,5 @@
 bin_PROGRAMS=FreeCAD FreeCADCmd
-pkglib_LTLIBRARIES=libFreeCADCmdPy.la
+lib_LTLIBRARIES=libFreeCADCmdPy.la
 
 #--------------------------------------------------------------------------------------
 FreeCAD_SOURCES= \
@@ -29,9 +29,11 @@ libFreeCADCmdPy_la_SOURCES= \
 	MainPy.cpp
 
 # the library search path.
-libFreeCADCmdPy_la_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries)
+libFreeCADCmdPy_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADCmdPy_la_LIBADD=\
 	-lFreeCADBase \
-	-lFreeCADApp \
-	-lFreeCADGui
+	-lFreeCADApp
+
+# set the include path found by configure
+INCLUDES= $(all_includes) $(QT_CXXFLAGS)

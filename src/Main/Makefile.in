@@ -75,7 +75,6 @@ LIB_REVISION = @LIB_REVISION@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MOC = @MOC@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -85,12 +84,20 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PYTHON = @PYTHON@
+QT_CXXFLAGS = @QT_CXXFLAGS@
+QT_DIR = @QT_DIR@
+QT_LIBS = @QT_LIBS@
+QT_MOC = @QT_MOC@
+QT_UIC = @QT_UIC@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-UIC = @UIC@
 VERSION = @VERSION@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
@@ -133,7 +140,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 bin_PROGRAMS = FreeCAD FreeCADCmd
-pkglib_LTLIBRARIES = libFreeCADCmdPy.la
+lib_LTLIBRARIES = libFreeCADCmdPy.la
 
 #--------------------------------------------------------------------------------------
 FreeCAD_SOURCES = \
@@ -168,18 +175,20 @@ libFreeCADCmdPy_la_SOURCES = \
 
 
 # the library search path.
-libFreeCADCmdPy_la_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries)
+libFreeCADCmdPy_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADCmdPy_la_LIBADD = \
 	-lFreeCADBase \
-	-lFreeCADApp \
-	-lFreeCADGui
+	-lFreeCADApp
 
+
+# set the include path found by configure
+INCLUDES = $(all_includes) $(QT_CXXFLAGS)
 subdir = Main
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/autoconfig.h
+CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(pkglib_LTLIBRARIES)
+LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libFreeCADCmdPy_la_DEPENDENCIES =
 am_libFreeCADCmdPy_la_OBJECTS = MainPy.lo
@@ -221,36 +230,36 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	  $(AUTOMAKE) --foreign  Main/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-pkglibLTLIBRARIES_INSTALL = $(INSTALL)
-install-pkglibLTLIBRARIES: $(pkglib_LTLIBRARIES)
+libLTLIBRARIES_INSTALL = $(INSTALL)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	@list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(LIBTOOL) --mode=install $(pkglibLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(pkglibdir)/$$f"; \
-	    $(LIBTOOL) --mode=install $(pkglibLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(pkglibdir)/$$f; \
+	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f"; \
+	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$f; \
 	  else :; fi; \
 	done
 
-uninstall-pkglibLTLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	@list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	    p="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(pkglibdir)/$$p"; \
-	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(pkglibdir)/$$p; \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
+	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-clean-pkglibLTLIBRARIES:
-	-test -z "$(pkglib_LTLIBRARIES)" || rm -f $(pkglib_LTLIBRARIES)
-	@list='$(pkglib_LTLIBRARIES)'; for p in $$list; do \
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
 	  test "$$dir" = "$$p" && dir=.; \
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
 libFreeCADCmdPy.la: $(libFreeCADCmdPy_la_OBJECTS) $(libFreeCADCmdPy_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(pkglibdir) $(libFreeCADCmdPy_la_LDFLAGS) $(libFreeCADCmdPy_la_OBJECTS) $(libFreeCADCmdPy_la_LIBADD) $(LIBS)
+	$(CXXLINK) -rpath $(libdir) $(libFreeCADCmdPy_la_LDFLAGS) $(libFreeCADCmdPy_la_OBJECTS) $(libFreeCADCmdPy_la_LIBADD) $(LIBS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
@@ -431,9 +440,11 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
+install-binPROGRAMS: install-libLTLIBRARIES
+
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir) $(DESTDIR)$(bindir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir)
 
 install: install-am
 install-exec: install-exec-am
@@ -461,8 +472,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool \
-	clean-pkglibLTLIBRARIES mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
+	clean-libtool mostlyclean-am
 
 distclean: distclean-am
 
@@ -479,7 +490,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-binPROGRAMS install-pkglibLTLIBRARIES
+install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
 
 install-info: install-info-am
 
@@ -505,21 +516,21 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
-	uninstall-pkglibLTLIBRARIES
+	uninstall-libLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libtool clean-pkglibLTLIBRARIES ctags \
+	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
 	distclean distclean-compile distclean-depend distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am info \
 	info-am install install-am install-binPROGRAMS install-data \
 	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-man install-pkglibLTLIBRARIES \
+	install-info-am install-libLTLIBRARIES install-man \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool pdf \
 	pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-binPROGRAMS uninstall-info-am \
-	uninstall-pkglibLTLIBRARIES
+	uninstall-libLTLIBRARIES
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
