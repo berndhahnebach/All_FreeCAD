@@ -261,6 +261,35 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Plugin
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+# Begin Custom Build - Building Plugin.h
+InputPath=.\Plugin
+
+"Plugin.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py Plugin Plugin.h 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# Begin Custom Build - Building Plugin.h
+InputPath=.\Plugin
+
+"Plugin.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py Plugin Plugin.h 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File
@@ -283,6 +312,35 @@ SOURCE=.\PropertyAttr.cpp
 # Begin Source File
 
 SOURCE=.\PropertyAttr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Standard
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+# Begin Custom Build - Building Standard.h
+InputPath=.\Standard
+
+"Standard.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py Standard Standard.h 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# Begin Custom Build - Building Standard.h
+InputPath=.\Standard
+
+"Standard.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py Standard Standard.h 
+	
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
