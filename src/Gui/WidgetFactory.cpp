@@ -38,7 +38,7 @@ FCWidgetFactorySupplier* FCWidgetFactorySupplier::_pcSingleton = 0L;
 
 FCWidgetFactorySupplier::FCWidgetFactorySupplier()
 {
-  new FCFactoryProducer<FCEditSpinBox>;
+  new FCFactoryProducer<FCPrefSpinBox>;
 }
 
 FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)

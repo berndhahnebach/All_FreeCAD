@@ -40,6 +40,7 @@
 #include "Application.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
+#include "../Base/Documentation.h"
 #ifndef FC_OS_LINUX
 #include <direct.h>
 #endif
@@ -505,7 +506,7 @@ void FCHtmlView::init()
     GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("EnableHistory");
     GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
     GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("NbOfBookmarks");
-  }catch(/*const*/ FCException& rclE)
+  }catch(const FCException& rclE)
   {
     QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
   }
@@ -1340,15 +1341,37 @@ void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, c
 {
   currentText = text;
 
+  // add here the following file types!!!
+  bool showHtml = false;
+  TDocType type;
   if (currentText.find(".html", 0, false) != -1)
   {
+    showHtml = true;
+    type = Html;
+  }
+  else if (currentText.find(".tex", 0, false) != -1)
+  {
+    showHtml = true;
+    type = Tech; // LaTeX
+  }
+  else if(currentText.find(".script", 0, false) != -1)
+  {
+    showHtml = true;
+    type = Script;
+  }
+
+  if (showHtml)
+  {
     // get text of the url 
-    QString txt = "Retrieving html text not yet implemented!";
     QWidget* w = ApplicationWindow::Instance->GetCustomWidgetManager()->getDockWindow("Help bar");
     if (w->inherits("FCHtmlView"))
     {
+      QString fn = tr("FCDoc:/%1").arg(currentText);
+      int pos = fn.findRev('.'); fn = fn.left(pos);
+
       FCHtmlView* help = (FCHtmlView*)w;
-      help->getBrowser()->setSource(currentText);//setText(text);
+      std::string text = GetDocumentationManager().Retrive(fn.latin1(), type );
+      help->getBrowser()->setText(text.c_str());
     }
   }
   else

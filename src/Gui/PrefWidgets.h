@@ -32,6 +32,7 @@
 #include "../App/Application.h"
 #include "../Base/Parameter.h"
 #include "Command.h"
+#include "Widgets.h"
 
 #include "qextmdi/qextmdimainfrm.h"
 #include <qspinbox.h>
@@ -172,34 +173,22 @@ class FCWidgetPrefsManager
 
 /** The FCEditSpinBox class
  */
-class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
+class FCPrefSpinBox : public FCFloatSpinBox, public FCWidgetPrefs
 {
     Q_OBJECT
 
-    Q_PROPERTY( int    accuracy   READ getAccuracy      WRITE setAccuracy      )
-    Q_PROPERTY( double valueFloat READ getValueFloat    WRITE setValueFloat    )
-    Q_PROPERTY( double valueMax   READ getMaxValueFloat WRITE setMaxValueFloat )
-    Q_PROPERTY( double valueMin   READ getMinValueFloat WRITE setMinValueFloat )
     Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
     Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
 
   public:
-    FCEditSpinBox ( QWidget * parent = 0, const char * name = 0 );
-    virtual ~FCEditSpinBox();
+    FCPrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCPrefSpinBox();
 
     // PROPERTIES
     // getters
-    int    getAccuracy      () const;
-    double getValueFloat    () const;
-    double getMinValueFloat () const;
-    double getMaxValueFloat () const;
     QString getEntryName    () const;
     QString getParamGrpPath () const;
     // setters
-    void  setAccuracy      (int    accur);
-    void  setValueFloat    (double value);
-    void  setMinValueFloat (double value);
-    void  setMaxValueFloat (double value);
     void  setEntryName     (QString name);
     void  setParamGrpPath  (QString name);
 
@@ -207,19 +196,6 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
     // restore from/save to parameters
     void restorePreferences();
     void savePreferences();
-    virtual QString mapValueToText(int value);
-    virtual int mapTextToValue(bool* ok);
-    virtual void valueChange();
-    void stepChange();
-
-  signals:
-    void valueFloatChanged(double value);
-
-  private:
-    QDoubleValidator* m_pValidator;
-    int               m_iAccuracy;
-    double            m_fDivisor;
-    double            m_fEpsilon;
 };
 
 /**

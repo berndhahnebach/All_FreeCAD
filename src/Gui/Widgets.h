@@ -321,6 +321,8 @@ class FCColorButton : public QButton
 class FCSpinBoxPrivate;
 class FCSpinBox : public QSpinBox
 {
+  Q_OBJECT // this is important for the inherited classes
+
   public:
     FCSpinBox ( QWidget* parent, const char* name = 0 );
     FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
@@ -336,6 +338,49 @@ class FCSpinBox : public QSpinBox
   private:
     int nY, nStep;
     FCSpinBoxPrivate* d;
+};
+
+/** The FCFloatSpinBox class
+ */
+class FCFloatSpinBox : public FCSpinBox
+{
+    Q_OBJECT
+
+    Q_PROPERTY( int    decimals   READ decimals      WRITE setDecimals      )
+    Q_PROPERTY( double valueFloat READ valueFloat    WRITE setValueFloat    )
+    Q_PROPERTY( double valueMax   READ maxValueFloat WRITE setMaxValueFloat )
+    Q_PROPERTY( double valueMin   READ minValueFloat WRITE setMinValueFloat )
+
+  public:
+    FCFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
+    FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
+    virtual ~FCFloatSpinBox();
+
+    int    decimals () const;
+    void   setDecimals ( int );
+    double minValueFloat () const;
+    void   setMinValueFloat ( double );
+    double maxValueFloat () const;
+    void   setMaxValueFloat ( double );
+    double valueFloat () const;
+
+  public slots:
+    void  setValueFloat ( double );
+
+  protected:
+    virtual QString mapValueToText(int value);
+    virtual int mapTextToValue(bool* ok);
+    virtual void valueChange();
+    void stepChange();
+
+  signals:
+    void valueFloatChanged(double value);
+
+  private:
+    QDoubleValidator* m_pValidator;
+    int               m_iDecimals;
+    double            m_fDivisor;
+    double            m_fEpsilon;
 };
 
 #endif // __FC_WIDGETS_H__

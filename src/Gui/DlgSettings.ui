@@ -233,7 +233,7 @@
                             </property>
                         </widget>
                         <widget row="0"  column="3" >
-                            <class>FCEditSpinBox</class>
+                            <class>FCPrefSpinBox</class>
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>NbOfBookmarks</cstring>
@@ -243,7 +243,7 @@
                                 <bool>false</bool>
                             </property>
                             <property>
-                                <name>accuracy</name>
+                                <name>decimals</name>
                                 <number>0</number>
                             </property>
                             <property>
@@ -296,7 +296,7 @@
                             </property>
                         </widget>
                         <widget row="0"  column="3" >
-                            <class>FCEditSpinBox</class>
+                            <class>FCPrefSpinBox</class>
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>NbOfHistoryItems</cstring>
@@ -306,7 +306,7 @@
                                 <bool>false</bool>
                             </property>
                             <property>
-                                <name>accuracy</name>
+                                <name>decimals</name>
                                 <number>0</number>
                             </property>
                             <property>
@@ -374,7 +374,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCEditSpinBox</class>
+        <class>FCPrefSpinBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>-1</width>
@@ -387,7 +387,7 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
         <property type="Int">valueFloat</property>
-        <property type="Int">accuracy</property>
+        <property type="Int">decimals</property>
         <property type="Int">lineStep</property>
         <property type="String">prefEntry</property>
         <property type="String">prefPath</property>

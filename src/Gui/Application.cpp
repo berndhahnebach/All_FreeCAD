@@ -146,8 +146,10 @@ ApplicationWindow::ApplicationWindow()
 	_cBmpFactory.AddPath("../Icons");
 //	_cBmpFactory.GetPixmap("Function");
 
-	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/","E:\\Develop\\Projekte\\FreeCAD\\FreeCAD_0.1\\Doc\\Online\\"));
-	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/","E:\\Develop\\Projekte\\FreeCAD\\FreeCAD_0.1\\Doc\\FrameWork\\"));
+  QDir dir(QDir::currentDirPath()); dir.cdUp();
+  QString root = dir.path();
+	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
+	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
 
 	std::string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
 
@@ -379,10 +381,10 @@ void ApplicationWindow::CreateStandardOperations()
     _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
 
 		defaultMenus.clear();
-		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_ViewCreateInventor");
 		defaultMenus.push_back("Std_ViewCreateOCC");
-    _pcWidgetMgr->addPopupMenu("View");
+		defaultMenus.push_back("Separator");
+    _pcWidgetMgr->addPopupMenu("View", defaultMenus);
   
 		defaultMenus.clear();
 		defaultMenus.push_back("Std_CommandLine");
@@ -426,8 +428,8 @@ void ApplicationWindow::CreateStandardOperations()
 
 void ApplicationWindow::OnShowView()
 {
-  QPopupMenu* menu = _pcWidgetMgr->getPopupMenu("View");
-  menu->clear();
+  FCPopupMenu* menu = _pcWidgetMgr->getPopupMenu("View");
+  menu->update(GetCommandManager());
   menu->setCheckable(true);
   mCheckBars.clear();
 
@@ -708,7 +710,8 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
 		{
 			(*It)->CanClose ( e );
-			if(! e->isAccepted() ) break;
+//			if(! e->isAccepted() ) break;
+			if(! e->isAccepted() ) return;
 		}
 	}
 
@@ -720,7 +723,8 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 		else 
 			e->ignore();
 
-		if(! e->isAccepted() ) break;
+//		if(! e->isAccepted() ) break;
+		if(! e->isAccepted() ) return;
 	}
 
 	if( e->isAccepted() )
@@ -991,11 +995,16 @@ void ApplicationWindow::SaveWindowSettings()
 void ApplicationWindow::LoadDockWndSettings()
 {
   // open file
-  QFile* datafile = new QFile("FreeCAD.xml");
+  QString fn = "FreeCAD.xml";
+  QFile* datafile = new QFile(fn);
   if (!datafile->open(IO_ReadOnly)) 
   {
     // error opening file
-    GetConsole().Warning("Error: Cannot open file\n");
+    bool bMute = FCGuiConsoleObserver::bMute;
+    FCGuiConsoleObserver::bMute = true;
+    GetConsole().Warning((tr("Error: Cannot open file '%1' "
+                             "(Maybe you're running FreeCAD the first time)\n").arg(fn)).latin1());
+    FCGuiConsoleObserver::bMute = bMute;
     datafile->close();
     delete (datafile);
     return;
@@ -1149,7 +1158,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
 	try{
 //		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
     Instance->_pcWidgetMgr->addItem(psCmdName);
-	}catch(FCException e) {
+	}catch(const FCException& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){
@@ -1205,7 +1214,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
 	try{
 //		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
     Instance->_pcWidgetMgr->addItem(psCmdName);
-	}catch(FCException e) {
+	}catch(const FCException& e) {
 		//e.ReportException();
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;

@@ -932,4 +932,99 @@ bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
   return QSpinBox::eventFilter(o, e);
 }
 
+// -------------------------------------------------------------
+
+FCFloatSpinBox::FCFloatSpinBox ( QWidget * parent, const char * name )
+: FCSpinBox(parent, name)
+{
+  m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
+  setValidator(m_pValidator);
+  
+  setDecimals(0);
+}
+
+FCFloatSpinBox::FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
+: FCSpinBox(minValue, maxValue, step, parent, name)
+{
+  m_pValidator = new QDoubleValidator((double)minValue, (double)maxValue, 2, this, name );
+  setValidator(m_pValidator);
+
+  setDecimals(0);
+}
+
+FCFloatSpinBox::~FCFloatSpinBox() 
+{
+  delete m_pValidator; 
+}
+
+int FCFloatSpinBox::decimals() const
+{
+  return m_iDecimals;
+}
+
+void FCFloatSpinBox::setDecimals(int i)
+{
+  m_iDecimals = i;
+  m_fDivisor = int(pow(10.0, double(m_iDecimals)));
+  m_fEpsilon = 1.0 / pow(10.0, double(m_iDecimals+1));
+
+  if (maxValue() <  INT_MAX)
+    QSpinBox::setMaxValue(int(maxValue() * m_fDivisor));
+  if (minValue() > -INT_MAX)
+    QSpinBox::setMinValue(int(minValue() * m_fDivisor));
+}
+
+double FCFloatSpinBox::valueFloat() const
+{ 
+  return QSpinBox::value() / double(m_fDivisor); 
+}
+
+void FCFloatSpinBox::setMinValueFloat(double value)
+{ 
+  QSpinBox::setMinValue(int(m_fDivisor * value)); 
+}
+
+void FCFloatSpinBox::setMaxValueFloat(double value)
+{ 
+  QSpinBox::setMaxValue(int(m_fDivisor * value)); 
+}
+
+double FCFloatSpinBox::minValueFloat () const
+{
+  return QSpinBox::minValue() / double(m_fDivisor); 
+}
+
+double FCFloatSpinBox::maxValueFloat () const
+{
+  return QSpinBox::maxValue() / double(m_fDivisor); 
+}
+
+QString FCFloatSpinBox::mapValueToText(int value)
+{ 
+  return QString::number(double(value) / m_fDivisor, 'f', m_iDecimals); 
+}
+
+int FCFloatSpinBox::mapTextToValue(bool*)
+{ 
+  double fEps = value() > 0.0 ? m_fEpsilon : -m_fEpsilon;
+  return int(text().toDouble() * m_fDivisor + fEps); 
+}
+
+void FCFloatSpinBox::valueChange()
+{
+  QSpinBox::valueChange();
+  emit valueFloatChanged( QSpinBox::value() / double(m_fDivisor) );
+}
+
+void FCFloatSpinBox::setValueFloat(double value)
+{ 
+  double fEps = value > 0.0 ? m_fEpsilon : -m_fEpsilon;
+  QSpinBox::setValue(int(m_fDivisor * value + fEps)); 
+}
+
+void FCFloatSpinBox::stepChange () 
+{
+  QSpinBox::stepChange();
+}
+
 #include "moc_Widgets.cpp"

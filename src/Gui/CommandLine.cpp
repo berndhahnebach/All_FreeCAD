@@ -163,7 +163,7 @@ void FCCommandLine::slotLaunchCommand()
   }
   catch (const FCException& rclE)
   {
-    std::string txt = (const_cast<FCException&>(rclE)).what();
+    std::string txt = rclE.what();
     std::string err = "'" + std::string(text(currentItem())) + "' is not defined!";
     QMessageBox::warning(this, txt.c_str(), err.c_str());
   }

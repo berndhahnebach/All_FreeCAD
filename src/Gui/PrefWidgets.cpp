@@ -166,29 +166,16 @@ void FCWidgetPrefsHandler::onRestore()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-FCEditSpinBox::FCEditSpinBox ( QWidget * parent, const char * name )
-: QSpinBox(parent, name), FCWidgetPrefs(name), m_pValidator(NULL), m_iAccuracy(2), m_fDivisor(0), m_fEpsilon(0)
+FCPrefSpinBox::FCPrefSpinBox ( QWidget * parent, const char * name )
+: FCFloatSpinBox(parent, name), FCWidgetPrefs(name)
 {
-  double fMinValue = -10.0f;
-  double fMaxValue =  10.0f;
-  double fStep     =  0.1f;
-
-  m_pValidator = new QDoubleValidator(fMinValue, fMaxValue, m_iAccuracy+1, this, QString(name) + "FCEditSpinBoxValidator" );
-  setValidator(m_pValidator);
-  
-  m_fDivisor = int(pow(10.0, double(m_iAccuracy)));
-  m_fEpsilon = 1.0 / pow(10.0, double(m_iAccuracy+1));
-  QSpinBox::setMaxValue(int(fMaxValue * m_fDivisor));
-  QSpinBox::setMinValue(int(fMinValue * m_fDivisor));
-  QSpinBox::setLineStep(int(fStep     * m_fDivisor));
 }
 
-FCEditSpinBox::~FCEditSpinBox() 
+FCPrefSpinBox::~FCPrefSpinBox() 
 {
-  delete m_pValidator; 
 }
 
-void FCEditSpinBox::restorePreferences()
+void FCPrefSpinBox::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
@@ -197,15 +184,15 @@ void FCEditSpinBox::restorePreferences()
   }
 
   double fVal;
-  if (m_iAccuracy == 0)
+  if (decimals() == 0)
     fVal = (double)hPrefGrp->GetInt(getEntryName().latin1(), value());
   else
-    fVal = (double)hPrefGrp->GetFloat(getEntryName().latin1(), getValueFloat());
+    fVal = (double)hPrefGrp->GetFloat(getEntryName().latin1(), valueFloat());
 
   setValueFloat(fVal);
 }
 
-void FCEditSpinBox::savePreferences()
+void FCPrefSpinBox::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
@@ -213,93 +200,28 @@ void FCEditSpinBox::savePreferences()
     return;
   }
 
-  if (m_iAccuracy == 0)
-    hPrefGrp->SetInt(getEntryName().latin1(), (int)getValueFloat());
+  if (decimals() == 0)
+    hPrefGrp->SetInt(getEntryName().latin1(), (int)valueFloat());
   else
-    hPrefGrp->SetFloat(getEntryName().latin1(), getValueFloat());
+    hPrefGrp->SetFloat(getEntryName().latin1(), valueFloat());
 }
 
-int FCEditSpinBox::getAccuracy() const
-{
-  return m_iAccuracy;
-}
-
-void FCEditSpinBox::setAccuracy(int i)
-{
-  m_iAccuracy = i;
-  m_fDivisor = int(pow(10.0, double(m_iAccuracy)));
-  m_fEpsilon = 1.0 / pow(10.0, double(m_iAccuracy+1));
-}
-
-double FCEditSpinBox::getValueFloat() const
-{ 
-  return QSpinBox::value() / double(m_fDivisor); 
-}
-
-void FCEditSpinBox::setMinValueFloat(double value)
-{ 
-  QSpinBox::setMinValue(int(m_fDivisor * value)); 
-}
-
-void FCEditSpinBox::setMaxValueFloat(double value)
-{ 
-  QSpinBox::setMaxValue(int(m_fDivisor * value)); 
-}
-
-double FCEditSpinBox::getMinValueFloat () const
-{
-  return QSpinBox::minValue() / double(m_fDivisor); 
-}
-
-double FCEditSpinBox::getMaxValueFloat () const
-{
-  return QSpinBox::maxValue() / double(m_fDivisor); 
-}
-
-QString FCEditSpinBox::mapValueToText(int value)
-{ 
-  return QString::number(double(value) / m_fDivisor, 'f', m_iAccuracy); 
-}
-
-int FCEditSpinBox::mapTextToValue(bool*)
-{ 
-  double fEps = value() > 0.0 ? m_fEpsilon : -m_fEpsilon;
-  return int(text().toDouble() * m_fDivisor + fEps); 
-}
-
-void FCEditSpinBox::valueChange()
-{
-  QSpinBox::valueChange();
-  emit valueChanged( QSpinBox::value() / double(m_fDivisor) );
-}
-
-void FCEditSpinBox::setValueFloat(double value)
-{ 
-  double fEps = value > 0.0 ? m_fEpsilon : -m_fEpsilon;
-  QSpinBox::setValue(int(m_fDivisor * value + fEps)); 
-}
-
-void FCEditSpinBox::stepChange () 
-{
-  QSpinBox::stepChange();
-}
-
-QString FCEditSpinBox::getEntryName () const
+QString FCPrefSpinBox::getEntryName () const
 {
   return FCWidgetPrefs::getEntryName();
 }
 
-QString FCEditSpinBox::getParamGrpPath () const
+QString FCPrefSpinBox::getParamGrpPath () const
 {
   return FCWidgetPrefs::getParamGrpPath();
 }
 
-void FCEditSpinBox::setEntryName (QString name)
+void FCPrefSpinBox::setEntryName (QString name)
 {
   FCWidgetPrefs::setEntryName(name);
 }
 
-void FCEditSpinBox::setParamGrpPath (QString name)
+void FCPrefSpinBox::setParamGrpPath (QString name)
 {
   FCWidgetPrefs::setParamGrpPath(name);
 }

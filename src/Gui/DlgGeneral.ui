@@ -289,13 +289,13 @@
                     </property>
                 </spacer>
                 <widget row="3"  column="1" >
-                    <class>FCEditSpinBox</class>
+                    <class>FCPrefSpinBox</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>RecentFiles</cstring>
                     </property>
                     <property>
-                        <name>accuracy</name>
+                        <name>decimals</name>
                         <number>0</number>
                     </property>
                     <property>
@@ -373,7 +373,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCEditSpinBox</class>
+        <class>FCPrefSpinBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>30</width>
@@ -386,7 +386,7 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
         <property type="Int">valueFloat</property>
-        <property type="Int">accuracy</property>
+        <property type="Int">decimals</property>
         <property type="Int">lineStep</property>
         <property type="String">prefEntry</property>
         <property type="String">prefPath</property>

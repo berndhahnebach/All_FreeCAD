@@ -30,11 +30,12 @@
 
 #include "PreCompiled.h"
 
+#include "../Version.h"
 #ifndef _PreComp_
 #	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
-#       include <Python.h>
+# include <Python.h>
 #endif
 
 #include "Splashscreen.h"
@@ -63,7 +64,7 @@ FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
   _aclDevelopers["Werner_Mayer"]   = std::make_pair<std::string, QPixmap>("Werner Mayer" , QPixmap(Juergen_Riegel));
 
   // set the text for all subclasses
-  SplasherText =
+  SplasherText = tr(
     "<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">"
     "<html>"
     "<body bgcolor=""#ffffff"">"
@@ -78,8 +79,15 @@ FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
     "</tr>"
     "<tr>"
     "<td>"
+    "<p>Version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>%1.%2 </b></p>"
+    "<p>Build number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <b>%3</b></p>"
+    "<p>Build date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>%4</b></p>"
+    "</td>"
+    "</tr>"
+    "<tr>"
+    "<td>"
     "Main developers of FreeCAD are:"
-    "<ul>";
+    "<ul>").arg(FCVersionMajor).arg(FCVersionMinor).arg(FCVersionBuild).arg(FCVersionDisDa);
   for (std::map<std::string, std::pair<std::string, QPixmap> >::iterator it = _aclDevelopers.begin(); it != _aclDevelopers.end(); ++it)
     SplasherText += tr(	"<li> <a href=""%1"">%2</a>\n").
                     arg(QString(it->first.c_str())). // first argument
