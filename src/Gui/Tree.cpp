@@ -49,12 +49,17 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
 FCTreeLabel::FCTreeLabel( FCTree * parent)
 	:QListViewItem(parent->_pcListView),
 	 _pcDocument(parent->_pcDocument),
-	 _hcLabel(parent->_pcDocument->GetDocument()->Main()),
 	 _bOpend(false)
 {
-	setText(0,"Main Label");
-	
+	if(_pcDocument){
+		setText(0,"Main Label");
+		_hcLabel = parent->_pcDocument->GetDocument()->Main();
+	}else{
+		setText(0,"No Active Document");
+	}
+
 	Update();
+	
 }
 
 
@@ -82,9 +87,8 @@ const QPixmap *FCTreeLabel::pixmap( int i ) const
 
 void FCTreeLabel::Update(void)
 {
-	puts("setOpen");
 	// quieck an dirty
-	if(_hcLabel->GetOCCLabel().HasChild() && !_bOpend)
+	if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !_bOpend)
 	{
 		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
 		//	delete pItem;
@@ -107,7 +111,7 @@ void FCTreeLabel::setOpen( bool o )
 {
 	puts("setOpen");
 	// quieck an dirty
-	if(_hcLabel->GetOCCLabel().HasChild() && o && !_bOpend)
+	if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && o && !_bOpend)
 	{
 		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
 		//	delete pItem;
@@ -219,6 +223,11 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 */
 	//setSize(200,400);
 
+}
+
+void FCTree::resizeEvent ( QResizeEvent * e) 
+{
+  _pcListView->resize(e->size());
 }
 
 bool FCTree::OnMsg(const char* pMsg)

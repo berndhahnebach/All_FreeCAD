@@ -140,4 +140,24 @@ FCSingelView::~FCSingelView()
 }
 
 
+
+FCViewBar::FCViewBar( FCView* pcView, QWidget* parent, const char* name, int wflags )
+	:FCWindow(parent,name,wflags),
+	 _pcView(pcView)
+{
+	_pcView->reparent(this,wflags,QPoint(0,0));
+	resize( 130, 600 );
+}
+
+FCViewBar::~FCViewBar()
+{
+
+}
+
+void FCViewBar::resizeEvent ( QResizeEvent * e) 
+{
+  _pcView->resize(e->size());
+}
+
+
 #include "moc_View.cpp"

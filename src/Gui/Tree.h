@@ -80,6 +80,8 @@ public:
 
 	virtual const char *GetName(void){return "Raw Tree";}
 	
+	virtual void resizeEvent ( QResizeEvent * e); 
+
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
 	friend FCTreeLabel;
 

@@ -221,7 +221,7 @@ void ParameterLabelGroup::FillUp(void)
 
 void ParameterLabelGroup::activate ()
 {
-	puts("Activated");
+	//puts("Activated");
 }
 
 

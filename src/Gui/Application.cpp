@@ -70,6 +70,7 @@
 #include "Splashscreen.h"
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
+#include "Tree.h"
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
@@ -156,6 +157,11 @@ ApplicationWindow::ApplicationWindow()
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
 	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
 	AddDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
+
+
+	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw tree"),this,"Raw Tree View");
+	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
 
 	// misc stuff
     resize( 800, 600 );

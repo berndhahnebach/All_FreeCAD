@@ -214,3 +214,6 @@ Version: V0.1B51 Date: Sun Apr 06 21:27:35 2003 +++++++++++++++++++++++++++++++
   - making command line dropabel (QT3)
   - frame for 3Dview
   - time in about dialog ;-)
+
+Version: V0.1B52 Date: Thu Apr 10 21:17:20 2003 +++++++++++++++++++++++++++++++
++ insert the TreeDockBar

@@ -197,10 +197,6 @@ signals:
 	void sendQuit();
     void timeEvent();
 
-// slots for the Application signals
-public slots:
-	/// this slot get frequently activatet and test the commands if they are still active
-	void UpdateCmdActivity();
 
 protected: // Protected methods
 	/** just fits the system menu button position to the menu position */
@@ -213,19 +209,21 @@ protected: // Protected methods
 	/// waiting cursor stuff 
 	void timerEvent( QTimerEvent * e){emit timeEvent();}
 
+public slots:
+	/// this slot get frequently activatet and test the commands if they are still active
+	void UpdateCmdActivity();
 	/** @name methodes for the UNDO REDO handling 
 	 *  this methodes are usaly used by the GUI document! Its not intended
 	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO 
 	 *  nececary.
 	 */
 	//@{
-protected slots:
 	void slotUndo();
 	void slotRedo();
 	void updateUndo();
 	void updateRedo();
 	void executeUndoRedo();
-
+	//@}
 	void OnWorkbenchChange( const QString & string);
 
 private:

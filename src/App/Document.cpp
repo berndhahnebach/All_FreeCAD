@@ -97,8 +97,8 @@ FCLabel::FCLabel(const TDF_Label &cLabel,FCDocument *pcDocument, PyTypeObject *T
 {
 	GetConsole().Log("Create Label %p\n",this);
 	
-    printf("Tag. %d\n",cLabel.Tag());
-    printf("Depth. %d\n",cLabel.Depth());
+    //printf("Tag. %d\n",cLabel.Tag());
+    //printf("Depth. %d\n",cLabel.Depth());
 
 }
 

@@ -79,4 +79,25 @@ private:
 
 };
 
+
+/** Holds a single view in a dock bar
+ */
+class FCViewBar: public FCWindow
+{
+	Q_OBJECT;
+
+public:
+	FCViewBar( FCView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	~FCViewBar();
+
+	virtual FCView* GetView(void){return _pcView;}
+
+	virtual void resizeEvent ( QResizeEvent * e);
+
+private:
+	FCView *		_pcView;
+
+};
+
+
 #endif
