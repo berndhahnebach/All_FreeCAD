@@ -556,3 +556,4 @@ Version: V0.1B117 Date: Sun Mar 20 14:06:55 2005 +++++++++++++++++++++++++++++++
 + Feature import for STL files added
 + Viewprovider for meshes added
 + Integration of latest Image module source
++ RFE 1159671 implemented (elements in alphabetic order)
