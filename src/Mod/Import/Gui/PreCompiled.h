@@ -3,6 +3,7 @@
 
 #include "../../../Config.h"
 
+#ifdef _PreComp_
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
@@ -25,9 +26,10 @@
 #include <string>
 #include <set>
 
-#include <python.h>
-#include <windows.h>
-
+#include <Python.h>
+#ifndef FC_OS_WIN32
+#	include <windows.h>
+#endif
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
 
@@ -70,6 +72,9 @@
 //#include <STEPControl_Writer.hxx>
 //#include <STEPControl_Reader.hxx>
 #include <BRepTools.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TNaming_Builder.hxx>
 
 
 
@@ -148,8 +153,5 @@
 #include <qwindowsstyle.h>
 #include <qworkspace.h>
 
-
-
-
-
+#endif
 #endif 

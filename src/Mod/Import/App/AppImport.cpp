@@ -19,13 +19,13 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#	include <stdio.h>
+#	include <Python.h>
 #endif
 
 #include "../../../App/Application.h"
 #include "../../../App/Topology.h"
 
-#include <stdio.h>
-#include <python.h>
 #include "../../../Base/Console.h"
 
 
@@ -79,6 +79,7 @@ static struct PyMethodDef hello_methods[] = {
 
 
 // python intry
+#ifdef FC_OS_WIN32
 extern "C" {
 void __declspec(dllexport) initImport() {
 
@@ -93,3 +94,4 @@ void __declspec(dllexport) initImport() {
 
 
 } // extern "C" {
+#endif
