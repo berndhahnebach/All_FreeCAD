@@ -156,8 +156,10 @@ class FCPythonResource : public FCPyObject
 		int _setattr(char *attr, PyObject *value);	// __setattr__ function
 
 		// methods
-		PYFUNCDEF_D(FCPythonResource, GetInput);
+		PYFUNCDEF_D(FCPythonResource, GetValue);
+		PYFUNCDEF_D(FCPythonResource, SetValue);
 		PYFUNCDEF_D(FCPythonResource, Show);
+		PYFUNCDEF_D(FCPythonResource, Connect);
 
 	private:
 		QDialog* myDlg;

@@ -285,8 +285,10 @@ PyTypeObject FCPythonResource::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef FCPythonResource::Methods[] = {
-  {"GetInput",       (PyCFunction) sGetInput, Py_NEWARGS},
+  {"GetValue",       (PyCFunction) sGetValue, Py_NEWARGS},
+  {"SetValue",       (PyCFunction) sSetValue, Py_NEWARGS},
   {"Show",           (PyCFunction) sShow,     Py_NEWARGS},
+  {"Connect",        (PyCFunction) sConnect,  Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -373,24 +375,28 @@ PyObject *FCPythonResource::Show(PyObject *args)
   return Py_None;
 }
 
-PyObject *FCPythonResource::GetInput(PyObject *args)
+PyObject *FCPythonResource::GetValue(PyObject *args)
 {
-	char *psInput;
-	if (!PyArg_ParseTuple(args, "s", &psInput))     // convert args: Python->C 
+	char *psName;
+	char *psProperty;
+	if (!PyArg_ParseTuple(args, "ss", &psName, &psProperty))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
 	QString input="";
 
 	if (myDlg)
 	{
-		QObjectList *l = myDlg->queryList( "QLineEdit" );
+		QObjectList *l = myDlg->queryList( "QWidget" );
 		QObjectListIt it( *l );
 		QObject *obj;
 
 		while ( (obj = it.current()) != 0 ) {
-				// for each found object...
 				++it;
-				input = ((QLineEdit*)obj)->text();
+				if (strcmp(obj->name(), psName) == 0)
+				{
+					input = obj->property(psProperty).toString();
+					break;
+				}
 		}
 		delete l; // delete the list, not the objects
 	}
@@ -399,4 +405,56 @@ PyObject *FCPythonResource::GetInput(PyObject *args)
 	pItem = PyString_FromString(input.latin1());
 
 	return pItem;
+}
+
+PyObject *FCPythonResource::SetValue(PyObject *args)
+{
+	char *psName;
+	char *psProperty;
+	char *psValue;
+	if (!PyArg_ParseTuple(args, "sss", &psName, &psProperty, &psValue))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	if (myDlg)
+	{
+		QObjectList *l = myDlg->queryList( "QWidget" );
+		QObjectListIt it( *l );
+		QObject *obj;
+
+		while ( (obj = it.current()) != 0 ) {
+				++it;
+				if (strcmp(obj->name(), psName) == 0)
+				{
+					QVariant v(psValue);
+					obj->setProperty(psProperty, v);
+					break;
+				}
+		}
+		delete l; // delete the list, not the objects
+	}
+
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *my_callback = NULL;
+
+PyObject *FCPythonResource::Connect(PyObject *args)
+{
+    PyObject *result = NULL;
+    PyObject *temp;
+
+    if (PyArg_ParseTuple(args, "O:set_callback", &temp)) {
+        if (!PyCallable_Check(temp)) {
+            PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+            return NULL;
+        }
+        Py_XINCREF(temp);         /* Add a reference to new callback */
+        Py_XDECREF(my_callback);  /* Dispose of previous callback */
+        my_callback = temp;       /* Remember new callback */
+        /* Boilerplate to return "None" */
+        Py_INCREF(Py_None);
+        result = Py_None;
+    }
+    return result;
 }
