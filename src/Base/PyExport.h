@@ -44,20 +44,22 @@ protected:
 #define PYFUNCIMP(Y,X) PyObject* Y::X (PyObject *self,PyObject *args,PyObject *kwd)
 
 
-#include <Python.h>
-#include <iostream.h>
+#include <python.h>
+#include <iostream>
+//#include <Python.h>
+//#include <iostream.h>
 
 /*------------------------------
  * Basic defines
 ------------------------------*/
-typedef const char * version;			// define "version"
+//typedef const char * version;			// define "version"
 
 
 
 inline int streq(const char *A, const char *B)	// define "streq"
 { return strcmp(A,B) == 0;};
 
-#ifndef __linux // this is defined in STL already
+/*
 
 template <class T>				// min
 inline T min(const T& a, const T& b)
@@ -70,8 +72,8 @@ inline T max(const T& a, const T& b)
 {
 	return a > b ? a : b;
 }
+*/
 
-#endif
 
 inline void Assert(int expr, char *msg)		// C++ assert
 {
@@ -95,7 +97,7 @@ inline void Assert(int expr, char *msg)		// C++ assert
 #define Py_Try(F) {if (!(F)) return NULL;}
 #define Py_Assert(A,E,M) {if (!(A)) {PyErr_SetString(E, M); return NULL;}}
 
-inline void Py_Fatal(char *M) {cout << M << endl; exit(-1);};
+inline void Py_Fatal(char *M) {stlport::cout << M << stlport::endl; exit(-1);};
 
 /// This must be the first line of each PyC++ class
 #define Py_Header												\

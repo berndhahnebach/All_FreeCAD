@@ -27,10 +27,10 @@
 #include "Export.h"
 #include "PyExport.h"
 
-#pragma warning(disable: 4786)  // specifier longer then 255 chars
+//#pragma warning(disable: 4786)  // specifier longer then 255 chars
 #include <assert.h>
-#include <iostream.h>
-#include <fstream.h> 
+#include <iostream>
+#include <fstream> 
 #include <set>
  
 
@@ -135,7 +135,7 @@ inline FCConsole &GetConsole(void){
 class BaseExport FCLoggingConsoleObserver : public FCConsoleObserver
 {
 public:
-	FCLoggingConsoleObserver(const char *sFileName,int nMode = ios::out);
+	FCLoggingConsoleObserver(const char *sFileName,int nMode = stlport::ios::out);
 	~FCLoggingConsoleObserver();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg);
@@ -143,9 +143,7 @@ public:
 	virtual void Log    (const char *sLog);
 
 protected:
-#pragma warning( disable : 4251 )
-	ofstream cFileStream;
-#pragma warning( default : 4251 )
+	stlport::ofstream cFileStream;
 };
 
 // simple print observer

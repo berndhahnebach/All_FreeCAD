@@ -23,7 +23,9 @@ public:
     inline void SetMessage(const char * sMessage);
   
 protected:
-	std::string _sErrMsg;
+#	pragma warning( disable : 4251 )
+	stlport::string _sErrMsg;
+#	pragma warning( default : 4251 )
 };
    
 

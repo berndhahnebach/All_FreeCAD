@@ -1,6 +1,9 @@
-// File:	TDataStd_Name.cxx
-// Created:	Thu Jul 31 10:32:56 1997
-// Author:	Denis PASCAL
+/** \file $RCSfile$
+ *  \brief The attribute module
+ *  \author $Author$
+ *  \version $Revision$
+ *  \date    $Date$
+ */
 
 #ifdef _PreComp_
 #	include "PreCompiled.h"

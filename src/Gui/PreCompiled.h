@@ -4,7 +4,7 @@
 #pragma warning( disable : 4786 )
 
 // standard
-#include <iostream>
+#include <iostream.h>
 #include <stdio.h>
 #include <assert.h>
 #include <io.h>
@@ -31,7 +31,7 @@
 #include <qpopupmenu.h>
 //#include <qevent.h>
 #include <qpixmap.h>
-#include <qtoolbar.h>
+#include <qtoolbar.h> 
 #include <qtoolbutton.h>
 #include <qpopupmenu.h>
 #include <qcombobox.h>

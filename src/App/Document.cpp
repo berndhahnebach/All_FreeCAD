@@ -275,7 +275,7 @@ bool FCDocument::IsValid() const
   return _hDoc->IsValid() != 0;
 }
 
-/// Set a special Labe as modified
+/// Set a special Label as modified
 void FCDocument::SetModified(FCLabel* L)
 {
   _hDoc->SetModified(L->GetOCCLabel()); 
@@ -377,7 +377,7 @@ void FCDocument::ChangeStorageFormat(const short* sStorageFormat)
 FCLabel *FCDocument::HasPyLabel(TDF_Label cLabel)
 {
 	FCLabel *pcL;
-	stlport::map <TDF_Label,FCLabel*,sless>::iterator It;
+	stlport::map <TDF_Label,FCLabel*,ltstr>::iterator It;
 	
 	// find a FCLabel if possible
 	It = mcLabelMap.find(cLabel);

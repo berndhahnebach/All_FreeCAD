@@ -298,7 +298,7 @@ void CheckEnv(void)
           cerr<<"Environment variable "<<envvar<<" is not set!"<<endl; \
           bFailure=true;\
         }  
-        TEST_ENVVAR_EXISTS("CSF_GraphicShr")
+        //TEST_ENVVAR_EXISTS("CSF_GraphicShr")
         TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory")
         TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory")
         TEST_ENVVAR_EXISTS("CSF_UnitsDefinition")

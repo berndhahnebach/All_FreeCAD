@@ -20,132 +20,120 @@ FCParameter::~FCParameter(void)
 
 }
 
+FCParameter::sValue &FCParameter::GetValue(const char *Key)
+{
+	int pos=-1;
+	char sBuf[512];
+	// kritical buffer overun
+	assert(strlen(Key)<511);
+
+	// search for the last slash
+	for(int i=0;Key[i]!=0;i++)
+		if(Key[i]=='/')pos=i;
+
+	if(pos==-1) // with no slash in Key
+		return mData["_MAIN"][Key];
+
+	if(pos==0) // with a starting slash
+	{
+		// copy without slash
+		strcpy(sBuf,Key+1);
+		return mData["_MAIN"][sBuf];
+	}
+
+	if(pos>0) // with a slash inside
+	{
+		// extracting name
+		char name[200];
+		strcpy(name,Key+pos);
+
+		// extrakting group
+		char group[512];
+		for (int l=0;l<pos;l++)
+			group[l]=Key[l];
+		group[l]=0;
+
+		return mData[group][name];
+	}
+
+}
 
 bool FCParameter::AddKeyLong(const char *Key, long lWert)
 {
-    // Key schon da?
-    assert(mData.find(Key)==mData.end());
-    char buff[34];
-    sprintf(buff,"%d",lWert);
-    mData.operator[](Key) = buff;
+	sValue sVal= GetValue(Key);
+
+	sVal.Value.Long = lWert;
+	sVal.Type = sValue::Long;
 
     return true;
 }
 
 bool FCParameter::AddKeyString(const char *Key, const char *Wert)
 {
-    // Key schon da?
-    assert(mData.find(Key)==mData.end());
-    mData.operator[](Key) = Wert;
 
     return true;
 }
 
 bool FCParameter::AddKeyFloat(const char *Key, float dWert)
 {
-    // Key schon da?
-    assert(mData.find(Key)==mData.end());
-    char buff[34];
-    sprintf(buff,"%f",dWert);
-    mData.operator[](Key) = buff;
 
     return true;
 }
 
 bool FCParameter::DeleteKey (const char *rclKey)
 {
-  return mData.erase(rclKey) != 0;
+  return true;
 }
 
 bool FCParameter::DeleteKeyFromString (const char *rclGroupKey, const char *rclValue)
 {
-  std::string clKey = FindKeyFromString(rclGroupKey, rclValue);
-  if (clKey.empty() == false)
-    return DeleteKey(clKey.c_str());
   return false;
 }
 
 const char *FCParameter::FindKeyFromString (const char *rclGroupKey, const char *rclValue) const
 {
-  for (std::map<std::string,std::string>::const_iterator pI = mData.begin(); pI != mData.end(); pI++)
-  {
-	  std::string::size_type nPos = pI->first.find_first_of(".");
-    if ((pI->first.substr(0, nPos) == rclGroupKey) && (pI->second == rclValue))
-      return pI->first.c_str();
-  }
   return "";
 }
 
 bool FCParameter::SetKeyLong(const char *Key, long lWert)
 {
-    char buff[34];
-    sprintf(buff,"%d",lWert);
-    mData.operator[](Key) = buff;
-
+	sValue sVal= GetValue(Key);
+	assert(sVal.Type == sValue::Long);
+	sVal.Value.Long = lWert;
+	
     return true;
 }
 
 bool FCParameter::SetKeyString(const char *Key, const char *sWert)
 {
-    mData.operator[](Key) = sWert;
-
     return true;
 }
 
 bool FCParameter::SetKeyFloat(const char *Key, float dWert)
 {
-   // Key schon da?
-    char buff[34];
-    sprintf(buff,"%f",dWert);
-    mData.operator[](Key) = buff;
-
     return true;
 }
 
 long      FCParameter::GetKeyLong(const char *Key, long lDef)
 {
-    if(mData.find(Key)!=mData.end()){
-        return atoi(mData.operator[](Key).c_str());
-    }else{
-        SetKeyLong(Key, lDef);
-        return lDef;
-    }
+	sValue sVal= GetValue(Key);
+	assert(sVal.Type == sValue::Long);
+	return sVal.Value.Long;
+	
 }
 
 const char *FCParameter::GetKeyString(const char *Key,const char *sDef)
 {
-    if(mData.find(Key)!=mData.end()){
-        return mData.operator[](Key).c_str();
-    }else{
-        SetKeyString(Key, sDef);
-        return sDef;
-    }
+	return sDef;
 }
 
 float    FCParameter::GetKeyFloat(const char *Key,float fDef)
 {
-    if(mData.find(Key)!=mData.end()){
-        return float(atof(mData.operator[](Key).c_str()));
-    }else{
-        SetKeyFloat(Key, fDef);
-        return fDef;
-    }
+	return fDef;
 }
 unsigned long FCParameter::GetGroup(const char *cKey,FCParameter &cPara) 
 {
-    int s=strlen(cKey);
     unsigned long ulSize=0;
-
-	for(std::map<std::string,std::string>::iterator It=mData.begin();It!=mData.end();It++)
-#ifdef __linux
-        if(!(It->first).compare(std::string(cKey)))
-#else	
-        if(!(It->first).compare(0,s,cKey))
-#endif	
-		{
-            cPara.mData[std::string(It->first,s,It->first.size())] = It->second;
-			ulSize++;
-		}
     return ulSize;
 }
 

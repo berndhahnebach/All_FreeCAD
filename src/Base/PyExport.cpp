@@ -57,7 +57,7 @@ PyObject *FCPyObject::_getattr(char *attr)
 
 int FCPyObject::_setattr(char *attr, PyObject *value)
 {
-  cerr << "Unknown attribute" << endl;
+	stlport::cerr << "Unknown attribute" << stlport::endl;
   return 1;
 }
 

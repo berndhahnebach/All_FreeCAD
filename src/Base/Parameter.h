@@ -39,6 +39,10 @@
  *  type float, long and string. Also it handles importing
  *  and exporting groups of parameters and enables streaming
  *  to a persistent medium.
+ *  \par
+ *  The groups and subgroubnames are separeted by a slash, so
+ *  no group must have a slash in his name. The saving and 
+ *  retrival is done in the config file formate and sorted.
  *  @see 
  */
 class BaseExport FCParameter : public FCPythonExport 
@@ -79,8 +83,27 @@ public:
 
 
 private:
+
+	struct sValue {
+		enum {
+			String,
+			Long,
+			Float
+		} Type;
+		union {
+			stlport::string *String;
+			long			 Long;
+			double           Float;
+		} Value;
+	};
+	/// retrive the Value for a key
+	sValue &GetValue(const char *Key);
+
 #pragma warning( disable : 4251 )
-	stlport::map<stlport::string,stlport::string> mData;
+#pragma warning( disable : 4503 )
+	stlport::map<stlport::string,stlport::map<stlport::string,sValue> > mData;
+	//stlport::map<stlport::string,stlport::string > mData;
+//#pragma warning( default : 4503 )
 #pragma warning( default : 4251 )
 
 };

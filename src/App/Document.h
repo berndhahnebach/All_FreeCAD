@@ -88,6 +88,9 @@ protected:
 
 };
 
+
+
+
 /** The Document 
  *  This is bisides the Applcation class the most importand class in FreeCAD
  *  It wrapps the OCC Document and contains all the data of the opend, saved
@@ -216,16 +219,14 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 	PyObject *PyRecompute(PyObject *args);		// Python wrapper
 	static PyObject *sPyRecompute(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocument*)self)->PyRecompute(args);};
 
+
+
 protected:
 
-	friend FCLabel;
-	
-	FCLabel *HasPyLabel(TDF_Label cLabel);
-
-	/// less funktion for the map sorting of TDF_Labels
-	struct sless{
-		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2)
+	struct ltstr{
+		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2) const
 		{
+	/// less funktion for the map sorting of TDF_Labels
 /* just for debugs
 			unsigned long l1,l2,l3,l4,l5,l6;
 			l1 = (unsigned short) cLabel1.Depth();
@@ -239,11 +240,16 @@ protected:
 			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
 				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
 		}
+		//friend class stlport::map<TDF_Label,FCLabel*,ltstr>;
 	};
+	
+	friend FCLabel;
+	FCLabel *HasPyLabel(TDF_Label cLabel);
 
 #	pragma warning( disable : 4251 )
 	/// map of all existing python label wrappers (sorted)
-	stlport::map <TDF_Label,FCLabel*,sless> mcLabelMap;
+	stlport::map <TDF_Label,FCLabel*,ltstr> mcLabelMap;
+//	stlport::map <TDF_Label,FCLabel*> mcLabelMap;
 	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
 #	pragma warning( default : 4251 )

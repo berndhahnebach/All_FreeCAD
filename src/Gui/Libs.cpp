@@ -10,12 +10,12 @@
 // === Including of libs: ============================================================================
 #ifdef WNT
 	// STLport
-#	ifndef __STL_DEBUG
-#		pragma comment(lib,"stlport_vc6.lib")
-#	else
-#		pragma comment(lib,"stlport_vc6_debug.lib")
-#		pragma comment(lib,"stlport_vc6_stldebug.lib")
-#	endif
+//#	ifndef __STL_DEBUG
+//#		pragma comment(lib,"stlport_vc6.lib")
+//#	else
+//#		pragma comment(lib,"stlport_vc6_debug.lib")
+//#		pragma comment(lib,"stlport_vc6_stldebug.lib")
+//#	endif
 #	pragma comment(lib,"TKernel.lib")
 #	pragma comment(lib,"TKMath.lib")
 #	pragma comment(lib,"TKService.lib")
