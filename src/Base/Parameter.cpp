@@ -110,21 +110,34 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 
 	// search if Group node already there
 	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
-/*	if(!pcTemp) // if not, create a new one
-	{
-		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
-
-		// creating new group node
-		pcTemp = pDocument->createElement(X("FCParamGroup"));
-		pcTemp-> setAttribute(X("Name"), X(Name));
-		_pGroupNode->appendChild(pcTemp);
-	}*/
 
 	// create and register handle
 	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
 	_GroupMap[Name] = rParamGrp;
 
 	return rParamGrp;
+}
+
+FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
+{
+	FCvector<FCHandle<FCParameterGrp> >  vrParamGrp;
+	DOMElement *pcTemp;
+
+	// already created?
+/*	if( (rParamGrp=_GroupMap[""]).IsValid() )
+	{
+		// just return the already existing Group handle
+		return vrParamGrp;
+	}
+
+	// search if Group node already there
+	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
+
+	// create and register handle
+	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
+	_GroupMap[Name] = rParamGrp;
+*/
+	return vrParamGrp;
 }
 
 bool FCParameterGrp::GetBool(const char* Name, bool bPreset)
@@ -268,6 +281,23 @@ DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, con
 					if (!strcmp(Name,StrX(clChild->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str()))
 						return (DOMElement*)clChild;
 				}
+			}
+		}
+	}
+	return NULL;
+}
+
+DOMElement *FCParameterGrp::FindNextElement(DOMElement *Prev, const char* Type)
+{
+	DOMNode *clChild;
+	while ((clChild = clChild->getNextSibling())!=0)
+	{
+		if (clChild->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			// the right node Type
+			if (!strcmp(Type,StrX(clChild->getNodeName()).c_str()))
+			{
+				return (DOMElement*)clChild;
 			}
 		}
 	}

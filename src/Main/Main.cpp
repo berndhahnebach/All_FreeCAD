@@ -115,18 +115,9 @@ void CheckEnv(void);
 
 
 
-#ifdef FREECADMAINPY
-BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved){return TRUE;}
-
-extern "C" {
-void __declspec(dllexport) initFreeCAD() {
-int argc =0;
-char **argv=0;
-#else
 
 int main( int argc, char ** argv ) {
 
-#endif
 	// Init phase ===========================================================
 	try{
 		// first check the environment variables
@@ -138,10 +129,6 @@ int main( int argc, char ** argv ) {
 		// the FreeCAD Application
 
 		GetApplication();
-
-#		ifdef FREECADMAINPY
-			return;
-#		endif
 
 
 	}
@@ -255,16 +242,26 @@ int main( int argc, char ** argv ) {
 
 	GetConsole().Log("FreeCAD completely terminated\n\n");
 
-#ifdef FREECADMAINPY
-	exit (0);
-}
-
-} // extern "C" {
-#else
 	return 0;
 }
+
+
+
+#ifdef FREECADMAINPY
+BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved){return TRUE;}
+
+extern "C" {
+#ifdef _DEBUG
+void __declspec(dllexport) initFreeCADDCmdPy() {
+#else
+void __declspec(dllexport) initFreeCADCmdPy() {
 #endif
 
+	GetApplication();
+	return;
+}
+}
+#endif
 
 //************************************************************************
 // Init()

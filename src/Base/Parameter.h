@@ -45,6 +45,7 @@
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #include <xercesc/dom/DOMWriterFilter.hpp>
+#include <vector>
 class DOMDocument;
 
 #include "Handle.h"
@@ -53,6 +54,37 @@ class DOMDocument;
 class DOMNode;
 class DOMElement;
 class FCParameterManager;
+
+/*
+class BaseExport FCParameterIterator
+{
+public:
+	FCParameterIterator(void);
+	FCParameterIterator(const FCParameterIterator &ToCopy);
+
+	void operator=(const FCParameterIterator &ToCopy);
+
+	virtual const char*Type(void)=0;
+
+	operator++(void);
+
+private:
+	/// DOM Node of the Base node of this group
+	DOMElement *_pIterNode;
+}
+
+class BaseExport FCParameterGroupIterator
+{
+public:
+	FCParameterGroupIterator(void):FCParameterIterator(){};
+	FCParameterGroupIterator(const FCParameterIterator &ToCopy):FCParameterIterator(ToCopy){};
+
+	
+
+}
+
+*/
+
 
 /** The parameter container class
  *  This is the base class of all classes handle parameter.
@@ -77,6 +109,7 @@ protected:
 
 public:
 	FCHandle<FCParameterGrp> GetGroup(const char* Name);
+	FCvector<FCHandle<FCParameterGrp> > GetGroups(void);
 	typedef FCHandle<FCParameterGrp> handle;
 
 	bool GetBool(const char* Name, bool bPreset=false);
@@ -106,6 +139,8 @@ public:
 	static void Init(void);
 
 	friend FCParameterManager;
+
+	DOMElement *FindNextElement(DOMElement *Prev, const char* Type);
 
 	/** Find an element specified by Type and Name
 	 *  Search in the parent element Start for the first occourrence of an 
