@@ -30,17 +30,20 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <list>
+# include <map>
+# include <queue>
 #endif
 
 #include "Process.h"
 #include "Console.h"
 
-#ifdef FC_OS_WIN32
 class FCBaseProcessPrivate
 {
   public:
     FCBaseProcessPrivate()
     {
+#ifdef FC_OS_WIN32
       pInfo = 0L;
 			hChildProcess = NULL;
 	    hStdInputRd = NULL;
@@ -60,6 +63,7 @@ class FCBaseProcessPrivate
       exitNormal = false;
       exitStatus = 0;
       exitCode = 0;
+#endif
     }
 
     ~FCBaseProcessPrivate()
@@ -69,18 +73,23 @@ class FCBaseProcessPrivate
 
     void delProcessInfo()
     {
+#ifdef FC_OS_WIN32
 	    delete pInfo;
 	    pInfo = 0;
+#endif
     }
 
     void newProcessInfo()
     {
+#ifdef FC_OS_WIN32
 	    delete pInfo;
 	    pInfo = new PROCESS_INFORMATION;
+#endif
     }
 
     void reset()
     {
+#ifdef FC_OS_WIN32
 	    while ( !stdinBuf.empty() )
 	      stdinBuf.pop();
   
@@ -100,6 +109,7 @@ class FCBaseProcessPrivate
 	    exitValues = false;
 
 	    delProcessInfo();
+#endif
     }
 
     std::string dir;
@@ -115,6 +125,7 @@ class FCBaseProcessPrivate
     bool exitValues;
     bool exitNormal;
     int exitStatus;
+#ifdef FC_OS_WIN32
     DWORD exitCode;
     unsigned int stdinBufRead;
 
@@ -123,8 +134,8 @@ class FCBaseProcessPrivate
     HANDLE hStdErrorRd, hStdErrorWr;
     HANDLE hStdOutputRd, hStdOutputWr;
 		HANDLE hChildProcess;
-};
 #endif
+};
 
 std::string FCBaseProcess::SystemWarning( int code, const char* pMsg)
 {
@@ -219,16 +230,20 @@ void FCBaseProcess::reset()
 
 const std::string& FCBaseProcess::childStdout()
 {
+#ifdef FC_OS_WIN32
   if( d->hStdOutputRd != NULL )
   	onReceiveData( true );
+#endif
 
   return d->bufferStdout;
 }
 
 const std::string& FCBaseProcess::childStderr()
 {
+#ifdef FC_OS_WIN32
   if( d->hStdErrorRd != NULL )
 	  onReceiveData( false );
+#endif
 
   return d->bufferStderr;
 }
@@ -240,9 +255,13 @@ bool FCBaseProcess::appendToPath (const char* path)
   {
 #ifdef FC_OS_WIN32
     sprintf(szPath, "%s;%s", d->env["PATH"].c_str(), path);
-#elif FC_OS_LINUX || FC_OS_CYGWIN
+#endif
+#ifdef FC_OS_LINUX
     sprintf(szPath, "%s:%s", d->env["PATH"].c_str(), path);
-#elif
+#endif
+#ifdef FC_OS_CYGWIN
+    sprintf(szPath, "%s:%s", d->env["PATH"].c_str(), path);
+#else
   GetConsole().Warning("Not yet implemented!\n");
   return false;
 #endif
@@ -252,9 +271,13 @@ bool FCBaseProcess::appendToPath (const char* path)
   {
 #ifdef FC_OS_WIN32
     sprintf(szPath, "%s;%s", getenv("PATH"), path);
-#elif FC_OS_LINUX || FC_OS_CYGWIN
+#endif
+#ifdef FC_OS_LINUX
     sprintf(szPath, "%s:%s", getenv("PATH"), path);
-#elif
+#endif
+#ifdef FC_OS_CYGWIN
+    sprintf(szPath, "%s:%s", getenv("PATH"), path);
+#else
   GetConsole().Warning("Not yet implemented!\n");
   return false;
 #endif
@@ -390,7 +413,11 @@ void FCBaseProcess::setupEnvironment()
   {
 #ifdef FC_OS_WIN32
     ::SetEnvironmentVariable (it->first.c_str(), it->second.c_str());
-#elif FC_OS_LINUX || FC_OS_CYGWIN
+#endif
+#ifdef FC_OS_LINUX
+    setenv(it->first.c_str(), it->second.c_str(), 1);
+#endif
+#ifdef FC_OS_CYGWIN
     setenv(it->first.c_str(), it->second.c_str(), 1);
 #else
     GetConsole().Warning("Not yet implemented!\n");
@@ -680,6 +707,7 @@ bool FCBaseProcess::onSendData(int dummy)
 #endif
 }
 
+#ifdef FC_OS_WIN32
 static unsigned int readStdOutput( HANDLE dev, std::string& buf, unsigned int oldSize, unsigned int bytes )
 {
   if ( bytes > 0 ) 
@@ -699,6 +727,7 @@ static unsigned int readStdOutput( HANDLE dev, std::string& buf, unsigned int ol
 
   return 0;
 }
+#endif
 
 void FCBaseProcess::onReceiveData (bool stdoutput)
 {

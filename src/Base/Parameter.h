@@ -58,7 +58,8 @@
 
 #ifdef XERCES_HAS_CPP_NAMESPACE
 #ifdef FC_OS_LINUX
-	using namespace xercesc_2_3;
+//	using namespace xercesc_2_3;
+  XERCES_CPP_NAMESPACE_USE
 #endif
 	using namespace xercesc;
 	namespace xercesc_2_3{

@@ -68,11 +68,15 @@ class BaseExport FCFactory
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #endif
+#ifdef _MSC_VER
 # if _MSC_VER >= 1300
 	   std::map<std::string, FCAbstractProducer*> _mpcProducers;
 # else
 		 std::map<const std::string, FCAbstractProducer*> _mpcProducers;
 # endif
+#else
+		 std::map<const std::string, FCAbstractProducer*> _mpcProducers;
+#endif
    
 		/// construction
 		FCFactory (void){}
