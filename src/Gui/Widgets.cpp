@@ -93,8 +93,10 @@ QString FCFileDialog::getSaveFileName ( const QString & initially, const QString
 {
   FCFileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
   fd.setCaption(caption);
-  fd.exec();
-  return fd.selectedFileName();
+  if ( fd.exec() )
+	  return fd.selectedFileName();
+	else
+		return QString("");
 }
 
 FCFileDialog::FCFileDialog (Mode mode, QWidget* parent, const char* name, bool modal)

@@ -50,6 +50,7 @@
 
 class QHBoxLayout;
 class QTime;
+class QGridLayout;
 
 /**
  * Using the Qt's open/save dialogs with own adjustments

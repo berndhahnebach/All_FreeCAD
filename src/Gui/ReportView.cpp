@@ -30,8 +30,9 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #	include <qscrollview.h>
+#	include <qsyntaxhighlighter.h>
 #	include <qtabwidget.h>
-#	include <qtextbrowser.h>
+#	include <qtextedit.h>
 #	include <qtimer.h>
 #endif
 
@@ -77,82 +78,90 @@ FCReportView::~FCReportView()
 
 // ----------------------------------------------------------
 
-class FCReportOutputPrivate
+ReportHighlighter::ReportHighlighter(QTextEdit* edit)
+: QSyntaxHighlighter(edit), type(Message), lastPos(0)
 {
-  public:
-    std::vector<QString> alOriginal;
-};
+}
+
+ReportHighlighter::~ReportHighlighter()
+{
+}
+
+int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
+{
+	if (type == Message)
+	{
+		setFormat(lastPos, text.length()-lastPos, Qt::black);
+	}
+	else if (type == Warning)
+	{
+		setFormat(lastPos, text.length()-lastPos, QColor(255, 170, 0));
+	}
+	else if (type == Error)
+	{
+		setFormat(lastPos, text.length()-lastPos, Qt::red);
+	}
+	else if (type == LogText)
+	{
+		setFormat(lastPos, text.length()-lastPos, Qt::black);
+	}
+
+	lastPos = text.length()-1;
+	return 0;
+}
+
+void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
+{
+	type = t;
+}
+
+// ----------------------------------------------------------
 
 FCReportOutput::FCReportOutput(QWidget* parent, const char* name)
- : QTextBrowser(parent, name)
+ : QTextEdit(parent, name)
 {
-#if QT_VERSION >= 300
-  setTextFormat(LogText);
-#endif
+	reportHl = new ReportHighlighter(this);
 
-  d = new FCReportOutputPrivate;
-
-  QFont _font(  font() );
-  _font.setFamily( "Courier" );
-  _font.setPointSize( 10 );
-  _font.setBold( TRUE );
-  setFont( _font ); 
-  onClear();
+	restoreFont();
+	setReadOnly(true);
+  clear();
   setHScrollBarMode(QScrollView::AlwaysOff);
 
-  setText("<qt>FreeCAD output.</qt>");
+  insert("FreeCAD output.\n");
   GetConsole().AttacheObserver(this);
 }
 
 FCReportOutput::~FCReportOutput()
 {
   GetConsole().DetacheObserver(this);
-  delete d; d = NULL;
+	delete reportHl;
 }
 
-void FCReportOutput::appendLog(const char * s, const char * color)
+void FCReportOutput::restoreFont()
 {
-  d->alOriginal.push_back(s);
-  QString qs;
-
-  if (color)
-  {
-#if QT_VERSION < 300
-    if (strchr(s, '\n') != NULL)
-      qs = QString("<font color=\"%1\">%2</font>\n<br/>").arg(color).arg(s);
-    else
-      qs = QString("<font color=\"%1\">%2</font>").arg(color).arg(s);
-#else
-      qs = QString("<font color=%1>%2</font>").arg(color).arg(s);;
-#endif
-  }
-  else
-  {
-#if QT_VERSION < 300
-    if (strchr(s, '\n') != NULL)
-      qs = QString("%1<br/>").arg(s);
-    else
-#endif
-      qs = QString("%1").arg(s);
-  }
-  
-  append(qs);
-  setContentsPos(0, contentsHeight());
+  QFont _font(  font() );
+  _font.setFamily( "Courier" );
+  _font.setPointSize( 10 );
+//  _font.setBold( TRUE );
+  setFont( _font ); 
 }
 
 void FCReportOutput::Warning(const char * s)
 {
-  appendLog(s, "orange");
+	reportHl->setParagraphType(ReportHighlighter::Warning);
+  insert(s);
 }
 
 void FCReportOutput::Message(const char * s)
 {
-  appendLog(s);
+	reportHl->setParagraphType(ReportHighlighter::Message);
+  insert(s);
 }
 
 void FCReportOutput::Error  (const char * s)
 {
-  appendLog(s, "red");
+	reportHl->setParagraphType(ReportHighlighter::Error);
+  insert(s);
 }
 
 void FCReportOutput::Log (const char * s)
@@ -165,75 +174,39 @@ bool FCReportOutput::event( QEvent* ev )
   bool ret = QWidget::event( ev ); 
   if ( ev->type() == QEvent::ApplicationFontChange ) 
   {
-	  QFont _font(  font() );
-	  _font.setFamily( "Courier" );
-	  _font.setPointSize( 10 );
-	  _font.setBold( TRUE );
-	  setFont( _font ); 
+		restoreFont();
   }
   
   return ret;
 }
 
-void FCReportOutput::viewportMousePressEvent (QMouseEvent * e)
+QPopupMenu * FCReportOutput::createPopupMenu ( const QPoint & pos )
 {
-  if (e->button() == RightButton)
-  {
-    QPopupMenu menu;
-    menu.insertItem(tr("Copy") , this, SLOT(copy()));
-    menu.insertItem(tr("Clear"), this, SLOT(onClear()));
-    menu.insertSeparator();
-    menu.insertItem(tr("Select All"), this, SLOT(selectAll()));
-    menu.insertSeparator();
-    menu.insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
-    menu.exec(e->globalPos());
-  }
-  else
-    QTextBrowser::viewportMousePressEvent(e);
-}
-
-void FCReportOutput::onClear()
-{
-//  setText("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n");
-  setText("");
+	QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+	menu->insertItem(tr("Clear"), this, SLOT(clear()));
+	menu->insertSeparator();
+	menu->insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
+	return menu;
 }
 
 void FCReportOutput::onSaveAs()
 {
-//  QString fn = FCFileDialog::getSaveFileName(QString::null,"RTF Files (*.rtf);;Plain Text Files (*.txt *.log)",
-//                                             this, QString("Save Report Output"));
-  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", this, QObject::tr("Save Report Output"));
+  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", 
+																						 this, QObject::tr("Save Report Output"));
   if (!fn.isEmpty())
   {
     int dot = fn.find('.');
     if (dot != -1)
     {
-      QString ext = fn.right(fn.length() - dot - 1).lower();
-      if (ext == QString("rtf"))
-      {
-        QFile f(fn);
-        if (f.open(IO_WriteOnly))
-        {
-          QTextStream t (&f);
-          t << text();
-          f.close();
-        }
-      }
-      else if (ext == QString("txt") || ext == QString("log"))
-      {
-        QFile f(fn);
-        if (f.open(IO_WriteOnly))
-        {
-          QTextStream t (&f);
-          for (std::vector<QString>::iterator it = d->alOriginal.begin(); it != d->alOriginal.end(); ++it)
-          {
-            t << *it;
-          }
-          f.close();
-        }
-      }
-    }
-  }
+			QFile f(fn);
+			if (f.open(IO_WriteOnly))
+			{
+				QTextStream t (&f);
+				t << text();
+				f.close();
+			}
+		}
+	}
 }
 
 #include "moc_ReportView.cpp"

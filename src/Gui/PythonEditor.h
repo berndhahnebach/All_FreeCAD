@@ -41,6 +41,7 @@
 #endif
 
 class PythonSyntaxHighlighter;
+class PythonSyntaxHighlighterP;
 
 class GuiExport PythonWindow : public QTextEdit
 {
@@ -83,7 +84,8 @@ class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
 			Blockcomment = 2, 
 			Literal      = 3, 
 			Number       = 4, 
-			Operator     = 5
+			Operator     = 5,
+			Keywords     = 6
 		};
 
 	public:
@@ -100,10 +102,9 @@ class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
 		int highlightOperators( const QString&, int& from, int endStateOfLastPara );
 		int highlightNumbers( const QString&, int& from, int endStateOfLastPara );
 		int highlightNormalText( const QString&, int& from, int endStateOfLastPara );
+		int highlightKeywords( const QString&, int& from, int endStateOfLastPara );
 
-		QStringList keywords;
-		QString blockComment;
-		bool hlError;
+		PythonSyntaxHighlighterP* d;
 };
 
 /**

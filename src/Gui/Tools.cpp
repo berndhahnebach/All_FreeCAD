@@ -176,3 +176,8 @@ int FCTools::getURLType(const QString& url)
 
 	return 2;
 }
+
+QString FCTools::i18n(const QString& s)
+{
+	return QObject::tr(s);
+}

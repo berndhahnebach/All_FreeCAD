@@ -30,10 +30,14 @@
 #define __FC_REPORT_VIEW_H__
 
 #include "Window.h"
+#ifndef _PreComp_
+#	include <qsyntaxhighlighter.h>
+#	include <qtextedit.h>
+#endif
 
 class PythonConsole;
 class FCReportOutput;
-class FCReportOutputPrivate;
+class ReportHighlighter;
 
 class FCReportView : public FCDockWindow
 { 
@@ -49,7 +53,29 @@ class FCReportView : public FCDockWindow
 		PythonConsole* pyc;
 };
 
-class GuiExport FCReportOutput : public QTextBrowser, public FCConsoleObserver
+class GuiExport ReportHighlighter : public QSyntaxHighlighter
+{
+	public: 
+		enum Paragraph { 
+			Message  = 0, 
+			Warning  = 1, 
+			Error    = 2, 
+			LogText  = 3
+		};
+
+	public:
+		ReportHighlighter(QTextEdit* );
+		~ReportHighlighter();
+
+		int highlightParagraph ( const QString & text, int endStateOfLastPara );
+		void setParagraphType(Paragraph);
+
+	private:
+		Paragraph type;
+		int lastPos;
+};
+
+class GuiExport FCReportOutput : public QTextEdit, public FCConsoleObserver
 {
   Q_OBJECT
 
@@ -62,17 +88,17 @@ class GuiExport FCReportOutput : public QTextBrowser, public FCConsoleObserver
     void Error  (const char * s);
 	  void Log (const char * s);
 
+		void restoreFont ();
+
   protected:
-    void appendLog(const char * s, const char * color = 0);
     bool event( QEvent* ev );
-    void viewportMousePressEvent (QMouseEvent * e);
+		QPopupMenu * createPopupMenu ( const QPoint & pos );
 
   public slots:
-    void onClear();
     void onSaveAs();
 
   private:
-    FCReportOutputPrivate* d;
+		ReportHighlighter* reportHl;
 };
 
 #endif //__FC_REPORT_VIEW_H__

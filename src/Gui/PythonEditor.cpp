@@ -44,8 +44,10 @@
 
 #include "PythonEditor.h"
 #include "Application.h"
+#include "DlgEditorImp.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
+#include "../Base/Parameter.h"
 
 
 
@@ -178,92 +180,113 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 
 // ------------------------------------------------------------------------
 
-PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
-: QSyntaxHighlighter(edit), hlError(false)
+class PythonSyntaxHighlighterP
 {
-	keywords << "and" << "assert" << "break" << "class" << "continue" << "def" << "del" << 
-		"elif" << "else" << "except" << "exec" << "finally" << "for" << "from" << "global" << 
-		"if" << "import" << "in" << "is" << "lambda" << "None" << "not" << "or" << "pass" << "print" <<
-		"raise" << "return" << "try" << "while" << "yield";
+	public:
+		PythonSyntaxHighlighterP() : hlError(false)
+		{
+			keywords << "and" << "assert" << "break" << "class" << "continue" << "def" << "del" << 
+				"elif" << "else" << "except" << "exec" << "finally" << "for" << "from" << "global" << 
+				"if" << "import" << "in" << "is" << "lambda" << "None" << "not" << "or" << "pass" << "print" <<
+				"raise" << "return" << "try" << "while" << "yield";
+
+			// set colors
+			FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+			hPrefGrp = hPrefGrp->GetGroup("Windows")->GetGroup("Editor");
+
+			long c;
+			c = hPrefGrp->GetInt("Text", GetDefCol().GetColor("Text"));
+			cNormalText.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Comment", GetDefCol().GetColor("Comment"));
+			cComment.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Block comment", GetDefCol().GetColor("Block comment"));
+			cBlockcomment.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Number", GetDefCol().GetColor("Number"));
+			cNumber.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("String", GetDefCol().GetColor("String"));
+			cLiteral.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Keyword", GetDefCol().GetColor("Keyword"));
+			cKeyword.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Class name", GetDefCol().GetColor("Class name"));
+			cClassName.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Define name", GetDefCol().GetColor("Define name"));
+			cDefineName.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+			c = hPrefGrp->GetInt("Operator", GetDefCol().GetColor("Operator"));
+			cOperator.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
+		}
+
+		QStringList keywords;
+		QString blockComment;
+		bool hlError;
+		QColor cNormalText, cComment, cBlockcomment, cLiteral, cNumber, 
+			cOperator, cKeyword, cClassName, cDefineName;
+};
+
+PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
+: QSyntaxHighlighter(edit)
+{
+	d = new PythonSyntaxHighlighterP;
 }
 
 PythonSyntaxHighlighter::~PythonSyntaxHighlighter()
 {
+	delete d;
 }
 
 void PythonSyntaxHighlighter::highlightError (bool b)
 {
-	hlError = b;
+	d->hlError = b;
 }
 
 int PythonSyntaxHighlighter::highlightBlockComments( const QString& txt, int& from, int endStateOfLastPara )
 {
 	QRegExp rx("(\"\"\"|''')");
 	int pos = txt.find(rx, from);
-	// if this is part of a block search for the right end
+	// if this is part of a block search for the closing tag
 	if (endStateOfLastPara == (int)Blockcomment)
-		pos = txt.find(blockComment, from);
+		pos = txt.find(d->blockComment, from);
 	else if (pos > -1)
-		blockComment = rx.cap(1);
-	QColor cm(160,160,164);
+		d->blockComment = rx.cap(1);
 
 	// whole line is a comment
 	if ( pos == -1 && endStateOfLastPara == (int)Blockcomment)
 	{
-		setFormat(0, txt.length(), QColor(160,160,164));
+		setFormat(0, txt.length(), d->cBlockcomment);
 	}
-	else
+	// tag for block comments found
+	else if ( pos > -1)
 	{
-		while (pos > -1)
+		int begin = pos;
+
+		// not part of a block comment
+		if ( endStateOfLastPara != (int)Blockcomment )
 		{
-			int begin = pos;
+			// search also for the closing tag
+			int end = txt.find(d->blockComment, begin+3);
 
-			// search also for the end (if block begins with """ the 
-			// it _must_ end with and vice versa)
-			int end = txt.find(blockComment, begin+3);
-
-			if (end > -1)
+			// all between "begin" and "end" is a comment
+			if ( end > -1 )
 			{
-				// all between "begin" and "end" is a comment
-				if (endStateOfLastPara != (int)Blockcomment)
-				{
-					int len = end - begin + 3;
-					setFormat(begin, len, cm);
-				}
-				// all before "begin" and after "end" is a comment
-				else
-				{
-					int len = begin + 3;
-					setFormat(0, len, cm);
-					setFormat(end, 3, cm);
-				}
-
+				int len = end - begin + 3;
+				setFormat(begin, len, d->cBlockcomment);
 				from = end+3;
 			}
+			// all after "begin" is a comment
 			else
 			{
-				// all after "begin" is a comment
-				if (endStateOfLastPara != (int)Blockcomment)
-				{
-					int len = txt.length() - begin;
-					setFormat(begin, len, cm);
-					endStateOfLastPara = (int)Blockcomment;
-				}
-				// all before "begin" is a comment
-				else
-				{
-					int len = begin + 3;
-					setFormat(0, len, cm);
-					endStateOfLastPara = (int)Normal;
-				}
-
-				from = begin+3;
+				int len = txt.length() - begin;
+				setFormat(begin, len, d->cBlockcomment);
+				from = txt.length();
+				endStateOfLastPara = (int)Blockcomment;
 			}
-
-			// do it again
-			pos = txt.find(rx, from);
-			if (pos > -1)
-				blockComment = rx.cap(1);
+		}
+		// previous line is part of a block comment
+		else
+		{
+			int len = begin + 3;
+			setFormat(0, len, d->cBlockcomment);
+			from = begin+3;
+			endStateOfLastPara = (int)Normal;
 		}
 	}
 
@@ -275,32 +298,32 @@ int PythonSyntaxHighlighter::highlightLiterals( const QString& txt, int& from, i
 	QRegExp rx("(\"|')");
 	int pos = txt.find(rx, from);
 	QString pat = rx.cap(1);
-	while (pos > -1)
+	if (pos > -1)
 	{
 		int begin = pos;
 
-		// search also for the end
+		// search also for the closing tag
 		int end = txt.find(pat, begin+1);
 
 		if (end > -1)
 		{
 			int len = end - begin + 1;
-			setFormat(begin, len, QColor(255, 0, 0));
+			setFormat(begin, len, d->cLiteral);
 			from = end+1;
+			endStateOfLastPara = (int)Normal;
 		}
 		else
 		{
+			// whole line is a literal
 			int len = txt.length()-begin;
-			setFormat(begin, len, QColor(255, 0, 0));
-			from = pos+1;
+			setFormat(begin, len, d->cLiteral);
+			from = txt.length();
+			endStateOfLastPara = (int)Literal;
 		}
-
-		pos = txt.find(rx, from);
-		pat = rx.cap(1);
 	}
 
 	// no blocks for literals allowed
-	return (int)Normal;
+	return (int)endStateOfLastPara;
 }
 
 int PythonSyntaxHighlighter::highlightComments( const QString& txt, int& from, int endStateOfLastPara )
@@ -309,54 +332,94 @@ int PythonSyntaxHighlighter::highlightComments( const QString& txt, int& from, i
 	int pos = txt.find("#", from);
 	if (pos != -1)
 	{
-		setFormat(pos, txt.length(), QColor(0, 170, 0));
+		int len = txt.length()-pos;
+		setFormat(pos, len, d->cComment);
+		endStateOfLastPara = (int)Comment;
 	}
 
-	return (int)Normal;
+	return (int)endStateOfLastPara;
 }
 
 int PythonSyntaxHighlighter::highlightNormalText( const QString& txt, int& from, int endStateOfLastPara )
 {
-	// first colourize everything black
-	setFormat(from, txt.length()-from, Qt::black);
+	// colourize everything black
+	setFormat(from, txt.length()-from, d->cNormalText);
 
-	// and search then for all keywords to colourize
-	for (QStringList::Iterator it = keywords.begin(); it != keywords.end(); ++it)
+	return 0;
+}
+
+int PythonSyntaxHighlighter::highlightKeywords( const QString& txt, int& from, int endStateOfLastPara )
+{
+	// search for all keywords to colourize
+	for (QStringList::Iterator it = d->keywords.begin(); it != d->keywords.end(); ++it)
 	{
 		QRegExp keyw(QString("\\b%1\\b").arg(*it));
-		int pos = txt.find(keyw);
+		int pos = txt.find(keyw, from);
 		while (pos > -1)
 		{
 			QFont font = textEdit()->currentFont();
 			font.setBold( true );
-			setFormat(pos, (*it).length(), font, Qt::blue);
-			pos = txt.find(keyw, pos+1);
+			setFormat(pos, (*it).length(), font, d->cKeyword);
+
+			// make next word bold
+			if ( (*it) == "def" || (*it) == "class")
+			{
+				QRegExp word("\\b[A-Za-z0-9]+\\b");
+				int wd = txt.find(word, pos+(*it).length());
+				if ( wd > -1)
+				{
+					int len = word.matchedLength();
+					QFont font = textEdit()->currentFont();
+					font.setBold( true );
+					if ((*it) == "def")
+						setFormat(wd, len, font, d->cDefineName);
+					else // *it == "class"
+						setFormat(wd, len, font, d->cClassName);
+				}
+			}
+
+			pos = txt.find(keyw, pos+(*it).length());
 		}
 	}
 
 	return 0;
 }
 
-int PythonSyntaxHighlighter::highlightOperators( const QString&, int& from, int endStateOfLastPara )
+int PythonSyntaxHighlighter::highlightOperators( const QString& txt, int& from, int endStateOfLastPara )
 {
-//		setFormat(0, text.length(), QColor(160,160,164));
+	QRegExp rx( "[\\[\\]\\{\\}\\(\\)\\+\\*\\-/<>]" );
+	int pos = rx.search( txt, from );
+	while ( pos > -1 ) 
+	{
+		int len = rx.matchedLength();
+		setFormat(pos, len, d->cOperator);
+		pos = rx.search( txt, pos+len );
+	}
+
 	return 0;
 }
 
-int PythonSyntaxHighlighter::highlightNumbers( const QString&, int& from, int endStateOfLastPara )
+int PythonSyntaxHighlighter::highlightNumbers( const QString& txt, int& from, int endStateOfLastPara )
 {
-//		setFormat(0, text.length(), QColor(0,0,255));
+	QRegExp rx( "\\b(\\d+)\\b" );
+	int pos = rx.search( txt, from );
+	while ( pos > -1 ) 
+	{
+		int len = rx.matchedLength();
+		setFormat(pos, len, d->cNumber);
+		pos = rx.search( txt, pos+len );
+	}
+
 	return 0;
 }
 
 int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
 	QString txt(text);
-	int ret;
 	int from = 0;
 
 	// highlight as error
-	if ( hlError )
+	if ( d->hlError )
 	{
 		QFont font = textEdit()->currentFont();
 		font.setItalic( true );
@@ -364,43 +427,62 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
 		return 0;
 	}
 
-	switch (Paragraph(endStateOfLastPara))
+	// colourize all keywords, operators, numbers, normal text
+	highlightNormalText(txt, from, endStateOfLastPara);
+	highlightKeywords  (txt, from, endStateOfLastPara);
+	highlightOperators (txt, from, endStateOfLastPara);
+	highlightNumbers   (txt, from, endStateOfLastPara);
+
+	QString comnt("#");
+	QRegExp blkcm("(\"\"\"|''')");
+	QRegExp strlt("(\"|')");
+	while ( from < (int)txt.length() && txt != " ")
 	{
-		// just continue to other case statements
-		default:
-		case Normal:
+		if ( endStateOfLastPara == int(Blockcomment) )
 		{
-			highlightNormalText(txt, from, endStateOfLastPara);
+			// search for closing block comments
+			endStateOfLastPara = highlightBlockComments(txt, from, endStateOfLastPara);
+			if (endStateOfLastPara > 0) return endStateOfLastPara;
 		}
-		case Blockcomment:
+		else
 		{
-			// search for block comments
-			ret = highlightBlockComments(txt, from, endStateOfLastPara);
-			if (ret > 0) return ret;
-		};
+			// search for the first tag
+			int com = txt.find(comnt, from);
+			if (com < 0) com = txt.length();
 
-		case Literal:
-		{
-			// search for string literals
-			//
-			ret = highlightLiterals(txt, from, endStateOfLastPara);
-			if (ret > 0) return ret;
-		};
+			int bcm = txt.find(blkcm, from);
+			if (bcm < 0) bcm = txt.length();
 
-		case Comment:
-		{
-			// at least search for normal comments
-			ret = highlightComments(txt, from, endStateOfLastPara);
-			if (ret > 0) return ret;
-		};
+			int str = txt.find(strlt, from);
+			if (str < 0) str = txt.length();
 
-		case Number:
-		{
-		};
-
-		case Operator:
-		{
-		};
+			// comment
+			if (com < bcm && com < str)
+			{
+				from = com;
+				highlightComments(txt, from, endStateOfLastPara);
+				return 0;
+			}
+			// block comment
+			else if (bcm < com && bcm <= str)
+			{
+				from = bcm;
+				endStateOfLastPara = highlightBlockComments(txt, from, endStateOfLastPara);
+				if (endStateOfLastPara > 0) return endStateOfLastPara;
+			}
+			// string literal
+			else if (str < com && str < bcm)
+			{
+				from = str;
+				endStateOfLastPara = highlightLiterals(txt, from, endStateOfLastPara);
+				if (endStateOfLastPara > 0) return 0;
+			}
+			// no tag found
+			else
+			{
+				from = txt.length();
+			}
+		}
 	}
 
 	return 0;

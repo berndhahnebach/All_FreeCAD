@@ -29,7 +29,11 @@
 #ifndef __FC_TOOLS_H__
 #define __FC_TOOLS_H__
 
-class QPixmap;
+#ifndef _PreComp_
+#	include <qstring.h>
+#	include <qpixmap.h>
+#	include <qtoolbar.h>
+#endif
 
 /**
  * A helper class
@@ -74,6 +78,8 @@ class FCTools
 		 * 2: something else
 		 */
 		static int getURLType(const QString& url);
+
+		static QString i18n(const QString& s);
 };
 
 template <class T>

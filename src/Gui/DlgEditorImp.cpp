@@ -195,19 +195,19 @@ FCDefColorMap::FCDefColorMap(void)
   col.setRgb(0, 170, 0); long lComments = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Comment"]        = lComments;
 
-  col = Qt::gray; long lBlockCom  = (col.blue() << 16) | (col.green() << 8) | col.red();
+  col.setRgb(160, 160, 164); long lBlockCom  = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Block comment"]   = lBlockCom;
 
   col = Qt::red; long lCharacter  = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Character"]   = lCharacter;
 
-  col = Qt::blue; long lClass  = (col.blue() << 16) | (col.green() << 8) | col.red();
+  col.setRgb(255, 170, 0); long lClass  = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Class name"]  = lClass;
 
-  col = Qt::blue; long lDefine = (col.blue() << 16) | (col.green() << 8) | col.red();
+  col.setRgb(255, 170, 0); long lDefine = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Define name"]  = lDefine;
 
-  col = Qt::gray; long lOperat = (col.blue() << 16) | (col.green() << 8) | col.red();
+  col.setRgb(160, 160, 164); long lOperat = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Operator"]    = lOperat;
 
   col = Qt::blue; long lNumbers   = (col.blue() << 16) | (col.green() << 8) | col.red();

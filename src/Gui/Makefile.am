@@ -98,58 +98,19 @@ qextmdi/qextmdichildfrmcaption.moc \
 qextmdi/qextmdichildview.moc \
 qextmdi/qextmdimainfrm.moc \
 qextmdi/qextmditaskbar.moc \
+propertyeditor/kexipropertybuffer.moc \
+propertyeditor/kexipropertyeditor.moc \
+propertyeditor/kexipropertysubeditor.moc \
+propertyeditor/propertyeditordate.moc \
+propertyeditor/propertyeditorfile.moc \
+propertyeditor/propertyeditorfont.moc \
+propertyeditor/propertyeditorinput.moc \
+propertyeditor/propertyeditorlist.moc \
 Language/FreeCAD_de.h \
 GuiInitScript.h
 
 
 libFreeCADGui_la_SOURCES=\
-scintilla/AutoComplete.cpp \
-scintilla/CallTip.cpp \
-scintilla/CellBuffer.cpp \
-scintilla/ContractionState.cpp \
-scintilla/DocumentAccessor.cpp \
-scintilla/Documents.cpp \
-scintilla/Editor.cpp \
-scintilla/ExternalLexer.cpp \
-scintilla/Indicator.cpp \
-scintilla/KeyMap.cpp \
-scintilla/KeyWords.cpp \
-scintilla/LexAda.cpp \
-scintilla/LexAsm.cpp \
-scintilla/LexAVE.cpp \
-scintilla/LexBaan.cpp \
-scintilla/LexBullant.cpp \
-scintilla/LexConf.cpp \
-scintilla/LexCPP.cpp \
-scintilla/LexCrontab.cpp \
-scintilla/LexCSS.cpp \
-scintilla/LexEiffel.cpp \
-scintilla/LexEScript.cpp \
-scintilla/LexFortran.cpp \
-scintilla/LexHTML.cpp \
-scintilla/LexLisp.cpp \
-scintilla/LexLout.cpp \
-scintilla/LexLua.cpp \
-scintilla/LexMatlab.cpp \
-scintilla/LexOthers.cpp \
-scintilla/LexPascal.cpp \
-scintilla/LexPerl.cpp \
-scintilla/LexPOV.cpp \
-scintilla/LexPython.cpp \
-scintilla/LexRuby.cpp \
-scintilla/LexSQL.cpp \
-scintilla/LexVB.cpp \
-scintilla/LineMarker.cpp \
-scintilla/PropSet.cpp \
-scintilla/RESearch.cpp \
-scintilla/ScintillaBase.cpp \
-scintilla/Style.cpp \
-scintilla/StyleContext.cpp \
-scintilla/UniConversion.cpp \
-scintilla/ViewStyle.cpp \
-scintilla/WindowAccessor.cpp \
-scintilla/XPM.cpp \
-\
 qextmdi/dummy_moc.cpp \
 qextmdi/kdocktabctl.cpp \
 qextmdi/kdockwidget.cpp \
@@ -160,6 +121,17 @@ qextmdi/qextmdichildfrmcaption.cpp \
 qextmdi/qextmdichildview.cpp \
 qextmdi/qextmdimainfrm.cpp \
 qextmdi/qextmditaskbar.cpp \
+\
+propertyeditor/kexiproperty.cpp \
+propertyeditor/kexipropertybuffer.cpp \
+propertyeditor/kexipropertyeditor.cpp \
+propertyeditor/kexipropertyeditoritem.cpp \
+propertyeditor/kexipropertysubeditor.cpp \
+propertyeditor/propertyeditordate.cpp \
+propertyeditor/propertyeditorfile.cpp \
+propertyeditor/propertyeditorfont.cpp \
+propertyeditor/propertyeditorinput.cpp \
+propertyeditor/propertyeditorlist.cpp \
 \
 Inventor/OCC/SoBrepShape.cpp \
 \
@@ -195,7 +167,6 @@ GuiConsole.cpp \
 HtmlView.cpp \
 Macro.cpp \
 MouseModel.cpp \
-PlatQt.cpp \
 PrefWidgets.cpp \
 Process.cpp \
 PropertyPage.cpp \
@@ -203,8 +174,6 @@ PropertyView.cpp \
 PythonEditor.cpp \
 ReportView.cpp \
 resource.cpp \
-SciEditor.cpp \
-ScintillaQt.cpp \
 Selection.cpp \
 Splashscreen.cpp \
 Tools.cpp \
