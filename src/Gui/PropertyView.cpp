@@ -162,4 +162,4 @@ bool FCPropertyView::OnMsg(const char* pMsg)
 	return false;
 }
 
-#include "moc_PropertyView.cpp"
+//#include "moc_PropertyView.cpp"
