@@ -72,7 +72,7 @@ FCProperty::~FCProperty(){}
 //**************************************************************************
 // Construction/Destruction
 
-       
+
 FCPropertyInteger::FCPropertyInteger(long lValue, long lMax, long lMin, long lStep)
 	:_lValue(lValue),_lMax(lMax), _lMin(lMin), _lStep(lStep)
 {
@@ -91,7 +91,7 @@ FCPropertyInteger::~FCPropertyInteger()
 const char* FCPropertyInteger::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%d",_lValue);
+	sprintf(sBuf,"%ld",_lValue);
 	return sBuf;
 }
 
@@ -122,16 +122,16 @@ const char* FCPropertyInteger::SetSubProperty(const char* sSubPropName,const cha
 const char* FCPropertyInteger::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%d",_lValue);
+	sprintf(sBuf,"%ld",_lValue);
 
 	if(strcmp(sSubPropName,"Value")==0)
-		sprintf(sBuf,"%d",_lValue);
+		sprintf(sBuf,"%ld",_lValue);
 	else if(strcmp(sSubPropName,"Max")==0)
-		sprintf(sBuf,"%d",_lMax);
+		sprintf(sBuf,"%ld",_lMax);
 	else if(strcmp(sSubPropName,"Min")==0)
-		sprintf(sBuf,"%d",_lMin);
+		sprintf(sBuf,"%ld",_lMin);
 	else if(strcmp(sSubPropName,"Step")==0)
-		sprintf(sBuf,"%d",_lStep);
+		sprintf(sBuf,"%ld",_lStep);
 	else return "";
 
 	return sBuf;
@@ -195,7 +195,7 @@ long FCPropertyInteger::GetValue(void)
 //**************************************************************************
 // Construction/Destruction
 
-       
+
 FCPropertyFloat::FCPropertyFloat(double dValue, double dMax, double dMin, double dStep)
 	:_dValue(dValue),_dMax(dMax), _dMin(dMin), _dStep(dStep)
 {
@@ -512,7 +512,7 @@ FCPropertyColor::~FCPropertyColor()
 const char* FCPropertyColor::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"[%d, %d, %d]",_lRed, _lGreen, _lBlue);
+	sprintf(sBuf,"[%ld, %ld, %ld]",_lRed, _lGreen, _lBlue);
 	return sBuf;
 }
 
@@ -543,11 +543,11 @@ const char* FCPropertyColor::GetSubProperty(const char* sSubPropName)
 	static char sBuf[DBL_DIG+10];
 
 	if(strcmp(sSubPropName,"Red")==0)
-		sprintf(sBuf,"%d",_lRed);
+		sprintf(sBuf,"%ld",_lRed);
 	else if(strcmp(sSubPropName,"Green")==0)
-		sprintf(sBuf,"%d",_lGreen);
+		sprintf(sBuf,"%ld",_lGreen);
 	else if(strcmp(sSubPropName,"Blue")==0)
-		sprintf(sBuf,"%d",_lBlue);
+		sprintf(sBuf,"%ld",_lBlue);
 	else return "";
 
 	return sBuf;
@@ -659,9 +659,9 @@ const char* FCPropertyList::SetSubProperty(const char* sSubPropName,const char* 
 const char* FCPropertyList::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
-	
+
 	if(strcmp(sSubPropName,"Current")==0)
-      sprintf(sBuf,"%d",_lCurrent);
+      sprintf(sBuf,"%ld",_lCurrent);
   else
   {
     unsigned lPos = atol(sSubPropName);
@@ -680,10 +680,10 @@ const char* FCPropertyList::GetSubPropertyNames(void)
   int pos = 0;
 
   long size = _lValue.size()-1;
-  pos = sprintf(sBuf, "%d.", _lCurrent);
+  pos = sprintf(sBuf, "%ld.", _lCurrent);
   for (long i = 0; i < size; ++i)
-    pos += sprintf(sBuf+pos, "%d.", i);
-  sprintf(sBuf+pos, "%d", size);
+    pos += sprintf(sBuf+pos, "%ld.", i);
+  sprintf(sBuf+pos, "%ld", size);
 	return sBuf;
 }
 

@@ -35,7 +35,7 @@ public:
 	/** View destructor
 	  * Detach the view from the document, if Atached!
 	  */
-	~FCBaseView();
+	virtual ~FCBaseView();
 
 
 	/** @name methodes used by the Application and the GuiDocument 

@@ -166,7 +166,7 @@ FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
 }
 
 FCAutoWaitCursor::FCAutoWaitCursor(uint id, int i)
-	:main_threadid(id), nInterval(i), bRun(true),bActive(true)
+	:main_threadid(id), nInterval(i), bActive(true),bRun(true)
 {
 	d = new FCAutoWaitCursorP;
 	start();

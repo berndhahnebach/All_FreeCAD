@@ -56,9 +56,10 @@
 
 // QT extension
 #include <qthread.h>
-#pragma comment(lib,QTLIBNAME)
-#pragma comment(lib,"TKernel.lib")
-
+#ifdef _MSC_VER
+#	pragma comment(lib,QTLIBNAME)
+#	pragma comment(lib,"TKernel.lib")
+#endif
 
 #include "../Gui/Application.h"
 

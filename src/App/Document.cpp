@@ -102,7 +102,7 @@ const short* FCDocument::GetName() const
 /// Get the path of a saved document
 const short* FCDocument::GetPath() const
 {
-  return _hDoc->GetPath().ToExtString(); 
+  return _hDoc->GetPath().ToExtString();
 }
 
 /// Get the Main Label of the document
@@ -164,7 +164,7 @@ void FCDocument::OpenCommand()
 /// Commit the Command transaction. Do nothing If there is no Command transaction open.
 void FCDocument::CommitCommand()
 {
-  _hDoc->CommitCommand(); 
+  _hDoc->CommitCommand();
 }
 
 /// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
@@ -296,13 +296,13 @@ PyMethodDef FCDocument::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCDocument::Parents[] = {&FCPyObject::Type, NULL};     
+PyParentObject FCDocument::Parents[] = {&FCPyObject::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc, PyTypeObject *T) 
- : _hDoc(hDoc),FCPyObject( T),_pcMain(0)
+FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc, PyTypeObject *T)
+ : FCPyObject( T),_hDoc(hDoc),_pcMain(0)
 {
 	GetConsole().Log("Create Document %p\n",this);
 }

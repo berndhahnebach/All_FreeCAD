@@ -100,8 +100,7 @@ PyParentObject FCGeometry3D::Parents[] = {&FCGeometry3D::Type, NULL};
 // constructor
 //--------------------------------------------------------------------------
 FCGeometry3D::FCGeometry3D(const TopoDS_Shape &cShape, PyTypeObject *T) 
- : _cTopoShape(cShape),
-   FCPyObject( T)
+ : FCPyObject( T), _cTopoShape(cShape)
 {
 	GetConsole().Log("Create TopoShape %p\n",this);
 }

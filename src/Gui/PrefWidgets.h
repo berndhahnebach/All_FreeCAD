@@ -24,27 +24,29 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 #ifndef __FC_PREF_WIDGETS_H__
 #define __FC_PREF_WIDGETS_H__
 
 #include "../Base/Parameter.h"
 #include "Widgets.h"
-
 #include "qextmdi/qextmdimainfrm.h"
+
 #include <qcheckbox.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qslider.h>
+#include <qtoolbar.h>
 
 // forward declarations
 class FCWidgetPrefsHandler;
 class QDoubleValidator;
 class FCWidgetFactorySupplier;
 class QAction;
+class QMainWindow;
 class FCStackBar;
 class FCDockWindow;
 class FCCommandManager;
@@ -380,7 +382,7 @@ class FCActionDrag : public QStoredDrag
 };
 
 /**
- * This abstract class is part of the framework providing 
+ * This abstract class is part of the framework providing
  * methods for a user defined configuration of toolbars and menus
  */
 class FCCustomWidget : public FCWidgetPrefs

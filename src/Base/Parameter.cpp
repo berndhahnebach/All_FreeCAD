@@ -491,7 +491,7 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCInt",Name);
 	// and set the vaue
-	sprintf(cBuf,"%i",lValue);
+	sprintf(cBuf,"%li",lValue);
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 	// trigger observer
 	Notify(Name);

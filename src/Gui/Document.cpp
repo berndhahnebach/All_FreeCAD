@@ -46,9 +46,9 @@
 
 
 FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, const char * name)
-	:_pcAppWnd(app),
-	 _pcDocument(pcDocument),
-	 _iWinCount(0)
+	:_iWinCount(0),
+	 _pcAppWnd(app),
+	 _pcDocument(pcDocument)
 {
 	// keeping an Instance of this document as long as at least one window lives
 	_pcDocument->_INCREF();
@@ -281,8 +281,6 @@ void FCGuiDocument::CloseAllViews(void)
 /// send Messages to the active view
 bool FCGuiDocument::SendMsgToViews(const char* pMsg)
 {
-
-	bool bResult = false;
 	std::list<FCBaseView*>::iterator It;
 
 	for(It = _LpcViews.begin();It != _LpcViews.end();It++)

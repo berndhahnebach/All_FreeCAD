@@ -41,7 +41,7 @@
 
 #ifndef _PreComp_
 #	include <qmessagebox.h>
-#	include <qiconview.h> 
+#	include <qiconview.h>
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
 #endif
@@ -58,11 +58,11 @@
 // DlgParameter
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-/* 
- *  Constructs a DlgParameter 
+/*
+ *  Constructs a DlgParameter
  */
 DlgParameter::DlgParameter( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : ParameterDialog( parent, name, modal, fl ),_pcMainLabel(0L),FCWindowParameter(name)
+    : ParameterDialog( parent, name, modal, fl ),FCWindowParameter(name),_pcMainLabel(0L)
 {
 	const std::map<std::string,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
 
@@ -191,7 +191,7 @@ void ParameterLabelGroup::FillUp(void)
 	for(std::map<std::string,long>::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
 	{
 		char b[255];
-		sprintf(b,"%d",It3->second);
+		sprintf(b,"%ld",It3->second);
 		pcItem = new QListViewItem(this,It3->first.c_str(),b);
 		pcItem->setPixmap(0,QPixmap(Param_Int) );
 	}

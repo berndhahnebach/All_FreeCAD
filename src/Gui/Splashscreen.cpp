@@ -67,7 +67,7 @@ class FCSplashObserver : public FCConsoleObserver
 		  GetConsole().AttacheObserver(this);
 		}
     
-		~FCSplashObserver()
+		virtual ~FCSplashObserver()
 		{
 		  GetConsole().DetacheObserver(this);
 		}
@@ -140,7 +140,7 @@ AboutDlg::AboutDlg( QWidget* parent, const char* name )
     : QDialog( parent, name, true,	QLabel::WStyle_Customize  | 
 																		QLabel::WStyle_NoBorder   | 
 																		QLabel::WType_Modal       ),
-      image0( (const char **) image0_data )
+      image0( (const char **) splash_screen )
 {
 	if ( !name )
 		setName( "AboutDlg" );

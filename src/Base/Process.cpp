@@ -432,7 +432,7 @@ bool FCBaseProcess::start (bool notifyOnExit)
 #ifdef FC_OS_WIN32
 
   d->newProcessInfo();
-	
+
   STARTUPINFO startInfo = 
   {
     sizeof( STARTUPINFO ), 0, 0, 0,
@@ -667,38 +667,40 @@ void FCBaseProcess::flushStdin()
 bool FCBaseProcess::onSendData(int dummy)
 {
 #ifdef FC_OS_WIN32
-  DWORD dwWritten;
+	DWORD dwWritten;
 
-  // if the process has terminated or if the buffer is empty
-  if ( d->stdinBuf.empty() || !isRunning() )
-  	return false;
+	// if the process has terminated or if the buffer is empty
+	if ( d->stdinBuf.empty() || !isRunning() )
+		return false;
 
-  if ( !WriteFile( d->hStdInputWr, d->stdinBuf.front().c_str() + d->stdinBufRead,
-		               d->stdinBuf.front().size() - d->stdinBufRead, &dwWritten, NULL ) ) 
-  	return false;
+	if ( !WriteFile( d->hStdInputWr, d->stdinBuf.front().c_str() + d->stdinBufRead,
+		d->stdinBuf.front().size() - d->stdinBufRead, &dwWritten, NULL ) )
+		return false;
 
-  d->stdinBufRead += dwWritten;
-  if ( d->stdinBufRead == d->stdinBuf.front().size() ) 
-  {
-  	d->stdinBufRead = 0;
-	  d->stdinBuf.pop();
-  	if ( wroteStdin && d->stdinBuf.empty() )
-      Notify(wroteStdin);
-  
-    onSendData( dummy );
+	d->stdinBufRead += dwWritten;
+	if ( d->stdinBufRead == d->stdinBuf.front().size() )
+	{
+		d->stdinBufRead = 0;
+		d->stdinBuf.pop();
+		if ( wroteStdin && d->stdinBuf.empty() )
+			Notify(wroteStdin);
 
-	if ( !d->stdinBuf.empty() )
-    return true;
-  }
+		onSendData( dummy );
 
-  return false;
+		if ( !d->stdinBuf.empty() )
+			return true;
+	}
+
+	return false;
+#else
+	return false;
 #endif
 }
 
 #ifdef FC_OS_WIN32
 static unsigned int readStdOutput( HANDLE dev, std::string& buf, unsigned int oldSize, unsigned int bytes )
 {
-  if ( bytes > 0 ) 
+  if ( bytes > 0 )
   {
   	unsigned long r;
     char* newBuf = new char[bytes];

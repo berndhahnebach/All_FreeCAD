@@ -40,6 +40,9 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
+#	if defined (_POSIX_C_SOURCE)
+#		undef  _POSIX_C_SOURCE
+#	endif // (re-)defined in pyconfig.h
 #	include <Python.h>
 #	include <iostream>
 #	include <fstream>

@@ -248,7 +248,9 @@ protected:
    int                     m_oldMainFrmMaxHeight;
    static QextMdi::FrameDecor   m_frameDecoration;
    bool                    m_bSDIApplication;
+#ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
+#endif
    QGuardedPtr<KDockWidget> m_pDockbaseAreaOfDocumentViews;
    QGuardedPtr<KDockWidget> m_pDockbaseOfTabPage;
    QDomDocument*           m_pTempDockSession;

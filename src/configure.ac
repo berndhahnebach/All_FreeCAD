@@ -283,7 +283,7 @@ AC_ARG_ENABLE([debug],
   [fc_set_debug=true])
 
 if $fc_set_debug; then
-	CPPFLAGS="$CPPFLAGS -g"
+	CPPFLAGS="$CPPFLAGS -g -DFC_DEBUG"
 fi
 
 # Check if you want thread support, or not

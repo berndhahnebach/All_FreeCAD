@@ -35,8 +35,11 @@
 #	include <stack>
 #	include <queue>
 #	include <string>
-#	include <Python.h>
 #	include <limits.h>
+#	if defined (_POSIX_C_SOURCE)
+#		undef  _POSIX_C_SOURCE
+#	endif // (re-)defined in pyconfig.h
+#	include <Python.h>
 #	include <algorithm>
 #	include <qaction.h>
 #	include <qcombobox.h>
@@ -340,7 +343,7 @@ FCAction * FCCmdUndo::CreateAction(void)
 	FCAction *pcAction;
 
 	pcAction = new FCUndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-  pcAction->setText(QObject::tr(sMenuText));
+	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
@@ -892,7 +895,7 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
         std::string msg = process->message();
 
         // search for an error message
-        int pos;
+        unsigned int pos;
         if ((pos = msg.find("failed: ")) != std::string::npos)
         {
           int pos2 = msg.find('.', pos);

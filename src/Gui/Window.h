@@ -43,7 +43,7 @@ class GuiExport FCWindowParameter
 {
 public:
 	FCWindowParameter(const char *name);
-	~FCWindowParameter();
+	virtual ~FCWindowParameter();
 
 	virtual void OnParameterChanged(void);
 

@@ -83,7 +83,7 @@ void FCMouseModel::moveMouseEvent (QMouseEvent *cEvent)
 void FCMouseModel::wheelMouseEvent (QWheelEvent *cEvent)
 {
   // do all the drawing stuff for us
-  QPoint clPoint = cEvent->pos();
+  //QPoint clPoint = cEvent->pos();
   draw();
   wheelEvent(cEvent);
   draw();
@@ -103,6 +103,8 @@ void FCMouseModel::mousePressEvent(QMouseEvent* cEvent)
     case Qt::RightButton:
       mouseRightPressEvent(cEvent);
       break;
+    default:
+      break;
   };
 }
 
@@ -119,6 +121,8 @@ void FCMouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
       break;
     case Qt::RightButton:
       mouseRightReleaseEvent(cEvent);
+      break;
+    default:
       break;
   };
 }
@@ -138,7 +142,7 @@ Handle_V3d_View   &FCMouseModel::GetView  (void)
 }
 
 Handle_V3d_Viewer &FCMouseModel::GetViewer(void) 
-{ 
+{
 	// first init the MouseModel -> initMouseModel(View3D &View3D)
 	assert (_pcView3D);
 	return _pcView3D->GetViewer();
@@ -496,7 +500,7 @@ void FCMouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
 
 void FCMouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
 {
-  QPoint point = cEvent->pos();
+  //QPoint point = cEvent->pos();
 
   if( m_bWorking )
   {

@@ -146,9 +146,13 @@ void FCReportOutput::restoreFont()
 {
   QFont _font(  font() );
   _font.setFamily( "Courier" );
+#ifdef FC_OS_LINUX
+  _font.setPointSize( 15 );
+#else
   _font.setPointSize( 10 );
+#endif
 //  _font.setBold( TRUE );
-  setFont( _font ); 
+  setFont( _font );
 }
 
 void FCReportOutput::Warning(const char * s)
@@ -176,12 +180,12 @@ void FCReportOutput::Log (const char * s)
 
 bool FCReportOutput::event( QEvent* ev )
 {
-  bool ret = QWidget::event( ev ); 
-  if ( ev->type() == QEvent::ApplicationFontChange ) 
+  bool ret = QWidget::event( ev );
+  if ( ev->type() == QEvent::ApplicationFontChange )
   {
 		restoreFont();
   }
-  
+
   return ret;
 }
 
@@ -196,7 +200,7 @@ QPopupMenu * FCReportOutput::createPopupMenu ( const QPoint & pos )
 
 void FCReportOutput::onSaveAs()
 {
-  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", 
+  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)",
 																						 this, QObject::tr("Save Report Output"));
   if (!fn.isEmpty())
   {

@@ -75,10 +75,9 @@ class  Handle_FCApplicationOCC : public Handle(TDocStd_Application) {
 
 class FCApplicationOCC : public TDocStd_Application
 {
-
 public:
-	FCApplicationOCC::~FCApplicationOCC();
-	FCApplicationOCC::FCApplicationOCC();
+	FCApplicationOCC();
+	virtual ~FCApplicationOCC();
 
 	// OpenCasCade application Stuff goes here +++++++++++++++++++++++++++++++++++
 	/** gives information about the types of formates */
@@ -90,16 +89,16 @@ public:
 	/** OCAF Typing information functions (see OpenCasCade doc) */
 	const Handle(Standard_Type)&   DynamicType() const;
 	/** OCAF Typing information functions (see OpenCasCade doc) */
-	Standard_Boolean	           IsKind(const Handle(Standard_Type)&) const;	
+	Standard_Boolean	           IsKind(const Handle(Standard_Type)&) const;
 protected:
 	/** This function can do some init stuff on a a new Viewer (not neccesary) */
 	virtual  void InitViewer(const Handle(TDocStd_Document)& aDoc) const;
 
 };
 
- 
 
-/** The Application 
+
+/** The Application
  *  The root of the whole application
  *  @see FCDocument
  */
@@ -124,7 +123,7 @@ public:
 	FCDocument* SaveAs(const char * Name=0l);
 	/// Retrive the active document
 	FCDocument* Active(void);
-	/// Set the active document 
+	/// Set the active document
 	void SetActive(FCDocument* pDoc);
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
@@ -232,7 +231,7 @@ public:
 	/// Constructor
 	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 	/// Destructor
-	~FCApplication();
+	virtual ~FCApplication();
 
 	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 private:
@@ -257,14 +256,13 @@ private:
 	std::vector<FCDocument*> _DocVector;
 	/// The container of all attached Obervers
 	std::set<FCApplicationObserver * > _aclObservers;
-	FCDocument* _pActiveDoc;
 
 	std::map<std::string,FCParameterManager *> mpcPramManager;
 	// map for Template objects
 	PyObject*		 _pcTemplateDictionary;
 
 	std::map<std::string,std::string> &_mConfig;
-
+	FCDocument* _pActiveDoc;
 };
 
 /// Singelton getter of the Applicaton
@@ -285,7 +283,7 @@ public:
 	/// Construction and attachment
 	FCApplicationObserver(){GetApplication().AttacheObserver(this);}
 	/// Destruction and detachment
-	~FCApplicationObserver(){GetApplication().DetacheObserver(this);}
+	virtual ~FCApplicationObserver(){GetApplication().DetacheObserver(this);}
 
 	/// This method get called when a new doc appears
 	virtual void OnDocNew(FCDocument*){};

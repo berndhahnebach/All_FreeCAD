@@ -103,7 +103,7 @@ public:
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	~ClassTemplate();
+	virtual ~ClassTemplate();
 
 	/**
 	 * a normal member taking two arguments and returning an integer value.
@@ -175,3 +175,4 @@ public:
 
 
 #endif // __FILETEMPLATE_H__
+

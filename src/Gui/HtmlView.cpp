@@ -350,9 +350,9 @@ class FCDocumentationSource : public QStoredDrag
     }
 
   private:
-    TDocType mType;
-    QString  mPath;
     QString  mRoot;
+    QString  mPath;
+    TDocType mType;
 };
 
 // --------------------------------------------------------------------------
@@ -375,11 +375,11 @@ class FCHtmlViewPrivate
 };
 
 FCHtmlViewPrivate::FCHtmlViewPrivate()
-:	selectedURL(), 
-  bHistory(false), 
-	bBookm(false), 
-	bBackward(false), 
-	bForward(false)
+ :	bBackward(false),
+	bForward(false),
+	bHistory(false),
+	bBookm(false),
+	selectedURL()
 {
 }
 
@@ -1312,7 +1312,7 @@ void FCHtmlView::SaveHistory()
   for (std::map<int, QString>::iterator it = d->mHistory.begin(); it != d->mHistory.end(); ++it, i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "History %d", i);
+    sprintf(szBuf, "History %ld", i);
     hHistGrp->SetASCII(szBuf, it->second.latin1());
   }
 }
@@ -1328,7 +1328,7 @@ void FCHtmlView::SaveBookmarks()
   for (std::map<int, QString>::iterator it = d->mBookmarks.begin(); it != d->mBookmarks.end(); ++it, i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "Bookmark %d", i);
+    sprintf(szBuf, "Bookmark %ld", i);
     hBookmGrp->SetASCII(szBuf, it->second.latin1());
   }
 }
@@ -1700,7 +1700,7 @@ void FCWhatsThisPrivate::clearWhatsThis()
 
 void FCWhatsThisPrivate::leaveWhatsThisMode()
 {
-  if ( mode == Active ) 
+  if ( mode == Active )
   {
     QApplication::restoreOverrideCursor();
   	mode = Inactive;
@@ -1712,7 +1712,7 @@ void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, c
 {
   currentText = text;
 
-  TDocType type=Html;
+  //TDocType type=Html;
   if (FCBrowserSourceFactory::canConvertToHTML(text) || currentText.findRev(".html") != -1)
   {
     // get text of the url

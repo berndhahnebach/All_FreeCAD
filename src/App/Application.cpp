@@ -432,7 +432,7 @@ PYFUNCIMP_S(FCApplication,sSave)
 
 	//Instance().Message("%s",pstr);				 // process massage 
 	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors 
+	return Py_None;                              // None: no errors
 }
 
 
@@ -746,7 +746,7 @@ void FCApplication::RunApplication()
 	if(mConfig["RunMode"] == "Cmd")
 	{
 		// Run the comandline interface
-		int ret = GetInterpreter().RunCommandLine("Console mode");
+		GetInterpreter().RunCommandLine("Console mode");
 	}
 	else if(mConfig["RunMode"] == "Script")
 	{

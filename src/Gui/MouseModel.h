@@ -53,6 +53,7 @@ class FCMouseModel
 {
 public:
 	FCMouseModel(void){};
+	virtual ~FCMouseModel(void){}
   /// implement this in derived classes
 	virtual void initialize() = 0;
   /// implement this in derived classes
@@ -114,6 +115,7 @@ class FCMouseModelStd :public FCMouseModel
 {
 public:
 	FCMouseModelStd(void);
+	virtual ~FCMouseModelStd(){}
 
   /// do nothing
 	virtual void initialize();

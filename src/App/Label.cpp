@@ -179,7 +179,7 @@ PyParentObject FCLabel::Parents[] = {&FCLabel::Type, NULL};
 // constructor
 //--------------------------------------------------------------------------
 FCLabel::FCLabel(const TDF_Label &cLabel,FCDocument *pcDocument, PyTypeObject *T) 
- : _cLabel(cLabel),_pcDocument(pcDocument),FCPyObject( T)
+ : FCPyObject( T), _cLabel(cLabel),_pcDocument(pcDocument)
 {
 	GetConsole().Log("Create Label %p\n",this);
 	

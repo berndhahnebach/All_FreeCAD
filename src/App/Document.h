@@ -74,7 +74,7 @@ class AppExport FCDocChanges
  *  Application. Only the Application can Open or destroy a document.
  *  @see FCLabel
  */
-class AppExport FCDocument :public FCPyObject, public FCSubject<const FCDocChanges&>
+class AppExport FCDocument : public FCPyObject, public FCSubject<const FCDocChanges&>
 {
 	/// always start with Py_Header
 	Py_Header;
@@ -228,13 +228,13 @@ protected:
 	/// friend daclaration to allow access
 	friend class FCLabel;
 	FCLabel *HasPyLabel(TDF_Label cLabel);
+	/// handle to the OCC document
+	Handle_TDocStd_Document _hDoc;
 	/// map of all existing python label wrappers (sorted)
 	std::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
 	FCLabel *						_pcMain;
 	//@}
-	
-	/// handle to the OCC document 
-	Handle_TDocStd_Document _hDoc;
+
 
 
 };

@@ -52,7 +52,7 @@ public:
 	/**
 	 * A destructor.
 	 */
-	~FCDocType();
+	virtual ~FCDocType();
 
 	/**
 	 * sets up the document

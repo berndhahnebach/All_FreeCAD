@@ -382,10 +382,13 @@ inline void SetCasCadeToFreeCADLib(const char* sLib)
 
 inline void PrintPath(void)
 {
-	char * p;
-	if(p=getenv("PATH") )
+	char * p = getenv("PATH");
+	if ( p != NULL )
 	{
 		EnvPrint(p);
-	}else
+	}
+	else
+	{
 		EnvPrint("No Path set");
+	}
 }

@@ -187,9 +187,9 @@ class FCSignalConnect : public QObject
 		void onExecute();
 
 	private:
-		QObject*  mySender;
 		PyObject* myResource;
 		PyObject* myCallback;
+		QObject*  mySender;
 };
 
 #endif // __FC_WIDGET_FACTORY_H__

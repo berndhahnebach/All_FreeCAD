@@ -69,6 +69,9 @@ extern "C" {             /* a C library, but callable from C++ */
 
 #include <stdio.h>
 // Python
+#if defined (_POSIX_C_SOURCE)
+#	undef  _POSIX_C_SOURCE
+#endif // (re-)defined in pyconfig.h
 #include <Python.h>
 
 extern int PP_RELOAD;    /* 1=reload py modules when attributes referenced */

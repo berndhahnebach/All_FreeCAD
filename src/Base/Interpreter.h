@@ -34,6 +34,9 @@
 #ifndef __INTERPRETER_H__
 #define __INTERPRETER_H__
 
+#if defined (_POSIX_C_SOURCE)
+#	undef  _POSIX_C_SOURCE
+#endif // (re-)defined in pyconfig.h
 #include <Python.h>
 #include <string>
 // Std. configurations

@@ -112,10 +112,13 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
 	: PythonWindow(parent, name), lastPara(-1)
 {
 	zoomIn(2);
+#ifdef FC_OS_LINUX
+	QFont serifFont( "Courier", 15, QFont::Normal );
+#else
 	QFont serifFont( "Courier", 10, QFont::Normal );
+#endif
 	setFont(serifFont);
 
-	int tabs = tabStopWidth();
 	setTabStopWidth(32);
 }
 

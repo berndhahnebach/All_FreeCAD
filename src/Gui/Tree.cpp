@@ -53,7 +53,7 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 		setText(0,QObject::tr("No Active Document"));
 	}
 
-	
+
 }
 
 /** Constructor
@@ -63,8 +63,8 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
  */
 FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
     : QListViewItem( parent ),
-	_pcDocument(parent->_pcDocument),
-	_hcLabel(hcLabel)
+	_hcLabel(hcLabel),
+	_pcDocument(parent->_pcDocument)
 {
 	QString cString;
 
@@ -73,7 +73,7 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
 	setText(0,cString);
 
 	BuildUp();
-		
+
 }
 
 void FCTreeLabel::Update(void)
@@ -226,7 +226,7 @@ void FCTree::resizeEvent ( QResizeEvent * e)
 
     QSize vs = _pcListView->viewportSize( 0, _pcListView->contentsHeight() );
 
-	int os = _pcListView->header()->sectionSize( 1 );
+	_pcListView->header()->sectionSize( 1 );
     int ns = vs.width() - _pcListView->header()->sectionSize( 0 );
     if ( ns < 16 )
 	ns = 16;

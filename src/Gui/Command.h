@@ -162,6 +162,7 @@ class GuiExport FCCommand
 public:
 
 	FCCommand(const char* name,CMD_Type eType=Cmd_Normal);
+	virtual ~FCCommand() {}
 
 	/** @name Methodes to override when create a new command
 	 */
@@ -295,6 +296,7 @@ protected:
 public:
 
 	FCCppCommand(const char* name,CMD_Type eType=Cmd_Normal);
+	virtual ~FCCppCommand() {}
 
 	/** @name Methodes to override when create a new command
 	 *  Description  
@@ -303,7 +305,7 @@ public:
 	/// Method which get called when activated, needs to be reimplemented!
 	virtual void Activated(int iMsg)=0;
 	/// Overite this methode if your Cmd is not always active
-	virtual bool IsActive(void){return true;} 
+	virtual bool IsActive(void){return true;}
 	/// Creates the used FCAction
 	virtual FCAction * CreateAction(void);
 	/// returns the resource values
@@ -343,6 +345,7 @@ class FCPythonCommand: public FCCommand
 {
 public:
 	FCPythonCommand(const char* name,PyObject * pcPyCommand);
+	virtual ~FCPythonCommand() {}
 
 	/** @name Methodes reimplemented for Command Framework */
 	//@{
@@ -384,6 +387,7 @@ class FCScriptCommand: public FCCommand
 {
 public:
 	FCScriptCommand(const char* name);
+	virtual ~FCScriptCommand() {}
 
 	/** @name Methodes reimplemented for Command Framework */
 	//@{
@@ -539,6 +543,7 @@ public:\
 {\
 public:\
 	X();\
+	virtual ~X(){}\
 	virtual void Activated(int iMsg);\
 	virtual bool IsActive(void);\
 };
@@ -552,6 +557,7 @@ public:\
 {\
 public:\
 	X();\
+	virtual ~X(){}\
 	virtual void Activated(int iMsg);\
 	virtual bool IsActive(void)\
 		{\
@@ -565,15 +571,15 @@ public:\
  */
 class FCCmdUndo : public FCCppCommand
 {
-  public:
-	  FCCmdUndo();
-	  virtual void Activated(int iMsg);
-    bool IsActive(void);
-    QWidget* GetWidget();
-  	FCAction * CreateAction(void);
+public:
+	FCCmdUndo();
+	void Activated(int iMsg);
+	bool IsActive(void);
+	QWidget* GetWidget();
+	FCAction * CreateAction(void);
 
-  private:
-  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+private:
+	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 /**
@@ -581,15 +587,15 @@ class FCCmdUndo : public FCCppCommand
  */
 class FCCmdRedo : public FCCppCommand
 {
-  public:
-	  FCCmdRedo();
-	  virtual void Activated(int iMsg);
-    bool IsActive(void);
-    QWidget* GetWidget();
-  	FCAction * CreateAction(void);
+public:
+	FCCmdRedo();
+	void Activated(int iMsg);
+	bool IsActive(void);
+	QWidget* GetWidget();
+	FCAction * CreateAction(void);
 
-  private:
-  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+private:
+	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 /**
@@ -597,19 +603,19 @@ class FCCmdRedo : public FCCppCommand
  */
 class FCCmdWorkbench : public FCCppCommand
 {
-  public:
-	  FCCmdWorkbench();
-	  virtual void Activated(int iMsg);
-  	FCAction * CreateAction(void);
-    void AddItem (const char* item);
-    void RemItem (const char* item);
-    void Clear();
-    void UpdateAction(int i);
-    void UpdateAction(const char* item);
-	  bool addTo(QWidget *);
+public:
+	FCCmdWorkbench();
+	void Activated(int iMsg);
+	FCAction * CreateAction(void);
+	void AddItem (const char* item);
+	void RemItem (const char* item);
+	void Clear();
+	void UpdateAction(int i);
+	void UpdateAction(const char* item);
+	bool addTo(QWidget *);
 
-  protected:
-    FCMultiAction *pcAction;
+private:
+	FCMultiAction *pcAction;
 };
 
 /**
@@ -617,22 +623,24 @@ class FCCmdWorkbench : public FCCppCommand
  */
 class FCCmdMRU : public FCCppCommand
 {
-  public:
-	  FCCmdMRU();
-	  virtual void Activated(int iMsg);
-  	FCAction * CreateAction(void);
-    void AddItem (const char* item);
-    void RemItem (const char* item);
-    void Clear();
-    int  GetMaxItems()      { return nMaxItems; }
-    void SetMaxItems(int i) { nMaxItems = i;    }
-    std::vector<std::string> GetItems() const;
+public:
+	FCCmdMRU();
+	bool IsActive(void){return true;}
+	void Activated(int iMsg);
+	FCAction * CreateAction(void);
+	void AddItem (const char* item);
+	void RemItem (const char* item);
+	void Clear();
+	int  GetMaxItems()      { return nMaxItems; }
+	void SetMaxItems(int i) { nMaxItems = i;    }
+	std::vector<std::string> GetItems() const;
+	std::string GetResource(const char* sName) { return ""; }
 
-  protected:
-    QString GetFileName(const char* name);
-    std::vector<std::string> _vMRU;
-    FCMultiAction *pcAction;
-    int nMaxItems;
+private:
+	QString GetFileName(const char* name);
+	std::vector<std::string> _vMRU;
+	FCMultiAction *pcAction;
+	int nMaxItems;
 };
 
 #endif // __Command_h__

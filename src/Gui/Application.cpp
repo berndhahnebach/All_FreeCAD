@@ -58,6 +58,9 @@
 #	include <queue>
 #	include <string>
 // Python
+#	if defined (_POSIX_C_SOURCE)
+#		undef  _POSIX_C_SOURCE
+#	endif // (re-)defined in pyconfig.h
 #	include <Python.h>
 #	include <limits.h>
 #	include <algorithm>
@@ -130,7 +133,7 @@
 
 
 static ApplicationWindow* stApp;
-static QWorkspace* stWs;
+//static QWorkspace* stWs;
 
 
 ApplicationWindow* ApplicationWindow::Instance = 0L;
@@ -1143,7 +1146,7 @@ QSplashScreen *ApplicationWindow::_splash = NULL;
 
 void ApplicationWindow::InitApplication(void)
 {
-	std::map<std::string,std::string> &Config = GetApplication().Config();
+//	std::map<std::string,std::string> &Config = GetApplication().Config();
 
 
 	new FCScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
@@ -1175,7 +1178,7 @@ void ApplicationWindow::RunApplication(void)
 
 	// run the Application event loop
 	GetConsole().Log("Running event loop...\n");
-	int ret = _pcQApp->exec();
+	_pcQApp->exec();
 	GetConsole().Log("event loop left\n");
 }
 
@@ -1188,7 +1191,7 @@ void ApplicationWindow::StartSplasher(void)
 		FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
 		if (hGrp->GetBool("AllowSplasher", true))
 		{
-			QPixmap pixmap(( const char** ) image0_data );
+			QPixmap pixmap(( const char** ) splash_screen );
 			_splash = new FCSplashScreen( pixmap );
 			_splash->show();
 		}

@@ -369,6 +369,10 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 				QApplication::beep();
 				return true;
 			} break;
+
+			default:
+			{
+			}  break;
 		}
 	}
 
@@ -480,8 +484,6 @@ void FCProgressBar::abort()
 
 void FCProgressBar::drawContents( QPainter *p )
 {
-  const int unit_width  = 9;
-  const int unit_height = 12;
   const int total_steps = totalSteps();
   const int progress_val = progress();
   QString	progress_str;
@@ -670,7 +672,7 @@ QDragObject * FCCmdView::dragObject ()
 
   bool bFirst = true;
   FCActionDrag *ad=NULL;
-  QPoint orig = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
+  //  QPoint orig = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
   for ( QIconViewItem *item = firstItem(); item; item = item->nextItem() ) 
   {
     if ( item->isSelected() ) 
@@ -802,38 +804,40 @@ FCAccelLineEdit::FCAccelLineEdit ( QWidget * parent, const char * name )
 
 void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
 {
-  QString txt;
-  clear();
+	QString txt;
+	clear();
 
-  if (e->ascii() == 0)
-    return; // only meta key pressed
+	if (e->ascii() == 0)
+		 return; // only meta key pressed
 
-  switch(e->state())
+	switch(e->state())
 	{
 		case ControlButton:
-      txt += QAccel::keyToString(CTRL+e->key());
-      setText(txt);
+			txt += QAccel::keyToString(CTRL+e->key());
+			setText(txt);
 			break;
 		case ControlButton+AltButton:
-      txt += QAccel::keyToString(CTRL+ALT+e->key());
-      setText(txt);
+			txt += QAccel::keyToString(CTRL+ALT+e->key());
+			setText(txt);
 			break;
 		case ControlButton+ShiftButton:
-      txt += QAccel::keyToString(CTRL+SHIFT+e->key());
-      setText(txt);
+			txt += QAccel::keyToString(CTRL+SHIFT+e->key());
+			setText(txt);
 			break;
 		case ControlButton+AltButton+ShiftButton:
-      txt += QAccel::keyToString(CTRL+ALT+SHIFT+e->key());
-      setText(txt);
+			txt += QAccel::keyToString(CTRL+ALT+SHIFT+e->key());
+			setText(txt);
+			break;
+		default:
 			break;
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-/* 
- *  Constructs a FCCheckListDlg which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+/*
+ *  Constructs a FCCheckListDlg which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
@@ -843,13 +847,13 @@ FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, 
 {
     if ( !name )
 	setName( "FCCheckListDlg" );
-    resize( 402, 270 ); 
+    resize( 402, 270 );
     setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-    FCCheckListDlgLayout = new QGridLayout( this ); 
+    FCCheckListDlgLayout = new QGridLayout( this );
     FCCheckListDlgLayout->setSpacing( 6 );
     FCCheckListDlgLayout->setMargin( 11 );
 
-    Layout2 = new QHBoxLayout; 
+    Layout2 = new QHBoxLayout;
     Layout2->setSpacing( 6 );
     Layout2->setMargin( 0 );
 
@@ -916,7 +920,6 @@ std::vector<std::string> FCCheckListDlg::getCheckedItems() const
 
 void FCCheckListDlg::show ()
 {
-  QListViewItem *item = 0;
   for (std::vector<std::pair<std::string, bool> >::iterator it = items.begin(); it!=items.end(); ++it)
   {
 		QCheckListItem* item = new QCheckListItem( ListView, it->first.c_str(), QCheckListItem::CheckBox );
@@ -1016,7 +1019,7 @@ void FCColorButton::drawButtonLabel( QPainter *paint )
 void FCColorButton::onChooseColor()
 {
   QColor c = QColorDialog::getColor( palette().active().background(), this );
-  if ( c.isValid() ) 
+  if ( c.isValid() )
   {
     setColor( c );
     emit changed();
@@ -1121,7 +1124,7 @@ void FCSpinBox::focusOutEvent ( QFocusEvent* e )
 
 void FCSpinBox::wheelEvent ( QWheelEvent* e )
 {
-  if (isEnabled()) 
+  if (isEnabled())
     QSpinBox::wheelEvent(e);
 }
 
@@ -1148,6 +1151,9 @@ bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
 
     case QEvent::FocusOut:
       focusOutEvent ((QFocusEvent*)e);
+      break;
+
+    default:
       break;
   }
 

@@ -128,11 +128,12 @@ protected:
 
 	bool _bVerbose;
 
-private:
 	// Singelton!
 	FCConsole(void);
 	virtual ~FCConsole();
-	// singelton 
+
+private:
+	// singelton
 	static void Destruct(void);
 	static FCConsole *_pcSingelton;
 

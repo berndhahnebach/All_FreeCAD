@@ -34,8 +34,8 @@
 /*
 
 
-//**************************************************************************
-//**************************************************************************
+// **************************************************************************
+// **************************************************************************
 // Handle_FCFeature
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -52,7 +52,7 @@ Standard_EXPORT Handle_Standard_Type& FCFeature_Type_()
   if ( aType3.IsNull()) aType3 = STANDARD_TYPE(MMgt_TShared);
   static Handle_Standard_Type aType4 = STANDARD_TYPE(Standard_Transient);
   if ( aType4.IsNull()) aType4 = STANDARD_TYPE(Standard_Transient);
- 
+
 
   static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,aType4,NULL};
   static Handle_Standard_Type _aType = new Standard_Type("FCFeature",
@@ -67,7 +67,7 @@ Standard_EXPORT Handle_Standard_Type& FCFeature_Type_()
 // DownCast method
 //   allow safe downcasting
 //
-const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transient)& AnObject) 
+const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transient)& AnObject)
 {
   Handle(FCFeature) _anOtherObject;
 
@@ -83,8 +83,8 @@ const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transi
 
 
 
-//**************************************************************************
-//**************************************************************************
+// **************************************************************************
+// **************************************************************************
 // FCFeature
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

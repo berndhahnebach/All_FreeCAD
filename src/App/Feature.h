@@ -29,6 +29,7 @@ class TFunction_Logbook;
  */
 class FCFeature
 {
+protected:
 
 	/** @name methodes used for reclculation (update) */
 	//@{
@@ -36,7 +37,7 @@ class FCFeature
 	 *  We call this method to check if the object was modified to
 	 *  be invoked. If the object label or an argument is modified,
 	 *  we must recompute the object - to call the method Execute().
-	 */	
+	 */
 	virtual bool MustExecute(const TFunction_Logbook& log) const =0;
 
 	/** Validate
@@ -111,7 +112,7 @@ public:
 	AppExport void* operator new(size_t,void* anAddress){return anAddress;}
 	AppExport void* operator new(size_t size){return Standard::Allocate(size);}
 	AppExport void  operator delete(void *anAddress){if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	AppExport Handle_FCFeature():Handle(FCAttribute)() {} 
+	AppExport Handle_FCFeature():Handle(FCAttribute)() {}
 	AppExport Handle_FCFeature(const Handle(FCFeature)& aHandle) : Handle(FCAttribute)(aHandle){}
 
 	AppExport Handle_FCFeature(const FCFeature* anItem) : Handle(FCAttribute)((FCAttribute *)anItem){}
@@ -128,7 +129,7 @@ public:
 		return *this;
 	}
 
-	AppExport FCFeature* operator->() 
+	AppExport FCFeature* operator->()
 	{
 		return (FCFeature *)(ControlAccess());
 	}
@@ -140,7 +141,7 @@ public:
 
 
 
-class FCFeature : public FCAttribute 
+class FCFeature : public FCAttribute
 {
 public:
 
@@ -177,7 +178,7 @@ public:
 	AppExport void Paste(const Handle(TDF_Attribute)& into,const Handle(TDF_RelocationTable)& RT) const;
 
 
-	/// needet for CasCade handles 
+	/// needet for CasCade handles
     AppExport void* operator new(size_t,void* anAddress)	{return anAddress;}
     AppExport void* operator new(size_t size)				{return Standard::Allocate(size);}
     AppExport void  operator delete(void *anAddress)		{if (anAddress) Standard::Free((Standard_Address&)anAddress);}
@@ -185,7 +186,7 @@ public:
 	AppExport const Handle(Standard_Type)& DynamicType() const;
 	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 
-private: 
+private:
 
 	/// Data member string
 	TCollection_ExtendedString myString2;

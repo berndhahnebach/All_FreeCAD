@@ -118,7 +118,7 @@ void FCCommandLine::SaveCmdList()
   for (std::list<std::string>::iterator it = alCmdList.begin(); it != alCmdList.end(); ++it, i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "Command %d", i);
+    sprintf(szBuf, "Command %ld", i);
     hCmdGrp->SetASCII(szBuf, it->c_str());
   }
 }
@@ -324,6 +324,8 @@ bool FCCommandLine::eventFilter       ( QObject* o, QEvent* e )
       case QEvent::Drop:
         if (acceptDrops())
           dropEvent ((QDropEvent*)e);
+        break;
+      default:
         break;
     }
   }

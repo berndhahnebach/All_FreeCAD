@@ -401,12 +401,12 @@ bool FCRedoAction::addTo(QWidget* w)
 }
 
 //===========================================================================
-// FCCommand 
+// FCCommand
 //===========================================================================
 
 
 FCCommand::FCCommand(const char* name,CMD_Type eType)
-	:_eType(eType),sName(name),_pcAction(0)
+	: sName(name),_pcAction(0),_eType(eType)
 {
 	sAppModule		= "";
 	sGroup			= "";
@@ -717,7 +717,7 @@ void FCScriptCommand::CmdHelpPage(std::string &rcHelpPage)
 
 
 //===========================================================================
-// FCPythonCommand 
+// FCPythonCommand
 //===========================================================================
 
 
@@ -729,8 +729,8 @@ FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
 	// call the methode "GetResources()" of the command object
 	_pcPyResourceDict = GetInterpreter().RunMethodObject(_pcPyCommand, "GetResources");
 	// check if the "GetResources()" methode returns a Dict object
-	if(! PyDict_Check(_pcPyResourceDict) ) 
-		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");	
+	if(! PyDict_Check(_pcPyResourceDict) )
+		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
 
 }
 
@@ -740,11 +740,11 @@ std::string FCPythonCommand::GetResource(const char* sName)
 	PyBuf ResName(sName);
 
 
-	// get the "MenuText" resource string 
+	// get the "MenuText" resource string
 	pcTemp = PyDict_GetItemString(_pcPyResourceDict,ResName.str);
-	if(! pcTemp ) 
+	if(! pcTemp )
 		return std::string();
-	if(! PyString_Check(pcTemp) ) 
+	if(! PyString_Check(pcTemp) )
 		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
 
 	return std::string(PyString_AsString(pcTemp) );
@@ -757,7 +757,7 @@ void FCPythonCommand::Activated(int iMsg)
 	try{
 		GetInterpreter().RunMethodVoid(_pcPyCommand, "Activated");
 	}catch (FCException e){
-		GetConsole().Error("Running the python command %s faild,try to resume",sName);
+		GetConsole().Error("Running the python command %s faild,try to resume",sName.c_str());
 	}
 }
 
