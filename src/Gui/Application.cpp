@@ -70,7 +70,6 @@
 #include "HelpView.h"
 #include "ReportView.h"
 #include "Macro.h"
-//#include "Themes.h"
 #include "ProgressBar.h"
 #include "Window.h" 
 
