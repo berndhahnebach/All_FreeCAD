@@ -17,6 +17,11 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <vector>
+#include <list>
+#include <set>
+
+
 // OpenCasCade =====================================================================================
 // Base
 #include <Standard_Failure.hxx>

@@ -114,6 +114,7 @@
 #include <TNaming_Builder.hxx>
 #include <TFunction_Logbook.hxx>
 #include <TFunction_DriverTable.hxx>
+#include <TFunction_Function.hxx>
 
 #include <TDF_Reference.hxx>
 

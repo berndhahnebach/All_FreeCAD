@@ -83,7 +83,8 @@ class Handle(FCFunction) : public Handle(TFunction_Driver) {
 
 
 
-class FCFunction : public TFunction_Driver {
+class FCFunction : public TFunction_Driver 
+{
 
 public:
 

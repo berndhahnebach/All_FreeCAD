@@ -132,7 +132,8 @@ Handle_FCApplicationOCC::~Handle_FCApplicationOCC() {}
 FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
 	:_pcSysParamMngr(pcSysParamMngr),
 	 _pcUserParamMngr(pcUserParamMngr),
-	 _mConfig(mConfig)
+	 _mConfig(mConfig),
+	 _pActiveDoc(0)
 {
 	_hApp = new FCApplicationOCC;
 	mpcPramManager["User parameter"] = pcUserParamMngr;

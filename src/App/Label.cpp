@@ -25,6 +25,7 @@
 #include "../Base/Exception.h"
 #include "Application.h"
 #include "Attribute.h"
+#include "Function.h"
 
 
 //===========================================================================
@@ -53,16 +54,53 @@ FCPyHandle<FCLabel> FCLabel::GetLabel(const char* sName)
 //	return FCPyHandle<FCLabel>(_pcDocument->HasPyLabel( _cLabel.FindChild(iN)));
 }
 
+
+FCFeature *FCLabel::GetFeature(void)
+{
+	Handle_TFunction_Function hcFunction;
+
+	if(_cLabel.FindAttribute(TFunction_Function::GetID(), hcFunction))
+	{
+		//return hcFunction->GetFeature();
+	}
+
+	return NULL;
+
+}
+
+
+void FCLabel::SetFeature(FCFeature *pcFeature)
+{
+	Handle_TFunction_Function hcFunction;
+
+	if(_cLabel.FindAttribute(TFunction_Function::GetID(), hcFunction))
+	{
+		//return hcFunction->GetFeature();
+	}
+
+
+}
+
+
 /// checks if the label is there
 bool FCLabel::HasLabel(int iN)
 {
-	//return _cLabel.FindChild(iN,false);
-	return false;
+	return _cLabel.FindChild(iN,false).IsNull() == 0;
+	//return false;
 }
 
 
 /// checks if the label is there by name (Name Attribute)
 bool FCLabel::HasLabel(const char* sName)
+{
+	TDF_Label cDummy;
+
+	return _FindLabelByName(sName,cDummy);
+
+}
+
+/// checks if the label is there by name (Name Attribute)
+bool FCLabel::_FindLabelByName(const char* sName, TDF_Label &rcLabel)
 {
 	// scann all child labels to find the right name
 	for (TDF_ChildIterator it(_cLabel); it.More(); it.Next())
@@ -70,7 +108,10 @@ bool FCLabel::HasLabel(const char* sName)
 		Handle(TDataStd_Name) NameAttr;
 		if(it.Value().FindAttribute(TDataStd_Name::GetID(),NameAttr))
 			if( TCollection_ExtendedString((Standard_CString) sName) == NameAttr->Get()/*.ToExtString()*/)
+			{
+				rcLabel = it.Value();
 				return true;
+			}
 	}
 
 	return false;

@@ -34,25 +34,7 @@ class PartDocument:
 class PartTemplate:
 	"Part template object"
 	def Start(self):
-		# switch to the right workbench
-		if(App.GuiUp == 1):
-			Log ('Switching to Part workbench')
-			Gui.WorkbenchActivate("Part design")
-		Log ('   Set up part document...\n')
-		#get the active document
-		Doc = App.DocGet()
-		Main = Doc.Main
-
-		Log ('   Init part doc handle...\n')		
-		#Doc.Part = 1
-		
-		L1 = Main.GetLabel(1)
-		L1.GetLabel(1)
-		L1.Int = 1
-		L1.Real = 1.0
-		L1.Name = "Hallo"
-		L2 = L1.GetLabel(1)
-		L3 = L1.GetLabel(2)
+		Log ('runing obsolete python template\n')
             
 
 

@@ -43,6 +43,7 @@
 
 class FCDocument;
 class FCLabel;
+class FCDocType;
 
 
 
@@ -86,6 +87,13 @@ public:
 
 	//---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+
+	void InitType(FCDocType *pcDocType);
+	FCDocType *GetDocType(void);
+
+	//---------------------------------------------------------------------
+	// CasCade exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
 	/// Save the Document under a new Name

@@ -21,11 +21,14 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
-
 #include <stdio.h>
 #include <python.h>
-#include "../../../Base/Console.h"
+
+#include <Base/Console.h>
+#include <App/Application.h>
+#include <App/Document.h>
+
+#include "PartDocType.h"
 
 
 /* module functions */
@@ -55,12 +58,41 @@ Box(PyObject *self, PyObject *args)               /* self unused in modules */
 		return Py_None;                           /* convert C -> Python */
     }
 }
+/* development function for test purpose */
+static PyObject *                                 /* returns object */
+Temp(PyObject *self, PyObject *args)               /* self unused in modules */
+{                                                 /* args from python call */
+    if (!PyArg_ParseTuple(args, ""))            // convert args: Python->C 
+        return NULL;                              /* null=raise exception */
+    else {
+
+		GetConsole().Log("Part.Temp() is runing ....\n");
+
+		FCDocument *doc = GetApplication().Active();
+		if(!doc) return Py_None;
+
+		GetConsole().Log("Doc init\n");
+		FCPartDocType *pcType = new FCPartDocType();
+		doc->InitType(pcType);
+
+		GetConsole().Log("Type Get\n");
+		if(strcmp(doc->GetDocType()->GetTypeName(),"Part")==0)
+		{
+			pcType = dynamic_cast<FCPartDocType*>( doc->GetDocType() );
+			GetConsole().Log("Part doc detected\n");
+		
+		}
+		
+		return Py_None;                           /* convert C -> Python */
+    }
+}
 
 /* registration table  */
 static struct PyMethodDef hello_methods[] = {
     {"message", message, 1},       /* method name, C func ptr, always-tuple */
-    {"AddBox",  Box,     1},       /* method name, C func ptr, always-tuple */
-    {NULL, NULL}                   /* end of table marker */
+    {"AddBox" , Box,     1},       /* method name, C func ptr, always-tuple */
+    {"Temp"   , Temp,    1},       /* method name, C func ptr, always-tuple */
+    {NULL     , NULL      }        /* end of table marker */
 };
 
 

@@ -25,6 +25,8 @@
 #include "../Base/Exception.h"
 #include "Application.h"
 #include "Attribute.h"
+#include "DocType.h"
+#include "DocTypeAttr.h"
 
 
 
@@ -33,6 +35,27 @@
 // FCDocument - Wrapper for the TDocStd_Document class
 //===========================================================================
 
+
+
+void FCDocument::InitType(FCDocType *pcDocType)
+{
+	// attach the type object
+	Main()->GetOCCLabel().AddAttribute(new FCDocTypeAttr(pcDocType));
+
+	// set up document
+	pcDocType->Init(this);
+
+}
+
+
+FCDocType *FCDocument::GetDocType(void)
+{
+	Handle(FCDocTypeAttr) TSR;
+	if (!Main()->GetOCCLabel().FindAttribute(FCDocTypeAttr::GetID(), TSR )) 
+		return 0;
+
+	return TSR->Get();
+}
 
 //--------------------------------------------------------------------------
 // Exported functions

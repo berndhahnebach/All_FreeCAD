@@ -42,6 +42,8 @@
 
 
 class FCDocument;
+class FCFeature;
+
 
 /** The OCC Label wrapper class
  *  This class wrapps the functionality of the TDFSdt_Label of OCC. 
@@ -78,6 +80,11 @@ public:
 
 	/// Gets a child label by name (Name Attribute), creats if not exist
 	FCPyHandle<FCLabel> GetLabel(const char*);
+
+	/// Get a attached Feature or NULL
+	FCFeature *GetFeature(void);
+
+	void SetFeature(FCFeature *pcFeature);
 
 	/// checks if the label is there
 	bool HasLabel(int);
@@ -118,6 +125,11 @@ protected:
 	TDF_Label _cLabel;
 	/// Pointer to the FCDocument where the label comes from 
 	FCDocument *_pcDocument;
+
+	//---------------------------------------------------------------------
+	// helper methodes          +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+	bool _FindLabelByName(const char* sName, TDF_Label &rcLabel);
 
 };
 
