@@ -288,7 +288,7 @@ QString CommandViewItem::commandName()
 /**
  * Constructs an empty command view called \a name, with parent \a parent and using the widget flags \a f.
  */
-CommandView::CommandView ( QWidget * parent, const char * name, WFlags f )
+CommandIconView::CommandIconView ( QWidget * parent, const char * name, WFlags f )
     : QIconView(parent, name, f)
 {
   // settings for the view showing the icons
@@ -307,7 +307,7 @@ CommandView::CommandView ( QWidget * parent, const char * name, WFlags f )
 /**
  * Destroys the icon view and deletes all items.
  */
-CommandView::~CommandView ()
+CommandIconView::~CommandIconView ()
 {
 }
 
@@ -316,7 +316,7 @@ CommandView::~CommandView ()
  * (or 0 if no item is now current). This slot emits the emitSelectionChanged()
  * signal for its part.
  */
-void CommandView::onSelectionChanged(QIconViewItem * item)
+void CommandIconView::onSelectionChanged(QIconViewItem * item)
 {
   emit emitSelectionChanged(item->text());
 }
@@ -325,7 +325,7 @@ void CommandView::onSelectionChanged(QIconViewItem * item)
  * Returns the QDragObject that should be used for drag-and-drop. This function is called 
  * by the icon view when starting a drag to get the dragobject that should be used for the drag. 
  */
-QDragObject * CommandView::dragObject ()
+QDragObject * CommandIconView::dragObject ()
 {
   ActionDrag::actions.clear();
   if ( !currentItem() )

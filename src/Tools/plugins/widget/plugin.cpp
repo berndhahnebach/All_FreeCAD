@@ -358,7 +358,7 @@ QStringList CustomWidgetPlugin::keys() const
   QStringList list;
   list << "Gui::FileChooser" << "Gui::PrefFileChooser" 
        << "Gui::AccelLineEdit" 
-       << "Gui::CommandView"
+       << "Gui::CommandIconView"
        << "Gui::SpinBox" << "Gui::FloatSpinBox" 
        << "Gui::PrefSpinBox" << "Gui::PrefFloatSpinBox"
        << "Gui::PrefLineEdit" 
@@ -379,8 +379,8 @@ QWidget* CustomWidgetPlugin::create( const QString &key, QWidget* parent, const 
   	return new Gui::PrefFileChooser( parent, name );
   else if ( key == "Gui::AccelLineEdit" )
     return new Gui::AccelLineEdit( parent, name );
-  else if ( key == "Gui::CommandView" )
-    return new Gui::CommandView( parent, name );
+  else if ( key == "Gui::CommandIconView" )
+    return new Gui::CommandIconView( parent, name );
   else if ( key == "Gui::SpinBox" )
     return new Gui::SpinBox( parent, name );
   else if ( key == "Gui::FloatSpinBox" )
@@ -417,7 +417,7 @@ QString CustomWidgetPlugin::group( const QString& feature ) const
   	return "Input";
   else if ( feature == "Gui::AccelLineEdit" )
     return "Input";
-  else if ( feature == "Gui::CommandView" )
+  else if ( feature == "Gui::CommandIconView" )
     return "Views";
   else if ( feature == "Gui::SpinBox" )
     return "Input";
@@ -437,7 +437,7 @@ QIconSet CustomWidgetPlugin::iconSet( const QString& feature ) const
     return QIconSet( QPixmap( filechooser_pixmap ) );
   else if ( feature == "Gui::AccelLineEdit" )
     return QIconSet( QPixmap( lineedit_pixmap ) );
-  else if ( feature == "Gui::CommandView" )
+  else if ( feature == "Gui::CommandIconView" )
     return QIconSet( QPixmap( iconview_pixmap ) );
   else if ( feature == "Gui::SpinBox" )
     return QIconSet( QPixmap( spinbox_pixmap ) );
@@ -475,7 +475,7 @@ QString CustomWidgetPlugin::includeFile( const QString& feature ) const
   	return "FileDialog.h";
   else if ( feature == "Gui::AccelLineEdit" )
     return "Widgets.h";
-  else if ( feature == "Gui::CommandView" )
+  else if ( feature == "Gui::CommandIconView" )
   	return "Widgets.h";
   else if ( feature == "Gui::SpinBox" )
   	return "SpinBox.h";
@@ -495,7 +495,7 @@ QString CustomWidgetPlugin::toolTip( const QString& feature ) const
   	return "File Chooser";
   else if ( feature == "Gui::AccelLineEdit" )
   	return "Accelerator Line Edit";
-  else if ( feature == "Gui::CommandView" )
+  else if ( feature == "Gui::CommandIconView" )
   	return "Command View";
   else if ( feature == "Gui::SpinBox" )
   	return "Spin Box";
@@ -533,7 +533,7 @@ QString CustomWidgetPlugin::whatsThis( const QString& feature ) const
   	return "A widget to choose a file or directory.";
   else if ( feature == "Gui::AccelLineEdit" )
   	return "A widget to specify accelerator keys.";
-  else if ( feature == "Gui::CommandView" )
+  else if ( feature == "Gui::CommandIconView" )
   	return "Area with movable and labeled icons.";
   else if ( feature == "Gui::SpinBox" )
   	return "Spin box widget (spin button).";

@@ -94,7 +94,7 @@ private:
 // ------------------------------------------------------------------------------
 
 /**
- *  Icon items used by the 'CommandView' and 'DlgCustomizeImp' classes.
+ *  Icon items used by the 'CommandIconView' and 'DlgCustomizeImp' classes.
  * \author Werner Mayer
  */
 class GuiExport CommandViewItem : public QIconViewItem
@@ -119,13 +119,13 @@ private:
  * @see CommandViewItem, FCCommand
  * \author Werner Mayer
  */
-class GuiExport CommandView : public QIconView
+class GuiExport CommandIconView : public QIconView
 {
   Q_OBJECT
 
 public:
-  CommandView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
-  virtual ~CommandView ();
+  CommandIconView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  virtual ~CommandIconView ();
 
 protected:
   QDragObject * dragObject ();

@@ -51,20 +51,6 @@ SpinBoxPrivate::SpinBoxPrivate()
   pressed = false;
 }
 
-class FloatSpinBoxPrivate
-{
-public:
-  FloatSpinBoxPrivate(){}
-  ~FloatSpinBoxPrivate()
-  {
-    delete m_pValidator;
-  }
-
-  QDoubleValidator* m_pValidator;
-  double            m_fDivisor;
-  double            m_fEpsilon;
-};
-
 } // namespace Gui
 
 // -----------------------------------------------------------------------------------
@@ -217,107 +203,261 @@ bool SpinBox::eventFilter ( QObject* o, QEvent* e )
 
 // -------------------------------------------------------------
 
+namespace Gui {
+
+class FloatSpinBoxPrivate {
+public:
+  FloatSpinBoxPrivate( int precision=1 )
+    : mPrecision( precision ),
+      mValidator( 0 )
+  {
+  }
+
+  int factor() const {
+    int f = 1;
+    for ( uint i = 0 ; i < mPrecision ; ++i ) f *= 10;
+    return f;
+  }
+
+  double basicStep() const {
+    return 1.0/double(factor());
+  }
+
+  int mapToInt( double value, bool * ok ) const {
+    assert( ok );
+    const double f = factor();
+    if ( value > double(INT_MAX) / f ) {
+      *ok = false;
+      return INT_MAX;
+    } else if ( value < double(INT_MIN) / f ) {
+      *ok = false;
+      return INT_MIN;
+    } else {
+      *ok = true;
+      return int( value * f + ( value < 0 ? -0.5 : 0.5 ) );
+    }
+  }
+
+  double mapToDouble( int value ) const {
+    return double(value) * basicStep();
+  }
+
+  uint mPrecision;
+  QDoubleValidator * mValidator;
+};
+
+} // namespace Gui
+
 /**
  * Constructs a spin box with the default QRangeControl range and step values. 
  * It is called \a name and has parent \a parent. The spin box works with floating point numbers.
+ * Default precision is set to 1.
  */
-FloatSpinBox::FloatSpinBox ( QWidget * parent, const char * name )
-  : SpinBox(parent, name)
+FloatSpinBox::FloatSpinBox( QWidget * parent, const char * name )
+  : SpinBox( parent, name )
 {
-  d = new FloatSpinBoxPrivate;
-
-  d->m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
-  setValidator(d->m_pValidator);
-
-  setDecimals(0);
+  d = new FloatSpinBoxPrivate();
+  updateValidator();
 }
 
 /**
  * Constructs a spin box that allows values from \a minValue to \a maxValue inclusive, with 
- * step amount \a step. The value is initially set to \a minValue. The spin box works
- * with floating point numbers.
+ * step amount \a step. The value is initially set to \a value and precision to \a precision. 
+ * The spin box works with floating point numbers.
  *
  * The spin box is called \a name and has parent \a parent.
  */
-FloatSpinBox::FloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
-    : SpinBox(minValue, maxValue, step, parent, name)
+FloatSpinBox::FloatSpinBox( double minValue, double maxValue, double step,
+        double value, uint precision, QWidget * parent, const char * name )
+  : SpinBox( parent, name )
 {
-  d = new FloatSpinBoxPrivate;
-
-  d->m_pValidator = new QDoubleValidator((double)minValue, (double)maxValue, 2, this, name );
-  setValidator(d->m_pValidator);
-
-  setDecimals(0);
+  d = new FloatSpinBoxPrivate();
+  setRange( minValue, maxValue, step, precision );
+  setValue( value );
 }
 
 /**
  * Destroys the spin box, freeing all memory and other resources.
  */
-FloatSpinBox::~FloatSpinBox()
+FloatSpinBox::~FloatSpinBox() {
+  delete d; d = 0;
+}
+
+/** 
+ * Sets a new range for the spin box values. Note that \a lower, \a upper 
+ * and \a step are rounded to \a precision decimal points first. 
+ */
+void FloatSpinBox::setRange( double lower, double upper, double step, uint precision )
 {
-  delete d;
+  lower = lower < upper ? lower : upper;
+  upper = lower < upper ? upper : lower;
+  setPrecision( precision, true ); // disable bounds checking, since
+  setMinValue( lower );            // it's done in set{Min,Max}Value
+  setMaxValue( upper );            // anyway and we want lower, upper
+  setLineStep( step );             // and step to have the right precision
 }
 
 /**
  * Returns the maximum number of digits after the decimal point.
  */
-uint FloatSpinBox::decimals() const
+uint FloatSpinBox::precision() const 
 {
-  return d->m_pValidator->decimals();
+  return d->mPrecision;
 }
 
 /**
  * Sets the maximum number of digits after the decimal point.
  */
-void FloatSpinBox::setDecimals(uint i)
+/** Equivalent to @ref setPrecsion( @p precison, @p false ); Needed
+    since Qt's moc doesn't ignore trailing parameters with default
+    args when searching for a property setter method. */
+void FloatSpinBox::setPrecision( uint precision ) 
 {
-  d->m_pValidator->setDecimals(i);
-  d->m_fDivisor = pow(10.0, double(i));
-  d->m_fEpsilon = 1.0 / pow(10.0, double(i+1));
+  setPrecision( precision, false );
+}
+
+/** Sets the number of decimal points to use. Note that there is a
+    tradeoff between the precision used and the available range of
+    values. See the class docs for more.
+    @param precision the new number of decimal points to use
+
+    @param force disables checking of bound violations that can
+           arise if you increase the precision so much that the
+           minimum and maximum values can't be represented
+           anymore. Disabling is useful if you don't want to keep
+           the current min and max values anyway. This is what
+           e.g. @ref setRange() does.
+**/
+void FloatSpinBox::setPrecision( uint precision, bool force ) 
+{
+  if ( precision < 1 ) return;
+  if ( !force ) {
+    uint maxPrec = maxPrecision();
+    if ( precision > maxPrec )
+      precision = maxPrec;
+  }
+  d->mPrecision = precision;
+  updateValidator();
+}
+
+uint FloatSpinBox::maxPrecision() const 
+{
+  // INT_MAX must be > maxAbsValue * 10^precision
+  // ==> 10^precision < INT_MAX / maxAbsValue
+  // ==> precision < log10 ( INT_MAX / maxAbsValue )
+  // ==> maxPrecision = floor( log10 ( INT_MAX / maxAbsValue ) );
+  double maxAbsValue = std::max<double>( fabs(minValue()), fabs(maxValue()) );
+  if ( maxAbsValue == 0 ) return 6; // return arbitrary value to avoid dbz...
+
+  return int( floor( log10( double(INT_MAX) / maxAbsValue ) ) );
 }
 
 /**
- * Sets the minimum floating point value of the spin box.
+ * Returns the value of the spin box.
  */
-void FloatSpinBox::setMinValue(double value)
+double FloatSpinBox::value() const 
 {
-  double fMax = d->m_fDivisor * value;
-  fMax = std::max<double>(fMax, (double)-INT_MAX);
-  SpinBox::setMinValue(int(fMax));
+  return d->mapToDouble( SpinBox::value() );
 }
 
 /**
- * Sets the maximum floating point value of the spin box.
+ * Sets the value of the spin box to \a value.
  */
-void FloatSpinBox::setMaxValue(double value)
+  /** Sets the current value to @p value, cubject to the constraints
+      that @p value is frist rounded to the current precision and then
+      clipped to the interval [@p minvalue(),@p maxValue()]. */
+void FloatSpinBox::setValue( double value ) 
 {
-  double fMin = d->m_fDivisor * value;
-  fMin = std::min<double>(fMin, (double)INT_MAX);
-  SpinBox::setMaxValue(int(fMin));
+  if ( value == this->value() ) return;
+  if ( value < minValue() )
+    SpinBox::setValue( SpinBox::minValue() );
+  else if ( value > maxValue() )
+    SpinBox::setValue( SpinBox::maxValue() );
+  else 
+  {
+    bool ok = false;
+    SpinBox::setValue( d->mapToInt( value, &ok ) );
+    assert( ok );
+  }
 }
 
 /**
  * Returns the minimum floating point value of the spin box.
  */
-double FloatSpinBox::minValue () const
+double FloatSpinBox::minValue() const 
 {
-  return SpinBox::minValue() / double(d->m_fDivisor);
+  return d->mapToDouble( SpinBox::minValue() );
+}
+
+/**
+ * Sets the minimum floating point value of the spin box.
+ */
+  /** Sets the lower bound of the range to @p value, subject to the
+      contraints that @p value is first rounded to the current
+      precision and then clipped to the maximum representable
+      interval.
+      @see maxValue, minValue, setMaxValue, setRange
+  */
+void FloatSpinBox::setMinValue( double value ) 
+{
+  bool ok = false;
+  int min = d->mapToInt( value, &ok );
+  if ( !ok ) return;
+  SpinBox::setMinValue( min );
+  updateValidator();
 }
 
 /**
  * Returns the maximum floating point value of the spin box.
  */
-double FloatSpinBox::maxValue () const
+double FloatSpinBox::maxValue() const 
 {
-  return SpinBox::maxValue() / double(d->m_fDivisor);
+  return d->mapToDouble( SpinBox::maxValue() );
+}
+
+/**
+ * Sets the maximum floating point value of the spin box.
+ */
+  /** Sets the upper bound of the range to @p value, subject to the
+      contraints that @p value is first rounded to the current
+      precision and then clipped to the maximum representable
+      interval.
+      @see minValue, maxValue, setMinValue, setRange
+  */
+void FloatSpinBox::setMaxValue( double value ) 
+{
+  bool ok = false;
+  int max = d->mapToInt( value, &ok );
+  if ( !ok ) return;
+  SpinBox::setMaxValue( max );
+  updateValidator();
+}
+
+/** @return the current step size */
+double FloatSpinBox::lineStep() const 
+{
+  return d->mapToDouble( SpinBox::lineStep() );
+}
+
+/** Sets the step size for clicking the up/down buttons to @p step,
+    subject to the constraints that @p step is first rounded to the
+    current precision and then clipped to the meaningful interval
+    [1, @p maxValue - @p minValue]. */
+void FloatSpinBox::setLineStep( double step ) 
+{
+  bool ok = false;
+  if ( step > maxValue() - minValue() )
+    SpinBox::setLineStep( 1 );
+  else
+    SpinBox::setLineStep( std::max<double>( d->mapToInt( step, &ok ), 1 ) );
 }
 
 /**
  * This virtual function is used by the spin box whenever it needs to display value \a value.
  */
-QString FloatSpinBox::mapValueToText(int value)
+QString FloatSpinBox::mapValueToText( int value ) 
 {
-  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_pValidator->decimals());
+  return QString().setNum( d->mapToDouble( value ), 'f', d->mPrecision );
 }
 
 /**
@@ -325,10 +465,15 @@ QString FloatSpinBox::mapValueToText(int value)
  * the user as a value. The text is available as text() and as cleanText(), and this function 
  * must parse it if possible.
  */ 
-int FloatSpinBox::mapTextToValue( bool* ok )
+int FloatSpinBox::mapTextToValue( bool * ok ) 
 {
-  double fEps = value() > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  return int(text().toDouble() * d->m_fDivisor + fEps);
+  double value = cleanText().toDouble( ok );
+  if ( !*ok ) return 0;
+  if ( value > maxValue() )
+    value = maxValue();
+  else if ( value < minValue() )
+    value = minValue();
+  return d->mapToInt( value, ok );
 }
 
 /**
@@ -337,27 +482,7 @@ int FloatSpinBox::mapTextToValue( bool* ok )
 void FloatSpinBox::valueChange()
 {
   SpinBox::valueChange();
-  emit valueFloatChanged( value() );
-}
-
-/**
- * Sets the value of the spin box to \a value.
- */
-void FloatSpinBox::setValue(double value)
-{
-  double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  double fValue = d->m_fDivisor * value + fEps;
-  fValue = std::min<double>(fValue, (double) INT_MAX);
-  fValue = std::max<double>(fValue, (double)-INT_MAX);
-  SpinBox::setValue(int(fValue));
-}
-
-/**
- * Returns the value of the spin box.
- */
-double FloatSpinBox::value() const
-{
-  return SpinBox::value() / double(d->m_fDivisor);
+  emit valueChanged( d->mapToDouble( value() ) );
 }
 
 /**
@@ -366,6 +491,24 @@ double FloatSpinBox::value() const
 void FloatSpinBox::stepChange ()
 {
   SpinBox::stepChange();
+}
+
+/** Overridden to ignore any setValidator() calls. */
+void FloatSpinBox::setValidator( const QValidator * ) 
+{
+  // silently discard the new validator. We don't want another one ;-)
+}
+
+void FloatSpinBox::updateValidator() 
+{
+  if ( !d->mValidator ) 
+  {
+    d->mValidator =  new QDoubleValidator( minValue(), maxValue(), precision(),
+             this, "d->mValidator" );
+    SpinBox::setValidator( d->mValidator );
+  } 
+  else
+    d->mValidator->setRange( minValue(), maxValue(), precision() );
 }
 
 #include "moc_SpinBox.cpp"

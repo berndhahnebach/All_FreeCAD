@@ -39,6 +39,7 @@ namespace PropertyEditor {
  */
 class GuiExport TextEditorItem: public EditableItem
 {
+  Q_OBJECT
 public:
   TextEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -54,6 +55,7 @@ protected:
  */
 class GuiExport IntEditorItem: public EditableItem
 {
+  Q_OBJECT
 public:
   IntEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -69,6 +71,7 @@ protected:
  */
 class GuiExport FloatEditorItem: public EditableItem
 {
+  Q_OBJECT
 public:
   FloatEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -76,40 +79,6 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
-};
-
-/**
- * A floating point spinbox..
- * \author Werner Mayer
- */
-class FloatSpinBox : public QSpinBox 
-{
-  Q_OBJECT
-  Q_OVERRIDE( double value READ value WRITE setValue )
-
-public:
-  FloatSpinBox( int min, int max, float step, int digits, QWidget *parent, const char *name = 0 );
-
-  /** Overrides the QSpinBox::setValue() using floating point numbers. 
-   * Sets the current value to \a value.
-   */
-  virtual void  setValue( double value );
-  /** Returns the current value. */
-  double  value() const;
-
-  virtual QString  mapValueToText( int value );
-  virtual int mapTextToValue( bool* ok );
-
-protected slots:
-  /** Opens an input dialog to set the precision. */
-  void onSetPrecision();
-
-protected:
-  /** Opens the context menu. */
-  void contextMenuEvent ( QContextMenuEvent * e );
-
-private:
-  int _digits;
 };
 
 } // namespace PropertyEditor

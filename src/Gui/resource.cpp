@@ -102,7 +102,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new WidgetProducer<PrefCheckBox>;
   new WidgetProducer<PrefRadioButton>;
   new WidgetProducer<PrefSlider>;
-  new WidgetProducer<CommandView>;
+  new WidgetProducer<CommandIconView>;
   new WidgetProducer<AccelLineEdit>;
   new WidgetProducer<ColorButton>;
 }

@@ -32,6 +32,7 @@
 #include <qcursor.h>
 #include <qapplication.h>
 #include <math.h>
+#include <assert.h>
 
 using namespace Gui;
 
@@ -167,7 +168,7 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
 
 // ------------------------------------------------------------------------------
 
-CommandView::CommandView ( QWidget * parent, const char * name, WFlags f )
+CommandIconView::CommandIconView ( QWidget * parent, const char * name, WFlags f )
     : QIconView(parent, name, f)
 {
   setResizeMode(Adjust);
@@ -180,11 +181,11 @@ CommandView::CommandView ( QWidget * parent, const char * name, WFlags f )
   connect(this, SIGNAL ( currentChanged ( QIconViewItem * ) ), this, SLOT ( onSelectionChanged(QIconViewItem * ) ) );
 }
 
-CommandView::~CommandView ()
+CommandIconView::~CommandIconView ()
 {
 }
 
-void CommandView::onSelectionChanged(QIconViewItem * item)
+void CommandIconView::onSelectionChanged(QIconViewItem * item)
 {
   emit emitSelectionChanged(item->text());
 }
@@ -206,18 +207,45 @@ SpinBoxPrivate::SpinBoxPrivate()
   pressed = false;
 }
 
-class FloatSpinBoxPrivate
-{
+class FloatSpinBoxPrivate {
 public:
-  FloatSpinBoxPrivate(){}
-  ~FloatSpinBoxPrivate()
+  FloatSpinBoxPrivate( int precision=1 )
+    : mPrecision( precision ),
+      mValidator( 0 )
   {
-    delete m_pValidator;
   }
 
-  QDoubleValidator* m_pValidator;
-  double            m_fDivisor;
-  double            m_fEpsilon;
+  int factor() const {
+    int f = 1;
+    for ( int i = 0 ; i < mPrecision ; ++i ) f *= 10;
+    return f;
+  }
+
+  double basicStep() const {
+    return 1.0/double(factor());
+  }
+
+  int mapToInt( double value, bool * ok ) const {
+    assert( ok );
+    const double f = factor();
+    if ( value > double(INT_MAX) / f ) {
+      *ok = false;
+      return INT_MAX;
+    } else if ( value < double(INT_MIN) / f ) {
+      *ok = false;
+      return INT_MIN;
+    } else {
+      *ok = true;
+      return int( value * f + ( value < 0 ? -0.5 : 0.5 ) );
+    }
+  }
+
+  double mapToDouble( int value ) const {
+    return double(value) * basicStep();
+  }
+
+  int mPrecision;
+  QDoubleValidator * mValidator;
 };
 
 } // namespace Gui
@@ -341,103 +369,169 @@ bool SpinBox::eventFilter ( QObject* o, QEvent* e )
 
 // -------------------------------------------------------------
 
-FloatSpinBox::FloatSpinBox ( QWidget * parent, const char * name )
-  : SpinBox(parent, name)
+FloatSpinBox::FloatSpinBox( QWidget * parent, const char * name )
+  : SpinBox( parent, name )
 {
-  d = new FloatSpinBoxPrivate;
-
-  d->m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
-  setValidator(d->m_pValidator);
-
-  setDecimals(0);
+  d = new FloatSpinBoxPrivate();
+  updateValidator();
 }
 
-FloatSpinBox::FloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
-    : SpinBox(minValue, maxValue, step, parent, name)
+FloatSpinBox::FloatSpinBox( double minValue, double maxValue, double step,
+        double value, uint precision, QWidget * parent, const char * name )
+  : SpinBox( parent, name )
 {
-  d = new FloatSpinBoxPrivate;
-
-  d->m_pValidator = new QDoubleValidator((double)minValue, (double)maxValue, 2, this, name );
-  setValidator(d->m_pValidator);
-
-  setDecimals(0);
+  d = new FloatSpinBoxPrivate();
+  setRange( minValue, maxValue, step, precision );
+  setValue( value );
 }
 
-FloatSpinBox::~FloatSpinBox()
-{
-  delete d;
+FloatSpinBox::~FloatSpinBox() {
+  delete d; d = 0;
 }
 
-uint FloatSpinBox::decimals() const
+void FloatSpinBox::setRange( double lower, double upper, double step, uint precision )
 {
-  return d->m_pValidator->decimals();
+  lower = lower < upper ? lower : upper;
+  upper = lower < upper ? upper : lower;
+  setPrecision( precision, true ); // disable bounds checking, since
+  setMinValue( lower );            // it's done in set{Min,Max}Value
+  setMaxValue( upper );            // anyway and we want lower, upper
+  setLineStep( step );             // and step to have the right precision
 }
 
-void FloatSpinBox::setDecimals(uint i)
+uint FloatSpinBox::precision() const 
 {
-  d->m_pValidator->setDecimals(i);
-  d->m_fDivisor = pow(10.0, double(i));
-  d->m_fEpsilon = 1.0 / pow(10.0, double(i+1));
+  return d->mPrecision;
 }
 
-void FloatSpinBox::setMinValue(double value)
+void FloatSpinBox::setPrecision( uint precision ) 
 {
-  double fMax = d->m_fDivisor * value;
-  fMax = std::max<double>(fMax, (double)-INT_MAX);
-  SpinBox::setMinValue(int(fMax));
+  setPrecision( precision, false );
 }
 
-void FloatSpinBox::setMaxValue(double value)
+void FloatSpinBox::setPrecision( uint precision, bool force ) 
 {
-  double fMin = d->m_fDivisor * value;
-  fMin = std::min<double>(fMin, (double)INT_MAX);
-  SpinBox::setMaxValue(int(fMin));
+  if ( precision < 1 ) return;
+  if ( !force ) {
+    uint maxPrec = maxPrecision();
+    if ( precision > maxPrec )
+      precision = maxPrec;
+  }
+  d->mPrecision = precision;
+  updateValidator();
 }
 
-double FloatSpinBox::minValue () const
+uint FloatSpinBox::maxPrecision() const 
 {
-  return SpinBox::minValue() / double(d->m_fDivisor);
+  double maxAbsValue = std::max<double>( fabs(minValue()), fabs(maxValue()) );
+  if ( maxAbsValue == 0 ) return 6; // return arbitrary value to avoid dbz...
+
+  return int( floor( log10( double(INT_MAX) / maxAbsValue ) ) );
 }
 
-double FloatSpinBox::maxValue () const
+double FloatSpinBox::value() const 
 {
-  return SpinBox::maxValue() / double(d->m_fDivisor);
+  return d->mapToDouble( SpinBox::value() );
 }
 
-QString FloatSpinBox::mapValueToText(int value)
+void FloatSpinBox::setValue( double value ) 
 {
-  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_pValidator->decimals());
+  if ( value == this->value() ) return;
+  if ( value < minValue() )
+    SpinBox::setValue( SpinBox::minValue() );
+  else if ( value > maxValue() )
+    SpinBox::setValue( SpinBox::maxValue() );
+  else 
+  {
+    bool ok = false;
+    SpinBox::setValue( d->mapToInt( value, &ok ) );
+    assert( ok );
+  }
 }
 
-int FloatSpinBox::mapTextToValue( bool* ok )
+double FloatSpinBox::minValue() const 
 {
-  double fEps = value() > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  return int(text().toDouble() * d->m_fDivisor + fEps);
+  return d->mapToDouble( SpinBox::minValue() );
+}
+
+void FloatSpinBox::setMinValue( double value ) 
+{
+  bool ok = false;
+  int min = d->mapToInt( value, &ok );
+  if ( !ok ) return;
+  SpinBox::setMinValue( min );
+  updateValidator();
+}
+
+double FloatSpinBox::maxValue() const 
+{
+  return d->mapToDouble( SpinBox::maxValue() );
+}
+
+void FloatSpinBox::setMaxValue( double value ) 
+{
+  bool ok = false;
+  int max = d->mapToInt( value, &ok );
+  if ( !ok ) return;
+  SpinBox::setMaxValue( max );
+  updateValidator();
+}
+
+double FloatSpinBox::lineStep() const 
+{
+  return d->mapToDouble( SpinBox::lineStep() );
+}
+
+void FloatSpinBox::setLineStep( double step ) 
+{
+  bool ok = false;
+  if ( step > maxValue() - minValue() )
+    SpinBox::setLineStep( 1 );
+  else
+    SpinBox::setLineStep( std::max<double>( d->mapToInt( step, &ok ), 1 ) );
+}
+
+QString FloatSpinBox::mapValueToText( int value ) 
+{
+  return QString().setNum( d->mapToDouble( value ), 'f', d->mPrecision );
+}
+
+int FloatSpinBox::mapTextToValue( bool * ok ) 
+{
+  double value = cleanText().toDouble( ok );
+  if ( !*ok ) return 0;
+  if ( value > maxValue() )
+    value = maxValue();
+  else if ( value < minValue() )
+    value = minValue();
+  return d->mapToInt( value, ok );
 }
 
 void FloatSpinBox::valueChange()
 {
   SpinBox::valueChange();
-  emit valueFloatChanged( value() );
-}
-
-void FloatSpinBox::setValue(double value)
-{
-  double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  double fValue = d->m_fDivisor * value + fEps;
-  fValue = std::min<double>(fValue, (double) INT_MAX);
-  fValue = std::max<double>(fValue, (double)-INT_MAX);
-  SpinBox::setValue(int(fValue));
-}
-
-double FloatSpinBox::value() const
-{
-  return SpinBox::value() / double(d->m_fDivisor);
+  emit valueChanged( d->mapToDouble( value() ) );
 }
 
 void FloatSpinBox::stepChange ()
 {
   SpinBox::stepChange();
+}
+
+void FloatSpinBox::setValidator( const QValidator * ) 
+{
+}
+
+void FloatSpinBox::updateValidator() 
+{
+  if ( !d->mValidator ) 
+  {
+    d->mValidator =  new QDoubleValidator( minValue(), maxValue(), precision(),
+             this, "d->mValidator" );
+    SpinBox::setValidator( d->mValidator );
+  } 
+  else
+    d->mValidator->setRange( minValue(), maxValue(), precision() );
 }
 
 // --------------------------------------------------------------------

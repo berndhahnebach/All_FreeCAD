@@ -114,13 +114,13 @@ protected:
 
 // ------------------------------------------------------------------------------
 
-class QT_WIDGET_PLUGIN_EXPORT CommandView : public QIconView
+class QT_WIDGET_PLUGIN_EXPORT CommandIconView : public QIconView
 {
   Q_OBJECT
 
 public:
-  CommandView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
-  virtual ~CommandView ();
+  CommandIconView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  virtual ~CommandIconView ();
 
 protected slots:
   void onSelectionChanged( QIconViewItem * item );
@@ -156,42 +156,55 @@ private:
 // -------------------------------------------------------------
 
 class FloatSpinBoxPrivate;
-class QT_WIDGET_PLUGIN_EXPORT FloatSpinBox : public SpinBox
+class QT_WIDGET_PLUGIN_EXPORT FloatSpinBox : public SpinBox 
 {
   Q_OBJECT
-
-  Q_PROPERTY( uint   decimals        READ decimals      WRITE setDecimals      )
-  Q_OVERRIDE( double value      READ value    WRITE setValue    )
-  Q_OVERRIDE( double maxValue   READ maxValue WRITE setMaxValue )
-  Q_OVERRIDE( double minValue   READ minValue WRITE setMinValue )
+  Q_OVERRIDE( double maxValue READ maxValue WRITE setMaxValue )
+  Q_OVERRIDE( double minValue READ minValue WRITE setMinValue )
+  Q_OVERRIDE( double lineStep READ lineStep WRITE setLineStep )
+  Q_OVERRIDE( double value READ value WRITE setValue )
+  Q_PROPERTY( uint precision READ precision WRITE setPrecision )
 
 public:
-  FloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
-  FloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
+  FloatSpinBox( QWidget * parent=0, const char * name=0 );
+  FloatSpinBox( double minValue, double maxValue, double step, double value,
+                uint precision=2, QWidget * parent=0, const char * name=0 );
   virtual ~FloatSpinBox();
 
-  uint   decimals () const;
-  void   setDecimals ( uint );
-  double minValue () const;
-  void   setMinValue ( double );
-  double maxValue () const;
-  void   setMaxValue ( double );
-  double value () const;
+  void setRange( double lower, double upper, double step=0.01, uint precision=2 );
 
-public slots:
-  void  setValue ( double );
+  uint precision() const;
+  void setPrecision( uint precision );
+  virtual void setPrecision( uint precision, bool force );
 
-protected:
-  virtual QString mapValueToText(int value);
-  virtual int mapTextToValue(bool* ok);
-  virtual void valueChange();
-  void stepChange();
+  double value() const;
+  double minValue() const;
+  void setMinValue( double value );
+  double maxValue() const;
+  void setMaxValue( double value );
+
+  double lineStep() const;
+  void setLineStep( double step );
+
+  void setValidator( const QValidator * );
 
 signals:
-  void valueFloatChanged(double value);
+  void valueChanged( double value );
+
+public slots:
+  virtual void setValue( double value );
+
+protected:
+  virtual void valueChange();
+  virtual void stepChange();
+  virtual QString mapValueToText(int);
+  virtual int mapTextToValue(bool*);
 
 private:
-  FloatSpinBoxPrivate* d;
+  void updateValidator();
+  uint maxPrecision() const;
+
+  FloatSpinBoxPrivate * d;
 };
 
 // -------------------------------------------------------------

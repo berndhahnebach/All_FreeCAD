@@ -33,6 +33,7 @@
 #endif
 
 #include "propertyeditorinput.h"
+#include "../SpinBox.h"
 
 using namespace Gui::PropertyEditor;
 
@@ -101,56 +102,6 @@ void IntEditorItem::setDefaultValue()
 
 // ======================================================================
 
-FloatSpinBox::FloatSpinBox( int min, int max, float step, int digits, QWidget *parent, const char *name )
-  : QSpinBox( (int) (min*pow(digits,10)), (int) (max*pow(digits,10)),
-    (int) (step*pow(digits,10)), parent, name ), _digits( digits )
-{
-  setValue( (int) (min*pow(digits,10)) );
-  delete validator();
-  QDoubleValidator* validator = new QDoubleValidator( min,  max, _digits, this );
-  setValidator( validator );
-}
-
-void FloatSpinBox::setValue( double value )
-{
-  QSpinBox::setValue((int)(value*pow(_digits,10)));
-}
-
-double FloatSpinBox::value() const
-{
-  QString txt = cleanText();
-  return txt.toFloat();
-}
-
-QString FloatSpinBox::mapValueToText( int value ) 
-{
-  QString format = QString("%.%1f").arg( _digits );
-  return QString().sprintf(format.latin1(), (value/(float)pow(_digits,10)) );
-}
-
-int FloatSpinBox::mapTextToValue( bool* ok ) 
-{
-  return int(cleanText().toFloat(ok)*pow(_digits,10));
-}
-
-void FloatSpinBox::onSetPrecision()
-{
-  bool ok;
-  int dec = QInputDialog::getInteger(tr("Precision"), tr("Set the number of decimals."), 2, 1, 5, 1, &ok);
-
-  if ( ok )
-  {
-    ((QDoubleValidator*)validator())->setDecimals( dec );
-  }
-}
-
-void FloatSpinBox::contextMenuEvent ( QContextMenuEvent * e )
-{
-  QPopupMenu menu;
-  menu.insertItem (tr( "Precision" ), this,  SLOT(onSetPrecision())); 
-  menu.exec(QCursor::pos());
-}
-
 FloatEditorItem::FloatEditorItem( QListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
 {
@@ -163,7 +114,7 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  FloatSpinBox* editor = new FloatSpinBox( 0 /*min*/, 12 /*max*/, 0.05f /*step*/, 3 /*digits*/,
+  FloatSpinBox* editor = new FloatSpinBox( 0 /*min*/, 12 /*max*/, 0.05 /*step*/, 5.5 /*value*/, 3 /*digits*/,
                                              parent, "FloatEditorItem::spin" );
   editor->setValue( (float)overrideValue().toDouble() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
