@@ -70,34 +70,35 @@ void PovTools::writeCameraVec(const char*                FileName,
       << "// Total number of camera positions\n"
       << "#declare nCamPos = " << CamVec.size() << ";\n\n";
 
+      // writing Camera positions
   out << "// Array of positions\n"
       << "#declare  CamPos = array[" << CamVec.size() << "] {\n";
-
   for(It = CamVec.begin();It != CamVec.end();It++)
     out << "   <" << It->CamPos.X()  <<"," << It->CamPos.Z()    <<"," << It->CamPos.Y()    <<">,\n";
- 
   out << "};\n"
+
+      // writing Camera Direction vector
       << "// Array of Directions (only for special calculations)\n"
       << "#declare  CamDir = array[" << CamVec.size() << "] {\n";
-
   for(It = CamVec.begin();It != CamVec.end();It++)
-    out << "   <" << It->CamDir.X()  <<"," << It->CamDir.Z()    <<"," << It->CamDir.Y()    <<">,\n";
- 
+    out << "   <" << It->CamDir.X()  <<"," << It->CamDir.Z()    <<"," << It->CamDir.Y()    <<">,\n"; 
   out << "};\n"
+
+      // writing lookat
       << "// Array of Look At positions\n"
       << "#declare  LookAt = array[" << CamVec.size() << "] {\n";
-
   for(It = CamVec.begin();It != CamVec.end();It++)
-    out << "   <" << It->LookAt.X()  <<"," << It->LookAt.Z()    <<"," << It->LookAt.Y()    <<">,\n";
- 
+    out << "   <" << It->LookAt.X()  <<"," << It->LookAt.Z()    <<"," << It->LookAt.Y()    <<">,\n"; 
   out << "};\n"
+
+      // writing the Up Vector
       << "// // Array of up vectors\n"
       << "#declare  Up = array[" << CamVec.size() << "] {\n";
-
   for(It = CamVec.begin();It != CamVec.end();It++)
     out << "   <" << It->Up.X()  <<"," << It->Up.Z()    <<"," << It->Up.Y()    <<">,\n";
-
   out << "};\n"
+
+      // array of zoom factors
       << "// // Array of up vectors\n"
       << "#declare  CamZoom = array[" << CamVec.size() << "] {\n";
 
@@ -327,7 +328,7 @@ void PovTools::transferToArray(const TopoDS_Face& aFace,gp_Vec** vertices,gp_Vec
       clNormal = clPropOfFace.Normal();
       gp_Vec temp = clNormal;
       //Base::Console().Log("unterschied:%.2f",temp.dot((*vertexnormals)[i]));
-      if ( temp.DotCross(temp,(*vertexnormals)[i]) < 0 )
+      if ( temp * (*vertexnormals)[i] < 0 )
         temp = -temp;
       (*vertexnormals)[i] = temp;
 

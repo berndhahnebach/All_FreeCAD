@@ -89,15 +89,18 @@
                         </widget>
                         <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>layout2</cstring>
+                                <cstring>layout4</cstring>
                             </property>
                             <vbox>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="Gui::PrefLineEdit">
+                                <widget class="Gui::PrefFileChooser">
                                     <property name="name">
-                                        <cstring>prefLineEdit1</cstring>
+                                        <cstring>prefFileChooser1</cstring>
+                                    </property>
+                                    <property name="mode">
+                                        <enum>Directory</enum>
                                     </property>
                                     <property name="prefEntry" stdset="0">
                                         <cstring>ProjectPath</cstring>

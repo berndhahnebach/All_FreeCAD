@@ -58,7 +58,7 @@ DlgSettingsRayImp::~DlgSettingsRayImp()
 
 void DlgSettingsRayImp::saveSettings()
 {
-  prefLineEdit1->onSave();
+  prefFileChooser1->onSave();
   prefLineEdit2->onSave();
   prefLineEdit3->onSave();
   prefFloatSpinBox1->onSave();
@@ -68,7 +68,7 @@ void DlgSettingsRayImp::saveSettings()
 
 void DlgSettingsRayImp::loadSettings()
 {
-  prefLineEdit1->onRestore();
+  prefFileChooser1->onRestore();
   prefLineEdit2->onRestore();
   prefLineEdit3->onRestore();
   prefFloatSpinBox1->onRestore();

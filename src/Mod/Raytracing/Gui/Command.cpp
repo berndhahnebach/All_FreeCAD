@@ -126,12 +126,12 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   // building up the python string
   std::stringstream out;
   out << "Raytracing.writeCameraFile(\"" << strToPython(cFullName) << "\"," 
-      << "(" << pos.getValue()[0]    <<"," << pos.getValue()[2]    <<"," << pos.getValue()[1]    <<")," 
-      << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<")," ;
+      << "(" << pos.getValue()[0]    <<"," << pos.getValue()[1]    <<"," << pos.getValue()[2]    <<")," 
+      << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[1] <<"," << lookat.getValue()[2] <<")," ;
   lookat *= Dist;
   lookat += pos;
-  out << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<")," 
-      << "(" << upvec.getValue()[0]  <<"," << upvec.getValue()[2]  <<"," << upvec.getValue()[1]  <<") )" ;
+  out << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[1] <<"," << lookat.getValue()[2] <<")," 
+      << "(" << upvec.getValue()[0]  <<"," << upvec.getValue()[1]  <<"," << upvec.getValue()[2]  <<") )" ;
 
  	doCommand(Gui,out.str().c_str());
 
