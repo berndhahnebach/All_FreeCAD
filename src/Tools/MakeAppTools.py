@@ -51,6 +51,9 @@ def copyTemplate(dirFrom, dirTo, oldName, newName):
 				print 'Error copying', pathFrom, 'to', pathTo, '--skipped'
 				print sys.exc_type, sys.exc_value
 		else:
+			if (file == "CVS"):
+				print 'Ignore CVS directory'
+				continue
 			if verbose: print 'copying dir', pathFrom, 'to', pathTo
 			try:
 				os.mkdir(pathTo)											# make new subdir

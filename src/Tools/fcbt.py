@@ -47,6 +47,8 @@ elif Cmd == "builddoc" or Cmd == "bd":
 	import fcbt.BuildDoc
 elif Cmd == "nextbuildnumber" or Cmd == "nbn":
 	import fcbt.NextBuildNumber
+elif Cmd == "createmodule" or Cmd == "cm":
+	import fcbt.CreateModule
 elif Cmd == "?" or Cmd == "help" or Cmd == "/h" or Cmd == "/?" or Cmd == "-h" or Cmd == "-help":
 	sys.stdout.write(help1)
 else:
