@@ -26,13 +26,12 @@ for line in lines:
     line2 = string.replace(line2,'\"','\\\"')
     line2 = string.replace(line2,"\'","\\\'")
 
-    
-    # output 
+
+    # output
     #out.write(line)
     out.write( '\"' + line2 + '\\n\"\n')
 
 out.write(";\n\n\n");
 
-    
 
-    
+
