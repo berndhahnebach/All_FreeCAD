@@ -1,6 +1,6 @@
 all: build
 
-include ../../Makefile.cfg
+include ../Makefile.cfg
 
 MODULES = View3D.o   Tree.o
 SOURCES = View3D.cpp Tree.cpp
@@ -16,4 +16,5 @@ Tree.moc:Tree.h
 
 
 include depends
+
 
