@@ -72,7 +72,7 @@ public:
 
   /** Opens a new Macro recording sassion
    * Starts a sassion with the Type and the Name of the Macro.
-   * All user interactions will be recordet as long as the commit() or
+   * All user interactions will be recorded as long as the commit() or
    * cancel() is called. 
    * There is only one recording sassion possible. To open a second one
    * cause a exception:

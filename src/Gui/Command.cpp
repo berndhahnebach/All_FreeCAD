@@ -486,6 +486,7 @@ void MacroCommand::save()
 PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
   :Command(name),_pcPyCommand(pcPyCommand)
 {
+  sGroup = "Python";
   Py_INCREF(_pcPyCommand);
 
   // call the methode "GetResources()" of the command object

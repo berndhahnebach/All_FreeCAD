@@ -134,7 +134,8 @@ def InitMenues():
 	list = ["Std_ViewExample1","Std_ViewExample2","Std_ViewExample3","Std_ViewIvDecorationOn","Std_ViewIvDecorationOff","Std_ViewIvStereoOn","Std_ViewIvStereoOff","Std_ViewIvIssueCamPos"]
 	Gui.MenuAppendItems("Inventor View", list, 0, 0)
 
-	list = ["Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Separator", "Std_Windows"] 
+	list = ["Std_CloseActiveWindow", "Std_CloseAllWindows", "Separator", "Std_ActivateNextWindow", "Std_ActivatePrevWindow", 
+	"Separator", "Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Separator", "Std_Windows"] 
 	Gui.MenuAppendItems("&Windows", list, 0, 0)
 
 	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Separator", "Std_About", "Std_AboutQt", "Separator", "Std_WhatsThis"]

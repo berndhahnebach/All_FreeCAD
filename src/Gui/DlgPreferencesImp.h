@@ -116,6 +116,7 @@ public:
 protected:
   void accept();
   void apply();
+  void languageChange();
 
 private:
   /** @name for internal use only */

@@ -252,6 +252,24 @@ void DlgPreferencesImp::apply()
   }
 }
 
+void DlgPreferencesImp::languageChange()
+{
+  DlgPreferences::languageChange();
+
+  // update the widget's tabs
+  for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
+  {
+    QTabWidget* tab = getPreferenceGroup( it.data() );
+    int ct = tab->count();
+
+    for ( int i=0; i<ct; i++ )
+    {
+      QWidget* page = tab->page( i );
+      tab->changeTab( page, page->caption() );
+    }
+  }
+}
+
 #include "DlgPreferences.cpp"
 #include "moc_DlgPreferences.cpp"
 #include "moc_DlgPreferencesImp.cpp"

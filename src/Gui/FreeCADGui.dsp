@@ -1679,6 +1679,10 @@ SOURCE=.\CommandTest.cpp
 SOURCE=.\CommandView.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File
+# Begin Source File
+
+SOURCE=.\CommandWindow.cpp
+# End Source File
 # End Group
 # Begin Group "Dock windows"
 

@@ -210,9 +210,15 @@ public:
   void onPolish();
   bool isCustomizable () const;
   void customize ();
+
+public slots:
   void tileHorizontal();
   void tile();
   void cascade();
+  void closeActiveWindow ();
+  void closeAllWindows ();
+  void activateNextWindow ();
+  void activatePrevWindow ();
 
 protected: // Protected methods
   virtual void closeEvent ( QCloseEvent * e );

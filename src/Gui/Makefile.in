@@ -290,6 +290,7 @@ libFreeCADGui_la_SOURCES = \
 		Command.cpp \
 		Command.h \
 		CommandStd.cpp  \
+		CommandWindow.cpp  \
 		CommandTest.cpp \
 		CommandView.cpp \
 		CustomWidgets.cpp \
@@ -487,16 +488,16 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
 	SoBrepShape.lo LanguageFactory.lo Translator.lo Action.lo \
 	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
-	Command.lo CommandStd.lo CommandTest.lo CommandView.lo \
-	CustomWidgets.lo DlgActionsImp.lo DlgActivateWindowImp.lo \
-	DlgCmdbarsImp.lo DlgCommandsImp.lo DlgCustomizeImp.lo \
-	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
-	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
-	DlgParameterImp.lo DlgPreferencesImp.lo DlgReportViewImp.lo \
-	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
-	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
-	DockWindow.lo Document.lo Doxygen.lo FileDialog.lo \
-	GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo \
+	Command.lo CommandStd.lo CommandWindow.lo CommandTest.lo \
+	CommandView.lo CustomWidgets.lo DlgActionsImp.lo \
+	DlgActivateWindowImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
+	DlgCustomizeImp.lo DlgDocTemplatesImp.lo DlgEditorImp.lo \
+	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
+	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
+	DlgReportViewImp.lo DlgSettings3DViewImp.lo \
+	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
+	DlgUndoRedo.lo DockWindow.lo Document.lo Doxygen.lo \
+	FileDialog.lo GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo \
 	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
 	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
 	ReportView.lo resource.lo Selection.lo SpinBox.lo \
@@ -518,6 +519,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/CommandStd.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandTest.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandView.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/CommandWindow.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CustomWidgets.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgActionsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgActivateWindowImp.Plo \
@@ -652,6 +654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandStd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandTest.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandView.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandWindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CustomWidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgActionsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgActivateWindowImp.Plo@am__quote@

@@ -61,7 +61,6 @@
 #include "Macro.h"
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
-#include "DlgActivateWindowImp.h"
 #include "Widgets.h"
 #include "NetworkRetriever.h"
 #include "GuiConsole.h"
@@ -807,198 +806,6 @@ void StdCmdWhatsThis::activated(int iMsg)
 }
 
 //===========================================================================
-// Std_TileHoricontal
-//===========================================================================
-DEF_STD_CMD_A(StdCmdTileHor);
-
-StdCmdTileHor::StdCmdTileHor()
-  :CppCommand("Std_TileHoricontal")
-{
-  sAppModule    = "";
-  sGroup        = QT_TR_NOOP("Standard");
-  sMenuText     = QT_TR_NOOP("Tile &Horizontally");
-  sToolTipText  = QT_TR_NOOP("Tile the windows horizontally");
-  sWhatsThis    = QT_TR_NOOP("Tile the windows horizontally");
-  sStatusTip    = QT_TR_NOOP("Tile the windows horizontally");
-  sPixmap       = "Std_WindowTileHor";
-  iAccel        = 0;
-}
-
-void StdCmdTileHor::activated(int iMsg)
-{
-  getAppWnd()->tileHorizontal ();
-}
-
-bool StdCmdTileHor::isActive(void)
-{
-  return !( getAppWnd()->windows().isEmpty() );
-}
-
-//===========================================================================
-// Std_TileVertical
-//===========================================================================
-DEF_STD_CMD_A(StdCmdTileVer);
-
-StdCmdTileVer::StdCmdTileVer()
-  :CppCommand("Std_TileVertical")
-{
-  sAppModule    = "";
-  sGroup        = QT_TR_NOOP("Standard");
-  sMenuText     = QT_TR_NOOP("&Tile Vertically");
-  sToolTipText  = QT_TR_NOOP("Tile the windows vertically");
-  sWhatsThis    = QT_TR_NOOP("Tile the windows vertically");
-  sStatusTip    = QT_TR_NOOP("Tile the windows vertically");
-  sPixmap       = "Std_WindowTileVer";
-  iAccel        = 0;
-}
-
-void StdCmdTileVer::activated(int iMsg)
-{
-  getAppWnd()->tile();
-}
-
-bool StdCmdTileVer::isActive(void)
-{
-  return !( getAppWnd()->windows().isEmpty() );
-}
-
-//===========================================================================
-// Std_TilePragmatic
-//===========================================================================
-DEF_STD_CMD_A(StdCmdTilePra);
-
-StdCmdTilePra::StdCmdTilePra()
-  :CppCommand("Std_TilePragmatic")
-{
-  sAppModule    = "";
-  sGroup        = QT_TR_NOOP("Standard");
-  sMenuText     = QT_TR_NOOP("&Cascade");
-  sToolTipText  = QT_TR_NOOP("Tile pragmatic");
-  sWhatsThis    = QT_TR_NOOP("Tile pragmatic");
-  sStatusTip    = QT_TR_NOOP("Tile pragmatic");
-  sPixmap       = "Std_WindowCascade";
-  iAccel        = 0;
-}
-
-void StdCmdTilePra::activated(int iMsg)
-{
-  getAppWnd()->cascade();
-}
-
-bool StdCmdTilePra::isActive(void)
-{
-  return !( getAppWnd()->windows().isEmpty() );
-}
-
-//===========================================================================
-// Std_Windows
-//===========================================================================
-DEF_STD_CMD(StdCmdWindows);
-
-StdCmdWindows::StdCmdWindows()
-  :CppCommand("Std_Windows")
-{
-  sAppModule    = "";
-  sGroup        = QT_TR_NOOP("Standard");
-  sMenuText     = QT_TR_NOOP("&Windows...");
-  sToolTipText  = QT_TR_NOOP("Windows list");
-  sWhatsThis    = QT_TR_NOOP("Windows list");
-  sStatusTip    = QT_TR_NOOP("Windows list");
-  //sPixmap     = "";
-  iAccel        = 0;
-}
-
-void StdCmdWindows::activated(int iMsg)
-{
-  Gui::Dialog::DlgActivateWindowImp dlg( getAppWnd(), "Windows", true );
-  dlg.exec();
-}
-
-/*
-//===========================================================================
-// Std_MDINormal
-//===========================================================================
-DEF_STD_CMD(StdCmdMDINormal);
-
-StdCmdMDINormal::StdCmdMDINormal()
-  :CppCommand("Std_MDINormal")
-{
-  sAppModule    = "";
-  sGroup        = "Standard";
-  sMenuText     = "MDI Normal";
-  sToolTipText  = "Set the standard MDI mode";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Paste";
-  iAccel        = 0;
-}
-
-
-void StdCmdMDINormal::Activated(int iMsg)
-{
-  getAppWnd()->switchToChildframeMode();
-}
-*/
-
-//===========================================================================
-// Std_MDIToplevel
-//===========================================================================
-DEF_STD_CMD(StdCmdMDIToplevel);
-
-StdCmdMDIToplevel::StdCmdMDIToplevel()
-  :CppCommand("Std_MDIToplevel",Cmd_Toggle)
-{
-  sAppModule    = "";
-  sGroup        = QT_TR_NOOP("Standard");
-  sMenuText     = QT_TR_NOOP("MDI seperate windows");
-  sToolTipText  = QT_TR_NOOP("Set the seperate window MDI mode");
-  sWhatsThis    = QT_TR_NOOP("Set the seperate window MDI mode");
-  sStatusTip    = QT_TR_NOOP("Set the seperate window MDI mode");
-  sPixmap       = "TopLevel";
-  iAccel        = 0;
-}
-
-void StdCmdMDIToplevel::activated(int iMsg)
-{
-  if(iMsg){
-    // switches Tab mode off 
-    toggleCommand("Std_MDITabed",false);
-//    getAppWnd()->switchToToplevelMode();
-  }//else
-    //getAppWnd()->finishToplevelMode();
-//    getAppWnd()->switchToChildframeMode();
-}
-
-//===========================================================================
-// Std_MDITabed
-//===========================================================================
-DEF_STD_CMD(StdCmdMDITabbed);
-
-StdCmdMDITabbed::StdCmdMDITabbed()
-  :CppCommand("Std_MDITabed",Cmd_Toggle)
-{
-  sAppModule    = "";
-  sGroup        = QT_TR_NOOP("Standard");
-  sMenuText     = QT_TR_NOOP("MDI tabbed");
-  sToolTipText  = QT_TR_NOOP("Set the tabbed MDI mode");
-  sWhatsThis    = QT_TR_NOOP("Set the tabbed MDI mode");
-  sStatusTip    = QT_TR_NOOP("Set the tabbed MDI mode");
-  sPixmap       = "TopLevel";
-  iAccel        = 0;
-}
-
-void StdCmdMDITabbed::activated(int iMsg)
-{
-  if(iMsg){
-    // switches Toplevel off 
-    toggleCommand("Std_MDIToplevel",false);
-//    getAppWnd()->switchToTabPageMode();
-  }//else
-//    getAppWnd()->switchToChildframeMode();
-}
-
-
-//===========================================================================
 // Std_DlgParameter
 //===========================================================================
 DEF_STD_CMD(StdCmdDlgParameter);
@@ -1086,9 +893,9 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("E&xecute macro ...");
-  sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a redordet macro");
-  sWhatsThis    = QT_TR_NOOP("Opens a Dialog let you execute a redordet macro");
-  sStatusTip    = QT_TR_NOOP("Opens a Dialog let you execute a redordet macro");
+  sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
+  sWhatsThis    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
+  sStatusTip    = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
   sPixmap       = "Std_MacroPlay";
   iAccel        = 0;
 }
@@ -1264,12 +1071,6 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdCut());
   rcCmdMgr.addCommand(new StdCmdCopy());
   rcCmdMgr.addCommand(new StdCmdPaste());
-  //rcCmdMgr.addCommand(new StdCmdMDINormal());
-  rcCmdMgr.addCommand(new StdCmdMDIToplevel());
-  rcCmdMgr.addCommand(new StdCmdMDITabbed());
-  rcCmdMgr.addCommand(new StdCmdTileHor());
-  rcCmdMgr.addCommand(new StdCmdTileVer());
-  rcCmdMgr.addCommand(new StdCmdTilePra());
   rcCmdMgr.addCommand(new StdCmdAbout());
   rcCmdMgr.addCommand(new StdCmdAboutQt());
 
@@ -1286,7 +1087,6 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdOCAFBrowse());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
-  rcCmdMgr.addCommand(new StdCmdWindows());
 }
 
 } // namespace Gui

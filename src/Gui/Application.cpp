@@ -150,11 +150,7 @@ struct ApplicationWindowP
 ApplicationWindow::ApplicationWindow()
     : QMainWindow( 0, "Main window", WDestructiveClose )
 {
-  FCParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
-
-  std::string language = hPGrp->GetASCII("Language", "English");
-  Gui::Translator::setLanguage( language.c_str() );
+  Gui::Translator::installLanguage();
   GetWidgetFactorySupplier();
 
   // seting up Python binding
@@ -329,7 +325,7 @@ void ApplicationWindow::open(const char* FileName)
   }
 
   // the original file name is required
-  appendRecentFile( FileName );
+  appendRecentFile( File.filePath().c_str() );
 }
 
 
@@ -345,6 +341,7 @@ void ApplicationWindow::createStandardOperations()
   // register the application Standard commands from CommandStd.cpp
   Gui::CreateStdCommands();
   Gui::CreateViewStdCommands();
+  Gui::CreateWindowStdCommands();
   Gui::CreateTestCommands();
 }
 
@@ -405,6 +402,26 @@ void ApplicationWindow::tile()
 void ApplicationWindow::cascade()
 {
   d->_pWorkspace->cascade();
+}
+
+void ApplicationWindow::closeActiveWindow ()
+{
+  d->_pWorkspace->closeActiveWindow();
+}
+
+void ApplicationWindow::closeAllWindows ()
+{
+  d->_pWorkspace->closeAllWindows();
+}
+
+void ApplicationWindow::activateNextWindow ()
+{
+  d->_pWorkspace->activateNextWindow();
+}
+
+void ApplicationWindow::activatePrevWindow ()
+{
+  d->_pWorkspace->activatePrevWindow();
 }
 
 void ApplicationWindow::onShowView()

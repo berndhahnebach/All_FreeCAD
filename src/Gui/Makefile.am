@@ -149,6 +149,7 @@ libFreeCADGui_la_SOURCES=\
 		Command.cpp \
 		Command.h \
 		CommandStd.cpp  \
+		CommandWindow.cpp  \
 		CommandTest.cpp \
 		CommandView.cpp \
 		CustomWidgets.cpp \

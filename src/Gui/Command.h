@@ -52,6 +52,7 @@ class MDIView;
 
 void CreateStdCommands(void);
 void CreateViewStdCommands(void);
+void CreateWindowStdCommands(void);
 void CreateTestCommands(void);
 
 /// Type of Commands
