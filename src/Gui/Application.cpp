@@ -353,22 +353,21 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Copy",pcStdToolBar);
 	_cCommandManager.AddTo("Std_Paste",pcStdToolBar);
 	pcStdToolBar->addSeparator();
+
 	// Undo/Redo Toolbutton
 	QToolButton* button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotUndo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateUndo()));
-
 	button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotRedo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateRedo()));
 
 	pcStdToolBar->addSeparator();
-
+	
+	// add the workbench combo to the main toolbar
 	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
-//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
-//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
-	_cActiveWorkbenchName = "";
-  ((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
+	_pcWorkbenchCombo->setMinimumWidth(130);
+	((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
 	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
 
 

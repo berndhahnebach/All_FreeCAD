@@ -1,4 +1,4 @@
-/** \file AppPartGui.cpp
+/** \file AppImport.cpp
  *  \brief 
  *  \author $Author$
  *  \version $Revision$
@@ -16,7 +16,6 @@
  *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
-
  
 #include "../../../Config.h"
 #ifdef _PreComp_
@@ -25,30 +24,34 @@
 #endif
 
 #include "../../../App/Application.h"
+
+#include <stdio.h>
+#include <python.h>
 #include "../../../Base/Console.h"
-
-#include "../../../Gui/Application.h"
-
-void CreateCommands(void);
 
 
 /* module functions */
 static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
+Info(PyObject *self, PyObject *args)              /* self unused in modules */
 {                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_Parse(args, "(s)", &fromPython))  /* convert Python -> C */
+	std::string strResult;
+
+    if (! PyArg_ParseTuple(args, ""))			  /* convert Python -> C */
         return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
+    
+	strResult += "The Import module\n";
+
+    PyBuf bufTemp(strResult.c_str());
+	return Py_BuildValue("s", bufTemp.str);   /* convert C -> Python */
+    
 }
+
+
 
 /* registration table  */
 static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+    {"Info", Info, 1},				/* method name, C func ptr, always-tuple */
+
     {NULL, NULL}                   /* end of table marker */
 };
 
@@ -56,42 +59,19 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
+
 // python intry
 extern "C" {
-void __declspec(dllexport) initPartGui() {
+void __declspec(dllexport) initImport() {
 
-	(void) Py_InitModule("PartGui", hello_methods);   /* mod name, table ptr */
-
-	GetConsole().Log("AppPartGui loaded\n");
+	(void) Py_InitModule("Import", hello_methods);   /* mod name, table ptr */
 
 	GetApplication();
-	ApplicationWindow::Instance;
 
-	// instanciating the commands
-	CreateCommands();
-
+	GetConsole().Log("Import loaded\n");
 
 	return;
 }
+
+
 } // extern "C" {
-
-
-
-
-/*
-#include <boost/python/class_builder.hpp>
-namespace python = boost::python;
-
-std::string info() { return "hello, world"; }
-
-
-BOOST_PYTHON_MODULE_INIT(getting_started1)
-{
-    // Create an object representing this extension module.
-    python::module_builder this_module("getting_started1");
-
-    // Add regular functions to the module.
-    this_module.def(info, "Info");
-    //this_module.def(square, "square");
-}
-*/

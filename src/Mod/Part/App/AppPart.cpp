@@ -57,9 +57,9 @@ static struct PyMethodDef hello_methods[] = {
 
 // python intry
 extern "C" {
-void __declspec(dllexport) initAppPart() {
+void __declspec(dllexport) initPart() {
 
-	(void) Py_InitModule("AppPart", hello_methods);   /* mod name, table ptr */
+	(void) Py_InitModule("Part", hello_methods);   /* mod name, table ptr */
 
 	GetApplication();
 

@@ -187,3 +187,7 @@ Version: V0.1B45 Date: Thu Mar 20 21:05:21 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B46 Date: Wed Mar 26 18:02:11 2003 +++++++++++++++++++++++++++++++
 + new methodes in ParameterGrp (IsEmpty(), HasGroup() )
+
+Version: V0.1B47 Date: Fri Mar 28 18:24:36 2003 +++++++++++++++++++++++++++++++
++ Import App Module added
++ removing Part.py and PartGui.py

@@ -1,7 +1,9 @@
-# FreeCAD Part module  
-# (c) 2001 Jürgen Riegel
+# Import gui init module  
+# (c) 2003 Jürgen Riegel
 #
-# Part design module
+# Gathering all the information to start FreeCAD
+# This is the second one of three init scripts, the third one
+# runs when the gui is up
 
 #***************************************************************************
 #*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
@@ -9,7 +11,7 @@
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU Lesser General Public License (LGPL)    *
+#*   it under the terms of the GNU General Public License (GPL)            *
 #*   as published by the Free Software Foundation; either version 2 of     *
 #*   the License, or (at your option) any later version.                   *
 #*   for detail see the LICENCE text file.                                 *
@@ -27,6 +29,38 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
-import FreeCAD
-# imports the C++ module
-import AppPart
+
+
+class ImportWorkbench ( Workbench ):
+	"Import workbench object"
+	def Start(self):
+		# load the module
+		try:
+			Log ('Loading ImportGui module')
+			import ImportGui
+		except:
+			Err('   can not load ImportGui')
+			raise
+		else:	
+			Log ('   Set up Import toolbar...\n')
+			Gui.ToolbarAddTo("ImportTools","Import_Test1")
+			Gui.ToolbarAddTo("ImportTools","Import_Test2")
+			Gui.ToolbarAddTo("ImportTools","Import_Box")
+			Gui.ToolbarAddTo("ImportTools","Import_Cut")
+
+			Log ('   Set up Import commandbar...\n')
+			Gui.CommandbarAddTo("ImportTools","Import_Test1")
+			Gui.CommandbarAddTo("ImportTools","Import_Test2")
+			Gui.CommandbarAddTo("ImportTools","Import_Box")
+			Gui.CommandbarAddTo("ImportTools","Import_Cut")
+
+			Log ('   Set up Import menues...\n')
+
+	def Stop(self):
+		Log ('   Stoping Import workbench...\n')
+		Gui.CommandbarDelete("ImportTools")
+		Gui.ToolbarDelete("ImportTools")
+
+
+#Gui.WorkbenchAdd("Import design",ImportWorkbench())
+Gui.WorkbenchAdd("Import design",ImportWorkbench())

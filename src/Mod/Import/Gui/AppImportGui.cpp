@@ -1,4 +1,4 @@
-/** \file AppPartGui.cpp
+/** \file AppImportGui.cpp
  *  \brief 
  *  \author $Author$
  *  \version $Revision$
@@ -58,11 +58,11 @@ static struct PyMethodDef hello_methods[] = {
 
 // python intry
 extern "C" {
-void __declspec(dllexport) initPartGui() {
+void __declspec(dllexport) initImportGui() {
 
-	(void) Py_InitModule("PartGui", hello_methods);   /* mod name, table ptr */
+	(void) Py_InitModule("ImportGui", hello_methods);   /* mod name, table ptr */
 
-	GetConsole().Log("AppPartGui loaded\n");
+	GetConsole().Log("ImportGui loaded\n");
 
 	GetApplication();
 	ApplicationWindow::Instance;

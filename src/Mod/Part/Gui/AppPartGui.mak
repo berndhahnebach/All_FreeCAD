@@ -39,11 +39,11 @@ OutDir=.\Release
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "..\AppPartGui.pyd" "$(OUTDIR)\AppPartGui.pch"
+ALL : "..\PartGui.pyd" "$(OUTDIR)\AppPartGui.pch"
 
 !ELSE 
 
-ALL : "AppPart - Win32 Release" "FreeCADBase - Win32 Release" "FreeCADApp - Win32 Release" "FreeCADGui - Win32 Release" "..\AppPartGui.pyd" "$(OUTDIR)\AppPartGui.pch"
+ALL : "AppPart - Win32 Release" "FreeCADBase - Win32 Release" "FreeCADApp - Win32 Release" "FreeCADGui - Win32 Release" "..\PartGui.pyd" "$(OUTDIR)\AppPartGui.pch"
 
 !ENDIF 
 
@@ -59,9 +59,9 @@ CLEAN :
 	-@erase "$(INTDIR)\Libs.obj"
 	-@erase "$(INTDIR)\PreCompiled.obj"
 	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(OUTDIR)\AppPartGui.exp"
-	-@erase "$(OUTDIR)\AppPartGui.lib"
-	-@erase "..\AppPartGui.pyd"
+	-@erase "$(OUTDIR)\PartGui.exp"
+	-@erase "$(OUTDIR)\PartGui.lib"
+	-@erase "..\PartGui.pyd"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -73,7 +73,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPartGui.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\AppPartGui.pdb" /machine:I386 /out:"../AppPartGui.pyd" /implib:"$(OUTDIR)\AppPartGui.lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\PartGui.pdb" /machine:I386 /out:"../PartGui.pyd" /implib:"$(OUTDIR)\PartGui.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\AppPartGui.obj" \
 	"$(INTDIR)\Command.obj" \
@@ -83,9 +83,9 @@ LINK32_OBJS= \
 	"..\..\..\Gui\Release\FreeCADGui.lib" \
 	"..\..\..\App\Release\FreeCADApp.lib" \
 	"..\..\..\Base\Release\FreeCADBase.lib" \
-	"..\AppPart.lib"
+	"..\Part.lib"
 
-"..\AppPartGui.pyd" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\PartGui.pyd" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -100,11 +100,11 @@ OutDir=.\Debug
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "..\AppPartGui_d.pyd" "$(OUTDIR)\AppPartGui.pch" "$(OUTDIR)\AppPartGui.bsc"
+ALL : "..\PartGui_d.pyd" "$(OUTDIR)\AppPartGui.pch" "$(OUTDIR)\AppPartGui.bsc"
 
 !ELSE 
 
-ALL : "AppPart - Win32 Debug" "FreeCADBase - Win32 Debug" "FreeCADApp - Win32 Debug" "FreeCADGui - Win32 Debug" "..\AppPartGui_d.pyd" "$(OUTDIR)\AppPartGui.pch" "$(OUTDIR)\AppPartGui.bsc"
+ALL : "AppPart - Win32 Debug" "FreeCADBase - Win32 Debug" "FreeCADApp - Win32 Debug" "FreeCADGui - Win32 Debug" "..\PartGui_d.pyd" "$(OUTDIR)\AppPartGui.pch" "$(OUTDIR)\AppPartGui.bsc"
 
 !ENDIF 
 
@@ -127,11 +127,11 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(OUTDIR)\AppPartGui.bsc"
-	-@erase "$(OUTDIR)\AppPartGui_d.exp"
-	-@erase "$(OUTDIR)\AppPartGui_d.lib"
-	-@erase "$(OUTDIR)\AppPartGui_d.pdb"
-	-@erase "..\AppPartGui_d.ilk"
-	-@erase "..\AppPartGui_d.pyd"
+	-@erase "$(OUTDIR)\PartGui_d.exp"
+	-@erase "$(OUTDIR)\PartGui_d.lib"
+	-@erase "$(OUTDIR)\PartGui_d.pdb"
+	-@erase "..\PartGui_d.ilk"
+	-@erase "..\PartGui_d.pyd"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -153,7 +153,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\AppPartGui_d.pdb" /debug /machine:I386 /out:"../AppPartGui_d.pyd" /implib:"$(OUTDIR)\AppPartGui_d.lib" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\PartGui_d.pdb" /debug /machine:I386 /out:"../PartGui_d.pyd" /implib:"$(OUTDIR)\PartGui_d.lib" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\AppPartGui.obj" \
 	"$(INTDIR)\Command.obj" \
@@ -163,9 +163,9 @@ LINK32_OBJS= \
 	"..\..\..\Gui\Debug\FreeCADGuiD.lib" \
 	"..\..\..\App\Debug\FreeCADAppD.lib" \
 	"..\..\..\Base\Debug\FreeCADBaseD.lib" \
-	"..\AppPart_d.lib"
+	"..\Part_d.lib"
 
-"..\AppPartGui_d.pyd" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\PartGui_d.pyd" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<

@@ -58,8 +58,8 @@
 #include <xercesc/util/XMLException.hpp>
 #include "iostream"
 
-// FreeCAD Gui header
 
+// FreeCAD Gui header
 #ifdef  _FC_GUI_ENABLED_
 #	include <qapplication.h>
 #	include "../Gui/Application.h"
@@ -82,8 +82,6 @@ const char sBanner[] = \
 "  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
-char sFCUser[200];
-
 
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
@@ -102,6 +100,7 @@ char sFCUser[200];
 	FCSplashScreen *splash = 0;
 #endif
 
+/// configuration map, acces throug FCApplication
 std::map<std::string,std::string> mConfig;
 
 
@@ -116,8 +115,10 @@ FCParameterManager *pcUserParameter;
 // forwards
 void Init(int argc, char ** argv );
 void Destruct(void);
+
 void ParsOptions(int argc, char ** argv);
 void CheckEnv(void);
+
 void PrintInitHelp(void);
 void ExtractPathAndUser(const char*);
 
@@ -267,8 +268,8 @@ int main( int argc, char ** argv )
 		exit(6);
 	}
 #	endif
-	// Destruction phase ===========================================================
 
+	// Destruction phase ===========================================================
 	GetConsole().Log("FreeCAD terminating...\n\n");
 #	ifndef FC_DEBUG
 	try
@@ -288,17 +289,6 @@ int main( int argc, char ** argv )
 	GetConsole().Log("FreeCAD completely terminated\n\n");
 
 	return 0;
-}
-
-/** The Destruct function
- * close and destruct everything created during Init()
- */
-void Destruct(void)
-{
-	pcSystemParameter->SaveDocument(mConfig["SystemParameter"].c_str());
-	pcUserParameter->SaveDocument(mConfig["UserParameter"].c_str());
-	delete pcSystemParameter;
-	delete pcUserParameter;
 }
 
 
@@ -402,6 +392,24 @@ void Init(int argc, char ** argv )
 	rcInterperter.Launch(FreeCADInit);
 
 }
+
+/** The Destruct function
+ * close and destruct everything created during Init()
+ */
+void Destruct(void)
+{
+	// saving system parameter
+	GetConsole().Log("Saving system parameter...");
+	pcSystemParameter->SaveDocument(mConfig["SystemParameter"].c_str());
+	// saving the User parameter
+	GetConsole().Log("done\nSaving user parameter...");
+	pcUserParameter->SaveDocument(mConfig["UserParameter"].c_str());
+	GetConsole().Log("done\n");
+	// clean up
+	delete pcSystemParameter;
+	delete pcUserParameter;
+}
+
 
 //**************************************************************************
 // extracting the home path
