@@ -74,7 +74,7 @@ void FCApplicationOCC::InitViewer(const Handle(TDocStd_Document)& aDoc) const
 
 FCApplicationOCC::~FCApplicationOCC() {}
 
-FCApplicationOCC::FCApplicationOCC() 
+FCApplicationOCC::FCApplicationOCC()
 {
 	// Instanciate a TOcafFunction_BoxDriver and add it to the TFunction_DriverTable
 //	TFunction_DriverTable::Get()->AddDriver(FCFunction::GetID(), 
@@ -161,7 +161,7 @@ FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterMana
 	// instanciate the workbench dictionary
 	_pcTemplateDictionary = PyDict_New();
 
-	// seting up Python binding 
+	// seting up Python binding
 	(void) Py_InitModule("FreeCAD", FCApplication::Methods);
 
 }
@@ -691,7 +691,7 @@ void FCApplication::InitApplication(void)
 	cTempStream << Stand ;
 	cTempStream.close();
 
-	
+
 	// interpreter and Init script ==========================================================
 	// register scripts
 	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
@@ -707,6 +707,14 @@ void FCApplication::InitApplication(void)
 	GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADInit"));
 
 
+}
+
+void FCApplication::InitApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
+{
+	if (FCApplication::_pcSingelton == 0L)
+	{
+		FCApplication::_pcSingelton = new FCApplication(pcSysParamMngr, pcUserParamMngr,mConfig);
+	}
 }
 
 void FCApplication::RunApplication()

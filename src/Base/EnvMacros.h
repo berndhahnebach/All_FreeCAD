@@ -167,7 +167,7 @@ inline void SetPythonToFreeCADLib(const char* sLib)
 		sTempString2 += PATHSEP;
 		sTempString2 += "tcl8.4";
 		//sTempString2 += PATHSEP;
-		putenv (sTempString2.c_str());
+		SetEnvironment (sTempString2.c_str());
 		EnvPrint(sTempString2.c_str());
 		sTempString2.clear();
 
@@ -177,7 +177,7 @@ inline void SetPythonToFreeCADLib(const char* sLib)
 		//sTempString2 += PATHSEP;
 		//sTempString2 += "pylibs";
 		//sTempString2 += PATHSEP;
-		putenv (sTempString2.c_str());
+		SetEnvironment (sTempString2.c_str());
 		EnvPrint(sTempString2.c_str());
 		sTempString2.clear();
 	}

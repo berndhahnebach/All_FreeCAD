@@ -116,13 +116,13 @@ Python $fc_py_ver: $fc_py_prefix : $fc_py_incs : $fc_py_libs
 # **************************************************************************
 
 AC_CHECKING([OpenCascade])
-AC_ARG_WITH(OpenCascade-prefix,[  --with-OpenCascade-prefix],
+AC_ARG_WITH(OCC-prefix,[  --with-OCC-prefix],
 	[fc_occ_prefix=$withval],
 	[fc_occ_prefix=/usr])
-AC_ARG_WITH(OpenCascade-includes,[  --with-OpenCascade-includes],
+AC_ARG_WITH(OCC-includes,[  --with-OCC-includes],
 	[fc_occ_incs=$withval],
 	[fc_occ_incs=$fc_occ_prefix/include/OCC])
-AC_ARG_WITH(OpenCascade-libs,[  --with-OpenCascade-libs],
+AC_ARG_WITH(OCC-libs,[  --with-OCC-libs],
 	[fc_occ_libs=$withval],
 	[fc_occ_libs=$fc_occ_prefix/lib])
 
@@ -132,14 +132,64 @@ OpenCascade $fc_occ_ver: $fc_occ_prefix : $fc_occ_incs : $fc_occ_libs
 
 # **************************************************************************
 
-all_includes="$all_includes -I$fc_py_incs -I$fc_occ_incs"
-all_libraries="$all_libraries -L$fc_py_libs -L$fc_occ_libs"
+AC_CHECKING([xerces-c])
+AC_ARG_WITH(XERCES-prefix,[  --with-XERCES-prefix],
+	[fc_xerces_prefix=$withval],
+	[fc_xerces_prefix=/usr])
+AC_ARG_WITH(XERCES-includes,[  --with-XERCES-includes],
+	[fc_xerces_incs=$withval],
+	[fc_xerces_incs=$fc_xerces_prefix/include/])
+AC_ARG_WITH(XERCES-libs,[  --with-XERCES-libs],
+	[fc_xerces_libs=$withval],
+	[fc_xerces_libs=$fc_xerces_prefix/lib])
+
+AC_MSG_RESULT([
+Xerces-c $fc_xerces_ver: $fc_xerces_prefix : $fc_xerces_incs : $fc_xerces_libs
+])
+
+# **************************************************************************
+
+AC_CHECKING([Coin])
+AC_ARG_WITH(coin-prefix,[  --with-coin-prefix],
+	[fc_coin_prefix=$withval],
+	[fc_coin_prefix=/usr])
+AC_ARG_WITH(coin-includes,[  --with-coin-includes],
+	[fc_coin_incs=$withval],
+	[fc_coin_incs=$fc_coin_prefix/include/])
+AC_ARG_WITH(coin-libs,[  --with-coin-libs],
+	[fc_coin_libs=$withval],
+	[fc_coin_libs=$fc_coin_prefix/lib])
+
+AC_MSG_RESULT([
+Coin $fc_coin_ver: $fc_coin_prefix : $fc_coin_incs : $fc_coin_libs
+])
+
+# **************************************************************************
+
+AC_CHECKING([SoQt])
+AC_ARG_WITH(soqt-prefix,[  --with-soqt-prefix],
+	[fc_soqt_prefix=$withval],
+	[fc_soqt_prefix=/usr])
+AC_ARG_WITH(soqt-includes,[  --with-soqt-includes],
+	[fc_soqt_incs=$withval],
+	[fc_soqt_incs=$fc_soqt_prefix/include/])
+AC_ARG_WITH(soqt-libs,[  --with-soqt-libs],
+	[fc_soqt_libs=$withval],
+	[fc_soqt_libs=$fc_soqt_prefix/lib])
+
+AC_MSG_RESULT([
+SoQt $fc_soqt_prefix : $fc_soqt_incs : $fc_soqt_libs
+])
+
+# **************************************************************************
+
+all_includes="$all_includes -I$fc_py_incs -I$fc_occ_incs -I$fc_xerces_incs -I$fc_coin_incs -I$fc_soqt_incs"
+all_libraries="$all_libraries -L$fc_py_libs -L$fc_occ_libs -L$fc_xerces_libs -L$fc_coin_libs -L$fc_soqt_libs"
 AC_SUBST(all_includes)
 AC_SUBST(all_libraries)
 
 # **************************************************************************
 # Check if you want to use GUI, or not
-
 want_gui=true
 AC_ARG_ENABLE([gui],
   AC_HELP_STRING([--enable-gui], [Enable GUI (you can disable this feature to use FreeCAD as server)]),
@@ -148,14 +198,30 @@ AC_ARG_ENABLE([gui],
     *)          want_gui=true ;;
   esac],
   [want_gui=true])
-echo "want_gui="$want_gui
+#echo "want_gui="$want_gui
 if $want_gui; then
-	AC_DEFINE_UNQUOTED(_FC_GUI_ENABLED_,1, [Define if you want to use the GUI])
+	CPPFLAGS="-D_FC_GUI_ENABLED_"
+fi
+
+# **************************************************************************
+# Check if you want thread support, or not
+want_thread=true
+AC_ARG_ENABLE([thread],
+  AC_HELP_STRING([--enable-thread], [Enable Thread support]),
+  [case $enableval in
+    no | false) want_thread=false ;;
+    *)          want_thread=true ;;
+  esac],
+  [want_thread=true])
+#echo "want_gui="$want_gui
+if $want_thread; then
+	CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+	LDFLAGS="-lpthread"
 fi
 
 
 # -DNO_KDE2 -DQT_THREAD_SUPPORT already defined in Config.h
-CPPFLAGS="$all_includes  -I/usr/include -I/usr/local/include -I$QTDIR/include  -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
+CPPFLAGS="$CPPFLAGS $all_includes  -I/usr/include -I/usr/local/include -I$QTDIR/include  -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  -DFC_OS_LINUX"
 CXX=g++
 CXXFLAGS="$all_libraries -L/usr/lib -L/usr/local/lib -Wno-deprecated -D__DEBUG__ -L$QTDIR/lib -frtti"
 LDFLAGS="-L$all_libraries"
@@ -165,4 +231,10 @@ AC_SUBST([fc_py_ver])
 
 AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
 AC_OUTPUT
+
+echo ""
+echo "Now, run 'make' to build FreeCAD."
+echo ""
+
+# **************************************************************************
 

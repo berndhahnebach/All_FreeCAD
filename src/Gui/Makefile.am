@@ -55,7 +55,7 @@ moc_View3DInventor.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 moc_Window.cpp \
-moc_private_HtmlView.cpp \
+moc_HtmlViewP.cpp \
 DlgActions.cpp \
 DlgActions.h \
 DlgCmdbars.cpp \
@@ -107,9 +107,9 @@ qextmdi/qextmdichildfrmcaption.moc \
 qextmdi/qextmdichildview.moc \
 qextmdi/qextmdimainfrm.moc \
 qextmdi/qextmditaskbar.moc \
-Language/FreeCAD_de.h
+Language/FreeCAD_de.h \
+GuiInitScript.h
 
-#scintilla/ExternalLexer.cpp
 
 libFreeCADGui_la_SOURCES=\
 scintilla/AutoComplete.cpp \
@@ -258,12 +258,29 @@ WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
 
-libFreeCADGui_la_LDADD   = -lpython2.3 -lxerces-c -lqt-mt -lqui -lCoin
+# the library search path.
+libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(all_libraries)
 
-
-# special rule for moc_private_HtmlView.cpp
-moc_private_%.cpp: %.cpp
-	cd $(@D) && $(MOC) $(<F) -o $(@F)
+libFreeCADGui_la_LDADD   =\
+		-lqui\
+		-lqt-mt \
+		-lTKernel \
+		-lTKMath \
+		-lTKService \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKPrim \
+		-lTKV2d \
+		-lTKV3d \
+		-lTKCAF \
+		-lTKCDF \
+		-lCoin \
+		-lFreeCADBase \
+		-lFreeCADApp
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -283,6 +300,9 @@ moc_%.cpp: %.h
 # rule for translation files using python script :
 %.h: %.ts
 	cd $(@D) && python ../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
+
+%Script.h: FreeCAD%.py
+	../Tools/PythonToCPP.py $(<F) $@
 
 
 # set the include path found by configure

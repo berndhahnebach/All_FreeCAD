@@ -32,16 +32,10 @@
 #include "PreCompiled.h"
 
 #ifdef FC_LINUX
-#	include <autoconfig.h>
-#endif
-
 #if HAVE_CONFIG_H
 #	include <autoconfig.h>
 #endif // HAVE_CONFIG_H
-
-#if HAVE_CONFIG_H
-#include <autoconfig.h>
-#endif // HAVE_CONFIG_H
+#endif // FC_LINUX
 
 #include <stdio.h>
 #include <list>
@@ -105,8 +99,8 @@ const char sBanner[] = \
 
 
 // the standard and plugin file of FreeCAD
-#include "Standard.h"
-#include "Plugin.h"
+#include "../App/Standard.h"
+#include "../App/Plugin.h"
 
 #include <string>
 #include <map>
@@ -143,7 +137,7 @@ void ExtractPathAndUser(const char*);
 
 
 
-int main( int argc, char ** argv ) 
+int main( int argc, char ** argv )
 {
 
   // Init phase ===========================================================
@@ -263,7 +257,7 @@ int main( int argc, char ** argv )
 			GetConsole().Log("Running internal script:\n");
 			GetInterpreter().Launch(sScriptName);
 		} else {
-		
+
 			GetConsole().Log("Unknown Run mode in main()?!?\n\n");
 			exit(1);
 		}
@@ -280,7 +274,7 @@ int main( int argc, char ** argv )
 	{
 		GetConsole().Error("Running the application failed:\n");
 		e.ReportException();
-		exit(5); 
+		exit(5);
 	}
 	catch(...)
 	{
@@ -295,7 +289,7 @@ int main( int argc, char ** argv )
 	try
 	{
 #	endif
-		// cleans up 
+		// cleans up
 		Destruct();
 
 #	ifndef FC_DEBUG
@@ -385,7 +379,7 @@ void Init(int argc, char ** argv )
 
 	}
 
-	
+
 	// interpreter and Init script ==========================================================
 	// register scripts
 	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
@@ -409,7 +403,7 @@ void Init(int argc, char ** argv )
 
 	// creating the application
 	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
-	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
+	FCApplication::InitApplication(pcSystemParameter,pcUserParameter,mConfig);
 
 	// Splasher phase ===========================================================
 #	ifdef _FC_GUI_ENABLED_
@@ -542,96 +536,96 @@ const char Usage[] = \
 
 void ParsOptions(int argc, char ** argv)
 {
-	// scan command line arguments for user input. 
-	for (int i = 1; i < argc; i++) 
-	{ 
-		if (*argv[i] == '-' ) 
-		{ 
-			switch (argv[i][1]) 
-			{ 
-			// Console modes 
-			case 'c': 
-			case 'C':  
-				switch (argv[i][2])  
-				{   
+	// scan command line arguments for user input.
+	for (int i = 1; i < argc; i++)
+	{
+		if (*argv[i] == '-' )
+		{
+			switch (argv[i][1])
+			{
+			// Console modes
+			case 'c':
+			case 'C':
+				switch (argv[i][2])
+				{
 					// Console with file
-					case 'f':  
-					case 'F':  
+					case 'f':
+					case 'F':
 						mConfig["RunMode"] = "Cmd";
 						if(argc <= i+1)
 						{
-							GetConsole().Error("Expecting a file\n");  
-							GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
+							GetConsole().Error("Expecting a file\n");
+							GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
 						}
 						mConfig["FileName"]= argv[i+1];
 						i++;
-						break;   
-					case '\0':  
+						break;
+					case '\0':
 						mConfig["RunMode"] = "Cmd";
-						break;   
-					default:  
-						GetConsole().Error("Invalid Input %s\n",argv[i]);  
-						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
-						throw FCException("Comandline error(s)");  
-				};  
-				break;  
-			case 't': 
-			case 'T':  
-				switch (argv[i][2])  
-				{   
-					case '0':  
+						break;
+					default:
+						GetConsole().Error("Invalid Input %s\n",argv[i]);
+						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+						throw FCException("Comandline error(s)");
+				};
+				break;
+			case 't':
+			case 'T':
+				switch (argv[i][2])
+				{
+					case '0':
 						// test script level 0
 						mConfig["RunMode"] = "Internal";
 						sScriptName = FreeCADTest;
-						break;   
-					default:  
+						break;
+					default:
 						//default testing level 0
 						mConfig["RunMode"] = "Internal";
 						sScriptName = FreeCADTest;
-						break;   
-				};  
-				break;  
-			case 'v': 
-			case 'V':  
-				switch (argv[i][2])  
-				{   
+						break;
+				};
+				break;
+			case 'v':
+			case 'V':
+				switch (argv[i][2])
+				{
 					// run the test environment script
-					case '1':  
+					case '1':
 						mConfig["Verbose"] = "Loose";
 						sScriptName = GetScriptFactory().ProduceScript("FreeCADTestEnv");
-						break;   
-					case '\0':  
-					case '0':  
+						break;
+					case '\0':
+					case '0':
 						// test script level 0
 						mConfig["Verbose"] = "Strict";
-						break;   
-					default:  
+						break;
+					default:
 						//default testing level 0
-						GetConsole().Error("Invalid Verbose Option: %s\n",argv[i]); 
-						GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
-						throw FCException("Comandline error(s)");  
-				};  
-				break;  
-			case '?': 
-			case 'h': 
-			case 'H': 
+						GetConsole().Error("Invalid Verbose Option: %s\n",argv[i]);
+						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+						throw FCException("Comandline error(s)");
+				};
+				break;
+			case '?':
+			case 'h':
+			case 'H':
 				GetConsole().Message("\nUsage: %s %s",argv[0],Usage);
-				throw FCException("Comandline break");  
-				break;  
-			default: 
-				GetConsole().Error("Invalid Option: %s\n",argv[i]); 
-				GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
+				throw FCException("Comandline break");
+				break;
+			default:
+				GetConsole().Error("Invalid Option: %s\n",argv[i]);
+				GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
 				throw FCException("Comandline error(s)");
-			} 
-		} 
-		else  
-		{ 
-			GetConsole().Error("Illegal command line argument #%d, %s\n",i,argv[i]); 
-			GetConsole().Error("\nUsage: %s %s",argv[0],Usage); 
-			throw FCException("Comandline error(s)");  
-		} 
-	}  
-}  
+			}
+		}
+		else
+		{
+			GetConsole().Error("Illegal command line argument #%d, %s\n",i,argv[i]);
+			GetConsole().Error("\nUsage: %s %s",argv[0],Usage);
+			throw FCException("Comandline error(s)");
+		}
+	}
+}
 
 
 void PrintInitHelp(void)

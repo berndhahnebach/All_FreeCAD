@@ -101,6 +101,3 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* Define if you want to use the GUI */
-#undef _FC_GUI_ENABLED_

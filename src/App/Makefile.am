@@ -1,14 +1,61 @@
 
 pkglib_LTLIBRARIES=libFreeCADApp.la
 
+BUILT_SOURCES=\
+	InitScript.h \
+	TestScript.h
+
 libFreeCADApp_la_SOURCES=\
-Application.cpp  Document.cpp  DocType.cpp DocTypeAttr.cpp FeatureAttr.cpp Geometry2D.cpp  Parameter.cpp    Topology.cpp\
-Attribute.cpp    Feature.cpp   Geometry3D.cpp  PreCompiled.cpp\
-Function.cpp  Label.cpp Libs.cpp        Properties.cpp\
-Application.h  Feature.h   FeatureAttr.h  Geometry3D.h   Properties.h\
-Attribute.h    DocType.h DocTypeAttr.h Function.h    Parameter.h    Topology.h\
-Document.h   Label.h  Geometry2D.h  PreCompiled.h
+		Application.h \
+		Attribute.h \
+		DocType.h \
+		DocTypeAttr.h \
+		Document.h \
+		Feature.h \
+		FeatureAttr.h \
+		Function.h \
+		Geometry2D.h \
+		Geometry3D.h \
+		Label.h \
+		Parameter.h \
+		PreCompiled.h \
+		Properties.h \
+		Topology.h \
+		Application.cpp \
+		Attribute.cpp \
+		DocType.cpp \
+		DocTypeAttr.cpp \
+		Document.cpp \
+		Feature.cpp \
+		FeatureAttr.cpp \
+		Function.cpp \
+		Geometry2D.cpp \
+		Geometry3D.cpp \
+		Label.cpp \
+		Parameter.cpp \
+		PreCompiled.cpp \
+		Properties.cpp \
+		Topology.cpp
 
-#LDADD=../Base/libFreeCADBase.a
+%Script.h: FreeCAD%.py
+	../Tools/PythonToCPP.py $(<F) $@
 
-libFreeCADApp_la_LDADD   = -lpython2.3 -lxerces-c
+# the library search path.
+libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries)
+
+libFreeCADApp_la_LDADD   = \
+		-lTKernel \
+		-lTKMath \
+		-lTKService \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKCAF \
+		-lTKCDF \
+		-lFreeCADBase
+
+# set the include path found by configure
+INCLUDES= $(all_includes)

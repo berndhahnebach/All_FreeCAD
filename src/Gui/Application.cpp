@@ -65,21 +65,21 @@
 #	include <qapplication.h>
 #	include <qaction.h>
 #	include <qbuttongroup.h>
+#	include <qcombobox.h>
 #	include <qcursor.h>
-#	include <qvbox.h>
-#	include <qworkspace.h>
-#	include <qstatusbar.h>
+#	include <qlabel.h>
 #	include <qmenubar.h>
 #	include <qmessagebox.h>
-#	include <qtoolbar.h>
-#	include <qprocess.h>
 #	include <qpopupmenu.h>
-#	include <qcombobox.h>
+#	include <qprocess.h>
 #	include <qstatusbar.h>
 #	include <qtabbar.h>
 #	include <qtextbrowser.h>
 #	include <qthread.h>
 #	include <qtimer.h>
+#	include <qtoolbar.h>
+#	include <qvbox.h>
+#	include <qworkspace.h>
 #endif
 
 
@@ -282,8 +282,10 @@ ApplicationWindow::ApplicationWindow()
 	d->_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
   // Report View
+  #ifndef FC_OS_LINUX
   FCReportView* pcOutput = new FCReportView(this,"ReportView");
   d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
+  #endif
 
  	CreateStandardOperations();
 
@@ -1173,7 +1175,7 @@ void ApplicationWindow::RunApplication(void)
 void ApplicationWindow::StartSplasher(void)
 {
 	// startup splasher
-	// when runnig in verbose mode no splasher
+	// when running in verbose mode no splasher
 	if ( ! (FCApplication::Config()["Verbose"] == "Strict") && (FCApplication::Config()["RunMode"] == "Gui") )
 		{
 		FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
@@ -1182,11 +1184,9 @@ void ApplicationWindow::StartSplasher(void)
 			int argc = FCApplication::GetARGC();
 			_pcQApp = new QApplication ( argc, FCApplication::GetARGV() );
 			_splash = new FCSplashScreen(QApplication::desktop());
-			_pcQApp->setMainWidget(_splash);
+			_pcQApp->setMainWidget((QWidget*)_splash);
 		}
 	}
-
-
 }
 
 

@@ -122,7 +122,7 @@ public:
 	FCDocument* Save(void);
 	/// Save the active Document to a filename
 	FCDocument* SaveAs(const char * Name=0l);
-	/// Retrive the active document 
+	/// Retrive the active document
 	FCDocument* Active(void);
 	/// Set the active document 
 	void SetActive(FCDocument* pDoc);
@@ -198,7 +198,7 @@ public:
 	static void SetRunMode(const char*);
 	static void RunApplication(void);
 //	static FCApplication &Instance(void);
-	friend FCApplication &GetApplication(void); 
+	friend FCApplication &GetApplication(void);
 	static std::map<std::string,std::string> &Config(void){return mConfig;}
 	static int GetARGC(void){return _argc;}
 	static char** GetARGV(void){return _argv;}
@@ -230,6 +230,7 @@ public:
 	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 	/// Destructor
 	~FCApplication();
+	static void InitApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 
 	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 private:
