@@ -25,12 +25,14 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
 
 #include <stdio.h>
 #include <Python.h>
-#include "../../../Base/Console.h"
 
+#include <Base/Console.h>
+#include <Base/Interpreter.h>
+
+#include <App/Application.h>
 
 
 extern struct PyMethodDef Raytracing_methodes[];
@@ -48,7 +50,8 @@ void ModuleExport initRaytracing() {
 
   (void) Py_InitModule("Raytracing", Raytracing_methodes);   /* mod name, table ptr */
 
-  App::GetApplication();
+    // load dependend module
+  Base::Interpreter().LoadModule("Part");
 
   Base::Console().Log("AppRaytracing loaded\n");
 

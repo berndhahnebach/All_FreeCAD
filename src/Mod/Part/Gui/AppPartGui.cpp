@@ -22,8 +22,10 @@
 #ifndef _PreComp_
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
+
+#include <App/Application.h>
 
 #include <Gui/Application.h>
 #include <Gui/ViewProvider.h>
@@ -74,9 +76,11 @@ void ModuleExport initPartGui() {
 
 	(void) Py_InitModule("PartGui", hello_methods);   /* mod name, table ptr */
 
+  // load needed modules
+  Base::Interpreter().LoadModule("Part");
+
 	Base::Console().Log("AppPartGui loaded\n");
 
-	App::GetApplication();
   Gui::ApplicationWindow::Instance->macroManager()->setModule("Part");
 
   // Register view provider

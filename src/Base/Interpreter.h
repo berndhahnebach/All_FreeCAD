@@ -1,12 +1,3 @@
-/** \file Interpreter.h
- *  \brief The base::interpreter header
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here is the definition of the interpreter.
- *  @see Interpreter.cpp 
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -37,16 +28,22 @@
 #if defined (_POSIX_C_SOURCE)
 #	undef  _POSIX_C_SOURCE
 #endif // (re-)defined in pyconfig.h
+
+
 #include <Python.h>
+
+// Std. configurations
 #include <string>
 #include <vector>
-// Std. configurations
+#include <map>
 
 
 namespace Base {
 
 	using std::string;
 	using std::vector;
+
+
 
 /** The Interpreter class
  *  This class manage the python interpreter and hold a lot 
@@ -97,6 +94,15 @@ public:
 	static void Destruct(void);
 //	static void Init(void);
 	//@}
+
+	/** @name std container to Python container helpers
+	 */
+	//@{
+  /// create a dictionary object from a string map, returns a reference
+  PyObject *CreateFrom(const std::map<std::string,std::string> &StringMap);
+
+	//@}
+
 
 	/** @name object, mthode and attribute query
 	 *  This methodes are used for code completion facility

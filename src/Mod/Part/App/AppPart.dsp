@@ -103,6 +103,10 @@ SOURCE=.\AppPart.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\AppPartPy.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\FeaturePartBox.cpp
 # End Source File
 # Begin Source File

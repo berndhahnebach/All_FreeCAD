@@ -255,3 +255,20 @@ const std::string InterpreterSingleton::StrToPython(const char* Str)
 
   return result;
 }
+
+
+PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::string> &StringMap)
+{
+  PyObject *Dict = PyDict_New();
+  PyObject *pKey,*pValue;
+
+  for (std::map<std::string,std::string>::const_iterator It = StringMap.begin();It != StringMap.end();It++)
+  {
+    pKey   = PyString_FromString(It->first.c_str());
+    pValue = PyString_FromString(It->second.c_str());
+    PyDict_SetItem(Dict, pKey, pValue); 
+  }
+
+  return Dict;
+
+}

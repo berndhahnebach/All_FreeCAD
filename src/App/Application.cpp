@@ -386,6 +386,25 @@ FCHandle<FCParameterGrp>  Application::GetParameterGroupByPath(const char* sName
 	return It->second->GetGroup(cName.c_str());
 }
 
+void Application::addOpenType(const char* Type, const char* ModuleName)
+{
+  _mEndings[Type] = ModuleName;
+}
+
+const char* Application::hasOpenType(const char* Type)
+{
+  return _mEndings[Type].c_str();
+}
+
+void Application::rmvOpenType(const char* Type)
+{
+  _mEndings.erase(Type);
+}
+
+const std::map<std::string,std::string> &Application::getOpenType(void)
+{
+  return _mEndings;
+}
 
 
 //**************************************************************************

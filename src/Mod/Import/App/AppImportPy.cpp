@@ -39,30 +39,46 @@
 
 
 
-/* registration table  */
-extern struct PyMethodDef Import_methods[];
+/* module functions */
+static PyObject *                                 /* returns object */
+open(PyObject *self, PyObject *args)              /* self unused in modules */
+{                                                 /* args from python call */
+	std::string strResult;
 
+  if (! PyArg_ParseTuple(args, ""))			  /* convert Python -> C */
+    return NULL;                              /* null=raise exception */
+    
+	strResult += "The Import module\n";
 
-// python entry
-#ifdef FC_OS_WIN32
-#	define ModuleExport __declspec(dllexport)
-#else
-#	define ModuleExport
-#endif
-extern "C" {
-void ModuleExport initImport() {
+	Base::PyBuf bufTemp(strResult.c_str());
+	return Py_BuildValue("s", bufTemp.str);   /* convert C -> Python */
+    
+}
 
-	(void) Py_InitModule("Import", Import_methods);   /* mod name, table ptr */
+/* module functions */
+static PyObject *                                 /* returns object */
+save(PyObject *self, PyObject *args)          /* self unused in modules */
+{                                                 /* args from python call */
+	char* str;
 
-  // load dependend module
-  Base::Interpreter().LoadModule("Part");
+    if (! PyArg_ParseTuple(args, "s",&str))		  /* convert Python -> C */
+        return NULL;                              /* null=raise exception */
+  
+	TopoDS_Shape ResultShape;
+	BRep_Builder aBuilder;
 
-  App::GetApplication();
+	BRepTools::Read(ResultShape,(const Standard_CString)str,aBuilder);
 
-	Base::Console().Log("Import loaded\n");
-
-	return;
+  return new App::TopoShapePy(ResultShape);		  /* convert C -> Python */
+    
 }
 
 
-} // extern "C" {
+
+/* registration table  */
+struct PyMethodDef Import_methods[] = {
+    {"open", open, 1},				/* method name, C func ptr, always-tuple */
+    {"save", save, 1},
+
+    {NULL, NULL}                   /* end of table marker */
+};

@@ -289,6 +289,14 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\OpenHandler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\OpenHandler.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Plugin
 
 !IF  "$(CFG)" == "FreeCADApp - Win32 Release"

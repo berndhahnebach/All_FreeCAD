@@ -1,10 +1,3 @@
-/** \file Factory.h
- *  \brief 
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -47,6 +40,7 @@ namespace Base
 class BaseExport AbstractProducer
 {
 	public:
+    /// overwriten by a concret producer to produce the needed object
 		virtual void* Produce (void) const = 0;
 };
 
@@ -63,25 +57,27 @@ class BaseExport Factory
 	public:
 		/// Adds a new prducer instance
 		void AddProducer (const char* sClassName, AbstractProducer *pcProducer);
+    /// returns true if there is a producer for this class registered
 		bool CanProduce(const char* sClassName) const;
+    /// returns a list of all registered producer
 		std::list<std::string> CanProduce() const;
 
 	protected:
 		/// produce a class with the given name
 		void* Produce (const char* sClassName) const;
 
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#endif
-#ifdef _MSC_VER
-# if _MSC_VER >= 1300
-	   std::map<std::string, AbstractProducer*> _mpcProducers;
-# else
+//#ifdef _MSC_VER
+//#	pragma warning( disable : 4251 )
+//#endif
+//#ifdef _MSC_VER
+//# if _MSC_VER >= 1300
+//	   std::map<std::string, AbstractProducer*> _mpcProducers;
+//# else
+//		 std::map<const std::string, AbstractProducer*> _mpcProducers;
+//# endif
+//#else
 		 std::map<const std::string, AbstractProducer*> _mpcProducers;
-# endif
-#else
-		 std::map<const std::string, AbstractProducer*> _mpcProducers;
-#endif
+//#endif
    
 		/// construction
 		Factory (void){}

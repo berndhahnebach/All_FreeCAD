@@ -72,6 +72,9 @@ PyMethodDef Application::Methods[] = {
 	{"TemplateAdd",    (PyCFunction) Application::sTemplateAdd,    1},
 	{"TemplateDelete", (PyCFunction) Application::sTemplateDelete ,1},
 	{"TemplateGet",    (PyCFunction) Application::sTemplateGet    ,1},
+	{"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1},
+	{"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
+	{"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -277,24 +280,52 @@ PYFUNCIMP_S(Application,sTemplateDelete)
 	Py_INCREF(Py_None);
     return Py_None;
 } 
-/*
-PYFUNCIMP_S(Application,sWorkbenchActivate)
-{
-	char*       psKey;
-	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
 
-	Instance->ActivateWorkbench(psKey);
-
-  Py_INCREF(Py_None);
-    return Py_None;
-}
-*/
 PYFUNCIMP_S(Application,sTemplateGet)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
 	return GetApplication()._pcTemplateDictionary;
+}
+
+PYFUNCIMP_S(Application,sEndingAdd)
+{
+	char *psKey,*psMod;
+
+  if (!PyArg_ParseTuple(args, "ss", &psKey,&psMod))     
+		return NULL;										
+
+  GetApplication().addOpenType(psKey,psMod);
+
+	Py_Return;
+} 
+
+PYFUNCIMP_S(Application,sEndingDelete)
+{
+	char*       psKey;
+
+  if (!PyArg_ParseTuple(args, "s", &psKey) )     
+		return NULL;										
+
+  GetApplication().rmvOpenType(psKey);
+
+	Py_Return;
+} 
+
+PYFUNCIMP_S(Application,sEndingGet)
+{
+	char*       psKey=0;
+
+  if (!PyArg_ParseTuple(args, "|s", &psKey))     // convert args: Python->C 
+     return NULL;                             // NULL triggers exception 
+
+  if(psKey)
+  {
+  	return Py_BuildValue("s",GetApplication().hasOpenType(psKey));
+  }else{
+    return Interpreter().CreateFrom(GetApplication().getOpenType());
+  }
+
 }
 

@@ -150,13 +150,48 @@ public:
 
 	/** @name methodes for parameter handling */
 	//@{
+  /// returns the system parameter
 	FCParameterManager &                                GetSystemParameter(void) ;
+  /// returns the user parameter
 	FCParameterManager &                                GetUserParameter(void) ;
+  /** Gets a parameter group by a full qualified path
+    * It's a easy methode to get a group:
+    * \code
+    * // geting standard parameter
+    * FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+    * std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+    * std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
+    * \endcode
+    */
+	FCHandle<FCParameterGrp>                            GetParameterGroupByPath(const char* sName);
+
 	FCParameterManager &                                GetParameterSet(const char* sName);
 	const std::map<std::string,FCParameterManager *> &  GetParameterSetList(void);
-	FCHandle<FCParameterGrp>                            GetParameterGroupByPath(const char* sName);
 	//@}
-	
+
+	/** @name methodes for the open handler 
+   *  With this facility a Application module can register 
+   *  a ending (file type) which he can handle to open. 
+   *  The ending and the module name are stored and if the file
+   *  type is opened the module get loaded and need to register a
+   *  OpenHandler class in the OpenHandlerFactorySingelton. 
+   *  After the module is loaded a OpenHandler of this type is created
+   *  and the file get loaded.
+   *  @see OpenHandler
+   *  @see OpenHandlerFactorySingelton
+   */
+	//@{
+  /// register a ending and a module name
+  void addOpenType(const char* Type, const char* ModuleName);
+  /// checks if a type is already registered and returns the module name on sucess or NULL at fail
+  const char* hasOpenType(const char* Type);
+  /// returns a map of all registered open types
+  const std::map<std::string,std::string> &getOpenType(void);
+  /// removes a open handler type
+  void rmvOpenType(const char* Type);
+	//@}
+
+
 private:
 	/** @name member for parameter */
 	//@{
@@ -199,6 +234,9 @@ private:
 	PYFUNCDEF_S(sTemplateAdd);
 	PYFUNCDEF_S(sTemplateDelete);
 	PYFUNCDEF_S(sTemplateGet);
+	PYFUNCDEF_S(sEndingAdd);
+	PYFUNCDEF_S(sEndingDelete);
+	PYFUNCDEF_S(sEndingGet);
 
 	static PyMethodDef    Methods[]; 
 
@@ -266,6 +304,8 @@ private:
 	//@}
 
 
+  /// open ending information
+  std::map<std::string,std::string> _mEndings;
 	/// Handle to the OCC Application
 	Handle_ApplicationOCC _hApp;
 	/// Handles the App::Document (and python) objects;

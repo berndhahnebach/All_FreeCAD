@@ -37,5 +37,12 @@ ParGrp.SetString("DocTemplateScript","TemplImport.py")
 ParGrp.SetString("WorkBenchName",    "Import Design")
 ParGrp.SetString("WorkBenchModule",  "ImportWorkbench.py")
 
+# Append the open handler
+FreeCAD.EndingAdd("igs","Part")
+FreeCAD.EndingAdd("iges","Part")
+FreeCAD.EndingAdd("step","Part")
+FreeCAD.EndingAdd("stp","Part")
+FreeCAD.EndingAdd("brp","Part")
+
 
 
