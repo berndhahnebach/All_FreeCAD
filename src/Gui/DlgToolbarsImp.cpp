@@ -198,7 +198,7 @@ void FCDlgCustomToolbarsImp::slotToolBarSelected(const QString & name)
 
   if (isModified())
   {
-    if (QMessageBox::information(this, "FreeCAD", "Do want to save your changes?", "Yes", "No", QString::null, 0) == 0)
+    if (QMessageBox::information(this, "FreeCAD", tr("Do want to save your changes?"), tr("Yes"), tr("No"), QString::null, 0) == 0)
       apply();
     else
      setModified(false);
@@ -339,12 +339,12 @@ void FCDlgCustomToolbarsImp::slotMoveDownAction()
 
 void FCDlgCustomToolbarsImp::slotCreateToolBar()
 {
-  QString def = tr("toolbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countToolBars());
+  QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countToolBars());
 #if QT_VERSION <= 230
-  QString text = QInputDialog::getText("New toolbar", "Specify the name of the new toolbar, please.",
+  QString text = QInputDialog::getText(tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
                                        def, 0, this);
 #else
-  QString text = QInputDialog::getText("New toolbar", "Specify the name of the new toolbar, please.",  QLineEdit::Normal,
+  QString text = QInputDialog::getText(tr("New toolbar"), tr("Specify the name of the new toolbar, please."),  QLineEdit::Normal,
                                        def, 0, this);
 #endif
   if (!text.isNull() && !text.isEmpty())
@@ -364,7 +364,7 @@ void FCDlgCustomToolbarsImp::slotDeleteToolBar()
     items.push_back((*it)->name());
 
   FCCheckListDlg checklists(this, "", true) ;
-  checklists.setCaption( "Delete selected toolbars" );
+  checklists.setCaption( tr("Delete selected toolbars") );
   checklists.setItems(items);
   if (checklists.exec())
   {

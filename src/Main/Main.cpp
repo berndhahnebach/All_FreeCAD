@@ -194,6 +194,12 @@ int main( int argc, char ** argv )
 				GetConsole().Log("Creating GUI Application...\n");
 				// if application not yet created
 				if (!pcQApp)  pcQApp = new QApplication ( argc, argv );
+				
+				static QTranslator *translator = 0;
+				translator = new QTranslator( 0 );
+				translator->load("FreeCAD.qm", ".");
+				qApp->installTranslator(translator);
+
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
 

@@ -172,9 +172,9 @@ void FCUndoRedoDlg::selChangeUndoRedoList()
   int pos = _pListBox->currentItem() + 1;
   QString text;
   if (_tMode == Undo)
-    text.sprintf("Undoes %d action(s)", pos);
+		text = tr("Undoes %1 action(s)").arg(pos);
   else
-    text.sprintf("Redoes %d action(s)", pos);
+		text = tr("Redoes %1 action(s)").arg(pos);
   _pTextLabel->setText(text);
 }
 

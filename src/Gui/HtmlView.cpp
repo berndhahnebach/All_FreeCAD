@@ -308,7 +308,7 @@ class FCDocumentationSource : public QStoredDrag
 
     QByteArray encodedData (const char* data) const
     {
-      QString fn = QObject::tr("%1%2").arg(mRoot).arg(mPath);
+      QString fn = QString("%1%2").arg(mRoot).arg(mPath);
       int pos = fn.findRev('.'); fn = fn.left(pos);
 
       std::string text = GetDocumentationManager().Retrive(fn.latin1(), mType );
@@ -316,7 +316,7 @@ class FCDocumentationSource : public QStoredDrag
 
       if (test.isEmpty())
       {
-        test = QObject::tr(
+        test = QString(
         "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
         "<html>"
         "<head>"
@@ -407,7 +407,7 @@ const QMimeSource* FCBrowserSourceFactory::data(const QString& abs_name) const
     if (FCBrowserFactoryData::Instance().mPaths.find(path) == FCBrowserFactoryData::Instance().mPaths.end())
     {
       FCBrowserFactoryData::Instance().mPaths.append(path);
-      QString root = QObject::tr("FCDoc:/%1/").arg(path);
+      QString root = QString("FCDoc:/%1/").arg(path);
       FCBrowserFactoryData::Instance().mRoots.append(root);
       GetDocumentationManager().AddProvider(new FCDocProviderDirectory(root.latin1(),path.latin1()));
     }
@@ -519,9 +519,8 @@ void FCTextBrowser::setSource (const QString & name)
     if (mime == NULL)
     {
 #if 0
-      char szBuf[200];
-      sprintf(szBuf, "Can't load '%s'.\nDo you want to start your favourite external browser instead?", source.latin1());
-      if (QMessageBox::information(this, "FreeCAD", szBuf, "Yes", "No", QString::null, 0) == 0)
+			QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
+      if (QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0) == 0)
 #endif
         emit startExtBrowser(name);
       return;
@@ -530,9 +529,8 @@ void FCTextBrowser::setSource (const QString & name)
 	  {
   	  if (QTextDrag::decode(mime, txt) == false) 
   	  {
-        char szBuf[200];
-        sprintf(szBuf, "Can't decode '%s'", source.latin1());
-        QMessageBox::information(this, "FreeCAD", szBuf);
+				QString msg = tr("Can't decode '%1'").arg(source);
+        QMessageBox::information(this, "FreeCAD", msg);
         return;
 	    }
     }
@@ -720,7 +718,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   //initialize
   init();
 
-  d->m_strCaption = "FreeCAD Help - ";
+  d->m_strCaption = tr("FreeCAD Help - ");
   d->m_FCdoc = QString::null/*"FCdoc://"*/;
   d->m_FCext = "FCext://";
   d->m_FCscript = QString::null/*"FCScript://"*/;
@@ -934,30 +932,30 @@ void FCHtmlView::PopupMenuAboutToShow()
   pclPopup->clear();
   if (pclBrowser->hasSelectedText())
   {
-    pclPopup->insertItem("Copy", pclBrowser, SLOT(copy()));
+    pclPopup->insertItem(tr("Copy"), pclBrowser, SLOT(copy()));
   }
   else
   {
-    int iBack = pclPopup->insertItem(QPixmap(back_pixmap), "Back", pclBrowser, SLOT(backward()));
+    int iBack = pclPopup->insertItem(QPixmap(back_pixmap), tr("Back"), pclBrowser, SLOT(backward()));
     pclPopup->setItemEnabled(iBack, d->bBackward);
-    int iForw = pclPopup->insertItem(QPixmap(forward_pixmap), "Forward", pclBrowser, SLOT(forward()));
+    int iForw = pclPopup->insertItem(QPixmap(forward_pixmap), tr("Forward"), pclBrowser, SLOT(forward()));
     pclPopup->setItemEnabled(iForw, d->bForward);
-    pclPopup->insertItem(QPixmap(home_pixmap), "Home", pclBrowser, SLOT(home()));
+    pclPopup->insertItem(QPixmap(home_pixmap), tr("Home"), pclBrowser, SLOT(home()));
     pclPopup->insertSeparator();
-    pclPopup->insertItem("Refresh", this, SLOT(RefreshPage()));
+    pclPopup->insertItem(tr("Refresh"), this, SLOT(RefreshPage()));
     pclPopup->insertSeparator();
     if (d->bHistory == true)
-      pclPopup->insertItem("History", pclHistory);
+      pclPopup->insertItem(tr("History"), pclHistory);
     if (d->bBookm == true)
     {
       CreateBookmarkPopup();
-      pclPopup->insertItem("Bookmarks", pclBookm);
+      pclPopup->insertItem(tr("Bookmarks"), pclBookm);
     }
     if (d->bHistory == true || d->bBookm == true)
       pclPopup->insertSeparator();
   }
 
-  pclPopup->insertItem("Select all", pclBrowser, SLOT(selectAll()));
+  pclPopup->insertItem(tr("Select all"), pclBrowser, SLOT(selectAll()));
 }
 
 void FCHtmlView::SetBackwardAvailable( bool b)
@@ -984,8 +982,8 @@ QString FCHtmlView::GetDocDirectory()
 
   if (QDir().exists(path) == false)
   {
-    QMessageBox::warning(this, "Path not found","Couldn't find the path for the Online help.\n"
-                         "Propably, you should run the python script 'MakeDoc.py' before.");
+    QMessageBox::warning(this, tr("Path not found"),tr("Couldn't find the path for the Online help.\n"
+                         "Propably, you should run the python script 'MakeDoc.py' before."));
   }
 
   return path;
@@ -1009,11 +1007,11 @@ QString FCHtmlView::GetBrowserDirectory()
   QString browser = GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->GetASCII("LineEditBrowser", "").c_str();
   if (browser.isEmpty())
   {
-    QMessageBox::information(this, "External browser", "Please search for an external browser.");
+    QMessageBox::information(this, tr("External browser"), tr("Please search for an external browser."));
     browser = QFileDialog::getOpenFileName();
 
     if (browser.isEmpty())
-      QMessageBox::warning(this, "External browser", "No external browser found.");
+      QMessageBox::warning(this, tr("External browser"), tr("No external browser found."));
     else
 //      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
       GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", browser.latin1());
@@ -1182,20 +1180,19 @@ void FCHtmlView::StartScript(QString path, QString protocol)
   path   = path.left(path.findRev("/") + 1);
   script = script.mid(script.findRev("/") + 1);
 
-  char szBuf[500];
 
   _chdir(path.latin1());
 
   FCProcess proc("python"); proc << script.latin1();
   if (!proc.start())
   {
-    sprintf(szBuf, "Sorry, cannot run file '%s'.", script.latin1());
-    QMessageBox::critical(this, "Script", szBuf);
+		QString msg = tr("Sorry, cannot run file '%1'.").arg(script);
+    QMessageBox::critical(this, "Script", msg);
   }
   else
   {
-    sprintf(szBuf, "'%s' done successfully.", script.latin1());
-    QMessageBox::information(this, "Script", szBuf);
+		QString msg = tr("'%1' done successfully.").arg(script);
+    QMessageBox::information(this, "Script", msg);
   }
 
   // go to the former path
@@ -1390,8 +1387,8 @@ void FCHtmlView::CheckBookmarks()
   if (d->mBookmarks.size() == 0)
     return;
 
-  int iButton = QMessageBox::information(this, "FreeCAD", "All unavailable bookmarks will be deleted\n"
-                           "Continue ?", "Yes", "No", QString::null, 1);
+  int iButton = QMessageBox::information(this, "FreeCAD", tr("All unavailable bookmarks will be deleted\n"
+                           "Continue ?"), tr("Yes"), tr("No"), QString::null, 1);
 
   if (iButton != 0) // not Ok pressed
     return;
@@ -1402,9 +1399,8 @@ void FCHtmlView::CheckBookmarks()
     const QMimeSource * mime = pclBrowser->mimeSourceFactory()->data(it->second);
     if (mime == NULL)
     {
-      char szBuf[200];
-      sprintf(szBuf, "%s is unavailable.\n Do you want to delete it?", it->second.latin1());
-      iButton = QMessageBox::information(this, "FreeCAD", szBuf, "Yes", "No", QString::null, 0);
+			QString msg = tr("%1 is unavailable.\n Do you want to delete it?").arg(it->second.latin1());
+      iButton = QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0);
 
       if (iButton != 0)
       {
@@ -1420,7 +1416,7 @@ void FCHtmlView::CheckBookmarks()
   d->mBookmarks = mChecked;
   CreateBookmarkPopup();
 
-  QMessageBox::information(this, "FreeCAD", "All bookmarks are uptodate");
+  QMessageBox::information(this, "FreeCAD", tr("All bookmarks are uptodate"));
 }
 
 void FCHtmlView::OnChange(FCSubject<FCParameterGrp::MessageType> &rCaller,FCParameterGrp::MessageType sReason)

@@ -337,3 +337,5 @@ Version: V0.1B73 Date: Mon Sep 29 00:36:57 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B74 Date: Fri Oct 31 00:27:14 2003 +++++++++++++++++++++++++++++++
 + add function RegisterIcon() in ApplicationWindow
++ Internationalization is now supported
+

@@ -65,7 +65,7 @@ FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
   _aclDevelopers["Werner_Mayer"]   = std::make_pair<std::string, QPixmap>("Werner Mayer" , QPixmap(Juergen_Riegel));
 
   // set the text for all subclasses
-  SplasherText = tr(
+  SplasherText = QString(
     "<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">"
     "<html>"
     "<body bgcolor=""#ffffff"">"
@@ -90,7 +90,7 @@ FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
     "Main developers of FreeCAD are:"
     "<ul>").arg(FCVersionMajor).arg(FCVersionMinor).arg(FCVersionBuild).arg(FCVersionDisDa);
   for (std::map<std::string, std::pair<std::string, QPixmap> >::iterator it = _aclDevelopers.begin(); it != _aclDevelopers.end(); ++it)
-    SplasherText += tr(	"<li> <a href=""%1"">%2</a>\n").
+    SplasherText += QString(	"<li> <a href=""%1"">%2</a>\n").
                     arg(QString(it->first.c_str())). // first argument
                     arg(QString(it->second.first.c_str()));// second argument
   SplasherText += 
@@ -141,7 +141,7 @@ FCSplashScreen::FCSplashScreen( QWidget* parent,  const char* name)
   	setName( "SplasherDialog" );
   setProperty( "enabled", QVariant( TRUE, 0 ) );
   resize( iHeight, iWidth ); 
-  setProperty( "caption", tr( "FreeCAD Startup" ) );
+  setProperty( "caption", "FreeCAD Startup"  );
   SplasherDialogLayout = new QVBoxLayout( this ); 
   SplasherDialogLayout->setSpacing( 6 );
   SplasherDialogLayout->setMargin( 11 );
@@ -259,7 +259,7 @@ FCSplashAbout::FCSplashAbout( QWidget* parent,  const char* name)
   	setName( "SplasherDialog" );
   setProperty( "enabled", QVariant( TRUE, 0 ) );
   resize( iHeight, iWidth ); 
-  setProperty( "caption", tr( "FreeCAD Startup" ) );
+  setProperty( "caption",  "FreeCAD Startup" );
   SplasherDialogLayout = new QVBoxLayout( this ); 
   SplasherDialogLayout->setSpacing( 6 );
   SplasherDialogLayout->setMargin( 11 );
@@ -316,9 +316,7 @@ void FCSplashAbout::run()
 
     if ((max-cnt)*sleep <= 10000)
     {
-      char szBuf[50];
-      sprintf(szBuf, "Closing this dialog in %d seconds...", (max-cnt)*sleep/1000);
-      RemainingTime->setText(szBuf);
+      RemainingTime->setText(tr("Closing this dialog in %1 seconds...").arg((max-cnt)*sleep/1000));
     }
   }
 

@@ -102,14 +102,14 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
     ~FCDlgPreferencesImp();
 
     /** Adds a new preference group */
-    void addPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2);
+    void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
     
     /**
      * Adds a new preference page to the current group
      * Before the first call of this method @ref addPreferenceGroup must be called
      * otherwise the preference pages will be lost.
      */
-    void addPreferencePage(QWidget* page, const char* name);
+    void addPreferencePage(QWidget* page, const QString& name);
 
   protected slots:
     /// click the OK button
@@ -123,7 +123,7 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
     /// for internal use only
     QTabWidget* getPreferenceGroup(int id);
     /// for internal use only
-    QTabWidget* getOrAddPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2);
+    QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
     /// for internal use only
     void connectWidget(QWidget* page) const;
 
@@ -139,7 +139,7 @@ class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
     //@}
 
   private:
-    std::map<std::string, int> m_mGroupIDs;
+    std::map<QString, int> m_mGroupIDs;
     QTabWidget               * m_pCurTab;
 
   private slots:

@@ -85,7 +85,7 @@ QString FCFileDialog::getSaveFileName( const QString & startWith, const QString&
 QString FCFileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, 
                                         const QString & caption )
 {
-  FCFileDialog fd(AnyFile, initially, filter, parent, "Save Dialog", true);
+  FCFileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
   fd.setCaption(caption);
   fd.exec();
   return fd.selectedFileName();
@@ -113,9 +113,8 @@ void FCFileDialog::accept()
 
   if (QFile(fn).exists() && mode() == AnyFile)
   {
-    char szBuf[200];
-    sprintf(szBuf, "'%s' already exists.\nReplace existing file?", fn.latin1());
-    if (QMessageBox::information(this, "Existing file", szBuf, "Yes", "No", QString::null, 1) == 0)
+		QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
+    if (QMessageBox::information(this, "Existing file", msg, "Yes", "No", QString::null, 1) == 0)
       QFileDialog::accept();
   }
   else
@@ -357,26 +356,26 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 					int hour   = diff %  60;
 					QString h,m,s;
 					if (hour < 10)   
-						h = tr("0%1").arg(hour);
+						h = QString("0%1").arg(hour);
 					else
-						h = tr("%1").arg(hour);
+						h = QString("%1").arg(hour);
 					if (minute < 10) 
-						m = tr("0%1").arg(minute);
+						m = QString("0%1").arg(minute);
 					else
-						m = tr("%1").arg(minute);
+						m = QString("%1").arg(minute);
 					if (second < 10) 
-						s = tr("0%1").arg(second);
+						s = QString("0%1").arg(second);
 					else
-						s = tr("%1").arg(second);
+						s = QString("%1").arg(second);
 
 					// nice formating for output
 					if(hour == 0)
 						if(minute == 0)
-							d->remainingTime = tr("(%1s)").arg(s);
+							d->remainingTime = QString("(%1s)").arg(s);
 						else
-							d->remainingTime = tr("(%1' %2s)").arg(m).arg(s);
+							d->remainingTime = QString("(%1' %2s)").arg(m).arg(s);
 					else
-						d->remainingTime = tr("(%1h %2min)").arg(h).arg(m);
+						d->remainingTime = QString("(%1h %2min)").arg(h).arg(m);
 				}
 			}
 
@@ -678,7 +677,6 @@ FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, 
     if ( !name )
 	setName( "FCCheckListDlg" );
     resize( 402, 270 ); 
-    setProperty( "caption", tr( "MyDialog" ) );
     setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
     FCCheckListDlgLayout = new QGridLayout( this ); 
     FCCheckListDlgLayout->setSpacing( 6 );

@@ -47,6 +47,11 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCPreferencePage
     FCDlgGeneral( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCDlgGeneral();
 
+  protected:
+    void onChooseLanguage(const QString&);
+		QStringList onSearchForLanguageFiles();
+		void onSelectLanguageItem();
+
   private slots:
     /** Looks in the system parameters for the entry "BigPixmaps".
      * If it is true the tool buttons in the main window are set to use big pixmaps, 
@@ -66,6 +71,10 @@ class FCDlgGeneral : public FCDlgGeneralBase, public FCPreferencePage
     /** Shows/hides the command line 
      */
     void onSetCmdLineVisible();
+
+	private:
+		QStringList languageFiles;
+		bool newLanguage;
 };
 
 #endif // DLG_GENERAL_IMP_H

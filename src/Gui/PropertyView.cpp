@@ -927,7 +927,7 @@ void FCPropertyViewTextItem::onSetValue()
 
 void FCPropertyViewTextItem::getText()
 {
-  QString txt = QInputDialog::getText("Text", "Text input");
+  QString txt = QInputDialog::getText(tr("Text"), tr("Text input"));
   if ( !txt.isEmpty() ) 
   {
 	  setText( 1, txt );
@@ -1656,9 +1656,9 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
 
 	// set defaults and the colums
 	_pcListView->setSorting(-1,false);
-	_pcListView->addColumn("Property");
+	_pcListView->addColumn(tr("Property"));
 	_pcListView->setColumnWidthMode(0,QListView::Manual);
-	_pcListView->addColumn("Value");
+	_pcListView->addColumn(tr("Value"));
 	_pcListView->setColumnWidthMode(1,QListView::Manual );
 	_pcListView->setColumnWidth(0,100);
 	_pcListView->setColumnWidth(1,100);

@@ -109,21 +109,21 @@ void FCReportOutput::appendLog(const char * s, const char * color)
   {
 #if QT_VERSION < 300
     if (strchr(s, '\n') != NULL)
-      qs = tr("<font color=\"%1\">%2</font>\n<br/>").arg(color).arg(s);
+      qs = QString("<font color=\"%1\">%2</font>\n<br/>").arg(color).arg(s);
     else
-      qs = tr("<font color=\"%1\">%2</font>").arg(color).arg(s);
+      qs = QString("<font color=\"%1\">%2</font>").arg(color).arg(s);
 #else
-      qs = tr("<font color=%1>%2</font>").arg(color).arg(s);;
+      qs = QString("<font color=%1>%2</font>").arg(color).arg(s);;
 #endif
   }
   else
   {
 #if QT_VERSION < 300
     if (strchr(s, '\n') != NULL)
-      qs = tr("%1<br/>").arg(s);
+      qs = QString("%1<br/>").arg(s);
     else
 #endif
-      qs = tr("%1").arg(s);
+      qs = QString("%1").arg(s);
   }
   
   append(qs);
@@ -170,12 +170,12 @@ void FCReportOutput::viewportMousePressEvent (QMouseEvent * e)
   if (e->button() == RightButton)
   {
     QPopupMenu menu;
-    menu.insertItem("Copy" , this, SLOT(copy()));
-    menu.insertItem("Clear", this, SLOT(onClear()));
+    menu.insertItem(tr("Copy") , this, SLOT(copy()));
+    menu.insertItem(tr("Clear"), this, SLOT(onClear()));
     menu.insertSeparator();
-    menu.insertItem("Select All", this, SLOT(selectAll()));
+    menu.insertItem(tr("Select All"), this, SLOT(selectAll()));
     menu.insertSeparator();
-    menu.insertItem("Save As...", this, SLOT(onSaveAs()));
+    menu.insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
     menu.exec(e->globalPos());
   }
   else
@@ -192,7 +192,7 @@ void FCReportOutput::onSaveAs()
 {
 //  QString fn = FCFileDialog::getSaveFileName(QString::null,"RTF Files (*.rtf);;Plain Text Files (*.txt *.log)",
 //                                             this, QString("Save Report Output"));
-  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", this, QString("Save Report Output"));
+  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", this, QObject::tr("Save Report Output"));
   if (!fn.isEmpty())
   {
     int dot = fn.find('.');

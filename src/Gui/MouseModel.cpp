@@ -370,11 +370,11 @@ void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 	}
 	else if (zDelta > 0)
 	{
-		GetConsole().Message("Cannot zoom in any more\n");
+		GetConsole().Message(QObject::tr("Cannot zoom in any more\n").latin1());
 	}
 	else
 	{
-		GetConsole().Message("Cannot zoom out any more\n");
+		GetConsole().Message(QObject::tr("Cannot zoom out any more\n").latin1());
 	}
 }
 

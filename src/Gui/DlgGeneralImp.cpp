@@ -34,7 +34,7 @@
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
+# include <Python.h>
 #endif
 
 #include "DlgGeneralImp.h"
@@ -51,13 +51,17 @@
  *  TRUE to construct a modal dialog.
  */
 FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
-    : FCDlgGeneralBase( parent, name, fl )
+    : FCDlgGeneralBase( parent, name, fl ), newLanguage(false)
 {
   // if you run this first time
   if (WindowStyle->count() == 0)
   {
     WindowStyle->insertStringList(FCStyleFactory::styles());
   }
+
+	// search for the language files
+	Languages->insertStringList(onSearchForLanguageFiles());
+	onSelectLanguageItem();
 
   append(SpeedAnimationCmdBar->getHandler());
   append(UsesBigPixmaps->getHandler());
@@ -104,7 +108,7 @@ void FCDlgGeneral::onSetStyle()
 
 void FCDlgGeneral::onSetMRUSize()
 {
-  FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+	FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
   if (pCmd)
   {
@@ -121,6 +125,56 @@ void FCDlgGeneral::onSetCmdLineVisible()
     GetCmdLine().show();
   else
     GetCmdLine().hide();
+}
+
+void FCDlgGeneral::onChooseLanguage(const QString& s)
+{
+	if (languageFiles.find(s) != languageFiles.end())
+	{
+		QString file = s;
+		
+		QTranslator translator(0);
+		translator.load(file, ".");
+		translator.save("FreeCAD.qm");
+
+		QMessageBox::information(this, "Info", tr("To take effect on the new language restart FreeCAD, please"));
+	}
+}
+
+QStringList FCDlgGeneral::onSearchForLanguageFiles()
+{
+	languageFiles.clear();
+	languageFiles.append(tr("English (Default)"));
+	QStringList s = QDir(".", "*.qm").entryList("*.qm");
+	s.remove("FreeCAD.qm");
+	languageFiles += s;
+	return languageFiles;
+}
+
+void FCDlgGeneral::onSelectLanguageItem()
+{
+	unsigned int size=0;
+	QFileInfo fi;
+	fi.setFile("FreeCAD.qm");
+	if (fi.exists() && fi.isFile())
+	{
+		size = fi.size();
+	}
+
+	int item = 0;
+	for (QStringList::Iterator it = languageFiles.begin(); it!=languageFiles.end(); ++it, ++item)
+	{
+		fi.setFile(*it);
+		if (fi.exists() && fi.isFile())
+		{
+			// compare the size of the two files
+			if (fi.size() == size)
+			{
+				Languages->setCurrentItem(item);
+				break;
+			}
+		}
+	}
 }
 
 #include "DlgGeneral.cpp"

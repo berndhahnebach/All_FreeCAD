@@ -1409,7 +1409,7 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
       d->_iSeparator = ApplicationWindow::Instance->menuBar()->insertSeparator();
     }
 
-    int id = ApplicationWindow::Instance->menuBar()->insertItem( name, pcPopup );
+    int id = ApplicationWindow::Instance->menuBar()->insertItem( QObject::tr(name), pcPopup );
     d->_clPopupID[pcPopup] = id;
 
     // search for the "Help" menu if inside
@@ -1437,7 +1437,7 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
     FCPopupMenu *pParent = getPopupMenu(parent);
     FCPopupMenu *pcPopup = new FCPopupMenu( pParent, name, parent );
 		d->_clPopupMenus[name] = pcPopup;
-    int id = pParent->insertItem(name, pcPopup);
+    int id = pParent->insertItem(QObject::tr(name), pcPopup);
     d->_clPopupID[pcPopup] = id;
 		return pcPopup;
   }

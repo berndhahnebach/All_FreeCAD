@@ -217,6 +217,7 @@
 #include <qtoolbar.h> 
 #include <qtoolbutton.h>
 #include <qtooltip.h>
+#include <qtranslator.h>
 #include <qurl.h>
 #include <qvalidator.h>
 #include <qvariant.h>

@@ -39,7 +39,7 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 	 _pcDocument(parent->_pcDocument)
 {
 	if(_pcDocument){
-		setText(0,"Main Label");
+		setText(0,QObject::tr("Main Label"));
 		setPixmap(0,*FCTree::pcLabelOpen);
 		_hcLabel = parent->_pcDocument->GetDocument()->Main();
 		BuildUp();
@@ -47,7 +47,7 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 	}else{
 		setPixmap(0,*FCTree::pcLabelClosed);
 		//setPixmap(new QPixmap(px));
-		setText(0,"No Active Document");
+		setText(0,QObject::tr("No Active Document"));
 	}
 
 	
@@ -169,9 +169,9 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 	// set defaults and the colums
 	_pcListView->setSorting(-1,false);
-	_pcListView->addColumn("Labels & Attr.");
+	_pcListView->addColumn(tr("Labels & Attr."));
 	_pcListView->setColumnWidthMode(0,QListView::Maximum);
-	_pcListView->addColumn("Value");
+	_pcListView->addColumn(tr("Value"));
 	_pcListView->setColumnWidthMode(1,QListView::Manual );
 
 	// retreive the Pixmaps

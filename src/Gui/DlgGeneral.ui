@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>448</width>
-            <height>430</height>
+            <width>402</width>
+            <height>446</height>
         </rect>
     </property>
     <property>
@@ -47,311 +47,7 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget row="0"  column="0" >
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>GroupBox6</cstring>
-                    </property>
-                    <property>
-                        <name>title</name>
-                        <string>Command bar</string>
-                    </property>
-                    <grid>
-                        <property>
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property>
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget row="0"  column="0" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1_2</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Slow</string>
-                            </property>
-                        </widget>
-                        <widget row="0"  column="2" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel2</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Fast</string>
-                            </property>
-                        </widget>
-                        <widget row="0"  column="1" >
-                            <class>FCSlider</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>SpeedAnimationCmdBar</cstring>
-                            </property>
-                            <property>
-                                <name>focusPolicy</name>
-                                <enum>TabFocus</enum>
-                            </property>
-                            <property>
-                                <name>maxValue</name>
-                                <number>100</number>
-                            </property>
-                            <property>
-                                <name>orientation</name>
-                                <number>0</number>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>SpeedAnimationCmdBar</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/CmdBar</string>
-                            </property>
-                            <property>
-                                <name>value</name>
-                                <number>100</number>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget row="1"  column="0" >
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>GroupBox3</cstring>
-                    </property>
-                    <property>
-                        <name>title</name>
-                        <string>Main window</string>
-                    </property>
-                    <grid>
-                        <property>
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property>
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget row="0"  column="0" >
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>UsesBigPixmaps</cstring>
-                            </property>
-                            <property>
-                                <name>focusPolicy</name>
-                                <enum>TabFocus</enum>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>BigPixmaps</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Use big pixmaps</string>
-                            </property>
-                        </widget>
-                        <spacer row="0"  column="1" >
-                            <property>
-                                <name>name</name>
-                                <cstring>Spacer1</cstring>
-                            </property>
-                            <property>
-                                <name>orientation</name>
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property>
-                                <name>sizeType</name>
-                                <enum>Expanding</enum>
-                            </property>
-                            <property>
-                                <name>sizeHint</name>
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget row="1"  column="1" >
-                            <class>FCComboBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>WindowStyle</cstring>
-                            </property>
-                            <property>
-                                <name>focusPolicy</name>
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>WindowStyle</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
-                            </property>
-                        </widget>
-                        <widget row="1"  column="0" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Window style:</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget row="2"  column="0" >
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>GroupBox4</cstring>
-                    </property>
-                    <property>
-                        <name>title</name>
-                        <string>Drag and drop</string>
-                    </property>
-                    <grid>
-                        <property>
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property>
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget row="0"  column="0" >
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>AllowDragMenu</cstring>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>AllowDrag</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Allow dragging of menu items</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget row="3"  column="0" >
-                    <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>GroupBox9</cstring>
-                    </property>
-                    <property>
-                        <name>title</name>
-                        <string>Command line</string>
-                    </property>
-                    <grid>
-                        <property>
-                            <name>margin</name>
-                            <number>11</number>
-                        </property>
-                        <property>
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget row="0"  column="0"  rowspan="1"  colspan="3" >
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>ShowCmdLine</cstring>
-                            </property>
-                            <property>
-                                <name>checked</name>
-                                <bool>true</bool>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>ShowCmdLine</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Show command line</string>
-                            </property>
-                        </widget>
-                        <widget row="1"  column="1" >
-                            <class>FCPrefSpinBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>SizeCmdLine</cstring>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>SizeCmdLine</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
-                            </property>
-                            <property>
-                                <name>valueFloat</name>
-                                <number>20</number>
-                            </property>
-                        </widget>
-                        <widget row="1"  column="0" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1_4</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Size of history</string>
-                            </property>
-                        </widget>
-                        <spacer row="1"  column="2" >
-                            <property>
-                                <name>name</name>
-                                <cstring>Spacer7</cstring>
-                            </property>
-                            <property>
-                                <name>orientation</name>
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property>
-                                <name>sizeType</name>
-                                <enum>Expanding</enum>
-                            </property>
-                            <property>
-                                <name>sizeHint</name>
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </grid>
-                </widget>
-                <widget row="4"  column="0" >
+                <widget row="5"  column="0" >
                     <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
@@ -483,6 +179,349 @@
                         </spacer>
                     </grid>
                 </widget>
+                <widget row="4"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox9</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Command line</string>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="0"  rowspan="1"  colspan="3" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>ShowCmdLine</cstring>
+                            </property>
+                            <property>
+                                <name>checked</name>
+                                <bool>true</bool>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>ShowCmdLine</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>System parameter:BaseApp/WindowSettings</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Show command line</string>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="1" >
+                            <class>FCPrefSpinBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>SizeCmdLine</cstring>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>SizeCmdLine</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>System parameter:BaseApp/WindowSettings</string>
+                            </property>
+                            <property>
+                                <name>valueFloat</name>
+                                <number>20</number>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel1_4</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Size of history</string>
+                            </property>
+                        </widget>
+                        <spacer row="1"  column="2" >
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer7</cstring>
+                            </property>
+                            <property>
+                                <name>orientation</name>
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property>
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </grid>
+                </widget>
+                <widget row="3"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox4</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Drag and drop</string>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>AllowDragMenu</cstring>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>AllowDrag</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>System parameter:BaseApp/WindowSettings</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Allow dragging of menu items</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget row="2"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox3</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Main window</string>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>UsesBigPixmaps</cstring>
+                            </property>
+                            <property>
+                                <name>focusPolicy</name>
+                                <enum>TabFocus</enum>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>BigPixmaps</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>System parameter:BaseApp/WindowSettings</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Use big pixmaps</string>
+                            </property>
+                        </widget>
+                        <spacer row="0"  column="1" >
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer1</cstring>
+                            </property>
+                            <property>
+                                <name>orientation</name>
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property>
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget row="1"  column="1" >
+                            <class>FCComboBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>WindowStyle</cstring>
+                            </property>
+                            <property>
+                                <name>focusPolicy</name>
+                                <enum>StrongFocus</enum>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>WindowStyle</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>System parameter:BaseApp/WindowSettings</string>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel1</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Window style:</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget row="1"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox6</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Command bar</string>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel1_2</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Slow</string>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="2" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel2</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Fast</string>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="1" >
+                            <class>FCSlider</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>SpeedAnimationCmdBar</cstring>
+                            </property>
+                            <property>
+                                <name>focusPolicy</name>
+                                <enum>TabFocus</enum>
+                            </property>
+                            <property>
+                                <name>maxValue</name>
+                                <number>100</number>
+                            </property>
+                            <property>
+                                <name>orientation</name>
+                                <number>0</number>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>SpeedAnimationCmdBar</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>User parameter:BaseApp/Windows/CmdBar</string>
+                            </property>
+                            <property>
+                                <name>value</name>
+                                <number>100</number>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget row="0"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>GroupBox7</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Language</string>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="0"  column="1" >
+                            <class>QComboBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>Languages</cstring>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="0" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel1_4</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Choose language:</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
             </grid>
         </widget>
     </grid>
@@ -591,4 +630,13 @@
         <data format="XPM.GZ" length="3758">789c9596db53153f12c7dffd2b28fbcddaeadfcc642633a9ad7d40400405455091ad7de85c46402e0a87ebd6feef9b7c3b52ded8aa3dade7d4c774279dbec5bf9e2dedbfdd5a7af6d793cb852c8ec25238948ba567f1eaf4f4ee9ffffac7bf9f3cedbaa5fca7b576a97bfab7274f77164b6169fbfc2c15a0eb0cd4345ddb39f051e5aef3e0adca4699fb070e60a9dc77b1b078e57e1a67d8a7ca321970541e9c833e3795bdb4b0d7f38d992c98e6cad10a58cf3779bf06fa87ca43507b7e533909ce13f5afb746f4bc096c6d2f7aff0df068076526f06c5cdf635ded672b5efdf950b86d1ed854f6ca12c09d313de2235fc1c6b861c4fead721f478df747651b3c924397e0def43dfca58bcad3007f7850b6b1ea7f035b9306f82fe7e0d1366e82fe4bf064bd683ed51f3ff49a1f46beba6618ad85fd31d898b157fb116cc7c983690176bdd1fbd0e7cac96a7dbc05cbe046f58794b3bdc6f30cec47ef359fb84f17fa59ede5061c7b6fb55ed43e8eb1ea23be5d1a5365dccf3499f57ebbe06e9ceb3af6cbe5d478e483f6c0c3d8cb80f350ff66b4c1e97d0ec06eeabdfa8ffb9930b51ef9e283ca36a0fe08f136319fa7f7bb07a769aceb7785fb767241ebe50bd84c5299c1fde403f2c9cbe07112aff9c17dfb693003f2435de1a175268019fd3158db59dc87de814767eb3afa6d70b6d17ee26d70723e687c4e0adbcec5a0f1db07f76e0e1aaf1df0e092ea33fa396f9e058cfab55186a0fd8efab6b9fb82ce03d4e7388ca1f62bfc19ed1827ad5fd4df388a8beadf3a78125126077612a2d603ea6b94ccb09735f09ccb53fbf77de1c9f85c3260c46b8a2e88c6e35ed98f51f3f9a1f214f57eb7e054046c0bbbc64bd4f8607eb8d67b653e05772ee9fca137ca591ffb09f2ed8ccb5780fe96f2f775467db9a108ecd72a47d1f8ac3eb0ce33f8e7acf34eeb6343596c9d079fc0a34f51e7c70a789256b4be5f80bd74cabca71c9aa8f58ef88b9159f763c43f67774c1a6ff8534ef3eaef1578943a8f6453d91baff146ff89f3439d1fc7cac125dc87715fc107ebcf957daffd2aca29db6b3ccf9483d5fc12f2e31b6fb5ff05f9f56d11ec8ff7217bdb55ffd06fbe0fdfe3ff1a6c8b60fda2f258fdc5fccbd5d2263d4ff79bfc1c707fde510e4ded37f8e75d11ec972a8bfac778dffc5c048cfac8d68dce0b467c425b04e7211fa10b26e87c41fe83893904d047ffa21dd57fcc9b3085396abf619ee4db1abd2fbdafdc47b5477c43cc0356dfc3e5ca53d2f9b55d794e5a1fa8b7d8c41a7fc1f9b12d82fd562b4fda5f82f91cbbe86abcf7959399d53fd44f1c529b34bf9867714c2669bc50cfd1a551f519f51b7d9a668d0ff217e722e04de524b3be9778af5293fcacf3e3f481357f78bff3e95dadc7cdca2669bcf1ff93d4a7a8fb09dee7fcd86601a3bf922d02fd57600c10acc3dfe48a607fb577733b6bff215f29cc66d6f716ef49c2078cf72ccdf3306bfc30dfb3b6d1fb30ce9f6d119c775a799af53cc4771e6757edf1fecf52040c7f518eda3f88d71c8a60fda2720e2918efe59c8a8031df677c0aef2c8a30b1fc0f21d5527df6f95f02474e8f48e4396bf807fda29df8331ff2d11fe498bff0099fb2a87ef6a4689ff1397fe56fbfc9055ff282aff89a6f98a02ff9bcdbacfdbb6e913bbee7657ece2bbcca52f513affd71efb2fb0b5ee797bcc19bfcea07fdd78feebec5dbfc86dff20ebffb497f97f7a0f19e3fe4ef5dfec8fb79f74f79f7036eb8e58e0df73fe87fe421eb591e7962474c44c297e42950a444337da6433afac99fac4fc7f9ef173aa1d3fc7bc60b3aa7aff48d2ee892167445d7bfea17a11bbacddf7774cf57b44ccf698556698d5ed0fa1ff577e9257e1d6dd026afd02b7a5de5156dfdae9ff7bd2dde147f689bded05bdaa177b44b7bf4fe27fd5d2a71f9401fb33f4cfbf4890ea8a1963a3e20433d0d647ff487469a78bf7c975fde2397adaf72699697c84b791cd22ffeff2ed7b9853ecba11cc9b17c91935fe2f9079153399373f92adfe4422e1ff215f950168f9c7025d77223b7722277b51e723dcb7daebfc74e5896e7b42e2bb2aaf55cfa45d61ea9b77c02afc88b2cebdffba5f6e38dbc7ccc423664537bf8ffeef7fffcfdc97f01946e7bc4</data>
     </image>
 </images>
+<connections>
+    <connection>
+        <sender>Languages</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>FCDlgGeneralBase</receiver>
+        <slot>onChooseLanguage(const QString&amp;)</slot>
+    </connection>
+    <slot access="protected">onChooseLanguage(const QString&amp;)</slot>
+</connections>
 </UI>

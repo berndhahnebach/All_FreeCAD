@@ -127,7 +127,7 @@ void FCView3D::dump()
 	static QString filter = "Images Files (*.bmp *.gif *.xwd)";
 	QFileDialog fd ( 0, 0, true );     
 	fd.setFilters( filter );
-	fd.setCaption ( tr("INF_APP_IMPORT") );
+	fd.setCaption ( "INF_APP_IMPORT" );
 	int ret = fd.exec(); 
     
 	/* update the desktop after the dialog is closed */
@@ -139,7 +139,7 @@ void FCView3D::dump()
 	  QApplication::setOverrideCursor( Qt::waitCursor );
 	  if(!_pcView3D->ScreenDump( (const Standard_CString) file.latin1())) {
 	    QApplication::restoreOverrideCursor();                
-	    QMessageBox::information ( qApp->mainWidget(),tr("TIT_ERROR"), tr("INF_ERROR"), tr("BTN_OK"),
+	    QMessageBox::information ( qApp->mainWidget(),"TIT_ERROR", "INF_ERROR", "BTN_OK",
 		  		       QString::null, QString::null, 0, 0);
 	    qApp->processEvents();  /* update desktop */	
 	  } else 

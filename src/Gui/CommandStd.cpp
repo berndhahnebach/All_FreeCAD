@@ -92,7 +92,7 @@ FCCmdOpen::FCCmdOpen()
 
 void FCCmdOpen::Activated(int iMsg)
 {
-	GetAppWnd()->statusBar()->message("Opening file...");
+	GetAppWnd()->statusBar()->message(QObject::tr("Opening file..."));
 
 	QString f = QFileDialog::getOpenFileName( QString::null, "FreeCAD Standard (*.FCStd);;OpenCasCade (*.std)", GetAppWnd() );
 	if ( !f.isEmpty() ) {
@@ -101,9 +101,8 @@ void FCCmdOpen::Activated(int iMsg)
     GetAppWnd()->AppendRecentFile(f.latin1());
 	} else {
 		// the user cancelled the dialog
-		GetAppWnd()->statusBar()->message("Opening aborted");
+		GetAppWnd()->statusBar()->message(QObject::tr("Opening aborted"));
 	}
-
 }
 
 //===========================================================================
@@ -563,11 +562,11 @@ QString FCCmdMRU::GetFileName(const char* name)
     QString cur  = QDir::currentDirPath();
     if (path != cur)
       fn = file;
-    fn.prepend(QObject::tr("%1 ").arg(ct));
+    fn.prepend(QString("%1 ").arg(ct));
     return fn;
   }
 
-  file.prepend(QObject::tr("%1 ").arg(ct));
+  file.prepend(QString("%1 ").arg(ct));
   return file;
 }
 
@@ -1191,7 +1190,7 @@ FCCmdDlgCustomize::FCCmdDlgCustomize()
 	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Customize...";
-	sToolTipText	= "Customize toolbars and button groups";
+	sToolTipText	= "Customize toolbars and command bars";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	//sPixmap			= "customize";

@@ -121,7 +121,7 @@ bool FCGuiDocument::Save(void)
 /// Save the document under a new file name
 bool FCGuiDocument::SaveAs(void)
 {
-	GetAppWnd()->statusBar()->message("Saving file under new filename...");
+	GetAppWnd()->statusBar()->message(tr("Saving file under new filename..."));
 	QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", GetAppWnd());
 	if (!fn.isEmpty())
 	{
@@ -130,7 +130,7 @@ bool FCGuiDocument::SaveAs(void)
 	}
 	else
 	{
-		GetAppWnd()->statusBar()->message("Saving aborted", 2000);
+		GetAppWnd()->statusBar()->message(tr("Saving aborted"), 2000);
     return false;
 	}
 }
@@ -151,8 +151,7 @@ void FCGuiDocument::CreateView(const char* sType)
 	}
 	
 
-	QString aName;
-	aName.sprintf("%s:%d","Document",_iWinCount++);
+	QString aName = tr("%1:%2").arg(tr("Document")).arg(_iWinCount++);
 
 
     pcView3D->setCaption(aName);
@@ -234,7 +233,8 @@ void FCGuiDocument::CanClose ( QCloseEvent * e )
 		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
 		&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
 	{
-		switch(QMessageBox::warning( GetActiveView(), "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
+		switch(QMessageBox::warning( GetActiveView(), tr("Unsaved document"),tr("Save file before close?"),
+			tr("Yes"),tr("No"),tr("Cancel"),0,2))
 		{
 		case 0:
 			//GetApplication().

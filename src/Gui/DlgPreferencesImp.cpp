@@ -385,14 +385,14 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
   //
   //
   addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen", "PrefTree_GroupClosed");
-  addPreferencePage(new FCDlgGeneral, "General");
-  addPreferencePage(new FCDlgEditorSettings, "Editor");
-  addPreferencePage(new FCDlgSettingsMacro,  "Macros");
-  addPreferencePage(new FCOnlineHelp,  "Online help");
+  addPreferencePage(new FCDlgGeneral, tr("General"));
+  addPreferencePage(new FCDlgEditorSettings, tr("Editor"));
+  addPreferencePage(new FCDlgSettingsMacro,  tr("Macros"));
+  addPreferencePage(new FCOnlineHelp,  tr("Online help"));
 
-  addPreferenceGroup("Viewer",  "PrefTree_GroupOpen", "PrefTree_GroupClosed");
-  addPreferencePage(new FCDlgSettings, "Help Viewer");
-  addPreferencePage(new FCDlgSettings3DView, "3D View");
+  addPreferenceGroup(tr("Viewer"),  "PrefTree_GroupOpen", "PrefTree_GroupClosed");
+  addPreferencePage(new FCDlgSettings, tr("Help Viewer"));
+  addPreferencePage(new FCDlgSettings3DView, tr("3D View"));
 
   // show the first page
   ListBox->setCurrentItem(0);
@@ -406,12 +406,12 @@ FCDlgPreferencesImp::~FCDlgPreferencesImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
-void FCDlgPreferencesImp::addPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2)
+void FCDlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   m_pCurTab = getOrAddPreferenceGroup(name, Pixmap, Pixmap2);
 }
 
-void FCDlgPreferencesImp::addPreferencePage(QWidget* page, const char* name)
+void FCDlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 {
 	if (m_pCurTab)
 	{
@@ -428,7 +428,7 @@ QTabWidget* FCDlgPreferencesImp::getPreferenceGroup(int id)
   return (QTabWidget*)tabWidgetStack->widget(id);
 }
 
-QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2)
+QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   // already inside
   if (m_mGroupIDs.find(name) != m_mGroupIDs.end())
