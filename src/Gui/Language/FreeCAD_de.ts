@@ -716,6 +716,10 @@ foo(0, 20)(new line)</translation>
             <source>Allow drag&amp;&amp;drop of menu items</source>
             <translation>Drag&amp;&amp;Drop von Menüeinträgen zulassen</translation>
         </message>
+        <message>
+            <source>Auto load module after startup:</source>
+            <translation>Lade Modul automatisch nach Startvorgang:</translation>
+        </message>
     </context>
     <context>
         <name>Gui::Dialog::DlgMacroExecute</name>
@@ -1449,11 +1453,11 @@ Möchten Sie die Datei überschreiben?</translation>
         <name>QObject</name>
         <message>
             <source>Opening file...</source>
-            <translation>Datei öffnen...</translation>
+            <translation type="obsolete" >Datei öffnen...</translation>
         </message>
         <message>
             <source>Opening aborted</source>
-            <translation>Öffnen abgebrochen</translation>
+            <translation type="obsolete" >Öffnen abgebrochen</translation>
         </message>
         <message>
             <source>Cannot zoom in any more
@@ -2246,6 +2250,21 @@ Möchten Sie die Datei überschreiben?</translation>
         <message>
             <source>Switch between workbenches</source>
             <translation>Zwischen Arbeitsbereichen wechseln</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdViewFullScreen</name>
+        <message>
+            <source>Standard-View</source>
+            <translation>Standard-Ansicht</translation>
+        </message>
+        <message>
+            <source>Fullscreen</source>
+            <translation>Vollbild</translation>
+        </message>
+        <message>
+            <source>Display the active view in fullscreen</source>
+            <translation>Aktives Fenster im Vollbild-Modus anzeigen</translation>
         </message>
     </context>
 </TS>
