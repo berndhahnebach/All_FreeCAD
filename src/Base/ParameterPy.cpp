@@ -104,9 +104,9 @@ public:
 	// methods
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetGrp);
 	PYFUNCDEF_D (FCPyParameterGrp,PyRemGrp);
-	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
 	PYFUNCDEF_D (FCPyParameterGrp,PyHasGroup);
 	PYFUNCDEF_D (FCPyParameterGrp,PyIsEmpty);
+	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
 	PYFUNCDEF_D (FCPyParameterGrp,PyNotify);
 	PYFUNCDEF_D (FCPyParameterGrp,PyNotifyAll);
 
@@ -444,10 +444,13 @@ PyObject *FCPyParameterGrp::PyIsEmpty(PyObject *args)
 } 
 
 PyObject *FCPyParameterGrp::PyHasGroup(PyObject *args)
-{ 
+{
+  int dummy1;
 	char *pstr;
-    if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+  int dummy2;
+  
+  if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 	
 	return Py_BuildValue("i",_cParamGrp->HasGroup(pstr));
 } 
