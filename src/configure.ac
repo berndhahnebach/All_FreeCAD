@@ -1,10 +1,11 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.57)
 AC_INIT(FreeCAD,cvs,[Juergen Riegel],freecad)
-AM_INIT_AUTOMAKE([dist-bzip2 no-texinfo.tex])
+#AM_INIT_AUTOMAKE([dist-bzip2 no-texinfo.tex])
+AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([autoconfig.h])
-AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_RANLIB
 #AC_CANONICAL_HOST
 AC_LANG_CPLUSPLUS
 
@@ -12,6 +13,21 @@ AC_LANG_CPLUSPLUS
 ## REQUIRED HEADERS
 ##############################
 #AC_CHECK_HEADERS([sstream argp.h],,[AC_MSG_ERROR([This header is needed. Bye.])])
+
+
+## CHECKS FOR PROGRAMS
+##############################
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_RANLIB
+
+## !!! TODO !!! Try to find these things below automatically 
+## Checks for libraries.
+##############################
+all_includes="$all_includes -I/usr/local/include/python2.3 -I/usr/local/include"
+all_libraries="$all_libraries -L/usr/local/lib"
+AC_SUBST(all_includes)
+AC_SUBST(all_libraries)
 
 
 ## PTHREADS
@@ -91,5 +107,7 @@ AC_SUBST([MOC],[moc])
 AC_SUBST([UIC],[uic])
 AC_SUBST([fc_py_ver])
 
+#AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
+AC_CONFIG_FILES([Makefile Base/Makefile])
 AC_OUTPUT
 
