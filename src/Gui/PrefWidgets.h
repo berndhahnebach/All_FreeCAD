@@ -62,8 +62,14 @@ class FCWindow;
 class FCWidgetPrefs : public FCObserver
 {
   public:
+    /// changes the preference name
+    virtual void setEntryName(QString name);
     /// get the widget's name in preferences
-    QString getPrefName();
+    QString getEntryName() const;
+    /// changes the preference path
+    virtual void setParamGrpPath(QString name);
+    /// get the widget's preferences path
+    QString getParamGrpPath() const;
     /// use user parameter
     void setUserParameter();
     /// return the handler
@@ -83,7 +89,7 @@ class FCWidgetPrefs : public FCObserver
     /// save the preferences
     virtual void savePreferences()    = 0;
     /// constructor
-    FCWidgetPrefs(const char * name = 0, bool bAttach=true);
+    FCWidgetPrefs(const char * name = 0, bool bInstall=true);
     /// destructor
     virtual ~FCWidgetPrefs();
 
@@ -94,6 +100,7 @@ class FCWidgetPrefs : public FCObserver
   private:
     FCWidgetPrefsHandler* pHandler;
     QString m_sPrefName;
+    QString m_sPrefGrp;
 
     // friends
     friend class FCWidgetFactorySupplier;
@@ -148,6 +155,8 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
     Q_PROPERTY( double valueFloat READ getValueFloat    WRITE setValueFloat    )
     Q_PROPERTY( double valueMax   READ getMaxValueFloat WRITE setMaxValueFloat )
     Q_PROPERTY( double valueMin   READ getMinValueFloat WRITE setMinValueFloat )
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
 
   public:
     FCEditSpinBox ( QWidget * parent = 0, const char * name = 0 );
@@ -159,11 +168,15 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
     double getValueFloat    () const;
     double getMinValueFloat () const;
     double getMaxValueFloat () const;
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
     // setters
     void  setAccuracy      (int    accur);
     void  setValueFloat    (double value);
     void  setMinValueFloat (double value);
     void  setMaxValueFloat (double value);
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -191,9 +204,20 @@ class FCLineEdit : public QLineEdit, public FCWidgetPrefs
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+
   public:
     FCLineEdit ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCLineEdit();
+
+    // PROPERTIES
+    // getters
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
+    // setters
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -208,9 +232,20 @@ class FCComboBox : public QComboBox, public FCWidgetPrefs
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+
   public:
     FCComboBox ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCComboBox();
+
+    // PROPERTIES
+    // getters
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
+    // setters
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -225,9 +260,20 @@ class FCListBox : public QListBox, public FCWidgetPrefs
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+
   public:
     FCListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
     virtual ~FCListBox();
+
+    // PROPERTIES
+    // getters
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
+    // setters
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -242,9 +288,20 @@ class FCCheckBox : public QCheckBox, public FCWidgetPrefs
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+
   public:
     FCCheckBox ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCCheckBox();
+
+    // PROPERTIES
+    // getters
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
+    // setters
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -259,9 +316,20 @@ class FCRadioButton : public QRadioButton, public FCWidgetPrefs
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+
   public:
     FCRadioButton ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCRadioButton();
+
+    // PROPERTIES
+    // getters
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
+    // setters
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -276,9 +344,20 @@ class FCSlider : public QSlider, public FCWidgetPrefs
 {
     Q_OBJECT
 
+    Q_PROPERTY( QString prefEntry READ getEntryName     WRITE setEntryName     )
+    Q_PROPERTY( QString prefPath  READ getParamGrpPath  WRITE setParamGrpPath  )
+
   public:
     FCSlider ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCSlider();
+
+    // PROPERTIES
+    // getters
+    QString getEntryName    () const;
+    QString getParamGrpPath () const;
+    // setters
+    void  setEntryName     (QString name);
+    void  setParamGrpPath  (QString name);
 
   protected:
     // restore from/save to parameters
@@ -404,7 +483,7 @@ class FCCustomWidgetManager
     std::vector<FCWindow*> getDockWindows();
     void delDockWindow(const char* name);
 	  void addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,
-                       KDockWidget::DockPosition pos = KDockWidget::DockRight);
+                       KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 50);
 
     void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);
     void addPopupMenu (const std::string& type, const char* parent = 0);

@@ -48,21 +48,16 @@
 
 
 
-FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bAttach) : pHandler(NULL)
+FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
 {
   m_sPrefName = "_____default_____";
+  m_sPrefGrp  = "User parameter:BaseApp/Windows/Widget Preferences";
 
   if (name)
     m_sPrefName = name;
 
-  if (bAttach)
+  if (bInstall)
   {
-    setUserParameter();
-    if (hPrefGrp.IsValid())
-    {
-      hPrefGrp->Attach(this);
-    }
-
     // install a handler for automation stuff
     pHandler = new FCWidgetPrefsHandler(this);
   }
@@ -70,7 +65,8 @@ FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bAttach) : pHandler(NULL)
 
 FCWidgetPrefs::~FCWidgetPrefs()
 {
-  hPrefGrp->Detach(this);
+  if (hPrefGrp.IsValid())
+    hPrefGrp->Detach(this);
 #ifdef FC_DEBUG
   if (m_sPrefName == "_____default_____")
   {
@@ -85,9 +81,32 @@ void FCWidgetPrefs::setPrefName(QString pref)
   m_sPrefName = pref; 
 }
 
-QString FCWidgetPrefs::getPrefName()
+void FCWidgetPrefs::setEntryName(QString name)
+{
+  if (hPrefGrp.IsValid())
+  {
+    GetConsole().Warning("Widget already attached to '%s' (will be detached and attached to '%s')\n", getEntryName().latin1(), name.latin1());
+    hPrefGrp->Detach(this);
+  }
+
+  setPrefName(name);
+  hPrefGrp = GetApplication().GetParameterGroupByPath(m_sPrefGrp.latin1())->GetGroup(name.latin1());
+  hPrefGrp->Attach(this);
+}
+
+QString FCWidgetPrefs::getEntryName() const
 {
   return m_sPrefName; 
+}
+
+void FCWidgetPrefs::setParamGrpPath(QString name)
+{
+  m_sPrefGrp = name;
+}
+
+QString FCWidgetPrefs::getParamGrpPath() const
+{
+  return m_sPrefGrp; 
 }
 
 void FCWidgetPrefs::setUserParameter()
@@ -133,7 +152,8 @@ FCWidgetPrefsHandler::FCWidgetPrefsHandler(FCWidgetPrefs* p) : pPref(p)
 void FCWidgetPrefsHandler::save()
 {
   pPref->savePreferences();
-  pPref->getParamGrp()->Notify();
+  if (pPref->getParamGrp().IsValid())
+    pPref->getParamGrp()->Notify();
 }
 
 void FCWidgetPrefsHandler::restore()
@@ -167,21 +187,33 @@ FCEditSpinBox::~FCEditSpinBox()
 
 void FCEditSpinBox::restorePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
   double fVal;
   if (m_iAccuracy == 0)
-    fVal = (double)hPrefGrp->GetInt(getPrefName().latin1(), 0);
+    fVal = (double)hPrefGrp->GetInt(getEntryName().latin1(), 0);
   else
-    fVal = (double)hPrefGrp->GetFloat(getPrefName().latin1(), 0.0f);
+    fVal = (double)hPrefGrp->GetFloat(getEntryName().latin1(), 0.0f);
 
   setValueFloat(fVal);
 }
 
 void FCEditSpinBox::savePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
   if (m_iAccuracy == 0)
-    hPrefGrp->SetInt(getPrefName().latin1(), (int)getValueFloat());
+    hPrefGrp->SetInt(getEntryName().latin1(), (int)getValueFloat());
   else
-    hPrefGrp->SetFloat(getPrefName().latin1(), getValueFloat());
+    hPrefGrp->SetFloat(getEntryName().latin1(), getValueFloat());
 }
 
 int FCEditSpinBox::getAccuracy() const
@@ -249,6 +281,26 @@ void FCEditSpinBox::stepChange ()
   QSpinBox::stepChange();
 }
 
+QString FCEditSpinBox::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCEditSpinBox::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCEditSpinBox::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCEditSpinBox::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCLineEdit::FCLineEdit ( QWidget * parent, const char * name )
@@ -262,13 +314,45 @@ FCLineEdit::~FCLineEdit()
 
 void FCLineEdit::restorePreferences()
 {
-  std::string text = hPrefGrp->GetASCII(getPrefName().latin1(), "");
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
+  std::string text = hPrefGrp->GetASCII(getEntryName().latin1(), "");
   setText(text.c_str());
 }
 
 void FCLineEdit::savePreferences()
 {
-  hPrefGrp->SetASCII(getPrefName().latin1(), text().latin1());
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
+  hPrefGrp->SetASCII(getEntryName().latin1(), text().latin1());
+}
+
+QString FCLineEdit::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCLineEdit::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCLineEdit::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCLineEdit::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -284,25 +368,57 @@ FCComboBox::~FCComboBox()
 
 void FCComboBox::restorePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
   clear();
-  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  std::vector<std::string> items = hPrefGrp->GetASCIIs(getEntryName().latin1());
   for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
     insertItem(it->c_str());
 
-  int item = hPrefGrp->GetInt(getPrefName().latin1(), 0);
+  int item = hPrefGrp->GetInt(getEntryName().latin1(), 0);
   setCurrentItem(item);
 }
 
 void FCComboBox::savePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
   for (int i = 0; i < count(); i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    sprintf(szBuf, "%s%d", getEntryName().latin1(), i);
     hPrefGrp->SetASCII(szBuf, text(i).latin1());
   }
 
-  hPrefGrp->SetInt(getPrefName().latin1(), currentItem());
+  hPrefGrp->SetInt(getEntryName().latin1(), currentItem());
+}
+
+QString FCComboBox::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCComboBox::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCComboBox::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCComboBox::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -318,26 +434,58 @@ FCListBox::~FCListBox()
 
 void FCListBox::restorePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
   clear();
-  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  std::vector<std::string> items = hPrefGrp->GetASCIIs(getEntryName().latin1());
   for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
     insertItem(it->c_str());
 
-  int item = hPrefGrp->GetInt(getPrefName().latin1(), 0);
+  int item = hPrefGrp->GetInt(getEntryName().latin1(), 0);
   setCurrentItem(item);
 }
 
 void FCListBox::savePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
   int size = int(count());
   for (int i = 0; i < size; i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    sprintf(szBuf, "%s%d", getEntryName().latin1(), i);
     hPrefGrp->SetASCII(szBuf, item(i)->text().latin1());
   }
 
-  hPrefGrp->SetInt(getPrefName().latin1(), currentItem());
+  hPrefGrp->SetInt(getEntryName().latin1(), currentItem());
+}
+
+QString FCListBox::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCListBox::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCListBox::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCListBox::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -353,13 +501,45 @@ FCCheckBox::~FCCheckBox()
 
 void FCCheckBox::restorePreferences()
 {
-  bool enable = hPrefGrp->GetBool(getPrefName().latin1(), false);
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
+  bool enable = hPrefGrp->GetBool(getEntryName().latin1(), false);
   setChecked(enable);
 }
 
 void FCCheckBox::savePreferences()
 {
-  hPrefGrp->SetBool(getPrefName().latin1(), isChecked());
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
+  hPrefGrp->SetBool(getEntryName().latin1(), isChecked());
+}
+
+QString FCCheckBox::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCCheckBox::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCCheckBox::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCCheckBox::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -375,13 +555,45 @@ FCRadioButton::~FCRadioButton()
 
 void FCRadioButton::restorePreferences()
 {
-  bool enable = hPrefGrp->GetBool(getPrefName().latin1(), false);
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
+  bool enable = hPrefGrp->GetBool(getEntryName().latin1(), false);
   setChecked(enable);
 }
 
 void FCRadioButton::savePreferences()
 {
-  hPrefGrp->SetBool(getPrefName().latin1(), isChecked());
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
+  hPrefGrp->SetBool(getEntryName().latin1(), isChecked());
+}
+
+QString FCRadioButton::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCRadioButton::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCRadioButton::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCRadioButton::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -397,6 +609,12 @@ FCSlider::~FCSlider()
 
 void FCSlider::restorePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
   FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
   int o = hPrefs->GetInt("Orientation", 0);
   setOrientation(Qt::Orientation(o));
@@ -410,11 +628,37 @@ void FCSlider::restorePreferences()
 
 void FCSlider::savePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
   FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup("Settings");
   hPrefs->SetInt("Orientation", int(orientation()));
   hPrefs->SetInt("MinValue", minValue());
   hPrefs->SetInt("MaxValue", maxValue());
   hPrefs->SetInt("Value", value());
+}
+
+QString FCSlider::getEntryName () const
+{
+  return FCWidgetPrefs::getEntryName();
+}
+
+QString FCSlider::getParamGrpPath () const
+{
+  return FCWidgetPrefs::getParamGrpPath();
+}
+
+void FCSlider::setEntryName (QString name)
+{
+  FCWidgetPrefs::setEntryName(name);
+}
+
+void FCSlider::setParamGrpPath (QString name)
+{
+  FCWidgetPrefs::setParamGrpPath(name);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -462,6 +706,12 @@ FCCustomWidget::~FCCustomWidget()
 
 void FCCustomWidget::restorePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot restore!\n");
+    return;
+  }
+
   if (hPrefGrp->HasGroup("Items"))
   {
     if (!hPrefGrp->GetGroup("Items")->IsEmpty())
@@ -473,13 +723,19 @@ void FCCustomWidget::restorePreferences()
 
 void FCCustomWidget::savePreferences()
 {
+  if (hPrefGrp.IsNull())
+  {
+    GetConsole().Warning("Cannot save!\n");
+    return;
+  }
+
   int i=0;
   FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup("Items");
   hPGrp->Clear();
   for (std::vector<std::string>::iterator it = _clItems.begin(); it != _clItems.end(); ++it, i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    sprintf(szBuf, "%s%d", getEntryName().latin1(), i);
     hPGrp->SetASCII(szBuf, it->c_str());
   }
 }
@@ -487,7 +743,7 @@ void FCCustomWidget::savePreferences()
 void FCCustomWidget::init(const char* grp, const char* name)
 {
   _clWorkbench = ApplicationWindow::Instance->GetActiveWorkbench();
-  setPrefName(ApplicationWindow::Instance->GetActiveWorkbench());
+  setPrefName(_clWorkbench);
   setUserParameter();
   hPrefGrp = hPrefGrp->GetGroup(grp);
   hPrefGrp = hPrefGrp->GetGroup(name);
@@ -1172,7 +1428,16 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
 {
 	std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.find(name);
 	if( It!=_clPopupMenus.end() )
+  {
+    // insert it again into another popup menu
+    if (parent != 0)
+    {
+      FCPopupMenu *pParent = getPopupMenu(parent);
+      pParent->insertItem(name, It->second);
+    }
+
 		return It->second;
+  }
 	else if (parent == 0)
 	{
     FCPopupMenu *pcPopup = new FCPopupMenu( ApplicationWindow::Instance, name );
@@ -1246,7 +1511,7 @@ void FCCustomWidgetManager::delDockWindow(const char* name)
 	}
 }
 
-void FCCustomWidgetManager::addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos)
+void FCCustomWidgetManager::addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos, int percent)
 {
   ApplicationWindow* pApp = ApplicationWindow::Instance;
 	_clDocWindows[name] = pcDocWindow;
@@ -1257,11 +1522,11 @@ void FCCustomWidgetManager::addDockWindow(const char* name,FCWindow *pcDocWindow
 	{
 		FCWindow* pcWnd = getDockWindow(sCompanion);
 		assert(pcWnd);
-		pApp->addToolWindow( pcDocWindow, pos, pcWnd, 83, str, name);
+		pApp->addToolWindow( pcDocWindow, pos, pcWnd, percent, str, name);
 	}
   else
   {
-		pApp->addToolWindow( pcDocWindow, pos, pApp->m_pMdi, 83, str, name);
+		pApp->addToolWindow( pcDocWindow, pos, pApp->m_pMdi, percent, str, name);
   }
 }
 

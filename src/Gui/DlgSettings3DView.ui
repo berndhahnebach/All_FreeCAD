@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>276</width>
+            <width>272</width>
             <height>303</height>
         </rect>
     </property>
@@ -57,7 +57,7 @@
                         <name>title</name>
                         <string>Anti aliasing</string>
                     </property>
-                    <hbox>
+                    <grid>
                         <property>
                             <name>margin</name>
                             <number>11</number>
@@ -66,39 +66,7 @@
                             <name>spacing</name>
                             <number>6</number>
                         </property>
-                        <widget>
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>UseAntialiasing</cstring>
-                            </property>
-                            <property>
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                </sizepolicy>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property>
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                </sizepolicy>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Using anti aliasing</string>
-                            </property>
-                        </widget>
-                        <spacer>
+                        <spacer row="0"  column="1" >
                             <property>
                                 <name>name</name>
                                 <cstring>Spacer9</cstring>
@@ -119,7 +87,29 @@
                                 </size>
                             </property>
                         </spacer>
-                    </hbox>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>UseAntialiasing</cstring>
+                            </property>
+                            <property>
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                </sizepolicy>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>UseAntialiasing</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Using anti aliasing</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
             </vbox>
         </widget>
@@ -144,12 +134,14 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
     </customwidget>
 </customwidgets>
 <images>
     <image>
         <name>image0</name>
-        <data format="XPM.GZ" length="2157">789ccdd2594fdb4010c0f1f77c0a0bbfa16a88d7c7daaafa0084b35ce186aa0fdef52e492001820384aadfbdb3b38355a110fa52b5d91cfa65fe766cc74b8bc1f9c16eb0b8d47aa8cbbaaf03dd2bc7c16235190ea7dfbe7ff9d15a1022c067960562e1536ba15b073ad8bb1d1907e820c2363dc8abec84bd4cce1b1f34cec96bec9c7dee1cb5dd226f91f348477e1e3a8b48b44544de27172261976c2d0af257e7386a7ce41db763df2b76c23e231768df5b76ced6ce8948a2842e06acb353f695732ad234f5de21978d1fd9455a922be72cced22c263f91155a917bec82bde92c63994adfaf90952ca49ff7d9153b72ce1359e50979db3b17ec1bb2ce4bf66e634deeb20dfbd8b9487253f8de907551167e7eeb5ca6a52853f2809db11fc855e376e38a3c64973c1f35f6f343b6616f38ab5465caf717ce3ad3b1f2f3bb57eb8c7cc296ec17b2695cb3157bd2d8dfefd76ccb16ce5556c595ef4fd9927d49369562df37f6db8f9d8d34b191e4942d79fefc6a63c919d9ba6fc8b2b19fefb115cfa78dfd3c665b76ee6ca58dd9c9abaddfbe604bef10c8d62a4b7d18b2ad77b7fef3f53ff710e22a41bd591a2a30eff416aea0f766f56100d733fb12eb1b18c288d6006ee9f30eee613cb357b8b707a861f2db7a84277886e9bbfd90aa1a5ee8b307cbb8c5746edfc763f0fb5e8155e8e0d9ceeb47b006ebb081f526b61dd882ed0ff6ff15ab1d3054afc12e9eedde9c7e00fbd81d60e9fa2efecefc7e088770446d078ee104cffcf4837e82d7fd0ccef148dc399fcce9355e9b0bb8c423684384eff720b01e430cc9ccbec2a3bf841432bc22125f99fb672187228499bd816b9c4fdfac046fc3f05fdcff7fa5fff9b9f50b3afa46fc</data>
+        <data format="XPM.GZ" length="2878">789ccdd5594f23471007f0773e8545bda1a8d673cf28ca0397318701c31ede8df2d0d33d0318b0c107d72adf3dddffea6d292b63e5254aa69645bfe99a9eea6bf8b0d5199d0f3a5b1f36e60bb5b8d11d7dad669d2db3bcbf7ffdfd8fdfbe6f6cc671c7fe8ba2a8136ffeb2b1395c7474e7743a691c7864415d5ccec470dc8dbcafe1ccdec991ffc53beda6f0195c768b6e81fc3658c157b0b277c404d72ef07c176eaca5fdd9398a6db5289653d8b880f17c1cb980158c0bcf37701517b1d457c3c6055c3827ddb8f1d670ea02cf4fe02c4912e9ef092e933ca9907fe56d0336ce69ec028ee022cd53793fe62f2b5cc0255c5a67f081b70df81cae3395613e18e3c93317f057b8c8f35cfabb814b17701fae6c86f814ae5dc08973e12ee9ef335c156521f963d8b8802fe1c65ad667cfb98c8ab694f9cfe0d8064c2f302eb4dfc375a94ad91f58afd2d83ba887507fd9d8c0fb68ea5c456553c97c623f55b8e00aae2b5549ff736715ab48c97a2de154252a81b13e2ab777b09f79162ce3bf850b17c8df854b9b21ef7b852bdb2eebb9f02e7dfb31acec1d9c0fbaf356beff49b09c9f3c58d6ef3118fd91f45f87e72f8225ff9b77ad64fcd360a9e72158f6cf3258e61beba18cd24aa33d76ae331768df76d6a94e6a59ffa71fd6723ed0bfce5cc0981f9d5bcbfc0ce052175ae663ec6d03c67875652df3b11f2cf59f78575ac6fb2958c6bb172cf9582f3b981fdef156de6f706d2defdbf6ae7dfbc76099af5eb09c17aca7c685fa51af49ece744f63bfa379949bd67c1b21f518fa94c29edfc1c2ce709df27a35cc038afa67619f0a1776d643e70be9ac805daf1fd6dd226f1ee05cbfb8fe0a2c94c8be70fbd8b46fac7feb5c7af6864bd06c1721e4e8225ffd6bb6c64fde7c1f2bc0e967a87c1b27e528f72817c7cff1a77c9fec4f7af8dda6e83bf4fd4f7b601a3bf366bd356c687f3d12a1730be57ad71217fecfe79fc9ff3995871cdfaa730dc70bb325ff1155ff3cd4f31e65bbe5b995fdbec7b9ef0941ff891673ce7052ff9899ff96565beb6bdbdf21b6ff30eeff21eef738f0fb8cf877cf46efeb1cde9f1090ff0fb94cff89c876bf22ff8d2d6d3e38ffc893ff3171ef1d7b5f9dfb8cb11c7b6a2c4e68e38e56c6d7ece85cd2ab9e211311129aa49bf9f4f861a9bd9d2155ddbdf3734b6f9b76bf2efe89e26a86444537aa0479ad17c4dfe827bb4a4277aa6173743f44a6fefd663784cdbb4632bd8a53dfb7f4dfbb6f71e1d507f657ec3b774484774cc433ab13f033aa5333aa7215daccc6ff98e5ff8e8ef417dbaa0cbff62ffff2bf97ffebaf117f4e0deb4</data>
     </image>
 </images>
 </UI>

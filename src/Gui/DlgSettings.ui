@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>374</width>
+            <width>370</width>
             <height>360</height>
         </rect>
     </property>
@@ -104,12 +104,20 @@
                                 <name>name</name>
                                 <cstring>LineEditBrowser</cstring>
                             </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>LineEditBrowser</string>
+                            </property>
                         </widget>
                         <widget row="1"  column="0" >
                             <class>FCLineEdit</class>
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>LineEditURL</cstring>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>LineEditURL</string>
                             </property>
                         </widget>
                         <widget row="0"  column="0" >
@@ -172,6 +180,10 @@
                                 <cstring>EnableBookmarks</cstring>
                             </property>
                             <property>
+                                <name>prefEntry</name>
+                                <string>EnableBookmarks</string>
+                            </property>
+                            <property>
                                 <name>text</name>
                                 <string>Enable bookmarks</string>
                             </property>
@@ -225,6 +237,10 @@
                             <property>
                                 <name>lineStep</name>
                                 <number>1</number>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>NbOfBookmarks</string>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -282,6 +298,10 @@
                                 <number>1</number>
                             </property>
                             <property>
+                                <name>prefEntry</name>
+                                <string>NbOfHistoryItems</string>
+                            </property>
+                            <property>
                                 <name>valueFloat</name>
                                 <number>10</number>
                             </property>
@@ -291,6 +311,10 @@
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>EnableHistory</cstring>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>EnableHistory</string>
                             </property>
                             <property>
                                 <name>text</name>
@@ -341,6 +365,8 @@
         <property type="Int">valueFloat</property>
         <property type="Int">accuracy</property>
         <property type="Int">lineStep</property>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCLineEdit</class>
@@ -355,6 +381,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image1</pixmap>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCCheckBox</class>
@@ -374,6 +402,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
     </customwidget>
 </customwidgets>
 <images>
