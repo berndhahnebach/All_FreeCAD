@@ -593,8 +593,3 @@ void FCCommandManager::TestActive(void)
 		It->second->TestActive();
 	}
 }
-
-
-
-#include "moc_Command.cpp"
-

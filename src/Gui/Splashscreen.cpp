@@ -87,7 +87,7 @@ public:
     }
     msg = QString("\n %1").arg(msg);
     splash->message( msg, Qt::AlignTop|Qt::AlignLeft, Qt::black );
-    qApp->processEvents();
+//    qApp->processEvents();
     QWaitCondition().wait(50);
   }
 

@@ -117,7 +117,6 @@
 #include "PropertyView.h"
 
 #include "CommandLine.h"
-#include "DlgCustomizeImp.h"
 #include "DlgDocTemplatesImp.h"
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
@@ -411,8 +410,7 @@ bool ApplicationWindow::isCustomizable () const
 
 void ApplicationWindow::customize ()
 {
-	Gui::Dialog::DlgCustomizeImp cDlg(this,"CustomizeDialog",true);
-	cDlg.exec();
+  GetCommandManager().RunCommandByName("Std_DlgCustomize");
 }
 
 void ApplicationWindow::OnShowView()
