@@ -7,7 +7,6 @@ moc_Command.cpp \
 moc_CommandLine.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
-moc_DlgCmdbars.cpp \
 moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
 moc_DlgCommandsImp.cpp \
@@ -40,14 +39,11 @@ moc_DlgToolbarsImp.cpp \
 moc_DlgUndoRedo.cpp \
 moc_Document.cpp \
 moc_HtmlView.cpp \
-moc_PlatQt.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
 moc_ProcessQt.cpp \
 moc_PropertyView.cpp \
 moc_ReportView.cpp \
-moc_SciEditor.cpp \
-moc_ScintillaQt.cpp \
 moc_Splashscreen.cpp \
 moc_Tree.cpp \
 moc_View.cpp\
@@ -59,8 +55,6 @@ moc_Window.cpp \
 moc_HtmlViewP.cpp \
 DlgActions.cpp \
 DlgActions.h \
-DlgCmdbars.cpp \
-DlgCmdbars.h \
 DlgCommands.cpp \
 DlgCommands.h \
 DlgDocTemplates.cpp \
