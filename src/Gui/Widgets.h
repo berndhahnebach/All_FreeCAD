@@ -29,6 +29,11 @@
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
 #include "window.h"
+#include <qprogressbar.h>
+#include <qlabel.h>
+
+class QHBoxLayout; 
+class QTime;
 
 class GuiExport FCFileDialog
 {
@@ -43,6 +48,28 @@ class GuiExport FCFileDialog
                                      const char * name = 0 );
     static QString getSaveFileName ( const QString & initially, const QString & filter, 
                                      QWidget * parent, const char * name, const QString & caption );
+};
+
+class FCProgressBar : public QProgressBar
+{
+  public:
+    FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+    void Start(QString txt, int steps, bool& flag);
+    void Next();
+    void Stop ();
+
+  protected:
+    virtual void keyPressEvent(QKeyEvent* e);
+    virtual void drawContents( QPainter *p );
+    bool setIndicator ( QString & indicator, int progress, int totalSteps );
+    bool bSeveralInstances;
+    int iStep;
+    int iTimeStep;
+    int iTotalTime;
+    int iFirstTotal;
+    int iStartedProgresses;
+    QTime   measureTime;
+    QString remainingTime;
 };
 
 #endif // __FC_WIDGETS_H__
