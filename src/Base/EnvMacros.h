@@ -50,7 +50,7 @@
 
 
 #define GET_FREECADLIB(_Into) \
-	std::string TempLibPath = getenv("FREECADLIB");\
+  std::string TempLibPath = getenv("FREECADLIB") ? getenv("FREECADLIB") : "";\
 	if(*(TempLibPath.rbegin()) != PATHSEP )\
 		TempLibPath += PATHSEP;\
 	cout << "FREECADLIB=" << TempLibPath << endl;\
