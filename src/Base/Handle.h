@@ -154,13 +154,13 @@ public:
 	 */
 	bool operator<(const FCHandle<HandledType> &other) const
 	{
-		return _pHandels<&other;
+		return _pHandels<other._pHandels;
 	}
 
 	/// equal operator
 	bool operator==(const FCHandle<HandledType> &other) const
 	{
-		return _pHandels==&other;
+		return _pHandels==other._pHandels;
 	}
 
 
