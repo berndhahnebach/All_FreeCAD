@@ -22,6 +22,7 @@
 
 #ifndef _PreComp_
 # include <qaction.h>
+# include <qstringlist.h>
 # include <qtooltip.h>
 # include <string>
 # include <vector>
@@ -522,15 +523,12 @@ public:
 	  FCCmdWorkbench();
 	void Activated(int iMsg);
   	QAction * CreateAction(void);
-    void AddItem (const char* item);
-    void RemItem (const char* item);
-    void Clear();
-    void UpdateAction(int i);
-    void UpdateAction(const char* item);
+    void appendItem ( const QString& item );
+    void activate( const QString& item );
 	  bool addTo(QWidget *);
 
 private:
-  Gui::ActionGroup *pcAction;
+  QActionGroup *pcAction;
 };
 
 /**
@@ -539,23 +537,27 @@ private:
 class FCCmdMRU : public FCCppCommand
 {
 public:
-	  FCCmdMRU();
-	bool IsActive(void){return true;}
-	void Activated(int iMsg);
-  	QAction * CreateAction(void);
-    void AddItem (const char* item);
-    void RemItem (const char* item);
-    void Clear();
-    int  GetMaxItems()      { return nMaxItems; }
-    void SetMaxItems(int i) { nMaxItems = i;    }
-    std::vector<std::string> GetItems() const;
-	std::string GetResource(const char* sName) { return ""; }
+  FCCmdMRU();
+  bool IsActive(void){return true;}
+  void Activated(int iMsg);
+
+  QAction * CreateAction(void);
+
+  void addRecentFile ( const QString& item );
+  void removeRecentFile ( const QString& item );
+  void refresh();
+
+  int  maxCount() const { return _nMaxItems; }
+  void setMaxCount (int i) { _nMaxItems = i;    }
+  
+  QStringList recentFiles() const;
+  std::string GetResource(const char* sName) { return ""; }
 
 private:
-    QString GetFileName(const char* name);
-    std::vector<std::string> _vMRU;
-    Gui::ActionGroup *pcAction;
-    int nMaxItems;
+  QString recentFileItem( const QString& fn );
+  QStringList _vMRU;
+  QActionGroup *pcAction;
+  int _nMaxItems;
 };
 
 #endif // __Command_h__

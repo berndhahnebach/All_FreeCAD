@@ -97,32 +97,36 @@ private:
  * For menus a submenu is created for toolbars a combo box.
  * @author Werner Mayer
  */
-class GuiExport ActionGroup : public Action
+class GuiExport ActionGroup : public QActionGroup
 {
   Q_OBJECT
 
 public:
-  ActionGroup ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  ActionGroup ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
   virtual ~ActionGroup();
 
-  virtual bool addTo(QWidget *);
+  virtual bool addTo( QWidget * w );
 
-  void setItems  (const std::vector<std::string>& items);
-  void insertItem(const char* item);
-  void removeItem(const char* item);
-  
-  void activate(int);
-  void activate(const QString&);
+  void addAction( QAction* act );
+  void removeAction ( QAction* act );
   void clear();
 
-public slots:
-  void onActivated (int i);
-
-private slots:
-  void onAboutToShow();
+  FCCommand* GetCommand() { return _pcCmd; }
+  
+  void activate( const QString& item );
 
 protected:
-  std::vector<std::string> mItems;
+  virtual void addedTo ( QWidget * actionWidget, QWidget * container, QAction * a );
+
+public slots:
+  void onActivated ( int i );
+  void onActivated ( QAction* );
+
+private slots:
+  void onActivated ();
+
+private:
+  FCCommand *_pcCmd;
 };
 
 // --------------------------------------------------------------------

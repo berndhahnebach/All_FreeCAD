@@ -132,7 +132,7 @@ void FCCmdOpen::Activated(int iMsg)
 	QString f = QFileDialog::getOpenFileName( QString::null, "FreeCAD Standard (*.FCStd);;OpenCasCade (*.std)", GetAppWnd() );
 	if ( !f.isEmpty() ) {
 		// the user selected a valid existing file
-		GetApplication().Open(f.latin1());
+//		GetApplication().Open(f.latin1());
     GetAppWnd()->AppendRecentFile(f.latin1());
 	} else {
 		// the user cancelled the dialog
@@ -426,40 +426,32 @@ FCCmdWorkbench::FCCmdWorkbench()
 	sToolTipText	= "Switch between workbenches";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-//	sPixmap			= "";
+	sPixmap			= "FCIcon";
 	iAccel			= 0;
 }
 
-
+// Todo
 void FCCmdWorkbench::Activated(int iMsg)
 {
   std::vector<std::string> wb = ApplicationWindow::Instance->GetWorkbenches();
   if (iMsg >= 0 && iMsg < int(wb.size()))
   {
-    //char szBuf[200];
-    //sprintf(szBuf, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
     DoCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
-    UpdateAction(iMsg);
   }
 }
 
-void FCCmdWorkbench::UpdateAction(int i)
+void FCCmdWorkbench::activate ( const QString& item )
 {
   if (!pcAction) 
     CreateAction();
-  pcAction->activate(i);
-}
-
-void FCCmdWorkbench::UpdateAction(const char* item)
-{
-  if (!pcAction) 
-    CreateAction();
-  pcAction->activate(QString(item));
+  dynamic_cast<ActionGroup*>(pcAction)->activate( item );
 }
 
 QAction * FCCmdWorkbench::CreateAction(void)
 {
-	pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new ActionGroup( this, ApplicationWindow::Instance, sName.c_str(), true );
+  pcAction->setExclusive( true );
+  pcAction->setUsesDropDown( true );
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -468,28 +460,25 @@ QAction * FCCmdWorkbench::CreateAction(void)
 	if(sPixmap)
 		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
+ 
+  std::vector<std::string> items = ApplicationWindow::Instance->GetWorkbenches();
+  for (std::vector<std::string>::iterator it = items.begin(); it!=items.end(); ++it)
+    appendItem(it->c_str());
 
-  pcAction->setItems(ApplicationWindow::Instance->GetWorkbenches());
-
-	return pcAction;
+  return pcAction;
 }
 
-void FCCmdWorkbench::AddItem (const char* item)
+void FCCmdWorkbench::appendItem ( const QString& item )
 {
-  if (pcAction)
-    pcAction->insertItem(item);
-}
-
-void FCCmdWorkbench::RemItem (const char* item)
-{
-  if (pcAction)
-    pcAction->removeItem(item);
-}
-
-void FCCmdWorkbench::Clear()
-{
-  if (pcAction)
-    pcAction->clear();
+  if ( pcAction )
+  {
+    QAction* action = new QAction( pcAction, item );
+    action->setText(QObject::tr(item));
+    action->setMenuText(QObject::tr(item));
+    action->setToggleAction( true );
+    action->setIconSet(Gui::BitmapFactory().pixmap("FCIcon"));
+    pcAction->add( action );
+  }
 }
 
 /** 
@@ -515,7 +504,7 @@ bool FCCmdWorkbench::addTo(QWidget *w)
 //===========================================================================
 
 FCCmdMRU::FCCmdMRU()
-	:FCCppCommand("Std_MRU"), pcAction(NULL), nMaxItems(4)
+	:FCCppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)
 {
 	sAppModule		= "";
 	sGroup			= "Standard";
@@ -532,16 +521,17 @@ void FCCmdMRU::Activated(int iMsg)
   if (iMsg >= 0 && iMsg < int(_vMRU.size()))
   {
     try{
-      DoCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].c_str());
+      DoCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].latin1());
     }catch(const Base::Exception&){
-      RemItem(_vMRU[iMsg].c_str());
+      removeRecentFile( _vMRU[iMsg] );
     }
   }
 }
 
 QAction * FCCmdMRU::CreateAction(void)
 {
-	pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(), false );
+  pcAction->setUsesDropDown( true );
 	pcAction->setText(QObject::tr(sMenuText));
 	pcAction->setMenuText(QObject::tr(sMenuText));
 	pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -551,64 +541,84 @@ QAction * FCCmdMRU::CreateAction(void)
 		pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
+  addRecentFile( "Test 123" );
+  addRecentFile( "Test 231" );
+  addRecentFile( "Test 231" );
+  addRecentFile( "Test 132" );
+  addRecentFile( "Test 321" );
+  addRecentFile( "Test 213" );
+
 	return pcAction;
 }
 
-void FCCmdMRU::AddItem (const char* item)
+void FCCmdMRU::addRecentFile ( const QString& item )
 {
-  if (std::find(_vMRU.begin(), _vMRU.end(), item) == _vMRU.end())
+  if ( _vMRU.contains( item ) )
+    return; // already inserted
+
+  if ( _nMaxItems > (int)_vMRU.size() )
   {
-    if (nMaxItems > (int)_vMRU.size())
+    _vMRU.prepend( item );
+  }
+  else
+  {
+    _vMRU.remove ( _vMRU.last() );
+    _vMRU.prepend( item );
+  }
+
+  refresh();
+}
+
+void FCCmdMRU::removeRecentFile ( const QString& item )
+{
+  QStringList::Iterator it = _vMRU.find(item);
+  if ( it != _vMRU.end() )
+  {
+    _vMRU.remove( it );
+    refresh();
+  }
+}
+
+void FCCmdMRU::refresh()
+{
+  if ( pcAction )
+  {
+    dynamic_cast<ActionGroup*>(pcAction)->clear();
+
+    for ( QStringList::Iterator it = _vMRU.begin(); it != _vMRU.end(); ++it )
     {
-      _vMRU.push_back(item);
-      if (pcAction)
-        pcAction->insertItem(GetFileName(item));
+      QAction* action = new QAction( pcAction, *it );
+      action->setText(QObject::tr( *it ));
+      QString name = recentFileItem( *it );
+      action->setMenuText(QObject::tr(name));
+      dynamic_cast<ActionGroup*>(pcAction)->addAction( action );
     }
   }
 }
 
-void FCCmdMRU::RemItem (const char* item)
+QString FCCmdMRU::recentFileItem( const QString& fn )
 {
-  if (pcAction)
-    pcAction->clear();
-  std::vector<std::string>::iterator it = std::find(_vMRU.begin(), _vMRU.end(), item);
-  if (it!=_vMRU.end())
-    _vMRU.erase(it);
-  for (it=_vMRU.begin(); it!=_vMRU.end(); ++it)
-    pcAction->insertItem(GetFileName(it->c_str()));
-}
+  int ct = _vMRU.findIndex( fn ) + 1;
 
-void FCCmdMRU::Clear()
-{
-  if (pcAction)
-    pcAction->clear();
-  _vMRU.clear();
-}
-
-QString FCCmdMRU::GetFileName(const char* name)
-{
-  std::vector<std::string>::iterator it = std::find(_vMRU.begin(), _vMRU.end(), name);
-  int ct = (it-_vMRU.begin())+1;
-
-  QString file(name);
+  QString file(fn);
 
   int npos = file.findRev('/');
-  if (npos != -1)
+  if ( npos != -1 )
   {
     QString fn = file.right(file.length()-npos-1);
     QString path = file.left(npos);
     QString cur  = QDir::currentDirPath();
     if (path != cur)
       fn = file;
-    fn.prepend(QString("%1 ").arg(ct));
+    fn.prepend(QString("&%1 ").arg(ct));
     return fn;
   }
 
-  file.prepend(QString("%1 ").arg(ct));
+  file.prepend(QString("&%1 ").arg(ct));
   return file;
 }
 
-std::vector<std::string> FCCmdMRU::GetItems() const
+QStringList FCCmdMRU::recentFiles() const
 {
   return _vMRU;
 }

@@ -43,7 +43,7 @@ using namespace Gui::DockWnd;
 std::vector<QString> ActionDrag::actions;
 
 ActionDrag::ActionDrag ( QString action, QWidget * dragSource , const char * name  )
-  : QStoredDrag("FCActionDrag", dragSource, name)
+  : QStoredDrag("Gui::ActionDrag", dragSource, name)
 {
   // store the QAction name
   actions.push_back(action);
@@ -55,7 +55,7 @@ ActionDrag::~ActionDrag ()
 
 bool ActionDrag::canDecode ( const QMimeSource * e )
 {
-  return e->provides( "ActionDrag" );
+  return e->provides( "Gui::ActionDrag" );
 }
 
 bool ActionDrag::decode ( const QMimeSource * e, QString&  action )
@@ -221,9 +221,10 @@ void Action::setEnabled ( bool b)
 
 // --------------------------------------------------------------------
 
-ActionGroup::ActionGroup ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle)
-:Action(pcCmd, parent, name, toggle)
+ActionGroup::ActionGroup ( FCCommand* pcCmd,QObject * parent, const char * name, bool exclusive )
+:QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
 {
+  connect( this, SIGNAL( selected(QAction*) ), this, SLOT( onActivated(QAction*) ) );
 }
 
 ActionGroup::~ActionGroup()
@@ -232,162 +233,141 @@ ActionGroup::~ActionGroup()
 
 /**
  * Adds this action group to widget \a w. 
- * An action group added to a tool bar is automatically displayed as a combo box; 
- * an action added to a pop up menu appears as a submenu.
+ * If isExclusive() is FALSE or usesDropDown() is FALSE, the actions within the group are added 
+ * to the widget individually. For example, if the widget is a menu, the actions will appear as 
+ * individual menu options, and if the widget is a toolbar, the actions will appear as toolbar buttons.
+ *
+ * If both isExclusive() and usesDropDown() are TRUE, the actions are presented either in a combobox 
+ * (if \a w is a toolbar) or in a submenu (if \a w is a menu).
+ *
+ * All actions should be added to the action group \a before the action group is added to the widget. 
+ * If actions are added to the action group \a after the action group has been added to the widget 
+ * these later actions will \a not appear.  
  */
-bool ActionGroup::addTo(QWidget *w)
+bool ActionGroup::addTo( QWidget *w )
 {
-  if (w->inherits("QToolBar"))
-  {
-    QComboBox* combo = new QComboBox(w, "Combo");
-    widgets.push_back(combo);
-    connect( combo, SIGNAL( destroyed() ),     this, SLOT( onDestroyed()    ) );
-    connect( combo, SIGNAL(  activated(int) ), this, SLOT( onActivated(int) ) );
-    combo->setMinimumWidth(130);
-    QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
-    for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
-    {
-      combo->insertItem(FCIcon, it->c_str());
-    }
-
-    if (w->inherits("Gui::DockWnd::CommandBar"))
-    {
-      ((CommandBar*)w)->setTextToLastItem(menuText());
-    }
-  }
-  else if (w->inherits("QPopupMenu"))
-  {
-    QPopupMenu* popup = new QPopupMenu(w, "Menu");
-    widgets.push_back(popup);
-    connect( popup, SIGNAL( destroyed() ),     this, SLOT( onDestroyed  ()   ) );
-    connect( popup, SIGNAL( aboutToShow() ),   this, SLOT( onAboutToShow()   ) );
-    connect( popup, SIGNAL(  activated(int) ), this, SLOT( onActivated  (int)) );
-
-//    if (iconSet().isNull())
-      ((QPopupMenu*)w)->insertItem(text(), popup);
-//    else
-//      ((QPopupMenu*)w)->insertItem(iconSet().pixmap(), mName.c_str(), popup);
-  }
-  else
-    return false;
-
-  return true;
+  return QActionGroup::addTo( w );
 }
 
-/**
- * Fills up the menu.
- */
-void ActionGroup::onAboutToShow()
+void ActionGroup::addedTo ( QWidget * actionWidget, QWidget * container, QAction * a )
 {
-  // fill up just before showing the menu 
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QPopupMenu"))
-    {
-      QPopupMenu* popup = (QPopupMenu*)(*it);
-      popup->clear();
+}
 
-      int i=0;
-      for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it, i++)
+void ActionGroup::addAction( QAction* act )
+{
+  if ( isExclusive() == false )
+    connect( act, SIGNAL( activated() ), this, SLOT( onActivated() ));
+  add( act );
+}
+
+void ActionGroup::removeAction ( QAction* act )
+{
+  const QObjectList *l = children();
+
+  if ( l )
+  {
+    QObjectListIt it(*l);
+    QObject * obj;
+    while ( (obj=it.current()) != 0 ) 
+    {
+      if ( obj->inherits("QAction") )
       {
-        popup->insertItem(/*QPixmap(FCIcon), */it->c_str(), i);
-      }
-    }
-  }
-}
-
-void ActionGroup::setItems(const std::vector<std::string>& items)
-{
-  mItems = items;
-}
-
-void ActionGroup::insertItem(const char* item)
-{
-  mItems.push_back(item);
-  QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      combo->insertItem(FCIcon, item);
-    }
-  }
-}
-
-void ActionGroup::removeItem(const char* item)
-{
-  std::vector<std::string>::iterator ii = std::find(mItems.begin(), mItems.end(), std::string(item));
-  if (ii != mItems.end()) mItems.erase(ii);
-
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      for (int i = 0; i<combo->count(); i++)
-      {
-        if (combo->text(i) == QString(item))
+        if ( obj == act )
         {
-          combo->removeItem(i);
+          if ( isExclusive() == false )
+            disconnect( act, SIGNAL( activated() ), this, SLOT( onActivated() ));
+          removeChild( act );
+          delete act;
           break;
         }
       }
+
+      ++it;
     }
   }
 }
 
 void ActionGroup::clear()
 {
-  mItems.clear();
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  QObjectList *l = queryList( "QAction" );
+  QObjectListIt it( *l );
+  QObject *obj;
+  while ( (obj = it.current()) != 0 ) 
   {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      combo->clear();
-    }
+    if ( isExclusive() == false )
+      disconnect( obj, SIGNAL( activated() ), this, SLOT( onActivated() ));
+    removeChild( obj );
+    delete obj;
+    ++it;
   }
+
+  delete l; // delete the list, not the objects
 }
 
-void ActionGroup::activate(int i)
+void ActionGroup::activate( const QString& name )
 {
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  const QObjectList *l = children();
+  if ( l )
   {
-    if ((*it)->inherits("QComboBox"))
+    QObjectListIt it(*l);
+    QObject * obj;
+    while ( (obj=it.current()) != 0 ) 
     {
-      QComboBox* combo = (QComboBox*)(*it);
-      if (combo->currentItem() != i)
-        combo->setCurrentItem(i);
-    }
-  }
-}
-
-void ActionGroup::activate(const QString& name)
-{
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
-  {
-    if ((*it)->inherits("QComboBox"))
-    {
-      QComboBox* combo = (QComboBox*)(*it);
-      if (combo->currentText() != name)
+      QAction* act = dynamic_cast<QAction*>(obj);
+      if ( act )
       {
-        for(int i=0;i<combo->count();i++)
+        if ( act->text() == name )
         {
-          if (combo->text(i) == name)
-          {
-            combo->setCurrentItem(i);
-            break;
-          }
+          act->setOn( true );
+          break;
         }
       }
+
+      ++it;
     }
+  }
+}
+
+void ActionGroup::onActivated ()
+{
+  if ( isExclusive() == false )
+  {
+    const QObject* o = sender();
+    if ( o && o->inherits("QAction") )
+      onActivated( (QAction*)o );
   }
 }
 
 void ActionGroup::onActivated (int i)
 {
   GetCommand()->Activated(i);
+}
+
+void ActionGroup::onActivated ( QAction* act )
+{
+  int id=0;
+  const QObjectList *l = children();
+
+  if ( l )
+  {
+    QObjectListIt it(*l);
+    QObject * obj;
+    while ( (obj=it.current()) != 0 ) 
+    {
+      if ( obj->inherits("QAction") )
+      {
+        if ( obj == act )
+        {
+          GetCommand()->Activated( id );
+          break;
+        }
+
+        id++;
+      }
+
+      ++it;
+    }
+  }
 }
 
 // --------------------------------------------------------------------

@@ -321,11 +321,11 @@ ApplicationWindow::ApplicationWindow()
     FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
     if (pCmd)
     {
-      ((FCCmdMRU*)pCmd)->SetMaxItems(hGrp->GetInt("RecentFiles", 4));
+      ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
       for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
       {
-        ((FCCmdMRU*)pCmd)->AddItem(it->c_str());
+        ((FCCmdMRU*)pCmd)->addRecentFile(it->c_str());
       }
     }
   }
@@ -359,15 +359,15 @@ ApplicationWindow::~ApplicationWindow()
     int i=0;
     FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Recent files");
     hGrp->Clear();
-    hGrp->GetInt("RecentFiles", ((FCCmdMRU*)pCmd)->GetMaxItems());
+    hGrp->GetInt("RecentFiles", ((FCCmdMRU*)pCmd)->maxCount());
 
-    std::vector<std::string> MRU = ((FCCmdMRU*)pCmd)->GetItems();
-    if (MRU.size() > 0)
+    QStringList files = ((FCCmdMRU*)pCmd)->recentFiles();
+    if ( files.size() > 0 )
     {
-      for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it,i++)
+      for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
       {
         sprintf(szBuf, "MRU%d", i);
-        hGrp->SetASCII(szBuf, it->c_str());
+        hGrp->SetASCII(szBuf, (*it).latin1());
       }
     }
   }
@@ -794,7 +794,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
     FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
     if (pCmd)
     {
-      ((FCCmdWorkbench*)pCmd)->UpdateAction(name);
+      ((FCCmdWorkbench*)pCmd)->activate( name );
     }
 
 	  show();
@@ -807,21 +807,21 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 
 void ApplicationWindow::UpdateWorkbenchEntrys(void)
 {
-	PyObject *key, *value;
-	int pos = 0;
-     
-  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
-  if (pCmd)
-  {
-  	// remove all items from the command
-    ((FCCmdWorkbench*)pCmd)->Clear();
-
-  	// insert all items
-    while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
-		  /* do something interesting with the values... */
-      ((FCCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
-	  }
-  }
+//	PyObject *key, *value;
+//	int pos = 0;
+//     
+//  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
+//  if (pCmd)
+//  {
+//  	// remove all items from the command
+//    ((FCCmdWorkbench*)pCmd)->Clear();
+//
+//  	// insert all items
+//    while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
+//		  /* do something interesting with the values... */
+//      ((FCCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
+//	  }
+//  }
 }
 
 std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
@@ -842,7 +842,7 @@ void ApplicationWindow::AppendRecentFile(const char* file)
   FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
   if (pCmd)
   {
-    ((FCCmdMRU*)pCmd)->AddItem(file);
+    ((FCCmdMRU*)pCmd)->addRecentFile(file);
   }
 }
 
