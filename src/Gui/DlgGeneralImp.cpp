@@ -152,7 +152,7 @@ void DlgGeneralImp::onChooseLanguage(const QString&)
 /** Searches for all registered languages and insert them into a combo box */
 void DlgGeneralImp::onSearchForLanguages()
 {
-  QStringList list = Gui::LanguageFactory().GetRegisteredLanguages();
+  QStringList list = Gui::LanguageFactory().getRegisteredLanguages();
 
   int pos = 0;
   Languages->insertItem(tr("English"));

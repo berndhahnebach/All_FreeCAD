@@ -225,8 +225,8 @@
         <sender>SaveBtn</sender>
         <signal>clicked()</signal>
         <receiver>DlgSettingsMacro</receiver>
-        <slot>ChooseDir()</slot>
+        <slot>chooseDir()</slot>
     </connection>
-    <slot access="public">ChooseDir()</slot>
+    <slot access="public">chooseDir()</slot>
 </connections>
 </UI>

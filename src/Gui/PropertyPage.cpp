@@ -66,7 +66,7 @@ void PropertyPage::setModified(bool b)
   bChanged = b;
 }
 
-/** Applies all changes calling @ref apply and reset the modified state */
+/** Applies all changes calling @ref apply() and reset the modified state */
 void PropertyPage::onApply()
 {
   if (isModified())
@@ -75,7 +75,7 @@ void PropertyPage::onApply()
   setModified(false);
 }
 
-/** Discards all changes calling @ref apply and reset the modified state */
+/** Discards all changes calling @ref apply() and reset the modified state */
 void PropertyPage::onCancel()
 {
   if (isModified())

@@ -69,7 +69,7 @@ ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
  */
 ReportView::~ReportView()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
 // ----------------------------------------------------------
@@ -85,46 +85,53 @@ ReportHighlighter::~ReportHighlighter()
 
 int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
-	int curPar = currentParagraph();
-	if (curPar > lastPar)
-		lastPos = 0;
+  int curPar = currentParagraph();
+  if (curPar > lastPar)
+  {
+    lastPos = 0;
+  }
 
-	if (type == Message)
-	{
-		setFormat(lastPos, text.length()-lastPos, Qt::black);
-	}
-	else if (type == Warning)
-	{
-		setFormat(lastPos, text.length()-lastPos, QColor(255, 170, 0));
-	}
-	else if (type == Error)
-	{
-		setFormat(lastPos, text.length()-lastPos, Qt::red);
-	}
-	else if (type == LogText)
-	{
-		setFormat(lastPos, text.length()-lastPos, Qt::black);
-	}
+  if (type == Message)
+  {
+    setFormat(lastPos, text.length()-lastPos, Qt::black);
+  }
+  else if (type == Warning)
+  {
+    setFormat(lastPos, text.length()-lastPos, QColor(255, 170, 0));
+  }
+  else if (type == Error)
+  {
+    setFormat(lastPos, text.length()-lastPos, Qt::red);
+  }
+  else if (type == LogText)
+  {
+    setFormat(lastPos, text.length()-lastPos, Qt::black);
+  }
 
-	lastPos = text.length()-1;
-	lastPar = curPar;
-	return 0;
+  lastPos = text.length()-1;
+  lastPar = curPar;
+  
+  return 0;
 }
 
 void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
 {
-	type = t;
+  type = t;
 }
 
 // ----------------------------------------------------------
 
+/**
+ *  Constructs a ReportOutput which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ */
 ReportOutput::ReportOutput(QWidget* parent, const char* name)
  : QTextEdit(parent, name)
 {
-	reportHl = new ReportHighlighter(this);
+  reportHl = new ReportHighlighter(this);
 
-	restoreFont();
-	setReadOnly(true);
+  restoreFont();
+  setReadOnly(true);
   clear();
   setHScrollBarMode(QScrollView::AlwaysOff);
 
@@ -132,10 +139,13 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
   Base::Console().AttacheObserver(this);
 }
 
+/**
+ *  Destroys the object and frees any allocated resources
+ */
 ReportOutput::~ReportOutput()
 {
-	Base::Console().DetacheObserver(this);
-	delete reportHl;
+  Base::Console().DetacheObserver(this);
+  delete reportHl;
 }
 
 void ReportOutput::restoreFont()
@@ -153,19 +163,19 @@ void ReportOutput::restoreFont()
 
 void ReportOutput::Warning(const char * s)
 {
-	reportHl->setParagraphType(ReportHighlighter::Warning);
+  reportHl->setParagraphType(ReportHighlighter::Warning);
   append(s);
 }
 
 void ReportOutput::Message(const char * s)
 {
-	reportHl->setParagraphType(ReportHighlighter::Message);
+  reportHl->setParagraphType(ReportHighlighter::Message);
   append(s);
 }
 
 void ReportOutput::Error  (const char * s)
 {
-	reportHl->setParagraphType(ReportHighlighter::Error);
+  reportHl->setParagraphType(ReportHighlighter::Error);
   append(s);
 }
 
@@ -179,7 +189,7 @@ bool ReportOutput::event( QEvent* ev )
   bool ret = QWidget::event( ev ); 
   if ( ev->type() == QEvent::ApplicationFontChange ) 
   {
-		restoreFont();
+    restoreFont();
   }
 
   return ret;
@@ -187,31 +197,31 @@ bool ReportOutput::event( QEvent* ev )
 
 QPopupMenu * ReportOutput::createPopupMenu ( const QPoint & pos )
 {
-	QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
-	menu->insertItem(tr("Clear"), this, SLOT(clear()));
-	menu->insertSeparator();
-	menu->insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
-	return menu;
+  QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+  menu->insertItem(tr("Clear"), this, SLOT(clear()));
+  menu->insertSeparator();
+  menu->insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
+  return menu;
 }
 
 void ReportOutput::onSaveAs()
 {
   QString fn = FileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", 
-																						 this, QObject::tr("Save Report Output"));
+                                           this, QObject::tr("Save Report Output"));
   if (!fn.isEmpty())
   {
     int dot = fn.find('.');
     if (dot != -1)
     {
-			QFile f(fn);
-			if (f.open(IO_WriteOnly))
-			{
-				QTextStream t (&f);
-				t << text();
-				f.close();
-			}
-		}
-	}
+      QFile f(fn);
+      if (f.open(IO_WriteOnly))
+      {
+        QTextStream t (&f);
+        t << text();
+        f.close();
+      }
+    }
+  }
 }
 
 #include "moc_ReportView.cpp"

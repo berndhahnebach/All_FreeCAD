@@ -352,15 +352,15 @@
         <sender>SaveBtn</sender>
         <signal>clicked()</signal>
         <receiver>DlgSettings3DView</receiver>
-        <slot>ChooseDir()</slot>
+        <slot>chooseDir()</slot>
     </connection>
     <connection>
         <sender>FCCheckBox_UseInventorViewer</sender>
         <signal>toggled(bool)</signal>
         <receiver>DlgSettings3DView</receiver>
-        <slot>WarnInventor(bool)</slot>
+        <slot>warnInventor(bool)</slot>
     </connection>
-    <slot access="public">ChooseDir()</slot>
-    <slot access="public">WarnInventor(bool)</slot>
+    <slot access="public">chooseDir()</slot>
+    <slot access="public">warnInventor(bool)</slot>
 </connections>
 </UI>

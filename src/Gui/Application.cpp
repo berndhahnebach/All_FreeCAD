@@ -197,7 +197,7 @@ ApplicationWindow::ApplicationWindow()
 	std::string language = GetApplication().GetUserParameter
 		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
 		("Language")->GetASCII("Language", "English");
-	Gui::LanguageFactory().SetLanguage(language.c_str());
+	Gui::LanguageFactory().setLanguage(language.c_str());
 	GetWidgetFactorySupplier();
 
 	// seting up Python binding

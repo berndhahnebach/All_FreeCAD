@@ -42,7 +42,7 @@ namespace Dialog {
  * @ref FCWidgetPrefs classes like:
  * FCEditSpinBox, FCLineEdit, FCComboBox, FCListBox, FCCheckBox, FCRadioButton and FCSlider
  *
- * Your implementation class must inherit the Qt-generated class and @ref FCPreferencePage.
+ * Your implementation class must inherit the Qt-generated class and @ref PreferencePage.
  * In the constructor of your class you must call for each object in your page
  * append(<objectname>->getHandler());
  * to use the full automation

@@ -53,79 +53,79 @@ private:
   PythonConsole* pyc; /**< Python console */
 };
 
-/**
- * Syntax highlighter to write log or normal messages, warnings and errors in different colors.
+/** Syntax highlighter to write log or normal messages, warnings and errors in different colors.
+ * \author Werner Mayer
  */
 class GuiExport ReportHighlighter : public QSyntaxHighlighter
 {
-	public: 
-		enum Paragraph { 
-			Message  = 0, /**< normal text */
-			Warning  = 1, /**< Warning */
-			Error    = 2, /**< Error text */
-			LogText  = 3  /**< Log text */
-		};
+public: 
+  enum Paragraph { 
+      Message  = 0, /**< normal text */
+      Warning  = 1, /**< Warning */
+      Error    = 2, /**< Error text */
+      LogText  = 3  /**< Log text */
+  };
 
-	public:
-		ReportHighlighter(QTextEdit* );
-		~ReportHighlighter();
+public:
+  ReportHighlighter(QTextEdit* );
+  ~ReportHighlighter();
 
-		/** Parses the given text and highlight it in the right colors. */
-		int highlightParagraph ( const QString & text, int endStateOfLastPara );
-		/** 
-		 * Sets the current paragraph type used in ReportOutput
-		 * @see ReportOutput::Message
-		 * @see ReportOutput::Warning
-		 * @see ReportOutput::Error
-		 */
-		void setParagraphType(Paragraph);
+  /** Parses the given text and highlight it in the right colors. */
+  int highlightParagraph ( const QString & text, int endStateOfLastPara );
+  /** 
+   * Sets the current paragraph type used in ReportOutput
+   * @see ReportOutput::Message
+   * @see ReportOutput::Warning
+   * @see ReportOutput::Error
+   */
+  void setParagraphType(Paragraph);
 
-	private:
-		/** @name for internal use only */
-		//@{
-		Paragraph type;
-		int lastPos;
-		int lastPar;
-		//@}
+private:
+  /** @name for internal use only */
+  //@{
+  Paragraph type;
+  int lastPos;
+  int lastPar;
+  //@}
 };
 
-/**
- * Output window to show messages.
+/** Output window to show messages.
  * @see Base::ConsoleObserver
  * @see QTextEdit
+ * \author Werner Mayer
  */
 class GuiExport ReportOutput : public QTextEdit, public Base::ConsoleObserver
 {
   Q_OBJECT
 
-  public:
-    ReportOutput(QWidget* parent=0, const char* name=0);
-    virtual ~ReportOutput();
+public:
+  ReportOutput(QWidget* parent=0, const char* name=0);
+  virtual ~ReportOutput();
 
-		/** Writes warnings */
-    void Warning(const char * s);
-		/** Writes normal text */
-	  void Message(const char * s);
-		/** Writes errors */
-    void Error  (const char * s);
-		/** Does not do anything */
-	  void Log (const char * s);
+  /** Writes warnings */
+  void Warning(const char * s);
+  /** Writes normal text */
+  void Message(const char * s);
+  /** Writes errors */
+  void Error  (const char * s);
+  /** Does not do anything */
+  void Log (const char * s);
 
-		/** Restore the default font settings */
-		void restoreFont ();
+  /** Restore the default font settings */
+  void restoreFont ();
 
-  protected:
-		/** For internal use only */
-    bool event( QEvent* ev );
-		/** Pops up the context menu with some extensions */
-		QPopupMenu * createPopupMenu ( const QPoint & pos );
+protected:
+  /** For internal use only */
+  bool event( QEvent* ev );
+  /** Pops up the context menu with some extensions */
+  QPopupMenu * createPopupMenu ( const QPoint & pos );
 
-  public slots:
-		/** Save the report messages into a file. */
-    void onSaveAs();
+public slots:
+  /** Save the report messages into a file. */
+  void onSaveAs();
 
-  private:
-		ReportHighlighter* reportHl; /**< Syntax highlighter */
+private:
+  ReportHighlighter* reportHl; /**< Syntax highlighter */
 };
 
 } // namespace DockWnd
