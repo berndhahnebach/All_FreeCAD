@@ -118,3 +118,6 @@ Version: V0.1B29 Date: Wed Feb 05 09:22:38 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B30 Date: Thu Feb 06 20:47:18 2003 +++++++++++++++++++++++++++++++
 + fix for the CommandBar (Werner)
 + fix for module loding
+
+Version: V0.1B31 Date: Fri Feb 07 22:26:22 2003 +++++++++++++++++++++++++++++++
++ ifdefs for QT 3 and 2.3 usage (werner)

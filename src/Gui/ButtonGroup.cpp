@@ -675,14 +675,22 @@ void FCToolboxButton::paint( QPainter *painter )
 
   if ( isDown() || isOn() )
   {
+#if QT_VER <= 230
     if ( style() == WindowsStyle )
+#else
+    if ( style().inherits("QWindowsStyle") )
+#endif
     	qDrawWinButton( painter, 0, 0, width(), height(), colorGroup(), TRUE );
     else
     	qDrawShadePanel( painter, 0, 0, width(), height(), colorGroup(), TRUE, 2, 0L );
   }
   else if ( raised )
   {
+#if QT_VER <= 230
     if ( style() == WindowsStyle )
+#else
+    if ( style().inherits("QWindowsStyle") )
+#endif
     	qDrawWinButton( painter, 0, 0, width(), height(), colorGroup(), FALSE );
     else
     	qDrawShadePanel( painter, 0, 0, width(), height(), colorGroup(), FALSE, 2, 0L );
@@ -693,7 +701,11 @@ void FCToolboxButton::paint( QPainter *painter )
     //dx = ( width() - pixmap()->width() ) / 2;
     dx = 5;
     dy = ( height() - pixmap()->height() ) / 2;
+#if QT_VER <= 230
     if ( isDown() && style() == WindowsStyle ) 
+#else
+    if ( isDown() && style().inherits("QWindowsStyle") )
+#endif
     {
     	dx++;
 	    dy++;

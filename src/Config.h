@@ -40,6 +40,7 @@
 #define QT_DLL
 #define QT_THREAD_SUPPORT
 #define QT_ALTERNATE_QTSMANIP
+#define QT_VER 230
 
 
 //**************************************************************************

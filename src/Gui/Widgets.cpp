@@ -42,6 +42,10 @@
 #include <qlayout.h>
 #include <qdatetime.h>
 
+#if QT_VER > 230
+# include <qstyle.h>
+#endif
+
 
 QString FCFileDialog::getOpenFileName( const QString & startWith, const QString& filter,
                           				     QWidget *parent, const char* name )
@@ -181,7 +185,11 @@ void FCProgressBar::drawContents( QPainter *p )
 	if ( progress_val != total_steps )
     p->fillRect( bar, colorGroup().brush( QColorGroup::Background ) );
 
+#if QT_VER <= 230
 	p->setPen( style()==MotifStyle? colorGroup().foreground() : colorGroup().text() );
+#else
+  p->setPen( style().isA("QMotifStyle")? colorGroup().foreground() : colorGroup().text());
+#endif
 	p->drawText( bar, AlignCenter, progress_str );
 }
 
@@ -343,14 +351,16 @@ bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
-                       bool newLine, const char * name )
-: QToolBar(label, parent, pos, newLine, name), FCWidgetPrefs(name)
-{
-  // allow drag and drop
-  setAcceptDrops(true);
-  restorePreferences();
-}
+# if QT_VER <= 230
+  FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
+                         bool newLine, const char * name )
+  : QToolBar(label, parent, pos, newLine, name), FCWidgetPrefs(name)
+  {
+    // allow drag and drop
+    setAcceptDrops(true);
+    restorePreferences();
+  }
+# endif
 
 FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine, 
                        const char * name, WFlags f )

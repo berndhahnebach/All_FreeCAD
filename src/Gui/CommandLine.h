@@ -56,12 +56,8 @@ class FCConsoleValidator : public QValidator
 class FCWindowsStyle : public QWindowsStyle
 {
   public:
-    // avoid drawing the button
-    QRect comboButtonRect ( int x, int y, int w, int h )
-    { 
-      return QWindowsStyle::comboButtonRect(x, y, w, h);
-    }
 
+#if QT_VER <= 230
     void drawComboButton ( QPainter * p, int x, int y, int w, int h, 
                            const QColorGroup & g, bool sunken = FALSE, 
                            bool editable = FALSE, bool enabled = TRUE, 
@@ -148,6 +144,12 @@ class FCWindowsStyle : public QWindowsStyle
          		         subB.width()-4, subB.height()-4, g, !maxedOut );
       }
     }
+#elif QT_VER > 230
+    void drawPrimitive( PrimitiveElement pe, QPainter * p, const QRect & r, const QColorGroup & cg, SFlags flags, const QStyleOption & opt ) const
+    {
+      QWindowsStyle::drawPrimitive( pe, p, r, cg, flags, opt );
+    }
+#endif
 };
 
 /** The command line class

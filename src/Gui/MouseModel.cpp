@@ -386,7 +386,11 @@ FCMouseModelPolyPicker::FCMouseModelPolyPicker()
 
 void FCMouseModelPolyPicker::initialize()
 {
+#if QT_VER <= 230
   _pcView3D->setCursor(QCursor(CrossCursor));
+#else
+  _pcView3D->setCursor(QCursor(QCursor::CrossCursor));
+#endif
 }
 
 void FCMouseModelPolyPicker::terminate()

@@ -4,6 +4,7 @@
 #include <qwindowsstyle.h>
 #include <qpalette.h>
 
+#if QT_VER <= 230
 class NorwegianWoodStyle : public QWindowsStyle
 {
 public:
@@ -91,5 +92,5 @@ private:
     QPalette oldPalette;
 };
 
-
+#endif
 #endif

@@ -34,7 +34,7 @@
 ///////////////////////////////////////////////////////
 
 
-
+#if QT_VER <= 230
 MetalStyle::MetalStyle() : QWindowsStyle() { }
 
 /*!
@@ -1058,3 +1058,6 @@ void NorwegianWoodStyle::drawButtonMask( QPainter *p, int x, int y, int w, int h
     int d = QMIN(w,h)/2;
     drawroundrect( p, x, y, w, h, d );
 }
+
+
+#endif

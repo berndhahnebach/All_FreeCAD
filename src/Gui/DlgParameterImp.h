@@ -38,6 +38,10 @@
 #include "../Base/Parameter.h"
 #include "Window.h"
 
+#if QT_VER > 230
+# include <qlistview.h>
+#endif 
+
 class 	ParameterLabelGroup;
 
 class DlgParameter : public ParameterDialog, public FCWindow

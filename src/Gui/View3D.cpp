@@ -255,7 +255,7 @@ void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 
 void View3D::hideEvent ( QHideEvent * cEvent )
 {
-	ApplicationWindow::Instance->SetPaneText(2, QString("Dimension"));
+	ApplicationWindow::Instance->SetPaneText(2, QString(" Dimension"));
 }
  
 bool View3D::OnMsg(const char* pMsg)
@@ -369,7 +369,7 @@ void View3D::ShowDimension (void) const
   }
   
   char szSize[100];
-  sprintf(szSize, "%.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
+  sprintf(szSize, " %.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
   
   ApplicationWindow::Instance->SetPaneText(2, QString(szSize));
 }
