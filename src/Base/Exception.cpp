@@ -67,12 +67,12 @@ FCException &FCException::operator=(const FCException &inst)
   return *this;
 }
 
-const char* FCException::what(void)
+const char* FCException::what(void) const
 {
 	return _sErrMsg.c_str();
 }
 
-void FCException::ReportException (void)
+void FCException::ReportException (void) const
 {
 	GetConsole().Error("Exception (%s): %s \n",GetConsole().Time(),what());
 }

@@ -46,9 +46,9 @@ public:
 
 	FCException &operator=(const FCException &inst);
   
-    const char* what(void);
+    const char* what(void) const;
   
-    void ReportException (void);
+    void ReportException (void) const;
 
     inline void SetMessage(const char * sMessage);
   
