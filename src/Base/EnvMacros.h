@@ -194,16 +194,6 @@ inline std::string FindHomePathWin32(HANDLE hModule)
 }
 #endif
 
-/*
-inline std::string FindBinPath(const char* sCall)
-{
-	std::string Call(sCall), TempHomePath;
-	std::string::size_type pos = Call.find_last_of(PATHSEP);
-	TempHomePath.assign(Call,0,pos+1);
-	return TempHomePath;
-}
-*/
-
 
 inline std::string GetFreeCADLib(const char* sHomePath)
 {

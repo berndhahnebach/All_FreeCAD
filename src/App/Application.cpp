@@ -368,6 +368,7 @@ PyMethodDef FCApplication::Methods[] = {
 	{"Version",        (PyCFunction) FCApplication::sGetVersion,     1},
 	{"ConfigGet",      (PyCFunction) FCApplication::sGetConfig,      1},
 	{"ConfigSet",      (PyCFunction) FCApplication::sSetConfig,      1},
+	{"ConfigDump",     (PyCFunction) FCApplication::sDumpConfig,     1},
 	{"TemplateAdd",    (PyCFunction) FCApplication::sTemplateAdd,    1},
 	{"TemplateDelete", (PyCFunction) FCApplication::sTemplateDelete ,1},
 	{"TemplateGet",    (PyCFunction) FCApplication::sTemplateGet    ,1},
@@ -496,6 +497,26 @@ PYFUNCIMP_S(FCApplication,sGetConfig)
 		return pDict;
 		
 	}
+}
+
+PYFUNCIMP_S(FCApplication,sDumpConfig)
+{
+
+    if (!PyArg_ParseTuple(args, "") )    // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	std::string str;
+	for(std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++)
+	{
+		str += It->first ;
+		int size = It->first.size();
+		for(int l = 0; l < (28-size) ; l++)
+			str += " ";
+
+		str += "= " + It->second + "\r\n";
+	}
+	return Py_BuildValue("s",str.c_str());
+		
 }
 
 PYFUNCIMP_S(FCApplication,sSetConfig)
@@ -930,9 +951,9 @@ void FCApplication::ExtractPathAndUser(const char* sCall)
 		mConfig["HomePath"] = FindHomePathUnix(sCall);
 #	endif
 
-	// find home path
-	//mConfig["BinPath"] = FindBinPath(sCall);
-	mConfig["BinPath"] = mConfig["BinPath"] + PATHSEP + "bin";
+	// std paths
+	mConfig["BinPath"] = mConfig["HomePath"] + PATHSEP + "bin" + PATHSEP;
+	mConfig["DocPath"] = mConfig["HomePath"] + PATHSEP + "doc" + PATHSEP;
 
 	// try to figure out if using FreeCADLib
 	mConfig["FreeCADLib"] = GetFreeCADLib(mConfig["HomePath"].c_str());

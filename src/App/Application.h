@@ -180,6 +180,7 @@ private:
 	PYFUNCDEF_S(sGetVersion);
 	PYFUNCDEF_S(sGetConfig);
 	PYFUNCDEF_S(sSetConfig);
+	PYFUNCDEF_S(sDumpConfig);
 	PYFUNCDEF_S(sTemplateAdd);
 	PYFUNCDEF_S(sTemplateDelete);
 	PYFUNCDEF_S(sTemplateGet);
