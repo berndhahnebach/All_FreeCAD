@@ -44,11 +44,8 @@
 FCDlgEditorSettings::FCDlgEditorSettings( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgEditorSettingsBase( parent, name, fl )
 {
-  HorizontalScroll->getHandler()->restore();
-  VerticalScroll->getHandler()->restore();
-
-  m_aHandlers.push_back(HorizontalScroll->getHandler());
-  m_aHandlers.push_back(VerticalScroll->getHandler());
+  append(HorizontalScroll->getHandler());
+  append(VerticalScroll->getHandler());
 }
 
 /*  

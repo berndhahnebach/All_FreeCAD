@@ -131,6 +131,7 @@ class FCWidgetPrefsHandler : public QObject
 
     //friends
     friend class FCWidgetPrefs;
+		friend class FCWidgetPrefsManager;
 };
 
 class FCWidgetPrefsManager
@@ -141,7 +142,20 @@ class FCWidgetPrefsManager
       return m_aHandlers;
     }
 
-  protected:
+		void append(FCWidgetPrefsHandler* handler)
+		{
+			if (handler)
+			{
+#ifdef FC_DEBUG
+				if (handler->pPref->getParamGrp().IsNull())
+					throw;
+#endif
+				handler->restore();
+				m_aHandlers.push_back(handler);
+			}
+		}
+
+  private:
     std::vector<FCWidgetPrefsHandler*> m_aHandlers;
 };
 
@@ -482,7 +496,7 @@ class FCCustomWidgetManager
     FCDockWindow* getDockWindow(const char* name);
     std::vector<FCDockWindow*> getDockWindows();
     void delDockWindow(const char* name);
-	void addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,
+		void addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,
                        KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 50);
 
     void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);

@@ -26,7 +26,7 @@ static QWidget *PWidget(Window &w)
 	return PWidget(w.GetID());
 }
 
-ScintillaQt::ScintillaQt(FCScintEditor* edit) 
+ScintillaQt::ScintillaQt(FCScintillaEdit* edit) 
  : m_pEditor(edit)
 {
 	lastKeyDownConsumed = false;
@@ -374,9 +374,46 @@ void ScintillaQt::paintEvent(QPaintEvent* e)
 	paintState = notPainting;
 }
 
+ScintillaQt::FCScintCallTip::FCScintCallTip(ScintillaQt* sci, QWidget* parent, const char * name) 
+: QWidget(parent,0,Qt::WType_TopLevel|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WStyle_Tool|Qt::WX11BypassWM), sciTE(sci)
+{
+	setFocusProxy(parent);
+}
+
+ScintillaQt::FCScintCallTip::~FCScintCallTip()
+{
+	setFocusProxy(0);
+}
+
+void ScintillaQt::FCScintCallTip::paintEvent(QPaintEvent* e)
+{
+	Surface *surfaceWindow = Surface::Allocate();
+
+  if (surfaceWindow)
+	{
+		QPainter p(this);
+		surfaceWindow->Init(&p,0);
+		sciTE->ct.PaintCT(surfaceWindow);
+		surfaceWindow->Release();
+		delete surfaceWindow;
+	}
+}
+
+void ScintillaQt::FCScintCallTip::mousePressEvent(QMouseEvent* e)
+{
+	Point pt;
+
+	pt.x = e->x();
+	pt.y = e->y();
+	sciTE->ct.MouseClick(pt);
+	sciTE->CallTipClick();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 static bool lexersLinked = FALSE;
 
-FCScintEditor::FCScintEditor(QWidget *parent,const char *name,WFlags f)
+FCScintillaEdit::FCScintillaEdit(QWidget *parent,const char *name,WFlags f)
 	: QWidget(parent,name,f), sciTE(0L), _bControlButton(false)
 {
 	QGridLayout *layout = new QGridLayout(this,2,2);
@@ -473,47 +510,17 @@ FCScintEditor::FCScintEditor(QWidget *parent,const char *name,WFlags f)
   sciTE->WndProc(SCI_STYLESETEOLFILLED,12, 1);
 }
 
-FCScintEditor::~FCScintEditor()
+FCScintillaEdit::~FCScintillaEdit()
 {
 	delete sciTE;
 }
 
-void FCScintEditor::openFile(const char* fileName)
-{
-	sciTE->WndProc(SCI_CLEARALL, 0, 0);
-	sciTE->WndProc(SCI_SETSAVEPOINT, 0, 0);
-  sciTE->WndProc(SCI_CANCEL, 0, 0);
-  sciTE->WndProc(SCI_SETUNDOCOLLECTION, 0, 0);
-
-  QString line;
-  QFile file(fileName);
-   
-  if( !file.open(IO_ReadOnly))
-     return;
-
-  QTextStream in(&file);
-  QString text;
-
-  while( !in.atEnd() ){
-    line = in.readLine();
-    text = line + "\n";
-    sciTE->WndProc(SCI_ADDTEXT, text.length(), reinterpret_cast<sptr_t>(static_cast<const char *>(text.latin1())));
-  }
-
-
-  file.close();
-
-  sciTE->WndProc(SCI_SETUNDOCOLLECTION, 1, 0);
-	sciTE->WndProc(SCI_SETSAVEPOINT, 0, 0);
-	sciTE->WndProc(SCI_GOTOPOS, 0, 0);
-}
-
-long FCScintEditor::SendScintilla(unsigned int msg,unsigned long wParam, long lParam)
+long FCScintillaEdit::SendScintilla(unsigned int msg,unsigned long wParam, long lParam)
 {
 	return sciTE->WndProc(msg,wParam,lParam);
 }
 
-bool FCScintEditor::eventFilter(QObject* o, QEvent* e)
+bool FCScintillaEdit::eventFilter(QObject* o, QEvent* e)
 {
 	if (o != view)
 		return QWidget::eventFilter(o,e);
@@ -573,27 +580,27 @@ bool FCScintEditor::eventFilter(QObject* o, QEvent* e)
 	return used;
 }
 
-void FCScintEditor::slotTimer()
+void FCScintillaEdit::slotTimer()
 {
 	sciTE->Tick();
 }
 
-void FCScintEditor::slotContextMenu(int cmd)
+void FCScintillaEdit::slotContextMenu(int cmd)
 {
 	sciTE->Command(cmd);
 }
 
-void FCScintEditor::focusInEvent(QFocusEvent * e)
+void FCScintillaEdit::focusInEvent(QFocusEvent * e)
 {
 	sciTE->SetFocusState(true);
 }
 
-void FCScintEditor::focusOutEvent(QFocusEvent * e)
+void FCScintillaEdit::focusOutEvent(QFocusEvent * e)
 {
 	sciTE->SetFocusState(false);
 }
 
-bool FCScintEditor::focusNextPrevChild (bool next)
+bool FCScintillaEdit::focusNextPrevChild (bool next)
 {
   // if CTRL is pressed
   if (_bControlButton)
@@ -601,7 +608,7 @@ bool FCScintEditor::focusNextPrevChild (bool next)
   return false;
 }
 
-void FCScintEditor::mousePressEvent(QMouseEvent * e)
+void FCScintillaEdit::mousePressEvent(QMouseEvent * e)
 {
 	setFocus();
 
@@ -632,7 +639,7 @@ void FCScintEditor::mousePressEvent(QMouseEvent * e)
 	}
 }
 
-void FCScintEditor::mouseReleaseEvent(QMouseEvent * e)
+void FCScintillaEdit::mouseReleaseEvent(QMouseEvent * e)
 {
 	if (sciTE->HaveMouseCapture() && e->button() == LeftButton)
 	{
@@ -642,12 +649,12 @@ void FCScintEditor::mouseReleaseEvent(QMouseEvent * e)
 	}
 }
 
-void FCScintEditor::mouseMoveEvent(QMouseEvent * e)
+void FCScintillaEdit::mouseMoveEvent(QMouseEvent * e)
 {
 	sciTE->ButtonMove(Point(e->x(),e->y()));
 }
 
-void FCScintEditor::mouseDoubleClickEvent(QMouseEvent * e)
+void FCScintillaEdit::mouseDoubleClickEvent(QMouseEvent * e)
 {
 	setFocus();
 
@@ -664,7 +671,7 @@ void FCScintEditor::mouseDoubleClickEvent(QMouseEvent * e)
 	}
 }
 
-void FCScintEditor::keyPressEvent(QKeyEvent * e)
+void FCScintillaEdit::keyPressEvent(QKeyEvent * e)
 {
   _bControlButton = (e->state() &  ControlButton);
 
@@ -774,13 +781,13 @@ void FCScintEditor::keyPressEvent(QKeyEvent * e)
 		e->ignore();
 }
 
-void FCScintEditor::keyReleaseEvent ( QKeyEvent * e )
+void FCScintillaEdit::keyReleaseEvent ( QKeyEvent * e )
 {
   _bControlButton = (e->state() &  ControlButton);
   QWidget::keyReleaseEvent (e);
 }
 
-void FCScintEditor::mouseWheelEvent(QWheelEvent * e)
+void FCScintillaEdit::mouseWheelEvent(QWheelEvent * e)
 {
 	setFocus();
 
@@ -790,17 +797,17 @@ void FCScintEditor::mouseWheelEvent(QWheelEvent * e)
 		QApplication::sendEvent(verScroll, e);
 }
 
-void FCScintEditor::slotVerScroll(int val)
+void FCScintillaEdit::slotVerScroll(int val)
 {
 	sciTE->ScrollTo(val);
 }
 
-void FCScintEditor::slotHorScroll(int val)
+void FCScintillaEdit::slotHorScroll(int val)
 {
 	sciTE->HorizontalScrollTo(val);
 }
 
-QSize FCScintEditor::sizeHint() const
+QSize FCScintillaEdit::sizeHint() const
 {
 	int height = sciTE->vs.lineHeight * sciTE->pdoc->LinesTotal();
 
@@ -810,69 +817,54 @@ QSize FCScintEditor::sizeHint() const
 	return QSize(sciTE->scrollWidth,height);
 }
 
-ScintillaQt::FCScintCallTip::FCScintCallTip(ScintillaQt* sci, QWidget* parent, const char * name) 
-: QWidget(parent,0,Qt::WType_TopLevel|Qt::WStyle_NoBorder|Qt::WStyle_StaysOnTop|Qt::WStyle_Tool|Qt::WX11BypassWM), sciTE(sci)
+ScintillaQt* FCScintillaEdit::getTextEditor() const
 {
-	setFocusProxy(parent);
+  return sciTE;
 }
 
-ScintillaQt::FCScintCallTip::~FCScintCallTip()
+bool FCScintillaEdit::toggleBreakpoint(int nLine)
 {
-	setFocusProxy(0);
-}
-
-void ScintillaQt::FCScintCallTip::paintEvent(QPaintEvent* e)
-{
-	Surface *surfaceWindow = Surface::Allocate();
-
-  if (surfaceWindow)
+	if ( sciTE->WndProc (SCI_MARKERGET, nLine-1,0) & 1 )
 	{
-		QPainter p(this);
-		surfaceWindow->Init(&p,0);
-		sciTE->ct.PaintCT(surfaceWindow);
-		surfaceWindow->Release();
-		delete surfaceWindow;
+		sciTE->WndProc(SCI_MARKERDELETE, nLine-1, 0);
+		return false;
 	}
-}
+	else
 
-void ScintillaQt::FCScintCallTip::mousePressEvent(QMouseEvent* e)
-{
-	Point pt;
-
-	pt.x = e->x();
-	pt.y = e->y();
-	sciTE->ct.MouseClick(pt);
-	sciTE->CallTipClick();
+	sciTE->WndProc(SCI_MARKERADD, nLine-1, 0);
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-FCScintEditView::FCScintEditView( QWidget* parent, const char* name)
+FCScintillaView::FCScintillaView( QWidget* parent, const char* name)
 : FCView(0,parent, name)  
 {
-//	FCScintillaView* pcScintView = new FCScintillaView(this, ApplicationWindow::Instance,"EditView");
 	setCaption("Editor");
 	setTabCaption("Editor");
 	resize( 400, 300 );
 
- // view = new FCScintEditor(_pcFrame);
-	view = new FCScintEditor(this);
+	view = new FCScintillaEdit(this);
 }
 
-FCScintEditView::~FCScintEditView()
+FCScintillaView::~FCScintillaView()
 {
 }
 
-void FCScintEditView::resizeEvent(QResizeEvent* e)
+void FCScintillaView::resizeEvent(QResizeEvent* e)
 {
 	view->resize(e->size().width(),e->size().height());
 	FCView::resizeEvent( e);
 }
 
-bool FCScintEditView::OnMsg(const char* pMsg)
+bool FCScintillaView::OnMsg(const char* pMsg)
 {
 	if (strcmp(pMsg,"Save")==0){
 		Save();
+		return true;
+	}
+	if (strcmp(pMsg,"SaveAs")==0){
+		SaveAs();
 		return true;
 	}
 	if (strcmp(pMsg,"Cut")==0){
@@ -887,112 +879,214 @@ bool FCScintEditView::OnMsg(const char* pMsg)
 		Paste();
 		return true;
 	}
+	if (strcmp(pMsg,"Undo")==0){
+		Undo();
+		return true;
+	}
+	if (strcmp(pMsg,"Redo")==0){
+		Redo();
+		return true;
+	}
 
-	GetConsole().Log("FCScintEditView::OnMsg() unhandled \"%s\"\n",pMsg);
+	GetConsole().Log("FCScintillaView::OnMsg() unhandled \"%s\"\n",pMsg);
 	return false;
 }
 
-	/// Mesage handler test
-bool FCScintEditView::OnHasMsg(const char* pMsg)
+// Mesage handler test
+bool FCScintillaView::OnHasMsg(const char* pMsg)
 {
 	if (strcmp(pMsg,"Save")==0)  return true;
 	if (strcmp(pMsg,"Print")==0) return true;
-	if (strcmp(pMsg,"Cut")==0)   return true;
-	if (strcmp(pMsg,"Copy")==0)  return true;
-	if (strcmp(pMsg,"Paste")==0) return true;
+	if (strcmp(pMsg,"Cut")==0)
+  {
+		bool writable = !view->getTextEditor()->WndProc(SCI_GETREADONLY, 0, 0);
+    return (writable && (view->getTextEditor()->SelectionEmpty() == false));
+  }
+	if (strcmp(pMsg,"Copy")==0)
+  {
+    return !(view->getTextEditor()->SelectionEmpty());
+  }
+	if (strcmp(pMsg,"Paste")==0)
+  {
+    QClipboard *cb = QApplication::clipboard();
+    QString text;
+
+    // Copy text from the clipboard (paste)
+    text = cb->text();
+
+    return (text && view->getTextEditor()->CanPaste());
+  }
+	if (strcmp(pMsg,"Undo")==0)
+  {
+    return view->SendScintilla(SCI_CANUNDO);
+  }
+	if (strcmp(pMsg,"Redo")==0)
+  {
+    return view->SendScintilla(SCI_CANREDO);
+  }
 	return false;
 }
 
-bool FCScintEditView::CanClose(void)
+bool FCScintillaView::CanClose(void)
 {
+  if (!view->SendScintilla(SCI_GETMODIFY))
+    return true;
 
-	switch(QMessageBox::warning( 0, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
+  switch(QMessageBox::warning( this, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
 	{
-	case 0:
-		//GetApplication().
-		if (Save())
-  			return true;
-		else
+		case 0:
+			return Save();
+		case 1:
+			return true;
+		case 2:
 			return false;
-	case 1:
-		return true;
-	case 2:
-		return false;
-	default:
-		return false;
+		default:
+			return false;
 	}
 }
 
-bool FCScintEditView::Save(void)
+bool FCScintillaView::Save(void)
 {
-  return true;
+  if (!view->SendScintilla(SCI_GETMODIFY))
+    return true;
+
+  // check if saved ever before
+	if (isAlreadySavedBefore())
+  {
+    saveFile();
+    return true;
+  }
+	else
+  {
+		return SaveAs();
+  }
 }
 
-bool FCScintEditView::SaveAs(void)
+bool FCScintillaView::SaveAs(void)
 {
-  return true;
+	QString fn = QFileDialog::getSaveFileName(QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)", this);
+	if (!fn.isEmpty())
+	{
+    _fileName = fn;
+    saveFile();
+    return true;
+	}
+	else
+	{
+    return false;
+	}
 }
 
-bool FCScintEditView::Open(void)
+bool FCScintillaView::Open(void)
 {
-	QString name = QFileDialog::getOpenFileName( QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", view);
-	if ( name.isEmpty() ) 
+	QString file = QFileDialog::getOpenFileName(QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", this);
+	if ( file.isEmpty() ) 
 		return false;
 
-	view->openFile(name.latin1());
+	OpenFile(file);
+	setCaption(file);
+	QString name = file.left(file.findRev('.'));
+	setTabCaption(name);
+
 	return true;
 }
 
-void FCScintEditView::Print(QPainter& cPrinter)
+void FCScintillaView::OpenFile (const QString& fileName)
+{
+	view->getTextEditor()->WndProc(SCI_CLEARALL, 0, 0);
+
+  QString line;
+  _fileName = fileName;
+  QFile file(fileName);
+   
+  if( !file.open(IO_ReadOnly))
+     return;
+
+  QTextStream in(&file);
+  QString text;
+
+  while( !in.atEnd() ){
+    line = in.readLine();
+    text = line + "\n";
+    view->getTextEditor()->WndProc(SCI_ADDTEXT, text.length(), reinterpret_cast<sptr_t>(static_cast<const char *>(text.latin1())));
+  }
+
+  file.close();
+
+  view->getTextEditor()->WndProc(SCI_SETUNDOCOLLECTION, 1, 0);
+	view->getTextEditor()->WndProc(SCI_SETSAVEPOINT, 0, 0);
+	view->getTextEditor()->WndProc(SCI_GOTOPOS, 0, 0);
+}
+
+void FCScintillaView::Cut(void)
+{
+  view->SendScintilla(SCI_CUT);
+}
+
+void FCScintillaView::Copy(void)
+{
+  view->SendScintilla(SCI_COPY);
+}
+
+void FCScintillaView::Paste(void)
+{
+  view->SendScintilla(SCI_PASTE);
+}
+
+void FCScintillaView::Undo(void)
+{
+  view->SendScintilla(SCI_UNDO);
+}
+
+void FCScintillaView::Redo(void)
+{
+  view->SendScintilla(SCI_REDO);
+}
+
+void FCScintillaView::Print(QPainter& cPrinter)
 {
 	// no printing yet ;-)
 	assert(0);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-/*
-FCScintillaView::FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name)
-  : FCFloatingView( pcView, parent, name )
+void FCScintillaView::saveFile()
 {
+	QFile file(_fileName);
+  if( !file.open(IO_WriteOnly))
+    return;
+
+  const int blockSize = 131072;
+
+	TextRange tr;
+	char data[blockSize + 1];
+	int lengthDoc = view->getTextEditor()->WndProc(SCI_GETLENGTH, 0, 0);
+	
+  QTextStream out(&file);
+  for (int i = 0; i < lengthDoc; i += blockSize) 
+	{
+		int grabSize = lengthDoc - i;
+		if (grabSize > blockSize)
+			grabSize = blockSize;
+
+		tr.chrg.cpMin = i;
+		tr.chrg.cpMax = i + grabSize;
+		tr.lpstrText = data;
+		view->getTextEditor()->WndProc(SCI_GETTEXTRANGE, 0, long(&tr));
+
+    out << data;
+	}
+
+	view->getTextEditor()->WndProc(SCI_SETSAVEPOINT, 0,0);
+
+  file.close();
+  view->SendScintilla(SCI_SETSAVEPOINT);
+  
+  return;
 }
 
-FCScintillaView::~FCScintillaView()
+bool FCScintillaView::isAlreadySavedBefore()
 {
+  return (!_fileName.isEmpty());
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-FCScintillaDoc::FCScintillaDoc()
-{
-}
-
-FCScintillaDoc::~FCScintillaDoc()
-{
-}
-
-void FCScintillaDoc::CreateView(const char* name)
-{
-  view = new FCScintEditView(this, 0L, name);
-}
-
-bool FCScintillaDoc::Save(void)
-{
-  return true;
-}
-
-bool FCScintillaDoc::SaveAs(void)
-{
-  return true;
-}
-
-bool FCScintillaDoc::Open(void)
-{
-	QString name = QFileDialog::getOpenFileName( QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", view);
-	if ( name.isEmpty() ) 
-    return false;
-
-  ((FCScintEditView*)view)->GetEditor()->openFile(name.latin1());
-   return true;
-}
-*/
 #include "moc_ScintillaQt.cpp"

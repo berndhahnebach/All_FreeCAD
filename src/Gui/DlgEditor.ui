@@ -6,25 +6,25 @@
         <name>name</name>
         <cstring>FCDlgEditorSettingsBase</cstring>
     </property>
-    <property>
+    <property stdset="1">
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>381</width>
+            <width>377</width>
             <height>291</height>
         </rect>
     </property>
-    <property>
+    <property stdset="1">
         <name>caption</name>
         <string>Editor</string>
     </property>
     <grid>
-        <property>
+        <property stdset="1">
             <name>margin</name>
             <number>11</number>
         </property>
-        <property>
+        <property stdset="1">
             <name>spacing</name>
             <number>6</number>
         </property>
@@ -34,16 +34,16 @@
                 <name>name</name>
                 <cstring>GroupBox2</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>Window settings</string>
             </property>
             <grid>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
@@ -56,6 +56,10 @@
                     <property>
                         <name>prefEntry</name>
                         <string>EnableEditVerticalScroll</string>
+                    </property>
+                    <property>
+                        <name>prefPath</name>
+                        <string>User parameter:BaseApp/Windows/Editor</string>
                     </property>
                     <property>
                         <name>text</name>
@@ -73,6 +77,10 @@
                         <string>EnableEditHorizontalScroll</string>
                     </property>
                     <property>
+                        <name>prefPath</name>
+                        <string>User parameter:BaseApp/Windows/Editor</string>
+                    </property>
+                    <property>
                         <name>text</name>
                         <string>Horizontal scroll bar</string>
                     </property>
@@ -85,7 +93,7 @@
                 <name>name</name>
                 <cstring>TextLabel3</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>text</name>
                 <string>Font:</string>
             </property>
@@ -96,16 +104,16 @@
                 <name>name</name>
                 <cstring>GroupBox1</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>Colors</string>
             </property>
             <grid>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
@@ -184,7 +192,7 @@
                         <name>name</name>
                         <cstring>TextLabel1</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Foreground:</string>
                     </property>
@@ -195,7 +203,7 @@
                         <name>name</name>
                         <cstring>TextLabel2</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Background:</string>
                     </property>
@@ -208,7 +216,7 @@
                 <name>name</name>
                 <cstring>TextLabel4</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>text</name>
                 <string>Size:</string>
             </property>
@@ -261,7 +269,7 @@
                 <name>name</name>
                 <cstring>ComboBox2</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>sizePolicy</name>
                 <sizepolicy>
                     <hsizetype>0</hsizetype>

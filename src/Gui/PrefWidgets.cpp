@@ -50,7 +50,6 @@
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
 {
-  m_sPrefName = "_____default_____";
   m_sPrefGrp  = "User parameter:BaseApp/Windows/Widget Preferences";
 
   if (name)
@@ -68,9 +67,9 @@ FCWidgetPrefs::~FCWidgetPrefs()
   if (hPrefGrp.IsValid())
     hPrefGrp->Detach(this);
 #ifdef FC_DEBUG
-  if (m_sPrefName == "_____default_____")
+  if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
   {
-    GetConsole().Warning("Wrong widget name!. It must not be \"_____default_____\"\n");
+    GetConsole().Warning("No valid widget name set!\n");
     throw;
   }
 #endif
@@ -83,16 +82,7 @@ void FCWidgetPrefs::setPrefName(QString pref)
 
 void FCWidgetPrefs::setEntryName(QString name)
 {
-  if (hPrefGrp.IsValid())
-  {
-    GetConsole().Warning("Widget already attached to '%s' (will be detached and attached to '%s')\n", getEntryName().latin1(), name.latin1());
-    hPrefGrp->Detach(this);
-  }
-
   setPrefName(name);
-  hPrefGrp = GetApplication().GetParameterGroupByPath(m_sPrefGrp.latin1())->GetGroup(name.latin1());
-  assert(hPrefGrp.IsValid());
-  hPrefGrp->Attach(this);
 }
 
 QString FCWidgetPrefs::getEntryName() const
@@ -103,6 +93,18 @@ QString FCWidgetPrefs::getEntryName() const
 void FCWidgetPrefs::setParamGrpPath(QString name)
 {
   m_sPrefGrp = name;
+
+#ifdef FC_DEBUG
+	if (hPrefGrp.IsValid())
+	{
+		GetConsole().Warning("Widget already attached\n");
+		hPrefGrp->Detach(this);
+	}
+#endif
+
+	hPrefGrp = GetApplication().GetParameterGroupByPath(m_sPrefGrp.latin1());
+	assert(hPrefGrp.IsValid());
+	hPrefGrp->Attach(this);
 }
 
 QString FCWidgetPrefs::getParamGrpPath() const
@@ -112,10 +114,7 @@ QString FCWidgetPrefs::getParamGrpPath() const
 
 void FCWidgetPrefs::setUserParameter()
 {
-  if (m_sPrefName == "_____default_____")
-    printf("%s is not a valid name\n", m_sPrefName.latin1());
   hPrefGrp = getRootParamGrp();
-  hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
 }
 
 FCWidgetPrefsHandler* FCWidgetPrefs::getHandler()
@@ -136,7 +135,8 @@ FCParameterGrp::handle FCWidgetPrefs::getParamGrp()
 
 void FCWidgetPrefs::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
-  restorePreferences();
+  if (QString(sReason) == m_sPrefName)
+    restorePreferences();
 }
 
 FCParameterGrp::handle FCWidgetPrefs::getRootParamGrp()
@@ -154,7 +154,7 @@ void FCWidgetPrefsHandler::save()
 {
   pPref->savePreferences();
   if (pPref->getParamGrp().IsValid())
-    pPref->getParamGrp()->Notify(0);
+    pPref->getParamGrp()->Notify(pPref->getEntryName().latin1());
 }
 
 void FCWidgetPrefsHandler::restore()

@@ -146,7 +146,6 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     virtual void StartBrowser(QString path, QString protocol);
 
     std::string aStrGroupPath;
-    std::vector<std::string> aStrGroups;
     QString        m_FCdoc, m_FCext, m_FCscript;
     std::map<int, QString> mHistory, mBookmarks;
     bool bBackward, bForward;

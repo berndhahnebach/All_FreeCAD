@@ -6,16 +6,16 @@
         <name>name</name>
         <cstring>FCDlgGeneralBase</cstring>
     </property>
-    <property>
+    <property stdset="1">
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>340</width>
+            <width>336</width>
             <height>359</height>
         </rect>
     </property>
-    <property>
+    <property stdset="1">
         <name>caption</name>
         <string>General</string>
     </property>
@@ -25,7 +25,7 @@
             <name>name</name>
             <cstring>GroupBox5</cstring>
         </property>
-        <property>
+        <property stdset="1">
             <name>geometry</name>
             <rect>
                 <x>10</x>
@@ -34,7 +34,7 @@
                 <height>321</height>
             </rect>
         </property>
-        <property>
+        <property stdset="1">
             <name>title</name>
             <string>General</string>
         </property>
@@ -44,7 +44,7 @@
                 <name>name</name>
                 <cstring>GroupBox6</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>geometry</name>
                 <rect>
                     <x>10</x>
@@ -53,7 +53,7 @@
                     <height>80</height>
                 </rect>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>Command bar</string>
             </property>
@@ -63,7 +63,7 @@
                     <name>name</name>
                     <cstring>TextLabel1_2</cstring>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>10</x>
@@ -72,7 +72,7 @@
                         <height>20</height>
                     </rect>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>text</name>
                     <string>Slow</string>
                 </property>
@@ -83,7 +83,7 @@
                     <name>name</name>
                     <cstring>TextLabel2</cstring>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>260</x>
@@ -92,7 +92,7 @@
                         <height>20</height>
                     </rect>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>text</name>
                     <string>Fast</string>
                 </property>
@@ -103,7 +103,7 @@
                     <name>name</name>
                     <cstring>SpeedAnimationCmdBar</cstring>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>geometry</name>
                     <rect>
                         <x>50</x>
@@ -112,7 +112,7 @@
                         <height>26</height>
                     </rect>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>focusPolicy</name>
                     <enum>TabFocus</enum>
                 </property>
@@ -123,6 +123,10 @@
                 <property>
                     <name>prefEntry</name>
                     <string>SpeedAnimationCmdBar</string>
+                </property>
+                <property>
+                    <name>prefPath</name>
+                    <string>User parameter:BaseApp/Windows/CmdBar</string>
                 </property>
                 <property>
                     <name>value</name>

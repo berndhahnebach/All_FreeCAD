@@ -1,7 +1,8 @@
 #include "PreCompiled.h"
 
-#include "DlgSettingsMacroImp.h"
+#include "Window.h"
 #include "PrefWidgets.h"
+#include "DlgSettingsMacroImp.h"
 
 /* 
  *  Constructs a DlgSettingsMacroImp which is a child of 'parent', with the 
@@ -10,6 +11,9 @@
 FCDlgSettingsMacro::FCDlgSettingsMacro( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettingsMacro( parent, name, fl )
 {
+  append(FCCheckBox2->getHandler());
+  append(FCCheckBox3->getHandler());
+	append(MacroPath->getHandler());
 }
 
 /*  

@@ -6,25 +6,25 @@
         <name>name</name>
         <cstring>DlgSettingsMacro</cstring>
     </property>
-    <property>
+    <property stdset="1">
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>384</width>
+            <width>376</width>
             <height>382</height>
         </rect>
     </property>
-    <property>
+    <property stdset="1">
         <name>caption</name>
         <string>Macro recording settings</string>
     </property>
     <vbox>
-        <property>
+        <property stdset="1">
             <name>margin</name>
             <number>11</number>
         </property>
-        <property>
+        <property stdset="1">
             <name>spacing</name>
             <number>6</number>
         </property>
@@ -34,16 +34,16 @@
                 <name>name</name>
                 <cstring>GroupBox6</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>Macro recording settings</string>
             </property>
             <vbox>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
@@ -53,16 +53,16 @@
                         <name>name</name>
                         <cstring>GroupBox8</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>title</name>
                         <string>Macro path</string>
                     </property>
                     <hbox>
-                        <property>
+                        <property stdset="1">
                             <name>margin</name>
                             <number>11</number>
                         </property>
-                        <property>
+                        <property stdset="1">
                             <name>spacing</name>
                             <number>6</number>
                         </property>
@@ -72,7 +72,7 @@
                                 <name>name</name>
                                 <cstring>MacroPath</cstring>
                             </property>
-                            <property>
+                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>1</hsizetype>
@@ -85,7 +85,7 @@
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Macro/</string>
+                                <string>User parameter:BaseApp/Macro</string>
                             </property>
                         </widget>
                         <widget>
@@ -94,14 +94,14 @@
                                 <name>name</name>
                                 <cstring>SaveBtn</cstring>
                             </property>
-                            <property>
+                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>4</hsizetype>
                                     <vsizetype>0</vsizetype>
                                 </sizepolicy>
                             </property>
-                            <property>
+                            <property stdset="1">
                                 <name>text</name>
                                 <string>...</string>
                             </property>
@@ -114,72 +114,20 @@
                         <name>name</name>
                         <cstring>GroupBox7</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>title</name>
                         <string>Gui commands</string>
                     </property>
                     <grid>
-                        <property>
+                        <property stdset="1">
                             <name>margin</name>
                             <number>11</number>
                         </property>
-                        <property>
+                        <property stdset="1">
                             <name>spacing</name>
                             <number>6</number>
                         </property>
-                        <widget row="0"  column="0"  rowspan="2"  colspan="1" >
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>FCCheckBox2</cstring>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>RecordGui</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>User parameter:BaseApp/Macro/</string>
-                            </property>
-                        </widget>
-                        <widget row="2"  column="0" >
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>FCCheckBox3</cstring>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>GuiAsComment</string>
-                            </property>
-                            <property>
-                                <name>prefPath</name>
-                                <string>User parameter:BaseApp/Macro/</string>
-                            </property>
-                        </widget>
-                        <widget row="0"  column="1" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Recording gui commands</string>
-                            </property>
-                        </widget>
-                        <widget row="1"  column="1"  rowspan="2"  colspan="1" >
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel2</cstring>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Record as comment</string>
-                            </property>
-                        </widget>
-                        <spacer row="0"  column="2"  rowspan="2"  colspan="1" >
+                        <spacer row="0"  column="1" >
                             <property>
                                 <name>name</name>
                                 <cstring>Spacer7</cstring>
@@ -200,6 +148,44 @@
                                 </size>
                             </property>
                         </spacer>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>FCCheckBox2</cstring>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>RecordGui</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>User parameter:BaseApp/Macro</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Recording gui commands</string>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>FCCheckBox3</cstring>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>GuiAsComment</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>User parameter:BaseApp/Macro</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Record as comment</string>
+                            </property>
+                        </widget>
                     </grid>
                 </widget>
                 <spacer>
@@ -229,22 +215,6 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCLineEdit</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
-    </customwidget>
-    <customwidget>
         <class>FCCheckBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
@@ -256,7 +226,7 @@
             <hordata>5</hordata>
             <verdata>5</verdata>
         </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image0</pixmap>
         <signal>toggled(bool)</signal>
         <property type="String">text</property>
         <property type="Bool">checked</property>
@@ -265,15 +235,31 @@
         <property type="String">prefEntry</property>
         <property type="String">prefPath</property>
     </customwidget>
+    <customwidget>
+        <class>FCLineEdit</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
+    </customwidget>
 </customwidgets>
 <images>
     <image>
         <name>image0</name>
-        <data format="XPM.GZ" length="1352">789ca5d3596fda401007f0773e8585df5045ea6b6dabea83399c8323242452a5aa0fb3578004305738a27ef77a769654904a55d5e1f24ffff5e29db52f6aceb741cfa95d54566b588f852346b0746a72339deebffff8fa56a9fabe53bec3d4f1aa9f2ad5ba239cfe7ca6f078571ebb9f4d2181e8877e8acc88cc0389740d93200901d924b29447488ef49228651c9913638fd20132f062c9cd54b78669c2882d4b100c299021445ee4233532f299c702a4348423af8929a373ef2c4198055e2159003e51197226e922b7c83838b247049066aa47439e4022904b642212457c25729066e627641aa62c0d912f960accf21b86420434f8de325631b28384e8c8b5a104a0b62f88dcf6ea9228380d1e2179c47deaf3de92110f44a169f0d45072a0a9c6968a3824ca5869e404299808a8b1cf9631b16ba85440835748c9caed350bdc1055accdffde182aa929ed1315a77486541a5fc83651c7daf00159c24e3537d49a535a586a62fd8ff51f890b27e51e130ea25cc0ef921a3825e58df7341abfd764f2fc022629bb359dcd8b935ab8e6b193cb5971562bf38c815ad3199b57fcdeee8addb6b0c99e061e32fadd959ff7a4d1cc5aed43d6ca2fcf93abeb9bac73c8ba9dfc3ce9e4cdac87b365e749de284cd2ff90dc665999e4adc1dd49224745fbbedbefb7fbc3a1bd6a5a8f2b460fe72ba51ed4e1f14300c75e2f5627ad5994fbf097fdf9d7ddfef9a5f20b95f7627f</data>
+        <data format="XPM.GZ" length="2878">789ccdd5594f23471007f0773e8545bda1a8d673cf28ca0397318701c31ede8df2d0d33d0318b0c107d72adf3dddffea6d292b63e5254aa69645bfe99a9eea6bf8b0d5199d0f3a5b1f36e60bb5b8d11d7dad669d2db3bcbf7ffdfd8fdfbe6f6cc671c7fe8ba2a8136ffeb2b1395c7474e7743a691c7864415d5ccec470dc8dbcafe1ccdec991ffc53beda6f0195c768b6e81fc3658c157b0b277c404d72ef07c176eaca5fdd9398a6db5289653d8b880f17c1cb980158c0bcf37701517b1d457c3c6055c3827ddb8f1d670ea02cf4fe02c4912e9ef092e933ca9907fe56d0336ce69ec028ee022cd53793fe62f2b5cc0255c5a67f081b70df81cae3395613e18e3c93317f057b8c8f35cfabb814b17701fae6c86f814ae5dc08973e12ee9ef335c156521f963d8b8802fe1c65ad667cfb98c8ab694f9cfe0d8064c2f302eb4dfc375a94ad91f58afd2d83ba887507fd9d8c0fb68ea5c456553c97c623f55b8e00aae2b5549ff736715ab48c97a2de154252a81b13e2ab777b09f79162ce3bf850b17c8df854b9b21ef7b852bdb2eebb9f02e7dfb31acec1d9c0fbaf356beff49b09c9f3c58d6ef3118fd91f45f87e72f8225ff9b77ad64fcd360a9e72158f6cf3258e61beba18cd24aa33d76ae331768df76d6a94e6a59ffa71fd6723ed0bfce5cc0981f9d5bcbfc0ce052175ae663ec6d03c67875652df3b11f2cf59f78575ac6fb2958c6bb172cf9582f3b981fdef156de6f706d2defdbf6ae7dfbc76099af5eb09c17aca7c685fa51af49ece744f63bfa379949bd67c1b21f518fa94c29edfc1c2ce709df27a35cc038afa67619f0a1776d643e70be9ac805daf1fd6dd226f1ee05cbfb8fe0a2c94c8be70fbd8b46fac7feb5c7af6864bd06c1721e4e8225ffd6bb6c64fde7c1f2bc0e967a87c1b27e528f72817c7cff1a77c9fec4f7af8dda6e83bf4fd4f7b601a3bf366bd356c687f3d12a1730be57ad71217fecfe79fc9ff3995871cdfaa730dc70bb325ff1155ff3cd4f31e65bbe5b995fdbec7b9ef0941ff891673ce7052ff9899ff96565beb6bdbdf21b6ff30eeff21eef738f0fb8cf877cf46efeb1cde9f1090ff0fb94cff89c876bf22ff8d2d6d3e38ffc893ff3171ef1d7b5f9dfb8cb11c7b6a2c4e68e38e56c6d7ece85cd2ab9e211311129aa49bf9f4f861a9bd9d2155ddbdf3734b6f9b76bf2efe89e26a86444537aa0479ad17c4dfe827bb4a4277aa6173743f44a6fefd663784cdbb4632bd8a53dfb7f4dfbb6f71e1d507f657ec3b774484774cc433ab13f033aa5333aa7215daccc6ff98e5ff8e8ef417dbaa0cbff62ffff2bf97ffebaf117f4e0deb4</data>
     </image>
     <image>
         <name>image1</name>
-        <data format="XPM.GZ" length="2157">789ccdd2594fdb4010c0f1f77c0a0bbfa16a88d7c7daaafa0084b35ce186aa0fdef52e492001820384aadfbdb3b38355a110fa52b5d91cfa65fe766cc74b8bc1f9c16eb0b8d47aa8cbbaaf03dd2bc7c16235190ea7dfbe7ff9d15a1022c067960562e1536ba15b073ad8bb1d1907e820c2363dc8abec84bd4cce1b1f34cec96bec9c7dee1cb5dd226f91f348477e1e3a8b48b44544de27172261976c2d0af257e7386a7ce41db763df2b76c23e231768df5b76ced6ce8948a2842e06acb353f695732ad234f5de21978d1fd9455a922be72cced22c263f91155a917bec82bde92c63994adfaf90952ca49ff7d9153b72ce1359e50979db3b17ec1bb2ce4bf66e634deeb20dfbd8b9487253f8de907551167e7eeb5ca6a52853f2809db11fc855e376e38a3c64973c1f35f6f343b6616f38ab5465caf717ce3ad3b1f2f3bb57eb8c7cc296ec17b2695cb3157bd2d8dfefd76ccb16ce5556c595ef4fd9927d49369562df37f6db8f9d8d34b191e4942d79fefc6a63c919d9ba6fc8b2b19fefb115cfa78dfd3c665b76ee6ca58dd9c9abaddfbe604bef10c8d62a4b7d18b2ad77b7fef3f53ff710e22a41bd591a2a30eff416aea0f766f56100d733fb12eb1b18c288d6006ee9f30eee613cb357b8b707a861f2db7a84277886e9bbfd90aa1a5ee8b307cbb8c5746edfc763f0fb5e8155e8e0d9ceeb47b006ebb081f526b61dd882ed0ff6ff15ab1d3054afc12e9eedde9c7e00fbd81d60e9fa2efecefc7e088770446d078ee104cffcf4837e82d7fd0ccef148dc399fcce9355e9b0bb8c423684384eff720b01e430cc9ccbec2a3bf841432bc22125f99fb672187228499bd816b9c4fdfac046fc3f05fdcff7fa5fff9b9f50b3afa46fc</data>
+        <data format="XPM.GZ" length="1487">789ca5d3d96eda501006e07b9ec20a775195d8c70bb6aa5e0427900db26f54bd386bc84288032481aaef5effbf216d48a5aaea0cdba7e12c9e63afaf7a97871d6f75bd361acbf18df6745f3e79ab6632184cbf7efbf2bdb6228457bee2d40b563ed556d63ced75870f16bf67e5efbacf006545110903e61593406ab04eaa504529b845ea24551cbb0d0669c35711784c660b1e90b2115454a48a65a2c073300c1a4e71a133324d23c54db64897a69afbd76094c6619c800e8c9344243168c82c29770dee912a8babb117a4cea496e02e983464a0b9902535129c820d5132038fc8444a23c09074a94a39760ca61609be565499e1420330139995dcc6351923c14d32d3bee1d813526b611c78453a1d59f6b9034aa163cba90ec958372c77352233152b9ed14e452d6d083e930c30005580049b15b5b36c6c9f144870834c90e0039921c11bd22141bfa269582e74076a1f09de920112bc27d977b04b3a1b584e35018d30f34ebe90a18d1cc7ee931a099e92c64ac7dbac473aab1cfb3c042d036c93cec58e330bd02548f0919448f092d448f089b448b020197cc4fe18ff51991fda22ea8b8a92dad8dfc238a9aa8ad4f6ba7ff316b777f703c94a5ddb87e163f12b9e8a6254e7d36fc6c3622926bc78699fab112faff89cce8ad9b4985736aa3f36f3ea7b56bedf2a9b5b79abddcc5bdb3bcb95ddbdfdbcd3ccbb9d83e5cae1f6567e84d9f2e5caf149c1cae987ca599e9795e3d6f9c5bb8ae95fb6afbabd5ebbe7fbf35d57d753de7c62f94aab1eacc9f043412e7a3d9abc6bcda83c87bf9ccfbf9ef68fcfb59ff4e37dd9</data>
     </image>
 </images>
 <connections>

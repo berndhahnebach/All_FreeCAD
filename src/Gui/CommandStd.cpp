@@ -284,7 +284,13 @@ FCCmdUndo::FCCmdUndo()
 
 void FCCmdUndo::Activated(int iMsg)
 {
-  ApplicationWindow::Instance->slotUndo();
+//  ApplicationWindow::Instance->slotUndo();
+	GetAppWnd()->SendMsgToActiveView("Undo");
+}
+
+bool FCCmdUndo::IsActive(void)
+{
+	return GetAppWnd()->SendHasMsgToActiveView("Undo");
 }
 
 QWidget* FCCmdUndo::GetWidget()
@@ -330,7 +336,13 @@ FCCmdRedo::FCCmdRedo()
 
 void FCCmdRedo::Activated(int iMsg)
 {
-  ApplicationWindow::Instance->slotRedo();
+//  ApplicationWindow::Instance->slotRedo();
+	GetAppWnd()->SendMsgToActiveView("Redo");
+}
+
+bool FCCmdRedo::IsActive(void)
+{
+	return GetAppWnd()->SendHasMsgToActiveView("Redo");
 }
 
 QWidget* FCCmdRedo::GetWidget()

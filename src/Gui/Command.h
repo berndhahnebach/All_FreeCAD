@@ -548,6 +548,7 @@ class FCCmdUndo : public FCCppCommand
   public:
 	  FCCmdUndo();
 	  virtual void Activated(int iMsg);
+    bool IsActive(void);
     QWidget* GetWidget();
   	FCAction * CreateAction(void);
 
@@ -560,6 +561,7 @@ class FCCmdRedo : public FCCppCommand
   public:
 	  FCCmdRedo();
 	  virtual void Activated(int iMsg);
+    bool IsActive(void);
     QWidget* GetWidget();
   	FCAction * CreateAction(void);
 

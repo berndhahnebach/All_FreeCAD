@@ -196,45 +196,4 @@ bool FCDockView::OnHasMsg(const char* pMsg)
 	return false;
 }
 
-
-
-//**************************************************************************
-// FCFloatingDoc
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-void FCFloatingDoc::CanClose(QCloseEvent * e )
-{
-  switch(QMessageBox::warning( view, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
-	{
-	case 0:
-		if (Save())
-  		e->accept();
-    else
-      e->ignore();
-		break;
-	case 1:
-		e->accept();
-		break;
-	case 2:
-		break;
-	}
-}
-
-//**************************************************************************
-// FCFloatingView
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-FCFloatingView::FCFloatingView(FCFloatingDoc* pcDoc, QWidget* parent, const char* name, int wflags)
-  : FCView(0,parent, name, wflags),
-    _pcDocument(pcDoc)
-{
-	_pcFrame = new QVBox (this);
-  _pcFrame->setSpacing ( 6 );
-  _pcFrame->setMargin (3);
-  _pcFrame->setFrameShadow(QVBox::Sunken);
-  _pcFrame->setFrameStyle(QVBox::Box);
-}
-
 #include "moc_View.cpp"

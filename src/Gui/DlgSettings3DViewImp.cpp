@@ -41,6 +41,8 @@
 
 #ifndef _PreComp_
 #endif
+
+#include "PrefWidgets.h"
 #include "DlgSettings3DViewImp.h"
 
 /* 
@@ -50,6 +52,7 @@
 FCDlgSettings3DView::FCDlgSettings3DView( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettings3DView( parent, name, fl )
 {
+	append(UseAntialiasing->getHandler());
 }
 
 /*  

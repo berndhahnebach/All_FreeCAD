@@ -6,25 +6,25 @@
         <name>name</name>
         <cstring>DlgSettings3DView</cstring>
     </property>
-    <property>
+    <property stdset="1">
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>272</width>
+            <width>268</width>
             <height>303</height>
         </rect>
     </property>
-    <property>
+    <property stdset="1">
         <name>caption</name>
         <string>3DView settings</string>
     </property>
     <vbox>
-        <property>
+        <property stdset="1">
             <name>margin</name>
             <number>11</number>
         </property>
-        <property>
+        <property stdset="1">
             <name>spacing</name>
             <number>6</number>
         </property>
@@ -34,16 +34,16 @@
                 <name>name</name>
                 <cstring>GroupBox12</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>3DView settings</string>
             </property>
             <vbox>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
@@ -53,19 +53,45 @@
                         <name>name</name>
                         <cstring>GroupBox13</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>title</name>
                         <string>Anti aliasing</string>
                     </property>
                     <grid>
-                        <property>
+                        <property stdset="1">
                             <name>margin</name>
                             <number>11</number>
                         </property>
-                        <property>
+                        <property stdset="1">
                             <name>spacing</name>
                             <number>6</number>
                         </property>
+                        <widget row="0"  column="0" >
+                            <class>FCCheckBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>UseAntialiasing</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                </sizepolicy>
+                            </property>
+                            <property>
+                                <name>prefEntry</name>
+                                <string>UseAntialiasing</string>
+                            </property>
+                            <property>
+                                <name>prefPath</name>
+                                <string>User parameter:BaseApp/Windows/View</string>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Using anti aliasing</string>
+                            </property>
+                        </widget>
                         <spacer row="0"  column="1" >
                             <property>
                                 <name>name</name>
@@ -87,28 +113,6 @@
                                 </size>
                             </property>
                         </spacer>
-                        <widget row="0"  column="0" >
-                            <class>FCCheckBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>UseAntialiasing</cstring>
-                            </property>
-                            <property>
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                </sizepolicy>
-                            </property>
-                            <property>
-                                <name>prefEntry</name>
-                                <string>UseAntialiasing</string>
-                            </property>
-                            <property>
-                                <name>text</name>
-                                <string>Using anti aliasing</string>
-                            </property>
-                        </widget>
                     </grid>
                 </widget>
             </vbox>

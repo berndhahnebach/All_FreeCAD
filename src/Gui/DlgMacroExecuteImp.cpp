@@ -142,7 +142,16 @@ void DlgMacroExecuteImp::OnCreate()
 
 void DlgMacroExecuteImp::OnEdit()
 {
-  ApplicationWindow::Instance->addWindow(new FCScintEditView(ApplicationWindow::Instance, "Editor"),QextMdi::StandardAdd);
+	QListViewItem* item = MacrosListView->selectedItem();
+	if (!item) return;
+
+	QString file = item->text(0);
+	FCScintillaView* edit = new FCScintillaView(ApplicationWindow::Instance, "Editor");
+  ApplicationWindow::Instance->addWindow(edit,QextMdi::StandardAdd);
+	edit->OpenFile(file);
+	edit->setCaption(file);
+	QString name = file.left(file.findRev('.'));
+	edit->setTabCaption(name);
   accept();
 }
 

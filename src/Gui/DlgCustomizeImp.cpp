@@ -211,7 +211,7 @@ void FCDlgCustomize::slotApply()
   if (dynamic_cast<FCPropertyPage*>(page) != NULL)
      (dynamic_cast<FCPropertyPage*>(page))->slotApply();
 
-# ifdef _DEBUG
+# ifdef FC_DEBUG
   else
     GetConsole().Warning("Added page does not inherit from class FCPropertyPage");
 #endif
@@ -224,7 +224,7 @@ void FCDlgCustomize::slotCancel()
     if (dynamic_cast<FCPropertyPage*>(*it) != NULL)
        (dynamic_cast<FCPropertyPage*>(*it))->slotCancel();
 
-# ifdef _DEBUG
+# ifdef FC_DEBUG
     else
       GetConsole().Warning("Added page does not inherit from class FCPropertyPage");
 #endif

@@ -438,26 +438,19 @@ FCHtmlView::~FCHtmlView()
     SaveHistory();
   if (bBookm)
     SaveBookmarks();
-  for (std::vector<std::string>::iterator it = aStrGroups.begin(); it != aStrGroups.end(); ++it)
-  {
-    GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Detach(this);
-  }
+  GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Detach(this);
 }
 
 void FCHtmlView::init()
 {
   try{
     // attach the help viewer to its preferences
-    aStrGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
-    aStrGroups.push_back("EnableBookmarks");
-    aStrGroups.push_back("EnableHistory");
-    aStrGroups.push_back("NbOfHistoryItems");
-    aStrGroups.push_back("NbOfBookmarks");
-    for (std::vector<std::string>::iterator it = aStrGroups.begin(); it != aStrGroups.end(); ++it)
-    {
-      GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Attach(this);
-      GetApplication().GetParameterGroupByPath((aStrGroupPath + *it).c_str())->Notify(0);
-    }
+    aStrGroupPath = "User parameter:BaseApp/Windows/HelpViewer";
+    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Attach(this);
+    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("EnableBookmarks");
+    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("EnableHistory");
+    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
+    GetApplication().GetParameterGroupByPath(aStrGroupPath.c_str())->Notify("NbOfBookmarks");
   }catch(/*const*/ FCException& rclE)
   {
     QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
@@ -1017,28 +1010,20 @@ void FCHtmlView::CheckBookmarks()
 void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
-  std::string name = rclGrp.GetGroupName();
-  std::vector<std::string>::iterator pos;
-  if (( pos = std::find(aStrGroups.begin(), aStrGroups.end(), name)) != aStrGroups.end())
+
+  if (strcmp(sReason, "EnableBookmarks") == 0)
+    bBookm = rclGrp.GetBool(sReason, false);
+  else if (strcmp(sReason, "EnableHistory") == 0)
+    bHistory = rclGrp.GetBool(sReason, false);
+  else if (strcmp(sReason, "NbOfHistoryItems") == 0)
   {
-    int i = pos - aStrGroups.begin();
-    switch (i)
-    {
-    case 0:
-      bBookm = rclGrp.GetBool(name.c_str(), false);
-      break;
-    case 1:
-      bHistory = rclGrp.GetBool(name.c_str(), false);
-      break;
-    case 2:
-      iMaxHist = rclGrp.GetInt(name.c_str(), 20);
-      if (!bHistory) iMaxHist = 0;
-      break;
-    case 3:
-      iMaxBookm = rclGrp.GetInt(name.c_str(), 20);
-      if (!bBookm) iMaxBookm = 0;
-      break;
-    };
+    iMaxHist = rclGrp.GetInt(sReason, 20);
+    if (!bHistory) iMaxHist = 0;
+  }
+  else if (strcmp(sReason, "NbOfBookmarks") == 0)
+  {
+    iMaxBookm = rclGrp.GetInt(sReason, 20);
+    if (!bBookm) iMaxBookm = 0;
   }
 }
 

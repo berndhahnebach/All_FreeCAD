@@ -108,9 +108,9 @@ class FCToolButtonDropDown : public QToolButton
     /// returns the widget
     QWidget* getWidget();
     /// enables this button if bEnable is true, otherwise disables it
-    void setButtonEnabled(bool bEnable);
+    void setEnabled(bool bEnable);
     /// returns true if this button is enabled otherwise false
-    bool isButtonEnabled();
+    bool isEnabled();
     void setAutoRaiseEx (bool bEnable);
     bool autoRaiseEx () const;
 

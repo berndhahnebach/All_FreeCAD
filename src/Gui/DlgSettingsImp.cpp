@@ -52,19 +52,12 @@
 FCDlgSettings::FCDlgSettings( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgSettingsBase( parent, name, fl )
 {
-  EnableBookmarks->getHandler()->restore();
-  EnableHistory->getHandler()->restore();
-  NbOfBookmarks->getHandler()->restore();
-  NbOfHistoryItems->getHandler()->restore();
-  LineEditURL->getHandler()->restore();
-  LineEditBrowser->getHandler()->restore();
-
-  m_aHandlers.push_back(EnableBookmarks->getHandler());
-  m_aHandlers.push_back(EnableHistory->getHandler());
-  m_aHandlers.push_back(NbOfBookmarks->getHandler());
-  m_aHandlers.push_back(NbOfHistoryItems->getHandler());
-  m_aHandlers.push_back(LineEditURL->getHandler());
-  m_aHandlers.push_back(LineEditBrowser->getHandler());
+  append(EnableBookmarks->getHandler());
+  append(EnableHistory->getHandler());
+  append(NbOfBookmarks->getHandler());
+  append(NbOfHistoryItems->getHandler());
+  append(LineEditURL->getHandler());
+  append(LineEditBrowser->getHandler());
 }
 
 /*  

@@ -35,7 +35,7 @@
 #define FCDLGSETTINGS3DVIEWIMP_H
 #include "DlgSettings3DView.h"
 
-class FCDlgSettings3DView : public DlgSettings3DView
+class FCDlgSettings3DView : public DlgSettings3DView, public FCWidgetPrefsManager
 { 
     Q_OBJECT
 

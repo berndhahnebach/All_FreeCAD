@@ -417,17 +417,17 @@ QWidget* FCToolButtonDropDown::getWidget()
   return _pWidget;
 }
 
-void FCToolButtonDropDown::setButtonEnabled(bool bEnable)
+void FCToolButtonDropDown::setEnabled(bool bEnable)
 {
-  setEnabled(bEnable);
+  QToolButton::setEnabled(bEnable);
   if (_pDropDown)
     _pDropDown->setEnabled(bEnable);
 }
 
-bool FCToolButtonDropDown::isButtonEnabled()
+bool FCToolButtonDropDown::isEnabled()
 {
   bool bEnabled = true;
-  bEnabled &= isEnabled();
+  bEnabled &= QToolButton::isEnabled();
   if (_pDropDown)
     bEnabled &= _pDropDown->isEnabled();
 

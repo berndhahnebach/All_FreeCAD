@@ -33,12 +33,12 @@
 
 
 // forward declaration
-class FCScintEditor;
+class FCScintillaEdit;
 
 class ScintillaQt : public ScintillaBase
 {
   public:
-	  ScintillaQt(FCScintEditor* edit);
+	  ScintillaQt(FCScintillaEdit* edit);
 	  virtual ~ScintillaQt();
 
 	  virtual sptr_t WndProc(unsigned int iMessage,uptr_t wParam, sptr_t lParam);
@@ -88,7 +88,7 @@ class ScintillaQt : public ScintillaBase
 	  int wheelDelta; ///< Wheel delta from roll
   	bool hasOKText;
 
-	  FCScintEditor* m_pEditor;
+	  FCScintillaEdit* m_pEditor;
 	  QTimer m_clTimer;
 
   private:
@@ -106,21 +106,23 @@ class ScintillaQt : public ScintillaBase
 	      ScintillaQt *sciTE;
     };
   
-  friend class FCScintEditor;
+  friend class FCScintillaEdit;
   friend class FCScintCallTip;
+  friend class FCScintillaView;
 };
 
-class FCScintEditor : public QWidget
+class FCScintillaEdit : public QWidget
 {
 	Q_OBJECT
 
   public:
-	  FCScintEditor(QWidget *parent = 0,const char *name = 0, WFlags f = 0);
-	  virtual ~FCScintEditor();
+	  FCScintillaEdit(QWidget *parent = 0,const char *name = 0, WFlags f = 0);
+	  virtual ~FCScintillaEdit();
 
 	  long SendScintilla(unsigned int msg,unsigned long wParam = 0, long lParam = 0);
 	  virtual QSize sizeHint() const;
-    void openFile(const char* fileName);
+    ScintillaQt* getTextEditor() const;
+    bool toggleBreakpoint(int nLine);
 
   protected:
 	  bool eventFilter                   (QObject *o,QEvent *e);
@@ -152,60 +154,43 @@ class FCScintEditor : public QWidget
     friend class ScintillaQt;
 };
 
-class FCScintEditor;
-//class FCScintillaDoc;
-
-class FCScintEditView : public FCView
+class FCScintillaView : public FCView
 {
-public:
-	  FCScintEditView( QWidget* parent, const char* name);
-	  ~FCScintEditView();
-
-    FCScintEditor* GetEditor() const { return view; }
-
-    virtual const char *GetName(void){return "Scintilla";}
-	virtual void Update(void){};
-
-	/// Mesage handler
-	virtual bool OnMsg(const char* pMsg);
-	/// Mesage handler test
-	virtual bool OnHasMsg(const char* pMsg);
-	/// checking on close state
-	virtual bool CanClose(void);
-
-
-    bool Save   (void);
-    bool SaveAs (void);
-    bool Open   (void);
-	virtual void Print(QPainter& cPrinter);
-	void Cut(void){}
-	void Copy(void){}
-	void Paste(void){}
-
-protected:
-	virtual void resizeEvent(QResizeEvent* e);
-    FCScintEditor* view;
-};
-/*
-class FCScintillaView : public FCFloatingView
-{
-  public:
-	  FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name);
+	public:
+	  FCScintillaView( QWidget* parent, const char* name);
 	  ~FCScintillaView();
 
-};
+    FCScintillaEdit* GetEditor() const { return view; }
 
-class FCScintillaDoc : public FCFloatingDoc
-{
-  Q_OBJECT
+    virtual const char *GetName(void){return "Scintilla";}
+		virtual void Update(void){};
 
-  public:
-    FCScintillaDoc();
-    ~FCScintillaDoc();
-    void CreateView(const char* name);
+		/// Mesage handler
+		virtual bool OnMsg(const char* pMsg);
+		/// Mesage handler test
+		virtual bool OnHasMsg(const char* pMsg);
+		/// checking on close state
+		virtual bool CanClose(void);
+		virtual void Print(QPainter& cPrinter);
+    void OpenFile (const QString& fileName);
+
     bool Save   (void);
     bool SaveAs (void);
     bool Open   (void);
+		void Cut    (void);
+		void Copy   (void);
+		void Paste  (void);
+    void Undo   (void);
+    void Redo   (void);
+
+    
+    void saveFile();
+    bool isAlreadySavedBefore();
+    QString _fileName;
+
+	protected:
+		virtual void resizeEvent(QResizeEvent* e);
+    FCScintillaEdit* view;
 };
-*/
+
 #endif

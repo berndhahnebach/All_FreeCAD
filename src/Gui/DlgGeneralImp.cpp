@@ -51,8 +51,7 @@
 FCDlgGeneral::FCDlgGeneral( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgGeneralBase( parent, name, fl )
 {
-  SpeedAnimationCmdBar->getHandler()->restore();
-  m_aHandlers.push_back(SpeedAnimationCmdBar->getHandler());
+  append(SpeedAnimationCmdBar->getHandler());
 }
 
 /*  
