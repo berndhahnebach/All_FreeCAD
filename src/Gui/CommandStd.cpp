@@ -23,7 +23,7 @@
 #else
 #endif
 
-#include "FCWidgets.h"
+#include "Widgets.h"
 #include "Splashscreen.h"
 #include "CommandStd.h"
 #include "DlgDocTemplatesImp.h"

@@ -100,8 +100,10 @@ const char*     sScriptName;
 /// set FreeCAD in the verbose mode
 bool bVerbose = false;
 /// The QT Application need to be set very early because of splasher
-QApplication* pcQApp = NULL;
-FCSplashScreen *splash = 0;
+#ifdef _FC_GUI_ENABLED_
+	QApplication* pcQApp = NULL;
+	FCSplashScreen *splash = 0;
+#endif
 /// pointer to the system parameter (loaded in Init())
 FCParameterManager *pcSystemParameter;
 /// pointer to the user parameter (loaded in Init())
