@@ -46,7 +46,7 @@ DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WF
 
   if ( MacroPath->text().isEmpty() )
   {
-    QDir d(GetApplication().GetHomePath());
+    QDir d(App::GetApplication().GetHomePath());
     MacroPath->setText( d.path() );
   }
 }

@@ -114,7 +114,7 @@ void CustomWidget::init(const char* grp, const char* name)
 /** Returns the handle to the root parameter group. */
 FCParameterGrp::handle CustomWidget::getRootParamGrp()
 {
-  return GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbenches");
+  return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbenches");
 }
 
 /** 

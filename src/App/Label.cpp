@@ -46,6 +46,7 @@
 using Base::Console;
 using Base::streq;
 
+using namespace App;
 
 /*
 
@@ -56,7 +57,7 @@ using Base::streq;
 FCLabel::FCLabel(const TDF_Label &cLabel,FCDocument *pcDocument) 
  : _cLabel(cLabel),_pcDocument(pcDocument)
 {
-	_pcPyObject = new FCLabelPy(this);
+	_pcPyObject = new LabelPy(this);
 
 	Console().Log("Create Label %p Py: %p Tag: %d Depth: %d\n",this,_pcPyObject,cLabel.Tag(),cLabel.Depth());
 	
@@ -188,11 +189,11 @@ FCPyObject *FCLabel::GetPyObject(void)
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject FCLabelPy::Type = {
+PyTypeObject LabelPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FCLabelPy",				/*tp_name*/
-	sizeof(FCLabelPy),			/*tp_basicsize*/
+	"LabelPy",				/*tp_name*/
+	sizeof(LabelPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -211,7 +212,7 @@ PyTypeObject FCLabelPy::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef FCLabelPy::Methods[] = {
+PyMethodDef LabelPy::Methods[] = {
   {"GetLabel",         (PyCFunction) sPyGetLabel,         Py_NEWARGS},
 //  {"GetName",          (PyCFunction) sPyGetName,          Py_NEWARGS},
   {"HasChildren",      (PyCFunction) sPyHasChildren,      Py_NEWARGS},
@@ -226,35 +227,35 @@ PyMethodDef FCLabelPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCLabelPy::Parents[] = {&FCLabelPy::Type, NULL};
+PyParentObject LabelPy::Parents[] = {&LabelPy::Type, NULL};
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCLabelPy::FCLabelPy(TDF_Label cLabel, PyTypeObject *T)
+LabelPy::LabelPy(TDF_Label cLabel, PyTypeObject *T)
  : FCPyObject( T), _cLabel(cLabel)
 {
 	//Console().Log("Create LabelPy: %p \n",this);
 }
 
-PyObject *FCLabelPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *LabelPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new FCLabelPy();			// Make new Python-able object
+  //return new LabelPy();			// Make new Python-able object
   return 0;
 }
 
 //--------------------------------------------------------------------------
-//  FCLabelPy destructor 
+//  LabelPy destructor 
 //--------------------------------------------------------------------------
-FCLabelPy::~FCLabelPy()						// Everything handled in parent
+LabelPy::~LabelPy()						// Everything handled in parent
 {
 	//Console().Log("Destroy LabelPy: %p \n",this);
 } 
 
 //--------------------------------------------------------------------------
-// FCLabelPy Attributes
+// LabelPy Attributes
 //--------------------------------------------------------------------------
-PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *LabelPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	PY_TRY{
 		// Access the number of attributes at this label
@@ -263,9 +264,9 @@ PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only 
 		else if (streq(attr, "ChildrenCount"))					
 			return Py_BuildValue("i", _cLabel.NbChildren()); 
 		else if (streq(attr, "Root"))						
-			return new FCLabelPy(_cLabel.Root()); 
+			return new LabelPy(_cLabel.Root()); 
 		else if (streq(attr, "Father"))						
-			return new FCLabelPy(_cLabel.Father()); 
+			return new LabelPy(_cLabel.Father()); 
 		else if (streq(attr, "Real")){
 			Handle(TDataStd_Real) RealAttr;
 			if(_cLabel.FindAttribute(TDataStd_Real::GetID(),RealAttr))
@@ -299,7 +300,7 @@ PyObject *FCLabelPy::_getattr(char *attr)				// __getattr__ function: note only 
 
 } 
 
-int FCLabelPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int LabelPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
 	if (streq(attr, "Real"))						// settable new state
 		TDataStd_Real::Set(_cLabel, PyFloat_AsDouble(value)); 
@@ -319,30 +320,30 @@ int FCLabelPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PyObject *FCLabelPy::PyGetLabel(PyObject *args)
+PyObject *LabelPy::PyGetLabel(PyObject *args)
 { 
 	int Tag;
     if (!PyArg_ParseTuple(args, "i",&Tag ))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	return new FCLabelPy(_cLabel.FindChild( Tag));
+	return new LabelPy(_cLabel.FindChild( Tag));
 }
  
-PyObject *FCLabelPy::PyHasChildren(PyObject *args)
+PyObject *LabelPy::PyHasChildren(PyObject *args)
 { 
 	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 	return Py_BuildValue("i",_cLabel.HasChild()?1:0);
 } 
 
-PyObject *FCLabelPy::PyAttributeCount(PyObject *args)
+PyObject *LabelPy::PyAttributeCount(PyObject *args)
 { 
 	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 	return Py_BuildValue("i",_cLabel.NbAttributes());
 } 
 
-PyObject *FCLabelPy::PyChildrenCount(PyObject *args)
+PyObject *LabelPy::PyChildrenCount(PyObject *args)
 { 
 	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
@@ -350,7 +351,7 @@ PyObject *FCLabelPy::PyChildrenCount(PyObject *args)
 }
  
 /// checks if the label is there by name (Name Attribute)
-bool FCLabelPy::_FindLabelByName(const char* sName, TDF_Label &rcLabel)
+bool LabelPy::_FindLabelByName(const char* sName, TDF_Label &rcLabel)
 {
 	// scann all child labels to find the right name
 	for (TDF_ChildIterator it(_cLabel); it.More(); it.Next())
@@ -371,21 +372,21 @@ bool FCLabelPy::_FindLabelByName(const char* sName, TDF_Label &rcLabel)
 
 
 /*
-PyObject *FCLabelPy::PyGetRoot(PyObject *args)
+PyObject *LabelPy::PyGetRoot(PyObject *args)
 { 
 	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
-	return new FCLabelPy(_cLabel.Root());
+	return new LabelPy(_cLabel.Root());
 } 
 
-PyObject *FCLabelPy::PyGetFather(PyObject *args)
+PyObject *LabelPy::PyGetFather(PyObject *args)
 { 
 	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
-	return new FCLabelPy(_cLabel.Father());; 
+	return new LabelPy(_cLabel.Father());; 
 } 
 
-PyObject *FCLabelPy::PyGetName(PyObject *args)
+PyObject *LabelPy::PyGetName(PyObject *args)
 { 
 	char *pstr;
 	if (!PyArg_ParseTuple(args, "s",&pstr))     // convert args: Python->C 
@@ -404,15 +405,15 @@ PyObject *FCLabelPy::PyGetName(PyObject *args)
 */
 
 /*
-PyObject *FCLabelPy::PyIsDifferent(PyObject *args)
+PyObject *LabelPy::PyIsDifferent(PyObject *args)
 { 
 	PyObject* pcObject;
     if (!PyArg_ParseTuple(args, "O!", &Type, &pcObject))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	
-	//_cLabel.IsDifferent( ((FCLabelPy*)pcObject)->GetLabel() );
+	//_cLabel.IsDifferent( ((LabelPy*)pcObject)->GetLabel() );
 
-	return Py_BuildValue("i", _cLabel.IsDifferent( ((FCLabelPy*)pcObject)->GetLabel() ) );
+	return Py_BuildValue("i", _cLabel.IsDifferent( ((LabelPy*)pcObject)->GetLabel() ) );
 	//Undo(); 
 	//Py_Return; 
 } 

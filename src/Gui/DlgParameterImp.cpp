@@ -48,7 +48,7 @@ using namespace Gui::Dialog;
 DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgParameter( parent, name, modal, fl ),_pcMainLabel(0L)
 {
-  const std::map<std::string,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
+  const std::map<std::string,FCParameterManager *> rcList = App::GetApplication().GetParameterSetList();
 
   for( std::map<std::string,FCParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
   {
@@ -123,7 +123,7 @@ void DlgParameterImp::onInsertFromFile()
 /** Switches the type of parameters either to user or system parameters. */
 void DlgParameterImp::onParameterSetChange(const QString& rcString)
 {
-  FCParameterManager &rcParMngr = GetApplication().GetParameterSet(rcString.latin1());
+  FCParameterManager &rcParMngr = App::GetApplication().GetParameterSet(rcString.latin1());
 
   if(_pcMainLabel) delete _pcMainLabel;
   // remove all labels

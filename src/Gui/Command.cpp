@@ -81,7 +81,7 @@ FCGuiDocument* FCCommand::GetActiveDocument(void)
 	return GetAppWnd()->GetActiveDocument();
 }
 
-FCDocument*	   FCCommand::GetActiveOCCDocument(void)
+App::Document*	   FCCommand::GetActiveOCCDocument(void)
 {
 	FCGuiDocument * pcDoc = GetAppWnd()->GetActiveDocument();
 	if(pcDoc)
@@ -322,9 +322,9 @@ void MacroCommand::Activated(int iMsg)
 //	DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
 //
 //	void CommitCommand(void);
-  std::string cMacroPath = GetApplication().GetParameterGroupByPath
+  std::string cMacroPath = App::GetApplication().GetParameterGroupByPath
     ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
-    GetApplication().GetHomePath());
+    App::GetApplication().GetHomePath());
 
   QDir d( cMacroPath.c_str() );
   QFileInfo fi( d, scriptName );

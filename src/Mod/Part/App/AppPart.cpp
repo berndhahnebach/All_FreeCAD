@@ -28,7 +28,7 @@
 #include <App/Application.h>
 #include <App/Document.h>
 
-#include "PartDocType.h"
+//#include "PartDocType.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
@@ -71,11 +71,11 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
 {                                                 /* args from python call */
     if (!PyArg_ParseTuple(args, ""))            // convert args: Python->C
         return NULL;                              /* null=raise exception */
-    else {
+    
 
-		Console().Log("Part.Temp() is runing ....\n");
+/*		Console().Log("Part.Temp() is runing ....\n");
 
-		FCDocument *doc = GetApplication().Active();
+    App::Document *doc = App::GetApplication().Active();
 		if(!doc) return Py_None;
 
 		Console().Log("Doc init\n");
@@ -89,9 +89,9 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
 			Console().Log("Part doc detected\n");
 
 		}
-
+  */
 		return Py_None;                           /* convert C -> Python */
-    }
+  
 }
 
 /* registration table  */
@@ -119,7 +119,7 @@ void ModuleExport initPart() {
 
 	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
 
-	GetApplication();
+  App::GetApplication();
 
 	Console().Log("AppPart loaded\n");
 

@@ -38,7 +38,6 @@
 
 
 #include "../App/Document.h"
-#include "../App/DocType.h"
 #include "Application.h"
 #include "Document.h"
 #include "View3D.h"
@@ -47,7 +46,7 @@
 
 int FCGuiDocument::_iDocCount = 0;
 
-FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, const char * name)
+FCGuiDocument::FCGuiDocument(App::Document* pcDocument,ApplicationWindow * app, const char * name)
 	:_iWinCount(1),
 	 _pcAppWnd(app),
 	 _pcDocument(pcDocument)
@@ -89,7 +88,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	_hContext->Deactivate(hTrihedron);
 
 	// alwayes create at least one view
-	if(GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetBool("UseInventorViewer",false) )
+	if(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetBool("UseInventorViewer",false) )
 		CreateView("View3DIv");
 	else
 		CreateView("");
@@ -108,7 +107,7 @@ FCGuiDocument::~FCGuiDocument()
 }
 
 
-void FCGuiDocument::OnChange(FCDocument::SubjectType &rCaller,FCDocument::MessageType Reason)
+void FCGuiDocument::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
   Base::Console().Log("FCGuiDocument::OnChange()");
 
@@ -207,7 +206,7 @@ void FCGuiDocument::DetachView(FCBaseView* pcView, bool bPassiv)
 void FCGuiDocument::Update(void)
 {
 
-  TDF_Label L = dynamic_cast<App::DocTypeStd*>(_pcDocument->GetDocType())->GetActive();
+  TDF_Label L = _pcDocument->GetActive();
 
   if(! L.IsNull()){
 

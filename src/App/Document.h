@@ -28,7 +28,7 @@
 #include "../Base/PyExport.h"
 #include "../Base/Observer.h"
 #include <TDocStd_Document.hxx>
-//#include <TDF_Label.hxx>
+#include <TFunction_Logbook.hxx>
 //#include <TDF_ChildIterator.hxx>
 
 #include <map>
@@ -43,18 +43,20 @@
 #endif
 
 
-
-class FCDocument;
-class FCLabel;
-class FCLabelPy;
-class FCDocType;
-class FCDocumentPy; // the python document class
-class FCApplication;
+//class FCLabel;
 namespace App
 {
-	class DocType;
+  class LabelPy;
+  class Document;
+  class Feature;
+  class DocumentPy; // the python document class
+  class Application;
 }
 
+
+
+namespace App
+{
 
 /** transport the changes of the Document
  *  This class transport closer information what was changed in a
@@ -67,7 +69,7 @@ namespace App
  *@see FCObserver
  *@bug not implemented so far...!
 */
-class AppExport FCDocChanges
+class AppExport DocChanges
 {
 };
 
@@ -81,27 +83,32 @@ class AppExport FCDocChanges
  *  The Document manage the Undo and Redo mechanism and the linking of documents.
  *  Note: the documents are not free objects. They are completly handled by the
  *  Application. Only the Application can Open or destroy a document.
- *  @see FCLabel
+ *  The standard document can customiced by deriving a subclass in a application
+ *  module. The custom document can handle different application specific behavior.
+ *  @see Label
  */
-class AppExport FCDocument :public Base::PyHandler, public FCSubject<const FCDocChanges&>
+class AppExport Document :public Base::PyHandler, public FCSubject<const DocChanges&>
 {
 
 public:
-	FCDocument(const Handle_TDocStd_Document &hDoc);
-
-	virtual ~FCDocument();
+  /// init with an OpenCasCade Document (done by App::Application)
+	Document(const Handle_TDocStd_Document &hDoc);
+  /// Destruction
+	virtual ~Document();
 
 	//---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
-	void InitType(App::DocType *pcDocType);
-	App::DocType *GetDocType(void);
+	//void InitType(App::DocType *pcDocType);
+	//App::DocType *GetDocType(void);
 
 	//---------------------------------------------------------------------
 	// CasCade exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
+ 	/** @name File handling of the document */
+	//@{
 	/// Save the Document under a new Name
 	void SaveAs (const char* Name);
 	/// Save the document under the name its been opened
@@ -112,20 +119,46 @@ public:
 	const short* GetName() const;
 	/// Get the path of a saved document (UNICODE)
 	const short* GetPath() const;
+	/// Returns the storage string of the document.
+	const short* StorageFormat() const;
+	/// Change the storage format of the document.
+	void ChangeStorageFormat(const short* sStorageFormat) ;
+  //@}
+
+	/** @name Feature handling  */
+	//@{
+  /// Add a feature (by name) to this document and set it active
+	Feature *AddFeature(const char* sName);
+  /// Returns the active Feature of this document
+	Feature *GetActiveFeature(void);
+  /// Get the label of the active Feature
+  TDF_Label GetActive(void){return _lActiveFeature;}
+	//@}
+
+  /** sets up the document
+	 *  Get called when the 
+	 */
+  virtual void Init (void);
+
+	/** @name methodes for modification and state handling
+	 */
+	//@{
 	/// Get the Main Label of the document
 	TDF_Label Main();
 	/// Test if the document is empty
 	bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.
 	bool IsValid() const;
+    /// Mark a label as modified by the user
+  void TouchState(const TDF_Label &);
+  /// Set a label modified
+  void ImpactState(const TDF_Label &);
 	/// Set a special Label as modified
 	//void SetModified(FCPyHandle<FCLabel> L);
-	/// /// Remove all modifications. After this call The document becomes again Valid.
+	/// Remove all modifications. After this call The document becomes again Valid.
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
 	void Recompute();
-	/// Get the OCC Document Handle
-	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
 
 	/** @name methodes for the UNDO REDO handling
 	 *  this methodes are usaly used by the GUI document! Its not intended
@@ -171,10 +204,8 @@ public:
   /// Dumps the Document to stdout
   void Dump(void);
 
-	/// Returns the storage string of the document.
-	const short* StorageFormat() const;
-	/// Change the storage format of the document.
-	void ChangeStorageFormat(const short* sStorageFormat) ;
+	/// Get the OCC Document Handle
+	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
 
 
 	virtual Base::FCPyObject *GetPyObject(void);
@@ -193,9 +224,9 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
   void UpdateReferences(const TCollection_AsciiString& aDocEntry) ;
 */
 
-	friend class FCDocumentPy;
-	//friend class FCLabelPy;
-	friend class FCApplication;
+	friend class DocumentPy;
+	friend class LabelPy;
+	friend class Application;
 
 protected:
 	/** @name atributes and methodes for label handling
@@ -221,9 +252,28 @@ protected:
 	Handle_TDocStd_Document _hDoc;
 
 	// pointer to the python class
-	FCDocumentPy *_pcDocPy;
+	DocumentPy *_pcDocPy;
+
+protected:
+  /// Base label 
+	TDF_Label _lBase;
+  /// label for the position of the document
+	TDF_Label _lPos;
+  /// label where the features goes 
+	TDF_Label _lFeature;
+  /// next free label for features 
+	int       _iNextFreeFeature;
+  /// Label of the Active Feature
+	TDF_Label _lActiveFeature;
+
+  /// The Logbook for this document
+  TFunction_Logbook _LogBook;
 
 
 };
+
+
+} //namespace App
+
 
 #endif // __Document_h__

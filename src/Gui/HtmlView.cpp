@@ -1424,7 +1424,7 @@ FCHtmlView::~FCHtmlView()
     SaveHistory();
   if (d->bBookm)
     SaveBookmarks();
-  GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Detach(this);
+  App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Detach(this);
 
   delete d;
 }
@@ -1434,11 +1434,11 @@ void FCHtmlView::init()
   try{
     // attach the help viewer to its preferences
     d->aStrGroupPath = "User parameter:BaseApp/Preferences/HelpViewer";
-    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Attach(this);
-    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableBookmarks");
-    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableHistory");
-    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
-    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfBookmarks");
+    App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Attach(this);
+    App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableBookmarks");
+    App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("EnableHistory");
+    App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfHistoryItems");
+    App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->Notify("NbOfBookmarks");
   }catch(const Base::Exception& rclE)
   {
     QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
@@ -1512,7 +1512,7 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-  QString home(GetApplication().GetHomePath());
+  QString home(App::GetApplication().GetHomePath());
   QString path = getWindowParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
 
   QDir dir (home + path);
@@ -1544,7 +1544,7 @@ QString FCHtmlView::GetScriptDirectory()
 QString FCHtmlView::GetBrowserDirectory()
 {
   //  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
-  QString browser = GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->GetASCII("LineEditBrowser", "").c_str();
+  QString browser = App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->GetASCII("LineEditBrowser", "").c_str();
   if (browser.isEmpty())
   {
     QMessageBox::information(this, tr("External browser"), tr("Please search for an external browser."));
@@ -1554,7 +1554,7 @@ QString FCHtmlView::GetBrowserDirectory()
       QMessageBox::warning(this, tr("External browser"), tr("No external browser found."));
     else
       //      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
-      GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", browser.latin1());
+      App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", browser.latin1());
   }
 
   return browser;
@@ -1701,7 +1701,7 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
 
   if (!d->m_Process.start())
     // delete the invalid entry
-    GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", "" );
+    App::GetApplication().GetParameterGroupByPath(d->aStrGroupPath.c_str())->SetASCII("LineEditBrowser", "" );
 }
 
 void FCHtmlView::StartScript(QString path, QString protocol)

@@ -114,28 +114,20 @@ SOURCE=.\DllMain.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DocType.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocType.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocTypeAttr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocTypeAttr.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Document.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\Document.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentPy.h
 # End Source File
 # Begin Source File
 

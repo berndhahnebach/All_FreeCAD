@@ -67,7 +67,7 @@
 
 
 // OpenCasCade
-//#include <Standard_Failure.hxx>
+#include <Standard_Failure.hxx>
 
 
 #endif //_PreComp_

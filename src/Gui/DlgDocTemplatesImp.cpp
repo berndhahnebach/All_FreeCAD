@@ -48,7 +48,7 @@ using namespace Gui::Dialog;
 DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl ), _pcCmd(pcCmd)
 {
-  std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
+  std::vector<std::string> vTemplates = App::GetApplication().GetAllTemplates();
 
   QPixmap pixmap(Gui::BitmapFactory().pixmap("Folder32"));
   QString str;

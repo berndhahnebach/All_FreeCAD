@@ -46,10 +46,12 @@
 #endif
 
 
+namespace App
+{
 
-class FCDocument;
-class FCFeature;
-class FCLabelPy;
+class Document;
+class Feature;
+class LabelPy;
 
 
 /** The OCC Label wrapper class
@@ -59,7 +61,7 @@ class FCLabelPy;
  *  @see FCDocument
  */
 /*
-class AppExport FCLabel :public FCPyExport
+class AppExport Label :public FCPyExport
 {
 
 public:
@@ -70,9 +72,9 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructer 
-	FCLabel(const TDF_Label &hLabel,FCDocument *pcDocument);
+	Label(const TDF_Label &hLabel,FCDocument *pcDocument);
 	/// Destruction 
-	~FCLabel();
+	~Label();
 
 
 	//---------------------------------------------------------------------
@@ -80,10 +82,10 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Gets a child label, creats if not exist
-	FCPyHandle<FCLabel> GetLabel(int);
+	FCPyHandle<Label> GetLabel(int);
 
 	/// Gets a child label by name (Name Attribute), creats if not exist
-	FCPyHandle<FCLabel> GetLabel(const char*);
+	FCPyHandle<Label> GetLabel(const char*);
 
 	/// Get a attached Feature or NULL
 	FCFeature *GetFeature(void);
@@ -97,7 +99,7 @@ public:
 	bool HasLabel(const char*);
 
 	/// Get all child labels
-	std::vector<FCPyHandle<FCLabel> > GetLabels(void);
+	std::vector<FCPyHandle<Label> > GetLabels(void);
 
 	/// return if the label has at least one child
 	bool HasChildren(void){return _cLabel.HasChild()!=0;}
@@ -107,7 +109,7 @@ public:
 
 	FCPyObject *GetPyObject(void);
 
-	friend FCLabelPy;
+	friend LabelPy;
 	friend FCDocument;
 
 protected:
@@ -122,7 +124,7 @@ protected:
 	//---------------------------------------------------------------------
 	bool _FindLabelByName(const char* sName, TDF_Label &rcLabel);
 
-	FCLabelPy *_pcPyObject;
+	LabelPy *_pcPyObject;
 	
 };
 
@@ -135,7 +137,7 @@ protected:
  *  Nodes and Leavs
  *  @see FCDocument
  */
-class AppExport FCLabelPy :public Base::FCPyObject
+class AppExport LabelPy :public Base::FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -148,11 +150,11 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructer 
-	FCLabelPy(TDF_Label cLabel, PyTypeObject *T = &Type);
+	LabelPy(TDF_Label cLabel, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 	/// Destruction 
-	~FCLabelPy();
+	~LabelPy();
 
 
 	//---------------------------------------------------------------------
@@ -164,16 +166,16 @@ public:
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 	// methods
 	PyObject *PyGetLabel(PyObject *args);	// Python wrapper
-	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((FCLabelPy*)self)->PyGetLabel(args);};
-	PYFUNCDEF_D (FCLabelPy,PyHasChildren);
-//	PYFUNCDEF_D (FCLabelPy,PyGetName);
-	PYFUNCDEF_D (FCLabelPy,PyAttributeCount);
-	PYFUNCDEF_D (FCLabelPy,PyChildrenCount);
-//	PYFUNCDEF_D (FCLabelPy,PyGetRoot);
-//	PYFUNCDEF_D (FCLabelPy,PyGetFather);
+	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((LabelPy*)self)->PyGetLabel(args);};
+	PYFUNCDEF_D (LabelPy,PyHasChildren);
+//	PYFUNCDEF_D (LabelPy,PyGetName);
+	PYFUNCDEF_D (LabelPy,PyAttributeCount);
+	PYFUNCDEF_D (LabelPy,PyChildrenCount);
+//	PYFUNCDEF_D (LabelPy,PyGetRoot);
+//	PYFUNCDEF_D (LabelPy,PyGetFather);
 
 private:
-	//FCLabel *_pcLabel;
+	//Label *_pcLabel;
 	TDF_Label _cLabel;
 
 	bool _FindLabelByName(const char* sName, TDF_Label &rcLabel);
@@ -181,5 +183,6 @@ private:
 };
 
 
+} // namespace App
 
 #endif // __Label_h__

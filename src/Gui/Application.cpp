@@ -200,7 +200,7 @@ struct ApplicationWindowP
 ApplicationWindow::ApplicationWindow()
     : QMainWindow( 0, "Main window", WDestructiveClose )
 {
-  FCParameterGrp::handle hPGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  FCParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
 
   std::string language = hPGrp->GetASCII("Language", "English");
@@ -287,7 +287,7 @@ ApplicationWindow::ApplicationWindow()
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/HelpViewer");
+	FCParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
 	d->_pcDockMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
@@ -317,7 +317,7 @@ ApplicationWindow::ApplicationWindow()
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	//setUsesBigPixmaps (true);
 
-  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
 /*
   if (hGrp->HasGroup("Macros"))
   {
@@ -338,7 +338,7 @@ ApplicationWindow::ApplicationWindow()
   }
 */
   // load recent file list
-  hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+  hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
   if (hGrp->HasGroup("RecentFiles"))
   {
     hGrp = hGrp->GetGroup("RecentFiles");
@@ -361,7 +361,7 @@ ApplicationWindow::~ApplicationWindow()
   std::vector<FCCommand*> macros = d->_cCommandManager.GetModuleCommands("Macro");
   if (macros.size() > 0)
   {
-    FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
+    FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
 /*
     for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
     {
@@ -383,7 +383,7 @@ ApplicationWindow::~ApplicationWindow()
   {
     char szBuf[200];
     int i=0;
-    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
+    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
     hGrp->Clear();
     hGrp->SetInt("RecentFiles", ((FCCmdMRU*)pCmd)->maxCount());
 
@@ -517,12 +517,12 @@ void ApplicationWindow::onToggleStatusBar()
 // document observers
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void ApplicationWindow::OnDocNew(FCDocument* pcDoc)
+void ApplicationWindow::OnDocNew(App::Document* pcDoc)
 {
 	d->lpcDocuments.push_back( new FCGuiDocument(pcDoc,this) );
 }
 
-void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
+void ApplicationWindow::OnDocDelete(App::Document* pcDoc)
 {
 	FCGuiDocument* pcGDoc;
 
@@ -995,7 +995,7 @@ void ApplicationWindow::LoadWindowSettings()
 {
   LoadDockWndSettings();
 
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   int w = hGrp->GetInt("Width", 1024);
   int h = hGrp->GetInt("Height", 768);
   int x = hGrp->GetInt("PosX", pos().x());
@@ -1012,7 +1012,7 @@ void ApplicationWindow::LoadWindowSettings()
 
 void ApplicationWindow::UpdatePixmapsSize(void)
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
   bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
   if (bigPixmaps != usesBigPixmaps())
@@ -1022,7 +1022,7 @@ void ApplicationWindow::UpdatePixmapsSize(void)
 void ApplicationWindow::UpdateStyle(void)
 {
   QStyle& curStyle = QApplication::style();
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
 
   QString style = hGrp->GetASCII( "WindowStyle", curStyle.name() ).c_str();
@@ -1038,7 +1038,7 @@ void ApplicationWindow::UpdateStyle(void)
 
 void ApplicationWindow::SaveWindowSettings()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   if (isMaximized())
   {
     hGrp->SetBool("Maximized", true);
@@ -1057,7 +1057,7 @@ void ApplicationWindow::SaveWindowSettings()
 
 void ApplicationWindow::LoadDockWndSettings()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   QString str = hGrp->GetASCII("Layout", "").c_str();
 
   if ( !str.isEmpty() )
@@ -1121,7 +1121,7 @@ void ApplicationWindow::SaveDockWndSettings()
   QTextStream ts( &str, IO_WriteOnly );
   ts << *this;
 
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   hGrp->SetASCII("Layout", str.latin1());
 /*
   // save dock window settings
@@ -1223,9 +1223,9 @@ void ApplicationWindow::RunApplication(void)
 	// A new QApplication
 	Console().Log("Creating GUI Application...\n");
 	// if application not yet created by the splasher
-	int argc = FCApplication::GetARGC();
+	int argc = App::Application::GetARGC();
   qInstallMsgHandler( messageHandler );
-	if (!_pcQApp)  _pcQApp = new QApplication (argc, FCApplication::GetARGV());
+	if (!_pcQApp)  _pcQApp = new QApplication (argc, App::Application::GetARGV());
 
 	StartSplasher();
 	ApplicationWindow * mw = new ApplicationWindow();
@@ -1252,9 +1252,9 @@ void ApplicationWindow::StartSplasher(void)
 {
 	// startup splasher
 	// when running in verbose mode no splasher
-	if ( ! (FCApplication::Config()["Verbose"] == "Strict") && (FCApplication::Config()["RunMode"] == "Gui") )
+	if ( ! (App::Application::Config()["Verbose"] == "Strict") && (App::Application::Config()["RunMode"] == "Gui") )
 	{
-		FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+		FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 #ifdef FC_DEBUG
   bool splash = false;
 #else
@@ -1283,7 +1283,7 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
 {
 	// tip of the day?
 	FCParameterGrp::handle
-  hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 
 #ifdef FC_DEBUG
   bool tip = false;
@@ -1313,7 +1313,7 @@ void ApplicationWindow::Destruct(void)
 //**************************************************************************
 // Python stuff
 
-// FCApplication Methods						// Methods structure
+// Application Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
 	{"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
 	{"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},

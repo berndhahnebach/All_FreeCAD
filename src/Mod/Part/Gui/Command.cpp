@@ -103,7 +103,7 @@ FCCmdPartTest2::FCCmdPartTest2()
 void FCCmdPartTest2::Activated(int iMsg)
 {
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
 
@@ -197,14 +197,14 @@ void FCCmdPartBox::Activated(int iMsg)
   {
     OpenCommand("Part Box Create");
 	  DoCommand(Doc,"import Part");
-	  DoCommand(Doc,"f = App.DocGet().DocType().AddFeature(\"PartBox\")");
+	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
 	  DoCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
 	  DoCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
 	  DoCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
 	  DoCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
 	  DoCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
 	  DoCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
-	  DoCommand(Doc,"App.DocGet().DocType().Update()");
+	  DoCommand(Doc,"App.DocGet().Update()");
     CommitCommand();
   
     UpdateActive();
@@ -247,14 +247,14 @@ void FCCmdPartBox2::Activated(int iMsg)
   OpenCommand("PartBox Create");
 
   DoCommand(Doc,"import Part");
-	DoCommand(Doc,"f = App.DocGet().DocType().AddFeature(\"PartBox\")");
+	DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
 	DoCommand(Doc,"f.x = 0.0");
 	DoCommand(Doc,"f.y = 0.0");
 	DoCommand(Doc,"f.z = 0.0");
 	DoCommand(Doc,"f.l = 100.0");
 	DoCommand(Doc,"f.w = 100.0");
 	DoCommand(Doc,"f.h = 100.0");
-  DoCommand(Doc,"App.DocGet().DocType().Update()");
+  DoCommand(Doc,"App.DocGet().Update()");
 
   UpdateActive();
 
@@ -325,9 +325,9 @@ void PartImportStep::Activated(int iMsg)
   {
     OpenCommand("Part ImportSTEP Create");
 	  DoCommand(Doc,"import Part");
-	  DoCommand(Doc,"f = App.DocGet().DocType().AddFeature(\"PartImportStep\")");
+	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\")");
 	  DoCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
-	  DoCommand(Doc,"App.DocGet().DocType().Update()");
+	  DoCommand(Doc,"App.DocGet().Update()");
     CommitCommand();
   
     UpdateActive();
@@ -373,9 +373,9 @@ void PartImportIges::Activated(int iMsg)
   {
     OpenCommand("Part ImportIGES Create");
 	  DoCommand(Doc,"import Part");
-	  DoCommand(Doc,"f = App.DocGet().DocType().AddFeature(\"PartImportIges\")");
+	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\")");
 	  DoCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
-	  DoCommand(Doc,"App.DocGet().DocType().Update()");
+	  DoCommand(Doc,"App.DocGet().Update()");
     CommitCommand();
   
     UpdateActive();

@@ -196,8 +196,8 @@ StackBar::StackBar( QWidget *parent, const char *name )
   {
     // attach the commandbar to its preferences
     const char* strGroupPath = "User parameter:BaseApp/Preferences/CommandBar";
-    GetApplication().GetParameterGroupByPath(strGroupPath)->Attach(this);
-    GetApplication().GetParameterGroupByPath(strGroupPath)->Notify("SpeedAnimationCmdBar");
+    App::GetApplication().GetParameterGroupByPath(strGroupPath)->Attach(this);
+    App::GetApplication().GetParameterGroupByPath(strGroupPath)->Notify("SpeedAnimationCmdBar");
   }
   catch(const Base::Exception& rclE)
   {
@@ -214,7 +214,7 @@ StackBar::~StackBar()
 {
   // detach the command bar
   const char* strGroupPath = "User parameter:BaseApp/Windows/CommandBar";
-  GetApplication().GetParameterGroupByPath(strGroupPath)->Detach(this);
+  App::GetApplication().GetParameterGroupByPath(strGroupPath)->Detach(this);
   m_mButtonView.clear();
   delete m_pLayout;
 }

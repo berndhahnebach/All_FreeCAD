@@ -132,14 +132,6 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\PartDocType.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\PartDocType.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\PartFeature.cpp
 # End Source File
 # Begin Source File

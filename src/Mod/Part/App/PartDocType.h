@@ -37,7 +37,7 @@
 
 // Std. configurations
 
-#include <App/DocType.h>
+//#include <App/DocType.h>
 
 using App::DocTypeStd;
 
@@ -68,7 +68,7 @@ public:
 	/**
 	 * sets up the document
 	 */
-	virtual void Init (FCDocument *pcDoc);
+  virtual void Init (App::Document *pcDoc);
 
 	/**
 	 * return the type name 

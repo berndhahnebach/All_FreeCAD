@@ -1,5 +1,5 @@
 /***************************************************************************
-                          FCApplication.cpp  -  description
+                          Application.cpp  -  description
                              -------------------
     begin                : Tue Jan 2 2001
     copyright            : (C) 2001 by Juergen Riegel
@@ -19,8 +19,8 @@
 #include "Application.h"
 #include "Document.h"
 #include "Function.h"
-#include "DocTypeAttr.h"
-#include "DocType.h"
+//#include "DocTypeAttr.h"
+//#include "DocType.h"
 
 // FreeCAD Base header
 #include "../Base/Interpreter.h"
@@ -30,20 +30,23 @@
 #include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 
+using namespace App;
+
+
 // static members
 #include "../Version.h"
 /// Major version nummber
-const unsigned int FCApplication::VersionMajor = FCVersionMajor;
+const unsigned int Application::VersionMajor = FCVersionMajor;
 /// Minor version nummber
-const unsigned int FCApplication::VersionMinor = FCVersionMinor;
+const unsigned int Application::VersionMinor = FCVersionMinor;
 /// Build nummber
-const unsigned int FCApplication::VersionBuild = FCVersionBuild;
+const unsigned int Application::VersionBuild = FCVersionBuild;
 /// Build date
-const char *       FCApplication::VersionDisDa = FCVersionDisDa;
+const char *       Application::VersionDisDa = FCVersionDisDa;
 /// Build date
-const char *       FCApplication::VersionDate  = __DATE__;
+const char *       Application::VersionDate  = __DATE__;
 /// Build date
-const char *       FCApplication::VersionTime  = __TIME__;
+const char *       Application::VersionTime  = __TIME__;
 
 
 // the standard and plugin file of FreeCAD
@@ -63,27 +66,27 @@ using namespace Base;
 using namespace App;
 
 
-Standard_CString FCApplicationOCC::ResourcesName()
+Standard_CString ApplicationOCC::ResourcesName()
 {
 	//return Standard_CString ("Resources");
 	return Standard_CString ("Standard");	
 }
 
-void FCApplicationOCC::Formats(TColStd_SequenceOfExtendedString& Formats)
+void ApplicationOCC::Formats(TColStd_SequenceOfExtendedString& Formats)
 {
 	Formats.Append(TCollection_ExtendedString ("FreeCad-Std"));
 	Formats.Append(TCollection_ExtendedString ("MDTV-Standard"));
 }
 
-void FCApplicationOCC::InitViewer(const Handle(TDocStd_Document)& aDoc) const
+void ApplicationOCC::InitViewer(const Handle(TDocStd_Document)& aDoc) const
 {
 	// Im not doing it here!
 }
 
 
-FCApplicationOCC::~FCApplicationOCC() {}
+ApplicationOCC::~ApplicationOCC() {}
 
-FCApplicationOCC::FCApplicationOCC()
+ApplicationOCC::ApplicationOCC()
 {
 	// Instanciate a TOcafFunction_BoxDriver and add it to the TFunction_DriverTable
 //	TFunction_DriverTable::Get()->AddDriver(FCFunction::GetID(), 
@@ -94,7 +97,7 @@ FCApplicationOCC::FCApplicationOCC()
 // OCAF specific stuff
 
 
-Standard_EXPORT Handle_Standard_Type& FCApplicationOCC_Type_()
+Standard_EXPORT Handle_Standard_Type& App::ApplicationOCC_Type_()
 {
 
   static Handle_Standard_Type aType1 = STANDARD_TYPE(TDocStd_Application);
@@ -109,7 +112,7 @@ Standard_EXPORT Handle_Standard_Type& FCApplicationOCC_Type_()
 
   static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,aType4,NULL};
   static Handle_Standard_Type _aType = new Standard_Type("FCApplicationOCC",
-			                                 sizeof(FCApplicationOCC),
+			                                 sizeof(ApplicationOCC),
 			                                 1,
 			                                 (Standard_Address)_Ancestors,
 			                                 (Standard_Address)NULL);
@@ -121,49 +124,49 @@ Standard_EXPORT Handle_Standard_Type& FCApplicationOCC_Type_()
 // DownCast method
 //   allow safe downcasting
 //
-const Handle_FCApplicationOCC Handle_FCApplicationOCC::DownCast(const Handle(Standard_Transient)& AnObject)
+const Handle_ApplicationOCC Handle_ApplicationOCC::DownCast(const Handle(Standard_Transient)& AnObject)
 {
-  Handle_FCApplicationOCC _anOtherObject;
+  Handle_ApplicationOCC _anOtherObject;
 
   if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(FCApplicationOCC))) {
-       _anOtherObject = Handle_FCApplicationOCC((Handle_FCApplicationOCC&)AnObject);
+     if (AnObject->IsKind(STANDARD_TYPE(ApplicationOCC))) {
+       _anOtherObject = Handle_ApplicationOCC((Handle_ApplicationOCC&)AnObject);
      }
   }
 
   return _anOtherObject ;
 }
-const Handle(Standard_Type)& FCApplicationOCC::DynamicType() const
+const Handle(Standard_Type)& ApplicationOCC::DynamicType() const
 {
-  return STANDARD_TYPE(FCApplicationOCC) ;
+  return STANDARD_TYPE(ApplicationOCC) ;
 }
-Standard_Boolean FCApplicationOCC::IsKind(const Handle(Standard_Type)& AType) const
+Standard_Boolean ApplicationOCC::IsKind(const Handle(Standard_Type)& AType) const
 {
-  return (STANDARD_TYPE(FCApplicationOCC) == AType || FCApplicationOCC::IsKind(AType));
+  return (STANDARD_TYPE(ApplicationOCC) == AType || ApplicationOCC::IsKind(AType));
 }
-Handle_FCApplicationOCC::~Handle_FCApplicationOCC() {}
+Handle_ApplicationOCC::~Handle_ApplicationOCC() {}
 
 
 //==========================================================================
-// FCApplication
+// Application
 //==========================================================================
 
-FCParameterManager *FCApplication::_pcSysParamMngr;
-FCParameterManager *FCApplication::_pcUserParamMngr;
+FCParameterManager *App::Application::_pcSysParamMngr;
+FCParameterManager *App::Application::_pcUserParamMngr;
 
-std::map<std::string,std::string> FCApplication::mConfig;
+std::map<std::string,std::string> Application::mConfig;
 
 
 //**************************************************************************
 // Construction and destruction
 
-FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
+Application::Application(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
 	://_pcSysParamMngr(pcSysParamMngr),
 	 //_pcUserParamMngr(pcUserParamMngr),
 	 _mConfig(mConfig),
 	 _pActiveDoc(0)
 {
-	_hApp = new FCApplicationOCC;
+	_hApp = new ApplicationOCC;
 	mpcPramManager["System parameter"] = _pcSysParamMngr;
 	mpcPramManager["User parameter"] = _pcUserParamMngr;
 
@@ -171,11 +174,11 @@ FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterMana
 	_pcTemplateDictionary = PyDict_New();
 
 	// seting up Python binding
-	(void) Py_InitModule("FreeCAD", FCApplication::Methods);
+	(void) Py_InitModule("FreeCAD", Application::Methods);
 
 }
 
-FCApplication::~FCApplication()
+Application::~Application()
 {
 }
 
@@ -183,13 +186,13 @@ FCApplication::~FCApplication()
 //**************************************************************************
 // Interface
 
-FCDocument* FCApplication::New(const char * Name)
+Document* Application::New(const char * Name)
 {
 	Handle_TDocStd_Document hDoc;
-	FCDocument*				pDoc;
+	Document*				pDoc;
 //	PyObject* pcTemplate;
 
-	Base::Console().Log("FCApplication::New(%s)\n",Name);
+	Base::Console().Log("Application::New(%s)\n",Name);
 
 /*	if(Name)
 	{
@@ -207,7 +210,7 @@ FCDocument* FCApplication::New(const char * Name)
 	_hApp->NewDocument("FreeCad-Std",hDoc);
 	//_hApp->NewDocument("MDTV-Standard",hDoc);
 	//_hApp->NewDocument("Standard",hDoc);
-	pDoc = new FCDocument(hDoc);
+	pDoc = new Document(hDoc);
 
 	// add the document to the internal list
 //	pDoc->IncRef();
@@ -215,19 +218,19 @@ FCDocument* FCApplication::New(const char * Name)
 	_pActiveDoc = pDoc;
 
 	// creat the type object
-	DocTypeStd *pDocType = new DocTypeStd();
+	//DocTypeStd *pDocType = new DocTypeStd();
 
-	pDoc->InitType(pDocType);
+	pDoc->Init();
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);
 
 	return pDoc;
 }
 
-FCDocument* FCApplication::Open(const char * Name)
+Document* Application::Open(const char * Name)
 {
 	Handle_TDocStd_Document hDoc;
-	FCDocument*				pDoc;
+	Document*				pDoc;
 
 	// create new (empty) document 
 	//pDoc = New("Standard");
@@ -261,7 +264,7 @@ FCDocument* FCApplication::Open(const char * Name)
 	}
 	
 	// Creating a FreeCAD Document
-	pDoc = new FCDocument(hDoc);
+	pDoc = new Document(hDoc);
 	pDoc->IncRef();
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
@@ -273,56 +276,56 @@ FCDocument* FCApplication::Open(const char * Name)
 	return pDoc;
 }
 
-FCDocument* FCApplication::Save(void)
+Document* Application::Save(void)
 {
-	FCDocument*	pDoc = Active();
+	Document*	pDoc = Active();
 
 	pDoc->Save();
 	
 	return pDoc;
 }
 
-FCDocument* FCApplication::SaveAs(const char * Name)
+Document* Application::SaveAs(const char * Name)
 {
-	FCDocument*	pDoc = Active();
+	Document*	pDoc = Active();
 
 	pDoc->SaveAs(Name);
 	
 	return pDoc;
 }
 
-FCDocument* FCApplication::Active(void)
+Document* Application::Active(void)
 {
 	
 	return _pActiveDoc;
 }
 
-void FCApplication::SetActive(FCDocument* pDoc)
+void Application::SetActive(Document* pDoc)
 {
 	_pActiveDoc = pDoc;
 }
 
-FCParameterManager & FCApplication::GetSystemParameter(void) 
+FCParameterManager & Application::GetSystemParameter(void) 
 {
 	return *_pcSysParamMngr;
 }
 
-FCParameterManager & FCApplication::GetUserParameter(void) 
+FCParameterManager & Application::GetUserParameter(void) 
 {
 	return *_pcUserParamMngr;
 }
 
-FCParameterManager & FCApplication::GetParameterSet(const char* sName)
+FCParameterManager & Application::GetParameterSet(const char* sName)
 {
 	return *mpcPramManager[sName];
 }
 
-const std::map<std::string,FCParameterManager *> & FCApplication::GetParameterSetList(void)
+const std::map<std::string,FCParameterManager *> & Application::GetParameterSetList(void)
 {
 	return mpcPramManager;
 }
 
-std::vector<std::string> FCApplication::GetAllTemplates(void)
+std::vector<std::string> Application::GetAllTemplates(void)
 {
 	PyObject *key, *value;
 	int pos = 0;
@@ -338,7 +341,7 @@ std::vector<std::string> FCApplication::GetAllTemplates(void)
 	return cTemp;
 }
 
-FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sName)
+FCHandle<FCParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
 {
 	std::string cName = sName,cTemp;
 
@@ -347,7 +350,7 @@ FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sNa
 	// is there a path seperator ?
 	if(pos == std::string::npos)
 	{
-		throw Base::Exception("FCApplication::GetParameterGroupByPath() no parameter set name specified");
+		throw Base::Exception("Application::GetParameterGroupByPath() no parameter set name specified");
 	} 
 	// assigning the parameter set name
     cTemp.assign(cName,0,pos);
@@ -356,7 +359,7 @@ FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sNa
 	// test if name is valid
 	std::map<std::string,FCParameterManager *>::iterator It = mpcPramManager.find(cTemp.c_str());
 	if (It == mpcPramManager.end())
-		throw Base::Exception("FCApplication::GetParameterGroupByPath() unknown parameter set name specified");
+		throw Base::Exception("Application::GetParameterGroupByPath() unknown parameter set name specified");
 
 	return It->second->GetGroup(cName.c_str());
 }
@@ -365,26 +368,26 @@ FCHandle<FCParameterGrp>  FCApplication::GetParameterGroupByPath(const char* sNa
 //**************************************************************************
 // Python stuff
 
-// FCApplication Methods						// Methods structure
-PyMethodDef FCApplication::Methods[] = {
-	{"DocNew",         (PyCFunction) FCApplication::sNew,            1},
-	{"DocOpen",        (PyCFunction) FCApplication::sOpen,           1},
-	{"DocSave"  ,      (PyCFunction) FCApplication::sSave,           1},
-	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,         1},
-	{"DocGet",         (PyCFunction) FCApplication::sGet,            1},
-	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,       1},
-	{"Version",        (PyCFunction) FCApplication::sGetVersion,     1},
-	{"ConfigGet",      (PyCFunction) FCApplication::sGetConfig,      1},
-	{"ConfigSet",      (PyCFunction) FCApplication::sSetConfig,      1},
-	{"ConfigDump",     (PyCFunction) FCApplication::sDumpConfig,     1},
-	{"TemplateAdd",    (PyCFunction) FCApplication::sTemplateAdd,    1},
-	{"TemplateDelete", (PyCFunction) FCApplication::sTemplateDelete ,1},
-	{"TemplateGet",    (PyCFunction) FCApplication::sTemplateGet    ,1},
+// Application Methods						// Methods structure
+PyMethodDef Application::Methods[] = {
+	{"DocNew",         (PyCFunction) Application::sNew,            1},
+	{"DocOpen",        (PyCFunction) Application::sOpen,           1},
+	{"DocSave"  ,      (PyCFunction) Application::sSave,           1},
+	{"DocSaveAs",      (PyCFunction) Application::sSaveAs,         1},
+	{"DocGet",         (PyCFunction) Application::sGet,            1},
+	{"ParamGet",       (PyCFunction) Application::sGetParam,       1},
+	{"Version",        (PyCFunction) Application::sGetVersion,     1},
+	{"ConfigGet",      (PyCFunction) Application::sGetConfig,      1},
+	{"ConfigSet",      (PyCFunction) Application::sSetConfig,      1},
+	{"ConfigDump",     (PyCFunction) Application::sDumpConfig,     1},
+	{"TemplateAdd",    (PyCFunction) Application::sTemplateAdd,    1},
+	{"TemplateDelete", (PyCFunction) Application::sTemplateDelete ,1},
+	{"TemplateGet",    (PyCFunction) Application::sTemplateGet    ,1},
 
   {NULL, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP_S(FCApplication,sOpen)
+PYFUNCIMP_S(Application,sOpen)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
@@ -412,14 +415,14 @@ PYFUNCIMP_S(FCApplication,sOpen)
 
 }
 
-PYFUNCIMP_S(FCApplication,sNew)
+PYFUNCIMP_S(Application,sNew)
 {
     char *pstr = 0;
     if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
 	PY_TRY{
-		FCDocument*	pDoc = GetApplication().New(pstr);
+		Document*	pDoc = GetApplication().New(pstr);
 		if (pDoc)
 			return pDoc->GetPyObject();
 		else
@@ -431,7 +434,7 @@ PYFUNCIMP_S(FCApplication,sNew)
 }
 
 
-PYFUNCIMP_S(FCApplication,sSave)
+PYFUNCIMP_S(Application,sSave)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -443,7 +446,7 @@ PYFUNCIMP_S(FCApplication,sSave)
 }
 
 
-PYFUNCIMP_S(FCApplication,sSaveAs)
+PYFUNCIMP_S(Application,sSaveAs)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -454,7 +457,7 @@ PYFUNCIMP_S(FCApplication,sSaveAs)
 	return Py_None;                              // None: no errors 
 }
 
-PYFUNCIMP_S(FCApplication,sGet)
+PYFUNCIMP_S(Application,sGet)
 {
   char *pstr=0;
   if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
@@ -470,7 +473,7 @@ PYFUNCIMP_S(FCApplication,sGet)
 	return Py_None;                              // None: no errors 
 }
 
-PYFUNCIMP_S(FCApplication,sGetParam)
+PYFUNCIMP_S(Application,sGetParam)
 {
     char *pstr=0;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -482,7 +485,7 @@ PYFUNCIMP_S(FCApplication,sGetParam)
 }
 
 
-PYFUNCIMP_S(FCApplication,sGetConfig)
+PYFUNCIMP_S(Application,sGetConfig)
 {
 	char *pstr=0;
 
@@ -503,7 +506,7 @@ PYFUNCIMP_S(FCApplication,sGetConfig)
 	}
 }
 
-PYFUNCIMP_S(FCApplication,sDumpConfig)
+PYFUNCIMP_S(Application,sDumpConfig)
 {
 
     if (!PyArg_ParseTuple(args, "") )    // convert args: Python->C 
@@ -523,7 +526,7 @@ PYFUNCIMP_S(FCApplication,sDumpConfig)
 		
 }
 
-PYFUNCIMP_S(FCApplication,sSetConfig)
+PYFUNCIMP_S(Application,sSetConfig)
 {
 	char *pstr,*pstr2;
 
@@ -536,30 +539,30 @@ PYFUNCIMP_S(FCApplication,sSetConfig)
 	return Py_None;
 }
 
-PYFUNCIMP_S(FCApplication,sGetVersion)
+PYFUNCIMP_S(Application,sGetVersion)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL; // NULL triggers exception 
 
 	PyObject* pList = PyList_New(6); 
 	PyObject *pItem;
-	pItem = PyInt_FromLong(FCApplication::VersionMajor);
+	pItem = PyInt_FromLong(Application::VersionMajor);
 	PyList_SetItem(pList, 0, pItem);
-	pItem = PyInt_FromLong(FCApplication::VersionMinor);
+	pItem = PyInt_FromLong(Application::VersionMinor);
 	PyList_SetItem(pList, 1, pItem);
-	pItem = PyInt_FromLong(FCApplication::VersionBuild);
+	pItem = PyInt_FromLong(Application::VersionBuild);
 	PyList_SetItem(pList, 2, pItem);
-	pItem = PyString_FromString(FCApplication::VersionDisDa);
+	pItem = PyString_FromString(Application::VersionDisDa);
 	PyList_SetItem(pList, 3, pItem);
-	pItem = PyString_FromString(FCApplication::VersionTime);
+	pItem = PyString_FromString(Application::VersionTime);
 	PyList_SetItem(pList, 4, pItem);
-	pItem = PyString_FromString(FCApplication::VersionDate);
+	pItem = PyString_FromString(Application::VersionDate);
 	PyList_SetItem(pList, 5, pItem);
 
 	return pList;
 }
 
-PYFUNCIMP_S(FCApplication,sTemplateAdd)
+PYFUNCIMP_S(Application,sTemplateAdd)
 {
 	char*       psKey;
 	PyObject*   pcObject;
@@ -574,7 +577,7 @@ PYFUNCIMP_S(FCApplication,sTemplateAdd)
 	return Py_None;
 } 
 
-PYFUNCIMP_S(FCApplication,sTemplateDelete)
+PYFUNCIMP_S(Application,sTemplateDelete)
 {
 	char*       psKey;
 	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -586,7 +589,7 @@ PYFUNCIMP_S(FCApplication,sTemplateDelete)
     return Py_None;
 } 
 /*
-PYFUNCIMP_S(FCApplication,sWorkbenchActivate)
+PYFUNCIMP_S(Application,sWorkbenchActivate)
 {
 	char*       psKey;
 	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -598,7 +601,7 @@ PYFUNCIMP_S(FCApplication,sWorkbenchActivate)
     return Py_None;
 }
 */
-PYFUNCIMP_S(FCApplication,sTemplateGet)
+PYFUNCIMP_S(Application,sTemplateGet)
 {
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
@@ -609,13 +612,13 @@ PYFUNCIMP_S(FCApplication,sTemplateGet)
 //**************************************************************************
 // Init, Destruct and singelton
 
-FCApplication * FCApplication::_pcSingelton = 0;
+Application * Application::_pcSingelton = 0;
 
-int FCApplication::_argc;
-char ** FCApplication::_argv;
+int Application::_argc;
+char ** Application::_argv;
 
 
-void FCApplication::Destruct(void)
+void Application::Destruct(void)
 {
 
 		// saving system parameter
@@ -636,7 +639,7 @@ void FCApplication::Destruct(void)
 
 
 
-void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
+void Application::InitConfig(int argc, char ** argv, const char * sHomePath )
 {
 	
 	static const char sBanner[] = \
@@ -721,12 +724,12 @@ void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 
 }
 
-void FCApplication::SetRunMode(const char* s)
+void Application::SetRunMode(const char* s)
 {
 	mConfig["RunMode"] = s;
 }
 
-void FCApplication::SaveEnv(const char* s)
+void Application::SaveEnv(const char* s)
 {
 	char *c = getenv(s);
 	if(c)
@@ -734,7 +737,7 @@ void FCApplication::SaveEnv(const char* s)
 }
 
 
-void FCApplication::InitApplication(void)
+void Application::InitApplication(void)
 {
 
 	// checking on the plugin files of OpenCasCade
@@ -755,7 +758,7 @@ void FCApplication::InitApplication(void)
 
 	// creating the application
 	if(!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application");
-	FCApplication::_pcSingelton = new FCApplication(0,0,mConfig);
+	Application::_pcSingelton = new Application(0,0,mConfig);
 
 
 	// starting the init script
@@ -764,7 +767,7 @@ void FCApplication::InitApplication(void)
 
 }
 
-void FCApplication::RunApplication()
+void Application::RunApplication()
 {
 
 
@@ -801,7 +804,7 @@ void FCApplication::RunApplication()
 
 }
 
-void FCApplication::DumpConfig()
+void Application::DumpConfig()
 {
 
 	for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
@@ -812,7 +815,7 @@ void FCApplication::DumpConfig()
 }
 
 
-void FCApplication::LoadParameters(void)
+void Application::LoadParameters(void)
 {
 	// create standard parameter sets
 	_pcSysParamMngr = new FCParameterManager();
@@ -845,7 +848,7 @@ void FCApplication::LoadParameters(void)
 }
 
 
-void FCApplication::ParsOptions(int argc, char ** argv)
+void Application::ParsOptions(int argc, char ** argv)
 {
 	static const char Usage[] = \
 	" [Options] files..."\
@@ -967,7 +970,7 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 }  
 
 
-void FCApplication::ExtractUser()
+void Application::ExtractUser()
 {
 	// std paths
 	mConfig["BinPath"] = mConfig["HomePath"] + PATHSEP + "bin" + PATHSEP;
@@ -1004,7 +1007,7 @@ const char sEnvErrorText2[] = \
 "Please reinstall XXX!\n\n";
 
 
-void FCApplication::CheckEnv(void)
+void Application::CheckEnv(void)
 {
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
 	SetPluginDefaults(mConfig["HomePath"].c_str());
@@ -1038,7 +1041,7 @@ void FCApplication::CheckEnv(void)
 // Observer stuff
 
 
-void FCApplication::AttacheObserver(FCApplicationObserver *pcObserver)
+void Application::AttacheObserver(ApplicationObserver *pcObserver)
 {
 	// double insert !!
 	assert(_aclObservers.find(pcObserver) == _aclObservers.end() );
@@ -1046,19 +1049,19 @@ void FCApplication::AttacheObserver(FCApplicationObserver *pcObserver)
 	_aclObservers.insert(pcObserver);
 }
 
-void FCApplication::DetacheObserver(FCApplicationObserver *pcObserver)
+void Application::DetacheObserver(ApplicationObserver *pcObserver)
 {
 	_aclObservers.erase(pcObserver);
 }
 
 
-void FCApplication::NotifyDocNew(FCDocument* pcDoc)
+void Application::NotifyDocNew(Document* pcDoc)
 {
-	for(std::set<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocNew(pcDoc);   // send doc to the listener
 }
-void FCApplication::NotifyDocDelete(FCDocument* pcDoc)
+void Application::NotifyDocDelete(Document* pcDoc)
 {
-	for(std::set<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocDelete(pcDoc);   // send doc to the listener
 }

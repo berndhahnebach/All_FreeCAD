@@ -7,8 +7,11 @@
 # include <qmainwindow.h>
 #endif
 
+namespace App
+{
+  class Document;
+}
 class FCGuiDocument;
-class FCDocument;
 class QSplitter;
 class QWidget;	
 class QPrinter;
@@ -54,7 +57,7 @@ public:
 	/// returns the document the view is attached to
 	FCGuiDocument* GetGuiDocument(){return _pcDocument;}
 	/// returns the document the view is attached to
-	FCDocument* GetAppDocument();
+  App::Document* GetAppDocument();
 	/// indikates if the view is in passiv mode
 	bool IsPassiv(void){return bIsPassiv;}
 

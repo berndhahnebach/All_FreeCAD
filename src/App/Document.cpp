@@ -34,6 +34,8 @@
 
 
 #include "Document.h"
+#include "Feature.h"
+#include "FeatureAttr.h"
 #include "Label.h"
 
 #include "../Base/PyExport.h"
@@ -41,91 +43,29 @@
 #include "../Base/Exception.h"
 #include "Application.h"
 #include "Attribute.h"
-#include "DocType.h"
-#include "DocTypeAttr.h"
+//#include "DocType.h"
+//#include "DocTypeAttr.h"
+#include "DocumentPy.h"
 
 using Base::Console;
 using Base::streq;
 using namespace App;
 
 
-//===========================================================================
-// FCDocumentPy - Python wrapper 
-//===========================================================================
 
-/** The Document python class 
- */
-class AppExport FCDocumentPy :public Base::FCPyObject
-{
-	/// always start with Py_Header
-	Py_Header;
-
-public:
-	FCDocumentPy(FCDocument *pcDoc, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~FCDocumentPy();
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PyObject *PyDocType(PyObject *args);		// Python wrapper
-	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyDocType(args);};
-	PyObject *PyUndo(PyObject *args);		// Python wrapper
-	static PyObject *sPyUndo(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyUndo(args);};
-	PyObject *PyRedo(PyObject *args);		// Python wrapper
-	static PyObject *sPyRedo(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyRedo(args);};
-	PyObject *PyClearUndos(PyObject *args);		// Python wrapper
-	static PyObject *sPyClearUndos(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyClearUndos(args);};
-	PyObject *PySaveAs(PyObject *args);		// Python wrapper
-	static PyObject *sPySaveAs(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PySaveAs(args);};
-	PyObject *PySave(PyObject *args);		// Python wrapper
-	static PyObject *sPySave(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PySave(args);};
-	PyObject *PySetModified(PyObject *args);		// Python wrapper
-	static PyObject *sPySetModified(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PySetModified(args);};
-	PyObject *PyPurgeModified(PyObject *args);		// Python wrapper
-	static PyObject *sPyPurgeModified(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyPurgeModified(args);};
-	PyObject *PyNewCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyNewCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyNewCommand(args);};
-	PyObject *PyOpenCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyOpenCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyOpenCommand(args);};
-	PyObject *PyCommitCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyCommitCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyCommitCommand(args);};
-	PyObject *PyAbortCommand(PyObject *args);		// Python wrapper
-	static PyObject *sPyAbortCommand(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyAbortCommand(args);};
-	PyObject *PyRecompute(PyObject *args);		// Python wrapper
-	static PyObject *sPyRecompute(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyRecompute(args);};
-	PyObject *PyDump(PyObject *args);		// Python wrapper
-	static PyObject *sPyDump(PyObject *self, PyObject *args, PyObject *kwd){return ((FCDocumentPy*)self)->PyDump(args);};
-
-
-
-private:
-	FCDocument *_pcDoc;
-
-};
-
-
-//===========================================================================
-// FCDocument - Wrapper for the TDocStd_Document class
-//===========================================================================
 
 //--------------------------------------------------------------------------
-//t constructor
+// constructor
 //--------------------------------------------------------------------------
-FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc)
+Document::Document(const Handle_TDocStd_Document &hDoc)
  : _hDoc(hDoc)
 {
-	_pcDocPy = new FCDocumentPy(this);
+	_pcDocPy = new DocumentPy(this);
 	Console().Log("Create Document: %p Py: %p\n",this,_pcDocPy);
 
 }
 
-FCDocument::~FCDocument()
+Document::~Document()
 {
 	_hDoc.Nullify();
 	Console().Log("Destroy Document %p\n",this);
@@ -133,8 +73,8 @@ FCDocument::~FCDocument()
 
 
 
-
-void FCDocument::InitType(App::DocType *pcDocType)
+/*
+void Document::InitType(App::DocType *pcDocType)
 {
 	// attach the type object
 
@@ -147,75 +87,76 @@ void FCDocument::InitType(App::DocType *pcDocType)
 	pcDocType->Init(this);
 
 }
+*/
 
-
-DocType *FCDocument::GetDocType(void)
+/*
+DocType *Document::GetDocType(void)
 {
 	Handle_FCDocTypeAttr hAttr;
 
 	Main().FindAttribute(FCDocTypeAttr::GetID(),hAttr);
 
 	return hAttr->Get();
-
+*/
 	
 	/*	Handle(FCDocTypeAttr) TSR;
 	if (!Main()->GetOCCLabel().FindAttribute(FCDocTypeAttr::GetID(), TSR )) 
 		return 0;
 
 	return TSR->Get();*/
-}
+//}
 
 //--------------------------------------------------------------------------
 // Exported functions
 //--------------------------------------------------------------------------
 
 // Save the Document under a new Name
-void FCDocument::SaveAs (const char* Name)
+void Document::SaveAs (const char* Name)
 {
 	// creat a non const buffer
 	Base::PyBuf name(Name);
 
-	Handle(FCApplicationOCC) hApp = GetApplication().GetOCCApp();
+	Handle(ApplicationOCC) hApp = GetApplication().GetOCCApp();
 	if(hApp->SaveAs(_hDoc,(Standard_CString)name.str)==CDF_SS_Failure) 
 		throw Base::Exception("SaveAs failed");
 }
 // Save the document under the name its been opened
-void FCDocument::Save (void)
+void Document::Save (void)
 {
 	Handle(TDocStd_Application)::DownCast(_hDoc->Application())->Save(_hDoc);
 }
 
-bool FCDocument::Undo(void)					
+bool Document::Undo(void)					
 {
   return _hDoc->Undo() != 0; 
 }
 
-bool FCDocument::Redo(void)
+bool Document::Redo(void)
 {
   return _hDoc->Redo() != 0; 
 }
 
-bool FCDocument::IsSaved() const
+bool Document::IsSaved() const
 {
 	return _hDoc->IsSaved() != 0;
 }
 
 
 /// Get the document name of a saved document
-const short* FCDocument::GetName() const
+const short* Document::GetName() const
 {
   return _hDoc->GetName().ToExtString(); 
 }
 
 /// Get the path of a saved document
-const short* FCDocument::GetPath() const
+const short* Document::GetPath() const
 {
   return _hDoc->GetPath().ToExtString();
 }
 
 /*
 /// Get the Main Label of the document
-FCPyHandle<FCLabel> FCDocument::Main() 
+FCPyHandle<FCLabel> Document::Main() 
 {
 	if(!_hcMain){
 		_hcMain = new FCLabel(_hDoc->Main(),this);
@@ -226,44 +167,44 @@ FCPyHandle<FCLabel> FCDocument::Main()
 }
 */
 /// Get the Main Label of the document
-TDF_Label FCDocument::Main() 
+TDF_Label Document::Main() 
 {
 	return  _hDoc->Main();
 }
 
 /// Test if the document is empty
-bool FCDocument::IsEmpty() const
+bool Document::IsEmpty() const
 {
   return _hDoc->IsEmpty() != 0; 
 }
 
 /// Returns False if the  document  contains notified modifications.
-bool FCDocument::IsValid() const
+bool Document::IsValid() const
 {
   return _hDoc->IsValid() != 0;
 }
 
 /*
 /// Set a special Label as modified
-void FCDocument::SetModified(FCLabel* L)
+void Document::SetModified(FCLabel* L)
 {
   _hDoc->SetModified(L->GetOCCLabel()); 
 }
 */
 /// Remove all modifications. After this call The document becomesagain Valid.
-void FCDocument::PurgeModified()
+void Document::PurgeModified()
 {
   _hDoc->PurgeModified(); 
 }
 
 /// New Command (Short cut for Commit and Open transaction)
-void FCDocument::NewCommand() 
+void Document::NewCommand() 
 {
   _hDoc->NewCommand(); 
 }
 
 /// returns True if a Command transaction is open
-bool FCDocument::HasOpenCommand() const
+bool Document::HasOpenCommand() const
 {
   return _hDoc->HasOpenCommand() != 0; 
 }
@@ -272,25 +213,25 @@ bool FCDocument::HasOpenCommand() const
  *  Raise a OCC Exception If a Command is already open.
  *  You may   check  it with the   previous method <HasOpenCommand>.
  */
-void FCDocument::OpenCommand()
+void Document::OpenCommand()
 {
   _hDoc->OpenCommand(); 
 }
 
 /// Commit the Command transaction. Do nothing If there is no Command transaction open.
-void FCDocument::CommitCommand()
+void Document::CommitCommand()
 {
   _hDoc->CommitCommand();
 }
 
 /// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
-void FCDocument::AbortCommand()
+void Document::AbortCommand()
 {
   _hDoc->AbortCommand(); 
 }
 
 /// The current limit on the number of undos
-int FCDocument::GetUndoLimit() const
+int Document::GetUndoLimit() const
 {
   return _hDoc->GetUndoLimit(); 
 }
@@ -301,51 +242,143 @@ int FCDocument::GetUndoLimit() const
  *  Enabling it will take effect with the next call to
  *  NewCommand. Of course this limit is the same for Redo.
  */
-void FCDocument::SetUndoLimit(const int L)
+void Document::SetUndoLimit(const int L)
 {
   _hDoc->SetUndoLimit(L); 
 }
 
 /// Remove all stored Undos and Redos
-void FCDocument::ClearUndos()
+void Document::ClearUndos()
 {
   _hDoc->ClearUndos(); 
 }
 
 /// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
-int FCDocument::GetAvailableUndos() const
+int Document::GetAvailableUndos() const
 {
   return _hDoc->GetAvailableUndos(); 
 }
 
 /// Returns the number   of stored Redos. If greater than 0 Redo will be effective.
-int FCDocument::GetAvailableRedos() const
+int Document::GetAvailableRedos() const
 {
   return _hDoc->GetAvailableRedos(); 
 }
 
 /// Recompute if the document was  not valid and propagate the reccorded modification.
-void FCDocument::Recompute()
-{
+void Document::Recompute()
+{  
+  
+  TDF_MapIteratorOfLabelMap It;
+
+  for(It.Initialize(_LogBook.GetTouched());It.More();It.Next())
+  {
+    // Get the Feature of this label
+    Feature *Feat = Feature::GetFeature(It.Key());
+    if(!Feat) continue;
+
+    // find the name of this label
+    Handle(TDataStd_Name) hName;
+    if(! It.Key().FindAttribute(TDataStd_Name::GetID(),hName))
+      throw Base::Exception("DocTypeStd::UpdateDoc() internal error, feature label with no name\n");
+    Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
+
+		if (Feat->MustExecute(_LogBook))
+		{
+			//_LogBook.SetTouched(It.Key());
+			if(Feat->Execute(_LogBook))
+        Base::Console().Message("Recompute of Feature failed\n");
+		}
+
+  }
+
   _hDoc->Recompute(); 
 
-  Notify(FCDocChanges());
+  Notify(DocChanges());
+}
+
+Feature *Document::AddFeature(const char* sName)
+{
+	Feature *pcFeature = FeatureFactory().Produce(sName);
+
+	if(pcFeature)
+	{
+		// next free label
+		TDF_Label FeatureLabel = _lFeature.FindChild(_iNextFreeFeature++);
+		// mount the feature on its place
+		FeatureAttr::Set(FeatureLabel,pcFeature);
+		// name
+		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) sName ));
+		// the rest of the setup do the feature itself
+		pcFeature->AttachLabel(FeatureLabel);
+		// update the pointer
+		_lActiveFeature = FeatureLabel;
+
+    pcFeature->SetDoc(this);
+
+		// return the feature
+		return pcFeature;
+
+	}else return 0;
+
+}
+
+Feature *Document::GetActiveFeature(void)
+{
+  // checks if there is no active Feature
+  if(_lActiveFeature.IsNull()) 
+    return 0;
+  
+  return Feature::GetFeature(_lActiveFeature);
+}
+
+
+void Document::Init (void)
+{
+	Base::Console().Log("Initialising Doc: %p ",this);
+
+ 
+	TDF_Label lMain = Main();
+
+	_lBase    = lMain.FindChild(1);
+	_lPos     = lMain.FindChild(2);
+	_lFeature = lMain.FindChild(3);
+
+
+	TDataStd_Name::Set(_lBase,    TCollection_ExtendedString((Standard_CString)"Base"));
+	TDataStd_Name::Set(_lPos,     TCollection_ExtendedString((Standard_CString)"Pos"));
+	TDataStd_Name::Set(_lFeature, TCollection_ExtendedString((Standard_CString)"Features"));
+
+	_iNextFreeFeature = 1;
+//	_lActiveFeature; 
 }
 
 /// Returns the storage string of the document.
-const short* FCDocument::StorageFormat() const
+const short* Document::StorageFormat() const
 {
   return _hDoc->StorageFormat().ToExtString(); 
 }
 
 /// Change the storage format of the document.
-void FCDocument::ChangeStorageFormat(const short* sStorageFormat) 
+void Document::ChangeStorageFormat(const short* sStorageFormat) 
 {
   _hDoc->ChangeStorageFormat((Standard_ExtString)sStorageFormat); 
 }
 
+void Document::TouchState(const TDF_Label &l)
+{
+  _LogBook.SetTouched(l);
+}
+
+void Document::ImpactState(const TDF_Label &l)
+{
+  _LogBook.SetImpacted(l);
+}
+
+
+
 /*
-FCLabel *FCDocument::HasLabel(TDF_Label cLabel)
+FCLabel *Document::HasLabel(TDF_Label cLabel)
 {
 	FCLabel *pcL;
 	std::map <TDF_Label,FCLabel*,LabelLess>::iterator It;
@@ -370,247 +403,14 @@ FCLabel *FCDocument::HasLabel(TDF_Label cLabel)
 
 */
 
-void FCDocument::Dump(void)
+void Document::Dump(void)
 {
   _hDoc->Main().Dump(std::cout);
 }
 
-Base::FCPyObject * FCDocument::GetPyObject(void)
+Base::FCPyObject * Document::GetPyObject(void)
 {
 	return _pcDocPy;
 }
 
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
-
-PyTypeObject FCDocumentPy::Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,						/*ob_size*/
-	"FCDocumentPy",				/*tp_name*/
-	sizeof(FCDocumentPy),			/*tp_basicsize*/
-	0,						/*tp_itemsize*/
-	/* methods */
-	PyDestructor,	  		/*tp_dealloc*/
-	0,			 			/*tp_print*/
-	__getattr, 				/*tp_getattr*/
-	__setattr, 				/*tp_setattr*/
-	0,						/*tp_compare*/
-	__repr,					/*tp_repr*/
-	0,						/*tp_as_number*/
-	0,						/*tp_as_sequence*/
-	0,						/*tp_as_mapping*/
-	0,						/*tp_hash*/
-	0,						/*tp_call */
-};
-
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
-PyMethodDef FCDocumentPy::Methods[] = {
-  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
-  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-  {"Redo",         (PyCFunction) sPyRedo,         Py_NEWARGS},
-  {"ClearUndos",   (PyCFunction) sPyClearUndos,   Py_NEWARGS},
-  {"SaveAs",       (PyCFunction) sPySaveAs,       Py_NEWARGS},
-  {"Save",         (PyCFunction) sPySave,         Py_NEWARGS},
-  {"SetModified",  (PyCFunction) sPySetModified,  Py_NEWARGS},
-  {"PurgeModified",(PyCFunction) sPyPurgeModified,Py_NEWARGS},
-  {"NewCommand",   (PyCFunction) sPyNewCommand,   Py_NEWARGS},
-  {"OpenCommand",  (PyCFunction) sPyOpenCommand,  Py_NEWARGS},
-  {"CommitCommand",(PyCFunction) sPyCommitCommand,Py_NEWARGS},
-  {"Recompute",    (PyCFunction) sPyRecompute,    Py_NEWARGS},
-  {"Dump",         (PyCFunction) sPyDump,         Py_NEWARGS},
-
-  {NULL, NULL}		/* Sentinel */
-};
-
-//--------------------------------------------------------------------------
-// Parents structure
-//--------------------------------------------------------------------------
-PyParentObject FCDocumentPy::Parents[] = {&FCPyObject::Type, NULL};     
-
-//--------------------------------------------------------------------------
-//t constructor
-//--------------------------------------------------------------------------
-FCDocumentPy::FCDocumentPy(FCDocument *pcDoc, PyTypeObject *T)
- : FCPyObject( T), _pcDoc(pcDoc)
-{
-	Base::Console().Log("Create FCDocumentPy (%d)\n",this);
-
-}
-
-PyObject *FCDocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
-{
-  //return new FCDocumentPy(name, n, tau, gamma);			// Make new Python-able object
-	return 0;
-}
-
-//--------------------------------------------------------------------------
-// destructor 
-//--------------------------------------------------------------------------
-FCDocumentPy::~FCDocumentPy()						// Everything handled in parent
-{
-	Console().Log("Destroy PyDocument: %p \n",this);
-
-} 
-
-
-//--------------------------------------------------------------------------
-// FCDocumentPy representation
-//--------------------------------------------------------------------------
-PyObject *FCDocumentPy::_repr(void)
-{
-	return Py_BuildValue("s", "FreeCAD Document");
-}
-//--------------------------------------------------------------------------
-// FCDocumentPy Attributes
-//--------------------------------------------------------------------------
-PyObject *FCDocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-	PY_TRY{
-		if (streq(attr, "UndoLimit"))						
-			return Py_BuildValue("i", _pcDoc->GetUndoLimit()); 
-		else if (streq(attr, "AvailableUndos"))				
-			return Py_BuildValue("i", _pcDoc->GetAvailableUndos()); 
-		else if (streq(attr, "AvailableRedos"))				
-			return Py_BuildValue("i", _pcDoc->GetAvailableRedos()); 
-		else if (streq(attr, "Name"))						
-			return Py_BuildValue("u", _pcDoc->GetName()); 
-		else if (streq(attr, "Path"))						
-			return Py_BuildValue("u", _pcDoc->GetPath()); 
-		else if (streq(attr, "Main")){
-			//_pcDoc->Main()->IncRef();
-			return new FCLabelPy(_pcDoc->_hDoc->Main()); 
-		}
-		else if (streq(attr, "IsEmpty"))					
-			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0); 
-		else if (streq(attr, "IsValid"))					
-			return Py_BuildValue("u", _pcDoc->IsValid()?1:0); 
-		else if (streq(attr, "HasOpenCommand"))				
-			return Py_BuildValue("u", _pcDoc->HasOpenCommand()?1:0);
-		else if (streq(attr, "StorageFormat"))						
-			return Py_BuildValue("u", _pcDoc->StorageFormat()); 
-		else
-			_getattr_up(FCPyObject); 						
-	}PY_CATCH;
-} 
-
-int FCDocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-	if (streq(attr, "UndoLimit")){						// settable new state
-		_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
-		return 1;
-	}else if (streq(attr, "StorageFormat")){						// settable new state
-		_pcDoc->ChangeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
-		return 1;
-	}else  
-		return FCPyObject::_setattr(attr, value); 	// send up to parent
-} 
-
-
-
-//--------------------------------------------------------------------------
-// Python wrappers
-//--------------------------------------------------------------------------
-
-PyObject *FCDocumentPy::PyDocType(PyObject *args)
-{ 
-	return _pcDoc->GetDocType()->GetPyObject();
-}
- 
-PyObject *FCDocumentPy::PyDump(PyObject *args)
-{ 
-	_pcDoc->Dump();
-	Py_Return; 
-} 
-
-PyObject *FCDocumentPy::PyUndo(PyObject *args)
-{ 
-	_pcDoc->Undo(); 
-	Py_Return; 
-} 
-
-PyObject *FCDocumentPy::PyRedo(PyObject *args)
-{ 
-	_pcDoc->Redo(); 
-	Py_Return; 
-} 
-PyObject *FCDocumentPy::PyClearUndos(PyObject *args)
-{ 
-	_pcDoc->ClearUndos(); 
-	Py_Return; 
-} 
-
-PyObject *FCDocumentPy::PySaveAs(PyObject *args)
-{
-	char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-	try {
-		_pcDoc->SaveAs(pstr);
-	}	
-	catch(...) {
-		PyErr_SetString(PyExc_IOError, "Save Failed");
-		return 0L;
-	}
-
-	Py_Return; 
-} 
-
-PyObject *FCDocumentPy::PySave(PyObject *args)
-{ 
-	_pcDoc->Save(); 
-	Py_Return; 
-} 
-
-
-PyObject *FCDocumentPy::PySetModified(PyObject *args)
-{ 
-	assert(0);
-	_pcDoc->Save(); 
-	Py_Return; 
-} 
-	
-PyObject *FCDocumentPy::PyPurgeModified(PyObject *args)
-{ 
-	_pcDoc->PurgeModified(); 
-	Py_Return; 
-} 
-	
-PyObject *FCDocumentPy::PyNewCommand(PyObject *args)
-{ 
-	_pcDoc->NewCommand(); 
-	Py_Return; 
-} 
-		
-PyObject *FCDocumentPy::PyOpenCommand(PyObject *args)
-{ 
-	_pcDoc->OpenCommand(); 
-	Py_Return; 
-} 
-	
-PyObject *FCDocumentPy::PyCommitCommand(PyObject *args)
-{ 
-	_pcDoc->CommitCommand(); 
-	Py_Return; 
-} 
-	
-PyObject *FCDocumentPy::PyAbortCommand(PyObject *args)
-{ 
-	_pcDoc->AbortCommand(); 
-	Py_Return; 
-} 
-	
-PyObject *FCDocumentPy::PyRecompute(PyObject *args)
-{ 
-	_pcDoc->Recompute(); 
-	Py_Return; 
-} 
-		
 

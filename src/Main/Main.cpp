@@ -114,7 +114,7 @@ const char sBanner[] = \
 	FCSplashScreen *splash = 0;
 #endif
 
-/// configuration map, acces throug FCApplication
+/// configuration map, acces throug Application
 std::map<std::string,std::string> mConfig;
 
 
@@ -405,7 +405,7 @@ void Init(int argc, char ** argv )
 
 	// creating the application
 	if(!(mConfig["Verbose"] == "Strict")) Console().Log("Create Application");
-	FCApplication::InitApplication(pcSystemParameter,pcUserParameter,mConfig);
+	Application::InitApplication(pcSystemParameter,pcUserParameter,mConfig);
 
 	// Splasher phase ===========================================================
 #	ifdef _FC_GUI_ENABLED_
@@ -650,7 +650,7 @@ void __declspec(dllexport) initFreeCADDCmdPy() {
 void __declspec(dllexport) initFreeCADCmdPy() {
 #endif
 	Console();
-	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
+	Application::_pcSingelton = new Application(pcSystemParameter,pcUserParameter,mConfig);
 	printf("hallo");
 	cout << "hallo";
 	return;

@@ -42,9 +42,9 @@
 #include "../Base/Exception.h"
 using Base::Console;
 
-
+#include "Document.h"
 #include "Feature.h"
-#include "DocType.h"
+#include "FeatureAttr.h"
 #include "Function.h"
 #include "Property.h"
 #include "PropertyAttr.h"
@@ -136,8 +136,8 @@ const char *Feature::GetStringProperty(const char *Name)
 
 void Feature::TouchProperty(const char *Name)
 {
-    _pDocType->TouchState( _cFeatureLabel.FindChild(_PropertiesMap[Name]) );
-    _pDocType->TouchState( _cFeatureLabel );
+    _pDoc->TouchState( _cFeatureLabel.FindChild(_PropertiesMap[Name]) );
+    _pDoc->TouchState( _cFeatureLabel );
 }
 
 void Feature::AttachLabel(const TDF_Label &rcLabel)
@@ -193,9 +193,20 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 
 }
 
-void Feature::SetDocType(DocTypeStd *dt)
+void Feature::SetDoc(Document *dt)
 {
-  _pDocType = dt;
+  _pDoc = dt;
+}
+
+Feature *Feature::GetFeature(const TDF_Label &l)
+{
+  Handle(FeatureAttr) hFeat;
+  
+  if(! l.FindAttribute(FeatureAttr::GetID(),hFeat))
+    //throw Base::Exception("DocTypeStd::GetFeature() internal error, feature attribute missing\n");
+    return 0;
+  
+  return hFeat->Get();
 }
 
 

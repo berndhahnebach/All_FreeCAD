@@ -54,12 +54,12 @@ class MDIWindow;
  *  @see FCDocument 
  *  @see MDIView
  */
-class GuiExport FCGuiDocument :public QObject, public FCDocument::ObserverType
+class GuiExport FCGuiDocument :public QObject, public App::Document::ObserverType
 {
 	Q_OBJECT
 
 public:
-	FCGuiDocument(FCDocument* pcDocument, ApplicationWindow * app, const char * name=0);
+  FCGuiDocument(App::Document* pcDocument, ApplicationWindow * app, const char * name=0);
 	~FCGuiDocument();
 
 
@@ -70,14 +70,14 @@ public:
 	bool SaveAs(void);
 
 	/// Observer message from the App doc
-	virtual void OnChange(FCDocument::SubjectType &rCaller,FCDocument::MessageType Reason);
+  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
 
 	/// Geter for the Application 
 	ApplicationWindow*				GetAppWnd(){return _pcAppWnd;}	
 	/// Geter for the OCC Interactive context
 	Handle(AIS_InteractiveContext)	GetContext(){return _hContext;}
 	/// Gerer for the App Document 
-	FCDocument*						GetDocument(void){return _pcDocument;}
+  App::Document*						GetDocument(void){return _pcDocument;}
 
 
 	/** @name methodes for activation handling */
@@ -156,8 +156,8 @@ private:
 	Handle(V3d_Viewer)				_hViewer;
 	Handle(AIS_InteractiveContext)	_hContext;
 	// the doc/Document
-	FCDocument*						_pcDocument;
-	Base::PyHandle<FCDocument>	    _hcDocument;
+  App::Document*						_pcDocument;
+  Base::PyHandle<App::Document>	    _hcDocument;
 
   Handle(TPrsStd_AISPresentation) _ActivePresentation;
 

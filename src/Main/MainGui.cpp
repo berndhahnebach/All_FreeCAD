@@ -95,21 +95,21 @@ int main( int argc, char ** argv )
 		}
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with gui if not overridden in InitConfig...
-	FCApplication::SetRunMode("Gui");
+	App::Application::SetRunMode("Gui");
 
 	// parse the options 
-	FCApplication::InitConfig(argc,argv,sHomePath.c_str());
+	App::Application::InitConfig(argc,argv,sHomePath.c_str());
 
-	FCApplication::InitApplication();
+	App::Application::InitApplication();
 
 	ApplicationWindow::InitApplication();
 
 	// dumps the configuration to the console
-//	FCApplication::DumpConfig();
+//	Application::DumpConfig();
 
 	// Run phase ===========================================================
 
-	if(GetApplication().Config()["RunMode"] == "Gui")
+	if(App::GetApplication().Config()["RunMode"] == "Gui")
 	{
 	// run GUI
 		ApplicationWindow::RunApplication();
@@ -118,7 +118,7 @@ int main( int argc, char ** argv )
 
 	} else {
 
-		FCApplication::RunApplication();
+		App::Application::RunApplication();
 	}
 
 
@@ -126,7 +126,7 @@ int main( int argc, char ** argv )
 	Base::Console().Log("FreeCAD terminating...\n\n");
 
 	// cleans up 
-	FCApplication::Destruct();
+	App::Application::Destruct();
 
 	Base::Console().Log("FreeCAD completely terminated\n\n");
 
@@ -140,16 +140,16 @@ void CheckEnv(void)
 {
 
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SetPluginDefaults(FCApplication::Config()["HomePath"].c_str());
+	SetPluginDefaults(Application::Config()["HomePath"].c_str());
 
 	// sets all needed varables if a FreeCAD LibPack is found
-	if(FCApplication::Config()["FreeCADLib"] != "")
+	if(Application::Config()["FreeCADLib"] != "")
 	{
 		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(FCApplication::Config()["FreeCADLib"].c_str());
+		SetPythonToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
 
 		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(FCApplication::Config()["FreeCADLib"].c_str());
+		SetCasCadeToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
 	}
 
 	cout << flush;

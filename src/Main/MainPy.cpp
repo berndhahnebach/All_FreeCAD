@@ -58,6 +58,10 @@
 #include "../App/Application.h"
 
 
+using App::Application;
+
+
+
 #ifdef FC_OS_WIN32
 #	pragma comment(lib,"TKernel.lib")
 #endif
@@ -98,11 +102,11 @@ extern "C" {
 
 		char* argv = "FreeCAD";
 		// parse the options
-		FCApplication::InitConfig(1,&argv,sHomePath.c_str());
+		Application::InitConfig(1,&argv,sHomePath.c_str());
 
-		FCApplication::InitApplication();
+		Application::InitApplication();
 
-		FCApplication::DumpConfig();
+		Application::DumpConfig();
 
 
 		return;

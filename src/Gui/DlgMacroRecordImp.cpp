@@ -47,7 +47,7 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool m
     : DlgMacroRecord( parent, name, modal, fl ), WindowParameter("Macro")
 {
   // get the macro home path
-  _cMacroPath = getWindowParameter()->GetASCII("MacroPath",GetApplication().GetHomePath());
+  _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
   // get a pointer to the macro manager
   _pcMacroMngr = ApplicationWindow::Instance->GetMacroMngr();
 

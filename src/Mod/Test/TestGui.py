@@ -38,7 +38,7 @@ import TestApp               #Test as Module name not possible
 class TestCmd:
     "Test1 commando object"
     def Activated(self):
-        TestApp.TestGui()
+        TestApp.TestGui("TestApp.All")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}

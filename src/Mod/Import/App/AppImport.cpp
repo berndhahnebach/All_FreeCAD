@@ -91,7 +91,7 @@ void ModuleExport initImport() {
 
 	(void) Py_InitModule("Import", hello_methods);   /* mod name, table ptr */
 
-	GetApplication();
+  App::GetApplication();
 
 	Base::Console().Log("Import loaded\n");
 

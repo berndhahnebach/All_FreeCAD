@@ -54,11 +54,12 @@
 #include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 
-using Base::Console;
-
-
 // FreeCAD doc header
 #include "../App/Application.h"
+
+
+using Base::Console;
+using App::Application;
 
 
 #pragma comment(lib,"TKernel.lib")
@@ -83,25 +84,25 @@ int main( int argc, char ** argv )
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
-	FCApplication::SetRunMode("Cmd");
+  Application::SetRunMode("Cmd");
 
 	// parse the options 
-	FCApplication::InitConfig(argc,argv,sHomePath.c_str());
+	Application::InitConfig(argc,argv,sHomePath.c_str());
 
-	FCApplication::InitApplication();
+	Application::InitApplication();
 
 
 	// Run phase ===========================================================
 
 
-	FCApplication::RunApplication();
+	Application::RunApplication();
 
 
 	// Destruction phase ===========================================================
 	Console().Log("FreeCAD terminating...\n\n");
 
 	// cleans up 
-	FCApplication::Destruct();
+	Application::Destruct();
 
 	Console().Log("FreeCAD completely terminated\n\n");
 
@@ -115,16 +116,16 @@ void CheckEnv(void)
 {
 
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SetPluginDefaults(FCApplication::Config()["HomePath"].c_str());
+	SetPluginDefaults(Application::Config()["HomePath"].c_str());
 
 	// sets all needed varables if a FreeCAD LibPack is found
-	if(FCApplication::Config()["FreeCADLib"] != "")
+	if(Application::Config()["FreeCADLib"] != "")
 	{
 		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(FCApplication::Config()["FreeCADLib"].c_str());
+		SetPythonToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
 
 		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(FCApplication::Config()["FreeCADLib"].c_str());
+		SetCasCadeToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
 	}
 
 	cout << flush;

@@ -31,10 +31,13 @@
 
 #include "../Base/PyExport.h"
 
+namespace App
+{
+  class Document;
+}
 class FCCommandManager;
 class ApplicationWindow;
 class FCGuiDocument;
-class FCDocument;
 class FCCommand;
 class QAction;
 class MDIView;
@@ -98,7 +101,7 @@ public:
 	/// Get pointer to the active gui document
 	FCGuiDocument*		GetActiveDocument(void);
 	/// Get ponter to the active CasCade document 
-	FCDocument*			GetActiveOCCDocument(void);
+  App::Document*			GetActiveOCCDocument(void);
 	/// Get the FCAxtion object of this command
 	QAction*           GetAction();
 	//@}

@@ -67,7 +67,7 @@ void ModuleExport initPartGui() {
 
 	Base::Console().Log("AppPartGui loaded\n");
 
-	GetApplication();
+	App::GetApplication();
 	ApplicationWindow::Instance;
 
 	// instanciating the commands

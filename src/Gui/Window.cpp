@@ -79,7 +79,7 @@ FCParameterGrp::handle  WindowParameter::getWindowParameter(void)
 
 FCParameterGrp::handle  WindowParameter::getParameter(void)
 {
-  return GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+  return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
 }
 
 ApplicationWindow* WindowParameter::applicationWindow(void)

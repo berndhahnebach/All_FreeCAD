@@ -75,7 +75,7 @@ void ModuleExport initImportGui() {
 	ApplicationWindow::Instance->GetMacroMngr()->AddLine(FCMacroManager::Base,"import Import");
 	Base::Interpreter().RunFCCommand("import Import");
 
-	GetApplication();
+  App::GetApplication();
 	ApplicationWindow::Instance;
 
 	// instanciating the commands

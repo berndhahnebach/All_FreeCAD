@@ -1,5 +1,5 @@
 /***************************************************************************
-                          FCApplication.h  -  description
+                          Application.h  -  description
                              -------------------
     begin                : Tue Jan 2 2001
     copyright            : (C) 2001 by Juergen Riegel
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _FCApplication_
-#define _FCApplication_
+#ifndef _Application_
+#define _Application_
 #include "../Base/PyExportImp.h"
 #include "../Base/Parameter.h"
 
@@ -25,59 +25,62 @@
 #include <TDocStd_Application.hxx>
 #include <TDataStd_Name.hxx>
 
+namespace App
+{
 
-class FCDocument;
-class FCApplicationOCC;
-class FCApplicationObserver;
+  
+class Document;
+class ApplicationOCC;
+class ApplicationObserver;
 
 
-Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCApplicationOCC);
+Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(ApplicationOCC);
 
-/**	Handle_FCApplicationOCC provides the handle for the FCApplicationOCC class.
+/**	Handle_ApplicationOCC provides the handle for the ApplicationOCC class.
   *
 	* To learn more about the OpenCasCade handle mechanismus see the CasCade manual.
   */
 
-class  Handle_FCApplicationOCC : public Handle(TDocStd_Application) {
+class  Handle_ApplicationOCC : public Handle(TDocStd_Application) {
   public:
-   Standard_EXPORT Handle_FCApplicationOCC():Handle(TDocStd_Application)() {}
-   Standard_EXPORT Handle_FCApplicationOCC(const Handle_FCApplicationOCC& aHandle) : Handle(TDocStd_Application)(aHandle){}
-   Standard_EXPORT Handle_FCApplicationOCC(const FCApplicationOCC* anItem) : Handle(TDocStd_Application)((TDocStd_Application *)anItem){}
-   Standard_EXPORT Handle_FCApplicationOCC& operator=(const Handle_FCApplicationOCC& aHandle){
+   Standard_EXPORT Handle_ApplicationOCC():Handle(TDocStd_Application)() {}
+   Standard_EXPORT Handle_ApplicationOCC(const Handle_ApplicationOCC& aHandle) : Handle(TDocStd_Application)(aHandle){}
+   Standard_EXPORT Handle_ApplicationOCC(const ApplicationOCC* anItem) : Handle(TDocStd_Application)((TDocStd_Application *)anItem){}
+   Standard_EXPORT Handle_ApplicationOCC& operator=(const Handle_ApplicationOCC& aHandle){
       Assign(aHandle.Access());
       return *this;
      }
-   Standard_EXPORT Handle_FCApplicationOCC& operator=(const FCApplicationOCC* anItem){
+   Standard_EXPORT Handle_ApplicationOCC& operator=(const ApplicationOCC* anItem){
       Assign((Standard_Transient *)anItem);
       return *this;
      }
-   Standard_EXPORT FCApplicationOCC* operator->(){
-      return (FCApplicationOCC *)ControlAccess();
+   Standard_EXPORT ApplicationOCC* operator->(){
+      return (ApplicationOCC *)ControlAccess();
      }
 
-   Standard_EXPORT FCApplicationOCC* operator->() const{
-      return (FCApplicationOCC *)ControlAccess();
+   Standard_EXPORT ApplicationOCC* operator->() const{
+      return (ApplicationOCC *)ControlAccess();
      }
 
-   Standard_EXPORT ~Handle_FCApplicationOCC();
-   Standard_EXPORT static const Handle_FCApplicationOCC DownCast(const Handle(Standard_Transient)& AnObject);
+   Standard_EXPORT ~Handle_ApplicationOCC();
+   Standard_EXPORT static const Handle_ApplicationOCC DownCast(const Handle(Standard_Transient)& AnObject);
 };
 
 
-/**	FCApplicationOCC provides the OpenCasCade Application functionality.
+/**	ApplicationOCC provides the OpenCasCade Application functionality.
   *
-  * FCApplicationOCC inherits from TDocStd_Application and redefines some pure
+  * ApplicationOCC inherits from TDocStd_Application and redefines some pure
   * virtual functions, like:
   * Format()        : gives information about the types of formates.
   * ResourcesName() : Dont know much about what this function is doing ;-)
   */
 
 
-class FCApplicationOCC : public TDocStd_Application
+class ApplicationOCC : public TDocStd_Application
 {
 public:
-	FCApplicationOCC();
-	virtual ~FCApplicationOCC();
+	ApplicationOCC();
+	virtual ~ApplicationOCC();
 
 	// OpenCasCade application Stuff goes here +++++++++++++++++++++++++++++++++++
 	/** gives information about the types of formates */
@@ -85,7 +88,7 @@ public:
 	/** Dont know much about what this function is doing ;-) */
 	virtual  void Formats(TColStd_SequenceOfExtendedString& Formats);
 	/** OCAF Typing information functions (see OpenCasCade doc) */
-	friend Handle_Standard_Type&   FCApplicationOCC_Type_();
+	friend Handle_Standard_Type&   ApplicationOCC_Type_();
 	/** OCAF Typing information functions (see OpenCasCade doc) */
 	const Handle(Standard_Type)&   DynamicType() const;
 	/** OCAF Typing information functions (see OpenCasCade doc) */
@@ -100,9 +103,9 @@ protected:
 
 /** The Application
  *  The root of the whole application
- *  @see FCDocument
+ *  @see App::Document
  */
-class AppExport FCApplication //: public FCPythonExport
+class AppExport Application //: public PythonExport
 {
 
 public:
@@ -114,19 +117,19 @@ public:
 	/** @name methodes for document handling */
 	//@{
 	/// Creates a new document with a template
-	FCDocument* New(const char * Name=0l);
+  App::Document* New(const char * Name=0l);
 	/// Open an existing document from a file
-	FCDocument* Open(const char * Name=0l);
+	App::Document* Open(const char * Name=0l);
 	/// Save the active document to the name it was opened
-	FCDocument* Save(void);
+	App::Document* Save(void);
 	/// Save the active Document to a filename
-	FCDocument* SaveAs(const char * Name=0l);
+	App::Document* SaveAs(const char * Name=0l);
 	/// Retrive the active document
-	FCDocument* Active(void);
+	App::Document* Active(void);
 	/// Set the active document
-	void SetActive(FCDocument* pDoc);
+	void SetActive(App::Document* pDoc);
 	/// Geter for the OCC Aplication
-	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
+	Handle_ApplicationOCC GetOCCApp(void) {return _hApp;}
 	/// Get for all possible tamplates
 	std::vector<std::string> GetAllTemplates(void);
 	//@}
@@ -187,7 +190,7 @@ private:
 
 	static PyMethodDef    Methods[]; 
 
-	friend class FCApplicationObserver;
+	friend class ApplicationObserver;
 
 public:
 	/** @name Init, Destruct an Access methodes */
@@ -198,8 +201,8 @@ public:
 	static void DumpConfig(void);
 	static void SetRunMode(const char*);
 	static void RunApplication(void);
-//	static FCApplication &Instance(void);
-	friend FCApplication &GetApplication(void);
+//	static Application &Instance(void);
+	friend Application &GetApplication(void);
 	static std::map<std::string,std::string> &Config(void){return mConfig;}
 	static int GetARGC(void){return _argc;}
 	static char** GetARGV(void){return _argv;}
@@ -209,7 +212,7 @@ private:
 	/** @name Init, Destruct an Access methodes */
 	//@{
 	// the one and only pointer to the application object
-	static FCApplication *_pcSingelton;
+	static Application *_pcSingelton;
 	/// argument helper function
 	static void ParsOptions(int argc, char ** argv);
 	/// checks if the environment is allreight
@@ -230,9 +233,9 @@ private:
 
 public:
 	/// Constructor
-	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
+	Application(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
 	/// Destructor
-	virtual ~FCApplication();
+	virtual ~Application();
 
 	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 private:
@@ -240,35 +243,35 @@ private:
 	/** @name Singelton functions */
 	//@{
 	/// Attach an Observer to monitor the Application
-	void AttacheObserver(FCApplicationObserver *pcObserver);
+	void AttacheObserver(ApplicationObserver *pcObserver);
 	/// Detache an monitoring Observer
-	void DetacheObserver(FCApplicationObserver *pcObserver);
+	void DetacheObserver(ApplicationObserver *pcObserver);
 	/// Notify the Obervers on a new Doc
-	void NotifyDocNew(FCDocument* pcDoc);
+	void NotifyDocNew(App::Document* pcDoc);
 	/// Notify the Obervers on a deleted Doc
-	void NotifyDocDelete(FCDocument* pcDoc);
+	void NotifyDocDelete(App::Document* pcDoc);
 	/// The Observer is a friend of the Application
 	//@}
 
 
 	/// Handle to the OCC Application
-	Handle_FCApplicationOCC _hApp;
-	/// Handles the FCDocument (and python) objects;
-	std::vector<FCDocument*> _DocVector;
+	Handle_ApplicationOCC _hApp;
+	/// Handles the App::Document (and python) objects;
+	std::vector<App::Document*> _DocVector;
 	/// The container of all attached Obervers
-	std::set<FCApplicationObserver * > _aclObservers;
+	std::set<ApplicationObserver * > _aclObservers;
 
 	std::map<std::string,FCParameterManager *> mpcPramManager;
 	// map for Template objects
 	PyObject*		 _pcTemplateDictionary;
 
 	std::map<std::string,std::string> &_mConfig;
-	FCDocument* _pActiveDoc;
+	App::Document* _pActiveDoc;
 };
 
 /// Singelton getter of the Applicaton
-inline FCApplication &GetApplication(void){
-	return *FCApplication::_pcSingelton;
+inline App::Application &GetApplication(void){
+  return *App::Application::_pcSingelton;
 }
 
 
@@ -276,24 +279,24 @@ inline FCApplication &GetApplication(void){
  *  Derive from this class if you need to get norified by a 
  *  change in the Application. The Observer attache and detache
  *  automaticly.
- *  @see FCApplication
+ *  @see Application
  */
-class AppExport FCApplicationObserver
+class AppExport ApplicationObserver
 {
 public:
 	/// Construction and attachment
-	FCApplicationObserver(){GetApplication().AttacheObserver(this);}
+	ApplicationObserver(){GetApplication().AttacheObserver(this);}
 	/// Destruction and detachment
-	virtual ~FCApplicationObserver(){GetApplication().DetacheObserver(this);}
+	virtual ~ApplicationObserver(){GetApplication().DetacheObserver(this);}
 
 	/// This method get called when a new doc appears
-	virtual void OnDocNew(FCDocument*){};
+	virtual void OnDocNew(App::Document*){};
 	/// This method get called when a new doc will be deleted
-	virtual void OnDocDelete(FCDocument*){};
+	virtual void OnDocDelete(App::Document*){};
 };
 
 
-
+} // namespace App
 
 #endif
 

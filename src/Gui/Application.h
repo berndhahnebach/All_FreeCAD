@@ -67,7 +67,7 @@ class CustomWidgetManager;
 /** The Applcation main class
  *  This is the central class of the GUI 
  */
-class GuiExport ApplicationWindow: public QMainWindow, public FCApplicationObserver
+class GuiExport ApplicationWindow: public QMainWindow, public App::ApplicationObserver
 {
     Q_OBJECT
  
@@ -81,8 +81,8 @@ public:
 	void CreateStandardOperations();
 
 	// Observer
-	virtual void OnDocNew(FCDocument* pcDoc);
-	virtual void OnDocDelete(FCDocument* pcDoc);
+  virtual void OnDocNew(App::Document* pcDoc);
+  virtual void OnDocDelete(App::Document* pcDoc);
 
   void addWindow( MDIView* view );
   QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;

@@ -52,9 +52,9 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFl
 : DlgCustomActionsBase(parent, name, fl), bShown( false )
 {
   // search for all macros
-  std::string cMacroPath = GetApplication().
+  std::string cMacroPath = App::GetApplication().
     GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
-    ->GetASCII("MacroPath",GetApplication().GetHomePath());
+    ->GetASCII("MacroPath",App::GetApplication().GetHomePath());
 
   QDir d(cMacroPath.c_str(),"*.FCMacro");
   actionMacros->clear();

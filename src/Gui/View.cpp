@@ -109,7 +109,7 @@ void FCBaseView::SetDocument(FCGuiDocument* pcDocument)
 }
 
 /// returns the document the view is attached to
-FCDocument* FCBaseView::GetAppDocument()
+App::Document* FCBaseView::GetAppDocument()
 {
 	if(!_pcDocument) return 0;
 	return _pcDocument->GetDocument();

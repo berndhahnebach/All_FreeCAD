@@ -189,7 +189,7 @@ FCCmdTest2::FCCmdTest2()
 void FCCmdTest2::Activated(int iMsg)
 {
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
 	Base::Console().Log("Using Doc: %p\n",pcDoc);
@@ -236,7 +236,7 @@ FCCmdTest3::FCCmdTest3()
 void FCCmdTest3::Activated(int iMsg)
 {
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
@@ -269,7 +269,7 @@ FCCmdTest4::FCCmdTest4()
 void FCCmdTest4::Activated(int iMsg)
 {
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
@@ -301,7 +301,7 @@ FCCmdTest5::FCCmdTest5()
 void FCCmdTest5::Activated(int iMsg)
 {
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
 }
@@ -334,7 +334,7 @@ FCCmdTest6::FCCmdTest6()
 void FCCmdTest6::Activated(int iMsg)
 {
 
-	FCDocument *pcDoc = GetActiveOCCDocument();
+  App::Document *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
 }

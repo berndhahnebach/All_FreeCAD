@@ -493,3 +493,10 @@ Version: V0.1B105 Date: Mon Jan 03 16:06:30 2005 +++++++++++++++++++++++++++++++
 
 Version: V0.1B106 Date: Mon Jan 10 11:16:24 2005 +++++++++++++++++++++++++++++++
 + fixed Bug 1099103 by fixing HasGroup in ParameterPy
+
+Version: V0.1B107 Date: Tue Jan 11 11:16:46 2005 +++++++++++++++++++++++++++++++
++ put Application and Document (and helper classes) in namespace App
++ put exception handling into ParameterPy wrapper
++ PIMPLE document in class and py class
++ put the whole document python methodes with the macros and exceptions
++ removing doctype and put Feature handling into the document

@@ -43,7 +43,7 @@ namespace App
 {
 
 class Property;
-class DocTypeStd;
+class Document;
 
 /** Base class of all Feature classes in FreeCAD
  */
@@ -118,7 +118,11 @@ public:
 	void TouchProperty(const char *Name);
 	//@}
 
-  void SetDocType(DocTypeStd*);
+  /// Retrive the Feature from a Document label
+  static Feature *GetFeature(const TDF_Label &l);
+
+
+  void SetDoc(Document*);
 
   void SetShape(TopoDS_Shape &Shape);
 
@@ -136,7 +140,7 @@ protected:
 	int                  _nextFreeLabel;
   std::map<std::string,int> _PropertiesMap;
 
-  DocTypeStd* _pDocType;
+  Document* _pDoc;
 };
 
 

@@ -300,7 +300,7 @@ void PyResource::load( const char* name )
   if ( fi.isRelative() )
   {
     QString cwd = QDir::currentDirPath ();
-    QString home= QDir(GetApplication().GetHomePath()).path();
+    QString home= QDir(App::GetApplication().GetHomePath()).path();
 
     // search in cwd and home path for the file
     //

@@ -72,7 +72,7 @@ PartDocType::~PartDocType()
 }
 
 
-void PartDocType::Init (FCDocument *pcDoc)
+void PartDocType::Init (App::Document *pcDoc)
 {
 /*	FCPyHandle<FCLabel> hcMainLabel = pcDoc->Main();
 

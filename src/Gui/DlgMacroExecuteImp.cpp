@@ -54,7 +54,7 @@ DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool
     : DlgMacroExecute( parent, name, modal, fl ), WindowParameter( "Macro" )
 {
   // retrieve the macro path from parameter or use the home path as default
-  _cMacroPath = getWindowParameter()->GetASCII("MacroPath",GetApplication().GetHomePath());
+  _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
   ComboBoxPath->insertItem(_cMacroPath.c_str());
 
   // Fill the List box
