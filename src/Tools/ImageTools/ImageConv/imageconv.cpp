@@ -48,9 +48,11 @@ CCmdParam CCmdLineParser::GetArgumentList(const char* pSwitch)
 // ------------------------------------------------------------
 
 QString CImageConvApp::m_Executable = "ImageConv";
+QString CImageConvApp::m_BmpFactory = "BmpFactoryIcons.cpp";
 
 CImageConvApp::CImageConvApp(const QString& nameFilter, const QString& sFile)
 {
+  m_bUpdate = false;
   m_Output = sFile;
   if (nameFilter.isEmpty())
     m_Dir.setNameFilter("*.png;*.bmp;*.xbm;*.pnm;*.jpg;*.jpeg;*.mng;*.gif"); // not "*.xpm"!
@@ -151,8 +153,38 @@ bool CImageConvApp::ConvertToXPM(bool bAppendToFile)
   return true;
 }
 
+void CImageConvApp::CreateBmpFactory()
+{
+  // empty file
+  //
+  QFileInfo fi(m_BmpFactory);
+
+  // already exists
+  if (fi.exists() && fi.isFile())
+    return;
+
+  QFile fw(m_BmpFactory);
+  QTextStream tw (&fw);
+  if (!fw.open( IO_Translate | IO_Raw | IO_WriteOnly ))
+    return;
+
+  // write header stuff
+  tw << "\n";
+  tw << "#include <Application.h>\n";
+  tw << "#include \"" << m_Output << "\"\n";
+  tw << "\n";
+  tw << "\n";
+  tw << "void RegisterIcons()\n";
+  tw << "{\n";
+  tw << "  FCBmpFactory& rclBmpFactory = ApplicationWindow::Instance->GetBmpFactory();\n";
+  tw << "}\n";
+  fw.close();
+}
+
 bool CImageConvApp::AppendToFile(const QString& file)
 {
+  CreateBmpFactory();
+
   QString ohead("static char");
   QString nhead("static const char");
 
@@ -174,7 +206,6 @@ bool CImageConvApp::AppendToFile(const QString& file)
 
   // open file
   bool found = false;
-  bool empty = false;
   QFile fw(m_Output);
   if ( fw.open( IO_ReadOnly ))
   {
@@ -183,35 +214,12 @@ bool CImageConvApp::AppendToFile(const QString& file)
     do 
     {
       line = tr.readLine();
-      if ((line.find(file)) != -1) // icon alreeady registered
+      if ((line.find(file)) != -1) // icon already registered
       {
         found = true;
       }
     } while (!tr.eof() && !found);  
 
-    fw.close();
-  }
-  else
-  {
-    // empty file
-    //
-    empty = true;
-    QTextStream tw (&fw);
-    if (!fw.open( IO_Translate | IO_Raw | IO_WriteOnly ))
-      return false;
-
-    // write header stuff
-    tw << "\n";
-    tw << "#include <qmap.h>\n";
-    tw << "#include <qstring.h>\n";
-    tw << "\n";
-    tw << "QMap <QString, QString> mRegIcons;\n";
-    tw << "\n";
-    tw << "void RegisterIcon(const QString& icon)\n";
-    tw << "{\n";
-    tw << "  mRegIcons[icon] = icon;\n";
-    tw << "}\n";
-    tw << "\n";
     fw.close();
   }
 
@@ -223,8 +231,21 @@ bool CImageConvApp::AppendToFile(const QString& file)
 
     // write into file now
     QTextStream tw (&fw);
-    tw << txt << "RegisterIcon(" << file << ");\n\n";
+    tw << txt << "\n";
     fw.close();
+  
+    if (m_bUpdate)
+    {
+      QFile bmp(m_BmpFactory);
+      QTextStream ts (&bmp);
+      if (!bmp.open( IO_Translate | IO_Raw | IO_WriteOnly ))
+        return false;
+
+      bmp.at( bmp.size()-3 );
+      ts << "  rclBmpFactory.AddXPM(\"" << file << "\", " << file << ");\n";
+      ts << "}\n";
+      bmp.close();
+    }
   }
 
   return true;
@@ -265,9 +286,13 @@ void CImageConvApp::Usage()
   
   cerr << "  -a, --append\tConvert all specified image files to XPM and\n"
           "           \tappend the result to the file specified with -o.\n"
+          "           \tWith -i you can specify the input files.\n" << endl;
+
+  
+  cerr << "  -u, --update\tUpdate the file \"BmpFactoryIcons.cpp\"\n"
           "           \tThis is a special mode to add icons to the FreeCAD's\n"
           "           \tbitmap factory automatically.\n"
-          "           \tWith -i you can specify the input files.\n" << endl;
+          "           \tThis switch is only available in addition with -a.\n" << endl;
  
   cerr << "  -v, --version\tPrint the version and exit." << endl;
 

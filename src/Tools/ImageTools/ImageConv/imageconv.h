@@ -76,6 +76,9 @@ class CImageConvApp
     bool Load(const QString& fn);
     bool ConvertToXPM(bool bAppendToFile = false);
     bool AppendToFile(const QString& file);
+    void SetUpdateBmpFactory(bool b)
+    { m_bUpdate = b; }
+    void CreateBmpFactory();
 
     const QPixmap& GetPixmap() const;
 
@@ -84,7 +87,9 @@ class CImageConvApp
     static void Version();
 
   private:
+    bool m_bUpdate;
     static QString  m_Executable;
+    static QString  m_BmpFactory;
     QPixmap  m_clPixmap;      // pixmap
     QString  m_Output;        // specified output file
     QDir     m_Dir;           // directory

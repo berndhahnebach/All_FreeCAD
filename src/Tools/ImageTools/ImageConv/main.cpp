@@ -70,6 +70,7 @@ int main( int argc, char **argv )
       // search for input fíles
       if (cCmdP.GetArgumentCount("-i") > 0)
       {
+        cICApp.SetUpdateBmpFactory(cCmdP.HasSwitch("-a") || cCmdP.HasSwitch("--update"));
         QString nameFilter;
         CCmdParam para = cCmdP.GetArgumentList("-i");
         for (TVector<TString>::iterator it = para.m_strings.begin(); it != para.m_strings.end(); it++)
