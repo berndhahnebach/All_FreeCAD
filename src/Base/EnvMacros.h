@@ -35,7 +35,7 @@
 
 inline EnvPrint(const char* sMsg)
 {
-	//cout << sMsg << endl;
+	cout << sMsg << endl;
 }
 
 /** Test if a Variable exist
@@ -53,17 +53,53 @@ inline std::string FindHomePath(const char* sCall)
 {
 	std::string Call(sCall), TempHomePath;
 	std::string::size_type pos = Call.find_last_of(PATHSEP);
+	TempHomePath.assign(Call,0,pos);
+	pos = TempHomePath.find_last_of(PATHSEP);
+	TempHomePath.assign(TempHomePath,0,pos+1);
+	return TempHomePath;
+}
+
+inline std::string FindDLLHomePath(HANDLE hModule)
+{
+	char  szFileName [MAX_PATH] ;
+	GetModuleFileName((HMODULE)hModule,
+		               szFileName,
+					   MAX_PATH-1);
+
+	return FindHomePath(szFileName);
+}
+
+
+inline std::string FindBinPath(const char* sCall)
+{
+	std::string Call(sCall), TempHomePath;
+	std::string::size_type pos = Call.find_last_of(PATHSEP);
 	TempHomePath.assign(Call,0,pos+1);
 	return TempHomePath;
 }
 
-inline std::string GetFreeCADLib(void) 
+inline std::string GetFreeCADLib(const char* sHomePath) 
 {
-	std::string TempLibPath = getenv("FREECADLIB");
-	if(*(TempLibPath.rbegin()) != PATHSEP )
-		TempLibPath += PATHSEP;
-	EnvPrint(TempLibPath.c_str());
-	return TempLibPath;
+	if(getenv("FREECADLIB") )
+	{
+		std::string TempLibPath = getenv("FREECADLIB");
+		if(*(TempLibPath.rbegin()) != PATHSEP )
+			TempLibPath += PATHSEP;
+		EnvPrint(TempLibPath.c_str());
+		return TempLibPath;
+	}else{
+		EnvPrint("Failed using FREECADLIB env variable, search for Setup constalation (./LibPack)");
+		std::string cStrLibPack(sHomePath);
+		cStrLibPack += "LibPack";
+		if(chdir(cStrLibPack.c_str()) != -1)
+		{
+			chdir(sHomePath);
+			EnvPrint("Found Setup constallation");
+			return cStrLibPack;
+		}
+		EnvPrint("No LibPack found, using standard environment (if there any)");
+		return std::string();
+	}
 }
 
 

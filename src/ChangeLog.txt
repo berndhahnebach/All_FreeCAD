@@ -353,3 +353,13 @@ Version: V0.1B76 Date: Sat Nov 08 14:47:32 2003 +++++++++++++++++++++++++++++++
 + new factory for scripts, widgets and languages
 + change FreeCAD and Projects to run with first Version of LibPack
 
+
+Version: V0.1B77 Date: Fri Nov 14 14:56:14 2003 +++++++++++++++++++++++++++++++
++ Finished Setup stuff
+  - Removed all relativ paths 
+  - config HomePath is now not in bin anymore
+  - all config files one dir up
+  - FC runs now from every derectory
+  - remove Startup and Install script
+  
+ 

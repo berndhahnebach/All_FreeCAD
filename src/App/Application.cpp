@@ -144,9 +144,6 @@ FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterMana
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCAD", FCApplication::Methods);
 
-  if (mConfig.find("HomePath")!=mConfig.end())
-    _cHomePath = mConfig["HomePath"];
-
 }
 
 FCApplication::~FCApplication()

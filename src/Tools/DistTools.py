@@ -132,6 +132,20 @@ def BuildDistName():
     DistName = "FreeCAD_V" + FCVersionMajor[23:-1] + '.' +FCVersionMinor[23:-1] + 'B' + FCVersionBuild[23:-1]
 
     return DistName
+def BuildSetupName():
+    # line seperator 
+    ls = os.linesep
+    # path seperator
+    ps = os.pathsep
+    # dir seperator
+    ds = os.sep
+
+    # Building dist name
+    # reading the last Version information
+    [FCVersionMajor,FCVersionMinor,FCVersionBuild,FCVersionDisDa] = open("../Version.h",'r').readlines()
+    DistName = "FreeCAD_V" + FCVersionMajor[23:-1] + '.' +FCVersionMinor[23:-1] 
+
+    return DistName
 
 def GetVersion():
     # line seperator 
@@ -247,8 +261,10 @@ LibFilter = ["^Plugin\\.*$",
           "^.*\\BaseD.lib$",
           "^.*\\GuiD.lib$",
           "^.*\\.FCScript\\..*$",
-          "^.*\\.FCParam$",
-          "^.*\\.FCScript$"]
+          "^.*\\.FCParam$"]
+
+LibPackFilter = ["^.*\\.o$",
+          "^Debug$"]
 
 ModFilter = ["^.*\\.o$",
           "^Debug$",
@@ -284,4 +300,8 @@ ModFilter = ["^.*\\.o$",
           "^.*\\.ui$",
           "^.*\\Makefile$",
           "^.*\\.plg$",]
+
+DocFilter = ["^.*\\.o$",
+          "^Debug$"]
+
 

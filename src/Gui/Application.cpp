@@ -187,7 +187,7 @@ ApplicationWindow::ApplicationWindow()
 //	QString tmpWb = _cActiveWorkbenchName;
 //	_cBmpFactory.GetPixmap("Function");
 /*
-  QDir dir(GetApplication().GetHomePath()); dir.cdUp();
+  QDir dir(GetApplication().GetHomePath()); 
   QString root = dir.path();
 	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
 	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
@@ -229,7 +229,7 @@ ApplicationWindow::ApplicationWindow()
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
-	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php.html").c_str());
+	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
 	d->_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 40);
 
@@ -957,15 +957,16 @@ void ApplicationWindow::SaveWindowSettings()
 void ApplicationWindow::LoadDockWndSettings()
 {
   // open file
-  QString fn = "FreeCAD.xml";
-  QFile* datafile = new QFile(fn);
+  std::string FileName(GetApplication().GetHomePath());
+  FileName += "FreeCAD.xml";
+  QFile* datafile = new QFile(FileName.c_str());
   if (!datafile->open(IO_ReadOnly)) 
   {
     // error opening file
     bool bMute = FCGuiConsoleObserver::bMute;
     FCGuiConsoleObserver::bMute = true;
     GetConsole().Warning((tr("Error: Cannot open file '%1' "
-                             "(Maybe you're running FreeCAD the first time)\n").arg(fn)).latin1());
+                             "(Maybe you're running FreeCAD the first time)\n").arg(FileName.c_str())));
     FCGuiConsoleObserver::bMute = bMute;
     datafile->close();
     delete (datafile);
@@ -1018,7 +1019,9 @@ void ApplicationWindow::SaveDockWndSettings()
   doc.appendChild(root);
 
   // save into file
-  QFile* datafile = new QFile ("FreeCAD.xml");
+  std::string FileName(GetApplication().GetHomePath());
+  FileName += "FreeCAD.xml";
+  QFile* datafile = new QFile (FileName.c_str());
   if (!datafile->open(IO_WriteOnly)) 
   {
     // error opening file

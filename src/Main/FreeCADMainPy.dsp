@@ -97,15 +97,7 @@ SOURCE=.\FreeCADInit.py
 # End Source File
 # Begin Source File
 
-SOURCE=.\FreeCADInstall.py
-# End Source File
-# Begin Source File
-
 SOURCE=.\FreeCADTest.py
-# End Source File
-# Begin Source File
-
-SOURCE=.\FreeCADTestEnv.py
 # End Source File
 # Begin Source File
 

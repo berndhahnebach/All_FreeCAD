@@ -148,64 +148,6 @@ InputPath=.\FreeCADInit.py
 # End Source File
 # Begin Source File
 
-SOURCE=.\FreeCADInstall.py
-
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
-
-# Begin Custom Build - Building InstallScript.h
-InputPath=.\FreeCADInstall.py
-
-"InstallScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
-
-# Begin Custom Build - Building InstallScript.h
-InputPath=.\FreeCADInstall.py
-
-"InstallScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\FreeCADStartup.py
-
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
-
-# Begin Custom Build - Building StartupScript.h
-InputPath=.\FreeCADStartup.py
-
-"StartupScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py FreeCADStartup.py StartupScript.h 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
-
-# Begin Custom Build - Building StartupScript.h
-InputPath=.\FreeCADStartup.py
-
-"StartupScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py FreeCADStartup.py StartupScript.h 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\FreeCADTest.py
 
 !IF  "$(CFG)" == "FreeCADMain - Win32 Release"
@@ -227,35 +169,6 @@ InputPath=.\FreeCADTest.py
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\FreeCADTestEnv.py
-
-!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
-
-# Begin Custom Build - Building TestEnvScript.h
-InputPath=.\FreeCADTestEnv.py
-
-"TestEnvScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py FreeCADTestEnv.py TestEnvScript.h 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
-
-# Begin Custom Build - Building TestEnvScript.h
-InputPath=.\FreeCADTestEnv.py
-
-"TestEnvScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py FreeCADTestEnv.py TestEnvScript.h 
 	
 # End Custom Build
 

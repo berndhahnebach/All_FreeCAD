@@ -981,8 +981,8 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-//  QString path = GetWindowParameter()->GetASCII("DocDir", "../Doc").c_str();
-  QString path = GetWindowParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
+//  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
+  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
 
   QDir dir (path);
   dir.convertToAbs();

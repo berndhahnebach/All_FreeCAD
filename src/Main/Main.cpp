@@ -71,6 +71,10 @@
 #	endif 
 #	include "GuiInitScript.h"
 #endif
+// scriptings (scripts are build in but can be overriden by command line option)
+#include "InitScript.h"
+#include "TestScript.h"
+
 
 
 
@@ -84,12 +88,9 @@ const char sBanner[] = \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
 
-// scriptings (scripts are build in but can be overriden by command line option)
-#include "InitScript.h"
-#include "TestScript.h"
-#include "TestEnvScript.h"
-#include "StartupScript.h"
-#include "InstallScript.h"
+// the standard and plugin file of FreeCAD
+#include "Standard.h"
+#include "Plugin.h"
 
 #include <string>
 #include <map>
@@ -128,15 +129,6 @@ void ExtractPathAndUser(const char*);
 
 int main( int argc, char ** argv ) 
 {
-	// register scripts
-	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
-	new FCScriptProducer( "FreeCADTest",    FreeCADTest    );
-	new FCScriptProducer( "FreeCADTestEnv", FreeCADTestEnv );
-	new FCScriptProducer( "FreeCADStartup", FreeCADStartup );
-	new FCScriptProducer( "FreeCADInstall", FreeCADInstall );
-#ifdef  _FC_GUI_ENABLED_
-	new FCScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-#endif
 
   // Init phase ===========================================================
 #	ifndef FC_DEBUG
@@ -334,6 +326,10 @@ void Init(int argc, char ** argv )
 	mConfig["UserParameter"]  += mConfig["HomePath"] + "FC" + mConfig["UserName"] + ".FCParam";
 	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
 
+	puts(mConfig["HomePath"].c_str());
+	puts(mConfig["UserParameter"].c_str());
+	puts(mConfig["SystemParameter"].c_str());
+
 	// init python
 	GetInterpreter();
 
@@ -375,13 +371,25 @@ void Init(int argc, char ** argv )
 
 	
 	// interpreter and Init script ==========================================================
+	// register scripts
+	new FCScriptProducer( "FreeCADInit",    FreeCADInit    );
+	new FCScriptProducer( "FreeCADTest",    FreeCADTest    );
+#ifdef  _FC_GUI_ENABLED_
+	new FCScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+#endif
+
 	// Start the python interpreter
 	FCInterpreter &rcInterperter = GetInterpreter();
 	rcInterperter.SetComLineArgs(argc,argv);
-	//rcInterperter.Launch("print 'Python started'\n");
-	
-	// starting the startup script
-	rcInterperter.Launch(GetScriptFactory().ProduceScript("FreeCADStartup"));
+
+	// checking on the plugin files of OpenCasCade
+	std::fstream cTempStream;
+	cTempStream.open((mConfig["HomePath"]+"\\Plugin").c_str(),ios::out);
+	cTempStream << Plu ;
+	cTempStream.close();
+	cTempStream.open((mConfig["HomePath"]+"\\Standard").c_str(),ios::out);
+	cTempStream << Stand ;
+	cTempStream.close();
 
 	// creating the application 
 	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
@@ -433,9 +441,11 @@ void ExtractPathAndUser(const char* sCall)
 {
 	// find home path
 	mConfig["HomePath"] = FindHomePath(sCall);
+	// find home path
+	mConfig["BinPath"] = FindBinPath(sCall);
 
 	// try to figure out if using FreeCADLib
-	mConfig["FreeCADLib"] = GetFreeCADLib();
+	mConfig["FreeCADLib"] = GetFreeCADLib(mConfig["HomePath"].c_str());
 
 	// try to figure out the user
 	char* user = getenv("USERNAME");
@@ -474,11 +484,15 @@ void CheckEnv(void)
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
 	SetPluginDefaults(mConfig["HomePath"].c_str());
 
-	// sets the python environment variables if the FREECADLIB variable is defined
-	SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
+	// sets all needed varables if a FreeCAD LibPack is found
+	if(mConfig["FreeCADLib"] != "")
+	{
+		// sets the python environment variables if the FREECADLIB variable is defined
+		SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
 
-	// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-	SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
+		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
+		SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
+	}
 
 	cout << flush;
 	
@@ -502,10 +516,9 @@ const char Usage[] = \
 "  -h             Display this information "\
 "  -c             Runs FreeCAD in console mode (no windows)\n"\
 "  -cf file-name  Runs FreeCAD in server mode with script file-name\n"\
-"  -te            Runs FreeCAD to test environment\n"\
 "  -t0            Runs FreeCAD self test function\n"\
-"  -i             Install a new Module (e.g.ModuleName_0.1.FCModule) and the rest\n"\
-"\n consult also the HTML documentation\n"\
+"  -v             Runs FreeCAD in verbose mode\n"\
+"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
 "";
 
 
@@ -544,16 +557,10 @@ void ParsOptions(int argc, char ** argv)
 						throw FCException("Comandline error(s)");  
 				};  
 				break;  
-/*			case 't': 
+			case 't': 
 			case 'T':  
 				switch (argv[i][2])  
 				{   
-					// run the test environment script
-					case 'e':  
-					case 'E':  
-						mConfig["RunMode"] = "Internal";
-						sScriptName = FreeCADTestEnv;
-						break;   
 					case '0':  
 						// test script level 0
 						mConfig["RunMode"] = "Internal";
@@ -565,12 +572,7 @@ void ParsOptions(int argc, char ** argv)
 						sScriptName = FreeCADTest;
 						break;   
 				};  
-				break;  */
-/*			case 'i': 
-			case 'I':  
-				RunMode = 3;
-				sScriptName = FreeCADInstall;
-				break;  */
+				break;  
 			case 'v': 
 			case 'V':  
 				switch (argv[i][2])  
@@ -581,6 +583,7 @@ void ParsOptions(int argc, char ** argv)
 						sScriptName = GetScriptFactory().ProduceScript("FreeCADTestEnv");
 						break;   
 					case '\0':  
+					case '0':  
 						// test script level 0
 						mConfig["Verbose"] = "Strict";
 						break;   

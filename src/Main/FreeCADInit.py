@@ -33,11 +33,22 @@
 # imports the one and only
 import FreeCAD
 
+try:
+	import sys,os,dircache
+except:
+	Err("Seams the python standard libs are not installed, bailing out!")
+	Err("Please (re)install python 2.1.x!")
+	Err("See www.python.org for details")
+	raise
+
 
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = '..\\src\\Mod'
+	if os.path.isdir('..\\src\\Mod'):	
+		ModDir = '..\\src\\Mod'
+	if os.path.isdir('..\\Mod'):	
+		ModDir = '..\\Mod'
 	sys.path.append( '..\\bin' )
 	Log("   Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -65,6 +76,13 @@ def InitApplications():
 #				else:
 #					Wrn("         Install.py not found! "+Dir+" not installed!\n")
 
+
+# some often used shortcuts (for lazy people like me ;-)
+App = FreeCAD
+Log = FreeCAD.PrintLog
+Msg = FreeCAD.PrintMessage
+Err = FreeCAD.PrintError
+Wrn = FreeCAD.PrintWarning
 
 Log ('\nFreeCAD init running....\n')
 

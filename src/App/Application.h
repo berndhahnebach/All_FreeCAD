@@ -186,8 +186,7 @@ public:
 	/// Destructor
 	~FCApplication();
 
-	void SetHomePath(const char* s){_cHomePath = s;}
-	const char* GetHomePath(void){return _cHomePath.c_str();}
+	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 private:
 
 	/// Attach an Observer to monitor the Application
@@ -207,7 +206,6 @@ private:
 	/// The container of all attached Obervers
 	std::set<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
-	std::string _cHomePath;
 
 	std::map<std::string,FCParameterManager *> mpcPramManager;
 	FCParameterManager *_pcSysParamMngr;

@@ -4,6 +4,8 @@
 /*!
   \mainpage
 
+  <H1>FreeCAD source documentation</H1>
+
   This is the main documentation page for the FreeCAD framework.
 
   The homepage of FreeCAD you found  

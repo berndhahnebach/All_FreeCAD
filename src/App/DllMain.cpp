@@ -60,27 +60,32 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 //    case DLL_THREAD_ATTACH:
 		// set the resource env variables
 		
-		char  szDirectory [256] ;
 
-		getcwd (szDirectory,sizeof szDirectory);
+		std::string cHomePath = FindDLLHomePath(hModule);
+
+//		getcwd (szDirectory,sizeof szDirectory);
 //		if (szDirectory[strlen(szDirectory)-1] != '\\') {
 //			strcat(szDirectory,"\\");
 //		}
 		
 		EnvPrint("App");
+		EnvPrint(cHomePath.c_str());
 
-		std::string Temp;
+
 		// try to figure out if using FreeCADLib
-		Temp = GetFreeCADLib();
+		std::string Temp = GetFreeCADLib(cHomePath.c_str());
 
-		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(Temp.c_str());
+		// sets all needed varables if a FreeCAD LibPack is found
+		if(Temp != "")
+		{
+			// sets the python environment variables if the FREECADLIB variable is defined
+			SetPythonToFreeCADLib(Temp.c_str());
 
-		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(Temp.c_str());
+			// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
+			SetCasCadeToFreeCADLib(Temp.c_str());
+		}
 
-
-		SetPluginDefaults(szDirectory);
+		SetPluginDefaults(cHomePath.c_str());
 
 		
 		break;
