@@ -429,12 +429,12 @@
         </sizepolicy>
         <pixmap>image2</pixmap>
         <property type="Int">valueFloat</property>
-        <property type="Int">decimals</property>
-        <property type="Int">lineStep</property>
+        <property type="UInt">decimals</property>
+        <property type="UInt">lineStep</property>
         <property type="CString">prefEntry</property>
         <property type="CString">prefPath</property>
-        <property type="Int">maxValue</property>
-        <property type="Int">minValue</property>
+        <property type="Int">maxValueFloat</property>
+        <property type="Int">minValueFloat</property>
     </customwidget>
 </customwidgets>
 <images>

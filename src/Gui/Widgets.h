@@ -377,18 +377,18 @@ class FCFloatSpinBox : public FCSpinBox
 {
     Q_OBJECT
 
-    Q_PROPERTY( int    decimals   READ decimals      WRITE setDecimals      )
-    Q_PROPERTY( double valueFloat READ valueFloat    WRITE setValueFloat    )
-    Q_PROPERTY( double valueMax   READ maxValueFloat WRITE setMaxValueFloat )
-    Q_PROPERTY( double valueMin   READ minValueFloat WRITE setMinValueFloat )
+    Q_PROPERTY( uint   decimals        READ decimals      WRITE setDecimals      )
+    Q_PROPERTY( double valueFloat      READ valueFloat    WRITE setValueFloat    )
+    Q_PROPERTY( double maxValueFloat   READ maxValueFloat WRITE setMaxValueFloat )
+    Q_PROPERTY( double minValueFloat   READ minValueFloat WRITE setMinValueFloat )
 
   public:
     FCFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
     FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
     virtual ~FCFloatSpinBox();
 
-    int    decimals () const;
-    void   setDecimals ( int );
+    uint   decimals () const;
+    void   setDecimals ( uint );
     double minValueFloat () const;
     void   setMinValueFloat ( double );
     double maxValueFloat () const;

@@ -1107,7 +1107,6 @@ class FCFloatSpinBoxPrivate
     }
 
     QDoubleValidator* m_pValidator;
-    int               m_iDecimals;
     double            m_fDivisor;
     double            m_fEpsilon;
 };
@@ -1139,36 +1138,30 @@ FCFloatSpinBox::~FCFloatSpinBox()
   delete d;
 }
 
-int FCFloatSpinBox::decimals() const
+uint FCFloatSpinBox::decimals() const
 {
-  return d->m_iDecimals;
+  return d->m_pValidator->decimals();
 }
 
-void FCFloatSpinBox::setDecimals(int i)
+void FCFloatSpinBox::setDecimals(uint i)
 {
-  d->m_iDecimals = i;
-  d->m_fDivisor = int(pow(10.0, double(d->m_iDecimals)));
-  d->m_fEpsilon = 1.0 / pow(10.0, double(d->m_iDecimals+1));
-
-  if (maxValue() <  INT_MAX)
-    FCSpinBox::setMaxValue(int(maxValue() * d->m_fDivisor));
-  if (minValue() > -INT_MAX)
-    FCSpinBox::setMinValue(int(minValue() * d->m_fDivisor));
-}
-
-double FCFloatSpinBox::valueFloat() const
-{ 
-  return FCSpinBox::value() / double(d->m_fDivisor); 
+  d->m_pValidator->setDecimals(i);
+  d->m_fDivisor = pow(10.0, double(i));
+  d->m_fEpsilon = 1.0 / pow(10.0, double(i+1));
 }
 
 void FCFloatSpinBox::setMinValueFloat(double value)
-{ 
-  FCSpinBox::setMinValue(int(d->m_fDivisor * value)); 
+{
+	double fMax = d->m_fDivisor * value;
+	fMax = std::max<double>(fMax, (double)-INT_MAX);
+  FCSpinBox::setMinValue(int(fMax)); 
 }
 
 void FCFloatSpinBox::setMaxValueFloat(double value)
-{ 
-  FCSpinBox::setMaxValue(int(d->m_fDivisor * value)); 
+{
+	double fMin = d->m_fDivisor * value;
+	fMin = std::min<double>(fMin, (double)INT_MAX);
+  FCSpinBox::setMaxValue(int(fMin)); 
 }
 
 double FCFloatSpinBox::minValueFloat () const
@@ -1182,12 +1175,12 @@ double FCFloatSpinBox::maxValueFloat () const
 }
 
 QString FCFloatSpinBox::mapValueToText(int value)
-{ 
-  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_iDecimals); 
+{
+  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_pValidator->decimals()); 
 }
 
-int FCFloatSpinBox::mapTextToValue(bool*)
-{ 
+int FCFloatSpinBox::mapTextToValue(bool* b)
+{
   double fEps = value() > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
   return int(text().toDouble() * d->m_fDivisor + fEps); 
 }
@@ -1195,13 +1188,21 @@ int FCFloatSpinBox::mapTextToValue(bool*)
 void FCFloatSpinBox::valueChange()
 {
   FCSpinBox::valueChange();
-  emit valueFloatChanged( FCSpinBox::value() / double(d->m_fDivisor) );
+  emit valueFloatChanged( valueFloat() );
 }
 
 void FCFloatSpinBox::setValueFloat(double value)
-{ 
+{
   double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  FCSpinBox::setValue(int(d->m_fDivisor * value + fEps)); 
+	double fValue = d->m_fDivisor * value + fEps;
+	fValue = std::min<double>(fValue, (double) INT_MAX);
+	fValue = std::max<double>(fValue, (double)-INT_MAX);
+  FCSpinBox::setValue(int(fValue)); 
+}
+
+double FCFloatSpinBox::valueFloat() const
+{
+  return FCSpinBox::value() / double(d->m_fDivisor); 
 }
 
 void FCFloatSpinBox::stepChange () 
