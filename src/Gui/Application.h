@@ -52,7 +52,6 @@ class FCWindow;
 class QToolBar;
 class FCBaseView;
 class FCToolboxBar;
-class FCAutoWaitCursor;
 class FCStackBar;
 class FCHtmlView;
 class FCUndoRedoDlg;
@@ -64,7 +63,7 @@ class FCCustomWidgetManager;
 class FCProgressBar;
 class FCView;
 class FCCommandManager;
-class FCSplashScreen;
+class QSplashScreen;
 
 
 
@@ -114,6 +113,10 @@ public:
 	void Update(void);
 	/// call update to all views of the active document
 	void UpdateActive(void);
+	/// call update to the pixmaps' size
+	void UpdatePixmapsSize(void);
+	/// call update to style
+	void UpdateStyle(void);
 	//@}
   void setPalette(const QPalette&);
   void setAreaPal(const QPalette&);
@@ -162,13 +165,14 @@ public:
 	static void InitApplication(void);
 	static void RunApplication(void);
 	static void StartSplasher(void);
+	static void StopSplasher(void);
 	static void Destruct(void);
 
 	//@}
 
 private:
 	static 	QApplication* _pcQApp ;
-	static 	FCSplashScreen *_splash;
+	static 	QSplashScreen *_splash;
 
 
 public:
@@ -280,41 +284,6 @@ public:
 	static bool bMute;
 protected:
 	ApplicationWindow* _pcAppWnd;
-};
-
-
-/** The FCAutoWaitCursor sets automatically the 
- *  waiting cursor if the application is busy
- *  @author Werner Mayer
- */
-class GuiExport FCAutoWaitCursor : public QThread
-{
-	public:
-		static void Destruct(void);
-		static FCAutoWaitCursor &Instance(void);
-
-		void SetWaitCursor();
-
-		// Singleton
-	private:
-    FCAutoWaitCursor(uint id, int i);
-		~FCAutoWaitCursor();
-
-    static FCAutoWaitCursor* _pclSingleton;
-
-	protected:
-    /// run the thread, decrement an internal counter
-    void run();
-
-		QMutex mutex;
-  	uint main_threadid;
-		int nInterval;
-		bool bActive;
-		bool bRun;
-
-	private:
-		class FCAutoWaitCursorP* d;
-		friend class FCAutoWaitCursorP;
 };
 
 #endif

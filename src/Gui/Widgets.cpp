@@ -71,12 +71,7 @@ QString FCFileDialog::getOpenFileName( const QString & startWith, const QString&
 QString FCFileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent, 
                                        const char* name, const QString& caption )
 {
-  QString file = QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
-
-  // set wait cursor because on windows OS this method blocks the QApplication object
-  if (!file.isEmpty())
-    FCAutoWaitCursor::Instance().SetWaitCursor();
-  return file;
+  return QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
 }
 
 QString FCFileDialog::getSaveFileName( const QString & startWith, const QString& filter,
@@ -88,12 +83,7 @@ QString FCFileDialog::getSaveFileName( const QString & startWith, const QString&
 QString FCFileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent, 
                                        const char* name, const QString& caption )
 {
-  QString file = QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
-
-  // set wait cursor because on windows OS this method blocks the QApplication object
-  if (!file.isEmpty())
-    FCAutoWaitCursor::Instance().SetWaitCursor();
-  return file;
+  return QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
 }
 
 QString FCFileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, 
@@ -282,17 +272,15 @@ int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QS
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-class FCProgressBarPrivate
+struct FCProgressBarPrivate
 {
-  public:
-    bool bSeveralInstances;
-    int iStep;
-    int iTimeStep;
-    int iTotalTime;
-    int iFirstTotal;
-    int iStartedProgresses;
-    QTime   measureTime;
-    QString remainingTime;
+  int nSteps;
+  int nElapsed; // in milliseconds
+	int nRemaining;
+  int nStarted;
+	int nMaxProg;
+  QTime measureTime;
+	std::list<int> aValues;
 };
 
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
@@ -303,11 +291,9 @@ FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
   setFixedWidth(120);
   // this style is very nice ;-)
   setIndicatorFollowsStyle(false);
-  // update the string after timestep steps
-  d->iTimeStep = 1;
   // so far there are no sequencer started
-  d->iStartedProgresses = 0;
-  d->bSeveralInstances = false;
+  d->nStarted = 0;
+	d->nMaxProg = 1;
 }
 
 FCProgressBar::~FCProgressBar ()
@@ -317,63 +303,68 @@ FCProgressBar::~FCProgressBar ()
 
 // NOTE: for each call of this method you must call the
 //       corresponding stop method
-void FCProgressBar::Start(QString txt, int steps/*, bool& flag*/)
+void FCProgressBar::start(QString txt, int steps)
 {
   // increment the size called this method
-  d->iStartedProgresses++;
-
-  // if you call this method in a for loop
-  // the steps size is regarded only once 
-//  if (!flag || steps == 0)
-//    return;
-//
-//  flag = false;
+  d->nStarted++;
 
   // several sequencer started
-  if (d->iStartedProgresses > 1)
+  if (d->nStarted > d->nMaxProg)
   {
-    d->bSeveralInstances = true;
-    steps *= totalSteps();
-    setTotalSteps(steps);
-    d->iTimeStep = totalSteps() / d->iFirstTotal; 
+		// calculate the number of iterations
+		// using Horner scheme
+		d->aValues.push_front(steps);
+		steps = 1;
+		for (std::list<int>::iterator it=d->aValues.begin(); it!=d->aValues.end();++it)
+			steps = steps * (*it) + 1;
+		steps -= 1;
+
+	  setTotalSteps(steps);
+		d->nMaxProg = d->nStarted;
     d->measureTime.restart();
   }
-  else
+  else if (d->nStarted == 1)
   {
-    d->iTotalTime = 0;
-    d->iStep = 0;
-    d->remainingTime = "";
-    d->iFirstTotal = steps;
-    setTotalSteps(steps);
+		d->aValues.push_front(steps);
+	  setTotalSteps(steps);
+    d->nElapsed = 0;
+    d->nSteps = 0;
     d->measureTime.start();
-  }
-
-  // print message to the satusbar
-  if (d->iStartedProgresses == 1)
+	  // print message to the statusbar
     ApplicationWindow::Instance->statusBar()->message(txt);
+  }
 }
 
-void FCProgressBar::Next()
+void FCProgressBar::next()
 {
   if (!isInterrupted())
-    setProgress(d->iStep++);
+	{
+    setProgress(d->nSteps++);
+
+		// estimate the remaining time in milliseconds
+		int diff = d->measureTime.restart();
+		d->nElapsed += diff;
+		d->nRemaining = d->nElapsed * ( totalSteps() - d->nSteps ) / d->nSteps;
+	}
 }
 
-void FCProgressBar::Stop ()
+void FCProgressBar::stop ()
 {
-  d->iStartedProgresses--;
-  if (d->iStartedProgresses == 0)
+  d->nStarted--;
+  if (d->nStarted == 0)
   {
-    Reset();
-    d->bSeveralInstances = false;
+    clear();
   }
 }
 
-void FCProgressBar::Reset()
+void FCProgressBar::clear()
 {
   reset();
   setTotalSteps(0);
   setProgress(-1);
+  d->nStarted = 0;
+	d->nMaxProg = 1;
+	d->aValues.clear();
 }
 
 bool FCProgressBar::isInterrupted()
@@ -402,9 +393,7 @@ bool FCProgressBar::isInterrupted()
 void FCProgressBar::interrupt()
 {
   //resets
-  Reset();
-  d->bSeveralInstances = false;
-  d->iStartedProgresses = 0;
+  clear();
 
   FCGuiConsoleObserver::bMute = true;
   FCException exc("Aborting...");
@@ -459,57 +448,30 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 	{
 		if (progress != -1)
 		{
-			// recalc remaining time every iTimeStep steps
-			if (progress % d->iTimeStep == 0 && progress > 0)
-			{
-				// difference in ms
-				int diff = d->measureTime.restart();
-				d->iTotalTime += diff;
-				// remaining time in s
-				diff *= (totalSteps - progress) / d->iTimeStep;
-				diff /= 1000;
+			int nRemaining = d->nRemaining;
+			nRemaining /= 1000;
 
-#ifdef FC_DEBUG
-				GetConsole().Log("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
-#endif
-//#				ifdef FC_DEBUG
-//				printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
-//#				endif
+			// get time format
+			int second = nRemaining %  60; nRemaining /= 60;
+			int minute = nRemaining %  60; nRemaining /= 60;
+			int hour   = nRemaining %  60;
+			QString h,m,s;
+			if (hour < 10)   
+				h = QString("0%1").arg(hour);
+			else
+				h = QString("%1").arg(hour);
+			if (minute < 10) 
+				m = QString("0%1").arg(minute);
+			else
+				m = QString("%1").arg(minute);
+			if (second < 10) 
+				s = QString("0%1").arg(second);
+			else
+				s = QString("%1").arg(second);
 
-//				if (bSeveralInstances == false)
-				{
-					// get time format
-					int second = diff %  60; diff /= 60;
-					int minute = diff %  60; diff /= 60;
-					int hour   = diff %  60;
-					QString h,m,s;
-					if (hour < 10)   
-						h = QString("0%1").arg(hour);
-					else
-						h = QString("%1").arg(hour);
-					if (minute < 10) 
-						m = QString("0%1").arg(minute);
-					else
-						m = QString("%1").arg(minute);
-					if (second < 10) 
-						s = QString("0%1").arg(second);
-					else
-						s = QString("%1").arg(second);
-
-					// nice formating for output
-					if(hour == 0)
-						if(minute == 0)
-							d->remainingTime = QString("(%1s)").arg(s);
-						else
-							d->remainingTime = QString("(%1' %2s)").arg(m).arg(s);
-					else
-						d->remainingTime = QString("(%1h %2min)").arg(h).arg(m);
-				}
-			}
-
-			char szBuf[200];
-			sprintf(szBuf, "%d %% %s", (100 * progress) / totalSteps, d->remainingTime.latin1());
-			indicator = szBuf;
+			// nice formating for output
+			int steps = (100 * progress) / totalSteps;
+			indicator = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
 		}
 	}
 
@@ -861,10 +823,16 @@ FCCheckListDlg::~FCCheckListDlg()
 
 void FCCheckListDlg::setItems(const std::vector<std::string>& items)
 {
+	for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
+		this->items.push_back(std::make_pair<std::string, bool>(*it, true));
+}
+
+void FCCheckListDlg::setItems(const std::vector<std::pair<std::string, bool> >& items)
+{
   this->items = items;
 }
 
-std::vector<int> FCCheckListDlg::getCheckedItems()
+std::vector<std::string> FCCheckListDlg::getCheckedItems() const
 {
   return checked;
 }
@@ -872,9 +840,10 @@ std::vector<int> FCCheckListDlg::getCheckedItems()
 void FCCheckListDlg::show ()
 {
   QListViewItem *item = 0;
-  for (std::vector<std::string>::iterator it = items.begin(); it!=items.end(); ++it)
+  for (std::vector<std::pair<std::string, bool> >::iterator it = items.begin(); it!=items.end(); ++it)
   {
-    (void)new QCheckListItem( ListView, it->c_str(), QCheckListItem::CheckBox );
+		QCheckListItem* item = new QCheckListItem( ListView, it->first.c_str(), QCheckListItem::CheckBox );
+		item->setEnabled(it->second);
   }
 
   QDialog::show();
@@ -882,14 +851,13 @@ void FCCheckListDlg::show ()
 
 void FCCheckListDlg::hide ()
 {
-  int pos = 0;
   QListViewItemIterator it = ListView->firstChild();
 
-  for ( ; it.current(); it++, pos++ ) 
+  for ( ; it.current(); it++) 
   {
     if ( ((QCheckListItem*)it.current())->isOn() ) 
     {
-      checked.push_back(pos);
+      checked.push_back(((QCheckListItem*)it.current())->text().latin1());
 	  }
   }
 

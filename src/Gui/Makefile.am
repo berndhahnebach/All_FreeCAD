@@ -212,6 +212,7 @@ View.cpp \
 View3D.cpp \
 View3DInventor.cpp \
 ViewProvider.cpp \
+WaitCursor.cpp \
 WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp

@@ -53,9 +53,6 @@ class QTime;
 
 /**
  * Using the Qt's open/save dialogs with own adjustments
- * In this implementation a waitcursor will additionally
- * be set.
- * @see FCAutoWaitCursor
  */
 class GuiExport FCFileDialog : public QFileDialog
 {
@@ -126,7 +123,7 @@ class GuiExport FCMessageBox : public QMessageBox
  * to the number of current steps, i.e. nevertheless the
  * progress bar will run only once.
  */
-class FCProgressBarPrivate;
+struct FCProgressBarPrivate;
 
 class FCProgressBar : public QProgressBar
 {
@@ -135,13 +132,11 @@ class FCProgressBar : public QProgressBar
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
     virtual ~FCProgressBar ();
     /** Starts the progress bar */
-    void Start(QString txt, int steps/*, bool& flag*/);
+    void start(QString txt, int steps);
     /** Does the next step */
-    void Next();
+    void next();
     /** Stops the sequencer */
-    void Stop ();
-    /** Resets the sequencer */
-    void Reset();
+    void stop ();
 
   private:
 	  /** @name for internal use only */
@@ -150,6 +145,8 @@ class FCProgressBar : public QProgressBar
      *  If ESC @ref interrupt() is called.
      */
     bool isInterrupted();
+    /** Resets the sequencer */
+    void clear();
     /**
      * Throws an exception to stop the pending operation.
      */
@@ -290,14 +287,15 @@ class FCCheckListDlg : public QDialog
 
     /** set all items to be shown in the list */
     void setItems(const std::vector<std::string>& items);
+    void setItems(const std::vector<std::pair<std::string, bool> >& items);
     /** get all checked items */
-    std::vector<int> getCheckedItems();
+    std::vector<std::string> getCheckedItems() const;
     void show ();
     void hide ();
 
   protected:
-    std::vector<std::string> items;
-    std::vector<int> checked;
+    std::vector<std::pair<std::string, bool> > items;
+    std::vector<std::string> checked;
 
     QPushButton* buttonOk;
     QPushButton* buttonCancel;

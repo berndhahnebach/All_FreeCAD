@@ -48,6 +48,7 @@
 #	include <qprocess.h>
 #	include <qprinter.h>
 #	include <qmessagebox.h>
+#	include <qsplashscreen.h>
 #	include <qtimer.h>
 #	include <qtextbrowser.h>
 #	include <qvalidator.h>

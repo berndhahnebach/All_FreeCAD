@@ -346,6 +346,7 @@ View.cpp \
 View3D.cpp \
 View3DInventor.cpp \
 ViewProvider.cpp \
+WaitCursor.cpp \
 WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
@@ -415,7 +416,7 @@ am_libFreeCADGui_la_OBJECTS = AutoComplete.lo CallTip.lo CellBuffer.lo \
 	PropertyView.lo ReportView.lo resource.lo SciEditor.lo \
 	ScintillaQt.lo Selection.lo Splashscreen.lo Tools.lo Tree.lo \
 	View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
-	WidgetFactory.lo Widgets.lo Window.lo
+	WaitCursor.lo WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -489,6 +490,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewStyle.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WidgetFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Widgets.Plo ./$(DEPDIR)/Window.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WindowAccessor.Plo ./$(DEPDIR)/XPM.Plo \
@@ -654,6 +656,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewStyle.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaitCursor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WidgetFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Widgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Window.Plo@am__quote@

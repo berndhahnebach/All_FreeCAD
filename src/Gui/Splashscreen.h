@@ -37,6 +37,7 @@ class QGridLayout;
 class QLabel;
 class QProgressBar;
 class QTextView;
+class FCSplashObserver;
 
 /**
  * text browser for the about dialog
@@ -83,22 +84,17 @@ class GuiExport FCSplashWidget : public QLabel, public QThread
 };
 
 /** Splasher at startup */
-class GuiExport FCSplashScreen : public FCSplashWidget
+class FCSplashScreen : public QSplashScreen
 {
-  Q_OBJECT
-
   public:
-    FCSplashScreen( QWidget* parent = 0, const char* name = 0 );
+    FCSplashScreen(  const QPixmap & pixmap = QPixmap ( ), WFlags f = 0 );
     ~FCSplashScreen();
 
   protected:
-    /// run the thread
-    virtual void run();
-    virtual QString getName();
-    QVBoxLayout* SplasherDialogLayout;
-    QLabel* PixmapLabel;
-    QTextView* SplasherTextView;
-    QProgressBar* SplasherProgress;
+		void drawContents ( QPainter * painter );
+
+    QProgressBar* progBar;
+		FCSplashObserver* messages;
 };
 
 /** Splasher for the help dialog */

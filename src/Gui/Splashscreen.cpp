@@ -36,27 +36,26 @@
 #	include <qmessagebox.h>
 #	include <qiconview.h>
 #	include <qfiledialog.h>
+#	include <qimage.h>
 #	include <qlabel.h>
+#	include <qlayout.h>
+#	include <qpixmap.h>
+#	include <qprogressbar.h>
+#	include <qpushbutton.h>
+#	include <qsplashscreen.h>
 #	include <qstylefactory.h>
 #	include <qtextbrowser.h>
+#	include <qtextview.h>
 #	include <qthread.h>
+#	include <qtooltip.h>
+#	include <qvariant.h>
+#	include <qwhatsthis.h>
 #endif
 
 #include "Splashscreen.h"
 #include "Icons/developers.h"
+#include "../Base/Console.h"
 
-#include <qlabel.h>
-#include <qprogressbar.h>
-#include <qpushbutton.h>
-#include <qtextview.h>
-#include <qlayout.h>
-#include <qvariant.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <qstyle.h>
-//#include <qmotifstyle.h>
 
 FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
   : QLabel( parent, "splash", f)
@@ -132,80 +131,78 @@ void FCSplashWidget::hideEvent ( QHideEvent * e )
 
 /////////////////////////////////////////////////////////////////////////////////
 
-FCSplashScreen::FCSplashScreen( QWidget* parent,  const char* name)
-  : FCSplashWidget( parent, name, QLabel::WDestructiveClose | 
-                                  QLabel::WStyle_Customize  | 
-                                  QLabel::WStyle_NoBorder   | 
-//                                  QLabel::WStyle_StaysOnTop |
-                                  QLabel::WType_Modal       )
+class FCSplashObserver : public FCConsoleObserver
 {
-  int iHeight = 400; int iWidth = 496;
-  QPixmap image0( ( const char** ) image0_data );
-  if ( !name )
-  	setName( "SplasherDialog" );
-  setProperty( "enabled", QVariant( TRUE, 0 ) );
-  resize( iHeight, iWidth ); 
-  setProperty( "caption", "FreeCAD Startup"  );
-  SplasherDialogLayout = new QVBoxLayout( this ); 
-  SplasherDialogLayout->setSpacing( 6 );
-  SplasherDialogLayout->setMargin( 11 );
+  public:
+    FCSplashObserver(QSplashScreen* splasher=0, const char* name=0)
+			: splash(splasher)
+		{
+		  GetConsole().AttacheObserver(this);
+		}
+    
+		~FCSplashObserver()
+		{
+		  GetConsole().DetacheObserver(this);
+		}
 
-  PixmapLabel = new QLabel( this, "PixmapLabel" );
-  PixmapLabel->setProperty( "sizePolicy", QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, PixmapLabel->sizePolicy().hasHeightForWidth() ) );
-  PixmapLabel->setProperty( "pixmap", image0 );
-  PixmapLabel->setProperty( "scaledContents", QVariant( TRUE, 0 ) );
-  SplasherDialogLayout->addWidget( PixmapLabel );
+    void Warning(const char * s)
+		{
+			Log(s);
+		}
+	  void Message(const char * s)
+		{
+			Log(s);
+		}
+    void Error  (const char * s)
+		{
+			Log(s);
+		}
+	  void Log (const char * s)
+		{
+			QString msg(s);
+			// remove leading blanks and carriage returns
+			while (msg[0] == '\n' || msg[0] == ' ')
+			{
+				msg = msg.mid(1);
+			}
+			msg = QString("\n %1").arg(msg);
+			splash->message( msg, Qt::AlignTop|Qt::AlignLeft, Qt::black );
+			qApp->processEvents();
+			QWaitCondition().wait(50);
+		}
 
-  SplasherTextView = new QTextView( this, "SplasherText" );
-  SplasherTextView->setText (SplasherText);
-  SplasherTextView->setHScrollBarMode(QScrollView::AlwaysOff);
-  SplasherTextView->setVScrollBarMode(QScrollView::AlwaysOff);
+		private:
+			QSplashScreen* splash;
+};
 
+FCSplashScreen::FCSplashScreen(  const QPixmap & pixmap , WFlags f )
+  : QSplashScreen( pixmap, f), progBar(0L)
+{
+	// write the messages to splasher
+	messages = new FCSplashObserver(this);
 
-  SplasherDialogLayout->addWidget( SplasherTextView );
+	// append also a progressbar for visual feedback
+  progBar = new QProgressBar( this, "SplasherProgress" );
+  progBar->setProperty( "progress", 0 );
+  progBar->setStyle(QStyleFactory::create("motif"));
+	progBar->setFixedSize(width()-6, 15);
 
-  SplasherProgress = new QProgressBar( this, "SplasherProgress" );
-  SplasherProgress->setProperty( "progress", 0 );
-#if QT_VERSION > 300
-  SplasherProgress->setStyle(QStyleFactory::create("motif"));
-#endif
-  SplasherDialogLayout->addWidget( SplasherProgress );
-
-  setFrameStyle( QFrame::WinPanel | QFrame::Raised );
-	setPixmap( QPixmap() );
-	adjustSize();
-	QRect r = QApplication::desktop()->geometry();
-  QRect s = rect();
-  s = QRect(0, 0, iHeight, iWidth);
-	move( r.center() - s.center() );
-	show();
-	repaint( FALSE );
-
-  start();
+	// make the splasher a bit higher
+	resize(width(), height()+progBar->height());
+	progBar->move(3, height()-(progBar->height()));
 }
 
 FCSplashScreen::~FCSplashScreen()
 {
+	delete messages;
+	delete progBar;
 }
 
-void FCSplashScreen::run()
+void FCSplashScreen::drawContents ( QPainter * painter )
 {
-  int total = SplasherProgress->totalSteps();
-  while (bRun && SplasherProgress->progress() < total)
-  {
-    msleep(3);
-    SplasherProgress->setProgress(SplasherProgress->progress() + 4);
-  }
-
-  hide();
-
-  // set the main window to active now
-  qApp->mainWidget()->setActiveWindow();
-}
-
-QString FCSplashScreen::getName()
-{
-  return "StartupSplasher";
+	if (progBar)
+	  progBar->setProgress(progBar->progress() + 6);
+	QSplashScreen::drawContents(painter);
 }
 
 /////////////////////////////////////////////////////////////////////////////////

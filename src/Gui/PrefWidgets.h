@@ -490,6 +490,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
     virtual void savePreferences();
     QString parent;
     bool    bAllowDrag;
+    FCParameterGrp::handle hCommonGrp;
 };
 
 /**

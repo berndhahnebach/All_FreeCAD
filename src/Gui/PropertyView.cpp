@@ -61,6 +61,7 @@
 #	include <qprocess.h>
 #	include <qstyle.h>
 #	include <qtabbar.h>
+#	include <qtabwidget.h>
 #	include <qthread.h>
 #	include <qurl.h>
 #	include <qvalidator.h>
@@ -159,7 +160,7 @@ bool FCPropertyViewItem::isChanged() const
 }
 
 void FCPropertyViewItem::setFocus( QWidget *w )
-{
+{/*
   QWorkspace *ws = 0;
   QWidget *wid = listview->propertyView();
   while ( wid )
@@ -173,7 +174,7 @@ void FCPropertyViewItem::setFocus( QWidget *w )
 	  return;
   ws = (QWorkspace*)wid;
   if ( ws->activeWindow() == listview->propertyView() )
-  	w->setFocus();
+  	w->setFocus();*/
 }
 
 QString FCPropertyViewItem::name() const
@@ -1496,8 +1497,8 @@ QHBox* FCPropertyViewColorItem::boxColor()
 
 /////////////////////////////////////////////////////////////////////////////
 
-FCPropertyListView::FCPropertyListView( FCPropertyView *view )
-  : QListView( view ), propView( view )
+FCPropertyListView::FCPropertyListView( QWidget* parent)
+  : QListView( parent )
 {
   header()->setMovingEnabled( false );
   viewport()->setBackgroundMode( PaletteBackground );
@@ -1511,6 +1512,36 @@ FCPropertyListView::FCPropertyListView( FCPropertyView *view )
   connect( this, SIGNAL( doubleClicked( QListViewItem * ) ), this, SLOT( toggleOpen( QListViewItem * ) ) );
   setSorting( -1 );
   setHScrollBarMode( AlwaysOff );
+
+
+  header()->setMovingEnabled( FALSE );
+  header()->setStretchEnabled( TRUE );
+  setResizePolicy( QScrollView::Manual );
+//  viewport()->setAcceptDrops( TRUE );
+  viewport()->installEventFilter( this );
+//  addColumn( tr( "Property" ) );
+//  addColumn( tr( "Value" ) );
+//  setSorting( -1 );
+  setColumnWidthMode( 1, QListView::Manual );
+  header()->installEventFilter( this );
+
+	FCPropertyViewItem* pcItem=0L;
+	
+  std::vector<std::string> list;
+  list.push_back("10.89");
+  list.push_back("-10.7");
+  pcItem = new FCPropertyViewColorItem( this, NULL, "Color", true  );
+  pcItem->setValue(new FCPropertyColor(255, 0, 0));
+	pcItem = new FCPropertyViewIntItem  ( this, pcItem,   "Integer", true );
+  pcItem->setValue( new FCPropertyInteger( 37 ) );
+  pcItem = new FCPropertyViewFloatItem( this, pcItem, "Float", true );
+  pcItem->setValue( new FCPropertyFloat( -3.14 ) );
+  pcItem = new FCPropertyViewTextItem ( this, pcItem, "Text", false, false);
+  pcItem->setValue( new FCPropertyString( "FreeCAD" ) );
+  pcItem = new FCPropertyViewListItem ( this, pcItem, "List", false);
+  pcItem->setValue( new FCPropertyList( list ) );
+  pcItem = new FCPropertyViewBoolItem ( this, pcItem, "Boolean");
+  pcItem->setValue( new FCPropertyBool ( false ) );
 }
 
 void FCPropertyListView::resizeEvent( QResizeEvent *e )
@@ -1640,7 +1671,93 @@ bool FCPropertyListView::eventFilter( QObject *o, QEvent *e )
   return QListView::eventFilter( o, e );
 }
 
-FCPropertyView *FCPropertyListView::propertyView() const
+// --------------------------------------------------------------
+
+FCPropertyEditor::FCPropertyEditor( FCPropertyView * view  )
+    : QTabWidget( view ), propView( view )
+{
+    setCaption( tr( "Property Editor" ) );
+    wid = 0;
+    listview = new FCPropertyListView( this );
+    addTab( listview, tr( "P&roperties" ) );
+//    addTab( eList, tr( "Signa&l Handlers" ) );
+}
+
+QObject *FCPropertyEditor::widget() const
+{
+    return wid;
+}
+
+void FCPropertyEditor::clear()
+{
+    listview->setContentsPos( 0, 0 );
+    listview->clear();
+}
+
+void FCPropertyEditor::setup()
+{
+    listview->viewport()->setUpdatesEnabled( FALSE );
+//    listview->setupProperties();
+    listview->viewport()->setUpdatesEnabled( TRUE );
+//    listview->updateEditorSize();
+}
+
+void FCPropertyEditor::refetchData()
+{
+//    listview->refetchData();
+}
+
+void FCPropertyEditor::closeEvent( QCloseEvent *e )
+{
+    emit hidden();
+    e->accept();
+}
+
+FCPropertyListView *FCPropertyEditor::propertyList() const
+{
+    return listview;
+}
+
+QString FCPropertyEditor::currentProperty() const
+{
+    if ( !wid )
+	return QString::null;
+    if ( ( (PropertyItem*)listview->currentItem() )->propertyParent() )
+	return ( (PropertyItem*)listview->currentItem() )->propertyParent()->name();
+    return ( (PropertyItem*)listview->currentItem() )->name();
+}
+
+void FCPropertyEditor::resetFocus()
+{
+    if ( listview->currentItem() )
+	( (PropertyItem*)listview->currentItem() )->showEditor();
+}
+
+void FCPropertyEditor::setPropertyEditorEnabled( bool b )
+{
+    if ( !b )
+	removePage( listview );
+    else
+	insertTab( listview, tr( "Property Editor" ), 0 );
+    updateWindow();
+}
+
+void FCPropertyEditor::setSignalHandlersEnabled( bool b )
+{
+}
+
+void FCPropertyEditor::updateWindow()
+{
+    if ( isHidden() && count() ) {
+	parentWidget()->show();
+//	MainWindow::self->setAppropriate( (QDockWindow*)parentWidget(), TRUE );
+    } else if ( isShown() && !count() ) {
+	parentWidget()->hide();
+//	MainWindow::self->setAppropriate( (QDockWindow*)parentWidget(), FALSE );
+    }
+}
+
+FCPropertyView *FCPropertyEditor::propertyView() const
 {
   return propView;
 }
@@ -1654,8 +1771,8 @@ QPixmap* FCPropertyView::pcLabelOpen=0;
 QPixmap* FCPropertyView::pcLabelClosed=0;
 QPixmap* FCPropertyView::pcAttribute=0;
 
-QColor FCPropertyView::cBackColor1=QColor(236,236,236);
-QColor FCPropertyView::cBackColor2=QColor(236,212,156);
+QColor FCPropertyView::cBackColor1=QColor(250,248,235);
+QColor FCPropertyView::cBackColor2=QColor(255,255,255);
 
 
 //**************************************************************************
@@ -1667,36 +1784,45 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
   setCaption( tr( "Property View" ) );
   wid = 0;
 
-  _pcListView = new FCPropertyListView(this/*,name*/);
+  _pTabLayout = new QGridLayout( this ); 
+  _pTabLayout->setSpacing( 0 );
+  _pTabLayout->setMargin ( 0 );
 
-  pclFormLayout = new QGridLayout( this ); 
-  pclFormLayout->setSpacing( 1 );
-  pclFormLayout->setMargin ( 1 );
-  tabs = new QTabBar(this, "jfoijwe");
-  tabs->setShape(QTabBar::TriangularBelow);
-  QTab* t;
-  t = new QTab; t->setText("Tab1"); tabs->addTab(t);
-  t = new QTab; t->setText("Tab2"); tabs->addTab(t);
-  t = new QTab; t->setText("Tab3"); tabs->addTab(t);
-  pclFormLayout->addWidget( _pcListView, 0, 0 );
-  pclFormLayout->addWidget( tabs,   1, 0 );
-//  tabs->hide();
+	_pTabWnd = new PropertyEditor( this );
+	_pTabWnd->setTabPosition(QTabWidget::Bottom);
+	_pTabWnd->setTabShape(QTabWidget::Triangular);
+  _pTabLayout->addWidget( _pTabWnd, 0, 0 );
 
 	// set defaults and the colums
-	_pcListView->setSorting(-1,false);
-	_pcListView->addColumn(tr("Property"));
-	_pcListView->setColumnWidthMode(0,QListView::Manual);
-	_pcListView->addColumn(tr("Value"));
-	_pcListView->setColumnWidthMode(1,QListView::Manual );
-	_pcListView->setColumnWidth(0,100);
-	_pcListView->setColumnWidth(1,100);
+//  _pcListView = new FCPropertyListView(_pTabWnd, this/*,name*/);
+//  _pcListView = new PropertyList(_pTabWnd/*,name*/);
+//	_pcListView->setSorting(-1);
+//	_pcListView->addColumn(tr("Property"));
+//	_pcListView->setColumnWidthMode(0,QListView::Manual);
+//	_pcListView->addColumn(tr("Value"));
+//	_pcListView->setColumnWidthMode(1,QListView::Manual );
+//	_pcListView->setColumnWidth(0,100);
+//	_pcListView->setColumnWidth(1,100);
+/*
+  _pcListView->header()->setMovingEnabled( FALSE );
+  _pcListView->header()->setStretchEnabled( TRUE );
+  _pcListView->setResizePolicy( QScrollView::Manual );
+  _pcListView->viewport()->setAcceptDrops( TRUE );
+  _pcListView->viewport()->installEventFilter( this );
+  _pcListView->addColumn( tr( "Property" ) );
+  _pcListView->addColumn( tr( "Value" ) );
+  _pcListView->setSorting( -1 );
+  _pcListView->setColumnWidthMode( 1, QListView::Manual );
+  _pcListView->header()->installEventFilter( this );
+*/
+//	_pTabWnd->insertTab(_pcListView, "Test");
 
 	// retrieve the Pixmaps
 	pcLabelOpen   = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_LabelClosed"));
 	pcLabelClosed = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_LabelOpen"));
 	pcAttribute   = new QPixmap(GetBitmapFactory().GetPixmap("RawTree_Attr"));
 
-
+/*
   // some examples how to use the ProprtyViewItem-Framework
   //
   //
@@ -1728,7 +1854,7 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
 
   // Add the first main label
 //	_pcMainItem = new FCTreeLabel(this);
-
+*/
 	//_pcListView->setRootIsDecorated(true);
 
 
@@ -1749,36 +1875,37 @@ QWidget *FCPropertyView::widget() const
 
 void FCPropertyView::clear()
 {
-  _pcListView->setContentsPos( 0, 0 );
-  _pcListView->clear();
+//  _pcListView->setContentsPos( 0, 0 );
+//  _pcListView->clear();
 }
 
 void FCPropertyView::setup()
 {
-  _pcListView->viewport()->setUpdatesEnabled( FALSE );
-  _pcListView->viewport()->setUpdatesEnabled( TRUE );
-  qApp->processEvents();
-  _pcListView->updateViewSize();
+//  _pcListView->viewport()->setUpdatesEnabled( FALSE );
+//  _pcListView->viewport()->setUpdatesEnabled( TRUE );
+//  qApp->processEvents();
+//  _pcListView->updateViewSize();
 }
 
 void FCPropertyView::resetFocus()
 {
-  if ( _pcListView->currentItem() )
-  	( (FCPropertyViewItem*)_pcListView->currentItem() )->showView();
+//  if ( _pcListView->currentItem() )
+//  	( (FCPropertyViewItem*)_pcListView->currentItem() )->showView();
 }
 
 FCPropertyListView *FCPropertyView::propertyList() const
 {
-  return _pcListView;
+  return 0;//_pcListView;
 }
 
 QString FCPropertyView::currentProperty() const
 {
-  if ( !wid )
+/*  if ( !wid )
   	return QString::null;
   if ( ( (FCPropertyViewItem*)_pcListView->currentItem() )->propertyParent() )
   	return ( (FCPropertyViewItem*)_pcListView->currentItem() )->propertyParent()->name();
-  return ( (FCPropertyViewItem*)_pcListView->currentItem() )->name();
+  return ( (FCPropertyViewItem*)_pcListView->currentItem() )->name();*/
+	return "";
 }
 
 void FCPropertyView::Update(void)
@@ -1791,7 +1918,7 @@ void FCPropertyView::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* p
 }
 
 void FCPropertyView::resizeEvent ( QResizeEvent * e) 
-{
+{/*
 	// routing the resize event to the child
 	_pcListView->resize(e->size());
 
@@ -1803,7 +1930,7 @@ void FCPropertyView::resizeEvent ( QResizeEvent * e)
   	ns = 16;
 	
   _pcListView->header()->resizeSection( 1, ns );
-  _pcListView->header()->repaint( _pcListView->header()->width() - _pcListView->header()->sectionSize( 1 ), 0, _pcListView->header()->sectionSize( 1 ), _pcListView->header()->height() );
+  _pcListView->header()->repaint( _pcListView->header()->width() - _pcListView->header()->sectionSize( 1 ), 0, _pcListView->header()->sectionSize( 1 ), _pcListView->header()->height() );*/
 }
 
 bool FCPropertyView::OnMsg(const char* pMsg)
@@ -1814,5 +1941,1809 @@ bool FCPropertyView::OnMsg(const char* pMsg)
 
 //**************************************************************************
 // separator for other implemetation aspects
+
+#include <qvariant.h> // HP-UX compiler needs this here
+
+
+#include <qpainter.h>
+#include <qpalette.h>
+#include <qapplication.h>
+#include <qheader.h>
+#include <qlineedit.h>
+#include <qstrlist.h>
+#include <qmetaobject.h>
+#include <qcombobox.h>
+#include <qpushbutton.h>
+#include <qhbox.h>
+#include <qfontdialog.h>
+#include <qspinbox.h>
+#include <qevent.h>
+#include <qobjectlist.h>
+#include <qlistbox.h>
+#include <qfontdatabase.h>
+#include <qcolor.h>
+#include <qcolordialog.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qsizepolicy.h>
+#include <qbitmap.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qaccel.h>
+#include <qworkspace.h>
+#include <qtimer.h>
+#include <qdragobject.h>
+#include <qdom.h>
+#include <qprocess.h>
+#include <qstyle.h>
+#include <qdatetimeedit.h>
+#include <qassistantclient.h>
+#include <qptrdict.h>
+#include <qpopupmenu.h>
+
+#include <limits.h>
+static QColor *backColor1 = 0;
+static QColor *backColor2 = 0;
+static QColor *selectedBack = 0;
+
+static void init_colors()
+{
+    if ( backColor1 )
+	return;
+
+#if 0 // a calculated alternative for backColor1
+    QColorGroup myCg = qApp->palette().active();
+    int h1, s1, v1;
+    int h2, s2, v2;
+    myCg.color( QColorGroup::Base ).hsv( &h1, &s1, &v1 );
+    myCg.color( QColorGroup::Background ).hsv( &h2, &s2, &v2 );
+    QColor c( h1, s1, ( v1 + v2 ) / 2, QColor::Hsv );
+#endif
+
+    backColor1 = new QColor(  250, 248, 235 );
+    backColor2 = new QColor( 255, 255, 255 );
+    selectedBack = new QColor( 230, 230, 230 );
+}
+
+#define setupStyle(x)
+
+PropertyItem::PropertyItem( PropertyList *l, PropertyItem *after, PropertyItem *prop, const QString &propName )
+    : QListViewItem( l, after ), listview( l ), property( prop ), propertyName( propName )
+{
+    setSelectable( FALSE );
+    open = FALSE;
+    setText( 0, propertyName );
+    changed = FALSE;
+    setText( 1, "" );
+    resetButton = 0;
+}
+
+PropertyItem::~PropertyItem()
+{
+    if ( resetButton )
+	delete resetButton->parentWidget();
+    resetButton = 0;
+}
+
+void PropertyItem::toggle()
+{
+}
+
+void PropertyItem::updateBackColor()
+{
+    if ( itemAbove() && this != listview->firstChild() ) {
+	if ( ( ( PropertyItem*)itemAbove() )->backColor == *backColor1 )
+	    backColor = *backColor2;
+	else
+	    backColor = *backColor1;
+    } else {
+	backColor = *backColor1;
+    }
+    if ( listview->firstChild() == this )
+	backColor = *backColor1;
+}
+
+QColor PropertyItem::backgroundColor()
+{
+    updateBackColor();
+    if ( (QListViewItem*)this == listview->currentItem() )
+	return *selectedBack;
+    return backColor;
+}
+
+void PropertyItem::createChildren()
+{
+}
+
+void PropertyItem::initChildren()
+{
+}
+
+void PropertyItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    QColorGroup g( cg );
+    g.setColor( QColorGroup::Base, backgroundColor() );
+    g.setColor( QColorGroup::Foreground, Qt::black );
+    g.setColor( QColorGroup::Text, Qt::black );
+    int indent = 0;
+    if ( column == 0 ) {
+	indent = 20 + ( property ? 20 : 0 );
+	p->fillRect( 0, 0, width, height(), backgroundColor() );
+	p->save();
+	p->translate( indent, 0 );
+    }
+
+    if ( isChanged() && column == 0 ) {
+	p->save();
+	QFont f = p->font();
+	f.setBold( TRUE );
+	p->setFont( f );
+    }
+
+    if ( !hasCustomContents() || column != 1 ) {
+	QListViewItem::paintCell( p, g, column, width - indent, align  );
+    } else {
+	p->fillRect( 0, 0, width, height(), backgroundColor() );
+	drawCustomContents( p, QRect( 0, 0, width, height() ) );
+    }
+
+    if ( isChanged() && column == 0 )
+	p->restore();
+    if ( column == 0 )
+	p->restore();
+    if ( hasSubItems() && column == 0 ) {
+	p->save();
+	p->setPen( cg.foreground() );
+	p->setBrush( cg.base() );
+	p->drawRect( 5, height() / 2 - 4, 9, 9 );
+	p->drawLine( 7, height() / 2, 11, height() / 2 );
+	if ( !isOpen() )
+	    p->drawLine( 9, height() / 2 - 2, 9, height() / 2 + 2 );
+	p->restore();
+    }
+    p->save();
+    p->setPen( QPen( cg.dark(), 1 ) );
+    p->drawLine( 0, height() - 1, width, height() - 1 );
+    p->drawLine( width - 1, 0, width - 1, height() );
+    p->restore();
+
+    if ( listview->currentItem() == this && column == 0 &&
+	 !listview->hasFocus() && !listview->viewport()->hasFocus() )
+	paintFocus( p, cg, QRect( 0, 0, width, height() ) );
+}
+
+void PropertyItem::paintBranches( QPainter * p, const QColorGroup & cg,
+				  int w, int y, int h )
+{
+    QColorGroup g( cg );
+    g.setColor( QColorGroup::Base, backgroundColor() );
+    QListViewItem::paintBranches( p, g, w, y, h );
+}
+
+void PropertyItem::paintFocus( QPainter *p, const QColorGroup &cg, const QRect &r )
+{
+    p->save();
+    QApplication::style().drawPrimitive(QStyle::PE_Panel, p, r, cg,
+					QStyle::Style_Sunken, QStyleOption(1,1) );
+    p->restore();
+}
+
+/*!  Subclasses which are expandable items have to return TRUE
+  here. Default is FALSE.
+*/
+
+bool PropertyItem::hasSubItems() const
+{
+    return FALSE;
+}
+
+/*!  Returns the parent property item here if this is a child or 0
+ otherwise.
+ */
+
+PropertyItem *PropertyItem::propertyParent() const
+{
+    return property;
+}
+
+bool PropertyItem::isOpen() const
+{
+    return open;
+}
+
+void PropertyItem::setOpen( bool b )
+{
+    if ( b == open )
+	return;
+    open = b;
+
+    if ( !open ) {
+	children.setAutoDelete( TRUE );
+	children.clear();
+	children.setAutoDelete( FALSE );
+	qApp->processEvents();
+	listview->updateEditorSize();
+	return;
+    }
+
+    createChildren();
+    initChildren();
+    qApp->processEvents();
+    listview->updateEditorSize();
+}
+
+/*!  Subclasses have to show the editor of the item here
+*/
+
+void PropertyItem::showEditor()
+{
+    createResetButton();
+    resetButton->parentWidget()->show();
+}
+
+/*!  Subclasses have to hide the editor of the item here
+*/
+
+void PropertyItem::hideEditor()
+{
+    createResetButton();
+    resetButton->parentWidget()->hide();
+}
+
+/*!  This is called to init the value of the item. Reimplement in
+  subclasses to init the editor
+*/
+
+void PropertyItem::setValue( const QVariant &v )
+{
+    val = v;
+}
+
+QVariant PropertyItem::value() const
+{
+    return val;
+}
+
+bool PropertyItem::isChanged() const
+{
+    return changed;
+}
+
+void PropertyItem::setChanged( bool b, bool updateDb )
+{
+    if ( propertyParent() )
+	return;
+    if ( changed == b )
+	return;
+    changed = b;
+    repaint();
+    if ( updateDb ) {
+    }
+    updateResetButtonState();
+}
+
+QString PropertyItem::name() const
+{
+    return propertyName;
+}
+
+void PropertyItem::createResetButton()
+{
+    if ( resetButton ) {
+	resetButton->parentWidget()->lower();
+	return;
+    }
+    QHBox *hbox = new QHBox( listview->viewport() );
+    hbox->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+    hbox->setLineWidth( 1 );
+    resetButton = new QPushButton( hbox );
+    setupStyle( resetButton );
+	  resetButton->setPixmap( resetproperty_xpm );
+    resetButton->setFixedWidth( resetButton->sizeHint().width() );
+    hbox->layout()->setAlignment( Qt::AlignRight );
+    listview->addChild( hbox );
+    hbox->hide();
+    QObject::connect( resetButton, SIGNAL( clicked() ),
+		      listview, SLOT( resetProperty() ) );
+    QToolTip::add( resetButton, PropertyEditor::tr( "Reset the property to its default value" ) );
+    QWhatsThis::add( resetButton, PropertyEditor::tr( "Click this button to reset the property to its default value" ) );
+    updateResetButtonState();
+}
+
+void PropertyItem::updateResetButtonState()
+{
+    if ( !resetButton )
+	return;
+    if ( propertyParent() )
+	resetButton->setEnabled( FALSE );
+    else
+	resetButton->setEnabled( isChanged() );
+}
+
+/*!  Call this to place/resize the item editor correctly (normally
+  call it from showEditor())
+*/
+
+void PropertyItem::placeEditor( QWidget *w )
+{
+    createResetButton();
+    QRect r = listview->itemRect( this );
+    if ( !r.size().isValid() ) {
+	listview->ensureItemVisible( this );
+#if defined(Q_WS_WIN)
+	listview->repaintContents( FALSE );
+#endif
+	r = listview->itemRect( this );
+    }
+    r.setX( listview->header()->sectionPos( 1 ) );
+    r.setWidth( listview->header()->sectionSize( 1 ) - 1 );
+    r.setWidth( r.width() - resetButton->width() - 2 );
+    r = QRect( listview->viewportToContents( r.topLeft() ), r.size() );
+    w->resize( r.size() );
+    listview->moveChild( w, r.x(), r.y() );
+    resetButton->parentWidget()->resize( resetButton->sizeHint().width() + 10, r.height() );
+    listview->moveChild( resetButton->parentWidget(), r.x() + r.width() - 8, r.y() );
+    resetButton->setFixedHeight( QMAX( 0, r.height() - 3 ) );
+}
+
+/*!  This should be called by subclasses if the use changed the value
+  of the property and this value should be applied to the widget property
+*/
+
+void PropertyItem::notifyValueChange()
+{
+    if ( !propertyParent() ) {
+	listview->valueChanged( this );
+	setChanged( TRUE );
+	if ( hasSubItems() )
+	    initChildren();
+    } else {
+	propertyParent()->childValueChanged( this );
+	setChanged( TRUE );
+    }
+}
+
+/*!  If a subclass is a expandable item reimplement this as this is
+  always called if a child item changed its value. So update the
+  display of the item here then.
+*/
+
+void PropertyItem::childValueChanged( PropertyItem * )
+{
+}
+
+/*!  When adding a child item, call this (normally from addChildren()
+*/
+
+void PropertyItem::addChild( PropertyItem *i )
+{
+    children.append( i );
+}
+
+int PropertyItem::childCount() const
+{
+    return children.count();
+}
+
+PropertyItem *PropertyItem::child( int i ) const
+{
+    // ARRRRRRRRG
+    return ( (PropertyItem*)this )->children.at( i );
+}
+
+/*!  If the contents of the item is not displayable with a text, but
+  you want to draw it yourself (using drawCustomContents()), return
+  TRUE here.
+*/
+
+bool PropertyItem::hasCustomContents() const
+{
+    return FALSE;
+}
+
+/*!
+  \sa hasCustomContents()
+*/
+
+void PropertyItem::drawCustomContents( QPainter *, const QRect & )
+{
+}
+
+QString PropertyItem::currentItem() const
+{
+    return QString::null;
+}
+
+int PropertyItem::currentIntItem() const
+{
+    return -1;
+}
+
+void PropertyItem::setCurrentItem( const QString & )
+{
+}
+
+void PropertyItem::setCurrentItem( int )
+{
+}
+
+int PropertyItem::currentIntItemFromObject() const
+{
+    return -1;
+}
+
+QString PropertyItem::currentItemFromObject() const
+{
+    return QString::null;
+}
+
+void PropertyItem::setFocus( QWidget *w )
+{
+    if ( !qApp->focusWidget() ||
+	 ( !qApp->focusWidget()->inherits( "Editor" ) ) )
+	w->setFocus();
+}
+
+void PropertyItem::setText( int col, const QString &t )
+{
+    QString txt( t );
+    if ( col == 1 )
+	txt = txt.replace( "\n", " " );
+    QListViewItem::setText( col, txt );
+}
+
+// --------------------------------------------------------------
+
+PropertyDoubleItem::PropertyDoubleItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+				    const QString &propName )
+    : PropertyItem( l, after, prop, propName )
+{
+    lin = 0;
+}
+
+QLineEdit *PropertyDoubleItem::lined()
+{
+    if ( lin )
+	return lin;
+    lin = new QLineEdit( listview->viewport() );
+    lin->setValidator( new QDoubleValidator( lin, "double_validator" ) );
+
+    connect( lin, SIGNAL( returnPressed() ),
+	     this, SLOT( setValue() ) );
+    connect( lin, SIGNAL( textChanged( const QString & ) ),
+	     this, SLOT( setValue() ) );
+    lin->installEventFilter( listview );
+    return lin;
+}
+
+PropertyDoubleItem::~PropertyDoubleItem()
+{
+    delete (QLineEdit*)lin;
+    lin = 0;
+}
+
+void PropertyDoubleItem::showEditor()
+{
+    PropertyItem::showEditor();
+    if ( !lin ) {
+	lined()->blockSignals( TRUE );
+	lined()->setText( QString::number( value().toDouble() ) );
+	lined()->blockSignals( FALSE );
+    }
+    QWidget* w = lined();
+
+    placeEditor( w );
+    if ( !w->isVisible() || !lined()->hasFocus() ) {
+	w->show();
+	setFocus( lined() );
+    }
+}
+
+
+void PropertyDoubleItem::hideEditor()
+{
+    PropertyItem::hideEditor();
+    QWidget* w = lined();
+    w->hide();
+}
+
+void PropertyDoubleItem::setValue( const QVariant &v )
+{
+    if ( value() == v )
+	return;
+    if ( lin ) {
+	lined()->blockSignals( TRUE );
+	int oldCursorPos;
+	oldCursorPos = lin->cursorPosition();
+	lined()->setText( QString::number( v.toDouble() ) );
+	if ( oldCursorPos < (int)lin->text().length() )
+	    lin->setCursorPosition( oldCursorPos );
+	lined()->blockSignals( FALSE );
+    }
+    setText( 1, QString::number( v.toDouble() ) );
+    PropertyItem::setValue( v );
+}
+
+void PropertyDoubleItem::setValue()
+{
+    setText( 1, lined()->text() );
+    QVariant v = lined()->text().toDouble();
+    PropertyItem::setValue( v );
+    notifyValueChange();
+}
+
+// --------------------------------------------------------------
+
+PropertyBoolItem::PropertyBoolItem( PropertyList *l, PropertyItem *after, PropertyItem *prop, const QString &propName )
+    : PropertyItem( l, after, prop, propName )
+{
+    comb = 0;
+}
+
+QComboBox *PropertyBoolItem::combo()
+{
+    if ( comb )
+	return comb;
+    comb = new QComboBox( FALSE, listview->viewport() );
+    comb->hide();
+    comb->insertItem( tr( "False" ) );
+    comb->insertItem( tr( "True" ) );
+    connect( comb, SIGNAL( activated( int ) ),
+	     this, SLOT( setValue() ) );
+    comb->installEventFilter( listview );
+    return comb;
+}
+
+PropertyBoolItem::~PropertyBoolItem()
+{
+    delete (QComboBox*)comb;
+    comb = 0;
+}
+
+void PropertyBoolItem::toggle()
+{
+    bool b = value().toBool();
+    setValue( QVariant( !b, 0 ) );
+    setValue();
+}
+
+void PropertyBoolItem::showEditor()
+{
+    PropertyItem::showEditor();
+    if ( !comb ) {
+	combo()->blockSignals( TRUE );
+	if ( value().toBool() )
+	    combo()->setCurrentItem( 1 );
+	else
+	    combo()->setCurrentItem( 0 );
+	combo()->blockSignals( FALSE );
+    }
+    placeEditor( combo() );
+    if ( !combo()->isVisible()  || !combo()->hasFocus() ) {
+	combo()->show();
+	setFocus( combo() );
+    }
+}
+
+void PropertyBoolItem::hideEditor()
+{
+    PropertyItem::hideEditor();
+    combo()->hide();
+}
+
+void PropertyBoolItem::setValue( const QVariant &v )
+{
+    if ( ( !hasSubItems() || !isOpen() )
+	 && value() == v )
+	return;
+
+    if ( comb ) {
+	combo()->blockSignals( TRUE );
+	if ( v.toBool() )
+	    combo()->setCurrentItem( 1 );
+	else
+	    combo()->setCurrentItem( 0 );
+	combo()->blockSignals( FALSE );
+    }
+    QString tmp = tr( "True" );
+    if ( !v.toBool() )
+	tmp = tr( "False" );
+    setText( 1, tmp );
+    PropertyItem::setValue( v );
+}
+
+void PropertyBoolItem::setValue()
+{
+    if ( !comb )
+	return;
+    setText( 1, combo()->currentText() );
+    bool b = combo()->currentItem() == 0 ? (bool)FALSE : (bool)TRUE;
+    PropertyItem::setValue( QVariant( b, 0 ) );
+    notifyValueChange();
+}
+
+// --------------------------------------------------------------
+
+PropertyIntItem::PropertyIntItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+				  const QString &propName, bool s )
+    : PropertyItem( l, after, prop, propName ), signedValue( s )
+{
+    spinBx = 0;
+}
+
+QSpinBox *PropertyIntItem::spinBox()
+{
+    if ( spinBx )
+	return spinBx;
+    if ( signedValue )
+	spinBx = new QSpinBox( -INT_MAX, INT_MAX, 1, listview->viewport() );
+    else
+	spinBx = new QSpinBox( 0, INT_MAX, 1, listview->viewport() );
+    spinBx->hide();
+    spinBx->installEventFilter( listview );
+    QObjectList *ol = spinBx->queryList( "QLineEdit" );
+    if ( ol && ol->first() )
+	ol->first()->installEventFilter( listview );
+    delete ol;
+    connect( spinBx, SIGNAL( valueChanged( int ) ),
+	     this, SLOT( setValue() ) );
+    return spinBx;
+}
+
+PropertyIntItem::~PropertyIntItem()
+{
+    delete (QSpinBox*)spinBx;
+    spinBx = 0;
+}
+
+void PropertyIntItem::showEditor()
+{
+    PropertyItem::showEditor();
+    if ( !spinBx ) {
+	spinBox()->blockSignals( TRUE );
+	if ( signedValue )
+	    spinBox()->setValue( value().toInt() );
+	else
+	    spinBox()->setValue( value().toUInt() );
+	spinBox()->blockSignals( FALSE );
+    }
+    placeEditor( spinBox() );
+    if ( !spinBox()->isVisible()  || !spinBox()->hasFocus()  ) {
+	spinBox()->show();
+	setFocus( spinBox() );
+    }
+}
+
+void PropertyIntItem::hideEditor()
+{
+    PropertyItem::hideEditor();
+    spinBox()->hide();
+}
+
+void PropertyIntItem::setValue( const QVariant &v )
+{
+    if ( ( !hasSubItems() || !isOpen() )
+	 && value() == v )
+	return;
+
+    if ( spinBx ) {
+	spinBox()->blockSignals( TRUE );
+	if ( signedValue )
+	    spinBox()->setValue( v.toInt() );
+	else
+	    spinBox()->setValue( v.toUInt() );
+	spinBox()->blockSignals( FALSE );
+    }
+
+    if ( signedValue )
+	    setText( 1, QString::number( v.toInt() ) );
+    else
+	    setText( 1, QString::number( v.toUInt() ) );
+    PropertyItem::setValue( v );
+}
+
+void PropertyIntItem::setValue()
+{
+    if ( !spinBx )
+	return;
+    setText( 1, QString::number( spinBox()->value() ) );
+    if ( signedValue )
+	PropertyItem::setValue( spinBox()->value() );
+    else
+	PropertyItem::setValue( (uint)spinBox()->value() );
+    notifyValueChange();
+}
+
+// --------------------------------------------------------------
+
+PropertyListItem::PropertyListItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+				    const QString &propName, bool e )
+    : PropertyItem( l, after, prop, propName ), editable( e )
+{
+    comb = 0;
+    oldInt = -1;
+}
+
+QComboBox *PropertyListItem::combo()
+{
+    if ( comb )
+	return comb;
+    comb = new QComboBox( editable, listview->viewport() );
+    comb->hide();
+    connect( comb, SIGNAL( activated( int ) ),
+	     this, SLOT( setValue() ) );
+    comb->installEventFilter( listview );
+    if ( editable ) {
+	QObjectList *ol = comb->queryList( "QLineEdit" );
+	if ( ol && ol->first() )
+	    ol->first()->installEventFilter( listview );
+	delete ol;
+    }
+    return comb;
+}
+
+PropertyListItem::~PropertyListItem()
+{
+    delete (QComboBox*)comb;
+    comb = 0;
+}
+
+void PropertyListItem::showEditor()
+{
+    PropertyItem::showEditor();
+    if ( !comb ) {
+	combo()->blockSignals( TRUE );
+	combo()->clear();
+	combo()->insertStringList( value().toStringList() );
+	combo()->blockSignals( FALSE );
+    }
+    placeEditor( combo() );
+    if ( !combo()->isVisible()  || !combo()->hasFocus() ) {
+	combo()->show();
+	setFocus( combo() );
+    }
+}
+
+void PropertyListItem::hideEditor()
+{
+    PropertyItem::hideEditor();
+    combo()->hide();
+}
+
+void PropertyListItem::setValue( const QVariant &v )
+{
+    if ( comb ) {
+	combo()->blockSignals( TRUE );
+	combo()->clear();
+	combo()->insertStringList( v.toStringList() );
+	combo()->blockSignals( FALSE );
+    }
+    setText( 1, v.toStringList().first() );
+    PropertyItem::setValue( v );
+}
+
+void PropertyListItem::setValue()
+{
+    if ( !comb )
+	return;
+    setText( 1, combo()->currentText() );
+    QStringList lst;
+    for ( uint i = 0; i < combo()->listBox()->count(); ++i )
+	lst << combo()->listBox()->item( i )->text();
+    PropertyItem::setValue( lst );
+    notifyValueChange();
+    oldInt = currentIntItem();
+    oldString = currentItem();
+}
+
+QString PropertyListItem::currentItem() const
+{
+    return ( (PropertyListItem*)this )->combo()->currentText();
+}
+
+void PropertyListItem::setCurrentItem( const QString &s )
+{
+    if ( comb && currentItem().lower() == s.lower() )
+	return;
+
+    if ( !comb ) {
+	combo()->blockSignals( TRUE );
+	combo()->clear();
+	combo()->insertStringList( value().toStringList() );
+	combo()->blockSignals( FALSE );
+    }
+    for ( uint i = 0; i < combo()->listBox()->count(); ++i ) {
+	if ( combo()->listBox()->item( i )->text().lower() == s.lower() ) {
+	    combo()->setCurrentItem( i );
+	    setText( 1, combo()->currentText() );
+	    break;
+	}
+    }
+    oldInt = currentIntItem();
+    oldString = currentItem();
+}
+
+void PropertyListItem::addItem( const QString &s )
+{
+    combo()->insertItem( s );
+}
+
+void PropertyListItem::setCurrentItem( int i )
+{
+    if ( comb && i == combo()->currentItem() )
+	return;
+
+    if ( !comb ) {
+	combo()->blockSignals( TRUE );
+	combo()->clear();
+	combo()->insertStringList( value().toStringList() );
+	combo()->blockSignals( FALSE );
+    }
+    combo()->setCurrentItem( i );
+    setText( 1, combo()->currentText() );
+    oldInt = currentIntItem();
+    oldString = currentItem();
+}
+
+int PropertyListItem::currentIntItem() const
+{
+    return ( (PropertyListItem*)this )->combo()->currentItem();
+}
+
+int PropertyListItem::currentIntItemFromObject() const
+{
+    return oldInt;
+}
+
+QString PropertyListItem::currentItemFromObject() const
+{
+    return oldString;
+}
+
+// --------------------------------------------------------------
+
+PropertyCoordItem::PropertyCoordItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+				    const QString &propName, Type t )
+    : PropertyItem( l, after, prop, propName ), typ( t )
+{
+    lin = 0;
+
+}
+
+QLineEdit *PropertyCoordItem::lined()
+{
+    if ( lin )
+	return lin;
+    lin = new QLineEdit( listview->viewport() );
+    lin->setReadOnly( TRUE );
+    lin->installEventFilter( listview );
+    lin->hide();
+    return lin;
+}
+
+void PropertyCoordItem::createChildren()
+{
+    PropertyItem *i = this;
+    if ( typ == Rect || typ == Point ) {
+	i = new PropertyIntItem( listview, i, this, tr( "x" ), TRUE );
+	addChild( i );
+	i = new PropertyIntItem( listview, i, this, tr( "y" ), TRUE );
+	addChild( i );
+    }
+    if ( typ == Rect || typ == Size ) {
+	i = new PropertyIntItem( listview, i, this, tr( "width" ), TRUE );
+	addChild( i );
+	i = new PropertyIntItem( listview, i, this, tr( "height" ), TRUE );
+	addChild( i );
+    }
+}
+
+void PropertyCoordItem::initChildren()
+{
+    PropertyItem *item = 0;
+    for ( int i = 0; i < childCount(); ++i ) {
+	item = PropertyItem::child( i );
+	if ( item->name() == tr( "x" ) ) {
+	    if ( typ == Rect )
+		item->setValue( val.toRect().x() );
+	    else if ( typ == Point )
+		item->setValue( val.toPoint().x() );
+	} else if ( item->name() == tr( "y" ) ) {
+	    if ( typ == Rect )
+		item->setValue( val.toRect().y() );
+	    else if ( typ == Point )
+		item->setValue( val.toPoint().y() );
+	} else if ( item->name() == tr( "width" ) ) {
+	    if ( typ == Rect )
+		item->setValue( val.toRect().width() );
+	    else if ( typ == Size )
+		item->setValue( val.toSize().width() );
+	} else if ( item->name() == tr( "height" ) ) {
+	    if ( typ == Rect )
+		item->setValue( val.toRect().height() );
+	    else if ( typ == Size )
+		item->setValue( val.toSize().height() );
+	}
+    }
+}
+
+PropertyCoordItem::~PropertyCoordItem()
+{
+    delete (QLineEdit*)lin;
+    lin = 0;
+}
+
+void PropertyCoordItem::showEditor()
+{
+    PropertyItem::showEditor();
+    if ( !lin )
+	lined()->setText( text( 1 ) );
+    placeEditor( lined() );
+    if ( !lined()->isVisible() || !lined()->hasFocus()  ) {
+	lined()->show();
+	setFocus( lined() );
+    }
+}
+
+void PropertyCoordItem::hideEditor()
+{
+    PropertyItem::hideEditor();
+    lined()->hide();
+}
+
+void PropertyCoordItem::setValue( const QVariant &v )
+{
+    if ( ( !hasSubItems() || !isOpen() )
+	 && value() == v )
+	return;
+
+    QString s;
+    if ( typ == Rect )
+	s = "[ " + QString::number( v.toRect().x() ) + ", " + QString::number( v.toRect().y() ) + ", " +
+	    QString::number( v.toRect().width() ) + ", " + QString::number( v.toRect().height() ) + " ]";
+    else if ( typ == Point )
+	s = "[ " + QString::number( v.toPoint().x() ) + ", " +
+	    QString::number( v.toPoint().y() ) + " ]";
+    else if ( typ == Size )
+	s = "[ " + QString::number( v.toSize().width() ) + ", " +
+	    QString::number( v.toSize().height() ) + " ]";
+    setText( 1, s );
+    if ( lin )
+	lined()->setText( s );
+    PropertyItem::setValue( v );
+}
+
+bool PropertyCoordItem::hasSubItems() const
+{
+    return TRUE;
+}
+
+void PropertyCoordItem::childValueChanged( PropertyItem *child )
+{
+    if ( typ == Rect ) {
+	QRect r = value().toRect();
+	if ( child->name() == tr( "x" ) )
+	    r.moveBy( -r.x() + child->value().toInt(), 0 );
+	else if ( child->name() == tr( "y" ) )
+	    r.moveBy( 0, -r.y() + child->value().toInt() );
+	else if ( child->name() == tr( "width" ) )
+	    r.setWidth( child->value().toInt() );
+	else if ( child->name() == tr( "height" ) )
+	    r.setHeight( child->value().toInt() );
+	setValue( r );
+    } else if ( typ == Point ) {
+	QPoint r = value().toPoint();
+	if ( child->name() == tr( "x" ) )
+	    r.setX( child->value().toInt() );
+	else if ( child->name() == tr( "y" ) )
+	    r.setY( child->value().toInt() );
+	setValue( r );
+    } else if ( typ == Size ) {
+	QSize r = value().toSize();
+	if ( child->name() == tr( "width" ) )
+	    r.setWidth( child->value().toInt() );
+	else if ( child->name() == tr( "height" ) )
+	    r.setHeight( child->value().toInt() );
+	setValue( r );
+    }
+    notifyValueChange();
+}
+
+// --------------------------------------------------------------
+
+PropertyColorItem::PropertyColorItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+				      const QString &propName, bool children )
+    : PropertyItem( l, after, prop, propName ), withChildren( children )
+{
+    box = new QHBox( listview->viewport() );
+    box->hide();
+    colorPrev = new QFrame( box );
+    button = new QPushButton( "...", box );
+    setupStyle( button );
+    button->setFixedWidth( 20 );
+    box->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+    box->setLineWidth( 2 );
+    colorPrev->setFrameStyle( QFrame::Plain | QFrame::Box );
+    colorPrev->setLineWidth( 2 );
+    QPalette pal = colorPrev->palette();
+    QColorGroup cg = pal.active();
+    cg.setColor( QColorGroup::Foreground, cg.color( QColorGroup::Base ) );
+    pal.setActive( cg );
+    pal.setInactive( cg );
+    pal.setDisabled( cg );
+    colorPrev->setPalette( pal );
+    box->installEventFilter( listview );
+    connect( button, SIGNAL( clicked() ),
+	     this, SLOT( getColor() ) );
+}
+
+void PropertyColorItem::createChildren()
+{
+    PropertyItem *i = this;
+    i = new PropertyIntItem( listview, i, this, tr( "Red" ), TRUE );
+    addChild( i );
+    i = new PropertyIntItem( listview, i, this, tr( "Green" ), TRUE );
+    addChild( i );
+    i = new PropertyIntItem( listview, i, this, tr( "Blue" ), TRUE );
+    addChild( i );
+}
+
+void PropertyColorItem::initChildren()
+{
+    PropertyItem *item = 0;
+    for ( int i = 0; i < childCount(); ++i ) {
+	item = PropertyItem::child( i );
+	if ( item->name() == tr( "Red" ) )
+	    item->setValue( val.toColor().red() );
+	else if ( item->name() == tr( "Green" ) )
+	    item->setValue( val.toColor().green() );
+	else if ( item->name() == tr( "Blue" ) )
+	    item->setValue( val.toColor().blue() );
+    }
+}
+
+PropertyColorItem::~PropertyColorItem()
+{
+    delete (QHBox*)box;
+}
+
+void PropertyColorItem::showEditor()
+{
+    PropertyItem::showEditor();
+    placeEditor( box );
+    if ( !box->isVisible() ) {
+	box->show();
+	listView()->viewport()->setFocus();
+    }
+}
+
+void PropertyColorItem::hideEditor()
+{
+    PropertyItem::hideEditor();
+    box->hide();
+}
+
+void PropertyColorItem::setValue( const QVariant &v )
+{
+    if ( ( !hasSubItems() || !isOpen() )
+	 && value() == v )
+	return;
+
+    QString s;
+    setText( 1, v.toColor().name() );
+    colorPrev->setBackgroundColor( v.toColor() );
+    PropertyItem::setValue( v );
+}
+
+bool PropertyColorItem::hasSubItems() const
+{
+    return withChildren;
+}
+
+void PropertyColorItem::childValueChanged( PropertyItem *child )
+{
+    QColor c( val.toColor() );
+    if ( child->name() == tr( "Red" ) )
+	c.setRgb( child->value().toInt(), c.green(), c.blue() );
+    else if ( child->name() == tr( "Green" ) )
+	c.setRgb( c.red(), child->value().toInt(), c.blue() );
+    else if ( child->name() == tr( "Blue" ) )
+	c.setRgb( c.red(), c.green(), child->value().toInt() );
+    setValue( c );
+    notifyValueChange();
+}
+
+void PropertyColorItem::getColor()
+{
+    QColor c = QColorDialog::getColor( val.asColor(), listview );
+    if ( c.isValid() ) {
+	setValue( c );
+	notifyValueChange();
+    }
+}
+
+bool PropertyColorItem::hasCustomContents() const
+{
+    return TRUE;
+}
+
+void PropertyColorItem::drawCustomContents( QPainter *p, const QRect &r )
+{
+    p->save();
+    p->setPen( QPen( black, 1 ) );
+    p->setBrush( val.toColor() );
+    p->drawRect( r.x() + 2, r.y() + 2, r.width() - 5, r.height() - 5 );
+    p->restore();
+}
+
+// --------------------------------------------------------------
+
+/*!
+  \class PropertyList propertyeditor.h
+  \brief PropertyList is a QListView derived class which is used for editing widget properties
+
+  This class is used for widget properties. It has to be child of a
+  PropertyEditor.
+
+  To initialize it for editing a widget call setupProperties() which
+  iterates through the properties of the current widget (see
+  PropertyEditor::widget()) and builds the list.
+
+  To update the item values, refetchData() can be called.
+
+  If the value of an item has been changed by the user, and this
+  change should be applied to the widget's property, valueChanged()
+  has to be called.
+
+  To set the value of an item, setPropertyValue() has to be called.
+*/
+
+PropertyList::PropertyList( PropertyEditor *e )
+    : QListView( e ), editor( e )
+{
+    init_colors();
+
+    showSorted = FALSE;
+    header()->setMovingEnabled( FALSE );
+    header()->setStretchEnabled( TRUE );
+    setResizePolicy( QScrollView::Manual );
+    viewport()->setAcceptDrops( TRUE );
+    viewport()->installEventFilter( this );
+    addColumn( tr( "Property" ) );
+    addColumn( tr( "Value" ) );
+    connect( header(), SIGNAL( sizeChange( int, int, int ) ),
+	     this, SLOT( updateEditorSize() ) );
+    disconnect( header(), SIGNAL( sectionClicked( int ) ),
+		this, SLOT( changeSortColumn( int ) ) );
+//    connect( header(), SIGNAL( sectionClicked( int ) ),
+//	     this, SLOT( toggleSort() ) );
+    connect( this, SIGNAL( pressed( QListViewItem *, const QPoint &, int ) ),
+	     this, SLOT( itemPressed( QListViewItem *, const QPoint &, int ) ) );
+    connect( this, SIGNAL( doubleClicked( QListViewItem * ) ),
+	     this, SLOT( toggleOpen( QListViewItem * ) ) );
+    setSorting( -1 );
+    setHScrollBarMode( AlwaysOff );
+//    setVScrollBarMode( AlwaysOn );
+    setColumnWidthMode( 1, Manual );
+    mousePressed = FALSE;
+    pressItem = 0;
+    header()->installEventFilter( this );
+
+		addPropertyItem();
+}
+
+void PropertyList::toggleSort()
+{
+    showSorted = !showSorted;
+    editor->clear();
+    editor->setup();
+}
+
+void PropertyList::resizeEvent( QResizeEvent *e )
+{
+    QListView::resizeEvent( e );
+    if ( currentItem() )
+	( ( PropertyItem* )currentItem() )->showEditor();
+}
+
+static QVariant::Type type_to_variant( const QString &s )
+{
+    if ( s == "Invalid " )
+	return QVariant::Invalid;
+    if ( s == "Map" )
+	return QVariant::Map;
+    if ( s == "List" )
+	return QVariant::List;
+    if ( s == "String" )
+	return QVariant::String;
+    if ( s == "StringList" )
+	return QVariant::StringList;
+    if ( s == "Font" )
+	return QVariant::Font;
+    if ( s == "Pixmap" )
+	return QVariant::Pixmap;
+    if ( s == "Brush" )
+	return QVariant::Brush;
+    if ( s == "Rect" )
+	return QVariant::Rect;
+    if ( s == "Size" )
+	return QVariant::Size;
+    if ( s == "Color" )
+	return QVariant::Color;
+    if ( s == "Palette" )
+	return QVariant::Palette;
+    if ( s == "ColorGroup" )
+	return QVariant::ColorGroup;
+    if ( s == "IconSet" )
+	return QVariant::IconSet;
+    if ( s == "Point" )
+	return QVariant::Point;
+    if ( s == "Image" )
+	return QVariant::Image;
+    if ( s == "Int" )
+	return QVariant::Int;
+    if ( s == "UInt" )
+	return QVariant::UInt;
+    if ( s == "Bool" )
+	return QVariant::Bool;
+    if ( s == "Double" )
+	return QVariant::Double;
+    if ( s == "CString" )
+	return QVariant::CString;
+    if ( s == "PointArray" )
+	return QVariant::PointArray;
+    if ( s == "Region" )
+	return QVariant::Region;
+    if ( s == "Bitmap" )
+	return QVariant::Bitmap;
+    if ( s == "Cursor" )
+	return QVariant::Cursor;
+    if ( s == "SizePolicy" )
+	return QVariant::SizePolicy;
+    if ( s == "Date" )
+	return QVariant::Date;
+    if ( s == "Time" )
+	return QVariant::Time;
+    if ( s == "DateTime" )
+	return QVariant::DateTime;
+    return QVariant::Invalid;
+}
+
+#ifndef QT_NO_SQL
+static bool parent_is_data_aware( QObject *o )
+{
+    if ( !o->inherits( "QWidget" ) )
+	return FALSE;
+    QWidget *w = (QWidget*)o;
+    QWidget *p = w->parentWidget();
+    while ( p && !p->isTopLevel() ) {
+	if ( p->inherits( "QDesignerDataBrowser" ) || p->inherits( "QDesignerDataView" ) )
+	    return TRUE;
+	p = p->parentWidget();
+    }
+    return FALSE;
+}
+#endif
+
+void PropertyList::setupProperties()
+{
+	addPropertyItem();
+}
+
+bool PropertyList::addPropertyItem( /*PropertyItem *&item, const QCString &name, QVariant::Type t*/ )
+{
+	PropertyItem * item = 0;
+	QCString name = "Test";
+	item = new PropertyColorItem( this, item, 0, name, TRUE );
+	item = new PropertyBoolItem( this, item, 0, name );
+  item = new PropertyIntItem( this, item, 0, name, TRUE );
+	item = new PropertyListItem( this, item, 0, name, TRUE );
+	item = new PropertyColorItem( this, item, 0, name, TRUE );
+
+/*    switch ( t ) {
+    case QVariant::Bool:
+	item = new PropertyBoolItem( this, item, 0, name );
+	break;
+    case QVariant::Int:
+	    item = new PropertyIntItem( this, item, 0, name, TRUE );
+	break;
+    case QVariant::UInt:
+	item = new PropertyIntItem( this, item, 0, name, FALSE );
+	break;
+    case QVariant::StringList:
+	item = new PropertyListItem( this, item, 0, name, TRUE );
+	break;
+    case QVariant::Color:
+	item = new PropertyColorItem( this, item, 0, name, TRUE );
+	break;
+    default:
+	return FALSE;
+    }*/
+    return TRUE;
+}
+
+void PropertyList::paintEmptyArea( QPainter *p, const QRect &r )
+{
+    p->fillRect( r, *backColor2 );
+}
+
+void PropertyList::setCurrentItem( QListViewItem *i )
+{
+    if ( !i )
+	return;
+
+    if ( currentItem() )
+	( (PropertyItem*)currentItem() )->hideEditor();
+    QListView::setCurrentItem( i );
+    ( (PropertyItem*)currentItem() )->showEditor();
+}
+
+void PropertyList::updateEditorSize()
+{
+    if ( currentItem() )
+	( ( PropertyItem* )currentItem() )->showEditor();
+}
+
+/*!  This has to be called if the value if \a i should be set as
+  property to the currently edited widget.
+*/
+
+void PropertyList::valueChanged( PropertyItem *i )
+{
+}
+
+void PropertyList::layoutInitValue( PropertyItem *i, bool changed )
+{
+}
+
+void PropertyList::itemPressed( QListViewItem *i, const QPoint &p, int c )
+{
+    if ( !i )
+	return;
+    PropertyItem *pi = (PropertyItem*)i;
+    if ( !pi->hasSubItems() )
+	return;
+
+    if ( c == 0 && viewport()->mapFromGlobal( p ).x() < 20 )
+	toggleOpen( i );
+}
+
+void PropertyList::toggleOpen( QListViewItem *i )
+{
+    if ( !i )
+	return;
+    PropertyItem *pi = (PropertyItem*)i;
+    if ( pi->hasSubItems() ) {
+	pi->setOpen( !pi->isOpen() );
+    } else {
+	pi->toggle();
+    }
+}
+
+bool PropertyList::eventFilter( QObject *o, QEvent *e )
+{
+    if ( !o || !e )
+	return TRUE;
+
+    PropertyItem *i = (PropertyItem*)currentItem();
+    if ( o != this &&e->type() == QEvent::KeyPress ) {
+	QKeyEvent *ke = (QKeyEvent*)e;
+	if ( ( ke->key() == Key_Up || ke->key() == Key_Down ) &&
+	     ( o != this || o != viewport() ) &&
+	     !( ke->state() & ControlButton ) ) {
+	    QApplication::sendEvent( this, (QKeyEvent*)e );
+	    return TRUE;
+	} else if ( ( !o->inherits( "QLineEdit" ) ||
+		      ( o->inherits( "QLineEdit" ) && ( (QLineEdit*)o )->isReadOnly() ) ) &&
+		    i && i->hasSubItems() ) {
+	    if ( !i->isOpen() &&
+		 ( ke->key() == Key_Plus ||
+		   ke->key() == Key_Right ))
+		i->setOpen( TRUE );
+	    else if ( i->isOpen() &&
+		      ( ke->key() == Key_Minus ||
+			ke->key() == Key_Left ) )
+		i->setOpen( FALSE );
+	} else if ( ( ke->key() == Key_Return || ke->key() == Key_Enter ) && o->inherits( "QComboBox" ) ) {
+	    QKeyEvent ke2( QEvent::KeyPress, Key_Space, 0, 0 );
+	    QApplication::sendEvent( o, &ke2 );
+	    return TRUE;
+	}
+    } 
+	else if ( o == viewport() ) {
+	QMouseEvent *me;
+	PropertyListItem* i;
+	switch ( e->type() ) {
+	case QEvent::MouseButtonPress:
+	    me = (QMouseEvent*)e;
+	    i = (PropertyListItem*) itemAt( me->pos() );
+	    if( i  && ( i->inherits("PropertyColorItem") || i->inherits("PropertyPixmapItem") ) ) {
+		pressItem = i;
+		pressPos = me->pos();
+		mousePressed = TRUE;
+	    }
+	    break;
+	case QEvent::MouseMove:
+	    me = (QMouseEvent*)e;
+	    if ( me && me->state() & LeftButton && mousePressed) {
+
+		i = (PropertyListItem*) itemAt( me->pos() );
+		if( i  && i == pressItem ) {
+
+		    if(( pressPos - me->pos() ).manhattanLength() > QApplication::startDragDistance() ){
+			if ( i->inherits("PropertyColorItem") ) {
+			    QColor col = i->value().asColor();
+			    QColorDrag *drg = new QColorDrag( col, this );
+			    QPixmap pix( 25, 25 );
+			    pix.fill( col );
+			    QPainter p( &pix );
+			    p.drawRect( 0, 0, pix.width(), pix.height() );
+			    p.end();
+			    drg->setPixmap( pix );
+			    mousePressed = FALSE;
+			    drg->dragCopy();
+			}
+			else if ( i->inherits("PropertyPixmapItem") ) {
+			    QPixmap pix = i->value().asPixmap();
+			    if( !pix.isNull() ) {
+				QImage img = pix.convertToImage();
+				QImageDrag *drg = new QImageDrag( img, this );
+				drg->setPixmap( pix );
+				mousePressed = FALSE;
+				drg->dragCopy();
+			    }
+			}
+		    }
+		}
+	    }
+	    break;
+	default:
+	    break;
+	}
+    } else if ( o == header() ) {
+	if ( e->type() == QEvent::ContextMenu ) {
+	    ((QContextMenuEvent *)e)->accept();
+	    QPopupMenu menu( 0 );
+	    menu.setCheckable( TRUE );
+	    const int cat_id = 1;
+	    const int alpha_id = 2;
+	    menu.insertItem( tr( "Sort &Categorized" ), cat_id );
+	    int alpha = menu.insertItem( tr( "Sort &Alphabetically" ), alpha_id );
+	    if ( showSorted )
+		menu.setItemChecked( alpha_id, TRUE );
+	    else
+		menu.setItemChecked( cat_id, TRUE );
+	    int res = menu.exec( ( (QContextMenuEvent*)e )->globalPos() );
+	    if ( res != -1 ) {
+		bool newShowSorted = ( res == alpha );
+		if ( showSorted != newShowSorted ) {
+		    showSorted = newShowSorted;
+		    editor->clear();
+		    editor->setup();
+		}
+	    }
+	    return TRUE;
+	}
+    }
+
+    return QListView::eventFilter( o, e );
+}
+
+/*!  This method re-initializes each item of the property list.
+*/
+
+void PropertyList::refetchData()
+{
+    QListViewItemIterator it( this );
+    for ( ; it.current(); ++it ) {
+	PropertyItem *i = (PropertyItem*)it.current();
+	if ( !i->propertyParent() )
+	    setPropertyValue( i );
+	if ( i->hasSubItems() )
+	    i->initChildren();
+	bool changed = true;
+	if ( ( i->name() == "layoutSpacing" || i->name() == "layoutMargin" ) ) {
+	    if ( i->value().toString() != "-1" )
+		i->setChanged( TRUE, FALSE );
+	    else
+		i->setChanged( FALSE, FALSE );
+	}
+	else if ( changed != i->isChanged() )
+	    i->setChanged( changed, FALSE );
+    }
+    updateEditorSize();
+}
+
+static void clearAlignList( QStrList &l )
+{
+    if ( l.count() == 1 )
+	return;
+    if ( l.find( "AlignAuto" ) != -1 )
+	l.remove( "AlignAuto" );
+    if ( l.find( "WordBreak" ) != -1 )
+	l.remove( "WordBreak" );
+}
+
+/*!  This method initializes the value of the item \a i to the value
+  of the corresponding property.
+*/
+
+void PropertyList::setPropertyValue( PropertyItem *i )
+{
+    const QMetaProperty *p =
+	editor->widget()->metaObject()->
+	property( editor->widget()->metaObject()->findProperty( i->name(), TRUE), TRUE );
+    if ( !p ) {
+	if ( i->name() == "hAlign" ) {
+	    int align = editor->widget()->property( "alignment" ).toInt();
+	    p = editor->widget()->metaObject()->
+		property( editor->widget()->metaObject()->findProperty( "alignment", TRUE ), TRUE );
+	    align &= ~AlignVertical_Mask;
+	    QStrList l = p->valueToKeys( align );
+	    clearAlignList( l );
+	    ( (PropertyListItem*)i )->setCurrentItem( l.last() );
+	} else if ( i->name() == "vAlign" ) {
+	    int align = editor->widget()->property( "alignment" ).toInt();
+	    p = editor->widget()->metaObject()->
+		property( editor->widget()->metaObject()->findProperty( "alignment", TRUE ), TRUE );
+	    align &= ~AlignHorizontal_Mask;
+	    ( (PropertyListItem*)i )->setCurrentItem( p->valueToKeys( align ).last() );
+	} else if ( i->name() == "wordwrap" ) {
+	    int align = editor->widget()->property( "alignment" ).toInt();
+	    if ( align & WordBreak )
+		i->setValue( QVariant( TRUE, 0 ) );
+	    else
+		i->setValue( QVariant( FALSE, 0 ) );
+	} else if ( i->name() == "layoutSpacing" ) {
+	} else if ( i->name() == "layoutMargin" ) {
+	} else if ( i->name() == "toolTip" || i->name() == "whatsThis" || i->name() == "database" || i->name() == "frameworkCode" ) {
+	} else if ( editor->widget()->inherits( "CustomWidget" ) ) {
+	}
+	return;
+    }
+    if ( p->isSetType() )
+	;
+    else if ( p->isEnumType() )
+	( (PropertyListItem*)i )->setCurrentItem( p->valueToKey( editor->widget()->property( i->name() ).toInt() ) );
+    else if ( qstrcmp( p->name(), "buddy" ) == 0 )
+	( (PropertyListItem*)i )->setCurrentItem( editor->widget()->property( i->name() ).toString() );
+    else
+	i->setValue( editor->widget()->property( i->name() ) );
+}
+
+void PropertyList::setCurrentProperty( const QString &n )
+{
+    if ( currentItem() && currentItem()->text( 0 ) == n ||
+	 currentItem() && ( (PropertyItem*)currentItem() )->propertyParent() &&
+	 ( (PropertyItem*)currentItem() )->propertyParent()->text( 0 ) == n )
+	return;
+
+    QListViewItemIterator it( this );
+    for ( ; it.current(); ++it ) {
+	if ( it.current()->text( 0 ) == n ) {
+	    setCurrentItem( it.current() );
+	    break;
+	}
+    }
+}
+
+PropertyEditor *PropertyList::propertyEditor() const
+{
+    return editor;
+}
+
+void PropertyList::resetProperty()
+{
+    if ( !currentItem() )
+	return;
+    PropertyItem *i = (PropertyItem*)currentItem();
+    if ( i->hasSubItems() )
+	i->initChildren();
+}
+
+void PropertyList::viewportDragEnterEvent( QDragEnterEvent *e )
+{
+    PropertyListItem *i = (PropertyListItem*) itemAt( e->pos() );
+    if( !i ) {
+	e->ignore();
+	return;
+    }
+
+    if ( i->inherits("PropertyColorItem") && QColorDrag::canDecode( e ) )
+	e->accept();
+    else if ( i->inherits("PropertyPixmapItem") && QImageDrag::canDecode( e ) )
+	e->accept();
+    else
+	e->ignore();
+}
+
+void PropertyList::viewportDragMoveEvent ( QDragMoveEvent *e )
+{
+    PropertyListItem *i = (PropertyListItem*) itemAt( e->pos() );
+    if( !i ) {
+	e->ignore();
+	return;
+    }
+
+    if ( i->inherits("PropertyColorItem") && QColorDrag::canDecode( e ) )
+	e->accept();
+    else if ( i->inherits("PropertyPixmapItem") && QImageDrag::canDecode( e ) )
+	e->accept();
+    else
+	e->ignore();
+}
+
+void PropertyList::viewportDropEvent ( QDropEvent *e )
+{
+    PropertyListItem *i = (PropertyListItem*) itemAt( e->pos() );
+    if( !i ) {
+	e->ignore();
+	return;
+    }
+
+    if ( i->inherits("PropertyColorItem") && QColorDrag::canDecode( e ) ) {
+	QColor color;
+	QColorDrag::decode( e, color );
+	i->setValue( QVariant( color ) );
+	valueChanged( i );
+	e->accept();
+    }
+    else if ( i->inherits("PropertyPixmapItem")  && QImageDrag::canDecode( e ) ) {
+	QImage img;
+	QImageDrag::decode( e, img );
+	QPixmap pm;
+	pm.convertFromImage( img );
+	i->setValue( QVariant( pm ) );
+	valueChanged( i );
+	e->accept();
+    }
+    else
+	e->ignore();
+}
+
+QString PropertyList::whatsThisAt( const QPoint &p )
+{
+    return whatsThisText( itemAt( p ) );
+}
+
+void PropertyList::showCurrentWhatsThis()
+{
+    if ( !currentItem() )
+	return;
+    QPoint p( 0, currentItem()->itemPos() );
+    p = viewport()->mapToGlobal( contentsToViewport( p ) );
+    QWhatsThis::display( whatsThisText( currentItem() ), p, viewport() );
+}
+
+QString PropertyList::whatsThisText( QListViewItem *i )
+{
+    if ( !i || !editor->widget() )
+	return QString::null;
+    readPropertyDocs();
+    if ( ( (PropertyItem*)i )->propertyParent() )
+	i = ( (PropertyItem*)i )->propertyParent();
+
+    const QMetaObject *mo = editor->widget()->metaObject();
+    QString prop = ( (PropertyItem*)i )->name();
+    while ( mo ) {
+	QString s;
+	s = QString( mo->className() ) + "::" + prop;
+	QMap<QString, QString>::Iterator it;
+	if ( ( it = propertyDocs.find( s ) ) != propertyDocs.end() ) {
+	    return *it;
+	}
+	mo = mo->superClass();
+    }
+
+    return tr( "<p><b>QWidget::%1</b></p><p>There is no documentation available for this property.</p>" ).arg( prop );
+}
+
+void PropertyList::readPropertyDocs()
+{
+}
+
+extern QListViewItem *newItem;
+
+// --------------------------------------------------------------
+
+PropertyEditor::PropertyEditor( QWidget *parent )
+    : QTabWidget( parent )
+{
+    setCaption( tr( "Property Editor" ) );
+    wid = 0;
+    listview = new PropertyList( this );
+    addTab( listview, tr( "P&roperties" ) );
+//    addTab( eList, tr( "Signa&l Handlers" ) );
+}
+
+QObject *PropertyEditor::widget() const
+{
+    return wid;
+}
+
+void PropertyEditor::clear()
+{
+    listview->setContentsPos( 0, 0 );
+    listview->clear();
+}
+
+void PropertyEditor::setup()
+{
+    listview->viewport()->setUpdatesEnabled( FALSE );
+    listview->setupProperties();
+    listview->viewport()->setUpdatesEnabled( TRUE );
+    listview->updateEditorSize();
+}
+
+void PropertyEditor::refetchData()
+{
+    listview->refetchData();
+}
+
+void PropertyEditor::closeEvent( QCloseEvent *e )
+{
+    emit hidden();
+    e->accept();
+}
+
+PropertyList *PropertyEditor::propertyList() const
+{
+    return listview;
+}
+
+QString PropertyEditor::currentProperty() const
+{
+    if ( !wid )
+	return QString::null;
+    if ( ( (PropertyItem*)listview->currentItem() )->propertyParent() )
+	return ( (PropertyItem*)listview->currentItem() )->propertyParent()->name();
+    return ( (PropertyItem*)listview->currentItem() )->name();
+}
+
+QString PropertyEditor::classOfCurrentProperty() const
+{
+    if ( !wid )
+	return QString::null;
+    QObject *o = wid;
+    QString curr = currentProperty();
+    QMetaObject *mo = o->metaObject();
+    while ( mo ) {
+	QStrList props = mo->propertyNames( FALSE );
+	if ( props.find( curr.latin1() ) != -1 )
+	    return mo->className();
+	mo = mo->superClass();
+    }
+    return QString::null;
+}
+
+void PropertyEditor::resetFocus()
+{
+    if ( listview->currentItem() )
+	( (PropertyItem*)listview->currentItem() )->showEditor();
+}
+
+void PropertyEditor::setPropertyEditorEnabled( bool b )
+{
+    if ( !b )
+	removePage( listview );
+    else
+	insertTab( listview, tr( "Property Editor" ), 0 );
+    updateWindow();
+}
+
+void PropertyEditor::setSignalHandlersEnabled( bool b )
+{
+}
+
+void PropertyEditor::updateWindow()
+{
+    if ( isHidden() && count() ) {
+	parentWidget()->show();
+//	MainWindow::self->setAppropriate( (QDockWindow*)parentWidget(), TRUE );
+    } else if ( isShown() && !count() ) {
+	parentWidget()->hide();
+//	MainWindow::self->setAppropriate( (QDockWindow*)parentWidget(), FALSE );
+    }
+}
 
 #include "moc_PropertyView.cpp"

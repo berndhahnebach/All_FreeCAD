@@ -31,8 +31,7 @@
 #ifndef DLGCMDBARS_IMP_H
 #define DLGCMDBARS_IMP_H
 
-#include "DlgCmdbars.h"
-#include "PropertyPage.h"
+#include "DlgToolbarsImp.h"
 
 class FCCommand;
 class FCToolBar;
@@ -40,7 +39,7 @@ class FCToolBar;
 /**
  * This class implements the creation of user defined command bars.
  */
-class FCDlgCustomCmdbarsImp : public FCDlgCustomCmdbars, public FCPropertyPage
+class FCDlgCustomCmdbarsImp : public FCDlgCustomToolbarsBase
 { 
   Q_OBJECT
 
@@ -51,33 +50,12 @@ class FCDlgCustomCmdbarsImp : public FCDlgCustomCmdbars, public FCPropertyPage
   protected:
     void apply();
     void cancel();
+		void onUpdate();
 
-  protected slots:
-    /// shows all buttons of the cmdbar
-    void slotCmdBarSelected(const QString &);
-    /// creates new cmdbar
-    void slotCreateCmdBar();
-    /// deletes cmdbar
-    void slotDeleteCmdBar();
-    /// adds a new action by double click
-    void slotDblClickAddAction(QListViewItem*);
-    /// adds a new action
-    void slotAddAction();
-    /// removes an action
-    void slotRemoveAction();
-    /// moves up an action
-    void slotMoveUpAction();
-    /// moves down an action
-    void slotMoveDownAction();
-    /// enables/disables buttons for change
-    void slotCurrentActionsChanged( QListViewItem *i );
-    /// enables/disables buttons for change
-    void slotAvailableActionsChanged( QListViewItem *i );
-
-  protected:
-    // groups of commands
-    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
-    std::vector<FCToolBar*>                         m_aclCmdbars;
+    /// creates new toolbar
+    void onCreateToolbar();
+    /// deletes toolbar
+    void onDeleteToolbar();
 };
 
 #endif

@@ -334,13 +334,11 @@ class FCPropertyListView : public QListView
     Q_OBJECT
 
   public:
-    FCPropertyListView( FCPropertyView *e );
+    FCPropertyListView( QWidget* parent );
 
     void setCurrentItem( QListViewItem *i );
     void valueChanged( FCPropertyViewItem *i );
     void setCurrentProperty( const QString &n );
-
-    FCPropertyView *propertyView() const;
 
   public slots:
     void updateViewSize();
@@ -356,9 +354,49 @@ class FCPropertyListView : public QListView
     void keyPressEvent ( QKeyEvent * e );
     void paintEmptyArea( QPainter *p, const QRect &r );
     bool addPropertyItem( FCPropertyViewItem *&item, const QCString &name, const char* type );
+};
+
+class FCPropertyEditor : public QTabWidget
+{
+    Q_OBJECT
+
+	public:
+    FCPropertyEditor( FCPropertyView * view );
+
+    QObject *widget() const;
+
+    void clear();
+    void setup();
+
+    void refetchData();
+
+    FCPropertyListView *propertyList() const;
+    QString currentProperty() const;
+
+    void resetFocus();
+    void setPropertyEditorEnabled( bool b );
+    void setSignalHandlersEnabled( bool b );
+
+
+    FCPropertyView *propertyView() const;
+
+
+	signals:
+    void hidden();
+
+	protected:
+    void closeEvent( QCloseEvent *e );
+
+	private:
+    void updateWindow();
+
+	private:
+    QObject *wid;
+    FCPropertyListView *listview;
 
   private:
     FCPropertyView *propView;
+
 };
 
 /** A test class. A more elaborate class description.
@@ -404,14 +442,390 @@ class FCPropertyView :public FCDockView
 
 
 //protected:
-  	FCPropertyListView*		_pcListView;
+//  	FCPropertyListView*		_pcListView;
+//		class PropertyList* _pcListView;
 
   	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
   private:
-    QGridLayout* pclFormLayout;
-    QTabBar* tabs;
+    QGridLayout* _pTabLayout;
+    class PropertyEditor * _pTabWnd;
     QWidget *wid;
+};
+
+
+
+
+
+#include <qfeatures.h>
+#include <qvariant.h>
+#include <qlistview.h>
+#include <qptrlist.h>
+#include <qguardedptr.h>
+#include <qtabwidget.h>
+#include <qmodules.h>
+
+class PropertyList;
+class PropertyEditor;
+class QPainter;
+class QColorGroup;
+class QComboBox;
+class QLineEdit;
+class QPushButton;
+class QHBox;
+class QSpinBox;
+class QLabel;
+class FormWindow;
+class QCloseEvent;
+class QResizeEvent;
+class PropertyWhatsThis;
+class QDateEdit;
+class QTimeEdit;
+class QDateTimeEdit;
+
+class PropertyItem : public QListViewItem
+{
+public:
+    PropertyItem( PropertyList *l, PropertyItem *after, PropertyItem *prop, const QString &propName );
+    ~PropertyItem();
+
+    void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
+    void paintBranches( QPainter * p, const QColorGroup & cg,
+			int w, int y, int h );
+    void paintFocus( QPainter *p, const QColorGroup &cg, const QRect &r );
+
+    virtual bool hasSubItems() const;
+    virtual void createChildren();
+    virtual void initChildren();
+
+    bool isOpen() const;
+    void setOpen( bool b );
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+    QVariant value() const;
+    QString name() const;
+    virtual void notifyValueChange();
+
+    virtual void setChanged( bool b, bool updateDb = TRUE );
+    bool isChanged() const;
+
+    virtual void placeEditor( QWidget *w );
+
+    virtual PropertyItem *propertyParent() const;
+    virtual void childValueChanged( PropertyItem *child );
+
+    void addChild( PropertyItem *i );
+    int childCount() const;
+    PropertyItem *child( int i ) const;
+
+    virtual bool hasCustomContents() const;
+    virtual void drawCustomContents( QPainter *p, const QRect &r );
+
+    void updateBackColor();
+
+    void setup() { QListViewItem::setup(); setHeight( QListViewItem::height() + 2 ); }
+
+    virtual QString currentItem() const;
+    virtual int currentIntItem() const;
+    virtual void setCurrentItem( const QString &s );
+    virtual void setCurrentItem( int i );
+    virtual int currentIntItemFromObject() const;
+    virtual QString currentItemFromObject() const;
+
+    void setFocus( QWidget *w );
+
+    virtual void toggle();
+    void setText( int col, const QString &txt );
+
+protected:
+    PropertyList *listview;
+    QVariant val;
+
+private:
+    QColor backgroundColor();
+    void createResetButton();
+    void updateResetButtonState();
+
+private:
+    bool open, changed;
+    PropertyItem *property;
+    QString propertyName;
+    QPtrList<PropertyItem> children;
+    QColor backColor;
+    QPushButton *resetButton;
+
+};
+
+class PropertyBoolItem : public QObject,
+			 public PropertyItem
+{
+    Q_OBJECT
+
+public:
+    PropertyBoolItem( PropertyList *l, PropertyItem *after, PropertyItem *prop, const QString &propName );
+    ~PropertyBoolItem();
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+    virtual void toggle();
+
+private slots:
+    void setValue();
+
+private:
+    QComboBox *combo();
+    QGuardedPtr<QComboBox> comb;
+
+};
+
+class PropertyIntItem : public QObject,
+			public PropertyItem
+{
+    Q_OBJECT
+
+public:
+    PropertyIntItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+		     const QString &propName, bool s );
+    ~PropertyIntItem();
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+
+private slots:
+    void setValue();
+
+private:
+    QSpinBox *spinBox();
+    QGuardedPtr<QSpinBox> spinBx;
+    bool signedValue;
+
+};
+
+class PropertyListItem : public QObject,
+			 public PropertyItem
+{
+    Q_OBJECT
+
+public:
+    PropertyListItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+		      const QString &propName, bool editable );
+    ~PropertyListItem();
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+
+    QString currentItem() const;
+    int currentIntItem() const;
+    void setCurrentItem( const QString &s );
+    void setCurrentItem( int i );
+    int currentIntItemFromObject() const;
+    QString currentItemFromObject() const;
+    void addItem( const QString &s );
+
+private slots:
+    void setValue();
+
+private:
+    QComboBox *combo();
+    QGuardedPtr<QComboBox> comb;
+    int oldInt;
+    bool editable;
+    QString oldString;
+
+};
+
+class PropertyCoordItem : public QObject,
+			  public PropertyItem
+{
+    Q_OBJECT
+
+public:
+    enum Type { Rect, Size, Point };
+
+    PropertyCoordItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+		       const QString &propName, Type t );
+    ~PropertyCoordItem();
+
+    virtual void createChildren();
+    virtual void initChildren();
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+    virtual bool hasSubItems() const;
+    virtual void childValueChanged( PropertyItem *child );
+
+private:
+    QLineEdit *lined();
+    QGuardedPtr<QLineEdit> lin;
+    Type typ;
+
+};
+
+class PropertyColorItem : public QObject,
+			  public PropertyItem
+{
+    Q_OBJECT
+
+public:
+    PropertyColorItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+		       const QString &propName, bool children );
+    ~PropertyColorItem();
+
+    virtual void createChildren();
+    virtual void initChildren();
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+    virtual bool hasSubItems() const;
+    virtual void childValueChanged( PropertyItem *child );
+
+    virtual bool hasCustomContents() const;
+    virtual void drawCustomContents( QPainter *p, const QRect &r );
+
+private slots:
+    void getColor();
+
+private:
+    QGuardedPtr<QHBox> box;
+    QGuardedPtr<QFrame> colorPrev;
+    QGuardedPtr<QPushButton> button;
+    bool withChildren;
+
+};
+
+class PropertyList : public QListView
+{
+    Q_OBJECT
+
+public:
+    PropertyList( PropertyEditor *e );
+
+    virtual void setupProperties();
+
+    virtual void setCurrentItem( QListViewItem *i );
+    virtual void valueChanged( PropertyItem *i );
+    virtual void refetchData();
+    virtual void setPropertyValue( PropertyItem *i );
+    virtual void setCurrentProperty( const QString &n );
+
+    void layoutInitValue( PropertyItem *i, bool changed = FALSE );
+    PropertyEditor *propertyEditor() const;
+    QString whatsThisAt( const QPoint &p );
+    void showCurrentWhatsThis();
+
+public slots:
+    void updateEditorSize();
+    void resetProperty();
+    void toggleSort();
+
+private slots:
+    void itemPressed( QListViewItem *i, const QPoint &p, int c );
+    void toggleOpen( QListViewItem *i );
+    bool eventFilter( QObject *o, QEvent *e );
+
+protected:
+    void resizeEvent( QResizeEvent *e );
+    void paintEmptyArea( QPainter *p, const QRect &r );
+    bool addPropertyItem( /*PropertyItem *&item, const QCString &name, QVariant::Type t */);
+
+    void viewportDragEnterEvent( QDragEnterEvent * );
+    void viewportDragMoveEvent ( QDragMoveEvent * );
+    void viewportDropEvent ( QDropEvent * );
+
+protected:
+    PropertyEditor *editor;
+
+private:
+    void readPropertyDocs();
+    QString whatsThisText( QListViewItem *i );
+
+private:
+    PropertyListItem* pressItem;
+    QPoint pressPos;
+    bool mousePressed;
+    bool showSorted;
+    QMap<QString, QString> propertyDocs;
+    PropertyWhatsThis *whatsThis;
+
+};
+
+class PropertyDoubleItem : public QObject,
+			public PropertyItem
+{
+    Q_OBJECT
+
+public:
+    PropertyDoubleItem( PropertyList *l, PropertyItem *after, PropertyItem *prop,
+		     const QString &propName );
+    ~PropertyDoubleItem();
+
+    virtual void showEditor();
+    virtual void hideEditor();
+
+    virtual void setValue( const QVariant &v );
+
+private slots:
+    void setValue();
+
+private:
+    QLineEdit *lined();
+    QGuardedPtr<QLineEdit> lin;
+};
+
+
+class PropertyEditor : public QTabWidget
+{
+    Q_OBJECT
+
+public:
+    PropertyEditor( QWidget *parent );
+
+    QObject *widget() const;
+
+    void clear();
+    void setup();
+
+    void refetchData();
+
+    void closed( FormWindow *w );
+
+    PropertyList *propertyList() const;
+    QString currentProperty() const;
+    QString classOfCurrentProperty() const;
+
+    void resetFocus();
+    void setPropertyEditorEnabled( bool b );
+    void setSignalHandlersEnabled( bool b );
+
+
+
+signals:
+    void hidden();
+
+protected:
+    void closeEvent( QCloseEvent *e );
+
+
+private:
+    void updateWindow();
+
+private:
+    QObject *wid;
+    PropertyList *listview;
+
 };
 
 #endif // __PROPTERYVIEW_H__

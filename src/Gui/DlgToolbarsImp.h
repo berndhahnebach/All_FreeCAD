@@ -40,7 +40,43 @@ class FCToolBar;
 /**
  * This class implements the creation of user defined toolbars.
  */
-class FCDlgCustomToolbarsImp : public FCDlgCustomToolbars, public FCPropertyPage
+class FCDlgCustomToolbarsBase : public FCDlgCustomToolbars, public FCPropertyPage
+{ 
+  Q_OBJECT
+
+  protected:
+    FCDlgCustomToolbarsBase( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    virtual ~FCDlgCustomToolbarsBase();
+
+  protected:
+    virtual void apply();
+    virtual void cancel();
+		virtual void onUpdate();
+
+    /// shows all buttons of the toolbar
+    void onItemActivated(const QString &);
+    /// adds a new action by double click
+    void onDoubleClickedAction(QListViewItem*);
+    /// adds a new action
+    void onAddAction();
+    /// removes an action
+    void onRemoveAction();
+    /// moves up an action
+    void onMoveUpAction();
+    /// moves down an action
+    void onMoveDownAction();
+    /// enables/disables buttons for change
+    void onNewActionChanged( QListViewItem *i );
+    /// enables/disables buttons for change
+    void onAllActionsChanged( QListViewItem *i );
+
+  protected:
+    // groups of commands
+    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
+    std::vector<FCToolBar*>                         m_aclToolbars;
+};
+
+class FCDlgCustomToolbarsImp : public FCDlgCustomToolbarsBase
 { 
   Q_OBJECT
 
@@ -51,33 +87,12 @@ class FCDlgCustomToolbarsImp : public FCDlgCustomToolbars, public FCPropertyPage
   protected:
     void apply();
     void cancel();
+		void onUpdate();
 
-  protected slots:
-    /// shows all buttons of the toolbar
-    void slotToolBarSelected(const QString &);
     /// creates new toolbar
-    void slotCreateToolBar();
+    void onCreateToolbar();
     /// deletes toolbar
-    void slotDeleteToolBar();
-    /// adds a new action by double click
-    void slotDblClickAddAction(QListViewItem*);
-    /// adds a new action
-    void slotAddAction();
-    /// removes an action
-    void slotRemoveAction();
-    /// moves up an action
-    void slotMoveUpAction();
-    /// moves down an action
-    void slotMoveDownAction();
-    /// enables/disables buttons for change
-    void slotCurrentActionsChanged( QListViewItem *i );
-    /// enables/disables buttons for change
-    void slotAvailableActionsChanged( QListViewItem *i );
-
-  protected:
-    // groups of commands
-    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
-    std::vector<FCToolBar*>                         m_aclToolbars;
+    void onDeleteToolbar();
 };
 
 #endif

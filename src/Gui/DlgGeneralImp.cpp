@@ -109,28 +109,12 @@ void FCDlgGeneral::apply()
 
 void FCDlgGeneral::onBigPixmaps()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
-  bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
-  if (bigPixmaps != ApplicationWindow::Instance->usesBigPixmaps())
-    ApplicationWindow::Instance->setUsesBigPixmaps(bigPixmaps);
+	ApplicationWindow::Instance->UpdatePixmapsSize();
 }
 
 void FCDlgGeneral::onSetStyle()
 {
-  QStyle& curStyle = QApplication::style();
-	QString styleName = WindowStyle->currentText();
-
-	if (strcmp(styleName.latin1(), curStyle.name()) != 0)
-	{
-#if QT_VERSION > 300
-	  QStyle* newStyle = QStyleFactory::create(styleName);
-
-		if (newStyle != NULL)
-		{
-			QApplication::setStyle(newStyle);
-		}
-#endif
-	}
+	ApplicationWindow::Instance->UpdateStyle();
 }
 
 void FCDlgGeneral::onSetMRUSize()
@@ -146,12 +130,7 @@ void FCDlgGeneral::onSetMRUSize()
 
 void FCDlgGeneral::onSetCmdLineVisible()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
-  bool show = hGrp->GetBool("ShowCmdLine", true);
-  if (show)
-    GetCmdLine().show();
-  else
-    GetCmdLine().hide();
+  GetCmdLine().show();
 }
 
 void FCDlgGeneral::onChooseLanguage(const QString&)

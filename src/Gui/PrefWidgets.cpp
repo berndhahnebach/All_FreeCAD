@@ -1065,7 +1065,8 @@ void FCToolBar::savePreferences()
 FCPopupMenu::FCPopupMenu(QWidget * parent, const char * name, const char* menu )
 : QPopupMenu(parent, name), FCCustomWidget("Menus", name), bAllowDrag(false)
 {
-  GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings")->Attach(this);
+  hCommonGrp = GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings");
+	hCommonGrp->Attach(this);
   // allow drag and drop
 //  setAcceptDrops(true);
   if (menu)
@@ -1074,7 +1075,7 @@ FCPopupMenu::FCPopupMenu(QWidget * parent, const char * name, const char* menu )
 
 FCPopupMenu::~FCPopupMenu()
 {
-  GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings")->Detach(this);
+  hCommonGrp->Detach(this);
 }
 
 void FCPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
@@ -1233,7 +1234,7 @@ void FCPopupMenu::mouseReleaseEvent( QMouseEvent * e )
 void FCPopupMenu::restorePreferences()
 {
   FCCustomWidget::restorePreferences();
-  bAllowDrag = hPrefGrp->GetBool("AllowDrag", false);
+  bAllowDrag = hCommonGrp->GetBool("AllowDrag", false);
 }
 
 void FCPopupMenu::savePreferences()

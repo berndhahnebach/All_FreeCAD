@@ -205,6 +205,7 @@
 #include <qscrollbar.h>
 #include <qslider.h>
 #include <qspinbox.h>
+#include <qsplashscreen.h>
 #include <qsplitter.h>
 #include <qstatusbar.h>
 #include <qstyle.h>
