@@ -96,7 +96,8 @@ FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
-      _pcActiveDocument(NULL)
+      _pcActiveDocument(NULL),
+	  _bIsClosing(false)
 {
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
@@ -453,10 +454,13 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 
 void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 {
-	// GuiDocument has closed the last window and get destructed
-	lpcDocuments.remove(pcDoc);
-	//lpcDocuments.erase(pcDoc);
-	delete pcDoc;	
+	if(!_bIsClosing)
+	{
+		// GuiDocument has closed the last window and get destructed
+		lpcDocuments.remove(pcDoc);
+		//lpcDocuments.erase(pcDoc);
+		delete pcDoc;	
+	}
 }
 
 // set text to the pane
@@ -592,12 +596,18 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
 	if( e->isAccepted() )
 	{
-		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
-		{
-			delete (*It);
-		}
+		_bIsClosing = true;
 
-		assert(lpcDocuments.size() == 0);
+		std::list<FCGuiDocument*>::iterator It;
+
+		for (It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		{
+			(*It)->CloseAllViews();
+		}
+		for (It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		{
+			delete(*It);
+		}
 
 		_pcActivityTimer->stop();
 

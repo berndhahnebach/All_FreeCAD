@@ -144,6 +144,9 @@ public:
 	//@}
 
 
+	/// true when the application shuting down
+	bool IsClosing(void){return _bIsClosing;}
+
 	/// Reference to the command manager
 	FCCommandManager &GetCommandManager(void){return _cCommandManager;}
 	
@@ -259,6 +262,8 @@ private:
 	QTimer *		 _pcActivityTimer; 
 	/// List of all registered views
 	std::list<FCView*>					_LpcViews;
+
+	bool _bIsClosing;
 
   // friends
   //

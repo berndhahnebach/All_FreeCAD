@@ -82,8 +82,8 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 FCGuiDocument::~FCGuiDocument()
 {
-	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
-		delete *It;
+//	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
+//		delete *It;
 
 	_pcDocument->Detach(this);
 
@@ -227,6 +227,19 @@ void FCGuiDocument::closeEvent ( QCloseEvent * e )
 {
 	CanClose(e);
 }
+
+void FCGuiDocument::CloseAllViews(void)
+{
+	std::list<FCView*>::iterator It;
+
+	while ( (It = _LpcViews.begin()) != _LpcViews.end())
+	{
+		(*It)->Close();
+	}
+	
+	assert(_LpcViews.size() == 0);
+}
+
 
 /// send Messages to the active view
 bool FCGuiDocument::SendMsgToViews(const char* pMsg)

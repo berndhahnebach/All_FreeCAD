@@ -44,7 +44,8 @@
 
 FCView::FCView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
 	:FCWindow(parent, name, wflags),
-	 _pcDocument(pcDocument)
+	 _pcDocument(pcDocument),
+	 bIsDetached(false)
 {
 	if(pcDocument)
 		pcDocument->AttachView(this);
@@ -54,11 +55,25 @@ FCView::FCView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int
 
 FCView::~FCView()
 {
+	if(!bIsDetached)
+	{
+		if(_pcDocument)
+			_pcDocument->DetachView(this);
+		else
+			ApplicationWindow::Instance->DetachView(this);
+	}
+}
+
+void FCView::Close(void)
+{
 	if(_pcDocument)
 		_pcDocument->DetachView(this);
 	else
 		ApplicationWindow::Instance->DetachView(this);
+
+	bIsDetached = true;
 }
+
 
 void FCView::SetDocument(FCGuiDocument* pcDocument)
 {

@@ -95,6 +95,8 @@ public:
 	void DetachView(FCView* pcView);
 	/// call update on attached all views
 	void Update(void);
+	/// close all attached views in order to close the gui document
+	void CloseAllViews(void);
 	//@}
 
 

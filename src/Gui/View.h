@@ -49,6 +49,9 @@ public:
 	/// Mesage handler
 	virtual bool OnMsg(const char* pMsg);
 
+	/// is send from the document in oder to close the document
+	void Close(void);
+
 signals:
 	/// sends a message to the document
 	void sendCloseView(FCView* theView);
@@ -61,6 +64,7 @@ public slots:
 
 protected:
     FCGuiDocument*	_pcDocument;
+	bool bIsDetached;
 
 };
 
