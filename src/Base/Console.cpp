@@ -48,7 +48,7 @@
 
 
 
-char format[1024];  //Warning! Can't go over 512 characters!!! 
+char format[4024];  //Warning! Can't go over 512 characters!!! 
 
 
 //**************************************************************************

@@ -135,10 +135,13 @@ private:
 };
 
 
+/// Type of Commands
 enum CMD_Type { 
 	Cmd_Normal=0,
 	Cmd_Toggle=1
 };
+
+
 
 
 /** The Command class
@@ -191,6 +194,21 @@ public:
 	void CommitCommand(void);
 	/// Abort the Undo transaction on the active document
 	void AbortCommand(void);
+	/// types of application level actions for DoCommand()
+	enum DoCmd_Type {
+		// Action alters the document
+		Document,
+		/// Action alters only the application
+		Application,
+		/// Action alters only the Gui
+		Gui
+	};
+	/// Run a App level Action 
+	void DoCommand(DoCmd_Type eType,const char* sCmd,...);
+	/// Activate an other Commands
+	void ActivateCommand(const char* sCmdName);
+	/// Toggles other Commands
+	void ToggleCommand(const char* sCmdName,bool bToggle);
 	//@}
 
 	/** @name Helper methodes to generate help pages */
@@ -250,6 +268,13 @@ protected:
 /** The cpp Command class
  *  This class is mostly used for commands implemented in C++. The resources are saved 
  *  as const char.
+ *  Note!
+ *  \par
+ *  This class is intendet to handle the gui interaction like:
+ *  - starting a dialog
+ *  - doing View and Window stuff
+ *  enithing else, especialy altering the document must be done on Application level!
+ *  see DoCommand() for details.
  *  @see FCCommandManager
  */
  class GuiExport FCCppCommand :public FCCommand

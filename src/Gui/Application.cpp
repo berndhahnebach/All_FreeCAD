@@ -282,8 +282,8 @@ FCProgressBar* ApplicationWindow::GetProgressBar()
 
 void ApplicationWindow::CreateTestOperations()
 {
-  QString tmpWb = _cActiveWorkbenchName;
-  _cActiveWorkbenchName = "Standard";
+	QString tmpWb = _cActiveWorkbenchName;
+	_cActiveWorkbenchName = "Standard";
 	_cBmpFactory.AddPath("../../FreeCADIcons");
 	_cBmpFactory.AddPath("../Icons");
 	_cBmpFactory.GetPixmap("Function");
@@ -292,32 +292,32 @@ void ApplicationWindow::CreateTestOperations()
 	CreateStdCommands();
 	CreateViewStdCommands();
 
-  // populate a tool bar with some actions
+	// populate a tool bar with some actions
 
-  bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
+	bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
 	// default toolbars -----------------------------------------------------------------------
-  //
-  // populate toolbars with all default actions
-  QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
-  //_pcStdToolBar->setLabel( "File" );
+	//
+	// populate toolbars with all default actions
+	QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
+	//_pcStdToolBar->setLabel( "File" );
 
-  if (!bInit)
-  {
-    std::vector<std::string> defToolbar;
-    defToolbar.push_back("Std_New");
-    defToolbar.push_back("Std_Open");
-    defToolbar.push_back("Std_Save");
-    defToolbar.push_back("Std_Print");
-    defToolbar.push_back("Separator");
-    defToolbar.push_back("Std_Cut");
-    defToolbar.push_back("Std_Copy");
-    defToolbar.push_back("Std_Paste");
-    defToolbar.push_back("Separator");
-    defToolbar.push_back("Std_Undo");
-    defToolbar.push_back("Std_Redo");
-    defToolbar.push_back("Separator");
-    _pcWidgetMgr->addToolBar("file operations", defToolbar);
-  }
+	if (!bInit)
+	{
+		std::vector<std::string> defToolbar;
+		defToolbar.push_back("Std_New");
+		defToolbar.push_back("Std_Open");
+		defToolbar.push_back("Std_Save");
+		defToolbar.push_back("Std_Print");
+		defToolbar.push_back("Separator");
+		defToolbar.push_back("Std_Cut");
+		defToolbar.push_back("Std_Copy");
+		defToolbar.push_back("Std_Paste");
+		defToolbar.push_back("Separator");
+		defToolbar.push_back("Std_Undo");
+		defToolbar.push_back("Std_Redo");
+		defToolbar.push_back("Separator");
+		_pcWidgetMgr->addToolBar("file operations", defToolbar);
+	}
 	
 	// add the workbench combo to the main toolbar
 	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
@@ -330,49 +330,65 @@ void ApplicationWindow::CreateTestOperations()
 
 
 	// default menu bar -----------------------------------------------------------------------
-  //
-  // populate menus with all default actions
-  if (!bInit)
-  {
-    std::vector<std::string> defaultMenus;
-    defaultMenus.push_back("Std_New");
-    defaultMenus.push_back("Std_Open");
-    defaultMenus.push_back("Std_Save");
-    defaultMenus.push_back("Std_SaveAs");
-    defaultMenus.push_back("Separator");
-    defaultMenus.push_back("Std_Print");
-    defaultMenus.push_back("Separator");
-    defaultMenus.push_back("Std_Quit");
-    _pcWidgetMgr->addPopupMenu("File", defaultMenus);
+	//
+	// populate menus with all default actions
+	if (!bInit)
+	{
+		std::vector<std::string> defaultMenus;
+		defaultMenus.push_back("Std_New");
+		defaultMenus.push_back("Std_Open");
+		defaultMenus.push_back("Std_Save");
+		defaultMenus.push_back("Std_SaveAs");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_Print");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_Quit");
+		_pcWidgetMgr->addPopupMenu("File", defaultMenus);
 
-    defaultMenus.clear();
-    defaultMenus.push_back("Std_Cut");
-    defaultMenus.push_back("Std_Copy");
-    defaultMenus.push_back("Std_Paste");
-    defaultMenus.push_back("Std_Undo");
-    defaultMenus.push_back("Std_Redo");
-    defaultMenus.push_back("Separator");
-    _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_Cut");
+		defaultMenus.push_back("Std_Copy");
+		defaultMenus.push_back("Std_Paste");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_Undo");
+		defaultMenus.push_back("Std_Redo");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_DlgPreferences");
+	   _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
   
-    defaultMenus.clear();
-    defaultMenus.push_back("Std_CommandLine");
-    defaultMenus.push_back("Std_DlgParameter");
-    defaultMenus.push_back("Std_DlgPreferences");
-    _pcWidgetMgr->addPopupMenu("Tools", defaultMenus);
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_CommandLine");
+		defaultMenus.push_back("Std_DlgParameter");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_DlgMacroRecord");
+		defaultMenus.push_back("Std_DlgMacroExecute");
+		defaultMenus.push_back("Std_DlgCustomize");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_DlgPreferences");
+		_pcWidgetMgr->addPopupMenu("Tools", defaultMenus);
+
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_TileHoricontal");
+		defaultMenus.push_back("Std_TileVertical");
+		defaultMenus.push_back("Std_TilePragmatic");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_MDIToplevel");
+		defaultMenus.push_back("Std_MDITabed");
+		_pcWidgetMgr->addPopupMenu("Windows", defaultMenus);
   
-    defaultMenus.clear();
-    defaultMenus.push_back("Std_About");
-    _pcWidgetMgr->addPopupMenu("?", defaultMenus);
-  }
+		defaultMenus.clear();
+		defaultMenus.push_back("Std_About");
+		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
+	}
 
 //  std::vector<std::string> Menus;
 //  Menus.push_back("Std_Cut");
 //  Menus.push_back("Std_Copy");
 //  Menus.push_back("Std_Paste");
 //  _pcWidgetMgr->addPopupMenu("Hallo2", Menus, "?");
-	 
+
 	setMenuForSDIModeSysButtons( menuBar());
-  _cActiveWorkbenchName = tmpWb;
+	_cActiveWorkbenchName = tmpWb;
 }
 
 /// send Messages to the active view

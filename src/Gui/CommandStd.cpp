@@ -626,12 +626,12 @@ FCCmdTilePra::FCCmdTilePra()
 	iAccel			= 0;
 }
 
-
 void FCCmdTilePra::Activated(int iMsg)
 {
 	GetAppWnd()->tilePragma();
 }
 
+/*
 //===========================================================================
 // Std_MDINormal
 //===========================================================================
@@ -655,6 +655,7 @@ void FCCmdMDINormal::Activated(int iMsg)
 {
 	GetAppWnd()->switchToChildframeMode();
 }
+*/
 
 //===========================================================================
 // Std_MDIToplevel
@@ -662,12 +663,12 @@ void FCCmdMDINormal::Activated(int iMsg)
 DEF_STD_CMD(FCCmdMDIToplevel);
 
 FCCmdMDIToplevel::FCCmdMDIToplevel()
-	:FCCppCommand("Std_MDIToplevel")
+	:FCCppCommand("Std_MDIToplevel",Cmd_Toggle)
 {
 	sAppModule		= "";
 	sGroup			= "Standard";
-	sMenuText		= "MDI Toplevel";
-	sToolTipText	= "Set the top level MDI mode";
+	sMenuText		= "MDI seperate windows";
+	sToolTipText	= "Set the seperate window MDI mode";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "TopLevel";
@@ -677,7 +678,13 @@ FCCmdMDIToplevel::FCCmdMDIToplevel()
 
 void FCCmdMDIToplevel::Activated(int iMsg)
 {
-	GetAppWnd()->switchToToplevelMode();
+	if(iMsg){
+		// switches Tab mode off 
+		ToggleCommand("Std_MDITabed",false);
+		GetAppWnd()->switchToToplevelMode();
+	}else
+		//GetAppWnd()->finishToplevelMode();
+		GetAppWnd()->switchToChildframeMode();
 }
 
 //===========================================================================
@@ -686,7 +693,7 @@ void FCCmdMDIToplevel::Activated(int iMsg)
 DEF_STD_CMD(FCCmdMDITabed);
 
 FCCmdMDITabed::FCCmdMDITabed()
-	:FCCppCommand("Std_MDITabed")
+	:FCCppCommand("Std_MDITabed",Cmd_Toggle)
 {
 	sAppModule		= "";
 	sGroup			= "Standard";
@@ -694,14 +701,19 @@ FCCmdMDITabed::FCCmdMDITabed()
 	sToolTipText	= "Set the tabed MDI mode";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Paste";
+	sPixmap			= "TopLevel";
 	iAccel			= 0;
 }
 
 
 void FCCmdMDITabed::Activated(int iMsg)
 {
-	GetAppWnd()->switchToTabPageMode();
+	if(iMsg){
+		// switches Toplevel off 
+		ToggleCommand("Std_MDIToplevel",false);
+		GetAppWnd()->switchToTabPageMode();
+	}else
+		GetAppWnd()->switchToChildframeMode();
 }
 
 
@@ -720,7 +732,7 @@ FCCmdDlgParameter::FCCmdDlgParameter()
 	sToolTipText	= "Opens a Dialog to edit the parameters";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "settings";
+	//sPixmap			= "settings";
 	iAccel			= 0;
 }
 
@@ -745,7 +757,7 @@ FCCmdDlgPreferences::FCCmdDlgPreferences()
 	sToolTipText	= "Opens a Dialog to edit the preferences";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "settings";
+	//sPixmap			= "settings";
 	iAccel			= 0;
 }
 
@@ -821,7 +833,7 @@ FCCmdDlgCustomize::FCCmdDlgCustomize()
 	sToolTipText	= "Customize toolbars and button groups";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "customize";
+	//sPixmap			= "customize";
 	iAccel			= 0;
 }
 
@@ -846,7 +858,7 @@ FCCmdDlgSettings::FCCmdDlgSettings()
 	sToolTipText	= "Edit the program settings";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "settings";
+	//sPixmap			= "settings";
 	iAccel			= 0;
 }
 
@@ -935,7 +947,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdCut());
 	rcCmdMgr.AddCommand(new FCCmdCopy());
 	rcCmdMgr.AddCommand(new FCCmdPaste());
-	rcCmdMgr.AddCommand(new FCCmdMDINormal());
+//	rcCmdMgr.AddCommand(new FCCmdMDINormal());
 	rcCmdMgr.AddCommand(new FCCmdMDIToplevel());
 	rcCmdMgr.AddCommand(new FCCmdMDITabed());
 	rcCmdMgr.AddCommand(new FCCmdTileHor());

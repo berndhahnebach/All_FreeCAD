@@ -317,16 +317,22 @@ bool FCCommand::IsToggle(void)
 
 void FCCommand::activated ()
 {
-	GetConsole().Log("Activate %s\n",_pcAction->text().latin1());
-	Activated(0);
+	if(_eType == Cmd_Normal)
+	{
+		GetConsole().Log("Activate %s\n",_pcAction->text().latin1());
+		Activated(0);
+	}
 }
 void FCCommand::toggled (bool b)
 {
-	GetConsole().Log("Toggled %s\n",_pcAction->text().latin1());
-	if(b)
-		Activated(1);
-	else
-		Activated(0);
+	if(_eType == Cmd_Toggle)
+	{
+		GetConsole().Log("Toggled %s\n",_pcAction->text().latin1());
+		if(b)
+			Activated(1);
+		else
+			Activated(0);
+	}
 }
 
 void FCCommand::TestActive(void)
@@ -367,6 +373,46 @@ void FCCommand::AbortCommand(void)
 {
 	GetAppWnd()->GetActiveDocument()->AbortCommand();
 }
+
+/// Run a App level Action 
+void FCCommand::DoCommand(DoCmd_Type eType,const char* sCmd,...)
+{
+	// temp buffer
+	char* format = (char*) malloc(strlen(sCmd)*2);
+    va_list namelessVars;
+    va_start(namelessVars, sCmd);  // Get the "..." vars
+    vsprintf(format, sCmd, namelessVars);
+    va_end(namelessVars);
+
+
+	free (format);
+
+}
+
+/// Activate an other Commands
+void FCCommand::ActivateCommand(const char* sCmdName)
+{
+	FCCommand* pcCmd = GetAppWnd()->GetCommandManager().GetCommandByName(sCmdName);
+	if(pcCmd)
+	{
+		assert(!(pcCmd->IsToggle()));
+		pcCmd->Activated(0);
+	}
+
+}
+
+/// Toggles other Commands
+void FCCommand::ToggleCommand(const char* sCmdName,bool bToggle)
+{
+	FCCommand* pcCmd = GetAppWnd()->GetCommandManager().GetCommandByName(sCmdName);
+	if(pcCmd)
+	{
+		assert(pcCmd->IsToggle());
+		pcCmd->_pcAction->setOn(bToggle?1:0);
+	}
+
+}
+
 
 //--------------------------------------------------------------------------
 // Online help handling  
