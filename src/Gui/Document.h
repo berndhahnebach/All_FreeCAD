@@ -21,7 +21,6 @@
 
 #pragma warning( disable : 4251 )
 
-#include "../Base/Export.h"
 
 #include <qobject.h>
 

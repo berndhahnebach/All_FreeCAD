@@ -112,7 +112,7 @@ void FCCommandLine::SaveCmdList()
 
 void FCCommandLine::ReadCmdList()
 {
-  FCParameterGrp::handle hCmdGrp = GetParameter()->GetGroup("CommandList");
+  FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
 
   int iCnt = hCmdGrp->GetInt("Commands");
 

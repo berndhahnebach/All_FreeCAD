@@ -499,8 +499,8 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-//  QString path = GetParameter()->GetASCII("DocDir", "../Doc/Online").c_str();
-  QString path = GetParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
+//  QString path = GetWindowParameter()->GetASCII("DocDir", "../Doc/Online").c_str();
+  QString path = GetWindowParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
 
   QDir dir (path);
   dir.convertToAbs();
@@ -518,7 +518,7 @@ QString FCHtmlView::GetDocDirectory()
 
 QString FCHtmlView::GetScriptDirectory()
 {
-  QString path = GetParameter()->GetASCII("ScriptDir", "../src/Tools").c_str();
+  QString path = GetWindowParameter()->GetASCII("ScriptDir", "../src/Tools").c_str();
 
   QDir dir (path);
   dir.convertToAbs();
@@ -530,7 +530,7 @@ QString FCHtmlView::GetScriptDirectory()
 
 QString FCHtmlView::GetBrowserDirectory()
 {
-  QString browser = GetParameter()->GetASCII("External Browser", "").c_str();
+  QString browser = GetWindowParameter()->GetASCII("External Browser", "").c_str();
   if (browser.isEmpty())
   {
     QMessageBox::information(this, "External browser", "Please search for an external browser.");
@@ -539,7 +539,7 @@ QString FCHtmlView::GetBrowserDirectory()
     if (browser.isEmpty())
       QMessageBox::warning(this, "External browser", "No external browser found.");
     else
-      GetParameter()->SetASCII("External Browser", browser.latin1());
+      GetWindowParameter()->SetASCII("External Browser", browser.latin1());
   }
 
   return browser;
@@ -774,7 +774,7 @@ void FCHtmlView::PathSelected( const QString & path )
 
 bool FCHtmlView::SetMaxHistory (long lCnt)
 {
-  FCParameterGrp::handle hHistGrp = GetParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
 
   hHistGrp->SetInt("Max History items", lCnt);
 
@@ -783,7 +783,7 @@ bool FCHtmlView::SetMaxHistory (long lCnt)
 
 void FCHtmlView::ReadHistory()
 {
-  FCParameterGrp::handle hHistGrp = GetParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
 
   int iCnt = hHistGrp->GetInt("History items");
 
@@ -798,7 +798,7 @@ void FCHtmlView::ReadHistory()
 
 void FCHtmlView::ReadBookmarks()
 {
-  FCParameterGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
 
   int iCnt = hBookmGrp->GetInt("Bookmark items");
 
@@ -813,7 +813,7 @@ void FCHtmlView::ReadBookmarks()
 
 void FCHtmlView::SaveHistory()
 {
-  FCParameterGrp::handle hHistGrp = GetParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
 
   int iMaxCnt = hHistGrp->GetInt("Max History items", 20);
 
@@ -833,7 +833,7 @@ void FCHtmlView::SaveHistory()
 
 void FCHtmlView::SaveBookmarks()
 {
-  FCParameterGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
 
   hBookmGrp->SetInt("Bookmark items", mBookmarks.size());
 

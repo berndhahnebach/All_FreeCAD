@@ -19,7 +19,6 @@
 #ifndef __Command_h__
 #define __Command_h__
 
-#include "../Base/Export.h"
 
 #include "../Base/PyExport.h"
 #include <qaction.h>

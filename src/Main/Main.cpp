@@ -41,7 +41,6 @@
 
 
 // FreeCAD Base header
-#include "../Base/Export.h"
 #include "../Base/Console.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Parameter.h"

@@ -120,23 +120,22 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 
 FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 {
+	FCHandle<FCParameterGrp> rParamGrp;
 	FCvector<FCHandle<FCParameterGrp> >  vrParamGrp;
 	DOMElement *pcTemp;
 
-	// already created?
-/*	if( (rParamGrp=_GroupMap[""]).IsValid() )
+	while( pcTemp = FindNextElement(pcTemp,"FCParamGroup") )
 	{
-		// just return the already existing Group handle
-		return vrParamGrp;
+		const char * Name = StrX(pcTemp->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// already created?
+		if( ! (rParamGrp=_GroupMap[Name]).IsValid() )
+		{
+			rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
+			_GroupMap[Name] = rParamGrp;
+		}
+		vrParamGrp.push_back( rParamGrp );
 	}
 
-	// search if Group node already there
-	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
-
-	// create and register handle
-	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
-	_GroupMap[Name] = rParamGrp;
-*/
 	return vrParamGrp;
 }
 

@@ -24,6 +24,8 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 #include "Application.h"
+#include "Attribute.h"
+
 
 //===========================================================================
 // FCLabel - Warpper for the TDF_Label classes
@@ -178,7 +180,8 @@ PyObject *FCLabel::PyGetLabel(PyObject *args)
 	FCLabel *pcL = GetLabel( Tag);
 	pcL->_INCREF();
 	return pcL;
-} 
+}
+ 
 
 /*
 PyObject *FCLabel::PyIsDifferent(PyObject *args)
@@ -459,6 +462,7 @@ PyObject *FCDocument::PyMake(PyObject *ignored, PyObject *args)	// Python wrappe
 //--------------------------------------------------------------------------
 FCDocument::~FCDocument()						// Everything handled in parent
 {
+	_hDoc.Nullify();
 	GetConsole().Log("Destroy Document %p\n",this);
 } 
 

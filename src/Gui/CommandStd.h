@@ -19,7 +19,6 @@
 #ifndef __CommandStd_h__
 #define __CommandStd_h__
 
-#include "../Base/Export.h"
 
 #include "Command.h"
 //#ifdef __linux

@@ -17,7 +17,6 @@
 
 #ifndef _FCApplication_
 #define _FCApplication_
-#include "../Base/Export.h" 
 #include "../Base/PyExport.h"
 
 #pragma warning( disable : 4251 )

@@ -65,18 +65,20 @@ class Handle(TDF_Attribute);
 class TDataStd_Name;
 Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(TDataStd_Name);
 
-#include "../Base/Export.h" 
+#include "../Base/PyExport.h"
+
+
 class FCAttribute;
 
 
 /** Handle class for FCAttribute
  */
-class AppExport Handle_FCAttribute :public Handle(TDF_Attribute)
+class Handle_FCAttribute :public Handle_TDF_Attribute
 {
 public:
-	void* operator new(size_t,void* anAddress){return anAddress;}
-	void* operator new(size_t size){return Standard::Allocate(size);}
-	void  operator delete(void *anAddress){if (anAddress) Standard::Free((Standard_Address&)anAddress);}
+	AppExport void* operator new(size_t,void* anAddress){return anAddress;}
+	AppExport void* operator new(size_t size){return Standard::Allocate(size);}
+	AppExport void  operator delete(void *anAddress){if (anAddress) Standard::Free((Standard_Address&)anAddress);}
 	Handle_FCAttribute():Handle(TDF_Attribute)() {} 
 	Handle_FCAttribute(const Handle(TDataStd_Name)& aHandle) : Handle(TDF_Attribute)(aHandle){}
 
@@ -84,11 +86,7 @@ public:
 
 	Handle_FCAttribute& operator=(const Handle(TDataStd_Name)& aHandle)
 	{
-//#ifdef __linux__  /*Access is protected*/
-//Assign(&(*aHandle));
-//#else
-		Assign(aHandle.Access()); 
-//#endif		
+		Assign(&(*aHandle));
 		return *this;
 	}
 
@@ -100,64 +98,60 @@ public:
 
 	TDataStd_Name* operator->() 
 	{
-//#ifdef __linux /* cannot convert `FCAttribute *' to `TDataStd_Name *' */
-//return (TDataStd_Name *)(ControlAccess());
-//#else		
-		return (FCAttribute *)ControlAccess();
-//#endif		
+		return (TDataStd_Name *)(ControlAccess());
 	}
 
-	TDataStd_Name* operator->() const{return (FCAttribute *)ControlAccess();}
+	TDataStd_Name* operator->() const{return(TDataStd_Name *)ControlAccess();}
 	~Handle_FCAttribute();
 	static const Handle_FCAttribute DownCast(const Handle(Standard_Transient)& AnObject);
 };
 
 
 
-class AppExport FCAttribute : public TDF_Attribute {
-
+class FCAttribute : public TDF_Attribute 
+{
 public:
 
 	/// Constructor
-	FCAttribute();
+	AppExport FCAttribute();
 	/// Destructor
-	~FCAttribute();
+	AppExport ~FCAttribute();
 
 	/// Delivers the GUID of the Object
-	static const Standard_GUID& GetID() ;
+	AppExport static const Standard_GUID& GetID() ;
 
 
 	/// Saving to a stream
-	virtual  Standard_OStream& Dump(Standard_OStream& anOS) const;
+	AppExport virtual  Standard_OStream& Dump(Standard_OStream& anOS) const;
 
 	/// copy
-	void Restore(const Handle(TDF_Attribute)& with) ;
+	AppExport void Restore(const Handle(TDF_Attribute)& with) ;
 
 	/// Set data
-	void Set(const TCollection_ExtendedString& S) ;
+	AppExport void Set(const TCollection_ExtendedString& S) ;
 	/// Get data
-	TCollection_ExtendedString Get() const;
+	AppExport TCollection_ExtendedString Get() const;
 
 	/// not shure
-	static  Handle_TDataStd_Name Set(const TDF_Label& label,const TCollection_ExtendedString& string) ;
+	AppExport static  Handle_TDataStd_Name Set(const TDF_Label& label,const TCollection_ExtendedString& string) ;
 
 	/// Get the unique ID of the Attribute
-	const Standard_GUID& ID() const;
+	AppExport const Standard_GUID& ID() const;
 
 	/// Get a empty instance
-	Handle_TDF_Attribute NewEmpty() const;
+	AppExport Handle_TDF_Attribute NewEmpty() const;
 
 	/// some kind of pasting ???
-	void Paste(const Handle(TDF_Attribute)& into,const Handle(TDF_RelocationTable)& RT) const;
+	AppExport void Paste(const Handle(TDF_Attribute)& into,const Handle(TDF_RelocationTable)& RT) const;
 
 
 	/// needet for CasCade handles 
-    void* operator new(size_t,void* anAddress)	{return anAddress;}
-    void* operator new(size_t size)				{return Standard::Allocate(size);}
-    void  operator delete(void *anAddress)		{if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	friend Handle_Standard_Type& TDataStd_Name_Type_();
-	const Handle(Standard_Type)& DynamicType() const;
-	Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
+    AppExport void* operator new(size_t,void* anAddress)	{return anAddress;}
+    AppExport void* operator new(size_t size)				{return Standard::Allocate(size);}
+    AppExport void  operator delete(void *anAddress)		{if (anAddress) Standard::Free((Standard_Address&)anAddress);}
+	AppExport friend Handle_Standard_Type& TDataStd_Name_Type_();
+	AppExport const Handle(Standard_Type)& DynamicType() const;
+	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 
 private: 
 
@@ -167,6 +161,47 @@ private:
 };
 
 
+
+/** The OCC Attribute wrapper class
+ *  This class wraps the functionality of the TDF_Attribute of OCC. 
+ *  This base class can represent every Attribute!
+ *  @see FCDocument,FCLabel
+ */
+class AppExport FCPyAttribute :public FCPyObject
+{
+	/** always start with Py_Header */
+	Py_Header;
+
+public:
+
+	//---------------------------------------------------------------------
+	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	/// Constructor 
+	FCPyAttribute (const Handle(TDF_Attribute) &hAttribute, PyTypeObject *T = &Type);
+	/// for Construction in python 
+	static PyObject *PyMake(PyObject *, PyObject *);
+	/// Destruction 
+	~FCPyAttribute();
+
+	//---------------------------------------------------------------------
+	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	PyObject *_getattr(char *attr);				// __getattr__ function
+	// getter setter
+	int _setattr(char *attr, PyObject *value);	// __setattr__ function
+	// methods
+	PYFUNCDEF_D (FCPyAttribute,PyGetId);
+
+protected:
+
+	/// handle to the Attribute 
+#	pragma warning( disable : 4251 )
+	Handle(TDF_Attribute) _hAttribute;
+
+};
 
 
 #endif

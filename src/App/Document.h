@@ -22,7 +22,6 @@
 
 #pragma warning( disable : 4251 )
 
-#include "../Base/Export.h"
 
 #include "../Base/PyExport.h"
 #include <TDocStd_Document.hxx>

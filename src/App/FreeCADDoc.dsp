@@ -99,7 +99,15 @@ SOURCE=.\Application.h
 # Begin Source File
 
 SOURCE=.\Attribute.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

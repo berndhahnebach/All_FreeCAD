@@ -19,7 +19,6 @@
 #ifndef __Windows_h__
 #define __Windows_h__
 
-#include "../Base/Export.h"
 
 #include <qwidget.h>
 #include <qextmdichildview.h>
@@ -39,6 +38,7 @@ public:
 	~FCWindow();
 
 	FCParameterGrp::handle &GetParameter(void);
+	FCParameterGrp::handle &GetWindowParameter(void);
 
 private:
 #	pragma warning( disable : 4251 )

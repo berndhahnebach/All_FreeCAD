@@ -9,7 +9,6 @@
 #endif
 
 #include "DlgDocTemplatesImp.h"
-#include "../Base/Export.h"
 #include "../Base/PyTools.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
@@ -25,29 +24,19 @@
  *  TRUE to construct a modal dialog.
  */
 DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgDocTemplates( parent, name, modal, fl )
+    : DlgDocTemplates( parent, name, modal, fl ),FCWindow(name)
 {
-/*	PyObject *result=NULL,*result2=NULL;
-	GetConsole().Log("Step 1\n");
-	if(PP_Run_Function("__main__","GetTemplateList","O",&result,"()") == -1) 
-		throw FCException("No Function TemplateList() in __main__");
-	if(!PySequence_Check(result)) 
-		throw FCException("TemplateList() delivers no Template List");
-	GetConsole().Log("Template Sequence size %d\n",PySequence_Size(result));
+	FCvector<FCHandle<FCParameterGrp> > vhGrp = GetParameter()->GetGroup("Modules")->GetGroups();
     
 	QPixmap pixmap(Folder32);
 	QString str;
 	// cycling through the Templates
-	for(int i=0;i<PySequence_Size(result);i++)
+	for(FCvector<FCHandle<FCParameterGrp> >::iterator i=vhGrp.begin();i!=vhGrp.end();i++)
 	{
-		result2 = PySequence_GetItem(result,i);
-		assert(result2);
-		assert(PyString_Check(result2));
-		str = PyString_AsString(result2);
-		new QIconViewItem ( TemplateIconView ,str,pixmap );
-		Py_DECREF(result2);
+		str = (*i)->GetASCII("DocTemplateName","").c_str();
+		if(str != "")
+			new QIconViewItem ( TemplateIconView ,str,pixmap );
 	}
-	Py_DECREF(result);*/
 }
 
 /*  

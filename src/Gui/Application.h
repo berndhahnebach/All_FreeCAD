@@ -1,7 +1,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "../Base/Export.h"
 
 #include <qmainwindow.h>
 #include <qaction.h>

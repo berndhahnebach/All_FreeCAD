@@ -20,7 +20,6 @@
 #ifndef __GUICONSOLE_H__
 #define __GUICONSOLE_H__
 
-#include "../Base/Export.h"
 
 #include "../Base/Console.h"
 
