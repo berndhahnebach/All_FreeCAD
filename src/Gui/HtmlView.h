@@ -35,13 +35,6 @@
 #ifndef __HTML_VIEW_H__
 #define __HTML_VIEW_H__
  
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
-#	include <assert.h>
-#endif
-
-#include "../Base/Export.h"
 #include <qtextbrowser.h>
 #include "window.h"
 
@@ -70,57 +63,53 @@ class GuiExport FCHtmlView : public FCDockWindow
     FCHtmlView( const QString& home_, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCHtmlView();
 
-    void setEnableHistory  (bool b=true);
-    void setEnableBookmarks(bool b=true);
-
-  private slots:
-    void setBackwardAvailable( bool );
-    void setForwardAvailable ( bool );
-
-    void textChanged();
-    void openFile();
-
-    void pathSelected( const QString & );
-    void histChosen( int );
-    void bookmChosen( int );
-    void addBookmark();
-    void checkBookmarks();
-
-  protected:
-    virtual QString getRelativeURL (const QString& path) const;
-    virtual QString getAbsoluteURL (const QString& path) const;
-    virtual QString getHelpDirectory() const;
+    void SetEnableHistory  (bool b=true);
+    void SetEnableBookmarks(bool b=true);
+    bool SetMaxHistory (long lCnt);
 
   protected slots:
-    void refreshPage();
-    void popupMenuAboutToShow();
-    void showPopupMenu();
+    void SetBackwardAvailable( bool );
+    void SetForwardAvailable ( bool );
+    void TextChanged();
+    void OpenFile();
+    void PathSelected( const QString & );
+    void HistChosen( int );
+    void BookmChosen( int );
+    void AddBookmark();
+    void CheckBookmarks();
+    void RefreshPage();
+    void PopupMenuAboutToShow();
+    void ShowPopupMenu();
 
-  private:
-    QStringList readHistory();
-    QStringList readBookmarks();
+  protected:
+    virtual QString GetRelativeURL (const QString& path) const;
+    virtual QString GetAbsoluteURL (const QString& path) const;
+    virtual QString GetHelpDirectory() const;
+    virtual void ReadHistory();
+    virtual void ReadBookmarks();
+    virtual void SaveHistory();
+    virtual void SaveBookmarks();
+    virtual void CreateHistoryPopup();
+    virtual void CreateBookmarkPopup();
+    virtual void AddToPath (const QString& path);
 
-    QString selectedURL;
-    QMap<int, QString> mHistory, mBookmarks;
-
+    FCmap<int, QString> mHistory, mBookmarks;
+    bool bBackward, bForward;
+    bool bHistory, bBookm;
     QButtonGroup*  pclButtonGrp;
     QToolButton*   pclButtonBack;
     QToolButton*   pclButtonForward;
     QToolButton*   pclButtonHome;
     QComboBox*     pclPathCombo;
     FCTextBrowser* pclBrowser;
-
-  protected:
-    bool bBackward, bForward;
-    bool bHistory, bBookm;
-
-    QString       m_strDocDir;
-    QString       m_strCaption;
-    QGridLayout*  pclFormLayout;
-    QHBoxLayout*  pclButtonGrpLayout;
-    QPopupMenu*   pclPopup;
-    QPopupMenu*   pclHistory;
-    QPopupMenu*   pclBookm;
+    QString        selectedURL;
+    QString        m_strDocDir;
+    QString        m_strCaption;
+    QGridLayout*   pclFormLayout;
+    QHBoxLayout*   pclButtonGrpLayout;
+    QPopupMenu*    pclPopup;
+    QPopupMenu*    pclHistory;
+    QPopupMenu*    pclBookm;
 };
 
 #endif // __HTML_VIEW_H__

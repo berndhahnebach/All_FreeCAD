@@ -35,7 +35,6 @@
 #define __INTERPRETER_H__
 
 // Std. configurations
-#include "Export.h"
 
 class BaseExport FCInterpreter
 {

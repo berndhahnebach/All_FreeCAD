@@ -61,7 +61,7 @@ public:
 
 protected:
 
-	stlport::string sName;
+	FCstring sName;
 
 };
 
@@ -140,7 +140,7 @@ public:
 
 private:
 #	pragma warning( disable : 4251 )
-	stlport::map<stlport::string,FCCommand*> _sCommands;
+	FCmap<stlport::string,FCCommand*> _sCommands;
 
 };
 

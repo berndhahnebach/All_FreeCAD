@@ -33,6 +33,7 @@
 
 
 // === Incuding of libs: ============================================================================
+#include "../Config.h"
 #ifndef WNT
 //#	error "Dont compile that file on UNIX!"
 #endif

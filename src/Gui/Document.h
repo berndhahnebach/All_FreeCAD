@@ -66,7 +66,7 @@ private:
 private:
 	ApplicationWindow*				_pcAppWnd;
 //#	pragma warning( disable : 4251 )
-	stlport::list<FCView*>			_LpcViews;
+	FClist<FCView*>			_LpcViews;
 	Handle(V3d_Viewer)				_hViewer;
 	Handle(AIS_InteractiveContext)	_hContext;
 //#	pragma warning( default : 4251 )

@@ -97,7 +97,7 @@ private:
     int myNbDocuments;
 	bool myIsDocuments;
 #	pragma warning( disable : 4251 )
- 	stlport::list<FCGuiDocument*> lpcDocuments;
+ 	FClist<FCGuiDocument*> lpcDocuments;
 #	pragma warning( default : 4251 )
 	//QList<QAction> myCasCadeTranslateActions;
 	QToolBar* myStdToolBar;

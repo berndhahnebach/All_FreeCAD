@@ -135,11 +135,13 @@ public:
 	//---------------------------------------------------------------------
 
 	// static python wrapper of the exported functions
-	PYFUNCDEF(sOpen);
-	PYFUNCDEF(sNew);
-	PYFUNCDEF(sSave);
-	PYFUNCDEF(sSaveAs);
-	PYFUNCDEF(sGet);
+	PYFUNCDEF_S(sOpen);
+	PYFUNCDEF_S(sNew);
+	PYFUNCDEF_S(sSave);
+	PYFUNCDEF_S(sSaveAs);
+	PYFUNCDEF_S(sGet);
+	PYFUNCDEF_S(sGetParam);
+
 	static PyMethodDef    Methods[]; 
 
 	friend FCApplicationObserver;
@@ -171,9 +173,9 @@ private:
 	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
 	/// Handles the FCDocument (and python) objects;
-	stlport::vector<FCDocument*> _DocVector;
+	FCvector<FCDocument*> _DocVector;
 	/// The container of all attached Obervers
-	stlport::set<FCApplicationObserver * > _aclObservers;
+	FCset<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
 	FCParameterManager *_pcParamMngr;
 };

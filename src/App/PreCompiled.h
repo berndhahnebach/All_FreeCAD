@@ -1,6 +1,8 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
+#include "../Config.h"
+
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef WNT
 #	pragma warning( disable : 4251 )

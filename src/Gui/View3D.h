@@ -118,7 +118,7 @@ private:
 
 	FCGuiDocument*  _pcDocument;
 
-	stlport::stack<FCMouseModel *>      _cMouseStack;
+	FCstack<FCMouseModel *>      _cMouseStack;
 	
 	bool bIsInit;
 	

@@ -38,6 +38,7 @@
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -97,7 +98,7 @@ void FCSubject::Detach(FCObserver *ToObserv)
 
 void FCSubject::Notify(void)
 {
-	for(stlport::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+	for(FCset<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
         (*Iter)->OnChange(*this);   // send OnChange-signal
 }
 

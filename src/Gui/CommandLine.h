@@ -31,13 +31,7 @@
 #ifndef __COMMAND_LINE_H__
 #define __COMMAND_LINE_H__
  
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
-#	include <assert.h>
-#endif
 
-#include "../Base/Export.h"
 #include <qlineedit.h>
 #include <list>
 #include <string>
@@ -57,11 +51,12 @@ private:
 
 protected:
   void keyPressEvent ( QKeyEvent * e );
-  void mouseDoubleClickEvent ( QMouseEvent * e );
+  void mousePressEvent ( QMouseEvent * e );
   void wheelEvent ( QWheelEvent * e );
   void PopupCmdList ();
   void ScrollUp();
   void ScrollDown();
+  QPopupMenu* CreatePopupMenu();
 
 public:
   void SetParent(QWidget* parent);
@@ -71,10 +66,17 @@ public:
 
 protected slots:
   void SetCmdText( QListBoxItem * item);
+  void slotCut();
+  void slotCopy();
+  void slotPaste();
+  void slotSeleclAll();
+  void slotClear();
+  void slotClearConsole();
 
 private:
-  stlport::list<stlport::string> _alCmdList;
-  stlport::list<stlport::string>::iterator _TIterator;
+  FClist<FCstring> _alCmdList;
+  FClist<FCstring>::iterator _TIterator;
+  bool bOpen;
 };
 
 inline FCCommandLine &GetCmdLine(void)

@@ -2,7 +2,6 @@
 #define _RSEXCEPTION_HXX
 
 #include <exception>
-#include "Export.h"
 #include "string"
 
 

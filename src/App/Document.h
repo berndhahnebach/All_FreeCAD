@@ -231,14 +231,14 @@ protected:
 			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
 				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
 		}
-		//friend class stlport::map<TDF_Label,FCLabel*,ltstr>;
+		//friend class FCmap<TDF_Label,FCLabel*,ltstr>;
 	};
 	
 	friend FCLabel;
 	FCLabel *HasPyLabel(TDF_Label cLabel);
 
 	/// map of all existing python label wrappers (sorted)
-	stlport::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
+	FCmap <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
 	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
 

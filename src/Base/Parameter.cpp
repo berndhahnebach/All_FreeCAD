@@ -39,6 +39,7 @@
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -58,6 +59,7 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 
 #include "Parameter.h"
 #include "Exception.h"
+#include "Console.h"
 
 //**************************************************************************
 //**************************************************************************
@@ -233,18 +235,18 @@ void FCParametrGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, con
 	}
 }
 
-stlport::string FCParametrGrp::GetASCII(const char* Name, const char * pPreset)
+FCstring FCParametrGrp::GetASCII(const char* Name, const char * pPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
 	// if not return preset
-	if(!pcElem) return stlport::string(pPreset);
+	if(!pcElem) return FCstring(pPreset);
 	// if yes check the value and return
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (pcElem2)
-		return stlport::string(StrX(pcElem2->getNodeValue()).c_str());	
+		return FCstring(StrX(pcElem2->getNodeValue()).c_str());	
 	else
-		return stlport::string(pPreset);
+		return FCstring(pPreset);
 }
 
 
@@ -383,7 +385,7 @@ void FCParameterManager::Init(void)
 
 		catch(const XMLException& toCatch)
 		{
-			stlport::strstream err;
+			FCstrstream err;
 			char *pMsg = XMLString::transcode(toCatch.getMessage());
 			err << "Error during Xerces-c Initialization.\n"
 				 << "  Exception message:"
@@ -581,6 +583,187 @@ void  FCParameterManager::CheckDocument()
 {
 	
 }
+
+
+//**************************************************************************
+//**************************************************************************
+// FCPyParametrGrp
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
+
+PyTypeObject FCPyParametrGrp::Type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,						/*ob_size*/
+	"FCParameterGrp",		/*tp_name*/
+	sizeof(FCPyParametrGrp),/*tp_basicsize*/
+	0,						/*tp_itemsize*/
+	/* methods */
+	PyDestructor,	  		/*tp_dealloc*/
+	0,			 			/*tp_print*/
+	__getattr, 				/*tp_getattr*/
+	__setattr, 				/*tp_setattr*/
+	0,						/*tp_compare*/
+	__repr,					/*tp_repr*/
+	0,						/*tp_as_number*/
+	0,						/*tp_as_sequence*/
+	0,						/*tp_as_mapping*/
+	0,						/*tp_hash*/
+	0,						/*tp_call */
+};
+
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
+PyMethodDef FCPyParametrGrp::Methods[] = {
+  {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS},
+  {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS},
+  {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS},
+
+  {NULL, NULL}		/* Sentinel */
+};
+
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject FCPyParametrGrp::Parents[] = {&FCPyObject::Type,&FCPyParametrGrp::Type, NULL};     
+
+//--------------------------------------------------------------------------
+// constructor
+//--------------------------------------------------------------------------
+FCPyParametrGrp::FCPyParametrGrp(const FCHandle<FCParametrGrp> &rcParamGrp, PyTypeObject *T ) 
+ : _cParamGrp(rcParamGrp),FCPyObject( T)
+{
+	GetConsole().Log("Create Param Group %p\n",this);
+}
+
+PyObject *FCPyParametrGrp::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  //return new FCPyParametrGrp();			// Make new Python-able object
+  return 0;
+}
+
+//--------------------------------------------------------------------------
+//  FCPyParametrGrp destructor 
+//--------------------------------------------------------------------------
+FCPyParametrGrp::~FCPyParametrGrp()						// Everything handled in parent
+{
+	GetConsole().Log("Destroy ParametrGrp %p\n",this);
+} 
+
+//--------------------------------------------------------------------------
+// FCPyParametrGrp Attributes
+//--------------------------------------------------------------------------
+PyObject *FCPyParametrGrp::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+{ 
+	/*
+	try{
+		// Access the number of attributes at this FCPyParametrGrp
+		if (streq(attr, "AttributeCount"))						
+			return Py_BuildValue("i", _cLabel.NbAttributes()); 
+		else if (streq(attr, "ChildrenCount"))					
+			return Py_BuildValue("i", _cLabel.NbChildren()); 
+		else if (streq(attr, "Root"))						
+			return _pcDocument->HasPyLabel( _cLabel.Root()); 
+		else if (streq(attr, "Father"))						
+			return _pcDocument->HasPyLabel( _cLabel.Father()); 
+		else if (streq(attr, "Real")){
+			Handle(TDataStd_Real) RealAttr;
+			if(_cLabel.FindAttribute(TDataStd_Real::GetID(),RealAttr))
+				return Py_BuildValue("d",RealAttr->Get()); 
+			else
+				return 0;
+		}else if (streq(attr, "Int")){
+			Handle(TDataStd_Integer) IntAttr;
+			if(_cLabel.FindAttribute(TDataStd_Integer::GetID(),IntAttr))
+				return Py_BuildValue("d",IntAttr->Get()); 
+			else
+				return 0;
+		}else if (streq(attr, "Name")){
+			Handle(TDataStd_Name) NameAttr;
+			if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr))
+				//return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
+#ifdef __linux // u is unicode as ToExtString is!
+				return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
+#else
+				return Py_BuildValue("s",NameAttr->Get()); 
+#endif				
+			else
+				return 0;
+		}else*/
+			_getattr_up(FCPyObject); 						// send to parent
+/*	}catch(...){
+		GetConsole().Log("Exception in FCPyParametrGrp::_getattr()\n");
+		return 0;
+	}*/
+		return 0;
+} 
+
+int FCPyParametrGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ /*
+	if (streq(attr, "Real"))						// settable new state
+		TDataStd_Real::Set(_cLabel, PyFloat_AsDouble(value)); 
+	else if (streq(attr, "Int"))						// settable new state
+		TDataStd_Integer::Set(_cLabel, PyInt_AsLong(value)); 
+	else if (streq(attr, "Name"))						// settable new state
+		TDataStd_Name::Set(_cLabel, (short*)PyString_AsString(value)); 
+		//TDataStd_Name::Set(_cLabel, (short*)PyUnicode_AsUnicode(value)); 
+	else  
+ */
+		return FCPyObject::_setattr(attr, value);	// send up to parent
+	return 0;
+} 
+
+
+//--------------------------------------------------------------------------
+// Python wrappers
+//--------------------------------------------------------------------------
+
+PyObject *FCPyParametrGrp::PyGetGrp(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	// get the Handle of the wanted group
+	FCHandle<FCParametrGrp> handle = _cParamGrp->GetGroup(pstr);
+	if(handle.IsValid()){
+		// crate a python wrapper class
+		FCPyParametrGrp *pcParamGrp = new FCPyParametrGrp(handle);
+		// increment the reff count
+		pcParamGrp->_INCREF();
+		return pcParamGrp;
+	}else{
+		PyErr_SetString(PyExc_IOError, "GetGroup failed");
+		return 0L;
+	}
+} 
+
+PyObject *FCPyParametrGrp::PySetBool(PyObject *args)
+{ 
+	char *pstr;
+	int  Bool;
+    if (!PyArg_ParseTuple(args, "si", &pstr,&Bool))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->SetBool(pstr,Bool!=0);
+	Py_Return; 
+} 
+
+PyObject *FCPyParametrGrp::PyGetBool(PyObject *args)
+{ 
+	char *pstr;
+	int  Bool=0;
+    if (!PyArg_ParseTuple(args, "s|i", &pstr,&Bool))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	return Py_BuildValue("i",_cParamGrp->GetBool(pstr,Bool!=0));
+} 
+
+
+
+
+
 
 //**************************************************************************
 //**************************************************************************

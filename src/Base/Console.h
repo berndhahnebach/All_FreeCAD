@@ -37,7 +37,6 @@
 #define __CONSOLE_H__
 
 // Std. configurations
-#include "Export.h"
 #include "PyExport.h"
 
 //#pragma warning(disable: 4786)  // specifier longer then 255 chars
@@ -132,7 +131,7 @@ private:
 	void NotifyLog    (const char *sMsg);
 	// observer list
 #pragma warning( disable : 4251 )
-	stlport::set<FCConsoleObserver * > _aclObservers;
+	FCset<FCConsoleObserver * > _aclObservers;
 
 };
 
@@ -147,7 +146,7 @@ inline FCConsole &GetConsole(void){
 class BaseExport FCLoggingConsoleObserver : public FCConsoleObserver
 {
 public:
-	FCLoggingConsoleObserver(const char *sFileName,int nMode = stlport::ios::out);
+	FCLoggingConsoleObserver(const char *sFileName,int nMode = ios::out);
 	~FCLoggingConsoleObserver();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg);
@@ -155,7 +154,7 @@ public:
 	virtual void Log    (const char *sLog);
 
 protected:
-	stlport::ofstream cFileStream;
+	FCofstream cFileStream;
 };
 
 // simple print observer

@@ -9,26 +9,30 @@
 #define __PYEXPORT_H__
 
 // Std. configurations
-#include "Export.h"
 
+// needed header
+#include <python.h>
+#include <iostream>
+
+// forward
 class FCInterpreter;
+
+
+
 
 /** The FCPythonExport class, exports the class as a python type
  *  FCPythonExport is the base class for all C++ classes which
- *  need to get exported into the python name space. This class is 
- *  very importand because nearly all imported classes in FreeCAD
- *  are visible in python for Macro recording and Automation purpose.
+ *  need to get exported into the python name space. Note: only
+ *  the class is exported! Not objects! If you want export objects
+ *  you need to use FCPyObject.
  *  \par
- *  FCConsole is a singelton! That means you can access the only
- *  instance of the class from every where in c++ by simply using:
- *  \code
- *  #include <Base/Console.h>
- *  GetConsole().Log("Stage: %d",i);
- *  \endcode
- *  \par
- *  FCConsole is abel to switch between several modes to, e.g. switch
- *  the logging on or off, or treat Warnings as Errors, and so on...
- *  @see FCConsoleObserver
+ *  A good example for exporting a class is the FCApplication. To
+ *  minimize the work two macros are providet for method definition
+ *  (PYFUNCDEF_S) and implementation (PYFUNCIMP_S).
+ *  @see FCPyObject
+ *  @see FCApplication
+ *  @see PYFUNCDEF_S
+ *  @see PYFUNCIMP_S
  */
 class BaseExport FCPythonExport
 {
@@ -40,14 +44,37 @@ protected:
 	friend FCInterpreter;
 };
 
-#define PYFUNCDEF(X)   static PyObject* X (PyObject *self,PyObject *args,PyObject *kwd)
-#define PYFUNCIMP(Y,X) PyObject* Y::X (PyObject *self,PyObject *args,PyObject *kwd)
+/** Python static class macro for definition
+ * sets up a static function entry in a class inheriting 
+ * from FCPythonExport. Its a pure confiniance macro. You can also do
+ * it by hand if you want. It looks like that:
+ * \code
+ * static PyObject* X (PyObject *self,PyObject *args,PyObject *kwd);
+ * \endcode
+ * @param SFUNC is the static method name (use what you want)
+ * @see PYFUNCIMP_S
+ * @see FCPythonExport
+ */
+#define PYFUNCDEF_S(SFUNC)   static PyObject* SFUNC (PyObject *self,PyObject *args,PyObject *kwd);
 
 
-#include <python.h>
-#include <iostream>
-//#include <Python.h>
-//#include <iostream.h>
+/** Python static class macro for implementation
+ * used to set up a implementation for PYFUNCDEF_S definition.
+ * Its a pure confiniance macro. You can also do
+ * it by hand if you want. It looks like that:
+ * \code
+ * PyObject* CLASS::SFUNC (PyObject *self,PyObject *args,PyObject *kwd)
+ * \endcode
+ * see PYFUNCDEF_S for details 
+ * @param CLASS is the class in which the macro take place.
+ * @param SFUNC is the object method get implemented
+ * @see PYFUNCDEF_S
+ * @see FCPythonExport
+ */
+#define PYFUNCIMP_S(CLASS,SFUNC) PyObject* CLASS::SFUNC (PyObject *self,PyObject *args,PyObject *kwd)
+
+
+
 
 /*------------------------------
  * Basic defines
@@ -82,7 +109,7 @@ inline void Assert(int expr, char *msg)		// C++ assert
 #define Py_Try(F) {if (!(F)) return NULL;}
 #define Py_Assert(A,E,M) {if (!(A)) {PyErr_SetString(E, M); return NULL;}}
 
-inline void Py_Fatal(char *M) {stlport::cout << M << stlport::endl; exit(-1);};
+inline void Py_Fatal(char *M) {FCcout << M << FCendl; exit(-1);};
 
 /// This must be the first line of each PyC++ class
 #define Py_Header												\
@@ -121,17 +148,8 @@ typedef PyTypeObject * PyParentObject;
  *  need to get exported into the python name space. This class is 
  *  very importand because nearly all imported classes in FreeCAD
  *  are visible in python for Macro recording and Automation purpose.
- *  \par
- *  FCConsole is a singelton! That means you can access the only
- *  instance of the class from every where in c++ by simply using:
- *  \code
- *  #include <Base/Console.h>
- *  GetConsole().Log("Stage: %d",i);
- *  \endcode
- *  \par
- *  FCConsole is abel to switch between several modes to, e.g. switch
- *  the logging on or off, or treat Warnings as Errors, and so on...
- *  @see FCConsoleObserver
+ *  The FCDocument is a good expample for a exported class.
+ *  @see FCDocument
  */
 class BaseExport FCPyObject : public PyObject 
 {				
@@ -163,6 +181,9 @@ class BaseExport FCPyObject : public PyObject
 	 *  If you whant to implement attributes in your class, reimplement
 	 *  this method, the FCDocument is a good expample.
 	 *  You have to call the method of the base class.
+	 *  Note: if you reimplement _gettattr() in a inheriting class you
+	 *  need to call the method of the base class! Otherwise even the 
+	 *  methodes of the object will disapiear!
 	 *  @see FCDocument
 	 */
 	virtual PyObject *_getattr(char *attr);	
@@ -200,6 +221,40 @@ class BaseExport FCPyObject : public PyObject
 		{return ((FCPyObject*)self)->Py_isA(args);};
 };
 
+/** Python dynamic class macro for definition
+ * sets up a static/dynamic function entry in a class inheriting 
+ * from FCPyObject. Its a pure confiniance macro. You can also do
+ * it by hand if you want. It looks like that:
+ * \code
+ * PyObject *PyGetGrp(PyObject *args);
+ * static PyObject *sPyGetGrp(PyObject *self, PyObject *args, PyObject *kwd)
+ *        {return ((FCPyParametrGrp*)self)->PyGetGrp(args);};
+ * \endcode
+ * first the method is defined which have the functionality then the
+ * static wrapper is used to provide a callback for python. The call 
+ * is simply mapped to the method.
+ * @param CLASS is the class in which the macro take place.
+ * @param DFUNC is the object method get defined and called
+ * @param SFUNC is the static method name (use what you want)
+ * @see PYFUNCIMP_D
+ * @see FCPyObject
+ */
+#define PYFUNCDEF_D(CLASS,DFUNC,SFUNC)	PyObject * DFUNC (PyObject *args);	\
+static PyObject * SFUNC (PyObject *self, PyObject *args, PyObject *kwd){return (( CLASS *)self)-> DFUNC (args);};
+
+/** Python dynamic class macro for implementation
+ * used to set up a impementation for PYFUNCDEF_D definition.
+ * Its a pure confiniance macro. You can also do
+ * it by hand if you want. It looks like that:
+ * \code
+ * PyObject *FCPyParametrGrp::PyGetGrp(PyObject *args)
+ * \endcode
+ * see PYFUNCDEF_D for details * @param CLASS is the class in which the macro take place.
+ * @param DFUNC is the object method get defined and called
+ * @see PYFUNCDEF_D
+ * @see FCPyObject
+ */
+#define PYFUNCIMP_D(CLASS,DFUNC) PyObject* Y::X (PyObject *self,PyObject *args,PyObject *kwd)
 
 
 #endif

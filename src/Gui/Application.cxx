@@ -1,4 +1,5 @@
 
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -103,7 +104,7 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 {
 	FCGuiDocument* pcGDoc=0;
 
-	for(stlport::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
+	for(FClist<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
 	{
 		if( ((*It)->GetDoc()) == pcDoc)
 		{

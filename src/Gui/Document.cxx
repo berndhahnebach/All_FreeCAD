@@ -18,6 +18,7 @@
  ***************************************************************************/
  
 
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -66,7 +67,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 FCGuiDocument::~FCGuiDocument()
 {
-	for(stlport::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
+	for(FClist<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 		delete *It;
 
 	_pcDocument->_DECREF();

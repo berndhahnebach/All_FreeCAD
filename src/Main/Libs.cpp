@@ -8,6 +8,7 @@
 
 
 // === Incuding of libs: ============================================================================
+#include "../Config.h"
 
 #ifdef WNT
 	// STLport
@@ -30,12 +31,15 @@
 	// Application Framwork OCAF
 #	pragma comment(lib,"TKCAF.lib")
 #	pragma comment(lib,"TKCDF.lib")
-	// QT extension
-#	pragma comment(lib,"qextmdi.lib")
+	// XML stuff
 #	ifdef _DEBUG
 #		pragma comment(lib,"xerces-c_2D.lib")
 #	else
 #		pragma comment(lib,"xerces-c_2.lib")
+#	endif
+	// QT extension
+#	ifdef _FC_GUI_ENABLED_
+#		pragma comment(lib,"qextmdi.lib")
 #	endif
 
 #endif

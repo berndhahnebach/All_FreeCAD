@@ -35,6 +35,7 @@
 
 
 // === Including of libs: ============================================================================
+#include "../Config.h"
 #ifdef WNT
 #	pragma comment(lib,"TKernel.lib")
 #	pragma comment(lib,"TKMath.lib")

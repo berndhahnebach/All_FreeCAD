@@ -1,3 +1,4 @@
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -105,6 +106,8 @@ void DlgDocTemplatesImp::IconDoubleClick(QIconViewItem* Item)
 	Validate();
 }
 
+#include "DlgDocTemplates_moc.cpp"
+#include "DlgDocTemplates.cpp"
 #include "DlgDocTemplatesImp_moc.cpp"
 
 

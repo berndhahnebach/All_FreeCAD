@@ -1,10 +1,36 @@
+/** \file main.cpp
+ *  \brief Main!
+ *  \author $Author$
+ *  \version $Revision$
+ *  \date    $Date$
+ */
 
-/// here get the warnings of to long specifieres disabled (needet for VC6)
-#ifdef WNT
-#	pragma warning( disable : 4251 )
-#	pragma warning( disable : 4503 )
-#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
-#endif
+/***************************************************************************
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License (GPL)            *
+ *   as published by the Free Software Foundation; either version 2 of     *
+ *   the License, or (at your option) any later version.                   *
+ *   for detail see the LICENCE text file.                                 *
+ *                                                                         *
+ *   FreeCAD is distributed in the hope that it will be useful,            *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
+ *                                                                         *
+ *   Juergen Riegel 2002                                                   *
+ ***************************************************************************/
+
+#include "../Config.h"
+
 
 #include <stdio.h>
 
@@ -24,16 +50,17 @@
 // FreeCAD doc header
 #include "../App/Application.h"
 
+
 #include "Standard_Failure.hxx"
 #include <xercesc/util/XMLException.hpp>
 #include "iostream"
 
 // FreeCAD Gui header
-#define _FC_GUI_ENABLED_
 
 #ifdef  _FC_GUI_ENABLED_
 #  include <qapplication.h>
 #  include "../Gui/Application.h"
+#	include "../Gui/GuiConsole.h"
 #  ifdef WNT
 #    pragma comment(lib,"qt-mt230nc.lib")
 #  endif 
@@ -59,9 +86,9 @@ const char sBanner[] = \
 #include "InstallScript.h"
 #else
 // this might be a cleaner approach? (Besides path to scripts)
-const char FreeCADInit[]="execfile('./Main/FreeCADInit.py')";
-const char FreeCADTest[]="execfile('./Main/FreeCADTest.py')";
-const char FreeCADTestEnv[]="execfile('./Main/FreeCADTestEnv.py')";
+//const char FreeCADInit[]="execfile('./Main/FreeCADInit.py')";
+//const char FreeCADTest[]="execfile('./Main/FreeCADTest.py')";
+//const char FreeCADTestEnv[]="execfile('./Main/FreeCADTestEnv.py')";
 #endif
 
 #include <string>
@@ -72,11 +99,15 @@ void PrintInitHelp(void);
 FCParameterManager *pcGlobalParameter;
 
 // run control
-int RunMode = 0;
-stlport::string sFileName;
+#ifdef _FC_GUI_ENABLED_
+	int RunMode = 0;
+#else
+	int RunMode = 1;
+#endif
+
+FCstring sFileName;
 const char*     sScriptName;
 
-QApplication* pcQApp;
 // forwards
 void Init(int argc, char ** argv );
 void ParsOptions(int argc, char ** argv);
@@ -139,10 +170,10 @@ int main( int argc, char ** argv ) {
 		{
 		case 0:{
 		// run GUI
-	#		ifdef _FC_GUI_ENABLED_
+#			ifdef _FC_GUI_ENABLED_
 				// A new QApplication
 				GetConsole().Log("Creating GUI Application...\n");
-				pcQApp = new QApplication ( argc, argv );
+				QApplication* pcQApp = new QApplication ( argc, argv );
 
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
@@ -157,9 +188,9 @@ int main( int argc, char ** argv ) {
 				GetConsole().Log("event loop left\n");
 				delete pcQApp;
 
-	#		else
+#			else
 				GetConsole().Error("GUI mode not possible. This is a FreeCAD compiled without GUI. Use FreeCAD -c\n");
-	#		endif
+#			endif
 				break;
 			}
 		case 1:
@@ -222,6 +253,7 @@ void Init(int argc, char ** argv )
 	// init python
 	GetInterpreter();
 	// std console (Also init the python bindings)
+	//GetConsole().AttacheObserver(new FCGUIConsole());
 	GetConsole().AttacheObserver(new FCCmdConsoleObserver());
 	// file logging fcility
 #	ifdef _DEBUG
@@ -252,7 +284,7 @@ void Init(int argc, char ** argv )
 	h->SetASCII("Works","hello");
 	char cBuf[256];
 	h->GetASCII("Works",cBuf,255);
-	stlport::string sTrest = h->GetASCII("Works");
+	FCstring sTrest = h->GetASCII("Works");
 	
 	
 	pcGlobalParameter->SaveDocument("AppParam.FCParam");
@@ -351,7 +383,7 @@ void CheckEnv(void)
 			exit(1);
         }
 #undef TEST_ENVVAR_EXISTS         
-        
+         
 /*	if( ! getenv("CSF_MDTVFONTDIRECTORY") ){
 		printf("Environment (CSF_MDTVFONTDIRECTORY) not set!\n");
 		bFailure = true;

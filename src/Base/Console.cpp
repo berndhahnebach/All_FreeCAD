@@ -30,7 +30,7 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
- 
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -214,22 +214,22 @@ void FCConsole::DetacheObserver(FCConsoleObserver *pcObserver)
 
 void FCConsole::NotifyMessage(const char *sMsg)
 {
-	for(stlport::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Message(sMsg);   // send string to the listener
 }
 void FCConsole::NotifyWarning(const char *sMsg)
 {
-	for(stlport::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Warning(sMsg);   // send string to the listener
 }
 void FCConsole::NotifyError(const char *sMsg)
 {
-	for(stlport::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Error(sMsg);   // send string to the listener
 }
 void FCConsole::NotifyLog(const char *sMsg)
 {
-	for(stlport::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Log(sMsg);   // send string to the listener
 }
 

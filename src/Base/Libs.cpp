@@ -36,6 +36,7 @@
 
 
 // === Incuding of libs: ============================================================================
+#include "../Config.h"
 #ifdef WNT
 #	pragma comment(lib,"python21.lib")
 #	ifdef _DEBUG

@@ -9,6 +9,7 @@
 
 // === Incuding of libs: ============================================================================
 
+#include "../Config.h"
 #ifdef WNT
 	// STLport
 //#	ifndef __STL_DEBUG

@@ -1,4 +1,4 @@
-#include "Export.h"
+#include "../Config.h"
 #include "PyTools.h"
 
 #include <stdarg.h>

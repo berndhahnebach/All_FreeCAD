@@ -37,7 +37,6 @@
 #define __OBSERVER_H__
 
 // Std. configurations
-#include "Export.h"
 
 #include <set>
 
@@ -127,7 +126,9 @@ public:
 
 protected:
 	/// Vector of attached observers
-	stlport::set<FCObserver *> _ObserverSet;
+#	pragma warning( disable : 4251 )
+	FCset<FCObserver *> _ObserverSet;
+#	pragma warning( default : 4251 )
 
 };
 

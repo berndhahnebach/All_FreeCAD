@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else

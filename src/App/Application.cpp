@@ -8,6 +8,7 @@
 
 
 
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #	pragma warning( disable : 4251 )
@@ -111,6 +112,9 @@ FCApplication::FCApplication(FCParameterManager *pcParamMngr)
 	:_pcParamMngr(pcParamMngr)
 {
 	_hApp = new FCApplicationOCC;
+	// seting up Python binding 
+	(void) Py_InitModule("FreeCAD", FCApplication::Methods);
+
 }
 
 FCApplication::~FCApplication()
@@ -236,11 +240,12 @@ PyMethodDef FCApplication::Methods[] = {
 	{"DocSave"  ,      (PyCFunction) FCApplication::sSave,      1},
 	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,    1},
 	{"DocGet",         (PyCFunction) FCApplication::sGet,       1},
+	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,  1},
 
   {NULL, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP(FCApplication,sOpen)
+PYFUNCIMP_S(FCApplication,sOpen)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -258,7 +263,7 @@ PYFUNCIMP(FCApplication,sOpen)
 	catch(Standard_Failure e)
 	{
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		stlport::strstream strm;
+		FCstrstream strm;
 
 		strm << E << endl;
 		//strm.freeze();
@@ -268,7 +273,7 @@ PYFUNCIMP(FCApplication,sOpen)
 
 }
 
-PYFUNCIMP(FCApplication,sNew)
+PYFUNCIMP_S(FCApplication,sNew)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -282,7 +287,7 @@ PYFUNCIMP(FCApplication,sNew)
 }
 
 
-PYFUNCIMP(FCApplication,sSave)
+PYFUNCIMP_S(FCApplication,sSave)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -293,7 +298,7 @@ PYFUNCIMP(FCApplication,sSave)
 }
 
 
-PYFUNCIMP(FCApplication,sSaveAs)
+PYFUNCIMP_S(FCApplication,sSaveAs)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -303,7 +308,7 @@ PYFUNCIMP(FCApplication,sSaveAs)
 	return Py_None;                              // None: no errors 
 }
 
-PYFUNCIMP(FCApplication,sGet)
+PYFUNCIMP_S(FCApplication,sGet)
 {
     char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -313,6 +318,16 @@ PYFUNCIMP(FCApplication,sGet)
 	return Py_None;                              // None: no errors 
 }
 
+PYFUNCIMP_S(FCApplication,sGetParam)
+{
+    char *pstr=0;
+    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	if(pstr) // if parameter give deticated group
+		return new FCPyParametrGrp(GetApplication().GetParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
+	else
+		return new FCPyParametrGrp(GetApplication().GetParameter().GetGroup("BaseApp"));  
+}
 
 
 
@@ -362,11 +377,11 @@ void FCApplication::DetacheObserver(FCApplicationObserver *pcObserver)
 
 void FCApplication::NotifyDocNew(FCDocument* pcDoc)
 {
-	for(stlport::set<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(FCset<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocNew(pcDoc);   // send doc to the listener
 }
 void FCApplication::NotifyDocDelete(FCDocument* pcDoc)
 {
-	for(stlport::set<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(FCset<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocDelete(pcDoc);   // send doc to the listener
 }

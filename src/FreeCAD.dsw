@@ -69,6 +69,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "FreeCADMainCmd"=.\Main\FreeCADMainCmd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Sample"=..\..\Cas40\Samples\QT\Sample.dsp - Package Owner=<4>
 
 Package=<5>

@@ -1,6 +1,8 @@
 #ifndef __PRECOMPILED_GUI__
 #define __PRECOMPILED_GUI__
 
+#include "../Config.h"
+
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef WNT
 #	pragma warning( disable : 4251 )
@@ -14,6 +16,7 @@
 #include <assert.h>
 #include <io.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
@@ -37,7 +40,9 @@
 #include <qaccel.h>
 #include <qaction.h>
 #include <qapplication.h>
+#include <qbuttongroup.h>
 #include <qcolordialog.h>
+#include <qclipboard.h>
 #include <qcombobox.h>
 #include <qdragobject.h>
 #include <qdrawutil.h>
@@ -76,6 +81,8 @@
 #include <qwidget.h>
 #include <qworkspace.h>
 #include <qtextbrowser.h> 
+#include <qurl.h>
+
 
 
 // help system

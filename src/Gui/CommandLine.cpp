@@ -28,6 +28,13 @@
 
 
 
+#include "../Config.h"
+#ifdef _PreComp_
+#	include "PreCompiled.h"
+#else
+#	include <qclipboard.h>
+#endif
+
 #include "CommandLine.h"
 #include "Application.h"
 
@@ -36,7 +43,7 @@
 /** The FCCommandLine class
  */
 FCCommandLine::FCCommandLine(void)
-: QLineEdit(NULL)
+: QLineEdit(NULL), bOpen(true)
 {
   setFixedWidth(400);
   connect(this, SIGNAL(returnPressed ()), this, SLOT(clear()));
@@ -44,6 +51,37 @@ FCCommandLine::FCCommandLine(void)
 
 FCCommandLine::~FCCommandLine(void)
 {
+}
+
+void FCCommandLine::slotCut()
+{
+  cut();
+}
+
+void FCCommandLine::slotCopy()
+{
+  copy();
+}
+
+void FCCommandLine::slotPaste()
+{
+  paste();
+}
+
+void FCCommandLine::slotSeleclAll()
+{
+  selectAll();
+}
+
+void FCCommandLine::slotClear()
+{
+  clear();
+}
+
+void FCCommandLine::slotClearConsole()
+{
+  clear();
+  _alCmdList.clear();
 }
 
 void FCCommandLine::SetParent(QWidget* parent)
@@ -134,17 +172,19 @@ void FCCommandLine::keyPressEvent ( QKeyEvent * e )
       ScrollDown();
       break;
     }
+    case Key_Menu:
+    {
+      QPopupMenu *pclPopup = CreatePopupMenu();
+      pclPopup->exec(QCursor::pos());
+      break;
+    }
     case Key_Return:
     case Key_Enter:
     {
-      stlport::string txt = text().latin1();
+      FCstring txt = text().latin1();
       if (txt != "")
       {
-        if (txt == "clear")
-          _alCmdList.clear();
-        else
-          _alCmdList.push_back(txt);
-
+        _alCmdList.push_back(txt);
         _TIterator = _alCmdList.end();
       }
 
@@ -153,10 +193,9 @@ void FCCommandLine::keyPressEvent ( QKeyEvent * e )
     }
     case 0: // this is the "^"-key
     {
-      if (_alCmdList.size() > 0)
-      {
+      if (bOpen)
         PopupCmdList();
-      }
+      bOpen = true;
       break;
     }
     default:
@@ -164,12 +203,44 @@ void FCCommandLine::keyPressEvent ( QKeyEvent * e )
   }
 }
 
-void FCCommandLine::mouseDoubleClickEvent ( QMouseEvent * e )
+QPopupMenu* FCCommandLine::CreatePopupMenu()
 {
-  if (e->button() == MidButton)
-    PopupCmdList();
+  // context menu
+  QPopupMenu* pclPopup = new QPopupMenu(0L);
+  int iCut    = pclPopup->insertItem(tr( "Cu&t" ),       this, SLOT(slotCut()));
+  int iCopy   = pclPopup->insertItem(tr( "&Copy" ),      this, SLOT(slotCopy()));
+  int iPaste  = pclPopup->insertItem(tr( "&Paste" ),     this, SLOT(slotPaste()));
+  pclPopup->insertSeparator (); 
+  int iSelAll = pclPopup->insertItem(tr( "Select All" ), this, SLOT(slotSeleclAll()));
+  pclPopup->insertSeparator (); 
+  int iClear  = pclPopup->insertItem (tr( "Clear" ),     this, SLOT(slotClear())); 
+  int iCls    = pclPopup->insertItem (tr( "Clear Console" ), this, SLOT(slotClearConsole())); 
+
+  // enable/disable items
+  bool enableCut   = hasMarkedText() && !isReadOnly();
+  bool enableCopy  = hasMarkedText();
+  bool enablePaste = !isReadOnly() && !QApplication::clipboard()->text().isEmpty();
+  bool enableClear = !isReadOnly() && !text().isEmpty();
+  bool allSelected = text().length() > 0;
+  pclPopup->setItemEnabled(iCut,    enableCut);
+  pclPopup->setItemEnabled(iCopy,   enableCopy);
+  pclPopup->setItemEnabled(iPaste,  enablePaste);
+  pclPopup->setItemEnabled(iSelAll, allSelected);
+  pclPopup->setItemEnabled(iClear,  enableClear);
+  pclPopup->setItemEnabled(iCls,    _alCmdList.size() > 0);
+
+  return pclPopup;
+}
+
+void FCCommandLine::mousePressEvent ( QMouseEvent * e )
+{
+  if ( e->button() == RightButton )
+  {
+    QPopupMenu *pclPopup = CreatePopupMenu();
+    pclPopup->exec(QCursor::pos());
+  }
   else
-    QLineEdit::mouseDoubleClickEvent(e);
+    QLineEdit::mousePressEvent(e);
 }
 
 void FCCommandLine::PopupCmdList()
@@ -181,31 +252,16 @@ void FCCommandLine::PopupCmdList()
   connect(box, SIGNAL(returnPressed ( QListBoxItem * )), this, SLOT(SetCmdText(QListBoxItem *)));
 
   // insert the commands
-  for (stlport::list<stlport::string>::iterator it = _alCmdList.begin(); it != _alCmdList.end(); ++it)
+  for (FClist<FCstring>::iterator it = _alCmdList.begin(); it != _alCmdList.end(); ++it)
     box->insertItem(it->c_str());
 
-  // set the sizes adapted to the number of elements
   box->setMinimumWidth(width());
-  int iHeight = 0;
-  int iItemHeight = box->itemHeight();
-
-  if (iItemHeight > 0)
-    iHeight = iItemHeight * (box->count() +1);
-  else
-    iHeight = width();
-
-  iHeight = iHeight < width() ? iHeight : width();
-
-//  box->setMinimumHeight(width());
-  box->setMinimumHeight(iHeight);
-  box->setMaximumHeight(iHeight);
+  box->setMinimumHeight(width());
 
   box->move(mapToGlobal(QPoint(0,-box->height())));
 
   box->setMinimumWidth(width());
-//  box->setMinimumHeight(width());
-  box->setMinimumHeight(iHeight);
-  box->setMaximumHeight(iHeight);
+  box->setMinimumHeight(width());
 
   // set the focus to box (important for copy)
   box->setFocus();
@@ -217,7 +273,10 @@ void FCCommandLine::PopupCmdList()
 void FCCommandLine::SetCmdText( QListBoxItem * item)
 {
   if (item != NULL)
+  {
     setText(item->text());
+    bOpen = bOpen == true ? false : true;
+  }
   else
     QMessageBox::critical(this, "Error", "bla bla bla");
 
@@ -243,7 +302,7 @@ void FCCommandListBox::keyPressEvent ( QKeyEvent * e )
 {
   switch (e->key())
   {
-    case 0: // this is the "^"-key
+  case 0: // this is the "^"-key
       Close();
       break;
     default:

@@ -31,7 +31,6 @@
 #ifndef __BUTTON_GROUP_H__
 #define __BUTTON_GROUP_H__
 
-#include "../Base/Export.h"
 #include <qbuttongroup.h>
 #include <qtoolbutton.h>
 #include <qdragobject.h>
@@ -46,12 +45,8 @@
 #include <qpalette.h>
 #include <qpixmap.h>
 
-#include <map>
-
 #include "window.h"
 
-
-#define FCmap stlport::map
 
 /** The button group class
  */

@@ -36,8 +36,6 @@
 #define __PARAMETER_H__
 
 // Std. configurations
-#include "Export.h"
-
 #include "PyExport.h"
 
 
@@ -102,7 +100,7 @@ public:
 
 	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
 
-	stlport::string GetASCII(const char* Name, const char * pPreset=NULL);
+	FCstring GetASCII(const char* Name, const char * pPreset=NULL);
 
 
 	static void Init(void);
@@ -129,7 +127,9 @@ protected:
 	/// DOM Node of the Base node of this group
 	DOMElement *_pGroupNode;
 	/// map of already exported groups
-	stlport::map <stlport::string ,FCHandle<FCParametrGrp> > _GroupMap;
+#	pragma warning( disable : 4251 )
+	FCmap <FCstring ,FCHandle<FCParametrGrp> > _GroupMap;
+#	pragma warning( default : 4251 )
 
 };
 
@@ -176,6 +176,65 @@ private:
 	bool          gFormatPrettyPrint    ;
 
 };
+
+
+
+/** The OCC Label wrapper class
+ *  This class wrapps the functionality of the TDFSdt_Label of OCC. 
+ *  Its used for building up hirachy in a OCC document by representing
+ *  Nodes and Leavs
+ *  @see FCDocument
+ */
+class BaseExport FCPyParametrGrp :public FCPyObject
+{
+	/** always start with Py_Header */
+	Py_Header;
+
+public:
+
+
+	//---------------------------------------------------------------------
+	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	/// Constructer 
+	FCPyParametrGrp(const FCHandle<FCParametrGrp> &rcParamGrp, PyTypeObject *T = &Type);
+	/// for Construction in python 
+	static PyObject *PyMake(PyObject *, PyObject *);
+	/// Destruction 
+	~FCPyParametrGrp();
+
+	//---------------------------------------------------------------------
+	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
+	PyObject *_getattr(char *attr);				// __getattr__ function
+	// getter setter
+	int _setattr(char *attr, PyObject *value);	// __setattr__ function
+	// methods
+	PYFUNCDEF_D (FCPyParametrGrp,PyGetGrp,sPyGetGrp);
+//	PyObject *PyGetGrp(PyObject *args);	// Python wrapper
+//	static PyObject *sPyGetGrp(PyObject *self, PyObject *args, PyObject *kwd){return ((FCPyParametrGrp*)self)->PyGetGrp(args);};
+	PyObject *PySetBool(PyObject *args);	// Python wrapper
+	static PyObject *sPySetBool(PyObject *self, PyObject *args, PyObject *kwd){return ((FCPyParametrGrp*)self)->PySetBool(args);};
+	PyObject *PyGetBool(PyObject *args);	// Python wrapper
+	static PyObject *sPyGetBool(PyObject *self, PyObject *args, PyObject *kwd){return ((FCPyParametrGrp*)self)->PyGetBool(args);};
+
+protected:
+
+	/// Pointer to the FCDocument where the label comes from 
+#	pragma warning( disable : 4251 )
+	FCHandle<FCParametrGrp> _cParamGrp;
+#	pragma warning( default : 4251 )
+};
+
+
+
+
+
+
+
+
 
 
 class DOMTreeErrorReporter : public ErrorHandler

@@ -36,7 +36,6 @@
 #define __HANDLE_H__
 
 // Std. configurations
-#include "Export.h"
 
 #include "PyExport.h"
 

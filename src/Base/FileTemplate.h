@@ -36,14 +36,11 @@
 #define __FILETEMPLATE_H__
 
 // Std. configurations
-#include "Export.h"
 
 #include "PyExport.h"
 
 #include <string>
 #include <map>
-#include <boost/any.hpp>
-
 
 
 /** A test class. A more elaborate class description.

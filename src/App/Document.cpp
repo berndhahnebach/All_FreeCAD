@@ -6,9 +6,8 @@
     email                : juergen.riegel@web.de
  ***************************************************************************/
 
-#	pragma warning( disable : 4251 )
 
-
+#include "../Config.h"
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
@@ -376,7 +375,7 @@ void FCDocument::ChangeStorageFormat(const short* sStorageFormat)
 FCLabel *FCDocument::HasPyLabel(TDF_Label cLabel)
 {
 	FCLabel *pcL;
-	stlport::map <TDF_Label,FCLabel*,LabelLess>::iterator It;
+	FCmap <TDF_Label,FCLabel*,LabelLess>::iterator It;
 	
 	// find a FCLabel if possible
 	It = mcLabelMap.find(cLabel);
