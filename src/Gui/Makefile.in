@@ -142,6 +142,7 @@ moc_CommandLine.cpp \
 moc_CustomWidgets.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
+moc_DlgActivateWindow.cpp \
 moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
 moc_DlgCommandsImp.cpp \
@@ -195,6 +196,8 @@ moc_Window.cpp \
 moc_HtmlViewP.cpp \
 DlgActions.cpp \
 DlgActions.h \
+DlgActivateWindow.cpp \
+DlgActivateWindow.h \
 DlgCommands.cpp \
 DlgCommands.h \
 DlgDocTemplates.cpp \
@@ -223,18 +226,6 @@ DlgTipOfTheDay.cpp \
 DlgTipOfTheDay.h \
 DlgToolbars.cpp \
 DlgToolbars.h \
-qextmdi/moc_dummykmainwindow.cpp \
-qextmdi/moc_dummykpartsdockmainwindow.cpp \
-qextmdi/moc_dummyktoolbar.cpp \
-qextmdi/kdocktabctl.moc \
-qextmdi/kdockwidget.moc \
-qextmdi/kdockwidget_private.moc \
-qextmdi/qextmdichildarea.moc \
-qextmdi/qextmdichildfrm.moc \
-qextmdi/qextmdichildfrmcaption.moc \
-qextmdi/qextmdichildview.moc \
-qextmdi/qextmdimainfrm.moc \
-qextmdi/qextmditaskbar.moc \
 propertyeditor/moc_propertyeditor.cpp \
 propertyeditor/moc_propertyeditorfile.cpp \
 propertyeditor/moc_propertyeditorfont.cpp \
@@ -247,17 +238,6 @@ GuiInitScript.h
 
 
 libFreeCADGui_la_SOURCES = \
-qextmdi/dummy_moc.cpp \
-qextmdi/kdocktabctl.cpp \
-qextmdi/kdockwidget.cpp \
-qextmdi/kdockwidget_private.cpp \
-qextmdi/qextmdichildarea.cpp \
-qextmdi/qextmdichildfrm.cpp \
-qextmdi/qextmdichildfrmcaption.cpp \
-qextmdi/qextmdichildview.cpp \
-qextmdi/qextmdimainfrm.cpp \
-qextmdi/qextmditaskbar.cpp \
-\
 propertyeditor/propertyeditor.cpp \
 propertyeditor/propertyeditoritem.cpp \
 propertyeditor/propertyeditordate.cpp \
@@ -283,6 +263,7 @@ CommandTest.cpp \
 CommandView.cpp \
 CustomWidgets.cpp \
 DlgActionsImp.cpp \
+DlgActivateWindowImp.cpp \
 DlgCmdbarsImp.cpp \
 DlgCommandsImp.cpp \
 DlgCustomizeImp.cpp \
@@ -359,7 +340,7 @@ libFreeCADGui_la_LIBADD = \
 
 
 # set the include path found by configure
-INCLUDES = $(all_includes) -I./qextmdi -I./Inventor/Qt
+INCLUDES = $(all_includes) -I./Inventor/Qt
 
 CLEANFILES = $(BUILT_SOURCES)
 subdir = Gui
@@ -369,21 +350,18 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libFreeCADGui_la_DEPENDENCIES =
-am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
-	kdockwidget_private.lo qextmdichildarea.lo qextmdichildfrm.lo \
-	qextmdichildfrmcaption.lo qextmdichildview.lo qextmdimainfrm.lo \
-	qextmditaskbar.lo propertyeditor.lo propertyeditoritem.lo \
+am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	propertyeditordate.lo propertyeditorfile.lo \
 	propertyeditorfont.lo propertyeditorinput.lo \
 	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
 	SoBrepShape.lo LanguageFactory.lo Action.lo Application.lo \
 	BitmapFactory.lo ButtonGroup.lo CommandLine.lo Command.lo \
 	CommandStd.lo CommandTest.lo CommandView.lo CustomWidgets.lo \
-	DlgActionsImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
-	DlgCustomizeImp.lo DlgDocTemplatesImp.lo DlgEditorImp.lo \
-	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
-	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
-	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
+	DlgActionsImp.lo DlgActivateWindowImp.lo DlgCmdbarsImp.lo \
+	DlgCommandsImp.lo DlgCustomizeImp.lo DlgDocTemplatesImp.lo \
+	DlgEditorImp.lo DlgGeneralImp.lo DlgMacroExecuteImp.lo \
+	DlgMacroRecordImp.lo DlgOnlineHelpImp.lo DlgParameterImp.lo \
+	DlgPreferencesImp.lo DlgSettingsImp.lo DlgSettings3DViewImp.lo \
 	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
 	DlgUndoRedo.lo Document.lo FileDialog.lo GuiConsole.lo \
 	HtmlView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
@@ -407,6 +385,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/CommandView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CustomWidgets.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgActionsImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgActivateWindowImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCmdbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCommandsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCustomizeImp.Plo \
@@ -446,10 +425,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WidgetFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Widgets.Plo ./$(DEPDIR)/Window.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/dummy_moc.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kdocktabctl.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kdockwidget.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kdockwidget_private.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knuminput.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knumvalidator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditor.Plo \
@@ -459,12 +434,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorinput.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditoritem.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorlist.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qextmdichildarea.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qextmdichildfrm.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qextmdichildfrmcaption.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qextmdichildview.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qextmdimainfrm.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qextmditaskbar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/resource.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -536,6 +505,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CustomWidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgActionsImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgActivateWindowImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCmdbarsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCommandsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCustomizeImp.Plo@am__quote@
@@ -584,10 +554,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WidgetFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Widgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Window.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dummy_moc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kdocktabctl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kdockwidget.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kdockwidget_private.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knuminput.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knumvalidator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditor.Plo@am__quote@
@@ -597,12 +563,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorinput.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditoritem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorlist.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdichildarea.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdichildfrm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdichildfrmcaption.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdichildview.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdimainfrm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmditaskbar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resource.Plo@am__quote@
 
 distclean-depend:
@@ -640,336 +600,6 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
-
-dummy_moc.o: qextmdi/dummy_moc.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dummy_moc.o -MD -MP -MF "$(DEPDIR)/dummy_moc.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o dummy_moc.o `test -f 'qextmdi/dummy_moc.cpp' || echo '$(srcdir)/'`qextmdi/dummy_moc.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/dummy_moc.Tpo" "$(DEPDIR)/dummy_moc.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/dummy_moc.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/dummy_moc.cpp' object='dummy_moc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/dummy_moc.Po' tmpdepfile='$(DEPDIR)/dummy_moc.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dummy_moc.o `test -f 'qextmdi/dummy_moc.cpp' || echo '$(srcdir)/'`qextmdi/dummy_moc.cpp
-
-dummy_moc.obj: qextmdi/dummy_moc.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dummy_moc.obj -MD -MP -MF "$(DEPDIR)/dummy_moc.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o dummy_moc.obj `if test -f 'qextmdi/dummy_moc.cpp'; then $(CYGPATH_W) 'qextmdi/dummy_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/dummy_moc.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/dummy_moc.Tpo" "$(DEPDIR)/dummy_moc.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/dummy_moc.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/dummy_moc.cpp' object='dummy_moc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/dummy_moc.Po' tmpdepfile='$(DEPDIR)/dummy_moc.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dummy_moc.obj `if test -f 'qextmdi/dummy_moc.cpp'; then $(CYGPATH_W) 'qextmdi/dummy_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/dummy_moc.cpp'; fi`
-
-dummy_moc.lo: qextmdi/dummy_moc.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dummy_moc.lo -MD -MP -MF "$(DEPDIR)/dummy_moc.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o dummy_moc.lo `test -f 'qextmdi/dummy_moc.cpp' || echo '$(srcdir)/'`qextmdi/dummy_moc.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/dummy_moc.Tpo" "$(DEPDIR)/dummy_moc.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/dummy_moc.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/dummy_moc.cpp' object='dummy_moc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/dummy_moc.Plo' tmpdepfile='$(DEPDIR)/dummy_moc.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dummy_moc.lo `test -f 'qextmdi/dummy_moc.cpp' || echo '$(srcdir)/'`qextmdi/dummy_moc.cpp
-
-kdocktabctl.o: qextmdi/kdocktabctl.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdocktabctl.o -MD -MP -MF "$(DEPDIR)/kdocktabctl.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdocktabctl.o `test -f 'qextmdi/kdocktabctl.cpp' || echo '$(srcdir)/'`qextmdi/kdocktabctl.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdocktabctl.Tpo" "$(DEPDIR)/kdocktabctl.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdocktabctl.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdocktabctl.cpp' object='kdocktabctl.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdocktabctl.Po' tmpdepfile='$(DEPDIR)/kdocktabctl.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdocktabctl.o `test -f 'qextmdi/kdocktabctl.cpp' || echo '$(srcdir)/'`qextmdi/kdocktabctl.cpp
-
-kdocktabctl.obj: qextmdi/kdocktabctl.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdocktabctl.obj -MD -MP -MF "$(DEPDIR)/kdocktabctl.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdocktabctl.obj `if test -f 'qextmdi/kdocktabctl.cpp'; then $(CYGPATH_W) 'qextmdi/kdocktabctl.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/kdocktabctl.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdocktabctl.Tpo" "$(DEPDIR)/kdocktabctl.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdocktabctl.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdocktabctl.cpp' object='kdocktabctl.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdocktabctl.Po' tmpdepfile='$(DEPDIR)/kdocktabctl.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdocktabctl.obj `if test -f 'qextmdi/kdocktabctl.cpp'; then $(CYGPATH_W) 'qextmdi/kdocktabctl.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/kdocktabctl.cpp'; fi`
-
-kdocktabctl.lo: qextmdi/kdocktabctl.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdocktabctl.lo -MD -MP -MF "$(DEPDIR)/kdocktabctl.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdocktabctl.lo `test -f 'qextmdi/kdocktabctl.cpp' || echo '$(srcdir)/'`qextmdi/kdocktabctl.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdocktabctl.Tpo" "$(DEPDIR)/kdocktabctl.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdocktabctl.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdocktabctl.cpp' object='kdocktabctl.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdocktabctl.Plo' tmpdepfile='$(DEPDIR)/kdocktabctl.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdocktabctl.lo `test -f 'qextmdi/kdocktabctl.cpp' || echo '$(srcdir)/'`qextmdi/kdocktabctl.cpp
-
-kdockwidget.o: qextmdi/kdockwidget.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdockwidget.o -MD -MP -MF "$(DEPDIR)/kdockwidget.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdockwidget.o `test -f 'qextmdi/kdockwidget.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdockwidget.Tpo" "$(DEPDIR)/kdockwidget.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdockwidget.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdockwidget.cpp' object='kdockwidget.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdockwidget.Po' tmpdepfile='$(DEPDIR)/kdockwidget.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdockwidget.o `test -f 'qextmdi/kdockwidget.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget.cpp
-
-kdockwidget.obj: qextmdi/kdockwidget.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdockwidget.obj -MD -MP -MF "$(DEPDIR)/kdockwidget.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdockwidget.obj `if test -f 'qextmdi/kdockwidget.cpp'; then $(CYGPATH_W) 'qextmdi/kdockwidget.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/kdockwidget.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdockwidget.Tpo" "$(DEPDIR)/kdockwidget.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdockwidget.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdockwidget.cpp' object='kdockwidget.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdockwidget.Po' tmpdepfile='$(DEPDIR)/kdockwidget.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdockwidget.obj `if test -f 'qextmdi/kdockwidget.cpp'; then $(CYGPATH_W) 'qextmdi/kdockwidget.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/kdockwidget.cpp'; fi`
-
-kdockwidget.lo: qextmdi/kdockwidget.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdockwidget.lo -MD -MP -MF "$(DEPDIR)/kdockwidget.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdockwidget.lo `test -f 'qextmdi/kdockwidget.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdockwidget.Tpo" "$(DEPDIR)/kdockwidget.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdockwidget.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdockwidget.cpp' object='kdockwidget.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdockwidget.Plo' tmpdepfile='$(DEPDIR)/kdockwidget.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdockwidget.lo `test -f 'qextmdi/kdockwidget.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget.cpp
-
-kdockwidget_private.o: qextmdi/kdockwidget_private.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdockwidget_private.o -MD -MP -MF "$(DEPDIR)/kdockwidget_private.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdockwidget_private.o `test -f 'qextmdi/kdockwidget_private.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget_private.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdockwidget_private.Tpo" "$(DEPDIR)/kdockwidget_private.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdockwidget_private.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdockwidget_private.cpp' object='kdockwidget_private.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdockwidget_private.Po' tmpdepfile='$(DEPDIR)/kdockwidget_private.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdockwidget_private.o `test -f 'qextmdi/kdockwidget_private.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget_private.cpp
-
-kdockwidget_private.obj: qextmdi/kdockwidget_private.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdockwidget_private.obj -MD -MP -MF "$(DEPDIR)/kdockwidget_private.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdockwidget_private.obj `if test -f 'qextmdi/kdockwidget_private.cpp'; then $(CYGPATH_W) 'qextmdi/kdockwidget_private.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/kdockwidget_private.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdockwidget_private.Tpo" "$(DEPDIR)/kdockwidget_private.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdockwidget_private.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdockwidget_private.cpp' object='kdockwidget_private.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdockwidget_private.Po' tmpdepfile='$(DEPDIR)/kdockwidget_private.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdockwidget_private.obj `if test -f 'qextmdi/kdockwidget_private.cpp'; then $(CYGPATH_W) 'qextmdi/kdockwidget_private.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/kdockwidget_private.cpp'; fi`
-
-kdockwidget_private.lo: qextmdi/kdockwidget_private.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kdockwidget_private.lo -MD -MP -MF "$(DEPDIR)/kdockwidget_private.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kdockwidget_private.lo `test -f 'qextmdi/kdockwidget_private.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget_private.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kdockwidget_private.Tpo" "$(DEPDIR)/kdockwidget_private.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kdockwidget_private.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/kdockwidget_private.cpp' object='kdockwidget_private.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kdockwidget_private.Plo' tmpdepfile='$(DEPDIR)/kdockwidget_private.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kdockwidget_private.lo `test -f 'qextmdi/kdockwidget_private.cpp' || echo '$(srcdir)/'`qextmdi/kdockwidget_private.cpp
-
-qextmdichildarea.o: qextmdi/qextmdichildarea.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildarea.o -MD -MP -MF "$(DEPDIR)/qextmdichildarea.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildarea.o `test -f 'qextmdi/qextmdichildarea.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildarea.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildarea.Tpo" "$(DEPDIR)/qextmdichildarea.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildarea.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildarea.cpp' object='qextmdichildarea.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildarea.Po' tmpdepfile='$(DEPDIR)/qextmdichildarea.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildarea.o `test -f 'qextmdi/qextmdichildarea.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildarea.cpp
-
-qextmdichildarea.obj: qextmdi/qextmdichildarea.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildarea.obj -MD -MP -MF "$(DEPDIR)/qextmdichildarea.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildarea.obj `if test -f 'qextmdi/qextmdichildarea.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildarea.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildarea.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildarea.Tpo" "$(DEPDIR)/qextmdichildarea.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildarea.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildarea.cpp' object='qextmdichildarea.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildarea.Po' tmpdepfile='$(DEPDIR)/qextmdichildarea.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildarea.obj `if test -f 'qextmdi/qextmdichildarea.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildarea.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildarea.cpp'; fi`
-
-qextmdichildarea.lo: qextmdi/qextmdichildarea.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildarea.lo -MD -MP -MF "$(DEPDIR)/qextmdichildarea.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildarea.lo `test -f 'qextmdi/qextmdichildarea.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildarea.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildarea.Tpo" "$(DEPDIR)/qextmdichildarea.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildarea.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildarea.cpp' object='qextmdichildarea.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildarea.Plo' tmpdepfile='$(DEPDIR)/qextmdichildarea.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildarea.lo `test -f 'qextmdi/qextmdichildarea.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildarea.cpp
-
-qextmdichildfrm.o: qextmdi/qextmdichildfrm.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildfrm.o -MD -MP -MF "$(DEPDIR)/qextmdichildfrm.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildfrm.o `test -f 'qextmdi/qextmdichildfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrm.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildfrm.Tpo" "$(DEPDIR)/qextmdichildfrm.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildfrm.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildfrm.cpp' object='qextmdichildfrm.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildfrm.Po' tmpdepfile='$(DEPDIR)/qextmdichildfrm.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildfrm.o `test -f 'qextmdi/qextmdichildfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrm.cpp
-
-qextmdichildfrm.obj: qextmdi/qextmdichildfrm.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildfrm.obj -MD -MP -MF "$(DEPDIR)/qextmdichildfrm.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildfrm.obj `if test -f 'qextmdi/qextmdichildfrm.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildfrm.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildfrm.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildfrm.Tpo" "$(DEPDIR)/qextmdichildfrm.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildfrm.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildfrm.cpp' object='qextmdichildfrm.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildfrm.Po' tmpdepfile='$(DEPDIR)/qextmdichildfrm.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildfrm.obj `if test -f 'qextmdi/qextmdichildfrm.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildfrm.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildfrm.cpp'; fi`
-
-qextmdichildfrm.lo: qextmdi/qextmdichildfrm.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildfrm.lo -MD -MP -MF "$(DEPDIR)/qextmdichildfrm.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildfrm.lo `test -f 'qextmdi/qextmdichildfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrm.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildfrm.Tpo" "$(DEPDIR)/qextmdichildfrm.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildfrm.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildfrm.cpp' object='qextmdichildfrm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildfrm.Plo' tmpdepfile='$(DEPDIR)/qextmdichildfrm.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildfrm.lo `test -f 'qextmdi/qextmdichildfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrm.cpp
-
-qextmdichildfrmcaption.o: qextmdi/qextmdichildfrmcaption.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildfrmcaption.o -MD -MP -MF "$(DEPDIR)/qextmdichildfrmcaption.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildfrmcaption.o `test -f 'qextmdi/qextmdichildfrmcaption.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrmcaption.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildfrmcaption.Tpo" "$(DEPDIR)/qextmdichildfrmcaption.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildfrmcaption.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildfrmcaption.cpp' object='qextmdichildfrmcaption.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildfrmcaption.Po' tmpdepfile='$(DEPDIR)/qextmdichildfrmcaption.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildfrmcaption.o `test -f 'qextmdi/qextmdichildfrmcaption.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrmcaption.cpp
-
-qextmdichildfrmcaption.obj: qextmdi/qextmdichildfrmcaption.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildfrmcaption.obj -MD -MP -MF "$(DEPDIR)/qextmdichildfrmcaption.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildfrmcaption.obj `if test -f 'qextmdi/qextmdichildfrmcaption.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildfrmcaption.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildfrmcaption.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildfrmcaption.Tpo" "$(DEPDIR)/qextmdichildfrmcaption.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildfrmcaption.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildfrmcaption.cpp' object='qextmdichildfrmcaption.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildfrmcaption.Po' tmpdepfile='$(DEPDIR)/qextmdichildfrmcaption.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildfrmcaption.obj `if test -f 'qextmdi/qextmdichildfrmcaption.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildfrmcaption.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildfrmcaption.cpp'; fi`
-
-qextmdichildfrmcaption.lo: qextmdi/qextmdichildfrmcaption.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildfrmcaption.lo -MD -MP -MF "$(DEPDIR)/qextmdichildfrmcaption.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildfrmcaption.lo `test -f 'qextmdi/qextmdichildfrmcaption.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrmcaption.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildfrmcaption.Tpo" "$(DEPDIR)/qextmdichildfrmcaption.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildfrmcaption.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildfrmcaption.cpp' object='qextmdichildfrmcaption.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildfrmcaption.Plo' tmpdepfile='$(DEPDIR)/qextmdichildfrmcaption.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildfrmcaption.lo `test -f 'qextmdi/qextmdichildfrmcaption.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildfrmcaption.cpp
-
-qextmdichildview.o: qextmdi/qextmdichildview.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildview.o -MD -MP -MF "$(DEPDIR)/qextmdichildview.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildview.o `test -f 'qextmdi/qextmdichildview.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildview.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildview.Tpo" "$(DEPDIR)/qextmdichildview.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildview.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildview.cpp' object='qextmdichildview.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildview.Po' tmpdepfile='$(DEPDIR)/qextmdichildview.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildview.o `test -f 'qextmdi/qextmdichildview.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildview.cpp
-
-qextmdichildview.obj: qextmdi/qextmdichildview.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildview.obj -MD -MP -MF "$(DEPDIR)/qextmdichildview.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildview.obj `if test -f 'qextmdi/qextmdichildview.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildview.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildview.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildview.Tpo" "$(DEPDIR)/qextmdichildview.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildview.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildview.cpp' object='qextmdichildview.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildview.Po' tmpdepfile='$(DEPDIR)/qextmdichildview.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildview.obj `if test -f 'qextmdi/qextmdichildview.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdichildview.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdichildview.cpp'; fi`
-
-qextmdichildview.lo: qextmdi/qextmdichildview.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdichildview.lo -MD -MP -MF "$(DEPDIR)/qextmdichildview.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdichildview.lo `test -f 'qextmdi/qextmdichildview.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildview.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdichildview.Tpo" "$(DEPDIR)/qextmdichildview.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdichildview.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdichildview.cpp' object='qextmdichildview.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdichildview.Plo' tmpdepfile='$(DEPDIR)/qextmdichildview.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdichildview.lo `test -f 'qextmdi/qextmdichildview.cpp' || echo '$(srcdir)/'`qextmdi/qextmdichildview.cpp
-
-qextmdimainfrm.o: qextmdi/qextmdimainfrm.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdimainfrm.o -MD -MP -MF "$(DEPDIR)/qextmdimainfrm.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdimainfrm.o `test -f 'qextmdi/qextmdimainfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdimainfrm.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdimainfrm.Tpo" "$(DEPDIR)/qextmdimainfrm.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdimainfrm.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdimainfrm.cpp' object='qextmdimainfrm.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdimainfrm.Po' tmpdepfile='$(DEPDIR)/qextmdimainfrm.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdimainfrm.o `test -f 'qextmdi/qextmdimainfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdimainfrm.cpp
-
-qextmdimainfrm.obj: qextmdi/qextmdimainfrm.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdimainfrm.obj -MD -MP -MF "$(DEPDIR)/qextmdimainfrm.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdimainfrm.obj `if test -f 'qextmdi/qextmdimainfrm.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdimainfrm.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdimainfrm.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdimainfrm.Tpo" "$(DEPDIR)/qextmdimainfrm.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdimainfrm.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdimainfrm.cpp' object='qextmdimainfrm.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdimainfrm.Po' tmpdepfile='$(DEPDIR)/qextmdimainfrm.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdimainfrm.obj `if test -f 'qextmdi/qextmdimainfrm.cpp'; then $(CYGPATH_W) 'qextmdi/qextmdimainfrm.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmdimainfrm.cpp'; fi`
-
-qextmdimainfrm.lo: qextmdi/qextmdimainfrm.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmdimainfrm.lo -MD -MP -MF "$(DEPDIR)/qextmdimainfrm.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmdimainfrm.lo `test -f 'qextmdi/qextmdimainfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdimainfrm.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmdimainfrm.Tpo" "$(DEPDIR)/qextmdimainfrm.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmdimainfrm.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmdimainfrm.cpp' object='qextmdimainfrm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmdimainfrm.Plo' tmpdepfile='$(DEPDIR)/qextmdimainfrm.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmdimainfrm.lo `test -f 'qextmdi/qextmdimainfrm.cpp' || echo '$(srcdir)/'`qextmdi/qextmdimainfrm.cpp
-
-qextmditaskbar.o: qextmdi/qextmditaskbar.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmditaskbar.o -MD -MP -MF "$(DEPDIR)/qextmditaskbar.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmditaskbar.o `test -f 'qextmdi/qextmditaskbar.cpp' || echo '$(srcdir)/'`qextmdi/qextmditaskbar.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmditaskbar.Tpo" "$(DEPDIR)/qextmditaskbar.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmditaskbar.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmditaskbar.cpp' object='qextmditaskbar.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmditaskbar.Po' tmpdepfile='$(DEPDIR)/qextmditaskbar.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmditaskbar.o `test -f 'qextmdi/qextmditaskbar.cpp' || echo '$(srcdir)/'`qextmdi/qextmditaskbar.cpp
-
-qextmditaskbar.obj: qextmdi/qextmditaskbar.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmditaskbar.obj -MD -MP -MF "$(DEPDIR)/qextmditaskbar.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmditaskbar.obj `if test -f 'qextmdi/qextmditaskbar.cpp'; then $(CYGPATH_W) 'qextmdi/qextmditaskbar.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmditaskbar.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmditaskbar.Tpo" "$(DEPDIR)/qextmditaskbar.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmditaskbar.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmditaskbar.cpp' object='qextmditaskbar.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmditaskbar.Po' tmpdepfile='$(DEPDIR)/qextmditaskbar.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmditaskbar.obj `if test -f 'qextmdi/qextmditaskbar.cpp'; then $(CYGPATH_W) 'qextmdi/qextmditaskbar.cpp'; else $(CYGPATH_W) '$(srcdir)/qextmdi/qextmditaskbar.cpp'; fi`
-
-qextmditaskbar.lo: qextmdi/qextmditaskbar.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qextmditaskbar.lo -MD -MP -MF "$(DEPDIR)/qextmditaskbar.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o qextmditaskbar.lo `test -f 'qextmdi/qextmditaskbar.cpp' || echo '$(srcdir)/'`qextmdi/qextmditaskbar.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/qextmditaskbar.Tpo" "$(DEPDIR)/qextmditaskbar.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/qextmditaskbar.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qextmdi/qextmditaskbar.cpp' object='qextmditaskbar.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/qextmditaskbar.Plo' tmpdepfile='$(DEPDIR)/qextmditaskbar.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmditaskbar.lo `test -f 'qextmdi/qextmditaskbar.cpp' || echo '$(srcdir)/'`qextmdi/qextmditaskbar.cpp
 
 propertyeditor.o: propertyeditor/propertyeditor.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditor.o -MD -MP -MF "$(DEPDIR)/propertyeditor.Tpo" \

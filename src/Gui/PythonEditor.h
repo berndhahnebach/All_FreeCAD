@@ -31,6 +31,8 @@
 # include <qsyntaxhighlighter.h>
 #endif
 
+class QPrinter;
+
 namespace Gui {
 
 class PythonSyntaxHighlighter;
@@ -125,7 +127,7 @@ private:
  * the Python editor and embeds the editor in a window.
  * \author Werner Mayer
  */
-class GuiExport PythonEditView : public FCView
+class GuiExport PythonEditView : public MDIView
 {
 public:
   PythonEditView( QWidget* parent, const char* name);
@@ -140,7 +142,7 @@ public:
   bool OnHasMsg(const char* pMsg);
   
   bool CanClose(void);
-  void Print(QPainter& cPrinter);
+  void Print( QPrinter* printer );
   void openFile (const QString& fileName);
 
   /** @name Standard actions of the editor */

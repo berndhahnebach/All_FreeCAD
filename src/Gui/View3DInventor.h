@@ -3,7 +3,7 @@
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *  @see FCView.cpp
+ *  @see MDIView.cpp
  */
 
 /***************************************************************************
@@ -42,7 +42,7 @@ class FCMouseModel;
 class FCGuiDocument;
 class FCGuiDocument;
 class View3D;
-class FCTree;
+class TreeView;
 class QSplitter;
 class QWidget;		
 class QPushButton;	
@@ -62,7 +62,7 @@ class	SoMaterial	;
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
  */
-class FCView3DInventor: public FCView
+class FCView3DInventor: public MDIView
 {
 	Q_OBJECT
 
@@ -103,8 +103,8 @@ protected:
 	SoShapeHints* pcShapeHint; 
 	SoMaterial	* pcShapeMaterial;
 private:
-	SoQtExaminerViewer * _viewer;
-//	View3DInventor * _viewer;
+//	SoQtExaminerViewer * _viewer;
+	View3DInventor * _viewer;
 	QWidget*		_pcWidget;
 	QVBox*			_pcFrame;    
 	QWidgetStack*	_pcWidgetStack;

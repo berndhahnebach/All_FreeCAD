@@ -35,6 +35,10 @@
 
 // Std. configurations
 
+#ifndef _PreComp_
+#	include <string>
+#endif
+
 struct ApplicationWindowP;
 
 /** Macro recording and play back management

@@ -22,6 +22,7 @@
 #	include <TDataStd_Name.hxx>
 #	include <TNaming_NamedShape.hxx>
 #	include <qheader.h>
+# include <qlayout.h>
 #endif
 
 #include "Tree.h"
@@ -39,19 +40,19 @@ GUIDDefs AttrNames[] = {
 };
 
 
-FCTreeLabel::FCTreeLabel( FCTree * parent)
+FCTreeLabel::FCTreeLabel( TreeView * parent)
 	:QListViewItem(parent->_pcListView),
 	 _pcDocument(parent->_pcDocument)
 {
 	if(_pcDocument){
 		setText(0,QObject::tr("Main Label"));
-		setPixmap(0,*FCTree::pcLabelOpen);
+		setPixmap(0,*TreeView::pcLabelOpen);
 //		_hcLabel = parent->_pcDocument->GetDocument()->Main();
 		_hcTDFLabel = parent->_pcDocument->GetDocument()->Main();
 		BuildUp();
 		setOpen(true);
 	}else{
-		setPixmap(0,*FCTree::pcLabelClosed);
+		setPixmap(0,*TreeView::pcLabelClosed);
 		//setPixmap(new QPixmap(px));
 		setText(0,QObject::tr("No Active Document"));
 	}
@@ -72,7 +73,7 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel )
 	QString cString;
 
 	cString.sprintf("Tag:%d",_hcTDFLabel.Tag());
-	setPixmap(0,*FCTree::pcLabelClosed);
+	setPixmap(0,*TreeView::pcLabelClosed);
 	setText(0,cString);
 
 	BuildUp();
@@ -136,12 +137,12 @@ void FCTreeLabel::setOpen( bool o )
 
 	if(o)
 	{
-		setPixmap(0,*FCTree::pcLabelOpen);
+		setPixmap(0,*TreeView::pcLabelOpen);
 
 		Update();
 
 	}else{
-		setPixmap(0,*FCTree::pcLabelClosed);
+		setPixmap(0,*TreeView::pcLabelClosed);
 	}
 
 	QListViewItem::setOpen ( o );
@@ -163,23 +164,24 @@ void FCTreeLabel::activate ()
 
 
 
-QPixmap* FCTree::pcLabelOpen=0;
-QPixmap* FCTree::pcLabelClosed=0;
-QPixmap* FCTree::pcAttribute=0;
+QPixmap* TreeView::pcLabelOpen=0;
+QPixmap* TreeView::pcLabelClosed=0;
+QPixmap* TreeView::pcAttribute=0;
 
 
-FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
-	:FCDockView(pcDocument,parent,name)
+TreeView::TreeView(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
+	:DockView(pcDocument,parent,name)
 {
-
+  QGridLayout* layout = new QGridLayout( this );
 	_pcListView = new QListView(this,name);
+  layout->addWidget( _pcListView, 0, 0 );
 
 	// set defaults and the colums
 	_pcListView->setSorting(-1,false);
 	_pcListView->addColumn(tr("Labels & Attr."));
 	_pcListView->setColumnWidthMode(0,QListView::Maximum);
-	_pcListView->addColumn(tr("Value"));
-	_pcListView->setColumnWidthMode(1,QListView::Manual );
+//	_pcListView->addColumn(tr("Value"));
+//	_pcListView->setColumnWidthMode(1,QListView::Manual );
 
 	// retreive the Pixmaps
 	pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
@@ -199,7 +201,7 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 }
 
-void FCTree::Update(void)
+void TreeView::Update(void)
 {
 	Base::Console().Log("Tree Updated\n");
 	
@@ -209,7 +211,7 @@ void FCTree::Update(void)
 
 }
 
-void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
+void TreeView::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument)
 {
 //	Console().Log("Tree doc activated %p\n",pcNewDocument);
 
@@ -222,8 +224,9 @@ void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocu
 }
 
 
-void FCTree::resizeEvent ( QResizeEvent * e) 
+void TreeView::resizeEvent ( QResizeEvent * e) 
 {
+  DockView::resizeEvent( e );return;
 	// routing the resize event to the child
 
  	_pcListView->resize(e->size());
@@ -241,7 +244,7 @@ void FCTree::resizeEvent ( QResizeEvent * e)
 
 }
 
-bool FCTree::OnMsg(const char* pMsg)
+bool TreeView::OnMsg(const char* pMsg)
 {
 	//printf("MsgTree: %s View: %p\n",pMsg,this);
 

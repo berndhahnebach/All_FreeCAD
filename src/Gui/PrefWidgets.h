@@ -41,7 +41,6 @@
 class QDoubleValidator;
 class QAction;
 class QMainWindow;
-class FCDockWindow;
 class FCCommandManager;
 
 namespace Gui {

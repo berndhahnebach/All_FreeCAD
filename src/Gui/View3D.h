@@ -3,7 +3,7 @@
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *  @see FCView.cpp
+ *  @see MDIView.cpp
  */
 
 /***************************************************************************
@@ -52,7 +52,7 @@ class FCMouseModel;
 class FCGuiDocument;
 class FCGuiDocument;
 class View3D;
-class FCTree;
+class TreeView;
 class QSplitter;
 class QWidget;		
 class QPushButton;	
@@ -65,7 +65,7 @@ class QTabBar;
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
  */
-class FCView3D: public FCView
+class FCView3D: public MDIView
 {
 	Q_OBJECT
 
@@ -77,7 +77,6 @@ public:
 	virtual bool OnMsg(const char* pMsg);
 	virtual const char *GetName(void);
 
-	virtual void resizeEvent ( QResizeEvent * e);
 
 	virtual void Update(void);
 
@@ -96,7 +95,6 @@ protected:
 private:
 	View3D*			_pcView3D;
 	QWidget*		_pcWidget;
-	QVBox*	    _pcFrame;    
 	QWidgetStack*	_pcWidgetStack;
 	QTabBar*		_pcTabBar;
 

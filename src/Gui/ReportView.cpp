@@ -24,7 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qlayout.h>
+# include <qpopupmenu.h>
 # include <qtabwidget.h>
+# include <qvariant.h>
 #endif
 
 #include "ReportView.h"
@@ -39,7 +42,7 @@ using namespace Gui::DockWnd;
  *  name 'name' and widget flags set to 'f' 
  */
 ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
-  : FCDockWindow( parent, name, fl )
+  : DockWindow( 0L, parent, name, fl )
 {
   if ( !name )
     setName( "ReportOutput" );

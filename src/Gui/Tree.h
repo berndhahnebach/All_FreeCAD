@@ -25,11 +25,11 @@
 #endif
 
 #include "../Base/PyExport.h"
-#include "View.h"
+#include "Window.h"
 
 /// Forwards
 class FCLabel; 
-class FCTree;
+class TreeView;
 class FCGuiDocument;
 
 
@@ -50,7 +50,7 @@ class FCTreeLabel : public QListViewItem
 public:
 	/// Constructor
     FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel );
-    FCTreeLabel( FCTree * parent);
+    FCTreeLabel( TreeView * parent);
 
     /// Opens the Leafs and generate them.
     void setOpen( bool );
@@ -80,11 +80,11 @@ protected:
 
 
 
-class FCTree :public FCDockView
+class TreeView :public Gui::DockView
 {
 	Q_OBJECT
 public:
-	FCTree(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
+	TreeView(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
 	// App_Tree();
 
 	bool OnMsg(const char* pMsg);

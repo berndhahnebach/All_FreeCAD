@@ -52,24 +52,17 @@
 
 
 FCView3D::FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
-    :FCView( pcDocument,parent, name, wflags)
+    :MDIView( pcDocument,parent, name, wflags)
 {
-	_pcFrame = new QVBox (this);
-  _pcFrame->setSpacing ( 6 );
-  _pcFrame->setMargin (3);
-  _pcFrame->setFrameShadow(QVBox::Sunken);
-  _pcFrame->setFrameStyle(QVBox::Box);
-	_pcView3D = new View3D(_pcDocument,_pcFrame);
+	_pcView3D = new View3D(_pcDocument,this);
+
+  setFocusProxy( _pcView3D );
+  setCentralWidget( _pcView3D );
 }
 
 FCView3D::~FCView3D()
 {
   delete _pcView3D;
-}
-
-void FCView3D::resizeEvent ( QResizeEvent * e)
-{
-  _pcFrame->resize(e->size());
 }
 
 /*
@@ -109,7 +102,7 @@ void FCView3D::Update(void)
 
 /*
 
-void FCView::fitAll()
+void MDIView::fitAll()
 {
 	myView->fitAll();
 }
@@ -318,7 +311,10 @@ void View3D::ShowPopup(int x, int y)
 
 void View3D::ShowDimension (void) const
 {
-	Quantity_Length fWidth, fHeight;
+	if ( _hView.IsNull() )
+    return; // no valid view
+
+  Quantity_Length fWidth, fHeight;
 	_hView->Size(fWidth, fHeight);
 
 	float fLog = float(log10(fWidth)), fFactor;

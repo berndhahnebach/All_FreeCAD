@@ -50,17 +50,10 @@
 
 
 FCView3DInventor::FCView3DInventor( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
-    :FCView( pcDocument,parent, name, wflags)
+    :MDIView( pcDocument,parent, name, wflags)
 {
-/*	_pcFrame = new QVBox (this);
-	_pcFrame->setSpacing ( 6 );
-	_pcFrame->setMargin (3);
-	_pcFrame->setFrameShadow(QVBox::Sunken);
-	_pcFrame->setFrameStyle(QVBox::Box);
-*/
-//	_viewer = new SoQtExaminerViewer(_pcFrame);
-	_viewer = new SoQtExaminerViewer(this);
-//	_viewer = new View3DInventor(this);
+//	_viewer = new SoQtExaminerViewer(this);
+	_viewer = new View3DInventor(this);
 
 	SetViewerDefaults();
 }
@@ -156,11 +149,11 @@ void FCView3DInventor::SetViewerDefaults(void)
 	pcSepRoot->addChild(pcSepShapeRoot);
 
 	_viewer->setSceneGraph(pcSepRoot);
-	_viewer->setFeedbackVisibility(true);
-	_viewer->setFeedbackSize(20);
+//	_viewer->setFeedbackVisibility(true);
+//	_viewer->setFeedbackSize(20);
 	_viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
 	_viewer->viewAll();
-	_viewer->setDecoration(false);
+//	_viewer->setDecoration(false);
 
     _viewer->show();
 }
@@ -196,7 +189,7 @@ void FCView3DInventor::SetShape(void)
 
 void FCView3DInventor::resizeEvent ( QResizeEvent * e)
 {
-	FCView::resizeEvent(e);
+	MDIView::resizeEvent(e);
 //	_pcFrame->resize(e->size());
 }
 
@@ -220,7 +213,7 @@ void FCView3DInventor::Update(void)
 
 /*
 
-void FCView::fitAll()
+void MDIView::fitAll()
 {
 	myView->fitAll();
 }

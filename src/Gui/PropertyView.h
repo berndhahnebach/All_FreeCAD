@@ -25,7 +25,7 @@
 #ifndef __PROPTERYVIEW_H__
 #define __PROPTERYVIEW_H__
 
-#include "View.h"
+#include "Window.h"
 
 #ifndef _PreComp_
 #if QT_VERSION < 300
@@ -48,7 +48,7 @@ class EditableListView;
 
 /** A test class. A more elaborate class description.
  */
-class FCPropertyView :public FCDockView
+class FCPropertyView :public Gui::DockView
 {
   public:
        

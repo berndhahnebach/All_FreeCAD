@@ -24,17 +24,22 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qregexp.h>
-# include <qtextedit.h>
-# include <qsyntaxhighlighter.h>
+# include <qapplication.h>
 # include <qclipboard.h>
-# include <qmessagebox.h>
 # include <qfile.h>
-# include <qfiledialog.h>
+# include <qmessagebox.h>
+# include <qpaintdevicemetrics.h>
+# include <qpainter.h>
+# include <qprinter.h>
+# include <qregexp.h>
+# include <qsimplerichtext.h>
+# include <qsyntaxhighlighter.h>
+# include <qtextedit.h>
 #endif
 
 #include "PythonEditor.h"
 #include "Application.h"
+#include "FileDialog.h"
 #include "DlgEditorImp.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
@@ -101,6 +106,26 @@ void PythonWindow::keyPressEvent(QKeyEvent * e)
 PythonEditor::PythonEditor(QWidget *parent,const char *name)
     : PythonWindow(parent, name)
 {
+  // set font
+  FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hPrefGrp = hPrefGrp->GetGroup("Windows")->GetGroup("Editor");
+
+  FCParameterGrp::handle hPrefSize = hPrefGrp->GetGroup("FontSize");
+  int cur = hPrefSize->GetInt( "currentItem" );
+  QString pattern = QString("Item%1").arg(cur);
+  QString txt = hPrefSize->GetASCII( pattern.latin1() ).c_str();
+
+  bool ok;
+  int size = txt.toInt(&ok);
+  if ( !ok ) size = 9; 
+
+  FCParameterGrp::handle hPrefFont = hPrefGrp->GetGroup("FontDB");
+  cur = hPrefFont->GetInt( "currentItem" );
+  pattern = QString("Item%1").arg(cur);
+  QString font = hPrefFont->GetASCII( pattern.latin1(), "Courier" ).c_str();
+
+  QFont serifFont( font, size, QFont::Normal );
+  setFont(serifFont);
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -542,17 +567,13 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
  *  name 'name'.
  */
 PythonEditView::PythonEditView( QWidget* parent, const char* name)
-    : FCView(0,parent, name)
+    : MDIView(0,parent, name, WDestructiveClose)
 {
-  setCaption("Editor");
-  setTabCaption("Editor");
-  resize( 400, 300 );
-
   textEdit = new PythonEditor(this);
   textEdit->setWordWrap( QTextEdit::NoWrap );
 
-  QGridLayout *layout = new QGridLayout(this,0,0);
-  layout->addWidget(textEdit,0,0);
+  setFocusProxy( textEdit );
+  setCentralWidget( textEdit );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -606,6 +627,7 @@ bool PythonEditView::OnMsg(const char* pMsg)
 bool PythonEditView::OnHasMsg(const char* pMsg)
 {
   if (strcmp(pMsg,"Save")==0)  return true;
+  if (strcmp(pMsg,"SaveAs")==0)  return true;
   if (strcmp(pMsg,"Print")==0) return true;
   if (strcmp(pMsg,"Cut")==0)
   {
@@ -644,7 +666,9 @@ bool PythonEditView::CanClose(void)
   if ( !textEdit->isModified() )
     return true;
 
-  switch(QMessageBox::warning( this, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
+  switch( QMessageBox::warning( this, tr("Unsaved document"),
+                                tr("Save changes to %1?").arg( caption() ),
+                                tr("Yes"), tr("No"), tr("Cancel"),0,2))
   {
   case 0:
     return save();
@@ -683,7 +707,8 @@ bool PythonEditView::save()
  */
 bool PythonEditView::saveAs(void)
 {
-  QString fn = QFileDialog::getSaveFileName(QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)", this);
+  QString fn = FileDialog::getSaveFileName(QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)", 
+                                           this, QObject::tr("Save Macro"));
   if (!fn.isEmpty())
   {
     _fileName = fn;
@@ -692,6 +717,7 @@ bool PythonEditView::saveAs(void)
   }
   else
   {
+    emit message( tr("Saving aborted"), 2000 );
     return false;
   }
 }
@@ -707,8 +733,6 @@ bool PythonEditView::open(void)
 
   openFile(file);
   setCaption(file);
-  QString name = file.left(file.findRev('.'));
-  setTabCaption(name);
 
   return true;
 }
@@ -737,6 +761,8 @@ void PythonEditView::openFile (const QString& fileName)
   file.close();
 
   textEdit->setModified(false);
+
+  emit message( tr("Loaded document %1").arg( fileName ), 2000 );
 }
 
 /**
@@ -786,10 +812,55 @@ void PythonEditView::redo(void)
 /**
  * \todo: Shows the printer dialog.
  */
-void PythonEditView::Print(QPainter& cPrinter)
+void PythonEditView::Print( QPrinter* printer )
 {
-  // no printing yet ;-)
-  assert(0);
+#ifndef QT_NO_PRINTER
+  int pageNo = 1;
+
+  if ( printer->setup(this) ) 
+  {		
+    // printer dialog
+    printer->setFullPage( TRUE );
+	  emit message( tr("Printing..."), 0 );
+
+    QPainter p;
+	  if ( !p.begin( printer ) )
+	    return;				// paint on printer
+
+    QPaintDeviceMetrics metrics( p.device() );
+    int dpiy = metrics.logicalDpiY();
+	  int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
+	  QRect body( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
+	  QSimpleRichText richText( QStyleSheet::convertFromPlainText(textEdit->text()),
+				  QFont(),
+				  textEdit->context(),
+				  textEdit->styleSheet(),
+				  textEdit->mimeSourceFactory(),
+				  body.height() );
+	  richText.setWidth( &p, body.width() );
+  	QRect view( body );
+
+    int page = 1;
+  	do 
+    {
+	    richText.draw( &p, body.left(), body.top(), view, colorGroup() );
+	    view.moveBy( 0, body.height() );
+	    p.translate( 0 , -body.height() );
+	    p.drawText( view.right() - p.fontMetrics().width( QString::number( page ) ),
+			view.bottom() + p.fontMetrics().ascent() + 5, QString::number( page ) );
+	    if ( view.top()  >= richText.height() )
+    		break;
+	    QString msg( "Printing (page " );
+	    msg += QString::number( ++pageNo );
+	    msg += ")...";
+	    emit message( msg, 0 );
+	    printer->newPage();
+	    page++;
+	  } while (true);
+
+    p.end();
+  }
+#endif
 }
 
 /**
@@ -806,6 +877,8 @@ void PythonEditView::saveFile()
   file.close();
 
   textEdit->setModified(false);
+
+  emit message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
 
   return;
 }

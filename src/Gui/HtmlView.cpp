@@ -24,16 +24,20 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qaction.h>
 # include <qbitmap.h>
 # include <qbuttongroup.h>
 # include <qcursor.h>
 # include <qfiledialog.h>
+# include <qlayout.h>
 # include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qprocess.h>
 # include <qdragobject.h>
 # include <qstylesheet.h>
+# include <qtoolbutton.h>
+# include <qtooltip.h>
 # include <qthread.h>
 # include <qurl.h>
 # include <qvaluestack.h>
@@ -710,7 +714,7 @@ void FCHtmlComboBox::slotKeyPressReturn()
  *  name 'name' and widget flags set to 'f' 
  */
 FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* name, WFlags fl )
-    : FCDockWindow( parent, name, fl ), pclPathCombo( 0 )
+  : DockWindow( 0L, parent, name, fl ), WindowParameter( name ), pclPathCombo( 0 )
 {
   d = new FCHtmlViewPrivate;
   d->m_Process.Attach(this);
@@ -1683,14 +1687,14 @@ void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, c
 
   //TDocType type=Html;
   if (FCBrowserSourceFactory::canConvertToHTML(text) || currentText.findRev(".html") != -1)
-  {
+  {/*
     // get text of the url
     QWidget* w = ApplicationWindow::Instance->GetCustomWidgetManager()->getDockWindow("Help bar");
     if (w->inherits("FCHtmlView"))
     {
       FCHtmlView* help = (FCHtmlView*)w;
       help->getBrowser()->setSource(text);
-    }
+    }*/
   }
   else
   {

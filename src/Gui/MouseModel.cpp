@@ -42,6 +42,7 @@
 #	include <qcursor.h>
 #	include <qevent.h>
 #	include <qpainter.h>
+# include <qpixmap.h>
 #	include <qvbox.h>
 #endif
 

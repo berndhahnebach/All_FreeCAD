@@ -115,29 +115,27 @@ def InitMenues():
 
 	list = ["Std_New", "Std_Open", "Std_Save", "Std_SaveAs", "Separator", "Std_Print",
 	"Separator","Std_MRU","Separator", "Std_Quit"]
-	Gui.MenuAppendItems("File", list, 0, 0)
+	Gui.MenuAppendItems("&File", list, 0, 0)
 
 	list = ["Std_Cut", "Std_Copy", "Std_Paste", "Separator", "Std_Undo", "Std_Redo",
 	"Separator", "Std_DlgPreferences"]
-	Gui.MenuAppendItems("Edit", list, 0, 0)
+	Gui.MenuAppendItems("&Edit", list, 0, 0)
 
 	list = ["Std_ViewCreateInventor", "Std_ViewCreateOCC","Separator"]
-	Gui.MenuAppendItems("View", list, 1, 0)
+	Gui.MenuAppendItems("&View", list, 1, 0)
 
 	list = ["Std_CommandLine", "Std_DlgParameter", "Std_OCAFBrowser", "Separator",
-	"Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute", "Separator",
-	"Std_ViewCreateInventor", "Std_ViewCreateOCC", "Separator", "Std_DlgCustomize", "Std_DlgPreferences"]
-	Gui.MenuAppendItems("Tools", list, 1, 0)
-
-	list = ["Std_TileHoricontal", "Std_TileVertical", "Std_TilePragmatic", "Separator", 
-	"Std_MDIToplevel", "Std_MDITabed"]
-	Gui.MenuAppendItems("Windows", list, 0, 0)
-
-	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Std_About", "Std_WhatsThis"]
-	Gui.MenuAppendItems("Help", list, 0, 0)
+	"Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute", "Separator", "Std_DlgCustomize"]
+	Gui.MenuAppendItems("&Tools", list, 1, 0)
 
 	list = ["Std_Test1","Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
-	Gui.MenuAppendItems("Test Commands", list, 0, 0)
+	Gui.MenuAppendItems("Test &Commands", list, 0, 0)
+
+	list = ["Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Separator", "Std_Windows"] 
+	Gui.MenuAppendItems("&Windows", list, 0, 0)
+
+	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Separator", "Std_About", "Std_AboutQt", "Separator", "Std_WhatsThis"]
+	Gui.MenuAppendItems("&Help", list, 0, 0)
 
 def InitCmdBar():
 	Log ('   Set up command bar...\n')

@@ -26,8 +26,10 @@
 #ifndef _PreComp_
 # include <qcolordialog.h>
 # include <qcursor.h>
+# include <qlabel.h>
 # include <qobjectlist.h>
 # include <qpainter.h>
+# include <qtoolbutton.h>
 #endif
 
 #include "ToolBoxBar.h"

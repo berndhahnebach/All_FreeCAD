@@ -2,13 +2,16 @@
 #define __FCview_h__
 
 
-#include "Window.h"
-#include "qextmdi/qextmdichildview.h"
+#ifndef _PreComp_
+# include <vector>
+# include <qmainwindow.h>
+#endif
 
 class FCGuiDocument;
 class FCDocument;
 class QSplitter;
 class QWidget;	
+class QPrinter;
 class ViewProvider;	
 
 
@@ -18,14 +21,12 @@ class ViewProvider;
  *  belong to the Active document. that means switching every time
  *  the active document is changing. It also means that the view 
  *  belongs sometimes to no document at all!
- *  @see FCTree
+ *  @see TreeView
  *  @see FCGuiDocument
  *  @see ApplicationWindow
  */
-class FCBaseView //: public FCWindow
+class FCBaseView
 {
-//	Q_OBJECT;
-
 public:
 	/** View constructor
 	  * Atach the view to the given document. If the document is NULL
@@ -103,11 +104,11 @@ protected:
  *  belong to the Active document. that means switching every time
  *  the active document is changing. It also means that the view 
  *  belongs sometimes to no document at all!
- *  @see FCTree
+ *  @see TreeView
  *  @see FCGuiDocument
  *  @see ApplicationWindow
  */
-class FCView : public QextMdiChildView,public FCBaseView
+class MDIView : public QMainWindow,public FCBaseView
 {
 	Q_OBJECT;
 
@@ -117,11 +118,11 @@ public:
 	  * the view will attach to the active document. Be aware! there isn't
 	  * allways a active document!
 	  */
-	FCView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	MDIView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	/** View destructor
 	  * Detach the view from the document, if Atached!
 	  */
-	~FCView();
+	~MDIView();
 
 	/// get called when the document is updated
 	virtual void Update(void)=0;
@@ -136,11 +137,15 @@ public:
 	/// overvrit when checking on close state
 	virtual bool CanClose(void){return true;}
 	/// print function of the view
-	virtual void Print(QPainter& cPrinter);
+	virtual void Print( QPrinter* printer );
+
+  QSize minimumSizeHint () const;
 
 signals:
 	/// sends a message to the document
-//	void sendCloseView(FCView* theView);
+//	void sendCloseView(MDIView* theView);
+
+  void message(const QString&, int );
 	
 public slots:	
 	void SetActive(void);
@@ -153,50 +158,6 @@ protected:
 
 
 
-/** Base class of all windows belonging to a document
- *  there are two ways of belonging to a document. The 
- *  first way is to a fixed one. The second way is to allways
- *  belong to the Active document. that means switching every time
- *  the active document is changing. It also means that the view 
- *  belongs sometimes to no document at all!
- *  @see FCTree
- *  @see FCGuiDocument
- *  @see ApplicationWindow
- */
-class FCDockView : public FCDockWindow,public FCBaseView
-{
-	Q_OBJECT;
-
-public:
-	/** View constructor
-	  * Atach the view to the given document. If the document is NULL
-	  * the view will attach to the active document. Be aware! there isn't
-	  * allways a active document!
-	  */
-	FCDockView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	/** View destructor
-	  * Detach the view from the document, if Atached!
-	  */
-	~FCDockView();
-
-	/// get called when the document is updated
-	virtual void Update(void){};
-
-	/// returns the name of the view (important for messages)
-	virtual const char *GetName(void)=0;
-
-	/// Mesage handler
-	virtual bool OnMsg(const char* pMsg);
-	/// Mesage handler test
-	virtual bool OnHasMsg(const char* pMsg);
-
-
-signals:
-	/// sends a message to the document
-//	void sendCloseView(FCView* theView);
-	
-};
-
 
 
 
@@ -204,7 +165,7 @@ signals:
 
 
 /** The double view container class
- *  This class can handle two FCView instances seperated by
+ *  This class can handle two MDIView instances seperated by
  *  a splitter. Usuly its used to show a FCDocTree and a FC3dView
  */
 /*
@@ -213,20 +174,20 @@ class FCDoubleView: public FCViewContainer
 	Q_OBJECT;
 
 public:
-	FCDoubleView( FCView* pcView1, FCView* pcView2, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	FCDoubleView( MDIView* pcView1, FCView* pcView2, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	~FCDoubleView();
 
 	// a more sophisticated implementation later
-	virtual FCView* GetActiveView(void){return _pcView2;}
+	virtual MDIView* GetActiveView(void){return _pcView2;}
 private:
-	FCView *		_pcView1;
-	FCView *		_pcView2;
+	MDIView *		_pcView1;
+	MDIView *		_pcView2;
 	QSplitter*		_pcSplitter;
 
 };
 */
 /** The singel view container class
- *  This class can handle one FCView instances 
+ *  This class can handle one MDIView instances 
  */
 /*
 class FCSingleView: public FCViewContainer
@@ -234,17 +195,17 @@ class FCSingleView: public FCViewContainer
 	Q_OBJECT;
 
 public:
-	FCSingleView( FCView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	FCSingleView( MDIView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	~FCSingleView();
 
 	virtual void resizeEvent ( QResizeEvent * e);
 
-	virtual FCView* GetActiveView(void){return _pcView;}
+	virtual MDIView* GetActiveView(void){return _pcView;}
 protected:
 	virtual void closeEvent(QCloseEvent *e);
 
 private:
-	FCView *		_pcView;
+	MDIView *		_pcView;
 
 };
 */
@@ -252,21 +213,21 @@ private:
 /** Holds a single view in a dock bar
  */
 /*
-class FCViewBar: public FCDockWindow
+class FCViewBar: public DockWindow
 {
 	Q_OBJECT;
 
 public:
-	FCViewBar( FCView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	FCViewBar( MDIView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	~FCViewBar();
 
-	virtual FCView* GetView(void){return _pcView;}
+	virtual MDIView* GetView(void){return _pcView;}
 
 protected:
 	virtual void resizeEvent ( QResizeEvent * e);
 
 private:
-	FCView *		_pcView;
+	MDIView *		_pcView;
 
 };
 */

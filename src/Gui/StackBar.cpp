@@ -184,7 +184,7 @@ void StackBarButton::mousePressEvent ( QMouseEvent * e )
  * Initializes the lists for holding the page-buttons.
  */
 StackBar::StackBar( QWidget *parent, const char *name )
-  : FCDockWindow( parent, name )
+  : DockWindow( 0L, parent, name )
 {
   m_pCurPage  = NULL;
   m_pLastBtn = NULL,

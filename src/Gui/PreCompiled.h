@@ -211,6 +211,7 @@
 #include <qrect.h>
 #include <qregexp.h>
 #include <qscrollbar.h>
+#include <qsimplerichtext.h>
 #include <qslider.h>
 #include <qspinbox.h>
 #include <qsplashscreen.h>

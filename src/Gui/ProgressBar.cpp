@@ -24,8 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qpainter.h>
 # include <qstatusbar.h>
+# include <qdatetime.h>
 # include <qwidgetlist.h>
 #endif
 

@@ -109,7 +109,7 @@ QPixmap* FCPropertyView::pcAttribute=0;
 //**************************************************************************
 // Construction/Destruction
 FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
-	:FCDockView(pcDocument,parent,name)
+	:DockView(pcDocument,parent,name)
 {
   setCaption( tr( "Property View" ) );
 

@@ -37,7 +37,7 @@ using namespace Gui::DockWnd;
  * Constructs a toolbox called \a name with parent \a parent and flags \a f.
  */
 ToolBox::ToolBox( QWidget *parent, const char *name, WFlags f )
-  : FCDockWindow(parent, name, f)
+  : DockWindow( 0, parent, name, f)
 {
   _pToolBox = new QToolBox( this, name, f);
   connect( _pToolBox, SIGNAL( currentChanged(int) ), this, SIGNAL( currentChanged(int) ) );

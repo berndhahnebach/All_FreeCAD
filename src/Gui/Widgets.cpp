@@ -28,7 +28,10 @@
 # include <qcolordialog.h>
 # include <qcursor.h>
 # include <qgroupbox.h>
+# include <qlabel.h>
+# include <qlayout.h>
 # include <qpainter.h>
+# include <qpushbutton.h>
 # include <qstyle.h>
 #endif
 

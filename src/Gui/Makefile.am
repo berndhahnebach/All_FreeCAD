@@ -8,6 +8,7 @@ moc_CommandLine.cpp \
 moc_CustomWidgets.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
+moc_DlgActivateWindow.cpp \
 moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
 moc_DlgCommandsImp.cpp \
@@ -61,6 +62,8 @@ moc_Window.cpp \
 moc_HtmlViewP.cpp \
 DlgActions.cpp \
 DlgActions.h \
+DlgActivateWindow.cpp \
+DlgActivateWindow.h \
 DlgCommands.cpp \
 DlgCommands.h \
 DlgDocTemplates.cpp \
@@ -89,18 +92,6 @@ DlgTipOfTheDay.cpp \
 DlgTipOfTheDay.h \
 DlgToolbars.cpp \
 DlgToolbars.h \
-qextmdi/moc_dummykmainwindow.cpp \
-qextmdi/moc_dummykpartsdockmainwindow.cpp \
-qextmdi/moc_dummyktoolbar.cpp \
-qextmdi/kdocktabctl.moc \
-qextmdi/kdockwidget.moc \
-qextmdi/kdockwidget_private.moc \
-qextmdi/qextmdichildarea.moc \
-qextmdi/qextmdichildfrm.moc \
-qextmdi/qextmdichildfrmcaption.moc \
-qextmdi/qextmdichildview.moc \
-qextmdi/qextmdimainfrm.moc \
-qextmdi/qextmditaskbar.moc \
 propertyeditor/moc_propertyeditor.cpp \
 propertyeditor/moc_propertyeditorfile.cpp \
 propertyeditor/moc_propertyeditorfont.cpp \
@@ -113,17 +104,6 @@ GuiInitScript.h
 
 
 libFreeCADGui_la_SOURCES=\
-qextmdi/dummy_moc.cpp \
-qextmdi/kdocktabctl.cpp \
-qextmdi/kdockwidget.cpp \
-qextmdi/kdockwidget_private.cpp \
-qextmdi/qextmdichildarea.cpp \
-qextmdi/qextmdichildfrm.cpp \
-qextmdi/qextmdichildfrmcaption.cpp \
-qextmdi/qextmdichildview.cpp \
-qextmdi/qextmdimainfrm.cpp \
-qextmdi/qextmditaskbar.cpp \
-\
 propertyeditor/propertyeditor.cpp \
 propertyeditor/propertyeditoritem.cpp \
 propertyeditor/propertyeditordate.cpp \
@@ -149,6 +129,7 @@ CommandTest.cpp \
 CommandView.cpp \
 CustomWidgets.cpp \
 DlgActionsImp.cpp \
+DlgActivateWindowImp.cpp \
 DlgCmdbarsImp.cpp \
 DlgCommandsImp.cpp \
 DlgCustomizeImp.cpp \
@@ -246,6 +227,6 @@ moc_%.cpp: %.h
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I./qextmdi -I./Inventor/Qt
+INCLUDES= $(all_includes) -I./Inventor/Qt
 
 CLEANFILES = $(BUILT_SOURCES)

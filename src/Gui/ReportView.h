@@ -46,7 +46,7 @@ class ReportHighlighter;
  * @see PythonConsole
  * \author Werner Mayer
  */
-class ReportView : public FCDockWindow
+class ReportView : public Gui::DockWindow
 { 
   Q_OBJECT
 

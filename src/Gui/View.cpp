@@ -123,42 +123,41 @@ void FCBaseView::AddViewProvider(ViewProvider* pcProvider)
 
 
 //**************************************************************************
-// FCView
+// MDIView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
-FCView::FCView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
-	:QextMdiChildView(parent, name, wflags),
-	 FCBaseView(pcDocument)
+MDIView::MDIView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
+	:QMainWindow(parent, name, wflags), FCBaseView(pcDocument)
 {
 	// sends the activation signal to the view, which set the active document and view in ApplicationWindow
-	connect(this, SIGNAL(activated(QextMdiChildView*)), this, SLOT(SetActive()));
+	connect(ApplicationWindow::Instance, SIGNAL(windowActivated(MDIView*)), this, SLOT(SetActive()));
 
 }
 
-FCView::~FCView()
+MDIView::~MDIView()
 {
 }
 
 
 /// recife a message
-bool FCView::OnMsg(const char* pMsg)
+bool MDIView::OnMsg(const char* pMsg)
 {
 	return false;
 }
 
-bool FCView::OnHasMsg(const char* pMsg)
+bool MDIView::OnHasMsg(const char* pMsg)
 {
 	return false;
 }
 
-void FCView::closeEvent(QCloseEvent *e)
+void MDIView::closeEvent(QCloseEvent *e)
 {
 	if(bIsPassiv){
 		if(CanClose() ){
 			e->accept();
-			QextMdiChildView::closeEvent(e);
+			QMainWindow::closeEvent(e);
 		}
 	}else{
 		if(GetGuiDocument()->IsLastView())
@@ -166,51 +165,28 @@ void FCView::closeEvent(QCloseEvent *e)
 			GetGuiDocument()->CanClose(e);
 
 			if(e->isAccepted ())
-				QextMdiChildView::closeEvent(e);
+				QMainWindow::closeEvent(e);
 		}else
 			e->accept();
 	}
 }
 
 
-void FCView::SetActive(void)
+void MDIView::SetActive(void)
 {
 	ApplicationWindow::Instance->ViewActivated(this);
 }
 
-void FCView::Print(QPainter& cPrinter)
+void MDIView::Print( QPrinter* printer )
 {
 	// print command specified but print methode not overriden!
 	assert(0);
 }
 
-
-
-//**************************************************************************
-// FCDockView
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-FCDockView::FCDockView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
-	:FCDockWindow(parent, name, wflags),
-	 FCBaseView(pcDocument)
+QSize MDIView::minimumSizeHint () const
 {
+  return QSize(100, 80);
 }
 
-FCDockView::~FCDockView()
-{
-}
-
-
-/// recife a message
-bool FCDockView::OnMsg(const char* pMsg)
-{
-	return false;
-}
-
-bool FCDockView::OnHasMsg(const char* pMsg)
-{
-	return false;
-}
 
 #include "moc_View.cpp"
