@@ -48,6 +48,9 @@
 
 #include <map>
 
+#include "window.h"
+
+
 #define FCmap stlport::map
 
 /** The button group class
@@ -135,9 +138,31 @@ public:
 	QWidget *widget() { return pWidget; }
 	void setWidget( QWidget * );
 };
-class QStackBar : public QWidget
+
+
+
+class FCCmdBar : public FCDockWindow
 {
+
 Q_OBJECT;
+
+public:
+	FCCmdBar( QWidget *parent=0, const char *name=0 );
+	virtual ~FCCmdBar();
+
+	void addPage( QStackBarBtn * );
+	void setCurPage( int );
+
+	void setButtonHeight(int);
+
+	/*!
+	 * \brief Gets the button heights
+	 *
+	 * All buttons must have the same height, here is where you set it.
+	 */
+	int buttonHeight() { return _stackHeight; }
+	/// add buttons just for test purpose
+	void AddTestButtons(void);
 
 protected:
 	QList <QStackBarBtn> *pButtons;
@@ -159,21 +184,6 @@ signals:
 	void pageSelected( int );
 	void pageHighlighted(int);
 	
-public:
-	QStackBar( QWidget *parent=0, const char *name=0 );
-	virtual ~QStackBar();
-
-	void addPage( QStackBarBtn * );
-	void setCurPage( int );
-
-	void setButtonHeight(int);
-
-	/*!
-	 * \brief Gets the button heights
-	 *
-	 * All buttons must have the same height, here is where you set it.
-	 */
-	int buttonHeight() { return _stackHeight; }
 };
 
 #endif // __BUTTON_GROUP_H__

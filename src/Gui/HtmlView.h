@@ -39,8 +39,9 @@
 
 #include "../Base/Export.h"
 #include <qtextbrowser.h>
+#include "window.h"
 
-class FCTextBrowser : public QTextBrowser
+class FCTextBrowser : public QTextBrowser, public FCWindow
 {
   Q_OBJECT
 
@@ -65,7 +66,7 @@ class GuiExport FCHtmlView : public QWidget
     Q_OBJECT
 
 public:
-    FCHtmlView( const QString& home_,  const QString& path, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    FCHtmlView( const QString& path, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCHtmlView();
 
 private slots:

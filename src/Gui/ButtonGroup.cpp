@@ -275,8 +275,8 @@ void FCButtonGroup::showText()
  * to -1, turns mouse tracking on, sets the stackHeight to the default of
  * 18 pixels.
  */
-QStackBar::QStackBar( QWidget *parent, const char *name )
-	: QWidget( parent, name )
+FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
+	: FCDockWindow( parent, name )
 {
 	pButtons = new QList<QStackBarBtn>;
 	pButtons->setAutoDelete(true);
@@ -296,7 +296,7 @@ QStackBar::QStackBar( QWidget *parent, const char *name )
  *
  * Destroys the list of QStackBarBtns
 */
-QStackBar::~QStackBar()
+FCCmdBar::~FCCmdBar()
 {
 	delete pButtons;
 }
@@ -308,7 +308,7 @@ QStackBar::~QStackBar()
  * Forces the buttons to rearrange themselves inside the widget. It
  * also resizes the active page widget.
 */
-void QStackBar::resizeEvent( QResizeEvent *e )
+void FCCmdBar::resizeEvent( QResizeEvent *e )
 {
 	rearrangeButtons(e->size().width(), e->size().height() );
 }
@@ -320,7 +320,7 @@ void QStackBar::resizeEvent( QResizeEvent *e )
  * This is called internally by the widget to rearrange the buttons
  * associated with the pages.
 */
-void QStackBar::rearrangeButtons( int w, int h )
+void FCCmdBar::rearrangeButtons( int w, int h )
 {
 	int topY;
 	int bottomY;
@@ -342,7 +342,7 @@ void QStackBar::rearrangeButtons( int w, int h )
  *
  * Duh
 */
-void QStackBar::paintEvent( QPaintEvent * )
+void FCCmdBar::paintEvent( QPaintEvent * )
 {
 	QPainter *pPaint;
 	QBrush brush;
@@ -436,7 +436,7 @@ void QStackBar::paintEvent( QPaintEvent * )
  *
  * Call this to add a new page to the widget.
 */
-void QStackBar::addPage( QStackBarBtn *pBtn )
+void FCCmdBar::addPage( QStackBarBtn *pBtn )
 {
 	pButtons->append( pBtn );
 	curPage = pButtons->count() - 1;
@@ -449,7 +449,7 @@ void QStackBar::addPage( QStackBarBtn *pBtn )
  * Call this to set the current page.  The widget will refresh and
  * rearrange itself.
  */
-void QStackBar::setCurPage( int i )
+void FCCmdBar::setCurPage( int i )
 {
 	if( i >= (int)pButtons->count() || i < 0 )
 		return;
@@ -479,7 +479,7 @@ void QStackBar::setCurPage( int i )
  * at a given mouse coordinate.  -1 is returned if nothing
  * is found.
 */
-int QStackBar::whichButton( int mx, int my )
+int FCCmdBar::whichButton( int mx, int my )
 {
 	int numBottom;	// number of buttons on the bottom stack
 
@@ -507,7 +507,7 @@ int QStackBar::whichButton( int mx, int my )
  * Selects the page under the mouse cursor if it can, and before that
  * it emits the pageSelected signal.
 */
-void QStackBar::mousePressEvent( QMouseEvent *e )
+void FCCmdBar::mousePressEvent( QMouseEvent *e )
 {
 	int buttonNum = whichButton( e->x(), e->y() );
 
@@ -525,7 +525,7 @@ void QStackBar::mousePressEvent( QMouseEvent *e )
  * Checks if the mouse cursor is over a button, if it is, it highlights
  * it and unhighlights the old button.  Also emits the signal pageHighlighted.
 */
-void QStackBar::mouseMoveEvent( QMouseEvent *e )
+void FCCmdBar::mouseMoveEvent( QMouseEvent *e )
 {
 	int buttonNum;
 	QBrush brush;
@@ -646,12 +646,34 @@ void QStackBar::mouseMoveEvent( QMouseEvent *e )
 	  pStackBar->setButtonHeight(30);
    \endcode
 */
-void QStackBar::setButtonHeight( int i )
+void FCCmdBar::setButtonHeight( int i )
 {
 	_stackHeight = i;
 
 	rearrangeButtons( width(), height() );
 }
+
+#include "Icons/x.xpm"
+
+void FCCmdBar::AddTestButtons(void)
+{
+	FCCmdBar* stack = this;
+	FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
+	stack->addPage( new QStackBarBtn( "Standard", mle ) );
+	stack->addPage( new QStackBarBtn( "Special 1", mle ) );
+	stack->addPage( new QStackBarBtn( "Test 1", mle ) );
+	stack->addPage( new QStackBarBtn( "Test 2", mle ) );
+	for (int i=0; i<30;i++)
+	{
+	  QToolButton* b0 = new QToolButton( /*DownArrow,*/ mle, "text" );
+	  b0->setProperty( "pixmap", QPixmap(px) );
+	  b0->setAutoRaise(true);
+	  b0->setTextLabel("Hallo Welt", true);
+	  b0->setFixedSize(32, 32);
+	  mle->insert(b0);
+	}
+}
+
 
 
 /*!

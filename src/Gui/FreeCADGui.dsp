@@ -578,5 +578,36 @@ InputPath=.\View3D.h
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\Window.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\Window.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Using moc on $(InputPath)
+InputPath=.\Window.h
+
+"Window_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Window_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Using moc on $(InputPath)
+InputPath=.\Window.h
+
+"Window_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Window_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

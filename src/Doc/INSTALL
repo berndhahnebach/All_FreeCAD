@@ -1,0 +1,20 @@
+FreeCAD
+-------
+
+for Project descripion see the /Doc directory
+
+Install on Win
+--------------
+
+You need to install OpenCasCade 4.0 from www.opencascade.org
+and Python 2.1.x from www.python.org.
+
+Unpack the binary package of FreeCAD and start FreeCAD.exe. The Init script
+of FreeCAD should do the rest. 
+
+Have fun!
+
+For Developers
+--------------
+
+You need also Python and OpenCasCade and a whole lot more:

@@ -118,7 +118,9 @@ static const char* home_pixmap[]={
 #include <ctype.h>
 
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
-: QTextBrowser(parent, name)
+	: QTextBrowser(parent, name),
+	 FCWindow(name)
+
 {
   pclPopup = new QPopupMenu(0L);
   connect(pclPopup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
@@ -178,7 +180,7 @@ void FCTextBrowser::refreshPage()
  *  Constructs a FCHtmlView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-FCHtmlView::FCHtmlView( const QString& home_,  const QString& path, QWidget* parent,  const char* name, WFlags fl )
+FCHtmlView::FCHtmlView(const QString& path, QWidget* parent,  const char* name, WFlags fl )
     : QWidget( parent, name, fl ), pclPathCombo( 0 ), selectedURL()
 {
   readHistory();
@@ -190,8 +192,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  const QString& path, QWidget* par
   pclBrowser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
   connect( pclBrowser, SIGNAL( textChanged() ), this, SLOT( textChanged() ) );
 
-  if ( !home_.isEmpty() )
-  	pclBrowser->setSource( home_ );
+	pclBrowser->setSource( QString("index.html") );
 
   // the browser's functionality
   connect( pclBrowser, SIGNAL( backwardAvailable( bool ) ), this, SLOT( setBackwardAvailable( bool ) ) );
@@ -268,7 +269,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  const QString& path, QWidget* par
   pclFormLayout->addWidget( pclBrowser,   1, 0 );
 
   // insert the start page to the history
-  pclPathCombo->insertItem( home_ );
+  pclPathCombo->insertItem( "index.html" );
 }
 
 /*  

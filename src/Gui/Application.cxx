@@ -25,7 +25,6 @@
 #include "HtmlView.h"
 
 
-#include "Icons/x.xpm"
 //#include "FreeCADAbout.h"
   
 //#include "Icons/Background3.xpm"
@@ -48,14 +47,6 @@ ApplicationWindow::ApplicationWindow()
 
     // create and define the central widget
 
-    //QVBox* vb = new QVBox( this );
-    //vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-    //stWs = new QWorkspace( vb );
-    //stWs->windowList().setAutoDelete(false);
-    //setCentralWidget( vb );
-
-	//setBackgroundPixmap(QPixmap(Background3));
-	//setUsesBigPixmaps (true);
 	CreateTestOperations();
 	//createCasCadeOperations();
 
@@ -63,32 +54,20 @@ ApplicationWindow::ApplicationWindow()
 	GetCmdLine().SetParent(statusBar());
 	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
     statusBar()->message( tr("Ready"), 2001 );
-    resize( 800, 600 );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	QString home = QString("E:\\Develop\\Projekte\\FreeCADWin\\Doc\\Online\\index.html");
-	FCHtmlView* hv = new FCHtmlView(home, ".",this);
+	FCHtmlView* hv = new FCHtmlView("..\\Doc\\Online\\",this);
 	addToolWindow( hv, KDockWidget::DockRight, m_pMdi, 70, "Help", "Help");
 
-	// Button Group +++++++++++++++++++++++++++++++++++++++++++++++++++
-	QStackBar* stack = new QStackBar;
-	FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
-	stack->addPage( new QStackBarBtn( "Test", mle ) );
-	stack->addPage( new QStackBarBtn( "Test", mle ) );
-	stack->addPage( new QStackBarBtn( "Test", mle ) );
-	stack->addPage( new QStackBarBtn( "Test", mle ) );
-//  addToolWindow( new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons"), KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
-	addToolWindow( stack, KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
-	for (int i=0; i<30;i++)
-	{
-	  QToolButton* b0 = new QToolButton( /*DownArrow,*/ mle, "text" );
-	  b0->setProperty( "pixmap", QPixmap(px) );
-	  b0->setAutoRaise(true);
-	  b0->setTextLabel("Hallo Welt", true);
-	  b0->setFixedSize(32, 32);
-	  mle->insert(b0);
-	}
+	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
+	FCCmdBar* pCmdBar = new FCCmdBar(this,"Cmd Group");
+	pCmdBar->AddTestButtons();
+	addToolWindow( pCmdBar, KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
 
+	// misc stuff
+    resize( 800, 600 );
+	//setBackgroundPixmap(QPixmap(Background3));
+	//setUsesBigPixmaps (true);
 
 }
 
