@@ -37,6 +37,7 @@
 
 #include "Widgets.h"
 #include "Application.h"
+#include "PrefWidgets.h"
 #include "../Base/Exception.h"
 
 #include <qlayout.h>

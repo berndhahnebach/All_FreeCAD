@@ -39,6 +39,8 @@
 
 #include "CommandLine.h"
 #include "Application.h"
+#include "PrefWidgets.h"
+#include "Command.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
@@ -79,11 +81,6 @@ FCCommandLine::FCCommandLine(void)
   _astrRunCmds.push_back("execute");
   _astrRunCmds.push_back("execfile");
 
-  // hide the botton from combo box
-//  setStyle(new FCWindowsStyle);
-#ifdef FC_OS_LINUX
-#warning style setting skipped here
-#endif
   ReadCmdList();
   //setFixedWidth(400);
   setMinimumWidth(200);
@@ -275,26 +272,6 @@ void FCCommandLine::mousePressEvent ( QMouseEvent * e )
   }
   else
     QComboBox::mousePressEvent(e);
-}
-
-void FCCommandLine::enterEvent ( QEvent * e)
-{
-  if (arrowRect().contains( mapFromGlobal(QCursor::pos()) ))
-    setStyle(&QApplication::style());
-}
-
-void FCCommandLine::leaveEvent ( QEvent * e)
-{
-#ifdef FC_OS_LINUX
-#	warning style setting skipped here
-#else
-//	setStyle(new FCWindowsStyle);
-#endif
-}
-
-QRect FCCommandLine::arrowRect() const
-{
-  return QRect( width() - 2 - 16, 2, 16, height() - 4 );
 }
 
 void FCCommandLine::dropEvent      ( QDropEvent      * e )

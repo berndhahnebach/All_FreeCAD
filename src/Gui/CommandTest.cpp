@@ -48,7 +48,7 @@
 #include "Inventor/Qt/SoQt.h"
 #include "Inventor/OCC/SoBrepShape.h"
 
-
+#include "Widgets.h"
 #include "Macro.h"
 
 

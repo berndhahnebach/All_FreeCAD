@@ -29,10 +29,6 @@
 #ifndef __FC_WIDGET_FACTORY_H__
 #define __FC_WIDGET_FACTORY_H__
 
-#include "../Base/Factory.h"
-#include <typeinfo>
-#include<qwidget.h>
-
 /** 
  * The widget factory supplier class
  */

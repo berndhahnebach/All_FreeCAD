@@ -32,7 +32,6 @@
 #define DLG_GENERAL_IMP_H
 
 #include "DlgGeneral.h"
-#include "Window.h"
 #include "PropertyPage.h"
 
 /**

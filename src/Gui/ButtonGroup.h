@@ -31,9 +31,7 @@
 #ifndef __BUTTON_GROUP_H__
 #define __BUTTON_GROUP_H__
 
-#include "CommandLine.h"
 #include "Window.h"
-#include "Widgets.h"
 #include "PrefWidgets.h"
 
 // forward declaration

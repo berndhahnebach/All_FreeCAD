@@ -25,6 +25,7 @@
 #include "../../../App/Document.h"
 #include "../../../Gui/Application.h"
 #include "../../../Gui/Command.h"
+#include "../../../Gui/Widgets.h"
 
 
 #include "../../../Gui/Icons/images.cpp"

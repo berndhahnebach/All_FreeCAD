@@ -31,6 +31,7 @@
 #endif
 
 #include "Application.h"
+#include "Command.h"
 #include "View3D.h"
 #include "MouseModel.h"
 #include "Document.h"

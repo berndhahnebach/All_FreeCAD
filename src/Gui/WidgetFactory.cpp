@@ -32,6 +32,7 @@
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
 #include "../Base/Console.h"
+#include "../Base/Factory.h"
 
 
 FCWidgetFactorySupplier* FCWidgetFactorySupplier::_pcSingleton = 0L;

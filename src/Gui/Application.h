@@ -33,11 +33,6 @@
 #define APPLICATION_H
 
 
-//#include <qmainwindow.h>
-//#include <qaction.h>
-//#include <qworkspace.h>
-//#include <qthread.h>
-
 #include "qextmdi/qextmdimainfrm.h"
 
 
@@ -45,12 +40,6 @@
 
 #include "../Base/Console.h"
 #include "../App/Application.h"
-#include "Command.h"
-#include "Widgets.h"
-#include "PrefWidgets.h"
-#include <list>
-#include <vector>
-#include <map>
 
 class FCGuiDocument;
 class QComboBox;
@@ -66,6 +55,11 @@ class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
 class FCViewBar;
+class FCCustomWidgetManager;
+class FCProgressBar;
+class FCView;
+class FCCommandManager;
+
 
 
 /** The Bitmap Factory
@@ -168,16 +162,16 @@ public:
 	void SetActiveDocument(FCGuiDocument* pcDocument);
 
 	/// true when the application shuting down
-	bool IsClosing(void){return _bIsClosing;}
+	bool IsClosing(void);
 
 	/// Reference to the command manager
-	FCCommandManager &GetCommandManager(void){return _cCommandManager;}
+	FCCommandManager &GetCommandManager(void);
 	
 	/// Returns the widget manager
-	FCCustomWidgetManager* GetCustomWidgetManager(void) { return _pcWidgetMgr; }
+	FCCustomWidgetManager* GetCustomWidgetManager(void);
 
-	/// Referenc to the bitmap factory
-	FCBmpFactory     &GetBmpFactory(void){return _cBmpFactory;}
+	/// Reference to the bitmap factory
+	FCBmpFactory     &GetBmpFactory(void);
 
 	/** @name status bar handling */
 	//@{	
@@ -194,7 +188,7 @@ public:
 	/// update the combo box when there are changes in the workbenches
 	void UpdateWorkbenchEntrys(void);
 	/// returns the name of the active workbench
-	QString GetActiveWorkbench(void){return _cActiveWorkbenchName;}
+	QString GetActiveWorkbench(void);
 	std::vector<std::string> GetWorkbenches(void);
 	//@}
 
@@ -202,7 +196,7 @@ public:
   void AppendRecentFile(const char* file);
 
 	/// Get macro manager
-	FCMacroManager *GetMacroMngr(void){return _pcMacroMngr;}
+	FCMacroManager *GetMacroMngr(void);
 
 
 
@@ -240,7 +234,7 @@ public:
 
 signals:
 	void sendQuit();
-    void timeEvent();
+  void timeEvent();
 
 public:
   void Polish();
@@ -253,11 +247,6 @@ protected: // Protected methods
   virtual void keyPressEvent ( QKeyEvent * e );
   virtual void keyReleaseEvent ( QKeyEvent * e );
   virtual bool focusNextPrevChild( bool next );
-  // store it if the CTRL button is pressed or released
-  bool _bControlButton;
-	/// Handels all commands 
-	FCCommandManager _cCommandManager;
-	FCBmpFactory     _cBmpFactory;
 	/// waiting cursor stuff 
 	void timerEvent( QTimerEvent * e){emit timeEvent();}
 
@@ -276,8 +265,8 @@ public slots:
 	 *  nececary.
 	 */
 	//@{
-	void slotUndo();
-	void slotRedo();
+	void OnUndo();
+	void OnRedo();
 	//@}
 
 protected slots:
@@ -285,33 +274,11 @@ protected slots:
   void OnShowView(int);
 
 private:
-  std::map<int, QWidget*> mCheckBars;
-	/// list of all handled documents
- 	std::list<FCGuiDocument*>         lpcDocuments;
-	/// list of windows
-	std::map <std::string,FCWindow*> mpcDocWindows;
-	/// Active document
-	FCGuiDocument*   _pcActiveDocument;
-	FCCustomWidgetManager*		 _pcWidgetMgr;
-	FCMacroManager*  _pcMacroMngr;
-	QLabel *         _pclSizeLabel, *_pclActionLabel;
-	FCProgressBar *  _pclProgress;
-	FCStackBar*        _pcStackBar;
-//	FCHtmlView*		 _pcHtmlView;
-//	FCViewBar *	     _pcViewBar;
-	/// workbench python dictionary
-	PyObject*		 _pcWorkbenchDictionary;
-	QString			 _cActiveWorkbenchName;
-	QTimer *		 _pcActivityTimer; 
-	/// List of all registered views
-	std::list<FCBaseView*>					_LpcViews;
-
-	bool _bIsClosing;
+  struct ApplicationWindowP* d;
 
   // friends
   //
   friend class FCCustomWidgetManager;
-  struct ApplicationWindowP* d;
 };
 
 

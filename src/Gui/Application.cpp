@@ -73,6 +73,7 @@
 #include "Splashscreen.h"
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
+#include "Command.h"
 #include "Tree.h"
 #include "Tools.h"
 #include "PropertyView.h"
@@ -108,8 +109,11 @@ FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 struct ApplicationWindowP
 {
   ApplicationWindowP()
-    : toolbars(0L), cmdbars(0L), viewbar(0L)
+    : toolbars(0L), cmdbars(0L), viewbar(0L), _pcActiveDocument(0L), 
+    _bIsClosing(false), _bControlButton(false)
   {
+	  // create the macro manager
+	  _pcMacroMngr = new FCMacroManager();
   }
 
   ~ApplicationWindowP()
@@ -117,18 +121,41 @@ struct ApplicationWindowP
     viewbar = 0L;
     delete toolbars;
     delete cmdbars;
+    delete _pcWidgetMgr;
+    delete _pcMacroMngr;
   }
 
   QPopupMenu* toolbars;
   QPopupMenu* cmdbars;
   FCPopupMenu* viewbar;
+  std::map<int, QWidget*> mCheckBars;
+	/// list of all handled documents
+ 	std::list<FCGuiDocument*>         lpcDocuments;
+	/// list of windows
+	std::map <std::string,FCWindow*> mpcDocWindows;
+	/// Active document
+	FCGuiDocument*   _pcActiveDocument;
+	FCCustomWidgetManager*		 _pcWidgetMgr;
+	FCMacroManager*  _pcMacroMngr;
+	QLabel *         _pclSizeLabel, *_pclActionLabel;
+	FCProgressBar *  _pclProgress;
+	FCStackBar*        _pcStackBar;
+	/// workbench python dictionary
+	PyObject*		 _pcWorkbenchDictionary;
+	QString			 _cActiveWorkbenchName;
+	QTimer *		 _pcActivityTimer; 
+	/// List of all registered views
+	std::list<FCBaseView*>					_LpcViews;
+	bool _bIsClosing;
+  // store it if the CTRL button is pressed or released
+  bool _bControlButton;
+	/// Handels all commands 
+	FCCommandManager _cCommandManager;
+	FCBmpFactory     _cBmpFactory;
 };
 
 ApplicationWindow::ApplicationWindow()
-    : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
-      _pcActiveDocument(NULL),
-	  _bIsClosing(false),
-    _bControlButton(false)
+    : QextMdiMainFrm( 0, "Main window", WDestructiveClose )
 {
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
@@ -140,7 +167,7 @@ ApplicationWindow::ApplicationWindow()
 
 	setCaption( "Qt-FreeCAD" );
 
-	_cActiveWorkbenchName="<none>";
+	d->_cActiveWorkbenchName="<none>";
 
 	// start thread which observes the application and 
 	// sets/unsets the waiting cursor if necessary
@@ -154,21 +181,18 @@ ApplicationWindow::ApplicationWindow()
 	stApp = this;
 
 	// instanciate the workbench dictionary
-	_pcWorkbenchDictionary = PyDict_New();
+	d->_pcWorkbenchDictionary = PyDict_New();
 
     // attach the console observer
 	GetConsole().AttacheObserver( new FCGuiConsoleObserver(this) );
 
-	// create the macro manager
-	_pcMacroMngr = new FCMacroManager();
 
 	// setting up the Bitmap manager
 //	QString tmpWb = _cActiveWorkbenchName;
-	_cActiveWorkbenchName = "Standard";
-	_cBmpFactory.AddPath("../../FreeCADIcons");
-	_cBmpFactory.AddPath("../Icons");
+	d->_cBmpFactory.AddPath("../../FreeCADIcons");
+	d->_cBmpFactory.AddPath("../Icons");
 //	_cBmpFactory.GetPixmap("Function");
-
+/*
   QDir dir(GetApplication().GetHomePath()); dir.cdUp();
   QString root = dir.path();
 	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
@@ -177,26 +201,26 @@ ApplicationWindow::ApplicationWindow()
 	std::string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
 
 	test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
-
+*/
 
   // animation
   FCAnimation::Instance()->reparent(statusBar(), QPoint());
   statusBar()->addWidget(FCAnimation::Instance(),0,true);
 	// labels and progressbar
-	_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
+	d->_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
 	//_pclProgress->setFixedWidth(200);
-	statusBar()->addWidget(_pclProgress,0,true);
+	statusBar()->addWidget(d->_pclProgress,0,true);
 	//_pclActionLabel = new QLabel("Ready", statusBar(), "Action");
 	//_pclActionLabel->setFixedWidth(120);
 	//statusBar()->addWidget(_pclActionLabel,0,true);
-	_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
-	_pclSizeLabel->setFixedWidth(120);
-	statusBar()->addWidget(_pclSizeLabel,0,true);
+	d->_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
+	d->_pclSizeLabel->setFixedWidth(120);
+	statusBar()->addWidget(d->_pclSizeLabel,0,true);
 
 	// update gui timer
-	_pcActivityTimer = new QTimer( this );
-    connect( _pcActivityTimer, SIGNAL(timeout()),this, SLOT(UpdateCmdActivity()) );
-    _pcActivityTimer->start( 4000, TRUE );                 // 4 seconds single-shot (wait until the gui is up)
+	d->_pcActivityTimer = new QTimer( this );
+    connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(UpdateCmdActivity()) );
+    d->_pcActivityTimer->start( 4000, TRUE );                 // 4 seconds single-shot (wait until the gui is up)
 
 
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -205,30 +229,30 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	_pcStackBar = new FCStackBar(this,"Cmd_Group");
-	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcStackBar);
-	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar, NULL, KDockWidget::DockRight, 83);
+	d->_pcStackBar = new FCStackBar(this,"Cmd_Group");
+	d->_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), d->_pcStackBar);
+	d->_pcWidgetMgr->addDockWindow( "Command bar",d->_pcStackBar, NULL, KDockWidget::DockRight, 83);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
-	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
+	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
-	_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 40);
+	d->_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 40);
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCTree* pcTree = new FCTree(0,0,"Raw_tree");
 	pcTree->setMinimumWidth(210);
-	_pcWidgetMgr->addDockWindow("Tree bar", pcTree,0, KDockWidget::DockLeft, 0);
+	d->_pcWidgetMgr->addDockWindow("Tree bar", pcTree,0, KDockWidget::DockLeft, 0);
 
 	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCPropertyView* pcPropView = new FCPropertyView(0,0,"PropertyView");
 	pcPropView->setMinimumWidth(210);
-	_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
+	d->_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
   // Report View
   FCReportView* pcOutput = new FCReportView(this,"ReportView");
-  _pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
+  d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
 
  	CreateStandardOperations();
 
@@ -255,7 +279,7 @@ ApplicationWindow::ApplicationWindow()
       pScript->SetStatusTip((*it)->GetASCII("Statustip").c_str());
       if ((*it)->GetASCII("Pixmap", "nix") != "nix") pScript->SetPixmap((*it)->GetASCII("Pixmap").c_str());
         pScript->SetAccel((*it)->GetInt("Accel"));
-      _cCommandManager.AddCommand(pScript);
+      d->_cCommandManager.AddCommand(pScript);
     }
   }
 
@@ -264,7 +288,7 @@ ApplicationWindow::ApplicationWindow()
   if (hGrp->HasGroup("Recent files"))
   {
     hGrp = hGrp->GetGroup("Recent files");
-    FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_MRU");
+    FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
     if (pCmd)
     {
       ((FCCmdMRU*)pCmd)->SetMaxItems(hGrp->GetInt("RecentFiles", 4));
@@ -279,9 +303,7 @@ ApplicationWindow::ApplicationWindow()
 
 ApplicationWindow::~ApplicationWindow()
 {
-  delete _pcWidgetMgr;
-  delete _pcMacroMngr;
-  std::vector<FCCommand*> macros = _cCommandManager.GetModuleCommands("Macro");
+  std::vector<FCCommand*> macros = d->_cCommandManager.GetModuleCommands("Macro");
   if (macros.size() > 0)
   {
     FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
@@ -300,7 +322,7 @@ ApplicationWindow::~ApplicationWindow()
   }
 
   // save recent file list
-  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_MRU");
+  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
   if (pCmd)
   {
     char szBuf[200];
@@ -332,127 +354,18 @@ ApplicationWindow::~ApplicationWindow()
 
 void ApplicationWindow::CreateStandardOperations()
 {
-
 	// register the application Standard commands from CommandStd.cpp
 	CreateStdCommands();
 	CreateViewStdCommands();
 	CreateTestCommands();
 
-
-	// populate a tool bar with some actions
-
-//	bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
-	// default toolbars -----------------------------------------------------------------------
-	//
-	// populate toolbars with all default actions
-//	QToolBar *pcStdToolBar =  GetCustomWidgetManager()->getToolBar("file operations");
-	//_pcStdToolBar->setLabel( "File" );
-/*
-	if (!bInit)
-	{
-		std::vector<std::string> defToolbar;
-		defToolbar.push_back("Std_New");
-		defToolbar.push_back("Std_Open");
-		defToolbar.push_back("Std_Save");
-		defToolbar.push_back("Std_Print");
-		defToolbar.push_back("Separator");
-		defToolbar.push_back("Std_Cut");
-		defToolbar.push_back("Std_Copy");
-		defToolbar.push_back("Std_Paste");
-		defToolbar.push_back("Separator");
-		defToolbar.push_back("Std_Undo");
-		defToolbar.push_back("Std_Redo");
-		defToolbar.push_back("Separator");
-		defToolbar.push_back("Std_Workbench");
-		defToolbar.push_back("Std_WhatsThis");
-		_pcWidgetMgr->addToolBar("file operations", defToolbar);
-
-		defToolbar.clear();
-		defToolbar.push_back("Std_DlgMacroRecord");
-		defToolbar.push_back("Std_DlgMacroStop");
-		defToolbar.push_back("Std_DlgMacroExecute");
-		_pcWidgetMgr->addToolBar("Macro recording", defToolbar);
-		// hide
-		_pcWidgetMgr->getToolBar("Macro recording")->hide();
-
-	}*/
-	
-	// default menu bar -----------------------------------------------------------------------
-	//
-	// populate menus with all default actions
-/*	if (!bInit)
-	{
-		std::vector<std::string> defaultMenus;
-		defaultMenus.push_back("Std_New");
-		defaultMenus.push_back("Std_Open");
-		defaultMenus.push_back("Std_Save");
-		defaultMenus.push_back("Std_SaveAs");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_Print");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_MRU");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_Quit");
-		_pcWidgetMgr->addPopupMenu("File", defaultMenus);
-
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_Cut");
-		defaultMenus.push_back("Std_Copy");
-		defaultMenus.push_back("Std_Paste");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_Undo");
-		defaultMenus.push_back("Std_Redo");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_DlgPreferences");
-    _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
-
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_ViewCreateInventor");
-		defaultMenus.push_back("Std_ViewCreateOCC");
-		defaultMenus.push_back("Separator");
-    _pcWidgetMgr->addPopupMenu("View", defaultMenus);
-  
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_CommandLine");
-		defaultMenus.push_back("Std_DlgParameter");
-#ifdef FC_USE_OCAFBROWSER
-		defaultMenus.push_back("Std_OCAFBrowser");
-#endif
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_DlgMacroRecord");
-		defaultMenus.push_back("Std_DlgMacroStop");
-		defaultMenus.push_back("Std_DlgMacroExecute");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_ViewCreateInventor");
-		defaultMenus.push_back("Std_ViewCreateOCC");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_DlgCustomize");
-		defaultMenus.push_back("Std_DlgPreferences");
-		_pcWidgetMgr->addPopupMenu("Tools", defaultMenus);
-
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_TileHoricontal");
-		defaultMenus.push_back("Std_TileVertical");
-		defaultMenus.push_back("Std_TilePragmatic");
-		defaultMenus.push_back("Separator");
-		defaultMenus.push_back("Std_MDIToplevel");
-		defaultMenus.push_back("Std_MDITabed");
-		_pcWidgetMgr->addPopupMenu("Windows", defaultMenus);
-  
-		defaultMenus.clear();
-		defaultMenus.push_back("Std_OnlineHelp");
-		defaultMenus.push_back("Std_About");
-		defaultMenus.push_back("Std_WhatsThis");
-		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
-	}*/
-
-	setMenuForSDIModeSysButtons( menuBar());
-	_cActiveWorkbenchName = "<none>";
+  setMenuForSDIModeSysButtons( menuBar());
 }
 
 void ApplicationWindow::Polish()
 {
-  d->viewbar  = _pcWidgetMgr->getPopupMenu("View");
+  d->viewbar  = d->_pcWidgetMgr->getPopupMenu("View");
+  d->viewbar->setCanModify(true);
   d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
   d->cmdbars  = new QPopupMenu(d->viewbar, "Cmdbars");
 
@@ -467,24 +380,24 @@ void ApplicationWindow::OnShowView()
   FCPopupMenu* menu = d->viewbar;
   menu->update(GetCommandManager());
   menu->setCheckable(true);
-  mCheckBars.clear();
+  d->mCheckBars.clear();
 
   // toolbars
   {
     QPopupMenu* m = d->toolbars;
     m->clear();
-    std::vector<FCToolBar*> tb = _pcWidgetMgr->getToolBars();
+    std::vector<FCToolBar*> tb = d->_pcWidgetMgr->getToolBars();
     for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
     {
       int id = m->insertItem((*it)->name());
-      mCheckBars[id] = *it;
+      d->mCheckBars[id] = *it;
       if ((*it)->isVisible())
 		    m->setItemChecked(id, true);
     }
 
     m->insertSeparator();
     int id = m->insertItem("Taskbar");
-    mCheckBars[id] = m_pTaskBar;
+    d->mCheckBars[id] = m_pTaskBar;
     if (m_pTaskBar->isVisible())
 		  m->setItemChecked(id, true);
 
@@ -495,12 +408,12 @@ void ApplicationWindow::OnShowView()
   {
     QPopupMenu* m = d->cmdbars;
     m->clear();
-    std::vector<FCToolBar*> tb = _pcWidgetMgr->getCmdBars();
+    std::vector<FCToolBar*> tb = d->_pcWidgetMgr->getCmdBars();
     for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
     {
       int id = m->insertItem((*it)->name());
-      mCheckBars[id] = *it;
-      if (_pcStackBar->isPageVisible(*it))
+      d->mCheckBars[id] = *it;
+      if (d->_pcStackBar->isPageVisible(*it))
 		    m->setItemChecked(id, true);
     }
 
@@ -509,14 +422,14 @@ void ApplicationWindow::OnShowView()
   menu->insertSeparator();
 
   // dock windows
-  std::vector<FCDockWindow*> windows = _pcWidgetMgr->getDockWindows();
+  std::vector<FCDockWindow*> windows = d->_pcWidgetMgr->getDockWindows();
   for (std::vector<FCDockWindow*>::iterator it = windows.begin(); it!=windows.end(); ++it)
   {
     KDockWidget* w = manager()->getDockWidgetFromName((*it)->name());
     if (w)
     {
       int id = menu->insertItem(w->tabPageLabel());
-      mCheckBars[id] = w;
+      d->mCheckBars[id] = w;
       if (w->isVisible())
 		    menu->setItemChecked(id, true);
     }
@@ -526,37 +439,37 @@ void ApplicationWindow::OnShowView()
   menu->insertSeparator();
   QWidget* w = statusBar();
   int id = menu->insertItem("Status bar");
-  mCheckBars[id] = w;
+  d->mCheckBars[id] = w;
   if (w->isVisible())
 		menu->setItemChecked(id, true);
 }
 
 void ApplicationWindow::OnShowView(int id)
 {
-  if (mCheckBars.find(id)==mCheckBars.end())
+  if (d->mCheckBars.find(id)==d->mCheckBars.end())
     return; // not a dock window
-  if (!mCheckBars[id])
+  if (!d->mCheckBars[id])
     return; // no valid dock window
 
   QPopupMenu* menu = (QPopupMenu*)sender();
 
   if (menu->isItemChecked(id))
   {
-    if (mCheckBars[id]->inherits("KDockWidget"))
-      ((KDockWidget*)mCheckBars[id])->changeHideShowState();
-    else if (_pcStackBar->hasView(mCheckBars[id]))
-      _pcStackBar->hidePage(mCheckBars[id]);
+    if (d->mCheckBars[id]->inherits("KDockWidget"))
+      ((KDockWidget*)d->mCheckBars[id])->changeHideShowState();
+    else if (d->_pcStackBar->hasView(d->mCheckBars[id]))
+      d->_pcStackBar->hidePage(d->mCheckBars[id]);
     else
-      mCheckBars[id]->hide();
+      d->mCheckBars[id]->hide();
   }
   else
   {
-    if (mCheckBars[id]->inherits("KDockWidget"))
-      ((KDockWidget*)mCheckBars[id])->changeHideShowState();
-    else if (_pcStackBar->hasView(mCheckBars[id]))
-      _pcStackBar->showPage(mCheckBars[id]);
+    if (d->mCheckBars[id]->inherits("KDockWidget"))
+      ((KDockWidget*)d->mCheckBars[id])->changeHideShowState();
+    else if (d->_pcStackBar->hasView(d->mCheckBars[id]))
+      d->_pcStackBar->showPage(d->mCheckBars[id]);
     else
-      mCheckBars[id]->show();
+      d->mCheckBars[id]->show();
   }
 }
 
@@ -566,19 +479,19 @@ void ApplicationWindow::OnShowView(int id)
 
 void ApplicationWindow::OnDocNew(FCDocument* pcDoc)
 {
-	lpcDocuments.push_back( new FCGuiDocument(pcDoc,this) );
+	d->lpcDocuments.push_back( new FCGuiDocument(pcDoc,this) );
 }
 
 void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 {
 	FCGuiDocument* pcGDoc;
 
-	for(std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
+	for(std::list<FCGuiDocument*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
 	{
 		if( ((*It)->GetDocument()) == pcDoc)
 		{
 			pcGDoc = *It;
-			lpcDocuments.erase(It);
+			d->lpcDocuments.erase(It);
 			delete pcGDoc;
 		}
 	}
@@ -587,15 +500,15 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 
 void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 {
-	if(!_bIsClosing)
+	if(!d->_bIsClosing)
 	{
 		// GuiDocument has closed the last window and get destructed
-		lpcDocuments.remove(pcDoc);
+		d->lpcDocuments.remove(pcDoc);
 		//lpcDocuments.erase(pcDoc);
 		delete pcDoc;
 		
 		// last document closed?
-		if(lpcDocuments.size() == 0 )
+		if(d->lpcDocuments.size() == 0 )
 			// reset active document
 			SetActiveDocument(0);
 	}
@@ -605,14 +518,14 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 void ApplicationWindow::SetPaneText(int i, QString text)
 {
   if (i==1)
-    _pclActionLabel->setText(text);
+    d->_pclActionLabel->setText(text);
   else if (i==2)
-    _pclSizeLabel->setText(text);
+    d->_pclSizeLabel->setText(text);
 }
 
 FCProgressBar* ApplicationWindow::GetProgressBar()
 {
-  return _pclProgress;
+  return d->_pclProgress;
 }
 
 
@@ -655,7 +568,7 @@ FCView* ApplicationWindow::GetActiveView(void)
 /// Geter for the Active View
 FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 {
-	return _pcActiveDocument;
+	return d->_pcActiveDocument;
 	/*
 	FCView* pView = GetActiveView();
 
@@ -667,38 +580,36 @@ FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 
 void ApplicationWindow::SetActiveDocument(FCGuiDocument* pcDocument)
 {
-	_pcActiveDocument=pcDocument;
+	d->_pcActiveDocument=pcDocument;
 
-	GetConsole().Log("Activate Document (%p) \n",_pcActiveDocument);
+	GetConsole().Log("Activate Document (%p) \n",d->_pcActiveDocument);
 
 	// notify all views attached to the application (not views belong to a special document)
-	for(std::list<FCBaseView*>::iterator It=_LpcViews.begin();It!=_LpcViews.end();It++)
+	for(std::list<FCBaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
 		(*It)->SetDocument(pcDocument);
 
 }
 
 void ApplicationWindow::AttachView(FCBaseView* pcView)
 {
-	_LpcViews.push_back(pcView);
-
+	d->_LpcViews.push_back(pcView);
 }
 
 
 void ApplicationWindow::DetachView(FCBaseView* pcView)
 {
-
-	_LpcViews.remove(pcView);
+	d->_LpcViews.remove(pcView);
 }
 
 void ApplicationWindow::Update(void)
 {
 	// update all documents
-	for(std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
+	for(std::list<FCGuiDocument*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
 	{
 		(*It)->Update();
 	}
 	// update all the independed views
-	for(std::list<FCBaseView*>::iterator It2 = _LpcViews.begin();It2 != _LpcViews.end();It2++)
+	for(std::list<FCBaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
 	{
 		(*It2)->Update();
 	}
@@ -724,12 +635,12 @@ void ApplicationWindow::UpdateActive(void)
 }
 
 
-void ApplicationWindow::slotUndo()
+void ApplicationWindow::OnUndo()
 {
 	puts("ApplicationWindow::slotUndo()");
 }
 
-void ApplicationWindow::slotRedo()
+void ApplicationWindow::OnRedo()
 {
 	puts("ApplicationWindow::slotRedo()");
 
@@ -747,12 +658,12 @@ void ApplicationWindow::resizeEvent ( QResizeEvent *e)
 void ApplicationWindow::closeEvent ( QCloseEvent * e )
 {
 
-	if(lpcDocuments.size() == 0)
+	if(d->lpcDocuments.size() == 0)
 	{
 		e->accept();
 	}else{
 		// ask all documents if closable
-		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		for (std::list<FCGuiDocument*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
 		{
 			(*It)->CanClose ( e );
 //			if(! e->isAccepted() ) break;
@@ -761,7 +672,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 	}
 
 	// ask all passiv views if closable
-	for (std::list<FCBaseView*>::iterator It2 = _LpcViews.begin();It2!=_LpcViews.end();It2++)
+	for (std::list<FCBaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
 	{
 		if((*It2)->CanClose() )
 			e->accept();
@@ -774,32 +685,32 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
 	if( e->isAccepted() )
 	{
-		_bIsClosing = true;
+		d->_bIsClosing = true;
 
 		std::list<FCGuiDocument*>::iterator It;
 
 		// close all views belonging to a document
-		for (It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
 		{
 			(*It)->CloseAllViews();
 		}
 
 		//detache the passiv views
 		//SetActiveDocument(0);
-		std::list<FCBaseView*>::iterator It2 = _LpcViews.begin();
-		while (It2!=_LpcViews.end())
+		std::list<FCBaseView*>::iterator It2 = d->_LpcViews.begin();
+		while (It2!=d->_LpcViews.end())
 		{
 			(*It2)->Close();
-			It2 = _LpcViews.begin();
+			It2 = d->_LpcViews.begin();
 		}
 
 		// remove all documents
-		for (It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
 		{
 			delete(*It);
 		}
 
-		_pcActivityTimer->stop();
+		d->_pcActivityTimer->stop();
 
     ActivateWorkbench("<none>");
 		QextMdiMainFrm::closeEvent(e);
@@ -817,7 +728,7 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
 
     std::map<int, QToolBar*> toolb;
 
-    std::vector<FCToolBar*> aclToolBars = _pcWidgetMgr->getToolBars();
+    std::vector<FCToolBar*> aclToolBars = d->_pcWidgetMgr->getToolBars();
 	  for (std::vector<FCToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
     {
       int id = menu.insertItem((*It)->name());
@@ -868,7 +779,7 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
 
 bool ApplicationWindow::focusNextPrevChild( bool next )
 {
-  if (_bControlButton)
+  if (d->_bControlButton)
   {
     if (next)
       activateNextWin();
@@ -883,13 +794,13 @@ bool ApplicationWindow::focusNextPrevChild( bool next )
 
 void ApplicationWindow::keyPressEvent ( QKeyEvent * e )
 {
-  _bControlButton = (e->state() &  ControlButton);
+  d->_bControlButton = (e->state() &  ControlButton);
   QextMdiMainFrm::keyPressEvent(e);
 }
 
 void ApplicationWindow::keyReleaseEvent ( QKeyEvent * e )
 {
-  _bControlButton = (e->state() &  ControlButton);
+  d->_bControlButton = (e->state() &  ControlButton);
   QextMdiMainFrm::keyReleaseEvent (e);
 }
 
@@ -904,34 +815,45 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	PyBuf Name(name);
 
 	// close old workbench
-	if(_cActiveWorkbenchName != "")
+	if(d->_cActiveWorkbenchName != "")
 	{
-		PyBuf OldName ( _cActiveWorkbenchName.latin1());
-		PyObject* pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, OldName.str);
+		PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
+		PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
 		GetInterpreter().RunMethodVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
-	PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
+	PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
 
-	// test if the workbench in
-	assert(pcWorkbench);
+  try{
+	  // test if the workbench in
+	  assert(pcWorkbench);
+    if (!pcWorkbench)
+    {
+      QString exc = tr("Workbench '%1' does not exist").arg(name);
+      throw FCException(exc.latin1());
+    }
 
-  // rename with new workbench before(!!!) calling "Start"
-	_cActiveWorkbenchName = name;
+    // rename with new workbench before(!!!) calling "Start"
+	  d->_cActiveWorkbenchName = name;
 
-	// runing the start of the workbench object
-	GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
-  _pcWidgetMgr->update(name);
+	  // running the start of the workbench object
+	  GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
+    d->_pcWidgetMgr->update(name);
 
-	// update the Std_Workbench command and its action object
-  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_Workbench");
-  if (pCmd)
-  {
-    ((FCCmdWorkbench*)pCmd)->UpdateAction(name);
+	  // update the Std_Workbench command and its action object
+    FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
+    if (pCmd)
+    {
+      ((FCCmdWorkbench*)pCmd)->UpdateAction(name);
+    }
+
+	  show();
   }
-
-	show();
+  catch (const FCException& rclE)
+  {
+    GetConsole().Error("%s\n", rclE.what());
+  }
 }
 
 void ApplicationWindow::UpdateWorkbenchEntrys(void)
@@ -939,14 +861,14 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 	PyObject *key, *value;
 	int pos = 0;
      
-  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_Workbench");
+  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
   if (pCmd)
   {
   	// remove all items from the command
     ((FCCmdWorkbench*)pCmd)->Clear();
 
   	// insert all items
-    while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
+    while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
 		  /* do something interesting with the values... */
       ((FCCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
 	  }
@@ -959,7 +881,7 @@ std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
 	int pos = 0;
   std::vector<std::string> wb;
 	// insert all items
-	while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
+	while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
 		/* do something interesting with the values... */
 		wb.push_back(PyString_AsString(key));
 	}
@@ -968,7 +890,7 @@ std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
 
 void ApplicationWindow::AppendRecentFile(const char* file)
 {
-  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_MRU");
+  FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
   if (pCmd)
   {
     ((FCCmdMRU*)pCmd)->AddItem(file);
@@ -982,12 +904,12 @@ void ApplicationWindow::UpdateCmdActivity()
 	if(cLastCall.elapsed() > 250 && isVisible () )
 	{
 		//puts("testActive");
-		_cCommandManager.TestActive();
+		d->_cCommandManager.TestActive();
 		// remember last call
 		cLastCall.start();
 	}
 
-	_pcActivityTimer->start( 300, TRUE );	
+	d->_pcActivityTimer->start( 300, TRUE );	
 }
 
 void ApplicationWindow::LoadWindowSettings()
@@ -1133,6 +1055,36 @@ void ApplicationWindow::setAreaPal(const QPalette& pal)
   m_pMdi->setMdiCaptionInactiveForeColor(pal.disabled().light());
 }
 
+bool ApplicationWindow::IsClosing(void)
+{
+  return d->_bIsClosing;
+}
+
+FCCustomWidgetManager* ApplicationWindow::GetCustomWidgetManager(void) 
+{ 
+  return d->_pcWidgetMgr; 
+}
+
+QString ApplicationWindow::GetActiveWorkbench(void)
+{
+  return d->_cActiveWorkbenchName;
+}
+
+FCMacroManager *ApplicationWindow::GetMacroMngr(void)
+{
+  return d->_pcMacroMngr;
+}
+
+FCCommandManager &ApplicationWindow::GetCommandManager(void)
+{
+  return d->_cCommandManager;
+}
+
+FCBmpFactory& ApplicationWindow::GetBmpFactory(void)
+{
+  return d->_cBmpFactory;
+}
+
 //**************************************************************************
 // Python stuff
 
@@ -1186,14 +1138,17 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
   PyObject* pObject;
   char* psMenuName;
   char* parent = 0;
-  int bForce;
-  int bRemovable = 1;
+  int bModify=1;
+  int bRemovable=1;
   // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sOi|is", &psMenuName, &pObject, &bForce,
+  if (!PyArg_ParseTuple(args, "sO|iis", &psMenuName, &pObject, &bModify, 
                                         &bRemovable, &parent ))     
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
+  {
+    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
     return NULL;                             // NULL triggers exception 
+  }
 
   std::vector<std::string> aclItems;
   int nSize = PyList_Size(pObject);
@@ -1209,9 +1164,9 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
   }
 
   try{
-    Instance->_pcWidgetMgr->addPopupMenu(psMenuName, aclItems, parent, bForce);
-    if (!bRemovable)
-      Instance->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(false);
+    Instance->d->_pcWidgetMgr->addPopupMenu(psMenuName, aclItems, parent);
+    Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setCanModify(bModify!=0);
+    Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(bRemovable!=0);
 	}catch(const FCException& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
@@ -1232,7 +1187,10 @@ PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
                                      &pObject))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
+  {
+    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
     return NULL;                             // NULL triggers exception 
+  }
 
   std::vector<std::string> aclItems;
   int nSize = PyList_Size(pObject);
@@ -1247,7 +1205,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
     aclItems.push_back(pItem);
   }
 
-  Instance->_pcWidgetMgr->removeMenuItems(psMenuName, aclItems);
+  Instance->d->_pcWidgetMgr->removeMenuItems(psMenuName, aclItems);
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1261,22 +1219,25 @@ PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
 	Instance->GetCustomWidgetManager()->delPopupMenu(psMenuName);
 
 	Py_INCREF(Py_None);
-    return Py_None;
+  return Py_None;
 }
 
 PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
 {
   PyObject* pObject;
   char* psToolbarName;
-  int bForce;
+  int bModify=1;
   int bVisible=1;
   int bRemovable=1;
   // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sOi|ii", &psToolbarName, &pObject, &bForce,
-                                        &bVisible, &bRemovable))     
+  if (!PyArg_ParseTuple(args, "sO|iii", &psToolbarName, &pObject, &bModify,
+                                        &bRemovable, &bVisible ))     
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
+  {
+    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
 		return NULL;                                      // NULL triggers exception 
+  }
 
   std::vector<std::string> aclItems;
   int nSize = PyList_Size(pObject);
@@ -1292,11 +1253,11 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
   }
 
 	try{
-    Instance->_pcWidgetMgr->addToolBar(psToolbarName, aclItems, bForce);
+    Instance->d->_pcWidgetMgr->addToolBar(psToolbarName, aclItems);
     if (!bVisible)
-      Instance->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
-    if (!bRemovable)
-      Instance->_pcWidgetMgr->getToolBar(psToolbarName)->setRemovable(false);
+      Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
+    Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setCanModify(bModify!=0);
+    Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setRemovable(bRemovable!=0);
 	}catch(const FCException& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
@@ -1306,7 +1267,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
 	}
 
 	Py_INCREF(Py_None);
-    return Py_None;
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
@@ -1317,7 +1278,10 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
                                      &pObject))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
+  {
+    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
 		return NULL;                             // NULL triggers exception 
+  }
 
   std::vector<std::string> aclItems;
   int nSize = PyList_Size(pObject);
@@ -1332,7 +1296,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
     aclItems.push_back(pItem);
   }
 
-  Instance->_pcWidgetMgr->removeToolBarItems(psToolbarName, aclItems);
+  Instance->d->_pcWidgetMgr->removeToolBarItems(psToolbarName, aclItems);
     
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1353,14 +1317,17 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
 {
   PyObject* pObject;
   char* psToolbarName;
-  int bForce;
-  int bRemovable = 1;
+  int bModify=1;
+  int bRemovable=1;
   // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sOi|i", &psToolbarName, &pObject,
-                                     &bForce, &bRemovable))     
+  if (!PyArg_ParseTuple(args, "sO|ii", &psToolbarName, &pObject,
+                                      &bModify, &bRemovable))     
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
+  {
+    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
 		return NULL;                                      // NULL triggers exception 
+  }
 
   std::vector<std::string> aclItems;
   int nSize = PyList_Size(pObject);
@@ -1376,9 +1343,9 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
   }
 
 	try{
-    Instance->_pcWidgetMgr->addCmdBar(psToolbarName, aclItems, bForce);
-    if (!bRemovable)
-      Instance->_pcWidgetMgr->getCmdBar(psToolbarName)->setRemovable(false);
+    Instance->d->_pcWidgetMgr->addCmdBar(psToolbarName, aclItems);
+    Instance->d->_pcWidgetMgr->getCmdBar(psToolbarName)->setCanModify(bModify!=0);
+    Instance->d->_pcWidgetMgr->getCmdBar(psToolbarName)->setRemovable(bRemovable!=0);
 	}catch(const FCException& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
@@ -1388,7 +1355,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
 	}
 
 	Py_INCREF(Py_None);
-    return Py_None;
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
@@ -1399,7 +1366,10 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
                                      &pObject))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
+  {
+    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
 		return NULL;                             // NULL triggers exception 
+  }
 
   std::vector<std::string> aclItems;
   int nSize = PyList_Size(pObject);
@@ -1414,7 +1384,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
     aclItems.push_back(pItem);
   }
 
-  Instance->_pcWidgetMgr->removeCmdBarItems(psToolbarName, aclItems);
+  Instance->d->_pcWidgetMgr->removeCmdBarItems(psToolbarName, aclItems);
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1442,7 +1412,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
 
 	//Py_INCREF(pcObject);
 
-	PyDict_SetItemString(Instance->_pcWorkbenchDictionary,psKey,pcObject);
+	PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
 
 	Instance->UpdateWorkbenchEntrys();
 
@@ -1456,10 +1426,12 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchDelete)
 	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
 		return NULL;										// NULL triggers exception 
 
-	PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
+	PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
+
+  Instance->UpdateWorkbenchEntrys();
 
 	Py_INCREF(Py_None);
-    return Py_None;
+  return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
@@ -1479,7 +1451,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
     if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	return Instance->_pcWorkbenchDictionary;
+	return Instance->d->_pcWorkbenchDictionary;
 }
 
 PYFUNCIMP_S(ApplicationWindow,sCommandAdd)

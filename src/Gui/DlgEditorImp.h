@@ -32,7 +32,6 @@
 #define DLG_EDITOR_IMP_H
 
 #include "DlgEditor.h"
-#include "Window.h"
 #include "PropertyPage.h"
 
 /**

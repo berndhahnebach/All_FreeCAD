@@ -21,6 +21,7 @@
 #include "ButtonGroup.h"
 #include "HtmlView.h"
 #include "Macro.h"
+#include "DlgUndoRedo.h"
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
@@ -640,7 +641,7 @@ FCScriptCommand::FCScriptCommand(const char* name)
 	_sWhatsThis		="Not set!!";
 	_sStatusTip		="Not set!!";
 	_iAccel			=0;
-  sAppModule    = "Macro";
+  sAppModule    = "";
   sGroup        = "Macros";
 }
 
@@ -830,6 +831,28 @@ std::vector <FCCommand*> FCCommandManager::GetModuleCommands(const char *sModNam
 	}
 
 	return vCmds;
+}
+
+std::string FCCommandManager::GetAppModuleName(QAction* pAction)
+{
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
+	{
+    if ( It->second->GetAction() == pAction )
+      return It->second->GetAppModuleName();
+	}
+
+  return "Not found";
+}
+
+std::string FCCommandManager::GetAppModuleNameByName(const char* sName)
+{
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
+	{
+    if ( strcmp(It->second->GetName(), sName) == 0 )
+      return It->second->GetAppModuleName();
+	}
+
+  return "Not found";
 }
 
 std::vector <FCCommand*> FCCommandManager::GetAllCommands(void)

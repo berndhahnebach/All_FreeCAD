@@ -32,8 +32,6 @@
 #ifndef __MOUSEMODEL_H__
 #define __MOUSEMODEL_H__
 
-#include "Window.h"
-
 // forwards
 class QMouseEvent;
 class QKeyEvent;

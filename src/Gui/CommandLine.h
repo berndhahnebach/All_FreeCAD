@@ -32,14 +32,14 @@
 #define __COMMAND_LINE_H__
  
 
-#include <list>
-#include <string>
 #include "Window.h"
+
 #ifdef FC_OS_LINUX
 #	include <qwindowsstyle.h>
 #	include <qvalidator.h>
 #	include <qlineedit.h>
 #endif
+
 /** Validate input of the command line
  */
 class FCConsoleValidator : public QValidator
@@ -50,108 +50,6 @@ class FCConsoleValidator : public QValidator
 
     virtual State validate ( QString &, int & ) const;
     virtual void fixup ( QString & ) const;
-};
-
-/** The windows style for the command line
- */
-class FCWindowsStyle : public QStyle //QWindowsStyle
-{
-  public:
-
-#if QT_VERSION <= 230
-    void drawComboButton ( QPainter * p, int x, int y, int w, int h, 
-                           const QColorGroup & g, bool sunken = FALSE, 
-                           bool editable = FALSE, bool enabled = TRUE, 
-                           const QBrush * fill = 0 )
-    {
-      qDrawWinPanel(p, x, y, w, h, g, TRUE, 
-              	    fill?fill:(enabled?&g.brush( QColorGroup::Base ): &g.brush( QColorGroup::Base )));
-
-      drawArrow( p, QStyle::DownArrow, sunken, x+w-2-16+ 2, y+2+ 2, 16- 4, h-4- 4, g, enabled,
-        	       fill ? fill : &g.brush( QColorGroup::Base ) );
-    }
-
-    void drawScrollBarControls ( QPainter * p, const QScrollBar * sb, int sliderStart, uint controls, uint activeControl )
-    {
-
-#define HORIZONTAL false
-#define VERTICAL true
-#define ADD_LINE_ACTIVE ( activeControl == AddLine )
-#define SUB_LINE_ACTIVE ( activeControl == SubLine )
-       
-      QColorGroup g  = sb->colorGroup();
-
-      int sliderMin, sliderMax, sliderLength, buttonDim;
-      scrollBarMetrics( sb, sliderMin, sliderMax, sliderLength, buttonDim );
-
-      if (sliderStart > sliderMax) 
-      {
-	      sliderStart = sliderMax;
-      }
-
-      int b = 0;
-      int dimB = buttonDim;
-      QRect addB;
-      QRect subB;
-      QRect addPageR;
-      QRect subPageR;
-      QRect sliderR;
-      int addX, addY, subX, subY;
-      int length = HORIZONTAL ? sb->width()  : sb->height();
-      int extent = HORIZONTAL ? sb->height() : sb->width();
-
-      if ( HORIZONTAL ) 
-      {
-	      subY = addY = ( extent - dimB ) / 2;
-	      subX = b;
-	      addX = length - dimB - b;
-      }
-      else
-      {
-	      subX = addX = ( extent - dimB ) / 2;
-	      subY = b;
-	      addY = length - dimB - b;
-      }
-
-      subB.setRect( subX,subY,dimB,dimB );
-      addB.setRect( addX,addY,dimB,dimB );
-
-      int sliderEnd = sliderStart + sliderLength;
-      int sliderW = extent - b*2;
-      if ( HORIZONTAL ) 
-      {
-	      subPageR.setRect( subB.right() + 1, b, sliderStart - subB.right() - 1 , sliderW );
-	      addPageR.setRect( sliderEnd, b, addX - sliderEnd, sliderW );
-	      sliderR .setRect( sliderStart, b, sliderLength, sliderW );
-      }
-      else 
-      {
-	      subPageR.setRect( b, subB.bottom() + 1, sliderW, sliderStart - subB.bottom() - 1 );
-	      addPageR.setRect( b, sliderEnd, sliderW, addY - sliderEnd );
-	      sliderR .setRect( b, sliderStart, sliderW, sliderLength );
-      }
-
-      bool maxedOut = (sb->maxValue() == sb->minValue());
-      if ( controls & AddLine ) 
-      {
-//        if (sb->maxValue() != sb->value())
-	        drawArrow( p, VERTICAL ? DownArrow : RightArrow, ADD_LINE_ACTIVE, addB.x()+2, addB.y()+2,
-        		         addB.width()-4, addB.height()-4, g, !maxedOut );
-      }
-      if ( controls & SubLine ) 
-      {
-//        if (sb->minValue() != sb->value())
-	        drawArrow( p, VERTICAL ? UpArrow : LeftArrow, SUB_LINE_ACTIVE, subB.x()+2, subB.y()+2,
-         		         subB.width()-4, subB.height()-4, g, !maxedOut );
-      }
-    }
-#elif QT_VERSION > 230
-    void drawPrimitive( PrimitiveElement pe, QPainter * p, const QRect & r, const QColorGroup & cg, SFlags flags, const QStyleOption & opt ) const
-    {
-      //QWindowsStyle
-	  QStyle::drawPrimitive( pe, p, r, cg, flags, opt );
-    }
-#endif
 };
 
 /** The command line class
@@ -179,8 +77,6 @@ protected:
   void keyPressEvent ( QKeyEvent * e );
   void mousePressEvent ( QMouseEvent * e );
   void wheelEvent ( QWheelEvent * e );
-  void enterEvent ( QEvent * );
-  void leaveEvent ( QEvent * );
   void dropEvent      ( QDropEvent      * e );
   void dragEnterEvent ( QDragEnterEvent * e );
 
@@ -200,9 +96,6 @@ protected slots:
   void slotOpenConsole();
   /** launch the command */
   void slotLaunchCommand();
-
-private:
-  QRect FCCommandLine::arrowRect() const;
 };
 
 inline FCCommandLine &GetCmdLine(void)

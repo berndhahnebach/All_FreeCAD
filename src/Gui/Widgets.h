@@ -28,7 +28,6 @@
 
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
-#include "Window.h"
 //#include <qprogressbar.h>
 //#include <qlabel.h>
 //#include <qiconview.h>

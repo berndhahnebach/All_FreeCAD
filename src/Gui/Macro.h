@@ -35,8 +35,7 @@
 
 // Std. configurations
 
-#include <string>
-
+struct ApplicationWindowP;
 
 /** Macro recording and play back management
  * The purpos of this class is to handle record 
@@ -99,7 +98,7 @@ public:
 
 	void Run(MacroType eType,const char *sName);
 
-	friend class ApplicationWindow;
+	friend struct ApplicationWindowP;
 
 protected:
 

@@ -32,7 +32,6 @@
 #define DLG_ONLINE_HELP_IMP_H
 
 #include "DlgOnlineHelp.h"
-#include "Window.h"
 #include "PropertyPage.h"
 
 class FCOnlineHelp : public FCOnlineHelpBase, public FCPreferencePage

@@ -19,6 +19,7 @@
 #endif
 #include <fcntl.h>
 #include <ctype.h>
+#include <typeinfo>
 
 // STL
 #include <vector>
@@ -181,11 +182,9 @@
 #include <qmainwindow.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
+#include <qmime.h>
+#include <qmovie.h>
 #include <qmultilineedit.h>
-//#include <qmotifplusstyle.h>
-//#include <qmotifstyle.h>
-//#include <qmovie.h>
-//#include <qmultilinedit.h>
 #include <qnamespace.h>
 #include <qobjectlist.h>
 #include <qpaintdevicemetrics.h>
@@ -196,9 +195,11 @@
 #include <qprinter.h>
 #include <qprogressbar.h>
 #include <qpushbutton.h>
+#include <qradiobutton.h>
 #include <qrangecontrol.h>
 #include <qrect.h>
 #include <qscrollbar.h>
+#include <qslider.h>
 #include <qspinbox.h>
 #include <qsplitter.h> 
 #include <qstatusbar.h>

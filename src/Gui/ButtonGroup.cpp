@@ -41,6 +41,7 @@
 #include "ButtonGroup.h"
 #include "Application.h"
 #include "DlgCustomizeImp.h"
+#include "Command.h"
 #include "../Base/Exception.h"
 
 
@@ -668,14 +669,10 @@ bool FCStackBar::addView(QWidget* page, const QString &name)
   connect( button, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
   QScrollView *sv = new QScrollView( this );
   sv->setHScrollBarMode(QScrollView::AlwaysOff);
+  sv->setVScrollBarMode(QScrollView::AlwaysOff);
   sv->setResizePolicy( QScrollView::AutoOneFit );
   sv->addChild( page );
   sv->setFrameStyle( QFrame::NoFrame );
-#ifdef FC_OS_LINUX
-#	warning style setting skipped here
-#else
-//  sv->verticalScrollBar()->setStyle(new FCWindowsStyle);
-#endif
   page->show();
   m_mButtonView[button] = sv;
   m_pLayout->addWidget( button );

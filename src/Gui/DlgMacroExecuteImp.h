@@ -34,7 +34,6 @@
 #define DLGMACROEXECUTEIMP_H
 #include "DlgMacroExecute.h"
 #include "Window.h"
-#include <string>
 
 
 class DlgMacroExecuteImp : public DlgMacroExecute, public FCWindowParameter

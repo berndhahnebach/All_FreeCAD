@@ -41,7 +41,7 @@
 #include "DlgCommandsImp.h"
 #include "Application.h"
 #include "Tools.h"
-#include <qtabwidget.h>
+#include "Command.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -44,6 +44,7 @@
 #include "Splashscreen.h"
 #include "Command.h"
 #include "HtmlView.h"
+#include "DlgUndoRedo.h"
 
 #ifdef FC_USE_OCAFBROWSER
 #	include <DebugBrowser.hxx>

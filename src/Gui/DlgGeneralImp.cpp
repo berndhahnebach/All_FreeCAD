@@ -40,6 +40,7 @@
 #include "DlgGeneralImp.h"
 #include "Application.h"
 #include "PrefWidgets.h"
+#include "Command.h"
 
 /* 
  *  Constructs a FCDlgGeneral which is a child of 'parent', with the 

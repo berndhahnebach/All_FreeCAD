@@ -21,17 +21,13 @@
 
 
 #include "../Base/PyExport.h"
-//#include <qaction.h>
-#include <string>
-#include <map>
-#include <list>
-#include "DlgUndoRedo.h"
 
 class FCCommandManager;
 class ApplicationWindow;
 class FCGuiDocument;
 class FCDocument;
 class FCCommand;
+class FCUndoRedoDlg;
 
 
 void CreateStdCommands(void);
@@ -472,6 +468,18 @@ public:
 	 *  @see FCCommand
 	 */
 	std::vector <FCCommand*> GetModuleCommands(const char *sModName);
+
+  /** Returns the module name of the corresponding FCCommand
+   * object. If the command cannot be found the message 'Not found'
+   * is returned.
+   */
+  std::string GetAppModuleName(QAction* pActions);
+
+  /** Returns the module name of the corresponding FCCommand
+   * object. If the command cannot be found the message 'Not found'
+   * is returned.
+   */
+  std::string GetAppModuleNameByName(const char* sName);
 
 	/** Returns all commands registered in the manager
 	 *  delivers a vector of all comands. If you intereted in commands of 

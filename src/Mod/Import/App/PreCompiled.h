@@ -11,6 +11,7 @@
 #endif
 
 // standard
+#include <list>
 #include <iostream>
 #include <strstream>
 #include <stdio.h>

@@ -34,7 +34,6 @@
 #define __PROPTERYVIEW_H__
 
 #include "View.h"
-#include <qvalidator.h>
 
 class QPixmap;
 class QListView;

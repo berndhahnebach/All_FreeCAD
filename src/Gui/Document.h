@@ -21,10 +21,8 @@
 
 
 
-#include <qobject.h>
 
 #include "View.h"
-#include <list>
 
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_Viewer.hxx>

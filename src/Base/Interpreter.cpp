@@ -154,7 +154,7 @@ void FCInterpreter::RunMethodVoid(PyObject *pobject, const char *method)
 				     0,		       // so no return object
 					 "()")		   // no arguments
 					 != 0)
-		throw FCException("Error runing FCInterpreter::RunMethodeVoid()");
+		throw FCException("Error running FCInterpreter::RunMethodeVoid()");
 
 }
 

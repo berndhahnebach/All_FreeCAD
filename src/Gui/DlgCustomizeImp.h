@@ -31,8 +31,6 @@
 #ifndef DLGCUSTOMIZE_H
 #define DLGCUSTOMIZE_H
 
-#include "Window.h"
-
 class QTabWidget;
 
 /**

@@ -41,8 +41,8 @@
 #include "DlgCmdbarsImp.h"
 #include "Application.h"
 #include "Tools.h"
-#include <qtabwidget.h>
 #include "Widgets.h"
+#include "Command.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,7 +84,8 @@ FCDlgCustomCmdbarsImp::FCDlgCustomCmdbarsImp( QWidget* parent, const char* name,
   m_aclCmdbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
   for (std::vector<FCToolBar*>::iterator it3 = m_aclCmdbars.begin(); it3 != m_aclCmdbars.end(); ++it3)
   {
-    ComboCmdbars->insertItem((*it3)->name());
+    if ((*it3)->canModify())
+      ComboCmdbars->insertItem((*it3)->name());
   }
 
   slotCmdBarSelected(ComboCmdbars->text(0));

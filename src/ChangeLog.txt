@@ -328,3 +328,9 @@ Version: V0.1B71 Date: Sun Sep 14 17:38:19 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B72 Date: Wed Sep 24 19:06:32 2003 +++++++++++++++++++++++++++++++
 + make customizable widget framework much more flexible (from python)
+
+Version: V0.1B73 Date: Mon Sep 29 00:36:57 2003 +++++++++++++++++++++++++++++++
++ dependencies from header files reduced to speed up compilation
++ PIMPLed the ApplicationWindow class 
++ make the python methods in ApplicationWindow more robust 
++ improved the custom widget framework

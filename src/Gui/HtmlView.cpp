@@ -39,8 +39,10 @@
 #include "HtmlView.h"
 #include "Process.h"
 #include "Application.h"
+#include "PrefWidgets.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
+#include "../Base/Documentation.h"
 #ifndef FC_OS_LINUX
 #include <direct.h>
 #endif
@@ -470,7 +472,7 @@ FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 {
   d = new FCTextBrowserPrivate;
 
-  setMimeSourceFactory(new FCBrowserSourceFactory);
+//  setMimeSourceFactory(new FCBrowserSourceFactory);
 
   setHScrollBarMode(QScrollView::AlwaysOff);
   setVScrollBarMode(QScrollView::AlwaysOff);
@@ -718,10 +720,10 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   //initialize
   init();
 
-  d->m_strCaption = "FCHelpViewer - ";
-  d->m_FCdoc = "FCdoc://";
+  d->m_strCaption = "FreeCAD Help - ";
+  d->m_FCdoc = QString::null/*"FCdoc://"*/;
   d->m_FCext = "FCext://";
-  d->m_FCscript = "FCScript://";
+  d->m_FCscript = QString::null/*"FCScript://"*/;
 
   // find the home directory of the online manual
   d->m_strDocDir = GetDocDirectory();
@@ -729,9 +731,13 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   QString home = d->m_strDocDir;
 
   // this is the complete URL of the start page
-  // WARNING: home_ must NOT contain an absolute pathname but a relative 
-  //          pathname
-  home.append(home_);
+  //
+  // check if home_ is absolute or relative
+  QDir dir (home_);
+  if (dir.isRelative())
+    home.append(home_);
+  else
+    home = home_;
 
   // read the old history and bookmark entries
   ReadHistory();
@@ -968,8 +974,8 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-//  QString path = GetWindowParameter()->GetASCII("DocDir", "../Doc/Online").c_str();
-  QString path = GetWindowParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
+  QString path = GetWindowParameter()->GetASCII("DocDir", "../Doc").c_str();
+//  QString path = GetWindowParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
 
   QDir dir (path);
   dir.convertToAbs();

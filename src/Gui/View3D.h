@@ -46,7 +46,6 @@
 #endif
 
 #include "View.h"
-#include <stack>
 
 class QMouseEvent;
 class FCMouseModel;

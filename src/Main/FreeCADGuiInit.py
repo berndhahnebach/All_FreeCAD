@@ -91,7 +91,7 @@ def InitToolbars():
 
 	list = ["Std_New", "Std_Open", "Std_Save", "Std_Print", "Separator", "Std_Cut","Std_Copy",
 	"Std_Paste", "Separator", "Std_Undo", "Std_Redo", "Separator", "Std_Workbench","Std_WhatsThis"]
-	Gui.ToolbarAppendItems("file operations", list, 0, 1, 0)
+	Gui.ToolbarAppendItems("file operations", list, 0, 0)
 
 	list = ["Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute"]
 	Gui.ToolbarAppendItems("Macro recording", list, 0, 0, 0)
@@ -122,19 +122,19 @@ def InitMenues():
 	Gui.MenuAppendItems("Edit", list, 0, 0)
 
 	list = ["Std_ViewCreateInventor", "Std_ViewCreateOCC","Separator"]
-	Gui.MenuAppendItems("View", list, 0, 0)
+	Gui.MenuAppendItems("View", list, 1, 0)
 
 	list = ["Std_CommandLine", "Std_DlgParameter", "Std_OCAFBrowser", "Separator",
 	"Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute", "Separator",
 	"Std_ViewCreateInventor", "Std_ViewCreateOCC", "Separator", "Std_DlgCustomize", "Std_DlgPreferences"]
-	Gui.MenuAppendItems("Tools", list, 0, 0)
+	Gui.MenuAppendItems("Tools", list, 1, 0)
 
 	list = ["Std_TileHoricontal", "Std_TileVertical", "Std_TilePragmatic", "Separator", 
 	"Std_MDIToplevel", "Std_MDITabed"]
 	Gui.MenuAppendItems("Windows", list, 0, 0)
 
 	list = ["Std_OnlineHelp", "Std_About", "Std_WhatsThis"]
-	Gui.MenuAppendItems("?", list, 0, 0)
+	Gui.MenuAppendItems("Help", list, 0, 0)
 
 def InitCmdBar():
 	Log ('   Set up command bar...\n')

@@ -32,7 +32,6 @@
 #define DLG_SETTINGS_IMP_H
 
 #include "DlgSettings.h"
-#include "Window.h"
 #include "PropertyPage.h"
 
 /**

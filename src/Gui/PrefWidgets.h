@@ -29,19 +29,15 @@
 #ifndef __FC_PREF_WIDGETS_H__
 #define __FC_PREF_WIDGETS_H__
 
-#include "../App/Application.h"
 #include "../Base/Parameter.h"
-#include "Command.h"
 #include "Widgets.h"
 
 #include "qextmdi/qextmdimainfrm.h"
-#include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qlistbox.h>
-#include <qstring.h>
 #include <qslider.h>
 
 // forward declarations
@@ -51,6 +47,7 @@ class FCWidgetFactorySupplier;
 class QAction;
 class FCStackBar;
 class FCDockWindow;
+class FCCommandManager;
 
 /** The widget preference class
  *  If you want to extend a QWidget class to save/restore data
@@ -396,9 +393,9 @@ class FCCustomWidget : public FCWidgetPrefs
     /** Sets the given items to current */
     void setItems(const std::vector<std::string>& items);
     /** Appends several items */
-    void appendItems(const std::vector<std::string>& item);
+    void appendItems(FCParameterGrp*, const std::vector<std::string>& item);
     /** Removes several items */
-    void removeItems(const std::vector<std::string>& item);
+    void removeItems(FCParameterGrp*, const std::vector<std::string>& item);
     /** Calls @ref restorePreferences() 
      * So it is possible to call the load routine from outside
      */
@@ -411,11 +408,13 @@ class FCCustomWidget : public FCWidgetPrefs
      * After switching to a new workbench the customizable
      * widgets of the old workbench (toolbars, command bars and menus 
      * (currently disabled)) normally will be deleted. To avoid this
-     * you can set this property to 'false'. The default is 'true'..
+     * you can set this property to 'false'. The default is 'true'.
      */
-    void setRemovable(bool b);
-    /** Returns whether the widget is removable or not */
+    virtual void setRemovable(bool b);
+    /** Returns whether the widget can be modified or not */
     bool isRemovable() const;
+    virtual void setCanModify(bool b);
+    bool canModify() const;
     virtual void update(FCCommandManager& rclMgr) = 0;
     /** Returns the acive workbench at creation time of this object */
     QString getWorkbench();
@@ -432,7 +431,11 @@ class FCCustomWidget : public FCWidgetPrefs
 
     std::vector<std::string> _clItems;
     QString                  _clWorkbench;
-    bool                     _bRemovable;
+    bool                     _bCanModify;
+    bool                     _bCanRemovable;
+    typedef std::map<FCParameterGrp*, std::vector<std::string> > WorkbenchItems;
+    // items from other workbenches
+    WorkbenchItems _clWbItems;
 };
 
 /**
@@ -448,6 +451,7 @@ class FCToolBar : public QToolBar, public FCCustomWidget
     virtual ~FCToolBar();
     virtual void clearAll();
     void update(FCCommandManager& rclMgr);
+    void setCanModify(bool b);
 
   public:
     static bool isAllowed(QWidget* w);
@@ -522,7 +526,7 @@ class FCCustomWidgetManager
      * the given in 'defIt'. If force is set to true the toolbar takes the
      * given items anyway.
      */
-    void addToolBar   (const std::string& type, const std::vector<std::string>& defIt, bool force=false);
+    void addToolBar   (const std::string& type, const std::vector<std::string>& defIt);
     /** Deletes the specified toolbar if it exists */
     void delToolBar(const char* name);
     /** Removes toolbar items */
@@ -543,7 +547,7 @@ class FCCustomWidgetManager
      * the given in 'defIt'. If force is set to true the toolbar takes the
      * given items anyway.
      */
-    void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt, bool force=false);
+    void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt);
     /** Deletes the specified command bar if it exists */
     void delCmdBar(const char* name);
     /** Removes command bar items */
@@ -562,7 +566,7 @@ class FCCustomWidgetManager
     std::vector<FCPopupMenu*> getPopupMenus();
     /** Adds new menu with its items and its parent */
     void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, 
-                       const char* parent = 0,  bool force=false);
+                       const char* parent = 0);
     /** Deletes the specified menu if it exists */
     void delPopupMenu(const char* name);
     /** Removes menu items */

@@ -11,6 +11,7 @@
 #endif
 
 // standard
+#include <list>
 #include <iostream>
 //#include <stdio.h>
 #include <assert.h>

@@ -29,12 +29,7 @@
 #ifndef __HTML_VIEW_H__
 #define __HTML_VIEW_H__
  
-//#include <qtextbrowser.h>
-//#include <qvalidator.h>
-//#include <qcombobox.h>
-#include <qmime.h>
 #include "Window.h"
-#include "../Base/Documentation.h"
 #include "Process.h"
 
 /**
