@@ -990,7 +990,6 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-//  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
   QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
 
   puts(path.latin1());
@@ -1001,8 +1000,8 @@ QString FCHtmlView::GetDocDirectory()
 
   if (QDir().exists(path) == false)
   {
-    int ans = QMessageBox::warning(this, tr("Path not found"),
-			tr("Couldn't find the path for the Online help.\n"
+    int ans = QMessageBox::warning(this, tr("Path not found"),	tr("Couldn't find the path for the Online help."));
+    /*
          "Propably, you should run the python script 'MakeDoc.py' before.\n"
 				 "Do you want to start this script now?"), tr("Yes"), tr("No"),QString::null, 0);
 		if (ans == 0)
@@ -1014,7 +1013,7 @@ QString FCHtmlView::GetDocDirectory()
 				GetInterpreter().LaunchFile(file.latin1());
 			}catch(...){
 			}
-		}
+		}*/
   }
 
   return path;

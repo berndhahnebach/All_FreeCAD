@@ -1,4 +1,4 @@
-pkglib_LTLIBRARIES=libFreeCADGui.la
+lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
 moc_Application.cpp \
@@ -217,7 +217,7 @@ Widgets.cpp \
 Window.cpp
 
 # the library search path.
-libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(all_libraries)
+libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADGui_la_LIBADD   =\
 		-lqui\
@@ -266,3 +266,5 @@ moc_%.cpp: %.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I./qextmdi -I./Inventor/Qt
+
+CLEANFILES = $(BUILT_SOURCES)

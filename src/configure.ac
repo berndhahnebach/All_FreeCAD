@@ -8,6 +8,18 @@ AM_CONFIG_HEADER([autoconfig.h])
 #AC_CANONICAL_HOST
 AC_LANG_CPLUSPLUS
 
+#AC_PREFIX_DEFAULT($PWD/..)
+AC_PREFIX_DEFAULT($HOME/FreeCAD)
+
+## Version number
+##############################
+# We begin with 0:0:0
+LIB_CURRENT=0
+LIB_REVISION=0
+LIB_AGE=0
+AC_SUBST(LIB_CURRENT)
+AC_SUBST(LIB_REVISION)
+AC_SUBST(LIB_AGE)
 
 ## REQUIRED HEADERS
 ##############################

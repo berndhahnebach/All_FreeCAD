@@ -34,19 +34,33 @@
 #	include <direct.h>
 #	include <windows.h>
 #endif
+#ifdef FC_OS_LINUX
+#	include <unistd.h>
+#	include <stdlib.h>
+#endif
 
 
+
+inline void EnvPrint(const char* sVar, const char* sVal)
+{
+	cout << sVar << "=" << sVal  << endl;
+}
 
 inline void EnvPrint(const char* sMsg)
 {
 	cout << sMsg << endl;
 }
 
-inline void SetEnvironment(const char* sMsg)
+inline void SetEnvironment(const char* sVar, const char* sVal)
 {
-	char szBuf[1024];
-	sprintf(szBuf, "%s", sMsg);
-	putenv (szBuf);
+#ifdef FC_OS_LINUX
+	setenv(sVar, sVal, 1);
+#else
+	std::string env(sVar);
+	env += "=";
+	env += sVal;
+	putenv (env.c_str());
+#endif
 }
 
 /** Test if a Variable exist
@@ -59,9 +73,98 @@ inline void TestEnvExists(const char* sEnvName,bool &bFailure)
         }
 }
 
+inline void SimplifyPath(std::string& sPath)
+{
+	// remove all unnecessary './' from sPath
+	std::string sep; sep += PATHSEP;
+	std::string pattern = sep + '.' + sep;
+	std::string::size_type npos = sPath.find(pattern);
+	while (npos != std::string::npos)
+	{
+		sPath.replace(npos, 3, sep);
+		npos = sPath.find(pattern);
+	}
+}
 
 inline std::string FindHomePath(const char* sCall)
 {
+#ifdef FC_OS_LINUX
+	std::string Call(sCall), TempHomePath;
+
+	// no absolute path
+	if (Call[0] != PATHSEP)
+	{
+		// relative path
+		if (Call[0] == '.')
+		{
+			// get the current working directory
+			char szDir[1024];
+			if ( getcwd(szDir, sizeof(szDir)) )
+			{
+				Call = szDir;
+				Call += PATHSEP;
+				Call += sCall;
+			}
+		}
+		// check the PATH environment variable
+		else
+		{
+			if ( getenv("PATH") )
+			{
+				std::string sPATH = getenv("PATH");
+
+				bool notfound = true, success = false;
+				std::string tmp;
+				std::string path;
+				std::string::size_type npos = sPATH.find(':');
+				while ( notfound )
+				{
+					if ( npos != std::string::npos )
+					{
+						path = sPATH.substr(0, npos);
+						sPATH = sPATH.substr(npos+1);
+						npos = sPATH.find(':');
+					}
+					else
+					{
+						// if this also fails break anyway
+						notfound = false;
+						path = sPATH;
+					}
+
+					tmp = path + PATHSEP + sCall;
+
+					// does file exist?
+					if ( access(tmp.c_str(), 0) == 0 )
+					{
+						Call = tmp;
+						notfound = false;
+						success = true;
+						break;
+					}
+				}
+
+				// path found?
+				if ( success )
+					std::cout << "Path found in " << path << std::endl;
+				else
+					std::cerr << "Sorry, could't find the right path!" << std::endl;
+			}
+		}
+	}
+
+	if (Call[0] == PATHSEP)
+	{
+		SimplifyPath(Call);
+		EnvPrint("FindHomePath--------------------");
+		EnvPrint(Call.c_str());
+		std::string::size_type pos = Call.find_last_of(PATHSEP);
+		TempHomePath.assign(Call,0,pos);
+		pos = TempHomePath.find_last_of(PATHSEP);
+		TempHomePath.assign(TempHomePath,0,pos+1);
+		EnvPrint(TempHomePath.c_str());
+	}
+#else
 	EnvPrint("FindHomePath--------------------");
 	EnvPrint(sCall);
 
@@ -72,6 +175,7 @@ inline std::string FindHomePath(const char* sCall)
 	TempHomePath.assign(TempHomePath,0,pos+1);
 
 	EnvPrint(TempHomePath.c_str());
+#endif
 
 	return TempHomePath;
 }
@@ -110,7 +214,7 @@ inline std::string GetFreeCADLib(const char* sHomePath)
 		EnvPrint(TempLibPath.c_str());
 		return TempLibPath;
 	}else{
-		EnvPrint("Failed using FREECADLIB env variable, search for Setup constalation (./LibPack)");
+		EnvPrint("Failed using FREECADLIB env variable, search for Setup constellation (./LibPack)");
 		std::string cStrLibPack(sHomePath);
 		cStrLibPack += "LibPack";
 		if(chdir(cStrLibPack.c_str()) != -1)
@@ -120,7 +224,7 @@ inline std::string GetFreeCADLib(const char* sHomePath)
 			str += "bin";
 			// switch back to bin
 			chdir(str.c_str());
-			EnvPrint("Found Setup constallation");
+			EnvPrint("Found Setup constellation");
 			return cStrLibPack+PATHSEP;
 		}
 		EnvPrint("No LibPack found, using standard environment (if there any)");
@@ -133,15 +237,13 @@ inline void SetPluginDefaults(const char* sPath)
 {
 	std::string sTempString;
 
-	sTempString += "CSF_StandardDefaults=";
 	sTempString += sPath;
-	SetEnvironment (sTempString.c_str());
-//	EnvPrint(sTempString.c_str());
+	SetEnvironment ( "CSF_StandardDefaults", sTempString.c_str());
+	EnvPrint( "CSF_StandardDefaults", sTempString.c_str());
 	sTempString.clear();
-	sTempString += "CSF_PluginDefaults=";
 	sTempString += sPath;
-	SetEnvironment (sTempString.c_str());
-	EnvPrint(sTempString.c_str());
+	SetEnvironment ("CSF_PluginDefaults", sTempString.c_str());
+	EnvPrint("CSF_PluginDefaults", sTempString.c_str());
 }
 
 
@@ -151,34 +253,31 @@ inline void SetPythonToFreeCADLib(const char* sLib)
 	std::string sTempString2;
 	if(std::string(sLib) != "")
 	{
-		sTempString2 += "PYTHONPATH=";
 		sTempString2 += sLib;
 		sTempString2 += "res";
 		sTempString2 += PATHSEP;
 		sTempString2 += "pylibs";
 		sTempString2 += PATHSEP;
-		SetEnvironment (sTempString2.c_str());
-		EnvPrint(sTempString2.c_str());
+		SetEnvironment ("PYTHONPATH", sTempString2.c_str());
+		EnvPrint("PYTHONPATH", sTempString2.c_str());
 		sTempString2.clear();
 
-		sTempString2 += "TCL_LIBRARY=";
 		sTempString2 += sLib;
 		sTempString2 += "res";
 		sTempString2 += PATHSEP;
 		sTempString2 += "tcl8.4";
 		//sTempString2 += PATHSEP;
-		SetEnvironment (sTempString2.c_str());
-		EnvPrint(sTempString2.c_str());
+		SetEnvironment ("TCL_LIBRARY", sTempString2.c_str());
+		EnvPrint("TCL_LIBRARY", sTempString2.c_str());
 		sTempString2.clear();
 
-		sTempString2 += "TCLLIBPATH=";
 		sTempString2 += sLib;
 		sTempString2 += "res";
 		//sTempString2 += PATHSEP;
 		//sTempString2 += "pylibs";
 		//sTempString2 += PATHSEP;
-		SetEnvironment (sTempString2.c_str());
-		EnvPrint(sTempString2.c_str());
+		SetEnvironment ("TCLLIBPATH", sTempString2.c_str());
+		EnvPrint("TCLLIBPATH", sTempString2.c_str());
 		sTempString2.clear();
 	}
 }
@@ -191,98 +290,97 @@ inline void SetCasCadeToFreeCADLib(const char* sLib)
 	if(std::string(sLib) != "")
 	{
 		/* CSF_MDTVFontDirectory */
-		sTempString3 += "CSF_MDTVFontDirectory=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_MDTVFontDirectory", sTempString3.c_str());
+		EnvPrint("CSF_MDTVFontDirectory", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_LANGUAGE */
 		sTempString3 += "CSF_LANGUAGE=";
 		sTempString3 += "us";
+		sTempString3.clear();
 		/* CSF_SHMessage */
-		sTempString3 += "CSF_SHMessage=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_SHMessage", sTempString3.c_str());
+		EnvPrint("CSF_SHMessage", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_MDTVTexturesDirectory */
-		sTempString3 += "CSF_MDTVTexturesDirectory=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_MDTVTexturesDirectory", sTempString3.c_str());
+		EnvPrint("CSF_MDTVTexturesDirectory", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_XCAFDefaults */
-		sTempString3 += "CSF_XCAFDefaults=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_XCAFDefaults", sTempString3.c_str());
+		EnvPrint("CSF_XCAFDefaults", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_GraphicShr */
-		sTempString3 += "CSF_GraphicShr=";
+#ifdef FC_OS_WIN32
 		sTempString3 += sLib;
 		sTempString3 += "dll";
 		sTempString3 += PATHSEP;
 		sTempString3 += "TKOpenGl.dll";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+#elif defined(FC_OS_LINUX)
+		sTempString3 += sLib;
+		sTempString3 += "lib";
+		sTempString3 += PATHSEP;
+		sTempString3 += "libTKOpenGl.so";
+#endif
+		SetEnvironment ("CSF_GraphicShr", sTempString3.c_str());
+		EnvPrint("CSF_GraphicShr", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_UnitsLexicon */
-		sTempString3 += "CSF_UnitsLexicon=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
 		sTempString3 += PATHSEP;
 		sTempString3 += "Lexi_Expr.dat";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_UnitsLexicon", sTempString3.c_str());
+		EnvPrint("CSF_UnitsLexicon", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_UnitsDefinition */
-		sTempString3 += "CSF_UnitsDefinition=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
 		sTempString3 += PATHSEP;
 		sTempString3 += "Units.dat";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_UnitsDefinition", sTempString3.c_str());
+		EnvPrint("CSF_UnitsDefinition", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_IGESDefaults */
-		sTempString3 += "CSF_IGESDefaults=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
-		SetEnvironment (sTempString3.c_str());
-//		EnvPrint(sTempString3.c_str());
+		SetEnvironment ("CSF_IGESDefaults", sTempString3.c_str());
+		EnvPrint("CSF_IGESDefaults", sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_STEPDefaults */
-		sTempString3 += "CSF_STEPDefaults=";
 		sTempString3 += sLib;
 		sTempString3 += "res";
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
-		SetEnvironment (sTempString3.c_str());
-		EnvPrint(sTempString3.c_str()); 
-		sTempString3.clear(); 
+		SetEnvironment ("CSF_STEPDefaults", sTempString3.c_str());
+		EnvPrint("CSF_STEPDefaults", sTempString3.c_str());
+		sTempString3.clear();
 	}
 }
 
 
-inline void PrintPath(void) 
+inline void PrintPath(void)
 {
 	char * p;
 	if(p=getenv("PATH") )

@@ -1,5 +1,5 @@
 
-pkglib_LTLIBRARIES=libFreeCADApp.la
+lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
 	InitScript.h \
@@ -41,7 +41,7 @@ libFreeCADApp_la_SOURCES=\
 	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
 
 # the library search path.
-libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries)
+libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADApp_la_LIBADD   = \
 		-lTKernel \
@@ -59,3 +59,5 @@ libFreeCADApp_la_LIBADD   = \
 
 # set the include path found by configure
 INCLUDES= $(all_includes)
+
+CLEANFILES = $(BUILT_SOURCES)

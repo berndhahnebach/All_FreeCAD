@@ -1,4 +1,4 @@
-# FreeCAD gui init module  
+# FreeCAD gui init module
 # (c) 2003 Jürgen Riegel
 #
 # Gathering all the information to start FreeCAD
@@ -155,6 +155,12 @@ def InitCmdBar():
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
 	ModDir = '../src/Mod'
+	#print FreeCAD.ConfigGet("HomePath")
+	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):
+		ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
+	else:
+		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Mod'):
+			ModDir = FreeCAD.ConfigGet("HomePath")+'src\\Mod'
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs

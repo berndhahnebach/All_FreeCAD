@@ -684,10 +684,10 @@ void FCApplication::InitApplication(void)
 {
 	// checking on the plugin files of OpenCasCade
 	std::fstream cTempStream;
-	cTempStream.open((mConfig["HomePath"]+"\\Plugin").c_str(),ios::out);
+	cTempStream.open((mConfig["HomePath"]+PATHSEP+"Plugin").c_str(),ios::out);
 	cTempStream << Plu ;
 	cTempStream.close();
-	cTempStream.open((mConfig["HomePath"]+"\\Standard").c_str(),ios::out);
+	cTempStream.open((mConfig["HomePath"]+PATHSEP+"Standard").c_str(),ios::out);
 	cTempStream << Stand ;
 	cTempStream.close();
 
@@ -905,11 +905,11 @@ void FCApplication::ExtractPathAndUser(const char* sCall)
 const char sEnvErrorText1[] = \
 "It seems some of the variables needed by FreeCAD are not set\n"\
 "or wrong set. This regards the Open CasCade or python variables:\n"\
-"CSF_GRAPHICSHR=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
-"CSF_MDTVFONTDIRECTORY=C:\\CasRoot\\src\\FontMFT\\\n"\
-"CSF_MDTVTEXTURESDIRECTORY=C:\\CasRoot\\src\\Textures\\\n"\
-"CSF_UNITSDEFINITION=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
-"CSF_UNITSLEXICON=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
+"CSF_GraphicShr=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
+"CSF_MDTVFontDirectory=C:\\CasRoot\\src\\FontMFT\\\n"\
+"CSF_MDTVTexturesDirectory=C:\\CasRoot\\src\\Textures\\\n"\
+"CSF_UnitsDefinition=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
+"CSF_UnitsLexicon=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
 "Please reinstall python or OpenCasCade!\n\n";
 
 const char sEnvErrorText2[] = \
@@ -921,7 +921,6 @@ const char sEnvErrorText2[] = \
 
 void FCApplication::CheckEnv(void)
 {
-
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
 	SetPluginDefaults(mConfig["HomePath"].c_str());
 

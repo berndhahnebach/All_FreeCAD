@@ -1,5 +1,5 @@
 
-pkglib_LTLIBRARIES=libFreeCADBase.la
+lib_LTLIBRARIES=libFreeCADBase.la
 
 libFreeCADBase_la_SOURCES=\
 		Console.h \
@@ -37,6 +37,5 @@ libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c
 # set the include path found by configure
 INCLUDES= $(all_includes)
 
-# the library search path.
-#libFreeCADBase_a_LDFLAGS = $(all_libraries)
-#libFreeCADBase_a_LIBADD = $(all_libraries)
+# the library version number
+libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

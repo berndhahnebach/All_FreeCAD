@@ -1273,7 +1273,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
   int bModify=1;
   int bRemovable=1;
   // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sO|iis", &psMenuName, &pObject, &bModify, 
+  if (!PyArg_ParseTuple(args, "sO|iis", &psMenuName, &pObject, &bModify,
                                         &bRemovable, &parent ))     
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
@@ -1453,7 +1453,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
   int bRemovable=1;
   // convert args: Python->C 
   if (!PyArg_ParseTuple(args, "sO|ii", &psToolbarName, &pObject,
-                                      &bModify, &bRemovable))     
+                                      &bModify, &bRemovable))
     return NULL;                             // NULL triggers exception 
   if (!PyList_Check(pObject))
   {
