@@ -48,6 +48,12 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool m
 {
   // get the macro home path
   _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
+  // check on PATHSEP at the end
+  std::string::iterator It = _cMacroPath.end();
+  It--;
+  if(*It != PATHSEP)
+    _cMacroPath += PATHSEP;
+
   // get a pointer to the macro manager
   _pcMacroMngr = ApplicationWindow::Instance->GetMacroMngr();
 
@@ -123,6 +129,7 @@ void DlgMacroRecordImp::start()
   {
     // open the macro recording
     _pcMacroMngr->Open(FCMacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
+    Base::Console().Log((_cMacroPath + LineEditPath->text().latin1()).c_str());
     accept();
   }
 }

@@ -704,7 +704,7 @@ void Application::ParsOptions(int argc, char ** argv)
 			case 'l': 
 			case 'L':  
 				mConfig["LoggingFile"] = "1";
-				mConfig["LoggingFileName"]= "FreeCAD.log";
+				mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
 				switch (argv[i][2])  
 				{   
 					// Console with file
@@ -793,8 +793,8 @@ void Application::ParsOptions(int argc, char ** argv)
 void Application::ExtractUser()
 {
 	// std paths
-	mConfig["BinPath"] = mConfig["HomePath"] + PATHSEP + "bin" + PATHSEP;
-	mConfig["DocPath"] = mConfig["HomePath"] + PATHSEP + "doc" + PATHSEP;
+	mConfig["BinPath"] = mConfig["HomePath"] + "bin" + PATHSEP;
+	mConfig["DocPath"] = mConfig["HomePath"] + "doc" + PATHSEP;
 
 	// try to figure out if using FreeCADLib
 	mConfig["FreeCADLib"] = GetFreeCADLib(mConfig["HomePath"].c_str());
