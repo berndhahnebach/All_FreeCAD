@@ -195,7 +195,7 @@ protected:
 /** The PrefSpinBox class.
  * \author Werner Mayer
  */
-class GuiExport PrefSpinBox : public FloatSpinBox, public PrefWidget
+class GuiExport PrefSpinBox : public SpinBox, public PrefWidget
 {
   Q_OBJECT
 
@@ -205,6 +205,34 @@ class GuiExport PrefSpinBox : public FloatSpinBox, public PrefWidget
 public:
   PrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
   virtual ~PrefSpinBox();
+
+  // PROPERTIES
+  // getters
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
+  // setters
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
+
+protected:
+  // restore from/save to parameters
+  void restorePreferences();
+  void savePreferences();
+};
+
+/** The PrefFloatSpinBox class.
+ * \author Werner Mayer
+ */
+class GuiExport PrefFloatSpinBox : public FloatSpinBox, public PrefWidget
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefFloatSpinBox();
 
   // PROPERTIES
   // getters

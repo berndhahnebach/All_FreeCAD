@@ -312,21 +312,25 @@ const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
  * Constructs a file chooser called \a name with the parent \a parent.
  */
 FileChooser::FileChooser ( QWidget * parent, const char * name )
-: QWidget(parent, name), _chFile( true ), _filter( QString::null )
+: QWidget(parent, name), md( File ), _filter( QString::null )
 {
-  QGridLayout* formLayout = new QGridLayout( this, 1, 1, 0, -1, "formLayout"); 
-  QHBoxLayout* layout = new QHBoxLayout( 0, 0, 6, "layout"); 
+  QHBoxLayout *layout = new QHBoxLayout( this );
+  layout->setMargin( 0 );
+  layout->setSpacing( 6 );
 
-  _le = new QLineEdit( this, "lineEdit" );
-  layout->addWidget( _le );
+  lineEdit = new QLineEdit( this, "filechooser_lineedit" );
+  layout->addWidget( lineEdit );
 
-  _pb = new QPushButton( this, "pushButton" );
-  _pb->setMaximumSize( QSize( 40, 32767 ) );
-  _pb->setText( "..." );
-  layout->addWidget( _pb );
-  formLayout->addLayout( layout, 0, 0 );
+  connect( lineEdit, SIGNAL( textChanged( const QString & ) ),
+	     this, SIGNAL( fileNameChanged( const QString & ) ) );
 
-  connect( _pb, SIGNAL( clicked() ), this, SLOT( onChoose() ));
+  button = new QPushButton( "...", this, "filechooser_button" );
+  button->setFixedWidth( 2*button->fontMetrics().width( " ... " ) );
+  layout->addWidget( button );
+
+  connect( button, SIGNAL( clicked() ), this, SLOT( chooseFile() ) );
+
+  setFocusProxy( lineEdit );
 }
 
 FileChooser::~FileChooser()
@@ -334,76 +338,79 @@ FileChooser::~FileChooser()
 }
 
 /**
- * \property FileChooser::text
+ * \property FileChooser::fileName
  *
- * This property holds the line edit's text.
- * Set this property's value with setText() and get this property's value with text().
+ * This property holds the file name.
+ * Set this property's value with setFileName() and get this property's value with fileName().
  *
- * \sa text(), setText().
+ * \sa fileName(), setFileName().
  */
-QString FileChooser::text() const
+QString FileChooser::fileName() const
 {
-  return _le->text();
+  return lineEdit->text();
 }
 
 /** 
- * Sets the text \a s to the lineedit field.
+ * Sets the file name \a s.
  */
-void FileChooser::setText( const QString& s )
+void FileChooser::setFileName( const QString& s )
 {
-  _le->setText( s );
+  lineEdit->setText( s );
 }
 
 /**
  * Opens a FileDialog to choose either a file or a directory in dependency of the
- * value of the chooseFile property.
+ * value of the Mode property.
  */
-void FileChooser::onChoose()
+void FileChooser::chooseFile()
 {
-  if ( _chFile )
+  QString fn;
+  if ( mode() == File )
   {
-    QString fn = Gui::FileDialog::getOpenFileName( QString::null, _filter, this, 0,
+    fn = Gui::FileDialog::getOpenFileName( lineEdit->text(), _filter, this, 0,
       tr( "Select file" ), tr( "Select" ));
-    if ( !fn.isEmpty() )
-      setText( fn );
   }
   else
   {
-    QString fn = Gui::FileDialog::getExistingDirectory( _le->text(), this );
-    if ( !fn.isEmpty() )
-      setText( fn );
+    fn = Gui::FileDialog::getExistingDirectory( lineEdit->text(), this );
+  }
+
+  if ( !fn.isEmpty() ) 
+  {
+  	lineEdit->setText( fn );
+	  emit fileNameChanged( fn );
   }
 }
 
 /**
- * \property FileChooser::chooseFile
+ * \property FileChooser::mode
  *
  * This property holds whether the widgets selects either a file or a directory.
- * The default value of chooseFile is set to true.
+ * The default value of chooseFile is set to File.
  *
- * \sa onChoose(), chooseFile(), setChooseFile().
+ * \sa chooseFile(), mode(), setMode().
  */
-bool FileChooser::chooseFile() const
+FileChooser::Mode FileChooser::mode() const
 {
-  return _chFile;
+  return md;
 }
 
 /**
- * If \a m is true the widget is set to choose a file, otherwise it is set to
+ * If \a m is File the widget is set to choose a file, otherwise it is set to
  * choose a directory.
  */
-void FileChooser::setChooseFile( bool m )
+void FileChooser::setMode( FileChooser::Mode m )
 {
-  _chFile = m;
+  md = m;
 }
 
 /**
  * \property FileChooser::filter
  *
  * This property holds the set filter to choose a file. This property is used only if 
- * \property FileChooser::chooseFile is set to true.
+ * \property FileChooser::Mode is set to File.
  *
- * \sa onChoose(), filter(), setFilter().
+ * \sa chooseFile(), filter(), setFilter().
  */
 QString FileChooser::filter() const
 {

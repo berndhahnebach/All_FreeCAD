@@ -70,7 +70,10 @@
                     <property name="name">
                         <cstring>UseProxy</cstring>
                     </property>
-                    <property name="checked" stdset="0">
+                    <property name="text">
+                        <string>Use proxy</string>
+                    </property>
+                    <property name="checked">
                         <bool>false</bool>
                     </property>
                     <property name="prefEntry" stdset="0">
@@ -78,9 +81,6 @@
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>OnlineHelp</cstring>
-                    </property>
-                    <property name="text" stdset="0">
-                        <string>Use proxy</string>
                     </property>
                 </widget>
                 <widget class="Gui::PrefLineEdit" row="4" column="0">
@@ -93,14 +93,14 @@
                             <height>0</height>
                         </size>
                     </property>
+                    <property name="text">
+                        <string>http://free-cad.sourceforge.net/index.html</string>
+                    </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>DownloadURL</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>OnlineHelp</cstring>
-                    </property>
-                    <property name="text" stdset="0">
-                        <string>http://free-cad.sourceforge.net/index.html</string>
                     </property>
                 </widget>
             </grid>
@@ -126,9 +126,6 @@
                     <property name="name">
                         <cstring>prefExtBrowser</cstring>
                     </property>
-                    <property name="chooseFile" stdset="0">
-                        <bool>true</bool>
-                    </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>ExternalBrowser</cstring>
                     </property>
@@ -139,9 +136,6 @@
                 <widget class="Gui::PrefFileChooser" row="1" column="0">
                     <property name="name">
                         <cstring>prefStartPage</cstring>
-                    </property>
-                    <property name="chooseFile" stdset="0">
-                        <bool>true</bool>
                     </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>Startpage</cstring>
@@ -187,75 +181,6 @@
         </spacer>
     </grid>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>Gui::PrefCheckBox</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>80</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <signal>toggled(bool)</signal>
-        <property type="String">text</property>
-        <property type="Bool">checked</property>
-        <property type="Bool">tristate</property>
-        <property type="Bool">enabled</property>
-        <property type="CString">prefEntry</property>
-        <property type="CString">prefPath</property>
-    </customwidget>
-    <customwidget>
-        <class>Gui::PrefLineEdit</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>100</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="CString">prefEntry</property>
-        <property type="CString">prefPath</property>
-        <property type="String">text</property>
-    </customwidget>
-    <customwidget>
-        <class>Gui::PrefFileChooser</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>100</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="String">text</property>
-        <property type="CString">prefEntry</property>
-        <property type="CString">prefPath</property>
-        <property type="Bool">chooseFile</property>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
-    </image>
-</images>
 <connections>
     <connection>
         <sender>UseProxy</sender>
@@ -264,12 +189,12 @@
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>PrefLineEdit2</tabstop>
+    <tabstop>UseProxy</tabstop>
+    <tabstop>DownloadURL</tabstop>
+    <tabstop>prefStartPage</tabstop>
+    <tabstop>prefExtBrowser</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>gui::preflineedit.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
-    <includehint>gui::preflineedit.h</includehint>
-    <includehint>gui::preffilechooser.h</includehint>
-    <includehint>gui::preffilechooser.h</includehint>
-</includehints>
 </UI>

@@ -409,6 +409,17 @@
         <slot>onDoubleClickedAction(QListViewItem*)</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>AvailableActions</tabstop>
+    <tabstop>CreateToolbar</tabstop>
+    <tabstop>DeleteToolbar</tabstop>
+    <tabstop>buttonRight</tabstop>
+    <tabstop>buttonLeft</tabstop>
+    <tabstop>buttonUp</tabstop>
+    <tabstop>buttonDown</tabstop>
+    <tabstop>ToolbarActions</tabstop>
+    <tabstop>ComboToolbars</tabstop>
+</tabstops>
 <slots>
     <slot access="protected">onAddAction()</slot>
     <slot access="protected">onAllActionsChanged( QListViewItem * )</slot>

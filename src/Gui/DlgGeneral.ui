@@ -63,17 +63,17 @@
                             <property name="name">
                                 <cstring>RecentFiles</cstring>
                             </property>
-                            <property name="decimals" stdset="0">
-                                <number>0</number>
-                            </property>
-                            <property name="lineStep" stdset="0">
-                                <number>1</number>
-                            </property>
-                            <property name="maxValue" stdset="0">
+                            <property name="maxValue">
                                 <number>20</number>
                             </property>
-                            <property name="minValue" stdset="0">
+                            <property name="minValue">
                                 <number>0</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>1</number>
+                            </property>
+                            <property name="value">
+                                <number>4</number>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>RecentFiles</cstring>
@@ -81,15 +81,15 @@
                             <property name="prefPath" stdset="0">
                                 <cstring>RecentFiles</cstring>
                             </property>
-                            <property name="value" stdset="0">
-                                <number>4</number>
-                            </property>
                         </widget>
                         <widget class="Gui::PrefCheckBox" row="1" column="0" rowspan="1" colspan="2">
                             <property name="name">
                                 <cstring>SplashScreen</cstring>
                             </property>
-                            <property name="checked" stdset="0">
+                            <property name="text">
+                                <string>Enable splashscreen at startup</string>
+                            </property>
+                            <property name="checked">
                                 <bool>true</bool>
                             </property>
                             <property name="prefEntry" stdset="0">
@@ -97,9 +97,6 @@
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>General</cstring>
-                            </property>
-                            <property name="text" stdset="0">
-                                <string>Enable splashscreen at startup</string>
                             </property>
                         </widget>
                         <spacer row="1" column="2" rowspan="1" colspan="2">
@@ -167,7 +164,10 @@
                             <property name="name">
                                 <cstring>ShowCmdLine</cstring>
                             </property>
-                            <property name="checked" stdset="0">
+                            <property name="text">
+                                <string>Show command line</string>
+                            </property>
+                            <property name="checked">
                                 <bool>true</bool>
                             </property>
                             <property name="prefEntry" stdset="0">
@@ -176,22 +176,19 @@
                             <property name="prefPath" stdset="0">
                                 <cstring>CommandLine</cstring>
                             </property>
-                            <property name="text" stdset="0">
-                                <string>Show command line</string>
-                            </property>
                         </widget>
                         <widget class="Gui::PrefSpinBox" row="1" column="1">
                             <property name="name">
                                 <cstring>SizeCmdLine</cstring>
+                            </property>
+                            <property name="value">
+                                <number>20</number>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>SizeCmdLine</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>CommandLine</cstring>
-                            </property>
-                            <property name="value" stdset="0">
-                                <number>20</number>
                             </property>
                         </widget>
                         <widget class="QLabel" row="1" column="0">
@@ -242,14 +239,14 @@
                             <property name="name">
                                 <cstring>AllowDragMenu</cstring>
                             </property>
+                            <property name="text">
+                                <string>Allow dragging of menu items</string>
+                            </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>AllowDrag</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>General</cstring>
-                            </property>
-                            <property name="text" stdset="0">
-                                <string>Allow dragging of menu items</string>
                             </property>
                         </widget>
                     </grid>
@@ -278,14 +275,14 @@
                             <property name="focusPolicy">
                                 <enum>TabFocus</enum>
                             </property>
+                            <property name="text">
+                                <string>Use big pixmaps</string>
+                            </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>BigPixmaps</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>General</cstring>
-                            </property>
-                            <property name="text" stdset="0">
-                                <string>Use big pixmaps</string>
                             </property>
                         </widget>
                         <spacer row="0" column="1">
@@ -356,66 +353,15 @@
         </widget>
     </grid>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>Gui::PrefCheckBox</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>80</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <signal>toggled(bool)</signal>
-        <property type="String">text</property>
-        <property type="Bool">checked</property>
-        <property type="Bool">tristate</property>
-        <property type="Bool">enabled</property>
-        <property type="CString">prefEntry</property>
-        <property type="CString">prefPath</property>
-    </customwidget>
-    <customwidget>
-        <class>Gui::PrefSpinBox</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>30</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="Int">value</property>
-        <property type="UInt">decimals</property>
-        <property type="UInt">lineStep</property>
-        <property type="CString">prefEntry</property>
-        <property type="CString">prefPath</property>
-        <property type="Int">maxValue</property>
-        <property type="Int">minValue</property>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
-    </image>
-</images>
+<tabstops>
+    <tabstop>Languages</tabstop>
+    <tabstop>UsesBigPixmaps</tabstop>
+    <tabstop>WindowStyle</tabstop>
+    <tabstop>AllowDragMenu</tabstop>
+    <tabstop>ShowCmdLine</tabstop>
+    <tabstop>SizeCmdLine</tabstop>
+    <tabstop>RecentFiles</tabstop>
+    <tabstop>SplashScreen</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>gui::prefspinbox.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
-    <includehint>gui::prefspinbox.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
-    <includehint>gui::prefcheckbox.h</includehint>
-</includehints>
 </UI>

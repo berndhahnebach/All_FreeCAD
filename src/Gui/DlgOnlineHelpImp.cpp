@@ -48,9 +48,9 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl
   append(PrefLineEdit2->getHandler());
   append(prefStartPage->getHandler());
   prefStartPage->setFilter( "All Html files (*.html *.htm)" );
-  if ( prefStartPage->text().isEmpty() )
+  if ( prefStartPage->fileName().isEmpty() )
   {
-    prefStartPage->setText( getStartpage() );
+    prefStartPage->setFileName( getStartpage() );
   }
 
   append(prefExtBrowser->getHandler());

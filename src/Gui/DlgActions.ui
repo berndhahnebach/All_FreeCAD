@@ -153,6 +153,12 @@
                     <property name="name">
                         <cstring>actionAccel</cstring>
                     </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="4" column="1">
                     <property name="name">
@@ -311,29 +317,6 @@
         </widget>
     </grid>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>Gui::AccelLineEdit</class>
-        <header location="local">Widgets.h</header>
-        <sizehint>
-            <width>100</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
-    </image>
-</images>
 <connections>
     <connection>
         <sender>buttonNew</sender>
@@ -369,6 +352,7 @@
 <tabstops>
     <tabstop>CustomActions</tabstop>
     <tabstop>actionName</tabstop>
+    <tabstop>actionMacros</tabstop>
     <tabstop>actionMenu</tabstop>
     <tabstop>actionToolTip</tabstop>
     <tabstop>actionStatus</tabstop>
@@ -385,7 +369,4 @@
     <slot access="protected">onCustomActionPixmap()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>gui::accellineedit.h</includehint>
-</includehints>
 </UI>

@@ -32,8 +32,6 @@
 # include <qpushbutton.h>
 #endif
 
-#include "../Base/Sequencer.h"
-
 class QAction;
 class QHBoxLayout;
 class QGridLayout;
@@ -180,6 +178,8 @@ private:
  */
 class GuiExport AccelLineEdit : public QLineEdit
 {
+  Q_OBJECT
+
 public:
   AccelLineEdit ( QWidget * parent=0, const char * name=0 );
 

@@ -68,6 +68,7 @@
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
+#include "../Base/Sequencer.h"
 #include "../App/Document.h"
 #include "Action.h"
 #include "Process.h"

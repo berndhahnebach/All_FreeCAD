@@ -128,41 +128,48 @@ class GuiExport FileChooser : public QWidget
 {
   Q_OBJECT
 
-  Q_ENUMS( ChooseMode )
-  Q_PROPERTY( QString  text      READ text          WRITE setText          )
+  Q_ENUMS( Mode )
+  Q_PROPERTY( Mode mode READ mode WRITE setMode )
+  Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
   Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
-  Q_PROPERTY( bool   chooseFile  READ chooseFile    WRITE setChooseFile    )
 
 public:
+  enum Mode { File, Directory };
+
   FileChooser ( QWidget * parent = 0, const char * name = 0 );
   virtual ~FileChooser();
-
-  /** 
-   * Returns the text of the lineedit field.
-   */
-  QString text() const;
-
-  /**
-   * Returns true if this widgets is set to choose a file, if it is
-   * set to choose false is returned.
-   */
-  bool chooseFile() const;
 
   /** 
    * Returns the set filter.
    */
   QString filter() const;
 
+  /** 
+   * Returns the filename.
+   */
+  QString fileName() const;
+
+  /**
+   * Returns true if this widgets is set to choose a file, if it is
+   * set to choose false is returned.
+   */
+  Mode mode() const;
+
 public slots:
-  virtual void onChoose();
-  virtual void setChooseFile( bool );
+  virtual void setFileName( const QString &fn );
+  virtual void setMode( Mode m );
   virtual void setFilter ( const QString & );
-  virtual void setText( const QString &);
+
+signals:
+  void fileNameChanged( const QString & );
+
+private slots:
+  void chooseFile();
 
 private:
-  QLineEdit* _le;
-  QPushButton* _pb;
-  bool _chFile;
+  QLineEdit *lineEdit;
+  QPushButton *button;
+  Mode md;
   QString _filter;
 };
 

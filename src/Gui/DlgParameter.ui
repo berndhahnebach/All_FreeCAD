@@ -350,14 +350,14 @@
 </connections>
 <tabstops>
     <tabstop>SetNameComboBox</tabstop>
-    <tabstop>LoadParameterButton</tabstop>
     <tabstop>ParameterView</tabstop>
+    <tabstop>ValueEdit</tabstop>
+    <tabstop>LoadParameterButton</tabstop>
     <tabstop>AddStringButton</tabstop>
     <tabstop>AddFloatButton</tabstop>
     <tabstop>AddIntButton</tabstop>
     <tabstop>AddGroupButton</tabstop>
     <tabstop>DeleteButton</tabstop>
-    <tabstop>ValueEdit</tabstop>
     <tabstop>ClearValueButton</tabstop>
     <tabstop>InsertFileValueButton</tabstop>
     <tabstop>PushButton8</tabstop>

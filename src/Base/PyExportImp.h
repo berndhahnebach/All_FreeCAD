@@ -38,6 +38,9 @@
 
 #include<typeinfo>
 
+#ifndef _PreComp_
+# include <Standard_Failure.hxx>
+#endif
 
 
 /** Python static class macro for definition

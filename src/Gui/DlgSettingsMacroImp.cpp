@@ -44,10 +44,10 @@ DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WF
   append(PrefCheckBox_RecordGui   ->getHandler());
   append(MacroPath                ->getHandler());
 
-  if ( MacroPath->text().isEmpty() )
+  if ( MacroPath->fileName().isEmpty() )
   {
     QDir d(App::GetApplication().GetHomePath());
-    MacroPath->setText( d.path() );
+    MacroPath->setFileName( d.path() );
   }
 }
 

@@ -156,7 +156,7 @@ void PrefWidgetHandler::onRestore()
 // --------------------------------------------------------------------
 
 PrefSpinBox::PrefSpinBox ( QWidget * parent, const char * name )
-  : FloatSpinBox(parent, name), PrefWidget(name)
+  : SpinBox(parent, name), PrefWidget(name)
 {
 }
 
@@ -172,13 +172,8 @@ void PrefSpinBox::restorePreferences()
     return;
   }
 
-  double fVal;
-  if (decimals() == 0)
-    fVal = (double)getWindowParameter()->GetInt( entryName(), QSpinBox::value() );
-  else
-    fVal = (double)getWindowParameter()->GetFloat( entryName() , value() );
-
-  setValue(fVal);
+  int nVal = getWindowParameter()->GetInt( entryName(), QSpinBox::value() );
+  setValue( nVal );
 }
 
 void PrefSpinBox::savePreferences()
@@ -189,10 +184,7 @@ void PrefSpinBox::savePreferences()
     return;
   }
 
-  if (decimals() == 0)
-    getWindowParameter()->SetInt( entryName() , (int)value() );
-  else
-    getWindowParameter()->SetFloat( entryName(), value() );
+  getWindowParameter()->SetInt( entryName() , (int)value() );
 }
 
 QCString PrefSpinBox::entryName () const
@@ -211,6 +203,60 @@ void PrefSpinBox::setEntryName ( const QCString& name )
 }
 
 void PrefSpinBox::setParamGrpPath ( const QCString& name )
+{
+  PrefWidget::setParamGrpPath(name);
+}
+
+// --------------------------------------------------------------------
+
+PrefFloatSpinBox::PrefFloatSpinBox ( QWidget * parent, const char * name )
+  : FloatSpinBox(parent, name), PrefWidget(name)
+{
+}
+
+PrefFloatSpinBox::~PrefFloatSpinBox()
+{
+}
+
+void PrefFloatSpinBox::restorePreferences()
+{
+  if ( getWindowParameter().IsNull() )
+  {
+    Console().Warning("Cannot restore!\n");
+    return;
+  }
+
+  double fVal = (double)getWindowParameter()->GetFloat( entryName() , value() );
+  setValue(fVal);
+}
+
+void PrefFloatSpinBox::savePreferences()
+{
+  if (getWindowParameter().IsNull())
+  {
+    Console().Warning("Cannot save!\n");
+    return;
+  }
+
+  getWindowParameter()->SetFloat( entryName(), value() );
+}
+
+QCString PrefFloatSpinBox::entryName () const
+{
+  return PrefWidget::entryName();
+}
+
+QCString PrefFloatSpinBox::paramGrpPath () const
+{
+  return PrefWidget::paramGrpPath();
+}
+
+void PrefFloatSpinBox::setEntryName ( const QCString& name )
+{
+  PrefWidget::setEntryName(name);
+}
+
+void PrefFloatSpinBox::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -288,8 +334,8 @@ void PrefFileChooser::restorePreferences()
     return;
   }
 
-  std::string txt = getWindowParameter()->GetASCII( entryName(), text().latin1() );
-  setText(txt.c_str());
+  std::string txt = getWindowParameter()->GetASCII( entryName(), fileName().latin1() );
+  setFileName(txt.c_str());
 }
 
 void PrefFileChooser::savePreferences()
@@ -300,7 +346,7 @@ void PrefFileChooser::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetASCII( entryName(), text().latin1() );
+  getWindowParameter()->SetASCII( entryName(), fileName().latin1() );
 }
 
 QCString PrefFileChooser::entryName () const
@@ -476,6 +522,7 @@ void PrefListBox::setParamGrpPath ( const QCString& name )
 PrefCheckBox::PrefCheckBox ( QWidget * parent, const char * name )
   : QCheckBox(parent, name), PrefWidget(name)
 {
+  setText( name );
 }
 
 PrefCheckBox::~PrefCheckBox()
@@ -530,6 +577,7 @@ void PrefCheckBox::setParamGrpPath ( const QCString& name )
 PrefRadioButton::PrefRadioButton ( QWidget * parent, const char * name )
   : QRadioButton(parent, name), PrefWidget(name)
 {
+  setText( name );
 }
 
 PrefRadioButton::~PrefRadioButton()
