@@ -77,10 +77,7 @@
 #include "Console.h"
 
 
-#ifdef XERCES_HAS_CPP_NAMESPACE
-	using namespace xercesc;
-#endif
-
+using namespace xercesc;
 using namespace Base;
 
 //**************************************************************************

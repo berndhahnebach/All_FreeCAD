@@ -102,6 +102,10 @@ public:
 	 */
 	double GetFloatProperty(const char *Name);
   
+	/** Get a Property and put it to float
+	 *  This works with all Properties inhereting from Float and Int Properties..
+	 */
+	const char *GetStringProperty(const char *Name);
 	//@}
 
 

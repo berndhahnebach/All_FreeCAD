@@ -198,5 +198,13 @@
 #include <TDataStd_Integer.hxx>
 
 
+// Import
+#include <STEPControl_Writer.hxx>
+#include <STEPControl_Reader.hxx>
+#include <IGESControl_Controller.hxx>
+#include <IGESControl_Writer.hxx>
+#include <IGESControl_Reader.hxx>
+
+
 
 #endif

@@ -26,13 +26,13 @@
 #define __FEATUREPARTBOX_H__
 
 
-#include <App/Feature.h>
+#include "PartFeature.h"
 
 namespace Part
 {
 
 
-class PartBoxFeature :public App::Feature
+class PartBoxFeature :public PartFeature
 {
 public:
 

@@ -31,6 +31,7 @@
 #include "PartDocType.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
+#include "FeaturePartImportStep.h"
 
 using Base::Console;
 using namespace Part;
@@ -121,8 +122,9 @@ void ModuleExport initPart() {
 
 	Console().Log("AppPart loaded\n");
 
-	App::FeatureFactory().AddProducer("PartBox",new App::FeatureProducer<Part::PartBoxFeature>);
-	App::FeatureFactory().AddProducer("PartCut",new App::FeatureProducer<Part::PartCutFeature>);
+	App::FeatureFactory().AddProducer("PartBox"       ,new App::FeatureProducer<Part::PartBoxFeature>);
+	App::FeatureFactory().AddProducer("PartCut"       ,new App::FeatureProducer<Part::PartCutFeature>);
+	App::FeatureFactory().AddProducer("PartImportStep",new App::FeatureProducer<Part::FeaturePartImportStep>);
 
 	return;
 }

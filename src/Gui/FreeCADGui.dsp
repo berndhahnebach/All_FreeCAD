@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADGui - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "FreeCADGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -1073,9 +1073,9 @@ InputPath=.\DlgDocTemplates.ui
 InputName=DlgDocTemplates
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1096,9 +1096,9 @@ InputPath=.\DlgDocTemplates.ui
 InputName=DlgDocTemplates
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1131,7 +1131,7 @@ InputPath=.\DlgDocTemplatesImp.h
 InputName=DlgDocTemplatesImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1143,7 +1143,7 @@ InputPath=.\DlgDocTemplatesImp.h
 InputName=DlgDocTemplatesImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1162,9 +1162,9 @@ InputPath=.\DlgMacroExecute.ui
 InputName=DlgMacroExecute
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1185,9 +1185,9 @@ InputPath=.\DlgMacroExecute.ui
 InputName=DlgMacroExecute
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1220,7 +1220,7 @@ InputPath=.\DlgMacroExecuteImp.h
 InputName=DlgMacroExecuteImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1232,7 +1232,7 @@ InputPath=.\DlgMacroExecuteImp.h
 InputName=DlgMacroExecuteImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1251,9 +1251,9 @@ InputPath=.\DlgMacroRecord.ui
 InputName=DlgMacroRecord
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1274,9 +1274,9 @@ InputPath=.\DlgMacroRecord.ui
 InputName=DlgMacroRecord
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1309,7 +1309,7 @@ InputPath=.\DlgMacroRecordImp.h
 InputName=DlgMacroRecordImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1321,7 +1321,7 @@ InputPath=.\DlgMacroRecordImp.h
 InputName=DlgMacroRecordImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1340,9 +1340,9 @@ InputPath=.\DlgParameter.ui
 InputName=DlgParameter
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1363,9 +1363,9 @@ InputPath=.\DlgParameter.ui
 InputName=DlgParameter
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1398,7 +1398,7 @@ InputPath=.\DlgParameterImp.h
 InputName=DlgParameterImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1410,7 +1410,7 @@ InputPath=.\DlgParameterImp.h
 InputName=DlgParameterImp
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1429,9 +1429,9 @@ InputPath=.\DlgTipOfTheDay.ui
 InputName=DlgTipOfTheDay
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1452,9 +1452,9 @@ InputPath=.\DlgTipOfTheDay.ui
 InputName=DlgTipOfTheDay
 
 BuildCmds= \
-	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
-	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
-	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
 	
 
 "$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1495,7 +1495,7 @@ InputPath=.\DlgUndoRedo.h
 InputName=DlgUndoRedo
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1507,7 +1507,7 @@ InputPath=.\DlgUndoRedo.h
 InputName=DlgUndoRedo
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1542,7 +1542,7 @@ InputPath=.\Action.h
 InputName=Action
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1554,7 +1554,7 @@ InputPath=.\Action.h
 InputName=Action
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1606,7 +1606,7 @@ InputPath=.\ButtonGroup.h
 InputName=ButtonGroup
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1618,7 +1618,7 @@ InputPath=.\ButtonGroup.h
 InputName=ButtonGroup
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1642,7 +1642,7 @@ InputPath=.\HtmlView.h
 InputName=HtmlView
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1654,7 +1654,7 @@ InputPath=.\HtmlView.h
 InputName=HtmlView
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1673,7 +1673,7 @@ InputPath=.\HtmlViewP.h
 InputName=HtmlViewP
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1685,7 +1685,7 @@ InputPath=.\HtmlViewP.h
 InputName=HtmlViewP
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1717,7 +1717,7 @@ InputPath=.\ReportView.h
 InputName=ReportView
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1729,7 +1729,7 @@ InputPath=.\ReportView.h
 InputName=ReportView
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1752,7 +1752,7 @@ InputPath=.\StackBar.h
 InputName=StackBar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1764,7 +1764,7 @@ InputPath=.\StackBar.h
 InputName=StackBar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1787,7 +1787,7 @@ InputPath=.\ToolBox.h
 InputName=ToolBox
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1799,7 +1799,7 @@ InputPath=.\ToolBox.h
 InputName=ToolBox
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1822,7 +1822,7 @@ InputPath=.\ToolBoxBar.h
 InputName=ToolBoxBar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1834,7 +1834,7 @@ InputPath=.\ToolBoxBar.h
 InputName=ToolBoxBar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1862,7 +1862,7 @@ InputPath=.\qextmdi\dummykmainwindow.h
 InputName=dummykmainwindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1874,7 +1874,7 @@ InputPath=.\qextmdi\dummykmainwindow.h
 InputName=dummykmainwindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1893,7 +1893,7 @@ InputPath=.\qextmdi\dummykpartsdockmainwindow.h
 InputName=dummykpartsdockmainwindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1905,7 +1905,7 @@ InputPath=.\qextmdi\dummykpartsdockmainwindow.h
 InputName=dummykpartsdockmainwindow
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1924,7 +1924,7 @@ InputPath=.\qextmdi\dummyktoolbar.h
 InputName=dummyktoolbar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1936,7 +1936,7 @@ InputPath=.\qextmdi\dummyktoolbar.h
 InputName=dummyktoolbar
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -1964,7 +1964,7 @@ InputPath=.\qextmdi\kdocktabctl.h
 InputName=kdocktabctl
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -1976,7 +1976,7 @@ InputPath=.\qextmdi\kdocktabctl.h
 InputName=kdocktabctl
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2000,7 +2000,7 @@ InputPath=.\qextmdi\kdockwidget.h
 InputName=kdockwidget
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2012,7 +2012,7 @@ InputPath=.\qextmdi\kdockwidget.h
 InputName=kdockwidget
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2036,7 +2036,7 @@ InputPath=.\qextmdi\kdockwidget_private.h
 InputName=kdockwidget_private
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2048,7 +2048,7 @@ InputPath=.\qextmdi\kdockwidget_private.h
 InputName=kdockwidget_private
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2072,7 +2072,7 @@ InputPath=.\qextmdi\qextmdichildarea.h
 InputName=qextmdichildarea
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2084,7 +2084,7 @@ InputPath=.\qextmdi\qextmdichildarea.h
 InputName=qextmdichildarea
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2108,7 +2108,7 @@ InputPath=.\qextmdi\qextmdichildfrm.h
 InputName=qextmdichildfrm
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2120,7 +2120,7 @@ InputPath=.\qextmdi\qextmdichildfrm.h
 InputName=qextmdichildfrm
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2144,7 +2144,7 @@ InputPath=.\qextmdi\qextmdichildfrmcaption.h
 InputName=qextmdichildfrmcaption
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2156,7 +2156,7 @@ InputPath=.\qextmdi\qextmdichildfrmcaption.h
 InputName=qextmdichildfrmcaption
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2180,7 +2180,7 @@ InputPath=.\qextmdi\qextmdichildview.h
 InputName=qextmdichildview
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2192,7 +2192,7 @@ InputPath=.\qextmdi\qextmdichildview.h
 InputName=qextmdichildview
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2228,9 +2228,9 @@ InputPath=.\qextmdi\qextmdimainfrm.h
 InputName=qextmdimainfrm
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc 
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc" 
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\post_moc.py $(InputDir)\$(InputName).moc 
+	python ..\Tools\post_moc.py "$(InputDir)\$(InputName).moc" 
 	
 # End Custom Build
 
@@ -2242,9 +2242,9 @@ InputPath=.\qextmdi\qextmdimainfrm.h
 InputName=qextmdimainfrm
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc 
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc" 
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\post_moc.py $(InputDir)\$(InputName).moc 
+	python ..\Tools\post_moc.py "$(InputDir)\$(InputName).moc" 
 	
 # End Custom Build
 
@@ -2272,7 +2272,7 @@ InputPath=.\qextmdi\qextmditaskbar.h
 InputName=qextmditaskbar
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2284,7 +2284,7 @@ InputPath=.\qextmdi\qextmditaskbar.h
 InputName=qextmditaskbar
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2373,7 +2373,7 @@ InputPath=.\propertyeditor\knuminput.h
 InputName=knuminput
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2385,7 +2385,7 @@ InputPath=.\propertyeditor\knuminput.h
 InputName=knuminput
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2408,7 +2408,7 @@ InputPath=.\propertyeditor\knumvalidator.h
 InputName=knumvalidator
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2420,7 +2420,7 @@ InputPath=.\propertyeditor\knumvalidator.h
 InputName=knumvalidator
 
 "$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\$(InputName).moc"
 
 # End Custom Build
 
@@ -2443,7 +2443,7 @@ InputPath=.\propertyeditor\propertyeditor.h
 InputName=propertyeditor
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2455,7 +2455,7 @@ InputPath=.\propertyeditor\propertyeditor.h
 InputName=propertyeditor
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2486,7 +2486,7 @@ InputPath=.\propertyeditor\propertyeditorfile.h
 InputName=propertyeditorfile
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2498,7 +2498,7 @@ InputPath=.\propertyeditor\propertyeditorfile.h
 InputName=propertyeditorfile
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2521,7 +2521,7 @@ InputPath=.\propertyeditor\propertyeditorfont.h
 InputName=propertyeditorfont
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2533,7 +2533,7 @@ InputPath=.\propertyeditor\propertyeditorfont.h
 InputName=propertyeditorfont
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2556,7 +2556,7 @@ InputPath=.\propertyeditor\propertyeditorinput.h
 InputName=propertyeditorinput
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2568,20 +2568,12 @@ InputPath=.\propertyeditor\propertyeditorinput.h
 InputName=propertyeditorinput
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\propertyeditorlist.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\propertyeditorlist.h
 # End Source File
 # Begin Source File
 
@@ -2599,7 +2591,7 @@ InputPath=.\propertyeditor\propertyeditoritem.h
 InputName=propertyeditoritem
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2611,12 +2603,20 @@ InputPath=.\propertyeditor\propertyeditoritem.h
 InputName=propertyeditoritem
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyeditor\propertyeditorlist.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyeditor\propertyeditorlist.h
 # End Source File
 # End Group
 # Begin Source File
@@ -2636,7 +2636,7 @@ InputPath=.\Application.h
 InputName=Application
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2648,7 +2648,7 @@ InputPath=.\Application.h
 InputName=Application
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2680,7 +2680,7 @@ InputPath=.\CommandLine.h
 InputName=CommandLine
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2692,7 +2692,7 @@ InputPath=.\CommandLine.h
 InputName=CommandLine
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2721,7 +2721,7 @@ InputPath=.\Document.h
 InputName=Document
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2733,7 +2733,7 @@ InputPath=.\Document.h
 InputName=Document
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2832,7 +2832,7 @@ InputPath=.\PrefWidgets.h
 InputName=PrefWidgets
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2844,7 +2844,7 @@ InputPath=.\PrefWidgets.h
 InputName=PrefWidgets
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2867,7 +2867,7 @@ InputPath=.\Process.h
 InputName=Process
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2879,7 +2879,7 @@ InputPath=.\Process.h
 InputName=Process
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2898,7 +2898,7 @@ InputPath=.\ProcessQt.h
 InputName=ProcessQt
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2910,7 +2910,7 @@ InputPath=.\ProcessQt.h
 InputName=ProcessQt
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2954,7 +2954,7 @@ InputPath=.\Splashscreen.h
 InputName=Splashscreen
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2966,7 +2966,7 @@ InputPath=.\Splashscreen.h
 InputName=Splashscreen
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -2990,7 +2990,7 @@ InputPath=.\Themes.h
 InputName=Themes
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3002,7 +3002,7 @@ InputPath=.\Themes.h
 InputName=Themes
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3035,7 +3035,7 @@ InputPath=.\Tree.h
 InputName=Tree
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3047,7 +3047,7 @@ InputPath=.\Tree.h
 InputName=Tree
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3071,7 +3071,7 @@ InputPath=.\View.h
 InputName=View
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3083,7 +3083,7 @@ InputPath=.\View.h
 InputName=View
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3107,7 +3107,7 @@ InputPath=.\View3D.h
 InputName=View3D
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3119,7 +3119,7 @@ InputPath=.\View3D.h
 InputName=View3D
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3143,7 +3143,7 @@ InputPath=.\View3DInventor.h
 InputName=View3DInventor
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3155,7 +3155,7 @@ InputPath=.\View3DInventor.h
 InputName=View3DInventor
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3195,7 +3195,7 @@ InputPath=.\WidgetFactory.h
 InputName=WidgetFactory
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3207,7 +3207,7 @@ InputPath=.\WidgetFactory.h
 InputName=WidgetFactory
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3231,7 +3231,7 @@ InputPath=.\Widgets.h
 InputName=Widgets
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3243,7 +3243,7 @@ InputPath=.\Widgets.h
 InputName=Widgets
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3267,7 +3267,7 @@ InputPath=.\Window.h
 InputName=Window
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 
@@ -3279,7 +3279,7 @@ InputPath=.\Window.h
 InputName=Window
 
 "$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
 
 # End Custom Build
 

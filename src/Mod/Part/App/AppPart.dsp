@@ -111,6 +111,14 @@ SOURCE=.\FeaturePartCut.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeaturePartImportStep.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartImportStep.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

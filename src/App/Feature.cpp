@@ -109,6 +109,11 @@ double Feature::GetFloatProperty(const char *Name)
     return dynamic_cast<PropertyFloat&>(GetProperty(Name)).GetValue();
 }
 
+const char *Feature::GetStringProperty(const char *Name)
+{
+    return dynamic_cast<PropertyString&>(GetProperty(Name)).GetAsString();
+}
+
 
 void Feature::AttachLabel(const TDF_Label &rcLabel)
 {

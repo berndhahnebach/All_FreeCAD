@@ -51,7 +51,7 @@ template <class MessageType> class FCSubject;
  *  @see FCSubject
  */
 template <class _MessageType>
-class BaseExport FCObserver
+class FCObserver
 {
 public:
 
@@ -91,7 +91,7 @@ public:
  *  @see FCObserver
  */
 template <class _MessageType>
-class BaseExport FCSubject
+class FCSubject
 {
 public:
 
