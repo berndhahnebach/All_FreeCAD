@@ -805,7 +805,12 @@ void FCStackBar::showPage(QWidget* w)
       QStackBarBtn* page = firstPageVisible();
       it->first->show();
       if (!page)
-        it->first->animateClick();
+      {
+        it->first->setSelected(true);
+        m_pLastBtn = it->first;
+        it->second->show();
+        m_pCurPage = it->second;
+      }
     }
   }
 }
@@ -819,6 +824,7 @@ void FCStackBar::hidePage(QWidget* w)
       it->first->hide();
       if (it->first->isSelected())
       {
+        it->first->setSelected(false);
         QStackBarBtn* page = firstPageVisible();
         if (page)
           page->animateClick();
