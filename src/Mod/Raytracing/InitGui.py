@@ -43,11 +43,11 @@ class RaytracingWorkbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up Raytracing toolbar...\n')
-			list = ["Raytracing_WriteCamera"]
+			list = ["Raytracing_WriteCamera","Raytracing_WritePart"]
 			Gui.ToolbarAppendItems("RaytracingTools", list, 0)
 
 			Log ('   Set up Raytracing commandbar...\n')
-			list = ["Raytracing_WriteCamera"]
+			list = ["Raytracing_WriteCamera","Raytracing_WritePart"]
 			Gui.CommandbarAppendItems("RaytracingTools", list, 0)
 
 			Log ('   Set up Raytracing menues...\n')

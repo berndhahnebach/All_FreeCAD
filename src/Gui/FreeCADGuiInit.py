@@ -88,7 +88,7 @@ def InitToolbars():
 
 	# macro tool bar
 	list = ["Std_DlgMacroRecord", "Std_DlgMacroStop", "Std_DlgMacroExecute"]
-	Gui.ToolbarAppendItems("Macro recording", list, 0, 0, 0)
+	Gui.ToolbarAppendItems("Macro recording", list, 0, 0)
 
 	# view tool bar
 	list = ["Std_ViewFitAll", "Std_ViewAxo", "Separator",

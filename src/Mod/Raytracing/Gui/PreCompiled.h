@@ -106,7 +106,17 @@
 #include <V3d_OrthographicView.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRep_Tool.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <TopoDS_Face.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <GCPnts_UniformDeflection.hxx>
 
 // Q Toolkit
 #include <qaccel.h>

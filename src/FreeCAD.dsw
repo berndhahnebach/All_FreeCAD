@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "All"=.\All.dsp - Package Owner=<4>
+Project: "All"=".\All.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -66,7 +66,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppImport"=.\Mod\Import\App\AppImport.dsp - Package Owner=<4>
+Project: "AppImport"=".\Mod\Import\App\AppImport.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -84,7 +84,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppImportGui"=.\Mod\Import\Gui\AppImportGui.dsp - Package Owner=<4>
+Project: "AppImportGui"=".\Mod\Import\Gui\AppImportGui.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -108,7 +108,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppMesh"=.\Mod\Mesh\App\AppMesh.dsp - Package Owner=<4>
+Project: "AppMesh"=".\Mod\Mesh\App\AppMesh.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -120,7 +120,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppMeshGui"=.\Mod\Mesh\Gui\AppMeshGui.dsp - Package Owner=<4>
+Project: "AppMeshGui"=".\Mod\Mesh\Gui\AppMeshGui.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -132,7 +132,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppPart"=.\Mod\Part\App\AppPart.dsp - Package Owner=<4>
+Project: "AppPart"=".\Mod\Part\App\AppPart.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -150,7 +150,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppPartGui"=.\MOD\PART\GUI\AppPartGui.dsp - Package Owner=<4>
+Project: "AppPartGui"=".\MOD\PART\GUI\AppPartGui.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -174,7 +174,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppRaytracing"=.\Mod\Raytracing\App\AppRaytracing.dsp - Package Owner=<4>
+Project: "AppRaytracing"=".\Mod\Raytracing\App\AppRaytracing.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -186,7 +186,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "AppRaytracingGui"=.\Mod\Raytracing\Gui\AppRaytracingGui.dsp - Package Owner=<4>
+Project: "AppRaytracingGui"=".\Mod\Raytracing\Gui\AppRaytracingGui.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -197,11 +197,14 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name AppRaytracing
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPart
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "FreeCADApp"=.\App\FreeCADDoc.dsp - Package Owner=<4>
+Project: "FreeCADApp"=".\App\FreeCADDoc.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -216,7 +219,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FreeCADBase"=.\Base\FreeCADBase.dsp - Package Owner=<4>
+Project: "FreeCADBase"=".\Base\FreeCADBase.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -228,7 +231,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FreeCADGui"=.\Gui\FreeCADGui.dsp - Package Owner=<4>
+Project: "FreeCADGui"=".\Gui\FreeCADGui.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -246,7 +249,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FreeCADMain"=.\Main\FreeCADMain.dsp - Package Owner=<4>
+Project: "FreeCADMain"=".\Main\FreeCADMain.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -267,7 +270,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FreeCADMainCmd"=.\Main\FreeCADMainCmd.dsp - Package Owner=<4>
+Project: "FreeCADMainCmd"=".\Main\FreeCADMainCmd.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -285,7 +288,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "FreeCADMainPy"=.\Main\FreeCADMainPy.dsp - Package Owner=<4>
+Project: "FreeCADMainPy"=".\Main\FreeCADMainPy.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
