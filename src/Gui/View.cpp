@@ -48,4 +48,4 @@ bool FCView::OnMsg(const char* pMsg)
 
 
 
-#include "View_moc.cpp"
+#include "moc_View.cpp"

@@ -17,7 +17,8 @@
 
 #include "Application.h"
 #include "Document.h"
-#include "CommandStd.h"
+//#include "CommandStd.h"
+//#include "CommandView.h"
 #include "Splashscreen.h"
 
 #include "CommandLine.h"
@@ -241,6 +242,7 @@ void ApplicationWindow::CreateTestOperations()
 
 	// register the application Standard commands from CommandStd.cpp
 	CreateStdCommands();
+	CreateViewStdCommands();
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
@@ -528,4 +530,4 @@ void FCAppConsoleObserver::Log    (const char *)
 {
 }
 
-#include "Application_moc.cpp"
+#include "moc_Application.cpp"

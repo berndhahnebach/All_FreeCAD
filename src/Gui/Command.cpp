@@ -55,6 +55,10 @@ bool FCAction::addTo(QWidget *w)
 	  connect( btn, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
 	  connect( btn, SIGNAL( toggled(bool) ), this, SLOT( toolButtonToggled(bool) ) );
 	  connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
+    // for disconnecting later
+    btn->setAction(this);
+    // for disconnecting later
+    btn->setAction(this);
     return true;
   }
   else
@@ -278,5 +282,5 @@ void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
 
 
 
-#include "Command_moc.cpp"
+#include "moc_Command.cpp"
 

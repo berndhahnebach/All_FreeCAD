@@ -337,4 +337,4 @@ void FCSplashAbout::setFCPixmap(const QPixmap& image0)
   PixmapLabel->setProperty( "pixmap", image0 );
 }
 
-#include "Splashscreen_moc.cpp"
+#include "moc_Splashscreen.cpp"

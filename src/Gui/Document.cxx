@@ -203,4 +203,4 @@ Handle(V3d_Viewer) FCGuiDocument::Viewer(const Standard_CString aDisplay,
 
 
 
-#include "Document_moc.cpp"
+#include "moc_Document.cpp"

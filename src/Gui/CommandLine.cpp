@@ -258,4 +258,4 @@ void FCCommandLine::leaveEvent ( QEvent * e)
   setStyle(new FCWindowsStyle);
 }
 
-#include "CommandLine_moc.cpp"
+#include "moc_CommandLine.cpp"

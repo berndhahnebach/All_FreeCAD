@@ -13,6 +13,17 @@
 #include "View3D.h"
  
 
+void FCMouseModel::initMouseModel(View3D *pcView3D)
+{
+  _pcView3D=pcView3D;
+  m_cPrevCursor = _pcView3D->cursor();
+}
+
+void FCMouseModel::releaseMouseModel()
+{
+  _pcView3D->setCursor(m_cPrevCursor);
+}
+
 View3D            &FCMouseModel::GetView3D(void) 
 { 
 	// first init the MouseModel -> initMouseModel(View3D &View3D)
@@ -191,3 +202,165 @@ void FCMouseModelStd::keyReleaseEvent ( QKeyEvent * )
 
 }
 
+// **** MouseModelPolyPicker *************************************************
+
+FCMouseModelPolyPicker::FCMouseModelPolyPicker() 
+: FCMouseModelStd()
+{
+  m_iRadius    = 2;
+  m_bWorking   = false;
+  m_bDrawNodes = true;
+}
+
+void FCMouseModelPolyPicker::initMouseModel(View3D *pcView3D)
+{
+  // base class initialization
+  FCMouseModelStd::initMouseModel(pcView3D);
+  _pcView3D->setCursor(QCursor(CrossCursor));
+  color = QColor(255, 255, 255);
+}
+
+FCMouseModelPolyPicker::~FCMouseModelPolyPicker()
+{
+}
+
+void FCMouseModelPolyPicker::mousePressEvent	( QMouseEvent *cEvent)
+{
+  QPoint point = cEvent->pos();
+
+  // left button
+  if (cEvent->button() == Qt::LeftButton)
+  {
+    // start working from now on
+    if ( !m_bWorking )    
+    {
+      m_bWorking = true;
+
+      m_iXmin=point.x();  m_iYmin=point.y();
+      m_iXmax=point.x();  m_iYmax=point.y();
+
+      _cNodeVector.clear();
+      _cNodeVector.push_back(point);
+
+      // drawing the first point
+      if (m_bDrawNodes == true)
+      {
+        QPainter p(_pcView3D);
+        p.setPen(color);
+      	p.setBrush(QBrush::white);
+        p.drawEllipse(point.x()-m_iRadius,point.y()-m_iRadius,2*m_iRadius,2*m_iRadius);
+      }
+    }
+    // drawing a new line
+    else
+    {
+      QPainter p(_pcView3D);
+      p.setPen(color);
+      p.drawLine(m_iXmax, m_iYmax, point.x(), point.y());
+      if (m_bDrawNodes == true)
+      {
+      	p.setBrush(QBrush::white);
+        p.drawEllipse(point.x()-m_iRadius,point.y()-m_iRadius,2*m_iRadius,2*m_iRadius);
+      }
+
+      _cNodeVector.push_back(point);
+
+      m_iXmin=point.x();  m_iYmin=point.y();
+      m_iXmax=point.x();  m_iYmax=point.y();
+    }
+  }
+  // right button
+  else if (cEvent->button() == Qt::RightButton)
+  {
+    if( m_bWorking )
+    {
+      m_bWorking = false;
+  
+      // close the polygon
+      if(_cNodeVector.size() > 2)
+      {
+        QPainter p(_pcView3D);
+        p.setPen(color);
+        p.drawLine(m_iXmax,m_iYmax,_cNodeVector[0].x(),_cNodeVector[0].y());
+      }
+    }
+    else // right click twice
+        _pcView3D->PopMouseModel();
+  }
+  // middle button
+  else if (cEvent->button() == Qt::MidButton)
+  {
+    // do nothing
+  }
+}
+
+void FCMouseModelPolyPicker::mouseReleaseEvent	( QMouseEvent *cEvent)
+{
+}
+
+void FCMouseModelPolyPicker::mouseMoveEvent		( QMouseEvent *cEvent)
+{
+  QPoint point = cEvent->pos();
+
+  if( m_bWorking )
+  {
+    QPainter p(_pcView3D);
+    p.setPen(color);
+//    p.drawLine(m_iXmax,m_iYmax,point.x(),point.y() );
+  }
+}
+
+void FCMouseModelPolyPicker::wheelEvent ( QWheelEvent * e)
+{
+  // do nothing
+}
+
+void FCMouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
+{
+  switch (e->key())
+  {
+    case Qt::Key_Escape:
+      _pcView3D->PopMouseModel();
+      break;
+    default:
+      FCMouseModelStd::keyPressEvent(e);
+      break;
+  }
+}
+
+void FCMouseModelPolyPicker::paintEvent ( QPaintEvent *e )
+{
+  QPainter p(_pcView3D);
+  p.setPen(color);
+  unsigned long ulLast = _cNodeVector.size() - 1;
+
+  for (int i=1;i<=int(ulLast);i++)
+  {
+    p.drawLine(_cNodeVector[i-1].x(), _cNodeVector[i-1].y(), _cNodeVector[i].x(), _cNodeVector[i].y());
+    if (m_bDrawNodes == true)
+    {
+      p.setBrush(QBrush::white);
+      p.drawEllipse(_cNodeVector[i-1].x()-m_iRadius,_cNodeVector[i-1].y()-m_iRadius,2*m_iRadius,2*m_iRadius);
+    }
+  }
+
+  // at least three points
+  if (_cNodeVector.size() > 2 && m_bWorking == false)
+  {
+    p.drawLine(_cNodeVector[ulLast].x(), _cNodeVector[ulLast].y(), _cNodeVector[0].x(), _cNodeVector[0].y());
+    if (m_bDrawNodes == true)
+    {
+      p.setBrush(QBrush::white);
+      p.drawEllipse(_cNodeVector[ulLast].x()-m_iRadius,_cNodeVector[ulLast].y()-m_iRadius,2*m_iRadius,2*m_iRadius);
+    }
+  }
+}
+
+void FCMouseModelPolyPicker::resizeEvent ( QResizeEvent * e)
+{
+  // the polygon becomes invalid and must be done again
+  if ( m_bWorking )
+  {
+//    _cNodeVector.clear();
+  }
+}

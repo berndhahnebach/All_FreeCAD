@@ -23,20 +23,22 @@
 #else
 #endif
 
+#include "../Base/Exception.h"
+#include "../App/Document.h"
+#include "Application.h"
 #include "Widgets.h"
 #include "Splashscreen.h"
-#include "CommandStd.h"
+#include "Command.h"
+
+
 #include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
 #include "DlgMacroExecuteImp.h"
 #include "DlgMacroRecordImp.h"
 #include "DlgPreferencesImp.h"
-#include "Icons/images.cpp"
 #include "DlgCustomizeImpl.h"
+#include "Icons/images.cpp"
 #include "Icons/x.xpm"
-#include "Application.h"
-#include "../Base/Exception.h"
-#include "../App/Document.h"
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
@@ -44,54 +46,13 @@
 
 
 
-void CreateStdCommands(void)
-{
-	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-
-	rcCmdMgr.AddCommand(new FCCmdNew());
-	rcCmdMgr.AddCommand(new FCCmdOpen());
-	rcCmdMgr.AddCommand(new FCCmdSave());
-	rcCmdMgr.AddCommand(new FCCmdSaveAs());
-	rcCmdMgr.AddCommand(new FCCmdUndo());
-	rcCmdMgr.AddCommand(new FCCmdRedo());
-	rcCmdMgr.AddCommand(new FCCmdPrint());
-	rcCmdMgr.AddCommand(new FCCmdQuit());
-	rcCmdMgr.AddCommand(new FCCmdCut());
-	rcCmdMgr.AddCommand(new FCCmdCopy());
-	rcCmdMgr.AddCommand(new FCCmdPaste());
-	rcCmdMgr.AddCommand(new FCCmdMDINormal());
-	rcCmdMgr.AddCommand(new FCCmdMDIToplevel());
-	rcCmdMgr.AddCommand(new FCCmdMDITabed());
-	rcCmdMgr.AddCommand(new FCCmdTileHor());
-	rcCmdMgr.AddCommand(new FCCmdTileVer());
-	rcCmdMgr.AddCommand(new FCCmdTilePra());
-	rcCmdMgr.AddCommand(new FCCmdTest1());
-	rcCmdMgr.AddCommand(new FCCmdTest2());
-	rcCmdMgr.AddCommand(new FCCmdAbout());
-	// views
-	rcCmdMgr.AddCommand(new FCCmdViewBottom());
-	rcCmdMgr.AddCommand(new FCCmdViewFront());
-	rcCmdMgr.AddCommand(new FCCmdViewLeft());
-	rcCmdMgr.AddCommand(new FCCmdViewRear());
-	rcCmdMgr.AddCommand(new FCCmdViewRight());
-	rcCmdMgr.AddCommand(new FCCmdViewTop());
-	rcCmdMgr.AddCommand(new FCCmdViewAxo());
-	rcCmdMgr.AddCommand(new FCCmdViewFitAll());
-
-	rcCmdMgr.AddCommand(new FCCmdDlgParameter());
-	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
-	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
-	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
-	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
-
-}
-
-
 
 
 //===========================================================================
 // Std_Open
 //===========================================================================
+
+DEF_STD_CMD(FCCmdOpen   ,"Std_Open");
 
 void FCCmdOpen::CmdProfile(char** sMenuText, 
 							char** sToolTipText, 
@@ -128,6 +89,8 @@ void FCCmdOpen::Activated(void)
 // Std_New
 //===========================================================================
 
+DEF_STD_CMD(FCCmdNew   ,"Std_New");
+
 void FCCmdNew::CmdProfile(char** sMenuText, 
 							char** sToolTipText, 
 							char** sWhatsThis, 
@@ -154,6 +117,7 @@ void FCCmdNew::Activated(void)
 //===========================================================================
 // Std_Save
 //===========================================================================
+DEF_STD_CMD(FCCmdSave  ,"Std_Save");
 
 void FCCmdSave::CmdProfile(char** sMenuText, 
 							char** sToolTipText, 
@@ -179,6 +143,7 @@ void FCCmdSave::Activated(void)
 //===========================================================================
 // Std_SaveAs
 //===========================================================================
+DEF_STD_CMD(FCCmdSaveAs,"Std_SaveAs");
 
 void FCCmdSaveAs::CmdProfile(char** sMenuText, 
 							char** sToolTipText, 
@@ -216,6 +181,7 @@ void FCCmdSaveAs::Activated(void)
 //===========================================================================
 // Std_Print
 //===========================================================================
+DEF_STD_CMD(FCCmdPrint ,"Std_Print");
 
 void FCCmdPrint::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -247,6 +213,8 @@ void FCCmdPrint::Activated(void)
 //===========================================================================
 // Std_Quit
 //===========================================================================
+
+DEF_STD_CMD(FCCmdQuit  ,"Std_Quit");
 
 void FCCmdQuit::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -280,6 +248,8 @@ void FCCmdQuit::Activated(void)
 // Std_Undo
 //===========================================================================
 
+DEF_STD_CMD(FCCmdUndo  ,"Std_Undo");
+
 void FCCmdUndo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
 	*sMenuText	  = "Undo";
@@ -301,6 +271,8 @@ void FCCmdUndo::Activated(void)
 // Std_Redo
 //===========================================================================
 
+DEF_STD_CMD(FCCmdRedo  ,"Std_Redo");
+
 void FCCmdRedo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
 	*sMenuText	  = "Redo";
@@ -320,6 +292,7 @@ void FCCmdRedo::Activated(void)
 //===========================================================================
 // Std_Cut
 //===========================================================================
+DEF_STD_CMD(FCCmdCut   ,"Std_Cut");
 
 void FCCmdCut::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -340,6 +313,7 @@ void FCCmdCut::Activated(void)
 //===========================================================================
 // Std_Copy
 //===========================================================================
+DEF_STD_CMD(FCCmdCopy  ,"Std_Copy");
 
 void FCCmdCopy::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -360,6 +334,7 @@ void FCCmdCopy::Activated(void)
 //===========================================================================
 // Std_Paste
 //===========================================================================
+DEF_STD_CMD(FCCmdPaste ,"Std_Paste");
 
 void FCCmdPaste::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -380,6 +355,7 @@ void FCCmdPaste::Activated(void)
 //===========================================================================
 // Std_About
 //===========================================================================
+DEF_STD_CMD(FCCmdAbout ,"Std_About");
 
 void FCCmdAbout::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -400,6 +376,7 @@ void FCCmdAbout::Activated(void)
 //===========================================================================
 // Std_Test1
 //===========================================================================
+DEF_STD_CMD(FCCmdTest1		,"Std_Test1");
 
 void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -480,6 +457,7 @@ void FCCmdTest1::Activated(void)
 //===========================================================================
 // Std_Test2
 //===========================================================================
+DEF_STD_CMD(FCCmdTest2		,"Std_Test2");
 
 void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -528,6 +506,7 @@ void FCCmdTest2::Activated(void)
 //===========================================================================
 // Std_TileHoricontal
 //===========================================================================
+DEF_STD_CMD(FCCmdTileHor	,"Std_TileHoricontal");
 
 void FCCmdTileHor::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -548,6 +527,7 @@ AppWnd()->expandHorizontal();
 //===========================================================================
 // Std_TileVertical
 //===========================================================================
+DEF_STD_CMD(FCCmdTileVer	,"Std_TileVertical");
 
 void FCCmdTileVer::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -568,6 +548,7 @@ AppWnd()->expandVertical();
 //===========================================================================
 // Std_TilePragmatic
 //===========================================================================
+DEF_STD_CMD(FCCmdTilePra	,"Std_TilePragmatic");
 
 void FCCmdTilePra::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -588,6 +569,7 @@ AppWnd()->tilePragma();
 //===========================================================================
 // Std_MDINormal
 //===========================================================================
+DEF_STD_CMD(FCCmdMDINormal	,"Std_MDINormal");
 
 void FCCmdMDINormal::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -608,6 +590,7 @@ void FCCmdMDINormal::Activated(void)
 //===========================================================================
 // Std_MDIToplevel
 //===========================================================================
+DEF_STD_CMD(FCCmdMDIToplevel,"Std_MDIToplevel");
 
 void FCCmdMDIToplevel::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -628,6 +611,7 @@ void FCCmdMDIToplevel::Activated(void)
 //===========================================================================
 // Std_MDITabed
 //===========================================================================
+DEF_STD_CMD(FCCmdMDITabed	,"Std_MDITabed");
 
 void FCCmdMDITabed::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -646,171 +630,11 @@ void FCCmdMDITabed::Activated(void)
 }
 
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-//===========================================================================
-// Std_ViewBottom
-//===========================================================================
-
-void FCCmdViewBottom::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Bottom";
-	*sToolTipText = "Set to bottom view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_bottom);
-	iAccel = 0;
-}
-
-
-void FCCmdViewBottom::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewBottom");
-}
-
-//===========================================================================
-// Std_ViewFront
-//===========================================================================
-
-void FCCmdViewFront::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Front";
-	*sToolTipText = "Set to front view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_front);
-	iAccel = 0;
-}
-
-
-void FCCmdViewFront::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewFront");
-}
-
-//===========================================================================
-// Std_ViewLeft
-//===========================================================================
-
-void FCCmdViewLeft::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Left";
-	*sToolTipText = "Set to left view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_left);
-	iAccel = 0;
-}
-
-
-void FCCmdViewLeft::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewLeft");
-}
-
-//===========================================================================
-// Std_ViewRear
-//===========================================================================
-
-void FCCmdViewRear::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Rear";
-	*sToolTipText = "Set to rear view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_back);
-	iAccel = 0;
-}
-
-
-void FCCmdViewRear::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewRear");
-}
-
-//===========================================================================
-// Std_ViewBottom
-//===========================================================================
-
-void FCCmdViewRight::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Right";
-	*sToolTipText = "Set to right view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_right);
-	iAccel = 0;
-}
-
-
-void FCCmdViewRight::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewRight");
-}
-
-//===========================================================================
-// Std_ViewTop
-//===========================================================================
-
-void FCCmdViewTop::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Top";
-	*sToolTipText = "Set to top view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_top);
-	iAccel = 0;
-}
-
-
-void FCCmdViewTop::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewTop");
-}
-
-//===========================================================================
-// Std_ViewAxo
-//===========================================================================
-
-void FCCmdViewAxo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Axometric";
-	*sToolTipText = "Set to axometric view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_axo);
-	iAccel = 0;
-}
-
-
-void FCCmdViewAxo::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewAxo");
-}
-
-//===========================================================================
-// Std_ViewFitAll
-//===========================================================================
-
-void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
-{
-	*sMenuText	  = "Fit all";
-	*sToolTipText = "Fits the whole content on the screen";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_fitall);
-	iAccel = 0;
-}
-
-
-void FCCmdViewFitAll::Activated(void)
-{
-	AppWnd()->SendMsgToActiveView("ViewFit");
-}
 
 //===========================================================================
 // Std_DlgParameter
 //===========================================================================
+DEF_STD_CMD(FCCmdDlgParameter	,"Std_DlgParameter");
 
 void FCCmdDlgParameter::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -832,6 +656,7 @@ void FCCmdDlgParameter::Activated(void)
 //===========================================================================
 // Std_DlgPreferences
 //===========================================================================
+DEF_STD_CMD(FCCmdDlgPreferences	,"Std_DlgPreferences");
 
 void FCCmdDlgPreferences::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -853,6 +678,7 @@ void FCCmdDlgPreferences::Activated(void)
 //===========================================================================
 // Std_DlgMacroRecord
 //===========================================================================
+DEF_STD_CMD(FCCmdDlgMacroRecord	,"Std_DlgMacroRecord");
 
 void FCCmdDlgMacroRecord::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -874,6 +700,7 @@ void FCCmdDlgMacroRecord::Activated(void)
 //===========================================================================
 // Std_DlgMacroExecute
 //===========================================================================
+DEF_STD_CMD(FCCmdDlgMacroExecute,"Std_DlgMacroExecute");
 
 void FCCmdDlgMacroExecute::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -896,6 +723,7 @@ void FCCmdDlgMacroExecute::Activated(void)
 //===========================================================================
 // Std_DlgCustomize
 //===========================================================================
+DEF_STD_CMD(FCCmdDlgCustomize	,"Std_DlgCustomize");
 
 void FCCmdDlgCustomize::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
@@ -913,4 +741,41 @@ void FCCmdDlgCustomize::Activated(void)
 	FCDlgCustomize cDlg(AppWnd(),"CustomizeDialog",true);
 	cDlg.exec();
 }
+
+
+
+void CreateStdCommands(void)
+{
+	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+
+	rcCmdMgr.AddCommand(new FCCmdNew());
+	rcCmdMgr.AddCommand(new FCCmdOpen());
+	rcCmdMgr.AddCommand(new FCCmdSave());
+	rcCmdMgr.AddCommand(new FCCmdSaveAs());
+	rcCmdMgr.AddCommand(new FCCmdUndo());
+	rcCmdMgr.AddCommand(new FCCmdRedo());
+	rcCmdMgr.AddCommand(new FCCmdPrint());
+	rcCmdMgr.AddCommand(new FCCmdQuit());
+	rcCmdMgr.AddCommand(new FCCmdCut());
+	rcCmdMgr.AddCommand(new FCCmdCopy());
+	rcCmdMgr.AddCommand(new FCCmdPaste());
+	rcCmdMgr.AddCommand(new FCCmdMDINormal());
+	rcCmdMgr.AddCommand(new FCCmdMDIToplevel());
+	rcCmdMgr.AddCommand(new FCCmdMDITabed());
+	rcCmdMgr.AddCommand(new FCCmdTileHor());
+	rcCmdMgr.AddCommand(new FCCmdTileVer());
+	rcCmdMgr.AddCommand(new FCCmdTilePra());
+	rcCmdMgr.AddCommand(new FCCmdTest1());
+	rcCmdMgr.AddCommand(new FCCmdTest2());
+	rcCmdMgr.AddCommand(new FCCmdAbout());
+
+	rcCmdMgr.AddCommand(new FCCmdDlgParameter());
+	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
+	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
+	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
+	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
+
+}
+
+
 

@@ -256,7 +256,7 @@
 <customwidgets>
     <customwidget>
         <class>FCCmdView</class>
-        <header location="local">C:/Projekte/FreeCAD/src/Gui/Widgets.h</header>
+        <header location="local">Widgets.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>

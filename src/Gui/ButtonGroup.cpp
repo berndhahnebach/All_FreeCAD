@@ -392,7 +392,7 @@ void FCToolboxGroup::resetBackgroundColor()
 /////////////////////////////////////////////////////////////////////////////////////
 
 FCToolboxButton::FCToolboxButton( QWidget *parent, const char *name )
-: QToolButton( parent, name )
+: QToolButton( parent, name ), pLastAction(NULL)
 {
   tbShowText = false;
   raised = FALSE;
@@ -404,7 +404,7 @@ FCToolboxButton::FCToolboxButton( QWidget *parent, const char *name )
 }
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, QWidget *parent, const char *name )
-: QToolButton( parent, name )
+: QToolButton( parent, name ), pLastAction(NULL)
 {
   tbShowText = true;
   raised = FALSE;
@@ -418,7 +418,7 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, Q
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
                                   QWidget *parent, const char *name )
-: QToolButton( parent, name )
+: QToolButton( parent, name ), pLastAction(NULL)
 {
   tbShowText = true;
   raised = FALSE;
@@ -432,7 +432,7 @@ FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const
 
 FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
                                   QObject *receiver, const char *member, QWidget *parent, const char *name )
-: QToolButton( parent, name )
+: QToolButton( parent, name ), pLastAction(NULL)
 {
   tbShowText = true;
   raised = FALSE;
@@ -533,6 +533,24 @@ void FCToolboxButton::dropEvent ( QDropEvent * e)
     setText(pAction->menuText());
     setTooltip(pAction->toolTip());
 
+    // disconnect last action first
+    if (pLastAction)
+    {
+      disconnect( this, SIGNAL( clicked() ), pLastAction, SIGNAL( activated() ) );
+	    disconnect( this, SIGNAL( toggled(bool) ), pLastAction, SLOT( toolButtonToggled(bool) ) );
+	    disconnect( this, SIGNAL( destroyed() ), pLastAction, SLOT( objectDestroyed() ) );
+    }
+
+    pLastAction = pAction;
+    // disconnect last action first
+    if (pLastAction)
+    {
+      disconnect( this, SIGNAL( clicked() ), pLastAction, SIGNAL( activated() ) );
+	    disconnect( this, SIGNAL( toggled(bool) ), pLastAction, SLOT( toolButtonToggled(bool) ) );
+	    disconnect( this, SIGNAL( destroyed() ), pLastAction, SLOT( objectDestroyed() ) );
+    }
+
+    pLastAction = pAction;
     connect( this, SIGNAL( clicked() ), pAction, SIGNAL( activated() ) );
 	  connect( this, SIGNAL( toggled(bool) ), pAction, SLOT( toolButtonToggled(bool) ) );
 	  connect( this, SIGNAL( destroyed() ), pAction, SLOT( objectDestroyed() ) );
@@ -1096,7 +1114,7 @@ void FCCmdBar::mouseMoveEvent( QMouseEvent *e )
 	
 		if( curHighlight <= curPage )
 		{
-			qDrawWinButton( pPaint, 0, curHighlight*_stackHeight, width(), _stackHeight, *pCGroup, false, &brush  );
+ 			qDrawWinButton( pPaint, 0, curHighlight*_stackHeight, width(), _stackHeight, *pCGroup, false, &brush  );
 
 			pPaint->setPen( fcolor );
 			pPaint->drawText( 0, curHighlight*_stackHeight-1, width(), _stackHeight, AlignHCenter | AlignVCenter, pBtn->label() );
@@ -1388,4 +1406,4 @@ void QStackBarBtn::setSelColor( QColor c )
 	_selColor = new QColorGroup( c, c, c.light(), c.dark(), c.light(), c,c,c,c );
 }
 
-#include "ButtonGroup_moc.cpp"
+#include "moc_ButtonGroup.cpp"

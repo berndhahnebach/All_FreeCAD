@@ -31,6 +31,10 @@ class ApplicationWindow;
 class FCGuiDocument;
 class FCDocument;
 
+void CreateStdCommands(void);
+void CreateViewStdCommands(void);
+
+
 class GuiExport FCAction : public QAction
 {
   public:

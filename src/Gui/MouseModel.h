@@ -1,6 +1,8 @@
 #ifndef __MOUSEMODEL_H__
 #define __MOUSEMODEL_H__
 
+#include "window.h"
+
 // forwards
 class QMouseEvent;
 class QKeyEvent;
@@ -14,8 +16,8 @@ class FCMouseModel
 {
 public:
 	FCMouseModel(void){};
-	virtual void initMouseModel(View3D *pcView3D){_pcView3D=pcView3D;};
-	virtual void releaseMouseModel(void){};
+	virtual void initMouseModel(View3D *pcView3D);
+	virtual void releaseMouseModel(void);
 
 	virtual void mousePressEvent		( QMouseEvent *cEvent) = 0;
 	virtual void mouseReleaseEvent		( QMouseEvent *cEvent) = 0;
@@ -39,7 +41,7 @@ public:
 
 protected:
 	View3D *_pcView3D;
-
+  QCursor m_cPrevCursor;
 };
 
 
@@ -72,20 +74,30 @@ protected:
 	
 };
 
+class FCMouseModelPolyPicker : public FCMouseModelStd
+{
+  public:
+    FCMouseModelPolyPicker();
+    virtual ~FCMouseModelPolyPicker();
 
+    virtual void initMouseModel(View3D *pcView3D);
+    virtual void mousePressEvent	  ( QMouseEvent  * cEvent );
+    virtual void mouseReleaseEvent	( QMouseEvent  * cEvent );
+    virtual void wheelEvent			    ( QWheelEvent  * cEvent );
+    virtual void mouseMoveEvent		  ( QMouseEvent  * cEvent );
+    virtual void keyPressEvent		  ( QKeyEvent    * cEvent );
+    virtual void paintEvent         ( QPaintEvent  * cEvent );
+    virtual void resizeEvent			  ( QResizeEvent * cEvent );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  protected:
+    QColor color;
+    FCvector<QPoint> _cNodeVector;
+    int  m_iRadius;
+    bool m_bWorking, m_bDrawNodes;
+    int  m_iXmin, 
+         m_iXmax, 
+         m_iYmin, 
+         m_iYmax; //extenst of the input vertices
+};
 
 #endif

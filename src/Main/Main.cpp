@@ -80,7 +80,6 @@ const char sBanner[] = \
 
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
-#include "InitGuiScript.h"
 #include "TestScript.h"
 #include "TestEnvScript.h"
 #include "StartupScript.h"
@@ -105,6 +104,8 @@ bool bVerbose = false;
 #ifdef _FC_GUI_ENABLED_
 	QApplication* pcQApp = NULL;
 	FCSplashScreen *splash = 0;
+#	include "InitGuiScript.h"
+
 #endif
 /// pointer to the system parameter (loaded in Init())
 FCParameterManager *pcSystemParameter;

@@ -95,9 +95,9 @@ void DlgDocTemplatesImp::IconDoubleClick(QIconViewItem* Item)
 	Validate();
 }
 
-#include "DlgDocTemplates_moc.cpp"
 #include "DlgDocTemplates.cpp"
-#include "DlgDocTemplatesImp_moc.cpp"
+#include "moc_DlgDocTemplates.cpp"
+#include "moc_DlgDocTemplatesImp.cpp"
 
 
 

@@ -964,5 +964,5 @@ void FCHtmlView::CheckBookmarks()
 }
 
 
-#include "HtmlView_moc.cpp"
+#include "moc_HtmlView.cpp"
 

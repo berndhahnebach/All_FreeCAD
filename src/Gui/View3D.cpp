@@ -222,6 +222,7 @@ bool View3D::InitCasCadeView(void)
 
 	// pushing the standard mouse model
 	PushMouseModel(new FCMouseModelStd);
+	PushMouseModel(new FCMouseModelPolyPicker);
 
    	bIsInit = true;
 	
@@ -364,14 +365,17 @@ void View3D::ShowDimension (void) const
 }
 
 
-void View3D::paintEvent (QPaintEvent * )
+void View3D::paintEvent (QPaintEvent * cEvent)
 {
-
 	if(!bIsInit)
 		InitCasCadeView();
 
 	if (!_hView.IsNull())
 		_hView->Redraw();
+
+  // do this repaint last 
+  if (_cMouseStack.size() > 0)
+    _cMouseStack.top()->paintEvent( cEvent);
 }
 
 /** Update the view when resize event occur.  */
@@ -383,6 +387,10 @@ void View3D::resizeEvent (QResizeEvent * e)
 			_hView->MustBeResized();
 		}
 	}
+
+  // do this repaint last 
+  if (_cMouseStack.size() > 0)
+    _cMouseStack.top()->resizeEvent( e );
 }
 
 // Managing MouseModels
@@ -415,7 +423,7 @@ bool View3D::ScreenDump(Standard_CString theFile)
 }
 
 	
-#include "View3D_moc.cpp"
+#include "moc_View3D.cpp"
 
 
 

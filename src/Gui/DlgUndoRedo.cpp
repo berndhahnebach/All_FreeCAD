@@ -478,5 +478,5 @@ bool QToolButtonDropDown::autoRaiseEx () const
   return autoRaise();
 }
 
-#include "DlgUndoRedo_moc.cpp"
+#include "moc_DlgUndoRedo.cpp"
 
