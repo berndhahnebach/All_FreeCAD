@@ -377,7 +377,7 @@ void ScintillaQt::paintEvent(QPaintEvent* e)
 static bool lexersLinked = FALSE;
 
 FCScintEditor::FCScintEditor(QWidget *parent,const char *name,WFlags f)
-	: QWidget(parent,name,f), sciTE(0L)
+	: QWidget(parent,name,f), sciTE(0L), _bControlButton(false)
 {
 	QGridLayout *layout = new QGridLayout(this,2,2);
 
@@ -410,63 +410,67 @@ FCScintEditor::FCScintEditor(QWidget *parent,const char *name,WFlags f)
 	}
 
   
-   const char font[] = "Verdana";
-   const char monospace[] = "Courier";
-   const short fontsize = 9;
-   const char keywords[] = "and assert break class continue def del elif else except exec "
-	                         "finally for from global if import in is lambda None not or "
-	                         "pass print raise return try while yield";
+  QColor col = Qt::red;
+ 	long lStrings = (col.blue() << 16) | (col.green() << 8) | col.red();
+  col = Qt::blue;
+  long lKeywords = (col.blue() << 16) | (col.green() << 8) | col.red();
+  const char font[] = "Verdana";
+  const char monospace[] = "Courier";
+  const short fontsize = 9;
+  const char keywords[] = "and assert break class continue def del elif else except exec "
+	                        "finally for from global if import in is lambda None not or "
+	                        "pass print raise return try while yield";
 
-   // set style bits, choose the right lexer (Lua) and set the keywords list
-   sciTE->WndProc(SCI_SETSTYLEBITS,5,0);
-   sciTE->WndProc(SCI_SETLEXER,SCLEX_PYTHON,0);
-   sciTE->WndProc(SCI_SETKEYWORDS,0,(sptr_t)keywords);
-   
-   // set up basic features (iguides on, tab=3, tabs-to-spaces, EOL=CRLF)
-   sciTE->WndProc(SCI_SETINDENTATIONGUIDES,1,0);
-   sciTE->WndProc(SCI_SETTABWIDTH,3,0);
-   sciTE->WndProc(SCI_SETUSETABS,0,0);
-   sciTE->WndProc(SCI_SETEOLMODE,SC_EOL_CRLF,0);
+  // set style bits, choose the right lexer (Lua) and set the keywords list
+  sciTE->WndProc(SCI_SETSTYLEBITS,5,0);
+  sciTE->WndProc(SCI_SETLEXER,SCLEX_PYTHON,0);
+  sciTE->WndProc(SCI_SETKEYWORDS,0,(sptr_t)keywords);
+  
+  // set up basic features (iguides on, tab=3, tabs-to-spaces, EOL=CRLF)
+  sciTE->WndProc(SCI_SETINDENTATIONGUIDES,1,0);
+  sciTE->WndProc(SCI_SETTABWIDTH,3,0);
+  sciTE->WndProc(SCI_SETUSETABS,0,0);
+  sciTE->WndProc(SCI_SETEOLMODE,SC_EOL_CRLF,0);
 
-   // now set up the styles (remember you have to set up font name for each style;
-   // if you fail to do so, bold/italics will not work (only color will work)
-   // !!colors are in format BGR!!
+  // now set up the styles (remember you have to set up font name for each style;
+  // if you fail to do so, bold/italics will not work (only color will work)
+  // !!colors are in format BGR!!
 
-   // style 32: default
-   sciTE->WndProc(SCI_STYLESETFONT,32, (sptr_t) font);
-   sciTE->WndProc(SCI_STYLESETSIZE,32, fontsize);
-   // style 0: whitespace
-   sciTE->WndProc(SCI_STYLESETFORE,0, 0x808080);
-   // style 1: comment (not used in Lua)
-   // style 2: line comment (green)
-   sciTE->WndProc(SCI_STYLESETFONT,2, (int)monospace);
-   sciTE->WndProc(SCI_STYLESETSIZE,2, fontsize);
-   sciTE->WndProc(SCI_STYLESETFORE,2, 0x00AA00);
-   // style 3: doc comment (grey???)
-   sciTE->WndProc(SCI_STYLESETFORE,3, 0x7F7F7F);      
-   // style 4: numbers (blue)
-   sciTE->WndProc(SCI_STYLESETFORE,4, 0xFF0000);
-   // style 5: keywords (black bold)
-   sciTE->WndProc(SCI_STYLESETFONT,5, (int)font);
-   sciTE->WndProc(SCI_STYLESETSIZE,5, (int)fontsize);
-   sciTE->WndProc(SCI_STYLESETFORE,5, 0x000000);
-   sciTE->WndProc(SCI_STYLESETBOLD,5, 1);
-   // style 6: double qouted strings (???)
-   sciTE->WndProc(SCI_STYLESETFORE,6, 0x7F007F);
-   // style 7: single quoted strings (???)
-   sciTE->WndProc(SCI_STYLESETFORE,7, 0x7F007F);
-   // style 8: UUIDs (IDL only, not used in Lua)
-   // style 9: preprocessor directives (not used in Lua 4)
-   // style 10: operators (black bold)
-   sciTE->WndProc(SCI_STYLESETFONT,10, (int)font);
-   sciTE->WndProc(SCI_STYLESETSIZE,10, fontsize);
-   sciTE->WndProc(SCI_STYLESETFORE,10, 0x000000);
-   sciTE->WndProc(SCI_STYLESETBOLD,10, 1);
-   // style 11: identifiers (leave to default)
-   // style 12: end of line where string is not closed (black on violet, eol-filled)
-   sciTE->WndProc(SCI_STYLESETFORE,12, 0x000000);
-   sciTE->WndProc(SCI_STYLESETBACK,12, 0xE0C0E0);
-   sciTE->WndProc(SCI_STYLESETEOLFILLED,12, 1);
+  // style 32: default
+  sciTE->WndProc(SCI_STYLESETFONT,32, (sptr_t) font);
+  sciTE->WndProc(SCI_STYLESETSIZE,32, fontsize);
+  // style 0: whitespace
+  sciTE->WndProc(SCI_STYLESETFORE,0, 0x808080);
+  // style 1: comment (not used in Lua)
+  // style 2: line comment (green)
+  sciTE->WndProc(SCI_STYLESETFONT,2, (int)monospace);
+  sciTE->WndProc(SCI_STYLESETSIZE,2, fontsize);
+  sciTE->WndProc(SCI_STYLESETFORE,2, 0x00AA00);
+  // style 3: doc comment (grey???)
+  sciTE->WndProc(SCI_STYLESETFORE,3, lStrings);      
+  // style 4: numbers (blue)
+  sciTE->WndProc(SCI_STYLESETFORE,4, 0xFF0000);
+  // style 5: keywords (black bold)
+  sciTE->WndProc(SCI_STYLESETFONT,5, (int)font);
+  sciTE->WndProc(SCI_STYLESETSIZE,5, (int)fontsize);
+  sciTE->WndProc(SCI_STYLESETFORE,5, lKeywords);
+  sciTE->WndProc(SCI_STYLESETBOLD,5, 1);
+  // style 6: double qouted strings (???)
+  sciTE->WndProc(SCI_STYLESETFORE,6, 0x7F007F);
+  // style 7: single quoted strings (???)
+  sciTE->WndProc(SCI_STYLESETFORE,7, 0x7F007F);
+  // style 8: UUIDs (IDL only, not used in Lua)
+  // style 9: preprocessor directives (not used in Lua 4)
+  // style 10: operators (black bold)
+  sciTE->WndProc(SCI_STYLESETFONT,10, (int)font);
+  sciTE->WndProc(SCI_STYLESETSIZE,10, fontsize);
+  sciTE->WndProc(SCI_STYLESETFORE,10, 0x000000);
+  sciTE->WndProc(SCI_STYLESETBOLD,10, 1);
+  // style 11: identifiers (leave to default)
+  // style 12: end of line where string is not closed (black on violet, eol-filled)
+  sciTE->WndProc(SCI_STYLESETFORE,12, 0x000000);
+  sciTE->WndProc(SCI_STYLESETBACK,12, 0xE0C0E0);
+  sciTE->WndProc(SCI_STYLESETEOLFILLED,12, 1);
 }
 
 FCScintEditor::~FCScintEditor()
@@ -589,6 +593,14 @@ void FCScintEditor::focusOutEvent(QFocusEvent * e)
 	sciTE->SetFocusState(false);
 }
 
+bool FCScintEditor::focusNextPrevChild (bool next)
+{
+  // if CTRL is pressed
+  if (_bControlButton)
+    return QWidget::focusNextPrevChild(next);
+  return false;
+}
+
 void FCScintEditor::mousePressEvent(QMouseEvent * e)
 {
 	setFocus();
@@ -654,7 +666,9 @@ void FCScintEditor::mouseDoubleClickEvent(QMouseEvent * e)
 
 void FCScintEditor::keyPressEvent(QKeyEvent * e)
 {
-	unsigned key;
+  _bControlButton = (e->state() &  ControlButton);
+
+  unsigned key;
 
 	switch (e->key())
 	{
@@ -758,6 +772,12 @@ void FCScintEditor::keyPressEvent(QKeyEvent * e)
 
 	if (!consumed)
 		e->ignore();
+}
+
+void FCScintEditor::keyReleaseEvent ( QKeyEvent * e )
+{
+  _bControlButton = (e->state() &  ControlButton);
+  QWidget::keyReleaseEvent (e);
 }
 
 void FCScintEditor::mouseWheelEvent(QWheelEvent * e)

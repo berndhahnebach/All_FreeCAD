@@ -125,6 +125,7 @@ class FCScintEditor : public QWidget
   protected:
 	  bool eventFilter                   (QObject *o,QEvent *e);
 	  virtual void keyPressEvent         (QKeyEvent   * e);
+    virtual void keyReleaseEvent       (QKeyEvent   * e);
 	  virtual void focusInEvent          (QFocusEvent * e);
 	  virtual void focusOutEvent         (QFocusEvent * e);
 	  virtual void mousePressEvent       (QMouseEvent * e);
@@ -132,6 +133,8 @@ class FCScintEditor : public QWidget
 	  virtual void mouseDoubleClickEvent (QMouseEvent * e);
 	  virtual void mouseMoveEvent        (QMouseEvent * e);
     virtual void mouseWheelEvent       (QWheelEvent * e);
+
+    virtual bool focusNextPrevChild (bool next);
 
   private slots:
 	  void slotTimer();
@@ -144,6 +147,7 @@ class FCScintEditor : public QWidget
 	  QWidget    * view;
 	  QScrollBar * verScroll;
 	  QScrollBar * horScroll;
+    bool _bControlButton;
 
     friend class ScintillaQt;
 };
