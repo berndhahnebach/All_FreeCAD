@@ -1,5 +1,5 @@
 /***************************************************************************
-                          FCWidgets.cpp  -  description
+                          Widgets.cpp  -  description
                              -------------------
     begin                : 2002/12/20 10:47:44
     copyright            : (C) 2002 by Werner Mayer
@@ -53,6 +53,8 @@ QString FCFileDialog::getOpenFileName( const QString & startWith, const QString&
                                        const char* name, const QString& caption )
 {
   QString file = QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
+
+  // set wait cursor because on windows OS this method blocks the QApplication object
   if (!file.isEmpty())
     FCAutoWaitCursor::Instance().SetWaitCursor();
   return file;
@@ -68,6 +70,8 @@ QString FCFileDialog::getSaveFileName( const QString & startWith, const QString&
                                        const char* name, const QString& caption )
 {
   QString file = QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
+
+  // set wait cursor because on windows OS this method blocks the QApplication object
   if (!file.isEmpty())
     FCAutoWaitCursor::Instance().SetWaitCursor();
   return file;
@@ -241,3 +245,153 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 
 	return true;
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QAction* pAct )
+: QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
+{
+  pAction = pAct;
+  description = pAction->toolTip();
+}
+
+FCCmdViewItem::~FCCmdViewItem ()
+{
+}
+
+QString FCCmdViewItem::text() const
+{
+  return description;
+}
+
+QAction* FCCmdViewItem::GetAction()
+{
+  return pAction;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCCmdView::FCCmdView ( QWidget * parent, const char * name, WFlags f )
+: QIconView(parent, name, f)
+{
+  // settings for the view showing the icons
+  setResizeMode(Adjust);
+  setItemsMovable(false);
+  setWordWrapIconText(false);
+  setGridX(50);
+  setGridY(50);
+
+  // clicking on a icon a signal with its description will be emitted
+  connect(this, SIGNAL ( selectionChanged ( QIconViewItem * ) ), this, SLOT ( slotSelectionChanged(QIconViewItem * ) ) );
+}
+
+FCCmdView::~FCCmdView ()
+{
+}
+
+void FCCmdView::slotSelectionChanged(QIconViewItem * item)
+{
+  emit emitSelectionChanged(item->text());
+}
+
+void FCCmdView::contentsMousePressEvent ( QMouseEvent * e )
+{
+  // create an object for drag and drop
+  QIconView::contentsMousePressEvent(e);
+  QIconViewItem *item = findItem( e->pos() );
+  if (item != NULL)
+  {
+    if (typeid(*item) == typeid(FCCmdViewItem))
+    {
+      FCActionDrag *ad = new FCActionDrag( ((FCCmdViewItem*)item)->GetAction(), this );
+      ad->setPixmap(QPixmap(*item->pixmap()),QPoint(8,8));
+      ad->dragCopy();
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+QAction* FCActionDrag::pAction = NULL;
+
+FCActionDrag::FCActionDrag ( QAction* action, QWidget * dragSource , const char * name  )
+: QStoredDrag("FCActionDrag", dragSource, name)
+{
+  // store the QAction object
+  pAction = action;
+}
+
+FCActionDrag::~FCActionDrag ()
+{
+}
+
+bool FCActionDrag::canDecode ( const QMimeSource * e )
+{
+  return e->provides( "FCActionDrag" );
+}
+
+bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
+{
+  if (pAction)
+  {
+    a = pAction;
+    return true;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
+                       bool newLine, const char * name )
+: QToolBar(label, parent, pos, newLine, name)
+{
+  // allow drag and drop
+  setAcceptDrops(true);
+}
+
+FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine, 
+                       const char * name, WFlags f )
+: QToolBar(label, parent, w, newLine, name, f)
+{
+  // allow drag and drop
+  setAcceptDrops(true);
+}
+
+FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
+: QToolBar(parent, name)
+{
+  // allow drag and drop
+  setAcceptDrops(true);
+}
+
+FCToolBar::~FCToolBar()
+{
+}
+
+void FCToolBar::dropEvent ( QDropEvent * e)
+{
+  // create a new button
+  QAction* pAction = FCActionDrag::pAction;
+  if ( pAction ) 
+  {
+    pAction->addTo(this);
+    FCActionDrag::pAction = NULL;
+  }
+}
+
+void FCToolBar::dragEnterEvent ( QDragEnterEvent * e)
+{
+  e->accept(FCActionDrag::canDecode(e));
+}
+
+void FCToolBar::dragLeaveEvent ( QDragLeaveEvent * )
+{
+}
+
+void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
+{
+}
+
+#include "moc_Widgets.cpp"

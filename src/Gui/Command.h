@@ -126,6 +126,9 @@ public:
 	FCGuiDocument* GetActiveDocument(void);
 	FCDocument*	   GetActiveOCCDocument(void);
 
+  FCAction* GetAction() { return _pcAction; }
+  const char* GetName() { return _pcName; }
+
 private slots:
 	virtual void activated (); 
 	virtual void toggled ( bool ); 
@@ -154,9 +157,11 @@ public:
 
 	void AddTo(const char* Name,QWidget *pcWidget);
 
+  const FCmap<FCstring, FCCommand*>& GetCommands() { return _sCommands; }
+
 private:
 #	pragma warning( disable : 4251 )
-	FCmap<stlport::string,FCCommand*> _sCommands;
+	FCmap<FCstring,FCCommand*> _sCommands;
 
 };
 

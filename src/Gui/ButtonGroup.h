@@ -47,7 +47,6 @@
 #include "CommandLine.h"
 #include "window.h"
 
-
 /** The button group class
  */
 class GuiExport FCButtonGroup : public QButtonGroup
@@ -118,7 +117,6 @@ class GuiExport FCToolboxGroup : public QVButtonGroup
     void setNewBackgroundColor();
     void resetBackgroundColor();
     void slotRedrawScrollBar(int);
-    void slotCustomize();
 
   signals:
     void signalMaximumWidth(int);
@@ -157,7 +155,6 @@ class GuiExport FCToolboxButton : public QToolButton
     // mouse events
     void leaveEvent( QEvent *_ev );
     void enterEvent( QEvent *_ev );
-    void mouseDoubleClickEvent( QMouseEvent * e);
     // drag'n'drop
     void dropEvent ( QDropEvent * );
     void dragEnterEvent ( QDragEnterEvent * );

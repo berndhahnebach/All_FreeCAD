@@ -42,6 +42,7 @@
 
 #include "buttongroup.h"
 #include "Application.h"
+#include "DlgCustomizeImpl.h"
 
 
 FCButtonGroup::FCButtonGroup(QWidget * parent, const char * name)
@@ -330,12 +331,6 @@ void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
 {
   if (e->button() == LeftButton)
   {
-    if (acceptDrops() == true)
-    {
-      QDragObject *drobj;
-      drobj = new QTextDrag( title(), this );
-      drobj->dragCopy();
-    }
   }
   else if (e->button() == RightButton)
   {
@@ -348,12 +343,17 @@ void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
 
 void FCToolboxGroup::dropEvent ( QDropEvent * e)
 {
+  QAction* pAction = FCActionDrag::pAction;
+  if ( pAction ) 
+  {
+    pAction->addTo(this);
+    FCActionDrag::pAction = NULL;
+  }
 }
 
 void FCToolboxGroup::dragEnterEvent ( QDragEnterEvent * e)
 {
-  e->accept(QTextDrag::canDecode( e ) ||
-            QImageDrag::canDecode( e ));
+  e->accept(FCActionDrag::canDecode(e));
 }
 
 void FCToolboxGroup::dragLeaveEvent ( QDragLeaveEvent * e)
@@ -371,7 +371,7 @@ void FCToolboxGroup::popupMenuAboutToShow()
   int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
   int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
   m_Popup->insertSeparator();
-  int cusId = m_Popup->insertItem("Customize...", this, SLOT(slotCustomize()));
+  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
 }
 
 void FCToolboxGroup::setNewBackgroundColor()
@@ -387,11 +387,6 @@ void FCToolboxGroup::resetBackgroundColor()
 {
   if (m_Color.isValid())
     setPalette(QPalette(m_Color, m_Color));
-}
-
-void FCToolboxGroup::slotCustomize()
-{
-  QMessageBox::information(this, "FreeCAD", "Not yet implemented");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -529,58 +524,31 @@ void FCToolboxButton::leaveEvent( QEvent * )
   }
 }
 
-void FCToolboxButton::mouseDoubleClickEvent( QMouseEvent * e)
-{
-  if (e->button() == LeftButton)
-  {
-    if (acceptDrops() == true)
-    {
-      QDragObject *drobj;
-//      drobj = new QTextDrag( text(), this );
-//      drobj->dragCopy();
-      if (pixmap())
-      {
-      	drobj = new QImageDrag( pixmap()->convertToImage(), this );
-	      QPixmap pm;
-	      pm.convertFromImage(pixmap()->convertToImage().smoothScale(
-	          pixmap()->width(),pixmap()->height()));
-	      drobj->setPixmap(pm,QPoint(0,0));
-        drobj->dragCopy();
-      }
-    }
-  }
-  else
-    QToolButton::mouseDoubleClickEvent(e);
-}
-
 void FCToolboxButton::dropEvent ( QDropEvent * e)
 {
-  QString str;
-  if ( QTextDrag::decode( e, str ) ) 
+  QAction* pAction = FCActionDrag::pAction;
+  if ( pAction )
   {
-	  setText( str );
-	  setMinimumSize( minimumSize().expandedTo( sizeHint() ) );
-	  return;
-  }
+    setPixmap(pAction->iconSet().pixmap());
+    setText(pAction->menuText());
+    setTooltip(pAction->toolTip());
 
-  QPixmap pm;
-  if ( QImageDrag::decode( e, pm ) ) 
-  {
-//    if (pixmap())
-//      pm.resize(pixmap()->size());
-  	setPixmap( pm );
-//    makeDisabledPixmap();
-//    enable(isEnabled());
-//  	setMinimumSize( minimumSize().expandedTo( sizeHint() ) );
-	  return;
+    connect( this, SIGNAL( clicked() ), pAction, SIGNAL( activated() ) );
+	  connect( this, SIGNAL( toggled(bool) ), pAction, SLOT( toolButtonToggled(bool) ) );
+	  connect( this, SIGNAL( destroyed() ), pAction, SLOT( objectDestroyed() ) );
+
+    if (!isEnabled())
+    {
+      makeDisabledPixmap();
+      setPixmap(disabledPixmap);
+    }
   }
 }
 
 void FCToolboxButton::dragEnterEvent ( QDragEnterEvent * e)
 {
-  if (isEnabled())
-    e->accept(QTextDrag::canDecode( e ) ||
-              QImageDrag::canDecode( e ));
+//  if (isEnabled())
+  e->accept(FCActionDrag::canDecode(e));
 }
 
 void FCToolboxButton::dragLeaveEvent ( QDragLeaveEvent * e)

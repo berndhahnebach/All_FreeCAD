@@ -1,5 +1,5 @@
 /***************************************************************************
-                          FCWidgets.h  -  description
+                          Widgets.h  -  description
                              -------------------
     begin                : 2002/12/20 10:47:44
     copyright            : (C) 2002 by Werner Mayer
@@ -31,10 +31,16 @@
 #include "window.h"
 #include <qprogressbar.h>
 #include <qlabel.h>
+#include <qiconview.h>
+#include <qdragobject.h>
 
 class QHBoxLayout; 
 class QTime;
+class QAction;
 
+/*  
+ *  Using the Qt's open/save dialogs with own adjustments
+ */
 class GuiExport FCFileDialog
 {
   public:
@@ -50,6 +56,9 @@ class GuiExport FCFileDialog
                                      QWidget * parent, const char * name, const QString & caption );
 };
 
+/*  
+ *  FreeCAD's progressbar for long operations
+ */
 class FCProgressBar : public QProgressBar
 {
   public:
@@ -70,6 +79,78 @@ class FCProgressBar : public QProgressBar
     int iStartedProgresses;
     QTime   measureTime;
     QString remainingTime;
+};
+
+/*  
+ *  Icon items used by the 'FCCmdView' and 'FCDlgCustomize' classes
+ */
+class FCCmdViewItem : public QIconViewItem
+{
+  public:
+    FCCmdViewItem ( QIconView * parent, QAction* pAct );
+    virtual ~FCCmdViewItem ();
+
+    QString text() const;
+    QAction* GetAction();
+
+  protected:
+    QAction * pAction;
+    QString description;
+};
+
+/*  
+ *  Icon view class
+ */
+class FCCmdView : public QIconView
+{
+  Q_OBJECT
+
+  public:
+    FCCmdView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+    virtual ~FCCmdView ();
+
+  protected:
+    void contentsMousePressEvent ( QMouseEvent * e );
+
+  protected slots:
+    void slotSelectionChanged(QIconViewItem * item);
+
+  signals:
+    void emitSelectionChanged(QString);
+};
+
+/*  
+ *  Class to drag a 'QAction' object
+ */
+class FCActionDrag : public QStoredDrag
+{
+  public:
+    FCActionDrag ( QAction* action = 0, QWidget * dragSource = 0, const char * name = 0 );
+    virtual ~FCActionDrag ();
+
+    static bool canDecode ( const QMimeSource * e );
+    static bool decode ( const QMimeSource * e, QAction*  a );
+
+  public:
+    static QAction* pAction;
+};
+
+/*  
+ *  Toolbar class that knows 'drag and drop'
+ */
+class FCToolBar : public QToolBar
+{
+  public:
+    FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0 );
+    FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0 );
+    FCToolBar ( QMainWindow * parent = 0, const char * name = 0 );
+    virtual ~FCToolBar();
+
+  protected:
+    void dropEvent ( QDropEvent * );
+    void dragEnterEvent ( QDragEnterEvent * );
+    void dragLeaveEvent ( QDragLeaveEvent * );
+    void dragMoveEvent ( QDragMoveEvent * );
 };
 
 #endif // __FC_WIDGETS_H__

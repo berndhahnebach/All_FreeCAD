@@ -161,7 +161,7 @@ QToolBar *ApplicationWindow::GetToolBar(const char* name)
 	if( It!=mpcToolBars.end() )
 		return It->second;
 	else
-		return mpcToolBars[name] = new QToolBar( this, name );
+		return mpcToolBars[name] = new FCToolBar( this, name );
 }
 
 /// Delete a named Toolbar

@@ -58,3 +58,6 @@ Version: V0.1B17 Date: Thu Jan 02 21:50:27 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B18 Date: Fri Jan 03 19:26:56 2003 +++++++++++++++++++++++++++++++
 + FirstPreferences Dialog
 + First Macro Dialogs
+
+Version: V0.1B19 Date: Sat Jan 04 12:23:49 2003 +++++++++++++++++++++++++++++++
++ new DlgCustomize (Werner)

@@ -55,6 +55,7 @@ def InitToolbars():
 	Gui.ToolbarAddTo("TestTools","Std_DlgPreferences")
 	Gui.ToolbarAddTo("TestTools","Std_DlgMacroRecord")
 	Gui.ToolbarAddTo("TestTools","Std_DlgMacroExecute")
+	Gui.ToolbarAddTo("TestTools","Std_DlgCustomize")
 
 	# test tool bar
 	Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")

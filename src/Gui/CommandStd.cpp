@@ -32,6 +32,7 @@
 #include "DlgMacroRecordImp.h"
 #include "DlgPreferencesImp.h"
 #include "Icons/images.cpp"
+#include "DlgCustomizeImpl.h"
 #include "Icons/x.xpm"
 #include "Application.h"
 #include "../Base/Exception.h"
@@ -81,6 +82,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
+	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
 
 }
 
@@ -887,6 +889,28 @@ void FCCmdDlgMacroExecute::CmdProfile(char** sMenuText,char** sToolTipText,char*
 void FCCmdDlgMacroExecute::Activated(void)
 {
 	DlgMacroExecuteImp cDlg(AppWnd(),"Macro Execute",true);
+	cDlg.exec();
+}
+
+
+//===========================================================================
+// Std_DlgCustomize
+//===========================================================================
+
+void FCCmdDlgCustomize::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Customize...";
+	*sToolTipText = "Customize toolbars and button groups";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_fitall);
+	iAccel = 0;
+}
+
+
+void FCCmdDlgCustomize::Activated(void)
+{
+	FCDlgCustomize cDlg(AppWnd(),"CustomizeDialog",true);
 	cDlg.exec();
 }
 

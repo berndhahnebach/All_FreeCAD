@@ -81,5 +81,6 @@ DEF_STD_CMD(FCCmdDlgParameter	,"Std_DlgParameter");
 DEF_STD_CMD(FCCmdDlgPreferences	,"Std_DlgPreferences");
 DEF_STD_CMD(FCCmdDlgMacroRecord	,"Std_DlgMacroRecord");
 DEF_STD_CMD(FCCmdDlgMacroExecute,"Std_DlgMacroExecute");
+DEF_STD_CMD(FCCmdDlgCustomize	,"Std_DlgCustomize");
 
 #endif
