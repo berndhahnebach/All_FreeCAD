@@ -93,7 +93,7 @@ class GuiExport FCButtonGroup : public QButtonGroup
     QColor       m_Color;
     QPopupMenu*  m_Popup;
 #	pragma warning( disable : 4251 )
-    FCmap<int, QPixmap> m_Pixmaps;
+    std::map<int, QPixmap> m_Pixmaps;
 };
 
 class FCToolboxButton;
@@ -126,7 +126,7 @@ class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
     void dragEnterEvent ( QDragEnterEvent * );
     void dragLeaveEvent ( QDragLeaveEvent * );
     void dragMoveEvent ( QDragMoveEvent * );
-    FCvector<FCstring> alDroppedActions;
+    std::vector<std::string> alDroppedActions;
     QColor       m_Color;
     QPopupMenu*  m_Popup;
 
@@ -282,7 +282,7 @@ public:
 
 protected:
 	QList <QStackBarBtn> *pButtons;
-  FCmap <QWidget*, FCToolboxGroup*> alViews;
+  std::map <QWidget*, FCToolboxGroup*> alViews;
 	int curPage;
 
 	int curHighlight;

@@ -239,22 +239,22 @@ void FCConsole::DetacheObserver(FCConsoleObserver *pcObserver)
 
 void FCConsole::NotifyMessage(const char *sMsg)
 {
-	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Message(sMsg);   // send string to the listener
 }
 void FCConsole::NotifyWarning(const char *sMsg)
 {
-	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Warning(sMsg);   // send string to the listener
 }
 void FCConsole::NotifyError(const char *sMsg)
 {
-	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Error(sMsg);   // send string to the listener
 }
 void FCConsole::NotifyLog(const char *sMsg)
 {
-	for(FCset<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<FCConsoleObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->Log(sMsg);   // send string to the listener
 }
 
@@ -346,8 +346,8 @@ PyObject *FCConsole::sPyLog(PyObject *self,			// static python wrapper
 //=========================================================================
 // some special observers
 
-FCLoggingConsoleObserver::FCLoggingConsoleObserver(const char *sFileName,int nMode )
-	:cFileStream(sFileName,nMode)
+FCLoggingConsoleObserver::FCLoggingConsoleObserver(const char *sFileName)
+	:cFileStream(sFileName)
 {}
 
 FCLoggingConsoleObserver::~FCLoggingConsoleObserver(){};

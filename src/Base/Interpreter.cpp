@@ -142,7 +142,7 @@ void FCInterpreter::RunMethode(PyObject *pobject, const char *method)
 	char sBuf[1024];
 	assert(strlen(method) < 1022);
 	strcpy(sBuf, method);
-	PyObject *pcO;
+//	PyObject *pcO;
 
 /*
 	if(PP_Run_Method(pobject ,     // object

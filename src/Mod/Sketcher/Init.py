@@ -1,7 +1,5 @@
-# FreeCAD Part module  
+# FreeCAD init script of the sketcher module  
 # (c) 2001 Jürgen Riegel
-#
-# Part design module
 
 #***************************************************************************
 #*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
@@ -17,7 +15,7 @@
 #*   FreeCAD is distributed in the hope that it will be useful,            *
 #*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Library General Public License for more details.                  *
+#*   GNU Lesser General Public License for more details.                   *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
 #*   License along with FreeCAD; if not, write to the Free Software        * 
@@ -27,5 +25,13 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
+# Get the Parameter Group of this module
+ParGrp = App.ParamGet("Modules").GetGroup("Sketcher")
 
-import AppPartD
+# Set the needed information
+#ParGrp.SetString("HelpIndex",        "Part/Help/index.html")
+#ParGrp.SetString("DocTemplateName",  "Part")
+#ParGrp.SetString("DocTemplateScript","TemplPart.py")
+ParGrp.SetString("WorkBenchName",    "Sketcher")
+ParGrp.SetString("WorkBenchModule",  "Sketcher.py")
+

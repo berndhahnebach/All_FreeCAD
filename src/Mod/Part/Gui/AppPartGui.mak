@@ -39,11 +39,11 @@ OutDir=.\Release
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\moc_DlgPartBoxImp.cpp" ".\moc_DlgPartBox.cpp" ".\DlgPartBox.h" ".\DlgPartBox.cpp" "$(OUTDIR)\AppPartGui.dll" "$(OUTDIR)\AppPartGui.pch"
+ALL : "..\AppPartGui.dll" "$(OUTDIR)\AppPartGui.pch"
 
 !ELSE 
 
-ALL : "AppPart - Win32 Release" "FreeCADBase - Win32 Release" "FreeCADApp - Win32 Release" "FreeCADGui - Win32 Release" ".\moc_DlgPartBoxImp.cpp" ".\moc_DlgPartBox.cpp" ".\DlgPartBox.h" ".\DlgPartBox.cpp" "$(OUTDIR)\AppPartGui.dll" "$(OUTDIR)\AppPartGui.pch"
+ALL : "AppPart - Win32 Release" "FreeCADBase - Win32 Release" "FreeCADApp - Win32 Release" "FreeCADGui - Win32 Release" "..\AppPartGui.dll" "$(OUTDIR)\AppPartGui.pch"
 
 !ENDIF 
 
@@ -59,13 +59,9 @@ CLEAN :
 	-@erase "$(INTDIR)\Libs.obj"
 	-@erase "$(INTDIR)\PreCompiled.obj"
 	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(OUTDIR)\AppPartGui.dll"
 	-@erase "$(OUTDIR)\AppPartGui.exp"
 	-@erase "$(OUTDIR)\AppPartGui.lib"
-	-@erase ".\DlgPartBox.cpp"
-	-@erase ".\DlgPartBox.h"
-	-@erase ".\moc_DlgPartBox.cpp"
-	-@erase ".\moc_DlgPartBoxImp.cpp"
+	-@erase "..\AppPartGui.dll"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -77,19 +73,19 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPartGui.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\AppPartGui.pdb" /machine:I386 /out:"$(OUTDIR)\AppPartGui.dll" /implib:"$(OUTDIR)\AppPartGui.lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\AppPartGui.pdb" /machine:I386 /out:"../AppPartGui.dll" /implib:"$(OUTDIR)\AppPartGui.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\AppPartGui.obj" \
 	"$(INTDIR)\Command.obj" \
-	"$(INTDIR)\PreCompiled.obj" \
-	"$(INTDIR)\Libs.obj" \
 	"$(INTDIR)\DlgPartBoxImp.obj" \
+	"$(INTDIR)\Libs.obj" \
+	"$(INTDIR)\PreCompiled.obj" \
 	"..\..\..\Gui\Release\FreeCADGui.lib" \
 	"..\..\..\App\Release\FreeCADApp.lib" \
 	"..\..\..\Base\Release\FreeCADBase.lib" \
 	"..\AppPart.lib"
 
-"$(OUTDIR)\AppPartGui.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\AppPartGui.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -104,11 +100,11 @@ OutDir=.\Debug
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\AppPartGui.dll" "$(OUTDIR)\AppPartGui.pch"
+ALL : "..\AppPartGuiD.dll" "$(OUTDIR)\AppPartGui.pch"
 
 !ELSE 
 
-ALL : "AppPart - Win32 Debug" "FreeCADBase - Win32 Debug" "FreeCADApp - Win32 Debug" "FreeCADGui - Win32 Debug" "$(OUTDIR)\AppPartGui.dll" "$(OUTDIR)\AppPartGui.pch"
+ALL : "AppPart - Win32 Debug" "FreeCADBase - Win32 Debug" "FreeCADApp - Win32 Debug" "FreeCADGui - Win32 Debug" "..\AppPartGuiD.dll" "$(OUTDIR)\AppPartGui.pch"
 
 !ENDIF 
 
@@ -125,35 +121,35 @@ CLEAN :
 	-@erase "$(INTDIR)\PreCompiled.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(OUTDIR)\AppPartGui.dll"
-	-@erase "$(OUTDIR)\AppPartGui.exp"
-	-@erase "$(OUTDIR)\AppPartGui.ilk"
-	-@erase "$(OUTDIR)\AppPartGui.lib"
-	-@erase "$(OUTDIR)\AppPartGui.pdb"
+	-@erase "$(OUTDIR)\AppPartGuiD.exp"
+	-@erase "$(OUTDIR)\AppPartGuiD.lib"
+	-@erase "$(OUTDIR)\AppPartGuiD.pdb"
+	-@erase "..\AppPartGuiD.dll"
+	-@erase "..\AppPartGuiD.ilk"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ  /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPartGui.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\AppPartGui.pdb" /debug /machine:I386 /out:"$(OUTDIR)\AppPartGui.dll" /implib:"$(OUTDIR)\AppPartGui.lib" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\AppPartGuiD.pdb" /debug /machine:I386 /out:"../AppPartGuiD.dll" /implib:"$(OUTDIR)\AppPartGuiD.lib" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\AppPartGui.obj" \
 	"$(INTDIR)\Command.obj" \
-	"$(INTDIR)\PreCompiled.obj" \
-	"$(INTDIR)\Libs.obj" \
 	"$(INTDIR)\DlgPartBoxImp.obj" \
+	"$(INTDIR)\Libs.obj" \
+	"$(INTDIR)\PreCompiled.obj" \
 	"..\..\..\Gui\Debug\FreeCADGuiD.lib" \
 	"..\..\..\App\Debug\FreeCADAppD.lib" \
 	"..\..\..\Base\Debug\FreeCADBaseD.lib" \
 	"..\AppPartD.lib"
 
-"$(OUTDIR)\AppPartGui.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\AppPartGuiD.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -205,25 +201,25 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
 "FreeCADGui - Win32 Release" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Release" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Gui"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADGui.mak" CFG="FreeCADGui - Win32 Release" 
    cd "..\MOD\PART\GUI"
 
 "FreeCADGui - Win32 ReleaseCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Release" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Gui"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADGui.mak" CFG="FreeCADGui - Win32 Release" RECURSE=1 CLEAN 
    cd "..\MOD\PART\GUI"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "FreeCADGui - Win32 Debug" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Debug" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Gui"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug" 
    cd "..\MOD\PART\GUI"
 
 "FreeCADGui - Win32 DebugCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Debug" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Gui"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug" RECURSE=1 CLEAN 
    cd "..\MOD\PART\GUI"
 
 !ENDIF 
@@ -231,25 +227,25 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
 "FreeCADApp - Win32 Release" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Release" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADDoc.mak" CFG="FreeCADApp - Win32 Release" 
    cd "..\MOD\PART\GUI"
 
 "FreeCADApp - Win32 ReleaseCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Release" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADDoc.mak" CFG="FreeCADApp - Win32 Release" RECURSE=1 CLEAN 
    cd "..\MOD\PART\GUI"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "FreeCADApp - Win32 Debug" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Debug" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADDoc.mak" CFG="FreeCADApp - Win32 Debug" 
    cd "..\MOD\PART\GUI"
 
 "FreeCADApp - Win32 DebugCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Debug" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADDoc.mak" CFG="FreeCADApp - Win32 Debug" RECURSE=1 CLEAN 
    cd "..\MOD\PART\GUI"
 
 !ENDIF 
@@ -257,25 +253,25 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
 "FreeCADBase - Win32 Release" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Release" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Base"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADBase.mak" CFG="FreeCADBase - Win32 Release" 
    cd "..\MOD\PART\GUI"
 
 "FreeCADBase - Win32 ReleaseCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Release" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Base"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADBase.mak" CFG="FreeCADBase - Win32 Release" RECURSE=1 CLEAN 
    cd "..\MOD\PART\GUI"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "FreeCADBase - Win32 Debug" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Debug" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Base"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADBase.mak" CFG="FreeCADBase - Win32 Debug" 
    cd "..\MOD\PART\GUI"
 
 "FreeCADBase - Win32 DebugCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
-   $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Debug" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Base"
+   $(MAKE) /$(MAKEFLAGS) /F ".\FreeCADBase.mak" CFG="FreeCADBase - Win32 Debug" RECURSE=1 CLEAN 
    cd "..\MOD\PART\GUI"
 
 !ENDIF 
@@ -283,25 +279,25 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "AppPartGui - Win32 Release"
 
 "AppPart - Win32 Release" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Release" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Mod\Part\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\AppPart.mak" CFG="AppPart - Win32 Release" 
    cd "..\GUI"
 
 "AppPart - Win32 ReleaseCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Release" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Mod\Part\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\AppPart.mak" CFG="AppPart - Win32 Release" RECURSE=1 CLEAN 
    cd "..\GUI"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "AppPart - Win32 Debug" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Debug" 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Mod\Part\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\AppPart.mak" CFG="AppPart - Win32 Debug" 
    cd "..\GUI"
 
 "AppPart - Win32 DebugCLEAN" : 
-   cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
-   $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Debug" RECURSE=1 CLEAN 
+   cd "\Dokumente und Einstellungen\jriegel\Eigene Dateien\Projekte\FreeCAD_0.1\src\Mod\Part\App"
+   $(MAKE) /$(MAKEFLAGS) /F ".\AppPart.mak" CFG="AppPart - Win32 Debug" RECURSE=1 CLEAN 
    cd "..\GUI"
 
 !ENDIF 
@@ -320,7 +316,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ  /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\AppPartGui.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -336,7 +332,7 @@ SOURCE=.\Command.cpp
 
 CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
-"$(INTDIR)\Command.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\Command.obj" : $(SOURCE) "$(INTDIR)" ".\DlgPartBox.h" ".\DlgPartBoxImp.h"
 	$(CPP) @<<
   $(CPP_SWITCHES) $(SOURCE)
 <<
@@ -344,7 +340,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ  /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /YX"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\Command.obj" : $(SOURCE) "$(INTDIR)" ".\DlgPartBoxImp.h" ".\DlgPartBox.h"
 	$(CPP) @<<
@@ -390,7 +386,7 @@ InputName=DlgPartBox
 
 SOURCE=.\DlgPartBoxImp.cpp
 
-"$(INTDIR)\DlgPartBoxImp.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\DlgPartBoxImp.obj" : $(SOURCE) "$(INTDIR)" ".\DlgPartBox.h" ".\DlgPartBox.cpp" ".\moc_DlgPartBox.cpp" ".\moc_DlgPartBoxImp.cpp" ".\DlgPartBoxImp.h"
 
 
 SOURCE=.\DlgPartBoxImp.h
@@ -437,7 +433,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ  /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\Libs.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -461,7 +457,7 @@ CPP_SWITCHES=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /Yc"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ  /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "_USRDLL" /D "_MBCS" /D "WNT" /D "FCAppPartGui" /Fp"$(INTDIR)\AppPartGui.pch" /Yc"PreCompiled.h" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 "$(INTDIR)\PreCompiled.obj"	"$(INTDIR)\AppPartGui.pch" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<

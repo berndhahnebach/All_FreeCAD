@@ -173,7 +173,7 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 {
 	FCGuiDocument* pcGDoc;
 
-	for(FClist<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
+	for(std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
 	{
 		if( ((*It)->GetDocument()) == pcDoc)
 		{
@@ -198,8 +198,8 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 /// Get a named Toolbar or creat if not in
 QToolBar *ApplicationWindow::GetToolBar(const char* name)
 {
-	//FCmap <FCstring,QToolBar*>     mpcToolBars;
-	FCmap <FCstring,QToolBar*>::iterator It = mpcToolBars.find(name);
+	//std::map <std::string,QToolBar*>     mpcToolBars;
+	std::map <std::string,QToolBar*>::iterator It = mpcToolBars.find(name);
 	if( It!=mpcToolBars.end() )
 		return It->second;
 	else
@@ -211,10 +211,10 @@ QToolBar *ApplicationWindow::GetToolBar(const char* name)
 	}
 }
 
-FCvector<QToolBar*> ApplicationWindow::GetToolBars()
+std::vector<QToolBar*> ApplicationWindow::GetToolBars()
 {
-  FCvector<QToolBar*> aclToolbars;
-	for (FCmap <FCstring,QToolBar*>::iterator It = mpcToolBars.begin(); It != mpcToolBars.end(); ++It)
+  std::vector<QToolBar*> aclToolbars;
+	for (std::map <std::string,QToolBar*>::iterator It = mpcToolBars.begin(); It != mpcToolBars.end(); ++It)
   {
     aclToolbars.push_back(It->second);
   }
@@ -225,7 +225,7 @@ FCvector<QToolBar*> ApplicationWindow::GetToolBars()
 /// Delete a named Toolbar
 void ApplicationWindow::DelToolBar(const char* name)
 {
-	FCmap <FCstring,QToolBar*>::iterator It = mpcToolBars.find(name);
+	std::map <std::string,QToolBar*>::iterator It = mpcToolBars.find(name);
 	if( It!=mpcToolBars.end() )
 	{
 		delete It->second;
@@ -256,7 +256,7 @@ void ApplicationWindow::DelCommandBar(const char* name)
 /// Add a new named Dock Window
 void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
 {
-	// 	FCmap <FCstring,FCDockWindow*> mpcDocWindows;
+	// 	std::map <std::string,FCDockWindow*> mpcDocWindows;
 	mpcDocWindows[name] = pcDocWindow;
 	QString str = name;
 	str += " dockable window";
@@ -272,7 +272,7 @@ void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow
 /// Gets you a registered Dock Window back
 FCDockWindow *ApplicationWindow::GetDockWindow(const char* name)
 {
-	FCmap <FCstring,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
+	std::map <std::string,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
 	if( It!=mpcDocWindows.end() )
 		return It->second;
 	else
@@ -282,7 +282,7 @@ FCDockWindow *ApplicationWindow::GetDockWindow(const char* name)
 /// Delete (or only remove) a named Dock Window
 void ApplicationWindow::DelDockWindow(const char* name, bool bOnlyRemove)
 {
-	FCmap <FCstring,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
+	std::map <std::string,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
 	if( It!=mpcDocWindows.end() )
 	{
 		if(!bOnlyRemove) delete It->second;
@@ -524,12 +524,16 @@ void ApplicationWindow::OnWorkbenchChange( const QString & string)
 {
 	if(_cActiveWorkbenchName != string)
 	{
-//		try{
+#ifndef _DEBUG
+		try{
+#endif
 			ActivateWorkbench(string.latin1());
-//		}
-//		catch(...){
-//			throw FCException("Error in initialising Workbench!");
-//		}
+#ifndef _DEBUG
+		}
+		catch(...){
+			throw FCException("Error in initialising Workbench!");
+		}
+#endif
 
 	}
 }
@@ -669,6 +673,8 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
 	PyObject*   pcObject;
 	if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
 		return NULL;										// NULL triggers exception 
+
+	Py_INCREF(pcObject);
 
 	PyDict_SetItemString(Instance->_pcWorkbenchDictionary,psKey,pcObject);
 
@@ -883,7 +889,7 @@ void FCBmpFactory::AddPath(const char* sPath)
 
 void FCBmpFactory::RemovePath(const char* sPath)
 {
-	_vsPaths.erase(FCfind<FCvector<FCstring>::iterator,FCstring>(_vsPaths.begin(),_vsPaths.end(),sPath));
+	_vsPaths.erase(std::find<std::vector<std::string>::iterator,std::string>(_vsPaths.begin(),_vsPaths.end(),sPath));
 }
 
 
@@ -902,13 +908,13 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName)
 {
 
 	// first try to find it in the build in XPM
-	FCmap<FCstring,const char*>::const_iterator It = _mpXPM.find(sName);
+	std::map<std::string,const char*>::const_iterator It = _mpXPM.find(sName);
 
 	if(It != _mpXPM.end())
 		return QPixmap(It->second);
 
 	// try to find it in the given directorys
-	for(FCvector<FCstring>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
+	for(std::vector<std::string>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
 	{
 		// list dir
 		QDir d( (*It2).c_str() );

@@ -103,3 +103,7 @@ Version: V0.1B27 Date: Sun Jan 26 21:25:59 2003 +++++++++++++++++++++++++++++++
   - New customize dialog
   - lot of work on preferences
   
+Version: V0.1B28 Date: Fri Jan 31 17:58:13 2003 +++++++++++++++++++++++++++++++
++ switching from Stlport IOSTREAM to VC6 iostream
++ removing FC container wrapping
++ starting serios work on module loading in part and sketcher

@@ -58,17 +58,17 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
   connect(ComboBoxCategory, SIGNAL(activated ( const QString & )), this, SLOT(slotGroupSelected(const QString &)));
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
+  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
   AvailableActions->insertItem("<Separator>");
-  for (FCmap<FCstring,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
+  for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
     // !!!! "Standard commands" muss durch Kategorie ersetzt werden
     m_alCmdGroups["Standard commands"].push_back(it->second);
     AvailableActions->insertItem(it->second->GetAction()->iconSet().pixmap(), it->second->GetAction()->menuText());
   }
 
-  for (FCmap<FCstring, FCvector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
+  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
   {
     ComboBoxCategory->insertItem(it2->first.c_str());
     ComboBoxCategory2->insertItem(it2->first.c_str());
@@ -82,7 +82,7 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
   connect(ComboToolbars, SIGNAL(activated ( const QString & )), this, SLOT(slotToolBarSelected(const QString &)));
   connect(CreateToolbar, SIGNAL(clicked()), this, SLOT(slotCreateToolBar()));
   m_aclToolbars = ApplicationWindow::Instance->GetToolBars();
-  for (FCvector<QToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
+  for (std::vector<QToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
   {
     ComboToolbars->insertItem((*it3)->name());
   }
@@ -110,8 +110,8 @@ void FCDlgCustomize::slotGroupSelected(const QString & group)
   // group of commands found
   if (m_alCmdGroups.find(group.latin1()) != m_alCmdGroups.end())
   {
-    FCvector<FCCommand*> aCmds = m_alCmdGroups[group.latin1()];
-    for (FCvector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
+    std::vector<FCCommand*> aCmds = m_alCmdGroups[group.latin1()];
+    for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
       if ((*it)->GetAction())
       (void) new FCCmdViewItem(IconView1, (*it)->GetAction());
@@ -122,11 +122,11 @@ void FCDlgCustomize::slotGroupSelected(const QString & group)
 void FCDlgCustomize::slotToolBarSelected(const QString & name)
 {
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
+  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
   ToolbarActions->clear();
 
-  for (FCvector<QToolBar*>::iterator it = m_aclToolbars.begin(); it != m_aclToolbars.end(); ++it)
+  for (std::vector<QToolBar*>::iterator it = m_aclToolbars.begin(); it != m_aclToolbars.end(); ++it)
   {
     if ((*it)->name() == name)
     {

@@ -62,8 +62,8 @@ class FCDlgCustomize : public FCDlgCustomizeBase
 
   protected:
     // groups of commands
-    FCmap<FCstring, FCvector<FCCommand*> > m_alCmdGroups;
-    FCvector<QToolBar*>                    m_aclToolbars;
+    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
+    std::vector<QToolBar*>                    m_aclToolbars;
 };
 
 #endif // DLGCUSTOMIZE_H

@@ -8,52 +8,21 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-//**************************************************************************
-// STL
 
-#define _STLP_USE_OWN_NAMESPACE
-#define __STLP_USE_DECLSPEC
+
+//**************************************************************************
+// STLport
+
+//#define _STLP_USE_OWN_NAMESPACE
+//#define __STLP_USE_DECLSPEC
 #define _STLP_NO_NEW_IOSTREAMS
+//#define _STLP_BROKEN_USING_DIRECTIVE
+#define _STLP_NO_OWN_IOSTREAMS
 #define _STLP_USE_ABBREVS
 #ifdef _DEBUG
 #	define __STL_DEBUG
 #endif
 
-#ifdef __linux
-#  define FCSTD std
-#else
-#define FCSTD stlport
-#endif
-
-// containers
-#define  FCvector               FCSTD::vector
-#define  FCset                  FCSTD::set
-#define  FCmap                  FCSTD::map
-#define  FCmultiset             FCSTD::multiset
-#define  FCmultimap             FCSTD::multimap
-#define  FCpair                 FCSTD::pair
-#define  FChash_set             FCSTD::hash_set
-#define  FChash_map             FCSTD::hash_map
-#define  FCstring               FCSTD::string
-#define  FClist                 FCSTD::list
-#define  FCslist                FCSTD::slist
-#define  FCqueue                FCSTD::queue
-#define  FCdeque                FCSTD::deque
-#define  FCbitset               FCSTD::bitset
-#define  FCstack                FCSTD::stack
-#define  FCcout                 FCSTD::cout
-#define  FCcerr                 FCSTD::cerr
-#define  FCendl                 FCSTD::endl
-#define  FCofstream             FCSTD::ofstream
-#ifdef __linux
-#  define FCstrstream           FCSTD::ostringstream
-#else
-#  define FCstrstream           FCSTD::strstream
-#endif
-#define  FCmake_pair            FCSTD::make_pair
-#define  FCfind                 FCSTD::find
-#define  FCmax                  FCSTD::max
-#define  FCmin                  FCSTD::min
 
 //**************************************************************************
 // Open CasCade
@@ -110,6 +79,7 @@
 #	pragma warning( disable : 4251 )
 #	pragma warning( disable : 4503 )
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#	pragma warning( disable : 4290 )  // not implemented throw specification
 // use precompiled header
 #	define _PreComp_
 #endif

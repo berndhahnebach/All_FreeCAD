@@ -81,7 +81,7 @@ public:
 
 protected:
 
-	FCstring sName;
+	std::string sName;
 
 };
 
@@ -165,11 +165,11 @@ public:
 
 	void AddTo(const char* Name,QWidget *pcWidget);
 
-  const FCmap<FCstring, FCCommand*>& GetCommands() { return _sCommands; }
+  const std::map<std::string, FCCommand*>& GetCommands() { return _sCommands; }
 
 private:
 #	pragma warning( disable : 4251 )
-	FCmap<FCstring,FCCommand*> _sCommands;
+	std::map<std::string,FCCommand*> _sCommands;
 
 };
 

@@ -26,12 +26,12 @@
 DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl ),FCWindow(name)
 {
-	FCvector<FCHandle<FCParameterGrp> > vhGrp = GetParameter()->GetGroup("Modules")->GetGroups();
+	std::vector<FCHandle<FCParameterGrp> > vhGrp = GetParameter()->GetGroup("Modules")->GetGroups();
     
 	QPixmap pixmap(Folder32);
 	QString str;
 	// cycling through the Templates
-	for(FCvector<FCHandle<FCParameterGrp> >::iterator i=vhGrp.begin();i!=vhGrp.end();i++)
+	for(std::vector<FCHandle<FCParameterGrp> >::iterator i=vhGrp.begin();i!=vhGrp.end();i++)
 	{
 		str = (*i)->GetASCII("DocTemplateName","").c_str();
 		if(str != "")

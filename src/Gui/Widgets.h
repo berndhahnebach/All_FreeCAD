@@ -164,7 +164,7 @@ class FCToolBar : public QToolBar, public FCWidgetPrefs
     void dragMoveEvent ( QDragMoveEvent * );
     virtual void restorePreferences();
     virtual void savePreferences();
-    FCvector<FCstring> alDroppedActions;
+    std::vector<std::string> alDroppedActions;
 };
 
 #endif // __FC_WIDGETS_H__

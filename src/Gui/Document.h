@@ -90,7 +90,7 @@ private:
 	int								_iWinCount;
 	ApplicationWindow*				_pcAppWnd;
 	/// List of all registered views
-	FClist<FCView*>					_LpcViews;
+	std::list<FCView*>					_LpcViews;
 	/// Active view
 	FCView*							_pcActiveView;
 	Handle(V3d_Viewer)				_hViewer;

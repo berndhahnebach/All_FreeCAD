@@ -92,7 +92,7 @@ private:
    
 protected:
 #	pragma warning( disable : 4251 )
-   FCmap<const FCstring, FCAbstractProducer*> _mpcProducers;
+   std::map<const std::string, FCAbstractProducer*> _mpcProducers;
    
    FCFactory (void){}
 

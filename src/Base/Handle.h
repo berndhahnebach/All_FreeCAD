@@ -41,7 +41,6 @@
 
 #include <string>
 #include <map>
-#include <boost/any.hpp>
 
 
 /** Handle class

@@ -778,7 +778,7 @@ void FCHtmlView::PathSelected( const QString & path )
 
   // insert to the history
   bool exists = FALSE;
-  for ( FCmap<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it ) 
+  for ( std::map<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it ) 
   {
   	if ( it->second == path ) 
     {
@@ -816,10 +816,10 @@ void FCHtmlView::ReadHistory()
 {
   // get all stored history items
   FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
-  FCvector<FCstring> hist = hHistGrp->GetASCIIs("History");
+  std::vector<std::string> hist = hHistGrp->GetASCIIs("History");
 
   int i=0;
-  for (FCvector<FCstring>::iterator it = hist.begin(); it != hist.end(); ++it, i++)
+  for (std::vector<std::string>::iterator it = hist.begin(); it != hist.end(); ++it, i++)
   {
     mHistory[i] = it->c_str();
   }
@@ -829,10 +829,10 @@ void FCHtmlView::ReadBookmarks()
 {
   // get all stored bookmark items
   FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
-  FCvector<FCstring> bookm = hBookmGrp->GetASCIIs("Bookmark");
+  std::vector<std::string> bookm = hBookmGrp->GetASCIIs("Bookmark");
 
   int i=0;
-  for (FCvector<FCstring>::iterator it = bookm.begin(); it != bookm.end(); ++it, i++)
+  for (std::vector<std::string>::iterator it = bookm.begin(); it != bookm.end(); ++it, i++)
   {
     mBookmarks[i] = it->c_str();
   }
@@ -847,7 +847,7 @@ void FCHtmlView::SaveHistory()
 	  mHistory.erase( mHistory.begin() );
 
   long i=0;
-  for (FCmap<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it, i++)
+  for (std::map<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "History %d", i);
@@ -864,7 +864,7 @@ void FCHtmlView::SaveBookmarks()
 	  mBookmarks.erase( mBookmarks.begin() );
 
   long i=0;
-  for (FCmap<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it, i++)
+  for (std::map<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "Bookmark %d", i);
@@ -896,7 +896,7 @@ void FCHtmlView::AddBookmark()
     QString path = pclPathCombo->currentText();
     path = GetAbsoluteURL(path);
 
-    for ( FCmap<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it )
+    for ( std::map<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it )
     {
       if (it->second == path)
       {
@@ -915,7 +915,7 @@ void FCHtmlView::AddBookmark()
 void FCHtmlView::CreateBookmarkPopup()
 {
   pclBookm->clear();
-  FCmap<int, QString> tmp = mBookmarks;
+  std::map<int, QString> tmp = mBookmarks;
   mBookmarks.clear();
 
   pclBookm->insertItem( tr( "Add Bookmark" ), this, SLOT( AddBookmark() ) );
@@ -924,7 +924,7 @@ void FCHtmlView::CreateBookmarkPopup()
   pclBookm->insertSeparator();
 
   int i = 0;
-  for (FCmap<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
+  for (std::map<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
   {
     QString txt = m_strCaption + it->second;
     int iPos = pclBookm->insertItem(m_strCaption + it->second, i++);
@@ -935,10 +935,10 @@ void FCHtmlView::CreateBookmarkPopup()
 void FCHtmlView::CreateHistoryPopup()
 {
   pclHistory->clear();
-  FCmap<int, QString> tmp = mHistory;
+  std::map<int, QString> tmp = mHistory;
   mHistory.clear();
 
-  for (FCmap<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
+  for (std::map<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
   {
 	  mHistory[pclHistory->insertItem(it->second, mHistory.size())] = it->second;
     AddToPath(GetAbsoluteURL(it->second));
@@ -956,8 +956,8 @@ void FCHtmlView::CheckBookmarks()
   if (iButton != 0) // not Ok pressed
     return;
 
-  FCmap<int, QString> mChecked;
-  for (FCmap<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it)
+  std::map<int, QString> mChecked;
+  for (std::map<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it)
   {
     const QMimeSource * mime = pclBrowser->mimeSourceFactory()->data(it->second);
     if (mime == NULL)

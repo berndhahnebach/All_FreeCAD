@@ -67,7 +67,7 @@ public:
 	FCPyHandle<FCLabel> GetLabel(int);
 
 	/// Get all child labels
-	FCvector<FCPyHandle<FCLabel> > GetLabels(void);
+	std::vector<FCPyHandle<FCLabel> > GetLabels(void);
 
 	/// return if the label has at least one child
 	bool HasChild(void){return _cLabel.HasChild()!=0;}
@@ -241,14 +241,14 @@ protected:
 			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
 				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
 		}
-		//friend class FCmap<TDF_Label,FCLabel*,ltstr>;
+		//friend class std::map<TDF_Label,FCLabel*,ltstr>;
 	};
 	
 	friend FCLabel;
 	FCLabel *HasPyLabel(TDF_Label cLabel);
 
 	/// map of all existing python label wrappers (sorted)
-	FCmap <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
+	std::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
 	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
 	FCLabel *						_pcMain;

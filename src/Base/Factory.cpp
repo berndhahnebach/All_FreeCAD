@@ -66,13 +66,13 @@ void FCFactory::Destruct (void)
 
 FCFactory::~FCFactory ()
 {
-  for (FCmap<const FCstring, FCAbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
+  for (std::map<const std::string, FCAbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
     delete pI->second;
 }
 
 void* FCFactory::Produce (const char *sClassName) const
 {
-  FCmap<const FCstring, FCAbstractProducer*>::const_iterator pProd;
+  std::map<const std::string, FCAbstractProducer*>::const_iterator pProd;
 
   pProd = _mpcProducers.find(sClassName);
   if (pProd != _mpcProducers.end())

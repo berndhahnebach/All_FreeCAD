@@ -245,7 +245,7 @@ FCLineEdit::~FCLineEdit()
 
 void FCLineEdit::restorePreferences()
 {
-  FCstring text = hPrefGrp->GetASCII(getPrefName().latin1(), "");
+  std::string text = hPrefGrp->GetASCII(getPrefName().latin1(), "");
   setText(text.c_str());
 }
 
@@ -268,8 +268,8 @@ FCComboBox::~FCComboBox()
 void FCComboBox::restorePreferences()
 {
   clear();
-  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
-  for (FCvector<FCstring>::const_iterator it = items.begin(); it != items.end(); ++it)
+  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
     insertItem(it->c_str());
 
   int item = hPrefGrp->GetInt(getPrefName().latin1(), 0);
@@ -302,8 +302,8 @@ FCListBox::~FCListBox()
 void FCListBox::restorePreferences()
 {
   clear();
-  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
-  for (FCvector<FCstring>::const_iterator it = items.begin(); it != items.end(); ++it)
+  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
     insertItem(it->c_str());
 
   int item = hPrefGrp->GetInt(getPrefName().latin1(), 0);

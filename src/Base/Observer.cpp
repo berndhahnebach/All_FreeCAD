@@ -98,7 +98,7 @@ void FCSubject::Detach(FCObserver *ToObserv)
 
 void FCSubject::Notify(void)
 {
-	for(FCset<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
         (*Iter)->OnChange(*this);   // send OnChange-signal
 }
 

@@ -34,6 +34,13 @@
 class PartWorkbench ( Workbench ):
 	"Part workbench object"
 	def Start(self):
+		# load the module
+		Log ('Loading Part module')
+		try:
+			import PartGui
+		except:
+			Log('   can not load PartGui')
+			
 		Log ('   Set up part toolbar...\n')
 		Gui.ToolbarAddTo("PartTools","Std_Test1")
 		Gui.ToolbarAddTo("PartTools","Std_Test2")
@@ -48,6 +55,7 @@ class PartWorkbench ( Workbench ):
 		Log ('   Stoping part workbench...\n')
 		Gui.CommandbarDelete("PartTools")
 		Gui.ToolbarDelete("PartTools")
+Temp1 = PartWorkbench()
 
-
-Gui.WorkbenchAdd("Part design",PartWorkbench())
+#Gui.WorkbenchAdd("Part design",PartWorkbench())
+Gui.WorkbenchAdd("Part design",Temp1)

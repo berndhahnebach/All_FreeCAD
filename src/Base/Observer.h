@@ -127,7 +127,7 @@ public:
 protected:
 	/// Vector of attached observers
 #	pragma warning( disable : 4251 )
-	FCset<FCObserver *> _ObserverSet;
+	std::set<FCObserver *> _ObserverSet;
 #	pragma warning( default : 4251 )
 
 };

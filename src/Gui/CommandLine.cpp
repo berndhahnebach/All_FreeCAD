@@ -94,14 +94,14 @@ void FCCommandLine::SaveCmdList()
   int iMaxCnt = hCmdGrp->GetInt("MaxCommands", 20);
 
   // copy from list box first
-  FClist<FCstring> alCmdList;
+  std::list<std::string> alCmdList;
   for (int ii=0; ii < count(); ii++)
     alCmdList.push_back(text(ii).latin1());
   while ( int(alCmdList.size()) > iMaxCnt )
 	  alCmdList.erase( alCmdList.begin() );
 
   long i=0;
-  for (FClist<FCstring>::iterator it = alCmdList.begin(); it != alCmdList.end(); ++it, i++)
+  for (std::list<std::string>::iterator it = alCmdList.begin(); it != alCmdList.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "Command %d", i);
@@ -113,10 +113,10 @@ void FCCommandLine::ReadCmdList()
 {
   // get the recent commands
   FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
-  FCvector<FCstring> cmd = hCmdGrp->GetASCIIs("Command");
+  std::vector<std::string> cmd = hCmdGrp->GetASCIIs("Command");
 
   int i=0;
-  for (FCvector<FCstring>::iterator it = cmd.begin(); it != cmd.end(); ++it, i++)
+  for (std::vector<std::string>::iterator it = cmd.begin(); it != cmd.end(); ++it, i++)
   {
     try
     {
@@ -140,8 +140,8 @@ void FCCommandLine::slotLaunchCommand()
   }
   catch (const FCException& rclE)
   {
-    FCstring txt = (const_cast<FCException&>(rclE)).what();
-    FCstring err = "'" + FCstring(text(currentItem())) + "' is not defined!";
+    std::string txt = (const_cast<FCException&>(rclE)).what();
+    std::string err = "'" + std::string(text(currentItem())) + "' is not defined!";
     QMessageBox::warning(this, txt.c_str(), err.c_str());
   }
   catch (...)

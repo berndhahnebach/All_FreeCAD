@@ -599,5 +599,5 @@ void FCMouseModelCirclePicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 void FCMouseModelCirclePicker::wheelEvent			    ( QWheelEvent  * cEvent )
 {
   int delta = cEvent->delta();
-  _nRadius = FCmax<int>(5, _nRadius + delta / 10);
+  _nRadius = std::max<int>(5, _nRadius + delta / 10);
 }

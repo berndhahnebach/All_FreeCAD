@@ -111,7 +111,7 @@ inline void Assert(int expr, char *msg)		// C++ assert
 #define Py_Try(F) {if (!(F)) return NULL;}
 #define Py_Assert(A,E,M) {if (!(A)) {PyErr_SetString(E, M); return NULL;}}
 
-inline void Py_Fatal(char *M) {FCcout << M << FCendl; exit(-1);};
+inline void Py_Fatal(char *M) {cout << M << endl; exit(-1);};
 
 /// This must be the first line of each PyC++ class
 #define Py_Header												\

@@ -44,9 +44,9 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
 	cString.sprintf("Tag:%d",_hcLabel->GetOCCLabel().Tag());
 	setText(0,cString);
 	
-/*	FCvector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+/*	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
 
-	for(FCvector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+	for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
 	{
 		new FCTreeLabel(this,*It);
 	}
@@ -62,9 +62,9 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 {
 	setText(0,"Main Label");
 	
-	FCvector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
 
-	for(FCvector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+	for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
 	{
 		new FCTreeLabel(this,*It);
 	}
@@ -103,9 +103,9 @@ void FCTreeLabel::setOpen( bool o )
 		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
 		//	delete pItem;
 
-		FCvector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+		std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
 
-		for(FCvector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+		for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
 		{
 			new FCTreeLabel(this,*It);
 		}

@@ -113,32 +113,32 @@ protected:
 
 public:
 	FCHandle<FCParameterGrp> GetGroup(const char* Name);
-	FCvector<FCHandle<FCParameterGrp> > GetGroups(void);
+	std::vector<FCHandle<FCParameterGrp> > GetGroups(void);
 	typedef FCHandle<FCParameterGrp> handle;
 
 	bool GetBool(const char* Name, bool bPreset=false);
 
 	void  SetBool(const char* Name, bool bValue);
 
-	FCvector<bool> GetBools(const char * sFilter = NULL);
+	std::vector<bool> GetBools(const char * sFilter = NULL);
 
-	FCmap<FCstring,bool> FCParameterGrp::GetBoolMap(const char * sFilter = NULL);
+	std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter = NULL);
 
 	long GetInt(const char* Name, long lPreset=0);
 
 	void  SetInt(const char* Name, long lValue);
 
-	FCvector<long> GetInts(const char * sFilter = NULL);
+	std::vector<long> GetInts(const char * sFilter = NULL);
 
-	FCmap<FCstring,long> GetIntMap(const char * sFilter = NULL);
+	std::map<std::string,long> GetIntMap(const char * sFilter = NULL);
 
 	double GetFloat(const char* Name, double dPreset=0.0);
 
 	void  SetFloat(const char* Name, double dValue);
 
-	FCvector<double> GetFloats(const char * sFilter = NULL);
+	std::vector<double> GetFloats(const char * sFilter = NULL);
 
-	FCmap<FCstring,double> GetFloatMap(const char * sFilter = NULL);
+	std::map<std::string,double> GetFloatMap(const char * sFilter = NULL);
 
 	void  SetBlob(const char* Name, void *pValue, long lLength);
 
@@ -148,17 +148,17 @@ public:
 
 	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
 
-	FCstring GetASCII(const char* Name, const char * pPreset=NULL);
+	std::string GetASCII(const char* Name, const char * pPreset=NULL);
 
 	/** Return all string elements in this group as a vector of strings
 	 *  Its also possible to set a filter criteria.
 	 *  @param sFilter only strings which name includes sFilter are put in the vector
-	 *  @return FCvector of FCstrings
+	 *  @return std::vector of std::strings
 	 */
-	FCvector<FCstring> GetASCIIs(const char * sFilter = NULL);
+	std::vector<std::string> GetASCIIs(const char * sFilter = NULL);
 
 	/// Same as GetASCIIs() but with key,value map
-	FCmap<FCstring,FCstring> FCParameterGrp::GetASCIIMap(const char * sFilter = NULL);
+	std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilter = NULL);
 
 	static void Init(void);
 
@@ -190,9 +190,9 @@ protected:
 	DOMElement *_pGroupNode;
 #	pragma warning( disable : 4251 )
 	/// the own name
-	FCstring _cName;
+	std::string _cName;
 	/// map of already exported groups
-	FCmap <FCstring ,FCHandle<FCParameterGrp> > _GroupMap;
+	std::map <std::string ,FCHandle<FCParameterGrp> > _GroupMap;
 #	pragma warning( default : 4251 )
 
 };
@@ -379,7 +379,7 @@ private :
     char*   fLocalForm;
 };
 
-inline ostream& operator<<(ostream& target, const StrX& toDump)
+inline std::ostream& operator<<(std::ostream& target, const StrX& toDump)
 {
     target << toDump.c_str();
     return target;

@@ -25,6 +25,8 @@
 
 #include "../../../App/Application.h"
 
+void CreateCommands(void);
+
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved
@@ -43,9 +45,35 @@ void __declspec(dllexport) initAppPartGuiD() {
 void __declspec(dllexport) initAppPartGui() {
 #endif
 
+	puts("AppPart loaded");
+
 	GetApplication();
+
+	// instanciating the commands
+	CreateCommands();
+
+
 	return;
 }
-
-
 } // extern "C" {
+
+
+
+
+/*
+#include <boost/python/class_builder.hpp>
+namespace python = boost::python;
+
+std::string info() { return "hello, world"; }
+
+
+BOOST_PYTHON_MODULE_INIT(getting_started1)
+{
+    // Create an object representing this extension module.
+    python::module_builder this_module("getting_started1");
+
+    // Add regular functions to the module.
+    this_module.def(info, "Info");
+    //this_module.def(square, "square");
+}
+*/

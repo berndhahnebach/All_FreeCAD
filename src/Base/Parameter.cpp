@@ -121,12 +121,12 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 	return rParamGrp;
 }
 
-FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
+std::vector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 {
 	FCHandle<FCParameterGrp> rParamGrp;
-	FCvector<FCHandle<FCParameterGrp> >  vrParamGrp;
+	std::vector<FCHandle<FCParameterGrp> >  vrParamGrp;
 	DOMElement *pcTemp; //= _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCParamGroup");
 
@@ -168,18 +168,18 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(bValue?"1":"0").unicodeForm());
 }
 
-FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
+std::vector<bool> FCParameterGrp::GetBools(const char * sFilter)
 {
-	FCvector<bool>  vrValues;
+	std::vector<bool>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCBool");
 	while( pcTemp)
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),"1"))
 				vrValues.push_back(false);
@@ -192,18 +192,18 @@ FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
 	return vrValues;
 }
 
-FCmap<FCstring,bool> FCParameterGrp::GetBoolMap(const char * sFilter)
+std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter)
 {
-	FCmap<FCstring,bool>  vrValues;
+	std::map<std::string,bool>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCBool");
 	while( pcTemp)
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),"1"))
 				vrValues[Name] = (false);
@@ -236,18 +236,18 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 }
 
-FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
+std::vector<long> FCParameterGrp::GetInts(const char * sFilter)
 {
-	FCvector<long>  vrValues;
+	std::vector<long>  vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCInt") ;
 	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			vrValues.push_back( atol (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
@@ -257,18 +257,18 @@ FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
 	return vrValues;
 }
 
-FCmap<FCstring,long> FCParameterGrp::GetIntMap(const char * sFilter)
+std::map<std::string,long> FCParameterGrp::GetIntMap(const char * sFilter)
 {
-	FCmap<FCstring,long>  vrValues;
+	std::map<std::string,long>  vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCInt") ;
 	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			vrValues[Name] = ( atol (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
@@ -298,18 +298,18 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 }
 
-FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
+std::vector<double> FCParameterGrp::GetFloats(const char * sFilter)
 {
-	FCvector<double>  vrValues;
+	std::vector<double>  vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCFloat") ;
 	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			vrValues.push_back( atof (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
@@ -319,18 +319,18 @@ FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
 	return vrValues;
 }
 
-FCmap<FCstring,double> FCParameterGrp::GetFloatMap(const char * sFilter)
+std::map<std::string,double> FCParameterGrp::GetFloatMap(const char * sFilter)
 {
-	FCmap<FCstring,double>  vrValues;
+	std::map<std::string,double>  vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCFloat") ;
 	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			vrValues[Name] = ( atof (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str()) );
 		}
@@ -387,37 +387,37 @@ void FCParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, co
 	}
 }
 
-FCstring FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
+std::string FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
 	// if not return preset
-	if(!pcElem) return FCstring(pPreset);
+	if(!pcElem) return std::string(pPreset);
 	// if yes check the value and return
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (pcElem2)
-		return FCstring(StrX(pcElem2->getNodeValue()).c_str());	
+		return std::string(StrX(pcElem2->getNodeValue()).c_str());	
 	else
-		return FCstring(pPreset);
+		return std::string(pPreset);
 }
 
-FCvector<FCstring> FCParameterGrp::GetASCIIs(const char * sFilter)
+std::vector<std::string> FCParameterGrp::GetASCIIs(const char * sFilter)
 {
-	FCvector<FCstring>  vrValues;
+	std::vector<std::string>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCText");
 	while( pcTemp  )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			// retrive the text element
 			DOMNode *pcElem2 = pcTemp->getFirstChild();
 			if (pcElem2)
-				vrValues.push_back( FCstring(StrX(pcElem2->getNodeValue()).c_str()) );
+				vrValues.push_back( std::string(StrX(pcElem2->getNodeValue()).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCText");
 	}
@@ -425,23 +425,23 @@ FCvector<FCstring> FCParameterGrp::GetASCIIs(const char * sFilter)
 	return vrValues;
 }
 
-FCmap<FCstring,FCstring> FCParameterGrp::GetASCIIMap(const char * sFilter)
+std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilter)
 {
-	FCmap<FCstring,FCstring>  vrValues;
+	std::map<std::string,std::string>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
-	FCstring Name;
+	std::string Name;
 
 	pcTemp = FindElement(_pGroupNode,"FCText");
 	while( pcTemp)
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
 		{
 			// retrive the text element
 			DOMNode *pcElem2 = pcTemp->getFirstChild();
 			if (pcElem2)
-				vrValues[Name] = FCstring(StrX(pcElem2->getNodeValue()).c_str()) ;
+				vrValues[Name] = std::string(StrX(pcElem2->getNodeValue()).c_str()) ;
 		}
 		pcTemp = FindNextElement(pcTemp,"FCText");
 	}
@@ -598,6 +598,7 @@ FCParameterManager::~FCParameterManager()
 {
 }
 
+
 void FCParameterManager::Init(void)
 {
 	static bool Init = false;
@@ -610,7 +611,11 @@ void FCParameterManager::Init(void)
 
 		catch(const XMLException& toCatch)
 		{
-			FCstrstream err;
+#ifdef __linux
+			std::sstream err;
+#else
+			std::strstream err;
+#endif
 			char *pMsg = XMLString::transcode(toCatch.getMessage());
 			err << "Error during Xerces-c Initialization.\n"
 				 << "  Exception message:"
@@ -676,21 +681,21 @@ int  FCParameterManager::LoadDocument(const char* sFileName)
 
     catch (const XMLException& e)
     {
-        cerr << "An error occurred during parsing\n   Message: "
-             << StrX(e.getMessage()) << endl;
+		std::cerr << "An error occurred during parsing\n   Message: "
+             << StrX(e.getMessage()) << std::endl;
         errorsOccured = true;
     }
 
     catch (const DOMException& e)
     {
-       cerr << "A DOM error occurred during parsing\n   DOMException code: "
-             << e.code << endl;
+       std::cerr << "A DOM error occurred during parsing\n   DOMException code: "
+             << e.code << std::endl;
         errorsOccured = true;
     }
 
     catch (...)
     {
-        cerr << "An error occurred during parsing\n " << endl;
+        std::cerr << "An error occurred during parsing\n " << std::endl;
         errorsOccured = true;
     }
 
@@ -784,9 +789,9 @@ void  FCParameterManager::SaveDocument(const char* sFileName)
     }
     catch (XMLException& e)
     {
-        cerr << "An error occurred during creation of output transcoder. Msg is:"
-            << endl
-            << StrX(e.getMessage()) << endl;
+        std::cerr << "An error occurred during creation of output transcoder. Msg is:"
+            << std::endl
+            << StrX(e.getMessage()) << std::endl;
      }
 
 }
@@ -1074,19 +1079,19 @@ void DOMTreeErrorReporter::warning(const SAXParseException&)
 void DOMTreeErrorReporter::error(const SAXParseException& toCatch)
 {
     fSawErrors = true;
-    cerr << "Error at file \"" << StrX(toCatch.getSystemId())
+    std::cerr << "Error at file \"" << StrX(toCatch.getSystemId())
 		 << "\", line " << toCatch.getLineNumber()
 		 << ", column " << toCatch.getColumnNumber()
-         << "\n   Message: " << StrX(toCatch.getMessage()) << endl;
+         << "\n   Message: " << StrX(toCatch.getMessage()) << std::endl;
 }
 
 void DOMTreeErrorReporter::fatalError(const SAXParseException& toCatch)
 {
     fSawErrors = true;
-    cerr << "Fatal Error at file \"" << StrX(toCatch.getSystemId())
+    std::cerr << "Fatal Error at file \"" << StrX(toCatch.getSystemId())
 		 << "\", line " << toCatch.getLineNumber()
 		 << ", column " << toCatch.getColumnNumber()
-         << "\n   Message: " << StrX(toCatch.getMessage()) << endl;
+         << "\n   Message: " << StrX(toCatch.getMessage()) << std::endl;
 }
 
 void DOMTreeErrorReporter::resetErrors()
@@ -1198,7 +1203,7 @@ bool DOMPrintErrorHandler::handleError(const DOMError &domError)
 {
     // Display whatever error message passed from the serializer
     char *msg = XMLString::transcode(domError.getMessage());
-    cout<<msg<<endl;
+    std::cout<<msg<<std::endl;
     delete[] msg;
 
     // Instructs the serializer to continue serialization if possible.

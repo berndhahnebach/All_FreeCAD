@@ -66,9 +66,9 @@
 DlgParameter::DlgParameter( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : ParameterDialog( parent, name, modal, fl ),_pcMainLabel(0L),FCWindow(name)
 {
-	const FCmap<FCstring,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
+	const std::map<std::string,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
 
-	for( FCmap<FCstring,FCParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
+	for( std::map<std::string,FCParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
 	{
 		if(It->first == "User parameter")
 			SetNameComboBox->insertItem(It->first.c_str(),1);
@@ -170,27 +170,27 @@ void ParameterLabelGroup::FillUp(void)
 {
 	//setPixmap( folderOpen );
 	// filing up groups
-	FCvector<FCHandle<FCParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
+	std::vector<FCHandle<FCParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
 
 	setText(0,_hcGrp->GetGroupName());
 
-	for(FCvector<FCHandle<FCParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
+	for(std::vector<FCHandle<FCParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
 		new ParameterLabelGroup(this,*It);
 	
 	// filling up Text nodes
-	FCmap<FCstring,FCstring> mcTextMap = _hcGrp->GetASCIIMap();
+	std::map<std::string,std::string> mcTextMap = _hcGrp->GetASCIIMap();
 
 	QListViewItem *pcItem;
-	for(FCmap<FCstring,FCstring>::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
+	for(std::map<std::string,std::string>::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
 	{
 		pcItem = new QListViewItem(this,It2->first.c_str(),It2->second.c_str());
 		pcItem->setPixmap(0,QPixmap(Param_Text) );
 	}
 
 	// filling up Int nodes
-	FCmap<FCstring,long> mcIntMap = _hcGrp->GetIntMap();
+	std::map<std::string,long> mcIntMap = _hcGrp->GetIntMap();
 
-	for(FCmap<FCstring,long>::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
+	for(std::map<std::string,long>::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
 	{
 		char b[255];
 		sprintf(b,"%d",It3->second);
@@ -199,9 +199,9 @@ void ParameterLabelGroup::FillUp(void)
 	}
 
 	// filling up Float nodes
-	FCmap<FCstring,double> mcFloatMap = _hcGrp->GetFloatMap();
+	std::map<std::string,double> mcFloatMap = _hcGrp->GetFloatMap();
 
-	for(FCmap<FCstring,double>::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
+	for(std::map<std::string,double>::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
 	{
 		char b[255];
 		sprintf(b,"%f",It4->second);
@@ -210,9 +210,9 @@ void ParameterLabelGroup::FillUp(void)
 	}
 
 	// filling up bool nodes
-	FCmap<FCstring,bool> mcBoolMap = _hcGrp->GetBoolMap();
+	std::map<std::string,bool> mcBoolMap = _hcGrp->GetBoolMap();
 
-	for(FCmap<FCstring,bool>::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
+	for(std::map<std::string,bool>::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
 	{
 		pcItem = new QListViewItem(this,It5->first.c_str(),It5->second?"true":"false");
 		pcItem->setPixmap(0,QPixmap(Param_Float) );

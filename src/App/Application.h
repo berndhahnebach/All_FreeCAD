@@ -133,7 +133,7 @@ public:
 	FCParameterManager & GetSystemParameter(void) ;
 	FCParameterManager & GetUserParameter(void) ;
 	FCParameterManager & GetParameterSet(const char* sName);
-	const FCmap<FCstring,FCParameterManager *> &GetParameterSetList(void);
+	const std::map<std::string,FCParameterManager *> &GetParameterSetList(void);
 	
 	/// Major version nummber
 	const static unsigned int VersionMajor;
@@ -192,12 +192,12 @@ private:
 	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
 	/// Handles the FCDocument (and python) objects;
-	FCvector<FCDocument*> _DocVector;
+	std::vector<FCDocument*> _DocVector;
 	/// The container of all attached Obervers
-	FCset<FCApplicationObserver * > _aclObservers;
+	std::set<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
 
-	FCmap<FCstring,FCParameterManager *> mpcPramManager;
+	std::map<std::string,FCParameterManager *> mpcPramManager;
 	FCParameterManager *_pcSysParamMngr;
 	FCParameterManager *_pcUserParamMngr;
 };

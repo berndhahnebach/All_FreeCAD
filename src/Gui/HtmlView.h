@@ -144,7 +144,7 @@ class GuiExport FCHtmlView : public FCDockWindow
 
 #	pragma warning( disable : 4251 )
     QString        m_FCdoc, m_FCext, m_FCscript;
-    FCmap<int, QString> mHistory, mBookmarks;
+    std::map<int, QString> mHistory, mBookmarks;
     bool bBackward, bForward;
     bool bHistory, bBookm;
     QButtonGroup*  pclButtonGrp;

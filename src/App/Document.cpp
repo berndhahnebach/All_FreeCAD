@@ -41,9 +41,9 @@ FCPyHandle<FCLabel> FCLabel::GetLabel(int iN)
 }
 
 /// Get all child labels
-FCvector<FCPyHandle<FCLabel> > FCLabel::GetLabels(void)
+std::vector<FCPyHandle<FCLabel> > FCLabel::GetLabels(void)
 {
-	FCvector<FCPyHandle<FCLabel> > vhcLabels;
+	std::vector<FCPyHandle<FCLabel> > vhcLabels;
 
 	for (TDF_ChildIterator it(_cLabel); it.More(); it.Next())
 		vhcLabels.push_back( FCPyHandle<FCLabel>(_pcDocument->HasPyLabel(it.Value())));
@@ -389,7 +389,7 @@ void FCDocument::ChangeStorageFormat(const short* sStorageFormat)
 FCLabel *FCDocument::HasPyLabel(TDF_Label cLabel)
 {
 	FCLabel *pcL;
-	FCmap <TDF_Label,FCLabel*,LabelLess>::iterator It;
+	std::map <TDF_Label,FCLabel*,LabelLess>::iterator It;
 	
 	// find a FCLabel if possible
 	It = mcLabelMap.find(cLabel);

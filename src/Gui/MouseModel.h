@@ -143,7 +143,7 @@ class FCMouseModelPolyPicker : public FCMouseModelStd
   protected:
     /// draw the polygon
     virtual void draw ();
-    FCvector<QPoint> _cNodeVector;
+    std::vector<QPoint> _cNodeVector;
     int  m_iRadius, m_iNodes;
     bool m_bWorking, m_bDrawNodes;
 };

@@ -81,7 +81,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 FCGuiDocument::~FCGuiDocument()
 {
-	for(FClist<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
+	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 		delete *It;
 
 	// remove the reverence from the object
@@ -141,7 +141,7 @@ bool FCGuiDocument::SendMsgToViews(const char* pMsg)
 
 	bool bResult = false;
 
-	for(FClist<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end();It++)
+	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end();It++)
 	{
 		if( (*It)->OnMsg(pMsg))
 		{

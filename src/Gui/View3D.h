@@ -178,7 +178,7 @@ private:
 
 	FCGuiDocument*  _pcDocument;
 
-	FCstack<FCMouseModel *>      _cMouseStack;
+	std::stack<FCMouseModel *>      _cMouseStack;
 	
 	bool bIsInit;
 	

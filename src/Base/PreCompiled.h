@@ -25,6 +25,8 @@
 #include <stack>
 #include <strstream>
 
+#include <iostream>
+
 // Python
 #include <Python.h>
 

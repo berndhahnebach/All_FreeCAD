@@ -142,7 +142,7 @@ private:
 	void NotifyLog    (const char *sMsg);
 	// observer list
 #pragma warning( disable : 4251 )
-	FCset<FCConsoleObserver * > _aclObservers;
+	std::set<FCConsoleObserver * > _aclObservers;
 
 };
 
@@ -157,7 +157,7 @@ inline FCConsole &GetConsole(void){
 class BaseExport FCLoggingConsoleObserver : public FCConsoleObserver
 {
 public:
-	FCLoggingConsoleObserver(const char *sFileName,int nMode = ios::out);
+	FCLoggingConsoleObserver(const char *sFileName);
 	~FCLoggingConsoleObserver();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg);
@@ -165,7 +165,7 @@ public:
 	virtual void Log    (const char *sLog);
 
 protected:
-	FCofstream cFileStream;
+	std::ofstream cFileStream;
 };
 
 // simple print observer

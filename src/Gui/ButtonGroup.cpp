@@ -218,7 +218,7 @@ void FCButtonGroup::showIcons()
 {
   int cnt = count();
 
-  for (FCmap<int, QPixmap>::const_iterator it = m_Pixmaps.begin(); it != m_Pixmaps.end(); it++)
+  for (std::map<int, QPixmap>::const_iterator it = m_Pixmaps.begin(); it != m_Pixmaps.end(); it++)
   {
     if (it->first < cnt)
     {
@@ -274,10 +274,10 @@ FCToolboxGroup::~FCToolboxGroup ()
 void FCToolboxGroup::restorePreferences()
 {
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
+  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
-  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
-  for (FCvector<FCstring>::iterator it = items.begin(); it != items.end(); ++it)
+  std::vector<std::string> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
   {
     sCommands[*it]->GetAction()->addTo(this);
   }
@@ -286,7 +286,7 @@ void FCToolboxGroup::restorePreferences()
 void FCToolboxGroup::savePreferences()
 {
   int i=0;
-  for (FCvector<FCstring>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
+  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", getPrefName().latin1(), i);

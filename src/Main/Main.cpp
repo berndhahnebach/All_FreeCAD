@@ -96,7 +96,7 @@ const char sBanner[] = \
 #endif
 
 // some globals set by the commandline options or Init function
-FCstring sFileName;
+std::string sFileName;
 const char*     sScriptName;
 /// set FreeCAD in the verbose mode
 bool bVerbose = false;

@@ -60,8 +60,8 @@ FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
   bRun = true;
 
   // set the developers of FC
-  _aclDevelopers["Juergen_Riegel"] = FCmake_pair<FCstring, QPixmap>("Jürgen Riegel", QPixmap(Juergen_Riegel));
-  _aclDevelopers["Werner_Mayer"]   = FCmake_pair<FCstring, QPixmap>("Werner Mayer" , QPixmap(Juergen_Riegel));
+  _aclDevelopers["Juergen_Riegel"] = std::make_pair<std::string, QPixmap>("Jürgen Riegel", QPixmap(Juergen_Riegel));
+  _aclDevelopers["Werner_Mayer"]   = std::make_pair<std::string, QPixmap>("Werner Mayer" , QPixmap(Juergen_Riegel));
 
   // set the text for all subclasses
   SplasherText =
@@ -81,7 +81,7 @@ FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
     "<td>"
     "Main developers of FreeCAD are:"
     "<ul>";
-  for (FCmap<FCstring, FCpair<FCstring, QPixmap> >::iterator it = _aclDevelopers.begin(); it != _aclDevelopers.end(); ++it)
+  for (std::map<std::string, std::pair<std::string, QPixmap> >::iterator it = _aclDevelopers.begin(); it != _aclDevelopers.end(); ++it)
     SplasherText += tr(	"<li> <a href=""%1"">%2</a>\n").
                     arg(QString(it->first.c_str())). // first argument
                     arg(QString(it->second.first.c_str()));// second argument

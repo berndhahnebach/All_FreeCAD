@@ -88,8 +88,8 @@ public:
 	QPixmap GetPixmap(const char* sName);
 
 protected:
-	FCmap<FCstring,const char*> _mpXPM;
-	FCvector<FCstring>          _vsPaths;
+	std::map<std::string,const char*> _mpXPM;
+	std::vector<std::string>          _vsPaths;
 };
 
 
@@ -137,7 +137,7 @@ public:
 	/// Get a named Toolbar or creat if not in
 	QToolBar *GetToolBar(const char* name);
   /// Get all toolbars
-  FCvector<QToolBar*> GetToolBars(); 
+  std::vector<QToolBar*> GetToolBars(); 
 	/// Delete a named Toolbar
 	void DelToolBar(const char* name);
 
@@ -215,11 +215,11 @@ protected slots:
 private:
 #	pragma warning( disable : 4251 )
 	/// list of all handled documents
- 	FClist<FCGuiDocument*>         lpcDocuments;
+ 	std::list<FCGuiDocument*>         lpcDocuments;
 	/// list of windows
-	FCmap <FCstring,FCDockWindow*> mpcDocWindows;
+	std::map <std::string,FCDockWindow*> mpcDocWindows;
 	/// map of Toolbars
-	FCmap <FCstring,QToolBar*>     mpcToolBars;
+	std::map <std::string,QToolBar*>     mpcToolBars;
 #	pragma warning( default : 4251 )
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;

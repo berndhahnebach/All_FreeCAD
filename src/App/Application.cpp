@@ -263,7 +263,7 @@ FCParameterManager & FCApplication::GetParameterSet(const char* sName)
 	return *mpcPramManager[sName];
 }
 
-const FCmap<FCstring,FCParameterManager *> & FCApplication::GetParameterSetList(void)
+const std::map<std::string,FCParameterManager *> & FCApplication::GetParameterSetList(void)
 {
 	return mpcPramManager;
 }
@@ -303,7 +303,7 @@ PYFUNCIMP_S(FCApplication,sOpen)
 	catch(Standard_Failure e)
 	{
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		FCstrstream strm;
+		strstream strm;
 
 		strm << E << endl;
 		//strm.freeze();
@@ -439,11 +439,11 @@ void FCApplication::DetacheObserver(FCApplicationObserver *pcObserver)
 
 void FCApplication::NotifyDocNew(FCDocument* pcDoc)
 {
-	for(FCset<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocNew(pcDoc);   // send doc to the listener
 }
 void FCApplication::NotifyDocDelete(FCDocument* pcDoc)
 {
-	for(FCset<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
+	for(std::set<FCApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocDelete(pcDoc);   // send doc to the listener
 }
