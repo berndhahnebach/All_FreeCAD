@@ -45,7 +45,6 @@ moc_FileDialog.cpp \
 moc_HtmlView.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
-moc_ProcessQt.cpp \
 moc_PropertyView.cpp \
 moc_ReportView.cpp \
 moc_SpinBox.cpp \
@@ -60,7 +59,6 @@ moc_View3DInventor.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 moc_Window.cpp \
-moc_HtmlViewP.cpp \
 DlgActions.cpp \
 DlgActions.h \
 DlgActivateWindow.cpp \
@@ -178,6 +176,7 @@ View3D.cpp \
 View3DInventor.cpp \
 ViewProvider.cpp \
 WaitCursor.cpp \
+WhatsThis.cpp \
 WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp

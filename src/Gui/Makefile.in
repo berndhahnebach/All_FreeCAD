@@ -179,7 +179,6 @@ moc_FileDialog.cpp \
 moc_HtmlView.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
-moc_ProcessQt.cpp \
 moc_PropertyView.cpp \
 moc_ReportView.cpp \
 moc_SpinBox.cpp \
@@ -194,7 +193,6 @@ moc_View3DInventor.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 moc_Window.cpp \
-moc_HtmlViewP.cpp \
 DlgActions.cpp \
 DlgActions.h \
 DlgActivateWindow.cpp \
@@ -312,6 +310,7 @@ View3D.cpp \
 View3DInventor.cpp \
 ViewProvider.cpp \
 WaitCursor.cpp \
+WhatsThis.cpp \
 WidgetFactory.cpp \
 Widgets.cpp \
 Window.cpp
@@ -373,7 +372,7 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	PropertyPage.lo PropertyView.lo PythonEditor.lo ReportView.lo \
 	resource.lo Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo \
 	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
-	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
+	View3DInventor.lo ViewProvider.lo WaitCursor.lo WhatsThis.lo \
 	WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
@@ -429,6 +428,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/WhatsThis.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WidgetFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Widgets.Plo ./$(DEPDIR)/Window.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knuminput.Plo \
@@ -558,6 +558,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaitCursor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WhatsThis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WidgetFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Widgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Window.Plo@am__quote@

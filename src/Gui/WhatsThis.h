@@ -21,54 +21,44 @@
  ***************************************************************************/
 
 
-#ifndef __QT_PROCESS_QT__H__
-#define __QT_PROCESS_QT__H__
-
-#if QT_VERSION > 300
+#ifndef WHATS_THIS_H
+#define WHATS_THIS_H
 
 #ifndef _PreComp_
-# include <qprocess.h>
+# include <qwhatsthis.h>
 #endif
 
-class FCProcess : public QProcess, public FCSubject <int>
+class QTextBrowser;
+
+namespace Gui {
+
+/**
+ * The WhatsThis class provides a simple description of any widget, i.e. answering the 
+ * question "What's this?". The description is shown in the help viewer.
+ * @see Gui::HtmlView
+ * \author Werner Mayer
+ */
+class WhatsThis : public QWhatsThis
 {
-  Q_OBJECT
+public:
+  WhatsThis( QWidget *);
+  WhatsThis( QWidget *, const QString& url);
+  virtual ~WhatsThis();
 
-  public:
-    FCProcess(const char* proc);
-    FCProcess( QObject *parent=0, const char *name=0 );
-    FCProcess( const QString& arg0, QObject *parent=0, const char *name=0 );
-    FCProcess( const QStringList& args, QObject *parent=0, const char *name=0 );
-    virtual ~FCProcess();
+  void setUrl( const QString& url );
+  void setText( const QString& txt );
+  virtual QString text( const QPoint & );
 
-    std::string message() const;
+  static void setHelpView( QTextBrowser* );
 
-    virtual bool setExecutable(const char* proc);
-    std::string executable () const;
-    FCProcess& operator<<(const char * arg);
-    virtual bool start( QStringList *env=0 );
+private:
+  QWidget* _widget; /**< Corresponding widget to object. */
+  QString _url; /**< URL of the Html document. */
+  QString _txt; /**< Description of the widget. */
 
-    bool appendToPath (const char* path);
-    void setEnvironment (const char* var, const char* val);
-    void clearEnvironment ();
-    void unsetEnvironment (const char* var);
-
-  private slots:
-    void OnNotifyReadyReadStdout();
-    void OnNotifyReadyReadStderr();
-    void OnNotifyProcessExited();
-    void OnNotifyWroteToStdin();
-    void OnNotifyLaunchFinished();
-
-  private:
-    void init();
-    void setupEnvironment();
-    std::map<std::string, std::string> env;
-    std::string data;
+  static QTextBrowser* _helpViewer; /**< global HelpViewer to display help. */
 };
 
-#else  // QT_VERSION < 300
-# error "QT Version missmatch, please set the right version in src/Config.h line 92"
-#endif // QT_VERSION > 300
+} // namespace Gui
 
-#endif //__QT_PROCESS_QT__H__
+#endif // WHATS_THIS_H
