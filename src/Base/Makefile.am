@@ -16,6 +16,7 @@ libFreeCADBase_la_SOURCES=\
 		Process.h \
 		PyExport.h \
 		PyTools.h \
+		Sequencer.h \
 		Console.cpp \
 		Documentation.cpp \
 		Doxygen.cpp \
@@ -30,7 +31,8 @@ libFreeCADBase_la_SOURCES=\
 		PreCompiled.cpp \
 		Process.cpp \
 		PyExport.cpp \
-		PyTools.c
+		PyTools.c \
+		Sequencer.cpp
 
 libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c
 

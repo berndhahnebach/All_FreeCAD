@@ -150,6 +150,7 @@ libFreeCADBase_la_SOURCES = \
 		Process.h \
 		PyExport.h \
 		PyTools.h \
+		Sequencer.h \
 		Console.cpp \
 		Documentation.cpp \
 		Doxygen.cpp \
@@ -164,7 +165,8 @@ libFreeCADBase_la_SOURCES = \
 		PreCompiled.cpp \
 		Process.cpp \
 		PyExport.cpp \
-		PyTools.c
+		PyTools.c \
+		Sequencer.cpp
 
 
 libFreeCADBase_la_LIBADD = -lpython@fc_py_ver@ -lxerces-c
@@ -184,7 +186,7 @@ libFreeCADBase_la_DEPENDENCIES =
 am_libFreeCADBase_la_OBJECTS = Console.lo Documentation.lo Doxygen.lo \
 	Exception.lo Factory.lo FileTemplate.lo Handle.lo \
 	Interpreter.lo Observer.lo Parameter.lo ParameterPy.lo \
-	PreCompiled.lo Process.lo PyExport.lo PyTools.lo
+	PreCompiled.lo Process.lo PyExport.lo PyTools.lo Sequencer.lo
 libFreeCADBase_la_OBJECTS = $(am_libFreeCADBase_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -199,7 +201,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Observer.Plo ./$(DEPDIR)/Parameter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ParameterPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo ./$(DEPDIR)/Process.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PyExport.Plo ./$(DEPDIR)/PyTools.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/PyExport.Plo ./$(DEPDIR)/PyTools.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Sequencer.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -280,6 +283,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Process.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyExport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyTools.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sequencer.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
