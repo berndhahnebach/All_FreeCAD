@@ -40,7 +40,7 @@ class TestWorkbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up Test toolbar...\n')
-			list = ["Test_Test1","Test_Test2","Test_TestAll","Test_TestDoc","Test_TestBase"]
+			list = ["Test_Test1","Test_Test2","Test_TestAll","Test_TestDoc","Test_TestBase","Test_TestWork"]
 			Gui.ToolbarAppendItems("TestTools",list,0)
 
 			Log ('   Set up Test commandbar...\n')

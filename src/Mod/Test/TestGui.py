@@ -77,6 +77,26 @@ class TestBaseCmd:
         return {'MenuText': 'Test base',
                 'ToolTip' : 'Test the basic functions of FreeCAD'}
 
+class TestWorkbenchCmd:
+    "Workbench test"
+    def Activated(self):
+    	i=0
+    	while (i<20):
+	        FreeCADGui.WorkbenchActivate("Import")
+	        FreeCADGui.UpdateGui()
+	        FreeCADGui.WorkbenchActivate("<none>")
+	        FreeCADGui.UpdateGui()
+	        FreeCADGui.WorkbenchActivate("Part design")
+	        FreeCADGui.UpdateGui()
+	        FreeCADGui.WorkbenchActivate("Sketcher")
+	        FreeCADGui.UpdateGui()
+	        print i
+	        i=i+1
+
+    def GetResources(self):
+        return {'MenuText': 'Test workbench',
+                'ToolTip' : 'Test the switching of workbenches in FreeCAD'}
+
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
@@ -85,4 +105,5 @@ FreeCADGui.CommandAdd('Test_Test2'   ,Test2Cmd())
 FreeCADGui.CommandAdd('Test_TestAll' ,TestAllCmd())
 FreeCADGui.CommandAdd('Test_TestDoc' ,TestDocCmd())
 FreeCADGui.CommandAdd('Test_TestBase',TestBaseCmd())
+FreeCADGui.CommandAdd('Test_TestWork',TestWorkbenchCmd())
 
