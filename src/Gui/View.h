@@ -135,4 +135,86 @@ private:
 };
 
 
+class FCFloatingView;
+class FCFloatingDoc : public QObject
+{
+  Q_OBJECT
+
+  public:
+    FCFloatingDoc() : bModified(false), view(0L) {}
+    ~FCFloatingDoc() {}
+
+    bool Save(void) { return true; }
+    bool SaveAs(void) { return true; }
+
+    virtual void CreateView(){}
+    bool IsModified() const { return bModified; }
+    void Undo(int iSteps) {}
+    void Redo(int iSteps) {}
+  	void CanClose(QCloseEvent * e );
+
+  signals:
+    void documentChanged();
+
+  protected:
+    void closeEvent ( QCloseEvent * e ) { CanClose(e); }
+  
+    bool bModified;
+    FCFloatingView* view;
+};
+
+class FCFloatingView : public FCWindow
+{
+  Q_OBJECT
+
+  public:
+	  FCFloatingView(FCFloatingDoc* pcDoc, QWidget* parent, const char* name, int wflags=WDestructiveClose);
+
+    ~FCFloatingView(){}
+
+    virtual void Update(void){}
+    virtual const char *GetName(void){ return "FCFloatingView"; }
+    virtual void SetDocument(FCFloatingDoc* pcDocument){}
+    FCFloatingDoc* GetDocument() const { return _pcDocument; }
+    virtual bool OnMsg(const char* pMsg) { return false; };
+
+  signals:
+  	void sendCloseView(FCFloatingView* theView);
+	
+  public slots:
+    void ViewMsg(const char* pMsg) { OnMsg(pMsg); }
+
+  protected:
+  	virtual void resizeEvent ( QResizeEvent * e)
+    {
+      _pcFrame->resize(e->size());
+    }
+  
+  	QVBox*	    _pcFrame;    
+    FCFloatingDoc*	_pcDocument;
+};
+
+class FCFloatingChildView : public QextMdiChildView, public FCWindowParameter
+{
+  public:
+	  FCFloatingChildView( FCFloatingView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose )
+      : QextMdiChildView( parent, name, wflags ), FCWindowParameter(name), _pcView(pcView)
+    {
+	    _pcView->reparent(this,wflags,QPoint(0,0));
+    }
+
+    ~FCFloatingChildView(){}
+
+  	virtual FCFloatingView* GetActiveView(void){return _pcView;}
+
+  protected:
+  	virtual void resizeEvent ( QResizeEvent * e)
+    {
+    	_pcView->resize(e->size());
+    }
+
+  private:
+	  FCFloatingView *		_pcView;
+};
+
 #endif
