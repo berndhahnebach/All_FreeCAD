@@ -445,3 +445,5 @@ Version: V0.1B96 Date: Tue Nov  9 00:29:38 2004 +++++++++++++++++++++++++++++++
 + Impl. of a property editor as described in "Practical Qt"
 
 Version: V0.1B97 Date: Thu Nov 11 22:40:19 2004 +++++++++++++++++++++++++++++++
+
+Version: V0.1B98 Date: Fri Nov 12 18:31:46 2004 +++++++++++++++++++++++++++++++

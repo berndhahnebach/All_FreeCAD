@@ -77,8 +77,12 @@
 #include "Console.h"
 
 
-using namespace xercesc;
+#ifdef XERCES_HAS_CPP_NAMESPACE
+	using namespace xercesc;
+#endif
+
 using namespace Base;
+using namespace xercesc;
 
 //**************************************************************************
 //**************************************************************************
@@ -179,7 +183,7 @@ public:
     //@{
 
 	/** @ interface from DOMWriterFilter */
-	virtual short acceptNode(const DOMNode*) const;
+	virtual short acceptNode(const xercesc::DOMNode*) const;
     //@{
 
 	virtual unsigned long getWhatToShow() const {return fWhatToShow;};
@@ -272,7 +276,7 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 /** Defauld construction
   * Does not much 
   */
-FCParameterGrp::FCParameterGrp(DOMElement *GroupNode,const char* sName)	
+FCParameterGrp::FCParameterGrp(xercesc::DOMElement *GroupNode,const char* sName)	
 	: FCHandled(), FCSubject<const char*>(),_pGroupNode(GroupNode)
 {
 	if(sName) _cName=sName;
@@ -626,7 +630,7 @@ void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (!pcElem2)
     {
-		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+		xercesc::DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
 		DOMText *pText = pDocument->createTextNode(XStr(sValue).unicodeForm());
 		pcElem->appendChild(pText);
 	}else{
@@ -893,7 +897,7 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 
 	if(!pcElem)
 	{
-		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+		xercesc::DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
 
 		pcElem = pDocument->createElement(XStr(Type).unicodeForm());
 		pcElem-> setAttribute(XStr("Name").unicodeForm(), XStr(Name).unicodeForm());
@@ -1373,7 +1377,7 @@ StrX::StrX(const XMLCh* const toTranscode)
 
 StrX::~StrX()
 {
-    delete [] fLocalForm;
+//    delete [] fLocalForm;
 }
 
 
@@ -1400,7 +1404,7 @@ XStr::XStr(const char* const toTranscode)
 
 XStr::~XStr()
 {
-    delete [] fUnicodeForm;
+    //delete [] fUnicodeForm;
 }
 
 

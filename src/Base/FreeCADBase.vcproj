@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="FreeCADBase"
 	SccProjectName=""
 	SccLocalPath="">
@@ -11,65 +11,8 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
-			ConfigurationType="2"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
-				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;FCBase"
-				StringPooling="TRUE"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="3"
-				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Release/FreeCADBase.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../../bin/FreeCADBase.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\Release/FreeCADBase.pdb"
-				ImportLibrary=".\Release/FreeCADBase.lib"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Release/FreeCADBase.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-		</Configuration>
-		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
+			OutputDirectory=".\../../lib"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -88,7 +31,6 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"/>
@@ -96,21 +38,21 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="../../bin/FreeCADBaseD.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/FreeCADBaseD.pdb"
-				ImportLibrary=".\Debug/FreeCADBaseD.lib"/>
+				ProgramDatabaseFile=".\../../lib/FreeCADBaseD.pdb"
+				ImportLibrary=".\../../lib/FreeCADBaseD.lib"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/FreeCADBase.tlb"/>
+				TypeLibraryName=".\../../lib/FreeCADBase.tlb"
+				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -124,129 +66,463 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\../../lib"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="_USRDLL;FCBase"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="PreCompiled.h"
+				PrecompiledHeaderFile=".\Release/FreeCADBase.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="../../bin/FreeCADBase.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				ProgramDatabaseFile=".\../../lib/FreeCADBase.pdb"
+				ImportLibrary=".\../../lib/FreeCADBase.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../../lib/FreeCADBase.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<File
-			RelativePath=".\Console.cpp">
-		</File>
-		<File
-			RelativePath=".\Console.h">
-		</File>
-		<File
-			RelativePath=".\DllMain.cpp">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
-			</FileConfiguration>
+			RelativePath="Console.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Exception.cpp">
-		</File>
-		<File
-			RelativePath=".\Exception.h">
-		</File>
-		<File
-			RelativePath=".\Factory.cpp">
-		</File>
-		<File
-			RelativePath=".\Factory.h">
-		</File>
-		<File
-			RelativePath=".\FileTemplate.cpp">
-		</File>
-		<File
-			RelativePath=".\FileTemplate.h">
-		</File>
-		<File
-			RelativePath=".\Handle.cpp">
-		</File>
-		<File
-			RelativePath=".\Handle.h">
-		</File>
-		<File
-			RelativePath=".\Interpreter.cpp">
-		</File>
-		<File
-			RelativePath=".\Interpreter.h">
-		</File>
-		<File
-			RelativePath=".\Libs.cpp">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Console.h">
+		</File>
+		<File
+			RelativePath="DllMain.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Observer.cpp">
-		</File>
-		<File
-			RelativePath=".\Observer.h">
-		</File>
-		<File
-			RelativePath=".\Parameter.cpp">
-		</File>
-		<File
-			RelativePath=".\Parameter.h">
-		</File>
-		<File
-			RelativePath=".\PreCompiled.cpp">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Documentation.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Documentation.h">
+		</File>
+		<File
+			RelativePath="Doxygen.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="EnvMacros.h">
+		</File>
+		<File
+			RelativePath="Exception.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Exception.h">
+		</File>
+		<File
+			RelativePath="Factory.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Factory.h">
+		</File>
+		<File
+			RelativePath="FileTemplate.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FileTemplate.h">
+		</File>
+		<File
+			RelativePath="Handle.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Handle.h">
+		</File>
+		<File
+			RelativePath="Interpreter.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Interpreter.h">
+		</File>
+		<File
+			RelativePath="Libs.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Observer.h">
+		</File>
+		<File
+			RelativePath="Parameter.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Parameter.h">
+		</File>
+		<File
+			RelativePath="ParameterPy.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="PreCompiled.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|Win32">
+				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"
 					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\PreCompiled.h">
+			RelativePath="PreCompiled.h">
 		</File>
 		<File
-			RelativePath=".\PyExport.cpp">
-		</File>
-		<File
-			RelativePath=".\PyExport.h">
-		</File>
-		<File
-			RelativePath=".\PyTools.c">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
-			</FileConfiguration>
+			RelativePath="Process.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Process.h">
+		</File>
+		<File
+			RelativePath="PyExport.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="PyExport.h">
+		</File>
+		<File
+			RelativePath="PyExportImp.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="PyExportImp.h">
+		</File>
+		<File
+			RelativePath="PyTools.c">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\PyTools.h">
+			RelativePath="PyTools.h">
+		</File>
+		<File
+			RelativePath="Sequencer.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Sequencer.h">
 		</File>
 	</Files>
 	<Globals>

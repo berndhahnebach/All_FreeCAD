@@ -45,12 +45,12 @@
 
 inline void EnvPrint(const char* sVar, const char* sVal)
 {
-	//std::cout << sVar << "=" << sVal  << std::endl;
+	std::cout << sVar << "=" << sVal  << std::endl;
 }
 
 inline void EnvPrint(const char* sMsg)
 {
-	//std::cout << sMsg << std::endl;
+	std::cout << sMsg << std::endl;
 }
 
 inline void SetEnvironment(const char* sVar, const char* sVal)
@@ -62,6 +62,7 @@ inline void SetEnvironment(const char* sVar, const char* sVal)
 	env += "=";
 	env += sVal;
 	putenv (env.c_str());
+	SetEnvironmentVariable(sVar,sVal);
 #endif
 }
 

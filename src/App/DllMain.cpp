@@ -57,7 +57,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 {
     switch( ul_reason_for_call ) {
     case DLL_PROCESS_ATTACH:
-//    case DLL_THREAD_ATTACH:
+    //case DLL_THREAD_ATTACH:
 		// set the resource env variables
 		
 		EnvPrint("App ==============================================");
@@ -80,6 +80,11 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 
 		SetPluginDefaults(cHomePath.c_str());
 		
+		char sBuf[255];
+		GetEnvironmentVariable("PYTHONPATH",sBuf,255);
+		std::cout << "Python-Pfad" << sBuf << std::endl;
+
+
 		break;
 
     //case DLL_THREAD_ATTACH:

@@ -56,20 +56,17 @@
 #include <vector>
 
 
-#ifdef XERCES_HAS_CPP_NAMESPACE
-#ifdef FC_OS_LINUX
-//	using namespace xercesc_2_3;
-  XERCES_CPP_NAMESPACE_USE
-#endif
-	using namespace xercesc;
-	namespace xercesc_2_3{
-#endif
+
+	namespace xercesc{
 		class DOMNode;
 		class DOMElement;
 		class DOMDocument;
-#ifdef XERCES_HAS_CPP_NAMESPACE
 	}
-#endif
+
+
+	
+
+
 
 
 class FCParameterManager;
@@ -199,13 +196,13 @@ public:
 
 protected:
 	/// constructor is protected (handle concept)
-	FCParameterGrp(DOMElement *GroupNode=0L,const char* sName=0L);
+	FCParameterGrp(xercesc::DOMElement *GroupNode=0L,const char* sName=0L);
 	/// destructor is protected (handle concept)
 	~FCParameterGrp();
 	/// helper function for GetGroup
 	FCHandle<FCParameterGrp> _GetGroup(const char* Name);
 
-	DOMElement *FindNextElement(DOMNode *Prev, const char* Type);
+	xercesc::DOMElement *FindNextElement(xercesc::DOMNode *Prev, const char* Type);
 
 	/** Find an element specified by Type and Name
 	 *  Search in the parent element Start for the first occourrence of an 
@@ -213,18 +210,18 @@ protected:
 	 *  the pointer to that element, otherwise NULL
 	 *  If the names not given he returns the first occourence fo Type.
 	 */
-	DOMElement *FindElement(DOMElement *Start, const char* Type, const char* Name=0L);
+	xercesc::DOMElement *FindElement(xercesc::DOMElement *Start, const char* Type, const char* Name=0L);
 
 	/** Find an element specified by Type and Name or create it if not found
 	 *  Search in the parent element Start for the first occourrence of an 
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
-	DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name);
+	xercesc::DOMElement *FCParameterGrp::FindOrCreateElement(xercesc::DOMElement *Start, const char* Type, const char* Name);
 
 
 	/// DOM Node of the Base node of this group
-	DOMElement *_pGroupNode;
+	xercesc::DOMElement *_pGroupNode;
 	/// the own name
 	std::string _cName;
 	/// map of already exported groups
@@ -257,7 +254,7 @@ public:
 
 private:
 
-	DOMDocument   *_pDocument;
+xercesc::DOMDocument   *_pDocument;
 
 	bool          gDoNamespaces         ;
 	bool          gDoSchema             ;

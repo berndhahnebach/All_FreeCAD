@@ -48,7 +48,7 @@
  *  FCHandled! 
  */
 template <class HandledType>
-class BaseExport FCHandle
+class FCHandle
 {
 public:
 	//**************************************************************************

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="FreeCADMainCmd"
 	SccProjectName=""
 	SccLocalPath="">
@@ -10,63 +10,6 @@
 			Name="Win32"/>
 	</Platforms>
 	<Configurations>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\../../bin"
-			IntermediateDirectory=".\ReleaseCmd"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
-				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG,_CONSOLE"
-				StringPooling="TRUE"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\ReleaseCmd/FreeCADMainCmd.pch"
-				AssemblerListingLocation=".\ReleaseCmd/"
-				ObjectFile=".\ReleaseCmd/"
-				ProgramDataBaseFileName=".\ReleaseCmd/"
-				BrowseInformation="1"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="..\..\bin\FreeCADCmd.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\../../bin/FreeCADCmd.pdb"
-				SubSystem="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/FreeCADMainCmd.tlb"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\../../bin"
@@ -78,16 +21,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="_CONSOLE,FC_DEBUG"
+				PreprocessorDefinitions="_CONSOLE;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\DebugCmd/FreeCADMainCmd.pch"
 				AssemblerListingLocation=".\DebugCmd/"
 				ObjectFile=".\DebugCmd/"
 				ProgramDataBaseFileName=".\DebugCmd/"
-				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"/>
@@ -95,21 +36,21 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="..\..\bin\FreeCADCmdD.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\../../bin/FreeCADCmdD.pdb"
-				SubSystem="1"/>
+				ProgramDatabaseFile="../../lib/FreeCADCmdD.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/FreeCADMainCmd.tlb"/>
+				TypeLibraryName=".\../../bin/FreeCADMainCmd.tlb"
+				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -123,143 +64,96 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\../../bin"
+			IntermediateDirectory=".\ReleaseCmd"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OptimizeForProcessor="2"
+				PreprocessorDefinitions="NDEBUG;_CONSOLE"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=".\ReleaseCmd/FreeCADMainCmd.pch"
+				AssemblerListingLocation=".\ReleaseCmd/"
+				ObjectFile=".\ReleaseCmd/"
+				ProgramDataBaseFileName=".\ReleaseCmd/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="..\..\bin\FreeCADCmd.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				ProgramDatabaseFile="../../lib/FreeCADCmd.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../../bin/FreeCADMainCmd.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<File
-			RelativePath=".\FreeCADInit.py">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building InitScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
-"
-					Outputs="InitScript.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building InitScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
-"
-					Outputs="InitScript.h"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\FreeCADInstall.py">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building InstallScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h
-"
-					Outputs="InstallScript.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building InstallScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h
-"
-					Outputs="InstallScript.h"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\FreeCADStartup.py">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building StartupScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADStartup.py StartupScript.h
-"
-					Outputs="StartupScript.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building StartupScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADStartup.py StartupScript.h
-"
-					Outputs="StartupScript.h"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\FreeCADTest.py">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building TestScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
-"
-					Outputs="TestScript.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building TestScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
-"
-					Outputs="TestScript.h"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\FreeCADTestEnv.py">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building TestEnvScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADTestEnv.py TestEnvScript.h
-"
-					Outputs="TestEnvScript.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building TestEnvScript.h"
-					CommandLine="python ..\Tools\PythonToCPP.py FreeCADTestEnv.py TestEnvScript.h
-"
-					Outputs="TestEnvScript.h"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Libs.cpp">
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
-			</FileConfiguration>
+			RelativePath="MainCmd.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
+					Optimization="0"
+					PreprocessorDefinitions=""
+					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Main.cpp">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="0"/>
+					Optimization="2"
+					PreprocessorDefinitions=""/>
 			</FileConfiguration>
 		</File>
 	</Files>
