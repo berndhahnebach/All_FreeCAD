@@ -1308,33 +1308,14 @@ void ApplicationWindow::dropEvent ( QDropEvent      * e )
   {
     QStringList fn;
     QUriDrag::decodeLocalFiles(e, fn);
-    QString file = fn.first();
-    QFileInfo info(file);
-    if ( info.exists() && info.isFile() )
-    {
-      std::string Com;
-      std::string Ending = info.extension(false).latin1();
 
+    for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it ) {
 
-      if(EndingMap.find(Ending) == EndingMap.end())
+      QFileInfo info(*it);
+      if ( info.exists() && info.isFile() )
       {
-        Com += "App.Open(";
-        Com += info.absFilePath().latin1();
-        Com += ")";
-        Base::Console().Log("OpenCMD: App.Open(\"%s\")",info.absFilePath().latin1());
-      }else{
-        Com += "import ";
-        Com += EndingMap.find(Ending)->second.c_str();
-        Com += "\n";
-        Com += EndingMap.find(Ending)->second.c_str();
-        Com += ".open(\"";
-        Com += info.absFilePath().latin1();
-        Com += "\")";
-        Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),info.absFilePath().latin1());
-      }    
-
-      macroManager()->addLine(MacroManager::Base,Com.c_str());
-      Interpreter().runString(Com.c_str());
+          open(info.absFilePath().latin1());
+      }
     }
   }else
     ApplicationWindow::dropEvent(e);

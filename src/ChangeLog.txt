@@ -557,3 +557,6 @@ Version: V0.1B117 Date: Sun Mar 20 14:06:55 2005 +++++++++++++++++++++++++++++++
 + Viewprovider for meshes added
 + Integration of latest Image module source
 + RFE 1159671 implemented (elements in alphabetic order)
++ Finishing drag&drop multible files
++ Finishing open from command line and droping on Programm icon
++ solving load dependand modules

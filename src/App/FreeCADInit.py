@@ -62,6 +62,7 @@ def InitApplications():
 	Log("   Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
+	PathExtension = ""
 	#print ModDirs
 	Log('   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
@@ -70,12 +71,16 @@ def InitApplications():
 			Log('      Init: ' + Dir + '... ')
 			ModGrp = ModPar.GetGroup(Dir)
 			sys.path.append( os.path.join(ModDir,Dir) )
+			PathExtension += ";" + os.path.join(ModDir,Dir)
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if ( os.path.exists(InstallFile) ):
 				execfile(InstallFile)
 				Log('done\n')
 			else:
 				Wrn("Init.py not found! "+Dir+" not initialized!\n")
+	os.environ["PATH"] += PathExtension
+	Log("PATH after addition: " + os.environ["PATH"] + "\n")
+	Log("path extension: " + PathExtension + "\n")
 
 #			else:
 #				FreeCAD.PrintMessage('new! install it...\n')

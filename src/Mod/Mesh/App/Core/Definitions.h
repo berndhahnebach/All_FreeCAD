@@ -24,7 +24,7 @@
 #ifndef __MESH_DEFINITIONS_HXX__
 #define __MESH_DEFINITIONS_HXX__
 
-#include "MeshConfig.h"
+//#include "MeshConfig.h"
 
 // default values
 #define MESH_MIN_PT_DIST           1.0e-5f

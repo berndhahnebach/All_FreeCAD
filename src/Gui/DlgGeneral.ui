@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>405</height>
+            <height>435</height>
         </rect>
     </property>
     <property name="caption">
@@ -32,7 +32,7 @@
             <property name="title">
                 <string>General</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -42,12 +42,12 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QGroupBox" row="4" column="0">
+                <widget class="QGroupBox">
                     <property name="name">
-                        <cstring>GroupBox10</cstring>
+                        <cstring>GroupBox7</cstring>
                     </property>
                     <property name="title">
-                        <string></string>
+                        <string>Language</string>
                     </property>
                     <grid>
                         <property name="name">
@@ -59,24 +59,49 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="Gui::PrefCheckBox" row="1" column="0">
-                            <property name="name">
-                                <cstring>SplashScreen</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Enable splashscreen at startup</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>AllowSplasher</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>General</cstring>
-                            </property>
-                        </widget>
                         <widget class="QLayoutWidget" row="0" column="0">
+                            <property name="name">
+                                <cstring>layout4</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel1_4</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Change language:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <property name="name">
+                                        <cstring>Languages</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>GroupBox3</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Main window</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>11</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLayoutWidget">
                             <property name="name">
                                 <cstring>layout2</cstring>
                             </property>
@@ -113,6 +138,9 @@
                                     <property name="name">
                                         <cstring>RecentFiles</cstring>
                                     </property>
+                                    <property name="maxValue">
+                                        <number>20</number>
+                                    </property>
                                     <property name="minValue">
                                         <number>0</number>
                                     </property>
@@ -131,9 +159,85 @@
                                 </widget>
                             </hbox>
                         </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout3</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>TextLabel1</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Window style:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <property name="name">
+                                        <cstring>WindowStyle</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="Gui::PrefCheckBox">
+                            <property name="name">
+                                <cstring>UsesBigPixmaps</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
+                            </property>
+                            <property name="text">
+                                <string>Use big pixmaps</string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>BigPixmaps</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>General</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>GroupBox4</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Drag and drop</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>11</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="Gui::PrefCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>AllowDragMenu</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Allow drag&amp;&amp;drop of menu items</string>
+                            </property>
+                            <property name="accel">
+                                <string></string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>AllowDrag</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>General</cstring>
+                            </property>
+                        </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox" row="3" column="0">
+                <widget class="QGroupBox">
                     <property name="name">
                         <cstring>GroupBox9</cstring>
                     </property>
@@ -218,14 +322,14 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox" row="2" column="0">
+                <widget class="QGroupBox">
                     <property name="name">
-                        <cstring>GroupBox4</cstring>
+                        <cstring>GroupBox10</cstring>
                     </property>
                     <property name="title">
-                        <string>Drag and drop</string>
+                        <string></string>
                     </property>
-                    <grid>
+                    <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
@@ -235,62 +339,9 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="Gui::PrefCheckBox" row="0" column="0">
+                        <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>AllowDragMenu</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Allow drag&amp;&amp;drop of menu items</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>AllowDrag</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>General</cstring>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QGroupBox" row="1" column="0">
-                    <property name="name">
-                        <cstring>GroupBox3</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Main window</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="Gui::PrefCheckBox" row="0" column="0">
-                            <property name="name">
-                                <cstring>UsesBigPixmaps</cstring>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>TabFocus</enum>
-                            </property>
-                            <property name="text">
-                                <string>Use big pixmaps</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>BigPixmaps</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>General</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget" row="1" column="0">
-                            <property name="name">
-                                <cstring>layout3</cstring>
+                                <cstring>layout5</cstring>
                             </property>
                             <hbox>
                                 <property name="name">
@@ -298,69 +349,68 @@
                                 </property>
                                 <widget class="QLabel">
                                     <property name="name">
-                                        <cstring>TextLabel1</cstring>
+                                        <cstring>textLabel1</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Window style:</string>
+                                        <string>Auto load module after startup:</string>
                                     </property>
                                 </widget>
-                                <widget class="QComboBox">
+                                <widget class="Gui::PrefComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>Part design</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Import</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Raytracing</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>&lt;none&gt;</string>
+                                        </property>
+                                    </item>
                                     <property name="name">
-                                        <cstring>WindowStyle</cstring>
+                                        <cstring>AutoloadModuleCombo</cstring>
+                                    </property>
+                                    <property name="prefEntry" stdset="0">
+                                        <cstring>AutoloadModule</cstring>
+                                    </property>
+                                    <property name="prefPath" stdset="0">
+                                        <cstring>General</cstring>
                                     </property>
                                 </widget>
                             </hbox>
                         </widget>
-                    </grid>
-                </widget>
-                <widget class="QGroupBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>GroupBox7</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Language</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLayoutWidget" row="0" column="0">
+                        <widget class="Gui::PrefCheckBox">
                             <property name="name">
-                                <cstring>layout4</cstring>
+                                <cstring>SplashScreen</cstring>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>TextLabel1_4</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Change language:</string>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>Languages</cstring>
-                                    </property>
-                                </widget>
-                            </hbox>
+                            <property name="text">
+                                <string>Enable splashscreen at startup</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>AllowSplasher</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>General</cstring>
+                            </property>
                         </widget>
-                    </grid>
+                    </vbox>
                 </widget>
-            </grid>
+            </vbox>
         </widget>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <tabstops>
     <tabstop>Languages</tabstop>
     <tabstop>UsesBigPixmaps</tabstop>
@@ -377,6 +427,7 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

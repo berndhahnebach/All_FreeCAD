@@ -90,6 +90,7 @@ void DlgGeneralImp::insertLanguages()
 
 void DlgGeneralImp::saveSettings()
 {
+  AutoloadModuleCombo->onSave();
   RecentFiles->onSave();
   SplashScreen->onSave();
   ShowCmdLine->onSave();
@@ -115,6 +116,7 @@ void DlgGeneralImp::saveSettings()
 
 void DlgGeneralImp::loadSettings()
 {
+  AutoloadModuleCombo->onRestore();
   RecentFiles->onRestore();
   SplashScreen->onRestore();
   ShowCmdLine->onRestore();

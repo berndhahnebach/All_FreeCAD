@@ -37,8 +37,6 @@ class ImportWorkbench ( Workbench ):
 		# load the module
 		try:
 			Log ('Loading ImportGui module')
-			import Part
-			import PartGui
 			import Import
 			import ImportGui
 		except:
