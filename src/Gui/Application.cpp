@@ -181,7 +181,8 @@ ApplicationWindow::ApplicationWindow()
 	
 	
 	// misc stuff
-    resize( 800, 600 );
+  LoadWindowSettings();
+  //  resize( 800, 600 );
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	//setUsesBigPixmaps (true);
 
@@ -226,6 +227,8 @@ ApplicationWindow::~ApplicationWindow()
     hMacro->SetInt("Accel", pScript->GetAccel());
     }
   }
+
+  SaveWindowSettings();
 }
 
 
@@ -850,6 +853,38 @@ void ApplicationWindow::UpdateCmdActivity()
 	}
 
 	_pcActivityTimer->start( 300, TRUE );	
+}
+
+void ApplicationWindow::LoadWindowSettings()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  int w = hGrp->GetInt("Width", 800);
+  int h = hGrp->GetInt("Height", 600);
+  int x = hGrp->GetInt("PosX", pos().x());
+  int y = hGrp->GetInt("PosY", pos().y());
+  bool max = hGrp->GetBool("Maximized", false);
+  resize( w, h );
+  move(x, y);
+  if (max) showMaximized();
+	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
+	//setUsesBigPixmaps (true);
+}
+
+void ApplicationWindow::SaveWindowSettings()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  if (isMaximized())
+  {
+    hGrp->SetBool("Maximized", true);
+  }
+  else
+  {
+    hGrp->SetInt("Width", width());
+    hGrp->SetInt("Height", height());
+    hGrp->SetInt("PosX", pos().x());
+    hGrp->SetInt("PosY", pos().y());
+    hGrp->SetBool("Maximized", false);
+  }
 }
 
 

@@ -235,6 +235,10 @@ protected: // Protected methods
 	/// waiting cursor stuff 
 	void timerEvent( QTimerEvent * e){emit timeEvent();}
 
+  // windows stuff
+  void LoadWindowSettings();
+  void SaveWindowSettings();
+
 public slots:
 	/// this slot get frequently activatet and test the commands if they are still active
 	void UpdateCmdActivity();
