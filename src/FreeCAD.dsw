@@ -1,5 +1,5 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
-# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
 ###############################################################################
 
@@ -25,6 +25,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name AppImportGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppMeshGui
     End Project Dependency
 }}}
 
@@ -94,6 +97,48 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppMesh"=.\Mod\Mesh\App\AppMesh.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppMeshGui"=.\Mod\Mesh\Gui\AppMeshGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name AppMesh
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
     End Project Dependency
 }}}
 
