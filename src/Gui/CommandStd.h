@@ -53,6 +53,7 @@ DEF_STD_CMD(FCCmdRedo  ,"Std_Redo");
 DEF_STD_CMD(FCCmdCut   ,"Std_Cut");
 DEF_STD_CMD(FCCmdCopy  ,"Std_Copy");
 DEF_STD_CMD(FCCmdPaste ,"Std_Paste");
+DEF_STD_CMD(FCCmdAbout ,"Std_About");
 
 DEF_STD_CMD(FCCmdTest1		,"Std_Test1");
 DEF_STD_CMD(FCCmdTest2		,"Std_Test2");

@@ -123,8 +123,9 @@ Handle_FCApplicationOCC::~Handle_FCApplicationOCC() {}
 //**************************************************************************
 // Construction and destruction
 
-FCApplication::FCApplication(FCParameterManager *pcParamMngr)
-	:_pcParamMngr(pcParamMngr)
+FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr)
+	:_pcSysParamMngr(pcSysParamMngr),
+	 _pcUserParamMngr(pcUserParamMngr)
 {
 	_hApp = new FCApplicationOCC;
 	// seting up Python binding 
@@ -340,9 +341,9 @@ PYFUNCIMP_S(FCApplication,sGetParam)
     if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	if(pstr) // if parameter give deticated group
-		return new FCPyParameterGrp(GetApplication().GetParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
+		return new FCPyParameterGrp(GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
 	else
-		return new FCPyParameterGrp(GetApplication().GetParameter().GetGroup("BaseApp"));  
+		return new FCPyParameterGrp(GetApplication().GetSystemParameter().GetGroup("BaseApp"));  
 }
 
 PYFUNCIMP_S(FCApplication,sGetVersion)

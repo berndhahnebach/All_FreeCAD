@@ -50,7 +50,13 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 	// seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
 	TCollection_ExtendedString a3DName("Visu3D");
-	_hViewer = Viewer(getenv("DISPLAY"),a3DName.ToExtString(),"",1000.0,V3d_XposYnegZpos,Standard_True,Standard_True);
+	_hViewer = Viewer(getenv("DISPLAY"),
+		              a3DName.ToExtString(),
+					  "",
+					  1000.0,
+					  V3d_XposYnegZpos,
+					  Standard_True,
+					  Standard_True);
 	TPrsStd_AISViewer::New(hcOcafDoc->Main(),_hViewer);
 
     _hViewer->Init();

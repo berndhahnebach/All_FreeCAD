@@ -47,7 +47,7 @@ FCWindow::FCWindow(const char *name)
 	//printf("Instanceate:%s\n",name);
 
 	// geting the group for the window
-	h = GetApplication().GetParameter().GetGroup("BaseApp");
+	h = GetApplication().GetSystemParameter().GetGroup("BaseApp");
 	h = h->GetGroup("Windows");
 	_handle = h->GetGroup(name);
 
@@ -70,7 +70,7 @@ FCParameterGrp::handle  FCWindow::GetWindowParameter(void)
 
 FCParameterGrp::handle  FCWindow::GetParameter(void)
 {
-	return GetApplication().GetParameter().GetGroup("BaseApp");
+	return GetApplication().GetUserParameter().GetGroup("BaseApp");
 }
 
 

@@ -76,6 +76,9 @@ public:
 	/// Delete (or only remove) a named Dock Window
 	void          DelDockWindow(const char* name, bool bOnlyRemove = false);
 
+  // set text to the pane
+  void SetPaneText(int i, QString text);
+
 
 
 protected:
@@ -116,14 +119,15 @@ private:
 	QPopupMenu*		_pcPopup;
 	FCUndoRedoDlg*	_pclUndoRedoWidget;
 	QComboBox *		_pcWorkbenchCombo;
+  QLabel *_pclSizeLabel, *_pclActionLabel;
 
+  // waiting cursor stuff 
   protected:
     void timerEvent( QTimerEvent * e)
     {
       emit timeEvent();
     }
     
-    FCAutoWaitCursor *waitCursor;
   signals:
     void timeEvent();
 };
@@ -162,7 +166,49 @@ class GuiExport FCAutoWaitCursor : public QObject, public QThread
   Q_OBJECT
 
   public:
+	static void Destruct(void)
+  {
+  	// not initialized or double destruct!
+    assert(_pclSingleton);
+	  delete _pclSingleton;
+  }
 
+	static FCAutoWaitCursor &Instance(void)
+  {
+	  // not initialized?
+	  if(!_pclSingleton)
+	  {
+#ifdef WNT
+		  _pclSingleton = new FCAutoWaitCursor(GetCurrentThreadId(), 100);
+#else
+		  _pclSingleton = new FCAutoWaitCursor(100);
+#endif
+	  }
+
+    return *_pclSingleton;
+  }
+
+  // getter/setter
+  int GetInterval()
+  {
+    return iInterval;
+  }
+
+  void SetInterval(int i)
+  {
+    iInterval = i;
+  }
+
+  void SetWaitCursor()
+  {
+#ifdef WNT // win32 api functions
+		AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
+		SetCursor(LoadCursor(NULL, IDC_WAIT));
+#endif
+  }
+
+  // Singleton
+  private:
 #ifdef WNT // windows os
     FCAutoWaitCursor(DWORD id, int i)
 		:main_threadid(id), iInterval(i)
@@ -183,6 +229,9 @@ class GuiExport FCAutoWaitCursor : public QObject, public QThread
     }
 #endif
 
+    static FCAutoWaitCursor* _pclSingleton;
+
+  protected:
     void run()
     {
       while (true)
@@ -202,10 +251,7 @@ class GuiExport FCAutoWaitCursor : public QObject, public QThread
           // load the waiting cursor only once
           if (bOverride == false)
           {
-#ifdef WNT // win32 api functions
-			      AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
-			      SetCursor(LoadCursor(NULL, IDC_WAIT));
-#endif
+            SetWaitCursor();
             bOverride = true;
           }
         }

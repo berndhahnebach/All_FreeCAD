@@ -127,7 +127,8 @@ public:
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
 
-	FCParameterManager & GetParameter(void) {return *_pcParamMngr;}
+	FCParameterManager & GetSystemParameter(void) {return *_pcSysParamMngr;}
+	FCParameterManager & GetUserParameter(void) {return *_pcUserParamMngr;}
 	
 	/// Major version nummber
 	const static unsigned int VersionMajor;
@@ -166,7 +167,7 @@ public:
 	static FCApplication *_pcSingelton;
 
 	/// Constructor
-	FCApplication(FCParameterManager *pcParamMngr);
+	FCApplication(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr);
 	/// Destructor
 	~FCApplication();
 
@@ -190,7 +191,8 @@ private:
 	/// The container of all attached Obervers
 	FCset<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
-	FCParameterManager *_pcParamMngr;
+	FCParameterManager *_pcSysParamMngr;
+	FCParameterManager *_pcUserParamMngr;
 };
 
 /// Singelton getter of the Applicaton

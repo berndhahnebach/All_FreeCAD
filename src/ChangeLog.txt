@@ -22,3 +22,11 @@ Version: V0.1B10 Date: Wed Dec 18 21:44:21 2002 +++++++++++++++++++++++++++++++
 
 Version: V0.1B11 Date: Fri Dec 20 10:44:09 2002 +++++++++++++++++++++++++++++++
 + First simple Implementation of Tree Raw
+
+Version: V0.1B12 Date: Thu Dec 26 14:54:54 2002 +++++++++++++++++++++++++++++++
++ New Splasher from Werner
++ clean up main (-v option)
++ User Parameter
++ New Background color
++ Werner get the automatic wait cursor to work
++ Dimension field in the status bar by Werner

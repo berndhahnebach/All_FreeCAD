@@ -41,6 +41,7 @@
 #define  FCendl                 FCSTD::endl
 #define  FCofstream             FCSTD::ofstream
 #define  FCstrstream            FCSTD::strstream
+#define  FCmake_pair            FCSTD::make_pair
 
 //**************************************************************************
 // Open CasCade

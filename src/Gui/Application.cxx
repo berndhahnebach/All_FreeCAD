@@ -18,6 +18,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "CommandStd.h"
+#include "Splashscreen.h"
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
@@ -38,6 +39,7 @@ static QWorkspace* stWs;
 
 
 ApplicationWindow* ApplicationWindow::Instance = 0L;
+FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
 
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
@@ -45,12 +47,9 @@ ApplicationWindow::ApplicationWindow()
 {
   // start thread which observes the application and 
   // sets/unsets the waiting cursor if necessary
-  int iInterval = 50;
-  startTimer(iInterval);
-#ifdef WNT
-  waitCursor = new FCAutoWaitCursor(GetCurrentThreadId(), 2*iInterval);
+  FCAutoWaitCursor* waitCursor = &FCAutoWaitCursor::Instance();
   connect(this, SIGNAL(timeEvent()), waitCursor, SLOT(timeEvent()));
-#endif
+  startTimer(waitCursor->GetInterval() / 2);
 
 	// global access 
 	Instance = this;
@@ -62,6 +61,14 @@ ApplicationWindow::ApplicationWindow()
 
 	CreateTestOperations();
 	//createCasCadeOperations();
+
+  // labels
+  _pclActionLabel = new QLabel("Ready", statusBar(), "Action");
+  _pclActionLabel->setFixedWidth(120);
+  statusBar()->addWidget(_pclActionLabel,0,true);
+  _pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
+  _pclSizeLabel->setFixedWidth(120);
+  statusBar()->addWidget(_pclSizeLabel,0,true);
 
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
 	GetCmdLine().SetParent(statusBar());
@@ -191,6 +198,14 @@ void ApplicationWindow::DelDockWindow(const char* name, bool bOnlyRemove)
 	}
 }
 
+// set text to the pane
+void ApplicationWindow::SetPaneText(int i, QString text)
+{
+  if (i==1)
+    _pclActionLabel->setText(text);
+  else if (i==2)
+    _pclSizeLabel->setText(text);
+}
 
 
 
@@ -225,6 +240,7 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddCommand(new FCCmdTilePra());
 	_cCommandManager.AddCommand(new FCCmdTest1());
 	_cCommandManager.AddCommand(new FCCmdTest2());
+	_cCommandManager.AddCommand(new FCCmdAbout());
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
@@ -294,6 +310,9 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Copy",_pcPopup);
 	_cCommandManager.AddTo("Std_Paste",_pcPopup);
 		
+  _pcPopup = new QPopupMenu( this );
+  menuBar()->insertItem( "?", _pcPopup );
+	_cCommandManager.AddTo("Std_About",_pcPopup);
 
 	setMenuForSDIModeSysButtons( menuBar());
 	 

@@ -459,6 +459,37 @@ SOURCE=.\PreCompiled.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Splashscreen.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Splashscreen.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Mocing $(InputPath)
+InputPath=.\Splashscreen.h
+
+"Splashscreen_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Splashscreen_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Mocing $(InputPath)
+InputPath=.\Splashscreen.h
+
+"Splashscreen_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Splashscreen_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\Themes.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
@@ -561,6 +592,14 @@ InputPath=.\View3D.h
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\Widgets.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Widgets.h
 # End Source File
 # Begin Source File
 

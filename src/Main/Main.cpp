@@ -57,9 +57,10 @@
 // FreeCAD Gui header
 
 #ifdef  _FC_GUI_ENABLED_
-#  include <qapplication.h>
-#  include "../Gui/Application.h"
+# include <qapplication.h>
+# include "../Gui/Application.h"
 #	include "../Gui/GuiConsole.h"
+# include "../Gui/Splashscreen.h"
 #  ifdef WNT
 #    pragma comment(lib,"qt-mt230nc.lib")
 #  endif 
@@ -77,49 +78,55 @@ const char sBanner[] = \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
 
-#ifndef __linux
-// scriptings
+// scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
 #include "TestScript.h"
 #include "TestEnvScript.h"
 #include "InstallScript.h"
-#else
-// this might be a cleaner approach? (Besides path to scripts)
-//const char FreeCADInit[]="execfile('./Main/FreeCADInit.py')";
-//const char FreeCADTest[]="execfile('./Main/FreeCADTest.py')";
-//const char FreeCADTestEnv[]="execfile('./Main/FreeCADTestEnv.py')";
-#endif
 
 #include <string>
 
-void PrintInitHelp(void);
 
-// globals
-FCParameterManager *pcGlobalParameter;
-
-// run control
+// run control default action
 #ifdef _FC_GUI_ENABLED_
 	int RunMode = 0;
 #else
 	int RunMode = 1;
 #endif
 
+// some globals set by the commandline options or Init function
 FCstring sFileName;
 const char*     sScriptName;
+/// set FreeCAD in the verbose mode
+bool bVerbose = false;
+/// The QT Application need to be set very early because of splasher
+QApplication* pcQApp = NULL;
+FCSplashScreen *splash = 0;
+/// pointer to the system parameter (loaded in Init())
+FCParameterManager *pcSystemParameter;
+/// pointer to the user parameter (loaded in Init())
+FCParameterManager *pcUserParameter;
+
 
 // forwards
 void Init(int argc, char ** argv );
+void Destruct(void);
 void ParsOptions(int argc, char ** argv);
 void CheckEnv(void);
+void PrintInitHelp(void);
 
 
 
 
-int main( int argc, char ** argv ) {
+int main( int argc, char ** argv ) 
+{
 
-	// Init phase ===========================================================
-	try{
-		// first check the environment variables
+  // Init phase ===========================================================
+#	ifndef _DEBUG
+	try
+	{
+#	endif
+    // first check the environment variables
 		CheckEnv();
 
 		// Ínitialization (phase 1)
@@ -128,8 +135,7 @@ int main( int argc, char ** argv ) {
 		// the FreeCAD Application
 
 		GetApplication();
-
-
+#	ifndef _DEBUG
 	}
 	// catch all OCC exceptions
 	catch(Standard_Failure e)
@@ -148,13 +154,13 @@ int main( int argc, char ** argv ) {
 		exit(20);
 	}
 	// catch XML exceptions
-    catch (XMLException& e)
-    {
+	catch (XMLException& e)
+	{
 		GetConsole().Error("Application init failed:");
 		GetConsole().Error(StrX(e.getMessage()).c_str());
 		PrintInitHelp();
 		exit(30);
-    }
+	}
 
 	// catch all the (nasty) rest
 	catch(...)
@@ -163,12 +169,16 @@ int main( int argc, char ** argv ) {
 		PrintInitHelp();
 		exit(40);
 	}
+#	endif
 
 
 	// Run phase ===========================================================
 
 	int ret;
-	try{
+#	ifndef _DEBUG
+	try
+	{
+#	endif
 		switch(RunMode)
 		{
 		case 0:{
@@ -176,8 +186,8 @@ int main( int argc, char ** argv ) {
 #			ifdef _FC_GUI_ENABLED_
 				// A new QApplication
 				GetConsole().Log("Creating GUI Application...\n");
-				QApplication* pcQApp = new QApplication ( argc, argv );
-
+				// if application not yet created
+				if (!pcQApp)  pcQApp = new QApplication ( argc, argv );
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
 				ApplicationWindow::Instance->setCaption( "FreeCAD" );
@@ -187,6 +197,13 @@ int main( int argc, char ** argv ) {
 				pcQApp->connect( pcQApp, SIGNAL(lastWindowClosed()), pcQApp, SLOT(quit()) );
 				// run the Application event loop
 				GetConsole().Log("Running event loop...\n");
+				if (splash)
+				{
+				  // wait a short moment
+				  QWaitCondition().wait(1000);
+				  // if splasher is still busy terminate it
+				  splash->bRun = false;
+				}
 				ret = pcQApp->exec();
 				GetConsole().Log("event loop left\n");
 				delete pcQApp;
@@ -213,6 +230,7 @@ int main( int argc, char ** argv ) {
 		default:
 			assert(0);
 		}
+#	ifndef _DEBUG
 	}
 	catch(Standard_Failure e)
 	{
@@ -232,45 +250,68 @@ int main( int argc, char ** argv ) {
 		GetConsole().Error("Running the application failed, because of a really nesty (unknown) error...\n\n");
 		exit(6);
 	}
-
+#	endif
 	// Destruction phase ===========================================================
+
 	GetConsole().Log("FreeCAD terminating...\n\n");
+#	ifndef _DEBUG
+	try
+	{
+#	endif
+		// cleans up 
+		Destruct();
 
-	pcGlobalParameter->SaveDocument("AppParam.FCParam");
-	delete pcGlobalParameter;
-
+#	ifndef _DEBUG
+	}
+	catch(...)
+	{
+		GetConsole().Error("Destruction of the application failed, because of a really nesty (unknown) error...\n\n");
+		exit(6);
+	}
+#	endif
 	GetConsole().Log("FreeCAD completely terminated\n\n");
 
 	return 0;
 }
 
-
-
-#ifdef FREECADMAINPY
-BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved){return TRUE;}
-
-extern "C" {
-#ifdef _DEBUG
-void __declspec(dllexport) initFreeCADDCmdPy() {
-#else
-void __declspec(dllexport) initFreeCADCmdPy() {
-#endif
-
-	GetApplication();
-	return;
+/** The Destruct function
+ * close and destruct everything created during Init()
+ */
+void Destruct(void)
+{
+	pcSystemParameter->SaveDocument("AppParam.FCParam");
+	pcUserParameter->SaveDocument("FCUserJR.FCParam");
+	delete pcSystemParameter;
+	delete pcUserParameter;
 }
-}
-#endif
 
-//************************************************************************
-// Init()
-// Initialize all the stuff and running the init script:
-// - Launching the FCInterpreter (starting python)
-// - Launching the FCConsole
-// - Call the Init script ("(FreeCADDir)/scripts/FreeCADInit.py")
-//************************************************************************
+
+/** The Init function
+ * Initialize all the stuff and running the init script:
+ * - parsing the options
+ * - starting splasher
+ * - Launching the FCInterpreter (starting python)
+ * - Launching the FCConsole
+ * - Call the Init script ("(FreeCADDir)/scripts/FreeCADInit.py")
+ **/
 void Init(int argc, char ** argv )
 {
+
+	// Pars the options which have impact to the init process
+	ParsOptions(argc,argv);
+
+	// Splasher phase ===========================================================
+	#	ifdef _FC_GUI_ENABLED_
+	// startup splasher
+	// when runnig in verbose mode no splasher
+	if ( ! bVerbose && RunMode == 0) 
+	{
+		pcQApp = new QApplication ( argc, argv );
+	  splash = new FCSplashScreen(QApplication::desktop());
+	  pcQApp->setMainWidget(splash);
+	}
+	# endif
+
 	// init python
 	GetInterpreter();
 	// std console (Also init the python bindings)
@@ -282,12 +323,15 @@ void Init(int argc, char ** argv )
 #	endif
 
 	// Banner
-	GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel\n\n%s",sBanner);
+	if(!bVerbose)
+		GetConsole().Message("FreeCAD (c) 2001 Juergen Riegel\n\n%s",sBanner);
 
-	pcGlobalParameter = new FCParameterManager();
+	pcSystemParameter = new FCParameterManager();
+	pcUserParameter = new FCParameterManager();
 
 	//pcGlobalParameter->CreateDocument();
-	if(pcGlobalParameter->LoadOrCreateDocument("AppParam.FCParam"))
+
+	if(pcSystemParameter->LoadOrCreateDocument("AppParam.FCParam") && !bVerbose)
 	{
 		GetConsole().Warning("   Parameter not existing, write initial one\n");
 		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
@@ -296,35 +340,15 @@ void Init(int argc, char ** argv )
 		                     "   install all present modules. \n");
 
 	}
-/*
-	pcGlobalParameter->GetGroup("BaseApp");
-	FCHandle<FCParametrGrp> h = pcGlobalParameter->GetGroup("BaseApp");
-	h = h->GetGroup("Windows");
 
-	h->SetBool("Works",true);
-	bool bTest = h->GetBool("Works");
+	if(pcUserParameter->LoadOrCreateDocument("FCUserJR.FCParam") && !bVerbose)
+	{
+		GetConsole().Warning("   User settings not existing, write initial one\n");
+		GetConsole().Message("   This Warning means normaly you running FreeCAD the first time\n"
+		                     "   or your configuration was deleted or moved. The system defaults\n"
+		                     "   will be reestablished for you.\n");
 
-	h->SetInt("Works",1000);
-	long lTest = h->GetInt("Works");
-
-	h->SetFloat("Works",123.23);
-	double test = h->GetFloat("Works");
-
-	h->SetASCII("Works","hello");
-	char cBuf[256];
-	h->GetASCII("Works",cBuf,255);
-	FCstring sTrest = h->GetASCII("Works");
-	
-	
-	pcGlobalParameter->SaveDocument("AppParam.FCParam");
-	//pcGlobalParameter->CreateDocument();
-
-
-
-	exit (0);
-
-*/
-	ParsOptions(argc,argv);
+	}
 
 	
 	// Start the python interpreter
@@ -336,7 +360,7 @@ void Init(int argc, char ** argv )
 	rcInterperter.Launch(FreeCADInit);
 
 	// creating the application 
-	FCApplication::_pcSingelton = new FCApplication(pcGlobalParameter);
+	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter);
 
 }
 
@@ -502,6 +526,10 @@ void ParsOptions(int argc, char ** argv)
 				RunMode = 3;
 				sScriptName = FreeCADInstall;
 				break;  
+			case 'v': 
+			case 'V':  
+				bVerbose = true;
+				break;  
 			case '?': 
 			case 'h': 
 			case 'H': 
@@ -533,4 +561,20 @@ void PrintInitHelp(void)
 		 << "  Good luck ;-)" << endl << endl;
 }
 
+
+#ifdef FREECADMAINPY
+BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved){return TRUE;}
+
+extern "C" {
+#ifdef _DEBUG
+void __declspec(dllexport) initFreeCADDCmdPy() {
+#else
+void __declspec(dllexport) initFreeCADCmdPy() {
+#endif
+
+	GetApplication();
+	return;
+}
+}
+#endif
 

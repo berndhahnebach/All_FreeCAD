@@ -26,6 +26,7 @@
 #	include <qpopupmenu.h>
 #endif
 
+#include "Application.h"
 #include "View3D.h"
 #include "MouseModel.h"
 #include "Document.h"
@@ -206,6 +207,13 @@ bool View3D::InitCasCadeView(void)
 	_hView->SetDegenerateModeOn();
 	_hView->MustBeResized();
 	_hView->Update();
+	_hView->SetAntialiasingOn();
+	_hView->SetBackgroundColor(Quantity_NOC_DARKKHAKI);
+_hView->SetBackgroundColor(Quantity_NOC_DARKOLIVEGREEN);
+//	_hView->SetBackgroundColor(Quantity_NOC_DARKORCHID);
+//	_hView->SetBackgroundColor(Quantity_NOC_DARKORCHID);
+//	_hView->SetBackgroundColor(Quantity_NOC_DARKSEAGREEN);
+
 
 	// pushing the standard mouse model
 	PushMouseModel(new FCMouseModelStd);
@@ -221,6 +229,15 @@ void View3D::mouseReleaseEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mouse
 void View3D::mouseDoubleClickEvent	( QMouseEvent *cEvent){_cMouseStack.top()->mouseDoubleClickEvent( cEvent);}
 void View3D::keyPressEvent			( QKeyEvent	  *cEvent){_cMouseStack.top()->keyPressEvent( cEvent);}
 void View3D::keyReleaseEvent		( QKeyEvent   *cEvent){_cMouseStack.top()->keyReleaseEvent( cEvent);}
+void View3D::focusInEvent ( QFocusEvent * cEvent)
+{
+  PrintDimensions();
+}
+
+void View3D::hideEvent ( QHideEvent * cEvent )
+{
+  ApplicationWindow::getApplication()->SetPaneText(2, QString("Dimension"));
+}
 void View3D::wheelEvent             ( QWheelEvent *cEvent){_cMouseStack.top()->wheelEvent( cEvent);}
 void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 { 
@@ -245,6 +262,81 @@ void View3D::ShowPopup(int x, int y)
 	pcMenu->insertItem("Std Views",pcSubMenu);
 	
 	pcMenu->exec(QCursor::pos());
+}
+
+void View3D::PrintDimensions (void) const
+{
+  Quantity_Length fWidth, fHeight;
+  _hView->Size(fWidth, fHeight);
+  
+  float fLog = float(log10(fWidth)), fFac;
+  int   nExp = int(fLog);
+  char  szUnit[20];
+  
+  if (nExp >= 6)
+  {
+    fFac = 1.0e+6f;
+    strcpy(szUnit, "km");
+  }
+  else if (nExp >= 3)
+  {
+    fFac = 1.0e+3f;
+    strcpy(szUnit, "m");
+  }
+  else if ((nExp >= 0) && (fLog > 0.0f))
+  {
+    fFac = 1.0e+0f;
+    strcpy(szUnit, "mm");
+  }
+  else if (nExp >= -3)
+  {
+    fFac = 1.0e-3f;
+    strcpy(szUnit, "um");
+  }
+  else 
+  {
+    fFac = 1.0e-6f;
+    strcpy(szUnit, "nm");
+  }
+  
+  char szOut[100];
+  sprintf(szOut, "%.2f x %.2f %s", fWidth / fFac, fHeight / fFac, szUnit);
+  
+  ApplicationWindow::getApplication()->SetPaneText(2, QString(szOut));
+}
+
+void View3D::PostHandleMovement (/*TViewChange tChange*/)
+{
+//  switch (tChange)
+//  {
+//    case ZOOM:
+//      PrintViewerPosition();
+//      UpdateFlags();
+//      PrintDimensions();
+//      UpdateViewPosition();
+//      break;
+//
+//    case PAN:
+//      PrintViewerPosition();
+//      UpdateFlags();
+//      UpdateViewPosition();
+//      break;
+//
+//    case ROTATE:
+//      PrintViewerPosition();
+//      UpdateFlags();
+//      UpdateViewPosition();
+//      break;
+//
+//    case RESIZE:
+      PrintDimensions();
+//      UpdateViewPosition();
+//      break;
+//  }
+}
+
+void View3D::PreHandleMovement (/*TViewChange tChange*/)
+{
 }
 
 

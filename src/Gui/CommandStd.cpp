@@ -23,6 +23,8 @@
 #else
 #endif
 
+#include "FCWidgets.h"
+#include "Splashscreen.h"
 #include "CommandStd.h"
 #include "DlgDocTemplatesImp.h"
 #include "Icons/images.cpp"
@@ -324,6 +326,24 @@ void FCCmdPaste::Activated(void)
 
 }
 
+//===========================================================================
+// Std_About
+//===========================================================================
+
+void FCCmdAbout::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "About FreeCAD";
+	*sToolTipText = "About FreeCAD";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+}
+
+
+void FCCmdAbout::Activated(void)
+{
+  FCSplashAbout::Instance();
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
@@ -434,7 +454,7 @@ void FCCmdTest2::Activated(void)
 	BRep_Builder aBuilder;
 	TopoDS_Shape ResultShape;
 
-	QString fn = QFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", AppWnd() );
+	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", AppWnd() );
 	if ( fn.isEmpty() ) return;
  
 	try{
