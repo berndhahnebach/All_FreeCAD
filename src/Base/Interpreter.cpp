@@ -75,7 +75,11 @@ void InterpreterSingleton::LaunchFile(const char*pxFileName)
 	
 	FILE *fp = fopen(FileName.str,"r");
 	if(fp == NULL) 
-		throw Exception("File not found");
+  {
+    char szBuf[200];
+    sprintf( szBuf, "File '%s' not found.", pxFileName );
+		throw Exception( szBuf );
+  }
 
 
 	PyRun_SimpleFile(fp,FileName.str);

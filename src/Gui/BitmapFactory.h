@@ -60,8 +60,12 @@ public:
   void removePath(const char* sPath);
   /// Adds a build in XPM pixmap under a given name
   void addXPM(const char* sName, const char** pXPM);
+  /// Adds a build in XPM pixmap under a given file format
+  void addFileFormat(const char* sFormat, const char** pXPM);
   /// Removes a build in pixmap by a given name
   void removeXPM(const char* sName);
+  /// Retrieves a pixmap by file format
+  QPixmap* fileFormat(const char* sFormat);
   /// Retrieves a pixmap by name
   QPixmap pixmap(const char* sName);
   /** Retrieves a pixmap by name

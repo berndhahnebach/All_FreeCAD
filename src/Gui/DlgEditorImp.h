@@ -38,7 +38,7 @@ namespace Dialog {
  *  @see class PrefWidget
  *  \author Werner Mayer
  */
-class DlgSettingsEditorImp : public DlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public PrefWidget
+class DlgSettingsEditorImp : public DlgEditorSettingsBase, public PreferencePage, public PrefWidget
 {
 Q_OBJECT
 

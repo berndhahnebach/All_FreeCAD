@@ -65,10 +65,10 @@ CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, 
   QString msg = tr("Do not show this message again");
   QString entry = QString("NotShowDialog:%1").arg(text);
 
-  checkBox = new Gui::PrefCheckBox(this, "FCCheckBox");
+  checkBox = new Gui::PrefCheckBox(this, "PrefCheckBox");
   checkBox->setText( msg );
   checkBox->setEntryName(entry);
-  checkBox->setParamGrpPath("User parameter:BaseApp/Windows/Dialogs");
+  checkBox->setParamGrpPath("General");
   checkBox->getHandler()->onRestore();
 
   // if check throw an exception to avoid to show
@@ -315,14 +315,14 @@ CreateToolBarDialog::CreateToolBarDialog( QWidget* parent,  const char* name, bo
   if ( !name )
     setName( "CreateToolBarDialog" );
   resize( 242, 179 );
-  setProperty( "caption", tr( "Create Toolbar and/or Command bar" ) );
+  setProperty( "caption", tr( "Create Toolbar and/or Commandbar" ) );
   setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
   CreateToolBarDialogLayout = new QGridLayout( this );
   CreateToolBarDialogLayout->setSpacing( 6 );
   CreateToolBarDialogLayout->setMargin( 11 );
 
   GroupBox1 = new QGroupBox( this, "GroupBox1" );
-  GroupBox1->setProperty( "title", tr( "Toolbar/Command bar" ) );
+  GroupBox1->setProperty( "title", tr( "Toolbar/Commandbar" ) );
   GroupBox1->setColumnLayout(0, Qt::Vertical );
   GroupBox1->layout()->setSpacing( 0 );
   GroupBox1->layout()->setMargin( 0 );
@@ -341,7 +341,7 @@ CreateToolBarDialog::CreateToolBarDialog( QWidget* parent,  const char* name, bo
   GroupBox1Layout->addWidget( LineEditName, 1, 0 );
 
   CheckCreateCmdBar = new QCheckBox( GroupBox1, "CheckCreateCmdBar" );
-  CheckCreateCmdBar->setProperty( "text", tr( "Create command bar" ) );
+  CheckCreateCmdBar->setProperty( "text", tr( "Create commandbar" ) );
   CheckCreateCmdBar->setProperty( "checked", QVariant( TRUE, 0 ) );
 
   GroupBox1Layout->addWidget( CheckCreateCmdBar, 3, 0 );
@@ -395,7 +395,7 @@ CreateToolBarDialog::~CreateToolBarDialog()
 }
 
 /**
- * Creates a new toolbar or command bar.
+ * Creates a new toolbar or commandbar.
  */
 void CreateToolBarDialog::accept ()
 {
@@ -599,17 +599,9 @@ void CheckListDialog::accept ()
  * Constructs a colored button called \a name with parent \a parent.
  */
 ColorButton::ColorButton(QWidget* parent, const char* name)
-    : QButton( parent, name )
+    : QPushButton( parent, name )
 {
-  setMinimumSize( minimumSizeHint() );
-  connect( this, SIGNAL(clicked()), SLOT(onChooseColor()));
-}
-
-ColorButton::ColorButton( const QBrush& b, QWidget* parent, const char* name, WFlags f )
-    : QButton( parent, name, f )
-{
-  col = b.color();
-  setMinimumSize( minimumSizeHint() );
+  connect( this, SIGNAL( clicked() ), SLOT( onChooseColor() ));
 }
 
 /**
@@ -624,7 +616,7 @@ ColorButton::~ColorButton()
  */
 void ColorButton::setColor( const QColor& c )
 {
-  col = c;
+  _col = c;
   update();
 }
 
@@ -633,41 +625,7 @@ void ColorButton::setColor( const QColor& c )
  */
 QColor ColorButton::color() const
 {
-  return col;
-}
-
-QSize ColorButton::sizeHint() const
-{
-  return QSize( 50, 25 );
-}
-
-QSize ColorButton::minimumSizeHint() const
-{
-  return QSize( 50, 25 );
-}
-
-/** 
- * Draws the button.
- */
-void ColorButton::drawButton( QPainter *paint )
-{
-#if QT_VERSION <= 230
-  style().drawBevelButton( paint, 0, 0, width(), height(), colorGroup(), isDown() );
-  drawButtonLabel( paint );
-  if ( hasFocus() )
-  {
-    style().drawFocusRect( paint, style().bevelButtonRect( 0, 0, width(), height()),
-                           colorGroup(), &colorGroup().button() );
-  }
-#else
-  style().drawPrimitive( QStyle::PE_ButtonBevel, paint, QRect(0, 0, width(), height()), colorGroup());
-  drawButtonLabel( paint );
-  if ( hasFocus() )
-  {
-    style().drawPrimitive( QStyle::PE_FocusRect, paint, style().subRect( QStyle::SR_PushButtonContents, this),
-                           colorGroup() );
-  }
-#endif
+  return _col;
 }
 
 /**
@@ -678,7 +636,7 @@ void ColorButton::drawButtonLabel( QPainter *paint )
   QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
                    : palette().disabled().buttonText();
   paint->setPen( pen );
-  paint->setBrush( QBrush( col ) );
+  paint->setBrush( QBrush( _col ) );
 
   paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
 }

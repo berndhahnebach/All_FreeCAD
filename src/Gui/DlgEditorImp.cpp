@@ -47,7 +47,7 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 {
   pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
 
-  setParamGrpPath("User parameter:BaseApp/Preferences/Editor");
+  setParamGrpPath("Editor");
   setEntryName("Editor");
 
   append(EnableLineNumber->getHandler());
@@ -56,6 +56,7 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 
   connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
   connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
+  ListBox1->setCurrentItem(0);
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -78,7 +79,7 @@ void DlgSettingsEditorImp::restorePreferences()
 
   for ( QStringList::Iterator it = names.begin(); it!=names.end(); ++it)
   {
-    _mColors[*it] = hPrefGrp->GetInt( (*it).latin1(), GetDefCol().color(*it));
+    _mColors[*it] = getWindowParameter()->GetInt( (*it).latin1(), GetDefCol().color(*it));
     long col = GetDefCol().color( *it );
     QColor color;
     color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
@@ -91,8 +92,8 @@ void DlgSettingsEditorImp::restorePreferences()
   QStringList familyNames = fdb.families( FALSE );
   FontDB->insertStringList( familyNames );
 
-  FontSize->setCurrentText( hPrefGrp->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
-  FontDB  ->setCurrentText( hPrefGrp->GetASCII( "Font", "Courier" ).c_str() );
+  FontSize->setCurrentText( getWindowParameter()->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
+  FontDB  ->setCurrentText( getWindowParameter()->GetASCII( "Font", "Courier" ).c_str() );
 }
 
 /** Saves the color map */
@@ -100,11 +101,11 @@ void DlgSettingsEditorImp::savePreferences()
 {
   for (std::map<QString, long>::iterator it = _mColors.begin(); it!=_mColors.end(); ++it)
   {
-    hPrefGrp->SetInt(it->first.latin1(), it->second);
+    getWindowParameter()->SetInt(it->first.latin1(), it->second);
   }
 
-  hPrefGrp->SetASCII( "FontSize", FontSize->currentText().latin1() );
-  hPrefGrp->SetASCII( "Font", FontDB->currentText().latin1() );
+  getWindowParameter()->SetASCII( "FontSize", FontSize->currentText().latin1() );
+  getWindowParameter()->SetASCII( "Font", FontDB->currentText().latin1() );
 }
 
 /** Searches for the corresponding color value to \e name in @ref DefColorMap and

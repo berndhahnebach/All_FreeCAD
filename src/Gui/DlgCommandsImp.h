@@ -27,6 +27,10 @@
 #include "DlgCommands.h"
 #include "PropertyPage.h"
 
+#ifndef _PreComp_
+# include <qmap.h>
+#endif
+
 class FCCommand;
 
 namespace Gui {
@@ -47,17 +51,12 @@ public:
   DlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgCustomCommandsImp();
 
-protected:
-  void apply();
-  void cancel();
-
 protected slots:
-  void onDescription(const QString&);
-  void onGroupSelected(const QString&);
+  void onDescription( const QString& );
+  void onGroupSelected( const QString& );
 
-private:
-  /** groups of commands */
-  std::map<std::string, std::vector<FCCommand*> > _alCmdGroups;
+protected:
+  void showEvent( QShowEvent* );
 };
 
 } // namespace Dialog

@@ -30,18 +30,22 @@
 namespace Gui {
 namespace Dialog {
 
+/**
+ * The DlgSettings3DViewImp class implements a preference page to change settings
+ * for the Inventor viewer.
+ * \author Jürgen Riegel
+ */
 class DlgSettings3DViewImp : public DlgSettings3DView, public Gui::Dialog::PreferencePage
 { 
   Q_OBJECT
-
-  virtual void chooseDir();
-  virtual void warnInventor(bool);
-
 
 public:
   DlgSettings3DViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgSettings3DViewImp();
 
+protected:
+  virtual void chooseDir();
+  virtual void warnInventor(bool);
 };
 
 } // namespace Dialog

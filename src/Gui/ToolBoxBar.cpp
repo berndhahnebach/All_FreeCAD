@@ -45,7 +45,7 @@ using namespace Gui::DockWnd;
  * Constructs an empty vertical toolbar.
  */
 CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: CustomToolBar(label, /*ApplicationWindow::Instance*/0, w, false, name, f, "Cmdbar")
+: CustomToolBar(label, /*ApplicationWindow::Instance*/0, w, false, name, f, "Commandbars")
 {
   // remove immediately from main window again
 //  ApplicationWindow::Instance->removeToolBar(this);
@@ -58,7 +58,6 @@ CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, W
   m_Popup->setCheckable(true);
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
   setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
-  bSaveColor = true;
 }
 
 CommandBar::~CommandBar ()

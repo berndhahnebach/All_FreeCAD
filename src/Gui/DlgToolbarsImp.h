@@ -40,6 +40,11 @@ class Gui::CustomToolBar;
 namespace Dialog {
 
 /** This class implements the creation of user defined toolbars.
+ * In the left panel are shown all command groups with their command objects.
+ * If any changeable toolbar was created in the left panel are shown all commands 
+ * of the currently edited toolbar, otherwise it is emtpy.
+ * All changes to a toolbar is done immediately.
+ * 
  * \author Werner Mayer
  */
 class DlgCustomToolbars : public DlgCustomToolbarsBase, public Gui::Dialog::PropertyPage
@@ -72,7 +77,7 @@ protected:
   QPtrList<Gui::CustomToolBar>                _aclToolbars;
 };
 
-/** This class implements the creation of user defined command bars.
+/** This class implements the creation of user defined toolbars.
  * @see DlgCustomToolbars
  * @see DlgCustomCmdbarsImp
  * \author Werner Mayer

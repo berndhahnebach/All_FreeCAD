@@ -22,7 +22,9 @@
 
 
 #include "PreCompiled.h"
+
 #ifndef _PreComp_
+# include <qdir.h>
 # include <qfileinfo.h>
 # include <qlayout.h>
 # include <qobjectlist.h>
@@ -32,13 +34,9 @@
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
 
+#include "../App/Application.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
-
-#ifdef FC_OS_WIN32
-# pragma comment(lib,"qui.lib")
-# pragma warning( disable : 4098 )
-#endif
 
 using Base::Console;
 using namespace Gui;
@@ -123,7 +121,7 @@ QWidget* WidgetFactoryInst::createPrefWidget(const char* sName, QWidget* parent,
 
   try
   {
-    dynamic_cast<PrefWidget*>(w)->setPrefName(sPref);
+    dynamic_cast<PrefWidget*>(w)->setEntryName(sPref);
     dynamic_cast<PrefWidget*>(w)->restorePreferences();
   }
   catch (...)
@@ -293,23 +291,57 @@ int PyResource::_setattr(char *attr, PyObject *value)   // __setattr__ function:
  * cannot create an instance an exception is thrown. If the created resource does not inherit from
  * QDialog an instance of ContainerDialog is created to embed it.
  */
-void PyResource::load(const char* name)
+void PyResource::load( const char* name )
 {
   QString fn = name;
   QFileInfo fi(fn);
 
-  if (!fi.exists())
-    throw Base::Exception(QString("Cannot find file %1").arg(fn));
+  // checks whether it's a relative path
+  if ( fi.isRelative() )
+  {
+    QString cwd = QDir::currentDirPath ();
+    QString home= QDir(GetApplication().GetHomePath()).path();
 
-#if QT_VERSION < 300
-  throw FCException("Qt version is too old!\n");
-#else
+    // search in cwd and home path for the file
+    //
+    // file does not reside in cwd, check home path now
+    if ( !fi.exists() )
+    {
+      if ( cwd == home )
+      {
+        throw Base::Exception(QString("Cannot find file %1").arg( fi.absFilePath() ));
+      }
+      else
+      {
+        fi.setFile( QDir(home), fn );
+
+        if ( !fi.exists() )
+        {
+          throw Base::Exception(QString("Cannot find file %1 neither in %2 nor in %3").
+                      arg( fn ).arg( cwd ).arg( home ) );
+        }
+        else
+        {
+          fn = fi.absFilePath(); // file resides in FreeCAD's home directory
+        }
+      }
+    }
+  }
+  else
+  {
+    if ( !fi.exists() )
+      throw Base::Exception(QString("Cannot find file %1").arg( fn ));
+  }
+
   QWidget* w=0;
   try{
-    w = QWidgetFactory::create(fn);
+    w = QWidgetFactory::create( fn );
   }catch(...){
     throw Base::Exception("Cannot create resource");
   }
+
+  if ( !w )
+    throw Base::Exception("Invalid widget.");
 
   if (w->inherits("QDialog"))
   {
@@ -319,7 +351,6 @@ void PyResource::load(const char* name)
   {
     myDlg = new ContainerDialog(w);
   }
-#endif
 }
 
 /**
@@ -354,12 +385,12 @@ bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
   {
     SignalConnect* sc = new SignalConnect(this, cb, objS);
     mySingals.push_back(sc);
-    QObject::connect(objS, sigStr.latin1(), sc, SLOT ( onExecute() )  );
-
-    return true;
+    return QObject::connect(objS, sigStr.latin1(), sc, SLOT ( onExecute() )  );
   }
   else
-    return false;
+    qWarning( "'%s' does not exist.\n", sender );
+
+  return false;
 }
 
 /**
@@ -407,6 +438,18 @@ PyObject *PyResource::show(PyObject *args)
 {
   if (myDlg)
   {
+    // small trick to get focus
+    myDlg->showMinimized();
+
+#ifdef Q_WS_X11
+    // On X11 this may not work. For further information see QWidget::showMaximized
+    //
+    // workaround for X11
+    myDlg->hide();
+    myDlg->show();
+#endif
+
+    myDlg->showNormal();
     myDlg->exec();
   }
 
@@ -433,15 +476,20 @@ PyObject *PyResource::value(PyObject *args)
     QObjectListIt it( *l );
     QObject *obj;
 
+    bool fnd = false;
     while ( (obj = it.current()) != 0 ) {
       ++it;
       if (strcmp(obj->name(), psName) == 0)
       {
+        fnd = true;
         v = obj->property(psProperty);
         break;
       }
     }
     delete l; // delete the list, not the objects
+
+    if ( !fnd )
+      qWarning( "'%s' not found.\n", psName );
   }
 
   PyObject *pItem;
@@ -544,15 +592,20 @@ PyObject *PyResource::setValue(PyObject *args)
     QObjectListIt it( *l );
     QObject *obj;
 
+    bool fnd = false;
     while ( (obj = it.current()) != 0 ) {
       ++it;
       if (strcmp(obj->name(), psName) == 0)
       {
+        fnd = true;
         obj->setProperty(psProperty, v);
         break;
       }
     }
     delete l; // delete the list, not the objects
+
+    if ( !fnd )
+      qWarning( "'%s' not found.\n", psName );
   }
 
   Py_INCREF(Py_None);

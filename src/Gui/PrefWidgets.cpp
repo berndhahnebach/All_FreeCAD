@@ -37,7 +37,8 @@ using namespace Gui;
  * is true a PrefWidgetHandler is installed. By default \a bInstall is set 
  * to true.
  */
-PrefWidget::PrefWidget(const char * name, bool bInstall) : pHandler(NULL)
+PrefWidget::PrefWidget( bool bInstall )
+ : WindowParameter(""), pHandler(0L)
 {
   if (bInstall)
   {
@@ -51,58 +52,39 @@ PrefWidget::PrefWidget(const char * name, bool bInstall) : pHandler(NULL)
  */
 PrefWidget::~PrefWidget()
 {
-  if (hPrefGrp.IsValid())
-    hPrefGrp->Detach(this);
-#ifdef FC_DEBUG
-  if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
-  {
-    qFatal( "No valid parameter name set! ");
-  }
-#endif
+  if (getWindowParameter().IsValid())
+    getWindowParameter()->Detach(this);
   delete pHandler;
-}
-
-/** Sets the preference name to \a name. */
-void PrefWidget::setPrefName( const QString& name )
-{
-  m_sPrefName = name;
 }
 
 /** Sets the preference name to \a name. */
 void PrefWidget::setEntryName( const QString& name )
 {
-  setPrefName(name);
+  m_sPrefName = name;
 }
 
 /** Returns the widget's preference name. */
 QString PrefWidget::entryName() const
 {
-#ifdef FC_DEBUG
-  if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
-  {
-    qFatal( "No valid parameter name set!" );
-  }
-#endif
-
   return m_sPrefName;
 }
 
 /** Sets the preference path to \a path. */
 void PrefWidget::setParamGrpPath( const QString& path )
 {
-  m_sPrefGrp = path;
-
 #ifdef FC_DEBUG
-  if (hPrefGrp.IsValid())
+  if (getWindowParameter().IsValid())
   {
     Base::Console().Warning("Widget already attached\n");
-    hPrefGrp->Detach(this);
   }
 #endif
 
-  hPrefGrp = GetApplication().GetParameterGroupByPath(m_sPrefGrp.latin1());
-  assert(hPrefGrp.IsValid());
-  hPrefGrp->Attach(this);
+  if ( setGroupName( path.latin1() ) )
+  {
+    m_sPrefGrp = path;
+    assert(getWindowParameter().IsValid());
+    getWindowParameter()->Attach(this);
+  }
 }
 
 /** Returns the widget's preferences path. */
@@ -124,12 +106,6 @@ void PrefWidget::installHandler(PrefWidgetHandler* h)
   pHandler = h;
 }
 
-/** Returns the handle to the parameter group. */
-FCParameterGrp::handle PrefWidget::getParamGrp() const
-{
-  return hPrefGrp;
-}
-
 /** 
  * This method is called if one ore more values in the parameter settings are changed 
  * where getParamGrp() points to. 
@@ -141,12 +117,6 @@ void PrefWidget::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
   if (QString(sReason) == m_sPrefName)
     restorePreferences();
-}
-
-/** Returns the handle to the root parameter group. */
-FCParameterGrp::handle PrefWidget::getRootParamGrp()
-{
-  return GetApplication().GetUserParameter().GetGroup("BaseApp");
 }
 
 // --------------------------------------------------------------------
@@ -163,8 +133,8 @@ PrefWidgetHandler::PrefWidgetHandler( PrefWidget* p ) : pPref(p)
 void PrefWidgetHandler::onSave()
 {
   pPref->savePreferences();
-  if ( pPref->getParamGrp().IsValid() )
-    pPref->getParamGrp()->Notify(pPref->entryName().latin1());
+  if ( pPref->getWindowParameter().IsValid() )
+    pPref->getWindowParameter()->Notify(pPref->entryName().latin1());
 
   emit saved();
 }
@@ -191,7 +161,7 @@ PrefSpinBox::~PrefSpinBox()
 
 void PrefSpinBox::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if ( getWindowParameter().IsNull() )
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -199,25 +169,25 @@ void PrefSpinBox::restorePreferences()
 
   double fVal;
   if (decimals() == 0)
-    fVal = (double)hPrefGrp->GetInt(entryName().latin1(), value());
+    fVal = (double)getWindowParameter()->GetInt(entryName().latin1(), value());
   else
-    fVal = (double)hPrefGrp->GetFloat(entryName().latin1(), valueFloat());
+    fVal = (double)getWindowParameter()->GetFloat(entryName().latin1(), valueFloat());
 
   setValueFloat(fVal);
 }
 
 void PrefSpinBox::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
   if (decimals() == 0)
-    hPrefGrp->SetInt(entryName().latin1(), (int)valueFloat());
+    getWindowParameter()->SetInt(entryName().latin1(), (int)valueFloat());
   else
-    hPrefGrp->SetFloat(entryName().latin1(), valueFloat());
+    getWindowParameter()->SetFloat(entryName().latin1(), valueFloat());
 }
 
 QString PrefSpinBox::entryName () const
@@ -253,25 +223,25 @@ PrefLineEdit::~PrefLineEdit()
 
 void PrefLineEdit::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  std::string txt = hPrefGrp->GetASCII(entryName().latin1(), text().latin1());
+  std::string txt = getWindowParameter()->GetASCII(entryName().latin1(), text().latin1());
   setText(txt.c_str());
 }
 
 void PrefLineEdit::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
-  hPrefGrp->SetASCII(entryName().latin1(), text().latin1());
+  getWindowParameter()->SetASCII(entryName().latin1(), text().latin1());
 }
 
 QString PrefLineEdit::entryName () const
@@ -307,13 +277,13 @@ PrefComboBox::~PrefComboBox()
 
 void PrefComboBox::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
   std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
   if (items.size() > 0)
@@ -328,13 +298,13 @@ void PrefComboBox::restorePreferences()
 
 void PrefComboBox::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
   hPGrp->Clear();
 
   int size = int(count());
@@ -381,13 +351,13 @@ PrefListBox::~PrefListBox()
 
 void PrefListBox::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
   std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
   if (items.size() > 0)
@@ -402,13 +372,13 @@ void PrefListBox::restorePreferences()
 
 void PrefListBox::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
   hPGrp->Clear();
 
   int size = int(count());
@@ -455,25 +425,25 @@ PrefCheckBox::~PrefCheckBox()
 
 void PrefCheckBox::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  bool enable = hPrefGrp->GetBool(entryName().latin1(), isChecked());
+  bool enable = getWindowParameter()->GetBool(entryName().latin1(), isChecked());
   setChecked(enable);
 }
 
 void PrefCheckBox::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
-  hPrefGrp->SetBool(entryName().latin1(), isChecked());
+  getWindowParameter()->SetBool(entryName().latin1(), isChecked());
 }
 
 QString PrefCheckBox::entryName () const
@@ -509,25 +479,25 @@ PrefRadioButton::~PrefRadioButton()
 
 void PrefRadioButton::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  bool enable = hPrefGrp->GetBool(entryName().latin1(), isChecked());
+  bool enable = getWindowParameter()->GetBool(entryName().latin1(), isChecked());
   setChecked(enable);
 }
 
 void PrefRadioButton::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
-  hPrefGrp->SetBool(entryName().latin1(), isChecked());
+  getWindowParameter()->SetBool(entryName().latin1(), isChecked());
 }
 
 QString PrefRadioButton::entryName () const
@@ -563,13 +533,13 @@ PrefSlider::~PrefSlider()
 
 void PrefSlider::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
   }
 
-  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup(entryName().latin1());
+  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup(entryName().latin1());
   int o = hPrefs->GetInt("Orientation", orientation());
   setOrientation(Qt::Orientation(o));
   int min = hPrefs->GetInt("MinValue", minValue());
@@ -582,13 +552,13 @@ void PrefSlider::restorePreferences()
 
 void PrefSlider::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
   }
 
-  FCParameterGrp::handle hPrefs = hPrefGrp->GetGroup(entryName().latin1());
+  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup(entryName().latin1());
   hPrefs->SetInt("Orientation", int(orientation()));
   hPrefs->SetInt("MinValue", minValue());
   hPrefs->SetInt("MaxValue", maxValue());
@@ -628,7 +598,7 @@ PrefColorButton::~PrefColorButton()
 
 void PrefColorButton::restorePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot restore!\n");
     return;
@@ -637,7 +607,7 @@ void PrefColorButton::restorePreferences()
   QColor col = color();
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
-  lcol = hPrefGrp->GetInt( entryName().latin1(), lcol );
+  lcol = getWindowParameter()->GetInt( entryName().latin1(), lcol );
   int b = lcol >> 16;  lcol -= b << 16;
   int g = lcol >> 8;   lcol -= g << 8;
   int r = lcol;
@@ -647,7 +617,7 @@ void PrefColorButton::restorePreferences()
 
 void PrefColorButton::savePreferences()
 {
-  if (hPrefGrp.IsNull())
+  if (getWindowParameter().IsNull())
   {
     Console().Warning("Cannot save!\n");
     return;
@@ -656,7 +626,7 @@ void PrefColorButton::savePreferences()
   QColor col = color();
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
-  hPrefGrp->SetInt( entryName().latin1(), lcol );
+  getWindowParameter()->SetInt( entryName().latin1(), lcol );
 }
 
 QString PrefColorButton::entryName () const

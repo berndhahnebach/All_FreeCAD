@@ -1,22 +1,26 @@
-/** \file CommandStd.h
- *  \brief The implementation of the standrd Commands
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
 /***************************************************************************
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Jürgen Riegel 2002                                                    *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
- 
+
+
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
@@ -32,7 +36,7 @@
 #include "../App/Label.h"
 #include "../App/Feature.h"
 #include "../App/Function.h"
-//#include "../App/Parameter.h"
+
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
@@ -56,27 +60,20 @@ using namespace Gui;
 DEF_STD_CMD_A(FCCmdTest1);
 
 FCCmdTest1::FCCmdTest1()
-	:FCCppCommand("Std_Test1")
+  :FCCppCommand("Std_Test1")
 {
-	sAppModule		= "";
-	sGroup			= "Standard-Test";
-	sMenuText		= "Test1";
-	sToolTipText	= "Test function 1";
-	sWhatsThis		= sToolTipText;
-	sStatusTip		= sToolTipText;
-	sPixmap			= "Std_Tool1";
-	iAccel			= Qt::CTRL+Qt::Key_T;
+  sAppModule    = "";
+  sGroup        = "Standard-Test";
+  sMenuText     = "Test1";
+  sToolTipText  = "Test function 1";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = Qt::CTRL+Qt::Key_T;
 }
-
 
 void FCCmdTest1::Activated(int iMsg)
 {
-	//FCDocument *pcDoc = GetActiveOCCDocument();
-	//if(!pcDoc) return;
-
-	//OpenCommand("Test1 - Box");
-
-
 #if 0
 	// get open file name
 	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)", GetAppWnd() );
@@ -416,15 +413,44 @@ void FCCmdTest8::Activated(int iMsg)
 {
 	try
 	{
-		unsigned long steps = 1000;
+    // level 1
+		unsigned long steps = 5;
 		Base::Sequencer().start("Starting progress bar", steps);
-		
 		for (unsigned long i=0; i<steps;i++)
 		{
+      QWaitCondition().wait(200);
 			Base::Sequencer().next();
-			QWaitCondition().wait(30);
-		}
 
+      // level 2
+      unsigned long steps = 6;
+      Base::Sequencer().start("Starting progress bar", steps);
+      for (unsigned long j=0; j<steps;j++)
+      {
+        QWaitCondition().wait(150);
+        Base::Sequencer().next();
+
+        // level 3
+        unsigned long steps = 7;
+        Base::Sequencer().start("Starting progress bar", steps);
+        for (unsigned long k=0; k<steps;k++)
+        {
+          QWaitCondition().wait(100);
+          Base::Sequencer().next();
+
+          // level 4
+          unsigned long steps = 8;
+          Base::Sequencer().start("Starting progress bar", steps);
+          for (unsigned long l=0; l<steps;l++)
+          {
+            QWaitCondition().wait(5);
+            Base::Sequencer().next();
+          }
+          Base::Sequencer().stop();
+        }
+        Base::Sequencer().stop();
+      }
+      Base::Sequencer().stop();
+		}
 		Base::Sequencer().stop();
 	}
 	catch (...)

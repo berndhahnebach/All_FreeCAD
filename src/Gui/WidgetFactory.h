@@ -188,7 +188,7 @@ inline WidgetFactorySupplier &GetWidgetFactorySupplier()
 
 /**
  * The ContainerDialog class acts as a container to embed any kinds of widgets that
- * do not inherit QDialog. This class also provied an "Ok" and a "Cancel" button.
+ * do not inherit from QDialog. This class also provides an "Ok" and a "Cancel" button.
  * At most this class is used to embed widgets which are created from .ui files.
  * \author Werner Mayer
  */
@@ -209,6 +209,51 @@ private:
 
 /**
  * The PyResource class provides an interface to create widgets or to load .ui files from Python.
+ * With
+ * \code
+ * d = Gui.CreateDialog("test.ui")
+ * \endcode
+ *
+ * you can create a PyResource object containing the widget. If a relative file name 
+ * is given PyResource looks first in the current working directory and afterwards in 
+ * the home path where FreeCAD resides.
+ * 
+ * If the appropriate .ui file cannot be found or creation fails an exception is thrown.
+ * In case the widget in the .ui file does not inherit from QDialog it is embedded in a
+ * \ref ContainerDialog object.
+ * To show the widget you can call
+ * \code
+ * d.Show()
+ * \endcode
+ *
+ * Furthermore it is possible to get or set values from any widgets inside
+ * the parent widget or to connect a Python callback function with a widget.
+ * \a Note: The callback function must have exactly one parameter.
+ * \code
+ * # define a callback function with one argument
+ * def TestCall(obj):
+ *      print "Button clicked"
+ *
+ * d = Gui.CreateDialog("test.ui")
+ * d.Connect("Button_Name", "clicked()", TestCall)
+ * d.Show()
+ * \endcode
+ *
+ * If the button with the name "Button_Name" is clicked the message "Button clicked" is
+ * printed.
+ * For example if you have a QLineEdit inside your widget you can set the text with
+ * \code
+ * # sets "Show this text here!" to the text property
+ * d.SetValue("lineedit", "text", "Show this text here!")
+ * d.Show()
+ * \endcode
+ *
+ * or retrieve the entered text with
+ * \code
+ * f = d.GetValue("lineedit", "text")
+ * print f
+ * \endcode
+ *
  * \author Werner Mayer
  */
 class PyResource : public Base::FCPyObject
@@ -269,7 +314,8 @@ private:
 
 /**
  * The QtWidgetFactory class provides the abitlity to use the widget factory 
- * framework of FreeCAD within the framework provided by Qt.
+ * framework of FreeCAD within the framework provided by Qt. This class extends
+ * the QWidgetFactory by the creation of FreeCAD specific widgets.
  * \author Werner Mayer
  */
 class QtWidgetFactory : public QWidgetFactory

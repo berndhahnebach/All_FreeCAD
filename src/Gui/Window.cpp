@@ -44,45 +44,45 @@ using namespace Gui;
 
 WindowParameter::WindowParameter(const char *name)
 {
-  FCHandle<FCParameterGrp> h;
-
   // not allowed to use a Window without a name, see the constructor of a DockWindow or a other QT Widget
   assert(name);
   //printf("Instanceate:%s\n",name);
 
-  // geting the group for the window
-  h = GetApplication().GetUserParameter().GetGroup("BaseApp");
-  h = h->GetGroup("Preferences");
-  //h = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/");
-
-  _handle = h->GetGroup(name);
-
-
-
+  // if string is empty do not create group
+  if ( strcmp(name, "") != 0 )
+    _handle = getParameter()->GetGroup( name );
 }
 
 WindowParameter::~WindowParameter()
 {
-
 }
 
-void WindowParameter::OnParameterChanged(void)
+bool WindowParameter::setGroupName( const char* name )
 {
-  Base::Console().Warning("WindowParameter::OnParameterChanged(): Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
+  if ( _handle.IsValid() )
+    return false; // cannot change parameter group
+
+  assert(name);
+  _handle = getParameter()->GetGroup( name );
+  return true;
 }
 
+void WindowParameter::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+{
+  Base::Console().Log("Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
+}
 
-FCParameterGrp::handle  WindowParameter::GetWindowParameter(void)
+FCParameterGrp::handle  WindowParameter::getWindowParameter(void)
 {
   return _handle;
 }
 
-FCParameterGrp::handle  WindowParameter::GetParameter(void)
+FCParameterGrp::handle  WindowParameter::getParameter(void)
 {
-  return GetApplication().GetUserParameter().GetGroup("BaseApp");
+  return GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
 }
 
-ApplicationWindow* WindowParameter::GetAppWnd(void)
+ApplicationWindow* WindowParameter::applicationWindow(void)
 {
   return ApplicationWindow::Instance;
 }

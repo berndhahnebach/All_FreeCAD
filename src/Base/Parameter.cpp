@@ -729,7 +729,7 @@ void FCParameterGrp::RemoveGrp(const char* Name)
 	_GroupMap.erase(Name);
 
 	// check if Element in group
-	DOMElement *pcElem = FindElement(_pGroupNode,"FCGrp",Name);
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCParamGroup",Name);
 	// if not return 
 	if(!pcElem) 
 		return; 

@@ -69,8 +69,10 @@ ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
   d->cWaitCursor = 0L;
 
   setFixedWidth(120);
-  // this style is very nice ;-)
-  //  setIndicatorFollowsStyle(false);
+
+  // write percentage to the center
+  setIndicatorFollowsStyle(false);
+  setCenterIndicator(true);
   hide();
 }
 
@@ -150,6 +152,18 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
   return QProgressBar::eventFilter(o, e);
 }
 
+void ProgressBar::setProgress( int progress )
+{
+  if ( progress == 0 ) 
+  {
+    // starting
+    d->measureTime.start();
+    d->nElapsed = -1;
+  }
+
+  QProgressBar::setProgress( progress );
+}
+
 bool ProgressBar::start(const char* pszStr, unsigned long steps)
 {
   // base stuff
@@ -161,12 +175,8 @@ bool ProgressBar::start(const char* pszStr, unsigned long steps)
   {
     show();
     enterControlEvents();
-    d->nElapsed = 0;
-    d->measureTime.start();
     d->cWaitCursor = new Gui::WaitCursor;
   }
-  else
-    d->measureTime.restart();
 
   return ret;
 }
@@ -176,11 +186,6 @@ bool ProgressBar::next()
   if (!wasCanceled())
   {
     setProgress(nProgress++);
-
-    // estimate the remaining time in milliseconds
-    int diff = d->measureTime.restart();
-    d->nElapsed += diff;
-    d->nRemaining = d->nElapsed * ( totalSteps() - nProgress ) / nProgress;
   }
   else
   {
@@ -202,6 +207,7 @@ void ProgressBar::resetData()
   delete d->cWaitCursor;
   d->cWaitCursor = 0L;
   leaveControlEvents();
+  ApplicationWindow::Instance->setPaneText( 1, "" );
 
   SequencerBase::resetData();
 }
@@ -218,98 +224,42 @@ void ProgressBar::abort()
   throw exc;
 }
 
-void ProgressBar::setText (const char* pszTxt)
+void ProgressBar::setText ( const char* pszTxt )
 {
   // print message to the statusbar
   QString txt = pszTxt ? pszTxt : "";
   ApplicationWindow::Instance->statusBar()->message(txt);
 }
 
-/*
-void ProgressBar::drawContents( QPainter *p )
-{
-  const int total_steps = totalSteps();
-  const int progress_val = progress();
-  QString progress_str;
-
-  setIndicator ( progress_str, progress_val, total_steps );
-
-  const QRect bar = contentsRect();
-
-  if (total_steps) 
-  {
-    int u = bar.width();
-    int pw;
-
-    if ( u > 0 && progress_val >= INT_MAX / u && total_steps >= u )
-      pw = (u * (progress_val / u)) / (total_steps / u);
-    else
-      pw = bar.width() * progress_val / total_steps;  
-
-    p->setPen( colorGroup().highlightedText() );
-    p->setClipRect( bar.x(), bar.y(), pw, bar.height() );
-    p->fillRect( bar, colorGroup().brush( QColorGroup::Highlight ) );
-    p->drawText( bar, AlignCenter, progress_str );
-
-    p->setClipRect( bar.x()+pw, bar.y(), bar.width()-pw, bar.height() );
-  }
-
-  if ( progress_val != total_steps )
-    p->fillRect( bar, colorGroup().brush( QColorGroup::Background ) );
-
-#if QT_VERSION <= 230
-  p->setPen( style()==MotifStyle? colorGroup().foreground() : colorGroup().text() );
-#else
-  p->setPen( style().isA("QMotifStyle")? colorGroup().foreground() : colorGroup().text());
-#endif
-  p->drawText( bar, AlignCenter, progress_str );
-}
-*/
 bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
 {
-  return QProgressBar::setIndicator(indicator, progress, totalSteps);
-  /*
-    if ( totalSteps == 0 )
-      return QProgressBar::setIndicator(indicator, progress, totalSteps);
-    bool ret = false;
-    if (progress != -1)
-    {
-      int nRemaining = d->nRemaining;
-      nRemaining /= 1000;
+  int elapsed = d->measureTime.elapsed();
+  if ( d->nElapsed == elapsed )
+    return false;
+  d->nElapsed = elapsed;
 
-      // get time format
-      int second = nRemaining %  60; nRemaining /= 60;
-      int minute = nRemaining %  60; nRemaining /= 60;
-      int hour   = nRemaining %  60;
-      QString h,m,s;
-      if (hour < 10)   
-        h = QString("0%1").arg(hour);
-      else
-        h = QString("%1").arg(hour);
-      if (minute < 10) 
-        m = QString("0%1").arg(minute);
-      else
-        m = QString("%1").arg(minute);
-      if (second < 10) 
-        s = QString("0%1").arg(second);
-      else
-        s = QString("%1").arg(second);
+  if ( totalSteps == 0 )
+  {
+    indicator = "";
+    return true;
+  }
 
-      // nice formating for output
-      int steps = (100 * progress) / totalSteps;
-      QString ind = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
+  QString txt = indicator;
+  if ( progress * 20 < totalSteps && elapsed < 5000 ) 
+  {
+    // Less than 5 percent complete and less than 5 secs have elapsed.
+    txt = tr("Measuring...");
+  }
+  else 
+  {
+    int rest = (int) ( (double) totalSteps/progress * elapsed ) - elapsed;
 
-      if (ind != indicator)
-      {
-        indicator = ind;
-        ret = true;
-      }
-    }
-    else
-    {
-      indicator = QString::null;
-    }
+    QTime time( 0,0, 0);
+    time = time.addSecs( rest/1000 );
+    txt = tr("Remaining: %1").arg( time.toString() );
+  }
 
-    return ret;
-  */
+  ApplicationWindow::Instance->setPaneText( 1, txt );
+
+  return QProgressBar::setIndicator ( indicator, progress, totalSteps );
 }

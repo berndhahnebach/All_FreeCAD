@@ -33,7 +33,11 @@ class CustomToolBar;
 
 namespace Dialog {
 
-/** This class implements the creation of user defined command bars.
+/** This class implements the creation of user defined commandbars.
+ * A commandbar is the same as a toolbar - a collection of several 
+ * QAction objects - unless a commandbar is placed in a QToolBox object,
+ * while a toolbar is placed in the dock areas of the main window..
+ * So commandbars are predestinated to save place on your desktop.
  * @see DlgCustomToolbars
  * @see DlgCustomToolbarsImp
  * \author Werner Mayer

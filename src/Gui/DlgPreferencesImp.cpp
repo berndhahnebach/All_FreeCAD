@@ -51,6 +51,9 @@ using namespace Gui::Dialog;
 
 // --------------------------------------------------
 
+namespace Gui {
+namespace Dialog {
+
 class PrefGroupItem : public QListBoxItem 
 {
 public:
@@ -66,6 +69,9 @@ private:
   QPixmap pm_Unsel;
   QPixmap pm_Sel;
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
     : QListBoxItem( parent ), pm_Unsel( p1 ), pm_Sel( p2 )
@@ -233,24 +239,6 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
       connect(buttonApply, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply
     }
   }
-}
-
-void DlgPreferencesImp::accept()
-{
-  onApply();
-  DlgPreferences::accept();
-}
-
-void DlgPreferencesImp::onApply()
-{
-  QWidget* page = _pCurTab->currentPage();
-  if (dynamic_cast<PreferencePage*>(page) != NULL)
-     (dynamic_cast<PreferencePage*>(page))->onApply();
-
-#ifdef FC_DEBUG
-  else
-    Base::Console().Warning("Added page does not inherit from class PreferencePage");
-#endif
 }
 
 // compiling the mocs and the Dlg

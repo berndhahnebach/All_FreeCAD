@@ -472,3 +472,14 @@ Version: V0.1B103 Date: Wed Dec 08 14:33:04 2004 +++++++++++++++++++++++++++++++
 
 Version: V0.1B104 Date: Tue Dec 21 22:15:28 2004 +++++++++++++++++++++++++++++++
 + Bug 1078371 fixed (crash of property editor)
+
+Version: V0.1B105 Date: Mon Jan 03 16:06:30 2005 +++++++++++++++++++++++++++++++
++ RFE 1076842 implemented (overlong MDi tabs)
++ Bug 1076836 fixed (Focus problem with MDI)
++ Redesign of PrefWidget & WindowParameter
++ ProgressBar shows remaining time
++ Bug fixed in removing groups from parameters
++ Update Commands tab in Customize dialog after creating any macro commands
++ Allow to modify existing macro commands
++ FileIconProvider class improved
++ PyResource class improved

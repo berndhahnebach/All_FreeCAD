@@ -46,7 +46,7 @@ using namespace Gui::Dialog;
 DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgGeneralBase( parent, name, fl )
 {
-  setParamGrpPath("User parameter:BaseApp/Preferences/General");
+  setParamGrpPath("General");
   setEntryName("General");
 
   append(UsesBigPixmaps->getHandler());
@@ -81,7 +81,7 @@ void DlgGeneralImp::restorePreferences()
   WindowStyle->setCurrentText( style );
 
   // search for the language files
-  QString language = hPrefGrp->GetASCII("Language", "English").c_str();
+  QString language = getWindowParameter()->GetASCII("Language", "English").c_str();
   insertLanguages();
   Languages->setCurrentText( language );
 }
@@ -89,18 +89,18 @@ void DlgGeneralImp::restorePreferences()
 /** Saves the color map */
 void DlgGeneralImp::savePreferences()
 {
-  hPrefGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
+  getWindowParameter()->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
 
   ApplicationWindow::Instance->UpdateStyle();
   ApplicationWindow::Instance->UpdatePixmapsSize();
   setMRUSize();
   CommandLine().show();
 
-  QString language = hPrefGrp->GetASCII("Language", "English").c_str();
+  QString language = getWindowParameter()->GetASCII("Language", "English").c_str();
   if ( QString::compare( Languages->currentText(), language ) != 0 )
   {
     CheckMessageBox::information(ApplicationWindow::Instance, "Info", tr("To take effect on the new language restart FreeCAD, please"));
-    hPrefGrp->SetASCII("Language", Languages->currentText().latin1());
+    getWindowParameter()->SetASCII("Language", Languages->currentText().latin1());
   }
 }
 
@@ -114,7 +114,7 @@ void DlgGeneralImp::setMRUSize()
   FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
   if (pCmd)
   {
-    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
+    FCParameterGrp::handle hGrp = getParameter()->GetGroup("RecentFiles");
     ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }

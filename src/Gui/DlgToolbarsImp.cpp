@@ -133,14 +133,6 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
 {
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-  if (isModified())
-  {
-    if (QMessageBox::information(this, "FreeCAD", tr("Do want to save your changes?"), tr("Yes"), tr("No"), QString::null, 0) == 0)
-      apply();
-    else
-      setModified(false);
-  }
-
   ToolbarActions->clear();
   Gui::CustomToolBar* it;
   for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
@@ -226,7 +218,7 @@ void DlgCustomToolbars::onAddAction()
     }
   }
 
-  setModified(true);
+  apply();
 }
 
 /** Removes an action */
@@ -242,7 +234,8 @@ void DlgCustomToolbars::onRemoveAction()
   }
 
   buttonLeft->setEnabled (ToolbarActions->childCount() > 0);
-  setModified(true);
+
+  apply();
 }
 
 /** Noves up an action */
@@ -269,7 +262,7 @@ void DlgCustomToolbars::onMoveUpAction()
   buttonUp->setEnabled (up);
   buttonDown->setEnabled (down);
 
-  setModified(true);
+  apply();
 }
 
 /** Moves down an action */
@@ -296,7 +289,7 @@ void DlgCustomToolbars::onMoveDownAction()
   buttonUp->setEnabled (up);
   buttonDown->setEnabled (down);
 
-  setModified(true);
+  apply();
 }
 
 /** Adds a new action by double click */
@@ -380,10 +373,11 @@ void DlgCustomToolbarsImp::cancel()
 {
 }
 
-/** Shows all actions from the last specified command bar */
+/** Shows all actions from the last specified commandbar */
 void DlgCustomToolbarsImp::updateData()
 {
   ComboToolbars->clear();
+  ToolbarActions->clear();
   _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
   Gui::CustomToolBar* it;
   for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
@@ -407,11 +401,8 @@ void DlgCustomToolbarsImp::updateData()
 void DlgCustomToolbarsImp::onCreateToolbar()
 {
   QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countToolBars());
-  QString text = QInputDialog::getText(tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
-#if QT_VERSION > 230
-                                      QLineEdit::Normal,
-#endif
-                                      def, 0, this);
+  QString text = QInputDialog::getText( tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
+                                      QLineEdit::Normal, def, 0, this );
 
   if (!text.isNull() && !text.isEmpty())
   {
@@ -443,7 +434,7 @@ void DlgCustomToolbarsImp::onDeleteToolbar()
     QStringList checked = checklists.getCheckedItems();
     for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
     {
-      ApplicationWindow::Instance->GetCustomWidgetManager()->removeToolBar( (*it).latin1() );
+      ApplicationWindow::Instance->GetCustomWidgetManager()->removeToolBarFromSettings( (*it).latin1() );
     }
 
     updateData();

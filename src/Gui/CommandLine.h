@@ -48,7 +48,7 @@ public:
   virtual void fixup ( QString & ) const;
 };
 
-/** The command line class.
+/** The CommandLineBase class allows the user to enter Python commands into the edit field.
  * \author Werner Mayer
  */
 class GuiExport CommandLineBase : public QComboBox, public WindowParameter

@@ -3,6 +3,7 @@ void RegisterIcons()
 {
   Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();
   rclBmpFactory.addXPM("px", px);
+  rclBmpFactory.addXPM("image_xpm", image_xpm);
   rclBmpFactory.addXPM("App_Parameter", App_Parameter);
   rclBmpFactory.addXPM("CommandLine", CommandLine);
   rclBmpFactory.addXPM("Copy", Copy);

@@ -11,6 +11,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qdir.h>
+# include <qfileinfo.h>
 # include <qobjectlist.h>
 # include <qstatusbar.h>
 # include <qwhatsthis.h>
@@ -48,6 +50,10 @@ FCCommand::FCCommand(const char* name,CMD_Type eType)
 
 }
 
+FCCommand::~FCCommand()
+{
+  delete _pcAction;
+}
 
 bool FCCommand::addTo(QWidget *pcWidget)
 {
@@ -252,13 +258,12 @@ const char * FCCommand::EndCmdHelp(void)
 FCCppCommand::FCCppCommand(const char* name,CMD_Type eType)
 	:FCCommand(name,eType)
 {
-	sMenuText		="Not set!!";
-	sToolTipText	="Not set!!";
-	sWhatsThis		="Not set!!";
-	sStatusTip		="Not set!!";
-	sPixmap			=0;
-	iAccel			=0;
-
+	sMenuText		  = "";
+	sToolTipText	= "";
+	sWhatsThis		= "";
+	sStatusTip		= "";
+  sPixmap			  = QString::null;
+	iAccel			  = 0;
 }
 
 std::string FCCppCommand::GetResource(const char* sName)
@@ -288,68 +293,86 @@ QAction * FCCppCommand::CreateAction(void)
 
 
 //===========================================================================
-// FCScriptCommand 
+// MacroCommand 
 //===========================================================================
 
-FCScriptCommand::FCScriptCommand(const char* name)
-	:FCCommand(name,Cmd_Normal)
+MacroCommand::MacroCommand(const char* name)
+	:FCCppCommand(name,Cmd_Normal)
 {
-	_sMenuText		="Not set!!";
-	_sToolTipText	="Not set!!";
-	_sWhatsThis		="Not set!!";
-	_sStatusTip		="Not set!!";
-	_iAccel			=0;
   sAppModule    = "";
   sGroup        = "Macros";
 }
 
-std::string FCScriptCommand::GetResource(const char* sName)
-{
-
-	return "";
-
-}
-
-
-QAction * FCScriptCommand::CreateAction(void)
-{
-	QAction *pcAction;
-
-	pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(QObject::tr(_sMenuText.c_str()));
-	pcAction->setMenuText(QObject::tr(_sMenuText.c_str()));
-	pcAction->setToolTip(QObject::tr(_sToolTipText.c_str()));
-	pcAction->setStatusTip(QObject::tr(_sStatusTip.c_str()));
-	pcAction->setWhatsThis(QObject::tr(_sWhatsThis.c_str()));
-	if(_sPixmap!="")
-		pcAction->setIconSet(Gui::BitmapFactory().pixmap(_sPixmap.c_str()));
-	pcAction->setAccel(_iAccel);
-
-	return pcAction;
-}
-
-
-void FCScriptCommand::Activated(int iMsg)
+void MacroCommand::Activated(int iMsg)
 {
 //	OpenCommand("Excecute Macro");
 //
 //	DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
 //
 //	void CommitCommand(void);
-  std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
-  ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,(cMacroPath + _sScriptName.c_str()).c_str());
+  std::string cMacroPath = GetApplication().GetParameterGroupByPath
+    ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
+    GetApplication().GetHomePath());
+
+  QDir d( cMacroPath.c_str() );
+  QFileInfo fi( d, scriptName );
+  ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,( fi.filePath() ).latin1());
 }
 
-std::string FCScriptCommand::CmdHelpURL(void)
+void MacroCommand::SetScriptName ( const QString& s )
 {
-	return _sHelpURL;
+  scriptName = s;
 }
 
-void FCScriptCommand::CmdHelpPage(std::string &rcHelpPage)
+void MacroCommand::SetWhatsThis( const QString& s )
 {
-	rcHelpPage += _sHelpPage;
+  sWhatsThis = s;
+  if ( _pcAction )
+    _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 }
 
+void MacroCommand::SetMenuText( const QString& s )
+{
+  sMenuText = s;
+  if ( _pcAction )
+  {
+    _pcAction->setText    (QObject::tr(sMenuText));
+    _pcAction->setMenuText(QObject::tr(sMenuText));
+  }
+}
+
+void MacroCommand::SetToolTipText( const QString& s )
+{
+  sToolTipText = s;
+  if ( _pcAction )
+    _pcAction->setToolTip(QObject::tr(sToolTipText));
+}
+
+void MacroCommand::SetStatusTip( const QString& s )
+{
+  sStatusTip = s;
+  if ( _pcAction )
+    _pcAction->setStatusTip(QObject::tr(sStatusTip));
+}
+
+void MacroCommand::SetPixmap( const QString& s )
+{
+  sPixmap = s;
+  if ( _pcAction )
+  {
+    if ( sPixmap )
+      _pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+    else
+      _pcAction->setIconSet(QPixmap());
+  }
+}
+
+void MacroCommand::SetAccel(int i)
+{
+  iAccel = i;
+  if ( _pcAction )
+    _pcAction->setAccel(iAccel);
+}
 
 //===========================================================================
 // FCPythonCommand
@@ -392,7 +415,7 @@ void FCPythonCommand::Activated(int iMsg)
 	try{
 		Interpreter().RunMethodVoid(_pcPyCommand, "Activated");
 	}catch (Base::Exception e){
-		Base::Console().Error("Running the python command %s faild,try to resume",sName.c_str());
+		Base::Console().Error("Running the python command %s failed,try to resume",sName.c_str());
 	}
 }
 

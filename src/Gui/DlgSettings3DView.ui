@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgSettings3DView</class>
+<class>Gui::Dialog::DlgSettings3DView</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>DlgSettings3DView</cstring>
+        <cstring>Gui::Dialog::DlgSettings3DView</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -50,7 +50,7 @@
                         <cstring>UseInventorViewer</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                        <string>View</string>
                     </property>
                     <property name="text" stdset="0">
                         <string>Use the Inventor viewer as default</string>
@@ -81,7 +81,7 @@
                                 <cstring>CornerCoordSystem</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                <string>View</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Show coordinate system in the corner</string>
@@ -95,7 +95,7 @@
                                 <cstring>ShowFPS</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                <string>View</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Show FPS Count</string>
@@ -109,7 +109,7 @@
                                 <cstring>UseSimpleBackground</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                <string>View</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Use simple background</string>
@@ -123,7 +123,7 @@
                                 <cstring>ShowViewerDecoration</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                <string>View</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Use simple background</string>
@@ -159,7 +159,7 @@
                                         <cstring>UserDefinedViewerExt</cstring>
                                     </property>
                                     <property name="prefPath" stdset="0">
-                                        <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                        <string>View</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
@@ -191,7 +191,7 @@
                                 <cstring>UseAutoRotation</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                <string>View</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Use auto rotation</string>
@@ -232,7 +232,7 @@
                                 <cstring>UseAntialiasing</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Preferences/View</cstring>
+                                <string>View</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Using anti aliasing</string>
@@ -297,13 +297,13 @@
     <connection>
         <sender>SaveBtn</sender>
         <signal>clicked()</signal>
-        <receiver>DlgSettings3DView</receiver>
+        <receiver>Gui::Dialog::DlgSettings3DView</receiver>
         <slot>chooseDir()</slot>
     </connection>
     <connection>
         <sender>PrefCheckBox_UseInventorViewer</sender>
         <signal>toggled(bool)</signal>
-        <receiver>DlgSettings3DView</receiver>
+        <receiver>Gui::Dialog::DlgSettings3DView</receiver>
         <slot>warnInventor(bool)</slot>
     </connection>
 </connections>

@@ -1,13 +1,10 @@
-<!DOCTYPE UI><UI>
-<class>DlgDocTemplates</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
-        <cstring>DlgDocTemplates</cstring>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgDocTemplates</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgDocTemplates</cstring>
     </property>
-    <property>
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
@@ -15,169 +12,148 @@
             <height>255</height>
         </rect>
     </property>
-    <property>
-        <name>sizePolicy</name>
+    <property name="sizePolicy">
         <sizepolicy>
             <hsizetype>5</hsizetype>
             <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property>
-        <name>caption</name>
+    <property name="caption">
         <string>Document templates</string>
     </property>
     <vbox>
-        <property>
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property>
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget>
-            <class>QIconView</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QIconView">
+            <property name="name">
                 <cstring>TemplateIconView</cstring>
             </property>
         </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QLayoutWidget">
+            <property name="name">
                 <cstring>Layout1</cstring>
             </property>
             <grid>
-                <property>
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property>
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget row="0"  column="1" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
                         <cstring>PushButton4</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Other ...</string>
                     </property>
                 </widget>
-                <widget row="0"  column="0" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="0" column="0">
+                    <property name="name">
                         <cstring>LineEdit1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                 </widget>
             </grid>
         </widget>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QLayoutWidget">
+            <property name="name">
                 <cstring>Layout4</cstring>
             </property>
             <grid>
-                <property>
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property>
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget row="0"  column="3" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton" row="0" column="3">
+                    <property name="name">
                         <cstring>ButtonCancel</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Cancel</string>
                     </property>
                 </widget>
-                <spacer row="0"  column="4" >
-                    <property>
-                        <name>name</name>
+                <spacer row="0" column="4">
+                    <property name="name">
                         <cstring>Spacer2</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <spacer row="0"  column="2" >
-                    <property>
-                        <name>name</name>
+                <spacer row="0" column="2">
+                    <property name="name">
                         <cstring>Spacer1</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <spacer row="0"  column="0" >
-                    <property>
-                        <name>name</name>
+                <spacer row="0" column="0">
+                    <property name="name">
                         <cstring>Spacer3</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget row="0"  column="1" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
                         <cstring>ButtonOK</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>OK</string>
                     </property>
-                    <property>
-                        <name>default</name>
+                    <property name="default">
                         <bool>true</bool>
                     </property>
                 </widget>
@@ -189,37 +165,33 @@
     <connection>
         <sender>ButtonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>DlgDocTemplates</receiver>
+        <receiver>Gui::Dialog::DlgDocTemplates</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>ButtonOK</sender>
         <signal>clicked()</signal>
-        <receiver>DlgDocTemplates</receiver>
-        <slot>Validate()</slot>
+        <receiver>Gui::Dialog::DlgDocTemplates</receiver>
+        <slot>onValidate()</slot>
     </connection>
     <connection>
         <sender>TemplateIconView</sender>
         <signal>doubleClicked(QIconViewItem*)</signal>
-        <receiver>DlgDocTemplates</receiver>
-        <slot>IconDoubleClick(QIconViewItem*)</slot>
+        <receiver>Gui::Dialog::DlgDocTemplates</receiver>
+        <slot>onIconDoubleClicked(QIconViewItem*)</slot>
     </connection>
     <connection>
         <sender>TemplateIconView</sender>
         <signal>selectionChanged(QIconViewItem*)</signal>
-        <receiver>DlgDocTemplates</receiver>
-        <slot>ViewChange(QIconViewItem*)</slot>
+        <receiver>Gui::Dialog::DlgDocTemplates</receiver>
+        <slot>onViewChanged(QIconViewItem*)</slot>
     </connection>
     <connection>
         <sender>PushButton4</sender>
         <signal>clicked()</signal>
-        <receiver>DlgDocTemplates</receiver>
-        <slot>ChoseFile()</slot>
+        <receiver>Gui::Dialog::DlgDocTemplates</receiver>
+        <slot>onChooseFile()</slot>
     </connection>
-    <slot access="public">ChoseFile()</slot>
-    <slot access="public">IconDoubleClick(QIconViewItem*)</slot>
-    <slot access="public">Validate()</slot>
-    <slot access="public">ViewChange(QIconViewItem*)</slot>
 </connections>
 <tabstops>
     <tabstop>TemplateIconView</tabstop>
@@ -228,4 +200,11 @@
     <tabstop>ButtonOK</tabstop>
     <tabstop>ButtonCancel</tabstop>
 </tabstops>
+<slots>
+    <slot>onChooseFile()</slot>
+    <slot access="protected">onIconDoubleClicked(QIconViewItem*)</slot>
+    <slot>onValidate()</slot>
+    <slot access="protected">onViewChanged(QIconViewItem*)</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>

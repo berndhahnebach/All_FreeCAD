@@ -26,6 +26,7 @@
 
 #include "../Base/Parameter.h"
 #include "Widgets.h"
+#include "Window.h"
 #include "SpinBox.h"
 
 #ifndef _PreComp_
@@ -55,7 +56,7 @@ class PrefWidgetHandler;
  * @see PrefWidgetHandler
  * \author Werner Mayer
  */
-class PrefWidget : public FCParameterGrp::ObserverType
+class PrefWidget : public WindowParameter
 {
 public:
   virtual void setEntryName( const QString& name );
@@ -63,14 +64,11 @@ public:
 
   virtual void setParamGrpPath( const QString& path );
   QString paramGrpPath() const;
-  FCParameterGrp::handle getParamGrp() const;
 
   void installHandler(PrefWidgetHandler*);
   PrefWidgetHandler* getHandler();
 
   virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
-
-  static FCParameterGrp::handle getRootParamGrp();
 
 protected:
   /** Restores the preferences
@@ -82,12 +80,8 @@ protected:
    */
   virtual void savePreferences()    = 0;
 
-  PrefWidget(const char * name = 0, bool bInstall=true);
+  PrefWidget( bool bInstall=true );
   virtual ~PrefWidget();
-
-  void setPrefName( const QString& name );
-
-  FCParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
 
 private:
   PrefWidgetHandler* pHandler;
@@ -184,7 +178,7 @@ public:
     if (handler)
     {
 #ifdef FC_DEBUG
-      if (handler->pPref->getParamGrp().IsNull())
+      if (handler->pPref->getWindowParameter().IsNull())
         qFatal( "No parameter group specified!" );
 #endif
       handler->onRestore();

@@ -83,7 +83,7 @@ CommandLineBase::CommandLineBase(void)
   connect(lineEdit(), SIGNAL(returnPressed ()), this, SLOT(onLaunchCommand()));
 
   loadHistory();
-  GetWindowParameter()->Attach( this );
+  getWindowParameter()->Attach( this );
 }
 
 /**
@@ -91,7 +91,7 @@ CommandLineBase::CommandLineBase(void)
  */
 CommandLineBase::~CommandLineBase(void)
 {
-  GetWindowParameter()->Detach( this );
+  getWindowParameter()->Detach( this );
   saveHistory();
 }
 
@@ -101,7 +101,7 @@ CommandLineBase::~CommandLineBase(void)
 void CommandLineBase::saveHistory()
 {
   // write the recent commands into file
-  FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("History");
+  FCParameterGrp::handle hCmdGrp = getWindowParameter()->GetGroup("History");
 
   // copy from list box first
   std::list<std::string> alCmdList;
@@ -124,7 +124,7 @@ void CommandLineBase::saveHistory()
  */
 void CommandLineBase::loadHistory()
 {
-  FCParameterGrp::handle hGrp = GetWindowParameter();
+  FCParameterGrp::handle hGrp = getWindowParameter();
   _maxCount = hGrp->GetInt("SizeCmdLine", _maxCount);
 
   // get the recent commands
@@ -345,9 +345,7 @@ bool CommandLineBase::eventFilter       ( QObject* o, QEvent* e )
 
 void CommandLineBase::show()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().
-    GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  bool show = (hGrp->GetBool("ShowCmdLine", true));
+  bool show = getWindowParameter()->GetBool( "ShowCmdLine", true );
 
   if ( !show )
     QComboBox::hide();

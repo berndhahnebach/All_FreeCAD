@@ -36,14 +36,16 @@ namespace Dialog {
 /**
  * This class implements a dialog containing several preference pages.
  * 
- * Each preference page can be created by the Qt Designer selecting the "Widget" project.
+ * Each preference page can be created by the Qt Designer selecting the "Widget" item
+ * in the project dialog.
  * For automation of saving or loading the settings of the elements of such a page
  * (e.g. combo boxes, line edits, check boxes, ...) you can make use of the classes
  * inherited by @ref PrefWidget class like:
- * FCEditSpinBox, FCLineEdit, FCComboBox, FCListBox, FCCheckBox, FCRadioButton and FCSlider
+ * PrefSpinBox, PrefLineEdit, PrefComboBox, PrefListBox, PrefCheckBox, PrefRadioButton and
+ * PrefSlider
  *
  * The implementation class must inherit from the Qt-generated class and @ref PreferencePage.
- * For each element inside your page you want to save or load its settings automatically you 
+ * For each element inside your page you want to save or load its settings automatically, you 
  * have to call append(<objectname>->getHandler()) in the constructor of your class. Furthermore
  * you have to make sure to have specified the "prefEntry" and "prefPath" properties for each element
  * in the Qt designer.
@@ -51,21 +53,21 @@ namespace Dialog {
  * See the example below for more details:
  *
  * \code
- *  // This class was created with Qt designer
+ *  // This class was created by Qt's uic tool 
  *  class MyPrefPage : public QWidget
  *  {
  *  public:
  *    MyPrefPage( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 )
  *    {
  *      myLineEdit->setProperty( "prefEntry", "lineedit" );
- *      myLineEdit->setProperty( "prefPath", "User parameter:BaseApp/Preferences" );
+ *      myLineEdit->setProperty( "prefPath", "GroupName" );
  *      myCheckBox->setProperty( "prefEntry", "checkbox" );
- *      myCheckBox->setProperty( "prefPath", "User parameter:BaseApp/Preferences" );
+ *      myCheckBox->setProperty( "prefPath", "GroupName" );
  *      ...
  *    }
  *
- *    FCLineEdit* myLineEdit;
- *    FCCheckBox* myCheckBox;
+ *    PrefLineEdit* myLineEdit;
+ *    PrefCheckBox* myCheckBox;
  * };
  * \endcode
  * In the derived class you just have to append these elements
@@ -96,8 +98,6 @@ public:
 private:
   /** @name for internal use only */
   //@{
-  void accept();
-  void onApply();
   void onPrefPageClicked(int item );
 
   void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);

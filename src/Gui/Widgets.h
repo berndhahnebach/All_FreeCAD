@@ -25,11 +25,11 @@
 #define ___WIDGETS_H__
 
 #ifndef _PreComp_
-# include <qbutton.h>
 # include <qiconview.h>
 # include <qlineedit.h>
 # include <qlistview.h>
 # include <qmessagebox.h>
+# include <qpushbutton.h>
 #endif
 
 #include "../Base/Sequencer.h"
@@ -134,7 +134,7 @@ signals:
 
 /**
  * The CreateToolBarDialog class provides a dialog to create a new
- * toolbar or command bar.
+ * toolbar or commandbar.
  * \author Werner Mayer
  */
 class GuiExport CreateToolBarDialog : public QDialog
@@ -219,7 +219,7 @@ private:
  *  Implementation of a color button.
  * \author Werner Mayer
  */
-class GuiExport ColorButton : public QButton
+class GuiExport ColorButton : public QPushButton
 {
   Q_OBJECT
 
@@ -227,14 +227,10 @@ class GuiExport ColorButton : public QButton
 
 public:
   ColorButton( QWidget* parent = 0, const char* name = 0 );
-  ColorButton( const QBrush& b, QWidget* parent = 0, const char* name = 0, WFlags f = 0 );
   ~ColorButton();
 
   void setColor( const QColor& );
   QColor color() const;
-
-  QSize sizeHint() const;
-  QSize minimumSizeHint() const;
 
 public slots:
   virtual void onChooseColor();
@@ -244,11 +240,10 @@ signals:
   void changed();
 
 protected:
-  void drawButton( QPainter* );
   void drawButtonLabel( QPainter* );
 
 private:
-  QColor col;
+  QColor _col;
 };
 
 } // namespace Gui

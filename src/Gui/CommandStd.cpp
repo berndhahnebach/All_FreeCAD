@@ -270,9 +270,12 @@ FCCmdPrint::FCCmdPrint()
 
 void FCCmdPrint::Activated(int iMsg)
 {
-	GetAppWnd()->statusBar()->message("Printing...");
-	QPrinter printer( QPrinter::HighResolution );
-	GetAppWnd()->GetActiveView()->Print( &printer );
+  if ( GetAppWnd()->GetActiveView() )
+  {
+    GetAppWnd()->statusBar()->message("Printing...");
+    QPrinter printer( QPrinter::HighResolution );
+    GetAppWnd()->GetActiveView()->Print( &printer );
+  }
 }
 
 bool FCCmdPrint::IsActive(void)
@@ -1180,7 +1183,7 @@ FCCmdDlgParameter::FCCmdDlgParameter()
 
 void FCCmdDlgParameter::Activated(int iMsg)
 {
-	DlgParameter cDlg(GetAppWnd(),"ParameterDialog",true);
+  Gui::Dialog::DlgParameterImp cDlg(GetAppWnd(),"ParameterDialog",true);
 	cDlg.exec();
 }
 
@@ -1230,7 +1233,7 @@ FCCmdDlgMacroRecord::FCCmdDlgMacroRecord()
 
 void FCCmdDlgMacroRecord::Activated(int iMsg)
 {
-	DlgMacroRecordImp cDlg(GetAppWnd(),"ParameterDialog",true);
+  Gui::Dialog::DlgMacroRecordImp cDlg(GetAppWnd(),"ParameterDialog",true);
 	cDlg.exec();
 }
 
@@ -1260,7 +1263,7 @@ FCCmdDlgMacroExecute::FCCmdDlgMacroExecute()
 
 void FCCmdDlgMacroExecute::Activated(int iMsg)
 {
-	DlgMacroExecuteImp cDlg(GetAppWnd(),"Macro Execute",true);
+  Gui::Dialog::DlgMacroExecuteImp cDlg(GetAppWnd(),"Macro Execute",true);
 	cDlg.exec();
 }
 
@@ -1311,7 +1314,7 @@ FCCmdDlgCustomize::FCCmdDlgCustomize()
 	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Customize...";
-	sToolTipText	= "Customize toolbars and command bars";
+	sToolTipText	= "Customize toolbars and commandbars";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	//sPixmap			= "customize";
@@ -1406,7 +1409,7 @@ FCCmdCreateToolOrCmdBar::FCCmdCreateToolOrCmdBar()
 	sAppModule		= "";
 	sGroup			= "Standard";
 	sMenuText		= "Create tool-/cmdbar";
-	sToolTipText	= "Create toolbar and/or command bar";
+	sToolTipText	= "Create toolbar and/or commandbar";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "CommandLine";

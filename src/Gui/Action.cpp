@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qobjectlist.h>
+# include <qpushbutton.h>
 # include <qstatusbar.h>
 # include <qwhatsthis.h>
 #endif

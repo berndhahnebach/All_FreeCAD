@@ -29,7 +29,8 @@
 namespace Gui {
 
 /** The LanguageFactoryInst singleton
-  */
+ * \author Werner Mayer
+ */
 class GuiExport LanguageFactoryInst : public Base::Factory
 {
 public:
@@ -73,6 +74,7 @@ inline GuiExport LanguageFactoryInst& LanguageFactory(void)
 // --------------------------------------------------------------------
 
 /** Retrieves the translated literals to the specified language.
+ * \author Werner Mayer
  */
 class GuiExport LanguageProducer : public Base::AbstractProducer
 {
@@ -96,7 +98,8 @@ private:
 // --------------------------------------------------------------------
 
 /**
- * The language factory supplier class
+ * The language factory supplier class.
+ * \author Werner Mayer
  */
 class GuiExport LanguageFactorySupplier
 {

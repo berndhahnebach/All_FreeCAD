@@ -46,10 +46,10 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool modal, WFlags fl )
-  : DlgTipOfTheDayBase( parent, name, modal, fl | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
+  : DlgTipOfTheDayBase( parent, name, modal, fl | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
+  WindowParameter("General")
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  bool tips = hGrp->GetBool("Tipoftheday", true);
+  bool tips = getWindowParameter()->GetBool("Tipoftheday", true);
   checkShowTips->setChecked(tips);
 
   // Since the resize mode of DlgTipOfTheDayBase does not
@@ -64,8 +64,7 @@ DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool mo
 /** Destroys the object and frees any allocated resources */
 DlgTipOfTheDayImp::~DlgTipOfTheDayImp()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  hGrp->SetBool("Tipoftheday", checkShowTips->isChecked());
+  getWindowParameter()->SetBool("Tipoftheday", checkShowTips->isChecked());
 }
 
 /** Shows next tip taken from the Tip-of-the-day site. */
@@ -79,11 +78,8 @@ void DlgTipOfTheDayImp::onNext()
 void DlgTipOfTheDayImp::reload()
 {
   // search for the Wiki Tip-of-the-day site
-  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().
-                                GetGroup("BaseApp")->GetGroup("Preferences");
-
   QString home = GetApplication().GetHomePath();
-  QString path = hGrp->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
+  QString path = getParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
   QString file = home + path + "index.php@TipOfTheDay.html";
 
   QFile f ( file );

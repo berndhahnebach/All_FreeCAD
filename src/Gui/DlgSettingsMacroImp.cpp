@@ -24,10 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qfiledialog.h>
+# include <qdir.h>
 #endif
 
 #include "DlgSettingsMacroImp.h"
+#include "FileDialog.h"
+#include "../App/Application.h"
 
 using namespace Gui::Dialog;
 
@@ -36,11 +38,17 @@ using namespace Gui::Dialog;
  *  name 'name' and widget flags set to 'f' 
  */
 DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
-    : DlgSettingsMacro( parent, name, fl )
+  : DlgSettingsMacro( parent, name, fl )
 {
   append(PrefCheckBox_GuiAsComment->getHandler());
   append(PrefCheckBox_RecordGui   ->getHandler());
   append(MacroPath                ->getHandler());
+
+  if ( MacroPath->text().isEmpty() )
+  {
+    QDir d(GetApplication().GetHomePath());
+    MacroPath->setText( d.path() );
+  }
 }
 
 /** 
@@ -56,12 +64,10 @@ DlgSettingsMacroImp::~DlgSettingsMacroImp()
  */
 void DlgSettingsMacroImp::chooseDir()
 {
-  QString cPath = QFileDialog::getExistingDirectory ();
-
-  MacroPath->setText( cPath.latin1() );
+  QString cPath = FileDialog::getExistingDirectory ();
+  if ( !cPath.isEmpty() )
+    MacroPath->setText( cPath );
 }
-
-
 
 
 #include "DlgSettingsMacro.cpp"

@@ -30,6 +30,7 @@
 #endif
 
 #include "DlgCustomizeImp.h"
+#include "Application.h"
 #include "Tools.h"
 #include "PropertyPage.h"
 #include "WidgetFactory.h"
@@ -64,12 +65,12 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
   layout->setSpacing( 6 );
   layout->setMargin( 0 );
 
+  buttonHelp = new QPushButton( this, "buttonHelp" );
+  buttonHelp->setText( tr( "&Help" ) );
+  layout->addWidget( buttonHelp );
+
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   layout->addItem( spacer );
-
-  buttonApply = new QPushButton( this, "buttonApply" );
-  buttonApply->setText( tr( "&Apply" ) );
-  layout->addWidget( buttonApply );
 
   buttonClose = new QPushButton( this, "buttonCancel" );
   buttonClose->setText( tr( "&Close" ) );
@@ -90,13 +91,13 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
 
 
   // tab order
-  setTabOrder( tabWidget, buttonApply );
-  setTabOrder( buttonApply, buttonClose );
+  setTabOrder( tabWidget, buttonClose );
+  setTabOrder( buttonClose, buttonHelp );
 
   // connections
   //
-  connect(buttonApply, SIGNAL(clicked()), this, SLOT(onApply()));
-  connect( buttonClose, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  connect( buttonHelp,  SIGNAL ( clicked() ), ApplicationWindow::Instance, SLOT ( whatsThis() ));
+  connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( reject() ) );
 }
 
 /**
@@ -123,19 +124,6 @@ void DlgCustomizeImp::addPage ( QWidget* w )
 {
   w->reparent(tabWidget, QPoint(0,0));
   tabWidget->insertTab( w, w->caption() );
-}
-
-/** Click the Apply button to save all changes */
-void DlgCustomizeImp::onApply()
-{
-  QWidget* page = tabWidget->currentPage();
-  if (dynamic_cast<PropertyPage*>(page) != NULL)
-     (dynamic_cast<PropertyPage*>(page))->onApply();
-
-# ifdef FC_DEBUG
-  else
-    Base::Console().Warning("Added page does not inherit from class PropertyPage");
-#endif
 }
 
 #include "moc_DlgCustomizeImp.cpp"

@@ -43,7 +43,6 @@ using namespace Gui::Dialog;
 DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
 : DlgCustomCommandsBase(parent, name, fl)
 {
-
   IconView1->setHScrollBarMode( QScrollView::AlwaysOff );
 
   // paints for active and inactive the same color
@@ -51,25 +50,24 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
   pal.setInactive( pal.active() );
   ComboBoxCategory->setPalette( pal );
 
-  apply();
-
   connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
   connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
+  QMap<QString, int> cmdGroups;
   for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
-    _alCmdGroups[it->second->GetGroupName()].push_back(it->second);
+    cmdGroups[ it->second->GetGroupName() ]++;
   }
 
-  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = _alCmdGroups.begin(); it2 != _alCmdGroups.end(); ++it2)
+  for ( QMap<QString, int>::Iterator it2 = cmdGroups.begin(); it2 != cmdGroups.end(); ++it2)
   {
-    ComboBoxCategory->insertItem(it2->first.c_str());
+    ComboBoxCategory->insertItem( it2.key() );
   }
 
-  ComboBoxCategory->setCurrentItem(0);
+  ComboBoxCategory->setCurrentItem( 0 );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -77,38 +75,10 @@ DlgCustomCommandsImp::~DlgCustomCommandsImp()
 {
 }
 
-/** Applies all your changes */
-void DlgCustomCommandsImp::apply()
-{
-  Gui::CustomToolBar* bar;
-  QPtrList<Gui::CustomToolBar> bars;
-
-  bars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
-  for ( bar = bars.first(); bar; bar = bars.next() )
-  {
-    bar->saveXML();
-  }
-
-  bars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
-  for ( bar = bars.first(); bar; bar = bars.next() )
-  {
-    bar->saveXML();
-  }
-}
-
-/** Discards all your changes */
-void DlgCustomCommandsImp::cancel()
-{
-  if ( ApplicationWindow::Instance->GetCustomWidgetManager() != 0 )
-  {
-    ApplicationWindow::Instance->GetCustomWidgetManager()->update();
-  }
-}
-
 /** Shows the description for the corresponding command */
 void DlgCustomCommandsImp::onDescription(const QString& txt)
 {
-  TextLabel->setText(txt);
+  TextLabel->setText( txt );
 }
 
 /** Shows all commands of this category */
@@ -116,13 +86,27 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
 {
   IconView1->clear();
  
-  // group of commands found
-  if ( _alCmdGroups.find(group.latin1()) != _alCmdGroups.end() )
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  std::vector<FCCommand*> aCmds = cCmdMgr.GetGroupCommands( group.latin1() );
+  for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
   {
-    std::vector<FCCommand*> aCmds = _alCmdGroups[group.latin1()];
-    for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
+    (void) new Gui::CommandViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
+  }
+}
+
+void DlgCustomCommandsImp::showEvent( QShowEvent* e )
+{
+  DlgCustomCommandsBase::showEvent( e );
+
+  // try to update the command view
+  if ( !ComboBoxCategory->findItem("Macros", 0) )
+  {
+    FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
+    std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
+    if ( aclCurMacros.size() > 0)
     {
-      (void) new Gui::CommandViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
+      ComboBoxCategory->insertItem("Macros");
+      ComboBoxCategory->sort();
     }
   }
 }

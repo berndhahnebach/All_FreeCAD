@@ -69,7 +69,7 @@ class GuiExport FCCommand
 public:
 
 	FCCommand(const char* name,CMD_Type eType=Cmd_Normal);
-	virtual ~FCCommand() {}
+	virtual ~FCCommand();
 
 	/** @name Methodes to override when create a new command
 	 */
@@ -227,11 +227,11 @@ protected:
 	 *  The real values should be set in the constructor of the inhereting class.
 	 */
 	//@{
-	const char* sMenuText;
-	const char* sToolTipText;
-	const char* sWhatsThis;
-	const char* sStatusTip;
-	const char* sPixmap;
+	QString sMenuText;
+	QString sToolTipText;
+	QString sWhatsThis;
+	QString sStatusTip;
+	QString sPixmap;
 	int         iAccel;
 	//@}
 
@@ -290,50 +290,38 @@ protected:
  *  @see FCCommand
  *  @see FCCommandManager
  */
-class FCScriptCommand: public FCCommand
+class MacroCommand: public FCCppCommand
 {
 public:
-	FCScriptCommand(const char* name);
-	virtual ~FCScriptCommand() {}
+	MacroCommand(const char* name);
+	virtual ~MacroCommand() {}
 
 	/** @name Methodes reimplemented for Command Framework */
 	//@{
 	/// Method which get called when activated
 	virtual void Activated(int iMsg);
-	/// Get the help URL
-	virtual std::string CmdHelpURL(void);
-	/// Get the help page
-	virtual void CmdHelpPage(std::string &rcHelpPage);
-	/// Creates the used FCAction
-	virtual QAction * CreateAction(void);
-	/// returns the resource values
-	virtual std::string GetResource(const char* sName);
 	//@}
 
-	/** @name Methodes to get the propertys of the Script Command */
-	//@{
-	const char* GetScriptName ()	{return _sScriptName. c_str();}
-	const char* GetMenuText   ()	{return _sMenuText.   c_str();}
-	const char* GetToolTipText()	{return _sToolTipText.c_str();}
-	const char* GetWhatsThis  ()	{return _sWhatsThis.  c_str();}
-	const char* GetStatusTip  ()	{return _sStatusTip.  c_str();}
-	const char* GetPixmap     ()	{return _sPixmap.     c_str();}
-	const char* GetHelpPage   ()	{return _sHelpPage.   c_str();}
-	const char* GetHelpURL    ()	{return _sHelpURL.    c_str();}
-	int         GetAccel      ()	{return _iAccel;              }
-	//@}
-	/** @name Methodes to set the propertys of the Script Command */
-	//@{
-	void SetScriptName		(const char* sScriptName)	{_sScriptName	=sScriptName;}
-	void SetMenuText		(const char* sMenuText)		{_sMenuText		=sMenuText;}
-	void SetToolTipText		(const char* sToolTipText)	{_sToolTipText	=sToolTipText;}
-	void SetWhatsThis		(const char* sWhatsThis)	{_sWhatsThis	=sWhatsThis;}
-	void SetStatusTip		(const char* sStatusTip)	{_sStatusTip	=sStatusTip;}
-	void SetPixmap		    (const char* sPixmap)		{_sPixmap		=sPixmap;}
-	void SetHelpPage	    (const char* sHelpPage)		{_sHelpPage		=sHelpPage;}
-	void SetHelpURL		    (const char* sHelpURL)		{_sHelpURL		=sHelpURL;}
-	void SetAccel		    (int iAccel)				{_iAccel		=iAccel;}
-	//@}
+  /** @name Methodes to get the propertys of the Script Command */
+  //@{
+  QString GetScriptName () const { return scriptName;   }
+  QString GetWhatsThis  () const { return sWhatsThis;   }
+  QString GetMenuText   () const { return sMenuText;    }
+  QString GetToolTipText() const { return sToolTipText; }
+  QString GetStatusTip  () const { return sStatusTip;   }
+  QString GetPixmap     () const { return sPixmap;      }
+  int     GetAccel      () const { return iAccel;       }
+  //@}
+  /** @name Methodes to set the propertys of the Script Command */
+  //@{
+  void SetScriptName ( const QString& );
+  void SetWhatsThis  ( const QString& );
+  void SetMenuText   ( const QString& );
+  void SetToolTipText( const QString& );
+  void SetStatusTip  ( const QString& );
+  void SetPixmap     ( const QString& );
+  void SetAccel      ( int   i        );
+  //@}
 
 
 protected:
@@ -343,15 +331,7 @@ protected:
 	 *  The real values should be set with the Seter.
 	 */
 	//@{
-	std::string _sMenuText;
-	std::string _sToolTipText;
-	std::string _sWhatsThis;
-	std::string _sStatusTip;
-	std::string _sPixmap;
-	std::string _sScriptName;
-	std::string _sHelpPage;
-	std::string _sHelpURL;
-	int         _iAccel;
+	QString scriptName;
 	//@}
 
 };

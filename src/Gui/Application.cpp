@@ -260,11 +260,11 @@ ApplicationWindow::ApplicationWindow()
 */
 
 	// labels and progressbar
+	d->_pclActionLabel = new QLabel("", statusBar(), "Action");
+	d->_pclActionLabel->setFixedWidth(120);
+	statusBar()->addWidget(d->_pclActionLabel,0,true);
 	statusBar()->addWidget(ProgressBar::Instance(),0,true);
 	//ProgressBar::Instance().setFixedWidth(200);
-	//_pclActionLabel = new QLabel("Ready", statusBar(), "Action");
-	//_pclActionLabel->setFixedWidth(120);
-	//statusBar()->addWidget(_pclActionLabel,0,true);
 	d->_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
 	d->_pclSizeLabel->setFixedWidth(120);
 	statusBar()->addWidget(d->_pclSizeLabel,0,true);
@@ -318,13 +318,14 @@ ApplicationWindow::ApplicationWindow()
 	//setUsesBigPixmaps (true);
 
   FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
+/*
   if (hGrp->HasGroup("Macros"))
   {
     hGrp = hGrp->GetGroup("Macros");
     std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
     for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
     {
-      FCScriptCommand* pScript = new FCScriptCommand((*it)->GetGroupName());
+      MacroCommand* pScript = new MacroCommand((*it)->GetGroupName());
       pScript->SetScriptName((*it)->GetASCII("Script").c_str());
       pScript->SetMenuText((*it)->GetASCII("Menu").c_str());
       pScript->SetToolTipText((*it)->GetASCII("Tooltip").c_str());
@@ -335,7 +336,7 @@ ApplicationWindow::ApplicationWindow()
       d->_cCommandManager.AddCommand(pScript);
     }
   }
-
+*/
   // load recent file list
   hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
   if (hGrp->HasGroup("RecentFiles"))
@@ -361,9 +362,10 @@ ApplicationWindow::~ApplicationWindow()
   if (macros.size() > 0)
   {
     FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
+/*
     for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
     {
-      FCScriptCommand* pScript = (FCScriptCommand*)(*it);
+      MacroCommand* pScript = (MacroCommand*)(*it);
       FCParameterGrp::handle hMacro = hGrp->GetGroup(pScript->GetName());
       hMacro->SetASCII("Script", pScript->GetScriptName());
       hMacro->SetASCII("Menu", pScript->GetMenuText());
@@ -372,7 +374,7 @@ ApplicationWindow::~ApplicationWindow()
       hMacro->SetASCII("Statustip", pScript->GetStatusTip());
       hMacro->SetASCII("Pixmap", pScript->GetPixmap());
       hMacro->SetInt("Accel", pScript->GetAccel());
-    }
+    }*/
   }
 
   // save recent file list
@@ -565,9 +567,9 @@ void ApplicationWindow::addWindow( MDIView* view )
   d->_tabs->addTab( tab );
   d->_tabs->show();
   d->_tabs->update();
-  d->_tabs->blockSignals( true ); // avoid that selected() signal is emitted
+//  d->_tabs->blockSignals( true ); // avoid that selected() signal is emitted
   d->_tabs->setCurrentTab( tab );
-  d->_tabs->blockSignals( false );
+//  d->_tabs->blockSignals( false );
 }
 
 void ApplicationWindow::onWindowDestroyed()
@@ -691,7 +693,7 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 }
 
 // set text to the pane
-void ApplicationWindow::SetPaneText(int i, QString text)
+void ApplicationWindow::setPaneText(int i, QString text)
 {
   if (i==1)
     d->_pclActionLabel->setText(text);
@@ -895,7 +897,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 		Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
 		PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
-    GetCustomWidgetManager()->hide();
+    GetCustomWidgetManager()->hideToolBox();
 		Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
@@ -916,7 +918,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	  // running the start of the workbench object
 	  Interpreter().RunMethodVoid(pcWorkbench, "Start");
     d->_pcWidgetMgr->update(name);
-    GetCustomWidgetManager()->show();
+    GetCustomWidgetManager()->showToolBox();
 
 	  // update the Std_Workbench command and its action object
     FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
@@ -1197,8 +1199,8 @@ void ApplicationWindow::InitApplication(void)
 
 void messageHandler( QtMsgType type, const char *msg )
 {
-  bool mute = GuiConsoleObserver::bMute;
-  GuiConsoleObserver::bMute = false;
+//  bool mute = GuiConsoleObserver::bMute;
+//  GuiConsoleObserver::bMute = false;
 
   switch ( type )
   {
@@ -1213,7 +1215,7 @@ void messageHandler( QtMsgType type, const char *msg )
       abort();                    // deliberately core dump
   }
 
-  GuiConsoleObserver::bMute = mute;
+//  GuiConsoleObserver::bMute = mute;
 }
 
 void ApplicationWindow::RunApplication(void)
@@ -1253,7 +1255,12 @@ void ApplicationWindow::StartSplasher(void)
 	if ( ! (FCApplication::Config()["Verbose"] == "Strict") && (FCApplication::Config()["RunMode"] == "Gui") )
 	{
 		FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-		if (hGrp->GetBool("AllowSplasher", true))
+#ifdef FC_DEBUG
+  bool splash = false;
+#else
+  bool splash = true;
+#endif
+		if (hGrp->GetBool("AllowSplasher", splash))
 		{
 			QPixmap pixmap(( const char** ) splash_screen );
 			_splash = new SplashScreen( pixmap );
@@ -1277,8 +1284,15 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
 	// tip of the day?
 	FCParameterGrp::handle
   hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  bool tips = hGrp->GetBool("Tipoftheday", true);
-	if ( tips || force)
+
+#ifdef FC_DEBUG
+  bool tip = false;
+#else
+  bool tip = true;
+#endif
+
+  tip = hGrp->GetBool("Tipoftheday", tip);
+	if ( tip || force)
 	{
 		Gui::Dialog::DlgTipOfTheDayImp dlg(Instance, "Tipofday");
 		dlg.exec();

@@ -59,7 +59,7 @@ PythonWindow::PythonWindow(QWidget *parent,const char *name)
   nInsertTabs = 0;
   pythonSyntax = new PythonSyntaxHighlighter(this);
 
-  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
 
   // set colors
@@ -69,14 +69,14 @@ PythonWindow::PythonWindow(QWidget *parent,const char *name)
 /** Destroys the object and frees any allocated resources */
 PythonWindow::~PythonWindow()
 {
-  GetWindowParameter()->Detach( this );
+  getWindowParameter()->Detach( this );
   delete pythonSyntax;
 }
 
 /** Sets the new color for \a rcColor. */  
 void PythonWindow::OnChange( FCSubject<const char*> &rCaller,const char* rcColor )
 {
-  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
 
   long col = hPrefGrp->GetInt( rcColor, GetDefCol().color( rcColor ));
   QColor color;
@@ -127,7 +127,7 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
     : PythonWindow(parent, name)
 {
   // set font
-  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Notify( "FontSize" );
   hPrefGrp->Notify( "Font" );
 }
@@ -140,7 +140,7 @@ PythonEditor::~PythonEditor()
 /** Sets the new color for \a rcColor. */  
 void PythonEditor::OnChange( FCSubject<const char*> &rCaller,const char* sReason )
 {
-  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
 
   QFont font = currentFont();
   if (strcmp(sReason, "FontSize") == 0)

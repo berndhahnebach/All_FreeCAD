@@ -25,49 +25,41 @@
 
 #ifndef _PreComp_
 # include <qcheckbox.h>
+# include <qdir.h>
 # include <qlayout.h>
 # include <qmessagebox.h>
 # include <qpainter.h>
 #endif
 
 #include "FileDialog.h"
+#include "BitmapFactory.h"
 
 using namespace Gui;
 
 
-QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter,
-                                     QWidget *parent, const char* name )
+QString FileDialog::getSaveFileName ( const QString & startWith, const QString & filter, QWidget * parent,
+                                      const char* name, const QString & caption )
 {
-  return getOpenFileName( startWith, filter, parent, name, QString::null  );
-}
-
-QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent,
-                                     const char* name, const QString& caption )
-{
-  return QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
-}
-
-QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter,
-                                     QWidget *parent, const char* name )
-{
-  return getSaveFileName( startWith, filter, parent, name, QString::null  );
-}
-
-QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent,
-                                     const char* name, const QString& caption )
-{
-  return QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
-}
-
-QString FileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent,
-                                      const QString & caption )
-{
-  FileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
+  FileDialog fd(AnyFile, startWith, filter, parent, name, true);
   fd.setCaption(caption);
   if ( fd.exec() )
     return fd.selectedFileName();
   else
     return QString("");
+}
+
+QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, const char* name,
+                                          const QString& caption, bool dirOnly, bool resolveSymlinks )
+{
+  QString path = QFileDialog::getExistingDirectory( dir, parent, name, caption, dirOnly, resolveSymlinks );
+  // valid path was selected
+  if ( !path.isEmpty() )
+  {
+    QDir d(path);
+    path = d.path(); // get path in Qt manner
+  }
+
+  return path;
 }
 
 /**
@@ -77,6 +69,7 @@ QString FileDialog::getSaveFileName ( const QString & initially, const QString &
 FileDialog::FileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
     : QFileDialog(parent, name, modal)
 {
+  setMode(mode);
 }
 
 /**
@@ -232,16 +225,22 @@ void PreviewLabel::previewUrl( const QUrl &u )
 /**
  * Constructs an empty file icon provider called \a name, with the parent \a parent.
  */
-PixmapFileProvider::PixmapFileProvider( QObject * parent, const char * name )
+FileIconProvider::FileIconProvider( QObject * parent, const char * name )
   : QFileIconProvider( parent, name )
 {
+  QFileDialog::setIconProvider( this );
+}
+
+FileIconProvider::~FileIconProvider()
+{
+  QFileDialog::setIconProvider( 0L );
 }
 
 /**
  * Returns a pointer to a pixmap that should be used to signify the file with the information \a info.
  * If pixmap() returns 0, QFileDialog draws the default pixmap.
  */
-const QPixmap * PixmapFileProvider::pixmap ( const QFileInfo & info )
+const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
 {
   QString fn = info.filePath();
   bool b=info.exists();
@@ -253,13 +252,18 @@ const QPixmap * PixmapFileProvider::pixmap ( const QFileInfo & info )
     // seems to be valid image file
     if ( ext )
     {
-      QPixmap* px = new QPixmap;
-      px->load( fn, ext );
-      return px;
+      return BitmapFactory().fileFormat( "image_xpm" );
+    }
+    else // other file formats 
+    {
+      QString ext = info.extension().upper();
+      QPixmap* px = BitmapFactory().fileFormat( ext.latin1() );
+      if ( px )
+        return px;
     }
   }
 
-  return 0;
+  return QFileIconProvider::pixmap( info );
 }
 
 #include "moc_FileDialog.cpp"

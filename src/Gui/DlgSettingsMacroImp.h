@@ -30,15 +30,21 @@
 namespace Gui {
 namespace Dialog {
 
+/**
+ * The DlgSettingsMacroImp class implements a preference page to change settings
+ * for macro stuff.
+ * \author Jürgen Riegel
+ */
 class DlgSettingsMacroImp : public DlgSettingsMacro, public Gui::Dialog::PreferencePage
 { 
   Q_OBJECT
 
-  virtual void chooseDir();
-
 public:
   DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgSettingsMacroImp();
+
+protected:
+  virtual void chooseDir();
 };
 
 } // namespace Dialog

@@ -43,11 +43,11 @@ class GuiExport FileDialog : public QFileDialog
   Q_OBJECT
 
 public:
-  static QString getOpenFileName( const QString &initially = QString::null, const QString &filter = QString::null, QWidget *parent = 0, const char* name = 0 );
-  static QString getOpenFileName( const QString &initially, const QString &filter, QWidget *parent, const char* name, const QString& caption );
-  static QString getSaveFileName ( const QString & initially = QString::null, const QString & filter = QString::null, QWidget * parent = 0, const char * name = 0 );
-  static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const char * name, const QString & caption );
-  static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const QString & caption );
+  static QString getSaveFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
+                                   QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null );
+  static QString getExistingDirectory( const QString & dir = QString::null, QWidget *parent = 0, 
+                                       const char* name = 0, const QString& caption = QString::null, 
+                                       bool dirOnly = true, bool resolveSymlinks = true );
 
 public:
   FileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
@@ -99,13 +99,14 @@ private:
 // ======================================================================
 
 /**
- * The PixmapFileProvider class provides icons for FileDialog to use.
+ * The FileIconProvider class provides icons for FileDialog to use.
  * \author Werner Mayer
  */
-class PixmapFileProvider : public QFileIconProvider
+class FileIconProvider : public QFileIconProvider
 {
 public:
-  PixmapFileProvider( QObject * parent = 0, const char * name = 0 );
+  FileIconProvider( QObject * parent = 0, const char * name = 0 );
+  ~FileIconProvider();
 
   const QPixmap * pixmap ( const QFileInfo & info );
 };

@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgCustomActionsBase</class>
+<class>Gui::Dialog::DlgCustomActionsBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>DlgCustomActionsBase</cstring>
+        <cstring>Gui::Dialog::DlgCustomActionsBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -202,6 +202,12 @@
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="3" column="1">
                     <property name="name">
@@ -238,6 +244,12 @@
                     </property>
                     <property name="enabled">
                         <bool>false</bool>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="1">
@@ -322,6 +334,38 @@
         <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
     </image>
 </images>
+<connections>
+    <connection>
+        <sender>buttonNew</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
+        <slot>onAddCustomAction()</slot>
+    </connection>
+    <connection>
+        <sender>buttonDelete</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
+        <slot>onDelCustomAction()</slot>
+    </connection>
+    <connection>
+        <sender>actionPixmapButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
+        <slot>onCustomActionPixmap()</slot>
+    </connection>
+    <connection>
+        <sender>CustomActions</sender>
+        <signal>clicked(QListViewItem*)</signal>
+        <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
+        <slot>onCustomActionsCanDelete(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>CustomActions</sender>
+        <signal>doubleClicked(QListViewItem*)</signal>
+        <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
+        <slot>onCustomActionsDoubleClicked(QListViewItem*)</slot>
+    </connection>
+</connections>
 <tabstops>
     <tabstop>CustomActions</tabstop>
     <tabstop>actionName</tabstop>
@@ -333,6 +377,13 @@
     <tabstop>buttonNew</tabstop>
     <tabstop>buttonDelete</tabstop>
 </tabstops>
+<slots>
+    <slot access="protected">onCustomActionsCanDelete( QListViewItem* )</slot>
+    <slot access="protected">onCustomActionsDoubleClicked( QListViewItem* )</slot>
+    <slot access="protected">onAddCustomAction()</slot>
+    <slot access="protected">onDelCustomAction()</slot>
+    <slot access="protected">onCustomActionPixmap()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>gui::accellineedit.h</includehint>

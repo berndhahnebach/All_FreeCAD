@@ -42,12 +42,14 @@
 #	include <assert.h>
 #	include <string>
 #	include <stdio.h>
+# include <qglobal.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Macro.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
+#include "../Base/Exception.h"
 
 
 
@@ -131,7 +133,14 @@ void FCMacroManager::AddLine(LineType Type,const char* sLine)
 
 void FCMacroManager::Run(MacroType eType,const char *sName)
 {
-	Base::Interpreter().LaunchFile(sName);
+  try
+  {
+  	Base::Interpreter().LaunchFile( sName );
+  }
+  catch ( const Base::Exception& e )
+  {
+    qWarning( e.what() );
+  }
 }
 
 

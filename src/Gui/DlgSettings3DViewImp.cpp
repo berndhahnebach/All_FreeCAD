@@ -75,13 +75,11 @@ void DlgSettings3DViewImp::chooseDir()
 /**
  * Print warning if OpenInventor viewer is used.
  */
-void  DlgSettings3DViewImp::warnInventor(bool b)
+void DlgSettings3DViewImp::warnInventor(bool b)
 {
   if ( b )
     Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
 }
-
-
 
 #include "DlgSettings3DView.cpp"
 #include "moc_DlgSettings3DView.cpp"

@@ -105,6 +105,8 @@ public:
   bool start(const char* pszStr, unsigned long steps);
   /** Runs the next step */
   bool next();
+  /** Set the progress to \a progress. */
+  void setProgress( int progress );
 
   /** Handles all incoming events while the
    * progress bar is running. All key and mouse

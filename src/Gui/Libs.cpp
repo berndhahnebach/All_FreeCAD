@@ -60,6 +60,8 @@
 
 	// QT extension
 #	pragma comment(lib,QTLIBNAME)
+# pragma comment(lib,"qui.lib")
+# pragma warning( disable : 4098 )
 
 #	pragma comment(lib,INVENTORLIBNAME)
 #	pragma comment(lib,SOQTLIBNAME)

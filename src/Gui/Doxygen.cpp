@@ -24,11 +24,3 @@
 /*! \namespace Gui::PropertyEditor
     \brief The namespace of the property editor for FreeCAD
 */
-
-/*! \namespace QextMdi
-    \brief The namespace of the QextMdi stuff
-*/
-
-/*! \namespace KParts
-    \brief The namespace of the QextMdi stuff
-*/

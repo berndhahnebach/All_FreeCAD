@@ -25,6 +25,7 @@
 #define DLG_TIP_OF_THE_DAY_IMP_H__
 
 #include "DlgTipOfTheDay.h"
+#include "Window.h"
 
 #ifndef _PreComp_
 # include <qstringlist.h>
@@ -50,7 +51,7 @@ namespace Dialog {
  *
  * \author Werner Mayer
  */
-class DlgTipOfTheDayImp : public DlgTipOfTheDayBase
+class DlgTipOfTheDayImp : public DlgTipOfTheDayBase, public WindowParameter
 {
 public:
   DlgTipOfTheDayImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );

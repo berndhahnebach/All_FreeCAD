@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgReportViewBase</class>
+<class>Gui::Dialog::DlgReportViewBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>DlgReportViewBase</cstring>
+        <cstring>Gui::Dialog::DlgReportViewBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -38,7 +38,7 @@
                         <string>checkLogging</string>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                        <string>OutputWindow</string>
                     </property>
                     <property name="text" stdset="0">
                         <string>Shoot log messages</string>
@@ -55,7 +55,7 @@
                         <string>checkWarning</string>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                        <string>OutputWindow</string>
                     </property>
                     <property name="text" stdset="0">
                         <string>Shoot warnings</string>
@@ -72,7 +72,7 @@
                         <string>checkError</string>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                        <string>OutputWindow</string>
                     </property>
                     <property name="text" stdset="0">
                         <string>Shoot error messages</string>
@@ -132,7 +132,7 @@
                                 <string>colorText</string>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                                <string>OutputWindow</string>
                             </property>
                         </widget>
                     </hbox>
@@ -185,7 +185,7 @@
                                 <string>colorLogging</string>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                                <string>OutputWindow</string>
                             </property>
                         </widget>
                     </hbox>
@@ -238,7 +238,7 @@
                                 <string>colorWarning</string>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                                <string>OutputWindow</string>
                             </property>
                         </widget>
                     </hbox>
@@ -291,7 +291,7 @@
                                 <string>colorError</string>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                                <string>OutputWindow</string>
                             </property>
                         </widget>
                     </hbox>

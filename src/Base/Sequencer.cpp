@@ -79,7 +79,18 @@ bool SequencerBase::start(const char* pszStr, unsigned long steps)
     _aSteps.push_front(steps);
     nTotalSteps = 1;
     for (std::list<unsigned long>::iterator it=_aSteps.begin(); it!=_aSteps.end();++it)
+    {
+      if ( *it == 0 )
+      {
+        // one process has undetermined number of steps, so
+        // the whole process must be undetermined
+        nTotalSteps = 1;
+        break;
+      }
+
       nTotalSteps = nTotalSteps * (*it) + 1;
+    }
+
     nTotalSteps -= 1;
 
     _nMaxInstStarted = _nInstStarted;

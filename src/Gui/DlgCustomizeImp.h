@@ -39,12 +39,12 @@ namespace Gui {
 namespace Dialog {
 
 /**
- * Dialog which contains all available commands and separate
- * them in several categories (file, edit, view,...).
+ * Dialog which contains several tab pages to customize
+ * the changeable toolbars and commandbars or to define
+ * own macro actions. 
  *
- * You can extend the existing toolbars or buttongroups with 
+ * You can extend the existing toolbars or commandbars with 
  * several commands just by drag and drop.
- * Furthermore it is possible to create new commands from macros.
  * @see DlgCustomCommandsImp
  * @see DlgCustomToolbarsImp
  * @see DlgCustomCmdbarsImp
@@ -62,13 +62,10 @@ public:
   static void addPage( const QString& className );
   void addPage ( QWidget* w );
 
-private slots:
-  void onApply();
-
 private:
   /** @name for internal use only */
   //@{
-  QPushButton* buttonApply; /**< the apply button */
+  QPushButton* buttonHelp; /**< the help button */
   QPushButton* buttonClose; /**< the cancel button */
   QTabWidget* tabWidget; /**< tab wigdets containing all pages */ 
   QGridLayout* customLayout; /**< layout */

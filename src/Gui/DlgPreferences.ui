@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgPreferences</class>
+<class>Gui::Dialog::DlgPreferences</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>DlgPreferences</cstring>
+        <cstring>Gui::Dialog::DlgPreferences</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -128,31 +128,24 @@
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPreferences</receiver>
+        <receiver>Gui::Dialog::DlgPreferences</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>DlgPreferences</receiver>
+        <receiver>Gui::Dialog::DlgPreferences</receiver>
         <slot>reject()</slot>
     </connection>
     <connection>
         <sender>listBox</sender>
         <signal>highlighted(int)</signal>
-        <receiver>DlgPreferences</receiver>
+        <receiver>Gui::Dialog::DlgPreferences</receiver>
         <slot>onPrefPageClicked(int)</slot>
-    </connection>
-    <connection>
-        <sender>buttonApply</sender>
-        <signal>clicked()</signal>
-        <receiver>DlgPreferences</receiver>
-        <slot>onApply()</slot>
     </connection>
 </connections>
 <slots>
     <slot access="protected">onPrefPageClicked(int)</slot>
-    <slot access="protected">onApply()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

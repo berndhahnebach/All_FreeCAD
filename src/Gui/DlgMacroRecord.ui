@@ -1,8 +1,8 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>DlgMacroRecord</class>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgMacroRecord</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>DlgMacroRecord</cstring>
+        <cstring>Gui::Dialog::DlgMacroRecord</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -252,38 +252,38 @@
     <connection>
         <sender>PushButton9</sender>
         <signal>clicked()</signal>
-        <receiver>DlgMacroRecord</receiver>
-        <slot>OnTieToolBar()</slot>
+        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
+        <slot>onTieToolBar()</slot>
     </connection>
     <connection>
         <sender>PushButton9_2</sender>
         <signal>clicked()</signal>
-        <receiver>DlgMacroRecord</receiver>
-        <slot>OnTieCommandBar()</slot>
+        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
+        <slot>onTieCommandBar()</slot>
     </connection>
     <connection>
         <sender>PushButton10</sender>
         <signal>clicked()</signal>
-        <receiver>DlgMacroRecord</receiver>
-        <slot>OnTieKeyboard()</slot>
+        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
+        <slot>onTieKeyboard()</slot>
     </connection>
     <connection>
         <sender>PushButtonStart</sender>
         <signal>clicked()</signal>
-        <receiver>DlgMacroRecord</receiver>
-        <slot>Start()</slot>
+        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
+        <slot>start()</slot>
     </connection>
     <connection>
         <sender>PushButtonStop</sender>
         <signal>clicked()</signal>
-        <receiver>DlgMacroRecord</receiver>
-        <slot>Stop()</slot>
+        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
+        <slot>stop()</slot>
     </connection>
     <connection>
         <sender>PushButtonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>DlgMacroRecord</receiver>
-        <slot>Cancel()</slot>
+        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
+        <slot>cancel()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -296,13 +296,13 @@
     <tabstop>PushButtonCancel</tabstop>
 </tabstops>
 <slots>
-    <slot>Cancel()</slot>
-    <slot>OnTieCommandBar()</slot>
-    <slot>OnTieKeyboard()</slot>
-    <slot>OnTieToolBar()</slot>
-    <slot>Start()</slot>
-    <slot>Stop()</slot>
-    <slot>File()</slot>
+    <slot>cancel()</slot>
+    <slot>onTieCommandBar()</slot>
+    <slot>onTieKeyboard()</slot>
+    <slot>onTieToolBar()</slot>
+    <slot>start()</slot>
+    <slot>stop()</slot>
+    <slot>onSaveMacro()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

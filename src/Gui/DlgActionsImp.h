@@ -33,8 +33,9 @@ namespace Gui {
 namespace Dialog {
 
 /** This class implements the creation of user defined actions executing a recorded macro.
- * @see FCAction
- * @see FCScriptCommand
+ * It is possible to use these actions in own toolbars or commandbars.
+ * @see Gui::Action
+ * @see MacroCommand
  * @see FCCommand
  * \author Werner Mayer
  */
@@ -48,7 +49,7 @@ public:
 
   void show();
 
-private slots:
+protected:
   /** Enables/disables buttons for deletion */
   void onCustomActionsCanDelete( QListViewItem *i );
   /** Shows the setup of the action */
@@ -61,23 +62,14 @@ private slots:
   void onCustomActionPixmap();
 
 private:
-  /** Shows the pixmaps of macros if available */
-  void showPixmaps();
-  /** 
-   * Add all temporary created commands to the FCCommandManager.
-   * @see FCCommandManager
-   */
-  void apply();
-  /** Discards all changes */
-  void cancel();
+  /** Shows all actions and their pixmaps if available  */
+  void showActions();
    /** Name for the new created action */
   void newActionName();
 
 private:
   bool bShown; /**< For internal use only*/
   QString m_sPixmap; /**< Name of the specified pixmap */
-  std::vector<FCCommand*> _aclNewMacros; /**< All temporary created actions */
-  std::vector<FCCommand*> _aclDelMacros; /**< All temporary deleted actions */
 };
 
 } // namespace Dialog

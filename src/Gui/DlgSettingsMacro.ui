@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgSettingsMacro</class>
+<class>Gui::Dialog::DlgSettingsMacro</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>DlgSettingsMacro</cstring>
+        <cstring>Gui::Dialog::DlgSettingsMacro</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -71,11 +71,17 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
                             <property name="prefEntry" stdset="0">
-                                <cstring>FilePath</cstring>
+                                <string>MacroPath</string>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Macro</cstring>
+                                <string>Macro</string>
                             </property>
                         </widget>
                         <widget class="QPushButton">
@@ -89,6 +95,12 @@
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>40</width>
+                                    <height>32767</height>
+                                </size>
                             </property>
                             <property name="text">
                                 <string>...</string>
@@ -121,7 +133,7 @@
                                 <cstring>RecordGui</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Macro</cstring>
+                                <string>Macro</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Recording gui commands</string>
@@ -135,7 +147,7 @@
                                 <cstring>GuiAsComment</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/Macro</cstring>
+                                <string>Macro</string>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Record as comment</string>
@@ -200,7 +212,7 @@
     <connection>
         <sender>SaveBtn</sender>
         <signal>clicked()</signal>
-        <receiver>DlgSettingsMacro</receiver>
+        <receiver>Gui::Dialog::DlgSettingsMacro</receiver>
         <slot>chooseDir()</slot>
     </connection>
 </connections>

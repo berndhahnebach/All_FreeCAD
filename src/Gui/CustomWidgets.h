@@ -73,6 +73,8 @@ public:
   QString getWorkbench();
   virtual ~CustomWidget();
 
+  static FCParameterGrp::handle getRootParamGrp();
+
 protected:
   typedef QMap<FCParameterGrp::handle, QStringList> WorkbenchItems;
 
@@ -82,6 +84,8 @@ protected:
 
   QStringList _clItems;
   WorkbenchItems _clWbItems;
+
+  FCParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
 
 private:
   void init( const char* grp, const char* name );
@@ -119,7 +123,6 @@ protected:
 
   virtual void restorePreferences();
   virtual void savePreferences();
-  bool bSaveColor;
 };
 
 /**
@@ -172,6 +175,7 @@ public:
   CustomToolBar* getToolBar( const QString& name );
   QPtrList<CustomToolBar> getToolBars();
   void addToolBar   ( const QString& type, const QStringList& defIt );
+  void removeToolBarFromSettings( const QString& name);
   void removeToolBar( const QString& name);
   void removeToolBarItems ( const QString& type, const QStringList& item );
   int countToolBars();
@@ -179,6 +183,7 @@ public:
   CustomToolBar* getCommandBar( const QString& name );
   QPtrList<CustomToolBar> getCommdandBars();
   void addCommandBar    ( const QString& type, const QStringList& defIt );
+  void removeCommandBarFromSettings( const QString& name);
   void removeCommandBar ( const QString& name );
   void removeCommandBarItems (const QString& type, const QStringList& item);
   int countCommandBars();
@@ -191,8 +196,8 @@ public:
   void removeMenuItems ( const QString& type, const QStringList& item );
   int countPopupMenus();
 
-  void show();
-  void hide();
+  void showToolBox();
+  void hideToolBox();
 
 private:
   struct CustomWidgetManagerP* d;

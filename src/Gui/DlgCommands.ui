@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgCustomCommandsBase</class>
+<class>Gui::Dialog::DlgCustomCommandsBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>DlgCustomCommandsBase</cstring>
+        <cstring>Gui::Dialog::DlgCustomCommandsBase</cstring>
     </property>
     <property name="geometry">
         <rect>

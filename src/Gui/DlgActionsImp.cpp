@@ -52,28 +52,22 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFl
 : DlgCustomActionsBase(parent, name, fl), bShown( false )
 {
   // search for all macros
-  std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
+  std::string cMacroPath = GetApplication().
+    GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
+    ->GetASCII("MacroPath",GetApplication().GetHomePath());
+
   QDir d(cMacroPath.c_str(),"*.FCMacro");
   actionMacros->clear();
   for (unsigned int i=0; i<d.count(); i++ )
     actionMacros->insertItem(d[i]);
 
-  showPixmaps();
+  showActions();
   newActionName();
-
-  // connections
-  //
-  connect(buttonNew, SIGNAL(clicked()), this, SLOT(onAddCustomAction()));
-  connect(buttonDelete, SIGNAL(clicked()), this, SLOT(onDelCustomAction()));
-  connect(actionPixmapButton, SIGNAL(clicked()), this, SLOT(onCustomActionPixmap()));
-  connect(CustomActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(onCustomActionsCanDelete(QListViewItem*)));
-  connect(CustomActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onCustomActionsDoubleClicked(QListViewItem*)));
 }
 
 /** Destroys the object and frees any allocated resources */
 DlgCustomActionsImp::~DlgCustomActionsImp()
 {
-  cancel();
 }
 
 /** 
@@ -90,7 +84,7 @@ void DlgCustomActionsImp::show()
   }
 }
 
-void DlgCustomActionsImp::showPixmaps()
+void DlgCustomActionsImp::showActions()
 {
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
@@ -103,38 +97,6 @@ void DlgCustomActionsImp::showPixmaps()
       item->setPixmap(0, Tools::fillUp(24,24,p));
     }
   }
-}
-
-void DlgCustomActionsImp::apply()
-{
-  FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
-  std::vector<FCCommand*>::iterator it;
-  for (it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it)
-  {
-    // add to the manager
-    rclMan.AddCommand(*it);
-  }
-
-  for (it = _aclDelMacros.begin(); it!= _aclDelMacros.end(); ++it)
-  {
-    // remove from manager and delete it immediately
-    rclMan.RemoveCommand(*it);
-  }
-
-  _aclNewMacros.clear();
-  _aclDelMacros.clear();
-}
-
-void DlgCustomActionsImp::cancel()
-{
-  // delete all temporary created commands again as they were not appended to the command manager
-  std::vector<FCCommand*>::iterator it;
-  for (it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it)
-  {
-    delete (*it);
-  }
-
-  _aclNewMacros.clear();
 }
 
 void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
@@ -159,27 +121,15 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
   if ( !i ) return; // no valid item
 
   actionName->setText(i->text(0));
-  FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
 
   // search for the command in the manager and if necessary in the temporary created ones
+  FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   FCCommand* pCmd = rclMan.GetCommandByName(i->text(0).latin1());
-  if (pCmd == NULL)
-  {
-    for (std::vector<FCCommand*>::iterator it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it)
-    {
-      if (i->text(0).startsWith((*it)->GetName()))
-      {
-        pCmd = *it;
-        break;
-      }
-    }
-  }
+  MacroCommand* pScript = dynamic_cast<MacroCommand*>(pCmd);
 
-  // command exists
-  if (pCmd != NULL)
+  // if valid command
+  if ( pScript )
   {
-    FCScriptCommand* pScript = (FCScriptCommand*)pCmd;
-    actionWhatsThis->setText(pScript->GetWhatsThis());
     bool bFound = false;
     for (int i = 0; i<actionMacros->count(); i++)
     {
@@ -196,14 +146,16 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
       Base::Console().Error(tr("Sorry, couldn't find macro file.").latin1());
     }
 
-    actionMenu->setText(pScript->GetMenuText());
-    actionToolTip->setText(pScript->GetToolTipText());
-    actionStatus->setText(pScript->GetStatusTip());
-    actionAccel->setText(QAccel::keyToString(pScript->GetAccel()));
+    // fill up labels with the command's data
+    actionWhatsThis -> setText( pScript->GetWhatsThis() );
+    actionMenu      -> setText( pScript->GetMenuText() );
+    actionToolTip   -> setText( pScript->GetToolTipText() );
+    actionStatus    -> setText( pScript->GetStatusTip() );
+    actionAccel     -> setText( QAccel::keyToString(pScript->GetAccel()) );
     PixmapLabel->clear();
-    if (QString(pScript->GetPixmap()).length() > 2)
+    if ( pScript->GetPixmap().length() > 2)
     {
-      QPixmap p = Gui::BitmapFactory().pixmap(pScript->GetPixmap());
+      QPixmap p = Gui::BitmapFactory().pixmap( pScript->GetPixmap() );
       PixmapLabel->setPixmap(p);
     }
   }
@@ -229,69 +181,60 @@ void DlgCustomActionsImp::onAddCustomAction()
     return;
   }
 
-  // search for the command in the manager and if necessary in the temporary created ones
+  // search for the command in the manager
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   FCCommand* pCmd = rclMan.GetCommandByName(actionName->text().latin1());
-  if (pCmd == NULL)
-  {
-    for (std::vector<FCCommand*>::iterator it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it)
-    {
-      if (actionName->text().startsWith((*it)->GetName()))
-      {
-        pCmd = *it;
-        break;
-      }
-    }
-  }
+  MacroCommand* macro = dynamic_cast<MacroCommand*>(pCmd);
 
-  // command exists
-  FCScriptCommand* macro;
-  if (pCmd != NULL)
+  // add pixmap to the item
+  QListViewItem* item;
+  if ( !macro )
   {
-    macro = (FCScriptCommand*)pCmd;
+    // add new action
+    macro = new MacroCommand(actionName->text().latin1());
+    rclMan.AddCommand( macro );
+    item = new QListViewItem(CustomActions,CustomActions->lastItem(), actionName->text());
   }
   else
   {
-    macro = new FCScriptCommand(actionName->text().latin1());
-    _aclNewMacros.push_back(macro);
-
-    QListViewItem* item = new QListViewItem(CustomActions,CustomActions->lastItem(), actionName->text());
-    
-    if (PixmapLabel->pixmap() != NULL)
-    {
-      QPixmap p = *PixmapLabel->pixmap();
-      item->setPixmap(0, Tools::fillUp(24,24,p));
-    }
+    item = CustomActions->currentItem();
+    item->setPixmap( 0, QPixmap() );
+  }
+  
+  if ( PixmapLabel->pixmap() && item )
+  {
+    QPixmap p = *PixmapLabel->pixmap();
+    item->setPixmap(0, Tools::fillUp(24,24,p));
   }
 
-  if (!actionWhatsThis->text().isEmpty())
-    macro->SetWhatsThis(actionWhatsThis->text().latin1());
+  if ( !actionWhatsThis->text().isEmpty() )
+    macro->SetWhatsThis( actionWhatsThis->text() );
   actionWhatsThis->clear();
   
-  if (!actionMacros-> currentText().isEmpty())
-    macro->SetScriptName(actionMacros-> currentText().latin1());
+  if ( !actionMacros-> currentText().isEmpty() )
+    macro->SetScriptName( actionMacros-> currentText() );
   
-  if (!actionMenu->text().isEmpty())
-    macro->SetMenuText(actionMenu->text().latin1());
+  if ( !actionMenu->text().isEmpty() )
+    macro->SetMenuText( actionMenu->text() );
   actionMenu->clear();
 
-  if (!actionToolTip->text().isEmpty())
-    macro->SetToolTipText(actionToolTip->text().latin1());
+  if ( !actionToolTip->text().isEmpty() )
+    macro->SetToolTipText( actionToolTip->text() );
   actionToolTip->clear();
 
-  if (!actionStatus->text().isEmpty())
-    macro->SetStatusTip(actionStatus->text().latin1());
+  if ( !actionStatus->text().isEmpty() )
+    macro->SetStatusTip( actionStatus->text() );
   actionStatus->clear();
 
-  if (!m_sPixmap.isEmpty())
-    macro->SetPixmap(m_sPixmap.latin1());
-  if (!actionAccel->text().isEmpty())
-    macro->SetAccel(QAccel::stringToKey(actionAccel->text()));
+  if ( !m_sPixmap.isEmpty() )
+    macro->SetPixmap( m_sPixmap );
+  PixmapLabel->clear();
+
+  if ( !actionAccel->text().isEmpty() )
+    macro->SetAccel( QAccel::stringToKey( actionAccel->text() ) );
   actionAccel->clear();
 
   newActionName();
-
-  setModified(true);
 }
 
 void DlgCustomActionsImp::onDelCustomAction()
@@ -315,31 +258,18 @@ void DlgCustomActionsImp::onDelCustomAction()
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
   std::vector<FCCommand*>::iterator it2;
 
-  // if the command is registered in the manager just mark it for deletion
-  // but do not delete it now
+  // if the command is registered in the manager just remove it
   for (it2 = aclCurMacros.begin(); it2!= aclCurMacros.end(); ++it2)
   {
-    if (itemText == (*it2)->GetName())
+    if ( itemText == (*it2)->GetName() )
     {
-      _aclDelMacros.push_back(*it2);
-      break;
-    }
-  }
-
-  // if the command is temporary created remove and delete it
-  for (it2 = _aclNewMacros.begin(); it2!= _aclNewMacros.end(); ++it2)
-  {
-    if (itemText == (*it2)->GetName())
-    {
-      delete *it2;
-      _aclNewMacros.erase(it2);
+      // remove from manager and delete it immediately
+      rclMan.RemoveCommand( *it2 );
       break;
     }
   }
 
   newActionName();
-
-  setModified(true);
 }
 
 void DlgCustomActionsImp::onCustomActionPixmap()
@@ -398,6 +328,8 @@ void DlgCustomActionsImp::onCustomActionPixmap()
 
   dlg->exec();
 
+  PixmapLabel->clear();
+  m_sPixmap = QString::null;
   if ( dlg->result() == QDialog::Accepted )
   {
     QIconViewItem* item = iconView->currentItem();
@@ -430,16 +362,7 @@ void DlgCustomActionsImp::newActionName()
     std::vector<FCCommand*>::iterator it;
     for ( it = aclCurMacros.begin(); it!= aclCurMacros.end(); ++it )
     {
-      if (sName == (*it)->GetName())
-      {
-        bUsed = true;
-        break;
-      }
-    }
-
-    for ( it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it )
-    {
-      if (sName == (*it)->GetName())
+      if ( sName == (*it)->GetName() )
       {
         bUsed = true;
         break;

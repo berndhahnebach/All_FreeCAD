@@ -30,6 +30,7 @@
 #endif
 
 #include "propertyeditorfont.h"
+#include "Widgets.h"
 
 using namespace Gui::PropertyEditor;
 
@@ -87,52 +88,6 @@ void FontEditorItem::onChangeFont()
 
 // ======================================================================
 
-class ColorButton : public QPushButton
-{
-public:
-  ColorButton( QWidget* parent = 0, const char* name = 0 );
-  ~ColorButton();
-
-  void setColor( const QColor& );
-  QColor color() const;
-
-protected:
-  void drawButtonLabel( QPainter* );
-
-private:
-  QColor col;
-};
-
-ColorButton::ColorButton(QWidget* parent, const char* name)
-  : QPushButton( parent, name )
-{
-}
-
-ColorButton::~ColorButton()
-{
-}
-
-void ColorButton::setColor( const QColor& c )
-{
-  col = c;
-  update();
-}
-
-QColor ColorButton::color() const
-{
-  return col;
-}
-
-void ColorButton::drawButtonLabel( QPainter *paint )
-{
-  QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
-                   : palette().disabled().buttonText();
-  paint->setPen( pen );
-  paint->setBrush( QBrush( col ) );
-
-  paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
-}
-
 ColorEditorItem::ColorEditorItem( QListView* lv, const QString& text, const QVariant& value )
     :EditableItem( lv, value )
 {
@@ -145,39 +100,32 @@ QWidget* ColorEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  ColorButton* editor = new ColorButton( parent, "ColorEditorItem::edit" );
+  Gui::ColorButton* editor = new Gui::ColorButton( parent, "ColorEditorItem::edit" );
 
   editor->setColor( _color );
 
-  connect(editor, SIGNAL(clicked()), this, SLOT(onChangeColor()));
+  connect(editor, SIGNAL( changed() ), this, SLOT( onChangeColor() ));
   return editor;
 }
 
 void ColorEditorItem::stopEdit( QWidget* editor, int column )
 {
-  _color = dynamic_cast<ColorButton*>(_editor)->color();
+  _color = dynamic_cast<Gui::ColorButton*>(_editor)->color();
   setOverrideValue( _color );
 }
 
 void ColorEditorItem::setDefaultValue()
 {
-  ColorButton* btn = dynamic_cast<ColorButton*>(_editor);
+  Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(_editor);
   btn->setColor( value().toColor() );
 }
 
 void ColorEditorItem::onChangeColor()
 {
-  ColorButton* btn = dynamic_cast<ColorButton*>(_editor);
-
+  Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(_editor);
   if ( btn )
   {
-    QColor col = QColorDialog::getColor ( /*Qt::white, listView()*/ );
-
-    if ( col.isValid() )
-    {
-      onValueChanged();
-      btn->setColor( col );
-    }
+    onValueChanged();
   }
 }
 

@@ -72,9 +72,29 @@ void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
   _mpXPM[sName] = pXPM;
 }
 
+void BitmapFactoryInst::addFileFormat(const char* sFormat, const char** pXPM)
+{
+  QString format(sFormat);
+  _mpXPM[format.upper()] = pXPM;
+}
+
 void BitmapFactoryInst::removeXPM(const char* sName)
 {
   _mpXPM.erase(sName);
+}
+
+QPixmap* BitmapFactoryInst::fileFormat(const char* sFormat)
+{
+  // first try to find it in the build in XPM
+  QMap<QString,const char**>::ConstIterator It = _mpXPM.find( sFormat );
+
+  QPixmap* px=0;
+  if(It != _mpXPM.end())
+  {
+    px = new QPixmap( It.data() );
+  }
+
+  return px;
 }
 
 QPixmap BitmapFactoryInst::pixmap(const char* sName)

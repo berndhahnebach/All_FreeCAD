@@ -48,14 +48,15 @@ public:
   WindowParameter(const char *name);
   virtual ~WindowParameter();
 
-  virtual void OnParameterChanged(void);
+  bool setGroupName( const char* name );
+  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
   /// get the parameters
-  FCParameterGrp::handle GetParameter(void);
+  FCParameterGrp::handle getParameter(void);
   /// return the parameter group of this window
-  FCParameterGrp::handle GetWindowParameter(void);
+  FCParameterGrp::handle getWindowParameter(void);
 
-  ApplicationWindow* GetAppWnd(void);
+  ApplicationWindow* applicationWindow(void);
 
 private:
   FCParameterGrp::handle _handle;

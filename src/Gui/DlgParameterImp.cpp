@@ -1,49 +1,33 @@
-/** \file DlgParameterImp.cpp
- *  \brief  
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *   
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
-/** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
- */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qmessagebox.h>
-#	include <qiconview.h>
-#	include <qfiledialog.h>
-#	include <qcombobox.h>
+# include <qmessagebox.h>
+# include <qiconview.h>
+# include <qfiledialog.h>
+# include <qcombobox.h>
 #endif
 
 #include "DlgParameterImp.h"
@@ -52,175 +36,177 @@
 
 #include "Icons/ParamDlgImgs.h"
 
+using namespace Gui::Dialog;
 
-//**************************************************************************
-//**************************************************************************
-// DlgParameter
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-/*
- *  Constructs a DlgParameter
+/**
+ *  Constructs a DlgParameterImp which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
  */
-DlgParameter::DlgParameter( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : ParameterDialog( parent, name, modal, fl ),_pcMainLabel(0L)
+DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+    : DlgParameter( parent, name, modal, fl ),_pcMainLabel(0L)
 {
-	const std::map<std::string,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
+  const std::map<std::string,FCParameterManager *> rcList = GetApplication().GetParameterSetList();
 
-	for( std::map<std::string,FCParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
-	{
-		if(It->first == "User parameter")
-			SetNameComboBox->insertItem(It->first.c_str(),1);
-		else
-			SetNameComboBox->insertItem(It->first.c_str(),-1);
-	}
+  for( std::map<std::string,FCParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
+  {
+    if(It->first == "User parameter")
+      SetNameComboBox->insertItem(It->first.c_str(),1);
+    else
+      SetNameComboBox->insertItem(It->first.c_str(),-1);
+  }
 
-	QString cStr("User parameter");
+  QString cStr("User parameter");
   SetNameComboBox->setCurrentText( cStr );
-	OnParameterSetChange(cStr);
+  
+  onParameterSetChange(cStr);
 }
 
-/*  
+/** 
  *  Destroys the object and frees any allocated resources
  */
-DlgParameter::~DlgParameter()
+DlgParameterImp::~DlgParameterImp()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgParameter::OnLoadParameterSet()
+/** \todo */
+void DlgParameterImp::onLoadParameterSet()
 { 
-	puts("button pressed");
+  puts("button pressed");
 }
 
-void DlgParameter::OnAddText()
+/** \todo */
+void DlgParameterImp::onAddText()
 {
 
 }
 
-void DlgParameter::DeleteItem()
+/** \todo */
+void DlgParameterImp::onDeleteItem()
 {
 
 }
 
-void DlgParameter::OnAddFloat()
+/** \todo */
+void DlgParameterImp::onAddFloat()
 {
 
 }
 
-void DlgParameter::OnAddGroup()
+/** \todo */
+void DlgParameterImp::onAddGroup()
 {
 
 }
 
-void DlgParameter::OnAddInteger()
+/** \todo */
+void DlgParameterImp::onAddInteger()
 {
 
 }
 
-void DlgParameter::OnCleatValue()
+/** \todo */
+void DlgParameterImp::onCleatValue()
 {
 
 }
 
-void DlgParameter::OnInsertFromFile()
+/** \todo */
+void DlgParameterImp::onInsertFromFile()
 {
 
 }
 
-
-
-void DlgParameter::OnParameterSetChange(const QString& rcString)
+/** Switches the type of parameters either to user or system parameters. */
+void DlgParameterImp::onParameterSetChange(const QString& rcString)
 {
-	FCParameterManager &rcParMngr = GetApplication().GetParameterSet(rcString.latin1());
+  FCParameterManager &rcParMngr = GetApplication().GetParameterSet(rcString.latin1());
 
-	if(_pcMainLabel) delete _pcMainLabel;
-	// remove all labels
-	ParameterView->clear();
+  if(_pcMainLabel) delete _pcMainLabel;
+  // remove all labels
+  ParameterView->clear();
 
-	// root label
-	_pcMainLabel = new ParameterLabelGroup(ParameterView,rcParMngr.GetGroup("BaseApp"));
+  // root label
+  _pcMainLabel = new ParameterLabelGroup(ParameterView,rcParMngr.GetGroup("BaseApp"));
 
-	_pcMainLabel->setOpen(true);
+  _pcMainLabel->setOpen(true);
 
-	ParameterView->triggerUpdate(); 
+  ParameterView->triggerUpdate(); 
 }
 
-//**************************************************************************
-//**************************************************************************
-// ParameterLabelGroup
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 
+// ---------------------------------------------------------------------------
 
 ParameterLabelGroup::ParameterLabelGroup( ParameterLabelGroup * parent, const FCHandle<FCParameterGrp> &hcGrp )
-    : QListViewItem( parent ),
-	_hcGrp(hcGrp)
+    : QListViewItem( parent ), _hcGrp(hcGrp)
 {
-	FillUp();	
+  fillUp();
 }
 
 ParameterLabelGroup::ParameterLabelGroup( QListView* parent, const FCHandle<FCParameterGrp> &hcGrp)
-    : QListViewItem( parent ),
-	_hcGrp(hcGrp)
+    : QListViewItem( parent ), _hcGrp(hcGrp)
 {
-	FillUp();	
+  fillUp();
 }
 
-void ParameterLabelGroup::FillUp(void)
+void ParameterLabelGroup::fillUp(void)
 {
-	//setPixmap( folderOpen );
-	// filing up groups
-	std::vector<FCHandle<FCParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
+  //setPixmap( folderOpen );
+  // filing up groups
+  std::vector<FCHandle<FCParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
 
-	setText(0,_hcGrp->GetGroupName());
+  setText(0,_hcGrp->GetGroupName());
 
-	for(std::vector<FCHandle<FCParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
-		new ParameterLabelGroup(this,*It);
-	
-	// filling up Text nodes
-	std::map<std::string,std::string> mcTextMap = _hcGrp->GetASCIIMap();
+  for(std::vector<FCHandle<FCParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
+    (void)new ParameterLabelGroup(this,*It);
 
-	QListViewItem *pcItem;
-	for(std::map<std::string,std::string>::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
-	{
-		pcItem = new QListViewItem(this,It2->first.c_str(),It2->second.c_str());
-		pcItem->setPixmap(0,QPixmap(Param_Text) );
-	}
+  // filling up Text nodes
+  std::map<std::string,std::string> mcTextMap = _hcGrp->GetASCIIMap();
 
-	// filling up Int nodes
-	std::map<std::string,long> mcIntMap = _hcGrp->GetIntMap();
+  QListViewItem *pcItem;
+  for(std::map<std::string,std::string>::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
+  {
+    pcItem = new QListViewItem(this,It2->first.c_str(),It2->second.c_str());
+    pcItem->setPixmap(0,QPixmap(Param_Text) );
+  }
 
-	for(std::map<std::string,long>::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
-	{
-		char b[255];
-		sprintf(b,"%ld",It3->second);
-		pcItem = new QListViewItem(this,It3->first.c_str(),b);
-		pcItem->setPixmap(0,QPixmap(Param_Int) );
-	}
+  // filling up Int nodes
+  std::map<std::string,long> mcIntMap = _hcGrp->GetIntMap();
 
-	// filling up Float nodes
-	std::map<std::string,double> mcFloatMap = _hcGrp->GetFloatMap();
+  for(std::map<std::string,long>::iterator It3=mcIntMap.begin();It3!=mcIntMap.end();It3++)
+  {
+    char b[255];
+    sprintf(b,"%ld",It3->second);
+    pcItem = new QListViewItem(this,It3->first.c_str(),b);
+    pcItem->setPixmap(0,QPixmap(Param_Int) );
+  }
 
-	for(std::map<std::string,double>::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
-	{
-		char b[255];
-		sprintf(b,"%f",It4->second);
-		pcItem = new QListViewItem(this,It4->first.c_str(),b);
-		pcItem->setPixmap(0,QPixmap(Param_Float) );
-	}
+  // filling up Float nodes
+  std::map<std::string,double> mcFloatMap = _hcGrp->GetFloatMap();
 
-	// filling up bool nodes
-	std::map<std::string,bool> mcBoolMap = _hcGrp->GetBoolMap();
+  for(std::map<std::string,double>::iterator It4=mcFloatMap.begin();It4!=mcFloatMap.end();It4++)
+  {
+    char b[255];
+    sprintf(b,"%f",It4->second);
+    pcItem = new QListViewItem(this,It4->first.c_str(),b);
+    pcItem->setPixmap(0,QPixmap(Param_Float) );
+  }
 
-	for(std::map<std::string,bool>::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
-	{
-		pcItem = new QListViewItem(this,It5->first.c_str(),It5->second?"true":"false");
-		pcItem->setPixmap(0,QPixmap(Param_Float) );
-	}
+  // filling up bool nodes
+  std::map<std::string,bool> mcBoolMap = _hcGrp->GetBoolMap();
+
+  for(std::map<std::string,bool>::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
+  {
+    pcItem = new QListViewItem(this,It5->first.c_str(),It5->second?"true":"false");
+    pcItem->setPixmap(0,QPixmap(Param_Float) );
+  }
 }
 
 void ParameterLabelGroup::activate ()
 {
-	//puts("Activated");
+  //puts("Activated");
 }
 
 

@@ -163,9 +163,9 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
 
   insert("FreeCAD output.\n");
   Base::Console().AttacheObserver(this);
-  GetWindowParameter()->Attach( this );
+  getWindowParameter()->Attach( this );
 
-  GetWindowParameter()->NotifyAll();
+  getWindowParameter()->NotifyAll();
 }
 
 /**
@@ -173,7 +173,7 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
  */
 ReportOutput::~ReportOutput()
 {
-  GetWindowParameter()->Detach( this );
+  getWindowParameter()->Detach( this );
   Base::Console().DetacheObserver(this);
   delete reportHl;
 }
@@ -294,19 +294,19 @@ bool ReportOutput::isLogging() const
 void ReportOutput::onToggleError()
 {
   _err = _err ? false : true;
-  GetWindowParameter()->SetBool( "checkError", _err );
+  getWindowParameter()->SetBool( "checkError", _err );
 }
 
 void ReportOutput::onToggleWarning()
 {
   _warn = _warn ? false : true;
-  GetWindowParameter()->SetBool( "checkWarning", _warn );
+  getWindowParameter()->SetBool( "checkWarning", _warn );
 }
 
 void ReportOutput::onToggleLogging()
 {
   _logg = _logg ? false : true;
-  GetWindowParameter()->SetBool( "checkLogging", _logg );
+  getWindowParameter()->SetBool( "checkLogging", _logg );
 }
 
 void ReportOutput::OnChange(FCSubject<const char*> &rCaller, const char * sReason)

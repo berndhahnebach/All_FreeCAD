@@ -43,7 +43,7 @@ using namespace Gui::Dialog;
 DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFlags fl )
   : DlgCustomToolbars(parent, name, fl)
 {
-  setCaption( tr( "Command bars" ) );
+  setCaption( tr( "Commandbars" ) );
   updateData();
 }
 
@@ -52,7 +52,7 @@ DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
 {
 }
 
-/** Adds created or removes deleted command bars */
+/** Adds created or removes deleted commandbars */
 void DlgCustomCmdbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
@@ -89,10 +89,11 @@ void DlgCustomCmdbarsImp::cancel()
 {
 }
 
-/** Shows all actions from the last specified command bar */
+/** Shows all actions from the last specified commandbar */
 void DlgCustomCmdbarsImp::updateData()
 {
   ComboToolbars->clear();
+  ToolbarActions->clear();
   _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
 
   Gui::CustomToolBar* bar;
@@ -113,15 +114,12 @@ void DlgCustomCmdbarsImp::updateData()
   }
 }
 
-/** Creates new command bar */
+/** Creates new commandbar */
 void DlgCustomCmdbarsImp::onCreateToolbar()
 {
   QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCommandBars());
-  QString text = QInputDialog::getText(tr("New command bar"), tr("Specify the name of the new command bar, please."),
-#if QT_VERSION > 230
-                                      QLineEdit::Normal,
-#endif
-                                      def, 0, this);
+  QString text = QInputDialog::getText(tr("New commandbar"), tr("Specify the name of the new commandbar, please."),
+                                      QLineEdit::Normal, def, 0, this);
 
   if (!text.isNull() && !text.isEmpty())
   {
@@ -136,7 +134,7 @@ void DlgCustomCmdbarsImp::onCreateToolbar()
   }
 }
 
-/** Deletes a command bar */
+/** Deletes a commandbar */
 void DlgCustomCmdbarsImp::onDeleteToolbar()
 {
   QValueList<CheckListItem> items;
@@ -146,14 +144,14 @@ void DlgCustomCmdbarsImp::onDeleteToolbar()
     items.append( qMakePair( QString(it->name()), it->canModify() ) );
 
   CheckListDialog checklists(this, "", true) ;
-  checklists.setCaption( tr("Delete selected command bars") );
+  checklists.setCaption( tr("Delete selected commandbars") );
   checklists.setCheckableItems( items );
   if (checklists.exec())
   {
     QStringList checked = checklists.getCheckedItems();
     for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
     {
-      ApplicationWindow::Instance->GetCustomWidgetManager()->removeCommandBar( (*it).latin1() );
+      ApplicationWindow::Instance->GetCustomWidgetManager()->removeCommandBarFromSettings( (*it).latin1() );
     }
 
     updateData();

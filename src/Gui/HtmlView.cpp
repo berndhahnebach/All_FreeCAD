@@ -1513,7 +1513,7 @@ void FCHtmlView::SetForwardAvailable( bool b)
 QString FCHtmlView::GetDocDirectory()
 {
   QString home(GetApplication().GetHomePath());
-  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
+  QString path = getWindowParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
 
   QDir dir (home + path);
 
@@ -1531,7 +1531,7 @@ QString FCHtmlView::GetDocDirectory()
 
 QString FCHtmlView::GetScriptDirectory()
 {
-  QString path = GetWindowParameter()->GetASCII("ScriptDir", "../src/Tools").c_str();
+  QString path = getWindowParameter()->GetASCII("ScriptDir", "../src/Tools").c_str();
 
   QDir dir (path);
   dir.convertToAbs();
@@ -1776,7 +1776,7 @@ void FCHtmlView::PathSelected( const QString & path )
 
 bool FCHtmlView::SetMaxHistory (long lCnt)
 {
-  FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = getWindowParameter()->GetGroup("History");
 
   hHistGrp->SetInt("Max History items", lCnt);
 
@@ -1785,7 +1785,7 @@ bool FCHtmlView::SetMaxHistory (long lCnt)
 
 bool FCHtmlView::SetMaxBookmarks (long lCnt)
 {
-  FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = getWindowParameter()->GetGroup("Bookmarks");
 
   hBookmGrp->SetInt("Max Bookmark items", lCnt);
 
@@ -1795,7 +1795,7 @@ bool FCHtmlView::SetMaxBookmarks (long lCnt)
 void FCHtmlView::ReadHistory()
 {
   // get all stored history items
-  FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = getWindowParameter()->GetGroup("History");
   std::vector<std::string> hist = hHistGrp->GetASCIIs("History");
 
   int i=0;
@@ -1808,7 +1808,7 @@ void FCHtmlView::ReadHistory()
 void FCHtmlView::ReadBookmarks()
 {
   // get all stored bookmark items
-  FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = getWindowParameter()->GetGroup("Bookmarks");
   std::vector<std::string> bookm = hBookmGrp->GetASCIIs("Bookmark");
 
   int i=0;
@@ -1821,7 +1821,7 @@ void FCHtmlView::ReadBookmarks()
 void FCHtmlView::SaveHistory()
 {
   // write the history items into file
-  FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = getWindowParameter()->GetGroup("History");
   while ( int(d->mHistory.size()) > d->iMaxHist )
     d->mHistory.erase( d->mHistory.begin() );
 
@@ -1837,7 +1837,7 @@ void FCHtmlView::SaveHistory()
 void FCHtmlView::SaveBookmarks()
 {
   // write the bookmark items into file
-  FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = getWindowParameter()->GetGroup("Bookmarks");
   while ( int(d->mBookmarks.size()) > d->iMaxBookm )
     d->mBookmarks.erase( d->mBookmarks.begin() );
 

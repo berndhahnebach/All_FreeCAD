@@ -134,7 +134,7 @@ public:
 	/** @name status bar handling */
 	//@{	
 	/// set text to the pane
-	void SetPaneText(int i, QString text);
+	void setPaneText(int i, QString text);
 	//@}
 
 	/** @name workbench handling */
