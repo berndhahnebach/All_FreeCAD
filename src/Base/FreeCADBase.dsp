@@ -111,6 +111,11 @@ SOURCE=.\Documentation.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Doxygen.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
 SOURCE=.\Exception.cpp
 # End Source File
 # Begin Source File

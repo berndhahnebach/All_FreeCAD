@@ -27,28 +27,6 @@
 
 // *************************************************************************
 
-/*!
-  \mainpage
-
-  %SoQt is a C++ GUI toolkit for using Coin with the Qt library.  It
-  can also be used on top of Open Inventor from SGI and TGS.  The API
-  is based on the InventorXt API originally from SGI.
-
-  For a small and simple example on how it is used, see the example
-  code in the class documentation of the SoQt class.
-
-  Qt is a C++ toolkit for primarily the GUI parts of application
-  development. Qt is a multi-platform library, available for X11-based
-  systems (UNIX, Linux and *BSDs, for instance), MSWindows, Mac OS X
-  and embedded systems.
-
-  For more information on the Qt GUI toolkit, see the web site for
-  Troll Tech (makers of Qt): <http://www.trolltech.com>.
-
-  The corresponding documentation for Coin is located 
-  <a href="http://doc.coin3d.org/Coin/">here</a>.
-*/
-
 // *************************************************************************
 
 // includes the FreeCAD configuration

@@ -3412,17 +3412,7 @@ InputName=View3D
 # Begin Source File
 
 SOURCE=.\View3DInventor.cpp
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
 # ADD CPP /Yu"PreCompiled.h"
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# ADD CPP /Yu"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

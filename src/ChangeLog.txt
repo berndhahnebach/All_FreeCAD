@@ -292,3 +292,6 @@ Version: V0.1B64 Date: Sun Jun 15 01:20:15 2003 +++++++++++++++++++++++++++++++
 + Inventor Test command
 + Inventor BREP binding
 + examiner viewer
+
+Version: V0.1B65 Date: Sat Jul 12 11:44:20 2003 +++++++++++++++++++++++++++++++
++ finssh doc framework for basic use

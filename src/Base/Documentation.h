@@ -37,10 +37,11 @@
 
 // Std. configurations
 
-#include "PyExport.h"
+//#include "PyExport.h"
+typedef struct _object PyObject;
 
 #include <string>
-#include <map>
+#include <list>
 
 
 
@@ -53,7 +54,10 @@
  * specify the type of document
  */
 enum TDocType { 
-	  html,     /**< is a html coded document. */  
+	  TextPlain,/**< is a plain text coded document. */  
+	  TextAnsi, /**< is a text coded document with ANSI higlighting. */  
+	  Html,     /**< is a html coded document. */  
+	  Tech,     /**< is a LaTex coded document. */ 
 	  Doc,      /**< is a FreeCAD XML coded document. */  
 	  Script,   /**< is a python script which produce a html coded document. */  
 	  DocScript /**< is a python script which produce a Doc coded document. */  
@@ -101,24 +105,55 @@ protected:
 
 /** Abstract base class of all DocumentationProvider
  */
-class BaseExport FCDocumentationManager
+class BaseExport FCDocProviderDirectory : public FCDocumentationProvider
 {
 public:
 
 	/** the constructor
 	 * @param sRootPath set the root path the provider is hooked on.
 	 */
-	FCDocumentationManager(void){};
+	FCDocProviderDirectory(const char* sRootPath,const char* sDirPath );
 
 	/// virtual destructor
-	virtual ~FCDocumentationManager(){};
+	virtual ~FCDocProviderDirectory();
+
+	/** Retrive a given Document from this provider
+	 * @param PathExtension give the path beond the root path of the provider (without any extension).
+	 * @param rtWhichType returns the type of document.
+	 * @return a string with the document
+	 */
+	virtual std::string Retrive(const char * PathExtension, TDocType& rtWhichType );
+
+	/** Save a edited Document through this provider
+	 * @param PathExtension give the path beond the root path of the provider (without any extension).
+	 * @param rtWhichType specify the type of document.
+	 */
+	virtual void Save(const char * PathExtension,const char* sDoc , TDocType tWhichType );
+
+
+
+
+protected:
+	
+	std::string _cDirPath;
+
+};
+
+
+
+/** Abstract base class of all DocumentationProvider
+ */
+class BaseExport FCDocumentationManager
+{
+public:
+
 
 	/** Retrive a given Document 
 	 * @param URL give the path (without any extension).
 	 * @param rtWhichType returns the type of document.
 	 * @return a string with the document
 	 */
-	virtual std::string Retrive(const char * URL, TDocType& rtWhichType );
+	virtual std::string Retrive(const char * URL, TDocType tTypeRequest );
 
 	/** Save a edited Document through this provider
 	 * @param URL give the path (without any extension).
@@ -128,10 +163,38 @@ public:
 
 	void AddProvider(FCDocumentationProvider* pcProvider);
 
-protected:
+private:
 	
-	std::map<const char*,FCDocumentationProvider*> mpcProviderMap;
+	/// translate the document by a given XSL
+	void _Translate(std::string &rcDoc, const char* sTransXSL);
+	/// call the python script and delivers the output as a document
+	void _CallScript(std::string &rcScript);
+	/// list of registered Document Provider
+	std::list<FCDocumentationProvider*> mpcProviderList;
+
+
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	// static python wrapper of the exported functions
+	static PyObject *sPyAddPath  (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyObject *sPyGet      (PyObject *self,PyObject *args,PyObject *kwd);
+	static PyMethodDef    Methods[]; 
+
+	// Singelton!
+	/** the constructor */
+	FCDocumentationManager(void);
+	/// virtual destructor
+	virtual ~FCDocumentationManager();
+	// singelton 
+	static void Destruct(void);
+	static FCDocumentationManager &Instance(void);
+	static FCDocumentationManager *_pcSingelton;
+	friend FCDocumentationManager &GetDocumentationManager(void); 
+	
 };
+
+inline FCDocumentationManager &GetDocumentationManager(void){
+	return FCDocumentationManager::Instance();
+}
 
 
 

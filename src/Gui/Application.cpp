@@ -67,6 +67,8 @@
 #include "View.h"
 //#include "CommandStd.h"
 //#include "CommandView.h"
+#include "../Base/Documentation.h"
+
 #include "Splashscreen.h"
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
@@ -143,6 +145,12 @@ ApplicationWindow::ApplicationWindow()
 	_cBmpFactory.AddPath("../Icons");
 //	_cBmpFactory.GetPixmap("Function");
 
+	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/","E:\\Develop\\Projekte\\FreeCAD\\FreeCAD_0.1\\Doc\\Online\\"));
+	GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/","E:\\Develop\\Projekte\\FreeCAD\\FreeCAD_0.1\\Doc\\FrameWork\\"));
+
+	std::string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
+
+	test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
 
 
 	// labels and progressbar
