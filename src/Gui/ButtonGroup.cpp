@@ -658,20 +658,23 @@ void FCCmdBar::setButtonHeight( int i )
 void FCCmdBar::AddTestButtons(void)
 {
 	FCCmdBar* stack = this;
-	FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
-	stack->addPage( new QStackBarBtn( "Standard", mle ) );
-	stack->addPage( new QStackBarBtn( "Special 1", mle ) );
-	stack->addPage( new QStackBarBtn( "Test 1", mle ) );
-	stack->addPage( new QStackBarBtn( "Test 2", mle ) );
-	for (int i=0; i<30;i++)
+	for (int ii = 0; ii < 4; ii++)
 	{
-	  QToolButton* b0 = new QToolButton( /*DownArrow,*/ mle, "text" );
-	  b0->setProperty( "pixmap", QPixmap(px) );
-	  b0->setAutoRaise(true);
-	  b0->setTextLabel("Hallo Welt", true);
-	  b0->setFixedSize(32, 32);
-	  mle->insert(b0);
+	  char szBuf[20];
+	  sprintf(szBuf, "Page No. %d", ii);
+		FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
+	  stack->addPage( new QStackBarBtn( szBuf, mle ) );
+		  for (int i=0; i<30;i++)
+		  {
+			QToolButton* b0 = new QToolButton( /*DownArrow,*/ mle, "text" );
+			b0->setProperty( "pixmap", QPixmap(px) );
+			b0->setAutoRaise(true);
+			b0->setTextLabel("Hallo Welt", true);
+			b0->setFixedSize(32, 32);
+			mle->insert(b0);
+		  }
 	}
+	stack->setCurPage(1);
 }
 
 

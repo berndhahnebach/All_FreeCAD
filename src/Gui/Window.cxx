@@ -37,7 +37,7 @@
 
 FCWindow::FCWindow(const char *name)
 {
-	// not allowed to use a FCWindow without a name
+	// not allowed to use a FCWindow without a name, see the constructor of a FCDockWindow or a other QT Widget
 	assert(name);
 	printf("Instancieate:%s\n",name);
 

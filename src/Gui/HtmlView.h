@@ -26,7 +26,11 @@
  ***************************************************************************/
  
 
-
+/**
+ * TODO: 
+ *  + Bookmarks dürfen nur genau einmal in Liste stehen
+ *  + Bookmarks müssen sofort verfügbar sein
+ */
 
 #ifndef __HTML_VIEW_H__
 #define __HTML_VIEW_H__
@@ -41,37 +45,37 @@
 #include <qtextbrowser.h>
 #include "window.h"
 
-class FCTextBrowser : public QTextBrowser, public FCWindow
+class FCTextBrowser : public QTextBrowser
 {
   Q_OBJECT
 
   public:
     FCTextBrowser(QWidget * parent=0, const char * name=0);
 
-  protected slots:
-    void popupMenuAboutToShow();
-    void setBackwardAvailable(bool);
-    void setForwardAvailable (bool);
-    void refreshPage();
+    virtual void setText (const QString & contents, const QString & context=QString::null);
+    virtual void setSource (const QString & name);
+
+  signals:
+    void showPopupMenu();
 
   protected:
-    void viewportMousePressEvent ( QMouseEvent * e );
-
-    bool bBackward, bForward;
-    QPopupMenu* pclPopup;
+    virtual void viewportMousePressEvent (QMouseEvent * e);
 };
 
-class GuiExport FCHtmlView : public QWidget
+class GuiExport FCHtmlView : public FCDockWindow
 { 
     Q_OBJECT
 
-public:
-    FCHtmlView( const QString& path, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  public:
+    FCHtmlView( const QString& home_, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCHtmlView();
 
-private slots:
+    void setEnableHistory  (bool b=true);
+    void setEnableBookmarks(bool b=true);
+
+  private slots:
     void setBackwardAvailable( bool );
-    void setForwardAvailable( bool );
+    void setForwardAvailable ( bool );
 
     void textChanged();
     void openFile();
@@ -80,28 +84,43 @@ private slots:
     void histChosen( int );
     void bookmChosen( int );
     void addBookmark();
+    void checkBookmarks();
 
-protected:
-    virtual void mouseDoubleClickEvent ( QMouseEvent * e );
+  protected:
+    virtual QString getRelativeURL (const QString& path) const;
+    virtual QString getAbsoluteURL (const QString& path) const;
+    virtual QString getHelpDirectory() const;
 
-private:
-    void readHistory();
-    void readBookmarks();
+  protected slots:
+    void refreshPage();
+    void popupMenuAboutToShow();
+    void showPopupMenu();
+
+  private:
+    QStringList readHistory();
+    QStringList readBookmarks();
 
     QString selectedURL;
-    QStringList history, bookmarks;
     QMap<int, QString> mHistory, mBookmarks;
 
-    QButtonGroup* pclButtonGrp;
-    QToolButton*  pclButtonBack;
-    QToolButton*  pclButtonForward;
-    QToolButton*  pclButtonHome;
-    QComboBox*    pclPathCombo;
-    QTextBrowser* pclBrowser;
+    QButtonGroup*  pclButtonGrp;
+    QToolButton*   pclButtonBack;
+    QToolButton*   pclButtonForward;
+    QToolButton*   pclButtonHome;
+    QComboBox*     pclPathCombo;
+    FCTextBrowser* pclBrowser;
 
-protected:
+  protected:
+    bool bBackward, bForward;
+    bool bHistory, bBookm;
+
+    QString       m_strDocDir;
+    QString       m_strCaption;
     QGridLayout*  pclFormLayout;
     QHBoxLayout*  pclButtonGrpLayout;
+    QPopupMenu*   pclPopup;
+    QPopupMenu*   pclHistory;
+    QPopupMenu*   pclBookm;
 };
 
 #endif // __HTML_VIEW_H__

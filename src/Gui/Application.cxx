@@ -56,11 +56,12 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	FCHtmlView* hv = new FCHtmlView("..\\Doc\\Online\\",this);
+	QString home = QString("index.html");
+	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
 	addToolWindow( hv, KDockWidget::DockRight, m_pMdi, 70, "Help", "Help");
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	FCCmdBar* pCmdBar = new FCCmdBar(this,"Cmd Group");
+	FCCmdBar* pCmdBar = new FCCmdBar(this,"Cmd_Group");
 	pCmdBar->AddTestButtons();
 	addToolWindow( pCmdBar, KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
 
