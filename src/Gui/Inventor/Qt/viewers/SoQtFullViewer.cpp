@@ -75,7 +75,7 @@
 #include <Inventor/Qt/viewers/SoQtFullViewer.h>
 #include <Inventor/Qt/viewers/SoQtFullViewerP.h>
 #include <Inventor/Qt/widgets/SoQtPopupMenu.h>
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 
 #include <Inventor/events/SoMouseButtonEvent.h>
 #include <Inventor/events/SoKeyboardEvent.h>

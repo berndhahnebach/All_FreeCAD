@@ -30,14 +30,14 @@
 #include "../../../Config.h"
 
 #if HAVE_CONFIG_H
-#include <config.h>
+#include <autoconfig.h>
 #endif
 
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 #include <Inventor/Qt/widgets/SoAnyThumbWheel.h>
 
 #ifndef M_PI

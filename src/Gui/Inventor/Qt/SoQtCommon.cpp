@@ -24,6 +24,10 @@
 // includes the FreeCAD configuration
 #include "../../../Config.h"
 
+#if HAVE_CONFIG_H
+#include <autoconfig.h>
+#endif // HAVE_CONFIG_H
+
 // @configure_input@
 
 /* For the Doxygen tool. */

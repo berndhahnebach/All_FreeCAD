@@ -22,7 +22,7 @@
 \**************************************************************************/
 
 // includes the FreeCAD configuration
-#include "../../../Config.h"
+#include "../../../../Config.h"
 
 
 #include "6DOFEvents.h"

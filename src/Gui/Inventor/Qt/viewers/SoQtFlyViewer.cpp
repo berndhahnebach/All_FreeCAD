@@ -66,7 +66,7 @@
 // includes the FreeCAD configuration
 #include "../../../Config.h"
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 #include <Inventor/Qt/viewers/SoQtFlyViewer.h>
 #include <Inventor/events/SoKeyboardEvent.h>
 #include <Inventor/events/SoLocation2Event.h>

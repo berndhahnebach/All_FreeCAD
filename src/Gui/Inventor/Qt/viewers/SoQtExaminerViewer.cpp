@@ -154,7 +154,7 @@
 
 // *************************************************************************
 // includes the FreeCAD configuration
-#include "../../../Config.h"
+#include "../../../../Config.h"
 
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewerP.h>
@@ -163,10 +163,10 @@
 #include <math.h>
 
 #if HAVE_CONFIG_H
-#include <config.h>
+#include <autoconfig.h>
 #endif // HAVE_CONFIG_H
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 
 #include <Inventor/Qt/common/gl.h>
 

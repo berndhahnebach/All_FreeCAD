@@ -124,6 +124,10 @@
 // includes the FreeCAD configuration
 #include "../../../Config.h"
 
+#if HAVE_CONFIG_H
+#include <autoconfig.h>
+#endif // HAVE_CONFIG_H
+
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -161,7 +165,7 @@
 #include <Inventor/SoLists.h>
 #include <Inventor/SbLinear.h>
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
 #include <math.h>

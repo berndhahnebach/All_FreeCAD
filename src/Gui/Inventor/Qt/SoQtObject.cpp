@@ -33,10 +33,10 @@
 // #endif // __COIN_SOQT__
 
 #if HAVE_CONFIG_H
-#include <config.h>
+#include <autoconfig.h>
 #endif // HAVE_CONFIG_H
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 #include <Inventor/Qt/SoQtObject.h>
 #include <Inventor/Qt/devices/SoQtDevice.h>
 #include <Inventor/Qt/SoQtComponent.h>

@@ -72,6 +72,10 @@
 // includes the FreeCAD configuration
 #include "../../../Config.h"
 
+#if HAVE_CONFIG_H
+#include <autoconfig.h>
+#endif // HAVE_CONFIG_H
+
 #include <Inventor/Qt/common/gl.h>
 #include <Inventor/Qt/SoQtGLWidget.h>
 #include <Inventor/Qt/SoQtGLWidgetP.h>

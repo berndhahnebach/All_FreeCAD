@@ -41,7 +41,7 @@
 #include <Inventor/SoLists.h>
 #include <Inventor/errors/SoDebugError.h>
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 #include <Inventor/Qt/widgets/SoQtPopupMenu.h>
 #include <Inventor/Qt/widgets/QtNativePopupMenu.h>
 

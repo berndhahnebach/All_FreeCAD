@@ -101,7 +101,7 @@
 #include <Inventor/Qt/viewers/SoQtPlaneViewer.h>
 
 #if HAVE_CONFIG_H
-#include <config.h>
+#include <autoconfig.h>
 #endif // HAVE_CONFIG_H
 
 #include <assert.h>
@@ -121,7 +121,7 @@
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/events/SoKeyboardEvent.h>
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 
 #include <Inventor/Qt/viewers/SoGuiFullViewerP.h> // for pan()
 #include <Inventor/Qt/viewers/SoQtPlaneViewerP.h>

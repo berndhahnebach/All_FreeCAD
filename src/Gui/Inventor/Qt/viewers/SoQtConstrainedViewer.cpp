@@ -42,7 +42,7 @@
 #include <Inventor/errors/SoDebugError.h>
 #include <Inventor/SoPickedPoint.h>
 #include <Inventor/nodes/SoCamera.h>
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 
 // ************************************************************************
 

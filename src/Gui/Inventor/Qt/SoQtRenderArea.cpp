@@ -146,6 +146,10 @@
 // includes the FreeCAD configuration
 #include "../../../Config.h"
 
+#if HAVE_CONFIG_H
+#include <autoconfig.h>
+#endif // HAVE_CONFIG_H
+
 
 #if SOQT_DEBUG // For the "soinfo" debugging backdoor.
 #include <qgl.h>
@@ -161,7 +165,7 @@
 #include <Inventor/misc/SoBasic.h>
 #include <Inventor/nodes/SoSelection.h>
 
-#include <soQtdefs.h>
+#include <soqtdefs.h>
 #include <Inventor/Qt/SoQtBasic.h>
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/devices/SoQtKeyboard.h>

@@ -28,7 +28,7 @@
 
 
 // includes the FreeCAD configuration
-#include "../../../Config.h"
+#include "../../../../Config.h"
 
 #include <Inventor/Qt/devices/SoQtDevice.h>
 
