@@ -29,6 +29,7 @@
 
 #include "Icons/images.cpp"
 #include "icons/FCIcon.xpm"
+#include "icons/x.xpm"
 //#include "icons/FCBackground.xpm"
 
 //#include "FreeCADAbout.h"
@@ -175,6 +176,23 @@ void ApplicationWindow::DelToolBar(const char* name)
 		mpcToolBars.erase(It);
 	}
 }
+/// Get a named Command bar view or creat if not in
+FCToolboxGroup *ApplicationWindow::GetCommandBar(const char* name)
+{
+	FCCmdBar* pCmdBar = (FCCmdBar*) GetDockWindow("Cmd_Group");
+	FCToolboxGroup * p = pCmdBar->GetView(name);
+	if(p)
+		return p;
+	else
+		return pCmdBar->CreateView(name);
+}
+
+/// Delete a named Command bar view
+void ApplicationWindow::DelCommandBar(const char* name)
+{
+	FCCmdBar* pCmdBar = (FCCmdBar*)GetDockWindow("Cmd_Group");
+	pCmdBar->DeleteView(name);
+}
 
 /// Add a new named Dock Window
 void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
@@ -239,6 +257,9 @@ FCProgressBar* ApplicationWindow::GetProgressBar()
 
 void ApplicationWindow::CreateTestOperations()
 {
+	_cBmpFactory.AddPath("../../FreeCADIcons");
+	_cBmpFactory.AddPath("../Icons");
+	_cBmpFactory.GetPixmap("Function");
 
 	// register the application Standard commands from CommandStd.cpp
 	CreateStdCommands();
@@ -457,9 +478,12 @@ void ApplicationWindow::exportImage()
 
 // FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
-	{"ToolbarAddTo",         (PyCFunction) ApplicationWindow::sToolbarAddTo,       1},
-	{"ToolbarDelete",        (PyCFunction) ApplicationWindow::sToolbarDelete,     1},
-	{"ToolbarAddSeperator",  (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
+	{"ToolbarAddTo",          (PyCFunction) ApplicationWindow::sToolbarAddTo,       1},
+	{"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,     1},
+	{"ToolbarAddSeperator",   (PyCFunction) ApplicationWindow::sToolbarAddSeperator,     1},
+	{"CommandbarAddTo",       (PyCFunction) ApplicationWindow::sCommandbarAddTo,       1},
+	{"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,     1},
+	{"CommandbarAddSeperator",(PyCFunction) ApplicationWindow::sCommandbarAddSeperator,     1},
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -492,6 +516,36 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	Instance->DelToolBar(psToolbarName);
+    return Py_None;
+}
+PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
+{
+	char *psToolbarName;
+	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+		return NULL;                                      // NULL triggers exception 
+
+	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
+	//pcBar->addSeparator(); not implemented yet
+	return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
+{
+	char *psToolbarName,*psCmdName;
+	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
+	Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+    return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
+{
+    char *psToolbarName;
+    if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	Instance->DelCommandBar(psToolbarName);
     return Py_None;
 }
 
@@ -529,5 +583,194 @@ void FCAppConsoleObserver::Error  (const char *m)
 void FCAppConsoleObserver::Log    (const char *)
 {
 }
+
+//**************************************************************************
+//**************************************************************************
+// FCAutoWaitCursor
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+void FCAutoWaitCursor::Destruct(void)
+{
+	// not initialized or double destruct!
+	assert(_pclSingleton);
+	delete _pclSingleton;
+}
+
+FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
+{
+	// not initialized?
+	if(!_pclSingleton)
+	{
+
+#ifdef WNT
+		_pclSingleton = new FCAutoWaitCursor(GetCurrentThreadId(), 100);
+#else
+		_pclSingleton = new FCAutoWaitCursor(100);
+#endif
+	}
+
+	return *_pclSingleton;
+}
+
+// getter/setter
+int FCAutoWaitCursor::GetInterval()
+{
+  return iInterval;
+}
+
+void FCAutoWaitCursor::SetInterval(int i)
+{
+  iInterval = i;
+}
+
+void FCAutoWaitCursor::SetWaitCursor()
+{
+#	ifdef WNT // win32 api functions
+		AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
+		SetCursor(LoadCursor(NULL, IDC_WAIT));
+#	endif
+}
+
+
+#ifdef WNT // windows os
+
+FCAutoWaitCursor::FCAutoWaitCursor(DWORD id, int i)
+	:main_threadid(id), iInterval(i)
+{
+	iAutoWaitCursorMaxCount = 3;
+	iAutoWaitCursorCounter  = 3;
+	bOverride = false;
+	start();
+}
+
+#else
+
+FCAutoWaitCursor::FCAutoWaitCursor(int i)
+	: iInterval(i)
+{
+	iAutoWaitCursorMaxCount = 3;
+	iAutoWaitCursorCounter  = 3;
+	bOverride = false;
+	start();
+}
+
+#endif
+
+void FCAutoWaitCursor::run()
+{
+	while (true)
+	{
+	  // set the thread sleeping
+	  msleep(iInterval);
+
+	  // decrements the counter
+	  awcMutex.lock();
+	  if (iAutoWaitCursorCounter > 0)
+		iAutoWaitCursorCounter--;
+	  awcMutex.unlock();
+
+	  // set waiting cursor if the application is busy
+	  if (iAutoWaitCursorCounter == 0)
+	  {
+		// load the waiting cursor only once
+		if (bOverride == false)
+		{
+		  SetWaitCursor();
+		  bOverride = true;
+		}
+	  }
+	  // reset
+	  else if (bOverride == true)
+	  {
+		// you need not to restore the old cursor because 
+		// the application window does this for you :-))
+		bOverride = false;
+	  }
+	}
+}
+
+
+void FCAutoWaitCursor::timeEvent()
+{
+  // NOTE: this slot must be connected with the timerEvent of your class
+  // increments the counter
+  awcMutex.lock();
+  if (iAutoWaitCursorCounter < iAutoWaitCursorMaxCount)
+    iAutoWaitCursorCounter++;
+  awcMutex.unlock();
+}
+
+
+
+//**************************************************************************
+//**************************************************************************
+// FCAppConsoleObserver
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+FCBmpFactory::FCBmpFactory(void)
+{
+
+}
+
+FCBmpFactory::~FCBmpFactory()
+{
+
+}
+
+
+void FCBmpFactory::AddPath(const char* sPath)
+{
+	_vsPaths.push_back(sPath);
+}
+
+void FCBmpFactory::RemovePath(const char* sPath)
+{
+	_vsPaths.erase(FCfind<FCvector<FCstring>::iterator,FCstring>(_vsPaths.begin(),_vsPaths.end(),sPath));
+}
+
+
+void FCBmpFactory::AddXPM(const char* sName, const char* pXPM)
+{
+	_mpXPM[sName] = pXPM;
+}
+
+void FCBmpFactory::RemoveXPM(const char* sName)
+{
+	_mpXPM.erase(sName);
+}
+
+
+QPixmap FCBmpFactory::GetPixmap(const char* sName)
+{
+
+	// first try to find it in the build in XPM
+	FCmap<FCstring,const char*>::const_iterator It = _mpXPM.find(sName);
+
+	if(It != _mpXPM.end())
+		return QPixmap(It->second);
+
+	// try to find it in the given directorys
+	for(FCvector<FCstring>::const_iterator It2 = _vsPaths.begin();It2 != _vsPaths.end();It2++)
+	{
+		// list dir
+		QDir d( (*It2).c_str() );
+		if( QFile(d.path()+QDir::separator() + sName +".bmp").exists() )
+			return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
+		if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
+			return QPixmap(d.path()+QDir::separator()+ sName + ".png");
+	}
+
+	GetConsole().Warning("Cant find Pixmap:%s\n",sName);
+
+	return QPixmap(px);
+
+}
+
+
+
+
+
+
 
 #include "moc_Application.cpp"

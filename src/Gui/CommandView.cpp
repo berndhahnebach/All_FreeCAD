@@ -40,13 +40,13 @@
 //===========================================================================
 DEF_STD_CMD(FCCmdViewBottom		,"Std_ViewBottom");
 
-void FCCmdViewBottom::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewBottom::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Bottom";
 	*sToolTipText = "Set to bottom view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_bottom);
+	*sPixmap      = "view_bottom";
 	iAccel = 0;
 }
 
@@ -61,13 +61,13 @@ void FCCmdViewBottom::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewFront		,"Std_ViewFront");
 
-void FCCmdViewFront::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewFront::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Front";
 	*sToolTipText = "Set to front view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_front);
+	*sPixmap      = "view_front";
 	iAccel = 0;
 }
 
@@ -82,13 +82,13 @@ void FCCmdViewFront::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewLeft		,"Std_ViewLeft");
 
-void FCCmdViewLeft::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewLeft::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Left";
 	*sToolTipText = "Set to left view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_left);
+	*sPixmap      = "view_left";
 	iAccel = 0;
 }
 
@@ -103,13 +103,13 @@ void FCCmdViewLeft::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewRear		,"Std_ViewRear");
 
-void FCCmdViewRear::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewRear::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Rear";
 	*sToolTipText = "Set to rear view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_back);
+	*sPixmap      = "view_back";
 	iAccel = 0;
 }
 
@@ -124,13 +124,13 @@ void FCCmdViewRear::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewRight		,"Std_ViewRight");
 
-void FCCmdViewRight::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewRight::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Right";
 	*sToolTipText = "Set to right view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_right);
+	*sPixmap      = "view_right";
 	iAccel = 0;
 }
 
@@ -145,13 +145,13 @@ void FCCmdViewRight::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewTop		,"Std_ViewTop");
 
-void FCCmdViewTop::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewTop::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Top";
 	*sToolTipText = "Set to top view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_top);
+	*sPixmap      = "view_top";
 	iAccel = 0;
 }
 
@@ -166,13 +166,13 @@ void FCCmdViewTop::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewAxo		,"Std_ViewAxo");
 
-void FCCmdViewAxo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewAxo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Axometric";
 	*sToolTipText = "Set to axometric view";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_axo);
+	*sPixmap      = "view_axo";
 	iAccel = 0;
 }
 
@@ -187,13 +187,13 @@ void FCCmdViewAxo::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdViewFitAll		,"Std_ViewFitAll");
 
-void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Fit all";
 	*sToolTipText = "Fits the whole content on the screen";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(view_fitall);
+	*sPixmap      = "view_fitall";
 	iAccel = 0;
 }
 

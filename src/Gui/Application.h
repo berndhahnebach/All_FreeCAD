@@ -18,14 +18,45 @@ class QToolBar;
 #include "Command.h"
 #include "Widgets.h"
 #include <list>
+#include <vector>
+#include <map>
 
 class FCGuiDocument;
 class QComboBox;
 class FCDockWindow;
 class QToolBar;
 class FCView;
-
+class FCToolboxGroup;
 class FCAutoWaitCursor;
+
+
+/** The Bitmap Factory
+  * the main purpos is to collect all build in Bitmaps and 
+  * hold all paths for the extern bitmaps (files) to serve
+  * as a single point of axcesing bitmaps in FreeCAD
+  */
+class FCBmpFactory
+{
+public:
+	FCBmpFactory(void);
+	~FCBmpFactory();
+	/// Adds a path were pixmaps can be found
+	void AddPath(const char* sPath);
+	/// Remove a path from the list of pixmap paths
+	void RemovePath(const char* sPath);
+
+	/// Add a build in XPM pixmap under a given name
+	void AddXPM(const char* sName, const char* pXPM);
+	/// Remove a build in pixmap by a given name
+	void RemoveXPM(const char* sName);
+
+	/// retrive a pixmap by name
+	QPixmap GetPixmap(const char* sName);
+
+protected:
+	FCmap<FCstring,const char*> _mpXPM;
+	FCvector<FCstring>          _vsPaths;
+};
 
 
 /** The Applcation main class
@@ -66,10 +97,19 @@ public:
 	/// Reference to the command manager
 	FCCommandManager &GetCommandManager(void){return _cCommandManager;}
 
+	/// Referenc to the bitmap factory
+	FCBmpFactory     &GetBmpFactory(void){return _cBmpFactory;}
+
 	/// Get a named Toolbar or creat if not in
 	QToolBar *GetToolBar(const char* name);
 	/// Delete a named Toolbar
 	void DelToolBar(const char* name);
+
+	// Get a named Command bar view or creat if not in
+	FCToolboxGroup *GetCommandBar(const char* name);
+
+	/// Delete a named Command bar view
+	void DelCommandBar(const char* name);
 
 	/// Add a new named Dock Window
 	void          AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);
@@ -90,6 +130,9 @@ public:
 	PYFUNCDEF_S(sToolbarAddTo);
 	PYFUNCDEF_S(sToolbarDelete);
 	PYFUNCDEF_S(sToolbarAddSeperator);
+	PYFUNCDEF_S(sCommandbarAddTo);
+	PYFUNCDEF_S(sCommandbarDelete);
+	PYFUNCDEF_S(sCommandbarAddSeperator);
 
 	static PyMethodDef    Methods[]; 
  
@@ -97,6 +140,7 @@ public:
 protected:
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
+	FCBmpFactory     _cBmpFactory;
 
 signals:
 	void sendQuit();
@@ -177,107 +221,29 @@ protected:
  */
 class GuiExport FCAutoWaitCursor : public QObject, public QThread
 {
-  Q_OBJECT
 
-  public:
-	static void Destruct(void)
-  {
-  	// not initialized or double destruct!
-    assert(_pclSingleton);
-	  delete _pclSingleton;
-  }
+	Q_OBJECT
 
-	static FCAutoWaitCursor &Instance(void)
-  {
-	  // not initialized?
-	  if(!_pclSingleton)
-	  {
-#ifdef WNT
-		  _pclSingleton = new FCAutoWaitCursor(GetCurrentThreadId(), 100);
-#else
-		  _pclSingleton = new FCAutoWaitCursor(100);
-#endif
-	  }
-
-    return *_pclSingleton;
-  }
-
-  // getter/setter
-  int GetInterval()
-  {
-    return iInterval;
-  }
-
-  void SetInterval(int i)
-  {
-    iInterval = i;
-  }
-
-  void SetWaitCursor()
-  {
-#ifdef WNT // win32 api functions
-		AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
-		SetCursor(LoadCursor(NULL, IDC_WAIT));
-#endif
-  }
+public:
+	static void Destruct(void);
+	static FCAutoWaitCursor &Instance(void);
+	// getter/setter
+	int GetInterval();
+	void SetInterval(int i);
+	void SetWaitCursor();
 
   // Singleton
-  private:
+private:
 #ifdef WNT // windows os
-    FCAutoWaitCursor(DWORD id, int i)
-		:main_threadid(id), iInterval(i)
-    {
-      iAutoWaitCursorMaxCount = 3;
-      iAutoWaitCursorCounter  = 3;
-      bOverride = false;
-      start();
-    }
+    FCAutoWaitCursor(DWORD id, int i);
 #else
-    FCAutoWaitCursor(int i)
-		: iInterval(i)
-    {
-      iAutoWaitCursorMaxCount = 3;
-      iAutoWaitCursorCounter  = 3;
-      bOverride = false;
-      start();
-    }
+    FCAutoWaitCursor(int i);
 #endif
 
     static FCAutoWaitCursor* _pclSingleton;
 
-  protected:
-    void run()
-    {
-      while (true)
-      {
-        // set the thread sleeping
-        msleep(iInterval);
-
-        // decrements the counter
-        awcMutex.lock();
-        if (iAutoWaitCursorCounter > 0)
-          iAutoWaitCursorCounter--;
-        awcMutex.unlock();
-
-        // set waiting cursor if the application is busy
-        if (iAutoWaitCursorCounter == 0)
-        {
-          // load the waiting cursor only once
-          if (bOverride == false)
-          {
-            SetWaitCursor();
-            bOverride = true;
-          }
-        }
-        // reset
-        else if (bOverride == true)
-        {
-          // you need not to restore the old cursor because 
-          // the application window does this for you :-))
-          bOverride = false;
-        }
-      }
-    }
+protected:
+    void run();
 
     QMutex awcMutex;
     int iAutoWaitCursorCounter;
@@ -288,16 +254,14 @@ class GuiExport FCAutoWaitCursor : public QObject, public QThread
   	DWORD main_threadid;
 #endif
 
-  public slots:
-    void timeEvent()
-    {
-      // NOTE: this slot must be connected with the timerEvent of your class
-      // increments the counter
-      awcMutex.lock();
-      if (iAutoWaitCursorCounter < iAutoWaitCursorMaxCount)
-        iAutoWaitCursorCounter++;
-      awcMutex.unlock();
-    }
+public slots:
+    void timeEvent();
 };
+
+
+
+
+
+
 
 #endif

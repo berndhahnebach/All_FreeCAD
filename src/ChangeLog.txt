@@ -70,3 +70,7 @@ Version: V0.1B21 Date: Mon Jan 06 20:53:48 2003 +++++++++++++++++++++++++++++++
 + Building up Part Application 
 + starting Test Application
 + Adding FCFactory in Base
+
+Version: V0.1B22 Date: Thu Jan 09 22:16:02 2003 +++++++++++++++++++++++++++++++
++ Add FCBmpFactory
++ New Methodes in Gui. (python)

@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 #include <set>
+#include <algorithm>
 
 // OpenCasCade Base
 #include <Standard_Failure.hxx>

@@ -118,7 +118,7 @@ public:
 	ApplicationWindow *AppWnd(void);
 
 	// Profile methode, gives the command all the text and pixmap
-	virtual void CmdProfile(char** sMenuText, char** sToolTipText, char** sWhatsThis, char** sStatusTip, QPixmap &cPixmap, int &iAccel)=0;
+	virtual void CmdProfile(char** sMenuText, char** sToolTipText, char** sWhatsThis, char** sStatusTip, char** sPixmap, int &iAccel)=0;
 	/// Method which get called when activated, needs to be reimplemented!
 	virtual void Activated(void){assert(_eType&Cmd_Toggle == 0);}
 	/// Method which get called when toggled, needs to be reimplemented!
@@ -179,7 +179,7 @@ private:
 {\
 public:\
 	X():FCCommand(Y){}\
-	virtual void CmdProfile(char** sMenuText, char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel);\
+	virtual void CmdProfile(char** sMenuText, char** sToolTipText,char** sWhatsThis,char** sStatusTip, char** sPixmap,int &iAccel);\
 	virtual void Activated(void);\
 };
 

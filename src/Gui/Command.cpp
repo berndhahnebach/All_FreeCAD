@@ -20,6 +20,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "ButtonGroup.h"
+#include "../Base/Exception.h"
 
 #include "Icons/x.xpm"
 
@@ -69,27 +70,28 @@ bool FCAction::addTo(QWidget *w)
 
 
 FCCommand::FCCommand(const char* name,CMD_Type eType)
-	:_eType(eType),_pcName(name)
+	:_eType(eType),_pcName(name),_pcAction(0)
 {
 
 }
 
 void FCCommand::Init(void)
 {
+	if(_pcAction) return;
 	// create a action with the Application as parent (shortcuts)
 	_pcAction = new FCAction(ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
 
 	// set standard profile here
-	char*  sMenuText,*sToolTipText,*sWhatsThis,*sStatusTip;
+	char*  sMenuText,*sToolTipText,*sWhatsThis,*sStatusTip,*sPixMap;
 	sMenuText		= "No menu text! see CmdProfile()";
 	sToolTipText	= "No Tooltip text! see CmdProfile()";
 	sWhatsThis		= "";
 	sStatusTip		= "";
-	QPixmap cPixmap(px);
+	sPixMap         = NULL;
 	int iAccel = 0;
 
 	// Get the informations from the derifed class
-	CmdProfile(&sMenuText,&sToolTipText,&sWhatsThis,&sStatusTip,cPixmap,iAccel);
+	CmdProfile(&sMenuText,&sToolTipText,&sWhatsThis,&sStatusTip,&sPixMap,iAccel);
 
 	// set the information and do Internationalization ( tr() )
 	_pcAction->setText(_pcName);
@@ -97,7 +99,8 @@ void FCCommand::Init(void)
 	_pcAction->setToolTip(_pcAction->tr(sToolTipText));
 	_pcAction->setStatusTip(_pcAction->tr(sStatusTip));
 	_pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
-	_pcAction->setIconSet(cPixmap);
+	if(sPixMap)
+		_pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixMap));
 	_pcAction->setAccel(iAccel);
 
 	connect( _pcAction, SIGNAL( activated() ) , this, SLOT( activated() ) );
@@ -131,7 +134,7 @@ bool FCCommand::IsToggle(void)
 
 const char* FCCommand::Name(void)
 {
-	return _pcAction->text().latin1(); 
+	return _pcName; 
 }
 
 
@@ -265,13 +268,15 @@ PyObject *FCAction::PyDo(PyObject *args)
 
 void FCCommandManager::AddCommand(FCCommand* pCom)
 {
-	pCom->Init();
 	_sCommands[pCom->Name()] = pCom;	
 }
 
 void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
 {
-	_sCommands[Name]->_pcAction->addTo(pcWidget);
+	FCCommand* pCom = _sCommands[Name];
+	if(!pCom) throw FCException("Wrong command name");
+	pCom->Init();
+	pCom->_pcAction->addTo(pcWidget);
 }
 
 
