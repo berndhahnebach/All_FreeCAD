@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(FreeCAD,0.184,[Juergen Riegel],freecad)
+AC_INIT(FreeCAD,0.184,[Juergen Riegel],FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([autoconfig.h])
 #AC_CANONICAL_HOST
@@ -256,7 +256,7 @@ AC_ARG_ENABLE([gui],
   [fc_set_gui=true])
 
 if $fc_set_gui; then
-	CPPFLAGS="$CPPFLAGS -D_FC_GUI_ENABLED_"
+	echo "not yet done"
 fi
 
 # Check if you want to have debug info, or not
@@ -301,6 +301,22 @@ else
 	CPPFLAGS="$CPPFLAGS -DNO_FC_THREAD"
 fi
 
+# Check if you want compiler warnings enabled, or not
+# **************************************************************************
+
+AC_ARG_ENABLE([warnings],
+  AC_HELP_STRING([--enable-warnings], [Enable compiler warnings]),
+  [case $enableval in
+    no | false) fc_set_warn=false ;;
+    *)          fc_set_warn=true ;;
+  esac],
+  [fc_set_warn=true])
+if $fc_set_warn; then
+	CPPFLAGS="$CPPFLAGS -Wall"
+else
+	CPPFLAGS="$CPPFLAGS -w"
+fi
+
 # **************************************************************************
 
 # -DNO_KDE2 -DQT_THREAD_SUPPORT already defined in Config.h
@@ -322,6 +338,7 @@ echo "  Python version:            "$fc_py_ver
 echo "  Graphical User Interface:  "$fc_set_gui
 echo "  Debug info enabled:        "$fc_set_debug
 echo "  Thread support enabled:    "$fc_set_thread
+echo "  Compiler warnings enabled: "$fc_set_warn
 echo ""
 echo "Now, run 'make' to build FreeCAD."
 echo ""

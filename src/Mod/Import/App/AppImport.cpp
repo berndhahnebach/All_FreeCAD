@@ -1,5 +1,5 @@
 /** \file AppImport.cpp
- *  \brief 
+ *  \brief
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
@@ -78,10 +78,14 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-// python intry
+// python entry
 #ifdef FC_OS_WIN32
+#	define ModuleExport __declspec(dllexport)
+#else
+#	define ModuleExport
+#endif
 extern "C" {
-void __declspec(dllexport) initImport() {
+void ModuleExport initImport() {
 
 	(void) Py_InitModule("Import", hello_methods);   /* mod name, table ptr */
 
@@ -94,4 +98,3 @@ void __declspec(dllexport) initImport() {
 
 
 } // extern "C" {
-#endif

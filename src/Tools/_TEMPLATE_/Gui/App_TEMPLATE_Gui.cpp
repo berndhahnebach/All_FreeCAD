@@ -1,5 +1,5 @@
 /** \file App_TEMPLATE_Gui.cpp
- *  \brief 
+ *  \brief
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
@@ -54,10 +54,14 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-// python intry
+// python entry
 #ifdef FC_OS_WIN32
+#	define ModuleExport __declspec(dllexport)
+#else
+#	define ModuleExport
+#endif
 extern "C" {
-void __declspec(dllexport) init_TEMPLATE_Gui() {
+void ModuleExport init_TEMPLATE_Gui() {
 
 	(void) Py_InitModule("_TEMPLATE_Gui", hello_methods);   /* mod name, table ptr */
 
@@ -73,4 +77,3 @@ void __declspec(dllexport) init_TEMPLATE_Gui() {
 	return;
 }
 } // extern "C" {
-#endif

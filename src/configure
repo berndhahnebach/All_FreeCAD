@@ -426,7 +426,7 @@ SHELL=${CONFIG_SHELL-/bin/sh}
 
 # Identity of this package.
 PACKAGE_NAME='FreeCAD'
-PACKAGE_TARNAME='freecad'
+PACKAGE_TARNAME='FreeCAD'
 PACKAGE_VERSION='0.184'
 PACKAGE_STRING='FreeCAD 0.184'
 PACKAGE_BUGREPORT='Juergen Riegel'
@@ -1028,6 +1028,7 @@ Optional Features:
                           FreeCAD in server mode)
   --enable-debug          Enable debug information
   --enable-thread         Enable thread support
+  --enable-warnings       Enable compiler warnings
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1750,7 +1751,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='freecad'
+ PACKAGE='FreeCAD'
  VERSION='0.184'
 
 
@@ -5575,7 +5576,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 5578 "configure"' > conftest.$ac_ext
+  echo '#line 5579 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -6104,7 +6105,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:6107: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:6108: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -7949,7 +7950,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7952 "configure"
+#line 7953 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8047,7 +8048,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8050 "configure"
+#line 8051 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9539,7 +9540,7 @@ else
 fi;
 
 if $fc_set_gui; then
-	CPPFLAGS="$CPPFLAGS -D_FC_GUI_ENABLED_"
+	echo "not yet done"
 fi
 
 # Check if you want to have debug info, or not
@@ -9783,6 +9784,25 @@ echo "$as_me: error: POSIX threads (pthreads) not working. Bye." >&2;}
 	fi
 else
 	CPPFLAGS="$CPPFLAGS -DNO_FC_THREAD"
+fi
+
+# Check if you want compiler warnings enabled, or not
+# **************************************************************************
+
+# Check whether --enable-warnings or --disable-warnings was given.
+if test "${enable_warnings+set}" = set; then
+  enableval="$enable_warnings"
+  case $enableval in
+    no | false) fc_set_warn=false ;;
+    *)          fc_set_warn=true ;;
+  esac
+else
+  fc_set_warn=true
+fi;
+if $fc_set_warn; then
+	CPPFLAGS="$CPPFLAGS -Wall"
+else
+	CPPFLAGS="$CPPFLAGS -w"
 fi
 
 # **************************************************************************
@@ -11156,6 +11176,7 @@ echo "  Python version:            "$fc_py_ver
 echo "  Graphical User Interface:  "$fc_set_gui
 echo "  Debug info enabled:        "$fc_set_debug
 echo "  Thread support enabled:    "$fc_set_thread
+echo "  Compiler warnings enabled: "$fc_set_warn
 echo ""
 echo "Now, run 'make' to build FreeCAD."
 echo ""

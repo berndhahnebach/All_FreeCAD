@@ -100,10 +100,14 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-// python intry
+// python entry
 #ifdef FC_OS_WIN32
+#	define ModuleExport __declspec(dllexport)
+#else
+#	define ModuleExport
+#endif
 extern "C" {
-void __declspec(dllexport) initPart() {
+void ModuleExport initPart() {
 
 	(void) Py_InitModule("Part", hello_methods);   /* mod name, table ptr */
 
@@ -116,4 +120,3 @@ void __declspec(dllexport) initPart() {
 
 
 } // extern "C" {
-#endif

@@ -54,19 +54,28 @@
 #include "../App/Application.h"
 
 
-#pragma comment(lib,"TKernel.lib")
+#ifdef FC_OS_WIN32
+#	pragma comment(lib,"TKernel.lib")
+#endif
 
+#ifdef FC_OS_WIN32
+#	define MainExport __declspec(dllexport)
+#else
+#	define MainExport
+#endif
 
+#ifdef FC_OS_WIN32
 BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved)
 {
 	return TRUE;
 }
+#endif
 
 extern "C" {
 	#ifdef FC_DEBUG
-	void __declspec(dllexport) initFreeCADDCmdPy() {
+	void MainExport initFreeCADDCmdPy() {
 	#else
-	void __declspec(dllexport) initFreeCADCmdPy() {
+	void MainExport initFreeCADCmdPy() {
 	#endif
 
 
@@ -75,7 +84,7 @@ extern "C" {
 		int argc=1;
 		char *argv="none";
 
-		// parse the options 
+		// parse the options
 		FCApplication::InitConfig(argc,&argv);
 
 		FCApplication::InitApplication();
