@@ -64,15 +64,6 @@ PythonWindow::PythonWindow(QWidget *parent,const char *name)
 
   // set colors
   hPrefGrp->NotifyAll();
-  hPrefGrp->Notify( "Text" );
-  hPrefGrp->Notify( "Comment" );
-  hPrefGrp->Notify( "Block comment" );
-  hPrefGrp->Notify( "Number" );
-  hPrefGrp->Notify( "String" );
-  hPrefGrp->Notify( "Keyword" );
-  hPrefGrp->Notify( "Class name" );
-  hPrefGrp->Notify( "Define name" );
-  hPrefGrp->Notify( "Operator" );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -136,24 +127,43 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
     : PythonWindow(parent, name)
 {
   // set font
-  FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hPrefGrp = hPrefGrp->GetGroup("Preferences")->GetGroup("Editor");
-
-  QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
-
-  bool ok;
-  int size = txt.toInt(&ok);
-  if ( !ok ) size = 9; 
-
-  QString font = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
-
-  QFont serifFont( font, size, QFont::Normal );
-  setFont(serifFont);
+  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+  hPrefGrp->Notify( "FontSize" );
+  hPrefGrp->Notify( "Font" );
 }
 
 /** Destroys the object and frees any allocated resources */
 PythonEditor::~PythonEditor()
 {
+}
+
+/** Sets the new color for \a rcColor. */  
+void PythonEditor::OnChange( FCSubject<const char*> &rCaller,const char* sReason )
+{
+  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+
+  QFont font = currentFont();
+  if (strcmp(sReason, "FontSize") == 0)
+  {
+    QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
+
+    bool ok;
+    int size = txt.toInt(&ok);
+    if ( !ok ) size = 9; 
+
+    font.setPointSize( size );
+    setFont( font );
+  }
+  else if (strcmp(sReason, "Font") == 0)
+  {
+    QString family = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
+    font.setFamily( family );
+    setFont( font );
+  }
+  else
+  {
+    PythonWindow::OnChange( rCaller, sReason );
+  }
 }
 
 // ------------------------------------------------------------------------

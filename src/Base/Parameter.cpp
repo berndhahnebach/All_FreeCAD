@@ -914,15 +914,20 @@ void FCParameterGrp::NotifyAll()
   for (std::map<std::string,long>::iterator It1= IntMap.begin(); It1 != IntMap.end(); It1++)
     Notify(It1->first.c_str());
 
+  // get all booleans and notify
+  std::map<std::string,bool>        BoolMap    = GetBoolMap();
+  for (std::map<std::string,bool>::iterator It2= BoolMap.begin(); It2 != BoolMap.end(); It2++)
+    Notify(It2->first.c_str());
+
   // get all Floats and notify
   std::map<std::string,double>      FloatMap  = GetFloatMap();
-  for (std::map<std::string,double>::iterator It2= FloatMap.begin(); It2 != FloatMap.end(); It2++)
-    Notify(It2->first.c_str());
+  for (std::map<std::string,double>::iterator It3= FloatMap.begin(); It3 != FloatMap.end(); It3++)
+    Notify(It3->first.c_str());
 
   // get all strings and notify
   std::map<std::string,std::string> StringMap = GetASCIIMap();
-  for (std::map<std::string,std::string>::iterator It3= StringMap.begin(); It3 != StringMap.end(); It3++)
-    Notify(It3->first.c_str());
+  for (std::map<std::string,std::string>::iterator It4= StringMap.begin(); It4 != StringMap.end(); It4++)
+    Notify(It4->first.c_str());
 }
 
 //**************************************************************************

@@ -49,7 +49,7 @@ protected:
   PythonWindow(QWidget *parent = 0,const char *name = 0);
   virtual ~PythonWindow();
 
-  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
+  virtual void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
 
 protected:
   virtual void keyPressEvent(QKeyEvent * e);
@@ -70,6 +70,8 @@ class GuiExport PythonEditor : public PythonWindow
 public:
   PythonEditor(QWidget *parent = 0,const char *name = 0);
   ~PythonEditor();
+
+  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
 };
 
 /**
