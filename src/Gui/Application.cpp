@@ -385,6 +385,12 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Cut",_pcPopup);
 	_cCommandManager.AddTo("Std_Copy",_pcPopup);
 	_cCommandManager.AddTo("Std_Paste",_pcPopup);
+
+    _pcPopup = new QPopupMenu( this );
+    menuBar()->insertItem( "Tools", _pcPopup );
+	_cCommandManager.AddTo("Std_CommandLine",_pcPopup);
+	_cCommandManager.AddTo("Std_DlgParameter",_pcPopup);
+	_cCommandManager.AddTo("Std_DlgPreferences",_pcPopup);
 		
   _pcPopup = new QPopupMenu( this );
   menuBar()->insertItem( "?", _pcPopup );
@@ -562,7 +568,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 		strcpy(sBuf, _cActiveWorkbenchName.latin1());
 		PyObject* pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, sBuf);
 		assert(pcOldWorkbench);
-		GetInterpreter().RunMethode(pcOldWorkbench, "Stop");
+		GetInterpreter().RunMethodeVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
 	strcpy(sBuf, name);
@@ -572,7 +578,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	assert(pcWorkbench);
 
 	// runing the start of the workbench object
-	GetInterpreter().RunMethode(pcWorkbench, "Start");
+	GetInterpreter().RunMethodeVoid(pcWorkbench, "Start");
 
 	_cActiveWorkbenchName = name;
 
@@ -625,9 +631,21 @@ PyMethodDef ApplicationWindow::Methods[] = {
 	{"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
 	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
 	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
+	{"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
 
 	{NULL, NULL}		/* Sentinel */
 };
+
+PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
+{
+	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+		return NULL;                                      // NULL triggers exception 
+
+	qApp->processEvents();
+	
+	Py_INCREF(Py_None);
+	return Py_None;
+} 
 
 PYFUNCIMP_S(ApplicationWindow,sToolbarAddSeperator)
 {
@@ -637,6 +655,8 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddSeperator)
 
 	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
 	pcBar->addSeparator();
+
+	Py_INCREF(Py_None);
 	return Py_None;
 } 
 
@@ -650,13 +670,14 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
 	try{
 		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
 	}catch(FCException e) {
-		//e.ReportException();
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
 	}catch(...){
 		PyErr_SetString(PyExc_RuntimeError, "unknown error");
 		return NULL;
 	}
+
+	Py_INCREF(Py_None);
     return Py_None;
 } 
 
@@ -666,6 +687,8 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	Instance->DelToolBar(psToolbarName);
+
+	Py_INCREF(Py_None);
     return Py_None;
 }
 PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
@@ -677,6 +700,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
 	FCToolboxGroup * pcBar = Instance->GetCommandBar(psToolbarName);
 	//pcBar->addSeparator(); not implemented yet
 
+	Py_INCREF(Py_None);
 	return Py_None;
 } 
 
@@ -688,7 +712,9 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarLoadSettings)
 
 	FCToolBar * pcBar = (FCToolBar*)Instance->GetToolBar(psToolbarName);
 	pcBar->loadUserDefButtons();
-    return Py_None;
+    
+	Py_INCREF(Py_None);
+	return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
@@ -709,6 +735,8 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
 		PyErr_SetString(PyExc_RuntimeError, "unknown error");
 		return NULL;
 	}
+
+	Py_INCREF(Py_None);
     return Py_None;
 } 
 
@@ -717,8 +745,11 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
     char *psToolbarName;
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
+
 	Instance->DelCommandBar(psToolbarName);
-    return Py_None;
+    
+	Py_INCREF(Py_None);
+	return Py_None;
 }
 
 PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
@@ -727,8 +758,10 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
 	if (!PyArg_ParseTuple(args, "s", &psCmdbarName))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-  Instance->GetCommandBar(psCmdbarName)->loadUserDefButtons();
-  return Py_None;
+	Instance->GetCommandBar(psCmdbarName)->loadUserDefButtons();
+
+	Py_INCREF(Py_None);
+	return Py_None;
 } 
 
 
@@ -739,12 +772,13 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
 	if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
 		return NULL;										// NULL triggers exception 
 
-	Py_INCREF(pcObject);
+	//Py_INCREF(pcObject);
 
 	PyDict_SetItemString(Instance->_pcWorkbenchDictionary,psKey,pcObject);
 
 	Instance->UpdateWorkbenchEntrys();
 
+	Py_INCREF(Py_None);
 	return Py_None;
 } 
 
@@ -756,6 +790,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchDelete)
 
 	PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
 
+	Py_INCREF(Py_None);
     return Py_None;
 } 
 
@@ -766,6 +801,8 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
 		return NULL;										// NULL triggers exception 
 
 	Instance->ActivateWorkbench(psKey);
+
+	Py_INCREF(Py_None);
     return Py_None;
 }
 

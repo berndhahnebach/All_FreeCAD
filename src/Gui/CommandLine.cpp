@@ -167,10 +167,12 @@ void FCCommandLine::slotLaunchCommand()
     std::string err = "'" + std::string(text(currentItem())) + "' is not defined!";
     QMessageBox::warning(this, txt.c_str(), err.c_str());
   }
+#ifndef FC_DEBUG
   catch (...)
   {
-    QMessageBox::critical(this, "Error", "A really nesty error occurred");
+    QMessageBox::critical(this, "Error", "A really nesty error occurred in runing the script");
   }
+#endif
 
   // hold the focus
   setFocus();

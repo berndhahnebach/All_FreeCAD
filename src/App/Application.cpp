@@ -180,7 +180,7 @@ FCDocument* FCApplication::New(const char * Name)
 	_pActiveDoc = pDoc;
 
 	// runing the start of the workbench object
-	if(Name) GetInterpreter().RunMethode(pcTemplate, "Start");
+	if(Name) GetInterpreter().RunMethodeVoid(pcTemplate, "Start");
 
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);
@@ -404,6 +404,7 @@ PYFUNCIMP_S(FCApplication,sSave)
         return NULL;                             // NULL triggers exception 
 
 	//Instance().Message("%s",pstr);				 // process massage 
+	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
 
@@ -415,6 +416,7 @@ PYFUNCIMP_S(FCApplication,sSaveAs)
         return NULL;                             // NULL triggers exception 
 
 	//Instance().Message("%s",pstr);				 // process massage 
+	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
 
@@ -427,6 +429,7 @@ PYFUNCIMP_S(FCApplication,sGet)
 	if(pstr == 0)
 		return GetApplication().Active();
 
+	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
 
@@ -481,6 +484,7 @@ PYFUNCIMP_S(FCApplication,sSetConfig)
 
 	GetApplication()._mConfig[pstr] = pstr2;
 
+	Py_INCREF(Py_None);
 	return Py_None;
 }
 
@@ -518,6 +522,7 @@ PYFUNCIMP_S(FCApplication,sTemplateAdd)
 
 	PyDict_SetItemString(GetApplication()._pcTemplateDictionary,psKey,pcObject);
 
+	Py_INCREF(Py_None);
 	return Py_None;
 } 
 
@@ -529,6 +534,7 @@ PYFUNCIMP_S(FCApplication,sTemplateDelete)
 
 	PyDict_DelItemString(GetApplication()._pcTemplateDictionary,psKey);
 
+	Py_INCREF(Py_None);
     return Py_None;
 } 
 /*
@@ -539,6 +545,8 @@ PYFUNCIMP_S(FCApplication,sWorkbenchActivate)
 		return NULL;										// NULL triggers exception 
 
 	Instance->ActivateWorkbench(psKey);
+
+  Py_INCREF(Py_None);
     return Py_None;
 }
 */

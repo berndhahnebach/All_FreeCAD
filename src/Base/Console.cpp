@@ -307,6 +307,7 @@ PyObject *FCConsole::sPyMessage(PyObject *self,			// static python wrapper
         return NULL;                             // NULL triggers exception 
 
 	Instance().Message("%s",pstr);				 // process massage 
+	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
 PyObject *FCConsole::sPyWarning(PyObject *self,			// static python wrapper
@@ -318,6 +319,7 @@ PyObject *FCConsole::sPyWarning(PyObject *self,			// static python wrapper
         return NULL;                             // NULL triggers exception 
 
 	Instance().Warning("%s",pstr);				 // process massage 
+	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
 PyObject *FCConsole::sPyError(PyObject *self,			// static python wrapper
@@ -329,6 +331,7 @@ PyObject *FCConsole::sPyError(PyObject *self,			// static python wrapper
         return NULL;                             // NULL triggers exception 
 
 	Instance().Error("%s",pstr);				 // process massage 
+	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 
 }
 PyObject *FCConsole::sPyLog(PyObject *self,			// static python wrapper
@@ -340,7 +343,8 @@ PyObject *FCConsole::sPyLog(PyObject *self,			// static python wrapper
         return NULL;                             // NULL triggers exception 
 
 	Instance().Log("%s",pstr);   				 // process massage 
-	return Py_None;                              // None: no errors 
+	Py_INCREF(Py_None);
+    return Py_None;
 }
 
 //=========================================================================

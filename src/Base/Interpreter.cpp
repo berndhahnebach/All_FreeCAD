@@ -136,38 +136,23 @@ int FCInterpreter::RunCommandLine(char *prompt)
 	return PP_Run_Command_Line(prompt);
 }
 
-void FCInterpreter::RunMethode(PyObject *pobject, const char *method)
+void FCInterpreter::RunMethodeVoid(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	char sBuf[1024];
 	assert(strlen(method) < 1022);
 	strcpy(sBuf, method);
-//	PyObject *pcO;
 
-/*
+	//PyObject *pcO;
+	//char *sBuf = strdup(method);
+
 	if(PP_Run_Method(pobject ,     // object
 		             sBuf,         // run method 
-			         "O",		   // no return type
-				     &pcO,		   // so no return object
-					 "")		   // no arguments
+			         0,			// no return type
+				     0,		       // so no return object
+					 "()")		   // no arguments
 					 != 0)
 		throw FCException("Error runing FCInterpreter::RunMethode()");
-*/
-
-	PyObject *pmeth, *pargs, *presult;
-    pmeth = PyObject_GetAttrString(pobject, sBuf);  
-    if (pmeth == NULL)                             /* get callable object */
-        return ;                                  /* bound method? has self */
-    pargs = Py_BuildValue("()");     /* args: c->python */
-    if (pargs == NULL) {
-        Py_DECREF(pmeth);
-        return;
-    }
-    presult = PyEval_CallObject(pmeth, pargs);   /* run interpreter */
-
-    Py_DECREF(pmeth);
-    Py_DECREF(pargs);
-//    return PP_Convert_Result(presult, resfmt, cresult);    /* to C format */
 
 }
 /*

@@ -27,7 +27,12 @@ PP_Run_Method(PyObject *pobject,  char *method,
     pmeth = PyObject_GetAttrString(pobject, method);  
     if (pmeth == NULL)                             /* get callable object */
         return -1;                                 /* bound method? has self */
-    pargs = Py_VaBuildValue(argfmt, argslist);     /* args: c->python */
+	/* handle zero args different */
+//	if(resfmt == 0 || strcmp(resfmt,"") == 0)
+//		pargs = Py_BuildValue("()");
+//	else
+		pargs = Py_VaBuildValue(argfmt, argslist);     /* args: c->python */
+
     if (pargs == NULL) {
         Py_DECREF(pmeth);
         return -1;
@@ -39,7 +44,10 @@ PP_Run_Method(PyObject *pobject,  char *method,
 
     Py_DECREF(pmeth);
     Py_DECREF(pargs);
-    return PP_Convert_Result(presult, resfmt, cresult);    /* to C format */
+//	if(cresult != 0 && resfmt != 0)
+		return PP_Convert_Result(presult, resfmt, cresult);    /* to C format */
+//	else 
+//		return 0;
 }
  
 

@@ -53,7 +53,8 @@ public:
 //	void Register(FCPythonExport *pcPyExporter);
 	void SetComLineArgs(int argc,char *argv[]);
 	int  RunCommandLine(char *prompt);
-	void RunMethode(PyObject *pobject, const char *method);
+	/// runs a python object methode with no return value and no arguments
+	void RunMethodeVoid(PyObject *pobject, const char *method);
 
 	// singelton
 	static FCInterpreter &Instance(void);

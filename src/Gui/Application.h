@@ -185,6 +185,8 @@ public:
 	PYFUNCDEF_S(sWorkbenchActivate);
 	PYFUNCDEF_S(sWorkbenchGet);
 
+	PYFUNCDEF_S(sUpdateGui);
+
 	static PyMethodDef    Methods[]; 
  
 
