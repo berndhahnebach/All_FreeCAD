@@ -47,7 +47,7 @@
 #include "../App/Application.h"
 #include "Application.h"
 #include "Macro.h"
-#include "PlatQt.h"
+#include "ScintillaQt.h"
 
 /* 
  *  Constructs a DlgMacroExecuteImp which is a child of 'parent', with the 
