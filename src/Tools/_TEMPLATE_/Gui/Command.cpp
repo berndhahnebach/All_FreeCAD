@@ -16,9 +16,13 @@
  *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
+#	include <qaction.h>
+#	include <BRepPrimAPI_MakeBox.hxx>
+#	include <TopoDS_Shape.hxx>
+#	include <TNaming_Builder.hxx>
 #endif
 
 #include "../../../Base/Exception.h"
@@ -28,12 +32,6 @@
 
 
 #include "../../../Gui/Icons/images.cpp"
-#include "../../../Gui/Icons/x.xpm"
-
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TNaming_Builder.hxx>
-
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -55,6 +55,7 @@ static struct PyMethodDef hello_methods[] = {
 
 
 // python intry
+#ifdef FC_OS_WIN32
 extern "C" {
 void __declspec(dllexport) init_TEMPLATE_Gui() {
 
@@ -72,3 +73,4 @@ void __declspec(dllexport) init_TEMPLATE_Gui() {
 	return;
 }
 } // extern "C" {
+#endif

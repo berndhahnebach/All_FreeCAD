@@ -1,5 +1,5 @@
 /** \file App_TEMPLATE_.cpp
- *  \brief 
+ *  \brief
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
@@ -16,7 +16,7 @@
  *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
@@ -24,7 +24,7 @@
 #include "../../../App/Application.h"
 
 #include <stdio.h>
-#include <python.h>
+#include <Python.h>
 #include "../../../Base/Console.h"
 
 
@@ -54,6 +54,7 @@ static struct PyMethodDef hello_methods[] = {
 
 
 // python intry
+#ifdef FC_OS_WIN32
 extern "C" {
 void __declspec(dllexport) init_TEMPLATE_() {
 
@@ -68,3 +69,4 @@ void __declspec(dllexport) init_TEMPLATE_() {
 
 
 } // extern "C" {
+#endif
