@@ -5,11 +5,7 @@
 #else
 #	include <qevent.h>
 #	include <assert.h>
-
-#ifdef __linux //no method QApplication::flushX
-#include"qapplication.h"
-#endif
-
+#	include "qapplication.h"
 #endif
 
 #include "MouseModel.h"

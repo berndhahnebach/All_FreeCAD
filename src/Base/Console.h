@@ -120,7 +120,6 @@ private:
 	// observer list
 #pragma warning( disable : 4251 )
 	stlport::set<FCConsoleObserver * > _aclObservers;
-#pragma warning( default : 4251 )
 
 };
 

@@ -36,12 +36,9 @@ def Get(Pars,Section,Option,Default=""):
 class FCModule:
     def __init__ (self,Dir):
         Pars = ConfigParser()
-#__linux: UNIX paths fixes
         ModConfFName=os.path.join(Dir,'Module.cfg')
-	Log('\t\tOpening:' + ModConfFName+'\n')
+        Log('\t\tOpening:' + ModConfFName+'\n')
         Pars.read(ModConfFName)
-#	Log('\t\tOpening:' + Dir + '\\Module.cfg\n')
-#	Pars.read(Dir + "\\Module.cfg")
         Log('\t\tModule exports:\n')
         for Exp in Pars.options("Exports"):
             Log('\t\t\t' + Exp + '\n')
@@ -69,8 +66,6 @@ for Dir in ModDirs:
 		ModDirDir=os.path.join(ModDir,Dir);
 		ModuleList.append(FCModule( ModDirDir ))
 		sys.path.append( ModDirDir )
-#		ModuleList.append(FCModule( ModDir + '\\' + Dir ))
-#		sys.path.append( ModDir + '\\' + Dir )
 # Attaching the list to the FreeCAD main module
 FreeCAD.Modules = ModuleList
 

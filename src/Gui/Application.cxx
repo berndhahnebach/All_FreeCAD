@@ -18,8 +18,11 @@
 #  include "Document.h"
 #  include "CommandStd.h"
 
+#include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
 #include "DlgUndoRedo.h"
+#include "ButtonGroup.h"
+
   
 //#include "Icons/Background3.xpm"
 
@@ -51,6 +54,8 @@ ApplicationWindow::ApplicationWindow()
 	setUsesBigPixmaps (true);
 	CreateTestOperations();
 	//createCasCadeOperations();
+
+	GetCmdLine().SetParent(statusBar());
 
     statusBar()->message( tr("Ready"), 2001 );
     resize( 800, 600 );
@@ -222,10 +227,10 @@ void ApplicationWindow::CreateTestOperations()
     pcTemp = new QAction( "Quit", "Quit", CTRL+Key_Q, this, "quit" );
     connect( pcTemp, SIGNAL( activated() ) , qApp, SLOT( closeAllWindows() ) );
 	_cCommandManager.AddCommand("Std_Quit",FCCommand(pcTemp));
-
+*/
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
-*/
+
 /*
 	viewToolAction = new QAction( tr("TBR_TOOL_BAR"), tr("MNU_TOOL_BAR"), 0, this, "toolbar");
 	connect( viewToolAction, SIGNAL( activated() ) , this, SLOT( onViewToolBar() ));
@@ -289,6 +294,20 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Copy",myFilePopup);
 	_cCommandManager.AddTo("Std_Paste",myFilePopup);
 	
+
+	//QextMdiChildView *v1 = new QextMdiChildView("Test",this);
+//	v1->setTabCaption("Tab changed");
+//    v1->setBackgroundColor( Qt::white );
+//	addWindow( v1);
+/*   v1->setGeometry(40, 40, 400, 100);
+   v1->setFont( QFont("times",20,QFont::Bold) );
+   v1->setCaption("MDI Test Application");
+   v1->show();
+*/
+	/*
+	FCButtonGroup *bg = new FCButtonGroup(0L);
+    addToolWindow( bg, KDockWidget::DockBottom, m_pMdi, 70);
+*/
 
 	setMenuForSDIModeSysButtons( menuBar());
 	 

@@ -20,6 +20,8 @@
 #ifndef __Document_h__
 #define __Document_h__
 
+#pragma warning( disable : 4251 )
+
 #include "../Base/Export.h"
 
 #include "../Base/PyExport.h"
@@ -84,7 +86,6 @@ protected:
 	TDF_Label _cLabel;
 	/// Pointer to the FCDocument where the label comes from 
 	FCDocument *_pcDocument;
-#	pragma warning( default : 4251 )
 
 };
 
@@ -223,20 +224,10 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 
 protected:
 
-	struct ltstr{
+	/// less funktion for the map sorting of TDF_Labels
+	struct LabelLess{
 		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2) const
 		{
-	/// less funktion for the map sorting of TDF_Labels
-/* just for debugs
-			unsigned long l1,l2,l3,l4,l5,l6;
-			l1 = (unsigned short) cLabel1.Depth();
-			l2 = (unsigned short) cLabel1.Tag();
-			l3 = (l1<<16)|l2 ;
-			l4 = (unsigned short) cLabel2.Depth();
-			l5 = (unsigned short) cLabel2.Tag();
-			l6 = (l4<<16)|l5 ;
-
-			return l3 < l6;*/
 			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
 				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
 		}
@@ -246,13 +237,10 @@ protected:
 	friend FCLabel;
 	FCLabel *HasPyLabel(TDF_Label cLabel);
 
-#	pragma warning( disable : 4251 )
 	/// map of all existing python label wrappers (sorted)
-	stlport::map <TDF_Label,FCLabel*,ltstr> mcLabelMap;
-//	stlport::map <TDF_Label,FCLabel*> mcLabelMap;
+	stlport::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
 	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
-#	pragma warning( default : 4251 )
 
 };
 

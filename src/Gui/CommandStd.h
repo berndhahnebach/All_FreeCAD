@@ -22,11 +22,11 @@
 #include "../Base/Export.h"
 
 #include "Command.h"
-#ifdef __linux
+//#ifdef __linux
 #  include "qstatusbar.h" //invalid use of type `class QStratusBar'
 #  include "qfiledlg.h" //QFileDialog undeclared
 #  include "qprinter.h" //aggregate QPrinter has incomplete type and cannot be initialized
-#endif
+//#endif
 
 
 class FCCmdOpen: public FCCommand

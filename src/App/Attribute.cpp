@@ -7,6 +7,7 @@
 
 #ifdef _PreComp_
 #	include "PreCompiled.h"
+#error
 #else
 #	include <TDF_Label.hxx>
 #	include <TDF_ChildIterator.hxx>

@@ -59,21 +59,6 @@ protected:
 inline int streq(const char *A, const char *B)	// define "streq"
 { return strcmp(A,B) == 0;};
 
-/*
-
-template <class T>				// min
-inline T min(const T& a, const T& b)
-{
-	return a < b ? a : b;
-}
-
-template <class T>				// max
-inline T max(const T& a, const T& b)
-{
-	return a > b ? a : b;
-}
-*/
-
 
 inline void Assert(int expr, char *msg)		// C++ assert
 {
@@ -174,7 +159,7 @@ class BaseExport FCPyObject : public PyObject
 	void _DECREF(void) {Py_DECREF(this);};
 
 	/** GetAttribute implementation
-	 *  This method implements the retriafel of object attributes.
+	 *  This method implements the retriavel of object attributes.
 	 *  If you whant to implement attributes in your class, reimplement
 	 *  this method, the FCDocument is a good expample.
 	 *  You have to call the method of the base class.

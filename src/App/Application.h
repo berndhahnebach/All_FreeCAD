@@ -3,7 +3,7 @@
                              -------------------
     begin                : Tue Jan 2 2001
     copyright            : (C) 2001 by Juergen Riegel
-    email                : juergen.riegel@bluewin.de
+    email                : juergen.riegel@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,7 +20,7 @@
 #include "../Base/Export.h" 
 #include "../Base/PyExport.h"
 
-#pragma warning( disable : 4786 )
+#pragma warning( disable : 4251 )
 
 #include <TDocStd_Application.hxx>
 #include <vector>
@@ -97,7 +97,7 @@ protected:
 
 };
 
-
+ 
 
 /** The Application 
  *  The root of the whole application
@@ -162,14 +162,12 @@ private:
 	friend FCApplicationObserver;
 
 	// OCC Application
-#	pragma warning( disable : 4251 )
 	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
 	/// Handles the FCDocument (and python) objects;
 	stlport::vector<FCDocument*> _DocVector;
 	/// The container of all attached Obervers
 	stlport::set<FCApplicationObserver * > _aclObservers;
-#	pragma warning( default : 4251 )
 	FCDocument* _pActiveDoc;
 };
 

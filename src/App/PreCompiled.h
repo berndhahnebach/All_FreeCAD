@@ -1,7 +1,12 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
-#pragma warning( disable : 4786 )
+/// here get the warnings of to long specifieres disabled (needet for VC6)
+#ifdef WNT
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#endif
 
 // standard
 #include <iostream>
@@ -86,7 +91,7 @@
 #include <Standard_UUID.hxx>
 #include <Standard_WayOfLife.hxx>
 
-
+ 
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>

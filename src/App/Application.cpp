@@ -10,6 +10,7 @@
 
 #ifdef _PreComp_
 #	include "PreCompiled.h"
+#	pragma warning( disable : 4251 )
 #else
 #	include <TColStd_SequenceOfExtendedString.hxx>
 #	include <TCollection_ExtendedString.hxx>

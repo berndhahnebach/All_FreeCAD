@@ -1,7 +1,12 @@
 #ifndef __PRECOMPILED_GUI__
 #define __PRECOMPILED_GUI__
 
-#pragma warning( disable : 4786 )
+/// here get the warnings of to long specifieres disabled (needet for VC6)
+#ifdef WNT
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#endif
 
 // standard
 #include <iostream.h>

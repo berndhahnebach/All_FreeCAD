@@ -25,7 +25,7 @@
 #include <qaction.h>
 #include <string>
 #include <map>
-#	pragma warning( disable : 4786 )
+//#	pragma warning( disable : 4786 )
 
 class FCCommandManager;
 class ApplicationWindow;
@@ -140,8 +140,8 @@ public:
 
 private:
 #	pragma warning( disable : 4251 )
-		stlport::map<stlport::string,FCCommand*> _sCommands;
-#	pragma warning( default : 4251 )
+	stlport::map<stlport::string,FCCommand*> _sCommands;
+
 };
 
 /** The Command Macro Standard

@@ -1,20 +1,34 @@
 /** \file Parameter.h
- *  \brief The console module
- *  \author Juergen Riegel
- *  \version 0.1
- *  \date    5.2001
- *  \bug Nothing known
+ *  \brief The base::parameter module
+ *  \author $Author$
+ *  \version $Revision$
+ *  \date    $Date$
+ *  here is the basic parameter engine defined
+ *  @see Parameter.cpp
  */
 
 /***************************************************************************
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
+ *   it under the terms of the GNU Library General Public License (LGPL)   *
+ *   as published by the Free Software Foundation; either version 2 of     *
+ *   the License, or (at your option) any later version.                   *
  *   for detail see the LICENCE text file.                                 *
- *   Jürgen Riegel 2002                                                    *
  *                                                                         *
+ *   FreeCAD is distributed in the hope that it will be useful,            *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
+ *                                                                         *
+ *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
@@ -25,86 +39,79 @@
 #include "Export.h"
 
 #include "PyExport.h"
-#define __STL_DESIGNATED_DLL 
+
 #include <string>
 #include <map>
+#include <boost/any.hpp>
 
 
 
 /** The parameter container class
  *  This is the base class of all classes handle parameter.
- *  The class contains a map of key-value pairs in a pseudo 
- *  hierarchal structure, not unlike the windows registry.
+ *  The class contains a map of key-value pairs in a grouping 
+ *  structure, not unlike the windows registry.
  *  It allows the user to set and retrieve values of the 
  *  type float, long and string. Also it handles importing
  *  and exporting groups of parameters and enables streaming
- *  to a persistent medium.
+ *  to a persistent medium via XML.
  *  \par
- *  The groups and subgroubnames are separeted by a slash, so
- *  no group must have a slash in his name. The saving and 
- *  retrival is done in the config file formate and sorted.
- *  @see 
+ *  @see FCParameterSet 
  */
-class BaseExport FCParameter : public FCPythonExport 
+class BaseExport FCParameter 
 {
 
 public:
-	FCParameter(){};
-    virtual ~FCParameter(void);
+	// Construction destruction *******************************************
+	/// Defauld construction
+	FCParameter();
+	/// Copy construction
+	FCParameter(const FCParameter &rcParameter);
+	/// Destruction
+    ~FCParameter(void);
 
-    bool AddKeyFloat (const char *Key, float dWert);
-    bool AddKeyString(const char *Key, const char *Wert);
-    bool AddKeyLong  (const char *Key, long lWert);
 
-    bool SetKeyFloat (const char *Key, float dWert);
-    bool SetKeyString(const char *Key, const char *sWert);
-    bool SetKeyLong  (const char *Key, long lWert);
+	// Typedefs ***********************************************************
+	/// typedef of the Key string type
+	typedef std::string	                                          tKeyString;
+	/// typedef of the Value string type (maybe unicode)
+	typedef std::string                                           tValueString;
+	/// typedef of the container
+	typedef std::map<tKeyString,std::map<tKeyString,boost::any> > tParamData;
 
-    unsigned long GetGroup(const char *cKey, FCParameter &) ;
-    void		  SetGroup(const char *sGrp, const FCParameter &cGrp);
-    void		  DelGroup(const char *sGrp);
+	// Preset Values *********************************************************
+	/// Preset floating point parameter values 
+    bool PresetKeyFloat (const tKeyString &Grp,const tKeyString &Key, double dWert);
+	/// Preset string parameter values
+    bool PresettKeyString(const tKeyString &Grp,const tKeyString &Key, const tValueString &rcValue);
+	/// Preset integer parameter values
+    bool PresetKeyLong  (const tKeyString &Grp,const tKeyString &Key, long lWert);
+
+	// Set Values *********************************************************
+	/// Set floating point parameter values 
+    void SetKeyFloat (const tKeyString &Grp,const tKeyString &Key, double dWert);
+	/// Set string parameter values
+    void SetKeyString(const tKeyString &Grp,const tKeyString &Key, const tValueString &rcValue);
+	/// Set integer parameter values
+    void SetKeyLong  (const tKeyString &Grp,const tKeyString &Key, long lWert);
+
+	// Get Values *********************************************************
+	/// Get floating point parameter values 
+    double GetKeyFloat (const tKeyString &Grp,const tKeyString &Key, double dWert);
+	/// Get string parameter values
+    const tValueString &GetKeyString(const tKeyString &Grp,const tKeyString &Key, const tValueString &rcValue);
+	/// Get integer parameter values
+    long GetKeyLong  (const tKeyString &Grp,const tKeyString &Key, long lWert);
+
+	// deletion ***********************************************************
+	/// Delete a whole group
+    void DelGroup(const tKeyString &Grp);    
+	/// Delete explicitely a key
+    void DeleteKey (const tKeyString &Grp,const tKeyString &Key);
+
     
-    bool DeleteKey (const char *rclKey);
-    bool DeleteKeyFromString (const char *rclGroupKey, const char *rclValue);
-    const char *FindKeyFromString (const char *rclGroupKey, const char *rclValue) const;
-
-    float		GetKeyFloat (const char *Key, float fDef=0.0f);
-    const char *GetKeyString(const char *Key, const char *sDef="");
-    long		GetKeyLong  (const char *Key, long lDef=0l);
-
-    unsigned long Print(std::string &cBuf);
-
-	// scripting stuff
-	virtual void PyRegister();
-    virtual void PyInstance();
-
-	PYFUNCDEF( SetKeyString );
-	PYFUNCDEF( GetKeyString );
-
-
 private:
-
-	struct sValue {
-		enum {
-			String,
-			Long,
-			Float
-		} Type;
-		union {
-			stlport::string *String;
-			long			 Long;
-			double           Float;
-		} Value;
-	};
-	/// retrive the Value for a key
-	sValue &GetValue(const char *Key);
-
-#pragma warning( disable : 4251 )
-#pragma warning( disable : 4503 )
-	stlport::map<stlport::string,stlport::map<stlport::string,sValue> > mData;
-	//stlport::map<stlport::string,stlport::string > mData;
-//#pragma warning( default : 4503 )
-#pragma warning( default : 4251 )
+	/// Container for the 2 level key value structure
+	tParamData mData;
 
 };
 

@@ -144,6 +144,8 @@ class QToolButtonDropDown : public QToolButton
     QWidget* getWidget();
     void setButtonEnabled(bool bEnable);
     bool isButtonEnabled();
+    void setAutoRaiseEx (bool bEnable);
+    bool autoRaiseEx () const;
 
   signals:
     // signals when entering or leaving the button with the mouse

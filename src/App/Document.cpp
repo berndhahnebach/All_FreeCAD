@@ -6,6 +6,7 @@
     email                : juergen.riegel@web.de
  ***************************************************************************/
 
+#	pragma warning( disable : 4251 )
 
 
 #ifdef _PreComp_
@@ -13,14 +14,12 @@
 #else
 #	include <TDocStd_Application.hxx>
 #	include <TDataStd_Real.hxx>
+#	include <TDataStd_Name.hxx>
+#	include <Handle_TDataStd_Name.hxx>
+#	include <TDataStd_Integer.hxx>
+#	include <Handle_TDataStd_Integer.hxx>
 #endif
 
-#ifdef __linux
-#  include <TDataStd_Name.hxx>
-#  include <Handle_TDataStd_Name.hxx>
-#  include <TDataStd_Integer.hxx>
-#  include <Handle_TDataStd_Integer.hxx>
-#endif
 
 #include "Document.h"
 #include "../Base/Console.h"
@@ -137,7 +136,7 @@ PyObject *FCLabel::_getattr(char *attr)				// __getattr__ function: note only ne
 			Handle(TDataStd_Name) NameAttr;
 			if(_cLabel.FindAttribute(TDataStd_Name::GetID(),NameAttr))
 				//return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
-#ifdef __linux /* will "u" work? */
+#ifdef __linux /* will "u" work? */ // u is unicode as ToExtString is!
 				return Py_BuildValue("u",NameAttr->Get().ToExtString()); 
 #else
 				return Py_BuildValue("s",NameAttr->Get()); 
@@ -377,7 +376,7 @@ void FCDocument::ChangeStorageFormat(const short* sStorageFormat)
 FCLabel *FCDocument::HasPyLabel(TDF_Label cLabel)
 {
 	FCLabel *pcL;
-	stlport::map <TDF_Label,FCLabel*,ltstr>::iterator It;
+	stlport::map <TDF_Label,FCLabel*,LabelLess>::iterator It;
 	
 	// find a FCLabel if possible
 	It = mcLabelMap.find(cLabel);

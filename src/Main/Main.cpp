@@ -1,16 +1,21 @@
-#include "../Base/Export.h"
 
-#pragma warning( disable : 4786 )
+/// here get the warnings of to long specifieres disabled (needet for VC6)
+#ifdef WNT
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#endif
 
 #include <stdio.h>
 
 #ifndef __linux
-#include <direct.h>
-#include <windows.h>
+#	include <direct.h>
+#	include <windows.h>
 #endif
 
 
 // FreeCAD Base header
+#include "../Base/Export.h"
 #include "../Base/Console.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Parameter.h"
@@ -128,6 +133,7 @@ int main( int argc, char ** argv ) {
 	#		ifdef _FC_GUI_ENABLED_
 				// A new QApplication
 				GetConsole().Log("Creating GUI Application...\n");
+				pcQApp = new QApplication ( argc, argv );
 
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
@@ -140,6 +146,7 @@ int main( int argc, char ** argv ) {
 				GetConsole().Log("Running event loop...\n");
 				ret = pcQApp->exec();
 				GetConsole().Log("event loop left\n");
+				delete pcQApp;
 
 	#		else
 				GetConsole().Error("GUI mode not possible. This is a FreeCAD compiled without GUI. Use FreeCAD -c\n");
@@ -184,10 +191,10 @@ int main( int argc, char ** argv ) {
 	}
 
 	// Destruction phase ===========================================================
-#ifdef __linux // what if we are running in a GUI-less mode?
-        if (pcQApp)
-#endif        
-        delete pcQApp;
+//#ifdef __linux // what if we are running in a GUI-less mode?
+//        if (pcQApp)
+//#endif        
+//        delete pcQApp;
 	delete pcGlobalParameter;
 
 	GetConsole().Log("FreeCAD completly terminated\n\n");
@@ -223,7 +230,7 @@ void Init(int argc, char ** argv )
 	/*
 	if(RunMode=0)
 	{*/
-		pcQApp = new QApplication ( argc, argv );
+	//	pcQApp = new QApplication ( argc, argv );
 	/*	SplasherDialog * pcSplasher = new SplasherDialog();
 		//pcQApp->setMainWidget(pcSplasher);
 		pcSplasher->show();
@@ -286,7 +293,7 @@ void CheckEnv(void)
 	cout<<szString<<endl;
 */
 
-/*  Attic ?
+/*  Attic Only needet for CasCade prior 4.0
 	if( ! getenv("CSF_GRAPHICSHR") ){
 		GetConsole().Message("Environment (CSF_GRAPHICSHR) not set!\n");
 		bFailure = true;

@@ -19,6 +19,8 @@
 #ifndef __GUIDocument_h__
 #define __GUIDocument_h__
 
+#pragma warning( disable : 4251 )
+
 #include "../Base/Export.h"
 
 #include <qobject.h>
@@ -63,11 +65,11 @@ private:
 		const Standard_Boolean ComputedMode,const Standard_Boolean aDefaultComputedMode );
 private:
 	ApplicationWindow*				_pcAppWnd;
-#	pragma warning( disable : 4251 )
+//#	pragma warning( disable : 4251 )
 	stlport::list<FCView*>			_LpcViews;
 	Handle(V3d_Viewer)				_hViewer;
 	Handle(AIS_InteractiveContext)	_hContext;
-#	pragma warning( default : 4251 )
+//#	pragma warning( default : 4251 )
 	// the doc/Document
 	FCDocument*						_pcDocument;
 };

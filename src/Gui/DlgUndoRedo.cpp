@@ -337,6 +337,12 @@ QToolButtonDropDown::QToolButtonDropDown(QWidget * parent, const QPixmap& rclPix
   // create the drop-down button
   _pDropDown = new QToolButtonDropDown(parent, name);
 
+  // place the two buttons in a horizontal box
+  // (this is important if you drag the parent toolbar to the left/right border)
+  QHBox* hb = new QHBox(parent);
+  reparent(hb, QPoint(0, 0));
+  _pDropDown->reparent(hb, QPoint(width(),0));
+
   // connect the signals of '_pDropDown' with the slots of 'this'...
   connect(_pDropDown, SIGNAL( enterEventSignal(QEvent*)), this, SLOT(enterEventSlot(QEvent*)));
   connect(_pDropDown, SIGNAL( leaveEventSignal(QEvent*)), this, SLOT(leaveEventSlot(QEvent*)));
@@ -346,22 +352,6 @@ QToolButtonDropDown::QToolButtonDropDown(QWidget * parent, const QPixmap& rclPix
 
   // connect the 'clicked()' signal
   connect(_pDropDown, SIGNAL( clicked()), this, SLOT(popupWidget()));
-
-  // rumspielen !!!
-  int w = width();
-  int h = height();w = h;w=24;
-  int dw = _pDropDown->width();
-/*
-  setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-  setFixedWidth(w);
-  QFrame* pGroup = new QFrame(parent);
-  pGroup->setProperty( "frameShape", (int)QButtonGroup::NoFrame );
-  pGroup->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-  pGroup->setFixedWidth(w + dw);
-  pGroup->setFixedHeight(w);
-  reparent(pGroup, QPoint(0,0));
-  _pDropDown->reparent(pGroup, QPoint(w,0));
-*/
 }
 
 QToolButtonDropDown::QToolButtonDropDown( QWidget * parent, const char * name)
@@ -473,6 +463,19 @@ bool QToolButtonDropDown::isButtonEnabled()
   return bEnabled;
 }
 
+void QToolButtonDropDown::setAutoRaiseEx (bool bEnable)
+{
+  setAutoRaise(bEnable);
+  if (_pDropDown != NULL)
+    _pDropDown->setAutoRaise(bEnable);
+}
+
+bool QToolButtonDropDown::autoRaiseEx () const
+{
+  if (_pDropDown != NULL)
+    return _pDropDown->autoRaise() && autoRaise();
+  return autoRaise();
+}
 
 #include "DlgUndoRedo_moc.cpp"
 

@@ -7,16 +7,9 @@
 #	include <qapplication.h>
 #	include <qmessagebox.h>
 #	include <qsplitter.h>
-#ifdef __linux //they are lowercase here...
 #	include <qwidgetstack.h>
 #	include <qpushbutton.h>
 #	include <qtabbar.h>
-#else
-#	include <QWidgetStack.h>
-#	include <QPushButton.h>
-#	include <QTabBar.h>
-#endif
-
 #	include <qlayout.h>
 #endif
 

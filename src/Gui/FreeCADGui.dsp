@@ -273,6 +273,37 @@ InputPath=.\Application.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ButtonGroup.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ButtonGroup.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\ButtonGroup.h
+
+"ButtonGroup_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o ButtonGroup_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\ButtonGroup.h
+
+"ButtonGroup_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o ButtonGroup_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\Command.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
@@ -297,6 +328,37 @@ InputPath=.\Command.h
 
 "Command_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%QTDIR%\bin\moc $(InputPath) -o Command_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\CommandLine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CommandLine.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\CommandLine.h
+
+"CommandLine_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o CommandLine_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\CommandLine.h
+
+"CommandLine_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o CommandLine_moc.cpp
 
 # End Custom Build
 

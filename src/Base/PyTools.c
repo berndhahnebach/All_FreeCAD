@@ -285,11 +285,11 @@ PP_Convert_Result(PyObject *presult, char *resFormat, void *resTarget)
     else {
         if (strcmp(resFormat, "O") != 0) {     /* free object unless exported */
             if (strcmp(resFormat, "s") == 0) { /* copy string: caller owns it */
-#ifdef __linux //cannot convert `void*' to `char **' in initialization
+//#ifdef __linux //cannot convert `void*' to `char **' in initialization
                 char **target = (char**) resTarget;
-#else
-                char **target = resTarget;                
-#endif                
+//#else
+//                char **target = resTarget;                
+//#endif                
                 *target = strdup(*target); 
             }
             Py_DECREF(presult);
@@ -346,15 +346,15 @@ int PP_DEBUG  = 0;    /* debug embedded code with pdb? */
 
 char *PP_Init(char *modname) {
     Py_Initialize();                               /* init python if needed */
-#ifdef __linux /* cannot convert `const char *' to `char *' in assignment */
+//#ifdef __linux /* cannot convert `const char *' to `char *' in assignment */
     if (modname!=NULL) return modname;
     { /* we assume here that the caller frees allocated memory */
       char* __main__=(char *)malloc(sizeof("__main__"));
       return __main__="__main__";
     }
-#else    
-    return modname == NULL ? "__main__" : modname;  /* default to '__main__' */
-#endif    
+//#else    
+//    return modname == NULL ? "__main__" : modname;  /* default to '__main__' */
+//#endif    
 }
 
 
