@@ -156,6 +156,8 @@ static const char *open_pixmap[] = {
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 : QTextBrowser(parent, name)
 {
+  setHScrollBarMode(QScrollView::AlwaysOff);
+  //setVScrollBarMode(QScrollView::AlwaysOff);
   mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");

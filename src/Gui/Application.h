@@ -147,12 +147,12 @@ protected:
 /** The FCAutoWaitCursor sets automatically the 
  *  waiting cursor if the application is busy
  */
-//#define WAITCURSORTEST
+#define WAITCURSORTEST
 //#define WAITCURSORNOTHREAD
 
 #ifdef WAITCURSORNOTHREAD
 #  ifndef WAITCURSORTEST
-#  define WAITCURSORTEST
+#	define WAITCURSORTEST
 #  endif
 #endif
 

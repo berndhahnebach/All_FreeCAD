@@ -250,8 +250,6 @@ const short* FCDocument::GetPath() const
 /// Get the Main Label of the document
 FCLabel *FCDocument::Main() 
 {
-	static FCLabel *_pcMain = 0;
-
 	if(!_pcMain){
 		_pcMain = new FCLabel(_hDoc->Main(),this);
 		_pcMain->_INCREF();
@@ -446,7 +444,7 @@ PyParentObject FCDocument::Parents[] = {&FCPyObject::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc, PyTypeObject *T) 
- : _hDoc(hDoc),FCPyObject( T)
+ : _hDoc(hDoc),FCPyObject( T),_pcMain(0)
 {
 	GetConsole().Log("Create Document %p\n",this);
 }

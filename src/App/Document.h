@@ -241,6 +241,8 @@ protected:
 	FCmap <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
 	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
+	FCLabel *						_pcMain;
+
 
 };
 

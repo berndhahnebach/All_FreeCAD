@@ -427,6 +427,8 @@ void FCCmdTest2::Activated(void)
 	FCDocument *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
+	GetConsole().Log("Using Doc: %p\n",pcDoc);
+
     TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
 
 	BRep_Builder aBuilder;
