@@ -93,6 +93,10 @@ PostBuild_Cmds=copy Debug\FreeCADD.exe ..\..\bin
 # Name "FreeCADMain - Win32 Debug"
 # Begin Source File
 
+SOURCE=.\freecad.rc
+# End Source File
+# Begin Source File
+
 SOURCE=.\FreeCADInit.py
 
 !IF  "$(CFG)" == "FreeCADMain - Win32 Release"
@@ -198,6 +202,10 @@ InputPath=.\FreeCADTestEnv.py
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\icon.ico
 # End Source File
 # Begin Source File
 

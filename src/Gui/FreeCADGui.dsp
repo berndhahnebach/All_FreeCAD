@@ -413,39 +413,43 @@ InputPath=.\Document.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\FreeCADAbout.rtf
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build
-InputPath=.\FreeCADAbout.rtf
-
-"FreeCADAbout.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADAbout.rtf FreeCADAbout.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build
-InputPath=.\FreeCADAbout.rtf
-
-"FreeCADAbout.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADAbout.rtf FreeCADAbout.h
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\GuiConsole.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\GuiConsole.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\HtmlView.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\HtmlView.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Mocing $(InputPath)
+InputPath=.\HtmlView.h
+
+"HtmlView_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o HtmlView_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Mocing $(InputPath)
+InputPath=.\HtmlView.h
+
+"HtmlView_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o HtmlView_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
