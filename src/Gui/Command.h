@@ -109,7 +109,7 @@ public:
   QAction*  getAction();
   //@}
 
-  /** @name Helper methodes for the UNDO REDO handling */
+  /** @name Helper methodes for the UNDO REDO  and Update handling */
   //@{
   /// Open a new Undo transaction on the active document
   void openCommand(const char* sName=0);
@@ -117,6 +117,18 @@ public:
   void commitCommand(void);
   /// Abort the Undo transaction on the active document
   void abortCommand(void);
+  /// Activate an other Commands
+  void activateCommand(const char* sCmdName);
+  /// Toggles other Commands
+  void toggleCommand(const char* sCmdName,bool bToggle);
+  /// Updates the (active) document (propagate changes)
+  void updateActive(void);
+  /// Updates the (all or listed) documents (propagate changes)
+  void updateAll(std::list<Gui::Document*> cList);
+  //@}
+
+  /** @name Helper methodes for isuing commands to the Python interpreter */
+  //@{
   /// types of application level actions for DoCommand()
   enum DoCmd_Type {
     /// Action alters the document
@@ -128,15 +140,14 @@ public:
   };
   /// Run a App level Action 
   void doCommand(DoCmd_Type eType,const char* sCmd,...);
-  /// Activate an other Commands
-  void activateCommand(const char* sCmdName);
-  /// Toggles other Commands
-  void toggleCommand(const char* sCmdName,bool bToggle);
-  /// Updates the (active) document (propagate changes)
-  void updateActive(void);
-  /// Updates the (all or listed) documents (propagate changes)
-  void updateAll(std::list<Gui::Document*> cList);
+  /// translate a string to a python string literal (needed e.g. in file names for windows...)
+  const std::string strToPython(const char* Str);
+  const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());};
+
   //@}
+
+
+
 
   /** @name Helper methodes to generate help pages */
   //@{

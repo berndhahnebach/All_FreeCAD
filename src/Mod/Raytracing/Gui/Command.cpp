@@ -112,60 +112,33 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   camrot.multVec(lookat, lookat);
 
   SbVec3f pos = Cam->position.getValue();
-
   float Dist = Cam->focalDistance.getValue();
 
-
-  std::stringstream out;
-  out << "// declares positon and view direction\n"
-      << "#declare  CamPos = <" << pos.getValue()[0]    <<"," << pos.getValue()[2]    <<"," << pos.getValue()[1]    <<">;\n" 
-      << "#declare  CamDir = <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">;\n" ;
-  lookat *= Dist;
-  lookat += pos;
-  out << "#declare  LookAt = <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">;\n" 
-      << "#declare  Up     = <" << upvec.getValue()[0]  <<"," << upvec.getValue()[2]  <<"," << upvec.getValue()[1]  <<">;\n" ;
-
-  //Base::Console().Log("Pov Camera out:\n%s",out.str().c_str());
-
+  // geting standard parameter
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
-
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
   std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
-  std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
-  bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
-  float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
 
   if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
     cDir += PATHSEP;
-
   std::string cFullName = cDir+cCameraName;
-  Base::Console().Log("Using file name:%s",cFullName.c_str());
 
-  // open the file and write
-  std::ofstream fout(cFullName.c_str());
-  fout <<  out.str() << endl;
-  fout.close();
+  // building up the python string
+  std::stringstream out;
+  out << "Raytracing.writeCameraFile(\"" << strToPython(cFullName) << "\"," 
+      << "(" << pos.getValue()[0]    <<"," << pos.getValue()[2]    <<"," << pos.getValue()[1]    <<")," 
+      << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<")," ;
+  lookat *= Dist;
+  lookat += pos;
+  out << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<")," 
+      << "(" << upvec.getValue()[0]  <<"," << upvec.getValue()[2]  <<"," << upvec.getValue()[1]  <<") )" ;
+
+ 	doCommand(Gui,out.str().c_str());
 
 
   // Bring ref-count of root-node back to zero to cause the
-  // destruction of the scene.
+  // destruction of the camera.
   Cam->unref();
-  // (Upon self-destructing, the root-node will also de-reference
-  // it's children nodes, so they also self-destruct, and so on
-  // recursively down the scenegraph hierarchy until the complete
-  // scenegraph has self-destructed and thereby returned all
-  // memory resources it was using.)
-
-
-
-/*
-  QString fn = Gui::FileDialog::getSaveFileName( QString::null, "POV include (*.inc);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
-	if (! fn.isEmpty() )
-	{
-    Base::Console().Log("File name: %s",fn.latin1());
-	}
-*/
 }
 
 bool CmdRaytracingWriteCamera::isActive(void)
@@ -315,124 +288,28 @@ CmdRaytracingWritePart::CmdRaytracingWritePart()
 
 void CmdRaytracingWritePart::activated(int iMsg)
 {
-  TopoDS_Shape myShape;
-
-  App::Feature *pcActFeature = getActiveDocument()->getDocument()->GetActiveFeature();
-
-  if(pcActFeature)
-  {
-    Part::PartFeature *pcPart = dynamic_cast<Part::PartFeature*> (pcActFeature);
-    myShape = pcPart->GetShape();
-  }
   
   // get the preferences
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
-  std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
   std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
   bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
   float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
 
-
   // name of the objects in the pov file
   std::string Name = "Part";
-
-  Base::Sequencer().start("Meshing Shape", 0);
-  Base::Console().Log("Meshing with Deviation: %f\n",fMeshDeviation);
-
-  TopExp_Explorer ex;
-	BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
-
-  Base::Sequencer().stop();
-
 
   if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
     cDir += PATHSEP;
 
   std::string cFullName = cDir+cPartName;
-  Base::Console().Log("Using file name:%s",cFullName.c_str());
 
-  // open the file and write
-  std::ofstream fout(cFullName.c_str());
+  std::stringstream out;
+  //Raytracing.writePartFile(App.DocGet().GetActiveFeature().getShape())
+  out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.DocGet().GetActiveFeature().getShape())";
 
-  // counting faces and start sequencer
-  int l = 1;
-  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-  Base::Sequencer().start("Writing file", l);
+ 	doCommand(Doc,out.str().c_str());
 
-
-  // write the file
-  fout <<  "// Written by FreeCAD http://free-cad.sf.net/" << endl;
-  l = 1;
-  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {
-
-    // get the shape and mesh it
-		const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
-
-
-    // this block mesh the face and transfers it in a C array of vertices and face indexes
-		Standard_Integer nbNodesInFace,nbTriInFace;
-		SbVec3f* vertices=0;
-		SbVec3f* vertexnormals=0;
-		long* cons=0;
-    
-    transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
-
-    if(!vertices) break;
-    // writing per face header 
-    fout << "// face number" << l << " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl
-         << "#declare " << Name << l << " = mesh2{" << endl
-         << "  vertex_vectors {" << endl
-         << "    " << nbNodesInFace << "," << endl;
-    // writing vertices
-    for(int i=0;i < nbNodesInFace;i++) {
-      fout << "    <" << vertices[i][0] << ","
-                      << vertices[i][2] << ","
-                      << vertices[i][1] << ">," 
-           << endl;
-    }
-    fout << "  }" << endl
-    // writing per vertex normals
-         << "  normal_vectors {" << endl
-         << "    " << nbNodesInFace << "," << endl;
-    for(int j=0;j < nbNodesInFace;j++) {
-      fout << "    <" << vertexnormals[j][0] << ","
-                      << vertexnormals[j][2] << ","
-                      << vertexnormals[j][1] << ">,"
-           << endl;
-    }
-
-    fout << "  }" << endl
-    // writing triangle indices
-         << "  face_indices {" << endl
-         << "    " << nbTriInFace << "," << endl;
-    for(int k=0;k < nbTriInFace;k++) {
-      fout << "    <" << cons[3*k] << ","<< cons[3*k+2] << ","<< cons[3*k+1] << ">," << endl;
-    }
-    // end of face
-    fout << "  }" << endl
-         << "} // end of Face"<< l << endl << endl;
-
-		delete [] vertexnormals;
-		delete [] vertices;
-		delete [] cons;
-
-    Base::Sequencer().next();
-
-  } // end of face loop
-
-
-  fout << endl << endl << "// Declare all together +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl
-       << "#declare " << Name << " = union {" << endl;
-  for(int i=1;i < l;i++) {
-    fout << "mesh2{ " << Name << i << "}" << endl;
-  }
-  fout << "}" << endl << endl;
-
-  Base::Sequencer().stop();
-
-
-  fout.close();
 
 
 }

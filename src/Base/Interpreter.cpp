@@ -227,3 +227,31 @@ void InterpreterSingleton::DbgStep(void)
 {
 
 }
+
+
+const std::string InterpreterSingleton::StrToPython(const char* Str)
+{
+  std::string result;
+  const char *It=Str;
+
+  while(*It != '\0')
+  {
+    switch(*It)
+    {
+    case '\\':
+      result += "\\\\";
+      break;
+    case '\"':
+      result += "\\\"";
+      break;
+    case '\'':
+      result += "\\\'";
+      break;
+    default:
+      result += *It;
+    }
+    It++;
+  }
+
+  return result;
+}

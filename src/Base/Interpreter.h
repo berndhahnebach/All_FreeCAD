@@ -123,6 +123,17 @@ public:
 	//@}
 
 
+	/** @name static helper functions
+	 */
+	//@{
+  /// replaces all char with escapes for usage in python console
+  static const std::string StrToPython(const char* Str);
+  static const std::string StrToPython(const std::string &Str){return StrToPython(Str.c_str());}
+
+
+	//@}
+
+
 protected:
 
 	// singelton

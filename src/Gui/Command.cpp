@@ -225,6 +225,13 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
   free (format);
 }
 
+
+const std::string Command::strToPython(const char* Str)
+{
+  return Base::InterpreterSingleton::StrToPython(Str);
+}
+
+
 /// Activate an other Commands
 void Command::activateCommand(const char* sCmdName)
 {
