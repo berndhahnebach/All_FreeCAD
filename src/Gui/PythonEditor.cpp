@@ -33,8 +33,6 @@
 # include <qprinter.h>
 # include <qregexp.h>
 # include <qsimplerichtext.h>
-# include <qsyntaxhighlighter.h>
-# include <qtextedit.h>
 #endif
 
 #include "PythonEditor.h"
@@ -54,7 +52,7 @@ using Gui::Dialog::GetDefCol;
  *  name 'name' and installs the Python syntax highlighter.
  */
 PythonWindow::PythonWindow(QWidget *parent,const char *name)
-    : QTextEdit(parent, name), WindowParameter( "Editor" )
+    : TextEdit(parent, name), WindowParameter( "Editor" )
 {
   nInsertTabs = 0;
   pythonSyntax = new PythonSyntaxHighlighter(this);
@@ -1001,3 +999,5 @@ QStringList PythonEditView::redoActions() const
   return lst;
 }
 
+
+#include "moc_PythonEditor.cpp"

@@ -180,8 +180,10 @@
 #include <qframe.h>
 #include <qfontdatabase.h>
 #include <qfontdialog.h>
+#include <qftp.h>
 #include <qhbox.h>
 #include <qheader.h>
+#include <qhttp.h>
 #include <qiconview.h>
 #include <qimage.h>
 #include <qinputdialog.h>

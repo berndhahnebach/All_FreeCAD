@@ -23,9 +23,13 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <qdir.h>
 #endif
 
 #include "DlgOnlineHelpImp.h"
+
+#include "../Base/Parameter.h"
+#include "../App/Application.h"
 
 using namespace Gui::Dialog;
 
@@ -42,9 +46,14 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl
   append(UseProxy->getHandler());
   append(DownloadURL->getHandler());
   append(PrefLineEdit2->getHandler());
-  append(Location->getHandler());
+  append(prefStartPage->getHandler());
+  prefStartPage->setFilter( "All Html files (*.html *.htm)" );
+  if ( prefStartPage->text().isEmpty() )
+  {
+    prefStartPage->setText( getStartpage() );
+  }
 
-  setModified(true);
+  append(prefExtBrowser->getHandler());
 }
 
 /** 
@@ -52,6 +61,29 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl
  */
 DlgOnlineHelpImp::~DlgOnlineHelpImp()
 {
+}
+
+/**
+ * Returns the start page for the HelpView. If none is defined the default 
+ * start page "<FreeCADHome>/doc/free-cad.sourceforge.net/index.php.html" 
+ * is returned.
+ * \remark It is not checked if the returned page really exists.
+ */
+QString DlgOnlineHelpImp::getStartpage()
+{
+  FCParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+  QString home = QString(hURLGrp->GetASCII( "Startpage", "" ).c_str());
+
+  if ( home.isEmpty() )
+  {
+    QString hm = App::GetApplication().GetHomePath();
+    hm += "/doc/free-cad.sourceforge.net";
+    QDir d(hm);
+    home = d.path();
+    home += "/index.php.html";
+  }
+
+  return home;
 }
 
 #include "DlgOnlineHelp.cpp"

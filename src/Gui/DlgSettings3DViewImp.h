@@ -44,7 +44,6 @@ public:
   ~DlgSettings3DViewImp();
 
 protected:
-  virtual void chooseDir();
   virtual void warnInventor(bool);
 };
 

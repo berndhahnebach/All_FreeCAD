@@ -24,7 +24,7 @@
 #ifndef __STACKBAR_H__
 #define __STACKBAR_H__
 
-#include "Window.h"
+#include "DockWindow.h"
 
 #ifndef _PreComp_
 # include <qtoolbutton.h>

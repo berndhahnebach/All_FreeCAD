@@ -29,8 +29,6 @@
 namespace Gui {
 namespace DockWnd {
 
-class StackBar;
-
 /** 
  * The CommandBar is a special kind of QToolBar with some extensions.
  * So this class is able to manage its content on its own.
@@ -42,7 +40,6 @@ class GuiExport CommandBar : public Gui::CustomToolBar
   Q_OBJECT
 
 public:
-  virtual void clearUp();
   virtual void setTextToLastItem( const QString& ) = 0;
   void setDummyToLastItem();
 
@@ -50,18 +47,11 @@ protected:
   CommandBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
   virtual ~CommandBar ();
 
-  void mousePressEvent( QMouseEvent * );
-
 protected slots:
-  void cleanupEventFilter();
-  void popupMenuAboutToShow();
-  void setNewBackgroundColor();
-  void resetBackgroundColor();
+  virtual void clearUp();
 
 private:
   QWidget*     m_Dummy;
-  QPopupMenu*  m_Popup;
-  QColor       m_Color;
 };
 
 /** 

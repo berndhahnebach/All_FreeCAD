@@ -73,13 +73,6 @@ public:
    * otherwise.
    */
   static QPixmap merge( const QPixmap& p1, const QPixmap& p2, bool vertical );
-
-  /** Returns whether the given url is a:
-   * 0: an existing file
-   * 1: a non-existing file but valid file name
-   * 2: something else
-   */
-  static int getURLType(const QString& url);
 };
 
 template <class T>

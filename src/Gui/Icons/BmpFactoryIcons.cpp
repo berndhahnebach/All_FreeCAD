@@ -91,4 +91,8 @@ void RegisterIcons()
   rclBmpFactory.addXPM("WhatsThis", WhatsThis);
   rclBmpFactory.addXPM("Folder32", Folder32);
   rclBmpFactory.addXPM("MacroEditor", MacroEditor);
+  rclBmpFactory.addXPM("back_pixmap", back_pixmap);
+  rclBmpFactory.addXPM("forward_pixmap", forward_pixmap);
+  rclBmpFactory.addXPM("home_pixmap", home_pixmap);
+  rclBmpFactory.addXPM("open_pixmap", open_pixmap);
 }

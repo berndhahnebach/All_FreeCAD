@@ -28,6 +28,7 @@
 #include "Widgets.h"
 #include "Window.h"
 #include "SpinBox.h"
+#include "FileDialog.h"
 
 #ifndef _PreComp_
 # include <qcheckbox.h>
@@ -56,7 +57,7 @@ class PrefWidgetHandler;
  * @see PrefWidgetHandler
  * \author Werner Mayer
  */
-class PrefWidget : public WindowParameter
+class GuiExport PrefWidget : public WindowParameter
 {
 public:
   virtual void setEntryName( const QCString& name );
@@ -98,7 +99,7 @@ private:
  * @see PrefWidget
  * \author Werner Mayer
  */
-class PrefWidgetHandler : public QObject
+class GuiExport PrefWidgetHandler : public QObject
 {
   Q_OBJECT
 
@@ -161,7 +162,7 @@ protected:
  *
  * \author Werner Mayer
  */
-class PrefWidgetManager
+class GuiExport PrefWidgetManager
 {
 public:
   std::vector<PrefWidgetHandler*> getHandlers()
@@ -194,7 +195,7 @@ protected:
 /** The PrefSpinBox class.
  * \author Werner Mayer
  */
-class PrefSpinBox : public FloatSpinBox, public PrefWidget
+class GuiExport PrefSpinBox : public FloatSpinBox, public PrefWidget
 {
   Q_OBJECT
 
@@ -223,7 +224,7 @@ protected:
  * The PrefLineEdit class.
  * \author Werner Mayer
  */
-class PrefLineEdit : public QLineEdit, public PrefWidget
+class GuiExport PrefLineEdit : public QLineEdit, public PrefWidget
 {
   Q_OBJECT
 
@@ -249,10 +250,39 @@ protected:
 };
 
 /**
+ * The PrefFileChooser class.
+ * \author Werner Mayer
+ */
+class GuiExport PrefFileChooser : public FileChooser, public PrefWidget
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefFileChooser ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefFileChooser();
+
+  // PROPERTIES
+  // getters
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
+  // setters
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
+
+protected:
+  // restore from/save to parameters
+  void restorePreferences();
+  void savePreferences();
+};
+
+/**
  * The PrefComboBox class.
  * \author Werner Mayer
  */
-class PrefComboBox : public QComboBox, public PrefWidget
+class GuiExport PrefComboBox : public QComboBox, public PrefWidget
 {
   Q_OBJECT
 
@@ -281,7 +311,7 @@ protected:
  * The PrefListBox class.
  * \author Werner Mayer
  */
-class PrefListBox : public QListBox, public PrefWidget
+class GuiExport PrefListBox : public QListBox, public PrefWidget
 {
   Q_OBJECT
 
@@ -310,7 +340,7 @@ protected:
  * The PrefCheckBox class.
  * \author Werner Mayer
  */
-class PrefCheckBox : public QCheckBox, public PrefWidget
+class GuiExport PrefCheckBox : public QCheckBox, public PrefWidget
 {
   Q_OBJECT
 
@@ -339,7 +369,7 @@ protected:
  * The PrefRadioButton class.
  * \author Werner Mayer
  */
-class PrefRadioButton : public QRadioButton, public PrefWidget
+class GuiExport PrefRadioButton : public QRadioButton, public PrefWidget
 {
   Q_OBJECT
 
@@ -368,7 +398,7 @@ protected:
  * The PrefSlider class.
  * \author Werner Mayer
  */
-class PrefSlider : public QSlider, public PrefWidget
+class GuiExport PrefSlider : public QSlider, public PrefWidget
 {
   Q_OBJECT
 
@@ -397,7 +427,7 @@ protected:
  * The PrefColorButton class.
  * \author Werner Mayer
  */
-class PrefColorButton : public ColorButton, public PrefWidget
+class GuiExport PrefColorButton : public ColorButton, public PrefWidget
 {
   Q_OBJECT
 

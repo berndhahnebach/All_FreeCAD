@@ -24,10 +24,11 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qlayout.h>
 #endif
 
 #include "PrefWidgets.h"
-#include "Application.h"
+#include "FileDialog.h"
 #include "../Base/Console.h"
 
 using Base::Console;
@@ -264,6 +265,60 @@ void PrefLineEdit::setEntryName ( const QCString& name )
 }
 
 void PrefLineEdit::setParamGrpPath ( const QCString& name )
+{
+  PrefWidget::setParamGrpPath(name);
+}
+
+// --------------------------------------------------------------------
+
+PrefFileChooser::PrefFileChooser ( QWidget * parent, const char * name )
+  : FileChooser(parent, name), PrefWidget(name)
+{
+}
+
+PrefFileChooser::~PrefFileChooser()
+{
+}
+
+void PrefFileChooser::restorePreferences()
+{
+  if (getWindowParameter().IsNull())
+  {
+    Console().Warning("Cannot restore!\n");
+    return;
+  }
+
+  std::string txt = getWindowParameter()->GetASCII( entryName(), text().latin1() );
+  setText(txt.c_str());
+}
+
+void PrefFileChooser::savePreferences()
+{
+  if (getWindowParameter().IsNull())
+  {
+    Console().Warning("Cannot save!\n");
+    return;
+  }
+
+  getWindowParameter()->SetASCII( entryName(), text().latin1() );
+}
+
+QCString PrefFileChooser::entryName () const
+{
+  return PrefWidget::entryName();
+}
+
+QCString PrefFileChooser::paramGrpPath () const
+{
+  return PrefWidget::paramGrpPath();
+}
+
+void PrefFileChooser::setEntryName ( const QCString& name )
+{
+  PrefWidget::setEntryName(name);
+}
+
+void PrefFileChooser::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }

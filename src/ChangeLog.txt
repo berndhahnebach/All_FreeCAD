@@ -501,3 +501,7 @@ Version: V0.1B107 Date: Tue Jan 11 11:16:46 2005 +++++++++++++++++++++++++++++++
 + put the whole document python methodes with the macros and exceptions
 + removing doctype and put Feature handling into the document
 + Bug 1100780 fixed (no color in editor after first start)
++ Moved HtmlView to HelpView + Reimplementaion
++ Added class FileChooser ( line edit with button on its right side to browse)
++ Merged pref. page "Help viewer" and "Online Help" to one page
++ TextEdit class with completion

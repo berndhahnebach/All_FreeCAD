@@ -120,8 +120,9 @@
 #include "DlgDocTemplatesImp.h"
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
+#include "DlgOnlineHelpImp.h"
 #include "ToolBox.h"
-#include "HtmlView.h"
+#include "HelpView.h"
 #include "ReportView.h"
 #include "Macro.h"
 #include "Themes.h"
@@ -138,7 +139,7 @@ using Base::Console;
 using Base::Interpreter;
 using namespace Gui;
 using namespace Gui::DockWnd;
-
+using Gui::Dialog::DlgOnlineHelpImp;
 
 static ApplicationWindow* stApp;
 //static QWorkspace* stWs;
@@ -286,11 +287,10 @@ ApplicationWindow::ApplicationWindow()
   d->_pcDockMgr = new Gui::DockWindowManager();
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
-	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  FCParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/HelpViewer");
-	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
-	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
-	d->_pcDockMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
+	// Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  QString home = DlgOnlineHelpImp::getStartpage();
+	HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
+	d->_pcDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
@@ -299,7 +299,7 @@ ApplicationWindow::ApplicationWindow()
   d->_pcDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
 
 	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	FCPropertyView* pcPropView = new FCPropertyView(0,0,"PropertyView");
+	PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
 	pcPropView->setMinimumWidth(210);
 	d->_pcDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
 

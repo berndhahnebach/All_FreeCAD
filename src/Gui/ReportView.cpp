@@ -327,38 +327,22 @@ void ReportOutput::OnChange(FCSubject<const char*> &rCaller, const char * sReaso
   else if (strcmp(sReason, "colorText") == 0)
   {
     long col = rclGrp.GetInt( sReason );
-    int b = col >> 16;  col -= b << 16;
-    int g = col >> 8;   col -= g << 8;
-    int r = col;
-
-    reportHl->setTextColor( QColor(r,g,b) );
+    reportHl->setTextColor( QColor(col & 0xff,(col >> 8) & 0xff,(col >> 16) & 0xff) );
   }
   else if (strcmp(sReason, "colorLogging") == 0)
   {
     long col = rclGrp.GetInt( sReason );
-    int b = col >> 16;  col -= b << 16;
-    int g = col >> 8;   col -= g << 8;
-    int r = col;
-
-    reportHl->setLogColor( QColor(r,g,b) );
+    reportHl->setLogColor( QColor(col & 0xff,(col >> 8) & 0xff,(col >> 16) & 0xff) );
   }
   else if (strcmp(sReason, "colorWarning") == 0)
   {
     long col = rclGrp.GetInt( sReason );
-    int b = col >> 16;  col -= b << 16;
-    int g = col >> 8;   col -= g << 8;
-    int r = col;
-
-    reportHl->setWarningColor( QColor(r,g,b) );
+    reportHl->setWarningColor( QColor(col & 0xff,(col >> 8) & 0xff,(col >> 16) & 0xff) );
   }
   else if (strcmp(sReason, "colorError") == 0)
   {
     long col = rclGrp.GetInt( sReason );
-    int b = col >> 16;  col -= b << 16;
-    int g = col >> 8;   col -= g << 8;
-    int r = col;
-
-    reportHl->setErrorColor( QColor(r,g,b) );
+    reportHl->setErrorColor( QColor(col & 0xff,(col >> 8) & 0xff,(col >> 16) & 0xff) );
   }
 }
 

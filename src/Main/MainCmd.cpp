@@ -22,7 +22,7 @@
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -62,7 +62,9 @@ using Base::Console;
 using App::Application;
 
 
-#pragma comment(lib,"TKernel.lib")
+#ifdef _MSC_VER
+# pragma comment(lib,"TKernel.lib")
+#endif
 
 
 void PrintInitHelp(void);

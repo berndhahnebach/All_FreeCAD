@@ -31,6 +31,8 @@
 #endif
 
 class QCheckBox;
+class QLineEdit;
+class QPushButton;
 
 namespace Gui {
 
@@ -43,6 +45,9 @@ class GuiExport FileDialog : public QFileDialog
   Q_OBJECT
 
 public:
+  static QString getOpenFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
+                                   QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null,
+                                   const QString& buttonText = QString::null );
   static QString getSaveFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
                                    QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null );
   static QString getExistingDirectory( const QString & dir = QString::null, QWidget *parent = 0, 
@@ -52,6 +57,7 @@ public:
 public:
   FileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
   FileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null, QWidget* parent = 0, const char* name = 0, bool modal = false);
+  FileDialog (const QString& dirName, const QString& filter = QString::null, QWidget* parent = 0, const char* name = 0, bool modal = false);
   virtual ~FileDialog();
 
   QString selectedFileName();
@@ -109,6 +115,55 @@ public:
   ~FileIconProvider();
 
   const QPixmap * pixmap ( const QFileInfo & info );
+};
+
+// ======================================================================
+
+/**
+ * The FileChooser class provides a lineedit with a button on the right side
+ * to specify a file or directory.
+ * \author Werner Mayer
+ */
+class GuiExport FileChooser : public QWidget
+{
+  Q_OBJECT
+
+  Q_ENUMS( ChooseMode )
+  Q_PROPERTY( QString  text      READ text          WRITE setText          )
+  Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
+  Q_PROPERTY( bool   chooseFile  READ chooseFile    WRITE setChooseFile    )
+
+public:
+  FileChooser ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~FileChooser();
+
+  /** 
+   * Returns the text of the lineedit field.
+   */
+  QString text() const;
+
+  /**
+   * Returns true if this widgets is set to choose a file, if it is
+   * set to choose false is returned.
+   */
+  bool chooseFile() const;
+
+  /** 
+   * Returns the set filter.
+   */
+  QString filter() const;
+
+public slots:
+  virtual void onChoose();
+  virtual void setChooseFile( bool );
+  virtual void setFilter ( const QString & );
+  virtual void setText( const QString &);
+
+private:
+  QLineEdit* _le;
+  QPushButton* _pb;
+  bool _chFile;
+  QString _filter;
 };
 
 } // namespace Gui

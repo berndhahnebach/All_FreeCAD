@@ -32,7 +32,7 @@
             <property name="title">
                 <string>Macro recording settings</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -42,14 +42,14 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="0" column="0">
                     <property name="name">
                         <cstring>GroupBox8</cstring>
                     </property>
                     <property name="title">
                         <string>Macro path</string>
                     </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
@@ -59,23 +59,12 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="Gui::PrefLineEdit">
+                        <widget class="Gui::PrefFileChooser" row="0" column="0">
                             <property name="name">
                                 <cstring>MacroPath</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>20</height>
-                                </size>
+                            <property name="chooseFile" stdset="0">
+                                <bool>false</bool>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>MacroPath</cstring>
@@ -84,31 +73,9 @@
                                 <cstring>Macro</cstring>
                             </property>
                         </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>SaveBtn</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>40</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>...</string>
-                            </property>
-                        </widget>
-                    </hbox>
+                    </grid>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="1" column="0">
                     <property name="name">
                         <cstring>GroupBox7</cstring>
                     </property>
@@ -155,7 +122,7 @@
                         </widget>
                     </grid>
                 </widget>
-            </vbox>
+            </grid>
         </widget>
     </vbox>
 </widget>
@@ -184,7 +151,7 @@
         <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
-        <class>Gui::PrefLineEdit</class>
+        <class>Gui::PrefFileChooser</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
             <width>100</width>
@@ -198,9 +165,10 @@
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
+        <property type="String">text</property>
         <property type="CString">prefEntry</property>
         <property type="CString">prefPath</property>
-        <property type="String">text</property>
+        <property type="Bool">chooseFile</property>
     </customwidget>
 </customwidgets>
 <images>
@@ -208,20 +176,9 @@
         <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
     </image>
 </images>
-<connections>
-    <connection>
-        <sender>SaveBtn</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgSettingsMacro</receiver>
-        <slot>chooseDir()</slot>
-    </connection>
-</connections>
-<slots>
-    <slot>chooseDir()</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>gui::preflineedit.h</includehint>
+    <includehint>gui::preffilechooser.h</includehint>
     <includehint>gui::prefcheckbox.h</includehint>
     <includehint>gui::prefcheckbox.h</includehint>
 </includehints>

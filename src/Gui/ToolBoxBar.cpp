@@ -24,19 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qcolordialog.h>
-# include <qcursor.h>
 # include <qlabel.h>
 # include <qobjectlist.h>
-# include <qpainter.h>
 # include <qtoolbutton.h>
 #endif
 
 #include "ToolBoxBar.h"
-#include "Application.h"
-#include "Command.h"
-
-#include "../Base/Exception.h"
 
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -51,18 +44,12 @@ CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, W
 //  ApplicationWindow::Instance->removeToolBar(this);
   setFrameStyle( QFrame::NoFrame );
   setOrientation( Qt::Vertical );
-
-  m_Color = Qt::white;
-  setPalette(QPalette(m_Color, m_Color));
-  m_Popup = new QPopupMenu(0L);
-  m_Popup->setCheckable(true);
-  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
+  setPalette(QPalette(Qt::white, Qt::white));
   setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
 }
 
 CommandBar::~CommandBar ()
 {
-  delete m_Popup;
   delete m_Dummy;
 }
 
@@ -84,64 +71,6 @@ void CommandBar::setDummyToLastItem()
   delete m_Dummy;
   m_Dummy = new QWidget(this);
   setStretchableWidget( m_Dummy );
-}
-
-/**
- * Shows up the context menu if the right button was pressed.
- */
-void CommandBar::mousePressEvent( QMouseEvent * e )
-{
-  if (e->button() == LeftButton)
-  {
-  }
-  else if (e->button() == RightButton)
-  {
-    m_Popup->exec(QCursor::pos());
-  }
-  else if (e->button() == MidButton)
-  {
-  }
-}
-
-/**
- * No implementation.
- */
-void CommandBar::cleanupEventFilter()
-{
-}
-
-/**
- * Fills up the context menu.
- */
-void CommandBar::popupMenuAboutToShow()
-{
-  m_Popup->clear();
-
-  m_Popup->insertItem(tr("Background color..."), this, SLOT(setNewBackgroundColor()));
-  m_Popup->insertItem(tr("Reset background color"), this, SLOT(resetBackgroundColor()));
-  m_Popup->insertSeparator();
-  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
-}
-
-/**
- * Opens the color dialog to change background color.
- */
-void CommandBar::setNewBackgroundColor()
-{
-  QColor color = QColorDialog::getColor ( backgroundColor(), this);
-  if (color.isValid())
-  {
-    setPalette(QPalette(color, color));
-  }
-}
-
-/**
- * Restores the default background color.
- */
-void CommandBar::resetBackgroundColor()
-{
-  if (m_Color.isValid())
-    setPalette(QPalette(m_Color, m_Color));
 }
 
 // --------------------------------------------------------------------

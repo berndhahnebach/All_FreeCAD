@@ -51,7 +51,6 @@ class QComboBox;
 class FCWindow;
 class QToolBar;
 class FCBaseView;
-class FCHtmlView;
 class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
@@ -62,6 +61,9 @@ class QSplashScreen;
 
 namespace Gui{
 class CustomWidgetManager;
+namespace DockWnd {
+class HelpView;
+} //namespace DockWnd
 } //namespace Gui
 
 /** The Applcation main class

@@ -31,6 +31,7 @@ namespace Gui {
 namespace Dialog {
 
 /** This class implements the dialog for downloading the online documentation.
+ * Moreover it allows to specify location of the start page an an external browser.
  *  Here you can specify to use a proxy if necessary and some more stuff.
  *  @see PreferencePage
  *  \author Werner Mayer
@@ -42,6 +43,8 @@ Q_OBJECT
 public:
   DlgOnlineHelpImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgOnlineHelpImp();
+
+  static QString getStartpage();
 };
 
 } // namespace Dialog

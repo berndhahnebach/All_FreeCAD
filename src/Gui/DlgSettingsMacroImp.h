@@ -42,9 +42,6 @@ class DlgSettingsMacroImp : public DlgSettingsMacro, public Gui::Dialog::Prefere
 public:
   DlgSettingsMacroImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgSettingsMacroImp();
-
-protected:
-  virtual void chooseDir();
 };
 
 } // namespace Dialog

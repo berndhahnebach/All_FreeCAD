@@ -164,8 +164,6 @@ moc_DlgParameterImp.cpp \
 moc_DlgPreferences.cpp \
 moc_DlgPreferencesImp.cpp \
 moc_DlgReportView.cpp \
-moc_DlgSettings.cpp \
-moc_DlgSettingsImp.cpp \
 moc_DlgSettings3DView.cpp \
 moc_DlgSettings3DViewImp.cpp \
 moc_DlgSettingsMacro.cpp \
@@ -174,16 +172,18 @@ moc_DlgTipOfTheDay.cpp \
 moc_DlgToolbars.cpp \
 moc_DlgToolbarsImp.cpp \
 moc_DlgUndoRedo.cpp \
+moc_DockWindow.cpp \
 moc_Document.cpp \
 moc_FileDialog.cpp \
-moc_HtmlView.cpp \
+moc_HelpView.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
-moc_PropertyView.cpp \
+moc_PythonEditor.cpp \
 moc_ReportView.cpp \
 moc_SpinBox.cpp \
 moc_Splashscreen.cpp \
 moc_StackBar.cpp \
+moc_TextEdit.cpp \
 moc_ToolBox.cpp \
 moc_ToolBoxBar.cpp \
 moc_Tree.cpp \
@@ -192,7 +192,6 @@ moc_View3D.cpp \
 moc_View3DInventor.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
-moc_Window.cpp \
 DlgActions.cpp \
 DlgActions.h \
 DlgActivateWindow.cpp \
@@ -217,8 +216,6 @@ DlgPreferences.cpp \
 DlgPreferences.h \
 DlgReportView.cpp \
 DlgReportView.h \
-DlgSettings.cpp \
-DlgSettings.h \
 DlgSettings3DView.cpp \
 DlgSettings3DView.h \
 DlgSettingsMacro.cpp \
@@ -279,16 +276,16 @@ DlgOnlineHelpImp.cpp \
 DlgParameterImp.cpp \
 DlgPreferencesImp.cpp \
 DlgReportViewImp.cpp \
-DlgSettingsImp.cpp \
 DlgSettings3DViewImp.cpp \
 DlgSettingsMacroImp.cpp \
 DlgTipOfTheDayImp.cpp \
 DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
+DockWindow.cpp \
 Document.cpp \
 FileDialog.cpp \
 GuiConsole.cpp \
-HtmlView.cpp \
+HelpView.cpp \
 Macro.cpp \
 MouseModel.cpp \
 PrefWidgets.cpp \
@@ -303,6 +300,7 @@ Selection.cpp \
 SpinBox.cpp \
 Splashscreen.cpp \
 StackBar.cpp \
+TextEdit.cpp \
 ToolBox.cpp \
 ToolBoxBar.cpp \
 Tools.cpp \
@@ -367,16 +365,16 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
 	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
 	DlgParameterImp.lo DlgPreferencesImp.lo DlgReportViewImp.lo \
-	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
-	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
-	DlgUndoRedo.lo Document.lo FileDialog.lo GuiConsole.lo \
-	HtmlView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
+	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
+	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
+	DockWindow.lo Document.lo FileDialog.lo GuiConsole.lo \
+	HelpView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
 	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
 	ReportView.lo resource.lo Selection.lo SpinBox.lo \
-	Splashscreen.lo StackBar.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
-	Tree.lo View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
-	WaitCursor.lo WhatsThis.lo WidgetFactory.lo Widgets.lo \
-	Window.lo
+	Splashscreen.lo StackBar.lo TextEdit.lo ToolBox.lo \
+	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
+	View3DInventor.lo ViewProvider.lo WaitCursor.lo WhatsThis.lo \
+	WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -406,13 +404,13 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgPreferencesImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgReportViewImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettings3DViewImp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsMacroImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgTipOfTheDayImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgToolbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgUndoRedo.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/FileDialog.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HtmlView.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DockWindow.Plo ./$(DEPDIR)/Document.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FileDialog.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HelpView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/LanguageFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MouseModel.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PrefWidgets.Plo ./$(DEPDIR)/Process.Plo \
@@ -424,10 +422,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Selection.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/SoBrepShape.Plo ./$(DEPDIR)/SpinBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Splashscreen.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/StackBar.Plo ./$(DEPDIR)/ToolBox.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ToolBoxBar.Plo ./$(DEPDIR)/Tools.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Translator.Plo ./$(DEPDIR)/Tree.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/View.Plo ./$(DEPDIR)/View3D.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/StackBar.Plo ./$(DEPDIR)/TextEdit.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ToolBox.Plo ./$(DEPDIR)/ToolBoxBar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Tools.Plo ./$(DEPDIR)/Translator.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Tree.Plo ./$(DEPDIR)/View.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/View3D.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
@@ -528,15 +527,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPreferencesImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgReportViewImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettings3DViewImp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsMacroImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgTipOfTheDayImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgToolbarsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgUndoRedo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DockWindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileDialog.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GuiConsole.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HtmlView.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Macro.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MouseModel.Plo@am__quote@
@@ -552,6 +551,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpinBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Splashscreen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StackBar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TextEdit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBoxBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tools.Plo@am__quote@

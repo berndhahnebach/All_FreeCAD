@@ -24,7 +24,7 @@
 #ifndef __TOOLBOX_H__
 #define __TOOLBOX_H__
 
-#include "Window.h"
+#include "DockWindow.h"
 
 class QToolBox;
 

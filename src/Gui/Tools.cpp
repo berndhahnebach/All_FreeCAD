@@ -168,26 +168,3 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
   res.setMask( mask );
   return res;
 }
-
-int Tools::getURLType(const QString& url)
-{
-  QFileInfo fi(url);
-
-  // valid and existing file
-  if (fi.isFile() && fi.exists())
-    return 0;
-
-  QString s = url.lower();
-  const QFileInfoList* roots = QDir::drives();
-  QListIterator<QFileInfo> i(*roots);
-  QFileInfo* pfi;
-  while ( (pfi = *i) )
-  {
-    QString fp = pfi->filePath().lower();
-    ++i;
-    if ( s.startsWith( fp ) )
-      return 1;
-  }
-
-  return 2;
-}

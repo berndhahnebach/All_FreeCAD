@@ -29,6 +29,7 @@
 # include <qtextedit.h>
 #endif
 
+#include "DockWindow.h"
 #include "Window.h"
 #include "../Base/Console.h"
 

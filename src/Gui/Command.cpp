@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "ToolBoxBar.h"
-#include "HtmlView.h"
+#include "HelpView.h"
 #include "Macro.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"

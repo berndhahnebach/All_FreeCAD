@@ -28,10 +28,13 @@
 #include "Window.h"
 
 #ifndef _PreComp_
-# include <qtextedit.h>
 # include <qsyntaxhighlighter.h>
 #endif
 
+#include <TextEdit.h>
+
+class QListBox;
+class QListBoxItem;
 class QPrinter;
 
 namespace Gui {
@@ -43,8 +46,10 @@ class PythonSyntaxHighlighterP;
  * Basic stuff for a Python text editor with syntax highlighting..
  * \author Werner Mayer
  */
-class GuiExport PythonWindow : public QTextEdit, public WindowParameter
+class GuiExport PythonWindow : public TextEdit, public WindowParameter
 {
+  Q_OBJECT
+
 protected:
   PythonWindow(QWidget *parent = 0,const char *name = 0);
   virtual ~PythonWindow();

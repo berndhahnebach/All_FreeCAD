@@ -8,14 +8,14 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>339</width>
-            <height>307</height>
+            <width>335</width>
+            <height>346</height>
         </rect>
     </property>
     <property name="caption">
         <string>Online help</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -25,99 +25,152 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="Gui::PrefLineEdit">
+        <widget class="QGroupBox" row="0" column="0">
             <property name="name">
-                <cstring>PrefLineEdit2</cstring>
+                <cstring>groupBox6</cstring>
             </property>
-            <property name="enabled">
-                <bool>false</bool>
+            <property name="title">
+                <string>Download</string>
             </property>
-            <property name="prefEntry" stdset="0">
-                <cstring>ProxyText</cstring>
-            </property>
-            <property name="prefPath" stdset="0">
-                <cstring>OnlineHelp</cstring>
-            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Download online help</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Proxy server:</string>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefLineEdit" row="1" column="0">
+                    <property name="name">
+                        <cstring>PrefLineEdit2</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>ProxyText</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>OnlineHelp</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox" row="2" column="0">
+                    <property name="name">
+                        <cstring>UseProxy</cstring>
+                    </property>
+                    <property name="checked" stdset="0">
+                        <bool>false</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>UseProxy</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>OnlineHelp</cstring>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>Use proxy</string>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefLineEdit" row="4" column="0">
+                    <property name="name">
+                        <cstring>DownloadURL</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>250</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>DownloadURL</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>OnlineHelp</cstring>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>http://free-cad.sourceforge.net/index.html</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-        <widget class="Gui::PrefCheckBox">
+        <widget class="QGroupBox" row="1" column="0">
             <property name="name">
-                <cstring>UseProxy</cstring>
+                <cstring>GroupBoxOther</cstring>
             </property>
-            <property name="checked" stdset="0">
-                <bool>false</bool>
+            <property name="title">
+                <string>Help viewer</string>
             </property>
-            <property name="prefEntry" stdset="0">
-                <cstring>UseProxy</cstring>
-            </property>
-            <property name="prefPath" stdset="0">
-                <cstring>OnlineHelp</cstring>
-            </property>
-            <property name="text" stdset="0">
-                <string>Use proxy</string>
-            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="Gui::PrefFileChooser" row="3" column="0">
+                    <property name="name">
+                        <cstring>prefExtBrowser</cstring>
+                    </property>
+                    <property name="chooseFile" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>ExternalBrowser</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>OnlineHelp</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefFileChooser" row="1" column="0">
+                    <property name="name">
+                        <cstring>prefStartPage</cstring>
+                    </property>
+                    <property name="chooseFile" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>Startpage</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>OnlineHelp</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>TextLabelBrowser</cstring>
+                    </property>
+                    <property name="text">
+                        <string>External browser</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabelURL</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Location of start page</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-        <widget class="QLabel">
+        <spacer row="4" column="0">
             <property name="name">
-                <cstring>TextLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>Download online help:</string>
-            </property>
-        </widget>
-        <widget class="Gui::PrefLineEdit">
-            <property name="name">
-                <cstring>DownloadURL</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>250</width>
-                    <height>0</height>
-                </size>
-            </property>
-            <property name="prefEntry" stdset="0">
-                <cstring>DownloadURL</cstring>
-            </property>
-            <property name="prefPath" stdset="0">
-                <cstring>OnlineHelp</cstring>
-            </property>
-            <property name="text" stdset="0">
-                <string>http://free-cad.sourceforge.net/index.html</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>TextLabel1_2</cstring>
-            </property>
-            <property name="text">
-                <string>Location of online help:</string>
-            </property>
-        </widget>
-        <widget class="Gui::PrefLineEdit">
-            <property name="name">
-                <cstring>Location</cstring>
-            </property>
-            <property name="enabled">
-                <bool>false</bool>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>250</width>
-                    <height>0</height>
-                </size>
-            </property>
-            <property name="prefEntry" stdset="0">
-                <cstring>OnlineDocDir</cstring>
-            </property>
-            <property name="prefPath" stdset="0">
-                <cstring>OnlineHelp</cstring>
-            </property>
-            <property name="text" stdset="0">
-                <string>/doc/free-cad.sourceforge.net/</string>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>Spacer7</cstring>
+                <cstring>spacer6</cstring>
             </property>
             <property name="orientation">
                 <enum>Vertical</enum>
@@ -128,11 +181,11 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>20</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>
-    </vbox>
+    </grid>
 </widget>
 <customwidgets>
     <customwidget>
@@ -177,6 +230,26 @@
         <property type="CString">prefPath</property>
         <property type="String">text</property>
     </customwidget>
+    <customwidget>
+        <class>Gui::PrefFileChooser</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>100</width>
+            <height>20</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <property type="String">text</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
+        <property type="Bool">chooseFile</property>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
@@ -196,6 +269,7 @@
     <includehint>gui::preflineedit.h</includehint>
     <includehint>gui::prefcheckbox.h</includehint>
     <includehint>gui::preflineedit.h</includehint>
-    <includehint>gui::preflineedit.h</includehint>
+    <includehint>gui::preffilechooser.h</includehint>
+    <includehint>gui::preffilechooser.h</includehint>
 </includehints>
 </UI>

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -25,14 +25,10 @@
 #ifndef __PROPTERYVIEW_H__
 #define __PROPTERYVIEW_H__
 
-#include "Window.h"
+#include "DockWindow.h"
 
 #ifndef _PreComp_
-#if QT_VERSION < 300
-#	include <qlist.h>
-#  else
-#	include <qptrlist.h>
-#  endif
+# include <qptrlist.h>
 #endif
 
 class QPixmap;
@@ -46,37 +42,42 @@ class EditableListView;
 } // namespace PropertyEditor
 } // namespace Gui
 
+namespace Gui {
+namespace DockWnd {
+
 /** A test class. A more elaborate class description.
  */
-class FCPropertyView :public Gui::DockView
+class PropertyView :public Gui::DockView
 {
-  public:
-       
-	  /**
-	   * A constructor.
-	   * A more elaborate description of the constructor.
-	   */
-	  FCPropertyView(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
+public:
+  /**
+   * A constructor.
+   * A more elaborate description of the constructor.
+   */
+  PropertyView(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
 
-	  /**
-	   * A destructor.
-	   * A more elaborate description of the destructor.
-	   */
-	  virtual ~FCPropertyView();
+  /**
+   * A destructor.
+   * A more elaborate description of the destructor.
+   */
+  virtual ~PropertyView();
 
-  	bool OnMsg(const char* pMsg);
+  bool OnMsg(const char* pMsg);
 
-	  virtual const char *GetName(void){return "PropertyView";}
+  virtual const char *GetName(void){return "PropertyView";}
 
-	  /// is called when the above function is called to handle document change stuff
-	  virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);
-	  /// get called when the document is changed or updated
-	  virtual void Update(void);
+  /// is called when the above function is called to handle document change stuff
+  virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);
+  /// get called when the document is changed or updated
+  virtual void Update(void);
 
-  	static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
+  static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-  private:
-    Gui::PropertyEditor::EditableListView * _pPropEditor;;
+private:
+  Gui::PropertyEditor::EditableListView * _pPropEditor;;
 };
+
+} // namespace DockWnd
+} // namespace Gui
 
 #endif // __PROPTERYVIEW_H__

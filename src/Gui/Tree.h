@@ -25,7 +25,7 @@
 #endif
 
 #include "../Base/PyExport.h"
-#include "Window.h"
+#include "DockWindow.h"
 
 /// Forwards
 class FCLabel; 

@@ -59,16 +59,6 @@ DlgSettingsMacroImp::~DlgSettingsMacroImp()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/**
- * Opens a file dialog to choose a directory.
- */
-void DlgSettingsMacroImp::chooseDir()
-{
-  QString cPath = FileDialog::getExistingDirectory ();
-  if ( !cPath.isEmpty() )
-    MacroPath->setText( cPath );
-}
-
 
 #include "DlgSettingsMacro.cpp"
 #include "moc_DlgSettingsMacro.cpp"

@@ -94,8 +94,8 @@
 #include "Macro.h"
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
-#include "DlgSettingsImp.h"
 #include "DlgActivateWindowImp.h"
+#include "Widgets.h"
 
 using Base::Console;
 using Base::Sequencer;

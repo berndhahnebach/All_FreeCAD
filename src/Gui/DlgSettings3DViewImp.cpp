@@ -51,7 +51,7 @@ DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, 
   append(CheckBox_ShowFPS->getHandler());
   append(CheckBox_UseSimpleBackground->getHandler());
   append(CheckBox_ShowViewerDecoration->getHandler());
-  append(PrefLineEdit_UserDefinedViewerExt->getHandler());
+  append(PrefLineEdit_UserDefinedViewer->getHandler());
   append(CheckBox_UseAutoRotation->getHandler());
 }
 
@@ -61,15 +61,6 @@ DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, 
 DlgSettings3DViewImp::~DlgSettings3DViewImp()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/**
- * Opens a file dialog to choose an OpenInventor file.
- */
-void DlgSettings3DViewImp::chooseDir()
-{
-  QString cPath = FileDialog::getOpenFileName( QString::null, "Inventor (*.iv)");
-  PrefLineEdit_UserDefinedViewerExt->setText(cPath.latin1());
 }
 
 /**

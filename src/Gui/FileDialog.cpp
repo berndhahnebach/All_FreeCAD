@@ -26,9 +26,12 @@
 #ifndef _PreComp_
 # include <qcheckbox.h>
 # include <qdir.h>
+# include <qfileinfo.h>
 # include <qlayout.h>
+# include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qpainter.h>
+# include <qpushbutton.h>
 #endif
 
 #include "FileDialog.h"
@@ -36,6 +39,24 @@
 
 using namespace Gui;
 
+
+QString FileDialog::getOpenFileName ( const QString & startWith, const QString & filter, QWidget * parent,
+                                      const char* name, const QString & caption, const QString& buttonText )
+{
+  FileDialog fd(ExistingFile, startWith, filter, parent, name, true);
+  fd.setCaption(caption);
+  if ( buttonText != QString::null )
+  {
+    // search for the OK button to change its text
+    QObject* btn = fd.child( "OK", "QPushButton", true );
+    if ( btn )
+      static_cast<QPushButton*>(btn)->setText( buttonText );
+  }
+  if ( fd.exec() )
+    return fd.selectedFileName();
+  else
+    return QString::null;
+}
 
 QString FileDialog::getSaveFileName ( const QString & startWith, const QString & filter, QWidget * parent,
                                       const char* name, const QString & caption )
@@ -45,7 +66,7 @@ QString FileDialog::getSaveFileName ( const QString & startWith, const QString &
   if ( fd.exec() )
     return fd.selectedFileName();
   else
-    return QString("");
+    return QString::null;
 }
 
 QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, const char* name,
@@ -87,6 +108,19 @@ FileDialog::FileDialog (Mode mode, const QString& dirName, const QString& filter
   setMode(mode);
 }
 
+/**
+ * Constructs a file dialog called \a name with the parent \a parent.
+ * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
+ *
+ * If \a dirName is specified then it will be used as the dialog's working directory, i.e. 
+ * it will be the directory that is shown when the dialog appears. If \a filter is specified
+ * it will be used as the dialog's file filter.
+ */
+FileDialog::FileDialog (const QString& dirName, const QString& filter, QWidget* parent, const char* name, bool modal)
+  : QFileDialog(dirName, filter, parent, name, modal)
+{
+}
+
 FileDialog::~FileDialog()
 {
 }
@@ -117,7 +151,13 @@ QString FileDialog::selectedFileName()
 
   // if empty do nothing
   if (fn.isEmpty())
-    return fn;
+    return QString::null;
+
+  // check if fn is a directory, because Qt 3.2.1 returns a non-emtpy
+  // string though cancel was pressed
+  QFileInfo fi( fn );
+  if ( fi.isDir() )
+    return QString::null;
 
   // search for extension
   int pos = fn.findRev('.');
@@ -264,6 +304,118 @@ const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
   }
 
   return QFileIconProvider::pixmap( info );
+}
+
+// --------------------------------------------------------------------
+
+/**
+ * Constructs a file chooser called \a name with the parent \a parent.
+ */
+FileChooser::FileChooser ( QWidget * parent, const char * name )
+: QWidget(parent, name), _chFile( true ), _filter( QString::null )
+{
+  QGridLayout* formLayout = new QGridLayout( this, 1, 1, 0, -1, "formLayout"); 
+  QHBoxLayout* layout = new QHBoxLayout( 0, 0, 6, "layout"); 
+
+  _le = new QLineEdit( this, "lineEdit" );
+  layout->addWidget( _le );
+
+  _pb = new QPushButton( this, "pushButton" );
+  _pb->setMaximumSize( QSize( 40, 32767 ) );
+  _pb->setText( "..." );
+  layout->addWidget( _pb );
+  formLayout->addLayout( layout, 0, 0 );
+
+  connect( _pb, SIGNAL( clicked() ), this, SLOT( onChoose() ));
+}
+
+FileChooser::~FileChooser()
+{
+}
+
+/**
+ * \property FileChooser::text
+ *
+ * This property holds the line edit's text.
+ * Set this property's value with setText() and get this property's value with text().
+ *
+ * \sa text(), setText().
+ */
+QString FileChooser::text() const
+{
+  return _le->text();
+}
+
+/** 
+ * Sets the text \a s to the lineedit field.
+ */
+void FileChooser::setText( const QString& s )
+{
+  _le->setText( s );
+}
+
+/**
+ * Opens a FileDialog to choose either a file or a directory in dependency of the
+ * value of the chooseFile property.
+ */
+void FileChooser::onChoose()
+{
+  if ( _chFile )
+  {
+    QString fn = Gui::FileDialog::getOpenFileName( QString::null, _filter, this, 0,
+      tr( "Select file" ), tr( "Select" ));
+    if ( !fn.isEmpty() )
+      setText( fn );
+  }
+  else
+  {
+    QString fn = Gui::FileDialog::getExistingDirectory( _le->text(), this );
+    if ( !fn.isEmpty() )
+      setText( fn );
+  }
+}
+
+/**
+ * \property FileChooser::chooseFile
+ *
+ * This property holds whether the widgets selects either a file or a directory.
+ * The default value of chooseFile is set to true.
+ *
+ * \sa onChoose(), chooseFile(), setChooseFile().
+ */
+bool FileChooser::chooseFile() const
+{
+  return _chFile;
+}
+
+/**
+ * If \a m is true the widget is set to choose a file, otherwise it is set to
+ * choose a directory.
+ */
+void FileChooser::setChooseFile( bool m )
+{
+  _chFile = m;
+}
+
+/**
+ * \property FileChooser::filter
+ *
+ * This property holds the set filter to choose a file. This property is used only if 
+ * \property FileChooser::chooseFile is set to true.
+ *
+ * \sa onChoose(), filter(), setFilter().
+ */
+QString FileChooser::filter() const
+{
+  return _filter;
+}
+
+/**
+ * Sets the filter for choosing a file.  
+ */
+void FileChooser::setFilter ( const QString& filter )
+{
+  _filter = filter;
 }
 
 #include "moc_FileDialog.cpp"

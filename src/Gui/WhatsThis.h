@@ -35,7 +35,7 @@ namespace Gui {
 /**
  * The WhatsThis class provides a simple description of any widget, i.e. answering the 
  * question "What's this?". The description is shown in the help viewer.
- * @see Gui::HtmlView
+ * @see Gui::HelpView
  * \author Werner Mayer
  */
 class WhatsThis : public QWhatsThis

@@ -54,7 +54,6 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 // INCLUDE YOUR PREFERENCFE PAGES HERE
 //
 #include "DlgPreferencesImp.h"
-#include "DlgSettingsImp.h"
 #include "DlgSettings3DViewImp.h"
 #include "DlgGeneralImp.h"
 #include "DlgEditorImp.h"
@@ -83,7 +82,6 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new PrefPageProducer<DlgReportViewImp>      ( QObject::tr( "FreeCAD" ) );
   new PrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr( "FreeCAD" ) );
   new PrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr( "FreeCAD" ) );
-  new PrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr( "Viewer"  ) );
   new PrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr( "Viewer"  ) );
 
   // ADD YOUR CUSTOMIZE PAGES HERE
