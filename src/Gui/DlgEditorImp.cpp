@@ -1,39 +1,32 @@
 /***************************************************************************
-                          DlgEditorImp.cpp  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief Does the editor settings
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#	include <qbutton.h>
-#	include <qfontdatabase.h>
-#	include <qlabel.h>
-#	include <qstringlist.h>
+# include <qbutton.h>
+# include <qfontdatabase.h>
+# include <qlabel.h>
+# include <qstringlist.h>
 #endif
 
 #include "DlgEditorImp.h"
@@ -41,14 +34,14 @@
 
 using namespace Gui::Dialog;
 
-/*
- *  Constructs a DlgEditorSettingsImp which is a child of 'parent', with the
+/**
+ *  Constructs a DlgSettingsEditorImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgEditorSettingsImp::DlgEditorSettingsImp( QWidget* parent,  const char* name, WFlags fl )
+DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgEditorSettingsBase( parent, name, fl )
 {
   setParamGrpPath("User parameter:BaseApp/Windows/Editor");
@@ -56,10 +49,10 @@ DlgEditorSettingsImp::DlgEditorSettingsImp( QWidget* parent,  const char* name, 
 
   append(EnableLineNumber->getHandler());
   append(EnableFolding->getHandler());
-	append(MyCustomWidget1_2->getHandler());
+  append(MyCustomWidget1_2->getHandler());
   append(getHandler());
 
-  connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onAssignColor( const QString & ) ));
+  connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
   connect(MyCustomWidget1, SIGNAL(changed ()), this, SLOT( onChosenColor()));
   connect(ComboBox1, SIGNAL(activated ( const QString & ) ), this, SLOT( onChosenFont( const QString & )));
 
@@ -88,51 +81,52 @@ DlgEditorSettingsImp::DlgEditorSettingsImp( QWidget* parent,  const char* name, 
 
   for(int k=0 ; it != familyNames.end() ; it++ ,k++)
   {
-  	s = *it;
-	  if ( s.contains('-') )
+    s = *it;
+    if ( s.contains('-') )
     {
-	    int i = s.find('-');
-	    s = s.right( s.length() - i - 1 ) + " [" + s.left( i ) + "]";
-	  }
+      int i = s.find('-');
+      s = s.right( s.length() - i - 1 ) + " [" + s.left( i ) + "]";
+    }
 
     s[0] = s[0].upper();
     if (s == item)
       pos = k;
-  	newList.append( s );
+    newList.append( s );
   }
 
   ComboBox1->insertStringList( newList );
   ComboBox1->setCurrentItem(pos);
 }
 
-/*  
- *  Destroys the object and frees any allocated resources
- */
-DlgEditorSettingsImp::~DlgEditorSettingsImp()
+/** Destroys the object and frees any allocated resources */
+DlgSettingsEditorImp::~DlgSettingsEditorImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgEditorSettingsImp::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+/** No implementation */
+void DlgSettingsEditorImp::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
   // just do nothing
 }
 
-void DlgEditorSettingsImp::restorePreferences()
+/** Restores the color map */
+void DlgSettingsEditorImp::restorePreferences()
 {
   std::vector<QString> names = GetDefCol().GetKeys();
 
   for (std::vector<QString>::iterator it = names.begin(); it!=names.end(); ++it)
   {
-    m_clColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().GetColor(*it));
+    _mColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().GetColor(*it));
   }
 
   Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
 }
 
-void DlgEditorSettingsImp::savePreferences()
+/** Saves the color map */
+void DlgSettingsEditorImp::savePreferences()
 {
-  for (std::map<QString, long>::iterator it = m_clColors.begin(); it!=m_clColors.end(); ++it)
+  for (std::map<QString, long>::iterator it = _mColors.begin(); it!=_mColors.end(); ++it)
   {
     hPrefGrp->SetInt(it->first.latin1(), it->second);
   }
@@ -140,9 +134,14 @@ void DlgEditorSettingsImp::savePreferences()
   hPrefGrp->SetInt("Lexer", Languages->currentItem());
 }
 
-void DlgEditorSettingsImp::onAssignColor(const QString& name)
+/** Searches for the corresponding color value to \e name in @ref DefColorMap and
+ *  assigns it to the color button
+ *  @see Gui::ColorButton
+ *  @see DefColorMap
+ */
+void DlgSettingsEditorImp::onDisplayColor(const QString& name)
 {
-  long col = m_clColors[name];
+  long col = _mColors[name];
 
   // foreground color
   int b = col >> 16;  col -= b << 16;
@@ -152,28 +151,31 @@ void DlgEditorSettingsImp::onAssignColor(const QString& name)
   MyCustomWidget1->setColor(QColor(r,g,b));
 }
 
-void DlgEditorSettingsImp::onChosenColor()
+/** Updates the color map if a color was changed */
+void DlgSettingsEditorImp::onChosenColor()
 {
   QString text = ListBox1->currentText();
   if (text.isEmpty())
     return;
 
   QColor col = MyCustomWidget1->color();
- 	long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
+  long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
   
-  m_clColors[text] = lcol;
+  _mColors[text] = lcol;
 }
 
-void DlgEditorSettingsImp::onChosenFont(const QString & item)
+/** Saves the chosen font, but it is disabled in this version */
+void DlgSettingsEditorImp::onChosenFont(const QString & item)
 {
   hPrefGrp->SetASCII("Font", item.latin1());
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+// -------------------------------------------------------------------
 
 DefColorMap *DefColorMap::_pcSingleton = NULL;
 
+/** Construction */
 DefColorMap::DefColorMap(void)
 {
 
@@ -219,36 +221,41 @@ DefColorMap::DefColorMap(void)
   m_clDefColors["String"]         = lStrings;
 }
 
+/** Destruction */
 DefColorMap::~DefColorMap(void)
 {
 }
 
+/** Destroys the DefColorMap singleton */
 void DefColorMap::Destruct(void)
 {
-	// not initialized or double destruct!
+  // not initialized or double destruct!
   assert(_pcSingleton);
-	delete _pcSingleton;
+  delete _pcSingleton;
 }
 
+/** Creates the DefColorMap singleton */
 DefColorMap &DefColorMap::Instance(void)
 {
-	// not initialized?
-	if(!_pcSingleton)
-	{
-		_pcSingleton = new DefColorMap;
-	}
+  // not initialized?
+  if(!_pcSingleton)
+  {
+    _pcSingleton = new DefColorMap;
+  }
 
   return *_pcSingleton;
 }
 
+/** Returns the corresponding color value to the given setting name */ 
 long DefColorMap::GetColor(const QString& name)
 {
-	if (m_clDefColors.find(name) != m_clDefColors.end())
-		return m_clDefColors[name];
-	else
-		return 0;
+  if (m_clDefColors.find(name) != m_clDefColors.end())
+    return m_clDefColors[name];
+  else
+    return 0;
 }
 
+/** Returns the names of all settings */
 std::vector<QString> DefColorMap::GetKeys() const
 {
   std::vector<QString> keys;

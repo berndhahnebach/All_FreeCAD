@@ -1,34 +1,23 @@
-/** \file FileTemplate.h
- *  \brief FileTemplate example header
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here a example of a file layout for FreeCAD.
- *  @see Parameter.cpp
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2000 - 2003                 *   
+ *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2003                                                   *
  ***************************************************************************/
 
 
@@ -37,10 +26,15 @@
 
 // Std. configurations
 
-//#include "PyExport.h"
+#include "PyExport.h"
 
-//#include <string>
-//#include <map>
+#ifndef _PreComp_
+# include <string>
+# include <map>
+#endif
+
+namespace Base
+{
 
 
 /** A test class. A more elaborate class description.
@@ -49,7 +43,7 @@
  *  bla blablablablablablabl:
  *  \code
  *  #include <Base/Console.h>
- *  GetConsole().Log("Stage: %d",i);
+ *  Base::Console().Log("Stage: %d",i);
  *  \endcode
  *  \par
  *  nother blablablablablablablablablabl:
@@ -87,92 +81,69 @@
  *     </ol>
  *  </ul>
  *  More text here.
+ *
+ * \author YOUR NAME
  */
 class BaseExport ClassTemplate
 {
 public:
+  /// Construction
+  ClassTemplate();
+  /// Destruction
+  virtual ~ClassTemplate();
 
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	ClassTemplate();
+  int testMe(int a,const char *s);
 
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	virtual ~ClassTemplate();
+  /** 
+   * An enum.
+   * More detailed enum description.
+   */
 
-	/**
-	 * a normal member taking two arguments and returning an integer value.
-	 * \par
-	 * You can use a printf like interface like:
-	 * \code
-	 * GetConsole().Warning("Some defects in %s, loading anyway\n",str);
-	 * \endcode
-	 * @param a an integer argument.
-	 * @param s a constant character pointer.
-	 * @see ClassTemplate()
-	 * @see ~ClassTemplate()
-	 * @see testMeToo()
-	 * @see publicVar()
-	 * @return The test results
-	 */
-	int testMe(int a,const char *s);
+  enum TEnum { 
+      TVal1, /**< enum value TVal1. */  
+      TVal2, /**< enum value TVal2. */  
+      TVal3  /**< enum value TVal3. */  
+     } 
+  *enumPtr, /**< enum pointer. Details. */
+  enumVar;  /**< enum variable. Details. */
 
-	/** 
-	 * An enum.
-	 * More detailed enum description.
-	 */
+  /**
+   * A pure virtual member.
+   * @see testMe()
+   * @param c1 the first argument.
+   * @param c2 the second argument.
+   */
+  virtual void testMeToo(char c1,char c2) = 0;
 
-	enum TEnum { 
-		  TVal1, /**< enum value TVal1. */  
-		  TVal2, /**< enum value TVal2. */  
-		  TVal3  /**< enum value TVal3. */  
-		 } 
-	*enumPtr, /**< enum pointer. Details. */
-	enumVar;  /**< enum variable. Details. */
-
-	/**
-	 * A pure virtual member.
-	 * @see testMe()
-	 * @param c1 the first argument.
-	 * @param c2 the second argument.
-	 */
-	virtual void testMeToo(char c1,char c2) = 0;
-
-	/** @name a group of methodes */
-	//@{
-	/// I am mthode one
-	virtual void One(void)=0;
-	/// I am mthode Two
-	virtual void Two(void)=0;
-	/// I am mthode Three
-	virtual void Three(void)=0;
-	//@}
+  /** @name a group of methodes */
+  //@{
+  /// I am method one
+  virtual void one(void)=0;
+  /// I am method two
+  virtual void two(void)=0;
+  /// I am method three
+  virtual void three(void)=0;
+  //@}
 
 
-	/** 
-	 * a public variable.
-	 * Details.
-	 */
-	int publicVar;
+  /** 
+   * a public variable.
+   * Details.
+   */
+  int publicVar;
  
-	/**
-	 * a function variable.
-	 * Details.
-	 */
-	int (*handler)(int a,int b);
+  /**
+   * a function variable.
+   * Details.
+   */
+  int (*handler)(int a,int b);
 
-	// VC6 warns a DLL interface, ignor!
-	std::string something;
+  // VC6 warns a DLL interface, ignore!
+  std::string something;
 
 };
 
-
-
+} //namespace Base
 
 #endif // __FILETEMPLATE_H__
 

@@ -322,7 +322,7 @@ FCCmdUndo::FCCmdUndo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Undo";
 	iAccel			= Qt::CTRL+Qt::Key_Z;
-  _pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Undo");
+  _pclUndoRedoWidget = new Gui::Dialog::UndoRedoDialog(ApplicationWindow::Instance, "Undo");
 }
 
 
@@ -374,7 +374,7 @@ FCCmdRedo::FCCmdRedo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Redo";
 	iAccel			= Qt::CTRL+Qt::Key_Y;
-	_pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Redo");
+	_pclUndoRedoWidget = new Gui::Dialog::UndoRedoDialog(ApplicationWindow::Instance, "Redo");
 }
 
 

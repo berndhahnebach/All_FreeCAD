@@ -1,44 +1,37 @@
 /***************************************************************************
-                          DlgCustomizeImp.cpp  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief Customize toolbars and button groups
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qbutton.h>
-#	include <qmessagebox.h>
-#	include <qiconview.h>
-#	include <qfiledialog.h>
-#	include <qcombobox.h>
-#	include <qlayout.h>
-#	include <qlabel.h>
-#	include <vector>
+# include <qbutton.h>
+# include <qmessagebox.h>
+# include <qiconview.h>
+# include <qfiledialog.h>
+# include <qcombobox.h>
+# include <qlayout.h>
+# include <qlabel.h>
+# include <vector>
 #endif
 
 #include "DlgCustomizeImp.h"
@@ -53,7 +46,7 @@
 
 using namespace Gui::Dialog;
 
-/* 
+/**
  *  Constructs a DlgCustomizeImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
@@ -64,7 +57,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
     : QDialog( parent, name, modal, fl )
 {
   if ( !name )
-  	setName( "FCDlgCustomize" );
+    setName( "FCDlgCustomize" );
   resize( 434, 365 ); 
   setProperty( "caption", tr( "Customize" ) );
   setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
@@ -143,7 +136,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
   connect(buttonCancel, SIGNAL(clicked()), this, SLOT(onCancel()));
 }
 
-/*  
+/**
  *  Destroys the object and frees any allocated resources
  */
 DlgCustomizeImp::~DlgCustomizeImp()
@@ -155,6 +148,7 @@ DlgCustomizeImp::~DlgCustomizeImp()
   tabPages.clear();
 }
 
+/** Inserts a new tab page with its caption */
 void DlgCustomizeImp::insertTab (QWidget* w, QString name)
 {
   w->reparent(tabWidget, QPoint(0,0));
@@ -164,11 +158,13 @@ void DlgCustomizeImp::insertTab (QWidget* w, QString name)
   tabPages.push_back(w);
 }
 
+/** Click the OK button to save changes and to exit */
 void DlgCustomizeImp::onOK()
 {
   onApply();
 }
 
+/** Click the Apply button to save all changes */
 void DlgCustomizeImp::onApply()
 {
   QWidget* page = tabWidget->currentPage();
@@ -177,10 +173,11 @@ void DlgCustomizeImp::onApply()
 
 # ifdef FC_DEBUG
   else
-	  Base::Console().Warning("Added page does not inherit from class PropertyPage");
+    Base::Console().Warning("Added page does not inherit from class PropertyPage");
 #endif
 }
 
+/** Click the Cancel button to discard all changes */
 void DlgCustomizeImp::onCancel()
 {
   for (std::vector<QWidget*>::iterator it = tabPages.begin(); it != tabPages.end(); ++it)
@@ -190,7 +187,7 @@ void DlgCustomizeImp::onCancel()
 
 # ifdef FC_DEBUG
     else
-		Base::Console().Warning("Added page does not inherit from class PropertyPage");
+      Base::Console().Warning("Added page does not inherit from class PropertyPage");
 #endif
 
   }

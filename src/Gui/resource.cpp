@@ -81,7 +81,7 @@ FCWidgetFactorySupplier::FCWidgetFactorySupplier()
   //
 	Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("FreeCAD"     ) );
   new FCPrefPageProducer<DlgGeneralImp>         ( QObject::tr("General"     ) );
-  new FCPrefPageProducer<DlgEditorSettingsImp>  ( QObject::tr("Editor"      ) );
+  new FCPrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr("Editor"      ) );
   new FCPrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr("Macros"      ) );
   new FCPrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr("Online help" ) );
 	Gui::Dialog::DlgPreferencesImp::addGroup      ( QObject::tr("Viewer"      ) );

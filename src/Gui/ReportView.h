@@ -1,30 +1,25 @@
 /***************************************************************************
-                          ReportView.h  -  description
-                             -------------------
-    begin                : 2003/08/16 10:47:44
-    copyright            : (C) 2003 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file ReportView.h
- *  \brief The output window of FreeCAD
- *  \author Werner Mayer
- *  \version 0.1
- *  \date    2003/01/06
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 #ifndef __FC_REPORT_VIEW_H__
 #define __FC_REPORT_VIEW_H__
@@ -39,23 +34,23 @@ namespace DockWnd {
 class ReportOutput;
 class ReportHighlighter;
 
-/** 
- * Report view containing an output window and a very simple Python console.
+/** Report view containing an output window and a very simple Python console.
  * @see ReportOutput
  * @see PythonConsole
+ * \author Werner Mayer
  */
 class ReportView : public FCDockWindow
 { 
-    Q_OBJECT
+  Q_OBJECT
 
-  public:
-    ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~ReportView();
+public:
+  ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~ReportView();
 
-  private:
-    QTabWidget* tab;
-    ReportOutput* mle; /**< Output window */
-		PythonConsole* pyc; /**< Python console */
+private:
+  QTabWidget* tab;
+  ReportOutput* mle; /**< Output window */
+  PythonConsole* pyc; /**< Python console */
 };
 
 /**

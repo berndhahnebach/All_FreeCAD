@@ -1,47 +1,40 @@
 /***************************************************************************
-                          DlgActionsImp.cpp  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief Customize actions
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaccel.h>
-#	include <qaction.h>
-#	include <qbutton.h>
-#	include <qcombobox.h>
-#	include <qcursor.h>
-#	include <qfiledialog.h>
-#	include <qiconview.h>
-#	include <qlabel.h>
-#	include <qmessagebox.h>
-#	include <qtabwidget.h>
-#	include <qthread.h>
+# include <qaccel.h>
+# include <qaction.h>
+# include <qbutton.h>
+# include <qcombobox.h>
+# include <qcursor.h>
+# include <qfiledialog.h>
+# include <qiconview.h>
+# include <qlabel.h>
+# include <qmessagebox.h>
+# include <qtabwidget.h>
+# include <qthread.h>
 #endif
 
 #include "DlgActionsImp.h"
@@ -53,18 +46,25 @@
 
 using namespace Gui::Dialog;
 
+/**
+ *  Constructs a DlgCustomActionsImp which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
 DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
 : DlgCustomActionsBase(parent, name, fl), bShown( false )
 {
   // search for all macros
   std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
   QDir d(cMacroPath.c_str(),"*.FCMacro");
-	actionMacros->clear();
+  actionMacros->clear();
   for (unsigned int i=0; i<d.count(); i++ )
     actionMacros->insertItem(d[i]);
 
   showPixmaps();
-	newActionName();
+  newActionName();
 
   // connections
   //
@@ -75,17 +75,22 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFl
   connect(CustomActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onCustomActionsDoubleClicked(QListViewItem*)));
 }
 
+/** Destroys the object and frees any allocated resources */
 DlgCustomActionsImp::~DlgCustomActionsImp()
 {
-	cancel();
+  cancel();
 }
 
+/** 
+ * Displays this page. If no macros were found a message box
+ * appears.
+ */
 void DlgCustomActionsImp::show()
 {
   DlgCustomActionsBase::show();
   if (actionMacros->count() == 0 && bShown == false)
   {
-		bShown = true;
+    bShown = true;
     QMessageBox::warning(this, tr("No macro"),tr("No macros found."));
   }
 }
@@ -111,13 +116,13 @@ void DlgCustomActionsImp::apply()
   std::vector<FCCommand*>::iterator it;
   for (it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it)
   {
-		// add to the manager
+    // add to the manager
     rclMan.AddCommand(*it);
   }
 
   for (it = _aclDelMacros.begin(); it!= _aclDelMacros.end(); ++it)
   {
-		// remove from manager and delete it immediately
+    // remove from manager and delete it immediately
     rclMan.RemoveCommand(*it);
   }
 
@@ -127,14 +132,14 @@ void DlgCustomActionsImp::apply()
 
 void DlgCustomActionsImp::cancel()
 {
-	// delete all temporary created commands again as they were not appended to the command manager
+  // delete all temporary created commands again as they were not appended to the command manager
   std::vector<FCCommand*>::iterator it;
   for (it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it)
   {
     delete (*it);
   }
 
-	_aclNewMacros.clear();
+  _aclNewMacros.clear();
 }
 
 void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
@@ -146,9 +151,9 @@ void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
   {
     if ( it.current()->isSelected() ) 
     {
-	    canDelete = TRUE;
-	    break;
-	  }
+      canDelete = TRUE;
+      break;
+    }
   }
 
   buttonDelete->setEnabled( canDelete || ( i && i->isSelected() ) );
@@ -156,12 +161,12 @@ void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
 
 void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
 {
-	if ( !i ) return; // no valid item
+  if ( !i ) return; // no valid item
 
   actionName->setText(i->text(0));
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
 
-	// search for the command in the manager and if necessary in the temporary created ones
+  // search for the command in the manager and if necessary in the temporary created ones
   FCCommand* pCmd = rclMan.GetCommandByName(i->text(0).latin1());
   if (pCmd == NULL)
   {
@@ -175,7 +180,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
     }
   }
 
-	// command exists
+  // command exists
   if (pCmd != NULL)
   {
     FCScriptCommand* pScript = (FCScriptCommand*)pCmd;
@@ -193,7 +198,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
 
     if (!bFound)
     {
-			Base::Console().Error(tr("Sorry, couldn't find macro file.").latin1());
+      Base::Console().Error(tr("Sorry, couldn't find macro file.").latin1());
     }
 
     actionMenu->setText(pScript->GetMenuText());
@@ -229,7 +234,7 @@ void DlgCustomActionsImp::onAddCustomAction()
     return;
   }
 
-	// search for the command in the manager and if necessary in the temporary created ones
+  // search for the command in the manager and if necessary in the temporary created ones
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   FCCommand* pCmd = rclMan.GetCommandByName(actionName->text().latin1());
   if (pCmd == NULL)
@@ -244,73 +249,74 @@ void DlgCustomActionsImp::onAddCustomAction()
     }
   }
 
-	// command exists
-	FCScriptCommand* macro;
+  // command exists
+  FCScriptCommand* macro;
   if (pCmd != NULL)
   {
-		macro = (FCScriptCommand*)pCmd;
-	}
-	else
-	{
-		macro = new FCScriptCommand(actionName->text().latin1());
-		_aclNewMacros.push_back(macro);
+    macro = (FCScriptCommand*)pCmd;
+  }
+  else
+  {
+    macro = new FCScriptCommand(actionName->text().latin1());
+    _aclNewMacros.push_back(macro);
 
-		QListViewItem* item = new QListViewItem(CustomActions,FCListView::lastItem(CustomActions), actionName->text());
-		if (PixmapLabel->pixmap() != NULL)
-		{
-			QPixmap p = *PixmapLabel->pixmap();
-			item->setPixmap(0, FCTools::fillUp(24,24,p));
-		}
-	}
+    QListViewItem* item = new QListViewItem(CustomActions,FCListView::lastItem(CustomActions), actionName->text());
+    
+    if (PixmapLabel->pixmap() != NULL)
+    {
+      QPixmap p = *PixmapLabel->pixmap();
+      item->setPixmap(0, FCTools::fillUp(24,24,p));
+    }
+  }
 
   if (!actionWhatsThis->text().isEmpty())
-	  macro->SetWhatsThis(actionWhatsThis->text().latin1());
+    macro->SetWhatsThis(actionWhatsThis->text().latin1());
   actionWhatsThis->clear();
   
-	if (!actionMacros-> currentText().isEmpty())
-	  macro->SetScriptName(actionMacros-> currentText().latin1());
+  if (!actionMacros-> currentText().isEmpty())
+    macro->SetScriptName(actionMacros-> currentText().latin1());
   
-	if (!actionMenu->text().isEmpty())
-		macro->SetMenuText(actionMenu->text().latin1());
+  if (!actionMenu->text().isEmpty())
+    macro->SetMenuText(actionMenu->text().latin1());
   actionMenu->clear();
 
   if (!actionToolTip->text().isEmpty())
-		macro->SetToolTipText(actionToolTip->text().latin1());
+    macro->SetToolTipText(actionToolTip->text().latin1());
   actionToolTip->clear();
 
   if (!actionStatus->text().isEmpty())
-		macro->SetStatusTip(actionStatus->text().latin1());
+    macro->SetStatusTip(actionStatus->text().latin1());
   actionStatus->clear();
 
   if (!m_sPixmap.isEmpty())
-		macro->SetPixmap(m_sPixmap.latin1());
+    macro->SetPixmap(m_sPixmap.latin1());
 //  if (!m_sPixmap.isEmpty())
-//	macro->SetHelpPage("");
+//  macro->SetHelpPage("");
 //  if (!m_sPixmap.isEmpty())
-//	macro->SetHelpURL("");
+//  macro->SetHelpURL("");
   if (!actionAccel->text().isEmpty())
     macro->SetAccel(QAccel::stringToKey(actionAccel->text()));
   actionAccel->clear();
 
-	newActionName();
+  newActionName();
 
   setModified(true);
 }
 
 void DlgCustomActionsImp::onDelCustomAction()
 {
-	// remove item from list view
+  // remove item from list view
   QString itemText;
   QListViewItemIterator it = CustomActions->firstChild();
   while ( it.current() ) 
   {
-	  if ( it.current()->isSelected() )
+    if ( it.current()->isSelected() )
     {
       itemText = it.current()->text(0);
       delete it.current();
       break;
     }
-	  else
+    else
       it++;
   }
 
@@ -318,8 +324,8 @@ void DlgCustomActionsImp::onDelCustomAction()
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
   std::vector<FCCommand*>::iterator it2;
 
-	// if the command is registered in the manager just mark it for deletion
-	// but do not delete it now
+  // if the command is registered in the manager just mark it for deletion
+  // but do not delete it now
   for (it2 = aclCurMacros.begin(); it2!= aclCurMacros.end(); ++it2)
   {
     if (itemText == (*it2)->GetName())
@@ -329,18 +335,18 @@ void DlgCustomActionsImp::onDelCustomAction()
     }
   }
 
-	// if the command is temporary created remove and delete it
+  // if the command is temporary created remove and delete it
   for (it2 = _aclNewMacros.begin(); it2!= _aclNewMacros.end(); ++it2)
   {
     if (itemText == (*it2)->GetName())
     {
-			delete *it2;
+      delete *it2;
       _aclNewMacros.erase(it2);
       break;
     }
   }
 
-	newActionName();
+  newActionName();
 
   setModified(true);
 }
@@ -348,7 +354,7 @@ void DlgCustomActionsImp::onDelCustomAction()
 void DlgCustomActionsImp::onCustomActionPixmap()
 {
   QString pixPath = FileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm *.gif *.png *.bmp)",this, "", 
-		tr("Choose a Pixmap"));
+    tr("Choose a Pixmap"));
   if (!pixPath.isEmpty())
   {
     m_sPixmap = pixPath.mid(pixPath.findRev("/") + 1);
@@ -359,38 +365,38 @@ void DlgCustomActionsImp::onCustomActionPixmap()
 
 void DlgCustomActionsImp::newActionName()
 {
-	int id = 0;
-	QString sName;
-	bool bUsed;
+  int id = 0;
+  QString sName;
+  bool bUsed;
 
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
 
-	do
-	{
-		bUsed = false;
-		sName = QString("Std_Macro_%1").arg( id++ );
+  do
+  {
+    bUsed = false;
+    sName = QString("Std_Macro_%1").arg( id++ );
 
-		std::vector<FCCommand*>::iterator it;
-		for ( it = aclCurMacros.begin(); it!= aclCurMacros.end(); ++it )
-		{
-			if (sName == (*it)->GetName())
-			{
-				bUsed = true;
-				break;
-			}
-		}
+    std::vector<FCCommand*>::iterator it;
+    for ( it = aclCurMacros.begin(); it!= aclCurMacros.end(); ++it )
+    {
+      if (sName == (*it)->GetName())
+      {
+        bUsed = true;
+        break;
+      }
+    }
 
-		for ( it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it )
-		{
-			if (sName == (*it)->GetName())
-			{
-				bUsed = true;
-				break;
-			}
-		}
-	}
-	while ( bUsed );
+    for ( it = _aclNewMacros.begin(); it!= _aclNewMacros.end(); ++it )
+    {
+      if (sName == (*it)->GetName())
+      {
+        bUsed = true;
+        break;
+      }
+    }
+  }
+  while ( bUsed );
 
   actionName->setText( sName );
 }

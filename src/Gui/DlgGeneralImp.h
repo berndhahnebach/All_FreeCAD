@@ -1,31 +1,24 @@
 /***************************************************************************
-                          DlgGeneralImp.h  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief 
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #ifndef DLG_GENERAL_IMP_H
@@ -37,50 +30,33 @@
 namespace Gui {
 namespace Dialog {
 
-/**
- * This class implements the settings for the application
- * like style, size of pixmaps, size of recent file list and so on
- * @see FCPreferencePage
- * @see class ApplicationWindow
+/** This class implements the settings for the application.
+ *  You can change window style, size of pixmaps, size of recent file list and so on
+ *  @see class PreferencePage
+ *  @see class ApplicationWindow
+ *  \author Werner Mayer
  */
 class DlgGeneralImp : public DlgGeneralBase, public Gui::Dialog::PreferencePage
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
-	DlgGeneralImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~DlgGeneralImp();
+  DlgGeneralImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  virtual ~DlgGeneralImp();
 
 protected:
-	/** Searches for all registered languages and insert them into a combo box */
-	void onSearchForLanguages();
-	/** ??? */
-	void onChooseLanguage(const QString&);
-	/** Apply the made changes */
-	void apply();
+  void onSearchForLanguages();
+  void onChooseLanguage(const QString&);
+  void apply();
 
-private slots:
-	/** Looks in the system parameters for the entry "BigPixmaps".
-	 * If it is true the tool buttons in the main window are set to use big pixmaps, 
-	 * and small pixmaps if "BigPixmaps" is false.
-	 * @see ApplicationWindow, QMainWindow
-	 */
-	void onBigPixmaps();
-	/** Sets the application's style
-	 * @see QStyle, QApplication
-	 */
-	void onSetStyle();
-	/** Sets the size of the recent file list (MRU) in the
-	 * system parameters.
-	 * @see FCCmdMRU
-	 */
-	void onSetMRUSize();
-	/** Shows/hides the command line 
-	 */
-	void onSetCmdLineVisible();
+protected slots:
+  void onBigPixmaps();
+  void onSetStyle();
+  void onSetMRUSize();
+  void onSetCmdLineVisible();
 
 private:
-	QString language; /**< Current used language */
+  QString language; /**< Current used language */
 };
 
 } // namespace Dialog

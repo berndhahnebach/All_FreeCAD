@@ -1,37 +1,27 @@
-/** \file DlgPreferncesImp.cpp
- *  \brief
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
+ *   This library  is distributed in the hope that it will be useful,      *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        *
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
-/** Precompiled header stuff
+/*  Precompiled header stuff
  *  on some compilers the precompiled header option gain significant compile
  *  time! So every external header (libs and system) should included in
  *  Precompiled.h. For systems without precompilation the header needed are
@@ -40,12 +30,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qlistbox.h>
-#	include <qwidgetstack.h>
-#	include <qtabwidget.h>
-#	include <qlistview.h>
-#	include <qpainter.h>
-#	include <qtabwidget.h>
+# include <qlistbox.h>
+# include <qwidgetstack.h>
+# include <qtabwidget.h>
+# include <qlistview.h>
+# include <qpainter.h>
+# include <qtabwidget.h>
 #endif
 #include "WidgetFactory.h"
 #include "DlgPreferencesImp.h"
@@ -59,18 +49,18 @@ using namespace Gui::Dialog;
 
 class PrefGroupItem : public QListBoxItem 
 {
-  public:
-    PrefGroupItem( QListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name);
+public:
+  PrefGroupItem( QListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name);
 
-    virtual int height( const QListBox * ) const;
-    virtual int width( const QListBox * )  const;
+  virtual int height( const QListBox * ) const;
+  virtual int width( const QListBox * )  const;
 
-  protected:
-    virtual void paint( QPainter * );
+protected:
+  virtual void paint( QPainter * );
 
-  private:
-    QPixmap pm_Unsel;
-    QPixmap pm_Sel;
+private:
+  QPixmap pm_Unsel;
+  QPixmap pm_Sel;
 };
 
 PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
@@ -102,12 +92,12 @@ void PrefGroupItem::paint( QPainter *p )
 #else
   if ( isSelected() )
 #endif
-	  p->drawPixmap( (w-pm_Sel.width())/2+10, 10, pm_Sel );
+    p->drawPixmap( (w-pm_Sel.width())/2+10, 10, pm_Sel );
   else
     p->drawPixmap( (w-pm_Unsel.width())/2+10, 10, pm_Unsel );
 }
 
-/*
+/**
  *  Constructs a DlgPreferencesImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
@@ -118,7 +108,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
     : QDialog( parent, name, modal, fl ),FCWindowParameter(name), m_pCurTab(NULL)
 {
   if ( !name )
-  	setName( "DlgPreferences" );
+    setName( "DlgPreferences" );
   resize( 574, 457 );
   setProperty( "caption", tr( "Preferences" ) );
   DlgPreferencesLayout = new QGridLayout( this );
@@ -174,63 +164,80 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
   setTabOrder( PushButton13, PushButton14 );
   setTabOrder( PushButton14, PushButton15 );
 
-  connect(ListBox, SIGNAL ( highlighted ( int ) ), this, SLOT( prefPageClicked( int ) ));
+  connect(ListBox, SIGNAL ( highlighted ( int ) ), this, SLOT( onPrefPageClicked( int ) ));
 
-	// make sure that pages are ready to create
-	GetWidgetFactorySupplier();
-	for (std::vector<QString>::iterator it = aclPages.begin(); it!=aclPages.end(); ++it)
-	{
-		if ((*it).startsWith("Group_"))
-		{
-			QString s = (*it).mid(6);
-		  addPreferenceGroup(s, "PrefTree_GroupOpen", "PrefTree_GroupClosed");
-		}
-		else
-		{
-			addPreferencePage(GetWidgetFactory().ProduceWidget(*it), tr(*it));
-		}
-	}
+  // make sure that pages are ready to create
+  GetWidgetFactorySupplier();
+  for (std::vector<QString>::iterator it = aclPages.begin(); it!=aclPages.end(); ++it)
+  {
+    if ((*it).startsWith("Group_"))
+    {
+      QString s = (*it).mid(6);
+      addPreferenceGroup(s, "PrefTree_GroupOpen", "PrefTree_GroupClosed");
+    }
+    else
+    {
+    addPreferencePage(GetWidgetFactory().ProduceWidget(*it), tr(*it));
+    }
+  }
 
   // show the first page
   ListBox->setCurrentItem(0);
 }
 
-/*  
+/**
  *  Destroys the object and frees any allocated resources
  */
 DlgPreferencesImp::~DlgPreferencesImp()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
 std::vector<QString> DlgPreferencesImp::aclPages;
+
+/**
+ * Adds a new preference page. The preference pages are also
+ * registered with their captions in the FCWidgetFactory to
+ * produce them at construction time of DlgPreferencesImp.
+ * All new added pages are mapped to the last added group.
+ * @addGroup
+ * @see FCWidgetFactory
+ * @see FCPrefPageProducer
+ */
 void DlgPreferencesImp::addPage(const QString& name)
 {
-	aclPages.push_back(name);
+  aclPages.push_back(name);
 }
 
+/** Adds a new group to arrange the preference pages. */
 void DlgPreferencesImp::addGroup(const QString& name)
 {
-	QString s = "Group_";
-	s += name;
-	aclPages.push_back(s);
+  QString s = "Group_";
+  s += name;
+  aclPages.push_back(s);
 }
 
+/** Adds a new preference group */
 void DlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   m_pCurTab = getOrAddPreferenceGroup(name, Pixmap, Pixmap2);
 }
 
+/**
+ * Adds a new preference page to the current group
+ * Before the first call of this method @ref addPreferenceGroup must be called
+ * otherwise the preference pages will be lost.
+ */
 void DlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 {
-	if (m_pCurTab && page)
-	{
-		m_pCurTab->addTab(page, name);
+  if (m_pCurTab && page)
+  {
+    m_pCurTab->addTab(page, name);
 
-		page->hide();
+    page->hide();
 
-		connectWidget(page);
-	}
+    connectWidget(page);
+  }
 }
 
 QTabWidget* DlgPreferencesImp::getPreferenceGroup(int id)
@@ -259,7 +266,7 @@ QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, cons
   return tabWidget;
 }
 
-void DlgPreferencesImp::prefPageClicked(int item)
+void DlgPreferencesImp::onPrefPageClicked(int item)
 {
   m_pCurTab = getPreferenceGroup(item);
 
@@ -296,7 +303,7 @@ void DlgPreferencesImp::onApply()
 
 # ifdef FC_DEBUG
   else
-	  Base::Console().Warning("Added page does not inherit from class FCPreferencePage");
+    Base::Console().Warning("Added page does not inherit from class FCPreferencePage");
 #endif
 }
 

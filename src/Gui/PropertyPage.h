@@ -1,30 +1,24 @@
 /***************************************************************************
-                          PropertyPage.h  -  description
-                             -------------------
-    begin                : 2002/10/19 10:47:44
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file PropertyPage.h
- *  \brief The property page base class
- *  \author Werner Mayer
- *  \version 0.1
- *  \date    2003/01/06
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
 
 
 #ifndef __PROPERTY_PAGE__H__
@@ -40,41 +34,37 @@ namespace Dialog {
  * should inherit PropertyPage to use apply/cancel mechanism.
  * Inherited classes should reimplement @ref apply() and
  * @ref cancel().
+ * \author Werner Mayer
  */
 class GuiExport PropertyPage
 {
 protected:
-	PropertyPage();
+  PropertyPage();
 
 public:
-	virtual ~PropertyPage() {}
-	/** Returns whether the page was modified or not */
-	bool isModified();
-	/** Sets the page to be modified */
-	void setModified(bool b);
-	/** Applies all changes calling @ref apply and reset the modified state */
-	void onApply();
-	/** Discards all changes calling @ref apply and reset the modified state */
-	void onCancel();
+  virtual ~PropertyPage();
+  bool isModified();
+  void setModified(bool b);
+  void onApply();
+  void onCancel();
 
 protected:
-	/** Applies all changes. Reimplement this in your subclasses. */
-	virtual void apply();
-	/** Discards all changes. Reimplement this in your subclasses. */
-	virtual void cancel();
+  virtual void apply();
+  virtual void cancel();
 
 private:
-	bool bChanged; /**< for internal use only */
+  bool bChanged; /**< for internal use only */
 };
 
-/**
+/** Base class for all preference pages.
  * @see PropertyPage
+ * \author Werner Mayer
  */
 class GuiExport PreferencePage : public PropertyPage, public FCWidgetPrefsManager
 {
 public:
-	PreferencePage();
-	virtual ~PreferencePage();
+  PreferencePage();
+  virtual ~PreferencePage();
 };
 
 } // namespace Dialog

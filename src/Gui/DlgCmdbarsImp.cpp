@@ -1,47 +1,39 @@
 /***************************************************************************
-                          DlgCmdbarsImp.cpp  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief Customize command bars
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
-
 
 
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaccel.h>
-#	include <qaction.h>
-#	include <qbutton.h>
-#	include <qinputdialog.h>
-#	include <qlabel.h>
-#	include <qmessagebox.h>
-#	include <qiconview.h>
-#	include <qfiledialog.h>
-#	include <qcombobox.h>
-#	include <qthread.h>
+# include <qaccel.h>
+# include <qaction.h>
+# include <qbutton.h>
+# include <qinputdialog.h>
+# include <qlabel.h>
+# include <qmessagebox.h>
+# include <qiconview.h>
+# include <qfiledialog.h>
+# include <qcombobox.h>
+# include <qthread.h>
 #endif
 
 #include "DlgCmdbarsImp.h"
@@ -51,16 +43,25 @@
 
 using namespace Gui::Dialog;
 
+/**
+ *  Constructs a DlgCustomCmdbarsImp which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
 DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFlags fl )
-	: DlgCustomToolbars(parent, name, fl)
+  : DlgCustomToolbars(parent, name, fl)
 {
-	onUpdate();
+  updateData();
 }
 
+/** Destroys the object and frees any allocated resources */
 DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
 {
 }
 
+/** Adds created or removes deleted command bars */
 void DlgCustomCmdbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
@@ -92,37 +93,40 @@ void DlgCustomCmdbarsImp::apply()
   toolbar->saveXML();
 }
 
+/** Discards all changes */
 void DlgCustomCmdbarsImp::cancel()
 {
 }
 
-void DlgCustomCmdbarsImp::onUpdate()
+/** Shows all actions from the last specified command bar */
+void DlgCustomCmdbarsImp::updateData()
 {
   ComboToolbars->clear();
-  m_aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
-  for (std::vector<FCToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
+  _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
+  for ( std::vector<FCToolBar*>::iterator it3 = _aclToolbars.begin(); it3 != _aclToolbars.end(); ++it3 )
   {
-		if ((*it3)->canModify())
-	    ComboToolbars->insertItem((*it3)->name());
+    if ((*it3)->canModify())
+      ComboToolbars->insertItem((*it3)->name());
   }
 
-	if (ComboToolbars->count() > 0)
-	{
-		onItemActivated(ComboToolbars->text(0));
-	}
-	else
-	{
-		ToolbarActions->setEnabled(false);
-		ComboToolbars->setEnabled (false);
-	}
+  if (ComboToolbars->count() > 0)
+  {
+    onItemActivated(ComboToolbars->text(0));
+  }
+  else
+  {
+    ToolbarActions->setEnabled(false);
+    ComboToolbars->setEnabled (false);
+  }
 }
 
+/** Creates new command bar */
 void DlgCustomCmdbarsImp::onCreateToolbar()
 {
   QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
   QString text = QInputDialog::getText(tr("New command bar"), tr("Specify the name of the new command bar, please."),
 #if QT_VERSION > 230
-																			QLineEdit::Normal,
+                                      QLineEdit::Normal,
 #endif
                                       def, 0, this);
 
@@ -130,15 +134,16 @@ void DlgCustomCmdbarsImp::onCreateToolbar()
   {
     FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());
     toolbar->show();
-    m_aclToolbars.push_back(toolbar);
+    _aclToolbars.push_back(toolbar);
     ComboToolbars->insertItem(text);
 
-		// enable the widgets
-		ToolbarActions->setEnabled(true);
-		ComboToolbars->setEnabled (true);
+    // enable the widgets
+    ToolbarActions->setEnabled(true);
+    ComboToolbars->setEnabled (true);
   }
 }
 
+/** Deletes a command bar */
 void DlgCustomCmdbarsImp::onDeleteToolbar()
 {
   std::vector<std::pair<std::string, bool> > items;
@@ -157,7 +162,7 @@ void DlgCustomCmdbarsImp::onDeleteToolbar()
       ApplicationWindow::Instance->GetCustomWidgetManager()->delCmdBar(it->c_str());
     }
 
-		onUpdate();
+    updateData();
   }
 }
 

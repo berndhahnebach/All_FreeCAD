@@ -1,31 +1,24 @@
 /***************************************************************************
-                          DlgEditorImp.h  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief Does the editor settings
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #ifndef DLG_EDITOR_IMP_H
@@ -37,66 +30,62 @@
 namespace Gui {
 namespace Dialog {
 
-/**
- * This class implements the settings for the editor
+/** This class implements a preferences page for the editor settings.
+ *  Here you can change differnt color settings and font for the editors.
+ *  @see class PreferencePage
+ *  @see class FCWidgetPrefs
+ *  \author Werner Mayer
  */
-class DlgEditorSettingsImp : public DlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public FCWidgetPrefs
+class DlgSettingsEditorImp : public DlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public FCWidgetPrefs
 {
 Q_OBJECT
 
 public:
-	DlgEditorSettingsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~DlgEditorSettingsImp();
+  DlgSettingsEditorImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~DlgSettingsEditorImp();
 
-	/** Does not do anything */
-	void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
+  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
 public slots:
-	/** Assign the color to the Gui::ColorButton object.
-	 * To get the color it searches for the color
-	 * in the @ref DefColorMap therefore.
-	 */
-	void onAssignColor(const QString& name);
-	/** Updates the color map if a color was changed */
-	void onChosenColor();
-	/** Sets the font, but it is disabled in this version */
-	void onChosenFont(const QString & item);
+  void onDisplayColor(const QString& name);
+  void onChosenColor();
+  void onChosenFont(const QString & item);
 
-protected:
-	/** Restores the color map */
-	void restorePreferences();
-	/** Saves the color map */
-	void savePreferences();
-	/** Color map */
-	std::map<QString, long> m_clColors;
+private:
+  void restorePreferences();
+  void savePreferences();
+
+private:
+  std::map<QString, long> _mColors; /**< Color map containing color settings */
+
+  DlgSettingsEditorImp( const DlgSettingsEditorImp & );
+  DlgSettingsEditorImp& operator=( const DlgSettingsEditorImp & );
 };
 
-/** 
- * This class implements a color map of QString->QColor.
+
+/** This class implements a color map of QString->QColor.
  * A string does not represent the name of the color itself
  * but it represents the "setting" the color is assigned to
  * (e.g. text color, keyword color, ...)
+ * \author Werner Mayer
  */
 class DefColorMap
 {
 private:
-	// Singleton
-	DefColorMap(void);
-	~DefColorMap(void);
+  DefColorMap(void);
+  ~DefColorMap(void);
 
-	static DefColorMap *_pcSingleton;
-
-	std::map<QString, long> m_clDefColors;
+  static DefColorMap *_pcSingleton;
+  std::map<QString, long> m_clDefColors;
 
 public:
-	std::vector<QString> GetKeys() const;
-	long GetColor(const QString& name);
-	static void Destruct(void);
-	static DefColorMap &Instance(void);
-
-	friend DefColorMap &GetDefCol(void); 
+  std::vector<QString> GetKeys() const;
+  long GetColor(const QString& name);
+  static void Destruct(void);
+  static DefColorMap &Instance(void);
 };
 
+/** Returns the @ref DefColorMap instance */
 inline DefColorMap &GetDefCol(void)
 {
   return DefColorMap::Instance();

@@ -1,37 +1,29 @@
-/** \file DlgPreferencesImp.h
- *  \brief  
- *  \author Juergen Riegel, Werner Mayer
- *  \version 1.7
- *  \date    2003/06/20 19:36:36
- *   
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
+
 
 #ifndef DLGPREFERENCESIMP_H
 #define DLGPREFERENCESIMP_H
+
 #include "DlgPreferences.h"
 #include "Window.h"
 
@@ -42,11 +34,9 @@ namespace Gui {
 namespace Dialog {
 
 /**
- * This class is a 2nd implementation of the container class.
- * It uses a listbox for the groups instead of a listview.
+ * This class implements a dialog containing several preference pages.
  * 
- * The single preference pages can be made by the Qt Designer. 
- * For a new page you must take the "QWidget" entry.
+ * Each preference page can be created by the Qt Designer selecting the "Widget" project.
  * For automation of saving/loading of the elements of such a page
  * (e.g. combo boxes, line edits, check boxes, ...) you can use the
  * @ref FCWidgetPrefs classes like:
@@ -56,74 +46,55 @@ namespace Dialog {
  * In the constructor of your class you must call for each object in your page
  * append(<objectname>->getHandler());
  * to use the full automation
+ * \author Werner Mayer, Jürgen Riegel
  */
 class GuiExport DlgPreferencesImp : public QDialog, public FCWindowParameter
 { 
 Q_OBJECT
 
 public:
-	/**
-	 * Adds a new preference page. The preference pages are also
-	 * registered with their captions in the FCWidgetFactory to
-	 * produce them at construction time of DlgPreferencesImp.
-	 * All new added pages are mapped to the last added group.
-	 * @addGroup
-	 * @see FCWidgetFactory
-	 * @see FCPrefPageProducer
-	 */
-	static void addPage(const QString& name);
-	/** Adds a new group to arrange the preference pages. */
-	static void addGroup(const QString& name);
+  static void addPage(const QString& name);
+  static void addGroup(const QString& name);
 
-	/// construction
-	DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-	/// destruction
-	~DlgPreferencesImp();
-
-protected slots:
-	/// click the OK button
-	void onOK();
-	/// click the Apply button
-	void onApply();
-	/// click the Cancel button
-	void onCancel();
-
-protected:
-	/** Adds a new preference group */
-	void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-
-	/**
-	 * Adds a new preference page to the current group
-	 * Before the first call of this method @ref addPreferenceGroup must be called
-	 * otherwise the preference pages will be lost.
-	 */
-	void addPreferencePage(QWidget* page, const QString& name);
-	/** @name for internal use only */
-	//@{
-	QTabWidget* getPreferenceGroup(int id);
-	QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-	void connectWidget(QWidget* page) const;
-	//@}
-
-	/** @name buttons and stack, ... */
-	//@{	
-	QPushButton* PushButton14;
-	QPushButton* PushButton15;
-	QPushButton* PushButton13;
-	QListBox* ListBox;
-	QWidgetStack* tabWidgetStack;
-	QGridLayout* DlgPreferencesLayout;
-	QGridLayout* Layout6;
-	//@}
-
-private:
-	std::map<QString, int> m_mGroupIDs; /**< Name of preference page with its ID */
-	QTabWidget               * m_pCurTab; /**< Tab widget */
-	static std::vector<QString> aclPages; /**< Name of all registered preference pages */
+  DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~DlgPreferencesImp();
 
 private slots:
-	/// for internal use only
-	void prefPageClicked(int item );
+  /// click the OK button
+  void onOK();
+  /// click the Apply button
+  void onApply();
+  /// click the Cancel button
+  void onCancel();
+  /// for internal use only
+  void onPrefPageClicked(int item );
+
+private:
+  void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
+
+  void addPreferencePage(QWidget* page, const QString& name);
+  /** @name for internal use only */
+  //@{
+  QTabWidget* getPreferenceGroup(int id);
+  QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
+  void connectWidget(QWidget* page) const;
+  //@}
+
+  /** @name buttons and stack, ... */
+  //@{	
+  QPushButton* PushButton14;
+  QPushButton* PushButton15;
+  QPushButton* PushButton13;
+  QListBox* ListBox;
+  QWidgetStack* tabWidgetStack;
+  QGridLayout* DlgPreferencesLayout;
+  QGridLayout* Layout6;
+  //@}
+
+private:
+  std::map<QString, int> m_mGroupIDs; /**< Name of preference page with its ID */
+  QTabWidget               * m_pCurTab; /**< Tab widget */
+  static std::vector<QString> aclPages; /**< Name of all registered preference pages */
 };
 
 } // namespace Dialog

@@ -1,31 +1,24 @@
 /***************************************************************************
-                          DlgToolbarsImp.h  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief Customize toolbars
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #ifndef DLGTOOLBARS_IMP_H
@@ -40,70 +33,60 @@ class FCToolBar;
 namespace Gui {
 namespace Dialog {
 
-/**
- * This class implements the creation of user defined toolbars.
+/** This class implements the creation of user defined toolbars.
+ * \author Werner Mayer
  */
 class DlgCustomToolbars : public DlgCustomToolbarsBase, public Gui::Dialog::PropertyPage
 { 
   Q_OBJECT
 
-  protected:
-    DlgCustomToolbars( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    virtual ~DlgCustomToolbars();
+protected:
+  DlgCustomToolbars( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  virtual ~DlgCustomToolbars();
 
-  protected:
-    virtual void apply();
-    virtual void cancel();
-		virtual void onUpdate();
+protected:
+  virtual void apply();
+  virtual void cancel();
+  virtual void updateData();
 
-    /** Shows all buttons of the toolbar */
-    void onItemActivated(const QString &);
-    /** Adds a new action by double click */
-    void onDoubleClickedAction(QListViewItem*);
-    /** Adds a new action */
-    void onAddAction();
-    /** Removes an action */
-    void onRemoveAction();
-    /** Noves up an action */
-    void onMoveUpAction();
-    /** Moves down an action */
-    void onMoveDownAction();
-    /** Enables/disables buttons for change */
-    void onNewActionChanged( QListViewItem *i );
-    /** Enables/disables buttons for change */
-    void onAllActionsChanged( QListViewItem *i );
+protected slots:
+  void onItemActivated(const QString &);
+  void onDoubleClickedAction(QListViewItem*);
+  void onAddAction();
+  void onRemoveAction();
+  void onMoveUpAction();
+  void onMoveDownAction();
+  void onNewActionChanged( QListViewItem *i );
+  void onAllActionsChanged( QListViewItem *i );
 
-  protected:
-    // groups of commands
-    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
-    std::vector<FCToolBar*>                         m_aclToolbars;
+protected:
+  /** Groups of commands */
+  std::map<std::string, std::vector<FCCommand*> > _alCmdGroups;
+  /** List of all toolbars */
+  std::vector<FCToolBar*>                         _aclToolbars;
 };
 
-/**
- * This class implements the creation of user defined command bars.
+/** This class implements the creation of user defined command bars.
  * @see DlgCustomToolbars
  * @see DlgCustomCmdbarsImp
+ * \author Werner Mayer
  */
 class DlgCustomToolbarsImp : public DlgCustomToolbars
 { 
   Q_OBJECT
 
 public:
-	DlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~DlgCustomToolbarsImp();
+  DlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~DlgCustomToolbarsImp();
 
 protected:
-	/** Adds created or removes deleted toolbars */
-	void apply();
-	/** Discards all changes */
-	void cancel();
-	/** Shows all actions from the last specified command bar */
-	void onUpdate();
+  void apply();
+  void cancel();
+  void updateData();
 
-	/** Creates new toolbar */
-	void onCreateToolbar();
-	/** Deletes a toolbar */
-	void onDeleteToolbar();
+protected slots:
+  void onCreateToolbar();
+  void onDeleteToolbar();
 };
 
 } // namespace Dialog

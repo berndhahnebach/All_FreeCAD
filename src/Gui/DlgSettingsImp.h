@@ -1,31 +1,24 @@
 /***************************************************************************
-                          DlgSettingsImp.h  -  description
-                             -------------------
-    begin                : 2002/08/19 21:11:52
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file $RCSfile$
- *  \brief 
- *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License as       *
- *   published by the Free Software Foundation; either version 2 of the    *
- *   License, or (at your option) any later version.                       *
- *   for detail see the LICENCE text file.                                 *
- *   Werner Mayer 2002                                                     *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
-
 
 
 #ifndef DLG_SETTINGS_IMP_H
@@ -37,17 +30,17 @@
 namespace Gui {
 namespace Dialog {
 
-/**
- * This class implements the settings for the help-viewer
+/** This class implements the settings for the help-viewer
  * @see class HtmlView
+ * \author Werner Mayer
  */
 class DlgSettingsHtmlViewImp : public DlgSettingsBase, public Gui::Dialog::PreferencePage
 {
 Q_OBJECT
 
 public:
-	DlgSettingsHtmlViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~DlgSettingsHtmlViewImp();
+  DlgSettingsHtmlViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~DlgSettingsHtmlViewImp();
 };
 
 } // namespace Dialog

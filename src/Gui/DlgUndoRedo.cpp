@@ -1,25 +1,22 @@
 /***************************************************************************
-                          DlgUndoRedo.cpp  -  description
-                             -------------------
-    begin                : 2002/04/23 21:02:44
-    copyright            : (C) 2002 by Werner Mayer
-    email                : werner.wm.mayer@gmx.de
- ***************************************************************************/
-
-/** \file DlgUndoRedo.cpp
- *  \brief The undo/redo dialog module
- *  \author Werner Mayer
- *  \version 0.1
- *  \date    2003/01/06
- */
-
-
-/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
 
@@ -27,19 +24,16 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <qaction.h>
-#	include <qapplication.h>
-#	include <qframe.h>
-#	include <qlabel.h>
-#	include <qlayout.h>
-#	include <qlistbox.h>
-#	include <qpainter.h>
-#	include <qrect.h>
-#	include <qthread.h>
-#	include <qtoolbutton.h>
-#	include <qtooltip.h>
-#	include <qvariant.h>
-#	include <qwhatsthis.h>
+# include <qaction.h>
+# include <qapplication.h>
+# include <qlabel.h>
+# include <qlayout.h>
+# include <qpainter.h>
+# include <qrect.h>
+# include <qthread.h>
+# include <qtooltip.h>
+# include <qvariant.h>
+# include <qwhatsthis.h>
 #endif
 
 #include "DlgUndoRedo.h"
@@ -52,11 +46,27 @@
 
 using namespace Gui::Dialog;
 
+/**
+ *  Constructs a UndoRedoList which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
 UndoRedoList::UndoRedoList( QWidget * parent, const char * name, WFlags f)
   : QListBox(parent, name, f)
 {
 }
 
+/** Destroys the object and frees any allocated resources */
+UndoRedoList::~UndoRedoList()
+{
+}
+
+/** 
+ * If the left mouse button is pressed and depending on the moving direction
+ * the items are selected or deselected.
+ */
 void UndoRedoList::mouseMoveEvent ( QMouseEvent * e )
 {
   if (e->state() == NoButton)
@@ -82,6 +92,7 @@ void UndoRedoList::mouseMoveEvent ( QMouseEvent * e )
   }
 }
 
+/** Select all items above the selected one */
 void UndoRedoList::mousePressEvent (QMouseEvent* e)
 {
   QListBox::mousePressEvent(e);
@@ -103,98 +114,107 @@ void UndoRedoList::mousePressEvent (QMouseEvent* e)
 
 // ------------------------------------------------------------
 
-/*
- *  Constructs a UndoRedoDlg which is a child of 'parent', with the 
+/**
+ *  Constructs a UndoRedoDialog which is a child of 'parent', with the 
  *  name 'name'.' 
  */
-UndoRedoDlg::UndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
-    : QFrame( parent, name, WType_Popup),
-      _tMode(tMode)
+UndoRedoDialog::UndoRedoDialog( QWidget* parent,  const char* name, TMode mode )
+    : QFrame( parent, name, WType_Popup), tMode(mode)
 {
   if ( !name )
-  	setName( "UndoRedoDlg" );
+    setName( "UndoRedoDlg" );
   resize( 160, 140 ); 
 
   setFrameStyle( WinPanel | Raised );
 
-  _pTextLabel = new QLabel( this, "TextLabel" );
-  _pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
-  _pTextLabel->setFrameStyle(QFrame::Sunken);
-  _pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
-  _pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
-  _pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
+  pTextLabel = new QLabel( this, "TextLabel" );
+  pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
+  pTextLabel->setFrameStyle(QFrame::Sunken);
+  pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
+  pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
+  pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
 
 
-  _pListBox = new UndoRedoList( this, "ListBox" );
-  _pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
-  _pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
-  _pListBox->setSelectionMode(QListBox::Multi);
+  pListBox = new UndoRedoList( this, "ListBox" );
+  pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
+  pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
+  pListBox->setSelectionMode(QListBox::Multi);
 
-  connect(_pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(selChangeUndoRedoList()));
-  connect(_pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
-  connect(_pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(selected()));
+  connect(pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(onSelChangeUndoRedoList()));
+  connect(pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
+  connect(pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(onSelected()));
   fetchUndoRedoInfo();
 }
 
-/*  
- *  Destroys the object and frees any allocated resources
+/** 
+ *  Destroys the object and frees any allocated resources.
  */
-UndoRedoDlg::~UndoRedoDlg()
+UndoRedoDialog::~UndoRedoDialog()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-void UndoRedoDlg::fetchUndoRedoInfo() 
+/** 
+ *  This method fetches the undo / redo information from the 
+ *  active document and shows it in the undo / redo dialog.
+ */
+void UndoRedoDialog::fetchUndoRedoInfo() 
 {
-	std::vector<std::string> vecReUndos;
-	FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
+  std::vector<std::string> vecReUndos;
+  FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
 
-	if(pcDoc)
-	{
-		if (_tMode == Undo)	
-			vecReUndos = pcDoc->GetUndoVector();
-		else
-			vecReUndos = pcDoc->GetRedoVector();
+  if( pcDoc )
+  {
+    if ( tMode == Undo ) 
+      vecReUndos = pcDoc->GetUndoVector();
+    else
+      vecReUndos = pcDoc->GetRedoVector();
 
-		for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
-			_pListBox->insertItem((*i).c_str());
-		_pTextLabel->setProperty( "text", tr( "Cancel" ) );
-	}else{
-		_pTextLabel->setProperty( "text", tr( "No Undo" ) );
-	}
-
+    for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
+      pListBox->insertItem((*i).c_str());
+    pTextLabel->setProperty( "text", tr( "Cancel" ) );
+  }
+  else
+  {
+    pTextLabel->setProperty( "text", tr( "No Undo" ) );
+  }
 }
 
-void UndoRedoDlg::selChangeUndoRedoList() 
+/** Sets the number of actons to undo/redo. */
+void UndoRedoDialog::onSelChangeUndoRedoList() 
 {
   // close the listbox
 //  close();
-  int pos = _pListBox->currentItem() + 1;
+  int pos = pListBox->currentItem() + 1;
   QString text;
-  if (_tMode == Undo)
-		text = tr("Undoes %1 action(s)").arg(pos);
+  if ( tMode == Undo )
+    text = tr("Undoes %1 action(s)").arg(pos);
   else
-		text = tr("Redoes %1 action(s)").arg(pos);
-  _pTextLabel->setText(text);
+    text = tr("Redoes %1 action(s)").arg(pos);
+  pTextLabel->setText(text);
 }
 
-void UndoRedoDlg::setMode(TMode tMode)
+/** Switch to the mode \a tMode (either Undo or Redo). */
+void UndoRedoDialog::setMode(TMode mode)
 {
-  _tMode = tMode;
+  tMode = mode;
 }
 
-UndoRedoDlg::TMode UndoRedoDlg::getMode() const
+/** Returns the current mode. */
+UndoRedoDialog::TMode UndoRedoDialog::getMode() const
 {
-  return _tMode;
+  return tMode;
 }
 
-void UndoRedoDlg::updateUndoRedoList()
+/** Updates the undo/redo list. */
+void UndoRedoDialog::updateUndoRedoList()
 {
-  _pListBox->clear();
+  pListBox->clear();
   fetchUndoRedoInfo();
 }
 
-void UndoRedoDlg::selected()
+/** Closes the dialog and emits the @ref clickedListBox() signal. */
+void UndoRedoDialog::onSelected()
 {
   close();
   emit clickedListBox();
@@ -303,8 +323,9 @@ ToolButtonDropDownPrivate::ToolButtonDropDownPrivate()
 } // namespace Dialog
 } // namespace Gui
 
-ToolButtonDropDown::ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
-  : QToolButton(parent, name), _pWidget(pWidget)
+/** Construction */
+ToolButtonDropDown::ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* widget, const char * name)
+  : QToolButton(parent, name), pWidget(widget)
 {
   d = new ToolButtonDropDownPrivate;
 
@@ -313,15 +334,17 @@ ToolButtonDropDown::ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixma
   setAutoRaise(true);
 }
 
+/** Destruction */
 ToolButtonDropDown::~ToolButtonDropDown()
 {
   delete d;
 }
 
-void ToolButtonDropDown::popupWidget()
+/** Pops up the window */
+void ToolButtonDropDown::onPopupWidget()
 {
   // popup the widget
-  if (_pWidget)
+  if ( pWidget )
   {
     // update the content of the widget
     emit updateWidgetSignal();
@@ -331,7 +354,7 @@ void ToolButtonDropDown::popupWidget()
     QPoint height = QPoint(0, this->height());
     QPoint pos    = point+height;
 
-    QSize  size   = _pWidget->size ();
+    QSize  size   = pWidget->size ();
     int w = size.width();
     int h = size.height();
 
@@ -348,21 +371,24 @@ void ToolButtonDropDown::popupWidget()
     if (pos.y() + h > screen_h)
       pos.setY(pos.y() - height.y() - h);
 
-    _pWidget->move(pos);
-    _pWidget->show();
+    pWidget->move(pos);
+    pWidget->show();
   }
 }
 
-void ToolButtonDropDown::setWidget(QWidget* pWidget)
+/** Sets a widget, this widget will be shown if click this button */
+void ToolButtonDropDown::setWidget(QWidget* widget)
 {
-  _pWidget = pWidget;
+  pWidget = widget;
 }
 
+/** Returns the current widget */
 QWidget* ToolButtonDropDown::getWidget()
 {
-  return _pWidget;
+  return pWidget;
 }
 
+/** Draws the button */
 void ToolButtonDropDown::drawButton( QPainter * p )
 {
   QToolButton::drawButton(p);
@@ -372,26 +398,27 @@ void ToolButtonDropDown::drawButton( QPainter * p )
     // drop down area
     if (d->bDropDown && !d->bActButton)
     {
-	    p->setPen( white );
-	    p->drawLine( 0, 0, 0, height() );
-	    p->drawLine( 0, 0, width()-20-1, 0 );
-	    p->setPen( darkGray );
-	    p->drawLine( 0, height()-1, width()-20-1, height()-1);
+      p->setPen( white );
+      p->drawLine( 0, 0, 0, height() );
+      p->drawLine( 0, 0, width()-20-1, 0 );
+      p->setPen( darkGray );
+      p->drawLine( 0, height()-1, width()-20-1, height()-1);
       p->drawLine( width()-20+1, 0, width()-20+1, height());
     }
     // the actual button area
     else
     {
-	    p->setPen( white );
-	    p->drawLine( width()-20+1, 0, width(), 0 );
+      p->setPen( white );
+      p->drawLine( width()-20+1, 0, width(), 0 );
       p->drawLine( width()-20, 0, width()-20, height());
-	    p->setPen( darkGray );
-	    p->drawLine( width()-1, 0, width()-1, height()-1 );
-	    p->drawLine( width()-20+1, height()-1, width(), height()-1 );
+      p->setPen( darkGray );
+      p->drawLine( width()-1, 0, width()-1, height()-1 );
+      p->drawLine( width()-20+1, height()-1, width(), height()-1 );
     }
   }
 }
 
+/** Draws the button label */
 void ToolButtonDropDown::drawButtonLabel( QPainter * p )
 {
   // get draw areas for the arrow and the actual icon
@@ -410,12 +437,12 @@ void ToolButtonDropDown::drawButtonLabel( QPainter * p )
   if (isDown() || isOn()) 
   {
 #if QT_VERSION <= 230
-	  style().getButtonShift(sx, sy);
+    style().getButtonShift(sx, sy);
 #else
     //TODO
 #endif
-	  x+=sx;
-	  y+=sy;
+    x+=sx;
+    y+=sy;
   }
 
   // draw drop down arrow
@@ -427,98 +454,98 @@ void ToolButtonDropDown::drawButtonLabel( QPainter * p )
   if ( !text().isNull() ) 
   {
 #if QT_VERSION <= 230
-  	style().drawItem( p, x2, y2, w2, h2, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
+    style().drawItem( p, x2, y2, w2, h2, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
 #else
-  	style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
+    style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
 #endif
   } 
   else 
   {
-  	QPixmap pm;
-	  if ( usesBigPixmap() ) 
+    QPixmap pm;
+    if ( usesBigPixmap() ) 
     {
 #if QT_VERSION < 300
-	    if ( !isEnabled() )
-		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Disabled );
-	    else if ( uses3D() )
-		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Active );
-	    else
-		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Normal );
+      if ( !isEnabled() )
+        pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Disabled );
+      else if ( uses3D() )
+        pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Active );
+      else
+        pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Normal );
 #else
-	    if ( !isEnabled() )
-		    pm = iconSet().pixmap( QIconSet::Large, QIconSet::Disabled );
-	    else if ( uses3D() )
-		    pm = iconSet().pixmap( QIconSet::Large, QIconSet::Active );
-	    else
-		    pm = iconSet().pixmap( QIconSet::Large, QIconSet::Normal );
+      if ( !isEnabled() )
+        pm = iconSet().pixmap( QIconSet::Large, QIconSet::Disabled );
+      else if ( uses3D() )
+        pm = iconSet().pixmap( QIconSet::Large, QIconSet::Active );
+      else
+        pm = iconSet().pixmap( QIconSet::Large, QIconSet::Normal );
 #endif
-	  }
+    }
     else
     {
 #if QT_VERSION < 300
-	    if ( !isEnabled() )
-    		pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Disabled );
-	    else if ( uses3D() )
-		    pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Active );
-	    else
-		    pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Normal );
+      if ( !isEnabled() )
+        pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Disabled );
+      else if ( uses3D() )
+        pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Active );
+      else
+        pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Normal );
 #else
-	    if ( !isEnabled() )
-    		    pm = iconSet().pixmap( QIconSet::Small, QIconSet::Disabled );
-	    else if ( uses3D() )
-		    pm = iconSet().pixmap( QIconSet::Small, QIconSet::Active );
-	    else
-		    pm = iconSet().pixmap( QIconSet::Small, QIconSet::Normal );
+      if ( !isEnabled() )
+        pm = iconSet().pixmap( QIconSet::Small, QIconSet::Disabled );
+      else if ( uses3D() )
+        pm = iconSet().pixmap( QIconSet::Small, QIconSet::Active );
+      else
+        pm = iconSet().pixmap( QIconSet::Small, QIconSet::Normal );
 #endif
-	  }
+    }
 
-  	if ( usesTextLabel() )
+    if ( usesTextLabel() )
     {
-	    int fh = fontMetrics().height();
+      int fh = fontMetrics().height();
       if (isDown()&&d->bActButton&&!d->bDropDown)
       {
 #if QT_VERSION <= 230
-	      style().drawItem( p, x2+1, y2+1, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, x2+1, y2+1, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #else
-	      style().drawItem( p, QRect(x2+1, y2+1, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, QRect(x2+1, y2+1, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #endif
-	      p->setFont( font() );
+        p->setFont( font() );
 #if QT_VERSION <= 230
-	      style().drawItem( p, x2+1, h2+1 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+        style().drawItem( p, x2+1, h2+1 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
 #else
-	      style().drawItem( p, QRect(x2+1, h2+1 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+        style().drawItem( p, QRect(x2+1, h2+1 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
 #endif
       }
       else
       {
 #if QT_VERSION <= 230
-	      style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #else
-	      style().drawItem( p, QRect(x2, y2, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, QRect(x2, y2, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #endif
-	      p->setFont( font() );
+        p->setFont( font() );
 #if QT_VERSION <= 230
-	      style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+        style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
 #else
-	      style().drawItem( p, QRect(x2, h2 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+        style().drawItem( p, QRect(x2, h2 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
 #endif
       }
- 	  } 
+    } 
     else 
     {
       if (isDown()&&d->bActButton&&!d->bDropDown)
 #if QT_VERSION <= 230
-  	    style().drawItem( p, x2+1, y2+1, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, x2+1, y2+1, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #else
-  	    style().drawItem( p, QRect(x2+1, y2+1, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, QRect(x2+1, y2+1, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #endif
       else
 #if QT_VERSION <= 230
-  	    style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #else
-  	    style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+        style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 #endif
-	  }
+    }
   }
 
   // draw vertical separator line if entered
@@ -536,40 +563,41 @@ void ToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w,
                                       const QColorGroup &g, bool enabled, const QBrush *fill )
 {
   QPointArray a;
-	a.setPoints( 7, -4,-2, 2,-2, -3,-1, 1,-1, -2,0, 0,0, -1,1 );
+  a.setPoints( 7, -4,-2, 2,-2, -3,-1, 1,-1, -2,0, 0,0, -1,1 );
 
-	x++;
-	y++;
+  x++;
+  y++;
 
   QPen savePen = p->pen();
   if (down)
-  	p->setBrushOrigin(p->brushOrigin() + QPoint(1,1));
+    p->setBrushOrigin(p->brushOrigin() + QPoint(1,1));
   if ( fill )
-	  p->fillRect( x, y, w, h, *fill );
+    p->fillRect( x, y, w, h, *fill );
   if (down)
-	  p->setBrushOrigin(p->brushOrigin() - QPoint(1,1));
+    p->setBrushOrigin(p->brushOrigin() - QPoint(1,1));
   if ( enabled ) 
   {
-	  a.translate( x+w/2, y+h/2 );
-	  p->setPen( g.buttonText() );
-	  p->drawLineSegments( a, 0, 3 );
-	  p->drawPoint( a[6] );
+    a.translate( x+w/2, y+h/2 );
+    p->setPen( g.buttonText() );
+    p->drawLineSegments( a, 0, 3 );
+    p->drawPoint( a[6] );
   } 
   else 
   {
-	  a.translate( x+w/2+1, y+h/2+1 );
-	  p->setPen( g.light() );
-	  p->drawLineSegments( a, 0, 3 );
-	  p->drawPoint( a[6] );
-	  a.translate( -1, -1 );
-	  p->setPen( g.mid() );
-	  p->drawLineSegments( a, 0, 3 );
-	  p->drawPoint( a[6] );
+    a.translate( x+w/2+1, y+h/2+1 );
+    p->setPen( g.light() );
+    p->drawLineSegments( a, 0, 3 );
+    p->drawPoint( a[6] );
+    a.translate( -1, -1 );
+    p->setPen( g.mid() );
+    p->drawLineSegments( a, 0, 3 );
+    p->drawPoint( a[6] );
   }
 
   p->setPen( savePen );
 }
 
+/** Returns the size hint of a normal button plus extra space for the drop down button */
 QSize ToolButtonDropDown::sizeHint() const
 {
   // take extra space for the drop down area
@@ -600,7 +628,7 @@ void ToolButtonDropDown::paintEvent( QPaintEvent *e )
 void ToolButtonDropDown::mousePressEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
-  	return;
+    return;
 
   // check which area is pressed
   if (QRect(width()-20, 0, 20, height()).contains(e->pos()))
@@ -620,13 +648,13 @@ void ToolButtonDropDown::mousePressEvent( QMouseEvent *e )
 void ToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
-  	return;
+    return;
 
   // check which area is pressed
   if (d->bDropDown && !d->bActButton)
   {
     if (hitButton(e->pos()))
-      popupWidget();
+      onPopupWidget();
     setDown(false);
     return;
   }

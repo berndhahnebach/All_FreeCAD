@@ -31,7 +31,7 @@ class FCCommand;
 namespace Gui {
 namespace Dialog {
 
-class UndoRedoDlg;
+class UndoRedoDialog;
 
 } // namespace Dialog
 } // namespace Gui
@@ -591,7 +591,7 @@ public:
   	FCAction * CreateAction(void);
 
 private:
-	Gui::Dialog::UndoRedoDlg*	 _pclUndoRedoWidget;
+	Gui::Dialog::UndoRedoDialog*	 _pclUndoRedoWidget;
 };
 
 /**
@@ -607,7 +607,7 @@ public:
   	FCAction * CreateAction(void);
 
 private:
-	Gui::Dialog::UndoRedoDlg*	 _pclUndoRedoWidget;
+	Gui::Dialog::UndoRedoDialog*	 _pclUndoRedoWidget;
 };
 
 /**

@@ -1,38 +1,27 @@
-/** \file FileTemplate.cpp
- *  \brief Template file to copy for own files
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here a example of a file layout for FreeCAD.
- *  @see Parameter.h FCParameter FCParameterManager
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2000 - 2003                 *   
+ *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           * 
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
-/** Precompiled header stuff
+/*  Precompiled header stuff
  *  on some compilers the precompiled header option gain significant compile 
  *  time! So every external header (libs and system) should included in 
  *  Precompiled.h. For systems without precompilation the header needed are
@@ -50,22 +39,51 @@
 #include "Exception.h"
 
 
-
+using namespace Base;
 
 
 //**************************************************************************
 // Construction/Destruction
 
-// here the implemataion! description should take place in the header file!
-ClassTemplate::ClassTemplate(){}
+/**
+ * A constructor.
+ * A more elaborate description of the constructor.
+ */
+ClassTemplate::ClassTemplate()
+{
+}
 
-ClassTemplate::~ClassTemplate(){}
+/**
+ * A destructor.
+ * A more elaborate description of the destructor.
+ */
+ClassTemplate::~ClassTemplate()
+{
+}
 
 
 //**************************************************************************
 // separator for other implemetation aspects
 
-int ClassTemplate::testMe(int a,const char *s){return 0;}
+/**
+ * a normal member taking two arguments and returning an integer value.
+ * \par
+ * You can use a printf like interface like:
+ * \code
+ * GetConsole().Warning("Some defects in %s, loading anyway\n",str);
+ * \endcode
+ * @param a an integer argument.
+ * @param s a constant character pointer.
+ * @see ClassTemplate()
+ * @see ~ClassTemplate()
+ * @see testMeToo()
+ * @see publicVar()
+ * @return The test results
+ */
+int ClassTemplate::testMe(int a,const char *s)
+{
+  return 0;
+}
 
 
 //**************************************************************************
