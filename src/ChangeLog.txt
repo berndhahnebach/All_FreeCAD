@@ -334,3 +334,6 @@ Version: V0.1B73 Date: Mon Sep 29 00:36:57 2003 +++++++++++++++++++++++++++++++
 + PIMPLed the ApplicationWindow class 
 + make the python methods in ApplicationWindow more robust 
 + improved the custom widget framework
+
+Version: V0.1B74 Date: Fri Oct 31 00:27:14 2003 +++++++++++++++++++++++++++++++
++ add function RegisterIcon() in ApplicationWindow

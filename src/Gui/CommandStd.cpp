@@ -61,8 +61,6 @@
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
 #include "DlgSettingsImp.h"
-#include "Icons/images.cpp"
-#include "Icons/x.xpm"
 
 
 

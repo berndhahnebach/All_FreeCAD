@@ -90,7 +90,7 @@
 #include "Inventor/Qt/SoQt.h"
 
 #include "Icons/images.cpp"
-#include "Icons/FCIcon.xpm"
+#include "Icons/BmpFactoryIcons.cpp"
 #include "Icons/x.xpm"
 //#include "Icons/FCBackground.xpm"
 
@@ -179,6 +179,8 @@ ApplicationWindow::ApplicationWindow()
 	Instance = this;
 
 	stApp = this;
+
+  RegisterIcons();
 
 	// instanciate the workbench dictionary
 	d->_pcWorkbenchDictionary = PyDict_New();
@@ -1669,7 +1671,7 @@ void FCBmpFactory::RemovePath(const char* sPath)
 }
 
 
-void FCBmpFactory::AddXPM(const char* sName, const char* pXPM)
+void FCBmpFactory::AddXPM(const char* sName, const char** pXPM)
 {
 	_mpXPM[sName] = pXPM;
 }
@@ -1684,7 +1686,7 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName)
 {
 
 	// first try to find it in the build in XPM
-	std::map<std::string,const char*>::const_iterator It = _mpXPM.find(sName);
+	std::map<std::string,const char**>::const_iterator It = _mpXPM.find(sName);
 
 	if(It != _mpXPM.end())
 		return QPixmap(It->second);

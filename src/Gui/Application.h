@@ -83,7 +83,7 @@ public:
 	void RemovePath(const char* sPath);
 
 	/// Add a build in XPM pixmap under a given name
-	void AddXPM(const char* sName, const char* pXPM);
+	void AddXPM(const char* sName, const char** pXPM);
 	/// Remove a build in pixmap by a given name
 	void RemoveXPM(const char* sName);
 
@@ -92,7 +92,7 @@ public:
   QPixmap GetPixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
 
 protected:
-	std::map<std::string,const char*> _mpXPM;
+	std::map<std::string,const char**> _mpXPM;
 	std::vector<std::string>          _vsPaths;
 };
 

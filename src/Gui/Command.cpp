@@ -26,8 +26,8 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
-#include "Icons/FCIcon.xpm"
-#include "Icons/x.xpm"
+//#include "Icons/FCIcon.xpm"
+//#include "Icons/x.xpm"
 
 //===========================================================================
 // FCAction 
@@ -167,9 +167,10 @@ bool FCMultiAction::addTo(QWidget *w)
   	connect( combo, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
   	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
     combo->setMinimumWidth(130);
+    QPixmap FCIcon = ApplicationWindow::Instance->GetBmpFactory().GetPixmap("FCIcon");
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
     {
-      combo->insertItem(QPixmap(FCIcon), it->c_str());
+      combo->insertItem(FCIcon, it->c_str());
     }
 
     if (w->inherits("FCCommandBar"))
@@ -223,12 +224,13 @@ void FCMultiAction::setItems(const std::vector<std::string>& items)
 void FCMultiAction::insertItem(const char* item)
 {
   mItems.push_back(item);
+  QPixmap FCIcon = ApplicationWindow::Instance->GetBmpFactory().GetPixmap("FCIcon");
   for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
   {
     if ((*it)->inherits("QComboBox"))
     {
       QComboBox* combo = (QComboBox*)(*it);
-      combo->insertItem(QPixmap(FCIcon), item);
+      combo->insertItem(FCIcon, item);
     }
   }
 }

@@ -14,9 +14,10 @@
 #include "../Base/Exception.h"
 #include "../App/Application.h"
 #include "Command.h"
+#include "Application.h"
 
 
-#include "Icons/Folder32.xpm"
+//#include "Icons/Folder32.xpm"
 /* 
  *  Constructs a DlgDocTemplatesImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
@@ -31,7 +32,7 @@ DlgDocTemplatesImp::DlgDocTemplatesImp(  FCCommand* pcCmd, QWidget* parent,  con
 {
 	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
     
-	QPixmap pixmap(Folder32);
+	QPixmap pixmap(_pcCmd->GetAppWnd()->GetBmpFactory().GetPixmap("Folder32"));
 	QString str;
 	// cycling through the Templates
 	for(std::vector<std::string>::iterator i=vTemplates.begin();i!=vTemplates.end();i++)

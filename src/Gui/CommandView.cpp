@@ -30,8 +30,6 @@
 #include "Document.h"
 
 
-#include "Icons/images.cpp"
-
 #include "Command.h"
 
 

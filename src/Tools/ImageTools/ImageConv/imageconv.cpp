@@ -170,10 +170,6 @@ void CImageConvApp::CreateBmpFactory()
 
   // write header stuff
   tw << "\n";
-  tw << "#include <Application.h>\n";
-  tw << "#include \"" << m_Output << "\"\n";
-  tw << "\n";
-  tw << "\n";
   tw << "void RegisterIcons()\n";
   tw << "{\n";
   tw << "  FCBmpFactory& rclBmpFactory = ApplicationWindow::Instance->GetBmpFactory();\n";
