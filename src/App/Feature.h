@@ -64,7 +64,7 @@ public:
 	 *  be invoked. If the object label or an argument is modified,
 	 *  we must recompute the object - to call the method Execute().
 	 */
-	virtual bool MustExecute(const TFunction_Logbook& log) const =0;
+	virtual bool MustExecute(const TFunction_Logbook& log);
 
 	/** Validate
 	 *  We compute the object and topologically name it.
@@ -79,7 +79,7 @@ public:
 	/** Validate
 	 * Validation of the object label, its arguments and its results.
 	 */
-	virtual void Validate(TFunction_Logbook& log) const=0;
+	virtual void Validate(TFunction_Logbook& log)=0;
 	//@}
 
 
@@ -106,6 +106,11 @@ public:
   void SetShape(TopoDS_Shape &Shape);
 
 	virtual Base::FCPyObject *GetPyObject(void);
+
+  TDF_Label Label(void)
+  {
+    return _cFeatureLabel;
+  }
 
   friend FeaturePy;
 

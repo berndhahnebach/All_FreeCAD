@@ -137,6 +137,23 @@ void Feature::AttachLabel(const TDF_Label &rcLabel)
 
 }
 
+bool Feature::MustExecute(const TFunction_Logbook& log)
+{
+	Base::Console().Log("Feature::MustExecute()\n");
+
+  // If the object's label is modified:
+  if (log.IsModified(_cFeatureLabel)) return Standard_True;
+  
+  // checks if a known property has changed
+  for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
+  {
+    if (log.IsModified( _cFeatureLabel.FindChild(It->second) ))
+      return Standard_True;
+  }
+
+  return false;
+
+}
 
 
 

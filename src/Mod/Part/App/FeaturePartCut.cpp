@@ -27,14 +27,14 @@
 
 
 #include "../../../Base/Console.h"
-#include "FeaturePartBox.h"
+#include "FeaturePartCut.h"
 
 
 using namespace Part;
 
-void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
+void PartCutFeature::InitLabel(const TDF_Label &rcLabel)
 {
-	Base::Console().Log("PartBoxFeature::InitLabel()\n");
+	Base::Console().Log("PartCutFeature::InitLabel()\n");
 
 	AddProperty("Float","x","0.0");
 	AddProperty("Float","y","0.0");
@@ -46,15 +46,15 @@ void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
 }
 
 /*
-bool PartBoxFeature::MustExecute(const TFunction_Logbook& log)
+bool PartCutFeature::MustExecute(const TFunction_Logbook& log)
 {
-	Base::Console().Log("PartBoxFeature::MustExecute()\n");
+	Base::Console().Log("PartCutFeature::MustExecute()\n");
 	return false;
 }
 */
-Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
+Standard_Integer PartCutFeature::Execute(TFunction_Logbook& log)
 {
-	Base::Console().Log("PartBoxFeature::Execute()\n");
+	Base::Console().Log("PartCutFeature::Execute()\n");
 
 /*  cout << GetFloatProperty("x") << endl;
   cout << GetFloatProperty("y") << endl;
@@ -64,7 +64,7 @@ Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
   cout << GetFloatProperty("w") << endl;*/
 
   try{
-	// Build a box using the dimension and position attributes 
+	// Build a Cut using the dimension and position attributes 
 	BRepPrimAPI_MakeBox mkBox( gp_Pnt(GetFloatProperty("x"), 
                                     GetFloatProperty("y") ,
                                     GetFloatProperty("z")), 
@@ -86,9 +86,9 @@ Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
 }
 
 
-void PartBoxFeature::Validate(TFunction_Logbook& log)
+void PartCutFeature::Validate(TFunction_Logbook& log)
 {
-	Base::Console().Log("PartBoxFeature::Validate()\n");
+	Base::Console().Log("PartCutFeature::Validate()\n");
  
   // We validate the object label ( Label() ), all the arguments and the results of the object:
   log.SetValid(Label(), Standard_True);

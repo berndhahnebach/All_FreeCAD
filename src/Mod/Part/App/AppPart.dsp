@@ -103,6 +103,14 @@ SOURCE=.\FeaturePartBox.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeaturePartCut.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartCut.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

@@ -437,3 +437,6 @@ Version: V0.1B94 Date: Sat Oct 23 18:58:52 2004 +++++++++++++++++++++++++++++++
 * removed most of unneeded includes (not in PCH) to speed up compilation
 + use own code convention on several classes
 
+Version: V0.1B95 Date: Wed Nov 03 17:34:53 2004 +++++++++++++++++++++++++++++++
++ Insert CutFeature
++ Automatic Property validation

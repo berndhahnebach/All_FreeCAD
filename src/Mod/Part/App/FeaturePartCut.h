@@ -22,8 +22,8 @@
 
 
 
-#ifndef __FEATUREPARTBOX_H__
-#define __FEATUREPARTBOX_H__
+#ifndef __FEATUREPARTCUT_H__
+#define __FEATUREPARTCUT_H__
 
 
 #include <App/Feature.h>
@@ -32,7 +32,7 @@ namespace Part
 {
 
 
-class PartBoxFeature :public App::Feature
+class PartCutFeature :public App::Feature
 {
 public:
 
