@@ -93,7 +93,7 @@ void FCMacroManager::Commit(void)
 
 	file << 	_sMacroInProgress.c_str();
 
-	Base::Console().Log("FCMacroManager::Commit()\n%s\n",_sMacroInProgress.c_str());
+	Base::Console().Log("Commit Macro: %s\n",_sName.c_str());
 
 	_sMacroInProgress = "";
 	_sName = "";

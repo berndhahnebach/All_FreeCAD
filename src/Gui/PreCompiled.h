@@ -4,6 +4,7 @@
 #include "../Config.h"
 #ifdef _PreComp_
 
+#include <windows.h>
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
@@ -123,6 +124,7 @@
 #include <TDF_Label.hxx>
 
 // extern inventor
+#include <GL/gl.h>
 #include <Inventor/SbColor.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
@@ -146,6 +148,32 @@
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/SoInput.h>
+#include <Inventor/nodes/SoBaseColor.h>
+#include <Inventor/nodes/SoComplexity.h>
+#include <Inventor/nodes/SoCone.h>
+#include <Inventor/nodes/SoCoordinate3.h>
+#include <Inventor/nodes/SoCube.h>
+#include <Inventor/nodes/SoLightModel.h>
+#include <Inventor/nodes/SoOrthographicCamera.h>
+#include <Inventor/nodes/SoQuadMesh.h>
+#include <Inventor/nodes/SoRotationXYZ.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoTexture2.h>
+#include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/nodes/SoImage.h>
+#include <Inventor/nodes/SoCylinder.h>
+#include <Inventor/nodes/SoTransform.h>
+#include <Inventor/SbClip.h>
+#include <Inventor/nodes/SoCoordinate3.h>
+#include <Inventor/nodes/SoComplexity.h>
+#include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoTexture3.h>
+#include <Inventor/nodes/SoTextureCoordinate3.h>
+#include <Inventor/nodes/SoFaceSet.h>
+#include <Inventor/nodes/SoLineSet.h>
+#include <Inventor/nodes/SoBaseColor.h>
+
+#include <float.h>
 
 
 

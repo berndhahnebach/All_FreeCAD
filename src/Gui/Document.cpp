@@ -42,6 +42,7 @@
 #include "Document.h"
 #include "View3D.h"
 #include "View3DInventor.h"
+#include "View3DInventorEx.h"
 #include "BitmapFactory.h"
 
 int FCGuiDocument::_iDocCount = 0;
@@ -153,7 +154,7 @@ void FCGuiDocument::CreateView(const char* sType)
   QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
 	MDIView* pcView3D;
 	if(strcmp(sType,"View3DIv") == 0){
-		pcView3D = new FCView3DInventor(this,_pcAppWnd,"View3DIv");
+		pcView3D = new FCView3DInventorEx(this,_pcAppWnd,"View3DIv");
 	}else{
 		pcView3D = new FCView3D(this,_pcAppWnd,"View3DOCC");
 	}
@@ -210,10 +211,15 @@ void FCGuiDocument::Update(void)
 
   if(! L.IsNull()){
 
+    if(!_ActivePresentation.IsNull())
+	    _ActivePresentation->Display(0);
+	    //_hContext->Display(_ActivePresentation->GetAIS(),0);
  	  // Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
-	  _ActivePresentation = TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+    if(!L.FindAttribute(TPrsStd_AISPresentation::GetID(),_ActivePresentation))
+	    _ActivePresentation = TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
 	  // Display it
 	  _ActivePresentation->Display(1);
+	  //_hContext->Display(_ActivePresentation->GetAIS(),1);
   }
 
 	std::list<FCBaseView*>::iterator It;

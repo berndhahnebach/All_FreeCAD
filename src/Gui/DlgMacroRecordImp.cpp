@@ -129,7 +129,6 @@ void DlgMacroRecordImp::start()
   {
     // open the macro recording
     _pcMacroMngr->Open(FCMacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
-    Base::Console().Log((_cMacroPath + LineEditPath->text().latin1()).c_str());
     accept();
   }
 }

@@ -22,12 +22,12 @@
  *   Juergen Riegel 2003                                                   *
  ***************************************************************************/
 
-#ifndef __VIEW3DINVENTOR__
-#define __VIEW3DINVENTOR__
+#ifndef __VIEW3DINVENTOREX__
+#define __VIEW3DINVENTOREX__
 
 #include "View.h"
 
-#include "Inventor/Qt/viewers/SoQtViewer.h"
+#include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
 
 class QMouseEvent;
 class FCMouseModel;
@@ -42,28 +42,29 @@ class QVBoxLayout;
 class QHBoxLayout;	
 class QWidgetStack;
 class QTabBar;
-class SoQtExaminerViewer;
-class SoQtViewer;
 class View3DInventor;
 
 class	SoSeparator ;
 class	SoShapeHints;
 class	SoMaterial	;
-
+class MyExaminerViewer;
 
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
  */
-class FCView3DInventor: public MDIView
+class FCView3DInventorEx: public MDIView
 {
 	Q_OBJECT
 
 public:
-	FCView3DInventor( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCView3DInventor();
+	FCView3DInventorEx( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	~FCView3DInventorEx();
 
 	/// Mesage handler
 	virtual bool OnMsg(const char* pMsg);
+	virtual bool OnHasMsg(const char* pMsg);
+  
+
 	virtual const char *GetName(void);
 
 	virtual void resizeEvent ( QResizeEvent * e);
@@ -74,7 +75,7 @@ public:
 
 	void SetViewerDefaults(void);
 
-	void SetShape(void);
+//	void SetShape(void);
 
 
 //signals:
@@ -90,13 +91,13 @@ protected:
 	// inventor nodes:
 	SoSeparator * pcSepUserSpecial;
 	SoSeparator * pcSepRoot;
-	SoSeparator * pcSepShapeRoot;
+//	SoSeparator * pcSepShapeRoot;
 	SoSeparator * pcSepAxis;
 	SoShapeHints* pcShapeHint; 
 	SoMaterial	* pcShapeMaterial;
 private:
 //	SoQtExaminerViewer * _viewer;
-	View3DInventor * _viewer;
+	MyExaminerViewer * _viewer;
 	QWidget*		_pcWidget;
 	QVBox*			_pcFrame;    
 	QWidgetStack*	_pcWidgetStack;
@@ -105,9 +106,24 @@ private:
 };
 
 
+class MyExaminerViewer : public SoQtExaminerViewer {
+
+public:
+  MyExaminerViewer(QWidget *parent, const char * filename);
+  ~MyExaminerViewer();
+
+protected:
+  virtual void actualRedraw(void);
+
+private:
+  SoSeparator * bckgroundroot;
+  SoSeparator * foregroundroot;
+  SoRotationXYZ * arrowrotation;
+};
+
+
 /** The Inventor viewer
  *  
- */
 class View3DInventor: public SoQtViewer
 {
 public:
@@ -121,6 +137,7 @@ public:
 	  ~View3DInventor(){}
 };
 
+ */
 
 #endif  //__VIEW3DINVENTOR__
 

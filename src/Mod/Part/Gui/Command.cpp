@@ -203,7 +203,7 @@ void FCCmdPartBox::Activated(int iMsg)
 	  DoCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
 	  DoCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
 	  DoCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
-	  DoCommand(Doc,"App.DocGet().Update()");
+//	  DoCommand(Doc,"App.DocGet().Update()");
     CommitCommand();
   
     UpdateActive();
@@ -252,7 +252,7 @@ void FCCmdPartBox2::Activated(int iMsg)
 	DoCommand(Doc,"f.l = 100.0");
 	DoCommand(Doc,"f.w = 100.0");
 	DoCommand(Doc,"f.h = 100.0");
-  DoCommand(Doc,"App.DocGet().Update()");
+ // DoCommand(Doc,"App.DocGet().Update()");
 
   UpdateActive();
 
@@ -324,7 +324,7 @@ void PartImportStep::Activated(int iMsg)
     OpenCommand("Part ImportSTEP Create");
 	  DoCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\")");
 	  DoCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
-	  DoCommand(Doc,"App.DocGet().Update()");
+//	  DoCommand(Doc,"App.DocGet().Update()");
     CommitCommand();
   
     UpdateActive();

@@ -1,12 +1,4 @@
 /***************************************************************************
-                          View3DInventor.cpp  -  description
-                             -------------------
-    begin                : Mon Jan 1 2001
-    copyright            : (C) 2001 by Juergen Riegel
-    email                : juergen.riegel@web.de
- ***************************************************************************/
-
-/***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *   
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *

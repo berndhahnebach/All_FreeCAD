@@ -204,7 +204,7 @@ int SoBrepShape::GetNbStrips()
 
 Standard_Boolean SoBrepShape::Compute(SoSeparator* root)
 {
-	if(ReadShape()) {
+//	if(ReadShape()) {
 		if(deflection==0) {
 			Bnd_Box B;
 			BRepBndLib::Add(myShape, B);
@@ -615,12 +615,12 @@ Standard_Boolean SoBrepShape::Compute(SoSeparator* root)
 
 			
 		}
-	}
+/*	}
 	else {
 		// BRep file cannot be read !!
 	    QMessageBox::information(0, "Error:","Input file cannot be read, rendering abort !");
 	    return 0;
-	}
+	}*/
 	return 1;
 }
 

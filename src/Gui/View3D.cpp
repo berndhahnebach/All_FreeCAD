@@ -97,7 +97,7 @@ bool FCView3D::OnMsg(const char* pMsg)
 
 void FCView3D::Update(void)
 {
-
+  _pcView3D->GetView()->Redraw();
 }
 
 /*
