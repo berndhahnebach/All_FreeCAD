@@ -343,6 +343,41 @@ CmdRaytracingNewProject::CmdRaytracingNewProject()
 
 void CmdRaytracingNewProject::activated(int iMsg)
 {
+
+  std::string tempPath = "c:\\temp\\";
+
+  doCommand(Doc,"Raytracing.copyResource(\"FCSimple.pov\",\"%s\")",tempPath.c_str());
+
+}
+
+bool CmdRaytracingNewProject::isActive(void)
+{
+	//if( getActiveDocument() )
+		return true;
+	//else
+	//	return false;
+}
+
+//===========================================================================
+// CmdRaytracingQuickRender
+//===========================================================================
+DEF_STD_CMD_A(CmdRaytracingQuickRender);
+
+CmdRaytracingQuickRender::CmdRaytracingQuickRender()
+  :CppCommand("Raytracing_QuickRender")
+{
+  sAppModule    = "Raytracing";
+  sGroup        = "Raytracing";
+  sMenuText     = "Render";
+  sToolTipText  = "Renders the actual view";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Test1";
+  iAccel        = 0;
+}
+
+void CmdRaytracingQuickRender::activated(int iMsg)
+{
   // get the preferences
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
@@ -363,7 +398,7 @@ void CmdRaytracingNewProject::activated(int iMsg)
 
 }
 
-bool CmdRaytracingNewProject::isActive(void)
+bool CmdRaytracingQuickRender::isActive(void)
 {
 	//if( getActiveDocument() )
 		return true;

@@ -33,6 +33,7 @@
 #include "FreeCADpov.h"
 
 #include <App/Topology.h>
+#include <App/Application.h>
 
 using namespace Raytracing;
 
@@ -128,6 +129,29 @@ writeCameraFile(PyObject *self, PyObject *args)
     Py_Return;       
 }
 
+/// write project file
+static PyObject *                                
+copyResource(PyObject *self, PyObject *args)          
+{      
+    const char *FileName,*DestDir;
+    if (! PyArg_ParseTuple(args, "ss",&FileName,&DestDir)) 
+        return NULL;                             
+
+    std::string resName = App::GetApplication().GetHomePath(); 
+    resName += "Mod"; 
+    resName += PATHSEP ;
+    resName += "Rytracing"; 
+    resName += PATHSEP ;
+    resName += "resources"; 
+    resName += PATHSEP;
+    resName += FileName;
+
+    Base::Console().Log("Using fileName = %s\n",resName.c_str());
+    
+
+    Py_Return;       
+}
+
 
 
 /* registration table  */
@@ -136,6 +160,7 @@ struct PyMethodDef Raytracing_methodes[] = {
     {"getProjectFile",   getProjectFile  , 1},       
     {"writePartFile",    writePartFile   , 1},       
     {"writeCameraFile",  writeCameraFile   , 1},       
+    {"copyResource",     copyResource   , 1},       
     {NULL, NULL}                   
 };
 
