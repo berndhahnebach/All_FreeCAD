@@ -173,7 +173,7 @@ void FCCommandLine::slotLaunchCommand()
 #ifndef FC_DEBUG
   catch (...)
   {
-    QMessageBox::critical(this, "Error", "A really nesty error occurred in running the script");
+    QMessageBox::critical(this, tr("Error"), tr("A really nesty error occurred in running the script"));
   }
 #endif
 
@@ -290,7 +290,7 @@ void FCCommandLine::dropEvent      ( QDropEvent      * e )
 
       if (pCmd)
       {
-        lineEdit()->setText(tr("Gui.RunCommand(\"%1\")").arg(pCmd->GetName()));
+        lineEdit()->setText(QString("Gui.RunCommand(\"%1\")").arg(pCmd->GetName()));
       }
     }
   }

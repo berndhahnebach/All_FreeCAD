@@ -189,14 +189,14 @@ void FCButtonGroup::popupMenuAboutToShow()
 //    m_Popup->insertSeparator();
 
     if (m_Pixmaps.size() > 0)
-      m_Popup->insertItem("Show buttons as icon", this, SLOT(showIcons()));
+      m_Popup->insertItem(tr("Show buttons as icon"), this, SLOT(showIcons()));
     else
-      m_Popup->insertItem("Show buttons as text", this, SLOT(showText()));
+      m_Popup->insertItem(tr("Show buttons as text"), this, SLOT(showText()));
     m_Popup->insertSeparator();
   }
 
-  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
-  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+  int colId = m_Popup->insertItem(tr("Background color..."), this, SLOT(setNewBackgroundColor()));
+  int resId = m_Popup->insertItem(tr("Reset background color"), this, SLOT(resetBackgroundColor()));
 }
 
 void FCButtonGroup::setNewBackgroundColor()
@@ -320,8 +320,8 @@ void FCCommandBar::popupMenuAboutToShow()
 {
   m_Popup->clear();
 
-  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
-  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+  int colId = m_Popup->insertItem(tr("Background color..."), this, SLOT(setNewBackgroundColor()));
+  int resId = m_Popup->insertItem(tr("Reset background color"), this, SLOT(resetBackgroundColor()));
   m_Popup->insertSeparator();
   ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
 }

@@ -398,12 +398,12 @@ void ApplicationWindow::OnShowView()
     }
 
     m->insertSeparator();
-    int id = m->insertItem("Taskbar");
+    int id = m->insertItem(tr("Taskbar"));
     d->mCheckBars[id] = m_pTaskBar;
     if (m_pTaskBar->isVisible())
 		  m->setItemChecked(id, true);
 
-    menu->insertItem("Toolbars", m);
+    menu->insertItem(tr("Toolbars"), m);
   }
 
   // command bars
@@ -419,7 +419,7 @@ void ApplicationWindow::OnShowView()
 		    m->setItemChecked(id, true);
     }
 
-    menu->insertItem("Commandbars", m);
+    menu->insertItem(tr("Commandbars"), m);
   }
   menu->insertSeparator();
 
@@ -440,7 +440,7 @@ void ApplicationWindow::OnShowView()
   // status bar
   menu->insertSeparator();
   QWidget* w = statusBar();
-  int id = menu->insertItem("Status bar");
+  int id = menu->insertItem(tr("Status bar"));
   d->mCheckBars[id] = w;
   if (w->isVisible())
 		menu->setItemChecked(id, true);
@@ -741,7 +741,7 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
     }
     if (m_pTaskBar)
     {
-      int id = menu.insertItem("Taskbar");
+      int id = menu.insertItem(tr("Taskbar"));
       toolb[id] = m_pTaskBar;
       if (m_pTaskBar->isVisible())
 		    menu.setItemChecked(id, true);

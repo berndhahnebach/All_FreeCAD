@@ -182,7 +182,7 @@ void FCDlgCustomCmdbarsImp::slotCmdBarSelected(const QString & name)
 
   if (isModified())
   {
-    if (QMessageBox::information(this, "FreeCAD", "Do want to save your changes?", "Yes", "No", QString::null, 0) == 0)
+    if (QMessageBox::information(this, "FreeCAD", tr("Do want to save your changes?"), tr("Yes"), tr("No"), QString::null, 0) == 0)
       apply();
     else
      setModified(false);
@@ -323,12 +323,12 @@ void FCDlgCustomCmdbarsImp::slotMoveDownAction()
 
 void FCDlgCustomCmdbarsImp::slotCreateCmdBar()
 {
-  QString def = tr("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
+  QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
 #if QT_VERSION <= 230
-  QString text = QInputDialog::getText("New command bar", "Specify the name of the new command bar, please.",
+  QString text = QInputDialog::getText(tr("New command bar"), tr("Specify the name of the new command bar, please."),
                                        def, 0, this);
 #else
-  QString text = QInputDialog::getText("New command bar", "Specify the name of the new command bar, please.", QLineEdit::Normal,
+  QString text = QInputDialog::getText(tr("New command bar", "Specify the name of the new command bar, please."), QLineEdit::Normal,
                                        def, 0, this);
 #endif
   if (!text.isNull() && !text.isEmpty())
@@ -348,7 +348,7 @@ void FCDlgCustomCmdbarsImp::slotDeleteCmdBar()
     items.push_back((*it)->name());
 
   FCCheckListDlg checklists(this, "", true) ;
-  checklists.setCaption( "Delete selected command bars" );
+  checklists.setCaption( tr("Delete selected command bars") );
   checklists.setItems(items);
   if (checklists.exec())
   {

@@ -80,16 +80,16 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   Layout->addItem( spacer );
 
-  buttonApply = new QPushButton( this, "buttonApply" );
-  buttonApply->setProperty( "text", tr( "&Apply" ) );
-  buttonApply->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-  Layout->addWidget( buttonApply );
-
   buttonOk = new QPushButton( this, "buttonOk" );
   buttonOk->setProperty( "text", tr( "&OK" ) );
   buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
   buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
   Layout->addWidget( buttonOk );
+
+  buttonApply = new QPushButton( this, "buttonApply" );
+  buttonApply->setProperty( "text", tr( "&Apply" ) );
+  buttonApply->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+  Layout->addWidget( buttonApply );
 
   buttonCancel = new QPushButton( this, "buttonCancel" );
   buttonCancel->setProperty( "text", tr( "&Cancel" ) );

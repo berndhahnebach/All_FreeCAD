@@ -53,7 +53,7 @@ FCDlgCustomActionsImp::FCDlgCustomActionsImp( QWidget* parent, const char* name,
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   _aclCurMacros = rclMan.GetModuleCommands("Macro");
   iCtMacros = _aclCurMacros.size();
-  actionName->setText(tr("Std_Macro_%1").arg(iCtMacros));
+  actionName->setText(QString("Std_Macro_%1").arg(iCtMacros));
 
   // search for all macros
   std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
@@ -82,7 +82,7 @@ void FCDlgCustomActionsImp::show()
   FCDlgCustomActions::show();
   if (actionMacros->count() == 0)
   {
-    QMessageBox::warning(this, "No macro","No macros found");
+    QMessageBox::warning(this, tr("No macro"),tr("No macros found."));
   }
 }
 
@@ -172,7 +172,7 @@ void FCDlgCustomActionsImp::slotCustomActionsDoubleClicked( QListViewItem *i )
     }
     if (!bFound)
     {
-      QMessageBox::warning(this, "Macro not found", "Sorry, macro not found");
+      QMessageBox::warning(this, tr("Macro not found"), tr("Sorry, macro not found."));
     }
 
     actionMenu->setText(pScript->GetMenuText());
@@ -195,19 +195,19 @@ void FCDlgCustomActionsImp::slotAddCustomAction()
 {
   if (actionName->text().isEmpty())
   {
-    QMessageBox::warning(this, "Empty name","Please specify an action name first");
+    QMessageBox::warning(this, tr("Empty name"),tr("Please specify an action name first."));
     return;
   }
 
   if (actionMacros-> currentText().isEmpty())
   {
-    QMessageBox::warning(this, "Empty macro","Please specify the macro first");
+    QMessageBox::warning(this, tr("Empty macro"),tr("Please specify the macro first."));
     return;
   }
 
   if (actionMenu->text().isEmpty())
   {
-    QMessageBox::warning(this, "Empty text","Please specify the menu text first");
+    QMessageBox::warning(this, tr("Empty text"),tr("Please specify the menu text first."));
     return;
   }
 
@@ -246,7 +246,7 @@ void FCDlgCustomActionsImp::slotAddCustomAction()
 
   _aclNewMacros.push_back(macro);
 
-  actionName->setText(tr("Std_Macro_%1").arg(++iCtMacros));
+  actionName->setText(QString("Std_Macro_%1").arg(++iCtMacros));
 
   setModified(true);
 }
@@ -290,7 +290,8 @@ void FCDlgCustomActionsImp::slotDelCustomAction()
 
 void FCDlgCustomActionsImp::slotCustomActionPixmap()
 {
-  QString pixPath = FCFileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm *.gif *.png *.bmp)",this, "", "Choose a Pixmap");
+  QString pixPath = FCFileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm *.gif *.png *.bmp)",this, "", 
+		tr("Choose a Pixmap"));
   if (!pixPath.isEmpty())
   {
     m_sPixmap = pixPath.mid(pixPath.findRev("/") + 1);
