@@ -117,18 +117,17 @@ void FCAction::slotDestroyed()
     widgets.erase(it);
 }
 
-
 void FCAction::Activated () 
 {
 	_pcCmd->activated();
 }
+
 void FCAction::Toggled ( bool b)
 {
 	_pcCmd->toggled(b);
 } 
 
 void FCAction::setEnabled ( bool b) 
-
 {
   QAction::setEnabled(b);
   // update all widgets containing this action
@@ -157,11 +156,16 @@ bool FCMultiAction::addTo(QWidget *w)
     QComboBox* combo = new QComboBox(w, "Combo");
     widgets.push_back(combo);
   	connect( combo, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-  	connect( combo, SIGNAL(  activated(int) )   , this, SIGNAL( activated(int) )   );
+  	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
     combo->setMinimumWidth(130);
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
     {
       combo->insertItem(QPixmap(FCIcon), it->c_str());
+    }
+
+    if (w->inherits("FCCommandBar"))
+    {
+  		((FCCommandBar*)w)->addedButton(menuText());
     }
   }
   else if (w->inherits("QPopupMenu"))
@@ -169,7 +173,7 @@ bool FCMultiAction::addTo(QWidget *w)
     QPopupMenu* popup = new QPopupMenu(w, "Menu");
     widgets.push_back(popup);
   	connect( popup, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-  	connect( popup, SIGNAL(  activated(int) )   , this, SIGNAL( activated(int) )   );
+  	connect( popup, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
 
     if (iconSet().isNull())
       ((QPopupMenu*)w)->insertItem(mName.c_str(), popup);
@@ -193,9 +197,97 @@ void FCMultiAction::setItems(const std::vector<std::string>& items)
   mItems = items;
 }
 
+void FCMultiAction::insertItem(const char* item)
+{
+  mItems.push_back(item);
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  {
+    if ((*it)->inherits("QComboBox"))
+    {
+      QComboBox* combo = (QComboBox*)(*it);
+      combo->insertItem(QPixmap(FCIcon), item);
+    }
+  }
+}
+
+void FCMultiAction::removeItem(const char* item)
+{
+  std::vector<std::string>::iterator ii = std::find(mItems.begin(), mItems.end(), std::string(item));
+  if (ii != mItems.end()) mItems.erase(ii);
+
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  {
+    if ((*it)->inherits("QComboBox"))
+    {
+      QComboBox* combo = (QComboBox*)(*it);
+      for (int i = 0; i<combo->count(); i++)
+      {
+        if (combo->text(i) == QString(item))
+        {
+          combo->removeItem(i);
+          break;
+        }
+      }
+    }
+  }
+}
+
+void FCMultiAction::clear()
+{
+  mItems.clear();
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  {
+    if ((*it)->inherits("QComboBox"))
+    {
+      QComboBox* combo = (QComboBox*)(*it);
+      combo->clear();
+    }
+  }
+}
+
 void FCMultiAction::setName(const char* name)
 {
   mName = name;
+}
+
+void FCMultiAction::activate(int i)
+{
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  {
+    if ((*it)->inherits("QComboBox"))
+    {
+      QComboBox* combo = (QComboBox*)(*it);
+      if (combo->currentItem() != i)
+        combo->setCurrentItem(i);
+    }
+  }
+}
+
+void FCMultiAction::activate(QString name)
+{
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  {
+    if ((*it)->inherits("QComboBox"))
+    {
+      QComboBox* combo = (QComboBox*)(*it);
+	    if (combo->currentText() != name)
+      {
+		    for(int i=0;i<combo->count();i++)
+		    {
+			    if (combo->text(i) == name)
+			    {
+				    combo->setCurrentItem(i);
+				    break;
+			    }
+		    }
+	    }
+    }
+  }
+}
+
+void FCMultiAction::activated (int i)
+{
+  GetCommand()->Activated(i);
 }
 
 //===========================================================================
@@ -324,7 +416,7 @@ FCAction* FCCommand::GetAction()
 
 bool FCCommand::IsToggle(void)
 {
-	return _eType&Cmd_Toggle != 0; 
+	return (_eType&Cmd_Toggle) != 0; 
 }
 
 
@@ -497,7 +589,7 @@ FCAction * FCCppCommand::CreateAction(void)
 {
 	FCAction *pcAction;
 
-	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(_pcAction->tr(sMenuText));
 	pcAction->setMenuText(_pcAction->tr(sMenuText));
 	pcAction->setToolTip(_pcAction->tr(sToolTipText));
@@ -539,7 +631,7 @@ FCAction * FCScriptCommand::CreateAction(void)
 {
 	FCAction *pcAction;
 
-	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(_pcAction->tr(_sMenuText.c_str()));
 	pcAction->setMenuText(_pcAction->tr(_sMenuText.c_str()));
 	pcAction->setToolTip(_pcAction->tr(_sToolTipText.c_str()));
@@ -655,7 +747,7 @@ FCAction * FCPythonCommand::CreateAction(void)
 {
 	FCAction *pcAction;
 
-	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(sName.c_str());
 	pcAction->setMenuText(GetResource("MenuText").c_str());
 	pcAction->setToolTip(GetResource("ToolTip").c_str());

@@ -85,9 +85,14 @@ public:
 	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
 	virtual bool addTo(QWidget *);
   void setItems(const std::vector<std::string>& items);
+  void insertItem(const char* item);
+  void removeItem(const char* item);
   void setName(const char* name);
+  void activate(int);
+  void activate(QString);
+  void clear();
 
-signals:
+public slots:
 	void activated (int i);
 
 protected:
@@ -163,7 +168,7 @@ public:
 	 */
 	//@{
 	/// Method which get called when activated, needs to be reimplemented!
-	virtual void Activated(int iMsg){assert(_eType&Cmd_Toggle == 0);}
+	virtual void Activated(int iMsg){assert((_eType&Cmd_Toggle) == 0);}
 	/// Overite this methode if your Cmd is not always active
 	virtual bool IsActive(void){return true;} 
 	/// Get the help URL
@@ -560,6 +565,23 @@ class FCCmdRedo : public FCCppCommand
 
   private:
   	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+};
+
+class FCCmdWorkbench : public FCCppCommand
+{
+  public:
+	  FCCmdWorkbench();
+	  virtual void Activated(int iMsg);
+  	FCAction * CreateAction(void);
+    void AddItem (const char* item);
+    void RemItem (const char* item);
+    void Clear();
+    void UpdateAction(int i);
+    void UpdateAction(const char* item);
+	  bool addTo(QWidget *);
+
+  protected:
+    FCMultiAction *pcAction;
 };
 
 #endif // __Command_h__

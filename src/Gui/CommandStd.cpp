@@ -269,7 +269,7 @@ FCAction * FCCmdUndo::CreateAction(void)
 {
 	FCAction *pcAction;
 
-	pcAction = new FCUndoAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction = new FCUndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(_pcAction->tr(sMenuText));
 	pcAction->setMenuText(_pcAction->tr(sMenuText));
 	pcAction->setToolTip(_pcAction->tr(sToolTipText));
@@ -315,7 +315,7 @@ FCAction * FCCmdRedo::CreateAction(void)
 {
 	FCAction *pcAction;
 
-	pcAction = new FCRedoAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction = new FCRedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
 	pcAction->setText(_pcAction->tr(sMenuText));
 	pcAction->setMenuText(_pcAction->tr(sMenuText));
 	pcAction->setToolTip(_pcAction->tr(sToolTipText));
@@ -326,6 +326,103 @@ FCAction * FCCmdRedo::CreateAction(void)
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
+}
+
+//===========================================================================
+// Std_Workbench
+//===========================================================================
+
+FCCmdWorkbench::FCCmdWorkbench()
+	:FCCppCommand("Std_Workbench"), pcAction(NULL)
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Workbench";
+	sToolTipText	= "Switch between workbenches";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+//	sPixmap			= "";
+	iAccel			= 0;
+}
+
+
+void FCCmdWorkbench::Activated(int iMsg)
+{
+  std::vector<std::string> wb = ApplicationWindow::Instance->GetWorkbenches();
+  if (iMsg >= 0 && iMsg < int(wb.size()))
+  {
+    char szBuf[200];
+    sprintf(szBuf, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
+    DoCommand(Gui, szBuf);
+    UpdateAction(iMsg);
+  }
+}
+
+void FCCmdWorkbench::UpdateAction(int i)
+{
+  if (!pcAction) 
+    CreateAction();
+  pcAction->activate(i);
+}
+
+void FCCmdWorkbench::UpdateAction(const char* item)
+{
+  if (!pcAction) 
+    CreateAction();
+  pcAction->activate(QString(item));
+}
+
+FCAction * FCCmdWorkbench::CreateAction(void)
+{
+	pcAction = new FCMultiAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction->setText(_pcAction->tr(sMenuText));
+	pcAction->setMenuText(_pcAction->tr(sMenuText));
+	pcAction->setToolTip(_pcAction->tr(sToolTipText));
+	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
+	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	if(sPixmap)
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+	pcAction->setAccel(iAccel);
+
+  pcAction->setItems(ApplicationWindow::Instance->GetWorkbenches());
+
+	return pcAction;
+}
+
+void FCCmdWorkbench::AddItem (const char* item)
+{
+  if (pcAction)
+    pcAction->insertItem(item);
+}
+
+void FCCmdWorkbench::RemItem (const char* item)
+{
+  if (pcAction)
+    pcAction->removeItem(item);
+}
+
+void FCCmdWorkbench::Clear()
+{
+  if (pcAction)
+    pcAction->clear();
+}
+
+/** 
+ * Can only add to the "standard file" toolbar. This is because the command changes the workbenches
+ * and so there will be several toolbars/cmdbars be deleted. If the corresponding combobox were
+ * inside such a toolbar/cmdbar FreeCAD crashes.
+ */
+bool FCCmdWorkbench::addTo(QWidget *w)
+{
+  if (!w->inherits("QToolBar") || QString(w->name()) != QString("file operations"))
+  {
+    char szBuf[200];
+    sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", GetName());
+    QMessageBox::information(ApplicationWindow::Instance, "Warning", szBuf);
+    return false;
+  }
+
+  return FCCommand::addTo(w);
 }
 
 //===========================================================================
@@ -869,6 +966,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdDlgSettings());
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
 	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
+	rcCmdMgr.AddCommand(new FCCmdWorkbench());
 }
 
 
