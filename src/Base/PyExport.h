@@ -11,7 +11,9 @@
 // Std. configurations
 
 // needed header
-#include <Python.h>
+#undef slots
+#	include <Python.h>
+#define slots
 #include <iostream>
 
 #include<typeinfo>

@@ -1306,7 +1306,9 @@ public:
 	virtual void Activated(int iMsg);
 	virtual bool IsActive(void);
 private:
+#ifdef FC_USE_OCAFBROWSER
 	DebugBrowser cBrowser;
+#endif
 };
 
 FCCmdOCAFBrowse::FCCmdOCAFBrowse()
@@ -1326,7 +1328,9 @@ FCCmdOCAFBrowse::FCCmdOCAFBrowse()
 
 void FCCmdOCAFBrowse::Activated(int iMsg)
 {
+#ifdef FC_USE_OCAFBROWSER
 	cBrowser.DFBrowser(GetAppWnd()->GetActiveDocument()->GetDocument()->GetOCCDoc());
+#endif	
 }
 
 bool FCCmdOCAFBrowse::IsActive(void)

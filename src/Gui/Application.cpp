@@ -786,7 +786,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
 		//detache the passiv views
 		//SetActiveDocument(0);
-		It2 = _LpcViews.begin();
+		std::list<FCBaseView*>::iterator It2 = _LpcViews.begin();
 		while (It2!=_LpcViews.end())
 		{
 			(*It2)->Close();
@@ -1006,17 +1006,17 @@ void ApplicationWindow::LoadWindowSettings()
   long pos = hGrp->GetGroup("WindowStyle")->GetInt("currentItem", 0);
   if (long(styles.size()) > pos)
     style = styles[pos].c_str();
-  QStyle* s = FCStyleFactory::createStyle(style);
+//  QStyle* s = FCStyleFactory::createStyle(style);
   resize( w, h );
   move(x, y);
   if (max) showMaximized();
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	setUsesBigPixmaps (big);
-  if (s && !FCStyleFactory::isCurrentStyle(s))
+/*  if (s && !FCStyleFactory::isCurrentStyle(s))
   {
     QApplication::setStyle(s);
     setAreaPal(palette());
-  }
+  }*/
 }
 
 void ApplicationWindow::SaveWindowSettings()
@@ -1761,6 +1761,8 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName, const char* sMask, Position p
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
+
 QStringList FCStyleFactory::styles()
 {
   QStringList list;
@@ -1789,6 +1791,9 @@ QStringList FCStyleFactory::styles()
 
 QStyle* FCStyleFactory::createStyle( const QString& s)
 {
+#ifdef FC_OS_LINUX
+  return QStyleFactory::create(s);
+#else
   QStyle* ret = NULL;
   QString style = s.lower();
 
@@ -1804,7 +1809,7 @@ QStyle* FCStyleFactory::createStyle( const QString& s)
     ret = new QPlatinumStyle;
   else if ( style == "sgi" )
     ret = new QSGIStyle;
-
+#endif
 #if QT_VERSION < 300
 
   else if ( style == "metal" )

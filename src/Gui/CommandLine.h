@@ -35,10 +35,11 @@
 #include <list>
 #include <string>
 #include "Window.h"
-//#include <qwindowsstyle.h>
-//#include <qvalidator.h>
-//#include <qlineedit.h>
-
+#ifdef FC_OS_LINUX
+#	include <qwindowsstyle.h>
+#	include <qvalidator.h>
+#	include <qlineedit.h>
+#endif
 /** Validate input of the command line
  */
 class FCConsoleValidator : public QValidator
@@ -53,7 +54,7 @@ class FCConsoleValidator : public QValidator
 
 /** The windows style for the command line
  */
-class FCWindowsStyle : public QWindowsStyle
+class FCWindowsStyle : public QStyle //QWindowsStyle
 {
   public:
 
@@ -147,7 +148,8 @@ class FCWindowsStyle : public QWindowsStyle
 #elif QT_VERSION > 230
     void drawPrimitive( PrimitiveElement pe, QPainter * p, const QRect & r, const QColorGroup & cg, SFlags flags, const QStyleOption & opt ) const
     {
-      QWindowsStyle::drawPrimitive( pe, p, r, cg, flags, opt );
+      //QWindowsStyle
+	  QStyle::drawPrimitive( pe, p, r, cg, flags, opt );
     }
 #endif
 };

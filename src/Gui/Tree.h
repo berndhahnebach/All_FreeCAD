@@ -89,7 +89,7 @@ public:
 	virtual void resizeEvent ( QResizeEvent * e); 
 
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
-	friend FCTreeLabel;
+	friend class FCTreeLabel;
 
 	/// is called when the above function is called to handle document change stuff
 	virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);

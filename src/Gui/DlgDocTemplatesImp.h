@@ -47,11 +47,11 @@ public:
     DlgDocTemplatesImp( FCCommand* pcCmd,QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
     ~DlgDocTemplatesImp();
 
-	// for linux one dummy constructor:
+/*	// for linux one dummy constructor:
 #ifdef FC_OS_LINUX
 	DlgDocTemplatesImp(int dummy, QWidget* parent,  const char* name, bool modal, WFlags fl )
 		:FCWindowParameter(name){DlgDocTemplatesImp(parent,name,modal,fl);}
-#endif
+#endif */
 
 public slots:
     virtual void ChoseFile();

@@ -57,8 +57,11 @@
 
 
 #ifdef XERCES_HAS_CPP_NAMESPACE
+#ifdef FC_OS_LINUX
+	using namespace xercesc_2_3;
+#endif
 	using namespace xercesc;
-	namespace xercesc{
+	namespace xercesc_2_3{
 #endif
 		class DOMNode;
 		class DOMElement;

@@ -105,6 +105,7 @@ protected:
 /** 
  * The Style Factory
  */
+
 class FCStyleFactory
 {
   public:

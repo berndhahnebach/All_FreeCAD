@@ -91,13 +91,15 @@
 #ifdef FC_OS_LINUX
 #	define LIN
 #       define LININTEL
-#       define NO_CXX_EXCEPTION
+//#       define NO_CXX_EXCEPTION
 #endif
 
 #define CSFDB
 
 /// enabels the use of the OCC DocumentBrowser
-#define FC_USE_OCAFBROWSER
+#ifndef FC_OS_LINUX
+#	define FC_USE_OCAFBROWSER
+#endif
 
 
 #ifdef FC_OCC_DEBUG
@@ -224,6 +226,7 @@
 #	define DocExport
 #	define BaseExport 
 #	define GuiExport
+#	define AppExport
 #endif
 
 

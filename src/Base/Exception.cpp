@@ -67,7 +67,7 @@ FCException &FCException::operator=(const FCException &inst)
   return *this;
 }
 
-const char* FCException::what(void) const
+const char* FCException::what(void) const throw()
 {
 	return _sErrMsg.c_str();
 }

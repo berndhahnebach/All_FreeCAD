@@ -380,7 +380,7 @@ class FCPropertyView :public FCDockView
 	
   	virtual void resizeEvent ( QResizeEvent * e); 
 
-  	friend FCPropertyViewItem;
+  	friend class FCPropertyViewItem;
 
 	  /// is called when the above function is called to handle document change stuff
 	  virtual void OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocument);

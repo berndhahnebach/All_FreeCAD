@@ -671,7 +671,11 @@ bool FCStackBar::addView(QWidget* page, const QString &name)
   sv->setResizePolicy( QScrollView::AutoOneFit );
   sv->addChild( page );
   sv->setFrameStyle( QFrame::NoFrame );
-  sv->verticalScrollBar()->setStyle(new FCWindowsStyle);
+#ifdef FC_OS_LINUX
+#	warning style setting skipped here
+#else
+//  sv->verticalScrollBar()->setStyle(new FCWindowsStyle);
+#endif
   page->show();
   m_mButtonView[button] = sv;
   m_pLayout->addWidget( button );

@@ -17,7 +17,9 @@
 
 #ifndef _PreComp_
 #	include "stdio.h"
-#	include "io.h"
+#	ifdef FC_OS_WIN32
+#		include "io.h"
+#	endif
 #	include "fcntl.h"
 #	include <iostream>
 #endif

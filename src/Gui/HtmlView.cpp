@@ -1851,5 +1851,10 @@ void FCWhatsThis::leaveWhatsThisMode( const QString& text, const QPoint& pos )
 }
 
 #include "moc_HtmlView.cpp"
-#include "moc_private_HtmlView.cpp"
+
+#ifdef FC_OS_LINUX
+#	warning moc_private_HtmlView.cpp not included
+#else
+#	include "moc_private_HtmlView.cpp"
+#endif
 

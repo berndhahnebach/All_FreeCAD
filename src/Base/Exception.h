@@ -46,7 +46,7 @@ public:
 
 	FCException &operator=(const FCException &inst);
   
-    virtual const char* what(void) const;
+    virtual const char* what(void) const throw();
   
     void ReportException (void) const;
 

@@ -47,7 +47,6 @@
 #include <qvalidator.h>
 
 
-
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
 {
   if (bInstall)
@@ -1105,7 +1104,11 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     }
 
     // if nothing found search item with similar text
+#ifdef FC_OS_LINUX
+    for (std::map<std::string, FCCommand*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
+#else
     for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
+#endif
     {
       QAction* a = it->second->GetAction();
       if (a != NULL)

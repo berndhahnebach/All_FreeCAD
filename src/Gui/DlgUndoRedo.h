@@ -27,7 +27,7 @@
 #define UNDOREDODLG_H
 
 //#include <qpopupmenu.h>
-//#include <qlistbox.h>
+#include <qlistbox.h>
 //#include <qtoolbutton.h>
 //#include <qhbox.h>
 

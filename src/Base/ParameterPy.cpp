@@ -46,7 +46,9 @@
 #	include <fcntl.h>
 #	include <sys/types.h>
 #	include <sys/stat.h>
-#	include <io.h>
+#	ifdef FC_OS_WIN32
+#		include <io.h>
+#	endif
 #	include <stdio.h>
 #endif
 

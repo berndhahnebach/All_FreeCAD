@@ -152,7 +152,7 @@ public:
 	 */
 	void Notify(_MessageType rcReason)
 	{
-		for(std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+		for(typename std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
 			(*Iter)->OnChange(*this,rcReason);   // send OnChange-signal
 	}
 

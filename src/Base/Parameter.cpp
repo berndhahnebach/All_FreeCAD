@@ -53,10 +53,13 @@
 #	include <xercesc/parsers/XercesDOMParser.hpp>
 #	include <xercesc/util/XMLUni.hpp>
 #	include <xercesc/sax/ErrorHandler.hpp>
+#	include <xercesc/sax/SAXParseException.hpp>
 #	include <fcntl.h>
 #	include <sys/types.h>
 #	include <sys/stat.h>
-#	include <io.h>
+#	ifdef FC_OS_WIN32
+#		include <io.h>
+#	endif
 #	include <stdio.h>
 #endif
 

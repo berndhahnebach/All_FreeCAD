@@ -80,7 +80,10 @@ FCCommandLine::FCCommandLine(void)
   _astrRunCmds.push_back("execfile");
 
   // hide the botton from combo box
-  setStyle(new FCWindowsStyle);
+//  setStyle(new FCWindowsStyle);
+#ifdef FC_OS_LINUX
+#warning style setting skipped here
+#endif
   ReadCmdList();
   //setFixedWidth(400);
   setMinimumWidth(200);
@@ -282,7 +285,11 @@ void FCCommandLine::enterEvent ( QEvent * e)
 
 void FCCommandLine::leaveEvent ( QEvent * e)
 {
-  setStyle(new FCWindowsStyle);
+#ifdef FC_OS_LINUX
+#	warning style setting skipped here
+#else
+//	setStyle(new FCWindowsStyle);
+#endif
 }
 
 QRect FCCommandLine::arrowRect() const

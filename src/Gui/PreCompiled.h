@@ -14,7 +14,9 @@
 #include <iostream.h>
 #include <stdio.h>
 #include <assert.h>
-#include <io.h>
+#ifdef FC_OS_WIN32
+#	include <io.h>
+#endif
 #include <fcntl.h>
 #include <ctype.h>
 
@@ -134,7 +136,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
-#include <inventor/SoInput.h>
+#include <Inventor/SoInput.h>
 
 
 
@@ -144,12 +146,18 @@
 #include <Graphic3d_WNTGraphicDevice.hxx>
 #endif
  
+#include <Python.h>
+#ifdef FC_OS_WIN32
+#	include <windows.h>
+#endif
+#include <limits.h>
+
+
 // Q Toolkit
 #include <qaccel.h>
 #include <qaction.h>
 #include <qapplication.h>
 #include <qbuttongroup.h>
-#include <qcdestyle.h>
 #include <qclipboard.h>
 #include <qcolordialog.h>
 #include <qcombobox.h>
@@ -173,17 +181,17 @@
 #include <qmainwindow.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
-#include <qmotifplusstyle.h>
-#include <qmotifstyle.h>
-#include <qmovie.h>
-#include <qmultilinedit.h>
+#include <qmultilineedit.h>
+//#include <qmotifplusstyle.h>
+//#include <qmotifstyle.h>
+//#include <qmovie.h>
+//#include <qmultilinedit.h>
 #include <qnamespace.h>
 #include <qobjectlist.h>
 #include <qpaintdevicemetrics.h>
 #include <qpainter.h>
 #include <qpalette.h> 
 #include <qpixmap.h>
-#include <qplatinumstyle.h>
 #include <qpopupmenu.h>
 #include <qprinter.h>
 #include <qprogressbar.h>
@@ -193,8 +201,11 @@
 #include <qscrollbar.h>
 #include <qspinbox.h>
 #include <qsplitter.h> 
-#include <qsgistyle.h>
 #include <qstatusbar.h>
+#include <qstyle.h>
+#ifdef FC_OS_LINUX
+#  include <qstylefactory.h>
+#endif
 #include <qtabbar.h>
 #include <qtextbrowser.h> 
 #include <qtextstream.h>
@@ -210,17 +221,20 @@
 #include <qwhatsthis.h>
 #include <qwidget.h>
 #include <qwidgetstack.h>
-#include <qwindowsstyle.h>
 #include <qworkspace.h>
 #if QT_VERSION > 300
 # include <qprocess.h>
 #endif
 
 
-
-#include <python.h>
-#include <windows.h>
-#include <limits.h>
+#ifdef FC_OS_WIN32
+#	include <qcdestyle.h>
+#	include <qmotifplusstyle.h>
+#	include <qmotifstyle.h>
+#	include <qwindowsstyle.h>
+#	include <qsgistyle.h>
+#	include <qplatinumstyle.h>
+#endif
 
 
 

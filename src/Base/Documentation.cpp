@@ -40,7 +40,10 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
-#	include <python.h>
+#	include <Python.h>
+#	include <iostream>
+#	include <fstream>
+#	include <fcntl.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -130,7 +133,7 @@ string FCDocProviderDirectory::Retrive(const char * PathExtension, TDocType& rtW
 
 	// test on std documentation
 
-	int r = open( (cBasePath + ".FCDoc").c_str() ,_O_RDONLY );
+	int r = open( (cBasePath + ".FCDoc").c_str() ,O_RDONLY );
 //	cInputFile.open((cBasePath + ".FCDoc").c_str(),ios::in);
 //	if(cInputFile){
 	if(r != -1){
@@ -138,13 +141,13 @@ string FCDocProviderDirectory::Retrive(const char * PathExtension, TDocType& rtW
 		cBasePath += ".FCDoc";
 		rtWhichType = Doc;
 	}else{
-		r = open( (cBasePath + ".FCDocScript").c_str() ,_O_RDONLY );
+		r = open( (cBasePath + ".FCDocScript").c_str() ,O_RDONLY );
 		if(r != -1){
 			close(r);
 			cBasePath += ".FCDocScript";
 			rtWhichType = DocScript;
 		}else{
-			r = open( (cBasePath + ".html").c_str() ,_O_RDONLY );
+			r = open( (cBasePath + ".html").c_str() ,O_RDONLY );
 			if(r != -1){
 				close(r);
 				cBasePath += ".html";

@@ -1136,7 +1136,7 @@ void FCAnimation::startAnimation()
 #else
   setMovie(QMovie("trolltech.gif"));
 #endif
-#if QT_VERSION < 300
+#if QT_VERSION > 300
   setMovie(QMovie("trolltech.gif"));
 #endif
 }

@@ -51,7 +51,8 @@
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include <qmotifstyle.h>
+#include <qstyle.h>
+//#include <qmotifstyle.h>
 
 FCSplashWidget::FCSplashWidget( QWidget* parent,  const char* name, WFlags f)
   : QLabel( parent, "splash", f)
@@ -161,7 +162,11 @@ FCSplashScreen::FCSplashScreen( QWidget* parent,  const char* name)
 
   SplasherProgress = new QProgressBar( this, "SplasherProgress" );
   SplasherProgress->setProperty( "progress", 0 );
-  SplasherProgress->setStyle(new QMotifStyle);
+#ifdef FC_OS_LINUX
+#	warning style setting skipped here
+#else
+    SplasherProgress->setStyle(new QMotifStyle);
+#endif
   SplasherDialogLayout->addWidget( SplasherProgress );
 
   setFrameStyle( QFrame::WinPanel | QFrame::Raised );
