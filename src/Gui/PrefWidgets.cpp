@@ -1043,8 +1043,9 @@ void FCToolBar::savePreferences()
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCPopupMenu::FCPopupMenu(QWidget * parent, const char * name, const char* menu )
-: QPopupMenu(parent, name), FCCustomWidget("Menus", name)
+: QPopupMenu(parent, name), FCCustomWidget("Menus", name), bAllowDrag(false)
 {
+  GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings")->Attach(this);
   // allow drag and drop
 //  setAcceptDrops(true);
   if (menu)
@@ -1053,6 +1054,16 @@ FCPopupMenu::FCPopupMenu(QWidget * parent, const char * name, const char* menu )
 
 FCPopupMenu::~FCPopupMenu()
 {
+  GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings")->Detach(this);
+}
+
+void FCPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+{
+  if (strcmp(sReason, "AllowDrag") == 0)
+  {
+    FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+    bAllowDrag = rclGrp.GetBool("AllowDrag", false);
+  }
 }
 
 void FCPopupMenu::update(FCCommandManager& rclMgr)
@@ -1102,7 +1113,7 @@ void FCPopupMenu::dragMoveEvent ( QDragMoveEvent * )
 
 void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
 {
-  if ( e->state() == LeftButton )
+  if ( e->state() == LeftButton && bAllowDrag)
   {
     // try to find out the correct menu item
     // in most cases this should work correctly
@@ -1177,6 +1188,7 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
 void FCPopupMenu::restorePreferences()
 {
   FCCustomWidget::restorePreferences();
+  bAllowDrag = hPrefGrp->GetBool("AllowDrag", false);
 }
 
 void FCPopupMenu::savePreferences()
@@ -1184,6 +1196,7 @@ void FCPopupMenu::savePreferences()
   FCCustomWidget::savePreferences();
   if (! parent.isEmpty())
     hPrefGrp->SetASCII("Parent Menu", parent.latin1());
+  hPrefGrp->SetBool("AllowDrag", bAllowDrag);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -97,6 +97,7 @@ void FCCmdOpen::Activated(int iMsg)
 	if ( !f.isEmpty() ) {
 		// the user selected a valid existing file
 		GetApplication().Open(f.latin1());
+    GetAppWnd()->AppendRecentFile(f.latin1());
 	} else {
 		// the user cancelled the dialog
 		GetAppWnd()->statusBar()->message("Opening aborted");
@@ -310,11 +311,11 @@ FCAction * FCCmdUndo::CreateAction(void)
 	FCAction *pcAction;
 
 	pcAction = new FCUndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(_pcAction->tr(sMenuText));
-	pcAction->setMenuText(_pcAction->tr(sMenuText));
-	pcAction->setToolTip(_pcAction->tr(sToolTipText));
-	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
-	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+  pcAction->setText(QObject::tr(sMenuText));
+	pcAction->setMenuText(QObject::tr(sMenuText));
+	pcAction->setToolTip(QObject::tr(sToolTipText));
+	pcAction->setStatusTip(QObject::tr(sStatusTip));
+	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
 		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
@@ -362,11 +363,11 @@ FCAction * FCCmdRedo::CreateAction(void)
 	FCAction *pcAction;
 
 	pcAction = new FCRedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(_pcAction->tr(sMenuText));
-	pcAction->setMenuText(_pcAction->tr(sMenuText));
-	pcAction->setToolTip(_pcAction->tr(sToolTipText));
-	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
-	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	pcAction->setText(QObject::tr(sMenuText));
+	pcAction->setMenuText(QObject::tr(sMenuText));
+	pcAction->setToolTip(QObject::tr(sToolTipText));
+	pcAction->setStatusTip(QObject::tr(sStatusTip));
+	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
 		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
@@ -421,11 +422,11 @@ void FCCmdWorkbench::UpdateAction(const char* item)
 FCAction * FCCmdWorkbench::CreateAction(void)
 {
 	pcAction = new FCMultiAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(_pcAction->tr(sMenuText));
-	pcAction->setMenuText(_pcAction->tr(sMenuText));
-	pcAction->setToolTip(_pcAction->tr(sToolTipText));
-	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
-	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	pcAction->setText(QObject::tr(sMenuText));
+	pcAction->setMenuText(QObject::tr(sMenuText));
+	pcAction->setToolTip(QObject::tr(sToolTipText));
+	pcAction->setStatusTip(QObject::tr(sStatusTip));
+	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
 		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
@@ -469,6 +470,105 @@ bool FCCmdWorkbench::addTo(QWidget *w)
   }
 
   return FCCommand::addTo(w);
+}
+
+//===========================================================================
+// Std_MRU
+//===========================================================================
+
+FCCmdMRU::FCCmdMRU()
+	:FCCppCommand("Std_MRU"), pcAction(NULL), nMaxItems(4)
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Recent files";
+	sToolTipText	= "Recent file list";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+//	sPixmap			= "";
+	iAccel			= 0;
+}
+
+void FCCmdMRU::Activated(int iMsg)
+{
+  if (iMsg >= 0 && iMsg < int(_vMRU.size()))
+  {
+    try{
+      DoCommand(Gui, "App.DocOpen(\"%s\")", _vMRU[iMsg].c_str());
+    }catch(const FCException&){
+      RemItem(_vMRU[iMsg].c_str());
+    }
+  }
+}
+
+FCAction * FCCmdMRU::CreateAction(void)
+{
+	pcAction = new FCMultiAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+	pcAction->setText(QObject::tr(sMenuText));
+	pcAction->setMenuText(QObject::tr(sMenuText));
+	pcAction->setToolTip(QObject::tr(sToolTipText));
+	pcAction->setStatusTip(QObject::tr(sStatusTip));
+	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+	if(sPixmap)
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+	pcAction->setAccel(iAccel);
+
+	return pcAction;
+}
+
+void FCCmdMRU::AddItem (const char* item)
+{
+  if (std::find(_vMRU.begin(), _vMRU.end(), item) == _vMRU.end())
+  {
+    if (nMaxItems > (int)_vMRU.size())
+    {
+      _vMRU.push_back(item);
+      if (pcAction)
+        pcAction->insertItem(GetFileName(item));
+    }
+  }
+}
+
+void FCCmdMRU::RemItem (const char* item)
+{
+  if (pcAction)
+    pcAction->clear();
+  std::vector<std::string>::iterator it = std::find(_vMRU.begin(), _vMRU.end(), item);
+  if (it!=_vMRU.end())
+    _vMRU.erase(it);
+  for (it=_vMRU.begin(); it!=_vMRU.end(); ++it)
+    pcAction->insertItem(GetFileName(it->c_str()));
+}
+
+void FCCmdMRU::Clear()
+{
+  if (pcAction)
+    pcAction->clear();
+  _vMRU.clear();
+}
+
+QString FCCmdMRU::GetFileName(const char* name)
+{
+  std::vector<std::string>::iterator it = std::find(_vMRU.begin(), _vMRU.end(), name);
+  int ct = (it-_vMRU.begin())+1;
+
+  QString file(name);
+  file.prepend(QObject::tr("%1 ").arg(ct));
+
+  int npos = file.findRev('/');
+  if (npos != -1)
+  {
+    QString fn = file.right(file.length()-npos-1);
+    fn.prepend(QObject::tr("%1 ").arg(ct));
+    return fn;
+  }
+
+  return file;
+}
+
+std::vector<std::string> FCCmdMRU::GetItems() const
+{
+  return _vMRU;
 }
 
 //===========================================================================
@@ -1071,6 +1171,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
 	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
 	rcCmdMgr.AddCommand(new FCCmdWorkbench());
+  rcCmdMgr.AddCommand(new FCCmdMRU());
 
 #	ifdef FC_USE_OCAFBROWSER
 		rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());

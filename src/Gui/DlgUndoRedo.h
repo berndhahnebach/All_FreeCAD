@@ -122,10 +122,15 @@ class FCToolButtonDropDown : public QToolButton
     // overwrite methods from base class
     virtual void enterEvent(QEvent* e);
     virtual void leaveEvent(QEvent* e);
-    void mousePressEvent( QMouseEvent *e );
+    void mousePressEvent  ( QMouseEvent *e );
+    void mouseReleaseEvent( QMouseEvent *e );
+    void drawButton     ( QPainter * p );
     void drawButtonLabel( QPainter * p );
+    void paintEvent     ( QPaintEvent *e ); 
 
     bool bEntered;
+    bool bDropDown;
+    bool bActButton;
     // show this widget when clicking on drop-down button
     QWidget* _pWidget;
 

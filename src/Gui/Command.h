@@ -87,7 +87,6 @@ public:
   void setItems(const std::vector<std::string>& items);
   void insertItem(const char* item);
   void removeItem(const char* item);
-  void setName(const char* name);
   void activate(int);
   void activate(QString);
   void clear();
@@ -97,7 +96,6 @@ public slots:
 
 protected:
   std::vector<std::string> mItems;
-  std::string mName;
 };
 
 /**
@@ -584,6 +582,27 @@ class FCCmdWorkbench : public FCCppCommand
 
   protected:
     FCMultiAction *pcAction;
+};
+
+/// Recent file list
+class FCCmdMRU : public FCCppCommand
+{
+  public:
+	  FCCmdMRU();
+	  virtual void Activated(int iMsg);
+  	FCAction * CreateAction(void);
+    void AddItem (const char* item);
+    void RemItem (const char* item);
+    void Clear();
+    int  GetMaxItems()      { return nMaxItems; }
+    void SetMaxItems(int i) { nMaxItems = i;    }
+    std::vector<std::string> GetItems() const;
+
+  protected:
+    QString GetFileName(const char* name);
+    std::vector<std::string> _vMRU;
+    FCMultiAction *pcAction;
+    int nMaxItems;
 };
 
 #endif // __Command_h__

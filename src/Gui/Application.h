@@ -191,6 +191,9 @@ public:
 	std::vector<std::string> GetWorkbenches(void);
 	//@}
 
+  /// MRU: recent files
+  void AppendRecentFile(const char* file);
+
 	/// Get macro manager
 	FCMacroManager *GetMacroMngr(void){return _pcMacroMngr;}
 
@@ -250,6 +253,8 @@ protected: // Protected methods
   // windows stuff
   void LoadWindowSettings();
   void SaveWindowSettings();
+  void LoadDockWndSettings();
+  void SaveDockWndSettings();
 
 public slots:
 	/// this slot get frequently activatet and test the commands if they are still active

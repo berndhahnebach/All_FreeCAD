@@ -175,15 +175,15 @@ bool FCMultiAction::addTo(QWidget *w)
   	connect( popup, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
   	connect( popup, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
 
-    if (iconSet().isNull())
-      ((QPopupMenu*)w)->insertItem(mName.c_str(), popup);
-    else
-      ((QPopupMenu*)w)->insertItem(iconSet().pixmap(), mName.c_str(), popup);
+//    if (iconSet().isNull())
+      ((QPopupMenu*)w)->insertItem(text(), popup);
+//    else
+//      ((QPopupMenu*)w)->insertItem(iconSet().pixmap(), mName.c_str(), popup);
 
     int i=0;
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it, i++)
     {
-      popup->insertItem(QPixmap(FCIcon), it->c_str(), i);
+      popup->insertItem(/*QPixmap(FCIcon), */it->c_str(), i);
     }
   }
   else
@@ -207,6 +207,12 @@ void FCMultiAction::insertItem(const char* item)
       QComboBox* combo = (QComboBox*)(*it);
       combo->insertItem(QPixmap(FCIcon), item);
     }
+    else if ((*it)->inherits("QPopupMenu"))
+    {
+      QPopupMenu* popup = (QPopupMenu*)(*it);
+      int ct = popup->count();
+      popup->insertItem(item, ct);
+    }
   }
 }
 
@@ -229,6 +235,18 @@ void FCMultiAction::removeItem(const char* item)
         }
       }
     }
+    else if ((*it)->inherits("QPopupMenu"))
+    {
+      QPopupMenu* popup = (QPopupMenu*)(*it);
+      for (int i = 0; i<int(popup->count()); i++)
+      {
+        if (popup->text(i) == QString(item))
+        {
+//          popup->removeItem(i);
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -242,12 +260,12 @@ void FCMultiAction::clear()
       QComboBox* combo = (QComboBox*)(*it);
       combo->clear();
     }
+    else if ((*it)->inherits("QPopupMenu"))
+    {
+      QPopupMenu* popup = (QPopupMenu*)(*it);
+      popup->clear();
+    }
   }
-}
-
-void FCMultiAction::setName(const char* name)
-{
-  mName = name;
 }
 
 void FCMultiAction::activate(int i)
@@ -596,11 +614,11 @@ FCAction * FCCppCommand::CreateAction(void)
 	FCAction *pcAction;
 
 	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(_pcAction->tr(sMenuText));
-	pcAction->setMenuText(_pcAction->tr(sMenuText));
-	pcAction->setToolTip(_pcAction->tr(sToolTipText));
-	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
-	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	pcAction->setText(QObject::tr(sMenuText));
+	pcAction->setMenuText(QObject::tr(sMenuText));
+	pcAction->setToolTip(QObject::tr(sToolTipText));
+	pcAction->setStatusTip(QObject::tr(sStatusTip));
+	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
 		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
@@ -638,11 +656,11 @@ FCAction * FCScriptCommand::CreateAction(void)
 	FCAction *pcAction;
 
 	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
-	pcAction->setText(_pcAction->tr(_sMenuText.c_str()));
-	pcAction->setMenuText(_pcAction->tr(_sMenuText.c_str()));
-	pcAction->setToolTip(_pcAction->tr(_sToolTipText.c_str()));
-	pcAction->setStatusTip(_pcAction->tr(_sStatusTip.c_str()));
-	pcAction->setWhatsThis(_pcAction->tr(_sWhatsThis.c_str()));
+	pcAction->setText(QObject::tr(_sMenuText.c_str()));
+	pcAction->setMenuText(QObject::tr(_sMenuText.c_str()));
+	pcAction->setToolTip(QObject::tr(_sToolTipText.c_str()));
+	pcAction->setStatusTip(QObject::tr(_sStatusTip.c_str()));
+	pcAction->setWhatsThis(QObject::tr(_sWhatsThis.c_str()));
 	if(_sPixmap!="")
 		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(_sPixmap.c_str()));
 	pcAction->setAccel(_iAccel);

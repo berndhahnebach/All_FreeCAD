@@ -197,19 +197,36 @@ ApplicationWindow::ApplicationWindow()
   if (hGrp->HasGroup("Macros"))
   {
     hGrp = hGrp->GetGroup("Macros");
-  std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
-  for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
-  {
-    FCScriptCommand* pScript = new FCScriptCommand((*it)->GetGroupName());
-    pScript->SetScriptName((*it)->GetASCII("Script").c_str());
-    pScript->SetMenuText((*it)->GetASCII("Menu").c_str());
-    pScript->SetToolTipText((*it)->GetASCII("Tooltip").c_str());
-    pScript->SetWhatsThis((*it)->GetASCII("WhatsThis").c_str());
-    pScript->SetStatusTip((*it)->GetASCII("Statustip").c_str());
-    if ((*it)->GetASCII("Pixmap", "nix") != "nix") pScript->SetPixmap((*it)->GetASCII("Pixmap").c_str());
-    pScript->SetAccel((*it)->GetInt("Accel"));
-    _cCommandManager.AddCommand(pScript);
+    std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
+    for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
+    {
+      FCScriptCommand* pScript = new FCScriptCommand((*it)->GetGroupName());
+      pScript->SetScriptName((*it)->GetASCII("Script").c_str());
+      pScript->SetMenuText((*it)->GetASCII("Menu").c_str());
+      pScript->SetToolTipText((*it)->GetASCII("Tooltip").c_str());
+      pScript->SetWhatsThis((*it)->GetASCII("WhatsThis").c_str());
+      pScript->SetStatusTip((*it)->GetASCII("Statustip").c_str());
+      if ((*it)->GetASCII("Pixmap", "nix") != "nix") pScript->SetPixmap((*it)->GetASCII("Pixmap").c_str());
+        pScript->SetAccel((*it)->GetInt("Accel"));
+      _cCommandManager.AddCommand(pScript);
+    }
   }
+
+  // load recent file list
+  hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp");
+  if (hGrp->HasGroup("Recent files"))
+  {
+    hGrp = hGrp->GetGroup("Recent files");
+    FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_MRU");
+    if (pCmd)
+    {
+      ((FCCmdMRU*)pCmd)->SetMaxItems(hGrp->GetInt("RecentFiles", 4));
+      std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
+      for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
+      {
+        ((FCCmdMRU*)pCmd)->AddItem(it->c_str());
+      }
+    }
   }
 }
 
@@ -221,17 +238,38 @@ ApplicationWindow::~ApplicationWindow()
   if (macros.size() > 0)
   {
     FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
-  for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
+    for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
+    {
+      FCScriptCommand* pScript = (FCScriptCommand*)(*it);
+      FCParameterGrp::handle hMacro = hGrp->GetGroup(pScript->GetName());
+      hMacro->SetASCII("Script", pScript->GetScriptName());
+      hMacro->SetASCII("Menu", pScript->GetMenuText());
+      hMacro->SetASCII("Tooltip", pScript->GetToolTipText());
+      hMacro->SetASCII("WhatsThis", pScript->GetWhatsThis());
+      hMacro->SetASCII("Statustip", pScript->GetStatusTip());
+      hMacro->SetASCII("Pixmap", pScript->GetPixmap());
+      hMacro->SetInt("Accel", pScript->GetAccel());
+    }
+  }
+
+  // save recent file list
+  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_MRU");
+  if (pCmd)
   {
-    FCScriptCommand* pScript = (FCScriptCommand*)(*it);
-    FCParameterGrp::handle hMacro = hGrp->GetGroup(pScript->GetName());
-    hMacro->SetASCII("Script", pScript->GetScriptName());
-    hMacro->SetASCII("Menu", pScript->GetMenuText());
-    hMacro->SetASCII("Tooltip", pScript->GetToolTipText());
-    hMacro->SetASCII("WhatsThis", pScript->GetWhatsThis());
-    hMacro->SetASCII("Statustip", pScript->GetStatusTip());
-    hMacro->SetASCII("Pixmap", pScript->GetPixmap());
-    hMacro->SetInt("Accel", pScript->GetAccel());
+    char szBuf[200];
+    int i=0;
+    FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Recent files");
+    hGrp->Clear();
+    hGrp->GetInt("RecentFiles", ((FCCmdMRU*)pCmd)->GetMaxItems());
+
+    std::vector<std::string> MRU = ((FCCmdMRU*)pCmd)->GetItems();
+    if (MRU.size() > 0)
+    {
+      for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it,i++)
+      {
+        sprintf(szBuf, "MRU%d", i);
+        hGrp->SetASCII(szBuf, it->c_str());
+      }
     }
   }
 
@@ -303,6 +341,8 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.push_back("Std_SaveAs");
 		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_Print");
+		defaultMenus.push_back("Separator");
+		defaultMenus.push_back("Std_MRU");
 		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_Quit");
 		_pcWidgetMgr->addPopupMenu("File", defaultMenus);
@@ -848,6 +888,15 @@ std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
   return wb;
 }
 
+void ApplicationWindow::AppendRecentFile(const char* file)
+{
+  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_MRU");
+  if (pCmd)
+  {
+    ((FCCmdMRU*)pCmd)->AddItem(file);
+  }
+}
+
 void ApplicationWindow::UpdateCmdActivity()
 {
 	static QTime cLastCall;
@@ -865,6 +914,8 @@ void ApplicationWindow::UpdateCmdActivity()
 
 void ApplicationWindow::LoadWindowSettings()
 {
+  LoadDockWndSettings();
+
   FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
   int w = hGrp->GetInt("Width", 800);
   int h = hGrp->GetInt("Height", 600);
@@ -888,6 +939,29 @@ void ApplicationWindow::LoadWindowSettings()
     QApplication::setStyle(s);
     setAreaPal(palette());
   }
+}
+
+void ApplicationWindow::SaveWindowSettings()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  if (isMaximized())
+  {
+    hGrp->SetBool("Maximized", true);
+  }
+  else
+  {
+    hGrp->SetInt("Width", width());
+    hGrp->SetInt("Height", height());
+    hGrp->SetInt("PosX", pos().x());
+    hGrp->SetInt("PosY", pos().y());
+    hGrp->SetBool("Maximized", false);
+  }
+
+  SaveDockWndSettings();
+}
+
+void ApplicationWindow::LoadDockWndSettings()
+{
   // open file
   QFile* datafile = new QFile("FreeCAD.xml");
   if (!datafile->open(IO_ReadOnly)) 
@@ -931,21 +1005,8 @@ void ApplicationWindow::LoadWindowSettings()
   readDockConfig(root);
 }
 
-void ApplicationWindow::SaveWindowSettings()
+void ApplicationWindow::SaveDockWndSettings()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
-  if (isMaximized())
-  {
-    hGrp->SetBool("Maximized", true);
-  }
-  else
-  {
-    hGrp->SetInt("Width", width());
-    hGrp->SetInt("Height", height());
-    hGrp->SetInt("PosX", pos().x());
-    hGrp->SetInt("PosY", pos().y());
-    hGrp->SetBool("Maximized", false);
-  }
   // save dock window settings
   QDomDocument doc("DockWindows");
 

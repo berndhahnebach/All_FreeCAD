@@ -295,7 +295,7 @@ static const char *pArrow[]={
 ".............#"};
 
 FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
-  : QToolButton(parent, name), _pWidget(pWidget), bEntered(false)
+  : QToolButton(parent, name), _pWidget(pWidget), bEntered(false), bDropDown(false), bActButton(false)
 {
   // set the pixmap onto the button
   setIconSet(rclPixmap);
@@ -351,6 +351,35 @@ QWidget* FCToolButtonDropDown::getWidget()
   return _pWidget;
 }
 
+void FCToolButtonDropDown::drawButton( QPainter * p )
+{
+  QToolButton::drawButton(p);
+
+  if (isDown())
+  {
+    // drop down area
+    if (bDropDown && !bActButton)
+    {
+	    p->setPen( white );
+	    p->drawLine( 0, 0, 0, height() );
+	    p->drawLine( 0, 0, width()-20-1, 0 );
+	    p->setPen( darkGray );
+	    p->drawLine( 0, height()-1, width()-20-1, height()-1);
+      p->drawLine( width()-20+1, 0, width()-20+1, height());
+    }
+    // the actual button area
+    else
+    {
+	    p->setPen( white );
+	    p->drawLine( width()-20+1, 0, width(), 0 );
+      p->drawLine( width()-20, 0, width()-20, height());
+	    p->setPen( darkGray );
+	    p->drawLine( width()-1, 0, width()-1, height()-1 );
+	    p->drawLine( width()-20+1, height()-1, width(), height()-1 );
+    }
+  }
+}
+
 void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
 {
   // get draw areas for the arrow and the actual icon
@@ -369,7 +398,10 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   }
 
   // draw drop down arrow
-  drawArrow( p,  isDown(), x+w-15, y, 15, h, colorGroup(), isEnabled() );
+  if (isDown()&&bActButton&&!bDropDown)
+    drawArrow( p,  isDown(), x+w-15-1, y-1, 15, h, colorGroup(), isEnabled() );
+  else
+    drawArrow( p,  isDown(), x+w-15, y, 15, h, colorGroup(), isEnabled() );
 
   if ( !text().isNull() ) 
   {
@@ -400,20 +432,32 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   	if ( usesTextLabel() ) 
     {
 	    int fh = fontMetrics().height();
-	    style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
-	    p->setFont( font() );
-	    style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+      if (isDown()&&bActButton&&!bDropDown)
+      {
+	      style().drawItem( p, x2+1, y2+1, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+	      p->setFont( font() );
+	      style().drawItem( p, x2+1, h2+1 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+      }
+      else
+      {
+	      style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+	      p->setFont( font() );
+	      style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+      }
  	  } 
     else 
     {
-	    style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+      if (isDown()&&bActButton&&!bDropDown)
+  	    style().drawItem( p, x2+1, y2+1, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+      else
+  	    style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
 	  }
   }
 
   // draw vertical separator line if entered
   if (bEntered)
   {
-    style().drawSeparator(p, width()-19, y2, width()-19, y2+h2,colorGroup());
+    style().drawSeparator(p, width()-19, y2-1, width()-19, y2+h2,colorGroup());
   }
 }
 
@@ -475,6 +519,13 @@ void FCToolButtonDropDown::leaveEvent(QEvent* e)
   QToolButton::leaveEvent(e);
 }
 
+void FCToolButtonDropDown::paintEvent( QPaintEvent *e )
+{
+  if (bEntered)
+    bEntered = isEnabled();
+  QToolButton::paintEvent(e);
+}
+
 void FCToolButtonDropDown::mousePressEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
@@ -483,11 +534,33 @@ void FCToolButtonDropDown::mousePressEvent( QMouseEvent *e )
   // check which area is pressed
   if (QRect(width()-20, 0, 20, height()).contains(e->pos()))
   {
-    popupWidget();
-    return;
+    bDropDown = true;
+    bActButton = false;
+  }
+  else
+  {
+    bDropDown = false;
+    bActButton = true;
   }
 
   QToolButton::mousePressEvent(e);
+}
+
+void FCToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( e->button() != LeftButton )
+  	return;
+
+  // check which area is pressed
+  if (bDropDown && !bActButton)
+  {
+    if (hitButton(e->pos()))
+      popupWidget();
+    setDown(false);
+    return;
+  }
+
+  QToolButton::mouseReleaseEvent(e);
 }
 
 #include "moc_DlgUndoRedo.cpp"

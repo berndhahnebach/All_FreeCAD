@@ -454,6 +454,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
     FCPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
     virtual ~FCPopupMenu();
     void update(FCCommandManager& rclMgr);
+    virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
   protected:
     void dropEvent ( QDropEvent * );
@@ -464,6 +465,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
     virtual void restorePreferences();
     virtual void savePreferences();
     QString parent;
+    bool    bAllowDrag;
 };
 
 class FCCustomWidgetManager
