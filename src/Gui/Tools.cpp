@@ -69,41 +69,29 @@ QPixmap FCTools::fillUp(int w, int h, QPixmap p)
   int x = pix.width () > w ? 0 : (w - pix.width ())/2;
   int y = pix.height() > h ? 0 : (h - pix.height())/2;
 
-  QPalette pal = qApp->palette();
-  QColorGroup g = pal.disabled();
+  if (x == 0 && y == 0)
+    return pix;
 
-  QPixmap pm;
-  pm.resize(w,h);
+  QPixmap pm (w,h);
+  QBitmap mask (w,h);
+  mask.fill(Qt::color0);
 
-#if 0 // the fillTransparentRect() method is not yet implemented correctly
-  pm = fillTransparentRect(0, 0, w, h, pm);
-  pm = fillOpaqueRect(x, y, p.width(), p.height(), pm);
-#else
-  pm.fill(g.base());
-#endif
+  if (pix.mask())
+  {
+    bitBlt(&mask, x, y, pix.mask(), 0, 0, pix.width(), pix.height(), Qt::CopyROP, false);
+    pm.setMask(mask);
+  }
+  else
+  {
+    pm.setMask(mask);
+    pm = fillOpaqueRect(x, y, pix.width(), pix.height(), pm);
+  }
+
   QPainter pt;
   pt.begin( &pm );
-  pt.setPen( g.light() );
   pt.drawPixmap(x, y, pix);
   pt.end();
   return pm;
-}
-
-void FCTools::clearToolButtons(QToolBar* tb)
-{
-  if ( !tb->children() )
-  	return;
-  QObjectListIt it( *tb->children() );
-  QObject * obj;
-  while( (obj=it.current()) != 0 ) 
-  {
-  	++it;
-	  if ( obj->isWidgetType() )
-    {
-      if ( obj->inherits("QToolButton") || obj->inherits("QToolBarSeparator") )
-  	    delete obj;
-    }
-  }
 }
 
 QPixmap FCTools::fillOpaqueRect(int x, int y, int w, int h, QPixmap p)
@@ -132,9 +120,9 @@ QPixmap FCTools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
 
   QBitmap b = *p.mask();
 
-  // make a transparent pixmap ???
+  // make a transparent pixmap
   QPixmap p2 (w,h);
-  p2.fill();
+  p2.fill(Qt::color0);
 
   // modify the mask
   bitBlt(&b, x, y, &p2, 0, 0, w, h, Qt::CopyROP, false);
@@ -142,4 +130,21 @@ QPixmap FCTools::fillTransparentRect(int x, int y, int w, int h, QPixmap p)
   p.setMask(b);
   
   return p;
+}
+
+void FCTools::clearToolButtons(QToolBar* tb)
+{
+  if ( !tb->children() )
+  	return;
+  QObjectListIt it( *tb->children() );
+  QObject * obj;
+  while( (obj=it.current()) != 0 ) 
+  {
+  	++it;
+	  if ( obj->isWidgetType() )
+    {
+      if ( obj->inherits("QToolButton") || obj->inherits("QToolBarSeparator") )
+  	    delete obj;
+    }
+  }
 }
