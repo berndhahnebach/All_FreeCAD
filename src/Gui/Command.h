@@ -94,6 +94,9 @@ public:
 public slots:
 	void activated (int i);
 
+private slots:
+  void onAboutToShow();
+
 protected:
   std::vector<std::string> mItems;
 };

@@ -553,16 +553,20 @@ QString FCCmdMRU::GetFileName(const char* name)
   int ct = (it-_vMRU.begin())+1;
 
   QString file(name);
-  file.prepend(QObject::tr("%1 ").arg(ct));
 
   int npos = file.findRev('/');
   if (npos != -1)
   {
     QString fn = file.right(file.length()-npos-1);
+    QString path = file.left(npos);
+    QString cur  = QDir::currentDirPath();
+    if (path != cur)
+      fn = file;
     fn.prepend(QObject::tr("%1 ").arg(ct));
     return fn;
   }
 
+  file.prepend(QObject::tr("%1 ").arg(ct));
   return file;
 }
 

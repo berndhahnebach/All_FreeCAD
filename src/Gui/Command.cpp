@@ -173,23 +173,37 @@ bool FCMultiAction::addTo(QWidget *w)
     QPopupMenu* popup = new QPopupMenu(w, "Menu");
     widgets.push_back(popup);
   	connect( popup, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
+    connect( popup, SIGNAL( aboutToShow() ), this, SLOT( onAboutToShow() ));
   	connect( popup, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
 
 //    if (iconSet().isNull())
       ((QPopupMenu*)w)->insertItem(text(), popup);
 //    else
 //      ((QPopupMenu*)w)->insertItem(iconSet().pixmap(), mName.c_str(), popup);
-
-    int i=0;
-    for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it, i++)
-    {
-      popup->insertItem(/*QPixmap(FCIcon), */it->c_str(), i);
-    }
   }
   else
     return false;
 
   return true;
+}
+
+void FCMultiAction::onAboutToShow()
+{
+  // fill up just before showing the menu 
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
+  {
+    if ((*it)->inherits("QPopupMenu"))
+    {
+      QPopupMenu* popup = (QPopupMenu*)(*it);
+      popup->clear();
+
+      int i=0;
+      for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it, i++)
+      {
+        popup->insertItem(/*QPixmap(FCIcon), */it->c_str(), i);
+      }
+    }
+  }
 }
 
 void FCMultiAction::setItems(const std::vector<std::string>& items)
@@ -206,12 +220,6 @@ void FCMultiAction::insertItem(const char* item)
     {
       QComboBox* combo = (QComboBox*)(*it);
       combo->insertItem(QPixmap(FCIcon), item);
-    }
-    else if ((*it)->inherits("QPopupMenu"))
-    {
-      QPopupMenu* popup = (QPopupMenu*)(*it);
-      int ct = popup->count();
-      popup->insertItem(item, ct);
     }
   }
 }
@@ -235,18 +243,6 @@ void FCMultiAction::removeItem(const char* item)
         }
       }
     }
-    else if ((*it)->inherits("QPopupMenu"))
-    {
-      QPopupMenu* popup = (QPopupMenu*)(*it);
-      for (int i = 0; i<int(popup->count()); i++)
-      {
-        if (popup->text(i) == QString(item))
-        {
-//          popup->removeItem(i);
-          break;
-        }
-      }
-    }
   }
 }
 
@@ -259,11 +255,6 @@ void FCMultiAction::clear()
     {
       QComboBox* combo = (QComboBox*)(*it);
       combo->clear();
-    }
-    else if ((*it)->inherits("QPopupMenu"))
-    {
-      QPopupMenu* popup = (QPopupMenu*)(*it);
-      popup->clear();
     }
   }
 }
