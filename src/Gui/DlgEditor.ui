@@ -1,0 +1,317 @@
+<!DOCTYPE UI><UI>
+<class>FCDlgEditorSettingsBase</class>
+<widget>
+    <class>QWidget</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>FCDlgEditorSettingsBase</cstring>
+    </property>
+    <property>
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>381</width>
+            <height>291</height>
+        </rect>
+    </property>
+    <property>
+        <name>caption</name>
+        <string>Editor</string>
+    </property>
+    <grid>
+        <property>
+            <name>margin</name>
+            <number>11</number>
+        </property>
+        <property>
+            <name>spacing</name>
+            <number>6</number>
+        </property>
+        <widget row="0"  column="0"  rowspan="3"  colspan="1" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox2</cstring>
+            </property>
+            <property>
+                <name>title</name>
+                <string>Window settings</string>
+            </property>
+            <grid>
+                <property>
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="0" >
+                    <class>FCCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>VerticalScroll</cstring>
+                    </property>
+                    <property>
+                        <name>prefEntry</name>
+                        <string>EnableEditVerticalScroll</string>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Vertical scroll bar</string>
+                    </property>
+                </widget>
+                <widget row="1"  column="0" >
+                    <class>FCCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>HorizontalScroll</cstring>
+                    </property>
+                    <property>
+                        <name>prefEntry</name>
+                        <string>EnableEditHorizontalScroll</string>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Horizontal scroll bar</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget row="0"  column="1" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel3</cstring>
+            </property>
+            <property>
+                <name>text</name>
+                <string>Font:</string>
+            </property>
+        </widget>
+        <widget row="2"  column="1"  rowspan="1"  colspan="2" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox1</cstring>
+            </property>
+            <property>
+                <name>title</name>
+                <string>Colors</string>
+            </property>
+            <grid>
+                <property>
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="2"  column="1" >
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>ComboBox1_3</cstring>
+                    </property>
+                </widget>
+                <widget row="0"  column="0"  rowspan="1"  colspan="2" >
+                    <class>QListBox</class>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Text</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Text Selection</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Bookmark</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Breakpoint</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Keyword</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Comment</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Number</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>String</string>
+                        </property>
+                    </item>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>ListBox1</cstring>
+                    </property>
+                </widget>
+                <widget row="2"  column="0" >
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>ComboBox1_2</cstring>
+                    </property>
+                </widget>
+                <widget row="1"  column="0" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Foreground:</string>
+                    </property>
+                </widget>
+                <widget row="1"  column="1" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel2</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Background:</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget row="0"  column="2" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel4</cstring>
+            </property>
+            <property>
+                <name>text</name>
+                <string>Size:</string>
+            </property>
+        </widget>
+        <widget row="1"  column="2" >
+            <class>QComboBox</class>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>9</string>
+                </property>
+            </item>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>10</string>
+                </property>
+            </item>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>11</string>
+                </property>
+            </item>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>12</string>
+                </property>
+            </item>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>13</string>
+                </property>
+            </item>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>14</string>
+                </property>
+            </item>
+            <item>
+                <property>
+                    <name>text</name>
+                    <string>15</string>
+                </property>
+            </item>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>ComboBox2</cstring>
+            </property>
+            <property>
+                <name>sizePolicy</name>
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                </sizepolicy>
+            </property>
+        </widget>
+        <widget row="1"  column="1" >
+            <class>QComboBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>ComboBox1</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>FCCheckBox</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <signal>toggled(bool)</signal>
+        <property type="String">text</property>
+        <property type="Bool">checked</property>
+        <property type="Bool">tristate</property>
+        <property type="Bool">enabled</property>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
+    </customwidget>
+</customwidgets>
+<images>
+    <image>
+        <name>image0</name>
+        <data format="XPM.GZ" length="2878">789ccdd5594f23471007f0773e8545bda1a8d673cf28ca0397318701c31ede8df2d0d33d0318b0c107d72adf3dddffea6d292b63e5254aa69645bfe99a9eea6bf8b0d5199d0f3a5b1f36e60bb5b8d11d7dad669d2db3bcbf7ffdfd8fdfbe6f6cc671c7fe8ba2a8136ffeb2b1395c7474e7743a691c7864415d5ccec470dc8dbcafe1ccdec991ffc53beda6f0195c768b6e81fc3658c157b0b277c404d72ef07c176eaca5fdd9398a6db5289653d8b880f17c1cb980158c0bcf37701517b1d457c3c6055c3827ddb8f1d670ea02cf4fe02c4912e9ef092e933ca9907fe56d0336ce69ec028ee022cd53793fe62f2b5cc0255c5a67f081b70df81cae3395613e18e3c93317f057b8c8f35cfabb814b17701fae6c86f814ae5dc08973e12ee9ef335c156521f963d8b8802fe1c65ad667cfb98c8ab694f9cfe0d8064c2f302eb4dfc375a94ad91f58afd2d83ba887507fd9d8c0fb68ea5c456553c97c623f55b8e00aae2b5549ff736715ab48c97a2de154252a81b13e2ab777b09f79162ce3bf850b17c8df854b9b21ef7b852bdb2eebb9f02e7dfb31acec1d9c0fbaf356beff49b09c9f3c58d6ef3118fd91f45f87e72f8225ff9b77ad64fcd360a9e72158f6cf3258e61beba18cd24aa33d76ae331768df76d6a94e6a59ffa71fd6723ed0bfce5cc0981f9d5bcbfc0ce052175ae663ec6d03c67875652df3b11f2cf59f78575ac6fb2958c6bb172cf9582f3b981fdef156de6f706d2defdbf6ae7dfbc76099af5eb09c17aca7c685fa51af49ece744f63bfa379949bd67c1b21f518fa94c29edfc1c2ce709df27a35cc038afa67619f0a1776d643e70be9ac805daf1fd6dd226f1ee05cbfb8fe0a2c94c8be70fbd8b46fac7feb5c7af6864bd06c1721e4e8225ffd6bb6c64fde7c1f2bc0e967a87c1b27e528f72817c7cff1a77c9fec4f7af8dda6e83bf4fd4f7b601a3bf366bd356c687f3d12a1730be57ad71217fecfe79fc9ff3995871cdfaa730dc70bb325ff1155ff3cd4f31e65bbe5b995fdbec7b9ef0941ff891673ce7052ff9899ff96565beb6bdbdf21b6ff30eeff21eef738f0fb8cf877cf46efeb1cde9f1090ff0fb94cff89c876bf22ff8d2d6d3e38ffc893ff3171ef1d7b5f9dfb8cb11c7b6a2c4e68e38e56c6d7ece85cd2ab9e211311129aa49bf9f4f861a9bd9d2155ddbdf3734b6f9b76bf2efe89e26a86444537aa0479ad17c4dfe827bb4a4277aa6173743f44a6fefd663784cdbb4632bd8a53dfb7f4dfbb6f71e1d507f657ec3b774484774cc433ab13f033aa5333aa7215daccc6ff98e5ff8e8ef417dbaa0cbff62ffff2bf97ffebaf117f4e0deb4</data>
+    </image>
+</images>
+<tabstops>
+    <tabstop>ComboBox1</tabstop>
+    <tabstop>ComboBox2</tabstop>
+    <tabstop>ListBox1</tabstop>
+    <tabstop>ComboBox1_2</tabstop>
+    <tabstop>ComboBox1_3</tabstop>
+</tabstops>
+</UI>
