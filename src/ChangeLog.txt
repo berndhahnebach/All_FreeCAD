@@ -380,3 +380,6 @@ Version: V0.1B80 Date: Wed Jan 07 13:36:29 2004 +++++++++++++++++++++++++++++++
 + Scintilla-Binding reimplemented
 + Autowaitcursor improved
 + a first version of python console added
+
+Version: V0.1B81 Date: Fri Jan 23 18:28:15 2004 +++++++++++++++++++++++++++++++
++ connect Python callback functions to QWidget signals 
