@@ -308,3 +308,8 @@ Version: V0.1B67 Date: Sun Jul 20 00:23:56 2003 +++++++++++++++++++++++++++++++
 + Precompiled header stuff again
 + improved the spin box
 + Report output window added
+
+Version: V0.1B68 Date: Wed Jul 23 19:46:41 2003 +++++++++++++++++++++++++++++++
++ Add Feature Attribute
++ Add Function driver
++ Implement Test Command 2

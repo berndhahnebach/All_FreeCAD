@@ -110,6 +110,13 @@
 #include <TDataStd_RealArray.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_Comment.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_Builder.hxx>
+#include <TFunction_Logbook.hxx>
+#include <TFunction_DriverTable.hxx>
+
+#include <TDF_Reference.hxx>
+
 //#include <TDataStd_Reference.hxx>
 
 

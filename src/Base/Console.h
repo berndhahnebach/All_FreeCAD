@@ -113,7 +113,10 @@ public:
 	void SetMode(ConsoleMode m);
 	/// Change mode
 	void UnsetMode(ConsoleMode m);
-	 
+
+	/// singelton 
+	static FCConsole &Instance(void);
+
 protected:
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	// static python wrapper of the exported functions
@@ -131,9 +134,7 @@ private:
 	virtual ~FCConsole();
 	// singelton 
 	static void Destruct(void);
-	static FCConsole &Instance(void);
 	static FCConsole *_pcSingelton;
-	friend FCConsole &GetConsole(void); 
 
 	// observer processing 
 	void NotifyMessage(const char *sMsg);

@@ -82,6 +82,7 @@ class FCApplicationOCC : public TDocStd_Application
 
 public:
 	FCApplicationOCC::~FCApplicationOCC();
+	FCApplicationOCC::FCApplicationOCC();
 
 	// OpenCasCade application Stuff goes here +++++++++++++++++++++++++++++++++++
 	/** gives information about the types of formates */
@@ -199,7 +200,6 @@ private:
 	void NotifyDocDelete(FCDocument* pcDoc);
 	/// The Observer is a friend of the Application
 
-private:
 	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
 	/// Handles the FCDocument (and python) objects;

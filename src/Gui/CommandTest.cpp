@@ -37,6 +37,8 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 #include "../App/Document.h"
+#include "../App/Feature.h"
+#include "../App/Function.h"
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
@@ -190,6 +192,7 @@ FCCmdTest2::FCCmdTest2()
 	iAccel			= 0;
 }
 
+#include <TFunction_Function.hxx>
 
 void FCCmdTest2::Activated(int iMsg)
 {
@@ -201,26 +204,15 @@ void FCCmdTest2::Activated(int iMsg)
 
     TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
 
-	BRep_Builder aBuilder;
-	TopoDS_Shape ResultShape;
+	L = L.FindChild(1);
 
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
-	if ( fn.isEmpty() ) return;
- 
-	try{
-	  BRepTools::Read(ResultShape,(const Standard_CString)fn.latin1(),aBuilder);
-	}
-	// Boeser Fehler ;-)
-	catch(...){
-	  throw new FCException("Error loading BREP file");
-	}  
+	Handle(FCFeature) Feat = new FCFeature();
+//	Handle(FCFunction) Func = new FCFunction();
+	Feat->Set("Test");
 
-	TNaming_Builder B(L);
-	B.Generated(ResultShape);
+	L.AddAttribute( Feat);
 
-	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
-	// Display it
-	hcPrs->Display(1);
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, FCFunction::GetID());
 
 }
 

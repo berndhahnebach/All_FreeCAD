@@ -39,7 +39,7 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructor 
-	FCPyAttribute (const Handle(TDF_Attribute) &hAttribute, PyTypeObject *T = &Type);
+	FCPyAttribute (const Handle(FCAttribute) &hAttribute, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 	/// Destruction 
@@ -61,7 +61,7 @@ protected:
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #endif
-	Handle(TDF_Attribute) _hAttribute;
+	Handle(FCAttribute) _hAttribute;
 
 };
 
@@ -75,7 +75,7 @@ protected:
 //purpose  : 
 //=======================================================================
 
-const Standard_GUID& TDataStd_Name::GetID () 
+const Standard_GUID& FCAttribute::GetID () 
 {
   static Standard_GUID TDataStd_NameID("2a96b608-ec8b-11d0-bee7-080009dc3333");
   return TDataStd_NameID;
@@ -85,20 +85,20 @@ const Standard_GUID& TDataStd_Name::GetID ()
 //function : Set
 //purpose  : 
 //=======================================================================
-Handle(TDataStd_Name) TDataStd_Name::Set(const TDF_Label& label,const TCollection_ExtendedString& string) 
+Handle(FCAttribute) FCAttribute::Set(const TDF_Label& label,const TCollection_ExtendedString& string) 
 {
-  Handle(TDataStd_Name) N;
-  if (!label.FindAttribute(TDataStd_Name::GetID(), N)) { 
-    N = new TDataStd_Name ();   
+  Handle(FCAttribute) N;
+  if (!label.FindAttribute(FCAttribute::GetID(), N)) { 
+    N = new FCAttribute ();   
     label.AddAttribute(N);
   }
   N->Set(string);    
   return N;  
 }
 
-TDataStd_Name::TDataStd_Name () {}
+FCAttribute::FCAttribute () {}
 
-void TDataStd_Name::Set (const TCollection_ExtendedString& S) 
+void FCAttribute::Set (const TCollection_ExtendedString& S) 
 {
  
   Backup();
@@ -109,36 +109,90 @@ void TDataStd_Name::Set (const TCollection_ExtendedString& S)
   //myEmpty = Standard_False;
 }
 
-TCollection_ExtendedString TDataStd_Name::Get () const {return myString;}
+TCollection_ExtendedString FCAttribute::Get () const {return myString;}
 
-const Standard_GUID& TDataStd_Name::ID () const { return GetID(); }
+const Standard_GUID& FCAttribute::ID () const { return GetID(); }
 
 
-Handle(TDF_Attribute) TDataStd_Name::NewEmpty () const
+Handle_TDF_Attribute FCAttribute::NewEmpty () const
 {  
-  return new TDataStd_Name(); 
+  return new FCAttribute(); 
 }
 
-void TDataStd_Name::Restore(const Handle(TDF_Attribute)& with) 
+void FCAttribute::Restore(const Handle(TDF_Attribute)& with) 
 {
-  myString = Handle(TDataStd_Name)::DownCast (with)->Get();
+  myString = Handle(FCAttribute)::DownCast (with)->Get();
 }
 
 
-void TDataStd_Name::Paste (const Handle(TDF_Attribute)& into,
+void FCAttribute::Paste (const Handle(TDF_Attribute)& into,
 		           const Handle(TDF_RelocationTable)& RT) const
 {
-  Handle(TDataStd_Name)::DownCast (into)->Set (myString);
+  Handle(FCAttribute)::DownCast (into)->Set (myString);
 }
 
 
-Standard_OStream& TDataStd_Name::Dump (Standard_OStream& anOS) const
+Standard_OStream& FCAttribute::Dump (Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   anOS << " Name=|"<<myString<<"|"<<endl;
   return anOS;
 }
 
+
+FCAttribute::~FCAttribute() {}
+ 
+
+
+Standard_EXPORT Handle_Standard_Type& FCAttribute_Type_()
+{
+
+//  static Handle_Standard_Type aType1 = STANDARD_TYPE(FCAttribute);
+//  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCAttribute);
+  static Handle_Standard_Type aType2 = STANDARD_TYPE(TDF_Attribute);
+  if ( aType2.IsNull()) aType2 = STANDARD_TYPE(TDF_Attribute);
+  static Handle_Standard_Type aType3 = STANDARD_TYPE(MMgt_TShared);
+  if ( aType3.IsNull()) aType3 = STANDARD_TYPE(MMgt_TShared);
+  static Handle_Standard_Type aType4 = STANDARD_TYPE(Standard_Transient);
+  if ( aType4.IsNull()) aType4 = STANDARD_TYPE(Standard_Transient);
+ 
+
+  static Handle_Standard_Transient _Ancestors[]= {/*aType1,*/aType2,aType3,aType4,NULL};
+  static Handle_Standard_Type _aType = new Standard_Type("FCAttribute",
+			                                 sizeof(FCAttribute),
+			                                 1,
+			                                 (Standard_Address)_Ancestors,
+			                                 (Standard_Address)NULL);
+
+  return _aType;
+}
+
+
+// DownCast method
+//   allow safe downcasting
+//
+const Handle(FCAttribute) Handle(FCAttribute)::DownCast(const Handle(Standard_Transient)& AnObject) 
+{
+  Handle(FCAttribute) _anOtherObject;
+
+  if (!AnObject.IsNull()) {
+     if (AnObject->IsKind(STANDARD_TYPE(FCAttribute))) {
+       _anOtherObject = Handle(FCAttribute)((Handle(FCAttribute)&)AnObject);
+     }
+  }
+
+  return _anOtherObject ;
+}
+const Handle(Standard_Type)& FCAttribute::DynamicType() const 
+{ 
+  return STANDARD_TYPE(FCAttribute) ; 
+}
+Standard_Boolean FCAttribute::IsKind(const Handle(Standard_Type)& AType) const 
+{ 
+  return (STANDARD_TYPE(FCAttribute) == AType || TDF_Attribute::IsKind(AType)); 
+}
+
+Handle_FCAttribute::~Handle_FCAttribute() {}
 
 
 
@@ -189,7 +243,7 @@ PyParentObject FCPyAttribute::Parents[] = {&FCPyObject::Type,&FCPyAttribute::Typ
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCPyAttribute::FCPyAttribute(const Handle(TDF_Attribute) &hAttribute, PyTypeObject *T ) 
+FCPyAttribute::FCPyAttribute(const Handle(FCAttribute) &hAttribute, PyTypeObject *T ) 
 	:FCPyObject(T),_hAttribute(hAttribute)
 {
 	//GetConsole().Log("Create Param Group %p\n",this);

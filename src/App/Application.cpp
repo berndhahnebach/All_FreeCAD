@@ -18,6 +18,7 @@
 
 #include "Application.h"
 #include "Document.h"
+#include "Function.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
@@ -58,6 +59,13 @@ void FCApplicationOCC::InitViewer(const Handle(TDocStd_Document)& aDoc) const
 
 FCApplicationOCC::~FCApplicationOCC() {}
 
+FCApplicationOCC::FCApplicationOCC() 
+{
+	// Instanciate a TOcafFunction_BoxDriver and add it to the TFunction_DriverTable
+	TFunction_DriverTable::Get()->AddDriver(FCFunction::GetID(), 
+											new FCFunction());
+
+}
 
 // OCAF specific stuff
 
@@ -439,7 +447,7 @@ PYFUNCIMP_S(FCApplication,sGetParam)
         return NULL;                             // NULL triggers exception 
 
 	try{
-		return GetApplication().GetParameterGroupByPath(pstr)->GetPyObject(); 
+		return GetPyObject(GetApplication().GetParameterGroupByPath(pstr)); 
 	}catch(...)
 	{
 		PyErr_SetString(PyExc_IOError, "GetParam faild!\nusage:\n   GetParam\"(SetName:GroupName_1/GroupName_2/.../GroupName_n)");

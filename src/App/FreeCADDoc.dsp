@@ -132,6 +132,24 @@ SOURCE=.\Document.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Feature.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\Feature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Function.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\Function.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Geometry2D.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File

@@ -193,9 +193,6 @@ public:
 	/// returns the name
 	const char* GetGroupName(void) {return _cName.c_str();}
 
-	/// returns a new python object reference of this group
-	PyObject* GetPyObject(void);
-
 protected:
 	/// constructor is protected (handle concept)
 	FCParameterGrp(DOMElement *GroupNode=0L,const char* sName=0L);
@@ -274,6 +271,9 @@ private:
 
 };
 
+/** python wrapper function
+*/
+BaseExport PyObject* GetPyObject( const FCHandle<FCParameterGrp> &hcParamGrp);
 
 
 #endif
