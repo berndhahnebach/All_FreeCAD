@@ -101,8 +101,9 @@ SOURCE=.\FreeCADInit.py
 InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
-
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h 
+	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
@@ -111,8 +112,9 @@ InputPath=.\FreeCADInit.py
 InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
-
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h 
+	
 # End Custom Build
 
 !ENDIF 
@@ -128,8 +130,9 @@ SOURCE=.\FreeCADTest.py
 InputPath=.\FreeCADTest.py
 
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
-
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h 
+	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
@@ -138,8 +141,9 @@ InputPath=.\FreeCADTest.py
 InputPath=.\FreeCADTest.py
 
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
-
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h 
+	
 # End Custom Build
 
 !ENDIF 

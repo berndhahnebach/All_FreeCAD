@@ -7,7 +7,8 @@
 class FCGuiDocument;
 class FCDocument;
 class QSplitter;
-class QWidget;		
+class QWidget;	
+class ViewProvider;	
 
 
 /** Base class of all windows belonging to a document
@@ -73,12 +74,26 @@ public:
 	virtual bool CanClose(void){return true;}
 	//@}
 
+	/** @name View provider handling 
+	 * View provider handle the visual apperance of things in the document
+	 * FreeCAD itself an all application modules can register View provider 
+	 * to visualize its new Features or Datatypes
+	 */
+	//@{
+	/// Register a new View provider
+	static void AddViewProvider(ViewProvider* pcProvider);
+	//@}
+
+
+
 
 protected:
     FCGuiDocument*	_pcDocument;
 	bool bIsDetached;
 	bool bIsPassiv;
 
+	// view provider container
+	static std::vector<ViewProvider*> _vpcViewProvider;
 };
 
 /** Base class of all windows belonging to a document

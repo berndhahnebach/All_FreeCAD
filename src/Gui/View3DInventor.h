@@ -35,6 +35,8 @@
 
 #include "View.h"
 
+#include "Inventor/Qt/viewers/SoQtViewer.h"
+
 class QMouseEvent;
 class FCMouseModel;
 class FCGuiDocument;
@@ -49,6 +51,8 @@ class QHBoxLayout;
 class QWidgetStack;
 class QTabBar;
 class SoQtExaminerViewer;
+class SoQtViewer;
+class View3DInventor;
 
 class	SoSeparator ;
 class	SoShapeHints;
@@ -100,6 +104,7 @@ protected:
 	SoMaterial	* pcShapeMaterial;
 private:
 	SoQtExaminerViewer * _viewer;
+//	View3DInventor * _viewer;
 	QWidget*		_pcWidget;
 	QVBox*			_pcFrame;    
 	QWidgetStack*	_pcWidgetStack;
@@ -108,7 +113,21 @@ private:
 };
 
 
+/** The Inventor viewer
+ *  
+ */
+class View3DInventor: public SoQtViewer
+{
+public:
 
+	  View3DInventor (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true) 
+		  :SoQtViewer (parent, name, embed, type, build)
+	  {
+
+	  }
+
+	  ~View3DInventor(){}
+};
 
 
 #endif  //__VIEW3DINVENTOR__

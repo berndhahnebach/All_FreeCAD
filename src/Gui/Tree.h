@@ -20,8 +20,9 @@
 #define __TREE__
 
 #include <qlistview.h>
-//#include "../Base/PyExport.h"
 
+#include "../Base/PyExport.h"
+#include "View.h"
 
 /// Forwards
 class FCLabel; 

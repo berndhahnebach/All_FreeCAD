@@ -45,6 +45,7 @@
 // FCBaseView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+std::vector<ViewProvider*> FCBaseView::_vpcViewProvider;
 
 FCBaseView::FCBaseView( FCGuiDocument* pcDocument)
 :_pcDocument(pcDocument),
@@ -112,6 +113,12 @@ FCDocument* FCBaseView::GetAppDocument()
 {
 	if(!_pcDocument) return 0;
 	return _pcDocument->GetDocument();
+}
+
+/// Register a new View provider
+void FCBaseView::AddViewProvider(ViewProvider* pcProvider)
+{
+	_vpcViewProvider.push_back(pcProvider);
 }
 
 

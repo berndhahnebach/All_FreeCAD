@@ -147,49 +147,52 @@
 //**************************************************************************
 // SoQt
 
-#define SOQT_INTERNAL
-#define SOQT_MAKE_DLL 1
-#define __COIN_SOQT__
-#define SOQT_DEBUG 1
+//#define SOQT_INTERNAL
+//#define SOQT_MAKE_DLL 1
+//#define __COIN_SOQT__
+//#define SOQT_DEBUG 1
 
-#define INVENTORLIBNAME "coin1.lib"
+#define INVENTORLIBNAME "coin2.lib"
+#define SOQTLIBNAME     "soqt1.lib"
 
 #ifdef FC_OS_WIN32
 
+#define SOQT_DLL
+
 	/* Define to use GetEnvironmentVariable() instead of getenv() */
-#	define HAVE_GETENVIRONMENTVARIABLE 1
+//#	define HAVE_GETENVIRONMENTVARIABLE 1
 	/* define if the GL header should be included as GL/gl.h */
-#	define HAVE_GL_GL_H 1
+//#	define HAVE_GL_GL_H 1
 	/* Define this to 1 if operator==(QGLFormat&, QGLFormat&) is available */
-#	define HAVE_QGLFORMAT_EQ_OP 1
+//#	define HAVE_QGLFORMAT_EQ_OP 1
 	/* Define this to 1 if QGLFormat::setOverlay() is available */
-#	define HAVE_QGLFORMAT_SETOVERLAY 1
+//#	define HAVE_QGLFORMAT_SETOVERLAY 1
 	/* Define this to 1 if QGLWidget::setAutoBufferSwap() is available */
-#	define HAVE_QGLWIDGET_SETAUTOBUFFERSWAP 1
+//#	define HAVE_QGLWIDGET_SETAUTOBUFFERSWAP 1
 	/* Define this if Qt::Keypad is available */
-#	define HAVE_QT_KEYPAD_DEFINE 1
+//#	define HAVE_QT_KEYPAD_DEFINE 1
 	/* Define this if QWidget::showFullScreen() is available */
-#	define HAVE_QWIDGET_SHOWFULLSCREEN 1
+//#	define HAVE_QWIDGET_SHOWFULLSCREEN 1
 	/* Define to enable use of Inventor feature */
-#	define HAVE_SOCAMERA_SETSTEREOMODE 1
+//#	define HAVE_SOCAMERA_SETSTEREOMODE 1
 	/* Define to enable use of Inventor feature */
-#	define HAVE_SOKEYBOARDEVENT_DELETE 1
+//#	define HAVE_SOKEYBOARDEVENT_DELETE 1
 	/* Define to enable use of Inventor feature */
-#	define HAVE_SOMOUSEBUTTONEVENT_BUTTON5 1
+//#	define HAVE_SOMOUSEBUTTONEVENT_BUTTON5 1
 	/* Define to enable use of the Open Inventor SoPolygonOffset node */
-#	define HAVE_SOPOLYGONOFFSET 1
+//#	define HAVE_SOPOLYGONOFFSET 1
 	/* Define to 1 if you have the <sys/types.h> header file. */
-#	define HAVE_SYS_TYPES_H 1
+//#	define HAVE_SYS_TYPES_H 1
 	/* Define to 1 if you have the <windows.h> header file. */
-#	define HAVE_WINDOWS_H 1
+//#	define HAVE_WINDOWS_H 1
 	/* Define to the major version of SoQt */
-#	define SOQT_MAJOR_VERSION 1
+//#	define SOQT_MAJOR_VERSION 1
 	/* Define to the micro version of SoQt */
-#	define SOQT_MICRO_VERSION 2
+//#	define SOQT_MICRO_VERSION 2
 	/* Define to the minor version of SoQt */
-#	define SOQT_MINOR_VERSION 0
+//#	define SOQT_MINOR_VERSION 0
 	/* Version string for SoQt */
-#	define SOQT_VERSION "1.0.2"
+//#	define SOQT_VERSION "1.0.2"
 
 #endif
 

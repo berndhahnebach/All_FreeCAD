@@ -62,6 +62,7 @@
 #	pragma comment(lib,QTLIBNAME)
 
 #	pragma comment(lib,INVENTORLIBNAME)
+#	pragma comment(lib,SOQTLIBNAME)
 #	pragma comment(lib,"OpenGL32.lib")
 
 #else

@@ -74,5 +74,5 @@ const char* FCException::what(void) const throw()
 
 void FCException::ReportException (void) const
 {
-	GetConsole().Error("Exception (%s): %s \n",GetConsole().Time(),what());
+	GetConsole().Error("\nException (%s): %s \n",GetConsole().Time(),what());
 }

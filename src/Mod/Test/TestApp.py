@@ -27,12 +27,16 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
-import FreeCAD, os
+import FreeCAD, os, unittest, Document
 
 
 #---------------------------------------------------------------------------
 # define the functions to test the FreeCAD base code
 #---------------------------------------------------------------------------
+
+
+def TestDocUnit():
+    return Document.DocTestCase()
 
 
 def TestAll():
@@ -94,45 +98,46 @@ def TestBase():
     FreeCAD.PrintWarning("   Printing warning\n")
     FreeCAD.PrintLog("   Printing Log\n")
 
-def TestParameter():
-    # Parameter testing
-    TestPar = FreeCAD.ParamGet("System parameter:Test")
-    FreeCAD.PrintLog("Test:")
-    for i in range(50):
-        FreeCAD.PrintLog(`i`+",")
-        TestPar.SetFloat(`i`,4711.4711)
-        TestPar.SetInt(`i`,4711)
-        TestPar.SetBool(`i`,1)
-        Temp = TestPar.GetGroup(`i`)
-        for l in range(50):
-            Temp.SetFloat(`l`,4711.4711)
-            Temp.SetInt(`l`,4711)
-            Temp.SetBool(`l`,1)
-    Temp = 0
-    FreeCAD.PrintLog("\n")
-    #check on special conditions
-    TestPar = FreeCAD.ParamGet("System parameter:Test/44")
-    # check on Int
-    if(TestPar.GetInt("44") == 4711):
-        FreeCAD.PrintLog("Int OK\n")
-    else:
-        FreeCAD.PrintLog("Error reading back Int")
-        raise
-    # check on float
-    if(TestPar.GetFloat("44") == 4711.4711):
-        FreeCAD.PrintLog("Float OK\n")
-    else:
-        FreeCAD.PrintLog("Error reading back Float")
-        raise
-    # check on Bool
-    if(TestPar.GetBool("44") == 1):
-        FreeCAD.PrintLog("Bool OK\n")
-    else:
-        FreeCAD.PrintLog("Error reading back Bool")
-        raise
-    #remove all
-    TestPar = FreeCAD.ParamGet("System parameter:Test")
-    TestPar.Clear()
+class ParameterTestCase(unittest.TestCase):
+    def runTest(self):
+        # Parameter testing
+        TestPar = FreeCAD.ParamGet("System parameter:Test")
+        FreeCAD.PrintLog("Test:")
+        for i in range(50):
+            FreeCAD.PrintLog(`i`+",")
+            TestPar.SetFloat(`i`,4711.4711)
+            TestPar.SetInt(`i`,4711)
+            TestPar.SetBool(`i`,1)
+            Temp = TestPar.GetGroup(`i`)
+            for l in range(50):
+                Temp.SetFloat(`l`,4711.4711)
+                Temp.SetInt(`l`,4711)
+                Temp.SetBool(`l`,1)
+        Temp = 0
+        FreeCAD.PrintLog("\n")
+        #check on special conditions
+        TestPar = FreeCAD.ParamGet("System parameter:Test/44")
+        # check on Int
+        if(TestPar.GetInt("44") == 4711):
+            FreeCAD.PrintLog("Int OK\n")
+        else:
+            FreeCAD.PrintLog("Error reading back Int")
+            raise
+        # check on float
+        if(TestPar.GetFloat("44") == 4711.4711):
+            FreeCAD.PrintLog("Float OK\n")
+        else:
+            FreeCAD.PrintLog("Error reading back Float")
+            raise
+        # check on Bool
+        if(TestPar.GetBool("44") == 1):
+            FreeCAD.PrintLog("Bool OK\n")
+        else:
+            FreeCAD.PrintLog("Error reading back Bool")
+            raise
+        #remove all
+        TestPar = FreeCAD.ParamGet("System parameter:Test")
+        TestPar.Clear()
 
 
 def TestParameterHeavy(i=10):
@@ -140,7 +145,6 @@ def TestParameterHeavy(i=10):
         TestParameter()
 
 def TestUnit():
-    import unittest
     import unittestgui
     import sys
     import Tkinter
@@ -149,7 +153,7 @@ def TestUnit():
     import string
     root = Tkinter.Tk()
     root.title("FreeCAD unit test")
-    runner = unittestgui.TkTestRunner(root, "test.test")
+    runner = unittestgui.TkTestRunner(root, "TestApp.TestDocUnit")
     root.protocol('WM_DELETE_WINDOW', root.quit)
     root.mainloop()
     root.destroy()

@@ -171,6 +171,7 @@
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qframe.h>
+#include <qfontdatabase.h>
 #include <qhbox.h>
 #include <qheader.h>
 #include <qiconview.h>

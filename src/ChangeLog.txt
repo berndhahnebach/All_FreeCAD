@@ -391,3 +391,5 @@ Version: V0.1B83 Date: Mon Apr  5 00:42:17 2004 +++++++++++++++++++++++++++++++
 + using Qt's qmake tool to build FreeCAD
 + FreeCAD now is running under Debian  in console mode :-)
    but in GUI mode it    crashes after the splashscreen appeared :-(
+
+Version: V0.1B84 Date: Wed Apr 07 15:59:56 2004 +++++++++++++++++++++++++++++++

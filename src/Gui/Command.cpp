@@ -751,7 +751,11 @@ std::string FCPythonCommand::GetResource(const char* sName)
 
 void FCPythonCommand::Activated(int iMsg)
 {
-	GetInterpreter().RunMethodVoid(_pcPyCommand, "Activated");
+	try{
+		GetInterpreter().RunMethodVoid(_pcPyCommand, "Activated");
+	}catch (FCException e){
+		GetConsole().Error("Running the python command %s faild,try to resume",sName);
+	}
 }
 
 bool FCPythonCommand::IsActive(void)
