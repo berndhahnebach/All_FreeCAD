@@ -240,11 +240,7 @@ class BaseExport FCPyObject : public PyObject
  *  @see FCPyObject,FCDocument 
  */
 template <class HandledType>
-# if _MSC_VER >= 1300
 class FCPyHandle
-# else
-class BaseExport FCPyHandle
-# endif
 {
 public:
 	//**************************************************************************

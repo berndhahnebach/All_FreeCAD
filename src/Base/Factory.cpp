@@ -74,6 +74,27 @@ void FCFactory::AddProducer (const char *sClassName, FCAbstractProducer *pcProdu
   _mpcProducers[sClassName] = pcProducer;
 }
 
+bool FCFactory::CanProduce(const char* sClassName) const
+{
+	return (_mpcProducers.find(sClassName) != _mpcProducers.end());
+}
+
+std::list<std::string> FCFactory::CanProduce() const
+{
+	std::list<std::string> lObjects;
+
+# if _MSC_VER >= 1300
+  for (std::map<std::string, FCAbstractProducer*>::const_iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
+# else
+  for (std::map<const std::string, FCAbstractProducer*>::const_iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
+# endif
+	{
+		lObjects.push_back(pI->first);
+	}
+
+	return lObjects;
+}
+
 // ----------------------------------------------------
 
 FCScriptFactory* FCScriptFactory::_pcSingleton = NULL;

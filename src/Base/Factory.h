@@ -58,6 +58,9 @@ class BaseExport FCFactory
 	public:
 		/// Adds a new prducer instance
 		void AddProducer (const char* sClassName, FCAbstractProducer *pcProducer);
+		bool CanProduce(const char* sClassName) const;
+		std::list<std::string> CanProduce() const;
+
 	protected:
 		/// produce a class with the given name
 		void* Produce (const char* sClassName) const;
