@@ -103,7 +103,9 @@
 #	define DEBUG 1
 #else
 #	undef  DEBUG 
-#	define NDEBUG
+# ifndef NDEBUG
+#	 define NDEBUG
+# endif
 #endif
 
 //**************************************************************************
