@@ -176,7 +176,7 @@ struct ApplicationWindowP
 	FCCustomWidgetManager*		 _pcWidgetMgr;
 	FCMacroManager*  _pcMacroMngr;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
-	FCStackBar*        _pcStackBar;
+	CStackBar*        _pcStackBar;
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
@@ -263,7 +263,7 @@ ApplicationWindow::ApplicationWindow()
   statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	d->_pcStackBar = new FCStackBar(this,"Cmd_Group");
+	d->_pcStackBar = new CStackBar(this,"Cmd_Group");
 	d->_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), d->_pcStackBar);
 	d->_pcWidgetMgr->addDockWindow( "Command bar",d->_pcStackBar, NULL, KDockWidget::DockRight, 83);
 
@@ -285,7 +285,7 @@ ApplicationWindow::ApplicationWindow()
 	d->_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
 	// Report View
-	Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
+	Gui::DockWnd::CReportView* pcOutput = new Gui::DockWnd::CReportView(this,"CReportView");
 	d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
 
  	CreateStandardOperations();
@@ -1215,7 +1215,7 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
   bool tips = hGrp->GetBool("Tipoftheday", true);
 	if ( tips || force)
 	{
-		Gui::Dialog::TipOfTheDayDlgImp dlg(Instance, "Tipofday");
+		Gui::Dialog::CDlgTipOfTheDayImp dlg(Instance, "Tipofday");
 		dlg.exec();
 	}
 }

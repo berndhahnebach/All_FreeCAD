@@ -88,7 +88,7 @@ class FCPrefPageProducer: public Base::AbstractProducer
 		FCPrefPageProducer (const QString& caption)  : mCaption(caption)
 		{
 			FCWidgetFactory::Instance().AddProducer(mCaption.latin1(), this);
-			Gui::Dialog::DlgPreferencesImp::addPage(caption);
+			Gui::Dialog::CDlgPreferencesImp::addPage(caption);
 		}
 
 		virtual ~FCPrefPageProducer (void){}

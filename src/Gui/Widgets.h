@@ -122,7 +122,7 @@ class GuiExport FCMessageBox : public QMessageBox
  */
 struct FCProgressBarPrivate;
 
-class FCProgressBar : public QProgressBar, public Base::SequencerBase
+class FCProgressBar : public QProgressBar, public Base::CSequencer
 {
   public:
 	  /**

@@ -298,7 +298,7 @@ FCProgressBar* FCProgressBar::Instance()
 }
 
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
-: QProgressBar (parent, name, f), SequencerBase()
+: QProgressBar (parent, name, f), CSequencer()
 {
   d = new FCProgressBarPrivate;
 	d->cWaitCursor = 0L;
@@ -385,7 +385,7 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 bool FCProgressBar::start(const char* pszStr, unsigned long steps)
 {
 	// base stuff
-	bool ret = SequencerBase::start(pszStr, steps);
+	bool ret = CSequencer::start(pszStr, steps);
 
 	setTotalSteps(_nTotalSteps);
 
@@ -433,7 +433,7 @@ void FCProgressBar::resetBar()
 	d->cWaitCursor = 0L;
 	leaveControlEvents();
 
-	SequencerBase::resetBar();
+	CSequencer::resetBar();
 }
 
 void FCProgressBar::abort()

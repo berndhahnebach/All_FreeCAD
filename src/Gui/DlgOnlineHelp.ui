@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI>
-<class>FCOnlineHelpBase</class>
+<class>CDlgOnlineHelpBase</class>
 <widget>
     <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>FCOnlineHelpBase</cstring>
+        <cstring>CDlgOnlineHelpBase</cstring>
     </property>
     <property stdset="1">
         <name>geometry</name>

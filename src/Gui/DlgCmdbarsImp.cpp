@@ -51,17 +51,17 @@
 
 using namespace Gui::Dialog;
 
-DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFlags fl )
-	: DlgCustomToolbarsBase(parent, name, fl)
+CDlgCustomCmdbarsImp::CDlgCustomCmdbarsImp( QWidget* parent, const char* name, WFlags fl )
+	: CDlgCustomToolbars(parent, name, fl)
 {
 	onUpdate();
 }
 
-DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
+CDlgCustomCmdbarsImp::~CDlgCustomCmdbarsImp()
 {
 }
 
-void DlgCustomCmdbarsImp::apply()
+void CDlgCustomCmdbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
   FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());
@@ -92,11 +92,11 @@ void DlgCustomCmdbarsImp::apply()
   toolbar->saveXML();
 }
 
-void DlgCustomCmdbarsImp::cancel()
+void CDlgCustomCmdbarsImp::cancel()
 {
 }
 
-void DlgCustomCmdbarsImp::onUpdate()
+void CDlgCustomCmdbarsImp::onUpdate()
 {
   ComboToolbars->clear();
   m_aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
@@ -117,7 +117,7 @@ void DlgCustomCmdbarsImp::onUpdate()
 	}
 }
 
-void DlgCustomCmdbarsImp::onCreateToolbar()
+void CDlgCustomCmdbarsImp::onCreateToolbar()
 {
   QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
   QString text = QInputDialog::getText(tr("New command bar"), tr("Specify the name of the new command bar, please."),
@@ -139,7 +139,7 @@ void DlgCustomCmdbarsImp::onCreateToolbar()
   }
 }
 
-void DlgCustomCmdbarsImp::onDeleteToolbar()
+void CDlgCustomCmdbarsImp::onDeleteToolbar()
 {
   std::vector<std::pair<std::string, bool> > items;
   std::vector<FCToolBar*> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();

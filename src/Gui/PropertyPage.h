@@ -37,17 +37,17 @@ namespace Dialog {
 
 /** Base class for property pages.
  * The pages of @ref DlgCustomizeImp and @ref DlgPreferencesImp
- * should inherit PropertyPage to use apply/cancel mechanism.
+ * should inherit CPropertyPage to use apply/cancel mechanism.
  * Inherited classes should reimplement @ref apply() and
  * @ref cancel().
  */
-class GuiExport PropertyPage
+class GuiExport CPropertyPage
 {
 protected:
-	PropertyPage();
+	CPropertyPage();
 
 public:
-	virtual ~PropertyPage() {}
+	virtual ~CPropertyPage() {}
 	/** Returns whether the page was modified or not */
 	bool isModified();
 	/** Sets the page to be modified */
@@ -68,9 +68,9 @@ private:
 };
 
 /**
- * @see PropertyPage
+ * @see CPropertyPage
  */
-class GuiExport PreferencePage : public PropertyPage, public FCWidgetPrefsManager
+class GuiExport PreferencePage : public CPropertyPage, public FCWidgetPrefsManager
 {
 public:
 	PreferencePage();

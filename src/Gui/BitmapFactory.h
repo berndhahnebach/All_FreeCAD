@@ -38,7 +38,7 @@ namespace Gui {
   * hold all paths for the extern bitmaps (files) to serve
   * as a single point of accessing bitmaps in FreeCAD
   */
-class GuiExport BitmapFactoryInst : public Base::Factory
+class GuiExport CBitmapFactory : public Base::Factory
 {
 public:
 	enum Position
@@ -49,7 +49,7 @@ public:
 		BottomRight /**< Place to the bottom right corner */
 	};
 
-	static BitmapFactoryInst& Instance(void);
+	static CBitmapFactory& Instance(void);
 	static void Destruct (void);
 
 	/// Adds a path where pixmaps can be found
@@ -69,19 +69,19 @@ public:
 	QPixmap GetPixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
 
 private:
-	static BitmapFactoryInst* _pcSingleton;
+	static CBitmapFactory* _pcSingleton;
 
-	BitmapFactoryInst(){}
-	~BitmapFactoryInst(){}
+	CBitmapFactory(){}
+	~CBitmapFactory(){}
 
 	std::map<std::string,const char**> _mpXPM;
 	std::vector<std::string>          _vsPaths;
 };
 
 /// Get the global instance
-inline GuiExport BitmapFactoryInst& BitmapFactory(void)
+inline GuiExport CBitmapFactory& BitmapFactory(void)
 {
-	return BitmapFactoryInst::Instance();
+	return CBitmapFactory::Instance();
 }
 
 } // namespace Gui

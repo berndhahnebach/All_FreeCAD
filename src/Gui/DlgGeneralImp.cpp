@@ -52,14 +52,14 @@
 using namespace Gui::Dialog;
 
 /* 
- *  Constructs a DlgGeneralImp which is a child of 'parent', with the 
+ *  Constructs a CDlgGeneralImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
-    : FCDlgGeneralBase( parent, name, fl )
+CDlgGeneralImp::CDlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
+    : CDlgGeneralBase( parent, name, fl )
 {
 #if QT_VERSION > 300
   // if you run this first time
@@ -94,12 +94,12 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
 /*  
  *  Destroys the object and frees any allocated resources
  */
-DlgGeneralImp::~DlgGeneralImp()
+CDlgGeneralImp::~CDlgGeneralImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgGeneralImp::apply()
+void CDlgGeneralImp::apply()
 {
 	if (QString::compare(Languages->currentText(), language) != 0)
 	{
@@ -109,17 +109,17 @@ void DlgGeneralImp::apply()
 	}
 }
 
-void DlgGeneralImp::onBigPixmaps()
+void CDlgGeneralImp::onBigPixmaps()
 {
 	ApplicationWindow::Instance->UpdatePixmapsSize();
 }
 
-void DlgGeneralImp::onSetStyle()
+void CDlgGeneralImp::onSetStyle()
 {
 	ApplicationWindow::Instance->UpdateStyle();
 }
 
-void DlgGeneralImp::onSetMRUSize()
+void CDlgGeneralImp::onSetMRUSize()
 {
 	FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
@@ -130,17 +130,17 @@ void DlgGeneralImp::onSetMRUSize()
   }
 }
 
-void DlgGeneralImp::onSetCmdLineVisible()
+void CDlgGeneralImp::onSetCmdLineVisible()
 {
   GetCmdLine().show();
 }
 
-void DlgGeneralImp::onChooseLanguage(const QString&)
+void CDlgGeneralImp::onChooseLanguage(const QString&)
 {
 	setModified(true);
 }
 
-void DlgGeneralImp::onSearchForLanguages()
+void CDlgGeneralImp::onSearchForLanguages()
 {
 	QStringList list = Gui::LanguageFactory().GetRegisteredLanguages();
 

@@ -40,13 +40,13 @@ namespace Dialog {
 /**
  * This class implements the settings for the editor
  */
-class DlgEditorSettings : public FCDlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public FCWidgetPrefs
+class CDlgEditorSettings : public CDlgEditorSettingsBase, public Gui::Dialog::PreferencePage, public FCWidgetPrefs
 {
 Q_OBJECT
 
 public:
-	DlgEditorSettings( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~DlgEditorSettings();
+	CDlgEditorSettings( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~CDlgEditorSettings();
 
 	/** Does not do anything */
 	void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
@@ -77,14 +77,14 @@ protected:
  * but it represents the "setting" the color is assigned to
  * (e.g. text color, keyword color, ...)
  */
-class DefColorMap
+class CDefColorMap
 {
 private:
 	// Singleton
-	DefColorMap(void);
-	~DefColorMap(void);
+	CDefColorMap(void);
+	~CDefColorMap(void);
 
-	static DefColorMap *_pcSingleton;
+	static CDefColorMap *_pcSingleton;
 
 	std::map<QString, long> m_clDefColors;
 
@@ -92,14 +92,14 @@ public:
 	std::vector<QString> GetKeys() const;
 	long GetColor(const QString& name);
 	static void Destruct(void);
-	static DefColorMap &Instance(void);
+	static CDefColorMap &Instance(void);
 
-	friend DefColorMap &GetDefCol(void); 
+	friend CDefColorMap &GetDefCol(void); 
 };
 
-inline DefColorMap &GetDefCol(void)
+inline CDefColorMap &GetDefCol(void)
 {
-  return DefColorMap::Instance();
+  return CDefColorMap::Instance();
 }
 
 } // namespace Dialog

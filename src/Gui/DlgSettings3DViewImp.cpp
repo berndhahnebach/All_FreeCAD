@@ -53,10 +53,10 @@
 using namespace Gui::Dialog;
 
 /* 
- *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 
+ *  Constructs a CDlgSettings3DViewImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, WFlags fl )
+CDlgSettings3DViewImp::CDlgSettings3DViewImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettings3DView( parent, name, fl )
 {
 	append(UseAntialiasing->getHandler());
@@ -73,19 +73,19 @@ DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, 
 /*  
  *  Destroys the object and frees any allocated resources
  */
-DlgSettings3DViewImp::~DlgSettings3DViewImp()
+CDlgSettings3DViewImp::~CDlgSettings3DViewImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgSettings3DViewImp::ChooseDir()
+void CDlgSettings3DViewImp::ChooseDir()
 {
 	QString cPath = FileDialog::getOpenFileName( QString::null, "Inventor (*.iv)");
 
 	FCLineEdit_UserDefinedViewerExt->setText(cPath.latin1());
 }
 
-void  DlgSettings3DViewImp::WarnInventor(bool b)
+void  CDlgSettings3DViewImp::WarnInventor(bool b)
 {
 	if(b)
 		Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");

@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI>
-<class>FCDlgEditorSettingsBase</class>
+<class>CDlgEditorSettingsBase</class>
 <widget>
     <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>FCDlgEditorSettingsBase</cstring>
+        <cstring>CDlgEditorSettingsBase</cstring>
     </property>
     <property>
         <name>geometry</name>

@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>FCDlgCustomToolbars</class>
+<class>CDlgCustomToolbarsBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>FCDlgCustomToolbars</cstring>
+        <cstring>CDlgCustomToolbarsBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -351,61 +351,61 @@
     <connection>
         <sender>buttonUp</sender>
         <signal>clicked()</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onMoveUpAction()</slot>
     </connection>
     <connection>
         <sender>buttonDown</sender>
         <signal>clicked()</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onMoveDownAction()</slot>
     </connection>
     <connection>
         <sender>DeleteToolbar</sender>
         <signal>clicked()</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onDeleteToolbar()</slot>
     </connection>
     <connection>
         <sender>buttonLeft</sender>
         <signal>clicked()</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onRemoveAction()</slot>
     </connection>
     <connection>
         <sender>buttonRight</sender>
         <signal>clicked()</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onAddAction()</slot>
     </connection>
     <connection>
         <sender>CreateToolbar</sender>
         <signal>clicked()</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onCreateToolbar()</slot>
     </connection>
     <connection>
         <sender>ComboToolbars</sender>
         <signal>activated(const QString&amp;)</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onItemActivated(const QString&amp;)</slot>
     </connection>
     <connection>
         <sender>ToolbarActions</sender>
         <signal>clicked(QListViewItem*,const QPoint&amp;,int)</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onNewActionChanged(QListViewItem*)</slot>
     </connection>
     <connection>
         <sender>AvailableActions</sender>
         <signal>clicked(QListViewItem*)</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onAllActionsChanged(QListViewItem*)</slot>
     </connection>
     <connection>
         <sender>AvailableActions</sender>
         <signal>doubleClicked(QListViewItem*)</signal>
-        <receiver>FCDlgCustomToolbars</receiver>
+        <receiver>CDlgCustomToolbarsBase</receiver>
         <slot>onDoubleClickedAction(QListViewItem*)</slot>
     </connection>
 </connections>

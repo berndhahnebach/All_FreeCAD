@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>TipOfTheDayDlg</class>
+<class>CDlgTipOfTheDayBase</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>TipOfTheDayDlg</cstring>
+        <cstring>CDlgTipOfTheDayBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -247,13 +247,13 @@
     <connection>
         <sender>pushButtonClose</sender>
         <signal>clicked()</signal>
-        <receiver>TipOfTheDayDlg</receiver>
+        <receiver>CDlgTipOfTheDayBase</receiver>
         <slot>close()</slot>
     </connection>
     <connection>
         <sender>pushButtonNext</sender>
         <signal>clicked()</signal>
-        <receiver>TipOfTheDayDlg</receiver>
+        <receiver>CDlgTipOfTheDayBase</receiver>
         <slot>onNext()</slot>
     </connection>
 </connections>

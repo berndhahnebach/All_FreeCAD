@@ -42,18 +42,18 @@ namespace Dialog {
  * You can extend the existing toolbars or buttongroups with 
  * several commands just by drag and drop.
  * Furthermore it is possible to create new commands from macros.
- * @see DlgCustomCommandsImp
- * @see DlgCustomToolbarsImp
- * @see DlgCustomCmdbarsImp
- * @see DlgCustomActionsImp
+ * @see CDlgCustomCommandsImp
+ * @see CDlgCustomToolbarsImp
+ * @see CDlgCustomCmdbarsImp
+ * @see CDlgCustomActionsImp
  */
-class DlgCustomizeImp : public QDialog
+class CDlgCustomizeImp : public QDialog
 { 
     Q_OBJECT
 
 public:
-	DlgCustomizeImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-	~DlgCustomizeImp();
+	CDlgCustomizeImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+	~CDlgCustomizeImp();
 
 	/** Inserts a new tab page with its caption */
 	void insertTab (QWidget* w, QString name);

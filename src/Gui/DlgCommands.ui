@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI>
-<class>FCDlgCustomCommands</class>
+<class>CDlgCustomCommandsBase</class>
 <widget>
     <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>FCDlgCustomCommands</cstring>
+        <cstring>CDlgCustomCommandsBase</cstring>
     </property>
     <property>
         <name>geometry</name>

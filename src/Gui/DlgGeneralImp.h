@@ -43,13 +43,13 @@ namespace Dialog {
  * @see FCPreferencePage
  * @see class ApplicationWindow
  */
-class DlgGeneralImp : public FCDlgGeneralBase, public Gui::Dialog::PreferencePage
+class CDlgGeneralImp : public CDlgGeneralBase, public Gui::Dialog::PreferencePage
 {
 Q_OBJECT
 
 public:
-	DlgGeneralImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-	~DlgGeneralImp();
+	CDlgGeneralImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~CDlgGeneralImp();
 
 protected:
 	/** Searches for all registered languages and insert them into a combo box */

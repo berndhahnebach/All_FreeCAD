@@ -54,13 +54,13 @@
 using namespace Gui::Dialog;
 
 /* 
- *  Constructs a DlgCustomizeImp which is a child of 'parent', with the 
+ *  Constructs a CDlgCustomizeImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+CDlgCustomizeImp::CDlgCustomizeImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
   if ( !name )
@@ -109,19 +109,19 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
   
   // first page
   //
-  insertTab(new Gui::Dialog::DlgCustomCommandsImp( tabWidget, "tab" ), tr("Commands"));
+  insertTab(new Gui::Dialog::CDlgCustomCommandsImp( tabWidget, "tab" ), tr("Commands"));
   
   // second page
   //
-  insertTab(new Gui::Dialog::DlgCustomToolbarsImp( tabWidget, "tab" ), tr("Toolbars"));
+  insertTab(new Gui::Dialog::CDlgCustomToolbarsImp( tabWidget, "tab" ), tr("Toolbars"));
   
   // third page
   //
-  insertTab(new Gui::Dialog::DlgCustomCmdbarsImp( tabWidget, "tab" ), tr("Command bars"));
+  insertTab(new Gui::Dialog::CDlgCustomCmdbarsImp( tabWidget, "tab" ), tr("Command bars"));
 
   // fourth page
   //
-  insertTab(new Gui::Dialog::DlgCustomActionsImp( tabWidget, "tab" ), tr("Actions"));
+  insertTab(new Gui::Dialog::CDlgCustomActionsImp( tabWidget, "tab" ), tr("Actions"));
 
 
   FCDlgCustomizeBaseLayout->addWidget( tabWidget, 0, 0 );
@@ -146,7 +146,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
 /*  
  *  Destroys the object and frees any allocated resources
  */
-DlgCustomizeImp::~DlgCustomizeImp()
+CDlgCustomizeImp::~CDlgCustomizeImp()
 {
     // no need to delete child widgets, Qt does it all for us
   for (std::vector<QWidget*>::iterator it = tabPages.begin(); it!=tabPages.end();++it)
@@ -155,7 +155,7 @@ DlgCustomizeImp::~DlgCustomizeImp()
   tabPages.clear();
 }
 
-void DlgCustomizeImp::insertTab (QWidget* w, QString name)
+void CDlgCustomizeImp::insertTab (QWidget* w, QString name)
 {
   w->reparent(tabWidget, QPoint(0,0));
   tabWidget->insertTab( w, name );
@@ -164,33 +164,33 @@ void DlgCustomizeImp::insertTab (QWidget* w, QString name)
   tabPages.push_back(w);
 }
 
-void DlgCustomizeImp::onOK()
+void CDlgCustomizeImp::onOK()
 {
   onApply();
 }
 
-void DlgCustomizeImp::onApply()
+void CDlgCustomizeImp::onApply()
 {
   QWidget* page = tabWidget->currentPage();
-  if (dynamic_cast<PropertyPage*>(page) != NULL)
-     (dynamic_cast<PropertyPage*>(page))->onApply();
+  if (dynamic_cast<CPropertyPage*>(page) != NULL)
+     (dynamic_cast<CPropertyPage*>(page))->onApply();
 
 # ifdef FC_DEBUG
   else
-	  Base::Console().Warning("Added page does not inherit from class FCPropertyPage");
+	  Base::Console().Warning("Added page does not inherit from class CPropertyPage");
 #endif
 }
 
-void DlgCustomizeImp::onCancel()
+void CDlgCustomizeImp::onCancel()
 {
   for (std::vector<QWidget*>::iterator it = tabPages.begin(); it != tabPages.end(); ++it)
   {
-    if (dynamic_cast<PropertyPage*>(*it) != NULL)
-       (dynamic_cast<PropertyPage*>(*it))->onCancel();
+    if (dynamic_cast<CPropertyPage*>(*it) != NULL)
+       (dynamic_cast<CPropertyPage*>(*it))->onCancel();
 
 # ifdef FC_DEBUG
     else
-		Base::Console().Warning("Added page does not inherit from class FCPropertyPage");
+		Base::Console().Warning("Added page does not inherit from class CPropertyPage");
 #endif
 
   }

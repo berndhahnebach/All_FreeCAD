@@ -39,30 +39,30 @@
 
 using namespace Gui::Dialog;
 
-PropertyPage::PropertyPage() 
+CPropertyPage::CPropertyPage() 
 {
   bChanged = false;
 }
 
-void PropertyPage::apply()
+void CPropertyPage::apply()
 {
 }
 
-void PropertyPage::cancel()
+void CPropertyPage::cancel()
 {
 }
 
-bool PropertyPage::isModified()
+bool CPropertyPage::isModified()
 {
   return bChanged;
 }
 
-void PropertyPage::setModified(bool b)
+void CPropertyPage::setModified(bool b)
 {
   bChanged = b;
 }
 
-void PropertyPage::onApply()
+void CPropertyPage::onApply()
 {
   if (isModified())
     apply();
@@ -70,7 +70,7 @@ void PropertyPage::onApply()
   setModified(false);
 }
 
-void PropertyPage::onCancel()
+void CPropertyPage::onCancel()
 {
   if (isModified())
   {

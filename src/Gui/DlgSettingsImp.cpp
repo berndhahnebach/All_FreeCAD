@@ -45,14 +45,14 @@
 using namespace Gui::Dialog;
 
 /* 
- *  Constructs a DlgSettingsImp which is a child of 'parent', with the 
+ *  Constructs a CDlgSettingsHtmlViewImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgSettingsImp::DlgSettingsImp( QWidget* parent,  const char* name, WFlags fl )
-    : FCDlgSettingsBase( parent, name, fl )
+CDlgSettingsHtmlViewImp::CDlgSettingsHtmlViewImp( QWidget* parent,  const char* name, WFlags fl )
+    : CDlgSettingsBase( parent, name, fl )
 {
   append(EnableBookmarks->getHandler());
   append(EnableHistory->getHandler());
@@ -65,7 +65,7 @@ DlgSettingsImp::DlgSettingsImp( QWidget* parent,  const char* name, WFlags fl )
 /*  
  *  Destroys the object and frees any allocated resources
  */
-DlgSettingsImp::~DlgSettingsImp()
+CDlgSettingsHtmlViewImp::~CDlgSettingsHtmlViewImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }

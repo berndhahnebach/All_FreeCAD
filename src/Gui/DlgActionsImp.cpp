@@ -53,8 +53,8 @@
 
 using namespace Gui::Dialog;
 
-DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
-: FCDlgCustomActions(parent, name, fl), bShown( false )
+CDlgCustomActionsImp::CDlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
+: CDlgCustomActionsBase(parent, name, fl), bShown( false )
 {
   // search for all macros
   std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
@@ -75,14 +75,14 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFl
   connect(CustomActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onCustomActionsDoubleClicked(QListViewItem*)));
 }
 
-DlgCustomActionsImp::~DlgCustomActionsImp()
+CDlgCustomActionsImp::~CDlgCustomActionsImp()
 {
 	cancel();
 }
 
-void DlgCustomActionsImp::show()
+void CDlgCustomActionsImp::show()
 {
-  FCDlgCustomActions::show();
+  CDlgCustomActionsBase::show();
   if (actionMacros->count() == 0 && bShown == false)
   {
 		bShown = true;
@@ -90,7 +90,7 @@ void DlgCustomActionsImp::show()
   }
 }
 
-void DlgCustomActionsImp::showPixmaps()
+void CDlgCustomActionsImp::showPixmaps()
 {
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
@@ -105,7 +105,7 @@ void DlgCustomActionsImp::showPixmaps()
   }
 }
 
-void DlgCustomActionsImp::apply()
+void CDlgCustomActionsImp::apply()
 {
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   std::vector<FCCommand*>::iterator it;
@@ -125,7 +125,7 @@ void DlgCustomActionsImp::apply()
   _aclDelMacros.clear();
 }
 
-void DlgCustomActionsImp::cancel()
+void CDlgCustomActionsImp::cancel()
 {
 	// delete all temporary created commands again as they were not appended to the command manager
   std::vector<FCCommand*>::iterator it;
@@ -137,7 +137,7 @@ void DlgCustomActionsImp::cancel()
 	_aclNewMacros.clear();
 }
 
-void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
+void CDlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
 {
   bool canDelete = FALSE;
   QListViewItemIterator it = CustomActions->firstChild();
@@ -154,7 +154,7 @@ void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
   buttonDelete->setEnabled( canDelete || ( i && i->isSelected() ) );
 }
 
-void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
+void CDlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
 {
 	if ( !i ) return; // no valid item
 
@@ -200,7 +200,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
     actionToolTip->setText(pScript->GetToolTipText());
     actionStatus->setText(pScript->GetStatusTip());
     actionAccel->setText(QAccel::keyToString(pScript->GetAccel()));
-		Gui::BitmapFactoryInst& bmp = Gui::BitmapFactory();
+		Gui::CBitmapFactory& bmp = Gui::BitmapFactory();
     PixmapLabel->clear();
     if (QString(pScript->GetPixmap()).length() > 2)
     {
@@ -210,7 +210,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
   }
 }
 
-void DlgCustomActionsImp::onAddCustomAction()
+void CDlgCustomActionsImp::onAddCustomAction()
 {
   if (actionName->text().isEmpty())
   {
@@ -298,7 +298,7 @@ void DlgCustomActionsImp::onAddCustomAction()
   setModified(true);
 }
 
-void DlgCustomActionsImp::onDelCustomAction()
+void CDlgCustomActionsImp::onDelCustomAction()
 {
 	// remove item from list view
   QString itemText;
@@ -346,7 +346,7 @@ void DlgCustomActionsImp::onDelCustomAction()
   setModified(true);
 }
 
-void DlgCustomActionsImp::onCustomActionPixmap()
+void CDlgCustomActionsImp::onCustomActionPixmap()
 {
   QString pixPath = FileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm *.gif *.png *.bmp)",this, "", 
 		tr("Choose a Pixmap"));
@@ -358,7 +358,7 @@ void DlgCustomActionsImp::onCustomActionPixmap()
   }
 }
 
-void DlgCustomActionsImp::newActionName()
+void CDlgCustomActionsImp::newActionName()
 {
 	int id = 0;
 	QString sName;

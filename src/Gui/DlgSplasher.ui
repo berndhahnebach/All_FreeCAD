@@ -1,10 +1,10 @@
 <!DOCTYPE UI><UI>
-<class>SplasherDialog</class>
+<class>CDlgSplasherBase</class>
 <widget>
     <class>QDialog</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>SplasherDialog</cstring>
+        <cstring>CDlgSplasherBase</cstring>
     </property>
     <property>
         <name>enabled</name>

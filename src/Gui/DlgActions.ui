@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>FCDlgCustomActions</class>
+<class>CDlgCustomActionsBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>FCDlgCustomActions</cstring>
+        <cstring>CDlgCustomActionsBase</cstring>
     </property>
     <property name="geometry">
         <rect>

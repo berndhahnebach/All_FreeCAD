@@ -57,10 +57,10 @@ using namespace Gui::Dialog;
 
 // --------------------------------------------------
 
-class PrefGroupItem : public QListBoxItem 
+class CPrefGroupItem : public QListBoxItem 
 {
   public:
-    PrefGroupItem( QListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name);
+    CPrefGroupItem( QListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name);
 
     virtual int height( const QListBox * ) const;
     virtual int width( const QListBox * )  const;
@@ -73,23 +73,23 @@ class PrefGroupItem : public QListBoxItem
     QPixmap pm_Sel;
 };
 
-PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
+CPrefGroupItem::CPrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
     : QListBoxItem( parent ), pm_Unsel( p1 ), pm_Sel( p2 )
 {
   setText( name );
 }
 
-int PrefGroupItem::height( const QListBox * ) const
+int CPrefGroupItem::height( const QListBox * ) const
 {
   return 50;
 }
 
-int PrefGroupItem::width( const QListBox * )  const
+int CPrefGroupItem::width( const QListBox * )  const
 {
   return 75;
 }
 
-void PrefGroupItem::paint( QPainter *p )
+void CPrefGroupItem::paint( QPainter *p )
 {
   int w = width( listBox() );
   int tx = (w-p->fontMetrics().boundingRect(text()).width())/2+10;
@@ -108,13 +108,13 @@ void PrefGroupItem::paint( QPainter *p )
 }
 
 /*
- *  Constructs a DlgPreferencesImp which is a child of 'parent', with the
+ *  Constructs a CDlgPreferencesImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+CDlgPreferencesImp::CDlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl ),FCWindowParameter(name), m_pCurTab(NULL)
 {
   if ( !name )
@@ -198,30 +198,30 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
 /*  
  *  Destroys the object and frees any allocated resources
  */
-DlgPreferencesImp::~DlgPreferencesImp()
+CDlgPreferencesImp::~CDlgPreferencesImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-std::vector<QString> DlgPreferencesImp::aclPages;
-void DlgPreferencesImp::addPage(const QString& name)
+std::vector<QString> CDlgPreferencesImp::aclPages;
+void CDlgPreferencesImp::addPage(const QString& name)
 {
 	aclPages.push_back(name);
 }
 
-void DlgPreferencesImp::addGroup(const QString& name)
+void CDlgPreferencesImp::addGroup(const QString& name)
 {
 	QString s = "Group_";
 	s += name;
 	aclPages.push_back(s);
 }
 
-void DlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
+void CDlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   m_pCurTab = getOrAddPreferenceGroup(name, Pixmap, Pixmap2);
 }
 
-void DlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
+void CDlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 {
 	if (m_pCurTab && page)
 	{
@@ -233,12 +233,12 @@ void DlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 	}
 }
 
-QTabWidget* DlgPreferencesImp::getPreferenceGroup(int id)
+QTabWidget* CDlgPreferencesImp::getPreferenceGroup(int id)
 {
   return (QTabWidget*)tabWidgetStack->widget(id);
 }
 
-QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
+QTabWidget* CDlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   // already inside
   if (m_mGroupIDs.find(name) != m_mGroupIDs.end())
@@ -254,12 +254,12 @@ QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, cons
   QTabWidget* tabWidget = new QTabWidget;
   tabWidgetStack->addWidget(tabWidget, iSize);
 
-  (void) new PrefGroupItem(ListBox, pixSel, pixUnsel, name);
+  (void) new CPrefGroupItem(ListBox, pixSel, pixUnsel, name);
 
   return tabWidget;
 }
 
-void DlgPreferencesImp::prefPageClicked(int item)
+void CDlgPreferencesImp::prefPageClicked(int item)
 {
   m_pCurTab = getPreferenceGroup(item);
 
@@ -269,7 +269,7 @@ void DlgPreferencesImp::prefPageClicked(int item)
   tabWidgetStack->raiseWidget(m_pCurTab);
 }
 
-void DlgPreferencesImp::connectWidget(QWidget* page) const
+void CDlgPreferencesImp::connectWidget(QWidget* page) const
 {
   if (dynamic_cast<PreferencePage*>(page) != NULL)
   {
@@ -283,12 +283,12 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
   }
 }
 
-void DlgPreferencesImp::onOK()
+void CDlgPreferencesImp::onOK()
 {
   onApply();
 }
 
-void DlgPreferencesImp::onApply()
+void CDlgPreferencesImp::onApply()
 {
   QWidget* page = m_pCurTab->currentPage();
   if (dynamic_cast<PreferencePage*>(page) != NULL)
@@ -300,7 +300,7 @@ void DlgPreferencesImp::onApply()
 #endif
 }
 
-void DlgPreferencesImp::onCancel()
+void CDlgPreferencesImp::onCancel()
 {
   // not yet implemented
 }

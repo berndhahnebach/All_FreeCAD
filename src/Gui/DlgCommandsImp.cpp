@@ -49,8 +49,8 @@
 
 using namespace Gui::Dialog;
 
-DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
-: FCDlgCustomCommands(parent, name, fl)
+CDlgCustomCommandsImp::CDlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
+: CDlgCustomCommandsBase(parent, name, fl)
 {
 
 	IconView1->setHScrollBarMode( QScrollView::AlwaysOff );
@@ -76,11 +76,11 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
   ComboBoxCategory->setCurrentItem(0);
 }
 
-DlgCustomCommandsImp::~DlgCustomCommandsImp()
+CDlgCustomCommandsImp::~CDlgCustomCommandsImp()
 {
 }
 
-void DlgCustomCommandsImp::apply()
+void CDlgCustomCommandsImp::apply()
 {
   std::vector<FCToolBar*> bars;
   std::vector<FCToolBar*>::iterator it;
@@ -98,7 +98,7 @@ void DlgCustomCommandsImp::apply()
   }
 }
 
-void DlgCustomCommandsImp::cancel()
+void CDlgCustomCommandsImp::cancel()
 {
   if (ApplicationWindow::Instance->GetCustomWidgetManager() != NULL)
   {
@@ -106,12 +106,12 @@ void DlgCustomCommandsImp::cancel()
   }
 }
 
-void DlgCustomCommandsImp::onDescription(QString txt)
+void CDlgCustomCommandsImp::onDescription(QString txt)
 {
   TextLabel->setText(txt);
 }
 
-void DlgCustomCommandsImp::onGroupSelected(const QString & group)
+void CDlgCustomCommandsImp::onGroupSelected(const QString & group)
 {
   IconView1->clear();
  

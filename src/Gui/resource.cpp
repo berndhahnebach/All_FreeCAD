@@ -47,7 +47,7 @@
 //
 #include "Language/FreeCAD_de.h"
 
-Gui::LanguageFactorySupplier::LanguageFactorySupplier()
+Gui::CLanguageFactorySupplier::CLanguageFactorySupplier()
 {
   // ADD ALL PIXMAPS TO THE FACTORY AUTOMATICALLY
   //
@@ -57,7 +57,7 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
   // ADD YOUR LANGUAGES HERE
   //
   //
-	new Gui::LanguageProducer("German", GetFreeCAD_de());
+	new Gui::CLanguageProducer("German", GetFreeCAD_de());
 }
 
 // ----------------------------------------------------
@@ -72,19 +72,21 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 #include "DlgSettingsMacroImp.h"
 #include "DlgOnlineHelpImp.h"
 
+using namespace Gui::Dialog;
+
 FCWidgetFactorySupplier::FCWidgetFactorySupplier()
 {
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-	Gui::Dialog::DlgPreferencesImp::addGroup                  ( QObject::tr("FreeCAD"     ) );
-  new FCPrefPageProducer<Gui::Dialog::DlgGeneralImp>        ( QObject::tr("General"     ) );
-  new FCPrefPageProducer<Gui::Dialog::DlgEditorSettings>    ( QObject::tr("Editor"      ) );
-  new FCPrefPageProducer<Gui::Dialog::DlgSettingsMacroImp>  ( QObject::tr("Macros"      ) );
-  new FCPrefPageProducer<Gui::Dialog::DlgOnlineHelpImp>     ( QObject::tr("Online help" ) );
-	Gui::Dialog::DlgPreferencesImp::addGroup                  ( QObject::tr("Viewer"      ) );
-  new FCPrefPageProducer<Gui::Dialog::DlgSettingsImp>       ( QObject::tr("Help Viewer" ) );
-  new FCPrefPageProducer<Gui::Dialog::DlgSettings3DViewImp> ( QObject::tr("3D View"     ) );
+	Gui::Dialog::CDlgPreferencesImp::addGroup      ( QObject::tr("FreeCAD"     ) );
+  new FCPrefPageProducer<CDlgGeneralImp>         ( QObject::tr("General"     ) );
+  new FCPrefPageProducer<CDlgEditorSettings>     ( QObject::tr("Editor"      ) );
+  new FCPrefPageProducer<CDlgSettingsMacroImp>   ( QObject::tr("Macros"      ) );
+  new FCPrefPageProducer<CDlgOnlineHelpImp>      ( QObject::tr("Online help" ) );
+	Gui::Dialog::CDlgPreferencesImp::addGroup      ( QObject::tr("Viewer"      ) );
+  new FCPrefPageProducer<CDlgSettingsHtmlViewImp>( QObject::tr("Help Viewer" ) );
+  new FCPrefPageProducer<CDlgSettings3DViewImp>  ( QObject::tr("3D View"     ) );
 
 	// ADD YOUR PREFERENCE WIDGETS HERE
 	//

@@ -321,7 +321,7 @@ FCCmdUndo::FCCmdUndo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Undo";
 	iAccel			= Qt::CTRL+Qt::Key_Z;
-  _pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Undo");
+  _pclUndoRedoWidget = new Gui::Dialog::CUndoRedoDlg(ApplicationWindow::Instance, "Undo");
 }
 
 
@@ -373,7 +373,7 @@ FCCmdRedo::FCCmdRedo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Redo";
 	iAccel			= Qt::CTRL+Qt::Key_Y;
-	_pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Redo");
+	_pclUndoRedoWidget = new Gui::Dialog::CUndoRedoDlg(ApplicationWindow::Instance, "Redo");
 }
 
 
@@ -1140,7 +1140,7 @@ FCCmdDlgPreferences::FCCmdDlgPreferences()
 
 void FCCmdDlgPreferences::Activated(int iMsg)
 {
-	Gui::Dialog::DlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
+	Gui::Dialog::CDlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
 	cDlg.exec();
 }
 
@@ -1256,7 +1256,7 @@ FCCmdDlgCustomize::FCCmdDlgCustomize()
 
 void FCCmdDlgCustomize::Activated(int iMsg)
 {
-	Gui::Dialog::DlgCustomizeImp cDlg(GetAppWnd(),"CustomizeDialog",true);
+	Gui::Dialog::CDlgCustomizeImp cDlg(GetAppWnd(),"CustomizeDialog",true);
 	cDlg.exec();
 }
 

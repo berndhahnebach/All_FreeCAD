@@ -44,13 +44,13 @@ class ReportHighlighter;
  * @see ReportOutput
  * @see PythonConsole
  */
-class ReportView : public FCDockWindow
+class CReportView : public FCDockWindow
 { 
     Q_OBJECT
 
   public:
-    ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~ReportView();
+    CReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~CReportView();
 
   private:
     QTabWidget* tab;
