@@ -81,16 +81,12 @@ class FCTextBrowser : public QTextBrowser
     void startExtBrowser(QString);
     void minWidthReached (bool);
 
-  protected slots:
-    void onHighlighted(const QString&);
-
   protected:
     virtual void viewportResizeEvent     (QResizeEvent* e);
     virtual void viewportMousePressEvent (QMouseEvent * e);
-    virtual void viewportMouseMoveEvent  (QMouseEvent * e);
     virtual void contentsDropEvent       (QDropEvent  * e);
-    virtual void viewportDragEnterEvent  (QDragEnterEvent * e);
-    virtual void viewportDropEvent       (QDropEvent  * e);
+    virtual void contentsDragEnterEvent  (QDragEnterEvent * e);
+		virtual void contentsDragMoveEvent   (QDragMoveEvent  * e );
 
   private:
     FCTextBrowserPrivate* d;

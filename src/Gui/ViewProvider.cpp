@@ -44,6 +44,7 @@
 #	include <assert.h>
 #	include <string>
 #	include <qlistview.h>
+#	include <TDF_Label.hxx>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

@@ -10,6 +10,11 @@
 
 // Std. configurations
 
+// (re-)defined in pyconfig.h
+#if defined (_POSIX_C_SOURCE)
+#	undef  _POSIX_C_SOURCE
+#endif
+
 // needed header
 #undef slots
 #	include <Python.h>

@@ -95,7 +95,7 @@ private:
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc) 
+FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc)
  : _hDoc(hDoc)
 {
 	_pcDocPy = new FCDocumentPy(this);
@@ -103,7 +103,7 @@ FCDocument::FCDocument(const Handle_TDocStd_Document &hDoc)
 
 }
 
-FCDocument::~FCDocument()	
+FCDocument::~FCDocument()
 {
 	_hDoc.Nullify();
 	GetConsole().Log("Destroy Document %p\n",this);
@@ -396,8 +396,8 @@ PyParentObject FCDocumentPy::Parents[] = {&FCPyObject::Type, NULL};
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-FCDocumentPy::FCDocumentPy(FCDocument *pcDoc, PyTypeObject *T) 
- : _pcDoc(pcDoc),FCPyObject( T)
+FCDocumentPy::FCDocumentPy(FCDocument *pcDoc, PyTypeObject *T)
+ : FCPyObject( T), _pcDoc(pcDoc)
 {
 
 }

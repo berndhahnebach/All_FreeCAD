@@ -149,8 +149,6 @@ libFreeCADApp_la_SOURCES = \
 		Feature.h \
 		FeatureAttr.h \
 		Function.h \
-		Geometry2D.h \
-		Geometry3D.h \
 		Label.h \
 		Parameter.h \
 		PreCompiled.h \
@@ -164,8 +162,6 @@ libFreeCADApp_la_SOURCES = \
 		Feature.cpp \
 		FeatureAttr.cpp \
 		Function.cpp \
-		Geometry2D.cpp \
-		Geometry3D.cpp \
 		Label.cpp \
 		Parameter.cpp \
 		PreCompiled.cpp \
@@ -204,8 +200,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libFreeCADApp_la_DEPENDENCIES =
 am_libFreeCADApp_la_OBJECTS = Application.lo Attribute.lo DocType.lo \
 	DocTypeAttr.lo Document.lo Feature.lo FeatureAttr.lo \
-	Function.lo Geometry2D.lo Geometry3D.lo Label.lo Parameter.lo \
-	PreCompiled.lo Properties.lo Topology.lo
+	Function.lo Label.lo Parameter.lo PreCompiled.lo Properties.lo \
+	Topology.lo
 libFreeCADApp_la_OBJECTS = $(am_libFreeCADApp_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -216,8 +212,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DocTypeAttr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/Feature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeatureAttr.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Function.Plo ./$(DEPDIR)/Geometry2D.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Geometry3D.Plo ./$(DEPDIR)/Label.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Function.Plo ./$(DEPDIR)/Label.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Parameter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Properties.Plo ./$(DEPDIR)/Topology.Plo
@@ -295,8 +290,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureAttr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Function.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Geometry2D.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Geometry3D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parameter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@

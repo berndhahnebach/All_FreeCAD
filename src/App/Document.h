@@ -16,7 +16,7 @@
  *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
- 
+
 #ifndef __Document_h__
 #define __Document_h__
 
@@ -36,7 +36,7 @@
 #	pragma warning( disable : 4503 )
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #	pragma warning( disable : 4290 )  // not implemented throw specification
-#	pragma warning( disable : 4275 )  
+#	pragma warning( disable : 4275 )
 #endif
 
 
@@ -48,12 +48,12 @@ class FCDocType;
 class FCDocumentPy; // the python document class
 class FCApplication;
 
-/** transport the changes of the Document 
- *  This class transport closer information what was changed in a 
+/** transport the changes of the Document
+ *  This class transport closer information what was changed in a
  *  document. Its a optional information and not all commands set this
  *  information. If not set all observer of the document assume a full change
- *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only 
- *  a small parameter whas changed. There for one can use this class and make the 
+ *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only
+ *  a small parameter whas changed. There for one can use this class and make the
  *  update of the document much faster!
  *@see FCDocument
  *@see FCObserver
@@ -65,10 +65,10 @@ class AppExport FCDocChanges
 
 
 
-/** The Document 
+/** The Document
  *  This is bisides the Applcation class the most importand class in FreeCAD
  *  It wrapps the OCC Document and contains all the data of the opend, saved
- *  or newly created FreeCAD Document. The data are organized in trees with 
+ *  or newly created FreeCAD Document. The data are organized in trees with
  *  the FCLabel class.
  *  The Document manage the Undo and Redo mechanism and the linking of documents.
  *  Note: the documents are not free objects. They are completly handled by the
@@ -81,7 +81,7 @@ class AppExport FCDocument :public FCPyExport, public FCSubject<const FCDocChang
 public:
 	FCDocument(const Handle_TDocStd_Document &hDoc);
 
-	~FCDocument();
+	virtual ~FCDocument();
 
 	//---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
@@ -95,9 +95,9 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Save the Document under a new Name
-	void SaveAs (const char* Name); 
+	void SaveAs (const char* Name);
 	/// Save the document under the name its been opened
-	void Save (void);				
+	void Save (void);
 	/// Is the document already saved to a file
 	bool IsSaved() const;
 	/// Get the document name of a saved document (UNICODE)
@@ -119,10 +119,10 @@ public:
 	/// Get the OCC Document Handle
 	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
 
-	
-	/** @name methodes for the UNDO REDO handling 
+
+	/** @name methodes for the UNDO REDO handling
 	 *  this methodes are usaly used by the GUI document! Its not intended
-	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO 
+	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO
 	 *  nececary.
 	 */
 	//@{
@@ -160,7 +160,7 @@ public:
 	bool Redo() ;
 	//@}
 
-	
+
 
 	/// Returns the storage string of the document.
 	const short* StorageFormat() const;
@@ -170,8 +170,8 @@ public:
 
 	virtual FCPyObject *GetPyObject(void);
 
-	
-	
+
+
 	/* Not mapped so far:
 virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Integer aReferenceIdentifier,const Standard_Address aModifContext) ;
   void SetData(const Handle(TDF_Data)& data) ;
@@ -184,9 +184,9 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
   void UpdateReferences(const TCollection_AsciiString& aDocEntry) ;
 */
 
-	friend FCDocumentPy;
-	//friend FCLabelPy;
-	friend FCApplication;
+	friend class FCDocumentPy;
+	//friend class FCLabelPy;
+	friend class FCApplication;
 
 protected:
 	/** @name atributes and methodes for label handling
@@ -207,8 +207,8 @@ protected:
 	std::map <TDF_Label,FCPyHandle<FCLabel>,LabelLess> mcLabelMap;
 	FCPyHandle<FCLabel> _hcMain;
 	//@}
-*/	
-	/// handle to the OCC document 
+*/
+	/// handle to the OCC document
 	Handle_TDocStd_Document _hDoc;
 
 	// pointer to the python class

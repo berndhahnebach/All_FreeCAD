@@ -176,7 +176,7 @@ static const char *open_pixmap[] = {
 "................",
 "................",
 "................"};
-
+/*
 // looks like MS cursor for hyperlinks
 #define cb_width  32
 #define cb_height 32
@@ -203,7 +203,7 @@ static unsigned char cm_bits[] = {		// cursor bitmap mask
  0x7f,0x00,0x00,0xf8,0x7f,0x00,0x00,0xf0,0x3f,0x00,0x00,0xf0,0x3f,0x00,0x00,
  0xf0,0x3f,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
-
+*/
 // --------------------------------------------------------------------------
 
 class FCTextBrowserPrivate
@@ -215,8 +215,6 @@ class FCTextBrowserPrivate
 
     QValueStack<QString> fdStack;
     QValueStack<QString> bdStack;
-    QCursor * cursor;
-    bool highlighted;
 
     bool getType (const QString& url, TDocType type);
     TMode tMode;
@@ -377,8 +375,8 @@ class FCHtmlViewPrivate
 FCHtmlViewPrivate::FCHtmlViewPrivate()
  :	bBackward(false),
 	bForward(false),
-  bHistory(false), 
-	bBookm(false), 
+	bHistory(false),
+	bBookm(false),
 	selectedURL()
 {
 }
@@ -490,23 +488,13 @@ FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
   mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
 
-  QBitmap cb( cb_width, cb_height, cb_bits, TRUE );
-  QBitmap cm( cm_width, cm_height, cm_bits, TRUE );
-  d->highlighted = false;
-  d->cursor = new QCursor ( cb, cm, 1, 1 );			// create bitmap cursor
-
-  connect(this, SIGNAL(highlighted(const QString&)), this, SLOT(onHighlighted(const QString&)));
+	setAcceptDrops( TRUE );
   viewport()->setAcceptDrops( TRUE );
 }
 
 FCTextBrowser::~FCTextBrowser()
 {
   delete d;
-}
-
-void FCTextBrowser::onHighlighted(const QString& s)
-{
-  d->highlighted = !s.isEmpty();
 }
 
 void FCTextBrowser::setSource (const QString & name)
@@ -639,14 +627,6 @@ void FCTextBrowser::viewportMousePressEvent (QMouseEvent * e)
     QTextBrowser::viewportMousePressEvent(e);
 }
 
-void FCTextBrowser::viewportMouseMoveEvent  (QMouseEvent * e)
-{
-  QTextBrowser::viewportMouseMoveEvent(e);
-  // avoid using the ugly Qt cursor ;-)
-  if (d->highlighted)
-    viewport()->setCursor( *d->cursor );
-}
-
 void FCTextBrowser::contentsDropEvent(QDropEvent  * e)
 {
   if (QUriDrag::canDecode(e))
@@ -667,18 +647,18 @@ void FCTextBrowser::contentsDropEvent(QDropEvent  * e)
   }
 }
 
-void FCTextBrowser::viewportDropEvent( QDropEvent* e )
-{
-  if (QUriDrag::canDecode(e) || QTextDrag::canDecode(e))
-    QTextBrowser::viewportDropEvent(e);
-}
-
-void FCTextBrowser::viewportDragEnterEvent  (QDragEnterEvent * e)
+void FCTextBrowser::contentsDragEnterEvent  (QDragEnterEvent * e)
 {
   bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
-  e->accept(can);
-//  if (can)
-//    QTextBrowser::viewportDragEnterEvent(e);
+	if ( !can )
+	  e->ignore();
+}
+
+void FCTextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
+{
+  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e);
+	if ( !can )
+	  e->ignore();
 }
 
 //// FCHtmlViewValidator //////////////////////////////////////////////////////
@@ -802,6 +782,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonBack->setProperty("text", tr( "..." ) );
   pclButtonBack->setProperty("pixmap", QPixmap(back_pixmap));
 	pclButtonBack->setAutoRaise(true);
+	QToolTip::add(pclButtonBack, tr("Previous"));
 
   // the 'Forward' button
   pclButtonForward = new QToolButton( pclButtonGrp, tr("Forward") );
@@ -809,6 +790,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonForward->setProperty( "text", tr( "..." ) );
   pclButtonForward->setProperty( "pixmap", QPixmap(forward_pixmap) );
 	pclButtonForward->setAutoRaise(true);
+	QToolTip::add(pclButtonForward, tr("Next"));
 
   // the 'Home' button
   pclButtonHome = new QToolButton( pclButtonGrp, tr("Home") );
@@ -816,6 +798,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonHome->setProperty( "text", tr( "..." ) );
   pclButtonHome->setProperty( "pixmap", QPixmap(home_pixmap) );
 	pclButtonHome->setAutoRaise(true);
+	QToolTip::add(pclButtonHome, tr("Home"));
 
   // the 'Open' button
   pclButtonOpen = new QToolButton( pclButtonGrp, tr("Open") );
@@ -823,6 +806,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonOpen->setProperty( "text", tr( "..." ) );
   pclButtonOpen->setProperty( "pixmap", QPixmap(open_pixmap) );
 	pclButtonOpen->setAutoRaise(true);
+	QToolTip::add(pclButtonOpen, tr("Open"));
 
   // the 'Path' combo box
   pclPathCombo = new FCHtmlComboBox( true, pclButtonGrp, "Paths" );
@@ -928,18 +912,7 @@ void FCHtmlView::SetEnableBookmarks(bool b)
 
 void FCHtmlView::RefreshPage()
 {
-  // sorry, but this isn't the best implementation 
-  // for reload of a page ;-)
-  if (d->bBackward)
-  {
-    pclBrowser->backward();
-    pclBrowser->forward();
-  }
-  else if (d->bForward)
-  {
-    pclBrowser->forward();
-    pclBrowser->backward();
-  }
+	pclBrowser->reload();
 }
 
 void FCHtmlView::ShowPopupMenu()
@@ -958,7 +931,7 @@ void FCHtmlView::PopupMenuAboutToShow()
   }
   else
   {
-    int iBack = pclPopup->insertItem(QPixmap(back_pixmap), tr("Back"), pclBrowser, SLOT(backward()));
+    int iBack = pclPopup->insertItem(QPixmap(back_pixmap), tr("Previous"), pclBrowser, SLOT(backward()));
     pclPopup->setItemEnabled(iBack, d->bBackward);
     int iForw = pclPopup->insertItem(QPixmap(forward_pixmap), tr("Forward"), pclBrowser, SLOT(forward()));
     pclPopup->setItemEnabled(iForw, d->bForward);

@@ -42,6 +42,9 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
+#	include <Standard_GUID.hxx>
+#	include <TFunction_Logbook.hxx>
+#	include <TDF_Reference.hxx>
 #endif
 
 #include "Function.h"

@@ -1,8 +1,8 @@
-# FreeCAD init script of the _TEMPLATE_ module  
-# (c) 2001 Jürgen Riegel
+# FreeCAD init script of the _TEMPLATE_ module
+# (c) 2001 Juergen Riegel
 
 #***************************************************************************
-#*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                        *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -13,12 +13,12 @@
 #*   for detail see the LICENCE text file.                                 *
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Lesser General Public License for more details.                   *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        * 
+#*   License along with FreeCAD; if not, write to the Free Software        *
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
@@ -30,7 +30,7 @@ class _TEMPLATE_Document:
 	"_TEMPLATE_ document"
 	def Info(self):
 		return "_TEMPLATE_ document"
-		
+
 class _TEMPLATE_Template:
 	"_TEMPLATE_ template object"
 	def Start(self):
@@ -43,9 +43,9 @@ class _TEMPLATE_Template:
 		Doc = App.DocGet()
 		Main = Doc.Main
 
-		Log ('   Init _TEMPLATE_ doc handle...\n')		
+		Log ('   Init _TEMPLATE_ doc handle...\n')
 		#Doc._TEMPLATE_ = 1
-		
+
 		L1 = Main.GetLabel(1)
 		L1.GetLabel(1)
 		L1.Int = 1
@@ -53,7 +53,7 @@ class _TEMPLATE_Template:
 		L1.Name = "Hallo"
 		L2 = L1.GetLabel(1)
 		L3 = L1.GetLabel(2)
-            
+
 
 
 # Get the Parameter Group of this module

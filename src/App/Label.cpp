@@ -16,6 +16,7 @@
 #	include <Handle_TDataStd_Name.hxx>
 #	include <TDataStd_Integer.hxx>
 #	include <Handle_TDataStd_Integer.hxx>
+#	include <TDF_ChildIterator.hxx>
 #endif
 
 
@@ -208,13 +209,13 @@ PyMethodDef FCLabelPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCLabelPy::Parents[] = {&FCLabelPy::Type, NULL};     
+PyParentObject FCLabelPy::Parents[] = {&FCLabelPy::Type, NULL};
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCLabelPy::FCLabelPy(TDF_Label cLabel, PyTypeObject *T) 
- : _cLabel(cLabel),FCPyObject( T)
+FCLabelPy::FCLabelPy(TDF_Label cLabel, PyTypeObject *T)
+ : FCPyObject( T), _cLabel(cLabel)
 {
 	GetConsole().Log("Create LabelPy: %p \n",this);
 }

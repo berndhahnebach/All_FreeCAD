@@ -64,8 +64,8 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
  */
 FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, TDF_Label &hcLabel )
     : QListViewItem( parent ),
-	_pcDocument(parent->_pcDocument),
-	_hcTDFLabel(hcLabel)
+	_hcTDFLabel(hcLabel),
+	_pcDocument(parent->_pcDocument)
 {
 	QString cString;
 

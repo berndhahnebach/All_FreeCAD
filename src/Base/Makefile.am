@@ -15,6 +15,7 @@ libFreeCADBase_la_SOURCES=\
 		PreCompiled.h \
 		Process.h \
 		PyExport.h \
+		PyExportImp.h \
 		PyTools.h \
 		Sequencer.h \
 		Console.cpp \
@@ -31,6 +32,7 @@ libFreeCADBase_la_SOURCES=\
 		PreCompiled.cpp \
 		Process.cpp \
 		PyExport.cpp \
+		PyExportImp.cpp \
 		PyTools.c \
 		Sequencer.cpp
 

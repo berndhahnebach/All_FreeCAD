@@ -22,7 +22,9 @@
 #define slots
 //#include <iostream>
 
-//#include<typeinfo>
+#ifndef _PreComp_
+#	include<typeinfo>
+#endif
 
 // forward
 class FCInterpreter;
@@ -228,8 +230,8 @@ public:
 				return false;
 			else
 				return true;
-		return typeid(*other) == typeid(HandledType) ; 
-	}                                     
+		return typeid(*other) == typeid(HandledType) ;
+	}
 
 private:
 	/// the pointer on the handled object

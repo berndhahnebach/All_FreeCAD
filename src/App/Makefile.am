@@ -14,8 +14,6 @@ libFreeCADApp_la_SOURCES=\
 		Feature.h \
 		FeatureAttr.h \
 		Function.h \
-		Geometry2D.h \
-		Geometry3D.h \
 		Label.h \
 		Parameter.h \
 		PreCompiled.h \
@@ -29,8 +27,6 @@ libFreeCADApp_la_SOURCES=\
 		Feature.cpp \
 		FeatureAttr.cpp \
 		Function.cpp \
-		Geometry2D.cpp \
-		Geometry3D.cpp \
 		Label.cpp \
 		Parameter.cpp \
 		PreCompiled.cpp \

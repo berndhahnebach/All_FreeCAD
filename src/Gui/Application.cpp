@@ -108,6 +108,7 @@
 #include "../Base/Documentation.h"
 
 #include "Icons/developers.h"
+#include "Icons/FCIcon.xpm"
 #include "Splashscreen.h"
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
@@ -195,7 +196,7 @@ ApplicationWindow::ApplicationWindow()
 	GetLanguageFactory().SetLanguage(language.c_str());
 	GetWidgetFactorySupplier();
 
-	// seting up Python binding 
+	// seting up Python binding
 	(void) Py_InitModule("FreeCADGui", ApplicationWindow::Methods);
 
 	// init the Inventor subsystem
@@ -204,6 +205,7 @@ ApplicationWindow::ApplicationWindow()
   d = new ApplicationWindowP;
 
 	setCaption( "Qt-FreeCAD" );
+	setIcon(QPixmap(FCIcon));
 
 	d->_cActiveWorkbenchName="<none>";
 
