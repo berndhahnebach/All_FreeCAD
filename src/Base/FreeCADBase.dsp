@@ -91,6 +91,15 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\Console.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -99,6 +108,7 @@ SOURCE=.\Console.h
 # Begin Source File
 
 SOURCE=.\DllMain.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
@@ -108,7 +118,7 @@ SOURCE=.\Exception.cpp
 
 !ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
 
-# SUBTRACT CPP /YX
+# ADD CPP /Yu"PreCompiled.h"
 
 !ENDIF 
 
@@ -120,6 +130,15 @@ SOURCE=.\Exception.h
 # Begin Source File
 
 SOURCE=.\Factory.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -128,6 +147,15 @@ SOURCE=.\Factory.h
 # Begin Source File
 
 SOURCE=.\FileTemplate.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -136,6 +164,15 @@ SOURCE=.\FileTemplate.h
 # Begin Source File
 
 SOURCE=.\Handle.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -144,6 +181,15 @@ SOURCE=.\Handle.h
 # Begin Source File
 
 SOURCE=.\Interpreter.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -152,10 +198,20 @@ SOURCE=.\Interpreter.h
 # Begin Source File
 
 SOURCE=.\Libs.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\Observer.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -164,6 +220,15 @@ SOURCE=.\Observer.h
 # Begin Source File
 
 SOURCE=.\Parameter.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -181,6 +246,15 @@ SOURCE=.\PreCompiled.h
 # Begin Source File
 
 SOURCE=.\PyExport.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

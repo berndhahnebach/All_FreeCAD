@@ -38,11 +38,7 @@
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
-#endif
+#include "PreCompiled.h"
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Observer.h"

@@ -33,6 +33,7 @@
 #include "../Base/Parameter.h"
 #include "Command.h"
 
+#include <qextmdimainfrm.h>
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qradiobutton.h>
@@ -47,7 +48,8 @@ class FCWidgetPrefsHandler;
 class QDoubleValidator;
 class FCWidgetFactorySupplier;
 class QAction;
-class FCCmdBar;
+class FCStackBar;
+class FCWindow;
 
 /** The widget preference class
  *  If you want to extend a QWidget class to save/restore data
@@ -369,23 +371,33 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
 class FCCustomWidgetManager
 {
   public:
-    FCCustomWidgetManager(FCCommandManager& rclMgr, FCCmdBar* pCmdBar);
+    FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pCmdBar);
     ~FCCustomWidgetManager();
 
     bool init(const char* workbench);
     bool update(const char* workbench);
 
+    // toolbars
     FCToolBar* getToolBar(const char* name);
     std::vector<FCToolBar*> getToolBars();
     void delToolBar(const char* name);
 
+    // command bars
     FCToolBar* getCmdBar(const char* name);
     std::vector<FCToolBar*> getCmdBars();
     void delCmdBar(const char* name);
 
+    // menus
     FCPopupMenu* getPopupMenu(const char* name, const char* parent = 0);
     std::vector<FCPopupMenu*> getPopupMenus();
     void delPopupMenu(const char* name);
+
+    // dockable windows
+    FCWindow* getDockWindow(const char* name);
+    std::vector<FCWindow*> getDockWindows();
+    void delDockWindow(const char* name);
+	  void addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,
+                       KDockWidget::DockPosition pos = KDockWidget::DockRight);
 
     void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);
     void addPopupMenu (const std::string& type, const char* parent = 0);
@@ -399,9 +411,10 @@ class FCCustomWidgetManager
     std::map <std::string,FCPopupMenu*> _clPopupMenus;
     std::map <std::string,FCToolBar*>   _clToolbars;
     std::map <std::string,FCToolBar*>   _clCmdbars;
+	  std::map <std::string,FCWindow*>    _clDocWindows;
     std::vector<std::string>            _clDefaultItems;
     FCCommandManager&                   _clCmdMgr;
-  	FCCmdBar*                           _pclCmdBar;
+  	FCStackBar*                         _pclStackBar;
 };
 
 #endif // __FC_PREF_WIDGETS_H__

@@ -240,3 +240,7 @@ Version: V0.1B56 Date: Tue Apr 22 18:38:49 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B57 Date: Fri Apr 25 16:18:12 2003 +++++++++++++++++++++++++++++++
 + New modules for the ToptDS and Geometry wrapping
 + Script command for macro customizing
+
+Version: V0.1B58 Date: Thu May 01 20:40:24 2003 +++++++++++++++++++++++++++++++
++ patch from werner 
++ precompiled header (werner)

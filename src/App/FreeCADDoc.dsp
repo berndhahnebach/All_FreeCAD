@@ -91,6 +91,15 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\Application.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -99,6 +108,15 @@ SOURCE=.\Application.h
 # Begin Source File
 
 SOURCE=.\Attribute.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -107,10 +125,30 @@ SOURCE=.\Attribute.h
 # Begin Source File
 
 SOURCE=.\DllMain.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+# SUBTRACT CPP /YX
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# SUBTRACT CPP /YX /Yc /Yu
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\Document.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -119,6 +157,15 @@ SOURCE=.\Document.h
 # Begin Source File
 
 SOURCE=.\Geometry2D.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -127,6 +174,15 @@ SOURCE=.\Geometry2D.h
 # Begin Source File
 
 SOURCE=.\Geometry3D.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -135,6 +191,7 @@ SOURCE=.\Geometry3D.h
 # Begin Source File
 
 SOURCE=.\Libs.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
@@ -156,6 +213,15 @@ SOURCE=.\PreCompiled.h
 # Begin Source File
 
 SOURCE=.\Topology.cpp
+
+!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

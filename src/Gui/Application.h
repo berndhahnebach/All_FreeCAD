@@ -59,7 +59,7 @@ class QToolBar;
 class FCView;
 class FCToolboxBar;
 class FCAutoWaitCursor;
-class FCCmdBar;
+class FCStackBar;
 class FCHtmlView;
 class FCUndoRedoDlg;
 class FCMacroManager;
@@ -138,16 +138,6 @@ public:
 
 	/// Referenc to the bitmap factory
 	FCBmpFactory     &GetBmpFactory(void){return _cBmpFactory;}
-
-	/** @name dock window handling */
-	//@{	
-	/// Add a new named Dock Window
-	void          AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);
-	/// Gets you a registered Dock Window back
-	FCWindow *    GetDockWindow(const char* name);
-	/// Delete (or only remove) a named Dock Window
-	void          DelDockWindow(const char* name, bool bOnlyRemove = false);
-	//@}
 
 	/** @name status bar handling */
 	//@{	
@@ -230,7 +220,12 @@ public slots:
 	//@}
 	void OnWorkbenchChange( const QString & string);
 
+protected slots:
+  void OnShowView();
+  void OnShowView(int);
+
 private:
+  std::map<int, QWidget*> mCheckBars;
 #	pragma warning( disable : 4251 )
 	/// list of all handled documents
  	std::list<FCGuiDocument*>         lpcDocuments;
@@ -244,13 +239,16 @@ private:
 	QComboBox *		 _pcWorkbenchCombo;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
 	FCProgressBar *  _pclProgress;
-	FCCmdBar*        _pcCmdBar;
+	FCStackBar*        _pcStackBar;
 	FCHtmlView*		 _pcHtmlView;
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
 	QTimer *		 _pcActivityTimer; 
 
+  // friends
+  //
+  friend class FCCustomWidgetManager;
 };
 
 

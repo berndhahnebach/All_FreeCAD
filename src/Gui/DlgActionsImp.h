@@ -43,12 +43,19 @@ class FCDlgCustomActionsImp : public FCDlgCustomActions, public FCPropertyPage
     ~FCDlgCustomActionsImp();
 
   protected:
+    void init();
     void apply();
     void cancel();
+    QString m_sPixmap;
+    std::vector<FCCommand*> _aclCurMacros;
+    std::vector<FCCommand*> _aclNewMacros;
+    std::vector<FCCommand*> _aclDelMacros;
+    int iCtMacros;
 
   protected slots:
     /// enables/disables buttons for change
     void slotCustomActionsChanged( QListViewItem *i );
+    void slotCustomActionsDoubleClicked( QListViewItem *i );
     /// adds a custom action
     void slotAddCustomAction();
     /// deletes a custom action

@@ -47,13 +47,9 @@ bool FCAction::addTo(QWidget *w)
 {
   if (QAction::addTo(w) == true)
   {
-    if (w->inherits("FCToolboxBar"))
+    if (w->inherits("FCCommandBar"))
     {
-  		((FCToolboxBar*)w)->addedButton(menuText());
-    }
-    else if (w->inherits("FCOutlookBar"))
-    {
-  		((FCOutlookBar*)w)->addedButton(menuText());
+  		((FCCommandBar*)w)->addedButton(menuText());
     }
   }
   else
@@ -218,15 +214,9 @@ bool FCUndoAction::addTo(QWidget* w)
     button->setIconSet( iconSet() );
 
     // do this before the tool tip stuff
-    if (w->inherits("FCToolboxBar"))
+    if (w->inherits("FCCommandBar"))
     {
-  		((FCToolboxBar*)w)->addedButton(menuText());
-      button->setTextLabel(menuText());
-      button->setUsesTextLabel(true);
-    }
-    else if (w->inherits("FCOutlookBar"))
-    {
-  		((FCOutlookBar*)w)->addedButton(menuText());
+  		((FCCommandBar*)w)->addedButton(menuText());
       button->setTextLabel(menuText());
       button->setUsesTextLabel(true);
     }
@@ -261,15 +251,9 @@ bool FCRedoAction::addTo(QWidget* w)
     button->setIconSet( iconSet() );
 
     // do this before the tool tip stuff
-    if (w->inherits("FCToolboxBar"))
+    if (w->inherits("FCCommandBar"))
     {
-  		((FCToolboxBar*)w)->addedButton(menuText());
-      button->setTextLabel(menuText());
-      button->setUsesTextLabel(true);
-    }
-    else if (w->inherits("FCOutlookBar"))
-    {
-  		((FCOutlookBar*)w)->addedButton(menuText());
+  		((FCCommandBar*)w)->addedButton(menuText());
       button->setTextLabel(menuText());
       button->setUsesTextLabel(true);
     }
@@ -521,7 +505,8 @@ FCScriptCommand::FCScriptCommand(const char* name)
 	_sWhatsThis		="Not set!!";
 	_sStatusTip		="Not set!!";
 	_iAccel			=0;
-
+  sAppModule    = "Macro";
+  sGroup        = "Macros";
 }
 
 std::string FCScriptCommand::GetResource(const char* sName)
@@ -552,11 +537,13 @@ FCAction * FCScriptCommand::CreateAction(void)
 
 void FCScriptCommand::Activated(int iMsg)
 {
-	OpenCommand("Excecute Macro");
-
-	DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
-
-	void CommitCommand(void);
+//	OpenCommand("Excecute Macro");
+//
+//	DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
+//
+//	void CommitCommand(void);
+  std::string cMacroPath = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetASCII("MacroPath",GetApplication().GetHomePath());
+  ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,(cMacroPath + _sScriptName.c_str()).c_str());
 }
 
 std::string FCScriptCommand::CmdHelpURL(void)
@@ -672,6 +659,16 @@ FCAction * FCPythonCommand::CreateAction(void)
 void FCCommandManager::AddCommand(FCCommand* pCom)
 {
 	_sCommands[pCom->GetName()] = pCom;//	pCom->Init();
+}
+
+void FCCommandManager::RemoveCommand(FCCommand* pCom)
+{
+	std::map <std::string,FCCommand*>::iterator It = _sCommands.find(pCom->GetName());
+  if (It != _sCommands.end())
+  {
+		delete It->second;
+		_sCommands.erase(It);
+  }
 }
 
 void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)

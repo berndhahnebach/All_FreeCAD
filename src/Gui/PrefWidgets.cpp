@@ -27,10 +27,9 @@
 
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <qstring.h>
 #	include <qurl.h>
 #	include <ctype.h>
@@ -546,7 +545,6 @@ FCToolBar::FCToolBar ( QMainWindow * parent, const char * name, const char* type
 
 FCToolBar::~FCToolBar()
 {
-  savePreferences();
 }
 
 bool FCToolBar::isAllowed(QWidget* w)
@@ -735,6 +733,9 @@ void FCToolBar::restorePreferences()
       setBackgroundMode(PaletteBackground);
     }
   }
+
+  if (hPrefGrp->GetBool("visible", true) == false)
+    hide();
 }
 
 void FCToolBar::savePreferences()
@@ -748,6 +749,8 @@ void FCToolBar::savePreferences()
     hColorGrp->SetInt("green", backgroundColor().green());
     hColorGrp->SetInt("blue", backgroundColor().blue());
   }
+
+  hPrefGrp->SetBool("visible",  !isHidden());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -884,8 +887,8 @@ void FCPopupMenu::savePreferences()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, FCCmdBar* pCmdBar)
-  :_clCmdMgr(rclMgr), _pclCmdBar(pCmdBar)
+FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pStackBar)
+  :_clCmdMgr(rclMgr), _pclStackBar(pStackBar)
 {
 }
 
@@ -919,8 +922,8 @@ bool FCCustomWidgetManager::init(const char* workbench)
   }
   if (_clCmdbars.size() > 0)
   {
-    if (_pclCmdBar->showedView() == NULL)
-      _pclCmdBar->showView(_clCmdbars.begin()->second);
+    if (_pclStackBar->showedView() == NULL)
+      _pclStackBar->showView(_clCmdbars.begin()->second);
   }
 
   hSubGrps = hToolGrp->GetGroups();
@@ -1113,9 +1116,9 @@ FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
 		return It->second;
 	else
 	{
-    FCToolBar *pcToolBar = new FCToolboxBar( name, _pclCmdBar, name );
+    FCToolBar *pcToolBar = new FCToolboxBar( name, _pclStackBar, name );
 		_clCmdbars[name] = pcToolBar;
-    _pclCmdBar->addView(pcToolBar, name);
+    _pclStackBar->addView(pcToolBar, name);
 		return pcToolBar;
 	}
 }
@@ -1137,7 +1140,7 @@ void FCCustomWidgetManager::delCmdBar(const char* name)
 	if( It!=_clCmdbars.end() )
 	{
     It->second->saveXML();
-    _pclCmdBar->remView(It->second);
+    _pclStackBar->remView(It->second);
 		_clCmdbars.erase(It);
 	}
 }
@@ -1184,6 +1187,54 @@ void FCCustomWidgetManager::delPopupMenu(const char* name)
 		delete It->second;
 		_clPopupMenus.erase(It);
 	}
+}
+
+FCWindow* FCCustomWidgetManager::getDockWindow(const char* name)
+{
+	std::map <std::string,FCWindow*>::iterator It = _clDocWindows.find(name);
+
+  if (It!=_clDocWindows.end())
+		return It->second;
+	else
+		return NULL;
+}
+
+std::vector<FCWindow*> FCCustomWidgetManager::getDockWindows()
+{
+  std::vector<FCWindow*> dockWindows;
+  for (std::map <std::string,FCWindow*>::iterator It = _clDocWindows.begin(); It!=_clDocWindows.end(); ++It)
+    dockWindows.push_back(It->second);
+
+  return dockWindows;
+}
+
+void FCCustomWidgetManager::delDockWindow(const char* name)
+{
+	std::map <std::string,FCWindow*>::iterator It = _clDocWindows.find(name);
+	if( It!=_clDocWindows.end() )
+	{
+		delete It->second;
+		_clDocWindows.erase(It);
+	}
+}
+
+void FCCustomWidgetManager::addDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos)
+{
+  ApplicationWindow* pApp = ApplicationWindow::Instance;
+	_clDocWindows[name] = pcDocWindow;
+	QString str = name;
+	str += " dockable window";
+
+  if (sCompanion)
+	{
+		FCWindow* pcWnd = getDockWindow(sCompanion);
+		assert(pcWnd);
+		pApp->addToolWindow( pcDocWindow, pos, pcWnd, 83, str, name);
+	}
+  else
+  {
+		pApp->addToolWindow( pcDocWindow, pos, pApp->m_pMdi, 83, str, name);
+  }
 }
 
 #include "moc_PrefWidgets.cpp"

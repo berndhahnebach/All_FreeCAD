@@ -1,11 +1,8 @@
 // Definitionsmodul
 // erstellt von INNOVATOR 6.1
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
-#endif
+#include "PreCompiled.h"
+
 
 #include "Exception.h"
 #include "Console.h"

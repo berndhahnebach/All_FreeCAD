@@ -55,6 +55,7 @@
 
 // forward declaration
 class QAction;
+class FCStackBar;
 
 /** The button group class
  */
@@ -98,61 +99,58 @@ class GuiExport FCButtonGroup : public QButtonGroup
     std::map<int, QPixmap> m_Pixmaps;
 };
 
-class GuiExport FCToolboxBar : public FCToolBar
+class GuiExport FCCommandBar : public FCToolBar
+{
+  Q_OBJECT
+
+  public:
+    FCCommandBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+    virtual ~FCCommandBar ();
+
+    virtual void clearAll();
+    /// set dummy widget to the end
+    virtual void addedButton(QString);
+
+  protected:
+    void mousePressEvent( QMouseEvent * );
+    QColor       m_Color;
+    QPopupMenu*  m_Popup;
+    QWidget*     m_Dummy;
+
+  protected slots:
+    void cleanupEventFilter();
+    void popupMenuAboutToShow();
+    void setNewBackgroundColor();
+    void resetBackgroundColor();
+};
+
+class GuiExport FCToolboxBar : public FCCommandBar
 {
   Q_OBJECT
 
   public:
     FCToolboxBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
     virtual ~FCToolboxBar ();
-
-    virtual void clearAll();
     /// set dummy widget to the end
-    void addedButton(QString);
-
-  protected:
-    void mousePressEvent( QMouseEvent * );
-    QColor       m_Color;
-    QPopupMenu*  m_Popup;
-    QWidget*     m_Dummy;
-
-  protected slots:
-    void cleanupEventFilter();
-    void popupMenuAboutToShow();
-    void setNewBackgroundColor();
-    void resetBackgroundColor();
+    virtual void addedButton(QString);
 };
 
-class GuiExport FCOutlookBar : public FCToolBar
+class GuiExport FCOutlookBar : public FCCommandBar
 {
   Q_OBJECT
 
   public:
     FCOutlookBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
     virtual ~FCOutlookBar ();
-
-    virtual void clearAll();
     /// set dummy widget to the end
-    void addedButton(QString);
-
-  protected:
-    void mousePressEvent( QMouseEvent * );
-    QColor       m_Color;
-    QPopupMenu*  m_Popup;
-    QWidget*     m_Dummy;
-
-  protected slots:
-    void cleanupEventFilter();
-    void popupMenuAboutToShow();
-    void setNewBackgroundColor();
-    void resetBackgroundColor();
+    virtual void addedButton(QString);
 };
 
 class QStackBarBtn : public QToolButton
 {
   public:
-    QStackBarBtn( QWidget *parent, const char *name );
-    QStackBarBtn( QWidget *object, QWidget *parent, const char *name );
+    QStackBarBtn( FCStackBar *parent, const char *name );
+    QStackBarBtn( QWidget *object, FCStackBar *parent, const char *name );
     ~QStackBarBtn();
 
     void setSelected( bool b );
@@ -162,19 +160,21 @@ class QStackBarBtn : public QToolButton
 
   protected:
     void drawButton( QPainter * );
+    void mousePressEvent ( QMouseEvent * e );
 
   private:
     bool bIsSelected;
     QWidget* w;
+    FCStackBar* pStackBar;
 };
 
-class FCCmdBar : public FCWindow, public FCObserver
+class FCStackBar : public FCWindow, public FCObserver
 {
   Q_OBJECT;
 
   public:
-    FCCmdBar( QWidget *parent=0, const char *name=0 );
-	  virtual ~FCCmdBar();
+    FCStackBar( QWidget *parent=0, const char *name=0 );
+	  virtual ~FCStackBar();
     
     // observers method
     void OnChange(FCSubject &rCaller);
@@ -184,6 +184,9 @@ class FCCmdBar : public FCWindow, public FCObserver
     bool hasView(QWidget* w);
     bool remView(QWidget* w);
   	bool showView(QWidget* w);
+    void showPage(QWidget* w);
+    void hidePage(QWidget* w);
+    bool isPageVisible(QWidget* w);
     QWidget* showedView();
 
   private slots:

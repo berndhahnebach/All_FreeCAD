@@ -388,6 +388,18 @@ public:
 	virtual std::string GetResource(const char* sName);
 	//@}
 
+	/** @name Methodes to get the propertys of the Script Command */
+	//@{
+	const char* GetScriptName		()	{return _sScriptName. c_str();}
+	const char* GetMenuText		  ()	{return _sMenuText.   c_str();}
+	const char* GetToolTipText	()	{return _sToolTipText.c_str();}
+	const char* GetWhatsThis		()	{return _sWhatsThis.  c_str();}
+	const char* GetStatusTip		()	{return _sStatusTip.  c_str();}
+	const char* GetPixmap		    ()	{return _sPixmap.     c_str();}
+	const char* GetHelpPage	    ()	{return _sHelpPage.   c_str();}
+	const char* GetHelpURL		  ()	{return _sHelpURL.    c_str();}
+	int         GetAccel		    ()	{return _iAccel;              }
+	//@}
 	/** @name Methodes to set the propertys of the Script Command */
 	//@{
 	void SetScriptName		(const char* sScriptName)	{_sScriptName	=sScriptName;}
@@ -435,6 +447,8 @@ class GuiExport FCCommandManager
 public:
 	/// Insert a new command into the manager
 	void AddCommand(FCCommand* pCom);
+	/// Remove a command from the manager
+	void RemoveCommand(FCCommand* pCom);
 
 	/// Adds the given command to a given widget
 	void AddTo(const char* Name,QWidget *pcWidget);

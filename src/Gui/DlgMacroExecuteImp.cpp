@@ -37,11 +37,12 @@
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+#ifndef _PreComp_
+
 #endif
+
+
 #include "DlgMacroExecuteImp.h"
 #include "../App/Application.h"
 #include "Application.h"

@@ -17,7 +17,7 @@ class View3D;
  * @ref initialize() and @ref terminate()
  * For all drawing stuff you just have to reimplement
  * the @ref draw() method. In general you need not do
- * something else.
+ * anything else.
  * \author Werner Mayer and Jürgen Riegel
  */
 class FCMouseModel

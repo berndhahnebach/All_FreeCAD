@@ -37,10 +37,9 @@
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <algorithm>
 #	include <qapplication.h>
 #	include <qvbox.h>
@@ -158,22 +157,21 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
-	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
-	AddDockWindow( "Command bar",_pcCmdBar);
+	_pcStackBar = new FCStackBar(this,"Cmd_Group");
+	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcStackBar);
+	_pcWidgetMgr->addDockWindow( "Command bar",_pcStackBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
 	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
-	AddDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
+	_pcWidgetMgr->addDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
-	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
+	_pcWidgetMgr->addDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
 
- 	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
  	CreateStandardOperations();
 
 	
@@ -183,12 +181,40 @@ ApplicationWindow::ApplicationWindow()
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	//setUsesBigPixmaps (true);
 
+  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetGroup("Macros");
+  std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
+  for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
+  {
+    FCScriptCommand* pScript = new FCScriptCommand((*it)->GetGroupName());
+    pScript->SetScriptName((*it)->GetASCII("Script").c_str());
+    pScript->SetMenuText((*it)->GetASCII("Menu").c_str());
+    pScript->SetToolTipText((*it)->GetASCII("Tooltip").c_str());
+    pScript->SetWhatsThis((*it)->GetASCII("WhatsThis").c_str());
+    pScript->SetStatusTip((*it)->GetASCII("Statustip").c_str());
+    if ((*it)->GetASCII("Pixmap", "nix") != "nix") pScript->SetPixmap((*it)->GetASCII("Pixmap").c_str());
+    pScript->SetAccel((*it)->GetInt("Accel"));
+    _cCommandManager.AddCommand(pScript);
+  }
 }
 
 ApplicationWindow::~ApplicationWindow()
 {
   delete _pcWidgetMgr;
   delete _pcMacroMngr;
+  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetGroup("Macros");
+  std::vector<FCCommand*> macros = _cCommandManager.GetModuleCommands("Macro");
+  for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
+  {
+    FCScriptCommand* pScript = (FCScriptCommand*)(*it);
+    FCParameterGrp::handle hMacro = hGrp->GetGroup(pScript->GetName());
+    hMacro->SetASCII("Script", pScript->GetScriptName());
+    hMacro->SetASCII("Menu", pScript->GetMenuText());
+    hMacro->SetASCII("Tooltip", pScript->GetToolTipText());
+    hMacro->SetASCII("WhatsThis", pScript->GetWhatsThis());
+    hMacro->SetASCII("Statustip", pScript->GetStatusTip());
+    hMacro->SetASCII("Pixmap", pScript->GetPixmap());
+    hMacro->SetInt("Accel", pScript->GetAccel());
+  }
 }
 
 
@@ -237,7 +263,7 @@ void ApplicationWindow::CreateStandardOperations()
 		defToolbar.push_back("Std_DlgMacroExecute");
 		_pcWidgetMgr->addToolBar("Macro recording", defToolbar);
 		// hide
-		_pcWidgetMgr->getCmdBar("Macro recording")->hide();
+		_pcWidgetMgr->getToolBar("Macro recording")->hide();
 
 	}
 	
@@ -277,6 +303,8 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_DlgPreferences");
     _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
+
+    _pcWidgetMgr->addPopupMenu("View");
   
 		defaultMenus.clear();
 		defaultMenus.push_back("Std_CommandLine");
@@ -304,6 +332,10 @@ void ApplicationWindow::CreateStandardOperations()
 		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
 	}
 
+  connect(_pcWidgetMgr->getPopupMenu("View"), SIGNAL(aboutToShow()), this, SLOT(OnShowView()));
+  connect(_pcWidgetMgr->getPopupMenu("View"), SIGNAL(activated ( int )), this, SLOT(OnShowView(int)));
+
+
 //  std::vector<std::string> Menus;
 //  Menus.push_back("Std_Cut");
 //  Menus.push_back("Std_Copy");
@@ -314,6 +346,55 @@ void ApplicationWindow::CreateStandardOperations()
 	_cActiveWorkbenchName = "<none>";
 }
 
+void ApplicationWindow::OnShowView()
+{
+  QPopupMenu* menu = _pcWidgetMgr->getPopupMenu("View");
+  menu->clear();
+  menu->setCheckable(true);
+  mCheckBars.clear();
+
+  // dock windows
+  std::vector<FCWindow*> windows = _pcWidgetMgr->getDockWindows();
+  for (std::vector<FCWindow*>::iterator it = windows.begin(); it!=windows.end(); ++it)
+  {
+    KDockWidget* w = manager()->getDockWidgetFromName((*it)->name());
+    if (w)
+    {
+      int id = menu->insertItem(w->tabPageLabel());
+      mCheckBars[id] = w;
+      if (w->isVisible())
+		    menu->setItemChecked(id, true);
+    }
+  }
+
+  // status bar
+  menu->insertSeparator();
+  QWidget* w = statusBar();
+  int id = menu->insertItem("Status bar");
+  mCheckBars[id] = w;
+  if (w->isVisible())
+		menu->setItemChecked(id, true);
+}
+
+void ApplicationWindow::OnShowView(int id)
+{
+  QPopupMenu* menu = _pcWidgetMgr->getPopupMenu("View");
+
+  if (menu->isItemChecked(id))
+  {
+    if (mCheckBars[id]->inherits("KDockWidget"))
+      ((KDockWidget*)mCheckBars[id])->changeHideShowState();
+    else
+      mCheckBars[id]->hide();
+  }
+  else
+  {
+    if (mCheckBars[id]->inherits("KDockWidget"))
+      ((KDockWidget*)mCheckBars[id])->changeHideShowState();
+    else
+      mCheckBars[id]->show();
+  }
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // document observers
@@ -339,52 +420,12 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 	}
 	
 }
+
 void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 {
 	// GuiDocument has closed the last window and get destructed
 	lpcDocuments.remove(pcDoc);
 	delete pcDoc;	
-}
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// dock window handling
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-/// Add a new named Dock Window
-void ApplicationWindow::AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
-{
-	// 	std::map <std::string,FCDockWindow*> mpcDocWindows;
-	mpcDocWindows[name] = pcDocWindow;
-	QString str = name;
-	str += " dockable window";
-	if(sCompanion)
-	{
-		FCWindow* pcWnd = GetDockWindow(sCompanion);
-		assert(pcWnd);
-		addToolWindow( pcDocWindow, pos, pcWnd, 83, str, name);
-	}else
-		addToolWindow( pcDocWindow, pos, m_pMdi, 83, str, name);
-}
-
-/// Gets you a registered Dock Window back
-FCWindow *ApplicationWindow::GetDockWindow(const char* name)
-{
-	std::map <std::string,FCWindow*>::iterator It = mpcDocWindows.find(name);
-	if( It!=mpcDocWindows.end() )
-		return It->second;
-	else
-		return 0l;
-}
-
-/// Delete (or only remove) a named Dock Window
-void ApplicationWindow::DelDockWindow(const char* name, bool bOnlyRemove)
-{
-	std::map <std::string,FCWindow*>::iterator It = mpcDocWindows.find(name);
-	if( It!=mpcDocWindows.end() )
-	{
-		if(!bOnlyRemove) delete It->second;
-		mpcDocWindows.erase(It);
-	}
 }
 
 // set text to the pane

@@ -30,10 +30,9 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <time.h>
 #	include "stdio.h"
 #   ifdef FC_OS_WIN32

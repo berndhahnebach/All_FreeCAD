@@ -187,4 +187,16 @@ class FCDlgCreateToolOrCmdBar : public QDialog
     QHBoxLayout* Layout2;
 };
 
+/**
+ *  Line accelerator
+ */
+class FCAccelLineEdit : public QLineEdit
+{
+  public:
+    FCAccelLineEdit ( QWidget * parent, const char * name=0 );
+
+  protected:
+     void keyPressEvent ( QKeyEvent * e);
+};
+
 #endif // __FC_WIDGETS_H__

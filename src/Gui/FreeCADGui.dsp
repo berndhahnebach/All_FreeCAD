@@ -150,6 +150,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgGeneralImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -238,7 +239,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgPreferencesImp.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -380,6 +381,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgSettings3DViewImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -415,6 +417,7 @@ InputName=DlgSettings3DViewImp
 # Begin Source File
 
 SOURCE=.\DlgSettingsImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -507,6 +510,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgActionsImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -595,6 +599,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgCmdbarsImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -683,6 +688,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgCommandsImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -718,6 +724,7 @@ InputName=DlgCommandsImp
 # Begin Source File
 
 SOURCE=.\DlgCustomizeImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -806,6 +813,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgToolbarsImp.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -895,7 +903,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgDocTemplatesImp.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -984,7 +992,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgMacroExecuteImp.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1073,7 +1081,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgMacroRecordImp.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1162,7 +1170,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgParameterImp.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1198,7 +1206,7 @@ InputName=DlgParameterImp
 # Begin Source File
 
 SOURCE=.\DlgUndoRedo.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1361,6 +1369,7 @@ InputName=HtmlView
 # Begin Source File
 
 SOURCE=.\Application.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1396,7 +1405,7 @@ InputName=Application
 # Begin Source File
 
 SOURCE=.\CommandLine.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1432,11 +1441,12 @@ InputName=CommandLine
 # Begin Source File
 
 SOURCE=.\DllMain.cpp
-# ADD CPP /YX"PreCompiled.h"
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Document.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1472,7 +1482,7 @@ InputName=Document
 # Begin Source File
 
 SOURCE=.\GuiConsole.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1481,10 +1491,12 @@ SOURCE=.\GuiConsole.h
 # Begin Source File
 
 SOURCE=.\Libs.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
 SOURCE=.\Macro.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1493,7 +1505,7 @@ SOURCE=.\Macro.h
 # Begin Source File
 
 SOURCE=.\MouseModel.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1511,6 +1523,7 @@ SOURCE=.\PreCompiled.h
 # Begin Source File
 
 SOURCE=.\PrefWidgets.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1546,7 +1559,7 @@ InputName=PrefWidgets
 # Begin Source File
 
 SOURCE=.\Splashscreen.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1591,6 +1604,7 @@ SOURCE=.\Themes.h
 # Begin Source File
 
 SOURCE=.\Tools.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1599,7 +1613,7 @@ SOURCE=.\Tools.h
 # Begin Source File
 
 SOURCE=.\Tree.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1635,7 +1649,7 @@ InputName=Tree
 # Begin Source File
 
 SOURCE=.\View.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1671,7 +1685,7 @@ InputName=View
 # Begin Source File
 
 SOURCE=.\View3D.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1707,6 +1721,7 @@ InputName=View3D
 # Begin Source File
 
 SOURCE=.\WidgetFactory.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1715,7 +1730,7 @@ SOURCE=.\WidgetFactory.h
 # Begin Source File
 
 SOURCE=.\Widgets.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1751,6 +1766,7 @@ InputName=Widgets
 # Begin Source File
 
 SOURCE=.\Window.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 

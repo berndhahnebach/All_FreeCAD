@@ -254,7 +254,7 @@ void FCButtonGroup::showText()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+FCCommandBar::FCCommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar")
 {
   // remove immediately from main window again
@@ -272,16 +272,84 @@ FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * nam
   bSaveColor = true;
 }
 
-FCToolboxBar::~FCToolboxBar ()
+FCCommandBar::~FCCommandBar ()
 {
   delete m_Popup;
   delete m_Dummy;
 }
 
-void FCToolboxBar::clearAll()
+void FCCommandBar::clearAll()
 {
   FCToolBar::clearAll();
   m_Dummy = NULL;
+}
+
+void FCCommandBar::addedButton(QString text)
+{
+#if QT_VERSION > 230
+  delete m_Dummy;
+  m_Dummy = new QWidget(this);
+  setStretchableWidget( m_Dummy );
+#else
+  if (!m_Dummy)
+    m_Dummy = new QWidget(this);
+  else
+    m_Dummy->reparent(this, QPoint(0,0));
+#endif
+}
+
+void FCCommandBar::mousePressEvent( QMouseEvent * e )
+{
+  if (e->button() == LeftButton)
+  {
+  }
+  else if (e->button() == RightButton)
+  {
+    m_Popup->exec(QCursor::pos());
+  }
+  else if (e->button() == MidButton)
+  {
+  }
+}
+
+void FCCommandBar::cleanupEventFilter()
+{
+}
+
+void FCCommandBar::popupMenuAboutToShow()
+{
+  m_Popup->clear();
+
+  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
+  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+  m_Popup->insertSeparator();
+  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
+}
+
+void FCCommandBar::setNewBackgroundColor()
+{
+  QColor color = QColorDialog::getColor ( backgroundColor(), this);
+  if (color.isValid())
+  {
+    setPalette(QPalette(color, color));
+  }
+}
+
+void FCCommandBar::resetBackgroundColor()
+{
+  if (m_Color.isValid())
+    setPalette(QPalette(m_Color, m_Color));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+: FCCommandBar(label, w, name, f)
+{
+}
+
+FCToolboxBar::~FCToolboxBar ()
+{
 }
 
 void FCToolboxBar::addedButton(QString text)
@@ -298,90 +366,18 @@ void FCToolboxBar::addedButton(QString text)
     }
   }
 
-#if QT_VERSION > 230
-  delete m_Dummy;
-  m_Dummy = new QWidget(this);
-  setStretchableWidget( m_Dummy );
-#else
-  if (!m_Dummy)
-    m_Dummy = new QWidget(this);
-  else
-    m_Dummy->reparent(this, QPoint(0,0));
-#endif
-}
-
-void FCToolboxBar::mousePressEvent( QMouseEvent * e )
-{
-  if (e->button() == LeftButton)
-  {
-  }
-  else if (e->button() == RightButton)
-  {
-    m_Popup->exec(QCursor::pos());
-  }
-  else if (e->button() == MidButton)
-  {
-  }
-}
-
-void FCToolboxBar::cleanupEventFilter()
-{
-}
-
-void FCToolboxBar::popupMenuAboutToShow()
-{
-  m_Popup->clear();
-
-  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
-  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
-  m_Popup->insertSeparator();
-  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
-}
-
-void FCToolboxBar::setNewBackgroundColor()
-{
-  QColor color = QColorDialog::getColor ( backgroundColor(), this);
-  if (color.isValid())
-  {
-    setPalette(QPalette(color, color));
-  }
-}
-
-void FCToolboxBar::resetBackgroundColor()
-{
-  if (m_Color.isValid())
-    setPalette(QPalette(m_Color, m_Color));
+  FCCommandBar::addedButton(text);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
 FCOutlookBar::FCOutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar" )
+: FCCommandBar(label, w, name, f)
 {
-  // remove immediately from main window again
-  ApplicationWindow::Instance->removeToolBar(this);
-#if QT_VERSION >= 300
-	setFrameStyle( QFrame::NoFrame );
-#endif
-	setOrientation( Qt::Vertical );
-
-  m_Color = backgroundColor();
-  m_Popup = new QPopupMenu(0L);
-  m_Popup->setCheckable(true);
-  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
-  setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
 }
 
 FCOutlookBar::~FCOutlookBar ()
 {
-  delete m_Popup;
-  delete m_Dummy;
-}
-
-void FCOutlookBar::clearAll()
-{
-  FCToolBar::clearAll();
-  m_Dummy = NULL;
 }
 
 void FCOutlookBar::addedButton(QString text)
@@ -400,59 +396,7 @@ void FCOutlookBar::addedButton(QString text)
     }
   }
 
-#if QT_VERSION > 230
-  delete m_Dummy;
-  m_Dummy = new QWidget(this);
-  setStretchableWidget( m_Dummy );
-#else
-  if (!m_Dummy)
-    m_Dummy = new QWidget(this);
-  else
-    m_Dummy->reparent(this, QPoint(0,0));
-#endif
-}
-
-void FCOutlookBar::mousePressEvent( QMouseEvent * e )
-{
-  if (e->button() == LeftButton)
-  {
-  }
-  else if (e->button() == RightButton)
-  {
-    m_Popup->exec(QCursor::pos());
-  }
-  else if (e->button() == MidButton)
-  {
-  }
-}
-
-void FCOutlookBar::cleanupEventFilter()
-{
-}
-
-void FCOutlookBar::popupMenuAboutToShow()
-{
-  m_Popup->clear();
-
-  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
-  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
-  m_Popup->insertSeparator();
-  ApplicationWindow::Instance->GetCommandManager().AddTo("Std_DlgCustomize", m_Popup);
-}
-
-void FCOutlookBar::setNewBackgroundColor()
-{
-  QColor color = QColorDialog::getColor ( backgroundColor(), this);
-  if (color.isValid())
-  {
-    setPalette(QPalette(color, color));
-  }
-}
-
-void FCOutlookBar::resetBackgroundColor()
-{
-  if (m_Color.isValid())
-    setPalette(QPalette(m_Color, m_Color));
+  FCCommandBar::addedButton(text);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -463,8 +407,8 @@ void FCOutlookBar::resetBackgroundColor()
  * This constructor allows you to set the name of the button, and tell it
  * what widget it shall contain.  It also sets the default colors.
  */
-QStackBarBtn::QStackBarBtn( QWidget *object, QWidget *parent, const char *name ) 
- : QToolButton( parent, name ), bIsSelected( false ), w(object)
+QStackBarBtn::QStackBarBtn( QWidget *object, FCStackBar *parent, const char *name ) 
+ : QToolButton( parent, name ), bIsSelected( false ), w(object), pStackBar(parent)
 {
   setBackgroundMode( PaletteLight ); 
 }
@@ -475,8 +419,8 @@ QStackBarBtn::QStackBarBtn( QWidget *object, QWidget *parent, const char *name )
  * This constructor differs from the above one only in that you cannot
  * specify what widget the button shall contain.
  */
-QStackBarBtn::QStackBarBtn( QWidget *parent, const char *name ) 
- : QToolButton( parent, name ), bIsSelected( false )
+QStackBarBtn::QStackBarBtn( FCStackBar *parent, const char *name ) 
+ : QToolButton( parent, name ), bIsSelected( false ), pStackBar(parent)
 {
   setBackgroundMode( PaletteLight ); 
 }
@@ -587,10 +531,48 @@ void QStackBarBtn::drawButton( QPainter *p )
   }
 }
 
+void QStackBarBtn::mousePressEvent ( QMouseEvent * e )
+{
+  if (e->button() == RightButton)
+  {
+    QPoint p = ((QMouseEvent*)e)->globalPos();
+    QPopupMenu menu;
+    menu.setCheckable(true);
+
+    std::map<int, QToolBar*> toolb;
+
+    std::vector<FCToolBar*> aclToolBars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
+	  for (std::vector<FCToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
+    {
+      int id = menu.insertItem((*It)->name());
+      QToolBar* tb = *It;
+      toolb[id] = tb;
+      if (pStackBar->isPageVisible(tb))
+		    menu.setItemChecked(id, true);
+    }
+
+    int id = menu.exec(p);
+    if (toolb.find(id) != toolb.end()) 
+    {
+      QToolBar* tb = toolb[id];
+      if (menu.isItemChecked(id))
+      {
+        pStackBar->hidePage(tb);
+      }
+      else 
+      {
+        pStackBar->showPage(tb);
+    	}
+    }
+  }
+  else
+    QToolButton::mousePressEvent(e);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 
 /*!
-  \class QStackBar
+  \class FCStackBar
   \brief Implements a button-bar similar to that of MS Outlook
 
   Use this widget to implement multiple pages of widgets in a single vertical
@@ -603,10 +585,10 @@ void QStackBarBtn::drawButton( QPainter *p )
   
 \code
 
-	QStackBar *sb;
+	FCStackBar *sb;
 	QListBox *l1;
 	
-	sb = new QStackBar(pParent, NULL);
+	sb = new FCStackBar(pParent, NULL);
 	l1 = new QListBox *l1 = new QListBox( sb );
 	
 	l1->insertItem("Item 1");
@@ -626,7 +608,7 @@ void QStackBarBtn::drawButton( QPainter *p )
  * \brief Default constructor
  *
  */
-FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
+FCStackBar::FCStackBar( QWidget *parent, const char *name )
 	: FCWindow( parent, name )
 {
   m_pCurPage  = NULL;
@@ -654,7 +636,7 @@ FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
  *
  * Destroys the list of QStackBarBtns
 */
-FCCmdBar::~FCCmdBar()
+FCStackBar::~FCStackBar()
 {
   // detach the command bar
   std::string strGroupPath = "User parameter:BaseApp/Windows/Widget Preferences/";
@@ -665,11 +647,11 @@ FCCmdBar::~FCCmdBar()
 }
 
 /*!
- * \brief Add a new page to the QStackBar
+ * \brief Add a new page to the FCStackBar
  *
  * Call this to add a new page to the widget.
 */
-bool FCCmdBar::addView(QWidget* page, const QString &name)
+bool FCStackBar::addView(QWidget* page, const QString &name)
 {
   if (!page)
 	{
@@ -722,7 +704,7 @@ bool FCCmdBar::addView(QWidget* page, const QString &name)
  *
  * Checks if there is a widget with the name 'sName' contained by the widget list
 */
-bool FCCmdBar::hasView(QWidget* w)
+bool FCStackBar::hasView(QWidget* w)
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -737,11 +719,11 @@ bool FCCmdBar::hasView(QWidget* w)
 }
 
 /*!
- * \brief Remove a page from the QStackBar
+ * \brief Remove a page from the FCStackBar
  *
  * Call this to remove a page from the widget.
 */
-bool FCCmdBar::remView(QWidget* w)
+bool FCStackBar::remView(QWidget* w)
 {
   bool bSucceed = false;
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
@@ -775,7 +757,7 @@ bool FCCmdBar::remView(QWidget* w)
  * Call this to set the current page.  The widget will refresh and
  * rearrange itself.
  */
-bool FCCmdBar::showView(QWidget* w)
+bool FCStackBar::showView(QWidget* w)
 {
   bool bSucced = false;
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
@@ -798,7 +780,7 @@ bool FCCmdBar::showView(QWidget* w)
   return bSucced;
 }
 
-QWidget* FCCmdBar::showedView()
+QWidget* FCStackBar::showedView()
 {
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
@@ -814,7 +796,45 @@ QWidget* FCCmdBar::showedView()
   return NULL;
 }
 
-void FCCmdBar::buttonClicked()
+void FCStackBar::showPage(QWidget* w)
+{
+  for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  {
+    if (it->first->widget() == w)
+    {
+      it->first->show();
+    }
+  }
+}
+
+void FCStackBar::hidePage(QWidget* w)
+{
+  for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  {
+    if (it->first->widget() == w)
+    {
+      if (!it->first->isSelected())
+      {
+        it->first->hide();
+      }
+    }
+  }
+}
+
+bool FCStackBar::isPageVisible(QWidget* w)
+{
+  for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  {
+    if (it->first->widget() == w)
+    {
+      return it->first->isVisible();
+    }
+  }
+
+  return false;
+}
+
+void FCStackBar::buttonClicked()
 {
   QStackBarBtn *tb = (QStackBarBtn*)sender();
   QScrollView *page = NULL;
@@ -850,11 +870,11 @@ void FCCmdBar::buttonClicked()
 }
 
 /*!
- * \brief Updates the QStackBar
+ * \brief Updates the FCStackBar
  *
  * Duh
 */
-void FCCmdBar::updatePages()
+void FCStackBar::updatePages()
 {
   bool after = false;
   for (std::map <QStackBarBtn*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
@@ -865,7 +885,7 @@ void FCCmdBar::updatePages()
   }
 }
 
-void FCCmdBar::timerEvent ( QTimerEvent * )
+void FCStackBar::timerEvent ( QTimerEvent * )
 {
   if (m_pAnimCurPage->height() > m_lAnimCount)
   {
@@ -889,7 +909,7 @@ void FCCmdBar::timerEvent ( QTimerEvent * )
   }
 }
 
-void FCCmdBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
+void FCStackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
 {
   if (!pCurPage || !pNewPage)
     return; // one page is invalid
@@ -908,7 +928,7 @@ void FCCmdBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
   startTimer(5);
 }
 
-void FCCmdBar::OnChange(FCSubject &rCaller)
+void FCStackBar::OnChange(FCSubject &rCaller)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   std::string name = rclGrp.GetGroupName();

@@ -27,10 +27,9 @@
 
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <qstring.h>
 #	include <qurl.h>
 #	include <ctype.h>
@@ -515,6 +514,42 @@ void FCDlgCreateToolOrCmdBar::accept ()
   if (CheckCreateCmdBar->isChecked())
     ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(txt.latin1());
   QDialog::accept();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCAccelLineEdit::FCAccelLineEdit ( QWidget * parent, const char * name )
+: QLineEdit(parent, name)
+{
+}
+
+void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
+{
+  QString txt;
+  clear();
+
+  if (e->ascii() == 0)
+    return; // only meta key pressed
+
+  switch(e->state())
+	{
+		case ControlButton:
+      txt += QAccel::keyToString(CTRL+e->key());
+      setText(txt);
+			break;
+		case ControlButton+AltButton:
+      txt += QAccel::keyToString(CTRL+ALT+e->key());
+      setText(txt);
+			break;
+		case ControlButton+ShiftButton:
+      txt += QAccel::keyToString(CTRL+SHIFT+e->key());
+      setText(txt);
+			break;
+		case ControlButton+AltButton+ShiftButton:
+      txt += QAccel::keyToString(CTRL+ALT+SHIFT+e->key());
+      setText(txt);
+			break;
+	}
 }
 
 #include "moc_Widgets.cpp"

@@ -7,10 +7,9 @@
  ***************************************************************************/
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <TDocStd_Application.hxx>
 #	include <TDataStd_Real.hxx>
 #	include <TDataStd_Name.hxx>

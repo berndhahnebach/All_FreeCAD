@@ -13,20 +13,18 @@
 
 
 
-#include "../Config.h"
+#include "PreCompiled.h"
 
-#ifndef FC_OS_LINUX
-
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#ifndef _PreComp_
 #	include "stdio.h"
 #	include "io.h"
 #	include "fcntl.h"
+#	include <iostream>
 #endif
 
 #include "GuiConsole.h"
 
+#ifndef FC_OS_LINUX
 
 const UINT FCGUIConsole::s_nMaxLines = 1000;
 UINT       FCGUIConsole::s_nRefCount = 0;
@@ -96,8 +94,7 @@ void FCGUIConsole::Log  (const char *sLog)
 }
 
 #else /* FC_OS_LINUX */
-#include <iostream>
-#include "GuiConsole.h"
+
 // safely ignore FCGUIConsole::s_nMaxLines and  FCGUIConsole::s_nRefCount
 FCGUIConsole::~FCGUIConsole (void) {}
 void FCGUIConsole::Message(const char *sMsg) { cout<<sMsg; }
@@ -105,4 +102,4 @@ void FCGUIConsole::Warning(const char *sWarn){ cerr<<"Warning: "<<sWarn; }
 void FCGUIConsole::Error  (const char *sErr) { cerr<<"Error: "<<sErr;}
 void FCGUIConsole::Log  (const char *sLog)   { clog<<sLog;}
 
-#endif
+#endif /* FC_OS_LINUX */

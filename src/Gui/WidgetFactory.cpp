@@ -27,10 +27,7 @@
 
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#endif
+#include "PreCompiled.h"
 
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"

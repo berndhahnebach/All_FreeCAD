@@ -28,10 +28,9 @@
 
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <qmessagebox.h>
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
@@ -117,7 +116,6 @@ void FCDlgCustomCommandsImp::slotGroupSelected(const QString & group)
     std::vector<FCCommand*> aCmds = m_alCmdGroups[group.latin1()];
     for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
-      if ((*it)->GetAction())
       (void) new FCCmdViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
     }
   }

@@ -1,10 +1,9 @@
 
 // Handling for precompiled headers
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <qevent.h>
 #	include <assert.h>
 #	include "qapplication.h"

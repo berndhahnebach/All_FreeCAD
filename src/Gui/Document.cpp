@@ -18,10 +18,9 @@
  ***************************************************************************/
  
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #	include <qstatusbar.h>
 #	ifndef FC_OS_WIN32
 #		include <Graphic3d_GraphicDevice.hxx>
