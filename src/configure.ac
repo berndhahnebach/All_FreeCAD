@@ -24,7 +24,7 @@ AC_PROG_RANLIB
 ## !!! TODO !!! Try to find these things below automatically 
 ## Checks for libraries.
 ##############################
-all_includes="$all_includes -I/usr/local/include/python2.3 -I/usr/local/include"
+all_includes="$all_includes -I/usr/local/include/python2.3"
 all_libraries="$all_libraries -L/usr/local/lib"
 AC_SUBST(all_includes)
 AC_SUBST(all_libraries)
@@ -99,7 +99,8 @@ Python $fc_py_ver: $fc_py_prefix : $fc_py_incs : $fc_py_libs
 
 
 # -DNO_KDE2 -DQT_THREAD_SUPPORT already defined in Config.h
-CPPFLAGS="-I/usr/include/qt3 -I/home/vaclav/build/OpenCASCADE-5.0/ros/inc -I/usr/include/xercesc -I$fc_py_incs -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
+#CPPFLAGS="-I/usr/include/qt3 -I/home/vaclav/build/OpenCASCADE-5.0/ros/inc -I/usr/include/xercesc -I$fc_py_incs -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
+CPPFLAGS="-I /usr/local/include/Inventor -I/usr/local/include/python2.3 -I/usr/include/qt3 -I/usr/local/include -I/home/werner/project/Cas5.1/ros/inc/ -I/usr/include/xercesc -I$fc_py_incs -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
 CXX=g++-3.2
 CXXFLAGS="-Wno-deprecated -D__DEBUG__"
 LDFLAGS="-L/usr/local/lib/OCC-5.0"
@@ -107,7 +108,6 @@ AC_SUBST([MOC],[moc])
 AC_SUBST([UIC],[uic])
 AC_SUBST([fc_py_ver])
 
-#AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
-AC_CONFIG_FILES([Makefile Base/Makefile])
+AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
 AC_OUTPUT
 
