@@ -163,6 +163,7 @@ moc_DlgParameter.cpp \
 moc_DlgParameterImp.cpp \
 moc_DlgPreferences.cpp \
 moc_DlgPreferencesImp.cpp \
+moc_DlgReportView.cpp \
 moc_DlgSettings.cpp \
 moc_DlgSettingsImp.cpp \
 moc_DlgSettings3DView.cpp \
@@ -216,6 +217,8 @@ DlgParameter.cpp \
 DlgParameter.h \
 DlgPreferences.cpp \
 DlgPreferences.h \
+DlgReportView.cpp \
+DlgReportView.h \
 DlgSettings.cpp \
 DlgSettings.h \
 DlgSettings3DView.cpp \
@@ -275,6 +278,7 @@ DlgMacroRecordImp.cpp \
 DlgOnlineHelpImp.cpp \
 DlgParameterImp.cpp \
 DlgPreferencesImp.cpp \
+DlgReportViewImp.cpp \
 DlgSettingsImp.cpp \
 DlgSettings3DViewImp.cpp \
 DlgSettingsMacroImp.cpp \
@@ -361,15 +365,16 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgCommandsImp.lo DlgCustomizeImp.lo DlgDocTemplatesImp.lo \
 	DlgEditorImp.lo DlgGeneralImp.lo DlgMacroExecuteImp.lo \
 	DlgMacroRecordImp.lo DlgOnlineHelpImp.lo DlgParameterImp.lo \
-	DlgPreferencesImp.lo DlgSettingsImp.lo DlgSettings3DViewImp.lo \
-	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
-	DlgUndoRedo.lo Document.lo FileDialog.lo GuiConsole.lo \
-	HtmlView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
-	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
-	ReportView.lo resource.lo Selection.lo SpinBox.lo \
-	Splashscreen.lo StackBar.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
-	Tree.lo View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
-	WaitCursor.lo WidgetFactory.lo Widgets.lo Window.lo
+	DlgPreferencesImp.lo DlgReportViewImp.lo DlgSettingsImp.lo \
+	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
+	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
+	Document.lo FileDialog.lo GuiConsole.lo HtmlView.lo Macro.lo \
+	MouseModel.lo PrefWidgets.lo Process.lo ProgressBar.lo \
+	PropertyPage.lo PropertyView.lo PythonEditor.lo ReportView.lo \
+	resource.lo Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo \
+	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
+	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
+	WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -397,6 +402,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgOnlineHelpImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgParameterImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgPreferencesImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgReportViewImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettings3DViewImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsMacroImp.Plo \
@@ -517,6 +523,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgOnlineHelpImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgParameterImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPreferencesImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgReportViewImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettings3DViewImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsMacroImp.Plo@am__quote@

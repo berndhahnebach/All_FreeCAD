@@ -29,6 +29,7 @@ moc_DlgParameter.cpp \
 moc_DlgParameterImp.cpp \
 moc_DlgPreferences.cpp \
 moc_DlgPreferencesImp.cpp \
+moc_DlgReportView.cpp \
 moc_DlgSettings.cpp \
 moc_DlgSettingsImp.cpp \
 moc_DlgSettings3DView.cpp \
@@ -82,6 +83,8 @@ DlgParameter.cpp \
 DlgParameter.h \
 DlgPreferences.cpp \
 DlgPreferences.h \
+DlgReportView.cpp \
+DlgReportView.h \
 DlgSettings.cpp \
 DlgSettings.h \
 DlgSettings3DView.cpp \
@@ -141,6 +144,7 @@ DlgMacroRecordImp.cpp \
 DlgOnlineHelpImp.cpp \
 DlgParameterImp.cpp \
 DlgPreferencesImp.cpp \
+DlgReportViewImp.cpp \
 DlgSettingsImp.cpp \
 DlgSettings3DViewImp.cpp \
 DlgSettingsMacroImp.cpp \
