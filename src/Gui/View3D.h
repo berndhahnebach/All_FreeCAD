@@ -80,6 +80,9 @@ public:
 
 	virtual void resizeEvent ( QResizeEvent * e);
 
+	virtual void Update(void);
+
+
 //signals:
 	//void message(const QString&, int );
 	

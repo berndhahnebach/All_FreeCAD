@@ -95,6 +95,12 @@ bool FCView3D::OnMsg(const char* pMsg)
 	return false;
 }
 
+
+void FCView3D::Update(void)
+{
+
+}
+
 /*
 
 void FCView::fitAll()

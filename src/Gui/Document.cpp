@@ -47,6 +47,8 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 	Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
+	_pcDocument->Attach(this);
+
 	// seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
 	TCollection_ExtendedString a3DName("Visu3D");
 	_hViewer = Viewer(getenv("DISPLAY"),
@@ -83,8 +85,18 @@ FCGuiDocument::~FCGuiDocument()
 	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 		delete *It;
 
+	_pcDocument->Detach(this);
+
 	// remove the reverence from the object
 	_pcDocument->_DECREF();
+}
+
+
+void FCGuiDocument::OnChange(FCSubject &rCaller)
+{
+
+
+
 }
 
 
@@ -125,15 +137,15 @@ void FCGuiDocument::CreateView(const char* sType)
     FCView3D* w = new FCView3D(this,0L,"View3D");
 	
 	// add to the view list of document
-	_LpcViews.push_back(w);
+	//_LpcViews.push_back(w);
 	// add to the view list of Application window
 
 	//connect( w, SIGNAL( message(const QString&, int) ), _pcAppWnd->statusBar(), SLOT( message(const QString&, int )) );
 	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(onCloseView(FCView*)));
-	connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(slotCloseView(FCView*)));
+	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(slotCloseView(FCView*)));
 
 	QString aName;
-//	aName.sprintf("%s:%d",_pcDocument->GetName(),_iWinCount++);
+//	aName.sprintf("%s:(%d)",_pcDocument->GetName(),_iWinCount++);
 	aName.sprintf("%s:%d","Document",_iWinCount++);
 
 	FCSingleView* pcSingleView = new FCSingleView(w,_pcAppWnd,"3DView");
@@ -149,28 +161,45 @@ void FCGuiDocument::CreateView(const char* sType)
 
 }
 
-void FCGuiDocument::slotCloseView(FCView* theView)
+void FCGuiDocument::AttachView(FCView* pcView)
+{
+	_LpcViews.push_back(pcView);
+
+}
+
+
+void FCGuiDocument::DetachView(FCView* pcView)
 {
 
-	_LpcViews.remove(theView);
+	_LpcViews.remove(pcView);
 	// last view?
 	if(_LpcViews.size() == 0)
 	{
-		OnLastViewClosed();
+		_pcAppWnd->OnLastWindowClosed(this);
 	}
 }
 
-void FCGuiDocument::OnLastViewClosed(void)
+void FCGuiDocument::Update(void)
 {
+	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end();It++)
+	{
+		(*It)->Update();
+	}
+}
 
-	_pcAppWnd->OnLastWindowClosed(this);
+bool FCGuiDocument::IsLastView(void)
+{
+	if(_LpcViews.size() <= 1)
+		return true;
+
+	return false;
 }
 
 /** 
  *  This method check if the Document can close. It checks on 
  *  the save state of the document and is abel to abort the close!
  */
-void FCGuiDocument::closeEvent ( QCloseEvent * e )
+void FCGuiDocument::CanClose ( QCloseEvent * e )
 {
 	if(! _pcDocument->IsSaved()
 		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
@@ -192,14 +221,12 @@ void FCGuiDocument::closeEvent ( QCloseEvent * e )
 	}else
 		e->accept();
 
-//	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
-//		(*It)->childWindowCloseRequest(e);
-//		(*It)->close(e);
-
 }
 
-
-
+void FCGuiDocument::closeEvent ( QCloseEvent * e )
+{
+	CanClose(e);
+}
 
 /// send Messages to the active view
 bool FCGuiDocument::SendMsgToViews(const char* pMsg)

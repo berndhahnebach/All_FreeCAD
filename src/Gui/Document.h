@@ -48,7 +48,7 @@ class MDIWindow;
  *  @see FCDocument 
  *  @see FCView
  */
-class GuiExport FCGuiDocument :public QObject
+class GuiExport FCGuiDocument :public QObject, public FCObserver
 {
 	Q_OBJECT
 
@@ -63,6 +63,8 @@ public:
 	/// Save the document under a new file name
 	void SaveAs(void);
 
+	/// Observer message from the App doc
+	virtual void OnChange(FCSubject &rCaller);
 
 	/// Geter for the Application 
 	ApplicationWindow*				GetAppWnd(){return _pcAppWnd;}	
@@ -71,17 +73,30 @@ public:
 	/// Gerer for the App Document 
 	FCDocument*						GetDocument(void){return _pcDocument;}
 
+
+	/** @name methodes for activation handling */
+	//@{
+	/// Geter for the Active View
+	FCView* GetActiveView(void);
+	//@}
+
+
+
+	/** @name methodes for View handling */
+	//@{
 	/// Creat a new View
 	void CreateView(const char* sType); 
-
-
-	void OnLastViewClosed(void);
-
 	/// send Messages to the active view
 	bool SendMsgToActiveView(const char* pMsg);
 	/// send Messages to all views
 	bool SendMsgToViews(const char* pMsg);
-
+	/// Attach a view (get called by the FCView constructor)
+	void AttachView(FCView* pcView);
+	/// Detach a view (get called by the FCView destructor)
+	void DetachView(FCView* pcView);
+	/// call update on attached all views
+	void Update(void);
+	//@}
 
 
 	/** @name methodes for the UNDO REDO handling */
@@ -103,14 +118,16 @@ public:
 	//@}
 
 
-	/// Geter for the Active View
-	FCView* GetActiveView(void);
 
 	/// handels the application close event
 	void closeEvent ( QCloseEvent * e );
+	///
+	void CanClose(QCloseEvent * e );
+	/// 
+	bool IsLastView(void);
 
 public slots:
-	void slotCloseView(FCView* theView);
+//	void slotCloseView(FCView* theView);
 
 
 private:

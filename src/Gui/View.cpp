@@ -36,23 +36,38 @@
 
 #include "View.h"
 #include "Document.h"
+#include "Application.h"
 
-#	include <qgrid.h>
+
+//#	include <qgrid.h>
 
 
 FCView::FCView( FCGuiDocument* pcDocument,QWidget* parent, const char* name, int wflags )
 	:FCWindow(parent, name, wflags),
 	 _pcDocument(pcDocument)
 {
-	
-	
+	if(pcDocument)
+		pcDocument->AttachView(this);
+	else
+		ApplicationWindow::Instance->AttachView(this);
 }
 
 FCView::~FCView()
 {
-  
+	if(_pcDocument)
+		_pcDocument->DetachView(this);
+	else
+		ApplicationWindow::Instance->DetachView(this);
 }
 
+void FCView::SetDocument(FCGuiDocument* pcDocument)
+{
+	if(_pcDocument)
+		_pcDocument->DetachView(this);
+	if(pcDocument)
+		pcDocument->AttachView(this);	
+	Update();
+}
 
 /// recife a message
 bool FCView::OnMsg(const char* pMsg)
@@ -65,6 +80,12 @@ void FCView::ViewMsg(const char* pMsg)
 {
 	OnMsg(pMsg);
 }
+
+void FCView::SetActive(void)
+{
+	ApplicationWindow::Instance->ViewActivated(this);
+}
+
 
 
 FCDoubleView::FCDoubleView(FCView* pcView1, FCView* pcView2, QWidget* parent, const char* name, int wflags )
@@ -108,28 +129,33 @@ FCDoubleView::~FCDoubleView()
 FCSingleView::FCSingleView(FCView* pcView, QWidget* parent, const char* name, int wflags )
     :FCViewContainer(parent, name, wflags),
 	 _pcView(pcView)
-{	
-/*
-	// reparent the view to this widget	
-	QVBox* vb2 = new QVBox( this );
-	vb2->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-    QVBoxLayout* pcMainLayout = new QVBoxLayout(vb2);
+{
 
-	_pcView->reparent(vb2,wflags,QPoint(0,0));
-	pcMainLayout->addWidget(vb2);
-*/
+	// sends the activation signal to the view, which set the active document and view in ApplicationWindow
+	connect(this, SIGNAL(activated(QextMdiChildView*)), pcView, SLOT(SetActive()));
+
+	// reparent the View to the ViewContainer
 	_pcView->reparent(this,wflags,QPoint(0,0));
 
-	/*
-	 QGrid* pcGrid = new QGrid(1,this);
-	_pcView->reparent(pcGrid,wflags,QPoint(0,0));
-*/
 	
 }
 
+
 void FCSingleView::resizeEvent ( QResizeEvent * e) 
 {
-  _pcView->resize(e->size());
+	// sends the rezise event to the view (reparent dont set the proper conection?!?!)
+	_pcView->resize(e->size());
+}
+
+void FCSingleView::closeEvent(QCloseEvent *e)
+{
+	if(_pcView->GetGuiDocument()->IsLastView())
+	{
+		_pcView->GetGuiDocument()->CanClose(e);
+
+		if(e->isAccepted ())
+			QextMdiChildView::closeEvent(e);
+	}
 }
 
 

@@ -122,12 +122,25 @@ public:
 	/// some kind of singelton
 	static ApplicationWindow* Instance;
 
+	/** @name methodes for View handling */
+	//@{
 	/// send Messages to the active view
 	bool SendMsgToActiveView(const char* pMsg);
 	/// returns the active view or NULL
 	FCView* GetActiveView(void);
 	/// Geter for the Active View
 	FCGuiDocument* GetActiveDocument(void);
+	/// Attach a view (get called by the FCView constructor)
+	void AttachView(FCView* pcView);
+	/// Detach a view (get called by the FCView destructor)
+	void DetachView(FCView* pcView);
+	/// get calld if a view gets activated, this manage the whole activation scheme
+	void ViewActivated(FCView* pcView);
+	/// call update to all docuemnts an all views (costly!)
+	void Update(void);
+	/// call update to all views of the active document
+	void UpdateActive(void);
+	//@}
 
 
 	/// Reference to the command manager
@@ -231,7 +244,6 @@ private:
  	std::list<FCGuiDocument*>         lpcDocuments;
 	/// list of windows
 	std::map <std::string,FCWindow*> mpcDocWindows;
-#	pragma warning( default : 4251 )
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;
 	FCCustomWidgetManager*		 _pcWidgetMgr;
@@ -245,6 +257,8 @@ private:
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
 	QTimer *		 _pcActivityTimer; 
+	/// List of all registered views
+	std::list<FCView*>					_LpcViews;
 
   // friends
   //

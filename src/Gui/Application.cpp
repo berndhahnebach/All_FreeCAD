@@ -230,6 +230,8 @@ void ApplicationWindow::CreateStandardOperations()
 	// register the application Standard commands from CommandStd.cpp
 	CreateStdCommands();
 	CreateViewStdCommands();
+	CreateTestCommands();
+
 
 	// populate a tool bar with some actions
 
@@ -425,6 +427,7 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 {
 	// GuiDocument has closed the last window and get destructed
 	lpcDocuments.remove(pcDoc);
+	//lpcDocuments.erase(pcDoc);
 	delete pcDoc;	
 }
 
@@ -444,6 +447,9 @@ FCProgressBar* ApplicationWindow::GetProgressBar()
 
 
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// view handling
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -482,6 +488,44 @@ FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 		return 0l;
 }
 
+void ApplicationWindow::AttachView(FCView* pcView)
+{
+	_LpcViews.push_back(pcView);
+
+}
+
+
+void ApplicationWindow::DetachView(FCView* pcView)
+{
+
+	_LpcViews.remove(pcView);
+}
+
+void ApplicationWindow::Update(void)
+{
+	// update all documents
+	for(std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
+	{
+		(*It)->Update();
+	}
+	// update all the independed views
+	for(std::list<FCView*>::iterator It2 = _LpcViews.begin();It2 != _LpcViews.end();It2++)
+	{
+		(*It2)->Update();
+	}
+
+}
+
+/// get calld if a view gets activated, this manage the whole activation scheme
+void ApplicationWindow::ViewActivated(FCView* pcView)
+{
+	GetConsole().Log("Deactivate (%p) Activate (%p) \n",_pcActiveDocument,_pcActiveDocument=pcView->GetGuiDocument());
+}
+
+void ApplicationWindow::UpdateActive(void)
+{
+	GetActiveDocument()->Update();
+}
 
 
 void ApplicationWindow::slotUndo()
@@ -513,13 +557,20 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 	}else{
 		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
 		{
-			(*It)->closeEvent ( e );
+			(*It)->CanClose ( e );
 			if(! e->isAccepted() ) break;
 		}
 	}
 
 	if( e->isAccepted() )
 	{
+		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		{
+			delete (*It);
+		}
+
+		assert(lpcDocuments.size() == 0);
+
 		_pcActivityTimer->stop();
 
 		QextMdiMainFrm::closeEvent(e);

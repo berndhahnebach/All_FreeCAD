@@ -450,6 +450,59 @@ InputName=DlgSettingsImp
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\DlgSettingsMacro.ui
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgSettingsMacro.ui
+InputName=DlgSettingsMacro
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgSettingsMacro.ui
+InputName=DlgSettingsMacro
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)\$(InputName).cpp \
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "Customize"
 
@@ -1246,7 +1299,7 @@ InputName=DlgUndoRedo
 # Begin Source File
 
 SOURCE=.\Command.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1282,12 +1335,17 @@ InputName=Command
 # Begin Source File
 
 SOURCE=.\CommandStd.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\CommandTest.cpp
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\CommandView.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # End Group
 # Begin Group "Dock windows"
@@ -1296,7 +1354,7 @@ SOURCE=.\CommandView.cpp
 # Begin Source File
 
 SOURCE=.\ButtonGroup.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1332,7 +1390,7 @@ InputName=ButtonGroup
 # Begin Source File
 
 SOURCE=.\HtmlView.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1595,7 +1653,7 @@ InputName=Splashscreen
 # Begin Source File
 
 SOURCE=.\Themes.cpp
-# ADD CPP /YX"PreCompiled.h"
+# ADD CPP /Yu"PreCompiled.h"
 # End Source File
 # Begin Source File
 

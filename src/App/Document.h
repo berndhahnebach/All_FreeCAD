@@ -24,6 +24,7 @@
 
 
 #include "../Base/PyExport.h"
+#include "../Base/Observer.h"
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -111,7 +112,7 @@ protected:
  *  Application. Only the Application can Open or destroy a document.
  *  @see FCLabel
  */
-class AppExport FCDocument :public FCPyObject
+class AppExport FCDocument :public FCPyObject, public FCSubject
 {
 	/// always start with Py_Header
 	Py_Header;

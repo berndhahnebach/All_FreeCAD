@@ -10,14 +10,38 @@ class QWidget;
 
 
 /** Base class of all windows belonging to a document
+ *  there are two ways of belonging to a document. The 
+ *  first way is to a fixed one. The second way is to allways
+ *  belong to the Active document. that means switching every time
+ *  the active document is changing. It also means that the view 
+ *  belongs sometimes to no document at all!
+ *  @see FCTree
+ *  @see FCGuiDocument
+ *  @see ApplicationWindow
  */
 class FCView : public FCWindow
 {
 	Q_OBJECT;
 
 public:
+	/** View constructor
+	  * Atach the view to the given document. If the document is NULL
+	  * the view will attach to the active document. Be aware! there isn't
+	  * allways a active document!
+	  */
 	FCView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	/** View destructor
+	  * Detach the view from the document, if Atached!
+	  */
 	~FCView();
+
+	/// sets the view to an oter document (called by ApplicationWindow)
+	void SetDocument(FCGuiDocument* pcDocument);
+
+	/// get called when the document is changed or updated
+	virtual void Update(void)=0;
+
+	/// returns the document the view is attached to
 	FCGuiDocument* GetGuiDocument(){return _pcDocument;}
 
 	virtual const char *GetName(void)=0;
@@ -30,7 +54,9 @@ signals:
 	void sendCloseView(FCView* theView);
 	
 public slots:
-	void ViewMsg(const char* pMsg);        
+	void ViewMsg(const char* pMsg);
+	
+	void SetActive(void);
 
 
 protected:
@@ -73,6 +99,8 @@ public:
 	virtual void resizeEvent ( QResizeEvent * e);
 
 	virtual FCView* GetActiveView(void){return _pcView;}
+protected:
+	virtual void closeEvent(QCloseEvent *e);
 
 private:
 	FCView *		_pcView;

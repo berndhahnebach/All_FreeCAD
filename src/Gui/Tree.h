@@ -26,6 +26,7 @@
 /// Forwards
 class FCLabel; 
 class FCTree;
+class FCGuiDocument;
 
 
 
@@ -67,7 +68,6 @@ protected:
 
 
 
-class FCGuiDocument;
 
 class FCTree :public FCView
 {
@@ -84,6 +84,9 @@ public:
 
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
 	friend FCTreeLabel;
+
+	virtual void Update(void);
+
 
 protected:
 	QListView*		_pcListView;

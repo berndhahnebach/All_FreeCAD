@@ -70,31 +70,6 @@ FCTreeLabel::FCTreeLabel( FCTree * parent)
 }
 
 
-/** Set the actuall pixmap
- *  @param px a QT pixmap object
- */
-/*
-void FCTreeLabel::setPixmap( QPixmap *px )
-{
-    //pix = px;
-	QListViewItem::setPixmap(0,*px);
-    setup();
-    widthChanged( 0 );
-    invalidateHeight();
-    repaint();
-}
-
-
-const QPixmap *FCTreeLabel::pixmap( int i ) const
-{
-    if ( i )
-		return 0;
-	return 0;
-
-    //return pix;
-}
-
-  */
 void FCTreeLabel::Update(void)
 {
 	// quieck an dirty
@@ -250,6 +225,10 @@ bool FCTree::OnMsg(const char* pMsg)
 	return false;
 }
 
+void FCTree::Update(void)
+{
+
+}
 
 
 //Tree:: Tree(){};

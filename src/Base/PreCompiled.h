@@ -5,6 +5,17 @@
 // Std. configurations
 #include "../Config.h"
 
+#ifdef _PreComp_
+
+
+//**************************************************************************
+// here get the warnings of to long specifieres disabled (needet for VC6)
+#ifdef FC_OS_WIN32
+#	pragma warning( disable : 4251 )
+#	pragma warning( disable : 4503 )
+#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+#	pragma warning( disable : 4290 )  // not implemented throw specification
+#endif
 
 // standard
 #include <iostream>
@@ -50,6 +61,6 @@
 //#include <Standard_Failure.hxx>
 
 
-
+#endif //_PreComp_
 
 #endif

@@ -1,25 +1,25 @@
 <!DOCTYPE UI><UI>
-<class>DlgSettings3DView</class>
+<class>MacroSettings</class>
 <widget>
     <class>QWidget</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>DlgSettings3DView</cstring>
+        <cstring>MacroSettings</cstring>
     </property>
     <property>
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>276</width>
-            <height>303</height>
+            <width>424</width>
+            <height>394</height>
         </rect>
     </property>
     <property>
         <name>caption</name>
-        <string>3DView settings</string>
+        <string>Macro settings</string>
     </property>
-    <vbox>
+    <hbox>
         <property>
             <name>margin</name>
             <number>11</number>
@@ -32,11 +32,11 @@
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>GroupBox12</cstring>
+                <cstring>GroupBox13</cstring>
             </property>
             <property>
                 <name>title</name>
-                <string>3DView settings</string>
+                <string>Macro settings</string>
             </property>
             <vbox>
                 <property>
@@ -51,11 +51,11 @@
                     <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>GroupBox13</cstring>
+                        <cstring>GroupBox14</cstring>
                     </property>
                     <property>
                         <name>title</name>
-                        <string>Anti aliasing</string>
+                        <string>Gui</string>
                     </property>
                     <hbox>
                         <property>
@@ -70,14 +70,7 @@
                             <class>FCCheckBox</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>UseAntialiasing</cstring>
-                            </property>
-                            <property>
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                </sizepolicy>
+                                <cstring>LogGuiCommands</cstring>
                             </property>
                         </widget>
                         <widget>
@@ -87,21 +80,14 @@
                                 <cstring>TextLabel1</cstring>
                             </property>
                             <property>
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                </sizepolicy>
-                            </property>
-                            <property>
                                 <name>text</name>
-                                <string>Using anti aliasing</string>
+                                <string>Log gui commands also</string>
                             </property>
                         </widget>
                         <spacer>
                             <property>
                                 <name>name</name>
-                                <cstring>Spacer9</cstring>
+                                <cstring>Spacer11</cstring>
                             </property>
                             <property>
                                 <name>orientation</name>
@@ -121,9 +107,30 @@
                         </spacer>
                     </hbox>
                 </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer10</cstring>
+                    </property>
+                    <property>
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property>
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
             </vbox>
         </widget>
-    </vbox>
+    </hbox>
 </widget>
 <customwidgets>
     <customwidget>
@@ -152,4 +159,6 @@
         <data format="XPM.GZ" length="2157">789ccdd2594fdb4010c0f1f77c0a0bbfa16a88d7c7daaafa0084b35ce186aa0fdef52e492001820384aadfbdb3b38355a110fa52b5d91cfa65fe766cc74b8bc1f9c16eb0b8d47aa8cbbaaf03dd2bc7c16235190ea7dfbe7ff9d15a1022c067960562e1536ba15b073ad8bb1d1907e820c2363dc8abec84bd4cce1b1f34cec96bec9c7dee1cb5dd226f91f348477e1e3a8b48b44544de27172261976c2d0af257e7386a7ce41db763df2b76c23e231768df5b76ced6ce8948a2842e06acb353f695732ad234f5de21978d1fd9455a922be72cced22c263f91155a917bec82bde92c63994adfaf90952ca49ff7d9153b72ce1359e50979db3b17ec1bb2ce4bf66e634deeb20dfbd8b9487253f8de907551167e7eeb5ca6a52853f2809db11fc855e376e38a3c64973c1f35f6f343b6616f38ab5465caf717ce3ad3b1f2f3bb57eb8c7cc296ec17b2695cb3157bd2d8dfefd76ccb16ce5556c595ef4fd9927d49369562df37f6db8f9d8d34b191e4942d79fefc6a63c919d9ba6fc8b2b19fefb115cfa78dfd3c665b76ee6ca58dd9c9abaddfbe604bef10c8d62a4b7d18b2ad77b7fef3f53ff710e22a41bd591a2a30eff416aea0f766f56100d733fb12eb1b18c288d6006ee9f30eee613cb357b8b707a861f2db7a84277886e9bbfd90aa1a5ee8b307cbb8c5746edfc763f0fb5e8155e8e0d9ceeb47b006ebb081f526b61dd882ed0ff6ff15ab1d3054afc12e9eedde9c7e00fbd81d60e9fa2efecefc7e088770446d078ee104cffcf4837e82d7fd0ccef148dc399fcce9355e9b0bb8c423684384eff720b01e430cc9ccbec2a3bf841432bc22125f99fb672187228499bd816b9c4fdfac046fc3f05fdcff7fa5fff9b9f50b3afa46fc</data>
     </image>
 </images>
+<connections>
+</connections>
 </UI>

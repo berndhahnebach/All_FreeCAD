@@ -28,10 +28,9 @@
 
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 # include <qpainter.h>
 # include <qstyle.h>
 # include <qapplication.h>

@@ -141,7 +141,7 @@ private:
 	void NotifyError  (const char *sMsg);
 	void NotifyLog    (const char *sMsg);
 	// observer list
-#pragma warning( disable : 4251 )
+#	pragma warning( disable : 4251 )
 	std::set<FCConsoleObserver * > _aclObservers;
 
 };

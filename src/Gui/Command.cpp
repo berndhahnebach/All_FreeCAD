@@ -8,10 +8,9 @@
 
 
 
-#include "../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
 #endif
 
 #include "../Base/Console.h"
@@ -429,6 +428,25 @@ void FCCommand::ToggleCommand(const char* sCmdName,bool bToggle)
 
 }
 
+/// Updates the (active) document (propagate changes)
+void FCCommand::UpdateActive(void)
+{
+
+	GetAppWnd()->UpdateActive();
+}
+
+/// Updates the (all or listed) documents (propagate changes)
+void FCCommand::UpdateAll(std::list<FCGuiDocument*> cList)
+{
+	if(cList.size()>0)
+	{
+		for(std::list<FCGuiDocument*>::iterator It= cList.begin();It!=cList.end();It++)
+			(*It)->Update();
+	}else{
+		GetAppWnd()->Update();
+	}
+
+}
 
 //--------------------------------------------------------------------------
 // Online help handling  

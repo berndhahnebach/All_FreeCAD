@@ -25,7 +25,7 @@
 #include <qaction.h>
 #include <string>
 #include <map>
-//#	pragma warning( disable : 4786 )
+#include <list>
 
 class FCCommandManager;
 class ApplicationWindow;
@@ -36,6 +36,7 @@ class FCCommand;
 
 void CreateStdCommands(void);
 void CreateViewStdCommands(void);
+void CreateTestCommands(void);
 
 /**
  * Allow Actions to be added to other widgets except of toolbars and menus
@@ -211,6 +212,10 @@ public:
 	void ActivateCommand(const char* sCmdName);
 	/// Toggles other Commands
 	void ToggleCommand(const char* sCmdName,bool bToggle);
+	/// Updates the (active) document (propagate changes)
+	void UpdateActive(void);
+	/// Updates the (all or listed) documents (propagate changes)
+	void UpdateAll(std::list<FCGuiDocument*> cList);
 	//@}
 
 	/** @name Helper methodes to generate help pages */
