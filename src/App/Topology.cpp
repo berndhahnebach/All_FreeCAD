@@ -1,9 +1,3 @@
-/** \file Topology.cpp
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -41,33 +35,28 @@
 #	include <assert.h>
 #endif
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include <Base/Exception.h>
+#include <Base/Console.h>
 #include "Topology.h"
-#include "../Base/Exception.h"
-#include "../Base/Console.h"
 
 using Base::Console;
 
+using namespace App;
+
 
 //===========================================================================
-// FCTopoShape - Warpper for the TopoDS classes
+// TopoShapePy - Warpper for the TopoDS classes
 //===========================================================================
-
-//--------------------------------------------------------------------------
-// Exported functions
-//--------------------------------------------------------------------------
-
-
 
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject FCTopoShape::Type = {
+PyTypeObject TopoShapePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FCLabel",				/*tp_name*/
-	sizeof(FCTopoShape),	/*tp_basicsize*/
+	"TopoShapePy",				/*tp_name*/
+	sizeof(TopoShapePy),	/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -86,7 +75,7 @@ PyTypeObject FCTopoShape::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef FCTopoShape::Methods[] = {
+PyMethodDef TopoShapePy::Methods[] = {
   {"HasChild",         (PyCFunction) sPyHasChild,         Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
@@ -95,34 +84,34 @@ PyMethodDef FCTopoShape::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCTopoShape::Parents[] = {&FCTopoShape::Type, NULL};     
+PyParentObject TopoShapePy::Parents[] = {&Base::PyObjectBase::Type,&TopoShapePy::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCTopoShape::FCTopoShape(const TopoDS_Shape &cShape, PyTypeObject *T) 
+TopoShapePy::TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T) 
  : PyObjectBase( T), _cTopoShape(cShape)
 {
 	Console().Log("Create TopoShape %p\n",this);
 }
 
-PyObject *FCTopoShape::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *TopoShapePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  return new FCTopoShape(TopoDS_Shape());			// Make new Python-able object
+  return new TopoShapePy(TopoDS_Shape());			// Make new Python-able object
 }
 
 //--------------------------------------------------------------------------
-//  FCLabel destructor 
+//  TopoShapePy destructor 
 //--------------------------------------------------------------------------
-FCTopoShape::~FCTopoShape()						// Everything handled in parent
+TopoShapePy::~TopoShapePy()						// Everything handled in parent
 {
 	Console().Log("Destroy TopoShape %p\n",this);
 } 
 
 //--------------------------------------------------------------------------
-// FCLabel Attributes
+// TopoShapePy Attributes
 //--------------------------------------------------------------------------
-PyObject *FCTopoShape::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *TopoShapePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	try{
 		// Access the number of attributes at this label
@@ -132,12 +121,12 @@ PyObject *FCTopoShape::_getattr(char *attr)				// __getattr__ function: note onl
 		}else
 			_getattr_up(PyObjectBase); 						// send to parent
 	}catch(...){
-		Console().Log("Exception in FCTopoShape::_getattr()\n");
+		Console().Log("Exception in TopoShapePy::_getattr()\n");
 		return 0;
 	}
 } 
 
-int FCTopoShape::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int TopoShapePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
 	if (Base::streq(attr, "Real"))						// settable new state
 		; 
@@ -146,15 +135,26 @@ int FCTopoShape::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 	return 0;
 } 
 
+//--------------------------------------------------------------------------
+// PartFeaturePy representation
+//--------------------------------------------------------------------------
+PyObject *TopoShapePy::_repr(void)
+{
+  std::stringstream a;
+  a << "TopoShape: [ ";
+  a << "]" << std::endl;
+	return Py_BuildValue("s", a.str().c_str());
+}
+
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PyObject *FCTopoShape::PyHasChild(PyObject *args)
+PyObject *TopoShapePy::PyHasChild(PyObject *args)
 { 
-    if (!PyArg_ParseTuple(args, "" ))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+  if (!PyArg_ParseTuple(args, "" ))   
+    return NULL;                      
 	Py_Return; 
 }
  

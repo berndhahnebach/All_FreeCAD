@@ -30,7 +30,7 @@
 # include <TDF_Label.hxx>
 #endif
 
-#include "../Base/PyExport.h"
+#include <Base/PyExportImp.h>
 
 /*
 class TFunction_Logbook;
@@ -40,6 +40,8 @@ class TopoDS_Shape;
 */
 namespace App
 {
+
+class Feature;
 
 //===========================================================================
 // FeaturePy - Python wrapper

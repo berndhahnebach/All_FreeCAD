@@ -96,7 +96,13 @@ int PyObjectBase::_setattr(char *attr, PyObject *value)
 ------------------------------*/
 PyObject *PyObjectBase::_repr(void)
 {
-  Py_Error(PyExc_SystemError, "Representation not overridden by object.");  
+  std::stringstream a;
+  a << "PyObjectBase: [ ";
+  a << "]" << std::endl;
+# ifdef FCDebug
+    Console().Log("PyObjectBase::_repr() not overwriten representation!");
+# endif
+	return Py_BuildValue("s", a.str().c_str());
 }
 
 /*------------------------------

@@ -42,13 +42,15 @@
 
 #include <TopoDS_Shape.hxx>
 
+namespace App
+{
 
 /** The TopoDSShape wrapper class
  *  This class wrapps the functionality of the Topology package. It wrapps not
  *  strictly after the OCC rules. It includes also a lot algorithems from oter
  *  packages like BRepTools and BRepBuilder. Also iterators and so on.
  */
-class AppExport FCTopoShape :public Base::PyObjectBase
+class AppExport TopoShapePy :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -56,11 +58,11 @@ class AppExport FCTopoShape :public Base::PyObjectBase
 public:
 
 	/// Constructer 
-	FCTopoShape(const TopoDS_Shape &cShape, PyTypeObject *T = &Type);
+  TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T = &TopoShapePy::Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 	/// Destruction 
-	~FCTopoShape();
+	~TopoShapePy();
 
 
 	//---------------------------------------------------------------------
@@ -68,18 +70,21 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Gets the OCC Label
-	TopoDS_Shape GetTopoShape(void){return _cTopoShape;}
+	TopoDS_Shape getTopoShape(void){return _cTopoShape;}
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------
 
+	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);				// __getattr__ function
 	// getter setter
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
-	// methods
 
-	PYFUNCDEF_D (FCTopoShape,PyHasChild);
+	// methods
+	PYFUNCDEF_D (TopoShapePy,PyHasChild);
+
+  TopoDS_Shape &getShape(void){return _cTopoShape;}
 
 
 protected:
@@ -93,6 +98,6 @@ protected:
 };
 
 
-
+} //namespace App
 
 #endif // __TOPOLOGY_H__

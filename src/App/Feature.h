@@ -30,8 +30,8 @@
 # include <TDF_Label.hxx>
 #endif
 
-#include "../Base/Factory.h"
-#include "../Base/PyExport.h"
+#include <Base/Factory.h>
+#include <Base/PyExport.h>
 
 
 class TFunction_Logbook;

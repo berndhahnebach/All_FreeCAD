@@ -61,7 +61,7 @@ ReadBREP(PyObject *self, PyObject *args)          /* self unused in modules */
 
 	BRepTools::Read(ResultShape,(const Standard_CString)str,aBuilder);
 
-	return new FCTopoShape(ResultShape);		  /* convert C -> Python */
+  return new App::TopoShapePy(ResultShape);		  /* convert C -> Python */
     
 }
 
