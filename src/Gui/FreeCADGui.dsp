@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADGui - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FreeCADGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -3092,23 +3092,27 @@ SOURCE=.\Language\FreeCAD_de.ts
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Building FreeCAD_de.h
+# Begin Custom Build - Building $(InputName).h
+InputDir=.\Language
 InputPath=.\Language\FreeCAD_de.ts
+InputName=FreeCAD_de
 
-"FreeCAD_de.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\tstocpp.py FreeCAD_de.ts FreeCAD_de.h 
+	python ..\Tools\tstocpp.py $(InputDir)\$(InputName).ts $(InputDir)\$(InputName).h $(InputName) 
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Building FreeCAD_de.h
+# Begin Custom Build - Building $(InputName).h
+InputDir=.\Language
 InputPath=.\Language\FreeCAD_de.ts
+InputName=FreeCAD_de
 
-"FreeCAD_de.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\tstocpp.py FreeCAD_de.ts FreeCAD_de.h 
+	python ..\Tools\tstocpp.py $(InputDir)\$(InputName).ts $(InputDir)\$(InputName).h $(InputName) 
 	
 # End Custom Build
 

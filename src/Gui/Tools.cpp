@@ -145,3 +145,26 @@ void FCTools::clearToolButtons(QToolBar* tb)
     }
   }
 }
+
+int FCTools::getURLType(const QString& url)
+{
+	QFileInfo fi(url);
+
+	// valid and existing file
+	if (fi.isFile() && fi.exists())
+		return 0;
+
+	QString s = url.lower();
+	const QFileInfoList* roots = QDir::drives();
+	QListIterator<QFileInfo> i(*roots);
+	QFileInfo* pfi;
+	while ( (pfi = *i) ) 
+	{
+		QString fp = pfi->filePath().lower();
+		++i;
+		if ( s.startsWith( fp ) )
+			return 1;
+	}
+
+	return 2;
+}

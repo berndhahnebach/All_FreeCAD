@@ -55,11 +55,11 @@
                     </property>
                     <property>
                         <name>prefEntry</name>
-                        <string>UseInventorViewer</string>
+                        <cstring>UseInventorViewer</cstring>
                     </property>
                     <property>
                         <name>prefPath</name>
-                        <string>User parameter:BaseApp/Windows/View</string>
+                        <cstring>User parameter:BaseApp/Windows/View</cstring>
                     </property>
                     <property>
                         <name>text</name>
@@ -93,11 +93,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>CornerCoordSystem</string>
+                                <cstring>CornerCoordSystem</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/View</string>
+                                <cstring>User parameter:BaseApp/Windows/View</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -112,11 +112,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>ShowFPS</string>
+                                <cstring>ShowFPS</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/View</string>
+                                <cstring>User parameter:BaseApp/Windows/View</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -131,11 +131,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>UseSimpleBackground</string>
+                                <cstring>UseSimpleBackground</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/View</string>
+                                <cstring>User parameter:BaseApp/Windows/View</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -150,11 +150,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>ShowViewerDecoration</string>
+                                <cstring>ShowViewerDecoration</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/View</string>
+                                <cstring>User parameter:BaseApp/Windows/View</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -195,11 +195,11 @@
                                     </property>
                                     <property>
                                         <name>prefEntry</name>
-                                        <string>UserDefinedViewerExt</string>
+                                        <cstring>UserDefinedViewerExt</cstring>
                                     </property>
                                     <property>
                                         <name>prefPath</name>
-                                        <string>User parameter:BaseApp/Windows/View</string>
+                                        <cstring>User parameter:BaseApp/Windows/View</cstring>
                                     </property>
                                 </widget>
                                 <widget>
@@ -234,11 +234,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>UseAutoRotation</string>
+                                <cstring>UseAutoRotation</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/View</string>
+                                <cstring>User parameter:BaseApp/Windows/View</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -281,11 +281,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>UseAntialiasing</string>
+                                <cstring>UseAntialiasing</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/View</string>
+                                <cstring>User parameter:BaseApp/Windows/View</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -312,8 +312,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCCheckBox</class>
@@ -333,8 +333,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
 </customwidgets>
 <images>

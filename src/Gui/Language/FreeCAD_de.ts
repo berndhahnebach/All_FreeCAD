@@ -7,6 +7,22 @@
         <translation>Bereit</translation>
     </message>
     <message>
+        <source>Taskbar</source>
+        <translation>Arbeitsleiste</translation>
+    </message>
+    <message>
+        <source>Toolbars</source>
+        <translation>Werkzeugleisten</translation>
+    </message>
+    <message>
+        <source>Commandbars</source>
+        <translation>Befehlsleisten</translation>
+    </message>
+    <message>
+        <source>Status bar</source>
+        <translation>Statuszeile</translation>
+    </message>
+    <message>
         <source>Line Up Toolbars (compact)</source>
         <translation>Werkzeugleisten aufrücken (kompakt)</translation>
     </message>
@@ -24,36 +40,20 @@
         <translation>Fehler beim Öffnen der Datei &apos;%1&apos; (Möglicherweise starten Sie FreeCAD zum ersten Mal).</translation>
     </message>
     <message>
-        <source>Taskbar</source>
-        <translation>Taskleiste</translation>
-    </message>
-    <message>
-        <source>Toolbars</source>
-        <translation>Werkzeugleisten</translation>
-    </message>
-    <message>
-        <source>Commandbars</source>
-        <translation>Befehlsleisten</translation>
-    </message>
-    <message>
-        <source>Status bar</source>
-        <translation>Statuszeile</translation>
-    </message>
-    <message>
         <source>Macro recording</source>
-        <translation>Makroaufnahme</translation>
+        <translation>Makroaufzeichnung</translation>
     </message>
     <message>
         <source>Standard views</source>
         <translation>Standardansichten</translation>
     </message>
     <message>
-        <source>File operations</source>
-        <translation type='obsolete'>Datei-Werkzeugleiste</translation>
+        <source>file operations</source>
+        <translation>Datei-Werkzeugleiste</translation>
     </message>
     <message>
-        <source>Special ops</source>
-        <translation type='obsolete'>Spezielle Befehle</translation>
+        <source>Special Ops</source>
+        <translation>Spezielle Operatoren</translation>
     </message>
     <message>
         <source>Command bar</source>
@@ -65,7 +65,7 @@
     </message>
     <message>
         <source>Property View</source>
-        <translation>Eigenschaftsfenster</translation>
+        <translation>Eigenschaften-Ansicht</translation>
     </message>
     <message>
         <source>Report View</source>
@@ -75,20 +75,12 @@
         <source>Tree bar</source>
         <translation>Baumansicht</translation>
     </message>
-    <message>
-        <source>file operations</source>
-        <translation>Datei-Werkzeugleiste</translation>
-    </message>
-    <message>
-        <source>Special Ops</source>
-        <translation>Spezielle Operatoren</translation>
-    </message>
 </context>
 <context>
     <name>DlgDocTemplates</name>
     <message>
         <source>Document templates</source>
-        <translation>Dokumente</translation>
+        <translation>Dokumententypen</translation>
     </message>
     <message>
         <source>Other ...</source>
@@ -115,7 +107,7 @@
     </message>
     <message>
         <source>Delete macro</source>
-        <translation>Löschen</translation>
+        <translation>Makro löschen</translation>
     </message>
     <message>
         <source>Execute</source>
@@ -123,7 +115,7 @@
     </message>
     <message>
         <source>Edit</source>
-        <translation>Bearbeiten...</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -143,7 +135,7 @@
     </message>
     <message>
         <source>Macro destination:</source>
-        <translation>Makro-Zielpfad</translation>
+        <translation>Makro-Zielpfad:</translation>
     </message>
     <message>
         <source>...</source>
@@ -158,7 +150,7 @@
     <name>DlgMacroRecord</name>
     <message>
         <source>Macro recording</source>
-        <translation>Makroaufnahme</translation>
+        <translation>Makroaufzeichnung</translation>
     </message>
     <message>
         <source>Macro name:</source>
@@ -166,7 +158,7 @@
     </message>
     <message>
         <source>Tie macro:</source>
-        <translation>Tie macro:</translation>
+        <translation>Makro Menü zuweisen:</translation>
     </message>
     <message>
         <source>Tool bar</source>
@@ -197,7 +189,7 @@
     <name>DlgMacroRecordImp</name>
     <message>
         <source>FreeCAD - Macro recorder</source>
-        <translation>FreeCAD - Makroaufnahme</translation>
+        <translation>FreeCAD - Makroaufzeichnung</translation>
     </message>
     <message>
         <source>Specify first a place to save.</source>
@@ -224,7 +216,7 @@
     </message>
     <message>
         <source>Chose a Page:</source>
-        <translation>Seite auswählen</translation>
+        <translation>Seite auswählen:</translation>
     </message>
 </context>
 <context>
@@ -234,64 +226,32 @@
         <translation>Einstellungen 3D-Viewer</translation>
     </message>
     <message>
-        <source>UseInventorViewer</source>
-        <translation>UseInventorViewer</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/View</source>
-        <translation>User parameter:BaseApp/Windows/View</translation>
-    </message>
-    <message>
         <source>Use the Inventor viewer as default</source>
-        <translation>Inventor Viewer als Standard wählen</translation>
+        <translation>UseInventorViewer</translation>
     </message>
     <message>
         <source>Inventor Viewer</source>
         <translation>Inventor Viewer</translation>
     </message>
     <message>
-        <source>CornerCoordSystem</source>
-        <translation>CornerCoordSystem</translation>
-    </message>
-    <message>
         <source>Show coordinate system in the corner</source>
         <translation>Koordinatensystem in Ecke anzeigen</translation>
-    </message>
-    <message>
-        <source>ShowFPS</source>
-        <translation>ShowFPS</translation>
     </message>
     <message>
         <source>Show FPS Count</source>
         <translation>FPS-Zähler einblenden</translation>
     </message>
     <message>
-        <source>UseSimpleBackground</source>
-        <translation>UseSimpleBackground</translation>
-    </message>
-    <message>
         <source>Use simple background</source>
         <translation>Einfachen Hintergrund verwenden</translation>
     </message>
     <message>
-        <source>ShowViewerDecoration</source>
-        <translation>ShowViewerDecoration</translation>
-    </message>
-    <message>
         <source>User defined inventor file (*.iv) for special viewer functions:</source>
-        <translation>Benutzerdefinierte Inventor-Datei für spezielle Funktionen</translation>
-    </message>
-    <message>
-        <source>UserDefinedViewerExt</source>
-        <translation>UserDefinedViewerExt</translation>
+        <translation>Benutzerdefinierte Inventor-Datei für spezielle Viewer-Funktionen:</translation>
     </message>
     <message>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>UseAutoRotation</source>
-        <translation>UseAutoRotation</translation>
     </message>
     <message>
         <source>Use auto rotation</source>
@@ -302,10 +262,6 @@
         <translation>OCC Viewer</translation>
     </message>
     <message>
-        <source>UseAntialiasing</source>
-        <translation>UseAntialiasing</translation>
-    </message>
-    <message>
         <source>Using anti aliasing</source>
         <translation>Anti-Aliasing verwenden</translation>
     </message>
@@ -314,19 +270,11 @@
     <name>DlgSettingsMacro</name>
     <message>
         <source>Macro recording settings</source>
-        <translation>Einstellugen Makroaufnahme</translation>
+        <translation>Einstellugen Makroaufzeichnung</translation>
     </message>
     <message>
         <source>Macro path</source>
-        <translation>Makro-Pfad</translation>
-    </message>
-    <message>
-        <source>FilePath</source>
-        <translation>FilePath</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Macro</source>
-        <translation>User parameter:BaseApp/Macro</translation>
+        <translation>Makro-Zielpfad</translation>
     </message>
     <message>
         <source>...</source>
@@ -337,20 +285,12 @@
         <translation>GUI-Befehle</translation>
     </message>
     <message>
-        <source>RecordGui</source>
-        <translation>RecordGui</translation>
-    </message>
-    <message>
         <source>Recording gui commands</source>
-        <translation>GUI-Befehle aufnehmen</translation>
-    </message>
-    <message>
-        <source>GuiAsComment</source>
-        <translation>GuiAsComment</translation>
+        <translation>GUI-Befehle aufzeichnen</translation>
     </message>
     <message>
         <source>Record as comment</source>
-        <translation>Aufnahme als Kommentar eintragen</translation>
+        <translation>Aufnahme als Kommentar behandeln</translation>
     </message>
 </context>
 <context>
@@ -402,7 +342,7 @@
     </message>
     <message>
         <source>Start command line...</source>
-        <translation>Kommandozeile</translation>
+        <translation>Kommandozeile...</translation>
     </message>
     <message>
         <source>Opens the command line in the console</source>
@@ -492,11 +432,11 @@
     </message>
     <message>
         <source>Macro recording ...</source>
-        <translation>Makro aufnehmen...</translation>
+        <translation>Makro aufzeichnen...</translation>
     </message>
     <message>
         <source>Opens a Dialog to record a macro</source>
-        <translation>Makro aufnehmen</translation>
+        <translation>Öffnet Dialog zur Makroaufzeichnung</translation>
     </message>
 </context>
 <context>
@@ -511,7 +451,7 @@
     </message>
     <message>
         <source>Opens a Dialog to edit the parameters</source>
-        <translation>Parameter ändern</translation>
+        <translation>Öffnet Dialog zum Ändern der Parameter</translation>
     </message>
 </context>
 <context>
@@ -526,7 +466,7 @@
     </message>
     <message>
         <source>Opens a Dialog to edit the preferences</source>
-        <translation>Einstellungen</translation>
+        <translation>Öffnet Dialog zum Ändern der Benutzereinstellungen</translation>
     </message>
 </context>
 <context>
@@ -537,11 +477,11 @@
     </message>
     <message>
         <source>Settings...</source>
-        <translation>Einstellungen</translation>
+        <translation>Einstellungen...</translation>
     </message>
     <message>
         <source>Edit the program settings</source>
-        <translation>Einstellungen</translation>
+        <translation>Programmeinstellungen vornehmen</translation>
     </message>
 </context>
 <context>
@@ -556,7 +496,7 @@
     </message>
     <message>
         <source>Set the tabed MDI mode</source>
-        <translation>MDI-Modus</translation>
+        <translation>In MDI-Modus umschalten</translation>
     </message>
 </context>
 <context>
@@ -571,7 +511,7 @@
     </message>
     <message>
         <source>Set the seperate window MDI mode</source>
-        <translation>Toplevel-Modus</translation>
+        <translation>In Toplevel-Modus umschalten</translation>
     </message>
 </context>
 <context>
@@ -597,15 +537,19 @@
     </message>
     <message>
         <source>Stop macro recording</source>
-        <translation>Makroaufnahme beenden</translation>
+        <translation>Makroaufzeichnung beenden</translation>
     </message>
     <message>
         <source>Stop the a running macro recording sassion</source>
-        <translation>Makroaufnahme beenden</translation>
+        <translation>Makroaufzeichnung beenden</translation>
     </message>
 </context>
 <context>
     <name>FCCmdNew</name>
+    <message>
+        <source>Standard</source>
+        <translation>Standard</translation>
+    </message>
     <message>
         <source>New</source>
         <translation>Neu</translation>
@@ -613,10 +557,6 @@
     <message>
         <source>Create a new empty Document</source>
         <translation>Erstelle neues Dokument</translation>
-    </message>
-    <message>
-        <source>Standard</source>
-        <translation>Standard</translation>
     </message>
 </context>
 <context>
@@ -676,7 +616,7 @@
     </message>
     <message>
         <source>Paste operation</source>
-        <translation>Aus der Zwischenablage einfügen</translation>
+        <translation>Einfügen</translation>
     </message>
 </context>
 <context>
@@ -777,7 +717,7 @@
     </message>
     <message>
         <source>Tile pragmatic</source>
-        <translation>Überlappend</translation>
+        <translation>Überlappend anordnen</translation>
     </message>
 </context>
 <context>
@@ -814,7 +754,7 @@
     <name>FCCmdViewAxo</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Axometric</source>
@@ -829,7 +769,7 @@
     <name>FCCmdViewBottom</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Bottom</source>
@@ -844,7 +784,7 @@
     <name>FCCmdViewCreateInventor</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Create new Inventor View</source>
@@ -852,14 +792,14 @@
     </message>
     <message>
         <source>Creates a new Inventor view window for the active document</source>
-        <translation>Neuen Inventor-View erstelle</translation>
+        <translation>Neuen Inventor-View erstellen</translation>
     </message>
 </context>
 <context>
     <name>FCCmdViewCreateOCC</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Create new OCC View</source>
@@ -874,7 +814,7 @@
     <name>FCCmdViewFitAll</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Fit all</source>
@@ -888,12 +828,12 @@
 <context>
     <name>FCCmdViewFront</name>
     <message>
-        <source>Front</source>
-        <translation>Vorne</translation>
+        <source>Standard-View</source>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
-        <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <source>Front</source>
+        <translation>Vorne</translation>
     </message>
     <message>
         <source>Set to front view</source>
@@ -904,7 +844,7 @@
     <name>FCCmdViewLeft</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Left</source>
@@ -919,7 +859,7 @@
     <name>FCCmdViewRear</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Rear</source>
@@ -934,7 +874,7 @@
     <name>FCCmdViewRight</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Right</source>
@@ -949,7 +889,7 @@
     <name>FCCmdViewTop</name>
     <message>
         <source>Standard-View</source>
-        <translation>Standard-View</translation>
+        <translation>Standard-Ansicht</translation>
     </message>
     <message>
         <source>Top</source>
@@ -1000,20 +940,20 @@
 <context>
     <name>FCCommandLine</name>
     <message>
-        <source>Open Console</source>
-        <translation>Öffne Konsole</translation>
-    </message>
-    <message>
-        <source>Clear Console</source>
-        <translation>Lösche Inhalt der Konsole</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
         <source>A really nesty error occurred in running the script</source>
-        <translation>Ein schwerwiegender Fehler ist während des Ablaufs des Skriptes aufgetreten.</translation>
+        <translation>Ein schwerwiegender Fehler ist während des Ablaufs des Skriptes aufgetreten</translation>
+    </message>
+    <message>
+        <source>Open Console</source>
+        <translation>Konsole öffnen</translation>
+    </message>
+    <message>
+        <source>Clear Console</source>
+        <translation>Konsoleninhalt löschen</translation>
     </message>
 </context>
 <context>
@@ -1102,15 +1042,15 @@
     </message>
     <message>
         <source>Accelerator:</source>
-        <translation>Accelerator:</translation>
+        <translation>Tastenbelegung:</translation>
     </message>
     <message>
         <source>What&apos;s this:</source>
-        <translation>Kontexthilfe</translation>
+        <translation>Kontexthilfe:</translation>
     </message>
     <message>
         <source>Menu text:</source>
-        <translation>Menutext:</translation>
+        <translation>Menütext:</translation>
     </message>
     <message>
         <source>Status text:</source>
@@ -1122,7 +1062,7 @@
     </message>
     <message>
         <source>Pixmap</source>
-        <translation>Pixmap:</translation>
+        <translation>Pixmap</translation>
     </message>
     <message>
         <source>Name:</source>
@@ -1145,7 +1085,7 @@
     </message>
     <message>
         <source>Macro not found</source>
-        <translation>Makro nicht gefunden.</translation>
+        <translation>Makro nicht gefunden</translation>
     </message>
     <message>
         <source>Sorry, macro not found.</source>
@@ -1169,7 +1109,7 @@
     </message>
     <message>
         <source>Empty text</source>
-        <translation>Leerer Text</translation>
+        <translation>LeeresTextfeld</translation>
     </message>
     <message>
         <source>Please specify the menu text first.</source>
@@ -1177,7 +1117,7 @@
     </message>
     <message>
         <source>Choose a Pixmap</source>
-        <translation>Pixmap wählen</translation>
+        <translation>Wählen Sie eine Pixmap aus</translation>
     </message>
 </context>
 <context>
@@ -1241,10 +1181,6 @@
 </context>
 <context>
     <name>FCDlgCustomCmdbarsImp</name>
-    <message>
-        <source>commandbar%1</source>
-        <translation type='obsolete'></translation>
-    </message>
     <message>
         <source>Do want to save your changes?</source>
         <translation>Möchten Sie Ihre Änderungen speichern?</translation>
@@ -1314,7 +1250,7 @@
     </message>
     <message>
         <source>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;Verschiebe ausgewählte Einträge eine Stufe nach unten.&lt;/b&gt;&lt;p&gt;Dies bewirkt auch eine Anpassung der Stufe des Vaterknotens.&lt;/p&gt;</translation>
+        <translation>&lt;b&gt;Move the selected item one level down.&lt;/b&gt;&lt;p&gt;This will also change the level of the parent item.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Move up</source>
@@ -1348,14 +1284,6 @@
 <context>
     <name>FCDlgCustomToolbarsImp</name>
     <message>
-        <source>toolbar%1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Delete selected toolbars</source>
-        <translation>Lösche ausgewählte Werkzeugleisten</translation>
-    </message>
-    <message>
         <source>Do want to save your changes?</source>
         <translation>Möchten Sie Ihre Änderungen speichern?</translation>
     </message>
@@ -1374,6 +1302,10 @@
     <message>
         <source>Specify the name of the new toolbar, please.</source>
         <translation>Geben Sie einen Namen für die neue Werkzeugleiste an.</translation>
+    </message>
+    <message>
+        <source>Delete selected toolbars</source>
+        <translation>Lösche ausgewählte Werkzeugleisten</translation>
     </message>
 </context>
 <context>
@@ -1423,19 +1355,11 @@
     </message>
     <message>
         <source>Font settings:</source>
-        <translation>Schrift</translation>
+        <translation>Schrift:</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation>Größe</translation>
-    </message>
-    <message>
-        <source>FontSize</source>
-        <translation>FontSize</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/Editor</source>
-        <translation>User parameter:BaseApp/Windows/Editor</translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <source>Font:</source>
@@ -1446,16 +1370,8 @@
         <translation>Fenstereinstellungen</translation>
     </message>
     <message>
-        <source>EnableLineNumber</source>
-        <translation>EnableLineNumber</translation>
-    </message>
-    <message>
         <source>Enable line numbers</source>
         <translation>Zeilennummerierung</translation>
-    </message>
-    <message>
-        <source>EnableFolding</source>
-        <translation>EnableFolding</translation>
     </message>
     <message>
         <source>Enable folding</source>
@@ -1515,7 +1431,7 @@
     </message>
     <message>
         <source>Number</source>
-        <translation>Zahl</translation>
+        <translation>Ziffer</translation>
     </message>
     <message>
         <source>String</source>
@@ -1542,11 +1458,11 @@
     <name>FCDlgGeneral</name>
     <message>
         <source>To take effect on the new language restart FreeCAD, please</source>
-        <translation>Um die ausgewähhlte Spracheinstellung wirksam werden zu lassen, müssen Sie FreeCAD neu starten.</translation>
+        <translation>Um die ausgewähhlte Spracheinstellung wirksam werden zu lassen, müssen Sie FreeCAD neu starten</translation>
     </message>
     <message>
-        <source>English (Default)</source>
-        <translation>Englisch (Standard)</translation>
+        <source>English</source>
+        <translation>English</translation>
     </message>
 </context>
 <context>
@@ -1554,22 +1470,6 @@
     <message>
         <source>General</source>
         <translation>Allgemein</translation>
-    </message>
-    <message>
-        <source>RecentFiles</source>
-        <translation>RecentFiles</translation>
-    </message>
-    <message>
-        <source>System parameter:BaseApp/Recent files</source>
-        <translation>System parameter:BaseApp/Recent files</translation>
-    </message>
-    <message>
-        <source>AllowSplasher</source>
-        <translation>AllowSplasher</translation>
-    </message>
-    <message>
-        <source>System parameter:BaseApp/WindowSettings</source>
-        <translation>System parameter:BaseApp/WindowSettings</translation>
     </message>
     <message>
         <source>Enable splashscreen at startup</source>
@@ -1584,28 +1484,16 @@
         <translation>Kommandzeile</translation>
     </message>
     <message>
-        <source>ShowCmdLine</source>
-        <translation>ShowCmdLine</translation>
-    </message>
-    <message>
         <source>Show command line</source>
         <translation>Kommandozeile anzeigen</translation>
     </message>
     <message>
-        <source>SizeCmdLine</source>
-        <translation>SizeCmdLine</translation>
-    </message>
-    <message>
         <source>Size of history</source>
-        <translation>Puffergröße</translation>
+        <translation>Puffergröße Verlauf</translation>
     </message>
     <message>
         <source>Drag and drop</source>
         <translation>Drag and drop</translation>
-    </message>
-    <message>
-        <source>AllowDrag</source>
-        <translation>AllowDrag</translation>
     </message>
     <message>
         <source>Allow dragging of menu items</source>
@@ -1616,24 +1504,16 @@
         <translation>Hauptfenster</translation>
     </message>
     <message>
-        <source>BigPixmaps</source>
-        <translation>BigPixmaps</translation>
-    </message>
-    <message>
         <source>Use big pixmaps</source>
         <translation>Große Pixmaps verwenden</translation>
     </message>
     <message>
-        <source>WindowStyle</source>
-        <translation>WindowStyle</translation>
-    </message>
-    <message>
         <source>Window style:</source>
-        <translation>Stil:</translation>
+        <translation>Fenster-Stil:</translation>
     </message>
     <message>
-        <source>Command bar</source>
-        <translation type='obsolete'>Befehlsleiste</translation>
+        <source>Animation speed of command bar</source>
+        <translation>Animationsgeschwindigkeit der Befehlsleiste</translation>
     </message>
     <message>
         <source>Slow</source>
@@ -1644,24 +1524,12 @@
         <translation>Schnell</translation>
     </message>
     <message>
-        <source>SpeedAnimationCmdBar</source>
-        <translation>SpeedAnimationCmdBar</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/CmdBar</source>
-        <translation>User parameter:BaseApp/Windows/CmdBar</translation>
-    </message>
-    <message>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
         <source>Choose language:</source>
-        <translation>Sprache auswählen</translation>
-    </message>
-    <message>
-        <source>Animation speed of command bar</source>
-        <translation>Animationsgeschwindigkeit der Befehlsleiste</translation>
+        <translation>Sprache auswählen:</translation>
     </message>
 </context>
 <context>
@@ -1682,34 +1550,6 @@
         <source>OK</source>
         <translation>OK</translation>
     </message>
-    <message>
-        <source>Editor</source>
-        <translation>Editor</translation>
-    </message>
-    <message>
-        <source>Macros</source>
-        <translation>Makros</translation>
-    </message>
-    <message>
-        <source>Online help</source>
-        <translation>Online-Hilfe</translation>
-    </message>
-    <message>
-        <source>Viewer</source>
-        <translation>Viewer</translation>
-    </message>
-    <message>
-        <source>Help Viewer</source>
-        <translation>Hilfe</translation>
-    </message>
-    <message>
-        <source>3D View</source>
-        <translation>3D-Viewer</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation>Allgemein</translation>
-    </message>
 </context>
 <context>
     <name>FCDlgSettingsBase</name>
@@ -1722,28 +1562,16 @@
         <translation>Browser-Einstellungen</translation>
     </message>
     <message>
-        <source>Other</source>
-        <translation type='obsolete'>Andere</translation>
+        <source>Other stuff</source>
+        <translation>Sonstige Einstellungen</translation>
     </message>
     <message>
         <source>External browser</source>
         <translation>Externer Browser</translation>
     </message>
     <message>
-        <source>LineEditURL</source>
-        <translation>LineEditURL</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/HelpViewer</source>
-        <translation>User parameter:BaseApp/Window/HelpViewer</translation>
-    </message>
-    <message>
         <source>index.php.html</source>
         <translation>index.php.html</translation>
-    </message>
-    <message>
-        <source>LineEditBrowser</source>
-        <translation>LineEditBrowser</translation>
     </message>
     <message>
         <source>Start URL</source>
@@ -1754,10 +1582,6 @@
         <translation>Lesezeichen</translation>
     </message>
     <message>
-        <source>EnableBookmarks</source>
-        <translation>EnableBookmarks</translation>
-    </message>
-    <message>
         <source>Enable bookmarks</source>
         <translation>Lesezeichen aktivieren</translation>
     </message>
@@ -1766,32 +1590,16 @@
         <translation>Max. Anzahl an Lesezeichen</translation>
     </message>
     <message>
-        <source>NbOfBookmarks</source>
-        <translation>NbOfBookmarks</translation>
-    </message>
-    <message>
         <source>History</source>
         <translation>Verlauf</translation>
     </message>
     <message>
         <source>Max. number of history items</source>
-        <translation>Max. Anzahl an Verlaufeinträge</translation>
-    </message>
-    <message>
-        <source>NbOfHistoryItems</source>
-        <translation>NbOfHistoryItems</translation>
-    </message>
-    <message>
-        <source>EnableHistory</source>
-        <translation>EnableHistory</translation>
+        <translation>Puffergröße Verlauf</translation>
     </message>
     <message>
         <source>Enable history</source>
         <translation>Verlauf aktivieren</translation>
-    </message>
-    <message>
-        <source>Other stuff</source>
-        <translation>Weitere Einstellungen</translation>
     </message>
 </context>
 <context>
@@ -1849,6 +1657,10 @@ Möchten Sie die Datei überschreiben?</translation>
 <context>
     <name>FCHtmlView</name>
     <message>
+        <source>FreeCAD Help - </source>
+        <translation>FreeCAD Hilfe -</translation>
+    </message>
+    <message>
         <source>Backward</source>
         <translation>Zurück</translation>
     </message>
@@ -1867,18 +1679,6 @@ Möchten Sie die Datei überschreiben?</translation>
     <message>
         <source>Open</source>
         <translation>Öffnen</translation>
-    </message>
-    <message>
-        <source>Add Bookmark</source>
-        <translation>Zu Lesezeichen hinzufügen</translation>
-    </message>
-    <message>
-        <source>Update Bookmarks</source>
-        <translation>Lesezeichen aktualisieren</translation>
-    </message>
-    <message>
-        <source>FreeCAD Help - </source>
-        <translation>FreeCAD Hilfe -</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -1910,9 +1710,19 @@ Möchten Sie die Datei überschreiben?</translation>
     </message>
     <message>
         <source>Couldn&apos;t find the path for the Online help.
-Propably, you should run the python script &apos;MakeDoc.py&apos; before.</source>
+Propably, you should run the python script &apos;MakeDoc.py&apos; before.
+Do you want to start this script now?</source>
         <translation>Der Pfad für die Online-Hilfe konnte nicht gefunden werden.
-Möglicherweise müssen Sie vorher das Python-Skript &apos;MakeDoc.py&apos; ausführen.</translation>
+Möglicherweise müssen Sie vorher das Python-Skript &apos;MakeDoc.py&apos; ausführen.
+Möchten Sie das Skript jetzt ausführen?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Nein</translation>
     </message>
     <message>
         <source>External browser</source>
@@ -1935,17 +1745,17 @@ Möglicherweise müssen Sie vorher das Python-Skript &apos;MakeDoc.py&apos; ausf
         <translation>&apos;%1&apos; wurde erfolgreich ausgeführt.</translation>
     </message>
     <message>
+        <source>Add Bookmark</source>
+        <translation>Zu Lesezeichen hinzufügen</translation>
+    </message>
+    <message>
+        <source>Update Bookmarks</source>
+        <translation>Lesezeichen aktualisieren</translation>
+    </message>
+    <message>
         <source>All unavailable bookmarks will be deleted
 Continue ?</source>
         <translation>Alle nicht verfügbare Lesezeichen werden gelöscht."nMöchten Sie fortfahren?</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation>Ja</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>Nein</translation>
     </message>
     <message>
         <source>%1 is unavailable.
@@ -1955,7 +1765,7 @@ Möchten Sie es löschen?</translation>
     </message>
     <message>
         <source>All bookmarks are uptodate</source>
-        <translation>Alle Lesezeichen sind aktualisiert.</translation>
+        <translation>Alle Lesezeichen sind aktualisiert</translation>
     </message>
 </context>
 <context>
@@ -1966,31 +1776,15 @@ Möchten Sie es löschen?</translation>
     </message>
     <message>
         <source>Download online help:</source>
-        <translation>Online-Hilfe herunterladen</translation>
-    </message>
-    <message>
-        <source>DownloadURL</source>
-        <translation>DownloadURL</translation>
-    </message>
-    <message>
-        <source>System parameter:BaseApp/WindowSettings</source>
-        <translation>System parameter:BaseApp/WindowSettings</translation>
+        <translation>Online-Hilfe herunterladen:</translation>
     </message>
     <message>
         <source>http://free-cad.sourceforge.net/index.html</source>
         <translation>http://free-cad.sourceforge.net/index.html</translation>
     </message>
     <message>
-        <source>ProxyText</source>
-        <translation>ProxyText</translation>
-    </message>
-    <message>
         <source>http://prx:8080</source>
         <translation>http://prx:8080</translation>
-    </message>
-    <message>
-        <source>UseProxy</source>
-        <translation>UseProxy</translation>
     </message>
     <message>
         <source>Use proxy</source>
@@ -2016,11 +1810,11 @@ Möchten Sie es löschen?</translation>
     </message>
     <message>
         <source>Click this button to reset the property to its default value</source>
-        <translation>Drücken Sie diesen Knopf, um zum Standardwert zurückzukehren.</translation>
+        <translation>Drücken Sie diesen Knopf, um zum Standardwert zurückzukehren</translation>
     </message>
     <message>
         <source>Property View</source>
-        <translation>Eigenschafts-Ansicht</translation>
+        <translation>Eigenschaften-Ansicht</translation>
     </message>
     <message>
         <source>Property</source>
@@ -2035,11 +1829,11 @@ Möchten Sie es löschen?</translation>
     <name>FCPropertyViewBoolItem</name>
     <message>
         <source>False</source>
-        <translation>Falsch</translation>
+        <translation>False</translation>
     </message>
     <message>
         <source>True</source>
-        <translation>Wahr</translation>
+        <translation>True</translation>
     </message>
 </context>
 <context>
@@ -2064,16 +1858,16 @@ Möchten Sie es löschen?</translation>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
         <source>Text</source>
         <translation>Text</translation>
     </message>
     <message>
         <source>Text input</source>
         <translation>Texteingabe</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -2123,6 +1917,14 @@ Möchten Sie es löschen?</translation>
 <context>
     <name>FCTextBrowser</name>
     <message>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
+    </message>
+    <message>
+        <source>File %1 does not exist.</source>
+        <translation>Datei %1 existiert nicht.</translation>
+    </message>
+    <message>
         <source>Can&apos;t load &apos;%1&apos;.
 Do you want to start your favourite external browser instead?</source>
         <translation>%1 konnte nicht geladen werden.
@@ -2138,14 +1940,14 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
     </message>
     <message>
         <source>Can&apos;t decode &apos;%1&apos;</source>
-        <translation>Die Datei &apos;%1&apos; kann nicht angezeigt werden.</translation>
+        <translation>Die Datei &apos;%1&apos; kann nicht angezeigt werden</translation>
     </message>
 </context>
 <context>
     <name>FCTree</name>
     <message>
         <source>Labels &amp; Attr.</source>
-        <translation>Ettiketten &amp; Attribute</translation>
+        <translation>Ettiketten &amp; Attribute.</translation>
     </message>
     <message>
         <source>Value</source>
@@ -2179,11 +1981,11 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
     </message>
     <message>
         <source>Add Text Entry</source>
-        <translation>Text-Eintrag hinzufügen</translation>
+        <translation>Texteintrag hinzufügen</translation>
     </message>
     <message>
         <source>Add Integer Entry</source>
-        <translation>Integer-Wert hinzufügen</translation>
+        <translation>Zahlwert hinzufügen</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -2195,7 +1997,7 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
     </message>
     <message>
         <source>Add Float Entry</source>
-        <translation>Float-Wert hinzufügen</translation>
+        <translation>Rationalzahlwert hinzufügen</translation>
     </message>
     <message>
         <source>Load parameter set ...</source>
@@ -2225,16 +2027,20 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
 <context>
     <name>QObject</name>
     <message>
+        <source>Opening file...</source>
+        <translation>Datei öffnen...</translation>
+    </message>
+    <message>
+        <source>Opening aborted</source>
+        <translation>Öffnen abgebrochen</translation>
+    </message>
+    <message>
         <source>Stop %1</source>
         <translation>%1 stoppen</translation>
     </message>
     <message>
         <source>Cannot start &apos;%1&apos;</source>
         <translation>&apos;%1&apos; kann nicht gestartet werden</translation>
-    </message>
-    <message>
-        <source>Ready</source>
-        <translation type='obsolete'>Bereit</translation>
     </message>
     <message>
         <source>Cannot zoom in any more
@@ -2245,6 +2051,10 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
         <source>Cannot zoom out any more
 </source>
         <translation>Kann nicht weiter herauszoomen</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <source>Save Report Output</source>
@@ -2259,20 +2069,36 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
         <translation>Kein aktives Dokument</translation>
     </message>
     <message>
-        <source>Set to bottom view</source>
-        <translation type='obsolete'>Unten</translation>
+        <source>FreeCAD</source>
+        <translation>FreeCAD</translation>
     </message>
     <message>
-        <source>Opening file...</source>
-        <translation>Datei öffnen</translation>
+        <source>General</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
-        <source>Opening aborted</source>
-        <translation>Öffnen abgebrochen</translation>
+        <source>Editor</source>
+        <translation>Editor</translation>
     </message>
     <message>
-        <source>Help</source>
+        <source>Macros</source>
+        <translation>Makros</translation>
+    </message>
+    <message>
+        <source>Online help</source>
+        <translation>Online-Hilfe</translation>
+    </message>
+    <message>
+        <source>Viewer</source>
+        <translation>Viewer</translation>
+    </message>
+    <message>
+        <source>Help Viewer</source>
         <translation>Hilfe</translation>
+    </message>
+    <message>
+        <source>3D View</source>
+        <translation>3D-Viewer</translation>
     </message>
 </context>
 <context>

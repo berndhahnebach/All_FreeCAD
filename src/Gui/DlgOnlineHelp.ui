@@ -75,11 +75,11 @@
             </property>
             <property>
                 <name>prefEntry</name>
-                <string>DownloadURL</string>
+                <cstring>DownloadURL</cstring>
             </property>
             <property>
                 <name>prefPath</name>
-                <string>System parameter:BaseApp/WindowSettings</string>
+                <cstring>System parameter:BaseApp/WindowSettings</cstring>
             </property>
             <property>
                 <name>text</name>
@@ -98,11 +98,11 @@
             </property>
             <property>
                 <name>prefEntry</name>
-                <string>ProxyText</string>
+                <cstring>ProxyText</cstring>
             </property>
             <property>
                 <name>prefPath</name>
-                <string>System parameter:BaseApp/WindowSettings</string>
+                <cstring>System parameter:BaseApp/WindowSettings</cstring>
             </property>
             <property>
                 <name>text</name>
@@ -121,11 +121,11 @@
             </property>
             <property>
                 <name>prefEntry</name>
-                <string>UseProxy</string>
+                <cstring>UseProxy</cstring>
             </property>
             <property>
                 <name>prefPath</name>
-                <string>System parameter:BaseApp/WindowSettings</string>
+                <cstring>System parameter:BaseApp/WindowSettings</cstring>
             </property>
             <property>
                 <name>text</name>
@@ -148,8 +148,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="String">text</property>
     </customwidget>
     <customwidget>
@@ -170,8 +170,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
 </customwidgets>
 <images>

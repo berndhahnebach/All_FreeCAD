@@ -67,6 +67,13 @@ class FCTools
     
     /** Clears only the tool buttons and the separators of a toolbar */
     static void clearToolButtons(QToolBar* tb);
+
+		/** Returns whether the given url is a: 
+		 * 0: an existing file
+		 * 1: a non-existing file but valid file name
+		 * 2: something else
+		 */
+		static int getURLType(const QString& url);
 };
 
 template <class T>

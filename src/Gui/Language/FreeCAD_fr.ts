@@ -7,6 +7,22 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
+        <source>Taskbar</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Toolbars</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Commandbars</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Status bar</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
         <source>Line Up Toolbars (compact)</source>
         <translation type='unfinished'></translation>
     </message>
@@ -24,22 +40,6 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Taskbar</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Toolbars</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Commandbars</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Status bar</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
         <source>Macro recording</source>
         <translation type='unfinished'></translation>
     </message>
@@ -48,12 +48,12 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>File operations</source>
-        <translation type='obsolete'></translation>
+        <source>file operations</source>
+        <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Special ops</source>
-        <translation type='obsolete'></translation>
+        <source>Special Ops</source>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Command bar</source>
@@ -73,14 +73,6 @@
     </message>
     <message>
         <source>Tree bar</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>file operations</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Special Ops</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -234,14 +226,6 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>UseInventorViewer</source>
-        <translation type='unfinished'>UseInventorViewer</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/View</source>
-        <translation type='unfinished'>User parameter:BaseApp/Windows/View</translation>
-    </message>
-    <message>
         <source>Use the Inventor viewer as default</source>
         <translation type='unfinished'></translation>
     </message>
@@ -250,48 +234,24 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>CornerCoordSystem</source>
-        <translation type='unfinished'>CornerCoordSystem</translation>
-    </message>
-    <message>
         <source>Show coordinate system in the corner</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>ShowFPS</source>
-        <translation type='unfinished'>ShowFPS</translation>
     </message>
     <message>
         <source>Show FPS Count</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>UseSimpleBackground</source>
-        <translation type='unfinished'>UseSimpleBackground</translation>
-    </message>
-    <message>
         <source>Use simple background</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>ShowViewerDecoration</source>
-        <translation type='unfinished'>ShowViewerDecoration</translation>
     </message>
     <message>
         <source>User defined inventor file (*.iv) for special viewer functions:</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>UserDefinedViewerExt</source>
-        <translation type='unfinished'>UserDefinedViewerExt</translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>UseAutoRotation</source>
-        <translation type='unfinished'>UseAutoRotation</translation>
     </message>
     <message>
         <source>Use auto rotation</source>
@@ -300,10 +260,6 @@
     <message>
         <source>OCC Viewer</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>UseAntialiasing</source>
-        <translation type='unfinished'>UseAntialiasing</translation>
     </message>
     <message>
         <source>Using anti aliasing</source>
@@ -321,14 +277,6 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>FilePath</source>
-        <translation type='unfinished'>FilePath</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Macro</source>
-        <translation type='unfinished'>User parameter:BaseApp/Macro</translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type='unfinished'></translation>
     </message>
@@ -337,16 +285,8 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>RecordGui</source>
-        <translation type='unfinished'>RecordGui</translation>
-    </message>
-    <message>
         <source>Recording gui commands</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>GuiAsComment</source>
-        <translation type='unfinished'>GuiAsComment</translation>
     </message>
     <message>
         <source>Record as comment</source>
@@ -607,15 +547,15 @@
 <context>
     <name>FCCmdNew</name>
     <message>
+        <source>Standard</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
         <source>New</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Create a new empty Document</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Standard</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -888,11 +828,11 @@
 <context>
     <name>FCCmdViewFront</name>
     <message>
-        <source>Front</source>
+        <source>Standard-View</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Standard-View</source>
+        <source>Front</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
@@ -1000,14 +940,6 @@
 <context>
     <name>FCCommandLine</name>
     <message>
-        <source>Open Console</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Clear Console</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation type='unfinished'></translation>
     </message>
@@ -1015,12 +947,20 @@
         <source>A really nesty error occurred in running the script</source>
         <translation type='unfinished'></translation>
     </message>
+    <message>
+        <source>Open Console</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Clear Console</source>
+        <translation type='unfinished'></translation>
+    </message>
 </context>
 <context>
     <name>FCCustomWidgetManager</name>
     <message>
         <source>File</source>
-        <translation>Fichier</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Edit</source>
@@ -1242,20 +1182,16 @@
 <context>
     <name>FCDlgCustomCmdbarsImp</name>
     <message>
-        <source>commandbar%1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
         <source>Do want to save your changes?</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type='unfinished'>Oui</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>No</source>
-        <translation type='unfinished'>Non</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>New command bar</source>
@@ -1348,14 +1284,6 @@
 <context>
     <name>FCDlgCustomToolbarsImp</name>
     <message>
-        <source>toolbar%1</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Delete selected toolbars</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
         <source>Do want to save your changes?</source>
         <translation type='unfinished'></translation>
     </message>
@@ -1373,6 +1301,10 @@
     </message>
     <message>
         <source>Specify the name of the new toolbar, please.</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Delete selected toolbars</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1430,14 +1362,6 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>FontSize</source>
-        <translation type='unfinished'>FontSize</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/Editor</source>
-        <translation type='unfinished'>User parameter:BaseApp/Windows/Editor</translation>
-    </message>
-    <message>
         <source>Font:</source>
         <translation type='unfinished'></translation>
     </message>
@@ -1446,16 +1370,8 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>EnableLineNumber</source>
-        <translation type='unfinished'>EnableLineNumber</translation>
-    </message>
-    <message>
         <source>Enable line numbers</source>
-        <translation type='unfinished'>Enable line numbers</translation>
-    </message>
-    <message>
-        <source>EnableFolding</source>
-        <translation type='unfinished'>EnableFolding</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Enable folding</source>
@@ -1545,7 +1461,7 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>English (Default)</source>
+        <source>English</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1554,22 +1470,6 @@
     <message>
         <source>General</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>RecentFiles</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>System parameter:BaseApp/Recent files</source>
-        <translation type='unfinished'>System parameter:BaseApp/Recent files</translation>
-    </message>
-    <message>
-        <source>AllowSplasher</source>
-        <translation type='unfinished'>AllowSplasher</translation>
-    </message>
-    <message>
-        <source>System parameter:BaseApp/WindowSettings</source>
-        <translation type='unfinished'>System parameter:BaseApp/WindowSettings</translation>
     </message>
     <message>
         <source>Enable splashscreen at startup</source>
@@ -1584,16 +1484,8 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>ShowCmdLine</source>
-        <translation type='unfinished'>ShowCmdLine</translation>
-    </message>
-    <message>
         <source>Show command line</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>SizeCmdLine</source>
-        <translation type='unfinished'>SizeCmdLine</translation>
     </message>
     <message>
         <source>Size of history</source>
@@ -1604,10 +1496,6 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>AllowDrag</source>
-        <translation type='unfinished'>AllowDrag</translation>
-    </message>
-    <message>
         <source>Allow dragging of menu items</source>
         <translation type='unfinished'></translation>
     </message>
@@ -1616,24 +1504,16 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>BigPixmaps</source>
-        <translation type='unfinished'>BigPixmaps</translation>
-    </message>
-    <message>
         <source>Use big pixmaps</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>WindowStyle</source>
-        <translation type='unfinished'>WindowStyle</translation>
     </message>
     <message>
         <source>Window style:</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Command bar</source>
-        <translation type='obsolete'></translation>
+        <source>Animation speed of command bar</source>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Slow</source>
@@ -1644,23 +1524,11 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>SpeedAnimationCmdBar</source>
-        <translation type='unfinished'>SpeedAnimationCmdBar</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/CmdBar</source>
-        <translation type='unfinished'>User parameter:BaseApp/Windows/CmdBar</translation>
-    </message>
-    <message>
         <source>Language</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Choose language:</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Animation speed of command bar</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1682,34 +1550,6 @@
         <source>OK</source>
         <translation type='unfinished'></translation>
     </message>
-    <message>
-        <source>Editor</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Macros</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Online help</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Viewer</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Help Viewer</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>3D View</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type='unfinished'></translation>
-    </message>
 </context>
 <context>
     <name>FCDlgSettingsBase</name>
@@ -1722,28 +1562,16 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Other</source>
-        <translation type='obsolete'></translation>
+        <source>Other stuff</source>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>External browser</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>LineEditURL</source>
-        <translation type='unfinished'>LineEditURL</translation>
-    </message>
-    <message>
-        <source>User parameter:BaseApp/Windows/HelpViewer</source>
-        <translation type='unfinished'>User parameter:BaseApp/Windows/HelpViewer</translation>
-    </message>
-    <message>
         <source>index.php.html</source>
-        <translation type='unfinished'>index.php.html</translation>
-    </message>
-    <message>
-        <source>LineEditBrowser</source>
-        <translation type='unfinished'>LineEditBrowser</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Start URL</source>
@@ -1754,20 +1582,12 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>EnableBookmarks</source>
-        <translation type='unfinished'>EnableBookmarks</translation>
-    </message>
-    <message>
         <source>Enable bookmarks</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Max. number of bookmarks</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>NbOfBookmarks</source>
-        <translation type='unfinished'>NbOfBookmarks</translation>
     </message>
     <message>
         <source>History</source>
@@ -1778,19 +1598,7 @@
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>NbOfHistoryItems</source>
-        <translation type='unfinished'>NbOfHistoryItems</translation>
-    </message>
-    <message>
-        <source>EnableHistory</source>
-        <translation type='unfinished'>EnableHistory</translation>
-    </message>
-    <message>
         <source>Enable history</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Other stuff</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -1848,6 +1656,10 @@ Replace existing file?</source>
 <context>
     <name>FCHtmlView</name>
     <message>
+        <source>FreeCAD Help - </source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
         <source>Backward</source>
         <translation type='unfinished'></translation>
     </message>
@@ -1865,18 +1677,6 @@ Replace existing file?</source>
     </message>
     <message>
         <source>Open</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Add Bookmark</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Update Bookmarks</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>FreeCAD Help - </source>
         <translation type='unfinished'></translation>
     </message>
     <message>
@@ -1909,7 +1709,16 @@ Replace existing file?</source>
     </message>
     <message>
         <source>Couldn&apos;t find the path for the Online help.
-Propably, you should run the python script &apos;MakeDoc.py&apos; before.</source>
+Propably, you should run the python script &apos;MakeDoc.py&apos; before.
+Do you want to start this script now?</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>No</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
@@ -1933,16 +1742,16 @@ Propably, you should run the python script &apos;MakeDoc.py&apos; before.</sourc
         <translation type='unfinished'></translation>
     </message>
     <message>
+        <source>Add Bookmark</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Update Bookmarks</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
         <source>All unavailable bookmarks will be deleted
 Continue ?</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>No</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
@@ -1959,35 +1768,19 @@ Continue ?</source>
     <name>FCOnlineHelpBase</name>
     <message>
         <source>OnlineHelp</source>
-        <translation type='unfinished'>OnlineHelp</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Download online help:</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>DownloadURL</source>
-        <translation type='unfinished'>DownloadURL</translation>
-    </message>
-    <message>
-        <source>System parameter:BaseApp/WindowSettings</source>
-        <translation type='unfinished'>System parameter:BaseApp/WindowSettings</translation>
-    </message>
-    <message>
         <source>http://free-cad.sourceforge.net/index.html</source>
-        <translation type='unfinished'>http://free-cad.sourceforge.net/index.html</translation>
-    </message>
-    <message>
-        <source>ProxyText</source>
-        <translation type='unfinished'>ProxyText</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>http://prx:8080</source>
-        <translation type='unfinished'>http://prx:8080</translation>
-    </message>
-    <message>
-        <source>UseProxy</source>
-        <translation type='unfinished'>UseProxy</translation>
+        <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Use proxy</source>
@@ -2061,15 +1854,15 @@ Continue ?</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type='unfinished'></translation>
-    </message>
-    <message>
         <source>Text</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Text input</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>...</source>
         <translation type='unfinished'></translation>
     </message>
 </context>
@@ -2119,6 +1912,14 @@ Continue ?</source>
 </context>
 <context>
     <name>FCTextBrowser</name>
+    <message>
+        <source>File not found</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>File %1 does not exist.</source>
+        <translation type='unfinished'></translation>
+    </message>
     <message>
         <source>Can&apos;t load &apos;%1&apos;.
 Do you want to start your favourite external browser instead?</source>
@@ -2221,16 +2022,20 @@ Do you want to start your favourite external browser instead?</source>
 <context>
     <name>QObject</name>
     <message>
+        <source>Opening file...</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Opening aborted</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
         <source>Stop %1</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
         <source>Cannot start &apos;%1&apos;</source>
         <translation type='unfinished'></translation>
-    </message>
-    <message>
-        <source>Ready</source>
-        <translation type='obsolete'></translation>
     </message>
     <message>
         <source>Cannot zoom in any more
@@ -2240,6 +2045,10 @@ Do you want to start your favourite external browser instead?</source>
     <message>
         <source>Cannot zoom out any more
 </source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Help</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
@@ -2255,19 +2064,35 @@ Do you want to start your favourite external browser instead?</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Set to bottom view</source>
-        <translation type='obsolete'></translation>
-    </message>
-    <message>
-        <source>Opening file...</source>
+        <source>FreeCAD</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Opening aborted</source>
+        <source>General</source>
         <translation type='unfinished'></translation>
     </message>
     <message>
-        <source>Help</source>
+        <source>Editor</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Macros</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Online help</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Viewer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>Help Viewer</source>
+        <translation type='unfinished'></translation>
+    </message>
+    <message>
+        <source>3D View</source>
         <translation type='unfinished'></translation>
     </message>
 </context>

@@ -97,7 +97,9 @@ HEADERS		=../Application.h \
 		../qextmdi/qextmdiiterator.h \
 		../qextmdi/qextmdimainfrm.h \
 		../qextmdi/qextmdinulliterator.h \
-		../qextmdi/qextmditaskbar.h
+		../qextmdi/qextmditaskbar.h \
+		LanguageFactory.h
+
 SOURCES		=../Application.cpp \
 		../ButtonGroup.cpp \
 		../Command.cpp \
@@ -166,7 +168,8 @@ SOURCES		=../Application.cpp \
 		../qextmdi/qextmdichildview.cpp \
 		../qextmdi/qextmdimainfrm.cpp \
 		../qextmdi/qextmditaskbar.cpp \
-		FreeCAD_de.po
+		LanguageFactory.cpp \
+		FreeCAD.po
 
 TRANSLATIONS	= FreeCAD_fr.ts \
 		  FreeCAD_de.ts

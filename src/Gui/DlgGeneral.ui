@@ -90,11 +90,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>RecentFiles</string>
+                                <cstring>RecentFiles</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/Recent files</string>
+                                <cstring>System parameter:BaseApp/Recent files</cstring>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -113,11 +113,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>AllowSplasher</string>
+                                <cstring>AllowSplasher</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
+                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -210,11 +210,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>ShowCmdLine</string>
+                                <cstring>ShowCmdLine</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
+                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -229,11 +229,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>SizeCmdLine</string>
+                                <cstring>SizeCmdLine</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
+                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -301,11 +301,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>AllowDrag</string>
+                                <cstring>AllowDrag</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
+                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -345,11 +345,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>BigPixmaps</string>
+                                <cstring>BigPixmaps</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
+                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -389,11 +389,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>WindowStyle</string>
+                                <cstring>WindowStyle</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>System parameter:BaseApp/WindowSettings</string>
+                                <cstring>System parameter:BaseApp/WindowSettings</cstring>
                             </property>
                         </widget>
                         <widget row="1"  column="0" >
@@ -470,11 +470,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>SpeedAnimationCmdBar</string>
+                                <cstring>SpeedAnimationCmdBar</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/CmdBar</string>
+                                <cstring>User parameter:BaseApp/Windows/CmdBar</cstring>
                             </property>
                             <property>
                                 <name>value</name>
@@ -540,8 +540,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="Int">currentItem</property>
         <property type="String">currentText</property>
     </customwidget>
@@ -563,8 +563,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCSlider</class>
@@ -582,8 +582,8 @@
         <property type="Int">minValue</property>
         <property type="Int">maxValue</property>
         <property type="Int">value</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="Int">tickInterval</property>
         <property type="Bool">tracking</property>
         <property type="Int">pageStep</property>
@@ -606,8 +606,8 @@
         <property type="Int">valueFloat</property>
         <property type="Int">decimals</property>
         <property type="Int">lineStep</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="Int">maxValue</property>
         <property type="Int">minValue</property>
     </customwidget>

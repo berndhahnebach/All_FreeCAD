@@ -81,11 +81,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>FilePath</string>
+                                <cstring>FilePath</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Macro</string>
+                                <cstring>User parameter:BaseApp/Macro</cstring>
                             </property>
                         </widget>
                         <widget>
@@ -135,11 +135,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>RecordGui</string>
+                                <cstring>RecordGui</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Macro</string>
+                                <cstring>User parameter:BaseApp/Macro</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -154,11 +154,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>GuiAsComment</string>
+                                <cstring>GuiAsComment</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Macro</string>
+                                <cstring>User parameter:BaseApp/Macro</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -185,8 +185,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCCheckBox</class>
@@ -206,8 +206,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
 </customwidgets>
 <images>

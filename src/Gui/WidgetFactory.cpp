@@ -139,14 +139,14 @@ FCWidgetFactorySupplier::FCWidgetFactorySupplier()
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-	FCDlgPreferencesImp::addGroup("FreeCAD");
-  new FCWidgetProducer<FCDlgGeneral>       ("General"     );
-  new FCWidgetProducer<FCDlgEditorSettings>("Editor"      );
-  new FCWidgetProducer<FCDlgSettingsMacro> ("Macros"      );
-  new FCWidgetProducer<FCOnlineHelp>       ("Online help" );
-	FCDlgPreferencesImp::addGroup("Viewer");
-  new FCWidgetProducer<FCDlgSettings>      ("Help Viewer" );
-  new FCWidgetProducer<FCDlgSettings3DView>("3D View"     );
+	FCDlgPreferencesImp::addGroup( QObject::tr("FreeCAD") );
+  new FCWidgetProducer<FCDlgGeneral>       ( QObject::tr("General"     ) );
+  new FCWidgetProducer<FCDlgEditorSettings>( QObject::tr("Editor"      ) );
+  new FCWidgetProducer<FCDlgSettingsMacro> ( QObject::tr("Macros"      ) );
+  new FCWidgetProducer<FCOnlineHelp>       ( QObject::tr("Online help" ) );
+	FCDlgPreferencesImp::addGroup( QObject::tr("Viewer") );
+  new FCWidgetProducer<FCDlgSettings>      ( QObject::tr("Help Viewer" ) );
+  new FCWidgetProducer<FCDlgSettings3DView>( QObject::tr("3D View"     ) );
 
 	// ADD YOUR PREFERENCE WIDGETS HERE
 	//

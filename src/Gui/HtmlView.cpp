@@ -40,6 +40,7 @@
 #include "Process.h"
 #include "Application.h"
 #include "PrefWidgets.h"
+#include "Tools.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
 #include "../Base/Documentation.h"
@@ -518,12 +519,20 @@ void FCTextBrowser::setSource (const QString & name)
     const QMimeSource* mime = mimeSourceFactory()->data(source, context());
     if (mime == NULL)
     {
-#if 0
-			QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
-      if (QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0) == 0)
-#endif
-        emit startExtBrowser(name);
-      return;
+			int type = FCTools::getURLType(source);
+			if ( type == 1 )
+			{
+				QMessageBox::information(this, tr("File not found"), tr("File %1 does not exist.").arg(source));
+				setText(tr("File not found"));
+				return;
+			}
+			else if ( type == 2 )
+			{
+				QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
+				if (QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0) == 0)
+					emit startExtBrowser(name);
+				return;
+			}
 	  }
 	  else 
 	  {
@@ -972,8 +981,8 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetDocDirectory()
 {
-  QString path = GetWindowParameter()->GetASCII("DocDir", "../Doc").c_str();
-//  QString path = GetWindowParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
+//  QString path = GetWindowParameter()->GetASCII("DocDir", "../Doc").c_str();
+  QString path = GetWindowParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
 
   QDir dir (path);
   dir.convertToAbs();
@@ -982,8 +991,20 @@ QString FCHtmlView::GetDocDirectory()
 
   if (QDir().exists(path) == false)
   {
-    QMessageBox::warning(this, tr("Path not found"),tr("Couldn't find the path for the Online help.\n"
-                         "Propably, you should run the python script 'MakeDoc.py' before."));
+    int ans = QMessageBox::warning(this, tr("Path not found"),
+			tr("Couldn't find the path for the Online help.\n"
+         "Propably, you should run the python script 'MakeDoc.py' before.\n"
+				 "Do you want to start this script now?"), tr("Yes"), tr("No"),QString::null, 0);
+		if (ans == 0)
+		{
+			QDir d(QDir::currentDirPath());
+			d.cdUp(); d.cd("src/Tools");
+			QString file = d.absPath() + "/MakeDoc.py";
+			try{
+				GetInterpreter().LaunchFile(file.latin1());
+			}catch(...){
+			}
+		}
   }
 
   return path;

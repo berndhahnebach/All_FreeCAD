@@ -81,11 +81,11 @@
                     </property>
                     <property>
                         <name>prefEntry</name>
-                        <string>FontSize</string>
+                        <cstring>FontSize</cstring>
                     </property>
                     <property>
                         <name>prefPath</name>
-                        <string>User parameter:BaseApp/Windows/Editor</string>
+                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
                     </property>
                 </widget>
                 <widget row="0"  column="0" >
@@ -143,11 +143,11 @@
                     </property>
                     <property>
                         <name>prefEntry</name>
-                        <string>EnableLineNumber</string>
+                        <cstring>EnableLineNumber</cstring>
                     </property>
                     <property>
                         <name>prefPath</name>
-                        <string>User parameter:BaseApp/Windows/Editor</string>
+                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
                     </property>
                     <property>
                         <name>text</name>
@@ -166,11 +166,11 @@
                     </property>
                     <property>
                         <name>prefEntry</name>
-                        <string>EnableFolding</string>
+                        <cstring>EnableFolding</cstring>
                     </property>
                     <property>
                         <name>prefPath</name>
-                        <string>User parameter:BaseApp/Windows/Editor</string>
+                        <cstring>User parameter:BaseApp/Windows/Editor</cstring>
                     </property>
                     <property>
                         <name>text</name>
@@ -423,8 +423,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="Int">currentItem</property>
         <property type="String">currentText</property>
     </customwidget>
@@ -446,8 +446,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCColorButton</class>

@@ -106,11 +106,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>LineEditURL</string>
+                                <cstring>LineEditURL</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/HelpViewer</string>
+                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -125,11 +125,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>LineEditBrowser</string>
+                                <cstring>LineEditBrowser</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/HelpViewer</string>
+                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
                             </property>
                         </widget>
                         <widget row="0"  column="0" >
@@ -193,11 +193,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>EnableBookmarks</string>
+                                <cstring>EnableBookmarks</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/HelpViewer</string>
+                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -256,11 +256,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>NbOfBookmarks</string>
+                                <cstring>NbOfBookmarks</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/HelpViewer</string>
+                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -319,11 +319,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>NbOfHistoryItems</string>
+                                <cstring>NbOfHistoryItems</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/HelpViewer</string>
+                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>valueFloat</name>
@@ -338,11 +338,11 @@
                             </property>
                             <property>
                                 <name>prefEntry</name>
-                                <string>EnableHistory</string>
+                                <cstring>EnableHistory</cstring>
                             </property>
                             <property>
                                 <name>prefPath</name>
-                                <string>User parameter:BaseApp/Windows/HelpViewer</string>
+                                <cstring>User parameter:BaseApp/Windows/HelpViewer</cstring>
                             </property>
                             <property>
                                 <name>text</name>
@@ -390,8 +390,8 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="String">text</property>
     </customwidget>
     <customwidget>
@@ -412,8 +412,8 @@
         <property type="Bool">checked</property>
         <property type="Bool">tristate</property>
         <property type="Bool">enabled</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
         <class>FCPrefSpinBox</class>
@@ -431,8 +431,8 @@
         <property type="Int">valueFloat</property>
         <property type="Int">decimals</property>
         <property type="Int">lineStep</property>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
         <property type="Int">maxValue</property>
         <property type="Int">minValue</property>
     </customwidget>
