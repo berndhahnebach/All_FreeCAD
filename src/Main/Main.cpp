@@ -121,6 +121,7 @@ void Destruct(void);
 void ParsOptions(int argc, char ** argv);
 void CheckEnv(void);
 void PrintInitHelp(void);
+const char* ExtractPath(const char*);
 
 
 
@@ -140,7 +141,7 @@ int main( int argc, char ** argv )
 
 		// the FreeCAD Application
 
-		GetApplication();
+		GetApplication().SetHomePath(ExtractPath(argv[0]));
 #	ifndef _DEBUG
 	}
 	// catch all OCC exceptions
@@ -309,6 +310,8 @@ void Destruct(void)
  **/
 void Init(int argc, char ** argv )
 {
+  // extract home path
+  ExtractPath(argv[0]);
   // make user specific parameter file
   char* user = getenv("USERNAME");
   if (user == NULL) user = getenv("USER");
@@ -386,6 +389,22 @@ void Init(int argc, char ** argv )
 
 	// starting the init script
 	rcInterperter.Launch(FreeCADInit);
+
+}
+
+//**************************************************************************
+// extracting the home path
+
+const char* ExtractPath(const char* sCall)
+{
+	std::string Call(sCall);
+	static std::string Temp;
+
+	std::string::size_type pos = Call.find_last_of('\\');
+
+	Temp.assign(Call,0,pos+1);
+
+	return Temp.c_str();
 
 }
 

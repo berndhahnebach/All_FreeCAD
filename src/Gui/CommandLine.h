@@ -137,13 +137,13 @@ class FCWindowsStyle : public QWindowsStyle
       bool maxedOut = (sb->maxValue() == sb->minValue());
       if ( controls & AddLine ) 
       {
-        if (sb->maxValue() != sb->value())
+//        if (sb->maxValue() != sb->value())
 	        drawArrow( p, VERTICAL ? DownArrow : RightArrow, ADD_LINE_ACTIVE, addB.x()+2, addB.y()+2,
         		         addB.width()-4, addB.height()-4, g, !maxedOut );
       }
       if ( controls & SubLine ) 
       {
-        if (sb->minValue() != sb->value())
+//        if (sb->minValue() != sb->value())
 	        drawArrow( p, VERTICAL ? UpArrow : LeftArrow, SUB_LINE_ACTIVE, subB.x()+2, subB.y()+2,
          		         subB.width()-4, subB.height()-4, g, !maxedOut );
       }

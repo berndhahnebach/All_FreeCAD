@@ -160,6 +160,8 @@ public:
 	PYFUNCDEF_S(sGet);
 	PYFUNCDEF_S(sGetParam);
 	PYFUNCDEF_S(sGetVersion);
+	PYFUNCDEF_S(sGetHomePath);
+	PYFUNCDEF_S(sGetDebugMode);
 
 	static PyMethodDef    Methods[]; 
 
@@ -176,6 +178,8 @@ public:
 	/// Destructor
 	~FCApplication();
 
+	void SetHomePath(const char* s){_cHomePath = s;}
+	const char* GetHomePath(void){return _cHomePath.c_str();}
 private:
 
 	/// Attach an Observer to monitor the Application
@@ -196,6 +200,7 @@ private:
 	/// The container of all attached Obervers
 	std::set<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
+	std::string _cHomePath;
 
 	std::map<std::string,FCParameterManager *> mpcPramManager;
 	FCParameterManager *_pcSysParamMngr;

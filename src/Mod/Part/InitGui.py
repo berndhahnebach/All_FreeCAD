@@ -40,16 +40,16 @@ class PartWorkbench ( Workbench ):
 			import PartGui
 		except:
 			Err('   can not load PartGui')
-			
-		Log ('   Set up part toolbar...\n')
-		Gui.ToolbarAddTo("PartTools","Part_Test1")
-		Gui.ToolbarAddTo("PartTools","Part_Test2")
+		else:	
+			Log ('   Set up part toolbar...\n')
+			Gui.ToolbarAddTo("PartTools","Part_Test1")
+			Gui.ToolbarAddTo("PartTools","Part_Test2")
 
-		Log ('   Set up part commandbar...\n')
-		Gui.CommandbarAddTo("PartTools","Part_Test1")
-		Gui.CommandbarAddTo("PartTools","Part_Test2")
+			Log ('   Set up part commandbar...\n')
+			Gui.CommandbarAddTo("PartTools","Part_Test1")
+			Gui.CommandbarAddTo("PartTools","Part_Test2")
 
-		Log ('   Set up part menues...\n')
+			Log ('   Set up part menues...\n')
 
 	def Stop(self):
 		Log ('   Stoping part workbench...\n')

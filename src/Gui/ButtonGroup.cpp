@@ -529,6 +529,7 @@ void FCToolboxButton::enterEvent( QEvent* )
   if ( isEnabled() )
   {
     raised = TRUE;
+    setBackgroundMode(PaletteBackground);
     repaint(FALSE);
   }
 }
@@ -538,6 +539,7 @@ void FCToolboxButton::leaveEvent( QEvent * )
   if( raised != FALSE )
   {
     raised = FALSE;
+    setBackgroundMode(PaletteLight);
     repaint();
   }
 }
@@ -735,6 +737,17 @@ QStackBarBtn::QStackBarBtn( QWidget *parent, const char *name )
 }
 
 /*!
+ * \brief destructor
+ *
+ */
+QStackBarBtn::~QStackBarBtn()
+{
+  if (w)
+    delete w;
+  w = NULL;
+}
+
+/*!
  * \brief Marks/unmarks the button as selected
  *
  */
@@ -885,6 +898,7 @@ FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
     m_pCurPage  = NULL;
     m_pLastPage = NULL,
     m_pLayout   = new QVBoxLayout( this );
+    m_lAnimCount = 10;
 }
 
 /*!
@@ -910,6 +924,9 @@ void FCCmdBar::addPage( const QString &name, QWidget *page )
     return; // no valid object	
   }
 
+  if (m_lButtons.size() == 0)
+    show(); //show again
+
   page->setBackgroundMode( PaletteBackground );
   QStackBarBtn *button = new QStackBarBtn( this, name.latin1() );
   button->setWidget(page);
@@ -922,6 +939,7 @@ void FCCmdBar::addPage( const QString &name, QWidget *page )
   sv->setResizePolicy( QScrollView::AutoOneFit );
   sv->addChild( page );
   sv->setFrameStyle( QFrame::NoFrame );
+  sv->verticalScrollBar()->setStyle(new FCWindowsStyle);
   page->show();
   m_mViews[button] = sv;
   m_pLayout->addWidget( button );
@@ -942,6 +960,7 @@ void FCCmdBar::addPage( const QString &name, QWidget *page )
   }
   
   updatePages();
+  connect(sv->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(repaint()));
 }
 
 void FCCmdBar::buttonClicked()
@@ -960,7 +979,7 @@ void FCCmdBar::buttonClicked()
 	  m_pLastPage->setSelected( false );
     
   m_pLastPage = tb;
-  
+
   if ( m_pCurPage )
 	  m_pCurPage->hide();
     
@@ -984,6 +1003,10 @@ void FCCmdBar::updatePages()
     (*it)->update();
     after = (*it) == m_pLastPage;
   }
+}
+
+void FCCmdBar::timerEvent ( QTimerEvent * )
+{
 }
 
 /*!
@@ -1076,6 +1099,9 @@ void FCCmdBar::setCurPage( int i )
 void FCCmdBar::remPage( QStackBarBtn * b)
 {
 	m_lButtons.remove( b );
+  delete b;
+  if (m_lButtons.size() == 0)
+    hide();
 }
 
 #include "moc_ButtonGroup.cpp"

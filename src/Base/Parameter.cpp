@@ -1037,7 +1037,7 @@ PyObject *FCPyParameterGrp::PyGetFloat(PyObject *args)
 	double  Float=0.0;
     if (!PyArg_ParseTuple(args, "s|d", &pstr,&Float))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	return Py_BuildValue("i",_cParamGrp->GetFloat(pstr,Float));
+	return Py_BuildValue("d",_cParamGrp->GetFloat(pstr,Float));
 } 
 
 PyObject *FCPyParameterGrp::PySetString(PyObject *args)
@@ -1056,7 +1056,7 @@ PyObject *FCPyParameterGrp::PyGetString(PyObject *args)
 	char *  str="";
     if (!PyArg_ParseTuple(args, "s|d", &pstr,&str))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	return Py_BuildValue("i",_cParamGrp->GetASCII(pstr,str).c_str());
+	return Py_BuildValue("s",_cParamGrp->GetASCII(pstr,str).c_str());
 } 
 
 

@@ -114,3 +114,7 @@ Version: V0.1B29 Date: Wed Feb 05 09:22:38 2003 +++++++++++++++++++++++++++++++
   - rewritten Command Bar
 + some work on the Part module (now loading in release)
 
+
+Version: V0.1B30 Date: Thu Feb 06 20:47:18 2003 +++++++++++++++++++++++++++++++
++ fix for the CommandBar (Werner)
++ fix for module loding

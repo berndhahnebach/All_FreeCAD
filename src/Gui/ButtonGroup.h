@@ -204,6 +204,7 @@ class QStackBarBtn : public QToolButton
   public:
     QStackBarBtn( QWidget *parent, const char *name );
     QStackBarBtn( QWidget *object, QWidget *parent, const char *name );
+    ~QStackBarBtn();
 
     void setSelected( bool b );
     void setWidget(QWidget* widget);
@@ -240,8 +241,10 @@ class FCCmdBar : public FCDockWindow
 
   private:
     void updatePages();
+    void timerEvent ( QTimerEvent * e);
 
   private:
+    long                           m_lAnimCount;
     QVBoxLayout                  * m_pLayout;
     QWidget                      * m_pCurPage;
     QStackBarBtn                 * m_pLastPage;

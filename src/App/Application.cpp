@@ -274,13 +274,15 @@ const std::map<std::string,FCParameterManager *> & FCApplication::GetParameterSe
 
 // FCApplication Methods						// Methods structure
 PyMethodDef FCApplication::Methods[] = {
-	{"DocNew",         (PyCFunction) FCApplication::sNew,       1},
-	{"DocOpen",        (PyCFunction) FCApplication::sOpen,      1},
-	{"DocSave"  ,      (PyCFunction) FCApplication::sSave,      1},
-	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,    1},
-	{"DocGet",         (PyCFunction) FCApplication::sGet,       1},
-	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,  1},
-	{"Version",        (PyCFunction) FCApplication::sGetVersion,1},
+	{"DocNew",         (PyCFunction) FCApplication::sNew,         1},
+	{"DocOpen",        (PyCFunction) FCApplication::sOpen,        1},
+	{"DocSave"  ,      (PyCFunction) FCApplication::sSave,        1},
+	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,      1},
+	{"DocGet",         (PyCFunction) FCApplication::sGet,         1},
+	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,    1},
+	{"Version",        (PyCFunction) FCApplication::sGetVersion,  1},
+	{"GetHomePath",    (PyCFunction) FCApplication::sGetHomePath ,1},
+	{"GetDebugMode",   (PyCFunction) FCApplication::sGetDebugMode,1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -367,6 +369,27 @@ PYFUNCIMP_S(FCApplication,sGetParam)
 		return new FCPyParameterGrp(GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
 	else
 		return new FCPyParameterGrp(GetApplication().GetSystemParameter().GetGroup("BaseApp"));  
+}
+
+
+PYFUNCIMP_S(FCApplication,sGetHomePath)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	return Py_BuildValue("s",GetApplication().GetHomePath());
+}
+
+PYFUNCIMP_S(FCApplication,sGetDebugMode)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+#ifdef _DEBUG
+	return Py_BuildValue("i",1);
+#else
+	return Py_BuildValue("i",0);
+#endif
 }
 
 PYFUNCIMP_S(FCApplication,sGetVersion)
