@@ -128,7 +128,7 @@ void FCCmdTest1::Activated(int iMsg)
 	root->renderCaching = SoSeparator::ON;
 	root->addChild(hints);
 
-	_putenv( "COIN_SHOW_FPS_COUNTER=1" );
+	putenv( "COIN_SHOW_FPS_COUNTER=1" );
 
 	bool nurbs_enable = false;
 	bool selection = false;
