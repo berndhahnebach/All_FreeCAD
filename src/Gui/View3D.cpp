@@ -48,42 +48,11 @@
 
 
 FCView3D::FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
-    :FCView( pcDocument, parent, name, wflags )
+    :FCView( pcDocument,parent, name, wflags)
 {
-	
-	QVBox* vb2;
-	//vb= new QVBox( this );
-    QVBoxLayout* vb = new QVBoxLayout(this);
+	_pcVBoxLayout = new QVBox(this);
 
-	//vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-	// set the splitter frames
-	_pcSplitter = new QSplitter( QSplitter::Horizontal, this, "Main");
-	vb->addWidget(_pcSplitter);
-	vb2 = new QVBox( _pcSplitter );
-	_pcSplitter->setResizeMode(vb2,QSplitter::KeepSize);
-	QValueList<int> size;
-	size.append(180);
-	size.append(100);
-	_pcSplitter->setSizes (size);
-
-	vb2->setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
-	_pcWidget	= new QWidget (vb2);
-	//_pcWidget	= new QWidget (_pcSplitter);
-	_pcTree		= new FCTree(_pcDocument,_pcWidget,"Tree");
-	_pcTabBar	= new QTabBar(_pcWidget);
-	_pcTabBar->setShape(QTabBar::RoundedBelow);
-	_pcTabBar->addTab(new QTab("3D"));
-	_pcTabBar->addTab(new QTab("Raw"));
-
-	_pcVBoxLayout		= new QVBoxLayout( _pcWidget ); // A layout on the widget
-    _pcVBoxLayout->addWidget( _pcTree );
-	_pcVBoxLayout->addWidget( _pcTabBar );
-
-	vb2 = new QVBox( _pcSplitter );
-	vb2->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-	_pcView3D = new View3D(_pcDocument,vb2);
-	
-	//createViewActions();
+	_pcView3D = new View3D(_pcDocument,_pcVBoxLayout);
 	
 }
 
@@ -92,10 +61,6 @@ FCView3D::~FCView3D()
   delete _pcView3D;
 }
 
-FCGuiDocument* FCView3D::getDocument()
-{
-	return _pcDocument;
-}
 
 void FCView3D::closeEvent(QCloseEvent* e)
 {
@@ -106,7 +71,7 @@ void FCView3D::closeEvent(QCloseEvent* e)
 */
 
 	emit sendCloseView(this);
-	QextMdiChildView::closeEvent(e);
+//	QextMdiChildView::closeEvent(e);
 }
 
 const char *FCView3D::GetName(void)
@@ -118,9 +83,9 @@ bool FCView3D::OnMsg(const char* pMsg)
 {
 	//printf("Msg: %s View: %p\n",pMsg,this);
 
-	if (_pcView3D->OnMsg(pMsg)) return true;
-	if (_pcTree->OnMsg(pMsg))   return true;
-
+//	if (_pcView3D->OnMsg(pMsg)) return true;
+//	if (_pcTree->OnMsg(pMsg))   return true;
+assert(0);
 	return false;
 }
 

@@ -44,7 +44,7 @@
 
 class 	ParameterLabelGroup;
 
-class DlgParameter : public ParameterDialog, public FCWindow
+class DlgParameter : public ParameterDialog, public FCWindowParameter
 { 
     Q_OBJECT
 

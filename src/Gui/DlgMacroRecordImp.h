@@ -35,7 +35,7 @@
 #include "DlgMacroRecord.h"
 #include "Window.h"
 
-class DlgMacroRecordImp : public DlgMacroRecord, public FCWindow
+class DlgMacroRecordImp : public DlgMacroRecord, public FCWindowParameter
 { 
     Q_OBJECT
 

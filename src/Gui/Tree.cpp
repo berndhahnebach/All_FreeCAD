@@ -43,32 +43,18 @@ FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
 
 	cString.sprintf("Tag:%d",_hcLabel->GetOCCLabel().Tag());
 	setText(0,cString);
-	
-/*	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
-
-	for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
-	{
-		new FCTreeLabel(this,*It);
-	}
-*/
-	
+		
 }
 
 FCTreeLabel::FCTreeLabel( FCTree * parent)
-	:QListViewItem((QListView*)parent),
+	:QListViewItem(parent->_pcListView),
 	 _pcDocument(parent->_pcDocument),
 	 _hcLabel(parent->_pcDocument->GetDocument()->Main()),
 	 _bOpend(false)
 {
 	setText(0,"Main Label");
 	
-	std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
-
-	for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
-	{
-		new FCTreeLabel(this,*It);
-	}
-
+	Update();
 }
 
 
@@ -92,6 +78,29 @@ const QPixmap *FCTreeLabel::pixmap( int i ) const
 	return 0;
 
     //return pix;
+}
+
+void FCTreeLabel::Update(void)
+{
+	puts("setOpen");
+	// quieck an dirty
+	if(_hcLabel->GetOCCLabel().HasChild() && !_bOpend)
+	{
+		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
+		//	delete pItem;
+
+		std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+
+		for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+		{
+			new FCTreeLabel(this,*It);
+		}
+
+		_bOpend = true;
+
+	}	
+
+
 }
 
 void FCTreeLabel::setOpen( bool o )
@@ -163,7 +172,7 @@ void FCTreeLabel::setOpen( bool o )
 
 void FCTreeLabel::setup()
 {
-    setExpandable( TRUE );
+    //setExpandable( TRUE );
     QListViewItem::setup();
 }
 
@@ -175,17 +184,19 @@ void FCTreeLabel::activate ()
 
 
 FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
-	:QListView(parent,name),
-	 _pcDocument(pcDocument)
+	:FCView(pcDocument,parent,name)
 {
+	_pcVBoxLayout = new QVBox(this);
+
+	_pcListView = new QListView(_pcVBoxLayout,name);
 	//_hDoc = hDoc;
 	//setRootIsDecorated(true);
-	setSorting(-1,false);
+	_pcListView->setSorting(-1,false);
 
-	addColumn("Labels");
-	setColumnWidthMode(0,Maximum);
-	addColumn("Value");
-	setColumnWidthMode(1,Maximum);
+	_pcListView->addColumn("Labels");
+	_pcListView->setColumnWidthMode(0,QListView::Maximum);
+	_pcListView->addColumn("Value");
+	_pcListView->setColumnWidthMode(1,QListView::Maximum);
 	//addColumn("Attributes.");
 
 	// Add the first main label

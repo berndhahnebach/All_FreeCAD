@@ -73,10 +73,10 @@ class FCView3D: public FCView
 public:
 	FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	~FCView3D();
-	FCGuiDocument* getDocument();
 
 	/// Mesage handler
 	virtual bool OnMsg(const char* pMsg);
+	virtual const char *GetName(void);
 
 signals:
 	//void message(const QString&, int );
@@ -87,16 +87,13 @@ public slots:
 	void onWindowActivated ();
 	void setCursor(const QCursor&);
 	void dump();
-	virtual const char *GetName(void);
 
 protected:
 	//void createViewActions();
 private:
 	View3D*			_pcView3D;
-	QSplitter*		_pcSplitter;
-	FCTree*		    _pcTree;
 	QWidget*		_pcWidget;
-	QVBoxLayout*	_pcVBoxLayout;    
+	QVBox*	_pcVBoxLayout;    
 	QWidgetStack*	_pcWidgetStack;
 	QTabBar*		_pcTabBar;
 

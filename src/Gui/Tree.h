@@ -25,38 +25,7 @@
 
 /// Forwards
 class FCLabel; 
-
-
-/** A container for FCTreeLabelType objects
- 
-class FCTreeLabelTypeContainer : public FCPyObject
-{
-public:
-	/// Constructor
-    FCTreeLabelTypeContainer( void );
-
-protected:
-
-};
-
-
-
-
-/** Defines the behacvior of the Tree node of special signature of a Label
- 
-class FCTreeLabelType : public FCPyObject
-{
-public:
-	/// Constructor
-    FCTreeLabelType( void );
-
-protected:
-
-};
-*/
-
-
-
+class FCTree;
 
 
 
@@ -82,6 +51,8 @@ public:
     /// Sets the pixmap that will be shown.
     void setPixmap( QPixmap *p );
 
+	void Update(void);
+
 
 
 protected:
@@ -98,7 +69,7 @@ protected:
 
 class FCGuiDocument;
 
-class FCTree :public QListView
+class FCTree :public FCView
 {
 	Q_OBJECT
 public:
@@ -106,11 +77,16 @@ public:
 	// App_Tree();
 
 	bool OnMsg(const char* pMsg);
+
+	virtual const char *GetName(void){return "Raw Tree";}
 	
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
 	friend FCTreeLabel;
-private:
-	FCGuiDocument*  _pcDocument;
+
+protected:
+	QVBox*	_pcVBoxLayout;    
+	QListView*		_pcListView;
+
 };
 
 

@@ -35,7 +35,7 @@
 #include "DlgMacroExecute.h"
 #include "Window.h"
 
-class DlgMacroExecuteImp : public DlgMacroExecute, public FCWindow
+class DlgMacroExecuteImp : public DlgMacroExecute, public FCWindowParameter
 { 
     Q_OBJECT
 

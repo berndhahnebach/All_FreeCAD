@@ -54,7 +54,7 @@
 
 class FCGuiDocument;
 class QComboBox;
-class FCDockWindow;
+class FCWindow;
 class QToolBar;
 class FCView;
 class FCToolboxBar;
@@ -149,9 +149,9 @@ public:
 	void DelCommandBar(const char* name);
 
 	/// Add a new named Dock Window
-	void          AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);
+	void          AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);
 	/// Gets you a registered Dock Window back
-	FCDockWindow *GetDockWindow(const char* name);
+	FCWindow *    GetDockWindow(const char* name);
 	/// Delete (or only remove) a named Dock Window
 	void          DelDockWindow(const char* name, bool bOnlyRemove = false);
 
@@ -233,7 +233,7 @@ private:
 	/// list of all handled documents
  	std::list<FCGuiDocument*>         lpcDocuments;
 	/// list of windows
-	std::map <std::string,FCDockWindow*> mpcDocWindows;
+	std::map <std::string,FCWindow*> mpcDocWindows;
 #	pragma warning( default : 4251 )
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;

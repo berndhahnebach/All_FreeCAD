@@ -36,7 +36,7 @@
 #include "DlgDocTemplates.h"
 #include "Window.h"
 
-class DlgDocTemplatesImp : virtual public DlgDocTemplates, public FCWindow
+class DlgDocTemplatesImp : virtual public DlgDocTemplates, public FCWindowParameter
 { 
     Q_OBJECT
 
@@ -47,7 +47,7 @@ public:
 
 	// for linux one dummy constructor:
 	DlgDocTemplatesImp(int dummy, QWidget* parent,  const char* name, bool modal, WFlags fl )
-		:FCWindow(name){DlgDocTemplatesImp(parent,name,modal,fl);}
+		:FCWindowParameter(name){DlgDocTemplatesImp(parent,name,modal,fl);}
 
 public slots:
     virtual void ChoseFile();

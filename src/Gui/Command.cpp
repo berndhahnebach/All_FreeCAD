@@ -142,8 +142,10 @@ void FCCommand::toggled (bool b)
 
 void FCCommand::TestActive(void)
 {
-	if(_pcAction)
-		_pcAction->setEnabled ( IsActive() );
+	if(!_pcAction) return;
+	
+	bool bActive = IsActive();
+	_pcAction->setEnabled ( bActive );
 }
 
 

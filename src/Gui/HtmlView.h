@@ -93,7 +93,7 @@ class FCHtmlComboBox : public QComboBox
 /**
  * The HTML viewer class
  */
-class GuiExport FCHtmlView : public FCDockWindow, public FCObserver
+class GuiExport FCHtmlView : public FCWindow, public FCObserver
 { 
     Q_OBJECT
 

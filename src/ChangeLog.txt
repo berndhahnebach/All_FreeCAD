@@ -197,3 +197,7 @@ Version: V0.1B48 Date: Sun Mar 30 15:06:23 2003 +++++++++++++++++++++++++++++++
   - feeding toolbars and Commandbar and menus from the parameterts
   - customizing works with positions in command bar and toolbar
   - customizing by draging from menu into toolbar and commandbar
+
+Version: V0.1B49 Date: Thu Apr 03 22:45:35 2003 +++++++++++++++++++++++++++++++
++ Master redisign of the window system, not yet full working
+

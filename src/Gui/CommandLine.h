@@ -154,7 +154,7 @@ class FCWindowsStyle : public QWindowsStyle
 
 /** The command line class
  */
-class GuiExport FCCommandLine : public QComboBox, public FCWindow
+class GuiExport FCCommandLine : public QComboBox, public FCWindowParameter
 {
   Q_OBJECT
 

@@ -38,7 +38,7 @@
 // forward declaration
 class QTabWidget;
 
-class DlgPreferencesImp : public DlgPreferences, public FCWindow
+class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
 { 
     Q_OBJECT
 

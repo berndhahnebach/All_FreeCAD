@@ -53,7 +53,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroRecord( parent, name, modal, fl ),FCWindow(name)
+    : DlgMacroRecord( parent, name, modal, fl ),FCWindowParameter(name)
 {
 }
 

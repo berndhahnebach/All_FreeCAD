@@ -37,7 +37,7 @@
 #include "DlgPartBox.h"
 
 
-class DlgPartBoxImp : public DlgPartBox, public FCWindow
+class DlgPartBoxImp : public DlgPartBox, public FCWindowParameter
 { 
     Q_OBJECT
 

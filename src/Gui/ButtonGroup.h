@@ -173,7 +173,7 @@ class QStackBarBtn : public QToolButton
     QWidget* w;
 };
 
-class FCCmdBar : public FCDockWindow
+class FCCmdBar : public FCWindow
 {
   Q_OBJECT;
 

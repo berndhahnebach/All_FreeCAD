@@ -70,7 +70,7 @@ void FCConsoleValidator::fixup ( QString & txt) const
 ////////////////////////////////////////////////////////////////////
 
 FCCommandLine::FCCommandLine(void)
-: QComboBox(true, NULL), FCWindow("command line")
+: QComboBox(true, NULL), FCWindowParameter("command line")
 {
   // run commands
   _astrRunCmds.push_back("run");

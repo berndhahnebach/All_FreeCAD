@@ -241,7 +241,7 @@ void ApplicationWindow::DelCommandBar(const char* name)
 }
 
 /// Add a new named Dock Window
-void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
+void ApplicationWindow::AddDockWindow(const char* name,FCWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
 {
 	// 	std::map <std::string,FCDockWindow*> mpcDocWindows;
 	mpcDocWindows[name] = pcDocWindow;
@@ -249,7 +249,7 @@ void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow
 	str += " dockable window";
 	if(sCompanion)
 	{
-		FCDockWindow* pcWnd = GetDockWindow(sCompanion);
+		FCWindow* pcWnd = GetDockWindow(sCompanion);
 		assert(pcWnd);
 		addToolWindow( pcDocWindow, pos, pcWnd, 83, str, name);
 	}else
@@ -257,9 +257,9 @@ void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow
 }
 
 /// Gets you a registered Dock Window back
-FCDockWindow *ApplicationWindow::GetDockWindow(const char* name)
+FCWindow *ApplicationWindow::GetDockWindow(const char* name)
 {
-	std::map <std::string,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
+	std::map <std::string,FCWindow*>::iterator It = mpcDocWindows.find(name);
 	if( It!=mpcDocWindows.end() )
 		return It->second;
 	else
@@ -269,7 +269,7 @@ FCDockWindow *ApplicationWindow::GetDockWindow(const char* name)
 /// Delete (or only remove) a named Dock Window
 void ApplicationWindow::DelDockWindow(const char* name, bool bOnlyRemove)
 {
-	std::map <std::string,FCDockWindow*>::iterator It = mpcDocWindows.find(name);
+	std::map <std::string,FCWindow*>::iterator It = mpcDocWindows.find(name);
 	if( It!=mpcDocWindows.end() )
 	{
 		if(!bOnlyRemove) delete It->second;
@@ -413,12 +413,13 @@ bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
 
 FCView* ApplicationWindow::GetActiveView(void)
 {
-	QextMdiChildView * pView = activeWindow();
+	FCViewContainer * pViewContainer = reinterpret_cast <FCViewContainer *> ( activeWindow() );
 
-	if(pView /*&& (typeid(*pView) == typeid(class FCView))*/)
-		return (FCView*)pView; 
+	if(pViewContainer)
+		return pViewContainer->GetActiveView();
 	else
-		return (FCView*)0l;
+		return 0;
+
 }
 
 
@@ -428,7 +429,7 @@ FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 	FCView* pView = GetActiveView();
 
 	if(pView)
-		return pView->getDocument();
+		return pView->GetGuiDocument();
 	else
 		return 0l;
 }

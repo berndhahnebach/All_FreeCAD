@@ -621,7 +621,7 @@ void QStackBarBtn::drawButton( QPainter *p )
  *
  */
 FCCmdBar::FCCmdBar( QWidget *parent, const char *name )
-	: FCDockWindow( parent, name )
+	: FCWindow( parent, name )
 {
     m_pCurPage  = NULL;
     m_pLastBtn = NULL,

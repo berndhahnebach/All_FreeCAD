@@ -23,21 +23,26 @@
 #include <qwidget.h>
 #include <qextmdichildview.h>
 #include "../Base/Parameter.h"
+
 class FCGuiDocument;
+class FCView;
 
 
-
-/** Adapter class to the parameter of FreeCAD for all QT Windows
+/** Adapter class to the parameter of FreeCAD for all Windows
  * Retrive the parameter group of the specific window
  * by the windowname.
  */
-class GuiExport FCWindow 
+class GuiExport FCWindowParameter 
 {
 public:
-	FCWindow(const char *name);
-	~FCWindow();
+	FCWindowParameter(const char *name);
+	~FCWindowParameter();
 
+	virtual void OnParameterChanged(void);
+
+	/// get the parameters
 	FCParameterGrp::handle GetParameter(void);
+	/// return the parameter group of this window
 	FCParameterGrp::handle GetWindowParameter(void);
 
 private:
@@ -48,52 +53,45 @@ private:
 };
 
 
-
-
-/** A test class. A more elaborate class description.
- * Detaild description with some formating:
- *  \par
- *  bla blablablablablablabl:
- *  \code
- *  #include <Base/Console.h>
- *  GetConsole().Log("Stage: %d",i);
- *  \endcode
+/** father of all FreeCAD windows (execept the view containers)
  */
-class GuiExport FCDockWindow :public QWidget, public FCWindow
+class GuiExport FCWindow:public QWidget, public FCWindowParameter 
 {
 	Q_OBJECT;
 
 public:
-	FCDockWindow(QWidget *parent=0, const char *name=0, WFlags f=0);
-	~FCDockWindow();
+	FCWindow(QWidget *parent=0, const char *name=0, WFlags f=0 );
+	~FCWindow();
 
+private:
+
+
+};
+
+
+
+
+
+
+/** Father of all view container classes
+ */
+class FCViewContainer: public QextMdiChildView, public FCWindowParameter
+{
+	Q_OBJECT;
+
+public:
+	FCViewContainer( QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	~FCViewContainer();
+
+	virtual FCView* GetActiveView(void){return 0L;}
 
 private:
 
 };
 
 
-/** A test class. A more elaborate class description.
- * Detaild description with some formating:
- *  \par
- *  bla blablablablablablabl:
- *  \code
- *  #include <Base/Console.h>
- *  GetConsole().Log("Stage: %d",i);
- *  \endcode
- */
-class FCViewWindow: public QextMdiChildView, public FCWindow
-{
-	Q_OBJECT;
 
-public:
-	FCViewWindow( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCViewWindow();
 
-private:
-    FCGuiDocument*	_pcDocument;
-
-};
 
 
 

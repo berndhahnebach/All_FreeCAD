@@ -59,7 +59,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPreferences( parent, name, modal, fl ),FCWindow(name), m_pCurPage(NULL), m_pCurTab(NULL)
+    : DlgPreferences( parent, name, modal, fl ),FCWindowParameter(name), m_pCurPage(NULL), m_pCurTab(NULL)
 {
   connect(ListView2, SIGNAL ( pressed ( QListViewItem * ) ), this, SLOT( prefPageClicked(QListViewItem * ) ));
 

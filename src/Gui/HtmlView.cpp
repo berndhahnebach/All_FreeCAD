@@ -281,7 +281,7 @@ void FCHtmlComboBox::slotKeyPressReturn()
  *  name 'name' and widget flags set to 'f' 
  */
 FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* name, WFlags fl )
-    : FCDockWindow( parent, name, fl ), pclPathCombo( 0 ), selectedURL(), 
+    : FCWindow( parent, name, fl ), pclPathCombo( 0 ), selectedURL(), 
       bHistory(false), bBookm(false), bBackward(false), bForward(false)
 
 {

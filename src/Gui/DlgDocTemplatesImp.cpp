@@ -25,7 +25,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgDocTemplates( parent, name, modal, fl ),FCWindow(name)
+    : DlgDocTemplates( parent, name, modal, fl ),FCWindowParameter(name)
 {
 	std::vector<std::string> vTemplates = GetApplication().GetAllTemplates();
     

@@ -25,20 +25,22 @@
 #endif
 
 
+#include "../Base/Console.h"
 #include "Window.h"
 #include "../App/Application.h"
 
 
+
 //**************************************************************************
 //**************************************************************************
-// FCWindow
+// FCWindowParameter
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //**************************************************************************
 // Construction/Destruction
 
-FCWindow::FCWindow(const char *name)
+FCWindowParameter::FCWindowParameter(const char *name)
 {
 	FCHandle<FCParameterGrp> h;
 
@@ -57,64 +59,69 @@ FCWindow::FCWindow(const char *name)
 
 }
 
+FCWindowParameter::~FCWindowParameter()
+{
+
+}
+
+void FCWindowParameter::OnParameterChanged(void)
+{
+	GetConsole().Warning("FCWindowParameter::OnParameterChanged(): Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
+}
+
+
+FCParameterGrp::handle  FCWindowParameter::GetWindowParameter(void)
+{
+	return _handle;
+}
+
+FCParameterGrp::handle  FCWindowParameter::GetParameter(void)
+{
+	return GetApplication().GetUserParameter().GetGroup("BaseApp");
+}
+
+
+
+//**************************************************************************
+//**************************************************************************
+// FCWindow
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//**************************************************************************
+// Construction/Destruction
+
+FCWindow::FCWindow(QWidget *parent, const char *name, WFlags f)
+	:QWidget(parent,name,f),
+	FCWindowParameter(name)
+{
+
+}
+
+
 FCWindow::~FCWindow()
 {
 
 }
 
 
-FCParameterGrp::handle  FCWindow::GetWindowParameter(void)
-{
-	return _handle;
-}
-
-FCParameterGrp::handle  FCWindow::GetParameter(void)
-{
-	return GetApplication().GetUserParameter().GetGroup("BaseApp");
-}
-
-
 //**************************************************************************
 //**************************************************************************
-// FCDockWindow
+// FCViewContainer
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //**************************************************************************
 // Construction/Destruction
 
-FCDockWindow::FCDockWindow(QWidget *parent, const char *name, WFlags f)
-	:QWidget(parent,name,f),
-	FCWindow(name)
-{
-
-}
-
-
-FCDockWindow::~FCDockWindow()
-{
-
-}
-
-
-//**************************************************************************
-//**************************************************************************
-// FCViewWindow
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-//**************************************************************************
-// Construction/Destruction
-
-FCViewWindow::FCViewWindow( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
+FCViewContainer::FCViewContainer(QWidget* parent, const char* name, int wflags )
     :QextMdiChildView( parent, name, wflags ),
-	 _pcDocument(pcDocument),
-	 FCWindow(name)
+	 FCWindowParameter(name)
 {
 		
 }
 
-FCViewWindow::~FCViewWindow()
+FCViewContainer::~FCViewContainer()
 {
   
 }
