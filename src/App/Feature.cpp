@@ -26,6 +26,8 @@ using Base::Console;
 
 #include "Feature.h"
 #include "Function.h"
+#include "Property.h"
+#include "PropertyAttr.h"
 
 using namespace App;
 
@@ -33,6 +35,20 @@ using namespace App;
 //===========================================================================
 // Feature
 //===========================================================================
+
+
+void Feature::AddProperty(const char *Type, const char *Name, const char *InitString)
+{
+	if(	Base::streq(Type, "Float") )
+	{
+		Property *Prop = new PropertyFloat();
+		Prop->Set(InitString);
+	}
+
+	Handle(PropertyAttr) PropAttr = new PropertyAttr();
+
+}
+
 
 
 void Feature::AttachLabel(const TDF_Label &rcLabel)

@@ -1,37 +1,28 @@
-/** \file Properties.h
- *  \brief FileTemplate example header
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
-#ifndef __PROPERTIES_H__
-#define __PROPERTIES_H__
+#ifndef __PROPERTY_H__
+#define __PROPERTY_H__
 
 // Std. configurations
 
@@ -44,18 +35,22 @@
 # pragma warning( disable : 4251 )
 #endif
 
+namespace App
+{
+
+
 
 /** Base class of all Properties
- * This is the father of all properties. Properties are
- * are object which are used in the document tree to parametrize 
- * e.g. features and ist grafical output. They also used to 
- * gain acces from the scripting facility.
- * /par
- * This abstract base class defines all methodes shared by all
- * possible properties. Its also possible to define user properties
- * and use them in the frame work....
+ *  This is the father of all properties. Properties are
+ *  are object which are used in the document tree to parametrize 
+ *  e.g. features and ist grafical output. They also used to 
+ *  gain acces from the scripting facility.
+ *  /par
+ *  This abstract base class defines all methodes shared by all
+ *  possible properties. Its also possible to define user properties
+ *  and use them in the frame work....
  */
-class AppExport FCProperty
+class AppExport Property
 {
 public:
 
@@ -64,13 +59,17 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCProperty();
+	Property();
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCProperty();
+	virtual ~Property();
+	
+	/** Sets the property throug a init string
+	 */
+	virtual void Set(const char* Str)=0;
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
@@ -110,7 +109,7 @@ public:
 /** Integer properties
  * This is the father of all properties handling Integers.
  */
-class AppExport FCPropertyInteger: public FCProperty
+class AppExport PropertyInteger: public Property
 {
 public:
 
@@ -119,13 +118,17 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCPropertyInteger(long lValue, long lMax=LONG_MAX, long lMin=LONG_MIN, long lStep=1);
+	PropertyInteger(long lValue, long lMax=LONG_MAX, long lMin=LONG_MIN, long lStep=1);
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCPropertyInteger();
+	virtual ~PropertyInteger();
+
+	/** Sets the property throug a init string
+	 */
+	virtual void Set(const char* Str);
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
@@ -182,22 +185,25 @@ private:
 /** Integer properties
  * This is the father of all properties handling Integers.
  */
-class AppExport FCPropertyFloat: public FCProperty
+class AppExport PropertyFloat: public Property
 {
 public:
 
        
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
+	/** Value Constructor
+	 *  Construct with explicite Values
 	 */
-	FCPropertyFloat(double dValue, double dMax=DBL_MAX, double dMin=DBL_MIN, double dStep=1);
+	PropertyFloat(double dValue = 0.0, double dMax=DBL_MAX, double dMin=DBL_MIN, double dStep=1);
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCPropertyFloat();
+	virtual ~PropertyFloat();
+
+	/** Sets the property throug a init string
+	 */
+	virtual void Set(const char* Str);
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
@@ -254,7 +260,7 @@ private:
 /** String properties
  * This is the father of all properties handling Strings.
  */
-class AppExport FCPropertyString: public FCProperty
+class AppExport PropertyString: public Property
 {
 public:
 
@@ -263,14 +269,18 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCPropertyString(const char* sValue, const char* sConstraint="");
+	PropertyString(const char* sValue, const char* sConstraint="");
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCPropertyString();
+	virtual ~PropertyString();
 
+	/** Sets the property throug a init string
+	 */
+
+	virtual void Set(const char* Str);
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
 	 * or more complex in cas of e.g. color
@@ -319,7 +329,7 @@ private:
 /** Bool properties
  * This is the father of all properties handling booleans.
  */
-class AppExport FCPropertyBool : public FCProperty
+class AppExport PropertyBool : public Property
 {
 public:
 
@@ -328,13 +338,17 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCPropertyBool(bool lValue);
+	PropertyBool(bool lValue);
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCPropertyBool();
+	virtual ~PropertyBool();
+
+	/** Sets the property throug a init string
+	 */
+	virtual void Set(const char* Str);
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
@@ -378,7 +392,7 @@ private:
 /** Color properties
  * This is the father of all properties handling colors.
  */
-class AppExport FCPropertyColor : public FCProperty
+class AppExport PropertyColor : public Property
 {
 public:
 
@@ -387,13 +401,17 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCPropertyColor(long lRed=0, long lGreen=0, long lBlue=0);
+	PropertyColor(long lRed=0, long lGreen=0, long lBlue=0);
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCPropertyColor();
+	virtual ~PropertyColor();
+
+	/** Sets the property throug a init string
+	 */
+	virtual void Set(const char* Str);
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
@@ -443,7 +461,7 @@ private:
 /** List properties
  * This is the father of all properties handling lists.
  */
-class AppExport FCPropertyList : public FCProperty
+class AppExport PropertyList : public Property
 {
 public:
 
@@ -452,13 +470,17 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	FCPropertyList(const std::vector<std::string>& lValue, long lCurrent=0);
+	PropertyList(const std::vector<std::string>& lValue, long lCurrent=0);
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~FCPropertyList();
+	virtual ~PropertyList();
+
+	/** Sets the property throug a init string
+	 */
+	virtual void Set(const char* Str);
 
 	/** This method returns a string representation of the property
 	 * This representation can be simple in case of strings or numbers
@@ -501,5 +523,8 @@ private:
   std::vector<std::string> _lValue;
   long _lCurrent;
 };
+
+
+} // namespace App
 
 #endif // __PROPERTIES_H__

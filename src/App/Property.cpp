@@ -1,32 +1,23 @@
-/** \file Properties.cpp
- *  \brief Template file to copy for own files
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
@@ -44,13 +35,14 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Properties.h"
+#include "Property.h"
 
+using namespace App;
 
 
 //**************************************************************************
 //**************************************************************************
-// FCProperty
+// Property
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -58,15 +50,15 @@
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCProperty::FCProperty(){}
+Property::Property(){}
 
-FCProperty::~FCProperty(){}
+Property::~Property(){}
 
 
 
 //**************************************************************************
 //**************************************************************************
-// FCPropertyInteger
+// PropertyInteger
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -74,14 +66,14 @@ FCProperty::~FCProperty(){}
 // Construction/Destruction
 
 
-FCPropertyInteger::FCPropertyInteger(long lValue, long lMax, long lMin, long lStep)
+PropertyInteger::PropertyInteger(long lValue, long lMax, long lMin, long lStep)
 	:_lValue(lValue),_lMax(lMax), _lMin(lMin), _lStep(lStep)
 {
 
 }
 
 
-FCPropertyInteger::~FCPropertyInteger()
+PropertyInteger::~PropertyInteger()
 {
 
 }
@@ -89,7 +81,13 @@ FCPropertyInteger::~FCPropertyInteger()
 //**************************************************************************
 // Base class implementer
 
-const char* FCPropertyInteger::GetAsString(void)
+void PropertyInteger::Set(const char* Str)
+{
+
+}
+
+
+const char* PropertyInteger::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
 	sprintf(sBuf,"%ld",_lValue);
@@ -98,12 +96,12 @@ const char* FCPropertyInteger::GetAsString(void)
 
 
 
-const char* FCPropertyInteger::GetType(void)
+const char* PropertyInteger::GetType(void)
 {
 	return "Int";
 }
 
-const char* FCPropertyInteger::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+const char* PropertyInteger::SetSubProperty(const char* sSubPropName,const char* sNewValue)
 {
 
 	if(strcmp(sSubPropName,"Value")==0)
@@ -120,7 +118,7 @@ const char* FCPropertyInteger::SetSubProperty(const char* sSubPropName,const cha
 }
 
 
-const char* FCPropertyInteger::GetSubProperty(const char* sSubPropName)
+const char* PropertyInteger::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
 	sprintf(sBuf,"%ld",_lValue);
@@ -139,7 +137,7 @@ const char* FCPropertyInteger::GetSubProperty(const char* sSubPropName)
 }
 
 
-const char* FCPropertyInteger::GetSubPropertyNames(void)
+const char* PropertyInteger::GetSubPropertyNames(void)
 {
 	return "Value;Max;Min;Step";
 }
@@ -147,49 +145,49 @@ const char* FCPropertyInteger::GetSubPropertyNames(void)
 //**************************************************************************
 // Seter getter for the property
 
-void FCPropertyInteger::SetMin(long lMin)
+void PropertyInteger::SetMin(long lMin)
 {
 	_lMin=lMin;
 }
 
-long FCPropertyInteger::GetMin(void)
+long PropertyInteger::GetMin(void)
 {
 	return _lMin;
 }
 
-void FCPropertyInteger::SetMax(long lMax)
+void PropertyInteger::SetMax(long lMax)
 {
 	_lMax=lMax;
 }
 
-long FCPropertyInteger::GetMax(void)
+long PropertyInteger::GetMax(void)
 {
 	return _lMax;
 }
 
-void FCPropertyInteger::SetStep(long lStep)
+void PropertyInteger::SetStep(long lStep)
 {
 	_lStep=lStep;
 }
 
-long FCPropertyInteger::GetStep(void)
+long PropertyInteger::GetStep(void)
 {
 	return _lStep;
 }
 
-void FCPropertyInteger::SetValue(long lValue)
+void PropertyInteger::SetValue(long lValue)
 {
 	_lValue=lValue;
 }
 
-long FCPropertyInteger::GetValue(void)
+long PropertyInteger::GetValue(void)
 {
 	return _lValue;
 }
 
 //**************************************************************************
 //**************************************************************************
-// FCPropertyFloat
+// PropertyFloat
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -197,14 +195,14 @@ long FCPropertyInteger::GetValue(void)
 // Construction/Destruction
 
 
-FCPropertyFloat::FCPropertyFloat(double dValue, double dMax, double dMin, double dStep)
+PropertyFloat::PropertyFloat(double dValue, double dMax, double dMin, double dStep)
 	:_dValue(dValue),_dMax(dMax), _dMin(dMin), _dStep(dStep)
 {
 
 }
 
 
-FCPropertyFloat::~FCPropertyFloat()
+PropertyFloat::~PropertyFloat()
 {
 
 }
@@ -212,7 +210,12 @@ FCPropertyFloat::~FCPropertyFloat()
 //**************************************************************************
 // Base class implementer
 
-const char* FCPropertyFloat::GetAsString(void)
+void PropertyFloat::Set(const char* Str)
+{
+
+}
+
+const char* PropertyFloat::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
 	sprintf(sBuf,"%f",_dValue);
@@ -221,12 +224,12 @@ const char* FCPropertyFloat::GetAsString(void)
 
 
 
-const char* FCPropertyFloat::GetType(void)
+const char* PropertyFloat::GetType(void)
 {
 	return "Float";
 }
 
-const char* FCPropertyFloat::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+const char* PropertyFloat::SetSubProperty(const char* sSubPropName,const char* sNewValue)
 {
 
 	if(strcmp(sSubPropName,"Value")==0)
@@ -243,7 +246,7 @@ const char* FCPropertyFloat::SetSubProperty(const char* sSubPropName,const char*
 }
 
 
-const char* FCPropertyFloat::GetSubProperty(const char* sSubPropName)
+const char* PropertyFloat::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
 	sprintf(sBuf,"%f",_dValue);
@@ -262,7 +265,7 @@ const char* FCPropertyFloat::GetSubProperty(const char* sSubPropName)
 }
 
 
-const char* FCPropertyFloat::GetSubPropertyNames(void)
+const char* PropertyFloat::GetSubPropertyNames(void)
 {
 	return "Value;Max;Min;Step";
 }
@@ -270,49 +273,49 @@ const char* FCPropertyFloat::GetSubPropertyNames(void)
 //**************************************************************************
 // Seter getter for the property
 
-void FCPropertyFloat::SetMin(double dMin)
+void PropertyFloat::SetMin(double dMin)
 {
 	_dMin=dMin;
 }
 
-double FCPropertyFloat::GetMin(void)
+double PropertyFloat::GetMin(void)
 {
 	return _dMin;
 }
 
-void FCPropertyFloat::SetMax(double dMax)
+void PropertyFloat::SetMax(double dMax)
 {
 	_dMax=dMax;
 }
 
-double FCPropertyFloat::GetMax(void)
+double PropertyFloat::GetMax(void)
 {
 	return _dMax;
 }
 
-void FCPropertyFloat::SetStep(double dStep)
+void PropertyFloat::SetStep(double dStep)
 {
 	_dStep=dStep;
 }
 
-double FCPropertyFloat::GetStep(void)
+double PropertyFloat::GetStep(void)
 {
 	return _dStep;
 }
 
-void FCPropertyFloat::SetValue(double lValue)
+void PropertyFloat::SetValue(double lValue)
 {
 	_dValue=lValue;
 }
 
-double FCPropertyFloat::GetValue(void)
+double PropertyFloat::GetValue(void)
 {
 	return _dValue;
 }
 
 //**************************************************************************
 //**************************************************************************
-// FCPropertyString
+// PropertyString
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -320,14 +323,14 @@ double FCPropertyFloat::GetValue(void)
 // Construction/Destruction
 
        
-FCPropertyString::FCPropertyString(const char* sValue, const char* sConstraint)
+PropertyString::PropertyString(const char* sValue, const char* sConstraint)
 	:_cValue(sValue),_cConstrain(sConstraint)
 {
 
 }
 
 
-FCPropertyString::~FCPropertyString()
+PropertyString::~PropertyString()
 {
 
 }
@@ -335,19 +338,24 @@ FCPropertyString::~FCPropertyString()
 //**************************************************************************
 // Base class implementer
 
-const char* FCPropertyString::GetAsString(void)
+void PropertyString::Set(const char* Str)
+{
+
+}
+
+const char* PropertyString::GetAsString(void)
 {
 	return _cValue.c_str();
 }
 
 
 
-const char* FCPropertyString::GetType(void)
+const char* PropertyString::GetType(void)
 {
 	return "String";
 }
 
-const char* FCPropertyString::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+const char* PropertyString::SetSubProperty(const char* sSubPropName,const char* sNewValue)
 {
 
 	if(strcmp(sSubPropName,"Value")==0)
@@ -361,7 +369,7 @@ const char* FCPropertyString::SetSubProperty(const char* sSubPropName,const char
 }
 
 
-const char* FCPropertyString::GetSubProperty(const char* sSubPropName)
+const char* PropertyString::GetSubProperty(const char* sSubPropName)
 {
 	if(strcmp(sSubPropName,"Value")==0)
 		return _cValue.c_str();
@@ -372,7 +380,7 @@ const char* FCPropertyString::GetSubProperty(const char* sSubPropName)
 }
 
 
-const char* FCPropertyString::GetSubPropertyNames(void)
+const char* PropertyString::GetSubPropertyNames(void)
 {
 	return "Value;Constrain";
 }
@@ -381,22 +389,22 @@ const char* FCPropertyString::GetSubPropertyNames(void)
 // Seter getter for the property
 
 
-void FCPropertyString::SetString(const char* sString)
+void PropertyString::SetString(const char* sString)
 {
 	_cValue = sString;
 }
 
-const char* FCPropertyString::GetString(void)
+const char* PropertyString::GetString(void)
 {
 	return _cValue.c_str();
 }
 
-void FCPropertyString::SetConstrain(const char* sConstrains)
+void PropertyString::SetConstrain(const char* sConstrains)
 {
 	_cConstrain = sConstrains;
 }
 
-const char* FCPropertyString::GetConstrain(void)
+const char* PropertyString::GetConstrain(void)
 {
 	return _cConstrain.c_str();
 }
@@ -406,7 +414,7 @@ const char* FCPropertyString::GetConstrain(void)
 
 //**************************************************************************
 //**************************************************************************
-// FCPropertyBool
+// PropertyBool
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -414,14 +422,14 @@ const char* FCPropertyString::GetConstrain(void)
 // Construction/Destruction
 
        
-FCPropertyBool::FCPropertyBool(bool lValue)
+PropertyBool::PropertyBool(bool lValue)
 	:_lValue(lValue)
 {
 
 }
 
 
-FCPropertyBool::~FCPropertyBool()
+PropertyBool::~PropertyBool()
 {
 
 }
@@ -429,7 +437,12 @@ FCPropertyBool::~FCPropertyBool()
 //**************************************************************************
 // Base class implementer
 
-const char* FCPropertyBool::GetAsString(void)
+void PropertyBool::Set(const char* Str)
+{
+
+}
+
+const char* PropertyBool::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
   sprintf(sBuf,"%s",(_lValue ? "True" : "False"));
@@ -438,12 +451,12 @@ const char* FCPropertyBool::GetAsString(void)
 
 
 
-const char* FCPropertyBool::GetType(void)
+const char* PropertyBool::GetType(void)
 {
 	return "Bool";
 }
 
-const char* FCPropertyBool::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+const char* PropertyBool::SetSubProperty(const char* sSubPropName,const char* sNewValue)
 {
 
 	if(strcmp(sSubPropName,"Value")==0)
@@ -454,7 +467,7 @@ const char* FCPropertyBool::SetSubProperty(const char* sSubPropName,const char* 
 }
 
 
-const char* FCPropertyBool::GetSubProperty(const char* sSubPropName)
+const char* PropertyBool::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
 	sprintf(sBuf,"%d",_lValue);
@@ -467,7 +480,7 @@ const char* FCPropertyBool::GetSubProperty(const char* sSubPropName)
 }
 
 
-const char* FCPropertyBool::GetSubPropertyNames(void)
+const char* PropertyBool::GetSubPropertyNames(void)
 {
 	return "Value";
 }
@@ -475,19 +488,19 @@ const char* FCPropertyBool::GetSubPropertyNames(void)
 //**************************************************************************
 // Seter getter for the property
 
-void FCPropertyBool::SetValue(bool lValue)
+void PropertyBool::SetValue(bool lValue)
 {
 	_lValue=lValue;
 }
 
-bool FCPropertyBool::GetValue(void)
+bool PropertyBool::GetValue(void)
 {
 	return _lValue;
 }
 
 //**************************************************************************
 //**************************************************************************
-// FCPropertyColor
+// PropertyColor
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -495,14 +508,14 @@ bool FCPropertyBool::GetValue(void)
 // Construction/Destruction
 
        
-FCPropertyColor::FCPropertyColor(long lRed, long lGreen, long lBlue)
+PropertyColor::PropertyColor(long lRed, long lGreen, long lBlue)
 	:_lRed(lRed),_lGreen(lGreen), _lBlue(lBlue)
 {
 
 }
 
 
-FCPropertyColor::~FCPropertyColor()
+PropertyColor::~PropertyColor()
 {
 
 }
@@ -510,7 +523,12 @@ FCPropertyColor::~FCPropertyColor()
 //**************************************************************************
 // Base class implementer
 
-const char* FCPropertyColor::GetAsString(void)
+void PropertyColor::Set(const char* Str)
+{
+
+}
+
+const char* PropertyColor::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
 	sprintf(sBuf,"[%ld, %ld, %ld]",_lRed, _lGreen, _lBlue);
@@ -519,12 +537,12 @@ const char* FCPropertyColor::GetAsString(void)
 
 
 
-const char* FCPropertyColor::GetType(void)
+const char* PropertyColor::GetType(void)
 {
 	return "Color";
 }
 
-const char* FCPropertyColor::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+const char* PropertyColor::SetSubProperty(const char* sSubPropName,const char* sNewValue)
 {
 
 	if(strcmp(sSubPropName,"Red")==0)
@@ -539,7 +557,7 @@ const char* FCPropertyColor::SetSubProperty(const char* sSubPropName,const char*
 }
 
 
-const char* FCPropertyColor::GetSubProperty(const char* sSubPropName)
+const char* PropertyColor::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
 
@@ -555,7 +573,7 @@ const char* FCPropertyColor::GetSubProperty(const char* sSubPropName)
 }
 
 
-const char* FCPropertyColor::GetSubPropertyNames(void)
+const char* PropertyColor::GetSubPropertyNames(void)
 {
 	return "Red;Green;Blue";
 }
@@ -563,39 +581,39 @@ const char* FCPropertyColor::GetSubPropertyNames(void)
 //**************************************************************************
 // Seter getter for the property
 
-void FCPropertyColor::SetRed(long lRed)
+void PropertyColor::SetRed(long lRed)
 {
 	_lRed=lRed;
 }
 
-long FCPropertyColor::GetRed(void)
+long PropertyColor::GetRed(void)
 {
 	return _lRed;
 }
 
-void FCPropertyColor::SetGreen(long lGreen)
+void PropertyColor::SetGreen(long lGreen)
 {
 	_lGreen=lGreen;
 }
 
-long FCPropertyColor::GetGreen(void)
+long PropertyColor::GetGreen(void)
 {
 	return _lGreen;
 }
 
-void FCPropertyColor::SetBlue(long lBlue)
+void PropertyColor::SetBlue(long lBlue)
 {
 	_lBlue=lBlue;
 }
 
-long FCPropertyColor::GetBlue(void)
+long PropertyColor::GetBlue(void)
 {
 	return _lBlue;
 }
 
 //**************************************************************************
 //**************************************************************************
-// FCPropertyList
+// PropertyList
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -603,14 +621,14 @@ long FCPropertyColor::GetBlue(void)
 // Construction/Destruction
 
        
-FCPropertyList::FCPropertyList(const std::vector<std::string>& lValue, long lCurrent)
+PropertyList::PropertyList(const std::vector<std::string>& lValue, long lCurrent)
 	:_lValue(lValue), _lCurrent(lCurrent)
 {
 
 }
 
 
-FCPropertyList::~FCPropertyList()
+PropertyList::~PropertyList()
 {
 
 }
@@ -618,7 +636,12 @@ FCPropertyList::~FCPropertyList()
 //**************************************************************************
 // Base class implementer
 
-const char* FCPropertyList::GetAsString(void)
+void PropertyList::Set(const char* Str)
+{
+
+}
+
+const char* PropertyList::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
   int pos = 0;
@@ -626,7 +649,7 @@ const char* FCPropertyList::GetAsString(void)
   {
     if (pos+it->length() >= DBL_DIG)
     {
-//      Console().Warning("FCPropertyList: List too long\n");
+//      Console().Warning("PropertyList: List too long\n");
       break;
     }
   	pos += sprintf(sBuf+pos,"%s ",it->c_str());
@@ -636,12 +659,12 @@ const char* FCPropertyList::GetAsString(void)
 
 
 
-const char* FCPropertyList::GetType(void)
+const char* PropertyList::GetType(void)
 {
 	return "List";
 }
 
-const char* FCPropertyList::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+const char* PropertyList::SetSubProperty(const char* sSubPropName,const char* sNewValue)
 {
 	if(strcmp(sSubPropName,"Current")==0)
 		_lCurrent = atol(sNewValue);
@@ -657,7 +680,7 @@ const char* FCPropertyList::SetSubProperty(const char* sSubPropName,const char* 
 }
 
 
-const char* FCPropertyList::GetSubProperty(const char* sSubPropName)
+const char* PropertyList::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
 
@@ -675,7 +698,7 @@ const char* FCPropertyList::GetSubProperty(const char* sSubPropName)
 }
 
 
-const char* FCPropertyList::GetSubPropertyNames(void)
+const char* PropertyList::GetSubPropertyNames(void)
 {
 	static char sBuf[DBL_DIG+10];
   int pos = 0;
@@ -691,22 +714,22 @@ const char* FCPropertyList::GetSubPropertyNames(void)
 //**************************************************************************
 // Seter getter for the property
 
-void FCPropertyList::SetValue(const std::vector<std::string>& lValue)
+void PropertyList::SetValue(const std::vector<std::string>& lValue)
 {
 	_lValue=lValue;
 }
 
-const std::vector<std::string>& FCPropertyList::GetValue(void)
+const std::vector<std::string>& PropertyList::GetValue(void)
 {
 	return _lValue;
 }
 
-void FCPropertyList::SetCurrentItem (long lCurrent)
+void PropertyList::SetCurrentItem (long lCurrent)
 {
   _lCurrent = lCurrent;
 }
 
-long FCPropertyList::GetCurrentItem (void)
+long PropertyList::GetCurrentItem (void)
 {
   return _lCurrent;
 }

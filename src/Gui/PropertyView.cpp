@@ -79,7 +79,7 @@
 #include "HtmlView.h"
 #include "BitmapFactory.h"
 #include "../Base/Console.h"
-#include "../App/Properties.h"
+#include "../App/Property.h"
 
 #include "propertyeditor/kexipropertyeditor.h"
 #include "propertyeditor/kexipropertybuffer.h"

@@ -43,11 +43,12 @@ public:
 
 	/** Init the Label the Feature is attached to
 	 *  This methode will be called when the Feature is mounted 
-	 *  to a Label in the document.
+	 *  to a Label in the document. It need to be overwriten in 
+	 *  every Feature
 	 */
 	virtual void InitLabel(const TDF_Label &rcLabel)=0;
 
-	/// Get called when the label is attached to the document
+	/// Get called by the framework when the label is attached to the document
 	void AttachLabel(const TDF_Label &rcLabel);
 
 	/** @name methodes used for recalculation (update) */
@@ -64,7 +65,7 @@ public:
 	 *  If during the execution we found something wrong,
 	 *  we return the number of the failure. For example:
 	 *  1 - an attribute hasn't been found,
-	 *  2 - algorithm failed, if there are no any mistakes occurred we return 0:
+	 *  2 - algorithm failed
 	 *  0 - no mistakes were found.
 	 */
 	virtual Standard_Integer Execute(TFunction_Logbook& log) const=0;
@@ -74,6 +75,17 @@ public:
 	 */
 	virtual void Validate(TFunction_Logbook& log) const=0;
 	//@}
+
+
+	/** @name methodes for conviniant handling of Parameter (Properties) */
+	//@{
+	/** Insert Property
+	 *  Call this method to add a Property to the Feature
+	 */
+	void AddProperty(const char *Type, const char *Name, const char *InitString);
+
+	//@}
+
 
 	virtual Base::FCPyObject *GetPyObject(void);
 

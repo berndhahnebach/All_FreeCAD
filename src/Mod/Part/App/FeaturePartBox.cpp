@@ -32,6 +32,8 @@ void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("PartBoxFeature::InitLabel()\n");
 
+	AddProperty("Float","X","0.0");
+
 }
 
 
