@@ -3,8 +3,13 @@
 import os,sys,string
 
 
+if(len(sys.argv) < 2):
+    sys.stdout.write("Convert translation files to source code.\n")
+    sys.exit()
+
 if(len(sys.argv) > 4):
     sys.stderr.write("Wrong Parameter\n  Usage:\n  tstocpp Infile.ts Outfile Var_name\n")
+    sys.exit()
 
 file = open(sys.argv[1])
 
