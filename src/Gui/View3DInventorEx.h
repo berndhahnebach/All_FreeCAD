@@ -27,7 +27,9 @@
 
 #include "View.h"
 
-#include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
+#ifndef _PreComp_
+# include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#endif
 
 class QMouseEvent;
 class FCMouseModel;
@@ -39,7 +41,8 @@ class QSplitter;
 class QWidget;		
 class QPushButton;	
 class QVBoxLayout;	
-class QHBoxLayout;	
+class QHBoxLayout;
+class QVBox;
 class QWidgetStack;
 class QTabBar;
 class View3DInventor;
@@ -47,6 +50,7 @@ class View3DInventor;
 class	SoSeparator ;
 class	SoShapeHints;
 class	SoMaterial	;
+class SoRotationXYZ;
 class MyExaminerViewer;
 
 /** The 3D View Window
@@ -99,7 +103,7 @@ private:
 //	SoQtExaminerViewer * _viewer;
 	MyExaminerViewer * _viewer;
 	QWidget*		_pcWidget;
-	QVBox*			_pcFrame;    
+	QVBox*			_pcFrame;
 	QWidgetStack*	_pcWidgetStack;
 	QTabBar*		_pcTabBar;
 

@@ -12,6 +12,7 @@ libFreeCADApp_la_SOURCES=\
 		Attribute.h \
 		DocTypeAttr.h \
 		Document.h \
+		DocumentPy.h \
 		Feature.h \
 		FeatureAttr.h \
 		Function.h \
@@ -27,6 +28,7 @@ libFreeCADApp_la_SOURCES=\
 		DocTypeAttr.cpp \
 		Document.cpp \
 		DocumentPy.cpp \
+		Doxygen.cpp \
 		Feature.cpp \
 		FeatureAttr.cpp \
 		Function.cpp \

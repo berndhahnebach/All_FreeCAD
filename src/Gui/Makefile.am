@@ -56,6 +56,7 @@ moc_Tree.cpp \
 moc_View.cpp\
 moc_View3D.cpp \
 moc_View3DInventor.cpp \
+moc_View3DInventorEx.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 DlgActions.cpp \
@@ -149,11 +150,13 @@ DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
 DockWindow.cpp \
 Document.cpp \
+Doxygen.cpp \
 FileDialog.cpp \
 GuiConsole.cpp \
 HelpView.cpp \
 Macro.cpp \
 MouseModel.cpp \
+PreCompiled.cpp \
 PrefWidgets.cpp \
 Process.cpp \
 ProgressBar.cpp \
@@ -174,6 +177,8 @@ Tree.cpp \
 View.cpp \
 View3D.cpp \
 View3DInventor.cpp \
+View3DInventorEx.cpp \
+View3DInventorExamples.cpp \
 ViewProvider.cpp \
 WaitCursor.cpp \
 WhatsThis.cpp \

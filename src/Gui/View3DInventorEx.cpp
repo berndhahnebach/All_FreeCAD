@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -25,10 +25,22 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qvbox.h>
-# include <TopoDS_Shape.hxx>
+//# include <qvbox.h>
+//# include <TopoDS_Shape.hxx>
+# include <TNaming_NamedShape.hxx>
+# include <GL/gl.h>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCone.h>
+# include <Inventor/nodes/SoCube.h>
+# include <Inventor/nodes/SoCylinder.h>
+# include <Inventor/nodes/SoImage.h>
+# include <Inventor/nodes/SoLightModel.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoRotationXYZ.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoTransform.h>
+# include <Inventor/nodes/SoTranslation.h>
 #endif
 
 #include "View3DInventorEx.h"

@@ -190,6 +190,7 @@ moc_Tree.cpp \
 moc_View.cpp\
 moc_View3D.cpp \
 moc_View3DInventor.cpp \
+moc_View3DInventorEx.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 DlgActions.cpp \
@@ -283,11 +284,13 @@ DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
 DockWindow.cpp \
 Document.cpp \
+Doxygen.cpp \
 FileDialog.cpp \
 GuiConsole.cpp \
 HelpView.cpp \
 Macro.cpp \
 MouseModel.cpp \
+PreCompiled.cpp \
 PrefWidgets.cpp \
 Process.cpp \
 ProgressBar.cpp \
@@ -308,6 +311,8 @@ Tree.cpp \
 View.cpp \
 View3D.cpp \
 View3DInventor.cpp \
+View3DInventorEx.cpp \
+View3DInventorExamples.cpp \
 ViewProvider.cpp \
 WaitCursor.cpp \
 WhatsThis.cpp \
@@ -367,14 +372,15 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgParameterImp.lo DlgPreferencesImp.lo DlgReportViewImp.lo \
 	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
 	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
-	DockWindow.lo Document.lo FileDialog.lo GuiConsole.lo \
-	HelpView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
-	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
-	ReportView.lo resource.lo Selection.lo SpinBox.lo \
-	Splashscreen.lo StackBar.lo TextEdit.lo ToolBox.lo \
-	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
-	View3DInventor.lo ViewProvider.lo WaitCursor.lo WhatsThis.lo \
-	WidgetFactory.lo Widgets.lo Window.lo
+	DockWindow.lo Document.lo Doxygen.lo FileDialog.lo \
+	GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo PreCompiled.lo \
+	PrefWidgets.lo Process.lo ProgressBar.lo PropertyPage.lo \
+	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
+	Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo TextEdit.lo \
+	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
+	View3DInventor.lo View3DInventorEx.lo View3DInventorExamples.lo \
+	ViewProvider.lo WaitCursor.lo WhatsThis.lo WidgetFactory.lo \
+	Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -409,10 +415,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgToolbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgUndoRedo.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DockWindow.Plo ./$(DEPDIR)/Document.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/FileDialog.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/FileDialog.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HelpView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/LanguageFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MouseModel.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PrefWidgets.Plo ./$(DEPDIR)/Process.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ProgressBar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyPage.Plo \
@@ -428,6 +435,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Tree.Plo ./$(DEPDIR)/View.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3D.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/View3DInventorEx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/View3DInventorExamples.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WhatsThis.Plo \
@@ -533,12 +542,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgUndoRedo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DockWindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileDialog.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GuiConsole.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Macro.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MouseModel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PrefWidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Process.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProgressBar.Plo@am__quote@
@@ -560,6 +571,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorEx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorExamples.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaitCursor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WhatsThis.Plo@am__quote@

@@ -147,6 +147,7 @@ libFreeCADApp_la_SOURCES = \
 		Attribute.h \
 		DocTypeAttr.h \
 		Document.h \
+		DocumentPy.h \
 		Feature.h \
 		FeatureAttr.h \
 		Function.h \
@@ -162,6 +163,7 @@ libFreeCADApp_la_SOURCES = \
 		DocTypeAttr.cpp \
 		Document.cpp \
 		DocumentPy.cpp \
+		Doxygen.cpp \
 		Feature.cpp \
 		FeatureAttr.cpp \
 		Function.cpp \
@@ -203,8 +205,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libFreeCADApp_la_DEPENDENCIES =
 am_libFreeCADApp_la_OBJECTS = Application.lo ApplicationPy.lo \
 	Attribute.lo DocTypeAttr.lo Document.lo DocumentPy.lo \
-	Feature.lo FeatureAttr.lo Function.lo Label.lo PreCompiled.lo \
-	Property.lo PropertyAttr.lo Topology.lo
+	Doxygen.lo Feature.lo FeatureAttr.lo Function.lo Label.lo \
+	PreCompiled.lo Property.lo PropertyAttr.lo Topology.lo
 libFreeCADApp_la_OBJECTS = $(am_libFreeCADApp_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -215,7 +217,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Attribute.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DocTypeAttr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/DocumentPy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Feature.Plo ./$(DEPDIR)/FeatureAttr.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/Feature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/FeatureAttr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Function.Plo ./$(DEPDIR)/Label.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Property.Plo \
@@ -293,6 +296,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DocTypeAttr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DocumentPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureAttr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Function.Plo@am__quote@

@@ -49,6 +49,7 @@
 # include <Inventor/nodes/SoShape.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/SoInput.h>
+# include <qmessagebox.h>
 #endif
 
 #include "SoBrepShape.h"

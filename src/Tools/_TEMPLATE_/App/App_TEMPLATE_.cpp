@@ -64,7 +64,7 @@ void ModuleExport init_TEMPLATE_() {
 
 	(void) Py_InitModule("_TEMPLATE_", hello_methods);   /* mod name, table ptr */
 
-	GetApplication();
+	App::GetApplication();
 
 	Base::Console().Log("App_TEMPLATE_ loaded\n");
 
