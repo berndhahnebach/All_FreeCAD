@@ -313,3 +313,10 @@ Version: V0.1B68 Date: Wed Jul 23 19:46:41 2003 +++++++++++++++++++++++++++++++
 + Add Feature Attribute
 + Add Function driver
 + Implement Test Command 2
+
+Version: V0.1B69 Date: Sun Jul 27 13:29:20 2003 +++++++++++++++++++++++++++++++
++ several bugs fixed in property view
++ new item types implemented
++ make what() method of exception class to const 
+ (because you should use const <exc. class>& in catch block)
++ use the document provider classes for the whatsthis stuff
