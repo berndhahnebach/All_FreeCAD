@@ -1,5 +1,30 @@
-// Scintilla source code edit control
-// PlatQT.cpp - implementation of platform facilities on Qt
+/***************************************************************************
+                          PlatQt.cpp  -  description
+                             -------------------
+    begin                : 2002/12/20 10:47:44
+    copyright            : (C) 2002 by Werner Mayer
+    email                : werner.wm.mayer@gmx.de
+ ***************************************************************************/
+
+/** \file PlatQt.cpp
+ *  \brief Qt binding stuff for scintilla
+ *  \author Werner Mayer
+ *  \version 0.1
+ *  \date    2003/05/16
+ */
+
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *   for detail see the LICENCE text file.                                 *
+ *   Werner Mayer 2002                                                     *
+ *                                                                         *
+ ***************************************************************************/
+
 
 #include "PreCompiled.h"
 
@@ -20,9 +45,13 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "PlatQt.h"
+#include "Application.h"
+#include "Document.h"
 #include "scintilla/Platform.h"
 #include "scintilla/XPM.h"
 #include "../Base/Console.h"
+#include "ScintillaQt.h"
 
 
 // globals
@@ -1024,3 +1053,81 @@ int Platform::Clamp(int val,int minVal,int maxVal)
 
 	return val;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintListBox::FCScintListBox(ListBoxX* listbox, QWidget* parent)
+  : QListBox(parent,0,Qt::WType_TopLevel|WStyle_NoBorder|WStyle_StaysOnTop|WStyle_Tool|WX11BypassWM), m_pXListbox(listbox)
+{
+	setFocusProxy(parent);
+	setFrameShape(StyledPanel);
+	setFrameShadow(Plain);
+	connect(this,SIGNAL(doubleClicked(QListBoxItem *)), SLOT(slotDoubleClicked(QListBoxItem *)));
+	connect(this,SIGNAL(highlighted(QListBoxItem *)), SLOT(ensureCurrentVisible()));
+}
+
+FCScintListBox::~FCScintListBox()
+{
+	setFocusProxy(0);
+}
+
+void FCScintListBox::slotDoubleClicked(QListBoxItem* item)
+{
+	if (m_pXListbox && m_pXListbox->doubleClickAction)
+		m_pXListbox->doubleClickAction(m_pXListbox->doubleClickActionData);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintEditView::FCScintEditView(FCScintillaDoc* pcDoc, QWidget* parent, const char* name)
+: FCFloatingView(pcDoc, parent, name)
+{
+  FCScintillaView* pcScintView = new FCScintillaView(this, ApplicationWindow::Instance,"EditView");
+  pcScintView->setCaption("Editor");
+	pcScintView->setTabCaption("Editor");
+	pcScintView->resize( 400, 300 );
+
+  view = new FCScintEditor(_pcFrame);
+  ApplicationWindow::Instance->addWindow(pcScintView);
+}
+
+FCScintEditView::~FCScintEditView()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintillaView::FCScintillaView( FCFloatingView* pcView, QWidget* parent, const char* name)
+  : FCFloatingChildView( pcView, parent, name )
+{
+}
+
+FCScintillaView::~FCScintillaView()
+{
+}
+
+void FCScintillaView::closeEvent(QCloseEvent *e)
+{
+  GetActiveView()->GetDocument()->CanClose(e);
+  if (e->isAccepted ())
+  {
+    FCFloatingChildView::closeEvent(e);
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+FCScintillaDoc::FCScintillaDoc()
+{
+}
+
+FCScintillaDoc::~FCScintillaDoc()
+{
+}
+
+void FCScintillaDoc::CreateView(const QString& s)
+{
+  view = new FCScintEditView(this, 0L, s.latin1());
+}
+
+#include "moc_PlatQt.cpp"
