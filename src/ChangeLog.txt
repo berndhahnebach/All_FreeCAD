@@ -30,3 +30,8 @@ Version: V0.1B12 Date: Thu Dec 26 14:54:54 2002 +++++++++++++++++++++++++++++++
 + New Background color
 + Werner get the automatic wait cursor to work
 + Dimension field in the status bar by Werner
+
+Version: V0.1B13 Date: Thu Dec 26 19:58:57 2002 +++++++++++++++++++++++++++++++
++ View Commands
++ switching StdViews from slots to Messages
++ try fixing Dock windows

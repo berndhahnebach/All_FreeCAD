@@ -42,6 +42,8 @@ public:
 	//virtual void Toogled  (bool);
 };
 
+void CreateStdCommands(void);
+
 
 DEF_STD_CMD(FCCmdNew   ,"Std_New");
 DEF_STD_CMD(FCCmdSave  ,"Std_Save");
@@ -65,5 +67,14 @@ DEF_STD_CMD(FCCmdTilePra	,"Std_TilePragmatic");
 DEF_STD_CMD(FCCmdMDINormal	,"Std_MDINormal");
 DEF_STD_CMD(FCCmdMDIToplevel,"Std_MDIToplevel");
 DEF_STD_CMD(FCCmdMDITabed	,"Std_MDITabed");
+
+DEF_STD_CMD(FCCmdViewBottom		,"Std_ViewBottom");
+DEF_STD_CMD(FCCmdViewFront		,"Std_ViewFront");
+DEF_STD_CMD(FCCmdViewLeft		,"Std_ViewLeft");
+DEF_STD_CMD(FCCmdViewRear		,"Std_ViewRear");
+DEF_STD_CMD(FCCmdViewRight		,"Std_ViewRight");
+DEF_STD_CMD(FCCmdViewTop		,"Std_ViewTop");
+DEF_STD_CMD(FCCmdViewAxo		,"Std_ViewAxo");
+DEF_STD_CMD(FCCmdViewFitAll		,"Std_ViewFitAll");
 
 #endif

@@ -38,6 +38,46 @@
 #include <TNaming_Builder.hxx>
 
 
+
+void CreateStdCommands(void)
+{
+	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+
+	rcCmdMgr.AddCommand(new FCCmdNew());
+	rcCmdMgr.AddCommand(new FCCmdOpen());
+	rcCmdMgr.AddCommand(new FCCmdSave());
+	rcCmdMgr.AddCommand(new FCCmdSaveAs());
+	rcCmdMgr.AddCommand(new FCCmdUndo());
+	rcCmdMgr.AddCommand(new FCCmdRedo());
+	rcCmdMgr.AddCommand(new FCCmdPrint());
+	rcCmdMgr.AddCommand(new FCCmdQuit());
+	rcCmdMgr.AddCommand(new FCCmdCut());
+	rcCmdMgr.AddCommand(new FCCmdCopy());
+	rcCmdMgr.AddCommand(new FCCmdPaste());
+	rcCmdMgr.AddCommand(new FCCmdMDINormal());
+	rcCmdMgr.AddCommand(new FCCmdMDIToplevel());
+	rcCmdMgr.AddCommand(new FCCmdMDITabed());
+	rcCmdMgr.AddCommand(new FCCmdTileHor());
+	rcCmdMgr.AddCommand(new FCCmdTileVer());
+	rcCmdMgr.AddCommand(new FCCmdTilePra());
+	rcCmdMgr.AddCommand(new FCCmdTest1());
+	rcCmdMgr.AddCommand(new FCCmdTest2());
+	rcCmdMgr.AddCommand(new FCCmdAbout());
+	// views
+	rcCmdMgr.AddCommand(new FCCmdViewBottom());
+	rcCmdMgr.AddCommand(new FCCmdViewFront());
+	rcCmdMgr.AddCommand(new FCCmdViewLeft());
+	rcCmdMgr.AddCommand(new FCCmdViewRear());
+	rcCmdMgr.AddCommand(new FCCmdViewRight());
+	rcCmdMgr.AddCommand(new FCCmdViewTop());
+	rcCmdMgr.AddCommand(new FCCmdViewAxo());
+	rcCmdMgr.AddCommand(new FCCmdViewFitAll());
+
+}
+
+
+
+
 //===========================================================================
 // Std_Open
 //===========================================================================
@@ -592,5 +632,168 @@ void FCCmdMDITabed::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhat
 void FCCmdMDITabed::Activated(void)
 {
 	AppWnd()->switchToTabPageMode();
+}
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//===========================================================================
+// Std_ViewBottom
+//===========================================================================
+
+void FCCmdViewBottom::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Bottom";
+	*sToolTipText = "Set to bottom view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_bottom);
+	iAccel = 0;
+}
+
+
+void FCCmdViewBottom::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewBottom");
+}
+
+//===========================================================================
+// Std_ViewFront
+//===========================================================================
+
+void FCCmdViewFront::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Front";
+	*sToolTipText = "Set to front view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_front);
+	iAccel = 0;
+}
+
+
+void FCCmdViewFront::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewFront");
+}
+
+//===========================================================================
+// Std_ViewLeft
+//===========================================================================
+
+void FCCmdViewLeft::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Left";
+	*sToolTipText = "Set to left view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_left);
+	iAccel = 0;
+}
+
+
+void FCCmdViewLeft::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewLeft");
+}
+
+//===========================================================================
+// Std_ViewRear
+//===========================================================================
+
+void FCCmdViewRear::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Rear";
+	*sToolTipText = "Set to rear view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_back);
+	iAccel = 0;
+}
+
+
+void FCCmdViewRear::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewRear");
+}
+
+//===========================================================================
+// Std_ViewBottom
+//===========================================================================
+
+void FCCmdViewRight::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Right";
+	*sToolTipText = "Set to right view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_right);
+	iAccel = 0;
+}
+
+
+void FCCmdViewRight::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewRight");
+}
+
+//===========================================================================
+// Std_ViewTop
+//===========================================================================
+
+void FCCmdViewTop::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Top";
+	*sToolTipText = "Set to top view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_top);
+	iAccel = 0;
+}
+
+
+void FCCmdViewTop::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewTop");
+}
+
+//===========================================================================
+// Std_ViewAxo
+//===========================================================================
+
+void FCCmdViewAxo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Axometric";
+	*sToolTipText = "Set to axometric view";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_axo);
+	iAccel = 0;
+}
+
+
+void FCCmdViewAxo::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewAxo");
+}
+
+//===========================================================================
+// Std_ViewFitAll
+//===========================================================================
+
+void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Fit all";
+	*sToolTipText = "Fits the whole content on the screen";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_fitall);
+	iAccel = 0;
+}
+
+
+void FCCmdViewFitAll::Activated(void)
+{
+	AppWnd()->SendMsgToActiveView("ViewFitAll");
 }
 

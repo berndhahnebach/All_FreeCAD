@@ -64,13 +64,16 @@ public:
 	FCGuiDocument* GetActiveDocument(void);
 
 
+	/// Reference to the command manager
+	FCCommandManager &GetCommandManager(void){return _cCommandManager;}
+
 	/// Get a named Toolbar or creat if not in
 	QToolBar *GetToolBar(const char* name);
 	/// Delete a named Toolbar
-	void      DelToolBar(const char* name);
+	void DelToolBar(const char* name);
 
 	/// Add a new named Dock Window
-	void          AddDockWindow(const char* name,FCDockWindow *pcDocWindow,KDockWidget::DockPosition pos = KDockWidget::DockRight, int percent = 82);
+	void          AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion = NULL,KDockWidget::DockPosition pos = KDockWidget::DockRight);
 	/// Gets you a registered Dock Window back
 	FCDockWindow *GetDockWindow(const char* name);
 	/// Delete (or only remove) a named Dock Window

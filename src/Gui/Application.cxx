@@ -83,7 +83,7 @@ ApplicationWindow::ApplicationWindow()
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	QString home = QString("index.html");
 	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
-	AddDockWindow("Help bar", hv);
+	AddDockWindow("Help bar", hv,"Command bar");
 
 	// misc stuff
     resize( 800, 600 );
@@ -168,13 +168,19 @@ void ApplicationWindow::DelToolBar(const char* name)
 }
 
 /// Add a new named Dock Window
-void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow,KDockWidget::DockPosition pos , int percent)
+void ApplicationWindow::AddDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion ,KDockWidget::DockPosition pos )
 {
 	// 	FCmap <FCstring,FCDockWindow*> mpcDocWindows;
 	mpcDocWindows[name] = pcDocWindow;
 	QString str = name;
 	str += " dockable window";
-	addToolWindow( pcDocWindow, pos, m_pMdi, percent, str, name);
+	if(sCompanion)
+	{
+		FCDockWindow* pcWnd = GetDockWindow(sCompanion);
+		assert(pcWnd);
+		addToolWindow( pcDocWindow, pos, pcWnd, 83, str, name);
+	}else
+		addToolWindow( pcDocWindow, pos, m_pMdi, 83, str, name);
 }
 
 /// Gets you a registered Dock Window back
@@ -220,27 +226,8 @@ void ApplicationWindow::SetPaneText(int i, QString text)
 void ApplicationWindow::CreateTestOperations()
 {
 
-
-	_cCommandManager.AddCommand(new FCCmdNew());
-	_cCommandManager.AddCommand(new FCCmdOpen());
-	_cCommandManager.AddCommand(new FCCmdSave());
-	_cCommandManager.AddCommand(new FCCmdSaveAs());
-	_cCommandManager.AddCommand(new FCCmdUndo());
-	_cCommandManager.AddCommand(new FCCmdRedo());
-	_cCommandManager.AddCommand(new FCCmdPrint());
-	_cCommandManager.AddCommand(new FCCmdQuit());
-	_cCommandManager.AddCommand(new FCCmdCut());
-	_cCommandManager.AddCommand(new FCCmdCopy());
-	_cCommandManager.AddCommand(new FCCmdPaste());
-	_cCommandManager.AddCommand(new FCCmdMDINormal());
-	_cCommandManager.AddCommand(new FCCmdMDIToplevel());
-	_cCommandManager.AddCommand(new FCCmdMDITabed());
-	_cCommandManager.AddCommand(new FCCmdTileHor());
-	_cCommandManager.AddCommand(new FCCmdTileVer());
-	_cCommandManager.AddCommand(new FCCmdTilePra());
-	_cCommandManager.AddCommand(new FCCmdTest1());
-	_cCommandManager.AddCommand(new FCCmdTest2());
-	_cCommandManager.AddCommand(new FCCmdAbout());
+	// register the application Standard commands from CommandStd.cpp
+	CreateStdCommands();
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
@@ -290,6 +277,18 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Test1"  ,pcStdToolBar);
 	_cCommandManager.AddTo("Std_Test2"  ,pcStdToolBar);
 
+	// view tool bar -----------------------------------------------------------------------
+    pcStdToolBar =  GetToolBar("View Toolbar" );
+	_cCommandManager.AddTo("Std_ViewFitAll"  ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_ViewAxo"     ,pcStdToolBar);
+	pcStdToolBar->addSeparator();
+	_cCommandManager.AddTo("Std_ViewFront"   ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_ViewRight"   ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_ViewTop"     ,pcStdToolBar);
+	pcStdToolBar->addSeparator();
+	_cCommandManager.AddTo("Std_ViewRear"  ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_ViewLeft"  ,pcStdToolBar);
+	_cCommandManager.AddTo("Std_ViewBottom",pcStdToolBar);
 
 	// test tool bar -----------------------------------------------------------------------
     // populate a menu with all actions

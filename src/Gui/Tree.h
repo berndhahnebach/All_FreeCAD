@@ -104,6 +104,8 @@ class FCTree :public QListView
 public:
 	FCTree(FCGuiDocument*  pcDocument,QWidget *parent=0,const char *name=0);
 	// App_Tree();
+
+	bool OnMsg(const char* pMsg);
 	
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
 	friend FCTreeLabel;

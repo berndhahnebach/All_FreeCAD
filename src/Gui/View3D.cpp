@@ -105,8 +105,12 @@ const char *FCView3D::GetName(void)
 
 bool FCView3D::OnMsg(const char* pMsg)
 {
-	printf("Msg: %s View: %p\n",pMsg,this);
-	return true;
+	//printf("Msg: %s View: %p\n",pMsg,this);
+
+	if (_pcView3D->OnMsg(pMsg)) return true;
+	if (_pcTree->OnMsg(pMsg))   return true;
+
+	return false;
 }
 
 /*
@@ -245,22 +249,78 @@ void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 	_cMouseStack.top()->mouseMoveEvent( cEvent);
 }
  
+bool View3D::OnMsg(const char* pMsg)
+{
+	if(strcmp("ViewBottom",pMsg) == 0 ){
+		_hView->SetProj(V3d_Zneg);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewFront",pMsg) == 0 ){
+		_hView->SetProj(V3d_Yneg);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewLeft",pMsg) == 0 ){
+		_hView->SetProj(V3d_Xpos);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewRear",pMsg) == 0 ){
+		_hView->SetProj(V3d_Ypos);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewRight",pMsg) == 0 ){
+		_hView->SetProj(V3d_Xneg);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewTop",pMsg) == 0 ){
+		_hView->SetProj(V3d_Zpos);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewAxo",pMsg) == 0 ){
+		_hView->SetProj(V3d_XposYnegZpos);
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}else if(strcmp("ViewFit",pMsg) == 0 ){
+		_hView->FitAll();
+		_hView->ZFitAll();
+		return true;
+	}
+	return false;
+}
 
 void View3D::ShowPopup(int x, int y)
 {
-	//cout << "View3D: ShowPopup:"<< x << "  " << y <<endl;
+	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+
 	QPopupMenu *pcMenu = new QPopupMenu;
 	QPopupMenu *pcSubMenu = new QPopupMenu;
-	pcSubMenu->insertItem("Front",    this,SLOT(SetViewFront()) );
-	pcSubMenu->insertItem("Top",      this,SLOT(SetViewTop())   );
-	pcSubMenu->insertItem("Right",    this,SLOT(SetViewRight()) );
-	pcSubMenu->insertItem("Rear",     this,SLOT(SetViewRear())  );
-	pcSubMenu->insertItem("Bottom",   this,SLOT(SetViewBottom()));
-	pcSubMenu->insertItem("Left",     this,SLOT(SetViewLeft())  );
-	pcSubMenu->insertItem("Axometric",this,SLOT(SetViewAxo())   );
-	pcMenu->insertItem("Fit all",     this,SLOT(SetViewFitAll()));
+
+	// view menu -----------------------------------------------------------------------
+	rcCmdMgr.AddTo("Std_ViewFitAll"  ,pcSubMenu);
+	rcCmdMgr.AddTo("Std_ViewAxo"     ,pcSubMenu);
+	pcSubMenu->insertSeparator();
+	rcCmdMgr.AddTo("Std_ViewFront"   ,pcSubMenu);
+	rcCmdMgr.AddTo("Std_ViewRight"   ,pcSubMenu);
+	rcCmdMgr.AddTo("Std_ViewTop" ,pcSubMenu);
+	pcSubMenu->insertSeparator();
+	rcCmdMgr.AddTo("Std_ViewRear"  ,pcSubMenu);
+	rcCmdMgr.AddTo("Std_ViewLeft"  ,pcSubMenu);
+	rcCmdMgr.AddTo("Std_ViewBottom",pcSubMenu);
+
+	
+	// Popup menu -----------------------------------------------------------------------
+
+	rcCmdMgr.AddTo("Std_ViewFitAll",pcMenu);
+
 	pcMenu->insertItem("Std Views",pcSubMenu);
 	
+	// show the menu	
 	pcMenu->exec(QCursor::pos());
 }
 

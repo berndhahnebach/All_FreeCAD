@@ -210,6 +210,15 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 
 }
 
+bool FCTree::OnMsg(const char* pMsg)
+{
+	//printf("MsgTree: %s View: %p\n",pMsg,this);
+
+	return false;
+}
+
+
+
 //Tree:: Tree(){};
 
 
