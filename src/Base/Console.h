@@ -1,9 +1,8 @@
-/** \file Console.h
+/** \file $RCSfile$
  *  \brief The console module
- *  \author Juergen Riegel
- *  \version 0.1
- *  \date    5.2001
- *  \bug Nothing known
+ *  \author $Author$
+ *  \version $Revision$
+ *  \date    $Date$
  */
 
 

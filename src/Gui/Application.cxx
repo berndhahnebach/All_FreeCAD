@@ -15,14 +15,6 @@
 #include "Application.h"
 #include "Document.h"
 
-
-#include <qapplication.h>
-#include <qvbox.h>
-#include <qworkspace.h>
-#include <qstatusbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-
 #include "DlgDocTemplatesImp.h"
   
 static ApplicationWindow* stApp;

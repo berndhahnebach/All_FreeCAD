@@ -1,12 +1,11 @@
 /***************************************************************************
-                          FCAction.cpp  -  description
+                          Command.cpp  -  description
                              -------------------
     begin                : Tue Jan 2 2002
     copyright            : (C) 2001 by Juergen Riegel
     email                : juergen.riegel@web.de
  ***************************************************************************/
 
-#include "Command.h"
 
 
 #ifdef _PreComp_
@@ -16,6 +15,7 @@
 
 #include "../base/Console.h"
 
+#include "Command.h"
 
 
 /*

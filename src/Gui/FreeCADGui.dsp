@@ -177,6 +177,17 @@ SOURCE=.\DlgDocTemplates_moc.cpp
 # Begin Source File
 
 SOURCE=.\DlgDocTemplatesImp.cpp
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# ADD CPP /YX"PreCompiled.h"
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# ADD CPP /YX"PreCompiled.h"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -213,6 +224,7 @@ SOURCE=.\DlgDocTemplatesImp_moc.cpp
 # Begin Source File
 
 SOURCE=.\Application.cxx
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -248,6 +260,7 @@ SOURCE=.\Application_moc.cpp
 # Begin Source File
 
 SOURCE=.\Command.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -256,6 +269,7 @@ SOURCE=.\Command.h
 # Begin Source File
 
 SOURCE=.\Document.cxx
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -264,6 +278,7 @@ SOURCE=.\Document.h
 # Begin Source File
 
 SOURCE=.\GuiConsole.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -276,6 +291,7 @@ SOURCE=.\Libs.cpp
 # Begin Source File
 
 SOURCE=.\MouseModel.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -284,6 +300,15 @@ SOURCE=.\MouseModel.h
 # Begin Source File
 
 SOURCE=.\PreCompiled.cpp
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# ADD CPP /Yc"PreCompiled.h"
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -292,6 +317,7 @@ SOURCE=.\PreCompiled.h
 # Begin Source File
 
 SOURCE=.\Themes.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -300,6 +326,7 @@ SOURCE=.\Themes.h
 # Begin Source File
 
 SOURCE=.\Tree.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -335,6 +362,7 @@ SOURCE=.\Tree_moc.cpp
 # Begin Source File
 
 SOURCE=.\View.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -366,6 +394,7 @@ InputPath=.\View.h
 # Begin Source File
 
 SOURCE=.\View3D.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 

@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef _PreComp_
+#	include "PreCompiled.h"
+#else
+
+#endif
 
 #include "Document.h"
 #include "Tree.h"

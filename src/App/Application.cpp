@@ -128,7 +128,7 @@ FCDocument* FCApplication::New(const char * Name)
 	// Load module
 	if(!GetInterpreter().LoadModule(Name))
 	{
-		delete pDoc;
+		delete pDoc ;  
 		throw FCException("No doc module");
 	}
 

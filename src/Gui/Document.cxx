@@ -1,29 +1,48 @@
+/** \file $RCSfile$
+ *  \brief The Gui Document
+ *  \author $Author$
+ *  \version $Revision$
+ *  \date    $Date$
+ */
+
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 2 of the    *
+ *   License, or (at your option) any later version.                       *
+ *   for detail see the LICENCE text file.                                 *
+ *   Jürgen Riegel 2002                                                    *
+ *                                                                         *
+ ***************************************************************************/
+ 
 
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
 #	include <qstatusbar.h>
+#	ifndef WNT
+#		include <Graphic3d_GraphicDevice.hxx>
+#	else
+#		include <Graphic3d_WNTGraphicDevice.hxx>
+#	endif
 #endif
 
 
-
+#include "../App/Document.h"
 #include "Application.h"
 #include "Document.h"
 #include "View.h"
 
-#include <qstatusbar.h>
-
-#ifndef WNT
-#include <Graphic3d_GraphicDevice.hxx>
-#else
-#include <Graphic3d_WNTGraphicDevice.hxx>
-#endif
 
 
 FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, const char * name)
 	:_pcAppWnd(app),
 	 _pcDocument(pcDocument)
 {
+	// keeping an Instance of this document as long as the window lives
+	_pcDocument->_INCREF();
 
 	TCollection_ExtendedString a3DName("Visu3D");
 	_hViewer = Viewer(getenv("DISPLAY"),a3DName.ToExtString(),"",1000.0,V3d_XposYnegZpos,Standard_True,Standard_True);
@@ -34,6 +53,12 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 
 	_hContext =new AIS_InteractiveContext(_hViewer);
 
+	// World coordinate system
+	Handle(AIS_Trihedron) hTrihedron;
+	hTrihedron = new AIS_Trihedron(new Geom_Axis2Placement(gp::XOY()));
+	_hContext->Display(hTrihedron);
+	_hContext->Deactivate(hTrihedron);
+
 	// alwayes create at least one view
 	CreateView();
 
@@ -43,6 +68,8 @@ FCGuiDocument::~FCGuiDocument()
 {
 	for(stlport::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
 		delete *It;
+
+	_pcDocument->_DECREF();
 }
 
 

@@ -1,5 +1,5 @@
-#ifndef __PRECOMPILED__
-#define __PRECOMPILED__
+#ifndef __PRECOMPILED_GUI__
+#define __PRECOMPILED_GUI__
 
 #pragma warning( disable : 4786 )
 
@@ -19,8 +19,13 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 
+#ifndef WNT
+#include <Graphic3d_GraphicDevice.hxx>
+#else
+#include <Graphic3d_WNTGraphicDevice.hxx>
+#endif
+ 
 // Q Toolkit
 #include <qapplication.h>
 #include <qpopupmenu.h>
@@ -46,12 +51,38 @@
 #include <qvbox.h>
 #include <qworkspace.h>
 #include <qstatusbar.h>
+#include <qmessagebox.h>
+#include <qiconview.h> 
+#include <qfiledialog.h>
+#include <qsplitter.h> 
+#include <qvbox.h>
+#include <qworkspace.h>
+#include <qstatusbar.h>
+#include <qmenubar.h>
+#include <qmessagebox.h>
+#include <qdrawutil.h>
+#include <qpalette.h> 
+#include <qwidget.h>
+#include <qlabel.h>
+#include <qimage.h>
+#include <qpushbutton.h>
+#include <qwidget.h>
+#include <qrangecontrol.h>
+#include <qscrollbar.h>
+#include <limits.h>
+#include <QTabBar.h>
+
+
+
+
+
 // help system
 #include <qwhatsthis.h>
 #include <qtooltip.h>
-#include <qsplitter.h> 
 
+#include <python.h>
 
+#include <windows.h>
 
 
 

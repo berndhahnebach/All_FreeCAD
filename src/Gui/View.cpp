@@ -1,64 +1,49 @@
+#ifdef _PreComp_
+#	include "PreCompiled.h"
+#else
+#	include <qvbox.h>
+#	include <qtoolbar.h>
+#	include <qfiledialog.h>
+#	include <qapplication.h>
+#	include <qmessagebox.h>
+#	include <qsplitter.h>
+#	include <QWidgetStack.h>
+#	include <QPushButton.h>
+#	include <QTabBar.h>
+#	include <qlayout.h>
+#endif
+
+
+
 //#include "MDIWindow.h"
 #include "Document.h"
 //#include "ViewOperations.h"
 #include "View3D.h"
 #include "Tree.h"
 
-#include <qvbox.h>
-#include <qtoolbar.h>
-#include <qfiledialog.h>
-#include <qapplication.h>
-#include <qmessagebox.h>
-#include <qsplitter.h>
-#include <QWidgetStack.h>
-#include <QPushButton.h>
-#include <QTabBar.h>
-#include <qlayout.h>
 
-#include <qmultilineedit.h>
 
 
 FCView::FCView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
     :QextMdiChildView( parent, name, wflags ),
 	 _pcDocument(pcDocument)
 {
-/*
-	QMultiLineEdit* tew;
-   QVBoxLayout* vb = new QVBoxLayout(this);
-   setFocusPolicy(QWidget::NoFocus);	
-
-   tew = new QMultiLineEdit( this, "edit_widget");
-   tew->setText(tr("This is a QLineEdit widget within a QextMDI view.\n\n") +
-                tr("You can also load any text file in a new view by using 'FileOpen'\n") +
-                tr("but this example is not able to save changes to file."));
-   vb->addWidget(tew);
-
-   QHBoxLayout* hb = new QHBoxLayout(vb);
-   QPushButton *b1 = new QPushButton( "Test 1", this, "button_test1");
-   b1->setFocusPolicy(StrongFocus);
-   hb->addWidget(b1);
-   QPushButton *b2 = new QPushButton( "Test 2", this, "button_test2");
-   b2->setFocusPolicy(NoFocus);
-   hb->addWidget(b2);
-
-*/
-
-
 	
 	QVBox* vb2;
 	//vb= new QVBox( this );
     QVBoxLayout* vb = new QVBoxLayout(this);
 
 	//vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-	//setCentralWidget(vb);
-	//setMainWidget(vb);
 	// set the splitter frames
-	//_pcSplitter = new QSplitter( QSplitter::Horizontal, vb, "Main");
 	_pcSplitter = new QSplitter( QSplitter::Horizontal, this, "Main");
 	vb->addWidget(_pcSplitter);
-	//setCentralWidget(_pcSplitter);
 	vb2 = new QVBox( _pcSplitter );
-	//_pcSplitter->setResizeMode(vb,QSplitter::KeepSize); 
+	_pcSplitter->setResizeMode(vb2,QSplitter::KeepSize);
+	QValueList<int> size;
+	size.append(180);
+	size.append(100);
+	_pcSplitter->setSizes (size);
+
 	vb2->setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
 	_pcWidget	= new QWidget (vb2);
 	//_pcWidget	= new QWidget (_pcSplitter);

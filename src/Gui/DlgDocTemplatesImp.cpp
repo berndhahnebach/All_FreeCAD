@@ -1,11 +1,18 @@
+#ifdef _PreComp_
+#	include "PreCompiled.h"
+#else
+#	include <qmessagebox.h>
+#	include <qiconview.h> 
+#	include <qfiledialog.h>
+#	include <python.h>
+#endif
+
 #include "DlgDocTemplatesImp.h"
-#include <qiconview.h> 
-#include <qfiledialog.h>
-#include <qmessagebox.h> 
-#include <python.h>
 #include "../Base/Export.h"
 #include "../Base/PyTools.h"
 #include "../Base/Interpreter.h"
+#include "../Base/Console.h"
+#include "../Base/Exception.h"
 
 
 #include "Icons/Folder32.xpm"
@@ -20,13 +27,16 @@ DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool
     : DlgDocTemplates( parent, name, modal, fl )
 {
 	PyObject *result=NULL,*result2=NULL;
-
-	assert(PP_Run_Function("__main__","GetTemplateList","O",&result,"()") != -1);
-	assert(PySequence_Check(result));
-
+	GetConsole().Log("Step 1\n");
+	if(PP_Run_Function("__main__","GetTemplateList","O",&result,"()") == -1) 
+		throw FCException("No Function TemplateList() in __main__");
+	if(!PySequence_Check(result)) 
+		throw FCException("TemplateList() delivers no Template List");
+	GetConsole().Log("Template Sequence size %d\n",PySequence_Size(result));
+    
 	QPixmap pixmap(Folder32);
 	QString str;
-
+	// cycling through the Templates
 	for(int i=0;i<PySequence_Size(result);i++)
 	{
 		result2 = PySequence_GetItem(result,i);

@@ -22,7 +22,6 @@
 
 
 #include "GUIConsole.h"
-#include "windows.h"
 
 
 const UINT FCGUIConsole::s_nMaxLines = 1000;

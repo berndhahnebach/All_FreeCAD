@@ -49,9 +49,10 @@ print ModDirs
 FreeCAD.PrintMessage('\tSearching modules...\n')
 ModuleList = []
 for Dir in ModDirs:
-    FreeCAD.PrintMessage('\t\tFound: ' + Dir + '\n')
-    ModuleList.append(FCModule( ModDir + '\\' + Dir ))
-    sys.path.append( ModDir + '\\' + Dir )
+	if ( Dir != 'CVS'):
+		FreeCAD.PrintMessage('\t\tFound: ' + Dir + '\n')
+		ModuleList.append(FCModule( ModDir + '\\' + Dir ))
+		sys.path.append( ModDir + '\\' + Dir )
 # Attaching the list to the FreeCAD main module
 FreeCAD.Modules = ModuleList
 

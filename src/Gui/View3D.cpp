@@ -27,6 +27,7 @@
 
 #include "View3D.h"
 #include "MouseModel.h"
+#include "Document.h"
 
 #ifdef _DEBUG_
 #define DEBUGOUT(X) cout << X
@@ -34,7 +35,6 @@
 #define DEBUGOUT(X)
 #endif
 
-#include "Document.h"
 
 // global graphic device (set in DocWindow)
 #ifdef WNT
