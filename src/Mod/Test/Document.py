@@ -33,20 +33,25 @@ import FreeCAD, os, unittest
 # define the functions to test the FreeCAD base code
 #---------------------------------------------------------------------------
 
-def CreateTestDoc():
-    FreeCAD.PrintLog("Creating new Document\n")
-    return FreeCAD.DocNew()
-    
+#def suite():
+#    suite = unittest.TestSuite()
+#    suite.addTest(DocTestCase("DocumentProperties"))
+#    suite.addTest(DocTestCase("DocumentLabels"))
+#    suite.addTest(DocTestCase("DocumentSaveAndRestore"))
+#    return suite
 
 
-class DocTestCase(unittest.TestCase):
-    def runTest(self):
-        self.Doc = CreateTestDoc()
-        FreeCAD.PrintLog("   Reading properties\n")
+class DocumentCases(unittest.TestCase):
+
+    def setUp(self):
+        self.Doc = FreeCAD.DocNew()
+
+    def testProperties(self):
         i = self.Doc.UndoLimit
         i = self.Doc.AvailableUndos
         i = self.Doc.AvailableRedos
 
+    def testLabels(self):
         Main = self.Doc.Main #getting the main label of the document 
         L1 = Main.GetLabel(1)
         L1 = Main.GetLabel(1)
@@ -64,25 +69,26 @@ class DocTestCase(unittest.TestCase):
         L1.Real = 1.0
         L1.Name = "Hallo"
 
-        # saving and restoring
-        TempPath = os.getenv('TEMP')
-        FreeCAD.PrintLog ('  Using temp path: ' + TempPath + '\n')
+#    def testSaveAndRestore(self):
+#        # saving and restoring
+#        TempPath = os.getenv('TEMP')
+#        FreeCAD.PrintLog ('  Using temp path: ' + TempPath + '\n')
+#
+#        SavePath = TempPath + os.sep + "Test1.FCStd"
+#        FreeCAD.PrintLog("   Save and Open the document to: " + SavePath + "\n")
+#        self.Doc.SaveAs(SavePath)
+#        FreeCAD.PrintLog("   provocate exceptio by try loading a already open document\n")
+#        try:
+#            Doc2 = App.DocOpen(SavePath)
+#        except:
+#            FreeCAD.PrintLog("   exception thrown, OK\n")
+#        else:
+#            FreeCAD.PrintLog("   no exception thrown, ERROR\n")
+#            raise IOError
 
-        SavePath = TempPath + os.sep + "Test1.FCStd"
-        FreeCAD.PrintLog("   Save and Open the document to: " + SavePath + "\n")
-        self.Doc.SaveAs(SavePath)
-        FreeCAD.PrintLog("   provocate exceptio by try loading a already open document\n")
-        try:
-            Doc2 = App.DocOpen(SavePath)
-        except:
-            FreeCAD.PrintLog("   exception thrown, OK\n")
-        else:
-            FreeCAD.PrintLog("   no exception thrown, ERROR\n")
-            raise IOError
+    def tearDown(self):
         # closing doc
         self.Doc = 0
 
-    def setUp(self):
-        self.Doc = CreateTestDoc()
 
         

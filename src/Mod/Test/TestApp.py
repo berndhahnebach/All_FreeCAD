@@ -27,7 +27,7 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
-import FreeCAD, os, unittest, Document
+import FreeCAD, os, unittest
 
 
 #---------------------------------------------------------------------------
@@ -35,116 +35,19 @@ import FreeCAD, os, unittest, Document
 #---------------------------------------------------------------------------
 
 
-def TestDocUnit():
-    return Document.DocTestCase()
+def All():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Base") )
+    return suite
 
+    
+def TestText(s):
+    s = unittest.defaultTestLoader.loadTestsFromName(s)
+    r = unittest.TextTestRunner()
+    r.run(s)
 
-def TestAll():
-    FreeCAD.PrintMessage("Checking on basic stuff\n")
-    TestBase()
-    FreeCAD.PrintMessage("Checking on Parameters\n")
-    TestParameter()
-    FreeCAD.PrintMessage("Checking on document\n")
-    TestDoc()
-
-def TestDoc():
-    FreeCAD.PrintLog("Creating new Part document and filing up\n")
-    Doc = FreeCAD.DocNew()
-    FreeCAD.PrintLog("   Reading properties\n")
-    i = Doc.UndoLimit
-    i = Doc.AvailableUndos
-    i = Doc.AvailableRedos
-
-    Main = Doc.Main #getting the main label of the document 
-    L1 = Main.GetLabel(1)
-    L1 = Main.GetLabel(1)
-    L1 = Main.GetLabel(1)
-    L1 = Main.GetLabel(1)
-    L1 = Main.GetLabel(1)
-    L1 = Main.GetLabel(1)
-    L2 = Main.GetLabel(2)
-    L3 = Main.GetLabel(3)
-    L4 = Main.GetLabel(4)
-    L5 = Main.GetLabel(5)
-    L6 = Main.GetLabel(6)
-    L7 = Main.GetLabel(7)
-    L1.Int = 1
-    L1.Real = 1.0
-    L1.Name = "Hallo"
-
-    # saving and restoring
-    TempPath = os.getenv('TEMP')
-    FreeCAD.PrintLog ('  Using temp path: ' + TempPath + '\n')
-
-    SavePath = TempPath + os.sep + "Test1.FCStd"
-    FreeCAD.PrintLog("   Save and Open the document to: " + SavePath + "\n")
-    Doc.SaveAs(SavePath)
-    FreeCAD.PrintLog("   provocate exceptio by try loading a already open document\n")
-    try:
-        Doc2 = App.DocOpen(SavePath)
-    except:
-        FreeCAD.PrintLog("   exception thrown, OK\n")
-    else:
-        FreeCAD.PrintLog("   no exception thrown, ERROR\n")
-        raise IOError
-    # closing doc
-    Doc = 0
-
-def TestBase():
-    FreeCAD.PrintLog ("Testing console...\n")
-
-    FreeCAD.PrintMessage("   Printing message\n")
-    FreeCAD.PrintError("   Printing error\n")
-    FreeCAD.PrintWarning("   Printing warning\n")
-    FreeCAD.PrintLog("   Printing Log\n")
-
-class ParameterTestCase(unittest.TestCase):
-    def runTest(self):
-        # Parameter testing
-        TestPar = FreeCAD.ParamGet("System parameter:Test")
-        FreeCAD.PrintLog("Test:")
-        for i in range(50):
-            FreeCAD.PrintLog(`i`+",")
-            TestPar.SetFloat(`i`,4711.4711)
-            TestPar.SetInt(`i`,4711)
-            TestPar.SetBool(`i`,1)
-            Temp = TestPar.GetGroup(`i`)
-            for l in range(50):
-                Temp.SetFloat(`l`,4711.4711)
-                Temp.SetInt(`l`,4711)
-                Temp.SetBool(`l`,1)
-        Temp = 0
-        FreeCAD.PrintLog("\n")
-        #check on special conditions
-        TestPar = FreeCAD.ParamGet("System parameter:Test/44")
-        # check on Int
-        if(TestPar.GetInt("44") == 4711):
-            FreeCAD.PrintLog("Int OK\n")
-        else:
-            FreeCAD.PrintLog("Error reading back Int")
-            raise
-        # check on float
-        if(TestPar.GetFloat("44") == 4711.4711):
-            FreeCAD.PrintLog("Float OK\n")
-        else:
-            FreeCAD.PrintLog("Error reading back Float")
-            raise
-        # check on Bool
-        if(TestPar.GetBool("44") == 1):
-            FreeCAD.PrintLog("Bool OK\n")
-        else:
-            FreeCAD.PrintLog("Error reading back Bool")
-            raise
-        #remove all
-        TestPar = FreeCAD.ParamGet("System parameter:Test")
-        TestPar.Clear()
-
-
-def TestParameterHeavy(i=10):
-    for l in range(i):
-        TestParameter()
-
-def TestUnit():
+def TestGui(s):
     import unittestgui
     import sys
     import Tkinter
@@ -152,8 +55,8 @@ def TestUnit():
     import traceback
     import string
     root = Tkinter.Tk()
-    root.title("FreeCAD unit test")
-    runner = unittestgui.TkTestRunner(root, "TestApp.TestDocUnit")
+    root.title("FreeCAD unit tests")
+    runner = unittestgui.TkTestRunner(root, s)
     root.protocol('WM_DELETE_WINDOW', root.quit)
     root.mainloop()
     root.destroy()

@@ -107,6 +107,8 @@ public:
 	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
 	PYFUNCDEF_D (FCPyParameterGrp,PyHasGroup);
 	PYFUNCDEF_D (FCPyParameterGrp,PyIsEmpty);
+	PYFUNCDEF_D (FCPyParameterGrp,PyNotify);
+	PYFUNCDEF_D (FCPyParameterGrp,PyNotifyAll);
 
 	PYFUNCDEF_D (FCPyParameterGrp,PySetBool);
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetBool);
@@ -165,6 +167,8 @@ PyMethodDef FCPyParameterGrp::Methods[] = {
   {"HasGroup",         (PyCFunction) sPyHasGroup,        Py_NEWARGS},
   {"IsEmpty",          (PyCFunction) sPyIsEmpty,         Py_NEWARGS},
   {"Clear",            (PyCFunction) sPyClear,           Py_NEWARGS},
+  {"Notify",           (PyCFunction) sPyNotify,          Py_NEWARGS},
+  {"NotifyAll",        (PyCFunction) sPyNotifyAll,       Py_NEWARGS},
 
   {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS},
   {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS},
@@ -446,6 +450,25 @@ PyObject *FCPyParameterGrp::PyHasGroup(PyObject *args)
         return NULL;                             // NULL triggers exception 
 	
 	return Py_BuildValue("i",_cParamGrp->HasGroup(pstr));
+} 
+
+PyObject *FCPyParameterGrp::PyNotify(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->Notify(pstr);
+
+	Py_Return;
+} 
+PyObject *FCPyParameterGrp::PyNotifyAll(PyObject *args)
+{ 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	
+	_cParamGrp->NotifyAll();
+
+	Py_Return;
 } 
 
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file '.\DlgPartImportStep.ui'
 **
-** Created: Do 9. Dez 23:03:05 2004
+** Created: Mi 22. Dez 17:37:19 2004
 **      by: The User Interface Compiler ($Id$)
 **
 ** WARNING! All changes made in this file will be lost!

@@ -876,18 +876,21 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 						mConfig["RunMode"] = "Script";
 						if(argc <= i+1)
 						{
-							Console().Error("Expecting a file\n");  
-							Console().Error("\nUsage: %s %s",argv[0],Usage);  
+              std::cerr << "Expecting a file" << std::endl;  
+							std::cerr << "\nUsage: " << argv[0] << Usage;
+              throw;
 						}
 						mConfig["FileName"]= argv[i+1];
 						i++;
+            break;
 					case 'c':  
 					case 'C':  
 						mConfig["RunMode"] = "ScriptCmd";
 						if(argc <= i+1)
 						{
-							Console().Error("Expecting a file\n");  
-							Console().Error("\nUsage: %s %s",argv[0],Usage);  
+              std::cerr << "Expecting a file" << std::endl;  
+							std::cerr << "\nUsage: " << argv[0] << Usage;
+              throw;
 						}
 						mConfig["FileName"]= argv[i+1];
 						i++;
@@ -896,8 +899,8 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 						mConfig["RunMode"] = "Cmd";
 						break;   
 					default:  
-						Console().Error("Invalid Input %s\n",argv[i]);  
-						Console().Error("\nUsage: %s %s",argv[0],Usage);  
+            std::cerr << "Invalid Input " << argv[i] << std::endl;  
+						std::cerr << "\nUsage: " << argv[0] << Usage;
 						throw Base::Exception("Comandline error(s)");  
 				};  
 				break;  
@@ -944,20 +947,20 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 			case '?': 
 			case 'h': 
 			case 'H': 
-				printf("\nUsage: %s %s",argv[0],Usage);
+				std::cerr << "\nUsage: " << argv[0] << Usage;
 				exit(0);
 				//throw FCException("Comandline break");  
 				break;  
 			default: 
 				printf("Invalid Option: %s\n",argv[i]); 
-				printf("\nUsage: %s %s",argv[0],Usage); 
-				exit(1);
+				std::cerr << "\nUsage: " << argv[0] << Usage;
+ 				throw Base::Exception("Comandline error(s)");
 			} 
 		} 
 		else  
 		{ 
-			Console().Error("Illegal command line argument #%d, %s\n",i,argv[i]); 
-			Console().Error("\nUsage: %s %s",argv[0],Usage); 
+      std::cerr << "Illegal command line argument #" << i << " " << argv[i] << std::endl; 
+			std::cerr << "\nUsage: " << argv[0] << Usage;
 			throw Base::Exception("Comandline error(s)");  
 		} 
 	}  

@@ -35,27 +35,18 @@ import TestApp               #Test as Module name not possible
 #---------------------------------------------------------------------------
 # define the Commands of the Test Application module
 #---------------------------------------------------------------------------
-class Test1Cmd:
+class TestCmd:
     "Test1 commando object"
     def Activated(self):
-        FreeCAD.PrintLog("TEst1 in python activated")
-        TestApp.TestUnit()
+        TestApp.TestGui()
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}
 
-class Test2Cmd:
-    "Test2 commando object"
-    def Activated(self):
-        FreeCAD.PrintLog("TEst2 in python activated")
-
-    def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 2', 'ToolTip': 'First very important Test!!!'}
-
 class TestAllCmd:
     "Test all commando object"
     def Activated(self):
-        TestApp.TestAll()
+        TestApp.TestGui("TestApp.All")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
@@ -63,33 +54,54 @@ class TestAllCmd:
 class TestDocCmd:
     "Document test commando object"
     def Activated(self):
-        TestApp.TestDoc()
+        TestApp.TestGui("Document")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
         		'MenuText': 'Test Document',
                 'ToolTip' : 'Test the document (creation, save, load and destruction)'}
 
-class TestParameterHeavy:
-    "Document test commando object"
-    def Activated(self):
-        TestApp.TestParameterHeavy(100)
-
-    def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test Parameter',
-        		'Heavy parameter test': 'Test parameter heavy',
-                'Test parameter very long' : 'Test parameter very long'}
-
 class TestBaseCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestBase()
+        TestApp.TestGui("Base")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
         		'MenuText': 'Test base',
                 'ToolTip' : 'Test the basic functions of FreeCAD'}
+
+class TestAllTextCmd:
+    "Test all commando object"
+    def Activated(self):
+        TestApp.TestText("TestApp.All")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
+
+class TestDocTextCmd:
+    "Document test commando object"
+    def Activated(self):
+        TestApp.TestText("Document")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test Document',
+                'ToolTip' : 'Test the document (creation, save, load and destruction)'}
+
+class TestBaseTextCmd:
+    "Base test commando object"
+    def Activated(self):
+        TestApp.TestText("Base")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test base',
+                'ToolTip' : 'Test the basic functions of FreeCAD'}
+
+
+
+
 
 class TestWorkbenchCmd:
     "Workbench test"
@@ -115,11 +127,12 @@ class TestWorkbenchCmd:
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
-FreeCADGui.CommandAdd('Test_Test1'   ,Test1Cmd())
-FreeCADGui.CommandAdd('Test_Test2'   ,Test2Cmd())
-FreeCADGui.CommandAdd('Test_TestAll' ,TestAllCmd())
-FreeCADGui.CommandAdd('Test_TestDoc' ,TestDocCmd())
-FreeCADGui.CommandAdd('Test_TestBase',TestBaseCmd())
-FreeCADGui.CommandAdd('Test_TestWork',TestWorkbenchCmd())
-FreeCADGui.CommandAdd('Test_TestParameter',TestParameterHeavy())
+FreeCADGui.CommandAdd('Test_Test'        ,TestCmd())
+FreeCADGui.CommandAdd('Test_TestAllText' ,TestAllTextCmd())
+FreeCADGui.CommandAdd('Test_TestDocText' ,TestDocTextCmd())
+FreeCADGui.CommandAdd('Test_TestBaseText',TestBaseTextCmd())
+FreeCADGui.CommandAdd('Test_TestAll'     ,TestAllCmd())
+FreeCADGui.CommandAdd('Test_TestDoc'     ,TestDocCmd())
+FreeCADGui.CommandAdd('Test_TestBase'    ,TestBaseCmd())
+FreeCADGui.CommandAdd('Test_TestWork'    ,TestWorkbenchCmd())
 

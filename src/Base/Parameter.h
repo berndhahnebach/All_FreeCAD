@@ -168,7 +168,7 @@ public:
 
 
 
-	/** @name methodes for Blob handling (not implemented yet) */
+	/** @name methodes for String handling */
 	//@{
 	/// set a string value
 	void  SetASCII(const char* Name, const char *sValue);

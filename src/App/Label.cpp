@@ -234,7 +234,7 @@ PyParentObject FCLabelPy::Parents[] = {&FCLabelPy::Type, NULL};
 FCLabelPy::FCLabelPy(TDF_Label cLabel, PyTypeObject *T)
  : FCPyObject( T), _cLabel(cLabel)
 {
-	Console().Log("Create LabelPy: %p \n",this);
+	//Console().Log("Create LabelPy: %p \n",this);
 }
 
 PyObject *FCLabelPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -248,7 +248,7 @@ PyObject *FCLabelPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 //--------------------------------------------------------------------------
 FCLabelPy::~FCLabelPy()						// Everything handled in parent
 {
-	Console().Log("Destroy LabelPy: %p \n",this);
+	//Console().Log("Destroy LabelPy: %p \n",this);
 } 
 
 //--------------------------------------------------------------------------

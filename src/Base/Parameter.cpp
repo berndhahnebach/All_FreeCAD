@@ -907,9 +907,22 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 	return pcElem;
 }
 
-/** \todo */	
 void FCParameterGrp::NotifyAll()
 {
+  // get all ints and notify
+  std::map<std::string,long>        IntMap    = GetIntMap();
+  for (std::map<std::string,long>::iterator It1= IntMap.begin(); It1 != IntMap.end(); It1++)
+    Notify(It1->first.c_str());
+
+  // get all Floats and notify
+  std::map<std::string,double>      FloatMap  = GetFloatMap();
+  for (std::map<std::string,double>::iterator It2= FloatMap.begin(); It2 != FloatMap.end(); It2++)
+    Notify(It2->first.c_str());
+
+  // get all strings and notify
+  std::map<std::string,std::string> StringMap = GetASCIIMap();
+  for (std::map<std::string,std::string>::iterator It3= StringMap.begin(); It3 != StringMap.end(); It3++)
+    Notify(It3->first.c_str());
 }
 
 //**************************************************************************
