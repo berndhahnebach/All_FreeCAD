@@ -159,6 +159,10 @@ View3D::View3D(Gui::Document*  pcDocument, QWidget *parent, const char *name, WF
   setFocusPolicy (ClickFocus);
 }
 
+View3D::~View3D()
+{
+}
+
 bool View3D::initCasCadeView(void)
 {
     _hView = new V3d_OrthographicView(_hViewer);

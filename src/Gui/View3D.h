@@ -115,6 +115,8 @@ public:
    */
   View3D(Gui::Document*  pcDocument, QWidget *parent, const char *name="View3D", WFlags f=WDestructiveClose );
 
+  virtual ~View3D();
+
   /** Initialation of the OCC Graphics. Here is the bundling of the QGLWidget
    * with the OCCGraphics3D_Window. Its very importend that the XWindow is fully
    * showed bevor this function is called! There for its not done in the

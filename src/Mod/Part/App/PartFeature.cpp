@@ -33,6 +33,8 @@
 #	include <TFunction_DriverTable.hxx>
 #	include <TFunction_Function.hxx>
 # include <TNaming_Builder.hxx>
+# include <TNaming_NamedShape.hxx>
+# include <TopoDS_Shape.hxx>
 #	include <Standard_GUID.hxx>
 #endif
 

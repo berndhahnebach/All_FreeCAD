@@ -659,7 +659,9 @@ std::string FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (pcElem2)
 		return std::string(StrX(pcElem2->getNodeValue()).c_str());	
-	else
+	else if (pPreset==0)
+		return std::string("");
+  else
 		return std::string(pPreset);
 }
 

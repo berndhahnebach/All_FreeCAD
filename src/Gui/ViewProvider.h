@@ -33,6 +33,7 @@ namespace App
 }
 
 class SoNode;
+class QListViewItem;
 
 namespace Gui {
 

@@ -597,6 +597,50 @@ QStringList StdCmdMRU::recentFiles() const
   return _vMRU;
 }
 
+void StdCmdMRU::load()
+{
+  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+  if (hGrp->HasGroup("RecentFiles"))
+  {
+    hGrp = hGrp->GetGroup("RecentFiles");
+    StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU"));
+    if (pCmd)
+    {
+      int maxCnt = hGrp->GetInt("RecentFiles", 4);
+      pCmd->setMaxCount( maxCnt );
+      std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
+      for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
+      {
+        pCmd->addRecentFile( it->c_str() );
+      }
+    }
+  }
+}
+
+void StdCmdMRU::save()
+{
+  // save recent file list
+  Command* pCmd = ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU");
+  if (pCmd)
+  {
+    char szBuf[200];
+    int i=0;
+    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
+    hGrp->Clear();
+    hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
+
+    QStringList files = ((StdCmdMRU*)pCmd)->recentFiles();
+    if ( files.size() > 0 )
+    {
+      for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
+      {
+        sprintf(szBuf, "MRU%d", i);
+        hGrp->SetASCII(szBuf, (*it).latin1());
+      }
+    }
+  }
+}
+
 //===========================================================================
 // Std_Cut
 //===========================================================================

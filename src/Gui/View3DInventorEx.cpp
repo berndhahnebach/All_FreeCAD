@@ -79,6 +79,7 @@ View3DInventorEx::~View3DInventorEx()
 {
   //delete _viewer;
   pcSepRoot->unref();
+  delete _viewer;
 }
 
 void View3DInventorEx::updatePrefs(void)

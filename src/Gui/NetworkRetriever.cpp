@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
+# include <qdir.h>
 # include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qtimer.h>
@@ -34,6 +36,7 @@
 #include "Application.h"
 #include "DlgAuthorization.h"
 
+#include "../App/Application.h"
 #include "../Base/Console.h"
 
 using namespace Gui;
@@ -43,11 +46,10 @@ namespace Gui {
 
 struct NetworkRetrieverP
 {
+  // wget options
   int tries;
   int level;
-  QString startUrl;
   QString outputFile;
-  QString proxy;
   QString user;
   QString passwd;
   bool timeStamp;
@@ -55,6 +57,12 @@ struct NetworkRetrieverP
   bool convert;
   bool recurse;
   bool folRel;
+  bool html;
+  // wget argument
+  QString startUrl;
+
+  QString proxy;
+  QString dir;
   bool fail;
 };
 
@@ -65,18 +73,22 @@ NetworkRetriever::NetworkRetriever( QObject * parent, const char * name )
 {
   d = new NetworkRetrieverP;
   d->tries = 3;
-  d->level = 0;
+  d->level = 1;
   d->timeStamp = false;
-  d->img = true;
+  d->img = false;
+  d->html = false;
   d->convert = true;
   d->recurse = false;
-  d->folRel = true;
+  d->folRel = false;
 
   wget = new Process( this, "wget" );
   wget->Attach(this);
 
   // if wgets exits emit signal
   connect(wget, SIGNAL( processExited () ), this, SIGNAL( wgetExited() ));
+
+  // if application quits kill wget immediately to avoid dangling processes
+  connect( qApp, SIGNAL(lastWindowClosed()), wget, SLOT(kill()) );
 }
 
 NetworkRetriever::~NetworkRetriever()
@@ -89,8 +101,11 @@ NetworkRetriever::~NetworkRetriever()
 /**
  * This method is connected to QTimer::singleShot() and executed after 5 seconds. If wget then is still running
  * we can assume that everything is fine.
- * \note This test is necessary since \a wget writes all its output on stderr and we cannot determine when
- * an error occurs and when not.
+ * \note This test is necessary since \a wget writes all its output on stderr and we cannot determine surely 
+ * if an error occurred or not.
+ *
+ * \todo There is still a problem that is not solved so far. If wget requires the proxy settings and if these 
+ * are not set, wget could take more than 5 seconds without downloading anything. 
  */
 void NetworkRetriever::testFailure()
 {
@@ -170,7 +185,7 @@ void NetworkRetriever::setNumberOfTries( int tries )
 /**
  * Sets output file to \a out where documents are written to.
  */
-void NetworkRetriever::setOutput( const QString& out )
+void NetworkRetriever::setOutputFile( const QString& out )
 {
   d->outputFile = out;
 }
@@ -201,7 +216,7 @@ void NetworkRetriever::setProxy( const QString& proxy, const QString& user, cons
  * If \a recursive is true all referenced files are downloaded recursivly.
  * As default recursivion is disabled. \a level specifies the maximum recursion 
  * depth. If \a level is 0 the recursion depth is infinite. As default the level
- * property is 0.
+ * property is 1.
  * \note: Use this with care!
  */
 void NetworkRetriever::setEnableRecursive( bool recursive, int level )
@@ -212,7 +227,7 @@ void NetworkRetriever::setEnableRecursive( bool recursive, int level )
 
 /**
  * If \a folRel is true wget follows relative links only. As default
- * the follows relative property is true.
+ * the follows relative property is false.
  */
 void NetworkRetriever::setFollowRelative( bool folRel )
 {
@@ -230,11 +245,28 @@ void NetworkRetriever::setEnableConvert( bool convert )
 
 /**
  * If \a img is true wget tries to get all needed image files
- * to display the HTML page. As default wget tries to fetch image files.
+ * to display the HTML page. As default this behaviour is disabled..
  */
 void NetworkRetriever::setFetchImages( bool img )
 {
   d->img = img;
+}
+
+/**
+ * Saves all text/html documents with .html extionsion if \a html is true.
+ * As default the html property is false.
+ */
+void NetworkRetriever::setEnableHTMLExtension( bool html )
+{
+  d->html = html;
+}
+
+/**
+ * Sets the output directory to \a dir where all downloaded are written into.
+ */
+void NetworkRetriever::setOutputDirectory( const QString& dir )
+{
+  d->dir = dir;
 }
 
 /**
@@ -249,12 +281,21 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
 
   // proxy as environment variable
   if ( !d->proxy.isEmpty() )
+  {
     wget->setEnvironment("http_proxy", d->proxy);
+    wget->setEnvironment("ftp_proxy", d->proxy);
+  }
   else
+  {
     wget->unsetEnvironment("http_proxy");
+    wget->unsetEnvironment("ftp_proxy");
+  }
 
   wget->clearArguments();
   wget->setExecutable( "wget" );
+
+  // set cwd
+  wget->setWorkingDirectory( QDir( d->dir ) );
 
   // user authentification
   if ( !d->proxy.isEmpty() )
@@ -269,10 +310,16 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
     }
   }
 
+  // output file
+  if ( !d->outputFile.isEmpty() )
+    (*wget) << QString("--output-document=%1").arg( d->outputFile );
+  // timestamping enabled -> update newer files only
   if ( d->timeStamp )
     (*wget) << "-N";
+  // get all needed image files
   if ( d->img )
     (*wget) << "-p";
+  // follow relative links only
   if ( d->folRel )
     (*wget) << "-L";
   if ( d->recurse )
@@ -281,10 +328,17 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
     (*wget) << QString("--level=%1").arg( d->level );
   }
 
+  // convert absolute links in to relative
   if ( d->convert )
     (*wget) << "-k";
+  // number of tries
   (*wget) << QString("--tries=%1").arg( d->tries );
-  (*wget) << "-E" << startUrl;
+  // use HTML file extension
+  if ( d->html )
+    (*wget) << "-E";
+
+  // start URL
+  (*wget)<< startUrl;
 
   bool ok = wget->start();
 
@@ -335,6 +389,22 @@ StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
   sStatusTip    = sToolTipText;
 
   wget = new NetworkRetriever( this );
+  // downloading recursively and depth 5
+  wget->setEnableRecursive( true, 5 );
+  wget->setNumberOfTries( 3 );
+  wget->setEnableHTMLExtension( true );
+  wget->setEnableConvert( true );
+
+  wget->setEnableTimestamp( true );
+  wget->setFetchImages( true );
+  wget->setFollowRelative( false );
+
+  // set output directory
+  QString path = App::GetApplication().GetHomePath();
+  path += "/doc/";
+  wget->setOutputDirectory( path );
+
+
   connect( wget, SIGNAL( wgetExited() ), this, SLOT( wgetExit() ) );
 }
 

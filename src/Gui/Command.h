@@ -334,6 +334,8 @@ public:
   void setAccel      ( int   i        );
   //@}
 
+  static void load();
+  static void save();
 
 protected:
   /** @name Attributes 
@@ -466,6 +468,9 @@ public:
   
   QStringList recentFiles() const;
   std::string getResource(const char* sName) { return ""; }
+
+  static void load();
+  static void save();
 
 private:
   QString recentFileItem( const QString& fn );

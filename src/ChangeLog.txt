@@ -537,3 +537,8 @@ Version: V0.1B113 Date: Fri Feb 11 00:47:38 2005 +++++++++++++++++++++++++++++++
 Version: V0.1B114 Date: Sun Feb 13 17:07:39 2005 +++++++++++++++++++++++++++++++
 + Encapsulation of 'wget' in NetworkRetriever
 + RFE 1100311 Message if wget cannot be found
++ Bug 1124689 fixed (Problems when all MDI windows closed)
++ Heavy bug in View3DInventorEx fixed
++ Check default parameter in FCParameterGrp::GetASCII() and use "" if it is 0
++ enhanced NetworkRetriever
++ loading/saving of user defined macros

@@ -140,7 +140,7 @@ struct ApplicationWindowP
   CommandManager _cCommandManager;
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
-  QMap<QObject*, QTab*> _tabIds;
+  QMap<int, MDIView*> _mdiIds;
 };
 
 } // namespace Gui
@@ -255,96 +255,20 @@ ApplicationWindow::ApplicationWindow()
   d->_pcDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
 
   createStandardOperations();
-
-
+  MacroCommand::load();
 
   // misc stuff
   loadWindowSettings();
-  //  resize( 800, 600 );
-  //setBackgroundPixmap(QPixmap((const char*)FCBackground));
-  //setUsesBigPixmaps (true);
-
-  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
-/*
-  if (hGrp->HasGroup("Macros"))
-  {
-    hGrp = hGrp->GetGroup("Macros");
-    std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
-    for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
-    {
-      MacroCommand* pScript = new MacroCommand((*it)->GetGroupName());
-      pScript->SetScriptName((*it)->GetASCII("Script").c_str());
-      pScript->SetMenuText((*it)->GetASCII("Menu").c_str());
-      pScript->SetToolTipText((*it)->GetASCII("Tooltip").c_str());
-      pScript->SetWhatsThis((*it)->GetASCII("WhatsThis").c_str());
-      pScript->SetStatusTip((*it)->GetASCII("Statustip").c_str());
-      if ((*it)->GetASCII("Pixmap", "nix") != "nix") pScript->SetPixmap((*it)->GetASCII("Pixmap").c_str());
-        pScript->SetAccel((*it)->GetInt("Accel"));
-      d->_cCommandManager.AddCommand(pScript);
-    }
-  }
-*/
   // load recent file list
-  hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
-  if (hGrp->HasGroup("RecentFiles"))
-  {
-    hGrp = hGrp->GetGroup("RecentFiles");
-    StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(d->_cCommandManager.getCommandByName("Std_MRU"));
-    if (pCmd)
-    {
-      int maxCnt = hGrp->GetInt("RecentFiles", 4);
-      pCmd->setMaxCount( maxCnt );
-      std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
-      for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
-      {
-        pCmd->addRecentFile( it->c_str() );
-      }
-    }
-  }
+  StdCmdMRU::load();
 }
 
 ApplicationWindow::~ApplicationWindow()
 {
-  std::vector<Command*> macros = d->_cCommandManager.getModuleCommands("Macro");
-  if (macros.size() > 0)
-  {
-    FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
-/*
-    for (std::vector<Command*>::iterator it = macros.begin(); it!=macros.end(); ++it )
-    {
-      MacroCommand* pScript = (MacroCommand*)(*it);
-      FCParameterGrp::handle hMacro = hGrp->GetGroup(pScript->GetName());
-      hMacro->SetASCII("Script", pScript->GetScriptName());
-      hMacro->SetASCII("Menu", pScript->GetMenuText());
-      hMacro->SetASCII("Tooltip", pScript->GetToolTipText());
-      hMacro->SetASCII("WhatsThis", pScript->GetWhatsThis());
-      hMacro->SetASCII("Statustip", pScript->GetStatusTip());
-      hMacro->SetASCII("Pixmap", pScript->GetPixmap());
-      hMacro->SetInt("Accel", pScript->GetAccel());
-    }*/
-  }
-
+  // save macros
+  MacroCommand::save();
   // save recent file list
-  Command* pCmd = d->_cCommandManager.getCommandByName("Std_MRU");
-  if (pCmd)
-  {
-    char szBuf[200];
-    int i=0;
-    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
-    hGrp->Clear();
-    hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
-
-    QStringList files = ((StdCmdMRU*)pCmd)->recentFiles();
-    if ( files.size() > 0 )
-    {
-      for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
-      {
-        sprintf(szBuf, "MRU%d", i);
-        hGrp->SetASCII(szBuf, (*it).latin1());
-      }
-    }
-  }
-
+  StdCmdMRU::save();
   saveWindowSettings();
 }
 
@@ -501,7 +425,7 @@ void ApplicationWindow::addWindow( MDIView* view )
 
   // add a new tab to our tabbar
   QTab* tab = new QTab;
-  d->_tabIds[ view ] = tab;
+
   // extract file name if possible
   QFileInfo fi( view->caption() );
   if ( fi.isFile() && fi.exists() )
@@ -511,60 +435,57 @@ void ApplicationWindow::addWindow( MDIView* view )
   if ( view->icon() )
     tab->setIconSet( *view->icon() );
   d->_tabs->setToolTip( d->_tabs->count(), view->caption() );
-  d->_tabs->addTab( tab );
-  d->_tabs->show();
+
+  int id = d->_tabs->addTab( tab );
+  d->_mdiIds[ id ] = view;
+  if ( d->_tabs->count() == 1 )
+    d->_tabs->show(); // invoke show() for the first tab
   d->_tabs->update();
-//  d->_tabs->blockSignals( true ); // avoid that selected() signal is emitted
   d->_tabs->setCurrentTab( tab );
-//  d->_tabs->blockSignals( false );
 }
 
 void ApplicationWindow::onWindowDestroyed()
 {
   QObject* obj = (QObject*)sender();
-  QMap<QObject*, QTab*>::Iterator it = d->_tabIds.find( obj );
-
-  if ( it != d->_tabIds.end() )
+  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
   {
-    QTab* tab = it.data();
-    d->_tabs->removeTab( tab );
-    if ( d->_tabs->count() == 0 )
-      d->_tabs->hide();
+    if ( it.data() == obj )
+    {
+      QTab* tab = d->_tabs->tab( it.key() );
+      d->_tabs->removeTab( tab );
+      d->_mdiIds.remove( it );
+      if ( d->_tabs->count() == 0 )
+        d->_tabs->hide(); // no view open any more
+      break;
+    }
   }
 }
 
 void ApplicationWindow::onWindowActivated( QWidget* w )
 {
-  MDIView* view = dynamic_cast<MDIView*>(w);
-  if ( !view ) return; // either no MDIView or no valid object
-  view->setActive();
+  MDIView* mdi = dynamic_cast<MDIView*>(w);
+  if ( !mdi ) return; // either no MDIView or no valid object
+  mdi->setActive();
 
-  QMap<QObject*, QTab*>::Iterator it = d->_tabIds.find( view );
-  if ( it != d->_tabIds.end() )
+  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
   {
-    QTab* tab = it.data();
-    d->_tabs->blockSignals( true ); // avoid that selected() signal is emitted
-    d->_tabs->setCurrentTab( tab );
-    d->_tabs->blockSignals( false );
+    if ( it.data() == mdi )
+    {
+      d->_tabs->blockSignals( true );
+      d->_tabs->setCurrentTab( it.key() );
+      d->_tabs->blockSignals( false );
+      break;
+    }
   }
 }
 
 void ApplicationWindow::onTabSelected( int i)
 {
-  QTab* tab = d->_tabs->tab( i );
-  if ( tab )
+  QMap<int, MDIView*>::Iterator it = d->_mdiIds.find( i );
+  if ( it != d->_mdiIds.end() )
   {
-    // get appropriate MDIView
-    for ( QMap<QObject*, QTab*>::ConstIterator it = d->_tabIds.begin(); it != d->_tabIds.end(); ++it )
-    {
-      if ( it.data() == tab )
-      {
-        MDIView* view = dynamic_cast<MDIView*>(it.key());
-        if ( !view ) return; // either no MDIView or no valid object
-        view->setFocus();
-        break;
-      }
-    }
+    if ( !it.data()->hasFocus() )
+      it.data()->setFocus();
   }
 }
 

@@ -44,14 +44,16 @@ public:
 	virtual ~NetworkRetriever();
 
   void setNumberOfTries( int );
-  void setOutput( const QString& );
+  void setOutputFile( const QString& );
   void setEnableTimestamp(bool);
   void setProxy( const QString&, const QString& = QString::null, const QString& = QString::null );
   void setEnableRecursive( bool, int = 0 );
   void setFollowRelative( bool );
   void setEnableConvert( bool );
   void setFetchImages( bool );
+  void setEnableHTMLExtension( bool );
 
+  void setOutputDirectory( const QString& );
   bool startDownload( const QString& );
   bool isDownloading() const;
   void abort();
