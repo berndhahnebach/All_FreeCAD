@@ -125,6 +125,8 @@ FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 	DOMNode *pcTemp = _pGroupNode->getFirstChild();
 	FCstring Name;
 
+	if(!pcTemp) return vrParamGrp; // empty vector
+
 	while( pcTemp = FindNextElement(pcTemp,"FCParamGroup") )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
