@@ -163,6 +163,8 @@ void FCPropertyView::Update(void)
 	buf->add(new Property("List", "Test", l, l, "Descr."));
 	_pPropEditor->setBuffer(buf);
 */
+  if ( _pPropEditor->childCount() > 0)
+    return;
   QStringList lst; lst << QString("This") << QString("is") << QString("my") << QString("first") << QString("list") << QString("first");
   new ListEditorItem(_pPropEditor, QString("List"), lst);
   new DateEditorItem(_pPropEditor, QString("Date"), QDate::currentDate ());

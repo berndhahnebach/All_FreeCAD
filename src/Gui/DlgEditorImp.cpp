@@ -45,6 +45,8 @@ using namespace Gui::Dialog;
 DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgEditorSettingsBase( parent, name, fl )
 {
+  pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
+
   setParamGrpPath("User parameter:BaseApp/Preferences/Editor");
   setEntryName("Editor");
 
@@ -54,8 +56,6 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 
   connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
   connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
-
-  pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -74,11 +74,15 @@ void DlgSettingsEditorImp::OnChange(FCSubject<const char*> &rCaller, const char 
 /** Restores the color map */
 void DlgSettingsEditorImp::restorePreferences()
 {
-  std::vector<QString> names = GetDefCol().keys();
+  QStringList names = GetDefCol().keys();
 
-  for (std::vector<QString>::iterator it = names.begin(); it!=names.end(); ++it)
+  for ( QStringList::Iterator it = names.begin(); it!=names.end(); ++it)
   {
-    _mColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().color(*it));
+    _mColors[*it] = hPrefGrp->GetInt( (*it).latin1(), GetDefCol().color(*it));
+    long col = GetDefCol().color( *it );
+    QColor color;
+    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    pythonSyntax->setColor( *it, color );
   }
 
   // fill up font styles
@@ -220,9 +224,9 @@ long DefColorMap::color(const QString& name)
 }
 
 /** Returns the names of all settings */
-std::vector<QString> DefColorMap::keys() const
+QStringList DefColorMap::keys() const
 {
-  std::vector<QString> keys;
+  QStringList keys;
 
   for (std::map<QString, long>::const_iterator it = m_clDefColors.begin(); it!=m_clDefColors.end(); ++it)
     keys.push_back(it->first);

@@ -33,7 +33,7 @@
 #include "BitmapFactory.h"
 #include "Command.h"
 #include "DlgUndoRedo.h"
-#include "HtmlView.h"
+#include "WhatsThis.h"
 #include "ToolBoxBar.h"
 
 using namespace Gui;
@@ -93,18 +93,6 @@ bool Action::addTo(QWidget *w)
 {
   if (QAction::addTo(w) == true)
   {
-    // connect html help with widget
-    const QObjectList *l = w->children();
-    if(l!=0)
-    {
-      QObjectListIt it(*l);
-      QObject* o = it.toLast();
-      if (o && o->isWidgetType())
-      {
-        FCWhatsThis::add((QWidget*)o, whatsThis());
-      }
-    }
-
     if (w->inherits("Gui::DockWnd::CommandBar"))
     {
       ((CommandBar*)w)->setTextToLastItem(menuText());
@@ -422,7 +410,6 @@ bool UndoAction::addTo( QWidget* w )
 
     QToolTip::add( button, toolTip(), tipGroup, statusTip() );
     QWhatsThis::add(button, whatsThis());
-    FCWhatsThis::add(button, whatsThis());
 
     connect( button,   SIGNAL( destroyed() ),             this, SLOT( onDestroyed() ) );
     connect( button,   SIGNAL( clicked() ),               this, SIGNAL( activated() ) );
@@ -464,7 +451,6 @@ bool RedoAction::addTo(QWidget* w)
 
     QToolTip::add( button, toolTip(), tipGroup, statusTip() );
     QWhatsThis::add(button, whatsThis());
-    FCWhatsThis::add(button, whatsThis());
 
     connect( button,   SIGNAL( destroyed() ),             this, SLOT( onDestroyed() ) );
     connect( button,   SIGNAL( clicked() ),               this, SIGNAL( activated() ) );

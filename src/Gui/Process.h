@@ -21,57 +21,91 @@
  ***************************************************************************/
 
 
-#ifndef __QT_PROCESS__H__
-#define __QT_PROCESS__H__
+#ifndef PROCESS__H__
+#define PROCESS__H__
 
-#include "../Base/Process.h"
-
-#if QT_VERSION > 300
-# include "ProcessQt.h"
-#else // QT_VERSION < 300
-
-#ifndef FC_OS_WIN32
-#if QT_VERSION < 300
-#	error "Does not contain QProcess. Please use Qt 3.x.x"
-#endif
+#ifndef _PreComp_
+# include <qprocess.h>
 #endif
 
-class FCProcess : public QObject, public FCBaseProcess
+namespace Gui {
+
+/** 
+ * The Process class is used to start external programs and to communicate with them.
+ * For further information refer to the documentation of QProcess.
+ * \author Werner Mayer
+ */
+class Process : public QProcess, public FCSubject <int>
 {
   Q_OBJECT
 
-  public:
-    FCProcess( QObject *parent=0, const char *name=0 );
-    FCProcess( const QString& arg0, QObject *parent=0, const char *name=0 );
-    FCProcess( const QStringList& args, QObject *parent=0, const char *name=0 );
-    FCProcess( const char* proc);
-    virtual ~FCProcess();
+public:
+  enum Signals
+  {
+    // avoid conflicts with the Win32 error codes
+    processStarted = 1024,
+    processFailed  = 1025,
+    processExited  = 1026,
+    processKilled  = 1027,
+    receivedStdout = 1028,
+    receivedStderr = 1029,
+    wroteStdin     = 1030,
+    launchFinished = 1031
+  };
 
-    virtual bool start( QStringList *env=0 );
-    virtual bool launch (const QString& buf, QStringList* env=0);
-    virtual bool launch (const QByteArray& buf, QStringList* env=0);
-    virtual QByteArray readStdout();
-    virtual QByteArray readStderr();
+  /** 
+   * Returns the appropriate message to the error code \a code.
+   * Use this method for Windows systems only.
+   */
+  static QString systemWarning( int code, const char* msg=0 );
 
-  public slots:
-    void tryTerminate() const;
-    void kill() const;
-    virtual void writeToStdin( const QString& buf );
-    virtual void writeToStdin( const QByteArray& buf );
-    virtual void closeStdin();
+  /** Construction */
+  Process( QObject *parent=0, const char *name=0 );
+  /** Construction */
+  Process( const QString& arg0, QObject *parent=0, const char *name=0 );
+  /** Construction */
+  Process( const QStringList& args, QObject *parent=0, const char *name=0 );
+  /** Destruction */
+  virtual ~Process();
 
-  private slots:
-    void timeout();
+  /** 
+   * Returns the last message printed either to standard output or standard
+   * error output.
+   */
+  QString message() const;
 
-  private:
-    bool onSendData (int dummy);
-    void setNotifyOnExit( bool notify );
-    void setIoRedirection( bool value );
-    bool notifyOnExit;
-    bool ioRedirection;
-    QTimer* timer;
+  /** Sets the executable name to \a proc. */
+  virtual bool setExecutable( const QString& proc );
+  /** Returns the current executable name. */
+  QString executable () const;
+  /** Adds the argument \a arg to the argument lit. */
+  Process& operator<< ( const QString& arg );
+  /** Starts the process. */
+  virtual bool start( QStringList *env=0 );
+
+  /** Append \a path to the PATH environenment of this process. */
+  bool appendToPath ( const QString& path );
+  /** Sets the environment \a var to \a val. */
+  void setEnvironment ( const QString& var, const QString& val);
+  /** Clears all environment variables of this process. */
+  void clearEnvironment ();
+  /** Unsets the environment \a var. */
+  void unsetEnvironment ( const QString& var);
+
+private slots:
+  void onNotifyReadyReadStdout();
+  void onNotifyReadyReadStderr();
+  void onNotifyProcessExited();
+  void onNotifyWroteToStdin();
+  void onNotifyLaunchFinished();
+
+private:
+  void init();
+  void setupEnvironment();
+  QMap<QString, QString> env;
+  QString data;
 };
 
-#endif
+} // namespace Gui
 
-#endif //__QT_PROCESS__H__
+#endif // PROCESS__H__

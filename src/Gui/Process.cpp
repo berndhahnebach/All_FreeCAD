@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 # include <qprocess.h>
 # include <qstring.h>
-# include <string>
 # ifdef FC_OS_WIN32
 #   include <windows.h>
 # endif
@@ -36,49 +35,96 @@
 #include "../Base/Observer.h"
 #include "Process.h"
 
+using namespace Gui;
 
-#if QT_VERSION > 300
-
-FCProcess::FCProcess(const char* proc)
-: QProcess(QString(proc))
+Process::Process( QObject *parent, const char *name)
+: QProcess( parent, name )
 {
   init();
 }
 
-FCProcess::FCProcess( QObject *parent, const char *name)
-: QProcess(parent, name)
-{
-  init();
-}
-
-FCProcess::FCProcess( const QString& arg0, QObject *parent, const char *name )
+Process::Process( const QString& arg0, QObject *parent, const char *name )
 : QProcess(arg0, parent, name)
 {
   init();
 }
 
-FCProcess::FCProcess( const QStringList& args, QObject *parent, const char *name )
+Process::Process( const QStringList& args, QObject *parent, const char *name )
 : QProcess(args, parent, name)
 {
   init();
 }
 
-FCProcess::~FCProcess()
+Process::~Process()
 {
 }
 
-void FCProcess::init()
+void Process::init()
 {
-  connect(this, SIGNAL(readyReadStdout()), this, SLOT(OnNotifyReadyReadStdout()));
-  connect(this, SIGNAL(readyReadStderr()), this, SLOT(OnNotifyReadyReadStderr()));
-  connect(this, SIGNAL(processExited  ()), this, SLOT(OnNotifyProcessExited  ()));
-  connect(this, SIGNAL(wroteToStdin   ()), this, SLOT(OnNotifyWroteToStdin   ()));
-  connect(this, SIGNAL(launchFinished ()), this, SLOT(OnNotifyLaunchFinished ()));
+  connect(this, SIGNAL(readyReadStdout()), this, SLOT(onNotifyReadyReadStdout()));
+  connect(this, SIGNAL(readyReadStderr()), this, SLOT(onNotifyReadyReadStderr()));
+  connect(this, SIGNAL(processExited  ()), this, SLOT(onNotifyProcessExited  ()));
+  connect(this, SIGNAL(wroteToStdin   ()), this, SLOT(onNotifyWroteToStdin   ()));
+  connect(this, SIGNAL(launchFinished ()), this, SLOT(onNotifyLaunchFinished ()));
 }
 
-bool FCProcess::setExecutable(const char* proc)
+QString Process::systemWarning( int code, const char* pMsg)
 {
-  if (isRunning() || !proc) 
+#ifdef FC_OS_WIN32
+  char szBuf[512];
+  LPVOID lpMsgBuf;
+
+  if (code < 0)
+    code = GetLastError();
+
+  if (pMsg)
+  {
+    sprintf(szBuf, "'%s'", pMsg);
+    va_list pArguments = szBuf;
+    FormatMessage( 
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+      FORMAT_MESSAGE_FROM_SYSTEM | 
+      FORMAT_MESSAGE_ARGUMENT_ARRAY ,
+      NULL,
+      code,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPTSTR) &lpMsgBuf,
+      0,
+      &pArguments);
+  }
+  else
+  {
+    FormatMessage( 
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+      FORMAT_MESSAGE_FROM_SYSTEM |
+      FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      code,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPTSTR) &lpMsgBuf,
+      0,
+      NULL);
+  }
+
+  if (!lpMsgBuf)
+    return "";
+
+  // Process any inserts in lpMsgBuf.
+  // ...
+  // Display the string.
+  QString msg = (LPCTSTR)lpMsgBuf;
+  // Free the buffer.
+  LocalFree( lpMsgBuf );
+
+  return msg;
+#else
+  return "Error";
+#endif
+}
+
+bool Process::setExecutable( const QString& proc )
+{
+  if ( isRunning() || proc.isEmpty() ) 
     return false;
 
   clearArguments();
@@ -87,21 +133,21 @@ bool FCProcess::setExecutable(const char* proc)
   return true;
 }
 
-std::string FCProcess::executable () const
+QString Process::executable () const
 {
   if (arguments().size() > 0)
-    return std::string(arguments()[0].latin1());
+    return (arguments()[0]);
   else
     return "";
 }
 
-FCProcess& FCProcess::operator<<(const char * arg)
+Process& Process::operator<<(const QString& arg)
 {
   addArgument(arg);
   return *this;
 }
 
-bool FCProcess::start( QStringList *e )
+bool Process::start( QStringList *e )
 {
   if (e)
   {
@@ -123,75 +169,73 @@ bool FCProcess::start( QStringList *e )
 
   if (QProcess::start())
   {
-    Notify(FCBaseProcess::processStarted);
+    Notify( Process::processStarted );
     return true;
   }
   else
   {
-    Notify(FCBaseProcess::processFailed);
+    Notify( Process::processFailed );
     return false;
   }
 }
 
-std::string FCProcess::message() const
+QString Process::message() const
 {
   return data;
 }
 
-void FCProcess::OnNotifyReadyReadStdout()
+void Process::onNotifyReadyReadStdout()
 {
   QByteArray bytes = readStdout();
   if (bytes.size() > 0)
   {
     data = bytes.data();
-    data.resize(bytes.size());
   }
 
-  Notify(FCBaseProcess::receivedStdout);
+  Notify( Process::receivedStdout );
 }
 
-void FCProcess::OnNotifyReadyReadStderr()
+void Process::onNotifyReadyReadStderr()
 {
   QByteArray bytes = readStderr();
   if (bytes.size() > 0)
   {
     data = bytes.data();
-    data.resize(bytes.size());
   }
 
-  Notify(FCBaseProcess::receivedStderr);
+  Notify( Process::receivedStderr );
 }
 
-void FCProcess::OnNotifyProcessExited()
+void Process::onNotifyProcessExited()
 {
   if (!isRunning())
   {
     if (normalExit())
-      Notify(FCBaseProcess::processExited);
+      Notify( Process::processExited );
     else
-      Notify(FCBaseProcess::processKilled);
+      Notify( Process::processKilled );
   }
 }
 
-void FCProcess::OnNotifyWroteToStdin()
+void Process::onNotifyWroteToStdin()
 {
-  Notify(FCBaseProcess::wroteStdin);
+  Notify( Process::wroteStdin );
 }
 
-void FCProcess::OnNotifyLaunchFinished()
+void Process::onNotifyLaunchFinished()
 {
-  Notify(FCBaseProcess::launchFinished);
+  Notify( Process::launchFinished );
 }
 
-bool FCProcess::appendToPath (const char* path)
+bool Process::appendToPath (const QString& path)
 {
   char szPath[5000];
   if (env.find("PATH") != env.end())
   {
 #ifdef FC_OS_WIN32
-    sprintf(szPath, "%s;%s", env["PATH"].c_str(), path);
+    sprintf(szPath, "%s;%s", env["PATH"].latin1(), path.latin1());
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
-    sprintf(szPath, "%s:%s", env["PATH"].c_str(), path);
+    sprintf(szPath, "%s:%s", env["PATH"].latin1(), path.latin1());
 #else
     Console().Warning("Not yet implemented!\n");
 #endif
@@ -200,9 +244,9 @@ bool FCProcess::appendToPath (const char* path)
   else
   {
 #ifdef FC_OS_WIN32
-    sprintf(szPath, "%s;%s", getenv("PATH"), path);
+    sprintf(szPath, "%s;%s", getenv("PATH"), path.latin1());
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
-    sprintf(szPath, "%s:%s", getenv("PATH"), path);
+    sprintf(szPath, "%s:%s", getenv("PATH"), path.latin1());
 #else
     Console().Warning("Not yet implemented!\n");
 #endif
@@ -212,229 +256,34 @@ bool FCProcess::appendToPath (const char* path)
   return true;
 }
 
-void FCProcess::setEnvironment (const char* var, const char* val)
+void Process::setEnvironment (const QString& var, const QString& val)
 {
   env[var] = val;
 }
 
-void FCProcess::clearEnvironment()
+void Process::clearEnvironment()
 {
   env.clear();
 }
 
-void FCProcess::unsetEnvironment (const char* var)
+void Process::unsetEnvironment (const QString& var)
 {
   env[var] = "";
 }
 
-void FCProcess::setupEnvironment()
+void Process::setupEnvironment()
 {
-  std::map<std::string, std::string>::iterator it;
+  QMap<QString, QString>::Iterator it;
   for (it = env.begin(); it != env.end(); ++it)
   {
 #ifdef FC_OS_WIN32
-    ::SetEnvironmentVariable (it->first.c_str(), it->second.c_str());
+    ::SetEnvironmentVariable (it.key().latin1(), it.data().latin1());
 #elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
-    setenv(it->first.c_str(), it->second.c_str(), 1);
+    setenv(it.key().latin1(), it.data().latin1(), 1);
 #else
     Console().Warning("Not yet implemented!\n");
 #endif
   }
 }
 
-#else // QT_VERSION < 300
-
-FCProcess::FCProcess(QObject *parent, const char *name)
-: FCBaseProcess(), notifyOnExit(false), ioRedirection(false)
-{
-  timer = new QTimer;
-	connect( timer, SIGNAL(timeout()),this, SLOT(timeout()) );
-}
-
-FCProcess::FCProcess(const char* proc)
-: FCBaseProcess(proc), notifyOnExit(false), ioRedirection(false)
-{
-  timer = new QTimer;
-	connect( timer, SIGNAL(timeout()),this, SLOT(timeout()) );
-}
-
-FCProcess::FCProcess( const QString& arg0, QObject *parent, const char *name)
-: FCBaseProcess(arg0.latin1()), notifyOnExit(false), ioRedirection(false)
-{
-  timer = new QTimer;
-	connect( timer, SIGNAL(timeout()),this, SLOT(timeout()) );
-}
-
-FCProcess::FCProcess( const QStringList& args, QObject *parent, const char *name )
-: FCBaseProcess(), notifyOnExit(false), ioRedirection(false)
-{
-  QStringList::ConstIterator it;
-  for (it=args.begin();it!=args.end();++it)
-    *this << (*it).latin1();
-  timer = new QTimer;
-	connect( timer, SIGNAL(timeout()),this, SLOT(timeout()) );
-}
-
-FCProcess::~FCProcess()
-{
-	disconnect( timer, SIGNAL(timeout()),this, SLOT(timeout()) );
-  delete timer;
-}
-
-void FCProcess::tryTerminate() const
-{
-  FCBaseProcess::tryTerminate();
-}
-
-void FCProcess::kill() const
-{
-  FCBaseProcess::kill();
-}
-
-void FCProcess::writeToStdin( const QString& buf )
-{
-  FCBaseProcess::writeToStdin(buf.latin1());
-}
-
-void FCProcess::writeToStdin( const QByteArray& buf )
-{
-  std::string msg;
-  msg.resize(buf.size());
-  for (int i=0;i<(int)buf.size();++i)
-    msg[i] = buf[i];
-}
-
-void FCProcess::closeStdin()
-{
-  FCBaseProcess::closeStdin();
-}
-
-void FCProcess::timeout()
-{
-  if ( canSendData() ) 
-  	onSendData( 0 );
-
-  if ( !canSendData() && !ioRedirection && !notifyOnExit )
-	    timer->stop();
-
-  if ( ioRedirection ) 
-  {
-  	onReceiveData( true );
-	  onReceiveData( false );
-  }
-
-  if ( !isRunning() ) 
-  {
-  	timer->stop();
-	  if ( notifyOnExit ) 
-    {
-	    Notify(processExited);
-  	}
-
-    // avoid to notify twice
-    notifyOnExit = false;
-  }
-}
-
-void FCProcess::setNotifyOnExit( bool notify )
-{
-  notifyOnExit = notify;
-  if ( !ioRedirection && !notifyOnExit )
-	  timer->stop();
-
-  if ( ioRedirection ) 
-  {
-  	if ( isRunning() )
-	    timer->start( 100 );
-   }
-}
-
-void FCProcess::setIoRedirection( bool value )
-{
-  ioRedirection = value;
-  if ( !ioRedirection && !notifyOnExit )
-  	timer->stop();
-
-  if ( notifyOnExit ) 
-  {
-  	if ( isRunning() )
-	    timer->start( 100 );
-  }
-}
-
-bool FCProcess::start( QStringList *env )
-{
-  setNotifyOnExit(true);
-  setIoRedirection(true);
-
-  bool success;
-  if (env)
-  {
-    FCBaseProcess::clearEnvironment();
-    for (QStringList::Iterator it = env->begin(); it!=env->end(); ++it)
-    {
-      int pos = (*it).find('=');
-      if (pos)
-      {
-        QString var = (*it).left(pos);
-        QString val = (*it).right( (*it).length() - pos - 1 );
-        FCBaseProcess::setEnvironment(var.latin1(), val.latin1());
-      }
-    }
-
-    success = FCBaseProcess::start(true);
-  }
-  else
-    success = FCBaseProcess::start(true);
-
-
-  if (success)
-  {
-    if ( ioRedirection || notifyOnExit )
-	    timer->start( 100 );
-  }
-
-  return success;
-}
-
-bool FCProcess::launch (const QString& buf, QStringList* env)
-{
-  return false;
-}
-
-bool FCProcess::launch (const QByteArray& buf, QStringList* env)
-{
-  return false;
-}
-
-QByteArray FCProcess::readStdout()
-{
-  return QByteArray();
-}
-
-QByteArray FCProcess::readStderr()
-{
-  return QByteArray();
-}
-
-bool FCProcess::onSendData (int dummy)
-{
-  if (FCBaseProcess::onSendData(dummy))
-  {
-  	// start timer 
-	  if ( canSendData() )
-	    timer->start( 100 );
-    
-    return true;
-  }
-
-  return false; 
-}
-
-#endif
-
-#if QT_VERSION > 300
-# include "moc_ProcessQt.cpp"
-#else
-# include "moc_Process.cpp"
-#endif
+#include "moc_Process.cpp"

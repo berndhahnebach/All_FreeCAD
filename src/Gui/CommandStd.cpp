@@ -75,7 +75,7 @@
 #include "Document.h"
 #include "Splashscreen.h"
 #include "Command.h"
-#include "HtmlView.h"
+#include "WhatsThis.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
 #include "View.h"
@@ -774,7 +774,7 @@ FCCmdWhatsThis::FCCmdWhatsThis()
 	sMenuText		= "What's This?";
 	sToolTipText	= "What's This?";
 //	sWhatsThis		= sToolTipText;
-	sWhatsThis		= "about.html";
+	sWhatsThis		= "";
 	sStatusTip		= sToolTipText;
 	iAccel			= Qt::SHIFT+Qt::Key_F1;
 	sPixmap			= "WhatsThis";
@@ -782,24 +782,24 @@ FCCmdWhatsThis::FCCmdWhatsThis()
 
 void FCCmdWhatsThis::Activated(int iMsg)
 {
-  FCWhatsThis::enterWhatsThisMode();
+  QWhatsThis::enterWhatsThisMode();
 }
 
 //===========================================================================
 // Std_OnlineHelp
 //===========================================================================
 
-class FCCmdOnlineHelp : public FCCppCommand, public FCProcess::ObserverType
+class FCCmdOnlineHelp : public FCCppCommand, public Gui::Process::ObserverType
 {
 public:
 	FCCmdOnlineHelp();
   virtual ~FCCmdOnlineHelp();
 	virtual void Activated(int iMsg);
 	virtual bool IsActive(void);
-  virtual void OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason);
+  virtual void OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason);
 
 private:
-  FCProcess* process;
+  Gui::Process* process;
   bool fail;
   int pages;
 };
@@ -819,7 +819,7 @@ FCCmdOnlineHelp::FCCmdOnlineHelp()
   // This value is for initialization of the progress bar
   pages = 763;
 
-  process = new FCProcess;
+  process = new Gui::Process;
   process->Attach(this);
 }
 
@@ -871,7 +871,7 @@ bool FCCmdOnlineHelp::IsActive(void)
   return true;
 }
 
-void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason)
+void FCCmdOnlineHelp::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason)
 {
   if (&rCaller != process)
     return;
@@ -879,14 +879,14 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
   switch (rcReason)
   {
     // 'started' signal
-    case FCBaseProcess::processStarted:
+    case Gui::Process::processStarted:
     {
       Console().Message("Download started...\n");
       Sequencer().start("Download online help", 0);
     } break;
 
     // 'exited' signal
-    case FCBaseProcess::processExited:
+    case Gui::Process::processExited:
     {
       if (!fail)
       {
@@ -898,39 +898,39 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
     } break;
 
     // 'failed' signal
-    case FCBaseProcess::processFailed:
+    case Gui::Process::processFailed:
     {
 #ifdef FC_OS_WIN32
-      std::string msg = FCBaseProcess::SystemWarning(GetLastError(), process->executable().c_str());
-      Console().Warning("%s\n", msg.c_str());
+      QString msg = Gui::Process::systemWarning( GetLastError(), process->executable().latin1() );
+      Console().Warning("%s\n", msg.latin1());
 #endif
     } break;
 
     // 'killed' signal
-    case FCBaseProcess::processKilled:
+    case Gui::Process::processKilled:
     {
       Console().Warning("Download was canceled.\n");
       Sequencer().stop();
     } break;
 
     // 'output' signal or 'error output' signal
-    case FCBaseProcess::receivedStdout:
-    case FCBaseProcess::receivedStderr:
+    case Gui::Process::receivedStdout:
+    case Gui::Process::receivedStderr:
     {
       try
       {
         Sequencer().next();
-        std::string msg = process->message();
+        QString msg = process->message();
 
         // search for an error message
-        unsigned int pos;
-        if ((pos = msg.find("failed: ")) != std::string::npos)
+        int pos;
+        if ( (pos = msg.find("failed: ")) != -1 )
         {
           int pos2 = msg.find('.', pos);
-          std::string substr = msg.substr(pos+8, pos2-pos-8+1);
+          QString substr = msg.mid(pos+8, pos2-pos-8+1);
           fail = true;
           Sequencer().stop();
-          Console().Error("%s\n", substr.c_str());
+          Console().Error("%s\n", substr.latin1());
 
           if (process->isRunning())
           {
@@ -945,12 +945,12 @@ void FCCmdOnlineHelp::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCPro
       }
     } break;
 
-   // 'wroteStdin' signal
-    case FCBaseProcess::wroteStdin:
+    // 'wroteStdin' signal
+    case Gui::Process::wroteStdin:
       break;
 
     // 'launch' signal
-    case FCBaseProcess::launchFinished:
+    case Gui::Process::launchFinished:
       break;
   }
 

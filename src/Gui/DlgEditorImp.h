@@ -81,7 +81,7 @@ protected:
   std::map<QString, long> m_clDefColors;
 
 public:
-  std::vector<QString> keys() const;
+  QStringList keys() const;
   long color(const QString& name);
   static void Destruct(void);
   static DefColorMap &Instance(void);

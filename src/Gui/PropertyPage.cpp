@@ -51,6 +51,11 @@ void PropertyPage::cancel()
 {
 }
 
+/** Resets to the default values. Reimplement this in your subclasses. */
+void PropertyPage::reset()
+{
+}
+
 /** Returns whether the page was modified or not */
 bool PropertyPage::isModified()
 {

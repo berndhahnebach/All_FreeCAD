@@ -35,7 +35,7 @@
 #include "ToolBoxBar.h"
 #include "ToolBox.h"
 #include "Command.h"
-#include "HtmlView.h"
+#include "WhatsThis.h"
 #include "../Base/Console.h"
 
 using Base::Console;
@@ -694,18 +694,6 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
   }
   else
     QPopupMenu::mouseMoveEvent(e);
-}
-
-void CustomPopupMenu::mouseReleaseEvent( QMouseEvent * e )
-{
-  if (FCWhatsThis::inWhatsThisMode())
-  {
-    int id = idAt(mapFromGlobal(QCursor::pos()));
-    close();
-    FCWhatsThis::leaveWhatsThisMode(whatsThis(id));
-  }
-  else
-    QPopupMenu::mouseReleaseEvent(e);
 }
 
 void CustomPopupMenu::restorePreferences()

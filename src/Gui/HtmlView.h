@@ -138,7 +138,7 @@ protected slots:
  * The HTML viewer class
  */
 class FCHtmlViewPrivate;
-class GuiExport FCHtmlView : public Gui::DockWindow, public Gui::WindowParameter, public FCProcess::ObserverType
+class GuiExport FCHtmlView : public Gui::DockWindow, public Gui::WindowParameter, public Gui::Process::ObserverType
 {
   Q_OBJECT
 
@@ -156,7 +156,7 @@ public:
   bool SetMaxBookmarks (long lCnt);
   /// observers methods
   void OnChange (FCSubject<FCParameterGrp::MessageType> &rCaller,FCParameterGrp::MessageType rcReason);
-  void OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason);
+  void OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason);
   /// returns the actual browser
   FCTextBrowser* getBrowser() const { return pclBrowser; }
 
@@ -209,28 +209,6 @@ protected:
 
 private:
   FCHtmlViewPrivate* d;
-};
-
-
-class FCWhatsThis : public Qt
-{
-public:
-  FCWhatsThis( QWidget *);
-  FCWhatsThis( QWidget *, QString url);
-  virtual ~FCWhatsThis();
-
-  virtual QString text( const QPoint & );
-
-  static void add( QWidget *, const QString &);
-  static void remove( QWidget * );
-  static QString textFor( QWidget *, const QPoint & pos = QPoint() );
-
-  static void enterWhatsThisMode();
-  static bool inWhatsThisMode();
-  static void leaveWhatsThisMode( const QString& = QString::null, const QPoint& pos = QCursor::pos() );
-
-private:
-  QString m_sURL;
 };
 
 #endif // __HTML_VIEW_H__

@@ -41,6 +41,7 @@
 #include "Application.h"
 #include "FileDialog.h"
 #include "DlgEditorImp.h"
+
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
@@ -53,16 +54,44 @@ using Gui::Dialog::GetDefCol;
  *  name 'name' and installs the Python syntax highlighter.
  */
 PythonWindow::PythonWindow(QWidget *parent,const char *name)
-    : QTextEdit(parent, name)
+    : QTextEdit(parent, name), WindowParameter( "Editor" )
 {
   nInsertTabs = 0;
   pythonSyntax = new PythonSyntaxHighlighter(this);
+
+  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+  hPrefGrp->Attach( this );
+
+  // set colors
+  hPrefGrp->NotifyAll();
+  hPrefGrp->Notify( "Text" );
+  hPrefGrp->Notify( "Comment" );
+  hPrefGrp->Notify( "Block comment" );
+  hPrefGrp->Notify( "Number" );
+  hPrefGrp->Notify( "String" );
+  hPrefGrp->Notify( "Keyword" );
+  hPrefGrp->Notify( "Class name" );
+  hPrefGrp->Notify( "Define name" );
+  hPrefGrp->Notify( "Operator" );
 }
 
 /** Destroys the object and frees any allocated resources */
 PythonWindow::~PythonWindow()
 {
+  GetWindowParameter()->Detach( this );
   delete pythonSyntax;
+}
+
+/** Sets the new color for \a rcColor. */  
+void PythonWindow::OnChange( FCSubject<const char*> &rCaller,const char* rcColor )
+{
+  FCParameterGrp::handle hPrefGrp = GetWindowParameter();
+
+  long col = hPrefGrp->GetInt( rcColor, GetDefCol().color( rcColor ));
+  QColor color;
+  color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+
+  pythonSyntax->setColor( rcColor, color );
 }
 
 void PythonWindow::keyPressEvent(QKeyEvent * e)
@@ -223,30 +252,6 @@ public:
     "elif" << "else" << "except" << "exec" << "finally" << "for" << "from" << "global" <<
     "if" << "import" << "in" << "is" << "lambda" << "None" << "not" << "or" << "pass" << "print" <<
     "raise" << "return" << "try" << "while" << "yield";
-
-    // set colors
-    FCParameterGrp::handle hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
-    hPrefGrp = hPrefGrp->GetGroup("Preferences")->GetGroup("Editor");
-
-    long c;
-    c = hPrefGrp->GetInt("Text", GetDefCol().color("Text"));
-    cNormalText.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Comment", GetDefCol().color("Comment"));
-    cComment.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Block comment", GetDefCol().color("Block comment"));
-    cBlockcomment.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Number", GetDefCol().color("Number"));
-    cNumber.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("String", GetDefCol().color("String"));
-    cLiteral.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Keyword", GetDefCol().color("Keyword"));
-    cKeyword.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Class name", GetDefCol().color("Class name"));
-    cClassName.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Define name", GetDefCol().color("Define name"));
-    cDefineName.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
-    c = hPrefGrp->GetInt("Operator", GetDefCol().color("Operator"));
-    cOperator.setRgb(c & 0xff, (c >> 8) & 0xff, (c >> 16) & 0xff);
   }
 
   QStringList keywords;
@@ -305,6 +310,7 @@ void PythonSyntaxHighlighter::setColor( Paragraph type, const QColor& col )
   default:
     break;
   }
+
   rehighlight();
 }
 
@@ -875,45 +881,45 @@ void PythonEditView::Print( QPrinter* printer )
   int pageNo = 1;
 
   if ( printer->setup(this) ) 
-  {		
+  {
     // printer dialog
     printer->setFullPage( TRUE );
-	  emit message( tr("Printing..."), 0 );
+    emit message( tr("Printing..."), 0 );
 
     QPainter p;
-	  if ( !p.begin( printer ) )
-	    return;				// paint on printer
+    if ( !p.begin( printer ) )
+      return; // paint on printer
 
     QPaintDeviceMetrics metrics( p.device() );
     int dpiy = metrics.logicalDpiY();
-	  int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
-	  QRect body( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
-	  QSimpleRichText richText( QStyleSheet::convertFromPlainText(textEdit->text()),
-				  QFont(),
-				  textEdit->context(),
-				  textEdit->styleSheet(),
-				  textEdit->mimeSourceFactory(),
-				  body.height() );
-	  richText.setWidth( &p, body.width() );
-  	QRect view( body );
+    int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
+    QRect body( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
+    QSimpleRichText richText( QStyleSheet::convertFromPlainText(textEdit->text()),
+          QFont(),
+          textEdit->context(),
+          textEdit->styleSheet(),
+          textEdit->mimeSourceFactory(),
+          body.height() );
+    richText.setWidth( &p, body.width() );
+    QRect view( body );
 
     int page = 1;
-  	do 
+    do 
     {
-	    richText.draw( &p, body.left(), body.top(), view, colorGroup() );
-	    view.moveBy( 0, body.height() );
-	    p.translate( 0 , -body.height() );
-	    p.drawText( view.right() - p.fontMetrics().width( QString::number( page ) ),
-			view.bottom() + p.fontMetrics().ascent() + 5, QString::number( page ) );
-	    if ( view.top()  >= richText.height() )
-    		break;
-	    QString msg( "Printing (page " );
-	    msg += QString::number( ++pageNo );
-	    msg += ")...";
-	    emit message( msg, 0 );
-	    printer->newPage();
-	    page++;
-	  } while (true);
+      richText.draw( &p, body.left(), body.top(), view, colorGroup() );
+      view.moveBy( 0, body.height() );
+      p.translate( 0 , -body.height() );
+      p.drawText( view.right() - p.fontMetrics().width( QString::number( page ) ),
+      view.bottom() + p.fontMetrics().ascent() + 5, QString::number( page ) );
+      if ( view.top()  >= richText.height() )
+        break;
+      QString msg( "Printing (page " );
+      msg += QString::number( ++pageNo );
+      msg += ")...";
+      emit message( msg, 0 );
+      printer->newPage();
+      page++;
+    } while (true);
 
     p.end();
   }

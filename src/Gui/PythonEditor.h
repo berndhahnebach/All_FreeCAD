@@ -25,6 +25,7 @@
 #define __PYTHON_EDITOR_H__
 
 #include "View.h"
+#include "Window.h"
 
 #ifndef _PreComp_
 # include <qtextedit.h>
@@ -42,11 +43,13 @@ class PythonSyntaxHighlighterP;
  * Basic stuff for a Python text editor with syntax highlighting..
  * \author Werner Mayer
  */
-class GuiExport PythonWindow : public QTextEdit
+class GuiExport PythonWindow : public QTextEdit, public WindowParameter
 {
 protected:
   PythonWindow(QWidget *parent = 0,const char *name = 0);
   virtual ~PythonWindow();
+
+  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
 
 protected:
   virtual void keyPressEvent(QKeyEvent * e);

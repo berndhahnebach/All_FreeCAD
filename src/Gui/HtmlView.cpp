@@ -49,11 +49,11 @@
 #endif
 
 #include "HtmlView.h"
-#include "HtmlViewP.h"
 #include "Process.h"
 #include "Application.h"
 #include "CustomWidgets.h"
 #include "Tools.h"
+#include "WhatsThis.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
 #include "../Base/Documentation.h"
@@ -913,7 +913,7 @@ public:
   QString        selectedURL;
   QString        m_strDocDir;
   QString        m_strCaption;
-  FCProcess      m_Process;
+  Gui::Process   m_Process;
 };
 
 FCHtmlViewPrivate::FCHtmlViewPrivate()
@@ -1022,6 +1022,7 @@ bool FCBrowserSourceFactory::canConvertToHTML (const QString& url)
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
     : QTextBrowser(parent, name)
 {
+  WhatsThis::setHelpView( this );
   d = new FCTextBrowserPrivate;
 
   //  setMimeSourceFactory(new FCBrowserSourceFactory);
@@ -1722,7 +1723,8 @@ void FCHtmlView::StartScript(QString path, QString protocol)
 
   _chdir(path.latin1());
 
-  FCProcess proc("python"); proc << script.latin1();
+  Gui::Process proc(QString("python")); 
+  proc << script;
   if (!proc.start())
   {
     QString msg = tr("Sorry, cannot run file '%1'.").arg(script);
@@ -1978,7 +1980,7 @@ void FCHtmlView::OnChange(FCSubject<FCParameterGrp::MessageType> &rCaller,FCPara
   }
 }
 
-void FCHtmlView::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess::MessageType rcReason)
+void FCHtmlView::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason)
 {
   if (&d->m_Process != &rCaller)
     return;
@@ -1986,28 +1988,28 @@ void FCHtmlView::OnChange (FCSubject<FCProcess::MessageType> &rCaller,FCProcess:
   // observe incoming signals
   switch (rcReason)
   {
-  case FCBaseProcess::processStarted:
+  case Gui::Process::processStarted:
     break;
-  case FCBaseProcess::processFailed:
+  case Gui::Process::processFailed:
     {
       QMessageBox::critical(this, "Browser",
 #ifdef FC_OS_WIN32
-                            FCBaseProcess::SystemWarning(GetLastError(), d->m_Process.executable().c_str()).c_str());
+        Gui::Process::systemWarning( GetLastError(), d->m_Process.executable().latin1()) );
 #else
-                            QObject::tr("Cannot start '%1'").arg(d->m_Process.executable().c_str()));
+      QObject::tr("Cannot start '%1'").arg(d->m_Process.executable().latin1()));
 #endif
     } break;
-  case FCBaseProcess::processExited:
+  case Gui::Process::processExited:
     break;
-  case FCBaseProcess::processKilled:
+  case Gui::Process::processKilled:
     break;
-  case FCBaseProcess::receivedStdout:
+  case Gui::Process::receivedStdout:
     break;
-  case FCBaseProcess::receivedStderr:
+  case Gui::Process::receivedStderr:
     break;
-  case FCBaseProcess::wroteStdin:
+  case Gui::Process::wroteStdin:
     break;
-  case FCBaseProcess::launchFinished:
+  case Gui::Process::launchFinished:
     break;
   }
 }
@@ -2020,326 +2022,5 @@ void FCHtmlView::onMinWidthReached (bool show)
     pclPathCombo->hide();
 }
 
-//// FCWhatsThis //////////////////////////////////////////////////////
-
-static FCWhatsThisPrivate * hh = NULL;
-
-
-#define cursor_mask_width 32
-#define cursor_mask_height 32
-static unsigned char cursor_mask_bits[] = {
-      0x01, 0x00, 0x00, 0x00, 0x03, 0xf0, 0x07, 0x00, 0x07, 0xf8, 0x0f, 0x00,
-      0x0f, 0xfc, 0x1f, 0x00, 0x1f, 0x3e, 0x1f, 0x00, 0x3f, 0x3e, 0x1f, 0x00,
-      0x7f, 0x3e, 0x1f, 0x00, 0xff, 0x3e, 0x1f, 0x00, 0xff, 0x9d, 0x0f, 0x00,
-      0xff, 0xc3, 0x07, 0x00, 0xff, 0xe7, 0x03, 0x00, 0x7f, 0xe0, 0x03, 0x00,
-      0xf7, 0xe0, 0x03, 0x00, 0xf3, 0xe0, 0x03, 0x00, 0xe1, 0xe1, 0x03, 0x00,
-      0xe0, 0xe1, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00,
-      0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
-
-#define cursor_bits_width 32
-#define cursor_bits_height 32
-static unsigned char cursor_bits_bits[] = {
-      0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x05, 0xf0, 0x07, 0x00,
-      0x09, 0x18, 0x0e, 0x00, 0x11, 0x1c, 0x0e, 0x00, 0x21, 0x1c, 0x0e, 0x00,
-      0x41, 0x1c, 0x0e, 0x00, 0x81, 0x1c, 0x0e, 0x00, 0x01, 0x01, 0x07, 0x00,
-      0x01, 0x82, 0x03, 0x00, 0xc1, 0xc7, 0x01, 0x00, 0x49, 0xc0, 0x01, 0x00,
-      0x95, 0xc0, 0x01, 0x00, 0x93, 0xc0, 0x01, 0x00, 0x21, 0x01, 0x00, 0x00,
-      0x20, 0xc1, 0x01, 0x00, 0x40, 0xc2, 0x01, 0x00, 0x40, 0x02, 0x00, 0x00,
-      0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
-
-FCWhatsThisPrivate::FCWhatsThisPrivate()
-    : QObject( 0, "Whats This object" )
-{
-  qAddPostRoutine( clearWhatsThis );
-  hh = this;
-  mode = Inactive;
-  cursor = new QCursor( QBitmap( cursor_bits_width, cursor_bits_height, cursor_bits_bits, true ),
-                        QBitmap( cursor_mask_width, cursor_mask_height, cursor_mask_bits, true ), 1, 1 );
-}
-
-FCWhatsThisPrivate::~FCWhatsThisPrivate()
-{
-  if ( mode == Active )
-    QApplication::restoreOverrideCursor();
-
-  FCWhatsThisItem* i;
-  QWidget * w;
-  for (std::map<QWidget*, FCWhatsThisItem*>::iterator it=mWidgetItem.begin(); it != mWidgetItem.end(); ++it)
-  {
-    w = it->first;
-    i = it->second;
-    i->deref();
-    if ( !i->count )
-      delete i;
-  }
-  mWidgetItem.clear();
-  topLevelWidget.clear();
-
-  delete cursor;
-
-  hh = NULL;
-}
-
-FCWhatsThisPrivate::FCWhatsThisItem* FCWhatsThisPrivate::item( QWidget * widget )
-{
-  FCWhatsThisItem * i = NULL;
-  if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
-    i = hh->mWidgetItem[widget];
-
-  if ( i )
-    FCWhatsThis::remove( widget );
-
-  i = new FCWhatsThisItem;
-  mWidgetItem[widget] = i;
-  QWidget * t = widget->topLevelWidget();
-
-  if ( topLevelWidget.find( t ) == topLevelWidget.end() )
-  {
-    topLevelWidget[t] = t;
-    t->installEventFilter( this );
-  }
-
-  connect( widget, SIGNAL(destroyed()), this, SLOT(removeWidget()) );
-  return i;
-}
-
-bool FCWhatsThisPrivate::eventFilter( QObject * o, QEvent * e )
-{
-  if ( !o || !e )
-    return false;
-
-  switch( mode )
-  {
-  case Inactive:
-    if ( e->type() == QEvent::Accel && ((QKeyEvent *)e)->key() == Key_F1 &&
-         o->isWidgetType() && ((QKeyEvent *)e)->state() == ShiftButton )
-    {
-      QWidget * w = ((QWidget *)o)->focusWidget();
-      FCWhatsThisPrivate::FCWhatsThisItem* i = NULL;
-      if (w && (mWidgetItem.find(w) != mWidgetItem.end()))
-      {
-        i = mWidgetItem[w];
-      }
-      if ( i && !i->txt.isNull() )
-      {
-        if ( i->whatsthis )
-          showWhatsThis( w, i->whatsthis->text( QPoint(0,0) ), w->mapToGlobal( w->rect().center() ) );
-        else
-          showWhatsThis( w, i->txt, w->mapToGlobal( w->rect().center() ));
-
-        ((QKeyEvent *)e)->accept();
-        return true;
-      }
-    }
-    break;
-  case Active:
-    if ( e->type() == QEvent::MouseButtonPress && o->isWidgetType() )
-    {
-      QWidget * w = (QWidget *) o;
-      if ( ( (QMouseEvent*)e)->button() == RightButton )
-        return false;
-      if ( w->customWhatsThis() )
-        return false;
-      FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
-      while( w && !i )
-      {
-        if (mWidgetItem.find(w) != mWidgetItem.end())
-          i = mWidgetItem[w];
-        if ( !i )
-          w = w->parentWidget();
-      }
-
-      leaveWhatsThisMode();
-      if (!i )
-        return true;
-      QPoint pos =  ((QMouseEvent*)e)->pos();
-      if ( i->whatsthis )
-        showWhatsThis( w, i->whatsthis->text( pos ), w->mapToGlobal(pos) );
-      else
-        showWhatsThis( w, i->txt, w->mapToGlobal(pos) );
-      return true;
-    }
-    else if ( e->type() == QEvent::MouseButtonRelease )
-    {
-      if ( ( (QMouseEvent*)e)->button() == RightButton )
-        return false;
-      return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
-    }
-    else if ( e->type() == QEvent::MouseMove )
-    {
-      return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
-    }
-    else if ( e->type() == QEvent::KeyPress )
-    {
-      QKeyEvent* kev = (QKeyEvent*)e;
-
-      if (kev->key() == Qt::Key_Escape)
-      {
-        leaveWhatsThisMode();
-        return true;
-      }
-      else if ( kev->key() == Key_Menu || ( kev->key() == Key_F10 && kev->state() == ShiftButton ) )
-        return false;
-      else if ( kev->state() == kev->stateAfter() && kev->key() != Key_Meta )
-        leaveWhatsThisMode();
-    }
-    else if ( e->type() == QEvent::MouseButtonDblClick )
-    {
-      return true;
-    }
-    break;
-  }
-
-  return FALSE;
-}
-
-void FCWhatsThisPrivate::createWhatsThis()
-{
-  if ( !hh )
-    hh = new FCWhatsThisPrivate();
-}
-
-void FCWhatsThisPrivate::clearWhatsThis()
-{
-  delete hh;
-  hh = NULL;
-}
-
-void FCWhatsThisPrivate::leaveWhatsThisMode()
-{
-  if ( mode == Active )
-  {
-    QApplication::restoreOverrideCursor();
-    mode = Inactive;
-    qApp->removeEventFilter( this );
-  }
-}
-
-void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, const QPoint& ppos)
-{
-  currentText = text;
-
-  //TDocType type=Html;
-  if (FCBrowserSourceFactory::canConvertToHTML(text) || currentText.findRev(".html") != -1)
-  {/*
-    // get text of the url
-    QWidget* w = ApplicationWindow::Instance->GetCustomWidgetManager()->getDockWindow("Help bar");
-    if (w->inherits("FCHtmlView"))
-    {
-      FCHtmlView* help = (FCHtmlView*)w;
-      help->getBrowser()->setSource(text);
-    }*/
-  }
-  else
-  {
-    // use the Qt's WhatsThis
-    QWhatsThis::enterWhatsThisMode();
-    QWhatsThis::leaveWhatsThisMode(text, ppos);
-  }
-}
-
-void FCWhatsThisPrivate::add( QWidget * widget, FCWhatsThis* special )
-{
-  item( widget )->whatsthis = special;
-}
-
-void FCWhatsThisPrivate::add( QWidget * widget, const QString &text )
-{
-  item( widget )->txt = text;
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-void FCWhatsThis::add( QWidget * widget, const QString &text )
-{
-  FCWhatsThisPrivate::createWhatsThis();
-  hh->add(widget,text);
-}
-
-void FCWhatsThis::remove( QWidget * widget )
-{
-  FCWhatsThisPrivate::createWhatsThis();
-  FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
-  if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
-    i = hh->mWidgetItem[widget];
-  if ( !i )
-    return;
-  hh->mWidgetItem.erase( widget );
-  i->deref();
-  if ( !i->count )
-    delete i;
-}
-
-QString FCWhatsThis::textFor( QWidget * widget, const QPoint& pos)
-{
-  FCWhatsThisPrivate::createWhatsThis();
-  FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
-  if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
-    i = hh->mWidgetItem[widget];
-  if (!i)
-    return QString::null;
-  return i->whatsthis? i->whatsthis->text( pos ) : i->txt;
-}
-
-FCWhatsThis::FCWhatsThis( QWidget * widget)
-{
-  FCWhatsThisPrivate::createWhatsThis();
-  hh->add(widget,this);
-}
-
-FCWhatsThis::FCWhatsThis( QWidget * widget, QString url)
-    : m_sURL(url)
-{
-  FCWhatsThisPrivate::createWhatsThis();
-  hh->add(widget,this);
-}
-
-FCWhatsThis::~FCWhatsThis()
-{
-}
-
-QString FCWhatsThis::text( const QPoint & )
-{
-  // returns the url containing the text
-  return m_sURL;
-}
-
-void FCWhatsThis::enterWhatsThisMode()
-{
-  FCWhatsThisPrivate::createWhatsThis();
-
-  if ( hh->mode == FCWhatsThisPrivate::Inactive )
-  {
-    QApplication::setOverrideCursor( *hh->cursor, false );
-    hh->mode = FCWhatsThisPrivate::Active;
-    qApp->installEventFilter( hh );
-  }
-}
-
-bool FCWhatsThis::inWhatsThisMode()
-{
-  if (!hh)
-    return false;
-  return hh->mode == FCWhatsThisPrivate::Active;
-}
-
-void FCWhatsThis::leaveWhatsThisMode( const QString& text, const QPoint& pos )
-{
-  if ( !inWhatsThisMode() )
-    return;
-  hh->leaveWhatsThisMode();
-  if ( !text.isNull() )
-    hh->showWhatsThis( 0, text, pos );
-}
-
 #include "moc_HtmlView.cpp"
-#include "moc_HtmlViewP.cpp"
 

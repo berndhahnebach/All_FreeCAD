@@ -51,6 +51,7 @@ public:
 protected:
   virtual void apply();
   virtual void cancel();
+  virtual void reset();
 
 private:
   bool bChanged; /**< for internal use only */
