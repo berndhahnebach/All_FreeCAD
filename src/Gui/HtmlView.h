@@ -43,6 +43,7 @@ class FCTextBrowser : public QTextBrowser
 
   public:
     FCTextBrowser(QWidget * parent=0, const char * name=0);
+    virtual ~FCTextBrowser();
 
     virtual void setText (const QString & contents, const QString & context=QString::null);
     virtual void setSource (const QString & name);
@@ -53,8 +54,14 @@ class FCTextBrowser : public QTextBrowser
     /// start an external browser to display complex web sites
     void startExtBrowser(QString);
 
+  protected slots:
+    void onHighlighted(const QString&);
+
   protected:
     virtual void viewportMousePressEvent (QMouseEvent * e);
+    virtual void viewportMouseMoveEvent  (QMouseEvent * e);
+    QCursor * cursor;
+    bool highlighted;
 };
 
 /**
@@ -111,6 +118,8 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     bool SetMaxBookmarks (long lCnt);
     /// observers method
     virtual void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
+    /// returns the actual browser
+    FCTextBrowser* getBrowser() const { return pclBrowser; }
 
   protected slots:
     void SetBackwardAvailable( bool );
@@ -166,6 +175,28 @@ class GuiExport FCHtmlView : public FCDockWindow, public FCParameterGrp::Observe
     QPopupMenu*    pclPopup;
     QPopupMenu*    pclHistory;
     QPopupMenu*    pclBookm;
+};
+
+
+class FCWhatsThis : public Qt
+{
+  public:
+    FCWhatsThis( QWidget *);
+    FCWhatsThis( QWidget *, QString url);
+    virtual ~FCWhatsThis();
+
+    virtual QString text( const QPoint & );
+
+    static void add( QWidget *, const QString &);
+    static void remove( QWidget * );
+    static QString textFor( QWidget *, const QPoint & pos = QPoint() );
+
+    static void enterWhatsThisMode();
+    static bool inWhatsThisMode();
+    static void leaveWhatsThisMode( const QString& = QString::null, const QPoint& pos = QCursor::pos() );
+
+  private:
+    QString m_sURL;
 };
 
 #endif // __HTML_VIEW_H__

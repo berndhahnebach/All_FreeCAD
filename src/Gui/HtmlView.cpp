@@ -53,6 +53,8 @@
 #  define _chdir chdir
 #endif
 
+#include <qstylesheet.h>
+#include <qsimplerichtext.h>
 
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
@@ -161,16 +163,59 @@ static const char *open_pixmap[] = {
 "................",
 "................"};
 
+// looks like MS cursor for hyperlinks
+#define cb_width  32
+#define cb_height 32
+static unsigned char cb_bits[] = {		// cursor bitmap
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x48,0x00,0x00,0x00,0x48,
+ 0x00,0x00,0x00,0x48,0x00,0x00,0x00,0x48,0x00,0x00,0x00,0xc8,0x01,0x00,0x00,
+ 0x48,0x0e,0x00,0x00,0x48,0x32,0x00,0x00,0x48,0x52,0x00,0x80,0x4b,0x92,0x00,
+ 0x80,0x0c,0x90,0x00,0x80,0x08,0x80,0x00,0x00,0x09,0x80,0x00,0x00,0x0a,0x80,
+ 0x00,0x00,0x02,0x80,0x00,0x00,0x04,0x80,0x00,0x00,0x04,0x40,0x00,0x00,0x08,
+ 0x40,0x00,0x00,0x08,0x40,0x00,0x00,0x10,0x20,0x00,0x00,0x10,0x20,0x00,0x00,
+ 0xf0,0x3f,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+
+#define cm_width  32
+#define cm_height 32
+static unsigned char cm_bits[] = {		// cursor bitmap mask
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x78,
+ 0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0xf8,0x01,0x00,0x00,
+ 0xf8,0x0f,0x00,0x00,0xf8,0x3f,0x00,0x00,0xf8,0x7f,0x00,0x80,0xfb,0xff,0x00,
+ 0x80,0xff,0xff,0x00,0x80,0xff,0xff,0x00,0x00,0xff,0xff,0x00,0x00,0xfe,0xff,
+ 0x00,0x00,0xfe,0xff,0x00,0x00,0xfc,0xff,0x00,0x00,0xfc,0x7f,0x00,0x00,0xf8,
+ 0x7f,0x00,0x00,0xf8,0x7f,0x00,0x00,0xf0,0x3f,0x00,0x00,0xf0,0x3f,0x00,0x00,
+ 0xf0,0x3f,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+
 //// FCTextBrowser //////////////////////////////////////////////////////
 
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
-: QTextBrowser(parent, name)
+: QTextBrowser(parent, name), highlighted(false)
 {
   setHScrollBarMode(QScrollView::AlwaysOff);
   //setVScrollBarMode(QScrollView::AlwaysOff);
   mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
+
+  QBitmap cb( cb_width, cb_height, cb_bits, TRUE );
+  QBitmap cm( cm_width, cm_height, cm_bits, TRUE );
+  cursor = new QCursor ( cb, cm, 1, 1 );			// create bitmap cursor
+
+  connect(this, SIGNAL(highlighted(const QString&)), this, SLOT(onHighlighted(const QString&)));
+}
+
+FCTextBrowser::~FCTextBrowser()
+{
+  delete cursor;
+}
+
+void FCTextBrowser::onHighlighted(const QString& s)
+{
+  highlighted = !s.isEmpty();
 }
 
 void FCTextBrowser::setSource (const QString & name)
@@ -227,6 +272,14 @@ void FCTextBrowser::viewportMousePressEvent (QMouseEvent * e)
   }
   else
     QTextBrowser::viewportMousePressEvent(e);
+}
+
+void FCTextBrowser::viewportMouseMoveEvent  (QMouseEvent * e)
+{
+  QTextBrowser::viewportMouseMoveEvent(e);
+  // avoid using the ugly Qt cursor ;-)
+  if (highlighted)
+    viewport()->setCursor( *cursor );
 }
 
 //// FCHtmlViewValidator //////////////////////////////////////////////////////
@@ -1028,5 +1081,377 @@ void FCHtmlView::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
 }
 
 
+//// FCWhatsThis //////////////////////////////////////////////////////
+
+class FCWhatsThisPrivate: public QObject
+{
+  Q_OBJECT
+
+  public:
+
+    struct FCWhatsThisItem : public QShared
+    {
+  	  FCWhatsThisItem() : QShared() { whatsthis = 0; }
+      ~FCWhatsThisItem() {}
+	    QString txt;
+	    FCWhatsThis* whatsthis;
+    };
+
+    enum TMode { Inactive, Active };
+
+    // create and clear the WhatsThis object
+    static void clearWhatsThis();
+    static void createWhatsThis();
+
+    FCWhatsThisPrivate();
+    ~FCWhatsThisPrivate();
+
+    bool eventFilter( QObject *, QEvent * );
+
+    FCWhatsThisItem* item( QWidget * widget );
+    void add( QWidget * widget, FCWhatsThis* special );
+    void add( QWidget * widget, const QString& text );
+
+    // show the help
+    void showWhatsThis( QWidget *, const QString&, const QPoint&  );
+    void leaveWhatsThisMode();
+
+    // members
+    std::map<QWidget*, FCWhatsThisItem*> mWidgetItem;
+    std::map<QWidget*, QWidget*> topLevelWidget;
+    TMode mode;
+
+    QCursor * cursor;
+    QString currentText;
+
+  private slots:
+    void removeWidget()
+    {
+  	  const QObject* o = sender();
+	    if ( o->isWidgetType() )
+	      FCWhatsThis::remove((QWidget*)o);
+    }
+};
+
+
+static FCWhatsThisPrivate * hh = NULL;
+
+
+#define cursor_mask_width 32
+#define cursor_mask_height 32
+static unsigned char cursor_mask_bits[] = {
+  0x01, 0x00, 0x00, 0x00, 0x03, 0xf0, 0x07, 0x00, 0x07, 0xf8, 0x0f, 0x00,
+  0x0f, 0xfc, 0x1f, 0x00, 0x1f, 0x3e, 0x1f, 0x00, 0x3f, 0x3e, 0x1f, 0x00,
+  0x7f, 0x3e, 0x1f, 0x00, 0xff, 0x3e, 0x1f, 0x00, 0xff, 0x9d, 0x0f, 0x00,
+  0xff, 0xc3, 0x07, 0x00, 0xff, 0xe7, 0x03, 0x00, 0x7f, 0xe0, 0x03, 0x00,
+  0xf7, 0xe0, 0x03, 0x00, 0xf3, 0xe0, 0x03, 0x00, 0xe1, 0xe1, 0x03, 0x00,
+  0xe0, 0xe1, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00, 0xc0, 0xe3, 0x03, 0x00,
+  0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
+
+#define cursor_bits_width 32
+#define cursor_bits_height 32
+static unsigned char cursor_bits_bits[] = {
+  0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x05, 0xf0, 0x07, 0x00,
+  0x09, 0x18, 0x0e, 0x00, 0x11, 0x1c, 0x0e, 0x00, 0x21, 0x1c, 0x0e, 0x00,
+  0x41, 0x1c, 0x0e, 0x00, 0x81, 0x1c, 0x0e, 0x00, 0x01, 0x01, 0x07, 0x00,
+  0x01, 0x82, 0x03, 0x00, 0xc1, 0xc7, 0x01, 0x00, 0x49, 0xc0, 0x01, 0x00,
+  0x95, 0xc0, 0x01, 0x00, 0x93, 0xc0, 0x01, 0x00, 0x21, 0x01, 0x00, 0x00,
+  0x20, 0xc1, 0x01, 0x00, 0x40, 0xc2, 0x01, 0x00, 0x40, 0x02, 0x00, 0x00,
+  0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, };
+
+FCWhatsThisPrivate::FCWhatsThisPrivate()
+  : QObject( 0, "Whats This object" )
+{
+  qAddPostRoutine( clearWhatsThis );
+  hh = this;
+  mode = Inactive;
+  cursor = new QCursor( QBitmap( cursor_bits_width, cursor_bits_height, cursor_bits_bits, true ),
+			                  QBitmap( cursor_mask_width, cursor_mask_height, cursor_mask_bits, true ), 1, 1 );
+}
+
+FCWhatsThisPrivate::~FCWhatsThisPrivate()
+{
+  if ( mode == Active )
+  	QApplication::restoreOverrideCursor();
+
+  FCWhatsThisItem* i;
+  QWidget * w;
+  for (std::map<QWidget*, FCWhatsThisItem*>::iterator it=mWidgetItem.begin(); it != mWidgetItem.end(); ++it)
+  {
+	  w = it->first;
+    i = it->second;
+	  i->deref();
+	  if ( !i->count )
+	    delete i;
+  }
+  mWidgetItem.clear();
+  topLevelWidget.clear();
+
+  delete cursor;
+
+  hh = NULL;
+}
+
+FCWhatsThisPrivate::FCWhatsThisItem* FCWhatsThisPrivate::item( QWidget * widget )
+{
+  FCWhatsThisItem * i = NULL;
+  if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
+    i = hh->mWidgetItem[widget];
+ 
+  if ( i )
+  	FCWhatsThis::remove( widget );
+  
+  i = new FCWhatsThisItem;
+  mWidgetItem[widget] = i;
+  QWidget * t = widget->topLevelWidget();
+  
+  if ( topLevelWidget.find( t ) == topLevelWidget.end() ) 
+  {
+	  topLevelWidget[t] = t;
+	  t->installEventFilter( this );
+  }
+
+  connect( widget, SIGNAL(destroyed()), this, SLOT(removeWidget()) );
+  return i;
+}
+
+bool FCWhatsThisPrivate::eventFilter( QObject * o, QEvent * e )
+{
+  if ( !o || !e )
+  	return false;
+
+  switch( mode ) 
+  {
+    case Inactive:
+ 	    if ( e->type() == QEvent::Accel && ((QKeyEvent *)e)->key() == Key_F1 &&
+ 	         o->isWidgetType() && ((QKeyEvent *)e)->state() == ShiftButton ) 
+      {
+ 	      QWidget * w = ((QWidget *)o)->focusWidget();
+        FCWhatsThisPrivate::FCWhatsThisItem* i = NULL;
+        if (w && (mWidgetItem.find(w) != mWidgetItem.end()))
+        {
+          i = mWidgetItem[w];
+        }
+ 	      if ( i && !i->txt.isNull() ) 
+        {
+      		if ( i->whatsthis )
+		        showWhatsThis( w, i->whatsthis->text( QPoint(0,0) ), w->mapToGlobal( w->rect().center() ) );
+      		else
+    		    showWhatsThis( w, i->txt, w->mapToGlobal( w->rect().center() ));
+		  
+          ((QKeyEvent *)e)->accept();
+      		return true;
+ 	      }
+ 	    }
+	    break;
+    case Active:
+    	if ( e->type() == QEvent::MouseButtonPress && o->isWidgetType() ) 
+      {
+  	    QWidget * w = (QWidget *) o;
+	      if ( ( (QMouseEvent*)e)->button() == RightButton )
+		      return false; 
+  	    if ( w->customWhatsThis() )
+	      	return false;
+	      FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
+	      while( w && !i ) 
+        {
+          if (mWidgetItem.find(w) != mWidgetItem.end())
+            i = mWidgetItem[w];
+		      if ( !i )
+		        w = w->parentWidget();
+	      }
+
+  	    leaveWhatsThisMode();
+	      if (!i )
+      		return true;
+  	    QPoint pos =  ((QMouseEvent*)e)->pos();
+	      if ( i->whatsthis )
+		      showWhatsThis( w, i->whatsthis->text( pos ), w->mapToGlobal(pos) );
+	      else
+      		showWhatsThis( w, i->txt, w->mapToGlobal(pos) );
+	      return true;
+	    } 
+      else if ( e->type() == QEvent::MouseButtonRelease ) 
+      {
+  	    if ( ( (QMouseEvent*)e)->button() == RightButton )
+	      	return false; 
+  	    return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
+	    } 
+      else if ( e->type() == QEvent::MouseMove ) 
+      {
+  	    return !o->isWidgetType() || !((QWidget*)o)->customWhatsThis();
+    	} 
+      else if ( e->type() == QEvent::KeyPress ) 
+      {
+  	    QKeyEvent* kev = (QKeyEvent*)e;
+
+	      if (kev->key() == Qt::Key_Escape) 
+        {
+      		leaveWhatsThisMode();
+		      return true;
+  	    }
+	      else if ( kev->key() == Key_Menu || ( kev->key() == Key_F10 && kev->state() == ShiftButton ) )
+		      return false;
+        else if ( kev->state() == kev->stateAfter() && kev->key() != Key_Meta )
+      		leaveWhatsThisMode();
+	    } 
+      else if ( e->type() == QEvent::MouseButtonDblClick ) 
+      {
+  	    return true;
+	    }
+    	break;
+  }
+
+  return FALSE;
+}
+
+void FCWhatsThisPrivate::createWhatsThis()
+{
+  if ( !hh )
+  	hh = new FCWhatsThisPrivate();
+}
+
+void FCWhatsThisPrivate::clearWhatsThis()
+{
+  delete hh;
+  hh = NULL;
+}
+
+void FCWhatsThisPrivate::leaveWhatsThisMode()
+{
+  if ( mode == Active ) 
+  {
+    QApplication::restoreOverrideCursor();
+  	mode = Inactive;
+	  qApp->removeEventFilter( this );
+  }
+}
+
+void FCWhatsThisPrivate::showWhatsThis( QWidget * widget, const QString &text, const QPoint& ppos)
+{
+  currentText = text;
+
+  if (currentText.find(".html", 0, false) != -1)
+  {
+    // get text of the url 
+    QString txt = "Retrieving html text not yet implemented!";
+    QWidget* w = ApplicationWindow::Instance->GetCustomWidgetManager()->getDockWindow("Help bar");
+    if (w->inherits("FCHtmlView"))
+    {
+      FCHtmlView* help = (FCHtmlView*)w;
+      help->getBrowser()->setSource(currentText);//setText(text);
+    }
+  }
+  else
+  {
+    // use the Qt's WhatsThis
+    QWhatsThis::enterWhatsThisMode();
+    QWhatsThis::leaveWhatsThisMode(text, ppos);
+  }
+}
+
+void FCWhatsThisPrivate::add( QWidget * widget, FCWhatsThis* special )
+{
+  item( widget )->whatsthis = special;
+}
+
+void FCWhatsThisPrivate::add( QWidget * widget, const QString &text )
+{
+  item( widget )->txt = text;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void FCWhatsThis::add( QWidget * widget, const QString &text )
+{
+  FCWhatsThisPrivate::createWhatsThis();
+  hh->add(widget,text);
+}
+
+void FCWhatsThis::remove( QWidget * widget )
+{
+  FCWhatsThisPrivate::createWhatsThis();
+  FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
+  if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
+    i = hh->mWidgetItem[widget];
+  if ( !i )
+  	return;
+  hh->mWidgetItem.erase( widget );
+  i->deref();
+  if ( !i->count )
+	  delete i;
+}
+
+QString FCWhatsThis::textFor( QWidget * widget, const QPoint& pos)
+{
+  FCWhatsThisPrivate::createWhatsThis();
+  FCWhatsThisPrivate::FCWhatsThisItem * i = NULL;
+  if (hh->mWidgetItem.find(widget) != hh->mWidgetItem.end())
+    i = hh->mWidgetItem[widget];
+  if (!i)
+  	return QString::null;
+  return i->whatsthis? i->whatsthis->text( pos ) : i->txt;
+}
+
+FCWhatsThis::FCWhatsThis( QWidget * widget)
+{
+  FCWhatsThisPrivate::createWhatsThis();
+  hh->add(widget,this);
+}
+
+FCWhatsThis::FCWhatsThis( QWidget * widget, QString url)
+ : m_sURL(url)
+{
+  FCWhatsThisPrivate::createWhatsThis();
+  hh->add(widget,this);
+}
+
+FCWhatsThis::~FCWhatsThis()
+{
+}
+
+QString FCWhatsThis::text( const QPoint & )
+{
+  // returns the url containing the text
+  return m_sURL;
+}
+
+void FCWhatsThis::enterWhatsThisMode()
+{
+  FCWhatsThisPrivate::createWhatsThis();
+  
+  if ( hh->mode == FCWhatsThisPrivate::Inactive ) 
+  {
+	  QApplication::setOverrideCursor( *hh->cursor, false );
+	  hh->mode = FCWhatsThisPrivate::Active;
+	  qApp->installEventFilter( hh );
+  }
+}
+
+bool FCWhatsThis::inWhatsThisMode()
+{
+  if (!hh)
+	  return false;
+  return hh->mode == FCWhatsThisPrivate::Active;
+}
+
+void FCWhatsThis::leaveWhatsThisMode( const QString& text, const QPoint& pos )
+{
+  if ( !inWhatsThisMode() )
+  	return;
+  hh->leaveWhatsThisMode();
+  if ( !text.isNull() )
+  	hh->showWhatsThis( 0, text, pos );
+}
+
 #include "moc_HtmlView.cpp"
+#include "moc_private_HtmlView.cpp"
 
