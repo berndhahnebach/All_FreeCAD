@@ -26,6 +26,10 @@
 #ifndef _Feature_h_
 #define _Feature_h_
 
+#ifndef _PreComp_
+# include <TDF_Label.hxx>
+#endif
+
 #include "../Base/Factory.h"
 #include "../Base/PyExport.h"
 
