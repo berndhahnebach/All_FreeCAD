@@ -72,30 +72,33 @@ FCGuiDocument::~FCGuiDocument()
 	_pcDocument->_DECREF();
 }
 
+#include "Icons/FCIcon.xpm"
 
 void FCGuiDocument::CreateView() 
 {
-	QWorkspace* ws = _pcAppWnd->getWorkspace();
+	//QWorkspace* ws = _pcAppWnd->getWorkspace();
 
-    FCView* w = new FCView(this,ws,"View");
+    FCView* w = new FCView(this,0L,"View");
+	
+	// add to the view list of document
 	_LpcViews.push_back(w);
+	// add to the view list of Application window
 
 	//connect( w, SIGNAL( message(const QString&, int) ), _pcAppWnd->statusBar(), SLOT( message(const QString&, int )) );
 	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(onCloseView(FCView*)));
 
 	QString aName;
     w->setCaption(aName.sprintf("Document 1:1"));
-
-    //QString dir = ApplicationWindow::getResourceDir();
 	
-    //w->setIcon( QPixmap(dir+tr("ICON_DOC")) );
+    w->setIcon( FCIcon );
     // show the very first window in maximized mode
 
 	w->resize( 400, 300 );
-    if ( ws->windowList().isEmpty() )
-		w->showMaximized();
+    if ( _LpcViews.size() == 1 )
+		_pcAppWnd->addWindow(w,QextMdi::StandardAdd);
     else
-		w->show();
+		_pcAppWnd->addWindow(w);
+
 }
 /*
 void FCGuiDocument::onCloseView(MDIWindow* theView)

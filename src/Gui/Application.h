@@ -20,7 +20,7 @@ class FCGuiDocument;
 class GuiExport ApplicationWindow: public QextMdiMainFrm, public FCApplicationObserver
 {
     Q_OBJECT
-
+ 
 	
 public:
     ApplicationWindow();
@@ -41,17 +41,19 @@ protected:
 
 signals:
 	void sendQuit();
+
+// slots for the Application signals
 public slots:
-    FCGuiDocument* onNewDoc();
-	void Open(void);
-	void Save(void);
-	void SaveAs(void);
-	void Print(void);
-	void Undo(void);
-	void Redo(void);
-	void Cut(void);
-	void Copy(void);
-	void Paste(void);
+    void slotNewDoc(void);
+	void slotOpen  (void);
+	void slotSave  (void);
+	void slotSaveAs(void);
+	void slotPrint (void);
+	void slotUndo  (void);
+	void slotRedo  (void);
+	void slotCut   (void);
+	void slotCopy  (void);
+	void slotPaste (void);
     
 	
 	//void onCloseWindow();
@@ -73,6 +75,11 @@ private:
 	//void createTranslatePopups();
 	//void createWindowPopup();
 	*/
+
+protected: // Protected methods
+   /** just fits the system menu button position to the menu position */
+   virtual void resizeEvent ( QResizeEvent * );
+
 private:
     int myNbDocuments;
 	bool myIsDocuments;

@@ -17,30 +17,37 @@
 
 #include "DlgDocTemplatesImp.h"
   
+//#include "Icons/Background3.xpm"
+
 static ApplicationWindow* stApp;
 static QWorkspace* stWs;
+
+
+
 
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose )
 {
 
-  myNbDocuments = 0;
-  stApp = this;
+	myNbDocuments = 0;
+	stApp = this;
 	myIsDocuments = false;
 
     // create and define the central widget
 
-    QVBox* vb = new QVBox( this );
-    vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-    stWs = new QWorkspace( vb );
-    stWs->windowList().setAutoDelete(false);
-    setCentralWidget( vb );
+    //QVBox* vb = new QVBox( this );
+    //vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+    //stWs = new QWorkspace( vb );
+    //stWs->windowList().setAutoDelete(false);
+    //setCentralWidget( vb );
+
+	//setBackgroundPixmap(QPixmap(Background3));
 
 	CreateTestOperations();
 	//createCasCadeOperations();
 
-    statusBar()->message( tr("INF_READY"), 2001 );
-    resize( 1000, 700 );
+    statusBar()->message( tr("Ready"), 2001 );
+    resize( 800, 600 );
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -59,18 +66,11 @@ ApplicationWindow::~ApplicationWindow()
 }
 
 
-FCGuiDocument* ApplicationWindow::onNewDoc()
-{
 
-  DlgDocTemplatesImp cDlg(this,"Dialog",true);
-  cDlg.exec();
-  //updateFileActions();
-  //FCGuiDocument* aDoc = new FCGuiDocument(this);
-  FCGuiDocument* aDoc = NULL;
-  //connect(aDoc,SIGNAL(sendCloseDocument(Document*)),this,SLOT(onCloseDocument(Document*)));
-  //connect(stWs,SIGNAL(windowActivated(QWidget*)),this,SLOT(onWindowActivated(QWidget*)));
-  return aDoc;
-}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// document observers
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void ApplicationWindow::OnDocNew(FCDocument* pcDoc)
 {
@@ -83,46 +83,88 @@ void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 }
 
 
-void ApplicationWindow::Open(void)
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// slots with the application std commands
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void ApplicationWindow::slotNewDoc()
 {
 
-}
-void ApplicationWindow::Save(void)
-{
-
-}
-
-void ApplicationWindow::SaveAs(void)
-{
-
+  DlgDocTemplatesImp cDlg(this,"Dialog",true);
+  cDlg.exec();
+  //connect(aDoc,SIGNAL(sendCloseDocument(Document*)),this,SLOT(onCloseDocument(Document*)));
+  //connect(stWs,SIGNAL(windowActivated(QWidget*)),this,SLOT(onWindowActivated(QWidget*)));
 }
 
-void ApplicationWindow::Print(void)
+void ApplicationWindow::slotOpen(void)
 {
+   statusBar()->message("Opening file...");
 
-}
-
-void ApplicationWindow::Undo(void)
-{
+   QString fileName = QFileDialog::getOpenFileName(0,0,this);
 
 }
 
-void ApplicationWindow::Redo(void)
+void ApplicationWindow::slotSave(void)
 {
 
 }
 
-void ApplicationWindow::Cut(void)
+void ApplicationWindow::slotSaveAs(void)
+{
+  statusBar()->message("Saving file under new filename...");
+  QString fn = QFileDialog::getSaveFileName(0, 0, this);
+  if (!fn.isEmpty())
+  {
+    //doc->saveAs(fn);
+  }
+  else
+  {
+    statusBar()->message("Saving aborted", 2000);
+  }
+
+  //statusBar()->message(IDS_STATUS_DEFAULT);
+
+}
+
+void ApplicationWindow::slotPrint(void)
+{
+	statusBar()->message("Printing...");
+	QPrinter printer;
+	if (printer.setup(this))
+	{
+		QPainter painter;
+		painter.begin(&printer);
+
+		///////////////////////////////////////////////////////////////////
+		// TODO: Define printing by using the QPainter methods here
+
+		painter.end();
+	};
+
+	//statusBar()->message(IDS_STATUS_DEFAULT);
+
+}
+
+void ApplicationWindow::slotUndo(void)
 {
 
 }
 
-void ApplicationWindow::Copy(void)
+void ApplicationWindow::slotRedo(void)
 {
 
 }
 
-void ApplicationWindow::Paste(void)
+void ApplicationWindow::slotCut(void)
+{
+
+}
+
+void ApplicationWindow::slotCopy(void)
+{
+
+}
+
+void ApplicationWindow::slotPaste(void)
 {
 
 }
@@ -147,43 +189,43 @@ void ApplicationWindow::CreateTestOperations()
 	QAction * pcTemp;
 
     pcTemp = new QAction( "New", QPixmap(pNew ), "New", CTRL+Key_N, this, "new" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( onNewDoc() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotNewDoc() ) );
 	_cCommandManager.AddCommand("Std_New",FCCommand(pcTemp));
 
     pcTemp = new QAction( "Open", QPixmap(pOpen ), "Open", CTRL+Key_O, this, "Open" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Open() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotOpen() ) );
 	_cCommandManager.AddCommand("Std_Open",FCCommand(pcTemp));
 
     pcTemp = new QAction( "Save", QPixmap(pSave ), "Save", CTRL+Key_S, this, "Save" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Save() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotSave() ) );
 	_cCommandManager.AddCommand("Std_Save",FCCommand(pcTemp));
 
     pcTemp = new QAction( "SaveAs","SaveAs", 0, this, "SaveAs" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( SaveAs() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotSaveAs() ) );
 	_cCommandManager.AddCommand("Std_SaveAs",FCCommand(pcTemp));
 
     pcTemp = new QAction( "Print", QPixmap(pPrint ), "Print", CTRL+Key_P, this, "Print" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Print() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotPrint() ) );
 	_cCommandManager.AddCommand("Std_Print",FCCommand(pcTemp));
 
     pcTemp = new QAction( "Undo", QPixmap(pUndo ), "Undo", CTRL+Key_Z, this, "Undo" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Undo() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotUndo() ) );
 	_cCommandManager.AddCommand("Std_Undo",FCCommand(pcTemp));
 
     pcTemp = new QAction( "Redo", QPixmap(pRedo ), "Redo", CTRL+Key_Y, this, "Redo" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Redo() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotRedo() ) );
 	_cCommandManager.AddCommand("Std_Redo",FCCommand(pcTemp));
 
 	pcTemp = new QAction( "Cut", QPixmap(pCut ), "Cut", CTRL+Key_X, this, "Cut" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Cut() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotCut() ) );
 	_cCommandManager.AddCommand("Std_Cut",FCCommand(pcTemp));
 
 	pcTemp = new QAction( "Copy", QPixmap(pCopy ), "Copy", CTRL+Key_C, this, "Copy" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Redo() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotCopy() ) );
 	_cCommandManager.AddCommand("Std_Copy",FCCommand(pcTemp));
 
 	pcTemp = new QAction( "Paste", QPixmap(pPaste ), "Paste", CTRL+Key_V, this, "Paste" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( Redo() ) );
+	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotPaste() ) );
 	_cCommandManager.AddCommand("Std_Paste",FCCommand(pcTemp));
 
 	//myStdActions.insert(FileNewId, fileNewAction);	
@@ -233,7 +275,7 @@ void ApplicationWindow::CreateTestOperations()
     // popuplate a menu with all actions
 
     myFilePopup = new QPopupMenu( this );
-    menuBar()->insertItem( "File"), myFilePopup ;
+    menuBar()->insertItem( "File", myFilePopup) ;
 	_cCommandManager.AddTo("Std_New",myFilePopup);
 	_cCommandManager.AddTo("Std_Open",myFilePopup);
 	_cCommandManager.AddTo("Std_Save",myFilePopup);
@@ -244,11 +286,14 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Quit",myFilePopup);
 
     myFilePopup = new QPopupMenu( this );
-    menuBar()->insertItem( "Work"), myFilePopup ;
+    menuBar()->insertItem( "Work", myFilePopup );
 	_cCommandManager.AddTo("Std_Cut",myFilePopup);
 	_cCommandManager.AddTo("Std_Copy",myFilePopup);
 	_cCommandManager.AddTo("Std_Paste",myFilePopup);
 	
+
+	setMenuForSDIModeSysButtons( menuBar());
+	 
 //    fileCloseAction->addTo( myFilePopup );
 //    myFilePopup->insertSeparator();
 //    fileQuitAction->addTo( myFilePopup );
@@ -268,6 +313,18 @@ void ApplicationWindow::CreateTestOperations()
 	helpAboutAction->addTo( help );
 	*/
 }
+
+
+/** just additionally fits the system menu button position to the menu position */
+void ApplicationWindow::resizeEvent ( QResizeEvent *e)
+{
+   QextMdiMainFrm::resizeEvent( e);
+   setSysButtonsAtMenuPosition();
+}
+
+
+
+
 /*
 void ApplicationWindow::createCasCadeOperations()
 {
@@ -399,10 +456,6 @@ void ApplicationWindow::windowsMenuActivated( int id )
 	w->setFocus();
 }
 */
-QWorkspace * ApplicationWindow::getWorkspace()
-{
-	return stWs;
-}
 
 ApplicationWindow* ApplicationWindow::getApplication()
 {
@@ -561,8 +614,8 @@ QString ApplicationWindow::getResourceDir()
 */
 void ApplicationWindow::exportImage()
 {
-  FCView* w = (FCView*) stWs->activeWindow();
-  w->dump();
+  //FCView* w = (FCView*) stWs->activeWindow();
+  //w->dump();
 }
 
 
