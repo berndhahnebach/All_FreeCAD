@@ -31,6 +31,7 @@
 
 #include "../App/Application.h"
 #include "../Base/Parameter.h"
+#include "Command.h"
 
 #include <qspinbox.h>
 #include <qcheckbox.h>
@@ -44,6 +45,8 @@
 class FCWidgetPrefsHandler;
 class QDoubleValidator;
 class FCWidgetFactorySupplier;
+class QAction;
+class FCCmdBar;
 
 /** The widget preference class
  *  If you want to extend a QWidget class to save/restore data
@@ -58,10 +61,8 @@ class FCWidgetPrefs : public FCObserver
   public:
     /// get the widget's name in preferences
     QString getPrefName();
-    /// use system parameter
-    void setUseSystemParameter();
     /// use user parameter
-    void setUseUserParameter();
+    void setUserParameter();
     /// return the handler
     FCWidgetPrefsHandler* getHandler();
     /// install a new handler
@@ -70,6 +71,8 @@ class FCWidgetPrefs : public FCObserver
     FCParameterGrp::handle getParamGrp();
     /// observers method
     virtual void OnChange(FCSubject &rCaller);
+    /// get the handle to the root parameter group
+    static FCParameterGrp::handle getRootParamGrp();
 
   protected:
     /// restore the preferences
@@ -87,7 +90,6 @@ class FCWidgetPrefs : public FCObserver
 
   private:
     FCWidgetPrefsHandler* pHandler;
-    QString m_sPrefGrp;
     QString m_sPrefName;
 
     // friends
@@ -262,6 +264,123 @@ class FCRadioButton : public QRadioButton, public FCWidgetPrefs
     // restore from/save to parameters
     void restorePreferences();
     void savePreferences();
+};
+
+/**
+ *  Class to drag a 'QAction' object
+ */
+class FCActionDrag : public QStoredDrag
+{
+  public:
+    FCActionDrag ( QAction* action = 0, QWidget * dragSource = 0, const char * name = 0 );
+    virtual ~FCActionDrag ();
+
+    static bool canDecode ( const QMimeSource * e );
+    static bool decode ( const QMimeSource * e, QAction*  a );
+
+  public:
+    static QAction* pAction;
+};
+
+class FCCustomWidget : public FCWidgetPrefs
+{
+  public:
+    bool hasCustomItems();
+    std::vector<std::string> getItems();
+    void setItems(const std::vector<std::string>& items);
+    void loadXML();
+    void saveXML();
+    virtual ~FCCustomWidget();
+
+  protected:
+    FCCustomWidget(const char* grp, const char * name);
+    virtual void restorePreferences();
+    virtual void savePreferences();
+    void init(const char* grp, const char* name);
+
+    std::vector<std::string> _clItems;
+};
+
+/**
+ *  Toolbar class that knows 'drag and drop'
+ */
+class FCToolBar : public QToolBar, public FCCustomWidget
+{
+  Q_OBJECT
+
+  public:
+#if QT_VER <= 230
+    FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0, const char* type = "Toolbars" );
+#endif
+    FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0, const char* type = "Toolbars" );
+    FCToolBar ( QMainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
+    virtual ~FCToolBar();
+    virtual void clearAll();
+
+  protected:
+    void dropEvent ( QDropEvent * );
+    void dragEnterEvent ( QDragEnterEvent * );
+    void dragLeaveEvent ( QDragLeaveEvent * );
+    void dragMoveEvent ( QDragMoveEvent * );
+    virtual void restorePreferences();
+    virtual void savePreferences();
+    bool bSaveColor;
+};
+
+class FCPopupMenu : public QPopupMenu, public FCCustomWidget
+{
+  Q_OBJECT
+
+  public:
+    FCPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
+    virtual ~FCPopupMenu();
+
+  protected:
+    void dropEvent ( QDropEvent * );
+    void dragEnterEvent ( QDragEnterEvent * );
+    void dragLeaveEvent ( QDragLeaveEvent * );
+    void dragMoveEvent ( QDragMoveEvent * );
+    void mouseMoveEvent ( QMouseEvent * );
+    virtual void restorePreferences();
+    virtual void savePreferences();
+    QString parent;
+};
+
+class FCCustomWidgetManager
+{
+  public:
+    FCCustomWidgetManager(FCCommandManager& rclMgr, FCCmdBar* pCmdBar);
+    ~FCCustomWidgetManager();
+
+    bool init(const char* workbench);
+
+    FCToolBar* getToolBar(const char* name);
+    std::vector<FCToolBar*> getToolBars();
+    void delToolBar(const char* name);
+
+    FCToolBar* getCmdBar(const char* name);
+    std::vector<FCToolBar*> getCmdBars();
+    void delCmdBar(const char* name);
+
+    FCPopupMenu* getPopupMenu(const char* name, const char* parent = 0);
+    std::vector<FCPopupMenu*> getPopupMenus();
+    void delPopupMenu(const char* name);
+
+    void addPopupMenu (const std::string& type, const std::vector<std::string>& defIt, const char* parent = 0);
+    void addPopupMenu (const std::string& type, const char* parent = 0);
+    void addToolBar   (const std::string& type, const std::vector<std::string>& defIt);
+    void addToolBar   (const std::string& type);
+    void addCmdBar    (const std::string& type, const std::vector<std::string>& defIt);
+    void addCmdBar    (const std::string& type);
+    void addItem      (const std::string& item);
+
+  protected:
+    std::map <std::string,FCPopupMenu*> _clPopupMenus;
+    std::map <std::string,FCToolBar*>   _clToolbars;
+    std::map <std::string,FCToolBar*>   _clCmdbars;
+    std::vector<std::string>            _clDefaultItems;
+    FCCommandManager&                   _clCmdMgr;
+  	FCCmdBar*                           _pclCmdBar;
 };
 
 #endif // __FC_PREF_WIDGETS_H__

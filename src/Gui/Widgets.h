@@ -29,7 +29,6 @@
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
 #include "Window.h"
-#include "PrefWidgets.h"
 #include <qprogressbar.h>
 #include <qlabel.h>
 #include <qiconview.h>
@@ -37,13 +36,14 @@
 #include <qstatusbar.h>
 #include <qtoolbar.h>
 #include <qfiledialog.h>
+#include <qvariant.h>
+#include <qdialog.h>
 #if QT_VER > 230
 # include <qlistview.h>
 #endif
 
 class QHBoxLayout; 
 class QTime;
-class QAction;
 
 /**
  *  Using the Qt's open/save dialogs with own adjustments
@@ -150,49 +150,41 @@ class FCCmdView : public QIconView
     void emitSelectionChanged(QString);
 };
 
-/**
- *  Class to drag a 'QAction' object
- */
-class FCActionDrag : public QStoredDrag
-{
-  public:
-    FCActionDrag ( QAction* action = 0, QWidget * dragSource = 0, const char * name = 0 );
-    virtual ~FCActionDrag ();
-
-    static bool canDecode ( const QMimeSource * e );
-    static bool decode ( const QMimeSource * e, QAction*  a );
-
-  public:
-    static QAction* pAction;
-};
+class QVBoxLayout; 
+class QHBoxLayout; 
+class QGridLayout; 
+class QCheckBox;
+class QGroupBox;
+class QLabel;
+class QLineEdit;
+class QPushButton;
 
 /**
- *  Toolbar class that knows 'drag and drop'
+ *  Toolbar/command bar creation class
  */
-class FCToolBar : public QToolBar, public FCWidgetPrefs
-{
-  Q_OBJECT
+class FCDlgCreateToolOrCmdBar : public QDialog
+{ 
+    Q_OBJECT
 
   public:
-#if QT_VER <= 230
-    FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0 );
-#endif
-    FCToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0 );
-    FCToolBar ( QMainWindow * parent = 0, const char * name = 0 );
-    virtual ~FCToolBar();
-    void loadUserDefButtons();
+    FCDlgCreateToolOrCmdBar( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~FCDlgCreateToolOrCmdBar();
+
+    QGroupBox* GroupBox1;
+    QLabel* TextLabel;
+    QLineEdit* LineEditName;
+    QCheckBox* CheckCreateCmdBar;
+    QCheckBox* CheckCreateToolBar;
+    QPushButton* buttonOk;
+    QPushButton* buttonCancel;
+
+  protected slots:
+    void accept ();
 
   protected:
-    void init();
-    void dropEvent ( QDropEvent * );
-    void dragEnterEvent ( QDragEnterEvent * );
-    void dragLeaveEvent ( QDragLeaveEvent * );
-    void dragMoveEvent ( QDragMoveEvent * );
-    virtual void restorePreferences();
-    virtual void savePreferences();
-    std::vector<std::string> alDroppedActions;
-    std::string widgetName;
-    bool bSaveColor;
+    QGridLayout* FCDlgCreateToolOrCmdBarLayout;
+    QGridLayout* GroupBox1Layout;
+    QHBoxLayout* Layout2;
 };
 
 #endif // __FC_WIDGETS_H__

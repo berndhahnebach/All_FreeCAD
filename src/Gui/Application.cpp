@@ -121,6 +121,8 @@ ApplicationWindow::ApplicationWindow()
     // attach the console observer
 	GetConsole().AttacheObserver( new FCGuiConsoleObserver(this) );
 
+	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
+  _pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
 	CreateTestOperations();
 	//createCasCadeOperations();
 
@@ -147,8 +149,6 @@ ApplicationWindow::ApplicationWindow()
     statusBar()->message( tr("Ready"), 2001 );
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-	_pcCmdBar = new FCCmdBar(this,"Cmd_Group");
-	//_pcCmdBar->AddTestButtons();
 	AddDockWindow( "Command bar",_pcCmdBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -166,7 +166,7 @@ ApplicationWindow::ApplicationWindow()
 
 ApplicationWindow::~ApplicationWindow()
 {
-
+  delete _pcWidgetMgr;
 }
 
 
@@ -210,59 +210,34 @@ void ApplicationWindow::OnLastWindowClosed(FCGuiDocument* pcDoc)
 /// Get a named Toolbar or creat if not in
 QToolBar *ApplicationWindow::GetToolBar(const char* name)
 {
-	//std::map <std::string,QToolBar*>     mpcToolBars;
-	std::map <std::string,QToolBar*>::iterator It = mpcToolBars.find(name);
-	if( It!=mpcToolBars.end() )
-		return It->second;
-	else
-	{
-		QToolBar *pcToolBar = new FCToolBar( this, name );
-		mpcToolBars[name] = pcToolBar;
-		pcToolBar->show();
-		return pcToolBar;
-	}
+  return _pcWidgetMgr->getToolBar(name);
 }
 
 std::vector<QToolBar*> ApplicationWindow::GetToolBars()
 {
-  std::vector<QToolBar*> aclToolbars;
-	for (std::map <std::string,QToolBar*>::iterator It = mpcToolBars.begin(); It != mpcToolBars.end(); ++It)
-  {
-    aclToolbars.push_back(It->second);
-  }
+  std::vector<QToolBar*> tb;
+  std::vector<FCToolBar*> tbs = _pcWidgetMgr->getToolBars();
 
-  return aclToolbars;
+  for (std::vector<FCToolBar*>::iterator it = tbs.begin(); it != tbs.end(); ++it)
+    tb.push_back(*it);
+  return tb;
 }
 
 /// Delete a named Toolbar
 void ApplicationWindow::DelToolBar(const char* name)
 {
-	std::map <std::string,QToolBar*>::iterator It = mpcToolBars.find(name);
-	if( It!=mpcToolBars.end() )
-	{
-		delete It->second;
-		mpcToolBars.erase(It);
-	}
+  _pcWidgetMgr->delToolBar(name);
 }
 /// Get a named Command bar view or creat if not in
 FCToolBar *ApplicationWindow::GetCommandBar(const char* name)
 {
-	//FCCmdBar* pCmdBar = (FCCmdBar*) GetDockWindow("Cmd_Group");
-	if (_pcCmdBar->HasView(name))
-		return _pcCmdBar->GetView(name);
-	else
-  {
-  	FCToolBar* p = _pcCmdBar->CreateView(name);
-    _pcCmdBar->setCurPage(0);
-		return p;
-  }
+  return _pcWidgetMgr->getCmdBar(name);
 }
 
 /// Delete a named Command bar view
 void ApplicationWindow::DelCommandBar(const char* name)
 {
-	//FCCmdBar* pCmdBar = (FCCmdBar*)GetDockWindow("Cmd_Group");
-	_pcCmdBar->DeleteView(name);
+  _pcWidgetMgr->delCmdBar(name);
 }
 
 /// Add a new named Dock Window
@@ -341,18 +316,27 @@ void ApplicationWindow::CreateTestOperations()
 
     // populate a tool bar with some actions
 
-	// Standard tool bar -----------------------------------------------------------------------
-    QToolBar *pcStdToolBar =  GetToolBar("file operations");
-    //_pcStdToolBar->setLabel( "File" );
-	_cCommandManager.AddTo("Std_New",pcStdToolBar);
-	_cCommandManager.AddTo("Std_Open",pcStdToolBar);
-	_cCommandManager.AddTo("Std_Save",pcStdToolBar);
-	_cCommandManager.AddTo("Std_Print",pcStdToolBar);
-	pcStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_Cut",pcStdToolBar);
-	_cCommandManager.AddTo("Std_Copy",pcStdToolBar);
-	_cCommandManager.AddTo("Std_Paste",pcStdToolBar);
-	pcStdToolBar->addSeparator();
+  bool bInit = _pcWidgetMgr->init(GetActiveWorkbench().latin1());
+	// default toolbars -----------------------------------------------------------------------
+  //
+  // populate toolbars with all default actions
+  QToolBar *pcStdToolBar =  GetToolBar("file operations");
+  //_pcStdToolBar->setLabel( "File" );
+
+  if (!bInit)
+  {
+    std::vector<std::string> defToolbar;
+    defToolbar.push_back("Std_New");
+    defToolbar.push_back("Std_Open");
+    defToolbar.push_back("Std_Save");
+    defToolbar.push_back("Std_Print");
+    defToolbar.push_back("Separator");
+    defToolbar.push_back("Std_Cut");
+    defToolbar.push_back("Std_Copy");
+    defToolbar.push_back("Std_Paste");
+    defToolbar.push_back("Separator");
+    _pcWidgetMgr->addToolBar("file operations", defToolbar);
+  }
 
 	// Undo/Redo Toolbutton
 	QToolButton* button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
@@ -361,48 +345,58 @@ void ApplicationWindow::CreateTestOperations()
 	button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotRedo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateRedo()));
-
 	pcStdToolBar->addSeparator();
 	
 	// add the workbench combo to the main toolbar
 	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
+//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
+//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
+//	_cActiveWorkbenchName = "";
 	_pcWorkbenchCombo->setMinimumWidth(130);
-	((FCToolBar*)GetToolBar("file operations"))->loadUserDefButtons();
 	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
 
 
 
-	// test tool bar -----------------------------------------------------------------------
-    // populate a menu with all actions
-    _pcPopup = new QPopupMenu( this );
-    menuBar()->insertItem( "File", _pcPopup) ;
-	_cCommandManager.AddTo("Std_New",_pcPopup);
-	_cCommandManager.AddTo("Std_Open",_pcPopup);
-	_cCommandManager.AddTo("Std_Save",_pcPopup);
-	_cCommandManager.AddTo("Std_SaveAs",_pcPopup);
-	_pcPopup->insertSeparator();
-	_cCommandManager.AddTo("Std_Print",_pcPopup);
-	_pcPopup->insertSeparator();
-	_cCommandManager.AddTo("Std_Quit",_pcPopup);
+	// default menu bar -----------------------------------------------------------------------
+  //
+  // populate menus with all default actions
+  if (!bInit)
+  {
+    std::vector<std::string> defaultMenus;
+    defaultMenus.push_back("Std_New");
+    defaultMenus.push_back("Std_Open");
+    defaultMenus.push_back("Std_Save");
+    defaultMenus.push_back("Std_SaveAs");
+    defaultMenus.push_back("Separator");
+    defaultMenus.push_back("Std_Print");
+    defaultMenus.push_back("Separator");
+    defaultMenus.push_back("Std_Quit");
+    _pcWidgetMgr->addPopupMenu("File", defaultMenus);
 
-    _pcPopup = new QPopupMenu( this );
-    menuBar()->insertItem( "Edit", _pcPopup );
-	_cCommandManager.AddTo("Std_Cut",_pcPopup);
-	_cCommandManager.AddTo("Std_Copy",_pcPopup);
-	_cCommandManager.AddTo("Std_Paste",_pcPopup);
+    defaultMenus.clear();
+    defaultMenus.push_back("Std_Cut");
+    defaultMenus.push_back("Std_Copy");
+    defaultMenus.push_back("Std_Paste");
+    _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
+  
+    defaultMenus.clear();
+    defaultMenus.push_back("Std_CommandLine");
+    defaultMenus.push_back("Std_DlgParameter");
+    defaultMenus.push_back("Std_DlgPreferences");
+    _pcWidgetMgr->addPopupMenu("Tools", defaultMenus);
+  
+    defaultMenus.clear();
+    defaultMenus.push_back("Std_About");
+    _pcWidgetMgr->addPopupMenu("?", defaultMenus);
+  }
 
-    _pcPopup = new QPopupMenu( this );
-    menuBar()->insertItem( "Tools", _pcPopup );
-	_cCommandManager.AddTo("Std_CommandLine",_pcPopup);
-	_cCommandManager.AddTo("Std_DlgParameter",_pcPopup);
-	_cCommandManager.AddTo("Std_DlgPreferences",_pcPopup);
-		
-  _pcPopup = new QPopupMenu( this );
-  menuBar()->insertItem( "?", _pcPopup );
-	_cCommandManager.AddTo("Std_About",_pcPopup);
-
-	setMenuForSDIModeSysButtons( menuBar());
+//  std::vector<std::string> Menus;
+//  Menus.push_back("Std_Cut");
+//  Menus.push_back("Std_Copy");
+//  Menus.push_back("Std_Paste");
+//  _pcWidgetMgr->addPopupMenu("Hallo2", Menus, "?");
 	 
+	setMenuForSDIModeSysButtons( menuBar());
 }
 
 /// send Messages to the active view
@@ -564,10 +558,11 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
 
     std::map<int, QToolBar*> toolb;
 
-	  for (std::map <std::string,QToolBar*>::iterator It = mpcToolBars.begin(); It != mpcToolBars.end(); ++It)
+    std::vector<QToolBar*> aclToolBars = GetToolBars();
+	  for (std::vector<QToolBar*>::iterator It = aclToolBars.begin(); It != aclToolBars.end(); ++It)
     {
-      int id = menu.insertItem(It->first.c_str());
-      QToolBar* tb = It->second;
+      int id = menu.insertItem((*It)->name());
+      QToolBar* tb = *It;
       toolb[id] = tb;
       if (tb->isVisible())
 		    menu.setItemChecked(id, true);
@@ -649,10 +644,11 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	// test if the workbench in
 	assert(pcWorkbench);
 
+  // rename with new workbench before(!!!) calling "Start"
+	_cActiveWorkbenchName = name;
+
 	// runing the start of the workbench object
 	GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
-
-	_cActiveWorkbenchName = name;
 
 	// set the combo box
 	if(_pcWorkbenchCombo->currentText() != name){
@@ -741,8 +737,9 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddSeperator)
 	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
 		return NULL;                                      // NULL triggers exception 
 
-	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
-	pcBar->addSeparator();
+//	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
+//	pcBar->addSeparator();
+  Instance->_pcWidgetMgr->addItem("Separator");
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -754,9 +751,10 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
 	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
+//	QToolBar * pcBar = Instance->GetToolBar(psToolbarName);
 	try{
-		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+//		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+    Instance->_pcWidgetMgr->addItem(psCmdName);
 	}catch(FCException e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
@@ -767,6 +765,18 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAddTo)
 
 	Py_INCREF(Py_None);
     return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarLoadSettings)
+{
+	char *psToolbarName;
+	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+  Instance->_pcWidgetMgr->addToolBar(psToolbarName);
+    
+	Py_INCREF(Py_None);
+	return Py_None;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
@@ -785,22 +795,10 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddSeperator)
 	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
 		return NULL;                                      // NULL triggers exception 
 
-	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
-	//pcBar->addSeparator(); not implemented yet
+//	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
+//	pcBar->addSeparator(); not implemented yet
+  Instance->_pcWidgetMgr->addItem("Separator");
 
-	Py_INCREF(Py_None);
-	return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarLoadSettings)
-{
-	char *psToolbarName;
-	if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
-
-	FCToolBar * pcBar = (FCToolBar*)Instance->GetToolBar(psToolbarName);
-	pcBar->loadUserDefButtons();
-    
 	Py_INCREF(Py_None);
 	return Py_None;
 } 
@@ -811,9 +809,10 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
 	if (!PyArg_ParseTuple(args, "ss", &psToolbarName,&psCmdName))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
+//	FCToolBar * pcBar = Instance->GetCommandBar(psToolbarName);
 	try{
-		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+//		Instance->_cCommandManager.AddTo(psCmdName,pcBar);
+    Instance->_pcWidgetMgr->addItem(psCmdName);
 	}catch(FCException e) {
 		//e.ReportException();
 		PyErr_SetString(PyExc_AssertionError, e.what());		
@@ -828,6 +827,18 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAddTo)
     return Py_None;
 } 
 
+PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
+{
+	char *psCmdbarName;
+	if (!PyArg_ParseTuple(args, "s", &psCmdbarName))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+  Instance->_pcWidgetMgr->addCmdBar(psCmdbarName);
+
+	Py_INCREF(Py_None);
+	return Py_None;
+} 
+
 PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
 {
     char *psToolbarName;
@@ -839,18 +850,6 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
 	Py_INCREF(Py_None);
 	return Py_None;
 }
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarLoadSettings)
-{
-	char *psCmdbarName;
-	if (!PyArg_ParseTuple(args, "s", &psCmdbarName))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
-
-	Instance->GetCommandBar(psCmdbarName)->loadUserDefButtons();
-
-	Py_INCREF(Py_None);
-	return Py_None;
-} 
 
 
 PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
@@ -1133,7 +1132,7 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName)
 			return QPixmap(d.path()+QDir::separator()+ sName + ".png");
 	}
 
-	GetConsole().Warning("Cant find Pixmap:%s\n",sName);
+	GetConsole().Warning("Can't find Pixmap:%s\n",sName);
 
 	return QPixmap(px);
 

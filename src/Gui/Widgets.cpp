@@ -401,167 +401,106 @@ void FCCmdView::contentsMousePressEvent ( QMouseEvent * e )
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////
-
-QAction* FCActionDrag::pAction = NULL;
-
-FCActionDrag::FCActionDrag ( QAction* action, QWidget * dragSource , const char * name  )
-: QStoredDrag("FCActionDrag", dragSource, name)
+/* 
+ *  Constructs a FCDlgCreateToolOrCmdBar which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
+FCDlgCreateToolOrCmdBar::FCDlgCreateToolOrCmdBar( QWidget* parent,  const char* name, bool modal, WFlags fl )
+    : QDialog( parent, name, modal, fl )
 {
-  // store the QAction object
-  pAction = action;
+    if ( !name )
+	setName( "FCDlgCreateToolOrCmdBar" );
+    resize( 242, 179 ); 
+    setProperty( "caption", tr( "Create Toolbar and/or Command bar" ) );
+    setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
+    FCDlgCreateToolOrCmdBarLayout = new QGridLayout( this ); 
+    FCDlgCreateToolOrCmdBarLayout->setSpacing( 6 );
+    FCDlgCreateToolOrCmdBarLayout->setMargin( 11 );
+
+    GroupBox1 = new QGroupBox( this, "GroupBox1" );
+    GroupBox1->setProperty( "title", tr( "Toolbar/Command bar" ) );
+    GroupBox1->setColumnLayout(0, Qt::Vertical );
+    GroupBox1->layout()->setSpacing( 0 );
+    GroupBox1->layout()->setMargin( 0 );
+    GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
+    GroupBox1Layout->setAlignment( Qt::AlignTop );
+    GroupBox1Layout->setSpacing( 6 );
+    GroupBox1Layout->setMargin( 11 );
+
+    TextLabel = new QLabel( GroupBox1, "TextLabel" );
+    TextLabel->setProperty( "text", tr( "Name:" ) );
+
+    GroupBox1Layout->addWidget( TextLabel, 0, 0 );
+
+    LineEditName = new QLineEdit( GroupBox1, "LineEditName" );
+
+    GroupBox1Layout->addWidget( LineEditName, 1, 0 );
+
+    CheckCreateCmdBar = new QCheckBox( GroupBox1, "CheckCreateCmdBar" );
+    CheckCreateCmdBar->setProperty( "text", tr( "Create command bar" ) );
+    CheckCreateCmdBar->setProperty( "checked", QVariant( TRUE, 0 ) );
+
+    GroupBox1Layout->addWidget( CheckCreateCmdBar, 3, 0 );
+
+    CheckCreateToolBar = new QCheckBox( GroupBox1, "CheckCreateToolBar" );
+    CheckCreateToolBar->setProperty( "text", tr( "Create toolbar" ) );
+    CheckCreateToolBar->setProperty( "checked", QVariant( TRUE, 0 ) );
+
+    GroupBox1Layout->addWidget( CheckCreateToolBar, 2, 0 );
+
+    FCDlgCreateToolOrCmdBarLayout->addWidget( GroupBox1, 0, 0 );
+
+    Layout2 = new QHBoxLayout; 
+    Layout2->setSpacing( 6 );
+    Layout2->setMargin( 0 );
+
+    buttonOk = new QPushButton( this, "buttonOk" );
+    buttonOk->setProperty( "text", tr( "&OK" ) );
+    buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+    buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
+    Layout2->addWidget( buttonOk );
+    QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    Layout2->addItem( spacer );
+
+    buttonCancel = new QPushButton( this, "buttonCancel" );
+    buttonCancel->setProperty( "text", tr( "&Cancel" ) );
+    buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+    Layout2->addWidget( buttonCancel );
+
+    FCDlgCreateToolOrCmdBarLayout->addLayout( Layout2, 2, 0 );
+    QSpacerItem* spacer_2 = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+    FCDlgCreateToolOrCmdBarLayout->addItem( spacer_2, 1, 0 );
+
+    // signals and slots connections
+    connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
+    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+
+    // tab order
+    setTabOrder( LineEditName, CheckCreateToolBar );
+    setTabOrder( CheckCreateToolBar, CheckCreateCmdBar );
+    setTabOrder( CheckCreateCmdBar, buttonOk );
+    setTabOrder( buttonOk, buttonCancel );
 }
 
-FCActionDrag::~FCActionDrag ()
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+FCDlgCreateToolOrCmdBar::~FCDlgCreateToolOrCmdBar()
 {
+    // no need to delete child widgets, Qt does it all for us
 }
 
-bool FCActionDrag::canDecode ( const QMimeSource * e )
+void FCDlgCreateToolOrCmdBar::accept () 
 {
-  return e->provides( "FCActionDrag" );
-}
-
-bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
-{
-  if (pAction)
-  {
-    a = pAction;
-    return true;
-  }
-
-  return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-# if QT_VER <= 230
-  FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
-                         bool newLine, const char * name )
-  : QToolBar(label, parent, pos, newLine, name), FCWidgetPrefs(name)
-  {
-    // allow drag and drop
-    setAcceptDrops(true);
-    bSaveColor = false;
-
-    init();
-  }
-# endif
-
-FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine, 
-                       const char * name, WFlags f )
-: QToolBar(label, parent, w, newLine, name, f), FCWidgetPrefs(name)
-{
-  // allow drag and drop
-  setAcceptDrops(true);
-  bSaveColor = false;
-
-  init();
-}
-
-FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
-: QToolBar(parent, name), FCWidgetPrefs(name)
-{
-  // allow drag and drop
-  setAcceptDrops(true);
-  bSaveColor = false;
-
-  init();
-}
-
-FCToolBar::~FCToolBar()
-{
-  savePreferences();
-}
-
-void FCToolBar::init()
-{
-  setPrefName(ApplicationWindow::Instance->GetActiveWorkbech());
-
-  hPrefGrp->Detach(this);
-  hPrefGrp = hPrefGrp->GetGroup(name());
-  hPrefGrp->Attach(this);
-}
-
-void FCToolBar::loadUserDefButtons()
-{
-  widgetName = className();
-  restorePreferences();
-}
-
-void FCToolBar::dropEvent ( QDropEvent * e)
-{
-  // create a new button
-  QAction* pAction = FCActionDrag::pAction;
-  if ( pAction ) 
-  {
-    pAction->addTo(this);
-    alDroppedActions.push_back(pAction->name());
-    FCActionDrag::pAction = NULL;
-  }
-}
-
-void FCToolBar::dragEnterEvent ( QDragEnterEvent * e)
-{
-  e->accept(FCActionDrag::canDecode(e));
-}
-
-void FCToolBar::dragLeaveEvent ( QDragLeaveEvent * )
-{
-}
-
-void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
-{
-}
-
-void FCToolBar::restorePreferences()
-{
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  std::vector<std::string> items = hPrefGrp->GetGroup(widgetName.c_str())->GetASCIIs(getPrefName().latin1());
-  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
-  {
-    if (sCommands.find(*it) != sCommands.end())
-    {
-      sCommands[*it]->addTo(this);
-      alDroppedActions.push_back(*it);
-    }
-    else
-      GetConsole().Warning("Cannot find action '%s'\n", it->c_str());
-  }
-
-  if (bSaveColor)
-  {
-    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
-    int r = hColorGrp->GetInt("red", 212);
-    int g = hColorGrp->GetInt("green", 208);
-    int b = hColorGrp->GetInt("blue", 200);
-    QColor color(r, g, b);
-    if (color.isValid())
-    {
-      setPalette(QPalette(color, color));
-      setBackgroundMode(PaletteBackground);
-    }
-  }
-}
-
-void FCToolBar::savePreferences()
-{
-  int i=0;
-  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
-  {
-    char szBuf[200];
-    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPrefGrp->GetGroup(widgetName.c_str())->SetASCII(szBuf, it->c_str());
-  }
-
-  if (bSaveColor)
-  {
-    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
-    hColorGrp->SetInt("red", backgroundColor().red());
-    hColorGrp->SetInt("green", backgroundColor().green());
-    hColorGrp->SetInt("blue", backgroundColor().blue());
-  }
+  QString txt = LineEditName->text();
+  if (CheckCreateToolBar->isChecked())
+    ApplicationWindow::Instance->GetToolBar(txt.latin1());
+  if (CheckCreateCmdBar->isChecked())
+    ApplicationWindow::Instance->GetCommandBar(txt.latin1());
+  QDialog::accept();
 }
 
 #include "moc_Widgets.cpp"

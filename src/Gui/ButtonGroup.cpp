@@ -254,7 +254,7 @@ void FCButtonGroup::showText()
 /////////////////////////////////////////////////////////////////////////////////////
 
 FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f)
+: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar")
 {
 #if QT_VER >= 300
 	setFrameStyle( QFrame::NoFrame );
@@ -273,6 +273,12 @@ FCToolboxBar::~FCToolboxBar ()
 {
   delete m_Popup;
   delete m_Dummy;
+}
+
+void FCToolboxBar::clearAll()
+{
+  FCToolBar::clearAll();
+  m_Dummy = NULL;
 }
 
 void FCToolboxBar::addedButton(QString text)
@@ -294,7 +300,10 @@ void FCToolboxBar::addedButton(QString text)
   m_Dummy = new QWidget(this);
   setStretchableWidget( m_Dummy );
 #else
-  m_Dummy->reparent(this, QPoint(0,0));
+  if (!m_Dummy)
+    m_Dummy = new QWidget(this);
+  else
+    m_Dummy->reparent(this, QPoint(0,0));
 #endif
 }
 
@@ -344,7 +353,7 @@ void FCToolboxBar::resetBackgroundColor()
 /////////////////////////////////////////////////////////////////////////////////////
 
 FCOutlookBar::FCOutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f)
+: FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar" )
 {
 #if QT_VER >= 300
 	setFrameStyle( QFrame::NoFrame );
@@ -362,6 +371,12 @@ FCOutlookBar::~FCOutlookBar ()
 {
   delete m_Popup;
   delete m_Dummy;
+}
+
+void FCOutlookBar::clearAll()
+{
+  FCToolBar::clearAll();
+  m_Dummy = NULL;
 }
 
 void FCOutlookBar::addedButton(QString text)
@@ -385,7 +400,10 @@ void FCOutlookBar::addedButton(QString text)
   m_Dummy = new QWidget(this);
   setStretchableWidget( m_Dummy );
 #else
-  m_Dummy->reparent(this, QPoint(0,0));
+  if (!m_Dummy)
+    m_Dummy = new QWidget(this);
+  else
+    m_Dummy->reparent(this, QPoint(0,0));
 #endif
 }
 

@@ -349,12 +349,15 @@ void FCCommandManager::AddCommand(FCCommand* pCom)
 
 void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
 {
-	FCCommand* pCom = _sCommands[Name];
-
-	if(!pCom) 
+  if (_sCommands.find(Name) == _sCommands.end())
+  {
 		GetConsole().Error("FCCommandManager::AddTo() try to add a unknown command (%s) to a widget!\n",Name);
-	else
-		pCom->addTo(pcWidget);
+  }
+  else
+  {
+	  FCCommand* pCom = _sCommands[Name];
+	  pCom->addTo(pcWidget);
+  }
 }
 
 std::vector <FCCommand*> FCCommandManager::GetModuleCommands(const char *sModName)

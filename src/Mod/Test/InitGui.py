@@ -45,6 +45,7 @@ class TestWorkbench ( Workbench ):
 			Gui.ToolbarAddTo("TestTools","Test_TestAll")
 			Gui.ToolbarAddTo("TestTools","Test_TestDoc")
 			Gui.ToolbarAddTo("TestTools","Test_TestBase")
+			Gui.ToolbarLoadSettings("TestTools")
 
 			Log ('   Set up Test commandbar...\n')
 			Gui.CommandbarAddTo("TestTools","Test_Test1")
@@ -52,6 +53,7 @@ class TestWorkbench ( Workbench ):
  			Gui.CommandbarAddTo("TestTools","Test_TestAll")
 			Gui.CommandbarAddTo("TestTools","Test_TestDoc")
 			Gui.CommandbarAddTo("TestTools","Test_TestBase")
+			Gui.CommandbarLoadSettings("TestTools")
                             
 			Log ('   Set up Test menues...\n')
 

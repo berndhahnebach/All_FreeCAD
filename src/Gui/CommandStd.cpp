@@ -123,7 +123,7 @@ FCCmdNew::FCCmdNew()
 
 void FCCmdNew::Activated(int iMsg)
 {
-  DlgDocTemplatesImp cDlg(GetAppWnd(),"Dialog",true);
+  DlgDocTemplatesImp cDlg(GetAppWnd(),"Template Dialog",true);
   cDlg.exec();
 
 }
@@ -852,6 +852,31 @@ void FCCmdCommandLine::Activated(int iMsg)
 }
 
 
+//===========================================================================
+// Std_CreateToolOrCmdBar
+//===========================================================================
+DEF_STD_CMD(FCCmdCreateToolOrCmdBar);
+
+FCCmdCreateToolOrCmdBar::FCCmdCreateToolOrCmdBar()
+	:FCCppCommand("Std_CreateToolOrCmdBar")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Create tool-/cmdbar";
+	sToolTipText	= "Create toolbar and/or command bar";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "CommandLine";
+	iAccel			= 0;
+}
+
+
+void FCCmdCreateToolOrCmdBar::Activated(int iMsg)
+{
+  FCDlgCreateToolOrCmdBar dlg(GetAppWnd(),"CreateToolbarDialog",true);
+  dlg.exec();
+}
+
 
 void CreateStdCommands(void)
 {
@@ -886,7 +911,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
 	rcCmdMgr.AddCommand(new FCCmdDlgSettings());
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
-
+	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
 }
 
 

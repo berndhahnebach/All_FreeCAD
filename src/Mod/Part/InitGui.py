@@ -47,12 +47,14 @@ class PartWorkbench ( Workbench ):
 			Gui.ToolbarAddTo("PartTools","Part_Test2")
 			Gui.ToolbarAddTo("PartTools","Part_Box")
 			Gui.ToolbarAddTo("PartTools","Part_Cut")
+			Gui.ToolbarLoadSettings("PartTools")
 
 			Log ('   Set up part commandbar...\n')
 			Gui.CommandbarAddTo("PartTools","Part_Test1")
 			Gui.CommandbarAddTo("PartTools","Part_Test2")
 			Gui.CommandbarAddTo("PartTools","Part_Box")
 			Gui.CommandbarAddTo("PartTools","Part_Cut")
+			Gui.CommandbarLoadSettings("PartTools")
 
 			Log ('   Set up part menues...\n')
 

@@ -191,3 +191,9 @@ Version: V0.1B46 Date: Wed Mar 26 18:02:11 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B47 Date: Fri Mar 28 18:24:36 2003 +++++++++++++++++++++++++++++++
 + Import App Module added
 + removing Part.py and PartGui.py
+
+Version: V0.1B48 Date: Sun Mar 30 15:06:23 2003 +++++++++++++++++++++++++++++++
++ Big patch from Werner about:
+  - feeding toolbars and Commandbar and menus from the parameterts
+  - customizing works with positions in command bar and toolbar
+  - customizing by draging from menu into toolbar and commandbar

@@ -37,31 +37,36 @@
 #endif
 
 #include "PrefWidgets.h"
+#include "Application.h"
 #include "WidgetFactory.h"
+#include "ButtonGroup.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
 #include <cmath>
 #include <qvalidator.h>
+#include <qobjcoll.h>
 
 
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bAttach) : pHandler(NULL)
 {
-  m_sPrefGrp = "Widget Preferences";
   m_sPrefName = "_____default_____";
 
   if (name)
     m_sPrefName = name;
 
-  setUseUserParameter();
-  if (hPrefGrp.IsValid() && bAttach)
+  if (bAttach)
   {
-    hPrefGrp->Attach(this);
-  }
+    setUserParameter();
+    if (hPrefGrp.IsValid())
+    {
+      hPrefGrp->Attach(this);
+    }
 
-  // install a handler for automation stuff
-  pHandler = new FCWidgetPrefsHandler(this);
+    // install a handler for automation stuff
+    pHandler = new FCWidgetPrefsHandler(this);
+  }
 }
 
 FCWidgetPrefs::~FCWidgetPrefs()
@@ -78,10 +83,7 @@ FCWidgetPrefs::~FCWidgetPrefs()
 
 void FCWidgetPrefs::setPrefName(QString pref)
 {
-  hPrefGrp->Detach(this);
   m_sPrefName = pref; 
-  setUseUserParameter();
-  hPrefGrp->Attach(this);
 }
 
 QString FCWidgetPrefs::getPrefName()
@@ -89,15 +91,11 @@ QString FCWidgetPrefs::getPrefName()
   return m_sPrefName; 
 }
 
-void FCWidgetPrefs::setUseSystemParameter()
+void FCWidgetPrefs::setUserParameter()
 {
-  hPrefGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup(m_sPrefGrp.latin1());
-  hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
-}
-
-void FCWidgetPrefs::setUseUserParameter()
-{
-  hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup(m_sPrefGrp.latin1());
+  if (m_sPrefName == "_____default_____")
+    printf("%s is not a valid name\n", m_sPrefName.latin1());
+  hPrefGrp = getRootParamGrp();
   hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
 }
 
@@ -120,6 +118,11 @@ FCParameterGrp::handle FCWidgetPrefs::getParamGrp()
 void FCWidgetPrefs::OnChange(FCSubject &rCaller)
 {
   restorePreferences();
+}
+
+FCParameterGrp::handle FCWidgetPrefs::getRootParamGrp()
+{
+  return GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup("Widget Preferences");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -380,6 +383,631 @@ void FCRadioButton::restorePreferences()
 void FCRadioButton::savePreferences()
 {
   hPrefGrp->SetBool(getPrefName().latin1(), isChecked());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+QAction* FCActionDrag::pAction = NULL;
+
+FCActionDrag::FCActionDrag ( QAction* action, QWidget * dragSource , const char * name  )
+: QStoredDrag("FCActionDrag", dragSource, name)
+{
+  // store the QAction object
+  pAction = action;
+}
+
+FCActionDrag::~FCActionDrag ()
+{
+}
+
+bool FCActionDrag::canDecode ( const QMimeSource * e )
+{
+  return e->provides( "FCActionDrag" );
+}
+
+bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
+{
+  if (pAction)
+  {
+    a = pAction;
+    return true;
+  }
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCCustomWidget::FCCustomWidget(const char* grp, const char * name)
+: FCWidgetPrefs(name, false)
+{
+  init(grp, name);
+}
+
+FCCustomWidget::~FCCustomWidget()
+{
+}
+
+void FCCustomWidget::restorePreferences()
+{
+  if (hPrefGrp->HasGroup("Items"))
+  {
+    if (!hPrefGrp->GetGroup("Items")->IsEmpty())
+    {
+      _clItems = hPrefGrp->GetGroup("Items")->GetASCIIs();
+    }
+  }
+}
+
+void FCCustomWidget::savePreferences()
+{
+  int i=0;
+  FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup("Items");
+  hPGrp->Clear();
+  for (std::vector<std::string>::iterator it = _clItems.begin(); it != _clItems.end(); ++it, i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    hPGrp->SetASCII(szBuf, it->c_str());
+  }
+}
+
+void FCCustomWidget::init(const char* grp, const char* name)
+{
+  setPrefName(ApplicationWindow::Instance->GetActiveWorkbench());
+  setUserParameter();
+  hPrefGrp = hPrefGrp->GetGroup(grp);
+  hPrefGrp = hPrefGrp->GetGroup(name);
+  hPrefGrp->Attach(this);
+}
+
+bool FCCustomWidget::hasCustomItems()
+{
+  return _clItems.size() > 0;
+}
+
+std::vector<std::string> FCCustomWidget::getItems()
+{
+  return _clItems;
+}
+
+void FCCustomWidget::setItems(const std::vector<std::string>& items)
+{
+  _clItems = items;
+}
+
+void FCCustomWidget::loadXML()
+{
+  restorePreferences();
+}
+
+void FCCustomWidget::saveXML()
+{
+  savePreferences();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+# if QT_VER <= 230
+  FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
+                         bool newLine, const char * name, const char* type )
+  : QToolBar(label, parent, pos, newLine, name), FCCustomWidget(type, name)
+  {
+    // allow drag and drop
+    setAcceptDrops(true);
+    bSaveColor = false;
+  }
+# endif
+
+FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine, 
+                       const char * name, WFlags f, const char* type )
+: QToolBar(label, parent, w, newLine, name, f), FCCustomWidget(type, name)
+{
+  // allow drag and drop
+  setAcceptDrops(true);
+  bSaveColor = false;
+}
+
+FCToolBar::FCToolBar ( QMainWindow * parent, const char * name, const char* type )
+: QToolBar(parent, name), FCCustomWidget(type, name)
+{
+  // allow drag and drop
+  setAcceptDrops(true);
+  bSaveColor = false;
+}
+
+FCToolBar::~FCToolBar()
+{
+  savePreferences();
+}
+
+void FCToolBar::clearAll()
+{
+  clear();
+}
+
+void FCToolBar::dropEvent ( QDropEvent * e)
+{
+  // store all widgets in STL vector 
+  // because of the better handling ;-)
+  std::vector<QWidget*> childs;
+  if ( children() )
+  {
+    QObjectListIt it( *children() );
+    QObject * obj;
+    while( (obj=it.current()) != 0 ) 
+    {
+  	  ++it;
+	    if ( obj->isWidgetType() )
+      {
+        childs.push_back((QWidget*)obj);
+      }
+    }
+  }
+
+  // find right position for the new button
+  QPoint pt = e->pos();
+  int pos=0;
+  for (std::vector<QWidget*>::iterator it = childs.begin(); it != childs.end(); ++it)
+  {
+    if (orientation () == Qt::Horizontal)
+    {
+      pos += (*it)->width();
+      if (pos >= pt.x())
+        break;
+    }
+    else
+    {
+      pos += (*it)->height();
+      if (pos >= pt.y())
+        break;
+    }
+  }
+
+  // create a new button
+  QAction* pAction = FCActionDrag::pAction;
+  if ( pAction ) 
+  {
+    pAction->addTo(this);
+    _clItems.push_back(pAction->name());
+    FCActionDrag::pAction = NULL;
+  }
+
+  // insert the rest of the "old" children after the new button
+  for (; it != childs.end(); ++it)
+  {
+    (*it)->reparent(this, QPoint(0,0));
+  }
+}
+
+void FCToolBar::dragEnterEvent ( QDragEnterEvent * e)
+{
+  e->accept(FCActionDrag::canDecode(e));
+}
+
+void FCToolBar::dragLeaveEvent ( QDragLeaveEvent * )
+{
+}
+
+void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
+{
+}
+
+void FCToolBar::restorePreferences()
+{
+  FCCustomWidget::restorePreferences();
+
+  if (bSaveColor)
+  {
+    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
+    int r = hColorGrp->GetInt("red", 212);
+    int g = hColorGrp->GetInt("green", 208);
+    int b = hColorGrp->GetInt("blue", 200);
+    QColor color(r, g, b);
+    if (color.isValid())
+    {
+      setPalette(QPalette(color, color));
+      setBackgroundMode(PaletteBackground);
+    }
+  }
+}
+
+void FCToolBar::savePreferences()
+{
+  FCCustomWidget::savePreferences();
+
+  if (bSaveColor)
+  {
+    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
+    hColorGrp->SetInt("red", backgroundColor().red());
+    hColorGrp->SetInt("green", backgroundColor().green());
+    hColorGrp->SetInt("blue", backgroundColor().blue());
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCPopupMenu::FCPopupMenu(QWidget * parent, const char * name, const char* menu )
+: QPopupMenu(parent, name), FCCustomWidget("Menus", name)
+{
+  // allow drag and drop
+//  setAcceptDrops(true);
+  if (menu)
+    this->parent = menu;
+}
+
+FCPopupMenu::~FCPopupMenu()
+{
+}
+
+void FCPopupMenu::dropEvent ( QDropEvent * e)
+{
+  // create a new button
+  QAction* pAction = FCActionDrag::pAction;
+  if ( pAction ) 
+  {
+    pAction->addTo(this);
+    _clItems.push_back(pAction->name());
+    FCActionDrag::pAction = NULL;
+  }
+}
+
+void FCPopupMenu::dragEnterEvent ( QDragEnterEvent * e)
+{
+  e->accept(/*FCActionDrag::canDecode(e)*/false);
+}
+
+void FCPopupMenu::dragLeaveEvent ( QDragLeaveEvent * )
+{
+}
+
+void FCPopupMenu::dragMoveEvent ( QDragMoveEvent * )
+{
+}
+
+void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
+{
+  if ( e->state() == LeftButton )
+  {
+    // try to find out the correct menu item
+    // in most cases this should work correctly
+    //
+    //
+    int id = idAt(e->pos());
+    if (id == -1) 
+      return; // out of range
+    
+    // get pixmap and text of this item
+    QPixmap* pix = pixmap(id);
+    QString txt = text(id);
+
+    // find the corresponding command to this item
+    const std::map<std::string, FCCommand*>& rclCmds = ApplicationWindow::Instance->GetCommandManager().GetCommands();
+
+    // search item with same text first
+    for (std::map<std::string, FCCommand*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
+    {
+      QAction* a = it->second->GetAction();
+      if (a != NULL)
+      {
+        if ( a->menuText() == txt )
+        {
+          FCActionDrag *ad = new FCActionDrag( a, this );
+          if (pix)
+            ad->setPixmap(QPixmap(*pix),QPoint(8,8));
+          ad->dragCopy();
+          return;
+        }
+      }
+    }
+
+    // if nothing found search item with similar text
+    for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
+    {
+      QAction* a = it->second->GetAction();
+      if (a != NULL)
+      {
+        // check if menu item starts with txt
+        // both strings need not to be equal (because of accelarators)
+        if ( txt.startsWith(a->menuText()) )
+        {
+          FCActionDrag *ad = new FCActionDrag( a, this );
+          if (pix)
+            ad->setPixmap(QPixmap(*pix),QPoint(8,8));
+          ad->dragCopy();
+          return;
+        }
+      }
+    }
+
+    // error
+    GetConsole().Warning("No corresponding Action object found\n");
+  }
+  else
+    QPopupMenu::mouseMoveEvent(e);
+}
+
+void FCPopupMenu::restorePreferences()
+{
+  FCCustomWidget::restorePreferences();
+}
+
+void FCPopupMenu::savePreferences()
+{
+  FCCustomWidget::savePreferences();
+  if (! parent.isEmpty())
+    hPrefGrp->SetASCII("Parent Menu", parent.latin1());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, FCCmdBar* pCmdBar)
+  :_clCmdMgr(rclMgr), _pclCmdBar(pCmdBar)
+{
+}
+
+FCCustomWidgetManager::~FCCustomWidgetManager()
+{
+  for (std::map <std::string,FCPopupMenu*>::iterator it1 = _clPopupMenus.begin(); it1 != _clPopupMenus.end(); ++it1)
+    it1->second->saveXML();
+  for (std::map <std::string,FCToolBar*>::iterator it2 = _clToolbars.begin(); it2 != _clToolbars.end(); ++it2)
+    it2->second->saveXML();
+  for (std::map <std::string,FCToolBar*>::iterator it3 = _clCmdbars.begin(); it3 != _clCmdbars.end(); ++it3)
+    it3->second->saveXML();
+}
+
+bool FCCustomWidgetManager::init(const char* workbench)
+{
+  bool bFound = false;
+  FCParameterGrp::handle hGrp = FCWidgetPrefs::getRootParamGrp();
+  hGrp = hGrp->GetGroup(workbench);
+
+  std::vector<FCParameterGrp::handle> hSubGrps;
+  std::vector<FCParameterGrp::handle>::iterator it;
+  FCParameterGrp::handle hCmdGrp  = hGrp->GetGroup("Cmdbar");
+  FCParameterGrp::handle hToolGrp = hGrp->GetGroup("Toolbars");
+  FCParameterGrp::handle hMenuGrp = hGrp->GetGroup("Menus");
+
+  hSubGrps = hCmdGrp->GetGroups();
+  bFound |= (hSubGrps.size() > 0);
+  for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
+  {
+    addCmdBar((*it)->GetGroupName());
+  }
+
+  hSubGrps = hToolGrp->GetGroups();
+  bFound |= (hSubGrps.size() > 0);
+  for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
+  {
+    addToolBar((*it)->GetGroupName());
+  }
+
+  hSubGrps = hMenuGrp->GetGroups();
+  bFound |= (hSubGrps.size() > 0);
+  for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
+  {
+    if ((*it)->GetASCII("Parent Menu", "nix") != "nix")
+      addPopupMenu((*it)->GetGroupName(), (*it)->GetASCII("Parent Menu").c_str());
+    else
+      addPopupMenu((*it)->GetGroupName());
+  }
+
+  return bFound;
+}
+
+void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vector<std::string>& defIt, const char* parent)
+{
+  FCPopupMenu* popup = getPopupMenu(type.c_str(), parent);
+  std::vector<std::string> items;
+
+  popup->loadXML();
+  if (popup->hasCustomItems())
+  {
+    items = popup->getItems();
+    popup->clear();
+  }
+  else
+  {
+    items = defIt;
+    popup->setItems(items);
+  }
+
+  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    if (*it == "Separator")
+      popup->insertSeparator();
+    else
+      _clCmdMgr.AddTo(it->c_str(), popup);
+  }
+}
+
+void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vector<std::string>& defIt)
+{
+  FCToolBar* toolbar = getToolBar(type.c_str());
+  std::vector<std::string> items;
+
+  toolbar->loadXML();
+  if (toolbar->hasCustomItems())
+  {
+    items = toolbar->getItems();
+    toolbar->clear();
+  }
+  else
+  {
+    items = defIt;
+    toolbar->setItems(items);
+  }
+
+  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    if (*it == "Separator")
+      toolbar->addSeparator();
+    else
+      _clCmdMgr.AddTo(it->c_str(), toolbar);
+  }
+}
+
+void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector<std::string>& defIt)
+{
+  FCToolBar* toolbar = getCmdBar(type.c_str());
+  std::vector<std::string> items;
+
+  toolbar->loadXML();
+  if (toolbar->hasCustomItems())
+  {
+    items = toolbar->getItems();
+//    toolbar->clearAll();
+  }
+  else
+  {
+    items = defIt;
+    toolbar->setItems(items);
+  }
+
+  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    if (*it == "Separator")
+      toolbar->addSeparator();
+    else
+      _clCmdMgr.AddTo(it->c_str(), toolbar);
+  }
+}
+
+void FCCustomWidgetManager::addItem(const std::string& item)
+{
+  _clDefaultItems.push_back(item);
+}
+
+void FCCustomWidgetManager::addToolBar(const std::string& type)
+{
+  addToolBar(type, _clDefaultItems);
+  _clDefaultItems.clear();
+}
+
+void FCCustomWidgetManager::addCmdBar(const std::string& type)
+{
+  addCmdBar(type, _clDefaultItems);
+  _clDefaultItems.clear();
+}
+
+void FCCustomWidgetManager::addPopupMenu(const std::string& type, const char* parent)
+{
+  addPopupMenu(type, _clDefaultItems, parent);
+  _clDefaultItems.clear();
+}
+
+FCToolBar* FCCustomWidgetManager::getToolBar(const char* name)
+{
+	std::map <std::string,FCToolBar*>::iterator It = _clToolbars.find(name);
+	if( It!=_clToolbars.end() )
+		return It->second;
+	else
+	{
+    FCToolBar *pcToolBar = new FCToolBar( ApplicationWindow::Instance, name );
+		_clToolbars[name] = pcToolBar;
+		pcToolBar->show();
+		return pcToolBar;
+	}
+}
+
+std::vector<FCToolBar*> FCCustomWidgetManager::getToolBars()
+{
+  std::vector<FCToolBar*> aclToolbars;
+	for (std::map <std::string,FCToolBar*>::iterator It = _clToolbars.begin(); It != _clToolbars.end(); ++It)
+  {
+    aclToolbars.push_back(It->second);
+  }
+
+  return aclToolbars;
+}
+
+void FCCustomWidgetManager::delToolBar(const char* name)
+{
+	std::map <std::string,FCToolBar*>::iterator It = _clToolbars.find(name);
+	if( It!=_clToolbars.end() )
+	{
+    It->second->saveXML();
+		delete It->second;
+		_clToolbars.erase(It);
+	}
+}
+
+FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
+{
+	if (_pclCmdBar->HasView(name))
+		return _pclCmdBar->GetView(name);
+	else
+  {
+  	FCToolBar* p = _pclCmdBar->CreateView(name);
+    _pclCmdBar->setCurPage(0);
+		return p;
+  }
+}
+
+std::vector<FCToolBar*> FCCustomWidgetManager::getCmdBars()
+{
+  std::vector<FCToolBar*> aclCmdbars;
+	for (std::map <std::string,FCToolBar*>::iterator It = _clCmdbars.begin(); It != _clCmdbars.end(); ++It)
+  {
+    aclCmdbars.push_back(It->second);
+  }
+
+  return aclCmdbars;
+}
+
+void FCCustomWidgetManager::delCmdBar(const char* name)
+{
+  std::map <std::string,FCToolBar*>::iterator it = _clCmdbars.find(name);
+  if (it != _clCmdbars.end())
+  {
+    it->second->saveXML();
+    _clCmdbars.erase(it);
+  }
+	_pclCmdBar->DeleteView(name);
+}
+
+FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* parent)
+{
+	std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.find(name);
+	if( It!=_clPopupMenus.end() )
+		return It->second;
+	else if (parent == 0)
+	{
+    FCPopupMenu *pcPopup = new FCPopupMenu( ApplicationWindow::Instance, name );
+		_clPopupMenus[name] = pcPopup;
+    ApplicationWindow::Instance->menuBar()->insertItem( name, pcPopup );
+		return pcPopup;
+	}
+  else
+  {
+    FCPopupMenu *pParent = getPopupMenu(parent);
+    FCPopupMenu *pcPopup = new FCPopupMenu( pParent, name, parent );
+		_clPopupMenus[name] = pcPopup;
+    pParent->insertItem(name, pcPopup);
+		return pcPopup;
+  }
+}
+
+std::vector<FCPopupMenu*> FCCustomWidgetManager::getPopupMenus()
+{
+  std::vector<FCPopupMenu*> aclMenus;
+	for (std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.begin(); It != _clPopupMenus.end(); ++It)
+  {
+    aclMenus.push_back(It->second);
+  }
+
+  return aclMenus;
+}
+
+void FCCustomWidgetManager::delPopupMenu(const char* name)
+{
+	std::map <std::string,FCPopupMenu*>::iterator It = _clPopupMenus.find(name);
+	if( It!=_clPopupMenus.end() )
+	{
+    It->second->saveXML();
+		delete It->second;
+		_clPopupMenus.erase(It);
+	}
 }
 
 #include "moc_PrefWidgets.cpp"

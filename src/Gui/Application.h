@@ -47,6 +47,7 @@
 #include "../App/Application.h"
 #include "Command.h"
 #include "Widgets.h"
+#include "PrefWidgets.h"
 #include <list>
 #include <vector>
 #include <map>
@@ -163,7 +164,7 @@ public:
 	/// update the combo box when there are changes in the workbenches
 	void UpdateWorkbenchEntrys(void);
 	/// returns the name of the active workbench
-	QString GetActiveWorkbech(void){return _cActiveWorkbenchName;}
+	QString GetActiveWorkbench(void){return _cActiveWorkbenchName;}
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -233,12 +234,10 @@ private:
  	std::list<FCGuiDocument*>         lpcDocuments;
 	/// list of windows
 	std::map <std::string,FCDockWindow*> mpcDocWindows;
-	/// map of Toolbars
-	std::map <std::string,QToolBar*>     mpcToolBars;
 #	pragma warning( default : 4251 )
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;
-	QPopupMenu*		 _pcPopup;
+	FCCustomWidgetManager*		 _pcWidgetMgr;
 	FCUndoRedoDlg*	 _pclUndoRedoWidget;
 	QComboBox *		 _pcWorkbenchCombo;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;

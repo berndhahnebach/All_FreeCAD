@@ -106,6 +106,7 @@ class GuiExport FCToolboxBar : public FCToolBar
     FCToolboxBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
     virtual ~FCToolboxBar ();
 
+    virtual void clearAll();
     /// set dummy widget to the end
     void addedButton(QString);
 
@@ -133,6 +134,7 @@ class GuiExport FCOutlookBar : public FCToolBar
     FCOutlookBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
     virtual ~FCOutlookBar ();
 
+    virtual void clearAll();
     /// set dummy widget to the end
     void addedButton(QString);
 
