@@ -21,6 +21,7 @@ FreeCADpov.h: FreeCADpov
 
 # the library search path.
 libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracing_la_CPPFLAGS = -DAppPartExport= -DFeatureRayExportPov=
 
 libRaytracing_la_LIBADD   = \
 		-lFreeCADBase \

@@ -163,6 +163,7 @@ libPart_la_SOURCES = \
 
 # the library search path.
 libPart_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD = \
 		-lFreeCADBase \
@@ -182,24 +183,25 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libPart_la_DEPENDENCIES =
-am_libPart_la_OBJECTS = AppPart.lo AppPartPy.lo FeaturePartBox.lo \
-	FeaturePartCut.lo FeaturePartImportIges.lo \
-	FeaturePartImportStep.lo PartFeature.lo PartFeaturePy.lo \
-	PreCompiled.lo
+am_libPart_la_OBJECTS = libPart_la-AppPart.lo libPart_la-AppPartPy.lo \
+	libPart_la-FeaturePartBox.lo libPart_la-FeaturePartCut.lo \
+	libPart_la-FeaturePartImportIges.lo \
+	libPart_la-FeaturePartImportStep.lo libPart_la-PartFeature.lo \
+	libPart_la-PartFeaturePy.lo libPart_la-PreCompiled.lo
 libPart_la_OBJECTS = $(am_libPart_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppPart.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/AppPartPy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/FeaturePartBox.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/FeaturePartCut.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportIges.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/FeaturePartImportStep.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PartFeature.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PartFeaturePy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libPart_la-AppPart.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-AppPartPy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartBox.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartCut.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartImportIges.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartImportStep.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PartFeature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PartFeaturePy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PreCompiled.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -265,15 +267,15 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppPart.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppPartPy.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartBox.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartCut.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportIges.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeaturePartImportStep.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartFeature.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PartFeaturePy.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-AppPart.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-AppPartPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartBox.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartCut.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartImportIges.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartImportStep.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PartFeature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PartFeaturePy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PreCompiled.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -310,6 +312,303 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+libPart_la-AppPart.o: AppPart.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-AppPart.o -MD -MP -MF "$(DEPDIR)/libPart_la-AppPart.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-AppPart.o `test -f 'AppPart.cpp' || echo '$(srcdir)/'`AppPart.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-AppPart.Tpo" "$(DEPDIR)/libPart_la-AppPart.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-AppPart.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPart.cpp' object='libPart_la-AppPart.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-AppPart.Po' tmpdepfile='$(DEPDIR)/libPart_la-AppPart.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-AppPart.o `test -f 'AppPart.cpp' || echo '$(srcdir)/'`AppPart.cpp
+
+libPart_la-AppPart.obj: AppPart.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-AppPart.obj -MD -MP -MF "$(DEPDIR)/libPart_la-AppPart.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-AppPart.obj `if test -f 'AppPart.cpp'; then $(CYGPATH_W) 'AppPart.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPart.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-AppPart.Tpo" "$(DEPDIR)/libPart_la-AppPart.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-AppPart.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPart.cpp' object='libPart_la-AppPart.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-AppPart.Po' tmpdepfile='$(DEPDIR)/libPart_la-AppPart.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-AppPart.obj `if test -f 'AppPart.cpp'; then $(CYGPATH_W) 'AppPart.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPart.cpp'; fi`
+
+libPart_la-AppPart.lo: AppPart.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-AppPart.lo -MD -MP -MF "$(DEPDIR)/libPart_la-AppPart.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-AppPart.lo `test -f 'AppPart.cpp' || echo '$(srcdir)/'`AppPart.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-AppPart.Tpo" "$(DEPDIR)/libPart_la-AppPart.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-AppPart.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPart.cpp' object='libPart_la-AppPart.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-AppPart.Plo' tmpdepfile='$(DEPDIR)/libPart_la-AppPart.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-AppPart.lo `test -f 'AppPart.cpp' || echo '$(srcdir)/'`AppPart.cpp
+
+libPart_la-AppPartPy.o: AppPartPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-AppPartPy.o -MD -MP -MF "$(DEPDIR)/libPart_la-AppPartPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-AppPartPy.o `test -f 'AppPartPy.cpp' || echo '$(srcdir)/'`AppPartPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-AppPartPy.Tpo" "$(DEPDIR)/libPart_la-AppPartPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-AppPartPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPartPy.cpp' object='libPart_la-AppPartPy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-AppPartPy.Po' tmpdepfile='$(DEPDIR)/libPart_la-AppPartPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-AppPartPy.o `test -f 'AppPartPy.cpp' || echo '$(srcdir)/'`AppPartPy.cpp
+
+libPart_la-AppPartPy.obj: AppPartPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-AppPartPy.obj -MD -MP -MF "$(DEPDIR)/libPart_la-AppPartPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-AppPartPy.obj `if test -f 'AppPartPy.cpp'; then $(CYGPATH_W) 'AppPartPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPartPy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-AppPartPy.Tpo" "$(DEPDIR)/libPart_la-AppPartPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-AppPartPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPartPy.cpp' object='libPart_la-AppPartPy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-AppPartPy.Po' tmpdepfile='$(DEPDIR)/libPart_la-AppPartPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-AppPartPy.obj `if test -f 'AppPartPy.cpp'; then $(CYGPATH_W) 'AppPartPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPartPy.cpp'; fi`
+
+libPart_la-AppPartPy.lo: AppPartPy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-AppPartPy.lo -MD -MP -MF "$(DEPDIR)/libPart_la-AppPartPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-AppPartPy.lo `test -f 'AppPartPy.cpp' || echo '$(srcdir)/'`AppPartPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-AppPartPy.Tpo" "$(DEPDIR)/libPart_la-AppPartPy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-AppPartPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPartPy.cpp' object='libPart_la-AppPartPy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-AppPartPy.Plo' tmpdepfile='$(DEPDIR)/libPart_la-AppPartPy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-AppPartPy.lo `test -f 'AppPartPy.cpp' || echo '$(srcdir)/'`AppPartPy.cpp
+
+libPart_la-FeaturePartBox.o: FeaturePartBox.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartBox.o -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartBox.o `test -f 'FeaturePartBox.cpp' || echo '$(srcdir)/'`FeaturePartBox.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo" "$(DEPDIR)/libPart_la-FeaturePartBox.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartBox.cpp' object='libPart_la-FeaturePartBox.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartBox.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartBox.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartBox.o `test -f 'FeaturePartBox.cpp' || echo '$(srcdir)/'`FeaturePartBox.cpp
+
+libPart_la-FeaturePartBox.obj: FeaturePartBox.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartBox.obj -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartBox.obj `if test -f 'FeaturePartBox.cpp'; then $(CYGPATH_W) 'FeaturePartBox.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartBox.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo" "$(DEPDIR)/libPart_la-FeaturePartBox.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartBox.cpp' object='libPart_la-FeaturePartBox.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartBox.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartBox.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartBox.obj `if test -f 'FeaturePartBox.cpp'; then $(CYGPATH_W) 'FeaturePartBox.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartBox.cpp'; fi`
+
+libPart_la-FeaturePartBox.lo: FeaturePartBox.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartBox.lo -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartBox.lo `test -f 'FeaturePartBox.cpp' || echo '$(srcdir)/'`FeaturePartBox.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo" "$(DEPDIR)/libPart_la-FeaturePartBox.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartBox.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartBox.cpp' object='libPart_la-FeaturePartBox.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartBox.Plo' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartBox.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartBox.lo `test -f 'FeaturePartBox.cpp' || echo '$(srcdir)/'`FeaturePartBox.cpp
+
+libPart_la-FeaturePartCut.o: FeaturePartCut.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartCut.o -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartCut.o `test -f 'FeaturePartCut.cpp' || echo '$(srcdir)/'`FeaturePartCut.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo" "$(DEPDIR)/libPart_la-FeaturePartCut.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartCut.cpp' object='libPart_la-FeaturePartCut.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartCut.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartCut.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartCut.o `test -f 'FeaturePartCut.cpp' || echo '$(srcdir)/'`FeaturePartCut.cpp
+
+libPart_la-FeaturePartCut.obj: FeaturePartCut.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartCut.obj -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartCut.obj `if test -f 'FeaturePartCut.cpp'; then $(CYGPATH_W) 'FeaturePartCut.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartCut.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo" "$(DEPDIR)/libPart_la-FeaturePartCut.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartCut.cpp' object='libPart_la-FeaturePartCut.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartCut.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartCut.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartCut.obj `if test -f 'FeaturePartCut.cpp'; then $(CYGPATH_W) 'FeaturePartCut.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartCut.cpp'; fi`
+
+libPart_la-FeaturePartCut.lo: FeaturePartCut.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartCut.lo -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartCut.lo `test -f 'FeaturePartCut.cpp' || echo '$(srcdir)/'`FeaturePartCut.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo" "$(DEPDIR)/libPart_la-FeaturePartCut.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartCut.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartCut.cpp' object='libPart_la-FeaturePartCut.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartCut.Plo' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartCut.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartCut.lo `test -f 'FeaturePartCut.cpp' || echo '$(srcdir)/'`FeaturePartCut.cpp
+
+libPart_la-FeaturePartImportIges.o: FeaturePartImportIges.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportIges.o -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportIges.o `test -f 'FeaturePartImportIges.cpp' || echo '$(srcdir)/'`FeaturePartImportIges.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportIges.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportIges.cpp' object='libPart_la-FeaturePartImportIges.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportIges.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportIges.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportIges.o `test -f 'FeaturePartImportIges.cpp' || echo '$(srcdir)/'`FeaturePartImportIges.cpp
+
+libPart_la-FeaturePartImportIges.obj: FeaturePartImportIges.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportIges.obj -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportIges.obj `if test -f 'FeaturePartImportIges.cpp'; then $(CYGPATH_W) 'FeaturePartImportIges.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartImportIges.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportIges.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportIges.cpp' object='libPart_la-FeaturePartImportIges.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportIges.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportIges.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportIges.obj `if test -f 'FeaturePartImportIges.cpp'; then $(CYGPATH_W) 'FeaturePartImportIges.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartImportIges.cpp'; fi`
+
+libPart_la-FeaturePartImportIges.lo: FeaturePartImportIges.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportIges.lo -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportIges.lo `test -f 'FeaturePartImportIges.cpp' || echo '$(srcdir)/'`FeaturePartImportIges.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportIges.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportIges.cpp' object='libPart_la-FeaturePartImportIges.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportIges.Plo' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportIges.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportIges.lo `test -f 'FeaturePartImportIges.cpp' || echo '$(srcdir)/'`FeaturePartImportIges.cpp
+
+libPart_la-FeaturePartImportStep.o: FeaturePartImportStep.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportStep.o -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportStep.o `test -f 'FeaturePartImportStep.cpp' || echo '$(srcdir)/'`FeaturePartImportStep.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportStep.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportStep.cpp' object='libPart_la-FeaturePartImportStep.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportStep.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportStep.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportStep.o `test -f 'FeaturePartImportStep.cpp' || echo '$(srcdir)/'`FeaturePartImportStep.cpp
+
+libPart_la-FeaturePartImportStep.obj: FeaturePartImportStep.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportStep.obj -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportStep.obj `if test -f 'FeaturePartImportStep.cpp'; then $(CYGPATH_W) 'FeaturePartImportStep.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartImportStep.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportStep.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportStep.cpp' object='libPart_la-FeaturePartImportStep.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportStep.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportStep.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportStep.obj `if test -f 'FeaturePartImportStep.cpp'; then $(CYGPATH_W) 'FeaturePartImportStep.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartImportStep.cpp'; fi`
+
+libPart_la-FeaturePartImportStep.lo: FeaturePartImportStep.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportStep.lo -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportStep.lo `test -f 'FeaturePartImportStep.cpp' || echo '$(srcdir)/'`FeaturePartImportStep.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportStep.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportStep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportStep.cpp' object='libPart_la-FeaturePartImportStep.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportStep.Plo' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportStep.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportStep.lo `test -f 'FeaturePartImportStep.cpp' || echo '$(srcdir)/'`FeaturePartImportStep.cpp
+
+libPart_la-PartFeature.o: PartFeature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PartFeature.o -MD -MP -MF "$(DEPDIR)/libPart_la-PartFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PartFeature.o `test -f 'PartFeature.cpp' || echo '$(srcdir)/'`PartFeature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PartFeature.Tpo" "$(DEPDIR)/libPart_la-PartFeature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PartFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PartFeature.cpp' object='libPart_la-PartFeature.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PartFeature.Po' tmpdepfile='$(DEPDIR)/libPart_la-PartFeature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PartFeature.o `test -f 'PartFeature.cpp' || echo '$(srcdir)/'`PartFeature.cpp
+
+libPart_la-PartFeature.obj: PartFeature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PartFeature.obj -MD -MP -MF "$(DEPDIR)/libPart_la-PartFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PartFeature.obj `if test -f 'PartFeature.cpp'; then $(CYGPATH_W) 'PartFeature.cpp'; else $(CYGPATH_W) '$(srcdir)/PartFeature.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PartFeature.Tpo" "$(DEPDIR)/libPart_la-PartFeature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PartFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PartFeature.cpp' object='libPart_la-PartFeature.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PartFeature.Po' tmpdepfile='$(DEPDIR)/libPart_la-PartFeature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PartFeature.obj `if test -f 'PartFeature.cpp'; then $(CYGPATH_W) 'PartFeature.cpp'; else $(CYGPATH_W) '$(srcdir)/PartFeature.cpp'; fi`
+
+libPart_la-PartFeature.lo: PartFeature.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PartFeature.lo -MD -MP -MF "$(DEPDIR)/libPart_la-PartFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PartFeature.lo `test -f 'PartFeature.cpp' || echo '$(srcdir)/'`PartFeature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PartFeature.Tpo" "$(DEPDIR)/libPart_la-PartFeature.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PartFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PartFeature.cpp' object='libPart_la-PartFeature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PartFeature.Plo' tmpdepfile='$(DEPDIR)/libPart_la-PartFeature.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PartFeature.lo `test -f 'PartFeature.cpp' || echo '$(srcdir)/'`PartFeature.cpp
+
+libPart_la-PartFeaturePy.o: PartFeaturePy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PartFeaturePy.o -MD -MP -MF "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PartFeaturePy.o `test -f 'PartFeaturePy.cpp' || echo '$(srcdir)/'`PartFeaturePy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo" "$(DEPDIR)/libPart_la-PartFeaturePy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PartFeaturePy.cpp' object='libPart_la-PartFeaturePy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PartFeaturePy.Po' tmpdepfile='$(DEPDIR)/libPart_la-PartFeaturePy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PartFeaturePy.o `test -f 'PartFeaturePy.cpp' || echo '$(srcdir)/'`PartFeaturePy.cpp
+
+libPart_la-PartFeaturePy.obj: PartFeaturePy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PartFeaturePy.obj -MD -MP -MF "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PartFeaturePy.obj `if test -f 'PartFeaturePy.cpp'; then $(CYGPATH_W) 'PartFeaturePy.cpp'; else $(CYGPATH_W) '$(srcdir)/PartFeaturePy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo" "$(DEPDIR)/libPart_la-PartFeaturePy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PartFeaturePy.cpp' object='libPart_la-PartFeaturePy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PartFeaturePy.Po' tmpdepfile='$(DEPDIR)/libPart_la-PartFeaturePy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PartFeaturePy.obj `if test -f 'PartFeaturePy.cpp'; then $(CYGPATH_W) 'PartFeaturePy.cpp'; else $(CYGPATH_W) '$(srcdir)/PartFeaturePy.cpp'; fi`
+
+libPart_la-PartFeaturePy.lo: PartFeaturePy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PartFeaturePy.lo -MD -MP -MF "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PartFeaturePy.lo `test -f 'PartFeaturePy.cpp' || echo '$(srcdir)/'`PartFeaturePy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo" "$(DEPDIR)/libPart_la-PartFeaturePy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PartFeaturePy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PartFeaturePy.cpp' object='libPart_la-PartFeaturePy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PartFeaturePy.Plo' tmpdepfile='$(DEPDIR)/libPart_la-PartFeaturePy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PartFeaturePy.lo `test -f 'PartFeaturePy.cpp' || echo '$(srcdir)/'`PartFeaturePy.cpp
+
+libPart_la-PreCompiled.o: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libPart_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PreCompiled.Tpo" "$(DEPDIR)/libPart_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libPart_la-PreCompiled.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libPart_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libPart_la-PreCompiled.obj: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PreCompiled.obj -MD -MP -MF "$(DEPDIR)/libPart_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PreCompiled.Tpo" "$(DEPDIR)/libPart_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libPart_la-PreCompiled.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libPart_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`
+
+libPart_la-PreCompiled.lo: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-PreCompiled.lo -MD -MP -MF "$(DEPDIR)/libPart_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-PreCompiled.Tpo" "$(DEPDIR)/libPart_la-PreCompiled.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libPart_la-PreCompiled.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/libPart_la-PreCompiled.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

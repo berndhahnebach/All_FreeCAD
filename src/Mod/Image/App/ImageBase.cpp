@@ -22,7 +22,7 @@
 #include "ImageBase.h"
 #include <Base/Exception.h>
 
-using namespace ImageApp;
+using namespace Image;
 
 // Constructor (constructs an empty image)
 ImageBase::ImageBase()

@@ -21,6 +21,7 @@ libPart_la_SOURCES=\
 
 # the library search path.
 libPart_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD   = \
 		-lFreeCADBase \

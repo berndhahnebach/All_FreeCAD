@@ -180,6 +180,7 @@ libPartGui_la_SOURCES = \
 
 # the library search path.
 libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartGui_la_CPPFLAGS = -DAppPartExport=
 
 libPartGui_la_LIBADD = \
 		-lFreeCADGui \
@@ -196,22 +197,25 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libPartGui_la_DEPENDENCIES =
-am_libPartGui_la_OBJECTS = AppPartGui.lo Command.lo DlgPartBoxImp.lo \
-	DlgPartImportIgesImp.lo DlgPartImportStepImp.lo \
-	DlgSettings3DViewPartImp.lo PreCompiled.lo ViewProvider.lo
+am_libPartGui_la_OBJECTS = libPartGui_la-AppPartGui.lo \
+	libPartGui_la-Command.lo libPartGui_la-DlgPartBoxImp.lo \
+	libPartGui_la-DlgPartImportIgesImp.lo \
+	libPartGui_la-DlgPartImportStepImp.lo \
+	libPartGui_la-DlgSettings3DViewPartImp.lo \
+	libPartGui_la-PreCompiled.lo libPartGui_la-ViewProvider.lo
 libPartGui_la_OBJECTS = $(am_libPartGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppPartGui.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Command.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgPartBoxImp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportIgesImp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportStepImp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgSettings3DViewPartImp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libPartGui_la-AppPartGui.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-Command.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-PreCompiled.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPartGui_la-ViewProvider.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -278,14 +282,14 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppPartGui.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartBoxImp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportIgesImp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportStepImp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettings3DViewPartImp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-AppPartGui.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-Command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPartGui_la-ViewProvider.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -322,6 +326,270 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+libPartGui_la-AppPartGui.o: AppPartGui.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-AppPartGui.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-AppPartGui.o `test -f 'AppPartGui.cpp' || echo '$(srcdir)/'`AppPartGui.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo" "$(DEPDIR)/libPartGui_la-AppPartGui.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPartGui.cpp' object='libPartGui_la-AppPartGui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-AppPartGui.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-AppPartGui.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-AppPartGui.o `test -f 'AppPartGui.cpp' || echo '$(srcdir)/'`AppPartGui.cpp
+
+libPartGui_la-AppPartGui.obj: AppPartGui.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-AppPartGui.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-AppPartGui.obj `if test -f 'AppPartGui.cpp'; then $(CYGPATH_W) 'AppPartGui.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPartGui.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo" "$(DEPDIR)/libPartGui_la-AppPartGui.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPartGui.cpp' object='libPartGui_la-AppPartGui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-AppPartGui.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-AppPartGui.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-AppPartGui.obj `if test -f 'AppPartGui.cpp'; then $(CYGPATH_W) 'AppPartGui.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPartGui.cpp'; fi`
+
+libPartGui_la-AppPartGui.lo: AppPartGui.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-AppPartGui.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-AppPartGui.lo `test -f 'AppPartGui.cpp' || echo '$(srcdir)/'`AppPartGui.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo" "$(DEPDIR)/libPartGui_la-AppPartGui.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-AppPartGui.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPartGui.cpp' object='libPartGui_la-AppPartGui.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-AppPartGui.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-AppPartGui.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-AppPartGui.lo `test -f 'AppPartGui.cpp' || echo '$(srcdir)/'`AppPartGui.cpp
+
+libPartGui_la-Command.o: Command.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-Command.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-Command.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-Command.o `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-Command.Tpo" "$(DEPDIR)/libPartGui_la-Command.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-Command.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Command.cpp' object='libPartGui_la-Command.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-Command.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-Command.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-Command.o `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp
+
+libPartGui_la-Command.obj: Command.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-Command.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-Command.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-Command.obj `if test -f 'Command.cpp'; then $(CYGPATH_W) 'Command.cpp'; else $(CYGPATH_W) '$(srcdir)/Command.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-Command.Tpo" "$(DEPDIR)/libPartGui_la-Command.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-Command.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Command.cpp' object='libPartGui_la-Command.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-Command.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-Command.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-Command.obj `if test -f 'Command.cpp'; then $(CYGPATH_W) 'Command.cpp'; else $(CYGPATH_W) '$(srcdir)/Command.cpp'; fi`
+
+libPartGui_la-Command.lo: Command.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-Command.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-Command.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-Command.lo `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-Command.Tpo" "$(DEPDIR)/libPartGui_la-Command.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-Command.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Command.cpp' object='libPartGui_la-Command.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-Command.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-Command.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-Command.lo `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp
+
+libPartGui_la-DlgPartBoxImp.o: DlgPartBoxImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartBoxImp.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartBoxImp.o `test -f 'DlgPartBoxImp.cpp' || echo '$(srcdir)/'`DlgPartBoxImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartBoxImp.cpp' object='libPartGui_la-DlgPartBoxImp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartBoxImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartBoxImp.o `test -f 'DlgPartBoxImp.cpp' || echo '$(srcdir)/'`DlgPartBoxImp.cpp
+
+libPartGui_la-DlgPartBoxImp.obj: DlgPartBoxImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartBoxImp.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartBoxImp.obj `if test -f 'DlgPartBoxImp.cpp'; then $(CYGPATH_W) 'DlgPartBoxImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPartBoxImp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartBoxImp.cpp' object='libPartGui_la-DlgPartBoxImp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartBoxImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartBoxImp.obj `if test -f 'DlgPartBoxImp.cpp'; then $(CYGPATH_W) 'DlgPartBoxImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPartBoxImp.cpp'; fi`
+
+libPartGui_la-DlgPartBoxImp.lo: DlgPartBoxImp.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartBoxImp.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartBoxImp.lo `test -f 'DlgPartBoxImp.cpp' || echo '$(srcdir)/'`DlgPartBoxImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartBoxImp.cpp' object='libPartGui_la-DlgPartBoxImp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartBoxImp.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartBoxImp.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartBoxImp.lo `test -f 'DlgPartBoxImp.cpp' || echo '$(srcdir)/'`DlgPartBoxImp.cpp
+
+libPartGui_la-DlgPartImportIgesImp.o: DlgPartImportIgesImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartImportIgesImp.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartImportIgesImp.o `test -f 'DlgPartImportIgesImp.cpp' || echo '$(srcdir)/'`DlgPartImportIgesImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartImportIgesImp.cpp' object='libPartGui_la-DlgPartImportIgesImp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartImportIgesImp.o `test -f 'DlgPartImportIgesImp.cpp' || echo '$(srcdir)/'`DlgPartImportIgesImp.cpp
+
+libPartGui_la-DlgPartImportIgesImp.obj: DlgPartImportIgesImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartImportIgesImp.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartImportIgesImp.obj `if test -f 'DlgPartImportIgesImp.cpp'; then $(CYGPATH_W) 'DlgPartImportIgesImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPartImportIgesImp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartImportIgesImp.cpp' object='libPartGui_la-DlgPartImportIgesImp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartImportIgesImp.obj `if test -f 'DlgPartImportIgesImp.cpp'; then $(CYGPATH_W) 'DlgPartImportIgesImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPartImportIgesImp.cpp'; fi`
+
+libPartGui_la-DlgPartImportIgesImp.lo: DlgPartImportIgesImp.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartImportIgesImp.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartImportIgesImp.lo `test -f 'DlgPartImportIgesImp.cpp' || echo '$(srcdir)/'`DlgPartImportIgesImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartImportIgesImp.cpp' object='libPartGui_la-DlgPartImportIgesImp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartImportIgesImp.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartImportIgesImp.lo `test -f 'DlgPartImportIgesImp.cpp' || echo '$(srcdir)/'`DlgPartImportIgesImp.cpp
+
+libPartGui_la-DlgPartImportStepImp.o: DlgPartImportStepImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartImportStepImp.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartImportStepImp.o `test -f 'DlgPartImportStepImp.cpp' || echo '$(srcdir)/'`DlgPartImportStepImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartImportStepImp.cpp' object='libPartGui_la-DlgPartImportStepImp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartImportStepImp.o `test -f 'DlgPartImportStepImp.cpp' || echo '$(srcdir)/'`DlgPartImportStepImp.cpp
+
+libPartGui_la-DlgPartImportStepImp.obj: DlgPartImportStepImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartImportStepImp.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartImportStepImp.obj `if test -f 'DlgPartImportStepImp.cpp'; then $(CYGPATH_W) 'DlgPartImportStepImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPartImportStepImp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartImportStepImp.cpp' object='libPartGui_la-DlgPartImportStepImp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartImportStepImp.obj `if test -f 'DlgPartImportStepImp.cpp'; then $(CYGPATH_W) 'DlgPartImportStepImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPartImportStepImp.cpp'; fi`
+
+libPartGui_la-DlgPartImportStepImp.lo: DlgPartImportStepImp.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgPartImportStepImp.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgPartImportStepImp.lo `test -f 'DlgPartImportStepImp.cpp' || echo '$(srcdir)/'`DlgPartImportStepImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPartImportStepImp.cpp' object='libPartGui_la-DlgPartImportStepImp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgPartImportStepImp.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgPartImportStepImp.lo `test -f 'DlgPartImportStepImp.cpp' || echo '$(srcdir)/'`DlgPartImportStepImp.cpp
+
+libPartGui_la-DlgSettings3DViewPartImp.o: DlgSettings3DViewPartImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgSettings3DViewPartImp.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgSettings3DViewPartImp.o `test -f 'DlgSettings3DViewPartImp.cpp' || echo '$(srcdir)/'`DlgSettings3DViewPartImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgSettings3DViewPartImp.cpp' object='libPartGui_la-DlgSettings3DViewPartImp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgSettings3DViewPartImp.o `test -f 'DlgSettings3DViewPartImp.cpp' || echo '$(srcdir)/'`DlgSettings3DViewPartImp.cpp
+
+libPartGui_la-DlgSettings3DViewPartImp.obj: DlgSettings3DViewPartImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgSettings3DViewPartImp.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgSettings3DViewPartImp.obj `if test -f 'DlgSettings3DViewPartImp.cpp'; then $(CYGPATH_W) 'DlgSettings3DViewPartImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgSettings3DViewPartImp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgSettings3DViewPartImp.cpp' object='libPartGui_la-DlgSettings3DViewPartImp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgSettings3DViewPartImp.obj `if test -f 'DlgSettings3DViewPartImp.cpp'; then $(CYGPATH_W) 'DlgSettings3DViewPartImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgSettings3DViewPartImp.cpp'; fi`
+
+libPartGui_la-DlgSettings3DViewPartImp.lo: DlgSettings3DViewPartImp.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-DlgSettings3DViewPartImp.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-DlgSettings3DViewPartImp.lo `test -f 'DlgSettings3DViewPartImp.cpp' || echo '$(srcdir)/'`DlgSettings3DViewPartImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo" "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgSettings3DViewPartImp.cpp' object='libPartGui_la-DlgSettings3DViewPartImp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-DlgSettings3DViewPartImp.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-DlgSettings3DViewPartImp.lo `test -f 'DlgSettings3DViewPartImp.cpp' || echo '$(srcdir)/'`DlgSettings3DViewPartImp.cpp
+
+libPartGui_la-PreCompiled.o: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo" "$(DEPDIR)/libPartGui_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libPartGui_la-PreCompiled.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libPartGui_la-PreCompiled.obj: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-PreCompiled.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo" "$(DEPDIR)/libPartGui_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libPartGui_la-PreCompiled.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`
+
+libPartGui_la-PreCompiled.lo: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-PreCompiled.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo" "$(DEPDIR)/libPartGui_la-PreCompiled.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libPartGui_la-PreCompiled.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-PreCompiled.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libPartGui_la-ViewProvider.o: ViewProvider.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-ViewProvider.o -MD -MP -MF "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-ViewProvider.o `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo" "$(DEPDIR)/libPartGui_la-ViewProvider.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProvider.cpp' object='libPartGui_la-ViewProvider.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-ViewProvider.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-ViewProvider.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-ViewProvider.o `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp
+
+libPartGui_la-ViewProvider.obj: ViewProvider.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-ViewProvider.obj -MD -MP -MF "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-ViewProvider.obj `if test -f 'ViewProvider.cpp'; then $(CYGPATH_W) 'ViewProvider.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProvider.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo" "$(DEPDIR)/libPartGui_la-ViewProvider.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProvider.cpp' object='libPartGui_la-ViewProvider.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-ViewProvider.Po' tmpdepfile='$(DEPDIR)/libPartGui_la-ViewProvider.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-ViewProvider.obj `if test -f 'ViewProvider.cpp'; then $(CYGPATH_W) 'ViewProvider.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProvider.cpp'; fi`
+
+libPartGui_la-ViewProvider.lo: ViewProvider.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPartGui_la-ViewProvider.lo -MD -MP -MF "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPartGui_la-ViewProvider.lo `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo" "$(DEPDIR)/libPartGui_la-ViewProvider.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPartGui_la-ViewProvider.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProvider.cpp' object='libPartGui_la-ViewProvider.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPartGui_la-ViewProvider.Plo' tmpdepfile='$(DEPDIR)/libPartGui_la-ViewProvider.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPartGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPartGui_la-ViewProvider.lo `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -30,7 +30,7 @@
 #define IB_CF_BGRA32    10		// 32-bit (8,8,8,8) BGRA color images (A = alpha)
 #define IB_CF_BGRA64    11		// 64-bit (16,16,16,16) BGRA color images (A = alpha)
 
-namespace ImageApp
+namespace Image
 {
 
 class ImageAppExport ImageBase

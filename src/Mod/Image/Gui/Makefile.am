@@ -1,28 +1,27 @@
 
-lib_LTLIBRARIES=libRaytracingGui.la
+lib_LTLIBRARIES=libImageGui.la
 
 BUILT_SOURCES=\
-		DlgSettingsRay.cpp \
-		DlgSettingsRay.h \
-		moc_DlgSettingsRay.cpp \
-		moc_DlgSettingsRayImp.cpp \
-		FreeCADpov.h
+		moc_GLImageBox.cpp \
+		moc_ImageView.cpp
 
-libRaytracingGui_la_SOURCES=\
-		AppRaytracingGui.cpp \
+libImageGui_la_SOURCES=\
+		AppImageGui.cpp \
 		Command.cpp \
-		DlgSettingsRayImp.cpp \
-		DlgSettingsRayImp.h \
+		GLImageBox.cpp \
+		GLImageBox.h \
+		ImageView.cpp \
+		ImageView.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
 # the library search path.
-libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DFeatureRayExportPov=
+libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImageGui_la_CPPFLAGS = -DImageAppExport=
 
-libRaytracingGui_la_LIBADD   = \
+libImageGui_la_LIBADD   = \
 		-lFreeCADGui \
-		-lRaytracing
+		-lImage
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -39,16 +38,13 @@ moc_%.cpp: %.h
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-FreeCADpov.h: FreeCADpov
-	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@
-
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
 # We need this softlink for Python to load
 install-data-local:
 		cd $(prefix) && \
-		rm -f RaytracingGui.so && \
-		$(LN_S) lib/libRaytracingGui.so RaytracingGui.so
+		rm -f ImageGui.so && \
+		$(LN_S) lib/libImageGui.so ImageGui.so
 
 CLEANFILES = $(BUILT_SOURCES)

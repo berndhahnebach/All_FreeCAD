@@ -159,6 +159,7 @@ libRaytracing_la_SOURCES = \
 
 # the library search path.
 libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracing_la_CPPFLAGS = -DAppPartExport= -DFeatureRayExportPov=
 
 libRaytracing_la_LIBADD = \
 		-lFreeCADBase \
@@ -174,18 +175,20 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libRaytracing_la_DEPENDENCIES =
-am_libRaytracing_la_OBJECTS = AppRaytracing.lo AppRaytracingPy.lo \
-	PovTools.lo PreCompiled.lo RayFeature.lo
+am_libRaytracing_la_OBJECTS = libRaytracing_la-AppRaytracing.lo \
+	libRaytracing_la-AppRaytracingPy.lo \
+	libRaytracing_la-PovTools.lo libRaytracing_la-PreCompiled.lo \
+	libRaytracing_la-RayFeature.lo
 libRaytracing_la_OBJECTS = $(am_libRaytracing_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppRaytracing.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/AppRaytracingPy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PovTools.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/RayFeature.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libRaytracing_la-AppRaytracing.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libRaytracing_la-PovTools.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libRaytracing_la-PreCompiled.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libRaytracing_la-RayFeature.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -252,11 +255,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracing.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppRaytracingPy.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PovTools.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RayFeature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libRaytracing_la-AppRaytracing.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libRaytracing_la-PovTools.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libRaytracing_la-PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libRaytracing_la-RayFeature.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -293,6 +296,171 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+libRaytracing_la-AppRaytracing.o: AppRaytracing.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-AppRaytracing.o -MD -MP -MF "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-AppRaytracing.o `test -f 'AppRaytracing.cpp' || echo '$(srcdir)/'`AppRaytracing.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo" "$(DEPDIR)/libRaytracing_la-AppRaytracing.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppRaytracing.cpp' object='libRaytracing_la-AppRaytracing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-AppRaytracing.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-AppRaytracing.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-AppRaytracing.o `test -f 'AppRaytracing.cpp' || echo '$(srcdir)/'`AppRaytracing.cpp
+
+libRaytracing_la-AppRaytracing.obj: AppRaytracing.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-AppRaytracing.obj -MD -MP -MF "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-AppRaytracing.obj `if test -f 'AppRaytracing.cpp'; then $(CYGPATH_W) 'AppRaytracing.cpp'; else $(CYGPATH_W) '$(srcdir)/AppRaytracing.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo" "$(DEPDIR)/libRaytracing_la-AppRaytracing.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppRaytracing.cpp' object='libRaytracing_la-AppRaytracing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-AppRaytracing.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-AppRaytracing.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-AppRaytracing.obj `if test -f 'AppRaytracing.cpp'; then $(CYGPATH_W) 'AppRaytracing.cpp'; else $(CYGPATH_W) '$(srcdir)/AppRaytracing.cpp'; fi`
+
+libRaytracing_la-AppRaytracing.lo: AppRaytracing.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-AppRaytracing.lo -MD -MP -MF "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-AppRaytracing.lo `test -f 'AppRaytracing.cpp' || echo '$(srcdir)/'`AppRaytracing.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo" "$(DEPDIR)/libRaytracing_la-AppRaytracing.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-AppRaytracing.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppRaytracing.cpp' object='libRaytracing_la-AppRaytracing.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-AppRaytracing.Plo' tmpdepfile='$(DEPDIR)/libRaytracing_la-AppRaytracing.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-AppRaytracing.lo `test -f 'AppRaytracing.cpp' || echo '$(srcdir)/'`AppRaytracing.cpp
+
+libRaytracing_la-AppRaytracingPy.o: AppRaytracingPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-AppRaytracingPy.o -MD -MP -MF "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-AppRaytracingPy.o `test -f 'AppRaytracingPy.cpp' || echo '$(srcdir)/'`AppRaytracingPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo" "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppRaytracingPy.cpp' object='libRaytracing_la-AppRaytracingPy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-AppRaytracingPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-AppRaytracingPy.o `test -f 'AppRaytracingPy.cpp' || echo '$(srcdir)/'`AppRaytracingPy.cpp
+
+libRaytracing_la-AppRaytracingPy.obj: AppRaytracingPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-AppRaytracingPy.obj -MD -MP -MF "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-AppRaytracingPy.obj `if test -f 'AppRaytracingPy.cpp'; then $(CYGPATH_W) 'AppRaytracingPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppRaytracingPy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo" "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppRaytracingPy.cpp' object='libRaytracing_la-AppRaytracingPy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-AppRaytracingPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-AppRaytracingPy.obj `if test -f 'AppRaytracingPy.cpp'; then $(CYGPATH_W) 'AppRaytracingPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppRaytracingPy.cpp'; fi`
+
+libRaytracing_la-AppRaytracingPy.lo: AppRaytracingPy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-AppRaytracingPy.lo -MD -MP -MF "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-AppRaytracingPy.lo `test -f 'AppRaytracingPy.cpp' || echo '$(srcdir)/'`AppRaytracingPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo" "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppRaytracingPy.cpp' object='libRaytracing_la-AppRaytracingPy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-AppRaytracingPy.Plo' tmpdepfile='$(DEPDIR)/libRaytracing_la-AppRaytracingPy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-AppRaytracingPy.lo `test -f 'AppRaytracingPy.cpp' || echo '$(srcdir)/'`AppRaytracingPy.cpp
+
+libRaytracing_la-PovTools.o: PovTools.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-PovTools.o -MD -MP -MF "$(DEPDIR)/libRaytracing_la-PovTools.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-PovTools.o `test -f 'PovTools.cpp' || echo '$(srcdir)/'`PovTools.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-PovTools.Tpo" "$(DEPDIR)/libRaytracing_la-PovTools.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-PovTools.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PovTools.cpp' object='libRaytracing_la-PovTools.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-PovTools.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-PovTools.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-PovTools.o `test -f 'PovTools.cpp' || echo '$(srcdir)/'`PovTools.cpp
+
+libRaytracing_la-PovTools.obj: PovTools.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-PovTools.obj -MD -MP -MF "$(DEPDIR)/libRaytracing_la-PovTools.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-PovTools.obj `if test -f 'PovTools.cpp'; then $(CYGPATH_W) 'PovTools.cpp'; else $(CYGPATH_W) '$(srcdir)/PovTools.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-PovTools.Tpo" "$(DEPDIR)/libRaytracing_la-PovTools.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-PovTools.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PovTools.cpp' object='libRaytracing_la-PovTools.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-PovTools.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-PovTools.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-PovTools.obj `if test -f 'PovTools.cpp'; then $(CYGPATH_W) 'PovTools.cpp'; else $(CYGPATH_W) '$(srcdir)/PovTools.cpp'; fi`
+
+libRaytracing_la-PovTools.lo: PovTools.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-PovTools.lo -MD -MP -MF "$(DEPDIR)/libRaytracing_la-PovTools.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-PovTools.lo `test -f 'PovTools.cpp' || echo '$(srcdir)/'`PovTools.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-PovTools.Tpo" "$(DEPDIR)/libRaytracing_la-PovTools.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-PovTools.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PovTools.cpp' object='libRaytracing_la-PovTools.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-PovTools.Plo' tmpdepfile='$(DEPDIR)/libRaytracing_la-PovTools.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-PovTools.lo `test -f 'PovTools.cpp' || echo '$(srcdir)/'`PovTools.cpp
+
+libRaytracing_la-PreCompiled.o: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo" "$(DEPDIR)/libRaytracing_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libRaytracing_la-PreCompiled.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libRaytracing_la-PreCompiled.obj: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-PreCompiled.obj -MD -MP -MF "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo" "$(DEPDIR)/libRaytracing_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libRaytracing_la-PreCompiled.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`
+
+libRaytracing_la-PreCompiled.lo: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-PreCompiled.lo -MD -MP -MF "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo" "$(DEPDIR)/libRaytracing_la-PreCompiled.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libRaytracing_la-PreCompiled.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/libRaytracing_la-PreCompiled.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libRaytracing_la-RayFeature.o: RayFeature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-RayFeature.o -MD -MP -MF "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-RayFeature.o `test -f 'RayFeature.cpp' || echo '$(srcdir)/'`RayFeature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo" "$(DEPDIR)/libRaytracing_la-RayFeature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RayFeature.cpp' object='libRaytracing_la-RayFeature.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-RayFeature.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-RayFeature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-RayFeature.o `test -f 'RayFeature.cpp' || echo '$(srcdir)/'`RayFeature.cpp
+
+libRaytracing_la-RayFeature.obj: RayFeature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-RayFeature.obj -MD -MP -MF "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-RayFeature.obj `if test -f 'RayFeature.cpp'; then $(CYGPATH_W) 'RayFeature.cpp'; else $(CYGPATH_W) '$(srcdir)/RayFeature.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo" "$(DEPDIR)/libRaytracing_la-RayFeature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RayFeature.cpp' object='libRaytracing_la-RayFeature.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-RayFeature.Po' tmpdepfile='$(DEPDIR)/libRaytracing_la-RayFeature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-RayFeature.obj `if test -f 'RayFeature.cpp'; then $(CYGPATH_W) 'RayFeature.cpp'; else $(CYGPATH_W) '$(srcdir)/RayFeature.cpp'; fi`
+
+libRaytracing_la-RayFeature.lo: RayFeature.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libRaytracing_la-RayFeature.lo -MD -MP -MF "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libRaytracing_la-RayFeature.lo `test -f 'RayFeature.cpp' || echo '$(srcdir)/'`RayFeature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo" "$(DEPDIR)/libRaytracing_la-RayFeature.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libRaytracing_la-RayFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RayFeature.cpp' object='libRaytracing_la-RayFeature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libRaytracing_la-RayFeature.Plo' tmpdepfile='$(DEPDIR)/libRaytracing_la-RayFeature.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libRaytracing_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libRaytracing_la-RayFeature.lo `test -f 'RayFeature.cpp' || echo '$(srcdir)/'`RayFeature.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -37,6 +37,7 @@ libPartGui_la_SOURCES=\
 
 # the library search path.
 libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartGui_la_CPPFLAGS = -DAppPartExport=
 
 libPartGui_la_LIBADD   = \
 		-lFreeCADGui \
