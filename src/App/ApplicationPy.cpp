@@ -29,6 +29,7 @@
 #ifndef _PreComp_
 #	include <TColStd_SequenceOfExtendedString.hxx>
 #	include <TCollection_ExtendedString.hxx>
+# include <sstream>
 #endif
 
 
@@ -93,7 +94,7 @@ PYFUNCIMP_S(Application,sOpen)
 	catch(Standard_Failure e)
 	{
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		stringstream strm;
+		std::stringstream strm;
 
 		strm << E << endl;
 		//strm.freeze();

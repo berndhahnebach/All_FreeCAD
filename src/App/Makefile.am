@@ -22,6 +22,7 @@ libFreeCADApp_la_SOURCES=\
     PropertyAttr.h \
 		Topology.h \
 		Application.cpp \
+		ApplicationPy.cpp \
 		Attribute.cpp \
 		DocTypeAttr.cpp \
 		Document.cpp \

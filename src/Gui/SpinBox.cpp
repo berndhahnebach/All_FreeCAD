@@ -449,7 +449,7 @@ void FloatSpinBox::setLineStep( double step )
   if ( step > maxValue() - minValue() )
     SpinBox::setLineStep( 1 );
   else
-    SpinBox::setLineStep( std::max<double>( d->mapToInt( step, &ok ), 1 ) );
+    SpinBox::setLineStep( std::max<int>( d->mapToInt( step, &ok ), 1 ) );
 }
 
 /**
@@ -482,7 +482,7 @@ int FloatSpinBox::mapTextToValue( bool * ok )
 void FloatSpinBox::valueChange()
 {
   SpinBox::valueChange();
-  emit valueChanged( d->mapToDouble( value() ) );
+  emit valueChanged( d->mapToDouble( SpinBox::value() ) );
 }
 
 /**

@@ -30,6 +30,7 @@
 
 #ifndef _PreComp_
 #	include <string>
+# include <set>
 #endif
 
 struct ApplicationWindowP;

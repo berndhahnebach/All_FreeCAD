@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -10,12 +10,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -29,6 +29,9 @@
 #ifndef _PreComp_
 #	include <TColStd_SequenceOfExtendedString.hxx>
 #	include <TCollection_ExtendedString.hxx>
+# ifdef FC_OS_LINUX
+# include <time.h>
+# endif
 #endif
 
 
@@ -596,16 +599,22 @@ void Application::RunApplication()
 
 void Application::LogStatus()
 {
+#if defined(FC_OS_WIN32)
   SYSTEMTIME time;
 
   GetSystemTime(&time);
 
   Console().Log("Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
-	for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
+#elif defined(FC_OS_LINUX)
+  time_t now;
+  time(&now);
+  Console().Log("Time: %s\n", ctime(&now));
+#endif
+
+  for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
 	{
 		Console().Log("  %s\t= %s\n",It->first.c_str(),It->second.c_str());
 	}
-
 }
 
 
