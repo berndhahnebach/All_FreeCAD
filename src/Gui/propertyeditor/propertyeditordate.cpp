@@ -18,6 +18,12 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ comment out use of KDE classes
+*/
+
+//#include <klocale.h>
 #include <qdatetimeedit.h>
 
 #include "propertyeditordate.h"
@@ -28,6 +34,7 @@
 PropertyEditorDate::PropertyEditorDate(QWidget *parent, KexiProperty *property, const char *name)
  : KexiPropertySubEditor(parent, property, name)
 {
+//	m_leaveTheSpaceForRevertButton = false;
 	m_leaveTheSpaceForRevertButton = true;
 	m_dateedit = new QDateEdit(property->value().asDate(), this);
 	m_dateedit->resize(width(), height());
@@ -60,6 +67,7 @@ PropertyEditorDate::valueChanged(const QDate &date)
 PropertyEditorTime::PropertyEditorTime(QWidget *parent, KexiProperty *property, const char *name)
  : KexiPropertySubEditor(parent, property, name)
 {
+//	m_leaveTheSpaceForRevertButton = false;
 	m_leaveTheSpaceForRevertButton = true;
 	m_timeedit = new QTimeEdit(property->value().asTime(), this);
 	m_timeedit->resize(width(), height());
@@ -93,6 +101,7 @@ PropertyEditorTime::valueChanged(const QTime &time)
 PropertyEditorDateTime::PropertyEditorDateTime(QWidget *parent, KexiProperty *property, const char *name)
  : KexiPropertySubEditor(parent, property, name)
 {
+//	m_leaveTheSpaceForRevertButton = false;
 	m_leaveTheSpaceForRevertButton = true;
 	m_datetime = new QDateTimeEdit(property->value().asDateTime(), this);
 	m_datetime->resize(width(), height());

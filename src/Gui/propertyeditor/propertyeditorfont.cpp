@@ -18,6 +18,11 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ use QFontDialog instead of KFontDialog
+*/
+
 #include <qlabel.h>
 #include <qstring.h>
 #include <qevent.h>
@@ -25,6 +30,12 @@
 #include <qfontdialog.h>
 #include <qcolordialog.h>
 #include <qpushbutton.h>
+
+//#include <klocale.h>
+//#include <kfontdialog.h>
+//#include <kpushbutton.h>
+//#include <kcolorbutton.h>
+//#include <kdebug.h>
 
 #include "propertyeditorfont.h"
 #include "kexiproperty.h"
@@ -41,7 +52,7 @@ PropertyEditorFont::PropertyEditorFont(QWidget *parent, KexiProperty *property, 
 	m_label->resize(width(), height()-1);
 
 	m_button = new QPushButton(" ... ", this);
-	m_button->resize(height(), height()-8);
+	m_button->resize(height(), height()-11);
 	m_button->move(width() - m_button->width(), 0);
 	
 //	m_label->setText( KexiProperty::format( m_font ) );
@@ -115,7 +126,7 @@ PropertyEditorColor::PropertyEditorColor(QWidget *parent, KexiProperty *property
 	m_label->resize(width(), height()-1);
 
 	m_button = new QPushButton(" ... ", this);
-	m_button->resize(height(), height()-8);
+	m_button->resize(height(), height()-11);
 	m_button->move(width() - m_button->width(), 0);
 
 	setValue(property->value());
@@ -155,7 +166,8 @@ PropertyEditorColor::selectColor()
 void
 PropertyEditorColor::resizeEvent(QResizeEvent *ev)
 {
-	m_label->resize(ev->size().width(), ev->size().height()-1);
+	m_label->resize(ev->size().width() - m_button->width()-5, ev->size().height()-6);
+	m_label->move(3, 3);
 	m_button->move(ev->size().width() - m_button->width(), 0);
 }
 

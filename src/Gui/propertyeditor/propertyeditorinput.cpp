@@ -19,11 +19,24 @@
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 */
+
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ comment out use of KDE class kDebug
+*/
+
 #include <qiconset.h>
 #include <qtoolbutton.h>
 
 #include <qlineedit.h>
 #include <qcombobox.h>
+
+//#include <kiconloader.h>
+//#include <klineedit.h>
+//#include <knuminput.h>
+//#include <klocale.h>
+//#include <kglobal.h>
+//#include <kdebug.h>
 
 #include "propertyeditorinput.h"
 #include "kexiproperty.h"
@@ -65,9 +78,8 @@ PropertyEditorInput::setValue(const QVariant &value)
 //INT
 
 PropIntSpinBox::PropIntSpinBox(int lower, int upper, int step, int value, int base=10, QWidget *parent=0, const char *name=0) 
-: QSpinBox(lower, upper, step, parent, name)
+: KIntSpinBox(lower, upper, step, value, base, parent, name)
 {
-	setValue(value);
 	editor()->setAlignment(Qt::AlignLeft);
 }
 
@@ -87,14 +99,15 @@ PropIntSpinBox::eventFilter(QObject *o, QEvent *e)
 		}
 	}
 	
-	return QSpinBox::eventFilter(o, e);
+	return KIntSpinBox::eventFilter(o, e);
 }
 
 
 PropertyEditorSpin::PropertyEditorSpin(QWidget *parent, KexiProperty *property, const char *name)
  : KexiPropertySubEditor(parent,property, name)
 {
-	m_leaveTheSpaceForRevertButton = false;
+//	m_leaveTheSpaceForRevertButton = false;
+	m_leaveTheSpaceForRevertButton = true;
 	m_spinBox = new PropIntSpinBox(0,50000, 1, 0, 10, this);
 	m_spinBox->resize(width(), height());
 	m_spinBox->setValue(property->value().toInt());
@@ -125,7 +138,7 @@ PropertyEditorSpin::valueChange(int)
 //DOUBLE
 
 PropDoubleSpinBox::PropDoubleSpinBox(QWidget *parent=0) 
-: FCFloatSpinBox(parent)
+: KDoubleSpinBox(parent)
 {
 	editor()->setAlignment(Qt::AlignLeft);
 }
@@ -146,13 +159,14 @@ PropDoubleSpinBox::eventFilter(QObject *o, QEvent *e)
 		}
 	}
 	
-	return QSpinBox::eventFilter(o, e);
+	return KDoubleSpinBox::eventFilter(o, e);
 }
 
 PropertyEditorDblSpin::PropertyEditorDblSpin(QWidget *parent, KexiProperty *property, const char *name)
  : KexiPropertySubEditor(parent, property, name)
 {
-	m_leaveTheSpaceForRevertButton = false;
+//	m_leaveTheSpaceForRevertButton = false;
+	m_leaveTheSpaceForRevertButton = true;
 	m_spinBox = new PropDoubleSpinBox(this);
 	m_spinBox->resize(width(), height());
 	setValue( property->value() );
@@ -173,6 +187,8 @@ void
 PropertyEditorDblSpin::setValue(const QVariant &value)
 {
 	double v = value.toDouble();
+	// FIXME: it should be possible to set range, precision. Just set maxValue to 100
+	m_spinBox->setRange(0, 100);
 	m_spinBox->setValue(v);
 }
 

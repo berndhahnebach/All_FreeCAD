@@ -19,6 +19,15 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ use FCTools::i18n instead of KDE method i18n
+		+ comment out use of KDE classes (kDebug, KCompletion, ..)
+*/
+
+//#include <klocale.h>
+//#include <kdebug.h>
+
 #include <qstringlist.h>
 #include <qcursor.h>
 #include <qlistbox.h>

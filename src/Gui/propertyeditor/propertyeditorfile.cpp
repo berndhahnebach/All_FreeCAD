@@ -19,6 +19,12 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ use QFileDialog instead of KFileDialog
+		+ comment out use of other KDE classes
+*/
+
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qfiledialog.h>
@@ -30,6 +36,9 @@
 #include <qlabel.h>
 #include <qcursor.h>
 
+//#include <klocale.h>
+//#include <kdebug.h>
+
 #include "propertyeditorfile.h"
 #include "kexiproperty.h"
 
@@ -40,7 +49,7 @@ PropertyEditorFile::PropertyEditorFile(QWidget *parent, KexiProperty *property, 
 	m_lineedit->resize(width(), height()-2);
 
 	m_button = new QPushButton(tr(" ... "), this);
-	m_button->resize(height(), height()-10);
+	m_button->resize(height(), height()-11);
 	m_button->move(width() - m_button->width() -1, 1);
 	
 	m_lineedit->setText(property->value().toString());
@@ -123,7 +132,7 @@ PropertyEditorPixmap::PropertyEditorPixmap(QWidget *parent, KexiProperty *proper
 	setWidget(m_label);
 	
 	m_button = new QPushButton(tr(" ... "), this);
-	m_button->resize(height(), height()-8);
+	m_button->resize(height(), height()-11);
 	m_button->move(width() - m_button->width() -1, 0);
 	m_button->show();
 

@@ -21,6 +21,13 @@
    this file contains all editor-classes using comboboxes
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+		+ PropComboBox inherits from QComboBox instead of KComboBox
+		+ use QListBox instead of KListBox
+
+*/
+
 #ifndef PROPERTYEDITORLIST_H
 #define PROPERTYEDITORLIST_H
 

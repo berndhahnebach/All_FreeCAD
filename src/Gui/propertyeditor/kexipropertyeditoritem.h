@@ -19,6 +19,13 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+		+ added class CListViewItem
+		+ KexiPropertyEditorItem inherits from CListViewItem instead of KListViewItem
+		+ use QListView instead of KListView
+*/
+
 #ifndef KEXIPROPERTYEDITORITEM_H
 #define KEXIPROPERTYEDITORITEM_H
 

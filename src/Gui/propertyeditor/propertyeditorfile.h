@@ -17,6 +17,13 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+		+ use QUrl instead of KURL
+		+	use QPushButton instead of KPushButton
+		+ use QLineEdit instead of KLineEdit
+*/
+
 #ifndef PROPERTYEDITORFILE_H
 #define PROPERTYEDITORFILE_H
 

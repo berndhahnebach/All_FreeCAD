@@ -18,12 +18,18 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+		+ use QLineEdit instead of KLineEdit
+		+ use QComboBox for PropertyEditorBool instead of a toggable QToolButton
+*/
+
 #ifndef PROPERTYEDITORINPUT_H
 #define PROPERTYEDITORINPUT_H
 
 
-#include <qspinbox.h>
-#include "Widgets.h"
+#include "knuminput.h"
+
 #include "kexipropertysubeditor.h"
 
 class QLineEdit;
@@ -52,7 +58,7 @@ class GuiExport PropertyEditorInput : public KexiPropertySubEditor
 
 //INT
 
-class GuiExport PropIntSpinBox : public QSpinBox
+class GuiExport PropIntSpinBox : public KIntSpinBox
 {
 	Q_OBJECT
 	
@@ -77,12 +83,12 @@ class GuiExport PropertyEditorSpin : public KexiPropertySubEditor
 		void			valueChange(int);
 		
 	protected:
-		QSpinBox		*m_spinBox;
+		KIntSpinBox		*m_spinBox;
 };
 
 
 //DOUBLE
-class GuiExport PropDoubleSpinBox : public FCFloatSpinBox
+class GuiExport PropDoubleSpinBox : public KDoubleSpinBox
 {
 	Q_OBJECT
 	
@@ -107,7 +113,7 @@ class GuiExport PropertyEditorDblSpin : public KexiPropertySubEditor
 		void			valueChange(int);
 
 	protected:
-		FCFloatSpinBox		*m_spinBox;
+		KDoubleSpinBox		*m_spinBox;
 };
 
 //BOOL EDITOR

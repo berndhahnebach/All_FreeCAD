@@ -17,8 +17,17 @@
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 */
+
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ comment out use of KDE class kDebug
+		+ use QListView(Item) instead of KListView(Item)
+*/
+
 #include <qvariant.h>
 #include <qlistview.h>
+//#include <kdebug.h>
+//#include <klistview.h>
 
 #include "kexipropertysubeditor.h"
 

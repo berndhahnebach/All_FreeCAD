@@ -63,6 +63,7 @@ class FCDlgCustomActionsImp : public FCDlgCustomActions, public FCPropertyPage
     std::vector<FCCommand*> _aclNewMacros;
     std::vector<FCCommand*> _aclDelMacros;
     int iCtMacros;
+		bool bShown;
 
   protected slots:
     /// enables/disables buttons for change

@@ -54,7 +54,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 FCDlgCustomActionsImp::FCDlgCustomActionsImp( QWidget* parent, const char* name, WFlags fl )
-: FCDlgCustomActions(parent, name, fl)
+: FCDlgCustomActions(parent, name, fl), bShown( false )
 {
   FCCommandManager& rclMan = ApplicationWindow::Instance->GetCommandManager();
   _aclCurMacros = rclMan.GetModuleCommands("Macro");
@@ -86,8 +86,9 @@ FCDlgCustomActionsImp::~FCDlgCustomActionsImp()
 void FCDlgCustomActionsImp::show()
 {
   FCDlgCustomActions::show();
-  if (actionMacros->count() == 0)
+  if (actionMacros->count() == 0 && bShown == false)
   {
+		bShown = true;
     QMessageBox::warning(this, tr("No macro"),tr("No macros found."));
   }
 }

@@ -21,15 +21,27 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ avoid using KDE class KGlobal
+		+ comment out use of KDE class kDebug
+		+ use FCTools::i18n instead of the KDE method i18n
+*/
+
 #include "kexiproperty.h"
 #include "kexipropertybuffer.h"
 
 #include <qstringlist.h>
+//#include <kdebug.h>
 #include <qsizepolicy.h>
 #include <qsize.h>
 #include <qrect.h>
 #include <qfont.h>
 #include <qcursor.h>
+
+//#include <klocale.h>
+//#include <kglobal.h>
+
 
 class SPHelper
 {
@@ -627,6 +639,7 @@ KexiProperty::format(const QVariant &v)
 		}
 		case QVariant::Double:
 		{
+//			return QString(KGlobal::locale()->formatNumber(v.toDouble()));
 			float f = v.toDouble();
 			return QString("%1").arg(f);
 		}

@@ -369,7 +369,7 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 	return QProgressBar::eventFilter(o, e);
 }
 
-bool FCProgressBar::start(const char* pszStr, int steps)
+bool FCProgressBar::start(const char* pszStr, unsigned long steps)
 {
 	// base stuff
 	bool ret = Sequencer::start(pszStr, steps);

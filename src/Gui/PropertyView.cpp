@@ -136,17 +136,17 @@ void FCPropertyView::Update(void)
 	buf->add(new KexiProperty("Boolean", QVariant(true,1)));
 	buf->add(new KexiProperty("Integer", 9));
 	buf->add(new KexiProperty("String", QString("Hallo")));
-	buf->add(new KexiProperty("Double", 3.14f));
-	QStringList l; l << "Hallo" << "Hallo2";
-	buf->add(new KexiProperty("List", "Test", l, l, "Descr."));
+	buf->add(new KexiProperty("Double", 3.14));
 	buf->add(new KexiProperty("Font", QFont()));
 	buf->add(new KexiProperty("Pixmap", QPixmap()));
 	buf->add(new KexiProperty("Color", Qt::blue));
-	buf->add(new KexiProperty("Date", QDate()));
 	buf->add(new KexiProperty("Time", QTime()));
-	buf->add(new KexiProperty("Date time", QDateTime()));
 	buf->add(new KexiProperty("Cursor", QCursor()));
 	buf->add(new KexiProperty("CString", QCString("Hallo")));
+	buf->add(new KexiProperty("Date time", QDateTime()));
+	buf->add(new KexiProperty("Date", QDate()));
+	QStringList l; l << "Hallo" << "Hallo2";
+	buf->add(new KexiProperty("List", "Test", l, l, "Descr."));
 	_pPropEditor->setBuffer(buf);
 
 	GetConsole().Log("Property Updated\n");

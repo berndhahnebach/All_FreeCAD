@@ -20,6 +20,12 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ comment out use of KDE class kDebug
+		+ added pixmap resetproperty_xpm
+*/
+
 #include "kexipropertyeditor.h"
 
 #include <qheader.h>

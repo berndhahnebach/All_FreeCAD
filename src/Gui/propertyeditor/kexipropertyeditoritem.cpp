@@ -20,6 +20,12 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ include FreeCAD's PreCompiled header stuff
+		+ comment out use of KDE classes
+		+ use value "True", "False" instead of "Yes", "No" for booleans
+*/
+
 #ifndef _PreComp_
 #	include <qapplication.h>
 #	include <qsize.h>
@@ -31,6 +37,11 @@
 #	include <qpoint.h>
 #	include <qstyle.h>
 #endif
+
+//#include <kdebug.h>
+//#include <kiconloader.h>
+
+//#include <klocale.h>
 
 #include "kexipropertyeditoritem.h"
 
@@ -158,13 +169,13 @@ KexiPropertyEditorItem::paintCell(QPainter *p, const QColorGroup & cg, int colum
 		{
 			case QVariant::Pixmap:
 			{
-				p->fillRect(0,0,width,height(),QBrush(backgroundColor()));
+//				p->fillRect(0,0,width,height(),QBrush(backgroundColor()));
 				p->drawPixmap(margin, margin, m_property->value().toPixmap());
 				break;
 			}
 			case QVariant::Color:
 			{
-				p->fillRect(0,0,width,height(), QBrush(backgroundColor()));
+//				p->fillRect(0,0,width,height(), QBrush(backgroundColor()));
 				QColor ncolor = m_property->value().toColor();
 				p->setBrush(ncolor);
 				p->drawRect(margin, margin, width - 2*margin, height() - 2*margin);
@@ -173,13 +184,17 @@ KexiPropertyEditorItem::paintCell(QPainter *p, const QColorGroup & cg, int colum
 			}
 			case QVariant::Bool:
 			{
-				p->fillRect(0,0,width,height(), QBrush(backgroundColor()));
+//				p->fillRect(0,0,width,height(), QBrush(backgroundColor()));
 				if(m_property->value().toBool())
 				{
+//					p->drawPixmap(margin, height()/2 -8, SmallIcon("button_ok"));
+//					p->drawText(QRect(margin+20,0,width,height()-1), Qt::AlignVCenter, i18n("Yes"));
 					p->drawText(QRect(margin,0,width,height()-1), Qt::AlignVCenter, QString("True"));
 				}
 				else
 				{
+//					p->drawPixmap(margin, height()/2 -8, SmallIcon("button_no"));
+//					p->drawText(QRect(margin+20,0,width,height()-1), Qt::AlignVCenter, i18n("No"));
 					p->drawText(QRect(margin,0,width,height()-1), Qt::AlignVCenter, QString("False"));
 				}
 				break;
@@ -190,6 +205,7 @@ KexiPropertyEditorItem::paintCell(QPainter *p, const QColorGroup & cg, int colum
 				if(depth()==0)
 					return;
 				QListViewItem::paintCell(p, cg, column, width, align);
+				// TODO: 
 //				p->fillRect(0,0,width,height(), QBrush(backgroundColor()));
 				break;
 			}

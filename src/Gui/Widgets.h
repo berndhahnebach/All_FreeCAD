@@ -137,7 +137,7 @@ class FCProgressBar : public QProgressBar, public Sequencer
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
     ~FCProgressBar ();
     /** Starts the progress bar */
-    bool start(const char* pszStr, int steps);
+    bool start(const char* pszStr, unsigned long steps);
     /** Does the next step */
     bool next();
 

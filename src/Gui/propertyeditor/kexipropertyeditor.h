@@ -19,6 +19,13 @@
    Boston, MA 02111-1307, USA.
 */
 
+/* Modifications for FreeCAD from 06-13-2004
+		+ use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
+		+ use QPushButton instead of KPushButton
+		+ KexiPropertyEditor inherits from QListView instead of KListView
+		+ added method KexiPropertyEditor::resizeColumns()
+*/
+
 #ifndef KEXIPROPERTYEDITOR_H
 #define KEXIPROPERTYEDITOR_H
 
