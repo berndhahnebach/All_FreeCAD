@@ -13,7 +13,7 @@
 // standard
 #include <list>
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <stdio.h>
 #include <assert.h>
 

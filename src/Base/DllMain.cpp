@@ -40,6 +40,7 @@
 
 
 
+#include <iostream>
 #include <windows.h>
 #include <direct.h>
 #include <stdio.h>
@@ -61,7 +62,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 //    case DLL_THREAD_ATTACH:
 		// set the resource env variables
 		
-		std::string cHomePath = FindDLLHomePath(hModule);
+		std::string cHomePath = FindHomePathWin32(hModule);
 
 		EnvPrint("Base");
 		

@@ -393,11 +393,11 @@ PYFUNCIMP_S(FCApplication,sOpen)
 	catch(Standard_Failure e)
 	{
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		strstream strm;
+		stringstream strm;
 
 		strm << E << endl;
 		//strm.freeze();
-		PyErr_SetString(PyExc_IOError, strm.str());
+		PyErr_SetString(PyExc_IOError, strm.str().c_str());
 		return 0L;
 	}
 
@@ -924,9 +924,15 @@ void FCApplication::ParsOptions(int argc, char ** argv)
 void FCApplication::ExtractPathAndUser(const char* sCall)
 {
 	// find home path
-	mConfig["HomePath"] = FindHomePath(sCall);
+#	ifdef FC_OS_WIN32
+		mConfig["HomePath"] = FindHomePathWin32(0);
+#	else
+		mConfig["HomePath"] = FindHomePathUnix(sCall);
+#	endif
+
 	// find home path
-	mConfig["BinPath"] = FindBinPath(sCall);
+	//mConfig["BinPath"] = FindBinPath(sCall);
+	mConfig["BinPath"] = mConfig["BinPath"] + PATHSEP + "bin";
 
 	// try to figure out if using FreeCADLib
 	mConfig["FreeCADLib"] = GetFreeCADLib(mConfig["HomePath"].c_str());

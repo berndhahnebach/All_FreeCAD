@@ -302,7 +302,7 @@ void FCDocumentationManager::_Translate(std::string &rcDoc, const char* sTransXS
 	char* Temp = (char*) malloc(rcDoc.size()+2);
 	strcpy(Temp,rcDoc.c_str());
 
-	istrstream Input(Temp,rcDoc.size()+2);
+	istringstream Input(Temp,rcDoc.size()+2);
 
 	XSLTInputSource xmlIn(Input);
 	XSLTInputSource xslIn(sTransXSL);

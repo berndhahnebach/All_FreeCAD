@@ -41,7 +41,7 @@
 
 #ifndef _PreComp_
 // standard
-#	include <iostream.h>
+#	include <iostream>
 #	include <stdio.h>
 #	include <assert.h>
 #	include <fcntl.h>

@@ -20,7 +20,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <iostream.h>
+#	include <iostream>
 #	include <stdio.h>
 #	include <assert.h>
 #	include <fcntl.h>

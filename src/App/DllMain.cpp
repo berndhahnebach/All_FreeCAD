@@ -38,6 +38,7 @@
 #	error "Dont compile that file on UNIX!"
 #endif
 
+#include <iostream>
 #include <windows.h>
 #include <direct.h>
 #include <stdio.h>
@@ -61,7 +62,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 		// set the resource env variables
 		
 
-		std::string cHomePath = FindDLLHomePath(hModule);
+		std::string cHomePath = FindHomePathWin32(hModule);
 
 //		getcwd (szDirectory,sizeof szDirectory);
 //		if (szDirectory[strlen(szDirectory)-1] != '\\') {

@@ -12,7 +12,7 @@
 #endif
 
 // standard
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 #include <assert.h>
 #ifdef FC_OS_WIN32

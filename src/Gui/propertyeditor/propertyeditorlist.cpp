@@ -78,9 +78,9 @@ PropComboBox::eventFilter(QObject *o, QEvent *e)
 }
 
 void
-PropComboBox::setSelected(const QStringList &list)
+PropComboBox::setSelected(const QStringList &List)
 {
-	QStringList strlist(list);
+	QStringList strlist(List);
 	m_listbox->clearSelection();
 	for(QStringList::iterator it = strlist.begin(); it != strlist.end(); ++it)
 	{
@@ -88,7 +88,7 @@ PropComboBox::setSelected(const QStringList &list)
 		if(item)
 			m_listbox->setSelected(item,true);
 	}
-	setEditText(list.join("|"));
+	setEditText(List.join("|"));
 }
 
 QStringList

@@ -43,12 +43,12 @@
 
 inline void EnvPrint(const char* sVar, const char* sVal)
 {
-	//cout << sVar << "=" << sVal  << endl;
+	std::cout << sVar << "=" << sVal  << std::endl;
 }
 
 inline void EnvPrint(const char* sMsg)
 {
-	//cout << sMsg << endl;
+	std::cout << sMsg << std::endl;
 }
 
 inline void SetEnvironment(const char* sVar, const char* sVal)
@@ -68,7 +68,7 @@ inline void SetEnvironment(const char* sVar, const char* sVal)
 inline void TestEnvExists(const char* sEnvName,bool &bFailure)
 {
 	if (!getenv(sEnvName)){
-          cerr<<"Environment variable "<<sEnvName<<" is not set!"<<endl;
+          std::cerr<<"Environment variable "<<sEnvName<<" is not set!"<<std::endl;
           bFailure = true;
         }
 }
@@ -86,9 +86,10 @@ inline void SimplifyPath(std::string& sPath)
 	}
 }
 
-inline std::string FindHomePath(const char* sCall)
-{
 #ifdef FC_OS_LINUX
+
+inline std::string FindHomePathUnix(const char* sCall)
+{
 	std::string Call(sCall), TempHomePath;
 
 	// no absolute path
@@ -164,35 +165,36 @@ inline std::string FindHomePath(const char* sCall)
 		TempHomePath.assign(TempHomePath,0,pos+1);
 		EnvPrint(TempHomePath.c_str());
 	}
-#else
-	EnvPrint("FindHomePath--------------------");
-	EnvPrint(sCall);
-
-	std::string Call(sCall), TempHomePath;
-	std::string::size_type pos = Call.find_last_of(PATHSEP);
-	TempHomePath.assign(Call,0,pos);
-	pos = TempHomePath.find_last_of(PATHSEP);
-	TempHomePath.assign(TempHomePath,0,pos+1);
-
-	EnvPrint(TempHomePath.c_str());
-#endif
 
 	return TempHomePath;
 }
+#endif
 
 #ifdef FC_OS_WIN32
-inline std::string FindDLLHomePath(HANDLE hModule)
+inline std::string FindHomePathWin32(HANDLE hModule)
 {
 	char  szFileName [MAX_PATH] ;
 	GetModuleFileName((HMODULE)hModule,
 		               szFileName,
 					   MAX_PATH-1);
 
-	return FindHomePath(szFileName);
+	EnvPrint("FindHomePath--------------------");
+	EnvPrint(szFileName);
+
+	std::string Call(szFileName), TempHomePath;
+	std::string::size_type pos = Call.find_last_of(PATHSEP);
+	TempHomePath.assign(Call,0,pos);
+	pos = TempHomePath.find_last_of(PATHSEP);
+	TempHomePath.assign(TempHomePath,0,pos+1);
+
+	EnvPrint(TempHomePath.c_str());
+//	return FindHomePath(szFileName);
+	return TempHomePath;
+
 }
 #endif
 
-
+/*
 inline std::string FindBinPath(const char* sCall)
 {
 	std::string Call(sCall), TempHomePath;
@@ -200,6 +202,8 @@ inline std::string FindBinPath(const char* sCall)
 	TempHomePath.assign(Call,0,pos+1);
 	return TempHomePath;
 }
+*/
+
 
 inline std::string GetFreeCADLib(const char* sHomePath)
 {

@@ -1000,18 +1000,18 @@ void FCParameterManager::Init(void)
 #if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 			std::ostringstream err;
 #else
-			std::strstream err;
+			std::stringstream err;
 #endif
 			char *pMsg = XMLString::transcode(toCatch.getMessage());
 			err << "Error during Xerces-c Initialization.\n"
 				 << "  Exception message:"
 				 << pMsg;
 			delete [] pMsg;
-#ifdef FC_OS_LINUX
+//#ifdef FC_OS_LINUX
 			throw FCException(err.str().c_str());
-#else
-			throw FCException(err.str());
-#endif
+//#else
+//			throw FCException(err.str());
+//#endif
 		}
 		Init = true;
 	}

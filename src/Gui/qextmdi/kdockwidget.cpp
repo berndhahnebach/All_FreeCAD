@@ -1275,7 +1275,7 @@ void KDockManager::findChildDockWidget( QWidget*& ww, const QWidget* p, const QP
   return;
 }
 
-void KDockManager::findChildDockWidget( const QWidget* p, WidgetList*& list )
+void KDockManager::findChildDockWidget( const QWidget* p, WidgetList*& List )
 {
   if ( p->children() ) {
     QWidget *w;
@@ -1285,8 +1285,8 @@ void KDockManager::findChildDockWidget( const QWidget* p, WidgetList*& list )
       if ( it.current()->isWidgetType() ) {
         w = (QWidget*)it.current();
         if ( w->isVisible() ) {
-          if ( w->inherits("KDockWidget") ) list->append( w );
-          findChildDockWidget( w, list );
+          if ( w->inherits("KDockWidget") ) List->append( w );
+          findChildDockWidget( w, List );
         }
       }
       --it;
@@ -1450,11 +1450,11 @@ static QDomElement createRectEntry(QDomDocument &doc, const QString &tagName, co
 
 
 static QDomElement createListEntry(QDomDocument &doc, const QString &tagName,
-                                   const QString &subTagName, const QStrList &list)
+                                   const QString &subTagName, const QStrList &List)
 {
     QDomElement el = doc.createElement(tagName);
 
-    QStrListIterator it(list);
+    QStrListIterator it(List);
     for (; it.current(); ++it) {
         QDomElement subel = doc.createElement(subTagName);
         subel.appendChild(doc.createTextNode(QString::fromLatin1(it.current())));
@@ -1498,16 +1498,16 @@ static QRect rectEntry(QDomElement &base, const QString &tagName)
 
 static QStrList listEntry(QDomElement &base, const QString &tagName, const QString &subTagName)
 {
-    QStrList list;
+    QStrList List;
     
     QDomElement subel = base.namedItem(tagName).firstChild().toElement();
     while (!subel.isNull()) {
         if (subel.tagName() == subTagName)
-            list.append(subel.firstChild().toText().data().latin1());
+            List.append(subel.firstChild().toText().data().latin1());
         subel = subel.nextSibling().toElement();
     }
 
-    return list;
+    return List;
 }
 
 
@@ -1557,13 +1557,13 @@ void KDockManager::writeConfig(QDomElement &base)
             //// Save a tab group
             groupEl = doc.createElement("tabGroup");
 
-            QStrList list;
+            QStrList List;
             for ( QWidget *w = ((KDockTabGroup*)obj->widget)->getFirstPage();
                   w;
                   w = ((KDockTabGroup*)obj->widget)->getNextPage(w) ) {
-                list.append( w->name() );
+                List.append( w->name() );
             }
-            groupEl.appendChild(createListEntry(doc, "tabs", "tab", list));
+            groupEl.appendChild(createListEntry(doc, "tabs", "tab", List));
             groupEl.appendChild(createNumberEntry(doc, "currentTab", ((KDockTabGroup*)obj->widget)->visiblePageId()));
         } else {
             //// Save an ordinary dock widget
@@ -1652,20 +1652,20 @@ void KDockManager::readConfig(QDomElement &base)
         } else if (childEl.tagName() == "tabGroup") {
             // Read a tab group
             QString name = stringEntry(childEl, "name");
-            QStrList list = listEntry(childEl, "tabs", "tab");
+            QStrList List = listEntry(childEl, "tabs", "tab");
 
-            KDockWidget *d1 = getDockWidgetFromName( list.first() );
-            list.next();
-            KDockWidget *d2 = getDockWidgetFromName( list.current() );
+            KDockWidget *d1 = getDockWidgetFromName( List.first() );
+            List.next();
+            KDockWidget *d2 = getDockWidgetFromName( List.current() );
             
             KDockWidget *obj = d2->manualDock( d1, KDockWidget::DockCenter );
             if (obj) {
                 KDockTabGroup *tab = (KDockTabGroup*)obj->widget;
-                list.next();
-                while (list.current() && obj) {
-                    KDockWidget *tabDock = getDockWidgetFromName(list.current());
+                List.next();
+                while (List.current() && obj) {
+                    KDockWidget *tabDock = getDockWidgetFromName(List.current());
                     obj = tabDock->manualDock(d1, KDockWidget::DockCenter);
-                    list.next();
+                    List.next();
                 }
                 if (obj) {
                     obj->setName(name.latin1());
