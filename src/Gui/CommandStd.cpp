@@ -28,6 +28,9 @@
 #include "CommandStd.h"
 #include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
+#include "DlgMacroExecuteImp.h"
+#include "DlgMacroRecordImp.h"
+#include "DlgPreferencesImp.h"
 #include "Icons/images.cpp"
 #include "Icons/x.xpm"
 #include "Application.h"
@@ -75,6 +78,9 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdViewFitAll());
 
 	rcCmdMgr.AddCommand(new FCCmdDlgParameter());
+	rcCmdMgr.AddCommand(new FCCmdDlgPreferences());
+	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
+	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
 
 }
 
@@ -818,6 +824,69 @@ void FCCmdDlgParameter::CmdProfile(char** sMenuText,char** sToolTipText,char** s
 void FCCmdDlgParameter::Activated(void)
 {
 	DlgParameter cDlg(AppWnd(),"ParameterDialog",true);
+	cDlg.exec();
+}
+
+//===========================================================================
+// Std_DlgPreferences
+//===========================================================================
+
+void FCCmdDlgPreferences::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Preferences ...";
+	*sToolTipText = "Opens a Dialog to edit the preferences";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_fitall);
+	iAccel = 0;
+}
+
+
+void FCCmdDlgPreferences::Activated(void)
+{
+	DlgPreferencesImp cDlg(AppWnd(),"Prefernces Dialog",true);
+	cDlg.exec();
+}
+
+//===========================================================================
+// Std_DlgMacroRecord
+//===========================================================================
+
+void FCCmdDlgMacroRecord::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Macro recording ...";
+	*sToolTipText = "Opens a Dialog to record a macro";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_fitall);
+	iAccel = 0;
+}
+
+
+void FCCmdDlgMacroRecord::Activated(void)
+{
+	DlgMacroRecordImp cDlg(AppWnd(),"ParameterDialog",true);
+	cDlg.exec();
+}
+
+//===========================================================================
+// Std_DlgMacroExecute
+//===========================================================================
+
+void FCCmdDlgMacroExecute::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Execute macro ...";
+	*sToolTipText = "Opens a Dialog let you execute a redordet macro";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_fitall);
+	iAccel = 0;
+}
+
+
+void FCCmdDlgMacroExecute::Activated(void)
+{
+	DlgMacroExecuteImp cDlg(AppWnd(),"Macro Execute",true);
 	cDlg.exec();
 }
 

@@ -1,0 +1,340 @@
+<!DOCTYPE UI><UI>
+<class>DlgMacroExecute</class>
+<widget>
+    <class>QDialog</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>DlgMacroExecute</cstring>
+    </property>
+    <property>
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>348</width>
+            <height>316</height>
+        </rect>
+    </property>
+    <property>
+        <name>caption</name>
+        <string>Execute macro</string>
+    </property>
+    <vbox>
+        <property>
+            <name>margin</name>
+            <number>11</number>
+        </property>
+        <property>
+            <name>spacing</name>
+            <number>6</number>
+        </property>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout4</cstring>
+            </property>
+            <grid>
+                <property>
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="1" >
+                    <class>QLayoutWidget</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>Layout3</cstring>
+                    </property>
+                    <grid>
+                        <property>
+                            <name>margin</name>
+                            <number>0</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget row="3"  column="0" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>CreateButton</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Create</string>
+                            </property>
+                        </widget>
+                        <spacer row="2"  column="0" >
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer4</cstring>
+                            </property>
+                            <property>
+                                <name>orientation</name>
+                                <enum>Vertical</enum>
+                            </property>
+                            <property>
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget row="4"  column="0" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>DeleteButton</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Delete macro</string>
+                            </property>
+                        </widget>
+                        <widget row="0"  column="0" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>ExecuteButton</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Execute</string>
+                            </property>
+                        </widget>
+                        <widget row="5"  column="0" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>EditButton</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Edit</string>
+                            </property>
+                        </widget>
+                        <widget row="1"  column="0" >
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>CancelButton</cstring>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>Cancel</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget row="0"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>MacroNameGroup</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Macro name:</string>
+                    </property>
+                    <vbox>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>QLineEdit</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>LineEdit2</cstring>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QListView</class>
+                            <column>
+                                <property>
+                                    <name>text</name>
+                                    <string>Macros</string>
+                                </property>
+                                <property>
+                                    <name>clickable</name>
+                                    <bool>true</bool>
+                                </property>
+                                <property>
+                                    <name>resizeable</name>
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <column>
+                                <property>
+                                    <name>text</name>
+                                    <string>Type</string>
+                                </property>
+                                <property>
+                                    <name>clickable</name>
+                                    <bool>true</bool>
+                                </property>
+                                <property>
+                                    <name>resizeable</name>
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>MacrosListView</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget row="1"  column="0" >
+                    <class>QGroupBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>DestinationGroup</cstring>
+                    </property>
+                    <property>
+                        <name>title</name>
+                        <string>Macro destination:</string>
+                    </property>
+                    <hbox>
+                        <property>
+                            <name>margin</name>
+                            <number>11</number>
+                        </property>
+                        <property>
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>QComboBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>ComboBox2</cstring>
+                            </property>
+                            <property>
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>DestButton</cstring>
+                            </property>
+                            <property>
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                </sizepolicy>
+                            </property>
+                            <property>
+                                <name>minimumSize</name>
+                                <size>
+                                    <width>23</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property>
+                                <name>maximumSize</name>
+                                <size>
+                                    <width>23</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property>
+                                <name>text</name>
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget row="1"  column="1" >
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>DoneButton</cstring>
+                    </property>
+                    <property>
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Done</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>CancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>DestButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnNewFolder()</slot>
+    </connection>
+    <connection>
+        <sender>MacrosListView</sender>
+        <signal>selectionChanged(QListViewItem*)</signal>
+        <receiver>DlgMacroExecute</receiver>
+        <slot>OnNewListItemPicked(QListViewItem*)</slot>
+    </connection>
+    <slot access="public">OnExecute()</slot>
+    <slot access="public">OnNewFolder()</slot>
+    <slot access="public">OnRecord()</slot>
+    <slot access="public">OnNewListItemPicked(QListViewItem*)</slot>
+</connections>
+<tabstops>
+    <tabstop>LineEdit2</tabstop>
+    <tabstop>MacrosListView</tabstop>
+    <tabstop>ExecuteButton</tabstop>
+    <tabstop>CancelButton</tabstop>
+    <tabstop>CreateButton</tabstop>
+    <tabstop>DeleteButton</tabstop>
+    <tabstop>EditButton</tabstop>
+    <tabstop>ComboBox2</tabstop>
+    <tabstop>DestButton</tabstop>
+    <tabstop>DoneButton</tabstop>
+</tabstops>
+</UI>
