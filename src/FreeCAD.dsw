@@ -1,0 +1,83 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
+
+###############################################################################
+
+Project: "FreeCADApp"=.\App\FreeCADDoc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADBase"=.\Base\FreeCADBase.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "FreeCADGui"=.\Gui\FreeCADGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADMain"=.\Main\FreeCADMain.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
