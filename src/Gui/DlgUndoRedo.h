@@ -98,54 +98,39 @@ class FCUndoRedoDlg : public QFrame
 class FCToolButtonDropDown : public QToolButton
 {
   Q_OBJECT
+
   public:
     // constructor/destructor
     FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
     virtual ~FCToolButtonDropDown ();
 
+    QSize sizeHint() const;
+
     /// sets a widget, this widget will be shown if click this button
     void setWidget(QWidget* pWidget);
     /// returns the widget
     QWidget* getWidget();
-    /// enables this button if bEnable is true, otherwise disables it
-    void setEnabled(bool bEnable);
-    /// returns true if this button is enabled otherwise false
-    bool isEnabled();
-    void setAutoRaiseEx (bool bEnable);
-    bool autoRaiseEx () const;
 
   signals:
-    // signals when entering or leaving the button with the mouse
-    void enterEventSignal(QEvent* e);
-    void leaveEventSignal(QEvent* e);
     void updateWidgetSignal();
+
+  protected slots:
+    // popup the window
+	  void popupWidget();
 
   protected:
     // overwrite methods from base class
     virtual void enterEvent(QEvent* e);
     virtual void leaveEvent(QEvent* e);
-    virtual void drawButton( QPainter * p );
+    void mousePressEvent( QMouseEvent *e );
+    void drawButtonLabel( QPainter * p );
 
-  protected slots:
-    // popup the window
-	  void popupWidget();
-    // process the events 
-    void enterEventSlot(QEvent* e);
-    void leaveEventSlot(QEvent* e);
-
-  private:
-    // this constructor will be used to create an instance
-    // of this object for '_pDropDown'
-    FCToolButtonDropDown(QWidget* parent, const char * name);
-
-    // this is the drop-down button right besides the actual button
-    // on the button there will be drawn a small arrow
-    FCToolButtonDropDown* _pDropDown;
-
-  protected:
+    bool bEntered;
     // show this widget when clicking on drop-down button
     QWidget* _pWidget;
-    bool bRaise;
+
+  private:
+    void drawArrow( QPainter *, bool, int, int, int, int, const QColorGroup &, bool, const QBrush* = NULL);
 };
 
 

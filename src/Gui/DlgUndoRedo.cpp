@@ -295,87 +295,21 @@ static const char *pArrow[]={
 ".............#"};
 
 FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
-  : QToolButton(parent, name), _pWidget(pWidget)
+  : QToolButton(parent, name), _pWidget(pWidget), bEntered(false)
 {
   // set the pixmap onto the button
   setIconSet(rclPixmap);
-  // create the drop-down button
-  _pDropDown = new FCToolButtonDropDown(parent, name);
-
-  // place the two buttons in a horizontal box
-  // (this is important if you drag the parent toolbar to the left/right border)
-  QHBox* hb = new QHBox(parent);
-  reparent(hb, QPoint(0, 0));
-  _pDropDown->reparent(hb, QPoint(width(),0));
-
-  // connect the signals of '_pDropDown' with the slots of 'this'...
-  connect(_pDropDown, SIGNAL( enterEventSignal(QEvent*)), this, SLOT(enterEventSlot(QEvent*)));
-  connect(_pDropDown, SIGNAL( leaveEventSignal(QEvent*)), this, SLOT(leaveEventSlot(QEvent*)));
-  // ... and the other way round
-  connect(this, SIGNAL( enterEventSignal(QEvent*)), _pDropDown, SLOT(enterEventSlot(QEvent*)));
-  connect(this, SIGNAL( leaveEventSignal(QEvent*)), _pDropDown, SLOT(leaveEventSlot(QEvent*)));
-
-  // connect the 'clicked()' signal
-  connect(_pDropDown, SIGNAL( clicked()), this, SLOT(popupWidget()));
-  bRaise = false;
-}
-
-FCToolButtonDropDown::FCToolButtonDropDown( QWidget * parent, const char * name)
-  : QToolButton(parent, name), _pDropDown(NULL), _pWidget(NULL)
-{
-  // resize the drop-down button
-  setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-  setFixedWidth(15);
-  // set the pixmap onto the drop-down button
-  setIconSet(QPixmap(pArrow));
-  bRaise = false;
+  setAutoRaise(true);
 }
 
 FCToolButtonDropDown::~FCToolButtonDropDown()
 {
-  if (_pDropDown != NULL)
-    delete _pDropDown;
-  _pDropDown = NULL;
-}
-
-void FCToolButtonDropDown::enterEvent ( QEvent * e )
-{
-  bRaise = true;
-  // do the things of the base class
-  QToolButton::enterEvent(e);
-  // emit a signal with this event to the other button
-  emit enterEventSignal(e);
-}
-
-void FCToolButtonDropDown::leaveEvent ( QEvent * e ) 
-{
-  bRaise = false;
-  // do the things of the base class
-  QToolButton::leaveEvent(e);
-  // emit a signal with this event to the other button
-  emit leaveEventSignal(e);
-  // when leaving the button has to be redrawn
-  update();
-}
-
-void FCToolButtonDropDown::enterEventSlot(QEvent* e)
-{
-  bRaise = true;
-  // process the event
-  QToolButton::enterEvent(e);
-}
-
-void FCToolButtonDropDown::leaveEventSlot(QEvent* e)
-{
-  bRaise = false;
-  // process the event
-  QToolButton::leaveEvent(e);
 }
 
 void FCToolButtonDropDown::popupWidget()
 {
   // popup the widget
-  if (_pWidget && _pDropDown)
+  if (_pWidget)
   {
     // update the content of the widget
     emit updateWidgetSignal();
@@ -417,79 +351,143 @@ QWidget* FCToolButtonDropDown::getWidget()
   return _pWidget;
 }
 
-void FCToolButtonDropDown::setEnabled(bool bEnable)
+void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
 {
-  QToolButton::setEnabled(bEnable);
-  if (_pDropDown)
-    _pDropDown->setEnabled(bEnable);
-}
+  // get draw areas for the arrow and the actual icon
+  int sx = 0;
+  int sy = 0;
+  int x, y, w, h;
+  int x2, y2, w2, h2;
+  style().toolButtonRect(width()-19, 0, 19, height() ).rect( &x, &y, &w, &h );
+  style().toolButtonRect(0, 0, width()-19, height() ).rect( &x2, &y2, &w2, &h2 );
 
-bool FCToolButtonDropDown::isEnabled()
-{
-  bool bEnabled = true;
-  bEnabled &= QToolButton::isEnabled();
-  if (_pDropDown)
-    bEnabled &= _pDropDown->isEnabled();
-
-  return bEnabled;
-}
-
-void FCToolButtonDropDown::setAutoRaiseEx (bool bEnable)
-{
-  setAutoRaise(bEnable);
-  if (_pDropDown != NULL)
-    _pDropDown->setAutoRaise(bEnable);
-}
-
-bool FCToolButtonDropDown::autoRaiseEx () const
-{
-  if (_pDropDown != NULL)
-    return _pDropDown->autoRaise() && autoRaise();
-  return autoRaise();
-}
-
-void FCToolButtonDropDown::drawButton( QPainter * p )
-{
-
-#if QT_VERSION >= 300
-
-  QStyle::SCFlags controls = QStyle::SC_ToolButton;
-  QStyle::SCFlags active = QStyle::SC_None;
-
-  if (isDown())
-	  active |= QStyle::SC_ToolButton;
-
-  QStyle::SFlags flags = QStyle::Style_Default;
-  if (isEnabled())
-	  flags |= QStyle::Style_Enabled;
-  if (hasFocus())
-	  flags |= QStyle::Style_HasFocus;
-  if (isDown())
-	  flags |= QStyle::Style_Down;
-  if (isOn())
-	  flags |= QStyle::Style_On;
-  if (autoRaise()) 
+  if (isDown() || isOn()) 
   {
-	  flags |= QStyle::Style_AutoRaise;
-  	if (bRaise) 
-    {
-      flags |= QStyle::Style_MouseOver;
-	    if (! isOn() && ! isDown())
-		    flags |= QStyle::Style_Raised;
-  	}
+	  style().getButtonShift(sx, sy);
+	  x+=sx;
+	  y+=sy;
+  }
+
+  // draw drop down arrow
+  drawArrow( p,  isDown(), x+w-15, y, 15, h, colorGroup(), isEnabled() );
+
+  if ( !text().isNull() ) 
+  {
+  	style().drawItem( p, x2, y2, w2, h2, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
   } 
-  else if (! isOn() && ! isDown())
-  	flags |= QStyle::Style_Raised;
+  else 
+  {
+  	QPixmap pm;
+	  if ( usesBigPixmap() ) 
+    {
+	    if ( !isEnabled() )
+		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Disabled );
+	    else if ( uses3D() )
+		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Active );
+	    else
+		    pm = iconSet( isOn() ).pixmap( QIconSet::Large, QIconSet::Normal );
+	  } 
+    else 
+    {
+	    if ( !isEnabled() )
+    		pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Disabled );
+	    else if ( uses3D() )
+		    pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Active );
+	    else
+		    pm = iconSet( isOn() ).pixmap( QIconSet::Small, QIconSet::Normal );
+	  }
 
-  style().drawComplexControl(QStyle::CC_ToolButton, p, this, rect(), colorGroup(),
-			       flags, controls, active, QStyleOption());
+  	if ( usesTextLabel() ) 
+    {
+	    int fh = fontMetrics().height();
+	    style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+	    p->setFont( font() );
+	    style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+ 	  } 
+    else 
+    {
+	    style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+	  }
+  }
 
-  drawButtonLabel(p);
+  // draw vertical separator line if entered
+  if (bEntered)
+  {
+    style().drawSeparator(p, width()-19, y2, width()-19, y2+h2,colorGroup());
+  }
+}
 
-#else // < QT 3.x
-    QToolButton::drawButton(p);
-#endif
+void FCToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w, int h, 
+                                      const QColorGroup &g, bool enabled, const QBrush *fill )
+{
+  QPointArray a;
+	a.setPoints( 7, -4,-2, 2,-2, -3,-1, 1,-1, -2,0, 0,0, -1,1 );
 
+	x++;
+	y++;
+
+  QPen savePen = p->pen();
+  if (down)
+  	p->setBrushOrigin(p->brushOrigin() + QPoint(1,1));
+  if ( fill )
+	  p->fillRect( x, y, w, h, *fill );
+  if (down)
+	  p->setBrushOrigin(p->brushOrigin() - QPoint(1,1));
+  if ( enabled ) 
+  {
+	  a.translate( x+w/2, y+h/2 );
+	  p->setPen( g.buttonText() );
+	  p->drawLineSegments( a, 0, 3 );
+	  p->drawPoint( a[6] );
+  } 
+  else 
+  {
+	  a.translate( x+w/2+1, y+h/2+1 );
+	  p->setPen( g.light() );
+	  p->drawLineSegments( a, 0, 3 );
+	  p->drawPoint( a[6] );
+	  a.translate( -1, -1 );
+	  p->setPen( g.mid() );
+	  p->drawLineSegments( a, 0, 3 );
+	  p->drawPoint( a[6] );
+  }
+
+  p->setPen( savePen );
+}
+
+QSize FCToolButtonDropDown::sizeHint() const
+{
+  // take extra space for the drop down area
+  QSize s = QToolButton::sizeHint();
+  s.setWidth(s.width()+20);
+  return s;
+}
+
+void FCToolButtonDropDown::enterEvent ( QEvent * e )
+{
+  bEntered = true;
+  QToolButton::enterEvent(e);
+}
+
+void FCToolButtonDropDown::leaveEvent(QEvent* e)
+{
+  bEntered = false;
+  QToolButton::leaveEvent(e);
+}
+
+void FCToolButtonDropDown::mousePressEvent( QMouseEvent *e )
+{
+  if ( e->button() != LeftButton )
+  	return;
+
+  // check which area is pressed
+  if (QRect(width()-20, 0, 20, height()).contains(e->pos()))
+  {
+    popupWidget();
+    return;
+  }
+
+  QToolButton::mousePressEvent(e);
 }
 
 #include "moc_DlgUndoRedo.cpp"
