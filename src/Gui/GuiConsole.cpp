@@ -15,7 +15,7 @@
 
 #include "../Config.h"
 
-#ifndef __linux
+#ifndef FC_OS_LINUX
 
 #ifdef _PreComp_
 #	include "PreCompiled.h"
@@ -95,7 +95,7 @@ void FCGUIConsole::Log  (const char *sLog)
 	printf("%s",sLog);
 }
 
-#else /* __linux */
+#else /* FC_OS_LINUX */
 #include <iostream>
 #include "GuiConsole.h"
 // safely ignore FCGUIConsole::s_nMaxLines and  FCGUIConsole::s_nRefCount

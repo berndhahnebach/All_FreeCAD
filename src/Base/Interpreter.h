@@ -34,6 +34,8 @@
 #ifndef __INTERPRETER_H__
 #define __INTERPRETER_H__
 
+#include<Python.h>
+
 // Std. configurations
 
 class BaseExport FCInterpreter

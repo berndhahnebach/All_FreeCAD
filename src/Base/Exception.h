@@ -2,7 +2,7 @@
 #define _RSEXCEPTION_HXX
 
 #include <exception>
-#include "string"
+#include <string>
 
 
 

@@ -33,6 +33,11 @@
 #ifndef _FACTORY_H_
 #define _FACTORY_H_
 
+#include<typeinfo>
+#include<string>
+#include<map>
+#include"../Config.h"
+
 /// Abstract base class of all producers
 class  BaseExport FCAbstractProducer
 { 

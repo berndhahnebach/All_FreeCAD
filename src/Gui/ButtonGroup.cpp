@@ -35,6 +35,7 @@
 # include <qpainter.h>
 # include <qstyle.h>
 # include <qapplication.h>
+# include <qcolordialog.h>
 #endif
 
 #include <qobjectlist.h>

@@ -31,6 +31,7 @@
 
 #include "../Base/Factory.h"
 #include <typeinfo>
+#include<qwidget.h>
 
 /** 
  * The widget factory supplier class

@@ -58,6 +58,9 @@
 static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Auto;
 
 #include <fcntl.h>
+#ifdef FC_OS_LINUX
+#	include <unistd.h>
+#endif
 
 #include "Parameter.h"
 #include "Exception.h"
@@ -650,7 +653,7 @@ void FCParameterManager::Init(void)
 		catch(const XMLException& toCatch)
 		{
 #ifdef FC_OS_LINUX
-			std::sstream err;
+			std::ostringstream err;
 #else
 			std::strstream err;
 #endif
@@ -674,7 +677,7 @@ void FCParameterManager::Init(void)
 
 bool FCParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-	int i=open(sFileName,_O_RDONLY);
+	int i=open(sFileName,O_RDONLY);
 	if( i != -1)
 	{
 		close(i);

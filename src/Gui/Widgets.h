@@ -79,7 +79,8 @@ class FCProgressBar : public QProgressBar
     void Stop ();
 
   protected:
-    virtual void keyPressEvent(QKeyEvent* e);
+    bool isInterrupted();
+    void interrupt();
     virtual void drawContents( QPainter *p );
     bool setIndicator ( QString & indicator, int progress, int totalSteps );
     bool bSeveralInstances;

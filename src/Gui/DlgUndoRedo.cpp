@@ -37,7 +37,7 @@
 #	include <qrect.h>
 #	include <qvariant.h>
 #	include <qframe.h>
-#       ifdef __linux
+#       ifdef FC_OS_LINUX
 #          include <qapplication.h>
 #       endif
 #endif

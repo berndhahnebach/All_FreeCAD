@@ -165,6 +165,8 @@ private:
 
 	static FCCommandLine *_pcSingleton;
 
+  std::vector<std::string> _astrRunCmds;
+
 protected:
   void keyPressEvent ( QKeyEvent * e );
   void mousePressEvent ( QMouseEvent * e );

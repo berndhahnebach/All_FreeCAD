@@ -177,7 +177,7 @@ private:
  *  This macro makes it easyer to define a new command.
  *  The parameters are the class name and the command name
  */
-//#ifndef aa__linux /* virtual does not compile */
+//#ifndef FC_OS_LINUX /* virtual does not compile */
 
 #define DEF_STD_CMD(X,Y) class X : public FCCommand \
 {\
@@ -197,7 +197,7 @@ public:\
 	void Activated(void);\
 };
 
-#endif //__linux*/
+#endif //FC_OS_LINUX*/
 
 
 

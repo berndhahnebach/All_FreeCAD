@@ -41,6 +41,7 @@
 #ifdef _PreComp_
 #	include "PreCompiled.h"
 #else
+#	include <algorithm>
 #	include <qapplication.h>
 #	include <qvbox.h>
 #	include <qworkspace.h>
@@ -472,26 +473,29 @@ void ApplicationWindow::executeUndoRedo()
 
   GetProgressBar()->Stop();
 #else
-  bool b=true; int bi=50;
-  bool c=true; int ci=20;
+	bool b=true; int bi=50;
+	bool c=true; int ci=20;
+	try{
+		GetProgressBar()->Start("Very long operation", bi, b);
+		for (int i=0; i<bi; i++)
+		{
+		  QWaitCondition().wait(i*10);
 
-  GetProgressBar()->Start("Very long operation", bi, b);
-  for (int i=0; i<bi; i++)
-  {
-    QWaitCondition().wait(i*10);
+		  GetProgressBar()->Start("Hallo", ci, c);
+		  for (int j=0;j<ci;j++)
+		  {
+			QWaitCondition().wait(j*20);
+			GetProgressBar()->Next();
+		  }
+		  GetProgressBar()->Stop();
 
-    GetProgressBar()->Start("Hallo", ci, c);
-    for (int j=0;j<ci;j++)
-    {
-      QWaitCondition().wait(j*20);
-      GetProgressBar()->Next();
-    }
-    GetProgressBar()->Stop();
+		  GetProgressBar()->Next();
+		}
 
-    GetProgressBar()->Next();
-  }
-
-  GetProgressBar()->Stop();
+		GetProgressBar()->Stop();
+	}catch(...)
+	{
+	}
 #endif
 }
 

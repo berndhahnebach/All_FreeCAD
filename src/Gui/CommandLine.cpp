@@ -72,6 +72,14 @@ void FCConsoleValidator::fixup ( QString & txt) const
 FCCommandLine::FCCommandLine(void)
 : QComboBox(true, NULL), FCWindow("command line")
 {
+  // run commands
+  _astrRunCmds.push_back("run");
+  _astrRunCmds.push_back("script");
+  _astrRunCmds.push_back("start");
+  _astrRunCmds.push_back("exec");
+  _astrRunCmds.push_back("execute");
+  _astrRunCmds.push_back("execfile");
+
   // hide the botton from combo box
   setStyle(new FCWindowsStyle);
   ReadCmdList();
@@ -136,7 +144,22 @@ void FCCommandLine::slotLaunchCommand()
   // launch the python command
   try
   {
-    GetInterpreter().Launch(text(currentItem()).latin1());
+    bool flag = false;
+    QString cmd = text(currentItem());
+    for (std::vector<std::string>::iterator it = _astrRunCmds.begin(); it != _astrRunCmds.end(); ++it)
+    {
+      // if one of the run commands is used
+      if (cmd.lower().startsWith(it->c_str()))
+      {
+        cmd = cmd.right(cmd.length() - (it->length()+1));
+        GetInterpreter().LaunchFile(cmd.latin1());
+        flag = true;
+        break;
+      }
+    }
+
+    if (!flag)
+      GetInterpreter().Launch(text(currentItem()).latin1());
   }
   catch (const FCException& rclE)
   {

@@ -19,7 +19,7 @@ out.write("const char " + sys.argv[1][:-3] + "[] =")
 
 for line in lines:
     # remove new line
-    line2 = line[:-1]
+    line2 = string.rstrip(line)
     # replace special chars
     line2 = string.replace(line2,'\\','\\\\')
     line2 = string.replace(line2,'\"','\\\"')

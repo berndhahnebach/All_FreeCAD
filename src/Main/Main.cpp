@@ -34,7 +34,11 @@
 
 #include <stdio.h>
 
-#ifndef __linux
+#ifdef FC_OS_LINUX
+#	include <unistd.h>
+#endif
+
+#ifdef FC_OS_WIN32
 #	include <direct.h>
 #	include <windows.h>
 #endif

@@ -41,11 +41,11 @@
 #include "Application.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
-#ifndef __linux
+#ifndef FC_OS_LINUX
 #include <direct.h>
 #endif
 
-#ifdef __linux
+#ifdef FC_OS_LINUX
 #  include<unistd.h> //for chdir
 #  include<stdlib.h> //for system
 #  ifdef _chdir
@@ -704,7 +704,7 @@ void FCHtmlView::StartExtBrowser(QString url)
 
 void FCHtmlView::StartBrowser(QString path, QString protocol)
 {
-#ifdef __linux
+#ifdef FC_OS_LINUX
   QString url = path.mid(protocol.length());
   if (system("mozilla "+url)!=0){
     char msgBuf[512];

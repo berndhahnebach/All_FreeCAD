@@ -341,7 +341,7 @@ int PP_DEBUG  = 0;    /* debug embedded code with pdb? */
 
 char *PP_Init(char *modname) {
     Py_Initialize();                               /* init python if needed */
-//#ifdef __linux /* cannot convert `const char *' to `char *' in assignment */
+//#ifdef FC_OS_LINUX /* cannot convert `const char *' to `char *' in assignment */
     if (modname!=NULL) return modname;
     { /* we assume here that the caller frees allocated memory */
       char* __main__=(char *)malloc(sizeof("__main__"));

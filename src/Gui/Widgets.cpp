@@ -38,6 +38,7 @@
 
 #include "Widgets.h"
 #include "Application.h"
+#include "../Base/Exception.h"
 
 #include <qlayout.h>
 #include <qdatetime.h>
@@ -86,6 +87,7 @@ QString FCFileDialog::getSaveFileName( const QString & startWith, const QString&
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
 : QProgressBar (parent, name, f)
 {
+  setFixedWidth(120);
   // this style is very nice ;-)
   setIndicatorFollowsStyle(false);
   // update the string after timestep steps
@@ -135,7 +137,8 @@ void FCProgressBar::Start(QString txt, int steps, bool& flag)
 
 void FCProgressBar::Next()
 {
-  setProgress(iStep++);
+  if (!isInterrupted())
+    setProgress(iStep++);
 }
 
 void FCProgressBar::Stop ()
@@ -148,8 +151,40 @@ void FCProgressBar::Stop ()
   }
 }
 
-void FCProgressBar::keyPressEvent(QKeyEvent* e)
+bool FCProgressBar::isInterrupted()
 {
+#ifdef  FC_OS_WIN32
+  MSG  tMSG;
+
+  // Escape button pressed ?
+  while (PeekMessage(&tMSG, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_REMOVE) == TRUE)
+  {
+    TranslateMessage(&tMSG);
+    if (tMSG.message == WM_KEYDOWN)
+    {
+      if (tMSG.wParam == VK_ESCAPE)
+      {
+        interrupt();
+        return true;
+      }
+    }
+  }
+#endif
+
+  return false;
+}
+
+void FCProgressBar::interrupt()
+{
+  //resets
+  reset();
+  bSeveralInstances = false;
+  iStartedProgresses = 0;
+
+  FCGuiConsoleObserver::bMute = true;
+  FCException exc("Aborting...");
+  FCGuiConsoleObserver::bMute = false;
+  throw exc;
 }
 
 void FCProgressBar::drawContents( QPainter *p )
