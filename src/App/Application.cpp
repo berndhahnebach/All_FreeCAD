@@ -54,6 +54,10 @@ const char *       FCApplication::VersionTime  = __TIME__;
 #include "InitScript.h"
 #include "TestScript.h"
 
+#ifdef FC_OS_LINUX
+using namespace std;
+#endif
+
 //using Base::GetConsole;
 using namespace Base;
 using namespace App;
@@ -383,14 +387,14 @@ PyMethodDef FCApplication::Methods[] = {
 PYFUNCIMP_S(FCApplication,sOpen)
 {
     char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
 
-         
+
 	try {
-		// return new document		
-		return (GetApplication().Open(pstr)->GetPyObject()); 	
-	}	
+		// return new document
+		return (GetApplication().Open(pstr)->GetPyObject());
+	}
 	catch(FCException e) {
 		PyErr_SetString(PyExc_IOError, e.what());
 		return 0L;

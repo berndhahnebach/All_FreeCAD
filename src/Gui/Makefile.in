@@ -237,6 +237,8 @@ propertyeditor/propertyeditorfile.moc \
 propertyeditor/propertyeditorfont.moc \
 propertyeditor/propertyeditorinput.moc \
 propertyeditor/propertyeditorlist.moc \
+propertyeditor/knuminput.moc \
+propertyeditor/knumvalidator.moc \
 Language/FreeCAD_de.h \
 GuiInitScript.h
 
@@ -263,6 +265,8 @@ propertyeditor/propertyeditorfile.cpp \
 propertyeditor/propertyeditorfont.cpp \
 propertyeditor/propertyeditorinput.cpp \
 propertyeditor/propertyeditorlist.cpp \
+propertyeditor/knuminput.cpp \
+propertyeditor/knumvalidator.cpp \
 \
 Inventor/OCC/SoBrepShape.cpp \
 \
@@ -364,14 +368,15 @@ am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	kexipropertyeditor.lo kexipropertyeditoritem.lo \
 	kexipropertysubeditor.lo propertyeditordate.lo \
 	propertyeditorfile.lo propertyeditorfont.lo \
-	propertyeditorinput.lo propertyeditorlist.lo SoBrepShape.lo \
-	LanguageFactory.lo Application.lo BitmapFactory.lo \
-	ButtonGroup.lo CommandLine.lo Command.lo CommandStd.lo \
-	CommandTest.lo CommandView.lo DlgActionsImp.lo DlgCmdbarsImp.lo \
-	DlgCommandsImp.lo DlgCustomizeImp.lo DlgDocTemplatesImp.lo \
-	DlgEditorImp.lo DlgGeneralImp.lo DlgMacroExecuteImp.lo \
-	DlgMacroRecordImp.lo DlgOnlineHelpImp.lo DlgParameterImp.lo \
-	DlgPreferencesImp.lo DlgSettingsImp.lo DlgSettings3DViewImp.lo \
+	propertyeditorinput.lo propertyeditorlist.lo knuminput.lo \
+	knumvalidator.lo SoBrepShape.lo LanguageFactory.lo \
+	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
+	Command.lo CommandStd.lo CommandTest.lo CommandView.lo \
+	DlgActionsImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
+	DlgCustomizeImp.lo DlgDocTemplatesImp.lo DlgEditorImp.lo \
+	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
+	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
+	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
 	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
 	DlgUndoRedo.lo Document.lo GuiConsole.lo HtmlView.lo Macro.lo \
 	MouseModel.lo PrefWidgets.lo Process.lo PropertyPage.lo \
@@ -437,6 +442,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/kexipropertyeditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/kexipropertyeditoritem.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/kexipropertysubeditor.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/knuminput.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/knumvalidator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditordate.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorfile.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorfont.Plo \
@@ -568,6 +575,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertyeditor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertyeditoritem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertysubeditor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knuminput.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knumvalidator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditordate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorfont.Plo@am__quote@
@@ -1276,6 +1285,72 @@ propertyeditorlist.lo: propertyeditor/propertyeditorlist.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditorlist.Plo' tmpdepfile='$(DEPDIR)/propertyeditorlist.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditorlist.lo `test -f 'propertyeditor/propertyeditorlist.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditorlist.cpp
+
+knuminput.o: propertyeditor/knuminput.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT knuminput.o -MD -MP -MF "$(DEPDIR)/knuminput.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o knuminput.o `test -f 'propertyeditor/knuminput.cpp' || echo '$(srcdir)/'`propertyeditor/knuminput.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/knuminput.Tpo" "$(DEPDIR)/knuminput.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/knuminput.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/knuminput.cpp' object='knuminput.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/knuminput.Po' tmpdepfile='$(DEPDIR)/knuminput.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o knuminput.o `test -f 'propertyeditor/knuminput.cpp' || echo '$(srcdir)/'`propertyeditor/knuminput.cpp
+
+knuminput.obj: propertyeditor/knuminput.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT knuminput.obj -MD -MP -MF "$(DEPDIR)/knuminput.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o knuminput.obj `if test -f 'propertyeditor/knuminput.cpp'; then $(CYGPATH_W) 'propertyeditor/knuminput.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/knuminput.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/knuminput.Tpo" "$(DEPDIR)/knuminput.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/knuminput.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/knuminput.cpp' object='knuminput.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/knuminput.Po' tmpdepfile='$(DEPDIR)/knuminput.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o knuminput.obj `if test -f 'propertyeditor/knuminput.cpp'; then $(CYGPATH_W) 'propertyeditor/knuminput.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/knuminput.cpp'; fi`
+
+knuminput.lo: propertyeditor/knuminput.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT knuminput.lo -MD -MP -MF "$(DEPDIR)/knuminput.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o knuminput.lo `test -f 'propertyeditor/knuminput.cpp' || echo '$(srcdir)/'`propertyeditor/knuminput.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/knuminput.Tpo" "$(DEPDIR)/knuminput.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/knuminput.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/knuminput.cpp' object='knuminput.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/knuminput.Plo' tmpdepfile='$(DEPDIR)/knuminput.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o knuminput.lo `test -f 'propertyeditor/knuminput.cpp' || echo '$(srcdir)/'`propertyeditor/knuminput.cpp
+
+knumvalidator.o: propertyeditor/knumvalidator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT knumvalidator.o -MD -MP -MF "$(DEPDIR)/knumvalidator.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o knumvalidator.o `test -f 'propertyeditor/knumvalidator.cpp' || echo '$(srcdir)/'`propertyeditor/knumvalidator.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/knumvalidator.Tpo" "$(DEPDIR)/knumvalidator.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/knumvalidator.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/knumvalidator.cpp' object='knumvalidator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/knumvalidator.Po' tmpdepfile='$(DEPDIR)/knumvalidator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o knumvalidator.o `test -f 'propertyeditor/knumvalidator.cpp' || echo '$(srcdir)/'`propertyeditor/knumvalidator.cpp
+
+knumvalidator.obj: propertyeditor/knumvalidator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT knumvalidator.obj -MD -MP -MF "$(DEPDIR)/knumvalidator.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o knumvalidator.obj `if test -f 'propertyeditor/knumvalidator.cpp'; then $(CYGPATH_W) 'propertyeditor/knumvalidator.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/knumvalidator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/knumvalidator.Tpo" "$(DEPDIR)/knumvalidator.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/knumvalidator.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/knumvalidator.cpp' object='knumvalidator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/knumvalidator.Po' tmpdepfile='$(DEPDIR)/knumvalidator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o knumvalidator.obj `if test -f 'propertyeditor/knumvalidator.cpp'; then $(CYGPATH_W) 'propertyeditor/knumvalidator.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/knumvalidator.cpp'; fi`
+
+knumvalidator.lo: propertyeditor/knumvalidator.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT knumvalidator.lo -MD -MP -MF "$(DEPDIR)/knumvalidator.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o knumvalidator.lo `test -f 'propertyeditor/knumvalidator.cpp' || echo '$(srcdir)/'`propertyeditor/knumvalidator.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/knumvalidator.Tpo" "$(DEPDIR)/knumvalidator.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/knumvalidator.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/knumvalidator.cpp' object='knumvalidator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/knumvalidator.Plo' tmpdepfile='$(DEPDIR)/knumvalidator.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o knumvalidator.lo `test -f 'propertyeditor/knumvalidator.cpp' || echo '$(srcdir)/'`propertyeditor/knumvalidator.cpp
 
 SoBrepShape.o: Inventor/OCC/SoBrepShape.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SoBrepShape.o -MD -MP -MF "$(DEPDIR)/SoBrepShape.Tpo" \

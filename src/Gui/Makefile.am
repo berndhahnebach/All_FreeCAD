@@ -103,6 +103,8 @@ propertyeditor/propertyeditorfile.moc \
 propertyeditor/propertyeditorfont.moc \
 propertyeditor/propertyeditorinput.moc \
 propertyeditor/propertyeditorlist.moc \
+propertyeditor/knuminput.moc \
+propertyeditor/knumvalidator.moc \
 Language/FreeCAD_de.h \
 GuiInitScript.h
 
@@ -129,6 +131,8 @@ propertyeditor/propertyeditorfile.cpp \
 propertyeditor/propertyeditorfont.cpp \
 propertyeditor/propertyeditorinput.cpp \
 propertyeditor/propertyeditorlist.cpp \
+propertyeditor/knuminput.cpp \
+propertyeditor/knumvalidator.cpp \
 \
 Inventor/OCC/SoBrepShape.cpp \
 \

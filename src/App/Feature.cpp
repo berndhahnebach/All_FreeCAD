@@ -13,6 +13,9 @@
 #	include <TDF_Tool.hxx>
 #	include <TCollection_AsciiString.hxx>
 #	include <TDF_ListIteratorOfAttributeList.hxx>
+#	include <TFunction_Logbook.hxx>
+#	include <TFunction_DriverTable.hxx>
+#	include <TFunction_Function.hxx>
 #	include <Standard_GUID.hxx>
 #endif
 
@@ -28,11 +31,11 @@ using namespace App;
 
 
 //===========================================================================
-// Feature  
+// Feature
 //===========================================================================
 
 
-void Feature::InitLabel(TDF_Label &rcLabel)
+void Feature::InitLabel(const TDF_Label &rcLabel)
 {
 	_cFeatureLabel = rcLabel;
 

@@ -47,7 +47,7 @@ public:
 	 *  If you overreide this methode allwayse call the vather mthode
 	 *  first!
 	 */
-	virtual void InitLabel(TDF_Label &rcLabel);
+	virtual void InitLabel(const TDF_Label &rcLabel);
 
 	/** @name methodes used for recalculation (update) */
 	//@{
