@@ -3,111 +3,219 @@ noinst_LIBRARIES=libFreeCADGui.a
 BUILT_SOURCES=\
 moc_Application.cpp \
 moc_ButtonGroup.cpp \
-moc_ButtonGroup.cpp \
 moc_Command.cpp \
 moc_CommandLine.cpp \
 moc_DlgActions.cpp \
+moc_DlgActionsImp.cpp \
 moc_DlgCmdbars.cpp \
+moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
-moc_DlgCustomize.cpp \
-moc_DlgCustomizeImp.cpp \
+moc_DlgCommandsImp.cpp \
 moc_DlgDocTemplates.cpp\
 moc_DlgDocTemplatesImp.cpp \
+moc_DlgEditor.cpp \
+moc_DlgEditorImp.cpp \
+moc_DlgGeneral.cpp \
+moc_DlgGeneralImp.cpp \
 moc_DlgMacroExecute.cpp \
 moc_DlgMacroExecuteImp.cpp \
 moc_DlgMacroRecord.cpp \
 moc_DlgMacroRecordImp.cpp \
 moc_DlgMacros.cpp \
 moc_DlgOnlineHelp.cpp \
+moc_DlgOnlineHelpImp.cpp \
 moc_DlgParameter.cpp \
 moc_DlgParameterImp.cpp \
 moc_DlgPreferences.cpp \
 moc_DlgPreferencesImp.cpp \
 moc_DlgSettings.cpp \
 moc_DlgSettingsImp.cpp \
+moc_DlgSettings3DView.cpp \
+moc_DlgSettings3DViewImp.cpp \
+moc_DlgSettingsMacro.cpp \
+moc_DlgSettingsMacroImp.cpp \
 moc_DlgToolbars.cpp \
+moc_DlgToolbarsImp.cpp \
 moc_DlgUndoRedo.cpp \
 moc_Document.cpp \
 moc_HtmlView.cpp \
+moc_PlatQt.cpp \
 moc_PrefWidgets.cpp \
+moc_Process.cpp \
+moc_ProcessQt.cpp \
+moc_PropertyView.cpp \
+moc_ReportView.cpp \
+moc_SciEditor.cpp \
+moc_ScintillaQt.cpp \
 moc_Splashscreen.cpp \
 moc_Tree.cpp \
 moc_View.cpp\
 moc_View3D.cpp \
+moc_View3DInventor.cpp \
 moc_WidgetFactory.cpp \
 moc_Widgets.cpp \
 moc_Window.cpp \
+DlgActions.cpp \
 DlgActions.h \
+DlgCmdbars.cpp \
 DlgCmdbars.h \
+DlgCommands.cpp \
 DlgCommands.h \
-DlgCustomize.h\
+DlgDocTemplates.cpp \
 DlgDocTemplates.h \
-DlgMacroExecute.h\
-DlgMacroRecord.h \
-DlgMacros.h \
-DlgOnlineHelp.h \
-DlgParameter.h \
-DlgPreferences.h \
-DlgSettings.h \
-DlgToolbars.h \
-DlgSettings3DView.h \
-DlgSettingsMacro.h \
+DlgEditor.cpp \
 DlgEditor.h \
+DlgGeneral.cpp \
 DlgGeneral.h \
-moc_DlgSettings3DView.cpp \
-moc_DlgSettingsMacro.cpp \
-moc_DlgEditor.cpp \
-moc_DlgGeneral.cpp
+DlgMacroExecute.cpp \
+DlgMacroExecute.h \
+DlgMacroRecord.cpp \
+DlgMacroRecord.h \
+DlgMacros.cpp \
+DlgMacros.h \
+DlgOnlineHelp.cpp \
+DlgOnlineHelp.h \
+DlgParameter.cpp \
+DlgParameter.h \
+DlgPreferences.cpp \
+DlgPreferences.h \
+DlgSettings.cpp \
+DlgSettings.h \
+DlgSettings3DView.cpp \
+DlgSettings3DView.h \
+DlgSettingsMacro.cpp \
+DlgSettingsMacro.h \
+DlgToolbars.cpp \
+DlgToolbars.h \
+qextmdi/dummykmainwindow.h \
+qextmdi/dummykpartsdockmainwindow.h \
+qextmdi/dummyktoolbar.h \
+qextmdi/kdockwidget.h
 
-
-#DlgCustomize.cpp\
-#DlgDocTemplates.cpp \
-#DlgMacroExecute.cpp \
-#DlgMacroRecord.cpp \
-#DlgMacros.cpp \
-#DlgParameter.cpp \
-#DlgPreferences.cpp \
-#DlgSettings.cpp
-
+#scintilla/ExternalLexer.cpp
 
 libFreeCADGui_a_SOURCES=\
-DlgCustomize.cpp\
-DlgDocTemplates.cpp \
-DlgMacroExecute.cpp \
-DlgMacroRecord.cpp \
-DlgMacros.cpp \
-DlgParameter.cpp \
-DlgPreferences.cpp \
-DlgSettings.cpp \
+scintilla/AutoComplete.cpp \
+scintilla/CallTip.cpp \
+scintilla/CellBuffer.cpp \
+scintilla/ContractionState.cpp \
+scintilla/DocumentAccessor.cpp \
+scintilla/Documents.cpp \
+scintilla/Editor.cpp \
+scintilla/Indicator.cpp \
+scintilla/KeyMap.cpp \
+scintilla/KeyWords.cpp \
+scintilla/LexPython.cpp \
+scintilla/LineMarker.cpp \
+scintilla/PropSet.cpp \
+scintilla/RESearch.cpp \
+scintilla/ScintillaBase.cpp \
+scintilla/Style.cpp \
+scintilla/StyleContext.cpp \
+scintilla/UniConversion.cpp \
+scintilla/ViewStyle.cpp \
+scintilla/WindowAccessor.cpp \
+scintilla/XPM.cpp \
+\
+qextmdi/dummy_moc.cpp \
+qextmdi/kdocktabctl.cpp \
+qextmdi/kdockwidget.cpp \
+qextmdi/kdockwidget_private.cpp \
+qextmdi/qextmdichildarea.cpp \
+qextmdi/qextmdichildfrm.cpp \
+qextmdi/qextmdichildfrmcaption.cpp \
+qextmdi/qextmdichildview.cpp \
+qextmdi/qextmdimainfrm.cpp \
+qextmdi/qextmditaskbar.cpp \
+\
+Inventor/OCC/SoBrepShape.cpp \
+Inventor/Qt/devices/6DOFEvents.cpp \
+Inventor/Qt/devices/SoGuiDevice.cpp \
+Inventor/Qt/devices/SoQtDevice.cpp \
+Inventor/Qt/devices/SoQtInputFocus.cpp \
+Inventor/Qt/devices/SoQtInputFocus1.cpp \
+Inventor/Qt/devices/SoQtKeyboard.cpp \
+Inventor/Qt/devices/SoQtKeyboard1.cpp \
+Inventor/Qt/devices/SoQtMouse.cpp \
+Inventor/Qt/devices/SoQtMouse1.cpp \
+Inventor/Qt/devices/SoQtSpaceball.cpp \
+Inventor/Qt/devices/SoQtSpaceball1.cpp \
+Inventor/Qt/viewers/ExaminerViewer.cpp \
+Inventor/Qt/viewers/FullViewer.cpp \
+Inventor/Qt/viewers/PlaneViewer.cpp \
+Inventor/Qt/viewers/SoQtConstrainedViewer.cpp \
+Inventor/Qt/viewers/SoQtExaminerViewer.cpp \
+Inventor/Qt/viewers/SoQtFlyViewer.cpp \
+Inventor/Qt/viewers/SoQtFullViewer.cpp \
+Inventor/Qt/viewers/SoQtPlaneViewer.cpp \
+Inventor/Qt/viewers/SoQtViewer.cpp \
+Inventor/Qt/widgets/QtNativePopupMenu.cpp \
+Inventor/Qt/widgets/SoAnyThumbWheel.cpp \
+Inventor/Qt/widgets/SoQtGLArea.cpp \
+Inventor/Qt/widgets/SoQtPopupMenu.cpp \
+Inventor/Qt/widgets/SoQtThumbWheel.cpp \
+Inventor/Qt/SoAny.cpp \
+Inventor/Qt/SoGuiGLWidgetCommon.cpp \
+Inventor/Qt/SoQt.cpp \
+Inventor/Qt/SoQtCommon.cpp \
+Inventor/Qt/SoQtComponent.cpp \
+Inventor/Qt/SoQtComponentCommon.cpp \
+Inventor/Qt/SoQtCursor.cpp \
+Inventor/Qt/SoQtGLWidget.cpp \
+Inventor/Qt/SoQtObject.cpp \
+Inventor/Qt/SoQtRenderArea.cpp \
+\
+Language/LanguageFactory.cpp \
 \
 Application.cpp \
+BitmapFactory.cpp \
 ButtonGroup.cpp \
 CommandLine.cpp \
 Command.cpp \
 CommandStd.cpp  \
+CommandTest.cpp \
 CommandView.cpp \
-DlgCustomizeImp.cpp \
+DlgActionsImp.cpp \
+DlgCmdbarsImp.cpp \
+DlgCommandsImp.cpp \
 DlgDocTemplatesImp.cpp \
+DlgEditorImp.cpp \
+DlgGeneralImp.cpp \
 DlgMacroExecuteImp.cpp \
 DlgMacroRecordImp.cpp \
 DlgMacros.cpp \
+DlgOnlineHelpImp.cpp \
 DlgParameterImp.cpp \
 DlgPreferencesImp.cpp \
 DlgSettingsImp.cpp \
+DlgSettings3DViewImp.cpp \
+DlgSettingsMacroImp.cpp \
+DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
 Document.cpp \
 GuiConsole.cpp \
 HtmlView.cpp \
+Macro.cpp \
 MouseModel.cpp \
+PlatQt.cpp \
 PrefWidgets.cpp \
+Process.cpp \
+PropertyPage.cpp \
+PropertyView.cpp \
+ReportView.cpp \
+resource.cpp \
+SciEditor.cpp \
+ScintillaQt.cpp \
 Splashscreen.cpp \
-Themes.cpp \
+Tools.cpp \
 Tree.cpp \
 View.cpp \
 View3D.cpp \
-Window.cpp \
+View3DInventor.cpp \
 WidgetFactory.cpp \
-Widgets.cpp 
+Widgets.cpp \
+Window.cpp
+
 
 #moc_DlgMacros.cpp
 
@@ -120,6 +228,10 @@ moc_%.cpp: %.h
 # (it adds path to #include automatically, so cd before calling it)
 %.h: %.ui
 	cd $(@D) && $(UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui 
+%.cpp: %.h %.ui
 	cd $(@D) && $(UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
+
+
+# set the include path found by configure
+INCLUDES= $(all_includes) -I./qextmdi -I./Inventor/Qt
