@@ -83,8 +83,11 @@ void FCPropertyPage::slotApply()
 
 void FCPropertyPage::slotCancel()
 {
-  cancel();
-  setModified(false);
+  if (isModified())
+  {
+    cancel();
+    setModified(false);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
