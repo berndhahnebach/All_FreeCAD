@@ -121,12 +121,12 @@ void Command::activated ()
     getAppWnd()->macroManager()->setModule(sAppModule.c_str());
     try{
       activated(0);
+    }catch(Base::PyException &e)                          
+    {                                                              
+          e.ReportException();
+          Base::Console().Error("Stack Trace: %s\n",e.getStackTrace()); 
     }catch(Base::Exception &e)                          
     {                                                              
-          std::string str;                                         
-          str += "FreeCAD exception thrown (";                     
-          str += e.what();                                         
-          str += ")";                                              
           e.ReportException();                                     
     }                                                              
     catch(std::exception &e)                                       
@@ -220,7 +220,9 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     getAppWnd()->macroManager()->addLine(MacroManager::Gui,format);
   else
     getAppWnd()->macroManager()->addLine(MacroManager::Base,format);
-  Interpreter().RunFCCommand(format);
+  Interpreter().runString(format);
+
+  Base::Console().Log("DoCmd (%s): %s",sName.c_str(),format);
 
   free (format);
 }
@@ -228,7 +230,7 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 
 const std::string Command::strToPython(const char* Str)
 {
-  return Base::InterpreterSingleton::StrToPython(Str);
+  return Base::InterpreterSingleton::strToPython(Str);
 }
 
 
@@ -487,7 +489,7 @@ PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
   Py_INCREF(_pcPyCommand);
 
   // call the methode "GetResources()" of the command object
-  _pcPyResourceDict = Interpreter().RunMethodObject(_pcPyCommand, "GetResources");
+  _pcPyResourceDict = Interpreter().runMethodObject(_pcPyCommand, "GetResources");
   // check if the "GetResources()" methode returns a Dict object
   if(! PyDict_Check(_pcPyResourceDict) )
     throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
@@ -513,7 +515,7 @@ std::string PythonCommand::getResource(const char* sName)
 void PythonCommand::activated(int iMsg)
 {
   try{
-    Interpreter().RunMethodVoid(_pcPyCommand, "Activated");
+    Interpreter().runMethodVoid(_pcPyCommand, "Activated");
   }catch (Base::Exception e){
     Base::Console().Error("Running the python command %s failed,try to resume",sName.c_str());
   }
@@ -528,7 +530,7 @@ std::string PythonCommand::cmdHelpURL(void)
 {
   PyObject* pcTemp;
 
-  pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpURL"); 
+  pcTemp = Interpreter().runMethodObject(_pcPyCommand, "CmdHelpURL"); 
 
   if(! pcTemp ) 
     return std::string();
@@ -542,7 +544,7 @@ void PythonCommand::cmdHelpPage(std::string &rcHelpPage)
 {
   PyObject* pcTemp;
 
-  pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpPage"); 
+  pcTemp = Interpreter().runMethodObject(_pcPyCommand, "CmdHelpPage"); 
 
   if(! pcTemp ) 
     return ;

@@ -54,7 +54,7 @@ void ModuleExport initRaytracing() {
   (void) Py_InitModule("Raytracing", Raytracing_methodes);   /* mod name, table ptr */
 
     // load dependend module
-  Base::Interpreter().LoadModule("Part");
+  Base::Interpreter().loadModule("Part");
 
   Base::Console().Log("AppRaytracing loaded\n");
 

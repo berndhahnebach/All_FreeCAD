@@ -43,6 +43,7 @@
 #include "../Base/Exception.h"
 #include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
+#include "../Base/FileInfo.h"
 #include "../App/Application.h"
 
 #include "Application.h"
@@ -274,11 +275,66 @@ ApplicationWindow::~ApplicationWindow()
   // save macros
   MacroCommand::save();
   // save recent file list
+
   // Note: the recent files are restored in StdCmdMRU::createAction(), because we need
+
   //       an valid instance of StdCmdMRU to do this
   StdCmdMRU::save();
   saveWindowSettings();
 }
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// creating std commands
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+void ApplicationWindow::open(const char* FileName)
+{
+  // get registered endings
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  // File infos
+  Base::FileInfo File(FileName);
+  
+  std::string te= File.extension();
+
+  if(EndingMap.find(File.extension()) != EndingMap.end())
+  {
+    // geting the module name
+    const std::string &Mod = EndingMap.find(File.extension())->second;
+
+    // issue module loading
+    std::string Cmd = "import ";
+    Cmd += Mod.c_str();
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
+
+    // issue gui module loading
+    Cmd =  "import ";
+    Cmd += Mod.c_str();
+    Cmd += "Gui";
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
+
+    // load the file with the module
+    Cmd = EndingMap.find(File.extension())->second.c_str();
+    Cmd += ".open(\"";
+    Cmd += File.filePath().c_str();
+    Cmd += "\")";
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
+    Base::Console().Log("Gui open: %s\n",Cmd.c_str());
+
+  }else{
+    Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",File.extension().c_str());
+    return;
+  }
+
+  appendRecentFile(File.fileName().c_str());
+
+
+}
+
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -781,7 +837,7 @@ void ApplicationWindow::activateWorkbench(const char* name)
     PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
     assert(pcOldWorkbench);
     customWidgetManager()->hideToolBox();
-    Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
+    Interpreter().runMethodVoid(pcOldWorkbench, "Stop");
   }
 
   try{
@@ -789,7 +845,7 @@ void ApplicationWindow::activateWorkbench(const char* name)
     d->_cActiveWorkbenchName = name;
 
     // running the start of the workbench object
-    Interpreter().RunMethodVoid(pcWorkbench, "Start");
+    Interpreter().runMethodVoid(pcWorkbench, "Start");
     d->_pcWidgetMgr->update(name);
     customWidgetManager()->showToolBox();
 
@@ -1128,15 +1184,41 @@ void ApplicationWindow::runApplication(void)
   _pcQApp->setMainWidget(mw);
 
   // runing the Gui init script
-  Interpreter().Launch(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+  Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
   // show the main window
   Console().Log("Showing GUI Application...\n");
   mw->onPolish();
   mw->show();
-  stopSplasher();
-  showTipOfTheDay();
 
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
+
+  Console().Log("Open command line files...\n");
+  unsigned short count = atoi(App::Application::Config()["OpenFileCount"].c_str());
+
+  std::string File;
+  for (unsigned short i=0; i<count; i++)
+  {
+    // geting file name
+    std::string temp = "OpenFile";
+    char buffer [10];
+    itoa(i,buffer,10);
+    temp += buffer;
+    File = App::Application::Config()[temp.c_str()];
+
+    // try to open 
+    try{
+      Console().Log("Open %s\n",File.c_str());
+      mw->open(File.c_str());
+    }catch(...){
+      Console().Error("Can't open file %s \n",File.c_str());
+    }
+  }
+
+  stopSplasher();
+
+  if(!count)
+    showTipOfTheDay();
+
 
   // run the Application event loop
   Console().Log("Running event loop...\n");
@@ -1239,7 +1321,7 @@ void ApplicationWindow::dropEvent ( QDropEvent      * e )
       }    
 
       macroManager()->addLine(MacroManager::Base,Com.c_str());
-      Interpreter().RunFCCommand(Com.c_str());
+      Interpreter().runString(Com.c_str());
     }
   }else
     ApplicationWindow::dropEvent(e);

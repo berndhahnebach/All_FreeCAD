@@ -94,11 +94,11 @@ extern "C" {
 
 		char* argv = "FreeCAD";
 		// parse the options
-		Application::InitConfig(1,&argv,sHomePath.c_str());
+		Application::initConfig(1,&argv,sHomePath.c_str());
 
-		Application::InitApplication();
+		Application::initApplication();
 
-		Application::LogStatus();
+		Application::logStatus();
 
 
 		return;

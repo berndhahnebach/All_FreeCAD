@@ -85,25 +85,25 @@ int main( int argc, char ** argv )
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
-  Application::SetRunMode("Cmd");
+  Application::setRunMode("Cmd");
 
 	// parse the options 
-	Application::InitConfig(argc,argv,sHomePath.c_str());
+	Application::initConfig(argc,argv,sHomePath.c_str());
 
-	Application::InitApplication();
+	Application::initApplication();
 
 
 	// Run phase ===========================================================
 
 
-	Application::RunApplication();
+	Application::runApplication();
 
 
 	// Destruction phase ===========================================================
 	Console().Log("FreeCAD terminating...\n\n");
 
 	// cleans up 
-	Application::Destruct();
+	Application::destruct();
 
 	Console().Log("FreeCAD completely terminated\n\n");
 

@@ -134,7 +134,7 @@ void MacroManager::run(MacroType eType,const char *sName)
 {
   try
   {
-    Base::Interpreter().LaunchFile( sName );
+    Base::Interpreter().runFile( sName );
   }
   catch ( const Base::Exception& e )
   {
@@ -147,6 +147,7 @@ void MacroManager::run(MacroType eType,const char *sName)
 //**************************************************************************
 // Seperator for additional classes
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 

@@ -79,8 +79,8 @@ void ModuleExport initImportGui() {
 
 	(void) Py_InitModule("ImportGui", hello_methods);   /* mod name, table ptr */
 
-  Base::Interpreter().LoadModule("Part");
-  Base::Interpreter().LoadModule("Import");
+  Base::Interpreter().loadModule("Import");
+  Base::Interpreter().loadModule("PartGui");
 
 	Base::Console().Log("ImportGui loaded\n");
 

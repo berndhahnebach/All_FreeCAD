@@ -69,7 +69,9 @@ public:
   /// destruction
   ~ApplicationWindow();
 
-  void createStandardOperations();
+  /// open a file
+  void open(const char* FileName);
+
 
   // Observer
   virtual void OnDocNew(App::Document* pcDoc);
@@ -145,8 +147,9 @@ public:
   /// Get macro manager
   Gui::MacroManager *macroManager(void);
 
+  /// helper which create the commands
+  void createStandardOperations();
 
-public:
   /** @name Init, Destruct an Access methodes */
   //@{
   static void initApplication(void);

@@ -185,7 +185,7 @@ PP_Run_Known_Callable(PyObject *object,               /* func|class|method */
  * the code here makes the 3 exception components more distinct;
  *****************************************************************************/
 
-#define MAX 1024
+#define MAX 2024
 /*
 FC_OS_LINUX: This is dangerous. How about PY_EXCEPT_MAX?
 */

@@ -40,6 +40,20 @@ char format2[1024];  //Warning! Can't go over 512 characters!!!
 using namespace Base;
 
 
+
+PyException::PyException(void)
+{
+  PP_Fetch_Error_Text();    /* fetch (and clear) exception */
+  std::string temp = PP_last_error_type; /* exception name text */
+  temp += ": ";
+  temp += PP_last_error_info;            /* exception data text */
+
+  _sErrMsg = temp;
+
+  _stackTrace = PP_last_error_trace;     /* exception traceback text */
+}
+
+
 InterpreterSingleton::InterpreterSingleton()
 {
 	Py_Initialize(); 
@@ -51,16 +65,13 @@ InterpreterSingleton::~InterpreterSingleton()
 }
 
 
-void InterpreterSingleton::Launch(const char *psCmd)
+void InterpreterSingleton::runString(const char *sCmd)
 {
-	PyBuf Cmd(psCmd);
-
-	int ret = PyRun_SimpleString(Cmd.str);
-
-	if(ret == -1) throw Exception("script failed");
+	if(PyRun_SimpleString(PyBuf(sCmd).str)) 
+    throw PyException();
 }
 
-void InterpreterSingleton::LaunchFile(const char*pxFileName)
+void InterpreterSingleton::runFile(const char*pxFileName)
 {
 	PyBuf FileName(pxFileName);
 	
@@ -77,7 +88,7 @@ void InterpreterSingleton::LaunchFile(const char*pxFileName)
 
 }
 
-bool InterpreterSingleton::LoadModule(const char* psModName)
+bool InterpreterSingleton::loadModule(const char* psModName)
 {
 	// buffer acrobatics
 	PyBuf ModName(psModName);
@@ -92,7 +103,7 @@ bool InterpreterSingleton::LoadModule(const char* psModName)
 	return true;
 }
 
-void InterpreterSingleton::RunFCCommand(const char * psCom,...)
+void InterpreterSingleton::runStringArg(const char * psCom,...)
 {
 	// va stuff
     va_list namelessVars;
@@ -101,9 +112,9 @@ void InterpreterSingleton::RunFCCommand(const char * psCom,...)
     va_end(namelessVars);
 	assert(strlen(psCom) < 800);
 	// loging
-	Console().Log("Run Com: %s\n",format2);
+	//Console().Log("Run Com: %s\n",format2);
 
-	Launch(format2);
+	runString(format2);
 }
 
 
@@ -126,12 +137,12 @@ void InterpreterSingleton::Destruct(void)
 	delete _pcSingelton;
 }
 
-void InterpreterSingleton::SetComLineArgs(int argc,char *argv[])
+void InterpreterSingleton::setComLineArgs(int argc,char *argv[])
 {
 	PySys_SetArgv(argc, argv);
 }
 
-int InterpreterSingleton::RunCommandLine(char *prompt)
+int InterpreterSingleton::runCommandLine(char *prompt)
 {
 	return PP_Run_Command_Line(prompt);
 }
@@ -140,7 +151,7 @@ int InterpreterSingleton::RunCommandLine(char *prompt)
  *  Runs a member methode of an object with no parameter and no return value
  *  void (void). There are other methodes to run with returns
  */
-void InterpreterSingleton::RunMethodVoid(PyObject *pobject, const char *method)
+void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	PyBuf Methode (method);
@@ -155,7 +166,7 @@ void InterpreterSingleton::RunMethodVoid(PyObject *pobject, const char *method)
 
 }
 
-PyObject* InterpreterSingleton::RunMethodObject(PyObject *pobject, const char *method)
+PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	PyBuf Methode (method);
@@ -173,7 +184,7 @@ PyObject* InterpreterSingleton::RunMethodObject(PyObject *pobject, const char *m
 	return pcO;
 }
 
-void InterpreterSingleton::RunMethod(PyObject *pobject, const char *method,
+void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
                               const char *resfmt,   void *cresult,        /* convert to c/c++ */
                               const char *argfmt,   ...  )                /* convert to python */
 {
@@ -205,7 +216,7 @@ void InterpreterSingleton::RunMethod(PyObject *pobject, const char *method,
 }
 
 
-void InterpreterSingleton::DbgObserveFile(const char* sFileName)
+void InterpreterSingleton::dbgObserveFile(const char* sFileName)
 {
 	if(sFileName)
 		_cDebugFileName = sFileName;
@@ -213,23 +224,23 @@ void InterpreterSingleton::DbgObserveFile(const char* sFileName)
 		_cDebugFileName = "";
 }
 
-void InterpreterSingleton::DbgSetBreakPoint(unsigned int uiLineNumber)
+void InterpreterSingleton::dbgSetBreakPoint(unsigned int uiLineNumber)
 {
 
 }
 
-void InterpreterSingleton::DbgUnsetBreakPoint(unsigned int uiLineNumber)
+void InterpreterSingleton::dbgUnsetBreakPoint(unsigned int uiLineNumber)
 {
 
 }
 
-void InterpreterSingleton::DbgStep(void)
+void InterpreterSingleton::dbgStep(void)
 {
 
 }
 
 
-const std::string InterpreterSingleton::StrToPython(const char* Str)
+const std::string InterpreterSingleton::strToPython(const char* Str)
 {
   std::string result;
   const char *It=Str;

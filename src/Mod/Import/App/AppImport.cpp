@@ -60,7 +60,7 @@ void ModuleExport initImport() {
 	(void) Py_InitModule("Import", Import_methods);   /* mod name, table ptr */
 
   // load dependend module
-  Base::Interpreter().LoadModule("Part");
+  Base::Interpreter().loadModule("Part");
 
 	App::FeatureFactory().AddProducer("ImportStep",new App::FeatureProducer<Import::FeatureImportStep>);
 	App::FeatureFactory().AddProducer("ImportIges",new App::FeatureProducer<Import::FeatureImportIges>);

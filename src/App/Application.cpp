@@ -48,6 +48,7 @@
 #include "../Base/Console.h"
 #include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
+#include "../Base/FileInfo.h"
 
 using namespace App;
 
@@ -253,47 +254,50 @@ Document* Application::Open(const char * Name)
 {
 	Handle_TDocStd_Document hDoc;
 	Document*				pDoc;
+  FileInfo File(Name);
+  std::string Ext = File.extension();
 
-	// create new (empty) document 
-	//pDoc = New("Standard");
-
-	// load
-	// TCollection_ExtendedString aName = (Standard_CString) Name;
-	switch(_hApp->Open(TCollection_ExtendedString((Standard_CString) Name),hDoc) )
-	{
-		case CDF_RS_OK:
-			break;
-		case CDF_RS_UnknownDocument:
-      throw Base::Exception("Unknown Document");
-		case CDF_RS_AlreadyRetrieved:
-			throw Base::Exception("Already Retrieved");
-		case CDF_RS_AlreadyRetrievedAndModified:
-			throw Base::Exception("AlreadyRetrievedAndModified");
-		case CDF_RS_NoDriver:
-			throw Base::Exception("NoDriver");
-		case CDF_RS_NoVersion:
-			throw Base::Exception("NoVersion");
-		case CDF_RS_NoModel:
-			throw Base::Exception("NoModel");
-		case CDF_RS_TypeNotFoundInSchema:
-			throw Base::Exception("TypeNotFoundInSchema");
-		case CDF_RS_UnrecognizedFileFormat:
-			throw Base::Exception("UnrecognizedFileFormat");
-		case CDF_RS_PermissionDenied:
-			throw Base::Exception("PermissionDenied");
-		default:
-			throw Base::Exception("Unknown open error");
-	}
-	
-	// Creating a FreeCAD Document
-	pDoc = new Document(hDoc);
-	pDoc->IncRef();
-	_DocVector.push_back(pDoc);
-	_pActiveDoc = pDoc;
+  // checking on the extension
+  if(Ext == "FCStd" || Ext == "std")
+  {
+    switch(_hApp->Open(TCollection_ExtendedString((Standard_CString) Name),hDoc) )
+	  {
+		  case CDF_RS_OK:
+			  break;
+		  case CDF_RS_UnknownDocument:
+        throw Base::Exception("Unknown Document");
+		  case CDF_RS_AlreadyRetrieved:
+			  throw Base::Exception("Already Retrieved");
+		  case CDF_RS_AlreadyRetrievedAndModified:
+			  throw Base::Exception("AlreadyRetrievedAndModified");
+		  case CDF_RS_NoDriver:
+			  throw Base::Exception("NoDriver");
+		  case CDF_RS_NoVersion:
+			  throw Base::Exception("NoVersion");
+		  case CDF_RS_NoModel:
+			  throw Base::Exception("NoModel");
+		  case CDF_RS_TypeNotFoundInSchema:
+			  throw Base::Exception("TypeNotFoundInSchema");
+		  case CDF_RS_UnrecognizedFileFormat:
+			  throw Base::Exception("UnrecognizedFileFormat");
+		  case CDF_RS_PermissionDenied:
+			  throw Base::Exception("PermissionDenied");
+		  default:
+			  throw Base::Exception("Unknown open error");
+	  }
+	  
+	  // Creating a FreeCAD Document
+	  pDoc = new Document(hDoc);
+	  pDoc->IncRef();
+	  _DocVector.push_back(pDoc);
+	  _pActiveDoc = pDoc;
 
 
-	// trigger Observers (open windows and so on)
-	NotifyDocNew(pDoc);
+	  // trigger Observers (open windows and so on)
+	  NotifyDocNew(pDoc);
+  }else{
+    throw Base::Exception("Unknown file extension");
+  }
 
 	return pDoc;
 }
@@ -416,7 +420,7 @@ int Application::_argc;
 char ** Application::_argv;
 
 
-void Application::Destruct(void)
+void Application::destruct(void)
 {
 
 		// saving system parameter
@@ -444,7 +448,7 @@ void Application::Destruct(void)
 
 
 
-void Application::InitConfig(int argc, char ** argv, const char * sHomePath )
+void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 {
 	
 	static const char sBanner[] = \
@@ -482,7 +486,7 @@ void Application::InitConfig(int argc, char ** argv, const char * sHomePath )
 
 	DBG_TRY
 		// init python
-		Interpreter().SetComLineArgs(argc,argv);
+		Interpreter().setComLineArgs(argc,argv);
 	DBG_CATCH(puts("Application::InitConfig() error init Python Interpreter\n");exit(1);)
 
 	DBG_TRY
@@ -539,11 +543,11 @@ void Application::InitConfig(int argc, char ** argv, const char * sHomePath )
 	// capture path
 	SaveEnv("PATH");
 
-  LogStatus();
+  logStatus();
 
 }
 
-void Application::SetRunMode(const char* s)
+void Application::setRunMode(const char* s)
 {
 	mConfig["RunMode"] = s;
 }
@@ -556,7 +560,7 @@ void Application::SaveEnv(const char* s)
 }
 
 
-void Application::InitApplication(void)
+void Application::initApplication(void)
 {
 
 	// checking on the plugin files of OpenCasCade
@@ -581,38 +585,77 @@ void Application::InitApplication(void)
 
 
 	// starting the init script
-	Interpreter().Launch(Base::ScriptFactory().ProduceScript("FreeCADInit"));
+	Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
 
 
 }
 
-void Application::RunApplication()
+void Application::runApplication()
 {
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+
+  // cycling through all the open files
+  unsigned short count = atoi(mConfig["OpenFileCount"].c_str());
+  std::string File;
+  for (unsigned short i=0; i<count; i++)
+  {
+    // geting file name
+    std::string temp = "OpenFile";
+    char buffer [10];
+    itoa(i,buffer,10);
+    temp += buffer;
+    FileInfo File(mConfig[temp.c_str()].c_str());
+
+    std::string Ext = File.extension();
+
+    if(Ext == "FCStd" || Ext == "std")
+    {
+
+      // try to open 
+      try{
+        Application::_pcSingelton->Open(File.fileName().c_str());
+      }catch(...){
+        Console().Error("Can't open file %s \n",File.fileName().c_str());
+      }
+    }else if(Ext == "FCscript")
+    {
+      Base::Interpreter().runFile(File.fileName().c_str());
+    }else if(EndingMap.find(Ext) != EndingMap.end())
+    {
+      Base::Interpreter().loadModule(EndingMap.find(Ext)->second.c_str());
+      Base::Interpreter().runStringArg("import %s",EndingMap.find(Ext)->second.c_str());
+      Base::Interpreter().runStringArg("%s.open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
+      Base::Console().Log("Command line open: %s.Open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
+
+    }
+
+  }
+
 
 
 	if(mConfig["RunMode"] == "Cmd")
 	{
 		// Run the comandline interface
-		Interpreter().RunCommandLine("Console mode");
+		Interpreter().runCommandLine("FreeCAD Console mode");
 	}
 	else if(mConfig["RunMode"] == "Script")
 	{
 		// run a script
 		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-		Interpreter().LaunchFile(mConfig["FileName"].c_str());
+		Interpreter().runFile(mConfig["FileName"].c_str());
 	}
 	else if(mConfig["RunMode"] == "ScriptCmd")
 	{
 		// run a script
 		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-		Interpreter().LaunchFile(mConfig["FileName"].c_str());
-		Interpreter().RunCommandLine("FreeCAD Console mode");
+		Interpreter().runFile(mConfig["FileName"].c_str());
+		Interpreter().runCommandLine("FreeCAD Console mode");
 	}
 	else if(mConfig["RunMode"] == "Internal")
 	{
 		// run internal script
 		Console().Log("Running internal script:\n");
-		Interpreter().Launch(Base::ScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
+		Interpreter().runString(Base::ScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
 
 		//!!! Interpreter().Launch(sScriptName);
 	} else {
@@ -623,7 +666,7 @@ void Application::RunApplication()
 
 }
 
-void Application::LogStatus()
+void Application::logStatus()
 {
 #if defined(FC_OS_WIN32)
   SYSTEMTIME time;
@@ -690,6 +733,9 @@ void Application::ParsOptions(int argc, char ** argv)
 	"  -v             Runs FreeCAD in verbose mode\n"\
 	"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
 	"";
+
+  int OpenFileCount = 0;
+
 	// scan command line arguments for user input. 
 	for (int i = 1; i < argc; i++) 
 	{ 
@@ -817,11 +863,25 @@ void Application::ParsOptions(int argc, char ** argv)
 		} 
 		else  
 		{ 
-      std::cerr << "Illegal command line argument #" << i << " " << argv[i] << std::endl; 
-			std::cerr << "\nUsage: " << argv[0] << Usage;
-			throw Base::Exception("Comandline error(s)");  
-		} 
-	}  
+      // store all file (URLS) names to open
+      if(OpenFileCount < 56534){
+        std::string temp = "OpenFile";
+        char buffer [10];
+        itoa(OpenFileCount,buffer,10);
+        temp += buffer;
+        mConfig[temp] = argv[i];
+        OpenFileCount++;
+      }else{
+        std::cerr << "\nTo many arguments! All arguments above 56534 will be ignored!!";
+      }
+
+    }
+	} 
+  char buffer [10];
+  itoa(OpenFileCount,buffer,10);
+
+  mConfig["OpenFileCount"] = buffer;  
+
 }  
 
 

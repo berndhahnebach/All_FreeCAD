@@ -165,11 +165,11 @@ void CommandLineBase::onLaunchCommand()
     if ( cmd.lower().find( pattern ) > -1 )
     {
       cmd = cmd.replace(pattern, "");
-      Interpreter().LaunchFile( cmd.latin1() );
+      Interpreter().runFile( cmd.latin1() );
     }
     else
     {
-      Interpreter().Launch(text(currentItem()).latin1());
+      Interpreter().runString(text(currentItem()).latin1());
     }
   }
   catch (const Base::Exception& rclE)

@@ -37,6 +37,8 @@
 #include <vector>
 #include <map>
 
+#include "Exception.h"
+
 
 namespace Base {
 
@@ -44,6 +46,20 @@ namespace Base {
 	using std::vector;
 
 
+
+class BaseExport PyException : public Exception
+{
+public:
+  /// constructor does the whole job
+  PyException(void);
+  
+  ///  this function returns the stack trace
+  const std::string &getStackTrace(void){return _stackTrace;}
+
+protected:
+  std::string _stackTrace;
+
+};
 
 /** The Interpreter class
  *  This class manage the python interpreter and hold a lot 
@@ -59,17 +75,17 @@ public:
 	 */
 	//@{
 	/// Run a statement on the python interpreter
-	void Launch(const char *psCmd);
+	void runString(const char *psCmd);
 	/// Run file (script) on the python interpreter
-	void LaunchFile(const char*pxFileName);
+	void runFile(const char*pxFileName);
 	/// Run a statement with arguments on the python interpreter
-	void RunFCCommand(const char * psCom,...);
+	void runStringArg(const char * psCom,...);
 	/// runs a python object methode with no return value and no arguments
-	void RunMethodVoid(PyObject *pobject, const char *method);
+	void runMethodVoid(PyObject *pobject, const char *method);
 	/// runs a python object methode which returns a arbetrary object
-	PyObject* RunMethodObject(PyObject *pobject, const char *method);
+	PyObject* runMethodObject(PyObject *pobject, const char *method);
 	/// runs a python methode with arbitrary params
-	void RunMethod(PyObject *pobject, const char *method,
+	void runMethod(PyObject *pobject, const char *method,
                    const char *resfmt=0,   void *cresult=0,   
                    const char *argfmt="()",   ...  );
 	//@}
@@ -79,7 +95,7 @@ public:
 	//@{
 	/* Loads a module
 	 */
-	bool LoadModule(const char* psModName);
+	bool loadModule(const char* psModName);
 	//@}
 
 
@@ -88,8 +104,8 @@ public:
 	/** @name startup and singletons
 	 */
 	//@{
-	void SetComLineArgs(int argc,char *argv[]);
-	int  RunCommandLine(char *prompt);
+	void setComLineArgs(int argc,char *argv[]);
+	int  runCommandLine(char *prompt);
 	static InterpreterSingleton &Instance(void);
 	static void Destruct(void);
 //	static void Init(void);
@@ -109,9 +125,9 @@ public:
 	 */
 	//@{
 	/// returns a list of methods providet by the specified object
-	vector<string> GetMethodesList(const char *){return vector<string>(); }
+	vector<string> getMethodesList(const char *){return vector<string>(); }
 	/// returns a list of attributes providet by the specified object
-	vector<string> GetAttributeList(const char *){return vector<string>(); }
+	vector<string> getAttributeList(const char *){return vector<string>(); }
 	//@}
 
 	
@@ -119,13 +135,13 @@ public:
 	 */
 	//@{
 	/// sets the file name which should be debuged
-	void DbgObserveFile(const char* sFileName="");
+	void dbgObserveFile(const char* sFileName="");
 	/// sets a break point to a special line number in the actual file
-	void DbgSetBreakPoint(unsigned int uiLineNumber);
+	void dbgSetBreakPoint(unsigned int uiLineNumber);
 	/// unsets a break point to a special line number in the actual file
-	void DbgUnsetBreakPoint(unsigned int uiLineNumber);
+	void dbgUnsetBreakPoint(unsigned int uiLineNumber);
 	/// One step further
-	void DbgStep(void);
+	void dbgStep(void);
 	//@}
 
 
@@ -133,8 +149,8 @@ public:
 	 */
 	//@{
   /// replaces all char with escapes for usage in python console
-  static const std::string StrToPython(const char* Str);
-  static const std::string StrToPython(const std::string &Str){return StrToPython(Str.c_str());}
+  static const std::string strToPython(const char* Str);
+  static const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());}
 
 
 	//@}

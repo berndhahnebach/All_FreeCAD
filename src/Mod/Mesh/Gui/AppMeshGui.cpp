@@ -25,14 +25,21 @@
 #ifndef _PreComp_
 #endif
 
+
 #include <Base/Interpreter.h>
+
 #include <Base/Parameter.h>
 
+
 #include <Base/Console.h>
+
 #include <App/Application.h>
 #include <Gui/Application.h>
 
+
 #include "ViewProvider.h"
+
+
 
 
 void CreateCommands(void);
@@ -68,15 +75,20 @@ void GuiMeshExport initMeshGui() {
 
   (void) Py_InitModule("MeshGui", hello_methods);   /* mod name, table ptr */
   // load needed modules
-  Base::Interpreter().LoadModule("Mesh");
+
+  Base::Interpreter().loadModule("Mesh");
+
 
   Base::Console().Log("AppMeshGui loaded\n");
+
 
   // instanciating the commands
   CreateCommands();
 
   // Register view provider
+
   Gui::ViewProviderInventorFactory().AddProducer("MeshImportSTL", new Gui::ViewProviderInventorProducer<MeshGui::ViewProviderInventorMesh>);
+
 
   return;
 }

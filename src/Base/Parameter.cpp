@@ -661,8 +661,10 @@ std::string FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
 		return std::string(StrX(pcElem2->getNodeValue()).c_str());	
 	else if (pPreset==0)
 		return std::string("");
+
   else
 		return std::string(pPreset);
+
 }
 
 std::vector<std::string> FCParameterGrp::GetASCIIs(const char * sFilter)
@@ -1392,7 +1394,7 @@ StrX::StrX(const XMLCh* const toTranscode)
 
 StrX::~StrX()
 {
-    //delete [] fLocalForm;
+    delete [] fLocalForm;
 }
 
 

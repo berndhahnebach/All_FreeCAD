@@ -1,11 +1,3 @@
-/** \file Factory.cpp
- *  \brief 
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *

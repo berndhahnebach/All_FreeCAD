@@ -77,7 +77,7 @@ void ModuleExport initPartGui() {
 	(void) Py_InitModule("PartGui", hello_methods);   /* mod name, table ptr */
 
   // load needed modules
-  Base::Interpreter().LoadModule("Part");
+  Base::Interpreter().loadModule("Part");
 
 	Base::Console().Log("AppPartGui loaded\n");
 

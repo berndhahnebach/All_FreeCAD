@@ -87,12 +87,12 @@ int main( int argc, char ** argv )
 		}
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with gui if not overridden in InitConfig...
-	App::Application::SetRunMode("Gui");
+	App::Application::setRunMode("Gui");
 
 	// parse the options 
-	App::Application::InitConfig(argc,argv,sHomePath.c_str());
+	App::Application::initConfig(argc,argv,sHomePath.c_str());
 
-	App::Application::InitApplication();
+	App::Application::initApplication();
 
   Gui::ApplicationWindow::initApplication();
 
@@ -110,7 +110,7 @@ int main( int argc, char ** argv )
 
 	} else {
 
-		App::Application::RunApplication();
+		App::Application::runApplication();
 	}
 
 
@@ -118,7 +118,7 @@ int main( int argc, char ** argv )
 	Base::Console().Log("FreeCAD terminating...\n\n");
 
 	// cleans up 
-	App::Application::Destruct();
+	App::Application::destruct();
 
 	Base::Console().Log("FreeCAD completely terminated\n\n");
 

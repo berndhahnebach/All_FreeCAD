@@ -246,12 +246,12 @@ private:
 public:
 	/** @name Init, Destruct an Access methodes */
 	//@{
-	static void Destruct(void);
-	static void InitConfig(int argc, char ** argv, const char * sHomePath  );
-	static void InitApplication(void);
-	static void LogStatus(void);
-	static void SetRunMode(const char*);
-	static void RunApplication(void);
+	static void destruct(void);
+	static void initConfig(int argc, char ** argv, const char * sHomePath  );
+	static void initApplication(void);
+	static void logStatus(void);
+	static void setRunMode(const char*);
+	static void runApplication(void);
 //	static Application &Instance(void);
 	friend Application &GetApplication(void);
 	static std::map<std::string,std::string> &Config(void){return mConfig;}

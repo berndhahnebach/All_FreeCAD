@@ -98,7 +98,7 @@ void StdCmdOpen::activated(int iMsg)
   const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
   std::string EndingList;
   
-  EndingList = "All suported formats (*.FCStd;*.std";
+  EndingList = "All suported formats (";
 
   std::map<std::string,std::string>::const_iterator It;
   for(It=EndingMap.begin();It != EndingMap.end();It++)
@@ -106,7 +106,7 @@ void StdCmdOpen::activated(int iMsg)
     EndingList += ";*." + It->first;
   }
 
-  EndingList += ");;FreeCAD Standard (*.FCStd;*.std));;";
+  EndingList += ");;";
 
   for(It=EndingMap.begin();It != EndingMap.end();It++)
   {
@@ -115,22 +115,11 @@ void StdCmdOpen::activated(int iMsg)
   EndingList += "All files (*.*)";
   
 
-  QString f = QFileDialog::getOpenFileName( QString::null, EndingList.c_str(), getAppWnd() );
-  if ( f.isEmpty() ) return;
+  QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),QString::null, getAppWnd() );
 
-  std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
-
-  if(EndingMap.find(Ending) == EndingMap.end())
-  {
-    doCommand(Doc,"App.Open(\"%s\")",strToPython(f.latin1()).c_str());
-    Base::Console().Log("OpenCMD: App.Open(\"%s\")",strToPython(f.latin1()).c_str());
-  }else{
-    doCommand(Doc,"import %s",EndingMap.find(Ending)->second.c_str());
-    doCommand(Doc,"%s.open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
-    Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
+  for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
+     getAppWnd()->open((*it).latin1());
   }
-
-  getAppWnd()->appendRecentFile(f.latin1());
 }
 
 //===========================================================================
@@ -511,40 +500,74 @@ void StdCmdMRU::activated(int iMsg)
   if (iMsg >= 0 && iMsg < int(_vMRU.size()))
   {
     // fill the list of registered endings
+
     const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+
     std::string EndingList;
+
   
+
     EndingList = "All suported formats (*.FCStd;*.std";
 
+
+
     std::map<std::string,std::string>::const_iterator It;
+
     for(It=EndingMap.begin();It != EndingMap.end();It++)
+
     {
+
       EndingList += ";*." + It->first;
+
     }
+
+
 
     EndingList += ");;FreeCAD Standard (*.FCStd;*.std));;";
 
+
+
     for(It=EndingMap.begin();It != EndingMap.end();It++)
+
     {
+
       EndingList += It->second + " (*." + It->first + ");;";
+
     }
+
     EndingList += "All files (*.*)";
+
   
 
+
+
     QString f = _vMRU[iMsg];
+
     std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+
+
 
     try{
       if ( EndingMap.find(Ending) == EndingMap.end() )
+
       {
+
         doCommand(Doc,"App.Open(\"%s\")",strToPython(f.latin1()).c_str());
+
         Base::Console().Log("OpenCMD: App.Open(\"%s\")",strToPython(f.latin1()).c_str());
+
       }else{
+
         doCommand(Doc,"import %s",EndingMap.find(Ending)->second.c_str());
+
         doCommand(Doc,"%s.open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
+
         Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
+
       }
+
       addRecentFile( f );
+
     }catch(const Base::Exception&){
       removeRecentFile( f );
     }
@@ -567,8 +590,11 @@ QAction * StdCmdMRU::createAction(void)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
 
+
   // load recent file list
+
   StdCmdMRU::load();
+
 
   return pcAction;
 }
@@ -672,6 +698,8 @@ void StdCmdMRU::load()
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
       pCmd->setMaxCount( maxCnt );
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
+
+
 
       // append the items in reverse mode to prevent the order
       for (std::vector<std::string>::reverse_iterator it = MRU.rbegin(); it!=MRU.rend();++it)
@@ -1258,11 +1286,14 @@ void StdCmdCommandLine::activated(int iMsg)
   qApp->processEvents();
 
 
+
   // create temporary console sequencer
+
   Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
   GuiConsoleObserver::bMute = true;
-  Base::Interpreter().RunCommandLine("Console mode");
+  Base::Interpreter().runCommandLine("Console mode");
   GuiConsoleObserver::bMute = mute;
+
   delete seq;
 
 #ifdef Q_WS_X11
