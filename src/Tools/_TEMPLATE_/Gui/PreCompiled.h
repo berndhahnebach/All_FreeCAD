@@ -78,6 +78,11 @@
 #include <Graphic3d_WNTGraphicDevice.hxx>
 #endif
  
+#include <Python.h>
+#ifdef FC_OS_WIN32
+#	include <windows.h>
+#endif
+
 // Q Toolkit
 #include <qaccel.h>
 #include <qaction.h>
@@ -146,11 +151,6 @@
 #include <qwindowsstyle.h>
 #include <qworkspace.h>
 
-
-#include <Python.h>
-#ifdef FC_OS_WIN32
-#	include <windows.h>
-#endif
 
 
 #endif
