@@ -24,6 +24,7 @@
 #include <TDocStd_Application.hxx>
 #include <vector>
 #include <set>
+#include <map>
 
 
 class FCDocument;
@@ -127,8 +128,10 @@ public:
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
 
-	FCParameterManager & GetSystemParameter(void) {return *_pcSysParamMngr;}
-	FCParameterManager & GetUserParameter(void) {return *_pcUserParamMngr;}
+	FCParameterManager & GetSystemParameter(void) ;
+	FCParameterManager & GetUserParameter(void) ;
+	FCParameterManager & GetParameterSet(const char* sName);
+	const FCmap<FCstring,FCParameterManager *> &GetParameterSetList(void);
 	
 	/// Major version nummber
 	const static unsigned int VersionMajor;
@@ -191,6 +194,8 @@ private:
 	/// The container of all attached Obervers
 	FCset<FCApplicationObserver * > _aclObservers;
 	FCDocument* _pActiveDoc;
+
+	FCmap<FCstring,FCParameterManager *> mpcPramManager;
 	FCParameterManager *_pcSysParamMngr;
 	FCParameterManager *_pcUserParamMngr;
 };

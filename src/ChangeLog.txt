@@ -50,3 +50,7 @@ Version: V0.1B15 Date: Wed Jan 01 17:09:53 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B16 Date: Wed Jan 01 18:06:46 2003 +++++++++++++++++++++++++++++++
 + Needed interface in CmdBar (Werner)
 + fixes in Parameter
+
+Version: V0.1B17 Date: Thu Jan 02 21:50:27 2003 +++++++++++++++++++++++++++++++
++ First Version Parameter Dialog
++ New Methodes on FCParameterGrp

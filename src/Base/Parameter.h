@@ -104,7 +104,7 @@ class  BaseExport FCParameterGrp	: public FCHandled,public FCSubject
 {
 
 protected:
-	FCParameterGrp(DOMElement *GroupNode=0L);
+	FCParameterGrp(DOMElement *GroupNode=0L,const char* sName=0L);
 	~FCParameterGrp();
 
 public:
@@ -118,17 +118,23 @@ public:
 
 	FCvector<bool> GetBools(const char * sFilter = NULL);
 
+	FCmap<FCstring,bool> FCParameterGrp::GetBoolMap(const char * sFilter = NULL);
+
 	long GetInt(const char* Name, long lPreset=0);
 
 	void  SetInt(const char* Name, long lValue);
 
 	FCvector<long> GetInts(const char * sFilter = NULL);
 
+	FCmap<FCstring,long> GetIntMap(const char * sFilter = NULL);
+
 	double GetFloat(const char* Name, double dPreset=0.0);
 
 	void  SetFloat(const char* Name, double dValue);
 
 	FCvector<double> GetFloats(const char * sFilter = NULL);
+
+	FCmap<FCstring,double> GetFloatMap(const char * sFilter = NULL);
 
 	void  SetBlob(const char* Name, void *pValue, long lLength);
 
@@ -147,6 +153,9 @@ public:
 	 */
 	FCvector<FCstring> GetASCIIs(const char * sFilter = NULL);
 
+	/// Same as GetASCIIs() but with key,value map
+	FCmap<FCstring,FCstring> FCParameterGrp::GetASCIIMap(const char * sFilter = NULL);
+
 	static void Init(void);
 
 	friend FCParameterManager;
@@ -157,8 +166,9 @@ public:
 	 *  Search in the parent element Start for the first occourrence of an 
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise NULL
+	 *  If the names not given he returns the first occourence fo Type.
 	 */
-	DOMElement *FindElement(DOMElement *Start, const char* Type, const char* Name);
+	DOMElement *FindElement(DOMElement *Start, const char* Type, const char* Name=0L);
 
 	/** Find an element specified by Type and Name or create it if not found
 	 *  Search in the parent element Start for the first occourrence of an 
@@ -167,13 +177,17 @@ public:
 	 */
 	DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name);
 
+	/// returns the name
+	const char* GetGroupName(void) {return _cName.c_str();}
 
 protected:
 
 	/// DOM Node of the Base node of this group
 	DOMElement *_pGroupNode;
-	/// map of already exported groups
 #	pragma warning( disable : 4251 )
+	/// the own name
+	FCstring _cName;
+	/// map of already exported groups
 	FCmap <FCstring ,FCHandle<FCParameterGrp> > _GroupMap;
 #	pragma warning( default : 4251 )
 

@@ -50,6 +50,8 @@ def InitToolbars():
 	Gui.ToolbarAddSeperator("TestTools")
 	Gui.ToolbarAddTo("TestTools","Std_Test1")
 	Gui.ToolbarAddTo("TestTools","Std_Test2")
+	Gui.ToolbarAddSeperator("TestTools")
+	Gui.ToolbarAddTo("TestTools","Std_DlgParameter")
 	# test tool bar
 	Gui.ToolbarAddTo("Standard views","Std_ViewFitAll")
 	Gui.ToolbarAddTo("Standard views","Std_ViewAxo")

@@ -74,9 +74,10 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 /** Defauld construction
   * Does not much 
   */
-FCParameterGrp::FCParameterGrp(DOMElement *GroupNode)	
+FCParameterGrp::FCParameterGrp(DOMElement *GroupNode,const char* sName)	
 	: FCHandled(), FCSubject(),_pGroupNode(GroupNode)
 {
+	if(sName) _cName=sName;
 }
 
 
@@ -112,7 +113,7 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
 
 	// create and register handle
-	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
+	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp,Name));
 	_GroupMap[Name] = rParamGrp;
 
 	return rParamGrp;
@@ -122,11 +123,10 @@ FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 {
 	FCHandle<FCParameterGrp> rParamGrp;
 	FCvector<FCHandle<FCParameterGrp> >  vrParamGrp;
-	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	DOMElement *pcTemp; //= _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	if(!pcTemp) return vrParamGrp; // empty vector
-	pcTemp = FindNextElement(pcTemp,"FCParamGroup");
+	pcTemp = FindElement(_pGroupNode,"FCParamGroup");
 
 	while(pcTemp)
 	{
@@ -134,7 +134,7 @@ FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 		// already created?
 		if( ! (rParamGrp=_GroupMap[Name]).IsValid() )
 		{
-			rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(((DOMElement*)pcTemp)));
+			rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(((DOMElement*)pcTemp),Name.c_str()));
 			_GroupMap[Name] = rParamGrp;
 		}
 		vrParamGrp.push_back( rParamGrp );
@@ -169,20 +169,44 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
 {
 	FCvector<bool>  vrValues;
-	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	pcTemp = FindNextElement(pcTemp,"FCBool");
+	pcTemp = FindElement(_pGroupNode,"FCBool");
 	while( pcTemp)
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
 			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str(),"1"))
 				vrValues.push_back(false);
 			else
 				vrValues.push_back(true);	
+		}
+		pcTemp = FindNextElement(pcTemp,"FCBool");
+	}
+
+	return vrValues;
+}
+
+FCmap<FCstring,bool> FCParameterGrp::GetBoolMap(const char * sFilter)
+{
+	FCmap<FCstring,bool>  vrValues;
+	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	pcTemp = FindElement(_pGroupNode,"FCBool");
+	while( pcTemp)
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		{
+			if(strcmp(StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str(),"1"))
+				vrValues[Name] = (false);
+			else
+				vrValues[Name] = (true);	
 		}
 		pcTemp = FindNextElement(pcTemp,"FCBool");
 	}
@@ -213,17 +237,38 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
 {
 	FCvector<long>  vrValues;
-	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	pcTemp = FindNextElement(pcTemp,"FCInt") ;
+	pcTemp = FindElement(_pGroupNode,"FCInt") ;
 	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
 			vrValues.push_back( atol (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+		}
+		pcTemp = FindNextElement(pcTemp,"FCInt") ;
+	}
+
+	return vrValues;
+}
+
+FCmap<FCstring,long> FCParameterGrp::GetIntMap(const char * sFilter)
+{
+	FCmap<FCstring,long>  vrValues;
+	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	pcTemp = FindElement(_pGroupNode,"FCInt") ;
+	while( pcTemp )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		{
+			vrValues[Name] = ( atol (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCInt") ;
 	}
@@ -254,17 +299,38 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
 {
 	FCvector<double>  vrValues;
-	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	pcTemp = FindNextElement(pcTemp,"FCFloat") ;
+	pcTemp = FindElement(_pGroupNode,"FCFloat") ;
 	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
 			vrValues.push_back( atof (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
+		}
+		pcTemp = FindNextElement(pcTemp,"FCFloat");
+	}
+
+	return vrValues;
+}
+
+FCmap<FCstring,double> FCParameterGrp::GetFloatMap(const char * sFilter)
+{
+	FCmap<FCstring,double>  vrValues;
+	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	pcTemp = FindElement(_pGroupNode,"FCFloat") ;
+	while( pcTemp )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		{
+			vrValues[Name] = ( atof (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
 		}
 		pcTemp = FindNextElement(pcTemp,"FCFloat");
 	}
@@ -336,20 +402,46 @@ FCstring FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
 FCvector<FCstring> FCParameterGrp::GetASCIIs(const char * sFilter)
 {
 	FCvector<FCstring>  vrValues;
-	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	while( pcTemp = FindNextElement(pcTemp,"FCText") )
+	pcTemp = FindElement(_pGroupNode,"FCText");
+	while( pcTemp  )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
-		if(sFilter != NULL && Name.find(sFilter)!= FCstring::npos)
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
 		{
 			// retrive the text element
 			DOMNode *pcElem2 = pcTemp->getFirstChild();
 			if (pcElem2)
 				vrValues.push_back( FCstring(StrX(pcElem2->getNodeValue()).c_str()) );
 		}
+		pcTemp = FindNextElement(pcTemp,"FCText");
+	}
+
+	return vrValues;
+}
+
+FCmap<FCstring,FCstring> FCParameterGrp::GetASCIIMap(const char * sFilter)
+{
+	FCmap<FCstring,FCstring>  vrValues;
+	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
+	FCstring Name;
+
+	pcTemp = FindElement(_pGroupNode,"FCText");
+	while( pcTemp)
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter == NULL || Name.find(sFilter)!= FCstring::npos)
+		{
+			// retrive the text element
+			DOMNode *pcElem2 = pcTemp->getFirstChild();
+			if (pcElem2)
+				vrValues[Name] = FCstring(StrX(pcElem2->getNodeValue()).c_str()) ;
+		}
+		pcTemp = FindNextElement(pcTemp,"FCText");
 	}
 
 	return vrValues;
@@ -371,8 +463,14 @@ DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, con
 			{
 				if (clChild->getAttributes()->getLength() > 0)
 				{
-					if (!strcmp(Name,StrX(clChild->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str()))
+					if(Name)
+					{
+						if (!strcmp(Name,StrX(clChild->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str()))
+							return (DOMElement*)clChild;
+					}
+					else
 						return (DOMElement*)clChild;
+
 				}
 			}
 		}

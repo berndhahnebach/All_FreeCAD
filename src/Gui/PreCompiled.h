@@ -18,6 +18,12 @@
 #include <fcntl.h>
 #include <ctype.h>
 
+// STL
+#include <vector>
+#include <map>
+#include <string>
+#include <set>
+
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
 

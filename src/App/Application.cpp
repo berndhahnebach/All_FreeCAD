@@ -128,6 +128,9 @@ FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterMana
 	 _pcUserParamMngr(pcUserParamMngr)
 {
 	_hApp = new FCApplicationOCC;
+	mpcPramManager["User parameter"] = pcUserParamMngr;
+	mpcPramManager["System parameter"] = pcSysParamMngr;
+
 	// seting up Python binding 
 	(void) Py_InitModule("FreeCAD", FCApplication::Methods);
 
@@ -243,6 +246,26 @@ FCDocument* FCApplication::Active(void)
 void FCApplication::SetActive(FCDocument* pDoc)
 {
 	_pActiveDoc = pDoc;
+}
+
+FCParameterManager & FCApplication::GetSystemParameter(void) 
+{
+	return *_pcSysParamMngr;
+}
+
+FCParameterManager & FCApplication::GetUserParameter(void) 
+{
+	return *_pcUserParamMngr;
+}
+
+FCParameterManager & FCApplication::GetParameterSet(const char* sName)
+{
+	return *mpcPramManager[sName];
+}
+
+const FCmap<FCstring,FCParameterManager *> & FCApplication::GetParameterSetList(void)
+{
+	return mpcPramManager;
 }
 
 

@@ -27,6 +27,7 @@
 #include "Splashscreen.h"
 #include "CommandStd.h"
 #include "DlgDocTemplatesImp.h"
+#include "DlgParameterImp.h"
 #include "Icons/images.cpp"
 #include "Icons/x.xpm"
 #include "Application.h"
@@ -72,6 +73,8 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdViewTop());
 	rcCmdMgr.AddCommand(new FCCmdViewAxo());
 	rcCmdMgr.AddCommand(new FCCmdViewFitAll());
+
+	rcCmdMgr.AddCommand(new FCCmdDlgParameter());
 
 }
 
@@ -795,5 +798,26 @@ void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWh
 void FCCmdViewFitAll::Activated(void)
 {
 	AppWnd()->SendMsgToActiveView("ViewFit");
+}
+
+//===========================================================================
+// Std_DlgParameter
+//===========================================================================
+
+void FCCmdDlgParameter::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Edit parameters ...";
+	*sToolTipText = "Opens a Dialog to edit the parameters";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(view_fitall);
+	iAccel = 0;
+}
+
+
+void FCCmdDlgParameter::Activated(void)
+{
+	DlgParameter cDlg(AppWnd(),"ParameterDialog",true);
+	cDlg.exec();
 }
 

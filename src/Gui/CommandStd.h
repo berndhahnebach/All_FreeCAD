@@ -77,4 +77,6 @@ DEF_STD_CMD(FCCmdViewTop		,"Std_ViewTop");
 DEF_STD_CMD(FCCmdViewAxo		,"Std_ViewAxo");
 DEF_STD_CMD(FCCmdViewFitAll		,"Std_ViewFitAll");
 
+DEF_STD_CMD(FCCmdDlgParameter	,"Std_DlgParameter");
+
 #endif
