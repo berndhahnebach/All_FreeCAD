@@ -16,6 +16,7 @@
 // standard
 #include <iostream>
 #include <stdio.h>
+#include <FCNTL.H>
 #include <assert.h>
 #include <time.h>
 
@@ -26,6 +27,7 @@
 #include <vector>
 #include <set>
 #include <stack>
+#include <strstream>
 
 // Python
 #include <Python.h>
@@ -38,6 +40,7 @@
 #include <xercesc/dom/DOMImplementationLS.hpp>
 #include <xercesc/dom/DOMWriter.hpp>
 #include <xercesc/framework/StdOutFormatTarget.hpp>
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/XMLUni.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>

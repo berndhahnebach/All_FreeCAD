@@ -196,7 +196,7 @@ class BaseExport FCPyObject : public PyObject
 	/// Python type checking
 	PyObject *Py_isA(PyObject *args);
 	/// static python wrapper
-	static PyObject *sPy_isA(PyObject *self, PyObject *args, PyObject *kwd)
+	static PyObject *sPy_isA(PyObject *self, PyObject *args, PyObject *)
 		{return ((FCPyObject*)self)->Py_isA(args);};
 };
 

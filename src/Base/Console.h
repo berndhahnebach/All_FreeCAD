@@ -57,13 +57,13 @@ class BaseExport FCConsoleObserver
 {
 public:
 	/// get calles when a Warning is issued
-	virtual void Warning(const char *sWarn){};
+	virtual void Warning(const char *){};
 	/// get calles when a Message is issued
-	virtual void Message(const char *sMsg){};
+	virtual void Message(const char *){};
 	/// get calles when a Error is issued
-	virtual void Error  (const char *sErr)=0;
+	virtual void Error  (const char *)=0;
 	/// get calles when a Log Message is issued
-	virtual void Log    (const char *sErr){};
+	virtual void Log    (const char *){};
 };
 
 

@@ -75,8 +75,7 @@
 #include <qvbox.h>
 #include <qwidget.h>
 #include <qworkspace.h>
-
-
+#include <qtextbrowser.h> 
 
 
 // help system

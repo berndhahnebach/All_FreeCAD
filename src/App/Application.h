@@ -192,9 +192,9 @@ public:
 	~FCApplicationObserver(){GetApplication().DetacheObserver(this);}
 
 	/// This method get called when a new doc appears
-	virtual void OnDocNew(FCDocument* pcDoc){};
+	virtual void OnDocNew(FCDocument*){};
 	/// This method get called when a new doc will be deleted
-	virtual void OnDocDelete(FCDocument* pcDoc){};
+	virtual void OnDocDelete(FCDocument*){};
 };
 
 

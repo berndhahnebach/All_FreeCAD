@@ -42,7 +42,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_CONSOLE" /D "CSFDB" /D "WIN32" /D "_MBCS" /D "WNT" /D "__STLP_USE_DECLSPEC" /D "QT_DLL" /D "QT_THREAD_SUPPORT" /D "QT_ALTERNATE_QTSMANIP" /D "NO_KDE2" /D "_STLP_NO_NEW_IOSTREAMS" /D "_STLP_USE_ABBREVS" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_CONSOLE" /D "CSFDB" /D "WIN32" /D "_MBCS" /D "WNT" /D "__STLP_USE_DECLSPEC" /D "QT_DLL" /D "QT_THREAD_SUPPORT" /D "QT_ALTERNATE_QTSMANIP" /D "NO_KDE2" /D "_STLP_NO_NEW_IOSTREAMS" /D "_STLP_USE_ABBREVS" /YX /FD /c
+# SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -168,10 +169,6 @@ SOURCE=.\DlgSplasher_moc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Export.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\FreeCADInit.py
 
 !IF  "$(CFG)" == "FreeCADMain - Win32 Release"
@@ -191,6 +188,33 @@ InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\FreeCADInstall.py
+
+!IF  "$(CFG)" == "FreeCADMain - Win32 Release"
+
+# Begin Custom Build - Building InstallScript.h
+InputPath=.\FreeCADInstall.py
+
+"InstallScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADMain - Win32 Debug"
+
+# Begin Custom Build - Building InstallScript.h
+InputPath=.\FreeCADInstall.py
+
+"InstallScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADInstall.py InstallScript.h
 
 # End Custom Build
 

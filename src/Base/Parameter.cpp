@@ -72,8 +72,8 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 /** Defauld construction
   * Does not much 
   */
-FCParametrGrp::FCParametrGrp()	
-	: FCHandled(), FCSubject()
+FCParametrGrp::FCParametrGrp(DOMElement *GroupNode)	
+	: FCHandled(), FCSubject(),_pGroupNode(GroupNode)
 {
 }
 
@@ -94,63 +94,201 @@ FCParametrGrp::~FCParametrGrp()
 //**************************************************************************
 // Access methodes
 
-
-bool FCParametrGrp::GetBool()
+FCHandle<FCParametrGrp> FCParametrGrp::GetGroup(const char* Name)
 {
-	return false;	
+	FCHandle<FCParametrGrp> rParamGrp;
+	DOMElement *pcTemp;
+
+	// already created?
+	if( (rParamGrp=_GroupMap[Name]).IsValid() )
+	{
+		// just return the already existing Group handle
+		return rParamGrp;
+	}
+
+	// search if Group node already there
+	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
+/*	if(!pcTemp) // if not, create a new one
+	{
+		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+
+		// creating new group node
+		pcTemp = pDocument->createElement(X("FCParamGroup"));
+		pcTemp-> setAttribute(X("Name"), X(Name));
+		_pGroupNode->appendChild(pcTemp);
+	}*/
+
+	// create and register handle
+	rParamGrp = FCHandle<FCParametrGrp> (new FCParametrGrp(pcTemp));
+	_GroupMap[Name] = rParamGrp;
+
+	return rParamGrp;
 }
 
-void  FCParametrGrp::SetBool()
+bool FCParametrGrp::GetBool(const char* Name, bool bPreset)
 {
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCBool",Name);
+	// if not return preset
+	if(!pcElem) return bPreset;
+	// if yes check the value and return
+	if(strcmp(StrX(pcElem->getAttribute(X("Value"))).c_str(),"1"))
+		return false;
+	else
+		return true;	
+}
+
+void  FCParametrGrp::SetBool(const char* Name, bool bValue)
+{
+	// find or create the Element
+	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCBool",Name);
+	// and set the vaue
+	pcElem->setAttribute(X("Value"), X(bValue?"1":"0"));
+}
+
+long FCParametrGrp::GetInt(const char* Name, long lPreset)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCInt",Name);
+	// if not return preset
+	if(!pcElem) return lPreset;
+	// if yes check the value and return
+	return atol (StrX(pcElem->getAttribute(X("Value"))).c_str());
+}
+
+void  FCParametrGrp::SetInt(const char* Name, long lValue)
+{
+	char cBuf[256];
+	// find or create the Element
+	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCInt",Name);
+	// and set the vaue
+	sprintf(cBuf,"%d",lValue);
+	pcElem->setAttribute(X("Value"), X(cBuf));
+}
+
+double FCParametrGrp::GetFloat(const char* Name, double dPreset)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCFloat",Name);
+	// if not return preset
+	if(!pcElem) return dPreset;
+	// if yes check the value and return
+	return atof (StrX(pcElem->getAttribute(X("Value"))).c_str());
+}
+
+void  FCParametrGrp::SetFloat(const char* Name, double dValue)
+{
+	char cBuf[256];
+	// find or create the Element
+	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCFloat",Name);
+	// and set the value
+	sprintf(cBuf,"%f",dValue);
+	pcElem->setAttribute(X("Value"), X(cBuf));
+}
+
+
+
+void  FCParametrGrp::SetBlob(const char* Name, void *pValue, long lLength)
+{
+	// not implemented so far
+	assert(0);
+}
+
+void FCParametrGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset)
+{
+	// not implemented so far
+	assert(0);
+}
+
+void  FCParametrGrp::SetASCII(const char* Name, const char *sValue)
+{
+	// find or create the Element
+	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCText",Name);
+	// and set the value
+    DOMNode *pcElem2 = pcElem->getFirstChild();
+    if (!pcElem2)
+    {
+		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+		DOMText *pText = pDocument->createTextNode(X(sValue));
+		pcElem->appendChild(pText);
+	}else{
+		pcElem2->setNodeValue(X(sValue));
+	}
+}
+
+void FCParametrGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
+	// if not return preset
+	if(!pcElem) strncpy(pBuf,pPreset,lMaxLength);
+	// if yes check the value and return
+    DOMNode *pcElem2 = pcElem->getFirstChild();
+    if (pcElem2)
+    {
+		StrX cTemp(pcElem2->getNodeValue());
+		strncpy(pBuf,cTemp.c_str(),lMaxLength);
+	}else{
+		strncpy(pBuf,pPreset,lMaxLength);
+	}
+}
+
+stlport::string FCParametrGrp::GetASCII(const char* Name, const char * pPreset)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
+	// if not return preset
+	if(!pcElem) return stlport::string(pPreset);
+	// if yes check the value and return
+    DOMNode *pcElem2 = pcElem->getFirstChild();
+    if (pcElem2)
+		return stlport::string(StrX(pcElem2->getNodeValue()).c_str());	
+	else
+		return stlport::string(pPreset);
+}
+
+
+//**************************************************************************
+// Access methodes
+
+
+DOMElement *FCParametrGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)
+{
+	for (DOMNode *clChild = Start->getFirstChild(); clChild != 0;  clChild = clChild->getNextSibling())
+	{
+		if (clChild->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			// the right node Type
+			if (!strcmp(Type,StrX(clChild->getNodeName()).c_str()))
+			{
+				if (clChild->getAttributes()->getLength() > 0)
+				{
+					if (!strcmp(Name,StrX(clChild->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str()))
+						return (DOMElement*)clChild;
+				}
+			}
+		}
+	}
+	return NULL;
+}
+
+DOMElement *FCParametrGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name)
+{
+	// first try to find it
+	DOMElement *pcElem = FindElement(Start,Type,Name);
+
+	if(!pcElem)
+	{
+		DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+
+		pcElem = pDocument->createElement(X(Type));
+		pcElem-> setAttribute(X("Name"), X(Name));
+		Start->appendChild(pcElem);
+	}
 	
+	return pcElem;
 }
-
-long FCParametrGrp::GetInt()
-{
-	return 0;
-}
-
-void  FCParametrGrp::SetInt()
-{
 	
-}
-
-double FCParametrGrp::GetFloat()
-{
-	return 0.0;
-}
-
-void  FCParametrGrp::SetFloat()
-{
-	
-}
-
-/*
-FCParametrGrp FCParametrGrp::GetGroup()
-{
-	return 
-}
-*/
-void  FCParametrGrp::SetBlob()
-{
-	
-}
-
-char FCParametrGrp::GetBlob()
-{
-	return '0';
-}
-
-void  FCParametrGrp::SetASCII()
-{
-	
-}
-
-char FCParametrGrp::GetASCII()
-{
-	return '0';	
-}
-
 
 //**************************************************************************
 //**************************************************************************
@@ -168,6 +306,49 @@ char FCParametrGrp::GetASCII()
   */
 FCParameterManager::FCParameterManager()	: FCParametrGrp()
 {
+	// initialize the XML system
+	Init();
+
+// ---------------------------------------------------------------------------
+//  Local data
+//
+//  gXmlFile
+//      The path to the file to parser. Set via command line.
+//
+//  gDoNamespaces
+//      Indicates whether namespace processing should be done.
+//
+//  gDoSchema
+//      Indicates whether schema processing should be done.
+//
+//  gSchemaFullChecking
+//      Indicates whether full schema constraint checking should be done.
+//
+//  gDoCreate
+//      Indicates whether entity reference nodes needs to be created or not
+//      Defaults to false
+//
+//  gOutputEncoding
+//      The encoding we are to output in. If not set on the command line,
+//      then it is defaults to the encoding of the input XML file.
+//
+//  gMyEOLSequence
+//      The end of line sequence we are to output.
+//
+//  gSplitCdataSections
+//      Indicates whether split-cdata-sections is to be enabled or not.
+//
+//  gDiscardDefaultContent
+//      Indicates whether default content is discarded or not.
+//
+//  gUseFilter
+//      Indicates if user wants to plug in the DOMPrintFilter.
+//
+//  gValScheme
+//      Indicates what validation scheme to use. It defaults to 'auto', but
+//      can be set via the -v= command.
+//
+// ---------------------------------------------------------------------------
 
 	gDoNamespaces          = false;
 	gDoSchema              = false;
@@ -180,7 +361,7 @@ FCParameterManager::FCParameterManager()	: FCParametrGrp()
 	gSplitCdataSections    = true;
 	gDiscardDefaultContent = true;
 	gUseFilter             = false;
-	gFormatPrettyPrint     = false;
+	gFormatPrettyPrint     = true;
 }
 
 /** Destruction
@@ -190,14 +371,49 @@ FCParameterManager::~FCParameterManager()
 {
 }
 
+void FCParameterManager::Init(void)
+{
+	static bool Init = false;
+	if(!Init)
+	{
+		try
+		{
+			XMLPlatformUtils::Initialize();
+		}
+
+		catch(const XMLException& toCatch)
+		{
+			stlport::strstream err;
+			char *pMsg = XMLString::transcode(toCatch.getMessage());
+			err << "Error during Xerces-c Initialization.\n"
+				 << "  Exception message:"
+				 << pMsg;
+			delete [] pMsg;
+			throw FCException(err.str());
+		}
+		Init = true;
+	}
+}
 
 //**************************************************************************
 // Document handling
 
-
-void  FCParameterManager::LoadDocument(const char* sFileName)
+void FCParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-	
+	int i=_open(sFileName,_O_RDONLY);
+	if( i != -1)
+	{
+		_close(i);
+		LoadDocument(sFileName);
+	}else{
+		CreateDocument();
+	}
+}
+
+
+
+int  FCParameterManager::LoadDocument(const char* sFileName)
+{
     const char *gXmlFile = sFileName;
 
     //
@@ -244,7 +460,17 @@ void  FCParameterManager::LoadDocument(const char* sFileName)
         cerr << "An error occurred during parsing\n " << endl;
         errorsOccured = true;
     }
+
+	if(errorsOccured) return 0;
+
+	_pDocument = parser->getDocument();
+	DOMElement* rootElem = _pDocument->getDocumentElement();
+
+	_pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
+
+	if(!_pGroupNode) throw FCException("Maleforme Parameter document: Root group not found");
 	
+	return 1;
 }
 
 void  FCParameterManager::SaveDocument(const char* sFileName)
@@ -300,10 +526,10 @@ void  FCParameterManager::SaveDocument(const char* sFileName)
 		// Plug in a format target to receive the resultant
 		// XML stream from the serializer.
         //
-		// StdOutFormatTarget prints the resultant XML stream
-		// to stdout once it receives any thing from the serializer.
+		// LocalFileFormatTarget prints the resultant XML stream
+		// to a file once it receives any thing from the serializer.
 		//
-		XMLFormatTarget *myFormTarget = new StdOutFormatTarget();
+		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget (sFileName);
 
 		//
 		// do the serialization through DOMWriter::writeNode();
@@ -331,6 +557,25 @@ void  FCParameterManager::SaveDocument(const char* sFileName)
      }
 
 }
+
+void  FCParameterManager::CreateDocument(void)
+{
+	// creating a document from screatch
+	DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
+	_pDocument = impl->createDocument(
+                    0,                    // root element namespace URI.
+                    X("FCParameters"),         // root element name
+                    0);                   // document type object (DTD).
+
+	// creating the node for the root group
+	DOMElement* rootElem = _pDocument->getDocumentElement();
+	_pGroupNode = _pDocument->createElement(X("FCParamGroup"));
+	((DOMElement*)_pGroupNode)->setAttribute(X("Name"), X("Root"));
+	rootElem->appendChild(_pGroupNode);
+
+	
+}
+
 
 void  FCParameterManager::CheckDocument()
 {
@@ -507,9 +752,36 @@ StrX::~StrX()
 // -----------------------------------------------------------------------
 //  Getter methods
 // -----------------------------------------------------------------------
-const char* StrX::localForm() const
+const char* StrX::c_str() const
 {
     return fLocalForm;
+}
+
+
+//**************************************************************************
+//**************************************************************************
+// XStr
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+XStr::XStr(const char* const toTranscode)
+{
+    // Call the private transcoding method
+    fUnicodeForm = XMLString::transcode(toTranscode);
+}
+
+XStr::~XStr()
+{
+    delete [] fUnicodeForm;
+}
+
+
+// -----------------------------------------------------------------------
+//  Getter methods
+// -----------------------------------------------------------------------
+const XMLCh* XStr::unicodeForm() const
+{
+    return fUnicodeForm;
 }
 
 

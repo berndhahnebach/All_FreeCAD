@@ -32,5 +32,10 @@
 #	pragma comment(lib,"TKCDF.lib")
 	// QT extension
 #	pragma comment(lib,"qextmdi.lib")
+#	ifdef _DEBUG
+#		pragma comment(lib,"xerces-c_2D.lib")
+#	else
+#		pragma comment(lib,"xerces-c_2.lib")
+#	endif
 
 #endif

@@ -24,6 +24,7 @@
 #include "ButtonGroup.h"
 
 #include "Icons/x.xpm"
+//#include "FreeCADAbout.h"
   
 //#include "Icons/Background3.xpm"
 
@@ -85,6 +86,11 @@ ApplicationWindow::ApplicationWindow()
 		connect(b0, SIGNAL(clicked()), this, SLOT(close()));
 	  }*/
 	}
+
+//	QTextBrowser *pBrowser = new QTextBrowser();
+//	pBrowser->setText(FreeCADAbout);
+//	addToolWindow( pBrowser, KDockWidget::DockRight, m_pMdi, 70, "Help", "Help");
+
 
 }
 

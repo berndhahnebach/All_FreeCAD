@@ -42,6 +42,7 @@
 
 
 // Include files
+#include <map>
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>
@@ -52,7 +53,8 @@ class DOMDocument;
 #include "Observer.h"
 
 class DOMNode;
-
+class DOMElement;
+class FCParameterManager;
 
 /** The parameter container class
  *  This is the base class of all classes handle parameter.
@@ -63,42 +65,71 @@ class DOMNode;
  *  and exporting groups of parameters and enables streaming
  *  to a persistent medium via XML.
  *  \par
- *  @see FCParameterSet 
+ *  Its main task is making user parameter persitent, saving 
+ *  last used values in dialog boxes, seting and retriving all
+ *  kind of preferences and so on.
+ *  @see FCParameterManager
  */
 class  BaseExport FCParametrGrp	: public FCHandled,public FCSubject
 {
-public:
-	FCParametrGrp();
-	~FCParametrGrp();
-
-	bool GetBool();
-
-	void  SetBool();
-
-	long GetInt();
-
-	void  SetInt();
-
-	double GetFloat();
-
-	void  SetFloat();
-
-//	FCParametrGrp GetGroup();
-
-	void  SetBlob();
-
-	char GetBlob();
-
-	void  SetASCII();
-
-	char GetASCII();
-
-	typedef FCHandle<FCParametrGrp> handle;
 
 protected:
-private:
+	FCParametrGrp(DOMElement *GroupNode=0L);
+	~FCParametrGrp();
 
-	DOMNode *_pGroupNode;
+public:
+	FCHandle<FCParametrGrp> GetGroup(const char* Name);
+	typedef FCHandle<FCParametrGrp> handle;
+
+	bool GetBool(const char* Name, bool bPreset=false);
+
+	void  SetBool(const char* Name, bool bValue);
+
+	long GetInt(const char* Name, long lPreset=0);
+
+	void  SetInt(const char* Name, long lValue);
+
+	double GetFloat(const char* Name, double dPreset=0.0);
+
+	void  SetFloat(const char* Name, double dValue);
+
+
+	void  SetBlob(const char* Name, void *pValue, long lLength);
+
+	void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL);
+
+	void  SetASCII(const char* Name, const char *sValue);
+
+	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
+
+	stlport::string GetASCII(const char* Name, const char * pPreset=NULL);
+
+
+	static void Init(void);
+
+	friend FCParameterManager;
+
+	/** Find a Element specified by Type and Name
+	 *  Search in the parent element Start for the first occourenc of a 
+	 *  element of Type and with the atribute Name=Name. On succes it returns
+	 *  the pointer to that element, otherwise NULL
+	 */
+	DOMElement *FindElement(DOMElement *Start, const char* Type, const char* Name);
+
+	/** Find a Element specified by Type and Name or create it if not found
+	 *  Search in the parent element Start for the first occourenc of a 
+	 *  element of Type and with the atribute Name=Name. On succes it returns
+	 *  the pointer to that element, otherwise it create the element and return the pointer.
+	 */
+	DOMElement *FCParametrGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name);
+
+
+protected:
+
+	/// DOM Node of the Base node of this group
+	DOMElement *_pGroupNode;
+	/// map of already exported groups
+	stlport::map <stlport::string ,FCHandle<FCParametrGrp> > _GroupMap;
 
 };
 
@@ -114,10 +145,15 @@ class BaseExport FCParameterManager	: public FCParametrGrp
 public:
 	FCParameterManager();
 	~FCParameterManager();
+	static void Init(void);
 
-	void  LoadDocument(const char* sFileName);
+	int   LoadDocument(const char* sFileName);
+
+	void  LoadOrCreateDocument(const char* sFileName);
 
 	void  SaveDocument(const char* sFileName);
+
+	void  CreateDocument(void);
 
 	void  CheckDocument();
 protected:
@@ -193,7 +229,7 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 //  This is a simple class that lets us do easy (though not terribly efficient)
 //  trancoding of XMLCh data to local code page for display.
 // ---------------------------------------------------------------------------
-class StrX
+class BaseExport StrX
 {
 public :
     // -----------------------------------------------------------------------
@@ -206,7 +242,7 @@ public :
     // -----------------------------------------------------------------------
     //  Getter methods
     // -----------------------------------------------------------------------
-    const char* localForm() const;
+    const char* c_str() const;
 
 private :
     // -----------------------------------------------------------------------
@@ -220,7 +256,7 @@ private :
 
 inline ostream& operator<<(ostream& target, const StrX& toDump)
 {
-    target << toDump.localForm();
+    target << toDump.c_str();
     return target;
 }
 
@@ -270,6 +306,39 @@ private :
     
 };
 
+
+
+// ---------------------------------------------------------------------------
+//  This is a simple class that lets us do easy (though not terribly efficient)
+//  trancoding of char* data to XMLCh data.
+// ---------------------------------------------------------------------------
+class XStr
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    XStr(const char* const toTranscode);
+
+    ~XStr();
+
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const XMLCh* unicodeForm() const;
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fUnicodeForm
+    //      This is the Unicode XMLCh format of the string.
+    // -----------------------------------------------------------------------
+    XMLCh*   fUnicodeForm;
+};
+
+#define X(str) XStr(str).unicodeForm()
 
 
 #endif

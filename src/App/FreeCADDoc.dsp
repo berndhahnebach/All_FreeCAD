@@ -44,6 +44,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FreeCADApp_EXPORTS" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "_PreComp_" /D "WIN32" /D "_MBCS" /D "WNT" /D "__STLP_USE_DECLSPEC" /D "FCApp" /D "_STLP_NO_NEW_IOSTREAMS" /D "_STLP_USE_ABBREVS" /YX /FD /c
+# SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
@@ -111,6 +112,10 @@ SOURCE=.\Attribute.cpp
 # Begin Source File
 
 SOURCE=.\Attribute.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DllMain.cpp
 # End Source File
 # Begin Source File
 

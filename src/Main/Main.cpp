@@ -25,6 +25,7 @@
 #include "../App/Application.h"
 
 #include "Standard_Failure.hxx"
+#include <xercesc/util/XMLException.hpp>
 #include "iostream"
 
 // FreeCAD Gui header
@@ -56,12 +57,15 @@ const char sBanner[] = \
 #include "InitScript.h"
 #include "TestScript.h"
 #include "TestEnvScript.h"
+#include "InstallScript.h"
 #else
 // this might be a cleaner approach? (Besides path to scripts)
 const char FreeCADInit[]="execfile('./Main/FreeCADInit.py')";
 const char FreeCADTest[]="execfile('./Main/FreeCADTest.py')";
 const char FreeCADTestEnv[]="execfile('./Main/FreeCADTestEnv.py')";
 #endif
+
+#include <string>
 
 void PrintInitHelp(void);
 
@@ -94,25 +98,37 @@ int main( int argc, char ** argv ) {
 
 		GetApplication();
 	}
+	// catch all OCC exceptions
 	catch(Standard_Failure e)
 	{
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		cout << "An exception was caught " << E << endl;
+		cout << "An Open CasCade exception was caught:"<< endl << E << endl;
 		PrintInitHelp();
-		exit(1);
+		exit(10);
 	}
+	// catch all FC exceptions
 	catch(FCException e)
 	{
 		GetConsole().Error("Application init fails:");
 		e.ReportException();
 		PrintInitHelp();
-		exit(2);
+		exit(20);
 	}
+	// catch XML exceptions
+    catch (XMLException& e)
+    {
+		GetConsole().Error("Application init fails:");
+		GetConsole().Error(StrX(e.getMessage()).c_str());
+		PrintInitHelp();
+		exit(30);
+    }
+
+	// catch all the (nasty) rest
 	catch(...)
 	{
 		GetConsole().Error("Application init fails, because of a realy nesty (unknown) error...");
 		PrintInitHelp();
-		exit(3);
+		exit(40);
 	}
 
 
@@ -158,7 +174,7 @@ int main( int argc, char ** argv ) {
 			break;
 		case 3:
 			// run internal script
-			GetConsole().Log("Runing internal script: %s\n",sFileName.c_str());
+			GetConsole().Log("Runing internal script:\n");
 			GetInterpreter().Launch(sScriptName);
 			break;
 		default:
@@ -185,10 +201,9 @@ int main( int argc, char ** argv ) {
 	}
 
 	// Destruction phase ===========================================================
-//#ifdef __linux // what if we are running in a GUI-less mode?
-//        if (pcQApp)
-//#endif        
-//        delete pcQApp;
+	GetConsole().Log("FreeCAD terminating...\n\n");
+
+	pcGlobalParameter->SaveDocument("AppParam.FCParam");
 	delete pcGlobalParameter;
 
 	GetConsole().Log("FreeCAD completly terminated\n\n");
@@ -219,7 +234,39 @@ void Init(int argc, char ** argv )
 
 	pcGlobalParameter = new FCParameterManager();
 
+	//pcGlobalParameter->CreateDocument();
+	pcGlobalParameter->LoadOrCreateDocument("AppParam.FCParam");
+/*
+	pcGlobalParameter->GetGroup("BaseApp");
+	FCHandle<FCParametrGrp> h = pcGlobalParameter->GetGroup("BaseApp");
+	h = h->GetGroup("Windows");
+
+	h->SetBool("Works",true);
+	bool bTest = h->GetBool("Works");
+
+	h->SetInt("Works",1000);
+	long lTest = h->GetInt("Works");
+
+	h->SetFloat("Works",123.23);
+	double test = h->GetFloat("Works");
+
+	h->SetASCII("Works","hello");
+	char cBuf[256];
+	h->GetASCII("Works",cBuf,255);
+	stlport::string sTrest = h->GetASCII("Works");
+	
+	
+	pcGlobalParameter->SaveDocument("AppParam.FCParam");
+	//pcGlobalParameter->CreateDocument();
+
+
+
+	exit (0);
+
+*/
 	ParsOptions(argc,argv);
+
+	
 
 	/*
 	if(RunMode=0)
@@ -246,28 +293,31 @@ void Init(int argc, char ** argv )
 
 }
 
-const char sEnvErrorText[] = \
+//**************************************************************************
+// checking the environment
+
+
+const char sEnvErrorText1[] = \
 "It seems some of the variables needed by FreeCAD are not set\n"\
-"or wrong set. This can happen when you start FreeCAD without\n"\
-"installation or you runnig mixed versions. Also while development\n"\
-"process. You can set the variables by hand or with a script:\n"\
+"or wrong set. This regards the Open CasCade variables:\n"\
 "CSF_GRAPHICSHR=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
 "CSF_MDTVFONTDIRECTORY=C:\\CasRoot\\src\\FontMFT\\\n"\
 "CSF_MDTVTEXTURESDIRECTORY=C:\\CasRoot\\src\\Textures\\\n"\
 "CSF_UNITSDEFINITION=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
 "CSF_UNITSLEXICON=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
-"CSF_PluginDefaults=C:\\Programme\\FreeCAD\\Resources\\\n"\
-"CSF_StandardDefaults=C:\\Programme\\FreeCAD\\Resources\\\n\n"\
-"You can also use a script providet with the source and the binary\n"\
-"distribution of FreeCAD -> SetEnvs.py, which try to figure it out\n"\
-"automaticaly.\n\n";
+"Please reinstall OpenCasCade!\n\n";
+
+const char sEnvErrorText2[] = \
+"It seems some of the variables needed by FreeCAD are not set\n"\
+"or wrong set. This regards the Open CasCade variables:\n"\
+"XXX=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
+"Please reinstall XXX!\n\n";
 
 
 void CheckEnv(void)
 {
-	bool bFailure = false;
+	int bFailure = 0;
 	// set the resource env variables
-/*  dont work!!! keeps the path from registry
 	char  szString [256] ;
 	char  szDirectory [256] ;
 
@@ -279,13 +329,13 @@ void CheckEnv(void)
 	SetEnvironmentVariable ( "CSF_ResourcesDefaults",szDirectory);
 	sprintf(szString,"CSF_ResourcesDefaults=%s",szDirectory);
 	putenv (szString);
-	cout<<szString<<endl;
+//	cout<<szString<<endl;
 
 	SetEnvironmentVariable ( "CSF_PluginDefaults",szDirectory);
 	sprintf(szString,"CSF_PluginDefaults=%s",szDirectory);
 	putenv (szString);
-	cout<<szString<<endl;
-*/
+//	cout<<szString<<endl;
+
 
 /*  Attic Only needet for CasCade prior 4.0
 	if( ! getenv("CSF_GRAPHICSHR") ){
@@ -294,21 +344,25 @@ void CheckEnv(void)
 	}*/
         
         
-#define TEST_ENVVAR_EXISTS(envvar) \
+#define TEST_ENVVAR_EXISTS(envvar,type) \
 	if (!getenv(envvar)){ \
           cerr<<"Environment variable "<<envvar<<" is not set!"<<endl; \
-          bFailure=true;\
+          bFailure|=type;\
         }  
         //TEST_ENVVAR_EXISTS("CSF_GraphicShr")
-        TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory")
-        TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory")
-        TEST_ENVVAR_EXISTS("CSF_UnitsDefinition")
-        TEST_ENVVAR_EXISTS("CSF_UnitsLexicon")
-        TEST_ENVVAR_EXISTS("CSF_PluginDefaults")
-        TEST_ENVVAR_EXISTS("CSF_StandardDefaults")
-        if (bFailure) {    
-         	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText;
-		exit(0);
+        TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory",1)
+        TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory",1)
+        TEST_ENVVAR_EXISTS("CSF_UnitsDefinition",1)
+        TEST_ENVVAR_EXISTS("CSF_UnitsLexicon",1)
+        TEST_ENVVAR_EXISTS("CSF_PluginDefaults",1)
+        TEST_ENVVAR_EXISTS("CSF_StandardDefaults",1)
+        if (bFailure&1) {    
+         	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
+			exit(1);
+        }
+        if (bFailure&2) {    
+         	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText2;
+			exit(1);
         }
 #undef TEST_ENVVAR_EXISTS         
         
@@ -437,6 +491,12 @@ void ParsOptions(int argc, char ** argv)
 						sScriptName = FreeCADTest;
 						break;   
 				};  
+				break;  
+			case 'i': 
+			case 'I':  
+				RunMode = 3;
+				sFileName = "TestEnv";
+				sScriptName = FreeCADInstall;
 				break;  
 			case '?': 
 			case 'h': 

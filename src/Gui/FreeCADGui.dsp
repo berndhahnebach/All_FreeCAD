@@ -44,6 +44,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FREECADGUI_EXPORTS" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "_PreComp_" /D "QT_DLL" /D "QT_THREAD_SUPPORT" /D "QT_ALTERNATE_QTSMANIP" /D "CSFDB" /D "WIN32" /D "_MBCS" /D "WNT" /D "__STLP_USE_DECLSPEC" /D "FCGui" /D "NO_KDE2" /D "_STLP_NO_NEW_IOSTREAMS" /D "_STLP_USE_ABBREVS" /YX /FD /c
+# SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
@@ -376,6 +377,10 @@ SOURCE=.\CommandStd.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\DllMain.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Document.cxx
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
@@ -400,6 +405,33 @@ InputPath=.\Document.h
 
 "Document_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	%QTDIR%\bin\moc $(InputPath) -o Document_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\FreeCADAbout.rtf
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\FreeCADAbout.rtf
+
+"FreeCADAbout.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADAbout.rtf FreeCADAbout.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\FreeCADAbout.rtf
+
+"FreeCADAbout.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\Tools\PythonToCPP.py FreeCADAbout.rtf FreeCADAbout.h
 
 # End Custom Build
 
