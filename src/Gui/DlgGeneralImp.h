@@ -36,27 +36,22 @@ namespace Dialog {
  *  @see class ApplicationWindow
  *  \author Werner Mayer
  */
-class DlgGeneralImp : public DlgGeneralBase, public Gui::Dialog::PreferencePage
+class DlgGeneralImp : public DlgGeneralBase, public Gui::Dialog::PreferencePage, public PrefWidget
 {
   Q_OBJECT
 
 public:
   DlgGeneralImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-  virtual ~DlgGeneralImp();
+  ~DlgGeneralImp();
 
-protected:
-  void onSearchForLanguages();
-  void onChangeLanguage(const QString&);
-  void apply();
-
-protected slots:
-  void onBigPixmaps();
-  void onSetStyle();
-  void onSetMRUSize();
-  void onSetCmdLineVisible();
+  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
 private:
-  QString language; /**< Current used language */
+  void setMRUSize();
+  void insertLanguages();
+
+  void restorePreferences();
+  void savePreferences();
 };
 
 } // namespace Dialog

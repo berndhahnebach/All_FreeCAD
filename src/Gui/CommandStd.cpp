@@ -320,7 +320,6 @@ FCCmdUndo::FCCmdUndo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Undo";
 	iAccel			= Qt::CTRL+Qt::Key_Z;
-  _pclUndoRedoWidget = new Gui::Dialog::UndoRedoDialog(ApplicationWindow::Instance, "Undo");
 }
 
 
@@ -333,11 +332,6 @@ void FCCmdUndo::Activated(int iMsg)
 bool FCCmdUndo::IsActive(void)
 {
 	return GetAppWnd()->SendHasMsgToActiveView("Undo");
-}
-
-QWidget* FCCmdUndo::GetWidget()
-{
-  return _pclUndoRedoWidget;
 }
 
 QAction * FCCmdUndo::CreateAction(void)
@@ -372,7 +366,6 @@ FCCmdRedo::FCCmdRedo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Redo";
 	iAccel			= Qt::CTRL+Qt::Key_Y;
-	_pclUndoRedoWidget = new Gui::Dialog::UndoRedoDialog(ApplicationWindow::Instance, "Redo");
 }
 
 
@@ -385,11 +378,6 @@ void FCCmdRedo::Activated(int iMsg)
 bool FCCmdRedo::IsActive(void)
 {
 	return GetAppWnd()->SendHasMsgToActiveView("Redo");
-}
-
-QWidget* FCCmdRedo::GetWidget()
-{
-  return _pclUndoRedoWidget;
 }
 
 QAction * FCCmdRedo::CreateAction(void)
@@ -723,7 +711,8 @@ FCCmdAbout::FCCmdAbout()
 
 void FCCmdAbout::Activated(int iMsg)
 {
-	AboutDialog().exec();
+	AboutDialog dlg( GetAppWnd() );
+  dlg.exec();
 }
 
 //===========================================================================

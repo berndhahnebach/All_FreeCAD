@@ -1,13 +1,10 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>DlgCustomCommandsBase</class>
-<widget>
-    <class>QWidget</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QWidget">
+    <property name="name">
         <cstring>DlgCustomCommandsBase</cstring>
     </property>
-    <property>
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
@@ -15,117 +12,102 @@
             <height>284</height>
         </rect>
     </property>
-    <property>
-        <name>caption</name>
+    <property name="caption">
         <string>Commands</string>
     </property>
     <grid>
-        <property>
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property>
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget row="0"  column="0" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
                 <cstring>GroupBox2</cstring>
             </property>
-            <property>
-                <name>title</name>
+            <property name="title">
                 <string></string>
             </property>
             <grid>
-                <property>
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property>
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget row="1"  column="1" >
-                    <class>Gui::CommandView</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="Gui::CommandView" row="1" column="1">
+                    <property name="name">
                         <cstring>IconView1</cstring>
                     </property>
+                    <property name="focusPolicy">
+                        <enum>StrongFocus</enum>
+                    </property>
                 </widget>
-                <widget row="2"  column="0"  rowspan="1"  colspan="2" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+                    <property name="name">
                         <cstring>TextLabel</cstring>
                     </property>
-                    <property>
-                        <name>minimumSize</name>
+                    <property name="minimumSize">
                         <size>
                             <width>0</width>
                             <height>0</height>
                         </size>
                     </property>
-                    <property>
-                        <name>maximumSize</name>
+                    <property name="maximumSize">
                         <size>
                             <width>32767</width>
                             <height>32767</height>
                         </size>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string></string>
                     </property>
                 </widget>
-                <widget row="0"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="0" column="1">
+                    <property name="name">
                         <cstring>TextLabelCommands</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Commands</string>
                     </property>
                 </widget>
-                <widget row="1"  column="0" >
-                    <class>QListBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QListBox" row="1" column="0">
+                    <property name="name">
                         <cstring>ComboBoxCategory</cstring>
                     </property>
-                    <property>
-                        <name>sizePolicy</name>
+                    <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>0</hsizetype>
                             <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property>
-                        <name>minimumSize</name>
+                    <property name="minimumSize">
                         <size>
                             <width>125</width>
                             <height>0</height>
                         </size>
                     </property>
-                    <property>
-                        <name>maximumSize</name>
+                    <property name="maximumSize">
                         <size>
                             <width>125</width>
                             <height>32767</height>
                         </size>
                     </property>
                 </widget>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
                         <cstring>TextLabelCategory</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Category</string>
                     </property>
                 </widget>
@@ -145,14 +127,24 @@
         <sizepolicy>
             <hordata>5</hordata>
             <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
 <images>
-    <image>
-        <name>image0</name>
-        <data format="XPM.GZ" length="3822">789ca59659531c470cc7dffd2928ebcd9592e7ea9e994ae5c19c0603363618702a0fea393897e5588e2595ef1ef55f0db153ce55e16fcafb5b6934ea6e49cdeb570b071fb6165ebd7e713393d949b7d01dcbf5c2abfe763299fffccb4fbfbe7859140bfa2fafb385e2e50f2f5eeecc16ba85ede9c51081e60a94e1077c9b58122f26ee8c79cfb87ab27760578c590dbe064b1132073e7ee21c2fe70fc6aecddac87203eea260af8c8b36af6097c87996b505fce90e5ce443b29f1a1775eff1fc1763d7e696ef7b70e3cb1cf169092c799737e00be352727bfed0d8e7b9c0de8207e7420e7e1bb9c8a2f0fe23701e053b1b575294b0af81eb7c307fc67a8a3e4ffb2d14b96caa6a30ff557057e625f64fce133b87f5b3f98f4595d68ffdae5c14debf09f65555613db298d827c6faab260afe1363573bcb7f19dc46c1ff011c9ef33d368e026f4476be6a1de2d325b876a3eb91ef1be3ba73f0e75de326373b617dae55a17ee4ccd8cb38c23e827b953dbf6eacf16017d4831b7c15ecfc02782cbb02f1f8d1d8f71efbcbabc64db078721fd967b94bf58df3f6b90b169f1e8cbdfec09f8ddbd2f2e3157059571efb27c6cea5f7d191b12fbdd5df15d82ba3be04f5e41bd7789c874cc192f799adefd6589fb07afc080edacdd67febc651f0b7f85d14f2fb6cdc8a47bf33fab52e7c9bf23b33d66f6097015c15b9bd9f73e328d8f1beda795fa3de18f9d7be296bebef0de350d6b65f5be0c687daea6dc5380a8c7ead4533b0f35b34d605da7a1b70178578cbcf6cf5837ea8c728d871de286fe44b98278d2b7c9a3f27e0d014f63cf7895d033b61fd3a9cb2c6f6eb2a71dddaf9a25fdab218739b471bc6ea61fd8bfe6b7dd3b4d60f8789fb06e743787fdb88b4581fd7e04e231897892bb17ad806f71adff245ffb543dba6f87b8955e01b63f162fdfa2eb2e87a8c29242ec5deb766dcebc0821def13ad066f3c3556d9f31e5c468177c05559d97c158bef5d9a2f7c69ac2bb0fb6166acb2f3c17c9046e35b3dec266e8c19e721210af1310fa48b823fd61732e983e5b76a1c85e7513f4107bacd6f1e8da3e0efc045143803977569fdce47c651b04b62176cbe603f94929d8bc44f76ec67f05d156c3db8af421d05b6f7d79d049befb88f432383587ded1b3ff9d356e2c6e211eed3d0fac2d97ad11f21843ec53b30ee8a60fdd2276e82f5b7c51bc3604c8fc63a3e6c7f501f9d8b02e33eedea26b37e27cc171c87d5d3bd71ef3bab5f9c6f17a2e08f7aeffa2830f2eb863ea4797a9778ec511fbc643ce6291eeeeb6ed48969e783f3ef8ba1ef6dfd98673d2e0cc4473e7dd3fbdef2db4fac02a35f7b517fac47509f48cfe627eea7218b02a31f86220a8c7c86320a8cf93c3895f1e4996d5e7e02d7433ed8f99e266e07bbff703ec358d7e9bec2fc1ff35146ab5ff4db588ccd60f30ef5325651b0a37e47afb2797df9ccb65ff87b616ca360c73cd2e82ae483fcc62e0afe9827631f05c67d380e51781ef7c938baaab0f32d8ddbaab17e298cb5a2ad5f73e3e7fa9b19c79fc83bb3282696bf119997f973d06f3aee79e0f13b3ae2633e518ff0ec1fbd4ff98ccf79f25d5df0942f59cc5f33e9f84abfbde61b9ea96ef90eff9beef5f701963913fc453379e437bcc84bf058e6155ee5b5e4ff96d77983dfe9a74d96e43ff0166ff37bfec03bfafd47fec4bbbcc79fe1bfcf077cc85f38d3cf4ffe23e75c70c9153bfdd673cd0db7c4d19f88840275d47fed4f038d7444c774a21ea77446e734a10bf84fe992aee89a6ebe893f51cb8c6e29ad94eee981e6f498e80d2dd2d29ffdff85fef01f69995668554f60466bf496d66983de21f61a6daa654b6dff233e6dd37bfa403bf4913ed12eedd1278dfc99e28e5ed03e1dd0217df9c63fa39c0a2aa9e20772ba524f35355a0733f56eb5e048e46b7f0954e8b8eb6588efd5c63992633941fe87722a67fa7bfe8dff844af5be90a97a5fca955ccb8d2067b9953b39973b9a7fe57f24f754e9fc9fca83cce551dec8892cca9256e04c9665455665ed1bff63cdf4e11f77e7a9de48bb612a6f655df77acdf65c366843dec9263e6fc936be4ff58c7eb9fcc7e8f3a77e49fd38d7f7fd752673ebe1ffdcefbffdf8e27793408008</data>
+    <image name="image0">
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
     </image>
 </images>
+<tabstops>
+    <tabstop>ComboBoxCategory</tabstop>
+    <tabstop>IconView1</tabstop>
+    <tabstop>TextLabel</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>gui::commandview.h</includehint>
+</includehints>
 </UI>

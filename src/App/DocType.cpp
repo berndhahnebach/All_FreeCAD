@@ -35,6 +35,7 @@
 #	include <assert.h>
 #	include <TDataStd_Name.hxx>
 #	include <TDF_Label.hxx>
+# include <TDF_MapIteratorOfLabelMap.hxx>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -189,6 +190,8 @@ Feature *DocTypeStd::AddFeature(const char* sName)
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
 
+    pcFeature->SetDocType(this);
+
 		// return the feature
 		return pcFeature;
 
@@ -201,20 +204,66 @@ Feature *DocTypeStd::GetActiveFeature(void)
   // checks if there is no active Feature
   if(_lActiveFeature.IsNull()) 
     return 0;
+  
+  return GetFeature(_lActiveFeature);
+}
 
+Feature *DocTypeStd::GetFeature(const TDF_Label &l)
+{
   Handle(FeatureAttr) hFeat;
   
-  if(! _lActiveFeature.FindAttribute(FeatureAttr::GetID(),hFeat))
-    throw Base::Exception("DocTypeStd::GetActiveFeature() internal error, feature attribute missing\n");
+  if(! l.FindAttribute(FeatureAttr::GetID(),hFeat))
+    //throw Base::Exception("DocTypeStd::GetFeature() internal error, feature attribute missing\n");
+    return 0;
   
   return hFeat->Get();
 }
 
+//**************************************************************************
+// State handling
+
+
+void DocTypeStd::TouchState(TDF_Label &l)
+{
+  _LogBook.SetTouched(l);
+}
+
+void DocTypeStd::ImpactState(TDF_Label &l)
+{
+  _LogBook.SetImpacted(l);
+}
+
+
+
 void DocTypeStd::UpdateDoc(void)
 {
-  _pcDoc->Recompute();
 
+  TDF_MapIteratorOfLabelMap It;
+
+  for(It.Initialize(_LogBook.GetTouched());It.More();It.Next())
+  {
+    // Get the Feature of this label
+    Feature *Feat = GetFeature(It.Key());
+    if(!Feat) continue;
+
+    // find the name of this label
+    Handle(TDataStd_Name) hName;
+    if(! It.Key().FindAttribute(TDataStd_Name::GetID(),hName))
+      throw Base::Exception("DocTypeStd::UpdateDoc() internal error, feature label with no name\n");
+    Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
+
+		if (Feat->MustExecute(_LogBook))
+		{
+			//_LogBook.SetTouched(It.Key());
+			if(Feat->Execute(_LogBook))
+        Base::Console().Message("Recompute of Feature failed\n");
+		}
+
+  }
+
+  _pcDoc->Recompute();
 }
+
 
 //===========================================================================
 // TpyeStdPy - Python wrapper

@@ -50,35 +50,12 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 
   append(EnableLineNumber->getHandler());
   append(EnableFolding->getHandler());
-  append(FontSize->getHandler());
-  append(FontDB->getHandler());
-  append(getHandler());
+  append(getHandler()); // this dialog
 
   connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
   connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
 
-  // if you run this first time
-  //
-  if (FontSize->count() == 0)
-  {
-    for ( int i=5; i<20; i++)
-      FontSize->insertItem( QString::number( i ) );
-    FontSize->setCurrentItem( 4 );
-  }
-
-  if ( FontDB->count() == 0 )
-  {
-    // fonts
-    QFontDatabase fdb;
-    QStringList familyNames = fdb.families( FALSE );
-    QString item = hPrefGrp->GetASCII("Font", "Courier").c_str();
-
-    FontDB->insertStringList( familyNames );
-    FontDB->setCurrentText( item );
-  }
-
   pythonSyntax = new PythonSyntaxHighlighter(textEdit1);
-  
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -104,7 +81,14 @@ void DlgSettingsEditorImp::restorePreferences()
     _mColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().color(*it));
   }
 
-//  Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
+  // fill up font styles
+  //
+  QFontDatabase fdb;
+  QStringList familyNames = fdb.families( FALSE );
+  FontDB->insertStringList( familyNames );
+
+  FontSize->setCurrentText( hPrefGrp->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
+  FontDB  ->setCurrentText( hPrefGrp->GetASCII( "Font", "Courier" ).c_str() );
 }
 
 /** Saves the color map */
@@ -115,7 +99,8 @@ void DlgSettingsEditorImp::savePreferences()
     hPrefGrp->SetInt(it->first.latin1(), it->second);
   }
 
-//  hPrefGrp->SetInt("Lexer", Languages->currentItem());
+  hPrefGrp->SetASCII( "FontSize", FontSize->currentText().latin1() );
+  hPrefGrp->SetASCII( "Font", FontDB->currentText().latin1() );
 }
 
 /** Searches for the corresponding color value to \e name in @ref DefColorMap and

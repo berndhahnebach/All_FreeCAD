@@ -455,3 +455,11 @@ Version: V0.1B99 Date: Fri Nov 26 22:40:56 2004 +++++++++++++++++++++++++++++++
 Version: V0.1B100 Date: Mon Nov 29 19:40:56 2004 +++++++++++++++++++++++++++++++
 + set up new exception handling for python call back
 + implement std property acces in App::Feature
+
+Version: V0.1B101 Date: Thu Dec 02 22:32:22 2004 +++++++++++++++++++++++++++++++
++ First working experiments with associative parametric modeling
+
+Version: V0.1B102 Date: Mon Dec 06 02:15:33 2004 +++++++++++++++++++++++++++++++
++ Redesign of undo/redo framework
++ Redesign of the customize pages framework
++ Simplified impl. of the General and Editor preference pages

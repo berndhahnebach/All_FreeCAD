@@ -35,7 +35,7 @@
 
 namespace Gui {
 
-/** Validates input of the command line
+/** Validates input of the command line.
  * \author Werner Mayer
  */
 class ConsoleValidator : public QValidator
@@ -48,10 +48,10 @@ public:
   virtual void fixup ( QString & ) const;
 };
 
-/** The command line class
+/** The command line class.
  * \author Werner Mayer
  */
-class GuiExport CommandLineBase : public QComboBox, public WindowParameter
+class GuiExport CommandLineBase : public QComboBox, public WindowParameter, public FCParameterGrp::ObserverType
 {
   Q_OBJECT
 
@@ -59,10 +59,7 @@ protected:
   // Singleton
   CommandLineBase(void);
   virtual ~CommandLineBase(void);
-
   static CommandLineBase *_pcSingleton;
-
-  std::vector<std::string> _astrRunCmds;
 
 protected:
   void loadHistory();
@@ -79,6 +76,8 @@ public:
   void show();
   void reparent(QWidget* parent);
 
+  void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
+
   static void Destruct(void);
   static CommandLineBase &Instance(void);
 
@@ -86,6 +85,9 @@ protected slots:
   void onClearHistory();
   void onShowHistory();
   void onLaunchCommand();
+
+private:
+  int _maxCount;
 };
 
 inline CommandLineBase &CommandLine(void)

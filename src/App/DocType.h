@@ -26,9 +26,14 @@
 #ifndef __FCDocType_H__
 #define __FCDocType_H__
 
+#include "../Base/PyExport.h"
+
+#ifndef _PreComp_
+# include <TFunction_Logbook.hxx>
+#endif
+
 class FCDocument;
 class FCPyObject;
-#include "../Base/PyExport.h"
 
 class DocTypeStdPy;
 
@@ -116,14 +121,24 @@ public:
 	Feature *AddFeature(const char* sName);
   /// Returns the active Feature of this document
 	Feature *GetActiveFeature(void);
-  /// Updates the document (recalculate)
-  void UpdateDoc(void);
 	//@}
 
 	/** @name State handling  */
 	//@{
-
+  /// clear all touched and ipacted Labels
+  //void ClearState(void);
+  /// Mark a label as modified by the user
+  void TouchState(TDF_Label &);
+  /// Set a label modified
+  void ImpactState(TDF_Label &);
+  /// Updates the document (recalculate)
+  void UpdateDoc(void);
 	//@}
+
+  /// Get the Feature of a Label
+  Feature *GetFeature(const TDF_Label &l);
+
+  TDF_Label GetActive(void){return _lActiveFeature;}
 
 protected:
 	TDF_Label _lBase;
@@ -136,6 +151,10 @@ protected:
 
 	/// The one and only python object of this DocTypeStd object
 	DocTypeStdPy *_pcDocTypeStdPy;
+
+  /// The Logbook for this document
+  TFunction_Logbook _LogBook;
+
 
 };
 

@@ -102,7 +102,9 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 // OCAF
 #include <TDF_Label.hxx>
+#include <TDF_LabelMap.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 #include <TDocStd_Application.hxx>

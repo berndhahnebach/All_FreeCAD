@@ -1,227 +1,158 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>DlgPreferences</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>DlgPreferences</cstring>
     </property>
-    <property>
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>574</width>
-            <height>457</height>
+            <width>570</width>
+            <height>454</height>
         </rect>
     </property>
-    <property>
-        <name>caption</name>
+    <property name="caption">
         <string>Preferences</string>
     </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
     <grid>
-        <property>
-            <name>margin</name>
-            <number>11</number>
+        <property name="name">
+            <cstring>unnamed</cstring>
         </property>
-        <property>
-            <name>spacing</name>
-            <number>6</number>
-        </property>
-        <widget row="1"  column="0"  rowspan="1"  colspan="2" >
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout6</cstring>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout9</cstring>
             </property>
-            <grid>
-                <property>
-                    <name>margin</name>
-                    <number>0</number>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-                <property>
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget row="0"  column="3" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>PushButton14</cstring>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
-                        <string>Apply</string>
-                    </property>
-                </widget>
-                <spacer row="0"  column="5" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer3</cstring>
-                    </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
-                            <width>20</width>
+                            <width>210</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget row="0"  column="4" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>PushButton15</cstring>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
-                        <string>Cancel</string>
+                    <property name="text">
+                        <string>&amp;OK</string>
                     </property>
-                </widget>
-                <widget row="0"  column="2" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>PushButton13</cstring>
+                    <property name="accel">
+                        <string></string>
                     </property>
-                    <property>
-                        <name>text</name>
-                        <string>OK</string>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
                     </property>
                 </widget>
-                <spacer row="0"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer6</cstring>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonApply</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
+                    <property name="text">
+                        <string>&amp;Apply</string>
                     </property>
-                    <property>
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
+                    <property name="accel">
+                        <string>Alt+A</string>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
+                    <property name="autoDefault">
+                        <bool>true</bool>
                     </property>
-                </spacer>
-                <spacer row="0"  column="0" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer6_2</cstring>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
                     </property>
-                    <property>
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
+                    <property name="accel">
+                        <string></string>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
+                    <property name="autoDefault">
+                        <bool>true</bool>
                     </property>
-                </spacer>
-            </grid>
+                </widget>
+            </hbox>
         </widget>
-        <widget row="0"  column="0" >
-            <class>QListView</class>
-            <column>
-                <property>
-                    <name>text</name>
-                    <string>Chose a Page:</string>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout11</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
                 </property>
-                <property>
-                    <name>clickable</name>
-                    <bool>false</bool>
-                </property>
-                <property>
-                    <name>resizeable</name>
-                    <bool>false</bool>
-                </property>
-            </column>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>ListView2</cstring>
-            </property>
-            <property>
-                <name>sizePolicy</name>
-                <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>5</vsizetype>
-                </sizepolicy>
-            </property>
-            <property>
-                <name>rootIsDecorated</name>
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget row="0"  column="1" >
-            <class>QWidgetStack</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>tabWidgetStack</cstring>
-            </property>
+                <widget class="QListBox">
+                    <property name="name">
+                        <cstring>listBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QWidgetStack">
+                    <property name="name">
+                        <cstring>tabWidgetStack</cstring>
+                    </property>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>WStackPage</cstring>
+                        </property>
+                        <attribute name="id">
+                            <number>0</number>
+                        </attribute>
+                    </widget>
+                </widget>
+            </hbox>
         </widget>
     </grid>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>QWidgetStack</class>
-        <header location="global">qwidgetstack.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
-<images>
-    <image>
-        <name>image0</name>
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1b8807f113148f82781855d0c314741e44fc776dbbacc9dab043ba47d32c6b6560bfdb80a9d4b36ffbab0377691f604eafae7b1f8eeb8fd24d03fe815acf94b6e0607bbf9d7d8eff1cdb855bd6f3404360085a8d8229a4a00826881945e1552867221a198403128d9236440a2281480a959d4aeab82c3617ccf7c45ef800a44c5c7ca9ac994fa720c589667f813a2852ba07eca54de76437c49ff35da91f3366675a</data>
-    </image>
-</images>
 <connections>
     <connection>
-        <sender>PushButton13</sender>
+        <sender>buttonOk</sender>
         <signal>clicked()</signal>
         <receiver>DlgPreferences</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
-        <sender>PushButton15</sender>
+        <sender>buttonCancel</sender>
         <signal>clicked()</signal>
         <receiver>DlgPreferences</receiver>
-        <slot>accept()</slot>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>listBox</sender>
+        <signal>highlighted(int)</signal>
+        <receiver>DlgPreferences</receiver>
+        <slot>onPrefPageClicked(int)</slot>
+    </connection>
+    <connection>
+        <sender>buttonApply</sender>
+        <signal>clicked()</signal>
+        <receiver>DlgPreferences</receiver>
+        <slot>onApply()</slot>
     </connection>
 </connections>
-<tabstops>
-    <tabstop>ListView2</tabstop>
-    <tabstop>PushButton13</tabstop>
-    <tabstop>PushButton14</tabstop>
-    <tabstop>PushButton15</tabstop>
-</tabstops>
+<slots>
+    <slot access="protected">onPrefPageClicked(int)</slot>
+    <slot access="protected">onApply()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>

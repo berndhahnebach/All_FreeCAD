@@ -404,13 +404,11 @@ UndoAction::UndoAction ( FCCommand* pcCmd,QObject * parent, const char * name, b
   tipGroup = new QToolTipGroup(0);
 }
 
-bool UndoAction::addTo(QWidget* w)
+bool UndoAction::addTo( QWidget* w )
 {
   if (w->inherits("QToolBar"))
   {
-    QWidget* dlg = ((FCCmdUndo*)GetCommand())->GetWidget();
-
-    QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+    QToolButton* button = new UndoRedoButton((QToolBar*)w, "Undo");
     button->setToggleButton( isToggleAction() );
     button->setIconSet( iconSet() );
 
@@ -452,9 +450,7 @@ bool RedoAction::addTo(QWidget* w)
 {
   if (w->inherits("QToolBar"))
   {
-    QWidget* dlg = ((FCCmdRedo*)GetCommand())->GetWidget();
-
-    QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+    QToolButton* button = new UndoRedoButton( (QToolBar*)w, "Redo" );
     button->setToggleButton( isToggleAction() );
     button->setIconSet( iconSet() );
 

@@ -43,6 +43,7 @@ using namespace Gui::Dialog;
 DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFlags fl )
   : DlgCustomToolbars(parent, name, fl)
 {
+  setCaption( tr( "Command bars" ) );
   updateData();
 }
 

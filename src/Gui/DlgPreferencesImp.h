@@ -84,53 +84,34 @@ namespace Dialog {
  *
  * \author Werner Mayer, Jürgen Riegel
  */
-class GuiExport DlgPreferencesImp : public QDialog, public Gui::WindowParameter
+class GuiExport DlgPreferencesImp : public DlgPreferences, public Gui::WindowParameter
 { 
 Q_OBJECT
 
 public:
-  static void addPage(const QString& name);
-  static void addGroup(const QString& name);
+  static void addPage( const QString& className, const QString& group );
 
   DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgPreferencesImp();
 
-private slots:
-  /// click the OK button
-  void onOK();
-  /// click the Apply button
-  void onApply();
-  /// click the Cancel button
-  void onCancel();
-  /// for internal use only
-  void onPrefPageClicked(int item );
-
 private:
-  void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-
-  void addPreferencePage(QWidget* page, const QString& name);
   /** @name for internal use only */
   //@{
+  void accept();
+  void onApply();
+  void onPrefPageClicked(int item );
+
+  void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
+  void addPreferencePage( QWidget* page );
   QTabWidget* getPreferenceGroup(int id);
   QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
   void connectWidget(QWidget* page) const;
   //@}
 
-  /** @name buttons and stack, ... */
-  //@{
-  QPushButton* PushButton14;
-  QPushButton* PushButton15;
-  QPushButton* PushButton13;
-  QListBox* ListBox;
-  QWidgetStack* tabWidgetStack;
-  QGridLayout* DlgPreferencesLayout;
-  QGridLayout* Layout6;
-  //@}
-
 private:
-  std::map<QString, int> m_mGroupIDs; /**< Name of preference page with its ID */
-  QTabWidget               * m_pCurTab; /**< Tab widget */
-  static std::vector<QString> aclPages; /**< Name of all registered preference pages */
+  QMap<QString, int> _mGroupIDs; /**< Name of preference page with its ID */
+  QTabWidget*        _pCurTab;   /**< Tab widget */
+  static QStringList _pages; /**< Name of all registered preference pages */
 };
 
 } // namespace Dialog

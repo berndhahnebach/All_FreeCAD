@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 # include <TDF_ChildIterator.hxx>
 # include <TDF_Tool.hxx>
 # include <TCollection_AsciiString.hxx>
@@ -45,6 +44,7 @@ using Base::Console;
 
 
 #include "Feature.h"
+#include "DocType.h"
 #include "Function.h"
 #include "Property.h"
 #include "PropertyAttr.h"
@@ -107,7 +107,12 @@ void Feature::AddProperty(const char *Type, const char *Name, const char *InitSt
 
 Property &Feature::GetProperty(const char *Name)
 {
-  TDF_Label L = _cFeatureLabel.FindChild(_PropertiesMap[Name]);
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::GetProperty() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
 
   Handle(PropertyAttr) PropAttr;
 
@@ -128,6 +133,15 @@ const char *Feature::GetStringProperty(const char *Name)
     return dynamic_cast<PropertyString&>(GetProperty(Name)).GetAsString();
 }
 
+
+void Feature::TouchProperty(const char *Name)
+{
+  TDF_Label label = _cFeatureLabel.FindChild( _PropertiesMap[Name] );
+  // gcc: cannot call _cFeatureLabel.FindChild( _PropertiesMap[Name] )
+  // since TouchState() expects a refererence and not const reference
+  _pDocType->TouchState( label );
+  _pDocType->TouchState( _cFeatureLabel );
+}
 
 void Feature::AttachLabel(const TDF_Label &rcLabel)
 {
@@ -168,7 +182,8 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 	Base::Console().Log("Feature::MustExecute()\n");
 
   // If the object's label is modified:
-  if (log.IsModified(_cFeatureLabel)) return Standard_True;
+  if (log.IsModified(_cFeatureLabel)) 
+    return Standard_True;
 
   // checks if a known property has changed
   for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
@@ -179,6 +194,11 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 
   return false;
 
+}
+
+void Feature::SetDocType(DocTypeStd *dt)
+{
+  _pDocType = dt;
 }
 
 
@@ -351,6 +371,8 @@ void FeaturePy::SetProperty(const char *attr, PyObject *value)
     (dynamic_cast<PropertyString&>(_pcFeature->GetProperty(attr))).Set(PyString_AsString(value));
   else
     throw Base::Exception("Not fiting type");
+  _pcFeature->TouchProperty(attr);
+
 }
 
 

@@ -59,24 +59,21 @@ public:
   DlgCustomizeImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgCustomizeImp();
 
-  void insertTab (QWidget* w, QString name);
+  static void addPage( const QString& className );
+  void addPage ( QWidget* w );
 
 private slots:
-  void onOK();
   void onApply();
-  void onCancel();
 
 private:
   /** @name for internal use only */
   //@{
-  QPushButton* buttonHelp; /**< the help button */
   QPushButton* buttonApply; /**< the apply button */
-  QPushButton* buttonOk; /**< the Ok button */
-  QPushButton* buttonCancel; /**< the cancel button */
+  QPushButton* buttonClose; /**< the cancel button */
   QTabWidget* tabWidget; /**< tab wigdets containing all pages */ 
-  QGridLayout* FCDlgCustomizeBaseLayout; /**< layout */
-  QHBoxLayout* Layout; /** horizontal layout */
-  std::vector<QWidget*> tabPages; /**< tab pages */
+  QGridLayout* customLayout; /**< layout */
+  QHBoxLayout* layout; /** horizontal layout */
+  static QStringList _pages; /**< Name of all registered preference pages */
   //@}
 };
 

@@ -27,6 +27,7 @@
 # include <qcursor.h>
 # include <qmessagebox.h>
 # include <qpopupmenu.h>
+# include <qregexp.h>
 #endif
 
 #include "CommandLine.h"
@@ -71,17 +72,8 @@ void ConsoleValidator::fixup ( QString & txt) const
  * it's also possible to drag and drop the command name from menus.
  */
 CommandLineBase::CommandLineBase(void)
-: QComboBox(true, NULL), WindowParameter("command line")
+: QComboBox(true, 0L), WindowParameter("CommandLine"), _maxCount(20)
 {
-  // run commands
-  _astrRunCmds.push_back("run");
-  _astrRunCmds.push_back("script");
-  _astrRunCmds.push_back("start");
-  _astrRunCmds.push_back("exec");
-  _astrRunCmds.push_back("execute");
-  _astrRunCmds.push_back("execfile");
-
-  loadHistory();
   setMaximumWidth(400);
   setMinimumWidth(200);
   setAutoCompletion ( true );
@@ -89,6 +81,9 @@ CommandLineBase::CommandLineBase(void)
   setAcceptDrops(true);
 
   connect(lineEdit(), SIGNAL(returnPressed ()), this, SLOT(onLaunchCommand()));
+
+  loadHistory();
+  GetWindowParameter()->Attach( this );
 }
 
 /**
@@ -96,6 +91,7 @@ CommandLineBase::CommandLineBase(void)
  */
 CommandLineBase::~CommandLineBase(void)
 {
+  GetWindowParameter()->Detach( this );
   saveHistory();
 }
 
@@ -105,17 +101,13 @@ CommandLineBase::~CommandLineBase(void)
 void CommandLineBase::saveHistory()
 {
   // write the recent commands into file
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().
-          GetGroup("BaseApp")->GetGroup("WindowSettings");
-  int iMaxCnt = hGrp->GetInt("SizeCmdLine", 20);
-
-  FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
+  FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("History");
 
   // copy from list box first
   std::list<std::string> alCmdList;
   for (int ii=0; ii < count(); ii++)
     alCmdList.push_back(text(ii).latin1());
-  while ( int(alCmdList.size()) > iMaxCnt )
+  while ( int(alCmdList.size()) > _maxCount )
     alCmdList.erase( alCmdList.begin() );
 
   long i=0;
@@ -132,8 +124,11 @@ void CommandLineBase::saveHistory()
  */
 void CommandLineBase::loadHistory()
 {
+  FCParameterGrp::handle hGrp = GetWindowParameter();
+  _maxCount = hGrp->GetInt("SizeCmdLine", _maxCount);
+
   // get the recent commands
-  FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
+  FCParameterGrp::handle hCmdGrp = hGrp->GetGroup("History");
   std::vector<std::string> cmd = hCmdGrp->GetASCIIs("Command");
 
   int i=0;
@@ -158,29 +153,27 @@ void CommandLineBase::loadHistory()
 void CommandLineBase::onLaunchCommand()
 {
   // launch the python command
+  QString cmd = text(currentItem());
+
   try
   {
-    bool flag = false;
-    QString cmd = text(currentItem());
-    for (std::vector<std::string>::iterator it = _astrRunCmds.begin(); it != _astrRunCmds.end(); ++it)
-    {
-      // if one of the run commands is used
-      if (cmd.lower().startsWith(it->c_str()))
-      {
-        cmd = cmd.right(cmd.length() - (it->length()+1));
-        Interpreter().LaunchFile(cmd.latin1());
-        flag = true;
-        break;
-      }
-    }
+    QRegExp pattern("^\\s*python\\s+");
 
-    if (!flag)
+    // if a Python script should be started
+    if ( cmd.lower().find( pattern ) > -1 )
+    {
+      cmd = cmd.replace(pattern, "");
+      Interpreter().LaunchFile( cmd.latin1() );
+    }
+    else
+    {
       Interpreter().Launch(text(currentItem()).latin1());
+    }
   }
   catch (const Base::Exception& rclE)
   {
     QString txt = rclE.what();
-    QString err = QString("'%1' is not defined!").arg(text(currentItem()));
+    QString err = QString("'%1' is not defined!").arg( cmd );
     QMessageBox::warning(this, txt, err);
   }
 #ifndef FC_DEBUG
@@ -190,10 +183,17 @@ void CommandLineBase::onLaunchCommand()
   }
 #endif
 
+  // remove first item
+  if ( count() > _maxCount )
+  {
+    setCurrentItem( currentItem() -1 );
+    removeItem( 0 );
+  }
+
   // hold the focus
   setFocus();
   // and clear the command line for the next command
-  lineEdit()->clear();
+  clearEdit();
 }
 
 /** 
@@ -256,20 +256,19 @@ void CommandLineBase::wheelEvent ( QWheelEvent * e )
  */
 void CommandLineBase::keyPressEvent ( QKeyEvent * e )
 {
-  switch (e->key())
+  int c = currentItem();
+
+  if ( e->key() == Key_Up && currentText().isEmpty() && count() > 0 )
   {
-    case Key_Up:
-    {
-      // show last command
-      if (currentText().isEmpty() && count() > 0)
-      {
-        int item = currentItem();
-        setCurrentItem(item);
-        break;
-      }
-    }
-    default:
-      QComboBox::keyPressEvent(e);
+    setCurrentItem( c );
+  }
+  else if ( e->key() == Key_Down && ++c == count() )
+  {
+    clearEdit();
+  }
+  else
+  {
+    QComboBox::keyPressEvent(e);
   }
 }
 
@@ -346,14 +345,30 @@ bool CommandLineBase::eventFilter       ( QObject* o, QEvent* e )
 
 void CommandLineBase::show()
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().
-    GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().
+    GetGroup("BaseApp")->GetGroup("Windows")->GetGroup("General");
   bool show = (hGrp->GetBool("ShowCmdLine", true));
 
   if ( !show )
     QComboBox::hide();
   else
     QComboBox::show();
+}
+
+void CommandLineBase::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
+{
+  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  if (strcmp(sReason, "SizeCmdLine") == 0)
+  {
+    _maxCount = rclGrp.GetInt("SizeCmdLine", _maxCount);
+    while ( count() > _maxCount && count() > 0 )
+    {
+      removeItem( 0 );
+    }
+
+    setCurrentItem( count() - 1 );
+    clearEdit();
+  }
 }
 
 #include "moc_CommandLine.cpp"

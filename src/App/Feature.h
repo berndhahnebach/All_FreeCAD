@@ -43,6 +43,7 @@ namespace App
 {
 
 class Property;
+class DocTypeStd;
 
 /** Base class of all Feature classes in FreeCAD
  */
@@ -110,8 +111,14 @@ public:
 	 *  This works with all Properties inhereting from Float and Int Properties..
 	 */
 	const char *GetStringProperty(const char *Name);
+
+  /** Set the property touched -> changed, cause recomputation in Update()
+	 *  
+	 */
+	void TouchProperty(const char *Name);
 	//@}
 
+  void SetDocType(DocTypeStd*);
 
   void SetShape(TopoDS_Shape &Shape);
 
@@ -129,6 +136,7 @@ protected:
 	int                  _nextFreeLabel;
   std::map<std::string,int> _PropertiesMap;
 
+  DocTypeStd* _pDocType;
 };
 
 

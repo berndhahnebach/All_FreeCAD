@@ -200,10 +200,11 @@ struct ApplicationWindowP
 ApplicationWindow::ApplicationWindow()
     : QMainWindow( 0, "Main window", WDestructiveClose )
 {
-	std::string language = GetApplication().GetUserParameter
-		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
-		("Language")->GetASCII("Language", "English");
-	Gui::LanguageFactory().setLanguage(language.c_str());
+  FCParameterGrp::handle hPGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hPGrp = hPGrp->GetGroup("Windows")->GetGroup("General");
+
+  std::string language = hPGrp->GetASCII("Language", "English");
+	Gui::LanguageFactory().setLanguage( language.c_str() );
 	GetWidgetFactorySupplier();
 
 	// seting up Python binding
@@ -551,7 +552,12 @@ void ApplicationWindow::addWindow( MDIView* view )
   // add a new tab to our tabbar
   QTab* tab = new QTab;
   d->_tabIds[ view ] = tab;
-  tab->setText( view->caption() );
+  // extract file name if possible
+  QFileInfo fi( view->caption() );
+  if ( fi.isFile() && fi.exists() )
+    tab->setText( fi.fileName() );
+  else
+    tab->setText( view->caption() );
   if ( view->icon() )
     tab->setIconSet( *view->icon() );
   d->_tabs->setToolTip( d->_tabs->count(), view->caption() );
@@ -1003,7 +1009,8 @@ void ApplicationWindow::LoadWindowSettings()
 
 void ApplicationWindow::UpdatePixmapsSize(void)
 {
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hGrp = hGrp->GetGroup("Windows")->GetGroup("General");
   bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
   if (bigPixmaps != usesBigPixmaps())
 		setUsesBigPixmaps (bigPixmaps);
@@ -1012,25 +1019,17 @@ void ApplicationWindow::UpdatePixmapsSize(void)
 void ApplicationWindow::UpdateStyle(void)
 {
   QStyle& curStyle = QApplication::style();
-  FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp");
-	hGrp = hGrp->GetGroup("WindowSettings")->GetGroup ("WindowStyle");
-	std::vector<std::string> aStyles = hGrp->GetASCIIs("Item");
-	long pos = hGrp->GetInt("currentItem");
-	if (long(aStyles.size()) > pos)
+  FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hGrp = hGrp->GetGroup("Windows")->GetGroup("General");
+
+  QString style = hGrp->GetASCII( "WindowStyle", curStyle.name() ).c_str();
+  if ( style == QString( curStyle.name() ) )
+    return; // already set
+  
+  QStyle* newStyle = QStyleFactory::create( style );
+	if ( newStyle != 0 )
 	{
-		QString styleName = aStyles[pos].c_str();
-
-		if (strcmp(styleName.latin1(), curStyle.name()) != 0)
-		{
-#if QT_VERSION > 300
-		  QStyle* newStyle = QStyleFactory::create(styleName);
-
-			if (newStyle != NULL)
-			{
-				QApplication::setStyle(newStyle);
-			}
-#endif
-		}
+  	QApplication::setStyle( newStyle );
 	}
 }
 
@@ -1230,7 +1229,7 @@ void ApplicationWindow::StartSplasher(void)
 	// when running in verbose mode no splasher
 	if ( ! (FCApplication::Config()["Verbose"] == "Strict") && (FCApplication::Config()["RunMode"] == "Gui") )
 	{
-		FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+		FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup("General");
 		if (hGrp->GetBool("AllowSplasher", true))
 		{
 			QPixmap pixmap(( const char** ) splash_screen );

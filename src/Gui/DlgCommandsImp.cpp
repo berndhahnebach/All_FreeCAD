@@ -46,6 +46,11 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
 
   IconView1->setHScrollBarMode( QScrollView::AlwaysOff );
 
+  // paints for active and inactive the same color
+  QPalette pal = ComboBoxCategory->palette();
+  pal.setInactive( pal.active() );
+  ComboBoxCategory->setPalette( pal );
+
   apply();
 
   connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));

@@ -42,12 +42,6 @@ class MDIView;
 namespace Gui {
 
 class ActionGroup;
-
-namespace Dialog {
-
-class UndoRedoDialog;
-
-} // namespace Dialog
 } // namespace Gui
 
 
@@ -490,14 +484,10 @@ public:\
 class FCCmdUndo : public FCCppCommand
 {
 public:
-	  FCCmdUndo();
-	void Activated(int iMsg);
-    bool IsActive(void);
-    QWidget* GetWidget();
-  	QAction * CreateAction(void);
-
-private:
-	Gui::Dialog::UndoRedoDialog*	 _pclUndoRedoWidget;
+  FCCmdUndo();
+  void Activated(int iMsg);
+  bool IsActive(void);
+  QAction * CreateAction(void);
 };
 
 /**
@@ -506,14 +496,10 @@ private:
 class FCCmdRedo : public FCCppCommand
 {
 public:
-	  FCCmdRedo();
-	void Activated(int iMsg);
-    bool IsActive(void);
-    QWidget* GetWidget();
-  	QAction * CreateAction(void);
-
-private:
-	Gui::Dialog::UndoRedoDialog*	 _pclUndoRedoWidget;
+  FCCmdRedo();
+  void Activated(int iMsg);
+  bool IsActive(void);
+  QAction * CreateAction(void);
 };
 
 /**
