@@ -29,6 +29,7 @@
 #include "View3D.h"
 #include "MouseModel.h"
 #include "Document.h"
+#include "Tree.h"
 
 
 // global graphic device (set in DocWindow)
@@ -37,6 +38,116 @@
 #else
 	extern Handle_Graphic3d_GraphicDevice		hGraphicDevice;
 #endif
+
+
+
+FCView3D::FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
+    :FCView( pcDocument, parent, name, wflags )
+{
+	
+	QVBox* vb2;
+	//vb= new QVBox( this );
+    QVBoxLayout* vb = new QVBoxLayout(this);
+
+	//vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+	// set the splitter frames
+	_pcSplitter = new QSplitter( QSplitter::Horizontal, this, "Main");
+	vb->addWidget(_pcSplitter);
+	vb2 = new QVBox( _pcSplitter );
+	_pcSplitter->setResizeMode(vb2,QSplitter::KeepSize);
+	QValueList<int> size;
+	size.append(180);
+	size.append(100);
+	_pcSplitter->setSizes (size);
+
+	vb2->setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
+	_pcWidget	= new QWidget (vb2);
+	//_pcWidget	= new QWidget (_pcSplitter);
+	_pcTree		= new FCTree(_pcDocument,_pcWidget,"Tree");
+	_pcTabBar	= new QTabBar(_pcWidget);
+	_pcTabBar->setShape(QTabBar::RoundedBelow);
+	_pcTabBar->addTab(new QTab("3D"));
+	_pcTabBar->addTab(new QTab("Raw"));
+
+	_pcVBoxLayout		= new QVBoxLayout( _pcWidget ); // A layout on the widget
+    _pcVBoxLayout->addWidget( _pcTree );
+	_pcVBoxLayout->addWidget( _pcTabBar );
+
+	vb2 = new QVBox( _pcSplitter );
+	vb2->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+	_pcView3D = new View3D(_pcDocument,vb2);
+	
+	//createViewActions();
+	
+}
+
+FCView3D::~FCView3D()
+{
+  delete _pcView3D;
+}
+
+FCGuiDocument* FCView3D::getDocument()
+{
+	return _pcDocument;
+}
+
+void FCView3D::closeEvent(QCloseEvent* e)
+{
+	emit sendCloseView(this);
+	QextMdiChildView::closeEvent(e);
+}
+
+const char *FCView3D::GetName(void)
+{
+	return "View3D";
+}
+
+/*
+
+void FCView::fitAll()
+{
+	myView->fitAll();
+}
+
+
+*/
+void FCView3D::onWindowActivated ()
+{
+  //myOperations->onSelectionChanged();
+}
+
+void FCView3D::setCursor(const QCursor& aCursor)
+{
+  _pcView3D->setCursor(aCursor);
+}
+
+void FCView3D::dump()
+{
+	static QString filter = "Images Files (*.bmp *.gif *.xwd)";
+	QFileDialog fd ( 0, 0, true );     
+	fd.setFilters( filter );
+	fd.setCaption ( tr("INF_APP_IMPORT") );
+	int ret = fd.exec(); 
+    
+	/* update the desktop after the dialog is closed */
+	qApp->processEvents();
+
+	QString file (ret == QDialog::Accepted ? fd.selectedFile() : QString::null);
+
+	if ( !file.isNull() ) {
+	  QApplication::setOverrideCursor( Qt::waitCursor );
+	  if(!_pcView3D->ScreenDump( (const Standard_CString) file.latin1())) {
+	    QApplication::restoreOverrideCursor();                
+	    QMessageBox::information ( qApp->mainWidget(),tr("TIT_ERROR"), tr("INF_ERROR"), tr("BTN_OK"),
+		  		       QString::null, QString::null, 0, 0);
+	    qApp->processEvents();  /* update desktop */	
+	  } else 
+	    QApplication::restoreOverrideCursor();                
+	}
+}
+
+
+
 
 
 

@@ -1,0 +1,3 @@
+Version V0.1B6 "Thu Dec 05 20:59:11 2002"
++ Clean Up GuiApplication
++ Add GUI Console observer

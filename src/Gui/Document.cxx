@@ -34,7 +34,7 @@
 #include "../App/Document.h"
 #include "Application.h"
 #include "Document.h"
-#include "View.h"
+#include "View3D.h"
 
 
 
@@ -43,7 +43,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	 _pcDocument(pcDocument),
 	 _iWinCount(0)
 {
-	// keeping an Instance of this document as long as the window lives
+	// keeping an Instance of this document as long as at least one window lives
 	_pcDocument->_INCREF();
 
 	TCollection_ExtendedString a3DName("Visu3D");
@@ -62,7 +62,7 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	_hContext->Deactivate(hTrihedron);
 
 	// alwayes create at least one view
-	CreateView();
+	CreateView("View3D");
 
 }
 
@@ -77,10 +77,10 @@ FCGuiDocument::~FCGuiDocument()
 
 #include "Icons/FCIcon.xpm"
 
-void FCGuiDocument::CreateView() 
+void FCGuiDocument::CreateView(const char* sType) 
 {
 
-    FCView* w = new FCView(this,0L,"View");
+    FCView* w = new FCView3D(this,0L,"View");
 	
 	// add to the view list of document
 	_LpcViews.push_back(w);
@@ -94,7 +94,7 @@ void FCGuiDocument::CreateView()
 //	aName.sprintf("%s:%d",_pcDocument->GetName(),_iWinCount++);
 	aName.sprintf("%s:%d","Document",_iWinCount++);
     w->setCaption(aName);
-	
+	w->setTabCaption(aName);
     w->setIcon( FCIcon );
 
 	w->resize( 400, 300 );
@@ -122,30 +122,59 @@ void FCGuiDocument::OnLastViewClosed(void)
 	_pcAppWnd->OnLastWindowClosed(this);
 }
 
-/*
-
-void FCGuiDocument::removeView(MDIWindow* theView)
+/// send Messages to the active view
+bool FCGuiDocument::SendMsgToViews(const char* pMsg)
 {
-	myViews.removeRef(theView);
-	delete theView;
+
+	bool bResult = false;
+
+	for(FClist<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end();It++)
+	{
+		if( (*It)->OnMsg(pMsg))
+		{
+			bResult = true;
+			break;
+		}
+	}
+
+	return bResult;
 }
 
-int FCGuiDocument::countOfWindow()
+/// send Messages to all views
+bool FCGuiDocument::SendMsgToActiveView(const char* pMsg)
 {
-	return myViews.count();
+
+	if(_pcActiveView)
+		return _pcActiveView->OnMsg(pMsg);
+	else
+		return false;
 }
 
-Handle(AIS_InteractiveContext) FCGuiDocument::getContext()
+
+/// set the parameter to the active view or reset in case of 0
+void FCGuiDocument::SetActive(FCView* pcView)
 {
-	return myContext;
+	_pcActiveView = pcView;
+
+	// trigger the application about Activity change
+	if(_pcActiveView)
+		_pcAppWnd->SetActive(this);
+	else
+		_pcAppWnd->SetActive(0l);
+
 }
 
-void FCGuiDocument::fitAll()
+/// Geter for the Active View
+FCView* FCGuiDocument::GetActiveView(void)
 {
-	for(MDIWindow* aView = (MDIWindow*) myViews.first(); aView; aView = (MDIWindow*) myViews.next())
-		aView->fitAll();
+	return _pcActiveView;
 }
-*/
+
+
+
+
+
+
 Handle(V3d_Viewer) FCGuiDocument::Viewer(const Standard_CString aDisplay,
 										 const Standard_ExtString aName,
 										 const Standard_CString aDomain,
@@ -172,47 +201,5 @@ Handle(V3d_Viewer) FCGuiDocument::Viewer(const Standard_CString aDisplay,
 }
 
 
-/*
-
-void FCGuiDocument::onWireframe()
-{
-	myOperations->onWireframe();
-}
-
-void FCGuiDocument::onShading()
-{
-	myOperations->onShading();
-}
-
-void FCGuiDocument::onColor()
-{
-	myOperations->onColor();
-}
-
-void FCGuiDocument::onMaterial(Standard_Integer theMaterial)
-{
-	myOperations->onMaterial(theMaterial);
-}
-
-void FCGuiDocument::onMaterial()
-{
-	myOperations->onMaterial();
-}
-
-void FCGuiDocument::onTransparency(Standard_Real theTrans)
-{
-	myOperations->onTransparency(theTrans);
-}
-
-void FCGuiDocument::onTransparency()
-{
-	myOperations->onTransparency();
-}
-
-void FCGuiDocument::onDelete()
-{
-	myOperations->onDelete();
-}
-*/
 
 #include "Document_moc.cpp"

@@ -17,6 +17,8 @@ class QWidgetStack;
 class QTabBar;
 
 
+/** Base class of all MDI View windows
+ */
 class FCView: public QextMdiChildView
 {
 	Q_OBJECT
@@ -25,29 +27,21 @@ public:
 	FCView( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	~FCView();
 	FCGuiDocument* getDocument();
+	virtual const char *GetName(void)=0;
 
+	/// send Messages to all views
+	virtual bool OnMsg(const char* pMsg);
 
-signals:
-	//void message(const QString&, int );
-	void sendCloseView(FCView* theView);
-	
-public slots:
-	void closeEvent(QCloseEvent* e);        
-	void onWindowActivated ();
-	void setCursor(const QCursor&);
-	void dump();
+	/// Sets this view as the active or inactive
+	void SetActive(bool bActive);
+
+	virtual void focusInEvent  ( QFocusEvent * ) ;
+	virtual void focusOutEvent ( QFocusEvent * ) ;
+
 
 protected:
-	//void createViewActions();
-private:
     FCGuiDocument*	_pcDocument;
-	View3D*			_pcView3D;
-	QSplitter*		_pcSplitter;
-	FCTree*		    _pcTree;
-	QWidget*		_pcWidget;
-	QVBoxLayout*	_pcVBoxLayout;    
-	QWidgetStack*	_pcWidgetStack;
-	QTabBar*		_pcTabBar;
+
 
 };
 

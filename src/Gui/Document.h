@@ -39,6 +39,15 @@ class ApplicationWindow;
 class FCDocument;
 class MDIWindow;
 
+
+/** The Gui Document
+ *  This is the document on GUI level. Its main responsibility is 
+ *  keeping track off open windows for a document, handling the OCC
+ *  interactiv context and warning on unsaved closes.
+ *  All handled views on the document must inherit from FCView
+ *  @see FCDocument 
+ *  @see FCView
+ */
 class GuiExport FCGuiDocument :public QObject
 {
 	Q_OBJECT
@@ -47,14 +56,29 @@ public:
 	FCGuiDocument(FCDocument* pcDocument, ApplicationWindow * app, const char * name=0);
 	~FCGuiDocument();
 
-	ApplicationWindow* GetApplication(){return _pcAppWnd;}	
-	Handle(AIS_InteractiveContext) GetContext(){return _hContext;}
+	/// Geter for the Application 
+	ApplicationWindow*				GetApplication(){return _pcAppWnd;}	
+	/// Geter for the OCC Interactive context
+	Handle(AIS_InteractiveContext)	GetContext(){return _hContext;}
+	/// Gerer for the App Document 
+	FCDocument*						GetDocument(void){return _pcDocument;}
 
-	void CreateView(void); 
+	/// Creat a new View
+	void CreateView(const char* sType); 
 
-	FCDocument*	 GetDoc(void){return _pcDocument;}
 
 	void OnLastViewClosed(void);
+
+	/// send Messages to the active view
+	bool SendMsgToActiveView(const char* pMsg);
+	/// send Messages to all views
+	bool SendMsgToViews(const char* pMsg);
+
+
+	/// set the parameter to the active view or reset in case of 0
+	void SetActive(FCView* pcView);
+	/// Geter for the Active View
+	FCView* GetActiveView(void);
 
 public slots:
 	void slotCloseView(FCView* theView);
@@ -67,11 +91,12 @@ private:
 private:
 	int								_iWinCount;
 	ApplicationWindow*				_pcAppWnd;
-//#	pragma warning( disable : 4251 )
-	FClist<FCView*>			_LpcViews;
+	/// List of all registered views
+	FClist<FCView*>					_LpcViews;
+	/// Active view
+	FCView*							_pcActiveView;
 	Handle(V3d_Viewer)				_hViewer;
 	Handle(AIS_InteractiveContext)	_hContext;
-//#	pragma warning( default : 4251 )
 	// the doc/Document
 	FCDocument*						_pcDocument;
 };

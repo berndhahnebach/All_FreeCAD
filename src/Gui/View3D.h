@@ -1,18 +1,33 @@
-/***************************************************************************
-                          View3D.h  -  description
-                             -------------------
-    begin                : Mon Jan 1 2001
-    copyright            : (C) 2001 by Juergen Riegel
-    email                : juergen.riegel@bluewin.de
- ***************************************************************************/
+/** \file View3D.h
+ *  \brief 3D View Window
+ *  \author $Author$
+ *  \version $Revision$
+ *  \date    $Date$
+ *  @see FCView.cpp
+ */
 
 /***************************************************************************
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   it under the terms of the GNU Library General Public License (LGPL)   *
+ *   as published by the Free Software Foundation; either version 2 of     *
+ *   the License, or (at your option) any later version.                   *
+ *   for detail see the LICENCE text file.                                 *
  *                                                                         *
+ *   FreeCAD is distributed in the hope that it will be useful,            *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+ *   USA                                                                   *
+ *                                                                         *
+ *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 #ifndef __VIEW3D__
@@ -30,12 +45,61 @@
 #	include <Graphic3d_WNTGraphicDevice.hxx>
 #endif
 
+#include "View.h"
+#include <stack>
+
 class QMouseEvent;
 class FCMouseModel;
 class FCGuiDocument;
+class FCGuiDocument;
+class View3D;
+class FCTree;
+class QSplitter;
+class QWidget;		
+class QPushButton;	
+class QVBoxLayout;	
+class QHBoxLayout;	
+class QWidgetStack;
+class QTabBar;
 
 
-#include <stack>
+/** The 3D View Window
+ *  It consist out of the 3DView and the tree
+ */
+class FCView3D: public FCView
+{
+	Q_OBJECT
+
+public:
+	FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+	~FCView3D();
+	FCGuiDocument* getDocument();
+
+
+signals:
+	//void message(const QString&, int );
+	void sendCloseView(FCView* theView);
+	
+public slots:
+	void closeEvent(QCloseEvent* e);        
+	void onWindowActivated ();
+	void setCursor(const QCursor&);
+	void dump();
+	virtual const char *GetName(void);
+
+protected:
+	//void createViewActions();
+private:
+	View3D*			_pcView3D;
+	QSplitter*		_pcSplitter;
+	FCTree*		    _pcTree;
+	QWidget*		_pcWidget;
+	QVBoxLayout*	_pcVBoxLayout;    
+	QWidgetStack*	_pcWidgetStack;
+	QTabBar*		_pcTabBar;
+
+};
+
 
 
 /**
