@@ -118,6 +118,7 @@ class GuiExport FCToolboxGroup : public QVButtonGroup
     void setNewBackgroundColor();
     void resetBackgroundColor();
     void slotRedrawScrollBar(int);
+    void slotCustomize();
 
   signals:
     void signalMaximumWidth(int);
@@ -235,7 +236,13 @@ public:
 	FCCmdBar( QWidget *parent=0, const char *name=0 );
 	virtual ~FCCmdBar();
 
-	void addPage( QStackBarBtn * );
+  // toolbox handling
+  FCToolboxGroup* GetView(const char *sName);
+  FCToolboxGroup* CreateView(const char *sName);
+  void DeleteView(const char *sName);
+	
+  void addPage( QStackBarBtn * );
+  void remPage( QStackBarBtn * );
 	void setCurPage( int );
 
 	void setButtonHeight(int);
@@ -251,6 +258,7 @@ public:
 
 protected:
 	QList <QStackBarBtn> *pButtons;
+  FCmap <QWidget*, FCToolboxGroup*> alViews;
 	int curPage;
 
 	int curHighlight;

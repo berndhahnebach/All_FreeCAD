@@ -197,9 +197,10 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 				diff *= (totalSteps - progress) / iTimeStep;
 				diff /= 1000;
 
-#				ifdef _DEBUG
-				printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
-#				endif
+				GetConsole().Log("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
+//#				ifdef _DEBUG
+//				printf("Elapsed time: %ds, (%d of %d)\n", diff, progress, totalSteps);
+//#				endif
 
 //				if (bSeveralInstances == false)
 				{

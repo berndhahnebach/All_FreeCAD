@@ -370,6 +370,8 @@ void FCToolboxGroup::popupMenuAboutToShow()
 
   int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
   int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+  m_Popup->insertSeparator();
+  int cusId = m_Popup->insertItem("Customize...", this, SLOT(slotCustomize()));
 }
 
 void FCToolboxGroup::setNewBackgroundColor()
@@ -385,6 +387,11 @@ void FCToolboxGroup::resetBackgroundColor()
 {
   if (m_Color.isValid())
     setPalette(QPalette(m_Color, m_Color));
+}
+
+void FCToolboxGroup::slotCustomize()
+{
+  QMessageBox::information(this, "FreeCAD", "Not yet implemented");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -777,6 +784,64 @@ FCCmdBar::~FCCmdBar()
 	delete pButtons;
 }
 
+FCToolboxGroup* FCCmdBar::GetView(const char *sName)
+{
+  if (!pButtons) 
+  {
+#ifdef _DEBUG
+    puts("Invalid button list");
+#endif
+    return NULL; // no valid list object
+  }
+
+  for (QListIterator<QStackBarBtn> it(*pButtons); it.current(); ++it)
+  {
+    QWidget* w = (*it)->widget();
+    if (alViews.find(w) != alViews.end() && (*it)->label() == sName)
+    {
+      return alViews[w];
+    }
+  }
+
+#ifdef _DEBUG
+    printf("Widget %s not found\n", sName);
+#endif
+
+  return NULL;
+}
+
+FCToolboxGroup* FCCmdBar::CreateView(const char *sName)
+{
+  FCToolboxGroup* bg = new FCToolboxGroup("", this);
+  addPage( new QStackBarBtn( sName, bg->pScrollWidget ) );
+  // this is to find the corresponding toolbox to the scrollview
+  alViews[bg->pScrollWidget] = bg;
+  return bg;
+}
+
+void FCCmdBar::DeleteView(const char *sName)
+{
+  if (!pButtons) 
+  {
+#ifdef _DEBUG
+    puts("Invalid button list");
+#endif
+    return; // no valid list object
+  }
+
+  for (QListIterator<QStackBarBtn> it(*pButtons); it.current(); ++it)
+  {
+    if ((*it)->label() == sName)
+    {
+      remPage(it);
+      return;
+    }
+  }
+
+#ifdef _DEBUG
+    printf("Widget %s not found\n", sName);
+#endif
+}
 
 /*!
  * \brief Handles window resizes
@@ -918,6 +983,17 @@ void FCCmdBar::addPage( QStackBarBtn *pBtn )
 	curPage = pButtons->count() - 1;
 }
 
+
+/*!
+ * \brief Remove a page from the QStackBar
+ *
+ * Call this to remove a page from the widget.
+*/
+void FCCmdBar::remPage( QStackBarBtn *pBtn )
+{
+	pButtons->remove( pBtn );
+	curPage = pButtons->count() - 1;
+}
 
 /*!
  * \brief Sets the current page to i

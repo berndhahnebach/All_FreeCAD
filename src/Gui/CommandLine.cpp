@@ -88,19 +88,16 @@ FCCommandLine::~FCCommandLine(void)
 
 void FCCommandLine::SaveCmdList()
 {
-  FCParameterGrp::handle hCmdGrp = GetParameter()->GetGroup("CommandList");
-
+  // write the recent commands into file
+  FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
   int iMaxCnt = hCmdGrp->GetInt("MaxCommands", 20);
 
   // copy from list box first
   FClist<FCstring> alCmdList;
   for (int ii=0; ii < count(); ii++)
     alCmdList.push_back(text(ii).latin1());
-
   while ( int(alCmdList.size()) > iMaxCnt )
 	  alCmdList.erase( alCmdList.begin() );
-
-  hCmdGrp->SetInt("Commands", alCmdList.size());
 
   long i=0;
   for (FClist<FCstring>::iterator it = alCmdList.begin(); it != alCmdList.end(); ++it, i++)
@@ -113,17 +110,16 @@ void FCCommandLine::SaveCmdList()
 
 void FCCommandLine::ReadCmdList()
 {
+  // get the recent commands
   FCParameterGrp::handle hCmdGrp = GetWindowParameter()->GetGroup("CommandList");
+  FCvector<FCstring> cmd = hCmdGrp->GetASCIIs("Command");
 
-  int iCnt = hCmdGrp->GetInt("Commands");
-
-  for (int i=0; i<iCnt; i++)
+  int i=0;
+  for (FCvector<FCstring>::iterator it = cmd.begin(); it != cmd.end(); ++it, i++)
   {
-    char szBuf[200];
-    sprintf(szBuf, "Command %d", i);
-    try{
-      FCstring cmd = hCmdGrp->GetASCII(szBuf);
-      insertItem(cmd.c_str());
+    try
+    {
+      insertItem(it->c_str());
     }
     catch(...)
     {

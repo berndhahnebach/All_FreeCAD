@@ -87,6 +87,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     void SetEnableHistory  (bool b=true);
     void SetEnableBookmarks(bool b=true);
     bool SetMaxHistory (long lCnt);
+    bool SetMaxBookmarks (long lCnt);
 
   protected slots:
     void SetBackwardAvailable( bool );

@@ -783,67 +783,71 @@ bool FCHtmlView::SetMaxHistory (long lCnt)
   return true;
 }
 
+bool FCHtmlView::SetMaxBookmarks (long lCnt)
+{
+  FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
+
+  hBookmGrp->SetInt("Max Bookmark items", lCnt);
+
+  return true;
+}
+
 void FCHtmlView::ReadHistory()
 {
+  // get all stored history items
   FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
+  FCvector<FCstring> hist = hHistGrp->GetASCIIs("History");
 
-  int iCnt = hHistGrp->GetInt("History items");
-
-  for (int i=0; i<iCnt; i++)
+  int i=0;
+  for (FCvector<FCstring>::iterator it = hist.begin(); it != hist.end(); ++it, i++)
   {
-    char szBuf[200];
-    sprintf(szBuf, "History item %d", i);
-    FCstring item = hHistGrp->GetASCII(szBuf);
-    mHistory[i] = item.c_str();
+    mHistory[i] = it->c_str();
   }
 }
 
 void FCHtmlView::ReadBookmarks()
 {
+  // get all stored bookmark items
   FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
+  FCvector<FCstring> bookm = hBookmGrp->GetASCIIs("Bookmark");
 
-  int iCnt = hBookmGrp->GetInt("Bookmark items");
-
-  for (int i=0; i<iCnt; i++)
+  int i=0;
+  for (FCvector<FCstring>::iterator it = bookm.begin(); it != bookm.end(); ++it, i++)
   {
-    char szBuf[200];
-    sprintf(szBuf, "Bookmark item %d", i);
-    FCstring item = hBookmGrp->GetASCII(szBuf);
-    mBookmarks[i] = item.c_str();
+    mBookmarks[i] = it->c_str();
   }
 }
 
 void FCHtmlView::SaveHistory()
 {
+  // write the history items into file
   FCParameterGrp::handle hHistGrp = GetWindowParameter()->GetGroup("History");
-
   int iMaxCnt = hHistGrp->GetInt("Max History items", 20);
-
   while ( int(mHistory.size()) > iMaxCnt )
 	  mHistory.erase( mHistory.begin() );
-
-  hHistGrp->SetInt("History items", mHistory.size());
 
   long i=0;
   for (FCmap<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it, i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "History item %d", i);
+    sprintf(szBuf, "History %d", i);
     hHistGrp->SetASCII(szBuf, it->second.latin1());
   }
 }
 
 void FCHtmlView::SaveBookmarks()
 {
+  // write the bookmark items into file
   FCParameterGrp::handle hBookmGrp = GetWindowParameter()->GetGroup("Bookmarks");
-
-  hBookmGrp->SetInt("Bookmark items", mBookmarks.size());
+  int iMaxCnt = hBookmGrp->GetInt("Max Bookmark items", 20);
+  while ( int(mBookmarks.size()) > iMaxCnt )
+	  mBookmarks.erase( mBookmarks.begin() );
 
   long i=0;
   for (FCmap<int, QString>::iterator it = mBookmarks.begin(); it != mBookmarks.end(); ++it, i++)
   {
     char szBuf[200];
-    sprintf(szBuf, "Bookmark item %d", i);
+    sprintf(szBuf, "Bookmark %d", i);
     hBookmGrp->SetASCII(szBuf, it->second.latin1());
   }
 }

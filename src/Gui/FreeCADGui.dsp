@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib /nologo /dll /debug /machine:I386 /out:"../../bin/FreeCADGuiD.dll" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib /nologo /dll /debug /machine:I386 /out:"../../bin/FreeCADGuiD.dll"
 
 !ENDIF 
 
@@ -97,7 +97,7 @@ SOURCE=.\DlgDocTemplates.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\DlgDocTemplates.h
 
 "DlgDocTemplates_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -107,11 +107,13 @@ InputPath=.\DlgDocTemplates.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\DlgDocTemplates.h
+InputName=DlgDocTemplates
 
-"DlgDocTemplates_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o DlgDocTemplates_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -141,18 +143,20 @@ BuildCmds= \
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
 InputPath=.\DlgDocTemplates.ui
+InputName=DlgDocTemplates
 
 BuildCmds= \
-	%QTDIR%\bin\uic -o DlgDocTemplates.h $(InputPath) \
-	%QTDIR%\bin\uic -o DlgDocTemplates.cpp -impl DlgDocTemplates.h  $(InputPath) \
+	%QTDIR%\bin\uic.exe $(InputPath) -o $(InputDir)\$(InputName).h \
+	%QTDIR%\bin\uic.exe $(InputPath) -impl $(InputName).h -o $(InputDir)\$(InputName).cpp \
 	
 
-"DlgDocTemplates.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DlgDocTemplates.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -170,7 +174,7 @@ SOURCE=.\DlgDocTemplatesImp.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\DlgDocTemplatesImp.h
 
 "DlgDocTemplatesImp_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -180,11 +184,13 @@ InputPath=.\DlgDocTemplatesImp.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\DlgDocTemplatesImp.h
+InputName=DlgDocTemplatesImp
 
-"DlgDocTemplatesImp_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o DlgDocTemplatesImp_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -202,7 +208,7 @@ SOURCE=.\DlgUndoRedo.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\DlgUndoRedo.h
 
 "DlgUndoRedo_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -212,11 +218,13 @@ InputPath=.\DlgUndoRedo.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\DlgUndoRedo.h
+InputName=DlgUndoRedo
 
-"DlgUndoRedo_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o DlgUndoRedo_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -235,7 +243,7 @@ SOURCE=.\Application.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\Application.h
 
 "Application_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -245,11 +253,13 @@ InputPath=.\Application.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\Application.h
+InputName=Application
 
-"Application_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o Application_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -266,7 +276,7 @@ SOURCE=.\ButtonGroup.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\ButtonGroup.h
 
 "ButtonGroup_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -276,11 +286,13 @@ InputPath=.\ButtonGroup.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\ButtonGroup.h
+InputName=ButtonGroup
 
-"ButtonGroup_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o ButtonGroup_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -308,11 +320,13 @@ InputPath=.\Command.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\Command.h
+InputName=Command
 
-"Command_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o Command_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -329,7 +343,7 @@ SOURCE=.\CommandLine.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\CommandLine.h
 
 "CommandLine_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -339,11 +353,13 @@ InputPath=.\CommandLine.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\CommandLine.h
+InputName=CommandLine
 
-"CommandLine_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o CommandLine_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -374,7 +390,7 @@ SOURCE=.\Document.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\Document.h
 
 "Document_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -384,11 +400,13 @@ InputPath=.\Document.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\Document.h
+InputName=Document
 
-"Document_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o Document_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -414,7 +432,7 @@ SOURCE=.\HtmlView.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\HtmlView.h
 
 "HtmlView_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -424,11 +442,13 @@ InputPath=.\HtmlView.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\HtmlView.h
+InputName=HtmlView
 
-"HtmlView_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o HtmlView_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -467,7 +487,7 @@ SOURCE=.\Splashscreen.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\Splashscreen.h
 
 "Splashscreen_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -477,11 +497,13 @@ InputPath=.\Splashscreen.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\Splashscreen.h
+InputName=Splashscreen
 
-"Splashscreen_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o Splashscreen_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -508,7 +530,7 @@ SOURCE=.\Tree.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\Tree.h
 
 "Tree_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -518,11 +540,13 @@ InputPath=.\Tree.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\Tree.h
+InputName=Tree
 
-"Tree_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o Tree_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -550,11 +574,13 @@ InputPath=.\View.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\View.h
+InputName=View
 
-"View_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o View_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -572,7 +598,7 @@ SOURCE=.\View3D.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\View3D.h
 
 "View3D_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -582,11 +608,13 @@ InputPath=.\View3D.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\View3D.h
+InputName=View3D
 
-"View3D_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o View3D_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -611,7 +639,7 @@ SOURCE=.\Window.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputPath=.\Window.h
 
 "Window_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -621,11 +649,13 @@ InputPath=.\Window.h
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Using moc on $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
 InputPath=.\Window.h
+InputName=Window
 
-"Window_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc $(InputPath) -o Window_moc.cpp
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 

@@ -126,8 +126,9 @@ FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 	FCstring Name;
 
 	if(!pcTemp) return vrParamGrp; // empty vector
+	pcTemp = FindNextElement(pcTemp,"FCParamGroup");
 
-	while( pcTemp = FindNextElement(pcTemp,"FCParamGroup") )
+	while(pcTemp)
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// already created?
@@ -137,6 +138,8 @@ FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 			_GroupMap[Name] = rParamGrp;
 		}
 		vrParamGrp.push_back( rParamGrp );
+		// go to next
+		pcTemp = FindNextElement(pcTemp,"FCParamGroup");
 	}
 
 	return vrParamGrp;
@@ -169,7 +172,8 @@ FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
 	DOMNode *pcTemp = _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	while( pcTemp = FindNextElement(pcTemp,"FCBool") )
+	pcTemp = FindNextElement(pcTemp,"FCBool");
+	while( pcTemp)
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
@@ -180,6 +184,7 @@ FCvector<bool> FCParameterGrp::GetBools(const char * sFilter)
 			else
 				vrValues.push_back(true);	
 		}
+		pcTemp = FindNextElement(pcTemp,"FCBool");
 	}
 
 	return vrValues;
@@ -211,7 +216,8 @@ FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
 	DOMNode *pcTemp = _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	while( pcTemp = FindNextElement(pcTemp,"FCInt") )
+	pcTemp = FindNextElement(pcTemp,"FCInt") ;
+	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
@@ -219,6 +225,7 @@ FCvector<long> FCParameterGrp::GetInts(const char * sFilter)
 		{
 			vrValues.push_back( atol (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
 		}
+		pcTemp = FindNextElement(pcTemp,"FCInt") ;
 	}
 
 	return vrValues;
@@ -250,7 +257,8 @@ FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
 	DOMNode *pcTemp = _pGroupNode->getFirstChild();
 	FCstring Name;
 
-	while( pcTemp = FindNextElement(pcTemp,"FCFloat") )
+	pcTemp = FindNextElement(pcTemp,"FCFloat") ;
+	while( pcTemp )
 	{
 		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// check on filter condition
@@ -258,6 +266,7 @@ FCvector<double> FCParameterGrp::GetFloats(const char * sFilter)
 		{
 			vrValues.push_back( atof (StrX(((DOMElement*)pcTemp)->getAttribute(X("Value"))).c_str()) );
 		}
+		pcTemp = FindNextElement(pcTemp,"FCFloat");
 	}
 
 	return vrValues;
@@ -374,6 +383,8 @@ DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, con
 DOMElement *FCParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
 {
 	DOMNode *clChild = Prev;
+	if(!clChild) return 0l;
+
 	while ((clChild = clChild->getNextSibling())!=0)
 	{
 		if (clChild->getNodeType() == DOMNode::ELEMENT_NODE)
