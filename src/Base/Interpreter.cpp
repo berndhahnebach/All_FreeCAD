@@ -69,7 +69,7 @@ void FCInterpreter::Launch(const char *psCmd)
 
 	free (sBuf);
 
-	if(ret == -1) throw FCException("script fails");
+	if(ret == -1) throw FCException("script failed");
 }
 
 void FCInterpreter::LaunchFile(const char*pxFileName)

@@ -2,7 +2,7 @@
 
 # shell and operating system
 import os,sys
-sys.path.append( "E:\\Develop\\FreeCADWin\\src\\Tools" )
+sys.path.append( "..\Tools" )
 
 import FCFileTools
 
@@ -111,10 +111,25 @@ LogFile.write(text)
 FCFileTools.cpfile("Manual.pdf","../../../doc/Manuals/Manual.pdf")
 
 #====================================================================
+#== run latex2html now NOTE: current directory MUST NOT contain any spaces !!!
+sys.stdout.write (' done\n  Generate HTML ...')
+if not os.path.isdir("../../../doc/Manuals/Design_Specification"):
+    os.mkdir("../../../doc/Manuals/Design_Specification")
+text = os.popen("latex2html Design_Specification.tex").read()
+LogFile.write(text)
+FCFileTools.cpall("Design_Specification","../../../doc/Manuals/Design_Specification")
+if not os.path.isdir("../../../doc/Manuals/Manual"):
+    os.mkdir("../../../doc/Manuals/Manual")
+text = os.popen("latex2html Manual.tex").read()
+LogFile.write(text)
+FCFileTools.cpall("Manual","../../../doc/Manuals/Manual")
+
+#====================================================================
+os.chdir("..")
 sys.stdout.write (' done\n  copy online help ...')
-if not os.path.isdir("../../../Doc/Online"):
-    os.mkdir("../../../Doc/Online")
-FCFileTools.cpall("Online","../../../Doc/Online")
+if not os.path.isdir("../../Doc/Online"):
+    os.mkdir("../../Doc/Online")
+FCFileTools.cpall("Online","../../Doc/Online")
 
 #====================================================================
 sys.stdout.write (' done\n  Clean up temporary files ...')

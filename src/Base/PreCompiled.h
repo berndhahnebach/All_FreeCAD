@@ -26,7 +26,7 @@
 #include <Python.h>
 
 
-// Xwerces
+// Xerces
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>

@@ -74,7 +74,7 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 /** Defauld construction
   * Does not much 
   */
-FCParametrGrp::FCParametrGrp(DOMElement *GroupNode)	
+FCParameterGrp::FCParameterGrp(DOMElement *GroupNode)	
 	: FCHandled(), FCSubject(),_pGroupNode(GroupNode)
 {
 }
@@ -89,16 +89,16 @@ FCParametrGrp::FCParametrGrp(DOMElement *GroupNode)
 /** Destruction
   * complete destruction of the object
   */
-FCParametrGrp::~FCParametrGrp()
+FCParameterGrp::~FCParameterGrp()
 {
 }
 
 //**************************************************************************
 // Access methodes
 
-FCHandle<FCParametrGrp> FCParametrGrp::GetGroup(const char* Name)
+FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 {
-	FCHandle<FCParametrGrp> rParamGrp;
+	FCHandle<FCParameterGrp> rParamGrp;
 	DOMElement *pcTemp;
 
 	// already created?
@@ -121,13 +121,13 @@ FCHandle<FCParametrGrp> FCParametrGrp::GetGroup(const char* Name)
 	}*/
 
 	// create and register handle
-	rParamGrp = FCHandle<FCParametrGrp> (new FCParametrGrp(pcTemp));
+	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
 	_GroupMap[Name] = rParamGrp;
 
 	return rParamGrp;
 }
 
-bool FCParametrGrp::GetBool(const char* Name, bool bPreset)
+bool FCParameterGrp::GetBool(const char* Name, bool bPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCBool",Name);
@@ -140,7 +140,7 @@ bool FCParametrGrp::GetBool(const char* Name, bool bPreset)
 		return true;	
 }
 
-void  FCParametrGrp::SetBool(const char* Name, bool bValue)
+void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 {
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCBool",Name);
@@ -148,7 +148,7 @@ void  FCParametrGrp::SetBool(const char* Name, bool bValue)
 	pcElem->setAttribute(X("Value"), X(bValue?"1":"0"));
 }
 
-long FCParametrGrp::GetInt(const char* Name, long lPreset)
+long FCParameterGrp::GetInt(const char* Name, long lPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCInt",Name);
@@ -158,7 +158,7 @@ long FCParametrGrp::GetInt(const char* Name, long lPreset)
 	return atol (StrX(pcElem->getAttribute(X("Value"))).c_str());
 }
 
-void  FCParametrGrp::SetInt(const char* Name, long lValue)
+void  FCParameterGrp::SetInt(const char* Name, long lValue)
 {
 	char cBuf[256];
 	// find or create the Element
@@ -168,7 +168,7 @@ void  FCParametrGrp::SetInt(const char* Name, long lValue)
 	pcElem->setAttribute(X("Value"), X(cBuf));
 }
 
-double FCParametrGrp::GetFloat(const char* Name, double dPreset)
+double FCParameterGrp::GetFloat(const char* Name, double dPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCFloat",Name);
@@ -178,7 +178,7 @@ double FCParametrGrp::GetFloat(const char* Name, double dPreset)
 	return atof (StrX(pcElem->getAttribute(X("Value"))).c_str());
 }
 
-void  FCParametrGrp::SetFloat(const char* Name, double dValue)
+void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 {
 	char cBuf[256];
 	// find or create the Element
@@ -190,19 +190,19 @@ void  FCParametrGrp::SetFloat(const char* Name, double dValue)
 
 
 
-void  FCParametrGrp::SetBlob(const char* Name, void *pValue, long lLength)
+void  FCParameterGrp::SetBlob(const char* Name, void *pValue, long lLength)
 {
 	// not implemented so far
 	assert(0);
 }
 
-void FCParametrGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset)
+void FCParameterGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset)
 {
 	// not implemented so far
 	assert(0);
 }
 
-void  FCParametrGrp::SetASCII(const char* Name, const char *sValue)
+void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
 {
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCText",Name);
@@ -218,7 +218,7 @@ void  FCParametrGrp::SetASCII(const char* Name, const char *sValue)
 	}
 }
 
-void FCParametrGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
+void FCParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -235,7 +235,7 @@ void FCParametrGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, con
 	}
 }
 
-FCstring FCParametrGrp::GetASCII(const char* Name, const char * pPreset)
+FCstring FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -254,7 +254,7 @@ FCstring FCParametrGrp::GetASCII(const char* Name, const char * pPreset)
 // Access methodes
 
 
-DOMElement *FCParametrGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)
+DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)
 {
 	for (DOMNode *clChild = Start->getFirstChild(); clChild != 0;  clChild = clChild->getNextSibling())
 	{
@@ -274,7 +274,7 @@ DOMElement *FCParametrGrp::FindElement(DOMElement *Start, const char* Type, cons
 	return NULL;
 }
 
-DOMElement *FCParametrGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name)
+DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name)
 {
 	// first try to find it
 	DOMElement *pcElem = FindElement(Start,Type,Name);
@@ -306,7 +306,7 @@ DOMElement *FCParametrGrp::FindOrCreateElement(DOMElement *Start, const char* Ty
 /** Defauld construction
   * Does not much 
   */
-FCParameterManager::FCParameterManager()	: FCParametrGrp()
+FCParameterManager::FCParameterManager()	: FCParameterGrp()
 {
 	// initialize the XML system
 	Init();
@@ -470,7 +470,7 @@ int  FCParameterManager::LoadDocument(const char* sFileName)
 
 	_pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
 
-	if(!_pGroupNode) throw FCException("Maleforme Parameter document: Root group not found");
+	if(!_pGroupNode) throw FCException("Malformed Parameter document: Root group not found");
 	
 	return 1;
 }
@@ -595,11 +595,11 @@ void  FCParameterManager::CheckDocument()
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject FCPyParametrGrp::Type = {
+PyTypeObject FCPyParameterGrp::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
 	"FCParameterGrp",		/*tp_name*/
-	sizeof(FCPyParametrGrp),/*tp_basicsize*/
+	sizeof(FCPyParameterGrp),/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -618,7 +618,7 @@ PyTypeObject FCPyParametrGrp::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef FCPyParametrGrp::Methods[] = {
+PyMethodDef FCPyParameterGrp::Methods[] = {
   {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS},
   {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS},
   {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS},
@@ -635,35 +635,35 @@ PyMethodDef FCPyParametrGrp::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCPyParametrGrp::Parents[] = {&FCPyObject::Type,&FCPyParametrGrp::Type, NULL};     
+PyParentObject FCPyParameterGrp::Parents[] = {&FCPyObject::Type,&FCPyParameterGrp::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCPyParametrGrp::FCPyParametrGrp(const FCHandle<FCParametrGrp> &rcParamGrp, PyTypeObject *T ) 
+FCPyParameterGrp::FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T ) 
  : _cParamGrp(rcParamGrp),FCPyObject( T)
 {
 	GetConsole().Log("Create Param Group %p\n",this);
 }
 
-PyObject *FCPyParametrGrp::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *FCPyParameterGrp::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new FCPyParametrGrp();			// Make new Python-able object
+  //return new FCPyParameterGrp();			// Make new Python-able object
   return 0;
 }
 
 //--------------------------------------------------------------------------
 //  FCPyParametrGrp destructor 
 //--------------------------------------------------------------------------
-FCPyParametrGrp::~FCPyParametrGrp()						// Everything handled in parent
+FCPyParameterGrp::~FCPyParameterGrp()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy ParametrGrp %p\n",this);
+	GetConsole().Log("Destroy ParameterGrp %p\n",this);
 } 
 
 //--------------------------------------------------------------------------
 // FCPyParametrGrp Attributes
 //--------------------------------------------------------------------------
-PyObject *FCPyParametrGrp::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *FCPyParameterGrp::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	/*
 	try{
@@ -708,7 +708,7 @@ PyObject *FCPyParametrGrp::_getattr(char *attr)				// __getattr__ function: note
 		return 0;
 } 
 
-int FCPyParametrGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int FCPyParameterGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { /*
 	if (streq(attr, "Real"))						// settable new state
 		TDataStd_Real::Set(_cLabel, PyFloat_AsDouble(value)); 
@@ -728,16 +728,16 @@ int FCPyParametrGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ funct
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PyObject *FCPyParametrGrp::PyGetGrp(PyObject *args)
+PyObject *FCPyParameterGrp::PyGetGrp(PyObject *args)
 { 
 	char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	// get the Handle of the wanted group
-	FCHandle<FCParametrGrp> handle = _cParamGrp->GetGroup(pstr);
+	FCHandle<FCParameterGrp> handle = _cParamGrp->GetGroup(pstr);
 	if(handle.IsValid()){
 		// crate a python wrapper class
-		FCPyParametrGrp *pcParamGrp = new FCPyParametrGrp(handle);
+		FCPyParameterGrp *pcParamGrp = new FCPyParameterGrp(handle);
 		// increment the reff count
 		pcParamGrp->_INCREF();
 		return pcParamGrp;
@@ -747,7 +747,7 @@ PyObject *FCPyParametrGrp::PyGetGrp(PyObject *args)
 	}
 } 
 
-PyObject *FCPyParametrGrp::PySetBool(PyObject *args)
+PyObject *FCPyParameterGrp::PySetBool(PyObject *args)
 { 
 	char *pstr;
 	int  Bool;
@@ -757,7 +757,7 @@ PyObject *FCPyParametrGrp::PySetBool(PyObject *args)
 	Py_Return; 
 } 
 
-PyObject *FCPyParametrGrp::PyGetBool(PyObject *args)
+PyObject *FCPyParameterGrp::PyGetBool(PyObject *args)
 { 
 	char *pstr;
 	int  Bool=0;
@@ -766,7 +766,7 @@ PyObject *FCPyParametrGrp::PyGetBool(PyObject *args)
 	return Py_BuildValue("i",_cParamGrp->GetBool(pstr,Bool!=0));
 } 
 
-PyObject *FCPyParametrGrp::PySetInt(PyObject *args)
+PyObject *FCPyParameterGrp::PySetInt(PyObject *args)
 { 
 	char *pstr;
 	long  Int;
@@ -776,7 +776,7 @@ PyObject *FCPyParametrGrp::PySetInt(PyObject *args)
 	Py_Return; 
 } 
 
-PyObject *FCPyParametrGrp::PyGetInt(PyObject *args)
+PyObject *FCPyParameterGrp::PyGetInt(PyObject *args)
 { 
 	char *pstr;
 	long  Int=0;
@@ -785,7 +785,7 @@ PyObject *FCPyParametrGrp::PyGetInt(PyObject *args)
 	return Py_BuildValue("i",_cParamGrp->GetInt(pstr,Int));
 } 
 
-PyObject *FCPyParametrGrp::PySetFloat(PyObject *args)
+PyObject *FCPyParameterGrp::PySetFloat(PyObject *args)
 { 
 	char *pstr;
 	double  Float;
@@ -795,7 +795,7 @@ PyObject *FCPyParametrGrp::PySetFloat(PyObject *args)
 	Py_Return; 
 } 
 
-PyObject *FCPyParametrGrp::PyGetFloat(PyObject *args)
+PyObject *FCPyParameterGrp::PyGetFloat(PyObject *args)
 { 
 	char *pstr;
 	double  Float=0.0;
@@ -804,7 +804,7 @@ PyObject *FCPyParametrGrp::PyGetFloat(PyObject *args)
 	return Py_BuildValue("i",_cParamGrp->GetFloat(pstr,Float));
 } 
 
-PyObject *FCPyParametrGrp::PySetString(PyObject *args)
+PyObject *FCPyParameterGrp::PySetString(PyObject *args)
 { 
 	char *pstr;
 	char *  str;
@@ -814,7 +814,7 @@ PyObject *FCPyParametrGrp::PySetString(PyObject *args)
 	Py_Return; 
 } 
 
-PyObject *FCPyParametrGrp::PyGetString(PyObject *args)
+PyObject *FCPyParameterGrp::PyGetString(PyObject *args)
 { 
 	char *pstr;
 	char *  str="";

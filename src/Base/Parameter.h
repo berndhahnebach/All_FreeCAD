@@ -64,20 +64,20 @@ class FCParameterManager;
  *  to a persistent medium via XML.
  *  \par
  *  Its main task is making user parameter persitent, saving 
- *  last used values in dialog boxes, seting and retriving all
+ *  last used values in dialog boxes, setting and retrieving all
  *  kind of preferences and so on.
  *  @see FCParameterManager
  */
-class  BaseExport FCParametrGrp	: public FCHandled,public FCSubject
+class  BaseExport FCParameterGrp	: public FCHandled,public FCSubject
 {
 
 protected:
-	FCParametrGrp(DOMElement *GroupNode=0L);
-	~FCParametrGrp();
+	FCParameterGrp(DOMElement *GroupNode=0L);
+	~FCParameterGrp();
 
 public:
-	FCHandle<FCParametrGrp> GetGroup(const char* Name);
-	typedef FCHandle<FCParametrGrp> handle;
+	FCHandle<FCParameterGrp> GetGroup(const char* Name);
+	typedef FCHandle<FCParameterGrp> handle;
 
 	bool GetBool(const char* Name, bool bPreset=false);
 
@@ -107,19 +107,19 @@ public:
 
 	friend FCParameterManager;
 
-	/** Find a Element specified by Type and Name
-	 *  Search in the parent element Start for the first occourenc of a 
-	 *  element of Type and with the atribute Name=Name. On succes it returns
+	/** Find an element specified by Type and Name
+	 *  Search in the parent element Start for the first occourrence of an 
+	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise NULL
 	 */
 	DOMElement *FindElement(DOMElement *Start, const char* Type, const char* Name);
 
-	/** Find a Element specified by Type and Name or create it if not found
-	 *  Search in the parent element Start for the first occourenc of a 
-	 *  element of Type and with the atribute Name=Name. On succes it returns
-	 *  the pointer to that element, otherwise it create the element and return the pointer.
+	/** Find an element specified by Type and Name or create it if not found
+	 *  Search in the parent element Start for the first occourrence of an 
+	 *  element of Type and with the attribute Name=Name. On success it returns
+	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
-	DOMElement *FCParametrGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name);
+	DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name);
 
 
 protected:
@@ -128,7 +128,7 @@ protected:
 	DOMElement *_pGroupNode;
 	/// map of already exported groups
 #	pragma warning( disable : 4251 )
-	FCmap <FCstring ,FCHandle<FCParametrGrp> > _GroupMap;
+	FCmap <FCstring ,FCHandle<FCParameterGrp> > _GroupMap;
 #	pragma warning( default : 4251 )
 
 };
@@ -136,11 +136,11 @@ protected:
 
 
 /** The parameter manager class
- *  This class manage a parameter XML document. 
+ *  This class manages a parameter XML document. 
  *  Does loding, saving and handling the DOM document.
  *  @see FCParameterGrp
  */
-class BaseExport FCParameterManager	: public FCParametrGrp
+class BaseExport FCParameterManager	: public FCParameterGrp
 {
 public:
 	FCParameterManager();
@@ -180,12 +180,12 @@ private:
 
 
 /** The OCC Label wrapper class
- *  This class wrapps the functionality of the TDFSdt_Label of OCC. 
- *  Its used for building up hirachy in a OCC document by representing
- *  Nodes and Leavs
+ *  This class wraps the functionality of the TDFSdt_Label of OCC. 
+ *  It's used for building up hierarchy in a OCC document by representing
+ *  nodes and leaves
  *  @see FCDocument
  */
-class BaseExport FCPyParametrGrp :public FCPyObject
+class BaseExport FCPyParameterGrp :public FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -197,12 +197,12 @@ public:
 	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------
 
-	/// Constructer 
-	FCPyParametrGrp(const FCHandle<FCParametrGrp> &rcParamGrp, PyTypeObject *T = &Type);
+	/// Constructor 
+	FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 	/// Destruction 
-	~FCPyParametrGrp();
+	~FCPyParameterGrp();
 
 	//---------------------------------------------------------------------
 	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	
@@ -212,21 +212,21 @@ public:
 	// getter setter
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 	// methods
-	PYFUNCDEF_D (FCPyParametrGrp,PyGetGrp);
-	PYFUNCDEF_D (FCPyParametrGrp,PySetBool);
-	PYFUNCDEF_D (FCPyParametrGrp,PyGetBool);
-	PYFUNCDEF_D (FCPyParametrGrp,PySetInt);
-	PYFUNCDEF_D (FCPyParametrGrp,PyGetInt);
-	PYFUNCDEF_D (FCPyParametrGrp,PySetFloat);
-	PYFUNCDEF_D (FCPyParametrGrp,PyGetFloat);
-	PYFUNCDEF_D (FCPyParametrGrp,PySetString);
-	PYFUNCDEF_D (FCPyParametrGrp,PyGetString);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetGrp);
+	PYFUNCDEF_D (FCPyParameterGrp,PySetBool);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetBool);
+	PYFUNCDEF_D (FCPyParameterGrp,PySetInt);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetInt);
+	PYFUNCDEF_D (FCPyParameterGrp,PySetFloat);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetFloat);
+	PYFUNCDEF_D (FCPyParameterGrp,PySetString);
+	PYFUNCDEF_D (FCPyParameterGrp,PyGetString);
 
 protected:
 
 	/// Pointer to the FCDocument where the label comes from 
 #	pragma warning( disable : 4251 )
-	FCHandle<FCParametrGrp> _cParamGrp;
+	FCHandle<FCParameterGrp> _cParamGrp;
 #	pragma warning( default : 4251 )
 };
 

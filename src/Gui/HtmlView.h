@@ -26,12 +26,6 @@
  ***************************************************************************/
  
 
-/**
- * TODO: 
- *  + Bookmarks dürfen nur genau einmal in Liste stehen
- *  + Bookmarks müssen sofort verfügbar sein
- */
-
 #ifndef __HTML_VIEW_H__
 #define __HTML_VIEW_H__
  
@@ -53,6 +47,22 @@ class FCTextBrowser : public QTextBrowser
 
   protected:
     virtual void viewportMousePressEvent (QMouseEvent * e);
+};
+
+class FCComboBox : public QComboBox
+{
+  Q_OBJECT
+
+  public:
+    FCComboBox ( QWidget * parent=0, const char * name=0 );
+    FCComboBox ( bool rw, QWidget * parent=0, const char * name=0 );
+
+  signals:
+    void returnPressed(QString text);
+
+  protected:
+    void keyPressEvent ( QKeyEvent * e );
+    int iCt;
 };
 
 class GuiExport FCHtmlView : public FCDockWindow
@@ -80,11 +90,13 @@ class GuiExport FCHtmlView : public FCDockWindow
     void RefreshPage();
     void PopupMenuAboutToShow();
     void ShowPopupMenu();
+    void StartScriptOrBrowser(QString text);
 
   protected:
     virtual QString GetRelativeURL (const QString& path) const;
     virtual QString GetAbsoluteURL (const QString& path) const;
     virtual QString GetHelpDirectory();
+    virtual QString GetScriptDirectory();
     virtual void ReadHistory();
     virtual void ReadBookmarks();
     virtual void SaveHistory();
@@ -92,6 +104,8 @@ class GuiExport FCHtmlView : public FCDockWindow
     virtual void CreateHistoryPopup();
     virtual void CreateBookmarkPopup();
     virtual void AddToPath (const QString& path);
+    virtual void StartScript (QString path, QString protocol);
+    virtual void StartBrowser(QString path, QString protocol);
 
 #	pragma warning( disable : 4251 )
     FCmap<int, QString> mHistory, mBookmarks;
@@ -101,7 +115,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     QToolButton*   pclButtonBack;
     QToolButton*   pclButtonForward;
     QToolButton*   pclButtonHome;
-    QComboBox*     pclPathCombo;
+    FCComboBox*    pclPathCombo;
     FCTextBrowser* pclBrowser;
     QString        selectedURL;
     QString        m_strDocDir;

@@ -40,11 +40,11 @@
 
 FCWindow::FCWindow(const char *name)
 {
-	FCHandle<FCParametrGrp> h;
+	FCHandle<FCParameterGrp> h;
 
 	// not allowed to use a FCWindow without a name, see the constructor of a FCDockWindow or a other QT Widget
 	assert(name);
-	printf("Instancieate:%s\n",name);
+	printf("Instanceate:%s\n",name);
 
 	// geting the group for the window
 	h = GetApplication().GetParameter().GetGroup("BaseApp");
@@ -63,7 +63,7 @@ FCWindow::~FCWindow()
 }
 
 
-FCParametrGrp::handle & FCWindow::GetParameter(void)
+FCParameterGrp::handle & FCWindow::GetParameter(void)
 {
 	return _handle;
 }

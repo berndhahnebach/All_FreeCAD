@@ -324,9 +324,9 @@ PYFUNCIMP_S(FCApplication,sGetParam)
     if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 	if(pstr) // if parameter give deticated group
-		return new FCPyParametrGrp(GetApplication().GetParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
+		return new FCPyParameterGrp(GetApplication().GetParameter().GetGroup("BaseApp")->GetGroup(pstr)); 
 	else
-		return new FCPyParametrGrp(GetApplication().GetParameter().GetGroup("BaseApp"));  
+		return new FCPyParameterGrp(GetApplication().GetParameter().GetGroup("BaseApp"));  
 }
 
 
@@ -352,7 +352,7 @@ FCApplication & FCApplication::Instance(void)
 	if(!_pcSingelton)
 	{
 		_pcSingelton = new FCApplication();
-		(void) Py_InitModule("FreeCAD", FCApplication::Methods);
+		
 	}
 	return *_pcSingelton;
 }

@@ -37,20 +37,85 @@
 
 #include "CommandLine.h"
 #include "Application.h"
+#include "../Base/Interpreter.h"
+#include "../Base/Exception.h"
 
 
 ////////////////////////////////////////////////////////////////////
 /** The FCCommandLine class
  */
 FCCommandLine::FCCommandLine(void)
-: QLineEdit(NULL), bOpen(true)
+: QLineEdit(NULL), bOpen(true), FCWindow("command line")
 {
+  ReadCmdList();
   setFixedWidth(400);
-  connect(this, SIGNAL(returnPressed ()), this, SLOT(clear()));
+  connect(this, SIGNAL(returnPressed ()), this, SLOT(slotLaunchCommand()));
 }
 
 FCCommandLine::~FCCommandLine(void)
 {
+  SaveCmdList();
+}
+
+void FCCommandLine::SaveCmdList()
+{
+  FCParameterGrp::handle hCmdGrp = GetParameter()->GetGroup("CommandList");
+
+  int iMaxCnt = hCmdGrp->GetInt("MaxCommands", 20);
+
+  while ( int(_alCmdList.size()) > iMaxCnt )
+	  _alCmdList.erase( _alCmdList.begin() );
+
+  hCmdGrp->SetInt("Commands", _alCmdList.size());
+
+  long i=0;
+  for (FClist<FCstring>::iterator it = _alCmdList.begin(); it != _alCmdList.end(); ++it, i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "Command %d", i);
+    hCmdGrp->SetASCII(szBuf, it->c_str());
+  }
+}
+
+void FCCommandLine::ReadCmdList()
+{
+  FCParameterGrp::handle hCmdGrp = GetParameter()->GetGroup("CommandList");
+
+  int iCnt = hCmdGrp->GetInt("Commands");
+
+  for (int i=0; i<iCnt; i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "Command %d", i);
+    FCstring cmd = hCmdGrp->GetASCII(szBuf);
+    _alCmdList.push_back(cmd);
+  }
+
+  _TIterator = _alCmdList.end();
+}
+
+void FCCommandLine::slotLaunchCommand()
+{
+  // launch the python command
+  try
+  {
+    GetInterpreter().Launch(text().latin1());
+  }
+  catch (const FCException& rclE)
+  {
+    FCstring txt = (const_cast<FCException&>(rclE)).what();
+    FCstring err = "'" + text() + "' is not defined!";
+    QMessageBox::warning(this, txt.c_str(), err.c_str());
+  }
+  catch (...)
+  {
+    QMessageBox::critical(this, "Error", "A really nesty error occurred");
+  }
+
+  // hold the focus
+  setFocus();
+  // and clear the command line for the next command
+  clear();
 }
 
 void FCCommandLine::slotCut()
@@ -82,6 +147,12 @@ void FCCommandLine::slotClearConsole()
 {
   clear();
   _alCmdList.clear();
+}
+
+void FCCommandLine::slotOpenConsole()
+{
+  PopupCmdList();
+  bOpen = false;
 }
 
 void FCCommandLine::SetParent(QWidget* parent)
@@ -215,6 +286,7 @@ QPopupMenu* FCCommandLine::CreatePopupMenu()
   pclPopup->insertSeparator (); 
   int iClear  = pclPopup->insertItem (tr( "Clear" ),     this, SLOT(slotClear())); 
   int iCls    = pclPopup->insertItem (tr( "Clear Console" ), this, SLOT(slotClearConsole())); 
+  int iOCl    = pclPopup->insertItem (tr( "Open Console" ), this, SLOT(slotOpenConsole())); 
 
   // enable/disable items
   bool enableCut   = hasMarkedText() && !isReadOnly();
@@ -228,6 +300,7 @@ QPopupMenu* FCCommandLine::CreatePopupMenu()
   pclPopup->setItemEnabled(iSelAll, allSelected);
   pclPopup->setItemEnabled(iClear,  enableClear);
   pclPopup->setItemEnabled(iCls,    _alCmdList.size() > 0);
+  pclPopup->setItemEnabled(iOCl,    true);
 
   return pclPopup;
 }
@@ -278,7 +351,7 @@ void FCCommandLine::SetCmdText( QListBoxItem * item)
     bOpen = bOpen == true ? false : true;
   }
   else
-    QMessageBox::critical(this, "Error", "bla bla bla");
+    QMessageBox::critical(this, "Error", "An unknown error occurred.");
 
   setFocus();
 }

@@ -216,7 +216,7 @@ void FCCmdUndo::Activated(void)
 void FCCmdRedo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
 {
 	*sMenuText	  = "Redo";
-	*sToolTipText = "Redos a previosly Undoed action";
+	*sToolTipText = "Redoes a previosly undid action";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
 	cPixmap = QPixmap(pRedo);

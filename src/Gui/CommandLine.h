@@ -35,10 +35,11 @@
 #include <qlineedit.h>
 #include <list>
 #include <string>
+#include "window.h"
 
 /** The command line class
  */
-class GuiExport FCCommandLine : public QLineEdit
+class GuiExport FCCommandLine : public QLineEdit, public FCWindow
 {
   Q_OBJECT
 
@@ -57,6 +58,8 @@ protected:
   void ScrollUp();
   void ScrollDown();
   QPopupMenu* CreatePopupMenu();
+  void ReadCmdList();
+  void SaveCmdList();
 
 public:
   void SetParent(QWidget* parent);
@@ -72,6 +75,8 @@ protected slots:
   void slotSeleclAll();
   void slotClear();
   void slotClearConsole();
+  void slotOpenConsole();
+  void slotLaunchCommand();
 
 private:
   FClist<FCstring> _alCmdList;

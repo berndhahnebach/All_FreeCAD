@@ -156,7 +156,7 @@ int main( int argc, char ** argv ) {
 	// catch all FC exceptions
 	catch(FCException e)
 	{
-		GetConsole().Error("Application init fails:");
+		GetConsole().Error("Application init failed:");
 		e.ReportException();
 		PrintInitHelp();
 		exit(20);
@@ -164,7 +164,7 @@ int main( int argc, char ** argv ) {
 	// catch XML exceptions
     catch (XMLException& e)
     {
-		GetConsole().Error("Application init fails:");
+		GetConsole().Error("Application init failed:");
 		GetConsole().Error(StrX(e.getMessage()).c_str());
 		PrintInitHelp();
 		exit(30);
@@ -173,7 +173,7 @@ int main( int argc, char ** argv ) {
 	// catch all the (nasty) rest
 	catch(...)
 	{
-		GetConsole().Error("Application init fails, because of a realy nesty (unknown) error...");
+		GetConsole().Error("Application init failed, because of a really nesty (unknown) error...");
 		PrintInitHelp();
 		exit(40);
 	}
@@ -216,12 +216,12 @@ int main( int argc, char ** argv ) {
 			break;
 		case 2:
 			// run a script
-			GetConsole().Log("Runing script: %s\n",sFileName.c_str());
+			GetConsole().Log("Running script: %s\n",sFileName.c_str());
 			GetInterpreter().LaunchFile(sFileName.c_str());
 			break;
 		case 3:
 			// run internal script
-			GetConsole().Log("Runing internal script:\n");
+			GetConsole().Log("Running internal script:\n");
 			GetInterpreter().Launch(sScriptName);
 			break;
 		default:
@@ -230,20 +230,20 @@ int main( int argc, char ** argv ) {
 	}
 	catch(Standard_Failure e)
 	{
-		GetConsole().Error("Running the application fails, OCC exception caught:");
+		GetConsole().Error("Running the application failed, OCC exception caught:");
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
 		cout << "An exception was caught " << E << endl;
 		exit(4);
 	}
 	catch(FCException e)
 	{
-		GetConsole().Error("Running the application fails:");
+		GetConsole().Error("Running the application failed:");
 		e.ReportException();
 		exit(5); 
 	}
 	catch(...)
 	{
-		GetConsole().Error("Running the application fails, because of a realy nesty (unknown) error...");
+		GetConsole().Error("Running the application failed, because of a really nesty (unknown) error...");
 		exit(6);
 	}
 
@@ -253,7 +253,7 @@ int main( int argc, char ** argv ) {
 	pcGlobalParameter->SaveDocument("AppParam.FCParam");
 	delete pcGlobalParameter;
 
-	GetConsole().Log("FreeCAD completly terminated\n\n");
+	GetConsole().Log("FreeCAD completely terminated\n\n");
 	exit (0);
 }
 
@@ -522,9 +522,9 @@ void ParsOptions(int argc, char ** argv)
 void PrintInitHelp(void)
 {
 	cerr << endl << endl
-		 << "  An Initializing error was cought. That means mainly" << endl
-		 << "  FreeCAD is not proper installed. Type \"FreeCAD -TestEnvironment\""<< endl
-		 << "  to gets hints whats wrong." << endl << endl
+		 << "  An initializing error was caught. This means mainly" << endl
+		 << "  FreeCAD is not installed properly. Type \"FreeCAD -TestEnvironment\""<< endl
+		 << "  to get hints whats wrong." << endl << endl
 		 << "  Good luck ;-)" << endl << endl;
 }
 

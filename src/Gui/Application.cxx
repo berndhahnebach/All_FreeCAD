@@ -56,15 +56,15 @@ ApplicationWindow::ApplicationWindow()
 	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
     statusBar()->message( tr("Ready"), 2001 );
 
-	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	QString home = QString("index.html");
-	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
-	addToolWindow( hv, KDockWidget::DockRight, m_pMdi, 70, "Help", "Help");
-
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	FCCmdBar* pCmdBar = new FCCmdBar(this,"Cmd_Group");
 	pCmdBar->AddTestButtons();
 	addToolWindow( pCmdBar, KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
+
+	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	QString home = QString("index.html");
+	FCHtmlView* hv = new FCHtmlView(home, this, "Help_View");
+	addToolWindow( hv, KDockWidget::DockBottom, pCmdBar, 70, "Help", "Help");
 
 	// misc stuff
     resize( 800, 600 );

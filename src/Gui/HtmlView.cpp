@@ -38,6 +38,8 @@
 
 #include "HtmlView.h"
 #include "Application.h"
+#include "../Base/Interpreter.h"
+#include <direct.h>
 
 
 
@@ -126,6 +128,8 @@ static const char* home_pixmap[]={
 "................"};
 
 
+//// FCTextBrowser //////////////////////////////////////////////////////
+
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 : QTextBrowser(parent, name)
 {
@@ -162,6 +166,36 @@ void FCTextBrowser::viewportMousePressEvent (QMouseEvent * e)
   else
     QTextBrowser::viewportMousePressEvent(e);
 }
+
+//// FCComboBox //////////////////////////////////////////////////////
+
+FCComboBox::FCComboBox ( QWidget * parent, const char * name)
+: QComboBox(parent, name), iCt(0)
+{
+}
+
+FCComboBox::FCComboBox ( bool rw, QWidget * parent, const char * name)
+: QComboBox(rw, parent, name), iCt(0)
+{
+}
+
+void FCComboBox::keyPressEvent ( QKeyEvent * e )
+{
+  QComboBox::keyPressEvent(e);
+
+  //NOTE: QComboBox has a strange behaviour
+  // for a lot of keys this class calls this methode twice!?
+  switch (e->key())
+  {
+    case Key_Return:
+    case Key_Enter:
+      iCt = (iCt + 1) % 2;
+      if (iCt == 0)
+        emit returnPressed(currentText());
+  };
+}
+
+//// FCHtmlView //////////////////////////////////////////////////////
 
 /* 
  *  Constructs a FCHtmlView which is a child of 'parent', with the 
@@ -241,7 +275,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 	pclButtonHome->setAutoRaise(true);
 
   // the 'Path' combo box
-  pclPathCombo = new QComboBox( true, pclButtonGrp, "Paths" );
+  pclPathCombo = new FCComboBox( true, pclButtonGrp, "Paths" );
   pclPathCombo->setDuplicatesEnabled(false);
   pclPathCombo->setAutoCompletion(true);
   pclPathCombo->setProperty( "minimumSize", QSize( 160, 25 ) );
@@ -256,6 +290,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   connect(pclBrowser,       SIGNAL(forwardAvailable(bool) ),       pclButtonForward, SLOT(setEnabled(bool) ) );
   connect(pclButtonHome,    SIGNAL(clicked()),                     pclBrowser,       SLOT(home()));
   connect(pclPathCombo,     SIGNAL(activated( const QString & ) ), this, SLOT( PathSelected( const QString & ) ) );
+  connect(pclPathCombo,     SIGNAL(returnPressed(QString)),        this, SLOT( StartScriptOrBrowser(QString)));
 
   // make the layout of the browser
   //
@@ -383,29 +418,33 @@ void FCHtmlView::SetForwardAvailable( bool b)
 
 QString FCHtmlView::GetHelpDirectory()
 {
-	/* aus den Parametern
-  // find the current directory of the online manual
-  QString sCurrDir;
-  QDir cCurrDirectory;
+//  QString path = GetParameter()->GetASCII("HelpDir", "../Doc/Online").c_str();
+  QString path = GetParameter()->GetASCII("HelpDir", "../src/Doc/Online").c_str();
 
-  // go to FreeCAD's root directory if possible
-  if (cCurrDirectory.cdUp())
+  QDir dir (path);
+  dir.convertToAbs();
+  path = dir.path();
+  path.append("/");
+
+  if (QDir().exists(path) == false)
   {
-    cCurrDirectory.convertToAbs();
-    sCurrDir = cCurrDirectory.path();
-  }
-  else
-  {
-    // one directory up
-    sCurrDir = QDir::currentDirPath();
-    sCurrDir.truncate(sCurrDir.findRev('/'));
+    QMessageBox::warning(this, "Path not found","Couldn't find the path for the Online help.\n"
+                         "Propably, you should run the python script 'MakeDoc.py' before.");
   }
 
-  sCurrDir.append("/src/Doc/Online/");
+  return path;
+}
 
-  return sCurrDir;
-  */
-	return QString(GetParameter()->GetASCII("HelpDir","../src/Doc/Online/").c_str());
+QString FCHtmlView::GetScriptDirectory()
+{
+  QString path = GetParameter()->GetASCII("ScriptDir", "../src/Tools").c_str();
+
+  QDir dir (path);
+  dir.convertToAbs();
+  path = dir.path();
+  path.append("/");
+
+  return path;
 }
 
 QString FCHtmlView::GetRelativeURL (const QString& rcAbsPath) const
@@ -531,16 +570,128 @@ void FCHtmlView::AddToPath (const QString& path)
   }
 }
 
-void FCHtmlView::PathSelected( const QString &_path )
+void FCHtmlView::StartScriptOrBrowser(QString path)
 {
-  // add new path if it is not inserted yet
-  AddToPath(_path);
+  QString script = "FCScript://";
+  QString extbrw = "FCext://";
+  QString lpath  = path.lower();
 
-  pclBrowser->setSource( GetAbsoluteURL(_path) );
+  // start a script
+  if (lpath.startsWith(script.lower()) == true)
+  {
+    StartScript(path, script);
+  }
+  // start an external browser
+  else if (lpath.startsWith(extbrw.lower()) == true)
+  {
+    StartBrowser(path, extbrw);
+  }
+}
+
+void FCHtmlView::StartBrowser(QString path, QString protocol)
+{
+  int iURL = path.length();
+  int iCur = protocol.length();
+  QString url = path.right(iURL - iCur);
+
+  QString browser = GetParameter()->GetASCII("External Browser", "").c_str();
+  if (browser.isEmpty())
+  {
+    QMessageBox::information(this, "External browser", "Please search for an external browser.");
+    browser = QFileDialog::getOpenFileName();
+
+    if (browser.isEmpty())
+    {
+      QMessageBox::warning(this, "External browser", "No external browser found.");
+      return;
+    }
+
+    GetParameter()->SetASCII("External Browser", browser.latin1());
+  }
+
+  char szBuf[500];
+  char szPath[5000];
+
+  // split into absolute path and filename
+  QString sPath = browser;
+  sPath   = sPath.left(sPath.findRev("/") + 1);
+  browser = browser.right(browser.length() - browser.findRev("/") - 1);
+
+  // create the command to execute
+  sprintf(szBuf, "%s %s", browser.latin1(), url.latin1());
+
+  // append the path of your favorite browser to global path
+  //
+  sprintf(szPath, "%s;%s", getenv("Path"), sPath.latin1());
+	SetEnvironmentVariable ( "Path",szPath);
+  sPath = QString(szPath);
+	sprintf(szPath,"Path=%s",sPath.latin1());
+	putenv (szPath);
+
+  if (system(szBuf) != 0)
+  {
+    sprintf(szBuf, "Sorry, cannot start %s", browser.latin1());
+    QMessageBox::critical(this, "Browser", szBuf);
+  }
+}
+
+void FCHtmlView::StartScript(QString path, QString protocol)
+{
+  QString currPath = QDir::currentDirPath();
+  _chdir(GetScriptDirectory().latin1());
+
+  int iURL = path.length();
+  int iCur = protocol.length();
+  path = path.right(iURL - iCur);
+
+  QDir dir (path);
+  dir.convertToAbs();
+  path = dir.path();
+
+  // split into absolute path and filename
+  QString script = path;
+  path   = path.left(path.findRev("/") + 1);
+  script = script.right(script.length() - script.findRev("/") - 1);
+
+  char szBuf[500];
+  sprintf(szBuf, "python %s", script.latin1());
+
+  _chdir(path.latin1());
+
+  if (system(szBuf) != 0)
+  {
+    sprintf(szBuf, "Sorry, cannot run file '%s'.", script.latin1());
+    QMessageBox::critical(this, "Script", szBuf);
+  }
+  else
+  {
+    sprintf(szBuf, "'%s' done successfully.", script.latin1());
+    QMessageBox::information(this, "Script", szBuf);
+  }
+
+  // go to the former path
+  _chdir(currPath.latin1());
+}
+
+void FCHtmlView::PathSelected( const QString & path )
+{
+  QString script = "FCScript://";
+  QString extbrw = "FCext://";
+  QString lpath  = path.lower();
+
+  // if you want to start a script or a browser do nothing here
+  // NOTE: to start a script or browser you must press Return/Enter
+  if (lpath.startsWith(script.lower()) || lpath.startsWith(extbrw.lower()))
+    return;
+
+  // add new path if it is not inserted yet
+  AddToPath(path);
+
+  pclBrowser->setSource( GetAbsoluteURL(path) );
   bool exists = FALSE;
   for ( FCmap<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it ) 
   {
-  	if ( it->second == _path ) 
+  	if ( it->second == path ) 
     {
 	    exists = TRUE;
 	    break;
@@ -550,13 +701,13 @@ void FCHtmlView::PathSelected( const QString &_path )
   if ( !exists )
   {
     if (bHistory)
-    	mHistory[pclHistory->insertItem(_path, mHistory.size())] = _path;
+    	mHistory[pclHistory->insertItem(path, mHistory.size())] = path;
   }
 }
 
 bool FCHtmlView::SetMaxHistory (long lCnt)
 {
-  FCParametrGrp::handle hHistGrp = GetParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = GetParameter()->GetGroup("History");
 
   hHistGrp->SetInt("Max History items", lCnt);
 
@@ -565,7 +716,7 @@ bool FCHtmlView::SetMaxHistory (long lCnt)
 
 void FCHtmlView::ReadHistory()
 {
-  FCParametrGrp::handle hHistGrp = GetParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = GetParameter()->GetGroup("History");
 
   int iCnt = hHistGrp->GetInt("History items");
 
@@ -580,7 +731,7 @@ void FCHtmlView::ReadHistory()
 
 void FCHtmlView::ReadBookmarks()
 {
-  FCParametrGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
 
   int iCnt = hBookmGrp->GetInt("Bookmark items");
 
@@ -595,7 +746,7 @@ void FCHtmlView::ReadBookmarks()
 
 void FCHtmlView::SaveHistory()
 {
-  FCParametrGrp::handle hHistGrp = GetParameter()->GetGroup("History");
+  FCParameterGrp::handle hHistGrp = GetParameter()->GetGroup("History");
 
   int iMaxCnt = hHistGrp->GetInt("Max History items", 20);
 
@@ -615,7 +766,7 @@ void FCHtmlView::SaveHistory()
 
 void FCHtmlView::SaveBookmarks()
 {
-  FCParametrGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
+  FCParameterGrp::handle hBookmGrp = GetParameter()->GetGroup("Bookmarks");
 
   hBookmGrp->SetInt("Bookmark items", mBookmarks.size());
 

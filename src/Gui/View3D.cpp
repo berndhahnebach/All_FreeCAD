@@ -81,7 +81,7 @@ bool View3D::InitCasCadeView(void)
 		_hView->SetWindow(hWindow);
 		if (!hWindow->IsMapped()) hWindow->Map();
 	}catch(Standard_Failure){
-		cerr << "Failure catched:"<<Standard_Failure::Caught()<<endl;
+		cerr << "Failure caught:"<<Standard_Failure::Caught()<<endl;
 		return false;
 	}
 
