@@ -36,10 +36,48 @@
 #include <list>
 #include <string>
 #include "window.h"
+#include <qwindowsstyle.h>
+#include <qvalidator.h>
+
+/** Validate input
+ */
+class FCConsoleValidator : public QValidator
+{
+  public:
+    FCConsoleValidator ( QWidget * parent, const char * name = 0 );
+    virtual ~FCConsoleValidator ();
+
+    virtual State validate ( QString &, int & ) const;
+    virtual void fixup ( QString & ) const;
+};
+
+/** The windows style for the command line
+ */
+class FCWindowsStyle : public QWindowsStyle
+{
+  public:
+    // avoid drawing the button
+    QRect comboButtonRect ( int x, int y, int w, int h )
+    { 
+      return QWindowsStyle::comboButtonRect(x, y, w, h);
+    }
+
+    void drawComboButton ( QPainter * p, int x, int y, int w, int h, 
+                           const QColorGroup & g, bool sunken = FALSE, 
+                           bool editable = FALSE, bool enabled = TRUE, 
+                           const QBrush * fill = 0 )
+    {
+      qDrawWinPanel(p, x, y, w, h, g, TRUE, 
+              	    fill?fill:(enabled?&g.brush( QColorGroup::Base ): &g.brush( QColorGroup::Base )));
+
+      drawArrow( p, QStyle::DownArrow, sunken, x+w-2-16+ 2, y+2+ 2, 16- 4, h-4- 4, g, enabled,
+        	       fill ? fill : &g.brush( QColorGroup::Base ) );
+    }
+};
 
 /** The command line class
  */
-class GuiExport FCCommandLine : public QLineEdit, public FCWindow
+class GuiExport FCCommandLine : public QComboBox, public FCWindow
 {
   Q_OBJECT
 
@@ -54,9 +92,8 @@ protected:
   void keyPressEvent ( QKeyEvent * e );
   void mousePressEvent ( QMouseEvent * e );
   void wheelEvent ( QWheelEvent * e );
-  void PopupCmdList ();
-  void ScrollUp();
-  void ScrollDown();
+  void enterEvent ( QEvent * );
+  void leaveEvent ( QEvent * );
   QPopupMenu* CreatePopupMenu();
   void ReadCmdList();
   void SaveCmdList();
@@ -68,20 +105,9 @@ public:
 	friend FCCommandLine &GetCmdLine(void); 
 
 protected slots:
-  void SetCmdText( QListBoxItem * item);
-  void slotCut();
-  void slotCopy();
-  void slotPaste();
-  void slotSeleclAll();
-  void slotClear();
   void slotClearConsole();
   void slotOpenConsole();
   void slotLaunchCommand();
-
-private:
-  FClist<FCstring> _alCmdList;
-  FClist<FCstring>::iterator _TIterator;
-  bool bOpen;
 };
 
 inline FCCommandLine &GetCmdLine(void)
@@ -89,20 +115,73 @@ inline FCCommandLine &GetCmdLine(void)
   return FCCommandLine::Instance();
 }
 
-/** A special list box used by the command line class
- */
-class GuiExport FCCommandListBox : public QListBox
-{
-  Q_OBJECT
-
-public:
-  FCCommandListBox( QWidget * parent=0, const char * name=0, WFlags f=0);
-
-protected:
-  void keyPressEvent ( QKeyEvent * e );
-
-protected slots:
-  void Close();
-};
+//
+///** The command line class
+// */
+//class GuiExport FCCommandLine : public QLineEdit, public FCWindow
+//{
+//  Q_OBJECT
+//
+//private:
+//	// Singleton
+//	FCCommandLine(void);
+//	~FCCommandLine(void);
+//
+//	static FCCommandLine *_pcSingleton;
+//
+//protected:
+//  void keyPressEvent ( QKeyEvent * e );
+//  void mousePressEvent ( QMouseEvent * e );
+//  void wheelEvent ( QWheelEvent * e );
+//  void PopupCmdList ();
+//  void ScrollUp();
+//  void ScrollDown();
+//  QPopupMenu* CreatePopupMenu();
+//  void ReadCmdList();
+//  void SaveCmdList();
+//
+//public:
+//  void SetParent(QWidget* parent);
+//	static void Destruct(void);
+//	static FCCommandLine &Instance(void);
+//	friend FCCommandLine &GetCmdLine(void); 
+//
+//protected slots:
+//  void SetCmdText( QListBoxItem * item);
+//  void slotCut();
+//  void slotCopy();
+//  void slotPaste();
+//  void slotSeleclAll();
+//  void slotClear();
+//  void slotClearConsole();
+//  void slotOpenConsole();
+//  void slotLaunchCommand();
+//
+//private:
+//  FClist<FCstring> _alCmdList;
+//  FClist<FCstring>::iterator _TIterator;
+//  bool bOpen;
+//};
+//
+//inline FCCommandLine &GetCmdLine(void)
+//{
+//  return FCCommandLine::Instance();
+//}
+//
+///** A special list box used by the command line class
+// */
+//class GuiExport FCCommandListBox : public QListBox
+//{
+//  Q_OBJECT
+//
+//public:
+//  FCCommandListBox( QWidget * parent=0, const char * name=0, WFlags f=0);
+//
+//protected:
+//  void keyPressEvent ( QKeyEvent * e );
+//
+//protected slots:
+//  void Close();
+//};
 
 #endif // __COMMAND_LINE_H__

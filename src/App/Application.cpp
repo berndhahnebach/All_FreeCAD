@@ -135,13 +135,13 @@ FCDocument* FCApplication::New(const char * Name)
 	//_hApp->NewDocument("Standard",hDoc);
 	pDoc = new FCDocument(hDoc);
 
-	// Load module
+/*	// Load module
 	if(!GetInterpreter().LoadModule(Name))
 	{
 		delete pDoc ;  
 		throw FCException("No doc module");
 	}
-	pDoc->_INCREF();
+*/	pDoc->_INCREF();
 	_DocVector.push_back(pDoc);
 	_pActiveDoc = pDoc;
 

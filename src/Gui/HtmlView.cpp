@@ -126,12 +126,39 @@ static const char* home_pixmap[]={
 "..#####.######..",
 "................"};
 
+/* XPM */
+static const char *open_pixmap[] = {
+"16 16 5 1",
+"# c #000000",
+"c c #808000",
+". c None",
+"b c #ffffff",
+"a c #ffffff",
+"..........###...",
+".........#...#.#",
+"..............##",
+"..###........###",
+".#aba#######....",
+".#babababab#....",
+".#ababababa#....",
+".#baba##########",
+".#aba#ccccccccc#",
+".#ba#ccccccccc#.",
+".#a#ccccccccc#..",
+".##ccccccccc#...",
+".###########....",
+"................",
+"................",
+"................"};
 
 //// FCTextBrowser //////////////////////////////////////////////////////
 
 FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 : QTextBrowser(parent, name)
 {
+  mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
+  mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
+  mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
 }
 
 void FCTextBrowser::setSource (const QString & name)
@@ -145,9 +172,6 @@ void FCTextBrowser::setSource (const QString & name)
     mark = name.mid( hash+1 );
   }
 
-  if ( source.left(5) == "file:" )
-    source = source.mid(6);
-
   QString txt;
 
   if (!source.isEmpty()) 
@@ -156,9 +180,9 @@ void FCTextBrowser::setSource (const QString & name)
     if (mime == NULL)
     {
       char szBuf[200];
-      sprintf(szBuf, "Can't load %s.\nDo you want to start your favourite external browser instead?", source.latin1());
+      sprintf(szBuf, "Can't load '%s'.\nDo you want to start your favourite external browser instead?", source.latin1());
       if (QMessageBox::information(this, "FreeCAD", szBuf, "Yes", "No", QString::null, 0) == 0)
-        emit startExtBrowser(source);
+        emit startExtBrowser(name);
       return;
 	  }
 	  else 
@@ -166,7 +190,7 @@ void FCTextBrowser::setSource (const QString & name)
   	  if (QTextDrag::decode(mime, txt) == false) 
   	  {
         char szBuf[200];
-        sprintf(szBuf, "Can't decode %s", source.latin1());
+        sprintf(szBuf, "Can't decode '%s'", source.latin1());
         QMessageBox::information(this, "FreeCAD", szBuf);
         return;
 	    }
@@ -193,32 +217,48 @@ void FCTextBrowser::viewportMousePressEvent (QMouseEvent * e)
     QTextBrowser::viewportMousePressEvent(e);
 }
 
+//// FCHtmlViewValidator //////////////////////////////////////////////////////
+
+FCHtmlViewValidator::FCHtmlViewValidator ( QWidget * parent, const char * name )
+: QValidator(parent, name)
+{
+}
+
+FCHtmlViewValidator::~FCHtmlViewValidator ()
+{
+}
+
+QValidator::State FCHtmlViewValidator::validate ( QString & txt, int & i) const
+{
+  if (txt.isEmpty())
+    return Intermediate;
+  else
+    return Acceptable;
+}
+
+void FCHtmlViewValidator::fixup ( QString & txt) const
+{
+}
+
 //// FCComboBox //////////////////////////////////////////////////////
 
 FCComboBox::FCComboBox ( QWidget * parent, const char * name)
-: QComboBox(parent, name), iCt(0)
+: QComboBox(parent, name)
 {
+  setValidator(new FCHtmlViewValidator(this));
+  connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(slotKeyPressReturn));
 }
 
 FCComboBox::FCComboBox ( bool rw, QWidget * parent, const char * name)
-: QComboBox(rw, parent, name), iCt(0)
+: QComboBox(rw, parent, name)
 {
+  setValidator(new FCHtmlViewValidator(this));
+  connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(slotKeyPressReturn()));
 }
 
-void FCComboBox::keyPressEvent ( QKeyEvent * e )
+void FCComboBox::slotKeyPressReturn()
 {
-  QComboBox::keyPressEvent(e);
-
-  //NOTE: QComboBox has a strange behaviour
-  // for a lot of keys this class calls this methode twice!?
-  switch (e->key())
-  {
-    case Key_Return:
-    case Key_Enter:
-      iCt = (iCt + 1) % 2;
-      if (iCt == 0)
-        emit returnPressed(currentText());
-  };
+  emit returnPressed(currentText());
 }
 
 //// FCHtmlView //////////////////////////////////////////////////////
@@ -233,9 +273,12 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 
 {
   m_strCaption = "FCHelpViewer - ";
+  m_FCdoc = "FCdoc://";
+  m_FCext = "FCext://";
+  m_FCscript = "FCScript://";
 
   // find the home directory of the online manual
-  m_strDocDir = GetHelpDirectory();
+  m_strDocDir = GetDocDirectory();
 
   QString home = m_strDocDir;
 
@@ -301,6 +344,13 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonHome->setProperty( "pixmap", QPixmap(home_pixmap) );
 	pclButtonHome->setAutoRaise(true);
 
+  // the 'Open' button
+  pclButtonOpen = new QToolButton( pclButtonGrp, tr("Open") );
+  pclButtonOpen->setProperty( "minimumSize", QSize( 25, 25 ) );
+  pclButtonOpen->setProperty( "text", tr( "..." ) );
+  pclButtonOpen->setProperty( "pixmap", QPixmap(open_pixmap) );
+	pclButtonOpen->setAutoRaise(true);
+
   // the 'Path' combo box
   pclPathCombo = new FCComboBox( true, pclButtonGrp, "Paths" );
   pclPathCombo->setDuplicatesEnabled(false);
@@ -316,6 +366,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   connect(pclButtonForward, SIGNAL(clicked()),                     pclBrowser,       SLOT(forward()));
   connect(pclBrowser,       SIGNAL(forwardAvailable(bool) ),       pclButtonForward, SLOT(setEnabled(bool) ) );
   connect(pclButtonHome,    SIGNAL(clicked()),                     pclBrowser,       SLOT(home()));
+  connect(pclButtonOpen,    SIGNAL(clicked()),                     this,             SLOT(OpenFile()));
   connect(pclPathCombo,     SIGNAL(activated( const QString & ) ), this, SLOT( PathSelected( const QString & ) ) );
   connect(pclPathCombo,     SIGNAL(returnPressed(QString)),        this, SLOT( StartScriptOrBrowser(QString)));
 
@@ -330,6 +381,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclButtonGrpLayout->addWidget( pclButtonBack );
   pclButtonGrpLayout->addWidget( pclButtonForward );
   pclButtonGrpLayout->addWidget( pclButtonHome );
+  pclButtonGrpLayout->addWidget( pclButtonOpen );
   QSpacerItem* spacer = new QSpacerItem( 0, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   pclButtonGrpLayout->addItem( spacer );
   pclButtonGrpLayout->addWidget( pclPathCombo );
@@ -363,8 +415,10 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 FCHtmlView::~FCHtmlView()
 {
     // no need to delete child widgets, Qt does it all for us
-  SaveHistory();
-  SaveBookmarks();
+  if (bHistory)
+    SaveHistory();
+  if (bBookm)
+    SaveBookmarks();
 }
 
 void FCHtmlView::SetEnableHistory  (bool b)
@@ -443,10 +497,10 @@ void FCHtmlView::SetForwardAvailable( bool b)
   pclButtonForward->setEnabled(b);
 }
 
-QString FCHtmlView::GetHelpDirectory()
+QString FCHtmlView::GetDocDirectory()
 {
-//  QString path = GetParameter()->GetASCII("HelpDir", "../Doc/Online").c_str();
-  QString path = GetParameter()->GetASCII("HelpDir", "../src/Doc/Online").c_str();
+//  QString path = GetParameter()->GetASCII("DocDir", "../Doc/Online").c_str();
+  QString path = GetParameter()->GetASCII("DocDir", "../src/Doc/Online").c_str();
 
   QDir dir (path);
   dir.convertToAbs();
@@ -474,17 +528,33 @@ QString FCHtmlView::GetScriptDirectory()
   return path;
 }
 
+QString FCHtmlView::GetBrowserDirectory()
+{
+  QString browser = GetParameter()->GetASCII("External Browser", "").c_str();
+  if (browser.isEmpty())
+  {
+    QMessageBox::information(this, "External browser", "Please search for an external browser.");
+    browser = QFileDialog::getOpenFileName();
+
+    if (browser.isEmpty())
+      QMessageBox::warning(this, "External browser", "No external browser found.");
+    else
+      GetParameter()->SetASCII("External Browser", browser.latin1());
+  }
+
+  return browser;
+}
+
 QString FCHtmlView::GetRelativeURL (const QString& rcAbsPath) const
 {
   QString cRelPath = rcAbsPath;
-  // is this a pathname inside the online manual
   QString sCurrDir = cRelPath.lower();
+
+  // is this a pathname inside the online manual
   if (sCurrDir.startsWith(m_strDocDir.lower()) == true)
   {
-    int iURL = cRelPath.length();
-    int iCur = m_strDocDir.length();
-    QString relativeURL = cRelPath.right(iURL - iCur);
-    relativeURL.prepend("FCdoc://");
+    QString relativeURL = cRelPath.mid(m_strDocDir.length());
+    relativeURL.prepend( m_FCdoc );
     cRelPath = relativeURL;
   }
 
@@ -495,40 +565,13 @@ QString FCHtmlView::GetAbsoluteURL (const QString& rcRelPath) const
 {
   QString cAbsPath = rcRelPath;
   QString sCurrDir = cAbsPath.lower();
-  
-  // if your path is an internet address do nothing
-  QString protocol = QUrl(sCurrDir).protocol();
-  if (protocol != "file" && protocol != "fcdoc")
-  {
-    return cAbsPath;
-  }
 
-  if (sCurrDir.startsWith("fcdoc://") == true)
+  // generate an absolute URL from a relative one
+  if (sCurrDir.startsWith(m_FCdoc.lower()) == true)
   {
-    int iURL = cAbsPath.length();
-    int iCur = 8; // length of fcdoc://
-    QString absoluteURL = cAbsPath.right(iURL - iCur);
+    QString absoluteURL = cAbsPath.mid(m_FCdoc.length());
     absoluteURL.prepend(m_strDocDir);
     cAbsPath = absoluteURL;
-  }
-  else if (QDir(cAbsPath).isRelative())
-  {
-    QString relativeURL = cAbsPath;
-    relativeURL.prepend("FCdoc://");
-
-    // search for this URL
-	  int i;
-	  for ( i = 0; i < pclPathCombo->count(); ++i ) 
-    {
-      QString test = pclPathCombo->text( i );
-	    if ( pclPathCombo->text( i ) == relativeURL ) 
-      {
-  	    pclPathCombo->setCurrentItem( i );
-	  	  break;
-	    }
-	  }
-
-    cAbsPath.prepend(m_strDocDir);
   }
 
   return cAbsPath;
@@ -536,6 +579,9 @@ QString FCHtmlView::GetAbsoluteURL (const QString& rcRelPath) const
 
 void FCHtmlView::TextChanged()
 {
+  // insert new item into the combo box
+  //
+  //
   if ( pclBrowser->documentTitle().isNull() ) 
   {
   	setCaption( m_strCaption + pclBrowser->context() );
@@ -587,7 +633,7 @@ void FCHtmlView::OpenFile()
 void FCHtmlView::AddToPath (const QString& path)
 {
   // add new path if it is not inserted yet
-  QString sCurrDir = GetAbsoluteURL(path);
+  QString sCurrDir = path;
   sCurrDir.truncate(sCurrDir.findRev('/'));
 
   QStringList sl = pclBrowser->mimeSourceFactory()->filePath();
@@ -599,19 +645,17 @@ void FCHtmlView::AddToPath (const QString& path)
 
 void FCHtmlView::StartScriptOrBrowser(QString path)
 {
-  QString script = "FCScript://";
-  QString extbrw = "FCext://";
   QString lpath  = path.lower();
 
   // start a script
-  if (lpath.startsWith(script.lower()) == true)
+  if (lpath.startsWith(m_FCscript.lower()) == true)
   {
-    StartScript(path, script);
+    StartScript(path, m_FCscript);
   }
   // start an external browser
-  else if (lpath.startsWith(extbrw.lower()) == true)
+  else if (lpath.startsWith(m_FCext.lower()) == true)
   {
-    StartBrowser(path, extbrw);
+    StartBrowser(path, m_FCext);
   }
 }
 
@@ -622,24 +666,11 @@ void FCHtmlView::StartExtBrowser(QString url)
 
 void FCHtmlView::StartBrowser(QString path, QString protocol)
 {
-  int iURL = path.length();
-  int iCur = protocol.length();
-  QString url = path.right(iURL - iCur);
+  QString url = path.mid(protocol.length());
 
-  QString browser = GetParameter()->GetASCII("External Browser", "").c_str();
+  QString browser = GetBrowserDirectory();
   if (browser.isEmpty())
-  {
-    QMessageBox::information(this, "External browser", "Please search for an external browser.");
-    browser = QFileDialog::getOpenFileName();
-
-    if (browser.isEmpty())
-    {
-      QMessageBox::warning(this, "External browser", "No external browser found.");
-      return;
-    }
-
-    GetParameter()->SetASCII("External Browser", browser.latin1());
-  }
+    return;
 
   char szBuf[500];
   char szPath[5000];
@@ -647,7 +678,7 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
   // split into absolute path and filename
   QString sPath = browser;
   sPath   = sPath.left(sPath.findRev("/") + 1);
-  browser = browser.right(browser.length() - browser.findRev("/") - 1);
+  browser = browser.mid(browser.findRev("/") + 1);
 
   // create the command to execute
   sprintf(szBuf, "%s %s", browser.latin1(), url.latin1());
@@ -676,9 +707,7 @@ void FCHtmlView::StartScript(QString path, QString protocol)
   QString currPath = QDir::currentDirPath();
   _chdir(GetScriptDirectory().latin1());
 
-  int iURL = path.length();
-  int iCur = protocol.length();
-  path = path.right(iURL - iCur);
+  path = path.mid(protocol.length());
 
   QDir dir (path);
   dir.convertToAbs();
@@ -687,7 +716,7 @@ void FCHtmlView::StartScript(QString path, QString protocol)
   // split into absolute path and filename
   QString script = path;
   path   = path.left(path.findRev("/") + 1);
-  script = script.right(script.length() - script.findRev("/") - 1);
+  script = script.mid(script.findRev("/") + 1);
 
   char szBuf[500];
   sprintf(szBuf, "python %s", script.latin1());
@@ -711,19 +740,21 @@ void FCHtmlView::StartScript(QString path, QString protocol)
 
 void FCHtmlView::PathSelected( const QString & path )
 {
-  QString script = "FCScript://";
-  QString extbrw = "FCext://";
   QString lpath  = path.lower();
 
   // if you want to start a script or a browser do nothing here
   // NOTE: to start a script or browser you must press Return/Enter
-  if (lpath.startsWith(script.lower()) || lpath.startsWith(extbrw.lower()))
+  if (lpath.startsWith(m_FCscript.lower()) || lpath.startsWith(m_FCext.lower()))
     return;
 
   // add new path if it is not inserted yet
-  AddToPath(path);
+  AddToPath(GetAbsoluteURL(path));
 
+  // set new source
   pclBrowser->setSource( GetAbsoluteURL(path) );
+  TextChanged();
+
+  // insert to the history
   bool exists = FALSE;
   for ( FCmap<int, QString>::iterator it = mHistory.begin(); it != mHistory.end(); ++it ) 
   {
@@ -884,7 +915,7 @@ void FCHtmlView::CreateHistoryPopup()
   for (FCmap<int, QString>::iterator it = tmp.begin(); it != tmp.end(); ++it)
   {
 	  mHistory[pclHistory->insertItem(it->second, mHistory.size())] = it->second;
-    AddToPath(it->second);
+    AddToPath(GetAbsoluteURL(it->second));
   }
 }
 

@@ -30,6 +30,7 @@
 #define __HTML_VIEW_H__
  
 #include <qtextbrowser.h>
+#include <qvalidator.h>
 #include "window.h"
 
 class FCTextBrowser : public QTextBrowser
@@ -50,6 +51,16 @@ class FCTextBrowser : public QTextBrowser
     virtual void viewportMousePressEvent (QMouseEvent * e);
 };
 
+class FCHtmlViewValidator : public QValidator
+{
+  public:
+    FCHtmlViewValidator ( QWidget * parent, const char * name = 0 );
+    virtual ~FCHtmlViewValidator ();
+
+    virtual State validate ( QString &, int & ) const;
+    virtual void fixup ( QString & ) const;
+};
+
 class FCComboBox : public QComboBox
 {
   Q_OBJECT
@@ -61,9 +72,8 @@ class FCComboBox : public QComboBox
   signals:
     void returnPressed(QString text);
 
-  protected:
-    void keyPressEvent ( QKeyEvent * e );
-    int iCt;
+  protected slots:
+    void slotKeyPressReturn();
 };
 
 class GuiExport FCHtmlView : public FCDockWindow
@@ -97,8 +107,9 @@ class GuiExport FCHtmlView : public FCDockWindow
   protected:
     virtual QString GetRelativeURL (const QString& path) const;
     virtual QString GetAbsoluteURL (const QString& path) const;
-    virtual QString GetHelpDirectory();
+    virtual QString GetDocDirectory();
     virtual QString GetScriptDirectory();
+    virtual QString GetBrowserDirectory();
     virtual void ReadHistory();
     virtual void ReadBookmarks();
     virtual void SaveHistory();
@@ -110,6 +121,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     virtual void StartBrowser(QString path, QString protocol);
 
 #	pragma warning( disable : 4251 )
+    QString        m_FCdoc, m_FCext, m_FCscript;
     FCmap<int, QString> mHistory, mBookmarks;
     bool bBackward, bForward;
     bool bHistory, bBookm;
@@ -117,6 +129,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     QToolButton*   pclButtonBack;
     QToolButton*   pclButtonForward;
     QToolButton*   pclButtonHome;
+    QToolButton*   pclButtonOpen;
     FCComboBox*    pclPathCombo;
     FCTextBrowser* pclBrowser;
     QString        selectedURL;

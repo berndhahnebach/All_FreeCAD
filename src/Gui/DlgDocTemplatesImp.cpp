@@ -27,7 +27,7 @@
 DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl )
 {
-	PyObject *result=NULL,*result2=NULL;
+/*	PyObject *result=NULL,*result2=NULL;
 	GetConsole().Log("Step 1\n");
 	if(PP_Run_Function("__main__","GetTemplateList","O",&result,"()") == -1) 
 		throw FCException("No Function TemplateList() in __main__");
@@ -47,7 +47,7 @@ DlgDocTemplatesImp::DlgDocTemplatesImp( QWidget* parent,  const char* name, bool
 		new QIconViewItem ( TemplateIconView ,str,pixmap );
 		Py_DECREF(result2);
 	}
-	Py_DECREF(result);
+	Py_DECREF(result);*/
 }
 
 /*  
@@ -77,13 +77,13 @@ void DlgDocTemplatesImp::Validate()
 {
 	QString sTemplate = LineEdit1->text();
 
-	if (sTemplate.isEmpty()){
+/*	if (sTemplate.isEmpty()){
 		QMessageBox::information( this, "Template error",
                             "You have to choos a template\n");
-	}else{
+	}else{*/
 		GetInterpreter().RunFCCommand("FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
 		accept();
-	}
+//	}
 }
 /* 
  * public slot
