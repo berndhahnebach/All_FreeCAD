@@ -51,10 +51,10 @@ void Feature::InitLabel(const TDF_Label &rcLabel)
 	if(!TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver)) 
 		myFunctionDriver;
 	
-	myFunctionDriver->Init(_cFeatureLabel);
+	//myFunctionDriver->Init(_cFeatureLabel);
 
-    if (myFunctionDriver->Execute(log)) 
-		Base::Console().Error("Feature::InitLabel()");
+    //if (myFunctionDriver->Execute(log)) 
+	//	Base::Console().Error("Feature::InitLabel()");
 
 }
 
