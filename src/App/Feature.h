@@ -41,7 +41,15 @@ class AppExport Feature: public Base::PyHandler
 {
 public:
 
-	/** @name methodes used for reclculation (update) */
+	/** Init the Label the Feature is attached to
+	 *  This methode will be called when the Feature is mounted 
+	 *  to a Label in the document.
+	 *  If you overreide this methode allwayse call the vather mthode
+	 *  first!
+	 */
+	virtual void InitLabel(TDF_Label &rcLabel);
+
+	/** @name methodes used for recalculation (update) */
 	//@{
 	/** MustExecute
 	 *  We call this method to check if the object was modified to
@@ -68,6 +76,8 @@ public:
 
 	virtual Base::FCPyObject *GetPyObject(void);
 
+protected:
+	TDF_Label _cFeatureLabel;
 
 };
 
@@ -104,7 +114,7 @@ class FeatureProducer: public Base::AbstractProducer
 		/// Constructor
 		FeatureProducer ()
 		{
-			FeatureFactory::Instance().AddProducer(typeid(CLASS).name(), this);
+			App::FeatureFactory().AddProducer(typeid(CLASS).name(), this);
 		}
 
 		virtual ~FeatureProducer (void){}

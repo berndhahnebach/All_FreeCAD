@@ -175,9 +175,15 @@ Feature *DocTypeStd::AddFeature(const char* sName)
 
 	if(pcFeature)
 	{
+		// mount the feature on its place
 		FeatureAttr::Set(_lFeature.FindChild(_iNextFreeFeature),pcFeature);
+		// the rest of the setup do the feature itself
+		pcFeature->InitLabel(_lFeature.FindChild(_iNextFreeFeature));
+		// update the pointer
 		_lActiveFeature = _lFeature.FindChild(_iNextFreeFeature);
 		_iNextFreeFeature++;
+
+		// return the feature
 		return pcFeature;
 
 	}else return 0;
@@ -303,5 +309,9 @@ PYFUNCIMP_D(DocTypeStdPy,AddFeature)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	return _pcDocTypeStd->AddFeature(pstr)->GetPyObject();
+	Feature *pcFtr = _pcDocTypeStd->AddFeature(pstr);
+	if(pcFtr)
+		return pcFtr->GetPyObject();
+	else
+		Py_Error(PyExc_Exception,"No Feature with this name!");
 }

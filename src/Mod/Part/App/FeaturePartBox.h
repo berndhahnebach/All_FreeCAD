@@ -38,6 +38,8 @@
 
 #include <App/Feature.h>
 
+namespace Part
+{
 
 
 class PartBoxFeature :public App::Feature
@@ -52,7 +54,7 @@ class PartBoxFeature :public App::Feature
 
 
 
-
+}
 
 
 

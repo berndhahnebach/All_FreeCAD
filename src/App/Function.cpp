@@ -47,22 +47,23 @@
 #	include <TDF_Reference.hxx>
 #endif
 
+#include "../Base/Console.h"
+
 #include "Function.h"
 #include "Feature.h"
 
+using namespace App;
 
 
 //=======================================================================
-//function : FCFunction
+//function : Function
 //purpose  : Creation of an instance of the driver. It's possible (and recommended)
 //         : to have only one instance of a driver for the whole session.
 //=======================================================================
 
-FCFunction::FCFunction(FCFeature *pcFeature)
-:_pcFeature(pcFeature)
-{}
+Function::Function(void) {}
 
-FCFunction::~FCFunction() {}
+Function::~Function() {}
  
 
 
@@ -72,7 +73,7 @@ FCFunction::~FCFunction() {}
 //purpose  :
 //=======================================================================
 
-const Standard_GUID& FCFunction::GetID() {
+const Standard_GUID& Function::GetID() {
   static Standard_GUID anID("681D5B67-465F-4b07-8BF6-F153C9D8B404");
   return anID;
 }
@@ -83,7 +84,7 @@ const Standard_GUID& FCFunction::GetID() {
 //purpose  : Validation of the object label, its arguments and its results.
 //=======================================================================
 
-void FCFunction::Validate(TFunction_Logbook& log) const
+void Function::Validate(TFunction_Logbook& log) const
 {
   // We validate the object label ( Label() ), all the arguments and the results of the object:
   log.SetValid(Label(), Standard_True);
@@ -96,8 +97,14 @@ void FCFunction::Validate(TFunction_Logbook& log) const
 //         : we must recompute the object - to call the method Execute().
 //=======================================================================
 
-Standard_Boolean FCFunction::MustExecute(const TFunction_Logbook& log) const
+Standard_Boolean Function::MustExecute(const TFunction_Logbook& log) const
 {
+	Base::Console().Log("Function::MustExecute()\n");
+
+	//return _pcFeature->MustExecute(log);
+  return Standard_False;
+
+/*
   // If the object's label is modified:
   if (log.IsModified(Label())) return Standard_True; 
 
@@ -118,6 +125,7 @@ Standard_Boolean FCFunction::MustExecute(const TFunction_Logbook& log) const
   // if there are no any modifications concerned the cut,
   // it's not necessary to recompute (to call the method Execute()):
   return Standard_False;
+  */
 }
 
 //=======================================================================
@@ -132,9 +140,13 @@ Standard_Boolean FCFunction::MustExecute(const TFunction_Logbook& log) const
 //         : 0 - no mistakes were found.
 //=======================================================================
 
-Standard_Integer FCFunction::Execute(TFunction_Logbook& log) const
+Standard_Integer Function::Execute(TFunction_Logbook& log) const
 {
-  // Let's get the arguments (OriginalNShape, ToolNShape of the object):
+	Base::Console().Log("Function::Execute()\n");
+//	return _pcFeature->Execute(log);
+   return Standard_False;
+
+	// Let's get the arguments (OriginalNShape, ToolNShape of the object):
 
 	// First, we have to retrieve the TDF_Reference attributes to obtain the root labels of the OriginalNShape and the ToolNShape:
 /*	Handle(TDF_Reference)  OriginalRef, ToolRef;
@@ -170,17 +182,17 @@ Standard_Integer FCFunction::Execute(TFunction_Logbook& log) const
 	B.Modify( OriginalShape, ResultShape);
 // That's all:
   // If there are no any mistakes we return 0:
-  */
 	return 0;
+  */
 }
 
 
 
-Standard_EXPORT Handle_Standard_Type& FCFunction_Type_()
+Standard_EXPORT Handle_Standard_Type& App::Function_Type_()
 {
 
-//  static Handle_Standard_Type aType1 = STANDARD_TYPE(FCFunction);
-//  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCFunction);
+//  static Handle_Standard_Type aType1 = STANDARD_TYPE(Function);
+//  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(Function);
   static Handle_Standard_Type aType2 = STANDARD_TYPE(TFunction_Driver);
   if ( aType2.IsNull()) aType2 = STANDARD_TYPE(TFunction_Driver);
   static Handle_Standard_Type aType3 = STANDARD_TYPE(MMgt_TShared);
@@ -190,8 +202,8 @@ Standard_EXPORT Handle_Standard_Type& FCFunction_Type_()
  
 
   static Handle_Standard_Transient _Ancestors[]= {/*aType1,*/aType2,aType3,aType4,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("FCFunction",
-			                                 sizeof(FCFunction),
+  static Handle_Standard_Type _aType = new Standard_Type("Function",
+			                                 sizeof(Function),
 			                                 1,
 			                                 (Standard_Address)_Ancestors,
 			                                 (Standard_Address)NULL);
@@ -203,26 +215,26 @@ Standard_EXPORT Handle_Standard_Type& FCFunction_Type_()
 // DownCast method
 //   allow safe downcasting
 //
-const Handle(FCFunction) Handle(FCFunction)::DownCast(const Handle(Standard_Transient)& AnObject) 
+const Handle(Function) Handle(Function)::DownCast(const Handle(Standard_Transient)& AnObject) 
 {
-  Handle(FCFunction) _anOtherObject;
+  Handle(Function) _anOtherObject;
 
   if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(FCFunction))) {
-       _anOtherObject = Handle(FCFunction)((Handle(FCFunction)&)AnObject);
+     if (AnObject->IsKind(STANDARD_TYPE(Function))) {
+       _anOtherObject = Handle(Function)((Handle(Function)&)AnObject);
      }
   }
 
   return _anOtherObject ;
 }
-const Handle(Standard_Type)& FCFunction::DynamicType() const 
+const Handle(Standard_Type)& Function::DynamicType() const 
 { 
-  return STANDARD_TYPE(FCFunction) ; 
+  return STANDARD_TYPE(Function) ; 
 }
-Standard_Boolean FCFunction::IsKind(const Handle(Standard_Type)& AType) const 
+Standard_Boolean Function::IsKind(const Handle(Standard_Type)& AType) const 
 { 
-  return (STANDARD_TYPE(FCFunction) == AType || TFunction_Driver::IsKind(AType)); 
+  return (STANDARD_TYPE(Function) == AType || TFunction_Driver::IsKind(AType)); 
 }
 
-Handle_FCFunction::~Handle_FCFunction() {}
+Handle_Function::~Handle_Function() {}
 

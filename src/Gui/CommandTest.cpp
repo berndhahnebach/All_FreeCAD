@@ -242,7 +242,7 @@ void FCCmdTest2::Activated(int iMsg)
 //	L.AddAttribute( Feat);
 	L.AddAttribute( Param);
 
-	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, FCFunction::GetID());
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, App::Function::GetID());
 
 }
 

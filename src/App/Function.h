@@ -46,49 +46,52 @@ class TFunction_Logbook;
 class Standard_Transient;
 class Handle_Standard_Type;
 class Handle(TFunction_Driver);
-class FCFunction;
-class FCFeature;
+
+namespace App
+{
+class Function;
+class Feature;
 
 
-AppExport Handle_Standard_Type& STANDARD_TYPE(FCFunction);
+AppExport Handle_Standard_Type& STANDARD_TYPE(Function);
 
 
-class Handle(FCFunction) : public Handle(TFunction_Driver) {
+class Handle(Function) : public Handle(TFunction_Driver) {
   public:
     inline void* operator new(size_t,void* anAddress)    {return anAddress;}
     inline void* operator new(size_t size)               {return Standard::Allocate(size);}
     inline void  operator delete(void *anAddress)        {if (anAddress) Standard::Free((Standard_Address&)anAddress); }
 //    inline void  operator delete(void *anAddress, size_t size) {if (anAddress) Standard::Free((Standard_Address&)anAddress,size); }
-    Handle(FCFunction)():Handle(TFunction_Driver)()      {} 
-    Handle(FCFunction)(const Handle(FCFunction)& aHandle) : Handle(TFunction_Driver)(aHandle) {}
-    Handle(FCFunction)(const FCFunction* anItem) : Handle(TFunction_Driver)((TFunction_Driver *)anItem){}
-    Handle(FCFunction)& operator=(const Handle(FCFunction)& aHandle)
+    Handle(Function)():Handle(TFunction_Driver)()      {} 
+    Handle(Function)(const Handle(Function)& aHandle) : Handle(TFunction_Driver)(aHandle) {}
+    Handle(Function)(const Function* anItem) : Handle(TFunction_Driver)((TFunction_Driver *)anItem){}
+    Handle(Function)& operator=(const Handle(Function)& aHandle)
 	{
       Assign(aHandle.Access());
       return *this;
      }
 
-    Handle(FCFunction)& operator=(const FCFunction* anItem)
+    Handle(Function)& operator=(const Function* anItem)
      {
       Assign((Standard_Transient *)anItem);
       return *this;
      }
 
-    FCFunction* operator->(){return (FCFunction *)ControlAccess();}
-    FCFunction* operator->() const {return (FCFunction *)ControlAccess();}
+    Function* operator->(){return (Function *)ControlAccess();}
+    Function* operator->() const {return (Function *)ControlAccess();}
 
-	AppExport ~Handle(FCFunction)();
-	AppExport static const Handle(FCFunction) DownCast(const Handle(Standard_Transient)& AnObject);
+	AppExport ~Handle(Function)();
+	AppExport static const Handle(Function) DownCast(const Handle(Standard_Transient)& AnObject);
 };
 
 
 
-class FCFunction : public TFunction_Driver 
+class Function : public TFunction_Driver 
 {
 
 public:
 
-	FCFeature *GetFeature(void){return _pcFeature;}
+//	Feature *GetFeature(void){return _pcFeature;}
 
 	/** @name methodes needet for OCAF */
 	//@{
@@ -112,11 +115,11 @@ public:
 	//@{
 	// new operator for the CasCade handle system 
 	AppExport static const Standard_GUID& GetID() ;
-	AppExport FCFunction(FCFeature *pcFeature);
+	AppExport Function(void);
 	AppExport virtual  void Validate(TFunction_Logbook& log) const;
 	AppExport virtual  Standard_Boolean MustExecute(const TFunction_Logbook& log) const;
 	AppExport virtual  Standard_Integer Execute(TFunction_Logbook& log) const;
-	AppExport ~FCFunction();
+	AppExport ~Function();
 	//@}
 
 
@@ -124,22 +127,17 @@ public:
 
 	/** @name Type management */
 	//@{
-	AppExport friend Handle_Standard_Type& FCFunction_Type_();
+	AppExport friend Handle_Standard_Type& Function_Type_();
 	AppExport const Handle(Standard_Type)& DynamicType() const;
 	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 	//@}
-
-protected:
-	FCFeature *_pcFeature;
 
 };
 
 
 
+} //namespace App
 
-
-// other inline functions and methods (like "C++: function call" methods)
-//
 
 
 #endif // _FUNCTION_H_

@@ -29,6 +29,7 @@
 #include <App/Document.h>
 
 #include "PartDocType.h"
+#include "FeaturePartBox.h"
 
 using Base::Console;
 using namespace Part;
@@ -91,7 +92,7 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
 }
 
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
+static struct PyMethodDef Part_methods[] = {
     {"message", message, 1},       /* method name, C func ptr, always-tuple */
     {"AddBox" , Box,     1},       /* method name, C func ptr, always-tuple */
     {"Temp"   , Temp,    1},       /* method name, C func ptr, always-tuple */
@@ -109,14 +110,17 @@ static struct PyMethodDef hello_methods[] = {
 #else
 #	define ModuleExport
 #endif
+
 extern "C" {
 void ModuleExport initPart() {
 
-	(void) Py_InitModule("Part", hello_methods);   /* mod name, table ptr */
+	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
 
 	GetApplication();
 
 	Console().Log("AppPart loaded\n");
+
+	App::FeatureFactory().AddProducer("PartBox",new App::FeatureProducer<Part::PartBoxFeature>);
 
 	return;
 }

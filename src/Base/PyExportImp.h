@@ -290,7 +290,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
  * @see PYFUNCDEF_D
  * @see FCPyObject
  */
-#define PYMETHODEDEF(FUNC)	{"FUNC",(PyCFunction) s##FUNC,Py_NEWARGS},
+#define PYMETHODEDEF(FUNC)	{"" #FUNC "",(PyCFunction) s##FUNC,Py_NEWARGS},
 
 
 /** Python buffer helper class (const char* -> char*)

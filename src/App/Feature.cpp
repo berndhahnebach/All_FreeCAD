@@ -22,8 +22,41 @@ using Base::Console;
 
 
 #include "Feature.h"
+#include "Function.h"
 
 using namespace App;
+
+
+//===========================================================================
+// Feature  
+//===========================================================================
+
+
+void Feature::InitLabel(TDF_Label &rcLabel)
+{
+	_cFeatureLabel = rcLabel;
+
+	// Instanciate a TFunction_Function attribute connected to the current box driver
+	// and attach it to the data structure as an attribute of the Box Label
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(_cFeatureLabel, Function::GetID());
+
+	// Initialize and execute the box driver (look at the "Execute()" code)
+    TFunction_Logbook log;
+
+	Handle(Function) myFunctionDriver;
+    // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
+	if(!TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver)) 
+		myFunctionDriver;
+	
+	myFunctionDriver->Init(_cFeatureLabel);
+
+    if (myFunctionDriver->Execute(log)) 
+		Base::Console().Error("Feature::InitLabel()");
+
+}
+
+
+
 
 //===========================================================================
 // FeaturePy - Python wrapper 
@@ -49,6 +82,7 @@ public:
 	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	PYFUNCDEF_D(FeaturePy,AddFeature)
 
 
 private:
@@ -85,8 +119,9 @@ PyTypeObject FeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef FeaturePy::Methods[] = {
 //  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
+	PYMETHODEDEF(AddFeature)
 
-  {NULL, NULL}		/* Sentinel */
+	{NULL, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
@@ -160,15 +195,15 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-/*
-PyObject *FeaturePy::PyUndo(PyObject *args)
-{ 
-	_pcDoc->Undo(); 
-	Py_Return; 
-} 
-*/
 
+PYFUNCIMP_D(FeaturePy,AddFeature)
+{
+	//char *pstr;
+    //if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    //    return NULL;                             // NULL triggers exception 
 
+	Py_Error(PyExc_Exception,"Not implemented!");
+}
 
 //===========================================================================
 // FeatureFactorySingleton - Factory for Features
@@ -193,7 +228,7 @@ void FeatureFactorySingleton::Destruct (void)
 
 Feature* FeatureFactorySingleton::Produce (const char* sName) const
 {
-	Feature* w = (Feature*)Produce(sName);
+	Feature* w = (Feature*)Factory::Produce(sName);
 
   // this Feature class is not registered
   if (!w)

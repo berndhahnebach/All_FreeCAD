@@ -21,23 +21,29 @@
 #ifndef _PreComp_
 #endif
 
+
+#include "../../../Base/Console.h"
 #include "FeaturePartBox.h"
 
 
+using namespace Part;
 
 bool PartBoxFeature::MustExecute(const TFunction_Logbook& log) const
 {
-return false;
+	Base::Console().Log("PartBoxFeature::MustExecute()\n");
+	return false;
 }
 
 Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log) const
 {
-return 1;
+	Base::Console().Log("PartBoxFeature::Execute()\n");
+	return 1;
 }
 
 
 void PartBoxFeature::Validate(TFunction_Logbook& log) const
 {
+	Base::Console().Log("PartBoxFeature::Validate()\n");
 
 }
 
