@@ -147,3 +147,7 @@ Version: V0.1B35 Date: Wed Feb 19 19:41:39 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B36 Date: Sat Feb 22 18:12:19 2003 +++++++++++++++++++++++++++++++
 + fix python problem (Py_INCREF(Py_None))!
+
+Version: V0.1B37 Date: Tue Feb 25 20:29:19 2003 +++++++++++++++++++++++++++++++
++ massiv improved costomize dialog (werner)
+  - sorting position of toolbars

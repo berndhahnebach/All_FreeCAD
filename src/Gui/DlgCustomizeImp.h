@@ -59,11 +59,31 @@ class FCDlgCustomize : public FCDlgCustomizeBase
     void slotToolBarSelected(const QString &);
     /// creates new toolbar
     void slotCreateToolBar();
+    /// enables/disables buttons for change
+    void slotCurrentActionsChanged( QListViewItem *i );
+    /// enables/disables buttons for change
+    void slotAvailableActionsChanged( QListViewItem *i );
+    /// adds a new action
+    void slotAddAction();
+    /// adds a new action by double click
+    void slotDblClickAddAction(QListViewItem*);
+    /// removes an action
+    void slotRemoveAction();
+    /// moves up an action
+    void slotMoveUpAction();
+    /// moves down an action
+    void slotMoveDownAction();
+    /// click the OK button
+    void slotOK();
+    /// click the Apply button
+    void slotApply();
 
   protected:
+    void init();
     // groups of commands
     std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
-    std::vector<QToolBar*>                    m_aclToolbars;
+    std::vector<QToolBar*>                          m_aclToolbars;
+    bool bChanged;
 };
 
 #endif // DLGCUSTOMIZE_H

@@ -243,6 +243,7 @@ class FCCmdBar : public FCDockWindow
   private:
     void updatePages();
     void timerEvent ( QTimerEvent * e);
+    void animatePageScroll(QWidget* pCurPage, QWidget* pNewPage);
 
   private:
     long                           m_lAnimCount;

@@ -1018,7 +1018,13 @@ void FCCmdBar::buttonClicked()
 
   if ( m_pCurPage )
 	  m_pCurPage->hide();
-    
+  
+  if (m_pCurPage != page)
+  {
+    if (m_lAnimCount > 0)
+      animatePageScroll(m_pCurPage, page);
+  }
+
   m_pCurPage = page;
   m_pCurPage->show();
   set_background_mode( m_pCurPage, PaletteLight );
@@ -1138,6 +1144,10 @@ void FCCmdBar::remPage( QStackBarBtn * b)
   delete b;
   if (m_lButtons.size() == 0)
     hide();
+}
+
+void FCCmdBar::animatePageScroll(QWidget* pCurPage, QWidget* pNewPage)
+{
 }
 
 #include "moc_ButtonGroup.cpp"

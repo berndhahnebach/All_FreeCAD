@@ -291,6 +291,54 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+FCListView::FCListView ( QWidget * parent, const char * name, WFlags f )
+{
+}
+
+FCListView::FCListView ( QWidget * parent, const char * name )
+{
+}
+
+FCListView::~FCListView ()
+{
+}
+
+QListViewItem* FCListView::lastItem () const
+{
+  QListViewItem* item = firstChild();
+  if ( item ) 
+  {
+  	while ( item->nextSibling() || item->firstChild() ) 
+    {
+	    if ( item->nextSibling() )
+    		item = item->nextSibling();
+	    else
+		    item = item->firstChild();
+  	}
+  }
+
+  return item;
+}
+
+QListViewItem* FCListView::lastItem (QListView* listview)
+{
+  QListViewItem* item = listview->firstChild();
+  if ( item ) 
+  {
+  	while ( item->nextSibling() || item->firstChild() ) 
+    {
+	    if ( item->nextSibling() )
+    		item = item->nextSibling();
+	    else
+		    item = item->firstChild();
+  	}
+  }
+
+  return item;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
 FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QAction* pAct )
 : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
 {
@@ -448,24 +496,34 @@ void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
 
 void FCToolBar::restorePreferences()
 {
+  QString wb = ApplicationWindow::Instance->GetActiveWorkbech();
+
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
-  std::vector<std::string> items = hPrefGrp->GetGroup("Toolbar")->GetASCIIs(getPrefName().latin1());
+  std::vector<std::string> items = hPrefGrp/*->GetGroup(wb.latin1())*/->GetGroup("Toolbar")->GetASCIIs(getPrefName().latin1());
   for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
   {
-    sCommands[*it]->GetAction()->addTo(this);
+    if (sCommands.find(*it) != sCommands.end())
+    {
+      sCommands[*it]->GetAction()->addTo(this);
+      alDroppedActions.push_back(*it);
+    }
+    else
+      GetConsole().Warning("Cannot find action '%s'\n", it->c_str());
   }
 }
 
 void FCToolBar::savePreferences()
 {
+  QString wb = ApplicationWindow::Instance->GetActiveWorkbech();
+
   int i=0;
   for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPrefGrp->GetGroup("Toolbar")->SetASCII(szBuf, it->c_str());
+    hPrefGrp/*->GetGroup(wb.latin1())*/->GetGroup("Toolbar")->SetASCII(szBuf, it->c_str());
   }
 }
 

@@ -94,6 +94,22 @@ class FCProgressBar : public QProgressBar
 };
 
 /**
+ *  List view class
+ */
+class FCListView : public QListView
+{
+  Q_OBJECT
+
+  public:
+    FCListView ( QWidget * parent, const char * name, WFlags f );
+    FCListView ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCListView (); 
+
+    QListViewItem * lastItem () const;
+    static QListViewItem * lastItem (QListView*);
+};
+
+/**
  *  Icon items used by the 'FCCmdView' and 'FCDlgCustomize' classes
  */
 class FCCmdViewItem : public QIconViewItem

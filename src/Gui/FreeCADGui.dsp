@@ -1099,6 +1099,14 @@ SOURCE=.\Themes.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Tools.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Tools.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Tree.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
