@@ -76,7 +76,7 @@
 class GuiExport FCWaitingCursor : public QThread
 {
 	public:
-    FCWaitingCursor();
+		 FCWaitingCursor();
 		~FCWaitingCursor();
 
 		void setWaitCursor();
@@ -84,16 +84,16 @@ class GuiExport FCWaitingCursor : public QThread
 		int  minimumDuration();
 		void setMinimumDuration ( int ms );
 
-	protected:
+	private:
 		void run();
 		struct FCWaitingCursorP* d;
 };
 
-/** 
- * The FCAutoWaitCursor sets automatically the 
+/**
+ * The FCAutoWaitCursor sets automatically the
  * waiting cursor if the application is busy
- * 
- * NOTE: 
+ *
+ * NOTE:
  * When clicking on the window bar (under Windows OS) the waiting cursor appears
  * after a while although the application actuallay is not really busy. 
  * Under Linux (Debian) I got some mysterious errors and the application hanged up.
@@ -110,17 +110,17 @@ class GuiExport FCAutoWaitCursor : public QThread
 
 		// Singleton
 	private:
-    FCAutoWaitCursor(uint id, int i);
+		 FCAutoWaitCursor(uint id, int i);
 		~FCAutoWaitCursor();
 
-    static FCAutoWaitCursor* _pclSingleton;
+		static FCAutoWaitCursor* _pclSingleton;
 
 	protected:
-    /// run the thread, decrement an internal counter
-    void run();
+		/// run the thread, decrement an internal counter
+		void run();
 
 		QMutex mutex;
-  	uint main_threadid;
+		uint main_threadid;
 		int nInterval;
 		bool bActive;
 		bool bRun;
