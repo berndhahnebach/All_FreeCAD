@@ -48,7 +48,7 @@
                     <number>6</number>
                 </property>
                 <widget row="1"  column="1" >
-                    <class>FCCmdView</class>
+                    <class>Gui::CommandView</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>IconView1</cstring>
@@ -135,7 +135,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCCmdView</class>
+        <class>Gui::CommandView</class>
         <header location="local">Widgets.h</header>
         <sizehint>
             <width>-1</width>

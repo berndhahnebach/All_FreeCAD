@@ -27,9 +27,10 @@
 #include "DlgToolbarsImp.h"
 
 class FCCommand;
-class FCToolBar;
 
 namespace Gui {
+class CustomToolBar;
+
 namespace Dialog {
 
 /** This class implements the creation of user defined command bars.

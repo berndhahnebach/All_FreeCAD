@@ -261,7 +261,7 @@
                     </property>
                 </widget>
                 <widget row="2"  column="1" >
-                    <class>FCColorButton</class>
+                    <class>Gui::ColorButton</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>MyCustomWidget1</cstring>
@@ -450,7 +450,7 @@
         <property type="CString">prefPath</property>
     </customwidget>
     <customwidget>
-        <class>FCColorButton</class>
+        <class>Gui::ColorButton</class>
         <header location="local">Widgets.h</header>
         <sizehint>
             <width>40</width>

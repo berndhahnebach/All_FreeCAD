@@ -33,10 +33,13 @@
 # include <qlayout.h>
 #endif
 
+#include "../FileDialog.h"
+
 #include "propertyeditorfile.h"
 #include "propertyeditorlist.h"
 #include "propertyeditorinput.h"
 
+using Gui::PreviewLabel;
 using namespace Gui::PropertyEditor;
 
 
@@ -91,108 +94,6 @@ void FileEditorItem::onChangeFile()
 }
 
 // ======================================================================
-
-class ImagePreview : public QScrollView
-{
-public:
-  ImagePreview( QWidget *parent=0 ) : QScrollView( parent ) 
-  {
-    viewport()->setBackgroundMode( PaletteBase );
-  }
-
-  void setPixmap( const QPixmap &pix )
-  {
-    _pixmap = pix;
-    resizeContents( _pixmap.size().width(), _pixmap.size().height() );
-    viewport()->repaint( FALSE );
-  }
-
-  void drawContents( QPainter *p, int clipx, int clipy, int clipw, int cliph )
-  {
-    bool mv = false;
-    int w = _pixmap.width();
-    int h = _pixmap.height();
-
-    p->fillRect( clipx, clipy, clipw, cliph, colorGroup().brush( QColorGroup::Base ) );
-
-    // move the pixmap to the center if it is small enough
-    if ( w <= clipw && h <= cliph)
-    {
-      mv = true;
-      p->save();
-      p->translate( (clipw-w)/2 , (cliph-h)/2 );
-    }
-
-    p->drawPixmap( 0, 0, _pixmap );
-
-    if ( mv )
-      p->restore();
-  }
-
-private:
-  QPixmap _pixmap;
-};
-
-class PreviewLabel : public QWidget, public QFilePreview
-{
-public:
-  PreviewLabel( QWidget *parent=0 ) : QWidget( parent ) 
-  {
-    QGridLayout* layout = new QGridLayout( this, 1, 1, 0, -1, "PreviewLabel"); 
-    _preview = new ImagePreview( this );
-    _cbview = new QCheckBox( this );
-    _cbview->setText( tr("Preview") );
-    _cbview->setChecked( true );
-
-    layout->addWidget( _preview, 0, 0 );
-    layout->addWidget( _cbview, 1, 0 );
-  }
-
-  void previewUrl( const QUrl &u )
-  {
-    QString path = u.path();
-    QPixmap pix( path );
-
-    if ( _cbview->isChecked() )
-      _preview->setPixmap( pix );
-    else
-      _preview->setPixmap( QPixmap() );
-  }
-
-private:
-  ImagePreview* _preview;
-  QCheckBox* _cbview;
-};
-
-class PixmapFileProvider : public QFileIconProvider
-{
-public:
-  PixmapFileProvider( QObject * parent = 0, const char * name = 0 )
-    : QFileIconProvider( parent, name )
-  {
-  }
-
-  const QPixmap * pixmap ( const QFileInfo & info )
-  {
-    QString fn = info.filePath();
-    bool b=info.exists();
-    b=info.isFile();
-    if ( info.exists() && info.isFile() )
-    {
-      const char* ext = QPixmap::imageFormat( fn );
-      
-      // seems to be valid image file
-      if ( ext )
-      {
-        QPixmap* px = new QPixmap;
-        px->load( fn, ext );
-        return px;
-      }
-    }
-
-    return 0;
-  }
-};
 
 PixmapEditorItem::PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )

@@ -183,7 +183,7 @@ void PrefWidgetHandler::onRestore()
 // --------------------------------------------------------------------
 
 PrefSpinBox::PrefSpinBox ( QWidget * parent, const char * name )
-  : FCFloatSpinBox(parent, name), PrefWidget(name)
+  : FloatSpinBox(parent, name), PrefWidget(name)
 {
 }
 

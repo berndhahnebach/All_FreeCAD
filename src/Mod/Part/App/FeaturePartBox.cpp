@@ -23,6 +23,8 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <BRepPrimAPI_MakeBox.hxx>
+# include <TFunction_Logbook.hxx>
 #endif
 
 
@@ -63,11 +65,13 @@ Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
   cout << GetFloatProperty("h") << endl;
   cout << GetFloatProperty("w") << endl;*/
 
+	double x = GetFloatProperty("x");
+  double y = GetFloatProperty("y");
+  double z = GetFloatProperty("z");
+
   try{
-	// Build a box using the dimension and position attributes 
-	BRepPrimAPI_MakeBox mkBox( gp_Pnt(GetFloatProperty("x"), 
-                                    GetFloatProperty("y") ,
-                                    GetFloatProperty("z")), 
+	// Build a box using the dimension and position attributes
+	BRepPrimAPI_MakeBox mkBox( gp_Pnt( x, y, z),
                              GetFloatProperty("l"),
                              GetFloatProperty("h"),
                              GetFloatProperty("w"));
@@ -154,7 +158,7 @@ TDF_Label TOcaf_Commands::CreateBox(Standard_Real x, Standard_Real y, Standard_R
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_BoxDriver::GetID(), myBoxDriver)) return L;
 	
 	myBoxDriver->Init(L);
-    if (myBoxDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
+    if (myBoxDriver->Execute(log)) CheckMessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
 
 	return L;
 }

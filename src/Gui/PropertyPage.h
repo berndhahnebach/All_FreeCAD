@@ -31,7 +31,7 @@ namespace Dialog {
 
 /** Base class for property pages.
  * The pages of @ref DlgCustomizeImp and @ref DlgPreferencesImp
- * should inherit PropertyPage to use apply/cancel mechanism.
+ * should inherit from PropertyPage to use apply/cancel mechanism.
  * Inherited classes should reimplement @ref apply() and
  * @ref cancel().
  * \author Werner Mayer

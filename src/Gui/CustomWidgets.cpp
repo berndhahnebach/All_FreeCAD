@@ -24,24 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qaction.h>
-# include <qbutton.h>
-# include <qbuttongroup.h>
-# include <qcombobox.h>
-# include <qcursor.h>
-# include <qlabel.h>
-# include <qlayout.h>
 # include <qobjectlist.h>
-# include <qmessagebox.h>
-# include <qprocess.h>
-# include <qstring.h>
-# include <qtextbrowser.h>
-# include <qthread.h>
-# include <qurl.h>
-# include <qvalidator.h>
-# include <qwhatsthis.h>
-# include <ctype.h>
-# include <cmath>
 #endif
 
 #include "CustomWidgets.h"
@@ -51,25 +34,29 @@
 #include "ToolBox.h"
 #include "Command.h"
 #include "HtmlView.h"
-#include "WidgetFactory.h"
 #include "../Base/Console.h"
-#include "../Base/Exception.h"
 
 using Base::Console;
 using namespace Gui;
 using namespace Gui::DockWnd;
 
-FCCustomWidget::FCCustomWidget(const char* grp, const char * name)
+/**
+ * Creates a custom widget with the group \a grp and its subgroup \a name.
+ */
+CustomWidget::CustomWidget(const char* grp, const char * name)
     : PrefWidget(name, false), _bCanModify(true), _bCanRemovable(true)
 {
   init(grp, name);
 }
 
-FCCustomWidget::~FCCustomWidget()
+CustomWidget::~CustomWidget()
 {
 }
 
-void FCCustomWidget::restorePreferences()
+/**
+ * Restores the settings of this widget.
+ */
+void CustomWidget::restorePreferences()
 {
   if (hPrefGrp.IsNull())
   {
@@ -81,12 +68,18 @@ void FCCustomWidget::restorePreferences()
   {
     if (!hPrefGrp->GetGroup("Items")->IsEmpty())
     {
-      _clItems = hPrefGrp->GetGroup("Items")->GetASCIIs();
+      _clItems.clear();
+      std::vector<std::string> items = hPrefGrp->GetGroup("Items")->GetASCIIs();
+      for ( std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it )
+        _clItems << it->c_str(); 
     }
   }
 }
 
-void FCCustomWidget::savePreferences()
+/**
+ * Saves the settings of this widget.
+ */
+void CustomWidget::savePreferences()
 {
   if (hPrefGrp.IsNull())
   {
@@ -97,15 +90,15 @@ void FCCustomWidget::savePreferences()
   int i=0;
   FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup("Items");
   hPGrp->Clear();
-  for (std::vector<std::string>::iterator it = _clItems.begin(); it != _clItems.end(); ++it, i++)
+  for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it, i++ )
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", entryName().latin1(), i);
-    hPGrp->SetASCII(szBuf, it->c_str());
+    hPGrp->SetASCII(szBuf, (*it).latin1() );
   }
 }
 
-void FCCustomWidget::init(const char* grp, const char* name)
+void CustomWidget::init(const char* grp, const char* name)
 {
   _clWorkbench = ApplicationWindow::Instance->GetActiveWorkbench();
   setPrefName(_clWorkbench);
@@ -115,168 +108,228 @@ void FCCustomWidget::init(const char* grp, const char* name)
   hPrefGrp->Attach(this);
 }
 
-bool FCCustomWidget::hasCustomItems()
+/** 
+ * Returns true if items are set, otherwise returns false. 
+ */
+bool CustomWidget::hasCustomItems()
 {
   return _clItems.size() > 0;
 }
 
-QString FCCustomWidget::getWorkbench()
+/** Returns the active workbench at creation time of this object */
+QString CustomWidget::getWorkbench()
 {
   return _clWorkbench;
 }
 
-std::vector<std::string> FCCustomWidget::getItems()
+/**
+ * Returns a list of set custom items.
+ */
+const QStringList& CustomWidget::getCustomItems() const
 {
   return _clItems;
 }
 
-void FCCustomWidget::setItems(const std::vector<std::string>& items)
+/**
+ * Sets the items \a items to current items.
+ */
+void CustomWidget::setCustomItems( const QStringList& items )
 {
   _clItems = items;
 }
 
-void FCCustomWidget::appendItems(FCParameterGrp::handle hGrp, const std::vector<std::string>& items)
+/** 
+ * Appends the items \a items to the parameter group \a grp..
+ */
+void CustomWidget::addCustomItems( FCParameterGrp::handle hGrp, const QStringList& items )
 {
   if (hGrp.IsNull()) return;
 
   if (hPrefGrp == hGrp)
   {
-    for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
-      _clItems.push_back(*it);
+    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+      _clItems.push_back( *it );
   }
   else
   {
-    if (_clWbItems.find(hGrp) == _clWbItems.end())
+    if ( _clWbItems.find( hGrp ) == _clWbItems.end() )
     {
       hGrp->Attach(this);
-      _clWbItems[hGrp] = items;
+      _clWbItems[ hGrp ] = items;
     }
   }
 }
 
-void FCCustomWidget::removeItems(FCParameterGrp::handle hGrp, const std::vector<std::string>& items)
+/** 
+ * Removes the items \a items from the parameter group \a grp..
+ */
+void CustomWidget::removeCustomItems( FCParameterGrp::handle hGrp, const QStringList& items )
 {
   if (hGrp.IsNull()) return;
 
   if (hPrefGrp == hGrp)
   {
     unsigned long startPos=0;
-    for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
+    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
     {
-      if (_clItems.size() > items.size())
+      if ( _clItems.size() > items.size() )
         startPos = _clItems.size() - items.size();
-      std::vector<std::string>::iterator pos;
-      pos = std::find(_clItems.begin() + startPos, _clItems.end(), *it);
+      QStringList::Iterator pos = _clItems.begin();
+      pos += startPos;
+      pos = _clItems.find( pos, *it );
       if (pos != _clItems.end())
-        _clItems.erase(pos);
+        _clItems.erase( pos );
     }
   }
   else
   {
-    WorkbenchItems::iterator it = _clWbItems.find(hGrp);
-    if (it != _clWbItems.end())
+    WorkbenchItems::Iterator it = _clWbItems.find( hGrp );
+    if ( it != _clWbItems.end() )
     {
       hGrp->Detach(this);
-      it->second.clear();
-      _clWbItems.erase(it);
+      it.data().clear();
+      _clWbItems.erase( it );
     }
   }
 }
 
-void FCCustomWidget::setRemovable(bool b)
+/** 
+ * Sets the 'removable' property to b
+ * After switching to a new workbench the customizable
+ * widgets of the old workbench (toolbars, command bars and menus 
+ * (currently disabled)) normally will be deleted. To avoid this
+ * you can set this property to 'false'. The default is 'true'.
+ */
+void CustomWidget::setRemovable(bool b)
 {
   _bCanRemovable = b;
 }
 
-bool FCCustomWidget::isRemovable() const
+/** 
+ * Returns whether the widget can be modified or not.
+ */
+bool CustomWidget::isRemovable() const
 {
   return _bCanRemovable;
 }
 
-void FCCustomWidget::setCanModify(bool b)
+/**
+ * If \a b is true this widget can be modified, otherwise it cannot be modified.
+ */
+void CustomWidget::setCanModify( bool b )
 {
   _bCanModify = b;
 }
 
-bool FCCustomWidget::canModify() const
+/**
+ * Returns true  if this widget can be modified, otherwise returns false. 
+ */
+bool CustomWidget::canModify() const
 {
   return _bCanModify;
 }
 
-void FCCustomWidget::loadXML()
+/** Calls @ref restorePreferences()
+ * So it is possible to call the load routine from outside.
+ */
+void CustomWidget::loadXML()
 {
   restorePreferences();
 }
 
-void FCCustomWidget::saveXML()
+/** Calls @ref savePreferences()
+ * So it is possible to call the save routine from outside.
+ */
+void CustomWidget::saveXML()
 {
   savePreferences();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------
 
-FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine,
-                       const char * name, WFlags f, const char* type )
-    : QToolBar(label, parent, w, newLine, name, f), FCCustomWidget(type, name)
+/**
+ * Constructs an empty horizontal toolbar of the type \a type with enabled drag'n'drop.
+ *
+ * The toolbar is called \a name and is a child of \a parent and is managed by \a mainWindow.
+ * The \a label and \a newLine parameters are passed straight to QMainWindow::addDockWindow().
+ * \a name and the widget flags \a f are passed on to the QDockWindow constructor.
+ *
+ * Use this constructor if you want to create torn-off (undocked, floating) toolbars or toolbars 
+ * in the status bar.
+ */
+CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, QWidget *parent, 
+                               bool newLine, const char * name, WFlags f, const char* type )
+  : QToolBar(label, mainWindow, parent, newLine, name, f), CustomWidget(type, name)
 {
   // allow drag and drop
   setAcceptDrops(true);
   bSaveColor = false;
 }
 
-FCToolBar::FCToolBar ( QMainWindow * parent, const char * name, const char* type )
-    : QToolBar(parent, name), FCCustomWidget(type, name)
+/**
+ * Constructs an empty toolbar called \a name, of the type \a type, with parent \a parent, in its 
+ * parent's top dock area, without any label and without requiring a newline.
+ */
+CustomToolBar::CustomToolBar ( QMainWindow * parent, const char * name, const char* type )
+    : QToolBar(parent, name), CustomWidget(type, name)
 {
   // allow drag and drop
   setAcceptDrops(true);
   bSaveColor = false;
 }
 
-FCToolBar::~FCToolBar()
+CustomToolBar::~CustomToolBar()
 {
 }
 
-void FCToolBar::update(FCCommandManager& rclMgr)
+/**
+ * If this toolbar can be modified it is rebuild using the command manager \a rclMgr, 
+ * otherwise nothing happens.
+ */
+void CustomToolBar::update( FCCommandManager& rclMgr )
 {
   if (!canModify())
     return; // no need to read again
 
   clearUp();
-  for (std::vector<std::string>::iterator it = _clItems.begin(); it != _clItems.end(); ++it)
+  for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it )
   {
     if (*it == "Separator")
       addSeparator();
     else
-      rclMgr.AddTo(it->c_str(), this);
+      rclMgr.AddTo( (*it).latin1(), this );
   }
 
   // get also the commands from other workbenches
-  std::vector<std::string> items;
-  for (WorkbenchItems::iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2)
+  QStringList items;
+  for (WorkbenchItems::Iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2)
   {
-    items = it2->second;
-    for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
+    items = it2.data();
+    for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
     {
-      if (*it == "Separator")
+      if ( *it == "Separator" )
         addSeparator();
       else
-        rclMgr.AddTo(it->c_str(), this);
+        rclMgr.AddTo( (*it).latin1(), this );
     }
   }
 }
 
-void FCToolBar::setCanModify(bool b)
+void CustomToolBar::setCanModify(bool b)
 {
-  _bCanModify = b;
+  CustomWidget::setCanModify( b );
   setAcceptDrops(b);
 }
 
-bool FCToolBar::isAllowed(QWidget* w)
+/**
+ * Returns true if the widget type \a w can be added to a toolbar, otherwise returns false.
+ */
+bool CustomToolBar::isAllowed( QWidget* w )
 {
   if (!w)
     return false; // no valid widget
 
-  // this is extensible of course ;-)
+  // this is extensible
   //
   if (w->inherits("QToolButton") )
     return true;
@@ -295,16 +348,17 @@ bool FCToolBar::isAllowed(QWidget* w)
   return false;
 }
 
-void FCToolBar::clearUp()
+/**
+ * Clear the toolbar's content.
+ */
+void CustomToolBar::clearUp()
 {
   clear();
 }
 
-void FCToolBar::dropEvent ( QDropEvent * e)
+void CustomToolBar::dropEvent ( QDropEvent * e)
 {
-  // store all widgets in STL vector
-  // because of the familiar handling ;-)
-  std::vector<QWidget*> childs;
+  QPtrList<QWidget> childs;
   if ( children() )
   {
     QObjectListIt it( *children() );
@@ -316,7 +370,7 @@ void FCToolBar::dropEvent ( QDropEvent * e)
       {
         // check if widget type is OK
         if (isAllowed((QWidget*)obj))
-          childs.push_back((QWidget*)obj);
+          childs.append((QWidget*)obj);
       }
     }
   }
@@ -325,7 +379,7 @@ void FCToolBar::dropEvent ( QDropEvent * e)
   // is the same as the number of items
   //
   // different sizes ->just append at the end
-  if (childs.size() != _clItems.size())
+  if ( childs.count() != _clItems.size() )
   {
     /*    // create a new button
         //
@@ -374,15 +428,16 @@ void FCToolBar::dropEvent ( QDropEvent * e)
 #endif
 
   // find right position for the new widget(s)
-  std::vector<std::string> items;
-  std::vector<std::string>::iterator it2 = _clItems.begin();
+  QStringList items;
+  QStringList::Iterator it2 = _clItems.begin();
   QPoint pt = e->pos();
   int pos=0;
-  for (std::vector<QWidget*>::iterator it = childs.begin(); it != childs.end(); ++it, ++it2)
+  QWidget* it;
+  for ( it = childs.first(); it; it = childs.next(), ++it2)
   {
     if (orient == Qt::Horizontal)
     {
-      pos += (*it)->width();
+      pos += it->width();
       if (pos >= pt.x())
         break;
       else
@@ -390,7 +445,7 @@ void FCToolBar::dropEvent ( QDropEvent * e)
     }
     else
     {
-      pos += (*it)->height();
+      pos += it->height();
       if (pos >= pt.y())
         break;
       else
@@ -399,10 +454,10 @@ void FCToolBar::dropEvent ( QDropEvent * e)
   }
 
   // append the dropped items
-  std::vector<QString> actions = ActionDrag::actions;
-  for (std::vector<QString>::iterator it3 = actions.begin(); it3 != actions.end(); ++it3)
+  QStringList actions = ActionDrag::actions;
+  for (QStringList::Iterator it3 = actions.begin(); it3 != actions.end(); ++it3)
   {
-    items.push_back(it3->latin1());
+    items.push_back( *it3 );
   }
 
   ActionDrag::actions.clear();
@@ -420,22 +475,22 @@ void FCToolBar::dropEvent ( QDropEvent * e)
   update(cCmdMgr);
 }
 
-void FCToolBar::dragEnterEvent ( QDragEnterEvent * e)
+void CustomToolBar::dragEnterEvent ( QDragEnterEvent * e)
 {
   e->accept( ActionDrag::canDecode(e) );
 }
 
-void FCToolBar::dragLeaveEvent ( QDragLeaveEvent * )
+void CustomToolBar::dragLeaveEvent ( QDragLeaveEvent * )
 {
 }
 
-void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
+void CustomToolBar::dragMoveEvent ( QDragMoveEvent * )
 {
 }
 
-void FCToolBar::restorePreferences()
+void CustomToolBar::restorePreferences()
 {
-  FCCustomWidget::restorePreferences();
+  CustomWidget::restorePreferences();
 
   if (bSaveColor)
   {
@@ -458,9 +513,9 @@ void FCToolBar::restorePreferences()
     hide();
 }
 
-void FCToolBar::savePreferences()
+void CustomToolBar::savePreferences()
 {
-  FCCustomWidget::savePreferences();
+  CustomWidget::savePreferences();
 
   if (bSaveColor)
   {
@@ -472,98 +527,106 @@ void FCToolBar::savePreferences()
   hPrefGrp->SetBool("visible",  !isHidden());
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------
 
-FCPopupMenu::FCPopupMenu(QWidget * parent, const char * name, const char* menu )
-    : QPopupMenu(parent, name), FCCustomWidget("Menus", name), bAllowDrag(false)
+/**
+ * Constructs a popup menu called \a name with parent \a parent and the parameter group 
+ * \a menu to store its content to.
+ */
+CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char* menu )
+  : QPopupMenu(parent, name), CustomWidget("Menus", name), _bAllowDrag(false)
 {
-  hCommonGrp = GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings");
-  hCommonGrp->Attach(this);
+  _hCommonGrp = GetApplication().GetParameterGroupByPath("System parameter:BaseApp/WindowSettings");
+  _hCommonGrp->Attach(this);
   // allow drag and drop
   //  setAcceptDrops(true);
   if (menu)
-    this->parent = menu;
+    this->_parent = menu;
 }
 
-FCPopupMenu::~FCPopupMenu()
+CustomPopupMenu::~CustomPopupMenu()
 {
-  hCommonGrp->Detach(this);
+  _hCommonGrp->Detach(this);
 }
 
-void FCPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void CustomPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
   if (strcmp(sReason, "AllowDrag") == 0)
   {
     FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
-    bAllowDrag = rclGrp.GetBool("AllowDrag", false);
+    _bAllowDrag = rclGrp.GetBool("AllowDrag", false);
   }
 }
 
-void FCPopupMenu::update(FCCommandManager& rclMgr)
+/**
+ * If this menu can be modified it is rebuild using the command manager \a rclMgr, 
+ * otherwise nothing happens.
+ */
+void CustomPopupMenu::update( FCCommandManager& rclMgr )
 {
   if (!canModify())
     return; // no need to read again
 
   clear();
-  for (std::vector<std::string>::iterator it = _clItems.begin(); it != _clItems.end(); ++it)
+  for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it )
   {
-    if (*it == "Separator")
+    if ( *it == "Separator" )
       insertSeparator();
     else
-      rclMgr.AddTo(it->c_str(), this);
+      rclMgr.AddTo( (*it).latin1(), this );
   }
 
   // get also the commands from other workbenches
-  std::vector<std::string> items;
-  for (WorkbenchItems::iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2)
+  QStringList items;
+  for ( WorkbenchItems::Iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2 )
   {
-    items = it2->second;
-    for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
+    items = it2.data();
+    for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
     {
-      if (*it == "Separator")
+      if ( *it == "Separator" )
         insertSeparator();
       else
-        rclMgr.AddTo(it->c_str(), this);
+        rclMgr.AddTo( (*it).latin1(), this );
     }
   }
 }
 
-void FCPopupMenu::dropEvent ( QDropEvent * e)
+void CustomPopupMenu::dropEvent ( QDropEvent * e)
 {
   // create a new button
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   FCCommand* pCom = NULL;
 
-  std::vector<QString> actions = ActionDrag::actions;
-  for (std::vector<QString>::iterator it = actions.begin(); it != actions.end(); ++it)
+  QStringList actions = ActionDrag::actions;
+  for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
   {
-    pCom = cCmdMgr.GetCommandByName(it->latin1());
+    pCom = cCmdMgr.GetCommandByName( (*it).latin1() );
     if (pCom != NULL)
     {
       if (pCom->addTo(this))
-        _clItems.push_back(it->latin1());
+        _clItems.push_back( *it );
     }
   }
 
   ActionDrag::actions.clear();
 }
 
-void FCPopupMenu::dragEnterEvent ( QDragEnterEvent * e)
+void CustomPopupMenu::dragEnterEvent ( QDragEnterEvent * e)
 {
   e->accept(/*ActionDrag::canDecode(e)*/false);
 }
 
-void FCPopupMenu::dragLeaveEvent ( QDragLeaveEvent * )
+void CustomPopupMenu::dragLeaveEvent ( QDragLeaveEvent * )
 {
 }
 
-void FCPopupMenu::dragMoveEvent ( QDragMoveEvent * )
+void CustomPopupMenu::dragMoveEvent ( QDragMoveEvent * )
 {
 }
 
-void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
+void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
 {
-  if ( e->state() == LeftButton && bAllowDrag)
+  if ( e->state() == LeftButton && _bAllowDrag)
   {
     // try to find out the correct menu item
     // in most cases this should work correctly
@@ -631,7 +694,7 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     QPopupMenu::mouseMoveEvent(e);
 }
 
-void FCPopupMenu::mouseReleaseEvent( QMouseEvent * e )
+void CustomPopupMenu::mouseReleaseEvent( QMouseEvent * e )
 {
   if (FCWhatsThis::inWhatsThisMode())
   {
@@ -643,62 +706,68 @@ void FCPopupMenu::mouseReleaseEvent( QMouseEvent * e )
     QPopupMenu::mouseReleaseEvent(e);
 }
 
-void FCPopupMenu::restorePreferences()
+void CustomPopupMenu::restorePreferences()
 {
-  FCCustomWidget::restorePreferences();
-  bAllowDrag = hCommonGrp->GetBool("AllowDrag", false);
+  CustomWidget::restorePreferences();
+  _bAllowDrag = _hCommonGrp->GetBool("AllowDrag", false);
 }
 
-void FCPopupMenu::savePreferences()
+void CustomPopupMenu::savePreferences()
 {
-  FCCustomWidget::savePreferences();
-  if (! parent.isEmpty())
-    hPrefGrp->SetASCII("Parent Menu", parent.latin1());
-  hPrefGrp->SetBool("AllowDrag", bAllowDrag);
+  CustomWidget::savePreferences();
+  if (! _parent.isEmpty())
+    hPrefGrp->SetASCII("Parent Menu", _parent.latin1());
+  hPrefGrp->SetBool("AllowDrag", _bAllowDrag);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------
 
-struct FCCustomWidgetManagerP
+namespace Gui {
+struct CustomWidgetManagerP
 {
-  FCCustomWidgetManagerP(FCCommandManager& rclMgr, ToolBox* pStackBar)
+  CustomWidgetManagerP(FCCommandManager& rclMgr, ToolBox* pStackBar)
       : _clCmdMgr(rclMgr), _pclStackBar(pStackBar)
   {
   }
 
   int                                  _iSeparator;
-  std::map <std::string,FCPopupMenu*>  _clPopupMenus;
-  std::map <FCPopupMenu*,int>          _clPopupID;
-  std::map <std::string,FCToolBar*>    _clToolbars;
-  std::map <std::string,FCToolBar*>    _clCmdbars;
-  std::map <std::string,FCDockWindow*> _clDocWindows;
+  std::map <QString,CustomPopupMenu*>  _clPopupMenus;
+  std::map <CustomPopupMenu*,int>          _clPopupID;
+  std::map <QString,CustomToolBar*>    _clToolbars;
+  std::map <QString,CustomToolBar*>    _clCmdbars;
+  QMap <QString,FCDockWindow*> _clDocWindows;
   FCCommandManager&                    _clCmdMgr;
   ToolBox*                           _pclStackBar;
 };
+} // namespace Gui
 
-FCCustomWidgetManager::FCCustomWidgetManager(FCCommandManager& rclMgr, ToolBox* pStackBar)
+CustomWidgetManager::CustomWidgetManager(FCCommandManager& rclMgr, ToolBox* pStackBar)
 {
-  d = new FCCustomWidgetManagerP(rclMgr, pStackBar);
+  d = new CustomWidgetManagerP(rclMgr, pStackBar);
 }
 
-FCCustomWidgetManager::~FCCustomWidgetManager()
+CustomWidgetManager::~CustomWidgetManager()
 {
-  for (std::map <std::string,FCPopupMenu*>::iterator it1 = d->_clPopupMenus.begin(); it1 != d->_clPopupMenus.end(); ++it1)
+  for (std::map <QString,CustomPopupMenu*>::iterator it1 = d->_clPopupMenus.begin(); it1 != d->_clPopupMenus.end(); ++it1)
     it1->second->saveXML();
-  for (std::map <std::string,FCToolBar*>::iterator it2 = d->_clToolbars.begin(); it2 != d->_clToolbars.end(); ++it2)
+  for (std::map <QString,CustomToolBar*>::iterator it2 = d->_clToolbars.begin(); it2 != d->_clToolbars.end(); ++it2)
     it2->second->saveXML();
-  for (std::map <std::string,FCToolBar*>::iterator it3 = d->_clCmdbars.begin(); it3 != d->_clCmdbars.end(); ++it3)
+  for (std::map <QString,CustomToolBar*>::iterator it3 = d->_clCmdbars.begin(); it3 != d->_clCmdbars.end(); ++it3)
     it3->second->saveXML();
 
   delete d;d=NULL;
 }
 
-bool FCCustomWidgetManager::loadCustomWidegts(const char* workbench)
+/** 
+ * Loads the custom widgets depending on the given
+ * workbench from the preferences. 
+ */
+bool CustomWidgetManager::loadCustomWidegts( const QString& workbench )
 {
-  std::vector<std::string> dummy;
+  QStringList dummy;
   bool bFound = false;
   FCParameterGrp::handle hGrp = PrefWidget::getRootParamGrp();
-  hGrp = hGrp->GetGroup("Workbenches")->GetGroup(workbench);
+  hGrp = hGrp->GetGroup("Workbenches")->GetGroup( workbench.latin1() );
 
   std::vector<FCParameterGrp::handle> hSubGrps;
   std::vector<FCParameterGrp::handle>::iterator it;
@@ -710,7 +779,7 @@ bool FCCustomWidgetManager::loadCustomWidegts(const char* workbench)
   bFound |= (hSubGrps.size() > 0);
   for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
   {
-    addCmdBar((*it)->GetGroupName(), dummy);
+    addCommandBar( (*it)->GetGroupName(), dummy );
   }
   if (d->_clCmdbars.size() > 0)
   {
@@ -722,7 +791,7 @@ bool FCCustomWidgetManager::loadCustomWidegts(const char* workbench)
   bFound |= (hSubGrps.size() > 0);
   for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
   {
-    addToolBar((*it)->GetGroupName(), dummy);
+    addToolBar( (*it)->GetGroupName(), dummy );
   }
 
   hSubGrps = hMenuGrp->GetGroups();
@@ -730,57 +799,63 @@ bool FCCustomWidgetManager::loadCustomWidegts(const char* workbench)
   for (it = hSubGrps.begin(); it != hSubGrps.end(); ++it)
   {
     if ((*it)->GetASCII("Parent Menu", "nix") != "nix")
-      addPopupMenu((*it)->GetGroupName(), dummy, (*it)->GetASCII("Parent Menu").c_str());
+      addPopupMenu( (*it)->GetGroupName(), dummy, (*it)->GetASCII("Parent Menu").c_str() );
     else
-      addPopupMenu((*it)->GetGroupName(), dummy);
+      addPopupMenu( (*it)->GetGroupName(), dummy );
   }
 
   return bFound;
 }
 
-bool FCCustomWidgetManager::update(const char* workbench)
+/** 
+ * Updates the custom widgets depending on the given workbench.
+ */
+bool CustomWidgetManager::update( const QString& workbench )
 {
   QString wb = ApplicationWindow::Instance->GetActiveWorkbench();
-  std::map <std::string,FCPopupMenu*> clPopupMenus = d->_clPopupMenus;
-  for (std::map <std::string,FCPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
+  std::map <QString,CustomPopupMenu*> clPopupMenus = d->_clPopupMenus;
+  for (std::map <QString,CustomPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
   {
     if (wb != it1->second->getWorkbench())
-      delPopupMenu(it1->first.c_str());
+      removePopupMenu( it1->first );
   }
-  std::map <std::string,FCToolBar*> clToolbars = d->_clToolbars;
-  for (std::map <std::string,FCToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
+  std::map <QString,CustomToolBar*> clToolbars = d->_clToolbars;
+  for (std::map <QString,CustomToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
   {
     if (wb != it2->second->getWorkbench())
-      delToolBar(it2->first.c_str());
+      removeToolBar( it2->first );
   }
-  std::map <std::string,FCToolBar*> clCmdbars = d->_clCmdbars;
-  for (std::map <std::string,FCToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
+  std::map <QString,CustomToolBar*> clCmdbars = d->_clCmdbars;
+  for (std::map <QString,CustomToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
   {
     if (wb != it3->second->getWorkbench())
-      delCmdBar(it3->first.c_str());
+      removeCommandBar( it3->first );
   }
 
-  return loadCustomWidegts(workbench);
+  return loadCustomWidegts( workbench );
 }
 
-bool FCCustomWidgetManager::update()
+/** 
+ * Clears all custom widgets and reload it from preferences.
+ */
+bool CustomWidgetManager::update()
 {
   // clear the content of all custom widgets and read it from preferences again
   //
-  std::map <std::string,FCPopupMenu*> clPopupMenus = d->_clPopupMenus;
-  for (std::map <std::string,FCPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
+  std::map <QString,CustomPopupMenu*> clPopupMenus = d->_clPopupMenus;
+  for (std::map <QString,CustomPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
   {
     it1->second->loadXML();
     it1->second->update(d->_clCmdMgr);
   }
-  std::map <std::string,FCToolBar*> clToolbars = d->_clToolbars;
-  for (std::map <std::string,FCToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
+  std::map <QString,CustomToolBar*> clToolbars = d->_clToolbars;
+  for (std::map <QString,CustomToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
   {
     it2->second->loadXML();
     it2->second->update(d->_clCmdMgr);
   }
-  std::map <std::string,FCToolBar*> clCmdbars = d->_clCmdbars;
-  for (std::map <std::string,FCToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
+  std::map <QString,CustomToolBar*> clCmdbars = d->_clCmdbars;
+  for (std::map <QString,CustomToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
   {
     it3->second->loadXML();
     it3->second->update(d->_clCmdMgr);
@@ -789,9 +864,12 @@ bool FCCustomWidgetManager::update()
   return true;
 }
 
-void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vector<std::string>& defIt, const char* parent)
+/** 
+ * Adds new menu with its items and its parent.
+ */
+void CustomWidgetManager::addPopupMenu(const QString& type, const QStringList& defIt, const char* parent)
 {
-  FCPopupMenu* popup = getPopupMenu(type.c_str(), parent);
+  CustomPopupMenu* popup = getPopupMenu( type, parent);
 
   // append if these items are from another workbench
   QString oldWb = popup->getWorkbench();
@@ -801,9 +879,9 @@ void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vec
     FCParameterGrp::handle hPrefGrp;
     hPrefGrp = PrefWidget::getRootParamGrp()->GetGroup("Workbenches")->GetGroup(newWb.latin1());
     hPrefGrp = hPrefGrp->GetGroup("Menus");
-    hPrefGrp = hPrefGrp->GetGroup(type.c_str());
+    hPrefGrp = hPrefGrp->GetGroup(type.latin1());
 
-    popup->appendItems(hPrefGrp, defIt);
+    popup->addCustomItems(hPrefGrp, defIt);
     popup->update(d->_clCmdMgr);
     return;
   }
@@ -811,23 +889,29 @@ void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vec
   popup->loadXML();
   if (!popup->hasCustomItems())
   {
-    popup->setItems(defIt);
+    popup->setCustomItems(defIt);
   }
 
   popup->update(d->_clCmdMgr);
 }
 
-FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* parent)
+/** 
+ * Returns the menu bar by name.
+ * If it does not exist it will be created. If parent is not NULL
+ * the menu with the name 'parent' is the father. Otherwise
+ * the menu will be put in the application's menu bar.
+ */
+CustomPopupMenu* CustomWidgetManager::getPopupMenu( const QString& name, const char* parent )
 {
-  std::map <std::string,FCPopupMenu*>::iterator It = d->_clPopupMenus.find(name);
+  std::map <QString,CustomPopupMenu*>::iterator It = d->_clPopupMenus.find( name );
   if ( It!=d->_clPopupMenus.end() )
   {
     return It->second;
   }
   else if (parent == 0 || strcmp(parent,"") == 0)
   {
-    FCPopupMenu *pcPopup = new FCPopupMenu( ApplicationWindow::Instance, name );
-    d->_clPopupMenus[name] = pcPopup;
+    CustomPopupMenu *pcPopup = new CustomPopupMenu( ApplicationWindow::Instance, name );
+    d->_clPopupMenus[ name ] = pcPopup;
 
     // if the help menu should be inserted
     if (strcmp(name, "Help") == 0)
@@ -860,8 +944,8 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
   }
   else
   {
-    FCPopupMenu *pParent = getPopupMenu(parent);
-    FCPopupMenu *pcPopup = new FCPopupMenu( pParent, name, parent );
+    CustomPopupMenu *pParent = getPopupMenu(parent);
+    CustomPopupMenu *pcPopup = new CustomPopupMenu( pParent, name, parent );
     d->_clPopupMenus[name] = pcPopup;
     int id = pParent->insertItem(QObject::tr(name), pcPopup);
     d->_clPopupID[pcPopup] = id;
@@ -869,20 +953,26 @@ FCPopupMenu* FCCustomWidgetManager::getPopupMenu(const char* name, const char* p
   }
 }
 
-std::vector<FCPopupMenu*> FCCustomWidgetManager::getPopupMenus()
+/** 
+ * Returns a vector of all menus.
+ */
+QPtrList<CustomPopupMenu> CustomWidgetManager::getPopupMenus()
 {
-  std::vector<FCPopupMenu*> aclMenus;
-  for (std::map <std::string,FCPopupMenu*>::iterator It = d->_clPopupMenus.begin(); It != d->_clPopupMenus.end(); ++It)
+  QPtrList<CustomPopupMenu> aclMenus;
+  for (std::map <QString,CustomPopupMenu*>::iterator It = d->_clPopupMenus.begin(); It != d->_clPopupMenus.end(); ++It)
   {
-    aclMenus.push_back(It->second);
+    aclMenus.append( It->second );
   }
 
   return aclMenus;
 }
 
-void FCCustomWidgetManager::delPopupMenu(const char* name)
+/** 
+ * Deletes the specified menu if it exists.
+ */
+void CustomWidgetManager::removePopupMenu( const QString& name )
 {
-  std::map <std::string,FCPopupMenu*>::iterator It = d->_clPopupMenus.find(name);
+  std::map <QString,CustomPopupMenu*>::iterator It = d->_clPopupMenus.find( name );
   if( It!=d->_clPopupMenus.end() )
   {
     if (!It->second->isRemovable())
@@ -896,18 +986,18 @@ void FCCustomWidgetManager::delPopupMenu(const char* name)
       ApplicationWindow::Instance->menuBar()->removeItem(id);
 
 #ifdef FC_DEBUG
-      printf("%s removed from menubar\n", name);
+      printf( "%s removed from menubar\n", name.latin1() );
 #endif
     }
     else if (strcmp(It->second->parentWidget()->className(), It->second->className()) == 0)
     {
       // remove properly from parent menu
-      FCPopupMenu* pParent = (FCPopupMenu*)It->second->parentWidget();
+      CustomPopupMenu* pParent = (CustomPopupMenu*)It->second->parentWidget();
       int id = d->_clPopupID[It->second];
       pParent->removeItem(id);
 
 #ifdef FC_DEBUG
-      printf("%s removed from parent menu\n", name);
+      printf( "%s removed from parent menu\n", name.latin1() );
 #endif
     }
 
@@ -916,28 +1006,41 @@ void FCCustomWidgetManager::delPopupMenu(const char* name)
   }
 }
 
-void FCCustomWidgetManager::removeMenuItems(const std::string& type, const std::vector<std::string>& items)
+/** 
+ * Removes menu items.
+ */
+void CustomWidgetManager::removeMenuItems(const QString& type, const QStringList& items)
 {
-  FCPopupMenu* popup = getPopupMenu(type.c_str());
+  CustomPopupMenu* popup = getPopupMenu( type );
 
   QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
   FCParameterGrp::handle hPrefGrp;
   hPrefGrp = PrefWidget::getRootParamGrp()->GetGroup("Workbenches")->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Menus");
-  hPrefGrp = hPrefGrp->GetGroup(type.c_str());
+  hPrefGrp = hPrefGrp->GetGroup( type.latin1() );
 
-  popup->FCCustomWidget::removeItems(hPrefGrp,items);
+  popup->CustomWidget::removeCustomItems( hPrefGrp, items );
   popup->update(d->_clCmdMgr);
 }
 
-int FCCustomWidgetManager::countPopupMenus()
+/**
+ * Get the number of menus.
+ */
+int CustomWidgetManager::countPopupMenus()
 {
   return int(d->_clPopupMenus.size());
 }
 
-void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vector<std::string>& defIt)
+/** 
+ * Adds new toolbar with its items
+ * After adding the new toolbar it searches for its items in 
+ * the preferences. If it has found any items it uses these instead of 
+ * the given in 'defIt'. If force is set to true the toolbar takes the
+ * given items anyway.
+ */
+void CustomWidgetManager::addToolBar( const QString& type, const QStringList& defIt )
 {
-  FCToolBar* toolbar = getToolBar(type.c_str());
+  CustomToolBar* toolbar = getToolBar( type );
 
   // append if these items are from another workbench
   QString oldWb = toolbar->getWorkbench();
@@ -947,9 +1050,9 @@ void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vecto
     FCParameterGrp::handle hPrefGrp;
     hPrefGrp = PrefWidget::getRootParamGrp()->GetGroup("Workbenches")->GetGroup(newWb.latin1());
     hPrefGrp = hPrefGrp->GetGroup("Toolbars");
-    hPrefGrp = hPrefGrp->GetGroup(type.c_str());
+    hPrefGrp = hPrefGrp->GetGroup( type.latin1() );
 
-    toolbar->appendItems(hPrefGrp, defIt);
+    toolbar->addCustomItems(hPrefGrp, defIt);
     toolbar->update(d->_clCmdMgr);
     return;
   }
@@ -957,43 +1060,53 @@ void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vecto
   toolbar->loadXML();
   if (!toolbar->hasCustomItems())
   {
-    toolbar->setItems(defIt);
+    toolbar->setCustomItems(defIt);
   }
 
   toolbar->update(d->_clCmdMgr);
 }
 
-FCToolBar* FCCustomWidgetManager::getToolBar(const char* name)
+/** 
+ * Returns the toolbar by name.
+ * If it does not exist it will be created.
+ */
+CustomToolBar* CustomWidgetManager::getToolBar( const QString& name )
 {
-  std::map <std::string,FCToolBar*>::iterator It = d->_clToolbars.find(name);
+  std::map <QString,CustomToolBar*>::iterator It = d->_clToolbars.find( name );
   if( It!=d->_clToolbars.end() )
     return It->second;
   else
   {
-//    FCToolBar *pcToolBar = new FCToolBar( ApplicationWindow::Instance, name );
-    FCToolBar *pcToolBar = new FCToolBar( QString(name), ApplicationWindow::Instance, 
-                                          ApplicationWindow::Instance, false, name );
+//    CustomToolBar *pcToolBar = new CustomToolBar( ApplicationWindow::Instance, name );
+    CustomToolBar *pcToolBar = new CustomToolBar( name, ApplicationWindow::Instance, 
+                                          ApplicationWindow::Instance, false, name.latin1() );
     ApplicationWindow::Instance->addToolBar(pcToolBar);
-    d->_clToolbars[name] = pcToolBar;
+    d->_clToolbars[ name ] = pcToolBar;
     pcToolBar->show();
     return pcToolBar;
   }
 }
 
-std::vector<FCToolBar*> FCCustomWidgetManager::getToolBars()
+/** 
+ * Returns a vector of all toolbars.
+ */
+QPtrList<CustomToolBar> CustomWidgetManager::getToolBars()
 {
-  std::vector<FCToolBar*> aclToolbars;
-  for (std::map <std::string,FCToolBar*>::iterator It = d->_clToolbars.begin(); It != d->_clToolbars.end(); ++It)
+  QPtrList<CustomToolBar> aclToolbars;
+  for (std::map <QString,CustomToolBar*>::iterator It = d->_clToolbars.begin(); It != d->_clToolbars.end(); ++It)
   {
-    aclToolbars.push_back(It->second);
+    aclToolbars.append(It->second);
   }
 
   return aclToolbars;
 }
 
-void FCCustomWidgetManager::delToolBar(const char* name)
+/** 
+ * Deletes the specified toolbar if it exists.
+ */
+void CustomWidgetManager::removeToolBar( const QString& name )
 {
-  std::map <std::string,FCToolBar*>::iterator It = d->_clToolbars.find(name);
+  std::map <QString,CustomToolBar*>::iterator It = d->_clToolbars.find( name );
   if( It!=d->_clToolbars.end() )
   {
     if (!It->second->isRemovable())
@@ -1005,28 +1118,41 @@ void FCCustomWidgetManager::delToolBar(const char* name)
   }
 }
 
-void FCCustomWidgetManager::removeToolBarItems(const std::string& type, const std::vector<std::string>& items)
+/** 
+ * Removes toolbar items.
+ */
+void CustomWidgetManager::removeToolBarItems( const QString& type, const QStringList& items )
 {
-  FCToolBar* tb = getToolBar(type.c_str());
+  CustomToolBar* tb = getToolBar( type );
 
   QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
   FCParameterGrp::handle hPrefGrp;
   hPrefGrp = PrefWidget::getRootParamGrp()->GetGroup("Workbenches")->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Toolbars");
-  hPrefGrp = hPrefGrp->GetGroup(type.c_str());
+  hPrefGrp = hPrefGrp->GetGroup( type.latin1() );
 
-  tb->FCCustomWidget::removeItems(hPrefGrp,items);
+  tb->CustomWidget::removeCustomItems( hPrefGrp, items );
   tb->update(d->_clCmdMgr);
 }
 
-int FCCustomWidgetManager::countToolBars()
+/** 
+ * Get the number of toolbars.
+ */
+int CustomWidgetManager::countToolBars()
 {
   return int(d->_clToolbars.size());
 }
 
-void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector<std::string>& defIt)
+/** 
+ * Adds new command bar with its items.
+ * After adding the new command bar it searches for its items in 
+ * the preferences. If it has found any items it uses these instead of 
+ * the given in 'defIt'. If force is set to true the toolbar takes the
+ * given items anyway.
+ */
+void CustomWidgetManager::addCommandBar(const QString& type, const QStringList& defIt)
 {
-  FCToolBar* toolbar = getCmdBar(type.c_str());
+  CustomToolBar* toolbar = getCommandBar( type );
 
   // append if these items are from another workbench
   QString oldWb = toolbar->getWorkbench();
@@ -1036,9 +1162,9 @@ void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector
     FCParameterGrp::handle hPrefGrp;
     hPrefGrp = PrefWidget::getRootParamGrp()->GetGroup("Workbenches")->GetGroup(newWb.latin1());
     hPrefGrp = hPrefGrp->GetGroup("Cmdbar");
-    hPrefGrp = hPrefGrp->GetGroup(type.c_str());
+    hPrefGrp = hPrefGrp->GetGroup(type.latin1());
 
-    toolbar->appendItems(hPrefGrp, defIt);
+    toolbar->addCustomItems(hPrefGrp, defIt);
     toolbar->update(d->_clCmdMgr);
     return;
   }
@@ -1046,40 +1172,50 @@ void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector
   toolbar->loadXML();
   if (!toolbar->hasCustomItems())
   {
-    toolbar->setItems(defIt);
+    toolbar->setCustomItems(defIt);
   }
 
   toolbar->update(d->_clCmdMgr);
 }
 
-FCToolBar* FCCustomWidgetManager::getCmdBar(const char* name)
+/** 
+ * Returns the command bar by name.
+ * If it does not exist it will be created.
+ */
+CustomToolBar* CustomWidgetManager::getCommandBar( const QString& name )
 {
-  std::map <std::string,FCToolBar*>::iterator It = d->_clCmdbars.find(name);
+  std::map <QString,CustomToolBar*>::iterator It = d->_clCmdbars.find( name );
   if( It!=d->_clCmdbars.end() )
     return It->second;
   else
   {
-    FCToolBar *pcToolBar = new ToolBoxBar( name, d->_pclStackBar, name );
-    d->_clCmdbars[name] = pcToolBar;
+    CustomToolBar *pcToolBar = new ToolBoxBar( name, d->_pclStackBar, name );
+    d->_clCmdbars[ name ] = pcToolBar;
     d->_pclStackBar->addItem(pcToolBar, name);
     return pcToolBar;
   }
 }
 
-std::vector<FCToolBar*> FCCustomWidgetManager::getCmdBars()
+/** 
+ * Returns a vector of all command bars.
+ */
+QPtrList<CustomToolBar> CustomWidgetManager::getCommdandBars()
 {
-  std::vector<FCToolBar*> aclCmdbars;
-  for (std::map <std::string,FCToolBar*>::iterator It = d->_clCmdbars.begin(); It != d->_clCmdbars.end(); ++It)
+  QPtrList<CustomToolBar> aclCmdbars;
+  for (std::map <QString,CustomToolBar*>::iterator It = d->_clCmdbars.begin(); It != d->_clCmdbars.end(); ++It)
   {
-    aclCmdbars.push_back(It->second);
+    aclCmdbars.append(It->second);
   }
 
   return aclCmdbars;
 }
 
-void FCCustomWidgetManager::delCmdBar(const char* name)
+/** 
+ * Deletes the specified command bar if it exists.
+ */
+void CustomWidgetManager::removeCommandBar( const QString& name )
 {
-  std::map <std::string,FCToolBar*>::iterator It = d->_clCmdbars.find(name);
+  std::map <QString,CustomToolBar*>::iterator It = d->_clCmdbars.find( name );
   if( It!=d->_clCmdbars.end() )
   {
     if (!It->second->isRemovable())
@@ -1090,29 +1226,38 @@ void FCCustomWidgetManager::delCmdBar(const char* name)
   }
 }
 
-void FCCustomWidgetManager::removeCmdBarItems(const std::string& type, const std::vector<std::string>& items)
+/** 
+ * Removes command bar items.
+ */
+void CustomWidgetManager::removeCommandBarItems(const QString& type, const QStringList& items)
 {
-  FCToolBar* tb = getCmdBar(type.c_str());
+  CustomToolBar* tb = getCommandBar( type );
 
   QString newWb = ApplicationWindow::Instance->GetActiveWorkbench();
   FCParameterGrp::handle hPrefGrp;
   hPrefGrp = PrefWidget::getRootParamGrp()->GetGroup("Workbenches")->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Cmdbar");
-  hPrefGrp = hPrefGrp->GetGroup(type.c_str());
+  hPrefGrp = hPrefGrp->GetGroup(type.latin1());
 
-  tb->FCCustomWidget::removeItems(hPrefGrp,items);
+  tb->CustomWidget::removeCustomItems(hPrefGrp,items);
   tb->update(d->_clCmdMgr);
 }
 
-int FCCustomWidgetManager::countCmdBars()
+/** 
+ * Get the number of command bars.
+ */
+int CustomWidgetManager::countCommandBars()
 {
   return int(d->_clCmdbars.size());
 }
 
-void FCCustomWidgetManager::addDockWindow(const char* name,FCDockWindow *pcDocWindow, const char* sCompanion, KDockWidget::DockPosition pos, int percent)
+/**
+ * Adds a new dock window.
+ */
+void CustomWidgetManager::addDockWindow( const QString& name,FCDockWindow *pcDocWindow, Qt::Dock pos )
 {
   ApplicationWindow* pApp = ApplicationWindow::Instance;
-  d->_clDocWindows[name] = pcDocWindow;
+  d->_clDocWindows[ name ] = pcDocWindow;
   QString str = name;
   str += " dockable window";
 
@@ -1123,87 +1268,81 @@ void FCCustomWidgetManager::addDockWindow(const char* name,FCDockWindow *pcDocWi
   dw->setWidget( pcDocWindow );
   dw->setResizeEnabled(true);
 
-  Qt::Dock dk = Qt::DockUnmanaged;
   switch (pos)
   {
-  case KDockWidget::DockTop:
-    dk = Qt::DockTop;
+  case Qt::DockTop:
     dw->setHorizontallyStretchable(true);
     break;
-  case KDockWidget::DockLeft:
-    dk = Qt::DockLeft;
+  case Qt::DockLeft:
     dw->setVerticallyStretchable(true);
     pApp->setDockEnabled ( dw, Qt::DockTop, false );
     pApp->setDockEnabled ( dw, Qt::DockBottom, false );
     break;
-  case KDockWidget::DockRight:
-    dk = Qt::DockRight;
+  case Qt::DockRight:
     dw->setVerticallyStretchable(true);
     pApp->setDockEnabled ( dw, Qt::DockTop, false );
     pApp->setDockEnabled ( dw, Qt::DockBottom, false );
     break;
-  case KDockWidget::DockBottom:
-    dk = Qt::DockBottom;
+  case Qt::DockBottom:
     dw->setHorizontallyStretchable(true);
     pApp->setDockEnabled ( dw, Qt::DockTop, false );
     pApp->setDockEnabled ( dw, Qt::DockLeft, false );
     pApp->setDockEnabled ( dw, Qt::DockRight, false );
     break;
   default:
-    dk = Qt::DockTornOff;
     dw->setHorizontallyStretchable(true);
     dw->setVerticallyStretchable(true);
     pApp->setDockEnabled ( dw, Qt::DockTop, false );
     break;
   }
-  pApp->addDockWindow(dw, dk);
-/*
-  if (sCompanion)
-  {
-    FCDockWindow* pcWnd = getDockWindow(sCompanion);
-    assert(pcWnd);
-    pApp->addToolWindow( pcDocWindow, pos, pcWnd, percent, str, name);
-  }
-  else
-  {
-    pApp->addToolWindow( pcDocWindow, pos, pApp->m_pMdi, percent, str, name);
-  }*/
+  pApp->addDockWindow( dw, pos );
 }
 
-FCDockWindow* FCCustomWidgetManager::getDockWindow(const char* name)
+/**
+ * Returns the dock window bar by name.
+ * If it does not exist it returns 0.
+ */
+FCDockWindow* CustomWidgetManager::getDockWindow( const QString& name )
 {
-  std::map <std::string,FCDockWindow*>::iterator It = d->_clDocWindows.find(name);
+  QMap <QString,FCDockWindow*>::Iterator It = d->_clDocWindows.find( name );
 
   if (It!=d->_clDocWindows.end())
-    return It->second;
+    return It.data();
   else
-    return NULL;
+    return 0L;
 }
 
-std::vector<FCDockWindow*> FCCustomWidgetManager::getDockWindows()
+/**
+ * Returns a vector of all dock windows.
+ */
+QPtrList<FCDockWindow> CustomWidgetManager::getDockWindows()
 {
-  std::vector<FCDockWindow*> dockWindows;
-  for (std::map <std::string,FCDockWindow*>::iterator It = d->_clDocWindows.begin(); It!=d->_clDocWindows.end(); ++It)
-    dockWindows.push_back(It->second);
+  QPtrList<FCDockWindow> dockWindows;
+  for ( QMap <QString,FCDockWindow*>::Iterator It = d->_clDocWindows.begin(); It!=d->_clDocWindows.end(); ++It)
+    dockWindows.append( It.data() );
 
   return dockWindows;
 }
 
-void FCCustomWidgetManager::delDockWindow(const char* name)
+/**
+ * Deletes the specified dock window if it exists.
+ */
+void CustomWidgetManager::removeDockWindow( const QString& name )
 {
-  std::map <std::string,FCDockWindow*>::iterator It = d->_clDocWindows.find(name);
+  QMap <QString,FCDockWindow*>::Iterator It = d->_clDocWindows.find( name );
   if( It!=d->_clDocWindows.end() )
   {
-    delete It->second;
+    delete It.data();
     d->_clDocWindows.erase(It);
   }
 }
-void FCCustomWidgetManager::show()
+
+void CustomWidgetManager::show()
 {
   d->_pclStackBar->show();
 }
 
-void FCCustomWidgetManager::hide()
+void CustomWidgetManager::hide()
 {
   d->_pclStackBar->hide();
 }

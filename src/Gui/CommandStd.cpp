@@ -72,7 +72,6 @@
 #include "Process.h"
 #include "Application.h"
 #include "Document.h"
-#include "Widgets.h"
 #include "Splashscreen.h"
 #include "Command.h"
 #include "HtmlView.h"
@@ -1366,7 +1365,7 @@ FCCmdCreateToolOrCmdBar::FCCmdCreateToolOrCmdBar()
 
 void FCCmdCreateToolOrCmdBar::Activated(int iMsg)
 {
-  FCDlgCreateToolOrCmdBar dlg(GetAppWnd(),"CreateToolbarDialog",true);
+  CreateToolBarDialog dlg(GetAppWnd(),"CreateToolbarDialog",true);
   dlg.exec();
 }
 

@@ -21,15 +21,16 @@
 #define __Label_h__
 
 
+#ifndef _PreComp_
+//#include <TDocStd_Document.hxx>
+# include <TDF_Label.hxx>
+//#include <TDF_ChildIterator.hxx>
+//#include <map>
+//#include <vector>
+#endif
 
 #include "../Base/PyExportImp.h"
 //#include "../Base/Observer.h"
-//#include <TDocStd_Document.hxx>
-//#include <TDF_Label.hxx>
-//#include <TDF_ChildIterator.hxx>
-
-//#include <map>
-//#include <vector>
 
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )

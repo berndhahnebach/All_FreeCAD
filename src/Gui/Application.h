@@ -54,12 +54,13 @@ class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
 class FCViewBar;
-class FCCustomWidgetManager;
 class FCView;
 class FCCommandManager;
 class QSplashScreen;
 
-
+namespace Gui{
+class CustomWidgetManager;
+} //namespace Gui
 
 /** The Applcation main class
  *  This is the central class of the GUI 
@@ -125,7 +126,7 @@ public:
 	FCCommandManager &GetCommandManager(void);
 	
 	/// Returns the widget manager
-	FCCustomWidgetManager* GetCustomWidgetManager(void);
+  Gui::CustomWidgetManager* GetCustomWidgetManager(void);
 
 	/** @name status bar handling */
 	//@{	
@@ -246,10 +247,6 @@ protected slots:
 
 private:
   struct ApplicationWindowP* d;
-
-  // friends
-  //
-  friend class FCCustomWidgetManager;
 };
 
 

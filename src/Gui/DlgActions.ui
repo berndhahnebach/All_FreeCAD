@@ -149,7 +149,7 @@
                         <string>Menu text:</string>
                     </property>
                 </widget>
-                <widget class="FCAccelLineEdit" row="6" column="2" rowspan="1" colspan="3">
+                <widget class="Gui::AccelLineEdit" row="6" column="2" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>actionAccel</cstring>
                     </property>
@@ -301,7 +301,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCAccelLineEdit</class>
+        <class>Gui::AccelLineEdit</class>
         <header location="local">Widgets.h</header>
         <sizehint>
             <width>100</width>
@@ -335,6 +335,6 @@
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>fcaccellineedit.h</includehint>
+    <includehint>accellineedit.h</includehint>
 </includehints>
 </UI>

@@ -74,19 +74,19 @@ DlgCustomCommandsImp::~DlgCustomCommandsImp()
 /** Applies all your changes */
 void DlgCustomCommandsImp::apply()
 {
-  std::vector<FCToolBar*> bars;
-  std::vector<FCToolBar*>::iterator it;
+  Gui::CustomToolBar* bar;
+  QPtrList<Gui::CustomToolBar> bars;
 
   bars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
-  for (it = bars.begin(); it!=bars.end(); ++it)
+  for ( bar = bars.first(); bar; bar = bars.next() )
   {
-    (*it)->saveXML();
+    bar->saveXML();
   }
 
-  bars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
-  for (it = bars.begin(); it!=bars.end(); ++it)
+  bars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
+  for ( bar = bars.first(); bar; bar = bars.next() )
   {
-    (*it)->saveXML();
+    bar->saveXML();
   }
 }
 
@@ -116,7 +116,7 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
     std::vector<FCCommand*> aCmds = _alCmdGroups[group.latin1()];
     for (std::vector<FCCommand*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
-      (void) new FCCmdViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
+      (void) new Gui::CommandViewItem(IconView1, (*it)->GetName(), (*it)->GetAction());
     }
   }
 }

@@ -29,6 +29,7 @@
 
 #include "DlgActionsImp.h"
 #include "Application.h"
+#include "FileDialog.h"
 #include "Tools.h"
 #include "Command.h"
 #include "BitmapFactory.h"
@@ -90,7 +91,7 @@ void DlgCustomActionsImp::showPixmaps()
   std::vector<FCCommand*> aclCurMacros = rclMan.GetGroupCommands("Macros");
   for (std::vector<FCCommand*>::iterator it = aclCurMacros.begin(); it != aclCurMacros.end(); ++it)
   {
-    QListViewItem* item = new QListViewItem(CustomActions,FCListView::lastItem(CustomActions), (*it)->GetName());
+    QListViewItem* item = new QListViewItem(CustomActions,CustomActions->lastItem(), (*it)->GetName());
     if (!(*it)->GetAction()->iconSet().isNull())
     {
       QPixmap p = (*it)->GetAction()->iconSet().pixmap();
@@ -249,7 +250,7 @@ void DlgCustomActionsImp::onAddCustomAction()
     macro = new FCScriptCommand(actionName->text().latin1());
     _aclNewMacros.push_back(macro);
 
-    QListViewItem* item = new QListViewItem(CustomActions,FCListView::lastItem(CustomActions), actionName->text());
+    QListViewItem* item = new QListViewItem(CustomActions,CustomActions->lastItem(), actionName->text());
     
     if (PixmapLabel->pixmap() != NULL)
     {

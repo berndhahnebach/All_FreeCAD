@@ -28,7 +28,7 @@
 #endif
 
 #include "ReportView.h"
-#include "Widgets.h"
+#include "FileDialog.h"
 #include "PythonEditor.h"
 
 using namespace Gui;

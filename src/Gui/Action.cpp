@@ -40,7 +40,7 @@ using namespace Gui;
 using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
 
-std::vector<QString> ActionDrag::actions;
+QStringList ActionDrag::actions;
 
 ActionDrag::ActionDrag ( QString action, QWidget * dragSource , const char * name  )
   : QStoredDrag("Gui::ActionDrag", dragSource, name)

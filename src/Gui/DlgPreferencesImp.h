@@ -43,7 +43,7 @@ namespace Dialog {
  * inherited by @ref PrefWidget class like:
  * FCEditSpinBox, FCLineEdit, FCComboBox, FCListBox, FCCheckBox, FCRadioButton and FCSlider
  *
- * The implementation class must inherit the Qt-generated class and @ref PreferencePage.
+ * The implementation class must inherit from the Qt-generated class and @ref PreferencePage.
  * For each element inside your page you want to save or load its settings automatically you 
  * have to call append(<objectname>->getHandler()) in the constructor of your class. Furthermore
  * you have to make sure to have specified the "prefEntry" and "prefPath" properties for each element

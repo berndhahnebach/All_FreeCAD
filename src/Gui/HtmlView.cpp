@@ -25,10 +25,14 @@
 
 #ifndef _PreComp_
 # include <qaction.h>
+# include <qbitmap.h>
 # include <qbuttongroup.h>
 # include <qcursor.h>
+# include <qfiledialog.h>
+# include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qprocess.h>
+# include <qdragobject.h>
 # include <qstylesheet.h>
 # include <qthread.h>
 # include <qurl.h>

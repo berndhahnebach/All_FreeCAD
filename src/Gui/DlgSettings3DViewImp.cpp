@@ -33,6 +33,7 @@
 #endif
 
 #include "DlgSettings3DViewImp.h"
+#include "FileDialog.h"
 #include "../Base/Console.h"
 
 using namespace Gui::Dialog;

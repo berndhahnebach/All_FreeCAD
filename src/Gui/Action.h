@@ -51,7 +51,7 @@ public:
   static bool decode ( const QMimeSource * e, QString&  action );
 
 public:
-  static std::vector<QString> actions;
+  static QStringList actions;
 };
 
 /**

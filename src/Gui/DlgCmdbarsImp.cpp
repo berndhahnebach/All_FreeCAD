@@ -55,12 +55,12 @@ DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
 void DlgCustomCmdbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
-  FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());
+  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommandBar(text.latin1());
   toolbar->clearUp();
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-  std::vector<std::string> items;
+  QStringList items;
   QListViewItem* item = ToolbarActions->firstChild();
   for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
   {
@@ -75,11 +75,11 @@ void DlgCustomCmdbarsImp::apply()
     if (pCom != NULL)
     {
       if (pCom->addTo(toolbar))
-        items.push_back(pCom->GetName());
+        items.push_back( pCom->GetName() );
     }
   }
 
-  toolbar->setItems(items);
+  toolbar->setCustomItems( items );
   toolbar->saveXML();
 }
 
@@ -92,16 +92,18 @@ void DlgCustomCmdbarsImp::cancel()
 void DlgCustomCmdbarsImp::updateData()
 {
   ComboToolbars->clear();
-  _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
-  for ( std::vector<FCToolBar*>::iterator it3 = _aclToolbars.begin(); it3 != _aclToolbars.end(); ++it3 )
+  _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
+
+  Gui::CustomToolBar* bar;
+  for ( bar = _aclToolbars.first(); bar; bar = _aclToolbars.next() )
   {
-    if ((*it3)->canModify())
-      ComboToolbars->insertItem((*it3)->name());
+    if (bar->canModify())
+      ComboToolbars->insertItem( bar->name() );
   }
 
   if (ComboToolbars->count() > 0)
   {
-    onItemActivated(ComboToolbars->text(0));
+    onItemActivated( ComboToolbars->text( 0 ) );
   }
   else
   {
@@ -113,7 +115,7 @@ void DlgCustomCmdbarsImp::updateData()
 /** Creates new command bar */
 void DlgCustomCmdbarsImp::onCreateToolbar()
 {
-  QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCmdBars());
+  QString def = QString("commandbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countCommandBars());
   QString text = QInputDialog::getText(tr("New command bar"), tr("Specify the name of the new command bar, please."),
 #if QT_VERSION > 230
                                       QLineEdit::Normal,
@@ -122,9 +124,9 @@ void DlgCustomCmdbarsImp::onCreateToolbar()
 
   if (!text.isNull() && !text.isEmpty())
   {
-    FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(text.latin1());
+    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommandBar(text.latin1());
     toolbar->show();
-    _aclToolbars.push_back(toolbar);
+    _aclToolbars.append( toolbar );
     ComboToolbars->insertItem(text);
 
     // enable the widgets
@@ -136,20 +138,21 @@ void DlgCustomCmdbarsImp::onCreateToolbar()
 /** Deletes a command bar */
 void DlgCustomCmdbarsImp::onDeleteToolbar()
 {
-  std::vector<std::pair<std::string, bool> > items;
-  std::vector<FCToolBar*> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBars();
-  for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
-    items.push_back(std::make_pair<std::string, bool>((*it)->name(), (*it)->canModify()));
+  QValueList<CheckListItem> items;
+  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getCommdandBars();
+  Gui::CustomToolBar* it;
+  for ( it = tb.first(); it; it = tb.next() )
+    items.append( qMakePair( QString(it->name()), it->canModify() ) );
 
-  FCCheckListDlg checklists(this, "", true) ;
+  CheckListDialog checklists(this, "", true) ;
   checklists.setCaption( tr("Delete selected command bars") );
-  checklists.setItems(items);
+  checklists.setCheckableItems( items );
   if (checklists.exec())
   {
-    std::vector<std::string> checked = checklists.getCheckedItems();
-    for (std::vector<std::string>::iterator it = checked.begin(); it!=checked.end(); ++it)
+    QStringList checked = checklists.getCheckedItems();
+    for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
     {
-      ApplicationWindow::Instance->GetCustomWidgetManager()->delCmdBar(it->c_str());
+      ApplicationWindow::Instance->GetCustomWidgetManager()->removeCommandBar( (*it).latin1() );
     }
 
     updateData();

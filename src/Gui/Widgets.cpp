@@ -61,111 +61,21 @@
 using namespace Gui;
 
 
-QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter,
-                                     QWidget *parent, const char* name )
-{
-  return getOpenFileName( startWith, filter, parent, name, QString::null  );
-}
-
-QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent,
-                                     const char* name, const QString& caption )
-{
-  return QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
-}
-
-QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter,
-                                     QWidget *parent, const char* name )
-{
-  return getSaveFileName( startWith, filter, parent, name, QString::null  );
-}
-
-QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent,
-                                     const char* name, const QString& caption )
-{
-  return QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
-}
-
-QString FileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent,
-                                      const QString & caption )
-{
-  FileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
-  fd.setCaption(caption);
-  if ( fd.exec() )
-    return fd.selectedFileName();
-  else
-    return QString("");
-}
-
-FileDialog::FileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
-    : QFileDialog(parent, name, modal)
+/**
+ * Constructs a message box with no text and a button with the label "OK".
+ * If \a parent is 0, the message box becomes an application-global modal dialog box. 
+ * If \a parent is a widget, the message box becomes modal relative to \a parent.
+ * The \a parent and \a name arguments are passed to the QMessageBox constructor.
+ */
+CheckMessageBox::CheckMessageBox(QWidget * parent, const char * name)
+  : QMessageBox(parent, name), checkBox(0L), layout(0L)
 {
 }
 
-FileDialog::FileDialog (Mode mode, const QString& dirName, const QString& filter,
-                        QWidget* parent, const char* name, bool modal)
-    : QFileDialog(dirName, filter, parent, name, modal)
-{
-  setMode(mode);
-}
-
-FileDialog::~FileDialog()
-{
-}
-
-void FileDialog::accept()
-{
-  QString fn = selectedFileName();
-
-  if (QFile(fn).exists() && mode() == AnyFile)
-  {
-    QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
-    if (QMessageBox::information(this, "Existing file", msg, "Yes", "No", QString::null, 1) == 0)
-      QFileDialog::accept();
-  }
-  else
-    QFileDialog::accept();
-}
-
-QString FileDialog::selectedFileName()
-{
-  QString fn = selectedFile();
-
-  // if empty do nothing
-  if (fn.isEmpty())
-    return fn;
-
-  // search for extension
-  int pos = fn.findRev('.');
-  if (pos == -1)
-  {
-    // try to figure out the selected filter
-    QString filt = selectedFilter();
-    int dot = filt.find('*');
-    int blank = filt.find(' ', dot);
-    int brack = filt.find(')', dot);
-    if (dot != -1 && blank != -1)
-    {
-      QString sub = filt.mid(dot+1, blank-dot-1);
-      fn = fn + sub;
-    }
-    else if (dot != -1 && brack != -1)
-    {
-      QString sub = filt.mid(dot+1, brack-dot-1);
-      fn = fn + sub;
-    }
-  }
-
-  return fn;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-FCMessageBox::FCMessageBox(QWidget * parent, const char * name)
-    : QMessageBox(parent, name), checkBox(0L), layout(0L)
-{
-}
-
-FCMessageBox::FCMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
+/**
+ * Constructs a message box with a \a caption, a \a text, an \a icon, and up to three buttons.
+ */
+CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
                            int button2, QWidget * parent, const char * name, bool modal, WFlags f)
     : QMessageBox(caption, text, icon, button0, button1, button2, parent, name, modal, f),
     checkBox(0L), layout(0L)
@@ -193,7 +103,10 @@ FCMessageBox::FCMessageBox(const QString & caption, const QString & text, Icon i
   layout->addWidget(checkBox, 0, 0);
 }
 
-FCMessageBox::~FCMessageBox()
+/**
+ * Destroys the message box.
+ */
+CheckMessageBox::~CheckMessageBox()
 {
   if (checkBox)
     checkBox->getHandler()->onSave();
@@ -201,17 +114,25 @@ FCMessageBox::~FCMessageBox()
   delete layout;
 }
 
-int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text,
-                              int button0, int button1, int button2)
+/**
+ * Opens an information message box with the caption \a caption and the text \a text. 
+ * The dialog may have up to three buttons. 
+ */
+int CheckMessageBox::information(QWidget * parent, const QString & caption, const QString & text,
+                            int button0, int button1, int button2)
 {
-  FCMessageBox dlg(caption, text, Information, button0, button1, button2, parent,  "FCMessageBox");
+  CheckMessageBox dlg(caption, text, Information, button0, button1, button2, parent,  "CheckMessageBox");
   dlg.exec();
   return 0;
 }
 
-int FCMessageBox::information(QWidget * parent, const QString & caption, const QString & text,
-                              const QString & button0Text, const QString & button1Text,
-                              const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+/**
+ * Displays an information message box with caption \a caption, text \a text and one, two or 
+ * three buttons. Returns the index of the button that was clicked (0, 1 or 2).
+ */
+int CheckMessageBox::information( QWidget * parent, const QString & caption, const QString & text,
+                             const QString & button0Text, const QString & button1Text,
+                             const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber )
 {
   int b[3];
   b[0] = 1;
@@ -227,9 +148,9 @@ int FCMessageBox::information(QWidget * parent, const QString & caption, const Q
       b[i] += QMessageBox::Escape;
   }
 
-  FCMessageBox* dlg=0L;
+  CheckMessageBox* dlg=0L;
   try{
-    dlg=new FCMessageBox( caption, text, Information, b[0], b[1], b[2], parent, "FCMessageBox");
+    dlg=new CheckMessageBox( caption, text, Information, b[0], b[1], b[2], parent, "CheckMessageBox");
     if ( !button0Text.isEmpty() )
       dlg->setButtonText(0, button0Text);
     if ( !button1Text.isEmpty() )
@@ -245,392 +166,93 @@ int FCMessageBox::information(QWidget * parent, const QString & caption, const Q
   }
 }
 
-int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
-                            int button0, int button1, int button2 )
+/** \todo
+ */
+int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
+                          int button0, int button1, int button2 )
 {
   return 0;
 }
 
-int FCMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
-                            const QString & button0Text, const QString & button1Text,
-                            const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+/** \todo
+ */
+int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
+                          const QString & button0Text, const QString & button1Text,
+                          const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
 {
   return 0;
 }
 
-int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
-                             int button0, int button1, int button2 )
+/** \todo
+ */
+int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
+                           int button0, int button1, int button2 )
 {
   return 0;
 }
 
-int FCMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
-                             const QString & button0Text, const QString & button1Text,
-                             const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+/** \todo
+ */
+int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text, const QString & button1Text,
+                           const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
 {
   return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------
 
-namespace Gui {
-struct ProgressBarPrivate
-{
-  int nElapsed; // in milliseconds
-  int nRemaining;
-  QTime measureTime;
-  WaitCursor* cWaitCursor;
-};
-}
-
-ProgressBar* ProgressBar::_pclSingleton = 0L;
-
-ProgressBar* ProgressBar::Instance()
-{
-  // not initialized?
-  if ( !_pclSingleton )
-  {
-    _pclSingleton = new ProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
-  }
-
-  return _pclSingleton;
-}
-
-ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
-    : QProgressBar (parent, name, f), SequencerBase()
-{
-  d = new Gui::ProgressBarPrivate;
-  d->cWaitCursor = 0L;
-
-  setFixedWidth(120);
-  // this style is very nice ;-)
-  //  setIndicatorFollowsStyle(false);
-  hide();
-}
-
-ProgressBar::~ProgressBar ()
-{
-  delete d;
-}
-
-void ProgressBar::enterControlEvents()
-{
-  QWidgetList  *list = QApplication::allWidgets();
-  QWidgetListIt it( *list );         // iterate over the widgets
-  QWidget * w;
-  while ( (w=it.current()) != 0 ) {  // for each widget...
-    ++it;
-    if (w != this)
-      w->installEventFilter(this);
-  }
-  delete list;                      // delete the list, not the widgets
-}
-
-void ProgressBar::leaveControlEvents()
-{
-  QWidgetList  *list = QApplication::allWidgets();
-  QWidgetListIt it( *list );         // iterate over the widgets
-  QWidget * w;
-  while ( (w=it.current()) != 0 ) {  // for each widget...
-    ++it;
-    if (w != this)
-      w->removeEventFilter(this);
-  }
-  delete list;                      // delete the list, not the widgets
-}
-
-bool ProgressBar::eventFilter(QObject* o, QEvent* e)
-{
-  if (isRunning() && e != 0L)
-  {
-    switch ( e->type() )
-    {
-      // check for ESC
-    case QEvent::KeyPress:
-      {
-        QKeyEvent* ke = (QKeyEvent*)e;
-        if (ke->key() == Qt::Key_Escape)
-        {
-          // cancel the operation
-          tryToCancel();
-        }
-
-        return true;
-      } break;
-
-      // ignore alle these events
-    case QEvent::KeyRelease:
-    case QEvent::Enter:
-    case QEvent::Leave:
-    case QEvent::Close:
-    case QEvent::MouseButtonDblClick:
-      {
-        return true;
-      } break;
-
-      // do a system beep and ignore the event
-    case QEvent::MouseButtonPress:
-      {
-        QApplication::beep();
-        return true;
-      } break;
-
-    default:
-      {
-      }  break;
-    }
-  }
-
-  return QProgressBar::eventFilter(o, e);
-}
-
-bool ProgressBar::start(const char* pszStr, unsigned long steps)
-{
-  // base stuff
-  bool ret = SequencerBase::start(pszStr, steps);
-
-  setTotalSteps(nTotalSteps);
-
-  if ( pendingOperations() == 1 )
-  {
-    show();
-    enterControlEvents();
-    d->nElapsed = 0;
-    d->measureTime.start();
-    d->cWaitCursor = new Gui::WaitCursor;
-  }
-  else
-    d->measureTime.restart();
-
-  return ret;
-}
-
-bool ProgressBar::next()
-{
-  if (!wasCanceled())
-  {
-    setProgress(nProgress++);
-
-    // estimate the remaining time in milliseconds
-    int diff = d->measureTime.restart();
-    d->nElapsed += diff;
-    d->nRemaining = d->nElapsed * ( totalSteps() - nProgress ) / nProgress;
-  }
-  else
-  {
-    // force to abort the operation
-    abort();
-  }
-
-  qApp->processEvents();
-
-  return nProgress < nTotalSteps;
-}
-
-void ProgressBar::resetData()
-{
-  reset();
-  setTotalSteps(0);
-  setProgress(-1);
-  hide();
-  delete d->cWaitCursor;
-  d->cWaitCursor = 0L;
-  leaveControlEvents();
-
-  SequencerBase::resetData();
-}
-
-void ProgressBar::abort()
-{
-  //resets
-  resetData();
-
-  bool bMute = GuiConsoleObserver::bMute;
-  GuiConsoleObserver::bMute = true;
-  Base::Exception exc("Aborting...");
-  GuiConsoleObserver::bMute = bMute;
-  throw exc;
-}
-
-void ProgressBar::setText (const char* pszTxt)
-{
-  // print message to the statusbar
-  QString txt = pszTxt ? pszTxt : "";
-  ApplicationWindow::Instance->statusBar()->message(txt);
-}
-
-/*
-void ProgressBar::drawContents( QPainter *p )
-{
-  const int total_steps = totalSteps();
-  const int progress_val = progress();
-  QString progress_str;
-
-  setIndicator ( progress_str, progress_val, total_steps );
-
-  const QRect bar = contentsRect();
-
-  if (total_steps) 
-  {
-    int u = bar.width();
-    int pw;
-
-    if ( u > 0 && progress_val >= INT_MAX / u && total_steps >= u )
-      pw = (u * (progress_val / u)) / (total_steps / u);
-    else
-      pw = bar.width() * progress_val / total_steps;  
-
-    p->setPen( colorGroup().highlightedText() );
-    p->setClipRect( bar.x(), bar.y(), pw, bar.height() );
-    p->fillRect( bar, colorGroup().brush( QColorGroup::Highlight ) );
-    p->drawText( bar, AlignCenter, progress_str );
-
-    p->setClipRect( bar.x()+pw, bar.y(), bar.width()-pw, bar.height() );
-  }
-
-  if ( progress_val != total_steps )
-    p->fillRect( bar, colorGroup().brush( QColorGroup::Background ) );
-
-#if QT_VERSION <= 230
-  p->setPen( style()==MotifStyle? colorGroup().foreground() : colorGroup().text() );
-#else
-  p->setPen( style().isA("QMotifStyle")? colorGroup().foreground() : colorGroup().text());
-#endif
-  p->drawText( bar, AlignCenter, progress_str );
-}
-*/
-bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
-{
-  return QProgressBar::setIndicator(indicator, progress, totalSteps);
-  /*
-    if ( totalSteps == 0 )
-      return QProgressBar::setIndicator(indicator, progress, totalSteps);
-    bool ret = false;
-    if (progress != -1)
-    {
-      int nRemaining = d->nRemaining;
-      nRemaining /= 1000;
-
-      // get time format
-      int second = nRemaining %  60; nRemaining /= 60;
-      int minute = nRemaining %  60; nRemaining /= 60;
-      int hour   = nRemaining %  60;
-      QString h,m,s;
-      if (hour < 10)   
-        h = QString("0%1").arg(hour);
-      else
-        h = QString("%1").arg(hour);
-      if (minute < 10) 
-        m = QString("0%1").arg(minute);
-      else
-        m = QString("%1").arg(minute);
-      if (second < 10) 
-        s = QString("0%1").arg(second);
-      else
-        s = QString("%1").arg(second);
-
-      // nice formating for output
-      int steps = (100 * progress) / totalSteps;
-      QString ind = QString("%1% (%2:%3:%4)").arg(steps).arg(h).arg(m).arg(s);
-
-      if (ind != indicator)
-      {
-        indicator = ind;
-        ret = true;
-      }
-    }
-    else
-    {
-      indicator = QString::null;
-    }
-
-    return ret;
-  */
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-FCListView::FCListView ( QWidget * parent, const char * name, WFlags f )
-{
-}
-
-FCListView::FCListView ( QWidget * parent, const char * name )
-{
-}
-
-FCListView::~FCListView ()
-{
-}
-
-QListViewItem* FCListView::lastItem () const
-{
-  QListViewItem* item = firstChild();
-  if ( item )
-  {
-    while ( item->nextSibling() || item->firstChild() )
-    {
-      if ( item->nextSibling() )
-        item = item->nextSibling();
-      else
-        item = item->firstChild();
-    }
-  }
-
-  return item;
-}
-
-QListViewItem* FCListView::lastItem (QListView* listview)
-{
-  QListViewItem* item = listview->firstChild();
-  if ( item )
-  {
-    while ( item->nextSibling() || item->firstChild() )
-    {
-      if ( item->nextSibling() )
-        item = item->nextSibling();
-      else
-        item = item->firstChild();
-    }
-  }
-
-  return item;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-class FCCmdViewItemPrivate
+namespace Gui{
+class CommandViewItemPrivate
 {
 public:
   QString sAction;
   QString description;
 };
+} // namespace Gui
 
-FCCmdViewItem::FCCmdViewItem ( QIconView * parent, QString Action, QAction* pAct)
-    : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
+/**
+ * Constructs an command view item and inserts it into the icon view \a parent using 
+ * the action's text as the text and the actoin's icon as the icon.
+ */
+CommandViewItem::CommandViewItem ( QIconView * parent, const QString& action, QAction* pAct )
+  : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
 {
-  d = new FCCmdViewItemPrivate;
-  d->sAction = Action;
+  d = new CommandViewItemPrivate;
+  d->sAction = action;
   d->description = pAct->toolTip();
 }
 
-FCCmdViewItem::~FCCmdViewItem ()
+/**
+ * Destroys the icon view item and tells the parent icon view that the item has been destroyed.
+ */
+CommandViewItem::~CommandViewItem ()
 {
   delete d;
 }
 
-QString FCCmdViewItem::text() const
+/**
+ * Returns the description text of the command view item.
+ */
+QString CommandViewItem::text() const
 {
   return d->description;
 }
 
-QString FCCmdViewItem::GetAction()
+/**
+ * Returns the command name of the command view item.
+ */
+QString CommandViewItem::commandName()
 {
   return d->sAction;
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------
 
-FCCmdView::FCCmdView ( QWidget * parent, const char * name, WFlags f )
+/**
+ * Constructs an empty command view called \a name, with parent \a parent and using the widget flags \a f.
+ */
+CommandView::CommandView ( QWidget * parent, const char * name, WFlags f )
     : QIconView(parent, name, f)
 {
   // settings for the view showing the icons
@@ -643,19 +265,31 @@ FCCmdView::FCCmdView ( QWidget * parent, const char * name, WFlags f )
   setSelectionMode(Extended);
 
   // clicking on a icon a signal with its description will be emitted
-  connect(this, SIGNAL ( currentChanged ( QIconViewItem * ) ), this, SLOT ( slotSelectionChanged(QIconViewItem * ) ) );
+  connect(this, SIGNAL ( currentChanged ( QIconViewItem * ) ), this, SLOT ( onSelectionChanged(QIconViewItem * ) ) );
 }
 
-FCCmdView::~FCCmdView ()
+/**
+ * Destroys the icon view and deletes all items.
+ */
+CommandView::~CommandView ()
 {
 }
 
-void FCCmdView::slotSelectionChanged(QIconViewItem * item)
+/**
+ * This slot is called when a new item becomes current. \a item is the new current item 
+ * (or 0 if no item is now current). This slot emits the emitSelectionChanged()
+ * signal for its part.
+ */
+void CommandView::onSelectionChanged(QIconViewItem * item)
 {
   emit emitSelectionChanged(item->text());
 }
 
-QDragObject * FCCmdView::dragObject ()
+/**
+ * Returns the QDragObject that should be used for drag-and-drop. This function is called 
+ * by the icon view when starting a drag to get the dragobject that should be used for the drag. 
+ */
+QDragObject * CommandView::dragObject ()
 {
   ActionDrag::actions.clear();
   if ( !currentItem() )
@@ -668,9 +302,9 @@ QDragObject * FCCmdView::dragObject ()
   {
     if ( item->isSelected() )
     {
-      if (typeid(*item) == typeid(FCCmdViewItem))
+      if (typeid(*item) == typeid(CommandViewItem))
       {
-        ad = new ActionDrag( ((FCCmdViewItem*)item)->GetAction(), this );
+        ad = new ActionDrag( ((CommandViewItem*)item)->commandName(), this );
         if (bFirst)
         {
           bFirst = false;
@@ -684,24 +318,26 @@ QDragObject * FCCmdView::dragObject ()
   return ad;
 }
 
-/*
- *  Constructs a FCDlgCreateToolOrCmdBar which is a child of 'parent', with the 
+// ------------------------------------------------------------------------------
+
+/**
+ *  Constructs a CreateToolBarDialog which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-FCDlgCreateToolOrCmdBar::FCDlgCreateToolOrCmdBar( QWidget* parent,  const char* name, bool modal, WFlags fl )
+CreateToolBarDialog::CreateToolBarDialog( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
   if ( !name )
-    setName( "FCDlgCreateToolOrCmdBar" );
+    setName( "CreateToolBarDialog" );
   resize( 242, 179 );
   setProperty( "caption", tr( "Create Toolbar and/or Command bar" ) );
   setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-  FCDlgCreateToolOrCmdBarLayout = new QGridLayout( this );
-  FCDlgCreateToolOrCmdBarLayout->setSpacing( 6 );
-  FCDlgCreateToolOrCmdBarLayout->setMargin( 11 );
+  CreateToolBarDialogLayout = new QGridLayout( this );
+  CreateToolBarDialogLayout->setSpacing( 6 );
+  CreateToolBarDialogLayout->setMargin( 11 );
 
   GroupBox1 = new QGroupBox( this, "GroupBox1" );
   GroupBox1->setProperty( "title", tr( "Toolbar/Command bar" ) );
@@ -734,7 +370,7 @@ FCDlgCreateToolOrCmdBar::FCDlgCreateToolOrCmdBar( QWidget* parent,  const char* 
 
   GroupBox1Layout->addWidget( CheckCreateToolBar, 2, 0 );
 
-  FCDlgCreateToolOrCmdBarLayout->addWidget( GroupBox1, 0, 0 );
+  CreateToolBarDialogLayout->addWidget( GroupBox1, 0, 0 );
 
   Layout2 = new QHBoxLayout;
   Layout2->setSpacing( 6 );
@@ -753,9 +389,9 @@ FCDlgCreateToolOrCmdBar::FCDlgCreateToolOrCmdBar( QWidget* parent,  const char* 
   buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
   Layout2->addWidget( buttonCancel );
 
-  FCDlgCreateToolOrCmdBarLayout->addLayout( Layout2, 2, 0 );
+  CreateToolBarDialogLayout->addLayout( Layout2, 2, 0 );
   QSpacerItem* spacer_2 = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  FCDlgCreateToolOrCmdBarLayout->addItem( spacer_2, 1, 0 );
+  CreateToolBarDialogLayout->addItem( spacer_2, 1, 0 );
 
   // signals and slots connections
   connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
@@ -768,32 +404,42 @@ FCDlgCreateToolOrCmdBar::FCDlgCreateToolOrCmdBar( QWidget* parent,  const char* 
   setTabOrder( buttonOk, buttonCancel );
 }
 
-/*
+/**
  *  Destroys the object and frees any allocated resources
  */
-FCDlgCreateToolOrCmdBar::~FCDlgCreateToolOrCmdBar()
+CreateToolBarDialog::~CreateToolBarDialog()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-void FCDlgCreateToolOrCmdBar::accept ()
+/**
+ * Creates a new toolbar or command bar.
+ */
+void CreateToolBarDialog::accept ()
 {
   QString txt = LineEditName->text();
   if (CheckCreateToolBar->isChecked())
-    ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(txt.latin1());
+    ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar( txt );
   if (CheckCreateCmdBar->isChecked())
-    ApplicationWindow::Instance->GetCustomWidgetManager()->getCmdBar(txt.latin1());
+    ApplicationWindow::Instance->GetCustomWidgetManager()->getCommandBar(txt.latin1());
   QDialog::accept();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------
 
-FCAccelLineEdit::FCAccelLineEdit ( QWidget * parent, const char * name )
-    : QLineEdit(parent, name)
+/**
+ * Constructs a line edit with no text.
+ * The \a parent and \a name arguments are sent to the QLineEdit constructor.
+ */
+AccelLineEdit::AccelLineEdit ( QWidget * parent, const char * name )
+  : QLineEdit(parent, name)
 {
 }
 
-void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
+/**
+ * Checks which keys are pressed and show it as text.
+ */
+void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
 {
   QString txt;
   clear();
@@ -824,25 +470,25 @@ void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------
 
-/*
- *  Constructs a FCCheckListDlg which is a child of 'parent', with the
+/**
+ *  Constructs a CheckListDialog which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
+CheckListDialog::CheckListDialog( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
   if ( !name )
-    setName( "FCCheckListDlg" );
+    setName( "CheckListDialog" );
   resize( 402, 270 );
   setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-  FCCheckListDlgLayout = new QGridLayout( this );
-  FCCheckListDlgLayout->setSpacing( 6 );
-  FCCheckListDlgLayout->setMargin( 11 );
+  CheckListDialogLayout = new QGridLayout( this );
+  CheckListDialogLayout->setSpacing( 6 );
+  CheckListDialogLayout->setMargin( 11 );
 
   Layout2 = new QHBoxLayout;
   Layout2->setSpacing( 6 );
@@ -861,7 +507,7 @@ FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, 
   buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
   Layout2->addWidget( buttonCancel );
 
-  FCCheckListDlgLayout->addLayout( Layout2, 1, 0 );
+  CheckListDialogLayout->addLayout( Layout2, 1, 0 );
 
   GroupBox1 = new QGroupBox( this, "GroupBox1" );
   GroupBox1->setColumnLayout(0, Qt::Vertical );
@@ -878,49 +524,58 @@ FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, 
 
   GroupBox1Layout->addWidget( ListView, 0, 0 );
 
-  FCCheckListDlgLayout->addWidget( GroupBox1, 0, 0 );
+  CheckListDialogLayout->addWidget( GroupBox1, 0, 0 );
 
   // signals and slots connections
   connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
   connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
 }
 
-/*
+/**
  *  Destroys the object and frees any allocated resources
  */
-FCCheckListDlg::~FCCheckListDlg()
+CheckListDialog::~CheckListDialog()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-void FCCheckListDlg::setItems(const std::vector<std::string>& items)
+/**
+ * Sets the items to the dialog's list view. By default all items are checkable..
+ */
+void CheckListDialog::setCheckableItems( const QStringList& items )
 {
-  for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
-    this->items.push_back(std::make_pair<std::string, bool>(*it, true));
+  for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+  {
+    QCheckListItem* item = new QCheckListItem( ListView, *it, QCheckListItem::CheckBox );
+    item->setEnabled( false );
+  }
 }
 
-void FCCheckListDlg::setItems(const std::vector<std::pair<std::string, bool> >& items)
+/**
+ * Sets the items to the dialog's list view. If the boolean type of a CheckListItem
+ * is set to false the item is not checkable any more.
+ */
+void CheckListDialog::setCheckableItems( const QValueList<CheckListItem>& items )
 {
-  this->items = items;
+  for ( QValueList<CheckListItem>::ConstIterator it = items.begin(); it!=items.end(); ++it )
+  {
+    QCheckListItem* item = new QCheckListItem( ListView, (*it).first, QCheckListItem::CheckBox );
+    item->setEnabled( (*it).second );
+  }
 }
 
-std::vector<std::string> FCCheckListDlg::getCheckedItems() const
+/**
+ * Returns a list of the check items.
+ */
+QStringList CheckListDialog::getCheckedItems() const
 {
   return checked;
 }
 
-void FCCheckListDlg::show ()
-{
-  for (std::vector<std::pair<std::string, bool> >::iterator it = items.begin(); it!=items.end(); ++it)
-  {
-    QCheckListItem* item = new QCheckListItem( ListView, it->first.c_str(), QCheckListItem::CheckBox );
-    item->setEnabled(it->second);
-  }
-
-  QDialog::show();
-}
-
-void FCCheckListDlg::hide ()
+/**
+ * Collects all checked items to be able to return them by call \ref getCheckedItems().
+ */
+void CheckListDialog::accept ()
 {
   QListViewItemIterator it = ListView->firstChild();
 
@@ -932,51 +587,66 @@ void FCCheckListDlg::hide ()
     }
   }
 
-  QDialog::hide();
+  QDialog::accept();
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------
 
-FCColorButton::FCColorButton(QWidget* parent, const char* name)
+/**
+ * Constructs a colored button called \a name with parent \a parent.
+ */
+ColorButton::ColorButton(QWidget* parent, const char* name)
     : QButton( parent, name )
 {
   setMinimumSize( minimumSizeHint() );
   connect( this, SIGNAL(clicked()), SLOT(onChooseColor()));
 }
 
-FCColorButton::FCColorButton( const QBrush& b, QWidget* parent, const char* name, WFlags f )
+ColorButton::ColorButton( const QBrush& b, QWidget* parent, const char* name, WFlags f )
     : QButton( parent, name, f )
 {
   col = b.color();
   setMinimumSize( minimumSizeHint() );
 }
 
-FCColorButton::~FCColorButton()
+/**
+ * Destroys the button.
+ */
+ColorButton::~ColorButton()
 {
 }
 
-void FCColorButton::setColor( const QColor& c )
+/** 
+ * Sets the color \a c to the button. 
+ */
+void ColorButton::setColor( const QColor& c )
 {
   col = c;
   update();
 }
 
-QColor FCColorButton::color() const
+/** 
+ * Returns the current color of the button.
+ */
+QColor ColorButton::color() const
 {
   return col;
 }
 
-QSize FCColorButton::sizeHint() const
+QSize ColorButton::sizeHint() const
 {
   return QSize( 50, 25 );
 }
 
-QSize FCColorButton::minimumSizeHint() const
+QSize ColorButton::minimumSizeHint() const
 {
   return QSize( 50, 25 );
 }
 
-void FCColorButton::drawButton( QPainter *paint )
+/** 
+ * Draws the button.
+ */
+void ColorButton::drawButton( QPainter *paint )
 {
 #if QT_VERSION <= 230
   style().drawBevelButton( paint, 0, 0, width(), height(), colorGroup(), isDown() );
@@ -997,7 +667,10 @@ void FCColorButton::drawButton( QPainter *paint )
 #endif
 }
 
-void FCColorButton::drawButtonLabel( QPainter *paint )
+/**
+ * Draws the button label.
+ */
+void ColorButton::drawButtonLabel( QPainter *paint )
 {
   QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
                    : palette().disabled().buttonText();
@@ -1007,7 +680,10 @@ void FCColorButton::drawButtonLabel( QPainter *paint )
   paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
 }
 
-void FCColorButton::onChooseColor()
+/**
+ * Opens a QColorDialog to set a new color.
+ */
+void ColorButton::onChooseColor()
 {
   QColor c = QColorDialog::getColor( palette().active().background(), this );
   if ( c.isValid() )
@@ -1015,255 +691,6 @@ void FCColorButton::onChooseColor()
     setColor( c );
     emit changed();
   }
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-class FCSpinBoxPrivate
-{
-public:
-  FCSpinBoxPrivate();
-  bool pressed;
-  int nY, nStep;
-};
-
-FCSpinBoxPrivate::FCSpinBoxPrivate()
-{
-  pressed = false;
-}
-
-// -----------------------------------------------------------------------------------
-
-FCSpinBox::FCSpinBox ( QWidget* parent, const char* name )
-    : QSpinBox (parent, name)
-{
-  setMouseTracking(true);
-  d = new FCSpinBoxPrivate;
-}
-
-FCSpinBox::FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
-    : QSpinBox(minValue, maxValue, step, parent, name)
-{
-  setMouseTracking(true);
-  d = new FCSpinBoxPrivate;
-}
-
-FCSpinBox::~FCSpinBox()
-{
-  delete d;
-  d = 0L;
-}
-
-void FCSpinBox::mouseMoveEvent ( QMouseEvent* e )
-{
-  if (QWidget::mouseGrabber() == NULL && !rect().contains(e->pos()) && d->pressed )
-    grabMouse(QCursor(IbeamCursor));
-
-  if (QWidget::mouseGrabber() == this)
-  {
-    // get "speed" of mouse move
-    int mult = d->nY - e->y();
-
-    int nValue = value() + mult * d->nStep;
-    if (nValue <= maxValue())
-      setValue ( nValue );
-    else
-      setValue ( maxValue() );
-
-    d->nY = e->y();
-  }
-  else
-    QSpinBox::mouseMoveEvent(e);
-}
-
-void FCSpinBox::mousePressEvent   ( QMouseEvent* e )
-{
-  d->pressed = true;
-
-  int nMax = maxValue();
-  int nMin = minValue();
-
-  if (nMax == INT_MAX || nMin == -INT_MAX)
-  {
-    d->nStep = 100;
-  }
-  else
-  {
-    int nRange = nMax - nMin;
-    int nHeight = QApplication::desktop()->height();
-    if (nRange > nHeight)
-      d->nStep = int(nRange / nHeight);
-    else
-      d->nStep = 1;
-  }
-
-  d->nY = e->y();
-}
-
-void FCSpinBox::mouseReleaseEvent ( QMouseEvent* e )
-{
-  if (QWidget::mouseGrabber() == this)
-    releaseMouse();
-  d->pressed = false;
-}
-
-void FCSpinBox::focusOutEvent ( QFocusEvent* e )
-{
-  if (QWidget::mouseGrabber() == this)
-    releaseMouse();
-}
-
-void FCSpinBox::wheelEvent ( QWheelEvent* e )
-{
-  if (isEnabled())
-    QSpinBox::wheelEvent(e);
-}
-
-bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
-{
-  if ( o != editor() )
-    return false;
-
-  // get the editor's mouse events
-  switch (e->type())
-  {
-    // redirect the events to spin box (itself)
-  case QEvent::MouseButtonPress:
-    mousePressEvent ((QMouseEvent*)e);
-    break;
-
-  case QEvent::MouseButtonRelease:
-    mouseReleaseEvent ((QMouseEvent*)e);
-    break;
-
-  case QEvent::MouseMove:
-    mouseMoveEvent ((QMouseEvent*)e);
-    break;
-
-  case QEvent::FocusOut:
-    focusOutEvent ((QFocusEvent*)e);
-    break;
-
-  default:
-    break;
-  }
-
-  return QSpinBox::eventFilter(o, e);
-}
-
-// -------------------------------------------------------------
-
-class FCFloatSpinBoxPrivate
-{
-public:
-  FCFloatSpinBoxPrivate(){}
-  ~FCFloatSpinBoxPrivate()
-  {
-    delete m_pValidator;
-  }
-
-  QDoubleValidator* m_pValidator;
-  double            m_fDivisor;
-  double            m_fEpsilon;
-};
-
-FCFloatSpinBox::FCFloatSpinBox ( QWidget * parent, const char * name )
-    : FCSpinBox(parent, name)
-{
-  d = new FCFloatSpinBoxPrivate;
-
-  d->m_pValidator = new QDoubleValidator((double)minValue(), (double)maxValue(), 2, this, name );
-  setValidator(d->m_pValidator);
-
-  setDecimals(0);
-}
-
-FCFloatSpinBox::FCFloatSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
-    : FCSpinBox(minValue, maxValue, step, parent, name)
-{
-  d = new FCFloatSpinBoxPrivate;
-
-  d->m_pValidator = new QDoubleValidator((double)minValue, (double)maxValue, 2, this, name );
-  setValidator(d->m_pValidator);
-
-  setDecimals(0);
-}
-
-FCFloatSpinBox::~FCFloatSpinBox()
-{
-  delete d;
-}
-
-uint FCFloatSpinBox::decimals() const
-{
-  return d->m_pValidator->decimals();
-}
-
-void FCFloatSpinBox::setDecimals(uint i)
-{
-  d->m_pValidator->setDecimals(i);
-  d->m_fDivisor = pow(10.0, double(i));
-  d->m_fEpsilon = 1.0 / pow(10.0, double(i+1));
-}
-
-void FCFloatSpinBox::setMinValueFloat(double value)
-{
-  double fMax = d->m_fDivisor * value;
-  fMax = std::max<double>(fMax, (double)-INT_MAX);
-  FCSpinBox::setMinValue(int(fMax));
-}
-
-void FCFloatSpinBox::setMaxValueFloat(double value)
-{
-  double fMin = d->m_fDivisor * value;
-  fMin = std::min<double>(fMin, (double)INT_MAX);
-  FCSpinBox::setMaxValue(int(fMin));
-}
-
-double FCFloatSpinBox::minValueFloat () const
-{
-  return FCSpinBox::minValue() / double(d->m_fDivisor);
-}
-
-double FCFloatSpinBox::maxValueFloat () const
-{
-  return FCSpinBox::maxValue() / double(d->m_fDivisor);
-}
-
-QString FCFloatSpinBox::mapValueToText(int value)
-{
-  return QString::number(double(value) / d->m_fDivisor, 'f', d->m_pValidator->decimals());
-}
-
-int FCFloatSpinBox::mapTextToValue(bool* b)
-{
-  double fEps = value() > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  return int(text().toDouble() * d->m_fDivisor + fEps);
-}
-
-void FCFloatSpinBox::valueChange()
-{
-  FCSpinBox::valueChange();
-  emit valueFloatChanged( valueFloat() );
-}
-
-void FCFloatSpinBox::setValueFloat(double value)
-{
-  double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
-  double fValue = d->m_fDivisor * value + fEps;
-  fValue = std::min<double>(fValue, (double) INT_MAX);
-  fValue = std::max<double>(fValue, (double)-INT_MAX);
-  FCSpinBox::setValue(int(fValue));
-}
-
-double FCFloatSpinBox::valueFloat() const
-{
-  return FCSpinBox::value() / double(d->m_fDivisor);
-}
-
-void FCFloatSpinBox::stepChange ()
-{
-  FCSpinBox::stepChange();
 }
 
 #include "moc_Widgets.cpp"

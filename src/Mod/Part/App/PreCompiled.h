@@ -2,6 +2,7 @@
 #define __PRECOMPILED__
 
 #include "../../../Config.h"
+#ifdef _PreComp_
 
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
@@ -209,6 +210,8 @@
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Reader.hxx>
 
+
+#endif //_PreComp_
 
 
 #endif

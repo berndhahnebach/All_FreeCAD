@@ -26,7 +26,6 @@
 #include "BitmapFactory.h"
 #include "WidgetFactory.h"
 #include "Language/LanguageFactory.h"
-#include "Widgets.h"
 
 // ----------------------------------------------------
 
@@ -92,7 +91,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new WidgetProducer<PrefCheckBox>;
   new WidgetProducer<PrefRadioButton>;
   new WidgetProducer<PrefSlider>;
-  new WidgetProducer<FCCmdView>;
-  new WidgetProducer<FCAccelLineEdit>;
-  new WidgetProducer<FCColorButton>;
+  new WidgetProducer<CommandView>;
+  new WidgetProducer<AccelLineEdit>;
+  new WidgetProducer<ColorButton>;
 }

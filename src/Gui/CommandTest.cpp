@@ -40,11 +40,12 @@
 #include "Inventor/Qt/SoQt.h"
 #include "Inventor/OCC/SoBrepShape.h"
 
-#include "Widgets.h"
+#include "FileDialog.h"
+#include "ProgressBar.h"
 #include "Macro.h"
 
 
-
+using namespace Gui;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

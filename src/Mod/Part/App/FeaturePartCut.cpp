@@ -179,7 +179,7 @@ Standard_Integer TOcafFunction_CutDriver::Execute(TFunction_Logbook& log) const
 	// Let's check if the Cut has been successfull:
 	if (!mkCut.IsDone()) 
 	{
-		MessageBox(0,"Cut not done.","Cut Function Driver",MB_ICONERROR);
+		CheckMessageBox(0,"Cut not done.","Cut Function Driver",MB_ICONERROR);
 		return 2;
 	}
 	TopoDS_Shape ResultShape = mkCut.Shape();
@@ -232,7 +232,7 @@ TDF_Label TOcaf_Commands::Cut(TDF_Label ObjectLab, TDF_Label ToolObjectLab)
 	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_CutDriver::GetID(), myCutDriver)) return L;
 		
 	myCutDriver->Init(L);
-    if (myCutDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Cut",MB_ICONERROR);
+    if (myCutDriver->Execute(log)) CheckMessageBox(0,"DFunction_Execute : failed","Cut",MB_ICONERROR);
 
 	return L;
 }

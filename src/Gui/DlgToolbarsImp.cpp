@@ -60,7 +60,7 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
     itemNode->setOpen(true);
     for (std::vector<FCCommand*>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
     {
-      QListViewItem* item = new QListViewItem(itemNode,FCListView::lastItem(AvailableActions), (*it3)->GetAction()->menuText());
+      QListViewItem* item = new QListViewItem(itemNode,AvailableActions->lastItem(), (*it3)->GetAction()->menuText());
       QPixmap pix = (*it3)->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
       item->setPixmap(0, Tools::fillUp(24,24,pix));
       itemNode->insertItem(item);
@@ -141,23 +141,24 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
   }
 
   ToolbarActions->clear();
-  for (std::vector<FCToolBar*>::iterator it = _aclToolbars.begin(); it != _aclToolbars.end(); ++it)
+  Gui::CustomToolBar* it;
+  for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
   {
-    if ((*it)->name() == name)
+    if (it->name() == name)
     {
-      std::vector<std::string> items = (*it)->getItems();
-      for (std::vector<std::string>::iterator it2 = items.begin(); it2 != items.end(); ++it2)
+      QStringList items = it->getCustomItems();
+      for ( QStringList::Iterator it2 = items.begin(); it2 != items.end(); ++it2 )
       {
         if (*it2 == "Separator")
         {
-          ToolbarActions->insertItem(new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), "<Separator>"));
+          ToolbarActions->insertItem(new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), "<Separator>"));
         }
         else
         {
-          FCCommand* pCom = cCmdMgr.GetCommandByName(it2->c_str());
+          FCCommand* pCom = cCmdMgr.GetCommandByName( (*it2).latin1() );
           if (pCom)
           {
-            QListViewItem* item = new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), pCom->GetAction()->menuText());
+            QListViewItem* item = new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), pCom->GetAction()->menuText());
             QPixmap pix = pCom->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
             item->setPixmap(0, Tools::fillUp(24,24,pix));
             ToolbarActions->insertItem(item);
@@ -187,7 +188,7 @@ void DlgCustomToolbars::onAddAction()
       if ( it.current()->childCount() == 0 ) 
       {
         // Selected, no children
-        QListViewItem *i = new QListViewItem( ToolbarActions, FCListView::lastItem(ToolbarActions) );
+        QListViewItem *i = new QListViewItem( ToolbarActions, ToolbarActions->lastItem() );
         i->setText( 0, it.current()->text(0) );
         if (it.current()->pixmap(0) != NULL)
         {
@@ -212,7 +213,7 @@ void DlgCustomToolbars::onAddAction()
     else if ( (it.current()->childCount() == 0) && addKids ) 
     {
       // Leaf node, and we _do_ process children
-      QListViewItem *i = new QListViewItem( ToolbarActions, FCListView::lastItem(ToolbarActions) );
+      QListViewItem *i = new QListViewItem( ToolbarActions, ToolbarActions->lastItem() );
       i->setText( 0, it.current()->text(0) );
       if (it.current()->pixmap(0) != NULL)
       {
@@ -277,7 +278,7 @@ void DlgCustomToolbars::onMoveDownAction()
   bool down = true;
   int count = ToolbarActions->childCount();
   QListViewItem *next = 0;
-  QListViewItem *item = FCListView::lastItem(ToolbarActions);
+  QListViewItem *item = ToolbarActions->lastItem();
 
   for ( int i = 0; i < count; ++i ) 
   {
@@ -328,14 +329,14 @@ DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
 void DlgCustomToolbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
-  FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(text.latin1());
+  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar( text );
   toolbar->clearUp();
 
   const QObjectList* children = toolbar->children ();
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-  std::vector<std::string> items;
+  QStringList items;
   QListViewItem* item = ToolbarActions->firstChild();
   for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
   {
@@ -369,7 +370,7 @@ void DlgCustomToolbarsImp::apply()
     }
   }
 
-  toolbar->setItems(items);
+  toolbar->setCustomItems( items );
   toolbar->saveXML();
 }
 
@@ -383,10 +384,11 @@ void DlgCustomToolbarsImp::updateData()
 {
   ComboToolbars->clear();
   _aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
-  for (std::vector<FCToolBar*>::iterator it3 = _aclToolbars.begin(); it3 != _aclToolbars.end(); ++it3)
+  Gui::CustomToolBar* it;
+  for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
   {
-    if ((*it3)->canModify())
-      ComboToolbars->insertItem((*it3)->name());
+    if ( it->canModify())
+      ComboToolbars->insertItem( it->name() );
   }
 
   if (ComboToolbars->count() > 0)
@@ -412,10 +414,10 @@ void DlgCustomToolbarsImp::onCreateToolbar()
 
   if (!text.isNull() && !text.isEmpty())
   {
-    FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(text.latin1());
+    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar( text );
     toolbar->show();
-    _aclToolbars.push_back(toolbar);
-    ComboToolbars->insertItem(text);
+    _aclToolbars.append( toolbar );
+    ComboToolbars->insertItem( text );
 
     // enable the widgets
     ToolbarActions->setEnabled(true);
@@ -426,20 +428,21 @@ void DlgCustomToolbarsImp::onCreateToolbar()
 /** Deletes a toolbar */
 void DlgCustomToolbarsImp::onDeleteToolbar()
 {
-  std::vector<std::pair<std::string, bool> > items;
-  std::vector<FCToolBar*> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
-  for (std::vector<FCToolBar*>::iterator it = tb.begin(); it!=tb.end(); ++it)
-    items.push_back(std::make_pair<std::string, bool>((*it)->name(), (*it)->canModify()));
+  QValueList<CheckListItem> items;
+  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
+  Gui::CustomToolBar* it;
+  for ( it = tb.first(); it; it = tb.next() )
+    items.append( qMakePair( QString(it->name()), it->canModify() ) );
 
-  FCCheckListDlg checklists(this, "", true) ;
+  CheckListDialog checklists(this, "", true) ;
   checklists.setCaption( tr("Delete selected toolbars") );
-  checklists.setItems(items);
+  checklists.setCheckableItems( items );
   if (checklists.exec())
   {
-    std::vector<std::string> checked = checklists.getCheckedItems();
-    for (std::vector<std::string>::iterator it = checked.begin(); it!=checked.end(); ++it)
+    QStringList checked = checklists.getCheckedItems();
+    for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
     {
-      ApplicationWindow::Instance->GetCustomWidgetManager()->delToolBar(it->c_str());
+      ApplicationWindow::Instance->GetCustomWidgetManager()->removeToolBar( (*it).latin1() );
     }
 
     updateData();

@@ -24,7 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qlayout.h>
+# include <qpushbutton.h>
 # include <qtabwidget.h>
+//# include <qobjcoll.h>
 #endif
 
 #include "DlgCustomizeImp.h"
@@ -34,7 +37,6 @@
 #include "DlgCommandsImp.h"
 #include "Tools.h"
 #include "../Base/Console.h"
-//#include <qobjcoll.h>
 
 using namespace Gui::Dialog;
 

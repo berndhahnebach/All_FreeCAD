@@ -26,6 +26,7 @@
 
 #include "../Base/Parameter.h"
 #include "Widgets.h"
+#include "SpinBox.h"
 
 #ifndef _PreComp_
 # include <qcheckbox.h>
@@ -200,7 +201,7 @@ protected:
 /** The PrefSpinBox class.
  * \author Werner Mayer
  */
-class PrefSpinBox : public FCFloatSpinBox, public PrefWidget
+class PrefSpinBox : public FloatSpinBox, public PrefWidget
 {
   Q_OBJECT
 

@@ -43,7 +43,7 @@ using namespace Gui::DockWnd;
  * Constructs an empty vertical toolbar.
  */
 CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: FCToolBar(label, /*ApplicationWindow::Instance*/0, w, false, name, f, "Cmdbar")
+: CustomToolBar(label, /*ApplicationWindow::Instance*/0, w, false, name, f, "Cmdbar")
 {
   // remove immediately from main window again
 //  ApplicationWindow::Instance->removeToolBar(this);
@@ -70,7 +70,7 @@ CommandBar::~CommandBar ()
  */
 void CommandBar::clearUp()
 {
-  FCToolBar::clearUp();
+  CustomToolBar::clearUp();
   m_Dummy = NULL;
 }
 

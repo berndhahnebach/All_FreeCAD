@@ -37,7 +37,7 @@ class StackBar;
  * Furthermore this class provides some methods to change its appearance.
  * \author Werner Mayer
  */
-class GuiExport CommandBar : public FCToolBar
+class GuiExport CommandBar : public Gui::CustomToolBar
 {
   Q_OBJECT
 

@@ -21,6 +21,8 @@
 #ifndef _PreComp_
 #	include <stdio.h>
 #	include <Python.h>
+# include <BRep_Builder.hxx>
+# include <BRepTools.hxx>
 #endif
 
 #include "../../../App/Application.h"

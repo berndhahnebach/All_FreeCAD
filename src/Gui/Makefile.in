@@ -173,12 +173,14 @@ moc_DlgToolbars.cpp \
 moc_DlgToolbarsImp.cpp \
 moc_DlgUndoRedo.cpp \
 moc_Document.cpp \
+moc_FileDialog.cpp \
 moc_HtmlView.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
 moc_ProcessQt.cpp \
 moc_PropertyView.cpp \
 moc_ReportView.cpp \
+moc_SpinBox.cpp \
 moc_Splashscreen.cpp \
 moc_StackBar.cpp \
 moc_ToolBox.cpp \
@@ -299,18 +301,21 @@ DlgTipOfTheDayImp.cpp \
 DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
 Document.cpp \
+FileDialog.cpp \
 GuiConsole.cpp \
 HtmlView.cpp \
 Macro.cpp \
 MouseModel.cpp \
 PrefWidgets.cpp \
 Process.cpp \
+ProgressBar.cpp \
 PropertyPage.cpp \
 PropertyView.cpp \
 PythonEditor.cpp \
 ReportView.cpp \
 resource.cpp \
 Selection.cpp \
+SpinBox.cpp \
 Splashscreen.cpp \
 StackBar.cpp \
 ToolBox.cpp \
@@ -380,13 +385,13 @@ am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
 	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
 	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
-	DlgUndoRedo.lo Document.lo GuiConsole.lo HtmlView.lo Macro.lo \
-	MouseModel.lo PrefWidgets.lo Process.lo PropertyPage.lo \
-	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
-	Selection.lo Splashscreen.lo StackBar.lo ToolBox.lo \
-	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
-	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
-	WidgetFactory.lo Widgets.lo Window.lo
+	DlgUndoRedo.lo Document.lo FileDialog.lo GuiConsole.lo \
+	HtmlView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
+	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
+	ReportView.lo resource.lo Selection.lo SpinBox.lo \
+	Splashscreen.lo StackBar.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
+	Tree.lo View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
+	WaitCursor.lo WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -419,17 +424,18 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgTipOfTheDayImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgToolbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgUndoRedo.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/GuiConsole.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/HtmlView.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/FileDialog.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HtmlView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/LanguageFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MouseModel.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PrefWidgets.Plo ./$(DEPDIR)/Process.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ProgressBar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyPage.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PythonEditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ReportView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Selection.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/SoBrepShape.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/SoBrepShape.Plo ./$(DEPDIR)/SpinBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Splashscreen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/StackBar.Plo ./$(DEPDIR)/ToolBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ToolBoxBar.Plo ./$(DEPDIR)/Tools.Plo \
@@ -548,6 +554,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgToolbarsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgUndoRedo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileDialog.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GuiConsole.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HtmlView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageFactory.Plo@am__quote@
@@ -555,12 +562,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MouseModel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PrefWidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Process.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProgressBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyPage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PythonEditor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReportView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Selection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SoBrepShape.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpinBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Splashscreen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StackBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBox.Plo@am__quote@

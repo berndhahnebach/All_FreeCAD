@@ -33,9 +33,10 @@
 #endif
 
 class FCCommand;
-class FCToolBar;
 
 namespace Gui {
+class Gui::CustomToolBar;
+
 namespace Dialog {
 
 /** This class implements the creation of user defined toolbars.
@@ -68,7 +69,7 @@ protected:
   /** Groups of commands */
   std::map<std::string, std::vector<FCCommand*> > _alCmdGroups;
   /** List of all toolbars */
-  std::vector<FCToolBar*>                         _aclToolbars;
+  QPtrList<Gui::CustomToolBar>                _aclToolbars;
 };
 
 /** This class implements the creation of user defined command bars.

@@ -30,10 +30,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qlayout.h>
 # include <qlistbox.h>
 # include <qwidgetstack.h>
 # include <qtabwidget.h>
 # include <qpainter.h>
+# include <qpushbutton.h>
 #endif
 
 #include "DlgPreferencesImp.h"

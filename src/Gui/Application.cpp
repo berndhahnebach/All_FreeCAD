@@ -125,6 +125,7 @@
 #include "ReportView.h"
 #include "Macro.h"
 #include "Themes.h"
+#include "ProgressBar.h"
 
 #include "Inventor/Qt/SoQt.h"
 
@@ -164,7 +165,7 @@ struct ApplicationWindowP
   }
 
   QPopupMenu* toolbars;
-  FCPopupMenu* viewbar;
+  Gui::CustomPopupMenu* viewbar;
   std::map<int, QWidget*> mCheckBars;
 	/// list of all handled documents
  	std::list<FCGuiDocument*>         lpcDocuments;
@@ -172,7 +173,7 @@ struct ApplicationWindowP
 	std::map <std::string,FCWindow*> mpcDocWindows;
 	/// Active document
 	FCGuiDocument*   _pcActiveDocument;
-	FCCustomWidgetManager*		 _pcWidgetMgr;
+  Gui::CustomWidgetManager*		 _pcWidgetMgr;
 	FCMacroManager*  _pcMacroMngr;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
 	ToolBox*        _pcStackBar;
@@ -260,29 +261,29 @@ ApplicationWindow::ApplicationWindow()
 
 	// Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
 	d->_pcStackBar = new ToolBox(this,"Cmd_Group");
-	d->_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), d->_pcStackBar);
-	d->_pcWidgetMgr->addDockWindow( "Toolbox",d->_pcStackBar, NULL, KDockWidget::DockRight, 83);
+  d->_pcWidgetMgr = new Gui::CustomWidgetManager(GetCommandManager(), d->_pcStackBar);
+  d->_pcWidgetMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.php@OnlineDocumentation.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
-	d->_pcWidgetMgr->addDockWindow("Help view", pcHtmlView,"Toolbox", /*KDockWidget::DockBottom*/KDockWidget::DockRight, 40);
+	d->_pcWidgetMgr->addDockWindow("Help view", pcHtmlView, Qt::DockRight );
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCTree* pcTree = new FCTree(0,0,"Raw_tree");
 	pcTree->setMinimumWidth(210);
-	d->_pcWidgetMgr->addDockWindow("Tree view", pcTree,0, KDockWidget::DockLeft, 0);
+  d->_pcWidgetMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
 
 	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCPropertyView* pcPropView = new FCPropertyView(0,0,"PropertyView");
 	pcPropView->setMinimumWidth(210);
-	d->_pcWidgetMgr->addDockWindow("Property editor", pcPropView,"Tree view", /*KDockWidget::DockBottom*/KDockWidget::DockLeft, 60);
+	d->_pcWidgetMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
 
 	// Report View
 	Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
-	d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
+  d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
 
  	CreateStandardOperations();
 
@@ -415,7 +416,7 @@ void ApplicationWindow::customize ()
 
 void ApplicationWindow::OnShowView()
 {
-  FCPopupMenu* menu = d->viewbar;
+  Gui::CustomPopupMenu* menu = d->viewbar;
   menu->update(GetCommandManager());
   menu->setCheckable(true);
   d->mCheckBars.clear();
@@ -1051,7 +1052,7 @@ bool ApplicationWindow::IsClosing(void)
   return d->_bIsClosing;
 }
 
-FCCustomWidgetManager* ApplicationWindow::GetCustomWidgetManager(void) 
+Gui::CustomWidgetManager* ApplicationWindow::GetCustomWidgetManager(void) 
 { 
   return d->_pcWidgetMgr; 
 }
@@ -1252,7 +1253,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
     return NULL;                             // NULL triggers exception 
   }
 
-  std::vector<std::string> aclItems;
+  QStringList items;
   int nSize = PyList_Size(pObject);
   for (int i=0; i<nSize;++i)
   {
@@ -1262,11 +1263,11 @@ PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
 
     char* pItem = PyString_AsString(item);
 
-    aclItems.push_back(pItem);
+    items.push_back(pItem);
   }
 
   try{
-    Instance->d->_pcWidgetMgr->addPopupMenu(psMenuName, aclItems, parent);
+    Instance->d->_pcWidgetMgr->addPopupMenu(psMenuName, items, parent);
     Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setCanModify(bModify!=0);
     Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(bRemovable!=0);
 	}catch(const Base::Exception& e) {
@@ -1294,7 +1295,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
     return NULL;                             // NULL triggers exception 
   }
 
-  std::vector<std::string> aclItems;
+  QStringList items;
   int nSize = PyList_Size(pObject);
   for (int i=0; i<nSize;++i)
   {
@@ -1304,10 +1305,10 @@ PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
 
     char* pItem = PyString_AsString(item);
 
-    aclItems.push_back(pItem);
+    items.push_back(pItem);
   }
 
-  Instance->d->_pcWidgetMgr->removeMenuItems(psMenuName, aclItems);
+  Instance->d->_pcWidgetMgr->removeMenuItems( psMenuName, items );
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1318,7 +1319,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
     char *psMenuName;
     if (!PyArg_ParseTuple(args, "s", &psMenuName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	Instance->GetCustomWidgetManager()->delPopupMenu(psMenuName);
+	Instance->GetCustomWidgetManager()->removePopupMenu(psMenuName);
 
 	Py_INCREF(Py_None);
   return Py_None;
@@ -1341,7 +1342,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
 		return NULL;                                      // NULL triggers exception 
   }
 
-  std::vector<std::string> aclItems;
+  QStringList items;
   int nSize = PyList_Size(pObject);
   for (int i=0; i<nSize;++i)
   {
@@ -1351,11 +1352,11 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
 
     char* pItem = PyString_AsString(item);
 
-    aclItems.push_back(pItem);
+    items.push_back(pItem);
   }
 
 	try{
-    Instance->d->_pcWidgetMgr->addToolBar(psToolbarName, aclItems);
+    Instance->d->_pcWidgetMgr->addToolBar( psToolbarName, items );
     if (!bVisible)
       Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
     Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setCanModify(bModify!=0);
@@ -1385,7 +1386,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
 		return NULL;                             // NULL triggers exception 
   }
 
-  std::vector<std::string> aclItems;
+  QStringList items;
   int nSize = PyList_Size(pObject);
   for (int i=0; i<nSize;++i)
   {
@@ -1395,10 +1396,10 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
 
     char* pItem = PyString_AsString(item);
 
-    aclItems.push_back(pItem);
+    items.push_back(pItem);
   }
 
-  Instance->d->_pcWidgetMgr->removeToolBarItems(psToolbarName, aclItems);
+  Instance->d->_pcWidgetMgr->removeToolBarItems( psToolbarName, items );
     
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1409,7 +1410,7 @@ PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
     char *psToolbarName;
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	Instance->GetCustomWidgetManager()->delToolBar(psToolbarName);
+	Instance->GetCustomWidgetManager()->removeToolBar(psToolbarName);
 
 	Py_INCREF(Py_None);
     return Py_None;
@@ -1431,7 +1432,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
 		return NULL;                                      // NULL triggers exception 
   }
 
-  std::vector<std::string> aclItems;
+  QStringList items;
   int nSize = PyList_Size(pObject);
   for (int i=0; i<nSize;++i)
   {
@@ -1441,13 +1442,13 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
 
     char* pItem = PyString_AsString(item);
 
-    aclItems.push_back(pItem);
+    items.push_back(pItem);
   }
 
 	try{
-    Instance->d->_pcWidgetMgr->addCmdBar(psToolbarName, aclItems);
-    Instance->d->_pcWidgetMgr->getCmdBar(psToolbarName)->setCanModify(bModify!=0);
-    Instance->d->_pcWidgetMgr->getCmdBar(psToolbarName)->setRemovable(bRemovable!=0);
+    Instance->d->_pcWidgetMgr->addCommandBar(psToolbarName, items);
+    Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setCanModify(bModify!=0);
+    Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setRemovable(bRemovable!=0);
 	}catch(const Base::Exception& e) {
 		PyErr_SetString(PyExc_AssertionError, e.what());		
 		return NULL;
@@ -1473,7 +1474,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
 		return NULL;                             // NULL triggers exception 
   }
 
-  std::vector<std::string> aclItems;
+  QStringList items;
   int nSize = PyList_Size(pObject);
   for (int i=0; i<nSize;++i)
   {
@@ -1483,10 +1484,10 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
 
     char* pItem = PyString_AsString(item);
 
-    aclItems.push_back(pItem);
+    items.push_back(pItem);
   }
 
-  Instance->d->_pcWidgetMgr->removeCmdBarItems(psToolbarName, aclItems);
+  Instance->d->_pcWidgetMgr->removeCommandBarItems( psToolbarName, items );
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1498,7 +1499,7 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
     if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	Instance->GetCustomWidgetManager()->delCmdBar(psToolbarName);
+	Instance->GetCustomWidgetManager()->removeCommandBar(psToolbarName);
     
 	Py_INCREF(Py_None);
 	return Py_None;

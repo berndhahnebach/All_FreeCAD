@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <qfileinfo.h>
 # include <qlayout.h>
 # include <qobjectlist.h>
 # include <qpushbutton.h>
@@ -88,9 +89,9 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
   catch (...)
   {
 #ifdef FC_DEBUG
-    Console().Error("%s does not inherit \"QWidget\"\n", sName);
+    Console().Error("%s does not inherit from \"QWidget\"\n", sName);
 #else
-    Console().Log("%s does not inherit \"QWidget\"\n", sName);
+    Console().Log("%s does not inherit from \"QWidget\"\n", sName);
 #endif
     delete w;
     return 0;
@@ -289,8 +290,8 @@ int PyResource::_setattr(char *attr, PyObject *value)   // __setattr__ function:
 
 /**
  * Loads an .ui file with the name \a name. If the .ui file cannot be found or the QWidgetFactory
- * cannot create an instance an exception is thrown. If the created resource does not inherit QDialog
- * an instance of ContainerDialog is created to embed it.
+ * cannot create an instance an exception is thrown. If the created resource does not inherit from
+ * QDialog an instance of ContainerDialog is created to embed it.
  */
 void PyResource::load(const char* name)
 {
