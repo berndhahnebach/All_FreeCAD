@@ -31,6 +31,7 @@
 
 #include "../Base/Factory.h"
 #include "../Base/PyExport.h"
+#include "DlgPreferencesImp.h"
 
 /** The WidgetFactory singleton
   */

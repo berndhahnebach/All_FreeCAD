@@ -90,7 +90,7 @@ bool FCProcess::setExecutable(const char* proc)
 std::string FCProcess::executable () const
 {
   if (arguments().size() > 0)
-    return arguments()[0];
+    return std::string(arguments()[0].latin1());
   else
     return "";
 }
@@ -190,9 +190,9 @@ bool FCProcess::appendToPath (const char* path)
   {
 #ifdef FC_OS_WIN32
     sprintf(szPath, "%s;%s", env["PATH"].c_str(), path);
-#elif FC_OS_LINUX || FC_OS_CYGWIN
+#elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", env["PATH"].c_str(), path);
-#elif
+#else
     GetConsole().Warning("Not yet implemented!\n");
 #endif
     env["PATH"] = szPath;
@@ -201,9 +201,9 @@ bool FCProcess::appendToPath (const char* path)
   {
 #ifdef FC_OS_WIN32
     sprintf(szPath, "%s;%s", getenv("PATH"), path);
-#elif FC_OS_LINUX || FC_OS_CYGWIN
+#elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", getenv("PATH"), path);
-#elif
+#else
     GetConsole().Warning("Not yet implemented!\n");
 #endif
     env["PATH"] = szPath;
@@ -234,7 +234,7 @@ void FCProcess::setupEnvironment()
   {
 #ifdef FC_OS_WIN32
     ::SetEnvironmentVariable (it->first.c_str(), it->second.c_str());
-#elif FC_OS_LINUX || FC_OS_CYGWIN
+#elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
     setenv(it->first.c_str(), it->second.c_str(), 1);
 #else
     GetConsole().Warning("Not yet implemented!\n");

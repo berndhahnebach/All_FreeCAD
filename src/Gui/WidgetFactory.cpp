@@ -404,11 +404,13 @@ PyObject *FCPyResource::SetValue(PyObject *args)
 	}
 	else if ( PyInt_Check(psValue) )
 	{
-		v = PyInt_AsLong(psValue);
+		int val = PyInt_AsLong(psValue);
+		v = val;
 	}
 	else if ( PyLong_Check(psValue) )
 	{
-		v = PyLong_AsLong(psValue);
+		unsigned int val = PyLong_AsLong(psValue);
+		v = val;
 	}
 	else if ( PyFloat_Check(psValue) )
 	{

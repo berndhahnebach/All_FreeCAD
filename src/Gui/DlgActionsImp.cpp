@@ -266,7 +266,8 @@ void FCDlgCustomActionsImp::slotDelCustomAction()
       it++;
   }
 
-  for (std::vector<FCCommand*>::iterator it2 = _aclCurMacros.begin(); it2!= _aclCurMacros.end(); ++it2)
+  std::vector<FCCommand*>::iterator it2;
+  for (it2 = _aclCurMacros.begin(); it2!= _aclCurMacros.end(); ++it2)
   {
     if (itemText == (*it2)->GetName())
     {

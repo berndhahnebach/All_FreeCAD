@@ -830,7 +830,7 @@ void FCToolBar::update(FCCommandManager& rclMgr)
   for (WorkbenchItems::iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2)
   {
     items = it2->second;
-    for (it = items.begin(); it != items.end(); ++it)
+    for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
     {
       if (*it == "Separator")
         addSeparator();
@@ -1092,7 +1092,7 @@ void FCPopupMenu::update(FCCommandManager& rclMgr)
   for (WorkbenchItems::iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2)
   {
     items = it2->second;
-    for (it = items.begin(); it != items.end(); ++it)
+    for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
     {
       if (*it == "Separator")
         insertSeparator();
