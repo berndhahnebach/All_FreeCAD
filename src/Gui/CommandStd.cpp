@@ -42,6 +42,7 @@
 #include "Widgets.h"
 #include "Splashscreen.h"
 #include "Command.h"
+#include "HtmlView.h"
 
 #ifdef FC_USE_OCAFBROWSER
 #	include <DebugBrowser.hxx>
@@ -84,7 +85,7 @@ FCCmdOpen::FCCmdOpen()
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap         = "Open";
-	int iAccel      = Qt::CTRL+Qt::Key_O;
+	iAccel      = Qt::CTRL+Qt::Key_O;
 
 }
 
@@ -123,7 +124,7 @@ FCCmdNew::FCCmdNew()
 	sWhatsThis		= "Create a new empty Document";
 	sStatusTip		= "Create a new empty Document";
 	sPixmap         = "New";
-	int iAccel      = Qt::CTRL+Qt::Key_N;
+	iAccel      = Qt::CTRL+Qt::Key_N;
 
 }
 
@@ -261,7 +262,7 @@ FCCmdQuit::FCCmdQuit()
 	sToolTipText	= "Quits the application";
 	sWhatsThis		= "Quits the application";
 	sStatusTip		= "Quits the application";
-	iAccel			= Qt::CTRL+Qt::Key_X;
+	iAccel			= Qt::ALT+Qt::Key_F4;
 }
 
 
@@ -677,10 +678,33 @@ FCCmdAbout::FCCmdAbout()
 	sStatusTip		= sToolTipText;
 }
 
-
 void FCCmdAbout::Activated(int iMsg)
 {
   FCSplashAbout::Instance();
+}
+
+//===========================================================================
+// Std_WhatsThis
+//===========================================================================
+DEF_STD_CMD(FCCmdWhatsThis);
+
+FCCmdWhatsThis::FCCmdWhatsThis()
+	:FCCppCommand("Std_WhatsThis")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "What's This?";
+	sToolTipText	= "What's This?";
+//	sWhatsThis		= sToolTipText;
+	sWhatsThis		= "about.html";
+	sStatusTip		= sToolTipText;
+	iAccel			= Qt::SHIFT+Qt::Key_F1;
+	sPixmap			= "WhatsThis";
+}
+
+void FCCmdWhatsThis::Activated(int iMsg)
+{
+  FCWhatsThis::enterWhatsThisMode();
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1176,6 +1200,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
 	rcCmdMgr.AddCommand(new FCCmdWorkbench());
   rcCmdMgr.AddCommand(new FCCmdMRU());
+  rcCmdMgr.AddCommand(new FCCmdWhatsThis());
 
 #	ifdef FC_USE_OCAFBROWSER
 		rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());

@@ -19,6 +19,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "ButtonGroup.h"
+#include "HtmlView.h"
 #include "Macro.h"
 
 #include "../Base/Exception.h"
@@ -46,6 +47,15 @@ bool FCAction::addTo(QWidget *w)
 {
   if (QAction::addTo(w) == true)
   {
+    // connect html help with widget
+    const QObjectList *l = w->children();
+    QObjectListIt it(*l);
+    QObject* o = it.toLast();
+    if (o && o->isWidgetType())
+    {
+      FCWhatsThis::add((QWidget*)o, whatsThis());
+    }
+
     if (w->inherits("FCCommandBar"))
     {
   		((FCCommandBar*)w)->addedButton(menuText());
@@ -55,7 +65,6 @@ bool FCAction::addTo(QWidget *w)
     return false;
 
   return true;
-
 }
 
 bool FCAction::removeFrom ( QWidget * w )
@@ -323,6 +332,7 @@ bool FCUndoAction::addTo(QWidget* w)
 
     QToolTip::add( button, toolTip(), tipGroup, statusTip() );
     QWhatsThis::add(button, whatsThis());
+    FCWhatsThis::add(button, whatsThis());
   	connect( button, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
     connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
     connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
@@ -360,6 +370,7 @@ bool FCRedoAction::addTo(QWidget* w)
 
     QToolTip::add( button, toolTip(), tipGroup, statusTip() );
     QWhatsThis::add(button, whatsThis());
+    FCWhatsThis::add(button, whatsThis());
   	connect( button, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
     connect( button, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
     connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
