@@ -104,6 +104,7 @@ class FCStyleFactory
   public:
     static QStringList styles();
     static QStyle* createStyle( const QString& );
+    static bool isCurrentStyle( QStyle* s );
 };
 
 /** The Applcation main class

@@ -64,7 +64,8 @@ QPixmap FCTools::resize(int w, int h, QPixmap p)
 QPixmap FCTools::fillUp(int w, int h, QPixmap p)
 {
   if (p.width() == 0 || p.height() == 0)
-    return p; // do not resize a null pixmap
+    w = 1;
+//    return p; // do not resize a null pixmap
 
   QPixmap pix = p;
   int x = pix.width () > w ? 0 : (w - pix.width ())/2;

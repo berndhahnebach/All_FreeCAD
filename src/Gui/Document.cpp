@@ -225,7 +225,7 @@ void FCGuiDocument::CanClose ( QCloseEvent * e )
 		&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
 		&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
 	{
-		switch(QMessageBox::warning( _pcAppWnd, "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
+		switch(QMessageBox::warning( GetActiveView(), "Unsaved document","Save file before close?","Yes","No","Cancel",0,2))
 		{
 		case 0:
 			//GetApplication().

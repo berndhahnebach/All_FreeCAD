@@ -4,7 +4,7 @@ static const char *FCIcon[]={
 "# c #000000",
 "a c #848284",
 "b c #ff0000",
-". c #ffffff",
+". c None",
 "........#.......",
 ".......##aaaaaa.",
 "........#.....a.",

@@ -883,7 +883,7 @@ void ApplicationWindow::LoadWindowSettings()
   if (max) showMaximized();
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	setUsesBigPixmaps (big);
-  if (s)
+  if (s && !FCStyleFactory::isCurrentStyle(s))
   {
     QApplication::setStyle(s);
     setAreaPal(palette());
@@ -1397,6 +1397,8 @@ QStringList FCStyleFactory::styles()
   	list << "Metal";
   if ( !list.contains( "Norwegian Wood" ) )
   	list << "Norwegian Wood";
+  if ( !list.contains( "Step" ) )
+  	list << "Step";
 
   return list;
 }
@@ -1422,6 +1424,8 @@ QStyle* FCStyleFactory::createStyle( const QString& s)
     ret = new MetalStyle;
   else if ( style == "norwegian wood" )
     ret = new NorwegianWoodStyle;
+  else if ( style == "step" )
+    ret = new StepStyle;
 
   if(ret)
   	ret->setName(s);
@@ -1429,6 +1433,16 @@ QStyle* FCStyleFactory::createStyle( const QString& s)
   return ret;
 }
 
+bool FCStyleFactory::isCurrentStyle( QStyle* s )
+{
+  if (!s)
+    return false;
+
+  QString s1 = s->className();
+  QString s2 = QApplication::style().className();
+
+  return s1 == s2;
+}
 
 
 

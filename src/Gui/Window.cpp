@@ -99,15 +99,34 @@ FCDockWindow::FCDockWindow(QWidget *parent, const char *name, WFlags f)
 	:QWidget(parent,name,f),
 	FCWindowParameter(name)
 {
-
+  OnRestore();
 }
 
 
 FCDockWindow::~FCDockWindow()
 {
-
+  OnSave();
 }
 
+void FCDockWindow::OnSave()
+{
+  FCParameterGrp::handle hGrp = GetWindowParameter()->GetGroup("WindowSettings");
+  hGrp->SetInt("Width", width());
+  hGrp->SetInt("Height", height());
+  hGrp->SetInt("PosX", pos().x());
+  hGrp->SetInt("PosY", pos().y());
+}
+
+void FCDockWindow::OnRestore()
+{
+  FCParameterGrp::handle hGrp = GetWindowParameter()->GetGroup("WindowSettings");
+  int w = hGrp->GetInt("Width", 0);
+  int h = hGrp->GetInt("Height", 0);
+  int x = hGrp->GetInt("PosX", pos().x());
+  int y = hGrp->GetInt("PosY", pos().y());
+  resize( w, h );
+  move(x, y);
+}
 
 //**************************************************************************
 //**************************************************************************
