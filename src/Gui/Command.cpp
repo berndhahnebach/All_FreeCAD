@@ -60,12 +60,15 @@ bool FCAction::addTo(QWidget *w)
   {
     // connect html help with widget
     const QObjectList *l = w->children();
-    QObjectListIt it(*l);
-    QObject* o = it.toLast();
-    if (o && o->isWidgetType())
-    {
-      FCWhatsThis::add((QWidget*)o, whatsThis());
-    }
+	if(l!=0)
+	{
+		QObjectListIt it(*l);
+		QObject* o = it.toLast();
+		if (o && o->isWidgetType())
+		{
+		  FCWhatsThis::add((QWidget*)o, whatsThis());
+		}
+	}
 
     if (w->inherits("FCCommandBar"))
     {
