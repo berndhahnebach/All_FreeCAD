@@ -126,6 +126,22 @@ SOURCE=.\Export.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FileTemplate.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FileTemplate.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Handle.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Handle.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Interpreter.cpp
 # End Source File
 # Begin Source File
@@ -135,6 +151,14 @@ SOURCE=.\Interpreter.h
 # Begin Source File
 
 SOURCE=.\Libs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Observer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Observer.h
 # End Source File
 # Begin Source File
 

@@ -1,12 +1,10 @@
-/** \file Libs.cpp
- *  \brief Include all needed libs on Windows
+/** \file Handle.cpp
+ *  \brief Handle implementation
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *  Here all the libs get includet by a #pragma dirctive.
- *  Unfortunatly there is nothin comperable on UNIX, so there
- *  you have to use compiler -l staments, which are somwere deep
- *  in the Makefile.
+ *  Handle pattern with referenc counting.
+ *  @see Handle.h 
  */
 
 /***************************************************************************
@@ -34,16 +32,69 @@
  ***************************************************************************/
 
 
-
-// === Incuding of libs: ============================================================================
-#ifdef WNT
-#	pragma comment(lib,"python21.lib")
-#	ifdef _DEBUG
-#		pragma comment(lib,"xerces-c_2D.lib")
-#	else
-#		pragma comment(lib,"xerces-c_2.lib")
-#	endif
+/** Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
+ */
+#ifdef _PreComp_
+#	include "PreCompiled.h"
 #else
-#	error "Dont compile that file on UNIX!"
+#	include <assert.h>
 #endif
+
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "Handle.h"
+#include "Exception.h"
+
+
+
+//**************************************************************************
+// Construction/Destruction
+
+// here the implemataion! description should take place in the header file!
+FCHandled::FCHandled() 
+	: _lRefCount(0)
+{
+
+
+}
+
+FCHandled::~FCHandled()
+{
+	if(_lRefCount != 0)
+		throw FCException("handled deleted with Rerferences!!!!!\n");
+}
+
+
+//**************************************************************************
+// separator for other implemetation aspects
+
+
+
+void  FCHandled::AttacheRef(void* pHandle)
+{
+	_lRefCount++;
+}
+
+void  FCHandled::DettachRef(void* pHandle)
+{
+	assert(_lRefCount > 0); 
+	if (--_lRefCount == 0)
+	{
+		OnLastRef();
+		try
+		{
+			delete this;
+		}
+		catch(...)
+		{
+			throw FCException("FChandled freed twice !!!!!\n");
+		}
+	}
+}
+
+
+
 

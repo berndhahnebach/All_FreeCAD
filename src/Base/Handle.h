@@ -1,12 +1,10 @@
-/** \file Libs.cpp
- *  \brief Include all needed libs on Windows
+/** \file FileTemplate.h
+ *  \brief FileTemplate example header
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *  Here all the libs get includet by a #pragma dirctive.
- *  Unfortunatly there is nothin comperable on UNIX, so there
- *  you have to use compiler -l staments, which are somwere deep
- *  in the Makefile.
+ *  Here a example of a file layout for FreeCAD.
+ *  @see Parameter.cpp
  */
 
 /***************************************************************************
@@ -34,16 +32,71 @@
  ***************************************************************************/
 
 
+#ifndef __HANDLE_H__
+#define __HANDLE_H__
 
-// === Incuding of libs: ============================================================================
-#ifdef WNT
-#	pragma comment(lib,"python21.lib")
-#	ifdef _DEBUG
-#		pragma comment(lib,"xerces-c_2D.lib")
-#	else
-#		pragma comment(lib,"xerces-c_2.lib")
-#	endif
-#else
-#	error "Dont compile that file on UNIX!"
-#endif
+// Std. configurations
+#include "Export.h"
 
+#include "PyExport.h"
+
+#include <string>
+#include <map>
+#include <boost/any.hpp>
+
+
+/** Handle Base class
+ *  Implementation of the referenc counting pattern
+ */
+template <class HandledType>
+class BaseExport FCHandle
+{
+public:
+	FCHandle();
+	~FCHandle();
+
+	HandledType operator*(){return _pHandels;}
+
+	HandledType operator->(){return _pHandels;}
+
+	bool operator<(const FCHandle<HandledType> &other){return _pHandels<&other;}
+
+	bool operator==(const FCHandle<HandledType> &other){return _pHandels==&other;}
+
+
+
+private:
+
+	HandledType *_pHandels;
+
+};
+
+
+
+class BaseExport FCHandled
+{
+public:
+	FCHandled();
+	~FCHandled();
+
+	void  AttacheRef(void* pHandle);
+
+	void  DettachRef(void* pHandle);
+
+	virtual void  OnLastRef(){}
+
+  	long GetReferenceCount(void) { return _lRefCount; };
+
+
+private:
+
+	long _lRefCount;
+
+};
+
+
+
+
+
+
+#endif // __HANDLE_H__

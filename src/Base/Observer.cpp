@@ -1,12 +1,10 @@
-/** \file Libs.cpp
- *  \brief Include all needed libs on Windows
+/** \file Observer.cpp
+ *  \brief Observer facility of FreeCAD
  *  \author $Author$
  *  \version $Revision$
  *  \date    $Date$
- *  Here all the libs get includet by a #pragma dirctive.
- *  Unfortunatly there is nothin comperable on UNIX, so there
- *  you have to use compiler -l staments, which are somwere deep
- *  in the Makefile.
+ *  Here the implemetation of the Observer pattern
+ *  @see Parameter.h FCParameterGrp
  */
 
 /***************************************************************************
@@ -34,16 +32,73 @@
  ***************************************************************************/
 
 
-
-// === Incuding of libs: ============================================================================
-#ifdef WNT
-#	pragma comment(lib,"python21.lib")
-#	ifdef _DEBUG
-#		pragma comment(lib,"xerces-c_2D.lib")
-#	else
-#		pragma comment(lib,"xerces-c_2.lib")
-#	endif
+/** Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
+ */
+#ifdef _PreComp_
+#	include "PreCompiled.h"
 #else
-#	error "Dont compile that file on UNIX!"
 #endif
+
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "Observer.h"
+#include "Exception.h"
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// class FCObserver
+
+
+
+//**************************************************************************
+// Construction/Destruction
+
+// here the implemataion! description should take place in the header file!
+FCObserver::FCObserver(){}
+
+FCObserver::~FCObserver(){}
+
+
+
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// class FCSubject
+
+
+//**************************************************************************
+// Construction/Destruction
+
+
+FCSubject::FCSubject(){}
+
+
+FCSubject::~FCSubject(){}
+
+//**************************************************************************
+// Subject methodes
+
+
+void FCSubject::Attach(FCObserver *ToObserv)
+{
+	_ObserverSet.insert(ToObserv);
+}
+
+
+void FCSubject::Detach(FCObserver *ToObserv)
+{
+	_ObserverSet.erase(ToObserv);
+}
+
+void FCSubject::Notify(void)
+{
+	for(stlport::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+        (*Iter)->OnChange(*this);   // send OnChange-signal
+}
+
 

@@ -40,10 +40,18 @@
 
 #include "PyExport.h"
 
-#include <string>
-#include <map>
-#include <boost/any.hpp>
 
+// Include files
+#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/dom/DOMErrorHandler.hpp>
+#include <xercesc/dom/DOMWriterFilter.hpp>
+class DOMDocument;
+
+#include "Handle.h"
+#include "Observer.h"
+
+class DOMNode;
 
 
 /** The parameter container class
@@ -57,63 +65,211 @@
  *  \par
  *  @see FCParameterSet 
  */
-class BaseExport FCParameter 
+class  BaseExport FCParametrGrp	: public FCHandled,public FCSubject
 {
-
 public:
-	// Construction destruction *******************************************
-	/// Defauld construction
-	FCParameter();
-	/// Copy construction
-	FCParameter(const FCParameter &rcParameter);
-	/// Destruction
-    ~FCParameter(void);
+	FCParametrGrp();
+	~FCParametrGrp();
 
+	bool GetBool();
 
-	// Typedefs ***********************************************************
-	/// typedef of the Key string type
-	typedef std::string	                                          tKeyString;
-	/// typedef of the Value string type (maybe unicode)
-	typedef std::string                                           tValueString;
-	/// typedef of the container
-	typedef std::map<tKeyString,std::map<tKeyString,boost::any> > tParamData;
+	void  SetBool();
 
-	// Preset Values *********************************************************
-	/// Preset floating point parameter values 
-    bool PresetKeyFloat (const tKeyString &Grp,const tKeyString &Key, double dWert);
-	/// Preset string parameter values
-    bool PresettKeyString(const tKeyString &Grp,const tKeyString &Key, const tValueString &rcValue);
-	/// Preset integer parameter values
-    bool PresetKeyLong  (const tKeyString &Grp,const tKeyString &Key, long lWert);
+	long GetInt();
 
-	// Set Values *********************************************************
-	/// Set floating point parameter values 
-    void SetKeyFloat (const tKeyString &Grp,const tKeyString &Key, double dWert);
-	/// Set string parameter values
-    void SetKeyString(const tKeyString &Grp,const tKeyString &Key, const tValueString &rcValue);
-	/// Set integer parameter values
-    void SetKeyLong  (const tKeyString &Grp,const tKeyString &Key, long lWert);
+	void  SetInt();
 
-	// Get Values *********************************************************
-	/// Get floating point parameter values 
-    double GetKeyFloat (const tKeyString &Grp,const tKeyString &Key, double dWert);
-	/// Get string parameter values
-    const tValueString &GetKeyString(const tKeyString &Grp,const tKeyString &Key, const tValueString &rcValue);
-	/// Get integer parameter values
-    long GetKeyLong  (const tKeyString &Grp,const tKeyString &Key, long lWert);
+	double GetFloat();
 
-	// deletion ***********************************************************
-	/// Delete a whole group
-    void DelGroup(const tKeyString &Grp);    
-	/// Delete explicitely a key
-    void DeleteKey (const tKeyString &Grp,const tKeyString &Key);
+	void  SetFloat();
 
-    
+//	FCParametrGrp GetGroup();
+
+	void  SetBlob();
+
+	char GetBlob();
+
+	void  SetASCII();
+
+	char GetASCII();
+
+	typedef FCHandle<FCParametrGrp> handle;
+
+protected:
 private:
-	/// Container for the 2 level key value structure
-	tParamData mData;
+
+	DOMNode *_pGroupNode;
 
 };
+
+
+
+/** The parameter manager class
+ *  This class manage a parameter XML document. 
+ *  Does loding, saving and handling the DOM document.
+ *  @see FCParameterGrp
+ */
+class BaseExport FCParameterManager	: public FCParametrGrp
+{
+public:
+	FCParameterManager();
+	~FCParameterManager();
+
+	void  LoadDocument(const char* sFileName);
+
+	void  SaveDocument(const char* sFileName);
+
+	void  CheckDocument();
+protected:
+private:
+
+	DOMDocument   *_pDocument;
+
+	bool          gDoNamespaces         ;
+	bool          gDoSchema             ;
+	bool          gSchemaFullChecking   ;
+	bool          gDoCreate             ;
+
+
+	const XMLCh*  gOutputEncoding       ;
+	const XMLCh*  gMyEOLSequence        ;
+
+	bool          gSplitCdataSections   ;
+	bool          gDiscardDefaultContent;
+	bool          gUseFilter            ;
+	bool          gFormatPrettyPrint    ;
+
+};
+
+
+class DOMTreeErrorReporter : public ErrorHandler
+{
+public:
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    DOMTreeErrorReporter() :
+       fSawErrors(false)
+    {
+    }
+
+    ~DOMTreeErrorReporter()
+    {
+    }
+
+
+    // -----------------------------------------------------------------------
+    //  Implementation of the error handler interface
+    // -----------------------------------------------------------------------
+    void warning(const SAXParseException& toCatch);
+    void error(const SAXParseException& toCatch);
+    void fatalError(const SAXParseException& toCatch);
+    void resetErrors();
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    bool getSawErrors() const;
+
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fSawErrors
+    //      This is set if we get any errors, and is queryable via a getter
+    //      method. Its used by the main code to suppress output if there are
+    //      errors.
+    // -----------------------------------------------------------------------
+    bool    fSawErrors;
+};
+
+inline bool DOMTreeErrorReporter::getSawErrors() const
+{
+    return fSawErrors;
+}
+
+
+
+// ---------------------------------------------------------------------------
+//  This is a simple class that lets us do easy (though not terribly efficient)
+//  trancoding of XMLCh data to local code page for display.
+// ---------------------------------------------------------------------------
+class StrX
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    StrX(const XMLCh* const toTranscode);
+
+    ~StrX();
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const char* localForm() const;
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fLocalForm
+    //      This is the local code page form of the string.
+    // -----------------------------------------------------------------------
+    char*   fLocalForm;
+};
+
+inline ostream& operator<<(ostream& target, const StrX& toDump)
+{
+    target << toDump.localForm();
+    return target;
+}
+
+class DOMPrintFilter : public DOMWriterFilter {
+public:
+
+    /** @name Constructors */
+	DOMPrintFilter(unsigned long whatToShow = DOMNodeFilter::SHOW_ALL);
+    //@{
+
+    /** @name Destructors */
+	~DOMPrintFilter(){};
+    //@{
+
+	/** @ interface from DOMWriterFilter */
+	virtual short acceptNode(const DOMNode*) const;
+    //@{
+
+	virtual unsigned long getWhatToShow() const {return fWhatToShow;};
+
+	virtual void          setWhatToShow(unsigned long toShow) {fWhatToShow = toShow;};
+
+private:
+	// unimplemented copy ctor and assignement operator
+	DOMPrintFilter(const DOMPrintFilter&);
+	DOMPrintFilter & operator = (const DOMPrintFilter&);
+
+	unsigned long fWhatToShow;   
+
+};
+
+class DOMPrintErrorHandler : public DOMErrorHandler
+{
+public:
+
+    DOMPrintErrorHandler(){};
+    ~DOMPrintErrorHandler(){};
+
+    /** @name The error handler interface */
+    bool handleError(const DOMError& domError);
+    void resetErrors(){};
+
+private :
+    /* Unimplemented constructors and operators */ 
+    DOMPrintErrorHandler(const DOMErrorHandler&);
+    void operator=(const DOMErrorHandler&);
+    
+};
+
 
 
 #endif
