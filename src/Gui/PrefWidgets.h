@@ -153,7 +153,7 @@ class FCWidgetPrefsManager
 			}
 		}
 
-  private:
+  protected:
     std::vector<FCWidgetPrefsHandler*> m_aHandlers;
 };
 

@@ -101,6 +101,7 @@
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qframe.h>
+#include <qheader.h>
 #include <qiconview.h> 
 #include <qimage.h>
 #include <qkeycode.h>

@@ -71,6 +71,7 @@
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
 #include "Tree.h"
+#include "PropertyView.h"
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
@@ -168,13 +169,18 @@ ApplicationWindow::ApplicationWindow()
 	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/HelpViewer");
 	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
 	FCHtmlView* pcHtmlView = new FCHtmlView(home, this, "HelpViewer");
-	_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 80);
+	_pcWidgetMgr->addDockWindow("Help bar", pcHtmlView,"Command bar", KDockWidget::DockBottom, 40);
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCTree* pcTree = new FCTree(0,0,"Raw_tree");
 	pcTree->setMinimumWidth(210);
 	_pcWidgetMgr->addDockWindow("Tree bar", pcTree,0, KDockWidget::DockLeft, 0);
+
+	// PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	FCPropertyView* pcPropView = new FCPropertyView(0,0,"PropertyView");
+	pcPropView->setMinimumWidth(210);
+	_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
  	CreateStandardOperations();
 
@@ -316,6 +322,7 @@ void ApplicationWindow::CreateStandardOperations()
 		defaultMenus.clear();
 		defaultMenus.push_back("Std_CommandLine");
 		defaultMenus.push_back("Std_DlgParameter");
+		defaultMenus.push_back("Std_OCAFBrowser");
 		defaultMenus.push_back("Separator");
 		defaultMenus.push_back("Std_DlgMacroRecord");
 		defaultMenus.push_back("Std_DlgMacroStop");

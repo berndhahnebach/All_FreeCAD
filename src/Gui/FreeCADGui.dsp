@@ -3164,6 +3164,25 @@ InputName=PrefWidgets
 # End Source File
 # Begin Source File
 
+SOURCE=.\PropertyView.cpp
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# ADD CPP /Yu"PreCompiled.h"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyView.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ScintillaQt.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File

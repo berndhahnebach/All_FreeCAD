@@ -18,6 +18,8 @@
 #	define FC_OS_WIN32
 #elif defined(linux) || defined(__linux) || defined(__linux__)
 #	define FC_OS_LINUX
+#elif defined(CYGWIN) 
+#	define FC_OS_CYGWIN
 //#elif defined(sun) || defined(__sun) || defined(__sun__)
 //#	if defined(__SVR4)
 //#		define _FC_OS_SOLARIS
@@ -94,6 +96,15 @@
 
 #define CSFDB
 
+/// enabels the use of the OCC DocumentBrowser
+#define FC_USE_OCAFBROWSER
+
+#ifdef FC_DEBUG
+#	define DEBUG 1
+#else
+#	undef  DEBUG 
+#	define NDEBUG
+#endif
 
 //**************************************************************************
 // QT

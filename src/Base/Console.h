@@ -160,7 +160,7 @@ class BaseExport FCLoggingConsoleObserver : public FCConsoleObserver
 {
 public:
 	FCLoggingConsoleObserver(const char *sFileName);
-	~FCLoggingConsoleObserver();
+	virtual ~FCLoggingConsoleObserver();
 	virtual void Warning(const char *sWarn);
 	virtual void Message(const char *sMsg);
 	virtual void Error  (const char *sErr);

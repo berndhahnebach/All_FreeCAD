@@ -53,7 +53,11 @@
 #	include <xercesc/parsers/XercesDOMParser.hpp>
 #	include <xercesc/util/XMLUni.hpp>
 #endif
-
+#	include <fcntl.h>
+#	include <sys/types.h>
+#	include <sys/stat.h>
+#	include <io.h>
+#	include <stdio.h>
 
 #include <fcntl.h>
 #ifdef FC_OS_LINUX
@@ -63,6 +67,8 @@
 #include "Parameter.h"
 #include "Exception.h"
 #include "Console.h"
+
+
 
 static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Auto;
 
@@ -299,7 +305,7 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCInt",Name);
 	// and set the vaue
-	sprintf(cBuf,"%d",lValue);
+	sprintf(cBuf,"%i",lValue);
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 	// trigger observer
 	Notify(Name);
@@ -796,7 +802,7 @@ void FCParameterManager::Init(void)
 
 		catch(const XMLException& toCatch)
 		{
-#ifdef FC_OS_LINUX
+#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 			std::ostringstream err;
 #else
 			std::strstream err;
@@ -1074,7 +1080,7 @@ PyParentObject FCPyParameterGrp::Parents[] = {&FCPyObject::Type,&FCPyParameterGr
 // constructor
 //--------------------------------------------------------------------------
 FCPyParameterGrp::FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T ) 
- : _cParamGrp(rcParamGrp),FCPyObject( T)
+ : FCPyObject( T),_cParamGrp(rcParamGrp)
 {
 	//GetConsole().Log("Create Param Group %p\n",this);
 }

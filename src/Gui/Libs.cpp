@@ -53,6 +53,11 @@
 	// Application Framwork OCAF
 #	pragma comment(lib,"TKCAF.lib")
 #	pragma comment(lib,"TKCDF.lib")
+
+#	ifdef FC_USE_OCAFBROWSER
+#		pragma comment(lib,"DFBrowser.lib")
+#	endif
+
 	// QT extension
 #	pragma comment(lib,QTLIBNAME)
 

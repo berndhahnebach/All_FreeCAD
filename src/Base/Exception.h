@@ -33,6 +33,7 @@
 #include <exception>
 #include <string>
 
+using namespace std;
 
 
 class BaseExport FCException: public exception
@@ -41,6 +42,7 @@ public:
 	FCException(const char * sMessage);
     FCException(void);
     FCException(const FCException &inst);
+    virtual ~FCException() throw() {}
 
 	FCException &operator=(const FCException &inst);
   

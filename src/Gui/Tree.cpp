@@ -217,7 +217,20 @@ void FCTree::OnNewDocument(FCGuiDocument* pcOldDocument,FCGuiDocument* pcNewDocu
 void FCTree::resizeEvent ( QResizeEvent * e) 
 {
 	// routing the resize event to the child
-  _pcListView->resize(e->size());
+
+ 	_pcListView->resize(e->size());
+
+    QSize vs = _pcListView->viewportSize( 0, _pcListView->contentsHeight() );
+
+	int os = _pcListView->header()->sectionSize( 1 );
+    int ns = vs.width() - _pcListView->header()->sectionSize( 0 );
+    if ( ns < 16 )
+	ns = 16;
+	
+    _pcListView->header()->resizeSection( 1, ns );
+    _pcListView->header()->repaint( _pcListView->header()->width() - _pcListView->header()->sectionSize( 1 ), 0, _pcListView->header()->sectionSize( 1 ), _pcListView->header()->height() );
+
+
 }
 
 bool FCTree::OnMsg(const char* pMsg)

@@ -43,6 +43,13 @@
 #include "Splashscreen.h"
 #include "Command.h"
 
+#ifdef FC_USE_OCAFBROWSER
+#	include <DebugBrowser.hxx>
+#endif
+
+
+
+
 #include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
 #include "DlgMacroExecuteImp.h"
@@ -986,6 +993,50 @@ void FCCmdCreateToolOrCmdBar::Activated(int iMsg)
 }
 
 
+//===========================================================================
+// Std_OCAFBrowser
+//===========================================================================
+#ifdef FC_USE_OCAFBROWSER
+
+class FCCmdOCAFBrowse : public FCCppCommand
+{
+public:
+	FCCmdOCAFBrowse();
+//	~FCCmdOCAFBrowse();
+	virtual void Activated(int iMsg);
+	virtual bool IsActive(void);
+private:
+	DebugBrowser cBrowser;
+};
+
+FCCmdOCAFBrowse::FCCmdOCAFBrowse()
+	:FCCppCommand("Std_OCAFBrowser")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Start raw document browser...";
+	sToolTipText	= "Starts a new window to deeply examine the document structure";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Copy";
+	iAccel			= Qt::CTRL+Qt::Key_C;
+
+
+}
+
+void FCCmdOCAFBrowse::Activated(int iMsg)
+{
+	cBrowser.DFBrowser(GetAppWnd()->GetActiveDocument()->GetDocument()->GetOCCDoc());
+}
+
+bool FCCmdOCAFBrowse::IsActive(void)
+{
+	return GetAppWnd()->GetActiveDocument() != 0;
+}
+
+#endif
+
+
 void CreateStdCommands(void)
 {
 	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
@@ -1020,6 +1071,11 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
 	rcCmdMgr.AddCommand(new FCCmdCreateToolOrCmdBar());
 	rcCmdMgr.AddCommand(new FCCmdWorkbench());
+
+#	ifdef FC_USE_OCAFBROWSER
+		rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());
+#	endif
+
 }
 
 
