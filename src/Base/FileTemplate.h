@@ -8,7 +8,7 @@
  */
 
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2000 - 2003                 *   
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -28,7 +28,7 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
+ *   Juergen Riegel 2003                                                   *
  ***************************************************************************/
 
 

@@ -49,6 +49,7 @@
 #include "../Base/Interpreter.h"
 #include "../Base/Parameter.h"
 #include "../Base/Exception.h"
+#include "../Base/EnvMacros.h"
 
 // FreeCAD doc header
 #include "../App/Application.h"
@@ -425,17 +426,14 @@ void Destruct(void)
 
 void ExtractPathAndUser(const char* sCall)
 {
-	std::string Call(sCall);
-	static std::string Temp;
+	// find home path
+	FIND_HOME_PATH(sCall,mConfig["HomePath"])
 
-	std::string::size_type pos = Call.find_last_of('\\');
-
-	Temp.assign(Call,0,pos+1);
-
-	mConfig["HomePath"] = Temp.c_str();
+	// try to figure out if using FreeCADLib
+	GET_FREECADLIB(mConfig["FreeCADLib"])
 
 	// try to figure out the user
-	 char* user = getenv("USERNAME");
+	char* user = getenv("USERNAME");
 	if (user == NULL) 
 		user = getenv("USER");
 	if (user == NULL) 
@@ -450,13 +448,13 @@ void ExtractPathAndUser(const char* sCall)
 
 const char sEnvErrorText1[] = \
 "It seems some of the variables needed by FreeCAD are not set\n"\
-"or wrong set. This regards the Open CasCade variables:\n"\
+"or wrong set. This regards the Open CasCade or python variables:\n"\
 "CSF_GRAPHICSHR=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
 "CSF_MDTVFONTDIRECTORY=C:\\CasRoot\\src\\FontMFT\\\n"\
 "CSF_MDTVTEXTURESDIRECTORY=C:\\CasRoot\\src\\Textures\\\n"\
 "CSF_UNITSDEFINITION=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
 "CSF_UNITSLEXICON=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
-"Please reinstall OpenCasCade!\n\n";
+"Please reinstall python or OpenCasCade!\n\n";
 
 const char sEnvErrorText2[] = \
 "It seems some of the variables needed by FreeCAD are not set\n"\
@@ -467,49 +465,30 @@ const char sEnvErrorText2[] = \
 
 void CheckEnv(void)
 {
-	int bFailure = 0;
-	// set the resource env variables
-	char  szString [256] ;
-	char  szDirectory [256] ;
 
-	getcwd (szDirectory,sizeof szDirectory);
-#	ifdef FC_OS_WIN32	
-#		define PATHSEP "\\"
-#	else
-#		define PATHSEP "/"
-#	endif
-	if (szDirectory[strlen(szDirectory)-1] != PATHSEP[0]) {
-		strcat(szDirectory,PATHSEP);
-	}
-	sprintf(szString,"CSF_StandardDefaults=%s",szDirectory);
-	putenv (szString);
-//	cout<<szString<<endl;
+	// set the OpenCasCade plugin variables to the FreeCAD bin path.
+	SET_PLUGINDEFAULTS(mConfig["HomePath"]);
 
-	sprintf(szString,"CSF_PluginDefaults=%s",szDirectory);
-	putenv (szString);
-//	cout<<szString<<endl;
+	// sets the python environment variables if the FREECADLIB variable is defined
+	SET_PYTHON_TO_FREECADLIB(mConfig["FreeCADLib"]);
+
+	// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
+	SET_CASCADE_TO_FREECADLIB(mConfig["FreeCADLib"]);
+
+	cout << flush;
+	
+    bool bFailure=false;  
         
-        
-#define TEST_ENVVAR_EXISTS(envvar,type) \
-	if (!getenv(envvar)){ \
-          cerr<<"Environment variable "<<envvar<<" is not set!"<<endl; \
-          bFailure|=type;\
-        }  
-        TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory",1)
-        TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory",1)
-        TEST_ENVVAR_EXISTS("CSF_UnitsDefinition",1)
-        TEST_ENVVAR_EXISTS("CSF_UnitsLexicon",1)
+	TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory",bFailure)
+    TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory",bFailure)
+    TEST_ENVVAR_EXISTS("CSF_UnitsDefinition",bFailure)
+    TEST_ENVVAR_EXISTS("CSF_UnitsLexicon",bFailure)
 
-        if (bFailure&1) {    
-         	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
-			exit(1);
-        }
-        if (bFailure&2) {    
-         	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText2;
-			exit(1);
-        }
+    if (bFailure) {    
+     	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
+		exit(1);
+    }
 
-#undef TEST_ENVVAR_EXISTS         
          
 /*	
 	if(  getenv("CASROOT") )

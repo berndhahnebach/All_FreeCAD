@@ -44,6 +44,11 @@
 #	error "FreeCAD was not ported to this os yet. For help see free-cad.sourceforge.net"
 #endif
 
+#	ifdef FC_OS_WIN32	
+#		define PATHSEP '\\'
+#	else
+#		define PATHSEP '/'
+#	endif
 
 
 //**************************************************************************

@@ -18,8 +18,8 @@ DistName = DistTools.BuildDistName()
 #DistSrc  = DistName + "_src"
 #DistSrc  = DistName + "_src_bin_win"
 #DistBin  = DistName + "_src_bin_win"
-DistSrc  = DistName 
-DistBin  = DistName 
+DistSrc  = DistName + "Bin"
+DistBin  = DistName + "Bin"
 DistDir  = "../../DistTemp/"
 
 #====================================================================
@@ -34,6 +34,20 @@ if (DistTools.EnsureDir(DistDir+DistBin) == 1):
 sys.stdout.write( 'Copy src Tree ...\n')
 DistTools.EnsureDir(DistDir+DistSrc+'/src')
 DistTools.cpallWithFilter('../../src',DistDir+DistSrc+'/src',DistTools.SetUpFilter(DistTools.SrcFilter))
+
+#====================================================================
+# copy bin and lib 
+sys.stdout.write( 'Copy bin and lib Tree ...\n')
+DistTools.EnsureDir(DistDir+DistBin+'/bin')
+DistTools.cpallWithFilter('../../bin',DistDir+DistBin+'/bin',DistTools.SetUpFilter(DistTools.BinFilter))
+DistTools.EnsureDir(DistDir+DistBin+'/lib')
+DistTools.cpallWithFilter('../../lib',DistDir+DistBin+'/lib',DistTools.SetUpFilter(DistTools.LibFilter))
+
+#====================================================================
+# copy Modules
+sys.stdout.write( 'Copy modul Tree ...\n')
+DistTools.EnsureDir(DistDir+DistBin+'/Mod')
+DistTools.cpallWithFilter('../../src/Mod',DistDir+DistBin+'/Mod',DistTools.SetUpFilter(DistTools.ModFilter))
 
 #====================================================================
 # copy top level files

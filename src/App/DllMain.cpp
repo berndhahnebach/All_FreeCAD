@@ -41,6 +41,10 @@
 #include <windows.h>
 #include <direct.h>
 #include <stdio.h>
+#include <string>
+
+#include "../Base/EnvMacros.h"
+
 
 /** DllMain
  *  is called when DLL is loaded and set some variables different from OCC
@@ -56,7 +60,6 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 //    case DLL_THREAD_ATTACH:
 		// set the resource env variables
 		
-		char  szString [256] ;
 		char  szDirectory [256] ;
 
 		getcwd (szDirectory,sizeof szDirectory);
@@ -64,11 +67,19 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 			strcat(szDirectory,"\\");
 		}
 		
-		sprintf(szString,"CSF_StandardDefaults=%s",szDirectory);
-		putenv (szString);
+		std::string Temp;
+		// try to figure out if using FreeCADLib
+		GET_FREECADLIB(Temp)
 
-		sprintf(szString,"CSF_PluginDefaults=%s",szDirectory);
-		putenv (szString);
+		// sets the python environment variables if the FREECADLIB variable is defined
+		SET_PYTHON_TO_FREECADLIB(Temp);
+
+		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
+		SET_CASCADE_TO_FREECADLIB(Temp);
+
+
+		SET_PLUGINDEFAULTS(szDirectory);
+
 		
 		break;
 

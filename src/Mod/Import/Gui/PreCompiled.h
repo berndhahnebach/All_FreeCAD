@@ -25,6 +25,9 @@
 #include <string>
 #include <set>
 
+#include <python.h>
+#include <windows.h>
+
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
 
@@ -146,8 +149,6 @@
 #include <qworkspace.h>
 
 
-#include <python.h>
-#include <windows.h>
 
 
 

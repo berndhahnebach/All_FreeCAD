@@ -1,9 +1,9 @@
 # Part gui init module  
-# (c) 2003 Jürgen Riegel
+# (c) 2003 Juergen Riegel
 #
 
 #***************************************************************************
-#*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *

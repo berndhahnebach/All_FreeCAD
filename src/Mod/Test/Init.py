@@ -1,8 +1,8 @@
 # FreeCAD init script of the test module  
-# (c) 2001 Jürgen Riegel
+# (c) 2001 Juergen Riegel
 
 #***************************************************************************
-#*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *

@@ -337,5 +337,11 @@ Version: V0.1B73 Date: Mon Sep 29 00:36:57 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B74 Date: Fri Oct 31 00:27:14 2003 +++++++++++++++++++++++++++++++
 + add function RegisterIcon() in ApplicationWindow
+
+Version: V0.1B75 Date: Sat Nov 01 18:38:15 2003 +++++++++++++++++++++++++++++++
++ changes on the Env handling for the LibPack
+  - EnvMacros.h added
++ Startup bat
++ Tools to make Binary and Setup distributions
 + Internationalization is now supported
 

@@ -39,7 +39,7 @@
 #include "../Config.h"
 
 #ifdef FC_OS_WIN32
-#	pragma comment(lib,PYLIBNAME)
+//#	pragma comment(lib,PYLIBNAME)
 #	pragma comment(lib,DOMLIBNAME)
 #else
 #	error "Dont compile that file on UNIX!"

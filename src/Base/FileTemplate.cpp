@@ -8,7 +8,7 @@
  */
 
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2000 - 2003                 *   
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
