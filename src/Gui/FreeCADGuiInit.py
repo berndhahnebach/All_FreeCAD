@@ -157,7 +157,7 @@ def InitCmdBar():
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = '../src/Mod'
+	ModDir = FreeCAD.ConfigGet("HomePath")+'src/Mod'
 	#print FreeCAD.ConfigGet("HomePath")
 	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):
 		ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'

@@ -37,6 +37,8 @@
 #ifdef FC_OS_LINUX
 #	include <unistd.h>
 #	include <stdlib.h>
+#	include <string>
+#	include <vector>
 #endif
 
 
@@ -75,7 +77,7 @@ inline void TestEnvExists(const char* sEnvName,bool &bFailure)
 
 inline void SimplifyPath(std::string& sPath)
 {
-	// remove all unnecessary './' from sPath
+	// remove all unnecessary '/./' from sPath
 	std::string sep; sep += PATHSEP;
 	std::string pattern = sep + '.' + sep;
 	std::string::size_type npos = sPath.find(pattern);
@@ -84,91 +86,193 @@ inline void SimplifyPath(std::string& sPath)
 		sPath.replace(npos, 3, sep);
 		npos = sPath.find(pattern);
 	}
+
+	// remove all unnecessary '//' from sPath
+	pattern = sep + sep;
+	npos = sPath.find(pattern);
+	while (npos != std::string::npos)
+	{
+		sPath.replace(npos, 2, sep);
+		npos = sPath.find(pattern);
+	}
 }
 
 #ifdef FC_OS_LINUX
-
 inline std::string FindHomePathUnix(const char* sCall)
 {
-	std::string Call(sCall), TempHomePath;
+	std::string argv = sCall;
+	std::string absPath;
+	std::string homePath;
+	std::string cwd;
 
-	// no absolute path
-	if (Call[0] != PATHSEP)
+	// get the current working directory
+	char szDir[1024];
+	if ( getcwd(szDir, sizeof(szDir)) == NULL)
+		return homePath;
+
+	cwd = szDir;
+
+	// absolute path
+	if ( argv[0] == PATHSEP )
 	{
-		// relative path
-		if (Call[0] == '.')
+		absPath = argv;
+#ifdef FC_DEBUG
+		printf("Absolute path: %s\n", absPath.c_str());
+#endif
+	}
+	// relative path
+	else if ( argv.find(PATHSEP) != std::string::npos )
+	{
+		absPath = cwd + PATHSEP + argv;
+#ifdef FC_DEBUG
+		printf("Relative path: %s\n", argv.c_str());
+		printf("Absolute path: %s\n", absPath.c_str());
+#endif
+	}
+	// check PATH
+	else
+	{
+#ifdef FC_DEBUG
+		printf("Searching in PATH variable...");
+#endif
+		const char *pEnv = getenv( "PATH" );
+
+		if ( pEnv )
 		{
-			// get the current working directory
-			char szDir[1024];
-			if ( getcwd(szDir, sizeof(szDir)) )
+			std::string path = pEnv;
+			std::vector<std::string> paths;
+
+			// split into each component
+			std::string::size_type start = 0;
+			std::string::size_type npos = path.find(':', start);
+			while ( npos != std::string::npos )
 			{
-				Call = szDir;
-				Call += PATHSEP;
-				Call += sCall;
+				std::string tmp = path.substr(start, npos - start);
+				paths.push_back( path.substr(start, npos - start) );
+				start = npos + 1;
+				npos = path.find(':', start);
 			}
-		}
-		// check the PATH environment variable
-		else
-		{
-			if ( getenv("PATH") )
+
+			// append also last component
+			paths.push_back( path.substr(start) );
+
+			for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
 			{
-				std::string sPATH = getenv("PATH");
+				std::string test = *it + PATHSEP + argv;
 
-				bool notfound = true, success = false;
-				std::string tmp;
-				std::string path;
-				std::string::size_type npos = sPATH.find(':');
-				while ( notfound )
+				// no abs. path
+				if ( test[0] != PATHSEP )
+					test = cwd + PATHSEP + test;
+
+				// does it exist?
+				if ( access(test.c_str(), 0) == 0 )
 				{
-					if ( npos != std::string::npos )
-					{
-						path = sPATH.substr(0, npos);
-						sPATH = sPATH.substr(npos+1);
-						npos = sPATH.find(':');
-					}
-					else
-					{
-						// if this also fails break anyway
-						notfound = false;
-						path = sPATH;
-					}
-
-					tmp = path + PATHSEP + sCall;
-
-					// does file exist?
-					if ( access(tmp.c_str(), 0) == 0 )
-					{
-						Call = tmp;
-						notfound = false;
-						success = true;
-						break;
-					}
+					absPath = test;
+#ifdef FC_DEBUG
+					printf("found.\n");
+					printf("Absolute path: %s\n", absPath.c_str());
+#endif
+					break;
 				}
-
-				// path found?
-				if ( success )
-					std::cout << "Path found in " << path << std::endl;
-				else
-					std::cerr << "Sorry, could't find the right path!" << std::endl;
 			}
 		}
 	}
 
-	if (Call[0] == PATHSEP)
+	// should be an absolute path now
+	if (absPath[0] == PATHSEP)
 	{
-		SimplifyPath(Call);
-
 		EnvPrint("FindHomePath -----------------");
 
-		EnvPrint(Call.c_str());
-		std::string::size_type pos = Call.find_last_of(PATHSEP);
-		TempHomePath.assign(Call,0,pos);
-		pos = TempHomePath.find_last_of(PATHSEP);
-		TempHomePath.assign(TempHomePath,0,pos+1);
-		EnvPrint(TempHomePath.c_str());
+		SimplifyPath( absPath );
+		std::string::size_type pos = absPath.find_last_of(PATHSEP);
+		homePath.assign(absPath,0,pos);
+		pos = homePath.find_last_of(PATHSEP);
+		homePath.assign(homePath,0,pos+1);
+
+		EnvPrint(homePath.c_str());
+	}
+	else
+	{
+		printf("ERROR: no valid home path! (%s)\n", absPath.c_str());
+		exit(0);
 	}
 
-	return TempHomePath;
+	return homePath;
+}
+
+inline std::string FindPyHomePathUnix(const char* sCall)
+{
+	std::string argv = sCall;
+	std::string absPath;
+	std::string homePath;
+	std::string cwd;
+
+	// get the current working directory
+	char szDir[1024];
+	if ( getcwd(szDir, sizeof(szDir)) == NULL)
+		return homePath;
+
+	cwd = szDir;
+
+	absPath = cwd + PATHSEP + argv;
+
+	// check PATH if module is not in cwd
+	if ( access(absPath.c_str(), 0) != 0 )
+	{
+		const char *pEnv = getenv( "PYTHONPATH" );
+
+		if ( pEnv )
+		{
+			std::string path = pEnv;
+			std::vector<std::string> paths;
+
+			// split into each component
+			std::string::size_type start = 0;
+			std::string::size_type npos = path.find(':', start);
+			while ( npos != std::string::npos )
+			{
+				std::string tmp = path.substr(start, npos - start);
+				paths.push_back( path.substr(start, npos - start) );
+				start = npos + 1;
+				npos = path.find(':', start);
+			}
+
+			// append also last component
+			paths.push_back( path.substr(start) );
+
+			for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
+			{
+				std::string test = *it + PATHSEP + argv;
+
+				// no abs. path
+				if ( test[0] != PATHSEP )
+					test = cwd + PATHSEP + test;
+
+				// does it exist?
+				if ( access(test.c_str(), 0) == 0 )
+				{
+					absPath = test;
+					break;
+				}
+			}
+		}
+	}
+
+	// should be an absolute path now
+	if (absPath[0] == PATHSEP)
+	{
+		EnvPrint("FindHomePath -----------------");
+
+		SimplifyPath( absPath );
+		std::string::size_type pos = absPath.find_last_of(PATHSEP);
+		homePath.assign(absPath,0,pos);
+		pos = homePath.find_last_of(PATHSEP);
+		homePath.assign(homePath,0,pos+1);
+
+		EnvPrint(homePath.c_str());
+	}
+
+	return homePath;
 }
 #endif
 

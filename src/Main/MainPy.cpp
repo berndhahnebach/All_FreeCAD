@@ -89,7 +89,7 @@ extern "C" {
 #		ifdef FC_OS_WIN32
 			sHomePath = path;
 #		else
-			//sHomePaht = ???;
+			sHomePath = FindPyHomePathUnix("FreeCAD.so");
 #		endif
 
 		char* argv = "FreeCAD";
