@@ -38,7 +38,7 @@
  * Inherited classes should reimplement @ref apply() and
  * @ref cancel().
  */
-class FCPropertyPage
+class GuiExport FCPropertyPage
 {
   protected:
     FCPropertyPage();
@@ -58,7 +58,7 @@ class FCPropertyPage
     bool bChanged;
 };
 
-class FCPreferencePage : public FCPropertyPage, public FCWidgetPrefsManager
+class GuiExport FCPreferencePage : public FCPropertyPage, public FCWidgetPrefsManager
 {
   public:
     FCPreferencePage();

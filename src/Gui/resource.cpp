@@ -30,7 +30,9 @@
 
 #include "PreCompiled.h"
 #include "BitmapFactory.h"
+#include "WidgetFactory.h"
 #include "Language/LanguageFactory.h"
+#include "Widgets.h"
 
 // ----------------------------------------------------
 
@@ -49,4 +51,45 @@ FCLanguageFactorySupplier::FCLanguageFactorySupplier()
   //
   //
 	new FCLanguageProducer("German", GetFreeCAD_de());
+}
+
+// ----------------------------------------------------
+
+// INCLUDE YOUR PREFERENCFE PAGES HERE
+//
+#include "DlgPreferencesImp.h"
+#include "DlgSettingsImp.h"
+#include "DlgSettings3DViewImp.h"
+#include "DlgGeneralImp.h"
+#include "DlgEditorImp.h"
+#include "DlgSettingsMacroImp.h"
+#include "DlgOnlineHelpImp.h"
+
+FCWidgetFactorySupplier::FCWidgetFactorySupplier()
+{
+  // ADD YOUR PREFERENCFE PAGES HERE
+  //
+  //
+	FCDlgPreferencesImp::addGroup( QObject::tr("FreeCAD") );
+  new FCPrefPageProducer<FCDlgGeneral>       ( QObject::tr("General"     ) );
+  new FCPrefPageProducer<FCDlgEditorSettings>( QObject::tr("Editor"      ) );
+  new FCPrefPageProducer<FCDlgSettingsMacro> ( QObject::tr("Macros"      ) );
+  new FCPrefPageProducer<FCOnlineHelp>       ( QObject::tr("Online help" ) );
+	FCDlgPreferencesImp::addGroup( QObject::tr("Viewer") );
+  new FCPrefPageProducer<FCDlgSettings>      ( QObject::tr("Help Viewer" ) );
+  new FCPrefPageProducer<FCDlgSettings3DView>( QObject::tr("3D View"     ) );
+
+	// ADD YOUR PREFERENCE WIDGETS HERE
+	//
+	//
+	new FCWidgetProducer<FCPrefSpinBox>;
+	new FCWidgetProducer<FCLineEdit>;
+	new FCWidgetProducer<FCComboBox>;
+	new FCWidgetProducer<FCListBox>;
+	new FCWidgetProducer<FCCheckBox>;
+	new FCWidgetProducer<FCRadioButton>;
+	new FCWidgetProducer<FCSlider>;
+	new FCWidgetProducer<FCCmdView>;
+	new FCWidgetProducer<FCAccelLineEdit>;
+	new FCWidgetProducer<FCColorButton>;
 }

@@ -63,7 +63,10 @@ class FCWidgetProducer: public FCAbstractProducer
 {
 	public:
 		/// Constructor
-		FCWidgetProducer ();
+		FCWidgetProducer ()
+		{
+			FCWidgetFactory::Instance().AddProducer(typeid(CLASS).name(), this);
+		}
 
 		virtual ~FCWidgetProducer (void){}
 
@@ -81,7 +84,11 @@ class FCPrefPageProducer: public FCAbstractProducer
 {
 	public:
 		/// Constructor
-		FCPrefPageProducer (const QString& caption);
+		FCPrefPageProducer (const QString& caption)  : mCaption(caption)
+		{
+			FCWidgetFactory::Instance().AddProducer(mCaption.latin1(), this);
+			FCDlgPreferencesImp::addPage(caption);
+		}
 
 		virtual ~FCPrefPageProducer (void){}
 
@@ -134,16 +141,17 @@ class FCContainerDialog : public QDialog
 
 // ----------------------------------------------------
 
-class FCPythonResource : public FCPyObject
+class FCPyResource : public FCPyObject
 {
 	/** always start with Py_Header */
 	Py_Header;
 
 	public:
-		FCPythonResource(PyTypeObject *T = &Type);
-		~FCPythonResource();
+		FCPyResource(PyTypeObject *T = &Type);
+		~FCPyResource();
 
 		void load(const char* name);
+		bool connect(const char* sender, const char* signal, PyObject* cb);
 
 		/// for Construction in python 
 		static PyObject *PyMake(PyObject *, PyObject *);
@@ -156,13 +164,31 @@ class FCPythonResource : public FCPyObject
 		int _setattr(char *attr, PyObject *value);	// __setattr__ function
 
 		// methods
-		PYFUNCDEF_D(FCPythonResource, GetValue);
-		PYFUNCDEF_D(FCPythonResource, SetValue);
-		PYFUNCDEF_D(FCPythonResource, Show);
-		PYFUNCDEF_D(FCPythonResource, Connect);
+		PYFUNCDEF_D(FCPyResource, GetValue);
+		PYFUNCDEF_D(FCPyResource, SetValue);
+		PYFUNCDEF_D(FCPyResource, Show);
+		PYFUNCDEF_D(FCPyResource, Connect);
 
 	private:
+		std::vector<class FCSignalConnect*> mySingals;
 		QDialog* myDlg;
+};
+
+class FCSignalConnect : public QObject
+{
+	Q_OBJECT
+
+	public:
+		FCSignalConnect( FCPyObject* res, PyObject* cb, QObject* sender);
+		~FCSignalConnect();
+
+	public slots:
+		void onExecute();
+
+	private:
+		QObject*  mySender;
+		PyObject* myResource;
+		PyObject* myCallback;
 };
 
 #endif // __FC_WIDGET_FACTORY_H__

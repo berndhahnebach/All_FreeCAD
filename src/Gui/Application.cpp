@@ -1135,8 +1135,8 @@ PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
 
 	PyObject* pPyResource=0L;
 	try{
-		pPyResource = new FCPythonResource();
-		((FCPythonResource*)pPyResource)->load(fn);
+		pPyResource = new FCPyResource();
+		((FCPyResource*)pPyResource)->load(fn);
 	} catch (const FCException& e)
 	{
     PyErr_SetString(PyExc_AssertionError, e.what());

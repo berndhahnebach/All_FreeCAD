@@ -31,14 +31,6 @@
 
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
-#include "Widgets.h"
-#include "DlgPreferencesImp.h"
-#include "DlgSettingsImp.h"
-#include "DlgSettings3DViewImp.h"
-#include "DlgGeneralImp.h"
-#include "DlgEditorImp.h"
-#include "DlgSettingsMacroImp.h"
-#include "DlgOnlineHelpImp.h"
 
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
@@ -104,7 +96,6 @@ QWidget* FCWidgetFactory::ProduceWidget (const char* sName, QWidget* parent) con
   return w;
 }
 
-
 QWidget* FCWidgetFactory::ProducePrefWidget(const char* sName, QWidget* parent, const char* sPref)
 {
   QWidget* w = ProduceWidget(sName);
@@ -151,57 +142,7 @@ class FCQtWidgetFactory : public QWidgetFactory
 
 // ----------------------------------------------------
 
-template <class CLASS>
-FCWidgetProducer<CLASS>::FCWidgetProducer ()
-{
-	FCWidgetFactory::Instance().AddProducer(typeid(CLASS).name(), this);
-}
-
-// ----------------------------------------------------
-
-template <class CLASS>
-FCPrefPageProducer<CLASS>::FCPrefPageProducer (const QString& caption) : mCaption(caption)
-{
-	FCWidgetFactory::Instance().AddProducer(mCaption.latin1(), this);
-	FCDlgPreferencesImp::addPage(caption);
-}
-
-// ----------------------------------------------------
-
 FCWidgetFactorySupplier* FCWidgetFactorySupplier::_pcSingleton = 0L;
-
-FCWidgetFactorySupplier::FCWidgetFactorySupplier()
-{
-  // ADD YOUR PREFERENCFE PAGES HERE
-  //
-  //
-	FCDlgPreferencesImp::addGroup( QObject::tr("FreeCAD") );
-  new FCPrefPageProducer<FCDlgGeneral>       ( QObject::tr("General"     ) );
-  new FCPrefPageProducer<FCDlgEditorSettings>( QObject::tr("Editor"      ) );
-  new FCPrefPageProducer<FCDlgSettingsMacro> ( QObject::tr("Macros"      ) );
-  new FCPrefPageProducer<FCOnlineHelp>       ( QObject::tr("Online help" ) );
-	FCDlgPreferencesImp::addGroup( QObject::tr("Viewer") );
-  new FCPrefPageProducer<FCDlgSettings>      ( QObject::tr("Help Viewer" ) );
-  new FCPrefPageProducer<FCDlgSettings3DView>( QObject::tr("3D View"     ) );
-
-	// ADD YOUR PREFERENCE WIDGETS HERE
-	//
-	//
-	new FCWidgetProducer<FCPrefSpinBox>;
-	new FCWidgetProducer<FCLineEdit>;
-	new FCWidgetProducer<FCComboBox>;
-	new FCWidgetProducer<FCListBox>;
-	new FCWidgetProducer<FCCheckBox>;
-	new FCWidgetProducer<FCRadioButton>;
-	new FCWidgetProducer<FCSlider>;
-	new FCWidgetProducer<FCCmdView>;
-	new FCWidgetProducer<FCAccelLineEdit>;
-	new FCWidgetProducer<FCColorButton>;
-
-#if QT_VERSION >= 300
-	QWidgetFactory::addWidgetFactory(new FCQtWidgetFactory);
-#endif
-}
 
 FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
 {
@@ -209,6 +150,10 @@ FCWidgetFactorySupplier & FCWidgetFactorySupplier::Instance(void)
 	if(!_pcSingleton)
 	{
 		_pcSingleton = new FCWidgetFactorySupplier;
+
+#if QT_VERSION >= 300
+	QWidgetFactory::addWidgetFactory(new FCQtWidgetFactory);
+#endif
 	}
 
   return *_pcSingleton;
@@ -261,11 +206,11 @@ FCContainerDialog::~FCContainerDialog()
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject FCPythonResource::Type = {
+PyTypeObject FCPyResource::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FCPythonResource",		/*tp_name*/
-	sizeof(FCPythonResource),/*tp_basicsize*/
+	"FCPyResource",		/*tp_name*/
+	sizeof(FCPyResource),/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -284,7 +229,7 @@ PyTypeObject FCPythonResource::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef FCPythonResource::Methods[] = {
+PyMethodDef FCPyResource::Methods[] = {
   {"GetValue",       (PyCFunction) sGetValue, Py_NEWARGS},
   {"SetValue",       (PyCFunction) sSetValue, Py_NEWARGS},
   {"Show",           (PyCFunction) sShow,     Py_NEWARGS},
@@ -296,46 +241,51 @@ PyMethodDef FCPythonResource::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCPythonResource::Parents[] = {&FCPyObject::Type,&FCPythonResource::Type, NULL};     
+PyParentObject FCPyResource::Parents[] = {&FCPyObject::Type,&FCPyResource::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCPythonResource::FCPythonResource(PyTypeObject *T)
+FCPyResource::FCPyResource(PyTypeObject *T)
  : FCPyObject( T), myDlg(0L)
 {
 }
 
-PyObject *FCPythonResource::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *FCPyResource::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new FCPythonResource();			// Make new Python-able object
+  //return new FCPyResource();			// Make new Python-able object
   return 0;
 }
 
 //--------------------------------------------------------------------------
-//  FCPythonResource destructor 
+//  FCPyResource destructor 
 //--------------------------------------------------------------------------
-FCPythonResource::~FCPythonResource()
+FCPyResource::~FCPyResource()
 {
 	delete myDlg;
+	for (std::vector<FCSignalConnect*>::iterator it = mySingals.begin(); it != mySingals.end(); ++it)
+	{
+		FCSignalConnect* sc = *it;
+		delete sc;
+	}
 }
 
 //--------------------------------------------------------------------------
 // FCPyParametrGrp Attributes
 //--------------------------------------------------------------------------
-PyObject *FCPythonResource::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *FCPyResource::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	_getattr_up(FCPyObject); 						// send to parent
 	return 0;
 } 
 
-int FCPythonResource::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int FCPyResource::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
 	return FCPyObject::_setattr(attr, value);	// send up to parent
 	return 0;
 } 
 
-void FCPythonResource::load(const char* name)
+void FCPyResource::load(const char* name)
 {
 	QString fn = name;
 	QFileInfo fi(fn);
@@ -364,7 +314,7 @@ void FCPythonResource::load(const char* name)
 #endif
 }
 
-PyObject *FCPythonResource::Show(PyObject *args)
+PyObject *FCPyResource::Show(PyObject *args)
 {
 	if (myDlg)
 	{
@@ -375,15 +325,14 @@ PyObject *FCPythonResource::Show(PyObject *args)
   return Py_None;
 }
 
-PyObject *FCPythonResource::GetValue(PyObject *args)
+PyObject *FCPyResource::GetValue(PyObject *args)
 {
 	char *psName;
 	char *psProperty;
 	if (!PyArg_ParseTuple(args, "ss", &psName, &psProperty))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
 
-	QString input="";
-
+	QVariant v;
 	if (myDlg)
 	{
 		QObjectList *l = myDlg->queryList( "QWidget" );
@@ -394,7 +343,7 @@ PyObject *FCPythonResource::GetValue(PyObject *args)
 				++it;
 				if (strcmp(obj->name(), psName) == 0)
 				{
-					input = obj->property(psProperty).toString();
+					v = obj->property(psProperty);
 					break;
 				}
 		}
@@ -402,18 +351,91 @@ PyObject *FCPythonResource::GetValue(PyObject *args)
 	}
 
 	PyObject *pItem;
-	pItem = PyString_FromString(input.latin1());
+	switch (v.type())
+	{
+		case QVariant::StringList:
+		{
+			QStringList str = v.toStringList();
+			int nSize = str.count();
+			PyObject* slist = PyList_New(nSize);
+			for (int i=0; i<nSize;++i)
+			{
+				PyObject* item = PyString_FromString(str[i].latin1());
+				PyList_SetItem(slist, i, item);
+			}
+		} break;
+		case QVariant::CString:
+			break;
+		case QVariant::String:
+			pItem = PyString_FromString(v.toString().latin1());
+			break;
+		case QVariant::Double:
+			pItem = PyFloat_FromDouble(v.toDouble());
+			break;
+		case QVariant::Bool:
+			pItem = PyInt_FromLong(v.toBool() ? 1 : 0);
+			break;
+		case QVariant::UInt:
+			pItem = PyLong_FromLong(v.toUInt());
+			break;
+		case QVariant::Int:
+			pItem = PyInt_FromLong(v.toInt());
+			break;
+		default:
+			pItem = PyString_FromString("");
+			break;
+	}
 
 	return pItem;
 }
 
-PyObject *FCPythonResource::SetValue(PyObject *args)
+PyObject *FCPyResource::SetValue(PyObject *args)
 {
 	char *psName;
 	char *psProperty;
-	char *psValue;
-	if (!PyArg_ParseTuple(args, "sss", &psName, &psProperty, &psValue))     // convert args: Python->C 
+	PyObject *psValue;
+	if (!PyArg_ParseTuple(args, "ssO", &psName, &psProperty, &psValue))     // convert args: Python->C 
 		return NULL;                             // NULL triggers exception 
+
+	QVariant v;
+	if ( PyString_Check(psValue) )
+	{
+		v = QString(PyString_AsString(psValue));
+	}
+	else if ( PyInt_Check(psValue) )
+	{
+		v = PyInt_AsLong(psValue);
+	}
+	else if ( PyLong_Check(psValue) )
+	{
+		v = PyLong_AsLong(psValue);
+	}
+	else if ( PyFloat_Check(psValue) )
+	{
+		v = PyFloat_AsDouble(psValue);
+	}
+	else if ( PyList_Check(psValue) )
+	{
+		QStringList str;
+		int nSize = PyList_Size(psValue);
+		for (int i=0; i<nSize;++i)
+		{
+			PyObject* item = PyList_GetItem(psValue, i);
+			if (!PyString_Check(item))
+				continue;
+
+			char* pItem = PyString_AsString(item);
+
+			str.append(pItem);
+		}
+
+		v = str;
+	}
+	else
+	{
+    PyErr_SetString(PyExc_AssertionError, "Unsupported type");
+		return NULL;
+	}
 
 	if (myDlg)
 	{
@@ -425,7 +447,6 @@ PyObject *FCPythonResource::SetValue(PyObject *args)
 				++it;
 				if (strcmp(obj->name(), psName) == 0)
 				{
-					QVariant v(psValue);
 					obj->setProperty(psProperty, v);
 					break;
 				}
@@ -437,24 +458,95 @@ PyObject *FCPythonResource::SetValue(PyObject *args)
   return Py_None;
 }
 
-static PyObject *my_callback = NULL;
-
-PyObject *FCPythonResource::Connect(PyObject *args)
+PyObject *FCPyResource::Connect(PyObject *args)
 {
-    PyObject *result = NULL;
-    PyObject *temp;
+	char *psSender;
+	char *psSignal;
 
-    if (PyArg_ParseTuple(args, "O:set_callback", &temp)) {
-        if (!PyCallable_Check(temp)) {
-            PyErr_SetString(PyExc_TypeError, "parameter must be callable");
-            return NULL;
-        }
-        Py_XINCREF(temp);         /* Add a reference to new callback */
-        Py_XDECREF(my_callback);  /* Dispose of previous callback */
-        my_callback = temp;       /* Remember new callback */
-        /* Boilerplate to return "None" */
-        Py_INCREF(Py_None);
-        result = Py_None;
+  PyObject *result = NULL;
+  PyObject *temp;
+
+  if (PyArg_ParseTuple(args, "ssO:set_callback", &psSender, &psSignal, &temp)) 
+	{
+    if (!PyCallable_Check(temp)) 
+		{
+      PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+      return NULL;
     }
-    return result;
+
+    Py_XINCREF(temp);         /* Add a reference to new callback */
+		std::string sSender = psSender;
+		std::string sSignal = psSignal;
+		
+		if ( !connect(psSender, psSignal, temp) )
+		{
+			// no signal object found => dispose the callback object
+			Py_XDECREF(temp);  /* Dispose of callback */
+		}
+
+    /* Boilerplate to return "None" */
+    Py_INCREF(Py_None);
+    result = Py_None;
+  }
+
+  return result;
 }
+
+bool FCPyResource::connect(const char* sender, const char* signal, PyObject* cb)
+{
+	QObject* objS=0L;
+	QObjectList *l = myDlg->queryList( "QWidget" );
+	QObjectListIt it( *l );
+	QObject *obj;
+	QString sigStr = QString("2%1").arg(signal);
+
+	while ( (obj = it.current()) != 0 ) {
+			++it;
+			if (strcmp(obj->name(), sender) == 0)
+			{
+				objS = obj;
+				break;
+			}
+	}
+
+	delete l; // delete the list, not the objects
+
+	if (objS)
+	{
+		FCSignalConnect* sc = new FCSignalConnect(this, cb, objS);
+		mySingals.push_back(sc);
+		QObject::connect(objS, sigStr.latin1(), sc, SLOT ( onExecute() )  );
+
+		return true;
+	}
+	else
+		return false;
+}
+
+// ----------------------------------------------------
+
+FCSignalConnect::FCSignalConnect( FCPyObject* res, PyObject* cb, QObject* sender)
+ : myResource(res), myCallback(cb), mySender(sender)
+{
+}
+
+FCSignalConnect::~FCSignalConnect()
+{
+	Py_XDECREF(myCallback);  /* Dispose of callback */
+}
+
+void FCSignalConnect::onExecute()
+{
+	int arg;
+	PyObject *arglist;
+	PyObject *result;
+	
+	arg = 123;
+
+	/* Time to call the callback */
+	arglist = Py_BuildValue("(O)", myResource);
+	result = PyEval_CallObject(myCallback, arglist);
+	Py_DECREF(arglist);
+}
+
+#include "moc_WidgetFactory.cpp"

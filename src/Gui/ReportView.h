@@ -49,7 +49,7 @@ class FCReportView : public FCDockWindow
     FCReportOutput* mle;
 };
 
-class FCReportOutput : public QTextBrowser, public FCConsoleObserver
+class GuiExport FCReportOutput : public QTextBrowser, public FCConsoleObserver
 {
   Q_OBJECT
 
