@@ -42,6 +42,7 @@
 #   include <xercesc/sax/SAXParseException.hpp>
 #	endif
 #	include <stdio.h>
+# include <Standard_Failure.hxx>
 #endif
 
 

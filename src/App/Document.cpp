@@ -30,6 +30,7 @@
 #	include <Handle_TDataStd_Name.hxx>
 #	include <TDataStd_Integer.hxx>
 #	include <Handle_TDataStd_Integer.hxx>
+# include <TDF_MapIteratorOfLabelMap.hxx>
 #endif
 
 

@@ -10,7 +10,6 @@ BUILT_SOURCES=\
 libFreeCADApp_la_SOURCES=\
 		Application.h \
 		Attribute.h \
-		DocType.h \
 		DocTypeAttr.h \
 		Document.h \
 		Feature.h \
@@ -24,9 +23,9 @@ libFreeCADApp_la_SOURCES=\
 		Topology.h \
 		Application.cpp \
 		Attribute.cpp \
-		DocType.cpp \
 		DocTypeAttr.cpp \
 		Document.cpp \
+		DocumentPy.cpp \
 		Feature.cpp \
 		FeatureAttr.cpp \
 		Function.cpp \
