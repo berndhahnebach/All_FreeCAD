@@ -41,46 +41,46 @@ using namespace Base;
 
 // -------------------------------------------------------
 
-SequencerBase* SequencerBase::_pclSingleton = 0L;
+CSequencer* CSequencer::_pclSingleton = 0L;
 
-SequencerBase& SequencerBase::Instance ()
+CSequencer& CSequencer::Instance ()
 {
 	// not initialized?
 	if ( !_pclSingleton )
 	{
-		_pclSingleton = new SequencerBase();
+		_pclSingleton = new CSequencer();
 	}
 
 	return *_pclSingleton;
 }
 
-SequencerBase::SequencerBase()
+CSequencer::CSequencer()
 	: _bCanceled(false), _nInstStarted(0), _nMaxInstStarted(1),
 		_nProgress(0), _nTotalSteps(0)
 {
 	setGlobalInstance();
 }
 
-SequencerBase::~SequencerBase()
+CSequencer::~CSequencer()
 {
 }
 
-void SequencerBase::setGlobalInstance ()
+void CSequencer::setGlobalInstance ()
 {
 	_pclSingleton = this;
 }
 
-bool SequencerBase::wasCanceled() const
+bool CSequencer::wasCanceled() const
 {
 	return _bCanceled;
 }
 
-bool SequencerBase::isRunning() const
+bool CSequencer::isRunning() const
 {
 	return _nInstStarted > 0;
 }
 
-bool SequencerBase::start(const char* pszStr, unsigned long steps)
+bool CSequencer::start(const char* pszStr, unsigned long steps)
 {
 	// increment the number of running instances
 	_nInstStarted++;
@@ -112,7 +112,7 @@ bool SequencerBase::start(const char* pszStr, unsigned long steps)
 	return false;
 }
 
-bool SequencerBase::next()
+bool CSequencer::next()
 {
   if (!wasCanceled())
 	{
@@ -127,7 +127,7 @@ bool SequencerBase::next()
 	return _nProgress < _nTotalSteps;
 }
 
-bool SequencerBase::stop()
+bool CSequencer::stop()
 {
 	_nInstStarted--;
 	if (_nInstStarted == 0)
@@ -138,14 +138,14 @@ bool SequencerBase::stop()
 	return (_nInstStarted == 0);
 }
 
-void SequencerBase::resetBar()
+void CSequencer::resetBar()
 {
 	_nInstStarted = 0;
 	_nMaxInstStarted = 1;
 	_aSteps.clear();
 }
 
-void SequencerBase::abort()
+void CSequencer::abort()
 {
 	//resets
 	resetBar();
@@ -153,6 +153,6 @@ void SequencerBase::abort()
 	throw exc;
 }
 
-void SequencerBase::setText(const char*)
+void CSequencer::setText(const char*)
 {
 }

@@ -65,7 +65,7 @@ void ModuleExport init_TEMPLATE_Gui() {
 
 	(void) Py_InitModule("_TEMPLATE_Gui", hello_methods);   /* mod name, table ptr */
 
-	Console().Log("App_TEMPLATE_Gui loaded\n");
+	Base::Console().Log("App_TEMPLATE_Gui loaded\n");
 
 	GetApplication();
 	ApplicationWindow::Instance;

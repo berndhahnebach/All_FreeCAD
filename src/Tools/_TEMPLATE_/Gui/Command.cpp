@@ -57,7 +57,7 @@ FCCmd_TEMPLATE_Test::FCCmd_TEMPLATE_Test()
 
 void FCCmd_TEMPLATE_Test::Activated(int iMsg)
 {
-  Console().Message("Hello, World!\n");
+  Base::Console().Message("Hello, World!\n");
 }
 
 void CreateCommands(void)

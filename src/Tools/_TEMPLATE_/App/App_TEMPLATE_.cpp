@@ -66,7 +66,7 @@ void ModuleExport init_TEMPLATE_() {
 
 	GetApplication();
 
-	Console().Log("App_TEMPLATE_ loaded\n");
+	Base::Console().Log("App_TEMPLATE_ loaded\n");
 
 	return;
 }

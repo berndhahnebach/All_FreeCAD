@@ -93,7 +93,7 @@ namespace Base {
  * This class is inherited by @see Gui::ProgressBar.
  */
 
-class BaseExport SequencerBase
+class BaseExport CSequencer
 {
 public:
 	/**
@@ -101,7 +101,7 @@ public:
 	 * @see setGlobalInstance
 	 * @see _pclSequencer
 	 */
-	static SequencerBase& Instance();
+	static CSequencer& Instance();
 
 	/** @methodes to reimplement in subclasses */
 	//@{
@@ -132,9 +132,9 @@ public:
 
 protected:
 	/** Construction */
-	SequencerBase();
+	CSequencer();
 	/** Destruction */
-	virtual ~SequencerBase();
+	virtual ~CSequencer();
 	/** Reimplemented in @see Gui::ProgressBar */
 	virtual void setText (const char* pszTxt);
 	/** Resets the sequencer
@@ -163,16 +163,16 @@ private:
 	void setGlobalInstance ();
 	/**
 	 * The _pclSequencer member just stores the pointer of the
-	 * last instaciated SequencerBase object.
+	 * last instaciated CSequencer object.
 	 */
-	static SequencerBase* _pclSingleton; 
+	static CSequencer* _pclSingleton; 
 	std::list<unsigned long> _aSteps;
 };
 
 /** get the last registered instance */
-inline SequencerBase& Sequencer ()
+inline CSequencer& Sequencer ()
 {
-	return SequencerBase::Instance();
+	return CSequencer::Instance();
 }
 
 } // namespace Base

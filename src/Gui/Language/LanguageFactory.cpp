@@ -47,25 +47,25 @@ typedef const std::vector<const char*>& RCharVector;
 
 using namespace Gui;
 
-LanguageFactoryInst* LanguageFactoryInst::_pcSingleton = NULL;
+CLanguageFactory* CLanguageFactory::_pcSingleton = NULL;
 
-LanguageFactoryInst& LanguageFactoryInst::Instance(void)
+CLanguageFactory& CLanguageFactory::Instance(void)
 {
   if (_pcSingleton == NULL)
-    _pcSingleton = new LanguageFactoryInst;
+    _pcSingleton = new CLanguageFactory;
   return *_pcSingleton;
 }
 
-void LanguageFactoryInst::Destruct (void)
+void CLanguageFactory::Destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
 
-void LanguageFactoryInst::SetLanguage (const QString& sName)
+void CLanguageFactory::SetLanguage (const QString& sName)
 {
 	// make sure that producers are created
-	LanguageFactorySupplier::Instance();
+	CLanguageFactorySupplier::Instance();
 
 	try
 	{
@@ -114,7 +114,7 @@ void LanguageFactoryInst::SetLanguage (const QString& sName)
 	}
 }
 
-QString LanguageFactoryInst::CreateUniqueID(const QString& sName)
+QString CLanguageFactory::CreateUniqueID(const QString& sName)
 {
 	if (_mCntLanguageFiles.find(sName) != _mCntLanguageFiles.end())
 	{
@@ -129,7 +129,7 @@ QString LanguageFactoryInst::CreateUniqueID(const QString& sName)
 	return id;
 }
 
-QStringList LanguageFactoryInst::GetUniqueIDs(const QString& sName)
+QStringList CLanguageFactory::GetUniqueIDs(const QString& sName)
 {
 	QStringList sl;
 	if (_mCntLanguageFiles.find(sName) != _mCntLanguageFiles.end())
@@ -145,7 +145,7 @@ QStringList LanguageFactoryInst::GetUniqueIDs(const QString& sName)
 	return sl;
 }
 
-QStringList LanguageFactoryInst::GetRegisteredLanguages() const
+QStringList CLanguageFactory::GetRegisteredLanguages() const
 {
 	QStringList sl;
 	for (std::map<QString, int>::const_iterator it = _mCntLanguageFiles.begin(); it != _mCntLanguageFiles.end(); ++it)
@@ -158,26 +158,26 @@ QStringList LanguageFactoryInst::GetRegisteredLanguages() const
 
 // ----------------------------------------------------
 
-LanguageProducer::LanguageProducer (const QString& language, const std::vector<const char*>& languageFile)
+CLanguageProducer::CLanguageProducer (const QString& language, const std::vector<const char*>& languageFile)
  : mLanguageFile(languageFile)
 {
-	LanguageFactoryInst& f = LanguageFactoryInst::Instance();
+	CLanguageFactory& f = CLanguageFactory::Instance();
 	f.AddProducer(f.CreateUniqueID(language).latin1(), this);
 }
 
-void* LanguageProducer::Produce (void) const
+void* CLanguageProducer::Produce (void) const
 { 
 	return (void*)(&mLanguageFile);
 }
 
-LanguageFactorySupplier* LanguageFactorySupplier::_pcSingleton = 0L;
+CLanguageFactorySupplier* CLanguageFactorySupplier::_pcSingleton = 0L;
 
-LanguageFactorySupplier & LanguageFactorySupplier::Instance(void)
+CLanguageFactorySupplier & CLanguageFactorySupplier::Instance(void)
 {
 	// not initialized?
 	if(!_pcSingleton)
 	{
-		_pcSingleton = new LanguageFactorySupplier;
+		_pcSingleton = new CLanguageFactorySupplier;
 	}
 
   return *_pcSingleton;

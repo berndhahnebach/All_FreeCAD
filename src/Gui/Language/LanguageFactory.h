@@ -33,15 +33,15 @@
 
 namespace Gui {
 
-/** The LanguageFactoryInst singleton
+/** The CLanguageFactory singleton
   */
-class GuiExport LanguageFactoryInst : public Base::Factory
+class GuiExport CLanguageFactory : public Base::Factory
 {
 	public:
 		/** @name singleton stuff */
 		//@{
 		/// Creates an instance
-		static LanguageFactoryInst& Instance(void);
+		static CLanguageFactory& Instance(void);
 		/// Destroys the instance
 		static void Destruct (void);
 		//@}
@@ -60,33 +60,33 @@ class GuiExport LanguageFactoryInst : public Base::Factory
 		QStringList GetRegisteredLanguages() const;
 
 	private:
-		static LanguageFactoryInst* _pcSingleton;
+		static CLanguageFactory* _pcSingleton;
 
-		LanguageFactoryInst(){}
-		~LanguageFactoryInst(){}
+		CLanguageFactory(){}
+		~CLanguageFactory(){}
 
 		/// several files for the same language (important for language files from modules)
 		std::map<QString, int> _mCntLanguageFiles;
 };
 
-/** Returns the global LanguageFactoryInst object */
-inline GuiExport LanguageFactoryInst& LanguageFactory(void)
+/** Returns the global CLanguageFactory object */
+inline GuiExport CLanguageFactory& LanguageFactory(void)
 {
-	return LanguageFactoryInst::Instance();
+	return CLanguageFactory::Instance();
 }
 
 // --------------------------------------------------------------------
 
-class GuiExport LanguageProducer : public Base::AbstractProducer
+class GuiExport CLanguageProducer : public Base::AbstractProducer
 {
 	public:
 		/** 
 		 * Appends itself to the language factory.
-		 * @see LanguageFactoryInst
+		 * @see CLanguageFactory
 		 */
-		LanguageProducer (const QString& language, const std::vector<const char*>& languageFile);
+		CLanguageProducer (const QString& language, const std::vector<const char*>& languageFile);
 
-		virtual ~LanguageProducer (void){}
+		virtual ~CLanguageProducer (void){}
 
 		/// Returns the generated language file
 		virtual void* Produce (void) const;
@@ -101,17 +101,17 @@ class GuiExport LanguageProducer : public Base::AbstractProducer
 /** 
  * The language factory supplier class
  */
-class GuiExport LanguageFactorySupplier
+class GuiExport CLanguageFactorySupplier
 {
   private:
 		/**
 		 * You can register new languages generated from ts file here
 		 */
-	  LanguageFactorySupplier();
-  	static LanguageFactorySupplier *_pcSingleton;
+	  CLanguageFactorySupplier();
+  	static CLanguageFactorySupplier *_pcSingleton;
 
   public:
-  	static LanguageFactorySupplier &Instance(void);
+  	static CLanguageFactorySupplier &Instance(void);
 };
 
 } // namespace Gui
