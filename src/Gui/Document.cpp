@@ -171,9 +171,11 @@ void Document::detachView(Gui::BaseView* pcView, bool bPassiv)
 {
   if(bPassiv)
   {
-    _LpcPassivViews.remove(pcView);
+    if(find(_LpcPassivViews.begin(),_LpcPassivViews.end(),pcView) != _LpcPassivViews.end())
+      _LpcPassivViews.remove(pcView);
   }else{
-    _LpcViews.remove(pcView);
+    if(find(_LpcViews.begin(),_LpcViews.end(),pcView) != _LpcViews.end())
+      _LpcViews.remove(pcView);
 
   // last view?
   if(_LpcViews.size() == 0)

@@ -355,6 +355,8 @@ bool View3DInventorEx::onMsg(const char* pMsg, const char** ppReturn)
     SoCamera * Cam = _viewer->getCamera();
     *ppReturn = buffer_writeaction(Cam).c_str();
     return true;
+  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
+    return setCamera(pMsg+10);
   }else if(strcmp("ViewFit",pMsg) == 0 ){
     _viewer->viewAll();
     return true;
@@ -427,22 +429,84 @@ bool View3DInventorEx::onHasMsg(const char* pMsg)
     return true;
   }else if(strcmp("ViewFit",pMsg) == 0 ){
     return true;
+  }else if(strcmp("ViewBottom",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewFront",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewLeft",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewRear",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewRight",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewTop",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewAxo",pMsg) == 0 ){
+    return true;
   }else if(strcmp("GetCamera",pMsg) == 0 ){
+    return true;
+  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
     return true;
   }
   return false;
 }
 
+#include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoOrthographicCamera.h>
 
-/*
-
-void MDIView::fitAll()
+bool View3DInventorEx::setCamera(const char* pCamera)
 {
-  myView->fitAll();
+  SoCamera * CamViewer = _viewer->getCamera();
+  if(!CamViewer)
+    Base::Console().Warning("setCamera because no camera set so far....");
+  SoPerspectiveCamera  * CamViewerP = 0;
+  SoOrthographicCamera * CamViewerO = 0;
+
+  if (CamViewer->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+    CamViewerP = (SoPerspectiveCamera *)CamViewer;  // safe downward cast, knows the type
+  }else if (CamViewer->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    CamViewerO = (SoOrthographicCamera *)CamViewer;  // safe downward cast, knows the type
+  }
+
+  SoInput in;
+  in.setBuffer((void*)pCamera,strlen(pCamera));
+
+  SoNode * Cam;
+  SoDB::read(&in,(SoNode*&)Cam);
+
+  if (!Cam){
+    Base::Console().Error("setCamera faild to read: %s\n",pCamera);
+    return true;
+  }
+
+  if (Cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+    if(CamViewerP){
+      CamViewerP->position      = ((SoPerspectiveCamera *)Cam)->position;
+      CamViewerP->orientation   = ((SoPerspectiveCamera *)Cam)->orientation;
+      CamViewerP->nearDistance  = ((SoPerspectiveCamera *)Cam)->nearDistance;
+      CamViewerP->farDistance   = ((SoPerspectiveCamera *)Cam)->farDistance;
+      CamViewerP->focalDistance = ((SoPerspectiveCamera *)Cam)->focalDistance;
+    }
+    else
+      Base::Console().Error("Camera type missmatch");
+  }else if (Cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    if(CamViewerO){
+      CamViewerO->viewportMapping  = ((SoOrthographicCamera *)Cam)->viewportMapping;
+      CamViewerO->position         = ((SoOrthographicCamera *)Cam)->position;
+      CamViewerO->orientation      = ((SoOrthographicCamera *)Cam)->orientation;
+      CamViewerO->nearDistance     = ((SoOrthographicCamera *)Cam)->nearDistance;
+      CamViewerO->farDistance      = ((SoOrthographicCamera *)Cam)->farDistance;
+      CamViewerO->focalDistance    = ((SoOrthographicCamera *)Cam)->focalDistance;
+      CamViewerO->aspectRatio      = ((SoOrthographicCamera *)Cam)->aspectRatio ;
+      CamViewerO->height           = ((SoOrthographicCamera *)Cam)->height;
+    }
+    else
+      Base::Console().Error("Camera type missmatch");
+  }
+
+  return true;
 }
 
-
-*/
 void View3DInventorEx::onWindowActivated ()
 {
   //myOperations->onSelectionChanged();

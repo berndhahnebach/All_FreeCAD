@@ -82,6 +82,7 @@ public:
   void setViewerDefaults(void);
 
 //  void SetShape(void);
+  bool setCamera(const char* pCamera);
 
 
 //signals:

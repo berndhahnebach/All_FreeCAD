@@ -34,6 +34,7 @@
 
 #include "../Base/Exception.h"
 #include "../App/Document.h"
+#include "Macro.h"
 
 using namespace Gui;
 
@@ -484,6 +485,57 @@ bool StdCmdViewIvStereoOn::isActive(void)
 }
 
 
+//===========================================================================
+// Std_ViewIvStereoOn
+//===========================================================================
+DEF_STD_CMD_A(StdCmdViewIvIssueCamPos);
+
+StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
+  :CppCommand("Std_ViewIvIssueCamPos")
+{
+  sAppModule    = "";
+  sGroup        = "Standard-View";
+  sMenuText     = "Issue camera position";
+  sToolTipText  = "Issue the camera posiotion to the console and to a macro, to easily recall this position";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Std_Tool8";
+  iAccel        = 0;
+}
+
+void StdCmdViewIvIssueCamPos::activated(int iMsg)
+{
+  std::string Temp,Temp2;
+  int pos;
+
+  const char* ppReturn=0;
+  getAppWnd()->sendMsgToActiveView("GetCamera",&ppReturn);
+
+  // remove the #inventor line...
+  Temp2 = ppReturn;
+  pos = Temp2.find_first_of("\n");
+  Temp2.erase(0,pos);
+  
+  // remove all returns
+  while((pos=Temp2.find('\n')) != std::string::npos) 
+    Temp2.replace(pos,1," ");
+
+  // build up the command string
+  Temp += "FreeCADGui.SendMsgToActiveView(\"SetCamera ";
+  Temp += Temp2;
+  Temp += "\")";
+
+  Base::Console().Message("%s",Temp.c_str());
+
+  getAppWnd()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
+  //doCommand(Command::Gui,Temp.c_str());
+}
+
+bool StdCmdViewIvIssueCamPos::isActive(void)
+{
+  return getAppWnd()->sendHasMsgToActiveView("SetStereoOn");
+}
+
 
 
 
@@ -517,6 +569,8 @@ void CreateViewStdCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdViewIvStereoOn());
   rcCmdMgr.addCommand(new StdCmdViewIvStereoOff());
+
+  rcCmdMgr.addCommand(new StdCmdViewIvIssueCamPos());
 
   rcCmdMgr.addCommand(new StdCmdViewCreateOCC());
   rcCmdMgr.addCommand(new StdCmdViewCreateInventor());

@@ -131,7 +131,7 @@ def InitMenues():
 	list = ["Std_Test1","Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
 	Gui.MenuAppendItems("Test &Commands", list, 0, 0)
 
-	list = ["Std_ViewExample1","Std_ViewExample2","Std_ViewExample3","Std_ViewIvDecorationOn","Std_ViewIvDecorationOff","Std_ViewIvStereoOn","Std_ViewIvStereoOff"]
+	list = ["Std_ViewExample1","Std_ViewExample2","Std_ViewExample3","Std_ViewIvDecorationOn","Std_ViewIvDecorationOff","Std_ViewIvStereoOn","Std_ViewIvStereoOff","Std_ViewIvIssueCamPos"]
 	Gui.MenuAppendItems("Inventor View", list, 0, 0)
 
 	list = ["Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Separator", "Std_Windows"] 
