@@ -78,6 +78,8 @@ public:
 	virtual bool OnMsg(const char* pMsg);
 	virtual const char *GetName(void);
 
+	virtual void resizeEvent ( QResizeEvent * e);
+
 signals:
 	//void message(const QString&, int );
 	void sendCloseView(FCView* theView);

@@ -222,7 +222,7 @@ class BaseExport FCHandled
 {
 public:
 	FCHandled();
-	~FCHandled();
+	virtual ~FCHandled();
 
 	void  AttacheRef(void* pHandle);
 

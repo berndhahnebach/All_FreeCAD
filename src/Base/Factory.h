@@ -46,36 +46,6 @@ class  BaseExport FCAbstractProducer
 };
 
 
-/** Producer template class
-  * this is a conviniance template to produce very easy a pruducer instance
-  * for the use in the FCFactory class.
-  * \code
-  * \endcode
-  * @see FCFactory
-  */
-template <class CLASS>
-# if _MSC_VER >= 1300
-class FCFactoryProducer: public FCAbstractProducer
-# else
-class BaseExport FCFactoryProducer: public FCAbstractProducer
-# endif
-{
-															  /// Constructor
-public:
-	FCFactoryProducer (void)
-	{
-		FCFactory::Instance().AddProducer(typeid(CLASS).name(), this);
-	}
-
-	virtual ~FCFactoryProducer (void){}
-
-	/// Produce a instance
-	virtual void* Produce (void) const
-	{ 
-	  return (void*)(new CLASS);
-	}
-
-};
  
 /** The Factory singelton
   * This class has the purpos to produce at runtime instances of 
@@ -116,6 +86,36 @@ inline BaseExport FCFactory& GetFactory(void)
 	return FCFactory::Instance();
 }
 
+/** Producer template class
+  * this is a conviniance template to produce very easy a pruducer instance
+  * for the use in the FCFactory class.
+  * \code
+  * \endcode
+  * @see FCFactory
+  */
+template <class CLASS>
+# if _MSC_VER >= 1300
+class FCFactoryProducer: public FCAbstractProducer
+# else
+class BaseExport FCFactoryProducer: public FCAbstractProducer
+# endif
+{
+															  /// Constructor
+public:
+	FCFactoryProducer (void)
+	{
+		FCFactory::Instance().AddProducer(typeid(CLASS).name(), this);
+	}
+
+	virtual ~FCFactoryProducer (void){}
+
+	/// Produce a instance
+	virtual void* Produce (void) const
+	{ 
+	  return (void*)(new CLASS);
+	}
+
+};
 
 #endif
 

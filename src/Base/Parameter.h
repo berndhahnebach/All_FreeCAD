@@ -44,7 +44,7 @@
 #  include <sstream>
 #endif
 #include <map>
-#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/dom/DOMErrorHandler.hpp>

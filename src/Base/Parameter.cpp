@@ -55,7 +55,6 @@
 #	include <xercesc/util/XMLUni.hpp>
 #endif
 
-static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Auto;
 
 #include <fcntl.h>
 #ifdef FC_OS_LINUX
@@ -65,6 +64,8 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 #include "Parameter.h"
 #include "Exception.h"
 #include "Console.h"
+
+static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Auto;
 
 //**************************************************************************
 //**************************************************************************

@@ -128,7 +128,7 @@ protected:
 private:
 	// Singelton!
 	FCConsole(void);
-	~FCConsole();
+	virtual ~FCConsole();
 	// singelton 
 	static void Destruct(void);
 	static FCConsole &Instance(void);

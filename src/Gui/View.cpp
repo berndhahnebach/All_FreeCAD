@@ -128,6 +128,12 @@ FCSingelView::FCSingelView(FCView* pcView, QWidget* parent, const char* name, in
 	
 }
 
+void FCSingelView::resizeEvent ( QResizeEvent * e) 
+{
+  _pcView->resize(e->size());
+}
+
+
 FCSingelView::~FCSingelView()
 {
  

@@ -50,15 +50,18 @@
 FCView3D::FCView3D( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
     :FCView( pcDocument,parent, name, wflags)
 {
-	_pcVBoxLayout = new QVBox(this);
-
-	_pcView3D = new View3D(_pcDocument,_pcVBoxLayout);
+	_pcView3D = new View3D(_pcDocument,this);
 	
 }
 
 FCView3D::~FCView3D()
 {
   delete _pcView3D;
+}
+
+void FCView3D::resizeEvent ( QResizeEvent * e)
+{
+  _pcView3D->resize(e->size());
 }
 
 
@@ -83,9 +86,9 @@ bool FCView3D::OnMsg(const char* pMsg)
 {
 	//printf("Msg: %s View: %p\n",pMsg,this);
 
-//	if (_pcView3D->OnMsg(pMsg)) return true;
+	if (_pcView3D->OnMsg(pMsg)) return true;
 //	if (_pcTree->OnMsg(pMsg))   return true;
-assert(0);
+//assert(0);
 	return false;
 }
 
@@ -227,37 +230,37 @@ bool View3D::OnMsg(const char* pMsg)
 {
 	if(strcmp("ViewBottom",pMsg) == 0 ){
 		_hView->SetProj(V3d_Zneg);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewFront",pMsg) == 0 ){
 		_hView->SetProj(V3d_Yneg);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewLeft",pMsg) == 0 ){
 		_hView->SetProj(V3d_Xpos);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewRear",pMsg) == 0 ){
 		_hView->SetProj(V3d_Ypos);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewRight",pMsg) == 0 ){
 		_hView->SetProj(V3d_Xneg);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewTop",pMsg) == 0 ){
 		_hView->SetProj(V3d_Zpos);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewAxo",pMsg) == 0 ){
 		_hView->SetProj(V3d_XposYnegZpos);
-		_hView->FitAll();
+		//_hView->FitAll();
 		_hView->ZFitAll();
 		return true;
 	}else if(strcmp("ViewFit",pMsg) == 0 ){
@@ -300,43 +303,43 @@ void View3D::ShowPopup(int x, int y)
 
 void View3D::ShowDimension (void) const
 {
-  Quantity_Length fWidth, fHeight;
-  _hView->Size(fWidth, fHeight);
+	Quantity_Length fWidth, fHeight;
+	_hView->Size(fWidth, fHeight);
+
+	float fLog = float(log10(fWidth)), fFactor;
+	int   nExp = int(fLog);
+	char  szDim[20];
+
+	if (nExp >= 6)
+	{
+		fFactor = 1.0e+6f;
+		strcpy(szDim, "km");
+	}
+	else if (nExp >= 3)
+	{
+		fFactor = 1.0e+3f;
+		strcpy(szDim, "m");
+	}
+	else if ((nExp >= 0) && (fLog > 0.0f))
+	{
+		fFactor = 1.0e+0f;
+		strcpy(szDim, "mm");
+	}
+	else if (nExp >= -3)
+	{
+		fFactor = 1.0e-3f;
+		strcpy(szDim, "um");
+	}
+	else 
+	{
+		fFactor = 1.0e-6f;
+		strcpy(szDim, "nm");
+	}
+
+	char szSize[100];
+	sprintf(szSize, " %.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
   
-  float fLog = float(log10(fWidth)), fFactor;
-  int   nExp = int(fLog);
-  char  szDim[20];
-  
-  if (nExp >= 6)
-  {
-    fFactor = 1.0e+6f;
-    strcpy(szDim, "km");
-  }
-  else if (nExp >= 3)
-  {
-    fFactor = 1.0e+3f;
-    strcpy(szDim, "m");
-  }
-  else if ((nExp >= 0) && (fLog > 0.0f))
-  {
-    fFactor = 1.0e+0f;
-    strcpy(szDim, "mm");
-  }
-  else if (nExp >= -3)
-  {
-    fFactor = 1.0e-3f;
-    strcpy(szDim, "um");
-  }
-  else 
-  {
-    fFactor = 1.0e-6f;
-    strcpy(szDim, "nm");
-  }
-  
-  char szSize[100];
-  sprintf(szSize, " %.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
-  
-  ApplicationWindow::Instance->SetPaneText(2, QString(szSize));
+	ApplicationWindow::Instance->SetPaneText(2, QString(szSize));
 }
 
 
@@ -348,9 +351,9 @@ void View3D::paintEvent (QPaintEvent * cEvent)
 	if (!_hView.IsNull())
 		_hView->Redraw();
 
-  // do this repaint last 
-  if (_cMouseStack.size() > 0)
-    _cMouseStack.top()->paintEvent( cEvent);
+	// do this repaint last 
+	if (_cMouseStack.size() > 0)
+		_cMouseStack.top()->paintEvent( cEvent);
 }
 
 /** Update the view when resize event occur.  */
@@ -363,9 +366,9 @@ void View3D::resizeEvent (QResizeEvent * e)
 		}
 	}
 
-  // do this repaint last 
-  if (_cMouseStack.size() > 0)
-    _cMouseStack.top()->resizeEvent( e );
+	// do this repaint last 
+	if (_cMouseStack.size() > 0)
+		_cMouseStack.top()->resizeEvent( e );
 }
 
 // Managing MouseModels

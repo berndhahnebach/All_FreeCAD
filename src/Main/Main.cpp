@@ -385,7 +385,7 @@ void Init(int argc, char ** argv )
 	rcInterperter.Launch(FreeCADStartup);
 
 	// creating the application 
-	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Message("Create Application");
+	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
 	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
 
 	// starting the init script

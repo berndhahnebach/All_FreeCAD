@@ -71,6 +71,8 @@
 
 #ifdef FC_OS_LINUX
 #	define LIN
+#       define LININTEL
+#       define NO_CXX_EXCEPTION
 #endif
 
 #define CSFDB

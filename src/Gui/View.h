@@ -70,6 +70,8 @@ public:
 	FCSingelView( FCView* pcView, QWidget* parent, const char* name, int wflags=WDestructiveClose );
 	~FCSingelView();
 
+	virtual void resizeEvent ( QResizeEvent * e);
+
 	virtual FCView* GetActiveView(void){return _pcView;}
 
 private:

@@ -201,3 +201,6 @@ Version: V0.1B48 Date: Sun Mar 30 15:06:23 2003 +++++++++++++++++++++++++++++++
 Version: V0.1B49 Date: Thu Apr 03 22:45:35 2003 +++++++++++++++++++++++++++++++
 + Master redisign of the window system, not yet full working
 
+Version: V0.1B50 Date: Fri Apr 04 22:10:24 2003 +++++++++++++++++++++++++++++++
++ Fix on the window rewrite
++ some work on the Linux port

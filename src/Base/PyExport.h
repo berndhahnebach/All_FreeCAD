@@ -482,11 +482,12 @@ public:
 		strncpy(str,(const char*) sString,size);
 	}
 
-	operator =(const char* sString)
+	PyBuf &operator =(const char* sString)
 	{
 		if(str) free(str);
 		str = (char *) malloc(strlen(sString)+1);
 		strcpy(str,sString);
+		return *this;
 	}
 
 	~PyBuf()

@@ -65,7 +65,7 @@ public:
 	 * A destructor.
 	 * No special function so far.
 	 */
-	~FCObserver();
+	virtual ~FCObserver();
 
 	/**
 	 * This method need to be reimplemented from the concrete Observer

@@ -103,7 +103,6 @@ FCUndoRedoDlg::~FCUndoRedoDlg()
  */
 void FCUndoRedoDlg::init() 
 {
-	puts("FCUndoRedoDlg::init()");
 	std::vector<std::string> vecReUndos;
 	FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
 
