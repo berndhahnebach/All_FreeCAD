@@ -25,10 +25,10 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
-#include "../../../Base/Console.h"
+#include <App/Application.h>
+#include <Base/Console.h>
 
-#include "../../../Gui/Application.h"
+#include <Gui/Application.h>
 
 void CreateCommands(void);
 
@@ -57,14 +57,9 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-// python entry
-#ifdef FC_OS_WIN32
-# define ModuleExport __declspec(dllexport)
-#else
-# define ModuleExport
-#endif
+/* Python entry */
 extern "C" {
-void ModuleExport init_TEMPLATE_Gui() {
+void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
 
   (void) Py_InitModule("_TEMPLATE_Gui", hello_methods);   /* mod name, table ptr */
 

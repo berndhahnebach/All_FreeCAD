@@ -12,6 +12,13 @@
 # pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+// Exporting of App classes
+#ifdef FC_OS_WIN32
+# define _TEMPLATE_AppExport __declspec(dllexport)
+#else // for Linux
+# define _TEMPLATE_AppExport
+#endif
+
 // standard
 #include <stdio.h>
 #include <assert.h>

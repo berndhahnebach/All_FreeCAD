@@ -25,11 +25,11 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
+#include <App/Application.h>
+#include <Base/Console.h>
 
 #include <stdio.h>
 #include <Python.h>
-#include "../../../Base/Console.h"
 
 
 /* module functions */
@@ -57,14 +57,9 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-// python entry
-#ifdef FC_OS_WIN32
-# define ModuleExport __declspec(dllexport)
-#else
-# define ModuleExport
-#endif
+/* Python entry */
 extern "C" {
-void ModuleExport init_TEMPLATE_() {
+void _TEMPLATE_AppExport init_TEMPLATE_() {
 
   (void) Py_InitModule("_TEMPLATE_", hello_methods);   /* mod name, table ptr */
 

@@ -29,10 +29,10 @@
 # include <TNaming_Builder.hxx>
 #endif
 
-#include "../../../Base/Exception.h"
-#include "../../../App/Document.h"
-#include "../../../Gui/Application.h"
-#include "../../../Gui/Command.h"
+#include <Base/Exception.h>
+#include <App/Document.h>
+#include <Gui/Application.h>
+#include <Gui/Command.h>
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -45,12 +45,12 @@ DEF_STD_CMD(Cmd_TEMPLATE_Test);
 Cmd_TEMPLATE_Test::Cmd_TEMPLATE_Test()
   :CppCommand("_TEMPLATE__Test")
 {
-  sAppModule    = "_TEMPLATE_";
-  sGroup        = "_TEMPLATE_";
-  sMenuText     = "Test1";
-  sToolTipText  = "_TEMPLATE_ Test function";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sAppModule    = QT_TR_NOOP("_TEMPLATE_");
+  sGroup        = QT_TR_NOOP("_TEMPLATE_");
+  sMenuText     = QT_TR_NOOP("Test1");
+  sToolTipText  = QT_TR_NOOP("_TEMPLATE_ Test function");
+  sWhatsThis    = QT_TR_NOOP("_TEMPLATE_ Test function");
+  sStatusTip    = QT_TR_NOOP("_TEMPLATE_ Test function");
   sPixmap       = "Test1";
   iAccel        = Qt::CTRL+Qt::Key_T;
 }

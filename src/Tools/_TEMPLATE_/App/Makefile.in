@@ -143,11 +143,14 @@ target_alias = @target_alias@
 lib_LTLIBRARIES = lib_TEMPLATE_.la
 
 lib_TEMPLATE__la_SOURCES = \
-	App_TEMPLATE_.cpp
+		App_TEMPLATE_.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 
 # the library search path.
 lib_TEMPLATE__la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+lib_TEMPLATE__la_CPPFLAGS = -D_TEMPLATE_AppExport=
 
 lib_TEMPLATE__la_LIBADD = \
 		-lFreeCADBase \
@@ -162,13 +165,15 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 lib_TEMPLATE__la_DEPENDENCIES =
-am_lib_TEMPLATE__la_OBJECTS = App_TEMPLATE_.lo
+am_lib_TEMPLATE__la_OBJECTS = lib_TEMPLATE__la-App_TEMPLATE_.lo \
+	lib_TEMPLATE__la-PreCompiled.lo
 lib_TEMPLATE__la_OBJECTS = $(am_lib_TEMPLATE__la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/App_TEMPLATE_.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -176,6 +181,13 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(lib_TEMPLATE__la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
@@ -227,7 +239,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/App_TEMPLATE_.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -264,6 +277,72 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+lib_TEMPLATE__la-App_TEMPLATE_.o: App_TEMPLATE_.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lib_TEMPLATE__la-App_TEMPLATE_.o -MD -MP -MF "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o lib_TEMPLATE__la-App_TEMPLATE_.o `test -f 'App_TEMPLATE_.cpp' || echo '$(srcdir)/'`App_TEMPLATE_.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo" "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='App_TEMPLATE_.cpp' object='lib_TEMPLATE__la-App_TEMPLATE_.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Po' tmpdepfile='$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lib_TEMPLATE__la-App_TEMPLATE_.o `test -f 'App_TEMPLATE_.cpp' || echo '$(srcdir)/'`App_TEMPLATE_.cpp
+
+lib_TEMPLATE__la-App_TEMPLATE_.obj: App_TEMPLATE_.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lib_TEMPLATE__la-App_TEMPLATE_.obj -MD -MP -MF "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o lib_TEMPLATE__la-App_TEMPLATE_.obj `if test -f 'App_TEMPLATE_.cpp'; then $(CYGPATH_W) 'App_TEMPLATE_.cpp'; else $(CYGPATH_W) '$(srcdir)/App_TEMPLATE_.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo" "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='App_TEMPLATE_.cpp' object='lib_TEMPLATE__la-App_TEMPLATE_.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Po' tmpdepfile='$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lib_TEMPLATE__la-App_TEMPLATE_.obj `if test -f 'App_TEMPLATE_.cpp'; then $(CYGPATH_W) 'App_TEMPLATE_.cpp'; else $(CYGPATH_W) '$(srcdir)/App_TEMPLATE_.cpp'; fi`
+
+lib_TEMPLATE__la-App_TEMPLATE_.lo: App_TEMPLATE_.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lib_TEMPLATE__la-App_TEMPLATE_.lo -MD -MP -MF "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o lib_TEMPLATE__la-App_TEMPLATE_.lo `test -f 'App_TEMPLATE_.cpp' || echo '$(srcdir)/'`App_TEMPLATE_.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo" "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='App_TEMPLATE_.cpp' object='lib_TEMPLATE__la-App_TEMPLATE_.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.Plo' tmpdepfile='$(DEPDIR)/lib_TEMPLATE__la-App_TEMPLATE_.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lib_TEMPLATE__la-App_TEMPLATE_.lo `test -f 'App_TEMPLATE_.cpp' || echo '$(srcdir)/'`App_TEMPLATE_.cpp
+
+lib_TEMPLATE__la-PreCompiled.o: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lib_TEMPLATE__la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o lib_TEMPLATE__la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo" "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='lib_TEMPLATE__la-PreCompiled.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lib_TEMPLATE__la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+lib_TEMPLATE__la-PreCompiled.obj: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lib_TEMPLATE__la-PreCompiled.obj -MD -MP -MF "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o lib_TEMPLATE__la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo" "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='lib_TEMPLATE__la-PreCompiled.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lib_TEMPLATE__la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`
+
+lib_TEMPLATE__la-PreCompiled.lo: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lib_TEMPLATE__la-PreCompiled.lo -MD -MP -MF "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o lib_TEMPLATE__la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo" "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='lib_TEMPLATE__la-PreCompiled.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/lib_TEMPLATE__la-PreCompiled.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_TEMPLATE__la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lib_TEMPLATE__la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -2,11 +2,14 @@
 lib_LTLIBRARIES=lib_TEMPLATE_.la
 
 lib_TEMPLATE__la_SOURCES=\
-	App_TEMPLATE_.cpp
+		App_TEMPLATE_.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 
 # the library search path.
 lib_TEMPLATE__la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+lib_TEMPLATE__la_CPPFLAGS = -D_TEMPLATE_AppExport=
 
 lib_TEMPLATE__la_LIBADD   = \
 		-lFreeCADBase \

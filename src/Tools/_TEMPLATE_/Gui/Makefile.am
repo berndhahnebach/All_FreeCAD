@@ -5,10 +5,13 @@ lib_LTLIBRARIES=lib_TEMPLATE_Gui.la
 #
 lib_TEMPLATE_Gui_la_SOURCES=\
 		App_TEMPLATE_Gui.cpp \
-		Command.cpp
+		Command.cpp \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 # the library search path.
 lib_TEMPLATE_Gui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+lib_TEMPLATE_Gui_la_CPPFLAGS = -D_TEMPLATE_AppExport= -D_TEMPLATE_GuiExport=
 
 lib_TEMPLATE_Gui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -37,3 +40,5 @@ install-data-local:
 		cd $(prefix) && \
 		rm -f _TEMPLATE_Gui.so && \
 		$(LN_S) lib/lib_TEMPLATE_Gui.so _TEMPLATE_Gui.so
+
+CLEANFILES = $(BUILT_SOURCES)
