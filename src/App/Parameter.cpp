@@ -16,21 +16,21 @@
 #	include <Standard_GUID.hxx>
 #endif
 
-#include "Feature.h"
+#include "Parameter.h"
 
 
 //**************************************************************************
 //**************************************************************************
-// Handle_FCFeature
+// Handle_FCParameter
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Handle_FCFeature::~Handle_FCFeature() {}
+Handle_FCParameter::~Handle_FCParameter() {}
 
-Standard_EXPORT Handle_Standard_Type& FCFeature_Type_()
+Standard_EXPORT Handle_Standard_Type& FCParameter_Type_()
 {
 
   static Handle_Standard_Type aType1 = STANDARD_TYPE(FCAttribute);
- if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCAttribute);
+  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCAttribute);
   static Handle_Standard_Type aType2 = STANDARD_TYPE(TDF_Attribute);
   if ( aType2.IsNull()) aType2 = STANDARD_TYPE(TDF_Attribute);
   static Handle_Standard_Type aType3 = STANDARD_TYPE(MMgt_TShared);
@@ -39,9 +39,9 @@ Standard_EXPORT Handle_Standard_Type& FCFeature_Type_()
   if ( aType4.IsNull()) aType4 = STANDARD_TYPE(Standard_Transient);
  
 
-  static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,aType4,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("FCFeature",
-			                                 sizeof(FCFeature),
+  static Handle_Standard_Transient _Ancestors[]= {aType2,aType3,aType4,NULL};
+  static Handle_Standard_Type _aType = new Standard_Type("FCParameter",
+			                                 sizeof(FCParameter),
 			                                 1,
 			                                 (Standard_Address)_Ancestors,
 			                                 (Standard_Address)NULL);
@@ -52,13 +52,13 @@ Standard_EXPORT Handle_Standard_Type& FCFeature_Type_()
 // DownCast method
 //   allow safe downcasting
 //
-const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transient)& AnObject) 
+const Handle(FCParameter) Handle(FCParameter)::DownCast(const Handle(Standard_Transient)& AnObject) 
 {
-  Handle(FCFeature) _anOtherObject;
+  Handle(FCParameter) _anOtherObject;
 
   if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(FCFeature))) {
-       _anOtherObject = Handle(FCFeature)((Handle(FCFeature)&)AnObject);
+     if (AnObject->IsKind(STANDARD_TYPE(FCParameter))) {
+       _anOtherObject = Handle(FCParameter)((Handle(FCParameter)&)AnObject);
      }
   }
 
@@ -70,7 +70,7 @@ const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transi
 
 //**************************************************************************
 //**************************************************************************
-// FCFeature
+// FCParameter
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -79,31 +79,31 @@ const Handle(FCFeature) Handle(FCFeature)::DownCast(const Handle(Standard_Transi
 //purpose  : 
 //=======================================================================
 
-const Standard_GUID& FCFeature::GetID () 
+const Standard_GUID& FCParameter::GetID () 
 {
-  static Standard_GUID FCFeatureID("F46EEE9A-F770-4eae-A832-C55ECD5F8FE2");
-  return FCFeatureID;
+  static Standard_GUID FCParameterID("3C445C0D-147A-4549-AC7E-B782889E475E");
+  return FCParameterID;
 }
 
 //=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
-Handle_FCFeature FCFeature::Set(const TDF_Label& label,const TCollection_ExtendedString& string) 
+Handle_FCParameter FCParameter::Set(const TDF_Label& label,const TCollection_ExtendedString& string) 
 {
-  Handle(FCFeature) N;
-  if (!label.FindAttribute(FCFeature::GetID(), N)) { 
-    N = new FCFeature ();   
+  Handle(FCParameter) N;
+  if (!label.FindAttribute(FCParameter::GetID(), N)) { 
+    N = new FCParameter ();   
     label.AddAttribute(N);
   }
   N->Set(string);    
   return N;  
 }
 
-FCFeature::FCFeature () {}
-FCFeature::~FCFeature () {}
+FCParameter::FCParameter () {}
+FCParameter::~FCParameter () {}
 
-void FCFeature::Set (const TCollection_ExtendedString& S) 
+void FCParameter::Set (const TCollection_ExtendedString& S) 
 {
  
   Backup();
@@ -114,44 +114,44 @@ void FCFeature::Set (const TCollection_ExtendedString& S)
   //myEmpty = Standard_False;
 }
 
-TCollection_ExtendedString FCFeature::Get () const {return myString2;}
+TCollection_ExtendedString FCParameter::Get () const {return myString2;}
 
-const Standard_GUID& FCFeature::ID () const { return GetID(); }
+const Standard_GUID& FCParameter::ID () const { return GetID(); }
 
 
-Handle(TDF_Attribute) FCFeature::NewEmpty () const
+Handle(TDF_Attribute) FCParameter::NewEmpty () const
 {  
-  return new FCFeature(); 
+  return new FCParameter(); 
 }
 
-void FCFeature::Restore(const Handle(TDF_Attribute)& with) 
+void FCParameter::Restore(const Handle(TDF_Attribute)& with) 
 {
-  myString2 = Handle(FCFeature)::DownCast (with)->Get();
+  myString2 = Handle(FCParameter)::DownCast (with)->Get();
 }
 
 
-void FCFeature::Paste (const Handle(TDF_Attribute)& into,
+void FCParameter::Paste (const Handle(TDF_Attribute)& into,
 		           const Handle(TDF_RelocationTable)& RT) const
 {
-  Handle(FCFeature)::DownCast (into)->Set (myString2);
+  Handle(FCParameter)::DownCast (into)->Set (myString2);
 }
 
 
-Standard_OStream& FCFeature::Dump (Standard_OStream& anOS) const
+Standard_OStream& FCParameter::Dump (Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   anOS << " Name=|"<<myString2<<"|"<<endl;
   return anOS;
 }
 
-const Handle(Standard_Type)& FCFeature::DynamicType() const 
+const Handle(Standard_Type)& FCParameter::DynamicType() const 
 { 
-  return STANDARD_TYPE(FCFeature) ; 
+  return STANDARD_TYPE(FCParameter) ; 
 }
 
-Standard_Boolean FCFeature::IsKind(const Handle(Standard_Type)& AType) const 
+Standard_Boolean FCParameter::IsKind(const Handle(Standard_Type)& AType) const 
 { 
-  return (STANDARD_TYPE(FCFeature) == AType || TDF_Attribute::IsKind(AType)); 
+  return (STANDARD_TYPE(FCParameter) == AType || TDF_Attribute::IsKind(AType)); 
 }
 
 

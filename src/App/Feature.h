@@ -29,7 +29,9 @@ class Standard_Transient;
 class Handle_Standard_Type;
 class Handle(TDF_Attribute);
 class TDataStd_Name;
-Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(TDataStd_Name);
+
+
+Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCFeature);
 
 
 
@@ -114,7 +116,7 @@ public:
     AppExport void* operator new(size_t,void* anAddress)	{return anAddress;}
     AppExport void* operator new(size_t size)				{return Standard::Allocate(size);}
     AppExport void  operator delete(void *anAddress)		{if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	AppExport friend Handle_Standard_Type& FCFeature_Type_();
+	          friend Handle_Standard_Type& FCFeature_Type_();
 	AppExport const Handle(Standard_Type)& DynamicType() const;
 	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 

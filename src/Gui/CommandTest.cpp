@@ -39,6 +39,7 @@
 #include "../App/Document.h"
 #include "../App/Feature.h"
 #include "../App/Function.h"
+#include "../App/Parameter.h"
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
@@ -207,10 +208,12 @@ void FCCmdTest2::Activated(int iMsg)
 	L = L.FindChild(1);
 
 	Handle(FCFeature) Feat = new FCFeature();
+	Handle(FCParameter) Param = new FCParameter();
 //	Handle(FCFunction) Func = new FCFunction();
 	Feat->Set("Test");
 
 	L.AddAttribute( Feat);
+	L.AddAttribute( Param);
 
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, FCFunction::GetID());
 

@@ -173,6 +173,15 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Parameter.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\Parameter.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File

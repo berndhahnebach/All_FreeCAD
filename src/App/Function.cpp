@@ -49,6 +49,14 @@
 
 
 
+//=======================================================================
+//function : FCFunction
+//purpose  : Creation of an instance of the driver. It's possible (and recommended)
+//         : to have only one instance of a driver for the whole session.
+//=======================================================================
+
+FCFunction::FCFunction() {}
+
 FCFunction::~FCFunction() {}
  
 
@@ -64,15 +72,6 @@ const Standard_GUID& FCFunction::GetID() {
   return anID;
 }
 
-
-//=======================================================================
-//function : TPartStd_CutDriver
-//purpose  : Creation of an instance of the driver. It's possible (and recommended)
-//         : to have only one instance of a driver for the whole session.
-//=======================================================================
-
-FCFunction::FCFunction()
-{}
 
 //=======================================================================
 //function : Validate

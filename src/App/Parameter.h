@@ -19,38 +19,10 @@
  
 
 
-#ifndef _Attribute_h_
-#define _Attribute_h_
+#ifndef _Parameter_h_
+#define _Parameter_h_
 
-
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-
-
-#include <TCollection_ExtendedString.hxx>
-#include <TDF_Attribute.hxx>
-#include <Handle_TDF_Attribute.hxx>
-#include <Handle_TDF_RelocationTable.hxx>
-#include <Standard_OStream.hxx>
-class Standard_DomainError;
-class Standard_GUID;
-class TDF_Label;
-class TCollection_ExtendedString;
-class TDF_Attribute;
-class TDF_RelocationTable;
-
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-
-#ifndef _Handle_TDF_Attribute_HeaderFile
-#include <Handle_TDF_Attribute.hxx>
-#endif
-
+#include "Attribute.h"
 
 
 class Standard_Transient;
@@ -59,58 +31,58 @@ class Handle(TDF_Attribute);
 class TDataStd_Name;
 
 
-Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCAttribute);
+Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(TDataStd_Name);
 
 
 
-class FCAttribute;
+class FCParameter;
 
 
-/** Handle class for FCAttribute
+/** Handle class for FCParameter
  */
-class Handle_FCAttribute :public Handle_TDF_Attribute
+class Handle_FCParameter :public Handle_FCAttribute
 {
 public:
 	AppExport void* operator new(size_t,void* anAddress){return anAddress;}
 	AppExport void* operator new(size_t size){return Standard::Allocate(size);}
 	AppExport void  operator delete(void *anAddress){if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	Handle_FCAttribute():Handle(TDF_Attribute)() {} 
-	Handle_FCAttribute(const Handle(FCAttribute)& aHandle) : Handle(TDF_Attribute)(aHandle){}
+	AppExport Handle_FCParameter():Handle(FCAttribute)() {} 
+	AppExport Handle_FCParameter(const Handle(FCParameter)& aHandle) : Handle(FCAttribute)(aHandle){}
 
-	Handle_FCAttribute(const FCAttribute* anItem) : Handle(TDF_Attribute)((TDF_Attribute *)anItem){}
+	AppExport Handle_FCParameter(const FCParameter* anItem) : Handle(FCAttribute)((FCAttribute *)anItem){}
 
-	Handle_FCAttribute& operator=(const Handle(FCAttribute)& aHandle)
+	AppExport Handle_FCParameter& operator=(const Handle(FCParameter)& aHandle)
 	{
 		Assign(&(*aHandle));
 		return *this;
 	}
 
-	Handle_FCAttribute& operator=(const FCAttribute* anItem)
+	AppExport Handle_FCParameter& operator=(const FCParameter* anItem)
 	{
 		Assign((Standard_Transient *)anItem);
 		return *this;
 	}
 
-	FCAttribute* operator->() 
+	AppExport FCParameter* operator->() 
 	{
-		return (FCAttribute *)(ControlAccess());
+		return (FCParameter *)(ControlAccess());
 	}
 
-	FCAttribute* operator->() const{return(FCAttribute *)ControlAccess();}
-	~Handle_FCAttribute();
-	static const Handle_FCAttribute DownCast(const Handle(Standard_Transient)& AnObject);
+	AppExport FCParameter* operator->() const{return(FCParameter *)ControlAccess();}
+	AppExport ~Handle_FCParameter();
+	AppExport static const Handle_FCParameter DownCast(const Handle(Standard_Transient)& AnObject);
 };
 
 
 
-class FCAttribute : public TDF_Attribute 
+class FCParameter : public FCAttribute 
 {
 public:
 
 	/// Constructor
-	AppExport FCAttribute();
+	AppExport FCParameter();
 	/// Destructor
-	AppExport ~FCAttribute();
+	AppExport ~FCParameter();
 
 	/// Delivers the GUID of the Object
 	AppExport static const Standard_GUID& GetID() ;
@@ -128,7 +100,7 @@ public:
 	AppExport TCollection_ExtendedString Get() const;
 
 	/// not shure
-	AppExport static  Handle_FCAttribute Set(const TDF_Label& label,const TCollection_ExtendedString& string) ;
+	AppExport static  Handle_FCParameter Set(const TDF_Label& label,const TCollection_ExtendedString& string) ;
 
 	/// Get the unique ID of the Attribute
 	AppExport const Standard_GUID& ID() const;
@@ -144,14 +116,14 @@ public:
     AppExport void* operator new(size_t,void* anAddress)	{return anAddress;}
     AppExport void* operator new(size_t size)				{return Standard::Allocate(size);}
     AppExport void  operator delete(void *anAddress)		{if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	          friend Handle_Standard_Type& FCAttribute_Type_();
+	AppExport friend Handle_Standard_Type& FCParameter_Type_();
 	AppExport const Handle(Standard_Type)& DynamicType() const;
 	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 
 private: 
 
 	/// Data member string
-	TCollection_ExtendedString myString;
+	TCollection_ExtendedString myString2;
 
 };
 
