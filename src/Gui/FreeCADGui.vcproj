@@ -16,17 +16,17 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="_DEBUG;_USRDLL;WNT;FCGui"
+				PreprocessorDefinitions="_USRDLL;FCGui;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile=".\Debug/FreeCADGui.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mteval311.lib $(QTDIR)\lib\qtmain.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib"
 				OutputFile="../../bin/FreeCADGuiD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -75,18 +75,18 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;WNT;FCGui"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FCGui"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile=".\Release/FreeCADGui.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
@@ -98,7 +98,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mteval311.lib $(QTDIR)\lib\qtmain.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib $(QTDIR)\lib\qt-mt230nc.lib $(QTDIR)\lib\qtmain.lib"
 				OutputFile="../../bin/FreeCADGui.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -132,55 +132,6 @@
 			Name="Dialog"
 			Filter="">
 			<File
-				RelativePath=".\DlgCustomize.ui">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
-%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
-%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
-%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
-%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\DlgCustomizeImp.cpp">
-			</File>
-			<File
-				RelativePath=".\DlgCustomizeImp.h">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\DlgDocTemplates.ui">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -207,18 +158,6 @@
 			</File>
 			<File
 				RelativePath=".\DlgDocTemplatesImp.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DlgDocTemplatesImp.h">
@@ -268,18 +207,6 @@
 			</File>
 			<File
 				RelativePath=".\DlgMacroExecuteImp.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DlgMacroExecuteImp.h">
@@ -329,18 +256,6 @@
 			</File>
 			<File
 				RelativePath=".\DlgMacroRecordImp.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DlgMacroRecordImp.h">
@@ -390,18 +305,6 @@
 			</File>
 			<File
 				RelativePath=".\DlgParameterImp.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DlgParameterImp.h">
@@ -425,129 +328,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\DlgPreferences.ui">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
-%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
-%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
-%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
-%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\DlgPreferencesImp.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\DlgPreferencesImp.h">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\DlgSettings.ui">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
-%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
-%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
-%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
-%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\DlgSettingsImp.cpp">
-			</File>
-			<File
-				RelativePath=".\DlgSettingsImp.h">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
-"
-						Outputs="$(InputDir)moc_$(InputName).cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\DlgUndoRedo.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DlgUndoRedo.h">
@@ -570,24 +351,436 @@
 						Outputs="$(InputDir)moc_$(InputName).cpp"/>
 				</FileConfiguration>
 			</File>
+			<Filter
+				Name="Settings"
+				Filter="">
+				<File
+					RelativePath=".\DlgGeneral.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgGeneralImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgGeneralImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgPreferences.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgPreferencesImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgPreferencesImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgSettings.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgSettings3DView.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgSettings3DViewImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgSettings3DViewImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgSettingsImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgSettingsImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="Customize"
+				Filter="">
+				<File
+					RelativePath=".\DlgActions.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgActionsImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgActionsImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgCmdbars.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgCmdbarsImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgCmdbarsImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgCommands.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgCommandsImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgCommandsImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgCustomizeImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgCustomizeImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgToolbars.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="%qtdir%\bin\uic.exe $(InputPath) -o $(InputDir)$(InputName).h
+%qtdir%\bin\uic.exe $(InputPath) -i $(InputName).h -o $(InputDir)$(InputName).cpp
+%qtdir%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgToolbarsImp.cpp">
+				</File>
+				<File
+					RelativePath=".\DlgToolbarsImp.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="%QTDIR%\bin\moc.exe $(InputDir)$(InputName).h -o $(InputDir)moc_$(InputName).cpp
+"
+							Outputs="$(InputDir)moc_$(InputName).cpp"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Command"
 			Filter="">
 			<File
 				RelativePath=".\Command.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Command.h">
@@ -612,33 +805,12 @@
 			</File>
 			<File
 				RelativePath=".\CommandStd.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CommandTest.cpp">
 			</File>
 			<File
 				RelativePath=".\CommandView.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -646,18 +818,6 @@
 			Filter="">
 			<File
 				RelativePath=".\ButtonGroup.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ButtonGroup.h">
@@ -682,18 +842,6 @@
 			</File>
 			<File
 				RelativePath=".\HtmlView.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						PrecompiledHeaderThrough="PreCompiled.h"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\HtmlView.h">
@@ -743,18 +891,6 @@
 		</File>
 		<File
 			RelativePath=".\CommandLine.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\CommandLine.h">
@@ -783,13 +919,13 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
 		</File>
 		<File
@@ -818,39 +954,33 @@
 		</File>
 		<File
 			RelativePath=".\GuiConsole.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\GuiConsole.h">
 		</File>
 		<File
 			RelativePath=".\Libs.cpp">
-		</File>
-		<File
-			RelativePath=".\MouseModel.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\Macro.cpp">
+		</File>
+		<File
+			RelativePath=".\Macro.h">
+		</File>
+		<File
+			RelativePath=".\MouseModel.cpp">
 		</File>
 		<File
 			RelativePath=".\MouseModel.h">
@@ -861,15 +991,13 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
 		</File>
 		<File
@@ -901,18 +1029,6 @@
 		</File>
 		<File
 			RelativePath=".\Splashscreen.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Splashscreen.h">
@@ -937,36 +1053,18 @@
 		</File>
 		<File
 			RelativePath=".\Themes.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Themes.h">
 		</File>
 		<File
+			RelativePath=".\Tools.cpp">
+		</File>
+		<File
+			RelativePath=".\Tools.h">
+		</File>
+		<File
 			RelativePath=".\Tree.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Tree.h">
@@ -991,18 +1089,6 @@
 		</File>
 		<File
 			RelativePath=".\View.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\View.h">
@@ -1027,18 +1113,6 @@
 		</File>
 		<File
 			RelativePath=".\View3D.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\View3D.h">
@@ -1069,18 +1143,6 @@
 		</File>
 		<File
 			RelativePath=".\Widgets.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Widgets.h">
