@@ -38,6 +38,7 @@ class PartWorkbench ( Workbench ):
 		try:
 			Log ('Loading PartGui module')
 			import PartGui
+			import Part
 		except:
 			Err('   can not load PartGui')
 			raise

@@ -109,7 +109,14 @@ void FCCommand::activated ()
 	if(_eType == Cmd_Normal)
 	{
 		Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
-		Activated(0);
+    // set the application module type for the macro
+    GetAppWnd()->GetMacroMngr()->SetModule(sAppModule.c_str());
+    try{
+      Activated(0);
+    }catch(...)
+    {
+      Base::Console().Error("FCCommand::activated()  Activate of Cmd faild");
+    };
 	}
 }
 void FCCommand::toggled (bool b)

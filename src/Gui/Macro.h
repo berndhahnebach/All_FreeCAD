@@ -1,10 +1,3 @@
-/** \file Macro.h
- *  \brief Implements the macro recording and play back facility
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -98,7 +91,15 @@ public:
 	/// indicates if a macro recording in in progress
 	bool IsOpen(void){return _bIsOpen;}
 
+  /// insert a new line in the macro
 	void AddLine(LineType Type,const char* sLine);
+
+	/** Set the active module 
+	 * This is normaly done by the workbench switch. It sets
+   * the actually active application module so when the macro
+   * gets started the right import can be issued.
+	 */
+  void SetModule(const char* sModule);
 
 	void Run(MacroType eType,const char *sName);
 
@@ -114,6 +115,9 @@ protected:
 
 	/// name of the macro
 	std::string _sName;
+
+  ///
+  std::set <std::string> _sModuleSet;
 
 	bool _bIsOpen;
  

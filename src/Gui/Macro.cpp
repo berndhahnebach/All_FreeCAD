@@ -1,10 +1,3 @@
-/** \file Macro.cpp
- *  \brief implementation of the macro manager
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -75,16 +68,16 @@ void FCMacroManager::Open(MacroType eType,const char *sName)
 	assert(!_bIsOpen);
 	assert(eType == File);
 
+  _sModuleSet.clear();
 	_sName = sName;
 
 	if(_sName.find(".FCMacro") == std::string::npos)
 		_sName += ".FCMacro";
 
-
-	_sMacroInProgress += "# Macro Begin: ";
+	_sMacroInProgress = "# Macro Begin: ";
 	_sMacroInProgress += _sName;
 	_sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
-	//sMacroInProgress += "def Macro:\n\n";
+	_sMacroInProgress += "import FreeCAD\n";
 
 	_bIsOpen = true;
 }
@@ -104,7 +97,7 @@ void FCMacroManager::Commit(void)
 
 	_sMacroInProgress = "";
 	_sName = "";
-
+  _sModuleSet.clear();
 	_bIsOpen = false;
 
 }
@@ -115,6 +108,7 @@ void FCMacroManager::Cancel(void)
 {
 	_sMacroInProgress = "";
 	_sName = "";
+  _sModuleSet.clear();
 
 	_bIsOpen = false;
 	
@@ -123,11 +117,25 @@ void FCMacroManager::Cancel(void)
 
 void FCMacroManager::AddLine(LineType Type,const char* sLine)
 {
-	//sMacroInProgress += "\t" + sLine + "\n";
-	if(Type == Gui) 
-			_sMacroInProgress += "#";	
-	_sMacroInProgress += sLine;		
-	_sMacroInProgress += "\n";		
+  if(_bIsOpen)
+  {
+	  //sMacroInProgress += "\t" + sLine + "\n";
+	  if(Type == Gui) 
+			  _sMacroInProgress += "#";	
+	  _sMacroInProgress += sLine;		
+	  _sMacroInProgress += "\n";		
+  }
+}
+
+void FCMacroManager::SetModule(const char* sModule)
+{
+  if(_bIsOpen && sModule && *sModule != '\0' && _sModuleSet.find(sModule) == _sModuleSet.end())
+  {
+    _sMacroInProgress += "import ";
+    _sMacroInProgress += sModule;
+    _sMacroInProgress += "\n";
+    _sModuleSet.insert(sModule);
+  }
 }
 
 

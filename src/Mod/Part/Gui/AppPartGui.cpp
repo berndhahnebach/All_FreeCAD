@@ -26,6 +26,7 @@
 #include "../../../Base/Console.h"
 
 #include "../../../Gui/Application.h"
+#include "../../../Gui/Macro.h"
 
 void CreateCommands(void);
 
@@ -68,7 +69,7 @@ void ModuleExport initPartGui() {
 	Base::Console().Log("AppPartGui loaded\n");
 
 	App::GetApplication();
-	ApplicationWindow::Instance;
+	ApplicationWindow::Instance->GetMacroMngr()->SetModule("Part");
 
 	// instanciating the commands
 	CreateCommands();
