@@ -4,27 +4,26 @@ How to build and run FreeCAD under Linux
 To compile FreeCAD, you will need, besides functioning Linux
 and programming tools (like compiler), the following libraries:
 
-o Python (http://www.python.org), I have 2.1, IMHO any 2.x will work
-o Qt (http://www.trolltech.no), 2.x.y (?), I have 2.3.1
-o OpenCascade (http://www.opencascade.org), you need >=4.0 here
-o QtExtMDI (http://www.geocities.com/gigafalk/qextmdi.htm), I used 2.0.2
-o Xerces-c (downloads http://xml.apache.org/dist/xerces-c/), mine is 2.1.0-3
+o Python (http://www.python.org), I have 2.3
+o Qt (http://www.trolltech.no), >= 3.2.x, I have 3.2.1
+o Coin3D (http://www.coin3d.org), >= 2.x, I have 2.2.1
+o SoQt (http://www.coin3d.org), >= 1.x, I have 1.0.2
+o OpenCascade (http://www.opencascade.org), you need >=5.0 here
+o Xerces-c (downloads http://xml.apache.org/dist/xerces-c/), mine is 2.4
 
-Make sure that you adjust Makefile to your needs (paths at the beginning)
-before building. Then run 'make'. Ignore compiler warnings. If you get
-linker wranings / errors, you are possibly /really in a trouble.
-Verify Makefile paths. I recommend getting all
-libraries that are not natively in your distro as sources and compiling them
-(this might include OpenCascade; in that case do NOT use the standard
-./configure [...] && make procedure, as its way of linking
-(incrementally, preserving all intermediate files) needs enorme quantities
-of HDD storage and is accordingly slow; why is it this way, I do not know).
+For the build process of FreeCAD we make use of configure scripts. 
+To have an overview of all options type in ./configure --help, first.
 
-If it works fine, go into fc.sh and set correct paths (again, sigh).
-It is a shell wrapper for running freecad. It is not at all robust,
-you _have to_ run it from the top directory (which contains,
-among others, Main and Mod). Then run ./fc.sh, from a console,
-of course, as you will see many interesting messages.
+If you have installed all libraries above into standard paths you need
+not any options at all. Unless you have installed any library into a
+non-standard path, then make use of the --with-XXX-includes or --with-XXX-libs 
+options, please. (XXX stands for the corresponding library.)
+
+Once you have built the sources successfully you can use the fc.sh shell script
+to start FreeCAD. Therefore you should have set correct paths in fc.sh.
+It is a shell wrapper for running FreeCAD. It is not at all robust, you _have to_ 
+run it from the top directory (which contains, among others, Main and Mod). 
+Then run ./fc.sh, from a console, of course, as you will see many interesting messages.
 
 All significant changes made to the sources can be found by the keyword __linux,
 either in preprocessor conditions or in comments. (If you happen to use
@@ -32,10 +31,77 @@ a c-preprocessor that does not #define __linux or you have turned it off,
 #define it manually, otherwise compilation will fail (e.g. #include<windows.h>,
 obviously)). 
 
-If you know how to work with GNU autoconf, feel free to contribute
-configuration scripts --- that would be great.
+If you know how to work with GNU autoconf, feel free to contribute improvements
+to our configuration scripts --- that would be great.
 
-Should you have some Linux specific problems with FreeCAD, drop me mail.
+Should you have some Linux specific problems with FreeCAD, drop me a mail.
 However, due to my limited knowledge, I do not promise anything.
 
+
+Known problems
+--------------
+
+Here I have added a list of known problems concerning installation of libraries or the build
+process of FreeCAD.
+
+Problem:
+Installation of Coin/SoQt could fail if the configure script searches
+for QGLWidget either in libqgl or libqt-gl.
+
+Solution:
+QGLWidget now resides in libqt-mt, so create links called libqgl.so and libqt-gl.so, 
+linking to libqt-mt.so.
+[ as root ]
+> ln -s /usr/lib/qt3/lib/libqt-mt.so ./libqgl.so
+> ln -s /usr/lib/qt3/lib/libqt-mt.so ./libqt-gl.so
+
+
+Worth noting up front that OpenCascade requires at least 500Mb of swap space 
+( according to their documentation ). Linux uses a separate partition for
+the swap space, so you might have to re-partition the hard drive to achieve this 
+( I did! ) and it is worth doing that before the rest of the install!
+
+Problem:
+OCC install wizard doesn't work - just prints a few lines of dots and then stops.
+
+Solution: 
+Export the display so that root can connect to it, and then run the java script 
+manually as root:
+> xhost +      // Allow root to access our display
+> su           // Change user to root
+> /usr/lib/java/jre/bin/java -jar ./Linux/setup.jar
+
+
+Problem:
+configure script fails because looking for strstream.h. Later compilers (like gcc 3.3.x)
+do not use this file anymore.
+
+Solution:
+Comment out the AC_CHECK_HEADERS([strstream.h],,[AC_MSG_ERROR([This header is needed. Bye.])])
+statement or check out latest sources from CVS repository hosted on sourceforge.net.
+
+
+Problem:
+configure couldn't execute various scripts: missing, config.sub, etc.
+
+Solution:
+Rerun the automake scripts, telling them to add in the missing script files from system
+templates:
+> automake --add-missing --force-missing
+> autoconf
+> ./configure
+
+
+Problem:
+After running configure, couldn't execute libtool (which is created by configure ). 
+If I viewed the libtool file in an editor ( e.g. vi ) I could see ^M at the end of 
+every line - which is the Windows EOL character, but not the Unix/Linux EOL character.
+
+Solution:
+Open libtool in a 'smart' text editor, such as Kate, save it and close it again - all 
+of the Windows ^M 's are converted into Linux ^L ( or whatever ).
+
+
 Vaclav Smilauer <smilauer@volny.cz>
+
+(updated by Werner Mayer)

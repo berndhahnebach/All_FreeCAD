@@ -33,6 +33,7 @@
 #include "Command.h"
 #include "CommandLine.h"
 #include "Language/LanguageFactory.h"
+#include "Language/Translator.h"
 
 using namespace Gui::Dialog;
 
@@ -99,8 +100,9 @@ void DlgGeneralImp::savePreferences()
   QString language = getWindowParameter()->GetASCII("Language", "English").c_str();
   if ( QString::compare( Languages->currentText(), language ) != 0 )
   {
-    CheckMessageBox::information(ApplicationWindow::Instance, "Info", tr("To take effect on the new language restart FreeCAD, please"));
+//    CheckMessageBox::information(ApplicationWindow::Instance, "Info", tr("To take effect on the new language restart FreeCAD, please."));
     getWindowParameter()->SetASCII("Language", Languages->currentText().latin1());
+    Gui::Translator::setLanguage( Languages->currentText() );
   }
 }
 
@@ -124,7 +126,6 @@ void DlgGeneralImp::insertLanguages()
 {
   QStringList list = Gui::LanguageFactory().getRegisteredLanguages();
 
-  int pos = 0;
   Languages->insertItem(tr("English"));
 
   for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )

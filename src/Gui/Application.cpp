@@ -130,7 +130,7 @@
 
 #include "Inventor/Qt/SoQt.h"
 
-#include "Language/LanguageFactory.h"
+#include "Language/Translator.h"
 
 #include "GuiInitScript.h"
 
@@ -204,7 +204,7 @@ ApplicationWindow::ApplicationWindow()
   hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
 
   std::string language = hPGrp->GetASCII("Language", "English");
-	Gui::LanguageFactory().setLanguage( language.c_str() );
+	Gui::Translator::setLanguage( language.c_str() );
 	GetWidgetFactorySupplier();
 
 	// seting up Python binding

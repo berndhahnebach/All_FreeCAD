@@ -86,6 +86,8 @@ public:
 	virtual QAction * CreateAction(void)=0;
 	/// returns the resource values
 	virtual std::string GetResource(const char* sName)=0;
+  /// Reassign QAction stuff
+  virtual void languageChange(){}
 	//@}
 
 
@@ -217,6 +219,8 @@ public:
 	virtual QAction * CreateAction(void);
 	/// returns the resource values
 	virtual std::string GetResource(const char* sName);
+  /// Reassign QAction stuff
+  virtual void languageChange();
 
 	//@}
 

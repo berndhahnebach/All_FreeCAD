@@ -134,55 +134,54 @@ QT_TRANSLATE_NOOP( "FCCmdOCAFBrowse", "Starts a new window to deeply examine the
 
 
 #: CommandView.cpp:
-QT_TRANSLATE_NOOP( "FCCmdViewBottom", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewBottom", "Bottom" )
-QT_TRANSLATE_NOOP( "FCCmdViewBottom", "Set to bottom view" )
+QT_TRANSLATE_NOOP( "StdCmdViewBottom", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewBottom", "Bottom" )
+QT_TRANSLATE_NOOP( "StdCmdViewBottom", "Set to bottom view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewFront", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewFront", "Front" )
-QT_TRANSLATE_NOOP( "FCCmdViewFront", "Set to front view" )
+QT_TRANSLATE_NOOP( "StdCmdViewFront", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewFront", "Front" )
+QT_TRANSLATE_NOOP( "StdCmdViewFront", "Set to front view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewLeft", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewLeft", "Left" )
-QT_TRANSLATE_NOOP( "FCCmdViewLeft", "Set to left view" )
+QT_TRANSLATE_NOOP( "StdCmdViewLeft", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewLeft", "Left" )
+QT_TRANSLATE_NOOP( "StdCmdViewLeft", "Set to left view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewRear", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewRear", "Rear" )
-QT_TRANSLATE_NOOP( "FCCmdViewRear", "Set to rear view" )
+QT_TRANSLATE_NOOP( "StdCmdViewRear", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewRear", "Rear" )
+QT_TRANSLATE_NOOP( "StdCmdViewRear", "Set to rear view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewRight", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewRight", "Right" )
-QT_TRANSLATE_NOOP( "FCCmdViewRight", "Set to right view" )
+QT_TRANSLATE_NOOP( "StdCmdViewRight", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewRight", "Right" )
+QT_TRANSLATE_NOOP( "StdCmdViewRight", "Set to right view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewTop", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewTop", "Top" )
-QT_TRANSLATE_NOOP( "FCCmdViewTop", "Set to top view" )
+QT_TRANSLATE_NOOP( "StdCmdViewTop", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewTop", "Top" )
+QT_TRANSLATE_NOOP( "StdCmdViewTop", "Set to top view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewAxo", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewAxo", "Axometric" )
-QT_TRANSLATE_NOOP( "FCCmdViewAxo", "Set to axometric view" )
+QT_TRANSLATE_NOOP( "StdCmdViewAxo", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewAxo", "Axometric" )
+QT_TRANSLATE_NOOP( "StdCmdViewAxo", "Set to axometric view" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewFitAll", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewFitAll", "Fit all" )
-QT_TRANSLATE_NOOP( "FCCmdViewFitAll", "Fits the whole content on the screen" )
+QT_TRANSLATE_NOOP( "StdCmdViewFitAll", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewFitAll", "Fit all" )
+QT_TRANSLATE_NOOP( "StdCmdViewFitAll", "Fits the whole content on the screen" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewCreateOCC", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewCreateOCC", "Create new OCC View" )
-QT_TRANSLATE_NOOP( "FCCmdViewCreateOCC", "Creates a new OpenCasCade view window for the active document" )
+QT_TRANSLATE_NOOP( "StdCmdViewCreateOCC", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewCreateOCC", "Create new OCC View" )
+QT_TRANSLATE_NOOP( "StdCmdViewCreateOCC", "Creates a new OpenCasCade view window for the active document" )
 
-QT_TRANSLATE_NOOP( "FCCmdViewCreateInventor", "Standard-View" )
-QT_TRANSLATE_NOOP( "FCCmdViewCreateInventor", "Create new Inventor View" )
-QT_TRANSLATE_NOOP( "FCCmdViewCreateInventor", "Creates a new Inventor view window for the active document" )
+QT_TRANSLATE_NOOP( "StdCmdViewCreateInventor", "Standard-View" )
+QT_TRANSLATE_NOOP( "StdCmdViewCreateInventor", "Create new Inventor View" )
+QT_TRANSLATE_NOOP( "StdCmdViewCreateInventor", "Creates a new Inventor view window for the active document" )
 
 
 #: PrefWidgets.cpp:
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "File" )
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Edit" )
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "View" )
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Tools" )
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Windows" )
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Help" )
-QT_TRANSLATE_NOOP( "FCCustomWidgetManager", "Help" )
+QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&File" )
+QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Edit" )
+QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&View" )
+QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Tools" )
+QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Windows" )
+QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Help" )
 
 
 #Application.cpp
@@ -191,13 +190,7 @@ QT_TRANSLATE_NOOP( "ApplicationWindow", "Standard views" )
 QT_TRANSLATE_NOOP( "ApplicationWindow", "file operations" )
 QT_TRANSLATE_NOOP( "ApplicationWindow", "Special Ops" )
 QT_TRANSLATE_NOOP( "ApplicationWindow", "Command bar" )
-QT_TRANSLATE_NOOP( "ApplicationWindow", "Help bar" )
 QT_TRANSLATE_NOOP( "ApplicationWindow", "Property View" )
 QT_TRANSLATE_NOOP( "ApplicationWindow", "Report View" )
-QT_TRANSLATE_NOOP( "ApplicationWindow", "Help bar" )
-QT_TRANSLATE_NOOP( "ApplicationWindow", "Tree bar" )
-
-
-#Buttongroup.cpp
-QT_TRANSLATE_NOOP( "FCStackBar", "Standard views" )
-QT_TRANSLATE_NOOP( "FCStackBar", "Special Ops" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Help view" )
+QT_TRANSLATE_NOOP( "ApplicationWindow", "Tree view" )

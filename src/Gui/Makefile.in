@@ -235,6 +235,7 @@ propertyeditor/moc_propertyeditoritem.cpp \
 propertyeditor/knuminput.moc \
 propertyeditor/knumvalidator.moc \
 Language/FreeCAD_de.h \
+Language/moc_Translator.cpp \
 GuiInitScript.h
 
 
@@ -252,6 +253,7 @@ propertyeditor/knumvalidator.cpp \
 Inventor/OCC/SoBrepShape.cpp \
 \
 Language/LanguageFactory.cpp \
+Language/Translator.cpp \
 \
 Action.cpp \
 Application.cpp \
@@ -357,23 +359,24 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	propertyeditordate.lo propertyeditorfile.lo \
 	propertyeditorfont.lo propertyeditorinput.lo \
 	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
-	SoBrepShape.lo LanguageFactory.lo Action.lo Application.lo \
-	BitmapFactory.lo ButtonGroup.lo CommandLine.lo Command.lo \
-	CommandStd.lo CommandTest.lo CommandView.lo CustomWidgets.lo \
-	DlgActionsImp.lo DlgActivateWindowImp.lo DlgCmdbarsImp.lo \
-	DlgCommandsImp.lo DlgCustomizeImp.lo DlgDocTemplatesImp.lo \
-	DlgEditorImp.lo DlgGeneralImp.lo DlgMacroExecuteImp.lo \
-	DlgMacroRecordImp.lo DlgOnlineHelpImp.lo DlgParameterImp.lo \
-	DlgPreferencesImp.lo DlgReportViewImp.lo DlgSettingsImp.lo \
-	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
-	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
-	Document.lo FileDialog.lo GuiConsole.lo HtmlView.lo Macro.lo \
-	MouseModel.lo PrefWidgets.lo Process.lo ProgressBar.lo \
-	PropertyPage.lo PropertyView.lo PythonEditor.lo ReportView.lo \
-	resource.lo Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo \
-	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
-	View3DInventor.lo ViewProvider.lo WaitCursor.lo WhatsThis.lo \
-	WidgetFactory.lo Widgets.lo Window.lo
+	SoBrepShape.lo LanguageFactory.lo Translator.lo Action.lo \
+	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
+	Command.lo CommandStd.lo CommandTest.lo CommandView.lo \
+	CustomWidgets.lo DlgActionsImp.lo DlgActivateWindowImp.lo \
+	DlgCmdbarsImp.lo DlgCommandsImp.lo DlgCustomizeImp.lo \
+	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
+	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
+	DlgParameterImp.lo DlgPreferencesImp.lo DlgReportViewImp.lo \
+	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
+	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
+	DlgUndoRedo.lo Document.lo FileDialog.lo GuiConsole.lo \
+	HtmlView.lo Macro.lo MouseModel.lo PrefWidgets.lo Process.lo \
+	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
+	ReportView.lo resource.lo Selection.lo SpinBox.lo \
+	Splashscreen.lo StackBar.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
+	Tree.lo View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
+	WaitCursor.lo WhatsThis.lo WidgetFactory.lo Widgets.lo \
+	Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -423,8 +426,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Splashscreen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/StackBar.Plo ./$(DEPDIR)/ToolBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ToolBoxBar.Plo ./$(DEPDIR)/Tools.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Tree.Plo ./$(DEPDIR)/View.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/View3D.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Translator.Plo ./$(DEPDIR)/Tree.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/View.Plo ./$(DEPDIR)/View3D.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
@@ -552,6 +555,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBoxBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tools.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Translator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3D.Plo@am__quote@
@@ -971,6 +975,39 @@ LanguageFactory.lo: Language/LanguageFactory.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/LanguageFactory.Plo' tmpdepfile='$(DEPDIR)/LanguageFactory.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LanguageFactory.lo `test -f 'Language/LanguageFactory.cpp' || echo '$(srcdir)/'`Language/LanguageFactory.cpp
+
+Translator.o: Language/Translator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Translator.o -MD -MP -MF "$(DEPDIR)/Translator.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o Translator.o `test -f 'Language/Translator.cpp' || echo '$(srcdir)/'`Language/Translator.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/Translator.Tpo" "$(DEPDIR)/Translator.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/Translator.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Language/Translator.cpp' object='Translator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Translator.Po' tmpdepfile='$(DEPDIR)/Translator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Translator.o `test -f 'Language/Translator.cpp' || echo '$(srcdir)/'`Language/Translator.cpp
+
+Translator.obj: Language/Translator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Translator.obj -MD -MP -MF "$(DEPDIR)/Translator.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o Translator.obj `if test -f 'Language/Translator.cpp'; then $(CYGPATH_W) 'Language/Translator.cpp'; else $(CYGPATH_W) '$(srcdir)/Language/Translator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/Translator.Tpo" "$(DEPDIR)/Translator.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/Translator.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Language/Translator.cpp' object='Translator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Translator.Po' tmpdepfile='$(DEPDIR)/Translator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Translator.obj `if test -f 'Language/Translator.cpp'; then $(CYGPATH_W) 'Language/Translator.cpp'; else $(CYGPATH_W) '$(srcdir)/Language/Translator.cpp'; fi`
+
+Translator.lo: Language/Translator.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Translator.lo -MD -MP -MF "$(DEPDIR)/Translator.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o Translator.lo `test -f 'Language/Translator.cpp' || echo '$(srcdir)/'`Language/Translator.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/Translator.Tpo" "$(DEPDIR)/Translator.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/Translator.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Language/Translator.cpp' object='Translator.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Translator.Plo' tmpdepfile='$(DEPDIR)/Translator.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Translator.lo `test -f 'Language/Translator.cpp' || echo '$(srcdir)/'`Language/Translator.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -25,21 +25,16 @@
 
 #ifndef _PreComp_
 # include <qobjectlist.h>
-# include <qpushbutton.h>
 # include <qstatusbar.h>
 # include <qwhatsthis.h>
 #endif
 
 #include "Action.h"
-#include "BitmapFactory.h"
 #include "Command.h"
 #include "DlgUndoRedo.h"
-#include "WhatsThis.h"
-#include "ToolBoxBar.h"
 
 using namespace Gui;
 using namespace Gui::Dialog;
-using namespace Gui::DockWnd;
 
 QStringList ActionDrag::actions;
 
@@ -87,22 +82,24 @@ Action::~Action()
 { 
 }
 
+void Action::addedTo ( QWidget * actionWidget, QWidget * container )
+{
+  if ( container->inherits("Gui::DockWnd::CommandBar") )
+  {
+    QToolButton* tb = (QToolButton*) actionWidget;
+    tb->setTextPosition( QToolButton::BesideIcon );
+    tb->setTextLabel( menuText() );
+    tb->setUsesTextLabel( true );
+    tb->setFixedHeight( 30 );
+  }
+}
+
 /**
  * Adds this action to widget \a w.
  */
 bool Action::addTo(QWidget *w)
 {
-  if (QAction::addTo(w) == true)
-  {
-    if (w->inherits("Gui::DockWnd::CommandBar"))
-    {
-      ((CommandBar*)w)->setTextToLastItem(menuText());
-    }
-  }
-  else
-    return false;
-
-  return true;
+  return QAction::addTo( w );
 }
 
 /**
@@ -110,73 +107,7 @@ bool Action::addTo(QWidget *w)
  */
 bool Action::removeFrom ( QWidget * w )
 {
-  QWidget* o;
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!=widgets.end(); ++it)
-  {
-    if ((*it)->parentWidget() == w)
-    {
-      o = *it;
-      widgets.erase(it);
-      disconnect( o, SIGNAL( destroyed() ), this, SLOT( onDestroyed() ) );
-      delete o;
-    }
-  }
-
-  return QAction::removeFrom(w);
-}
-
-/** 
- * Sets whether a toggle action is on but only if this action is a toggle action.
- */
-void Action::onToolButtonToggled( bool on )
-{
-  if ( !isToggleAction() )
-    return;
-  setOn( on );
-}
-
-/**
- * Prints the text \a text on the status bar.
- */
-void Action::onShowStatusText( const QString& text )
-{
-  QObject* par;
-  if ( ( par = parent() ) && par->inherits( "QActionGroup" ) )
-    par = par->parent();
-
-  if ( !par || !par->isWidgetType() )
-    return;
-
-  QObjectList* l = ( (QWidget*)par )->topLevelWidget()->queryList("QStatusBar");
-  for ( QStatusBar* bar = (QStatusBar*) l->first(); bar; bar = (QStatusBar*)l->next() ) 
-  {
-    if ( text.isEmpty() )
-      bar->clear();
-    else
-      bar->message( text );
-  }
-
-  delete l;
-}
-
-/**
- * Clears the text on the status bar.
- */
-void Action::onClearStatusText()
-{
-  onShowStatusText( QString::null );
-
-}
-
-/**
- * Removes the just destroyed widget.
- */
-void Action::onDestroyed()
-{
-  const QWidget* w = (QWidget*)sender();
-  std::vector<QWidget*>::iterator it;
-  if ((it = std::find(widgets.begin(), widgets.end(), w)) != widgets.end())
-    widgets.erase(it);
+  return QAction::removeFrom( w );
 }
 
 /**
@@ -201,11 +132,6 @@ void Action::onToggled ( bool b)
 void Action::setEnabled ( bool b) 
 {
   QAction::setEnabled(b);
-  // update all widgets containing this action
-  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!=widgets.end(); ++it)
-  {
-    (*it)->setEnabled(b);
-  }
 }
 
 // --------------------------------------------------------------------
@@ -387,84 +313,50 @@ void ActionGroup::onActivated ( QAction* act )
 
 // --------------------------------------------------------------------
 
-UndoAction::UndoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
+UndoRedoAction::UndoRedoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
   : Action(pcCmd, parent, name, toggle)
 {
-  tipGroup = new QToolTipGroup(0);
 }
 
-bool UndoAction::addTo( QWidget* w )
+UndoRedoAction::~UndoRedoAction()
 {
-  if (w->inherits("QToolBar"))
+}
+
+void UndoRedoAction::addedTo ( QWidget * actionWidget, QWidget * container )
+{
+  if ( actionWidget->inherits("QToolButton") )
   {
-    QToolButton* button = new UndoRedoButton((QToolBar*)w, "Undo");
-    button->setToggleButton( isToggleAction() );
-    button->setIconSet( iconSet() );
+    QToolButton* tb = (QToolButton*)actionWidget;
+    QPopupMenu* menu = new UndoRedoDialog( tb );
 
-    // do this before the tool tip stuff
-    if (w->inherits("Gui::DockWnd::CommandBar"))
-    {
-      ((CommandBar*)w)->setTextToLastItem(menuText());
-      button->setTextLabel(menuText());
-      button->setUsesTextLabel(true);
-    }
-
-    QToolTip::add( button, toolTip(), tipGroup, statusTip() );
-    QWhatsThis::add(button, whatsThis());
-
-    connect( button,   SIGNAL( destroyed() ),             this, SLOT( onDestroyed() ) );
-    connect( button,   SIGNAL( clicked() ),               this, SIGNAL( activated() ) );
-    connect( button,   SIGNAL( toggled(bool) ),           this, SLOT( onToolButtonToggled(bool) ) );
-    connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(onShowStatusText(const QString&)) );
-    connect( tipGroup, SIGNAL( removeTip() ),             this, SLOT(onClearStatusText()) );
-
-    widgets.push_back(button);
-
-    return true;
+    tb->setPopup( menu );
+    tb->setPopupDelay(0);
+    tb->setAutoRaise(true);
   }
 
-  return Action::addTo(w);
+  Action::addedTo( actionWidget, container );
+}
+
+// --------------------------------------------------------------------
+
+UndoAction::UndoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
+  : UndoRedoAction(pcCmd, parent, name, toggle)
+{
+}
+
+UndoAction::~UndoAction()
+{
 }
 
 // --------------------------------------------------------------------
 
 RedoAction::RedoAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle )
-  : Action(pcCmd, parent, name, toggle)
+  : UndoRedoAction(pcCmd, parent, name, toggle)
 {
-  tipGroup = new QToolTipGroup(0);
 }
 
-bool RedoAction::addTo(QWidget* w)
+RedoAction::~RedoAction()
 {
-  if (w->inherits("QToolBar"))
-  {
-    QToolButton* button = new UndoRedoButton( (QToolBar*)w, "Redo" );
-    button->setToggleButton( isToggleAction() );
-    button->setIconSet( iconSet() );
-
-    // do this before the tool tip stuff
-    if (w->inherits("Gui::DockWnd::CommandBar"))
-    {
-      ((CommandBar*)w)->setTextToLastItem(menuText());
-      button->setTextLabel(menuText());
-      button->setUsesTextLabel(true);
-    }
-
-    QToolTip::add( button, toolTip(), tipGroup, statusTip() );
-    QWhatsThis::add(button, whatsThis());
-
-    connect( button,   SIGNAL( destroyed() ),             this, SLOT( onDestroyed() ) );
-    connect( button,   SIGNAL( clicked() ),               this, SIGNAL( activated() ) );
-    connect( button,   SIGNAL( toggled(bool) ),           this, SLOT( onToolButtonToggled(bool) ) );
-    connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(onShowStatusText(const QString&)) );
-    connect( tipGroup, SIGNAL( removeTip() ),             this, SLOT(onClearStatusText()) );
-    
-    widgets.push_back(button);
-
-    return true;
-  }
-
-  return Action::addTo(w);
 }
 
 #include "moc_Action.cpp"

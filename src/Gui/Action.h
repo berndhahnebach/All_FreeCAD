@@ -28,8 +28,6 @@
 # include <qaction.h>
 # include <qdragobject.h>
 # include <qtooltip.h>
-# include <string>
-# include <vector>
 #endif
 
 class FCCommand;
@@ -66,8 +64,9 @@ public:
   Action ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   virtual ~Action();
 
-  virtual bool addTo(QWidget *);
-  bool removeFrom ( QWidget * w );
+  virtual void addedTo ( QWidget * actionWidget, QWidget * container );
+  virtual bool addTo ( QWidget * w );
+  virtual bool removeFrom ( QWidget * w );
   
   void setEnabled  ( bool ) ;
 
@@ -76,15 +75,6 @@ public:
 public slots:
   void onActivated ();
   void onToggled   ( bool ); 
-
-protected slots:
-  void onToolButtonToggled ( bool );
-  void onClearStatusText   ();
-  void onShowStatusText    ( const QString& );
-  void onDestroyed();
-
-protected:
-  std::vector<QWidget*> widgets;
 
 private:
   FCCommand *_pcCmd;
@@ -133,21 +123,34 @@ private:
 // --------------------------------------------------------------------
 
 /**
+ * The UndoRedoAction class reimplements the addedTo() function to make a popup menu 
+ * appearing when the button with the arrow is clicked.
+ * \author Werner Mayer
+ */
+class GuiExport UndoRedoAction : public Action
+{
+  Q_OBJECT
+
+public:
+  UndoRedoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  virtual ~UndoRedoAction();
+  
+  void addedTo ( QWidget * actionWidget, QWidget * container );
+};
+
+// --------------------------------------------------------------------
+
+/**
  * Special action for the undo button
  * @author Werner Mayer
  */
-class GuiExport UndoAction : public Action
+class GuiExport UndoAction : public UndoRedoAction
 {
   Q_OBJECT
 
 public:
   UndoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
-  ~UndoAction(){ delete tipGroup; }
-  
-  bool addTo(QWidget *);
-
-private:
-  QToolTipGroup* tipGroup;
+  ~UndoAction();
 };
 
 // --------------------------------------------------------------------
@@ -156,18 +159,13 @@ private:
  * Special action for the redo button
  * @author Werner Mayer
  */
-class GuiExport RedoAction : public Action
+class GuiExport RedoAction : public UndoRedoAction
 {
   Q_OBJECT
 
 public:
   RedoAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
-  ~RedoAction(){ delete tipGroup; }
-  
-  bool addTo(QWidget *);
-
-private:
-  QToolTipGroup* tipGroup;
+  ~RedoAction();
 };
 
 } // namespace Gui

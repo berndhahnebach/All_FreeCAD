@@ -92,7 +92,7 @@
                                 <cstring>LineEditURL</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>HelpViewer</string>
+                                <cstring>HelpViewer</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>index.php.html</string>
@@ -106,7 +106,7 @@
                                 <cstring>LineEditBrowser</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>HelpViewer</string>
+                                <cstring>HelpViewer</cstring>
                             </property>
                         </widget>
                         <widget class="QLabel" row="0" column="0">
@@ -161,7 +161,7 @@
                                 <cstring>EnableBookmarks</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>HelpViewer</string>
+                                <cstring>HelpViewer</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Enable bookmarks</string>
@@ -209,9 +209,9 @@
                                 <cstring>NbOfBookmarks</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>HelpViewer</string>
+                                <cstring>HelpViewer</cstring>
                             </property>
-                            <property name="valueFloat" stdset="0">
+                            <property name="value" stdset="0">
                                 <number>10</number>
                             </property>
                         </widget>
@@ -259,9 +259,9 @@
                                 <cstring>NbOfHistoryItems</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>HelpViewer</string>
+                                <cstring>HelpViewer</cstring>
                             </property>
-                            <property name="valueFloat" stdset="0">
+                            <property name="value" stdset="0">
                                 <number>10</number>
                             </property>
                         </widget>
@@ -273,7 +273,7 @@
                                 <cstring>EnableHistory</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>HelpViewer</string>
+                                <cstring>HelpViewer</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Enable history</string>
@@ -341,13 +341,13 @@
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="Int">valueFloat</property>
         <property type="UInt">decimals</property>
         <property type="UInt">lineStep</property>
         <property type="CString">prefEntry</property>
         <property type="CString">prefPath</property>
-        <property type="Int">maxValueFloat</property>
-        <property type="Int">minValueFloat</property>
+        <property type="Int">minValue</property>
+        <property type="Int">maxValue</property>
+        <property type="Int">value</property>
     </customwidget>
     <customwidget>
         <class>Gui::PrefLineEdit</class>

@@ -69,19 +69,19 @@
                             <property name="lineStep" stdset="0">
                                 <number>1</number>
                             </property>
-                            <property name="maxValueFloat" stdset="0">
+                            <property name="maxValue" stdset="0">
                                 <number>20</number>
                             </property>
-                            <property name="minValueFloat" stdset="0">
+                            <property name="minValue" stdset="0">
                                 <number>0</number>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>RecentFiles</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>RecentFiles</string>
+                                <cstring>RecentFiles</cstring>
                             </property>
-                            <property name="valueFloat" stdset="0">
+                            <property name="value" stdset="0">
                                 <number>4</number>
                             </property>
                         </widget>
@@ -96,7 +96,7 @@
                                 <cstring>AllowSplasher</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>General</string>
+                                <cstring>General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Enable splashscreen at startup</string>
@@ -174,7 +174,7 @@
                                 <cstring>ShowCmdLine</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>CommandLine</string>
+                                <cstring>CommandLine</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Show command line</string>
@@ -188,9 +188,9 @@
                                 <cstring>SizeCmdLine</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>CommandLine</string>
+                                <cstring>CommandLine</cstring>
                             </property>
-                            <property name="valueFloat" stdset="0">
+                            <property name="value" stdset="0">
                                 <number>20</number>
                             </property>
                         </widget>
@@ -246,7 +246,7 @@
                                 <cstring>AllowDrag</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>General</string>
+                                <cstring>General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Allow dragging of menu items</string>
@@ -282,7 +282,7 @@
                                 <cstring>BigPixmaps</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>General</string>
+                                <cstring>General</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Use big pixmaps</string>
@@ -395,13 +395,13 @@
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="Int">valueFloat</property>
+        <property type="Int">value</property>
         <property type="UInt">decimals</property>
         <property type="UInt">lineStep</property>
         <property type="CString">prefEntry</property>
         <property type="CString">prefPath</property>
-        <property type="Int">maxValueFloat</property>
-        <property type="Int">minValueFloat</property>
+        <property type="Int">maxValue</property>
+        <property type="Int">minValue</property>
     </customwidget>
 </customwidgets>
 <images>

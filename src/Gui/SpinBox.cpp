@@ -279,7 +279,7 @@ void FloatSpinBox::setDecimals(uint i)
 /**
  * Sets the minimum floating point value of the spin box.
  */
-void FloatSpinBox::setMinValueFloat(double value)
+void FloatSpinBox::setMinValue(double value)
 {
   double fMax = d->m_fDivisor * value;
   fMax = std::max<double>(fMax, (double)-INT_MAX);
@@ -289,7 +289,7 @@ void FloatSpinBox::setMinValueFloat(double value)
 /**
  * Sets the maximum floating point value of the spin box.
  */
-void FloatSpinBox::setMaxValueFloat(double value)
+void FloatSpinBox::setMaxValue(double value)
 {
   double fMin = d->m_fDivisor * value;
   fMin = std::min<double>(fMin, (double)INT_MAX);
@@ -299,7 +299,7 @@ void FloatSpinBox::setMaxValueFloat(double value)
 /**
  * Returns the minimum floating point value of the spin box.
  */
-double FloatSpinBox::minValueFloat () const
+double FloatSpinBox::minValue () const
 {
   return SpinBox::minValue() / double(d->m_fDivisor);
 }
@@ -307,7 +307,7 @@ double FloatSpinBox::minValueFloat () const
 /**
  * Returns the maximum floating point value of the spin box.
  */
-double FloatSpinBox::maxValueFloat () const
+double FloatSpinBox::maxValue () const
 {
   return SpinBox::maxValue() / double(d->m_fDivisor);
 }
@@ -337,13 +337,13 @@ int FloatSpinBox::mapTextToValue( bool* ok )
 void FloatSpinBox::valueChange()
 {
   SpinBox::valueChange();
-  emit valueFloatChanged( valueFloat() );
+  emit valueFloatChanged( value() );
 }
 
 /**
  * Sets the value of the spin box to \a value.
  */
-void FloatSpinBox::setValueFloat(double value)
+void FloatSpinBox::setValue(double value)
 {
   double fEps = value > 0.0 ? d->m_fEpsilon : - d->m_fEpsilon;
   double fValue = d->m_fDivisor * value + fEps;
@@ -355,7 +355,7 @@ void FloatSpinBox::setValueFloat(double value)
 /**
  * Returns the value of the spin box.
  */
-double FloatSpinBox::valueFloat() const
+double FloatSpinBox::value() const
 {
   return SpinBox::value() / double(d->m_fDivisor);
 }

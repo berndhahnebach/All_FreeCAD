@@ -101,6 +101,7 @@ propertyeditor/moc_propertyeditoritem.cpp \
 propertyeditor/knuminput.moc \
 propertyeditor/knumvalidator.moc \
 Language/FreeCAD_de.h \
+Language/moc_Translator.cpp \
 GuiInitScript.h
 
 
@@ -118,6 +119,7 @@ propertyeditor/knumvalidator.cpp \
 Inventor/OCC/SoBrepShape.cpp \
 \
 Language/LanguageFactory.cpp \
+Language/Translator.cpp \
 \
 Action.cpp \
 Application.cpp \

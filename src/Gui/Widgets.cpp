@@ -31,7 +31,6 @@
 # include <qlabel.h>
 # include <qlayout.h>
 # include <qpainter.h>
-# include <qpushbutton.h>
 # include <qstyle.h>
 #endif
 
@@ -39,6 +38,10 @@
 #include "Application.h"
 #include "Action.h"
 #include "CustomWidgets.h"
+
+#include "Language/Translator.h"
+
+#include "../Base/Exception.h"
 
 using namespace Gui;
 
@@ -62,23 +65,28 @@ CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, 
     : QMessageBox(caption, text, icon, button0, button1, button2, parent, name, modal, f),
     checkBox(0L), layout(0L)
 {
-  QString msg = tr("Do not show this message again");
-  QString entry = QString("NotShowDialog:%1").arg(text);
+  QString txt = Translator::getFindSourceText( text );
+
+  QString msg = tr("Never show this message again.");
+  QString entry = txt;
+  QString cn = parent ? parent->className() : "Unknown";
+  QString path  = QString("General/NeverShowDialog/%1").arg( cn );
+
 
   checkBox = new Gui::PrefCheckBox(this, "PrefCheckBox");
   checkBox->setText( msg );
-  checkBox->setEntryName(entry);
-  checkBox->setParamGrpPath("General");
+  checkBox->setEntryName( entry.latin1() );
+  checkBox->setParamGrpPath( path.latin1() );
   checkBox->getHandler()->onRestore();
 
-  // if check throw an exception to avoid to show
+  // if checked throw an exception to avoid to show
   // (exception is caught in the calling static function)
   if (checkBox->isChecked())
   {
     delete checkBox;
     checkBox = 0L;
 
-    throw QString("jjj");
+    throw Base::Exception("Do not show dialog.");
   }
 
   layout = new QGridLayout(this, 1, 1, 50);
@@ -116,6 +124,86 @@ int CheckMessageBox::information( QWidget * parent, const QString & caption, con
                              const QString & button0Text, const QString & button1Text,
                              const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber )
 {
+  return _msg( Information, parent, caption, text, button0Text, button1Text, button2Text, defaultButtonNumber,
+               escapeButtonNumber );
+}
+
+/**
+ * Opens a question message box with the caption \a caption and the text \a text. 
+ * The dialog may have up to three buttons. 
+ */
+int CheckMessageBox::question(QWidget * parent, const QString & caption, const QString & text,
+                            int button0, int button1, int button2)
+{
+  CheckMessageBox dlg(caption, text, Question, button0, button1, button2, parent,  "CheckMessageBox");
+  dlg.exec();
+  return 0;
+}
+
+/**
+ * Displays a question message box with caption \a caption, text \a text and one, two or 
+ * three buttons. Returns the index of the button that was clicked (0, 1 or 2).
+ */
+int CheckMessageBox::question( QWidget * parent, const QString & caption, const QString & text,
+                             const QString & button0Text, const QString & button1Text,
+                             const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber )
+{
+  return _msg( Question, parent, caption, text, button0Text, button1Text, button2Text, defaultButtonNumber,
+               escapeButtonNumber );
+}
+
+/**
+ * Opens a warning message box with the caption \a caption and the text \a text. 
+ * The dialog may have up to three buttons. 
+ */
+int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
+                          int button0, int button1, int button2 )
+{
+  CheckMessageBox dlg(caption, text, Warning, button0, button1, button2, parent,  "CheckMessageBox");
+  dlg.exec();
+  return 0;
+}
+
+/**
+ * Displays a warning message box with caption \a caption, text \a text and one, two or 
+ * three buttons. Returns the index of the button that was clicked (0, 1 or 2).
+ */
+int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
+                          const QString & button0Text, const QString & button1Text,
+                          const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+{
+  return _msg( Warning, parent, caption, text, button0Text, button1Text, button2Text, defaultButtonNumber,
+               escapeButtonNumber );
+}
+
+/**
+ * Opens a critical message box with the caption \a caption and the text \a text. 
+ * The dialog may have up to three buttons. 
+ */
+int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
+                           int button0, int button1, int button2 )
+{
+  CheckMessageBox dlg(caption, text, Critical, button0, button1, button2, parent,  "CheckMessageBox");
+  dlg.exec();
+  return 0;
+}
+
+/**
+ * Displays a critical message box with caption \a caption, text \a text and one, two or 
+ * three buttons. Returns the index of the button that was clicked (0, 1 or 2).
+ */
+int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text, const QString & button1Text,
+                           const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
+{
+  return _msg( Critical, parent, caption, text, button0Text, button1Text, button2Text, defaultButtonNumber,
+               escapeButtonNumber );
+}
+
+int CheckMessageBox::_msg( Icon icon, QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text, const QString & button1Text, const QString & button2Text,
+                           int defaultButtonNumber, int escapeButtonNumber )
+{
   int b[3];
   b[0] = 1;
   b[1] = !button1Text.isEmpty() ? 2 : 0;
@@ -132,7 +220,7 @@ int CheckMessageBox::information( QWidget * parent, const QString & caption, con
 
   CheckMessageBox* dlg=0L;
   try{
-    dlg=new CheckMessageBox( caption, text, Information, b[0], b[1], b[2], parent, "CheckMessageBox");
+    dlg=new CheckMessageBox( caption, text, icon, b[0], b[1], b[2], parent, "CheckMessageBox");
     if ( !button0Text.isEmpty() )
       dlg->setButtonText(0, button0Text);
     if ( !button1Text.isEmpty() )
@@ -148,40 +236,6 @@ int CheckMessageBox::information( QWidget * parent, const QString & caption, con
   }
 }
 
-/** \todo
- */
-int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
-                          int button0, int button1, int button2 )
-{
-  return 0;
-}
-
-/** \todo
- */
-int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const QString & text,
-                          const QString & button0Text, const QString & button1Text,
-                          const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
-{
-  return 0;
-}
-
-/** \todo
- */
-int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
-                           int button0, int button1, int button2 )
-{
-  return 0;
-}
-
-/** \todo
- */
-int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const QString & text,
-                           const QString & button0Text, const QString & button1Text,
-                           const QString & button2Text, int defaultButtonNumber, int escapeButtonNumber)
-{
-  return 0;
-}
-
 // ------------------------------------------------------------------------------
 
 namespace Gui{
@@ -194,7 +248,7 @@ public:
 } // namespace Gui
 
 /**
- * Constructs an command view item and inserts it into the icon view \a parent using 
+ * Constructs a command view item and inserts it into the icon view \a parent using 
  * the action's text as the text and the actoin's icon as the icon.
  */
 CommandViewItem::CommandViewItem ( QIconView * parent, const QString& action, QAction* pAct )

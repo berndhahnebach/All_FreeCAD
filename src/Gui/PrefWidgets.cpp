@@ -58,37 +58,41 @@ PrefWidget::~PrefWidget()
 }
 
 /** Sets the preference name to \a name. */
-void PrefWidget::setEntryName( const QString& name )
+void PrefWidget::setEntryName( const QCString& name )
 {
   m_sPrefName = name;
 }
 
 /** Returns the widget's preference name. */
-QString PrefWidget::entryName() const
+QCString PrefWidget::entryName() const
 {
   return m_sPrefName;
 }
 
 /** Sets the preference path to \a path. */
-void PrefWidget::setParamGrpPath( const QString& path )
+void PrefWidget::setParamGrpPath( const QCString& path )
 {
 #ifdef FC_DEBUG
   if (getWindowParameter().IsValid())
   {
-    Base::Console().Warning("Widget already attached\n");
+    if ( paramGrpPath() != path )
+      Base::Console().Warning("Widget already attached\n");
   }
 #endif
 
-  if ( setGroupName( path.latin1() ) )
+  if ( paramGrpPath() != path )
   {
-    m_sPrefGrp = path;
-    assert(getWindowParameter().IsValid());
-    getWindowParameter()->Attach(this);
+    if ( setGroupName( path ) )
+    {
+      m_sPrefGrp = path;
+      assert(getWindowParameter().IsValid());
+      getWindowParameter()->Attach(this);
+    }
   }
 }
 
 /** Returns the widget's preferences path. */
-QString PrefWidget::paramGrpPath() const
+QCString PrefWidget::paramGrpPath() const
 {
   return m_sPrefGrp;
 }
@@ -115,7 +119,7 @@ void PrefWidget::installHandler(PrefWidgetHandler* h)
  */
 void PrefWidget::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
-  if (QString(sReason) == m_sPrefName)
+  if ( QString(sReason) == QString(m_sPrefName) )
     restorePreferences();
 }
 
@@ -134,7 +138,7 @@ void PrefWidgetHandler::onSave()
 {
   pPref->savePreferences();
   if ( pPref->getWindowParameter().IsValid() )
-    pPref->getWindowParameter()->Notify(pPref->entryName().latin1());
+    pPref->getWindowParameter()->Notify( pPref->entryName() );
 
   emit saved();
 }
@@ -169,11 +173,11 @@ void PrefSpinBox::restorePreferences()
 
   double fVal;
   if (decimals() == 0)
-    fVal = (double)getWindowParameter()->GetInt(entryName().latin1(), value());
+    fVal = (double)getWindowParameter()->GetInt( entryName(), QSpinBox::value() );
   else
-    fVal = (double)getWindowParameter()->GetFloat(entryName().latin1(), valueFloat());
+    fVal = (double)getWindowParameter()->GetFloat( entryName() , value() );
 
-  setValueFloat(fVal);
+  setValue(fVal);
 }
 
 void PrefSpinBox::savePreferences()
@@ -185,27 +189,27 @@ void PrefSpinBox::savePreferences()
   }
 
   if (decimals() == 0)
-    getWindowParameter()->SetInt(entryName().latin1(), (int)valueFloat());
+    getWindowParameter()->SetInt( entryName() , (int)value() );
   else
-    getWindowParameter()->SetFloat(entryName().latin1(), valueFloat());
+    getWindowParameter()->SetFloat( entryName(), value() );
 }
 
-QString PrefSpinBox::entryName () const
+QCString PrefSpinBox::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefSpinBox::paramGrpPath () const
+QCString PrefSpinBox::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefSpinBox::setEntryName ( const QString& name )
+void PrefSpinBox::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefSpinBox::setParamGrpPath ( const QString& name )
+void PrefSpinBox::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -229,7 +233,7 @@ void PrefLineEdit::restorePreferences()
     return;
   }
 
-  std::string txt = getWindowParameter()->GetASCII(entryName().latin1(), text().latin1());
+  std::string txt = getWindowParameter()->GetASCII( entryName(), text().latin1() );
   setText(txt.c_str());
 }
 
@@ -241,25 +245,25 @@ void PrefLineEdit::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetASCII(entryName().latin1(), text().latin1());
+  getWindowParameter()->SetASCII( entryName(), text().latin1() );
 }
 
-QString PrefLineEdit::entryName () const
+QCString PrefLineEdit::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefLineEdit::paramGrpPath () const
+QCString PrefLineEdit::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefLineEdit::setEntryName ( const QString& name )
+void PrefLineEdit::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefLineEdit::setParamGrpPath ( const QString& name )
+void PrefLineEdit::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -283,7 +287,7 @@ void PrefComboBox::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
   if (items.size() > 0)
@@ -304,7 +308,7 @@ void PrefComboBox::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   hPGrp->Clear();
 
   int size = int(count());
@@ -318,22 +322,22 @@ void PrefComboBox::savePreferences()
   hPGrp->SetInt("currentItem", currentItem());
 }
 
-QString PrefComboBox::entryName () const
+QCString PrefComboBox::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefComboBox::paramGrpPath () const
+QCString PrefComboBox::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefComboBox::setEntryName ( const QString& name )
+void PrefComboBox::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefComboBox::setParamGrpPath ( const QString& name )
+void PrefComboBox::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -357,7 +361,7 @@ void PrefListBox::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
   if (items.size() > 0)
@@ -378,7 +382,7 @@ void PrefListBox::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup(entryName().latin1());
+  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   hPGrp->Clear();
 
   int size = int(count());
@@ -392,22 +396,22 @@ void PrefListBox::savePreferences()
   hPGrp->SetInt("currentItem", currentItem());
 }
 
-QString PrefListBox::entryName () const
+QCString PrefListBox::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefListBox::paramGrpPath () const
+QCString PrefListBox::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefListBox::setEntryName ( const QString& name )
+void PrefListBox::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefListBox::setParamGrpPath ( const QString& name )
+void PrefListBox::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -431,7 +435,7 @@ void PrefCheckBox::restorePreferences()
     return;
   }
 
-  bool enable = getWindowParameter()->GetBool(entryName().latin1(), isChecked());
+  bool enable = getWindowParameter()->GetBool( entryName(), isChecked() );
   setChecked(enable);
 }
 
@@ -443,25 +447,25 @@ void PrefCheckBox::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetBool(entryName().latin1(), isChecked());
+  getWindowParameter()->SetBool( entryName(), isChecked() );
 }
 
-QString PrefCheckBox::entryName () const
+QCString PrefCheckBox::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefCheckBox::paramGrpPath () const
+QCString PrefCheckBox::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefCheckBox::setEntryName ( const QString& name )
+void PrefCheckBox::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefCheckBox::setParamGrpPath ( const QString& name )
+void PrefCheckBox::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -485,7 +489,7 @@ void PrefRadioButton::restorePreferences()
     return;
   }
 
-  bool enable = getWindowParameter()->GetBool(entryName().latin1(), isChecked());
+  bool enable = getWindowParameter()->GetBool( entryName(), isChecked() );
   setChecked(enable);
 }
 
@@ -497,25 +501,25 @@ void PrefRadioButton::savePreferences()
     return;
   }
 
-  getWindowParameter()->SetBool(entryName().latin1(), isChecked());
+  getWindowParameter()->SetBool( entryName() , isChecked() );
 }
 
-QString PrefRadioButton::entryName () const
+QCString PrefRadioButton::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefRadioButton::paramGrpPath () const
+QCString PrefRadioButton::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefRadioButton::setEntryName ( const QString& name )
+void PrefRadioButton::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefRadioButton::setParamGrpPath ( const QString& name )
+void PrefRadioButton::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -539,7 +543,7 @@ void PrefSlider::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup(entryName().latin1());
+  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
   int o = hPrefs->GetInt("Orientation", orientation());
   setOrientation(Qt::Orientation(o));
   int min = hPrefs->GetInt("MinValue", minValue());
@@ -558,29 +562,29 @@ void PrefSlider::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup(entryName().latin1());
+  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
   hPrefs->SetInt("Orientation", int(orientation()));
   hPrefs->SetInt("MinValue", minValue());
   hPrefs->SetInt("MaxValue", maxValue());
   hPrefs->SetInt("Value", value());
 }
 
-QString PrefSlider::entryName () const
+QCString PrefSlider::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefSlider::paramGrpPath () const
+QCString PrefSlider::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefSlider::setEntryName ( const QString& name )
+void PrefSlider::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefSlider::setParamGrpPath ( const QString& name )
+void PrefSlider::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }
@@ -607,7 +611,7 @@ void PrefColorButton::restorePreferences()
   QColor col = color();
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
-  lcol = getWindowParameter()->GetInt( entryName().latin1(), lcol );
+  lcol = getWindowParameter()->GetInt( entryName(), lcol );
   int b = lcol >> 16;  lcol -= b << 16;
   int g = lcol >> 8;   lcol -= g << 8;
   int r = lcol;
@@ -626,25 +630,25 @@ void PrefColorButton::savePreferences()
   QColor col = color();
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
-  getWindowParameter()->SetInt( entryName().latin1(), lcol );
+  getWindowParameter()->SetInt( entryName(), lcol );
 }
 
-QString PrefColorButton::entryName () const
+QCString PrefColorButton::entryName () const
 {
   return PrefWidget::entryName();
 }
 
-QString PrefColorButton::paramGrpPath () const
+QCString PrefColorButton::paramGrpPath () const
 {
   return PrefWidget::paramGrpPath();
 }
 
-void PrefColorButton::setEntryName ( const QString& name )
+void PrefColorButton::setEntryName ( const QCString& name )
 {
   PrefWidget::setEntryName(name);
 }
 
-void PrefColorButton::setParamGrpPath ( const QString& name )
+void PrefColorButton::setParamGrpPath ( const QCString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }

@@ -94,28 +94,6 @@ protected:
   TMode            tMode; /**< Either it's a undo or a redo list. */
 };
 
-// ------------------------------------------------------------
-
-class UndoRedoButtonPrivate;
-
-/**
- * The UndoRedoButton class implements a tool button with a popup menu appearing when
- * the button with the arrow is clicked.
- * Such buttons are usually used as undo/redo-buttons in a lot of GUI applications.
- * \author Werner Mayer
- */
-class UndoRedoButton : public QToolButton
-{
-  Q_OBJECT
-
-public:
-  UndoRedoButton( QWidget * parent,  const char * name = 0 );
-  ~UndoRedoButton ();
-
-private:
-  UndoRedoButtonPrivate* d; /**< for internal use only */
-};
-
 } // namespace Dialog
 } // namespace Gui
 

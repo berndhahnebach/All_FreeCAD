@@ -57,27 +57,37 @@ public:
   CheckMessageBox(QWidget * parent=0, const char * name=0);
   ~CheckMessageBox();
 
-  static int information(QWidget * parent, const QString & caption, const QString & text,
-                         int button0, int button1=0, int button2=0);
-  static int information(QWidget * parent, const QString & caption, const QString & text,
-                         const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                         const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
-  static int warning ( QWidget * parent, const QString & caption, const QString & text,
-                       int button0, int button1, int button2=0 );
-  static int warning ( QWidget * parent, const QString & caption, const QString & text,
-                       const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                       const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
-  static int critical ( QWidget * parent, const QString & caption, const QString & text,
-                        int button0, int button1, int button2=0 );
-  static int critical ( QWidget * parent, const QString & caption, const QString & text,
-                        const QString & button0Text = QString::null, const QString & button1Text = QString::null,
-                        const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+  static int information ( QWidget * parent, const QString & caption, const QString & text,
+                           int button0, int button1=0, int button2=0);
+  static int information ( QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
+  static int question    ( QWidget * parent, const QString & caption, const QString & text,
+                           int button0, int button1=0, int button2=0);
+  static int question    ( QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
+  static int warning     ( QWidget * parent, const QString & caption, const QString & text,
+                           int button0, int button1, int button2=0 );
+  static int warning     ( QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
+  static int critical    ( QWidget * parent, const QString & caption, const QString & text,
+                           int button0, int button1, int button2=0 );
+  static int critical    ( QWidget * parent, const QString & caption, const QString & text,
+                           const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                           const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1 );
 
 protected:
 
   // protected constructor
   CheckMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
                int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
+
+private:
+  static int _msg( Icon icon, QWidget * parent, const QString & caption, const QString & text,
+                   const QString & button0Text = QString::null, const QString & button1Text = QString::null,
+                   const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
 
   Gui::PrefCheckBox* checkBox;
   QGridLayout* layout;

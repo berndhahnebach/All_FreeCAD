@@ -59,11 +59,11 @@ class PrefWidgetHandler;
 class PrefWidget : public WindowParameter
 {
 public:
-  virtual void setEntryName( const QString& name );
-  QString entryName() const;
+  virtual void setEntryName( const QCString& name );
+  QCString entryName() const;
 
-  virtual void setParamGrpPath( const QString& path );
-  QString paramGrpPath() const;
+  virtual void setParamGrpPath( const QCString& path );
+  QCString paramGrpPath() const;
 
   void installHandler(PrefWidgetHandler*);
   PrefWidgetHandler* getHandler();
@@ -85,8 +85,8 @@ protected:
 
 private:
   PrefWidgetHandler* pHandler;
-  QString m_sPrefName;
-  QString m_sPrefGrp;
+  QCString m_sPrefName;
+  QCString m_sPrefGrp;
 
   // friends
   friend class Gui::WidgetFactoryInst;
@@ -198,8 +198,8 @@ class PrefSpinBox : public FloatSpinBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
@@ -207,11 +207,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -227,8 +227,8 @@ class PrefLineEdit : public QLineEdit, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefLineEdit ( QWidget * parent = 0, const char * name = 0 );
@@ -236,11 +236,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -256,8 +256,8 @@ class PrefComboBox : public QComboBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefComboBox ( QWidget * parent = 0, const char * name = 0 );
@@ -265,11 +265,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -285,8 +285,8 @@ class PrefListBox : public QListBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
@@ -294,11 +294,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -314,8 +314,8 @@ class PrefCheckBox : public QCheckBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefCheckBox ( QWidget * parent = 0, const char * name = 0 );
@@ -323,11 +323,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -343,8 +343,8 @@ class PrefRadioButton : public QRadioButton, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefRadioButton ( QWidget * parent = 0, const char * name = 0 );
@@ -352,11 +352,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -372,8 +372,8 @@ class PrefSlider : public QSlider, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefSlider ( QWidget * parent = 0, const char * name = 0 );
@@ -381,11 +381,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters
@@ -401,8 +401,8 @@ class PrefColorButton : public ColorButton, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
   PrefColorButton ( QWidget * parent = 0, const char * name = 0 );
@@ -410,11 +410,11 @@ public:
 
   // PROPERTIES
   // getters
-  QString entryName    () const;
-  QString paramGrpPath () const;
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QString& name );
-  void  setParamGrpPath  ( const QString& name );
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
 
 protected:
   // restore from/save to parameters

@@ -67,9 +67,9 @@ class FloatSpinBox : public SpinBox
   Q_OBJECT
 
   Q_PROPERTY( uint   decimals        READ decimals      WRITE setDecimals      )
-  Q_PROPERTY( double valueFloat      READ valueFloat    WRITE setValueFloat    )
-  Q_PROPERTY( double maxValueFloat   READ maxValueFloat WRITE setMaxValueFloat )
-  Q_PROPERTY( double minValueFloat   READ minValueFloat WRITE setMinValueFloat )
+  Q_OVERRIDE( double value      READ value    WRITE setValue    )
+  Q_OVERRIDE( double maxValue   READ maxValue WRITE setMaxValue )
+  Q_OVERRIDE( double minValue   READ minValue WRITE setMinValue )
 
 public:
   FloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
@@ -78,14 +78,14 @@ public:
 
   uint   decimals () const;
   void   setDecimals ( uint );
-  double minValueFloat () const;
-  void   setMinValueFloat ( double );
-  double maxValueFloat () const;
-  void   setMaxValueFloat ( double );
-  double valueFloat () const;
+  double minValue () const;
+  void   setMinValue ( double );
+  double maxValue () const;
+  void   setMaxValue ( double );
+  double value () const;
 
 public slots:
-  void  setValueFloat ( double );
+  void  setValue ( double );
 
 protected:
   virtual QString mapValueToText(int value);

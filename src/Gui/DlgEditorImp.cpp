@@ -24,9 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qfontdatabase.h>
-# ifdef FC_OS_WIN32
-#   include <assert.h>
-#	endif
+# include <assert.h>
 #endif
 
 #include "DlgEditorImp.h"

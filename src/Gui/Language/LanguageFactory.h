@@ -26,6 +26,12 @@
 
 #include "../Base/Factory.h"
 
+#ifndef _PreComp_
+# include <qtranslator.h>
+# include <qvaluelist.h>
+# include <vector>
+#endif
+
 namespace Gui {
 
 /** The LanguageFactoryInst singleton
@@ -42,8 +48,10 @@ public:
   static void Destruct (void);
   //@}
 
-  /** Sets the specified language if available */
-  void setLanguage (const QString& sName);
+  /** Installs the specified language \a lang if available */
+  bool installLanguage (const QString& lang ) const;
+  /** Gets all translated messages to language \a lang. */
+  QValueList<QTranslatorMessage> messages( const QString& lang ) const;
   /**
    * Creates a unique ID (QString) for the specified language.
    * This makes possible to register several files for the same language for example
@@ -51,7 +59,7 @@ public:
    */
   QString createUniqueID(const QString& sName);
   /** Returns all IDs to the specified language. */
-  QStringList getUniqueIDs(const QString& sName);
+  QStringList getUniqueIDs(const QString& sName) const;
   /** Returns a list of all registered languages. */
   QStringList getRegisteredLanguages() const;
 

@@ -213,37 +213,5 @@ void UndoRedoDialog::onSelected()
   emit clickedListBox();
 }
 
-// ------------------------------------------------------------
-
-namespace Gui {
-namespace Dialog {
-
-class UndoRedoButtonPrivate
-{
-  public:
-    UndoRedoDialog* menu;
-};
-
-} // namespace Dialog
-} // namespace Gui
-
-/** Construction */
-UndoRedoButton::UndoRedoButton( QWidget * parent, const char * name )
-  : QToolButton( parent, name )
-{
-  d = new UndoRedoButtonPrivate;
-  d->menu = new UndoRedoDialog();
-
-  setPopup(d->menu);
-  setPopupDelay(0);
-  setAutoRaise(true);
-}
-
-/** Destruction */
-UndoRedoButton::~UndoRedoButton()
-{
-  delete d;
-}
-
 #include "moc_DlgUndoRedo.cpp"
 

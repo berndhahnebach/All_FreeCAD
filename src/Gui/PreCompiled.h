@@ -194,6 +194,7 @@
 #include <qmainwindow.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
+#include <qmetaobject.h>
 #include <qmime.h>
 #include <qmovie.h>
 #include <qmultilineedit.h>
@@ -225,6 +226,7 @@
 #include <qsyntaxhighlighter.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
+#include <qtextcodec.h>
 #include <qtextedit.h>
 #include <qtextbrowser.h>
 #include <qtextstream.h>

@@ -29,13 +29,13 @@
 # include <qstringlist.h>
 # include <qfile.h>
 # include <qdir.h>
-# include <vector>
 # include <map>
 #endif
 
-#include "../Base/Console.h"
 #include "LanguageFactory.h"
+#include "Translator.h"
 #include "linguist/metatranslator.h"
+#include "../Base/Console.h"
 
 typedef std::vector<const char*>  TCharVector;
 typedef std::vector<const char*>* PCharVector;
@@ -58,14 +58,23 @@ void LanguageFactoryInst::Destruct (void)
     delete _pcSingleton;
 }
 
-void LanguageFactoryInst::setLanguage (const QString& sName)
+bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 {
+  bool ok = false;
+
   // make sure that producers are created
   LanguageFactorySupplier::Instance();
 
+  // create temporary files
+  QString ts = "Language.ts";
+  QString qm = "Language.qm";
+  QFile file( ts );
+  file.open( IO_WriteOnly );
+  QTextStream out( &file );
+
   try
   {
-    QStringList IDs = getUniqueIDs(sName);
+    QStringList IDs = getUniqueIDs( lang );
 
     for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
     {
@@ -73,41 +82,96 @@ void LanguageFactoryInst::setLanguage (const QString& sName)
 
       if ( !tv )
       {
-#ifdef FC_DEBUG
-        Base::Console().Warning("\"%s\" is not registered\n", sName.latin1());
-#endif
         continue; // no data
       }
 
       RCharVector text = *tv;
-
-      // create temporary files
-      QString fn1 = "Language.ts";
-      QString fn2 = "Language.qm";
-      QFile file(fn1);
-      file.open(IO_WriteOnly);
-      QTextStream out(&file);
       for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
         out << (*i);
-      file.close();
+    }
 
+    // all messages written
+    file.close();
+
+    // and delete the files again
+    QDir dir;
+    if ( file.size() > 0 )
+    {
       // build the translator messages
       MetaTranslator mt;
-      mt.load(fn1);
-      mt.release(fn2);
-      QTranslator* t = new QTranslator( 0 );
-      t->load(fn2, ".");
-      qApp->installTranslator(t);
+      mt.load( ts );
+      mt.release( qm );
+      QTranslator* t = new Translator( lang );
+      t->load( qm, "." );
+      dir.remove( qm );
+  
+      qApp->installTranslator( t );
+      ok = true;
+    }
 
-      // and delete the files again
-      QDir dir;
-      dir.remove(fn1);
-      dir.remove(fn2);
+    dir.remove( ts );
+  }
+  catch (...)
+  {
+  }
+
+  return ok;
+}
+
+QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lang ) const
+{
+  QValueList<QTranslatorMessage> msgs;
+
+  // make sure that producers are created
+  LanguageFactorySupplier::Instance();
+
+  // create temporary files
+  QString fn = "Language.ts";
+  QFile file( fn );
+  file.open( IO_WriteOnly );
+  QTextStream out( &file );
+
+  try
+  {
+    QStringList IDs = getUniqueIDs( lang );
+
+    for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
+    {
+      PCharVector tv = (PCharVector) Produce((*it).latin1());
+
+      if ( !tv )
+      {
+        continue; // no data
+      }
+
+      RCharVector text = *tv;
+      for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
+        out << (*i);
+    }
+
+    // all messages written
+    file.close();
+
+    // build the translator messages
+    MetaTranslator mt;
+    if ( file.size() > 0 )
+      mt.load( fn );
+
+    // and delete the files again
+    QDir dir;
+    dir.remove( fn );
+
+    QValueList<MetaTranslatorMessage> mtmsg = mt.messages();
+    for ( QValueList<MetaTranslatorMessage>::Iterator it2 = mtmsg.begin(); it2 != mtmsg.end(); it2++ )
+    {
+      msgs.append( *it2 );
     }
   }
   catch (...)
   {
   }
+
+  return msgs;
 }
 
 QString LanguageFactoryInst::createUniqueID(const QString& sName)
@@ -125,15 +189,16 @@ QString LanguageFactoryInst::createUniqueID(const QString& sName)
   return id;
 }
 
-QStringList LanguageFactoryInst::getUniqueIDs(const QString& sName)
+QStringList LanguageFactoryInst::getUniqueIDs(const QString& sName) const
 {
   QStringList sl;
-  if (_mCntLanguageFiles.find(sName) != _mCntLanguageFiles.end())
+  std::map<QString, int>::const_iterator it = _mCntLanguageFiles.find( sName );
+  if ( it != _mCntLanguageFiles.end() )
   {
-    int cnt = _mCntLanguageFiles[sName];
+    int cnt = it->second;
     for (int i=1; i<=cnt; ++i)
     {
-      QString id = QString("%1_%2").arg(sName).arg(_mCntLanguageFiles[sName]);
+      QString id = QString("%1_%2").arg(sName).arg( i );
       sl.append(id);
     }
   }

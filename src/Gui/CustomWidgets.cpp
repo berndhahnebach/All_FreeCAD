@@ -97,7 +97,7 @@ void CustomWidget::savePreferences()
   for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it, i++ )
   {
     char szBuf[200];
-    sprintf(szBuf, "%s%d", entryName().latin1(), i);
+    sprintf(szBuf, "%s%d", QString( entryName() ).latin1(), i);
     hPGrp->SetASCII(szBuf, (*it).latin1() );
   }
 }
@@ -105,7 +105,7 @@ void CustomWidget::savePreferences()
 void CustomWidget::init(const char* grp, const char* name)
 {
   _clWorkbench = ApplicationWindow::Instance->GetActiveWorkbench();
-  setEntryName(_clWorkbench);
+  setEntryName( _clWorkbench.latin1() );
   hPrefGrp = getRootParamGrp()->GetGroup(_clWorkbench.latin1());
   hPrefGrp = hPrefGrp->GetGroup( grp )->GetGroup( name );
   hPrefGrp->Attach(this);
@@ -705,6 +705,7 @@ struct CustomWidgetManagerP
   std::map <CustomPopupMenu*,int>          _clPopupID;
   std::map <QString,CustomToolBar*>    _clToolbars;
   std::map <QString,CustomToolBar*>    _clCmdbars;
+  QMap<int, QString>                 _menuBarItem;
   FCCommandManager&                    _clCmdMgr;
   ToolBox*                           _pclStackBar;
 };
@@ -889,12 +890,13 @@ CustomPopupMenu* CustomWidgetManager::getPopupMenu( const QString& name, const c
     }
 
     int id = ApplicationWindow::Instance->menuBar()->insertItem( QObject::tr(name), pcPopup );
+    d->_menuBarItem[ id ] = name;
     d->_clPopupID[pcPopup] = id;
 
     // search for the "Help" menu if inside
-    if (strcmp(name, "Help") != 0)
+    if (strcmp(name, "&Help") != 0)
     {
-      It = d->_clPopupMenus.find("Help");
+      It = d->_clPopupMenus.find("&Help");
       // not found
       if ( It!=d->_clPopupMenus.end())
       {
@@ -904,7 +906,8 @@ CustomPopupMenu* CustomWidgetManager::getPopupMenu( const QString& name, const c
         d->_iSeparator = ApplicationWindow::Instance->menuBar()->insertSeparator();
         id = d->_clPopupID[It->second];
         ApplicationWindow::Instance->menuBar()->removeItem(id);
-        id = ApplicationWindow::Instance->menuBar()->insertItem( QObject::tr("Help"), It->second );
+        id = ApplicationWindow::Instance->menuBar()->insertItem( QObject::tr("&Help"), It->second );
+        d->_menuBarItem[ id ] = "&Help";
         d->_clPopupID[It->second] = id;
       }
     }
@@ -920,6 +923,11 @@ CustomPopupMenu* CustomWidgetManager::getPopupMenu( const QString& name, const c
     d->_clPopupID[pcPopup] = id;
     return pcPopup;
   }
+}
+
+const QMap<int, QString>& CustomWidgetManager::menuBarItems() const
+{
+  return d->_menuBarItem;
 }
 
 /** 

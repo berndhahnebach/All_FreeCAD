@@ -1,4 +1,4 @@
-<!DOCTYPE TS><TS>
+﻿<!DOCTYPE TS><TS>
 <codec>iso8859-1</codec>
 <context>
     <name>ApplicationWindow</name>
@@ -60,7 +60,7 @@
         <translation>Befehlsleiste</translation>
     </message>
     <message>
-        <source>Help bar</source>
+        <source>Help view</source>
         <translation>Hilfefenster</translation>
     </message>
     <message>
@@ -72,12 +72,12 @@
         <translation>Ausgabefenster</translation>
     </message>
     <message>
-        <source>Tree bar</source>
+        <source>Tree view</source>
         <translation>Baumansicht</translation>
     </message>
 </context>
 <context>
-    <name>DlgDocTemplates</name>
+    <name>Gui::Dialog::DlgDocTemplates</name>
     <message>
         <source>Document templates</source>
         <translation>Dokumententypen</translation>
@@ -96,7 +96,7 @@
     </message>
 </context>
 <context>
-    <name>DlgMacroExecute</name>
+    <name>Gui::Dialog::DlgMacroExecute</name>
     <message>
         <source>Execute macro</source>
         <translation>Makro ausführen</translation>
@@ -147,7 +147,7 @@
     </message>
 </context>
 <context>
-    <name>DlgMacroRecord</name>
+    <name>Gui::Dialog::DlgMacroRecord</name>
     <message>
         <source>Macro recording</source>
         <translation>Makroaufzeichnung</translation>
@@ -186,7 +186,7 @@
     </message>
 </context>
 <context>
-    <name>DlgMacroRecordImp</name>
+    <name>Gui::Dialog::DlgMacroRecordImp</name>
     <message>
         <source>FreeCAD - Macro recorder</source>
         <translation>FreeCAD - Makroaufzeichnung</translation>
@@ -197,7 +197,7 @@
     </message>
 </context>
 <context>
-    <name>DlgPreferences</name>
+    <name>Gui::Dialog::DlgPreferences</name>
     <message>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
@@ -220,7 +220,7 @@
     </message>
 </context>
 <context>
-    <name>DlgSettings3DView</name>
+    <name>Gui::Dialog::DlgSettings3DView</name>
     <message>
         <source>3DView settings</source>
         <translation>Einstellungen 3D-Viewer</translation>
@@ -267,7 +267,7 @@
     </message>
 </context>
 <context>
-    <name>DlgSettingsMacro</name>
+    <name>Gui::Dialog::DlgSettingsMacro</name>
     <message>
         <source>Macro recording settings</source>
         <translation>Einstellugen Makroaufzeichnung</translation>
@@ -294,7 +294,7 @@
     </message>
 </context>
 <context>
-    <name>FCButtonGroup</name>
+    <name>Gui::DockWnd::ButtonGroup</name>
     <message>
         <source>Show buttons as icon</source>
         <translation>Zeige Knöpfe als Bilder an</translation>
@@ -313,7 +313,7 @@
     </message>
 </context>
 <context>
-    <name>FCCheckListDlg</name>
+    <name>Gui::CheckListDialog</name>
     <message>
         <source>&amp;OK</source>
         <translation>&amp;OK</translation>
@@ -590,6 +590,13 @@
     </message>
 </context>
 <context>
+    <name>Gui::Translator</name>
+    <message>
+        <source>dummy</source>
+        <translation>dummy</translation>
+    </message>
+</context>
+<context>
     <name>FCCmdOpen</name>
     <message>
         <source>Standard</source>
@@ -751,7 +758,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewAxo</name>
+    <name>StdCmdViewAxo</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -766,7 +773,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewBottom</name>
+    <name>StdCmdViewBottom</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -781,7 +788,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewCreateInventor</name>
+    <name>StdCmdViewCreateInventor</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -796,7 +803,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewCreateOCC</name>
+    <name>StdCmdViewCreateOCC</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -811,7 +818,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewFitAll</name>
+    <name>StdCmdViewFitAll</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -826,7 +833,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewFront</name>
+    <name>StdCmdViewFront</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -841,7 +848,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewLeft</name>
+    <name>StdCmdViewLeft</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -856,7 +863,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewRear</name>
+    <name>StdCmdViewRear</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -871,7 +878,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewRight</name>
+    <name>StdCmdViewRight</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -886,7 +893,7 @@
     </message>
 </context>
 <context>
-    <name>FCCmdViewTop</name>
+    <name>StdCmdViewTop</name>
     <message>
         <source>Standard-View</source>
         <translation>Standard-Ansicht</translation>
@@ -927,7 +934,7 @@
     </message>
 </context>
 <context>
-    <name>FCCommandBar</name>
+    <name>Gui::DockWnd::CommandBar</name>
     <message>
         <source>Background color...</source>
         <translation>Hintergrundfarbe wählen...</translation>
@@ -938,7 +945,7 @@
     </message>
 </context>
 <context>
-    <name>FCCommandLine</name>
+    <name>Gui::CommandLineBase</name>
     <message>
         <source>Error</source>
         <translation>Fehler</translation>
@@ -957,34 +964,34 @@
     </message>
 </context>
 <context>
-    <name>FCCustomWidgetManager</name>
+    <name>Gui::CustomWidgetManager</name>
     <message>
-        <source>File</source>
-        <translation>Datei</translation>
+        <source>&amp;File</source>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
-        <source>Edit</source>
-        <translation>Bearbeiten</translation>
+        <source>&amp;Edit</source>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation>Ansicht</translation>
+        <source>&amp;View</source>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
-        <source>Tools</source>
-        <translation>Werkzeuge</translation>
+        <source>&amp;Tools</source>
+        <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-        <source>Windows</source>
-        <translation>Fenster</translation>
+        <source>&amp;Windows</source>
+        <translation>&amp;Fenster</translation>
     </message>
     <message>
-        <source>Help</source>
-        <translation>Hilfe</translation>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
     </message>
 </context>
 <context>
-    <name>FCDlgCreateToolOrCmdBar</name>
+    <name>Gui::CreateToolBarDialog</name>
     <message>
         <source>Create Toolbar and/or Command bar</source>
         <translation>Erstellle Werkzeug- und/oder Befehlsleiste</translation>
@@ -1015,14 +1022,14 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomActions</name>
+    <name>Gui::Dialog::DlgCustomActionsBase</name>
     <message>
         <source>Actions</source>
         <translation>Aktionen</translation>
     </message>
     <message>
-        <source>Setup Custom Actions</source>
-        <translation>Benutzdefinierte Aktionen</translation>
+        <source>Setup Custom Macros</source>
+        <translation>Benutzdefinierte Makros</translation>
     </message>
     <message>
         <source>New</source>
@@ -1074,7 +1081,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomActionsImp</name>
+    <name>Gui::Dialog::DlgCustomActionsImp</name>
     <message>
         <source>No macro</source>
         <translation>Kein Makro</translation>
@@ -1121,13 +1128,13 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomCmdbars</name>
+    <name>Gui::Dialog::DlgCustomToolbarsBase</name>
     <message>
-        <source>Command bars</source>
+        <source>Commandbars</source>
         <translation>Befehlsleisten</translation>
     </message>
     <message>
-        <source>Setup Cmdbar</source>
+        <source>Setup Commandbar</source>
         <translation>Befehlsleiste einstellen</translation>
     </message>
     <message>
@@ -1180,39 +1187,27 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomCmdbarsImp</name>
+    <name>Gui::Dialog::DlgCustomCmdbarsImp</name>
     <message>
-        <source>Do want to save your changes?</source>
-        <translation>Möchten Sie Ihre Änderungen speichern?</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation>Ja</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation>Nein</translation>
-    </message>
-    <message>
-        <source>New command bar</source>
+        <source>New commandbar</source>
         <translation>Neue Befehlsleiste</translation>
     </message>
     <message>
-        <source>Specify the name of the new command bar, please.</source>
+        <source>Specify the name of the new commandbar, please.</source>
         <translation>Geben Sie bitten den Namen für die neue Befehlsleiste an.</translation>
     </message>
     <message>
-        <source>New command bar</source>
-        <comment>Specify the name of the new command bar, please.</comment>
+        <source>New commandbar</source>
+        <comment>Specify the name of the new commandbar, please.</comment>
         <translation>Neue Befehlsleiste</translation>
     </message>
     <message>
-        <source>Delete selected command bars</source>
+        <source>Delete selected commandbars</source>
         <translation>Lösche ausgewählte Befehlsleisten</translation>
     </message>
 </context>
 <context>
-    <name>FCDlgCustomCommands</name>
+    <name>Gui::Dialog::DlgCustomCommandsBase</name>
     <message>
         <source>Commands</source>
         <translation>Befehle</translation>
@@ -1223,7 +1218,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomToolbars</name>
+    <name>Gui::Dialog::DlgCustomToolbarsBase</name>
     <message>
         <source>Toolbars</source>
         <translation>Werkzeugleisten</translation>
@@ -1282,7 +1277,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomToolbarsImp</name>
+    <name>Gui::Dialog::DlgCustomToolbarsImp</name>
     <message>
         <source>Do want to save your changes?</source>
         <translation>Möchten Sie Ihre Änderungen speichern?</translation>
@@ -1309,7 +1304,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgCustomize</name>
+    <name>Gui::Dialog::DlgCustomizeImp</name>
     <message>
         <source>Customize</source>
         <translation>Benutzerdefiniert</translation>
@@ -1323,12 +1318,8 @@
         <translation>&amp;OK</translation>
     </message>
     <message>
-        <source>&amp;Apply</source>
-        <translation>&amp;Übernehmen</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation>&amp;Abbrechen</translation>
+        <source>&amp;Close</source>
+        <translation>&amp;Schließen</translation>
     </message>
     <message>
         <source>Commands</source>
@@ -1339,7 +1330,7 @@
         <translation>Werkzeugleisten</translation>
     </message>
     <message>
-        <source>Command bars</source>
+        <source>Commandbars</source>
         <translation>Befehlsleisten</translation>
     </message>
     <message>
@@ -1348,7 +1339,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgEditorSettingsBase</name>
+    <name>Gui::Dialog::DlgEditorSettingsBase</name>
     <message>
         <source>Editor</source>
         <translation>Editor</translation>
@@ -1455,7 +1446,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgGeneral</name>
+    <name>Gui::Dialog::DlgGeneralImp</name>
     <message>
         <source>To take effect on the new language restart FreeCAD, please</source>
         <translation>Um die ausgewähhlte Spracheinstellung wirksam werden zu lassen, müssen Sie FreeCAD neu starten</translation>
@@ -1466,7 +1457,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgGeneralBase</name>
+    <name>Gui::Dialog::DlgGeneralBase</name>
     <message>
         <source>General</source>
         <translation>Allgemein</translation>
@@ -1528,19 +1519,19 @@
         <translation>Sprache</translation>
     </message>
     <message>
-        <source>Choose language:</source>
+        <source>Change language:</source>
         <translation>Sprache auswählen:</translation>
     </message>
 </context>
 <context>
-    <name>FCDlgPreferencesImp</name>
+    <name>Gui::Dialog::DlgPreferencesImp</name>
     <message>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <source>Apply</source>
-        <translation>Übernehmen</translation>
+        <source>&amp;Apply</source>
+        <translation>&amp;Übernehmen</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1552,7 +1543,7 @@
     </message>
 </context>
 <context>
-    <name>FCDlgSettingsBase</name>
+    <name>Gui::Dialog::DlgSettingsBase</name>
     <message>
         <source>Help viewer</source>
         <translation>Hilfe</translation>
@@ -1603,7 +1594,7 @@
     </message>
 </context>
 <context>
-    <name>FCFileDialog</name>
+    <name>Gui::FileDialog</name>
     <message>
         <source>Save Dialog</source>
         <translation>Speichern</translation>
@@ -1769,7 +1760,7 @@ Möchten Sie es löschen?</translation>
     </message>
 </context>
 <context>
-    <name>FCOnlineHelpBase</name>
+    <name>Gui::Dialog::DlgOnlineHelpBase</name>
     <message>
         <source>OnlineHelp</source>
         <translation>Online-Hilfe</translation>
@@ -1792,7 +1783,7 @@ Möchten Sie es löschen?</translation>
     </message>
 </context>
 <context>
-    <name>FCPropertyListView</name>
+    <name>Gui::PropertyEditor::EditableListView</name>
     <message>
         <source>Property</source>
         <translation>Eigenschaft</translation>
@@ -1871,7 +1862,7 @@ Möchten Sie es löschen?</translation>
     </message>
 </context>
 <context>
-    <name>FCReportOutput</name>
+    <name>Gui::DockWnd::ReportOutput</name>
     <message>
         <source>Copy</source>
         <translation>Kopieren</translation>
@@ -1890,28 +1881,10 @@ Möchten Sie es löschen?</translation>
     </message>
 </context>
 <context>
-    <name>FCReportView</name>
+    <name>Gui::DockWnd::ReportView</name>
     <message>
         <source>Output</source>
         <translation>Ausgabe</translation>
-    </message>
-</context>
-<context>
-    <name>FCSplashAbout</name>
-    <message>
-        <source>Closing this dialog in %1 seconds...</source>
-        <translation>Dieser Dialog wird in %1 Sekunden geschlossen...</translation>
-    </message>
-</context>
-<context>
-    <name>FCStackBar</name>
-    <message>
-        <source>Standard views</source>
-        <translation>Standardansichten</translation>
-    </message>
-    <message>
-        <source>Special Ops</source>
-        <translation>Spezielle Operatoren</translation>
     </message>
 </context>
 <context>
@@ -1955,7 +1928,7 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
     </message>
 </context>
 <context>
-    <name>FCUndoRedoDlg</name>
+    <name>Gui::Dialog::UndoRedoDialog</name>
     <message>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
@@ -1974,7 +1947,7 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
     </message>
 </context>
 <context>
-    <name>ParameterDialog</name>
+    <name>Gui::Dialog::DlgParameter</name>
     <message>
         <source>Parameter Dialog</source>
         <translation>Parameter</translation>

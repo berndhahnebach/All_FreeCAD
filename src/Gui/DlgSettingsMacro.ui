@@ -78,10 +78,10 @@
                                 </size>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <string>MacroPath</string>
+                                <cstring>MacroPath</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>Macro</string>
+                                <cstring>Macro</cstring>
                             </property>
                         </widget>
                         <widget class="QPushButton">
@@ -133,7 +133,7 @@
                                 <cstring>RecordGui</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>Macro</string>
+                                <cstring>Macro</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Recording gui commands</string>
@@ -147,7 +147,7 @@
                                 <cstring>GuiAsComment</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>Macro</string>
+                                <cstring>Macro</cstring>
                             </property>
                             <property name="text" stdset="0">
                                 <string>Record as comment</string>

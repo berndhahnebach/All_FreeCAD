@@ -195,6 +195,7 @@ public:
   void removePopupMenu ( const QString& name );
   void removeMenuItems ( const QString& type, const QStringList& item );
   int countPopupMenus();
+  const QMap<int, QString>&  menuBarItems() const;
 
   void showToolBox();
   void hideToolBox();

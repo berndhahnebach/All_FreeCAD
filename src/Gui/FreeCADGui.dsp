@@ -1994,6 +1994,41 @@ SOURCE=.\Language\LanguageFactory.cpp
 
 SOURCE=.\Language\LanguageFactory.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\Language\Translator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Language\Translator.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Language
+InputPath=.\Language\Translator.h
+InputName=Translator
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.\Language
+InputPath=.\Language\Translator.h
+InputName=Translator
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "Propertyeditor"
 

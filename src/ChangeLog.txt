@@ -483,3 +483,10 @@ Version: V0.1B105 Date: Mon Jan 03 16:06:30 2005 +++++++++++++++++++++++++++++++
 + Allow to modify existing macro commands
 + FileIconProvider class improved
 + PyResource class improved
++ updated README.Linux
++ clear out Action.cpp/h
++ use QCString instead of QString for all prefPath and prefEntry properties.
+  This is because of i18n
++ Translator class added
++ .ts files updated
++ Change language on the fly

@@ -291,6 +291,18 @@ QAction * FCCppCommand::CreateAction(void)
 	return pcAction;
 }
 
+void FCCppCommand::languageChange()
+{
+  if ( _pcAction )
+  {
+	  _pcAction->setText(QObject::tr(sMenuText));
+	  _pcAction->setMenuText(QObject::tr(sMenuText));
+	  _pcAction->setToolTip(QObject::tr(sToolTipText));
+	  _pcAction->setStatusTip(QObject::tr(sStatusTip));
+	  _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  }
+}
+
 
 //===========================================================================
 // MacroCommand 

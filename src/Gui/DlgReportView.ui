@@ -35,10 +35,10 @@
                         <cstring>checkLogging</cstring>
                     </property>
                     <property name="prefEntry" stdset="0">
-                        <string>checkLogging</string>
+                        <cstring>checkLogging</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <string>OutputWindow</string>
+                        <cstring>OutputWindow</cstring>
                     </property>
                     <property name="text" stdset="0">
                         <string>Shoot log messages</string>
@@ -52,10 +52,10 @@
                         <bool>true</bool>
                     </property>
                     <property name="prefEntry" stdset="0">
-                        <string>checkWarning</string>
+                        <cstring>checkWarning</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <string>OutputWindow</string>
+                        <cstring>OutputWindow</cstring>
                     </property>
                     <property name="text" stdset="0">
                         <string>Shoot warnings</string>
@@ -69,10 +69,10 @@
                         <bool>true</bool>
                     </property>
                     <property name="prefEntry" stdset="0">
-                        <string>checkError</string>
+                        <cstring>checkError</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
-                        <string>OutputWindow</string>
+                        <cstring>OutputWindow</cstring>
                     </property>
                     <property name="text" stdset="0">
                         <string>Shoot error messages</string>
@@ -129,10 +129,10 @@
                                 <cstring>colorText</cstring>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <string>colorText</string>
+                                <cstring>colorText</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>OutputWindow</string>
+                                <cstring>OutputWindow</cstring>
                             </property>
                         </widget>
                     </hbox>
@@ -182,10 +182,10 @@
                                 </color>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <string>colorLogging</string>
+                                <cstring>colorLogging</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>OutputWindow</string>
+                                <cstring>OutputWindow</cstring>
                             </property>
                         </widget>
                     </hbox>
@@ -235,10 +235,10 @@
                                 </color>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <string>colorWarning</string>
+                                <cstring>colorWarning</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>OutputWindow</string>
+                                <cstring>OutputWindow</cstring>
                             </property>
                         </widget>
                     </hbox>
@@ -288,10 +288,10 @@
                                 </color>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <string>colorError</string>
+                                <cstring>colorError</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <string>OutputWindow</string>
+                                <cstring>OutputWindow</cstring>
                             </property>
                         </widget>
                     </hbox>
