@@ -362,6 +362,7 @@ void FCToolboxBar::addedButton(QString text)
     {
       ((QToolButton*)o)->setTextLabel(text);
       ((QToolButton*)o)->setUsesTextLabel(true);
+      ((QToolButton*)o)->setMaximumHeight(42);
     }
   }
 
@@ -816,6 +817,8 @@ void FCStackBar::hidePage(QWidget* w)
       {
         it->first->hide();
       }
+      else
+        QMessageBox::information(this, "Cannot hide","Cannot hide active window");
     }
   }
 }
