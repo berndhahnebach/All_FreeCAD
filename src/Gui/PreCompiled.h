@@ -125,6 +125,7 @@
 #include <qsplitter.h> 
 #include <qstatusbar.h>
 #include <qtextstream.h>
+#include <qtimer.h>
 #include <qtoolbar.h> 
 #include <qtoolbutton.h>
 #include <qvariant.h>

@@ -155,15 +155,15 @@ public:
 
 protected:
 	// user interaction events (got mainly handled in the MouseModel classes)
-	virtual void mousePressEvent		    ( QMouseEvent * );
-	virtual void mouseReleaseEvent		  ( QMouseEvent * );
-	virtual void mouseMoveEvent			    ( QMouseEvent * );
-	virtual void mouseDoubleClickEvent	( QMouseEvent * );
-	virtual void keyPressEvent			    ( QKeyEvent   * );
-	virtual void keyReleaseEvent		    ( QKeyEvent   * );
-	virtual void wheelEvent				      ( QWheelEvent * );
-	virtual void focusInEvent			      ( QFocusEvent * );
-	virtual void hideEvent				      ( QHideEvent  * );
+	virtual void mousePressEvent       ( QMouseEvent * );
+	virtual void mouseReleaseEvent     ( QMouseEvent * );
+	virtual void mouseMoveEvent        ( QMouseEvent * );
+	virtual void mouseDoubleClickEvent ( QMouseEvent * );
+	virtual void keyPressEvent         ( QKeyEvent   * );
+	virtual void keyReleaseEvent       ( QKeyEvent   * );
+	virtual void wheelEvent            ( QWheelEvent * );
+	virtual void focusInEvent          ( QFocusEvent * );
+	virtual void hideEvent             ( QHideEvent  * );
 
 	/** Update the view when paint event occur. */
 	virtual void paintEvent				      ( QPaintEvent * );

@@ -110,10 +110,6 @@ class GuiExport FCToolboxBar : public FCToolBar
     void addedButton(QString);
 
   protected:
-    /// restore the preferences
-    virtual void restorePreferences();
-    /// save the preferences
-    virtual void savePreferences();
     void mousePressEvent( QMouseEvent * );
     QColor       m_Color;
     QPopupMenu*  m_Popup;
@@ -141,10 +137,6 @@ class GuiExport FCOutlookBar : public FCToolBar
     void addedButton(QString);
 
   protected:
-    /// restore the preferences
-    virtual void restorePreferences();
-    /// save the preferences
-    virtual void savePreferences();
     void mousePressEvent( QMouseEvent * );
     QColor       m_Color;
     QPopupMenu*  m_Popup;

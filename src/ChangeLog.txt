@@ -172,3 +172,5 @@ Version: V0.1B41 Date: Sat Mar 08 19:16:05 2003 +++++++++++++++++++++++++++++++
 + test application 
   - implemented some basic tests
 
+Version: V0.1B42 Date: Thu Mar 13 21:36:58 2003 +++++++++++++++++++++++++++++++
++ changes in Customize Dialog

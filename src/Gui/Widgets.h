@@ -37,6 +37,9 @@
 #include <qstatusbar.h>
 #include <qtoolbar.h>
 #include <qfiledialog.h>
+#if QT_VER > 230
+# include <qlistview.h>
+#endif
 
 class QHBoxLayout; 
 class QTime;
@@ -180,6 +183,7 @@ class FCToolBar : public QToolBar, public FCWidgetPrefs
     void loadUserDefButtons();
 
   protected:
+    void init();
     void dropEvent ( QDropEvent * );
     void dragEnterEvent ( QDragEnterEvent * );
     void dragLeaveEvent ( QDragLeaveEvent * );
@@ -187,6 +191,8 @@ class FCToolBar : public QToolBar, public FCWidgetPrefs
     virtual void restorePreferences();
     virtual void savePreferences();
     std::vector<std::string> alDroppedActions;
+    std::string widgetName;
+    bool bSaveColor;
 };
 
 #endif // __FC_WIDGETS_H__

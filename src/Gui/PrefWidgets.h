@@ -81,12 +81,11 @@ class FCWidgetPrefs : public FCObserver
     /// destructor
     virtual ~FCWidgetPrefs();
 
+    /// changes the preference name
+    void setPrefName(QString pref);
     FCParameterGrp::handle hPrefGrp;
 
   private:
-    // only FCWidgetFactorySupplier has the permission to change
-    void setPrefName(QString pref);
-
     FCWidgetPrefsHandler* pHandler;
     QString m_sPrefGrp;
     QString m_sPrefName;

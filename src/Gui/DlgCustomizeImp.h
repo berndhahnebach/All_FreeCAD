@@ -73,13 +73,28 @@ class FCDlgCustomize : public FCDlgCustomizeBase
     void slotMoveUpAction();
     /// moves down an action
     void slotMoveDownAction();
+    /// enables/disables buttons for change
+    void slotCustomActionsChanged( QListViewItem *i );
+    /// adds a custom action
+    void slotAddCustomAction();
+    /// deletes a custom action
+    void slotDelCustomAction();
+    /// select a pixmap
+    void slotCustomActionPixmap();
     /// click the OK button
     void slotOK();
     /// click the Apply button
     void slotApply();
 
   protected:
+    // initializes dialog
     void init();
+    // initializes 'Commands' tab 
+    void initCommandsTab();
+    // initializes 'Toolbars' tab 
+    void initToolbarsTab();
+    // initializes 'Actions' tab 
+    void initActionsTab();
     // groups of commands
     std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
     std::vector<QToolBar*>                          m_aclToolbars;

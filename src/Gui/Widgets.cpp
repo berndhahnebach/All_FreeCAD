@@ -441,6 +441,9 @@ bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
   {
     // allow drag and drop
     setAcceptDrops(true);
+    bSaveColor = false;
+
+    init();
   }
 # endif
 
@@ -450,6 +453,9 @@ FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, b
 {
   // allow drag and drop
   setAcceptDrops(true);
+  bSaveColor = false;
+
+  init();
 }
 
 FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
@@ -457,6 +463,9 @@ FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
 {
   // allow drag and drop
   setAcceptDrops(true);
+  bSaveColor = false;
+
+  init();
 }
 
 FCToolBar::~FCToolBar()
@@ -464,8 +473,18 @@ FCToolBar::~FCToolBar()
   savePreferences();
 }
 
+void FCToolBar::init()
+{
+  setPrefName(ApplicationWindow::Instance->GetActiveWorkbech());
+
+  hPrefGrp->Detach(this);
+  hPrefGrp = hPrefGrp->GetGroup(name());
+  hPrefGrp->Attach(this);
+}
+
 void FCToolBar::loadUserDefButtons()
 {
+  widgetName = className();
   restorePreferences();
 }
 
@@ -496,12 +515,10 @@ void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
 
 void FCToolBar::restorePreferences()
 {
-  QString wb = ApplicationWindow::Instance->GetActiveWorkbech();
-
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
-  std::vector<std::string> items = hPrefGrp/*->GetGroup(wb.latin1())*/->GetGroup("Toolbar")->GetASCIIs(getPrefName().latin1());
+  std::vector<std::string> items = hPrefGrp->GetGroup(widgetName.c_str())->GetASCIIs(getPrefName().latin1());
   for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
   {
     if (sCommands.find(*it) != sCommands.end())
@@ -512,18 +529,38 @@ void FCToolBar::restorePreferences()
     else
       GetConsole().Warning("Cannot find action '%s'\n", it->c_str());
   }
+
+  if (bSaveColor)
+  {
+    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
+    int r = hColorGrp->GetInt("red", 212);
+    int g = hColorGrp->GetInt("green", 208);
+    int b = hColorGrp->GetInt("blue", 200);
+    QColor color(r, g, b);
+    if (color.isValid())
+    {
+      setPalette(QPalette(color, color));
+      setBackgroundMode(PaletteBackground);
+    }
+  }
 }
 
 void FCToolBar::savePreferences()
 {
-  QString wb = ApplicationWindow::Instance->GetActiveWorkbech();
-
   int i=0;
   for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPrefGrp/*->GetGroup(wb.latin1())*/->GetGroup("Toolbar")->SetASCII(szBuf, it->c_str());
+    hPrefGrp->GetGroup(widgetName.c_str())->SetASCII(szBuf, it->c_str());
+  }
+
+  if (bSaveColor)
+  {
+    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
+    hColorGrp->SetInt("red", backgroundColor().red());
+    hColorGrp->SetInt("green", backgroundColor().green());
+    hColorGrp->SetInt("blue", backgroundColor().blue());
   }
 }
 

@@ -55,6 +55,11 @@ FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, 
     : FCDlgCustomizeBase( parent, name, modal, fl ), bChanged(false)
 {
   init();
+
+  // connections
+  //
+  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
+  connect(buttonApply, SIGNAL(clicked()), this, SLOT(slotApply()));
 }
 
 /*  
@@ -67,69 +72,9 @@ FCDlgCustomize::~FCDlgCustomize()
 
 void FCDlgCustomize::init()
 {
-  AvailableActions->setSorting( -1 );
-  AvailableActions->setColumnWidthMode(0, QListView::Maximum);
-  ToolbarActions->setSorting( -1 );
-  ToolbarActions->setColumnWidthMode(0, QListView::Maximum);
-
-
-  // first tab
-  //
-  connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(slotDescription(QString)));
-  connect(ComboBoxCategory, SIGNAL(activated ( const QString & )), this, SLOT(slotGroupSelected(const QString &)));
-
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
-  {
-    m_alCmdGroups[it->second->GetGroupName()].push_back(it->second);
-  }
-
-  // first and second tab
-  //
-  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
-  {
-    ComboBoxCategory->insertItem(it2->first.c_str());
-
-    QListViewItem* itemNode = new QListViewItem(AvailableActions, it2->first.c_str());
-    itemNode->setOpen(true);
-    for (std::vector<FCCommand*>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
-    {
-      QListViewItem* item = new QListViewItem(itemNode,FCListView::lastItem(AvailableActions), (*it3)->GetAction()->menuText());
-      QPixmap pix = (*it3)->GetAction()->iconSet().pixmap(QIconSet::Large,true);
-      item->setPixmap(0, FCTools::resize(24,24,pix));
-      itemNode->insertItem(item);
-    }
-
-    AvailableActions->insertItem(itemNode);
-  }
-  AvailableActions->insertItem(new QListViewItem(AvailableActions, "<Separator>"));
-
-  slotGroupSelected(ComboBoxCategory->text(0));
-
-  connect(ComboToolbars, SIGNAL(activated ( const QString & )), this, SLOT(slotToolBarSelected(const QString &)));
-  connect(CreateToolbar, SIGNAL(clicked()), this, SLOT(slotCreateToolBar()));
-  m_aclToolbars = ApplicationWindow::Instance->GetToolBars();
-  for (std::vector<QToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
-  {
-    ComboToolbars->insertItem((*it3)->name());
-  }
-
-  slotToolBarSelected(ComboToolbars->text(0));
-
-
-  // connections
-  //
-  connect(buttonRight, SIGNAL(clicked()), this, SLOT(slotAddAction()));
-  connect(AvailableActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotDblClickAddAction(QListViewItem*)));
-  connect(buttonLeft, SIGNAL(clicked()), this, SLOT(slotRemoveAction()));
-  connect(buttonUp, SIGNAL(clicked()), this, SLOT(slotMoveUpAction()));
-  connect(buttonDown, SIGNAL(clicked()), this, SLOT(slotMoveDownAction()));
-  connect(AvailableActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotAvailableActionsChanged(QListViewItem*)));
-  connect(ToolbarActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotCurrentActionsChanged(QListViewItem*)));
-  connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
-  connect(buttonApply, SIGNAL(clicked()), this, SLOT(slotApply()));
+  initCommandsTab();
+  initToolbarsTab();
+  initActionsTab();
 }
 
 void FCDlgCustomize::slotDescription(QString txt)
@@ -186,7 +131,7 @@ void FCDlgCustomize::slotToolBarSelected(const QString & name)
           {
             FCCommand* pCom = sCommands[bname.latin1()];
             QListViewItem* item = new QListViewItem(ToolbarActions,FCListView::lastItem(ToolbarActions), pCom->GetAction()->menuText());
-            QPixmap pix = pCom->GetAction()->iconSet().pixmap(QIconSet::Large,true);
+            QPixmap pix = pCom->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
             item->setPixmap(0, FCTools::resize(24,24,pix));
             ToolbarActions->insertItem(item);
           }
@@ -364,6 +309,65 @@ void FCDlgCustomize::slotAvailableActionsChanged( QListViewItem *i )
   buttonRight->setEnabled( canAdd || ( i && i->isSelected() ) );
 }
 
+void FCDlgCustomize::slotCustomActionsChanged( QListViewItem *i )
+{
+  bool canDelete = FALSE;
+  QListViewItemIterator it = CustomActions->firstChild();
+
+  for ( ; it.current(); it++ ) 
+  {
+    if ( it.current()->isSelected() ) 
+    {
+      actionName->setText(it.current()->text(0));
+	    canDelete = TRUE;
+	    break;
+	  }
+  }
+
+  buttonDelete->setEnabled( canDelete || ( i && i->isSelected() ) );
+}
+
+void FCDlgCustomize::slotAddCustomAction()
+{
+  if (actionName->text().isEmpty())
+  {
+    QMessageBox::warning(this, "Empty name","Please specify an action name first");
+    return;
+  }
+
+  QListViewItem* item = new QListViewItem(CustomActions,FCListView::lastItem(CustomActions), actionName->text());
+  if (PixmapLabel->pixmap() != NULL)
+  {
+    QPixmap p = *PixmapLabel->pixmap();
+    item->setPixmap(0, FCTools::resize(24,24,p));
+  }
+  actionName->clear();
+  actionToolTip->clear();
+  actionStatus->clear();
+}
+
+void FCDlgCustomize::slotDelCustomAction()
+{
+  bChanged = true;
+  QListViewItemIterator it = CustomActions->firstChild();
+  while ( it.current() ) 
+  {
+	  if ( it.current()->isSelected() )
+     delete it.current();
+	  else
+     it++;
+  }
+}
+
+void FCDlgCustomize::slotCustomActionPixmap()
+{
+  QString pix = FCFileDialog::getOpenFileName(QString::null,"Pixmap (*.xpm)",this, "", "Choose a Pixmap");
+  if (!pix.isEmpty())
+  {
+    PixmapLabel->setPixmap(QPixmap(pix));
+  }
+}
+
 void FCDlgCustomize::slotOK()
 {
   slotApply();
@@ -418,6 +422,88 @@ void FCDlgCustomize::slotApply()
     }
   }
 }
+
+void FCDlgCustomize::initCommandsTab()
+{
+  // first tab
+  //
+  connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(slotDescription(QString)));
+  connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(slotGroupSelected(const QString &)));
+
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
+
+  for (std::map<std::string,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
+  {
+    m_alCmdGroups[it->second->GetGroupName()].push_back(it->second);
+  }
+
+  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
+  {
+    ComboBoxCategory->insertItem(it2->first.c_str());
+  }
+
+  ComboBoxCategory->setCurrentItem(0);
+}
+
+void FCDlgCustomize::initToolbarsTab()
+{
+  // first and second tab
+  //
+  AvailableActions->setSorting( -1 );
+  AvailableActions->setColumnWidthMode(0, QListView::Maximum);
+  ToolbarActions->setSorting( -1 );
+  ToolbarActions->setColumnWidthMode(0, QListView::Maximum);
+
+  for (std::map<std::string, std::vector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
+  {
+    QListViewItem* itemNode = new QListViewItem(AvailableActions, it2->first.c_str());
+    itemNode->setOpen(true);
+    for (std::vector<FCCommand*>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
+    {
+      QListViewItem* item = new QListViewItem(itemNode,FCListView::lastItem(AvailableActions), (*it3)->GetAction()->menuText());
+      QPixmap pix = (*it3)->GetAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
+      item->setPixmap(0, FCTools::resize(24,24,pix));
+      itemNode->insertItem(item);
+    }
+
+    AvailableActions->insertItem(itemNode);
+  }
+
+  AvailableActions->insertItem(new QListViewItem(AvailableActions, "<Separator>"));
+
+  connect(ComboToolbars, SIGNAL(activated ( const QString & )), this, SLOT(slotToolBarSelected(const QString &)));
+  connect(CreateToolbar, SIGNAL(clicked()), this, SLOT(slotCreateToolBar()));
+  m_aclToolbars = ApplicationWindow::Instance->GetToolBars();
+
+  for (std::vector<QToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
+  {
+    ComboToolbars->insertItem((*it3)->name());
+  }
+
+  slotToolBarSelected(ComboToolbars->text(0));
+
+  // connections
+  //
+  connect(buttonRight, SIGNAL(clicked()), this, SLOT(slotAddAction()));
+  connect(buttonLeft, SIGNAL(clicked()), this, SLOT(slotRemoveAction()));
+  connect(buttonUp, SIGNAL(clicked()), this, SLOT(slotMoveUpAction()));
+  connect(buttonDown, SIGNAL(clicked()), this, SLOT(slotMoveDownAction()));
+  connect(AvailableActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotAvailableActionsChanged(QListViewItem*)));
+  connect(AvailableActions, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(slotDblClickAddAction(QListViewItem*)));
+  connect(ToolbarActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotCurrentActionsChanged(QListViewItem*)));
+}
+
+void FCDlgCustomize::initActionsTab()
+{
+  // connections
+  //
+  connect(buttonNew, SIGNAL(clicked()), this, SLOT(slotAddCustomAction()));
+  connect(buttonDelete, SIGNAL(clicked()), this, SLOT(slotDelCustomAction()));
+  connect(actionPixmapButton, SIGNAL(clicked()), this, SLOT(slotCustomActionPixmap()));
+  connect(CustomActions, SIGNAL(clicked(QListViewItem*)), this, SLOT(slotCustomActionsChanged(QListViewItem*)));
+}
+
 
 #include "DlgCustomize.cpp"
 #include "moc_DlgCustomize.cpp"

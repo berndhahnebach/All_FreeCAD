@@ -266,11 +266,11 @@ FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * nam
   m_Popup->setCheckable(true);
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
   setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
+  bSaveColor = true;
 }
 
 FCToolboxBar::~FCToolboxBar ()
 {
-//  savePreferences();
   delete m_Popup;
   delete m_Dummy;
 }
@@ -289,46 +289,13 @@ void FCToolboxBar::addedButton(QString text)
     }
   }
 
+#if QT_VER > 230
+  delete m_Dummy;
+  m_Dummy = new QWidget(this);
+  setStretchableWidget( m_Dummy );
+#else
   m_Dummy->reparent(this, QPoint(0,0));
-}
-
-void FCToolboxBar::restorePreferences()
-{
-  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  std::vector<std::string> items = hPGrp->GetASCIIs(getPrefName().latin1());
-  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
-  {
-    sCommands[*it]->GetAction()->addTo(this);
-  }
-
-  int r = hPGrp->GetInt("red", 255);
-  int g = hPGrp->GetInt("green", 255);
-  int b = hPGrp->GetInt("blue", 255);
-  QColor color(r, g, b);
-//  if (color.isValid())
-//  {
-//    setPalette(QPalette(color, color));
-//    setBackgroundMode(PaletteLight);
-//  }
-}
-
-void FCToolboxBar::savePreferences()
-{
-  int i=0;
-  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
-  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
-  {
-    char szBuf[200];
-    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPGrp->SetASCII(szBuf, it->c_str());
-  }
-
-  hPGrp->SetInt("red", backgroundColor().red());
-  hPGrp->SetInt("green", backgroundColor().green());
-  hPGrp->SetInt("blue", backgroundColor().blue());
+#endif
 }
 
 void FCToolboxBar::mousePressEvent( QMouseEvent * e )
@@ -393,7 +360,6 @@ FCOutlookBar::FCOutlookBar ( const QString & label, QWidget *w, const char * nam
 
 FCOutlookBar::~FCOutlookBar ()
 {
-//  savePreferences();
   delete m_Popup;
   delete m_Dummy;
 }
@@ -414,46 +380,13 @@ void FCOutlookBar::addedButton(QString text)
     }
   }
 
+#if QT_VER > 230
+  delete m_Dummy;
+  m_Dummy = new QWidget(this);
+  setStretchableWidget( m_Dummy );
+#else
   m_Dummy->reparent(this, QPoint(0,0));
-}
-
-void FCOutlookBar::restorePreferences()
-{
-  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
-  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
-  std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
-
-  std::vector<std::string> items = hPGrp->GetASCIIs(getPrefName().latin1());
-  for (std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it)
-  {
-    sCommands[*it]->GetAction()->addTo(this);
-  }
-
-  int r = hPGrp->GetInt("red", 255);
-  int g = hPGrp->GetInt("green", 255);
-  int b = hPGrp->GetInt("blue", 255);
-  QColor color(r, g, b);
-//  if (color.isValid())
-//  {
-//    setPalette(QPalette(color, color));
-//    setBackgroundMode(PaletteLight);
-//  }
-}
-
-void FCOutlookBar::savePreferences()
-{
-  int i=0;
-  FCParameterGrp::handle hPGrp = hPrefGrp->GetGroup("Commandbar");
-  for (std::vector<std::string>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
-  {
-    char szBuf[200];
-    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
-    hPGrp->SetASCII(szBuf, it->c_str());
-  }
-
-  hPGrp->SetInt("red", backgroundColor().red());
-  hPGrp->SetInt("green", backgroundColor().green());
-  hPGrp->SetInt("blue", backgroundColor().blue());
+#endif
 }
 
 void FCOutlookBar::mousePressEvent( QMouseEvent * e )
@@ -632,15 +565,6 @@ void QStackBarBtn::drawButton( QPainter *p )
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-static void set_background_mode( QWidget *top, QWidget::BackgroundMode bm )
-{
-//  QObjectList *l = top->queryList( "QWidget" );
-//  l->append( top );
-//  for ( QObject *o = l->first(); o; o = l->next() )
-//  	( (QWidget*)o )->setBackgroundMode( bm );
-//  delete l;
-}
-
 /*!
   \class QStackBar
   \brief Implements a button-bar similar to that of MS Outlook
@@ -740,7 +664,6 @@ void FCCmdBar::addPage( const QString &name, QWidget *page )
 	  m_pLastBtn = button;
 	  m_pLastBtn->setSelected( true );
 	  sv->show();
-	  set_background_mode( m_pCurPage, PaletteLight );
   } 
   else 
   {
@@ -782,7 +705,6 @@ void FCCmdBar::buttonClicked()
 
   m_pCurPage = page;
   m_pCurPage->show();
-  set_background_mode( m_pCurPage, PaletteLight );
   updatePages();
 }
 
@@ -796,7 +718,7 @@ void FCCmdBar::updatePages()
   bool after = false;
   for (std::list<QStackBarBtn*>::iterator it = m_lButtons.begin(); it != m_lButtons.end(); ++it)
   {
-    (*it)->setBackgroundMode( !after ? PaletteBackground : PaletteLight );
+    (*it)->setBackgroundMode( /*!after ? */PaletteBackground /*: PaletteLight*/ );
     (*it)->update();
     after = (*it) == m_pLastBtn;
   }
@@ -821,7 +743,6 @@ void FCCmdBar::timerEvent ( QTimerEvent * )
     m_pAnimCurPage->hide();
     m_pAnimNewPage->show();
     m_pCurPage = m_pAnimNewPage;
-    set_background_mode( m_pCurPage, PaletteLight );
     updatePages();
   }
 }
@@ -915,7 +836,6 @@ void FCCmdBar::setCurPage( int i )
   if (b)
   {
     b->animateClick();
-    set_background_mode( m_pCurPage, PaletteLight );
   }
 }
 
