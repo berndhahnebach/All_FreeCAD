@@ -8,6 +8,8 @@
 #	include <qstatusbar.h>
 #	include <qmenubar.h>
 #	include <qmessagebox.h>
+#	include <qtoolbar.h>
+#	include <qpopupmenu.h>
 #endif
 
 
@@ -16,6 +18,7 @@
 #include "Document.h"
 
 #include "DlgDocTemplatesImp.h"
+#include "DlgUndoRedo.h"
   
 //#include "Icons/Background3.xpm"
 
@@ -237,6 +240,9 @@ void ApplicationWindow::CreateTestOperations()
     connect( pcTemp, SIGNAL( activated() ) , qApp, SLOT( closeAllWindows() ) );
 	_cCommandManager.AddCommand("Std_Quit",FCCommand(pcTemp));
 
+	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
+	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
+
 /*
 	viewToolAction = new QAction( tr("TBR_TOOL_BAR"), tr("MNU_TOOL_BAR"), 0, this, "toolbar");
 	connect( viewToolAction, SIGNAL( activated() ) , this, SLOT( onViewToolBar() ));
@@ -267,8 +273,17 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Copy",myStdToolBar);
 	_cCommandManager.AddTo("Std_Paste",myStdToolBar);
 	myStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_Undo",myStdToolBar);
-	_cCommandManager.AddTo("Std_Redo",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Undo",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Redo",myStdToolBar);
+	//myStdToolBar->addSeparator();
+	// Undo/Redo Toolbutton
+	QToolButton* button = new QToolButtonDropDown(myStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
+	connect(button, SIGNAL(clicked()), this, SLOT(slotUndo()));
+	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateUndo()));
+
+	button = new QToolButtonDropDown(myStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
+	connect(button, SIGNAL(clicked()), this, SLOT(slotRedo()));
+	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateRedo()));
 
 
 
@@ -312,6 +327,29 @@ void ApplicationWindow::CreateTestOperations()
     menuBar()->insertItem( tr("MNU_HELP"), help );
 	helpAboutAction->addTo( help );
 	*/
+}
+
+void ApplicationWindow::updateUndo()
+{
+  if (_pclUndoRedoWidget)
+  {
+    _pclUndoRedoWidget->setMode(FCUndoRedoDlg::Undo);
+    _pclUndoRedoWidget->updateUndoRedoList();
+  }
+}
+
+void ApplicationWindow::updateRedo()
+{
+  if (_pclUndoRedoWidget)
+  {
+    _pclUndoRedoWidget->setMode(FCUndoRedoDlg::Redo);
+    _pclUndoRedoWidget->updateUndoRedoList();
+  }
+}
+
+
+void ApplicationWindow::executeUndoRedo()
+{
 }
 
 

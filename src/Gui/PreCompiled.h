@@ -71,6 +71,9 @@
 #include <qscrollbar.h>
 #include <limits.h>
 #include <QTabBar.h>
+#include <qrect.h>
+#include <qvariant.h>
+#include <qframe.h>
 
 
 

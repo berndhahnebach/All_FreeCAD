@@ -177,17 +177,7 @@ SOURCE=.\DlgDocTemplates_moc.cpp
 # Begin Source File
 
 SOURCE=.\DlgDocTemplatesImp.cpp
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
 # ADD CPP /YX"PreCompiled.h"
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# ADD CPP /YX"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -219,6 +209,42 @@ InputPath=.\DlgDocTemplatesImp.h
 # Begin Source File
 
 SOURCE=.\DlgDocTemplatesImp_moc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgUndoRedo.cpp
+# ADD CPP /YX"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgUndoRedo.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build
+InputPath=.\DlgUndoRedo.h
+
+"DlgUndoRedo_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o DlgUndoRedo_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build
+InputPath=.\DlgUndoRedo.h
+
+"DlgUndoRedo_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o DlgUndoRedo_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgUndoRedo_moc.cpp
 # End Source File
 # End Group
 # Begin Source File

@@ -4,12 +4,14 @@
 #include "../Base/Export.h"
 
 #include <qmainwindow.h>
-#include <qaction.h>
-#include <qtoolbar.h>
-#include <qpopupmenu.h>
-#include <qworkspace.h>
+//#include <qaction.h>
+//#include <qworkspace.h>
 
 #include <qextmdimainfrm.h>
+
+class FCUndoRedoDlg;
+class QPopupMenu;
+class QToolBar;
 
 
 #include "../App/Application.h"
@@ -26,7 +28,7 @@ public:
     ApplicationWindow();
     ~ApplicationWindow();
 
-	static QWorkspace * getWorkspace();
+	//static QWorkspace * getWorkspace();
 	static ApplicationWindow* getApplication();
 	//static QString getResourceDir();
 
@@ -80,6 +82,14 @@ protected: // Protected methods
    /** just fits the system menu button position to the menu position */
    virtual void resizeEvent ( QResizeEvent * );
 
+protected slots:
+//    void slotUndo();
+//    void slotRedo();
+    void updateUndo();
+    void updateRedo();
+    void executeUndoRedo();
+
+
 private:
     int myNbDocuments;
 	bool myIsDocuments;
@@ -91,6 +101,7 @@ private:
 	QPopupMenu* myWindowPopup;
 	QPopupMenu* myImportPopup;
 	QPopupMenu* myExportPopup;
+	FCUndoRedoDlg* _pclUndoRedoWidget;
 };
 
 #endif
