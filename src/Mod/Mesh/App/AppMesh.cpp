@@ -25,12 +25,13 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
+#include <App/Application.h>
+#include <Base/Console.h>
 
 #include <stdio.h>
 #include <Python.h>
-#include "../../../Base/Console.h"
 
+#include "FeatureMeshImportSTL.h"
 
 /* module functions */
 static PyObject *                                 /* returns object */
@@ -72,26 +73,16 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-
-
-
-// python entry
-#ifdef FC_OS_WIN32
-# define ModuleExport __declspec(dllexport)
-#else
-# define ModuleExport
-#endif
+/* Python entry */
 extern "C" {
-void ModuleExport initMesh() {
+void AppMeshExport initMesh() {
 
   (void) Py_InitModule("Mesh", hello_methods);   /* mod name, table ptr */
 
-  App::GetApplication();
-
   Base::Console().Log("AppMesh loaded\n");
+	App::FeatureFactory().AddProducer("MeshImportSTL",new App::FeatureProducer<Mesh::FeatureMeshImportSTL>);
 
   return;
 }
 
-
-} // extern "C" {
+} // extern "C" 

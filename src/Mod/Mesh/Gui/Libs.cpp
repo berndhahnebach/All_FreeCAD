@@ -25,6 +25,7 @@
 # pragma comment(lib,"TKCDF.lib")
   // QT extension
 # pragma comment(lib,QTLIBNAME)
+# pragma comment(lib,INVENTORLIBNAME)
 
 #else
 //#error "Dont compile this file on UNIX!"

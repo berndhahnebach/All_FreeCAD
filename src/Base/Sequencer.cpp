@@ -162,19 +162,6 @@ void SequencerBase::setText(const char*)
 
 using Base::ConsoleSequencer;
 
-ConsoleSequencer* ConsoleSequencer::_pclSingleton = 0; 
-
-ConsoleSequencer* ConsoleSequencer::Instance()
-{
-  // not initialized?
-  if ( !_pclSingleton )
-  {
-    _pclSingleton = new ConsoleSequencer;
-  }
-
-  return _pclSingleton;
-}
-
 bool ConsoleSequencer::start(const char* pszStr, unsigned long steps)
 {
 	// base stuff

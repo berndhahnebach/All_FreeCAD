@@ -42,8 +42,7 @@ using namespace Gui;
 namespace Gui {
 struct ProgressBarPrivate
 {
-  int nElapsed; // in milliseconds
-  int nRemaining;
+  int nLastPercentage;
   QTime measureTime;
   WaitCursor* cWaitCursor;
 };
@@ -156,13 +155,6 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
 
 void ProgressBar::setProgress( int progress )
 {
-  if ( progress == 0 ) 
-  {
-    // starting
-    d->measureTime.start();
-    d->nElapsed = -1;
-  }
-
   QProgressBar::setProgress( progress );
 }
 
@@ -172,12 +164,16 @@ bool ProgressBar::start(const char* pszStr, unsigned long steps)
   bool ret = SequencerBase::start(pszStr, steps);
 
   setTotalSteps(nTotalSteps);
+  d->nLastPercentage = -1;
 
   if ( pendingOperations() == 1 )
   {
     show();
     enterControlEvents();
     d->cWaitCursor = new Gui::WaitCursor;
+
+    // starting
+    d->measureTime.start();
   }
 
   return ret;
@@ -185,17 +181,26 @@ bool ProgressBar::start(const char* pszStr, unsigned long steps)
 
 bool ProgressBar::next()
 {
-  if (!wasCanceled())
-  {
-    setProgress(nProgress++);
-  }
-  else
-  {
-    // force to abort the operation
-    abort();
-  }
+  nProgress++;
+  int perc = nProgress*100 / nTotalSteps;
 
-  qApp->processEvents();
+  // do only an update if we have increased by one percent
+  if ( perc > d->nLastPercentage )
+  {
+    d->nLastPercentage = perc;
+
+    if (!wasCanceled())
+    {
+      setProgress(nProgress++);
+    }
+    else
+    {
+      // force to abort the operation
+      abort();
+    }
+    
+    qApp->processEvents();
+  }
 
   return nProgress < nTotalSteps;
 }
@@ -236,9 +241,6 @@ void ProgressBar::setText ( const char* pszTxt )
 bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
 {
   int elapsed = d->measureTime.elapsed();
-  if ( d->nElapsed == elapsed )
-    return false;
-  d->nElapsed = elapsed;
 
   if ( totalSteps == 0 )
   {
@@ -246,7 +248,7 @@ bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSte
     return true;
   }
 
-  QString txt = indicator;
+  QString txt = QString::null;
   if ( progress * 20 < totalSteps && elapsed < 5000 ) 
   {
     // Less than 5 percent complete and less than 5 secs have elapsed.
@@ -256,9 +258,13 @@ bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSte
   {
     int rest = (int) ( (double) totalSteps/progress * elapsed ) - elapsed;
 
-    QTime time( 0,0, 0);
-    time = time.addSecs( rest/1000 );
-    txt = tr("Remaining: %1").arg( time.toString() );
+    // more than 1 secs have elapsed and at least 100 ms are remaining
+    if ( elapsed > 1000 && rest > 100 )
+    {
+      QTime time( 0,0, 0);
+      time = time.addSecs( rest/1000 );
+      txt = tr("Remaining: %1").arg( time.toString() );
+    }
   }
 
   ApplicationWindow::Instance->setPaneText( 1, txt );

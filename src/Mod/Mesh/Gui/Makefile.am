@@ -7,10 +7,13 @@ libMeshGui_la_SOURCES=\
 		AppMeshGui.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		ViewProvider.cpp \
+		ViewProvider.h
 
 # the library search path.
 libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport= 
 
 libMeshGui_la_LIBADD   = \
 		-lFreeCADGui \

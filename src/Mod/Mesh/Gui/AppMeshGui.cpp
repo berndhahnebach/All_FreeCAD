@@ -25,10 +25,15 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
-#include "../../../Base/Console.h"
+#include <Base/Interpreter.h>
+#include <Base/Parameter.h>
 
-#include "../../../Gui/Application.h"
+#include <Base/Console.h>
+#include <App/Application.h>
+#include <Gui/Application.h>
+
+#include "ViewProvider.h"
+
 
 void CreateCommands(void);
 
@@ -57,25 +62,21 @@ static struct PyMethodDef hello_methods[] = {
 
 
 
-// python entry
-#ifdef FC_OS_WIN32
-# define ModuleExport __declspec(dllexport)
-#else
-# define ModuleExport
-#endif
+/* Python entry */
 extern "C" {
-void ModuleExport initMeshGui() {
+void GuiMeshExport initMeshGui() {
 
   (void) Py_InitModule("MeshGui", hello_methods);   /* mod name, table ptr */
+  // load needed modules
+  Base::Interpreter().LoadModule("Mesh");
 
   Base::Console().Log("AppMeshGui loaded\n");
-
-  App::GetApplication();
-  Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
   CreateCommands();
 
+  // Register view provider
+  Gui::ViewProviderInventorFactory().AddProducer("MeshImportSTL", new Gui::ViewProviderInventorProducer<MeshGui::ViewProviderInventorMesh>);
 
   return;
 }

@@ -14,9 +14,14 @@
 # pragma comment(lib,"TKBRep.lib")
 # pragma comment(lib,"TKTopAlgo.lib")
 # pragma comment(lib,"TKPrim.lib")
-  // Application Framwork OCAF
+#	pragma comment(lib,"TKXSBase.lib")
+// Application Framwork OCAF
 # pragma comment(lib,"TKCAF.lib")
 # pragma comment(lib,"TKCDF.lib")
+// OpenCasCade Std IO
+#	pragma comment(lib,"TKIGES.lib")
+#	pragma comment(lib,"TKShHealing.lib")
+#	pragma comment(lib,"TKSTEP.lib")
 #endif
 
 

@@ -24,45 +24,60 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qaction.h>
-# include <BRepPrimAPI_MakeBox.hxx>
-# include <TopoDS_Shape.hxx>
-# include <TNaming_Builder.hxx>
 #endif
 
-#include "../../../Base/Exception.h"
-#include "../../../App/Document.h"
-#include "../../../Gui/Application.h"
-#include "../../../Gui/Command.h"
+#include <Base/Exception.h>
+#include <App/Document.h>
+#include <Gui/Application.h>
+#include <Gui/Command.h>
+#include <Gui/FileDialog.h>
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// FCCmdMeshTest THIS IS JUST A TEST COMMAND
+// CmdMeshImportSTL THIS IS JUST A TEST COMMAND
 //===========================================================================
-DEF_STD_CMD(FCCmdMeshTest);
+DEF_STD_CMD_A(CmdMeshImportSTL);
 
-FCCmdMeshTest::FCCmdMeshTest()
+CmdMeshImportSTL::CmdMeshImportSTL()
   :CppCommand("Mesh_Test")
 {
   sAppModule    = "Mesh";
   sGroup        = "Mesh";
-  sMenuText     = "Test1";
-  sToolTipText  = "Mesh Test function";
+  sMenuText     = "Import Mesh";
+  sToolTipText  = "Create or change an Import Mesh feature";
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
-  sPixmap       = "Test1";
+  sPixmap       = "Open";
   iAccel        = Qt::CTRL+Qt::Key_T;
 }
 
-
-void FCCmdMeshTest::activated(int iMsg)
+void CmdMeshImportSTL::activated(int iMsg)
 {
-  Base::Console().Message("Hello, World!\n");
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STL (*.stl *.ast);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
+  {
+    openCommand("Mesh ImportSTL Create");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"MeshImportSTL\")");
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    commitCommand();
+ 
+    updateActive();
+  }
+}
+
+bool CmdMeshImportSTL::isActive(void)
+{
+	if( getActiveDocument() )
+		return true;
+	else
+		return false;
 }
 
 void CreateCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
-  rcCmdMgr.addCommand(new FCCmdMeshTest());
+  rcCmdMgr.addCommand(new CmdMeshImportSTL());
 }

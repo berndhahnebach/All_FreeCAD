@@ -184,6 +184,14 @@ ReportOutput::~ReportOutput()
   delete reportHl;
 }
 
+void ReportOutput::append ( const QString & text )
+{
+  QTextEdit::append( text );
+
+  if ( !isVisible() )
+    scrollToBottom();
+}
+
 void ReportOutput::restoreFont()
 {
   QFont _font(  font() );

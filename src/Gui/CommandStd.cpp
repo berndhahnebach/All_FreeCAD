@@ -1227,9 +1227,12 @@ void StdCmdCommandLine::activated(int iMsg)
   qApp->processEvents();
 
 
+  // create temporary console sequencer
+  Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
   GuiConsoleObserver::bMute = true;
   Base::Interpreter().RunCommandLine("Console mode");
   GuiConsoleObserver::bMute = mute;
+  delete seq;
 
 #ifdef Q_WS_X11
   // On X11 this may not work. For further information see QWidget::showMaximized

@@ -12,9 +12,23 @@
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+// Exporting of App classes
+#ifdef FC_OS_WIN32
+# define AppMeshExport __declspec(dllexport)
+#else // for Linux
+# define AppMeshExport
+#endif
+
+#ifdef FC_OS_WIN32
+# include <windows.h>
+#endif
+
 // standard
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
+#include <float.h>
+#include <fcntl.h>
 
 // STL
 #include <algorithm>
@@ -30,6 +44,9 @@
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
+
+// OpenCASCADE
+#include <TDF_Label.hxx>
 
 #endif //_PreComp_
 

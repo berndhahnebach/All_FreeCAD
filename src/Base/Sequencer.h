@@ -186,10 +186,10 @@ private:
 class BaseExport ConsoleSequencer : public SequencerBase
 {
 public:
-  /**
-   * Returns the console sequencer object
-   */
-  static ConsoleSequencer* Instance();
+  /** construction */
+  ConsoleSequencer ();
+  /** Destruction */
+  ~ConsoleSequencer ();
 
   /** Starts the sequencer */
   bool start(const char* pszStr, unsigned long steps);
@@ -199,17 +199,11 @@ public:
   bool next();
 
 private:
-  /** construction */
-  ConsoleSequencer ();
-  /** Destruction */
-  ~ConsoleSequencer ();
-
   /** Puts text to the console window */
   void setText (const char* pszTxt);
   /** Resets the sequencer */
   void resetData();
 
-  static ConsoleSequencer* _pclSingleton; 
   int _iLastPercentage;
 };
 

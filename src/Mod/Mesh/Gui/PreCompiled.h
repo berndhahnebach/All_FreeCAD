@@ -12,6 +12,15 @@
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+// Importing of App classes
+#ifdef FC_OS_WIN32
+# define AppMeshExport __declspec(dllimport)
+# define GuiMeshExport __declspec(dllexport)
+#else // for Linux
+# define AppMeshExport
+# define GuiMeshExport
+#endif
+
 // standard
 #include <stdio.h>
 #include <assert.h>
@@ -33,14 +42,26 @@
 
 #include <Python.h>
 #ifdef FC_OS_WIN32
-#	include <windows.h>
+# include <windows.h>
 #endif
+
+// OCC
+#include <TDF_Label.hxx>
 
 // Qt Toolkit
 #include <qaction.h>
 #include <qapplication.h>
+#include <qfiledialog.h>
 #include <qmainwindow.h>
+#include <qscrollview.h>
 #include <qworkspace.h>
+
+// Open Inventor
+#include <Inventor/nodes/SoCoordinate3.h>
+#include <Inventor/nodes/SoFaceSet.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoNormal.h>
+#include <Inventor/nodes/SoNormalBinding.h>
 
 #endif  //_PreComp_
 

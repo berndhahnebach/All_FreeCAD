@@ -143,6 +143,14 @@ public:
   /** Does not do anything */
   void Log (const char * s);
 
+  /** 
+   * Appends new text \a text and scrolls to bottom if the widget itself is not visible.
+   * \Renark Normally a scrollToBottom() call in the constructor should be sufficient
+   * but works with WindowsXP style only but not for all other styles, at least on 
+   * WindowsXP.
+   */
+  virtual void append ( const QString & text );
+
   /// returns the name for observer handling
   const char* getName(void){return "ReportOutput";}
 
