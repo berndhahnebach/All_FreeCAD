@@ -53,6 +53,7 @@
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
 #include "Application.h"
+#include "Tools.h"
 #include "Widgets.h"
 
 /* 
@@ -72,11 +73,14 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
   // ADD YOUR PAGES HERE
   //
   //
+  addPreferenceGroup("Viewer", "PrefTree_GroupClosed");
+  m_mGroupsItem["Viewer"]->setOpen(true);
+  addPreferencePage(new FCDlgSettings, "Help Viewer");
+  addPreferencePage(new FCDlgSettings3DView, "3D View");
+
   addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen");
   m_mGroupsItem["FreeCAD"]->setOpen(true);
   addPreferencePage(new FCDlgGeneral, "General");
-  addPreferencePage(new FCDlgSettings, "Help Viewer");
-  addPreferencePage(new FCDlgSettings3DView, "3D View");
   addPreferencePage(new FCDlgEditorSettings, "Editor");
   addPreferencePage(new FCDlgSettingsMacro,  "Macros");
 
@@ -247,6 +251,209 @@ void DlgPreferencesImp::connectWidget(QWidget* page) const
 //  connect(PushButton13, SIGNAL(clicked()), page, SLOT(save()));//OK
 //  connect(PushButton14, SIGNAL(clicked()), page, SLOT(save()));//Apply
 
+  if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
+  {
+    // and its preference widgets
+    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCWidgetPrefsManager*>(page)->getHandlers();
+    for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
+    {
+      connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
+      connect(PushButton14, SIGNAL(clicked()), *it, SLOT(onSave()));//Apply
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+class PrefGroupItem : public QListBoxItem 
+{
+  public:
+    PrefGroupItem( QListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name);
+
+    virtual int height( const QListBox * ) const;
+    virtual int width( const QListBox * )  const;
+
+  protected:
+    virtual void paint( QPainter * );
+
+  private:
+    QPixmap pm_Unsel;
+    QPixmap pm_Sel;
+};
+
+PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
+    : QListBoxItem( parent ), pm_Unsel( p1 ), pm_Sel( p2 )
+{
+    setText( name );
+}
+
+int PrefGroupItem::height( const QListBox * ) const
+{
+    return 50;
+}
+
+int PrefGroupItem::width( const QListBox * )  const
+{
+    return 75;
+}
+
+void PrefGroupItem::paint( QPainter *p )
+{
+  int w = width( listBox() );
+  int tx = (w-p->fontMetrics().boundingRect(text()).width())/2+10;
+  p->drawText( tx, 40, text() );
+  if ( selected() )
+	  p->drawPixmap( (w-pm_Sel.width())/2+10, 10, pm_Sel );
+  else
+    p->drawPixmap( (w-pm_Unsel.width())/2+10, 10, pm_Unsel );
+}
+
+/* 
+ *  Constructs a FCDlgPreferencesImp which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
+FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+    : QDialog( parent, name, modal, fl ),FCWindowParameter(name), m_pCurTab(NULL)
+{
+  if ( !name )
+  	setName( "DlgPreferences" );
+  resize( 574, 457 ); 
+  setProperty( "caption", tr( "Preferences" ) );
+  DlgPreferencesLayout = new QGridLayout( this ); 
+  DlgPreferencesLayout->setSpacing( 6 );
+  DlgPreferencesLayout->setMargin( 11 );
+
+  Layout6 = new QGridLayout; 
+  Layout6->setSpacing( 6 );
+  Layout6->setMargin( 0 );
+
+  PushButton14 = new QPushButton( this, "PushButton14" );
+  PushButton14->setProperty( "text", tr( "Apply" ) );
+
+  Layout6->addWidget( PushButton14, 0, 3 );
+  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  Layout6->addItem( spacer, 0, 5 );
+
+  PushButton15 = new QPushButton( this, "PushButton15" );
+  PushButton15->setProperty( "text", tr( "Cancel" ) );
+
+  Layout6->addWidget( PushButton15, 0, 4 );
+
+  PushButton13 = new QPushButton( this, "PushButton13" );
+  PushButton13->setProperty( "text", tr( "OK" ) );
+
+  Layout6->addWidget( PushButton13, 0, 2 );
+  QSpacerItem* spacer_2 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  Layout6->addItem( spacer_2, 0, 1 );
+  QSpacerItem* spacer_3 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  Layout6->addItem( spacer_3, 0, 0 );
+
+  DlgPreferencesLayout->addMultiCellLayout( Layout6, 1, 1, 0, 1 );
+
+  ListBox = new QListBox( this, "ListBox" );
+  ListBox->setProperty( "sizePolicy", QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)5, ListBox->sizePolicy().hasHeightForWidth() ) );
+  ListBox->setFixedWidth(120);
+
+  DlgPreferencesLayout->addWidget( ListBox, 0, 0 );
+
+  tabWidgetStack = new QWidgetStack( this, "tabWidgetStack" );
+
+  DlgPreferencesLayout->addWidget( tabWidgetStack, 0, 1 );
+
+  // signals and slots connections
+  connect( PushButton13, SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( PushButton15, SIGNAL( clicked() ), this, SLOT( accept() ) );
+
+  // tab order
+  setTabOrder( ListBox, PushButton13 );
+  setTabOrder( PushButton13, PushButton14 );
+  setTabOrder( PushButton14, PushButton15 );
+
+  connect(ListBox, SIGNAL ( highlighted ( int ) ), this, SLOT( prefPageClicked( int ) ));
+
+  // ADD YOUR PAGES HERE
+  //
+  //
+  addPreferenceGroup("FreeCAD", "PrefTree_GroupOpen", "PrefTree_GroupClosed");
+  addPreferencePage(new FCDlgGeneral, "General");
+  addPreferencePage(new FCDlgEditorSettings, "Editor");
+  addPreferencePage(new FCDlgSettingsMacro,  "Macros");
+
+  addPreferenceGroup("Viewer",  "PrefTree_GroupOpen", "PrefTree_GroupClosed");
+  addPreferencePage(new FCDlgSettings, "Help Viewer");
+  addPreferencePage(new FCDlgSettings3DView, "3D View");
+
+  // show the first page
+//  prefPageClicked(0);
+  ListBox->setCurrentItem(0);
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+FCDlgPreferencesImp::~FCDlgPreferencesImp()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
+void FCDlgPreferencesImp::addPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2)
+{
+  m_pCurTab = getOrAddPreferenceGroup(name, Pixmap, Pixmap2);
+}
+
+void FCDlgPreferencesImp::addPreferencePage(QWidget* page, const char* name)
+{
+	if (m_pCurTab)
+	{
+		m_pCurTab->addTab(page, name);
+
+		page->hide();
+
+		connectWidget(page);
+	}
+}
+
+QTabWidget* FCDlgPreferencesImp::getPreferenceGroup(int id)
+{
+  return (QTabWidget*)tabWidgetStack->widget(id);
+}
+
+QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2)
+{
+  // already inside
+  if (m_mGroupIDs.find(name) != m_mGroupIDs.end())
+  {
+    return (QTabWidget*)tabWidgetStack->widget(m_mGroupIDs[name]);
+  }
+
+  QPixmap pixSel   = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap);
+  QPixmap pixUnsel = ApplicationWindow::Instance->GetBmpFactory().GetPixmap(Pixmap2);
+
+  int iSize = m_mGroupIDs.size();
+  m_mGroupIDs[name] = iSize;
+  QTabWidget* tabWidget = new QTabWidget;
+  tabWidgetStack->addWidget(tabWidget, iSize);
+
+  (void) new PrefGroupItem(ListBox, pixSel, pixUnsel, name);
+
+  return tabWidget;
+}
+
+void FCDlgPreferencesImp::prefPageClicked(int item)
+{
+  m_pCurTab = getPreferenceGroup(item);
+
+  if (!m_pCurTab)
+    return;
+
+  tabWidgetStack->raiseWidget(m_pCurTab);
+}
+
+void FCDlgPreferencesImp::connectWidget(QWidget* page) const
+{
   if (dynamic_cast<FCWidgetPrefsManager*>(page) != NULL)
   {
     // and its preference widgets

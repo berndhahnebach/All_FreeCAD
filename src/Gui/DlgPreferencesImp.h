@@ -71,4 +71,36 @@ class DlgPreferencesImp : public DlgPreferences, public FCWindowParameter
 
 };
 
+class FCDlgPreferencesImp : public QDialog, public FCWindowParameter
+{ 
+    Q_OBJECT
+
+  public:
+    FCDlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~FCDlgPreferencesImp();
+
+    void addPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2);
+    void addPreferencePage(QWidget* page, const char* name);
+
+  protected:
+    QTabWidget* getPreferenceGroup(int id);
+    QTabWidget* getOrAddPreferenceGroup(const char* name, const char* Pixmap, const char* Pixmap2);
+    void connectWidget(QWidget* page) const;
+
+    QPushButton* PushButton14;
+    QPushButton* PushButton15;
+    QPushButton* PushButton13;
+    QListBox* ListBox;
+    QWidgetStack* tabWidgetStack;
+    QGridLayout* DlgPreferencesLayout;
+    QGridLayout* Layout6;
+
+  private:
+    std::map<std::string, int> m_mGroupIDs;
+    QTabWidget               * m_pCurTab;
+
+  private slots:
+    void prefPageClicked(int item );
+};
+
 #endif // DLGPREFERENCESIMP_H
