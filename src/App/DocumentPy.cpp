@@ -95,13 +95,13 @@ PyMethodDef DocumentPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject DocumentPy::Parents[] = {&FCPyObject::Type, NULL};     
+PyParentObject DocumentPy::Parents[] = {&PyObjectBase::Type, NULL};     
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
 DocumentPy::DocumentPy(Document *pcDoc, PyTypeObject *T)
- : FCPyObject( T), _pcDoc(pcDoc)
+ : PyObjectBase( T), _pcDoc(pcDoc)
 {
 	Base::Console().Log("Create DocumentPy (%d)\n",this);
 
@@ -159,7 +159,7 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 		else if (streq(attr, "StorageFormat"))						
 			return Py_BuildValue("u", _pcDoc->StorageFormat()); 
 		else
-			_getattr_up(FCPyObject); 						
+			_getattr_up(PyObjectBase); 						
 	}PY_CATCH;
 } 
 
@@ -172,7 +172,7 @@ int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 		_pcDoc->ChangeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
 		return 1;
 	}else  
-		return FCPyObject::_setattr(attr, value); 	// send up to parent
+		return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
 
 

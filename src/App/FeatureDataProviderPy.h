@@ -36,7 +36,7 @@
 
 /*
 class TFunction_Logbook;
-class FCPyObject;
+class PyObjectBase;
 class FeaturePy;
 class TopoDS_Shape;
 */
@@ -50,7 +50,7 @@ namespace App
 
 /** The DocTypeStd python class
  */
-class AppExport FeatureDataProviderPy :public Base::FCPyObject
+class AppExport FeatureDataProviderPy :public Base::PyObjectBase
 {
 	/// always start with Py_Header
 	Py_Header;

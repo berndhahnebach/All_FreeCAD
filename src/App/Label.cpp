@@ -179,7 +179,7 @@ std::vector<FCPyHandle<FCLabel> > FCLabel::GetLabels(void)
 
 
 
-FCPyObject *FCLabel::GetPyObject(void)
+PyObjectBase *FCLabel::GetPyObject(void)
 {
 	return _pcPyObject;
 }
@@ -233,7 +233,7 @@ PyParentObject LabelPy::Parents[] = {&LabelPy::Type, NULL};
 // constructor
 //--------------------------------------------------------------------------
 LabelPy::LabelPy(TDF_Label cLabel, PyTypeObject *T)
- : FCPyObject( T), _cLabel(cLabel)
+ : PyObjectBase( T), _cLabel(cLabel)
 {
 	//Console().Log("Create LabelPy: %p \n",this);
 }
@@ -292,7 +292,7 @@ PyObject *LabelPy::_getattr(char *attr)				// __getattr__ function: note only ne
 				return 0;
       }
     }else
-			_getattr_up(FCPyObject); 						// send to parent
+			_getattr_up(PyObjectBase); 						// send to parent
 
   }PY_CATCH;
 		
@@ -311,7 +311,7 @@ int LabelPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: not
 		//TDataStd_Name::Set(_cLabel, (short*)PyUnicode_AsUnicode(value)); 
 	else  
  
-		return FCPyObject::_setattr(attr, value);	// send up to parent
+		return PyObjectBase::_setattr(attr, value);	// send up to parent
 	return 0;
 } 
 

@@ -87,13 +87,13 @@ PyMethodDef FeatureDataProviderPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FeatureDataProviderPy::Parents[] = {&FCPyObject::Type, NULL};
+PyParentObject FeatureDataProviderPy::Parents[] = {&PyObjectBase::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
 FeatureDataProviderPy::FeatureDataProviderPy(FeatureDataProvider *pcFeatureDataProvider, PyTypeObject *T)
-: FCPyObject( T), _pcFeatureDataProvider(pcFeatureDataProvider)
+: PyObjectBase( T), _pcFeatureDataProvider(pcFeatureDataProvider)
 {
 	Base::Console().Log("Create FeatureDataProviderPy: %p \n",this);
 }
@@ -132,7 +132,7 @@ PyObject *FeatureDataProviderPy::_getattr(char *attr)				// __getattr__ function
 		if (Base::streq(attr, "XXXX"))						
 			return Py_BuildValue("i",1); 
 		else
-		  _getattr_up(FCPyObject); 						
+		  _getattr_up(PyObjectBase); 						
 	}PY_CATCH;
 } 
 
@@ -141,7 +141,7 @@ int FeatureDataProviderPy::_setattr(char *attr, PyObject *value) 	// __setattr__
 	if (Base::streq(attr, "XXXX")){						// settable new state
 		return 1;
   }else
-	  return FCPyObject::_setattr(attr, value); 						
+	  return PyObjectBase::_setattr(attr, value); 						
 } 
 
 

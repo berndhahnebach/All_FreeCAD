@@ -153,7 +153,7 @@ PYFUNCIMP_S(Application,sGet)
     return NULL;                             // NULL triggers exception 
 
   if(pstr == 0){
-    Base::FCPyObject *p = GetApplication().Active()->GetPyObject();
+    Base::PyObjectBase *p = GetApplication().Active()->GetPyObject();
     p->_INCREF();
 	  return p;
   }

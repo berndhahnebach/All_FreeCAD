@@ -93,7 +93,7 @@ const char *PartDocType::GetTypeName(void)
 }
 
 
-Base::FCPyObject *PartDocType::GetPyObject(void)
+Base::PyObjectBase *PartDocType::GetPyObject(void)
 {
 	return 0;
 	//return new DocTypeStdPy(this);

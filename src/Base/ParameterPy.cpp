@@ -67,7 +67,7 @@ using namespace Base;
 
 /** The ParameterGrp wrapper class
  */
-class FCPyParameterGrp :public Base::FCPyObject
+class FCPyParameterGrp :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -184,13 +184,13 @@ PyMethodDef FCPyParameterGrp::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCPyParameterGrp::Parents[] = {&FCPyObject::Type,&FCPyParameterGrp::Type, NULL};     
+PyParentObject FCPyParameterGrp::Parents[] = {&PyObjectBase::Type,&FCPyParameterGrp::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
 FCPyParameterGrp::FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T ) 
- : FCPyObject( T),_cParamGrp(rcParamGrp)
+ : PyObjectBase( T),_cParamGrp(rcParamGrp)
 {
 	//Console().Log("Create Param Group %p\n",this);
 }
@@ -249,7 +249,7 @@ PyObject *FCPyParameterGrp::_getattr(char *attr)				// __getattr__ function: not
 			else
 				return 0;
 		}else*/
-			_getattr_up(FCPyObject); 						// send to parent
+			_getattr_up(PyObjectBase); 						// send to parent
 /*	}catch(...){
 		Console().Log("Exception in FCPyParametrGrp::_getattr()\n");
 		return 0;
@@ -268,7 +268,7 @@ int FCPyParameterGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ func
 		//TDataStd_Name::Set(_cLabel, (short*)PyUnicode_AsUnicode(value)); 
 	else  
  */
-		return FCPyObject::_setattr(attr, value);	// send up to parent
+		return PyObjectBase::_setattr(attr, value);	// send up to parent
 	return 0;
 } 
 

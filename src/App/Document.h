@@ -208,7 +208,7 @@ public:
 	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
 
 
-	virtual Base::FCPyObject *GetPyObject(void);
+	virtual Base::PyObjectBase *GetPyObject(void);
 
 
 

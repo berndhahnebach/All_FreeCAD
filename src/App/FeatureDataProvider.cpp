@@ -64,7 +64,7 @@ void FeatureDataProvider::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 
 }
 
-Base::FCPyObject *FeatureDataProvider::GetPyObject(void)
+Base::PyObjectBase *FeatureDataProvider::GetPyObject(void)
 {
 	return new FeatureDataProviderPy(this);
 }

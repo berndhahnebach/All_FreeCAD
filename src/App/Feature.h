@@ -35,7 +35,7 @@
 
 
 class TFunction_Logbook;
-class FCPyObject;
+class PyObjectBase;
 class FeaturePy;
 class TopoDS_Shape;
 
@@ -128,7 +128,7 @@ public:
 
   void SetShape(TopoDS_Shape &Shape);
 
-	virtual Base::FCPyObject *GetPyObject(void);
+	virtual Base::PyObjectBase *GetPyObject(void);
 
   TDF_Label Label(void)
   {

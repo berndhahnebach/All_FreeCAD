@@ -100,7 +100,7 @@ PyParentObject FCGeometry2D::Parents[] = {&FCGeometry2D::Type, NULL};
 // constructor
 //--------------------------------------------------------------------------
 FCGeometry2D::FCGeometry2D(const TopoDS_Shape &cShape, PyTypeObject *T) 
- : FCPyObject( T), _cTopoShape(cShape)
+ : PyObjectBase( T), _cTopoShape(cShape)
 {
 	Console().Log("Create TopoShape %p\n",this);
 }
@@ -129,7 +129,7 @@ PyObject *FCGeometry2D::_getattr(char *attr)				// __getattr__ function: note on
 		{
 			return Py_BuildValue("i", 1); 
 		}else
-			_getattr_up(FCPyObject); 						// send to parent
+			_getattr_up(PyObjectBase); 						// send to parent
 	}PY_CATCH;
 	return 0;
 } 
@@ -139,7 +139,7 @@ int FCGeometry2D::_setattr(char *attr, PyObject *value) 	// __setattr__ function
 	if (streq(attr, "Real"))						// settable new state
 		; 
 	else  
-		return FCPyObject::_setattr(attr, value);	// send up to parent
+		return PyObjectBase::_setattr(attr, value);	// send up to parent
 	return 0;
 } 
 

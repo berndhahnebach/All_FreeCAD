@@ -243,13 +243,13 @@ PyMethodDef PyResource::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject PyResource::Parents[] = {&FCPyObject::Type,&PyResource::Type, NULL};
+PyParentObject PyResource::Parents[] = {&PyObjectBase::Type,&PyResource::Type, NULL};
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
 PyResource::PyResource(PyTypeObject *T)
-    : FCPyObject( T), myDlg(0L)
+    : PyObjectBase( T), myDlg(0L)
 {
 }
 
@@ -277,13 +277,13 @@ PyResource::~PyResource()
 //--------------------------------------------------------------------------
 PyObject *PyResource::_getattr(char *attr)        // __getattr__ function: note only need to handle new state
 {
-  _getattr_up(FCPyObject);            // send to parent
+  _getattr_up(PyObjectBase);            // send to parent
   return 0;
 }
 
 int PyResource::_setattr(char *attr, PyObject *value)   // __setattr__ function: note only need to handle new state
 {
-  return FCPyObject::_setattr(attr, value); // send up to parent
+  return PyObjectBase::_setattr(attr, value); // send up to parent
   return 0;
 }
 
@@ -615,7 +615,7 @@ PyObject *PyResource::setValue(PyObject *args)
 
 // ----------------------------------------------------
 
-SignalConnect::SignalConnect( Base::FCPyObject* res, PyObject* cb, QObject* sender)
+SignalConnect::SignalConnect( Base::PyObjectBase* res, PyObject* cb, QObject* sender)
   : myResource(res), myCallback(cb), mySender(sender)
 {
 }

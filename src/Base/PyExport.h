@@ -33,7 +33,7 @@ typedef struct _object PyObject;
 
 namespace Base
 {
-class FCPyObject;
+class PyObjectBase;
 
 /** The PyHandler class
  *  This class is the base class of all FreeCAD classes
@@ -47,21 +47,21 @@ class BaseExport PyHandler
 public:
 	void IncRef(void);
 	void DecRef(void);
-	virtual FCPyObject *GetPyObject(void)=0;
+	virtual PyObjectBase *GetPyObject(void)=0;
 
 };
 
 
 /** Python Object handle class
- *  Using pointers on classes derived from FCPyObject would
+ *  Using pointers on classes derived from PyObjectBase would
  *  be potentionaly dangerous because you would have to take 
  *  care of the referenc counting of python by your self. There
  *  fore this class was designd. It takes care of references and 
  *  as long as a object of this class exists the handled class get
- *  not destructed. That means a FCPyObject derived object you can
+ *  not destructed. That means a PyObjectBase derived object you can
  *  only destruct by destructing all FCPyHandle and all python 
  *  references on it!
- *  @see FCPyObject,FCDocument 
+ *  @see PyObjectBase,FCDocument 
  */
 template <class HandledType>
 class PyHandle

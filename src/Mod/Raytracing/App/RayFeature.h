@@ -32,7 +32,7 @@
 #include "../../Part/App/PartFeature.h"
 
 class TFunction_Logbook;
-class FCPyObject;
+class PyObjectBase;
 class FeaturePy;
 
 namespace Raytracing

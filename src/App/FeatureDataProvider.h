@@ -36,7 +36,7 @@
 
 /*
 class TFunction_Logbook;
-class FCPyObject;
+class PyObjectBase;
 class FeaturePy;
 class TopoDS_Shape;
 */
@@ -70,7 +70,7 @@ public:
   virtual const char *Type(void)=0;
 
   // returns the python object of this FeatureDataProvider
-	virtual Base::FCPyObject *GetPyObject(void);
+	virtual Base::PyObjectBase *GetPyObject(void);
 
   /// returns the Label of this FeatureDataProvider
   TDF_Label Label(void)

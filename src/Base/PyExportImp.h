@@ -144,15 +144,15 @@ typedef PyTypeObject * PyParentObject;
 } 
 
 /*------------------------------
- * FCPyObject
+ * PyObjectBase
 ------------------------------*/
 
 namespace Base
 {
 
 
-/** The FCPyObject class, exports the class as a python type
- *  FCPyObject is the base class for all C++ classes which
+/** The PyObjectBase class, exports the class as a python type
+ *  PyObjectBase is the base class for all C++ classes which
  *  need to get exported into the python name space. This class is 
  *  very importand because nearly all imported classes in FreeCAD
  *  are visible in python for Macro recording and Automation purpose.
@@ -172,11 +172,11 @@ namespace Base
  *  @see Py_Try
  *  @see Py_Assert  
  */
-class BaseExport FCPyObject : public PyObject 
+class BaseExport PyObjectBase : public PyObject 
 {				
 	/** Py_Header struct from python.h.
-	 *  Every FCPyObject object is also a python object. So you can use
-	 *  every Python C-Library function also on a FCPyObject object
+	 *  Every PyObjectBase object is also a python object. So you can use
+	 *  every Python C-Library function also on a PyObjectBase object
 	 */
 	Py_Header;
 
@@ -185,13 +185,13 @@ class BaseExport FCPyObject : public PyObject
  	 *  Sets the Type of the object (for inherintance) and decrease the
  	 *  the reference count of the PyObject.
  	 */
-	FCPyObject(PyTypeObject *T) 				// constructor
+	PyObjectBase(PyTypeObject *T) 				// constructor
 		{this->ob_type = T; _Py_NewReference(this);};
 	/// destructor
-	virtual ~FCPyObject() {};
+	virtual ~PyObjectBase() {};
 	/// Wrapper for the Python destructor
 	static void PyDestructor(PyObject *P)				// python wrapper
-		{  delete ((FCPyObject *) P);  };
+		{  delete ((PyObjectBase *) P);  };
 	/// incref method wrapper (see python extending manual)
 	void _INCREF(void) {Py_INCREF(this);};
 	/// decref method wrapper (see python extending manual)	
@@ -211,7 +211,7 @@ class BaseExport FCPyObject : public PyObject
 	/// static wrapper for pythons _getattr()
 	static  PyObject *__getattr(PyObject * PyObj, char *attr) 	// This should be the entry in Type. 
 	{ 
-		return ((FCPyObject*) PyObj)->_getattr(attr); 
+		return ((PyObjectBase*) PyObj)->_getattr(attr); 
 	};
    
 	/** SetAttribute implementation
@@ -227,14 +227,14 @@ class BaseExport FCPyObject : public PyObject
                         char *attr, 
                         PyObject *value)
   {
-    return ((FCPyObject*) PyObj)->_setattr(attr, value);
+    return ((PyObjectBase*) PyObj)->_setattr(attr, value);
   };
 	/// _repr method
 	virtual PyObject *_repr(void);				
 	/// python wrapper for the _repr() function
 	static  PyObject *__repr(PyObject *PyObj)		
 	{
-    return ((FCPyObject*) PyObj)->_repr();
+    return ((PyObjectBase*) PyObj)->_repr();
   };
 
 	/// Type checking							
@@ -246,7 +246,7 @@ class BaseExport FCPyObject : public PyObject
 	/// static python wrapper
   static PyObject *sPy_isA(PyObject *self, PyObject *args, PyObject *)
   {
-    return ((FCPyObject*)self)->Py_isA(args);
+    return ((PyObjectBase*)self)->Py_isA(args);
   };
 };
 
@@ -255,7 +255,7 @@ class BaseExport FCPyObject : public PyObject
 
 /** Python dynamic class macro for definition
  * sets up a static/dynamic function entry in a class inheriting 
- * from FCPyObject. Its a pure confiniance macro. You can also do
+ * from PyObjectBase. Its a pure confiniance macro. You can also do
  * it by hand if you want. It looks like that:
  * \code
  * PyObject *PyGetGrp(PyObject *args);
@@ -269,7 +269,7 @@ class BaseExport FCPyObject : public PyObject
  * @param DFUNC is the object method get defined and called
  * @param SFUNC is the static method name (use what you want)
  * @see PYFUNCIMP_D
- * @see FCPyObject
+ * @see PyObjectBase
  */
 #define PYFUNCDEF_D(CLASS,DFUNC)	PyObject * DFUNC (PyObject *args);	\
 static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){return (( CLASS *)self)-> DFUNC (args);};
@@ -284,14 +284,14 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
  * see PYFUNCDEF_D for details * @param CLASS is the class in which the macro take place.
  * @param DFUNC is the object method get defined and called
  * @see PYFUNCDEF_D
- * @see FCPyObject
+ * @see PyObjectBase
  */
 #define PYFUNCIMP_D(CLASS,DFUNC) PyObject* CLASS::DFUNC (PyObject *args)
 
 
 
 /** Python dynamic class macro for the methode list
- * used to fill the methode list of a class derived from FCPyObject.
+ * used to fill the methode list of a class derived from PyObjectBase.
  * Its a pure confiniance macro. You can also do
  * it by hand if you want. It looks like that:
  * \code
@@ -312,7 +312,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
  * see PYFUNCDEF_D for details 
  * @param FUNC is the object method get defined
  * @see PYFUNCDEF_D
- * @see FCPyObject
+ * @see PyObjectBase
  */
 #define PYMETHODEDEF(FUNC)	{"" #FUNC "",(PyCFunction) s##FUNC,Py_NEWARGS},
 
@@ -320,7 +320,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 
 /** Exceptionhandling for python callback functions
  * Is a conviniance macro to manage the exception handling of python callback
- * function defined in classes inhereting FCPyObject and using PYMETHODEDEF .
+ * function defined in classes inhereting PyObjectBase and using PYMETHODEDEF .
  * You can automate this:
  * \code
  * PYFUNCIMP_D(DocTypeStdPy,AddFeature)
@@ -353,7 +353,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
  * this catch maps all of the FreeCAD standard exception to a clear output for the 
  * Python exception.
  * @see PYMETHODEDEF
- * @see FCPyObject
+ * @see PyObjectBase
  */
 #define PY_TRY	try 
 

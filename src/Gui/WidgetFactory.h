@@ -259,7 +259,7 @@ private:
  *
  * \author Werner Mayer
  */
-class PyResource : public Base::FCPyObject
+class PyResource : public Base::PyObjectBase
 {
   // always start with Py_Header
   Py_Header;
@@ -303,7 +303,7 @@ class SignalConnect : public QObject
   Q_OBJECT
 
 public:
-  SignalConnect( Base::FCPyObject* res, PyObject* cb, QObject* sender);
+  SignalConnect( Base::PyObjectBase* res, PyObject* cb, QObject* sender);
   ~SignalConnect();
 
 public slots:

@@ -407,7 +407,7 @@ void Document::Dump(void)
   _hDoc->Main().Dump(std::cout);
 }
 
-Base::FCPyObject * Document::GetPyObject(void)
+Base::PyObjectBase * Document::GetPyObject(void)
 {
 	return _pcDocPy;
 }

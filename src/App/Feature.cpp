@@ -214,7 +214,7 @@ Feature *Feature::GetFeature(const TDF_Label &l)
 
 /** The DocTypeStd python class
  */
-class AppExport FeaturePy :public Base::FCPyObject
+class AppExport FeaturePy :public Base::PyObjectBase
 {
 	/// always start with Py_Header
 	Py_Header;
@@ -282,13 +282,13 @@ PyMethodDef FeaturePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FeaturePy::Parents[] = {&FCPyObject::Type, NULL};
+PyParentObject FeaturePy::Parents[] = {&PyObjectBase::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
 FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
-: FCPyObject( T), _pcFeature(pcFeature)
+: PyObjectBase( T), _pcFeature(pcFeature)
 {
 	Base::Console().Log("Create FeaturePy: %p \n",this);
 }
@@ -299,7 +299,7 @@ PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 	return 0;
 }
 
-Base::FCPyObject *Feature::GetPyObject(void)
+Base::PyObjectBase *Feature::GetPyObject(void)
 {
 	return new FeaturePy(this);
 }
@@ -341,7 +341,7 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
         return Py_BuildValue("s", _pcFeature->GetProperty(attr).GetAsString());
       else
-			  _getattr_up(FCPyObject); 						
+			  _getattr_up(PyObjectBase); 						
 	}PY_CATCH;
 } 
 
@@ -360,7 +360,7 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
         }
         return 0;
       }else
-			  return FCPyObject::_setattr(attr, value); 						
+			  return PyObjectBase::_setattr(attr, value); 						
 } 
 
 void FeaturePy::SetProperty(const char *attr, PyObject *value)

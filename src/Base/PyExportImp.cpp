@@ -38,14 +38,14 @@
 using namespace Base;
 
 /*------------------------------
- * FCPyObject Type		-- Every class, even the abstract one should have a Type
+ * PyObjectBase Type		-- Every class, even the abstract one should have a Type
 ------------------------------*/
 
-PyTypeObject FCPyObject::Type = {
+PyTypeObject PyObjectBase::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FCPyObject",			/*tp_name*/
-	sizeof(FCPyObject),	/*tp_basicsize*/
+	"PyObjectBase",			/*tp_name*/
+	sizeof(PyObjectBase),	/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 			/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -62,22 +62,22 @@ PyTypeObject FCPyObject::Type = {
 };
 
 /*------------------------------
- * FCPyObject Methods 	-- Every class, even the abstract one should have a Methods
+ * PyObjectBase Methods 	-- Every class, even the abstract one should have a Methods
 ------------------------------*/
-PyMethodDef FCPyObject::Methods[] = {
+PyMethodDef PyObjectBase::Methods[] = {
   {"isA",		 (PyCFunction) sPy_isA,			Py_NEWARGS},
   {NULL, NULL}		/* Sentinel */
 };
 
 /*------------------------------
- * FCPyObject Parents		-- Every class, even the abstract one should have parents
+ * PyObjectBase Parents		-- Every class, even the abstract one should have parents
 ------------------------------*/
-PyParentObject FCPyObject::Parents[] = {&FCPyObject::Type, NULL};
+PyParentObject PyObjectBase::Parents[] = {&PyObjectBase::Type, NULL};
 
 /*------------------------------
- * FCPyObject attributes	-- attributes
+ * PyObjectBase attributes	-- attributes
 ------------------------------*/
-PyObject *FCPyObject::_getattr(char *attr)
+PyObject *PyObjectBase::_getattr(char *attr)
 {
   if (streq(attr, "type"))
     return Py_BuildValue("s", (*(GetParents()))->tp_name);
@@ -85,29 +85,29 @@ PyObject *FCPyObject::_getattr(char *attr)
   return Py_FindMethod(Methods, this, attr);    
 }
 
-int FCPyObject::_setattr(char *attr, PyObject *value)
+int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
 	//FCcerr << "Unknown attribute" << FCendl;
   return 1;
 }
 
 /*------------------------------
- * FCPyObject repr		-- representations
+ * PyObjectBase repr		-- representations
 ------------------------------*/
-PyObject *FCPyObject::_repr(void)
+PyObject *PyObjectBase::_repr(void)
 {
   Py_Error(PyExc_SystemError, "Representation not overridden by object.");  
 }
 
 /*------------------------------
- * FCPyObject isA		-- the isA functions
+ * PyObjectBase isA		-- the isA functions
 ------------------------------*/
-bool FCPyObject::isA(PyTypeObject *T)		// if called with a Type, use "typename"
+bool PyObjectBase::isA(PyTypeObject *T)		// if called with a Type, use "typename"
 {
   return isA(T->tp_name);
 }
 
-bool FCPyObject::isA(const char *type_name)		// check typename of each parent
+bool PyObjectBase::isA(const char *type_name)		// check typename of each parent
 {
   int i;
   PyParentObject  P;
@@ -119,7 +119,7 @@ bool FCPyObject::isA(const char *type_name)		// check typename of each parent
   return false;
 }
 
-PyObject *FCPyObject::Py_isA(PyObject *args)		// Python wrapper for isA
+PyObject *PyObjectBase::Py_isA(PyObject *args)		// Python wrapper for isA
 {
   char *type_name;
   Py_Try(PyArg_ParseTuple(args, "s", &type_name));

@@ -107,7 +107,7 @@ public:
 	/// Gets the OCC Label
 	TDF_Label GetOCCLabel(void){return _cLabel;}
 
-	FCPyObject *GetPyObject(void);
+	PyObjectBase *GetPyObject(void);
 
 	friend LabelPy;
 	friend FCDocument;
@@ -137,7 +137,7 @@ protected:
  *  Nodes and Leavs
  *  @see FCDocument
  */
-class AppExport LabelPy :public Base::FCPyObject
+class AppExport LabelPy :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;

@@ -27,7 +27,7 @@
  *  This base class can represent every Attribute!
  *  @see FCDocument,FCLabel
  */
-class FCPyAttribute :public Base::FCPyObject
+class FCPyAttribute :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -238,13 +238,13 @@ PyMethodDef FCPyAttribute::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCPyAttribute::Parents[] = {&FCPyObject::Type,&FCPyAttribute::Type, NULL};     
+PyParentObject FCPyAttribute::Parents[] = {&PyObjectBase::Type,&FCPyAttribute::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
 FCPyAttribute::FCPyAttribute(const Handle(FCAttribute) &hAttribute, PyTypeObject *T ) 
-	:FCPyObject(T),_hAttribute(hAttribute)
+	:PyObjectBase(T),_hAttribute(hAttribute)
 {
 	//Console().Log("Create Param Group %p\n",this);
 }
@@ -303,7 +303,7 @@ PyObject *FCPyAttribute::_getattr(char *attr)				// __getattr__ function: note o
 			else
 				return 0;
 		}else*/
-			_getattr_up(FCPyObject); 						// send to parent
+			_getattr_up(PyObjectBase); 						// send to parent
 /*	}catch(...){
 		Console().Log("Exception in FCPyParametrGrp::_getattr()\n");
 		return 0;
@@ -322,7 +322,7 @@ int FCPyAttribute::_setattr(char *attr, PyObject *value) 	// __setattr__ functio
 		//TDataStd_Name::Set(_cLabel, (short*)PyUnicode_AsUnicode(value)); 
 	else  
  */
-		return FCPyObject::_setattr(attr, value);	// send up to parent
+		return PyObjectBase::_setattr(attr, value);	// send up to parent
 	return 0;
 } 
 

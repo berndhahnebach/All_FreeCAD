@@ -75,7 +75,7 @@ public:
 	 */
 	virtual const char *PartDocType::GetTypeName(void);
 
-	virtual Base::FCPyObject *GetPyObject(void);
+	virtual Base::PyObjectBase *GetPyObject(void);
 
 };
 

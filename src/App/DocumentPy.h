@@ -27,7 +27,7 @@
 namespace App {
 /** The Document python class 
  */
-class AppExport DocumentPy :public Base::FCPyObject
+class AppExport DocumentPy :public Base::PyObjectBase
 {
 	/// always start with Py_Header
 	Py_Header;
