@@ -167,6 +167,13 @@ public:
 
   QSize minimumSizeHint () const;
 
+  /**
+   * If \a b is true the MDIView is displayed in full screen mode, otherwise
+   * in normal mode. For more hints refer to the Qt documentation to
+   * QWidget::showFullScreen ().
+   */
+  void setFullScreenMode( bool b );
+
 signals:
   /// sends a message to the document
 //  void sendCloseView(MDIView* theView);
@@ -177,7 +184,8 @@ public slots:
   void setActive(void);
 
 protected:
-  void closeEvent(QCloseEvent *e);
+  void closeEvent    ( QCloseEvent *e );
+  void keyPressEvent ( QKeyEvent   *e );
 };
 
 

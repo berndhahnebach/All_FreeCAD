@@ -176,5 +176,37 @@ QSize MDIView::minimumSizeHint () const
   return QSize(100, 80);
 }
 
+void MDIView::setFullScreenMode( bool b )
+{
+  // set fullscreen mode
+  if ( b )
+  {
+    WFlags f = getWFlags();
+    setWFlags( f | WType_TopLevel );
+    showFullScreen();
+
+    grabKeyboard();
+  }
+  else
+  {
+    showNormal();
+    clearWFlags ( WType_TopLevel );
+    ApplicationWindow::Instance->addWindow( this );
+
+    releaseKeyboard();
+  }
+}
+
+void MDIView::keyPressEvent ( QKeyEvent   *e )
+{
+  if ( isFullScreen() && e->key() == Key_F )
+  {
+    setFullScreenMode( false );
+  }
+  else
+  {
+    QMainWindow::keyPressEvent( e );
+  }
+}
 
 #include "moc_View.cpp"

@@ -232,6 +232,36 @@ bool StdCmdViewFitAll::isActive(void)
 
 
 //===========================================================================
+// Std_ViewFullScreen
+//===========================================================================
+DEF_STD_CMD_A(StdViewFullScreen);
+
+StdViewFullScreen::StdViewFullScreen()
+  :CppCommand("Std_ViewFullScreen")
+{
+  sAppModule  = "";
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Fullscreen");
+  sToolTipText= QT_TR_NOOP("Display the active view in fullscreen");
+  sWhatsThis  = QT_TR_NOOP("Display the active view in fullscreen");
+  sStatusTip  = QT_TR_NOOP("Display the active view in fullscreen");
+//  sPixmap     = "view_fitall";
+  iAccel      = Qt::Key_F;
+}
+
+void StdViewFullScreen::activated(int iMsg)
+{
+  MDIView* view = getActiveDocument()->getActiveView();
+  if ( view )
+    view->setFullScreenMode( true );
+}
+
+bool StdViewFullScreen::isActive(void)
+{
+  return (getActiveDocument()!=NULL);
+}
+
+//===========================================================================
 // Std_ViewCreateOCC
 //===========================================================================
 DEF_STD_CMD_A(StdCmdViewCreateOCC);
@@ -575,6 +605,8 @@ void CreateViewStdCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdViewCreateOCC());
   rcCmdMgr.addCommand(new StdCmdViewCreateInventor());
+
+  rcCmdMgr.addCommand(new StdViewFullScreen());
 }
 
 } // namespace Gui
