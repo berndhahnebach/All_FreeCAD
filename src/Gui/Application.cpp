@@ -888,6 +888,47 @@ void ApplicationWindow::LoadWindowSettings()
     QApplication::setStyle(s);
     setAreaPal(palette());
   }
+  // open file
+  QFile* datafile = new QFile("FreeCAD.xml");
+  if (!datafile->open(IO_ReadOnly)) 
+  {
+    // error opening file
+    GetConsole().Warning("Error: Cannot open file\n");
+    datafile->close();
+    delete (datafile);
+    return;
+  }
+
+  // open dom document
+  QDomDocument doc("DockWindows");
+  if (!doc.setContent(datafile)) 
+  {
+    GetConsole().Warning("Error:  is not a valid file\n");
+    datafile->close();
+    delete (datafile);
+    return;
+  }
+
+  datafile->close();
+  delete (datafile);
+
+  // check the doc type and stuff
+  if (doc.doctype().name() != "DockWindows") 
+  {
+    // wrong file type
+    GetConsole().Warning("Error: is not a valid file\n");
+    return;
+  }
+
+  QDomElement root = doc.documentElement();
+  if (root.attribute("application") != QString("FreeCAD")) 
+  {
+    // right file type, wrong application
+    GetConsole().Warning("Error: wrong file\n");
+    return;
+  }
+
+  readDockConfig(root);
 }
 
 void ApplicationWindow::SaveWindowSettings()
@@ -905,6 +946,33 @@ void ApplicationWindow::SaveWindowSettings()
     hGrp->SetInt("PosY", pos().y());
     hGrp->SetBool("Maximized", false);
   }
+  // save dock window settings
+  QDomDocument doc("DockWindows");
+
+  // create the root element
+  QDomElement root = doc.createElement(doc.doctype().name());
+  root.setAttribute("version", "0.1");
+  root.setAttribute("application", "FreeCAD");
+
+  writeDockConfig(root);
+  doc.appendChild(root);
+
+  // save into file
+  QFile* datafile = new QFile ("FreeCAD.xml");
+  if (!datafile->open(IO_WriteOnly)) 
+  {
+    // error opening file
+    GetConsole().Warning("Error: Cannot open file\n");
+    datafile->close();
+    delete (datafile);
+    return;
+  }
+
+  // write it out
+  QTextStream textstream(datafile);
+  doc.save(textstream, 0);
+  datafile->close();
+  delete (datafile);
 }
 
 void ApplicationWindow::setPalette(const QPalette& pal)
