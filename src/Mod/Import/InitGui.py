@@ -45,9 +45,11 @@ class ImportWorkbench ( Workbench ):
 		else:	
 			Log ('   Set up Import toolbar...\n')
 			Gui.ToolbarAddTo("ImportTools","Import_ReadBREP")
+			Gui.ToolbarLoadSettings("ImportTools")
 
 			Log ('   Set up Import commandbar...\n')
 			Gui.CommandbarAddTo("ImportTools","Import_ReadBREP")
+			Gui.CommandbarLoadSettings("ImportTools")
 			
 			Log ('   Set up Import menues...\n')
 
