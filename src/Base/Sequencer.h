@@ -1,8 +1,8 @@
 /** \file Sequencer.h
  *  \brief Sequencer base class
  *  \author Werner Mayer
- *  \version $Revision$
- *  \date    $Date$
+ *  \version 1.3
+ *  \date    2004/10/03 21:57:09
  */
 
 /***************************************************************************
@@ -33,146 +33,72 @@
 #ifndef __SEQUENCER_H__
 #define __SEQUENCER_H__
 
-#include <list>
+#ifndef _PreComp_
+# include <list>
+# include <vector>
+#endif
 
 namespace Base {
-
-/**
- * This class gives the user an indication of the progress of an operation and
- * it is used to reassure them that the application is still running.
- *
- *  \par
- *  \code
- *  #include <Base/Sequencer.h>
- *  //first example
- *  if (Sequencer().start ("your text", 10))
- *  for (int i=0; i<10; i++)
- *  {
- *    // do something
- *		Sequencer().next ();
- *  }
- *  Sequencer().stop ();
- *
- *  //second example
- *  if (Sequencer().start ("your text", 10))
- *  do
- *  {
- *    // do something
- *  }
- *  while (Sequencer().next ());
- *  Sequencer().stop ();
- *  \endcode
- *  \par
- *
- * The implementation of this class also supports the interlocking of several running
- * operations at a time. 
- *
- *  \par
- *  \code
- *  //start the first operation
- *  Sequencer().start ("your text", 10)
- *  for (int i=0; i<10, i++)
- *  {
- *    // do something
- *
- *    // start the second operation while the first one is still running
- *    Sequencer().start ("another text", 10);
- *		for (int j=0; j<10; j++)
- *		{
- *			// do something other
- *			Sequencer().next ();
- *		}
- *		Sequencer().stop ();
- *
- *		Sequencer().next ();
- *  }
- *  Sequencer().stop ();
- *  \endcode
- *  \par
- *
- * This class is inherited by @see Gui::ProgressBar.
- */
-
-class BaseExport CSequencer
+class BaseExport SequencerBase
 {
 public:
-	/**
-	 * Returns the last registered sequencer object
-	 * @see setGlobalInstance
-	 * @see _pclSequencer
-	 */
-	static CSequencer& Instance();
+  static SequencerBase& Instance();
 
-	/** @methodes to reimplement in subclasses */
-	//@{
-	/**
-	 * Starts the sequencer, returns false if there is already a pending operation,
-	 * true otherwise.
-	 * Reimplemented in @see Gui::ProgressBar
-	 */
-	virtual bool start(const char* pszStr, unsigned long steps);
-	/**
-	 * Next step, returns false if the end is already reached, true otherwise.
-	 * NOTE: For each call of start() you must call the
-	 *	     corresponding @see stop() method.
-	 * Reimplemented in @see Gui::ProgressBar.
-	 */
-	virtual bool next();
-	/**
-	 * Stops the (running) sequencer, returns false if there are still
-	 * pending operations, true otherwise.
-	 */
-	virtual bool stop();
-	//@}
-	/** Checks if the sequencer is running */
-	bool isRunning() const;
-	/** Returns true if the operation was canceled (e.g. by pressing ESC)
-	 */
-	bool wasCanceled() const;
+  virtual bool start(const char* pszStr, unsigned long steps);
+  virtual bool next();
+  virtual bool stop();
+
+  bool isRunning() const;
+  bool wasCanceled() const;
+  void tryToCancel();
+
+  int pendingOperations() const;
 
 protected:
-	/** Construction */
-	CSequencer();
-	/** Destruction */
-	virtual ~CSequencer();
-	/** Reimplemented in @see Gui::ProgressBar */
-	virtual void setText (const char* pszTxt);
-	/** Resets the sequencer
-	 * Reimplemented in @see Gui::ProgressBar
-	 */
-	virtual void resetBar();
-	/** Aborts all pending operations
-	 * Reimplemented in @see Gui::ProgressBar
-	 */
-	virtual void abort();
+  SequencerBase();
+  virtual ~SequencerBase();
+
+  virtual void setText (const char* pszTxt);
+  virtual void resetData();
 
 protected:
-	bool _bCanceled; /**< Is set to true if the last pending operation was canceled */
-	int _nInstStarted; /**< Stores the number of pending operations */ 
-	int _nMaxInstStarted; /**< Stores the number of maximum pending operations until no pending operation 
-												  is running. */
-	unsigned long _nProgress, _nTotalSteps;
+  unsigned long nProgress; /**< Stores the current amount of progress.*/
+  unsigned long nTotalSteps; /**< Stores the total number of steps */
 
 private:
-	/**
-	 * Sets a global Sequencer object.
-	 * Access to the last registered
-	 * object is performed by
-	 * @see Sequencer().
-	 */
-	void setGlobalInstance ();
-	/**
-	 * The _pclSequencer member just stores the pointer of the
-	 * last instaciated CSequencer object.
-	 */
-	static CSequencer* _pclSingleton; 
-	std::list<unsigned long> _aSteps;
+  void _setGlobalInstance ();
+
+  bool _bCanceled; /**< Is set to true if the last pending operation was canceled */
+  int _nInstStarted; /**< Stores the number of pending operations */ 
+  int _nMaxInstStarted; /**< Stores the number of maximum pending operations until all pending operations 
+                            are finished. */
+  std::list<unsigned long> _aSteps; /**< Stores the number of steps for each operation */
+  static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */ 
 };
 
-/** get the last registered instance */
-inline CSequencer& Sequencer ()
+class BaseExport ConsoleSequencer : public SequencerBase
 {
-	return CSequencer::Instance();
+public:
+  static ConsoleSequencer* Instance();
+
+  bool start(const char* pszStr, unsigned long steps);
+  bool next();
+
+private:
+  ConsoleSequencer ();
+  ~ConsoleSequencer ();
+
+  void setText (const char* pszTxt);
+  void resetData();
+
+  static ConsoleSequencer* _pclSingleton; 
+  int _iLastPercentage;
+};
+
+/** Access to the only SequencerBase instance */
+inline SequencerBase& Sequencer ()
+{
+  return SequencerBase::Instance();
 }
 
 } // namespace Base
