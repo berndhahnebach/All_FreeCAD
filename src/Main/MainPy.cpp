@@ -77,7 +77,23 @@ extern "C" {
 		// Init phase ===========================================================
 
 		int argc=1;
-		char *argv="none";
+		char cwd[1024];
+
+		if ( getcwd(cwd, sizeof(cwd) ) == 0L )
+		{
+				// Error
+				exit(0);
+		}
+
+		// FreeCAD.py dient nur als Anhaengsel, um das richtige Home-Directory zu berechnen
+		std::string tmp = cwd;
+		tmp += PATHSEP;
+		tmp += "FreeCAD.py";
+
+		char* argv = new char[1024];
+		strcpy(argv, tmp.c_str());
+		EnvPrint(argv);
+
 
 		// parse the options
 		FCApplication::InitConfig(argc,&argv);

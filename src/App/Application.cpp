@@ -705,7 +705,9 @@ void FCApplication::SetRunMode(const char* s)
 
 void FCApplication::SaveEnv(const char* s)
 {
-	mConfig[s] = getenv(s);
+	char *c = getenv(s);
+	if(c)
+		mConfig[s] = c;
 }
 
 

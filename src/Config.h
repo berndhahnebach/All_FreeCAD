@@ -65,9 +65,9 @@
 #ifdef FC_OS_WIN32
 //#	define _STLP_USE_OWN_NAMESPACE
 //#	define __STLP_USE_DECLSPEC
-#	define _STLP_NO_NEW_IOSTREAMS
+#	define _STLP_NO_NEW_IOSTREAMS 1
 //#	define _STLP_BROKEN_USING_DIRECTIVE
-#	define _STLP_NO_OWN_IOSTREAMS
+#	define _STLP_NO_OWN_IOSTREAMS 1
 #	define _STLP_USE_ABBREVS
 // switch on StlPort debuging, need the libs build!
 //#	define __STL_DEBUG
