@@ -90,9 +90,6 @@ class FCMouseModelPolyPicker : public FCMouseModelStd
     virtual void resizeEvent			  ( QResizeEvent * cEvent );
 
   protected:
-    void repaint();
-
-    QColor color;
     FCvector<QPoint> _cNodeVector;
     int  m_iRadius;
     bool m_bWorking, m_bDrawNodes;
@@ -101,6 +98,26 @@ class FCMouseModelPolyPicker : public FCMouseModelStd
          m_iXmax, 
          m_iYmin, 
          m_iYmax; //extenst of the input vertices
+};
+
+class FCMouseModelSelection : public FCMouseModelStd 
+{
+  public:
+    FCMouseModelSelection();
+    virtual ~FCMouseModelSelection();
+
+  protected:
+    virtual void initMouseModel(View3D *pcView3D);
+    virtual void mousePressEvent	  ( QMouseEvent  * cEvent );
+    virtual void mouseReleaseEvent	( QMouseEvent  * cEvent );
+    virtual void wheelEvent			    ( QWheelEvent  * cEvent );
+    virtual void mouseMoveEvent		  ( QMouseEvent  * cEvent );
+    virtual void paintEvent         ( QPaintEvent  * cEvent );
+    virtual void resizeEvent			  ( QResizeEvent * cEvent );
+  private:
+    void drawRect( QPainter* p, const QPoint& p1, const QPoint& p2 );
+    QPoint _start, _last;
+    bool m_bWorking;
 };
 
 #endif

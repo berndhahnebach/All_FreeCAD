@@ -46,13 +46,13 @@
 //===========================================================================
 DEF_STD_CMD(FCCmdTest1		,"Std_Test1");
 
-void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Test1";
 	*sToolTipText = "Test function 1";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(pPaste);
+	*sPixmap      = "Test1";
 	iAccel = Qt::CTRL+Qt::Key_T;
 }
 
@@ -131,13 +131,13 @@ void FCCmdTest1::Activated(void)
 //===========================================================================
 DEF_STD_CMD(FCCmdTest2		,"Std_Test2");
 
-void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Test2";
 	*sToolTipText = "Test function 2";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	cPixmap = QPixmap(pPaste);
+	*sPixmap      = "Test2";
 	iAccel = 0;
 }
 
