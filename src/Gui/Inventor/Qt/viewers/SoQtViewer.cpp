@@ -20,6 +20,10 @@
  *  <URL:http://www.sim.no>, <mailto:support@sim.no>
  *
 \**************************************************************************/
+#ifdef _MSC_VER
+#	pragma warning( disable : 4305 )
+#	pragma warning( disable : 4101 )
+#endif
 
 // @configure_input@
 
