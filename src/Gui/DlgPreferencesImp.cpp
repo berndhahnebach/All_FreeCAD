@@ -51,6 +51,7 @@
 #include "DlgSettings3DViewImp.h"
 #include "DlgGeneralImp.h"
 #include "DlgEditorImp.h"
+#include "DlgSettingsMacroImp.h"
 #include "Application.h"
 #include "Widgets.h"
 
@@ -77,6 +78,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
   addPreferencePage(new FCDlgSettings, "Help Viewer");
   addPreferencePage(new FCDlgSettings3DView, "3D View");
   addPreferencePage(new FCDlgEditorSettings, "Editor");
+  addPreferencePage(new FCDlgSettingsMacro,  "Macros");
 
   // show the first page
   prefPageClicked(ListView2->firstChild());

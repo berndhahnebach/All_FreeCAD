@@ -205,6 +205,8 @@ public:
 	PYFUNCDEF_S(sWorkbenchActivate);
 	PYFUNCDEF_S(sWorkbenchGet);
 
+	PYFUNCDEF_S(sSendActiveView);
+
 	PYFUNCDEF_S(sUpdateGui);
 
 	PYFUNCDEF_S(sCommandAdd);

@@ -150,9 +150,11 @@ FCCmdSave::FCCmdSave()
 void FCCmdSave::Activated(int iMsg)
 {
 	if( GetActiveDocument() )
+//		DoCommand(FCCommand::Doc,"FreeCAD.DocGetActive().Save()");		
 		GetActiveDocument()->Save();
 	else
-		GetAppWnd()->SendMsgToActiveView("Save");
+		DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"Save\")");
+//		GetAppWnd()->SendMsgToActiveView("Save");
 }
 
 bool FCCmdSave::IsActive(void)

@@ -872,9 +872,22 @@ PyMethodDef ApplicationWindow::Methods[] = {
 	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
 	{"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
 	{"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
+	{"SendMsgToActiveView",        (PyCFunction) ApplicationWindow::sSendActiveView,          1},
 
 	{NULL, NULL}		/* Sentinel */
 };
+
+PYFUNCIMP_S(ApplicationWindow,sSendActiveView)
+{
+	char *psCommandStr;
+	if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
+		return NULL;                                      // NULL triggers exception 
+
+	Instance->SendMsgToActiveView(psCommandStr);
+	
+	Py_INCREF(Py_None);
+	return Py_None;
+} 
 
 PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
 {

@@ -91,6 +91,7 @@ void FCWidgetPrefs::setEntryName(QString name)
 
   setPrefName(name);
   hPrefGrp = GetApplication().GetParameterGroupByPath(m_sPrefGrp.latin1())->GetGroup(name.latin1());
+  assert(hPrefGrp.IsValid());
   hPrefGrp->Attach(this);
 }
 

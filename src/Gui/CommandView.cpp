@@ -71,7 +71,7 @@ bool FCCmdViewBottom::IsActive(void)
 
 void FCCmdViewBottom::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewBottom");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewBottom\")");
 }
 
 //===========================================================================
@@ -95,7 +95,7 @@ FCCmdViewFront::FCCmdViewFront()
 
 void FCCmdViewFront::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewFront");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFront\")");
 }
 
 //===========================================================================
@@ -119,7 +119,7 @@ FCCmdViewLeft::FCCmdViewLeft()
 
 void FCCmdViewLeft::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewLeft");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewLeft\")");
 }
 
 //===========================================================================
@@ -143,7 +143,7 @@ FCCmdViewRear::FCCmdViewRear()
 
 void FCCmdViewRear::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewRear");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRear\")");
 }
 
 //===========================================================================
@@ -167,7 +167,7 @@ FCCmdViewRight::FCCmdViewRight()
 
 void FCCmdViewRight::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewRight");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRight\")");
 }
 
 //===========================================================================
@@ -191,7 +191,7 @@ FCCmdViewTop::FCCmdViewTop()
 
 void FCCmdViewTop::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewTop");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewTop\")");
 }
 
 //===========================================================================
@@ -215,7 +215,7 @@ FCCmdViewAxo::FCCmdViewAxo()
 
 void FCCmdViewAxo::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewAxo");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewAxo\")");
 }
 
 //===========================================================================
@@ -239,7 +239,7 @@ FCCmdViewFitAll::FCCmdViewFitAll()
 
 void FCCmdViewFitAll::Activated(int iMsg)
 {
-	GetAppWnd()->SendMsgToActiveView("ViewFit");
+	DoCommand(FCCommand::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 
