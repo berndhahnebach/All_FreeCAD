@@ -250,7 +250,7 @@ StdCmdViewCreateOCC::StdCmdViewCreateOCC()
 
 void StdCmdViewCreateOCC::activated(int iMsg)
 {
-  getActiveDocument()->createView("View3DOcc");
+  getActiveDocument()->createView("View3DOCC");
 }
 
 bool StdCmdViewCreateOCC::isActive(void)

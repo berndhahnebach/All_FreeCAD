@@ -44,196 +44,141 @@
                 </property>
                 <widget class="Gui::PrefCheckBox">
                     <property name="name">
-                        <cstring>PrefCheckBox_UseInventorViewer</cstring>
+                        <cstring>CheckBox_ShowViewerDecoration</cstring>
                     </property>
                     <property name="text">
-                        <string>Use the Inventor viewer as default</string>
+                        <string>Use simple background</string>
                     </property>
                     <property name="prefEntry" stdset="0">
-                        <cstring>UseInventorViewer</cstring>
+                        <cstring>ShowViewerDecoration</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>View</cstring>
                     </property>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="Gui::PrefCheckBox">
                     <property name="name">
-                        <cstring>GroupBox4</cstring>
+                        <cstring>CheckBox_CornerCoordSystem</cstring>
                     </property>
-                    <property name="title">
-                        <string>Inventor Viewer</string>
+                    <property name="text">
+                        <string>Show coordinate system in the corner</string>
                     </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="Gui::PrefCheckBox" row="0" column="0">
-                            <property name="name">
-                                <cstring>CheckBox_CornerCoordSystem</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Show coordinate system in the corner</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>CornerCoordSystem</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox" row="1" column="0">
-                            <property name="name">
-                                <cstring>CheckBox_ShowFPS</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Show FPS Count</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>ShowFPS</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox" row="2" column="0">
-                            <property name="name">
-                                <cstring>CheckBox_UseSimpleBackground</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Use simple background</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>UseSimpleBackground</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox" row="3" column="0">
-                            <property name="name">
-                                <cstring>CheckBox_ShowViewerDecoration</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Use simple background</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>ShowViewerDecoration</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="4" column="0">
-                            <property name="name">
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>User defined inventor file (*.iv) for special viewer functions:</string>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox" row="6" column="0">
-                            <property name="name">
-                                <cstring>CheckBox_UseAutoRotation</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="text">
-                                <string>Use auto rotation</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>UseAutoRotation</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefFileChooser" row="5" column="0">
-                            <property name="name">
-                                <cstring>PrefLineEdit_UserDefinedViewer</cstring>
-                            </property>
-                            <property name="filter">
-                                <string>Inventor (*.iv)</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>UserDefinedViewerExt</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                    </grid>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>CornerCoordSystem</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="Gui::PrefCheckBox">
                     <property name="name">
-                        <cstring>GroupBox3</cstring>
+                        <cstring>CheckBox_ShowFPS</cstring>
                     </property>
-                    <property name="title">
-                        <string>OCC Viewer</string>
+                    <property name="text">
+                        <string>Show FPS Count</string>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="Gui::PrefCheckBox">
-                            <property name="name">
-                                <cstring>UseAntialiasing</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Using anti aliasing</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>UseAntialiasing</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                    </vbox>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>ShowFPS</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>CheckBox_UseAutoRotation</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>Use auto rotation</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>UseAutoRotation</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox8</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enable antialiasing (slower)</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>Antialiasing</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>CheckBox_UseSimpleBackground</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Use simple background</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>UseSimpleBackground</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>User defined inventor file (*.iv) for special viewer functions:</string>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefFileChooser">
+                    <property name="name">
+                        <cstring>PrefLineEdit_UserDefinedViewer</cstring>
+                    </property>
+                    <property name="filter">
+                        <string>Inventor (*.iv)</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>UserDefinedViewerExt</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
                 </widget>
             </vbox>
         </widget>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
-<connections>
-    <connection>
-        <sender>PrefCheckBox_UseInventorViewer</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Gui::Dialog::DlgSettings3DView</receiver>
-        <slot>warnInventor(bool)</slot>
-    </connection>
-</connections>
 <tabstops>
-    <tabstop>PrefCheckBox_UseInventorViewer</tabstop>
     <tabstop>CheckBox_CornerCoordSystem</tabstop>
     <tabstop>CheckBox_ShowFPS</tabstop>
     <tabstop>CheckBox_UseSimpleBackground</tabstop>
     <tabstop>CheckBox_ShowViewerDecoration</tabstop>
     <tabstop>PrefLineEdit_UserDefinedViewer</tabstop>
     <tabstop>CheckBox_UseAutoRotation</tabstop>
-    <tabstop>UseAntialiasing</tabstop>
 </tabstops>
 <slots>
     <slot>warnInventor(bool)</slot>
@@ -242,7 +187,6 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

@@ -36,18 +36,19 @@ class RaytracingWorkbench ( Workbench ):
 	def Start(self):
 		# load the module
 		try:
-			Log ('Loading RaytracingGui module')
+			Log ('Loading RaytracingGui and PartGui module')
+			import PartGui
 			import RaytracingGui
 		except:
 			Err('   can not load RaytracingGui')
 			raise
 		else:	
 			Log ('   Set up Raytracing toolbar...\n')
-			list = ["Raytracing_WriteCamera","Raytracing_WritePart"]
+			list = ["Raytracing_NewProject","Raytracing_WriteCamera","Raytracing_WritePart"]
 			Gui.ToolbarAppendItems("RaytracingTools", list, 0)
 
 			Log ('   Set up Raytracing commandbar...\n')
-			list = ["Raytracing_WriteCamera","Raytracing_WritePart"]
+			list = ["Raytracing_NewProject","Raytracing_WriteCamera","Raytracing_WritePart"]
 			Gui.CommandbarAppendItems("RaytracingTools", list, 0)
 
 			Log ('   Set up Raytracing menues...\n')

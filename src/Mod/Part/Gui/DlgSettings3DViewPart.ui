@@ -8,14 +8,14 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>389</width>
-            <height>365</height>
+            <width>544</width>
+            <height>520</height>
         </rect>
     </property>
     <property name="caption">
         <string>Part Viewing Settings</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -25,7 +25,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>GroupBox12</cstring>
             </property>
@@ -42,136 +42,255 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QGroupBox">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>groupBox4</cstring>
+                        <cstring>layout14</cstring>
                     </property>
-                    <property name="title">
-                        <string>View Accuracy / Performance</string>
-                    </property>
-                    <vbox>
+                    <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLayoutWidget">
+                        <widget class="QLabel">
                             <property name="name">
-                                <cstring>layout1</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Max deviation of view mesh</string>
-                                    </property>
-                                </widget>
-                                <widget class="Gui::PrefFloatSpinBox">
-                                    <property name="name">
-                                        <cstring>prefFloatSpinBox1</cstring>
-                                    </property>
-                                    <property name="maxValue">
-                                        <number>100</number>
-                                    </property>
-                                    <property name="minValue">
-                                        <number>0.01</number>
-                                    </property>
-                                    <property name="lineStep">
-                                        <number>0.01</number>
-                                    </property>
-                                    <property name="value">
-                                        <number>0.5</number>
-                                    </property>
-                                    <property name="precision">
-                                        <number>2</number>
-                                    </property>
-                                    <property name="prefEntry" stdset="0">
-                                        <cstring>MeshDeviation</cstring>
-                                    </property>
-                                    <property name="prefPath" stdset="0">
-                                        <cstring>Mod/Part</cstring>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox">
-                            <property name="name">
-                                <cstring>prefCheckBox8</cstring>
+                                <cstring>textLabel1_3</cstring>
                             </property>
                             <property name="text">
-                                <string>Not using per vertex normals</string>
+                                <string>View accuracy / Performance</string>
+                            </property>
+                        </widget>
+                        <widget class="Line">
+                            <property name="name">
+                                <cstring>line2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="frameShape">
+                                <enum>HLine</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Max deviation of view mesh (smaller means nicer but slower):</string>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefFloatSpinBox">
+                            <property name="name">
+                                <cstring>prefFloatSpinBox1</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
+                            <property name="minValue">
+                                <number>0.01</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>0.01</number>
+                            </property>
+                            <property name="value">
+                                <number>0.5</number>
+                            </property>
+                            <property name="precision">
+                                <number>2</number>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <cstring>NoPerVertexNormals</cstring>
+                                <cstring>MeshDeviation</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>Mod/Part</cstring>
                             </property>
                         </widget>
-                        <widget class="Gui::PrefCheckBox">
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout14_2_2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
                             <property name="name">
-                                <cstring>prefCheckBox9</cstring>
+                                <cstring>textLabel1_3_3_2</cstring>
                             </property>
                             <property name="text">
-                                <string>Show view mesh vertexes</string>
+                                <string>View smooting</string>
+                            </property>
+                        </widget>
+                        <widget class="Line">
+                            <property name="name">
+                                <cstring>line2_2_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="frameShape">
+                                <enum>HLine</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox8</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Not using per vertex normals (using flat shading)</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>NoPerVertexNormals</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Mod/Part</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Using high qualiti normals (slower but nicer)</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>QualityNormals</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Mod/Part</cstring>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout14_2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_3_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>View accuracy / Performance</string>
+                            </property>
+                        </widget>
+                        <widget class="Line">
+                            <property name="name">
+                                <cstring>line2_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="frameShape">
+                                <enum>HLine</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox9</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show view mesh vertexes</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>MeshVertex</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Mod/Part</cstring>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Hilight color</string>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>prefColorButton1</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="color">
+                                <color>
+                                    <red>119</red>
+                                    <green>182</green>
+                                    <blue>131</blue>
+                                </color>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <cstring>MeshVertex</cstring>
+                                <cstring>HilightColor</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>Mod/Part</cstring>
                             </property>
                         </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout2</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Hilight color</string>
-                                    </property>
-                                </widget>
-                                <widget class="Gui::PrefColorButton">
-                                    <property name="name">
-                                        <cstring>prefColorButton1</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                    <property name="color">
-                                        <color>
-                                            <red>119</red>
-                                            <green>182</green>
-                                            <blue>131</blue>
-                                        </color>
-                                    </property>
-                                    <property name="prefEntry" stdset="0">
-                                        <cstring>HilightColor</cstring>
-                                    </property>
-                                    <property name="prefPath" stdset="0">
-                                        <cstring>Mod/Part</cstring>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
+                    </hbox>
                 </widget>
             </vbox>
         </widget>
-    </grid>
+    </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <slots>
     <slot>warnInventor(bool)</slot>
     <slot access="protected">loadSettings()</slot>
@@ -179,6 +298,7 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

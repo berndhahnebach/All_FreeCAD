@@ -50,10 +50,13 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
+#include <Base/Parameter.h>
+#include <App/Application.h>
 
 #include "ViewProvider.h"
 
-#include "../App/PartFeature.h"
+#include <Mod/Part/App/PartFeature.h>
+
 //#include "Tree.h"
 
 
@@ -67,7 +70,14 @@ using namespace PartGui;
        
 ViewProviderInventorPart::ViewProviderInventorPart()
 {
-  fDeflection = 0,1;
+  hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
+
+
+  fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
+  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+  lHilightColor       = hGrp->GetInt ("HilightColor",0);
+  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+
 }
 
 ViewProviderInventorPart::~ViewProviderInventorPart()
@@ -78,9 +88,15 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 { 
 
+  // geting actual setting values...
+  fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
+  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+  lHilightColor       = hGrp->GetInt ("HilightColor",0);
+  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+
+  
   SoSeparator * SepShapeRoot=new SoSeparator();
   if(computeFacesNew(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape()))
-//  if(ComputeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape(),(float)0.1))
     return SepShapeRoot;
   else
     Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
@@ -131,7 +147,7 @@ Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, co
   TopExp_Explorer ex;
 //  BRepMesh::Mesh(myShape,1.0);
 //	BRepMesh_Discret MESH(1.0,myShape,20.0);
-	BRepMesh_IncrementalMesh MESH(myShape,0.2);
+	BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
 
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
 
@@ -149,15 +165,18 @@ Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, co
 
     if(!vertices) break;
 
-    // define normals (this is optional)
-    SoNormal * norm = new SoNormal;
-    norm->vector.setValues(0, nbNodesInFace, vertexnormals);
-    root->addChild(norm);
+    if(!bNoPerVertexNormals)
+    {
+      // define normals (this is optional)
+      SoNormal * norm = new SoNormal;
+      norm->vector.setValues(0, nbNodesInFace, vertexnormals);
+      root->addChild(norm);
 
-    // bind one normal per face
-    SoNormalBinding * normb = new SoNormalBinding;
-    normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
-    root->addChild(normb);
+      // bind one normal per face
+      SoNormalBinding * normb = new SoNormalBinding;
+      normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
+      root->addChild(normb);
+    }
 
 	  // define vertices
 	  SoCoordinate3 * coords = new SoCoordinate3;
@@ -269,16 +288,19 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
       V3.Transform(myTransf);
     }
 
-    // Calculate triangle normal
-    gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
-    gp_Vec Normal = (v2-v1)^(v3-v1); 
+    if(!bNoPerVertexNormals)
+    {
+      // Calculate triangle normal
+      gp_Vec v1(V1.X(),V1.Y(),V1.Z()),v2(V2.X(),V2.Y(),V2.Z()),v3(V3.X(),V3.Y(),V3.Z());
+      gp_Vec Normal = (v2-v1)^(v3-v1); 
 
-    //Standard_Real Area = 0.5 * Normal.Magnitude();
+      //Standard_Real Area = 0.5 * Normal.Magnitude();
 
-    // add the triangle normal to the vertex normal for all points of this triangle
-    (*vertexnormals)[N1-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-    (*vertexnormals)[N2-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
-    (*vertexnormals)[N3-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+      // add the triangle normal to the vertex normal for all points of this triangle
+      (*vertexnormals)[N1-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+      (*vertexnormals)[N2-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+      (*vertexnormals)[N3-1] += SbVec3f(Normal.X(),Normal.Y(),Normal.Z());
+    }
 
     (*vertices)[N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
     (*vertices)[N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
@@ -292,30 +314,30 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
   // normalize all vertex normals
   for(i=0;i < nbNodesInFace;i++) {
 
-    gp_Dir clNormal;
+    if(bQualityNormals)
+    {
+      gp_Dir clNormal;
 
-    try {
-      Handle_Geom_Surface Surface = BRep_Tool::Surface(aFace);
+      try {
+        Handle_Geom_Surface Surface = BRep_Tool::Surface(aFace);
 
-      gp_Pnt vertex((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]);
-      GeomAPI_ProjectPointOnSurf ProPntSrf(vertex, Surface);
-      Standard_Real fU, fV; ProPntSrf.Parameters(1, fU, fV);
+        gp_Pnt vertex((*vertices)[i][0], (*vertices)[i][1], (*vertices)[i][2]);
+        GeomAPI_ProjectPointOnSurf ProPntSrf(vertex, Surface);
+        Standard_Real fU, fV; ProPntSrf.Parameters(1, fU, fV);
 
-      GeomLProp_SLProps clPropOfFace(Surface, fU, fV, 2, gp::Resolution());
+        GeomLProp_SLProps clPropOfFace(Surface, fU, fV, 2, gp::Resolution());
 
-      clNormal = clPropOfFace.Normal();
-      SbVec3f temp = SbVec3f(clNormal.X(),clNormal.Y(),clNormal.Z());
-      //Base::Console().Log("unterschied:%.2f",temp.dot((*vertexnormals)[i]));
-      if ( temp.dot((*vertexnormals)[i]) < 0 )
-        temp = -temp;
-      (*vertexnormals)[i] = temp;
+        clNormal = clPropOfFace.Normal();
+        SbVec3f temp = SbVec3f(clNormal.X(),clNormal.Y(),clNormal.Z());
+        //Base::Console().Log("unterschied:%.2f",temp.dot((*vertexnormals)[i]));
+        if ( temp.dot((*vertexnormals)[i]) < 0 )
+          temp = -temp;
+        (*vertexnormals)[i] = temp;
 
-    }catch(...){}
-
-
-    (*vertexnormals)[i].normalize();
-
+      }catch(...){}
+    }else{
+      (*vertexnormals)[i].normalize();
+    }
   }
-
 }
 

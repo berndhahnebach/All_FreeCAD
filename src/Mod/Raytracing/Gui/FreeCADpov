@@ -1,5 +1,6 @@
+// FreeCAD Povray standard file
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2005 Juergen Riegel         <juergen.riegel@web.de>     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,55 +21,57 @@
  *                                                                         *
  ***************************************************************************/
 
+// -w320 -h240
+// -w8000 -h6000 +a0.3
+// Use povray -iLehreW221animation.pov LehreW221animation.ini to trace.
+// Use povray -w1280 -h720 +a0.3 -iLehreW221animation.pov LehreW221animation.ini to trace.
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
+// Include Standard-Colors provided by povray
+#include "colors.inc"
+// Include Standard-Textures and Finishes provided by povray
+#include "textures.inc"
+#include "woods.inc"
+ 
+// default texture
+default {
+  texture { pigment {rgb 1} finish {ambient 0.2 reflection 0.2 specular 0.7} }
+}
+       
 
-#include "../../../Gui/ViewProvider.h"
-
-
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-
-namespace PartGui {
-
-
-class ViewProviderInventorPart:public Gui::ViewProviderInventor
-{
-public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderInventorPart();
-
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderInventorPart();
-
-  virtual SoNode* create(App::Feature *pcFeature);
-
-protected:
-  Standard_Boolean ComputeFaces(SoSeparator* root, const TopoDS_Shape &myShape, float deflection);
-  Standard_Boolean computeFacesNew(SoSeparator* root, const TopoDS_Shape &myShape);
-  void             transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
-
-  // setings stuff
-  FCParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
+sky_sphere {
+    pigment { rgb <0.8,0.8,0.8> }
+    pigment {
+    gradient x
+      color_map {
+        [0.00 color rgbt <0.4,0.8,0.5,0>]
+        [0.05 color rgbt <0.4,0.8,0.5,0>]
+        [0.06 color rgbt <0.5,0.5,0.5,1>]
+        [1.00 color rgbt <0.5,0.5,0.5,1>]
+      }
+      scale 0.1
+    }
+    pigment {
+    gradient y
+      color_map {
+        [0.00 color rgbt <.3,1,.7,0>]
+        [0.05 color rgbt <.3,1,.7,0>]
+        [0.06 color rgbt <0.5,0.5,0.5,1>]
+        [1.00 color rgbt <0.5,0.5,0.5,1>]
+      }
+      scale 0.1
+    }
+}
 
 
-};
+// includes the Part mesh writen from FreeCAD          
+#include "TempPart.inc"
+          
+// includes the camera from FreeCAD
+#include "TempCamera.inc"
 
-} // namespace PartGui
 
-
-#endif // __VIEWPROVIDERPART_H__
-
+ 
+// Lightsource
+light_source {
+<-1573.9813500000005,1310.07165000000003,-2000.1032>, color White
+}

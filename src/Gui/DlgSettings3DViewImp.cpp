@@ -66,26 +66,24 @@ void DlgSettings3DViewImp::warnInventor(bool b)
 
 void DlgSettings3DViewImp::saveSettings()
 {
-  PrefCheckBox_UseInventorViewer->onSave();
+  prefCheckBox8->onSave();
   CheckBox_CornerCoordSystem->onSave();
   CheckBox_ShowFPS->onSave();
   CheckBox_UseSimpleBackground->onSave();
   CheckBox_ShowViewerDecoration->onSave();
   CheckBox_UseAutoRotation->onSave();
   PrefLineEdit_UserDefinedViewer->onSave();
-  UseAntialiasing->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
 {
-  PrefCheckBox_UseInventorViewer->onRestore();
+  prefCheckBox8->onRestore();
   CheckBox_CornerCoordSystem->onRestore();
   CheckBox_ShowFPS->onRestore();
   CheckBox_UseSimpleBackground->onRestore();
   CheckBox_ShowViewerDecoration->onRestore();
   CheckBox_UseAutoRotation->onRestore();
   PrefLineEdit_UserDefinedViewer->onRestore();
-  UseAntialiasing->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

@@ -55,6 +55,8 @@
 
 #include <Mod/Part/App/PartFeature.h>
   
+#include "FreeCADpov.h"
+
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -123,17 +125,24 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
 //      << "  right     x*image_width/image_height\n"
       << "}\n";
 
-  Base::Console().Log("Pov Camera out:\n%s",out.str().c_str());
+  //Base::Console().Log("Pov Camera out:\n%s",out.str().c_str());
 
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("Preferences")->GetGroup("Mod")->GetGroup("Raytracing");
-  std::string cDir = hGrp->GetASCII("ProjectPath", "");
-  std::string cName = hGrp->GetASCII("CameraName", "StdCamera.inc");
+  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
 
-  std::string cFullName = cName;
+  std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+  std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
+  std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
+  bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
+  float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
+
+  if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
+    cDir += PATHSEP;
+
+  std::string cFullName = cDir+cCameraName;
   Base::Console().Log("Using file name:%s",cFullName.c_str());
 
   // open the file and write
-  std::ofstream fout((cDir+cName).c_str());
+  std::ofstream fout(cFullName.c_str());
   fout <<  out.str() << endl;
   fout.close();
 
@@ -315,22 +324,46 @@ void CmdRaytracingWritePart::activated(int iMsg)
     Part::PartFeature *pcPart = dynamic_cast<Part::PartFeature*> (pcActFeature);
     myShape = pcPart->GetShape();
   }
+  
+  // get the preferences
+  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+  std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+  std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
+  std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
+  bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
+  float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
 
-  std::string Name = "TempPart";
+
+  // name of the objects in the pov file
+  std::string Name = "Part";
 
   Base::Sequencer().start("Meshing Shape", 0);
+  Base::Console().Log("Meshing with Deviation: %f\n",fMeshDeviation);
 
   TopExp_Explorer ex;
-	BRepMesh_IncrementalMesh MESH(myShape,0.2);
+	BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
 
   Base::Sequencer().stop();
 
-  Base::Sequencer().start("Writing file", 0);
+
+  if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
+    cDir += PATHSEP;
+
+  std::string cFullName = cDir+cPartName;
+  Base::Console().Log("Using file name:%s",cFullName.c_str());
 
   // open the file and write
-  std::ofstream fout((Name +".inc").c_str());
-  fout <<  "// Written by FreeCAD http://free-cad.sf.net/" << endl;
+  std::ofstream fout(cFullName.c_str());
+
+  // counting faces and start sequencer
   int l = 1;
+  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
+  Base::Sequencer().start("Writing file", l);
+
+
+  // write the file
+  fout <<  "// Written by FreeCAD http://free-cad.sf.net/" << endl;
+  l = 1;
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {
 
     // get the shape and mesh it
@@ -413,8 +446,51 @@ bool CmdRaytracingWritePart::isActive(void)
 }
 
 
+//===========================================================================
+// CmdRaytracingNewProject
+//===========================================================================
+DEF_STD_CMD_A(CmdRaytracingNewProject);
+
+CmdRaytracingNewProject::CmdRaytracingNewProject()
+  :CppCommand("Raytracing_NewProject")
+{
+  sAppModule    = "Raytracing";
+  sGroup        = "Raytracing";
+  sMenuText     = "New render project";
+  sToolTipText  = "Wirte the initial povray file to render a part";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "Test1";
+  iAccel        = 0;
+}
+
+void CmdRaytracingNewProject::activated(int iMsg)
+{
+  // get the preferences
+  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+  std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+
+  if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
+    cDir += PATHSEP;
+
+  std::string cFullName = cDir+"FreeCAD.pov";
+  Base::Console().Log("Using file name:%s",cFullName.c_str());
+
+  // open the file and write
+  std::ofstream fout(cFullName.c_str());
+	fout << FreeCAD ;
+	fout.close();
 
 
+}
+
+bool CmdRaytracingNewProject::isActive(void)
+{
+	//if( getActiveDocument() )
+		return true;
+	//else
+	//	return false;
+}
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -425,4 +501,5 @@ void CreateCommands(void)
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdRaytracingWriteCamera());
   rcCmdMgr.addCommand(new CmdRaytracingWritePart());
+  rcCmdMgr.addCommand(new CmdRaytracingNewProject());
 }

@@ -133,39 +133,16 @@ int main( int argc, char ** argv )
 	return 0;
 }
 
-
-
 /*
-void CheckEnv(void)
+int WINAPI WinMain (
+   HINSTANCE hInstance,
+   HINSTANCE hPrevInstance,
+   LPTSTR     lpCmdLine,
+   int nCmdShow
+   )
 {
 
-	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SetPluginDefaults(Application::Config()["HomePath"].c_str());
-
-	// sets all needed varables if a FreeCAD LibPack is found
-	if(Application::Config()["FreeCADLib"] != "")
-	{
-		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
-
-		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
-	}
-
-	cout << flush;
-
-	bool bFailure=false;
-
-	TestEnvExists("CSF_MDTVFontDirectory",bFailure);
-	TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
-	TestEnvExists("CSF_UnitsDefinition",bFailure);
-	TestEnvExists("CSF_UnitsLexicon",bFailure);
-
-	if (bFailure) {
-     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
-		exit(1);
-	}
-
+  
+  return main();
 }
-
 */

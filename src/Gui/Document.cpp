@@ -85,11 +85,8 @@ Document::Document(App::Document* pcDocument,ApplicationWindow * app, const char
   _hContext->Display(hTrihedron);
   _hContext->Deactivate(hTrihedron);
 
-  // alwayes create at least one view
-  if(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View")->GetBool("UseInventorViewer",false) )
-    createView("View3DIv");
-  else
-    createView("");
+  // open at least one viewer
+  createView("View3DIv");
 }
 
 Document::~Document()
@@ -147,12 +144,13 @@ void Document::createView(const char* sType)
   MDIView* pcView3D;
   if(strcmp(sType,"View3DIv") == 0){
     pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
-  }else{
+  }else if(strcmp(sType,"View3DOCC") == 0){
     pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
-  }
+  }else
+    Base::Console().Error("Unknown view type: %s\n",sType);
 
 
-  QString aName = tr("%1%2:%3").arg(tr("Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
+  QString aName = tr("%1%2:%3").arg(tr("Document::createView() Unnamed Document")).arg(_iDocId).arg(_iWinCount++);
 
 
   pcView3D->setCaption(aName);

@@ -121,10 +121,36 @@ void Command::activated ()
     getAppWnd()->macroManager()->setModule(sAppModule.c_str());
     try{
       activated(0);
-    }catch(...)
-    {
-      Base::Console().Error("Command::activated()  Activate of Cmd failed\n");
-    };
+    }catch(Base::Exception &e)                          
+    {                                                              
+          std::string str;                                         
+          str += "FreeCAD exception thrown (";                     
+          str += e.what();                                         
+          str += ")";                                              
+          e.ReportException();                                     
+    }                                                              
+    catch(std::exception &e)                                       
+    {                                                              
+          std::string str;                                         
+          str += "C++ exception thrown (";                         
+          str += e.what();                                         
+          str += ")";                                              
+          Base::Console().Error(str.c_str());                      
+     }                                                             
+    catch(Standard_Failure)                                        
+    {                                                              
+		      Handle(Standard_Failure) e = Standard_Failure::Caught(); 
+          std::string str;                                         
+          str += "OCC exception thrown (";                         
+          str += e->GetMessageString();                            
+          str += ")\n";                                            
+          Base::Console().Error(str.c_str());                      
+    }                                                              
+    catch(...)                                                     
+    {                                                              
+    		  Base::Console().Error("Unknown C++ exception in command thrown");       
+    }   
+
   }
 }
 void Command::toggled (bool b)
@@ -396,52 +422,99 @@ void MacroCommand::setAccel(int i)
     _pcAction->setAccel(iAccel);
 }
 
+
 void MacroCommand::load()
+
 {
+
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
 
+
+
   if (hGrp->HasGroup("Macros"))
+
   {
+
     hGrp = hGrp->GetGroup("Macros");
+
     std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
+
     for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
+
     {
+
       MacroCommand* macro = new MacroCommand((*it)->GetGroupName());
+
       macro->setScriptName  ( (*it)->GetASCII( "Script"     ).c_str() );
+
       macro->setMenuText    ( (*it)->GetASCII( "Menu"       ).c_str() );
+
       macro->setToolTipText ( (*it)->GetASCII( "Tooltip"    ).c_str() );
+
       macro->setWhatsThis   ( (*it)->GetASCII( "WhatsThis"  ).c_str() );
+
       macro->setStatusTip   ( (*it)->GetASCII( "Statustip"  ).c_str() );
+
       if ((*it)->GetASCII("Pixmap", "nix") != "nix") 
+
         macro->setPixmap    ( (*it)->GetASCII( "Pixmap"     ).c_str() );
+
       macro->setAccel       ( (*it)->GetInt  ( "Accel",0    )         );
+
       ApplicationWindow::Instance->commandManager().addCommand( macro );
+
     }
+
   }
+
 }
+
+
 
 void MacroCommand::save()
+
 {
+
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
+
   hGrp->Clear();
 
+
+
   std::vector<Command*> macros = ApplicationWindow::Instance->commandManager().getGroupCommands("Macros");
+
   if ( macros.size() > 0 )
+
   {
+
     for (std::vector<Command*>::iterator it = macros.begin(); it!=macros.end(); ++it )
+
     {
+
       MacroCommand* macro = (MacroCommand*)(*it);
+
       FCParameterGrp::handle hMacro = hGrp->GetGroup(macro->getName());
+
       hMacro->SetASCII( "Script",    macro->getScriptName () );
+
       hMacro->SetASCII( "Menu",      macro->getMenuText   () );
+
       hMacro->SetASCII( "Tooltip",   macro->getToolTipText() );
+
       hMacro->SetASCII( "WhatsThis", macro->getWhatsThis  () );
+
       hMacro->SetASCII( "Statustip", macro->getStatusTip  () );
+
       hMacro->SetASCII( "Pixmap",    macro->getPixmap     () );
+
       hMacro->SetInt  ( "Accel",     macro->getAccel      () );
+
     }
+
   }
+
 }
+
 
 //===========================================================================
 // FCPythonCommand

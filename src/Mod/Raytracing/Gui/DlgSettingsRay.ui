@@ -103,29 +103,35 @@
                                         <cstring>ProjectPath</cstring>
                                     </property>
                                     <property name="prefPath" stdset="0">
-                                        <cstring>Mod/Ratracing</cstring>
+                                        <cstring>Mod/Raytracing</cstring>
                                     </property>
                                 </widget>
                                 <widget class="Gui::PrefLineEdit">
                                     <property name="name">
                                         <cstring>prefLineEdit2</cstring>
                                     </property>
+                                    <property name="text">
+                                        <string>TempCamera.inc</string>
+                                    </property>
                                     <property name="prefEntry" stdset="0">
                                         <cstring>CameraName</cstring>
                                     </property>
                                     <property name="prefPath" stdset="0">
-                                        <cstring>Mod/Ratracing</cstring>
+                                        <cstring>Mod/Raytracing</cstring>
                                     </property>
                                 </widget>
                                 <widget class="Gui::PrefLineEdit">
                                     <property name="name">
                                         <cstring>prefLineEdit3</cstring>
                                     </property>
+                                    <property name="text">
+                                        <string>TempPart.inc</string>
+                                    </property>
                                     <property name="prefEntry" stdset="0">
                                         <cstring>PartName</cstring>
                                     </property>
                                     <property name="prefPath" stdset="0">
-                                        <cstring>Mod/Ratracing</cstring>
+                                        <cstring>Mod/Raytracing</cstring>
                                     </property>
                                 </widget>
                             </vbox>
@@ -198,7 +204,7 @@
                                         <cstring>MeshDeviation</cstring>
                                     </property>
                                     <property name="prefPath" stdset="0">
-                                        <cstring>Mod/Ratracing</cstring>
+                                        <cstring>Mod/Raytracing</cstring>
                                     </property>
                                 </widget>
                             </hbox>
@@ -214,7 +220,7 @@
                                 <cstring>NotWriteVertexNormals</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>Mod/Ratracing</cstring>
+                                <cstring>Mod/Raytracing</cstring>
                             </property>
                         </widget>
                         <widget class="Gui::PrefCheckBox">
@@ -228,7 +234,7 @@
                                 <cstring>WriteUVCoordinates</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>Mod/Ratracing</cstring>
+                                <cstring>Mod/Raytracing</cstring>
                             </property>
                         </widget>
                     </vbox>
@@ -237,8 +243,6 @@
         </widget>
     </grid>
 </widget>
-<tabstops>
-</tabstops>
 <slots>
     <slot>warnInventor(bool)</slot>
     <slot access="protected">loadSettings()</slot>

@@ -271,6 +271,50 @@ InputName=DlgSettingsRayImp
 # End Source File
 # Begin Source File
 
+SOURCE=.\FreeCAD.pov
+
+!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\FreeCADpov
+
+!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
+
+# Begin Custom Build - Building FreeCADpov.h
+InputPath=.\FreeCADpov
+
+"FreeCADpov.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
+
+# Begin Custom Build - Building FreeCADpov.h
+InputPath=.\FreeCADpov
+
+"FreeCADpov.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
