@@ -31,6 +31,31 @@ class ConsoleTestCase(unittest.TestCase):
         FreeCAD.PrintWarning("   Printing warning\n")
         FreeCAD.PrintLog("   Printing Log\n")
 
+    def testStatus(self):
+        SLog = FreeCAD.GetStatus("Console","Log")
+        SErr = FreeCAD.GetStatus("Console","Err")
+        SWrn = FreeCAD.GetStatus("Console","Wrn")
+        SMsg = FreeCAD.GetStatus("Console","Msg")
+        FreeCAD.SetStatus("Console","Log",1)
+        FreeCAD.SetStatus("Console","Err",1)
+        FreeCAD.SetStatus("Console","Wrn",1)
+        FreeCAD.SetStatus("Console","Msg",1)
+        self.failUnless(FreeCAD.GetStatus("Console","Msg")==1,"Set and read status failed (Console,Msg)")
+        self.failUnless(FreeCAD.GetStatus("Console","Err")==1,"Set and read status failed (Console,Err)")
+        self.failUnless(FreeCAD.GetStatus("Console","Wrn")==1,"Set and read status failed (Console,Wrn)")
+        self.failUnless(FreeCAD.GetStatus("Console","Log")==1,"Set and read status failed (Console,Log)")
+        FreeCAD.SetStatus("Console","Log",0)
+        FreeCAD.SetStatus("Console","Err",0)
+        FreeCAD.SetStatus("Console","Wrn",0)
+        FreeCAD.SetStatus("Console","Msg",0)
+        self.failUnless(FreeCAD.GetStatus("Console","Msg")==0,"Set and read status failed (Console,Msg)")
+        self.failUnless(FreeCAD.GetStatus("Console","Err")==0,"Set and read status failed (Console,Err)")
+        self.failUnless(FreeCAD.GetStatus("Console","Wrn")==0,"Set and read status failed (Console,Wrn)")
+        self.failUnless(FreeCAD.GetStatus("Console","Log")==0,"Set and read status failed (Console,Log)")
+        FreeCAD.SetStatus("Console","Log",SLog)
+        FreeCAD.SetStatus("Console","Err",SErr)
+        FreeCAD.SetStatus("Console","Wrn",SWrn)
+        FreeCAD.SetStatus("Console","Msg",SMsg)
 
 class ParameterTestCase(unittest.TestCase):
     def setUp(self):
