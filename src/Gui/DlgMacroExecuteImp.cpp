@@ -35,10 +35,12 @@
 
 #include "DlgMacroExecuteImp.h"
 #include "../App/Application.h"
+#include "../App/Document.h"
 #include "Application.h"
 #include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "Macro.h"
+#include "Document.h"
 #include "PythonEditor.h"
 
 using namespace Gui;
@@ -119,6 +121,8 @@ void DlgMacroExecuteImp::onExecute()
     QDir d( _cMacroPath.c_str() );
     QFileInfo fi( d, LineEditMacroName->text() );
     ApplicationWindow::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
+    // after macro run recalculate the document
+    ApplicationWindow::Instance->activeDocument()->getDocument()->Recompute();
   }
 }
 

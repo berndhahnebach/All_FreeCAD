@@ -22,14 +22,19 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
-#include "../../../Base/Console.h"
+#include <App/Application.h>
+#include <Base/Console.h>
 
-#include "../../../Gui/Application.h"
-#include "../../../Gui/ViewProvider.h"
-#include "../../../Gui/Macro.h"
+#include <Gui/Application.h>
+#include <Gui/ViewProvider.h>
+#include <Gui/Macro.h>
+
+#include <Gui/WidgetFactory.h>
 
 #include "ViewProvider.h"
+#include "DlgSettings3DViewPartImp.h"
+
+using namespace PartGui;
 
 void CreateCommands(void);
 
@@ -82,6 +87,9 @@ void ModuleExport initPartGui() {
 
 	// instanciating the commands
 	CreateCommands();
+
+  // register preferences pages
+  new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( QObject::tr( "Part design" ) );
 
 
 	return;

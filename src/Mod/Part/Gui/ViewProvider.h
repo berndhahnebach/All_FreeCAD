@@ -53,7 +53,7 @@ public:
 protected:
   Standard_Boolean ComputeFaces(SoSeparator* root, const TopoDS_Shape &myShape, float deflection);
   Standard_Boolean computeFacesNew(SoSeparator* root, const TopoDS_Shape &myShape);
-  void             transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,long** cons,int &nbNodesInFace,int &nbTriInFace );
+  void             transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
 
   float fDeflection;
 

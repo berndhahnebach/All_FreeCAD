@@ -59,8 +59,8 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 { 
 
   SoSeparator * SepShapeRoot=new SoSeparator();
-//  if(computeFacesNew(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape()))
-  if(ComputeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape(),(float)0.1))
+  if(computeFacesNew(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape()))
+//  if(ComputeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape(),(float)0.1))
     return SepShapeRoot;
   else
     Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
@@ -78,7 +78,7 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
-//	BRepMesh_IncrementalMesh MESH(myShape,fDeflection);
+	BRepMesh_IncrementalMesh MESH(myShape,1.0);
 
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
 
@@ -89,9 +89,10 @@ Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, co
     // this block mesh the face and transfers it in a C array of vertices and face indexes
 		Standard_Integer nbNodesInFace,nbTriInFace;
 		SbVec3f* vertices=0;
+		SbVec3f* vertexnormals=0;
 		long* cons=0;
     
-    transferToArray(aFace,&vertices,&cons,nbNodesInFace,nbTriInFace);
+    transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
 
     if(!vertices) break;
 
@@ -117,12 +118,12 @@ Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, co
   return true;
 }
 
-void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,long** cons,int &nbNodesInFace,int &nbTriInFace )
+void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )
 {
 	TopLoc_Location aLoc;
 
   // doing the meshing and checking the result
-	BRepMesh_IncrementalMesh MESH(aFace,fDeflection);
+	//BRepMesh_IncrementalMesh MESH(aFace,fDeflection);
 	Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
   if(aPoly.IsNull()){ 
     Base::Console().Log("Empty face trianglutaion\n");
@@ -145,6 +146,7 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
 	nbNodesInFace = aPoly->NbNodes();
 	nbTriInFace = aPoly->NbTriangles();
 	*vertices = new SbVec3f[nbNodesInFace];
+  *vertexnormals = new SbVec3f[nbNodesInFace];
 	*cons = new long[4*(nbTriInFace)];
 
   // cycling through the poly mesh

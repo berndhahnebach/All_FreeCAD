@@ -25,12 +25,19 @@
 #ifndef _PreComp_
 #endif
 
-#include "../../../App/Application.h"
-#include "../../../Base/Console.h"
+#include <App/Application.h>
+#include <Base/Console.h>
+#include <Gui/WidgetFactory.h>
 
-#include "../../../Gui/Application.h"
+
+#include <Gui/Application.h>
+
+
+#include "DlgSettingsRayImp.h"
 
 void CreateCommands(void);
+
+using namespace RayGui;
 
 
 /* module functions */
@@ -75,6 +82,10 @@ void ModuleExport initRaytracingGui() {
 
   // instanciating the commands
   CreateCommands();
+
+  // register preferences pages
+  new Gui::PrefPageProducer<DlgSettingsRayImp> ( QObject::tr( "Raytracing" ) );
+
 
 
   return;

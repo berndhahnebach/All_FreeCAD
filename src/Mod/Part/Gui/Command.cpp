@@ -318,12 +318,16 @@ void PartImportStep::activated(int iMsg)
 {
 
 
-  DlgPartImportStepImp cDlg(getAppWnd(),"Part import STEP",true);
-  if ( cDlg.exec() == QDialog::Accepted )
+//  DlgPartImportStepImp cDlg(getAppWnd(),"Part import STEP",true);
+//  if ( cDlg.exec() == QDialog::Accepted )
+
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
 	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\")");
-	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 //	  DoCommand(Doc,"App.DocGet().Update()");
     commitCommand();
   
@@ -365,12 +369,18 @@ PartImportIges::PartImportIges()
 void PartImportIges::activated(int iMsg)
 {
 
-  DlgPartImportIgesImp cDlg(getAppWnd(),"Part import IGES",true);
-  if ( cDlg.exec() == QDialog::Accepted )
+//  DlgPartImportIgesImp cDlg(getAppWnd(),"Part import IGES",true);
+//  if ( cDlg.exec() == QDialog::Accepted )
+
+  
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
   {
     openCommand("Part ImportIGES Create");
 	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\")");
-	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
+//	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 	  doCommand(Doc,"App.DocGet().Update()");
     commitCommand();
   

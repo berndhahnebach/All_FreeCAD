@@ -108,12 +108,6 @@
 #include <V3d_View.hxx>
 
 
-
-// Qt Toolkit
-#include <qaction.h>
-#include <qapplication.h>
-#include <qmainwindow.h>
-#include <qworkspace.h>
 // Q Toolkit
 #include <qaccel.h>
 #include <qaction.h>
@@ -182,6 +176,18 @@
 #include <qwidgetstack.h>
 #include <qwindowsstyle.h>
 #include <qworkspace.h>
+#include <qcheckbox.h>
+#include <qradiobutton.h>
+#include <qslider.h>
+#include <qwidgetfactory.h>
+#include <qcheckbox.h>
+#include <qcombobox.h>
+#include <qlineedit.h>
+#include <qlistbox.h>
+#include <qradiobutton.h>
+#include <qslider.h>
+
+
 
 #endif  //_PreComp_
 
