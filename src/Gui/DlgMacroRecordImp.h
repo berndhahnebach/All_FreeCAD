@@ -27,7 +27,7 @@
 #include "DlgMacroRecord.h"
 #include "Window.h"
 
-class FCMacroManager;
+class MacroManager;
 
 namespace Gui {
 namespace Dialog {
@@ -55,7 +55,7 @@ public:
 
 protected:
   /// conviniance pointer
-  FCMacroManager* _pcMacroMngr; 
+  MacroManager* _pcMacroMngr; 
   std::string _cMacroPath; // Macro file to save in
 };
 

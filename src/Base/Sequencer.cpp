@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <stdio.h>
 #endif
 
 #include "Sequencer.h"

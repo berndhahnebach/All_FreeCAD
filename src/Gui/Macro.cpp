@@ -1,40 +1,32 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
 
-/** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
- */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
-#	include <string>
-#	include <stdio.h>
+# include <assert.h>
+# include <string>
+# include <stdio.h>
 # include <qglobal.h>
 #endif
 
@@ -45,89 +37,88 @@
 #include "../Base/Exception.h"
 
 
-
-
+using namespace Gui;
 
 //**************************************************************************
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-FCMacroManager::FCMacroManager()
+MacroManager::MacroManager()
 :_bIsOpen(false)
-{}
+{
+}
 
-FCMacroManager::~FCMacroManager(){}
+MacroManager::~MacroManager()
+{
+}
 
 
 //**************************************************************************
 // separator for other implemetation aspects
 
-void FCMacroManager::Open(MacroType eType,const char *sName)
+void MacroManager::open(MacroType eType,const char *sName)
 {
-	// check 
-	assert(!_bIsOpen);
-	assert(eType == File);
+  // check 
+  assert(!_bIsOpen);
+  assert(eType == File);
 
   _sModuleSet.clear();
-	_sName = sName;
+  _sName = sName;
 
-	if(_sName.find(".FCMacro") == std::string::npos)
-		_sName += ".FCMacro";
+  if(_sName.find(".FCMacro") == std::string::npos)
+    _sName += ".FCMacro";
 
-	_sMacroInProgress = "# Macro Begin: ";
-	_sMacroInProgress += _sName;
-	_sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
-	_sMacroInProgress += "import FreeCAD\n";
+  _sMacroInProgress = "# Macro Begin: ";
+  _sMacroInProgress += _sName;
+  _sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+  _sMacroInProgress += "import FreeCAD\n";
 
-	_bIsOpen = true;
+  _bIsOpen = true;
 }
 
 /// close (and save) the recording sassion
-void FCMacroManager::Commit(void)
+void MacroManager::commit(void)
 {
-	_sMacroInProgress += "# Macro End: ";
-	_sMacroInProgress += _sName;
-	_sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+  _sMacroInProgress += "# Macro End: ";
+  _sMacroInProgress += _sName;
+  _sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
-	std::ofstream file(_sName.c_str());
+  std::ofstream file(_sName.c_str());
 
-	file << 	_sMacroInProgress.c_str();
+  file << 	_sMacroInProgress.c_str();
 
-	Base::Console().Log("Commit Macro: %s\n",_sName.c_str());
+  Base::Console().Log("Commit Macro: %s\n",_sName.c_str());
 
-	_sMacroInProgress = "";
-	_sName = "";
+  _sMacroInProgress = "";
+  _sName = "";
   _sModuleSet.clear();
-	_bIsOpen = false;
-
+  _bIsOpen = false;
 }
 
 
 /// cancels the recording sassion
-void FCMacroManager::Cancel(void)
+void MacroManager::cancel(void)
 {
-	_sMacroInProgress = "";
-	_sName = "";
+  _sMacroInProgress = "";
+  _sName = "";
   _sModuleSet.clear();
 
-	_bIsOpen = false;
-	
-	
+  _bIsOpen = false;
 }
 
-void FCMacroManager::AddLine(LineType Type,const char* sLine)
+void MacroManager::addLine(LineType Type,const char* sLine)
 {
   if(_bIsOpen)
   {
-	  //sMacroInProgress += "\t" + sLine + "\n";
-	  if(Type == Gui) 
-			  _sMacroInProgress += "#";	
-	  _sMacroInProgress += sLine;		
-	  _sMacroInProgress += "\n";		
+    //sMacroInProgress += "\t" + sLine + "\n";
+    if(Type == Gui) 
+      _sMacroInProgress += "#";
+    _sMacroInProgress += sLine;
+    _sMacroInProgress += "\n";
   }
 }
 
-void FCMacroManager::SetModule(const char* sModule)
+void MacroManager::setModule(const char* sModule)
 {
   if(_bIsOpen && sModule && *sModule != '\0' && _sModuleSet.find(sModule) == _sModuleSet.end())
   {
@@ -139,19 +130,17 @@ void FCMacroManager::SetModule(const char* sModule)
 }
 
 
-void FCMacroManager::Run(MacroType eType,const char *sName)
+void MacroManager::run(MacroType eType,const char *sName)
 {
   try
   {
-  	Base::Interpreter().LaunchFile( sName );
+    Base::Interpreter().LaunchFile( sName );
   }
   catch ( const Base::Exception& e )
   {
     qWarning( e.what() );
   }
 }
-
-
 
 
 //**************************************************************************

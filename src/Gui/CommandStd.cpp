@@ -1246,7 +1246,7 @@ void StdCmdDlgMacroRecord::activated(int iMsg)
 
 bool StdCmdDlgMacroRecord::isActive(void)
 {
-  return ! (getAppWnd()->GetMacroMngr()->IsOpen());
+  return ! (getAppWnd()->GetMacroMngr()->isOpen());
 }
 
 //===========================================================================
@@ -1275,7 +1275,7 @@ void StdCmdDlgMacroExecute::activated(int iMsg)
 
 bool StdCmdDlgMacroExecute::isActive(void)
 {
-  return ! (getAppWnd()->GetMacroMngr()->IsOpen());
+  return ! (getAppWnd()->GetMacroMngr()->isOpen());
 }
 
 //===========================================================================
@@ -1298,12 +1298,12 @@ StdCmdMacroStop::StdCmdMacroStop()
 
 void StdCmdMacroStop::activated(int iMsg)
 {
-  getAppWnd()->GetMacroMngr()->Commit();
+  getAppWnd()->GetMacroMngr()->commit();
 }
 
 bool StdCmdMacroStop::isActive(void)
 {
-  return getAppWnd()->GetMacroMngr()->IsOpen();
+  return getAppWnd()->GetMacroMngr()->isOpen();
 }
 
 //===========================================================================

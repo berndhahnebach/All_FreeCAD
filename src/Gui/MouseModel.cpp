@@ -1,49 +1,38 @@
-/** \file MouseModel.cpp
- *  \brief Several mouse models for picking, selection, ...
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *   
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-// Handling for precompiled headers
 
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
-#	include <stack>
-#	include <vector>
-#	include <qapplication.h>
-#	include <qcursor.h>
-#	include <qevent.h>
-#	include <qpainter.h>
+# include <assert.h>
+# include <stack>
+# include <vector>
+# include <qapplication.h>
+# include <qcursor.h>
+# include <qevent.h>
+# include <qpainter.h>
 # include <qpixmap.h>
-#	include <qvbox.h>
+# include <qvbox.h>
 #endif
 
 #include "MouseModel.h"
@@ -51,9 +40,10 @@
 
 
 #include "View3D.h"
- 
 
-void FCMouseModel::initMouseModel(View3D *pcView3D)
+using namespace Gui; 
+
+void MouseModel::initMouseModel(View3D *pcView3D)
 {
   _pcView3D=pcView3D;
   m_cPrevCursor = _pcView3D->cursor();
@@ -62,7 +52,7 @@ void FCMouseModel::initMouseModel(View3D *pcView3D)
   initialize();
 }
 
-void FCMouseModel::releaseMouseModel()
+void MouseModel::releaseMouseModel()
 {
   // do termination of your mousemodel
   terminate();
@@ -70,7 +60,7 @@ void FCMouseModel::releaseMouseModel()
   _pcView3D->setCursor(m_cPrevCursor);
 }
 
-void FCMouseModel::moveMouseEvent (QMouseEvent *cEvent)
+void MouseModel::moveMouseEvent (QMouseEvent *cEvent)
 {
   // do all the drawing stuff for us
   QPoint clPoint = cEvent->pos();
@@ -81,7 +71,7 @@ void FCMouseModel::moveMouseEvent (QMouseEvent *cEvent)
   draw();
 }
 
-void FCMouseModel::wheelMouseEvent (QWheelEvent *cEvent)
+void MouseModel::wheelMouseEvent (QWheelEvent *cEvent)
 {
   // do all the drawing stuff for us
   //QPoint clPoint = cEvent->pos();
@@ -90,7 +80,7 @@ void FCMouseModel::wheelMouseEvent (QWheelEvent *cEvent)
   draw();
 }
 
-void FCMouseModel::mousePressEvent(QMouseEvent* cEvent)
+void MouseModel::mousePressEvent(QMouseEvent* cEvent)
 {
   switch (cEvent->button())
   {
@@ -109,7 +99,7 @@ void FCMouseModel::mousePressEvent(QMouseEvent* cEvent)
   };
 }
 
-void FCMouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
+void MouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
 {
   switch (cEvent->button())
   {
@@ -128,35 +118,35 @@ void FCMouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
   };
 }
 
-View3D            &FCMouseModel::GetView3D(void) 
+View3D& MouseModel::GetView3D(void) 
 { 
-	// first init the MouseModel -> initMouseModel(View3D &View3D)
-	assert (_pcView3D);
-	return *_pcView3D;
+  // first init the MouseModel -> initMouseModel(View3D &View3D)
+  assert (_pcView3D);
+  return *_pcView3D;
 }
 
-Handle_V3d_View   &FCMouseModel::GetView  (void) 
+Handle_V3d_View& MouseModel::GetView  (void) 
 { 
-	// first init the MouseModel -> initMouseModel(View3D &View3D)
-	assert (_pcView3D);
-	return _pcView3D->GetView();
+  // first init the MouseModel -> initMouseModel(View3D &View3D)
+  assert (_pcView3D);
+  return _pcView3D->GetView();
 }
 
-Handle_V3d_Viewer &FCMouseModel::GetViewer(void) 
+Handle_V3d_Viewer& MouseModel::GetViewer(void) 
 {
-	// first init the MouseModel -> initMouseModel(View3D &View3D)
-	assert (_pcView3D);
-	return _pcView3D->GetViewer();
+  // first init the MouseModel -> initMouseModel(View3D &View3D)
+  assert (_pcView3D);
+  return _pcView3D->GetViewer();
 }
 
-Handle_AIS_InteractiveContext &FCMouseModel::GetContext(void)
+Handle_AIS_InteractiveContext& MouseModel::GetContext(void)
 {
-	// first init the MouseModel -> initMouseModel(View3D &View3D)
-	assert (_pcView3D);
-	return _pcView3D->GetContext();
+  // first init the MouseModel -> initMouseModel(View3D &View3D)
+  assert (_pcView3D);
+  return _pcView3D->GetContext();
 }
 
-void FCMouseModel::drawRect( int x, int y, int w, int h, QPainter* p )
+void MouseModel::drawRect( int x, int y, int w, int h, QPainter* p )
 {
   if (p)
     p->drawRect( QRect( QPoint( QMIN( x, w ), QMIN( y, h ) ),
@@ -170,7 +160,7 @@ void FCMouseModel::drawRect( int x, int y, int w, int h, QPainter* p )
   }
 }
 
-void FCMouseModel::drawNode ( int x, int y, int w, int h, QPainter* p )
+void MouseModel::drawNode ( int x, int y, int w, int h, QPainter* p )
 {
   if (p)
     p->drawEllipse( x, y, w, h );
@@ -184,7 +174,7 @@ void FCMouseModel::drawNode ( int x, int y, int w, int h, QPainter* p )
   }
 }
 
-void FCMouseModel::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
+void MouseModel::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
 {
   if (p)
     p->drawLine( x1, y1, x2, y2 );
@@ -197,7 +187,7 @@ void FCMouseModel::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
   }
 }
 
-void FCMouseModel::drawCircle ( int x, int y, int r, QPainter* p )
+void MouseModel::drawCircle ( int x, int y, int r, QPainter* p )
 {
   if (p)
   {
@@ -213,7 +203,7 @@ void FCMouseModel::drawCircle ( int x, int y, int r, QPainter* p )
   }
 }
 
-void FCMouseModel::drawText ( int x, int y, const QString & str, QPainter* p )
+void MouseModel::drawText ( int x, int y, const QString & str, QPainter* p )
 {
   if (p)
     p->drawText( x, y, str);
@@ -228,188 +218,182 @@ void FCMouseModel::drawText ( int x, int y, const QString & str, QPainter* p )
 
 // **** MouseModelStd ********************************************************
 
-FCMouseModelStd::FCMouseModelStd(void)
-	:mode(nothing)
+MouseModelStd::MouseModelStd(void)
+  :mode(nothing)
 {
 };
 
-void FCMouseModelStd::initialize()
+void MouseModelStd::initialize()
 {
 }
 
-void FCMouseModelStd::terminate()
+void MouseModelStd::terminate()
 {
 }
 
 // Buttons to use
-#define OCC_ROTATION 		5 		// MidButton & LeftButton
-#define OCC_PANNING  		4		// MidButton
-#define OCC_ZOOM     		6		// MidButton & RightButton
-#define OCC_SELECTION 		1		// LeftButton
-//#define OCC_ADDSELECTION 	9		// LeftButton & ShiftButton
-#define OCC_ADDSELECTION 	17		// LeftButton & CtrlButton
-#define OCC_SHOWPOPUP       2		// RightButton
+#define OCC_ROTATION    5   // MidButton & LeftButton
+#define OCC_PANNING     4   // MidButton
+#define OCC_ZOOM        6   // MidButton & RightButton
+#define OCC_SELECTION   1   // LeftButton
+//#define OCC_ADDSELECTION  9 // LeftButton & ShiftButton
+#define OCC_ADDSELECTION  17  // LeftButton & CtrlButton
+#define OCC_SHOWPOPUP       2 // RightButton
 
-void FCMouseModelStd::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
+void MouseModelStd::mouseLeftPressEvent ( QMouseEvent *cEvent)
 {
   mousePressEvent(cEvent);
 }
 
-void FCMouseModelStd::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
+void MouseModelStd::mouseMiddlePressEvent ( QMouseEvent *cEvent)
 {
   mousePressEvent(cEvent);
 }
 
-void FCMouseModelStd::mouseRightPressEvent		 ( QMouseEvent *cEvent)
+void MouseModelStd::mouseRightPressEvent ( QMouseEvent *cEvent)
 {
   mousePressEvent(cEvent);
 }
 
-void FCMouseModelStd::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
+void MouseModelStd::mouseLeftReleaseEvent ( QMouseEvent *cEvent)
 {
   mouseReleaseEvent(cEvent);
 }
 
-void FCMouseModelStd::mouseMiddleReleaseEvent ( QMouseEvent *cEvent)
+void MouseModelStd::mouseMiddleReleaseEvent ( QMouseEvent *cEvent)
 {
   mouseReleaseEvent(cEvent);
 }
 
-void FCMouseModelStd::mouseRightReleaseEvent	 ( QMouseEvent *cEvent)
+void MouseModelStd::mouseRightReleaseEvent ( QMouseEvent *cEvent)
 {
   mouseReleaseEvent(cEvent);
 }
 
-void FCMouseModelStd::mousePressEvent( QMouseEvent *cEvent)
+void MouseModelStd::mousePressEvent( QMouseEvent *cEvent)
 {
-	iX = cEvent->x();
-	iY = cEvent->y();
-	//cout << "View3D: MousePress:"<< cEvent->state() +  cEvent->button()<<endl;
-	switch(cEvent->state() + cEvent->button())
-	{
-		case OCC_ROTATION:
-			GetView()->StartRotation(iX,iY);
-			mode = rotation;
-			break;
-		case OCC_PANNING:
-			mode = panning;
-			break;
-		case OCC_ZOOM:
-			mode = zooming;
-			break;
-		case OCC_SELECTION:
-			mode = selection;
-			break;
-		case OCC_ADDSELECTION:
-			mode = addselection;
-			break;
-		case OCC_SHOWPOPUP:
-			GetView3D().ShowPopup(iX,iY);
-			break;
-		default:
-			mode = nothing;
-	}
-	//cout << "View3D: Mode:"<< (int) mode <<endl;
+  iX = cEvent->x();
+  iY = cEvent->y();
+  //cout << "View3D: MousePress:"<< cEvent->state() +  cEvent->button()<<endl;
+  switch(cEvent->state() + cEvent->button())
+  {
+    case OCC_ROTATION:
+      GetView()->StartRotation(iX,iY);
+      mode = rotation;
+      break;
+    case OCC_PANNING:
+      mode = panning;
+      break;
+    case OCC_ZOOM:
+      mode = zooming;
+      break;
+    case OCC_SELECTION:
+      mode = selection;
+      break;
+    case OCC_ADDSELECTION:
+      mode = addselection;
+      break;
+    case OCC_SHOWPOPUP:
+      GetView3D().ShowPopup(iX,iY);
+      break;
+    default:
+      mode = nothing;
+  }
+  //cout << "View3D: Mode:"<< (int) mode <<endl;
 }
 
-void FCMouseModelStd::mouseReleaseEvent( QMouseEvent *cEvent)
+void MouseModelStd::mouseReleaseEvent( QMouseEvent *cEvent)
 {
-	//cout << "View3D: MouseRelease" <<endl;
-	switch(mode)
-	{
-		case selection:
-			GetContext()->MoveTo(cEvent->x(),cEvent->x(),GetView());
-			GetContext()->Select();
-			break;
-		case addselection:
-			GetContext()->MoveTo(cEvent->x(),cEvent->x(),GetView());
-			GetContext()->ShiftSelect();
-			break;
-		default:
-			;	
-	}
-	mode = nothing;
-	
+  //cout << "View3D: MouseRelease" <<endl;
+  switch(mode)
+  {
+    case selection:
+      GetContext()->MoveTo(cEvent->x(),cEvent->x(),GetView());
+      GetContext()->Select();
+      break;
+    case addselection:
+      GetContext()->MoveTo(cEvent->x(),cEvent->x(),GetView());
+      GetContext()->ShiftSelect();
+      break;
+    default:
+  ;
+  }
+  mode = nothing;
 }
 
-void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
+void MouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 {
-#	ifndef FC_OS_WIN32
-		QApplication::flushX();
-#	endif
+#ifndef FC_OS_WIN32
+  QApplication::flushX();
+#endif
 
-	//cout << "View3D: MouseMove" <<endl;
-	switch(mode)
-	{
-		case nothing:
-			break;
-		case rotation:
-			GetView()->Rotation(cEvent->x(),cEvent->y());
-			break;
-		case panning:
-		  GetView()->Pan(cEvent->x()-iX,iY-cEvent->y()); // Use "Pan(...)" instead of "Panning(...)" !!!
-			break;
-		case zooming:
-			GetView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
-			break;
-		default:
-			break;
-	}
-	GetContext()->MoveTo(cEvent->x(),cEvent->y(),GetView());
-	
-	iX = cEvent->x();
-	iY = cEvent->y();
+  //cout << "View3D: MouseMove" <<endl;
+  switch(mode)
+  {
+    case nothing:
+      break;
+    case rotation:
+      GetView()->Rotation(cEvent->x(),cEvent->y());
+      break;
+    case panning:
+      GetView()->Pan(cEvent->x()-iX,iY-cEvent->y()); // Use "Pan(...)" instead of "Panning(...)" !!!
+      break;
+    case zooming:
+      GetView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
+      break;
+    default:
+      break;
+  }
+  GetContext()->MoveTo(cEvent->x(),cEvent->y(),GetView());
 
+  iX = cEvent->x();
+  iY = cEvent->y();
 }
 
-void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
+void MouseModelStd::wheelEvent ( QWheelEvent * cEvent)
 {
-	int zDelta = cEvent->delta()/3;
-	//Console().Log("Wheel Delta=%d\n",zDelta);
-	Quantity_Length fWidth, fHeight;
-	GetView()->Size(fWidth, fHeight);
-	float fLog = float(log10(fWidth));
-	int   nExp = int(fLog);
+  int zDelta = cEvent->delta()/3;
+  //Console().Log("Wheel Delta=%d\n",zDelta);
+  Quantity_Length fWidth, fHeight;
+  GetView()->Size(fWidth, fHeight);
+  float fLog = float(log10(fWidth));
+  int   nExp = int(fLog);
 
-	// Zoom begrenzen
-	if ((nExp > -6 && zDelta > 0) || (nExp < 8 && zDelta < 0))
-	{
-		GetView()->Zoom(0,0,zDelta,0);
+  // Zoom begrenzen
+  if ((nExp > -6 && zDelta > 0) || (nExp < 8 && zDelta < 0))
+  {
+    GetView()->Zoom(0,0,zDelta,0);
     GetView3D().ShowDimension();
-	}
-	else if (zDelta > 0)
-	{
-		Base::Console().Message(QObject::tr("Cannot zoom in any more\n").latin1());
-	}
-	else
-	{
-		Base::Console().Message(QObject::tr("Cannot zoom out any more\n").latin1());
-	}
+  }
+  else if (zDelta > 0)
+  {
+    Base::Console().Message(QObject::tr("Cannot zoom in any more\n").latin1());
+  }
+  else
+  {
+    Base::Console().Message(QObject::tr("Cannot zoom out any more\n").latin1());
+  }
 }
 
-
-void FCMouseModelStd::mouseDoubleClickEvent ( QMouseEvent * )
+void MouseModelStd::mouseDoubleClickEvent ( QMouseEvent * )
 {
 
-
 }
 
-void FCMouseModelStd::keyPressEvent ( QKeyEvent * )
+void MouseModelStd::keyPressEvent ( QKeyEvent * )
 {
 
-
 }
 
-void FCMouseModelStd::keyReleaseEvent ( QKeyEvent * )
+void MouseModelStd::keyReleaseEvent ( QKeyEvent * )
 {
 
-
 }
 
-// **** MouseModelPolyPicker *************************************************
+// -----------------------------------------------------------------------------------
 
-FCMouseModelPolyPicker::FCMouseModelPolyPicker() 
-: FCMouseModelStd()
+MouseModelPolyPicker::MouseModelPolyPicker() 
+: MouseModelStd()
 {
   m_iRadius    = 2;
   m_iNodes     = 0;
@@ -417,20 +401,16 @@ FCMouseModelPolyPicker::FCMouseModelPolyPicker()
   m_bDrawNodes = true;
 }
 
-void FCMouseModelPolyPicker::initialize()
+void MouseModelPolyPicker::initialize()
 {
-#if QT_VERSION <= 230
-  _pcView3D->setCursor(QCursor(CrossCursor));
-#else
   _pcView3D->setCursor(QCursor(QCursor::CrossCursor));
-#endif
 }
 
-void FCMouseModelPolyPicker::terminate()
+void MouseModelPolyPicker::terminate()
 {
 }
 
-void FCMouseModelPolyPicker::draw ()
+void MouseModelPolyPicker::draw ()
 {
   if ( m_bWorking )
   {
@@ -450,11 +430,11 @@ void FCMouseModelPolyPicker::draw ()
   }
 }
 
-FCMouseModelPolyPicker::~FCMouseModelPolyPicker()
+MouseModelPolyPicker::~MouseModelPolyPicker()
 {
 }
 
-void FCMouseModelPolyPicker::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
+void MouseModelPolyPicker::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
 {
   QPoint point = cEvent->pos();
 
@@ -473,20 +453,20 @@ void FCMouseModelPolyPicker::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
   m_iXold = point.x();  m_iYold = point.y();
 }
 
-void FCMouseModelPolyPicker::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
+void MouseModelPolyPicker::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
 {
 }
 
-void FCMouseModelPolyPicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
+void MouseModelPolyPicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 {
 }
 
-void FCMouseModelPolyPicker::wheelEvent ( QWheelEvent * e)
+void MouseModelPolyPicker::wheelEvent ( QWheelEvent * e)
 {
   // do nothing
 }
 
-void FCMouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
+void MouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
 {
   switch (e->key())
   {
@@ -494,12 +474,12 @@ void FCMouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
       _pcView3D->PopMouseModel();
       break;
     default:
-      FCMouseModelStd::keyPressEvent(e);
+      MouseModelStd::keyPressEvent(e);
       break;
   }
 }
 
-void FCMouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
+void MouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
 {
   //QPoint point = cEvent->pos();
 
@@ -516,33 +496,33 @@ void FCMouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
   _pcView3D->PopMouseModel();
 }
 
-// **** MouseModelSelection *************************************************
+// -----------------------------------------------------------------------------------
 
-FCMouseModelSelection::FCMouseModelSelection()
-: FCMouseModelStd()
+MouseModelSelection::MouseModelSelection()
+: MouseModelStd()
 {
   m_bWorking = false;
 }
 
-FCMouseModelSelection::~FCMouseModelSelection()
+MouseModelSelection::~MouseModelSelection()
 {
 }
 
-void FCMouseModelSelection::initialize()
+void MouseModelSelection::initialize()
 {
 }
 
-void FCMouseModelSelection::terminate()
+void MouseModelSelection::terminate()
 {
 }
 
-void FCMouseModelSelection::draw ()
+void MouseModelSelection::draw ()
 {
   if (m_bWorking)
     drawRect( m_iXold, m_iYold, m_iXnew, m_iYnew );
 }
 
-void FCMouseModelSelection::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
+void MouseModelSelection::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
 {
   m_bWorking = true;
   QPoint p = cEvent->pos();
@@ -550,12 +530,13 @@ void FCMouseModelSelection::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
   m_iYold = m_iYnew = p.y();
 }
 
-void FCMouseModelSelection::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
+void MouseModelSelection::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
 {
   m_bWorking = false;
 }
 
-// **** MouseModelSelection *************************************************
+// -----------------------------------------------------------------------------------
+
 /* XPM */
 static const char *xpm_cursor[]={
 "32 32 2 1",
@@ -594,31 +575,31 @@ static const char *xpm_cursor[]={
 "................................",
 "................................"};
 
-FCMouseModelCirclePicker::FCMouseModelCirclePicker()
-: FCMouseModelStd(), _nRadius(50)
+MouseModelCirclePicker::MouseModelCirclePicker()
+: MouseModelStd(), _nRadius(50)
 {
   QPoint p = QCursor::pos();
   m_iXnew = p.x(); 
   m_iYnew = p.y();
 }
 
-FCMouseModelCirclePicker::~FCMouseModelCirclePicker()
+MouseModelCirclePicker::~MouseModelCirclePicker()
 {
 }
 
-void FCMouseModelCirclePicker::initialize()
+void MouseModelCirclePicker::initialize()
 {
   QPixmap p(xpm_cursor);
   QCursor cursor( p );
   _pcView3D->setCursor(cursor);
 }
 
-void FCMouseModelCirclePicker::terminate()
+void MouseModelCirclePicker::terminate()
 {
   draw();
 }
 
-void FCMouseModelCirclePicker::draw ()
+void MouseModelCirclePicker::draw ()
 {
   char szBuf[20];
   float fRad = float(_pcView3D->GetView()->Convert(Standard_Integer(_nRadius)));
@@ -628,15 +609,14 @@ void FCMouseModelCirclePicker::draw ()
   drawText(m_iXnew+9, m_iYnew-9, szBuf);
 }
 
-void FCMouseModelCirclePicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
+void MouseModelCirclePicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 {
   _pcView3D->PopMouseModel();
 }
 
 
-void FCMouseModelCirclePicker::wheelEvent			    ( QWheelEvent  * cEvent )
+void MouseModelCirclePicker::wheelEvent			    ( QWheelEvent  * cEvent )
 {
-	int delta = cEvent->delta();
-	_nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
-
+  int delta = cEvent->delta();
+  _nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
 }

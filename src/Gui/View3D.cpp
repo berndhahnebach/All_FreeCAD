@@ -1,19 +1,25 @@
 /***************************************************************************
-                          3DView.cpp  -  description
-                             -------------------
-    begin                : Mon Jan 1 2001
-    copyright            : (C) 2001 by Juergen Riegel
-    email                : juergen.riegel@web.de
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
 #include "PreCompiled.h"
 
@@ -209,7 +215,7 @@ bool View3D::InitCasCadeView(void)
 
 
 	// pushing the standard mouse model
-	PushMouseModel(new FCMouseModelStd);
+	PushMouseModel(new MouseModelStd);
 
    	bIsInit = true;
 	
@@ -384,7 +390,7 @@ void View3D::resizeEvent (QResizeEvent * e)
 }
 
 // Managing MouseModels
-void View3D::PushMouseModel	(FCMouseModel *pcModel)
+void View3D::PushMouseModel	(MouseModel *pcModel)
 {
 	pcModel->initMouseModel(this);
 	_cMouseStack.push(pcModel);
@@ -401,7 +407,7 @@ void View3D::PopMouseModel	(void)
 	}
 }
 
-FCMouseModel* View3D::GetMouseModel	(void)
+MouseModel* View3D::GetMouseModel	(void)
 {
 	return _cMouseStack.top();
 }

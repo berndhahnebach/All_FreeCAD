@@ -1,27 +1,24 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
-
 
 
 #include "PreCompiled.h"
@@ -40,17 +37,19 @@
 
 #include "GuiConsole.h"
 
+using namespace Gui;
+
 #ifndef FC_OS_LINUX
 
-const unsigned int FCGUIConsole::s_nMaxLines = 1000;
-unsigned int       FCGUIConsole::s_nRefCount = 0;
+const unsigned int GUIConsole::s_nMaxLines = 1000;
+unsigned int       GUIConsole::s_nRefCount = 0;
 
 /** Constructor
  *  Open a Top level Window and redirect the 
  *  stdin, stdout and stderr stream to it.
  *  Dont needet in Linux!
  */
-FCGUIConsole::FCGUIConsole (void)
+GUIConsole::GUIConsole (void)
 {
   if (!s_nRefCount++)
   {
@@ -79,45 +78,45 @@ FCGUIConsole::FCGUIConsole (void)
 /** Destructor
  *  Close the window and redirect the streams back 
  */
-FCGUIConsole::~FCGUIConsole (void)
+GUIConsole::~GUIConsole (void)
 {
   if (!--s_nRefCount)
       FreeConsole();
 }
 
-
-void FCGUIConsole::Message(const char *sMsg)
+void GUIConsole::Message(const char *sMsg)
 {
-	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-	printf("%s",sMsg);
-	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+  ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
+  printf("%s",sMsg);
+  ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 }
 
-void FCGUIConsole::Warning(const char *sWarn)
+void GUIConsole::Warning(const char *sWarn)
 {
-	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);
-	printf("%s",sWarn);
-	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
-}
-void FCGUIConsole::Error  (const char *sErr)
-{
-	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED );
-	printf("%s",sErr);
-	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+  ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);
+  printf("%s",sWarn);
+  ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 }
 
-void FCGUIConsole::Log  (const char *sLog)
+void GUIConsole::Error  (const char *sErr)
 {
-	printf("%s",sLog);
+  ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED );
+  printf("%s",sErr);
+  ::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+}
+
+void GUIConsole::Log  (const char *sLog)
+{
+  printf("%s",sLog);
 }
 
 #else /* FC_OS_LINUX */
 
-// safely ignore FCGUIConsole::s_nMaxLines and  FCGUIConsole::s_nRefCount
-FCGUIConsole::~FCGUIConsole (void) {}
-void FCGUIConsole::Message(const char *sMsg) { std::cout<<sMsg; }
-void FCGUIConsole::Warning(const char *sWarn){ std::cerr<<"Warning: "<<sWarn; }
-void FCGUIConsole::Error  (const char *sErr) { std::cerr<<"Error: "<<sErr;}
-void FCGUIConsole::Log  (const char *sLog)   { std::clog<<sLog;}
+// safely ignore GUIConsole::s_nMaxLines and  GUIConsole::s_nRefCount
+GUIConsole::~GUIConsole (void) {}
+void GUIConsole::Message(const char *sMsg) { std::cout<<sMsg; }
+void GUIConsole::Warning(const char *sWarn){ std::cerr<<"Warning: "<<sWarn; }
+void GUIConsole::Error  (const char *sErr) { std::cerr<<"Error: "<<sErr;}
+void GUIConsole::Log  (const char *sLog)   { std::clog<<sLog;}
 
 #endif /* FC_OS_LINUX */

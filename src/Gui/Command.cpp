@@ -122,7 +122,7 @@ void Command::activated ()
   {
     Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
     // set the application module type for the macro
-    getAppWnd()->GetMacroMngr()->SetModule(sAppModule.c_str());
+    getAppWnd()->GetMacroMngr()->setModule(sAppModule.c_str());
     try{
       activated(0);
     }catch(...)
@@ -195,9 +195,9 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     va_end(namelessVars);
 
   if(eType == Gui)
-    getAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Gui,format);
+    getAppWnd()->GetMacroMngr()->addLine(MacroManager::Gui,format);
   else
-    getAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Base,format);
+    getAppWnd()->GetMacroMngr()->addLine(MacroManager::Base,format);
   Interpreter().RunFCCommand(format);
 
   free (format);
@@ -340,7 +340,7 @@ void MacroCommand::activated(int iMsg)
 
   QDir d( cMacroPath.c_str() );
   QFileInfo fi( d, scriptName );
-  ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,( fi.filePath() ).latin1());
+  ApplicationWindow::Instance->GetMacroMngr()->run(MacroManager::File,( fi.filePath() ).latin1());
 }
 
 void MacroCommand::setScriptName ( const QString& s )

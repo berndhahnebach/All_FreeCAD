@@ -58,7 +58,7 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool m
   _pcMacroMngr = ApplicationWindow::Instance->GetMacroMngr();
 
   // check if a macro recording is in progress
-  if(_pcMacroMngr->IsOpen())
+  if(_pcMacroMngr->isOpen())
   {
     PushButtonStart->setEnabled(false);
   }
@@ -105,9 +105,9 @@ void DlgMacroRecordImp::onTieKeyboard()
  */
 void DlgMacroRecordImp::cancel()
 {
-  if(_pcMacroMngr->IsOpen())
+  if(_pcMacroMngr->isOpen())
   {
-    _pcMacroMngr->Cancel();
+    _pcMacroMngr->cancel();
   }
   
   reject();
@@ -128,7 +128,7 @@ void DlgMacroRecordImp::start()
   else
   {
     // open the macro recording
-    _pcMacroMngr->Open(FCMacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
+    _pcMacroMngr->open(MacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
     accept();
   }
 }
@@ -138,10 +138,10 @@ void DlgMacroRecordImp::start()
  */
 void DlgMacroRecordImp::stop()
 {
-  if(_pcMacroMngr->IsOpen())
+  if(_pcMacroMngr->isOpen())
   {
     // ends the macrorecording and save the file...
-    _pcMacroMngr->Commit();
+    _pcMacroMngr->commit();
     accept();
   }
 }

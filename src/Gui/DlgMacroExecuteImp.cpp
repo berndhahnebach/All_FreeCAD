@@ -117,7 +117,7 @@ void DlgMacroExecuteImp::onExecute()
 
     QDir d( _cMacroPath.c_str() );
     QFileInfo fi( d, LineEditMacroName->text() );
-    ApplicationWindow::Instance->GetMacroMngr()->Run(FCMacroManager::File,( fi.filePath() ).latin1());
+    ApplicationWindow::Instance->GetMacroMngr()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
   }
 }
 

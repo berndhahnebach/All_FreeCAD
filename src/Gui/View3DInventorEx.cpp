@@ -1,26 +1,25 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
+ *   This library  is distributed in the hope that it will be useful,      *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        *
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2003                                                   *
  ***************************************************************************/
+
 
 #include "PreCompiled.h"
 
@@ -57,24 +56,24 @@
 
 #include "View3DInventorExamples.h"
 
+using namespace Gui;
 
-FCView3DInventorEx::FCView3DInventorEx( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
+View3DInventorEx::View3DInventorEx( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
-//	_viewer = new SoQtExaminerViewer(this);
-	_viewer = new MyExaminerViewer(this,"FreeCAD.png");
+//  _viewer = new SoQtExaminerViewer(this);
+  _viewer = new Gui::MyExaminerViewer(this,"FreeCAD.png");
 
-	SetViewerDefaults();
+  SetViewerDefaults();
 }
 
-FCView3DInventorEx::~FCView3DInventorEx()
+View3DInventorEx::~View3DInventorEx()
 {
   //delete _viewer;
-	pcSepRoot->unref();
-
+  pcSepRoot->unref();
 }
 
-void FCView3DInventorEx::UpdatePrefs(void)
+void View3DInventorEx::UpdatePrefs(void)
 {
 
 
@@ -84,84 +83,81 @@ void FCView3DInventorEx::UpdatePrefs(void)
     SbBool ok = in.openFile(fn.latin1());
     if (!ok) throw FCException("FCView3DInventor::SetViewerDefaults() wrong file name for user special!");
     SoSeparator * pcSepUserSpecial = SoDB::readAll(&in);
-	pcSepRoot->addChild(pcSepUserSpecial);
+  pcSepRoot->addChild(pcSepUserSpecial);
 */
-
-
-
 }
 
 
-void FCView3DInventorEx::SetViewerDefaults(void)
+void View3DInventorEx::SetViewerDefaults(void)
 {
-	// create the root group
-	pcSepRoot = new SoSeparator();
-	pcSepRoot->ref();
+  // create the root group
+  pcSepRoot = new SoSeparator();
+  pcSepRoot->ref();
 
-	// empty separator for user special
+  // empty separator for user special
     SoSeparator * pcSepUserSpecial= new SoSeparator();
-	pcSepRoot->addChild(pcSepUserSpecial);
+  pcSepRoot->addChild(pcSepUserSpecial);
 
 
-	// shape aperance
-	pcShapeHint = new SoShapeHints;
-	pcShapeHint->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
+  // shape aperance
+  pcShapeHint = new SoShapeHints;
+  pcShapeHint->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
 
-	// color management
-	QColor Col1(236,212,156); // light brown
-	QColor Col(128,128,128);  // grey
+  // color management
+  QColor Col1(236,212,156); // light brown
+  QColor Col(128,128,128);  // grey
 
-	QColor DifCol=Col1;
-	QColor AmbCol=Col1;
-	QColor SpeCol=Col;
-	QColor EmCol(0,0,0);
+  QColor DifCol=Col1;
+  QColor AmbCol=Col1;
+  QColor SpeCol=Col;
+  QColor EmCol(0,0,0);
 
-	pcShapeMaterial = new SoMaterial;
-	pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
-	pcShapeMaterial->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
-	pcShapeMaterial->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
-	pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
-	pcSepRoot->addChild(pcShapeMaterial);
+  pcShapeMaterial = new SoMaterial;
+  pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
+  pcShapeMaterial->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
+  pcShapeMaterial->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
+  pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
+  pcSepRoot->addChild(pcShapeMaterial);
 
-	pcSepRoot->renderCaching = SoSeparator::ON;
-	pcSepRoot->addChild(pcShapeHint);
+  pcSepRoot->renderCaching = SoSeparator::ON;
+  pcSepRoot->addChild(pcShapeHint);
 
-	// create axis
-	pcSepAxis = new SoSeparator();
+  // create axis
+  pcSepAxis = new SoSeparator();
 
-	// x Axis
-	SoMaterial *pcMat = new SoMaterial();
-	pcMat->diffuseColor.setValue(1.0,0,0);
-	pcSepAxis->addChild(pcMat);
-	SoCylinder *pcCylinder = new SoCylinder();
-	pcCylinder->height.setValue(100);
-	
-	SoTransform *pcTransform = new SoTransform();
-	pcTransform->rotation.setValue(  SbVec3f (1,0,0), 90);
-	pcSepAxis->addChild(pcTransform);
+  // x Axis
+  SoMaterial *pcMat = new SoMaterial();
+  pcMat->diffuseColor.setValue(1.0,0,0);
+  pcSepAxis->addChild(pcMat);
+  SoCylinder *pcCylinder = new SoCylinder();
+  pcCylinder->height.setValue(100);
 
-	// y axis
-	pcMat = new SoMaterial();
-	pcMat->diffuseColor.setValue(0,1.0,0);
-	pcSepAxis->addChild(pcMat);
-	pcCylinder = new SoCylinder();
-	pcCylinder->height.setValue(100);
+  SoTransform *pcTransform = new SoTransform();
+  pcTransform->rotation.setValue(  SbVec3f (1,0,0), 90);
+  pcSepAxis->addChild(pcTransform);
 
-	pcSepRoot->addChild(pcSepAxis);
+  // y axis
+  pcMat = new SoMaterial();
+  pcMat->diffuseColor.setValue(0,1.0,0);
+  pcSepAxis->addChild(pcMat);
+  pcCylinder = new SoCylinder();
+  pcCylinder->height.setValue(100);
 
-
-	// create the root for the shape
-//	pcSepShapeRoot = new SoSeparator();
-//	pcSepRoot->addChild(pcSepShapeRoot);
-
-//	_viewer->setSceneGraph(pcSepRoot);
+  pcSepRoot->addChild(pcSepAxis);
 
 
-	_viewer->setFeedbackVisibility(true);
-	_viewer->setFeedbackSize(15);
-//	_viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-	_viewer->viewAll();
-	_viewer->setDecoration(false);
+  // create the root for the shape
+//  pcSepShapeRoot = new SoSeparator();
+//  pcSepRoot->addChild(pcSepShapeRoot);
+
+//  _viewer->setSceneGraph(pcSepRoot);
+
+
+  _viewer->setFeedbackVisibility(true);
+  _viewer->setFeedbackSize(15);
+//  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
+  _viewer->viewAll();
+  _viewer->setDecoration(false);
 
   _viewer->setSceneGraph(new SoCone);
   _viewer->show();
@@ -170,13 +166,13 @@ void FCView3DInventorEx::SetViewerDefaults(void)
 }
 
 /*
-void FCView3DInventorEx::SetShape(void)
+void View3DInventorEx::SetShape(void)
 {
-	TopoDS_Shape cShape;
+  TopoDS_Shape cShape;
   SoBrepShape cShapeConverter;
 
 
-	assert(GetAppDocument());
+  assert(GetAppDocument());
 
 
     //TDF_Label L = GetAppDocument()->Main()->GetOCCLabel();
@@ -184,134 +180,134 @@ void FCView3DInventorEx::SetShape(void)
 
 
 
-	// Open the argument file..
+  // Open the argument file..
     //cShapeConverter.SetFile(fn.latin1());
 
-	bool nurbs_enable = false;
-	bool selection = false;
-	bool strip_enable = false;
-	bool strip_color = false;
-	
-	cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
-	cShapeConverter.Compute(pcSepShapeRoot);
+  bool nurbs_enable = false;
+  bool selection = false;
+  bool strip_enable = false;
+  bool strip_color = false;
+
+  cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
+  cShapeConverter.Compute(pcSepShapeRoot);
 
 }
 */
-void FCView3DInventorEx::Update(void)
+void View3DInventorEx::Update(void)
 {
 
   TDF_Label L = GetAppDocument()->GetActive();
 
   if(! L.IsNull())
   {
-	  Handle(TNaming_NamedShape) ShapeToViewName;
-	  if (!( L.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))
-		  return;		
+    Handle(TNaming_NamedShape) ShapeToViewName;
+    if (!( L.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))
+      return;
 
-	  // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
-	  TopoDS_Shape ShapeToView  = ShapeToViewName->Get();
+    // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
+    TopoDS_Shape ShapeToView  = ShapeToViewName->Get();
 
-	  bool nurbs_enable = false;
-	  bool selection = true;
-	  bool strip_enable = false;
-	  bool strip_color = false;
-	  
+    bool nurbs_enable = false;
+    bool selection = true;
+    bool strip_enable = false;
+    bool strip_color = false;
+
     SoBrepShape cShapeConverter;
 
-	  cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
+    cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
     cShapeConverter.SetShape(ShapeToView);
 
     SoSeparator * SepShapeRoot=new SoSeparator();
-	  if(cShapeConverter.Compute2(SepShapeRoot))
+    if(cShapeConverter.Compute2(SepShapeRoot))
       _viewer->setSceneGraph(SepShapeRoot);
     else
-      Base::Console().Error("FCView3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
+      Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
   }
 
 }
 
 
-void FCView3DInventorEx::resizeEvent ( QResizeEvent * e)
+void View3DInventorEx::resizeEvent ( QResizeEvent * e)
 {
-	MDIView::resizeEvent(e);
-//	_pcFrame->resize(e->size());
+  MDIView::resizeEvent(e);
+//  _pcFrame->resize(e->size());
 }
 
-const char *FCView3DInventorEx::GetName(void)
+const char *View3DInventorEx::GetName(void)
 {
-	return "View3DInventorEx";
+  return "View3DInventorEx";
 }
 
-bool FCView3DInventorEx::OnMsg(const char* pMsg)
+bool View3DInventorEx::OnMsg(const char* pMsg)
 {
-	if(strcmp("SetStereoOn",pMsg) == 0 ){
-		_viewer->setStereoViewing(true);
-		return true;
-	}else if(strcmp("SetStereoOff",pMsg) == 0 ){
-		_viewer->setStereoViewing(false);
-		return true;
-	}else if(strcmp("SetDecorationOn",pMsg) == 0 ){
-		_viewer->setDecoration(true);
-		return true;
-	}else if(strcmp("SetDecorationOff",pMsg) == 0 ){
-		_viewer->setDecoration(false);
-		return true;
-	}else if(strcmp("SetFeedbackOff",pMsg) == 0 ){
-		_viewer->setFeedbackVisibility(true);
-		return true;
-	}else if(strcmp("SetFeedbackOn",pMsg) == 0 ){
-		_viewer->setFeedbackVisibility(false);
-		return true;
-	}else if(strcmp("Example1",pMsg) == 0 ){
+  if(strcmp("SetStereoOn",pMsg) == 0 ){
+    _viewer->setStereoViewing(true);
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    _viewer->setStereoViewing(false);
+    return true;
+  }else if(strcmp("SetDecorationOn",pMsg) == 0 ){
+    _viewer->setDecoration(true);
+    return true;
+  }else if(strcmp("SetDecorationOff",pMsg) == 0 ){
+    _viewer->setDecoration(false);
+    return true;
+  }else if(strcmp("SetFeedbackOff",pMsg) == 0 ){
+    _viewer->setFeedbackVisibility(true);
+    return true;
+  }else if(strcmp("SetFeedbackOn",pMsg) == 0 ){
+    _viewer->setFeedbackVisibility(false);
+    return true;
+  }else if(strcmp("Example1",pMsg) == 0 ){
     SoSeparator * root = new SoSeparator;;
     Texture3D(root);
-		_viewer->setSceneGraph(root);
-		return true;
-	}else if(strcmp("Example2",pMsg) == 0 ){
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("Example2",pMsg) == 0 ){
     SoSeparator * root = new SoSeparator;;
     LightManip(root);
-		_viewer->setSceneGraph(root);
-		return true;
-	}else if(strcmp("Example3",pMsg) == 0 ){
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("Example3",pMsg) == 0 ){
     SoSeparator * root = new SoSeparator;;
     AnimationTexture(root);
-		_viewer->setSceneGraph(root);
-		return true;
-	}else if(strcmp("ViewFit",pMsg) == 0 ){
-		_viewer->viewAll();
-		return true;
-	}
-	return false;
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("ViewFit",pMsg) == 0 ){
+    _viewer->viewAll();
+    return true;
+  }
+  return false;
 
-	return false;
+  return false;
 }
 
-bool FCView3DInventorEx::OnHasMsg(const char* pMsg)
+bool View3DInventorEx::OnHasMsg(const char* pMsg)
 {
-	if(strcmp("SetStereoOn",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("SetStereoOff",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("SetStereoOff",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("SetDecorationOn",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("SetDecorationOff",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("SetFeedbackOff",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("SetFeedbackOn",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("Example1",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("Example2",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("Example3",pMsg) == 0 ){
-		return true;
-	}else if(strcmp("ViewFit",pMsg) == 0 ){
-		return true;
-	}
-	return false;
+  if(strcmp("SetStereoOn",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetDecorationOn",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetDecorationOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetFeedbackOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetFeedbackOn",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example1",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example2",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example3",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewFit",pMsg) == 0 ){
+    return true;
+  }
+  return false;
 }
 
 
@@ -319,28 +315,26 @@ bool FCView3DInventorEx::OnHasMsg(const char* pMsg)
 
 void MDIView::fitAll()
 {
-	myView->fitAll();
+  myView->fitAll();
 }
 
 
 */
-void FCView3DInventorEx::onWindowActivated ()
+void View3DInventorEx::onWindowActivated ()
 {
   //myOperations->onSelectionChanged();
 }
 
-void FCView3DInventorEx::setCursor(const QCursor& aCursor)
+void View3DInventorEx::setCursor(const QCursor& aCursor)
 {
   //_viewer->setCursor(aCursor);
 }
 
-void FCView3DInventorEx::dump()
+void View3DInventorEx::dump()
 {
 
 
 }
-
-
 
 // *************************************************************************
 
@@ -423,8 +417,7 @@ MyExaminerViewer::~MyExaminerViewer()
   this->foregroundroot->unref();
 }
 
-void
-MyExaminerViewer::actualRedraw(void)
+void MyExaminerViewer::actualRedraw(void)
 {
   // Must set up the OpenGL viewport manually, as upon resize
   // operations, Coin won't set it up until the SoGLRenderAction is
@@ -455,12 +448,4 @@ MyExaminerViewer::actualRedraw(void)
   glra->apply(this->foregroundroot);
 }
 
-
-
-
-
-	
-#include "moc_View3DInventorEx.cpp"
-
-
-
+#include "moc_View3DInventorEx.cpp" 

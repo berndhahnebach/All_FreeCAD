@@ -1,26 +1,25 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2003                        *   
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Library General Public License (LGPL)   *
- *   as published by the Free Software Foundation; either version 2 of     *
- *   the License, or (at your option) any later version.                   *
- *   for detail see the LICENCE text file.                                 *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
  *                                                                         *
- *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
- *   USA                                                                   *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
- *   Juergen Riegel 2003                                                   *
  ***************************************************************************/
+
 
 #ifndef __VIEW3DINVENTOR__
 #define __VIEW3DINVENTOR__
@@ -30,97 +29,97 @@
 #include "Inventor/Qt/viewers/SoQtViewer.h"
 
 class QMouseEvent;
-class FCMouseModel;
-class FCGuiDocument;
 class FCGuiDocument;
 class View3D;
 class TreeView;
 class QSplitter;
-class QWidget;		
-class QPushButton;	
-class QVBoxLayout;	
-class QHBoxLayout;	
+class QWidget;
+class QPushButton;
+class QVBoxLayout;
+class QHBoxLayout;
 class QWidgetStack;
 class QTabBar;
 class SoQtExaminerViewer;
 class SoQtViewer;
-class View3DInventor;
 
-class	SoSeparator ;
+class	SoSeparator;
 class	SoShapeHints;
-class	SoMaterial	;
+class	SoMaterial;
 
+
+namespace Gui {
+class MyView3DInventor;
 
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
+ *  \author Jürgen Riegel
  */
-class FCView3DInventor: public MDIView
+class View3DInventor: public MDIView
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	FCView3DInventor( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
-	~FCView3DInventor();
+  View3DInventor( FCGuiDocument* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  ~View3DInventor();
 
-	/// Mesage handler
-	virtual bool OnMsg(const char* pMsg);
-	virtual const char *GetName(void);
+  /// Mesage handler
+  virtual bool OnMsg(const char* pMsg);
+  virtual const char *GetName(void);
 
-	virtual void resizeEvent ( QResizeEvent * e);
+  virtual void resizeEvent ( QResizeEvent * e);
 
-	virtual void Update(void);
+  virtual void Update(void);
 
-	void UpdatePrefs(void);
+  void UpdatePrefs(void);
 
-	void SetViewerDefaults(void);
+  void SetViewerDefaults(void);
 
-	void SetShape(void);
+  void SetShape(void);
 
 
 //signals:
-	//void message(const QString&, int );
-	
+  //void message(const QString&, int );
+
 public slots:
-//	void closeEvent(QCloseEvent* e);        
-	void onWindowActivated ();
-	void setCursor(const QCursor&);
-	void dump();
+//  void closeEvent(QCloseEvent* e);        
+  void onWindowActivated ();
+  void setCursor(const QCursor&);
+  void dump();
 
 protected:
-	// inventor nodes:
-	SoSeparator * pcSepUserSpecial;
-	SoSeparator * pcSepRoot;
-	SoSeparator * pcSepShapeRoot;
-	SoSeparator * pcSepAxis;
-	SoShapeHints* pcShapeHint; 
-	SoMaterial	* pcShapeMaterial;
+  // inventor nodes:
+  SoSeparator * pcSepUserSpecial;
+  SoSeparator * pcSepRoot;
+  SoSeparator * pcSepShapeRoot;
+  SoSeparator * pcSepAxis;
+  SoShapeHints* pcShapeHint; 
+  SoMaterial	* pcShapeMaterial;
 private:
-//	SoQtExaminerViewer * _viewer;
-	View3DInventor * _viewer;
-	QWidget*		_pcWidget;
-	QVBox*			_pcFrame;    
-	QWidgetStack*	_pcWidgetStack;
-	QTabBar*		_pcTabBar;
-
+//  SoQtExaminerViewer * _viewer;
+  MyView3DInventor * _viewer;
+  QWidget*      _pcWidget;
+  QVBox*        _pcFrame;    
+  QWidgetStack* _pcWidgetStack;
+  QTabBar*      _pcTabBar;
 };
 
 
 /** The Inventor viewer
  *  
  */
-class View3DInventor: public SoQtViewer
+class MyView3DInventor: public SoQtViewer
 {
 public:
+    MyView3DInventor (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true) 
+      :SoQtViewer (parent, name, embed, type, build)
+    {
 
-	  View3DInventor (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true) 
-		  :SoQtViewer (parent, name, embed, type, build)
-	  {
+    }
 
-	  }
-
-	  ~View3DInventor(){}
+    ~MyView3DInventor(){}
 };
 
+} // namespace Gui
 
 #endif  //__VIEW3DINVENTOR__
 
