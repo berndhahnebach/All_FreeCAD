@@ -5,10 +5,23 @@
 # This is one of two init scripts, the second one
 # runs when the gui is up
 
-# using FreeCAD output (not print)
-import sys
 
+
+# imports the one and only
 import FreeCAD
+
+# some often used shortcuts (for lazy people like me ;-)
+App = FreeCAD
+Log = FreeCAD.PrintLog
+Msg = FreeCAD.PrintMessage
+Err = FreeCAD.PrintError
+
+try:
+	import sys,os
+except:
+	Err("Seams the python standard libs are not installed, bailing out!")
+	Err("Please (re)install python 2.1.x!")
+	raise
 
 # classes to manage loadable modules
 from ConfigParser import *
@@ -23,11 +36,11 @@ def Get(Pars,Section,Option,Default=""):
 class FCModule:
     def __init__ (self,Dir):
         Pars = ConfigParser()
-        FreeCAD.PrintLog('\t\tOpening:' + Dir + '\\Module.cfg\n')
+        Log('\t\tOpening:' + Dir + '\\Module.cfg\n')
         Pars.read(Dir + "\\Module.cfg")
-        FreeCAD.PrintLog('\t\tModule exports:\n')
+        Log('\t\tModule exports:\n')
         for Exp in Pars.options("Exports"):
-            FreeCAD.PrintLog('\t\t\t' + Exp + '\n')
+            Log('\t\t\t' + Exp + '\n')
         self.Name               = Get(Pars,"Module","Name")
         self.DocTemplateName    = Get(Pars,"Exports","DocTemplateName")
         self.DocTemplateScript  = Get(Pars,"Exports","DocTemplateScript")
@@ -38,15 +51,13 @@ class FCModule:
 #python standard functions
 import dircache,os
 
-print dircache.listdir(os.curdir)
-
-FreeCAD.PrintLog ('\nFreeCAD init running....\n')
+Log ('\nFreeCAD init running....\n')
 
 # Searching modules ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ModDir = '../src/Mod'
 ModDirs = dircache.listdir(ModDir)
-print ModDirs
-FreeCAD.PrintMessage('\tSearching modules...\n')
+#print ModDirs
+Msg('\tSearching modules...\n')
 ModuleList = []
 for Dir in ModDirs:
 	if ( Dir != 'CVS'):
@@ -64,8 +75,7 @@ def GetTemplateList():
     return l
 
 
-
-FreeCAD.PrintLog ('\nFreeCAD init done\n')
+Log ('\nFreeCAD init done\n')
    
     
 

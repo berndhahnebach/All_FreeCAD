@@ -154,7 +154,9 @@ const char* FCConsole::Time(void)
 	time_t aclock;
 	time( &aclock );                 // Get time in seconds 
 	newtime = localtime( &aclock );  // Convert time to struct tm form 
-	return asctime( newtime );
+	char* st = asctime( newtime );
+	st[24] = 0;
+	return st;
 }
 
 

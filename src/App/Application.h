@@ -67,10 +67,10 @@ class  Handle_FCApplicationOCC : public Handle(TDocStd_Application) {
 
 /**	FCApplicationOCC provides the OpenCasCade Application functionality.
   *
-	* FCApplicationOCC inherits from TDocStd_Application and redefines some pure
-	* virtual functions, like:
-	* Format()        : gives information about the types of formates.
-	* ResourcesName() : Dont know much about what this function is doing ;-)
+  * FCApplicationOCC inherits from TDocStd_Application and redefines some pure
+  * virtual functions, like:
+  * Format()        : gives information about the types of formates.
+  * ResourcesName() : Dont know much about what this function is doing ;-)
   */
 
 
@@ -99,18 +99,36 @@ protected:
 
 
 
+/** The Application 
+ *  The root of the whole application
+ *  @see FCDocument
+ */
 class AppExport FCApplication :public FCPythonExport
 {
 
 public:
 
+	//---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+
+	/// Creates a new document with a template
 	FCDocument* New(const char * Name=0l);
+	/// Open an existing document from a file
 	FCDocument* Open(const char * Name=0l);
+	/// Save the active document to the name it was opened
 	FCDocument* Save(void);
+	/// Save the active Document to a filename
 	FCDocument* SaveAs(const char * Name=0l);
-	 
+	/// Retrive the active document 
+	FCDocument* Active(void);
+	/// Geter for the OCC Aplication
+	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
+	
+	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	//---------------------------------------------------------------------
+
 	// static python wrapper of the exported functions
 	PYFUNCDEF(sOpen);
 	PYFUNCDEF(sNew);
@@ -120,42 +138,61 @@ public:
 	static PyMethodDef    Methods[]; 
 
 private:
-	// Singelton!
+	/// Constructor
 	FCApplication(void);
+	/// Destructor
 	~FCApplication();
-	// Singelton functions
+	/// Singelton functions
 	static void Destruct(void);
 	static FCApplication &Instance(void);
 	static FCApplication *_pcSingelton;
 	friend FCApplication &GetApplication(void); 
 
-	// Observer
+	/// Attach an Observer to monitor the Application
 	void AttacheObserver(FCApplicationObserver *pcObserver);
+	/// Detache an monitoring Observer
 	void DetacheObserver(FCApplicationObserver *pcObserver);
+	/// Notify the Obervers on a new Doc
 	void NotifyDocNew(FCDocument* pcDoc);
+	/// Notify the Obervers on a deleted Doc
 	void NotifyDocDelete(FCDocument* pcDoc);
+	/// The Observer is a friend of the Application
 	friend FCApplicationObserver;
 
 	// OCC Application
 #	pragma warning( disable : 4251 )
+	/// Handle to the OCC Application
 	Handle_FCApplicationOCC _hApp;
-	// Handles the FCDocument (and python) objects;
+	/// Handles the FCDocument (and python) objects;
 	stlport::vector<FCDocument*> _DocVector;
+	/// The container of all attached Obervers
 	stlport::set<FCApplicationObserver * > _aclObservers;
 #	pragma warning( default : 4251 )
 };
 
+/// Singelton getter of the Applicaton
 inline FCApplication &GetApplication(void){
 	return FCApplication::Instance();
 }
 
+
+/** The Application Observer
+ *  Derive from this class if you need to get norified by a 
+ *  change in the Application. The Observer attache and detache
+ *  automaticly.
+ *  @see FCApplication
+ */
 class AppExport FCApplicationObserver
 {
 public:
+	/// Construction and attachment
 	FCApplicationObserver(){GetApplication().AttacheObserver(this);}
+	/// Destruction and detachment
 	~FCApplicationObserver(){GetApplication().DetacheObserver(this);}
 
+	/// This method get called when a new doc appears
 	virtual void OnDocNew(FCDocument* pcDoc){};
+	/// This method get called when a new doc will be deleted
 	virtual void OnDocDelete(FCDocument* pcDoc){};
 };
 

@@ -24,12 +24,13 @@
 
 Standard_CString FCApplicationOCC::ResourcesName()
 {
+	//return Standard_CString ("Resources");
 	return Standard_CString ("Standard");
 }
 
 void FCApplicationOCC::Formats(TColStd_SequenceOfExtendedString& Formats)
 {
-	//Formats.Append(TCollection_ExtendedString ("FreeCad"));
+	//Formats.Append(TCollection_ExtendedString ("FreeCad-Part"));
 	Formats.Append(TCollection_ExtendedString ("MDTV-Standard"));
 
 }
@@ -122,7 +123,9 @@ FCDocument* FCApplication::New(const char * Name)
 	Handle_TDocStd_Document hDoc;
 	FCDocument*				pDoc;
 
-	_hApp->NewDocument("Standard",hDoc);
+	_hApp->NewDocument("FreeCad-Part",hDoc);
+	//_hApp->NewDocument("MDTV-Standard",hDoc);
+	//_hApp->NewDocument("Standard",hDoc);
 	pDoc = new FCDocument(hDoc);
 
 	// Load module
@@ -144,8 +147,16 @@ FCDocument* FCApplication::Open(const char * Name)
 	Handle_TDocStd_Document hDoc;
 	FCDocument*				pDoc;
 
+	// create new (empty) document 
 	_hApp->NewDocument("Standard",hDoc);
+
+	// load
+	// TCollection_ExtendedString aName = (Standard_CString) Name;
+	_hApp->Open(TCollection_ExtendedString((Standard_CString) Name),hDoc);
+	
+	// Creating a FreeCAD Document
 	pDoc = new FCDocument(hDoc);
+	
 	_DocVector.push_back(pDoc);
 
 
@@ -157,8 +168,11 @@ FCDocument* FCApplication::Open(const char * Name)
 
 FCDocument* FCApplication::Save(void)
 {
-	assert(0);
-	return NULL;
+	FCDocument*	pDoc = Active();
+
+	pDoc->Save();
+	
+	return pDoc;
 }
 
 FCDocument* FCApplication::SaveAs(const char * Name)
@@ -166,6 +180,14 @@ FCDocument* FCApplication::SaveAs(const char * Name)
 	assert(0);
 	return NULL;
 }
+
+FCDocument* FCApplication::Active(void)
+{
+	FCDocument*	pDoc = 0;
+	
+	return pDoc;
+}
+
 
 //**************************************************************************
 // Python stuff

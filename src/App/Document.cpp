@@ -17,6 +17,8 @@
 
 #include "Document.h"
 #include "../base/Console.h"
+#include "../base/Exception.h"
+#include "Application.h"
 
 //===========================================================================
 // FCLabel - Warpper for the TDF_Label classes
@@ -171,6 +173,9 @@ PyObject *FCLabel::PyIsDifferent(PyObject *args)
 } 
 
 */
+
+
+
 //===========================================================================
 // FCDocument - Wrapper for the TDocStd_Document class
 //===========================================================================
@@ -255,13 +260,13 @@ PyObject *FCDocument::_getattr(char *attr)				// __getattr__ function: note only
 		else if (streq(attr, "Name"))						// accessable new state
 			return Py_BuildValue("s", _hDoc->GetName()); 
 		else if (streq(attr, "Path"))						// accessable new state
-			return Py_BuildValue("´s", _hDoc->GetPath()); 
+			return Py_BuildValue("s", _hDoc->GetPath()); 
 		else if (streq(attr, "Main"))						// accessable new state
 			return new FCLabel( _hDoc->Main()); 
 		else
 			_getattr_up(FCPyObject); 						// send to parent
 	}catch(...){
-		return 0;
+		Py_Error(PyExc_Exception,"Error in get Attribute");
 	}
 } 
 
@@ -278,30 +283,170 @@ int FCDocument::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 // Exported functions
 //--------------------------------------------------------------------------
 
-void FCDocument::Undo(void)					// C++ method
-{
-  _hDoc->Undo(); 
-}
-void FCDocument::Redo(void)					// C++ method
-{
-  _hDoc->Redo(); 
-}
-void FCDocument::ClearUndos(void)			// C++ method
-{
-  _hDoc->ClearUndos(); 
-}
 // Save the Document under a new Name
 void FCDocument::SaveAs (const char* Name)
 {
 	char path[512];
 	strcpy(path,Name);
-	Handle(TDocStd_Application)::DownCast(_hDoc->Application())->SaveAs(_hDoc,path);
+	Handle(FCApplicationOCC) hApp = GetApplication().GetOCCApp();
+	if(hApp->SaveAs(_hDoc,(Standard_CString)path)==CDF_SS_Failure) throw FCException("SaveAs fialed");
+	//GetApplication().GetOCCApp()->SaveAs(_hDoc,path);
+	//Handle(TDocStd_Application) aDoc = Handle(TDocStd_Application)::DownCast(_hDoc->Application());
+	//aDoc->SaveAs(_hDoc,path);
+	//_hDoc->Application()->SaveAs(_hDoc,path);
+	//assert(0);
 }
 // Save the document under the name its been opened
 void FCDocument::Save (void)
 {
 	Handle(TDocStd_Application)::DownCast(_hDoc->Application())->Save(_hDoc);
 }
+
+bool FCDocument::Undo(void)					
+{
+  return _hDoc->Undo() != 0; 
+}
+
+bool FCDocument::Redo(void)
+{
+  return _hDoc->Redo() != 0; 
+}
+
+/// Get the document name of a saved document
+const short* FCDocument::GetName() const
+{
+  return _hDoc->GetName().ToExtString(); 
+}
+
+/// Get the path of a saved document
+const short* FCDocument::GetPath() const
+{
+  return _hDoc->GetPath().ToExtString(); 
+}
+
+/// Get the Main Label of the document
+FCLabel *FCDocument::Main() const
+{
+	static FCLabel *_pcMain = 0;
+
+	if(!_pcMain){
+		_pcMain = new FCLabel(_hDoc->Main());
+		_pcMain->_INCREF();
+	}
+
+	return  _pcMain;
+}
+
+/// Test if the document is empty
+bool FCDocument::IsEmpty() const
+{
+  return _hDoc->IsEmpty() != 0; 
+}
+
+/// Returns False if the  document  contains notified modifications.
+bool FCDocument::IsValid() const
+{
+  return _hDoc->IsValid() != 0;
+}
+
+/// Set a special Labe as modified
+void FCDocument::SetModified(FCLabel* L)
+{
+  _hDoc->SetModified(L->GetLabel()); 
+}
+
+/// Remove all modifications. After this call The document becomesagain Valid.
+void FCDocument::PurgeModified()
+{
+  _hDoc->PurgeModified(); 
+}
+
+/// New Command (Short cut for Commit and Open transaction)
+void FCDocument::NewCommand() 
+{
+  _hDoc->NewCommand(); 
+}
+
+/// returns True if a Command transaction is open
+bool FCDocument::HasOpenCommand() const
+{
+  return _hDoc->HasOpenCommand() != 0; 
+}
+
+/** Open a new command transaction.
+ *  Raise a OCC Exception If a Command is already open.
+ *  You may   check  it with the   previous method <HasOpenCommand>.
+ */
+void FCDocument::OpenCommand()
+{
+  _hDoc->OpenCommand(); 
+}
+
+/// Commit the Command transaction. Do nothing If there is no Command transaction open.
+void FCDocument::CommitCommand()
+{
+  _hDoc->CommitCommand(); 
+}
+
+/// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
+void FCDocument::AbortCommand()
+{
+  _hDoc->AbortCommand(); 
+}
+
+/// The current limit on the number of undos
+int FCDocument::GetUndoLimit() const
+{
+  return _hDoc->GetUndoLimit(); 
+}
+
+/** Set the limit on the number of Undo Deltas stored.
+ *  0 will disable Undo on the document A negative value
+ *  means no limit. Note that by default Undo is disabled.
+ *  Enabling it will take effect with the next call to
+ *  NewCommand. Of course this limit is the same for Redo.
+ */
+void FCDocument::SetUndoLimit(const int L)
+{
+  _hDoc->SetUndoLimit(L); 
+}
+
+/// Remove all stored Undos and Redos
+void FCDocument::ClearUndos()
+{
+  _hDoc->ClearUndos(); 
+}
+
+/// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
+int FCDocument::GetAvailableUndos() const
+{
+  return _hDoc->GetAvailableUndos(); 
+}
+
+/// Returns the number   of stored Redos. If greater than 0 Redo will be effective.
+int FCDocument::GetAvailableRedos() const
+{
+  return _hDoc->GetAvailableRedos(); 
+}
+
+/// Recompute if the document was  not valid and propagate the reccorded modification.
+void FCDocument::Recompute()
+{
+  _hDoc->Recompute(); 
+}
+
+/// Returns the storage string of the document.
+const short* FCDocument::StorageFormat() const
+{
+  return _hDoc->StorageFormat().ToExtString(); 
+}
+
+/// Change the storage format of the document.
+void FCDocument::ChangeStorageFormat(const short* sStorageFormat) 
+{
+  _hDoc->ChangeStorageFormat((Standard_ExtString)sStorageFormat); 
+}
+
 
 //--------------------------------------------------------------------------
 // Python wrappers

@@ -29,12 +29,6 @@
 #include "MouseModel.h"
 #include "Document.h"
 
-#ifdef _DEBUG_
-#define DEBUGOUT(X) cout << X
-#else
-#define DEBUGOUT(X)
-#endif
-
 
 // global graphic device (set in DocWindow)
 #ifdef WNT
@@ -75,20 +69,20 @@ bool View3D::InitCasCadeView(void)
 {
     _hView = new V3d_OrthographicView(_hViewer);
 	// Now some window specific tasks		
-		try{
-			// create a new OCC Window from the OCC Graphic device and the win ID of the QT OpenGL Render Window
-#			ifdef WNT
-				Handle(WNT_Window) hWindow = new WNT_Window(Handle(Graphic3d_WNTGraphicDevice)::DownCast(_hContext->CurrentViewer()->Device()),winId());//WNT_GraphicDevice
-#			else
-				Handle(Xw_Window) hWindow  = new Xw_Window (Handle(Graphic3d_GraphicDevice)::DownCast(_hContext->CurrentViewer()->Device()),winId());
-#			endif
-			// map the window ( can crash when OGL setings and Viewer setings not the same)
-			_hView->SetWindow(hWindow);
-			if (!hWindow->IsMapped()) hWindow->Map();
-		}catch(Standard_Failure){
-			cerr << "Failure catched:"<<Standard_Failure::Caught()<<endl;
-			return false;
-		}
+	try{
+		// create a new OCC Window from the OCC Graphic device and the win ID of the QT OpenGL Render Window
+#		ifdef WNT
+			Handle(WNT_Window) hWindow = new WNT_Window(Handle(Graphic3d_WNTGraphicDevice)::DownCast(_hContext->CurrentViewer()->Device()),winId());//WNT_GraphicDevice
+#		else
+			Handle(Xw_Window) hWindow  = new Xw_Window (Handle(Graphic3d_GraphicDevice)::DownCast(_hContext->CurrentViewer()->Device()),winId());
+#		endif
+		// map the window ( can crash when OGL setings and Viewer setings not the same)
+		_hView->SetWindow(hWindow);
+		if (!hWindow->IsMapped()) hWindow->Map();
+	}catch(Standard_Failure){
+		cerr << "Failure catched:"<<Standard_Failure::Caught()<<endl;
+		return false;
+	}
 
 	_hView->SetDegenerateModeOn();
 	_hView->MustBeResized();
@@ -105,10 +99,15 @@ bool View3D::InitCasCadeView(void)
 
 void View3D::mousePressEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mousePressEvent( cEvent);}
 void View3D::mouseReleaseEvent		( QMouseEvent *cEvent){_cMouseStack.top()->mouseReleaseEvent( cEvent);}
-void View3D::mouseMoveEvent			( QMouseEvent *cEvent){ QApplication::flushX(); _cMouseStack.top()->mouseMoveEvent( cEvent);}
 void View3D::mouseDoubleClickEvent	( QMouseEvent *cEvent){_cMouseStack.top()->mouseDoubleClickEvent( cEvent);}
 void View3D::keyPressEvent			( QKeyEvent	  *cEvent){_cMouseStack.top()->keyPressEvent( cEvent);}
 void View3D::keyReleaseEvent		( QKeyEvent   *cEvent){_cMouseStack.top()->keyReleaseEvent( cEvent);}
+void View3D::wheelEvent             ( QWheelEvent *cEvent){_cMouseStack.top()->wheelEvent( cEvent);}
+void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
+{ 
+	QApplication::flushX(); 
+	_cMouseStack.top()->mouseMoveEvent( cEvent);
+}
  
 
 void View3D::ShowPopup(int x, int y)

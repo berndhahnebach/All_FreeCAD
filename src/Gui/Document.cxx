@@ -76,7 +76,6 @@ FCGuiDocument::~FCGuiDocument()
 
 void FCGuiDocument::CreateView() 
 {
-	//QWorkspace* ws = _pcAppWnd->getWorkspace();
 
     FCView* w = new FCView(this,0L,"View");
 	

@@ -22,6 +22,8 @@ public:
 	virtual void mouseMoveEvent			( QMouseEvent *cEvent){};
 	virtual void mouseDoubleClickEvent	( QMouseEvent * ){};
 
+	virtual void wheelEvent				( QWheelEvent * ){};
+
 	virtual void keyPressEvent			( QKeyEvent * ){};
 	virtual void keyReleaseEvent		( QKeyEvent * ){}; 
 
@@ -48,12 +50,13 @@ class FCMouseModelStd :public FCMouseModel
 public:
 	FCMouseModelStd(void){};
 
-	virtual void mousePressEvent( QMouseEvent *cEvent);
-	virtual void mouseReleaseEvent( QMouseEvent *cEvent);
-	virtual void mouseMoveEvent( QMouseEvent *cEvent);
+	virtual void mousePressEvent	( QMouseEvent *cEvent);
+	virtual void mouseReleaseEvent	( QMouseEvent *cEvent);
+	virtual void mouseMoveEvent		( QMouseEvent *cEvent);
 	virtual void mouseDoubleClickEvent ( QMouseEvent * );
-	virtual void keyPressEvent ( QKeyEvent * );
-	virtual void keyReleaseEvent ( QKeyEvent * );
+	virtual void keyPressEvent		( QKeyEvent * );
+	virtual void keyReleaseEvent	( QKeyEvent * );
+	virtual void wheelEvent			( QWheelEvent * );
 	
 protected:
 	enum {

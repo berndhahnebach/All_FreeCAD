@@ -129,7 +129,7 @@ void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 
 			break;
 		case zooming:
-			GetView()->Zoom(iX,iY,cEvent->x(),cEvent->y());
+			GetView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
 			break;
 		default:
 			;
@@ -140,6 +140,30 @@ void FCMouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
 	iY = cEvent->y();
 
 }
+
+void FCMouseModelStd::wheelEvent ( QWheelEvent * cEvent)
+{
+	int zDelta = cEvent->delta();
+	Quantity_Length fWidth, fHeight;
+	GetView()->Size(fWidth, fHeight);
+	float fLog = float(log10(fWidth));
+	int   nExp = int(fLog);
+
+	// Zoom begrenzen
+	if ((nExp > -6 && zDelta > 0) || (nExp < 8 && zDelta < 0))
+	{
+		GetView()->Zoom(0,0,zDelta,0);
+	}
+	else if (zDelta > 0)
+	{
+		//GetConsole().Message("Cannot zoom in any more\n");
+	}
+	else
+	{
+		//GetConsole().Message("Cannot zoom out any more\n");
+	}
+}
+
 
 void FCMouseModelStd::mouseDoubleClickEvent ( QMouseEvent * )
 {

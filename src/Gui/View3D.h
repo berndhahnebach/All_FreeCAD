@@ -93,6 +93,7 @@ protected:
 	virtual void mouseDoubleClickEvent	( QMouseEvent * ); 
 	virtual void keyPressEvent			( QKeyEvent * );
 	virtual void keyReleaseEvent		( QKeyEvent * ); 
+	virtual void wheelEvent             ( QWheelEvent * );
 
 	/** Update the view when paint event occur. */
 	virtual void paintEvent				(QPaintEvent * ) ;

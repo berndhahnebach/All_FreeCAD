@@ -103,7 +103,7 @@ private:
  *  menus is implemented here.
  *  @see FCCommand
  */
-class FCCommandManager
+class GuiExport FCCommandManager
 {
 public:
 	void AddCommand(const char* Name,const FCCommand& Com)
@@ -117,8 +117,9 @@ public:
 	}
 
 private:
-	stlport::map<stlport::string,FCCommand> _sCommands;
-
+#	pragma warning( disable : 4251 )
+		stlport::map<stlport::string,FCCommand> _sCommands;
+#	pragma warning( default : 4251 )
 };
 
 

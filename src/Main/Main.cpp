@@ -2,7 +2,10 @@
 
 #pragma warning( disable : 4786 )
 
-//#include <stdio.h>
+#include <stdio.h>
+#include <direct.h>
+#include <windows.h>
+
 
 // FreeCAD Base header
 #include "../Base/Console.h"
@@ -48,8 +51,13 @@ const char sBanner[] = \
 
 // globals
 FCParameter *pcGlobalParameter;
+
+// run control
 int RunMode = 0;
-std::string sFileName;
+stlport::string sFileName;
+const char*     sScriptName;
+
+
 QApplication* pcQApp;
 // forwards
 void Init(int argc, char ** argv );
@@ -91,13 +99,13 @@ int main( int argc, char ** argv ) {
 		GetConsole().Error("Application init fails:");
 		e.ReportException();
 		PrintInitHelp();
-		exit(1);
+		exit(2);
 	}
 	catch(...)
 	{
 		GetConsole().Error("Application init fails, because of a realy nesty (unknown) error...");
 		PrintInitHelp();
-		exit(1);
+		exit(3);
 	}
 
 
@@ -136,22 +144,35 @@ int main( int argc, char ** argv ) {
 			break;
 		case 2:
 			// run a script
+			GetConsole().Log("Runing script: %s\n",sFileName.c_str());
 			GetInterpreter().LaunchFile(sFileName.c_str());
+			break;
+		case 3:
+			// run internal script
+			GetConsole().Log("Runing internal script: %s\n",sFileName.c_str());
+			GetInterpreter().Launch(sScriptName);
 			break;
 		default:
 			assert(0);
 		}
 	}
+	catch(Standard_Failure e)
+	{
+		GetConsole().Error("Running the application fails, OCC exception caught:");
+		Handle(Standard_Failure) E = Standard_Failure::Caught();
+		cout << "An exception was caught " << E << endl;
+		exit(4);
+	}
 	catch(FCException e)
 	{
 		GetConsole().Error("Running the application fails:");
 		e.ReportException();
-		throw; 
+		exit(5); 
 	}
 	catch(...)
 	{
 		GetConsole().Error("Running the application fails, because of a realy nesty (unknown) error...");
-		throw;
+		exit(6);
 	}
 
 	// Destruction phase ===========================================================
@@ -234,6 +255,27 @@ void CheckEnv(void)
 {
 	bool bFailure = false;
 
+	// set the resource env variables
+/*  dont work!!! keeps the path from registry
+	char  szString [256] ;
+	char  szDirectory [256] ;
+
+	_getcwd (szDirectory,sizeof szDirectory);
+	if (szDirectory[strlen(szDirectory)-1] != '\\') {
+		strcat(szDirectory,"\\");
+	}
+	
+	SetEnvironmentVariable ( "CSF_ResourcesDefaults",szDirectory);
+	sprintf(szString,"CSF_ResourcesDefaults=%s",szDirectory);
+	putenv (szString);
+	cout<<szString<<endl;
+
+	SetEnvironmentVariable ( "CSF_PluginDefaults",szDirectory);
+	sprintf(szString,"CSF_PluginDefaults=%s",szDirectory);
+	putenv (szString);
+	cout<<szString<<endl;
+*/
+
 /*  Attic ?
 	if( ! getenv("CSF_GRAPHICSHR") ){
 		GetConsole().Message("Environment (CSF_GRAPHICSHR) not set!\n");
@@ -296,8 +338,11 @@ void CheckEnv(void)
 const char Usage[] = \
 " [Options] files..."\
 "Options:\n"\
-"  -h           Display this information "\
-"  -c           Runs FreeCAD in console mode (no windows)\n"\
+"  -h             Display this information "\
+"  -c             Runs FreeCAD in console mode (no windows)\n"\
+"  -cf file-name  Runs FreeCAD in server mode with script file-name\n"\
+"  -te            Runs FreeCAD to test environment\n"\
+"  -t0            Runs FreeCAD self test function\n"\
 "\n consult also the HTML documentation\n"\
 "";
 
@@ -335,6 +380,31 @@ void ParsOptions(int argc, char ** argv)
 						GetConsole().Error("Invalid Input %s\n",argv[i]);  
 						GetConsole().Error("\nUsage: %s %s",argv[0],Usage);  
 						throw FCException("Comandline error(s)");  
+				};  
+				break;  
+			case 't': 
+			case 'T':  
+				switch (argv[i][2])  
+				{   
+					// run the test environment script
+					case 'e':  
+					case 'E':  
+						RunMode = 3;
+						sFileName = "TestEnv";
+						sScriptName = FreeCADTestEnv;
+						break;   
+					case '0':  
+						// test script level 0
+						RunMode = 3;
+						sFileName = "Test";
+						sScriptName = FreeCADTest;
+						break;   
+					default:  
+						//default testing level 0
+						RunMode = 3;
+						sFileName = "Test";
+						sScriptName = FreeCADTest;
+						break;   
 				};  
 				break;  
 			case '?': 

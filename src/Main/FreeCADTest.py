@@ -1,13 +1,46 @@
-import Console
+# FreeCAD test module  
+# (c) 2002 Jürgen Riegel
+#
+# Testing the function of the base system and run 
+# (if existing) the test function of the modules
+#
 
-Console.Log("FreeCAD test running...\n\n")
+Log = FreeCAD.PrintLog
 
-Console.Log("Testing console...\n")
+FreeCAD.PrintLog ("FreeCAD test running...\n\n")
 
-Console.Message("Printing message\n")
-Console.Error("Printing error\n")
-#Console.Error("Printing error\n")
+TempPath = os.getenv('TEMP')
+FreeCAD.PrintLog ('Using temp path: ' + TempPath + '\n')
 
-Console.Log("FreeCAD test done\n")
+# Basics +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+FreeCAD.PrintLog ("Testing console...\n")
+
+FreeCAD.PrintMessage("   Printing message\n")
+FreeCAD.PrintError("   Printing error\n")
+FreeCAD.PrintLog("   Printing Log\n")
+
+# Application and Document +++++++++++++++++++++++++++++++++++++++++++++++++
+FreeCAD.PrintLog ("Testing Application and Document...\n")
+
+Log("   Creating new Part document and filing up\n")
+Doc = App.DocNew("Part")
+i = Doc.UndoLimit
+i = Doc.AvailableUndos
+i = Doc.AvailableRedos
+s = Doc.Name
+
+Main = Doc.Main #getting the main label of the document 
+
+
+
+SavePath = TempPath + os.sep + "Test.std"
+Log("   Save and Open the document to: " + SavePath + "\n")
+Doc.SaveAs(SavePath)
+
+
+
+
+
+FreeCAD.PrintLog ("FreeCAD test done\n")
 
 

@@ -41,5 +41,5 @@ const char* FCException::what(void)
 
 void FCException::ReportException (void)
 {
-	GetConsole().Error("Exception(%s): %s \n",GetConsole().Time(),what());
+	GetConsole().Error("Exception (%s): %s \n",GetConsole().Time(),what());
 }
