@@ -16,18 +16,16 @@
 			IntermediateDirectory=".\ReleasePy"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="WNT;NDEBUG;_USRDLL;FREECADMAINPY"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FREECADMAINPY"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="3"
-				PrecompiledHeaderThrough="stdafx.h"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\ReleasePy/FreeCADMainPy.pch"
 				AssemblerListingLocation=".\ReleasePy/"
 				ObjectFile=".\ReleasePy/"
@@ -74,17 +72,15 @@
 			IntermediateDirectory=".\DebugPy"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="WNT;_DEBUG;_USRDLL;FREECADMAINPY"
+				PreprocessorDefinitions="_USRDLL;FREECADMAINPY;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="3"
-				PrecompiledHeaderThrough="stdafx.h"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\DebugPy/FreeCADMainPy.pch"
 				AssemblerListingLocation=".\DebugPy/"
 				ObjectFile=".\DebugPy/"

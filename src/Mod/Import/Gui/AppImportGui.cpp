@@ -18,10 +18,8 @@
  ***************************************************************************/
 
  
-#include "../../../Config.h"
-#ifdef _PreComp_
-#	include "PreCompiled.h"
-#else
+#include "PreCompiled.h"
+#ifndef _PreComp_
 #endif
 
 #include "../../../App/Application.h"

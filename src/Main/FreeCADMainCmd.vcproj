@@ -16,18 +16,17 @@
 			IntermediateDirectory=".\ReleaseCmd"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG,WNT,_CONSOLE"
+				PreprocessorDefinitions="NDEBUG,_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\ReleaseCmd/FreeCADMainCmd.pch"
 				AssemblerListingLocation=".\ReleaseCmd/"
 				ObjectFile=".\ReleaseCmd/"
@@ -74,17 +73,16 @@
 			IntermediateDirectory=".\DebugCmd"
 			ConfigurationType="1"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="_DEBUG,WNT,_CONSOLE"
+				PreprocessorDefinitions="_CONSOLE,FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\DebugCmd/FreeCADMainCmd.pch"
 				AssemblerListingLocation=".\DebugCmd/"
 				ObjectFile=".\DebugCmd/"
@@ -236,9 +234,33 @@
 		</File>
 		<File
 			RelativePath=".\Libs.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Main.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="0"/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

@@ -16,15 +16,15 @@
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="_DEBUG;_USRDLL;WNT;FCAppPartGui"
+				PreprocessorDefinitions="_USRDLL;FCAppPartGui;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile=".\Debug/AppPartGui.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
@@ -39,12 +39,12 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../AppPartGui_d.pyd"
+				OutputFile="../PartGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/AppPartGui_d.pdb"
-				ImportLibrary=".\Debug/AppPartGui_d.lib"/>
+				ProgramDatabaseFile=".\Debug/PartGui_d.pdb"
+				ImportLibrary=".\Debug/PartGui_d.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -73,16 +73,16 @@
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;WNT;FCAppPartGui"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppPartGui"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="PreCompiled.h"
 				PrecompiledHeaderFile=".\Release/AppPartGui.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
@@ -95,11 +95,11 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../AppPartGui.pyd"
+				OutputFile="../PartGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\Release/AppPartGui.pdb"
-				ImportLibrary=".\Release/AppPartGui.lib"/>
+				ProgramDatabaseFile=".\Release/PartGui.pdb"
+				ImportLibrary=".\Release/PartGui.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -126,33 +126,9 @@
 	<Files>
 		<File
 			RelativePath=".\AppPartGui.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Command.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\DlgPartBox.ui">
@@ -224,15 +200,13 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-					PrecompiledHeaderThrough="PreCompiled.h"/>
+					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
 		</File>
 		<File
