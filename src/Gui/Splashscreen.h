@@ -37,51 +37,9 @@ class QGridLayout;
 class QLabel;
 class QProgressBar;
 class QTextView;
+class QPushButton;
+class QCheckBox;
 class FCSplashObserver;
-
-/**
- * text browser for the about dialog
- */
-class FCSplashBrowser : public QTextBrowser
-{
-  Q_OBJECT
-
-  public:
-    FCSplashBrowser(QWidget * parent=0, const char * name=0);
-    /** Emits the signal @ref linkClicked */
-    void setSource ( const QString & name );
-
-  signals:
-    /** This signal is emitted by @ref setSource() */
-    void linkClicked(const QString& txt);
-};
-
-/**
- * Abstract base class for Splashers.
- * This splasher runs in an own thread
- * @see QThread
- */
-class GuiExport FCSplashWidget : public QLabel, public QThread
-{
-  Q_OBJECT
-
-  public:
-    FCSplashWidget( QWidget* parent = 0, const char* name = 0, WFlags f = 0 );
-    ~FCSplashWidget();
-
-    QString SplasherText;
-    bool bRun;
-
-  protected:
-    /// implement this method in inherited classes
-    virtual void run() = 0;
-    virtual QString getName() = 0;
-    void hideEvent ( QHideEvent * e);
-    std::map<std::string, std::pair<std::string, QPixmap> > _aclDevelopers;
-
-  protected slots:
-    void aboutToQuit();
-};
 
 /** Splasher at startup */
 class FCSplashScreen : public QSplashScreen
@@ -97,36 +55,28 @@ class FCSplashScreen : public QSplashScreen
 		FCSplashObserver* messages;
 };
 
-/** Splasher for the help dialog */
-class GuiExport FCSplashAbout : public FCSplashWidget
+/** About dialog */
+class AboutDlg : public QDialog
 {
-  Q_OBJECT
+	Q_OBJECT
 
-  public:
-	  static void Destruct(void);
-  	static FCSplashAbout* Instance(void);
-    void setFCPixmap(const QPixmap& image0);
+	public:
+		AboutDlg( QWidget* parent = 0, const char* name = 0 );
+		~AboutDlg();
 
-  private:
-    FCSplashAbout( QWidget* parent = 0, const char* name = 0 );
-    ~FCSplashAbout();
-    static FCSplashAbout* _pclSingleton;
+		QLabel* pixmapLabel1;
+		QPushButton* pushButton1;
+		QLabel* textLabel1;
 
-  protected:
-    /// run the thread
-    virtual void run();
-    virtual QString getName();
-    void keyPressEvent ( QKeyEvent * e );
-    void hideEvent ( QHideEvent * e);
-    QVBoxLayout* SplasherDialogLayout;
-    QPushButton* ButtonOK;
-    QLabel* RemainingTime;
-    QLabel* PixmapLabel;
-    FCSplashBrowser* SplasherTextView;
+	protected:
+		QGridLayout* Form1Layout;
+		QHBoxLayout* layout1;
 
-  protected slots:
-    void clicked();
-    void linkClicked(const QString& txt);
+	protected slots:
+		void languageChange();
+
+	private:
+		QPixmap image0;
 };
 
 #endif // __SPLASHSCREEN_H__

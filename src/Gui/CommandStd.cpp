@@ -708,7 +708,28 @@ FCCmdAbout::FCCmdAbout()
 
 void FCCmdAbout::Activated(int iMsg)
 {
-  FCSplashAbout::Instance();
+	AboutDlg().exec();
+}
+
+//===========================================================================
+// Std_TipOfTheDay
+//===========================================================================
+DEF_STD_CMD(FCCmdTipOfTheDay);
+
+FCCmdTipOfTheDay::FCCmdTipOfTheDay()
+	:FCCppCommand("Std_TipOfTheDay")
+{
+	sAppModule		= "";
+	sGroup			= "Standard";
+	sMenuText		= "Tip of the day...";
+	sToolTipText	= "Tip of the day";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+}
+
+void FCCmdTipOfTheDay::Activated(int iMsg)
+{
+	GetAppWnd()->ShowTipOfTheDay( true );
 }
 
 //===========================================================================
@@ -1407,6 +1428,7 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdWhatsThis());
 	rcCmdMgr.AddCommand(new FCCmdOnlineHelp());
 	rcCmdMgr.AddCommand(new FCCmdOCAFBrowse());
+	rcCmdMgr.AddCommand(new FCCmdTipOfTheDay());
 }
 
 

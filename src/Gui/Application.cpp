@@ -76,6 +76,7 @@
 #	include <qstatusbar.h>
 #	include <qstyle.h>
 #	include <qstylefactory.h>
+#	include <qsyntaxhighlighter.h>
 #	include <qtabbar.h>
 #	include <qtabwidget.h>
 #	include <qtextbrowser.h>
@@ -113,6 +114,7 @@
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
+#include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
 #include "ButtonGroup.h"
 #include "HtmlView.h"
@@ -1167,6 +1169,7 @@ void ApplicationWindow::RunApplication(void)
 	mw->Polish();
 	mw->show();
 	StopSplasher();
+	ShowTipOfTheDay();
 
 	_pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
@@ -1202,8 +1205,18 @@ void ApplicationWindow::StopSplasher(void)
 	}
 }
 
-
-
+void ApplicationWindow::ShowTipOfTheDay( bool force )
+{
+	// tip of the day?
+	FCParameterGrp::handle
+  hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+  bool tips = hGrp->GetBool("Tipoftheday", true);
+	if ( tips || force)
+	{
+		TipOfTheDayDlgImp dlg(Instance, "Tipofday");
+		dlg.exec();
+	}
+}
 
 void ApplicationWindow::Destruct(void)
 {

@@ -79,7 +79,7 @@ FCReportView::~FCReportView()
 // ----------------------------------------------------------
 
 ReportHighlighter::ReportHighlighter(QTextEdit* edit)
-: QSyntaxHighlighter(edit), type(Message), lastPos(0)
+: QSyntaxHighlighter(edit), type(Message), lastPos(0), lastPar(0)
 {
 }
 
@@ -89,6 +89,10 @@ ReportHighlighter::~ReportHighlighter()
 
 int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
+	int curPar = currentParagraph();
+	if (curPar > lastPar)
+		lastPos = 0;
+
 	if (type == Message)
 	{
 		setFormat(lastPos, text.length()-lastPos, Qt::black);
@@ -107,6 +111,7 @@ int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOf
 	}
 
 	lastPos = text.length()-1;
+	lastPar = curPar;
 	return 0;
 }
 
@@ -149,19 +154,19 @@ void FCReportOutput::restoreFont()
 void FCReportOutput::Warning(const char * s)
 {
 	reportHl->setParagraphType(ReportHighlighter::Warning);
-  insert(s);
+  append(s);
 }
 
 void FCReportOutput::Message(const char * s)
 {
 	reportHl->setParagraphType(ReportHighlighter::Message);
-  insert(s);
+  append(s);
 }
 
 void FCReportOutput::Error  (const char * s)
 {
 	reportHl->setParagraphType(ReportHighlighter::Error);
-  insert(s);
+  append(s);
 }
 
 void FCReportOutput::Log (const char * s)

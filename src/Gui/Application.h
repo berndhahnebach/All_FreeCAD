@@ -166,6 +166,7 @@ public:
 	static void RunApplication(void);
 	static void StartSplasher(void);
 	static void StopSplasher(void);
+	static void ShowTipOfTheDay(bool force=false);
 	static void Destruct(void);
 
 	//@}

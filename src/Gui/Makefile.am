@@ -34,6 +34,7 @@ moc_DlgSettings3DView.cpp \
 moc_DlgSettings3DViewImp.cpp \
 moc_DlgSettingsMacro.cpp \
 moc_DlgSettingsMacroImp.cpp \
+moc_DlgTipOfTheDay.cpp \
 moc_DlgToolbars.cpp \
 moc_DlgToolbarsImp.cpp \
 moc_DlgUndoRedo.cpp \
@@ -84,6 +85,8 @@ DlgSettings3DView.cpp \
 DlgSettings3DView.h \
 DlgSettingsMacro.cpp \
 DlgSettingsMacro.h \
+DlgTipOfTheDay.cpp \
+DlgTipOfTheDay.h \
 DlgToolbars.cpp \
 DlgToolbars.h \
 qextmdi/moc_dummykmainwindow.cpp \
@@ -160,6 +163,7 @@ DlgPreferencesImp.cpp \
 DlgSettingsImp.cpp \
 DlgSettings3DViewImp.cpp \
 DlgSettingsMacroImp.cpp \
+DlgTipOfTheDayImp.cpp \
 DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
 Document.cpp \

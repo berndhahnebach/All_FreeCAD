@@ -162,6 +162,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qbuttongroup.h>
+#include <qcheckbox.h>
 #include <qclipboard.h>
 #include <qcolordialog.h>
 #include <qcombobox.h>

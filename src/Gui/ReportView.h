@@ -30,10 +30,6 @@
 #define __FC_REPORT_VIEW_H__
 
 #include "Window.h"
-#ifndef _PreComp_
-#	include <qsyntaxhighlighter.h>
-#	include <qtextedit.h>
-#endif
 
 class PythonConsole;
 class FCReportOutput;
@@ -73,6 +69,7 @@ class GuiExport ReportHighlighter : public QSyntaxHighlighter
 	private:
 		Paragraph type;
 		int lastPos;
+		int lastPar;
 };
 
 class GuiExport FCReportOutput : public QTextEdit, public FCConsoleObserver

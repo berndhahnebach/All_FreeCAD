@@ -168,6 +168,7 @@ moc_DlgSettings3DView.cpp \
 moc_DlgSettings3DViewImp.cpp \
 moc_DlgSettingsMacro.cpp \
 moc_DlgSettingsMacroImp.cpp \
+moc_DlgTipOfTheDay.cpp \
 moc_DlgToolbars.cpp \
 moc_DlgToolbarsImp.cpp \
 moc_DlgUndoRedo.cpp \
@@ -218,6 +219,8 @@ DlgSettings3DView.cpp \
 DlgSettings3DView.h \
 DlgSettingsMacro.cpp \
 DlgSettingsMacro.h \
+DlgTipOfTheDay.cpp \
+DlgTipOfTheDay.h \
 DlgToolbars.cpp \
 DlgToolbars.h \
 qextmdi/moc_dummykmainwindow.cpp \
@@ -294,6 +297,7 @@ DlgPreferencesImp.cpp \
 DlgSettingsImp.cpp \
 DlgSettings3DViewImp.cpp \
 DlgSettingsMacroImp.cpp \
+DlgTipOfTheDayImp.cpp \
 DlgToolbarsImp.cpp \
 DlgUndoRedo.cpp \
 Document.cpp \
@@ -374,11 +378,11 @@ am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	DlgEditorImp.lo DlgGeneralImp.lo DlgMacroExecuteImp.lo \
 	DlgMacroRecordImp.lo DlgOnlineHelpImp.lo DlgParameterImp.lo \
 	DlgPreferencesImp.lo DlgSettingsImp.lo DlgSettings3DViewImp.lo \
-	DlgSettingsMacroImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
-	Document.lo GuiConsole.lo HtmlView.lo Macro.lo MouseModel.lo \
-	PrefWidgets.lo Process.lo PropertyPage.lo PropertyView.lo \
-	PythonEditor.lo ReportView.lo resource.lo Selection.lo \
-	Splashscreen.lo Tools.lo Tree.lo View.lo View3D.lo \
+	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
+	DlgUndoRedo.lo Document.lo GuiConsole.lo HtmlView.lo Macro.lo \
+	MouseModel.lo PrefWidgets.lo Process.lo PropertyPage.lo \
+	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
+	Selection.lo Splashscreen.lo Tools.lo Tree.lo View.lo View3D.lo \
 	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
 	WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
@@ -408,6 +412,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettings3DViewImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgSettingsMacroImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgTipOfTheDayImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgToolbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgUndoRedo.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/GuiConsole.Plo \
@@ -532,6 +537,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettings3DViewImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgSettingsMacroImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgTipOfTheDayImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgToolbarsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgUndoRedo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Document.Plo@am__quote@

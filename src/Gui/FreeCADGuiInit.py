@@ -133,7 +133,7 @@ def InitMenues():
 	"Std_MDIToplevel", "Std_MDITabed"]
 	Gui.MenuAppendItems("Windows", list, 0, 0)
 
-	list = ["Std_OnlineHelp", "Std_About", "Std_WhatsThis"]
+	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Std_About", "Std_WhatsThis"]
 	Gui.MenuAppendItems("Help", list, 0, 0)
 
 def InitCmdBar():
