@@ -75,8 +75,6 @@ public:
 	bool SendMsgToViews(const char* pMsg);
 
 
-	/// set the parameter to the active view or reset in case of 0
-	void SetActive(FCView* pcView);
 	/// Geter for the Active View
 	FCView* GetActiveView(void);
 

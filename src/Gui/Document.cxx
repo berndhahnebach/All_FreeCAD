@@ -46,14 +46,21 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	// keeping an Instance of this document as long as at least one window lives
 	_pcDocument->_INCREF();
 
+	Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
+
+	// seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
 	TCollection_ExtendedString a3DName("Visu3D");
 	_hViewer = Viewer(getenv("DISPLAY"),a3DName.ToExtString(),"",1000.0,V3d_XposYnegZpos,Standard_True,Standard_True);
+	TPrsStd_AISViewer::New(hcOcafDoc->Main(),_hViewer);
 
     _hViewer->Init();
 	_hViewer->SetDefaultLights();
 	_hViewer->SetLightOn();
 
-	_hContext =new AIS_InteractiveContext(_hViewer);
+	// seting up a new interactive context +++++++++++++++++++++++++++++++++++++++++++++++
+	//_hContext =new AIS_InteractiveContext(_hViewer);
+	TPrsStd_AISViewer::Find(hcOcafDoc->Main(), _hContext);
+	_hContext->SetDisplayMode(AIS_Shaded);
 
 	// World coordinate system
 	Handle(AIS_Trihedron) hTrihedron;
@@ -151,23 +158,11 @@ bool FCGuiDocument::SendMsgToActiveView(const char* pMsg)
 }
 
 
-/// set the parameter to the active view or reset in case of 0
-void FCGuiDocument::SetActive(FCView* pcView)
-{
-	_pcActiveView = pcView;
-
-	// trigger the application about Activity change
-	if(_pcActiveView)
-		_pcAppWnd->SetActive(this);
-	else
-		_pcAppWnd->SetActive(0l);
-
-}
 
 /// Geter for the Active View
 FCView* FCGuiDocument::GetActiveView(void)
 {
-	return _pcActiveView;
+	return _pcAppWnd->GetActiveView();
 }
 
 

@@ -9,3 +9,9 @@ Version: V0.1B7 Date: Fri Dec 06 17:30:26 2002 +++++++++++++++++++++++++++++++
 Version: V0.1B8 Date: Mon Dec 09 20:51:27 2002 +++++++++++++++++++++++++++++++
 + Fixes for button bar from Werner
 + New Std Commands
+
+Version: V0.1B9 Date: Mon Dec 16 14:40:59 2002 +++++++++++++++++++++++++++++++
++ First version of Werners waiting cursor
++ Activ View finished
++ Send Msg to view finished
++ Test1 importing BREP

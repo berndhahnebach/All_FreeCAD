@@ -26,9 +26,14 @@
 #include "CommandStd.h"
 #include "DlgDocTemplatesImp.h"
 #include "Icons/images.cpp"
+#include "Icons/x.xpm"
 #include "Application.h"
+#include "../Base/Exception.h"
+#include "../App/Document.h"
 
-
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TNaming_Builder.hxx>
 
 
 //===========================================================================
@@ -115,7 +120,7 @@ void FCCmdSave::CmdProfile(char** sMenuText,
 
 void FCCmdSave::Activated(void)
 {
-
+	GetApplication().Save();
 }
 
 //===========================================================================
@@ -141,10 +146,10 @@ void FCCmdSaveAs::CmdProfile(char** sMenuText,
 void FCCmdSaveAs::Activated(void)
 {
   AppWnd()->statusBar()->message("Saving file under new filename...");
-  QString fn = QFileDialog::getSaveFileName(0, 0, AppWnd());
+  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", AppWnd());
   if (!fn.isEmpty())
   {
-    //doc->saveAs(fn);
+    GetApplication().SaveAs(fn.latin1());
   }
   else
   {
@@ -183,7 +188,37 @@ void FCCmdPrint::Activated(void)
 		// TODO: Define printing by using the QPainter methods here
 
 		painter.end();
-	};
+	}
+}
+
+//===========================================================================
+// Std_Quit
+//===========================================================================
+
+void FCCmdQuit::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Exit";
+	*sToolTipText = "Quits the application";
+	*sWhatsThis   = "Quits the application";
+	*sStatusTip   = "Quits the application";
+	cPixmap = QPixmap(px);
+	iAccel = Qt::CTRL+Qt::Key_X;
+}
+
+
+void FCCmdQuit::Activated(void)
+{
+  if (ApplicationWindow::getApplication()->GetActiveView() == NULL)
+  {
+    qApp->quit();
+    return;
+  }
+
+  int iButton = QMessageBox::warning(ApplicationWindow::getApplication(), 
+                                     "FreeCAD", "Save changes to file?", "Yes", "No", "Cancel", 0);
+  if (iButton == 1) // no
+    qApp->quit();
+	
 
 	//statusBar()->message(IDS_STATUS_DEFAULT);
 }
@@ -308,6 +343,66 @@ void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsTh
 
 void FCCmdTest1::Activated(void)
 {
+  // A data structure for our box:
+  // the box itself is attached to the BoxLabel label (as his name and his function attribute) 
+  // its arguments (dimensions: width, length and height; and position: x, y, z) 
+  // are attached to the child labels of the box:
+  //
+  // 0:1 Box Label ---> Name --->  Named shape ---> Function
+  //       |
+  //     0:1:1 -- Width Label
+  //       |
+  //     0:1:2 -- Length Label
+  //       |
+  //     0:1:3 -- Height Label
+  //       |
+  //     0:1:4 -- X Label
+  //       |
+  //     0:1:5 -- Y Label
+  //       |
+  //     0:1:6 -- Z Label
+
+	// Create a new label in the data structure for the box
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
+
+	// Create the data structure : Set the dimensions, position and name attributes
+	TDataStd_Real::Set(L.FindChild(1), 1);
+	TDataStd_Real::Set(L.FindChild(2), 2);
+	TDataStd_Real::Set(L.FindChild(3), 3);
+	TDataStd_Real::Set(L.FindChild(4), 4);
+	TDataStd_Real::Set(L.FindChild(5), 5);
+	TDataStd_Real::Set(L.FindChild(6), 6);
+	TDataStd_Name::Set(L, "hallo");
+
+	// Instanciate a TSampleOcafFunction_BoxDriver and add it to the TFunction_DriverTable
+/*	Handle(TSampleOcafFunction_BoxDriver) myBoxDriver = new TSampleOcafFunction_BoxDriver();
+	TFunction_DriverTable::Get()->AddDriver(Standard_GUID("BoxDriver"), myBoxDriver);
+	// Instanciate a TFunction_Function attribute connected to the current box driver
+	// and attach it to the data structure as an attribute of the Box Label
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L,Standard_GUID("BoxDriver"));
+
+	// Initialize and execute the box driver (look at the "Execute()" code)
+    TFunction_Logbook log;
+	myBoxDriver->Init(L);
+    if (myBoxDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
+*/
+
+	// Make a box
+ 	BRepPrimAPI_MakeBox mkBox( gp_Pnt(1, 2 ,3), 4, 5 ,6);
+	TopoDS_Shape ResultShape = mkBox.Shape();
+
+
+	// Build a TNaming_NamedShape using built box
+	TNaming_Builder B(L);
+	B.Generated(ResultShape);
+
+	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+	// Display it
+	hcPrs->Display(1);
+
 
 }
 
@@ -328,6 +423,32 @@ void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsTh
 
 void FCCmdTest2::Activated(void)
 {
+
+	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
+
+	BRep_Builder aBuilder;
+	TopoDS_Shape ResultShape;
+
+	QString fn = QFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", AppWnd() );
+	if ( fn.isEmpty() ) return;
+ 
+	try{
+	  BRepTools::Read(ResultShape,(const Standard_CString)fn.latin1(),aBuilder);
+	}
+	// Boeser Fehler ;-)
+	catch(...){
+	  throw new FCException("Error loading BREP file");
+	}  
+
+	TNaming_Builder B(L);
+	B.Generated(ResultShape);
+
+	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+	// Display it
+	hcPrs->Display(1);
 
 }
 

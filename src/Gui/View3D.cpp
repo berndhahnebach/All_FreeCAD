@@ -102,6 +102,12 @@ const char *FCView3D::GetName(void)
 	return "View3D";
 }
 
+bool FCView3D::OnMsg(const char* pMsg)
+{
+	printf("Msg: %s View: %p\n",pMsg,this);
+	return true;
+}
+
 /*
 
 void FCView::fitAll()
@@ -222,15 +228,6 @@ void View3D::mouseMoveEvent			( QMouseEvent *cEvent)
 	_cMouseStack.top()->mouseMoveEvent( cEvent);
 }
  
-void View3D::focusInEvent  ( QFocusEvent * )
-{
-  puts("focus in (OpenGL window)");
-}
-
-void View3D::focusOutEvent ( QFocusEvent * )
-{
-  puts("focus out (OpenGL window)");
-}
 
 void View3D::ShowPopup(int x, int y)
 {

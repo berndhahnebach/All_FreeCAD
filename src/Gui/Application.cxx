@@ -40,7 +40,8 @@ static QWorkspace* stWs;
 ApplicationWindow* ApplicationWindow::Instance = 0L;
 
 ApplicationWindow::ApplicationWindow()
-    : QextMdiMainFrm( 0, "Main window", WDestructiveClose )
+    : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
+      _pcActiveDocument(NULL)
 {
 	// global access 
 	Instance = this;
@@ -203,6 +204,7 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddCommand(new FCCmdUndo());
 	_cCommandManager.AddCommand(new FCCmdRedo());
 	_cCommandManager.AddCommand(new FCCmdPrint());
+	_cCommandManager.AddCommand(new FCCmdQuit());
 	_cCommandManager.AddCommand(new FCCmdCut());
 	_cCommandManager.AddCommand(new FCCmdCopy());
 	_cCommandManager.AddCommand(new FCCmdPaste());
@@ -275,10 +277,10 @@ void ApplicationWindow::CreateTestOperations()
 	_pcPopup->insertSeparator();
 	_cCommandManager.AddTo("Std_Print",_pcPopup);
 	_pcPopup->insertSeparator();
-	//_cCommandManager.AddTo("Std_Quit",myFilePopup);
+	_cCommandManager.AddTo("Std_Quit",_pcPopup);
 
     _pcPopup = new QPopupMenu( this );
-    menuBar()->insertItem( "Work", _pcPopup );
+    menuBar()->insertItem( "Edit", _pcPopup );
 	_cCommandManager.AddTo("Std_Cut",_pcPopup);
 	_cCommandManager.AddTo("Std_Copy",_pcPopup);
 	_cCommandManager.AddTo("Std_Paste",_pcPopup);
@@ -291,41 +293,35 @@ void ApplicationWindow::CreateTestOperations()
 /// send Messages to the active view
 bool ApplicationWindow::SendMsgToActiveView(const char* pMsg)
 {
-	if(_pcActiveDocument)
-		return _pcActiveDocument->SendMsgToActiveView(pMsg);
-	else
+	FCView* pView = GetActiveView();
+
+	if(pView){
+		pView->OnMsg(pMsg);
+		return true;
+	}else
 		return false;
 }
 
-/// send Messages to the active view
-bool ApplicationWindow::SendMsgToViews(const char* pMsg)
+FCView* ApplicationWindow::GetActiveView(void)
 {
-	bool bResult = false;
+	QextMdiChildView * pView = activeWindow();
 
-	for(FClist<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
-	{
-		if( (*It)->SendMsgToActiveView(pMsg))
-		{
-			bResult = true;
-			break;
-		}
-	}
-
-	return bResult;
+	if(pView /*&& (typeid(*pView) == typeid(class FCView))*/)
+		return (FCView*)pView; 
+	else
+		return (FCView*)0l;
 }
 
-
-/// set the parameter to the active view or reset in case of 0
-void ApplicationWindow::SetActive(FCGuiDocument* pcDoc)
-{
-	_pcActiveDocument = pcDoc;
-
-}
 
 /// Geter for the Active View
-FCGuiDocument* ApplicationWindow::GetActiveView(void)
+FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 {
-	return _pcActiveDocument;
+	FCView* pView = GetActiveView();
+
+	if(pView)
+		return pView->getDocument();
+	else
+		return 0l;
 }
 
 

@@ -46,27 +46,6 @@ bool FCView::OnMsg(const char* pMsg)
 	return false;
 }
 
-/// Sets this view as the active or inactive
-void FCView::SetActive(bool bActive)
-{
-	if(bActive)
-		_pcDocument->SetActive(this);
-	else
-		_pcDocument->SetActive(0l);
-
-}
-
-void FCView::focusInEvent  ( QFocusEvent * ) 
-{
-	puts("focus in ");
-	SetActive(true);
-}
-
-void FCView::focusOutEvent ( QFocusEvent * ) 
-{
-	puts("focus out ");
-	SetActive(false);
-}
 
 
 #include "View_moc.cpp"

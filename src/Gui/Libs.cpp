@@ -46,6 +46,7 @@
 #	pragma comment(lib,"TKG3d.lib")
 #	pragma comment(lib,"TKBRep.lib")
 #	pragma comment(lib,"TKTopAlgo.lib")
+#	pragma comment(lib,"TKPrim.lib")
 	// OpenCasCade Std IO
 #	pragma comment(lib,"TKIGESStd.lib")
 #	pragma comment(lib,"TKShHealingStd.lib")

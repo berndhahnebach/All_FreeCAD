@@ -28,6 +28,8 @@
 
 class FCCommandManager;
 class ApplicationWindow;
+class FCGuiDocument;
+class FCDocument;
 /*
 class GuiExport FCAction :public FCPyObject, public QAction
 {
@@ -108,6 +110,10 @@ public:
 	virtual void Toogled  (bool){assert(_eType&Cmd_Toggle != 0);}
 	
 	friend FCCommandManager;
+
+	// Helper Methodes
+	FCGuiDocument* GetActiveDocument(void);
+	FCDocument*	   GetActiveOCCDocument(void);
 
 private slots:
 	virtual void activated (); 

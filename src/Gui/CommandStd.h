@@ -47,6 +47,7 @@ DEF_STD_CMD(FCCmdNew   ,"Std_New");
 DEF_STD_CMD(FCCmdSave  ,"Std_Save");
 DEF_STD_CMD(FCCmdSaveAs,"Std_SaveAs");
 DEF_STD_CMD(FCCmdPrint ,"Std_Print");
+DEF_STD_CMD(FCCmdQuit  ,"Std_Quit");
 DEF_STD_CMD(FCCmdUndo  ,"Std_Undo");
 DEF_STD_CMD(FCCmdRedo  ,"Std_Redo");
 DEF_STD_CMD(FCCmdCut   ,"Std_Cut");

@@ -18,6 +18,7 @@
 
 #include "Command.h"
 #include "Application.h"
+#include "Document.h"
 
 #include "Icons/x.xpm"
 
@@ -69,6 +70,19 @@ ApplicationWindow *FCCommand::AppWnd(void)
 	return ApplicationWindow::Instance;
 }
 
+FCGuiDocument* FCCommand::GetActiveDocument(void)
+{
+	return AppWnd()->GetActiveDocument();
+}
+
+FCDocument*	   FCCommand::GetActiveOCCDocument(void)
+{
+	FCGuiDocument * pcDoc = AppWnd()->GetActiveDocument();
+	if(pcDoc)
+		return pcDoc->GetDocument();
+	else
+		return 0l;
+}
 
 bool FCCommand::IsToggle(void)
 {

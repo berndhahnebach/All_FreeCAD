@@ -29,15 +29,8 @@ public:
 	FCGuiDocument* getDocument();
 	virtual const char *GetName(void)=0;
 
-	/// send Messages to all views
+	/// Mesage handler
 	virtual bool OnMsg(const char* pMsg);
-
-	/// Sets this view as the active or inactive
-	void SetActive(bool bActive);
-
-	virtual void focusInEvent  ( QFocusEvent * ) ;
-	virtual void focusOutEvent ( QFocusEvent * ) ;
-
 
 protected:
     FCGuiDocument*	_pcDocument;
