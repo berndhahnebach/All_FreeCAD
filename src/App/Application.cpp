@@ -62,8 +62,8 @@ FCApplicationOCC::~FCApplicationOCC() {}
 FCApplicationOCC::FCApplicationOCC() 
 {
 	// Instanciate a TOcafFunction_BoxDriver and add it to the TFunction_DriverTable
-	TFunction_DriverTable::Get()->AddDriver(FCFunction::GetID(), 
-											new FCFunction());
+//	TFunction_DriverTable::Get()->AddDriver(FCFunction::GetID(), 
+//											new FCFunction());
 
 }
 

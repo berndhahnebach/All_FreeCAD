@@ -51,11 +51,17 @@ inline TestEnvExists(const char* sEnvName,bool &bFailure)
 
 inline std::string FindHomePath(const char* sCall)
 {
+	EnvPrint("FindHomePath--------------------");
+	EnvPrint(sCall);
+
 	std::string Call(sCall), TempHomePath;
 	std::string::size_type pos = Call.find_last_of(PATHSEP);
 	TempHomePath.assign(Call,0,pos);
 	pos = TempHomePath.find_last_of(PATHSEP);
 	TempHomePath.assign(TempHomePath,0,pos+1);
+
+	EnvPrint(TempHomePath.c_str());
+
 	return TempHomePath;
 }
 
@@ -80,6 +86,9 @@ inline std::string FindBinPath(const char* sCall)
 
 inline std::string GetFreeCADLib(const char* sHomePath) 
 {
+	EnvPrint("GetFreeCADLib--------------------");
+	EnvPrint(sHomePath);
+
 	if(getenv("FREECADLIB") )
 	{
 		std::string TempLibPath = getenv("FREECADLIB");
@@ -93,9 +102,13 @@ inline std::string GetFreeCADLib(const char* sHomePath)
 		cStrLibPack += "LibPack";
 		if(chdir(cStrLibPack.c_str()) != -1)
 		{
-			chdir(sHomePath);
+			std::string str(sHomePath);
+			str += PATHSEP;
+			str += "bin";
+			// switch back to bin 
+			chdir(str.c_str());
 			EnvPrint("Found Setup constallation");
-			return cStrLibPack;
+			return cStrLibPack+PATHSEP;
 		}
 		EnvPrint("No LibPack found, using standard environment (if there any)");
 		return std::string();
@@ -110,7 +123,7 @@ inline SetPluginDefaults(const char* sPath)
 	sTempString += "CSF_StandardDefaults=";
 	sTempString += sPath;
 	putenv (sTempString.c_str());
-	EnvPrint(sTempString.c_str());
+//	EnvPrint(sTempString.c_str());
 	sTempString.clear();
 	sTempString += "CSF_PluginDefaults=";
 	sTempString += sPath;
@@ -149,7 +162,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
 		putenv (sTempString3.c_str());
-		EnvPrint(sTempString3.c_str());
+//		EnvPrint(sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_LANGUAGE */ 
 		sTempString3 += "CSF_LANGUAGE=";
@@ -161,7 +174,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP;
 		sTempString3 += "OpenCascade";
 		putenv (sTempString3.c_str());
-		EnvPrint(sTempString3.c_str());
+//		EnvPrint(sTempString3.c_str());
 		sTempString3.clear();
 		/* CSF_MDTVTexturesDirectory */  
 		sTempString3 += "CSF_MDTVTexturesDirectory="; 
@@ -170,7 +183,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP; 
 		sTempString3 += "OpenCascade"; 
 		putenv (sTempString3.c_str()); 
-		EnvPrint(sTempString3.c_str()); 
+//		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 		/* CSF_XCAFDefaults */  
 		sTempString3 += "CSF_XCAFDefaults="; 
@@ -179,7 +192,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP; 
 		sTempString3 += "OpenCascade"; 
 		putenv (sTempString3.c_str()); 
-		EnvPrint(sTempString3.c_str()); 
+//		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 		/* CSF_GraphicShr */  
 		sTempString3 += "CSF_GraphicShr="; 
@@ -188,7 +201,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP; 
 		sTempString3 += "TKOpenGl.dll"; 
 		putenv (sTempString3.c_str()); 
-		EnvPrint(sTempString3.c_str()); 
+//		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 		/* CSF_UnitsLexicon */  
 		sTempString3 += "CSF_UnitsLexicon="; 
@@ -199,7 +212,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP; 
 		sTempString3 += "Lexi_Expr.dat"; 
 		putenv (sTempString3.c_str()); 
-		EnvPrint(sTempString3.c_str()); 
+//		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 		/* CSF_UnitsDefinition */  
 		sTempString3 += "CSF_UnitsDefinition="; 
@@ -210,7 +223,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP; 
 		sTempString3 += "Units.dat"; 
 		putenv (sTempString3.c_str()); 
-		EnvPrint(sTempString3.c_str()); 
+//		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 		/* CSF_IGESDefaults */  
 		sTempString3 += "CSF_IGESDefaults="; 
@@ -219,7 +232,7 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += PATHSEP; 
 		sTempString3 += "OpenCascade"; 
 		putenv (sTempString3.c_str()); 
-		EnvPrint(sTempString3.c_str()); 
+//		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 		/* CSF_STEPDefaults */  
 		sTempString3 += "CSF_STEPDefaults="; 
@@ -231,4 +244,15 @@ inline SetCasCadeToFreeCADLib(const char* sLib)
 		EnvPrint(sTempString3.c_str()); 
 		sTempString3.clear(); 
 	}
+}
+
+
+inline void PrintPath(void) 
+{
+	char * p;
+	if(p=getenv("PATH") )
+	{
+		EnvPrint(p);
+	}else
+		EnvPrint("No Path set");
 }

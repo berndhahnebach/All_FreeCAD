@@ -37,18 +37,23 @@ try:
 	import sys,os,dircache
 except:
 	Err("Seams the python standard libs are not installed, bailing out!")
-	Err("Please (re)install python 2.1.x!")
-	Err("See www.python.org for details")
 	raise
 
+def InitDocumentation():
+	# Checking on FreeCAD documentation path ++++++++++++++++++++++++++++++++++++++++++
+	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc'):	
+		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net'):	
+			FreeCAD.ConfigSet("DocPath",FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net')
 
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	if os.path.isdir('..\\src\\Mod'):	
-		ModDir = '..\\src\\Mod'
-	if os.path.isdir('..\\Mod'):	
-		ModDir = '..\\Mod'
+	#print FreeCAD.ConfigGet("HomePath")
+	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):	
+		ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
+	else:
+		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Mod'):	
+			ModDir = FreeCAD.ConfigGet("HomePath")+'src\\Mod'
 	sys.path.append( '..\\bin' )
 	Log("   Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -47,7 +47,7 @@ class Standard_Transient;
 class Handle_Standard_Type;
 class Handle(TFunction_Driver);
 class FCFunction;
-
+class FCFeature;
 
 
 AppExport Handle_Standard_Type& STANDARD_TYPE(FCFunction);
@@ -87,40 +87,49 @@ class FCFunction : public TFunction_Driver {
 
 public:
 
-    inline void* operator new(size_t,void* anAddress) 
-      {
-        return anAddress;
-      }
-    inline void* operator new(size_t size) 
-      { 
-        return Standard::Allocate(size); 
-      }
-    inline void  operator delete(void *anAddress) 
-      { 
-        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
-      }
+	FCFeature *GetFeature(void){return _pcFeature;}
+
+	/** @name methodes needet for OCAF */
+	//@{
+	/** new operator for the CasCade handle system 
+	 */	
+    inline void* operator new(size_t,void* anAddress){return anAddress;}
+	/** new operator for the CasCade handle system 
+	 */	
+    inline void* operator new(size_t size){return Standard::Allocate(size);}
+	/** delete operator for the CasCade handle system 
+	 */	
+    inline void  operator delete(void *anAddress){if (anAddress) Standard::Free((Standard_Address&)anAddress);}
 //    inline void  operator delete(void *anAddress, size_t size) 
 //      { 
 //        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
 //      }
+	//@}
 
 	
+	/** @name methodes overiden from TFunction_Driver */
+	//@{
+	// new operator for the CasCade handle system 
 	AppExport static const Standard_GUID& GetID() ;
-	AppExport FCFunction();
+	AppExport FCFunction(FCFeature *pcFeature);
 	AppExport virtual  void Validate(TFunction_Logbook& log) const;
 	AppExport virtual  Standard_Boolean MustExecute(const TFunction_Logbook& log) const;
 	AppExport virtual  Standard_Integer Execute(TFunction_Logbook& log) const;
 	AppExport ~FCFunction();
+	//@}
 
 
 
 
- // Type management
- //
+	/** @name Type management */
+	//@{
 	AppExport friend Handle_Standard_Type& FCFunction_Type_();
 	AppExport const Handle(Standard_Type)& DynamicType() const;
 	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
+	//@}
 
+protected:
+	FCFeature *_pcFeature;
 
 };
 

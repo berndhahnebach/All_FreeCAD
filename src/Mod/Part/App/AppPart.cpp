@@ -42,9 +42,24 @@ message(PyObject *self, PyObject *args)           /* self unused in modules */
     }
 }
 
+/* module functions */
+static PyObject *                                 /* returns object */
+Box(PyObject *self, PyObject *args)               /* self unused in modules */
+{                                                 /* args from python call */
+	double  Float1,Float2,Float3,Float4,Float5,Float6;
+    if (!PyArg_ParseTuple(args, "(dddddd)",&Float1,&Float2,&Float3,&Float4,&Float5,&Float6))     // convert args: Python->C 
+        return NULL;                              /* null=raise exception */
+    else {
+
+        
+		return Py_None;                           /* convert C -> Python */
+    }
+}
+
 /* registration table  */
 static struct PyMethodDef hello_methods[] = {
     {"message", message, 1},       /* method name, C func ptr, always-tuple */
+    {"AddBox",  Box,     1},       /* method name, C func ptr, always-tuple */
     {NULL, NULL}                   /* end of table marker */
 };
 

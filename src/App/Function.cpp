@@ -45,7 +45,7 @@
 #endif
 
 #include "Function.h"
-
+#include "Feature.h"
 
 
 
@@ -55,7 +55,9 @@
 //         : to have only one instance of a driver for the whole session.
 //=======================================================================
 
-FCFunction::FCFunction() {}
+FCFunction::FCFunction(FCFeature *pcFeature)
+:_pcFeature(pcFeature)
+{}
 
 FCFunction::~FCFunction() {}
  

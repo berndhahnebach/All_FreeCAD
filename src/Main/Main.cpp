@@ -455,6 +455,8 @@ void ExtractPathAndUser(const char* sCall)
 		user = "Anonymous";
 	mConfig["UserName"] = user;
 
+	PrintPath();
+
 }
 
 //**************************************************************************

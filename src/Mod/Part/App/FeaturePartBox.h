@@ -36,6 +36,28 @@
 #define __FEATUREPARTBOX_H__
 
 
+#include <App/Feature.h>
+
+
+
+class PartBoxFeature :public FCFeature
+{
+	virtual bool MustExecute(const TFunction_Logbook& log) const;
+
+	virtual Standard_Integer Execute(TFunction_Logbook& log) const;
+
+	virtual void Validate(TFunction_Logbook& log) const;
+
+};
+
+
+
+
+
+
+
+/*
+
 #include <Standard.hxx>
 #include <TFunction_Driver.hxx>
 #include <Standard_Boolean.hxx>
@@ -124,6 +146,68 @@ public:
 	Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 
 };
+*/
+
+  // A data structure for our box:
+  // the box itself is attached to the BoxLabel label (as his name and his function attribute) 
+  // its arguments (dimensions: width, length and height; and position: x, y, z) 
+  // are attached to the child labels of the box:
+  //
+  // 0:1 Box Label ---> Name --->  Named shape ---> Function
+  //       |
+  //     0:1:1 -- Width Label
+  //       |
+  //     0:1:2 -- Length Label
+  //       |
+  //     0:1:3 -- Height Label
+  //       |
+  //     0:1:4 -- X Label
+  //       |
+  //     0:1:5 -- Y Label
+  //       |
+  //     0:1:6 -- Z Label
+
+	// Create a new label in the data structure for the box
+/*	FCDocument *pcDoc = GetActiveOCCDocument();
+	if(!pcDoc) return;
+
+    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
+
+	// Create the data structure : Set the dimensions, position and name attributes
+	TDataStd_Real::Set(L.FindChild(1), 1);
+	TDataStd_Real::Set(L.FindChild(2), 2);
+	TDataStd_Real::Set(L.FindChild(3), 3);
+	TDataStd_Real::Set(L.FindChild(4), 4);
+	TDataStd_Real::Set(L.FindChild(5), 5);
+	TDataStd_Real::Set(L.FindChild(6), 6);
+	TDataStd_Name::Set(L, "hallo");
+*/
+	// Instanciate a TSampleOcafFunction_BoxDriver and add it to the TFunction_DriverTable
+/*	Handle(TSampleOcafFunction_BoxDriver) myBoxDriver = new TSampleOcafFunction_BoxDriver();
+	TFunction_DriverTable::Get()->AddDriver(Standard_GUID("BoxDriver"), myBoxDriver);
+	// Instanciate a TFunction_Function attribute connected to the current box driver
+	// and attach it to the data structure as an attribute of the Box Label
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L,Standard_GUID("BoxDriver"));
+
+	// Initialize and execute the box driver (look at the "Execute()" code)
+    TFunction_Logbook log;
+	myBoxDriver->Init(L);
+    if (myBoxDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
+*/
+
+	// Make a box
+/* 	BRepPrimAPI_MakeBox mkBox( gp_Pnt(1, 2 ,3), 4, 5 ,6);
+	TopoDS_Shape ResultShape = mkBox.Shape();
+
+
+	// Build a TNaming_NamedShape using built box
+	TNaming_Builder B(L);
+	B.Generated(ResultShape);
+
+	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
+	// Display it
+	hcPrs->Display(1);
+*/
 
 
 #endif // __FEATUREPARTBOX_H__

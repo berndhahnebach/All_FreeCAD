@@ -984,6 +984,7 @@ QString FCHtmlView::GetDocDirectory()
 //  QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
   QString path = GetWindowParameter()->GetASCII("OnlineDocDir", "../Doc/free-cad.sourceforge.net").c_str();
 
+  puts(path.latin1());
   QDir dir (path);
   dir.convertToAbs();
   path = dir.path();

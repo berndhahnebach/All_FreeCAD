@@ -1,4 +1,4 @@
 #define FCVersionMajor 0
 #define FCVersionMinor 1
-#define FCVersionBuild 77
-#define FCVersionDisDa "Fri Nov 14 14:56:14 2003"
+#define FCVersionBuild 78
+#define FCVersionDisDa "Sun Nov 23 13:15:15 2003"

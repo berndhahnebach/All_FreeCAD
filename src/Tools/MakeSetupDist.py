@@ -44,7 +44,7 @@ try:
     DistTools.cpallWithFilter('../../bin',DistDir+DistBin+'/bin',DistTools.SetUpFilter(DistTools.BinFilter))
     DistTools.EnsureDir(DistDir+DistBin+'/lib')
     DistTools.cpallWithFilter('../../lib',DistDir+DistBin+'/lib',DistTools.SetUpFilter(DistTools.LibFilter))
-
+    DistTools.cpfile("FreeCAD.bat",DistDir+DistBin+'/bin/FreeCAD.bat')
     #====================================================================
     # copy Modules
     sys.stdout.write( 'Copy modul Tree ...\n')
@@ -110,9 +110,9 @@ try:
     #Sfx.write(" [Version:"+Version+"|Build:"+BuildNbr+"|Date:"+BuildDate+"] \n");
     Sfx.write("\n} \n");
     Sfx.write("Path=FreeCAD \n\n");
-    Sfx.write('Shortcut=S, '+DistBin+'\\bin\\FreeCAD.exe, FreeCAD'+Version+', "FreeCAD '+Version+'", "FreeCAD'+Version+'" \n\n');
-    Sfx.write('Shortcut=S, '+DistBin+'\\Doc\\free-cad.sourceforge.net\\index.html, FreeCAD'+Version+', "User documentation", "UserDoc" \n\n');
-    Sfx.write('Shortcut=S, '+DistBin+'\\Doc\\SourceDocumentation\\index.html, FreeCAD'+Version+', "Source documentation", "SourceDoc" \n\n');
+    Sfx.write('Shortcut=P, '+DistBin+'\\bin\\FreeCAD.bat, FreeCAD'+Version+', "FreeCAD '+Version+'", "FreeCAD'+Version+'" \n\n');
+    Sfx.write('Shortcut=P, '+DistBin+'\\Doc\\free-cad.sourceforge.net\\index.html, FreeCAD'+Version+', "User documentation", "UserDoc" \n\n');
+    Sfx.write('Shortcut=P, '+DistBin+'\\Doc\\SourceDocumentation\\index.html, FreeCAD'+Version+', "Source documentation", "SourceDoc" \n\n');
     Sfx.write("Overwrite=1 \n\n");
 
     Sfx.close()
@@ -120,7 +120,7 @@ try:
 
     #====================================================================
     # ziping a archiv
-    Cmd = "rar.exe a -sfx -zsfx.txt -df -ep1 "+DistDir+DistBin+".exe "+ DistDir+DistBin
+    Cmd = "rar.exe a -sfx -zsfx.txt -df -ep1 "+DistDir+DistBin+"B"+BuildNbr+".exe "+ DistDir+DistBin
     print Cmd
     os.popen(Cmd)
 except:

@@ -24,6 +24,31 @@
 #include "FeaturePartBox.h"
 
 
+
+bool PartBoxFeature::MustExecute(const TFunction_Logbook& log) const
+{
+return false;
+}
+
+Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log) const
+{
+return 1;
+}
+
+
+void PartBoxFeature::Validate(TFunction_Logbook& log) const
+{
+
+}
+
+
+
+
+
+
+
+/*
+
 //=======================================================================
 //function : TPartStd_BoxDriver
 //purpose  : Creation of an instance of the driver. It's possible (and recommended)
@@ -172,4 +197,4 @@ Standard_Boolean TSampleOcafFunction_BoxDriver::IsKind(const Handle(Standard_Typ
 
 Handle_TSampleOcafFunction_BoxDriver::~Handle_TSampleOcafFunction_BoxDriver() {}
 
-
+*/
