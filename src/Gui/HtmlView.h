@@ -44,6 +44,7 @@ class FCTextBrowser : public QTextBrowser
 
   signals:
     void showPopupMenu();
+    void startExtBrowser(QString);
 
   protected:
     virtual void viewportMousePressEvent (QMouseEvent * e);
@@ -91,6 +92,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     void PopupMenuAboutToShow();
     void ShowPopupMenu();
     void StartScriptOrBrowser(QString text);
+    void StartExtBrowser(QString);
 
   protected:
     virtual QString GetRelativeURL (const QString& path) const;

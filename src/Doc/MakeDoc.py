@@ -117,12 +117,19 @@ if not os.path.isdir("../../../doc/Manuals/Design_Specification"):
     os.mkdir("../../../doc/Manuals/Design_Specification")
 text = os.popen("latex2html Design_Specification.tex").read()
 LogFile.write(text)
-FCFileTools.cpall("Design_Specification","../../../doc/Manuals/Design_Specification")
+# if latex2html failed this directory doesn't exist
+if os.path.isdir("Design_Specification"):
+    FCFileTools.cpall("Design_Specification","../../../doc/Manuals/Design_Specification")
+else:
+    sys.stderr.write("latex2html failed!\n")
+
 if not os.path.isdir("../../../doc/Manuals/Manual"):
     os.mkdir("../../../doc/Manuals/Manual")
 text = os.popen("latex2html Manual.tex").read()
 LogFile.write(text)
-FCFileTools.cpall("Manual","../../../doc/Manuals/Manual")
+# if latex2html failed this directory doesn't exist
+if os.path.isdir("Manual"):
+    FCFileTools.cpall("Manual","../../../doc/Manuals/Manual")
 
 #====================================================================
 os.chdir("..")

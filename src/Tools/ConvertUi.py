@@ -14,38 +14,44 @@ for arg in sys.argv:
         if not os.path.isfile(sys.argv[i]):
             sys.stdout.write("Cannot find file " + sys.argv[i] + "\n")
             continue
-            
-        # input file name
-        file = open(sys.argv[i])
         
         # file without ".ui" extension
         inputFile  = sys.argv[i]
         inputFile  = inputFile[:-3]
+        inputFileU = inputFile + ".uic"
+        inputFileH = inputFile + ".h"
+        inputFileC = inputFile + ".cpp"
         
         #make a copy of the original file
-        FCFileTools.cpfile(sys.argv[i],inputFile+".old")
+        FCFileTools.cpfile(sys.argv[i],inputFileU)
 
-        # read the original file...        
+        # input file name
+        file = open(inputFileU)
+
+        # read the file...        
         lines = file.readlines()
         
         # ... and close it immediately
         file.close()
         
-        sys.stdout.write("Converting " + sys.argv[i] + "... ")
+        sys.stdout.write("Converting " + inputFileU + "... ")
         
         a=0
         for line in lines:
             # replace special strings
-            a=a+1
             line2 = line
-            # if succesful go 4 lines back (this should be the correct line)
+            # if succesful go 3 lines back (this should be the correct line)
             if (string.find(line2, '_pref</cstring>') != -1):
-                line3 = lines[a-4]
+                line3 = lines[a-3]
                 if (string.find(line3, '<class>Q') != -1):
-                    lines[a-4] = string.replace(line3,'<class>Q','<class>FC')
+                    lines[a-3] = string.replace(line3,'<class>Q','<class>FC')
+                line3 = lines[a-3]
+                if (string.find(line3, '</class>') != -1):
+                    lines[a-3] = string.replace(line3,'</class>','Pref</class>')
+            a=a+1
 
         # write the changes into the original file  
-        out = open(sys.argv[i],"w");
+        out = open(inputFileU,"w");
         for line in lines:
             # output 
             out.write(line)
@@ -56,6 +62,8 @@ for arg in sys.argv:
         
         # now run the uic (ui compiler)
         sys.stdout.write("Make source/header files... ")
-        os.popen("uic " + inputFile + ".ui -o " + inputFile + ".h")
-        os.popen("uic " + inputFile + ".ui -impl " + inputFile + ".h -o " + inputFile + ".cpp")
+        os.popen("uic " + inputFileU + " -o " + inputFileH)
+        os.popen("uic " + inputFileU + " -impl " + inputFileH + " -o " + inputFileC)
         sys.stdout.write("done.\n")
+
+        os.remove(inputFileU)

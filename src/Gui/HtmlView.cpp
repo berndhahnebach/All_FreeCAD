@@ -44,7 +44,6 @@
 
 
 
-
 /* XPM */
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
 /* See http://www.kde.org */
@@ -137,14 +136,41 @@ FCTextBrowser::FCTextBrowser(QWidget * parent, const char * name)
 
 void FCTextBrowser::setSource (const QString & name)
 {
-  const QMimeSource * mime = mimeSourceFactory()->data(name);
-
-  if (mime == NULL)
+  QString source = name;
+  QString mark;
+  int hash = name.find('#');
+  if ( hash != -1) 
   {
-    char szBuf[200];
-    sprintf(szBuf, "Can't load %s", name.latin1());
-    QMessageBox::information(this, "FreeCAD", szBuf);
-    return;
+    source  = name.left( hash );
+    mark = name.mid( hash+1 );
+  }
+
+  if ( source.left(5) == "file:" )
+    source = source.mid(6);
+
+  QString txt;
+
+  if (!source.isEmpty()) 
+  {
+    const QMimeSource* mime = mimeSourceFactory()->data(source, context());
+    if (mime == NULL)
+    {
+      char szBuf[200];
+      sprintf(szBuf, "Can't load %s.\nDo you want to start your favourite external browser instead?", source.latin1());
+      if (QMessageBox::information(this, "FreeCAD", szBuf, "Yes", "No", QString::null, 0) == 0)
+        emit startExtBrowser(source);
+      return;
+	  }
+	  else 
+	  {
+  	  if (QTextDrag::decode(mime, txt) == false) 
+  	  {
+        char szBuf[200];
+        sprintf(szBuf, "Can't decode %s", source.latin1());
+        QMessageBox::information(this, "FreeCAD", szBuf);
+        return;
+	    }
+    }
   }
 
   QTextBrowser::setSource(name);
@@ -229,6 +255,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclBrowser->mimeSourceFactory()->setFilePath( m_strDocDir ); 
   pclBrowser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
   connect(pclBrowser, SIGNAL(textChanged()), this, SLOT(TextChanged()));
+  connect(pclBrowser, SIGNAL(startExtBrowser(QString)), this, SLOT(StartExtBrowser(QString)));
 
   // set the start page now
   if (!home.isEmpty())
@@ -588,6 +615,11 @@ void FCHtmlView::StartScriptOrBrowser(QString path)
   }
 }
 
+void FCHtmlView::StartExtBrowser(QString url)
+{
+  StartBrowser(url, "");
+}
+
 void FCHtmlView::StartBrowser(QString path, QString protocol)
 {
   int iURL = path.length();
@@ -628,9 +660,13 @@ void FCHtmlView::StartBrowser(QString path, QString protocol)
 	sprintf(szPath,"Path=%s",sPath.latin1());
 	putenv (szPath);
 
-  if (system(szBuf) != 0)
+#ifdef WNT
+  if (WinExec(szBuf, SW_SHOW) < 32) // windows
+#else
+  if (system(szBuf) != 0) // other OS (not windows)
+#endif
   {
-    sprintf(szBuf, "Sorry, cannot start %s", browser.latin1());
+    sprintf(szBuf, "Sorry, cannot start '%s'", browser.latin1());
     QMessageBox::critical(this, "Browser", szBuf);
   }
 }
