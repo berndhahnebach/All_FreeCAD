@@ -90,10 +90,13 @@ class FCMouseModelPolyPicker : public FCMouseModelStd
     virtual void resizeEvent			  ( QResizeEvent * cEvent );
 
   protected:
+    void repaint();
+
     QColor color;
     FCvector<QPoint> _cNodeVector;
     int  m_iRadius;
     bool m_bWorking, m_bDrawNodes;
+    int  m_iXold, m_iYold;
     int  m_iXmin, 
          m_iXmax, 
          m_iYmin, 

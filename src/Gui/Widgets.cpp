@@ -229,11 +229,11 @@ bool FCProgressBar::setIndicator ( QString & indicator, int progress, int totalS
 					// nice formating for output
 					if(hour == 0)
 						if(minute == 0)
-							remainingTime = tr("(%1 s)").arg(s);
+							remainingTime = tr("(%1s)").arg(s);
 						else
-							remainingTime = tr("(%1'%2 min)").arg(m).arg(s);
+							remainingTime = tr("(%1' %2s)").arg(m).arg(s);
 					else
-						remainingTime = tr("(%1:%2 h)").arg(h).arg(m);
+						remainingTime = tr("(%1h %2min)").arg(h).arg(m);
 				}
 			}
 

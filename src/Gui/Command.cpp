@@ -57,8 +57,6 @@ bool FCAction::addTo(QWidget *w)
 	  connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
     // for disconnecting later
     btn->setAction(this);
-    // for disconnecting later
-    btn->setAction(this);
     return true;
   }
   else

@@ -50,9 +50,6 @@
 // forward declaration
 class QAction;
 
-// forward declaration
-class QAction;
-
 /** The button group class
  */
 class GuiExport FCButtonGroup : public QButtonGroup
@@ -150,10 +147,10 @@ class GuiExport FCToolboxButton : public QToolButton
     QSize sizeHint() const;
     void enable(bool enable);
     void showText(bool enable);
-    void setAction(QAction* action) { pLastAction = action; }
     void makeDisabledPixmap();
     void on(bool flag);
     void toggle();
+    void setAction(QAction* action) { pLastAction = action; }
 
   public slots:
     void slotResizeButton(int);
@@ -175,11 +172,11 @@ class GuiExport FCToolboxButton : public QToolButton
 
   private:
     bool tbShowText;
-    QAction* pLastAction;
     bool raised;    
     QString textLabel;
     QPixmap enabledPixmap;
     QPixmap disabledPixmap;
+    QAction* pLastAction;
 };
 
 class QStackBarBtn

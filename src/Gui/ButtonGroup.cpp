@@ -310,6 +310,11 @@ bool FCToolboxGroup::addWidget(QWidget* w, int i)
     return false;
 
   ButtonGroupLayout->addWidget(w, i, 0);
+  
+  // show if invisible
+  if (!w->isVisible())
+    w->show();
+
   return true;
 }
 
@@ -533,15 +538,6 @@ void FCToolboxButton::dropEvent ( QDropEvent * e)
     setText(pAction->menuText());
     setTooltip(pAction->toolTip());
 
-    // disconnect last action first
-    if (pLastAction)
-    {
-      disconnect( this, SIGNAL( clicked() ), pLastAction, SIGNAL( activated() ) );
-	    disconnect( this, SIGNAL( toggled(bool) ), pLastAction, SLOT( toolButtonToggled(bool) ) );
-	    disconnect( this, SIGNAL( destroyed() ), pLastAction, SLOT( objectDestroyed() ) );
-    }
-
-    pLastAction = pAction;
     // disconnect last action first
     if (pLastAction)
     {
