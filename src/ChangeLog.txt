@@ -546,3 +546,5 @@ Version: V0.1B114 Date: Sun Feb 13 17:07:39 2005 +++++++++++++++++++++++++++++++
 + RFE 1149922 implemented (Autoscrolling at startup)
 
 Version: V0.1B115 Date: Sun Feb 27 22:01:44 2005 +++++++++++++++++++++++++++++++
+
+Version: V0.1B116 Date: Wed Mar 16 23:19:23 2005 +++++++++++++++++++++++++++++++

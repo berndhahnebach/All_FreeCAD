@@ -48,7 +48,7 @@ FreeCAD.PrintLog("   Printing Log\n")
 Log ("Testing Application and Document...\n")
 
 Log("   Creating new Part document and filing up\n")
-Doc = App.DocNew("Part")
+Doc = App.New("Part")
 i = Doc.UndoLimit
 i = Doc.AvailableUndos
 i = Doc.AvailableRedos

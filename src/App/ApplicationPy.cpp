@@ -59,8 +59,9 @@ using namespace App;
 
 // Application Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
-	{"DocNew",         (PyCFunction) Application::sNew,            1},
-	{"DocOpen",        (PyCFunction) Application::sOpen,           1},
+	{"New",            (PyCFunction) Application::sNew,            1},
+	{"Open",           (PyCFunction) Application::sOpen,           1},
+	{"Import"  ,       (PyCFunction) Application::sImport,         1},
 	{"DocSave"  ,      (PyCFunction) Application::sSave,           1},
 	{"DocSaveAs",      (PyCFunction) Application::sSaveAs,         1},
 	{"DocGet",         (PyCFunction) Application::sGet,            1},
@@ -105,6 +106,16 @@ PYFUNCIMP_S(Application,sOpen)
 		return 0L;
 	}
 
+}
+
+PYFUNCIMP_S(Application,sImport)
+{
+    char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
+        return NULL;                             // NULL triggers exception
+
+    Py_Return;
+	
 }
 
 PYFUNCIMP_S(Application,sNew)

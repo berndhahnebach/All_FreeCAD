@@ -94,17 +94,43 @@ StdCmdOpen::StdCmdOpen()
 
 void StdCmdOpen::activated(int iMsg)
 {
-  getAppWnd()->statusBar()->message(QObject::tr("Opening file..."));
+  // fill the list of registered endings
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  std::string EndingList;
+  
+  EndingList = "All suported formats (*.FCStd;*.std";
 
-  QString f = QFileDialog::getOpenFileName( QString::null, "FreeCAD Standard (*.FCStd);;OpenCasCade (*.std)", getAppWnd() );
-  if ( !f.isEmpty() ) {
-    // the user selected a valid existing file
-//    GetApplication().Open(f.latin1());
-    getAppWnd()->appendRecentFile(f.latin1());
-  } else {
-    // the user cancelled the dialog
-    getAppWnd()->statusBar()->message(QObject::tr("Opening aborted"));
+  std::map<std::string,std::string>::const_iterator It;
+  for(It=EndingMap.begin();It != EndingMap.end();It++)
+  {
+    EndingList += ";*." + It->first;
   }
+
+  EndingList += ");;FreeCAD Standard (*.FCStd;*.std));;";
+  
+  for(It=EndingMap.begin();It != EndingMap.end();It++)
+  {
+    EndingList += It->second + " (*." + It->first + ");;";
+  }
+  EndingList += "All files (*.*)";
+  
+
+  QString f = QFileDialog::getOpenFileName( QString::null, EndingList.c_str(), getAppWnd() );
+  if ( f.isEmpty() ) return;
+  
+  std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+
+  if(EndingMap.find(Ending) == EndingMap.end())
+  {
+    doCommand(Doc,"App.Open(\"%s\")",strToPython(f.latin1()));
+    Base::Console().Log("OpenCMD: App.Open(\"%s\")",strToPython(f.latin1()));
+  }else{
+    doCommand(Doc,"import %s",EndingMap.find(Ending)->second.c_str());
+    doCommand(Doc,"%s.open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()));
+    Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()));
+  }    
+
+  getAppWnd()->appendRecentFile(f.latin1());
 }
 
 //===========================================================================
@@ -132,7 +158,7 @@ void StdCmdNew::activated(int iMsg)
 //  DlgDocTemplatesImp cDlg(this,getAppWnd(),"Template Dialog",true);
 //  cDlg.exec();
 
-  doCommand(Command::Gui,"App.DocNew()");
+  doCommand(Command::Gui,"App.New()");
 }
 
 //===========================================================================
@@ -1239,9 +1265,13 @@ StdCmdOCAFBrowse::StdCmdOCAFBrowse()
 void StdCmdOCAFBrowse::activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
+
 # ifdef _MSC_VER
+
 #   pragma warning(disable: 4101)
+
 # endif
+
   DebugBrowser cBrowser;
   cBrowser.DFBrowser(getAppWnd()->activeDocument()->getDocument()->GetOCCDoc());
 #else

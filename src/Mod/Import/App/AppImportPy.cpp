@@ -40,29 +40,28 @@
 
 
 /* module functions */
-static PyObject *                                 /* returns object */
-open(PyObject *self, PyObject *args)              /* self unused in modules */
-{                                                 /* args from python call */
+static PyObject *                        
+open(PyObject *self, PyObject *args)     
+{                                        
 	std::string strResult;
 
-  if (! PyArg_ParseTuple(args, ""))			  /* convert Python -> C */
-    return NULL;                              /* null=raise exception */
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
     
-	strResult += "The Import module\n";
+  Base::Console().Log("Open in Import with %s",strResult);
 
-	Base::PyBuf bufTemp(strResult.c_str());
-	return Py_BuildValue("s", bufTemp.str);   /* convert C -> Python */
-    
+	Py_Return;    
 }
 
 /* module functions */
-static PyObject *                                 /* returns object */
-save(PyObject *self, PyObject *args)          /* self unused in modules */
-{                                                 /* args from python call */
+static PyObject *                        
+save(PyObject *self, PyObject *args)     
+{                                        
 	char* str;
 
-    if (! PyArg_ParseTuple(args, "s",&str))		  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
+    if (! PyArg_ParseTuple(args, "s",&str))		
+        return NULL;                          
   
 	TopoDS_Shape ResultShape;
 	BRep_Builder aBuilder;

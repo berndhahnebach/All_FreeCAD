@@ -161,7 +161,7 @@ CmdPartNewDoc::CmdPartNewDoc()
 
 void CmdPartNewDoc::activated(int iMsg)
 {
-	doCommand(Doc,"d = App.DocNew()");
+	doCommand(Doc,"d = App.New()");
 
   updateActive();
 }

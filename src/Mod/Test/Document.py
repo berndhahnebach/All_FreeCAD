@@ -1,7 +1,3 @@
-# Document test module  
-# (c) 2004 Juergen Riegel
-#
-
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2003                       *   
 #*                                                                         *
@@ -44,7 +40,7 @@ import FreeCAD, os, unittest
 class DocumentCases(unittest.TestCase):
 
     def setUp(self):
-        self.Doc = FreeCAD.DocNew()
+        self.Doc = FreeCAD.New()
 
     def testProperties(self):
         i = self.Doc.UndoLimit

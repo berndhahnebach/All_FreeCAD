@@ -223,6 +223,7 @@ private:
 	// static python wrapper of the exported functions
 	PYFUNCDEF_S(sOpen);
 	PYFUNCDEF_S(sNew);
+	PYFUNCDEF_S(sImport);
 	PYFUNCDEF_S(sSave);
 	PYFUNCDEF_S(sSaveAs);
 	PYFUNCDEF_S(sGet);

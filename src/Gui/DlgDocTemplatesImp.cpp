@@ -88,9 +88,9 @@ void DlgDocTemplatesImp::onValidate()
   QString sTemplate = LineEdit1->text();
 
   if (sTemplate.isEmpty())
-    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.DocNew()");		
+    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.New()");		
   else
-    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
+    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.New(\"%s\")",LineEdit1->text().latin1());
 
   accept();
 }

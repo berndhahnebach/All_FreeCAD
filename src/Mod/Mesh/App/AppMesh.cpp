@@ -46,9 +46,27 @@ message(PyObject *self, PyObject *args)           /* self unused in modules */
     }
 }
 
+
+/* module functions */
+static PyObject *                        
+open(PyObject *self, PyObject *args)     
+{                                        
+	std::string strResult;
+
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+    
+  Base::Console().Log("Open in Mesh with %s",strResult);
+
+	Py_Return;    
+}
+
+
 /* registration table  */
 static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+    {"message", message, 1},       
+    {"open",    open,    1},       
     {NULL, NULL}                   /* end of table marker */
 };
 

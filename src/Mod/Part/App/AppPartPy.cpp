@@ -94,12 +94,27 @@ Temp(PyObject *self, PyObject *args)               /* self unused in modules */
   
 }
 
+/* module functions */
+static PyObject *                        
+open(PyObject *self, PyObject *args)     
+{                                        
+	std::string strResult;
+
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+    
+  Base::Console().Log("Open in Part with %s",strResult);
+
+	Py_Return;    
+}
+
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"info"   , info,    1},       
     {"AddBox" , Box,     1},       
     {"Temp"   , Temp,    1},       
-    {"open"   , Temp,    1},       
+    {"open"   , open,    1},       
     {"save"   , Temp,    1},       
     {NULL     , NULL      }        /* end of table marker */
 };

@@ -59,6 +59,11 @@ class MeshTemplate:
 # Get the Parameter Group of this module
 ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Mesh")
 
+# Append the open handler
+FreeCAD.EndingAdd("stl","Mesh")
+FreeCAD.EndingAdd("bms","Mesh")
+
+
 # Set the needed information
 ParGrp.SetString("HelpIndex",        "Mesh/Help/index.html")
 ParGrp.SetString("DocTemplateName",  "Mesh")
