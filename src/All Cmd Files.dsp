@@ -39,6 +39,11 @@ MTL=midl.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Desc=copy
+PostBuild_Cmds=mkdir ..\Mod\Test	copy Mod\Test\*.py ..\Mod\Test
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "All Cmd Files - Win32 Debug"
 
@@ -52,6 +57,11 @@ MTL=midl.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Desc=copy
+PostBuild_Cmds=mkdir ..\Mod\Test	copy Mod\Test\*.py ..\Mod\Test
+# End Special Build Tool
 
 !ENDIF 
 

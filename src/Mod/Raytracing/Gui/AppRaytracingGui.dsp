@@ -53,7 +53,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../RaytracingGui.pyd"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release\RaytracingGui.pyd"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Raytracing	copy Release\RaytracingGui.pyd ..\..\..\..\Mod\Raytracing	copy ..\InitGui.py ..\..\..\..\Mod\Raytracing
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
 
@@ -79,7 +83,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../RaytracingGui_d.pyd" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"Debug\RaytracingGui_d.pyd" /pdbtype:sept
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Raytracing	copy Debug\RaytracingGui_d.pyd ..\..\..\..\Mod\Raytracing	copy ..\InitGui.py ..\..\..\..\Mod\Raytracing
+# End Special Build Tool
 
 !ENDIF 
 
@@ -90,88 +98,6 @@ LINK32=link.exe
 # Begin Group "Dialogs"
 
 # PROP Default_Filter ""
-# End Group
-# Begin Group "Libs"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADApp.lib
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADAppD.lib
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADBase.lib
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADBaseD.lib
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADGui.lib
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADGuiD.lib
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
 # End Group
 # Begin Source File
 

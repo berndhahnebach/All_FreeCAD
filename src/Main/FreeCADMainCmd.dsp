@@ -38,7 +38,7 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "../../bin"
+# PROP Output_Dir "ReleaseCmd"
 # PROP Intermediate_Dir "ReleaseCmd"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -54,8 +54,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /pdb:"../../lib/FreeCADCmd.pdb" /machine:I386 /out:"..\..\bin\FreeCADCmd.exe"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /pdb:"../../lib/FreeCADCmd.pdb" /machine:I386 /out:"ReleaseCmd\FreeCADCmd.exe"
 # SUBTRACT LINK32 /pdb:none
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=mkdir ..\..\bin	copy ReleaseCmd\FreeCADCmd.exe ..\..\bin
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
 
@@ -66,7 +70,7 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "../../bin"
+# PROP Output_Dir "DebugCmd"
 # PROP Intermediate_Dir "DebugCmd"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -82,8 +86,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /pdb:"../../lib/FreeCADCmdD.pdb" /debug /machine:I386 /out:"..\..\bin\FreeCADCmdD.exe" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"DebugCmd\FreeCADCmdD.exe" /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=mkdir ..\..\bin	copy DebugCmd\FreeCADCmdD.exe ..\..\bin
+# End Special Build Tool
 
 !ENDIF 
 

@@ -38,7 +38,7 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir ".."
+# PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -53,7 +53,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"../Raytracing.pyd"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release/Raytracing.pyd"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Raytracing	copy Release\Raytracing.pyd ..\..\..\..\Mod\Raytracing	copy ..\Init.py ..\..\..\..\Mod\Raytracing
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
 
@@ -64,7 +68,7 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir ".."
+# PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -79,7 +83,11 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../Raytracing_d.pyd" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"Debug\Raytracing_d.pyd" /pdbtype:sept
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Raytracing	copy Debug\Raytracing_d.pyd ..\..\..\..\Mod\Raytracing	copy ..\Init.py ..\..\..\..\Mod\Raytracing
+# End Special Build Tool
 
 !ENDIF 
 
@@ -87,62 +95,6 @@ LINK32=link.exe
 
 # Name "AppRaytracing - Win32 Release"
 # Name "AppRaytracing - Win32 Debug"
-# Begin Group "Libs"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADApp.lib
-
-!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADAppD.lib
-
-!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADBase.lib
-
-!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\lib\FreeCADBaseD.lib
-
-!IF  "$(CFG)" == "AppRaytracing - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=.\AppRaytracing.cpp
@@ -151,6 +103,14 @@ SOURCE=.\AppRaytracing.cpp
 
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=.\PovTools.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PovTools.h
 # End Source File
 # Begin Source File
 

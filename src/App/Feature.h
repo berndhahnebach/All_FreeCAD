@@ -41,9 +41,10 @@ class TopoDS_Shape;
 namespace App
 {
 
-class FeaturePy;
+//class FeaturePy;
 class Property;
 class Document;
+class FeatureDataProvider;
 
 /** Base class of all Feature classes in FreeCAD
  */
@@ -121,12 +122,19 @@ public:
 	void TouchProperty(const char *Name);
 	//@}
 
+
+	/** @name methodes for conviniant handling of DataProvider
+    * @see FeatureDataProvider
+    */
+	//@{
+  FeatureDataProvider *AddDataProvider(const char* Name);
+
+
+	//@}
+
   /// Retrive the Feature from a Document label
   static Feature *GetFeature(const TDF_Label &l);
 
-
-
-  void SetShape(TopoDS_Shape &Shape);
 
 	virtual Base::PyObjectBase *GetPyObject(void);
 

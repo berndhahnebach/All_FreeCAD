@@ -61,12 +61,6 @@ Feature::Feature(void)
 {
 
 }
-	
-//void Feature::SetShape(TopoDS_Shape &Shape)
-//{
-// 	TNaming_Builder B(_cFeatureLabel);
-//	B.Generated(Shape);
-//}
 
 
 void Feature::AddProperty(const char *Type, const char *Name, const char *InitString)

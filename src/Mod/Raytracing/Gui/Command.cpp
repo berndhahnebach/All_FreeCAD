@@ -469,6 +469,8 @@ void CmdRaytracingNewProject::activated(int iMsg)
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
 
+  //cDir = Gui::FileDialog::getExistingDirectory(cDir.c_str()).latin1();
+  
   if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
     cDir += PATHSEP;
 
