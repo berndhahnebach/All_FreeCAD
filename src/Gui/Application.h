@@ -24,7 +24,7 @@ class FCDockWindow;
 class QToolBar;
 class FCView;
 
-
+class FCAutoWaitCursor;
 
 
 /** The Applcation main class
@@ -116,6 +116,16 @@ private:
 	QPopupMenu*		_pcPopup;
 	FCUndoRedoDlg*	_pclUndoRedoWidget;
 	QComboBox *		_pcWorkbenchCombo;
+
+  protected:
+    void timerEvent( QTimerEvent * e)
+    {
+      emit timeEvent();
+    }
+    
+    FCAutoWaitCursor *waitCursor;
+  signals:
+    void timeEvent();
 };
 
 
@@ -147,49 +157,63 @@ protected:
 /** The FCAutoWaitCursor sets automatically the 
  *  waiting cursor if the application is busy
  */
-#define WAITCURSORTEST
-//#define WAITCURSORNOTHREAD
-
-#ifdef WAITCURSORNOTHREAD
-#  ifndef WAITCURSORTEST
-#	define WAITCURSORTEST
-#  endif
-#endif
-
 class GuiExport FCAutoWaitCursor : public QObject, public QThread
 {
   Q_OBJECT
 
   public:
-    FCAutoWaitCursor()
+
+#ifdef WNT // windows os
+    FCAutoWaitCursor(DWORD id, int i)
+		:main_threadid(id), iInterval(i)
     {
-      iAutoWaitCursorMaxCount = 5;
-      iAutoWaitCursorCounter  = 5;
+      iAutoWaitCursorMaxCount = 3;
+      iAutoWaitCursorCounter  = 3;
       bOverride = false;
+      start();
     }
+#else
+    FCAutoWaitCursor(int i)
+		: iInterval(i)
+    {
+      iAutoWaitCursorMaxCount = 3;
+      iAutoWaitCursorCounter  = 3;
+      bOverride = false;
+      start();
+    }
+#endif
 
     void run()
     {
       while (true)
       {
-        msleep(300);
+        // set the thread sleeping
+        msleep(iInterval);
 
+        // decrements the counter
         awcMutex.lock();
         if (iAutoWaitCursorCounter > 0)
           iAutoWaitCursorCounter--;
         awcMutex.unlock();
 
+        // set waiting cursor if the application is busy
         if (iAutoWaitCursorCounter == 0)
         {
+          // load the waiting cursor only once
           if (bOverride == false)
           {
-            QApplication::setOverrideCursor(WaitCursor);
+#ifdef WNT // win32 api functions
+			      AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
+			      SetCursor(LoadCursor(NULL, IDC_WAIT));
+#endif
             bOverride = true;
           }
         }
+        // reset
         else if (bOverride == true)
         {
-          QApplication::restoreOverrideCursor();
+          // you need not to restore the old cursor because 
+          // the application window does this for you :-))
           bOverride = false;
         }
       }
@@ -198,65 +222,22 @@ class GuiExport FCAutoWaitCursor : public QObject, public QThread
     QMutex awcMutex;
     int iAutoWaitCursorCounter;
     int iAutoWaitCursorMaxCount;
+    int iInterval;
     bool bOverride;
+#ifdef WNT
+  	DWORD main_threadid;
+#endif
 
   public slots:
     void timeEvent()
     {
+      // NOTE: this slot must be connected with the timerEvent of your class
+      // increments the counter
       awcMutex.lock();
       if (iAutoWaitCursorCounter < iAutoWaitCursorMaxCount)
         iAutoWaitCursorCounter++;
       awcMutex.unlock();
     }
-};
-
-/** The application main class
- */
-class GuiExport FCMainApplication : public QApplication
-{
-  Q_OBJECT
-
-  public:
-    FCMainApplication ( int & argc, char ** argv )
-      :QApplication(argc, argv)
-    {
-#ifdef WAITCURSORTEST
-      iWaitCursor = 0;
-#endif
-      startTimer(100);
-      waitCursor = new FCAutoWaitCursor;
-#ifndef WAITCURSORNOTHREAD
-      waitCursor->start();
-#endif
-
-      connect(this, SIGNAL(timeEvent()), waitCursor, SLOT(timeEvent()));
-    }
-
-  protected:
-#ifdef WAITCURSORTEST
-    int iWaitCursor;
-#endif
-    void timerEvent( QTimerEvent * e)
-    {
-      emit timeEvent();
-#ifdef WAITCURSORTEST
-      if ((iWaitCursor++) == 50)
-      {
-#ifdef WAITCURSORNOTHREAD
-        setOverrideCursor( WaitCursor );
-#endif
-        QWaitCondition().wait(3000);
-#ifdef WAITCURSORNOTHREAD
-        restoreOverrideCursor();
-#endif
-        iWaitCursor = 0;
-      }
-#endif
-    }
-
-    FCAutoWaitCursor *waitCursor;
-  signals:
-    void timeEvent();
 };
 
 #endif

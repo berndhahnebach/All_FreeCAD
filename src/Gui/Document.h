@@ -35,8 +35,10 @@
 #include <Geom_Axis2Placement.hxx>
 #endif
 
+#include "../Base/PyExport.h"
+#include "../App/Document.h"
+
 class ApplicationWindow;
-class FCDocument;
 class MDIWindow;
 
 
@@ -97,6 +99,7 @@ private:
 	Handle(AIS_InteractiveContext)	_hContext;
 	// the doc/Document
 	FCDocument*						_pcDocument;
+	FCPyHandle<FCDocument>			_hcDocument;
 };
 
 

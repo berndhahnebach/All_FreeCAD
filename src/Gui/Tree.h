@@ -69,7 +69,8 @@ class FCTreeLabel : public QListViewItem
 {
 public:
 	/// Constructor
-    FCTreeLabel( FCTreeLabel * parent, const FCLabel& rcLabel );
+    FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel );
+    FCTreeLabel( FCTree * parent);
 
     /// Opens the Leafs and generate them.
     void setOpen( bool );
@@ -81,11 +82,16 @@ public:
     /// Sets the pixmap that will be shown.
     void setPixmap( QPixmap *p );
 
+
+
 protected:
-	const FCLabel& _rcLabel;
+	void activate (); 
+	FCPyHandle<FCLabel> _hcLabel;
 
     FCTreeLabel * _pcParent;
+	FCGuiDocument*  _pcDocument;
 
+	bool _bOpend;
 };
 
 
@@ -100,7 +106,7 @@ public:
 	// App_Tree();
 	
 	//void InitCascade(Handle(TDocStd_Document) hDoc);
-
+	friend FCTreeLabel;
 private:
 	FCGuiDocument*  _pcDocument;
 };

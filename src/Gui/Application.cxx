@@ -43,6 +43,15 @@ ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose ),
       _pcActiveDocument(NULL)
 {
+  // start thread which observes the application and 
+  // sets/unsets the waiting cursor if necessary
+  int iInterval = 50;
+  startTimer(iInterval);
+#ifdef WNT
+  waitCursor = new FCAutoWaitCursor(GetCurrentThreadId(), 2*iInterval);
+  connect(this, SIGNAL(timeEvent()), waitCursor, SLOT(timeEvent()));
+#endif
+
 	// global access 
 	Instance = this;
 
@@ -347,6 +356,7 @@ void ApplicationWindow::updateRedo()
 
 void ApplicationWindow::executeUndoRedo()
 {
+  QWaitCondition().wait(5000);
 }
 
 

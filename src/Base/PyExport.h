@@ -221,6 +221,193 @@ class BaseExport FCPyObject : public PyObject
 		{return ((FCPyObject*)self)->Py_isA(args);};
 };
 
+
+/** Python Object handle class
+ *  Using pointers on classes derived from FCPyObject would
+ *  be potentionaly dangerous because you would have to take 
+ *  care of the referenc counting of python by your self. There
+ *  fore this class was designd. It takes care of references and 
+ *  as long as a object of this class exists the handled class get
+ *  not destructed. That means a FCPyObject derived object you can
+ *  only destruct by destructing all FCPyHandle and all python 
+ *  references on it!
+ *  @see FCPyObject,FCDocument 
+ */
+template <class HandledType>
+class BaseExport FCPyHandle
+{
+public:
+	//**************************************************************************
+	// construction destruction
+
+	/** pointer and default constructor
+	 *  the good way would be not using pointer
+	 *  instead using a overwriten new operator in the
+	 *  HandledType class! But is not easy to inforce!
+	 */
+	FCPyHandle(HandledType *ToHandel=0L)
+		:_pHandels(ToHandel)
+	{
+		if(_pHandels)
+			ToHandel->_INCREF();
+	}
+
+	/// Copy constructor 
+	FCPyHandle(const FCPyHandle <HandledType> &ToHandel)
+		:_pHandels(ToHandel._pHandels)
+	{
+		if(_pHandels)
+			ToHandel->_INCREF();
+	}
+
+	/** destructor
+	 *  Release the referenc count which cause,
+	 *  if was the last one, the referenced object to 
+	 *  destruct! 
+	 */
+	~FCPyHandle()
+	{
+		if(_pHandels)
+			_pHandels->_DECREF();
+	}
+
+	//**************************************************************************
+	// operator implementation
+
+	// assign operator from a pointer
+	FCPyHandle <HandledType>  &operator=(const HandledType* other)
+	{		
+		if(_pHandels)
+			_pHandels->_DECREF();
+		_pHandels = other->_pHandels;
+		if(_pHandels)
+			ToHandel->_INCREF();
+		return *this;
+	}
+
+	// assign operator from a unknown pointer
+	FCPyHandle <HandledType>  &operator=(const void* other)
+	{		
+		if(_pHandels)
+			_pHandels->_DECREF();
+		if( PointsOn(other) )
+			_pHandels = other->_pHandels;
+		else
+			// invalid handle
+			_pHandels = 0L;
+		if(_pHandels)
+			_pHandels->_INCREF();
+		return *this;
+	}
+
+	// assign operator from a handle
+	FCPyHandle <HandledType>  &operator=(const FCPyHandle <HandledType> &other)
+	{
+		if(_pHandels)
+			_pHandels->_DECREF();
+		_pHandels = other._pHandels;
+		if(_pHandels)
+			_pHandels->_INCREF();
+		return *this;
+	}
+
+	/// derefrence operators
+	HandledType &operator*()
+	{
+		return *_pHandels;
+	}
+
+	/// derefrence operators
+	HandledType *operator->()
+	{
+		return _pHandels;
+	}
+
+	/// derefrence operators
+	HandledType &operator*() const
+	{
+		return _pHandels;
+	}
+
+	/// derefrence operators
+	HandledType *operator->() const
+	{
+		return _pHandels;
+	}
+
+	/** lower operator
+	 *  needed for sorting in maps and sets
+	 */
+	bool operator<(const FCPyHandle<HandledType> &other) const
+	{
+		return _pHandels<&other;
+	}
+
+	/// equal operator
+	bool operator==(const FCPyHandle<HandledType> &other) const
+	{
+		return _pHandels==&other;
+	}
+
+	/// returns the type as PyObject
+	PyObject* GetPyObject(void)
+	{
+		return (PyObject*) _pHandels;
+	}
+	//**************************************************************************
+	// checking on the state
+
+	/// Test if it handels something
+	bool IsValid(void) const
+	{
+		return _pHandels!=0;
+	}
+
+	/// Test if it not handels something
+	bool IsNull(void) const
+	{
+		return _pHandels==0;
+	}
+/*
+	/// Test if this is the last Referenc
+	bool IsLastRef(void) const
+	{
+		if(_pHandels && _pHadels->GetReferenceCount()==1)
+			return true;
+		return false;
+	}
+
+	/// Get number of references on the object, including this one
+	long GetReferenceCount(void) const
+	{
+		if(_pHandels)
+			return _pHadels->GetReferenceCount();
+		return 0;
+	}
+*/
+	/** Type checking
+	 *  test for a point if its the right type for handling
+	 *  with this concrete handle object
+	 */
+	bool PointsOn(const void* other) const
+	{
+		if(!_pHandels)
+			if(other)
+				return false;
+			else
+				return true;
+		return typeid(*other) == typeid(HandledType) ; 
+	}                                     
+
+private:
+	/// the pointer on the handled object
+	HandledType *_pHandels;
+
+};
+
+
+
+
 /** Python dynamic class macro for definition
  * sets up a static/dynamic function entry in a class inheriting 
  * from FCPyObject. Its a pure confiniance macro. You can also do

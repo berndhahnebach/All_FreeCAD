@@ -28,6 +28,7 @@
 #include <TDF_Label.hxx>
 
 #include <map>
+#include <vector>
 
 class FCDocument;
 
@@ -62,7 +63,13 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Gets a child label
-	FCLabel* GetLabel(int);
+	FCPyHandle<FCLabel> GetLabel(int);
+
+	/// Get all child labels
+	FCvector<FCPyHandle<FCLabel> > GetLabels(void);
+
+	/// return if the label has at least one child
+	bool HasChild(void){return _cLabel.HasChild()!=0;}
 
 	/// Gets the OCC Label
 	TDF_Label GetOCCLabel(void){return _cLabel;}
@@ -77,6 +84,8 @@ public:
 	// methods
 	PyObject *PyGetLabel(PyObject *args);	// Python wrapper
 	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((FCLabel*)self)->PyGetLabel(args);};
+	PYFUNCDEF_D (FCLabel,PyHasChild);
+
 
 protected:
 
@@ -127,7 +136,7 @@ public:
 	/// Get the path of a saved document (UNICODE)
 	const short* GetPath() const;
 	/// Get the Main Label of the document
-	FCLabel *Main();
+	FCPyHandle<FCLabel> Main();
 	/// Test if the document is empty
 	bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.

@@ -44,7 +44,7 @@
 #include <boost/any.hpp>
 
 
-/** Handle Base class
+/** Handle class
  *  Implementation of the referenc counting pattern
  *  Only able to instatiate with a class inhereting 
  *  FCHandled! 

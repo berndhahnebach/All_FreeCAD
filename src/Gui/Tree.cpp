@@ -23,6 +23,7 @@
 #endif
 
 #include "Document.h"
+#include "../App/Document.h"
 #include "Tree.h"
 
 
@@ -32,18 +33,43 @@
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, const FCLabel& rcLabel )
+FCTreeLabel::FCTreeLabel( FCTreeLabel * parent, FCPyHandle<FCLabel> &hcLabel )
     : QListViewItem( parent ),
-	_rcLabel(rcLabel)
+	_pcDocument(parent->_pcDocument),
+	_hcLabel(hcLabel),
+	_bOpend(false)
 {
-/*
-    if ( !readable )
-		setPixmap( folderLocked );
-    else
-		setPixmap( folderClosed );
-		*/
+	QString cString;
+
+	cString.sprintf("Tag:%d",_hcLabel->GetOCCLabel().Tag());
+	setText(0,cString);
+	
+/*	FCvector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+
+	for(FCvector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+	{
+		new FCTreeLabel(this,*It);
+	}
+*/
+	
 }
 
+FCTreeLabel::FCTreeLabel( FCTree * parent)
+	:QListViewItem((QListView*)parent),
+	 _pcDocument(parent->_pcDocument),
+	 _hcLabel(parent->_pcDocument->GetDocument()->Main()),
+	 _bOpend(false)
+{
+	setText(0,"Main Label");
+	
+	FCvector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+
+	for(FCvector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+	{
+		new FCTreeLabel(this,*It);
+	}
+
+}
 
 
 /** Set the actuall pixmap
@@ -70,7 +96,27 @@ const QPixmap *FCTreeLabel::pixmap( int i ) const
 
 void FCTreeLabel::setOpen( bool o )
 {
-/*    if ( o )
+	puts("setOpen");
+	// quieck an dirty
+	if(_hcLabel->GetOCCLabel().HasChild() && o && !_bOpend)
+	{
+		//for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
+		//	delete pItem;
+
+		FCvector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
+
+		for(FCvector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
+		{
+			new FCTreeLabel(this,*It);
+		}
+
+		_bOpend = true;
+
+	}	
+	QListViewItem::setOpen ( o );
+	
+	
+	/*    if ( o )
 	setPixmap( folderOpen );
     else
 	setPixmap( folderClosed );
@@ -121,6 +167,11 @@ void FCTreeLabel::setup()
     QListViewItem::setup();
 }
 
+void FCTreeLabel::activate ()
+{
+	puts("Activated");
+}
+
 
 
 FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
@@ -137,6 +188,11 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 	setColumnWidthMode(1,Maximum);
 	//addColumn("Attributes.");
 
+	// Add the first main label
+	new FCTreeLabel(this);
+
+
+	/*
 	QListViewItem *tmp = new QListViewItem(this,"Part","no");
 	tmp->setOpen ( true );
 	new QListViewItem(tmp,"xy_Plane","no");
@@ -149,7 +205,7 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 	new QListViewItem(tmp,"usw","no");
 	tmp = new QListViewItem(tmp,"Empty","no");
 	tmp = new QListViewItem(tmp,"Empty","no");
-
+*/
 	//setSize(200,400);
 
 }

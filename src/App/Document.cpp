@@ -35,11 +35,21 @@
 // Exported functions
 //--------------------------------------------------------------------------
 
-FCLabel* FCLabel::GetLabel(int iN)
+FCPyHandle<FCLabel> FCLabel::GetLabel(int iN)
 {
-	return _pcDocument->HasPyLabel( _cLabel.FindChild(iN));
+	return FCPyHandle<FCLabel>(_pcDocument->HasPyLabel( _cLabel.FindChild(iN)));
 }
 
+/// Get all child labels
+FCvector<FCPyHandle<FCLabel> > FCLabel::GetLabels(void)
+{
+	FCvector<FCPyHandle<FCLabel> > vhcLabels;
+
+	for (TDF_ChildIterator it(_cLabel); it.More(); it.Next())
+		vhcLabels.push_back( FCPyHandle<FCLabel>(_pcDocument->HasPyLabel(it.Value())));
+
+	return vhcLabels;
+}
 
 //--------------------------------------------------------------------------
 // Type structure
@@ -177,11 +187,18 @@ PyObject *FCLabel::PyGetLabel(PyObject *args)
 	int Tag;
     if (!PyArg_ParseTuple(args, "i",&Tag ))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-	FCLabel *pcL = GetLabel( Tag);
-	pcL->_INCREF();
-	return pcL;
+	FCPyHandle<FCLabel> hcL = GetLabel( Tag);
+	hcL->_INCREF();
+	return hcL.GetPyObject();
 }
  
+PyObject *FCLabel::PyHasChild(PyObject *args)
+{ 
+	if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+	return Py_BuildValue("i",HasChild()?1:0);
+} 
+
 
 /*
 PyObject *FCLabel::PyIsDifferent(PyObject *args)
@@ -248,14 +265,14 @@ const short* FCDocument::GetPath() const
 }
 
 /// Get the Main Label of the document
-FCLabel *FCDocument::Main() 
+FCPyHandle<FCLabel> FCDocument::Main() 
 {
 	if(!_pcMain){
 		_pcMain = new FCLabel(_hDoc->Main(),this);
 		_pcMain->_INCREF();
 		mcLabelMap[_hDoc->Main()] = _pcMain;
 	}
-	return  _pcMain;
+	return  FCPyHandle<FCLabel>(_pcMain);
 }
 
 /// Test if the document is empty
@@ -490,7 +507,7 @@ PyObject *FCDocument::_getattr(char *attr)				// __getattr__ function: note only
 			return Py_BuildValue("u", GetPath()); 
 		else if (streq(attr, "Main")){
 			Main()->_INCREF();
-			return Main(); }
+			return Main().GetPyObject(); }
 		else if (streq(attr, "IsEmpty"))					
 			return Py_BuildValue("u", IsEmpty()?1:0); 
 		else if (streq(attr, "IsValid"))					

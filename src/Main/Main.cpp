@@ -176,7 +176,6 @@ int main( int argc, char ** argv ) {
 #			ifdef _FC_GUI_ENABLED_
 				// A new QApplication
 				GetConsole().Log("Creating GUI Application...\n");
-				//QApplication* pcQApp = new FCMainApplication ( argc, argv );
 				QApplication* pcQApp = new QApplication ( argc, argv );
 
 				ApplicationWindow * mw = new ApplicationWindow();
