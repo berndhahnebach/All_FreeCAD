@@ -525,3 +525,6 @@ Version: V0.1B111 Date: Sun Jan 30 19:02:55 2005 +++++++++++++++++++++++++++++++
 + reactivate Inventor viewer
 + build in examples
 + new view commands
+
+Version: V0.1B112 Date: Mon Jan 31 01:57:33 2005 +++++++++++++++++++++++++++++++
++ redesign of PrefWidgets
