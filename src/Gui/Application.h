@@ -35,11 +35,17 @@
 
 #include "qextmdi/qextmdimainfrm.h"
 
-
 #define  putpix()
 
 #include "../Base/Console.h"
 #include "../App/Application.h"
+
+#ifndef _PreComp_
+#	include <string>
+#	include <vector>
+#	include <qmutex.h>
+#	include <qthread.h>
+#endif
 
 class FCGuiDocument;
 class QComboBox;

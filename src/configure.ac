@@ -156,7 +156,7 @@ fi
 
 # -DNO_KDE2 -DQT_THREAD_SUPPORT already defined in Config.h
 CPPFLAGS="$all_includes  -I/usr/include -I/usr/local/include -I$QTDIR/include  -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  "
-CXX=g++-3.2
+CXX=g++
 CXXFLAGS="$all_libraries -L/usr/lib -L/usr/local/lib -Wno-deprecated -D__DEBUG__ -L$QTDIR/lib -frtti"
 LDFLAGS="-L$all_libraries"
 AC_SUBST([MOC],[moc])
