@@ -49,16 +49,12 @@ class QComboBox;
 class FCWindow;
 class QToolBar;
 class FCBaseView;
-class FCToolboxBar;
-class FCStackBar;
 class FCHtmlView;
-class FCUndoRedoDlg;
 class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
 class FCViewBar;
 class FCCustomWidgetManager;
-class FCProgressBar;
 class FCView;
 class FCCommandManager;
 class QSplashScreen;
@@ -135,8 +131,6 @@ public:
 	//@{	
 	/// set text to the pane
 	void SetPaneText(int i, QString text);
-	/// gets a pointer to the Progress bar
-	FCProgressBar* GetProgressBar();
 	//@}
 
 	/** @name workbench handling */

@@ -31,11 +31,14 @@
  ***************************************************************************/
 
 
-#ifndef FCDLGSETTINGS3DVIEWIMP_H
-#define FCDLGSETTINGS3DVIEWIMP_H
+#ifndef __DLGSETTINGS3DVIEWIMP_H
+#define __DLGSETTINGS3DVIEWIMP_H
 #include "DlgSettings3DView.h"
 
-class FCDlgSettings3DView : public DlgSettings3DView, public FCPreferencePage
+namespace Gui {
+namespace Dialog {
+
+class DlgSettings3DViewImp : public DlgSettings3DView, public Gui::Dialog::PreferencePage
 { 
     Q_OBJECT
 
@@ -45,9 +48,12 @@ class FCDlgSettings3DView : public DlgSettings3DView, public FCPreferencePage
 
 
 public:
-    FCDlgSettings3DView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgSettings3DView();
+    DlgSettings3DViewImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~DlgSettings3DViewImp();
 
 };
 
-#endif // FCDLGSETTINGS3DVIEWIMP_H
+} // namespace Dialog
+} // namespace Gui
+
+#endif // __DLGSETTINGS3DVIEWIMP_H

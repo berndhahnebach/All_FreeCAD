@@ -24,54 +24,66 @@
  *   Werner Mayer 2002                                                     *
  *                                                                         *
  ***************************************************************************/
- 
 
-#ifndef __FC_BITMAP_FACTORY_H__
-#define __FC_BITMAP_FACTORY_H__
+
+#ifndef __BITMAP_FACTORY_H__
+#define __BITMAP_FACTORY_H__
 
 #include "../Base/Factory.h"
 
+namespace Gui {
+
 /** The Bitmap Factory
-  * the main purpose is to collect all build in Bitmaps and 
+  * the main purpose is to collect all build in Bitmaps and
   * hold all paths for the extern bitmaps (files) to serve
   * as a single point of accessing bitmaps in FreeCAD
   */
-class GuiExport FCBitmapFactory : public Base::Factory
+class GuiExport BitmapFactoryInst : public Base::Factory
 {
-	public:
-		enum Position
-		{
-			TopLeft, TopRight, BottomLeft, BottomRight
-		};
+public:
+	enum Position
+	{
+		TopLeft,  /**< Place to the top left corner */
+		TopRight, /**< Place to the top right corner */
+		BottomLeft, /**< Place to the bottom left corner */
+		BottomRight /**< Place to the bottom right corner */
+	};
 
-		static FCBitmapFactory& Instance(void);
-		static void Destruct (void);
+	static BitmapFactoryInst& Instance(void);
+	static void Destruct (void);
 
-		/// Adds a path were pixmaps can be found
-		void AddPath(const char* sPath);
-		/// Remove a path from the list of pixmap paths
-		void RemovePath(const char* sPath);
-		/// Add a build in XPM pixmap under a given name
-		void AddXPM(const char* sName, const char** pXPM);
-		/// Remove a build in pixmap by a given name
-		void RemoveXPM(const char* sName);
-		/// retrieve a pixmap by name
-		QPixmap GetPixmap(const char* sName);
-		QPixmap GetPixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
+	/// Adds a path where pixmaps can be found
+	void AddPath(const char* sPath);
+	/// Removes a path from the list of pixmap paths
+	void RemovePath(const char* sPath);
+	/// Adds a build in XPM pixmap under a given name
+	void AddXPM(const char* sName, const char** pXPM);
+	/// Removes a build in pixmap by a given name
+	void RemoveXPM(const char* sName);
+	/// Retrieves a pixmap by name
+	QPixmap GetPixmap(const char* sName);
+	/** Retrieves a pixmap by name
+	 * specifying also the name and possition of a smaller pixmap.
+	 * The the smaller pixmap is drawn into the bigger pixmap.
+	 */
+	QPixmap GetPixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
 
-	private:
-		static FCBitmapFactory* _pcSingleton;
+private:
+	static BitmapFactoryInst* _pcSingleton;
 
-		FCBitmapFactory(){}
-		~FCBitmapFactory(){}
+	BitmapFactoryInst(){}
+	~BitmapFactoryInst(){}
 
-		std::map<std::string,const char**> _mpXPM;
-		std::vector<std::string>          _vsPaths;
+	std::map<std::string,const char**> _mpXPM;
+	std::vector<std::string>          _vsPaths;
 };
 
-inline GuiExport FCBitmapFactory& GetBitmapFactory(void)
+/// Get the global instance
+inline GuiExport BitmapFactoryInst& BitmapFactory(void)
 {
-	return FCBitmapFactory::Instance();
+	return BitmapFactoryInst::Instance();
 }
 
-#endif // __FC_BITMAP_FACTORY_H__
+} // namespace Gui
+
+#endif // __BITMAP_FACTORY_H__

@@ -149,7 +149,7 @@ bool FCGuiDocument::SaveAs(void)
 
 void FCGuiDocument::CreateView(const char* sType) 
 {
-  QPixmap FCIcon = GetBitmapFactory().GetPixmap("FCIcon");
+  QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
 	FCView* pcView3D;
 	if(strcmp(sType,"View3DIv") == 0){
 		pcView3D = new FCView3DInventor(this,0L,"View3DIv");

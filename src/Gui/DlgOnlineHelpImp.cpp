@@ -36,7 +36,9 @@
 
 #include "DlgOnlineHelpImp.h"
 
-FCOnlineHelp::FCOnlineHelp( QWidget* parent, const char* name, WFlags fl )
+using namespace Gui::Dialog;
+
+DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl )
 : FCOnlineHelpBase(parent, name, fl)
 {
   append(UseProxy->getHandler());
@@ -46,7 +48,7 @@ FCOnlineHelp::FCOnlineHelp( QWidget* parent, const char* name, WFlags fl )
   setModified(true);
 }
 
-FCOnlineHelp::~FCOnlineHelp()
+DlgOnlineHelpImp::~DlgOnlineHelpImp()
 {
 }
 

@@ -6,7 +6,7 @@
  */
 
 /***************************************************************************
- *   (c) Werner Mayer (werner.wm.mayer@gmx.de) 2000 - 2003                 *   
+ *   (c) Werner Mayer (werner.wm.mayer@gmx.de) 2000 - 2003                 *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -17,12 +17,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -35,54 +35,87 @@
 
 #include <list>
 
-/** Declaration of class Sequencer.
+namespace Base {
+
+/**
  * This class gives the user an indication of the progress of an operation and
- * is used to reassure them that the application is still running.
- * This class is inherited by @see FCProgressBar.
+ * it is used to reassure them that the application is still running.
  *
  *  \par
  *  \code
  *  #include <Base/Sequencer.h>
  *  //first example
- *  if (GetSequencer().start ("your text", 10))
+ *  if (Sequencer().start ("your text", 10))
  *  for (int i=0; i<10; i++)
  *  {
  *    // do something
- *		GetSequencer().next ();
+ *		Sequencer().next ();
  *  }
- *  GetSequencer().stop ();
+ *  Sequencer().stop ();
  *
  *  //second example
- *  if (GetSequencer().start ("your text", 10))
+ *  if (Sequencer().start ("your text", 10))
  *  do
  *  {
  *    // do something
  *  }
- *  while (GetSequencer().next ());
- *  GetSequencer().stop ();
+ *  while (Sequencer().next ());
+ *  Sequencer().stop ();
  *  \endcode
  *  \par
+ *
+ * The implementation of this class also supports the interlocking of several running
+ * operations at a time. 
+ *
+ *  \par
+ *  \code
+ *  //start the first operation
+ *  Sequencer().start ("your text", 10)
+ *  for (int i=0; i<10, i++)
+ *  {
+ *    // do something
+ *
+ *    // start the second operation while the first one is still running
+ *    Sequencer().start ("another text", 10);
+ *		for (int j=0; j<10; j++)
+ *		{
+ *			// do something other
+ *			Sequencer().next ();
+ *		}
+ *		Sequencer().stop ();
+ *
+ *		Sequencer().next ();
+ *  }
+ *  Sequencer().stop ();
+ *  \endcode
+ *  \par
+ *
+ * This class is inherited by @see Gui::ProgressBar.
  */
 
-class BaseExport Sequencer
+class BaseExport SequencerBase
 {
 public:
-	Sequencer();
-	virtual ~Sequencer();
+	/**
+	 * Returns the last registered sequencer object
+	 * @see setGlobalInstance
+	 * @see _pclSequencer
+	 */
+	static SequencerBase& Instance();
 
-	/** @methodes to reimplement in subclasses*/
+	/** @methodes to reimplement in subclasses */
 	//@{
 	/**
 	 * Starts the sequencer, returns false if there is already a pending operation,
 	 * true otherwise.
-	 * Reimplemented in @see FCProgressBar
+	 * Reimplemented in @see Gui::ProgressBar
 	 */
 	virtual bool start(const char* pszStr, unsigned long steps);
 	/**
 	 * Next step, returns false if the end is already reached, true otherwise.
 	 * NOTE: For each call of start() you must call the
 	 *	     corresponding @see stop() method.
-	 * Reimplemented in @see FCProgressBar.
+	 * Reimplemented in @see Gui::ProgressBar.
 	 */
 	virtual bool next();
 	/**
@@ -98,34 +131,50 @@ public:
 	bool wasCanceled() const;
 
 protected:
-	/**
-	 * Sets a global Sequencer object.
-	 * Access to the last registered
-	 * object is performed by
-	 * @see GetSequencer().
-	 */
-	void setGlobalInstance ();
-	/// Reimplemented in @see FCProgressBar
+	/** Construction */
+	SequencerBase();
+	/** Destruction */
+	virtual ~SequencerBase();
+	/** Reimplemented in @see Gui::ProgressBar */
 	virtual void setText (const char* pszTxt);
 	/** Resets the sequencer
-	 * Reimplemented in @see FCProgressBar
+	 * Reimplemented in @see Gui::ProgressBar
 	 */
 	virtual void resetBar();
 	/** Aborts all pending operations
-	 * Reimplemented in @see FCProgressBar
+	 * Reimplemented in @see Gui::ProgressBar
 	 */
 	virtual void abort();
 
 protected:
-	bool _bCanceled;
-	int _nInstStarted, _nMaxInstStarted;
+	bool _bCanceled; /**< Is set to true if the last pending operation was canceled */
+	int _nInstStarted; /**< Stores the number of pending operations */ 
+	int _nMaxInstStarted; /**< Stores the number of maximum pending operations until no pending operation 
+												  is running. */
 	unsigned long _nProgress, _nTotalSteps;
 
 private:
+	/**
+	 * Sets a global Sequencer object.
+	 * Access to the last registered
+	 * object is performed by
+	 * @see Sequencer().
+	 */
+	void setGlobalInstance ();
+	/**
+	 * The _pclSequencer member just stores the pointer of the
+	 * last instaciated SequencerBase object.
+	 */
+	static SequencerBase* _pclSingleton; 
 	std::list<unsigned long> _aSteps;
 };
 
-// get global instance
-BaseExport Sequencer& GetSequencer ();
+/** get the last registered instance */
+inline SequencerBase& Sequencer ()
+{
+	return SequencerBase::Instance();
+}
+
+} // namespace Base
 
 #endif // __SEQUENCER_H__

@@ -38,6 +38,9 @@
 // forward declaration
 class QTabWidget;
 
+namespace Gui {
+namespace Dialog {
+
 /**
  * This class is a 2nd implementation of the container class.
  * It uses a listbox for the groups instead of a listview.
@@ -54,64 +57,76 @@ class QTabWidget;
  * append(<objectname>->getHandler());
  * to use the full automation
  */
-class GuiExport FCDlgPreferencesImp : public QDialog, public FCWindowParameter
+class GuiExport DlgPreferencesImp : public QDialog, public FCWindowParameter
 { 
-    Q_OBJECT
+Q_OBJECT
 
-  public:
-		static void addPage(const QString& name);
-		static void addGroup(const QString& name);
+public:
+	/**
+	 * Adds a new preference page. The preference pages are also
+	 * registered with their captions in the FCWidgetFactory to
+	 * produce them at construction time of DlgPreferencesImp.
+	 * All new added pages are mapped to the last added group.
+	 * @addGroup
+	 * @see FCWidgetFactory
+	 * @see FCPrefPageProducer
+	 */
+	static void addPage(const QString& name);
+	/** Adds a new group to arrange the preference pages. */
+	static void addGroup(const QString& name);
 
-    /// construction
-    FCDlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    /// destruction
-    ~FCDlgPreferencesImp();
+	/// construction
+	DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+	/// destruction
+	~DlgPreferencesImp();
 
-  protected slots:
-    /// click the OK button
-    void onOK();
-    /// click the Apply button
-    void onApply();
-    /// click the Cancel button
-    void onCancel();
+protected slots:
+	/// click the OK button
+	void onOK();
+	/// click the Apply button
+	void onApply();
+	/// click the Cancel button
+	void onCancel();
 
-  protected:
-    /** Adds a new preference group */
-    void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-    
-    /**
-     * Adds a new preference page to the current group
-     * Before the first call of this method @ref addPreferenceGroup must be called
-     * otherwise the preference pages will be lost.
-     */
-    void addPreferencePage(QWidget* page, const QString& name);
-    /// for internal use only
-    QTabWidget* getPreferenceGroup(int id);
-    /// for internal use only
-    QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-    /// for internal use only
-    void connectWidget(QWidget* page) const;
+protected:
+	/** Adds a new preference group */
+	void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
 
-	  /** @name buttons and stack, ... */
-	  //@{	
-    QPushButton* PushButton14;
-    QPushButton* PushButton15;
-    QPushButton* PushButton13;
-    QListBox* ListBox;
-    QWidgetStack* tabWidgetStack;
-    QGridLayout* DlgPreferencesLayout;
-    QGridLayout* Layout6;
-    //@}
+	/**
+	 * Adds a new preference page to the current group
+	 * Before the first call of this method @ref addPreferenceGroup must be called
+	 * otherwise the preference pages will be lost.
+	 */
+	void addPreferencePage(QWidget* page, const QString& name);
+	/** @name for internal use only */
+	//@{
+	QTabWidget* getPreferenceGroup(int id);
+	QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
+	void connectWidget(QWidget* page) const;
+	//@}
 
-  private:
-    std::map<QString, int> m_mGroupIDs;
-    QTabWidget               * m_pCurTab;
+	/** @name buttons and stack, ... */
+	//@{	
+	QPushButton* PushButton14;
+	QPushButton* PushButton15;
+	QPushButton* PushButton13;
+	QListBox* ListBox;
+	QWidgetStack* tabWidgetStack;
+	QGridLayout* DlgPreferencesLayout;
+	QGridLayout* Layout6;
+	//@}
 
-		static std::vector<QString> aclPages;
+private:
+	std::map<QString, int> m_mGroupIDs; /**< Name of preference page with its ID */
+	QTabWidget               * m_pCurTab; /**< Tab widget */
+	static std::vector<QString> aclPages; /**< Name of all registered preference pages */
 
-  private slots:
-    /// for internal use only
-    void prefPageClicked(int item );
+private slots:
+	/// for internal use only
+	void prefPageClicked(int item );
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif // DLGPREFERENCESIMP_H

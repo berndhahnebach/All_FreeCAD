@@ -26,8 +26,8 @@
  ***************************************************************************/
 
 
-#ifndef __FC_WIDGETS_H__
-#define __FC_WIDGETS_H__
+#ifndef ___WIDGETS_H__
+#define ___WIDGETS_H__
 
 #ifndef _PreComp_
 # include <qbutton.h>
@@ -50,7 +50,7 @@
 
 #include "../Base/Sequencer.h"
 
-#include "../Base/Sequencer.h"
+//namespace Gui {
 
 class QHBoxLayout;
 class QTime;
@@ -59,34 +59,26 @@ class QGridLayout;
 /**
  * Using the Qt's open/save dialogs with own adjustments
  */
-class GuiExport FCFileDialog : public QFileDialog
+class GuiExport FileDialog : public QFileDialog
 {
-  Q_OBJECT
+	Q_OBJECT
 
-  public:
-    static QString getOpenFileName( const QString &initially = QString::null,
-				                            const QString &filter = QString::null,
-				                            QWidget *parent = 0, const char* name = 0 );
-    static QString getOpenFileName( const QString &initially, const QString &filter,
-				                            QWidget *parent, const char* name, const QString& caption );
-    static QString getSaveFileName ( const QString & initially = QString::null,
-                                     const QString & filter = QString::null, QWidget * parent = 0,
-                                     const char * name = 0 );
-    static QString getSaveFileName ( const QString & initially, const QString & filter,
-                                     QWidget * parent, const char * name, const QString & caption );
-    static QString getSaveFileName ( const QString & initially, const QString & filter,
-                                     QWidget * parent, const QString & caption );
+public:
+	static QString getOpenFileName( const QString &initially = QString::null, const QString &filter = QString::null, QWidget *parent = 0, const char* name = 0 );
+	static QString getOpenFileName( const QString &initially, const QString &filter, QWidget *parent, const char* name, const QString& caption );
+	static QString getSaveFileName ( const QString & initially = QString::null, const QString & filter = QString::null, QWidget * parent = 0, const char * name = 0 );
+	static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const char * name, const QString & caption );
+	static QString getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, const QString & caption );
 
-  public:
-    FCFileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
-    FCFileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null,
-                  QWidget* parent = 0, const char* name = 0, bool modal = false);
-    virtual ~FCFileDialog();
+public:
+	FileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
+	FileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null, QWidget* parent = 0, const char* name = 0, bool modal = false);
+	virtual ~FileDialog();
 
-    QString selectedFileName();
+	QString selectedFileName();
 
-  protected slots:
-    virtual void accept();
+protected slots:
+	virtual void accept();
 };
 
 class GuiExport FCMessageBox : public QMessageBox
@@ -130,12 +122,13 @@ class GuiExport FCMessageBox : public QMessageBox
  */
 struct FCProgressBarPrivate;
 
-class FCProgressBar : public QProgressBar, public Sequencer
+class FCProgressBar : public QProgressBar, public Base::SequencerBase
 {
   public:
-    /// construction
-    FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
-    ~FCProgressBar ();
+	  /**
+		 * Returns the sequencer object
+		 */
+		static FCProgressBar* Instance();
     /** Starts the progress bar */
     bool start(const char* pszStr, unsigned long steps);
     /** Does the next step */
@@ -148,9 +141,13 @@ class FCProgressBar : public QProgressBar, public Sequencer
 		bool eventFilter(QObject* o, QEvent* e);
 
   private:
+    /** construction */
+    FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+		/** Destruction */
+    ~FCProgressBar ();
 	  /** @name for internal use only */
     //@{
-		/** Puts text to the status bar */ 
+		/** Puts text to the status bar */
 		void setText (const char* pszTxt);
 		/** Get the events under control */
 		void enterControlEvents();
@@ -166,6 +163,7 @@ class FCProgressBar : public QProgressBar, public Sequencer
     bool setIndicator ( QString & indicator, int progress, int totalSteps );
     //@}
     FCProgressBarPrivate* d;
+		static FCProgressBar* _pclSingleton; 
 };
 
 /**
@@ -439,5 +437,7 @@ class FCAnimation : public QLabel
 
     static FCAnimation* _pcSingleton;
 };
+
+//} // namespace Gui
 
 #endif // __FC_WIDGETS_H__

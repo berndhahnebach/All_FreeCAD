@@ -53,6 +53,8 @@
 #include "Widgets.h"
 #include "BitmapFactory.h"
 
+using namespace Gui::Dialog;
+
 // --------------------------------------------------
 
 class PrefGroupItem : public QListBoxItem 
@@ -106,13 +108,13 @@ void PrefGroupItem::paint( QPainter *p )
 }
 
 /*
- *  Constructs a FCDlgPreferencesImp which is a child of 'parent', with the
+ *  Constructs a DlgPreferencesImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl ),FCWindowParameter(name), m_pCurTab(NULL)
 {
   if ( !name )
@@ -196,30 +198,30 @@ FCDlgPreferencesImp::FCDlgPreferencesImp( QWidget* parent,  const char* name, bo
 /*  
  *  Destroys the object and frees any allocated resources
  */
-FCDlgPreferencesImp::~FCDlgPreferencesImp()
+DlgPreferencesImp::~DlgPreferencesImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-std::vector<QString> FCDlgPreferencesImp::aclPages;
-void FCDlgPreferencesImp::addPage(const QString& name)
+std::vector<QString> DlgPreferencesImp::aclPages;
+void DlgPreferencesImp::addPage(const QString& name)
 {
 	aclPages.push_back(name);
 }
 
-void FCDlgPreferencesImp::addGroup(const QString& name)
+void DlgPreferencesImp::addGroup(const QString& name)
 {
 	QString s = "Group_";
 	s += name;
 	aclPages.push_back(s);
 }
 
-void FCDlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
+void DlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   m_pCurTab = getOrAddPreferenceGroup(name, Pixmap, Pixmap2);
 }
 
-void FCDlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
+void DlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 {
 	if (m_pCurTab && page)
 	{
@@ -231,12 +233,12 @@ void FCDlgPreferencesImp::addPreferencePage(QWidget* page, const QString& name)
 	}
 }
 
-QTabWidget* FCDlgPreferencesImp::getPreferenceGroup(int id)
+QTabWidget* DlgPreferencesImp::getPreferenceGroup(int id)
 {
   return (QTabWidget*)tabWidgetStack->widget(id);
 }
 
-QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
+QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {
   // already inside
   if (m_mGroupIDs.find(name) != m_mGroupIDs.end())
@@ -244,8 +246,8 @@ QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, co
     return (QTabWidget*)tabWidgetStack->widget(m_mGroupIDs[name]);
   }
 
-  QPixmap pixSel   = GetBitmapFactory().GetPixmap(Pixmap);
-  QPixmap pixUnsel = GetBitmapFactory().GetPixmap(Pixmap2);
+  QPixmap pixSel   = Gui::BitmapFactory().GetPixmap(Pixmap);
+  QPixmap pixUnsel = Gui::BitmapFactory().GetPixmap(Pixmap2);
 
   int iSize = m_mGroupIDs.size();
   m_mGroupIDs[name] = iSize;
@@ -257,7 +259,7 @@ QTabWidget* FCDlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, co
   return tabWidget;
 }
 
-void FCDlgPreferencesImp::prefPageClicked(int item)
+void DlgPreferencesImp::prefPageClicked(int item)
 {
   m_pCurTab = getPreferenceGroup(item);
 
@@ -267,12 +269,12 @@ void FCDlgPreferencesImp::prefPageClicked(int item)
   tabWidgetStack->raiseWidget(m_pCurTab);
 }
 
-void FCDlgPreferencesImp::connectWidget(QWidget* page) const
+void DlgPreferencesImp::connectWidget(QWidget* page) const
 {
-  if (dynamic_cast<FCPreferencePage*>(page) != NULL)
+  if (dynamic_cast<PreferencePage*>(page) != NULL)
   {
     // and its preference widgets
-    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<FCPreferencePage*>(page)->getHandlers();
+    std::vector<FCWidgetPrefsHandler*> aHandlers = dynamic_cast<PreferencePage*>(page)->getHandlers();
     for (std::vector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
     {
       connect(PushButton13, SIGNAL(clicked()), *it, SLOT(onSave()));//OK
@@ -281,16 +283,16 @@ void FCDlgPreferencesImp::connectWidget(QWidget* page) const
   }
 }
 
-void FCDlgPreferencesImp::onOK()
+void DlgPreferencesImp::onOK()
 {
   onApply();
 }
 
-void FCDlgPreferencesImp::onApply()
+void DlgPreferencesImp::onApply()
 {
   QWidget* page = m_pCurTab->currentPage();
-  if (dynamic_cast<FCPreferencePage*>(page) != NULL)
-     (dynamic_cast<FCPreferencePage*>(page))->onApply();
+  if (dynamic_cast<PreferencePage*>(page) != NULL)
+     (dynamic_cast<PreferencePage*>(page))->onApply();
 
 # ifdef FC_DEBUG
   else
@@ -298,7 +300,7 @@ void FCDlgPreferencesImp::onApply()
 #endif
 }
 
-void FCDlgPreferencesImp::onCancel()
+void DlgPreferencesImp::onCancel()
 {
   // not yet implemented
 }

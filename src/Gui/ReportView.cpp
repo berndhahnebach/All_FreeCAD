@@ -40,15 +40,17 @@
 #include "Widgets.h"
 #include "PythonEditor.h"
 
+using namespace Gui::DockWnd;
+
 /*
- *  Constructs a FCReportOutput which is a child of 'parent', with the 
+ *  Constructs a ReportOutput which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
+ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
     : FCDockWindow( parent, name, fl )
 {
   if ( !name )
-  	setName( "FCReportOutput" );
+  	setName( "ReportOutput" );
 
   resize( 529, 162 );
   QGridLayout* tabLayout = new QGridLayout( this );
@@ -61,7 +63,7 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
   tabLayout->addWidget( tab, 0, 0 );
 
 
-  mle = new FCReportOutput( tab, "LogOutput" );
+  mle = new ReportOutput( tab, "LogOutput" );
   tab->insertTab( mle, tr( "Output" ) );
 
 	pyc = new PythonConsole(tab, "PythonConsole");
@@ -71,7 +73,7 @@ FCReportView::FCReportView( QWidget* parent,  const char* name, WFlags fl )
 /*  
  *  Destroys the object and frees any allocated resources
  */
-FCReportView::~FCReportView()
+ReportView::~ReportView()
 {
     // no need to delete child widgets, Qt does it all for us
 }
@@ -122,7 +124,7 @@ void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
 
 // ----------------------------------------------------------
 
-FCReportOutput::FCReportOutput(QWidget* parent, const char* name)
+ReportOutput::ReportOutput(QWidget* parent, const char* name)
  : QTextEdit(parent, name)
 {
 	reportHl = new ReportHighlighter(this);
@@ -136,13 +138,13 @@ FCReportOutput::FCReportOutput(QWidget* parent, const char* name)
   Base::Console().AttacheObserver(this);
 }
 
-FCReportOutput::~FCReportOutput()
+ReportOutput::~ReportOutput()
 {
 	Base::Console().DetacheObserver(this);
 	delete reportHl;
 }
 
-void FCReportOutput::restoreFont()
+void ReportOutput::restoreFont()
 {
   QFont _font(  font() );
   _font.setFamily( "Courier" );
@@ -155,30 +157,30 @@ void FCReportOutput::restoreFont()
   setFont( _font ); 
 }
 
-void FCReportOutput::Warning(const char * s)
+void ReportOutput::Warning(const char * s)
 {
 	reportHl->setParagraphType(ReportHighlighter::Warning);
   append(s);
 }
 
-void FCReportOutput::Message(const char * s)
+void ReportOutput::Message(const char * s)
 {
 	reportHl->setParagraphType(ReportHighlighter::Message);
   append(s);
 }
 
-void FCReportOutput::Error  (const char * s)
+void ReportOutput::Error  (const char * s)
 {
 	reportHl->setParagraphType(ReportHighlighter::Error);
   append(s);
 }
 
-void FCReportOutput::Log (const char * s)
+void ReportOutput::Log (const char * s)
 {
   // ignore this
 }
 
-bool FCReportOutput::event( QEvent* ev )
+bool ReportOutput::event( QEvent* ev )
 {
   bool ret = QWidget::event( ev ); 
   if ( ev->type() == QEvent::ApplicationFontChange ) 
@@ -189,7 +191,7 @@ bool FCReportOutput::event( QEvent* ev )
   return ret;
 }
 
-QPopupMenu * FCReportOutput::createPopupMenu ( const QPoint & pos )
+QPopupMenu * ReportOutput::createPopupMenu ( const QPoint & pos )
 {
 	QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
 	menu->insertItem(tr("Clear"), this, SLOT(clear()));
@@ -198,9 +200,9 @@ QPopupMenu * FCReportOutput::createPopupMenu ( const QPoint & pos )
 	return menu;
 }
 
-void FCReportOutput::onSaveAs()
+void ReportOutput::onSaveAs()
 {
-  QString fn = FCFileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", 
+  QString fn = FileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", 
 																						 this, QObject::tr("Save Report Output"));
   if (!fn.isEmpty())
   {

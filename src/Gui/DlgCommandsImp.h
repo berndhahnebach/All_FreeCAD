@@ -36,27 +36,36 @@
 
 class FCCommand;
 
-class FCDlgCustomCommandsImp : public FCDlgCustomCommands, public FCPropertyPage
+namespace Gui {
+namespace Dialog {
+
+/**
+ * Shows an overview of all available commands of all groups and modules.
+ */
+class DlgCustomCommandsImp : public FCDlgCustomCommands, public Gui::Dialog::PropertyPage
 { 
   Q_OBJECT
 
-  public:
-    FCDlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgCustomCommandsImp();
+public:
+	DlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgCustomCommandsImp();
 
-  protected:
-    void apply();
-    void cancel();
+protected:
+	void apply();
+	void cancel();
 
-  protected slots:
-    /// shows the description for the corresponding command
-    void slotDescription(QString);
-    /// show all commands of this category
-    void slotGroupSelected(const QString &);
+protected slots:
+	/** Shows the description for the corresponding command */
+	void onDescription(QString);
+	/** Shows all commands of this category */
+	void onGroupSelected(const QString &);
 
-  protected:
-    // groups of commands
-    std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
+protected:
+	// groups of commands
+	std::map<std::string, std::vector<FCCommand*> > m_alCmdGroups;
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif

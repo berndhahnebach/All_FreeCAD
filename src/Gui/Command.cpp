@@ -41,6 +41,9 @@
 #include "../Base/Interpreter.h"
 
 using Base::Interpreter;
+using namespace Gui;
+using namespace Gui::Dialog;
+using namespace Gui::DockWnd;
 
 //===========================================================================
 // FCAction 
@@ -183,7 +186,7 @@ bool FCMultiAction::addTo(QWidget *w)
   	connect( combo, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
   	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
     combo->setMinimumWidth(130);
-    QPixmap FCIcon = GetBitmapFactory().GetPixmap("FCIcon");
+    QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
     for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
     {
       combo->insertItem(FCIcon, it->c_str());
@@ -240,7 +243,7 @@ void FCMultiAction::setItems(const std::vector<std::string>& items)
 void FCMultiAction::insertItem(const char* item)
 {
   mItems.push_back(item);
-  QPixmap FCIcon = GetBitmapFactory().GetPixmap("FCIcon");
+  QPixmap FCIcon = Gui::BitmapFactory().GetPixmap("FCIcon");
   for (std::vector<QWidget*>::iterator it = widgets.begin(); it!= widgets.end(); ++it)
   {
     if ((*it)->inherits("QComboBox"))
@@ -336,7 +339,7 @@ bool FCUndoAction::addTo(QWidget* w)
   {
     QWidget* dlg = ((FCCmdUndo*)GetCommand())->GetWidget();
 
-	  QToolButton* button = new FCToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+		QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
     button->setToggleButton( isToggleAction() );
     button->setIconSet( iconSet() );
 
@@ -374,7 +377,7 @@ bool FCRedoAction::addTo(QWidget* w)
   {
     QWidget* dlg = ((FCCmdRedo*)GetCommand())->GetWidget();
 
-	  QToolButton* button = new FCToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
+		QToolButton* button = new ToolButtonDropDown((QToolBar*)w, iconSet().pixmap(), dlg);
     button->setToggleButton( isToggleAction() );
     button->setIconSet( iconSet() );
 
@@ -647,7 +650,7 @@ FCAction * FCCppCommand::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -689,7 +692,7 @@ FCAction * FCScriptCommand::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(_sStatusTip.c_str()));
 	pcAction->setWhatsThis(QObject::tr(_sWhatsThis.c_str()));
 	if(_sPixmap!="")
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(_sPixmap.c_str()));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(_sPixmap.c_str()));
 	pcAction->setAccel(_iAccel);
 
 	return pcAction;
@@ -809,7 +812,7 @@ FCAction * FCPythonCommand::CreateAction(void)
 	pcAction->setStatusTip(GetResource("StatusTip").c_str());
 	pcAction->setWhatsThis(GetResource("WhatsThis").c_str());
 	if(GetResource("Pixmap") != "")
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(GetResource("Pixmap").c_str()));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(GetResource("Pixmap").c_str()));
 
 	return pcAction;
 }
@@ -900,6 +903,19 @@ std::vector <FCCommand*> FCCommandManager::GetAllCommands(void)
 	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
 	{
 		vCmds.push_back(It->second);
+	}
+
+	return vCmds;
+}
+
+std::vector <FCCommand*> FCCommandManager::GetGroupCommands(const char *sGrpName)
+{
+	std::vector <FCCommand*> vCmds;
+
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+	{
+		if( strcmp(It->second->GetGroupName(),sGrpName) == 0)
+			vCmds.push_back(It->second);
 	}
 
 	return vCmds;

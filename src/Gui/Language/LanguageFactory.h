@@ -26,53 +26,73 @@
  ***************************************************************************/
 
 
-#ifndef __FC_LANGUAGE_FACTORY_H__
-#define __FC_LANGUAGE_FACTORY_H__
+#ifndef __LANGUAGE_FACTORY_H__
+#define __LANGUAGE_FACTORY_H__
 
 #include "../Base/Factory.h"
 
-/** The LanguageFactory singleton
+namespace Gui {
+
+/** The LanguageFactoryInst singleton
   */
-class GuiExport FCLanguageFactory : public Base::Factory
+class GuiExport LanguageFactoryInst : public Base::Factory
 {
 	public:
-		static FCLanguageFactory& Instance(void);
+		/** @name singleton stuff */
+		//@{
+		/// Creates an instance
+		static LanguageFactoryInst& Instance(void);
+		/// Destroys the instance
 		static void Destruct (void);
+		//@}
 
+		/** Sets the specified language if available */
 		void SetLanguage (const QString& sName);
+		/**
+		 * Creates a unique ID (QString) for the specified language.
+		 * This makes possible to register several files for the same language for example
+		 * if you have files coming from several application modules.
+		 */
 		QString CreateUniqueID(const QString& sName);
+		/** Returns all IDs to the specified language. */
 		QStringList GetUniqueIDs(const QString& sName);
+		/** Returns a list of all registered languages. */
 		QStringList GetRegisteredLanguages() const;
 
 	private:
-		static FCLanguageFactory* _pcSingleton;
+		static LanguageFactoryInst* _pcSingleton;
 
-		FCLanguageFactory(){}
-		~FCLanguageFactory(){}
+		LanguageFactoryInst(){}
+		~LanguageFactoryInst(){}
 
 		/// several files for the same language (important for language files from modules)
 		std::map<QString, int> _mCntLanguageFiles;
 };
 
-inline GuiExport FCLanguageFactory& GetLanguageFactory(void)
+/** Returns the global LanguageFactoryInst object */
+inline GuiExport LanguageFactoryInst& LanguageFactory(void)
 {
-	return FCLanguageFactory::Instance();
+	return LanguageFactoryInst::Instance();
 }
 
 // --------------------------------------------------------------------
 
-class GuiExport FCLanguageProducer : public Base::AbstractProducer
+class GuiExport LanguageProducer : public Base::AbstractProducer
 {
 	public:
-		/// Constructor
-		FCLanguageProducer (const QString& language, const std::vector<const char*>& languageFile);
+		/** 
+		 * Appends itself to the language factory.
+		 * @see LanguageFactoryInst
+		 */
+		LanguageProducer (const QString& language, const std::vector<const char*>& languageFile);
 
-		virtual ~FCLanguageProducer (void){}
+		virtual ~LanguageProducer (void){}
 
-		/// Produce an instance
+		/// Returns the generated language file
 		virtual void* Produce (void) const;
 
 	private:
+		/// Contains all translations
 		const std::vector<const char*>& mLanguageFile;
 };
 
@@ -81,15 +101,19 @@ class GuiExport FCLanguageProducer : public Base::AbstractProducer
 /** 
  * The language factory supplier class
  */
-class GuiExport FCLanguageFactorySupplier
+class GuiExport LanguageFactorySupplier
 {
   private:
-	  // Singleton
-	  FCLanguageFactorySupplier();
-  	static FCLanguageFactorySupplier *_pcSingleton;
+		/**
+		 * You can register new languages generated from ts file here
+		 */
+	  LanguageFactorySupplier();
+  	static LanguageFactorySupplier *_pcSingleton;
 
   public:
-  	static FCLanguageFactorySupplier &Instance(void);
+  	static LanguageFactorySupplier &Instance(void);
 };
 
-#endif // __FC_LANGUAGE_FACTORY_H__
+} // namespace Gui
+
+#endif // __LANGUAGE_FACTORY_H__

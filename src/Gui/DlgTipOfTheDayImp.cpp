@@ -40,6 +40,8 @@
 #include "Application.h"
 #include "DlgTipOfTheDayImp.h"
 
+using namespace Gui::Dialog;
+
 TipOfTheDayDlgImp::TipOfTheDayDlgImp( QWidget* parent, const char* name )
 	: TipOfTheDayDlg( parent, name, true, WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu )
 {

@@ -26,11 +26,7 @@
 #ifndef UNDOREDODLG_H
 #define UNDOREDODLG_H
 
-//#include <qpopupmenu.h>
 #include <qlistbox.h>
-//#include <qtoolbutton.h>
-//#include <qhbox.h>
-
 
 // forward declarations
 class QVBoxLayout; 
@@ -40,61 +36,73 @@ class QLabel;
 class QListBox;
 class QListBoxItem;
 
+namespace Gui {
+namespace Dialog {
+
 /**
- * This class implements an extension of 'QListBox'.
+ * This class implements an extension of @ref QListBox.
  * If you select an item all items above will be selected automatically.
  */
-class FCUndoRedoList : public QListBox
+class UndoRedoList : public QListBox
 {
-  public:
-    FCUndoRedoList( QWidget * parent=0, const char * name=0, WFlags f=0);
-    virtual ~FCUndoRedoList(){};
+public:
+	UndoRedoList( QWidget * parent=0, const char * name=0, WFlags f=0);
+	virtual ~UndoRedoList(){};
 
-    void mouseMoveEvent ( QMouseEvent * e );
-    void mousePressEvent (QMouseEvent* e);
+	/** 
+	 * If the left mouse button is pressed and depending on the moving direction
+	 * the items are selected or deselected.
+	 */
+	void mouseMoveEvent ( QMouseEvent * e );
+	/** Select all items above the selected one */
+	void mousePressEvent (QMouseEvent* e);
 };
+
+// ------------------------------------------------------------
 
 /**
  * This class implements the undo/redo dialog.
  */
-class FCUndoRedoDlg : public QFrame
+class UndoRedoDlg : public QFrame
 { 
     Q_OBJECT
-  public:
-    enum TMode {Undo, Redo};
+public:
+	enum TMode {Undo, Redo};
 
-    FCUndoRedoDlg( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
-    virtual ~FCUndoRedoDlg();
+	UndoRedoDlg( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
+	virtual ~UndoRedoDlg();
 
-    /** Sets the mode (Undo, Redo) */
-    void setMode(TMode tMode);
-    /** Returns the mode */
-    TMode getMode() const;
-    /** Updates the undo/redo list */
-    void updateUndoRedoList();
+	/** Sets the mode (Undo, Redo) */
+	void setMode(TMode tMode);
+	/** Returns the mode */
+	TMode getMode() const;
+	/** Updates the undo/redo list */
+	void updateUndoRedoList();
 
-  signals:
-    /** This signal is emitted by the @ref selected() slot */
-    void clickedListBox();
+signals:
+	/** This signal is emitted by the @ref selected() slot */
+	void clickedListBox();
 
-  protected:
-    /** 
-     *  This method fetches the undo / redo information from the 
-     *  active document and shows it in the undo / redo dialog.
-     */
-	  void init();
+protected:
+	/** 
+	 *  This method fetches the undo / redo information from the 
+	 *  active document and shows it in the undo / redo dialog.
+	 */
+	void fetchUndoRedoInfo();
 
-  protected slots:
-    /** Sets the number of actons to undo/redo */
-	  void selChangeUndoRedoList();
-    /** Closes the dialog and emits the @ref clickedListBox() signal */
-    void selected();
+protected slots:
+	/** Sets the number of actons to undo/redo */
+	void selChangeUndoRedoList();
+	/** Closes the dialog and emits the @ref clickedListBox() signal */
+	void selected();
 
-  protected:
-    QLabel*          _pTextLabel;
-    FCUndoRedoList*  _pListBox;
-    TMode            _tMode;
+protected:
+	QLabel*          _pTextLabel; /**< Text label to show the number of selected items */
+	UndoRedoList*    _pListBox; /**< List containing the undo/redo info */
+	TMode            _tMode; /**< Either it's a undo or a redo list */
 };
+
+// ------------------------------------------------------------
 
 /** 
  * Drop Down Toolbar button
@@ -102,54 +110,56 @@ class FCUndoRedoDlg : public QFrame
  * (drop-down button). Such buttons are usually used as undo/redo-buttons in a lot
  * of Windows programs.
  */
-class FCToolButtonDropDownPrivate;
-class FCToolButtonDropDown : public QToolButton
+class ToolButtonDropDownPrivate;
+class ToolButtonDropDown : public QToolButton
 {
   Q_OBJECT
 
-  public:
-    // constructor/destructor
-    FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
-    virtual ~FCToolButtonDropDown ();
+public:
+	// constructor/destructor
+	ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
+	~ToolButtonDropDown ();
 
-    /** Returns the size hint of a normal button plus extra space for the drop down button */
-    QSize sizeHint() const;
+	/** Returns the size hint of a normal button plus extra space for the drop down button */
+	QSize sizeHint() const;
 
-    /** Sets a widget, this widget will be shown if click this button */
-    void setWidget(QWidget* pWidget);
-    /** Returns the current widget */
-    QWidget* getWidget();
+	/** Sets a widget, this widget will be shown if click this button */
+	void setWidget(QWidget* pWidget);
+	/** Returns the current widget */
+	QWidget* getWidget();
 
-  signals
-    /** This signal is emitted when @ref popupWidget() is called */:
-    void updateWidgetSignal();
+signals
+	/** This signal is emitted when @ref popupWidget() is called */:
+	void updateWidgetSignal();
 
-  protected slots:
-    /** Pops up the window */
-	  void popupWidget();
+protected slots:
+	/** Pops up the window */
+	void popupWidget();
 
-  protected:
-    // overwrite methods from base class
-    virtual void enterEvent(QEvent* e);
-    virtual void leaveEvent(QEvent* e);
-    void mousePressEvent  ( QMouseEvent *e );
-    void mouseReleaseEvent( QMouseEvent *e );
-    /** Draws the button */
-    void drawButton     ( QPainter * p );
-    /** Draws the button label */
-    void drawButtonLabel( QPainter * p );
-    void paintEvent     ( QPaintEvent *e ); 
+protected:
+	/** @name overwritten methods from base class
+ 	 */
+	//@{
+	void enterEvent(QEvent* e);
+	void leaveEvent(QEvent* e);
+	void mousePressEvent  ( QMouseEvent *e );
+	void mouseReleaseEvent( QMouseEvent *e );
+	/** Draws the button */
+	void drawButton     ( QPainter * p );
+	/** Draws the button label */
+	void drawButtonLabel( QPainter * p );
+	void paintEvent     ( QPaintEvent *e ); 
+	//@}
 
-    // show this widget when clicking on drop-down button
-    QWidget* _pWidget;
+	QWidget* _pWidget; /**< Shows this widget when clicking on drop-down button */
 
-  private:
-    /** Draws the arrow for the drop down button */
-    void drawArrow( QPainter *, bool, int, int, int, int, const QColorGroup &, bool, const QBrush* = NULL);
-    FCToolButtonDropDownPrivate* d;
+private:
+	/** Draws the arrow for the drop down button */
+	void drawArrow( QPainter *, bool, int, int, int, int, const QColorGroup &, bool, const QBrush* = NULL);
+	ToolButtonDropDownPrivate* d; /**< for internal use only */
 };
 
-
-
+} // namespace Dialog
+} // namespace Gui
 
 #endif

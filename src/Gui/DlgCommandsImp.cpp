@@ -47,15 +47,18 @@
 #include "Tools.h"
 #include "Command.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+using namespace Gui::Dialog;
 
-FCDlgCustomCommandsImp::FCDlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
+DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
 : FCDlgCustomCommands(parent, name, fl)
 {
+
+	IconView1->setHScrollBarMode( QScrollView::AlwaysOff );
+
   apply();
 
-  connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(slotDescription(QString)));
-  connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(slotGroupSelected(const QString &)));
+  connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(onDescription(QString)));
+  connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
@@ -73,11 +76,11 @@ FCDlgCustomCommandsImp::FCDlgCustomCommandsImp( QWidget* parent, const char* nam
   ComboBoxCategory->setCurrentItem(0);
 }
 
-FCDlgCustomCommandsImp::~FCDlgCustomCommandsImp()
+DlgCustomCommandsImp::~DlgCustomCommandsImp()
 {
 }
 
-void FCDlgCustomCommandsImp::apply()
+void DlgCustomCommandsImp::apply()
 {
   std::vector<FCToolBar*> bars;
   std::vector<FCToolBar*>::iterator it;
@@ -95,7 +98,7 @@ void FCDlgCustomCommandsImp::apply()
   }
 }
 
-void FCDlgCustomCommandsImp::cancel()
+void DlgCustomCommandsImp::cancel()
 {
   if (ApplicationWindow::Instance->GetCustomWidgetManager() != NULL)
   {
@@ -103,12 +106,12 @@ void FCDlgCustomCommandsImp::cancel()
   }
 }
 
-void FCDlgCustomCommandsImp::slotDescription(QString txt)
+void DlgCustomCommandsImp::onDescription(QString txt)
 {
   TextLabel->setText(txt);
 }
 
-void FCDlgCustomCommandsImp::slotGroupSelected(const QString & group)
+void DlgCustomCommandsImp::onGroupSelected(const QString & group)
 {
   IconView1->clear();
  

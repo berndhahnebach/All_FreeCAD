@@ -64,34 +64,34 @@
 #endif
 
 
-QString FCFileDialog::getOpenFileName( const QString & startWith, const QString& filter,
+QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter,
                           				     QWidget *parent, const char* name )
 {
     return getOpenFileName( startWith, filter, parent, name, QString::null  );
 }
 
-QString FCFileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent, 
+QString FileDialog::getOpenFileName( const QString & startWith, const QString& filter, QWidget *parent, 
                                        const char* name, const QString& caption )
 {
   return QFileDialog::getOpenFileName( startWith, filter, parent, name, caption );
 }
 
-QString FCFileDialog::getSaveFileName( const QString & startWith, const QString& filter,
+QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter,
                           				     QWidget *parent, const char* name )
 {
     return getSaveFileName( startWith, filter, parent, name, QString::null  );
 }
 
-QString FCFileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent, 
+QString FileDialog::getSaveFileName( const QString & startWith, const QString& filter, QWidget *parent, 
                                        const char* name, const QString& caption )
 {
   return QFileDialog::getSaveFileName( startWith, filter, parent, name, caption );
 }
 
-QString FCFileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, 
+QString FileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, 
                                         const QString & caption )
 {
-  FCFileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
+  FileDialog fd(AnyFile, initially, filter, parent, tr("Save Dialog"), true);
   fd.setCaption(caption);
   if ( fd.exec() )
 	  return fd.selectedFileName();
@@ -99,23 +99,23 @@ QString FCFileDialog::getSaveFileName ( const QString & initially, const QString
 		return QString("");
 }
 
-FCFileDialog::FCFileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
+FileDialog::FileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
 : QFileDialog(parent, name, modal)
 {
 }
 
-FCFileDialog::FCFileDialog (Mode mode, const QString& dirName, const QString& filter, 
+FileDialog::FileDialog (Mode mode, const QString& dirName, const QString& filter, 
                             QWidget* parent, const char* name, bool modal)
  : QFileDialog(dirName, filter, parent, name, modal)
 {
   setMode(mode);
 }
 
-FCFileDialog::~FCFileDialog()
+FileDialog::~FileDialog()
 {
 }
 
-void FCFileDialog::accept()
+void FileDialog::accept()
 {
   QString fn = selectedFileName();
 
@@ -129,7 +129,7 @@ void FCFileDialog::accept()
     QFileDialog::accept();
 }
 
-QString FCFileDialog::selectedFileName()
+QString FileDialog::selectedFileName()
 {
   QString fn = selectedFile();
 
@@ -284,8 +284,21 @@ struct FCProgressBarPrivate
 	FCWaitingCursor* cWaitCursor;
 };
 
+FCProgressBar* FCProgressBar::_pclSingleton = 0L; 
+
+FCProgressBar* FCProgressBar::Instance()
+{
+	// not initialized?
+	if ( !_pclSingleton )
+	{
+		_pclSingleton = new FCProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
+	}
+
+	return _pclSingleton;
+}
+
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
-: QProgressBar (parent, name, f), Sequencer()
+: QProgressBar (parent, name, f), SequencerBase()
 {
   d = new FCProgressBarPrivate;
 	d->cWaitCursor = 0L;
@@ -372,7 +385,7 @@ bool FCProgressBar::eventFilter(QObject* o, QEvent* e)
 bool FCProgressBar::start(const char* pszStr, unsigned long steps)
 {
 	// base stuff
-	bool ret = Sequencer::start(pszStr, steps);
+	bool ret = SequencerBase::start(pszStr, steps);
 
 	setTotalSteps(_nTotalSteps);
 
@@ -420,7 +433,7 @@ void FCProgressBar::resetBar()
 	d->cWaitCursor = 0L;
 	leaveControlEvents();
 
-	Sequencer::resetBar();
+	SequencerBase::resetBar();
 }
 
 void FCProgressBar::abort()

@@ -44,15 +44,15 @@
 #include "Icons/images.cpp"
 #include "Icons/BmpFactoryIcons.cpp"
 
+using namespace Gui;
 
+BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = NULL;
 
-FCBitmapFactory* FCBitmapFactory::_pcSingleton = NULL;
-
-FCBitmapFactory& FCBitmapFactory::Instance(void)
+BitmapFactoryInst& BitmapFactoryInst::Instance(void)
 {
   if (_pcSingleton == NULL)
 	{
-    _pcSingleton = new FCBitmapFactory;
+    _pcSingleton = new BitmapFactoryInst;
 		_pcSingleton->AddPath("../../FreeCADIcons");
 		_pcSingleton->AddPath("../Icons");
 
@@ -62,33 +62,33 @@ FCBitmapFactory& FCBitmapFactory::Instance(void)
   return *_pcSingleton;
 }
 
-void FCBitmapFactory::Destruct (void)
+void BitmapFactoryInst::Destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
 
-void FCBitmapFactory::AddPath(const char* sPath)
+void BitmapFactoryInst::AddPath(const char* sPath)
 {
 	_vsPaths.push_back(sPath);
 }
 
-void FCBitmapFactory::RemovePath(const char* sPath)
+void BitmapFactoryInst::RemovePath(const char* sPath)
 {
 	_vsPaths.erase(std::find<std::vector<std::string>::iterator,std::string>(_vsPaths.begin(),_vsPaths.end(),sPath));
 }
 
-void FCBitmapFactory::AddXPM(const char* sName, const char** pXPM)
+void BitmapFactoryInst::AddXPM(const char* sName, const char** pXPM)
 {
 	_mpXPM[sName] = pXPM;
 }
 
-void FCBitmapFactory::RemoveXPM(const char* sName)
+void BitmapFactoryInst::RemoveXPM(const char* sName)
 {
 	_mpXPM.erase(sName);
 }
 
-QPixmap FCBitmapFactory::GetPixmap(const char* sName)
+QPixmap BitmapFactoryInst::GetPixmap(const char* sName)
 {
 	// first try to find it in the build in XPM
 	std::map<std::string,const char**>::const_iterator It = _mpXPM.find(sName);
@@ -115,7 +115,7 @@ QPixmap FCBitmapFactory::GetPixmap(const char* sName)
 
 }
 
-QPixmap FCBitmapFactory::GetPixmap(const char* sName, const char* sMask, Position pos)
+QPixmap BitmapFactoryInst::GetPixmap(const char* sName, const char* sMask, Position pos)
 {
   QPixmap p1 = GetPixmap(sName);
   QPixmap p2 = GetPixmap(sMask);

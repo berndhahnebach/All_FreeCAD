@@ -37,37 +37,40 @@
 class FCCommand;
 class FCToolBar;
 
+namespace Gui {
+namespace Dialog {
+
 /**
  * This class implements the creation of user defined toolbars.
  */
-class FCDlgCustomToolbarsBase : public FCDlgCustomToolbars, public FCPropertyPage
+class DlgCustomToolbarsBase : public FCDlgCustomToolbars, public Gui::Dialog::PropertyPage
 { 
   Q_OBJECT
 
   protected:
-    FCDlgCustomToolbarsBase( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    virtual ~FCDlgCustomToolbarsBase();
+    DlgCustomToolbarsBase( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    virtual ~DlgCustomToolbarsBase();
 
   protected:
     virtual void apply();
     virtual void cancel();
 		virtual void onUpdate();
 
-    /// shows all buttons of the toolbar
+    /** Shows all buttons of the toolbar */
     void onItemActivated(const QString &);
-    /// adds a new action by double click
+    /** Adds a new action by double click */
     void onDoubleClickedAction(QListViewItem*);
-    /// adds a new action
+    /** Adds a new action */
     void onAddAction();
-    /// removes an action
+    /** Removes an action */
     void onRemoveAction();
-    /// moves up an action
+    /** Noves up an action */
     void onMoveUpAction();
-    /// moves down an action
+    /** Moves down an action */
     void onMoveDownAction();
-    /// enables/disables buttons for change
+    /** Enables/disables buttons for change */
     void onNewActionChanged( QListViewItem *i );
-    /// enables/disables buttons for change
+    /** Enables/disables buttons for change */
     void onAllActionsChanged( QListViewItem *i );
 
   protected:
@@ -76,23 +79,34 @@ class FCDlgCustomToolbarsBase : public FCDlgCustomToolbars, public FCPropertyPag
     std::vector<FCToolBar*>                         m_aclToolbars;
 };
 
-class FCDlgCustomToolbarsImp : public FCDlgCustomToolbarsBase
+/**
+ * This class implements the creation of user defined command bars.
+ * @see DlgCustomToolbarsBase
+ * @see DlgCustomCmdbarsImp
+ */
+class DlgCustomToolbarsImp : public DlgCustomToolbarsBase
 { 
   Q_OBJECT
 
-  public:
-    FCDlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgCustomToolbarsImp();
+public:
+	DlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgCustomToolbarsImp();
 
-  protected:
-    void apply();
-    void cancel();
-		void onUpdate();
+protected:
+	/** Adds created or removes deleted toolbars */
+	void apply();
+	/** Discards all changes */
+	void cancel();
+	/** Shows all actions from the last specified command bar */
+	void onUpdate();
 
-    /// creates new toolbar
-    void onCreateToolbar();
-    /// deletes toolbar
-    void onDeleteToolbar();
+	/** Creates new toolbar */
+	void onCreateToolbar();
+	/** Deletes a toolbar */
+	void onDeleteToolbar();
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif

@@ -27,7 +27,14 @@ class ApplicationWindow;
 class FCGuiDocument;
 class FCDocument;
 class FCCommand;
-class FCUndoRedoDlg;
+
+namespace Gui {
+namespace Dialog {
+
+class UndoRedoDlg;
+
+} // namespace Dialog
+} // namespace Gui
 
 
 void CreateStdCommands(void);
@@ -496,6 +503,11 @@ public:
 	 */
 	std::vector <FCCommand*> GetAllCommands(void);
 
+	/** Returns all commands of a group
+	 *  delivers a vector of all comands in the given group. 
+	 */
+	std::vector <FCCommand*> GetGroupCommands(const char *sGrpName);
+
   /** Returns the command registered in the manager with the name sName
    *  If nothing is found it returns a null pointer 
 	 *  @see FCCommand
@@ -579,7 +591,7 @@ public:
   	FCAction * CreateAction(void);
 
 private:
-  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+	Gui::Dialog::UndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 /**
@@ -595,7 +607,7 @@ public:
   	FCAction * CreateAction(void);
 
 private:
-  	FCUndoRedoDlg*	 _pclUndoRedoWidget;
+	Gui::Dialog::UndoRedoDlg*	 _pclUndoRedoWidget;
 };
 
 /**

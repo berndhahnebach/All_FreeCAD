@@ -60,6 +60,8 @@
 #include "../Base/Exception.h"
 
 using Base::Console;
+using namespace Gui;
+using namespace Gui::DockWnd;
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name, bool bInstall) : pHandler(NULL)
 {

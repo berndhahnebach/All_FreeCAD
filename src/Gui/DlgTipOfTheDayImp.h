@@ -35,13 +35,23 @@
 
 #include "DlgTipOfTheDay.h"
 
+namespace Gui {
+namespace Dialog {
+
+/** 
+ * Implementation of the well-known Tip-of-the-day dialog.
+ */
 class TipOfTheDayDlgImp : public TipOfTheDayDlg
 {
 	public:
 		TipOfTheDayDlgImp( QWidget* parent = 0, const char* name = 0);
 		~TipOfTheDayDlgImp();
 
+		/** Show next tip taking from database */
 		void onNext();
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif // DLG_TIP_OF_THE_DAY_IMP_H__

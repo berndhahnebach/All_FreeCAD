@@ -36,46 +36,64 @@
 
 class FCCommand;
 
+namespace Gui {
+namespace Dialog {
+
 /**
- * This class implements the creation of user defined commands executing a recorded macro.
+ * This class implements the creation of user defined actions executing a recorded macro.
+ * @see FCAction
+ * @see FCScriptCommand
+ * @see FCCommand
  */
-class FCDlgCustomActionsImp : public FCDlgCustomActions, public FCPropertyPage
+class DlgCustomActionsImp : public FCDlgCustomActions, public Gui::Dialog::PropertyPage
 { 
-  Q_OBJECT
+Q_OBJECT
 
-  public:
-    /// construction
-    FCDlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    /// destruction
-    ~FCDlgCustomActionsImp();
+public:
+	/** construction */
+	DlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	/** destruction */
+	~DlgCustomActionsImp();
 
-    /// shows the page
-    void show();
+	/** 
+	 * Displays this page. If no macros were found a message box
+	 * appears.
+	 */
+	void show();
 
-  protected:
-    //@{
-    /// for internal use only
-    void init();
-    void apply();
-    void cancel();
-    QString m_sPixmap;
-    std::vector<FCCommand*> _aclCurMacros;
-    std::vector<FCCommand*> _aclNewMacros;
-    std::vector<FCCommand*> _aclDelMacros;
-    int iCtMacros;
-		bool bShown;
+private slots:
+	/** Enables/disables buttons for deletion */
+	void onCustomActionsCanDelete( QListViewItem *i );
+	/** Shows the setup of the action */
+	void onCustomActionsDoubleClicked( QListViewItem *i );
+	/** Adds a custom action */
+	void onAddCustomAction();
+	/** Deletes a custom action */
+	void onDelCustomAction();
+	/** Opens a file dialog to select a pixmap */
+	void onCustomActionPixmap();
 
-  protected slots:
-    /// enables/disables buttons for change
-    void slotCustomActionsChanged( QListViewItem *i );
-    void slotCustomActionsDoubleClicked( QListViewItem *i );
-    /// adds a custom action
-    void slotAddCustomAction();
-    /// deletes a custom action
-    void slotDelCustomAction();
-    /// select a pixmap
-    void slotCustomActionPixmap();
-    //@}
+private:
+	/** Shows the pixmaps of macros if available */
+	void showPixmaps();
+	/** 
+	 * Add all temporary created commands to the FCCommandManager.
+	 * @see FCCommandManager
+	 */
+	void apply();
+	/** Discards all changes */
+	void cancel();
+	 /** Name for the new created action */
+	void newActionName();
+
+private:
+	bool bShown; /**< For internal use only*/
+	QString m_sPixmap; /**< Path of the specified pixmap */
+	std::vector<FCCommand*> _aclNewMacros; /**< All temporary created actions */
+	std::vector<FCCommand*> _aclDelMacros; /**< All temporary deleted actions */
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif

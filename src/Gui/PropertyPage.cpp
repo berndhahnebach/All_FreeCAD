@@ -37,32 +37,32 @@
 
 #include "PropertyPage.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+using namespace Gui::Dialog;
 
-FCPropertyPage::FCPropertyPage() 
+PropertyPage::PropertyPage() 
 {
   bChanged = false;
 }
 
-void FCPropertyPage::apply()
+void PropertyPage::apply()
 {
 }
 
-void FCPropertyPage::cancel()
+void PropertyPage::cancel()
 {
 }
 
-bool FCPropertyPage::isModified()
+bool PropertyPage::isModified()
 {
   return bChanged;
 }
 
-void FCPropertyPage::setModified(bool b)
+void PropertyPage::setModified(bool b)
 {
   bChanged = b;
 }
 
-void FCPropertyPage::onApply()
+void PropertyPage::onApply()
 {
   if (isModified())
     apply();
@@ -70,7 +70,7 @@ void FCPropertyPage::onApply()
   setModified(false);
 }
 
-void FCPropertyPage::onCancel()
+void PropertyPage::onCancel()
 {
   if (isModified())
   {
@@ -81,10 +81,10 @@ void FCPropertyPage::onCancel()
 
 // -----------------------------------------------------------------
 
-FCPreferencePage::FCPreferencePage()
+PreferencePage::PreferencePage()
 {
 }
 
-FCPreferencePage::~FCPreferencePage()
+PreferencePage::~PreferencePage()
 {
 }

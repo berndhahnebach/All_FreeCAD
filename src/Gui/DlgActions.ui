@@ -1,13 +1,10 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>FCDlgCustomActions</class>
-<widget>
-    <class>QWidget</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QWidget">
+    <property name="name">
         <cstring>FCDlgCustomActions</cstring>
     </property>
-    <property>
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
@@ -15,350 +12,286 @@
             <height>381</height>
         </rect>
     </property>
-    <property>
-        <name>caption</name>
+    <property name="caption">
         <string>Actions</string>
     </property>
     <grid>
-        <property>
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property>
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget row="0"  column="0" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
                 <cstring>GroupBox7</cstring>
             </property>
-            <property>
-                <name>title</name>
+            <property name="title">
                 <string>Setup Custom Actions</string>
             </property>
             <grid>
-                <property>
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property>
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget row="9"  column="1" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton" row="9" column="1">
+                    <property name="name">
                         <cstring>buttonNew</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
-                        <string>New</string>
+                    <property name="text">
+                        <string>Add</string>
                     </property>
                 </widget>
-                <widget row="9"  column="2"  rowspan="1"  colspan="2" >
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton" row="9" column="2" rowspan="1" colspan="2">
+                    <property name="name">
                         <cstring>buttonDelete</cstring>
                     </property>
-                    <property>
-                        <name>enabled</name>
+                    <property name="enabled">
                         <bool>false</bool>
                     </property>
-                    <property>
-                        <name>text</name>
-                        <string>Delete</string>
+                    <property name="text">
+                        <string>Remove</string>
                     </property>
                 </widget>
-                <spacer row="9"  column="4" >
-                    <property>
-                        <name>name</name>
+                <spacer row="9" column="4">
+                    <property name="name">
                         <cstring>Spacer8</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget row="0"  column="0"  rowspan="10"  colspan="1" >
-                    <class>QListView</class>
+                <widget class="QListView" row="0" column="0" rowspan="10" colspan="1">
                     <column>
-                        <property>
-                            <name>text</name>
+                        <property name="text">
                             <string>Custom Actions</string>
                         </property>
-                        <property>
-                            <name>clickable</name>
-                            <bool>true</bool>
+                        <property name="clickable">
+                            <bool>false</bool>
                         </property>
-                        <property>
-                            <name>resizeable</name>
-                            <bool>true</bool>
+                        <property name="resizable">
+                            <bool>false</bool>
                         </property>
                     </column>
-                    <property stdset="1">
-                        <name>name</name>
+                    <property name="name">
                         <cstring>CustomActions</cstring>
                     </property>
+                    <property name="resizeMode">
+                        <enum>AllColumns</enum>
+                    </property>
                 </widget>
-                <widget row="7"  column="2" >
-                    <class>QToolButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QToolButton" row="7" column="2">
+                    <property name="name">
                         <cstring>actionPixmapButton</cstring>
                     </property>
-                    <property>
-                        <name>sizePolicy</name>
+                    <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>0</hsizetype>
                             <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property>
-                        <name>minimumSize</name>
+                    <property name="minimumSize">
                         <size>
                             <width>40</width>
                             <height>30</height>
                         </size>
                     </property>
-                    <property>
-                        <name>maximumSize</name>
+                    <property name="maximumSize">
                         <size>
                             <width>40</width>
                             <height>30</height>
                         </size>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>...</string>
                     </property>
                 </widget>
-                <widget row="6"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="6" column="1">
+                    <property name="name">
                         <cstring>TextLabel1</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Accelerator:</string>
                     </property>
                 </widget>
-                <widget row="5"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="5" column="1">
+                    <property name="name">
                         <cstring>TextLabel2</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>What's this:</string>
                     </property>
                 </widget>
-                <widget row="2"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="2" column="1">
+                    <property name="name">
                         <cstring>TextLabel3</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Menu text:</string>
                     </property>
                 </widget>
-                <widget row="6"  column="2"  rowspan="1"  colspan="3" >
-                    <class>FCAccelLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="FCAccelLineEdit" row="6" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionAccel</cstring>
                     </property>
                 </widget>
-                <widget row="4"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="4" column="1">
+                    <property name="name">
                         <cstring>TextLabel3_2</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Status text:</string>
                     </property>
                 </widget>
-                <spacer row="7"  column="4" >
-                    <property>
-                        <name>name</name>
+                <spacer row="7" column="4">
+                    <property name="name">
                         <cstring>Spacer7_2</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget row="2"  column="2"  rowspan="1"  colspan="3" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionMenu</cstring>
                     </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
                 </widget>
-                <widget row="3"  column="2"  rowspan="1"  colspan="3" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="3" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionToolTip</cstring>
                     </property>
-                    <property>
-                        <name>sizePolicy</name>
+                    <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>7</hsizetype>
                             <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
                 </widget>
-                <widget row="3"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="3" column="1">
+                    <property name="name">
                         <cstring>TextLabel2_2</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Tool tip:</string>
                     </property>
                 </widget>
-                <widget row="7"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="7" column="1">
+                    <property name="name">
                         <cstring>TextLabel5_2</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Pixmap</string>
                     </property>
                 </widget>
-                <widget row="5"  column="2"  rowspan="1"  colspan="3" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="5" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionWhatsThis</cstring>
                     </property>
                 </widget>
-                <widget row="0"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="0" column="1">
+                    <property name="name">
                         <cstring>TextLabel1_2</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Name:</string>
                     </property>
                 </widget>
-                <widget row="0"  column="2"  rowspan="1"  colspan="3" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="0" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionName</cstring>
                     </property>
-                    <property>
-                        <name>enabled</name>
+                    <property name="enabled">
                         <bool>false</bool>
                     </property>
                 </widget>
-                <widget row="1"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="1" column="1">
+                    <property name="name">
                         <cstring>TextLabel1_3</cstring>
                     </property>
-                    <property>
-                        <name>text</name>
+                    <property name="text">
                         <string>Macro:</string>
                     </property>
                 </widget>
-                <spacer row="8"  column="1" >
-                    <property>
-                        <name>name</name>
+                <spacer row="8" column="1">
+                    <property name="name">
                         <cstring>Spacer20</cstring>
                     </property>
-                    <property>
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Vertical</enum>
                     </property>
-                    <property>
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
+                    <property name="sizeHint">
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget row="7"  column="3" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="7" column="3">
+                    <property name="name">
                         <cstring>PixmapLabel</cstring>
                     </property>
-                    <property>
-                        <name>minimumSize</name>
+                    <property name="minimumSize">
                         <size>
                             <width>40</width>
                             <height>40</height>
                         </size>
                     </property>
-                    <property>
-                        <name>maximumSize</name>
+                    <property name="maximumSize">
                         <size>
                             <width>40</width>
                             <height>40</height>
                         </size>
                     </property>
-                    <property>
-                        <name>scaledContents</name>
+                    <property name="scaledContents">
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget row="1"  column="2"  rowspan="1"  colspan="3" >
-                    <class>QComboBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QComboBox" row="1" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionMacros</cstring>
                     </property>
                 </widget>
-                <widget row="4"  column="2"  rowspan="1"  colspan="3" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="3">
+                    <property name="name">
                         <cstring>actionStatus</cstring>
                     </property>
                 </widget>
@@ -378,13 +311,14 @@
         <sizepolicy>
             <hordata>5</hordata>
             <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
 <images>
-    <image>
-        <name>image0</name>
+    <image name="image0">
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1ddec44f503c0ae2a154410f53d0ed20e2bf6bdb656dd6861dd23d9a66591b0587fd1654235ebded6f0edcd53e419d87ae7b1f4f9b8f906d0bfe012317426a70b07bdc2f3ec77f8ed6b89559061a0343d06a124cc105596482585094bc0ae599b04646c9018926491b2205e140c485cace25755c175d0a967b622ff900b8cc9c7d29af594ea722d589167f813aa852ba07d94b9dce296e883fe7bb163f23896753</data>
     </image>
 </images>
@@ -399,4 +333,8 @@
     <tabstop>buttonNew</tabstop>
     <tabstop>buttonDelete</tabstop>
 </tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>fcaccellineedit.h</includehint>
+</includehints>
 </UI>

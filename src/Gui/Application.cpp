@@ -134,6 +134,7 @@
 
 using Base::Console;
 using Base::Interpreter;
+using namespace Gui::DockWnd;
 
 
 static ApplicationWindow* stApp;
@@ -175,7 +176,6 @@ struct ApplicationWindowP
 	FCCustomWidgetManager*		 _pcWidgetMgr;
 	FCMacroManager*  _pcMacroMngr;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
-	FCProgressBar *  _pclProgress;
 	FCStackBar*        _pcStackBar;
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
@@ -196,7 +196,7 @@ ApplicationWindow::ApplicationWindow()
 	std::string language = GetApplication().GetUserParameter
 		().GetGroup("BaseApp")->GetGroup("Window")->GetGroup
 		("Language")->GetASCII("Language", "English");
-	GetLanguageFactory().SetLanguage(language.c_str());
+	Gui::LanguageFactory().SetLanguage(language.c_str());
 	GetWidgetFactorySupplier();
 
 	// seting up Python binding
@@ -242,9 +242,8 @@ ApplicationWindow::ApplicationWindow()
   FCAnimation::Instance()->reparent(statusBar(), QPoint());
   statusBar()->addWidget(FCAnimation::Instance(),0,true);
 	// labels and progressbar
-	d->_pclProgress = new FCProgressBar(statusBar(), "Sequencer");
-	//_pclProgress->setFixedWidth(200);
-	statusBar()->addWidget(d->_pclProgress,0,true);
+	statusBar()->addWidget(FCProgressBar::Instance(),0,true);
+	//FCProgressBar::Instance().setFixedWidth(200);
 	//_pclActionLabel = new QLabel("Ready", statusBar(), "Action");
 	//_pclActionLabel->setFixedWidth(120);
 	//statusBar()->addWidget(_pclActionLabel,0,true);
@@ -286,7 +285,7 @@ ApplicationWindow::ApplicationWindow()
 	d->_pcWidgetMgr->addDockWindow("Property View", pcPropView,"Tree bar", KDockWidget::DockBottom, 60);
 
 	// Report View
-	FCReportView* pcOutput = new FCReportView(this,"ReportView");
+	Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
 	d->_pcWidgetMgr->addDockWindow("Report View", pcOutput, 0, KDockWidget::DockBottom, 90);
 
  	CreateStandardOperations();
@@ -556,11 +555,6 @@ void ApplicationWindow::SetPaneText(int i, QString text)
     d->_pclActionLabel->setText(text);
   else if (i==2)
     d->_pclSizeLabel->setText(text);
-}
-
-FCProgressBar* ApplicationWindow::GetProgressBar()
-{
-  return d->_pclProgress;
 }
 
 
@@ -1221,7 +1215,7 @@ void ApplicationWindow::ShowTipOfTheDay( bool force )
   bool tips = hGrp->GetBool("Tipoftheday", true);
 	if ( tips || force)
 	{
-		TipOfTheDayDlgImp dlg(Instance, "Tipofday");
+		Gui::Dialog::TipOfTheDayDlgImp dlg(Instance, "Tipofday");
 		dlg.exec();
 	}
 }

@@ -34,17 +34,23 @@
 #include "DlgSettings.h"
 #include "PropertyPage.h"
 
+namespace Gui {
+namespace Dialog {
+
 /**
  * This class implements the settings for the help-viewer
- * @see class FCHtmlView
+ * @see class HtmlView
  */
-class FCDlgSettings : public FCDlgSettingsBase, public FCPreferencePage
+class DlgSettingsImp : public FCDlgSettingsBase, public Gui::Dialog::PreferencePage
 {
-  Q_OBJECT
+Q_OBJECT
 
-  public:
-    FCDlgSettings( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgSettings();
+public:
+	DlgSettingsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgSettingsImp();
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif // DLG_SETTINGS_IMP_H

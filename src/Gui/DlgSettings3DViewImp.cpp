@@ -50,11 +50,13 @@
 #include "Widgets.h"
 #include "../Base/Console.h"
 
+using namespace Gui::Dialog;
+
 /* 
- *  Constructs a FCDlgSettings3DViewImp which is a child of 'parent', with the 
+ *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-FCDlgSettings3DView::FCDlgSettings3DView( QWidget* parent,  const char* name, WFlags fl )
+DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettings3DView( parent, name, fl )
 {
 	append(UseAntialiasing->getHandler());
@@ -71,19 +73,19 @@ FCDlgSettings3DView::FCDlgSettings3DView( QWidget* parent,  const char* name, WF
 /*  
  *  Destroys the object and frees any allocated resources
  */
-FCDlgSettings3DView::~FCDlgSettings3DView()
+DlgSettings3DViewImp::~DlgSettings3DViewImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void FCDlgSettings3DView::ChooseDir()
+void DlgSettings3DViewImp::ChooseDir()
 {
-	QString cPath = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)");
+	QString cPath = FileDialog::getOpenFileName( QString::null, "Inventor (*.iv)");
 
 	FCLineEdit_UserDefinedViewerExt->setText(cPath.latin1());
 }
 
-void  FCDlgSettings3DView::WarnInventor(bool b)
+void  DlgSettings3DViewImp::WarnInventor(bool b)
 {
 	if(b)
 		Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");

@@ -32,37 +32,52 @@
 
 #include "PrefWidgets.h"
 
+namespace Gui {
+namespace Dialog {
+
 /** Base class for property pages.
- * The pages of @ref FCDlgCustomize and @ref FCDlgPreferencesImp
- * should inherit FCPropertyPage to use apply/cancel mechanism.
+ * The pages of @ref DlgCustomizeImp and @ref DlgPreferencesImp
+ * should inherit PropertyPage to use apply/cancel mechanism.
  * Inherited classes should reimplement @ref apply() and
  * @ref cancel().
  */
-class GuiExport FCPropertyPage
+class GuiExport PropertyPage
 {
-  protected:
-    FCPropertyPage();
+protected:
+	PropertyPage();
 
-  public:
-    virtual ~FCPropertyPage() {}
-    bool isModified();
-    void setModified(bool b);
-    void onApply();
-    void onCancel();
+public:
+	virtual ~PropertyPage() {}
+	/** Returns whether the page was modified or not */
+	bool isModified();
+	/** Sets the page to be modified */
+	void setModified(bool b);
+	/** Applies all changes calling @ref apply and reset the modified state */
+	void onApply();
+	/** Discards all changes calling @ref apply and reset the modified state */
+	void onCancel();
 
-  protected:
-    virtual void apply();
-    virtual void cancel();
+protected:
+	/** Applies all changes. Reimplement this in your subclasses. */
+	virtual void apply();
+	/** Discards all changes. Reimplement this in your subclasses. */
+	virtual void cancel();
 
-  private:
-    bool bChanged;
+private:
+	bool bChanged; /**< for internal use only */
 };
 
-class GuiExport FCPreferencePage : public FCPropertyPage, public FCWidgetPrefsManager
+/**
+ * @see PropertyPage
+ */
+class GuiExport PreferencePage : public PropertyPage, public FCWidgetPrefsManager
 {
-  public:
-    FCPreferencePage();
-    virtual ~FCPreferencePage();
+public:
+	PreferencePage();
+	virtual ~PreferencePage();
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif // __PROPERTY_PAGE__H__

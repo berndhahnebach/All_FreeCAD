@@ -36,7 +36,13 @@
 
 // forward declaration
 class QAction;
+
+namespace Gui {
+
+// forward declaration
+namespace DockWnd {
 class FCStackBar;
+} // namespace DockWnd
 
 /** The button group class
  */
@@ -142,8 +148,8 @@ class GuiExport FCOutlookBar : public FCCommandBar
 class QStackBarBtn : public QToolButton
 {
   public:
-    QStackBarBtn( FCStackBar *parent, const char *name );
-    QStackBarBtn( QWidget *object, FCStackBar *parent, const char *name );
+    QStackBarBtn( DockWnd::FCStackBar *parent, const char *name );
+    QStackBarBtn( QWidget *object, DockWnd::FCStackBar *parent, const char *name );
     ~QStackBarBtn();
 
     void setSelected( bool b );
@@ -158,8 +164,10 @@ class QStackBarBtn : public QToolButton
   private:
     bool bIsSelected;
     QWidget* w;
-    FCStackBar* pStackBar;
+		DockWnd::FCStackBar* pStackBar;
 };
+
+namespace DockWnd {
 
 /** FCStackBar class
  * To the stack bar you can add any type of QWidget objects.
@@ -209,5 +217,8 @@ class FCStackBar : public FCDockWindow, public FCParameterGrp::ObserverType
     std::map <QStackBarBtn*, 
               QScrollView*>        m_mButtonView;
 };
+
+} // namespace DockWnd
+} // namespace Gui
 
 #endif // __BUTTON_GROUP_H__

@@ -50,79 +50,14 @@
 # include <qstyle.h>
 #endif
 
+using namespace Gui::Dialog;
 
-
-
-
-
-FCUndoRedoList::FCUndoRedoList( QWidget * parent, const char * name, WFlags f)
+UndoRedoList::UndoRedoList( QWidget * parent, const char * name, WFlags f)
   : QListBox(parent, name, f)
 {
 }
 
-/*
- *  Constructs a FCUndoRedoDlg which is a child of 'parent', with the 
- *  name 'name'.' 
- */
-FCUndoRedoDlg::FCUndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
-    : QFrame( parent, name, WType_Popup),
-      _tMode(tMode)
-{
-  if ( !name )
-  	setName( "FCUndoRedoDlg" );
-  resize( 160, 140 ); 
-
-  setFrameStyle( WinPanel | Raised );
-
-  _pTextLabel = new QLabel( this, "TextLabel" );
-  _pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
-  _pTextLabel->setFrameStyle(QFrame::Sunken);
-  _pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
-  _pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
-  _pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
-
-
-  _pListBox = new FCUndoRedoList( this, "ListBox" );
-  _pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
-  _pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
-  _pListBox->setSelectionMode(QListBox::Multi);
-
-  connect(_pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(selChangeUndoRedoList()));
-  connect(_pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
-  connect(_pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(selected()));
-  init();
-}
-
-/*  
- *  Destroys the object and frees any allocated resources
- */
-FCUndoRedoDlg::~FCUndoRedoDlg()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
-
-void FCUndoRedoDlg::init() 
-{
-	std::vector<std::string> vecReUndos;
-	FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
-
-	if(pcDoc)
-	{
-		if (_tMode == Undo)	
-			vecReUndos = pcDoc->GetUndoVector();
-		else
-			vecReUndos = pcDoc->GetRedoVector();
-
-		for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
-			_pListBox->insertItem((*i).c_str());
-		_pTextLabel->setProperty( "text", tr( "Cancel" ) );
-	}else{
-		_pTextLabel->setProperty( "text", tr( "No Undo" ) );
-	}
-
-}
-
-void FCUndoRedoList::mouseMoveEvent ( QMouseEvent * e )
+void UndoRedoList::mouseMoveEvent ( QMouseEvent * e )
 {
   if (e->state() == NoButton)
     return;
@@ -147,7 +82,7 @@ void FCUndoRedoList::mouseMoveEvent ( QMouseEvent * e )
   }
 }
 
-void FCUndoRedoList::mousePressEvent (QMouseEvent* e)
+void UndoRedoList::mousePressEvent (QMouseEvent* e)
 {
   QListBox::mousePressEvent(e);
 
@@ -166,7 +101,71 @@ void FCUndoRedoList::mousePressEvent (QMouseEvent* e)
   }
 }
 
-void FCUndoRedoDlg::selChangeUndoRedoList() 
+// ------------------------------------------------------------
+
+/*
+ *  Constructs a UndoRedoDlg which is a child of 'parent', with the 
+ *  name 'name'.' 
+ */
+UndoRedoDlg::UndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
+    : QFrame( parent, name, WType_Popup),
+      _tMode(tMode)
+{
+  if ( !name )
+  	setName( "UndoRedoDlg" );
+  resize( 160, 140 ); 
+
+  setFrameStyle( WinPanel | Raised );
+
+  _pTextLabel = new QLabel( this, "TextLabel" );
+  _pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
+  _pTextLabel->setFrameStyle(QFrame::Sunken);
+  _pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
+  _pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
+  _pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
+
+
+  _pListBox = new UndoRedoList( this, "ListBox" );
+  _pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
+  _pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
+  _pListBox->setSelectionMode(QListBox::Multi);
+
+  connect(_pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(selChangeUndoRedoList()));
+  connect(_pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
+  connect(_pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(selected()));
+  fetchUndoRedoInfo();
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+UndoRedoDlg::~UndoRedoDlg()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void UndoRedoDlg::fetchUndoRedoInfo() 
+{
+	std::vector<std::string> vecReUndos;
+	FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
+
+	if(pcDoc)
+	{
+		if (_tMode == Undo)	
+			vecReUndos = pcDoc->GetUndoVector();
+		else
+			vecReUndos = pcDoc->GetRedoVector();
+
+		for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
+			_pListBox->insertItem((*i).c_str());
+		_pTextLabel->setProperty( "text", tr( "Cancel" ) );
+	}else{
+		_pTextLabel->setProperty( "text", tr( "No Undo" ) );
+	}
+
+}
+
+void UndoRedoDlg::selChangeUndoRedoList() 
 {
   // close the listbox
 //  close();
@@ -179,23 +178,23 @@ void FCUndoRedoDlg::selChangeUndoRedoList()
   _pTextLabel->setText(text);
 }
 
-void FCUndoRedoDlg::setMode(TMode tMode)
+void UndoRedoDlg::setMode(TMode tMode)
 {
   _tMode = tMode;
 }
 
-FCUndoRedoDlg::TMode FCUndoRedoDlg::getMode() const
+UndoRedoDlg::TMode UndoRedoDlg::getMode() const
 {
   return _tMode;
 }
 
-void FCUndoRedoDlg::updateUndoRedoList()
+void UndoRedoDlg::updateUndoRedoList()
 {
   _pListBox->clear();
-  init();
+  fetchUndoRedoInfo();
 }
 
-void FCUndoRedoDlg::selected()
+void UndoRedoDlg::selected()
 {
   close();
   emit clickedListBox();
@@ -284,36 +283,42 @@ static const char *pArrow[]={
 ".............#",
 ".............#"};
 
-class FCToolButtonDropDownPrivate
+namespace Gui {
+namespace Dialog {
+
+class ToolButtonDropDownPrivate
 {
   public:
-    FCToolButtonDropDownPrivate();
+    ToolButtonDropDownPrivate();
     bool bEntered;
     bool bDropDown;
     bool bActButton;
 };
 
-FCToolButtonDropDownPrivate::FCToolButtonDropDownPrivate()
+ToolButtonDropDownPrivate::ToolButtonDropDownPrivate()
   : bEntered(false), bDropDown(false), bActButton(false)
 {
 }
 
-FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
+} // namespace Dialog
+} // namespace Gui
+
+ToolButtonDropDown::ToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
   : QToolButton(parent, name), _pWidget(pWidget)
 {
-  d = new FCToolButtonDropDownPrivate;
+  d = new ToolButtonDropDownPrivate;
 
   // set the pixmap onto the button
   setIconSet(rclPixmap);
   setAutoRaise(true);
 }
 
-FCToolButtonDropDown::~FCToolButtonDropDown()
+ToolButtonDropDown::~ToolButtonDropDown()
 {
   delete d;
 }
 
-void FCToolButtonDropDown::popupWidget()
+void ToolButtonDropDown::popupWidget()
 {
   // popup the widget
   if (_pWidget)
@@ -348,17 +353,17 @@ void FCToolButtonDropDown::popupWidget()
   }
 }
 
-void FCToolButtonDropDown::setWidget(QWidget* pWidget)
+void ToolButtonDropDown::setWidget(QWidget* pWidget)
 {
   _pWidget = pWidget;
 }
 
-QWidget* FCToolButtonDropDown::getWidget()
+QWidget* ToolButtonDropDown::getWidget()
 {
   return _pWidget;
 }
 
-void FCToolButtonDropDown::drawButton( QPainter * p )
+void ToolButtonDropDown::drawButton( QPainter * p )
 {
   QToolButton::drawButton(p);
 
@@ -387,7 +392,7 @@ void FCToolButtonDropDown::drawButton( QPainter * p )
   }
 }
 
-void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
+void ToolButtonDropDown::drawButtonLabel( QPainter * p )
 {
   // get draw areas for the arrow and the actual icon
   int sx = 0;
@@ -527,7 +532,7 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   }
 }
 
-void FCToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w, int h, 
+void ToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int w, int h, 
                                       const QColorGroup &g, bool enabled, const QBrush *fill )
 {
   QPointArray a;
@@ -565,7 +570,7 @@ void FCToolButtonDropDown::drawArrow( QPainter *p, bool down, int x, int y, int 
   p->setPen( savePen );
 }
 
-QSize FCToolButtonDropDown::sizeHint() const
+QSize ToolButtonDropDown::sizeHint() const
 {
   // take extra space for the drop down area
   QSize s = QToolButton::sizeHint();
@@ -573,26 +578,26 @@ QSize FCToolButtonDropDown::sizeHint() const
   return s;
 }
 
-void FCToolButtonDropDown::enterEvent ( QEvent * e )
+void ToolButtonDropDown::enterEvent ( QEvent * e )
 {
   d->bEntered = true;
   QToolButton::enterEvent(e);
 }
 
-void FCToolButtonDropDown::leaveEvent(QEvent* e)
+void ToolButtonDropDown::leaveEvent(QEvent* e)
 {
   d->bEntered = false;
   QToolButton::leaveEvent(e);
 }
 
-void FCToolButtonDropDown::paintEvent( QPaintEvent *e )
+void ToolButtonDropDown::paintEvent( QPaintEvent *e )
 {
   if (d->bEntered)
     d->bEntered = isEnabled();
   QToolButton::paintEvent(e);
 }
 
-void FCToolButtonDropDown::mousePressEvent( QMouseEvent *e )
+void ToolButtonDropDown::mousePressEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
   	return;
@@ -612,7 +617,7 @@ void FCToolButtonDropDown::mousePressEvent( QMouseEvent *e )
   QToolButton::mousePressEvent(e);
 }
 
-void FCToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
+void ToolButtonDropDown::mouseReleaseEvent( QMouseEvent *e )
 {
   if ( e->button() != LeftButton )
   	return;

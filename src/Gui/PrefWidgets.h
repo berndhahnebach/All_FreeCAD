@@ -47,9 +47,15 @@ class QDoubleValidator;
 class FCWidgetFactorySupplier;
 class QAction;
 class QMainWindow;
-class FCStackBar;
 class FCDockWindow;
 class FCCommandManager;
+
+namespace Gui {
+namespace DockWnd {
+class FCStackBar;
+
+} // namespace DockWnd
+} // namespace Gui
 
 /** The widget preference class
  *  If you want to extend a QWidget class to save/restore data
@@ -504,7 +510,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
 class FCCustomWidgetManager
 {
   public:
-    FCCustomWidgetManager(FCCommandManager& rclMgr, FCStackBar* pCmdBar);
+    FCCustomWidgetManager(FCCommandManager& rclMgr, Gui::DockWnd::FCStackBar* pCmdBar);
     ~FCCustomWidgetManager();
 
     /** Loads the custom widgets depending on the given 

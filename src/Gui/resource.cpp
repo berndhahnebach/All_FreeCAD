@@ -47,17 +47,17 @@
 //
 #include "Language/FreeCAD_de.h"
 
-FCLanguageFactorySupplier::FCLanguageFactorySupplier()
+Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 {
   // ADD ALL PIXMAPS TO THE FACTORY AUTOMATICALLY
   //
   //
-	GetBitmapFactory();
+	Gui::BitmapFactory();
 
   // ADD YOUR LANGUAGES HERE
   //
   //
-	new FCLanguageProducer("German", GetFreeCAD_de());
+	new Gui::LanguageProducer("German", GetFreeCAD_de());
 }
 
 // ----------------------------------------------------
@@ -77,14 +77,14 @@ FCWidgetFactorySupplier::FCWidgetFactorySupplier()
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-	FCDlgPreferencesImp::addGroup( QObject::tr("FreeCAD") );
-  new FCPrefPageProducer<FCDlgGeneral>       ( QObject::tr("General"     ) );
-  new FCPrefPageProducer<FCDlgEditorSettings>( QObject::tr("Editor"      ) );
-  new FCPrefPageProducer<FCDlgSettingsMacro> ( QObject::tr("Macros"      ) );
-  new FCPrefPageProducer<FCOnlineHelp>       ( QObject::tr("Online help" ) );
-	FCDlgPreferencesImp::addGroup( QObject::tr("Viewer") );
-  new FCPrefPageProducer<FCDlgSettings>      ( QObject::tr("Help Viewer" ) );
-  new FCPrefPageProducer<FCDlgSettings3DView>( QObject::tr("3D View"     ) );
+	Gui::Dialog::DlgPreferencesImp::addGroup                  ( QObject::tr("FreeCAD"     ) );
+  new FCPrefPageProducer<Gui::Dialog::DlgGeneralImp>        ( QObject::tr("General"     ) );
+  new FCPrefPageProducer<Gui::Dialog::DlgEditorSettings>    ( QObject::tr("Editor"      ) );
+  new FCPrefPageProducer<Gui::Dialog::DlgSettingsMacroImp>  ( QObject::tr("Macros"      ) );
+  new FCPrefPageProducer<Gui::Dialog::DlgOnlineHelpImp>     ( QObject::tr("Online help" ) );
+	Gui::Dialog::DlgPreferencesImp::addGroup                  ( QObject::tr("Viewer"      ) );
+  new FCPrefPageProducer<Gui::Dialog::DlgSettingsImp>       ( QObject::tr("Help Viewer" ) );
+  new FCPrefPageProducer<Gui::Dialog::DlgSettings3DViewImp> ( QObject::tr("3D View"     ) );
 
 	// ADD YOUR PREFERENCE WIDGETS HERE
 	//

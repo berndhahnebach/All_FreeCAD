@@ -34,13 +34,24 @@
 #include "DlgOnlineHelp.h"
 #include "PropertyPage.h"
 
-class FCOnlineHelp : public FCOnlineHelpBase, public FCPreferencePage
-{
-  Q_OBJECT
+namespace Gui {
+namespace Dialog {
 
-  public:
-    FCOnlineHelp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCOnlineHelp();
+/**
+ * Here you can make your settings for downloading the online documenation.
+ * So you can specify to use a proxy if necessary and some more stuff.
+ * @see FCPreferencePage
+ */
+class DlgOnlineHelpImp : public FCOnlineHelpBase, public Gui::Dialog::PreferencePage
+{
+Q_OBJECT
+
+public:
+	DlgOnlineHelpImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgOnlineHelpImp();
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif //DLG_ONLINE_HELP_IMP_H

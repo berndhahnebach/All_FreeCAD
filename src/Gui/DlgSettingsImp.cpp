@@ -42,14 +42,16 @@
 #include "DlgSettingsImp.h"
 #include "PrefWidgets.h"
 
+using namespace Gui::Dialog;
+
 /* 
- *  Constructs a FCDlgSettings which is a child of 'parent', with the 
+ *  Constructs a DlgSettingsImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-FCDlgSettings::FCDlgSettings( QWidget* parent,  const char* name, WFlags fl )
+DlgSettingsImp::DlgSettingsImp( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgSettingsBase( parent, name, fl )
 {
   append(EnableBookmarks->getHandler());
@@ -63,7 +65,7 @@ FCDlgSettings::FCDlgSettings( QWidget* parent,  const char* name, WFlags fl )
 /*  
  *  Destroys the object and frees any allocated resources
  */
-FCDlgSettings::~FCDlgSettings()
+DlgSettingsImp::~DlgSettingsImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }

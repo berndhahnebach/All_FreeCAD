@@ -49,7 +49,8 @@
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
 
-
+using namespace Gui;
+using namespace Gui::Dialog;
 
 PythonWindow::PythonWindow(QWidget *parent,const char *name)
 	: QTextEdit(parent, name)

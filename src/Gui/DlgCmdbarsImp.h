@@ -36,26 +36,37 @@
 class FCCommand;
 class FCToolBar;
 
+namespace Gui {
+namespace Dialog {
+
 /**
  * This class implements the creation of user defined command bars.
+ * @see DlgCustomToolbarsBase
+ * @see DlgCustomToolbarsImp
  */
-class FCDlgCustomCmdbarsImp : public FCDlgCustomToolbarsBase
+class DlgCustomCmdbarsImp : public DlgCustomToolbarsBase
 { 
   Q_OBJECT
 
-  public:
-    FCDlgCustomCmdbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCDlgCustomCmdbarsImp();
+public:
+	DlgCustomCmdbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+	~DlgCustomCmdbarsImp();
 
-  protected:
-    void apply();
-    void cancel();
-		void onUpdate();
+protected:
+	/** Adds created or removes deleted command bars */
+	void apply();
+	/** Discards all changes */
+	void cancel();
+	/** Shows all actions from the last specified command bar */
+	void onUpdate();
 
-    /// creates new toolbar
-    void onCreateToolbar();
-    /// deletes toolbar
-    void onDeleteToolbar();
+	/** Creates new command bar */
+	void onCreateToolbar();
+	/** Deletes a command bar */
+	void onDeleteToolbar();
 };
+
+} // namespace Dialog
+} // namespace Gui
 
 #endif

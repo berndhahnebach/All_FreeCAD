@@ -49,15 +49,13 @@
 #include "Tools.h"
 #include "Command.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+using namespace Gui::Dialog;
 
-FCDlgCustomToolbarsBase::FCDlgCustomToolbarsBase( QWidget* parent, const char* name, WFlags fl )
+DlgCustomToolbarsBase::DlgCustomToolbarsBase( QWidget* parent, const char* name, WFlags fl )
 : FCDlgCustomToolbars(parent, name, fl)
 {
   AvailableActions->setSorting( -1 );
-  AvailableActions->setColumnWidthMode(0, QListView::Maximum);
   ToolbarActions->setSorting( -1 );
-  ToolbarActions->setColumnWidthMode(0, QListView::Maximum);
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   std::map<std::string,FCCommand*> sCommands = cCmdMgr.GetCommands();
@@ -83,23 +81,23 @@ FCDlgCustomToolbarsBase::FCDlgCustomToolbarsBase( QWidget* parent, const char* n
   AvailableActions->insertItem(new QListViewItem(AvailableActions, "<Separator>"));
 }
 
-FCDlgCustomToolbarsBase::~FCDlgCustomToolbarsBase()
+DlgCustomToolbarsBase::~DlgCustomToolbarsBase()
 {
 }
 
-void FCDlgCustomToolbarsBase::apply()
+void DlgCustomToolbarsBase::apply()
 {
 }
 
-void FCDlgCustomToolbarsBase::cancel()
+void DlgCustomToolbarsBase::cancel()
 {
 }
 
-void FCDlgCustomToolbarsBase::onUpdate()
+void DlgCustomToolbarsBase::onUpdate()
 {
 }
 
-void FCDlgCustomToolbarsBase::onAllActionsChanged( QListViewItem *i )
+void DlgCustomToolbarsBase::onAllActionsChanged( QListViewItem *i )
 {
   bool canAdd = FALSE;
   QListViewItemIterator it = AvailableActions->firstChild();
@@ -116,7 +114,7 @@ void FCDlgCustomToolbarsBase::onAllActionsChanged( QListViewItem *i )
   buttonRight->setEnabled( ( canAdd || ( i && i->isSelected() ) ) && ComboToolbars->isEnabled() );
 }
 
-void FCDlgCustomToolbarsBase::onNewActionChanged( QListViewItem *i )
+void DlgCustomToolbarsBase::onNewActionChanged( QListViewItem *i )
 {
   buttonUp->setEnabled( (bool) (i && i->itemAbove()) );
   buttonDown->setEnabled( (bool) (i && i->itemBelow()) );
@@ -135,7 +133,7 @@ void FCDlgCustomToolbarsBase::onNewActionChanged( QListViewItem *i )
   buttonLeft->setEnabled( canRemove || ( i && i->isSelected() ) );
 }
 
-void FCDlgCustomToolbarsBase::onItemActivated(const QString & name)
+void DlgCustomToolbarsBase::onItemActivated(const QString & name)
 {
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
@@ -175,7 +173,7 @@ void FCDlgCustomToolbarsBase::onItemActivated(const QString & name)
   }
 }
 
-void FCDlgCustomToolbarsBase::onAddAction()
+void DlgCustomToolbarsBase::onAddAction()
 {
   QListView *src = AvailableActions;
 
@@ -233,7 +231,7 @@ void FCDlgCustomToolbarsBase::onAddAction()
   setModified(true);
 }
 
-void FCDlgCustomToolbarsBase::onRemoveAction()
+void DlgCustomToolbarsBase::onRemoveAction()
 {
   QListViewItemIterator it = ToolbarActions->firstChild();
   while ( it.current() ) 
@@ -248,7 +246,7 @@ void FCDlgCustomToolbarsBase::onRemoveAction()
   setModified(true);
 }
 
-void FCDlgCustomToolbarsBase::onMoveUpAction()
+void DlgCustomToolbarsBase::onMoveUpAction()
 {
 	bool up = true;
 	bool down = true;
@@ -273,7 +271,7 @@ void FCDlgCustomToolbarsBase::onMoveUpAction()
   setModified(true);
 }
 
-void FCDlgCustomToolbarsBase::onMoveDownAction()
+void DlgCustomToolbarsBase::onMoveDownAction()
 {
 	bool up = true;
 	bool down = true;
@@ -299,7 +297,7 @@ void FCDlgCustomToolbarsBase::onMoveDownAction()
   setModified(true);
 }
 
-void FCDlgCustomToolbarsBase::onDoubleClickedAction(QListViewItem* item)
+void DlgCustomToolbarsBase::onDoubleClickedAction(QListViewItem* item)
 {
   if (item && item->childCount()==0 && ComboToolbars->isEnabled())
     onAddAction();
@@ -307,17 +305,17 @@ void FCDlgCustomToolbarsBase::onDoubleClickedAction(QListViewItem* item)
 
 // -------------------------------------------------------------
 
-FCDlgCustomToolbarsImp::FCDlgCustomToolbarsImp( QWidget* parent, const char* name, WFlags fl )
-	: FCDlgCustomToolbarsBase(parent, name, fl)
+DlgCustomToolbarsImp::DlgCustomToolbarsImp( QWidget* parent, const char* name, WFlags fl )
+	: DlgCustomToolbarsBase(parent, name, fl)
 {
 	onUpdate();
 }
 
-FCDlgCustomToolbarsImp::~FCDlgCustomToolbarsImp()
+DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
 {
 }
 
-void FCDlgCustomToolbarsImp::apply()
+void DlgCustomToolbarsImp::apply()
 {
   QString text = ComboToolbars->currentText();
   FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(text.latin1());
@@ -365,11 +363,11 @@ void FCDlgCustomToolbarsImp::apply()
   toolbar->saveXML();
 }
 
-void FCDlgCustomToolbarsImp::cancel()
+void DlgCustomToolbarsImp::cancel()
 {
 }
 
-void FCDlgCustomToolbarsImp::onUpdate()
+void DlgCustomToolbarsImp::onUpdate()
 {
   ComboToolbars->clear();
   m_aclToolbars = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();
@@ -390,7 +388,7 @@ void FCDlgCustomToolbarsImp::onUpdate()
 	}
 }
 
-void FCDlgCustomToolbarsImp::onCreateToolbar()
+void DlgCustomToolbarsImp::onCreateToolbar()
 {
   QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->GetCustomWidgetManager()->countToolBars());
   QString text = QInputDialog::getText(tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
@@ -412,7 +410,7 @@ void FCDlgCustomToolbarsImp::onCreateToolbar()
   }
 }
 
-void FCDlgCustomToolbarsImp::onDeleteToolbar()
+void DlgCustomToolbarsImp::onDeleteToolbar()
 {
   std::vector<std::pair<std::string, bool> > items;
   std::vector<FCToolBar*> tb = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBars();

@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 /** \file $RCSfile$
- *  \brief Do the editor settings
+ *  \brief Does the editor settings
  *  \author Werner Mayer
  *  \version $Revision$
  *  \date    $Date$
@@ -39,14 +39,16 @@
 #include "DlgEditorImp.h"
 #include "Widgets.h"
 
+using namespace Gui::Dialog;
+
 /*
- *  Constructs a FCDlgEditorSettings which is a child of 'parent', with the
+ *  Constructs a DlgEditorSettings which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-FCDlgEditorSettings::FCDlgEditorSettings( QWidget* parent,  const char* name, WFlags fl )
+DlgEditorSettings::DlgEditorSettings( QWidget* parent,  const char* name, WFlags fl )
     : FCDlgEditorSettingsBase( parent, name, fl )
 {
   setParamGrpPath("User parameter:BaseApp/Windows/Editor");
@@ -106,17 +108,17 @@ FCDlgEditorSettings::FCDlgEditorSettings( QWidget* parent,  const char* name, WF
 /*  
  *  Destroys the object and frees any allocated resources
  */
-FCDlgEditorSettings::~FCDlgEditorSettings()
+DlgEditorSettings::~DlgEditorSettings()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void FCDlgEditorSettings::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void DlgEditorSettings::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
 {
   // just do nothing
 }
 
-void FCDlgEditorSettings::restorePreferences()
+void DlgEditorSettings::restorePreferences()
 {
   std::vector<QString> names = GetDefCol().GetKeys();
 
@@ -128,7 +130,7 @@ void FCDlgEditorSettings::restorePreferences()
   Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
 }
 
-void FCDlgEditorSettings::savePreferences()
+void DlgEditorSettings::savePreferences()
 {
   for (std::map<QString, long>::iterator it = m_clColors.begin(); it!=m_clColors.end(); ++it)
   {
@@ -138,7 +140,7 @@ void FCDlgEditorSettings::savePreferences()
   hPrefGrp->SetInt("Lexer", Languages->currentItem());
 }
 
-void FCDlgEditorSettings::onAssignColor(const QString& name)
+void DlgEditorSettings::onAssignColor(const QString& name)
 {
   long col = m_clColors[name];
 
@@ -150,7 +152,7 @@ void FCDlgEditorSettings::onAssignColor(const QString& name)
   MyCustomWidget1->setColor(QColor(r,g,b));
 }
 
-void FCDlgEditorSettings::onChosenColor()
+void DlgEditorSettings::onChosenColor()
 {
   QString text = ListBox1->currentText();
   if (text.isEmpty())
@@ -163,16 +165,16 @@ void FCDlgEditorSettings::onChosenColor()
   m_clColors[text] = lcol;
 }
 
-void FCDlgEditorSettings::onChosenFont(const QString & item)
+void DlgEditorSettings::onChosenFont(const QString & item)
 {
   hPrefGrp->SetASCII("Font", item.latin1());
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-FCDefColorMap *FCDefColorMap::_pcSingleton = NULL;
+DefColorMap *DefColorMap::_pcSingleton = NULL;
 
-FCDefColorMap::FCDefColorMap(void)
+DefColorMap::DefColorMap(void)
 {
 
   QColor col;
@@ -217,29 +219,29 @@ FCDefColorMap::FCDefColorMap(void)
   m_clDefColors["String"]         = lStrings;
 }
 
-FCDefColorMap::~FCDefColorMap(void)
+DefColorMap::~DefColorMap(void)
 {
 }
 
-void FCDefColorMap::Destruct(void)
+void DefColorMap::Destruct(void)
 {
 	// not initialized or double destruct!
   assert(_pcSingleton);
 	delete _pcSingleton;
 }
 
-FCDefColorMap &FCDefColorMap::Instance(void)
+DefColorMap &DefColorMap::Instance(void)
 {
 	// not initialized?
 	if(!_pcSingleton)
 	{
-		_pcSingleton = new FCDefColorMap;
+		_pcSingleton = new DefColorMap;
 	}
 
   return *_pcSingleton;
 }
 
-long FCDefColorMap::GetColor(const QString& name)
+long DefColorMap::GetColor(const QString& name)
 {
 	if (m_clDefColors.find(name) != m_clDefColors.end())
 		return m_clDefColors[name];
@@ -247,7 +249,7 @@ long FCDefColorMap::GetColor(const QString& name)
 		return 0;
 }
 
-std::vector<QString> FCDefColorMap::GetKeys() const
+std::vector<QString> DefColorMap::GetKeys() const
 {
   std::vector<QString> keys;
 

@@ -31,72 +31,109 @@
 
 #include "Window.h"
 
-
 class PythonConsole;
-class FCReportOutput;
+
+namespace Gui {
+namespace DockWnd {
+
+class ReportOutput;
 class ReportHighlighter;
 
-class FCReportView : public FCDockWindow
+/** 
+ * Report view containing an output window and a very simple Python console.
+ * @see ReportOutput
+ * @see PythonConsole
+ */
+class ReportView : public FCDockWindow
 { 
     Q_OBJECT
 
   public:
-    FCReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~FCReportView();
+    ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~ReportView();
 
-  protected:
+  private:
     QTabWidget* tab;
-    FCReportOutput* mle;
-		PythonConsole* pyc;
+    ReportOutput* mle; /**< Output window */
+		PythonConsole* pyc; /**< Python console */
 };
 
+/**
+ * Syntax highlighter to write log or normal messages, warnings and errors in different colors.
+ */
 class GuiExport ReportHighlighter : public QSyntaxHighlighter
 {
 	public: 
 		enum Paragraph { 
-			Message  = 0, 
-			Warning  = 1, 
-			Error    = 2, 
-			LogText  = 3
+			Message  = 0, /**< normal text */
+			Warning  = 1, /**< Warning */
+			Error    = 2, /**< Error text */
+			LogText  = 3  /**< Log text */
 		};
 
 	public:
 		ReportHighlighter(QTextEdit* );
 		~ReportHighlighter();
 
+		/** Parses the given text and highlight it in the right colors. */
 		int highlightParagraph ( const QString & text, int endStateOfLastPara );
+		/** 
+		 * Sets the current paragraph type used in ReportOutput
+		 * @see ReportOutput::Message
+		 * @see ReportOutput::Warning
+		 * @see ReportOutput::Error
+		 */
 		void setParagraphType(Paragraph);
 
 	private:
+		/** @name for internal use only */
+		//@{
 		Paragraph type;
 		int lastPos;
 		int lastPar;
+		//@}
 };
 
-class GuiExport FCReportOutput : public QTextEdit, public Base::ConsoleObserver
+/**
+ * Output window to show messages.
+ * @see Base::ConsoleObserver
+ * @see QTextEdit
+ */
+class GuiExport ReportOutput : public QTextEdit, public Base::ConsoleObserver
 {
   Q_OBJECT
 
   public:
-    FCReportOutput(QWidget* parent=0, const char* name=0);
-    virtual ~FCReportOutput();
+    ReportOutput(QWidget* parent=0, const char* name=0);
+    virtual ~ReportOutput();
 
+		/** Writes warnings */
     void Warning(const char * s);
+		/** Writes normal text */
 	  void Message(const char * s);
+		/** Writes errors */
     void Error  (const char * s);
+		/** Does not do anything */
 	  void Log (const char * s);
 
+		/** Restore the default font settings */
 		void restoreFont ();
 
   protected:
+		/** For internal use only */
     bool event( QEvent* ev );
+		/** Pops up the context menu with some extensions */
 		QPopupMenu * createPopupMenu ( const QPoint & pos );
 
   public slots:
+		/** Save the report messages into a file. */
     void onSaveAs();
 
   private:
-		ReportHighlighter* reportHl;
+		ReportHighlighter* reportHl; /**< Syntax highlighter */
 };
+
+} // namespace DockWnd
+} // namespace Gui
 
 #endif //__FC_REPORT_VIEW_H__

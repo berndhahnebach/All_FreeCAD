@@ -48,6 +48,8 @@
 #include "Command.h"
 #include "../Base/Exception.h"
 
+using namespace Gui;
+using namespace Gui::DockWnd;
 
 FCButtonGroup::FCButtonGroup(QWidget * parent, const char * name)
 : QButtonGroup(parent, name), m_iChildWidth(32), m_iChildHeight(32)

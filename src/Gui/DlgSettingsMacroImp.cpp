@@ -4,11 +4,13 @@
 #include "PropertyPage.h"
 #include "DlgSettingsMacroImp.h"
 
+using namespace Gui::Dialog;
+
 /* 
  *  Constructs a DlgSettingsMacroImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-FCDlgSettingsMacro::FCDlgSettingsMacro( QWidget* parent,  const char* name, WFlags fl )
+DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgSettingsMacro( parent, name, fl )
 {
 	append(FCCheckBox_GuiAsComment   ->getHandler());
@@ -19,13 +21,13 @@ FCDlgSettingsMacro::FCDlgSettingsMacro( QWidget* parent,  const char* name, WFla
 /*  
  *  Destroys the object and frees any allocated resources
  */
-FCDlgSettingsMacro::~FCDlgSettingsMacro()
+DlgSettingsMacroImp::~DlgSettingsMacroImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
 
-void FCDlgSettingsMacro::ChooseDir()
+void DlgSettingsMacroImp::ChooseDir()
 {
 	QString cPath = QFileDialog::getExistingDirectory ();
 

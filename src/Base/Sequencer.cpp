@@ -37,47 +37,50 @@
 #include "Sequencer.h"
 #include "Exception.h"
 
-
-/**
- * global sequencer instance
- */
-static Sequencer  clSequencer;
-static Sequencer* pclSequencer = &clSequencer;
-
-Sequencer& GetSequencer ()
-{
-	return *pclSequencer;
-}
+using namespace Base;
 
 // -------------------------------------------------------
 
-Sequencer::Sequencer()
+SequencerBase* SequencerBase::_pclSingleton = 0L;
+
+SequencerBase& SequencerBase::Instance ()
+{
+	// not initialized?
+	if ( !_pclSingleton )
+	{
+		_pclSingleton = new SequencerBase();
+	}
+
+	return *_pclSingleton;
+}
+
+SequencerBase::SequencerBase()
 	: _bCanceled(false), _nInstStarted(0), _nMaxInstStarted(1),
 		_nProgress(0), _nTotalSteps(0)
 {
 	setGlobalInstance();
 }
 
-Sequencer::~Sequencer()
+SequencerBase::~SequencerBase()
 {
 }
 
-void Sequencer::setGlobalInstance ()
+void SequencerBase::setGlobalInstance ()
 {
-	pclSequencer = this;
+	_pclSingleton = this;
 }
 
-bool Sequencer::wasCanceled() const
+bool SequencerBase::wasCanceled() const
 {
 	return _bCanceled;
 }
 
-bool Sequencer::isRunning() const
+bool SequencerBase::isRunning() const
 {
 	return _nInstStarted > 0;
 }
 
-bool Sequencer::start(const char* pszStr, unsigned long steps)
+bool SequencerBase::start(const char* pszStr, unsigned long steps)
 {
 	// increment the number of running instances
 	_nInstStarted++;
@@ -109,7 +112,7 @@ bool Sequencer::start(const char* pszStr, unsigned long steps)
 	return false;
 }
 
-bool Sequencer::next()
+bool SequencerBase::next()
 {
   if (!wasCanceled())
 	{
@@ -124,7 +127,7 @@ bool Sequencer::next()
 	return _nProgress < _nTotalSteps;
 }
 
-bool Sequencer::stop()
+bool SequencerBase::stop()
 {
 	_nInstStarted--;
 	if (_nInstStarted == 0)
@@ -135,14 +138,14 @@ bool Sequencer::stop()
 	return (_nInstStarted == 0);
 }
 
-void Sequencer::resetBar()
+void SequencerBase::resetBar()
 {
 	_nInstStarted = 0;
 	_nMaxInstStarted = 1;
 	_aSteps.clear();
 }
 
-void Sequencer::abort()
+void SequencerBase::abort()
 {
 	//resets
 	resetBar();
@@ -150,6 +153,6 @@ void Sequencer::abort()
 	throw exc;
 }
 
-void Sequencer::setText(const char*)
+void SequencerBase::setText(const char*)
 {
 }

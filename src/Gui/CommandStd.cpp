@@ -321,7 +321,7 @@ FCCmdUndo::FCCmdUndo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Undo";
 	iAccel			= Qt::CTRL+Qt::Key_Z;
-  _pclUndoRedoWidget = new FCUndoRedoDlg(ApplicationWindow::Instance, "Undo");
+  _pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Undo");
 }
 
 
@@ -352,7 +352,7 @@ FCAction * FCCmdUndo::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -373,7 +373,7 @@ FCCmdRedo::FCCmdRedo()
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Redo";
 	iAccel			= Qt::CTRL+Qt::Key_Y;
-	_pclUndoRedoWidget = new FCUndoRedoDlg(ApplicationWindow::Instance, "Redo");
+	_pclUndoRedoWidget = new Gui::Dialog::UndoRedoDlg(ApplicationWindow::Instance, "Redo");
 }
 
 
@@ -404,7 +404,7 @@ FCAction * FCCmdRedo::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -463,7 +463,7 @@ FCAction * FCCmdWorkbench::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
   pcAction->setItems(ApplicationWindow::Instance->GetWorkbenches());
@@ -545,7 +545,7 @@ FCAction * FCCmdMRU::CreateAction(void)
 	pcAction->setStatusTip(QObject::tr(sStatusTip));
 	pcAction->setWhatsThis(QObject::tr(sWhatsThis));
 	if(sPixmap)
-		pcAction->setIconSet(GetBitmapFactory().GetPixmap(sPixmap));
+		pcAction->setIconSet(Gui::BitmapFactory().GetPixmap(sPixmap));
 	pcAction->setAccel(iAccel);
 
 	return pcAction;
@@ -1140,7 +1140,7 @@ FCCmdDlgPreferences::FCCmdDlgPreferences()
 
 void FCCmdDlgPreferences::Activated(int iMsg)
 {
-	FCDlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
+	Gui::Dialog::DlgPreferencesImp cDlg(GetAppWnd(),"Preferences Dialog",true);
 	cDlg.exec();
 }
 
@@ -1256,7 +1256,7 @@ FCCmdDlgCustomize::FCCmdDlgCustomize()
 
 void FCCmdDlgCustomize::Activated(int iMsg)
 {
-	FCDlgCustomize cDlg(GetAppWnd(),"CustomizeDialog",true);
+	Gui::Dialog::DlgCustomizeImp cDlg(GetAppWnd(),"CustomizeDialog",true);
 	cDlg.exec();
 }
 

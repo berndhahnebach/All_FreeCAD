@@ -124,7 +124,7 @@ void FCCmdTest1::Activated(int iMsg)
     SoSeparator * root = SoDB::readAll(&in);
 #else
 	// get open file name
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", GetAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", GetAppWnd() );
 	if ( fn.isEmpty() ) return;
 
     // Open the argument file..
@@ -438,15 +438,15 @@ void FCCmdTest8::Activated(int iMsg)
 	try
 	{
 		unsigned long steps = 1000;
-		GetSequencer().start("Starting progress bar", steps);
+		Base::Sequencer().start("Starting progress bar", steps);
 		
 		for (unsigned long i=0; i<steps;i++)
 		{
-			GetSequencer().next();
+			Base::Sequencer().next();
 			QWaitCondition().wait(30);
 		}
 
-		GetSequencer().stop();
+		Base::Sequencer().stop();
 	}
 	catch (...)
 	{
@@ -456,7 +456,7 @@ void FCCmdTest8::Activated(int iMsg)
 
 bool FCCmdTest8::IsActive(void)
 {
-	return ( !GetSequencer().isRunning() );
+	return ( !Base::Sequencer().isRunning() );
 }
 
 
