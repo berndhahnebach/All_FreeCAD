@@ -1,6 +1,6 @@
 /** \file $RCSfile$
  *  \brief The command line module
- *  \author $Author$
+ *  \author Werner Mayer
  *  \version $Revision$
  *  \date    $Date$
  */
@@ -27,8 +27,17 @@
 #include <qtoolbutton.h>
 #include <qdragobject.h>
 #include <qpopupmenu.h>
-#include <map>
+#include <qpushbutton.h>
+#include <qlist.h>
+#include <qevent.h>
+#include <qcolor.h>
+//#include <qstring.h>
+//#include <qwidget.h>
+#include <qfont.h>
+#include <qpalette.h>
+#include <qpixmap.h>
 
+#include <map>
 
 #define FCmap stlport::map
 
@@ -67,6 +76,95 @@ class GuiExport FCButtonGroup : public QButtonGroup
     QColor       m_Color;
     QPopupMenu*  m_Popup;
     FCmap<int, QPixmap> m_Pixmaps;
+};
+
+
+class QStackBarBtn
+{
+protected:
+	QColorGroup *_color, *_selColor, *_hiColor;
+	QFont _font, _selFont, _hiFont;
+	QColor _fcolor, _fselcolor, _fhicolor;
+	QString _label;
+	QWidget *pWidget;
+	QPixmap *pPixmap;
+
+public:
+	QStackBarBtn( QString, QWidget * );
+	QStackBarBtn( QString, QWidget *, QColor );
+
+	virtual ~QStackBarBtn();
+
+	QFont *selFont() { return &_selFont; }
+	QFont *hiFont() { return &_hiFont; }
+	QFont *font() { return &_font; }
+
+	QPixmap *pixmap() { return pPixmap; }
+
+	QColorGroup *selColor() { return _selColor; }
+	QColorGroup *hiColor() { return _hiColor; }
+	QColorGroup *color() { return _color; }
+
+	void setSelColor( QColor  );
+	void setHiColor( QColor  );
+	void setColor( QColor  );
+
+	void setFontColor( QColor c ) { _fcolor=c; }
+	void setFontSelColor( QColor c ) { _fselcolor=c; }
+	void setFontHiColor( QColor c ) { _fhicolor=c; }
+
+	void setPixmap( QPixmap * );
+
+	QColor fontColor() { return _fcolor; }
+	QColor fontSelColor() { return _fselcolor; }
+	QColor fontHiColor() { return _fhicolor; }
+
+	QString label() { return _label; }
+
+	void setLabel( QString s ) { _label=s; }
+
+	QWidget *widget() { return pWidget; }
+	void setWidget( QWidget * );
+};
+class QStackBar : public QWidget
+{
+Q_OBJECT;
+
+protected:
+	QList <QStackBarBtn> *pButtons;
+	int curPage;
+
+	int curHighlight;
+	int _stackHeight;
+
+protected:
+	void resizeEvent( QResizeEvent * );
+	void paintEvent( QPaintEvent * );
+	void mouseMoveEvent( QMouseEvent * );
+	void mousePressEvent( QMouseEvent * );
+
+	int whichButton(int, int);
+	void rearrangeButtons(int,int);
+
+signals:
+	void pageSelected( int );
+	void pageHighlighted(int);
+	
+public:
+	QStackBar( QWidget *parent=0, const char *name=0 );
+	virtual ~QStackBar();
+
+	void addPage( QStackBarBtn * );
+	void setCurPage( int );
+
+	void setButtonHeight(int);
+
+	/*!
+	 * \brief Gets the button heights
+	 *
+	 * All buttons must have the same height, here is where you set it.
+	 */
+	int buttonHeight() { return _stackHeight; }
 };
 
 #endif // __BUTTON_GROUP_H__

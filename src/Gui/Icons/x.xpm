@@ -1,5 +1,5 @@
 /* XPM */
-static const char *x[]={
+static const char *px[]={
 "24 24 2 1",
 "# c #000000",
 ". c #ffffff",

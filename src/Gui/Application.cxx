@@ -14,15 +14,16 @@
 
 
 
-#  include "Application.h"
-#  include "Document.h"
-#  include "CommandStd.h"
+#include "Application.h"
+#include "Document.h"
+#include "CommandStd.h"
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
 #include "DlgUndoRedo.h"
 #include "ButtonGroup.h"
 
+#include "Icons/x.xpm"
   
 //#include "Icons/Background3.xpm"
 
@@ -51,14 +52,40 @@ ApplicationWindow::ApplicationWindow()
     //setCentralWidget( vb );
 
 	//setBackgroundPixmap(QPixmap(Background3));
-	setUsesBigPixmaps (true);
+	//setUsesBigPixmaps (true);
 	CreateTestOperations();
 	//createCasCadeOperations();
 
 	GetCmdLine().SetParent(statusBar());
+	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
 
     statusBar()->message( tr("Ready"), 2001 );
     resize( 800, 600 );
+
+	QStackBar* stack = new QStackBar;
+	FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
+	stack->addPage( new QStackBarBtn( "Test", mle ) );
+	stack->addPage( new QStackBarBtn( "Test", mle ) );
+	stack->addPage( new QStackBarBtn( "Test", mle ) );
+	stack->addPage( new QStackBarBtn( "Test", mle ) );
+//  addToolWindow( new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons"), KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
+	addToolWindow( stack, KDockWidget::DockRight, m_pMdi, 70, "Buttons", "Buttons");
+	for (int i=0; i<30;i++)
+	{
+	  QToolButton* b0 = new QToolButton( /*DownArrow,*/ mle, "text" );
+	  b0->setProperty( "pixmap", QPixmap(px) );
+	  b0->setAutoRaise(true);
+	  b0->setTextLabel("Hallo Welt", true);
+	  b0->setFixedSize(32, 32);
+	  mle->insert(b0);
+
+/*	  if (i==12)
+	  {
+		b0->setProperty( "pixmap", QPixmap(px) );
+		connect(b0, SIGNAL(clicked()), this, SLOT(close()));
+	  }*/
+	}
+
 }
 
 ApplicationWindow::~ApplicationWindow()
@@ -304,10 +331,7 @@ void ApplicationWindow::CreateTestOperations()
    v1->setCaption("MDI Test Application");
    v1->show();
 */
-	/*
-	FCButtonGroup *bg = new FCButtonGroup(0L);
-    addToolWindow( bg, KDockWidget::DockBottom, m_pMdi, 70);
-*/
+	
 
 	setMenuForSDIModeSysButtons( menuBar());
 	 

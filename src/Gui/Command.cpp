@@ -43,7 +43,7 @@ void FCCommand::Init(void)
 	sToolTipText	= "No Tooltip text! see CmdProfile()";
 	sWhatsThis		= "";
 	sStatusTip		= "";
-	QPixmap cPixmap(x);
+	QPixmap cPixmap(px);
 	int iAccel = 0;
 
 	// Get the informations from the derifed class
