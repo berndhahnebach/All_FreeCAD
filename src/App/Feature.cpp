@@ -24,15 +24,18 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <TDF_Label.hxx>
-#	include <TDF_ChildIterator.hxx>
-#	include <TDF_Tool.hxx>
-#	include <TCollection_AsciiString.hxx>
-#	include <TDF_ListIteratorOfAttributeList.hxx>
-#	include <TFunction_Logbook.hxx>
-#	include <TFunction_DriverTable.hxx>
-#	include <TFunction_Function.hxx>
-#	include <Standard_GUID.hxx>
+# include <TDF_Label.hxx>
+# include <TDF_ChildIterator.hxx>
+# include <TDF_Tool.hxx>
+# include <TCollection_AsciiString.hxx>
+# include <TDF_ListIteratorOfAttributeList.hxx>
+# include <TFunction_Logbook.hxx>
+# include <TFunction_DriverTable.hxx>
+# include <TFunction_Function.hxx>
+# include <Standard_GUID.hxx>
+# include <TNaming_Builder.hxx>
+# include <TDataStd_Name.hxx>
+# include <sstream>
 #endif
 
 #include "../Base/PyExportImp.h"
@@ -125,14 +128,17 @@ void Feature::AttachLabel(const TDF_Label &rcLabel)
 
 	Handle(Function) myFunctionDriver;
     // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
-	if(!TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver)) 
-		myFunctionDriver;
-	
+	if(!TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver))
+  {
+    // Werner: What's that???
+//		myFunctionDriver;
+  }
+
 	myFunctionDriver->Init(_cFeatureLabel);
 
 	InitLabel(_cFeatureLabel);
 
-    if (myFunctionDriver->Execute(log)) 
+    if (myFunctionDriver->Execute(log))
 		Base::Console().Error("Feature::InitLabel()");
 
 }
@@ -143,7 +149,7 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 
   // If the object's label is modified:
   if (log.IsModified(_cFeatureLabel)) return Standard_True;
-  
+
   // checks if a known property has changed
   for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
   {
@@ -158,10 +164,10 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 
 
 //===========================================================================
-// FeaturePy - Python wrapper 
+// FeaturePy - Python wrapper
 //===========================================================================
 
-/** The DocTypeStd python class 
+/** The DocTypeStd python class
  */
 class AppExport FeaturePy :public Base::FCPyObject
 {
@@ -175,7 +181,7 @@ public:
 	~FeaturePy();
 
 	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
 	virtual PyObject *_repr(void);  				// the representation
@@ -226,7 +232,7 @@ PyMethodDef FeaturePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FeaturePy::Parents[] = {&FCPyObject::Type, NULL};     
+PyParentObject FeaturePy::Parents[] = {&FCPyObject::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
@@ -250,12 +256,12 @@ Base::FCPyObject *Feature::GetPyObject(void)
 
 
 //--------------------------------------------------------------------------
-// destructor 
+// destructor
 //--------------------------------------------------------------------------
 FeaturePy::~FeaturePy()						// Everything handled in parent
 {
 	Base::Console().Log("Destroy FeaturePy: %p \n",this);
-} 
+}
 
 
 //--------------------------------------------------------------------------

@@ -1694,6 +1694,15 @@ InputName=HtmlViewP
 # End Source File
 # Begin Source File
 
+SOURCE=.\PropertyView.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyView.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ReportView.cpp
 # End Source File
 # Begin Source File
@@ -2350,127 +2359,6 @@ SOURCE=.\Language\LanguageFactory.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\propertyeditor\kexiproperty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexiproperty.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertybuffer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertybuffer.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Mocing $(InputPath)
-InputDir=.\propertyeditor
-InputPath=.\propertyeditor\kexipropertybuffer.h
-InputName=kexipropertybuffer
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Mocing $(InputPath)
-InputDir=.\propertyeditor
-InputPath=.\propertyeditor\kexipropertybuffer.h
-InputName=kexipropertybuffer
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertyeditor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertyeditor.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Mocing $(InputPath)
-InputDir=.\propertyeditor
-InputPath=.\propertyeditor\kexipropertyeditor.h
-InputName=kexipropertyeditor
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Mocing $(InputPath)
-InputDir=.\propertyeditor
-InputPath=.\propertyeditor\kexipropertyeditor.h
-InputName=kexipropertyeditor
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertyeditoritem.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertyeditoritem.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertysubeditor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\propertyeditor\kexipropertysubeditor.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Mocing $(InputPath)
-InputDir=.\propertyeditor
-InputPath=.\propertyeditor\kexipropertysubeditor.h
-InputName=kexipropertysubeditor
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Mocing $(InputPath)
-InputDir=.\propertyeditor
-InputPath=.\propertyeditor\kexipropertysubeditor.h
-InputName=kexipropertysubeditor
-
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\propertyeditor\knuminput.cpp
 # End Source File
 # Begin Source File
@@ -2541,38 +2429,46 @@ InputName=knumvalidator
 # End Source File
 # Begin Source File
 
-SOURCE=.\propertyeditor\propertyeditordate.cpp
+SOURCE=.\propertyeditor\propertyeditor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\propertyeditor\propertyeditordate.h
+SOURCE=.\propertyeditor\propertyeditor.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
-InputPath=.\propertyeditor\propertyeditordate.h
-InputName=propertyeditordate
+InputPath=.\propertyeditor\propertyeditor.h
+InputName=propertyeditor
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
-InputPath=.\propertyeditor\propertyeditordate.h
-InputName=propertyeditordate
+InputPath=.\propertyeditor\propertyeditor.h
+InputName=propertyeditor
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyeditor\propertyeditordate.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyeditor\propertyeditordate.h
 # End Source File
 # Begin Source File
 
@@ -2584,25 +2480,25 @@ SOURCE=.\propertyeditor\propertyeditorfile.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
 InputPath=.\propertyeditor\propertyeditorfile.h
 InputName=propertyeditorfile
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
 InputPath=.\propertyeditor\propertyeditorfile.h
 InputName=propertyeditorfile
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2619,25 +2515,25 @@ SOURCE=.\propertyeditor\propertyeditorfont.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
 InputPath=.\propertyeditor\propertyeditorfont.h
 InputName=propertyeditorfont
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
 InputPath=.\propertyeditor\propertyeditorfont.h
 InputName=propertyeditorfont
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2654,25 +2550,25 @@ SOURCE=.\propertyeditor\propertyeditorinput.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
 InputPath=.\propertyeditor\propertyeditorinput.h
 InputName=propertyeditorinput
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
 InputPath=.\propertyeditor\propertyeditorinput.h
 InputName=propertyeditorinput
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -2686,28 +2582,36 @@ SOURCE=.\propertyeditor\propertyeditorlist.cpp
 # Begin Source File
 
 SOURCE=.\propertyeditor\propertyeditorlist.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyeditor\propertyeditoritem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\propertyeditor\propertyeditoritem.h
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
-InputPath=.\propertyeditor\propertyeditorlist.h
-InputName=propertyeditorlist
+InputPath=.\propertyeditor\propertyeditoritem.h
+InputName=propertyeditoritem
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
 
-# Begin Custom Build - Mocing $(InputPath)
+# Begin Custom Build - Moc'ing $(InputName).h ...
 InputDir=.\propertyeditor
-InputPath=.\propertyeditor\propertyeditorlist.h
-InputName=propertyeditorlist
+InputPath=.\propertyeditor\propertyeditoritem.h
+InputName=propertyeditoritem
 
-"$(InputDir)\$(InputName).moc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\$(InputName).moc
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe $(InputDir)\$(InputName).h -o $(InputDir)\moc_$(InputName).cpp
 
 # End Custom Build
 
@@ -3012,15 +2916,6 @@ InputName=ProcessQt
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyView.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyView.h
 # End Source File
 # Begin Source File
 

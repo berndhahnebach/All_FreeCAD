@@ -69,6 +69,9 @@ PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixma
     : QListBoxItem( parent ), pm_Unsel( p1 ), pm_Sel( p2 )
 {
   setText( name );
+  QPalette pal = parent->palette();
+  pal.setInactive( pal.active() );
+  parent->setPalette( pal );
 }
 
 int PrefGroupItem::height( const QListBox * ) const

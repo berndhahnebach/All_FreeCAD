@@ -232,14 +232,11 @@ qextmdi/qextmdichildfrmcaption.moc \
 qextmdi/qextmdichildview.moc \
 qextmdi/qextmdimainfrm.moc \
 qextmdi/qextmditaskbar.moc \
-propertyeditor/kexipropertybuffer.moc \
-propertyeditor/kexipropertyeditor.moc \
-propertyeditor/kexipropertysubeditor.moc \
-propertyeditor/propertyeditordate.moc \
-propertyeditor/propertyeditorfile.moc \
-propertyeditor/propertyeditorfont.moc \
-propertyeditor/propertyeditorinput.moc \
-propertyeditor/propertyeditorlist.moc \
+propertyeditor/moc_propertyeditor.cpp \
+propertyeditor/moc_propertyeditorfile.cpp \
+propertyeditor/moc_propertyeditorfont.cpp \
+propertyeditor/moc_propertyeditorinput.cpp \
+propertyeditor/moc_propertyeditoritem.cpp \
 propertyeditor/knuminput.moc \
 propertyeditor/knumvalidator.moc \
 Language/FreeCAD_de.h \
@@ -258,11 +255,8 @@ qextmdi/qextmdichildview.cpp \
 qextmdi/qextmdimainfrm.cpp \
 qextmdi/qextmditaskbar.cpp \
 \
-propertyeditor/kexiproperty.cpp \
-propertyeditor/kexipropertybuffer.cpp \
-propertyeditor/kexipropertyeditor.cpp \
-propertyeditor/kexipropertyeditoritem.cpp \
-propertyeditor/kexipropertysubeditor.cpp \
+propertyeditor/propertyeditor.cpp \
+propertyeditor/propertyeditoritem.cpp \
 propertyeditor/propertyeditordate.cpp \
 propertyeditor/propertyeditorfile.cpp \
 propertyeditor/propertyeditorfont.cpp \
@@ -371,27 +365,25 @@ libFreeCADGui_la_DEPENDENCIES =
 am_libFreeCADGui_la_OBJECTS = dummy_moc.lo kdocktabctl.lo kdockwidget.lo \
 	kdockwidget_private.lo qextmdichildarea.lo qextmdichildfrm.lo \
 	qextmdichildfrmcaption.lo qextmdichildview.lo qextmdimainfrm.lo \
-	qextmditaskbar.lo kexiproperty.lo kexipropertybuffer.lo \
-	kexipropertyeditor.lo kexipropertyeditoritem.lo \
-	kexipropertysubeditor.lo propertyeditordate.lo \
-	propertyeditorfile.lo propertyeditorfont.lo \
-	propertyeditorinput.lo propertyeditorlist.lo knuminput.lo \
-	knumvalidator.lo SoBrepShape.lo LanguageFactory.lo Action.lo \
-	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
-	Command.lo CommandStd.lo CommandTest.lo CommandView.lo \
-	DlgActionsImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
-	DlgCustomizeImp.lo DlgDocTemplatesImp.lo DlgEditorImp.lo \
-	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
-	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
-	DlgSettingsImp.lo DlgSettings3DViewImp.lo \
-	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
-	DlgUndoRedo.lo Document.lo GuiConsole.lo HtmlView.lo Macro.lo \
-	MouseModel.lo PrefWidgets.lo Process.lo PropertyPage.lo \
-	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
-	Selection.lo Splashscreen.lo StackBar.lo ToolBox.lo \
-	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
-	View3DInventor.lo ViewProvider.lo WaitCursor.lo \
-	WidgetFactory.lo Widgets.lo Window.lo
+	qextmditaskbar.lo propertyeditor.lo propertyeditoritem.lo \
+	propertyeditordate.lo propertyeditorfile.lo \
+	propertyeditorfont.lo propertyeditorinput.lo \
+	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
+	SoBrepShape.lo LanguageFactory.lo Action.lo Application.lo \
+	BitmapFactory.lo ButtonGroup.lo CommandLine.lo Command.lo \
+	CommandStd.lo CommandTest.lo CommandView.lo DlgActionsImp.lo \
+	DlgCmdbarsImp.lo DlgCommandsImp.lo DlgCustomizeImp.lo \
+	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
+	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
+	DlgParameterImp.lo DlgPreferencesImp.lo DlgSettingsImp.lo \
+	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
+	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
+	Document.lo GuiConsole.lo HtmlView.lo Macro.lo MouseModel.lo \
+	PrefWidgets.lo Process.lo PropertyPage.lo PropertyView.lo \
+	PythonEditor.lo ReportView.lo resource.lo Selection.lo \
+	Splashscreen.lo StackBar.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
+	Tree.lo View.lo View3D.lo View3DInventor.lo ViewProvider.lo \
+	WaitCursor.lo WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -448,17 +440,14 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/kdocktabctl.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/kdockwidget.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/kdockwidget_private.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kexiproperty.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kexipropertybuffer.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kexipropertyeditor.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kexipropertyeditoritem.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/kexipropertysubeditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knuminput.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knumvalidator.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/propertyeditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditordate.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorfile.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorfont.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorinput.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/propertyeditoritem.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditorlist.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/qextmdichildarea.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/qextmdichildfrm.Plo \
@@ -585,17 +574,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kdocktabctl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kdockwidget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kdockwidget_private.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexiproperty.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertybuffer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertyeditor.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertyeditoritem.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kexipropertysubeditor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knuminput.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knumvalidator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditordate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorfont.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorinput.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditoritem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditorlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdichildarea.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qextmdichildfrm.Plo@am__quote@
@@ -971,170 +957,71 @@ qextmditaskbar.lo: qextmdi/qextmditaskbar.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qextmditaskbar.lo `test -f 'qextmdi/qextmditaskbar.cpp' || echo '$(srcdir)/'`qextmdi/qextmditaskbar.cpp
 
-kexiproperty.o: propertyeditor/kexiproperty.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexiproperty.o -MD -MP -MF "$(DEPDIR)/kexiproperty.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexiproperty.o `test -f 'propertyeditor/kexiproperty.cpp' || echo '$(srcdir)/'`propertyeditor/kexiproperty.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexiproperty.Tpo" "$(DEPDIR)/kexiproperty.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexiproperty.Tpo"; exit 1; \
+propertyeditor.o: propertyeditor/propertyeditor.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditor.o -MD -MP -MF "$(DEPDIR)/propertyeditor.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o propertyeditor.o `test -f 'propertyeditor/propertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditor.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/propertyeditor.Tpo" "$(DEPDIR)/propertyeditor.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/propertyeditor.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexiproperty.cpp' object='kexiproperty.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexiproperty.Po' tmpdepfile='$(DEPDIR)/kexiproperty.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/propertyeditor.cpp' object='propertyeditor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditor.Po' tmpdepfile='$(DEPDIR)/propertyeditor.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexiproperty.o `test -f 'propertyeditor/kexiproperty.cpp' || echo '$(srcdir)/'`propertyeditor/kexiproperty.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditor.o `test -f 'propertyeditor/propertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditor.cpp
 
-kexiproperty.obj: propertyeditor/kexiproperty.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexiproperty.obj -MD -MP -MF "$(DEPDIR)/kexiproperty.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexiproperty.obj `if test -f 'propertyeditor/kexiproperty.cpp'; then $(CYGPATH_W) 'propertyeditor/kexiproperty.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexiproperty.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexiproperty.Tpo" "$(DEPDIR)/kexiproperty.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexiproperty.Tpo"; exit 1; \
+propertyeditor.obj: propertyeditor/propertyeditor.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditor.obj -MD -MP -MF "$(DEPDIR)/propertyeditor.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o propertyeditor.obj `if test -f 'propertyeditor/propertyeditor.cpp'; then $(CYGPATH_W) 'propertyeditor/propertyeditor.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/propertyeditor.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/propertyeditor.Tpo" "$(DEPDIR)/propertyeditor.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/propertyeditor.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexiproperty.cpp' object='kexiproperty.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexiproperty.Po' tmpdepfile='$(DEPDIR)/kexiproperty.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/propertyeditor.cpp' object='propertyeditor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditor.Po' tmpdepfile='$(DEPDIR)/propertyeditor.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexiproperty.obj `if test -f 'propertyeditor/kexiproperty.cpp'; then $(CYGPATH_W) 'propertyeditor/kexiproperty.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexiproperty.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditor.obj `if test -f 'propertyeditor/propertyeditor.cpp'; then $(CYGPATH_W) 'propertyeditor/propertyeditor.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/propertyeditor.cpp'; fi`
 
-kexiproperty.lo: propertyeditor/kexiproperty.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexiproperty.lo -MD -MP -MF "$(DEPDIR)/kexiproperty.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexiproperty.lo `test -f 'propertyeditor/kexiproperty.cpp' || echo '$(srcdir)/'`propertyeditor/kexiproperty.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexiproperty.Tpo" "$(DEPDIR)/kexiproperty.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexiproperty.Tpo"; exit 1; \
+propertyeditor.lo: propertyeditor/propertyeditor.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditor.lo -MD -MP -MF "$(DEPDIR)/propertyeditor.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o propertyeditor.lo `test -f 'propertyeditor/propertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditor.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/propertyeditor.Tpo" "$(DEPDIR)/propertyeditor.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/propertyeditor.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexiproperty.cpp' object='kexiproperty.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexiproperty.Plo' tmpdepfile='$(DEPDIR)/kexiproperty.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/propertyeditor.cpp' object='propertyeditor.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditor.Plo' tmpdepfile='$(DEPDIR)/propertyeditor.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexiproperty.lo `test -f 'propertyeditor/kexiproperty.cpp' || echo '$(srcdir)/'`propertyeditor/kexiproperty.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditor.lo `test -f 'propertyeditor/propertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditor.cpp
 
-kexipropertybuffer.o: propertyeditor/kexipropertybuffer.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertybuffer.o -MD -MP -MF "$(DEPDIR)/kexipropertybuffer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertybuffer.o `test -f 'propertyeditor/kexipropertybuffer.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertybuffer.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertybuffer.Tpo" "$(DEPDIR)/kexipropertybuffer.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertybuffer.Tpo"; exit 1; \
+propertyeditoritem.o: propertyeditor/propertyeditoritem.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditoritem.o -MD -MP -MF "$(DEPDIR)/propertyeditoritem.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o propertyeditoritem.o `test -f 'propertyeditor/propertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditoritem.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/propertyeditoritem.Tpo" "$(DEPDIR)/propertyeditoritem.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/propertyeditoritem.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertybuffer.cpp' object='kexipropertybuffer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertybuffer.Po' tmpdepfile='$(DEPDIR)/kexipropertybuffer.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/propertyeditoritem.cpp' object='propertyeditoritem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditoritem.Po' tmpdepfile='$(DEPDIR)/propertyeditoritem.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertybuffer.o `test -f 'propertyeditor/kexipropertybuffer.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertybuffer.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditoritem.o `test -f 'propertyeditor/propertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditoritem.cpp
 
-kexipropertybuffer.obj: propertyeditor/kexipropertybuffer.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertybuffer.obj -MD -MP -MF "$(DEPDIR)/kexipropertybuffer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertybuffer.obj `if test -f 'propertyeditor/kexipropertybuffer.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertybuffer.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertybuffer.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertybuffer.Tpo" "$(DEPDIR)/kexipropertybuffer.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertybuffer.Tpo"; exit 1; \
+propertyeditoritem.obj: propertyeditor/propertyeditoritem.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditoritem.obj -MD -MP -MF "$(DEPDIR)/propertyeditoritem.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o propertyeditoritem.obj `if test -f 'propertyeditor/propertyeditoritem.cpp'; then $(CYGPATH_W) 'propertyeditor/propertyeditoritem.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/propertyeditoritem.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/propertyeditoritem.Tpo" "$(DEPDIR)/propertyeditoritem.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/propertyeditoritem.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertybuffer.cpp' object='kexipropertybuffer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertybuffer.Po' tmpdepfile='$(DEPDIR)/kexipropertybuffer.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/propertyeditoritem.cpp' object='propertyeditoritem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditoritem.Po' tmpdepfile='$(DEPDIR)/propertyeditoritem.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertybuffer.obj `if test -f 'propertyeditor/kexipropertybuffer.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertybuffer.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertybuffer.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditoritem.obj `if test -f 'propertyeditor/propertyeditoritem.cpp'; then $(CYGPATH_W) 'propertyeditor/propertyeditoritem.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/propertyeditoritem.cpp'; fi`
 
-kexipropertybuffer.lo: propertyeditor/kexipropertybuffer.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertybuffer.lo -MD -MP -MF "$(DEPDIR)/kexipropertybuffer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertybuffer.lo `test -f 'propertyeditor/kexipropertybuffer.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertybuffer.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertybuffer.Tpo" "$(DEPDIR)/kexipropertybuffer.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertybuffer.Tpo"; exit 1; \
+propertyeditoritem.lo: propertyeditor/propertyeditoritem.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditoritem.lo -MD -MP -MF "$(DEPDIR)/propertyeditoritem.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o propertyeditoritem.lo `test -f 'propertyeditor/propertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditoritem.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/propertyeditoritem.Tpo" "$(DEPDIR)/propertyeditoritem.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/propertyeditoritem.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertybuffer.cpp' object='kexipropertybuffer.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertybuffer.Plo' tmpdepfile='$(DEPDIR)/kexipropertybuffer.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/propertyeditoritem.cpp' object='propertyeditoritem.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/propertyeditoritem.Plo' tmpdepfile='$(DEPDIR)/propertyeditoritem.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertybuffer.lo `test -f 'propertyeditor/kexipropertybuffer.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertybuffer.cpp
-
-kexipropertyeditor.o: propertyeditor/kexipropertyeditor.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertyeditor.o -MD -MP -MF "$(DEPDIR)/kexipropertyeditor.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertyeditor.o `test -f 'propertyeditor/kexipropertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditor.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertyeditor.Tpo" "$(DEPDIR)/kexipropertyeditor.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertyeditor.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertyeditor.cpp' object='kexipropertyeditor.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertyeditor.Po' tmpdepfile='$(DEPDIR)/kexipropertyeditor.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertyeditor.o `test -f 'propertyeditor/kexipropertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditor.cpp
-
-kexipropertyeditor.obj: propertyeditor/kexipropertyeditor.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertyeditor.obj -MD -MP -MF "$(DEPDIR)/kexipropertyeditor.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertyeditor.obj `if test -f 'propertyeditor/kexipropertyeditor.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertyeditor.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertyeditor.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertyeditor.Tpo" "$(DEPDIR)/kexipropertyeditor.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertyeditor.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertyeditor.cpp' object='kexipropertyeditor.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertyeditor.Po' tmpdepfile='$(DEPDIR)/kexipropertyeditor.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertyeditor.obj `if test -f 'propertyeditor/kexipropertyeditor.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertyeditor.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertyeditor.cpp'; fi`
-
-kexipropertyeditor.lo: propertyeditor/kexipropertyeditor.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertyeditor.lo -MD -MP -MF "$(DEPDIR)/kexipropertyeditor.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertyeditor.lo `test -f 'propertyeditor/kexipropertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditor.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertyeditor.Tpo" "$(DEPDIR)/kexipropertyeditor.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertyeditor.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertyeditor.cpp' object='kexipropertyeditor.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertyeditor.Plo' tmpdepfile='$(DEPDIR)/kexipropertyeditor.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertyeditor.lo `test -f 'propertyeditor/kexipropertyeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditor.cpp
-
-kexipropertyeditoritem.o: propertyeditor/kexipropertyeditoritem.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertyeditoritem.o -MD -MP -MF "$(DEPDIR)/kexipropertyeditoritem.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertyeditoritem.o `test -f 'propertyeditor/kexipropertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditoritem.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertyeditoritem.Tpo" "$(DEPDIR)/kexipropertyeditoritem.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertyeditoritem.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertyeditoritem.cpp' object='kexipropertyeditoritem.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertyeditoritem.Po' tmpdepfile='$(DEPDIR)/kexipropertyeditoritem.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertyeditoritem.o `test -f 'propertyeditor/kexipropertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditoritem.cpp
-
-kexipropertyeditoritem.obj: propertyeditor/kexipropertyeditoritem.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertyeditoritem.obj -MD -MP -MF "$(DEPDIR)/kexipropertyeditoritem.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertyeditoritem.obj `if test -f 'propertyeditor/kexipropertyeditoritem.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertyeditoritem.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertyeditoritem.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertyeditoritem.Tpo" "$(DEPDIR)/kexipropertyeditoritem.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertyeditoritem.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertyeditoritem.cpp' object='kexipropertyeditoritem.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertyeditoritem.Po' tmpdepfile='$(DEPDIR)/kexipropertyeditoritem.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertyeditoritem.obj `if test -f 'propertyeditor/kexipropertyeditoritem.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertyeditoritem.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertyeditoritem.cpp'; fi`
-
-kexipropertyeditoritem.lo: propertyeditor/kexipropertyeditoritem.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertyeditoritem.lo -MD -MP -MF "$(DEPDIR)/kexipropertyeditoritem.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertyeditoritem.lo `test -f 'propertyeditor/kexipropertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditoritem.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertyeditoritem.Tpo" "$(DEPDIR)/kexipropertyeditoritem.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertyeditoritem.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertyeditoritem.cpp' object='kexipropertyeditoritem.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertyeditoritem.Plo' tmpdepfile='$(DEPDIR)/kexipropertyeditoritem.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertyeditoritem.lo `test -f 'propertyeditor/kexipropertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertyeditoritem.cpp
-
-kexipropertysubeditor.o: propertyeditor/kexipropertysubeditor.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertysubeditor.o -MD -MP -MF "$(DEPDIR)/kexipropertysubeditor.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertysubeditor.o `test -f 'propertyeditor/kexipropertysubeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertysubeditor.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertysubeditor.Tpo" "$(DEPDIR)/kexipropertysubeditor.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertysubeditor.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertysubeditor.cpp' object='kexipropertysubeditor.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertysubeditor.Po' tmpdepfile='$(DEPDIR)/kexipropertysubeditor.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertysubeditor.o `test -f 'propertyeditor/kexipropertysubeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertysubeditor.cpp
-
-kexipropertysubeditor.obj: propertyeditor/kexipropertysubeditor.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertysubeditor.obj -MD -MP -MF "$(DEPDIR)/kexipropertysubeditor.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertysubeditor.obj `if test -f 'propertyeditor/kexipropertysubeditor.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertysubeditor.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertysubeditor.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertysubeditor.Tpo" "$(DEPDIR)/kexipropertysubeditor.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertysubeditor.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertysubeditor.cpp' object='kexipropertysubeditor.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertysubeditor.Po' tmpdepfile='$(DEPDIR)/kexipropertysubeditor.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertysubeditor.obj `if test -f 'propertyeditor/kexipropertysubeditor.cpp'; then $(CYGPATH_W) 'propertyeditor/kexipropertysubeditor.cpp'; else $(CYGPATH_W) '$(srcdir)/propertyeditor/kexipropertysubeditor.cpp'; fi`
-
-kexipropertysubeditor.lo: propertyeditor/kexipropertysubeditor.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kexipropertysubeditor.lo -MD -MP -MF "$(DEPDIR)/kexipropertysubeditor.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o kexipropertysubeditor.lo `test -f 'propertyeditor/kexipropertysubeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertysubeditor.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/kexipropertysubeditor.Tpo" "$(DEPDIR)/kexipropertysubeditor.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/kexipropertysubeditor.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='propertyeditor/kexipropertysubeditor.cpp' object='kexipropertysubeditor.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/kexipropertysubeditor.Plo' tmpdepfile='$(DEPDIR)/kexipropertysubeditor.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kexipropertysubeditor.lo `test -f 'propertyeditor/kexipropertysubeditor.cpp' || echo '$(srcdir)/'`propertyeditor/kexipropertysubeditor.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o propertyeditoritem.lo `test -f 'propertyeditor/propertyeditoritem.cpp' || echo '$(srcdir)/'`propertyeditor/propertyeditoritem.cpp
 
 propertyeditordate.o: propertyeditor/propertyeditordate.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT propertyeditordate.o -MD -MP -MF "$(DEPDIR)/propertyeditordate.Tpo" \

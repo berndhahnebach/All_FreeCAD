@@ -21,8 +21,8 @@
     \brief The namespace of the dockable windows of FreeCAD
 */
 
-/*! \namespace Gui::Kexi
-    \brief The namespace of the Kexi property editor for FreeCAD
+/*! \namespace Gui::PropertyEditor
+    \brief The namespace of the property editor for FreeCAD
 */
 
 /*! \namespace QextMdi

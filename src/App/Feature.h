@@ -33,6 +33,7 @@
 class TFunction_Logbook;
 class FCPyObject;
 class FeaturePy;
+class TopoDS_Shape;
 
 namespace App
 {
@@ -46,6 +47,7 @@ class AppExport Feature: public Base::PyHandler
 public:
 	/// Constructor
 	Feature(void);
+  virtual ~Feature() {}
 
 	/** Init the Label the Feature is attached to
 	 *  This methode will be called when the Feature is mounted 
@@ -112,12 +114,12 @@ public:
     return _cFeatureLabel;
   }
 
-  friend FeaturePy;
+  friend class FeaturePy;
 
 protected:
 	TDF_Label            _cFeatureLabel;
 	int                  _nextFreeLabel;
-  map<std::string,int> _PropertiesMap;
+  std::map<std::string,int> _PropertiesMap;
 
 };
 

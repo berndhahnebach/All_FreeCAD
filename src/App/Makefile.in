@@ -152,7 +152,8 @@ libFreeCADApp_la_SOURCES = \
 		Label.h \
 		Parameter.h \
 		PreCompiled.h \
-		Properties.h \
+		Property.h \
+    PropertyAttr.h \
 		Topology.h \
 		Application.cpp \
 		Attribute.cpp \
@@ -163,9 +164,9 @@ libFreeCADApp_la_SOURCES = \
 		FeatureAttr.cpp \
 		Function.cpp \
 		Label.cpp \
-		Parameter.cpp \
 		PreCompiled.cpp \
-		Properties.cpp \
+		Property.cpp \
+    PropertyAttr.cpp \
 		Topology.cpp
 
 
@@ -200,7 +201,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libFreeCADApp_la_DEPENDENCIES =
 am_libFreeCADApp_la_OBJECTS = Application.lo Attribute.lo DocType.lo \
 	DocTypeAttr.lo Document.lo Feature.lo FeatureAttr.lo \
-	Function.lo Label.lo Parameter.lo PreCompiled.lo Properties.lo \
+	Function.lo Label.lo PreCompiled.lo Property.lo PropertyAttr.lo \
 	Topology.lo
 libFreeCADApp_la_OBJECTS = $(am_libFreeCADApp_la_OBJECTS)
 
@@ -213,9 +214,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Document.Plo ./$(DEPDIR)/Feature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FeatureAttr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Function.Plo ./$(DEPDIR)/Label.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Parameter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Properties.Plo ./$(DEPDIR)/Topology.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/Property.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PropertyAttr.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Topology.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -291,9 +293,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureAttr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Function.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Label.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parameter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Properties.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Property.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyAttr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Topology.Plo@am__quote@
 
 distclean-depend:

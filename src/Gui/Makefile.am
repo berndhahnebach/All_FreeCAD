@@ -98,14 +98,11 @@ qextmdi/qextmdichildfrmcaption.moc \
 qextmdi/qextmdichildview.moc \
 qextmdi/qextmdimainfrm.moc \
 qextmdi/qextmditaskbar.moc \
-propertyeditor/kexipropertybuffer.moc \
-propertyeditor/kexipropertyeditor.moc \
-propertyeditor/kexipropertysubeditor.moc \
-propertyeditor/propertyeditordate.moc \
-propertyeditor/propertyeditorfile.moc \
-propertyeditor/propertyeditorfont.moc \
-propertyeditor/propertyeditorinput.moc \
-propertyeditor/propertyeditorlist.moc \
+propertyeditor/moc_propertyeditor.cpp \
+propertyeditor/moc_propertyeditorfile.cpp \
+propertyeditor/moc_propertyeditorfont.cpp \
+propertyeditor/moc_propertyeditorinput.cpp \
+propertyeditor/moc_propertyeditoritem.cpp \
 propertyeditor/knuminput.moc \
 propertyeditor/knumvalidator.moc \
 Language/FreeCAD_de.h \
@@ -124,11 +121,8 @@ qextmdi/qextmdichildview.cpp \
 qextmdi/qextmdimainfrm.cpp \
 qextmdi/qextmditaskbar.cpp \
 \
-propertyeditor/kexiproperty.cpp \
-propertyeditor/kexipropertybuffer.cpp \
-propertyeditor/kexipropertyeditor.cpp \
-propertyeditor/kexipropertyeditoritem.cpp \
-propertyeditor/kexipropertysubeditor.cpp \
+propertyeditor/propertyeditor.cpp \
+propertyeditor/propertyeditoritem.cpp \
 propertyeditor/propertyeditordate.cpp \
 propertyeditor/propertyeditorfile.cpp \
 propertyeditor/propertyeditorfont.cpp \

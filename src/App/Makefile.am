@@ -17,7 +17,8 @@ libFreeCADApp_la_SOURCES=\
 		Label.h \
 		Parameter.h \
 		PreCompiled.h \
-		Properties.h \
+		Property.h \
+    PropertyAttr.h \
 		Topology.h \
 		Application.cpp \
 		Attribute.cpp \
@@ -28,9 +29,9 @@ libFreeCADApp_la_SOURCES=\
 		FeatureAttr.cpp \
 		Function.cpp \
 		Label.cpp \
-		Parameter.cpp \
 		PreCompiled.cpp \
-		Properties.cpp \
+		Property.cpp \
+    PropertyAttr.cpp \
 		Topology.cpp
 
 %Script.h: FreeCAD%.py

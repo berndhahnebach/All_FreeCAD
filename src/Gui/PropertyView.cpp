@@ -72,12 +72,29 @@
 #include "../Base/Console.h"
 #include "../App/Property.h"
 
-#include "propertyeditor/kexipropertyeditor.h"
-#include "propertyeditor/kexipropertybuffer.h"
+#include "propertyeditor/propertyeditor.h"
+#include "propertyeditor/propertyeditorlist.h"
+#include "propertyeditor/propertyeditorfile.h"
+#include "propertyeditor/propertyeditorfont.h"
+#include "propertyeditor/propertyeditorinput.h"
+#include "propertyeditor/propertyeditordate.h"
 
-using Gui::Kexi::PropertyEditor;
-using Gui::Kexi::PropertyBuffer;
-using Gui::Kexi::Property;
+using Gui::PropertyEditor::EditableListView;
+using Gui::PropertyEditor::ListEditorItem;
+using Gui::PropertyEditor::DateTimeEditorItem;
+using Gui::PropertyEditor::DateTimeEditorItem;
+using Gui::PropertyEditor::FileEditorItem;
+using Gui::PropertyEditor::CursorEditorItem;
+using Gui::PropertyEditor::TimeEditorItem;
+using Gui::PropertyEditor::DateEditorItem;
+using Gui::PropertyEditor::ColorEditorItem;
+using Gui::PropertyEditor::ChildrenEditorItem;
+using Gui::PropertyEditor::PixmapEditorItem;
+using Gui::PropertyEditor::FontEditorItem;
+using Gui::PropertyEditor::FloatEditorItem;
+using Gui::PropertyEditor::TextEditorItem;
+using Gui::PropertyEditor::IntEditorItem;
+using Gui::PropertyEditor::BoolEditorItem;
 
 //**************************************************************************
 //**************************************************************************
@@ -105,8 +122,10 @@ FCPropertyView::FCPropertyView(FCGuiDocument* pcDocument,QWidget *parent,const c
 	pTabs->setTabShape(QTabWidget::Triangular);
   pLayout->addWidget( pTabs, 0, 0 );
 
-	_pPropEditor = new PropertyEditor( pTabs );
+	_pPropEditor = new EditableListView( pTabs );
 	pTabs->insertTab(_pPropEditor, "Properties");
+  _pPropEditor->addColumn("Name");
+  _pPropEditor->addColumn( "Value" );
 
 	// retrieve the Pixmaps
 	pcLabelOpen   = new QPixmap(Gui::BitmapFactory().GetPixmap("RawTree_LabelClosed"));
@@ -124,7 +143,7 @@ FCPropertyView::~FCPropertyView()
 }
 
 void FCPropertyView::Update(void)
-{
+{/*
 	PropertyBuffer* buf = new PropertyBuffer(_pPropEditor, "Test");
 
 	// append sample properties
@@ -143,7 +162,22 @@ void FCPropertyView::Update(void)
 	QStringList l; l << "Hallo" << "Hallo2";
 	buf->add(new Property("List", "Test", l, l, "Descr."));
 	_pPropEditor->setBuffer(buf);
-
+*/
+  QStringList lst; lst << QString("This") << QString("is") << QString("my") << QString("first") << QString("list") << QString("first");
+  new ListEditorItem(_pPropEditor, QString("List"), lst);
+  new DateEditorItem(_pPropEditor, QString("Date"), QDate::currentDate ());
+  new DateTimeEditorItem(_pPropEditor, QString("Datetime"), QDateTime::currentDateTime ());
+  new FileEditorItem(_pPropEditor, QString("File name"), QCString());
+  new CursorEditorItem(_pPropEditor, QString("Cursor"), QCursor(Qt::SplitVCursor));
+  new TimeEditorItem(_pPropEditor, QString("Time"), QTime::currentTime ());
+  new ColorEditorItem(_pPropEditor, QString("Color"), Qt::red);
+  new ChildrenEditorItem(_pPropEditor, QString("Children"), 1);
+  new PixmapEditorItem( _pPropEditor, QString("Pixmap"), QPixmap() );
+  new FontEditorItem( _pPropEditor, QString("Font"), QFont() );
+  new FloatEditorItem( _pPropEditor, QString("Float"), 0.85f );
+  new TextEditorItem( _pPropEditor, QString("Text"), QString("Example text") );
+  new IntEditorItem( _pPropEditor, QString("Integer"), 2 );
+  new BoolEditorItem( _pPropEditor, QString("Boolean"), QVariant(true, 0) );
 //	Base::Console().Log("Property Updated\n");
 }
 
