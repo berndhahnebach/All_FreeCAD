@@ -890,7 +890,7 @@ FCCmdDlgPreferences::FCCmdDlgPreferences()
 
 void FCCmdDlgPreferences::Activated(int iMsg)
 {
-	DlgPreferencesImp cDlg(GetAppWnd(),"Prefernces Dialog",true);
+	FCDlgPreferencesImp cDlg(GetAppWnd(),"Prefernces Dialog",true);
 	cDlg.exec();
 }
 
