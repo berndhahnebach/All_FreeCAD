@@ -1,195 +1,204 @@
-/* This file is part of the KDE project
-   Copyright (C) 2003 Cedric Pasteur <cedric.pasteur@free.fr>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this program; see the file COPYING.  If not, write to
-   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
-*/
-
-/* Modifications for FreeCAD from 06-13-2004
-    + include FreeCAD's PreCompiled header stuff
-    + use QFontDialog instead of KFontDialog
-*/
+/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
 
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlabel.h>
-# include <qstring.h>
-# include <qevent.h>
-# include <qfontdialog.h>
 # include <qcolordialog.h>
-# include <qpushbutton.h>
+# include <qfontdialog.h>
+# include <qpainter.h>
 #endif
 
-//#include <klocale.h>
-//#include <kfontdialog.h>
-//#include <kpushbutton.h>
-//#include <kcolorbutton.h>
-//#include <kdebug.h>
-
 #include "propertyeditorfont.h"
-#include "kexiproperty.h"
 
-using namespace Gui::Kexi;
+using namespace Gui::PropertyEditor;
 
-//FONT CHOOSER
-
-PropertyEditorFont::PropertyEditorFont(QWidget *parent, Property *property, const char *name)
- : PropertySubEditor(parent, property, name)
+FontEditorItem::FontEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-//  m_font = property->value().toFont();
-
-  m_label = new QLabel(this);
-  m_label->setMargin( 2 );
-  m_label->resize(width(), height()-1);
-
-  m_button = new QPushButton(" ... ", this);
-  m_button->resize(height(), height()-11);
-  m_button->move(width() - m_button->width(), 0);
-
-//  m_label->setText( Property::format( m_font ) );
-  setValue(property->value());
-  m_label->setBackgroundMode(Qt::PaletteBase);
-  m_label->show();
-  m_button->show();
-
-  setWidget(m_label);
-
-  connect(m_button, SIGNAL(clicked()), this, SLOT(selectFont()));
+  setText( 0, text );
+  setText( 1, value.toFont().family() );
 }
 
-QVariant
-PropertyEditorFont::value()
+QWidget* FontEditorItem::createEditor( int column, QWidget* parent )
 {
-  return QVariant(m_font);
+  if ( column == 0 )
+    return 0;
+
+  QPushButton* editor = new QPushButton( parent, "FontEditorItem::edit" );
+  editor->setText( overrideValue().toFont().family() );
+  connect(editor, SIGNAL(clicked()), this, SLOT(onChangeFont()));
+  return editor;
 }
 
-void
-PropertyEditorFont::setValue(const QVariant &value)
+void FontEditorItem::stopEdit( QWidget* editor, int column )
 {
-  m_font = value.toFont();
-  m_label->setText( Property::format( m_font ) );
-  emit changed(this);
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+
+  QVariant var;
+  var.asFont().setFamily( btn->text() );
+  setOverrideValue( var );
+  setText( column, overrideValue().toFont().family() );
 }
 
-void
-PropertyEditorFont::selectFont()
+void FontEditorItem::setDefaultValue()
 {
-  bool ok;
-  QFont font = QFontDialog::getFont(&ok, m_font, this);
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  btn->setText( value().toFont().family() );
+}
 
-  if(ok)
+void FontEditorItem::onChangeFont()
+{
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+
+  if ( btn )
   {
-    setValue(font);
-//    m_label->setText(m_font.family() + " " + QString::number(m_font.pointSize()));
-    emit changed(this);
-  }
-}
+    bool ok;
+    QFont font( btn->text() ); 
+    font = QFontDialog::getFont( &ok, font, listView() );
 
-void
-PropertyEditorFont::resizeEvent(QResizeEvent *ev)
-{
-  m_label->resize(ev->size().width(), ev->size().height()-1);
-  m_button->move(ev->size().width() - m_button->width(), 0);
-}
-
-bool
-PropertyEditorFont::eventFilter(QObject* watched, QEvent* e)
-{
-  if(e->type() == QEvent::KeyPress)
-  {
-    QKeyEvent* ev = static_cast<QKeyEvent*>(e);
-    if((ev->key() == Key_Enter) | (ev->key()== Key_Space) || (ev->key() == Key_Return))
+    if ( ok ) 
     {
-      m_button->animateClick();
-      return true;
+      onValueChanged();
+      btn->setText( font.family() );
     }
   }
-  return PropertySubEditor::eventFilter(watched, e);
 }
 
-//COLOR CHOOSER
+// ======================================================================
 
-PropertyEditorColor::PropertyEditorColor(QWidget *parent, Property *property, const char *name)
- : PropertySubEditor(parent, property, name)
- {
-  m_label = new QLabel(this);
-  m_label->setMargin( 2 );
-  m_label->resize(width(), height()-1);
+class ColorButton : public QPushButton
+{
+public:
+  ColorButton( QWidget* parent = 0, const char* name = 0 );
+  ~ColorButton();
 
-  m_button = new QPushButton(" ... ", this);
-  m_button->resize(height(), height()-11);
-  m_button->move(width() - m_button->width(), 0);
+  void setColor( const QColor& );
+  QColor color() const;
 
-  setValue(property->value());
-  m_label->show();
-  m_button->show();
-  setWidget(m_button);
+protected:
+  void drawButtonLabel( QPainter* );
 
-  connect(m_button, SIGNAL(clicked()), this, SLOT(selectColor()));
- }
+private:
+  QColor col;
+};
 
+ColorButton::ColorButton(QWidget* parent, const char* name)
+  : QPushButton( parent, name )
+{
+}
+
+ColorButton::~ColorButton()
+{
+}
+
+void ColorButton::setColor( const QColor& c )
+{
+  col = c;
+  update();
+}
+
+QColor ColorButton::color() const
+{
+  return col;
+}
+
+void ColorButton::drawButtonLabel( QPainter *paint )
+{
+  QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
+                   : palette().disabled().buttonText();
+  paint->setPen( pen );
+  paint->setBrush( QBrush( col ) );
+
+  paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
+}
+
+ColorEditorItem::ColorEditorItem( QListView* lv, const QString& text, const QVariant& value )
+    :EditableItem( lv, value )
+{
+  setText( 0, text );
+  _color = value.toColor();
+}
+
+QWidget* ColorEditorItem::createEditor( int column, QWidget* parent )
+{
+  if ( column == 0 )
+    return 0;
+
+  ColorButton* editor = new ColorButton( parent, "ColorEditorItem::edit" );
+
+  editor->setColor( _color );
+
+  connect(editor, SIGNAL(clicked()), this, SLOT(onChangeColor()));
+  return editor;
+}
+
+void ColorEditorItem::stopEdit( QWidget* editor, int column )
+{
+  _color = dynamic_cast<ColorButton*>(_editor)->color();
+  setOverrideValue( _color );
+}
+
+void ColorEditorItem::setDefaultValue()
+{
+  ColorButton* btn = dynamic_cast<ColorButton*>(_editor);
+  btn->setColor( value().toColor() );
+}
+
+void ColorEditorItem::onChangeColor()
+{
+  ColorButton* btn = dynamic_cast<ColorButton*>(_editor);
+
+  if ( btn )
+  {
+    QColor col = QColorDialog::getColor ( /*Qt::white, listView()*/ );
+
+    if ( col.isValid() )
+    {
+      onValueChanged();
+      btn->setColor( col );
+    }
+  }
+}
+
+void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
+{
+  EditableItem::paintCell( p, cg, column, width, align );
  
- QVariant
-PropertyEditorColor::value()
-{
-  return QVariant(m_color);
-}
-
-void
-PropertyEditorColor::setValue(const QVariant &value)
-{
-  m_color = value.toColor();
-  m_label->setPaletteBackgroundColor( m_color );
-}
-
-void
-PropertyEditorColor::selectColor()
-{
-  QColor c = QColorDialog::getColor(m_color, this);
-
-  if ( c.isValid() )
+  if ( column == 1 )
   {
-    setValue(c);
-    emit changed(this);
+    p->fillRect( 2, 2, width-5, height()-4, _color );
+    p->save();
+    p->setPen( QPen( QObject::black, 1 ) );
+    p->drawRect( 2, 2, width-5, height()-4 );
+    p->restore();
+    p->save();
+    p->setPen( QPen( cg.dark(), 1 ) );
+    p->drawLine( 0, height() - 1, width, height() - 1 );
+    p->drawLine( width - 1, 0, width - 1, height() );
+    p->restore();
   }
 }
 
-void
-PropertyEditorColor::resizeEvent(QResizeEvent *ev)
-{
-  m_label->resize(ev->size().width() - m_button->width()-5, ev->size().height()-6);
-  m_label->move(3, 3);
-  m_button->move(ev->size().width() - m_button->width(), 0);
-}
-
-bool
-PropertyEditorColor::eventFilter(QObject* watched, QEvent* e)
-{
-  if(e->type() == QEvent::KeyPress)
-  {
-    QKeyEvent* ev = static_cast<QKeyEvent*>(e);
-    if((ev->key() == Key_Enter) | (ev->key()== Key_Space) || (ev->key() == Key_Return))
-    {
-      m_button->animateClick();
-      return true;
-    }
-  }
-  return PropertySubEditor::eventFilter(watched, e);
-}
-
-#include "propertyeditorfont.moc"
+#include "moc_propertyeditorfont.cpp"
 

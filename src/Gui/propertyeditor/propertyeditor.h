@@ -21,62 +21,56 @@
  ***************************************************************************/
 
 
-#ifndef PROPERTYEDITORDATE_H
-#define PROPERTYEDITORDATE_H
+#ifndef PROPERTYEDITOR_H
+#define PROPERTYEDITOR_H
 
 #include "propertyeditoritem.h"
 
+#ifndef _PreComp_
+# include <qpushbutton.h>
+#endif
 
 namespace Gui {
 namespace PropertyEditor {
 
-/**
- * Change a time property.
+/** Implementation of a property editor similar to this one of Qt designer.
+ *
+ * EditableListView contains all EditableItem objects with an editor inside.
+ * The implementation is based on the sources of book "Practical Qt" in chapter 3.
+ *
  * \author Werner Mayer
  */
-class GuiExport TimeEditorItem: public EditableItem
+class EditableListView :public QListView
 {
+    Q_OBJECT
 public:
-  TimeEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  /** Constructs a list view. */
+  EditableListView( QWidget* parent, const char* name = 0 );
+  /** Sets \a item to be open if \a open is true and \a item is expandable, 
+   * and to be closed if \a open is false. Deletes the current editor and 
+   * repaints accordingly.
+   */
+  void setOpen ( QListViewItem * item, bool open );
+
+protected slots:
+  /** This slot is connected with the clicked signal and calls itemChanged(). */
+  void mouseClick(QListViewItem * item );
+  /** Deletes the editor of the last selected item and creates a new one
+   * for the curreent item \a item.
+   */
+  void itemChanged(QListViewItem * item );
+  /** Updates the current editable item. */
+  void updateItem();
 
 protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-};
+  void resizeEvent( QResizeEvent* e );
+//void drawContentsOffset ( QPainter * p, int ox, int oy, int cx, int cy, int cw, int ch );
 
-/**
- * Change a date property.
- * \author Werner Mayer
- */
-class GuiExport DateEditorItem: public EditableItem
-{
-public:
-  DateEditorItem( QListView* lv, const QString& text, const QVariant& value );
-
-protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-};
-
-/**
- * Change a datetime property.
- * \author Werner Mayer
- */
-class GuiExport DateTimeEditorItem: public EditableItem
-{
-public:
-  DateTimeEditorItem( QListView* lv, const QString& text, const QVariant& value );
-
-protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
+private:
+  EditableItem* _editingItem;
 };
 
 } //namespace PropertyEditor
 } //namespace Gui
 
-#endif
-
+#endif // PROPERTYEDITOR_H

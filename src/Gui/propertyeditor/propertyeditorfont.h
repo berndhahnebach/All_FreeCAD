@@ -1,96 +1,85 @@
-/* This file is part of the KDE project
-   Copyright (C) 2003 Cedric Pasteur <cedric.pasteur@free.fr>
+/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this program; see the file COPYING.  If not, write to
-   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
-*/
-
-/* Modifications for FreeCAD from 06-13-2004
-    + use FreeCAD's export macro GuiExport instead of KEXICORE_EXPORT
-    + use QPushButton instead of KPushButton
-    + use QPushButton with QLabel instead of KColorButton
-    + replace method PropertyEditorColor::valueChanged(const QColor &)
-      with PropertyEditorColor::selectColor()
-    + added method PropertyEditorColor::resizeEvent(QResizeEvent*)
-
-   Modifications for FreeCAD from 10-19-2004
-    + use namespace Gui::Kexi instead of prefix
-*/
 
 #ifndef PROPERTYEDITORFONT_H
 #define PROPERTYEDITORFONT_H
 
-#include "kexipropertysubeditor.h"
+#include "propertyeditoritem.h"
 
-class QLabel;
-class QPushButton;
-class QResizeEvent;
-
-namespace Gui {
-namespace Kexi {
-
-class Property;
-
-class GuiExport PropertyEditorFont : public PropertySubEditor
-{
-Q_OBJECT
-
-public:
-  PropertyEditorFont(QWidget *parent, Property *property, const char *name=0);
-  ~PropertyEditorFont() {;}
-
-  virtual QVariant  value();
-  virtual void  setValue(const QVariant &value);
-
-  void resizeEvent(QResizeEvent *ev);
-  virtual bool eventFilter(QObject* watched, QEvent* e);
-
-protected slots:
-  void selectFont();
-
-protected:
-  QLabel    *m_label;
-  QPushButton *m_button;
-  QFont   m_font;
-};
-
-
-class GuiExport PropertyEditorColor : public PropertySubEditor
-{
-Q_OBJECT
-
-public:
-  PropertyEditorColor(QWidget *parent, Property *property, const char *name=0);
-  ~PropertyEditorColor() {;}
-
-  virtual QVariant  value();
-  virtual void  setValue(const QVariant &value);
-  void resizeEvent(QResizeEvent *ev);
-  bool  eventFilter(QObject* watched, QEvent* e);
-
-protected slots:
-  void selectColor();
-
-protected:
-  QLabel  *m_label;
-  QPushButton *m_button;
-  QColor  m_color;
-};
-
-} // namespace Kexi
-} // namespace Gui
-
+#ifndef _PreComp_
+# include <qpushbutton.h>
 #endif
 
+
+namespace Gui {
+namespace PropertyEditor {
+
+/**
+ * Change a font property.
+ * \author Werner Mayer
+ */
+class GuiExport FontEditorItem: public EditableItem
+{
+  Q_OBJECT 
+
+public:
+  FontEditorItem( QListView* lv, const QString& text, const QVariant& value );
+
+protected slots:
+  void onChangeFont();
+
+protected:
+  QWidget* createEditor( int column, QWidget* parent );
+  virtual void stopEdit( QWidget* editor, int column );
+  virtual void setDefaultValue();
+};
+
+/**
+ * Change a color property.
+ * \author Werner Mayer
+ */
+class GuiExport ColorEditorItem: public EditableItem
+{
+  Q_OBJECT 
+
+public:
+  ColorEditorItem( QListView* lv, const QString& text, const QVariant& value );
+
+protected slots:
+  void onChangeColor();
+
+protected:
+  QWidget* createEditor( int column, QWidget* parent );
+  virtual void stopEdit( QWidget* editor, int column );
+  virtual void setDefaultValue();
+  /** Paints the current color with a frame outside. */
+  void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
+
+private:
+  QColor _color;
+};
+
+} //namespace PropertyEditor
+} //namespace Gui
+
+#endif

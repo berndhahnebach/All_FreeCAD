@@ -1,306 +1,209 @@
-/* This file is part of the KDE project
-   Copyright (C) 2002   Lucijan Busch <lucijan@gmx.at>
+/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this program; see the file COPYING.  If not, write to
-   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
-*/
-
-/* Modifications for FreeCAD from 06-13-2004
-    + include FreeCAD's PreCompiled header stuff
-    + use FCTools::i18n instead of KDE method i18n
-    + comment out use of KDE classes (kDebug, KCompletion, ..)
-*/
 
 #include "PreCompiled.h"
-#include "Tools.h"
-
-//#include <klocale.h>
-//#include <kdebug.h>
 
 #ifndef _PreComp_
 # include <qstringlist.h>
 # include <qcursor.h>
-# include <qlistbox.h>
-# include <qlineedit.h>
+# include <qcombobox.h>
 #endif
 
 #include "propertyeditorlist.h"
-#include "kexiproperty.h"
 
-using namespace Gui::Kexi;
+using namespace Gui::PropertyEditor;
 
-PropComboBox::PropComboBox(QWidget *parent, bool multi)
-   : QComboBox(parent)
+
+BoolEditorItem::BoolEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  : EditableItem( lv, value )
 {
-  m_listbox = 0;
-  m_eventFilterEnabled = true;
-  if(multi)
-  {
-    m_listbox = new QListBox(this);
-    m_listbox->setSelectionMode(QListBox::Multi);
-    setEditable(true);
-    m_eventFilterEnabled = false; //disable filter (crashed!)
-    setListBox(m_listbox);
-    m_eventFilterEnabled = true;
+  setText( 0, text);
 
-    disconnect(m_listbox, 0, this, 0);
-    connect(m_listbox, SIGNAL(selected(QListBoxItem*)), this, SLOT(updateEdit()));
-    connect(m_listbox, SIGNAL(returnPressed(QListBoxItem *)), this, SLOT(hideList()));
-  }
-}
-
-bool
-PropComboBox::eventFilter(QObject *o, QEvent *e)
-{
-  if (!m_eventFilterEnabled)
-    return false;
-
-  if(o == (QObject*)lineEdit())
-  {
-    if(e->type() == QEvent::KeyPress)
-    {
-      QKeyEvent* ev = static_cast<QKeyEvent*>(e);
-      if((ev->key()==Key_Up || ev->key()==Key_Down) && ev->state()!=ControlButton)
-      {
-        parentWidget()->eventFilter(o, e);
-        return true;
-      }
-    }
-  }
-  if(o==m_listbox)
-  {
-    if(e->type() == QEvent::Show)
-    {
-      QString s = lineEdit()->text();
-      setSelected(QStringList::split("|",s));
-    }
-  }
-  
-  return QComboBox::eventFilter(o, e);
-}
-
-void
-PropComboBox::setSelected(const QStringList &List)
-{
-  QStringList strlist(List);
-  m_listbox->clearSelection();
-  for(QStringList::iterator it = strlist.begin(); it != strlist.end(); ++it)
-  {
-    QListBoxItem *item = m_listbox->findItem(*it, Qt::ExactMatch);
-    if(item)
-      m_listbox->setSelected(item,true);
-  }
-  setEditText(List.join("|"));
-}
-
-QStringList
-PropComboBox::getSelected()
-{
-  QStringList list;
-
-  for(uint i=0; i < m_listbox->count(); i++)
-  {
-    if(m_listbox->isSelected(i))
-      list.append(m_listbox->text(i));
-  }
-  return list;
-}
-
-void
-PropComboBox::updateEdit()
-{
-  QStringList list = getSelected();
-  if(!list.isEmpty())
-  {
-    setEditText(list.join("|"));
-  }
+  if ( value.toBool() )
+    setText( 1, QObject::tr("True") );
   else
-    setEditText("");
-  emit activated(1);
+    setText( 1, QObject::tr("False") );
 }
 
-void
-PropComboBox::hideList()
+QWidget* BoolEditorItem::createEditor( int column, QWidget* parent )
 {
-  m_listbox->hide();
-  lineEdit()->setFocus();
+  if ( column == 0 )
+    return 0;
+
+  QComboBox* editor = new QComboBox( parent, "BoolEditorItem::combo" );
+  editor->insertStringList( QStringList() << QObject::tr("True")
+                              << QObject::tr("False") );
+  connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
+
+  if ( overrideValue().toBool() )
+    editor->setCurrentItem( 0 );
+  else
+    editor->setCurrentItem( 1 );
+  return editor;
 }
 
-//EDITOR
-
-PropertyEditorList::PropertyEditorList(QWidget *parent, Property *property, const char *name)
- : PropertySubEditor(parent, property, name)
+void BoolEditorItem::stopEdit( QWidget* editor, int column )
 {
-  m_combo = new PropComboBox(this, false);
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+  QVariant var;
+  var.asBool() = combo->currentItem() == 0 ? true : false;
+  setOverrideValue( var );
+  setText( column, combo->currentText() );
+}
 
-  m_combo->setGeometry(frameGeometry());
-  m_combo->setEditable(true);
-  m_combo->setInsertionPolicy(QComboBox::NoInsertion);
-  m_combo->setAutoCompletion(true);
-  if(m_property->names() && m_property->keys())
+void BoolEditorItem::setDefaultValue()
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+  if ( value().toBool() )
+    combo->setCurrentItem( 0 );
+  else
+    combo->setCurrentItem( 1 );
+}
+
+// ======================================================================
+
+ListEditorItem::ListEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
+{
+  setText( 0, text);
+  setText( 1, value.toStringList().last());
+}
+
+QWidget* ListEditorItem::createEditor( int column, QWidget* parent )
+{
+  if ( column == 0 )
+    return 0;
+
+  QStringList items = overrideValue().toStringList();
+  QComboBox* editor = new QComboBox( parent, "ListEditorItem::combo" );
+  connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
+
+  QString txt = items.last();
+  items.pop_back();
+  editor->insertStringList( items );
+
+  int cur = 0;
+  for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
   {
-    m_combo->insertStringList(*(m_property->names()));
-    int idx = m_property->keys()->findIndex( property->value().asString() );
-    if (idx>=0) {
-    //m_combo->setCurrentText(property->value().asString());
-      m_combo->setCurrentItem(idx);
-    //KCompletion *comp = m_combo->completionObject();
-    //comp->insertItems(*(m_property->names()));
+    if ( txt == *it)
+    {
+      editor->setCurrentItem( cur );
+      break;
     }
+
+    cur++;
   }
-  m_combo->show();
 
-  setWidget(m_combo);
-  connect(m_combo, SIGNAL(activated(int)), SLOT(valueChanged()));
+  return editor;
 }
 
-QVariant
-PropertyEditorList::value()
+void ListEditorItem::stopEdit( QWidget* editor, int column )
 {
-  if (!m_property->keys() || !m_property->names())
-    return QVariant();
-  int idx = m_combo->currentItem();
-  if (idx<0)
-    return QVariant();
-  return QVariant( (*m_property->keys())[idx] );
-//  return QVariant(m_combo->currentText());
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+
+  QVariant var = overrideValue();
+  var.asStringList().last() = combo->currentText();
+  setOverrideValue( var );
+  setText( column, overrideValue().toStringList().last() );
 }
 
-void
-PropertyEditorList::setValue(const QVariant &value)
+void ListEditorItem::setDefaultValue()
 {
-  int idx = m_property->keys()->findIndex( value.toString() );
-  if (idx>=0) {
-    m_combo->setCurrentItem(idx);
-  }
-  else {
-//    kdDebug() << "PropertyEditorList::setValue(): NO SUCH KEY! '" << value.toString() << "'" << endl;
-    m_combo->setCurrentText(QString::null);
-  }
-  emit changed(this);
-}
+  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
 
-void
-PropertyEditorList::setList(QStringList l)
-{
-  m_combo->insertStringList(l);
-}
+  QStringList items = value().toStringList();
 
-void
-PropertyEditorList::valueChanged()
-{
-  emit changed(this);
-}
+  QString txt = items.last();
+  items.pop_back();
 
-//Multiple selection editor (for OR'ed values)
-
-PropertyEditorMultiList::PropertyEditorMultiList(QWidget *parent, Property *property, const char *name)
- : PropertySubEditor(parent, property, name)
-{
-  m_combo = new PropComboBox(this, true);
-
-  m_combo->setGeometry(frameGeometry());
-  m_combo->setInsertionPolicy(QComboBox::NoInsertion);
-  m_combo->setAutoCompletion(true);
-//  if(property->list())
-  if(m_property->names() && m_property->keys())
+  int cur = 0;
+  for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
   {
-    m_combo->insertStringList(*(m_property->names()));
-    int idx = m_property->keys()->findIndex( property->value().asString() );
-    if (idx>=0) {
-      m_combo->setCurrentItem(idx);
-//      KCompletion *comp = m_combo->completionObject();
-//      comp->insertItems(*(m_property->names()));
-//js TODO
+    if ( txt == *it)
+    {
+      combo->setCurrentItem( cur );
+      break;
     }
-/*original code:
-    m_combo->insertStringList(*(property->list()));
-    m_combo->setSelected(property->value().asStringList());
-    m_combo->setEditText(property->value().toStringList().join("|"));
-    KCompletion *comp = m_combo->completionObject();
-    comp->insertItems(*(property->list()));*/
+
+    cur++;
   }
-  m_combo->show();
-
-  setWidget(m_combo);
-  connect(m_combo, SIGNAL(activated(int)), SLOT(valueChanged()));
 }
 
-QVariant
-PropertyEditorMultiList::value()
+// ======================================================================
+
+CursorEditorItem::CursorEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-  return QVariant(m_combo->getSelected());
+  _lst[ QObject::ArrowCursor        ] = QString("Arrow");
+  _lst[ QObject::UpArrowCursor      ] = QString("Up Arrow");
+  _lst[ QObject::CrossCursor        ] = QString("Cross");
+  _lst[ QObject::WaitCursor         ] = QString("Waiting");
+  _lst[ QObject::IbeamCursor        ] = QString("iBeam");
+  _lst[ QObject::SizeVerCursor      ] = QString("Size Vertical");
+  _lst[ QObject::SizeHorCursor      ] = QString("Size Horizontal");
+  _lst[ QObject::SizeBDiagCursor    ] = QString("Size Slash");
+  _lst[ QObject::SizeFDiagCursor    ] = QString("Size Backslash");
+  _lst[ QObject::SizeAllCursor      ] = QString("Size All");
+  _lst[ QObject::BlankCursor        ] = QString("Blank");
+  _lst[ QObject::SplitVCursor       ] = QString("Split Vertical");
+  _lst[ QObject::SplitHCursor       ] = QString("Split Horizontal");
+  _lst[ QObject::PointingHandCursor ] = QString("Pointing Hand");
+  _lst[ QObject::ForbiddenCursor    ] = QString("Forbidden");
+  _lst[ QObject::WhatsThisCursor    ] = QString("What's this");
+
+  setText( 0, text);
+  setText( 1, _lst[value.toCursor().shape()]);
 }
 
-void
-PropertyEditorMultiList::setValue(const QVariant &value)
+QWidget* CursorEditorItem::createEditor( int column, QWidget* parent )
 {
-  m_combo->setSelected(value.toStringList());
-  emit changed(this);
+  if ( column == 0 )
+    return 0;
+
+  QComboBox* editor = new QComboBox( parent, "CursorEditorItem::combo" );
+  editor->setEditable(false);
+  connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
+  for ( QMapConstIterator<int, QString> it = _lst.begin(); it != _lst.end(); ++it )
+  {
+    editor->insertItem(it.data(), it.key());
+  }
+
+  editor->setCurrentItem(overrideValue().toCursor().shape());
+
+  return editor;
 }
 
-void
-PropertyEditorMultiList::valueChanged()
+void CursorEditorItem::stopEdit( QWidget* editor, int column )
 {
-  emit changed(this);
+  QVariant var;
+  var.asCursor().setShape( dynamic_cast<QComboBox*>(editor)->currentItem() );
+  setOverrideValue( var );
+  setText( column, _lst[overrideValue().toCursor().shape()] );
 }
 
-void
-PropertyEditorMultiList::setList(QStringList l)
+void CursorEditorItem::setDefaultValue()
 {
-  m_combo->insertStringList(l);
+  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+  combo->setCurrentItem(value().toCursor().shape());
 }
 
-
-// Cursor Editor
-
-PropertyEditorCursor::PropertyEditorCursor(QWidget *parent, Property *property, const char *name)
-   : PropertyEditorList(parent, property, name)
-{
-  m_combo->setEditable(false);
-  m_combo->insertItem(FCTools::i18n("Arrow"), Qt::ArrowCursor);
-  m_combo->insertItem(FCTools::i18n("Up Arrow"), Qt::UpArrowCursor);
-  m_combo->insertItem(FCTools::i18n("Cross"), Qt::CrossCursor);
-  m_combo->insertItem(FCTools::i18n("Waiting"), Qt::WaitCursor);
-  m_combo->insertItem(FCTools::i18n("iBeam"), Qt::IbeamCursor);
-  m_combo->insertItem(FCTools::i18n("Size Vertical"), Qt::SizeVerCursor);
-  m_combo->insertItem(FCTools::i18n("Size Horizontal"), Qt::SizeHorCursor);
-  m_combo->insertItem(FCTools::i18n("Size Slash"), Qt::SizeBDiagCursor);
-  m_combo->insertItem(FCTools::i18n("Size Backslash"), Qt::SizeFDiagCursor);
-  m_combo->insertItem(FCTools::i18n("Size All"), Qt::SizeAllCursor);
-  m_combo->insertItem(FCTools::i18n("Blank"), Qt::BlankCursor);
-  m_combo->insertItem(FCTools::i18n("Split Vertical"), Qt::SplitVCursor);
-  m_combo->insertItem(FCTools::i18n("Split Horizontal"), Qt::SplitHCursor);
-  m_combo->insertItem(FCTools::i18n("Pointing Hand"), Qt::PointingHandCursor);
-  m_combo->insertItem(FCTools::i18n("Forbidden"), Qt::ForbiddenCursor);
-  m_combo->insertItem(FCTools::i18n("What's this"), Qt::WhatsThisCursor);
-
-  m_combo->setCurrentItem(property->value().toCursor().shape());
-}
-
-QVariant
-PropertyEditorCursor::value()
-{
-  return QCursor(m_combo->currentItem());
-}
-
-void
-PropertyEditorCursor::setValue(const QVariant &value)
-{
-  m_combo->setCurrentItem(value.toCursor().shape());
-  emit changed(this);
-}
-
-#include "propertyeditorlist.moc"

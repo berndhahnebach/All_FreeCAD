@@ -1,140 +1,128 @@
-/* This file is part of the KDE project
-   Copyright (C) 2003 Cedric Pasteur <cedric.pasteur@free.fr>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this program; see the file COPYING.  If not, write to
-   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
-*/
-
-/* Modifications for FreeCAD from 06-13-2004
-    + include FreeCAD's PreCompiled header stuff
-    + comment out use of KDE classes
-*/
+/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
 
 #include "PreCompiled.h"
-//#include <klocale.h>
 #ifndef _PreComp_
 # include <qdatetimeedit.h>
 #endif
 
 #include "propertyeditordate.h"
-#include "kexiproperty.h"
 
-//DATE CHOOSER
+using namespace Gui::PropertyEditor;
 
-using namespace Gui::Kexi;
-
-PropertyEditorDate::PropertyEditorDate(QWidget *parent, Property *property, const char *name)
-    : PropertySubEditor(parent, property, name)
+TimeEditorItem::TimeEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-  //m_leaveTheSpaceForRevertButton = false;
-  m_leaveTheSpaceForRevertButton = true;
-  m_dateedit = new QDateEdit(property->value().asDate(), this);
-  m_dateedit->resize(width(), height());
-  m_dateedit->show();
-  setWidget(m_dateedit);
-
-  connect(m_dateedit, SIGNAL(valueChanged(const QDate&)), this, SLOT(valueChanged(const QDate&)));
+  setText( 0, text );
+  setText( 1, QString("%1").arg(value.toTime().toString()) );
 }
 
-QVariant
-PropertyEditorDate::value()
+QWidget* TimeEditorItem::createEditor( int column, QWidget* parent )
 {
-  return QVariant(m_dateedit->date());
+  if ( column == 0 )
+    return 0;
+
+  QTimeEdit* editor = new QTimeEdit( parent, "TimeEditorItem::spin" );
+  editor->setTime( overrideValue().toTime() );
+  connect(editor, SIGNAL( valueChanged(const QTime&) ), this, SLOT( onValueChanged() ) );
+  return editor;
 }
 
-void
-PropertyEditorDate::setValue(const QVariant &value)
+void TimeEditorItem::stopEdit( QWidget* editor, int column )
 {
-  m_dateedit->setDate(value.toDate());
+  setOverrideValue( dynamic_cast<QTimeEdit*>(editor)->time() );
+  setText( column, QString("%1").arg(overrideValue().toTime().toString()) );
 }
 
-void
-PropertyEditorDate::valueChanged(const QDate &date)
+void TimeEditorItem::setDefaultValue()
 {
-  emit changed(this);
+  QTimeEdit* edit = dynamic_cast<QTimeEdit*>(_editor);
+  edit->setTime( value().toTime() );
 }
 
-//TIME CHOOSER
+// ======================================================================
 
-PropertyEditorTime::PropertyEditorTime(QWidget *parent, Property *property, const char *name)
-    : PropertySubEditor(parent, property, name)
+DateEditorItem::DateEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-  //m_leaveTheSpaceForRevertButton = false;
-  m_leaveTheSpaceForRevertButton = true;
-  m_timeedit = new QTimeEdit(property->value().asTime(), this);
-  m_timeedit->resize(width(), height());
-  m_timeedit->show();
-  setWidget(m_timeedit);
-
-  connect(m_timeedit, SIGNAL(valueChanged(const QTime&)), this, SLOT(valueChanged(const QTime&)));
+  setText( 0, text );
+  setText( 1, QString("%1").arg(value.toDate().toString()) );
 }
 
-QVariant
-PropertyEditorTime::value()
+QWidget* DateEditorItem::createEditor( int column, QWidget* parent )
 {
-  return QVariant(m_timeedit->time());
+  if ( column == 0 )
+    return 0;
+
+  QDateEdit* editor = new QDateEdit( parent, "TimeEditorItem::spin" );
+  editor->setDate( overrideValue().toDate() );
+  connect(editor, SIGNAL( valueChanged(const QDate&) ), this, SLOT( onValueChanged() ) );
+  return editor;
 }
 
-void
-PropertyEditorTime::setValue(const QVariant &value)
+void DateEditorItem::stopEdit( QWidget* editor, int column )
 {
-  m_timeedit->setTime(value.toTime());
+  setOverrideValue( dynamic_cast<QDateEdit*>(editor)->date() );
+  setText( column, QString("%1").arg(overrideValue().toDate().toString()) );
 }
 
-void
-PropertyEditorTime::valueChanged(const QTime &time)
+void DateEditorItem::setDefaultValue()
 {
-  emit changed(this);
+  QDateEdit* edit = dynamic_cast<QDateEdit*>(_editor);
+  edit->setDate( value().toDate() );
 }
 
+// ======================================================================
 
-// DATE/TIME CHOOSER
-
-PropertyEditorDateTime::PropertyEditorDateTime(QWidget *parent, Property *property, const char *name)
-    : PropertySubEditor(parent, property, name)
+DateTimeEditorItem::DateTimeEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-  //m_leaveTheSpaceForRevertButton = false;
-  m_leaveTheSpaceForRevertButton = true;
-  m_datetime = new QDateTimeEdit(property->value().asDateTime(), this);
-  m_datetime->resize(width(), height());
-  m_datetime->show();
-  setWidget(m_datetime);
-
-  connect(m_datetime, SIGNAL(valueChanged(const QDateTime&)), this, SLOT(valueChanged(const QDateTime&)));
+  setText( 0, text );
+  setText( 1, QString("%1").arg(value.toDateTime().toString()) );
 }
 
-QVariant
-PropertyEditorDateTime::value()
+QWidget* DateTimeEditorItem::createEditor( int column, QWidget* parent )
 {
-  return QVariant(m_datetime->dateTime());
+  if ( column == 0 )
+    return 0;
+
+  QDateTimeEdit* editor = new QDateTimeEdit( parent, "TimeEditorItem::spin" );
+  editor->setDateTime( overrideValue().toDateTime() );
+  connect(editor, SIGNAL( valueChanged(const QDateTime&) ), this, SLOT( onValueChanged() ) );
+  return editor;
 }
 
-void
-PropertyEditorDateTime::setValue(const QVariant &value)
+void DateTimeEditorItem::stopEdit( QWidget* editor, int column )
 {
-  m_datetime->setDateTime(value.toDateTime());
+  QVariant var = overrideValue();
+  var.asDateTime() = dynamic_cast<QDateTimeEdit*>(editor)->dateTime();
+  setOverrideValue( var );
+  setText( column, QString("%1").arg(var.toDateTime().toString()) );
 }
 
-void
-PropertyEditorDateTime::valueChanged(const QDateTime &dateTime)
+void DateTimeEditorItem::setDefaultValue()
 {
-  emit changed(this);
+  QDateTimeEdit* edit = dynamic_cast<QDateTimeEdit*>(_editor);
+  edit->setDateTime( value().toDateTime() );
 }
-
-
-#include "propertyeditordate.moc"
-
 

@@ -1,222 +1,339 @@
-/* This file is part of the KDE project
-   Copyright (C) 2003 Cedric Pasteur <cedric.pasteur@free.fr>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this program; see the file COPYING.  If not, write to
-   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
-*/
-
-/* Modifications for FreeCAD from 06-13-2004
-    + include FreeCAD's PreCompiled header stuff
-    + use QFileDialog instead of KFileDialog
-    + comment out use of other KDE classes
-*/
+/***************************************************************************
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
 
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlineedit.h>
 # include <qpushbutton.h>
 # include <qfiledialog.h>
-# include <qstring.h>
-# include <qpixmap.h>
-# include <qvariant.h>
-# include <qevent.h>
-# include <qlabel.h>
-# include <qcursor.h>
+# include <qcombobox.h>
+# include <qpainter.h>
+# include <qheader.h>
+# include <qcheckbox.h>
+# include <qlayout.h>
 #endif
 
-//#include <klocale.h>
-//#include <kdebug.h>
-
-#include "Tools.h"
 #include "propertyeditorfile.h"
-#include "kexiproperty.h"
+#include "propertyeditorlist.h"
+#include "propertyeditorinput.h"
 
-using namespace Gui::Kexi;
+using namespace Gui::PropertyEditor;
 
-PropertyEditorFile::PropertyEditorFile(QWidget *parent, Property *property, const char *name)
-    : PropertySubEditor(parent, property, name)
+
+FileEditorItem::FileEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-  m_lineedit = new QLineEdit(this);
-  m_lineedit->resize(width(), height()-2);
-
-  m_button = new QPushButton(tr(" ... "), this);
-  m_button->resize(height(), height()-11);
-  m_button->move(width() - m_button->width() -1, 1);
-
-  m_lineedit->setText(property->value().toString());
-  m_lineedit->show();
-  m_button->show();
-
-  setWidget(m_lineedit);
-
-  connect(m_button, SIGNAL(clicked()), this, SLOT(selectFile()));
+  setText( 0, text );
+  setText(1, overrideValue().toCString());
 }
 
-QVariant
-PropertyEditorFile::value()
+QWidget* FileEditorItem::createEditor( int column, QWidget* parent )
 {
-  return QVariant(m_url.path());
+  if ( column == 0 )
+    return 0;
+
+  QPushButton* editor = new QPushButton( parent, "FileEditorItem::edit" );
+
+  editor->setText( overrideValue().toCString() );
+
+  connect(editor, SIGNAL(clicked()), this, SLOT(onChangeFile()));
+  return editor;
 }
 
-void
-PropertyEditorFile::setValue(const QVariant &value)
+void FileEditorItem::stopEdit( QWidget* editor, int column )
 {
-  m_url = value.toString();
-  m_lineedit->setText(m_url.fileName());
+  QVariant var;
+  var.asCString() = dynamic_cast<QPushButton*>(_editor)->text();
+  setOverrideValue( var );
+  setText( column, var.toCString() );
 }
 
-
-void
-PropertyEditorFile::selectFile()
+void FileEditorItem::setDefaultValue()
 {
-  QString url = QFileDialog::getOpenFileName(QString::null, m_filter, this, tr("Choose a file"));
-  if ( !url.isEmpty() )
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  btn->setText( value().toCString() );
+}
+
+void FileEditorItem::onChangeFile()
+{
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+
+  if ( btn )
   {
-    m_url = url;
-    m_lineedit->setText(m_url.fileName());
-    emit changed(this);
-  }
-}
-
-void
-PropertyEditorFile::setFilter(QString filter, bool add)
-{
-  if(add)
-    m_filter += filter;
-  else
-    m_filter = filter;
-}
-
-void
-PropertyEditorFile::resizeEvent(QResizeEvent *ev)
-{
-  m_lineedit->resize(ev->size());
-  m_button->move(ev->size().width() - m_button->width()-1, 1);
-}
-
-bool
-PropertyEditorFile::eventFilter(QObject* watched, QEvent* e)
-{
-  if(e->type() == QEvent::KeyPress)
-  {
-    QKeyEvent* ev = static_cast<QKeyEvent*>(e);
-    if((ev->key() == Key_Enter) || (ev->key()== Key_Space) || (ev->key() == Key_Return))
+    QString url = QFileDialog::getOpenFileName(QString::null, QString::null, listView(), tr("Choose a file"));
+    if ( !url.isEmpty() )
     {
-      m_button->animateClick();
-      return true;
+      onValueChanged();
+      btn->setText( url );
+      setModified( true );
     }
   }
-  return PropertySubEditor::eventFilter(watched, e);
 }
 
-//PIXMAP
+// ======================================================================
 
-PropertyEditorPixmap::PropertyEditorPixmap(QWidget *parent, Property *property, const char *name)
-    : PropertySubEditor(parent, property, name)
+class ImagePreview : public QScrollView
 {
-  m_label = new QLabel(this);
-  m_label->setPixmap(property->value().toPixmap());
-  m_label->setAlignment(Qt::AlignTop);
-  m_label->resize(width(), height()-1);
-  m_label->setBackgroundMode(Qt::PaletteBase);
-  m_label->show();
-  setWidget(m_label);
-
-  m_button = new QPushButton(tr(" ... "), this);
-  m_button->resize(height(), height()-11);
-  m_button->move(width() - m_button->width() -1, 0);
-  m_button->show();
-
-  m_popup = new QLabel(0, 0, Qt::WStyle_NoBorder|Qt::WX11BypassWM|WStyle_StaysOnTop);
-  m_popup->hide();
-
-  connect(m_button, SIGNAL(clicked()), this, SLOT(selectFile()));
-}
-
-void
-PropertyEditorPixmap::resizeEvent(QResizeEvent *ev)
-{
-  m_label->resize(ev->size().width(), ev->size().height()-1);
-  m_button->move(ev->size().width() - m_button->width(), 0);
-}
-
-bool
-PropertyEditorPixmap::eventFilter(QObject *o, QEvent *ev)
-{
-  if(o == m_label)
+public:
+  ImagePreview( QWidget *parent=0 ) : QScrollView( parent ) 
   {
-    if(ev->type() == QEvent::MouseButtonPress)
+    viewport()->setBackgroundMode( PaletteBase );
+  }
+
+  void setPixmap( const QPixmap &pix )
+  {
+    _pixmap = pix;
+    resizeContents( _pixmap.size().width(), _pixmap.size().height() );
+    viewport()->repaint( FALSE );
+  }
+
+  void drawContents( QPainter *p, int clipx, int clipy, int clipw, int cliph )
+  {
+    bool mv = false;
+    int w = _pixmap.width();
+    int h = _pixmap.height();
+
+    p->fillRect( clipx, clipy, clipw, cliph, colorGroup().brush( QColorGroup::Base ) );
+
+    // move the pixmap to the center if it is small enough
+    if ( w <= clipw && h <= cliph)
     {
-      if(m_label->pixmap()->size().height() < height()-2
-          && m_label->pixmap()->size().width() < width()-20)
-        return false;
-      m_popup->setPixmap(*(m_label->pixmap()));
-      m_popup->resize(m_label->pixmap()->size());
-      m_popup->move(QCursor::pos());
-      m_popup->show();
+      mv = true;
+      p->save();
+      p->translate( (clipw-w)/2 , (cliph-h)/2 );
     }
-    if(ev->type() == QEvent::MouseButtonRelease)
+
+    p->drawPixmap( 0, 0, _pixmap );
+
+    if ( mv )
+      p->restore();
+  }
+
+private:
+  QPixmap _pixmap;
+};
+
+class PreviewLabel : public QWidget, public QFilePreview
+{
+public:
+  PreviewLabel( QWidget *parent=0 ) : QWidget( parent ) 
+  {
+    QGridLayout* layout = new QGridLayout( this, 1, 1, 0, -1, "PreviewLabel"); 
+    _preview = new ImagePreview( this );
+    _cbview = new QCheckBox( this );
+    _cbview->setText( tr("Preview") );
+    _cbview->setChecked( true );
+
+    layout->addWidget( _preview, 0, 0 );
+    layout->addWidget( _cbview, 1, 0 );
+  }
+
+  void previewUrl( const QUrl &u )
+  {
+    QString path = u.path();
+    QPixmap pix( path );
+
+    if ( _cbview->isChecked() )
+      _preview->setPixmap( pix );
+    else
+      _preview->setPixmap( QPixmap() );
+  }
+
+private:
+  ImagePreview* _preview;
+  QCheckBox* _cbview;
+};
+
+class PixmapFileProvider : public QFileIconProvider
+{
+public:
+  PixmapFileProvider( QObject * parent = 0, const char * name = 0 )
+    : QFileIconProvider( parent, name )
+  {
+  }
+
+  const QPixmap * pixmap ( const QFileInfo & info )
+  {
+    QString fn = info.filePath();
+    bool b=info.exists();
+    b=info.isFile();
+    if ( info.exists() && info.isFile() )
     {
-      if(m_popup->isVisible())
-        m_popup->hide();
-    }
-    if(ev->type() == QEvent::KeyPress)
-    {
-      QKeyEvent* e = static_cast<QKeyEvent*>(ev);
-      if((e->key() == Key_Enter) || (e->key()== Key_Space) || (e->key() == Key_Return))
+      const char* ext = QPixmap::imageFormat( fn );
+      
+      // seems to be valid image file
+      if ( ext )
       {
-        m_button->animateClick();
-        return true;
+        QPixmap* px = new QPixmap;
+        px->load( fn, ext );
+        return px;
+      }
+    }
+
+    return 0;
+  }
+};
+
+PixmapEditorItem::PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
+{
+  setText( 0, text );
+  setPixmap(1, overrideValue().toPixmap());
+}
+
+QWidget* PixmapEditorItem::createEditor( int column, QWidget* parent )
+{
+  if ( column == 0 )
+    return 0;
+
+  QPushButton* editor = new QPushButton( parent, "PixmapEditorItem::button" );
+
+  editor->setPixmap( overrideValue().toPixmap() );
+
+  connect(editor, SIGNAL(clicked()), this, SLOT(onChangePixmap()));
+  return editor;
+}
+
+void PixmapEditorItem::stopEdit( QWidget* editor, int column )
+{
+  const QPixmap* p = dynamic_cast<QPushButton*>(_editor)->pixmap();
+
+  if ( p )
+  {
+    setOverrideValue( *p );
+    setPixmap( column, *p );
+  }
+}
+
+void PixmapEditorItem::setDefaultValue()
+{
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  btn->setPixmap( value().toPixmap() );
+}
+
+void PixmapEditorItem::onChangePixmap()
+{
+  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+
+  if ( btn )
+  {
+    PreviewLabel* p = new PreviewLabel;
+
+    QFileDialog dlg( QString::null, QString("*.png *.xpm *.bmp *.jpg Pixmap Files"), listView(), 0, true );
+    dlg.setContentsPreviewEnabled( true );
+    dlg.setContentsPreview( p, p );
+    dlg.setViewMode( QFileDialog::List );
+    dlg.setPreviewMode( QFileDialog::Contents );
+    dlg.setCaption( tr( "Choose a Pixmap..." ) );
+
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      QString url = dlg.selectedFile();
+      if ( !url.isEmpty() )
+      {
+        onValueChanged();
+        QPixmap p;
+        p.load(url);
+        int w = QMIN(p.width(), height());
+        int h = QMIN(p.height(), height());
+        p.resize(w, h);
+        btn->setPixmap( p );
       }
     }
   }
-  return PropertySubEditor::eventFilter(o, ev);
 }
 
-QVariant
-PropertyEditorPixmap::value()
+// ======================================================================
+
+ChildrenEditorItem::ChildrenEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
 {
-  return *(m_label->pixmap());
+  setExpandable( true );
+  setText( 0, text);
+  setText( 1, value.toStringList().last());
+  insertItem(new BoolEditorItem(lv, "Bool", 0));
+  insertItem(new IntEditorItem(lv, "Width", 5));
+  insertItem(new IntEditorItem(lv, "Height", 15));
 }
 
-void
-PropertyEditorPixmap::setValue(const QVariant &value)
+QWidget* ChildrenEditorItem::createEditor( int column, QWidget* parent )
 {
-  m_label->setPixmap(value.toPixmap());
-  emit changed(this);
-}
+//    if ( column == 0 )
+    return 0;
 
-void
-PropertyEditorPixmap::selectFile()
-{
-  QString url = QFileDialog::getOpenFileName(QString::null, tr("*.png *.xpm *.bmp *.jpg Pixmap Files"),
-                this, tr("Choose a file"));
-  if ( !url.isEmpty() )
+  QStringList items = overrideValue().toStringList();
+  QComboBox* editor = new QComboBox( parent, "ListEditorItem::combo" );
+  connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
+
+  QString txt = items.last();
+  items.pop_back();
+  editor->insertStringList( items );
+
+  int cur = 0;
+  for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
   {
-    m_url = url;
-    m_label->setPixmap(QPixmap(m_url.path()));
-    emit changed(this);
+    if ( txt == *it)
+    {
+      editor->setCurrentItem( cur );
+      break;
+    }
+
+    cur++;
+  }
+
+  return editor;
+}
+
+void ChildrenEditorItem::stopEdit( QWidget* editor, int column )
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+
+  QVariant var = overrideValue();
+  var.asStringList().last() = combo->currentText();
+  setOverrideValue( var );
+  setText( column, overrideValue().toStringList().last() );
+}
+
+void ChildrenEditorItem::setDefaultValue()
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+
+  QStringList items = value().toStringList();
+
+  QString txt = items.last();
+  items.pop_back();
+
+  int cur = 0;
+  for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
+  {
+    if ( txt == *it)
+    {
+      combo->setCurrentItem( cur );
+      break;
+    }
+
+    cur++;
   }
 }
 
-PropertyEditorPixmap::~PropertyEditorPixmap()
-{
-  delete m_popup;
-}
-
-#include "propertyeditorfile.moc"
-
+#include "moc_propertyeditorfile.cpp"
