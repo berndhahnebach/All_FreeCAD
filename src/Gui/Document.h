@@ -56,8 +56,16 @@ public:
 	FCGuiDocument(FCDocument* pcDocument, ApplicationWindow * app, const char * name=0);
 	~FCGuiDocument();
 
+
+	/// Save the document
+	void Save(void);
+
+	/// Save the document under a new file name
+	void SaveAs(void);
+
+
 	/// Geter for the Application 
-	ApplicationWindow*				GetApplication(){return _pcAppWnd;}	
+	ApplicationWindow*				GetAppWnd(){return _pcAppWnd;}	
 	/// Geter for the OCC Interactive context
 	Handle(AIS_InteractiveContext)	GetContext(){return _hContext;}
 	/// Gerer for the App Document 
@@ -77,6 +85,9 @@ public:
 
 	/// Geter for the Active View
 	FCView* GetActiveView(void);
+
+	/// handels the application close event
+	void closeEvent ( QCloseEvent * e );
 
 public slots:
 	void slotCloseView(FCView* theView);

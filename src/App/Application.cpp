@@ -160,7 +160,7 @@ FCDocument* FCApplication::New(const char * Name)
 		char sBuf[1024];
 		assert(strlen(Name) < 1022);
 
-		// get the python workbench object from the dictionary
+		// get the python template object from the dictionary
 		strcpy(sBuf, Name);
 		pcTemplate = PyDict_GetItemString(_pcTemplateDictionary, sBuf);
 
@@ -377,8 +377,8 @@ PYFUNCIMP_S(FCApplication,sOpen)
 
 PYFUNCIMP_S(FCApplication,sNew)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    char *pstr = 0;
+    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
 	try{

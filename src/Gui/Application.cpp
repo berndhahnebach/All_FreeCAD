@@ -135,6 +135,12 @@ ApplicationWindow::ApplicationWindow()
 	_pclSizeLabel->setFixedWidth(120);
 	statusBar()->addWidget(_pclSizeLabel,0,true);
 
+	// update gui timer
+	_pcActivityTimer = new QTimer( this );
+    connect( _pcActivityTimer, SIGNAL(timeout()),this, SLOT(UpdateCmdActivity()) );
+    _pcActivityTimer->start( 4000, TRUE );                 // 4 seconds single-shot (wait until the gui is up)
+
+
 	// Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
 	GetCmdLine().SetParent(statusBar());
 	statusBar()->addWidget(&FCCommandLine::Instance(), 0, true);
@@ -146,8 +152,8 @@ ApplicationWindow::ApplicationWindow()
 	AddDockWindow( "Command bar",_pcCmdBar);
 
 	// Html View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
-  QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
+	FCParameterGrp::handle hURLGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Widget Preferences/LineEditURL");
+	QString home = QString(hURLGrp->GetASCII("LineEditURL", "index.html").c_str());
 	_pcHtmlView = new FCHtmlView(home, this, "Help_View");
 	AddDockWindow("Help bar", _pcHtmlView,"Command bar", KDockWidget::DockBottom);
 
@@ -514,19 +520,25 @@ void ApplicationWindow::resizeEvent ( QResizeEvent *e)
 }
 
 void ApplicationWindow::closeEvent ( QCloseEvent * e )
-{/*
-  long lNbOfDocs = lpcDocuments.size();
-  FCView* pView = GetActiveView();
-  while (pView != NULL && lNbOfDocs > 0)
-  {
-    lNbOfDocs--;
-    pView->close();
-    if (lNbOfDocs != lpcDocuments.size())
-      return; // cancel pressed
-    pView = GetActiveView();
-  }
-*/
-  QextMdiMainFrm::closeEvent(e);
+{
+
+	if(lpcDocuments.size() == 0)
+	{
+		e->accept();
+	}else{
+		for (std::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It!=lpcDocuments.end();It++)
+		{
+			(*It)->closeEvent ( e );
+			if(! e->isAccepted() ) break;
+		}
+	}
+
+	if( e->isAccepted() )
+	{
+		_pcActivityTimer->stop();
+
+		QextMdiMainFrm::closeEvent(e);
+	}
 }
 
 bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
@@ -579,12 +591,6 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
   }
 
   return QextMdiMainFrm::eventFilter(o, e);
-}
-
-void ApplicationWindow::exportImage()
-{
-  //FCView* w = (FCView*) stWs->activeWindow();
-  //w->dump();
 }
 
 
@@ -663,6 +669,21 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 		_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),PyString_AsString(key));
 	}
 
+}
+
+void ApplicationWindow::UpdateCmdActivity()
+{
+	static QTime cLastCall;
+
+	if(cLastCall.elapsed() > 250 && isVisible () )
+	{
+		//puts("testActive");
+		_cCommandManager.TestActive();
+		// remember last call
+		cLastCall.start();
+	}
+
+	_pcActivityTimer->start( 300, TRUE );	
 }
 
 

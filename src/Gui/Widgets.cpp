@@ -506,7 +506,7 @@ void FCToolBar::restorePreferences()
   {
     if (sCommands.find(*it) != sCommands.end())
     {
-      sCommands[*it]->GetAction()->addTo(this);
+      sCommands[*it]->addTo(this);
       alDroppedActions.push_back(*it);
     }
     else

@@ -136,8 +136,8 @@ public:
 
 	/// Get a named Toolbar or creat if not in
 	QToolBar *GetToolBar(const char* name);
-  /// Get all toolbars
-  std::vector<QToolBar*> GetToolBars(); 
+	/// Get all toolbars
+	std::vector<QToolBar*> GetToolBars(); 
 	/// Delete a named Toolbar
 	void DelToolBar(const char* name);
 
@@ -196,13 +196,14 @@ signals:
 
 // slots for the Application signals
 public slots:
-	void exportImage();
+	/// this slot get frequently activatet and test the commands if they are still active
+	void UpdateCmdActivity();
 
 protected: // Protected methods
 	/** just fits the system menu button position to the menu position */
 	virtual void resizeEvent ( QResizeEvent * );
 	virtual void closeEvent ( QCloseEvent * e );
-  virtual bool eventFilter( QObject* o, QEvent *e );
+	virtual bool eventFilter( QObject* o, QEvent *e );
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
 	FCBmpFactory     _cBmpFactory;
@@ -240,6 +241,7 @@ private:
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
+	QTimer *		 _pcActivityTimer; 
 
 };
 

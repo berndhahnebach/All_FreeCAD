@@ -88,6 +88,36 @@ FCGuiDocument::~FCGuiDocument()
 	_pcDocument->_DECREF();
 }
 
+
+/// Save the document
+void FCGuiDocument::Save(void)
+{
+	if(_pcDocument->IsSaved())
+		GetDocument()->Save();
+	else
+		SaveAs();
+
+}
+
+/// Save the document under a new file name
+void FCGuiDocument::SaveAs(void)
+{
+	GetAppWnd()->statusBar()->message("Saving file under new filename...");
+	QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", GetAppWnd());
+	if (!fn.isEmpty())
+	{
+
+		GetDocument()->SaveAs(fn.latin1());
+	}
+	else
+	{
+		GetAppWnd()->statusBar()->message("Saving aborted", 2000);
+	}
+}
+
+
+
+
 #include "Icons/FCIcon.xpm"
 
 void FCGuiDocument::CreateView(const char* sType) 
@@ -134,6 +164,38 @@ void FCGuiDocument::OnLastViewClosed(void)
 
 	_pcAppWnd->OnLastWindowClosed(this);
 }
+
+/** 
+ *  This method check if the Document can close. It checks on 
+ *  the save state of the document and is abel to abort the close!
+ */
+void FCGuiDocument::closeEvent ( QCloseEvent * e )
+{
+	if(! _pcDocument->IsSaved() )
+	{
+		switch(QMessageBox::warning( _pcAppWnd, "Unsaved document","Save file bevore close?","Yes","No","Cancel",0,2))
+		{
+		case 0:
+			//GetApplication().
+			Save();
+			e->accept();
+			break;
+		case 1:
+			e->accept();
+			break;
+		case 2:
+			break;
+		}
+	}
+
+//	for(std::list<FCView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
+//		(*It)->childWindowCloseRequest(e);
+//		(*It)->close(e);
+
+}
+
+
+
 
 /// send Messages to the active view
 bool FCGuiDocument::SendMsgToViews(const char* pMsg)

@@ -25,8 +25,10 @@
 
 
 #include "Application.h"
+#include "View.h"
 #include "../Base/Exception.h"
 #include "../App/Document.h"
+
 
 #include "Icons/images.cpp"
 
@@ -38,169 +40,207 @@
 //===========================================================================
 // Std_ViewBottom
 //===========================================================================
-DEF_STD_CMD(FCCmdViewBottom		,"Std_ViewBottom");
+//DEF_STD_CMD(FCCmdViewBottom);
 
-void FCCmdViewBottom::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+class FCCmdViewBottom : public FCCommand 
 {
-	*sMenuText	  = "Bottom";
-	*sToolTipText = "Set to bottom view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_bottom";
-	iAccel = 0;
+public:
+	FCCmdViewBottom();
+	virtual void Activated(int iMsg);
+	virtual bool IsActive(void); 
+};
+
+
+
+FCCmdViewBottom::FCCmdViewBottom()
+	:FCCommand("Std_ViewBottom")
+{
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Bottom";
+	sToolTipText	= "Set to bottom view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_bottom";
+	iAccel			= 0;
 }
 
-
-void FCCmdViewBottom::Activated(void)
+bool FCCmdViewBottom::IsActive(void)
 {
-	AppWnd()->SendMsgToActiveView("ViewBottom");
+	return GetAppWnd()->GetActiveView() && strcmp( GetAppWnd()->GetActiveView()->GetName(), "View3D" ) == 0?true:false;
+} 
+
+void FCCmdViewBottom::Activated(int iMsg)
+{
+	GetAppWnd()->SendMsgToActiveView("ViewBottom");
 }
 
 //===========================================================================
 // Std_ViewFront
 //===========================================================================
-DEF_STD_CMD(FCCmdViewFront		,"Std_ViewFront");
+DEF_3DV_CMD(FCCmdViewFront);
 
-void FCCmdViewFront::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewFront::FCCmdViewFront()
+	:FCCommand("Std_ViewFront")
 {
-	*sMenuText	  = "Front";
-	*sToolTipText = "Set to front view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_front";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Front";
+	sToolTipText	= "Set to front view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_front";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewFront::Activated(void)
+void FCCmdViewFront::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewFront");
+	GetAppWnd()->SendMsgToActiveView("ViewFront");
 }
 
 //===========================================================================
 // Std_ViewLeft
 //===========================================================================
-DEF_STD_CMD(FCCmdViewLeft		,"Std_ViewLeft");
+DEF_3DV_CMD(FCCmdViewLeft);
 
-void FCCmdViewLeft::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewLeft::FCCmdViewLeft()
+	:FCCommand("Std_ViewLeft")
 {
-	*sMenuText	  = "Left";
-	*sToolTipText = "Set to left view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_left";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Left";
+	sToolTipText	= "Set to left view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_left";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewLeft::Activated(void)
+void FCCmdViewLeft::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewLeft");
+	GetAppWnd()->SendMsgToActiveView("ViewLeft");
 }
 
 //===========================================================================
 // Std_ViewRear
 //===========================================================================
-DEF_STD_CMD(FCCmdViewRear		,"Std_ViewRear");
+DEF_3DV_CMD(FCCmdViewRear);
 
-void FCCmdViewRear::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewRear::FCCmdViewRear()
+	:FCCommand("Std_ViewRear")
 {
-	*sMenuText	  = "Rear";
-	*sToolTipText = "Set to rear view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_back";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Rear";
+	sToolTipText	= "Set to rear view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_back";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewRear::Activated(void)
+void FCCmdViewRear::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewRear");
+	GetAppWnd()->SendMsgToActiveView("ViewRear");
 }
 
 //===========================================================================
 // Std_ViewRight
 //===========================================================================
-DEF_STD_CMD(FCCmdViewRight		,"Std_ViewRight");
+DEF_3DV_CMD(FCCmdViewRight);
 
-void FCCmdViewRight::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewRight::FCCmdViewRight()
+	:FCCommand("Std_ViewRight")
 {
-	*sMenuText	  = "Right";
-	*sToolTipText = "Set to right view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_right";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Right";
+	sToolTipText	= "Set to right view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_right";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewRight::Activated(void)
+void FCCmdViewRight::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewRight");
+	GetAppWnd()->SendMsgToActiveView("ViewRight");
 }
 
 //===========================================================================
 // Std_ViewTop
 //===========================================================================
-DEF_STD_CMD(FCCmdViewTop		,"Std_ViewTop");
+DEF_3DV_CMD(FCCmdViewTop);
 
-void FCCmdViewTop::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewTop::FCCmdViewTop()
+	:FCCommand("Std_ViewTop")
 {
-	*sMenuText	  = "Top";
-	*sToolTipText = "Set to top view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_top";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Top";
+	sToolTipText	= "Set to top view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_top";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewTop::Activated(void)
+void FCCmdViewTop::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewTop");
+	GetAppWnd()->SendMsgToActiveView("ViewTop");
 }
 
 //===========================================================================
 // Std_ViewAxo
 //===========================================================================
-DEF_STD_CMD(FCCmdViewAxo		,"Std_ViewAxo");
+DEF_3DV_CMD(FCCmdViewAxo);
 
-void FCCmdViewAxo::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewAxo::FCCmdViewAxo()
+	:FCCommand("Std_ViewAxo")
 {
-	*sMenuText	  = "Axometric";
-	*sToolTipText = "Set to axometric view";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_axo";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Axometric";
+	sToolTipText	= "Set to axometric view";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_axo";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewAxo::Activated(void)
+void FCCmdViewAxo::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewAxo");
+	GetAppWnd()->SendMsgToActiveView("ViewAxo");
 }
 
 //===========================================================================
 // Std_ViewFitAll
 //===========================================================================
-DEF_STD_CMD(FCCmdViewFitAll		,"Std_ViewFitAll");
+DEF_3DV_CMD(FCCmdViewFitAll);
 
-void FCCmdViewFitAll::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdViewFitAll::FCCmdViewFitAll()
+	:FCCommand("Std_ViewFitAll")
 {
-	*sMenuText	  = "Fit all";
-	*sToolTipText = "Fits the whole content on the screen";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_fitall";
-	iAccel = 0;
+	sAppModule		= 0;
+	sGroup			= "Standard-View";
+	sMenuText		= "Fit all";
+	sToolTipText	= "Fits the whole content on the screen";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "view_fitall";
+	iAccel			= 0;
 }
 
 
-void FCCmdViewFitAll::Activated(void)
+void FCCmdViewFitAll::Activated(int iMsg)
 {
-	AppWnd()->SendMsgToActiveView("ViewFit");
+	GetAppWnd()->SendMsgToActiveView("ViewFit");
 }
 
 

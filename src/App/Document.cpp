@@ -252,6 +252,12 @@ bool FCDocument::Redo(void)
   return _hDoc->Redo() != 0; 
 }
 
+bool FCDocument::IsSaved() const
+{
+	return _hDoc->IsSaved() != 0;
+}
+
+
 /// Get the document name of a saved document
 const short* FCDocument::GetName() const
 {

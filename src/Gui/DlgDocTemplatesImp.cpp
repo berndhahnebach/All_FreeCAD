@@ -67,13 +67,12 @@ void DlgDocTemplatesImp::Validate()
 {
 	QString sTemplate = LineEdit1->text();
 
-/*	if (sTemplate.isEmpty()){
-		QMessageBox::information( this, "Template error",
-                            "You have to choos a template\n");
-	}else{*/
+	if (sTemplate.isEmpty())
+		GetInterpreter().RunFCCommand("FreeCAD.DocNew()");		
+	else
 		GetInterpreter().RunFCCommand("FreeCAD.DocNew(\"%s\")",LineEdit1->text().latin1());
-		accept();
-//	}
+	
+	accept();
 }
 /* 
  * public slot

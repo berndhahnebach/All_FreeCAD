@@ -30,7 +30,7 @@ class PartTemplate:
 	"Part template object"
 	def Start(self):
 		# switch to the right workbench
-		if(App.Gui == 1):
+		if(App.GuiUp == 1):
 			Log ('Switching to Part workbench')
 			Gui.WorkbenchActivate("Part design")
 		Log ('   Set up part document...\n')

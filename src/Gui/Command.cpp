@@ -34,37 +34,28 @@ FCAction::FCAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool 
 	connect( this, SIGNAL( toggled(bool) )   , this, SLOT( Toggled(bool) )   );
 
 }
-/*
-FCAction::FCAction ( const QString & text, const QIconSet & icon, const QString & menuText, int accel, QObject * parent, const char * name, bool toggle)
-:QAction(text, icon, menuText, accel, parent, name, toggle)
-{
-}
 
-FCAction::FCAction ( const QString & text, const QString & menuText, int accel, QObject * parent, const char * name, bool toggle)
-:QAction(text, menuText, accel, parent, name, toggle)
-{
-}
-*/
 FCAction::~FCAction()
 {
 }
 
 bool FCAction::addTo(QWidget *w)
 {
-  if ( w->inherits( "FCToolboxGroup" ) ) 
-  {
-	  FCToolboxButton* btn = new FCToolboxButton(menuText(), iconSet().pixmap(), toolTip(), w);
-    btn->setFixedHeight(32);
-	  connect( btn, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
-	  connect( btn, SIGNAL( toggled(bool) ), this, SLOT( toolButtonToggled(bool) ) );
-	  connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
-    // for disconnecting later
-    btn->setAction(this);
-    ((FCToolboxGroup*)w)->addedButton();
-    return true;
-  }
-  else
-    return QAction::addTo(w);
+	if ( w->inherits( "FCToolboxGroup" ) ) 
+	{
+		FCToolboxButton* btn = new FCToolboxButton(menuText(), iconSet().pixmap(), toolTip(), w);
+		btn->setFixedHeight(32);
+		
+		connect( btn, SIGNAL( clicked() ), this, SIGNAL( activated() ) );
+		connect( btn, SIGNAL( toggled(bool) ), this, SLOT( toolButtonToggled(bool) ) );
+		connect( btn, SIGNAL( destroyed() ), this, SLOT( objectDestroyed() ) );
+		// for disconnecting later
+		btn->setAction(this);
+		((FCToolboxGroup*)w)->addedButton();
+		return true;
+	}
+	else
+		return QAction::addTo(w);
 }
 
 
@@ -86,59 +77,67 @@ void FCAction::Toggled ( bool b)
 FCCommand::FCCommand(const char* name,CMD_Type eType)
 	:_eType(eType),_pcName(name),_pcAction(0)
 {
-
-}
-
-void FCCommand::Init(void)
-{
-	if(_pcAction) return;
-	// create a action with the Application as parent (shortcuts)
-	_pcAction = new FCAction(this,ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
-
-	// set standard profile here
-	char*  sMenuText,*sToolTipText,*sWhatsThis,*sStatusTip,*sPixMap;
+	sAppModule		= 0;
 	sMenuText		= "No menu text! see CmdProfile()";
 	sToolTipText	= "No Tooltip text! see CmdProfile()";
 	sWhatsThis		= "";
 	sStatusTip		= "";
-	sPixMap         = NULL;
+	sPixmap         = NULL;
 	int iAccel = 0;
-
-	// Get the informations from the derifed class
-	CmdProfile(&sMenuText,&sToolTipText,&sWhatsThis,&sStatusTip,&sPixMap,iAccel);
-
-	// set the information and do Internationalization ( tr() )
-	_pcAction->setText(_pcName);
-	_pcAction->setMenuText(_pcAction->tr(sMenuText));
-	_pcAction->setToolTip(_pcAction->tr(sToolTipText));
-	_pcAction->setStatusTip(_pcAction->tr(sStatusTip));
-	_pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
-	if(sPixMap)
-		_pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixMap));
-	_pcAction->setAccel(iAccel);
-
-	//connect( _pcAction, SIGNAL( activated() ) , this, SLOT( activated() ) );
-	//connect( _pcAction, SIGNAL( toggled(bool) )   , this, SLOT( toggled(bool) )   );
 
 }
 
-ApplicationWindow *FCCommand::AppWnd(void)
+
+bool FCCommand::addTo(QWidget *pcWidget)
+{
+	if (!_pcAction)
+		_pcAction = CreateAction();
+
+	return _pcAction->addTo(pcWidget);
+}
+
+FCAction * FCCommand::CreateAction(void)
+{
+	FCAction *pcAction;
+
+	pcAction = new FCAction(this,ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
+	pcAction->setText(_pcName);
+	pcAction->setMenuText(_pcAction->tr(sMenuText));
+	pcAction->setToolTip(_pcAction->tr(sToolTipText));
+	pcAction->setStatusTip(_pcAction->tr(sStatusTip));
+	pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	if(sPixmap)
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(sPixmap));
+	pcAction->setAccel(iAccel);
+
+	return pcAction;
+}
+ 
+ApplicationWindow *FCCommand::GetAppWnd(void)
 {
 	return ApplicationWindow::Instance;
 }
 
 FCGuiDocument* FCCommand::GetActiveDocument(void)
 {
-	return AppWnd()->GetActiveDocument();
+	return GetAppWnd()->GetActiveDocument();
 }
 
 FCDocument*	   FCCommand::GetActiveOCCDocument(void)
 {
-	FCGuiDocument * pcDoc = AppWnd()->GetActiveDocument();
+	FCGuiDocument * pcDoc = GetAppWnd()->GetActiveDocument();
 	if(pcDoc)
 		return pcDoc->GetDocument();
 	else
 		return 0l;
+}
+
+FCAction* FCCommand::GetAction() 
+{ 
+	if (!_pcAction)
+		_pcAction = CreateAction();
+
+	return _pcAction; 
 }
 
 bool FCCommand::IsToggle(void)
@@ -146,24 +145,73 @@ bool FCCommand::IsToggle(void)
 	return _eType&Cmd_Toggle != 0; 
 }
 
-const char* FCCommand::Name(void)
-{
-	return _pcName; 
-}
 
-
-//--------------------------------------------------------------------------
-// slots from QT 
-//--------------------------------------------------------------------------
 void FCCommand::activated ()
 {
 	GetConsole().Log("Activate %s\n",_pcAction->text().latin1());
-	Activated();
+	Activated(0);
 }
-void FCCommand::toggled ( bool bState)
+void FCCommand::toggled (bool b)
 {
-	GetConsole().Log("Toggle %s\n",_pcAction->text().latin1());
-	Toogled(bState);
+	GetConsole().Log("Toggled %s\n",_pcAction->text().latin1());
+	if(b)
+		Activated(1);
+	else
+		Activated(0);
+}
+
+void FCCommand::TestActive(void)
+{
+	if(_pcAction)
+		_pcAction->setEnabled ( IsActive() );
+}
+
+
+//--------------------------------------------------------------------------
+// UNDO REDO transaction handling  
+//--------------------------------------------------------------------------
+/** Open a new Undo transaction on the active document
+ *  This methode open a new UNDO transaction on the active document. This transaction
+ *  will later apear in the UNDO REDO dialog with the name of the command. If the user 
+ *  recall the transaction everything changed on the document between OpenCommand() and 
+ *  CommitCommand will be undone (or redone). You can use an alternetive name for the 
+ *  operation default is the Command name.
+ *  @see CommitCommand(),AbortCommand()
+ */
+void FCCommand::OpenCommand(const char* sName)
+{
+
+}
+
+void FCCommand::CommitCommand(void)
+{
+
+}
+
+void FCCommand::AborCommand(void)
+{
+
+}
+
+//--------------------------------------------------------------------------
+// Online help handling  
+//--------------------------------------------------------------------------
+
+/// returns the begin of a online help page
+const char * FCCommand::BeginCmdHelp(void)
+{
+	return  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
+			"<html>\n"
+			"<head>\n"
+			"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n"
+			"<title>FreeCAD Main Index</title>\n"
+			"</head>\n"
+			"<body bgcolor=\"#ffffff\">\n\n";
+}
+/// returns the end of a online help page
+const char * FCCommand::EndCmdHelp(void)
+{
+	return "</body></html>\n\n";
 }
 
 
@@ -278,24 +326,59 @@ PyObject *FCAction::PyDo(PyObject *args)
 
 */
 
+//===========================================================================
+// FCCommandManager 
+//===========================================================================
 
 
 void FCCommandManager::AddCommand(FCCommand* pCom)
 {
-	_sCommands[pCom->Name()] = pCom;	pCom->Init();
+	_sCommands[pCom->GetName()] = pCom;//	pCom->Init();
 }
 
 void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
 {
 	FCCommand* pCom = _sCommands[Name];
-	if(!pCom) throw FCException("Wrong command name");
-	pCom->Init();
-	pCom->_pcAction->addTo(pcWidget);
+
+	if(!pCom) 
+		GetConsole().Error("FCCommandManager::AddTo() try to add a unknown command (%s) to a widget!\n",Name);
+	else
+		pCom->addTo(pcWidget);
+}
+
+std::vector <FCCommand*> FCCommandManager::GetModuleCommands(const char *sModName)
+{
+	std::vector <FCCommand*> vCmds;
+
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+	{
+		if( strcmp(It->second->GetAppModuleName(),sModName) == 0)
+			vCmds.push_back(It->second);
+	}
+
+	return vCmds;
+}
+
+std::vector <FCCommand*> FCCommandManager::GetAllCommands(void)
+{
+	std::vector <FCCommand*> vCmds;
+
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+	{
+		vCmds.push_back(It->second);
+	}
+
+	return vCmds;
 }
 
 
-
-
+void FCCommandManager::TestActive(void)
+{
+	for( std::map<std::string, FCCommand*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+	{
+		It->second->TestActive();
+	}
+}
 
 
 

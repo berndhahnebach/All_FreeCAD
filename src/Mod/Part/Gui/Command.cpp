@@ -44,23 +44,26 @@
 //===========================================================================
 // Std_Test1
 //===========================================================================
-DEF_STD_CMD(FCCmdPartTest1		,"Part_Test1");
+DEF_STD_CMD(FCCmdPartTest1);
 
-void FCCmdPartTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdPartTest1::FCCmdPartTest1()
+	:FCCommand("Part_Test1")
 {
-	*sMenuText	  = "Test1";
-	*sToolTipText = "Part Test function 1";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "Test1";
-	iAccel = Qt::CTRL+Qt::Key_T;
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Test1";
+	sToolTipText	= "Part Test function 1";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Test1";
+	iAccel			= Qt::CTRL+Qt::Key_T;
 }
 
 
-void FCCmdPartTest1::Activated(void)
+void FCCmdPartTest1::Activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(AppWnd(),"Part Box",true);
+	DlgPartBoxImp cDlg(GetAppWnd(),"Part Box",true);
 	cDlg.exec();
 
   // A data structure for our box:
@@ -129,20 +132,23 @@ void FCCmdPartTest1::Activated(void)
 //===========================================================================
 // Std_Test2
 //===========================================================================
-DEF_STD_CMD(FCCmdPartTest2		,"Part_Test2");
+DEF_STD_CMD(FCCmdPartTest2);
 
-void FCCmdPartTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdPartTest2::FCCmdPartTest2()
+	:FCCommand("Part_Test2")
 {
-	*sMenuText	  = "Test2";
-	*sToolTipText = "Part Test function 2";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "Test2";
-	iAccel = 0;
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Test2";
+	sToolTipText	= "Part Test function 2";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Test2";
+	iAccel			= 0;
 }
 
 
-void FCCmdPartTest2::Activated(void)
+void FCCmdPartTest2::Activated(int iMsg)
 {
 
 	FCDocument *pcDoc = GetActiveOCCDocument();
@@ -155,7 +161,7 @@ void FCCmdPartTest2::Activated(void)
 	BRep_Builder aBuilder;
 	TopoDS_Shape ResultShape;
 
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", AppWnd() );
+	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
 	if ( fn.isEmpty() ) return;
  
 	try{
@@ -178,23 +184,26 @@ void FCCmdPartTest2::Activated(void)
 //===========================================================================
 // Part_Box
 //===========================================================================
-DEF_STD_CMD(FCCmdPartBox		,"Part_Box");
+DEF_STD_CMD(FCCmdPartBox);
 
-void FCCmdPartBox::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdPartBox::FCCmdPartBox()
+	:FCCommand("Part_Box")
 {
-	*sMenuText	  = "Box";
-	*sToolTipText = "Create or change a Box feature";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "Part_Box";
-	iAccel = 0;
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Box";
+	sToolTipText	= "Create or change a Box feature";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Part_Box";
+	iAccel			= 0;
 }
 
 
-void FCCmdPartBox::Activated(void)
+void FCCmdPartBox::Activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(AppWnd(),"Part Box",true);
+	DlgPartBoxImp cDlg(GetAppWnd(),"Part Box",true);
 	cDlg.exec();
 
 }
@@ -202,23 +211,26 @@ void FCCmdPartBox::Activated(void)
 //===========================================================================
 // Part_Box
 //===========================================================================
-DEF_STD_CMD(FCCmdPartCut		,"Part_Cut");
+DEF_STD_CMD(FCCmdPartCut);
 
-void FCCmdPartCut::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+FCCmdPartCut::FCCmdPartCut()
+	:FCCommand("Part_Cut")
 {
-	*sMenuText	  = "Cut";
-	*sToolTipText = "Create or change a Cut feature";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "Part_Box";
-	iAccel = 0;
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Cut";
+	sToolTipText	= "Create or change a Cut feature";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Part_Box";
+	iAccel			= 0;
 }
 
 
-void FCCmdPartCut::Activated(void)
+void FCCmdPartCut::Activated(int iMsg)
 {
 
-	DlgPartBoxImp cDlg(AppWnd(),"Part Box",true);
+	DlgPartBoxImp cDlg(GetAppWnd(),"Part Box",true);
 	cDlg.exec();
 
 }
