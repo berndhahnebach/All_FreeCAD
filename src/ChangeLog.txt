@@ -303,3 +303,8 @@ Version: V0.1B66 Date: Sun Jul 13 17:15:34 2003 +++++++++++++++++++++++++++++++
 + reimplementation of the WhatsThis framework
 + several commands
 + improved drag and drop for the commandline
+
+Version: V0.1B67 Date: Sun Jul 20 00:23:56 2003 +++++++++++++++++++++++++++++++
++ Precompiled header stuff again
++ improved the spin box
++ Report output window added
