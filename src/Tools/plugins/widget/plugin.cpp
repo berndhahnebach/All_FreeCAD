@@ -470,19 +470,19 @@ QIconSet CustomWidgetPlugin::iconSet( const QString& feature ) const
 QString CustomWidgetPlugin::includeFile( const QString& feature ) const
 {
   if ( feature.startsWith( "Gui::" ) )
-    return "PrefWidgets.h";
+    return "Gui/PrefWidgets.h";
   else if ( feature == "Gui::FileChooser" )
-  	return "FileDialog.h";
+  	return "Gui/FileDialog.h";
   else if ( feature == "Gui::AccelLineEdit" )
-    return "Widgets.h";
+    return "Gui/Widgets.h";
   else if ( feature == "Gui::CommandIconView" )
-  	return "Widgets.h";
+  	return "Gui/Widgets.h";
   else if ( feature == "Gui::SpinBox" )
-  	return "SpinBox.h";
+  	return "Gui/SpinBox.h";
   else if ( feature == "Gui::FloatSpinBox" )
-  	return "SpinBox.h";
+  	return "Gui/SpinBox.h";
   else if ( feature == "Gui::ColorButton" )
-  	return "Widgets.h";
+  	return "Gui/Widgets.h";
 
   return QString::null;
 }

@@ -245,6 +245,9 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
 
 	*cons = new long[4*(nbTriInFace)];
 
+  // check orientation
+  TopAbs_Orientation orient = aFace.Orientation();
+
   // cycling through the poly mesh
 	const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
 	const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
@@ -253,6 +256,14 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
 
     Standard_Integer N1,N2,N3;
     Triangles(i).Get(N1,N2,N3);
+    
+    // change orientation of the triangles
+    if ( orient != TopAbs_FORWARD )
+    {
+      Standard_Integer tmp = N1;
+      N1 = N2;
+      N2 = tmp;
+    }
 
     gp_Pnt V1 = Nodes(N1);
     gp_Pnt V2 = Nodes(N2);

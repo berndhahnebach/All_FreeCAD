@@ -313,7 +313,7 @@ public:
   virtual void activated(int iMsg);
   //@}
 
-  /** @name Methodes to get the propertys of the Script Command */
+  /** @name Methods to get the properties of the Script Command */
   //@{
   QString getScriptName () const { return scriptName;   }
   QString getWhatsThis  () const { return sWhatsThis;   }
@@ -334,11 +334,13 @@ public:
   void setAccel      ( int   i        );
   //@}
 
-
+  /** @name Methods to load and save macro commands. */
+  //@{
+  /** Loads all macros command from the preferences. */
   static void load();
-
+  /** Saves all macros command to the preferences. */
   static void save();
-
+  //@}
 
 protected:
   /** @name Attributes 
@@ -432,108 +434,74 @@ private:
 };
 
 
-
 /**
-
  *  The workbench command
-
  *  @author Werner Mayer
-
  */
-
 class StdCmdWorkbench : public CppCommand
-
 {
-
 public:
-
   StdCmdWorkbench();
-
+  /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
 
+  /** Creates the accompanying QAction object to the command. */
   QAction * createAction(void);
 
+  /** Appends a new workbench \a item. */
   void appendItem ( const QString& item );
-
+  /** Activates the workbench \a item. */
   void activate( const QString& item );
-
+  /** Adds the workbench command to a widget. */
   bool addTo(QWidget *);
 
-
-
 private:
-
   QActionGroup *pcAction;
-
 };
-
 
 
 /**
-
  *  The MRU command which does the handling of recent files.
-
  *  @author Werner Mayer
-
  */
-
 class StdCmdMRU : public CppCommand
-
 {
-
 public:
-
   StdCmdMRU();
-
   bool isActive(void){return true;}
-
+  /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
 
-
-
+  /** Creates the accompanying QAction object to the command. */
   QAction * createAction(void);
-
-
-
+  
+  /** Adds the new item to the recent files. */
   void addRecentFile ( const QString& item );
-
+  /** Removes \a item from the recent files. */
   void removeRecentFile ( const QString& item );
-
+  /** Refreshes the recent file list. */
   void refresh();
 
-
-
   int  maxCount() const { return _nMaxItems; }
-
   void setMaxCount (int i) { _nMaxItems = i;    }
 
-  
-
   QStringList recentFiles() const;
-
   std::string getResource(const char* sName) { return ""; }
 
-
-
+  /** @name Methodes to set the propertys of the Script Command */
+  //@{
+  /** Loads all macros command from the preferences. */
   static void load();
-
+  /** Saves all macros command to the preferences. */
   static void save();
-
-
+  //@}
 
 private:
-
   QString recentFileItem( const QString& fn );
-
   QStringList _vMRU;
-
   QActionGroup *pcAction;
-
   int _nMaxItems;
-
 };
-
-
 
 } // namespace Gui
 
