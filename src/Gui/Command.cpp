@@ -23,6 +23,7 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
+#include "Icons/FCIcon.xpm"
 #include "Icons/x.xpm"
 #include <qobjcoll.h>
 
@@ -101,6 +102,79 @@ void FCAction::Toggled ( bool b)
 	_pcCmd->toggled(b);
 } 
 
+void FCAction::setEnabled ( bool b) 
+{
+  QAction::setEnabled(b);
+  // update all widgets containing this action
+  for (std::vector<QWidget*>::iterator it = widgets.begin(); it!=widgets.end(); ++it)
+  {
+    (*it)->setEnabled(b);
+  }
+}
+
+//===========================================================================
+// FCMultiAction 
+//===========================================================================
+FCMultiAction::FCMultiAction ( FCCommand* pcCmd,QObject * parent, const char * name, bool toggle)
+:FCAction(pcCmd, parent, name, toggle)
+{
+}
+
+FCMultiAction::~FCMultiAction()
+{ 
+}
+
+bool FCMultiAction::addTo(QWidget *w)
+{
+  if (w->inherits("QToolBar"))
+  {
+    QComboBox* combo = new QComboBox(w, "Combo");
+    widgets.push_back(combo);
+  	connect( combo, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
+    combo->setMinimumWidth(130);
+    for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it)
+    {
+      combo->insertItem(QPixmap(FCIcon), it->c_str());
+    }
+  }
+  else if (w->inherits("QPopupMenu"))
+  {
+    QPopupMenu* popup = new QPopupMenu(w, "Menu");
+    widgets.push_back(popup);
+  	connect( popup, SIGNAL(  activated(int) )   , this, SLOT( activated(int) )   );
+
+    if (iconSet().isNull())
+      ((QPopupMenu*)w)->insertItem(mName.c_str(), popup);
+    else
+      ((QPopupMenu*)w)->insertItem(iconSet().pixmap(), mName.c_str(), popup);
+
+    int i=0;
+    for (std::vector<std::string>::iterator it = mItems.begin(); it!=mItems.end(); ++it, i++)
+    {
+      popup->insertItem(QPixmap(FCIcon), it->c_str(), i);
+    }
+  }
+  else
+    return false;
+
+  return true;
+}
+
+void FCMultiAction::setItems(const std::vector<std::string>& items)
+{
+  mItems = items;
+}
+
+void FCMultiAction::setName(const char* name)
+{
+  mName = name;
+}
+
+void FCMultiAction::activated (int i) 
+{
+  ApplicationWindow::Instance->OnWorkbenchChange(mItems[i].c_str());
+}
+
 //===========================================================================
 // FCUndoAction 
 //===========================================================================
@@ -135,6 +209,7 @@ bool FCUndoAction::addTo(QWidget* w)
     connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
 	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
 	  connect( tipGroup, SIGNAL( removeTip() ), this, SLOT(slotClearStatusText()) );
+    widgets.push_back(button);
 
     return true;
   }
@@ -176,6 +251,7 @@ bool FCRedoAction::addTo(QWidget* w)
     connect( button, SIGNAL( toggled(bool) ), this, SLOT( slotToolButtonToggled(bool) ) );
 	  connect( tipGroup, SIGNAL( showTip(const QString&) ), this, SLOT(slotShowStatusText(const QString&)) );
 	  connect( tipGroup, SIGNAL( removeTip() ), this, SLOT(slotClearStatusText()) );
+    widgets.push_back(button);
 
     return true;
   }

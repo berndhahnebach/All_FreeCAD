@@ -257,6 +257,8 @@ void FCButtonGroup::showText()
 FCToolboxBar::FCToolboxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar")
 {
+  // remove immediately from main window again
+  ApplicationWindow::Instance->removeToolBar(this);
 #if QT_VERSION >= 300
 	setFrameStyle( QFrame::NoFrame );
 #endif
@@ -356,6 +358,8 @@ void FCToolboxBar::resetBackgroundColor()
 FCOutlookBar::FCOutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
 : FCToolBar(label, ApplicationWindow::Instance, w, false, name, f, "Cmdbar" )
 {
+  // remove immediately from main window again
+  ApplicationWindow::Instance->removeToolBar(this);
 #if QT_VERSION >= 300
 	setFrameStyle( QFrame::NoFrame );
 #endif

@@ -109,7 +109,7 @@ void FCDlgCustomToolbarsImp::apply()
   QString text = ComboToolbars->currentText();
   FCToolBar* toolbar = ApplicationWindow::Instance->GetCustomWidgetManager()->getToolBar(text.latin1());
 
-  FCTools::clearToolButtons(toolbar);
+  toolbar->clearAll();
   const QObjectList* children = toolbar->children ();
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();

@@ -123,10 +123,6 @@ ApplicationWindow::ApplicationWindow()
     // attach the console observer
 	GetConsole().AttacheObserver( new FCGuiConsoleObserver(this) );
 
-	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
-	CreateTestOperations();
-	//createCasCadeOperations();
-
 	// create the macro manager
 	_pcMacroMngr = new FCMacroManager();
 
@@ -165,12 +161,13 @@ ApplicationWindow::ApplicationWindow()
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
- 	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
+	AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
 
+ 	_pcWidgetMgr = new FCCustomWidgetManager(GetCommandManager(), _pcCmdBar);
+ 	CreateTestOperations();
 
-	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
-	//AddDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
-
+	
+	
 	// misc stuff
     resize( 800, 600 );
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
@@ -352,6 +349,9 @@ void ApplicationWindow::CreateTestOperations()
     defaultMenus.push_back("Std_Cut");
     defaultMenus.push_back("Std_Copy");
     defaultMenus.push_back("Std_Paste");
+    defaultMenus.push_back("Std_Undo");
+    defaultMenus.push_back("Std_Redo");
+    defaultMenus.push_back("Separator");
     _pcWidgetMgr->addPopupMenu("Edit", defaultMenus);
   
     defaultMenus.clear();

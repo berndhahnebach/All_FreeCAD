@@ -55,14 +55,41 @@ public:
 public slots:
 	void Activated ();
 	void Toggled   (bool); 
+  void setEnabled ( bool ) ;
 
 protected slots:
   void slotToolButtonToggled( bool on );
   void slotClearStatusText();
   void slotShowStatusText( const QString& text );
 
+protected:
+  std::vector<QWidget*> widgets;
+
 private:
 	FCCommand *_pcCmd;
+};
+
+/**
+ * @author Werner Mayer
+ */
+class GuiExport FCMultiAction : public FCAction
+{
+	Q_OBJECT
+public:
+	FCMultiAction ( FCCommand* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+	virtual ~FCMultiAction();
+
+	/// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
+	virtual bool addTo(QWidget *);
+  void setItems(const std::vector<std::string>& items);
+  void setName(const char* name);
+
+public slots:
+	void activated (int i);
+
+protected:
+  std::vector<std::string> mItems;
+  std::string mName;
 };
 
 /**
