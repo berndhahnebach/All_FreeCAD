@@ -290,7 +290,7 @@ PyObject *FCPyParameterGrp::PyGetGrp(PyObject *args)
 		// crate a python wrapper class
 		FCPyParameterGrp *pcParamGrp = new FCPyParameterGrp(handle);
 		// increment the reff count
-		pcParamGrp->_INCREF();
+		//pcParamGrp->_INCREF();
 		return pcParamGrp;
 	}else{
 		PyErr_SetString(PyExc_IOError, "GetGroup failed");

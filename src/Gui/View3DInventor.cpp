@@ -49,6 +49,7 @@
 #include "View3DInventor.h"
 #include "MouseModel.h"
 #include "Document.h"
+#include "../App/Label.h"
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"

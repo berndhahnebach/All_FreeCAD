@@ -108,6 +108,7 @@ def TestParameter():
             Temp.SetFloat(`l`,4711.4711)
             Temp.SetInt(`l`,4711)
             Temp.SetBool(`l`,1)
+    Temp = 0
     FreeCAD.PrintLog("\n")
     #check on special conditions
     TestPar = FreeCAD.ParamGet("System parameter:Test/44")
@@ -134,4 +135,9 @@ def TestParameter():
     TestPar.Clear()
 
 
+def TestParameterHeavy(i=10):
+    for l in range(i):
+        TestParameter()
+
+        
 

@@ -37,6 +37,7 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 #include "../App/Document.h"
+#include "../App/Label.h"
 #include "../App/Feature.h"
 #include "../App/Function.h"
 #include "../App/Parameter.h"

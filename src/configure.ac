@@ -1,4 +1,3 @@
-
 AC_INIT(FreeCAD,cvs,[Juergen Riegel],freecad)
 AM_INIT_AUTOMAKE([dist-bzip2 no-texinfo.tex])
 AM_CONFIG_HEADER([autoconfig.h])

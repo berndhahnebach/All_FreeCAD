@@ -25,8 +25,8 @@
 #include "../Base/PyExport.h"
 #include "../Base/Observer.h"
 #include <TDocStd_Document.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_ChildIterator.hxx>
+//#include <TDF_Label.hxx>
+//#include <TDF_ChildIterator.hxx>
 
 #include <map>
 #include <vector>
@@ -42,70 +42,9 @@
 
 
 class FCDocument;
-
-/** The OCC Label wrapper class
- *  This class wrapps the functionality of the TDFSdt_Label of OCC. 
- *  Its used for building up hirachy in a OCC document by representing
- *  Nodes and Leavs
- *  @see FCDocument
- */
-class AppExport FCLabel :public FCPyObject
-{
-	/** always start with Py_Header */
-	Py_Header;
-
-public:
+class FCLabel;
 
 
-	//---------------------------------------------------------------------
-	// construction / destruction +++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	/// Constructer 
-	FCLabel(const TDF_Label &hLabel,FCDocument *pcDocument, PyTypeObject *T = &Type);
-	/// for Construction in python 
-	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~FCLabel();
-
-
-	//---------------------------------------------------------------------
-	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-
-	/// Gets a child label
-	FCPyHandle<FCLabel> GetLabel(int);
-
-	/// Get all child labels
-	std::vector<FCPyHandle<FCLabel> > GetLabels(void);
-
-	/// return if the label has at least one child
-	bool HasChild(void){return _cLabel.HasChild()!=0;}
-
-	/// Gets the OCC Label
-	TDF_Label GetOCCLabel(void){return _cLabel;}
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	PyObject *_getattr(char *attr);				// __getattr__ function
-	// getter setter
-	int _setattr(char *attr, PyObject *value);	// __setattr__ function
-	// methods
-	PyObject *PyGetLabel(PyObject *args);	// Python wrapper
-	static PyObject *sPyGetLabel(PyObject *self, PyObject *args, PyObject *kwd){return ((FCLabel*)self)->PyGetLabel(args);};
-	PYFUNCDEF_D (FCLabel,PyHasChild);
-
-
-protected:
-
-	/// The OCC Label
-	TDF_Label _cLabel;
-	/// Pointer to the FCDocument where the label comes from 
-	FCDocument *_pcDocument;
-
-};
 
 /** transport the changes of the Document 
  *  This class transport closer information what was changed in a 

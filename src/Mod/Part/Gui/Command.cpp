@@ -23,6 +23,7 @@
 
 #include "../../../Base/Exception.h"
 #include "../../../App/Document.h"
+#include "../../../App/Label.h"
 #include "../../../Gui/Application.h"
 #include "../../../Gui/Command.h"
 #include "../../../Gui/Widgets.h"

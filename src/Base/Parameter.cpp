@@ -807,6 +807,11 @@ void FCParameterGrp::Clear(void)
 {
 	std::vector<DOMNode*> vecNodes;
 
+	// checking on references
+	std::map <std::string ,FCHandle<FCParameterGrp> >::iterator It1;
+	for(It1 = _GroupMap.begin();It1!=_GroupMap.end();It1++)
+		if(!(It1->second.IsLastRef()))
+			GetConsole().Warning("FCParameterGrp::Clear(): Group clear with active references");
 	// remove group handles
 	_GroupMap.clear();
 
@@ -817,9 +822,13 @@ void FCParameterGrp::Clear(void)
 	}
 
 	// deleting the nodes
+	DOMNode* pcTemp;
 	for(std::vector<DOMNode*>::iterator It=vecNodes.begin();It!=vecNodes.end();It++)
-		_pGroupNode->removeChild(*It);
-
+	{
+		pcTemp = _pGroupNode->removeChild(*It);
+		//delete pcTemp;
+		pcTemp->release();
+	}
 	// trigger observer
 	Notify(0);
 }

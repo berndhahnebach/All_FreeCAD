@@ -68,6 +68,15 @@ class TestDocCmd:
         return {'MenuText': 'Test Document',
                 'ToolTip' : 'Test the document (creation, save, load and destruction)'}
 
+class TestParameterHeavy:
+    "Document test commando object"
+    def Activated(self):
+        TestApp.TestParameterHeavy(100)
+
+    def GetResources(self):
+        return {'Heavy parameter test': 'Test parameter heavy',
+                'Test parameter very long' : 'Test parameter very long'}
+
 class TestBaseCmd:
     "Base test commando object"
     def Activated(self):
@@ -106,4 +115,5 @@ FreeCADGui.CommandAdd('Test_TestAll' ,TestAllCmd())
 FreeCADGui.CommandAdd('Test_TestDoc' ,TestDocCmd())
 FreeCADGui.CommandAdd('Test_TestBase',TestBaseCmd())
 FreeCADGui.CommandAdd('Test_TestWork',TestWorkbenchCmd())
+FreeCADGui.CommandAdd('Test_TestParameter',TestParameterHeavy())
 

@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "../App/Document.h"
+#include "../App/Label.h"
 #include "Tree.h"
 
 

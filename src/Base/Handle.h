@@ -182,7 +182,7 @@ public:
 	/// Test if this is the last Referenc
 	bool IsLastRef(void) const
 	{
-		if(_pHandels && _pHadels->GetReferenceCount()==1)
+		if(_pHandels && _pHandels->GetReferenceCount()==1)
 			return true;
 		return false;
 	}

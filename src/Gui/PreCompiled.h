@@ -113,6 +113,8 @@
 #include <Poly_Connect.hxx>
 #include <BRepBuilderAPI_NurbsConvert.hxx>
 
+// OCAF
+#include <TDF_Label.hxx>
 
 // extern inventor
 #include <Inventor/SbColor.h>
