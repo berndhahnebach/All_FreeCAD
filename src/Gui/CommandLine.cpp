@@ -48,6 +48,8 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
+using Base::Interpreter;
+
 ////////////////////////////////////////////////////////////////////
 
 FCConsoleValidator::FCConsoleValidator ( QWidget * parent, const char * name )
@@ -158,14 +160,14 @@ void FCCommandLine::slotLaunchCommand()
       if (cmd.lower().startsWith(it->c_str()))
       {
         cmd = cmd.right(cmd.length() - (it->length()+1));
-        GetInterpreter().LaunchFile(cmd.latin1());
+        Interpreter().LaunchFile(cmd.latin1());
         flag = true;
         break;
       }
     }
 
     if (!flag)
-      GetInterpreter().Launch(text(currentItem()).latin1());
+      Interpreter().Launch(text(currentItem()).latin1());
   }
   catch (const FCException& rclE)
   {

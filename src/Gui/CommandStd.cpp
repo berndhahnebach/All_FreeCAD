@@ -1310,7 +1310,7 @@ void FCCmdCommandLine::Activated(int iMsg)
 	qApp->processEvents();
 
 	GuiConsoleObserver::bMute = true;
-	GetInterpreter().RunCommandLine("Console mode");
+	Base::Interpreter().RunCommandLine("Console mode");
 	GuiConsoleObserver::bMute = mute;
 
 #ifdef Q_WS_X11

@@ -214,7 +214,7 @@ int main( int argc, char ** argv )
 				pcQApp->setMainWidget(mw);
 
 				// runing the Gui init script
-				GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
+				Interpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
 
 				// show the main window
 				Console().Log("Showing GUI Application...\n");
@@ -245,19 +245,19 @@ int main( int argc, char ** argv )
 		else if(mConfig["RunMode"] == "Cmd")
 		{
 			// Run the comandline interface
-			ret = GetInterpreter().RunCommandLine("Console mode");
+			ret = Interpreter().RunCommandLine("Console mode");
 		}
 		else if(mConfig["RunMode"] == "Script")
 		{
 			// run a script
 			Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-			GetInterpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
+			Interpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
 		}
 		else if(mConfig["RunMode"] == "Internal")
 		{
 			// run internal script
 			Console().Log("Running internal script:\n");
-			GetInterpreter().Launch(sScriptName);
+			Interpreter().Launch(sScriptName);
 		} else {
 
 			Console().Log("Unknown Run mode in main()?!?\n\n");
@@ -343,7 +343,7 @@ void Init(int argc, char ** argv )
 	puts(mConfig["SystemParameter"].c_str());
 
 	// init python
-	GetInterpreter();
+	Interpreter();
 
 	// Init console ===========================================================
 	Console().AttacheObserver(new FCCmdConsoleObserver());
@@ -391,7 +391,7 @@ void Init(int argc, char ** argv )
 #endif
 
 	// Start the python interpreter
-	FCInterpreter &rcInterperter = GetInterpreter();
+	FCInterpreter &rcInterperter = Interpreter();
 	rcInterperter.SetComLineArgs(argc,argv);
 
 	// checking on the plugin files of OpenCasCade

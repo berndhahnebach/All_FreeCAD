@@ -49,18 +49,18 @@ char format2[1024];  //Warning! Can't go over 512 characters!!!
 using namespace Base;
 
 
-FCInterpreter::FCInterpreter()
+InterpreterSingleton::InterpreterSingleton()
 {
 	Py_Initialize(); 
 }
 
-FCInterpreter::~FCInterpreter()
+InterpreterSingleton::~InterpreterSingleton()
 {
 
 }
 
 
-void FCInterpreter::Launch(const char *psCmd)
+void InterpreterSingleton::Launch(const char *psCmd)
 {
 	PyBuf Cmd(psCmd);
 
@@ -69,7 +69,7 @@ void FCInterpreter::Launch(const char *psCmd)
 	if(ret == -1) throw FCException("script failed");
 }
 
-void FCInterpreter::LaunchFile(const char*pxFileName)
+void InterpreterSingleton::LaunchFile(const char*pxFileName)
 {
 	PyBuf FileName(pxFileName);
 	
@@ -82,7 +82,7 @@ void FCInterpreter::LaunchFile(const char*pxFileName)
 
 }
 
-bool FCInterpreter::LoadModule(const char* psModName)
+bool InterpreterSingleton::LoadModule(const char* psModName)
 {
 	// buffer acrobatics
 	PyBuf ModName(psModName);
@@ -90,14 +90,14 @@ bool FCInterpreter::LoadModule(const char* psModName)
 
 	module = PP_Load_Module(ModName.str);
 
-	if(!module ) throw FCException("FCInterpreter::LoadModule(): Module not loaded!");
+	if(!module ) throw FCException("InterpreterSingleton::LoadModule(): Module not loaded!");
 
 	Py_XINCREF(module);
 
 	return true;
 }
 
-void FCInterpreter::RunFCCommand(const char * psCom,...)
+void InterpreterSingleton::RunFCCommand(const char * psCom,...)
 {
 	// va stuff
     va_list namelessVars;
@@ -114,29 +114,29 @@ void FCInterpreter::RunFCCommand(const char * psCom,...)
 
 // Singelton:
 
-FCInterpreter * FCInterpreter::_pcSingelton = 0;
+InterpreterSingleton * InterpreterSingleton::_pcSingelton = 0;
 
-FCInterpreter & FCInterpreter::Instance(void)
+InterpreterSingleton & InterpreterSingleton::Instance(void)
 {
 	// not initialized!
 	if(!_pcSingelton)
-		_pcSingelton = new FCInterpreter();
+		_pcSingelton = new InterpreterSingleton();
 	return *_pcSingelton;
 }
 
-void FCInterpreter::Destruct(void)
+void InterpreterSingleton::Destruct(void)
 {
 	// not initialized or doubel destruct!
 	assert(_pcSingelton);
 	delete _pcSingelton;
 }
 
-void FCInterpreter::SetComLineArgs(int argc,char *argv[])
+void InterpreterSingleton::SetComLineArgs(int argc,char *argv[])
 {
 	PySys_SetArgv(argc, argv);
 }
 
-int FCInterpreter::RunCommandLine(char *prompt)
+int InterpreterSingleton::RunCommandLine(char *prompt)
 {
 	return PP_Run_Command_Line(prompt);
 }
@@ -145,7 +145,7 @@ int FCInterpreter::RunCommandLine(char *prompt)
  *  Runs a member methode of an object with no parameter and no return value
  *  void (void). There are other methodes to run with returns
  */
-void FCInterpreter::RunMethodVoid(PyObject *pobject, const char *method)
+void InterpreterSingleton::RunMethodVoid(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	PyBuf Methode (method);
@@ -156,11 +156,11 @@ void FCInterpreter::RunMethodVoid(PyObject *pobject, const char *method)
 				     0,		       // so no return object
 					 "()")		   // no arguments
 					 != 0)
-		throw FCException("Error running FCInterpreter::RunMethodeVoid()");
+		throw FCException("Error running InterpreterSingleton::RunMethodeVoid()");
 
 }
 
-PyObject* FCInterpreter::RunMethodObject(PyObject *pobject, const char *method)
+PyObject* InterpreterSingleton::RunMethodObject(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	PyBuf Methode (method);
@@ -173,12 +173,12 @@ PyObject* FCInterpreter::RunMethodObject(PyObject *pobject, const char *method)
 				     &pcO,		   // return object
 					 "()")		   // no arguments
 					 != 0)
-		throw FCException("Error runing FCInterpreter::RunMethodeObject()");
+		throw FCException("Error runing InterpreterSingleton::RunMethodeObject()");
 	
 	return pcO;
 }
 
-void FCInterpreter::RunMethod(PyObject *pobject, const char *method,
+void InterpreterSingleton::RunMethod(PyObject *pobject, const char *method,
                               const char *resfmt,   void *cresult,        /* convert to c/c++ */
                               const char *argfmt,   ...  )                /* convert to python */
 {
@@ -189,13 +189,13 @@ void FCInterpreter::RunMethod(PyObject *pobject, const char *method,
 
     pmeth = PyObject_GetAttrString(pobject, cMethod.str);  
     if (pmeth == NULL)                             /* get callable object */
-        throw FCException("Error runing FCInterpreter::RunMethod() methode not defined");                                 /* bound method? has self */
+        throw FCException("Error runing InterpreterSingleton::RunMethod() methode not defined");                                 /* bound method? has self */
 
 	pargs = Py_VaBuildValue(cArgfmt.str, argslist);     /* args: c->python */
 
     if (pargs == NULL) {
         Py_DECREF(pmeth);
-        throw FCException("FCInterpreter::RunMethod() wrong arguments");
+        throw FCException("InterpreterSingleton::RunMethod() wrong arguments");
     }
     
 	presult = PyEval_CallObject(pmeth, pargs);   /* run interpreter */
@@ -205,12 +205,12 @@ void FCInterpreter::RunMethod(PyObject *pobject, const char *method,
 	if(PP_Convert_Result(presult, cResfmt.str, cresult)!= 0)
 	{
 		PyErr_Print();
-		throw FCException("Error runing FCInterpreter::RunMethod() exception in called methode");
+		throw FCException("Error runing InterpreterSingleton::RunMethod() exception in called methode");
 	}
 }
 
 
-void FCInterpreter::DbgObserveFile(const char* sFileName)
+void InterpreterSingleton::DbgObserveFile(const char* sFileName)
 {
 	if(sFileName)
 		_cDebugFileName = sFileName;
@@ -218,17 +218,17 @@ void FCInterpreter::DbgObserveFile(const char* sFileName)
 		_cDebugFileName = "";
 }
 
-void FCInterpreter::DbgSetBreakPoint(unsigned int uiLineNumber)
+void InterpreterSingleton::DbgSetBreakPoint(unsigned int uiLineNumber)
 {
 
 }
 
-void FCInterpreter::DbgUnsetBreakPoint(unsigned int uiLineNumber)
+void InterpreterSingleton::DbgUnsetBreakPoint(unsigned int uiLineNumber)
 {
 
 }
 
-void FCInterpreter::DbgStep(void)
+void InterpreterSingleton::DbgStep(void)
 {
 
 }

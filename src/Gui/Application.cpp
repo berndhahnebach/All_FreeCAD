@@ -133,6 +133,7 @@
 #include "GuiInitScript.h"
 
 using Base::Console;
+using Base::Interpreter;
 
 
 static ApplicationWindow* stApp;
@@ -854,7 +855,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 		PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
 		PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
-		GetInterpreter().RunMethodVoid(pcOldWorkbench, "Stop");
+		Interpreter().RunMethodVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
 	PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
@@ -872,7 +873,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	  d->_cActiveWorkbenchName = name;
 
 	  // running the start of the workbench object
-	  GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
+	  Interpreter().RunMethodVoid(pcWorkbench, "Start");
     d->_pcWidgetMgr->update(name);
 
 	  // update the Std_Workbench command and its action object
@@ -1170,7 +1171,7 @@ void ApplicationWindow::RunApplication(void)
 	_pcQApp->setMainWidget(mw);
 
 	// runing the Gui init script
-	GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
+	Interpreter().Launch(GetScriptFactory().ProduceScript("FreeCADGuiInit"));
 	// show the main window
 	Console().Log("Showing GUI Application...\n");
 	mw->Polish();

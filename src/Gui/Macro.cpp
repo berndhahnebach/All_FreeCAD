@@ -131,7 +131,7 @@ void FCMacroManager::AddLine(LineType Type,const char* sLine)
 
 void FCMacroManager::Run(MacroType eType,const char *sName)
 {
-	GetInterpreter().LaunchFile(sName);
+	Base::Interpreter().LaunchFile(sName);
 }
 
 

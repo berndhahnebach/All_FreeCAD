@@ -209,7 +209,7 @@ FCDocument* FCApplication::New(const char * Name)
 	// runing the start of the workbench object
 	if(Name)
 	{
-		GetInterpreter().RunMethodVoid(pcTemplate, "Start");
+		Interpreter().RunMethodVoid(pcTemplate, "Start");
 	}*/
 
 	// trigger Observers (open windows and so on)
@@ -681,7 +681,7 @@ void FCApplication::InitConfig(int argc, char ** argv, const char * sHomePath )
 
 	DBGTRY
 		// init python
-		GetInterpreter().SetComLineArgs(argc,argv);
+		Interpreter().SetComLineArgs(argc,argv);
 	DBGCATCH(puts("error init Interpreter\n");exit(1);)
 
 	DBGTRY
@@ -766,7 +766,7 @@ void FCApplication::InitApplication(void)
 
 
 	// starting the init script
-	GetInterpreter().Launch(GetScriptFactory().ProduceScript("FreeCADInit"));
+	Interpreter().Launch(GetScriptFactory().ProduceScript("FreeCADInit"));
 
 
 }
@@ -778,21 +778,21 @@ void FCApplication::RunApplication()
 	if(mConfig["RunMode"] == "Cmd")
 	{
 		// Run the comandline interface
-		GetInterpreter().RunCommandLine("Console mode");
+		Interpreter().RunCommandLine("Console mode");
 	}
 	else if(mConfig["RunMode"] == "Script")
 	{
 		// run a script
 		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-		GetInterpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
+		Interpreter().LaunchFile(mConfig["ScriptFileName"].c_str());
 	}
 	else if(mConfig["RunMode"] == "Internal")
 	{
 		// run internal script
 		Console().Log("Running internal script:\n");
-		GetInterpreter().Launch(GetScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
+		Interpreter().Launch(GetScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
 
-		//!!! GetInterpreter().Launch(sScriptName);
+		//!!! Interpreter().Launch(sScriptName);
 	} else {
 
 		Console().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());

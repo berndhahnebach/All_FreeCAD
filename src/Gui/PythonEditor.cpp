@@ -157,7 +157,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 					// launch the command now
 					GuiConsoleObserver::bMute = true;
 					if (!cmd.isEmpty())
-					GetInterpreter().Launch(cmd.latin1());
+						Base::Interpreter().Launch(cmd.latin1());
 				}
 				catch (const FCException& exc)
 				{

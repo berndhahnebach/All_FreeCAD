@@ -40,6 +40,8 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 
+using Base::Interpreter;
+
 //===========================================================================
 // FCAction 
 //===========================================================================
@@ -539,7 +541,7 @@ void FCCommand::DoCommand(DoCmd_Type eType,const char* sCmd,...)
 		GetAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Gui,format);
 	else
 		GetAppWnd()->GetMacroMngr()->AddLine(FCMacroManager::Base,format);
-	GetInterpreter().RunFCCommand(format);
+	Interpreter().RunFCCommand(format);
 
 	free (format);
 
@@ -727,7 +729,7 @@ FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
 	Py_INCREF(_pcPyCommand);
 
 	// call the methode "GetResources()" of the command object
-	_pcPyResourceDict = GetInterpreter().RunMethodObject(_pcPyCommand, "GetResources");
+	_pcPyResourceDict = Interpreter().RunMethodObject(_pcPyCommand, "GetResources");
 	// check if the "GetResources()" methode returns a Dict object
 	if(! PyDict_Check(_pcPyResourceDict) )
 		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
@@ -755,7 +757,7 @@ std::string FCPythonCommand::GetResource(const char* sName)
 void FCPythonCommand::Activated(int iMsg)
 {
 	try{
-		GetInterpreter().RunMethodVoid(_pcPyCommand, "Activated");
+		Interpreter().RunMethodVoid(_pcPyCommand, "Activated");
 	}catch (FCException e){
 		Base::Console().Error("Running the python command %s faild,try to resume",sName.c_str());
 	}
@@ -770,7 +772,7 @@ std::string FCPythonCommand::CmdHelpURL(void)
 {
 	PyObject* pcTemp;
 
-	pcTemp = GetInterpreter().RunMethodObject(_pcPyCommand, "CmdHelpURL"); 
+	pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpURL"); 
 
 	if(! pcTemp ) 
 		return std::string();
@@ -784,7 +786,7 @@ void FCPythonCommand::CmdHelpPage(std::string &rcHelpPage)
 {
 	PyObject* pcTemp;
 
-	pcTemp = GetInterpreter().RunMethodObject(_pcPyCommand, "CmdHelpPage"); 
+	pcTemp = Interpreter().RunMethodObject(_pcPyCommand, "CmdHelpPage"); 
 
 	if(! pcTemp ) 
 		return ;

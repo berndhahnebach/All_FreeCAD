@@ -8,8 +8,8 @@ import os,sys,string
 help1 = """
 FreeCAD Build Tool
 Usage:
-   fcbt <module name> [module parameter]
-possible modules are:
+   fcbt <command name> [command parameter]
+possible commands are:
  - DistSrc         (DS)   Build a source Distr. of the aktuall source tree
  - DistBin         (DB)   Build a binary Distr. of the aktuall source tree
  - DistSetup       (DI)   Build a Setup Distr. of the aktuall source tree
@@ -19,13 +19,13 @@ possible modules are:
  - CreateModule    (CM)   Insert a new FreeCAD Module in the module directory
 
 For help on the modules type:
-  fcbt <module name> ?
+  fcbt <command name> ?
 
-Input Command:
 """
 
 if(len(sys.argv) < 2):
 	sys.stdout.write(help1)
+	sys.stdout.write("Insert command: ")
 	CmdRaw = sys.stdin.readline()[:-1]
 else:
 	CmdRaw = sys.argv[1]
@@ -47,6 +47,8 @@ elif Cmd == "builddoc" or Cmd == "bd":
 	import fcbt.BuildDoc
 elif Cmd == "nextbuildnumber" or Cmd == "nbn":
 	import fcbt.NextBuildNumber
+elif Cmd == "?" or Cmd == "help" or Cmd == "/h" or Cmd == "/?" or Cmd == "-h" or Cmd == "-help":
+	sys.stdout.write(help1)
 else:
 	print CmdRaw + " is an unknown command!\n"
 	sys.exit(1)

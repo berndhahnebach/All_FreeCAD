@@ -39,33 +39,76 @@
 #endif // (re-)defined in pyconfig.h
 #include <Python.h>
 #include <string>
+#include <vector>
 // Std. configurations
 
 
+namespace Base {
 
-class BaseExport FCInterpreter
+	using std::string;
+	using std::vector;
+
+/** The Interpreter class
+ *  This class manage the python interpreter and hold a lot 
+ *  helper functions for handling python stuff
+ */
+class BaseExport InterpreterSingleton
 {
 public:
-	FCInterpreter();
-	~FCInterpreter();
+	InterpreterSingleton();
+	~InterpreterSingleton();
 
+	/** @name execution methodes
+	 */
+	//@{
+	/// Run a statement on the python interpreter
 	void Launch(const char *psCmd);
+	/// Run file (script) on the python interpreter
 	void LaunchFile(const char*pxFileName);
-	bool LoadModule(const char* psModName);
-
+	/// Run a statement with arguments on the python interpreter
 	void RunFCCommand(const char * psCom,...);
-
-//	void Register(FCPythonExport *pcPyExporter);
-	void SetComLineArgs(int argc,char *argv[]);
-	int  RunCommandLine(char *prompt);
 	/// runs a python object methode with no return value and no arguments
 	void RunMethodVoid(PyObject *pobject, const char *method);
 	/// runs a python object methode which returns a arbetrary object
 	PyObject* RunMethodObject(PyObject *pobject, const char *method);
+	/// runs a python methode with arbitrary params
 	void RunMethod(PyObject *pobject, const char *method,
                    const char *resfmt=0,   void *cresult=0,   
                    const char *argfmt="()",   ...  );
+	//@}
 
+	/** @name Module handling
+	 */
+	//@{
+	/* Loads a module
+	 */
+	bool LoadModule(const char* psModName);
+	//@}
+
+
+//	void Register(FCPythonExport *pcPyExporter);
+
+	/** @name startup and singletons
+	 */
+	//@{
+	void SetComLineArgs(int argc,char *argv[]);
+	int  RunCommandLine(char *prompt);
+	static InterpreterSingleton &Instance(void);
+	static void Destruct(void);
+//	static void Init(void);
+	//@}
+
+	/** @name object, mthode and attribute query
+	 *  This methodes are used for code completion facility
+	 */
+	//@{
+	/// returns a list of methods providet by the specified object
+	vector<string> GetMethodesList(const char *){return vector<string>(); }
+	/// returns a list of attributes providet by the specified object
+	vector<string> GetAttributeList(const char *){return vector<string>(); }
+	//@}
+
+	
 	/** @name methodes for debuging facility
 	 */
 	//@{
@@ -79,26 +122,28 @@ public:
 	void DbgStep(void);
 	//@}
 
-	// singelton
-	static FCInterpreter &Instance(void);
-	static void Destruct(void);
-//	static void Init(void);
 
 protected:
 
 	// singelton
-	static FCInterpreter *_pcSingelton;
-	friend FCInterpreter &GetInterpreter(void);
+	static InterpreterSingleton *_pcSingelton;
+	friend InterpreterSingleton &GetInterpreter(void);
 	
 	std::string _cDebugFileName;
 	
 };
 
 
-inline FCInterpreter &GetInterpreter(void)
+/** Access to the InterpreterSingleton object
+ *  This method is used to gain access to the one and only instance of 
+ *  the InterpreterSingleton class.
+ */  
+inline InterpreterSingleton &Interpreter(void)
 {
-	return FCInterpreter::Instance();
+	return InterpreterSingleton::Instance();
 }
 
+
+} //namespace Base 
 
 #endif

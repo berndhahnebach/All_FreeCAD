@@ -73,14 +73,14 @@ public:
  *  Messages are distributed with the FCConsoleObserver. The
  *  FCConsole class itself makes no IO, it's more like a manager.
  *  \par
- *  FCConsole is a singelton! That means you can access the only
+ *  ConsoleSingelton is a singelton! That means you can access the only
  *  instance of the class from every where in c++ by simply using:
  *  \code
  *  #include <Base/Console.h>
- *  GetConsole().Log("Stage: %d",i);
+ *  Base::Console().Log("Stage: %d",i);
  *  \endcode
  *  \par
- *  FCConsole is abel to switch between several modes to, e.g. switch
+ *  ConsoleSingelton is abel to switch between several modes to, e.g. switch
  *  the logging on or off, or treat Warnings as Errors, and so on...
  *  @see ConsoleObserver
  */
@@ -152,7 +152,8 @@ private:
 };
 
 /** Access to the Console
- *  
+ *  This method is used to gain access to the one and only instance of 
+ *  the ConsoleSingelton class.
  */  
 inline ConsoleSingelton &Console(void){
 	return ConsoleSingelton::Instance();
