@@ -225,7 +225,7 @@ std::string DlgPreferencesImp::getGroupName() const
 
 std::string DlgPreferencesImp::getPageName() const
 {
-  return m_pCurTab->tabLabel(m_pCurTab->currentPage());
+  return std::string(m_pCurTab->tabLabel(m_pCurTab->currentPage()).latin1());
 }
 
 void DlgPreferencesImp::connectWidget(QWidget* page) const

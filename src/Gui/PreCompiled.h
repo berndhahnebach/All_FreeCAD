@@ -134,7 +134,7 @@
 #include <qworkspace.h>
 #include <qtextbrowser.h> 
 #include <qurl.h>
-
+#include <qinputdialog.h>
 
 
 // help system

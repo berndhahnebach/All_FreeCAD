@@ -37,7 +37,6 @@
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
-#ifndef _PreComp_
 #include "PreCompiled.h"
 
 #ifndef _PreComp_

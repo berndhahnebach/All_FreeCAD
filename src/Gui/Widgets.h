@@ -40,6 +40,7 @@
 #include <qdialog.h>
 #if QT_VERSION > 230
 # include <qlistview.h>
+# include <qlineedit.h>
 #endif
 
 class QHBoxLayout; 
@@ -197,6 +198,35 @@ class FCAccelLineEdit : public QLineEdit
 
   protected:
      void keyPressEvent ( QKeyEvent * e);
+};
+
+/**
+ *  Check list
+ */
+class FCCheckListDlg : public QDialog
+{ 
+    Q_OBJECT
+
+  public:
+    FCCheckListDlg( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~FCCheckListDlg();
+
+    void setItems(const std::vector<std::string>& items);
+    std::vector<int> getCheckedItems(); 
+    void show ();
+    void hide ();
+
+  protected:
+    std::vector<std::string> items;
+    std::vector<int> checked;
+
+    QPushButton* buttonOk;
+    QPushButton* buttonCancel;
+    QGroupBox* GroupBox1;
+    QListView* ListView;
+    QGridLayout* FCCheckListDlgLayout;
+    QHBoxLayout* Layout2;
+    QGridLayout* GroupBox1Layout;
 };
 
 #endif // __FC_WIDGETS_H__

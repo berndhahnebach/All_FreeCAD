@@ -388,6 +388,7 @@ void FCCmdView::slotSelectionChanged(QIconViewItem * item)
 
 QDragObject * FCCmdView::dragObject ()
 {
+  FCActionDrag::actions.clear();
   if ( !currentItem() )
       return 0;
 
@@ -550,6 +551,113 @@ void FCAccelLineEdit::keyPressEvent ( QKeyEvent * e)
       setText(txt);
 			break;
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+/* 
+ *  Constructs a FCCheckListDlg which is a child of 'parent', with the 
+ *  name 'name' and widget flags set to 'f' 
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
+FCCheckListDlg::FCCheckListDlg( QWidget* parent,  const char* name, bool modal, WFlags fl )
+    : QDialog( parent, name, modal, fl )
+{
+    if ( !name )
+	setName( "FCCheckListDlg" );
+    resize( 402, 270 ); 
+    setProperty( "caption", tr( "MyDialog" ) );
+    setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
+    FCCheckListDlgLayout = new QGridLayout( this ); 
+    FCCheckListDlgLayout->setSpacing( 6 );
+    FCCheckListDlgLayout->setMargin( 11 );
+
+    Layout2 = new QHBoxLayout; 
+    Layout2->setSpacing( 6 );
+    Layout2->setMargin( 0 );
+
+    buttonOk = new QPushButton( this, "buttonOk" );
+    buttonOk->setProperty( "text", tr( "&OK" ) );
+    buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+    buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
+    Layout2->addWidget( buttonOk );
+    QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    Layout2->addItem( spacer );
+
+    buttonCancel = new QPushButton( this, "buttonCancel" );
+    buttonCancel->setProperty( "text", tr( "&Cancel" ) );
+    buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+    Layout2->addWidget( buttonCancel );
+
+    FCCheckListDlgLayout->addLayout( Layout2, 1, 0 );
+
+    GroupBox1 = new QGroupBox( this, "GroupBox1" );
+    GroupBox1->setColumnLayout(0, Qt::Vertical );
+    GroupBox1->layout()->setSpacing( 0 );
+    GroupBox1->layout()->setMargin( 0 );
+    GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
+    GroupBox1Layout->setAlignment( Qt::AlignTop );
+    GroupBox1Layout->setSpacing( 6 );
+    GroupBox1Layout->setMargin( 11 );
+
+    ListView = new QListView( GroupBox1, "ListView" );
+    ListView->addColumn( "Items" );
+    ListView->setRootIsDecorated( TRUE );
+
+    GroupBox1Layout->addWidget( ListView, 0, 0 );
+
+    FCCheckListDlgLayout->addWidget( GroupBox1, 0, 0 );
+
+    // signals and slots connections
+    connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
+    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+FCCheckListDlg::~FCCheckListDlg()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
+void FCCheckListDlg::setItems(const std::vector<std::string>& items)
+{
+  this->items = items;
+}
+
+std::vector<int> FCCheckListDlg::getCheckedItems()
+{
+  return checked;
+}
+
+void FCCheckListDlg::show ()
+{
+  QListViewItem *item = 0;
+  for (std::vector<std::string>::iterator it = items.begin(); it!=items.end(); ++it)
+  {
+    (void)new QCheckListItem( ListView, it->c_str(), QCheckListItem::CheckBox );
+  }
+
+  QDialog::show();
+}
+
+void FCCheckListDlg::hide ()
+{
+  int pos = 0;
+  QListViewItemIterator it = ListView->firstChild();
+
+  for ( ; it.current(); it++, pos++ ) 
+  {
+    if ( ((QCheckListItem*)it.current())->isOn() ) 
+    {
+      checked.push_back(pos);
+	  }
+  }
+
+  QDialog::hide();
 }
 
 #include "moc_Widgets.cpp"

@@ -35,7 +35,7 @@
 #	include <qiconview.h> 
 #	include <qfiledialog.h>
 #	include <qcombobox.h>
-#       include <Python.h>
+# include <Python.h>
 #endif
 
 #include "DlgCommandsImp.h"
@@ -94,10 +94,9 @@ void FCDlgCustomCommandsImp::apply()
 
 void FCDlgCustomCommandsImp::cancel()
 {
-  QString wb = ApplicationWindow::Instance->GetActiveWorkbench();
   if (ApplicationWindow::Instance->GetCustomWidgetManager() != NULL)
   {
-    ApplicationWindow::Instance->GetCustomWidgetManager()->update(wb.latin1());
+    ApplicationWindow::Instance->GetCustomWidgetManager()->update();
   }
 }
 

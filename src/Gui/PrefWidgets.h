@@ -310,6 +310,7 @@ class FCCustomWidget : public FCWidgetPrefs
     void setItems(const std::vector<std::string>& items);
     void loadXML();
     void saveXML();
+    virtual void update(FCCommandManager& rclMgr) = 0;
     QString getWorkbench();
     virtual ~FCCustomWidget();
 
@@ -335,6 +336,7 @@ class FCToolBar : public QToolBar, public FCCustomWidget
     FCToolBar ( QMainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
     virtual ~FCToolBar();
     virtual void clearAll();
+    void update(FCCommandManager& rclMgr);
 
   public:
     static bool isAllowed(QWidget* w);
@@ -356,6 +358,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
   public:
     FCPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
     virtual ~FCPopupMenu();
+    void update(FCCommandManager& rclMgr);
 
   protected:
     void dropEvent ( QDropEvent * );
@@ -376,21 +379,25 @@ class FCCustomWidgetManager
 
     bool init(const char* workbench);
     bool update(const char* workbench);
+    bool update();
 
     // toolbars
     FCToolBar* getToolBar(const char* name);
     std::vector<FCToolBar*> getToolBars();
     void delToolBar(const char* name);
+    int countToolBars();
 
     // command bars
     FCToolBar* getCmdBar(const char* name);
     std::vector<FCToolBar*> getCmdBars();
     void delCmdBar(const char* name);
+    int countCmdBars();
 
     // menus
     FCPopupMenu* getPopupMenu(const char* name, const char* parent = 0);
     std::vector<FCPopupMenu*> getPopupMenus();
     void delPopupMenu(const char* name);
+    int countPopupMenus();
 
     // dockable windows
     FCWindow* getDockWindow(const char* name);
