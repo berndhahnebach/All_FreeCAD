@@ -32,6 +32,9 @@
 #include <stack>
 #include <queue>
 
+// Xerces
+#include <xercesc/util/XercesDefs.hpp>
+
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
 
@@ -157,7 +160,7 @@
 #include <limits.h>
 
 
-// Q Toolkit
+// Qt Toolkit
 #include <qaccel.h>
 #include <qaction.h>
 #include <qapplication.h>
@@ -200,6 +203,7 @@
 #include <qpixmap.h>
 #include <qpopupmenu.h>
 #include <qprinter.h>
+#include <qprocess.h>
 #include <qprogressbar.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -213,6 +217,7 @@
 #include <qsplitter.h>
 #include <qstatusbar.h>
 #include <qstyle.h>
+#include <qstylefactory.h>
 #include <qstylesheet.h>
 #include <qsyntaxhighlighter.h>
 #include <qtabbar.h>
@@ -234,22 +239,9 @@
 #include <qvbox.h>
 #include <qwhatsthis.h>
 #include <qwidget.h>
+#include <qwidgetfactory.h>
 #include <qwidgetstack.h>
 #include <qworkspace.h>
-#if QT_VERSION > 300
-# include <qprocess.h>
-# include <qstylefactory.h>
-#endif
-
-
-#ifdef FC_OS_WIN32
-# include <qcdestyle.h>
-# include <qmotifplusstyle.h>
-# include <qmotifstyle.h>
-# include <qwindowsstyle.h>
-# include <qsgistyle.h>
-# include <qplatinumstyle.h>
-#endif
 
 #endif //_PreComp_
 

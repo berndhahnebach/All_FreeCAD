@@ -3,7 +3,9 @@ lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
 	InitScript.h \
-	TestScript.h
+	TestScript.h \
+  Plugin.h \
+  Standard.h
 
 libFreeCADApp_la_SOURCES=\
 		Application.h \
@@ -35,6 +37,12 @@ libFreeCADApp_la_SOURCES=\
 		Topology.cpp
 
 %Script.h: FreeCAD%.py
+	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+
+Standard.h: Standard
+	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+
+Plugin.h: Plugin
 	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
 
 # the library search path.

@@ -55,20 +55,16 @@
 #include <map>
 #include <vector>
 
-
-#ifdef FC_OS_LINUX
-#ifndef xercesc
-# define xercesc xercesc_2_4
-#endif
+#ifndef _PreComp_
+# include <xercesc/util/XercesDefs.hpp>
 #endif
 
-	namespace xercesc{
-		class DOMNode;
-		class DOMElement;
-		class DOMDocument;
-	}
 
-
+XERCES_CPP_NAMESPACE_BEGIN
+	class DOMNode;
+	class DOMElement;
+	class DOMDocument;
+XERCES_CPP_NAMESPACE_END
 
 
 
@@ -201,13 +197,13 @@ public:
 
 protected:
 	/// constructor is protected (handle concept)
-	FCParameterGrp(xercesc::DOMElement *GroupNode=0L,const char* sName=0L);
+	FCParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode=0L,const char* sName=0L);
 	/// destructor is protected (handle concept)
 	~FCParameterGrp();
 	/// helper function for GetGroup
 	FCHandle<FCParameterGrp> _GetGroup(const char* Name);
 
-	xercesc::DOMElement *FindNextElement(xercesc::DOMNode *Prev, const char* Type);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type);
 
 	/** Find an element specified by Type and Name
 	 *  Search in the parent element Start for the first occourrence of an
@@ -215,18 +211,18 @@ protected:
 	 *  the pointer to that element, otherwise NULL
 	 *  If the names not given he returns the first occourence fo Type.
 	 */
-	xercesc::DOMElement *FindElement(xercesc::DOMElement *Start, const char* Type, const char* Name=0L);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name=0L);
 
 	/** Find an element specified by Type and Name or create it if not found
 	 *  Search in the parent element Start for the first occourrence of an
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
-	xercesc::DOMElement *FCParameterGrp::FindOrCreateElement(xercesc::DOMElement *Start, const char* Type, const char* Name);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FCParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name);
 
 
 	/// DOM Node of the Base node of this group
-	xercesc::DOMElement *_pGroupNode;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *_pGroupNode;
 	/// the own name
 	std::string _cName;
 	/// map of already exported groups
@@ -259,7 +255,7 @@ public:
 
 private:
 
-xercesc::DOMDocument   *_pDocument;
+XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument   *_pDocument;
 
 	bool          gDoNamespaces         ;
 	bool          gDoSchema             ;

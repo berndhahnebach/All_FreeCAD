@@ -30,6 +30,10 @@
  ***************************************************************************/
 #include "../Config.h"
 
+#ifdef _PreComp_
+# undef _PreComp_
+#endif
+
 #ifdef FC_LINUX
 #	include <autoconfig.h>
 #	include <unistd.h>

@@ -77,12 +77,12 @@
 #include "Console.h"
 
 
-#ifdef XERCES_HAS_CPP_NAMESPACE
-	using namespace xercesc;
-#endif
+//#ifdef XERCES_HAS_CPP_NAMESPACE
+//	using namespace xercesc;
+//#endif
 
+XERCES_CPP_NAMESPACE_USE
 using namespace Base;
-using namespace xercesc;
 
 //**************************************************************************
 //**************************************************************************
@@ -183,7 +183,7 @@ public:
     //@{
 
 	/** @ interface from DOMWriterFilter */
-	virtual short acceptNode(const xercesc::DOMNode*) const;
+	virtual short acceptNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode*) const;
     //@{
 
 	virtual unsigned long getWhatToShow() const {return fWhatToShow;};
@@ -276,7 +276,7 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 /** Defauld construction
   * Does not much 
   */
-FCParameterGrp::FCParameterGrp(xercesc::DOMElement *GroupNode,const char* sName)	
+FCParameterGrp::FCParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode,const char* sName)	
 	: FCHandled(), FCSubject<const char*>(),_pGroupNode(GroupNode)
 {
 	if(sName) _cName=sName;
@@ -630,7 +630,7 @@ void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (!pcElem2)
     {
-		xercesc::DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
 		DOMText *pText = pDocument->createTextNode(XStr(sValue).unicodeForm());
 		pcElem->appendChild(pText);
 	}else{
@@ -897,7 +897,7 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 
 	if(!pcElem)
 	{
-		xercesc::DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
 
 		pcElem = pDocument->createElement(XStr(Type).unicodeForm());
 		pcElem-> setAttribute(XStr("Name").unicodeForm(), XStr(Name).unicodeForm());

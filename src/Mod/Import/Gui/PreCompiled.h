@@ -30,6 +30,10 @@
 #ifndef FC_OS_WIN32
 #	include <windows.h>
 #endif
+
+// Xerces
+#include <xercesc/util/XercesDefs.hpp>
+
 // OpenCasCade Base
 #include <Standard_Failure.hxx>
 

@@ -137,7 +137,9 @@ lib_LTLIBRARIES = libFreeCADApp.la
 
 BUILT_SOURCES = \
 	InitScript.h \
-	TestScript.h
+	TestScript.h \
+  Plugin.h \
+  Standard.h
 
 
 libFreeCADApp_la_SOURCES = \
@@ -525,6 +527,12 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 
 
 %Script.h: FreeCAD%.py
+	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+
+Standard.h: Standard
+	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
+
+Plugin.h: Plugin
 	$(PYTHON) ../Tools/PythonToCPP.py $(<F) $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

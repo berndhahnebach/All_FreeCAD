@@ -23,6 +23,8 @@
 #include <list>
 #include <set>
 
+// Xerces
+#include <xercesc/util/XercesDefs.hpp>
 
 // OpenCasCade =====================================================================================
 // Base

@@ -122,6 +122,8 @@
 
 //#include <TDataStd_Reference.hxx>
 
+#include <xercesc/util/XercesDefs.hpp>
+
 
 #endif //_PreComp_
 
