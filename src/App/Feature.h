@@ -36,12 +36,12 @@
 
 class TFunction_Logbook;
 class PyObjectBase;
-class FeaturePy;
 class TopoDS_Shape;
 
 namespace App
 {
 
+class FeaturePy;
 class Property;
 class Document;
 
