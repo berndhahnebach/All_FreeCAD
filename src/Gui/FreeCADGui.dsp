@@ -147,6 +147,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgCustomizeImpl.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -324,6 +325,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgMacroExecuteImp.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -412,6 +414,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgMacroRecordImp.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -500,6 +503,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgParameterImp.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -588,6 +592,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\DlgPreferencesImp.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -704,6 +709,7 @@ SOURCE=.\CommandStd.cpp
 # Begin Source File
 
 SOURCE=.\CommandView.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # End Group
 # Begin Group "Dock windows"
@@ -712,6 +718,7 @@ SOURCE=.\CommandView.cpp
 # Begin Source File
 
 SOURCE=.\ButtonGroup.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -747,6 +754,7 @@ InputName=ButtonGroup
 # Begin Source File
 
 SOURCE=.\HtmlView.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -819,6 +827,7 @@ InputName=Application
 # Begin Source File
 
 SOURCE=.\CommandLine.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -854,6 +863,7 @@ InputName=CommandLine
 # Begin Source File
 
 SOURCE=.\DllMain.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -925,6 +935,7 @@ SOURCE=.\PreCompiled.h
 # Begin Source File
 
 SOURCE=.\Splashscreen.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1077,6 +1088,7 @@ InputName=View3D
 # Begin Source File
 
 SOURCE=.\Widgets.cpp
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
@@ -1112,6 +1124,7 @@ InputName=Widgets
 # Begin Source File
 
 SOURCE=.\Window.cxx
+# ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
