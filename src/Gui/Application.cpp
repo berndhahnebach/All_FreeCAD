@@ -102,7 +102,7 @@ ApplicationWindow::ApplicationWindow()
 
 	setCaption( "FreeCAD" );
 
-	_cActiveWorkbenchName="";
+	_cActiveWorkbenchName="<none>";
 
 	// start thread which observes the application and 
 	// sets/unsets the waiting cursor if necessary

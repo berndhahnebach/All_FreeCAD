@@ -61,7 +61,10 @@
 // here the implemataion! description should take place in the header file!
 FCObserver::FCObserver(){}
 
-FCObserver::~FCObserver(){}
+FCObserver::~FCObserver()
+{
+
+}
 
 
 
@@ -79,7 +82,12 @@ FCObserver::~FCObserver(){}
 FCSubject::FCSubject(){}
 
 
-FCSubject::~FCSubject(){}
+FCSubject::~FCSubject()
+{
+	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+        (*Iter)->OnDestroy(*this);   // send OnChange-signal
+
+}
 
 //**************************************************************************
 // Subject methodes

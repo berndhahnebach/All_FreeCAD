@@ -150,6 +150,15 @@ public:
 
 	std::string GetASCII(const char* Name, const char * pPreset=NULL);
 
+	void Clear(void);
+
+	void RemoveGrp(const char* Name);
+	void RemoveASCII(const char* Name);
+	void RemoveBlob(const char* Name);
+	void RemoveFloat(const char* Name);
+	void RemoveInt(const char* Name);
+	void RemoveBool(const char* Name);
+
 	/** Return all string elements in this group as a vector of strings
 	 *  Its also possible to set a filter criteria.
 	 *  @param sFilter only strings which name includes sFilter are put in the vector
@@ -288,6 +297,13 @@ public:
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetFloat);
 	PYFUNCDEF_D (FCPyParameterGrp,PySetString);
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetString);
+
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemGrp);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemBool);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemInt);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemFloat);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemString);
+	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
 
 protected:
 

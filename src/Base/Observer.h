@@ -74,6 +74,12 @@ public:
 	 */
 	virtual void OnChange(FCSubject &rCaller)=0;
 
+	/**
+	 * This method need to be reimplemented from the concrete Observer
+	 * and get called by the observed class
+	 * @param pCaller a referenc to the calling object
+	 */
+	virtual void OnDestroy(FCSubject &rCaller){}
 };
 
 /** Subject class

@@ -207,6 +207,8 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCBool",Name);
 	// and set the vaue
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(bValue?"1":"0").unicodeForm());
+	// trigger observer
+	Notify();
 }
 
 std::vector<bool> FCParameterGrp::GetBools(const char * sFilter)
@@ -275,6 +277,8 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	// and set the vaue
 	sprintf(cBuf,"%d",lValue);
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
+	// trigger observer
+	Notify();
 }
 
 std::vector<long> FCParameterGrp::GetInts(const char * sFilter)
@@ -337,6 +341,8 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	// and set the value
 	sprintf(cBuf,"%f",dValue);
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
+	// trigger observer
+	Notify();
 }
 
 std::vector<double> FCParameterGrp::GetFloats(const char * sFilter)
@@ -409,6 +415,9 @@ void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
 	}else{
 		pcElem2->setNodeValue(XStr(sValue).unicodeForm());
 	}
+	// trigger observer
+	Notify();
+
 }
 
 void FCParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
@@ -489,6 +498,117 @@ std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilt
 
 	return vrValues;
 }
+
+//**************************************************************************
+// Access methodes
+
+void FCParameterGrp::RemoveGrp(const char* Name)
+{
+	// remove group handle
+	_GroupMap.erase(Name);
+
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCGrp",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+	// trigger observer
+	Notify();
+}
+
+void FCParameterGrp::RemoveASCII(const char* Name)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+	// trigger observer
+	Notify();
+
+}
+
+void FCParameterGrp::RemoveBool(const char* Name)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCBool",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+
+	// trigger observer
+	Notify();
+}
+
+void FCParameterGrp::RemoveBlob(const char* Name)
+{
+	/* not implemented yet
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCGrp",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+*/
+}
+
+void FCParameterGrp::RemoveFloat(const char* Name)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCFloat",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+
+	// trigger observer
+	Notify();
+}
+
+void FCParameterGrp::RemoveInt(const char* Name)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCInt",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+
+	// trigger observer
+	Notify();
+}
+
+void FCParameterGrp::Clear(void)
+{
+	std::vector<DOMNode*> vecNodes;
+
+	// remove group handles
+	_GroupMap.clear();
+
+	// searching all nodes
+	for (DOMNode *clChild = _pGroupNode->getFirstChild(); clChild != 0;  clChild = clChild->getNextSibling())
+	{
+		vecNodes.push_back(clChild);
+	}
+
+	// deleting the nodes
+	for(std::vector<DOMNode*>::iterator It=vecNodes.begin();It!=vecNodes.end();It++)
+		_pGroupNode->removeChild(*It);
+
+	// trigger observer
+	Notify();
+}
+
+
 
 
 //**************************************************************************
@@ -906,6 +1026,13 @@ PyMethodDef FCPyParameterGrp::Methods[] = {
   {"SetString",        (PyCFunction) sPySetString,       Py_NEWARGS},
   {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS},
 
+  {"RemGroup",         (PyCFunction) sPyRemGrp,          Py_NEWARGS},
+  {"RemBool",          (PyCFunction) sPyRemBool,         Py_NEWARGS},
+  {"RemInt",           (PyCFunction) sPyRemInt,          Py_NEWARGS},
+  {"RemFloat",         (PyCFunction) sPyRemFloat,        Py_NEWARGS},
+  {"RemString",        (PyCFunction) sPyRemString,       Py_NEWARGS},
+  {"Clear",            (PyCFunction) sPyClear,           Py_NEWARGS},
+
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -1100,7 +1227,60 @@ PyObject *FCPyParameterGrp::PyGetString(PyObject *args)
 	return Py_BuildValue("s",_cParamGrp->GetASCII(pstr,str).c_str());
 } 
 
+//----
 
+PyObject *FCPyParameterGrp::PyRemInt(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->RemoveInt(pstr);
+	Py_Return; 
+} 
+
+PyObject *FCPyParameterGrp::PyRemBool(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->RemoveBool(pstr);
+	Py_Return; 
+} 
+
+PyObject *FCPyParameterGrp::PyRemGrp(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->RemoveGrp(pstr);
+	Py_Return; 
+} 
+
+PyObject *FCPyParameterGrp::PyRemFloat(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->RemoveFloat(pstr);
+	Py_Return; 
+} 
+
+PyObject *FCPyParameterGrp::PyRemString(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->RemoveASCII(pstr);
+	Py_Return; 
+} 
+
+PyObject *FCPyParameterGrp::PyClear(PyObject *args)
+{ 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	_cParamGrp->Clear();
+	Py_Return; 
+} 
 
 
 
