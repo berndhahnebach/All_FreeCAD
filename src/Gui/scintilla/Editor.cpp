@@ -712,7 +712,9 @@ void Editor::RedrawRect(PRectangle rc) {
 
 void Editor::Redraw() {
 	//Platform::DebugPrintf("Redraw all\n");
-	wMain.InvalidateAll();
+	PRectangle rcClient = GetClientRectangle();
+	wMain.InvalidateRectangle(rcClient);
+	//wMain.InvalidateAll();
 }
 
 void Editor::RedrawSelMargin() {
@@ -1577,8 +1579,15 @@ void Editor::PaintSelMargin(Surface *surfWindow, PRectangle &rc) {
 					number[0] = '\0';
 					if (firstSubLine)
 						sprintf(number, "%d", lineDoc + 1);
-					if (foldFlags & SC_FOLDFLAG_LEVELNUMBERS)
-						sprintf(number, "%X", pdoc->GetLevel(lineDoc));
+					if (foldFlags & SC_FOLDFLAG_LEVELNUMBERS) {
+						int lev = pdoc->GetLevel(lineDoc);
+						sprintf(number, "%c%c %03X %03X",
+							(lev & SC_FOLDLEVELHEADERFLAG) ? 'H' : '_',
+							(lev & SC_FOLDLEVELWHITEFLAG) ? 'W' : '_',
+							lev & SC_FOLDLEVELNUMBERMASK,
+							lev >> 16
+						);
+					}
 					PRectangle rcNumber = rcMarker;
 					// Right justify
 					int width = surface->WidthText(vs.styles[STYLE_LINENUMBER].font, number, strlen(number));
@@ -2477,7 +2486,7 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 				} else {
 					int FoldLevelCurr = (pdoc->GetLevel(lineDoc) & SC_FOLDLEVELNUMBERMASK) - SC_FOLDLEVELBASE;
 					int FoldLevelPrev = (pdoc->GetLevel(lineDoc - 1) & SC_FOLDLEVELNUMBERMASK) - SC_FOLDLEVELBASE;
-					int FoldLevelFlags = (pdoc->GetLevel(lineDoc) & ~SC_FOLDLEVELNUMBERMASK);
+					int FoldLevelFlags = (pdoc->GetLevel(lineDoc) & ~SC_FOLDLEVELNUMBERMASK) & ~(0xFFF0000);
 					int indentationStep = (pdoc->indentInChars ? pdoc->indentInChars : pdoc->tabInChars);
 					// Draw line above fold
 					if ((FoldLevelPrev < FoldLevelCurr)
@@ -3200,12 +3209,12 @@ void Editor::NotifyModifyAttempt(Document*, void *) {
 }
 
 void Editor::NotifyMove(int position) {
-#ifdef INCLUDE_DEPRECATED_FEATURES
 	SCNotification scn;
-	scn.nmhdr.code = SCN_POSCHANGED;
+#ifdef INCLUDE_DEPRECATED_FEATURES
+  scn.nmhdr.code = SCN_POSCHANGED;
+#endif
 	scn.position = position;
 	NotifyParent(scn);
-#endif
 }
 
 void Editor::NotifySavePoint(Document*, void *, bool atSavePoint) {
@@ -3435,6 +3444,7 @@ void Editor::NotifyMacroRecord(unsigned int iMessage, unsigned long wParam, long
 	case SCI_DELWORDRIGHT:
 	case SCI_DELLINELEFT:
 	case SCI_DELLINERIGHT:
+	case SCI_LINECOPY:
 	case SCI_LINECUT:
 	case SCI_LINEDELETE:
 	case SCI_LINETRANSPOSE:
@@ -3873,18 +3883,21 @@ int Editor::KeyCommand(unsigned int iMessage) {
 			pdoc->DeleteChars(currentPos, end - currentPos);
 		}
 		break;
+	case SCI_LINECOPY: {
+			int lineStart = pdoc->LineFromPosition(SelectionStart());
+			int lineEnd = pdoc->LineFromPosition(SelectionEnd());
+			CopyRangeToClipboard(pdoc->LineStart(lineStart),
+				pdoc->LineStart(lineEnd + 1));
+		}
+		break;
 	case SCI_LINECUT: {
-			int lineStart = pdoc->LineFromPosition(currentPos);
-			int lineEnd = pdoc->LineFromPosition(anchor);
-			if (lineStart > lineEnd) {
-				int t = lineEnd;
-				lineEnd = lineStart;
-				lineStart = t;
-			}
+			int lineStart = pdoc->LineFromPosition(SelectionStart());
+			int lineEnd = pdoc->LineFromPosition(SelectionEnd());
 			int start = pdoc->LineStart(lineStart);
 			int end = pdoc->LineStart(lineEnd + 1);
 			SetSelection(start, end);
 			Cut();
+			SetLastXChosen();
 		}
 		break;
 	case SCI_LINEDELETE: {
@@ -4181,10 +4194,14 @@ char *Editor::CopyRange(int start, int end) {
 	return text;
 }
 
+void Editor::CopySelectionFromRange(SelectionText *ss, int start, int end) {
+	ss->Set(CopyRange(start, end), end - start + 1, false);
+}
+
 void Editor::CopySelectionRange(SelectionText *ss) {
-	char *text = 0;
-	int size = 0;
 	if (selType == selRectangle) {
+		char *text = 0;
+		int size = 0;
 		int lineStart = pdoc->LineFromPosition(SelectionStart());
 		int lineEnd = pdoc->LineFromPosition(SelectionEnd());
 		int line;
@@ -4209,11 +4226,24 @@ void Editor::CopySelectionRange(SelectionText *ss) {
 				text[size] = '\0';
 			}
 		}
+		ss->Set(text, size + 1, true);
 	} else {
-		size = SelectionEnd() - SelectionStart();
-		text = CopyRange(SelectionStart(), SelectionEnd());
+		CopySelectionFromRange(ss, SelectionStart(), SelectionEnd());
 	}
-	ss->Set(text, size, selType == selRectangle);
+}
+
+void Editor::CopyRangeToClipboard(int start, int end) {
+	start = pdoc->ClampPositionIntoDocument(start);
+	end = pdoc->ClampPositionIntoDocument(end);
+	SelectionText selectedText;
+	selectedText.Set(CopyRange(start, end), end - start + 1);
+	CopyToClipboard(selectedText);
+}
+
+void Editor::CopyText(int length, const char *text) {
+	SelectionText selectedText;
+	selectedText.Copy(text, length);
+	CopyToClipboard(selectedText);
 }
 
 void Editor::SetDragPosition(int newPos) {
@@ -4875,10 +4905,7 @@ void Editor::SetDocPointer(Document *document) {
 
 	pdoc->AddWatcher(this, 0);
 	Redraw();
-	// Removed because of reentrance problems of GTK+ 2.x
-	// where changing a scroll bar position causes synchronous
-	// painting before lexer and styling state is set up.
-	//SetScrollBars();
+	SetScrollBars();
 }
 
 // Recursively expand a fold, making lines visible except where they have an unexpanded parent
@@ -5043,6 +5070,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		Copy();
 		break;
 
+	case SCI_COPYRANGE:
+		CopyRangeToClipboard(wParam, lParam);
+		break;
+
+	case SCI_COPYTEXT:
+		CopyText(wParam, CharPtrFromSPtr(lParam));
+		break;
+
 	case SCI_PASTE:
 		Paste();
 		SetLastXChosen();
@@ -5201,6 +5236,12 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETSEARCHFLAGS:
 		return searchFlags;
+
+	case SCI_POSITIONBEFORE:
+		return pdoc->MovePositionOutsideChar(wParam-1, -1, true);
+
+	case SCI_POSITIONAFTER:
+		return pdoc->MovePositionOutsideChar(wParam+1, 1, true);
 
 	case SCI_LINESCROLL:
 		ScrollTo(topLine + lParam);
@@ -6178,6 +6219,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_DELWORDRIGHT:
 	case SCI_DELLINELEFT:
 	case SCI_DELLINERIGHT:
+	case SCI_LINECOPY:
 	case SCI_LINECUT:
 	case SCI_LINEDELETE:
 	case SCI_LINETRANSPOSE:
