@@ -116,7 +116,7 @@ ApplicationWindow::ApplicationWindow()
 	SoQt::init(this);
 
 
-	setCaption( "FreeCAD" );
+	setCaption( "Qt-FreeCAD" );
 
 	_cActiveWorkbenchName="<none>";
 

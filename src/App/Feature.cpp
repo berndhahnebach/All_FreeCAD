@@ -19,6 +19,21 @@
 #include "Feature.h"
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
 //**************************************************************************
 //**************************************************************************
 // Handle_FCFeature
@@ -154,7 +169,7 @@ Standard_Boolean FCFeature::IsKind(const Handle(Standard_Type)& AType) const
   return (STANDARD_TYPE(FCFeature) == AType || TDF_Attribute::IsKind(AType)); 
 }
 
-
+*/
 
 
 

@@ -207,12 +207,12 @@ void FCCmdTest2::Activated(int iMsg)
 
 	L = L.FindChild(1);
 
-	Handle(FCFeature) Feat = new FCFeature();
+//	Handle(FCFeature) Feat = new FCFeature();
 	Handle(FCParameter) Param = new FCParameter();
 //	Handle(FCFunction) Func = new FCFunction();
-	Feat->Set("Test");
+//	Feat->Set("Test");
 
-	L.AddAttribute( Feat);
+//	L.AddAttribute( Feat);
 	L.AddAttribute( Param);
 
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, FCFunction::GetID());

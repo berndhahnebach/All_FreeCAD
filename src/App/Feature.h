@@ -22,6 +22,70 @@
 #ifndef _Feature_h_
 #define _Feature_h_
 
+class TFunction_Logbook;
+
+
+/** Base class of all Feature classes in FreeCAD
+ */
+class FCFeature
+{
+
+	/** @name methodes used for reclculation (update) */
+	//@{
+	/** MustExecute
+	 *  We call this method to check if the object was modified to
+	 *  be invoked. If the object label or an argument is modified,
+	 *  we must recompute the object - to call the method Execute().
+	 */	
+	virtual bool MustExecute(const TFunction_Logbook& log) const =0;
+
+	/** Validate
+	 *  We compute the object and topologically name it.
+	 *  If during the execution we found something wrong,
+	 *  we return the number of the failure. For example:
+	 *  1 - an attribute hasn't been found,
+	 *  2 - algorithm failed, if there are no any mistakes occurred we return 0:
+	 *  0 - no mistakes were found.
+	 */
+	virtual Standard_Integer Execute(TFunction_Logbook& log) const=0;
+
+	/** Validate
+	 * Validation of the object label, its arguments and its results.
+	 */
+	virtual void Validate(TFunction_Logbook& log) const=0;
+	//@}
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 #include "Attribute.h"
 
 
@@ -36,10 +100,11 @@ Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCFeature);
 
 
 class FCFeature;
-
+*/
 
 /** Handle class for FCFeature
  */
+/*
 class Handle_FCFeature :public Handle_FCAttribute
 {
 public:
@@ -128,7 +193,6 @@ private:
 };
 
 
-
-
+*/
 
 #endif

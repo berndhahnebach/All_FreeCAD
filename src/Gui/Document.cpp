@@ -77,7 +77,10 @@ FCGuiDocument::FCGuiDocument(FCDocument* pcDocument,ApplicationWindow * app, con
 	_hContext->Deactivate(hTrihedron);
 
 	// alwayes create at least one view
-	CreateView("View3DInv");
+	if(GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/View")->GetBool("UseInventorViewer") )
+		CreateView("View3DIv");
+	else
+		CreateView("");
 
 }
 
