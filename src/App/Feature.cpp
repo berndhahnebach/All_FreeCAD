@@ -62,11 +62,11 @@ Feature::Feature(void)
 
 }
 	
-void Feature::SetShape(TopoDS_Shape &Shape)
-{
- 	TNaming_Builder B(_cFeatureLabel);
-	B.Generated(Shape);
-}
+//void Feature::SetShape(TopoDS_Shape &Shape)
+//{
+// 	TNaming_Builder B(_cFeatureLabel);
+//	B.Generated(Shape);
+//}
 
 
 void Feature::AddProperty(const char *Type, const char *Name, const char *InitString)
@@ -140,9 +140,10 @@ void Feature::TouchProperty(const char *Name)
     _pDoc->TouchState( _cFeatureLabel );
 }
 
-void Feature::AttachLabel(const TDF_Label &rcLabel)
+void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 {
 	_cFeatureLabel = rcLabel;
+  _pDoc = dt;
 
 	// Add the one and only FreeCAD FunctionDriver to the driver Tabel !!! Move to APPinit !!!
 	Handle(TFunction_Driver) myDriver = new Function();
@@ -193,10 +194,6 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 
 }
 
-void Feature::SetDoc(Document *dt)
-{
-  _pDoc = dt;
-}
 
 Feature *Feature::GetFeature(const TDF_Label &l)
 {

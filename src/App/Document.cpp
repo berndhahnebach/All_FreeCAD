@@ -311,11 +311,9 @@ Feature *Document::AddFeature(const char* sName)
 		// name
 		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) sName ));
 		// the rest of the setup do the feature itself
-		pcFeature->AttachLabel(FeatureLabel);
+		pcFeature->AttachLabel(FeatureLabel,this);
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
-
-    pcFeature->SetDoc(this);
 
 		// return the feature
 		return pcFeature;

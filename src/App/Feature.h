@@ -62,7 +62,7 @@ public:
 	virtual void InitLabel(const TDF_Label &rcLabel)=0;
 
 	/// Get called by the framework when the label is attached to the document
-	void AttachLabel(const TDF_Label &rcLabel);
+	void AttachLabel(const TDF_Label &rcLabel,Document*);
 
   /// Returns the Name/Type of the feature
   virtual const char *Type(void)=0;
@@ -125,7 +125,6 @@ public:
   static Feature *GetFeature(const TDF_Label &l);
 
 
-  void SetDoc(Document*);
 
   void SetShape(TopoDS_Shape &Shape);
 
