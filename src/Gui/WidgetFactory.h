@@ -134,31 +134,33 @@ class FCContainerDialog : public QDialog
 
 // ----------------------------------------------------
 
-class GuiExport FCPythonResource : public FCPythonExport
+class FCPythonResource : public FCPyObject
 {
+	/** always start with Py_Header */
+	Py_Header;
+
 	public:
-		static FCPythonResource& Instance(void);
-		static void Destruct (void);
+		FCPythonResource(PyTypeObject *T = &Type);
+		~FCPythonResource();
+
+		void load(const char* name);
+
+		/// for Construction in python 
+		static PyObject *PyMake(PyObject *, PyObject *);
+
+		//---------------------------------------------------------------------
+		// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+		//---------------------------------------------------------------------
+		PyObject *_getattr(char *attr);				// __getattr__ function
+		// getter setter
+		int _setattr(char *attr, PyObject *value);	// __setattr__ function
+
+		// methods
+		PYFUNCDEF_D(FCPythonResource, GetInput);
+		PYFUNCDEF_D(FCPythonResource, Show);
 
 	private:
-		static FCPythonResource* _pcSingleton;
-
-		FCPythonResource();
-		~FCPythonResource(){}
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	// static python wrapper of the exported functions
-	PYFUNCDEF_S(sGetInput);
-
-	static PyMethodDef    Methods[]; 
+		QDialog* myDlg;
 };
-
-inline GuiExport FCPythonResource& GetResource(void)
-{
-	return FCPythonResource::Instance();
-}
 
 #endif // __FC_WIDGET_FACTORY_H__

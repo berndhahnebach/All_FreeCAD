@@ -177,6 +177,7 @@ public:
 	PYFUNCDEF_S(sSendActiveView);
 
 	PYFUNCDEF_S(sUpdateGui);
+	PYFUNCDEF_S(sCreateDialog);
 
 	PYFUNCDEF_S(sRunCommand);
 	PYFUNCDEF_S(sCommandAdd);

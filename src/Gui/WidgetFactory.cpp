@@ -257,71 +257,133 @@ FCContainerDialog::~FCContainerDialog()
 
 // ----------------------------------------------------
 
-FCPythonResource* FCPythonResource::_pcSingleton = NULL;
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
 
-FCPythonResource& FCPythonResource::Instance(void)
-{
-  if (_pcSingleton == NULL)
-    _pcSingleton = new FCPythonResource;
-  return *_pcSingleton;
-}
+PyTypeObject FCPythonResource::Type = {
+	PyObject_HEAD_INIT(&PyType_Type)
+	0,						/*ob_size*/
+	"FCPythonResource",		/*tp_name*/
+	sizeof(FCPythonResource),/*tp_basicsize*/
+	0,						/*tp_itemsize*/
+	/* methods */
+	PyDestructor,	  		/*tp_dealloc*/
+	0,			 			/*tp_print*/
+	__getattr, 				/*tp_getattr*/
+	__setattr, 				/*tp_setattr*/
+	0,						/*tp_compare*/
+	__repr,					/*tp_repr*/
+	0,						/*tp_as_number*/
+	0,						/*tp_as_sequence*/
+	0,						/*tp_as_mapping*/
+	0,						/*tp_hash*/
+	0,						/*tp_call */
+};
 
-void FCPythonResource::Destruct (void)
-{
-  if (_pcSingleton != NULL)
-    delete _pcSingleton;
-}
-
-FCPythonResource::FCPythonResource()
-{
-	// setting up Python binding 
-	(void) Py_InitModule("FreeCADRes", FCPythonResource::Methods);
-}
-
-//**************************************************************************
-// Python stuff
-
-// FCPythonResource Methods						// Methods structure
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
 PyMethodDef FCPythonResource::Methods[] = {
-	{"GetInput",       (PyCFunction) FCPythonResource::sGetInput,        1},
+  {"GetInput",       (PyCFunction) sGetInput, Py_NEWARGS},
+  {"Show",           (PyCFunction) sShow,     Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP_S(FCPythonResource,sGetInput)
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject FCPythonResource::Parents[] = {&FCPyObject::Type,&FCPythonResource::Type, NULL};     
+
+//--------------------------------------------------------------------------
+// constructor
+//--------------------------------------------------------------------------
+FCPythonResource::FCPythonResource(PyTypeObject *T)
+ : FCPyObject( T), myDlg(0L)
 {
-	char *psUIFile;
-	if (!PyArg_ParseTuple(args, "s", &psUIFile))     // convert args: Python->C 
-		return NULL;                             // NULL triggers exception 
+}
+
+PyObject *FCPythonResource::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  //return new FCPythonResource();			// Make new Python-able object
+  return 0;
+}
+
+//--------------------------------------------------------------------------
+//  FCPythonResource destructor 
+//--------------------------------------------------------------------------
+FCPythonResource::~FCPythonResource()
+{
+	delete myDlg;
+}
+
+//--------------------------------------------------------------------------
+// FCPyParametrGrp Attributes
+//--------------------------------------------------------------------------
+PyObject *FCPythonResource::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+{ 
+	_getattr_up(FCPyObject); 						// send to parent
+	return 0;
+} 
+
+int FCPythonResource::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+	return FCPyObject::_setattr(attr, value);	// send up to parent
+	return 0;
+} 
+
+void FCPythonResource::load(const char* name)
+{
+	QString fn = name;
+	QFileInfo fi(fn);
+
+	if (!fi.exists())
+		throw FCException(QString("Cannot find file %1").arg(fn));
 
 #if QT_VERSION < 300
-	GetConsole().Error("Qt version is too old!\n");
-	return NULL;
+	throw FCException("Qt version is too old!\n");
 #else
 	QWidget* w=NULL;
 	try{
-		QString file = psUIFile;
-		w = QWidgetFactory::create(file);
+		w = QWidgetFactory::create(fn);
 	}catch(...){
-		PyErr_SetString(PyExc_RuntimeError, "Cannot create resource");
-		return NULL;
+		throw FCException("Cannot create resource");
 	}
 
-	try{
-		QDialog* dlg = NULL;
-		if (w->inherits("QDialog"))
-		{
-			dlg = (QDialog*)w;
-		}
-		else
-		{
-			dlg = new FCContainerDialog(w);
-		}
+	if (w->inherits("QDialog"))
+	{
+		myDlg = (QDialog*)w;
+	}
+	else
+	{
+		myDlg = new FCContainerDialog(w);
+	}
+#endif
+}
 
-		dlg->exec();
+PyObject *FCPythonResource::Show(PyObject *args)
+{
+	if (myDlg)
+	{
+		myDlg->exec();
+	}
 
-		QString input="";
-		QObjectList *l = dlg->queryList( "QLineEdit" );
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+PyObject *FCPythonResource::GetInput(PyObject *args)
+{
+	char *psInput;
+	if (!PyArg_ParseTuple(args, "s", &psInput))     // convert args: Python->C 
+		return NULL;                             // NULL triggers exception 
+
+	QString input="";
+
+	if (myDlg)
+	{
+		QObjectList *l = myDlg->queryList( "QLineEdit" );
 		QObjectListIt it( *l );
 		QObject *obj;
 
@@ -331,14 +393,10 @@ PYFUNCIMP_S(FCPythonResource,sGetInput)
 				input = ((QLineEdit*)obj)->text();
 		}
 		delete l; // delete the list, not the objects
-		delete dlg;
-
-		PyObject *pItem;
-		pItem = PyString_FromString(input.latin1());
-
-		return pItem;
-	} catch (...){
-		return NULL;
 	}
-#endif
+
+	PyObject *pItem;
+	pItem = PyString_FromString(input.latin1());
+
+	return pItem;
 }

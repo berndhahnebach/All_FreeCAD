@@ -1096,6 +1096,7 @@ PyMethodDef ApplicationWindow::Methods[] = {
 	{"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
 	{"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
 	{"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
+	{"CreateDialog",          (PyCFunction) ApplicationWindow::sCreateDialog,            1},
 	{"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
 	{"RunCommand",            (PyCFunction) ApplicationWindow::sRunCommand,              1},
 	{"SendMsgToActiveView",   (PyCFunction) ApplicationWindow::sSendActiveView,          1},
@@ -1124,6 +1125,24 @@ PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
 	
 	Py_INCREF(Py_None);
 	return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
+{
+  char* fn = 0;
+	if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
+		return NULL;                                      // NULL triggers exception 
+
+	PyObject* pPyResource=0L;
+	try{
+		pPyResource = new FCPythonResource();
+		((FCPythonResource*)pPyResource)->load(fn);
+	} catch (const FCException& e)
+	{
+    PyErr_SetString(PyExc_AssertionError, e.what());
+	}
+
+	return pPyResource;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
