@@ -419,11 +419,12 @@ void MacroCommand::load()
 
 void MacroCommand::save()
 {
+  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
+  hGrp->Clear();
+
   std::vector<Command*> macros = ApplicationWindow::Instance->commandManager().getGroupCommands("Macros");
   if ( macros.size() > 0 )
   {
-    FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
-
     for (std::vector<Command*>::iterator it = macros.begin(); it!=macros.end(); ++it )
     {
       MacroCommand* macro = (MacroCommand*)(*it);
