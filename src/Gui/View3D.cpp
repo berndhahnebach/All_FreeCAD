@@ -233,8 +233,6 @@ bool View3D::InitCasCadeView(void)
 
 	// pushing the standard mouse model
 	PushMouseModel(new FCMouseModelStd);
-	PushMouseModel(new FCMouseModelCirclePicker);
-	PushMouseModel(new FCMouseModelPolyPicker);
 
    	bIsInit = true;
 	

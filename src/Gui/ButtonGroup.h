@@ -37,7 +37,6 @@
 #include <qdragobject.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h>
-#include <qlist.h>
 #include <qevent.h>
 #include <qcolor.h>
 #include <qfont.h>
@@ -46,6 +45,8 @@
 #include <qcombobox.h>
 #include <qscrollbar.h>
 #include <qscrollview.h>
+#include <qwidget.h>
+#include <qlayout.h>
 
 #include "CommandLine.h"
 #include "Window.h"
@@ -105,7 +106,6 @@ class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
     FCToolboxGroup ( QWidget * parent=0, const char * name=0 );
     FCToolboxGroup ( const QString & title, QWidget * parent=0, const char * name=0 );
     ~FCToolboxGroup ();
-    QScrollView *pScrollWidget;
     QGridLayout* ButtonGroupLayout;
 
     /// add a new widget
@@ -134,7 +134,6 @@ class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
     void popupMenuAboutToShow();
     void setNewBackgroundColor();
     void resetBackgroundColor();
-    void slotRedrawScrollBar(int);
 
   signals:
     void signalMaximumWidth(int);
@@ -200,107 +199,54 @@ class GuiExport FCToolboxButton : public QToolButton
     QAction* pLastAction;
 };
 
-class QStackBarBtn
+class QStackBarBtn : public QToolButton
 {
-protected:
-	QColorGroup *_color, *_selColor, *_hiColor;
-	QFont _font, _selFont, _hiFont;
-	QColor _fcolor, _fselcolor, _fhicolor;
-	QString _label;
-	QWidget *pWidget;
-	QPixmap *pPixmap;
+  public:
+    QStackBarBtn( QWidget *parent, const char *name );
+    QStackBarBtn( QWidget *object, QWidget *parent, const char *name );
 
-public:
-	QStackBarBtn( QString, QWidget * );
-	QStackBarBtn( QString, QWidget *, QColor );
+    void setSelected( bool b );
+    void setWidget(QWidget* widget);
+    QWidget* widget();
 
-	virtual ~QStackBarBtn();
+  protected:
+    void drawButton( QPainter * );
 
-	QFont *selFont() { return &_selFont; }
-	QFont *hiFont() { return &_hiFont; }
-	QFont *font() { return &_font; }
-
-	QPixmap *pixmap() { return pPixmap; }
-
-	QColorGroup *selColor() { return _selColor; }
-	QColorGroup *hiColor() { return _hiColor; }
-	QColorGroup *color() { return _color; }
-
-	void setSelColor( QColor  );
-	void setHiColor( QColor  );
-	void setColor( QColor  );
-
-	void setFontColor( QColor c ) { _fcolor=c; }
-	void setFontSelColor( QColor c ) { _fselcolor=c; }
-	void setFontHiColor( QColor c ) { _fhicolor=c; }
-
-	void setPixmap( QPixmap * );
-
-	QColor fontColor() { return _fcolor; }
-	QColor fontSelColor() { return _fselcolor; }
-	QColor fontHiColor() { return _fhicolor; }
-
-	QString label() { return _label; }
-
-	void setLabel( QString s ) { _label=s; }
-
-	QWidget *widget() { return pWidget; }
-	void setWidget( QWidget * );
+  private:
+    bool bIsSelected;
+    QWidget* w;
 };
-
-
 
 class FCCmdBar : public FCDockWindow
 {
+  Q_OBJECT;
 
-Q_OBJECT;
+  public:
+	  FCCmdBar( QWidget *parent=0, const char *name=0 );
+	  virtual ~FCCmdBar();
 
-public:
-	FCCmdBar( QWidget *parent=0, const char *name=0 );
-	virtual ~FCCmdBar();
+    void addPage( const QString &name, QWidget *page );
+    void remPage( QStackBarBtn * );
+  	void setCurPage( int );
 
-  // toolbox handling
-  bool HasView(const char *sName);
-  FCToolboxGroup* GetView(const char *sName);
-  FCToolboxGroup* CreateView(const char *sName);
-  void DeleteView(const char *sName);
-	
-  void addPage( QStackBarBtn * );
-  void remPage( QStackBarBtn * );
-	void setCurPage( int );
+    // toolbox handling
+    bool HasView(const char *sName);
+    FCToolboxGroup* GetView(const char *sName);
+    FCToolboxGroup* CreateView(const char *sName);
+    void DeleteView(const char *sName);
 
-	void setButtonHeight(int);
+  private slots:
+    void buttonClicked();
 
-	/*!
-	 * \brief Gets the button heights
-	 *
-	 * All buttons must have the same height, here is where you set it.
-	 */
-	int buttonHeight() { return _stackHeight; }
-	/// add buttons just for test purpose
-	void AddTestButtons(void);
+  private:
+    void updatePages();
 
-protected:
-	QList <QStackBarBtn> *pButtons;
-  std::map <QWidget*, FCToolboxGroup*> alViews;
-	int curPage;
-
-	int curHighlight;
-	int _stackHeight;
-
-protected:
-	void resizeEvent( QResizeEvent * );
-	void paintEvent( QPaintEvent * );
-	void mouseMoveEvent( QMouseEvent * );
-	void mousePressEvent( QMouseEvent * );
-
-	int whichButton(int, int);
-	void rearrangeButtons(int,int);
-
-signals:
-	void pageSelected( int );
-	void pageHighlighted(int);
-	
+  private:
+    QVBoxLayout                  * m_pLayout;
+    QWidget                      * m_pCurPage;
+    QStackBarBtn                 * m_pLastPage;
+    std::list<QStackBarBtn*>       m_lButtons;
+    std::map <QWidget*, QWidget*>  m_mViews;
 };
 
 #endif // __BUTTON_GROUP_H__

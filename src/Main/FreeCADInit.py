@@ -37,10 +37,10 @@ import FreeCAD
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = '../src/Mod'
+	ModDir = '..\\src\\Mod'
+	sys.path.append( '..\\bin' )
 	Log("   Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
-	sys.path.append( ModDir )
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
 	Log('   Searching modules...\n')
@@ -49,6 +49,7 @@ def InitApplications():
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
 			Log('      Init: ' + Dir + '... ')
 			ModGrp = ModPar.GetGroup(Dir)
+			sys.path.append( os.path.join(ModDir,Dir) )
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if ( os.path.exists(InstallFile) ):
 				execfile(InstallFile)

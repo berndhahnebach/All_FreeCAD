@@ -77,6 +77,8 @@ const char sBanner[] = \
 "  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
 "  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
+char sFCUser[200];
+
 
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
@@ -291,7 +293,7 @@ int main( int argc, char ** argv )
 void Destruct(void)
 {
 	pcSystemParameter->SaveDocument("AppParam.FCParam");
-	pcUserParameter->SaveDocument("FCUserJR.FCParam");
+	pcUserParameter->SaveDocument(sFCUser);
 	delete pcSystemParameter;
 	delete pcUserParameter;
 }
@@ -307,6 +309,12 @@ void Destruct(void)
  **/
 void Init(int argc, char ** argv )
 {
+  // make user specific parameter file
+  char* user = getenv("USERNAME");
+  if (user == NULL) user = getenv("USER");
+  if (user == NULL) user = "Anonymous";
+  sprintf(sFCUser, "FC%s.FCParam", user);
+
 
 	// Pars the options which have impact to the init process
 	ParsOptions(argc,argv);
@@ -353,7 +361,7 @@ void Init(int argc, char ** argv )
 
 	}
 
-	if(pcUserParameter->LoadOrCreateDocument("FCUserJR.FCParam") && !bVerbose)
+	if(pcUserParameter->LoadOrCreateDocument(sFCUser) && !bVerbose)
 	{
 		GetConsole().Warning("   User settings not existing, write initial one\n");
 		GetConsole().Message("   This Warning means normaly you running FreeCAD the first time\n"

@@ -44,12 +44,12 @@
 //===========================================================================
 // Std_Test1
 //===========================================================================
-DEF_STD_CMD(FCCmdTest1		,"Std_Test1");
+DEF_STD_CMD(FCCmdPartTest1		,"Part_Test1");
 
-void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+void FCCmdPartTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Test1";
-	*sToolTipText = "Test function 1";
+	*sToolTipText = "Part Test function 1";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
 	*sPixmap      = "Test1";
@@ -57,7 +57,7 @@ void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsTh
 }
 
 
-void FCCmdTest1::Activated(void)
+void FCCmdPartTest1::Activated(void)
 {
 
 	DlgPartBoxImp cDlg(AppWnd(),"Part Box",true);
@@ -129,12 +129,12 @@ void FCCmdTest1::Activated(void)
 //===========================================================================
 // Std_Test2
 //===========================================================================
-DEF_STD_CMD(FCCmdTest2		,"Std_Test2");
+DEF_STD_CMD(FCCmdPartTest2		,"Part_Test2");
 
-void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+void FCCmdPartTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
 {
 	*sMenuText	  = "Test2";
-	*sToolTipText = "Test function 2";
+	*sToolTipText = "Part Test function 2";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
 	*sPixmap      = "Test2";
@@ -142,7 +142,7 @@ void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsTh
 }
 
 
-void FCCmdTest2::Activated(void)
+void FCCmdPartTest2::Activated(void)
 {
 
 	FCDocument *pcDoc = GetActiveOCCDocument();
@@ -182,8 +182,8 @@ void CreateCommands(void)
 {
 	FCCommandManager &rcCmdMgr = ApplicationWindow::Instance->GetCommandManager();
 
-	rcCmdMgr.AddCommand(new FCCmdTest1());
-	rcCmdMgr.AddCommand(new FCCmdTest2());
+	rcCmdMgr.AddCommand(new FCCmdPartTest1());
+	rcCmdMgr.AddCommand(new FCCmdPartTest2());
 
 }
 

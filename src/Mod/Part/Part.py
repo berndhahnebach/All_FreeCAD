@@ -28,4 +28,5 @@
 #***************************************************************************/
 
 
-import AppPartD
+print "Part module"
+import AppPart

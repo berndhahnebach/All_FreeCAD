@@ -39,11 +39,11 @@ OutDir=.\..
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\AppPart.dll" "$(OUTDIR)\App\Release\AppPart.pch"
+ALL : "..\..\..\..\bin\AppPart.pyd" "$(OUTDIR)\App\Release\AppPart.pch"
 
 !ELSE 
 
-ALL : "FreeCADBase - Win32 Release" "FreeCADApp - Win32 Release" "$(OUTDIR)\AppPart.dll" "$(OUTDIR)\App\Release\AppPart.pch"
+ALL : "FreeCADBase - Win32 Release" "FreeCADApp - Win32 Release" "..\..\..\..\bin\AppPart.pyd" "$(OUTDIR)\App\Release\AppPart.pch"
 
 !ENDIF 
 
@@ -58,9 +58,9 @@ CLEAN :
 	-@erase "$(INTDIR)\Libs.obj"
 	-@erase "$(INTDIR)\PreCompiled.obj"
 	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(OUTDIR)\AppPart.dll"
 	-@erase "$(OUTDIR)\AppPart.exp"
 	-@erase "$(OUTDIR)\AppPart.lib"
+	-@erase "..\..\..\..\bin\AppPart.pyd"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -75,16 +75,16 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPart.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\AppPart.pdb" /machine:I386 /out:"$(OUTDIR)\AppPart.dll" /implib:"$(OUTDIR)\AppPart.lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"$(OUTDIR)\AppPart.pdb" /machine:I386 /out:"../../../../bin/AppPart.pyd" /implib:"$(OUTDIR)\AppPart.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\AppPart.obj" \
-	"$(INTDIR)\PreCompiled.obj" \
-	"$(INTDIR)\Libs.obj" \
 	"$(INTDIR)\FeaturePartBox.obj" \
+	"$(INTDIR)\Libs.obj" \
+	"$(INTDIR)\PreCompiled.obj" \
 	"..\..\..\App\Release\FreeCADApp.lib" \
 	"..\..\..\Base\Release\FreeCADBase.lib"
 
-"$(OUTDIR)\AppPart.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\..\..\..\bin\AppPart.pyd" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -99,11 +99,11 @@ OutDir=.\..
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\AppPartD.dll" "$(OUTDIR)\App\Debug\AppPart.pch"
+ALL : "..\..\..\..\bin\AppPartD.pyd" "$(OUTDIR)\App\Debug\AppPart.pch"
 
 !ELSE 
 
-ALL : "FreeCADBase - Win32 Debug" "FreeCADApp - Win32 Debug" "$(OUTDIR)\AppPartD.dll" "$(OUTDIR)\App\Debug\AppPart.pch"
+ALL : "FreeCADBase - Win32 Debug" "FreeCADApp - Win32 Debug" "..\..\..\..\bin\AppPartD.pyd" "$(OUTDIR)\App\Debug\AppPart.pch"
 
 !ENDIF 
 
@@ -119,11 +119,11 @@ CLEAN :
 	-@erase "$(INTDIR)\PreCompiled.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(OUTDIR)\AppPartD.dll"
 	-@erase "$(OUTDIR)\AppPartD.exp"
-	-@erase "$(OUTDIR)\AppPartD.ilk"
 	-@erase "$(OUTDIR)\AppPartD.lib"
 	-@erase "$(OUTDIR)\AppPartD.pdb"
+	-@erase "..\..\..\..\bin\AppPartD.ilk"
+	-@erase "..\..\..\..\bin\AppPartD.pyd"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -138,16 +138,16 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\AppPart.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\AppPartD.pdb" /debug /machine:I386 /out:"$(OUTDIR)\AppPartD.dll" /implib:"$(OUTDIR)\AppPartD.lib" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"$(OUTDIR)\AppPartD.pdb" /debug /machine:I386 /out:"../../../../bin/AppPartD.pyd" /implib:"$(OUTDIR)\AppPartD.lib" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\AppPart.obj" \
-	"$(INTDIR)\PreCompiled.obj" \
-	"$(INTDIR)\Libs.obj" \
 	"$(INTDIR)\FeaturePartBox.obj" \
+	"$(INTDIR)\Libs.obj" \
+	"$(INTDIR)\PreCompiled.obj" \
 	"..\..\..\App\Debug\FreeCADAppD.lib" \
 	"..\..\..\Base\Debug\FreeCADBaseD.lib"
 
-"$(OUTDIR)\AppPartD.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"..\..\..\..\bin\AppPartD.pyd" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<

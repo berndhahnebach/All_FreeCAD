@@ -107,3 +107,10 @@ Version: V0.1B28 Date: Fri Jan 31 17:58:13 2003 +++++++++++++++++++++++++++++++
 + switching from Stlport IOSTREAM to VC6 iostream
 + removing FC container wrapping
 + starting serios work on module loading in part and sketcher
+
+Version: V0.1B29 Date: Wed Feb 05 09:22:38 2003 +++++++++++++++++++++++++++++++
++ patch from Werner
+  - some small changes
+  - rewritten Command Bar
++ some work on the Part module (now loading in release)
+

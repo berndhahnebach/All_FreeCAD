@@ -39,15 +39,15 @@ class PartWorkbench ( Workbench ):
 		try:
 			import PartGui
 		except:
-			Log('   can not load PartGui')
+			Err('   can not load PartGui')
 			
 		Log ('   Set up part toolbar...\n')
-		Gui.ToolbarAddTo("PartTools","Std_Test1")
-		Gui.ToolbarAddTo("PartTools","Std_Test2")
+		Gui.ToolbarAddTo("PartTools","Part_Test1")
+		Gui.ToolbarAddTo("PartTools","Part_Test2")
 
 		Log ('   Set up part commandbar...\n')
-		Gui.CommandbarAddTo("PartTools","Std_Test1")
-		Gui.CommandbarAddTo("PartTools","Std_Test2")
+		Gui.CommandbarAddTo("PartTools","Part_Test1")
+		Gui.CommandbarAddTo("PartTools","Part_Test2")
 
 		Log ('   Set up part menues...\n')
 

@@ -54,7 +54,7 @@ FCWidgetPrefs::FCWidgetPrefs(const char * name) : pHandler(NULL)
   if (name)
     m_sPrefName = name;
 
-  setUseSystemParameter();
+  setUseUserParameter();
   if (hPrefGrp.IsValid())
   {
     hPrefGrp->Attach(this);
@@ -73,7 +73,7 @@ void FCWidgetPrefs::setPrefName(QString pref)
 {
   hPrefGrp->Detach(this);
   m_sPrefName = pref; 
-  setUseSystemParameter();
+  setUseUserParameter();
   hPrefGrp->Attach(this);
 }
 
@@ -84,13 +84,13 @@ QString FCWidgetPrefs::getPrefName()
 
 void FCWidgetPrefs::setUseSystemParameter()
 {
-  hPrefGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Widgets")->GetGroup(m_sPrefGrp.latin1());
+  hPrefGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup(m_sPrefGrp.latin1());
   hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
 }
 
 void FCWidgetPrefs::setUseUserParameter()
 {
-  hPrefGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Widgets")->GetGroup(m_sPrefGrp.latin1());
+  hPrefGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Windows")->GetGroup(m_sPrefGrp.latin1());
   hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
 }
 
@@ -158,13 +158,21 @@ FCEditSpinBox::~FCEditSpinBox()
 
 void FCEditSpinBox::restorePreferences()
 {
-  double fVal = hPrefGrp->GetFloat(getPrefName().latin1(), 0.0f);
+  double fVal;
+  if (m_iAccuracy == 0)
+    fVal = (double)hPrefGrp->GetInt(getPrefName().latin1(), 0);
+  else
+    fVal = (double)hPrefGrp->GetFloat(getPrefName().latin1(), 0.0f);
+
   setValueFloat(fVal);
 }
 
 void FCEditSpinBox::savePreferences()
 {
-  hPrefGrp->SetFloat(getPrefName().latin1(), getValueFloat());
+  if (m_iAccuracy == 0)
+    hPrefGrp->SetInt(getPrefName().latin1(), (int)getValueFloat());
+  else
+    hPrefGrp->SetFloat(getPrefName().latin1(), getValueFloat());
 }
 
 int FCEditSpinBox::getAccuracy() const
