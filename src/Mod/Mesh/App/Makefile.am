@@ -12,7 +12,6 @@ libMesh_la_SOURCES=\
 		Core/Iterator.h \
 		Core/Matrix.cpp \
 		Core/Matrix.h \
-		Core/MeshConfig.h \
 		Core/Mesh.cpp \
 		Core/Mesh.h \
 		Core/MeshIO.cpp \

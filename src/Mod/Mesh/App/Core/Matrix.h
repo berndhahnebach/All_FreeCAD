@@ -24,7 +24,7 @@
 #ifndef __MATRIX_HXX__
 #define __MATRIX_HXX__
 
-#include "MeshConfig.h"
+#include "Definitions.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -155,12 +155,12 @@ inline Vector3D Matrix4D::operator* (const Vector3D& rclVct) const
 inline bool Matrix4D::operator== (const Matrix4D& rclMtrx)
 {
   short     iz, is;
-  bool      bRet = TRUE;
+  bool      bRet = true;
 
   for (iz = 0; iz < 4; iz++)
     for (is = 0; is < 4; is++) 
       if (fabs(dMtrx4D[iz][is] - rclMtrx.dMtrx4D[iz][is]) > FLOAT_EPS)
-        bRet = FALSE;
+        bRet = false;
 
   return bRet;
 }

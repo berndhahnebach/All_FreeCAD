@@ -31,6 +31,8 @@
 #	include <TCollection_ExtendedString.hxx>
 # ifdef FC_OS_LINUX
 # include <time.h>
+// TODO: Don't know where the header is!
+void itoa(int, char*, int){ }
 # endif
 #endif
 
@@ -49,6 +51,7 @@
 #include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 #include "../Base/FileInfo.h"
+#include "../Base/Sequencer.h"
 
 using namespace App;
 
@@ -631,7 +634,8 @@ void Application::runApplication()
 
   }
 
-
+  // create temporary console sequencer
+  Base::ConsoleSequencer seq;
 
 	if(mConfig["RunMode"] == "Cmd")
 	{

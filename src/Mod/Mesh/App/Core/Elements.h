@@ -240,7 +240,7 @@ class MeshEdge
 class AppMeshExport MeshGeomEdge
 {
     public:
-    MeshGeomEdge (void) : _bBorder(FALSE) 
+    MeshGeomEdge (void) : _bBorder(false)
     {}
 
     public:
@@ -674,7 +674,7 @@ inline bool MeshPoint::operator < (const MeshPoint &rclPt) const
     if (fabs(y - rclPt.y) < MeshDefinitions::_fMinPointDistanceD1)
     {
       if (fabs(z - rclPt.z) < MeshDefinitions::_fMinPointDistanceD1)
-        return FALSE;
+        return false;
       else
         return z < rclPt.z;
     }

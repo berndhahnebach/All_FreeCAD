@@ -42,7 +42,7 @@ class BaseExport FileInfo
 		/// Constrction
 		FileInfo (const char* FileName="");
     /// gecerates a unique file name
-    makeTemp(const char* Template);
+    void makeTemp(const char* Template);
     /// set a new file name
     void setFile(const char* name);
     /// set a new file name

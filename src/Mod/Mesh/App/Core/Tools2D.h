@@ -30,7 +30,7 @@
 #include <list>
 #include <vector>
 
-#include "MeshConfig.h"
+#include "Definitions.h"
 
 namespace Mesh {
 
@@ -152,10 +152,10 @@ class AppMeshExport Polygon2D
 
 inline void BoundBox2D::operator &= (const Vector2D &rclVct)
 {
-  fMinX = MIN(fMinX, rclVct.fX);
-  fMinY = MIN(fMinY, rclVct.fY);
-  fMaxX = MAX(fMaxX, rclVct.fX);
-  fMaxY = MAX(fMaxY, rclVct.fY);
+  fMinX = std::min<float>(fMinX, rclVct.fX);
+  fMinY = std::min<float>(fMinY, rclVct.fY);
+  fMaxX = std::max<float>(fMaxX, rclVct.fX);
+  fMaxY = std::max<float>(fMaxY, rclVct.fY);
 }
   
 inline Vector2D::Vector2D (void)
@@ -258,7 +258,7 @@ inline unsigned long Polygon2D::GetCtVectors (void) const
 inline bool Polygon2D::Add (const Vector2D &rclVct)
 {
   _aclVct.push_back (rclVct);
-  return TRUE;
+  return true;
 }
 
 inline bool Polygon2D::Delete (unsigned long ulNdx)
@@ -328,10 +328,10 @@ inline BoundBox2D::BoundBox2D (const BoundBox2D &rclBB)
 
 inline BoundBox2D::BoundBox2D (float fX1, float fY1, float fX2, float fY2)
 {
-    fMinX = MIN( fX1, fX2 );
-    fMaxX = MAX( fX1, fX2 );
-    fMinY = MIN( fY1, fY2 );
-    fMaxY = MAX( fY1, fY2 );
+    fMinX = std::min<float>( fX1, fX2 );
+    fMaxX = std::max<float>( fX1, fX2 );
+    fMinY = std::min<float>( fY1, fY2 );
+    fMaxY = std::max<float>( fY1, fY2 );
 }
 
 inline bool BoundBox2D::IsValid (void)

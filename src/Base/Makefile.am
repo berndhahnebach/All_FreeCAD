@@ -12,6 +12,8 @@ libFreeCADBase_la_SOURCES=\
 		Exception.h \
 		Factory.cpp \
 		Factory.h \
+		FileInfo.cpp \
+		FileInfo.h \
 		FileTemplate.cpp \
 		FileTemplate.h \
 		Handle.cpp \

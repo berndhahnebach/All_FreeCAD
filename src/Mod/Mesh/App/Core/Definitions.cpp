@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #include <math.h>
-#include "MeshConfig.h"
+#include "Definitions.h"
 
 #include "Definitions.h"
 

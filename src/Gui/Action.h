@@ -52,8 +52,13 @@ public:
   static QStringList actions;
 };
 
+// --------------------------------------------------------------------
+
 /**
- * Allows actions to be added to widgets other than toolbars or popup menus.
+ * The Action class is the link between Qt's QAction class and FreeCAD's 
+ * command classes (@ref Command). So, it is possible to have all actions
+ * (from toolbars, menus, ...) implemented in classes instead of slots of
+ * the main window. 
  * @author Werner Mayer
  */
 class GuiExport Action : public QAction
@@ -61,7 +66,7 @@ class GuiExport Action : public QAction
   Q_OBJECT
 
 public:
-  Action ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
+  Action ( Command* pcCmd, QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   virtual ~Action();
 
   virtual void addedTo ( QWidget * actionWidget, QWidget * container );
@@ -83,38 +88,100 @@ private:
 // --------------------------------------------------------------------
 
 /**
- * This allows several actions to be added to a toolbar or menu.
- * For menus a submenu is created for toolbars a combo box.
+ * The WorkbenchAction class represents a workbench. When this action gets 
+ * activated the workbench - it represents - gets loaded.
+ * @see WorkbenchGroup
  * @author Werner Mayer
  */
-class GuiExport ActionGroup : public QActionGroup
+class StdCmdWorkbench;
+class GuiExport WorkbenchAction : public QAction
 {
   Q_OBJECT
 
 public:
-  ActionGroup ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
-  virtual ~ActionGroup();
+  /** 
+   * Creates an action for the command \a pcCmd to load the workbench \a name
+   * when it gets activated.
+   */
+  WorkbenchAction ( StdCmdWorkbench* pcCmd, QObject * parent, const char * name = 0 );
+  virtual ~WorkbenchAction();
 
-  virtual bool addTo( QWidget * w );
+private slots:
+  void onActivated();
 
-  void addAction( QAction* act );
-  void removeAction ( QAction* act );
-  void clear();
+private:
+  StdCmdWorkbench *_pcCmd;
+};
 
-  Command* command() { return _pcCmd; }
-  
+// --------------------------------------------------------------------
+
+/**
+ * The WorkbenchGroup class is an action group that holds WorkbenchAction objects
+ * to switch between workbenches.
+ * @see WorkbenchAction
+ * @author Werner Mayer
+ */
+class GuiExport WorkbenchGroup : public QActionGroup
+{
+  Q_OBJECT
+
+public:
+  WorkbenchGroup ( QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
+  virtual ~WorkbenchGroup();
+
+  /** Activates the workbench with name \a item. */
   void activate( const QString& item );
-  void activate( int id);
+};
+
+// --------------------------------------------------------------------
+
+/**
+ * The MRUAction class represents an item of the recent file list. Usually
+ * this list is provided by a popupmenu.
+ * @see MRUActionGroup
+ * @author Werner Mayer
+ */
+class GuiExport MRUAction : public QAction
+{
+  Q_OBJECT
 
 protected:
-  virtual void addedTo ( QWidget * actionWidget, QWidget * container, QAction * a );
+  MRUAction ( QObject * parent, const char * name = 0, bool toggle = FALSE );
+  virtual ~MRUAction();
 
-public slots:
-  void onActivated ( int i );
-  void onActivated ( QAction* );
+  int index() const;
+
+protected:
+  virtual void addedTo ( int index, QPopupMenu * menu );
+
+private:
+  QString recentFileItem( const QString& fn );
+  int _idx;
+
+  friend class MRUActionGroup;
+};
+
+/**
+ * The MRUActionGroup class holds all MRUAction objects for the recent file list. 
+ * Usually this list is provided by a popupmenu that is added to the "File" menu.
+ * @see MRUAction
+ * @author Werner Mayer
+ */
+class GuiExport MRUActionGroup : public QActionGroup
+{
+  Q_OBJECT
+
+public:
+  MRUActionGroup ( Command* pcCmd, QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
+  virtual ~MRUActionGroup();
+
+  void setRecentFiles( const QStringList& );
 
 private slots:
   void onActivated ();
+
+private:
+  void clear();
 
 private:
   Command *_pcCmd;
@@ -125,7 +192,7 @@ private:
 /**
  * The UndoRedoAction class reimplements the addedTo() function to make a popup menu 
  * appearing when the button with the arrow is clicked.
- * \author Werner Mayer
+ * @author Werner Mayer
  */
 class GuiExport UndoRedoAction : public Action
 {

@@ -420,7 +420,7 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
   unsigned long   i, j, ulNFacet, ulInd, ulEdge;
 
   if (rclIter._clIter >= _aclFacetArray.end())
-    return FALSE;
+    return false;
 
   // Index des zu loeschenden Facet
   ulInd = rclIter._clIter - _aclFacetArray.begin(); 
@@ -467,7 +467,7 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
   // Indizies des Kanten-Arrays zu Facets abstimmen
   _aclEdgeArray.AdjustIndex(ulInd);
 
-  return TRUE;
+  return true;
 }
 
 /*-------------------------------------------------------------------
@@ -509,7 +509,7 @@ bool MeshKernel::DeleteEdge (const MeshEdgeIterator &rclIter)
     }
   }
  
-  return TRUE;
+  return true;
 }
 
 /*-------------------------------------------------------------------
@@ -549,7 +549,7 @@ bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
   for (i = clToDel.size(); i > 0; i--)
     DeleteFacet(clToDel[i-1]); 
 
-  return TRUE;
+  return true;
 }
 
 /*-------------------------------------------------------------------
@@ -595,7 +595,7 @@ void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex,
   }
 
 
-  if (bOnlySetInvalid == FALSE)
+  if (bOnlySetInvalid == false)
   { // Punkt komplett loeschen
     _aclPointArray.erase(_aclPointArray.begin() + ulIndex);
 
@@ -669,7 +669,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
   for (pPIter = _aclPointArray.begin(); pPIter != pPEnd; pPIter++)
   {
     *pDIter++ = ulDec;
-    if (pPIter->IsValid() == FALSE)
+    if (pPIter->IsValid() == false)
       ulDec++;
   }
 
@@ -687,7 +687,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
         j = _aclFacetArray[i]._aulNeighbours[k];
         if (j != ULONG_MAX) // hat Nachbar
         {
-          if (_aclFacetArray[j].IsValid() == true) // Nachbar-Facet geloescht ?  
+          if (_aclFacetArray[j].IsValid() == true) // Nachbar-Facet geloescht ?
           {  // Kante auf Nachbar-Facet indizieren
             k = _aclFacetArray[j].Side(i);
             pEIter->Set(j, k);
@@ -1073,6 +1073,6 @@ void MeshKernel::RebuildNeighbours (void)
       _aclFacetArray[ulF1]._aulNeighbours[usSide] = ulF0;
     }
     else
-      assert(FALSE);
+      assert(false);
   }
 }

@@ -387,22 +387,13 @@ StdCmdWorkbench::StdCmdWorkbench()
 }
 
 /**
- * Activates the workbench at the position \a iMsg.
+ * Activates the workbench at the position \a pos.
  */
-void StdCmdWorkbench::activated(int iMsg)
+void StdCmdWorkbench::activated( int pos )
 {
-  std::vector<std::string> wb = ApplicationWindow::Instance->workbenches();
-
-  try{
-    if (iMsg >= 0 && iMsg < int(wb.size()))
-    {
-      doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
-    }
-  }
-  catch(const Base::Exception&)
-  {
-    // just do nothing because for sure the exception has already been reported
-  }
+  QStringList wb = ApplicationWindow::Instance->workbenches();
+  if (pos >= 0 && pos < int(wb.size()))
+    activate( wb[pos] );
 }
 
 /**
@@ -410,9 +401,19 @@ void StdCmdWorkbench::activated(int iMsg)
  */
 void StdCmdWorkbench::activate ( const QString& item )
 {
-  if (!pcAction)
-    createAction();
-  dynamic_cast<ActionGroup*>(pcAction)->activate( item );
+  try{
+    doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", item.latin1());
+  }
+  catch(const Base::Exception&)
+  {
+    // just do nothing because for sure the exception has already been reported
+  }
+}
+
+void StdCmdWorkbench::notify( const QString& item )
+{
+  if ( pcAction )
+    dynamic_cast<WorkbenchGroup*>(pcAction)->activate( item );
 }
 
 /**
@@ -420,7 +421,7 @@ void StdCmdWorkbench::activate ( const QString& item )
  */
 QAction * StdCmdWorkbench::createAction(void)
 {
-  pcAction = new ActionGroup( this, ApplicationWindow::Instance, sName.c_str(), true );
+  pcAction = new WorkbenchGroup( ApplicationWindow::Instance, sName.c_str(), true );
   pcAction->setExclusive( true );
   pcAction->setUsesDropDown( true );
   pcAction->setText(QObject::tr(sMenuText));
@@ -432,9 +433,11 @@ QAction * StdCmdWorkbench::createAction(void)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
  
-  std::vector<std::string> items = ApplicationWindow::Instance->workbenches();
-  for (std::vector<std::string>::iterator it = items.begin(); it!=items.end(); ++it)
-    appendItem(it->c_str());
+  // sort the workbenches
+  QStringList items = ApplicationWindow::Instance->workbenches();
+  items.sort();
+  for (QStringList::Iterator it = items.begin(); it!=items.end(); ++it)
+    appendItem( *it );
 
   return pcAction;
 }
@@ -446,7 +449,7 @@ void StdCmdWorkbench::appendItem ( const QString& item )
 {
   if ( pcAction )
   {
-    QAction* action = new QAction( pcAction, item );
+    QAction* action = new WorkbenchAction( this, pcAction, item );
     action->setText(QObject::tr(item));
     action->setMenuText(QObject::tr(item));
     action->setToggleAction( true );
@@ -497,80 +500,20 @@ StdCmdMRU::StdCmdMRU()
  */
 void StdCmdMRU::activated(int iMsg)
 {
-  if (iMsg >= 0 && iMsg < int(_vMRU.size()))
+  if (iMsg < 0 || iMsg >= int(_vMRU.size()))
+    return; // not in range
+
+  QString f = _vMRU[iMsg];
+  QFileInfo fi(f);
+  if ( !fi.exists() || !fi.isFile())
   {
-    // fill the list of registered endings
-
-    const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
-
-    std::string EndingList;
-
-  
-
-    EndingList = "All suported formats (*.FCStd;*.std";
-
-
-
-    std::map<std::string,std::string>::const_iterator It;
-
-    for(It=EndingMap.begin();It != EndingMap.end();It++)
-
-    {
-
-      EndingList += ";*." + It->first;
-
-    }
-
-
-
-    EndingList += ");;FreeCAD Standard (*.FCStd;*.std));;";
-
-
-
-    for(It=EndingMap.begin();It != EndingMap.end();It++)
-
-    {
-
-      EndingList += It->second + " (*." + It->first + ");;";
-
-    }
-
-    EndingList += "All files (*.*)";
-
-  
-
-
-
-    QString f = _vMRU[iMsg];
-
-    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
-
-
-
-    try{
-      if ( EndingMap.find(Ending) == EndingMap.end() )
-
-      {
-
-        doCommand(Doc,"App.Open(\"%s\")",strToPython(f.latin1()).c_str());
-
-        Base::Console().Log("OpenCMD: App.Open(\"%s\")",strToPython(f.latin1()).c_str());
-
-      }else{
-
-        doCommand(Doc,"import %s",EndingMap.find(Ending)->second.c_str());
-
-        doCommand(Doc,"%s.open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
-
-        Base::Console().Log("%s.Open(\"%s\")",EndingMap.find(Ending)->second.c_str(),strToPython(f.latin1()).c_str());
-
-      }
-
-      addRecentFile( f );
-
-    }catch(const Base::Exception&){
-      removeRecentFile( f );
-    }
+    removeRecentFile( f );
+    // rebuild the recent file list
+    dynamic_cast<MRUActionGroup*>(pcAction)->setRecentFiles(_vMRU);
+  }
+  else
+  {
+    getAppWnd()->open( f.latin1() );
   }
 }
 
@@ -579,7 +522,7 @@ void StdCmdMRU::activated(int iMsg)
  */
 QAction * StdCmdMRU::createAction(void)
 {
-  pcAction = new ActionGroup(this,ApplicationWindow::Instance,sName.c_str(), false );
+  pcAction = new MRUActionGroup( this, ApplicationWindow::Instance,sName.c_str(), false );
   pcAction->setUsesDropDown( true );
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
@@ -590,11 +533,9 @@ QAction * StdCmdMRU::createAction(void)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
 
-
   // load recent file list
-
   StdCmdMRU::load();
-
+  dynamic_cast<MRUActionGroup*>(pcAction)->setRecentFiles( _vMRU );
 
   return pcAction;
 }
@@ -611,13 +552,11 @@ void StdCmdMRU::addRecentFile ( const QString& item )
   {
     _vMRU.prepend( item );
   }
-  else
+  else if ( _nMaxItems > 0 )
   {
     _vMRU.remove ( _vMRU.last() );
     _vMRU.prepend( item );
   }
-
-  refresh();
 }
 
 /**
@@ -629,53 +568,15 @@ void StdCmdMRU::removeRecentFile ( const QString& item )
   if ( it != _vMRU.end() )
   {
     _vMRU.remove( it );
-    refresh();
   }
 }
 
-/**
- * Refreshes the list of the known recent files.
- */
-void StdCmdMRU::refresh()
+/** Refreshes the recent file list. */
+void StdCmdMRU::refreshRecentFileWidgets()
 {
-  if ( pcAction )
-  {
-    dynamic_cast<ActionGroup*>(pcAction)->clear();
-
-    for ( QStringList::Iterator it = _vMRU.begin(); it != _vMRU.end(); ++it )
-    {
-      QAction* action = new QAction( pcAction, *it );
-      action->setText(QObject::tr( *it ));
-      QString name = recentFileItem( *it );
-      action->setMenuText(QObject::tr(name));
-      dynamic_cast<ActionGroup*>(pcAction)->addAction( action );
-    }
-  }
-}
-
-/** 
- * Creates the text of an item for the recent files menu.
- */
-QString StdCmdMRU::recentFileItem( const QString& fn )
-{
-  int ct = _vMRU.findIndex( fn ) + 1;
-
-  QString file(fn);
-
-  int npos = file.findRev('/');
-  if ( npos != -1 )
-  {
-    QString fn = file.right(file.length()-npos-1);
-    QString path = file.left(npos);
-    QString cur  = QDir::currentDirPath();
-    if (path != cur)
-      fn = file;
-    fn.prepend(QString("&%1 ").arg(ct));
-    return fn;
-  }
-
-  file.prepend(QString("&%1 ").arg(ct));
-  return file;
+  MRUActionGroup* recfiles = dynamic_cast<MRUActionGroup*>(pcAction);
+  if ( recfiles )
+    recfiles->setRecentFiles( _vMRU );
 }
 
 /** 
@@ -698,8 +599,6 @@ void StdCmdMRU::load()
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
       pCmd->setMaxCount( maxCnt );
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
-
-
 
       // append the items in reverse mode to prevent the order
       for (std::vector<std::string>::reverse_iterator it = MRU.rbegin(); it!=MRU.rend();++it)
@@ -832,6 +731,7 @@ StdCmdAbout::StdCmdAbout()
   sToolTipText  = QT_TR_NOOP("About FreeCAD");
   sWhatsThis    = QT_TR_NOOP("About FreeCAD");
   sStatusTip    = QT_TR_NOOP("About FreeCAD");
+  sPixmap       = "FCIcon";
 }
 
 void StdCmdAbout::activated(int iMsg)
@@ -1285,15 +1185,11 @@ void StdCmdCommandLine::activated(int iMsg)
   getAppWnd()->showMinimized () ;
   qApp->processEvents();
 
-
-
   // create temporary console sequencer
-
   Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
   GuiConsoleObserver::bMute = true;
   Base::Interpreter().runCommandLine("Console mode");
   GuiConsoleObserver::bMute = mute;
-
   delete seq;
 
 #ifdef Q_WS_X11

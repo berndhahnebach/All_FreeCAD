@@ -416,6 +416,7 @@ StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
   sToolTipText  = "Download FreeCAD's online help";
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
+  sPixmap       = "help";
 
   wget = new NetworkRetriever( this );
   // downloading recursively and depth 5

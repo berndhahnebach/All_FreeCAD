@@ -52,7 +52,8 @@ class BaseExport PyException : public Exception
 public:
   /// constructor does the whole job
   PyException(void);
-  
+  ~PyException() throw() {}
+
   ///  this function returns the stack trace
   const std::string &getStackTrace(void){return _stackTrace;}
 

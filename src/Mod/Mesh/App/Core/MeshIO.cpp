@@ -50,12 +50,12 @@ bool MeshSTL::Load (FileStream &rstrIn)
 {
   char szBuf[200];
 
-  if ((rstrIn.IsOpen() == FALSE) || (rstrIn.IsBad() == TRUE))
-    return FALSE;
+  if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
+    return false;
 
   rstrIn.SetPosition(80);
-  if (rstrIn.Read(szBuf, 80) == FALSE)
-    return FALSE;
+  if (rstrIn.Read(szBuf, 80) == false)
+    return false;
   szBuf[80] = 0; 
 
   if ((strstr(szBuf, "SOLID") == NULL)  && (strstr(szBuf, "FACET") == NULL)    && (strstr(szBuf, "NORMAL") == NULL) &&
@@ -70,7 +70,7 @@ bool MeshSTL::Load (FileStream &rstrIn)
     return LoadAscii(rstrIn);
   }
 
-  return TRUE;
+  return true;
 }
 
 bool MeshSTL::LoadAscii (FileStream &rstrIn)
@@ -81,13 +81,13 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
   MeshGeomFacet clFacet;
   std::vector<MeshGeomFacet>  clFacetAry;
 
-  if ((rstrIn.IsOpen() == FALSE) || (rstrIn.IsBad() == TRUE))
-    return FALSE;
+  if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
+    return false;
 
   ulCt = rstrIn.FileSize();
 
   ulVertexCt = 0;
-  while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE))
+  while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false))
   {
     rstrIn.ReadLine(szLine, 200);
     if (strncmp(szLine, "FACET", 5) == 0)  // normale
@@ -112,7 +112,7 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
 
   _rclMesh = clFacetAry;  
 
-  return TRUE;  
+  return true;
 }
 
 
@@ -123,22 +123,22 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
   unsigned short                     usAtt; 
   unsigned long                      ulCt;
 
-  if ((rstrIn.IsOpen() == FALSE) || (rstrIn.IsBad() == TRUE))
-    return FALSE;
+  if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
+    return false;
 
   rstrIn.Read(szInfo, sizeof(szInfo));
  
   rstrIn.Read((char*)&ulCt, sizeof(ulCt));
-  if (rstrIn.IsBad() == TRUE)
-    return FALSE;
+  if (rstrIn.IsBad() == true)
+    return false;
 
   unsigned long ulSize = rstrIn.FileSize(); 
   unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long)))/50;
 
 	if (ulCt > ulFac)
-		return FALSE;// not a valid STL file
+		return false;// not a valid STL file
 
-  Base::Sequencer().start("create mesh structure...", ulCt + 1);
+  Base::Sequencer().start("create mesh structure...", ulCt * 4 + 1);
 
   MeshPointBuilder  clMap;
   clMap.resize(ulCt*3);
@@ -151,8 +151,8 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
     // Normale, Eckpunkte
     rstrIn.Read((char*)&clVects, sizeof(clVects));
 
-    if (rstrIn.IsBad() == TRUE)
-      return FALSE;
+    if (rstrIn.IsBad() == true)
+      return false;
 
     // Umlaufrichtung an Normale anpassen
     if ((((clVects[2] - clVects[1]) % (clVects[3] - clVects[1])) * clVects[0]) >= 0.0f)
@@ -178,7 +178,7 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
 
   Base::Sequencer().stop();
  
-  return TRUE;
+  return true;
 }
 
 bool MeshSTL::SaveAscii (FileStream &rstrOut) const
@@ -188,10 +188,10 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
   unsigned long                  i, ulCtFacet;
   char                   szBuf[200]; 
 
-  if ((rstrOut.IsOpen() == FALSE) || (rstrOut.IsBad() == TRUE) ||
+  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
       (_rclMesh.CountFacets() == 0))
   {
-    return FALSE;
+    return false;
   }
 
   strcpy(szBuf, "solid MESH\n");
@@ -231,7 +231,7 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
   strcpy(szBuf, "endsolid MESH\n");
   rstrOut.Write(szBuf, strlen(szBuf));
   
-  return TRUE;
+  return true;
 }
 
 bool MeshSTL::SaveBinary (FileStream &rstrOut) const
@@ -242,10 +242,10 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
   unsigned short                 usAtt;
   char                   szInfo[80];
 
-  if ((rstrOut.IsOpen() == FALSE) || (rstrOut.IsBad() == TRUE) ||
+  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
       (_rclMesh.CountFacets() == 0))
   {
-    return FALSE;
+    return false;
   }
  
   strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
@@ -278,7 +278,7 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
     ++clIter;
   }
 
-  return TRUE;
+  return true;
 }
 
 bool MeshInventor::Load (FileStream &rstrIn)
@@ -294,18 +294,18 @@ bool MeshInventor::Load (FileStream &rstrIn)
   std::vector<Vector3D>         aclPoints;
 
 
-  if ((rstrIn.IsOpen() == FALSE) || (rstrIn.IsBad() == TRUE))
-    return FALSE;
+  if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
+    return false;
 
   ulCt = rstrIn.FileSize();
 ///*
-  bFlag = TRUE;
-  while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
+  bFlag = true;
+  while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
   {
       rstrIn.ReadLine(szLine ,200);
       // read the normals
       if (strncmp(szLine, "VECTOR [", 8) == 0){
-          while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
+          while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
           {  
               rstrIn.ReadLine(szLine, 200);
 
@@ -315,20 +315,20 @@ bool MeshInventor::Load (FileStream &rstrIn)
 
               }
               else{
-                  bFlag = FALSE;
+                  bFlag = false;
               }
           }
       }
   }
 
 //*/
-  bFlag = TRUE;
-  while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
+  bFlag = true;
+  while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
   {
       rstrIn.ReadLine(szLine ,200);
       // read the points
       if (strncmp(szLine, "POINT [", 7) == 0){
-          while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
+          while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
           {
               rstrIn.ReadLine(szLine, 200);
               if (sscanf(szLine, "%f  %f  %f", &(clPoint.x), &(clPoint.y), &(clPoint.z)) == 3)
@@ -336,20 +336,20 @@ bool MeshInventor::Load (FileStream &rstrIn)
                  aclPoints.push_back(clPoint);
               }
               else{
-                  bFlag = FALSE;
+                  bFlag = false;
               }
           }
       }
   }
 
   ulCt = 0;
-  bFlag = TRUE;
-  while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
+  bFlag = true;
+  while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
   {
       rstrIn.ReadLine(szLine ,200);
       // read the points of the facets
       if (strncmp(szLine, "COORDINDEX [ ", 13) == 0){
-          while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
+          while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
           {
               rstrIn.ReadLine(szLine, 200);
               if (sscanf(szLine, "%lu, %lu, %lu, %ld",
@@ -364,14 +364,14 @@ bool MeshInventor::Load (FileStream &rstrIn)
               }
               else
               {
-                  bFlag = FALSE;
+                  bFlag = false;
               }
           }
       }
   }
 
   _rclMesh = clFacetAry;
-  return TRUE;
+  return true;
 }
 
 bool MeshInventor::Save (FileStream &rstrOut) const
@@ -383,10 +383,10 @@ bool MeshInventor::Save (FileStream &rstrOut) const
   unsigned long                  i, ulCtFacet, ulAllFacets = _rclMesh.CountFacets();
   char                   szBuf[200]; 
 
-  if ((rstrOut.IsOpen() == FALSE) || (rstrOut.IsBad() == TRUE) ||
+  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
       (_rclMesh.CountFacets() == 0))
   {
-    return FALSE;
+    return false;
   }
 
   // Einleitung
@@ -483,5 +483,5 @@ bool MeshInventor::Save (FileStream &rstrOut) const
   strcpy(szBuf, "#End of Triangulation Data \n  }\n\n");
   rstrOut.Write(szBuf, strlen(szBuf));
 
-  return TRUE;
+  return true;
 }

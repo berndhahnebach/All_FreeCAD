@@ -34,8 +34,8 @@ using namespace Mesh;
 
 void DataStream::Init (void)
 {
-  bSwap = FALSE;
-  bFormatError = FALSE;
+  bSwap = false;
+  bFormatError = false;
   ulFlag = 0;
 }
 
@@ -271,12 +271,12 @@ bool FileStream::Open (const char* pszName, std::ios::openmode om)
 #ifdef FC_OS_WIN32  
   om = (std::ios::open_mode)(om | std::ios::binary);
 #endif
-	bSwap = FALSE;
+	bSwap = false;
     pfs->open (pszName, om);
     return pfs->good ();
   }
   else
-    return FALSE;
+    return false;
 }
 
 /*$$$*/
@@ -354,7 +354,7 @@ bool FileStream::IsGood (void)
  Rueckgabe    : TRUE/FALSE OK / Fehler
  -------------------------------------------------------*/
 {
-  return pfs ? pfs->good () : FALSE;
+  return pfs ? pfs->good () : false;
 }
 
 /*$$$*/
@@ -365,7 +365,7 @@ bool FileStream::IsEof (void)
  Rueckgabe    : TRUE/FALSE EOF / nicht EOF
  -------------------------------------------------------*/
 {
-  return pfs ? pfs->eof () : FALSE;
+  return pfs ? pfs->eof () : false;
 }
 
 /*$$$*/
@@ -376,7 +376,7 @@ bool FileStream::IsFail (void)
  Rueckgabe    : TRUE/FALSE Fehler / kein Fehler
  -------------------------------------------------------*/
 {
-  return pfs ? pfs->fail () : TRUE;
+  return pfs ? pfs->fail () : true;
 }
 
 /*$$$*/
@@ -387,7 +387,7 @@ bool FileStream::IsBad (void)
  Rueckgabe    : TRUE/FALSE Fehler / kein Fehler
  -------------------------------------------------------*/
 {
-  return pfs ? pfs->bad () : TRUE;
+  return pfs ? pfs->bad () : true;
 }
 
 /*$$$*/
@@ -668,7 +668,7 @@ bool BlobStream::IsOpen (void)
  Rueckgabe    : TRUE
  -------------------------------------------------------*/
 {
-  return TRUE;
+  return true;
 }
               
 /*$$$*/

@@ -106,7 +106,7 @@ public:
   /// Get ponter to the active CasCade document 
   App::Document*  getActiveOCCDocument(void);
   /// Get the FCAxtion object of this command
-  QAction*  getAction();
+  QAction*  getAction(bool create=true);
   //@}
 
   /** @name Helper methodes for the UNDO REDO  and Update handling */
@@ -346,13 +346,9 @@ public:
   //@}
 
   /** @name Methods to load and save macro commands. */
-
   //@{
-
   /** Loads all macros command from the preferences. */
-
   static void load();
-
   /** Saves all macros command to the preferences. */
   static void save();
   //@}
@@ -462,19 +458,20 @@ public:
   /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
 
-
-
   /** Creates the accompanying QAction object to the command. */
   QAction * createAction(void);
 
-
-
   /** Appends a new workbench \a item. */
   void appendItem ( const QString& item );
-  /** Activates the workbench \a item. */
 
+  /** Activates the workbench \a item. */
   void activate( const QString& item );
 
+  /** Notifies this command when workbench has been changed from 
+   * outside, e.g. via Python command line. 
+   */
+  void notify( const QString& item );
+  
   /** Adds the workbench command to a widget. */
   bool addTo(QWidget *);
 
@@ -492,25 +489,20 @@ class StdCmdMRU : public CppCommand
 public:
   StdCmdMRU();
   bool isActive(void){return true;}
-  /** The item at position \a iMsg is activated. */
 
+  /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
 
-
   /** Creates the accompanying QAction object to the command. */
-
   QAction * createAction(void);
   
-
   /** Adds the new item to the recent files. */
-
   void addRecentFile ( const QString& item );
   /** Removes \a item from the recent files. */
-
   void removeRecentFile ( const QString& item );
 
   /** Refreshes the recent file list. */
-  void refresh();
+  void refreshRecentFileWidgets();
 
   int  maxCount() const { return _nMaxItems; }
   void setMaxCount (int i) { _nMaxItems = i;    }
@@ -518,21 +510,15 @@ public:
   QStringList recentFiles() const;
   std::string getResource(const char* sName) { return ""; }
 
-  /** @name Methodes to set the propertys of the Script Command */
-
+  /** @name Methods to load or save from preferences */
   //@{
-
-  /** Loads all macros command from the preferences. */
-
+  /** Loads all recent files from the preferences. */
   static void load();
-  /** Saves all macros command to the preferences. */
-
+  /** Saves all recent files to the preferences. */
   static void save();
   //@}
 
-
 private:
-  QString recentFileItem( const QString& fn );
   QStringList _vMRU;
   QActionGroup *pcAction;
   int _nMaxItems;

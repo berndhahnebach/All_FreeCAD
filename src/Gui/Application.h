@@ -29,6 +29,7 @@
 # include <string>
 # include <vector>
 # include <qmainwindow.h>
+# include <qstringlist.h>
 # include <qworkspace.h>
 #endif
 
@@ -135,10 +136,11 @@ public:
   /// Activate a named workbench
   void activateWorkbench(const char* name);
   /// update the combo box when there are changes in the workbenches
-  void updateWorkbenchEntrys(void);
+  void appendWorkbench(const char* name);
+  void removeWorkbench(const char* name);
   /// returns the name of the active workbench
   QString activeWorkbench(void);
-  std::vector<std::string> workbenches(void);
+  QStringList workbenches(void);
   //@}
 
   /// MRU: recent files

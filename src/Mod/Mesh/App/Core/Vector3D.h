@@ -29,7 +29,7 @@
 # include <math.h>
 #endif
 
-#include "MeshConfig.h"
+#include "Definitions.h"
 #include "Stream.h"
 
 namespace Mesh {

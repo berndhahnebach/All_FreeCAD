@@ -25,7 +25,7 @@
 #define __RSTREAM_HXX__
 
 #include <string>
-#include "MeshConfig.h"
+#include "Definitions.h"
 #include <fstream>
 
 #ifndef _PreComp_

@@ -28,7 +28,7 @@
 # include <math.h>
 #endif
 
-#include "MeshConfig.h"
+#include "Definitions.h"
 #include "ViewProj.h"
 #include "Vector3D.h"
 #include "Stream.h"
@@ -144,12 +144,12 @@ inline BoundBox3D::BoundBox3D (const Vector3D *pclVect, unsigned long ulCt)
   const Vector3D  *pI, *pEnd = pclVect + ulCt;
   for (pI = pclVect; pI < pEnd; pI++)
   {
-    MinX = MIN(MinX, pI->x);
-    MinY = MIN(MinY, pI->y);
-    MinZ = MIN(MinZ, pI->z);
-    MaxX = MAX(MaxX, pI->x);
-    MaxY = MAX(MaxY, pI->y);
-    MaxZ = MAX(MaxZ, pI->z);
+    MinX = std::min<float>(MinX, pI->x);
+    MinY = std::min<float>(MinY, pI->y);
+    MinZ = std::min<float>(MinZ, pI->z);
+    MaxX = std::max<float>(MaxX, pI->x);
+    MaxY = std::max<float>(MaxY, pI->y);
+    MaxZ = std::max<float>(MaxZ, pI->z);
   }
 }
 
@@ -166,12 +166,12 @@ inline BoundBox3D& BoundBox3D::operator = (const BoundBox3D &rcBound)
 
 inline BoundBox3D& BoundBox3D::operator &= (const Vector3D &rclVect)
 {
-  MinX = MIN(MinX, rclVect.x);
-  MinY = MIN(MinY, rclVect.y);
-  MinZ = MIN(MinZ, rclVect.z);
-  MaxX = MAX(MaxX, rclVect.x);
-  MaxY = MAX(MaxY, rclVect.y);
-  MaxZ = MAX(MaxZ, rclVect.z);
+  MinX = std::min<float>(MinX, rclVect.x);
+  MinY = std::min<float>(MinY, rclVect.y);
+  MinZ = std::min<float>(MinZ, rclVect.z);
+  MaxX = std::max<float>(MaxX, rclVect.x);
+  MaxY = std::max<float>(MaxY, rclVect.y);
+  MaxZ = std::max<float>(MaxZ, rclVect.z);
   return *this;
 }
 
@@ -242,10 +242,10 @@ inline bool BoundBox3D::IsCutPlane (const Vector3D &rclBase, const Vector3D &rcl
     for (unsigned short i = 1; i < 8; i++)
     {
       if ((CalcPoint(i).DistanceToPlane(rclBase, rclNormal) * fD) < 0.0f)
-        return TRUE;
+        return true;
     }
   }
-  return FALSE;
+  return false;
 }
 
 inline void BoundBox3D::Enlarge (float fLen)

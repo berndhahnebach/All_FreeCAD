@@ -30,8 +30,39 @@
 #define MESH_MIN_PT_DIST           1.0e-5f
 #define MESH_MIN_EDGE_LEN          1.0e-3f
 #define MESH_MIN_EDGE_ANGLE        float(RAD(2.0))
-#define MESH_REMOVE_MIN_LEN        TRUE
-#define MESH_REMOVE_G3_EDGES       TRUE
+#define MESH_REMOVE_MIN_LEN        true
+#define MESH_REMOVE_G3_EDGES       true
+
+/*
+ * general constant definitions
+ */
+#define FLOAT_EPS   1.0e-4f 
+
+#ifndef  F_PI
+# define F_PI  3.1415926f
+#endif
+
+#ifndef  D_PI
+# define D_PI  3.141592653589793
+#endif
+  
+#ifndef  FLOAT_MAX
+# define FLOAT_MAX 1e30f
+#endif
+
+#ifndef  DOUBLE_MAX
+# define DOUBLE_MAX 1.7976931348623157E+308    /* max decimal value of a "double"*/
+#endif
+
+#ifndef  DOUBLE_MIN
+# define DOUBLE_MIN 2.2250738585072014E-308    /* min decimal value of a "double"*/
+#endif
+
+/*
+ * macros to convert between angles
+ */
+#define RAD(D)    ((D) * D_PI / 180.0)
+#define DEGREE(R) ((R) * 180.0 / D_PI) 
 
 namespace Mesh {
 

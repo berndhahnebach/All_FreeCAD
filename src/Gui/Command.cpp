@@ -98,9 +98,9 @@ App::Document* Command::getActiveOCCDocument(void)
     return 0l;
 }
 
-QAction* Command::getAction() 
+QAction* Command::getAction( bool create ) 
 { 
-  if (!_pcAction)
+  if (!_pcAction && create)
     _pcAction = createAction();
 
   return _pcAction; 

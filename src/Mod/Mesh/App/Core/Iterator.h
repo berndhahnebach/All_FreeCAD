@@ -439,12 +439,12 @@ inline bool MeshFacetIterator::Set (unsigned long ulIndex)
   if (ulIndex < _rclMesh._aclFacetArray.size())
   {
     _clIter    = _rclMesh._aclFacetArray.begin() + ulIndex;
-    return TRUE;
+    return true;
   }
   else
   {
     _clIter    = _rclMesh._aclFacetArray.end();
-    return FALSE;
+    return false;
   }
 }
 
@@ -511,12 +511,12 @@ inline bool MeshPointIterator::Set (unsigned long ulIndex)
   if (ulIndex < _rclMesh._aclPointArray.size())
   {
     _clIter = _rclMesh._aclPointArray.begin() + ulIndex;
-    return TRUE;
+    return true;
   }
   else
   {
     _clIter = _rclMesh._aclPointArray.end();
-    return FALSE;
+    return false;
   }
 }
 
@@ -584,12 +584,12 @@ inline bool MeshEdgeIterator::Set (unsigned long ulIndex)
   if (ulIndex < _rclMesh._aclEdgeArray.size())
   {
     _clIter = _rclMesh._aclEdgeArray.begin() + ulIndex;
-    return TRUE;
+    return true;
   }
   else
   {
     _clIter = _rclMesh._aclEdgeArray.end();
-    return FALSE;
+    return false;
   }
 }
 

@@ -148,10 +148,6 @@ SOURCE=.\Core\Mesh.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\MeshConfig.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\MeshIO.cpp
 # End Source File
 # Begin Source File

@@ -28,7 +28,7 @@
 #include <math.h>
 #include <limits.h>
 
-#include "MeshConfig.h"
+#include "Definitions.h"
 #include "BoundBox.h"
 
 
@@ -55,12 +55,12 @@ BoundBox3D BoundBox3D::operator & (RBoundBox3D rcBB)
 {
   BoundBox3D cBBRes;
 	
-  cBBRes.MinX = MAX (MinX, rcBB.MinX);
-  cBBRes.MaxX = MIN (MaxX, rcBB.MaxX);
-  cBBRes.MinY = MAX (MinY, rcBB.MinY);
-  cBBRes.MaxY = MIN (MaxY, rcBB.MaxY);
-  cBBRes.MinZ = MAX (MinZ, rcBB.MinZ);
-  cBBRes.MaxZ = MIN (MaxZ, rcBB.MaxZ);
+  cBBRes.MinX = std::max<float> (MinX, rcBB.MinX);
+  cBBRes.MaxX = std::min<float> (MaxX, rcBB.MaxX);
+  cBBRes.MinY = std::max<float> (MinY, rcBB.MinY);
+  cBBRes.MaxY = std::min<float> (MaxY, rcBB.MaxY);
+  cBBRes.MinZ = std::max<float> (MinZ, rcBB.MinZ);
+  cBBRes.MaxZ = std::min<float> (MaxZ, rcBB.MaxZ);
 	
   return cBBRes;
 }
@@ -69,12 +69,12 @@ BoundBox3D BoundBox3D::operator | (RBoundBox3D rcBB)
 {
   BoundBox3D cBBRes;
 	
-  cBBRes.MinX = MIN (MinX, rcBB.MinX);
-  cBBRes.MaxX = MAX (MaxX, rcBB.MaxX);
-  cBBRes.MinY = MIN (MinY, rcBB.MinY);
-  cBBRes.MaxY = MAX (MaxY, rcBB.MaxY);
-  cBBRes.MinZ = MIN (MinZ, rcBB.MinZ);
-  cBBRes.MaxZ = MAX (MaxZ, rcBB.MaxZ);
+  cBBRes.MinX = std::min<float> (MinX, rcBB.MinX);
+  cBBRes.MaxX = std::max<float> (MaxX, rcBB.MaxX);
+  cBBRes.MinY = std::min<float> (MinY, rcBB.MinY);
+  cBBRes.MaxY = std::max<float> (MaxY, rcBB.MaxY);
+  cBBRes.MinZ = std::min<float> (MinZ, rcBB.MinZ);
+  cBBRes.MaxZ = std::max<float> (MaxZ, rcBB.MaxZ);
 	
   return cBBRes;
 }
@@ -89,7 +89,7 @@ bool BoundBox3D::IsValid (void)
 bool BoundBox3D::GetOctantFromVector (Vector3D &rclVct, OCTANT &rclOctant)
 {
   if (!IsInBox (rclVct))
-    return FALSE;
+    return false;
     
   unsigned short usNdx = 0;
   if (IS_ON_RAY (HALF (MinX, MaxX), MaxX, rclVct.x))  // left/RIGHT
@@ -99,7 +99,7 @@ bool BoundBox3D::GetOctantFromVector (Vector3D &rclVct, OCTANT &rclOctant)
   if (IS_ON_RAY (HALF (MinZ, MaxZ), MaxZ, rclVct.z))  // back/FRONT
     usNdx |= 4;
   rclOctant = (OCTANT) usNdx;
-  return TRUE;
+  return true;
 }
 
 BoundBox3D BoundBox3D::CalcOctant (OCTANT Octant)

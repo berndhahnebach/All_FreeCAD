@@ -469,7 +469,7 @@ HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, W
 
   // the 'Open' button
   QToolButton* open = new QToolButton( btnGrp, tr("Open") );
-  open->setPixmap( Gui::BitmapFactory().pixmap("open_pixmap") );
+  open->setPixmap( Gui::BitmapFactory().pixmap("helpopen") );
   open->setAutoRaise(true);
   QToolTip::add( open, tr("Open"));
 

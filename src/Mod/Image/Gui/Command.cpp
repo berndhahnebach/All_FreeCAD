@@ -80,7 +80,7 @@ void CmdImageOpen::activated(int iMsg)
 
       // Displaying the image in a view
       ImageView* iView = new ImageView(Gui::ApplicationWindow::Instance, "Image");
-      iView->setIcon( Gui::BitmapFactory().pixmap("FCIcon") );
+      iView->setIcon( Gui::BitmapFactory().pixmap("colors") );
       iView->setCaption(QObject::tr("Image viewer"));
       iView->resize( 400, 300 );
       Gui::ApplicationWindow::Instance->addWindow( iView );

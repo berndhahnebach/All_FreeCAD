@@ -314,7 +314,7 @@ class AppMeshExport MeshKernel
     // --------------------------------------------------------------------
     protected:
     void ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex,
-                                bool bOnlySetInvalid = FALSE);
+                                bool bOnlySetInvalid = false);
 
     // Neuaufbau des Kantenarrays.
     protected:

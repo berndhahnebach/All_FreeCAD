@@ -95,4 +95,8 @@ void RegisterIcons()
   rclBmpFactory.addXPM("forward_pixmap", forward_pixmap);
   rclBmpFactory.addXPM("home_pixmap", home_pixmap);
   rclBmpFactory.addXPM("open_pixmap", open_pixmap);
+  rclBmpFactory.addXPM("reload", reload);
+  rclBmpFactory.addXPM("help", help);
+  rclBmpFactory.addXPM("helpopen", helpopen);
+  rclBmpFactory.addXPM("colors", colors);
 }

@@ -137,81 +137,151 @@ void Action::setEnabled ( bool b)
 
 // --------------------------------------------------------------------
 
-ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent, const char * name, bool exclusive )
-:QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
+WorkbenchAction::WorkbenchAction (  StdCmdWorkbench* pcCmd, QObject * parent, const char * name )
+  : QAction( parent, name, false ), _pcCmd(pcCmd)
 {
-  connect( this, SIGNAL( selected(QAction*) ), this, SLOT( onActivated(QAction*) ) );
+  connect(this, SIGNAL(activated()), SLOT(onActivated()));
 }
 
-ActionGroup::~ActionGroup()
+WorkbenchAction::~WorkbenchAction()
+{
+}
+
+/** 
+ * This slot is connected to the activated() signal and gets called whenever the user 
+ * clicks a menu or combobox option or a toolbar button or presses an action's accelerator 
+ * key combination.
+ */
+void WorkbenchAction::onActivated()
+{
+  _pcCmd->activate( text() );
+}
+
+// --------------------------------------------------------------------
+
+WorkbenchGroup::WorkbenchGroup ( QObject * parent, const char * name, bool exclusive )
+  :QActionGroup( parent, name, exclusive )
+{
+}
+
+WorkbenchGroup::~WorkbenchGroup()
 { 
 }
 
 /**
- * Adds this action group to widget \a w. 
- * If isExclusive() is FALSE or usesDropDown() is FALSE, the actions within the group are added 
- * to the widget individually. For example, if the widget is a menu, the actions will appear as 
- * individual menu options, and if the widget is a toolbar, the actions will appear as toolbar buttons.
- *
- * If both isExclusive() and usesDropDown() are TRUE, the actions are presented either in a combobox 
- * (if \a w is a toolbar) or in a submenu (if \a w is a menu).
- *
- * All actions should be added to the action group \a before the action group is added to the widget. 
- * If actions are added to the action group \a after the action group has been added to the widget 
- * these later actions will \a not appear.  
+ * If the workbench has changed this method notifies its actions to set
+ * the active one if it is added to a combobox.
  */
-bool ActionGroup::addTo( QWidget *w )
-{
-  return QActionGroup::addTo( w );
-}
-
-void ActionGroup::addedTo ( QWidget * actionWidget, QWidget * container, QAction * a )
-{
-}
-
-void ActionGroup::addAction( QAction* act )
-{
-  if ( isExclusive() == false )
-    connect( act, SIGNAL( activated() ), this, SLOT( onActivated() ));
-  add( act );
-}
-
-void ActionGroup::removeAction ( QAction* act )
+void WorkbenchGroup::activate( const QString& name )
 {
   const QObjectList *l = children();
-
   if ( l )
   {
     QObjectListIt it(*l);
     QObject * obj;
     while ( (obj=it.current()) != 0 ) 
     {
-      if ( obj->inherits("QAction") )
+      QAction* act = dynamic_cast<QAction*>(obj);
+      if ( act && act->text() == name )
       {
-        if ( obj == act )
-        {
-          if ( isExclusive() == false )
-            disconnect( act, SIGNAL( activated() ), this, SLOT( onActivated() ));
-          removeChild( act );
-          delete act;
-          break;
-        }
+        act->setOn( true );
+        break;
       }
-
       ++it;
     }
   }
 }
 
-void ActionGroup::clear()
+// --------------------------------------------------------------------
+
+MRUAction::MRUAction ( QObject * parent, const char * name, bool toggle )
+  : QAction( parent, name, toggle ), _idx(-1)
+{
+}
+
+MRUAction::~MRUAction()
+{
+}
+
+/**
+ * Sets the index for this action to \a index. \a index + 1 is the number that 
+ * is prepended to the "menuText" property ofthis action. 
+ */
+void MRUAction::addedTo ( int index, QPopupMenu * menu )
+{
+  _idx = index;
+  QString item = recentFileItem( text() );
+  item.prepend( QString("&%1 ").arg( _idx + 1 ) );
+  setMenuText( item );
+}
+
+/**
+ * Returns the index number.
+ */
+int MRUAction::index() const
+{
+  return _idx;
+}
+
+/**
+ * Returns the file name of \a fn if the \a fn is in the current
+ * working directory, otherwise \a fn is returned.
+ */
+QString MRUAction::recentFileItem( const QString& fn )
+{
+  QFileInfo fi(fn);
+  QString dir = fi.dirPath( true );
+  QString cur = QDir::currentDirPath();
+  if ( dir == cur )
+    return fi.fileName();
+  else
+    return fn;
+}
+
+// --------------------------------------------------------------------
+
+MRUActionGroup::MRUActionGroup ( Command* pcCmd, QObject * parent, const char * name, bool exclusive )
+  :QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
+{
+}
+
+MRUActionGroup::~MRUActionGroup()
+{ 
+}
+
+/**
+ * Set the list of recent files. For each item an action object is
+ * created and added to this action group. 
+ */
+void MRUActionGroup::setRecentFiles( const QStringList& files )
+{
+  clear();
+
+  for ( QStringList::ConstIterator it = files.begin(); it != files.end(); it++ )
+  {
+    // This is a trick to fool Qt's QAction handling.
+    // To the QAction constructor a null pointer is given to delay the addition to a QActionGroup.
+    // Reason: If the parent QActionGroup is already added to a widget then it isn't possible to
+    // get called our own addedTo() method but the QAction::addedTo() is called instead.
+    MRUAction* action = new MRUAction( 0, *it );
+    insertChild(action);
+    action->setText( *it );
+  
+    connect( action, SIGNAL( activated() ), this, SLOT( onActivated() ));
+
+    // now addedTo() is called whenever a new action is added to this action group
+    add( action );
+  }
+}
+
+void MRUActionGroup::clear()
 {
   QObjectList *l = queryList( "QAction" );
   QObjectListIt it( *l );
   QObject *obj;
   while ( (obj = it.current()) != 0 ) 
   {
-    if ( isExclusive() == false )
-      disconnect( obj, SIGNAL( activated() ), this, SLOT( onActivated() ));
+    disconnect( obj, SIGNAL( activated() ), this, SLOT( onActivated() ));
     removeChild( obj );
     delete obj;
     ++it;
@@ -220,95 +290,15 @@ void ActionGroup::clear()
   delete l; // delete the list, not the objects
 }
 
-void ActionGroup::activate( int id)
+void MRUActionGroup::onActivated ()
 {
-  int pos = 0;
-  const QObjectList *l = children();
-  if ( l )
+  const QObject* o = sender();
+
+  if ( o->inherits("Gui::MRUAction") )
   {
-    QObjectListIt it(*l);
-    QObject * obj;
-    while ( (obj=it.current()) != 0 ) 
-    {
-      QAction* act = dynamic_cast<QAction*>(obj);
-      if ( act )
-      {
-        if ( pos == id )
-        {
-          act->setOn( true );
-          break;
-        }
-      }
-
-      ++it;
-      ++pos;
-    }
-  }
-}
-
-void ActionGroup::activate( const QString& name )
-{
-  const QObjectList *l = children();
-  if ( l )
-  {
-    QObjectListIt it(*l);
-    QObject * obj;
-    while ( (obj=it.current()) != 0 ) 
-    {
-      QAction* act = dynamic_cast<QAction*>(obj);
-      if ( act )
-      {
-        if ( act->text() == name )
-        {
-          act->setOn( true );
-          break;
-        }
-      }
-
-      ++it;
-    }
-  }
-}
-
-void ActionGroup::onActivated ()
-{
-  if ( isExclusive() == false )
-  {
-    const QObject* o = sender();
-    if ( o && o->inherits("QAction") )
-      onActivated( (QAction*)o );
-  }
-}
-
-void ActionGroup::onActivated (int i)
-{
-  command()->activated(i);
-}
-
-void ActionGroup::onActivated ( QAction* act )
-{
-  int id=0;
-  const QObjectList *l = children();
-
-  if ( l )
-  {
-    QObjectListIt it(*l);
-    QObject * obj;
-    while ( (obj=it.current()) != 0 ) 
-    {
-      if ( obj->inherits("QAction") )
-      {
-        if ( obj == act )
-        {
-          command()->activated( id );
-          break;
-        }
-
-        id++;
-      }
-
-      ++it;
-    }
+    MRUAction* act = (MRUAction*)o;
+    if ( act )
+      _pcCmd->activated( act->index() );
   }
 }
 

@@ -156,7 +156,7 @@ RET: bool: TRUE, wenn Punkt zum Dreieck gehoert
 bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
 {
   if (Distance(rclPoint) > fDistance)
-    return FALSE;
+    return false;
 
   Vector3D clNorm(_clNormal), clProjPt(rclPoint), clEdge;
   Vector3D clP0(_aclPoints[0]), clP1(_aclPoints[1]), clP2(_aclPoints[2]);
@@ -174,11 +174,11 @@ bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
     fLE = clP2.DistanceToLine(clP0, clEdge);
     if (fLP <= fLE)
     {
-      if (clProjPt.DistanceToLine(clP2, clEdge) > fLE) 
-        return FALSE;
+      if (clProjPt.DistanceToLine(clP2, clEdge) > fLE)
+        return false;
     }
     else
-      return FALSE;        
+      return false;
   }      
 
   // Kante P0 --> P2
@@ -190,10 +190,10 @@ bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
     if (fLP <= fLE)
     {
       if (clProjPt.DistanceToLine(clP1, clEdge) > fLE) 
-        return FALSE;
+        return false;
     }
     else
-      return FALSE;        
+      return false;
   }      
 
   // Kante P1 --> P2
@@ -205,13 +205,13 @@ bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
     if (fLP <= fLE)
     {
       if (clProjPt.DistanceToLine(clP0, clEdge) > fLE) 
-        return FALSE;
+        return false;
     }
     else
-      return FALSE;        
+      return false;
   }      
 
-  return TRUE;
+  return true;
 }
 
 /*-------------------------------------------------------------------

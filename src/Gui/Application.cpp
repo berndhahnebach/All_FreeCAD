@@ -35,6 +35,10 @@
 # include <qvbox.h>
 #endif
 
+#ifdef FC_OS_LINUX
+// TODO: Don't know where the header is!
+void itoa(int, char*, int){ }
+#endif
 
 // FreeCAD Base header
 #include "../Base/Console.h"
@@ -274,10 +278,9 @@ ApplicationWindow::~ApplicationWindow()
 {
   // save macros
   MacroCommand::save();
+
   // save recent file list
-
   // Note: the recent files are restored in StdCmdMRU::createAction(), because we need
-
   //       an valid instance of StdCmdMRU to do this
   StdCmdMRU::save();
   saveWindowSettings();
@@ -330,9 +333,8 @@ void ApplicationWindow::open(const char* FileName)
     return;
   }
 
-  appendRecentFile(File.fileName().c_str());
-
-
+  // the original file name is required
+  appendRecentFile( FileName );
 }
 
 
@@ -850,10 +852,10 @@ void ApplicationWindow::activateWorkbench(const char* name)
     customWidgetManager()->showToolBox();
 
     // update the Std_Workbench command and its action object
-    Command* pCmd = d->_cCommandManager.getCommandByName("Std_Workbench");
-    if (pCmd)
+    StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
+    if ( pCmd && pCmd->getAction(false) )
     {
-      ((StdCmdWorkbench*)pCmd)->activate( name );
+      pCmd->notify( name );
     }
 
     show();
@@ -864,7 +866,17 @@ void ApplicationWindow::activateWorkbench(const char* name)
   }
 }
 
-void ApplicationWindow::updateWorkbenchEntrys(void)
+void ApplicationWindow::appendWorkbench(const char* name)
+{
+  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
+
+  if ( pCmd && pCmd->getAction(false) )
+  {
+    pCmd->appendItem( name );
+  }
+}
+
+void ApplicationWindow::removeWorkbench(const char* name)
 {
 //	PyObject *key, *value;
 //	int pos = 0;
@@ -883,11 +895,11 @@ void ApplicationWindow::updateWorkbenchEntrys(void)
 //  }
 }
 
-std::vector<std::string> ApplicationWindow::workbenches(void)
+QStringList ApplicationWindow::workbenches(void)
 {
   PyObject *key, *value;
   int pos = 0;
-  std::vector<std::string> wb;
+  QStringList wb;
   // insert all items
   while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
     /* do something interesting with the values... */
@@ -898,10 +910,11 @@ std::vector<std::string> ApplicationWindow::workbenches(void)
 
 void ApplicationWindow::appendRecentFile(const char* file)
 {
-  Command* pCmd = d->_cCommandManager.getCommandByName("Std_MRU");
+  StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(d->_cCommandManager.getCommandByName("Std_MRU"));
   if (pCmd)
   {
-    ((StdCmdMRU*)pCmd)->addRecentFile(file);
+    pCmd->addRecentFile( file );
+    pCmd->refreshRecentFileWidgets();
   }
 }
 
@@ -1698,7 +1711,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
 
   PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
 
-  Instance->updateWorkbenchEntrys();
+  Instance->appendWorkbench(psKey);
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1712,7 +1725,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchDelete)
 
   PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
 
-  Instance->updateWorkbenchEntrys();
+  Instance->removeWorkbench(psKey);
 
   Py_INCREF(Py_None);
   return Py_None;

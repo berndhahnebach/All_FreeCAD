@@ -153,6 +153,8 @@ libFreeCADBase_la_SOURCES = \
 		Exception.h \
 		Factory.cpp \
 		Factory.h \
+		FileInfo.cpp \
+		FileInfo.h \
 		FileTemplate.cpp \
 		FileTemplate.h \
 		Handle.cpp \
@@ -191,7 +193,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libFreeCADBase_la_DEPENDENCIES =
 am_libFreeCADBase_la_OBJECTS = Console.lo Documentation.lo Doxygen.lo \
-	Exception.lo Factory.lo FileTemplate.lo Handle.lo \
+	Exception.lo Factory.lo FileInfo.lo FileTemplate.lo Handle.lo \
 	Interpreter.lo Observer.lo Parameter.lo ParameterPy.lo \
 	PreCompiled.lo PyExport.lo PyExportImp.lo PyTools.lo \
 	Sequencer.lo
@@ -203,7 +205,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Console.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Documentation.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/Exception.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Factory.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Factory.Plo ./$(DEPDIR)/FileInfo.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FileTemplate.Plo ./$(DEPDIR)/Handle.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Interpreter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Observer.Plo ./$(DEPDIR)/Parameter.Plo \
@@ -282,6 +284,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTemplate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Handle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Interpreter.Plo@am__quote@
