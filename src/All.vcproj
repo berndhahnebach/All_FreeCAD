@@ -43,6 +43,9 @@
 		</Configuration>
 	</Configurations>
 	<Files>
+		<File
+			RelativePath=".\Gui\Application.cpp">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
