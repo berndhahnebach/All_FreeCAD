@@ -64,4 +64,4 @@ class TestWorkbench ( Workbench ):
 
 
 #Gui.WorkbenchAdd("Part design",PartWorkbench())
-Gui.WorkbenchAdd("Test framwork",TestWorkbench())
+Gui.WorkbenchAdd("Test framework",TestWorkbench())
