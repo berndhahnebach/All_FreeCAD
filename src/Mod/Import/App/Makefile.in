@@ -145,18 +145,24 @@ lib_LTLIBRARIES = libImport.la
 libImport_la_SOURCES = \
 		AppImport.cpp \
 		AppImportPy.cpp \
+		FeatureImportIges.cpp \
+		FeatureImportIges.h \
+		FeatureImportStep.cpp \
+		FeatureImportStep.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
 
 # the library search path.
-libImport_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImport_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImport_la_CPPFLAGS = -DAppPartExport=
 
 libImport_la_LIBADD = \
 		-lTKIGES \
 		-lTKSTEP \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+		-lPart
 
 
 # set the include path found by configure
@@ -167,15 +173,19 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libImport_la_DEPENDENCIES =
-am_libImport_la_OBJECTS = AppImport.lo AppImportPy.lo PreCompiled.lo
+am_libImport_la_OBJECTS = libImport_la-AppImport.lo \
+	libImport_la-AppImportPy.lo libImport_la-FeatureImportIges.lo \
+	libImport_la-FeatureImportStep.lo libImport_la-PreCompiled.lo
 libImport_la_OBJECTS = $(am_libImport_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppImport.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/AppImportPy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libImport_la-AppImport.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libImport_la-AppImportPy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libImport_la-FeatureImportIges.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libImport_la-FeatureImportStep.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libImport_la-PreCompiled.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -241,9 +251,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppImport.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppImportPy.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImport_la-AppImport.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImport_la-AppImportPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImport_la-FeatureImportIges.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImport_la-FeatureImportStep.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImport_la-PreCompiled.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -280,6 +292,171 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+libImport_la-AppImport.o: AppImport.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-AppImport.o -MD -MP -MF "$(DEPDIR)/libImport_la-AppImport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-AppImport.o `test -f 'AppImport.cpp' || echo '$(srcdir)/'`AppImport.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-AppImport.Tpo" "$(DEPDIR)/libImport_la-AppImport.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-AppImport.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImport.cpp' object='libImport_la-AppImport.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-AppImport.Po' tmpdepfile='$(DEPDIR)/libImport_la-AppImport.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-AppImport.o `test -f 'AppImport.cpp' || echo '$(srcdir)/'`AppImport.cpp
+
+libImport_la-AppImport.obj: AppImport.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-AppImport.obj -MD -MP -MF "$(DEPDIR)/libImport_la-AppImport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-AppImport.obj `if test -f 'AppImport.cpp'; then $(CYGPATH_W) 'AppImport.cpp'; else $(CYGPATH_W) '$(srcdir)/AppImport.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-AppImport.Tpo" "$(DEPDIR)/libImport_la-AppImport.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-AppImport.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImport.cpp' object='libImport_la-AppImport.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-AppImport.Po' tmpdepfile='$(DEPDIR)/libImport_la-AppImport.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-AppImport.obj `if test -f 'AppImport.cpp'; then $(CYGPATH_W) 'AppImport.cpp'; else $(CYGPATH_W) '$(srcdir)/AppImport.cpp'; fi`
+
+libImport_la-AppImport.lo: AppImport.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-AppImport.lo -MD -MP -MF "$(DEPDIR)/libImport_la-AppImport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-AppImport.lo `test -f 'AppImport.cpp' || echo '$(srcdir)/'`AppImport.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-AppImport.Tpo" "$(DEPDIR)/libImport_la-AppImport.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-AppImport.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImport.cpp' object='libImport_la-AppImport.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-AppImport.Plo' tmpdepfile='$(DEPDIR)/libImport_la-AppImport.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-AppImport.lo `test -f 'AppImport.cpp' || echo '$(srcdir)/'`AppImport.cpp
+
+libImport_la-AppImportPy.o: AppImportPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-AppImportPy.o -MD -MP -MF "$(DEPDIR)/libImport_la-AppImportPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-AppImportPy.o `test -f 'AppImportPy.cpp' || echo '$(srcdir)/'`AppImportPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-AppImportPy.Tpo" "$(DEPDIR)/libImport_la-AppImportPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-AppImportPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImportPy.cpp' object='libImport_la-AppImportPy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-AppImportPy.Po' tmpdepfile='$(DEPDIR)/libImport_la-AppImportPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-AppImportPy.o `test -f 'AppImportPy.cpp' || echo '$(srcdir)/'`AppImportPy.cpp
+
+libImport_la-AppImportPy.obj: AppImportPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-AppImportPy.obj -MD -MP -MF "$(DEPDIR)/libImport_la-AppImportPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-AppImportPy.obj `if test -f 'AppImportPy.cpp'; then $(CYGPATH_W) 'AppImportPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppImportPy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-AppImportPy.Tpo" "$(DEPDIR)/libImport_la-AppImportPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-AppImportPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImportPy.cpp' object='libImport_la-AppImportPy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-AppImportPy.Po' tmpdepfile='$(DEPDIR)/libImport_la-AppImportPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-AppImportPy.obj `if test -f 'AppImportPy.cpp'; then $(CYGPATH_W) 'AppImportPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppImportPy.cpp'; fi`
+
+libImport_la-AppImportPy.lo: AppImportPy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-AppImportPy.lo -MD -MP -MF "$(DEPDIR)/libImport_la-AppImportPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-AppImportPy.lo `test -f 'AppImportPy.cpp' || echo '$(srcdir)/'`AppImportPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-AppImportPy.Tpo" "$(DEPDIR)/libImport_la-AppImportPy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-AppImportPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImportPy.cpp' object='libImport_la-AppImportPy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-AppImportPy.Plo' tmpdepfile='$(DEPDIR)/libImport_la-AppImportPy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-AppImportPy.lo `test -f 'AppImportPy.cpp' || echo '$(srcdir)/'`AppImportPy.cpp
+
+libImport_la-FeatureImportIges.o: FeatureImportIges.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-FeatureImportIges.o -MD -MP -MF "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-FeatureImportIges.o `test -f 'FeatureImportIges.cpp' || echo '$(srcdir)/'`FeatureImportIges.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo" "$(DEPDIR)/libImport_la-FeatureImportIges.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureImportIges.cpp' object='libImport_la-FeatureImportIges.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-FeatureImportIges.Po' tmpdepfile='$(DEPDIR)/libImport_la-FeatureImportIges.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-FeatureImportIges.o `test -f 'FeatureImportIges.cpp' || echo '$(srcdir)/'`FeatureImportIges.cpp
+
+libImport_la-FeatureImportIges.obj: FeatureImportIges.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-FeatureImportIges.obj -MD -MP -MF "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-FeatureImportIges.obj `if test -f 'FeatureImportIges.cpp'; then $(CYGPATH_W) 'FeatureImportIges.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureImportIges.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo" "$(DEPDIR)/libImport_la-FeatureImportIges.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureImportIges.cpp' object='libImport_la-FeatureImportIges.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-FeatureImportIges.Po' tmpdepfile='$(DEPDIR)/libImport_la-FeatureImportIges.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-FeatureImportIges.obj `if test -f 'FeatureImportIges.cpp'; then $(CYGPATH_W) 'FeatureImportIges.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureImportIges.cpp'; fi`
+
+libImport_la-FeatureImportIges.lo: FeatureImportIges.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-FeatureImportIges.lo -MD -MP -MF "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-FeatureImportIges.lo `test -f 'FeatureImportIges.cpp' || echo '$(srcdir)/'`FeatureImportIges.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo" "$(DEPDIR)/libImport_la-FeatureImportIges.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-FeatureImportIges.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureImportIges.cpp' object='libImport_la-FeatureImportIges.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-FeatureImportIges.Plo' tmpdepfile='$(DEPDIR)/libImport_la-FeatureImportIges.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-FeatureImportIges.lo `test -f 'FeatureImportIges.cpp' || echo '$(srcdir)/'`FeatureImportIges.cpp
+
+libImport_la-FeatureImportStep.o: FeatureImportStep.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-FeatureImportStep.o -MD -MP -MF "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-FeatureImportStep.o `test -f 'FeatureImportStep.cpp' || echo '$(srcdir)/'`FeatureImportStep.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo" "$(DEPDIR)/libImport_la-FeatureImportStep.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureImportStep.cpp' object='libImport_la-FeatureImportStep.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-FeatureImportStep.Po' tmpdepfile='$(DEPDIR)/libImport_la-FeatureImportStep.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-FeatureImportStep.o `test -f 'FeatureImportStep.cpp' || echo '$(srcdir)/'`FeatureImportStep.cpp
+
+libImport_la-FeatureImportStep.obj: FeatureImportStep.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-FeatureImportStep.obj -MD -MP -MF "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-FeatureImportStep.obj `if test -f 'FeatureImportStep.cpp'; then $(CYGPATH_W) 'FeatureImportStep.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureImportStep.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo" "$(DEPDIR)/libImport_la-FeatureImportStep.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureImportStep.cpp' object='libImport_la-FeatureImportStep.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-FeatureImportStep.Po' tmpdepfile='$(DEPDIR)/libImport_la-FeatureImportStep.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-FeatureImportStep.obj `if test -f 'FeatureImportStep.cpp'; then $(CYGPATH_W) 'FeatureImportStep.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureImportStep.cpp'; fi`
+
+libImport_la-FeatureImportStep.lo: FeatureImportStep.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-FeatureImportStep.lo -MD -MP -MF "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-FeatureImportStep.lo `test -f 'FeatureImportStep.cpp' || echo '$(srcdir)/'`FeatureImportStep.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo" "$(DEPDIR)/libImport_la-FeatureImportStep.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-FeatureImportStep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureImportStep.cpp' object='libImport_la-FeatureImportStep.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-FeatureImportStep.Plo' tmpdepfile='$(DEPDIR)/libImport_la-FeatureImportStep.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-FeatureImportStep.lo `test -f 'FeatureImportStep.cpp' || echo '$(srcdir)/'`FeatureImportStep.cpp
+
+libImport_la-PreCompiled.o: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libImport_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-PreCompiled.Tpo" "$(DEPDIR)/libImport_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libImport_la-PreCompiled.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libImport_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libImport_la-PreCompiled.obj: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-PreCompiled.obj -MD -MP -MF "$(DEPDIR)/libImport_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-PreCompiled.Tpo" "$(DEPDIR)/libImport_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libImport_la-PreCompiled.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libImport_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`
+
+libImport_la-PreCompiled.lo: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImport_la-PreCompiled.lo -MD -MP -MF "$(DEPDIR)/libImport_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImport_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImport_la-PreCompiled.Tpo" "$(DEPDIR)/libImport_la-PreCompiled.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImport_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libImport_la-PreCompiled.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImport_la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/libImport_la-PreCompiled.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImport_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImport_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

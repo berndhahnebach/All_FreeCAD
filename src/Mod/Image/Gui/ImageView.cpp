@@ -22,18 +22,17 @@
 # include <qaction.h>
 # include <qapplication.h>
 # include <qpopupmenu.h>
+# include <qslider.h>
 # include <qstatusbar.h>
 #endif
 
 #include "ImageView.h"
 #include "GLImageBox.h"
 #include "../App/ImageBase.h"
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+#include "XpmImages.h"
 
 using namespace ImageGui;
+
 
 ImageView::ImageView(QWidget* parent, const char* name)
     : MDIView(0, parent, name, WDestructiveClose)
@@ -45,8 +44,8 @@ ImageView::ImageView(QWidget* parent, const char* name)
     _pGLImageBox = new GLImageBox(this, "ImageView glimagebox");
     setCentralWidget(_pGLImageBox);
 
-    // Create the default status bar for displaying messages
-    statusBar();
+    // Create the default status bar for displaying messages and disable the gripper
+    statusBar()->setSizeGripEnabled( false );
 
     _currMode = nothing;
     _currX = 0;
@@ -64,25 +63,38 @@ ImageView::~ImageView()
     // No need to delete _pGLImageBox or other widgets as this gets done automatically by QT
 }
 
-// Create the actions, menus and toolbars
+// Create the action groups, actions, menus and toolbars
 void ImageView::createActions()
 {
     // Create actions
-    _pFitAct = new QAction(tr("&Fit image"), tr("Ctrl+F"), this);
+    _pFitAct = new QAction(this);
+    _pFitAct->setMenuText(tr("&Fit image"));
+    _pFitAct->setIconSet(QPixmap(image_stretch));
     _pFitAct->setStatusTip(tr("Stretch the image to fit the view"));
     connect(_pFitAct, SIGNAL(activated()), this, SLOT(fitImage()));
 
-    _pOneToOneAct = new QAction(tr("&1:1 scale"), tr("Ctrl+1"), this);
+    _pOneToOneAct = new QAction(this);
+    _pOneToOneAct->setMenuText(tr("&1:1 scale"));
+    _pOneToOneAct->setIconSet(QPixmap(image_oneToOne));
     _pOneToOneAct->setStatusTip(tr("Display the image at a 1:1 scale"));
     connect(_pOneToOneAct, SIGNAL(activated()), this, SLOT(oneToOneImage()));
 
-    _pShowOrigAct = new QAction(tr("&Original color"), tr("Ctrl+O"), this);
-    _pShowOrigAct->setStatusTip(tr("Display the image with its original color(s)"));
-    connect(_pShowOrigAct, SIGNAL(activated()), this, SLOT(showOriginalColors()));
+    // Create an action group for the exclusive color actions
+    _pShowColActGrp = new QActionGroup (this);
+    _pShowColActGrp->setExclusive(true);
+    connect(_pShowColActGrp, SIGNAL(selected(QAction*)), this, SLOT(handleColorAct(QAction*)));
 
-    _pShowBrightAct = new QAction(tr("&Brightened color"), tr("Ctrl+B"), this);
+    _pShowOrigAct = new QAction(_pShowColActGrp);
+    _pShowOrigAct->setToggleAction(true);
+    _pShowOrigAct->setMenuText(tr("&Original color"));
+    _pShowOrigAct->setIconSet(QPixmap(image_orig));
+    _pShowOrigAct->setStatusTip(tr("Display the image with its original color(s)"));
+
+    _pShowBrightAct = new QAction(_pShowColActGrp);
+    _pShowBrightAct->setToggleAction(true);
+    _pShowBrightAct->setMenuText(tr("&Brightened color"));
+    _pShowBrightAct->setIconSet(QPixmap(image_bright));
     _pShowBrightAct->setStatusTip(tr("Display the image with brightened color(s)"));
-    connect(_pShowBrightAct, SIGNAL(activated()), this, SLOT(showBrightened()));
 
     // Create the menus and add the actions
     _pContextMenu = new QPopupMenu(this);
@@ -90,6 +102,22 @@ void ImageView::createActions()
     _pOneToOneAct->addTo(_pContextMenu);
     _pShowOrigAct->addTo(_pContextMenu);
     _pShowBrightAct->addTo(_pContextMenu);
+
+    // Create the toolbars and add the actions
+    _pStdToolBar = new QToolBar(tr("Standard"), this);
+    _pFitAct->addTo(_pStdToolBar);
+    _pOneToOneAct->addTo(_pStdToolBar);
+    _pShowOrigAct->addTo(_pStdToolBar);
+    _pShowBrightAct->addTo(_pStdToolBar);
+
+    // Add a slider to the toolbar (for brightness adjustment)
+    _sliderBrightAdjVal = 10;
+    _pSliderBrightAdj = new QSlider(0, 100, 10, _sliderBrightAdjVal, Qt::Horizontal, _pStdToolBar);
+    connect(_pSliderBrightAdj, SIGNAL(valueChanged(int)), this, SLOT(sliderValueAdjusted(int)));
+    _pSliderBrightAdj->hide();
+
+    // Set the original color action to ON
+    _pShowOrigAct->setOn(true);
 }
 
 // Slot function to fit (stretch/shrink) the image to the view size
@@ -105,45 +133,65 @@ void ImageView::oneToOneImage()
     _pGLImageBox->setNormal();
 }
 
+// Slot function to handle the color actions
+void ImageView::handleColorAct( QAction* act)
+{
+    if (act == _pShowOrigAct)
+    {
+        _pSliderBrightAdj->hide();
+	    showOriginalColors();
+    }
+    else if (act == _pShowBrightAct)
+    {
+        _pSliderBrightAdj->show();
+        showBrightened();
+    }
+}
+
 // Show the original colors (no enhancement)
 void ImageView::showOriginalColors()
 {
     _pGLImageBox->clearIntensityMap();
+    _pGLImageBox->redraw();
 }
 
-// Show the image with a preset brightness enhancement
-// Useful for looking at very dark images
+// Show the image with a brightness adjustment
 void ImageView::showBrightened()
 {
-    if (createIntensityMap() == 0)
+    if (createIntensityMap(0, false) == 0)
     {
         // Fill the intensity map with the preset enhancement
         int numMapEntries = getNumIntensityMapEntries();
-        float out;
-        float lower = 50.0 * (float)numMapEntries / 256.0;
-        float upper = 170.0 * (float)numMapEntries / 256.0;
-        float above_lower = 205.0 * (float)numMapEntries / 256.0;
-        float above_upper = 85.0 * (float)numMapEntries / 256.0;
+        double expValue = _sliderBrightAdjVal / 1000.0;
         for (int in = 0; in < numMapEntries; in++)
         {
-            if ((float)in < lower)
-                out = ((float)in * upper) / lower;
-            else
-                out = upper + (((float)in - lower) * above_upper) / above_lower;
-            setIntensityMapValue(in, out / (float)(numMapEntries - 1));
+            double out = 1.0 - exp (-(double)in * expValue);
+            setIntensityMapValue(in, (float)out);
         }
+
+        // redraw
+        _pGLImageBox->redraw();
     }
 }
 
-// Create a linear intensity map
+// Slot function to adjust the brightness slider's value
+void ImageView::sliderValueAdjusted(int NewValue)
+{
+    _sliderBrightAdjVal = NewValue;
+    if (_pShowBrightAct->isOn() == true)
+        showBrightened();
+}
+
+// Create an intensity map
 // returns 0 for OK, -1 for memory allocation error
 // numRequestedEntries ... requested number of map entries (used if not greater than system maximum or 
 //                         if not greater than the maximum number of intensity values in the current image).
 //                         Pass zero to use the maximum possible. Always check the actual number of entries
 //                         created using getNumIntensityMapEntries() after a call to this method.
-int ImageView::createIntensityMap(int numEntriesReq)
+// Initialise ... flag to initialise the map to a linear scale or not
+int ImageView::createIntensityMap(int numEntriesReq, bool Initialise)
 {
-    return (_pGLImageBox->createIntensityMap());
+    return (_pGLImageBox->createIntensityMap(numEntriesReq, Initialise));
 }
 
 // Gets the number of entries in the intensity map
@@ -231,8 +279,8 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent* cEvent)
     {
         double icX = _pGLImageBox->WCToIC_X(_currX);
         double icY = _pGLImageBox->WCToIC_Y(_currY);
-//        int pixX = (int)floor(icX + 0.5);
-//        int pixY = (int)floor(icY + 0.5);
+        //int pixX = (int)floor(icX + 0.5);
+        //int pixY = (int)floor(icY + 0.5);
         _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor(), true, (int)floor(icX + 0.5), (int)floor(icY + 0.5));
     }
 }
@@ -301,7 +349,7 @@ void ImageView::wheelEvent(QWheelEvent * cEvent)
 void ImageView::updateStatusBar()
 {
     // Get some image parameters
-//    unsigned short numImageSamples = _pGLImageBox->getImageNumSamplesPerPix();
+    //unsigned short numImageSamples = _pGLImageBox->getImageNumSamplesPerPix();
     double zoomFactor = _pGLImageBox->getZoomFactor();
     double icX = _pGLImageBox->WCToIC_X(_currX);
     double icY = _pGLImageBox->WCToIC_Y(_currY);
@@ -326,8 +374,8 @@ void ImageView::updateStatusBar()
              (colorFormat == IB_CF_RGB48))
     {
         double red, green, blue;
-        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, red) != 0) || 
-            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) || 
+        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, red) != 0) ||
+            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0))
             txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
         else
@@ -338,8 +386,8 @@ void ImageView::updateStatusBar()
              (colorFormat == IB_CF_BGR48))
     {
         double red, green, blue;
-        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, blue) != 0) || 
-            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) || 
+        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, blue) != 0) ||
+            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0))
             txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
         else
@@ -350,9 +398,9 @@ void ImageView::updateStatusBar()
              (colorFormat == IB_CF_RGBA64))
     {
         double red, green, blue, alpha;
-        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, red) != 0) || 
-            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) || 
-            (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0) || 
+        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, red) != 0) ||
+            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
+            (_pGLImageBox->getImageSample(pixX, pixY, 2, blue) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 3, alpha) != 0))
             txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
         else
@@ -363,9 +411,9 @@ void ImageView::updateStatusBar()
              (colorFormat == IB_CF_BGRA64))
     {
         double red, green, blue, alpha;
-        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, blue) != 0) || 
-            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) || 
-            (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0) || 
+        if ((_pGLImageBox->getImageSample(pixX, pixY, 0, blue) != 0) ||
+            (_pGLImageBox->getImageSample(pixX, pixY, 1, green) != 0) ||
+            (_pGLImageBox->getImageSample(pixX, pixY, 2, red) != 0) ||
             (_pGLImageBox->getImageSample(pixX, pixY, 3, alpha) != 0))
             txt.sprintf("x,y = %s  |  %s = %0.1lf", tr("outside image").latin1(), tr("zoom").latin1(), zoomFactor);
         else
@@ -438,7 +486,6 @@ void ImageView::drawGraphics()
     glEnd();
     */
 }
-
 
 #include "moc_ImageView.cpp"
 

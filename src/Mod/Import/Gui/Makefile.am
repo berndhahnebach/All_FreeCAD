@@ -10,13 +10,22 @@ libImportGui_la_SOURCES=\
 		PreCompiled.h
 
 # the library search path.
-libImportGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImportGui_la_LDFLAGS = \
+		-L../../../Base \
+		-L../../../App  \
+		-L../../../Gui  \
+		-L../../Part/Gui \
+		-L../App \
+		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+
+libImportGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libImportGui_la_LIBADD   = \
 		-lTKPrim \
 		-lTKV2d \
 		-lTKV3d \
 		-lFreeCADGui \
+		-lPartGui \
 		-lImport
 
 # rule for Qt MetaObject Compiler:

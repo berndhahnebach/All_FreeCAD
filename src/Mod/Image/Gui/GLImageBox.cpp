@@ -546,10 +546,11 @@ int GLImageBox::calcNumColorMapEntries()
     return NumEntries;
 }
 
-// Creates a linear intensity map
+// Creates an intensity map
 // returns 0 for OK, -1 for memory allocation error
 // numRequestedEntries ... requested number of map entries (used if not greater than maximum possible or number of intensity values)
-int GLImageBox::createIntensityMap(int numEntriesReq)
+// Initialise ... flag to initialise the map to a linear scale or not
+int GLImageBox::createIntensityMap(int numEntriesReq, bool Initialise)
 {
     // Get the number of map entries to use
     int maxNumEntries = calcNumColorMapEntries();
@@ -559,27 +560,30 @@ int GLImageBox::createIntensityMap(int numEntriesReq)
     else
         numEntries = std::min<int>(numEntriesReq, maxNumEntries);
 
-    // Clear the pixel map if its not the desired size
+    // Clear and re-create the pixel map if it's not the desired size
     if (numEntries != _numMapEntries)
     {
         clearIntensityMap();
         _numMapEntries = numEntries;
+
+        // Create the intensity map
+        try
+        {
+            _pIntensityMap = new float[_numMapEntries];
+        }
+        catch(...)
+        {
+            clearIntensityMap();
+            return -1;
+        }
     }
 
-    // Create the intensity map
-    try
+    // Initialise the intensity map if requested
+    if (Initialise == true)
     {
-        _pIntensityMap = new float[_numMapEntries];
+        for (int in = 0; in < _numMapEntries; in++)
+            _pIntensityMap[in] = (float)in / (float)(_numMapEntries - 1);
     }
-    catch(...)
-    {
-        clearIntensityMap();
-        return -1;
-    }
-
-    // Initialise the intensity map
-    for (int in = 0; in < _numMapEntries; in++)
-        _pIntensityMap[in] = (float)in / (float)(_numMapEntries - 1);
 
     return 0;
 }

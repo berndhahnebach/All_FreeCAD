@@ -62,7 +62,7 @@ public:
     int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
 
     void clearIntensityMap();
-    int createIntensityMap(int numEntriesReq = 0);
+    int createIntensityMap(int numEntriesReq = 0, bool Initialise = true);
     int getNumIntensityMapEntries() const { return _numMapEntries; }
     int setIntensityMapValue(int index, float value);
 

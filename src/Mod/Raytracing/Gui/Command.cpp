@@ -293,8 +293,8 @@ void CmdRaytracingWritePart::activated(int iMsg)
   FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
   std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
-  bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
-  float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
+  //bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
+  //float fMeshDeviation         = hGrp->GetFloat("MeshDeviation",0.1);
 
   // name of the objects in the pov file
   std::string Name = "Part";

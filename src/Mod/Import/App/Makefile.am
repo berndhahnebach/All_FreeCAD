@@ -4,18 +4,24 @@ lib_LTLIBRARIES=libImport.la
 libImport_la_SOURCES=\
 		AppImport.cpp \
 		AppImportPy.cpp \
+		FeatureImportIges.cpp \
+		FeatureImportIges.h \
+		FeatureImportStep.cpp \
+		FeatureImportStep.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
 
 # the library search path.
-libImport_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImport_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImport_la_CPPFLAGS = -DAppPartExport=
 
 libImport_la_LIBADD   = \
 		-lTKIGES \
 		-lTKSTEP \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+		-lPart
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../

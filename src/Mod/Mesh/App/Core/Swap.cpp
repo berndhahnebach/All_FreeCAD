@@ -48,7 +48,7 @@ void Mesh::SwapVar (short& s)
   short sTmp;
   int i;
 
-  for (i = 0; i < sizeof (short); i++)
+  for (i = 0; i < (int)sizeof (short); i++)
     *(((char*) &sTmp) + i) = *(((char*) &s) + sizeof (short) - i - 1);
   s = sTmp;
 }
@@ -58,7 +58,7 @@ void Mesh::SwapVar (unsigned short& s)
   short sTmp;
   int i;
 
-  for (i = 0; i < sizeof (short); i++)
+  for (i = 0; i < (int)sizeof (short); i++)
     *(((char*) &sTmp) + i) = *(((char*) &s) + sizeof (short) - i - 1);
   s = sTmp;
 }
@@ -68,7 +68,7 @@ void Mesh::SwapVar (long& l)
   long lTmp;
   int i;
 
-  for (i = 0; i < sizeof (long); i++)
+  for (i = 0; i < (int)sizeof (long); i++)
     *(((char*) &lTmp) + i) = *(((char*) &l) + sizeof (long) - i - 1);
   l = lTmp;
 }
@@ -78,7 +78,7 @@ void Mesh::SwapVar (unsigned long& l)
   long lTmp;
   int i;
 
-  for (i = 0; i < sizeof (long); i++)
+  for (i = 0; i < (int)sizeof (long); i++)
     *(((char*) &lTmp) + i) = *(((char*) &l) + sizeof (long) - i - 1);
   l = lTmp;
 }
@@ -88,7 +88,7 @@ void Mesh::SwapVar (float& f)
   float fTmp;
   int i;
 
-  for (i = 0; i < sizeof (float); i++)
+  for (i = 0; i < (int)sizeof (float); i++)
     *(((char*) &fTmp) + i) = *(((char*) &f) + sizeof (float) - i - 1);
   f = fTmp;
 }
@@ -98,7 +98,7 @@ void Mesh::SwapVar (double& d)
   double dTmp;
   int i;
 
-  for (i = 0; i < sizeof (double); i++)
+  for (i = 0; i < (int)sizeof (double); i++)
     *(((char*) &dTmp) + i) = *(((char*) &d) + sizeof (double) - i - 1);
   d = dTmp;
 }

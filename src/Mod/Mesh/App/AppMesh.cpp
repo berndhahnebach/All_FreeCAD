@@ -57,8 +57,8 @@ open(PyObject *self, PyObject *args)
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
-    
-  Base::Console().Log("Open in Mesh with %s",strResult);
+
+  Base::Console().Log("Open in Mesh with %s",strResult.c_str());
 
 	Py_Return;    
 }

@@ -29,10 +29,11 @@
 #endif
 
 #include "DlgParameterImp.h"
+#include "BitmapFactory.h"
+
 #include "../Base/Parameter.h"
 #include "../App/Application.h"
 
-#include "Icons/ParamDlgImgs.h"
 
 using namespace Gui::Dialog;
 
@@ -167,7 +168,7 @@ void ParameterLabelGroup::fillUp(void)
   for(std::map<std::string,std::string>::iterator It2=mcTextMap.begin();It2!=mcTextMap.end();It2++)
   {
     pcItem = new QListViewItem(this,It2->first.c_str(),It2->second.c_str());
-    pcItem->setPixmap(0,QPixmap(Param_Text) );
+    pcItem->setPixmap(0,BitmapFactory().pixmap("Param_Text") );
   }
 
   // filling up Int nodes
@@ -178,7 +179,7 @@ void ParameterLabelGroup::fillUp(void)
     char b[255];
     sprintf(b,"%ld",It3->second);
     pcItem = new QListViewItem(this,It3->first.c_str(),b);
-    pcItem->setPixmap(0,QPixmap(Param_Int) );
+    pcItem->setPixmap(0,BitmapFactory().pixmap("Param_Int") );
   }
 
   // filling up Float nodes
@@ -189,7 +190,7 @@ void ParameterLabelGroup::fillUp(void)
     char b[255];
     sprintf(b,"%f",It4->second);
     pcItem = new QListViewItem(this,It4->first.c_str(),b);
-    pcItem->setPixmap(0,QPixmap(Param_Float) );
+    pcItem->setPixmap(0,BitmapFactory().pixmap("Param_Float") );
   }
 
   // filling up bool nodes
@@ -198,7 +199,7 @@ void ParameterLabelGroup::fillUp(void)
   for(std::map<std::string,bool>::iterator It5=mcBoolMap.begin();It5!=mcBoolMap.end();It5++)
   {
     pcItem = new QListViewItem(this,It5->first.c_str(),It5->second?"true":"false");
-    pcItem->setPixmap(0,QPixmap(Param_Float) );
+    pcItem->setPixmap(0,BitmapFactory().pixmap("Param_Bool") );
   }
 }
 

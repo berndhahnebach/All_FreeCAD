@@ -22,6 +22,10 @@
 #endif
 
 #include <stdio.h>
+
+# if defined (_POSIX_C_SOURCE)
+#   undef  _POSIX_C_SOURCE
+# endif // (re-)defined in pyconfig.h
 #include <Python.h>
 
 #include <Base/Console.h>

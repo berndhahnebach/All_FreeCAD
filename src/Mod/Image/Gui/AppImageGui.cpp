@@ -54,9 +54,6 @@ void ImageGuiExport initImageGui() {
 
 	Base::Console().Log("AppImageGui loaded\n");
 
-	App::GetApplication();
-  Gui::ApplicationWindow::Instance;
-
 	// instanciating the commands
 	CreateCommands();
 

@@ -352,7 +352,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
           while ((rstrIn.IsEof() == FALSE) && (rstrIn.IsBad() == FALSE) && bFlag)
           {
               rstrIn.ReadLine(szLine, 200);
-              if (sscanf(szLine, "%u, %u, %u, %d",
+              if (sscanf(szLine, "%lu, %lu, %lu, %ld",
                   &ulPoints[0], &ulPoints[1], &ulPoints[2], &lSeparator) == 4)
               {
                   clFacet = clFacetAry[ulCt];
@@ -392,7 +392,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
   // Einleitung
   strcpy(szBuf, "#Inventor V2.1 ascii\n\n");
   rstrOut.Write(szBuf, strlen(szBuf));
-  sprintf(szBuf, "# Triangulation Data contains %u Points and %u Facets\n", 
+  sprintf(szBuf, "# Triangulation Data contains %lu Points and %lu Facets\n",
       _rclMesh.CountPoints(), _rclMesh.CountFacets());
   rstrOut.Write(szBuf, strlen(szBuf));
   strcpy(szBuf, "Separator { \n\n\n");
@@ -464,8 +464,8 @@ bool MeshInventor::Save (FileStream &rstrOut) const
   while (i < ulAllFacets - 1)
   {
     clFacet = _rclMesh._aclFacetArray[i];
-      
-    sprintf(szBuf, "%u, %u, %u, %d,\n", clFacet._aulPoints[0],
+
+    sprintf(szBuf, "%lu, %lu, %lu, %d,\n", clFacet._aulPoints[0],
               clFacet._aulPoints[1], clFacet._aulPoints[2], -1);
     rstrOut.Write(szBuf, strlen(szBuf));
     
@@ -473,7 +473,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
   } 
 
   clFacet = _rclMesh._aclFacetArray[ulAllFacets - 1];
-  sprintf(szBuf, "%u, %u, %u, %d\n", clFacet._aulPoints[0],
+  sprintf(szBuf, "%lu, %lu, %lu, %d\n", clFacet._aulPoints[0],
             clFacet._aulPoints[1], clFacet._aulPoints[2], - 1);
   rstrOut.Write(szBuf, strlen(szBuf));
 

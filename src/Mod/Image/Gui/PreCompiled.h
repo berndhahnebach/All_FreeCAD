@@ -139,8 +139,9 @@
 #include <qrangecontrol.h>
 #include <qrect.h>
 #include <qscrollbar.h>
+#include <qslider.h>
 #include <qspinbox.h>
-#include <qsplitter.h> 
+#include <qsplitter.h>
 #include <qsgistyle.h>
 #include <qstatusbar.h>
 #include <qtabbar.h>

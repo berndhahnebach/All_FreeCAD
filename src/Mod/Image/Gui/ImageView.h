@@ -21,7 +21,11 @@
 #include <Gui/View.h>
 #include "GLImageBox.h"
 
+class QSlider;
 class QAction;
+class QPopupMenu;
+class QToolBar;
+
 namespace ImageGui
 {
 
@@ -43,13 +47,15 @@ public:
 protected slots:
     virtual void fitImage();
     virtual void oneToOneImage();
-    virtual void showOriginalColors();
-    virtual void showBrightened();
+    virtual void handleColorAct( QAction* act);
+    virtual void sliderValueAdjusted(int NewValue);
     virtual void drawGraphics();
 
 protected:
     virtual void createActions();
-    virtual int createIntensityMap(int numEntriesReq = 0);
+    virtual void showOriginalColors();
+    virtual void showBrightened();
+    virtual int createIntensityMap(int numEntriesReq = 0, bool Initialise = true);
     virtual int getNumIntensityMapEntries() const;
     virtual int setIntensityMapValue(int index, float value);
     virtual void mousePressEvent(QMouseEvent* cEvent);
@@ -80,6 +86,9 @@ protected:
     int dragStartWCx;
     int dragStartWCy;
 
+    // Action groups
+    QActionGroup* _pShowColActGrp;
+
     // Actions
     QAction* _pFitAct;
     QAction* _pOneToOneAct;
@@ -88,6 +97,14 @@ protected:
 
     // Menus
     QPopupMenu* _pContextMenu;
+
+    // Toolbars
+    QToolBar* _pStdToolBar;
+
+    // Slider for brightness adjustment
+    QSlider* _pSliderBrightAdj;
+    int _sliderBrightAdjVal;
+
 };
 
 } // namespace ImageViewGui

@@ -152,13 +152,23 @@ libImportGui_la_SOURCES = \
 
 
 # the library search path.
-libImportGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImportGui_la_LDFLAGS = \
+		-L../../../Base \
+		-L../../../App  \
+		-L../../../Gui  \
+		-L../../Part/Gui \
+		-L../App \
+		$(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+
+
+libImportGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libImportGui_la_LIBADD = \
 		-lTKPrim \
 		-lTKV2d \
 		-lTKV3d \
 		-lFreeCADGui \
+		-lPartGui \
 		-lImport
 
 
@@ -170,14 +180,16 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libImportGui_la_DEPENDENCIES =
-am_libImportGui_la_OBJECTS = AppImportGui.lo Command.lo PreCompiled.lo
+am_libImportGui_la_OBJECTS = libImportGui_la-AppImportGui.lo \
+	libImportGui_la-Command.lo libImportGui_la-PreCompiled.lo
 libImportGui_la_OBJECTS = $(am_libImportGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppImportGui.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Command.Plo ./$(DEPDIR)/PreCompiled.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libImportGui_la-AppImportGui.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libImportGui_la-Command.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libImportGui_la-PreCompiled.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -243,9 +255,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppImportGui.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImportGui_la-AppImportGui.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImportGui_la-Command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libImportGui_la-PreCompiled.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -282,6 +294,105 @@ distclean-depend:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+libImportGui_la-AppImportGui.o: AppImportGui.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-AppImportGui.o -MD -MP -MF "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-AppImportGui.o `test -f 'AppImportGui.cpp' || echo '$(srcdir)/'`AppImportGui.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo" "$(DEPDIR)/libImportGui_la-AppImportGui.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImportGui.cpp' object='libImportGui_la-AppImportGui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-AppImportGui.Po' tmpdepfile='$(DEPDIR)/libImportGui_la-AppImportGui.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-AppImportGui.o `test -f 'AppImportGui.cpp' || echo '$(srcdir)/'`AppImportGui.cpp
+
+libImportGui_la-AppImportGui.obj: AppImportGui.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-AppImportGui.obj -MD -MP -MF "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-AppImportGui.obj `if test -f 'AppImportGui.cpp'; then $(CYGPATH_W) 'AppImportGui.cpp'; else $(CYGPATH_W) '$(srcdir)/AppImportGui.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo" "$(DEPDIR)/libImportGui_la-AppImportGui.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImportGui.cpp' object='libImportGui_la-AppImportGui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-AppImportGui.Po' tmpdepfile='$(DEPDIR)/libImportGui_la-AppImportGui.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-AppImportGui.obj `if test -f 'AppImportGui.cpp'; then $(CYGPATH_W) 'AppImportGui.cpp'; else $(CYGPATH_W) '$(srcdir)/AppImportGui.cpp'; fi`
+
+libImportGui_la-AppImportGui.lo: AppImportGui.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-AppImportGui.lo -MD -MP -MF "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-AppImportGui.lo `test -f 'AppImportGui.cpp' || echo '$(srcdir)/'`AppImportGui.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo" "$(DEPDIR)/libImportGui_la-AppImportGui.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-AppImportGui.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppImportGui.cpp' object='libImportGui_la-AppImportGui.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-AppImportGui.Plo' tmpdepfile='$(DEPDIR)/libImportGui_la-AppImportGui.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-AppImportGui.lo `test -f 'AppImportGui.cpp' || echo '$(srcdir)/'`AppImportGui.cpp
+
+libImportGui_la-Command.o: Command.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-Command.o -MD -MP -MF "$(DEPDIR)/libImportGui_la-Command.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-Command.o `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-Command.Tpo" "$(DEPDIR)/libImportGui_la-Command.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-Command.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Command.cpp' object='libImportGui_la-Command.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-Command.Po' tmpdepfile='$(DEPDIR)/libImportGui_la-Command.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-Command.o `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp
+
+libImportGui_la-Command.obj: Command.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-Command.obj -MD -MP -MF "$(DEPDIR)/libImportGui_la-Command.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-Command.obj `if test -f 'Command.cpp'; then $(CYGPATH_W) 'Command.cpp'; else $(CYGPATH_W) '$(srcdir)/Command.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-Command.Tpo" "$(DEPDIR)/libImportGui_la-Command.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-Command.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Command.cpp' object='libImportGui_la-Command.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-Command.Po' tmpdepfile='$(DEPDIR)/libImportGui_la-Command.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-Command.obj `if test -f 'Command.cpp'; then $(CYGPATH_W) 'Command.cpp'; else $(CYGPATH_W) '$(srcdir)/Command.cpp'; fi`
+
+libImportGui_la-Command.lo: Command.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-Command.lo -MD -MP -MF "$(DEPDIR)/libImportGui_la-Command.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-Command.lo `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-Command.Tpo" "$(DEPDIR)/libImportGui_la-Command.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-Command.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Command.cpp' object='libImportGui_la-Command.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-Command.Plo' tmpdepfile='$(DEPDIR)/libImportGui_la-Command.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-Command.lo `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp
+
+libImportGui_la-PreCompiled.o: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo" "$(DEPDIR)/libImportGui_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libImportGui_la-PreCompiled.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libImportGui_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libImportGui_la-PreCompiled.obj: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-PreCompiled.obj -MD -MP -MF "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo" "$(DEPDIR)/libImportGui_la-PreCompiled.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libImportGui_la-PreCompiled.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-PreCompiled.Po' tmpdepfile='$(DEPDIR)/libImportGui_la-PreCompiled.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-PreCompiled.obj `if test -f 'PreCompiled.cpp'; then $(CYGPATH_W) 'PreCompiled.cpp'; else $(CYGPATH_W) '$(srcdir)/PreCompiled.cpp'; fi`
+
+libImportGui_la-PreCompiled.lo: PreCompiled.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libImportGui_la-PreCompiled.lo -MD -MP -MF "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libImportGui_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo" "$(DEPDIR)/libImportGui_la-PreCompiled.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libImportGui_la-PreCompiled.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreCompiled.cpp' object='libImportGui_la-PreCompiled.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libImportGui_la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/libImportGui_la-PreCompiled.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libImportGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libImportGui_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
