@@ -32,12 +32,12 @@
 #define __COMMAND_LINE_H__
  
 
-#include <qlineedit.h>
 #include <list>
 #include <string>
 #include "Window.h"
-#include <qwindowsstyle.h>
-#include <qvalidator.h>
+//#include <qwindowsstyle.h>
+//#include <qvalidator.h>
+//#include <qlineedit.h>
 
 /** Validate input of the command line
  */

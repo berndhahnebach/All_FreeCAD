@@ -95,7 +95,7 @@ void FCDlgCustomActionsImp::init()
     if (!(*it)->GetAction()->iconSet().isNull())
     {
       QPixmap p = (*it)->GetAction()->iconSet().pixmap();
-      item->setPixmap(0, FCTools::resize(24,24,p));
+      item->setPixmap(0, FCTools::fillUp(24,24,p));
     }
   }
 }
@@ -216,7 +216,7 @@ void FCDlgCustomActionsImp::slotAddCustomAction()
   if (PixmapLabel->pixmap() != NULL)
   {
     QPixmap p = *PixmapLabel->pixmap();
-    item->setPixmap(0, FCTools::resize(24,24,p));
+    item->setPixmap(0, FCTools::fillUp(24,24,p));
   }
 
   FCScriptCommand* macro = new FCScriptCommand(actionName->text().latin1());

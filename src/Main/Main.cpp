@@ -29,7 +29,7 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#include "../Config.h"
+#include "PreCompiled.h"
 
 
 #include <stdio.h>
@@ -61,7 +61,6 @@
 
 // FreeCAD Gui header
 #ifdef  _FC_GUI_ENABLED_
-#	include <qapplication.h>
 #	include "../Gui/Application.h"
 #	include "../Gui/GuiConsole.h"
 #	include "../Gui/Splashscreen.h"

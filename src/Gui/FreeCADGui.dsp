@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FREECADGUI_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "." /I "inventor/Qt" /D "NDEBUG" /D "_USRDLL" /D "FCGui" /D "SCI_LEXER" /YX /FD /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "." /I "inventor/Qt" /D "NDEBUG" /D "_USRDLL" /D "FCGui" /D "SCI_LEXER" /Yu"PreCompiled.h" /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FREECADGUI_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "inventor/Qt" /D "_USRDLL" /D "FCGui" /D "FC_DEBUG" /D "SCI_LEXER" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "inventor/Qt" /D "_USRDLL" /D "FCGui" /D "FC_DEBUG" /D "SCI_LEXER" /FR /Yu"PreCompiled.h" /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -1569,7 +1569,7 @@ BuildCmds= \
 # Begin Source File
 
 SOURCE=.\scintilla\AutoComplete.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1578,7 +1578,7 @@ SOURCE=.\scintilla\AutoComplete.h
 # Begin Source File
 
 SOURCE=.\scintilla\CallTip.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1587,7 +1587,7 @@ SOURCE=.\scintilla\CallTip.h
 # Begin Source File
 
 SOURCE=.\scintilla\CellBuffer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1596,7 +1596,7 @@ SOURCE=.\scintilla\CellBuffer.h
 # Begin Source File
 
 SOURCE=.\scintilla\ContractionState.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1605,7 +1605,7 @@ SOURCE=.\scintilla\ContractionState.h
 # Begin Source File
 
 SOURCE=.\scintilla\DocumentAccessor.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1614,7 +1614,7 @@ SOURCE=.\scintilla\DocumentAccessor.h
 # Begin Source File
 
 SOURCE=.\scintilla\Documents.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1623,7 +1623,7 @@ SOURCE=.\scintilla\Documents.h
 # Begin Source File
 
 SOURCE=.\scintilla\Editor.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1632,7 +1632,7 @@ SOURCE=.\scintilla\Editor.h
 # Begin Source File
 
 SOURCE=.\scintilla\ExternalLexer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1641,7 +1641,7 @@ SOURCE=.\scintilla\ExternalLexer.h
 # Begin Source File
 
 SOURCE=.\scintilla\Indicator.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1650,7 +1650,7 @@ SOURCE=.\scintilla\Indicator.h
 # Begin Source File
 
 SOURCE=.\scintilla\KeyMap.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1659,137 +1659,137 @@ SOURCE=.\scintilla\KeyMap.h
 # Begin Source File
 
 SOURCE=.\scintilla\KeyWords.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexAda.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexAsm.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexAVE.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexBaan.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexBullant.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexConf.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexCPP.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexCrontab.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexCSS.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexEiffel.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexEScript.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexFortran.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexHTML.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexLisp.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexLout.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexLua.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexMatlab.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexOthers.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexPascal.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexPerl.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexPOV.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexPython.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexRuby.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexSQL.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LexVB.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\LineMarker.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1798,12 +1798,12 @@ SOURCE=.\scintilla\LineMarker.h
 # Begin Source File
 
 SOURCE=.\scintilla\PropSet.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\RESearch.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1812,7 +1812,7 @@ SOURCE=.\scintilla\RESearch.h
 # Begin Source File
 
 SOURCE=.\scintilla\ScintillaBase.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1821,7 +1821,7 @@ SOURCE=.\scintilla\ScintillaBase.h
 # Begin Source File
 
 SOURCE=.\scintilla\Style.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1830,7 +1830,7 @@ SOURCE=.\scintilla\Style.h
 # Begin Source File
 
 SOURCE=.\scintilla\StyleContext.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1843,7 +1843,7 @@ SOURCE=.\scintilla\SVector.h
 # Begin Source File
 
 SOURCE=.\scintilla\UniConversion.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1852,7 +1852,7 @@ SOURCE=.\scintilla\UniConversion.h
 # Begin Source File
 
 SOURCE=.\scintilla\ViewStyle.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -1861,12 +1861,12 @@ SOURCE=.\scintilla\ViewStyle.h
 # Begin Source File
 
 SOURCE=.\scintilla\WindowAccessor.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\scintilla\XPM.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2330,7 +2330,7 @@ InputName=qextmditaskbar
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\6DOFEvents.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2339,7 +2339,7 @@ SOURCE=.\Inventor\Qt\devices\6DOFEvents.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoGuiDevice.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2364,7 +2364,7 @@ SOURCE=.\Inventor\Qt\devices\SoGuiSpaceballP.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtDevice.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2377,7 +2377,7 @@ SOURCE=.\Inventor\Qt\devices\SoQtDeviceP.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtInputFocus.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2386,12 +2386,12 @@ SOURCE=.\Inventor\Qt\devices\SoQtInputFocus.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtInputFocus1.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtKeyboard.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2400,12 +2400,12 @@ SOURCE=.\Inventor\Qt\devices\SoQtKeyboard.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtKeyboard1.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtMouse.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2414,12 +2414,12 @@ SOURCE=.\Inventor\Qt\devices\SoQtMouse.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtMouse1.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtSpaceball.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2428,7 +2428,7 @@ SOURCE=.\Inventor\Qt\devices\SoQtSpaceball.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\devices\SoQtSpaceball1.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2441,17 +2441,17 @@ SOURCE=.\Inventor\Qt\devices\SoQtSpaceballP.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\ExaminerViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\FullViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\PlaneViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2468,7 +2468,7 @@ SOURCE=.\Inventor\Qt\viewers\SoGuiPlaneViewerP.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\SoQtConstrainedViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2477,7 +2477,7 @@ SOURCE=.\Inventor\Qt\viewers\SoQtConstrainedViewer.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\SoQtExaminerViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2517,7 +2517,7 @@ InputName=SoQtExaminerViewerP
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\SoQtFlyViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2526,7 +2526,7 @@ SOURCE=.\Inventor\Qt\viewers\SoQtFlyViewer.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\SoQtFullViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2566,7 +2566,7 @@ InputName=SoQtFullViewerP
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\SoQtPlaneViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2606,7 +2606,7 @@ InputName=SoQtPlaneViewerP
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\viewers\SoQtViewer.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2619,7 +2619,7 @@ SOURCE=.\Inventor\Qt\viewers\SoQtViewer.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\widgets\QtNativePopupMenu.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2655,7 +2655,7 @@ InputName=QtNativePopupMenu
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\widgets\SoAnyThumbWheel.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2664,7 +2664,7 @@ SOURCE=.\Inventor\Qt\widgets\SoAnyThumbWheel.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\widgets\SoQtGLArea.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2700,7 +2700,7 @@ InputName=SoQtGLArea
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\widgets\SoQtPopupMenu.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2736,7 +2736,7 @@ InputName=SoQtPopupMenu
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\widgets\SoQtThumbWheel.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2786,7 +2786,7 @@ SOURCE=.\Inventor\OCC\SoBrepShape.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoAny.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2799,7 +2799,7 @@ SOURCE=.\Inventor\Qt\SoGuiComponentP.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoGuiGLWidgetCommon.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2808,7 +2808,7 @@ SOURCE=.\Inventor\Qt\SoGuiP.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQt.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2817,12 +2817,12 @@ SOURCE=.\Inventor\Qt\SoQt.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtCommon.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtComponent.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2831,7 +2831,7 @@ SOURCE=.\Inventor\Qt\SoQtComponent.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtComponentCommon.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2867,7 +2867,7 @@ InputName=SoQtComponentP
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtCursor.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2876,7 +2876,7 @@ SOURCE=.\Inventor\Qt\SoQtCursor.h
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtGLWidget.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2916,7 +2916,7 @@ InputName=SoQtGLWidgetP
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtObject.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -2956,7 +2956,7 @@ InputName=SoQtP
 # Begin Source File
 
 SOURCE=.\Inventor\Qt\SoQtRenderArea.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
@@ -3088,7 +3088,7 @@ SOURCE=.\GuiConsole.h
 # Begin Source File
 
 SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX
+# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 

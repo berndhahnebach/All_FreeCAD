@@ -26,10 +26,10 @@
 #ifndef UNDOREDODLG_H
 #define UNDOREDODLG_H
 
-#include <qpopupmenu.h>
-#include <qlistbox.h>
-#include <qtoolbutton.h>
-#include <qhbox.h>
+//#include <qpopupmenu.h>
+//#include <qlistbox.h>
+//#include <qtoolbutton.h>
+//#include <qhbox.h>
 
 
 // forward declarations

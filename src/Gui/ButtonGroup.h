@@ -31,23 +31,6 @@
 #ifndef __BUTTON_GROUP_H__
 #define __BUTTON_GROUP_H__
 
-#include <qbuttongroup.h>
-#include <qvbuttongroup.h>
-#include <qtoolbutton.h>
-#include <qdragobject.h>
-#include <qpopupmenu.h>
-#include <qpushbutton.h>
-#include <qevent.h>
-#include <qcolor.h>
-#include <qfont.h>
-#include <qpalette.h>
-#include <qpixmap.h>
-#include <qcombobox.h>
-#include <qscrollbar.h>
-#include <qscrollview.h>
-#include <qwidget.h>
-#include <qlayout.h>
-
 #include "CommandLine.h"
 #include "Window.h"
 #include "Widgets.h"

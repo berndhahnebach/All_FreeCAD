@@ -29,9 +29,9 @@
 #ifndef __HTML_VIEW_H__
 #define __HTML_VIEW_H__
  
-#include <qtextbrowser.h>
-#include <qvalidator.h>
-#include <qcombobox.h>
+//#include <qtextbrowser.h>
+//#include <qvalidator.h>
+//#include <qcombobox.h>
 #include "Window.h"
 
 /**

@@ -32,10 +32,10 @@
 #define __SPLASHSCREEN_H__
 
 #include "Window.h"
-#include <qvariant.h>
-#include <qlabel.h>
-#include <qthread.h>
-#include <qtextbrowser.h>
+//#include <qvariant.h>
+//#include <qlabel.h>
+//#include <qthread.h>
+//#include <qtextbrowser.h>
 
 class QVBoxLayout; 
 class QHBoxLayout; 
