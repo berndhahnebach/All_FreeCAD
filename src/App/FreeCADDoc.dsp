@@ -139,6 +139,11 @@ SOURCE=.\Document.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Doxygen.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
 SOURCE=.\Feature.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File

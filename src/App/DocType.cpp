@@ -46,13 +46,17 @@
 #include "../Base/PyExportImp.h"
 #include "../Base/Console.h"
 
-
+#include "Document.h"
 #include "DocType.h"
+#include "Feature.h"
+#include "FeatureAttr.h"
+
+using namespace App;
 
 
-using App::DocType;
-using App::DocTypeStd;
-
+//===========================================================================
+// DocType 
+//===========================================================================
 
 //**************************************************************************
 // Construction/Destruction
@@ -74,6 +78,11 @@ const char *DocType::GetTypeName(void)
 	return "Base";
 }
 
+
+
+//===========================================================================
+// DocTypeStd 
+//===========================================================================
 
 //**************************************************************************
 // Construction/Destruction
@@ -98,6 +107,39 @@ const char *DocTypeStd::GetTypeName(void)
 
 void DocTypeStd::Init (FCDocument *pcDoc)
 {
+	Base::Console().Log("Initialising Doc: %p trough DocTypeStd\n",pcDoc);
+
+	TDF_Label lMain = pcDoc->Main();
+
+	_lBase    = lMain.FindChild(1);
+	_lPos     = lMain.FindChild(2);
+	_lFeature = lMain.FindChild(3);
+
+
+	TDataStd_Name::Set(_lBase,    TCollection_ExtendedString((Standard_CString)"Base"));
+	TDataStd_Name::Set(_lPos,     TCollection_ExtendedString((Standard_CString)"Pos"));
+	TDataStd_Name::Set(_lFeature, TCollection_ExtendedString((Standard_CString)"Features"));
+
+	_iNextFreeFeature = 1;
+	_lActiveFeature;
+}
+
+//**************************************************************************
+// Feature handling
+
+
+Feature *DocTypeStd::AddFeature(const char* sName)
+{
+	Feature *pcFeature = FeatureFactory().Produce(sName);
+
+	if(pcFeature)
+	{
+		FeatureAttr::Set(_lFeature.FindChild(_iNextFreeFeature),pcFeature);
+		_lActiveFeature = _lFeature.FindChild(_iNextFreeFeature);
+		_iNextFreeFeature++;
+		return pcFeature;
+
+	}else return 0;
 
 }
 

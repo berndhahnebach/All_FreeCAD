@@ -18,21 +18,21 @@
 
 #include "FeatureAttr.h"
 
-
+using namespace App;
 
 
 //**************************************************************************
 //**************************************************************************
-// Handle_FCFeatureAttr
+// Handle_FeatureAttr
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Handle_FCFeatureAttr::~Handle_FCFeatureAttr() {}
+Handle_FeatureAttr::~Handle_FeatureAttr() {}
 
-Standard_EXPORT Handle_Standard_Type& FCFeatureAttr_Type_()
+AppExport Handle_Standard_Type& App::STANDARD_TYPE(FeatureAttr)
 {
 
   static Handle_Standard_Type aType1 = STANDARD_TYPE(FCAttribute);
- if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCAttribute);
+  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(FCAttribute);
   static Handle_Standard_Type aType2 = STANDARD_TYPE(TDF_Attribute);
   if ( aType2.IsNull()) aType2 = STANDARD_TYPE(TDF_Attribute);
   static Handle_Standard_Type aType3 = STANDARD_TYPE(MMgt_TShared);
@@ -42,8 +42,8 @@ Standard_EXPORT Handle_Standard_Type& FCFeatureAttr_Type_()
  
 
   static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,aType4,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("FCFeatureAttr",
-			                                 sizeof(FCFeatureAttr),
+  static Handle_Standard_Type _aType = new Standard_Type("FeatureAttr",
+			                                 sizeof(FeatureAttr),
 			                                 1,
 			                                 (Standard_Address)_Ancestors,
 			                                 (Standard_Address)NULL);
@@ -51,16 +51,17 @@ Standard_EXPORT Handle_Standard_Type& FCFeatureAttr_Type_()
   return _aType;
 }
 
+
 // DownCast method
 //   allow safe downcasting
 //
-const Handle(FCFeatureAttr) Handle(FCFeatureAttr)::DownCast(const Handle(Standard_Transient)& AnObject) 
+const Handle(FeatureAttr) Handle(FeatureAttr)::DownCast(const Handle(Standard_Transient)& AnObject) 
 {
-  Handle(FCFeatureAttr) _anOtherObject;
+  Handle(FeatureAttr) _anOtherObject;
 
   if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(FCFeatureAttr))) {
-       _anOtherObject = Handle(FCFeatureAttr)((Handle(FCFeatureAttr)&)AnObject);
+     if (AnObject->IsKind(STANDARD_TYPE(FeatureAttr))) {
+       _anOtherObject = Handle(FeatureAttr)((Handle(FeatureAttr)&)AnObject);
      }
   }
 
@@ -72,7 +73,7 @@ const Handle(FCFeatureAttr) Handle(FCFeatureAttr)::DownCast(const Handle(Standar
 
 //**************************************************************************
 //**************************************************************************
-// FCFeatureAttr
+// FeatureAttr
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -81,31 +82,31 @@ const Handle(FCFeatureAttr) Handle(FCFeatureAttr)::DownCast(const Handle(Standar
 //purpose  : 
 //=======================================================================
 
-const Standard_GUID& FCFeatureAttr::GetID () 
+const Standard_GUID& FeatureAttr::GetID () 
 {
-  static Standard_GUID FCFeatureAttrID("F46EEE9A-F770-4eae-A832-C55ECD5F8FE2");
-  return FCFeatureAttrID;
+  static Standard_GUID FeatureAttrID("F46EEE9A-F770-4eae-A832-C55ECD5F8FE2");
+  return FeatureAttrID;
 }
 
 //=======================================================================
 //function : Set
 //purpose  : 
 //=======================================================================
-Handle_FCFeatureAttr FCFeatureAttr::Set(const TDF_Label& label,FCFeature  * S) 
+Handle_FeatureAttr FeatureAttr::Set(const TDF_Label& label,Feature  * S) 
 {
-  Handle(FCFeatureAttr) N;
-  if (!label.FindAttribute(FCFeatureAttr::GetID(), N)) { 
-    N = new FCFeatureAttr ();   
+  Handle(FeatureAttr) N;
+  if (!label.FindAttribute(FeatureAttr::GetID(), N)) { 
+    N = new FeatureAttr ();   
     label.AddAttribute(N);
   }
   N->Set(S);    
   return N;  
 }
 
-FCFeatureAttr::FCFeatureAttr () {}
-FCFeatureAttr::~FCFeatureAttr () {}
+FeatureAttr::FeatureAttr () {}
+FeatureAttr::~FeatureAttr () {}
 
-void FCFeatureAttr::Set (FCFeature  * S) 
+void FeatureAttr::Set (Feature  * S) 
 {
  
   Backup();
@@ -116,44 +117,44 @@ void FCFeatureAttr::Set (FCFeature  * S)
   //myEmpty = Standard_False;
 }
 
-FCFeature  *FCFeatureAttr::Get () const {return _pcFeature;}
+Feature  *FeatureAttr::Get () const {return _pcFeature;}
 
-const Standard_GUID& FCFeatureAttr::ID () const { return GetID(); }
+const Standard_GUID& FeatureAttr::ID () const { return GetID(); }
 
 
-Handle(TDF_Attribute) FCFeatureAttr::NewEmpty () const
+Handle(TDF_Attribute) FeatureAttr::NewEmpty () const
 {  
-  return new FCFeatureAttr(); 
+  return new FeatureAttr(); 
 }
 
-void FCFeatureAttr::Restore(const Handle(TDF_Attribute)& with) 
+void FeatureAttr::Restore(const Handle(TDF_Attribute)& with) 
 {
-  _pcFeature = Handle(FCFeatureAttr)::DownCast (with)->Get();
+  _pcFeature = Handle(FeatureAttr)::DownCast (with)->Get();
 }
 
 
-void FCFeatureAttr::Paste (const Handle(TDF_Attribute)& into,
+void FeatureAttr::Paste (const Handle(TDF_Attribute)& into,
 		           const Handle(TDF_RelocationTable)& RT) const
 {
-  Handle(FCFeatureAttr)::DownCast (into)->Set (_pcFeature);
+  Handle(FeatureAttr)::DownCast (into)->Set (_pcFeature);
 }
 
 
-Standard_OStream& FCFeatureAttr::Dump (Standard_OStream& anOS) const
+Standard_OStream& FeatureAttr::Dump (Standard_OStream& anOS) const
 {
   TDF_Attribute::Dump(anOS);
   //anOS << " Name=|"<<myString2<<"|"<<endl;
   return anOS;
 }
 
-const Handle(Standard_Type)& FCFeatureAttr::DynamicType() const 
+const Handle(Standard_Type)& FeatureAttr::DynamicType() const 
 { 
-  return STANDARD_TYPE(FCFeatureAttr) ; 
+  return STANDARD_TYPE(FeatureAttr) ; 
 }
 
-Standard_Boolean FCFeatureAttr::IsKind(const Handle(Standard_Type)& AType) const 
+Standard_Boolean FeatureAttr::IsKind(const Handle(Standard_Type)& AType) const 
 { 
-  return (STANDARD_TYPE(FCFeatureAttr) == AType || TDF_Attribute::IsKind(AType)); 
+  return (STANDARD_TYPE(FeatureAttr) == AType || TDF_Attribute::IsKind(AType)); 
 }
 
 

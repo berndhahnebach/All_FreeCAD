@@ -36,7 +36,7 @@ namespace App
 
 /** Base class of all Feature classes in FreeCAD
  */
-class Feature
+class AppExport Feature
 {
 protected:
 
@@ -89,7 +89,7 @@ private:
 	~FeatureFactorySingleton(){}
 };
 
-inline GuiExport FeatureFactorySingleton& FeatureFactory(void)
+inline AppExport FeatureFactorySingleton& FeatureFactory(void)
 {
 	return FeatureFactorySingleton::Instance();
 }

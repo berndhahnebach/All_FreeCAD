@@ -14,6 +14,10 @@
 
 
 
+/*! \namespace std
+    \brief The Standard namespace for the C++ library
+*/
+
 /*! \namespace Base
     \brief The namespace of the FreeCAD Base library
 
@@ -24,3 +28,4 @@
 
   and so on......
 */
+namespace Base {}

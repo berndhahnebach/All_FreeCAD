@@ -162,8 +162,11 @@ FCCmdNew::FCCmdNew()
 
 void FCCmdNew::Activated(int iMsg)
 {
-  DlgDocTemplatesImp cDlg(this,GetAppWnd(),"Template Dialog",true);
-  cDlg.exec();
+//  DlgDocTemplatesImp cDlg(this,GetAppWnd(),"Template Dialog",true);
+//  cDlg.exec();
+
+	DoCommand(FCCommand::Gui,"App.DocNew()");
+
 
 }
 

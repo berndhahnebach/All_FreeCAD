@@ -38,6 +38,8 @@ class FCPyObject;
 
 namespace App {
 
+class Feature;
+
 /** Base class of Document type objects
 
  */
@@ -46,27 +48,35 @@ class AppExport DocType
 public:
 
        
-	/**
+	/** @name Basics */
+	//@{
+	/** constructor
 	 * A constructor.
 	 */
 	DocType();
 
-	/**
+	/** destructor
 	 * A destructor.
 	 */
 	virtual ~DocType();
 
-	/**
-	 * sets up the document
-	 */
-	virtual void Init (FCDocument *pcDoc)=0;
-
-	/**
-	 * sets up the document
+	/** Return the type name as string
+	 *  this methode must be overided by children of this class and return the 
+	 *  name of type object.
 	 */
 	virtual const char *GetTypeName(void);
 
+	/// returns the python wrapper
 	virtual FCPyObject *GetPyObject(void)=0;
+	//@}
+
+	
+	/** sets up the document
+	 *  Get called when the type object is attached to a newly
+	 *  created document. This methode sets up the basic structure of the document.
+	 */
+	virtual void Init (FCDocument *pcDoc)=0;
+
 
 };
 
@@ -80,30 +90,46 @@ class AppExport DocTypeStd: public DocType
 public:
 
        
-	/**
-	 * A constructor.
-	 */
+	/** @name Basics */
+	//@{
+	
+	/// Constructor
 	DocTypeStd();
 
-	/**
-	 * A destructor.
-	 */
+	/// Destructor
 	virtual ~DocTypeStd();
 
-	/**
-	 * sets up the document
-	 */
-	virtual void Init (FCDocument *pcDoc);
-
-	/**
-	 * sets up the document
-	 */
+	///returns the type name of DocumentType object
 	virtual const char *GetTypeName(void);
 
-
+	/// returns the python wrapper
 	virtual FCPyObject *GetPyObject(void);
+	//@}
 
+	/** @name Document handling  */
+	//@{
+	/** sets up the document
+	 *  Get called when the 
+	 */
+	virtual void Init (FCDocument *pcDoc);
+	//@}
 
+	/** @name Feature handling  */
+	//@{
+	Feature *AddFeature(const char* sName);
+	//@}
+
+	/** @name State handling  */
+	//@{
+
+	//@}
+
+protected:
+	TDF_Label _lBase;
+	TDF_Label _lPos;
+	TDF_Label _lFeature;
+	int       _iNextFreeFeature;
+	TDF_Label _lActiveFeature;
 
 };
 

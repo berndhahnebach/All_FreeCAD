@@ -33,60 +33,66 @@ class TDataStd_Name;
 class TFunction_Logbook;
 
 
-Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(FCFeatureAttr);
 
 
+//namespace App {
+//Handle_Standard_Type& FeatureAttr_Type_();
+//}
 
-class FCFeatureAttr;
-class FCFeature;
+namespace App
+{
+
+class FeatureAttr;
+class Feature;
+AppExport Handle_Standard_Type& STANDARD_TYPE(FeatureAttr);
 
 
-/** Handle class for FCFeatureAttr
+/** Handle class for FeatureAttr
  */
 
-class Handle_FCFeatureAttr :public Handle_FCAttribute
+class Handle_FeatureAttr :public Handle_FCAttribute
 {
 public:
 	AppExport void* operator new(size_t,void* anAddress){return anAddress;}
 	AppExport void* operator new(size_t size){return Standard::Allocate(size);}
 	AppExport void  operator delete(void *anAddress){if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	AppExport Handle_FCFeatureAttr():Handle(FCAttribute)() {} 
-	AppExport Handle_FCFeatureAttr(const Handle(FCFeatureAttr)& aHandle) : Handle(FCAttribute)(aHandle){}
+	AppExport Handle_FeatureAttr():Handle(FCAttribute)() {} 
+	AppExport Handle_FeatureAttr(const Handle(FeatureAttr)& aHandle) : Handle(FCAttribute)(aHandle){}
 
-	AppExport Handle_FCFeatureAttr(const FCFeatureAttr* anItem) : Handle(FCAttribute)((FCAttribute *)anItem){}
+	AppExport Handle_FeatureAttr(const FeatureAttr* anItem) : Handle(FCAttribute)((FCAttribute *)anItem){}
 
-	AppExport Handle_FCFeatureAttr& operator=(const Handle(FCFeatureAttr)& aHandle)
+	AppExport Handle_FeatureAttr& operator=(const Handle(FeatureAttr)& aHandle)
 	{
 		Assign(&(*aHandle));
 		return *this;
 	}
 
-	AppExport Handle_FCFeatureAttr& operator=(const FCFeatureAttr* anItem)
+	AppExport Handle_FeatureAttr& operator=(const FeatureAttr* anItem)
 	{
 		Assign((Standard_Transient *)anItem);
 		return *this;
 	}
 
-	AppExport FCFeatureAttr* operator->() 
+	AppExport FeatureAttr* operator->() 
 	{
-		return (FCFeatureAttr *)(ControlAccess());
+		return (FeatureAttr *)(ControlAccess());
 	}
 
-	AppExport FCFeatureAttr* operator->() const{return(FCFeatureAttr *)ControlAccess();}
-	AppExport ~Handle_FCFeatureAttr();
-	AppExport static const Handle_FCFeatureAttr DownCast(const Handle(Standard_Transient)& AnObject);
+	AppExport FeatureAttr* operator->() const{return(FeatureAttr *)ControlAccess();}
+	AppExport ~Handle_FeatureAttr();
+	AppExport static const Handle_FeatureAttr DownCast(const Handle(Standard_Transient)& AnObject);
 };
 
 
 
-class FCFeatureAttr : public FCAttribute 
+class FeatureAttr : public FCAttribute 
 {
 public:
 
 	/// Constructor
-	AppExport FCFeatureAttr();
+	AppExport FeatureAttr();
 	/// Destructor
-	AppExport ~FCFeatureAttr();
+	AppExport ~FeatureAttr();
 
 	/// Delivers the GUID of the Object
 	AppExport static const Standard_GUID& GetID() ;
@@ -99,12 +105,12 @@ public:
 	AppExport void Restore(const Handle(TDF_Attribute)& with) ;
 
 	/// Set data
-	AppExport void Set(FCFeature  * S) ;
+	AppExport void Set(Feature  * S) ;
 	/// Get data
-	AppExport FCFeature  * Get() const;
+	AppExport Feature  * Get() const;
 
 	/// not shure
-	AppExport static  Handle_FCFeatureAttr Set(const TDF_Label& label,FCFeature  * S) ;
+	AppExport static  Handle_FeatureAttr Set(const TDF_Label& label,Feature  * S) ;
 
 	/// Get the unique ID of the Attribute
 	AppExport const Standard_GUID& ID() const;
@@ -120,16 +126,18 @@ public:
     AppExport void* operator new(size_t,void* anAddress)	{return anAddress;}
     AppExport void* operator new(size_t size)				{return Standard::Allocate(size);}
     AppExport void  operator delete(void *anAddress)		{if (anAddress) Standard::Free((Standard_Address&)anAddress);}
-	          friend Handle_Standard_Type& FCFeatureAttr_Type_();
+	friend Handle_Standard_Type& FeatureAttr_Type_();
 	AppExport const Handle(Standard_Type)& DynamicType() const;
 	AppExport Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 
 private: 
 
 	/// Data member string
-	FCFeature *_pcFeature;
+	Feature *_pcFeature;
 
 };
 
+
+} // namespace App
 
 #endif
