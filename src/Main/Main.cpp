@@ -322,19 +322,6 @@ void Init(int argc, char ** argv )
 	mConfig["UserParameter"]  += mConfig["HomePath"] + "FC" + mConfig["UserName"] + ".FCParam";
 	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
 
-
-	// Splasher phase ===========================================================
-	#	ifdef _FC_GUI_ENABLED_
-		// startup splasher
-		// when runnig in verbose mode no splasher
-		if ( ! (mConfig["Verbose"] == "Strict") && (mConfig["RunMode"] == "Gui") )
-		{
-			pcQApp = new QApplication ( argc, argv );
-			splash = new FCSplashScreen(QApplication::desktop());
-			pcQApp->setMainWidget(splash);
-		}
-	# endif
-
 	// init python
 	GetInterpreter();
 
@@ -387,6 +374,22 @@ void Init(int argc, char ** argv )
 	// creating the application 
 	if(!(mConfig["Verbose"] == "Strict")) GetConsole().Log("Create Application");
 	FCApplication::_pcSingelton = new FCApplication(pcSystemParameter,pcUserParameter,mConfig);
+
+	// Splasher phase ===========================================================
+#	ifdef _FC_GUI_ENABLED_
+		// startup splasher
+		// when runnig in verbose mode no splasher
+		if ( ! (mConfig["Verbose"] == "Strict") && (mConfig["RunMode"] == "Gui") )
+		{
+      FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+      if (hGrp->GetBool("AllowSplasher", true))
+      {
+			  pcQApp = new QApplication ( argc, argv );
+			  splash = new FCSplashScreen(QApplication::desktop());
+			  pcQApp->setMainWidget(splash);
+      }
+		}
+# endif
 
 	// starting the init script
 	rcInterperter.Launch(FreeCADInit);
