@@ -38,6 +38,7 @@
 //#include "PyExport.h"
 
 #include <string>
+#include <vector>
 
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
@@ -313,6 +314,192 @@ private:
 
 	std::string _cConstrain;
 
+};
+
+/** Bool properties
+ * This is the father of all properties handling booleans.
+ */
+class AppExport FCPropertyBool : public FCProperty
+{
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	FCPropertyBool(bool lValue);
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	virtual ~FCPropertyBool();
+
+	/** This method returns a string representation of the property
+	 * This representation can be simple in case of strings or numbers
+	 * or more comples in case of e.g. color
+	 */
+	virtual const char* GetAsString(void);
+
+	/** Gets the type of the concrete Property
+	 * Properties inherit from this class reports
+	 * its type through this methode.
+	 */
+
+	virtual const char* GetType(void);
+
+	/** Returns the value of a sub property
+	 * This method is mainly for scripting and allow setting  
+	 * of additional information, like e.g. limits. 
+	 */
+	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
+
+	/** sets the value of a sub property
+	 * This method is mainly for scripting and allow geting 
+	 * of additional information, like e.g. limits. 
+	 */
+	virtual const char* GetSubProperty(const char* sSubPropName);
+
+	/** gets all possible subproperty names
+	 * return a line feed seperated list of all sub property
+	 * names.
+	 */
+	virtual const char* GetSubPropertyNames(void);
+
+	void SetValue(bool lValue);
+	bool GetValue(void);
+
+private:
+
+	bool _lValue;
+};
+
+/** Color properties
+ * This is the father of all properties handling colors.
+ */
+class AppExport FCPropertyColor : public FCProperty
+{
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	FCPropertyColor(long lRed=0, long lGreen=0, long lBlue=0);
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	virtual ~FCPropertyColor();
+
+	/** This method returns a string representation of the property
+	 * This representation can be simple in case of strings or numbers
+	 * or more comples in cas of e.g. color
+	 */
+	virtual const char* GetAsString(void);
+
+	/** Gets the type of the concrete Property
+	 * Properties inherit from this class reports
+	 * its type through this methode.
+	 */
+
+	virtual const char* GetType(void);
+
+	/** Returns the value of a sub property
+	 * This method is mainly for scripting and allow setting  
+	 * of additional information, like e.g. limits. 
+	 */
+	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
+
+	/** sets the value of a sub property
+	 * This method is mainly for scripting and allow geting 
+	 * of additional information, like e.g. limits. 
+	 */
+	virtual const char* GetSubProperty(const char* sSubPropName);
+
+	/** gets all possible subproperty names
+	 * return a line feed seperated list of all sub property
+	 * names.
+	 */
+	virtual const char* GetSubPropertyNames(void);
+
+	void SetRed(long lRed);
+	long GetRed(void);
+
+	void SetGreen(long lGreen);
+	long GetGreen(void);
+
+	void SetBlue(long lBlue);
+	long GetBlue(void);
+
+private:
+	long _lRed, _lGreen, _lBlue;
+
+};
+
+/** List properties
+ * This is the father of all properties handling lists.
+ */
+class AppExport FCPropertyList : public FCProperty
+{
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	FCPropertyList(const std::vector<std::string>& lValue, long lCurrent=0);
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	virtual ~FCPropertyList();
+
+	/** This method returns a string representation of the property
+	 * This representation can be simple in case of strings or numbers
+	 * or more comples in cas of e.g. color
+	 */
+	virtual const char* GetAsString(void);
+
+	/** Gets the type of the concrete Property
+	 * Properties inherit from this class reports
+	 * its type through this methode.
+	 */
+
+	virtual const char* GetType(void);
+
+	/** Returns the value of a sub property
+	 * This method is mainly for scripting and allow setting  
+	 * of additional information, like e.g. limits. 
+	 */
+	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
+
+	/** sets the value of a sub property
+	 * This method is mainly for scripting and allow geting 
+	 * of additional information, like e.g. limits. 
+	 */
+	virtual const char* GetSubProperty(const char* sSubPropName);
+
+	/** gets all possible subproperty names
+	 * return a line feed seperated list of all sub property
+	 * names.
+	 */
+	virtual const char* GetSubPropertyNames(void);
+
+	void SetValue(const std::vector<std::string>& lValue);
+	const std::vector<std::string>& GetValue(void);
+
+  void SetCurrentItem (long lCurrent);
+  long GetCurrentItem (void);
+
+private:
+  std::vector<std::string> _lValue;
+  long _lCurrent;
 };
 
 #endif // __PROPERTIES_H__

@@ -176,6 +176,16 @@ long FCPropertyInteger::GetStep(void)
 	return _lStep;
 }
 
+void FCPropertyInteger::SetValue(long lValue)
+{
+	_lValue=lValue;
+}
+
+long FCPropertyInteger::GetValue(void)
+{
+	return _lValue;
+}
+
 //**************************************************************************
 //**************************************************************************
 // FCPropertyFloat
@@ -289,6 +299,16 @@ double FCPropertyFloat::GetStep(void)
 	return _dStep;
 }
 
+void FCPropertyFloat::SetValue(double lValue)
+{
+	_dValue=lValue;
+}
+
+double FCPropertyFloat::GetValue(void)
+{
+	return _dValue;
+}
+
 //**************************************************************************
 //**************************************************************************
 // FCPropertyString
@@ -382,3 +402,310 @@ const char* FCPropertyString::GetConstrain(void)
 
 
 
+
+//**************************************************************************
+//**************************************************************************
+// FCPropertyBool
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//**************************************************************************
+// Construction/Destruction
+
+       
+FCPropertyBool::FCPropertyBool(bool lValue)
+	:_lValue(lValue)
+{
+
+}
+
+
+FCPropertyBool::~FCPropertyBool()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+const char* FCPropertyBool::GetAsString(void)
+{
+	static char sBuf[DBL_DIG+10];
+  sprintf(sBuf,"%s",(_lValue ? "True" : "False"));
+	return sBuf;
+}
+
+
+
+const char* FCPropertyBool::GetType(void)
+{
+	return "Bool";
+}
+
+const char* FCPropertyBool::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+{
+
+	if(strcmp(sSubPropName,"Value")==0)
+    _lValue = atol(sNewValue) > 0 ? true : false;
+	else return "";
+
+	return GetSubProperty(sSubPropName);
+}
+
+
+const char* FCPropertyBool::GetSubProperty(const char* sSubPropName)
+{
+	static char sBuf[DBL_DIG+10];
+	sprintf(sBuf,"%d",_lValue);
+
+	if(strcmp(sSubPropName,"Value")==0)
+    sprintf(sBuf,"%s",(_lValue ? "True" : "False"));
+	else return "";
+
+	return sBuf;
+}
+
+
+const char* FCPropertyBool::GetSubPropertyNames(void)
+{
+	return "Value";
+}
+
+//**************************************************************************
+// Seter getter for the property
+
+void FCPropertyBool::SetValue(bool lValue)
+{
+	_lValue=lValue;
+}
+
+bool FCPropertyBool::GetValue(void)
+{
+	return _lValue;
+}
+
+//**************************************************************************
+//**************************************************************************
+// FCPropertyColor
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//**************************************************************************
+// Construction/Destruction
+
+       
+FCPropertyColor::FCPropertyColor(long lRed, long lGreen, long lBlue)
+	:_lRed(lRed),_lGreen(lGreen), _lBlue(lBlue)
+{
+
+}
+
+
+FCPropertyColor::~FCPropertyColor()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+const char* FCPropertyColor::GetAsString(void)
+{
+	static char sBuf[DBL_DIG+10];
+	sprintf(sBuf,"[%d, %d, %d]",_lRed, _lGreen, _lBlue);
+	return sBuf;
+}
+
+
+
+const char* FCPropertyColor::GetType(void)
+{
+	return "Color";
+}
+
+const char* FCPropertyColor::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+{
+
+	if(strcmp(sSubPropName,"Red")==0)
+		_lRed = atol(sNewValue);
+	else if(strcmp(sSubPropName,"Green")==0)
+		_lGreen = atol(sNewValue);
+	else if(strcmp(sSubPropName,"Blue")==0)
+		_lBlue = atol(sNewValue);
+	else return "";
+
+	return GetSubProperty(sSubPropName);
+}
+
+
+const char* FCPropertyColor::GetSubProperty(const char* sSubPropName)
+{
+	static char sBuf[DBL_DIG+10];
+
+	if(strcmp(sSubPropName,"Red")==0)
+		sprintf(sBuf,"%d",_lRed);
+	else if(strcmp(sSubPropName,"Green")==0)
+		sprintf(sBuf,"%d",_lGreen);
+	else if(strcmp(sSubPropName,"Blue")==0)
+		sprintf(sBuf,"%d",_lBlue);
+	else return "";
+
+	return sBuf;
+}
+
+
+const char* FCPropertyColor::GetSubPropertyNames(void)
+{
+	return "Red;Green;Blue";
+}
+
+//**************************************************************************
+// Seter getter for the property
+
+void FCPropertyColor::SetRed(long lRed)
+{
+	_lRed=lRed;
+}
+
+long FCPropertyColor::GetRed(void)
+{
+	return _lRed;
+}
+
+void FCPropertyColor::SetGreen(long lGreen)
+{
+	_lGreen=lGreen;
+}
+
+long FCPropertyColor::GetGreen(void)
+{
+	return _lGreen;
+}
+
+void FCPropertyColor::SetBlue(long lBlue)
+{
+	_lBlue=lBlue;
+}
+
+long FCPropertyColor::GetBlue(void)
+{
+	return _lBlue;
+}
+
+//**************************************************************************
+//**************************************************************************
+// FCPropertyList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//**************************************************************************
+// Construction/Destruction
+
+       
+FCPropertyList::FCPropertyList(const std::vector<std::string>& lValue, long lCurrent)
+	:_lValue(lValue), _lCurrent(lCurrent)
+{
+
+}
+
+
+FCPropertyList::~FCPropertyList()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+const char* FCPropertyList::GetAsString(void)
+{
+	static char sBuf[DBL_DIG+10];
+  int pos = 0;
+  for (std::vector<std::string>::iterator it = _lValue.begin(); it!=_lValue.end(); ++it)
+  {
+    if (pos+it->length() >= DBL_DIG)
+    {
+//      GetConsole().Warning("FCPropertyList: List too long\n");
+      break;
+    }
+  	pos += sprintf(sBuf+pos,"%s ",it->c_str());
+  }
+	return sBuf;
+}
+
+
+
+const char* FCPropertyList::GetType(void)
+{
+	return "List";
+}
+
+const char* FCPropertyList::SetSubProperty(const char* sSubPropName,const char* sNewValue)
+{
+	if(strcmp(sSubPropName,"Current")==0)
+		_lCurrent = atol(sNewValue);
+  else
+  {
+    unsigned lPos = atol(sSubPropName);
+    if (lPos < _lValue.size())
+      _lValue[lPos] = sNewValue;
+  	else return "";
+  }
+
+	return GetSubProperty(sSubPropName);
+}
+
+
+const char* FCPropertyList::GetSubProperty(const char* sSubPropName)
+{
+	static char sBuf[DBL_DIG+10];
+	
+	if(strcmp(sSubPropName,"Current")==0)
+      sprintf(sBuf,"%d",_lCurrent);
+  else
+  {
+    unsigned lPos = atol(sSubPropName);
+    if (lPos < _lValue.size())
+      sprintf(sBuf,"%s",_lValue[lPos].c_str());
+  	else return "";
+  }
+
+	return sBuf;
+}
+
+
+const char* FCPropertyList::GetSubPropertyNames(void)
+{
+	static char sBuf[DBL_DIG+10];
+  int pos = 0;
+
+  long size = _lValue.size()-1;
+  pos = sprintf(sBuf, "%d.", _lCurrent);
+  for (long i = 0; i < size; ++i)
+    pos += sprintf(sBuf+pos, "%d.", i);
+  sprintf(sBuf+pos, "%d", size);
+	return sBuf;
+}
+
+//**************************************************************************
+// Seter getter for the property
+
+void FCPropertyList::SetValue(const std::vector<std::string>& lValue)
+{
+	_lValue=lValue;
+}
+
+const std::vector<std::string>& FCPropertyList::GetValue(void)
+{
+	return _lValue;
+}
+
+void FCPropertyList::SetCurrentItem (long lCurrent)
+{
+  _lCurrent = lCurrent;
+}
+
+long FCPropertyList::GetCurrentItem (void)
+{
+  return _lCurrent;
+}
