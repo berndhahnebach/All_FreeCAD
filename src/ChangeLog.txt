@@ -236,3 +236,7 @@ Version: V0.1B56 Date: Tue Apr 22 18:38:49 2003 +++++++++++++++++++++++++++++++
 + some bugfixing (werner)
 + QT3 fixes (werner)
 + DnD changes (werner)
+
+Version: V0.1B57 Date: Fri Apr 25 16:18:12 2003 +++++++++++++++++++++++++++++++
++ New modules for the ToptDS and Geometry wrapping
++ Script command for macro customizing

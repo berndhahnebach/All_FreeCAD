@@ -439,7 +439,7 @@ FCCmdTest1::FCCmdTest1()
 	sToolTipText	= "Test function 1";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Test1";
+	sPixmap			= "Std_Tool1";
 	iAccel			= Qt::CTRL+Qt::Key_T;
 }
 
@@ -523,7 +523,7 @@ FCCmdTest2::FCCmdTest2()
 	sToolTipText	= "Test function 2";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
-	sPixmap			= "Test2";
+	sPixmap			= "Std_Tool2";
 	iAccel			= 0;
 }
 

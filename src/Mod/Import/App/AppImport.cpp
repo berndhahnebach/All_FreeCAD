@@ -24,6 +24,7 @@
 #endif
 
 #include "../../../App/Application.h"
+#include "../../../App/Topology.h"
 
 #include <stdio.h>
 #include <python.h>
@@ -46,11 +47,30 @@ Info(PyObject *self, PyObject *args)              /* self unused in modules */
     
 }
 
+/* module functions */
+static PyObject *                                 /* returns object */
+ReadBREP(PyObject *self, PyObject *args)          /* self unused in modules */
+{                                                 /* args from python call */
+	char* str;
+
+    if (! PyArg_ParseTuple(args, "s",&str))		  /* convert Python -> C */
+        return NULL;                              /* null=raise exception */
+  
+	TopoDS_Shape ResultShape;
+	BRep_Builder aBuilder;
+
+	BRepTools::Read(ResultShape,(const Standard_CString)str,aBuilder);
+
+	return new FCTopoShape(ResultShape);		  /* convert C -> Python */
+    
+}
+
 
 
 /* registration table  */
 static struct PyMethodDef hello_methods[] = {
     {"Info", Info, 1},				/* method name, C func ptr, always-tuple */
+    {"ReadBREP", ReadBREP, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };

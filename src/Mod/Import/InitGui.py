@@ -37,23 +37,18 @@ class ImportWorkbench ( Workbench ):
 		# load the module
 		try:
 			Log ('Loading ImportGui module')
+			import Import
 			import ImportGui
 		except:
 			Err('   can not load ImportGui')
 			raise
 		else:	
 			Log ('   Set up Import toolbar...\n')
-			Gui.ToolbarAddTo("ImportTools","Import_Test1")
-			Gui.ToolbarAddTo("ImportTools","Import_Test2")
-			Gui.ToolbarAddTo("ImportTools","Import_Box")
-			Gui.ToolbarAddTo("ImportTools","Import_Cut")
+			Gui.ToolbarAddTo("ImportTools","Import_ReadBREP")
 
 			Log ('   Set up Import commandbar...\n')
-			Gui.CommandbarAddTo("ImportTools","Import_Test1")
-			Gui.CommandbarAddTo("ImportTools","Import_Test2")
-			Gui.CommandbarAddTo("ImportTools","Import_Box")
-			Gui.CommandbarAddTo("ImportTools","Import_Cut")
-
+			Gui.CommandbarAddTo("ImportTools","Import_ReadBREP")
+			
 			Log ('   Set up Import menues...\n')
 
 	def Stop(self):
@@ -63,4 +58,4 @@ class ImportWorkbench ( Workbench ):
 
 
 #Gui.WorkbenchAdd("Import design",ImportWorkbench())
-Gui.WorkbenchAdd("Import design",ImportWorkbench())
+Gui.WorkbenchAdd("Import",ImportWorkbench())

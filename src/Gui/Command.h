@@ -349,11 +349,76 @@ public:
 	virtual std::string GetResource(const char* sName);
 	//@}
 
+
 protected:
 	/// a reference to the python coammnd object
 	PyObject * _pcPyCommand;
 	/// the command object resource dictionary
 	PyObject * _pcPyResourceDict;
+
+};
+
+
+/** The script command class
+ *  This is a special type of command class. Its used to bind
+ *  a macro or python script into the FC command framework.
+ *  A object of this class gets a string to the place where the 
+ *  script is in the file system and manage all the passing between the 
+ *  C++ and the python world. Unlike the other commands the resources can
+ *  be set by methodes.
+ *  @see FCCommand
+ *  @see FCCommandManager
+ */
+class FCScriptCommand: public FCCommand
+{
+public:
+	FCScriptCommand(const char* name);
+
+	/** @name Methodes reimplemented for Command Framework */
+	//@{
+	/// Method which get called when activated
+	virtual void Activated(int iMsg);
+	/// Get the help URL
+	virtual std::string CmdHelpURL(void);
+	/// Get the help page
+	virtual void CmdHelpPage(std::string &rcHelpPage);
+	/// Creates the used FCAction
+	virtual FCAction * CreateAction(void);
+	/// returns the resource values
+	virtual std::string GetResource(const char* sName);
+	//@}
+
+	/** @name Methodes to set the propertys of the Script Command */
+	//@{
+	void SetScriptName		(const char* sScriptName)	{_sScriptName	=sScriptName;}
+	void SetMenuText		(const char* sMenuText)		{_sMenuText		=sMenuText;}
+	void SetToolTipText		(const char* sToolTipText)	{_sToolTipText	=sToolTipText;}
+	void SetWhatsThis		(const char* sWhatsThis)	{_sWhatsThis	=sWhatsThis;}
+	void SetStatusTip		(const char* sStatusTip)	{_sStatusTip	=sStatusTip;}
+	void SetPixmap		    (const char* sPixmap)		{_sPixmap		=sPixmap;}
+	void SetHelpPage	    (const char* sHelpPage)		{_sHelpPage		=sHelpPage;}
+	void SetHelpURL		    (const char* sHelpURL)		{_sHelpURL		=sHelpURL;}
+	void SetAccel		    (int iAccel)				{_iAccel		=iAccel;}
+	//@}
+
+
+protected:
+	/** @name Attributes 
+	 *  set by the inherited constructor to set up the most important propertys 
+	 *  of the command. In the FCCommand constructor are set default values! 
+	 *  The real values should be set with the Seter.
+	 */
+	//@{
+	std::string _sMenuText;
+	std::string _sToolTipText;
+	std::string _sWhatsThis;
+	std::string _sStatusTip;
+	std::string _sPixmap;
+	std::string _sScriptName;
+	std::string _sHelpPage;
+	std::string _sHelpURL;
+	int         _iAccel;
+	//@}
 
 };
 

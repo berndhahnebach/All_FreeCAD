@@ -118,6 +118,22 @@ SOURCE=.\Document.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Geometry2D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Geometry2D.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Geometry3D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Geometry3D.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
@@ -136,6 +152,14 @@ SOURCE=.\PreCompiled.cpp
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Topology.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Topology.h
 # End Source File
 # End Target
 # End Project

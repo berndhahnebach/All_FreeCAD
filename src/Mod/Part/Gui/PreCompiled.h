@@ -60,11 +60,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <TPrsStd_AISViewer.hxx>
 #include <TNaming_NamedShape.hxx>
-//#include <IGESControl_Controller.hxx>
-//#include <IGESControl_Writer.hxx>
-//#include <IGESControl_Reader.hxx>
-//#include <STEPControl_Writer.hxx>
-//#include <STEPControl_Reader.hxx>
 #include <BRepTools.hxx>
 
 

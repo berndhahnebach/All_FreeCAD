@@ -408,7 +408,7 @@ void FCCommand::AbortCommand(void)
 void FCCommand::DoCommand(DoCmd_Type eType,const char* sCmd,...)
 {
 	// temp buffer
-	char* format = (char*) malloc(strlen(sCmd)*2);
+	char* format = (char*) malloc(strlen(sCmd)+1024);
     va_list namelessVars;
     va_start(namelessVars, sCmd);  // Get the "..." vars
     vsprintf(format, sCmd, namelessVars);
@@ -467,7 +467,6 @@ const char * FCCommand::EndCmdHelp(void)
 	return "</body></html>\n\n";
 }
 
-
 //===========================================================================
 // FCCppCommand 
 //===========================================================================
@@ -510,6 +509,65 @@ FCAction * FCCppCommand::CreateAction(void)
 }
 
 
+//===========================================================================
+// FCScriptCommand 
+//===========================================================================
+
+FCScriptCommand::FCScriptCommand(const char* name)
+	:FCCommand(name,Cmd_Normal)
+{
+	_sMenuText		="Not set!!";
+	_sToolTipText	="Not set!!";
+	_sWhatsThis		="Not set!!";
+	_sStatusTip		="Not set!!";
+	_iAccel			=0;
+
+}
+
+std::string FCScriptCommand::GetResource(const char* sName)
+{
+
+	return "";
+
+}
+
+
+FCAction * FCScriptCommand::CreateAction(void)
+{
+	FCAction *pcAction;
+
+	pcAction = new FCAction(this,ApplicationWindow::Instance,sName.c_str(),_eType&Cmd_Toggle != 0);
+	pcAction->setText(_pcAction->tr(_sMenuText.c_str()));
+	pcAction->setMenuText(_pcAction->tr(_sMenuText.c_str()));
+	pcAction->setToolTip(_pcAction->tr(_sToolTipText.c_str()));
+	pcAction->setStatusTip(_pcAction->tr(_sStatusTip.c_str()));
+	pcAction->setWhatsThis(_pcAction->tr(_sWhatsThis.c_str()));
+	if(_sPixmap!="")
+		pcAction->setIconSet(ApplicationWindow::Instance->GetBmpFactory().GetPixmap(_sPixmap.c_str()));
+	pcAction->setAccel(_iAccel);
+
+	return pcAction;
+}
+
+
+void FCScriptCommand::Activated(int iMsg)
+{
+	OpenCommand("Excecute Macro");
+
+	DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
+
+	void CommitCommand(void);
+}
+
+std::string FCScriptCommand::CmdHelpURL(void)
+{
+	return _sHelpURL;
+}
+
+void FCScriptCommand::CmdHelpPage(std::string &rcHelpPage)
+{
+	rcHelpPage += _sHelpPage;
+}
 
 
 //===========================================================================

@@ -192,6 +192,13 @@
 #include <TFunction_Function.hxx>
 #include <TDataStd_Integer.hxx>
 
+// IO
+#include <IGESControl_Controller.hxx>
+#include <IGESControl_Writer.hxx>
+#include <IGESControl_Reader.hxx>
+#include <STEPControl_Writer.hxx>
+#include <STEPControl_Reader.hxx>
+
 
 
 #endif
