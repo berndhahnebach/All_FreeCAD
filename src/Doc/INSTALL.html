@@ -1,0 +1,121 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-gb">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>FreeCAD Downloads</title>
+<meta name="Microsoft Border" content="none, default">
+</head>
+
+<body link="#800000" vlink="#008080" alink="#FF0000">
+<table border="0" cellpadding="0" cellspacing="1" width="710" height="43">
+  <tr>
+    <td height="41" valign="middle" align="center" width="192">
+      <h1><font face="Arial">Install</font></h1>
+    </td>
+    <td height="41" valign="middle" align="center" width="528" bgcolor="#FFCC66">&nbsp;</td>
+  </tr>
+</table>
+<hr>
+<p>&nbsp;</p>
+<table border="0" cellpadding="10" cellspacing="3" width="714">
+  <tr>
+    <td width="684" height="6" valign="top" align="left" bgcolor="#FFCC66">
+      <h2><font face="Arial">For Developers</font></h2>
+    </td>
+  </tr>
+  <tr>
+    <td width="684" height="24" valign="top" align="left" bgcolor="#FFCC66">
+      <h2>Getting the latest sources</h2>
+<p>For the source code you can download the src packages from <a href="https://sourceforge.net/projects/free-cad/"> SourceForge</a> or retrieve
+the latest Version from <a href="https://sourceforge.net/cvs/?group_id=49159"> CVS</a> (which is not guaranteed to compile or
+run) but your at the edge of development:</p>
+<p><font face="Courier" size="2">cvs -d:pserver:anonymous@cvs.free-cad.sourceforge.net:/cvsroot/free-cad login<br>
+cvs -z3 -d:pserver:anonymous@cvs.free-cad.sourceforge.net:/cvsroot/free-cad checkout
+src</font></p>
+<h2>Needed libraries</h2>
+<p>Because of the heavy use of&nbsp; third party libraries in FreeCAD its quit
+hard to set up a development environment so far. You need to download and
+install a lot of libraries, as there are:
+<ul>
+  <li>Open CasCade from <a href="http://www.opencascade.org">www.opencascade.org</a>
+    in Version 4.0</li>
+  <li>Trolltechs QT GUI library from <a href="http://www.troll.no">www.troll.no</a>
+    in Version 2.2.x or higher</li>
+  <li>Python from <a href="http://www.python.org">www.python.org</a> in version
+    2.1.x or higher</li>
+  <li><a href="http://www.geocities.com/gigafalk/qextmdi.htm">QExtMDI</a> an QT extension library for MDI Windows</li>
+  <li>The BOOST library from <a href="http://www.boost.org">www.boost.org</a>&nbsp;</li>
+  <li>STLport from <a href="http://www.stlport.org">www.stlport.org</a> in
+    Version 4.3.5 (at least on Windows)</li>
+</ul>
+<h2>Environment</h2>
+<p>FreeCAD don't need environment variables beside the ones set by the OCC
+installer. If they are not set by any reason you can set them by hand:</p>
+<p><font face="Courier" size="2">CSF_MDTVFONTDIRECTORY='E:\Develop\Libs\Cas40\src\FontMFT'<br>
+CSF_MDTVTEXTURESDIRECTORY='E:\Develop\Libs\Cas40\src\Textures'<br>
+CSF_PLUGINDEFAULTS='E:\Develop\Libs\Cas40\src\StdResource'<br>
+CSF_SHMESSAGESTD='E:\Develop\Libs\Cas40\src\SHMessageStd'<br>
+CSF_STANDARDDEFAULTS='E:\Develop\Libs\Cas40\src\StdResource'<br>
+CSF_UNITSDEFINITION='E:\Develop\Libs\Cas40\src\UnitsAPI\Units.dat'<br>
+CSF_UNITSLEXICON='E:\Develop\Libs\Cas40\src\UnitsAPI\Lexi_Expr.dat'<br>
+CSF_XSMESSAGESTD='E:\Develop\Libs\Cas40\src\XSMessageStd'</font></p>
+<h2>Building the executables</h2>
+<p><b>Windows</b></p>
+<p>On Windows you need Visual C++ 6.0 SP5 to build FreeCAD. There fore you'll
+find a .DSW file in the src directory. Also provided are Make files for
+NMAKE.exe if you like.</p>
+<p><b>Linux</b></p>
+<p>There are Make files for Linux, but they are not constantly updated because
+the main development at the moment happens on Windows2k.</p>
+<h2>Building documentation</h2>
+<p>For building the FreeCAD documentation (Manuals and Framework documentation)
+run the script MakeDoc.py in the src/Doc directory. It will generate a Doc
+directory in the top level dir and build an copy the whole documentation.</p>
+<h2>Contribute</h2>
+<p>If you want to contribute own code to FreeCAD, following these steps:</p>
+<ol>
+  <li>Update your source to the newest version by typing:<br>
+    <font face="Courier" size="2">cvs -z3 -d:pserver:anonymous@cvs.free-cad.sourceforge.net:/cvsroot/free-cad
+    update src</font></li>
+  <li>Removing eventually conflicts and compile FreeCAD completely new</li>
+  <li>Running the build in check to ensure nothing serious is broken by typing:<br>
+    <font face="Courier" size="2">FreeCAD -t0</font></li>
+  <li>If the test was successfully generate a patch by typing:<br>
+    <font face="Courier" size="2">cvs -z3
+    -d:pserver:anonymous@cvs.free-cad.sourceforge.net:/cvsroot/free-cad diff src<a href="./">
+    </a>&gt; FreeCAD_<i>yourname_date</i>.patch</font></li>
+  <li>Put the patch in the patch tray on <a href="https://sourceforge.net/projects/free-cad/"> SourceForge</a>
+    and maybe drop me a line.</li>
+  <li>dfdf</li>
+  <li>dfd</li>
+</ol>
+<p>Besides code there are many ways to help us on FreeCAD. You can write bug
+reports or give us a hint on interesting librarys to use. You can help on the
+documentation or just tell friends on FreeCAD and and and ......&nbsp; </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table border="0" cellpadding="10" cellspacing="3" width="714">
+  <tr>
+    <td width="684" height="6" valign="top" align="left" bgcolor="#FFCC66">
+      <h2><font face="Arial">For User</font></h2>
+    </td>
+  </tr>
+  <tr>
+    <td width="684" height="24" valign="top" align="left" bgcolor="#FFCC66">
+<h2>To early</h2>
+<p>The development of FreeCAD is in a early state. A distribution for a end user
+makes no sense yet.&nbsp;</p>
+<p>Later on there will be an installer on windows and a RPM for Linux, but since
+there is still a lot to do ;-)</p>
+ </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<hr>
+Last change 28.11.2002 by J. Riegel</body>
+
+</html>

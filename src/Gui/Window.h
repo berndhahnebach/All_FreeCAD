@@ -37,8 +37,8 @@ public:
 	FCWindow(const char *name);
 	~FCWindow();
 
-	FCParameterGrp::handle &GetParameter(void);
-	FCParameterGrp::handle &GetWindowParameter(void);
+	FCParameterGrp::handle GetParameter(void);
+	FCParameterGrp::handle GetWindowParameter(void);
 
 private:
 #	pragma warning( disable : 4251 )

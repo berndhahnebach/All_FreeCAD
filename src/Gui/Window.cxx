@@ -63,12 +63,12 @@ FCWindow::~FCWindow()
 }
 
 
-FCParameterGrp::handle & FCWindow::GetWindowParameter(void)
+FCParameterGrp::handle  FCWindow::GetWindowParameter(void)
 {
 	return _handle;
 }
 
-FCParameterGrp::handle & FCWindow::GetParameter(void)
+FCParameterGrp::handle  FCWindow::GetParameter(void)
 {
 	return GetApplication().GetParameter().GetGroup("BaseApp");
 }

@@ -122,15 +122,16 @@ FCvector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 {
 	FCHandle<FCParameterGrp> rParamGrp;
 	FCvector<FCHandle<FCParameterGrp> >  vrParamGrp;
-	DOMElement *pcTemp;
+	DOMNode *pcTemp = _pGroupNode->getFirstChild();
+	FCstring Name;
 
 	while( pcTemp = FindNextElement(pcTemp,"FCParamGroup") )
 	{
-		const char * Name = StrX(pcTemp->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
 		// already created?
 		if( ! (rParamGrp=_GroupMap[Name]).IsValid() )
 		{
-			rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp));
+			rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(((DOMElement*)pcTemp)));
 			_GroupMap[Name] = rParamGrp;
 		}
 		vrParamGrp.push_back( rParamGrp );
@@ -286,9 +287,9 @@ DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, con
 	return NULL;
 }
 
-DOMElement *FCParameterGrp::FindNextElement(DOMElement *Prev, const char* Type)
+DOMElement *FCParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
 {
-	DOMNode *clChild;
+	DOMNode *clChild = Prev;
 	while ((clChild = clChild->getNextSibling())!=0)
 	{
 		if (clChild->getNodeType() == DOMNode::ELEMENT_NODE)

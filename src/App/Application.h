@@ -129,6 +129,19 @@ public:
 
 	FCParameterManager & GetParameter(void) {return *_pcParamMngr;}
 	
+	/// Major version nummber
+	const static unsigned int VersionMajor;
+	/// Minor version nummber
+	const static unsigned int VersionMinor;
+	/// Build nummber
+	const static unsigned int VersionBuild;
+	/// Build date
+	const static char *       VersionDate;
+	/// Build time
+	const static char *    	  VersionTime;
+	/// Build time
+	const static char *    	  VersionDisDa;
+	
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
 	//---------------------------------------------------------------------
@@ -140,6 +153,7 @@ public:
 	PYFUNCDEF_S(sSaveAs);
 	PYFUNCDEF_S(sGet);
 	PYFUNCDEF_S(sGetParam);
+	PYFUNCDEF_S(sGetVersion);
 
 	static PyMethodDef    Methods[]; 
 

@@ -140,7 +140,7 @@ public:
 
 	friend FCParameterManager;
 
-	DOMElement *FindNextElement(DOMElement *Prev, const char* Type);
+	DOMElement *FindNextElement(DOMNode *Prev, const char* Type);
 
 	/** Find an element specified by Type and Name
 	 *  Search in the parent element Start for the first occourrence of an 

@@ -101,7 +101,7 @@ Standard_OStream& TDataStd_Name::Dump (Standard_OStream& anOS) const
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
-
+ 
 PyTypeObject FCPyAttribute::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/

@@ -24,6 +24,21 @@
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
 
+// static members
+#include "../Version.h"
+/// Major version nummber
+const unsigned int FCApplication::VersionMajor = FCVersionMajor;
+/// Minor version nummber
+const unsigned int FCApplication::VersionMinor = FCVersionMinor;
+/// Build nummber
+const unsigned int FCApplication::VersionBuild = FCVersionBuild;
+/// Build date
+const char *       FCApplication::VersionDisDa = FCVersionDisDa;
+/// Build date
+const char *       FCApplication::VersionDate  = __DATE__;
+/// Build date
+const char *       FCApplication::VersionTime  = __TIME__;
+
 
 Standard_CString FCApplicationOCC::ResourcesName()
 {
@@ -241,6 +256,7 @@ PyMethodDef FCApplication::Methods[] = {
 	{"DocSaveAs",      (PyCFunction) FCApplication::sSaveAs,    1},
 	{"DocGet",         (PyCFunction) FCApplication::sGet,       1},
 	{"ParamGet",       (PyCFunction) FCApplication::sGetParam,  1},
+	{"Version",        (PyCFunction) FCApplication::sGetVersion,1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -329,6 +345,28 @@ PYFUNCIMP_S(FCApplication,sGetParam)
 		return new FCPyParameterGrp(GetApplication().GetParameter().GetGroup("BaseApp"));  
 }
 
+PYFUNCIMP_S(FCApplication,sGetVersion)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL; // NULL triggers exception 
+
+	PyObject* pList = PyList_New(6); 
+	PyObject *pItem;
+	pItem = PyInt_FromLong(FCApplication::VersionMajor);
+	PyList_SetItem(pList, 0, pItem);
+	pItem = PyInt_FromLong(FCApplication::VersionMinor);
+	PyList_SetItem(pList, 1, pItem);
+	pItem = PyInt_FromLong(FCApplication::VersionBuild);
+	PyList_SetItem(pList, 2, pItem);
+	pItem = PyString_FromString(FCApplication::VersionDisDa);
+	PyList_SetItem(pList, 3, pItem);
+	pItem = PyString_FromString(FCApplication::VersionTime);
+	PyList_SetItem(pList, 4, pItem);
+	pItem = PyString_FromString(FCApplication::VersionDate);
+	PyList_SetItem(pList, 5, pItem);
+
+	return pList;
+}
 
 
 
