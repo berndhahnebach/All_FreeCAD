@@ -32,6 +32,7 @@
 
 class TFunction_Logbook;
 class FCPyObject;
+class FeaturePy;
 
 namespace App
 {
@@ -105,6 +106,8 @@ public:
   void SetShape(TopoDS_Shape &Shape);
 
 	virtual Base::FCPyObject *GetPyObject(void);
+
+  friend FeaturePy;
 
 protected:
 	TDF_Label            _cFeatureLabel;

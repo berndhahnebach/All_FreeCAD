@@ -161,6 +161,41 @@ void FCCmdPartBox::Activated(int iMsg)
 	cDlg.exec();
 
 }
+//===========================================================================
+// Part_Box2
+//===========================================================================
+DEF_STD_CMD(FCCmdPartBox2);
+
+FCCmdPartBox2::FCCmdPartBox2()
+	:FCCppCommand("Part_Box2")
+{
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Box2";
+	sToolTipText	= "Create or change a Box feature without Dialog";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Part_Box";
+	iAccel			= 0;
+}
+
+
+void FCCmdPartBox2::Activated(int iMsg)
+{
+  OpenCommand("PartBox Create");
+
+	DoCommand(Doc,"f = App.GetActiveDoc().DocType().AddFeature(\"PartBox\")");
+	DoCommand(Doc,"f.x = 0");
+	DoCommand(Doc,"f.y = 0");
+	DoCommand(Doc,"f.z = 0");
+	DoCommand(Doc,"f.l = 100");
+	DoCommand(Doc,"f.w = 100");
+	DoCommand(Doc,"f.h = 100");
+
+  UpdateActive();
+
+  CommitCommand();
+}
 
 //===========================================================================
 // Part_Box
@@ -199,6 +234,7 @@ void CreateCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdPartTest2());
 	rcCmdMgr.AddCommand(new FCCmdPartCut());
 	rcCmdMgr.AddCommand(new FCCmdPartBox());
+	rcCmdMgr.AddCommand(new FCCmdPartBox2());
 
 }
 

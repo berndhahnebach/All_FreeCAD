@@ -168,7 +168,7 @@ public:
 
 
 private:
-	Feature *_pcFeature;
+  Feature *_pcFeature;
 
 };
 
@@ -246,7 +246,14 @@ FeaturePy::~FeaturePy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *FeaturePy::_repr(void)
 {
-	return Py_BuildValue("s", "FreeCAD Document");
+  std::stringstream a;
+  a << "Feature: [ ";
+  for(std::map<std::string,int>::const_iterator It = _pcFeature->_PropertiesMap.begin();It!=_pcFeature->_PropertiesMap.end();It++)
+  {
+    a << It->first << "=" << _pcFeature->GetProperty(It->first.c_str()).GetAsString() << "; ";
+  }
+  a << "]" << std::endl;
+	return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
 // FeaturePy Attributes
@@ -257,7 +264,11 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 		if (Base::streq(attr, "XXXX"))						
 			return Py_BuildValue("i",1); 
 		else
-			_getattr_up(FCPyObject); 						
+      // search in PropertyList
+      if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
+        return Py_BuildValue("s", _pcFeature->GetProperty(attr).GetAsString());
+      else
+			  _getattr_up(FCPyObject); 						
 	}catch(...){
 		Py_Error(PyExc_Exception,"Error in get Attribute");
 	}
@@ -268,8 +279,20 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
 	if (Base::streq(attr, "XXXX")){						// settable new state
 		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
 		return 1;
-	}else  
-		return FCPyObject::_setattr(attr, value); 	// send up to parent
+  }else
+      // search in PropertyList
+      if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){
+        try{
+          //char sBuf[256];
+          //sprintf(sBuf,"%f",PyFloat_AsDouble(value));
+          //_pcFeature->GetProperty(attr).Set(sBuf);
+          (dynamic_cast<PropertyFloat&>(_pcFeature->GetProperty(attr))).SetValue(PyFloat_AsDouble(value));
+        }catch(...){
+          return 1;
+        }
+        return 0;
+      }else
+			  return FCPyObject::_setattr(attr, value); 						
 } 
 
 
