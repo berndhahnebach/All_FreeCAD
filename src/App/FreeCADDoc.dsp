@@ -148,6 +148,14 @@ SOURCE=.\Feature.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeatureAttr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureAttr.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Function.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File

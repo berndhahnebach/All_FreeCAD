@@ -39,6 +39,7 @@ class Test1Cmd:
     "Test1 commando object"
     def Activated(self):
         FreeCAD.PrintLog("TEst1 in python activated")
+        TestApp.TestUnit()
 
     def GetResources(self):
         return {'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}

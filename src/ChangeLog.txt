@@ -369,3 +369,8 @@ Version: V0.1B78 Date: Sun Nov 23 13:15:15 2003 +++++++++++++++++++++++++++++++
   - Using absolute Doc path 
   - using Start/Program for Shortcuts
 
+
+Version: V0.1B79 Date: Thu Dec 18 21:48:48 2003 +++++++++++++++++++++++++++++++
++ included tkinter into libPack
++ using PyUnit and unittestgui.py in test framework
+

@@ -139,5 +139,24 @@ def TestParameterHeavy(i=10):
     for l in range(i):
         TestParameter()
 
+def TestUnit():
+    import unittest
+    import unittestgui
+    import sys
+    import Tkinter
+    import tkMessageBox
+    import traceback
+    import string
+    root = Tkinter.Tk()
+    root.title("FreeCAD unit test")
+    runner = unittestgui.TkTestRunner(root, "test.test")
+    root.protocol('WM_DELETE_WINDOW', root.quit)
+    root.mainloop()
+    root.destroy()
+
+
+    
+
+
         
 
