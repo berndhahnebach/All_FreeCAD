@@ -64,6 +64,7 @@
 #include "DlgActivateWindowImp.h"
 #include "Widgets.h"
 #include "NetworkRetriever.h"
+#include "GuiConsole.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -377,15 +378,22 @@ void StdCmdWorkbench::activated(int iMsg)
 {
   std::vector<std::string> wb = ApplicationWindow::Instance->workbenches();
 
+
+
   try{
     if (iMsg >= 0 && iMsg < int(wb.size()))
     {
       doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", wb[iMsg].c_str());
     }
+
   }
+
   catch(const Base::Exception&)
+
   {
+
     // just do nothing because for sure the exception has already been reported
+
   }
 }
 
@@ -604,49 +612,93 @@ QStringList StdCmdMRU::recentFiles() const
   return _vMRU;
 }
 
+
 void StdCmdMRU::load()
+
 {
+
   FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+
   if (hGrp->HasGroup("RecentFiles"))
+
   {
+
     hGrp = hGrp->GetGroup("RecentFiles");
+
     StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU"));
+
     if (pCmd)
+
     {
+
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
+
       pCmd->setMaxCount( maxCnt );
+
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
+
       for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
+
       {
+
         pCmd->addRecentFile( it->c_str() );
+
       }
+
     }
+
   }
+
 }
+
+
 
 void StdCmdMRU::save()
+
 {
+
   // save recent file list
+
   Command* pCmd = ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU");
+
   if (pCmd)
+
   {
+
     char szBuf[200];
+
     int i=0;
+
     FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
+
     hGrp->Clear();
+
     hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
 
+
+
     QStringList files = ((StdCmdMRU*)pCmd)->recentFiles();
+
     if ( files.size() > 0 )
+
     {
+
       for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
+
       {
+
         sprintf(szBuf, "MRU%d", i);
+
         hGrp->SetASCII(szBuf, (*it).latin1());
+
       }
+
     }
+
   }
+
 }
+
 
 //===========================================================================
 // Std_Cut
@@ -1193,8 +1245,12 @@ void StdCmdCommandLine::activated(int iMsg)
   bool show = getAppWnd()->isMaximized ();
   bool mute = GuiConsoleObserver::bMute;
 
+  // pop up the Gui command window
+  GUIConsole Wnd;
+
   getAppWnd()->showMinimized () ;
   qApp->processEvents();
+
 
   GuiConsoleObserver::bMute = true;
   Base::Interpreter().RunCommandLine("Console mode");

@@ -96,12 +96,13 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 
   
   SoSeparator * SepShapeRoot=new SoSeparator();
-  if(computeFacesNew(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape()))
-    return SepShapeRoot;
-  else
+  if(! computeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape())){
     Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
+    return 0l;
+  }
 
-  return 0l;
+
+  return SepShapeRoot;
 
 }
 
@@ -141,10 +142,66 @@ buffer_writeaction(SoNode * root)
 
 // **********************************************************************************
 
-
-Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
+  SoSeparator *EdgeRoot = new SoSeparator();
+  root->addChild(EdgeRoot);
+
+  for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next()) {
+
+    // get the shape and mesh it
+		const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
+/*
+	  GCPnts_TangentialDeflection Algo(aCurve, theU1, theU2, anAngle, TheDeflection);
+	  NumberOfPoints = Algo.NbPoints();
+	  
+    Adaptor3d_Curve          aCurve;
+
+	  if (NumberOfPoints > 0) {
+	    for (i=1;i<NumberOfPoints;i++) { 
+	      SeqP.Append(Algo.Value(i)); 
+	    }
+	    if (j == nbinter) {
+	      SeqP.Append(Algo.Value(NumberOfPoints)); 
+	    }
+	  }
+*/
+
+  }
+
+  return true;
+}
+
+
+
+Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, const TopoDS_Shape &myShape)
+{
+  TopExp_Explorer ex;
+
+  for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
+
+    // get the shape and mesh it
+		const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
+
+
+
+
+  }
+
+  return true;
+}
+
+
+
+
+Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const TopoDS_Shape &myShape)
+{
+  TopExp_Explorer ex;
+
+  SoSeparator *FaceRoot = new SoSeparator();
+  root->addChild(FaceRoot);
+
 //  BRepMesh::Mesh(myShape,1.0);
 //	BRepMesh_Discret MESH(1.0,myShape,20.0);
 	BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
@@ -170,18 +227,18 @@ Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, co
       // define normals (this is optional)
       SoNormal * norm = new SoNormal;
       norm->vector.setValues(0, nbNodesInFace, vertexnormals);
-      root->addChild(norm);
+      FaceRoot->addChild(norm);
 
       // bind one normal per face
       SoNormalBinding * normb = new SoNormalBinding;
       normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
-      root->addChild(normb);
+      FaceRoot->addChild(normb);
     }
 
 	  // define vertices
 	  SoCoordinate3 * coords = new SoCoordinate3;
 	  coords->point.setValues(0,nbNodesInFace, vertices);
-	  root->addChild(coords);
+	  FaceRoot->addChild(coords);
 
    // Turns on backface culling
 //    SoShapeHints * hints = new SoShapeHints;
@@ -206,7 +263,7 @@ Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, co
     SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
 		faceset->coordIndex.setValues(0,4*nbTriInFace,(const int*) cons);
 		h->addChild(faceset);
-		root->addChild(h);
+		FaceRoot->addChild(h);
 
     
 //    Base::Console().Log("Inventor tree:\n%s",buffer_writeaction(root).c_str());
