@@ -355,7 +355,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
   pclPathCombo = new FCComboBox( true, pclButtonGrp, "Paths" );
   pclPathCombo->setDuplicatesEnabled(false);
   pclPathCombo->setAutoCompletion(true);
-  pclPathCombo->setProperty( "minimumSize", QSize( 160, 25 ) );
+  pclPathCombo->setProperty( "minimumSize", QSize( 25, 25 ) );
   pclPathCombo->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
   // the buttons' functionality

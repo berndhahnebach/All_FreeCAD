@@ -44,7 +44,7 @@ FCWindow::FCWindow(const char *name)
 
 	// not allowed to use a FCWindow without a name, see the constructor of a FCDockWindow or a other QT Widget
 	assert(name);
-	printf("Instanceate:%s\n",name);
+	//printf("Instanceate:%s\n",name);
 
 	// geting the group for the window
 	h = GetApplication().GetParameter().GetGroup("BaseApp");

@@ -40,33 +40,50 @@
 #	include <qcolordialog.h>
 #endif
 
-
-
 #include "buttongroup.h"
-#include "qsizepolicy.h"
 
 
 FCButtonGroup::FCButtonGroup(QWidget * parent, const char * name)
 : QButtonGroup(parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
+  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
+  setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->addChild(this);
+  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
   initialize();
 }
 
 FCButtonGroup::FCButtonGroup(const QString & title, QWidget * parent, const char * name)
 : QButtonGroup(title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
+  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
+  setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->addChild(this);
+  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
   initialize();
 }
 
 FCButtonGroup::FCButtonGroup(int columns, Orientation o, QWidget * parent, const char * name)
 : QButtonGroup(columns, o, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
+  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
+  setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->addChild(this);
+  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
   initialize();
 }
 
 FCButtonGroup::FCButtonGroup(int columns, Orientation o, const QString & title, QWidget * parent, const char * name)
 : QButtonGroup(columns, o, title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
+  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
+  setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->addChild(this);
+  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
   initialize();
 }
 
@@ -232,6 +249,463 @@ void FCButtonGroup::showText()
     }
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+FCToolboxGroup::FCToolboxGroup ( QWidget * parent, const char * name)
+: QVButtonGroup(parent, name)
+{
+  initialize(parent);
+}
+
+FCToolboxGroup::FCToolboxGroup ( const QString & title, QWidget * parent, const char * name)
+: QVButtonGroup(title, parent, name)
+{
+  initialize(parent);
+}
+
+FCToolboxGroup::~FCToolboxGroup ()
+{
+}
+
+void FCToolboxGroup::initialize(QWidget* parent)
+{
+  setColumnLayout(0, Qt::Vertical );
+  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
+  setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget->addChild(this);
+  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
+  pScrollWidget->setHScrollBarMode(QScrollView::AlwaysOff);
+  pScrollWidget->verticalScrollBar()->setStyle(new FCWindowsStyle);
+  if (parent) parent->setMinimumWidth(40);
+
+  layout()->setSpacing( 0 );
+  layout()->setMargin( 0 );
+  ButtonGroupLayout = new QGridLayout( layout() );
+  ButtonGroupLayout->setAlignment( Qt::AlignTop );
+  ButtonGroupLayout->setSpacing( 1 );
+  ButtonGroupLayout->setMargin( 1 );
+  m_Color = backgroundColor();
+
+  setAcceptDrops(true);
+  setFocusPolicy (ClickFocus);
+
+  m_Popup = new QPopupMenu(0L);
+  m_Popup->setCheckable(true);
+  connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
+  connect(pScrollWidget->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(slotRedrawScrollBar(int)));
+}
+
+void FCToolboxGroup::slotRedrawScrollBar(int v)
+{
+//  int maxV = pScrollWidget->verticalScrollBar()->maxValue();
+//  int minV = pScrollWidget->verticalScrollBar()->minValue();
+//  if (v == maxV || v == minV)
+    pScrollWidget->verticalScrollBar()->repaint();
+}
+
+bool FCToolboxGroup::addWidget(QWidget* w, int i)
+{
+  if (!w)
+    return false;
+
+  ButtonGroupLayout->addWidget(w, i, 0);
+  return true;
+}
+
+bool FCToolboxGroup::addToolboxButton(FCToolboxButton* b, int i)
+{
+  connect(this, SIGNAL(signalMaximumWidth(int)), b, SLOT(slotResizeButton(int)));
+  return addWidget(b, i);
+}
+
+void FCToolboxGroup::paintEvent (QPaintEvent * e)
+{
+  QRect rect = visibleRect();
+  emit signalMaximumWidth(rect.width());
+  QVButtonGroup::paintEvent(e);
+}
+
+void FCToolboxGroup::mousePressEvent( QMouseEvent * e )
+{
+  if (e->button() == LeftButton)
+  {
+    if (acceptDrops() == true)
+    {
+      QDragObject *drobj;
+      drobj = new QTextDrag( title(), this );
+      drobj->dragCopy();
+    }
+  }
+  else if (e->button() == RightButton)
+  {
+    m_Popup->exec(QCursor::pos());
+  }
+  else if (e->button() == MidButton)
+  {
+  }
+}
+
+void FCToolboxGroup::dropEvent ( QDropEvent * e)
+{
+}
+
+void FCToolboxGroup::dragEnterEvent ( QDragEnterEvent * e)
+{
+  e->accept(QTextDrag::canDecode( e ) ||
+            QImageDrag::canDecode( e ));
+}
+
+void FCToolboxGroup::dragLeaveEvent ( QDragLeaveEvent * e)
+{
+}
+
+void FCToolboxGroup::dragMoveEvent ( QDragMoveEvent * e)
+{
+}
+
+void FCToolboxGroup::popupMenuAboutToShow()
+{
+  m_Popup->clear();
+
+  int colId = m_Popup->insertItem("Background color...", this, SLOT(setNewBackgroundColor()));
+  int resId = m_Popup->insertItem("Reset background color", this, SLOT(resetBackgroundColor()));
+}
+
+void FCToolboxGroup::setNewBackgroundColor()
+{
+  QColor color = QColorDialog::getColor ( backgroundColor(), this);
+  if (color.isValid())
+  {
+    setPalette(QPalette(color, color));
+  }
+}
+
+void FCToolboxGroup::resetBackgroundColor()
+{
+  if (m_Color.isValid())
+    setPalette(QPalette(m_Color, m_Color));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+FCToolboxButton::FCToolboxButton( QWidget *parent, const char *name )
+: QToolButton( parent, name )
+{
+  raised = FALSE;
+  setFocusPolicy( NoFocus );
+  setTextAndPixmap (0, 0);
+  setAutoResize( TRUE );
+  setAcceptDrops ( true );
+  setMinimumHeight(24);
+}
+
+FCToolboxButton::FCToolboxButton( const QString &text, const QString &tooltip, QWidget *parent, const char *name )
+: QToolButton( parent, name )
+{
+  raised = FALSE;
+  setFocusPolicy( NoFocus );
+  setTextAndPixmap (text, 0);
+  setTooltip(tooltip);
+  setAutoResize( TRUE );
+  setAcceptDrops ( true );
+  setMinimumHeight(24);
+}
+
+FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
+                                  QWidget *parent, const char *name )
+: QToolButton( parent, name )
+{
+  raised = FALSE;
+  setFocusPolicy( NoFocus );
+  setTextAndPixmap (text, pix);
+  setTooltip(tooltip);
+  setAutoResize( TRUE );
+  setAcceptDrops ( true );
+  setMinimumHeight(24);
+}
+
+FCToolboxButton::FCToolboxButton( const QString &text, const QPixmap &pix, const QString &tooltip,
+                                  QObject *receiver, const char *member, QWidget *parent, const char *name )
+: QToolButton( parent, name )
+{
+  raised = FALSE;
+  setFocusPolicy( NoFocus );
+  setTextAndPixmap (text, pix);
+  setTooltip(tooltip);
+  // do the connection of the clicked() signal
+  if (receiver && member)
+      connect (this, SIGNAL(clicked ()), receiver, member);
+  setAutoResize( TRUE );
+  setAcceptDrops ( true );
+  setMinimumHeight(24);
+}
+
+FCToolboxButton::~FCToolboxButton()
+{
+}
+
+void FCToolboxButton::setTextAndPixmap( const QString &text, const QPixmap &pix)
+{
+  textLabel=text;
+  enabledPixmap=pix;
+  repaint();
+}
+
+void FCToolboxButton::setText(const char *t)
+{
+  textLabel = t;
+  repaint();
+}
+
+void FCToolboxButton::setPixmap( const QPixmap& pixmap )
+{
+  QToolButton::setPixmap(pixmap);
+  enabledPixmap=pixmap;
+  repaint();
+}
+
+void FCToolboxButton::setTooltip( const QString& tooltip )
+{
+  if (!tooltip.isNull() && !tooltip.isEmpty())
+    QToolTip::add (this, tooltip);
+}
+
+const char *FCToolboxButton::text() const
+{
+  return textLabel;
+}
+
+void FCToolboxButton::slotResizeButton(int width)
+{
+  setMaximumWidth(width);
+}
+
+QSize FCToolboxButton::sizeHint() const
+{
+  int w=0, h=0;
+
+  if (pixmap()) {
+    w = 5 + pixmap()->width();
+    h = 5 + pixmap()->height() ;
+  }
+
+  if (text()) {
+    w += fontMetrics().width(text()) + 10;
+    if (fontMetrics().height() > h)
+      h = fontMetrics().height();
+  }
+  if (w > 0 && h > 0)
+    return QSize(w, h);
+  else
+    return QSize(1,1);
+}
+
+void FCToolboxButton::enterEvent( QEvent* )
+{
+  if ( isEnabled() )
+  {
+    raised = TRUE;
+    repaint(FALSE);
+  }
+}
+
+void FCToolboxButton::leaveEvent( QEvent * )
+{
+  if( raised != FALSE )
+  {
+    raised = FALSE;
+    repaint();
+  }
+}
+
+void FCToolboxButton::mouseDoubleClickEvent( QMouseEvent * e)
+{
+  if (e->button() == LeftButton)
+  {
+    if (acceptDrops() == true)
+    {
+      QDragObject *drobj;
+//      drobj = new QTextDrag( text(), this );
+//      drobj->dragCopy();
+      if (pixmap())
+      {
+      	drobj = new QImageDrag( pixmap()->convertToImage(), this );
+	      QPixmap pm;
+	      pm.convertFromImage(pixmap()->convertToImage().smoothScale(
+	          pixmap()->width(),pixmap()->height()));
+	      drobj->setPixmap(pm,QPoint(0,0));
+        drobj->dragCopy();
+      }
+    }
+  }
+  else
+    QToolButton::mouseDoubleClickEvent(e);
+}
+
+void FCToolboxButton::dropEvent ( QDropEvent * e)
+{
+  QString str;
+  if ( QTextDrag::decode( e, str ) ) 
+  {
+	  setTooltip( str );
+	  setMinimumSize( minimumSize().expandedTo( sizeHint() ) );
+	  return;
+  }
+
+  QPixmap pm;
+  if ( QImageDrag::decode( e, pm ) ) 
+  {
+//    if (pixmap())
+//      pm.resize(pixmap()->size());
+  	setPixmap( pm );
+//    makeDisabledPixmap();
+//    enable(isEnabled());
+//  	setMinimumSize( minimumSize().expandedTo( sizeHint() ) );
+//    setMaximumHeight(32);
+	  return;
+  }
+}
+
+void FCToolboxButton::dragEnterEvent ( QDragEnterEvent * e)
+{
+  if (isEnabled())
+    e->accept(QTextDrag::canDecode( e ) ||
+              QImageDrag::canDecode( e ));
+}
+
+void FCToolboxButton::dragLeaveEvent ( QDragLeaveEvent * e)
+{
+}
+
+void FCToolboxButton::dragMoveEvent ( QDragMoveEvent * e)
+{
+}
+
+void FCToolboxButton::drawButton( QPainter *_painter )
+{
+  paint( _painter );
+}
+
+void FCToolboxButton::drawButtonLabel( QPainter *_painter )
+{
+  paint( _painter );
+}
+
+void FCToolboxButton::makeDisabledPixmap()
+{
+  QPalette pal = palette();
+  QColorGroup g = pal.disabled();
+
+  // Find the outline of the colored portion of the normal pixmap
+
+  QBitmap *pmm = (QBitmap*) enabledPixmap.mask();
+  QPixmap pm;
+  if (pmm != 0L)
+  {
+    pmm->setMask( *pmm );
+    pm = *pmm;
+  }
+  else
+  {
+    pm.resize(enabledPixmap.size());
+    enabledPixmap.fill(this, 0, 0);
+  };
+
+  // Prepare the disabledPixmap for drawing
+
+  disabledPixmap.resize(enabledPixmap.size());
+  disabledPixmap.fill( g.background() );
+
+  // Draw the outline found above in highlight and then overlay a grey version
+  // for a cheesy 3D effect ! BTW. this is the way that Qt 1.2+ does it for
+  // Windows style
+
+  QPainter p;
+  p.begin( &disabledPixmap );
+  p.setPen( g.light() );
+  p.drawPixmap(1, 1, pm);
+  p.setPen( g.text() );
+  p.drawPixmap(0, 0, pm);
+  p.end();
+}
+
+void FCToolboxButton::paletteChange(const QPalette &)
+{
+  makeDisabledPixmap();
+  if ( !isEnabled() )
+    setPixmap( disabledPixmap );
+  repaint( TRUE );
+}
+
+void FCToolboxButton::on(bool flag)
+{
+  setOn(flag);
+  repaint();
+}
+
+void FCToolboxButton::toggle()
+{
+  setOn(!isOn());
+  repaint();
+}
+
+void FCToolboxButton::enable( bool enabled )
+{
+  setPixmap( (enabled ? enabledPixmap : disabledPixmap) );
+  setEnabled( enabled );
+}
+
+void FCToolboxButton::showText(bool enable)
+{
+  tbShowText = enable;
+  repaint();
+}
+
+void FCToolboxButton::paint( QPainter *painter )
+{
+  int dx=0, dy=0;
+  QFontMetrics fm(fontMetrics());
+
+  if ( isDown() || isOn() )
+  {
+    if ( style() == WindowsStyle )
+    	qDrawWinButton( painter, 0, 0, width(), height(), colorGroup(), TRUE );
+    else
+    	qDrawShadePanel( painter, 0, 0, width(), height(), colorGroup(), TRUE, 2, 0L );
+  }
+  else if ( raised )
+  {
+    if ( style() == WindowsStyle )
+    	qDrawWinButton( painter, 0, 0, width(), height(), colorGroup(), FALSE );
+    else
+    	qDrawShadePanel( painter, 0, 0, width(), height(), colorGroup(), FALSE, 2, 0L );
+  }
+  
+  if ( pixmap() )
+  {
+    //dx = ( width() - pixmap()->width() ) / 2;
+    dx = 5;
+    dy = ( height() - pixmap()->height() ) / 2;
+    if ( isDown() && style() == WindowsStyle ) 
+    {
+    	dx++;
+	    dy++;
+    }
+
+    painter->drawPixmap( dx, dy, *pixmap() );
+  }
+
+  if (text()&&tbShowText) 
+  {
+    dx = dx + (pixmap() ? pixmap()->width() : 0) + 5;
+    dy = dy + (pixmap() ? (pixmap()->height() / 2) : height()/2-2) + (fm.boundingRect(text()).height() / 2);
+    painter->drawText(dx, dy, text());
+  }
+}
+
+
 
 
 /*!
@@ -655,27 +1129,128 @@ void FCCmdBar::setButtonHeight( int i )
 }
 
 #include "Icons/x.xpm"
+#include "Icons/Images.cpp"
 
 void FCCmdBar::AddTestButtons(void)
 {
 	FCCmdBar* stack = this;
 	for (int ii = 0; ii < 4; ii++)
 	{
-	  char szBuf[20];
-	  sprintf(szBuf, "Page No. %d", ii);
-		FCButtonGroup* mle = new FCButtonGroup(3, QButtonGroup::Horizontal, "Buttons", stack);
-	  stack->addPage( new QStackBarBtn( szBuf, mle ) );
-		  for (int i=0; i<30;i++)
-		  {
-			QToolButton* b0 = new QToolButton( /*DownArrow,*/ mle, "text" );
-			b0->setProperty( "pixmap", QPixmap(px) );
-			b0->setAutoRaise(true);
-			b0->setTextLabel("Hallo Welt", true);
-			b0->setFixedSize(32, 32);
+		FCToolboxGroup* mle = new FCToolboxGroup("", stack);
+	  stack->addPage( new QStackBarBtn( "Toolbox", mle->pScrollWidget ) );
+	  for (int i=0; i<=20;i++)
+	  {
+			FCToolboxButton* b0 = new FCToolboxButton( /*DownArrow,*/ mle, "text" );
+//			b0->setTextLabel("Hallo Welt", true);
+			b0->setFixedHeight(24);
+      b0->setTooltip(tr("Tooltip"));
+      b0->showText(true);
+      if (i!=4)
+      b0->setText("Test");
+      else b0->setText("Hello World");
+      if (i==14) b0->setPixmap(QPixmap(tool_color));
+      else if (i==0) b0->setPixmap(QPixmap(view_left));
+      else if (i==1) b0->setPixmap(QPixmap(view_zoom));
+      else if (i==2) b0->setPixmap(QPixmap(view_top));
+      else if (i==3) b0->setPixmap(QPixmap(view_rotate));
+      else if (i==4) b0->setPixmap(QPixmap(view_right));
+      else if (i==5) b0->setPixmap(QPixmap(view_reset));
+      else if (i==6) b0->setPixmap(QPixmap(view_pan));
+      else if (i==7) b0->setPixmap(QPixmap(tool_delete));
+      else if (i==8) b0->setPixmap(QPixmap(tool_material));
+      else if (i==9) b0->setPixmap(QPixmap(tool_shading));
+      else if (i==10) b0->setPixmap(QPixmap(tool_transparency));
+      else if (i==11) b0->setPixmap(QPixmap(tool_wireframe));
+      else if (i==12) b0->setPixmap(QPixmap(view_axo));
+      else if (i==13) b0->setPixmap(QPixmap(view_back));
+      else if (i==14) b0->setPixmap(QPixmap(view_bottom));
+      else if (i==15) b0->setPixmap(QPixmap(view_comp_off));
+      else if (i==16) b0->setPixmap(QPixmap(view_comp_on));
+      else if (i==17) b0->setPixmap(QPixmap(view_fitall));
+      else if (i==18) b0->setPixmap(QPixmap(view_fitarea));
+      else if (i==19) b0->setPixmap(QPixmap(view_front));
+      else if (i==20 && ii != 0) b0->setPixmap(QPixmap(view_glpan));
+
+      if (i%3==0)
+      {
+        b0->makeDisabledPixmap();
+        b0->enable(false);
+      }
 			mle->insert(b0);
-		  }
+      mle->addToolboxButton(b0, i);
+//      mle->ButtonGroupLayout->addWidget(b0, i, 0);
+    }
 	}
-	stack->setCurPage(1);
+  // insert viewing toolbar
+  FCToolboxButton* btn;
+	FCToolboxGroup* view = new FCToolboxGroup("", stack);
+	stack->addPage( new QStackBarBtn( "Viewing", view->pScrollWidget ) );
+
+  // fit all
+  btn = new FCToolboxButton(view);
+  btn->setText("Fit all");
+  btn->setTooltip("Fit all objects");
+  btn->setPixmap(QPixmap(view_fitall));
+  view->insert(btn);
+  view->addToolboxButton(btn, 0);
+
+  // front
+  btn = new FCToolboxButton(view);
+  btn->setText("Front");
+  btn->setTooltip("Front");
+  btn->setPixmap(QPixmap(view_front));
+  view->insert(btn);
+  view->addToolboxButton(btn, 1);
+
+  // top
+  btn = new FCToolboxButton(view);
+  btn->setText("Top");
+  btn->setTooltip("Top");
+  btn->setPixmap(QPixmap(view_top));
+  view->insert(btn);
+  view->addToolboxButton(btn, 2);
+
+  // right
+  btn = new FCToolboxButton(view);
+  btn->setText("Right");
+  btn->setTooltip("Right");
+  btn->setPixmap(QPixmap(view_right));
+  view->insert(btn);
+  view->addToolboxButton(btn, 3);
+
+  // rear
+  btn = new FCToolboxButton(view);
+  btn->setText("Rear");
+  btn->setTooltip("Rear");
+  btn->setPixmap(QPixmap(view_back));
+  view->insert(btn);
+  view->addToolboxButton(btn, 4);
+
+  // bottom
+  btn = new FCToolboxButton(view);
+  btn->setText("Bottom");
+  btn->setTooltip("Bottom");
+  btn->setPixmap(QPixmap(view_bottom));
+  view->insert(btn);
+  view->addToolboxButton(btn, 5);
+
+  // left
+  btn = new FCToolboxButton(view);
+  btn->setText("Left");
+  btn->setTooltip("Left");
+  btn->setPixmap(QPixmap(view_left));
+  view->insert(btn);
+  view->addToolboxButton(btn, 6);
+
+  // axo
+  btn = new FCToolboxButton(view);
+  btn->setText("Axometric");
+  btn->setTooltip("Axometric");
+  btn->setPixmap(QPixmap(view_axo));
+  view->insert(btn);
+  view->addToolboxButton(btn, 7);
+
+  stack->setCurPage(4);
 }
 
 
@@ -692,11 +1267,13 @@ QStackBarBtn::QStackBarBtn(QString s, QWidget *w)
 {
 	_label = s;
 
-	QColor base(200,200,200);
+//	QColor base(200,200,200);
+  QColor base(212,208,200);
 
 	_color = new QColorGroup( base, base, base.light(), base.dark(), base.light(), base, base, base, base );
 
-	base.setRgb(220,220,220);
+//	base.setRgb(220,220,220);
+	base.setRgb(212,208,200);
 	_hiColor = new QColorGroup( base, base, base.light(), base.dark(), base.light(), base, base, base, base );
 	_selColor = new QColorGroup( *_color );
 	pWidget = w;
@@ -824,7 +1401,5 @@ void QStackBarBtn::setSelColor( QColor c )
 
 	_selColor = new QColorGroup( c, c, c.light(), c.dark(), c.light(), c,c,c,c );
 }
-
-
 
 #include "ButtonGroup_moc.cpp"

@@ -289,3 +289,165 @@ void FCCmdPaste::Activated(void)
 
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//===========================================================================
+// Std_Test1
+//===========================================================================
+
+void FCCmdTest1::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Test1";
+	*sToolTipText = "Test function 1";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = Qt::CTRL+Qt::Key_T;
+}
+
+
+void FCCmdTest1::Activated(void)
+{
+
+}
+
+//===========================================================================
+// Std_Test2
+//===========================================================================
+
+void FCCmdTest2::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Test2";
+	*sToolTipText = "Test function 2";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = 0;
+}
+
+
+void FCCmdTest2::Activated(void)
+{
+
+}
+
+//===========================================================================
+// Std_TileHoricontal
+//===========================================================================
+
+void FCCmdTileHor::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Tile Hor.";
+	*sToolTipText = "Tile the windows horizontal";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = 0;
+}
+
+
+void FCCmdTileHor::Activated(void)
+{
+
+}
+
+//===========================================================================
+// Std_TileVertical
+//===========================================================================
+
+void FCCmdTileVer::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Tile Ver.";
+	*sToolTipText = "Tile the windows vertical";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = Qt::CTRL+Qt::Key_T;
+}
+
+
+void FCCmdTileVer::Activated(void)
+{
+
+}
+
+//===========================================================================
+// Std_TilePragmatic
+//===========================================================================
+
+void FCCmdTilePra::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "Tile pragmatic";
+	*sToolTipText = "Tile pragmatic";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = 0;
+}
+
+
+void FCCmdTilePra::Activated(void)
+{
+
+}
+
+//===========================================================================
+// Std_MDINormal
+//===========================================================================
+
+void FCCmdMDINormal::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "MDI Normal";
+	*sToolTipText = "Set the standard MDI mode";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = 0;
+}
+
+
+void FCCmdMDINormal::Activated(void)
+{
+	AppWnd()->switchToChildframeMode();
+}
+
+//===========================================================================
+// Std_MDIToplevel
+//===========================================================================
+
+void FCCmdMDIToplevel::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "MDI Toplevel";
+	*sToolTipText = "Set the top level MDI mode";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = 0;
+}
+
+
+void FCCmdMDIToplevel::Activated(void)
+{
+	AppWnd()->switchToToplevelMode();
+}
+
+//===========================================================================
+// Std_MDITabed
+//===========================================================================
+
+void FCCmdMDITabed::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel)
+{
+	*sMenuText	  = "MDI tabed";
+	*sToolTipText = "Set the tabed MDI mode";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	cPixmap = QPixmap(pPaste);
+	iAccel = 0;
+}
+
+
+void FCCmdMDITabed::Activated(void)
+{
+	AppWnd()->switchToTabPageMode();
+}
+

@@ -145,6 +145,9 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddCommand(new FCCmdCut());
 	_cCommandManager.AddCommand(new FCCmdCopy());
 	_cCommandManager.AddCommand(new FCCmdPaste());
+	_cCommandManager.AddCommand(new FCCmdMDINormal());
+	_cCommandManager.AddCommand(new FCCmdMDIToplevel());
+	_cCommandManager.AddCommand(new FCCmdMDITabed());
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
@@ -179,6 +182,10 @@ void ApplicationWindow::CreateTestOperations()
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Assambly"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"FEM"); 
 	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"Renderer"); 
+
+	_cCommandManager.AddTo("Std_MDIToplevel",_pcStdToolBar);
+	_cCommandManager.AddTo("Std_MDITabed"   ,_pcStdToolBar);
+	_cCommandManager.AddTo("Std_MDINormal"  ,_pcStdToolBar);
 
     // populate a menu with all actions
 

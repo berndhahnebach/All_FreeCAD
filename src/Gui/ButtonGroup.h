@@ -32,6 +32,7 @@
 #define __BUTTON_GROUP_H__
 
 #include <qbuttongroup.h>
+#include <qvbuttongroup.h>
 #include <qtoolbutton.h>
 #include <qdragobject.h>
 #include <qpopupmenu.h>
@@ -39,12 +40,11 @@
 #include <qlist.h>
 #include <qevent.h>
 #include <qcolor.h>
-//#include <qstring.h>
-//#include <qwidget.h>
 #include <qfont.h>
 #include <qpalette.h>
 #include <qpixmap.h>
 
+#include "CommandLine.h"
 #include "window.h"
 
 
@@ -62,6 +62,7 @@ class GuiExport FCButtonGroup : public QButtonGroup
 
     // overwrite method from base class
     void resizeEvent (QResizeEvent * e);
+    QScrollView *pScrollWidget;
 
   protected:
     void initialize(void);
@@ -86,6 +87,94 @@ class GuiExport FCButtonGroup : public QButtonGroup
     FCmap<int, QPixmap> m_Pixmaps;
 };
 
+class FCToolboxButton;
+class GuiExport FCToolboxGroup : public QVButtonGroup
+{
+  Q_OBJECT
+
+  public:
+    FCToolboxGroup ( QWidget * parent=0, const char * name=0 );
+    FCToolboxGroup ( const QString & title, QWidget * parent=0, const char * name=0 );
+    ~FCToolboxGroup ();
+    QScrollView *pScrollWidget;
+    QGridLayout* ButtonGroupLayout;
+
+    bool addWidget(QWidget* w, int i);
+    bool addToolboxButton(FCToolboxButton* b, int i);
+
+  protected:
+    void initialize(QWidget* parent);
+    void paintEvent (QPaintEvent * e);
+    void mousePressEvent( QMouseEvent * );
+    void dropEvent ( QDropEvent * );
+    void dragEnterEvent ( QDragEnterEvent * );
+    void dragLeaveEvent ( QDragLeaveEvent * );
+    void dragMoveEvent ( QDragMoveEvent * );
+    QColor       m_Color;
+    QPopupMenu*  m_Popup;
+
+  protected slots:
+    void popupMenuAboutToShow();
+    void setNewBackgroundColor();
+    void resetBackgroundColor();
+    void slotRedrawScrollBar(int);
+
+  signals:
+    void signalMaximumWidth(int);
+};
+
+class GuiExport FCToolboxButton : public QToolButton
+{
+  Q_OBJECT
+
+  public:
+    FCToolboxButton ( QWidget * parent=0, const char * name=0 );
+    FCToolboxButton ( const QString & title, const QString &tooltip = 0, QWidget *parent = 0, const char *name = 0 );
+    FCToolboxButton ( const QString & title, const QPixmap &pix, const QString &tooltip = 0, 
+                      QWidget *parent = 0, const char *name = 0 );
+    FCToolboxButton ( const QString & title, const QPixmap &pix, const QString &tooltip = 0,
+                      QObject *receiver = 0, const char *member = 0, QWidget *parent = 0, const char *name = 0 );
+
+    virtual ~FCToolboxButton();
+    
+    void setTextAndPixmap( const QString &text, const QPixmap &pix);
+    void setText(const char *text);
+    void setPixmap( const QPixmap& pixmap );
+    void setTooltip( const QString& tooltip );
+    const char *text() const; 
+    QSize sizeHint() const;
+    void enable(bool enable);
+    void showText(bool enable);
+    void makeDisabledPixmap();
+    void on(bool flag);
+    void toggle();
+
+  public slots:
+    void slotResizeButton(int);
+  
+  protected:
+    // mouse events
+    void leaveEvent( QEvent *_ev );
+    void enterEvent( QEvent *_ev );
+    void mouseDoubleClickEvent( QMouseEvent * e);
+    // drag'n'drop
+    void dropEvent ( QDropEvent * );
+    void dragEnterEvent ( QDragEnterEvent * );
+    void dragLeaveEvent ( QDragLeaveEvent * );
+    void dragMoveEvent ( QDragMoveEvent * );
+
+    void drawButton( QPainter *_painter );
+    void drawButtonLabel( QPainter *_painter );
+    void paint( QPainter *_painter );
+    void paletteChange(const QPalette &);
+
+  private:
+    bool tbShowText;
+    bool raised;    
+    const char *textLabel;
+    QPixmap enabledPixmap;
+    QPixmap disabledPixmap;
+};
 
 class QStackBarBtn
 {
