@@ -109,7 +109,7 @@ void FCCmdPartTest2::Activated(int iMsg)
 	BRep_Builder aBuilder;
 	TopoDS_Shape ResultShape;
 
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
 	if ( fn.isEmpty() )
 	{
 		AbortCommand();

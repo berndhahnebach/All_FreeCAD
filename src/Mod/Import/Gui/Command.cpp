@@ -61,7 +61,7 @@ void FCCmdImportReadBREP::Activated(int iMsg)
 
 	OpenCommand("Read BREP");
 
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
 	if ( fn.isEmpty() )
 	{
 		AbortCommand();
