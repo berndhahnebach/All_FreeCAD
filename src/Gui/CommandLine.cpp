@@ -79,10 +79,6 @@ FCCommandLine::FCCommandLine(void)
   _astrRunCmds.push_back("execute");
   _astrRunCmds.push_back("execfile");
 
-#if QT_VERSION > 230
-  setLineEdit(new FCCmdLineEdit(this));
-#endif
-
   // hide the botton from combo box
   setStyle(new FCWindowsStyle);
   ReadCmdList();
@@ -90,6 +86,7 @@ FCCommandLine::FCCommandLine(void)
   setMinimumWidth(200);
   setAutoCompletion ( true );
   setValidator(new FCConsoleValidator(this));
+  setAcceptDrops(true);
   connect(lineEdit(), SIGNAL(returnPressed ()), this, SLOT(slotLaunchCommand()));
 }
 
@@ -293,13 +290,7 @@ QRect FCCommandLine::arrowRect() const
   return QRect( width() - 2 - 16, 2, 16, height() - 4 );
 }
 
-FCCmdLineEdit::FCCmdLineEdit(QWidget * parent, const char * name)
-: QLineEdit(parent, name)
-{
-  setAcceptDrops(true);
-}
-
-void FCCmdLineEdit::dropEvent  ( QDropEvent * e)
+void FCCommandLine::dropEvent      ( QDropEvent      * e )
 {
   QString action;
   if (FCActionDrag::decode(e, action))
@@ -312,20 +303,42 @@ void FCCmdLineEdit::dropEvent  ( QDropEvent * e)
 
       if (pCmd)
       {
-        setText("Not yet implemented");
+        lineEdit()->setText("Not yet implemented");
       }
     }
   }
 
-  QLineEdit::dropEvent(e);
+  QComboBox::dropEvent(e);
 }
 
-void FCCmdLineEdit::dragEnterEvent ( QDragEnterEvent * e)
+void FCCommandLine::dragEnterEvent ( QDragEnterEvent * e )
 {
   if (FCActionDrag::canDecode(e))
     e->accept(true);
   else
-    QLineEdit::dragEnterEvent(e);
+    QComboBox::dragEnterEvent(e);
+}
+
+bool FCCommandLine::eventFilter       ( QObject* o, QEvent* e )
+{
+  if ( o != lineEdit() )
+  	return false;
+
+  // get the editor's mouse events
+  switch (e->type())
+  {
+    case QEvent::DragEnter:
+      // divert the event to combo box (itself)
+      if (acceptDrops())
+        dragEnterEvent ((QDragEnterEvent*)e);
+      break;
+    case QEvent::Drop:
+      if (acceptDrops())
+        dropEvent ((QDropEvent*)e);
+      break;
+  }
+
+  return QComboBox::eventFilter(o, e);
 }
 
 #include "moc_CommandLine.cpp"

@@ -168,18 +168,23 @@ private:
   std::vector<std::string> _astrRunCmds;
 
 protected:
-  void keyPressEvent ( QKeyEvent * e );
-  void mousePressEvent ( QMouseEvent * e );
-  void wheelEvent ( QWheelEvent * e );
-  void enterEvent ( QEvent * );
-  void leaveEvent ( QEvent * );
   QPopupMenu* CreatePopupMenu();
   /** import old commands from the preferences */
   void ReadCmdList();
   /** export new commands into the preferences */
   void SaveCmdList();
 
+  void keyPressEvent ( QKeyEvent * e );
+  void mousePressEvent ( QMouseEvent * e );
+  void wheelEvent ( QWheelEvent * e );
+  void enterEvent ( QEvent * );
+  void leaveEvent ( QEvent * );
+  void dropEvent      ( QDropEvent      * e );
+  void dragEnterEvent ( QDragEnterEvent * e );
+
 public:
+  bool eventFilter       ( QObject* o, QEvent* e );
+
   void SetParent(QWidget* parent);
 	static void Destruct(void);
 	static FCCommandLine &Instance(void);
@@ -202,19 +207,5 @@ inline FCCommandLine &GetCmdLine(void)
 {
   return FCCommandLine::Instance();
 }
-
-/** The command line edit class
- */
-class FCCmdLineEdit : public QLineEdit
-{
-  Q_OBJECT
-
-  public:
-    FCCmdLineEdit(QWidget * parent, const char * name=0);
-
-  protected:
-    void dropEvent      ( QDropEvent      * );
-    void dragEnterEvent ( QDragEnterEvent * );
-};
 
 #endif // __COMMAND_LINE_H__
