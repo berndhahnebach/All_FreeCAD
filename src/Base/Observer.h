@@ -132,9 +132,10 @@ public:
 
 protected:
 	/// Vector of attached observers
+#ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
+#endif
 	std::set<FCObserver *> _ObserverSet;
-#	pragma warning( default : 4251 )
 
 };
 

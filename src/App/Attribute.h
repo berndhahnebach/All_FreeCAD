@@ -199,7 +199,9 @@ public:
 protected:
 
 	/// handle to the Attribute 
+#ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
+#endif
 	Handle(TDF_Attribute) _hAttribute;
 
 };

@@ -86,7 +86,9 @@ public:
 
 protected:
 
+#ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
+#endif
 	/// The OCC Label
 	TopoDS_Shape _cTopoShape;
 

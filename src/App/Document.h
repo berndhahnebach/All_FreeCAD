@@ -20,7 +20,6 @@
 #ifndef __Document_h__
 #define __Document_h__
 
-#pragma warning( disable : 4251 )
 
 
 #include "../Base/PyExport.h"
@@ -91,7 +90,6 @@ public:
 
 protected:
 
-#	pragma warning( disable : 4251 )
 	/// The OCC Label
 	TDF_Label _cLabel;
 	/// Pointer to the FCDocument where the label comes from 

@@ -49,7 +49,6 @@ public:
 	ApplicationWindow* GetAppWnd(void);
 
 private:
-#	pragma warning( disable : 4251 )
 	FCParameterGrp::handle _handle;
 
 

@@ -19,7 +19,6 @@
 #ifndef __GUIDocument_h__
 #define __GUIDocument_h__
 
-#pragma warning( disable : 4251 )
 
 
 #include <qobject.h>

@@ -21,7 +21,6 @@
 #include "../Base/Parameter.h"
 
 
-#pragma warning( disable : 4251 )
 
 #include <TDocStd_Application.hxx>
 #include <TDataStd_Name.hxx>

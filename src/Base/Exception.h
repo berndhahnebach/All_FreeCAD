@@ -51,9 +51,10 @@ public:
     inline void SetMessage(const char * sMessage);
   
 protected:
+#ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
+#endif
 	std::string _sErrMsg;
-#	pragma warning( default : 4251 )
 };
    
 

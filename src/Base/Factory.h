@@ -70,7 +70,9 @@ private:
    static FCFactory* _pcSingleton;
    
 protected:
+#ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
+#endif
 # if _MSC_VER >= 1300
    std::map<std::string, FCAbstractProducer*> _mpcProducers;
 # else

@@ -145,7 +145,6 @@ class GuiExport FCHtmlView : public FCWindow, public FCObserver
     virtual void StartScript (QString path, QString protocol);
     virtual void StartBrowser(QString path, QString protocol);
 
-#	pragma warning( disable : 4251 )
     std::string aStrGroupPath;
     std::vector<std::string> aStrGroups;
     QString        m_FCdoc, m_FCext, m_FCscript;

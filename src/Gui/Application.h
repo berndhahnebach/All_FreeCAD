@@ -240,7 +240,6 @@ protected slots:
 
 private:
   std::map<int, QWidget*> mCheckBars;
-#	pragma warning( disable : 4251 )
 	/// list of all handled documents
  	std::list<FCGuiDocument*>         lpcDocuments;
 	/// list of windows

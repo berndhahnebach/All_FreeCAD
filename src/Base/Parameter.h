@@ -248,12 +248,10 @@ protected:
 
 	/// DOM Node of the Base node of this group
 	DOMElement *_pGroupNode;
-#	pragma warning( disable : 4251 )
 	/// the own name
 	std::string _cName;
 	/// map of already exported groups
 	std::map <std::string ,FCHandle<FCParameterGrp> > _GroupMap;
-#	pragma warning( default : 4251 )
 
 };
 
@@ -362,9 +360,7 @@ public:
 protected:
 
 	/// Pointer to the FCDocument where the label comes from 
-#	pragma warning( disable : 4251 )
 	FCHandle<FCParameterGrp> _cParamGrp;
-#	pragma warning( default : 4251 )
 };
 
 

@@ -167,7 +167,6 @@ public:
 	int (*handler)(int a,int b);
 
 	// VC6 warns a DLL interface, ignor!
-#	pragma warning( disable : 4251 )
 	std::string something;
 
 };

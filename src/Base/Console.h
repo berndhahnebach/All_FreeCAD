@@ -141,7 +141,9 @@ private:
 	void NotifyError  (const char *sMsg);
 	void NotifyLog    (const char *sMsg);
 	// observer list
+#ifdef FC_OS_WIN32
 #	pragma warning( disable : 4251 )
+#endif
 	std::set<FCConsoleObserver * > _aclObservers;
 
 };

@@ -496,7 +496,6 @@ public:
 	/// get frequently called by the AppWnd to check the commands are active
 	void TestActive(void); 
 private:
-#	pragma warning( disable : 4251 )
 	std::map<std::string,FCCommand*> _sCommands;
 
 };
