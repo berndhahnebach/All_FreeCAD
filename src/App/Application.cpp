@@ -170,19 +170,19 @@ FCDocument* FCApplication::Open(const char * Name)
 		case CDF_RS_AlreadyRetrieved:
 			throw FCException("Already Retrieved");
 		case CDF_RS_AlreadyRetrievedAndModified:
-			throw FCException("CDF_RS_AlreadyRetrievedAndModified");
+			throw FCException("AlreadyRetrievedAndModified");
 		case CDF_RS_NoDriver:
-			throw FCException("CDF_RS_NoDriver");
+			throw FCException("NoDriver");
 		case CDF_RS_NoVersion:
-			throw FCException("CDF_RS_NoVersion");
+			throw FCException("NoVersion");
 		case CDF_RS_NoModel:
-			throw FCException("CDF_RS_NoModel");
+			throw FCException("NoModel");
 		case CDF_RS_TypeNotFoundInSchema:
-			throw FCException("CDF_RS_TypeNotFoundInSchema");
+			throw FCException("TypeNotFoundInSchema");
 		case CDF_RS_UnrecognizedFileFormat:
-			throw FCException("CDF_RS_UnrecognizedFileFormat");
+			throw FCException("UnrecognizedFileFormat");
 		case CDF_RS_PermissionDenied:
-			throw FCException("CDF_RS_PermissionDenied");
+			throw FCException("PermissionDenied");
 		default:
 			throw FCException("Unknown open error");
 	}

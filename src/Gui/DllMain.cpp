@@ -53,25 +53,22 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 {
     switch( ul_reason_for_call ) {
     case DLL_PROCESS_ATTACH:
+//    case DLL_THREAD_ATTACH:
 		// set the resource env variables
 		
 		char  szString [256] ;
 		char  szDirectory [256] ;
 
-		_getcwd (szDirectory,sizeof szDirectory);
+		getcwd (szDirectory,sizeof szDirectory);
 		if (szDirectory[strlen(szDirectory)-1] != '\\') {
 			strcat(szDirectory,"\\");
 		}
 		
-		SetEnvironmentVariable ( "CSF_ResourcesDefaults",szDirectory);
-		sprintf(szString,"CSF_ResourcesDefaults=%s",szDirectory);
+		sprintf(szString,"CSF_StandardDefaults=%s",szDirectory);
 		putenv (szString);
-		//cout<<szString<<endl;
 
-		SetEnvironmentVariable ( "CSF_PluginDefaults",szDirectory);
 		sprintf(szString,"CSF_PluginDefaults=%s",szDirectory);
 		putenv (szString);
-		//cout<<szString<<endl;
 		
 		break;
 

@@ -40,7 +40,7 @@ Msg = FreeCAD.PrintMessage
 Err = FreeCAD.PrintError
 
 try:
-	import sys,os
+	import sys,os,dircache
 except:
 	Err("Seams the python standard libs are not installed, bailing out!")
 	Err("Please (re)install python 2.1.x!")
@@ -120,8 +120,6 @@ FreeCad-StdSchema: ad696002-5b34-11d1-b5ba-00a0c9064368
 FreeCad-Std.AttributeStoragePlugin: 47b0b826-d931-11d1-b5da-00a0c9064368
 FreeCad-Std.AttributeRetrievalPlugin: 47b0b827-d931-11d1-b5da-00a0c9064368
 """
-	Log("    Checking on Plugin files...\n")
-
 	try:
 		f = open("Plugin","r")
 	except:
@@ -172,9 +170,9 @@ class FCModule:
         self.WorkBenchName 	    = Get(Pars,"Exports","WorkBenchName")
         self.WorkBenchModule    = Get(Pars,"Exports","WorkBenchModule")
            
-
-#python standard functions
-import dircache,os
+#============================================================================
+# here we go ...
+#============================================================================
 
 Log ('\nFreeCAD init running....\n')
 

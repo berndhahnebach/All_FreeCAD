@@ -114,8 +114,19 @@ void ParsOptions(int argc, char ** argv);
 void CheckEnv(void);
 
 
+
+#ifdef FREECADMAINPY
+BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved){return TRUE;}
+
+extern "C" {
+void __declspec(dllexport) initFreeCAD() {
+int argc =0;
+char **argv=0;
+#else
+
 int main( int argc, char ** argv ) {
 
+#endif
 	// Init phase ===========================================================
 	try{
 		// first check the environment variables
@@ -127,6 +138,12 @@ int main( int argc, char ** argv ) {
 		// the FreeCAD Application
 
 		GetApplication();
+
+#		ifdef FREECADMAINPY
+			return;
+#		endif
+
+
 	}
 	// catch all OCC exceptions
 	catch(Standard_Failure e)
@@ -237,8 +254,12 @@ int main( int argc, char ** argv ) {
 	delete pcGlobalParameter;
 
 	GetConsole().Log("FreeCAD completly terminated\n\n");
-	return 0;
+	exit (0);
 }
+
+#ifdef FREECADMAINPY
+} // extern "C" {
+#endif
 
 
 //************************************************************************
@@ -339,27 +360,18 @@ void CheckEnv(void)
 	char  szString [256] ;
 	char  szDirectory [256] ;
 
-	_getcwd (szDirectory,sizeof szDirectory);
+	getcwd (szDirectory,sizeof szDirectory);
 	if (szDirectory[strlen(szDirectory)-1] != '\\') {
 		strcat(szDirectory,"\\");
 	}
 	
-	SetEnvironmentVariable ( "CSF_ResourcesDefaults",szDirectory);
-	sprintf(szString,"CSF_ResourcesDefaults=%s",szDirectory);
+	sprintf(szString,"CSF_StandardDefaults=%s",szDirectory);
 	putenv (szString);
 //	cout<<szString<<endl;
 
-	SetEnvironmentVariable ( "CSF_PluginDefaults",szDirectory);
 	sprintf(szString,"CSF_PluginDefaults=%s",szDirectory);
 	putenv (szString);
 //	cout<<szString<<endl;
-
-
-/*  Attic Only needet for CasCade prior 4.0
-	if( ! getenv("CSF_GRAPHICSHR") ){
-		GetConsole().Message("Environment (CSF_GRAPHICSHR) not set!\n");
-		bFailure = true;
-	}*/
         
         
 #define TEST_ENVVAR_EXISTS(envvar,type) \
@@ -367,13 +379,11 @@ void CheckEnv(void)
           cerr<<"Environment variable "<<envvar<<" is not set!"<<endl; \
           bFailure|=type;\
         }  
-        //TEST_ENVVAR_EXISTS("CSF_GraphicShr")
         TEST_ENVVAR_EXISTS("CSF_MdtvFontDirectory",1)
         TEST_ENVVAR_EXISTS("CSF_MdtvTexturesDirectory",1)
         TEST_ENVVAR_EXISTS("CSF_UnitsDefinition",1)
         TEST_ENVVAR_EXISTS("CSF_UnitsLexicon",1)
-        TEST_ENVVAR_EXISTS("CSF_PluginDefaults",1)
-        TEST_ENVVAR_EXISTS("CSF_StandardDefaults",1)
+
         if (bFailure&1) {    
          	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
 			exit(1);
@@ -382,38 +392,9 @@ void CheckEnv(void)
          	cerr<<"Environment Error(s)"<<endl<<sEnvErrorText2;
 			exit(1);
         }
+
 #undef TEST_ENVVAR_EXISTS         
          
-/*	if( ! getenv("CSF_MDTVFONTDIRECTORY") ){
-		printf("Environment (CSF_MDTVFONTDIRECTORY) not set!\n");
-		bFailure = true;
-	}
-	if( ! getenv("CSF_MDTVTEXTURESDIRECTORY") ){
-		printf("Environment (CSF_MDTVTEXTURESDIRECTORY) not set!\n");
-		bFailure = true;
-	}
-	if( ! getenv("CSF_UNITSDEFINITION") ){
-		printf("Environment (CSF_UNITSDEFINITION) not set!\n");
-		bFailure = true;
-	}
-	if( ! getenv("CSF_UNITSLEXICON") ){
-		printf("Environment (CSF_UNITSLEXICON) not set!\n");
-		bFailure = true;
-	}
-	if( ! getenv("CSF_PluginDefaults") ){
-		printf("Environment (CSF_PluginDefaults) not set!\n");
-		bFailure = true;
-	}
-	if( ! getenv("CSF_StandardDefaults") ){
-		printf("Environment (CSF_StandardDefaults) not set!\n");
-		bFailure = true;
-	}
-
-	if(bFailure){
-		printf("Environment Error(s)\n%s",sEnvErrorText);
-		exit(0);
-	}  */
-
 /*	
 	if(  getenv("CASROOT") )
 	{

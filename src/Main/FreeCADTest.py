@@ -70,13 +70,20 @@ L1.Name = "Hallo"
 
 # saving and restoring
 
-SavePath = TempPath + os.sep + "Test1.FCStd"
+#SavePath = TempPath + os.sep + "Test1.FCStd"
+SavePath = "E:\\Test1.FCStd"
 Log("   Save and Open the document to: " + SavePath + "\n")
 Doc.SaveAs(SavePath)
-Log( Doc.Path + Doc.Name)
-Doc2 = App.DocOpen(SavePath)
+Log("provocate exceptio by try loading a already open document\n")
+try:
+    Doc2 = App.DocOpen(SavePath)
+except:
+    Log("exception thrown, OK\n")
+else:
+    Log("no exception thrown, ERROR\n")
+    raise IOError
 
-Log(Doc2.Main.GetLabel(1).Name)
+#Log(Doc2.Main.GetLabel(1).Name)
 
 #Doc2 = App.DocOpen("e:\\Test.FCPart")
 #Doc.SaveAs("e:\\Test")
