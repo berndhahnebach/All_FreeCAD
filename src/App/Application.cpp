@@ -155,8 +155,8 @@ FCApplication::FCApplication(FCParameterManager *pcSysParamMngr, FCParameterMana
 	 _pActiveDoc(0)
 {
 	_hApp = new FCApplicationOCC;
-	mpcPramManager["User parameter"] = _pcSysParamMngr;
-	mpcPramManager["System parameter"] = _pcUserParamMngr;
+	mpcPramManager["System parameter"] = _pcSysParamMngr;
+	mpcPramManager["User parameter"] = _pcUserParamMngr;
 
 	// instanciate the workbench dictionary
 	_pcTemplateDictionary = PyDict_New();

@@ -401,3 +401,8 @@ Version: V0.1B85 Date: Sun Apr 18 01:22:41 2004 +++++++++++++++++++++++++++++++
 
 Version: V0.1B86 Date: Thu May 06 21:15:32 2004 +++++++++++++++++++++++++++++++
 + removed EnvPrints and put it in Config
+
+Version: V0.1B87 Date: Thu Jun 03 23:47:13 2004 +++++++++++++++++++++++++++++++
++ several minor bugs fixed
++ load settings at startup made in preferences
++ use Qt splashscreen
