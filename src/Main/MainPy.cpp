@@ -1,10 +1,3 @@
-/** \file MainCmd.cpp
- *  \brief The main for the command application
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *

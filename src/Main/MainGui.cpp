@@ -1,10 +1,3 @@
-/** \file MainGui.cpp
- *  \brief The main for the gui application
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *

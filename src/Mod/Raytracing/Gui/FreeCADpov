@@ -33,9 +33,9 @@
 #include "woods.inc"
  
 // default texture
-default {
-  texture { pigment {rgb 1} finish {ambient 0.2 reflection 0.2 specular 0.7} }
-}
+//default {
+//  texture { pigment {rgb 1} finish {ambient 0.2 reflection 0.2 specular 0.7} }
+//}
        
 
 sky_sphere {
@@ -43,31 +43,60 @@ sky_sphere {
     pigment {
     gradient x
       color_map {
-        [0.00 color rgbt <0.4,0.8,0.5,0>]
-        [0.05 color rgbt <0.4,0.8,0.5,0>]
-        [0.06 color rgbt <0.5,0.5,0.5,1>]
-        [1.00 color rgbt <0.5,0.5,0.5,1>]
+        [0.00 color rgbt <1,1,1,0>]
+        [0.08 color rgbt <1,1,1,0>]
+        [0.09 color rgbt <0.1,0.1,0.1,1>]
+        [1.00 color rgbt <0.1,0.1,0.1,1>]
       }
-      scale 0.1
+      scale 0.05
     }
     pigment {
     gradient y
       color_map {
-        [0.00 color rgbt <.3,1,.7,0>]
-        [0.05 color rgbt <.3,1,.7,0>]
-        [0.06 color rgbt <0.5,0.5,0.5,1>]
-        [1.00 color rgbt <0.5,0.5,0.5,1>]
+        [0.00 color rgbt <1,1,1,0>]
+        [0.08 color rgbt <1,1,1,0>]
+        [0.09 color rgbt <0.1,0.1,0.1,1>]
+        [1.00 color rgbt <0.1,0.1,0.1,1>]
       }
-      scale 0.1
+      scale 0.05
     }
 }
+ 
+
+// Fussboden 
+plane {               // checkered floor
+  y, -1
+  texture
+  {
+    pigment {
+      checker
+      color rgb 1
+      color rgb 0.5
+      scale 0.5
+    }
+    finish{
+      diffuse 0.2
+      ambient 0.4
+    }
+  }
+  scale 1000
+} 
 
 
 // includes the Part mesh writen from FreeCAD          
 #include "TempPart.inc"
+object {Part
+   texture { pigment {rgb <0.3,0.8,0.3>} finish {ambient 0.2 reflection 0.2 specular 0.7} }
+ }
           
 // includes the camera from FreeCAD
 #include "TempCamera.inc"
+camera {
+  location  CamPos
+  look_at   LookAt
+  sky       Up 
+  angle     50
+}
 
 
  

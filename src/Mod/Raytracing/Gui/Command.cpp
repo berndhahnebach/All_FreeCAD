@@ -113,17 +113,16 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   SbVec3f pos = Cam->position.getValue();
 
   float Dist = Cam->focalDistance.getValue();
-  lookat *= Dist;
-  lookat += pos;
 
 
   std::stringstream out;
-  out << "camera {\n"
-      << "  location  <" << pos.getValue()[0]    <<"," << pos.getValue()[2]    <<"," << pos.getValue()[1]    <<">\n" 
-      << "  look_at   <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">\n" 
-      << "  up        <" << upvec.getValue()[0]  <<"," << upvec.getValue()[2]  <<"," << upvec.getValue()[1]  <<">\n" 
-//      << "  right     x*image_width/image_height\n"
-      << "}\n";
+  out << "// declares positon and view direction\n"
+      << "#declare  CamPos = <" << pos.getValue()[0]    <<"," << pos.getValue()[2]    <<"," << pos.getValue()[1]    <<">;\n" 
+      << "#declare  CamDir = <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">;\n" ;
+  lookat *= Dist;
+  lookat += pos;
+  out << "#declare  LookAt = <" << lookat.getValue()[0] <<"," << lookat.getValue()[2] <<"," << lookat.getValue()[1] <<">;\n" 
+      << "#declare  Up     = <" << upvec.getValue()[0]  <<"," << upvec.getValue()[2]  <<"," << upvec.getValue()[1]  <<">;\n" ;
 
   //Base::Console().Log("Pov Camera out:\n%s",out.str().c_str());
 
@@ -423,11 +422,11 @@ void CmdRaytracingWritePart::activated(int iMsg)
 
 
   fout << endl << endl << "// Declare all together +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl
-       << "//#declare " << Name << " {" << endl;
+       << "#declare " << Name << " = union {" << endl;
   for(int i=1;i < l;i++) {
     fout << "mesh2{ " << Name << i << "}" << endl;
   }
-  fout << "//}" << endl << endl;
+  fout << "}" << endl << endl;
 
   Base::Sequencer().stop();
 

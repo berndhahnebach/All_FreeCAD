@@ -335,12 +335,17 @@ public:
   //@}
 
   /** @name Methods to load and save macro commands. */
+
   //@{
+
   /** Loads all macros command from the preferences. */
+
   static void load();
+
   /** Saves all macros command to the preferences. */
   static void save();
   //@}
+
 
 protected:
   /** @name Attributes 
@@ -442,16 +447,23 @@ class StdCmdWorkbench : public CppCommand
 {
 public:
   StdCmdWorkbench();
+
   /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
+
+
 
   /** Creates the accompanying QAction object to the command. */
   QAction * createAction(void);
 
+
+
   /** Appends a new workbench \a item. */
   void appendItem ( const QString& item );
   /** Activates the workbench \a item. */
+
   void activate( const QString& item );
+
   /** Adds the workbench command to a widget. */
   bool addTo(QWidget *);
 
@@ -470,15 +482,22 @@ public:
   StdCmdMRU();
   bool isActive(void){return true;}
   /** The item at position \a iMsg is activated. */
+
   void activated(int iMsg);
 
+
   /** Creates the accompanying QAction object to the command. */
+
   QAction * createAction(void);
   
+
   /** Adds the new item to the recent files. */
+
   void addRecentFile ( const QString& item );
   /** Removes \a item from the recent files. */
+
   void removeRecentFile ( const QString& item );
+
   /** Refreshes the recent file list. */
   void refresh();
 
@@ -489,12 +508,17 @@ public:
   std::string getResource(const char* sName) { return ""; }
 
   /** @name Methodes to set the propertys of the Script Command */
+
   //@{
+
   /** Loads all macros command from the preferences. */
+
   static void load();
   /** Saves all macros command to the preferences. */
+
   static void save();
   //@}
+
 
 private:
   QString recentFileItem( const QString& fn );
@@ -504,6 +528,7 @@ private:
 };
 
 } // namespace Gui
+
 
 
 /** The Command Macro Standard
@@ -561,7 +586,7 @@ public:\
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\
-    return ( getAppWnd()->activeView() && QString( getAppWnd()->activeView()->getName()).contains( "View3D" )  > 0)?true:false;\
+    return ( getAppWnd()->activeView() && QString( getAppWnd()->activeView()->getName()).contains( "View3DInventorEx" )  > 0)?true:false;\
   }\
 };
 

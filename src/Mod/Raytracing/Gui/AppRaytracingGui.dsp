@@ -271,21 +271,6 @@ InputName=DlgSettingsRayImp
 # End Source File
 # Begin Source File
 
-SOURCE=.\FreeCAD.pov
-
-!IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\FreeCADpov
 
 !IF  "$(CFG)" == "AppRaytracingGui - Win32 Release"

@@ -51,11 +51,15 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <Base/Parameter.h>
+#include <Base/Exception.h>
 #include <App/Application.h>
 
 #include "ViewProvider.h"
 
 #include <Mod/Part/App/PartFeature.h>
+
+#include <Poly_Polygon3D.hxx>
+
 
 //#include "Tree.h"
 
@@ -94,11 +98,28 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
   lHilightColor       = hGrp->GetInt ("HilightColor",0);
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
-  
+  // head separator
   SoSeparator * SepShapeRoot=new SoSeparator();
   if(! computeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape())){
     Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
     return 0l;
+  }
+
+
+  TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape();
+
+  // creating the mesh on the data structure
+  //  BRepMesh::Mesh(myShape,1.0);
+  //	BRepMesh_Discret MESH(1.0,myShape,20.0);
+	BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
+
+  try{
+    computeFaces   (SepShapeRoot,cShape);
+//    computeEdges   (SepShapeRoot,cShape);
+    computeVertices(SepShapeRoot,cShape);
+  } catch (...){
+    Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
+    return 0l;   
   }
 
 
@@ -152,7 +173,51 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 
     // get the shape and mesh it
 		const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
-/*
+
+    TopLoc_Location aLoc;
+    Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
+
+    if(aPoly.IsNull()) 
+      throw Base::Exception("ViewProviderInventorPart::computeEdges(): Empty face trianglutaion\n");
+    
+    // geting the transformation of the shape/face
+	  gp_Trsf myTransf;
+	  Standard_Boolean identity = true;
+	  if(!aLoc.IsIdentity())  {
+	    identity = false;
+		  myTransf = aLoc.Transformation();
+    }
+
+    Standard_Integer i;
+    // geting size and create the array
+	  Standard_Integer nbNodesInFace = aPoly->NbNodes();
+	  SbVec3f* vertices = new SbVec3f[nbNodesInFace];
+
+   	const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+
+    gp_Pnt V;
+
+    for(i=0;i < nbNodesInFace;i++) {
+      V = Nodes(i+1);
+      V.Transform(myTransf);
+      vertices[i].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
+    }
+
+	  // define vertices
+	  SoCoordinate3 * coords = new SoCoordinate3;
+	  coords->point.setValues(0,nbNodesInFace, vertices);
+	  EdgeRoot->addChild(coords);
+
+	  // define the indexed face set
+		SoLocateHighlight* h = new SoLocateHighlight();
+//    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
+    h->color.setValue((float)0.5,(float)0.0,(float)0.5);
+
+    SoLineSet * lineset = new SoLineSet;
+		h->addChild(lineset);
+		EdgeRoot->addChild(h);
+    
+    /*
 	  GCPnts_TangentialDeflection Algo(aCurve, theU1, theU2, anAngle, TheDeflection);
 	  NumberOfPoints = Algo.NbPoints();
 	  
@@ -167,7 +232,6 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 	    }
 	  }
 */
-
   }
 
   return true;
@@ -178,6 +242,9 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
+  SoSeparator *FaceRoot = new SoSeparator();
+  root->addChild(FaceRoot);
+
 
   for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
 
@@ -284,15 +351,8 @@ void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f*
   // doing the meshing and checking the result
 	//BRepMesh_IncrementalMesh MESH(aFace,fDeflection);
 	Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
-  if(aPoly.IsNull()){ 
-    Base::Console().Log("Empty face trianglutaion\n");
-    nbNodesInFace =0;
-    nbTriInFace = 0;
-    vertices = 0l;
-    cons = 0l;
-    return;
-  }
-
+  if(aPoly.IsNull()) throw Base::Exception("Empty face trianglutaion\n");
+    
   // geting the transformation of the shape/face
 	gp_Trsf myTransf;
 	Standard_Boolean identity = true;

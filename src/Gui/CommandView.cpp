@@ -527,6 +527,7 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
 
   Base::Console().Message("%s",Temp.c_str());
 
+  getAppWnd()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.DocGet().Update()");
   getAppWnd()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
   //doCommand(Command::Gui,Temp.c_str());
 }
