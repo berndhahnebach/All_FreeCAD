@@ -493,6 +493,7 @@ class FCPopupMenu : public QPopupMenu, public FCCustomWidget
     void dragLeaveEvent ( QDragLeaveEvent * );
     void dragMoveEvent ( QDragMoveEvent * );
     void mouseMoveEvent ( QMouseEvent * );
+    void mouseReleaseEvent( QMouseEvent * );
     virtual void restorePreferences();
     virtual void savePreferences();
     QString parent;

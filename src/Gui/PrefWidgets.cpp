@@ -39,6 +39,7 @@
 #include "Application.h"
 #include "WidgetFactory.h"
 #include "ButtonGroup.h"
+#include "HtmlView.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
@@ -1147,10 +1148,6 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
         {
           FCActionDrag *ad = new FCActionDrag( it->second->GetName(), this );
 
-# if QT_VERSION <= 230 // set python command to clipboard (not available yet)
-          QApplication::clipboard()->setData(new QTextDrag("Not yet implemented"));
-# endif
-
           if (pix)
             ad->setPixmap(QPixmap(*pix),QPoint(8,8));
           ad->dragCopy();
@@ -1171,10 +1168,6 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
         {
           FCActionDrag *ad = new FCActionDrag( it->second->GetName(), this );
 
-# if QT_VERSION <= 230 // set python command to clipboard (not available yet)
-          QApplication::clipboard()->setData(new QTextDrag("Not yet implemented"));
-# endif
-
           if (pix)
             ad->setPixmap(QPixmap(*pix),QPoint(8,8));
           ad->dragCopy();
@@ -1188,6 +1181,18 @@ void FCPopupMenu::mouseMoveEvent ( QMouseEvent * e)
   }
   else
     QPopupMenu::mouseMoveEvent(e);
+}
+
+void FCPopupMenu::mouseReleaseEvent( QMouseEvent * e )
+{
+  if (FCWhatsThis::inWhatsThisMode())
+  {
+    int id = idAt(mapFromGlobal(QCursor::pos()));
+    close();
+    FCWhatsThis::leaveWhatsThisMode(whatsThis(id));
+  }
+  else
+    QPopupMenu::mouseReleaseEvent(e);
 }
 
 void FCPopupMenu::restorePreferences()
