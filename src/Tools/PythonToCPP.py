@@ -1,8 +1,4 @@
 #!/usr/bin/python
-import sys
-
-print sys.path
-
 import os,sys,string
 
 #os.chdir("E:\\Develop\\FreeCADWin\\scripts")
