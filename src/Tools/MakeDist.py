@@ -72,6 +72,12 @@ Filter = ["^.*\\.o$",
           "^.*\\.pyc$",
           "^.*\\.dep$",
           "^.*\\.log$",
+          "^.*\\.pyd$",
+          "^.*\\.ilk$",
+          "^.*\\.lib$",
+          "^.*\\.pdb$",
+          "^.*\\.exp$",
+          "^.*\\.bsc$",
           "^.*\\.plg$",]
 FCFileTools.cpallWithFilter('../../src',DistDir+DistSrc+'/src',FCFileTools.SetUpFilter(Filter))
 
