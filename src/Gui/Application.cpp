@@ -58,7 +58,7 @@
 #include "../Base/Interpreter.h"
 
 #if QT_VER != QT_VERSION
-#	error "QT Version missmatch, please set the right version in src/Config.h line 92"
+//#	error "QT Version missmatch, please set the right version in src/Config.h line 92"
 #endif
 
 
@@ -169,8 +169,8 @@ ApplicationWindow::ApplicationWindow()
 
 
 	// Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-	FCViewBar *pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
-	_pcWidgetMgr->addDockWindow("Tree bar", pcViewBar,0, KDockWidget::DockLeft);
+	_pcViewBar = new FCViewBar(new FCTree(0,0,"Raw_tree"),this,"Raw_Tree_View");
+	_pcWidgetMgr->addDockWindow("Tree bar", _pcViewBar,0, KDockWidget::DockLeft);
 
  	CreateStandardOperations();
 
@@ -201,6 +201,8 @@ ApplicationWindow::~ApplicationWindow()
 {
   delete _pcWidgetMgr;
   delete _pcMacroMngr;
+  delete _pcHtmlView;
+  delete _pcViewBar;
   FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetGroup("Macros");
   std::vector<FCCommand*> macros = _cCommandManager.GetModuleCommands("Macro");
   for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
@@ -257,6 +259,7 @@ void ApplicationWindow::CreateStandardOperations()
 		defToolbar.push_back("Std_Undo");
 		defToolbar.push_back("Std_Redo");
 		defToolbar.push_back("Separator");
+		defToolbar.push_back("Std_Workbench");
 		_pcWidgetMgr->addToolBar("file operations", defToolbar);
 
 		defToolbar.clear();
@@ -269,16 +272,6 @@ void ApplicationWindow::CreateStandardOperations()
 
 	}
 	
-	// add the workbench combo to the main toolbar
-	_pcWorkbenchCombo = new QComboBox(pcStdToolBar);
-//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none>"); 
-//	_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),"<none2>"); 
-//	_cActiveWorkbenchName = "";
-	_pcWorkbenchCombo->setMinimumWidth(130);
-	connect(_pcWorkbenchCombo, SIGNAL(activated (const QString &)), this, SLOT(OnWorkbenchChange(const QString &)));
-
-
-
 	// default menu bar -----------------------------------------------------------------------
 	//
 	// populate menus with all default actions
@@ -637,26 +630,6 @@ bool ApplicationWindow::eventFilter( QObject* o, QEvent *e )
   return QextMdiMainFrm::eventFilter(o, e);
 }
 
-
-void ApplicationWindow::OnWorkbenchChange( const QString & string)
-{
-	if(_cActiveWorkbenchName != string)
-	{
-#ifndef FC_DEBUG
-		try{
-#endif
-			ActivateWorkbench(string.latin1());
-#ifndef FC_DEBUG
-		}
-		catch(...){
-			throw FCException("Error in initialising Workbench!");
-		}
-#endif
-
-	}
-}
-
-
 /**
  *  Activate the named workbench by calling the methodes in the 
  *  python workbench object. If the workbench is allready active
@@ -688,17 +661,12 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
   _pcWidgetMgr->update(name);
 
-	// set the combo box
-	if(_pcWorkbenchCombo->currentText() != name){
-		for(int i=0;i<_pcWorkbenchCombo->count();i++)
-		{
-			if(_pcWorkbenchCombo->text(i) == name)
-			{
-				_pcWorkbenchCombo->setCurrentItem(i);
-				break;
-			}
-		}
-	}
+	// update the Std_Workbench command and its action object
+  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_Workbench");
+  if (pCmd)
+  {
+    ((FCCmdWorkbench*)pCmd)->UpdateAction(name);
+  }
 
 	show();
 }
@@ -708,15 +676,31 @@ void ApplicationWindow::UpdateWorkbenchEntrys(void)
 	PyObject *key, *value;
 	int pos = 0;
      
-	// remove all items from the combo box
-	_pcWorkbenchCombo->clear();
+  FCCommand* pCmd = _cCommandManager.GetCommandByName("Std_Workbench");
+  if (pCmd)
+  {
+  	// remove all items from the command
+    ((FCCmdWorkbench*)pCmd)->Clear();
 
+  	// insert all items
+    while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
+		  /* do something interesting with the values... */
+      ((FCCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
+	  }
+  }
+}
+
+std::vector<std::string> ApplicationWindow::GetWorkbenches(void)
+{
+	PyObject *key, *value;
+	int pos = 0;
+  std::vector<std::string> wb;
 	// insert all items
 	while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
 		/* do something interesting with the values... */
-		_pcWorkbenchCombo->insertItem (QPixmap(FCIcon),PyString_AsString(key));
+		wb.push_back(PyString_AsString(key));
 	}
-
+  return wb;
 }
 
 void ApplicationWindow::UpdateCmdActivity()

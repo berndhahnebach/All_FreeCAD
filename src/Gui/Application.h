@@ -65,6 +65,7 @@ class FCUndoRedoDlg;
 class FCMacroManager;
 class QPopupMenu;
 class QToolBar;
+class FCViewBar;
 
 
 /** The Bitmap Factory
@@ -168,6 +169,7 @@ public:
 	void UpdateWorkbenchEntrys(void);
 	/// returns the name of the active workbench
 	QString GetActiveWorkbench(void){return _cActiveWorkbenchName;}
+  std::vector<std::string> GetWorkbenches(void);
 	//@}
 
 	/// Get macro manager
@@ -231,7 +233,6 @@ public slots:
 	void slotUndo();
 	void slotRedo();
 	//@}
-	void OnWorkbenchChange( const QString & string);
 
 protected slots:
   void OnShowView();
@@ -248,11 +249,11 @@ private:
 	FCGuiDocument*   _pcActiveDocument;
 	FCCustomWidgetManager*		 _pcWidgetMgr;
 	FCMacroManager*  _pcMacroMngr;
-	QComboBox *		 _pcWorkbenchCombo;
 	QLabel *         _pclSizeLabel, *_pclActionLabel;
 	FCProgressBar *  _pclProgress;
 	FCStackBar*        _pcStackBar;
 	FCHtmlView*		 _pcHtmlView;
+  FCViewBar *    _pcViewBar;
 	/// workbench python dictionary
 	PyObject*		 _pcWorkbenchDictionary;
 	QString			 _cActiveWorkbenchName;
