@@ -989,10 +989,13 @@ void FCToolBar::restorePreferences()
 
   if (bSaveColor)
   {
-    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
-    int r = hColorGrp->GetInt("red", 212);
-    int g = hColorGrp->GetInt("green", 208);
-    int b = hColorGrp->GetInt("blue", 200);
+    long def = (200 << 16) | (208 << 8) | 212;
+    long col = hPrefGrp->GetInt("Color", def);
+
+    int b = col >> 16;  col -= b << 16;
+    int g = col >> 8;   col -= g << 8;
+    int r = col;
+
     QColor color(r, g, b);
     if (color.isValid())
     {
@@ -1011,10 +1014,9 @@ void FCToolBar::savePreferences()
 
   if (bSaveColor)
   {
-    FCParameterGrp::handle hColorGrp = hPrefGrp->GetGroup("Color");
-    hColorGrp->SetInt("red", backgroundColor().red());
-    hColorGrp->SetInt("green", backgroundColor().green());
-    hColorGrp->SetInt("blue", backgroundColor().blue());
+    QColor col = backgroundColor();
+ 	  long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
+    hPrefGrp->SetInt("Color", lcol);
   }
 
   hPrefGrp->SetBool("visible",  !isHidden());

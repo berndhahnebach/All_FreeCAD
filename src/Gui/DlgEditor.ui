@@ -6,44 +6,246 @@
         <name>name</name>
         <cstring>FCDlgEditorSettingsBase</cstring>
     </property>
-    <property stdset="1">
+    <property>
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>393</width>
+            <width>377</width>
             <height>317</height>
         </rect>
     </property>
-    <property stdset="1">
+    <property>
         <name>caption</name>
         <string>Editor</string>
     </property>
     <grid>
-        <property stdset="1">
+        <property>
             <name>margin</name>
             <number>11</number>
         </property>
-        <property stdset="1">
+        <property>
             <name>spacing</name>
             <number>6</number>
         </property>
+        <widget row="0"  column="0" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox5</cstring>
+            </property>
+            <property>
+                <name>title</name>
+                <string>Font settings:</string>
+            </property>
+            <grid>
+                <property>
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="1" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel4</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Size:</string>
+                    </property>
+                </widget>
+                <widget row="1"  column="0" >
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>ComboBox1</cstring>
+                    </property>
+                    <property>
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget row="1"  column="1" >
+                    <class>FCComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>MyCustomWidget1_2</cstring>
+                    </property>
+                    <property>
+                        <name>focusPolicy</name>
+                        <enum>StrongFocus</enum>
+                    </property>
+                    <property>
+                        <name>prefEntry</name>
+                        <string>FontSize</string>
+                    </property>
+                    <property>
+                        <name>prefPath</name>
+                        <string>User parameter:BaseApp/Windows/Editor</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="0" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel3</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Font:</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget row="1"  column="1" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox2</cstring>
+            </property>
+            <property>
+                <name>title</name>
+                <string>Window settings</string>
+            </property>
+            <grid>
+                <property>
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="0" >
+                    <class>FCCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>EnableLineNumber</cstring>
+                    </property>
+                    <property>
+                        <name>minimumSize</name>
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>focusPolicy</name>
+                        <enum>TabFocus</enum>
+                    </property>
+                    <property>
+                        <name>checked</name>
+                        <bool>true</bool>
+                    </property>
+                    <property>
+                        <name>prefEntry</name>
+                        <string>EnableLineNumber</string>
+                    </property>
+                    <property>
+                        <name>prefPath</name>
+                        <string>User parameter:BaseApp/Windows/Editor</string>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Enable line numbers</string>
+                    </property>
+                </widget>
+                <widget row="1"  column="0" >
+                    <class>FCCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>EnableFolding</cstring>
+                    </property>
+                    <property>
+                        <name>checked</name>
+                        <bool>true</bool>
+                    </property>
+                    <property>
+                        <name>prefEntry</name>
+                        <string>EnableFolding</string>
+                    </property>
+                    <property>
+                        <name>prefPath</name>
+                        <string>User parameter:BaseApp/Windows/Editor</string>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Enable folding</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget row="0"  column="1" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox7</cstring>
+            </property>
+            <property>
+                <name>title</name>
+                <string>Language:</string>
+            </property>
+            <grid>
+                <property>
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property>
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="1"  column="0" >
+                    <class>QComboBox</class>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Python</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>XML</string>
+                        </property>
+                    </item>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>Languages</cstring>
+                    </property>
+                </widget>
+                <widget row="0"  column="0" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1_2</cstring>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Select language:</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
         <widget row="1"  column="0" >
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
                 <cstring>GroupBox1</cstring>
             </property>
-            <property stdset="1">
+            <property>
                 <name>title</name>
                 <string>Colors</string>
             </property>
             <grid>
-                <property stdset="1">
+                <property>
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property stdset="1">
+                <property>
                     <name>spacing</name>
                     <number>6</number>
                 </property>
@@ -53,7 +255,7 @@
                         <name>name</name>
                         <cstring>TextLabel1</cstring>
                     </property>
-                    <property stdset="1">
+                    <property>
                         <name>text</name>
                         <string>Color:</string>
                     </property>
@@ -64,38 +266,38 @@
                         <name>name</name>
                         <cstring>MyCustomWidget1</cstring>
                     </property>
-            <property stdset="1">
+                    <property>
                         <name>minimumSize</name>
                         <size>
                             <width>140</width>
                             <height>0</height>
                         </size>
-            </property>
-            <property stdset="1">
+                    </property>
+                    <property>
                         <name>focusPolicy</name>
                         <enum>TabFocus</enum>
-            </property>
-        </widget>
+                    </property>
+                </widget>
                 <spacer row="2"  column="2" >
                     <property>
-                <name>name</name>
+                        <name>name</name>
                         <cstring>Spacer1</cstring>
-            </property>
+                    </property>
                     <property>
                         <name>orientation</name>
                         <enum>Horizontal</enum>
-            </property>
+                    </property>
                     <property>
                         <name>sizeType</name>
                         <enum>Expanding</enum>
-                </property>
+                    </property>
                     <property>
                         <name>sizeHint</name>
                         <size>
                             <width>20</width>
                             <height>20</height>
                         </size>
-                </property>
+                    </property>
                 </spacer>
                 <spacer row="2"  column="0" >
                     <property>
@@ -159,6 +361,12 @@
                     <item>
                         <property>
                             <name>text</name>
+                            <string>Block comment</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
                             <string>Number</string>
                         </property>
                     </item>
@@ -168,6 +376,30 @@
                             <string>String</string>
                         </property>
                     </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Character</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Class name</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Define name</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property>
+                            <name>text</name>
+                            <string>Operator</string>
+                        </property>
+                    </item>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>ListBox1</cstring>
@@ -175,143 +407,15 @@
                 </widget>
             </grid>
         </widget>
-        <widget row="0"  column="0" >
-            <class>QGroupBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                <cstring>GroupBox5</cstring>
-                    </property>
-            <property stdset="1">
-                <name>title</name>
-                <string>Font settings:</string>
-            </property>
-            <grid>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>11</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget row="0"  column="1" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel4</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Size:</string>
-                    </property>
-                </widget>
-                <widget row="1"  column="0" >
-                    <class>QComboBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>ComboBox1</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>enabled</name>
-                        <bool>false</bool>
-                    </property>
-                </widget>
-                <widget row="1"  column="1" >
-                    <class>FCComboBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>MyCustomWidget1_2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>focusPolicy</name>
-                        <enum>StrongFocus</enum>
-                    </property>
-                    <property>
-                        <name>prefEntry</name>
-                        <string>FontSize</string>
-                    </property>
-                    <property>
-                        <name>prefPath</name>
-                        <string>User parameter:BaseApp/Windows/Editor</string>
-                    </property>
-                </widget>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel3</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Font:</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget row="0"  column="1"  rowspan="2"  colspan="1" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>GroupBox2</cstring>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string>Window settings</string>
-            </property>
-            <grid>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>11</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget row="2"  column="0" >
-                    <class>FCCheckBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>EnableLineNumber</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
-                        <size>
-                            <width>150</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property stdset="1">
-                        <name>focusPolicy</name>
-                        <enum>TabFocus</enum>
-                </property>
-                <property>
-                        <name>checked</name>
-                        <bool>true</bool>
-                </property>
-                <property>
-                        <name>prefEntry</name>
-                        <string>EnableLineNumber</string>
-                </property>
-                <property>
-                        <name>prefPath</name>
-                        <string>User parameter:BaseApp/Windows/Editor</string>
-                </property>
-                <property>
-                    <name>text</name>
-                        <string>Enable line numbers</string>
-            </property>
-        </widget>
-            </grid>
-        </widget>
     </grid>
 </widget>
 <customwidgets>
     <customwidget>
-        <class>FCCheckBox</class>
+        <class>FCComboBox</class>
         <header location="local">PrefWidgets.h</header>
         <sizehint>
-            <width>100</width>
-            <height>20</height>
+            <width>50</width>
+            <height>15</height>
         </sizehint>
         <container>0</container>
         <sizepolicy>
@@ -319,6 +423,24 @@
             <verdata>5</verdata>
         </sizepolicy>
         <pixmap>image0</pixmap>
+        <property type="String">prefEntry</property>
+        <property type="String">prefPath</property>
+        <property type="Int">currentItem</property>
+        <property type="String">currentText</property>
+    </customwidget>
+    <customwidget>
+        <class>FCCheckBox</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>80</width>
+            <height>20</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
         <signal>toggled(bool)</signal>
         <property type="String">text</property>
         <property type="Bool">checked</property>
@@ -339,35 +461,21 @@
             <hordata>5</hordata>
             <verdata>5</verdata>
         </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image2</pixmap>
         <property type="Color">color</property>
-    </customwidget>
-    <customwidget>
-        <class>FCComboBox</class>
-        <header location="local">PrefWidgets.h</header>
-        <sizehint>
-            <width>80</width>
-            <height>20</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
-        <property type="String">prefEntry</property>
-        <property type="String">prefPath</property>
-        <property type="Int">currentItem</property>
-        <property type="String">currentText</property>
     </customwidget>
 </customwidgets>
 <images>
     <image>
         <name>image0</name>
-        <data format="XPM.GZ" length="2878">789ccdd5594f23471007f0773e8545bda1a8d673cf28ca0397318701c31ede8df2d0d33d0318b0c107d72adf3dddffea6d292b63e5254aa69645bfe99a9eea6bf8b0d5199d0f3a5b1f36e60bb5b8d11d7dad669d2db3bcbf7ffdfd8fdfbe6f6cc671c7fe8ba2a8136ffeb2b1395c7474e7743a691c7864415d5ccec470dc8dbcafe1ccdec991ffc53beda6f0195c768b6e81fc3658c157b0b277c404d72ef07c176eaca5fdd9398a6db5289653d8b880f17c1cb980158c0bcf37701517b1d457c3c6055c3827ddb8f1d670ea02cf4fe02c4912e9ef092e933ca9907fe56d0336ce69ec028ee022cd53793fe62f2b5cc0255c5a67f081b70df81cae3395613e18e3c93317f057b8c8f35cfabb814b17701fae6c86f814ae5dc08973e12ee9ef335c156521f963d8b8802fe1c65ad667cfb98c8ab694f9cfe0d8064c2f302eb4dfc375a94ad91f58afd2d83ba887507fd9d8c0fb68ea5c456553c97c623f55b8e00aae2b5549ff736715ab48c97a2de154252a81b13e2ab777b09f79162ce3bf850b17c8df854b9b21ef7b852bdb2eebb9f02e7dfb31acec1d9c0fbaf356beff49b09c9f3c58d6ef3118fd91f45f87e72f8225ff9b77ad64fcd360a9e72158f6cf3258e61beba18cd24aa33d76ae331768df76d6a94e6a59ffa71fd6723ed0bfce5cc0981f9d5bcbfc0ce052175ae663ec6d03c67875652df3b11f2cf59f78575ac6fb2958c6bb172cf9582f3b981fdef156de6f706d2defdbf6ae7dfbc76099af5eb09c17aca7c685fa51af49ece744f63bfa379949bd67c1b21f518fa94c29edfc1c2ce709df27a35cc038afa67619f0a1776d643e70be9ac805daf1fd6dd226f1ee05cbfb8fe0a2c94c8be70fbd8b46fac7feb5c7af6864bd06c1721e4e8225ffd6bb6c64fde7c1f2bc0e967a87c1b27e528f72817c7cff1a77c9fec4f7af8dda6e83bf4fd4f7b601a3bf366bd356c687f3d12a1730be57ad71217fecfe79fc9ff3995871cdfaa730dc70bb325ff1155ff3cd4f31e65bbe5b995fdbec7b9ef0941ff891673ce7052ff9899ff96565beb6bdbdf21b6ff30eeff21eef738f0fb8cf877cf46efeb1cde9f1090ff0fb94cff89c876bf22ff8d2d6d3e38ffc893ff3171ef1d7b5f9dfb8cb11c7b6a2c4e68e38e56c6d7ece85cd2ab9e211311129aa49bf9f4f861a9bd9d2155ddbdf3734b6f9b76bf2efe89e26a86444537aa0479ad17c4dfe827bb4a4277aa6173743f44a6fefd663784cdbb4632bd8a53dfb7f4dfbb6f71e1d507f657ec3b774484774cc433ab13f033aa5333aa7215daccc6ff98e5ff8e8ef417dbaa0cbff62ffff2bf97ffebaf117f4e0deb4</data>
+        <data format="XPM.GZ" length="2830">789cad95c76e1c391086ef7a8a81ea262cca9dd86c62e183724e966dc95eec8164772be719a5c5befb927f51d2d81a193eecfc1a011faa586405723ecc0c0e763607331fa66e877678ec07fec8de0c66dad1f9f9e35f7f7ffc676aba2806e12fcf9a4131fdc7d4f4ee70e0075b97175d045a0a405996fb32072f0a1759d9801f12e7a5052f242e4a0fde4a5c1660b689aba2857d3eb1ae14ecdf13379506d7896de5e03f275c664afc6f12e70ae7e1ebc495823fabc44a613fbe7a61e4c755625bd7e032715ff7e06fe0b22ab5ecb70b7695d1067c09f6c15fd613b82f4d55e1bcb1989417955225b805d74a257fd4b3c8944e7c012e54a6e1cf05389cbe917a1c805d9d3792df2db8d3b6917e2d472eb328d8cfc14af55af2417fca3a0b1ff88bdd29abd17cd6601f05467fcbf6c51ffb55ba6e1bf49bf7c1466b23fdb903db28d877c05e5b23fd3e03f7da189917f44f354d63655e3cd804167ff4b3ce8d72c2a84f5d58e7900f9d822b63bc9cff13584581b7c1bae9527cf4bf3636f712ef04dc5add4abf66c17d9dfa4f4ed836adc4fb1a5917a676b21fe65b7bd33af48756c16d4848faf345d8744eeecb71e42673652bf9637e9ac25589713f9adad5adac37e0de97adec87f3983a0afe8f89c30eb0a37e61388360df14b661c0c124ecb34efa7904f6beec24bef8b7aef632df39b88f82ff86b0b5d21f46fdad8e82fd50d8db0ef522d4df1aa7247fc67db7f6799e18f7c1ba28f833b8f35d27f3de45767914ecf7e0320af635701d05fb088c80b08bbf7bd9af89ec8b28f8af246e52bec2b80060e4db665160cc4b9bbfc4cb84a3100ff3de16ad917e32e6bd555160f42b5883c0785f5b1b85f5c8b7cbbae7fe20bfae88023f81cb28acc7fbd2a928f03a584781318f9d8bc27ab1e303fb5ee43e8b02e3fde8cb28f8f7601505fb67b08d02e3bef72fef033f094781f15ef75d1418f3dff7b1a0e09170f83dc0fde323615da4f7a84ffcfc7e1d0a9bdca0de3c2b1c3ff2e3c5c4f63744bb4379afd9b1e796bb77d4f3211ff1319f30c9ef179ff2199ff3055ff2d598aef9866f7918ec23bee37b7e609be23ff213cf06cd05cdbe910ddf795e08ff25fee2ef9e9f17255f51e0255e9e10ff55f483bfe5155efda5bffdc97f8dd7798337798bb7c7b4c3bbfc89f7f8f31bff2e54e30b7fe57d3e18d3b750abef9c851593fc732eb8e46a4c8a6bd6dc84b34ef2df0b919a097a2fbe2126223b26479e5aeaa89fe44f877444c77432a6533aa3f3f7e2d3055dd2155d8fe9866e69f87f9d9f4693ea497793ce4ff721fefea47ad2c3a4f8f4484f344b73344f0b635aa4255ae686567ef2275aa5355a7feffcb4f1e3bc6187cd30257ba1126f441bb425f771cc7f31acd8a69db79349dbaff7f7d53fdd8277ee7ad4f4bf7f4efd075ec78e32</data>
     </image>
     <image>
         <name>image1</name>
+        <data format="XPM.GZ" length="2878">789ccdd5594f23471007f0773e8545bda1a8d673cf28ca0397318701c31ede8df2d0d33d0318b0c107d72adf3dddffea6d292b63e5254aa69645bfe99a9eea6bf8b0d5199d0f3a5b1f36e60bb5b8d11d7dad669d2db3bcbf7ffdfd8fdfbe6f6cc671c7fe8ba2a8136ffeb2b1395c7474e7743a691c7864415d5ccec470dc8dbcafe1ccdec991ffc53beda6f0195c768b6e81fc3658c157b0b277c404d72ef07c176eaca5fdd9398a6db5289653d8b880f17c1cb980158c0bcf37701517b1d457c3c6055c3827ddb8f1d670ea02cf4fe02c4912e9ef092e933ca9907fe56d0336ce69ec028ee022cd53793fe62f2b5cc0255c5a67f081b70df81cae3395613e18e3c93317f057b8c8f35cfabb814b17701fae6c86f814ae5dc08973e12ee9ef335c156521f963d8b8802fe1c65ad667cfb98c8ab694f9cfe0d8064c2f302eb4dfc375a94ad91f58afd2d83ba887507fd9d8c0fb68ea5c456553c97c623f55b8e00aae2b5549ff736715ab48c97a2de154252a81b13e2ab777b09f79162ce3bf850b17c8df854b9b21ef7b852bdb2eebb9f02e7dfb31acec1d9c0fbaf356beff49b09c9f3c58d6ef3118fd91f45f87e72f8225ff9b77ad64fcd360a9e72158f6cf3258e61beba18cd24aa33d76ae331768df76d6a94e6a59ffa71fd6723ed0bfce5cc0981f9d5bcbfc0ce052175ae663ec6d03c67875652df3b11f2cf59f78575ac6fb2958c6bb172cf9582f3b981fdef156de6f706d2defdbf6ae7dfbc76099af5eb09c17aca7c685fa51af49ece744f63bfa379949bd67c1b21f518fa94c29edfc1c2ce709df27a35cc038afa67619f0a1776d643e70be9ac805daf1fd6dd226f1ee05cbfb8fe0a2c94c8be70fbd8b46fac7feb5c7af6864bd06c1721e4e8225ffd6bb6c64fde7c1f2bc0e967a87c1b27e528f72817c7cff1a77c9fec4f7af8dda6e83bf4fd4f7b601a3bf366bd356c687f3d12a1730be57ad71217fecfe79fc9ff3995871cdfaa730dc70bb325ff1155ff3cd4f31e65bbe5b995fdbec7b9ef0941ff891673ce7052ff9899ff96565beb6bdbdf21b6ff30eeff21eef738f0fb8cf877cf46efeb1cde9f1090ff0fb94cff89c876bf22ff8d2d6d3e38ffc893ff3171ef1d7b5f9dfb8cb11c7b6a2c4e68e38e56c6d7ece85cd2ab9e211311129aa49bf9f4f861a9bd9d2155ddbdf3734b6f9b76bf2efe89e26a86444537aa0479ad17c4dfe827bb4a4277aa6173743f44a6fefd663784cdbb4632bd8a53dfb7f4dfbb6f71e1d507f657ec3b774484774cc433ab13f033aa5333aa7215daccc6ff98e5ff8e8ef417dbaa0cbff62ffff2bf97ffebaf117f4e0deb4</data>
+    </image>
+    <image>
+        <name>image2</name>
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1ddec44f503c0ae2a154410f53d0ed20e2bf6bdb656dd6861dd23d9a66591b0587fd1654235ebded6f0edcd53e419d87ae7b1f4f9b8f906d0bfe012317426a70b07bdc2f3ec77f8ed6b89559061a0343d06a124cc105596482585094bc0ae599b04646c9018926491b2205e140c485cace25755c175d0a967b622ff900b8cc9c7d29af594ea722d589167f813aa852ba07d94b9dce296e883fe7bb163f23896753</data>
     </image>
 </images>

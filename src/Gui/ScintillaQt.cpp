@@ -184,6 +184,22 @@ int ScintillaQt::GetCtrlID()
 
 void ScintillaQt::NotifyParent(SCNotification scn)
 {
+  switch (scn.nmhdr.code)
+  {
+	  case SCN_MARGINCLICK:
+      m_pEditor->clickMargin(scn.position,scn.modifiers);
+		  break;
+	
+    case SCN_MODIFIED:
+		  if (0 != (scn.modificationType & SC_MOD_CHANGEFOLD)) 
+      {
+			  m_pEditor->foldChanged(scn.line, scn.foldLevelNow, scn.foldLevelPrev);
+		  }
+		  break;
+
+    case SCN_DOUBLECLICK:
+		  break;
+  }
 }
 
 void ScintillaQt::NotifyDoubleClick(Point pt, bool shift) 
@@ -451,6 +467,13 @@ FCScintillaEdit::FCScintillaEdit(QWidget *parent,const char *name,WFlags f)
   loadSettings();
 }
 
+void FCScintillaEdit::DefineMarker(int marker, int markerType, long fore, long back) 
+{
+	SendScintilla(SCI_MARKERDEFINE, marker, markerType);
+	SendScintilla(SCI_MARKERSETFORE, marker, fore);
+	SendScintilla(SCI_MARKERSETBACK, marker, back);
+}
+
 FCScintillaEdit::~FCScintillaEdit()
 {
   GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Editor")->Detach(this);
@@ -459,82 +482,201 @@ FCScintillaEdit::~FCScintillaEdit()
 
 void FCScintillaEdit::OnChange(FCSubject<const char*> &rCaller,const char* rcReason)
 {
-  loadSettings();
-}
-
-void FCScintillaEdit::loadSettings()
-{  
-	FCParameterGrp::handle hPrefGrp;
-  hPrefGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Editor");
+  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   
   const char font[] = "Verdana";
   const char monospace[] = "Courier";
-  const short fontsize = hPrefGrp->GetInt("FontSize", 3) + 6;
-  const char keywords[] = "and assert break class continue def del elif else except exec "
-	                        "finally for from global if import in is lambda None not or "
-	                        "pass print raise return try while yield";
-
-  // set style bits, choose the lexer and set the keywords list
-  sciTE->WndProc(SCI_SETSTYLEBITS,5,0);
-  sciTE->WndProc(SCI_SETLEXER,SCLEX_PYTHON,0);
-  sciTE->WndProc(SCI_SETKEYWORDS,0,(sptr_t)keywords);
-  
-  // set up basic features (iguides on, tab=3, tabs-to-spaces, EOL=CRLF)
-  sciTE->WndProc(SCI_SETINDENTATIONGUIDES,1,0);
-  sciTE->WndProc(SCI_SETTABWIDTH,3,0);
-  sciTE->WndProc(SCI_SETUSETABS,0,0);
-  sciTE->WndProc(SCI_SETEOLMODE,SC_EOL_CRLF,0);
+  const short fontsize = rclGrp.GetInt("FontSize", 3) + 6;
 
   // style 32: default
-  sciTE->WndProc(SCI_STYLESETFONT,32, (sptr_t) font);
-  sciTE->WndProc(SCI_STYLESETSIZE,32, fontsize);
-
-  // text color
-  sciTE->WndProc(SCI_STYLESETFORE,SciQt_TEXT, hPrefGrp->GetInt("Text", GetDefCol().GetColor("Text")));
-
-  // comment color
-  sciTE->WndProc(SCI_STYLESETFONT,SciQt_COMMENT, (int)monospace);
-  sciTE->WndProc(SCI_STYLESETSIZE,SciQt_COMMENT, fontsize);
-  sciTE->WndProc(SCI_STYLESETFORE,SciQt_COMMENT, hPrefGrp->GetInt("Comment", GetDefCol().GetColor("Comment")));
-
-  // number color
-  sciTE->WndProc(SCI_STYLESETFORE,SciQt_NUMBER, hPrefGrp->GetInt("Number", GetDefCol().GetColor("Number")));
-
-	// string color
-  sciTE->WndProc(SCI_STYLESETFORE,SciQt_STRING, hPrefGrp->GetInt("String", GetDefCol().GetColor("String")));      
+  SendScintilla(SCI_STYLESETFONT,32, (sptr_t) font);
+  SendScintilla(SCI_STYLESETSIZE,32, fontsize);
   
-	// keyword color
-  sciTE->WndProc(SCI_STYLESETFONT,5, (int)font);
-  sciTE->WndProc(SCI_STYLESETSIZE,5, (int)fontsize);
-  sciTE->WndProc(SCI_STYLESETFORE,5, hPrefGrp->GetInt("Keyword", GetDefCol().GetColor("Keyword")));
-  sciTE->WndProc(SCI_STYLESETBOLD,5, 1);
+  // set up basic features (iguides on, tab=3, tabs-to-spaces, EOL=CRLF)
+  SendScintilla(SCI_SETINDENTATIONGUIDES,1,0);
+  SendScintilla(SCI_SETTABWIDTH,3,0);
+  SendScintilla(SCI_SETUSETABS,0,0);
+  SendScintilla(SCI_SETEOLMODE,SC_EOL_CRLF,0);
 
-	// breakpoint color
-	sciTE->WndProc(SCI_MARKERDEFINE,  SciQt_MARKER_BREAKPNT, SC_MARK_CIRCLE);
-	sciTE->WndProc(SCI_MARKERSETFORE, SciQt_MARKER_BREAKPNT, hPrefGrp->GetInt("Breakpoint", GetDefCol().GetColor("Breakpoint")));
-	sciTE->WndProc(SCI_MARKERSETBACK, SciQt_MARKER_BREAKPNT, hPrefGrp->GetInt("Breakpoint", GetDefCol().GetColor("Breakpoint")));
+  if (strcmp(rcReason, "Lexer") == 0)
+  {
+    int l = rclGrp.GetInt("Lexer");
 
-	// bookmark color
-	sciTE->WndProc(SCI_MARKERDEFINE,  SciQt_MARKER_BOOKMARK, SC_MARK_ARROW);
-	sciTE->WndProc(SCI_MARKERSETFORE, SciQt_MARKER_BOOKMARK, hPrefGrp->GetInt("Bookmark", GetDefCol().GetColor("Bookmark")));
-	sciTE->WndProc(SCI_MARKERSETBACK, SciQt_MARKER_BOOKMARK, hPrefGrp->GetInt("Bookmark", GetDefCol().GetColor("Bookmark")));
+    if (l == 0)
+    {
+      const char keywords[] = "and assert break class continue def del elif else except exec "
+	                            "finally for from global if import in is lambda None not or "
+	                            "pass print raise return try while yield";
+      // set style bits, choose the lexer and set the keywords list
+      SendScintilla(SCI_SETSTYLEBITS,5,0);
+      SendScintilla(SCI_SETLEXER,SCLEX_PYTHON,0);
+      SendScintilla(SCI_SETKEYWORDS,0,(sptr_t)keywords);
+    }
+    else if (l == 1)
+    {
+      const char keywords[] = "XML";
+      SendScintilla(SCI_SETSTYLEBITS,5,0);
+      SendScintilla(SCI_SETLEXER,SCLEX_XML,0);
+      SendScintilla(SCI_SETKEYWORDS,0,(sptr_t)keywords);
+    }
+    else
+    {
+      SendScintilla(SCI_SETLEXER,SCLEX_NULL,0);
+    }
+  }
+  else if (strcmp(rcReason, "Text") == 0)
+  {
+    // text color
+    SendScintilla(SCI_STYLESETFORE,SciQt_TEXT, rclGrp.GetInt("Text", GetDefCol().GetColor("Text")));
+  }
+  else if (strcmp(rcReason, "Comment") == 0)
+  {
+    // comment color
+    SendScintilla(SCI_STYLESETFONT,SciQt_COMMENT, (int)monospace);
+    SendScintilla(SCI_STYLESETSIZE,SciQt_COMMENT, fontsize);
+    SendScintilla(SCI_STYLESETFORE,SciQt_COMMENT, rclGrp.GetInt("Comment", GetDefCol().GetColor("Comment")));
+  }
+  else if (strcmp(rcReason, "Block comment") == 0)
+  {
+    // block comment color
+    SendScintilla(SCI_STYLESETFONT,SciQt_COMMENTBLOCK, (int)monospace);
+    SendScintilla(SCI_STYLESETSIZE,SciQt_COMMENTBLOCK, fontsize);
+    SendScintilla(SCI_STYLESETFORE,SciQt_COMMENTBLOCK, rclGrp.GetInt("Block comment", GetDefCol().GetColor("Block comment")));
+  }
+  else if (strcmp(rcReason, "Number") == 0)
+  {
+    // number color
+    SendScintilla(SCI_STYLESETFORE,SciQt_NUMBER, rclGrp.GetInt("Number", GetDefCol().GetColor("Number")));
+  }
+  else if (strcmp(rcReason, "String") == 0)
+  {
+	  // string color
+    SendScintilla(SCI_STYLESETFORE,SciQt_STRING, rclGrp.GetInt("String", GetDefCol().GetColor("String")));      
+  }
+  else if (strcmp(rcReason, "Keyword") == 0)
+  {
+	  // keyword color
+    SendScintilla(SCI_STYLESETFONT,SciQt_KEYWORDS, (int)font);
+    SendScintilla(SCI_STYLESETSIZE,SciQt_KEYWORDS, (int)fontsize);
+    SendScintilla(SCI_STYLESETFORE,SciQt_KEYWORDS, rclGrp.GetInt("Keyword", GetDefCol().GetColor("Keyword")));
+    SendScintilla(SCI_STYLESETBOLD,SciQt_KEYWORDS, 1);
+  }
+  else if (strcmp(rcReason, "Breakpoint") == 0)
+  {
+	  // breakpoint color
+	  SendScintilla(SCI_MARKERDEFINE,  SciQt_MARKER_BREAKPNT, SC_MARK_CIRCLE);
+	  SendScintilla(SCI_MARKERSETFORE, SciQt_MARKER_BREAKPNT, rclGrp.GetInt("Breakpoint", GetDefCol().GetColor("Breakpoint")));
+	  SendScintilla(SCI_MARKERSETBACK, SciQt_MARKER_BREAKPNT, rclGrp.GetInt("Breakpoint", GetDefCol().GetColor("Breakpoint")));
+  }
+  else if (strcmp(rcReason, "Bookmark") == 0)
+  {
+	  // bookmark color
+	  SendScintilla(SCI_MARKERDEFINE,  SciQt_MARKER_BOOKMARK, SC_MARK_ARROW);
+	  SendScintilla(SCI_MARKERSETFORE, SciQt_MARKER_BOOKMARK, rclGrp.GetInt("Bookmark", GetDefCol().GetColor("Bookmark")));
+	  SendScintilla(SCI_MARKERSETBACK, SciQt_MARKER_BOOKMARK, rclGrp.GetInt("Bookmark", GetDefCol().GetColor("Bookmark")));
+  }
+  else if (strcmp(rcReason, "Character") == 0)
+  {
+    // character
+    SendScintilla(SCI_STYLESETFORE,SciQt_CHARACTER, rclGrp.GetInt("Character", GetDefCol().GetColor("Character")));
+    // triple
+    SendScintilla(SCI_STYLESETFORE,SciQt_TRIPLE, rclGrp.GetInt("Character", GetDefCol().GetColor("Character")));
+    // triple double
+    SendScintilla(SCI_STYLESETFORE,SciQt_TRIPLEDOUBLE, rclGrp.GetInt("Character", GetDefCol().GetColor("Character")));
+    // end of line
+    SendScintilla(SCI_STYLESETFORE,SciQt_STRINGEOL, rclGrp.GetInt("Character", GetDefCol().GetColor("Character")));
+  }
+  else if (strcmp(rcReason, "Class name") == 0)
+  {
+    // class name
+    SendScintilla(SCI_STYLESETFORE,SciQt_CLASSNAME, rclGrp.GetInt("Class name", GetDefCol().GetColor("Class name")));
+  }
+  else if (strcmp(rcReason, "Define name") == 0)
+  {
+    // define name
+    SendScintilla(SCI_STYLESETFORE,SciQt_DEFNAME, rclGrp.GetInt("Define name", GetDefCol().GetColor("Define name")));
+  }
+  else if (strcmp(rcReason, "Operator") == 0)
+  {
+    // operator
+    SendScintilla(SCI_STYLESETFORE,SciQt_OPERATOR, rclGrp.GetInt("Operator", GetDefCol().GetColor("Operator")));
+  }
+  else if (strcmp(rcReason, "Text Selection") == 0)
+  {
+  }
+  else if (strcmp(rcReason, "EnableFolding") == 0)
+  {
+	  if (rclGrp.GetBool("EnableFolding", true))
+    {
+      SendScintilla(SCI_SETPROPERTY, (uptr_t) "fold", (sptr_t) "1");
+	    SendScintilla(SCI_SETPROPERTY, (uptr_t) "fold.compact", (sptr_t) "1");
+	    SendScintilla(SCI_SETPROPERTY, (uptr_t) "fold.symbols", (sptr_t) "1");
+	    SendScintilla(SCI_SETPROPERTY, (uptr_t) "styling.within.preprocessor", (sptr_t) "1");
+	    // set styles.
+	    long fore = 0;
+	    long back = 0x00ffffff;
 
-	// line number
-	if (hPrefGrp->GetBool("EnableLineNumber", true))
-	{
-		sciTE->WndProc(SCI_SETMARGINTYPEN, 0, SC_MARGIN_NUMBER);
-		int pixelWidth = 3 * sciTE->WndProc(SCI_TEXTWIDTH, STYLE_LINENUMBER, (int)"9");
-		sciTE->WndProc(SCI_SETMARGINWIDTHN, 0, pixelWidth);
+	    SendScintilla(SCI_SETFOLDFLAGS, 16, 0);
+	    // to put the folder markers in the line number region
+	    //SendScintilla(SCI_SETMARGINMASKN, 0, SC_MASK_FOLDERS);
+	    SendScintilla(SCI_SETMODEVENTMASK, SC_MOD_CHANGEFOLD, 0);
+
+	    // create a margin column for the folding symbols
+	    SendScintilla(SCI_SETMARGINTYPEN, 2, SC_MARGIN_SYMBOL);
+	    SendScintilla(SCI_SETMARGINWIDTHN, 2, /*foldMargin ? foldMarginWidth :*/ 16);
+	    SendScintilla(SCI_SETMARGINMASKN, 2, SC_MASK_FOLDERS);
+	    SendScintilla(SCI_SETMARGINSENSITIVEN, 2, 1);
+	    DefineMarker(SC_MARKNUM_FOLDEROPEN, SC_MARK_MINUS, back, fore);
+	    DefineMarker(SC_MARKNUM_FOLDER, SC_MARK_PLUS, back, fore);
+	    DefineMarker(SC_MARKNUM_FOLDERSUB, SC_MARK_EMPTY, back, fore);
+	    DefineMarker(SC_MARKNUM_FOLDERTAIL, SC_MARK_EMPTY, back, fore);
+	    DefineMarker(SC_MARKNUM_FOLDEREND, SC_MARK_EMPTY, back, fore);
+	    DefineMarker(SC_MARKNUM_FOLDEROPENMID, SC_MARK_EMPTY, back, fore);
+	    DefineMarker(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_EMPTY, back, fore);
+    }
+  }
+  else if (strcmp(rcReason, "EnableLineNumber") == 0)
+  {
+	  // line number
+	  if (rclGrp.GetBool("EnableLineNumber", true))
+	  {
+		  SendScintilla(SCI_SETMARGINTYPEN, 0, SC_MARGIN_NUMBER);
+		  int pixelWidth = 3 * SendScintilla(SCI_TEXTWIDTH, STYLE_LINENUMBER, (int)"9");
+		  SendScintilla(SCI_SETMARGINWIDTHN, 0, pixelWidth);
+    }
+    else
+    {
+		  SendScintilla(SCI_SETMARGINTYPEN, 0, 0);
+    }
   }
   else
   {
-		sciTE->WndProc(SCI_SETMARGINTYPEN, 0, 0);
+	  // margin stuff
+	  SendScintilla(SCI_SETMARGINTYPEN,  1, SC_MARGIN_SYMBOL);
+	  SendScintilla(SCI_SETMARGINWIDTHN, 1, 10);
+	  SendScintilla(SCI_SETMARGINSENSITIVEN, 1, TRUE);
   }
+}
 
-	// margin stuff
-	sciTE->WndProc(SCI_SETMARGINTYPEN,  1, SC_MARGIN_SYMBOL);
-	sciTE->WndProc(SCI_SETMARGINWIDTHN, 1, 10);
-	sciTE->WndProc(SCI_SETMARGINSENSITIVEN, 1, TRUE);
+void FCScintillaEdit::loadSettings()
+{
+  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Windows/Editor");
+  hGrp->Notify("");
+  hGrp->Notify("Lexer");
+  hGrp->Notify("Text");
+  hGrp->Notify("Comment");
+  hGrp->Notify("Block comment");
+  hGrp->Notify("Number");
+  hGrp->Notify("String");
+  hGrp->Notify("Keyword");
+  hGrp->Notify("Breakpoint");
+  hGrp->Notify("Bookmark");
+  hGrp->Notify("Character");
+  hGrp->Notify("Class name");
+  hGrp->Notify("Define name");
+  hGrp->Notify("Operator");
+  hGrp->Notify("EnableLineNumber");
+  hGrp->Notify("EnableFolding");
 }
 
 long FCScintillaEdit::SendScintilla(unsigned int msg,unsigned long wParam, long lParam)
@@ -1026,6 +1168,11 @@ void FCScintillaEdit::foldChanged(int line, int levelNow, int levelPrev)
 			expand(line, true, false, 0, levelPrev);
 		}
 	}
+}
+
+void FCScintillaEdit::toggleFold(int nLine)
+{
+	SendScintilla(SCI_TOGGLEFOLD,nLine);
 }
 
 void FCScintillaEdit::expand(int &line, bool doExpand, bool force, int visLevels, int level) 

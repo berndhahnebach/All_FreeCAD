@@ -50,6 +50,7 @@ FCDlgEditorSettings::FCDlgEditorSettings( QWidget* parent,  const char* name, WF
   setEntryName("Editor");
 
   append(EnableLineNumber->getHandler());
+  append(EnableFolding->getHandler());
 	append(MyCustomWidget1_2->getHandler());
   append(getHandler());
 
@@ -120,6 +121,8 @@ void FCDlgEditorSettings::restorePreferences()
   {
     m_clColors[*it] = hPrefGrp->GetInt(it->latin1(), GetDefCol().GetColor(*it));
   }
+
+  Languages->setCurrentItem(hPrefGrp->GetInt("Lexer", 0));
 }
 
 void FCDlgEditorSettings::savePreferences()
@@ -128,6 +131,8 @@ void FCDlgEditorSettings::savePreferences()
   {
     hPrefGrp->SetInt(it->first.latin1(), it->second);
   }
+
+  hPrefGrp->SetInt("Lexer", Languages->currentItem());
 }
 
 void FCDlgEditorSettings::onAssignColor(const QString& name)
@@ -186,6 +191,21 @@ FCDefColorMap::FCDefColorMap(void)
 
   col.setRgb(0, 170, 0); long lComments = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Comment"]        = lComments;
+
+  col = Qt::gray; long lBlockCom  = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Block comment"]   = lBlockCom;
+
+  col = Qt::red; long lCharacter  = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Character"]   = lCharacter;
+
+  col = Qt::blue; long lClass  = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Class name"]  = lClass;
+
+  col = Qt::blue; long lDefine = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Define name"]  = lDefine;
+
+  col = Qt::gray; long lOperat = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Operator"]    = lOperat;
 
   col = Qt::blue; long lNumbers   = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["Number"]         = lNumbers;

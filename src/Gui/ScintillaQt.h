@@ -38,7 +38,16 @@
 #define SciQt_COMMENT         1
 #define SciQt_NUMBER          2
 #define SciQt_STRING          3
+#define SciQt_CHARACTER       4
+#define SciQt_KEYWORDS        5
+#define SciQt_TRIPLE          6
+#define SciQt_TRIPLEDOUBLE    7
+#define SciQt_CLASSNAME       8
+#define SciQt_DEFNAME         9
+#define SciQt_OPERATOR       10
 #define SciQt_TEXT           11
+#define SciQt_COMMENTBLOCK   12
+#define SciQt_STRINGEOL      13
 
 // forward declaration
 class FCScintillaEdit;
@@ -150,6 +159,7 @@ class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
   	void expand(int &line, bool doExpand, bool force = false, int visLevels = 0, int level = -1);
     void foldChanged(int line, int levelNow, int levelPrev);
     void foldAll();
+    void toggleFold(int nLine);
     bool clickMargin(int position, int modifiers);
 	  void OnChange(FCSubject<const char*> &rCaller,const char* rcReason);
 
@@ -168,6 +178,7 @@ class FCScintillaEdit : public QWidget, public FCParameterGrp::ObserverType
     virtual bool focusNextPrevChild (bool next);
 
     void loadSettings();
+    void DefineMarker(int marker, int markerType, long fore, long back);
 
   private slots:
 	  void slotTimer();

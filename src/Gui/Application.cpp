@@ -185,7 +185,10 @@ ApplicationWindow::ApplicationWindow()
 	//setBackgroundPixmap(QPixmap((const char*)FCBackground));
 	//setUsesBigPixmaps (true);
 
-  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
+  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro");
+  if (hGrp->HasGroup("Macros"))
+  {
+    hGrp = hGrp->GetGroup("Macros");
   std::vector<FCHandle<FCParameterGrp> > macros = hGrp->GetGroups();
   for (std::vector<FCHandle<FCParameterGrp> >::iterator it = macros.begin(); it!=macros.end(); ++it )
   {
@@ -199,14 +202,17 @@ ApplicationWindow::ApplicationWindow()
     pScript->SetAccel((*it)->GetInt("Accel"));
     _cCommandManager.AddCommand(pScript);
   }
+  }
 }
 
 ApplicationWindow::~ApplicationWindow()
 {
   delete _pcWidgetMgr;
   delete _pcMacroMngr;
-  FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro/")->GetGroup("Macros");
   std::vector<FCCommand*> macros = _cCommandManager.GetModuleCommands("Macro");
+  if (macros.size() > 0)
+  {
+    FCParameterGrp::handle hGrp = GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
   for (std::vector<FCCommand*>::iterator it = macros.begin(); it!=macros.end(); ++it )
   {
     FCScriptCommand* pScript = (FCScriptCommand*)(*it);
@@ -218,6 +224,7 @@ ApplicationWindow::~ApplicationWindow()
     hMacro->SetASCII("Statustip", pScript->GetStatusTip());
     hMacro->SetASCII("Pixmap", pScript->GetPixmap());
     hMacro->SetInt("Accel", pScript->GetAccel());
+    }
   }
 }
 
