@@ -48,6 +48,8 @@ class TestWorkbench ( Workbench ):
 			Gui.CommandbarAppendItems("TestToolsGui",list,0)
 			list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
 			Gui.CommandbarAppendItems("TestToolsText",list,0)
+			list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
+			Gui.CommandbarAppendItems("TestToolsMenu",list,0)
                             
 			Log ('   Set up Test menues...\n')
 

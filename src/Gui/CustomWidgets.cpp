@@ -43,18 +43,31 @@ using namespace Gui;
 using namespace Gui::DockWnd;
 
 /**
- * Creates a custom widget with the group \a grp and its subgroup \a name.
+ * Creates a custom widget with the group \a grp and its sub-group \a name.
+ * The widget is attached to the parameter sub-group \a name.
  */
 CustomWidget::CustomWidget(const char* grp, const char * name)
-    : PrefWidget(), _bCanModify(true), _bCanRemovable(true)
+    : PrefWidget(), _bCanModify(true), _bCanRemove(true)
 {
   init(grp, name);
 }
 
+/**
+ * Destroys the custom widget and detaches from preferences.
+ */
 CustomWidget::~CustomWidget()
 {
   if (hPrefGrp.IsValid())
     hPrefGrp->Detach(this);
+}
+
+void CustomWidget::init(const char* grp, const char* name)
+{
+  _Workbench = ApplicationWindow::Instance->activeWorkbench();
+  setEntryName( _Workbench.latin1() );
+  hPrefGrp = getParameter()->GetGroup(_Workbench.latin1());
+  hPrefGrp = hPrefGrp->GetGroup( grp )->GetGroup( name );
+  hPrefGrp->Attach(this);
 }
 
 /**
@@ -72,10 +85,10 @@ void CustomWidget::restorePreferences()
   {
     if (!hPrefGrp->GetGroup("Items")->IsEmpty())
     {
-      _clItems.clear();
+      _Items.clear();
       std::vector<std::string> items = hPrefGrp->GetGroup("Items")->GetASCIIs();
       for ( std::vector<std::string>::iterator it = items.begin(); it != items.end(); ++it )
-        _clItems << it->c_str(); 
+        _Items << it->c_str(); 
     }
   }
 }
@@ -94,7 +107,7 @@ void CustomWidget::savePreferences()
   int i=0;
   FCParameterGrp::handle  hPGrp = hPrefGrp->GetGroup("Items");
   hPGrp->Clear();
-  for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it, i++ )
+  for ( QStringList::Iterator it = _Items.begin(); it != _Items.end(); ++it, i++ )
   {
     char szBuf[200];
     sprintf(szBuf, "%s%d", QString( entryName() ).latin1(), i);
@@ -102,17 +115,8 @@ void CustomWidget::savePreferences()
   }
 }
 
-void CustomWidget::init(const char* grp, const char* name)
-{
-  _clWorkbench = ApplicationWindow::Instance->activeWorkbench();
-  setEntryName( _clWorkbench.latin1() );
-  hPrefGrp = getRootParamGrp()->GetGroup(_clWorkbench.latin1());
-  hPrefGrp = hPrefGrp->GetGroup( grp )->GetGroup( name );
-  hPrefGrp->Attach(this);
-}
-
 /** Returns the handle to the root parameter group. */
-FCParameterGrp::handle CustomWidget::getRootParamGrp()
+FCParameterGrp::handle CustomWidget::getParameter()
 {
   return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbenches");
 }
@@ -122,13 +126,13 @@ FCParameterGrp::handle CustomWidget::getRootParamGrp()
  */
 bool CustomWidget::hasCustomItems()
 {
-  return _clItems.size() > 0;
+  return _Items.size() > 0;
 }
 
 /** Returns the active workbench at creation time of this object */
 QString CustomWidget::getWorkbench()
 {
-  return _clWorkbench;
+  return _Workbench;
 }
 
 /**
@@ -136,7 +140,7 @@ QString CustomWidget::getWorkbench()
  */
 const QStringList& CustomWidget::getCustomItems() const
 {
-  return _clItems;
+  return _Items;
 }
 
 /**
@@ -144,7 +148,8 @@ const QStringList& CustomWidget::getCustomItems() const
  */
 void CustomWidget::setCustomItems( const QStringList& items )
 {
-  _clItems = items;
+  _Items = items;
+  rebuild();
 }
 
 /** 
@@ -157,16 +162,18 @@ void CustomWidget::addCustomItems( FCParameterGrp::handle hGrp, const QStringLis
   if (hPrefGrp == hGrp)
   {
     for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-      _clItems.push_back( *it );
+      _Items.push_back( *it );
   }
   else
   {
-    if ( _clWbItems.find( hGrp ) == _clWbItems.end() )
+    if ( _WbItems.find( hGrp ) == _WbItems.end() )
     {
       hGrp->Attach(this);
-      _clWbItems[ hGrp ] = items;
+      _WbItems[ hGrp ] = items;
     }
   }
+
+  rebuild();
 }
 
 /** 
@@ -181,25 +188,27 @@ void CustomWidget::removeCustomItems( FCParameterGrp::handle hGrp, const QString
     unsigned long startPos=0;
     for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
     {
-      if ( _clItems.size() > items.size() )
-        startPos = _clItems.size() - items.size();
-      QStringList::Iterator pos = _clItems.begin();
+      if ( _Items.size() > items.size() )
+        startPos = _Items.size() - items.size();
+      QStringList::Iterator pos = _Items.begin();
       pos += startPos;
-      pos = _clItems.find( pos, *it );
-      if (pos != _clItems.end())
-        _clItems.erase( pos );
+      pos = _Items.find( pos, *it );
+      if (pos != _Items.end())
+        _Items.erase( pos );
     }
   }
   else
   {
-    WorkbenchItems::Iterator it = _clWbItems.find( hGrp );
-    if ( it != _clWbItems.end() )
+    WorkbenchItems::Iterator it = _WbItems.find( hGrp );
+    if ( it != _WbItems.end() )
     {
       hGrp->Detach(this);
       it.data().clear();
-      _clWbItems.erase( it );
+      _WbItems.erase( it );
     }
   }
+
+  rebuild();
 }
 
 /** 
@@ -211,7 +220,7 @@ void CustomWidget::removeCustomItems( FCParameterGrp::handle hGrp, const QString
  */
 void CustomWidget::setRemovable(bool b)
 {
-  _bCanRemovable = b;
+  _bCanRemove = b;
 }
 
 /** 
@@ -219,7 +228,7 @@ void CustomWidget::setRemovable(bool b)
  */
 bool CustomWidget::isRemovable() const
 {
-  return _bCanRemovable;
+  return _bCanRemove;
 }
 
 /**
@@ -244,6 +253,7 @@ bool CustomWidget::canModify() const
 void CustomWidget::loadXML()
 {
   restorePreferences();
+  rebuild();
 }
 
 /** Calls @ref savePreferences()
@@ -290,26 +300,26 @@ CustomToolBar::~CustomToolBar()
 }
 
 /**
- * If this toolbar can be modified it is rebuild using the command manager \a rclMgr, 
- * otherwise nothing happens.
+ * If this toolbar can be modified it is rebuild, otherwise nothing happens.
  */
-void CustomToolBar::update( CommandManager& rclMgr )
+void CustomToolBar::rebuild()
 {
+  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
   if (!canModify())
     return; // no need to read again
 
   clearUp();
-  for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it )
+  for ( QStringList::Iterator it = _Items.begin(); it != _Items.end(); ++it )
   {
     if (*it == "Separator")
       addSeparator();
     else
-      rclMgr.addTo( (*it).latin1(), this );
+      rMgr.addTo( (*it).latin1(), this );
   }
 
   // get also the commands from other workbenches
   QStringList items;
-  for (WorkbenchItems::Iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2)
+  for (WorkbenchItems::Iterator it2 = _WbItems.begin(); it2 != _WbItems.end(); ++it2)
   {
     items = it2.data();
     for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
@@ -317,7 +327,7 @@ void CustomToolBar::update( CommandManager& rclMgr )
       if ( *it == "Separator" )
         addSeparator();
       else
-        rclMgr.addTo( (*it).latin1(), this );
+        rMgr.addTo( (*it).latin1(), this );
     }
   }
 }
@@ -386,7 +396,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   // is the same as the number of items
   //
   // different sizes ->just append at the end
-  if ( childs.count() != _clItems.size() )
+  if ( childs.count() != _Items.size() )
   {
     /*    // create a new button
         //
@@ -399,7 +409,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
           if (pCom != NULL)
           {
             if (pCom->addTo(this))
-              _clItems.push_back(it->latin1());
+              _Items.push_back(it->latin1());
           }
         }
     */
@@ -436,7 +446,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
 
   // find right position for the new widget(s)
   QStringList items;
-  QStringList::Iterator it2 = _clItems.begin();
+  QStringList::Iterator it2 = _Items.begin();
   QPoint pt = e->pos();
   int pos=0;
   QWidget* it;
@@ -470,16 +480,14 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   ActionDrag::actions.clear();
 
   // and now append the rest of the old items
-  for (;it2 != _clItems.end(); ++it2)
+  for (;it2 != _Items.end(); ++it2)
     items.push_back(*it2);
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
-
-  _clItems = items;
+  _Items = items;
 
   // clear all and rebuild it again
   //
-  update(cCmdMgr);
+  rebuild();
 }
 
 void CustomToolBar::dragEnterEvent ( QDragEnterEvent * e)
@@ -498,7 +506,7 @@ void CustomToolBar::dragMoveEvent ( QDragMoveEvent * )
 void CustomToolBar::restorePreferences()
 {
   CustomWidget::restorePreferences();
-  if (hPrefGrp->GetBool("visible", true) == false)
+  if ( hPrefGrp->GetBool( "visible", !isHidden() ) == false )
     hide();
 }
 
@@ -541,26 +549,26 @@ void CustomPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sRe
 }
 
 /**
- * If this menu can be modified it is rebuild using the command manager \a rclMgr, 
- * otherwise nothing happens.
+ * If this menu can be modified it is rebuild, otherwise nothing happens.
  */
-void CustomPopupMenu::update( CommandManager& rclMgr )
+void CustomPopupMenu::rebuild()
 {
+  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
   if (!canModify())
     return; // no need to read again
 
   clear();
-  for ( QStringList::Iterator it = _clItems.begin(); it != _clItems.end(); ++it )
+  for ( QStringList::Iterator it = _Items.begin(); it != _Items.end(); ++it )
   {
     if ( *it == "Separator" )
       insertSeparator();
     else
-      rclMgr.addTo( (*it).latin1(), this );
+      rMgr.addTo( (*it).latin1(), this );
   }
 
   // get also the commands from other workbenches
   QStringList items;
-  for ( WorkbenchItems::Iterator it2 = _clWbItems.begin(); it2 != _clWbItems.end(); ++it2 )
+  for ( WorkbenchItems::Iterator it2 = _WbItems.begin(); it2 != _WbItems.end(); ++it2 )
   {
     items = it2.data();
     for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
@@ -568,7 +576,7 @@ void CustomPopupMenu::update( CommandManager& rclMgr )
       if ( *it == "Separator" )
         insertSeparator();
       else
-        rclMgr.addTo( (*it).latin1(), this );
+        rMgr.addTo( (*it).latin1(), this );
     }
   }
 }
@@ -586,7 +594,7 @@ void CustomPopupMenu::dropEvent ( QDropEvent * e)
     if (pCom != NULL)
     {
       if (pCom->addTo(this))
-        _clItems.push_back( *it );
+        _Items.push_back( *it );
     }
   }
 
@@ -695,8 +703,7 @@ void CustomPopupMenu::savePreferences()
 namespace Gui {
 struct CustomWidgetManagerP
 {
-  CustomWidgetManagerP(CommandManager& rclMgr, ToolBox* pStackBar)
-      : _clCmdMgr(rclMgr), _pclStackBar(pStackBar)
+  CustomWidgetManagerP( ToolBox* pStackBar ) : _pclStackBar(pStackBar)
   {
   }
 
@@ -706,14 +713,13 @@ struct CustomWidgetManagerP
   std::map <QString,CustomToolBar*>    _clToolbars;
   std::map <QString,CustomToolBar*>    _clCmdbars;
   QMap<int, QString>                 _menuBarItem;
-  CommandManager&                    _clCmdMgr;
   ToolBox*                           _pclStackBar;
 };
 } // namespace Gui
 
-CustomWidgetManager::CustomWidgetManager(CommandManager& rclMgr, ToolBox* pStackBar)
+CustomWidgetManager::CustomWidgetManager( ToolBox* pStackBar )
 {
-  d = new CustomWidgetManagerP(rclMgr, pStackBar);
+  d = new CustomWidgetManagerP( pStackBar );
 }
 
 CustomWidgetManager::~CustomWidgetManager()
@@ -736,7 +742,7 @@ bool CustomWidgetManager::loadCustomWidegts( const QString& workbench )
 {
   QStringList dummy;
   bool bFound = false;
-  FCParameterGrp::handle hGrp = CustomWidget::getRootParamGrp();
+  FCParameterGrp::handle hGrp = CustomWidget::getParameter();
   hGrp = hGrp->GetGroup( workbench.latin1() );
 
   std::vector<FCParameterGrp::handle> hSubGrps;
@@ -816,19 +822,16 @@ bool CustomWidgetManager::update()
   for (std::map <QString,CustomPopupMenu*>::iterator it1 = clPopupMenus.begin(); it1 != clPopupMenus.end(); ++it1)
   {
     it1->second->loadXML();
-    it1->second->update(d->_clCmdMgr);
   }
   std::map <QString,CustomToolBar*> clToolbars = d->_clToolbars;
   for (std::map <QString,CustomToolBar*>::iterator it2 = clToolbars.begin(); it2 != clToolbars.end(); ++it2)
   {
     it2->second->loadXML();
-    it2->second->update(d->_clCmdMgr);
   }
   std::map <QString,CustomToolBar*> clCmdbars = d->_clCmdbars;
   for (std::map <QString,CustomToolBar*>::iterator it3 = clCmdbars.begin(); it3 != clCmdbars.end(); ++it3)
   {
     it3->second->loadXML();
-    it3->second->update(d->_clCmdMgr);
   }
 
   return true;
@@ -847,12 +850,11 @@ void CustomWidgetManager::addPopupMenu(const QString& type, const QStringList& d
   if (oldWb != newWb)
   {
     FCParameterGrp::handle hPrefGrp;
-    hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
+    hPrefGrp = CustomWidget::getParameter()->GetGroup(newWb.latin1());
     hPrefGrp = hPrefGrp->GetGroup("Menus");
     hPrefGrp = hPrefGrp->GetGroup(type.latin1());
 
     popup->addCustomItems(hPrefGrp, defIt);
-    popup->update(d->_clCmdMgr);
     return;
   }
 
@@ -861,8 +863,6 @@ void CustomWidgetManager::addPopupMenu(const QString& type, const QStringList& d
   {
     popup->setCustomItems(defIt);
   }
-
-  popup->update(d->_clCmdMgr);
 }
 
 /** 
@@ -945,6 +945,50 @@ QPtrList<CustomPopupMenu> CustomWidgetManager::getPopupMenus()
 }
 
 /** 
+ * Deletes the specified popupmenu if it exists and remove it from preferences.
+ */
+void CustomWidgetManager::removePopupMenuFromSettings( const QString& name)
+{
+  std::map <QString,CustomPopupMenu*>::iterator It = d->_clPopupMenus.find( name );
+  if( It!=d->_clPopupMenus.end() )
+  {
+    CustomPopupMenu* menu = It->second;
+    if (!menu->isRemovable())
+      return; // cannot be removed
+
+    menu->saveXML();
+    if (strcmp(menu->parentWidget()->className(), ApplicationWindow::Instance->className()) == 0)
+    {
+      // remove properly from menubar
+      int id = d->_clPopupID[menu];
+      ApplicationWindow::Instance->menuBar()->removeItem(id);
+
+#ifdef FC_DEBUG
+      printf( "%s removed from menubar\n", name.latin1() );
+#endif
+    }
+    else if (strcmp(menu->parentWidget()->className(), menu->className()) == 0)
+    {
+      // remove properly from parent menu
+      CustomPopupMenu* pParent = (CustomPopupMenu*)menu->parentWidget();
+      int id = d->_clPopupID[menu];
+      pParent->removeItem(id);
+
+#ifdef FC_DEBUG
+      printf( "%s removed from parent menu\n", name.latin1() );
+#endif
+    }
+
+    FCParameterGrp::handle hPrefGrp;
+    hPrefGrp = CustomWidget::getParameter()->GetGroup( menu->getWorkbench().latin1() )->GetGroup("Menus");
+    hPrefGrp->RemoveGrp( name.latin1() );
+
+    delete menu;
+    d->_clPopupMenus.erase(It);
+  }
+}
+
+/** 
  * Deletes the specified menu if it exists.
  */
 void CustomWidgetManager::removePopupMenu( const QString& name )
@@ -992,12 +1036,11 @@ void CustomWidgetManager::removeMenuItems(const QString& type, const QStringList
 
   QString newWb = ApplicationWindow::Instance->activeWorkbench();
   FCParameterGrp::handle hPrefGrp;
-  hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
+  hPrefGrp = CustomWidget::getParameter()->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Menus");
   hPrefGrp = hPrefGrp->GetGroup( type.latin1() );
 
-  popup->CustomWidget::removeCustomItems( hPrefGrp, items );
-  popup->update(d->_clCmdMgr);
+  popup->removeCustomItems( hPrefGrp, items );
 }
 
 /**
@@ -1025,12 +1068,11 @@ void CustomWidgetManager::addToolBar( const QString& type, const QStringList& de
   if (oldWb != newWb)
   {
     FCParameterGrp::handle hPrefGrp;
-    hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
+    hPrefGrp = CustomWidget::getParameter()->GetGroup(newWb.latin1());
     hPrefGrp = hPrefGrp->GetGroup("Toolbars");
     hPrefGrp = hPrefGrp->GetGroup( type.latin1() );
 
     toolbar->addCustomItems(hPrefGrp, defIt);
-    toolbar->update(d->_clCmdMgr);
     return;
   }
 
@@ -1039,8 +1081,6 @@ void CustomWidgetManager::addToolBar( const QString& type, const QStringList& de
   {
     toolbar->setCustomItems(defIt);
   }
-
-  toolbar->update(d->_clCmdMgr);
 }
 
 /** 
@@ -1108,7 +1148,7 @@ void CustomWidgetManager::removeToolBarFromSettings( const QString& name)
       return; // cannot be removed
 
     FCParameterGrp::handle hPrefGrp;
-    hPrefGrp = tb->getRootParamGrp()->GetGroup( tb->getWorkbench().latin1() )->GetGroup("Toolbars");
+    hPrefGrp = CustomWidget::getParameter()->GetGroup( tb->getWorkbench().latin1() )->GetGroup("Toolbars");
     hPrefGrp->RemoveGrp( name.latin1() );
     ApplicationWindow::Instance->removeToolBar( tb );
     delete tb;
@@ -1125,12 +1165,11 @@ void CustomWidgetManager::removeToolBarItems( const QString& type, const QString
 
   QString newWb = ApplicationWindow::Instance->activeWorkbench();
   FCParameterGrp::handle hPrefGrp;
-  hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
+  hPrefGrp = CustomWidget::getParameter()->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Toolbars");
   hPrefGrp = hPrefGrp->GetGroup( type.latin1() );
 
-  tb->CustomWidget::removeCustomItems( hPrefGrp, items );
-  tb->update(d->_clCmdMgr);
+  tb->removeCustomItems( hPrefGrp, items );
 }
 
 /** 
@@ -1158,12 +1197,11 @@ void CustomWidgetManager::addCommandBar(const QString& type, const QStringList& 
   if (oldWb != newWb)
   {
     FCParameterGrp::handle hPrefGrp;
-    hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
+    hPrefGrp = CustomWidget::getParameter()->GetGroup(newWb.latin1());
     hPrefGrp = hPrefGrp->GetGroup("Commandbars");
     hPrefGrp = hPrefGrp->GetGroup(type.latin1());
 
     toolbar->addCustomItems(hPrefGrp, defIt);
-    toolbar->update(d->_clCmdMgr);
     return;
   }
 
@@ -1172,8 +1210,6 @@ void CustomWidgetManager::addCommandBar(const QString& type, const QStringList& 
   {
     toolbar->setCustomItems(defIt);
   }
-
-  toolbar->update(d->_clCmdMgr);
 }
 
 /** 
@@ -1221,7 +1257,7 @@ void CustomWidgetManager::removeCommandBarFromSettings( const QString& name)
       return; // cannot be removed
 
     FCParameterGrp::handle hPrefGrp;
-    hPrefGrp = tb->getRootParamGrp()->GetGroup( tb->getWorkbench().latin1() )->GetGroup("Commandbars");
+    hPrefGrp = CustomWidget::getParameter()->GetGroup( tb->getWorkbench().latin1() )->GetGroup("Commandbars");
     hPrefGrp->RemoveGrp( name.latin1() );
     ApplicationWindow::Instance->removeToolBar( tb );
     delete tb;
@@ -1254,12 +1290,11 @@ void CustomWidgetManager::removeCommandBarItems(const QString& type, const QStri
 
   QString newWb = ApplicationWindow::Instance->activeWorkbench();
   FCParameterGrp::handle hPrefGrp;
-  hPrefGrp = CustomWidget::getRootParamGrp()->GetGroup(newWb.latin1());
+  hPrefGrp = CustomWidget::getParameter()->GetGroup(newWb.latin1());
   hPrefGrp = hPrefGrp->GetGroup("Commandbars");
   hPrefGrp = hPrefGrp->GetGroup(type.latin1());
 
-  tb->CustomWidget::removeCustomItems(hPrefGrp,items);
-  tb->update(d->_clCmdMgr);
+  tb->removeCustomItems(hPrefGrp,items);
 }
 
 /** 

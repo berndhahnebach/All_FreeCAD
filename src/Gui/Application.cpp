@@ -230,7 +230,7 @@ ApplicationWindow::ApplicationWindow()
 
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
   d->_pcStackBar = new ToolBox(this,"Cmd_Group");
-  d->_pcWidgetMgr = new Gui::CustomWidgetManager(commandManager(), d->_pcStackBar);
+  d->_pcWidgetMgr = new Gui::CustomWidgetManager( d->_pcStackBar );
   d->_pcDockMgr = new Gui::DockWindowManager();
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
@@ -349,7 +349,9 @@ void ApplicationWindow::cascade()
 void ApplicationWindow::onShowView()
 {
   Gui::CustomPopupMenu* menu = d->viewbar;
-  menu->update(commandManager());
+  // get a copy of the items an reassign to force the rebuild
+  QStringList items = menu->getCustomItems();
+  menu->setCustomItems( items );
   menu->setCheckable(true);
   d->mCheckBars.clear();
 
@@ -1345,7 +1347,7 @@ PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
     char *psMenuName;
     if (!PyArg_ParseTuple(args, "s", &psMenuName))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
-  Instance->customWidgetManager()->removePopupMenu(psMenuName);
+  Instance->customWidgetManager()->removePopupMenuFromSettings(psMenuName);
 
   Py_INCREF(Py_None);
   return Py_None;

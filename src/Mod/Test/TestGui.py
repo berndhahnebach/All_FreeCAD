@@ -124,6 +124,26 @@ class TestWorkbenchCmd:
         		'MenuText': 'Test workbench',
                 'ToolTip' : 'Test the switching of workbenches in FreeCAD'}
 
+class TestCreateMenuCmd:
+    "Base test commando object"
+    def Activated(self):
+        TestApp.TestText("Menu.MenuCreateCases")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test menu',
+                'ToolTip' : 'Test the menu stuff of FreeCAD'}
+
+class TestDeleteMenuCmd:
+    "Base test commando object"
+    def Activated(self):
+        TestApp.TestText("Menu.MenuDeleteCases")
+
+    def GetResources(self):
+        return {'Pixmap'  : 'Std_Tool1',
+        		'MenuText': 'Test menu',
+                'ToolTip' : 'Test the menu stuff of FreeCAD'}
+
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
@@ -135,4 +155,6 @@ FreeCADGui.CommandAdd('Test_TestAll'     ,TestAllCmd())
 FreeCADGui.CommandAdd('Test_TestDoc'     ,TestDocCmd())
 FreeCADGui.CommandAdd('Test_TestBase'    ,TestBaseCmd())
 FreeCADGui.CommandAdd('Test_TestWork'    ,TestWorkbenchCmd())
+FreeCADGui.CommandAdd('Test_TestCreateMenu'    ,TestCreateMenuCmd())
+FreeCADGui.CommandAdd('Test_TestDeleteMenu'    ,TestDeleteMenuCmd())
 

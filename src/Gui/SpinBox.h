@@ -60,6 +60,9 @@ private:
 /** 
  * The FloatSpinBox class provides a spin box working with floating point numbers.
  * The code is taken in part from KDoubleSpinBox implementation of the KDE library.
+ * Furthermore some bugs are fixed, such as:
+ * \li setting value, precision or linestep after min./max. value are set without loosing accuracy
+ * \li stability factor added to make conversion between double <-> int more robust
  * \author Werner Mayer
  */
 class FloatSpinBoxPrivate;

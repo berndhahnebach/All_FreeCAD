@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FC_CUSTOM_WIDGETS_H__
-#define __FC_CUSTOM_WIDGETS_H__
+#ifndef CUSTOM_WIDGETS_H__
+#define CUSTOM_WIDGETS_H__
 
 #include "../Base/Parameter.h"
 #include "PrefWidgets.h"
@@ -48,10 +48,12 @@ class ToolBox;
 } // namespace DockWnd
 
 /**
- * The abstract CustomWidget class provides methods to customize widgets.
+ * The abstract CustomWidget class provides methods to customize widgets, e.g. toolbars or menus.
+ * It is possible to define whether a CustomWidget can be modified or even can be removed from
+ * the workbench it belongs to.
  * \author Werner Mayer
  */
-class CustomWidget : public PrefWidget
+class GuiExport CustomWidget : public PrefWidget
 {
 public:
   bool hasCustomItems();
@@ -68,38 +70,38 @@ public:
 
   virtual void setCanModify(bool b);
   bool canModify() const;
-  
-  virtual void update( CommandManager& rclMgr ) = 0;
+
   QString getWorkbench();
   virtual ~CustomWidget();
 
-  static FCParameterGrp::handle getRootParamGrp();
+  static FCParameterGrp::handle getParameter();
 
 protected:
+  virtual void rebuild() = 0;
   typedef QMap<FCParameterGrp::handle, QStringList> WorkbenchItems;
 
   CustomWidget( const char* grp, const char * name );
   virtual void restorePreferences();
   virtual void savePreferences();
 
-  QStringList _clItems;
-  WorkbenchItems _clWbItems;
+  QStringList _Items;
+  WorkbenchItems _WbItems;
 
   FCParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
 
 private:
   void init( const char* grp, const char* name );
 
-  QString  _clWorkbench;
+  QString  _Workbench;
   bool     _bCanModify;
-  bool     _bCanRemovable;
+  bool     _bCanRemove;
 };
 
 /**
  * The CustomToolbar class provides method to customize toolbars.
  * \author Werner Mayer
  */
-class CustomToolBar : public QToolBar, public CustomWidget
+class GuiExport CustomToolBar : public QToolBar, public CustomWidget
 {
   Q_OBJECT
 
@@ -109,13 +111,13 @@ public:
   virtual ~CustomToolBar();
 
   virtual void clearUp();
-  void update( CommandManager& rclMgr );
   void setCanModify( bool b );
 
 public:
   static bool isAllowed( QWidget* w );
 
 protected:
+  void rebuild();
   void dropEvent     ( QDropEvent      * );
   void dragEnterEvent( QDragEnterEvent * );
   void dragLeaveEvent( QDragLeaveEvent * );
@@ -129,17 +131,17 @@ protected:
  * The CustomToolbar class provides method to customize toolbars.
  * \author Werner Mayer
  */
-class CustomPopupMenu : public QPopupMenu, public CustomWidget
+class GuiExport CustomPopupMenu : public QPopupMenu, public CustomWidget
 {
   Q_OBJECT
 
 public:
   CustomPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
   virtual ~CustomPopupMenu();
-  void update( CommandManager& rclMgr );
   virtual void OnChange( FCSubject<const char*> &rCaller, const char * sReason );
 
 protected:
+  void rebuild();
   void dropEvent        ( QDropEvent      * );
   void dragEnterEvent   ( QDragEnterEvent * );
   void dragLeaveEvent   ( QDragLeaveEvent * );
@@ -162,10 +164,10 @@ private:
  * @see CustomToolBar, CustomPopupMenu
  * \author Werner Mayer
  */
-class CustomWidgetManager
+class GuiExport CustomWidgetManager
 {
 public:
-  CustomWidgetManager( CommandManager& rclMgr, Gui::DockWnd::ToolBox* pCmdBar );
+  CustomWidgetManager( Gui::DockWnd::ToolBox* pCmdBar );
   ~CustomWidgetManager();
 
   bool loadCustomWidegts( const QString& workbench );
@@ -192,6 +194,7 @@ public:
   QPtrList<CustomPopupMenu> getPopupMenus();
   void addPopupMenu ( const QString& type, const QStringList& defIt,
                       const char* parent = 0);
+  void removePopupMenuFromSettings( const QString& name);
   void removePopupMenu ( const QString& name );
   void removeMenuItems ( const QString& type, const QStringList& item );
   int countPopupMenus();
@@ -206,4 +209,4 @@ private:
 
 } // namespace Gui
 
-#endif // __FC_CUSTOM_WIDGETS_H__
+#endif // CUSTOM_WIDGETS_H__

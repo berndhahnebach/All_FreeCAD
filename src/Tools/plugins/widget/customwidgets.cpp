@@ -211,13 +211,22 @@ class FloatSpinBoxPrivate {
 public:
   FloatSpinBoxPrivate( int precision=1 )
     : mPrecision( precision ),
+      mValue(0.0), mLineStep(0.1),
+      mMinValue(0.0), mMaxValue(9.9),
       mValidator( 0 )
   {
   }
 
   int factor() const {
     int f = 1;
-    for ( int i = 0 ; i < mPrecision ; ++i ) f *= 10;
+    for ( uint i = 0 ; i < mPrecision ; ++i ) f *= 10;
+    return f;
+  }
+
+  double epsilon() const {
+    // needed for numerical stability
+    double f = 5;
+    for ( uint i = 0 ; i < mPrecision+1 ; ++i ) f /= 10;
     return f;
   }
 
@@ -236,7 +245,8 @@ public:
       return INT_MIN;
     } else {
       *ok = true;
-      return int( value * f + ( value < 0 ? -0.5 : 0.5 ) );
+//      return int( value * f + ( value < 0 ? -0.5 : 0.5 ) );
+      return int( value * f + ( value < 0 ? -epsilon() : epsilon() ) );
     }
   }
 
@@ -244,7 +254,9 @@ public:
     return double(value) * basicStep();
   }
 
-  int mPrecision;
+  uint mPrecision;
+  double mValue, mLineStep;
+  double mMinValue, mMaxValue;
   QDoubleValidator * mValidator;
 };
 
@@ -316,14 +328,14 @@ void SpinBox::mousePressEvent   ( QMouseEvent* e )
   d->nY = e->y();
 }
 
-void SpinBox::mouseReleaseEvent ( QMouseEvent* e )
+void SpinBox::mouseReleaseEvent ( QMouseEvent* )
 {
   if (QWidget::mouseGrabber() == this)
     releaseMouse();
   d->pressed = false;
 }
 
-void SpinBox::focusOutEvent ( QFocusEvent* e )
+void SpinBox::focusOutEvent ( QFocusEvent* )
 {
   if (QWidget::mouseGrabber() == this)
     releaseMouse();
@@ -417,8 +429,14 @@ void FloatSpinBox::setPrecision( uint precision, bool force )
     if ( precision > maxPrec )
       precision = maxPrec;
   }
+
+//  updateValidator();
+  // if we set precision we also must adjust min. and max. value
   d->mPrecision = precision;
-  updateValidator();
+  setMaxValue( d->mMaxValue );
+  setMinValue( d->mMinValue );
+  setLineStep( d->mLineStep );
+  setValue   ( d->mValue    );
 }
 
 uint FloatSpinBox::maxPrecision() const 
@@ -445,6 +463,7 @@ void FloatSpinBox::setValue( double value )
   {
     bool ok = false;
     SpinBox::setValue( d->mapToInt( value, &ok ) );
+    d->mValue = value;
     assert( ok );
   }
 }
@@ -461,6 +480,7 @@ void FloatSpinBox::setMinValue( double value )
   if ( !ok ) return;
   SpinBox::setMinValue( min );
   updateValidator();
+  d->mMinValue = value;
 }
 
 double FloatSpinBox::maxValue() const 
@@ -475,6 +495,7 @@ void FloatSpinBox::setMaxValue( double value )
   if ( !ok ) return;
   SpinBox::setMaxValue( max );
   updateValidator();
+  d->mMaxValue = value;
 }
 
 double FloatSpinBox::lineStep() const 
@@ -488,7 +509,10 @@ void FloatSpinBox::setLineStep( double step )
   if ( step > maxValue() - minValue() )
     SpinBox::setLineStep( 1 );
   else
-    SpinBox::setLineStep( std::max<double>( d->mapToInt( step, &ok ), 1 ) );
+  {
+    SpinBox::setLineStep( std::max<int>( d->mapToInt( step, &ok ), 1 ) );
+    d->mLineStep = step;
+  }
 }
 
 QString FloatSpinBox::mapValueToText( int value ) 
@@ -510,7 +534,7 @@ int FloatSpinBox::mapTextToValue( bool * ok )
 void FloatSpinBox::valueChange()
 {
   SpinBox::valueChange();
-  emit valueChanged( d->mapToDouble( value() ) );
+  emit valueChanged( d->mapToDouble( SpinBox::value() ) );
 }
 
 void FloatSpinBox::stepChange ()
