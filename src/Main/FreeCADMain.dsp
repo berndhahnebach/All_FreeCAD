@@ -259,5 +259,9 @@ SOURCE=.\Libs.cpp
 
 SOURCE=.\Main.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\Gui\x.bmp
+# End Source File
 # End Target
 # End Project

@@ -471,4 +471,5 @@ bool QToolButtonDropDown::isButtonEnabled()
 }
 
 
+#include "DlgUndoRedo_moc.cpp"
 

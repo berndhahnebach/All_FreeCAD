@@ -180,7 +180,7 @@ bool View3D::ScreenDump(Standard_CString theFile)
 }
 
 	
-
+#include "View3D_moc.cpp"
 
 
 

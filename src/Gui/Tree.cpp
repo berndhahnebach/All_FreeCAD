@@ -156,4 +156,5 @@ FCTree::FCTree(FCGuiDocument* pcDocument,QWidget *parent,const char *name)
 //Tree:: Tree(){};
 
 
+#include "Tree_moc.cpp"
 

@@ -38,6 +38,8 @@ public:
 	virtual void OnDocNew(FCDocument* pcDoc);
 	virtual void OnDocDelete(FCDocument* pcDoc);
 
+	static ApplicationWindow* Instance;
+
 protected:
 	FCCommandManager _cCommandManager;
 

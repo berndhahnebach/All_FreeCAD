@@ -16,6 +16,7 @@
 
 #include "Application.h"
 #include "Document.h"
+#include "CommandStd.h"
 
 #include "DlgDocTemplatesImp.h"
 #include "DlgUndoRedo.h"
@@ -26,11 +27,13 @@ static ApplicationWindow* stApp;
 static QWorkspace* stWs;
 
 
-
+ApplicationWindow* ApplicationWindow::Instance = 0L;
 
 ApplicationWindow::ApplicationWindow()
     : QextMdiMainFrm( 0, "Main window", WDestructiveClose )
 {
+	// global access 
+	Instance = this;
 
 	myNbDocuments = 0;
 	stApp = this;
@@ -100,9 +103,17 @@ void ApplicationWindow::slotNewDoc()
 
 void ApplicationWindow::slotOpen(void)
 {
-   statusBar()->message("Opening file...");
+	statusBar()->message("Opening file...");
 
-   QString fileName = QFileDialog::getOpenFileName(0,0,this);
+	QString f = QFileDialog::getOpenFileName( QString::null, "FreeCAD Standard (*.FCStd);;OpenCasCade (*.std)", this );
+	if ( !f.isEmpty() ) {
+		// the user selected a valid existing file
+		GetApplication().Open(f.latin1());
+	} else {
+		// the user cancelled the dialog
+		statusBar()->message("Opening aborted");
+	}
+
 
 }
 
@@ -189,7 +200,11 @@ void ApplicationWindow::CreateTestOperations()
 	//helpIcon = QPixmap( "help.png" );
 	//closeIcon = QPixmap( "close.png" );
 
-	QAction * pcTemp;
+
+
+	_cCommandManager.AddCommand(new FCCmdOpen());
+
+/*	QAction * pcTemp;
 
     pcTemp = new QAction( "New", QPixmap(pNew ), "New", CTRL+Key_N, this, "new" );
 	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotNewDoc() ) );
@@ -242,7 +257,7 @@ void ApplicationWindow::CreateTestOperations()
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
 	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
-
+*/
 /*
 	viewToolAction = new QAction( tr("TBR_TOOL_BAR"), tr("MNU_TOOL_BAR"), 0, this, "toolbar");
 	connect( viewToolAction, SIGNAL( activated() ) , this, SLOT( onViewToolBar() ));
@@ -264,14 +279,14 @@ void ApplicationWindow::CreateTestOperations()
 
     myStdToolBar = new QToolBar( this, "file operations" );
     myStdToolBar->setLabel( "File" );
-	_cCommandManager.AddTo("Std_New",myStdToolBar);
+	//_cCommandManager.AddTo("Std_New",myStdToolBar);
 	_cCommandManager.AddTo("Std_Open",myStdToolBar);
-	_cCommandManager.AddTo("Std_Save",myStdToolBar);
-	_cCommandManager.AddTo("Std_Print",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Save",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Print",myStdToolBar);
 	myStdToolBar->addSeparator();
-	_cCommandManager.AddTo("Std_Cut",myStdToolBar);
-	_cCommandManager.AddTo("Std_Copy",myStdToolBar);
-	_cCommandManager.AddTo("Std_Paste",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Cut",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Copy",myStdToolBar);
+	//_cCommandManager.AddTo("Std_Paste",myStdToolBar);
 	myStdToolBar->addSeparator();
 	//_cCommandManager.AddTo("Std_Undo",myStdToolBar);
 	//_cCommandManager.AddTo("Std_Redo",myStdToolBar);
@@ -291,20 +306,20 @@ void ApplicationWindow::CreateTestOperations()
 
     myFilePopup = new QPopupMenu( this );
     menuBar()->insertItem( "File", myFilePopup) ;
-	_cCommandManager.AddTo("Std_New",myFilePopup);
+	//_cCommandManager.AddTo("Std_New",myFilePopup);
 	_cCommandManager.AddTo("Std_Open",myFilePopup);
-	_cCommandManager.AddTo("Std_Save",myFilePopup);
-	_cCommandManager.AddTo("Std_SaveAs",myFilePopup);
+	//_cCommandManager.AddTo("Std_Save",myFilePopup);
+	//_cCommandManager.AddTo("Std_SaveAs",myFilePopup);
 	myFilePopup->insertSeparator();
-	_cCommandManager.AddTo("Std_Print",myFilePopup);
+	//_cCommandManager.AddTo("Std_Print",myFilePopup);
 	myFilePopup->insertSeparator();
-	_cCommandManager.AddTo("Std_Quit",myFilePopup);
+	//_cCommandManager.AddTo("Std_Quit",myFilePopup);
 
     myFilePopup = new QPopupMenu( this );
     menuBar()->insertItem( "Work", myFilePopup );
-	_cCommandManager.AddTo("Std_Cut",myFilePopup);
-	_cCommandManager.AddTo("Std_Copy",myFilePopup);
-	_cCommandManager.AddTo("Std_Paste",myFilePopup);
+	//_cCommandManager.AddTo("Std_Cut",myFilePopup);
+	//_cCommandManager.AddTo("Std_Copy",myFilePopup);
+	//_cCommandManager.AddTo("Std_Paste",myFilePopup);
 	
 
 	setMenuForSDIModeSysButtons( menuBar());
@@ -657,3 +672,4 @@ void ApplicationWindow::exportImage()
 }
 
 
+#include "Application_moc.cpp"

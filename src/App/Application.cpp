@@ -30,13 +30,13 @@ Standard_CString FCApplicationOCC::ResourcesName()
 
 void FCApplicationOCC::Formats(TColStd_SequenceOfExtendedString& Formats)
 {
-	//Formats.Append(TCollection_ExtendedString ("FreeCad-Part"));
+	Formats.Append(TCollection_ExtendedString ("FreeCad-Std"));
 	Formats.Append(TCollection_ExtendedString ("MDTV-Standard"));
-
 }
 
 void FCApplicationOCC::InitViewer(const Handle(TDocStd_Document)& aDoc) const
 {
+	// Im not doing it here!
 }
 
 
@@ -123,7 +123,7 @@ FCDocument* FCApplication::New(const char * Name)
 	Handle_TDocStd_Document hDoc;
 	FCDocument*				pDoc;
 
-	_hApp->NewDocument("FreeCad-Part",hDoc);
+	_hApp->NewDocument("FreeCad-Std",hDoc);
 	//_hApp->NewDocument("MDTV-Standard",hDoc);
 	//_hApp->NewDocument("Standard",hDoc);
 	pDoc = new FCDocument(hDoc);
@@ -134,8 +134,10 @@ FCDocument* FCApplication::New(const char * Name)
 		delete pDoc ;  
 		throw FCException("No doc module");
 	}
-
+	pDoc->_INCREF();
 	_DocVector.push_back(pDoc);
+	_pActiveDoc = pDoc;
+
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);
 
@@ -148,16 +150,41 @@ FCDocument* FCApplication::Open(const char * Name)
 	FCDocument*				pDoc;
 
 	// create new (empty) document 
-	_hApp->NewDocument("Standard",hDoc);
+	//pDoc = New("Standard");
 
 	// load
 	// TCollection_ExtendedString aName = (Standard_CString) Name;
-	_hApp->Open(TCollection_ExtendedString((Standard_CString) Name),hDoc);
+	switch(_hApp->Open(TCollection_ExtendedString((Standard_CString) Name),hDoc) )
+	{
+		case CDF_RS_OK:
+			break;
+		case CDF_RS_UnknownDocument:
+			throw FCException("Unknown Document");
+		case CDF_RS_AlreadyRetrieved:
+			throw FCException("Already Retrieved");
+		case CDF_RS_AlreadyRetrievedAndModified:
+			throw FCException("CDF_RS_AlreadyRetrievedAndModified");
+		case CDF_RS_NoDriver:
+			throw FCException("CDF_RS_NoDriver");
+		case CDF_RS_NoVersion:
+			throw FCException("CDF_RS_NoVersion");
+		case CDF_RS_NoModel:
+			throw FCException("CDF_RS_NoModel");
+		case CDF_RS_TypeNotFoundInSchema:
+			throw FCException("CDF_RS_TypeNotFoundInSchema");
+		case CDF_RS_UnrecognizedFileFormat:
+			throw FCException("CDF_RS_UnrecognizedFileFormat");
+		case CDF_RS_PermissionDenied:
+			throw FCException("CDF_RS_PermissionDenied");
+		default:
+			throw FCException("Unknown open error");
+	}
 	
 	// Creating a FreeCAD Document
 	pDoc = new FCDocument(hDoc);
-	
+	pDoc->_INCREF();
 	_DocVector.push_back(pDoc);
+	_pActiveDoc = pDoc;
 
 
 	// trigger Observers (open windows and so on)
@@ -177,15 +204,22 @@ FCDocument* FCApplication::Save(void)
 
 FCDocument* FCApplication::SaveAs(const char * Name)
 {
-	assert(0);
-	return NULL;
+	FCDocument*	pDoc = Active();
+
+	pDoc->SaveAs(Name);
+	
+	return pDoc;
 }
 
 FCDocument* FCApplication::Active(void)
 {
-	FCDocument*	pDoc = 0;
 	
-	return pDoc;
+	return _pActiveDoc;
+}
+
+void FCApplication::SetActive(FCDocument* pDoc)
+{
+	_pActiveDoc = pDoc;
 }
 
 
@@ -209,10 +243,27 @@ PYFUNCIMP(FCApplication,sOpen)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
 
-	//Instance().Message("%s",pstr);				 // process massage 
-	return Py_None;                              // None: no errors 
-}
+         
+	try {
+		// return new document		
+		return GetApplication().Open(pstr); 	
+	}	
+	catch(FCException e) {
+		PyErr_SetString(PyExc_IOError, e.what());
+		return 0L;
+	}
+	catch(Standard_Failure e)
+	{
+		Handle(Standard_Failure) E = Standard_Failure::Caught();
+		stlport::strstream strm;
 
+		strm << E << endl;
+		//strm.freeze();
+		PyErr_SetString(PyExc_IOError, strm.str());
+		return 0L;
+	}
+
+}
 
 PYFUNCIMP(FCApplication,sNew)
 {

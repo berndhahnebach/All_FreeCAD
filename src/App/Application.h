@@ -122,6 +122,8 @@ public:
 	FCDocument* SaveAs(const char * Name=0l);
 	/// Retrive the active document 
 	FCDocument* Active(void);
+	/// Set the active document 
+	void SetActive(FCDocument* pDoc);
 	/// Geter for the OCC Aplication
 	Handle_FCApplicationOCC GetOCCApp(void) {return _hApp;}
 	
@@ -168,6 +170,7 @@ private:
 	/// The container of all attached Obervers
 	stlport::set<FCApplicationObserver * > _aclObservers;
 #	pragma warning( default : 4251 )
+	FCDocument* _pActiveDoc;
 };
 
 /// Singelton getter of the Applicaton

@@ -104,3 +104,7 @@ void DlgDocTemplatesImp::IconDoubleClick(QIconViewItem* Item)
 	LineEdit1->setText(Item->text());
 	Validate();
 }
+
+#include "DlgDocTemplatesImp_moc.cpp"
+
+

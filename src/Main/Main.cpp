@@ -123,7 +123,7 @@ int main( int argc, char ** argv ) {
 
 				ApplicationWindow * mw = new ApplicationWindow();
 				pcQApp->setMainWidget(mw);
-				mw->setCaption( "FreeCAD" );
+				ApplicationWindow::Instance->setCaption( "FreeCAD" );
 
 				GetConsole().Log("Showing GUI Application...\n");
 				mw->show();

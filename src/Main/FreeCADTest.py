@@ -5,12 +5,11 @@
 # (if existing) the test function of the modules
 #
 
-Log = FreeCAD.PrintLog
 
-FreeCAD.PrintLog ("FreeCAD test running...\n\n")
+Log ("FreeCAD test running...\n\n")
 
 TempPath = os.getenv('TEMP')
-FreeCAD.PrintLog ('Using temp path: ' + TempPath + '\n')
+Log ('Using temp path: ' + TempPath + '\n')
 
 # Basics +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 FreeCAD.PrintLog ("Testing console...\n")
@@ -20,7 +19,7 @@ FreeCAD.PrintError("   Printing error\n")
 FreeCAD.PrintLog("   Printing Log\n")
 
 # Application and Document +++++++++++++++++++++++++++++++++++++++++++++++++
-FreeCAD.PrintLog ("Testing Application and Document...\n")
+Log ("Testing Application and Document...\n")
 
 Log("   Creating new Part document and filing up\n")
 Doc = App.DocNew("Part")
@@ -45,12 +44,17 @@ L1.Int = 1
 L1.Real = 1.0
 L1.Name = "Hallo"
 
+# saving and restoring
 
 SavePath = TempPath + os.sep + "Test.std"
 Log("   Save and Open the document to: " + SavePath + "\n")
-Doc.SaveAs(SavePath)
+Doc.SaveAs("e:\\Test")
+#Doc.SaveAs(SavePath)
 Log( Doc.Path + Doc.Name)
+Doc2 = App.DocOpen("e:\\Test.FCPart")
+#Doc2 = App.DocOpen(SavePath)
 
+Log(Doc2.Main.GetLabel(1).Name)
 
 
 

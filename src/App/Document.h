@@ -171,6 +171,8 @@ public:
 	const short* StorageFormat() const;
 	/// Change the storage format of the document.
 	void ChangeStorageFormat(const short* sStorageFormat) ;
+	/// Get the OCC Document Handle
+	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
 
 /* Not mapped so far:
 virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Integer aReferenceIdentifier,const Standard_Address aModifContext) ;
@@ -217,6 +219,7 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 protected:
 
 	friend FCLabel;
+	
 	FCLabel *HasPyLabel(TDF_Label cLabel);
 
 	/// less funktion for the map sorting of TDF_Labels

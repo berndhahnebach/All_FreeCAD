@@ -16,29 +16,87 @@
 #include "../base/Console.h"
 
 #include "Command.h"
+#include "Application.h"
+
+
+#include "Icons/x.xpm"
+
+
+//===========================================================================
+// FCCommand 
+//===========================================================================
+
+
+FCCommand::FCCommand(const char* name,CMD_Type eType)
+	:_eType(eType),_pcName(name)
+{
+
+}
+
+void FCCommand::Init(void)
+{
+	// create a action with the Application as parent (shortcuts)
+	_pcAction = new QAction(ApplicationWindow::Instance,_pcName,_eType&Cmd_Toggle != 0);
+
+	// set standard profile here
+	char*  sMenuText,*sToolTipText,*sWhatsThis,*sStatusTip;
+	sMenuText		= "No menu text! see CmdProfile()";
+	sToolTipText	= "No Tooltip text! see CmdProfile()";
+	sWhatsThis		= "";
+	sStatusTip		= "";
+	QPixmap cPixmap(x);
+	int iAccel = 0;
+
+	// Get the informations from the derifed class
+	CmdProfile(&sMenuText,&sToolTipText,&sWhatsThis,&sStatusTip,cPixmap,iAccel);
+
+	// set the information and do Internationalization ( tr() )
+	_pcAction->setText(_pcName);
+	_pcAction->setMenuText(_pcAction->tr(sMenuText));
+	_pcAction->setToolTip(_pcAction->tr(sToolTipText));
+	_pcAction->setStatusTip(_pcAction->tr(sStatusTip));
+	_pcAction->setWhatsThis(_pcAction->tr(sWhatsThis));
+	_pcAction->setIconSet(cPixmap);
+	_pcAction->setAccel(iAccel);
+
+	connect( _pcAction, SIGNAL( activated() ) , this, SLOT( activated() ) );
+	connect( _pcAction, SIGNAL( toggled(bool) )   , this, SLOT( toggled(bool) )   );
+
+}
+
+ApplicationWindow *FCCommand::AppWnd(void)
+{
+	return ApplicationWindow::Instance;
+}
+
+
+bool FCCommand::IsToggle(void)
+{
+	return _eType&Cmd_Toggle != 0; 
+}
+
+const char* FCCommand::Name(void)
+{
+	return _pcAction->text().latin1(); 
+}
+
+
+//--------------------------------------------------------------------------
+// slots from QT 
+//--------------------------------------------------------------------------
+void FCCommand::activated ()
+{
+	GetConsole().Log("Activate %s\n",_pcAction->text().latin1());
+	Activated();
+}
+void FCCommand::toggled ( bool bState)
+{
+	GetConsole().Log("Toggle %s\n",_pcAction->text().latin1());
+	Toogled(bState);
+}
 
 
 /*
-
-
-//===========================================================================
-// FCAction - Warpper for the QAction classe
-//===========================================================================
-
-
-//--------------------------------------------------------------------------
-// signals from QT 
-//--------------------------------------------------------------------------
-void FCAction::activated ()
-{
-	GetConsole().Log("Activate %s\n",sName.c_str());
-}
-void FCAction::toggled ( bool )
-{
-	GetConsole().Log("Toggle %s\n",sName.c_str());
-}
-
-
 
 
 //--------------------------------------------------------------------------
@@ -148,3 +206,25 @@ PyObject *FCAction::PyDo(PyObject *args)
 } 
 
 */
+
+
+
+void FCCommandManager::AddCommand(FCCommand* pCom)
+{
+	pCom->Init();
+	_sCommands[pCom->Name()] = pCom;	
+}
+
+void FCCommandManager::AddTo(const char* Name,QWidget *pcWidget)
+{
+	_sCommands[Name]->_pcAction->addTo(pcWidget);
+}
+
+
+
+
+
+
+
+#include "Command_moc.cpp"
+

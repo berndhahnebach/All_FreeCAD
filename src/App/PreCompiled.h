@@ -5,6 +5,7 @@
 
 // standard
 #include <iostream>
+#include <strstream>
 #include <stdio.h>
 #include <assert.h>
 

@@ -208,10 +208,6 @@ InputPath=.\DlgDocTemplatesImp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DlgDocTemplatesImp_moc.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\DlgUndoRedo.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
@@ -241,10 +237,6 @@ InputPath=.\DlgUndoRedo.h
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\DlgUndoRedo_moc.cpp
 # End Source File
 # End Group
 # Begin Source File
@@ -281,16 +273,44 @@ InputPath=.\Application.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Application_moc.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Command.cpp
 # ADD CPP /YX"PreCompiled.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\Command.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Using moc on $(InputPath)
+InputPath=.\Command.h
+
+"Command_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Command_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Using moc on $(InputPath)
+InputPath=.\Command.h
+
+"Command_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Command_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\CommandStd.cpp
+# ADD CPP /YX"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\CommandStd.h
 # End Source File
 # Begin Source File
 
@@ -332,6 +352,8 @@ SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# ADD CPP /Yc"PreCompiled.h"
 
 !ENDIF 
 
@@ -380,10 +402,6 @@ InputPath=.\Tree.h
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\Tree_moc.cpp
 # End Source File
 # Begin Source File
 
@@ -448,14 +466,6 @@ InputPath=.\View3D.h
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3D_moc.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\View_moc.cpp
 # End Source File
 # End Target
 # End Project

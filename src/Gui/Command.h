@@ -25,8 +25,10 @@
 #include <qaction.h>
 #include <string>
 #include <map>
+#	pragma warning( disable : 4786 )
 
-
+class FCCommandManager;
+class ApplicationWindow;
 /*
 class GuiExport FCAction :public FCPyObject, public QAction
 {
@@ -65,6 +67,13 @@ protected:
 
 */
 
+
+enum CMD_Type { 
+	Cmd_Normal=0,
+	Cmd_Toggle=1
+};
+
+
 /** The CommandManager class
  *  This class manage all available commands in FreeCAD. All 
  *  Commands will registered here, also commands from Application
@@ -73,27 +82,46 @@ protected:
  *  menus is implemented here.
  *  @see FCCommand
  */
-class FCCommand 
+class GuiExport FCCommand :/*public FCPyObject,*/ public QObject
 {
+	//Py_Header;			// always start with Py_Header
+
+
+	Q_OBJECT			// also a QT Object
+
 public:
 
-	FCCommand(void)
-		:_pcAction(0)
-	{}
+	FCCommand(const char* name,CMD_Type eType=Cmd_Normal);
 
-	FCCommand(QAction *pcAction)
-		:_pcAction(pcAction)
-	{}
-	FCCommand(const FCCommand& copy)
-		:_pcAction(copy._pcAction)
-	{}
+	// Initialize the Action
+	void Init(void);
+	bool IsToggle(void);
+	const char* Name(void);
 
-	QAction *Action(void){return _pcAction;}
+	/// Helpers
+	ApplicationWindow *AppWnd(void);
+
+	// Profile methode, gives the command all the text and pixmap
+	virtual void CmdProfile(char** sMenuText, char** sToolTipText, char** sWhatsThis, char** sStatusTip, QPixmap &cPixmap, int &iAccel)=0;
+	/// Method which get called when activated, needs to be reimplemented!
+	virtual void Activated(void){assert(_eType&Cmd_Toggle == 0);}
+	/// Method which get called when toggled, needs to be reimplemented!
+	virtual void Toogled  (bool){assert(_eType&Cmd_Toggle != 0);}
+	
+	friend FCCommandManager;
+
+private slots:
+	virtual void activated (); 
+	virtual void toggled ( bool ); 
 
 
-private:	
+private:
+	const char* _pcName;
 	QAction *_pcAction;
+	CMD_Type _eType;
 };
+
+
 
 /** The CommandManager class
  *  This class manage all available commands in FreeCAD. All 
@@ -106,19 +134,13 @@ private:
 class GuiExport FCCommandManager
 {
 public:
-	void AddCommand(const char* Name,const FCCommand& Com)
-	{
-		_sCommands[Name] = Com;	
-	}
+	void AddCommand(FCCommand* pCom);
 
-	void AddTo(const char* Name,QWidget *pcWidget)
-	{
-		_sCommands[Name].Action()->addTo(pcWidget);
-	}
+	void AddTo(const char* Name,QWidget *pcWidget);
 
 private:
 #	pragma warning( disable : 4251 )
-		stlport::map<stlport::string,FCCommand> _sCommands;
+		stlport::map<stlport::string,FCCommand*> _sCommands;
 #	pragma warning( default : 4251 )
 };
 

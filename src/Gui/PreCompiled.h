@@ -74,6 +74,8 @@
 #include <qrect.h>
 #include <qvariant.h>
 #include <qframe.h>
+#include <qaction.h>
+#include <qnamespace.h>
 
 
 

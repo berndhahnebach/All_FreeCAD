@@ -531,8 +531,14 @@ PyObject *FCDocument::PySaveAs(PyObject *args)
 	char *pstr;
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
+	try {
+		SaveAs(pstr);
+	}	
+	catch(...) {
+		PyErr_SetString(PyExc_IOError, "Save Failed");
+		return 0L;
+	}
 
-	SaveAs(pstr);	
 	Py_Return; 
 } 
 

@@ -153,3 +153,6 @@ void FCView::dump()
 	    QApplication::restoreOverrideCursor();                
 	}
 }
+
+
+#include "View_moc.cpp"
