@@ -39,6 +39,10 @@
 
 #include <string>
 
+#ifdef _MSC_VER
+# pragma warning( disable : 4251 )
+#endif
+
 
 /** Base class of all Properties
  * This is the father of all properties. Properties are
