@@ -81,6 +81,68 @@ QString FCFileDialog::getSaveFileName( const QString & startWith, const QString&
   return file;
 }
 
+QString FCFileDialog::getSaveFileName ( const QString & initially, const QString & filter, QWidget * parent, 
+                                        const QString & caption )
+{
+  FCFileDialog fd(AnyFile, initially, filter, parent, "Save Dialog", true);
+  fd.setCaption(caption);
+  fd.exec();
+  return fd.selectedFileName();
+}
+
+FCFileDialog::FCFileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
+: QFileDialog(parent, name, modal)
+{
+}
+
+FCFileDialog::FCFileDialog (Mode mode, const QString& dirName, const QString& filter, 
+                            QWidget* parent, const char* name, bool modal)
+ : QFileDialog(dirName, filter, parent, name, modal)
+{
+  setMode(mode);
+}
+
+FCFileDialog::~FCFileDialog()
+{
+}
+
+void FCFileDialog::accept()
+{
+  QString fn = selectedFileName();
+
+  if (QFile(fn).exists() && mode() == AnyFile)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "'%s' already exists.\nReplace existing file?", fn.latin1());
+    if (QMessageBox::information(this, "Existing file", szBuf, "Yes", "No", QString::null, 1) == 0)
+      QFileDialog::accept();
+  }
+  else
+    QFileDialog::accept();
+}
+
+QString FCFileDialog::selectedFileName()
+{
+  QString fn = selectedFile();
+
+  // search for extension
+  int pos = fn.findRev('.');
+  if (pos == -1)
+  {
+    // try to figure out the selected filter
+    QString filt = selectedFilter();
+    int dot = filt.find('*');
+    int blank = filt.find(' ', dot);
+    if (dot != -1 && blank != -1)
+    {
+      QString sub = filt.mid(dot+1, blank-dot-1);
+      fn = fn + sub;
+    }
+  }
+
+  return fn;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 FCProgressBar::FCProgressBar ( QWidget * parent, const char * name, WFlags f )
@@ -744,20 +806,45 @@ void FCColorButton::onChooseColor()
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+class FCSpinBoxPrivate
+{
+  public:
+    FCSpinBoxPrivate();
+    bool pressed;
+};
+
+FCSpinBoxPrivate::FCSpinBoxPrivate()
+{
+  pressed = false;
+}
+
+// -----------------------------------------------------------------------------------
+
 FCSpinBox::FCSpinBox ( QWidget* parent, const char* name )
  : QSpinBox (parent, name)
 {
   setMouseTracking(true);
+  d = new FCSpinBoxPrivate;
 }
 
 FCSpinBox::FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name )
  : QSpinBox(minValue, maxValue, step, parent, name)
 {
   setMouseTracking(true);
+  d = new FCSpinBoxPrivate;
+}
+
+FCSpinBox::~FCSpinBox()
+{
+  delete d;
+  d = 0L;
 }
 
 void FCSpinBox::mouseMoveEvent ( QMouseEvent* e )
 {
+  if (QWidget::mouseGrabber() == NULL && !rect().contains(e->pos()) && d->pressed )
+    grabMouse(QCursor(IbeamCursor));
+
   if (QWidget::mouseGrabber() == this)
   {
     // get "speed" of mouse move
@@ -771,10 +858,14 @@ void FCSpinBox::mouseMoveEvent ( QMouseEvent* e )
 
     nY = e->y();
   }
+  else
+    QSpinBox::mouseMoveEvent(e);
 }
 
 void FCSpinBox::mousePressEvent   ( QMouseEvent* e )
 {
+  d->pressed = true;
+
   int nMax = maxValue();
   int nMin = minValue();
 
@@ -793,12 +884,19 @@ void FCSpinBox::mousePressEvent   ( QMouseEvent* e )
   }
 
   nY = e->y();
-  grabMouse();
 }
 
 void FCSpinBox::mouseReleaseEvent ( QMouseEvent* e )
 {
-  releaseMouse();
+  if (QWidget::mouseGrabber() == this)
+    releaseMouse();
+  d->pressed = false;
+}
+
+void FCSpinBox::focusOutEvent ( QFocusEvent* e )
+{
+  if (QWidget::mouseGrabber() == this)
+    releaseMouse();
 }
 
 bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
@@ -809,9 +907,21 @@ bool FCSpinBox::eventFilter ( QObject* o, QEvent* e )
   // get the editor's mouse events
   switch (e->type())
   {
+    // redirect the events to spin box (itself)
     case QEvent::MouseButtonPress:
-      // divert the event to spin box (itself)
       mousePressEvent ((QMouseEvent*)e);
+      break;
+
+    case QEvent::MouseButtonRelease:
+      mouseReleaseEvent ((QMouseEvent*)e);
+      break;
+
+    case QEvent::MouseMove:
+      mouseMoveEvent ((QMouseEvent*)e);
+      break;
+
+    case QEvent::FocusOut:
+      focusOutEvent ((QFocusEvent*)e);
       break;
   }
 

@@ -29,20 +29,20 @@
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
 #include "Window.h"
-#include <qprogressbar.h>
-#include <qlabel.h>
-#include <qiconview.h>
-#include <qdragobject.h>
-#include <qstatusbar.h>
-#include <qtoolbar.h>
-#include <qfiledialog.h>
-#include <qvariant.h>
-#include <qdialog.h>
-#include <qspinbox.h>
-#if QT_VERSION > 230
-# include <qlistview.h>
-# include <qlineedit.h>
-#endif
+//#include <qprogressbar.h>
+//#include <qlabel.h>
+//#include <qiconview.h>
+//#include <qdragobject.h>
+//#include <qstatusbar.h>
+//#include <qtoolbar.h>
+//#include <qfiledialog.h>
+//#include <qvariant.h>
+//#include <qdialog.h>
+//#include <qspinbox.h>
+//#if QT_VERSION > 230
+//# include <qlistview.h>
+//# include <qlineedit.h>
+//#endif
 
 class QHBoxLayout; 
 class QTime;
@@ -53,8 +53,10 @@ class QTime;
  * be set.
  * @see FCAutoWaitCursor
  */
-class GuiExport FCFileDialog
+class GuiExport FCFileDialog : public QFileDialog
 {
+  Q_OBJECT
+
   public:
     static QString getOpenFileName( const QString &initially = QString::null,
 				                            const QString &filter = QString::null,
@@ -66,6 +68,19 @@ class GuiExport FCFileDialog
                                      const char * name = 0 );
     static QString getSaveFileName ( const QString & initially, const QString & filter, 
                                      QWidget * parent, const char * name, const QString & caption );
+    static QString getSaveFileName ( const QString & initially, const QString & filter, 
+                                     QWidget * parent, const QString & caption ); 
+
+  public:
+    FCFileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);
+    FCFileDialog (Mode mode, const QString& dirName, const QString& filter = QString::null, 
+                  QWidget* parent = 0, const char* name = 0, bool modal = false);
+    virtual ~FCFileDialog();
+
+    QString selectedFileName();
+
+  protected slots:
+    virtual void accept();
 };
 
 /**  
@@ -303,21 +318,24 @@ class FCColorButton : public QButton
  * A special spinbox: augment or diminish the value by moving up or down 
  * keeping the left mouse button pressed
  */
+class FCSpinBoxPrivate;
 class FCSpinBox : public QSpinBox
 {
   public:
     FCSpinBox ( QWidget* parent, const char* name = 0 );
     FCSpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
-    virtual ~FCSpinBox(){}
+    virtual ~FCSpinBox();
 
   protected:
     void mouseMoveEvent    ( QMouseEvent* e );
     void mousePressEvent   ( QMouseEvent* e );
     void mouseReleaseEvent ( QMouseEvent* e );
+    void focusOutEvent     ( QFocusEvent* e );
     bool eventFilter       ( QObject* o, QEvent* e );
 
   private:
     int nY, nStep;
+    FCSpinBoxPrivate* d;
 };
 
 #endif // __FC_WIDGETS_H__
