@@ -38,6 +38,7 @@ App = FreeCAD
 Log = FreeCAD.PrintLog
 Msg = FreeCAD.PrintMessage
 Err = FreeCAD.PrintError
+Wrn = FreeCAD.PrintWarning
 
 try:
 	import sys,os,dircache
@@ -47,14 +48,6 @@ except:
 	Err("See www.python.org for details")
 	raise
 
-# classes to manage loadable modules
-from ConfigParser import *
-
-def Get(Pars,Section,Option,Default=""):
-    if(Pars.has_option(Section,Option)):
-        return Pars.get(Section,Option)
-    else:
-        return Default
 
 def CheckInitialPlugin():
 	Plugin = """
@@ -137,7 +130,6 @@ FreeCad-Std.AttributeRetrievalPlugin: 47b0b827-d931-11d1-b5da-00a0c9064368
 		f.close
 
 
-
 def CheckEnvs():
 	try:
 		# Testing env variables ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -155,20 +147,7 @@ def CheckEnvs():
 		Err("        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n")
 		raise
 
-class FCModule:
-    def __init__ (self,Dir):
-        Pars = ConfigParser()
-        ModConfFName=os.path.join(Dir,'Module.cfg')
-        Log('\t\tOpening:' + ModConfFName+'\n')
-        Pars.read(ModConfFName)
-        Log('\t\tModule exports:\n')
-        for Exp in Pars.options("Exports"):
-            Log('\t\t\t' + Exp + '\n')
-        self.Name               = Get(Pars,"Module","Name")
-        self.DocTemplateName    = Get(Pars,"Exports","DocTemplateName")
-        self.DocTemplateScript  = Get(Pars,"Exports","DocTemplateScript")
-        self.WorkBenchName 	    = Get(Pars,"Exports","WorkBenchName")
-        self.WorkBenchModule    = Get(Pars,"Exports","WorkBenchModule")
+
            
 #============================================================================
 # here we go ...
@@ -180,29 +159,6 @@ Log ('\nFreeCAD init running....\n')
 CheckInitialPlugin()
 # checks if the OCC environment is set
 CheckEnvs()
-
-# Searching modules ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-ModDir = '../src/Mod'
-ModDirs = dircache.listdir(ModDir)
-#print ModDirs
-Msg('   Searching modules...\n')
-ModuleList = []
-for Dir in ModDirs:
-	if ( Dir != 'CVS'):
-		FreeCAD.PrintMessage('    Found: ' + Dir + '\n')
-		ModDirDir=os.path.join(ModDir,Dir);
-		ModuleList.append(FCModule( ModDirDir ))
-		sys.path.append( ModDirDir )
-# Attaching the list to the FreeCAD main module
-FreeCAD.Modules = ModuleList
-
-def GetTemplateList():
-    l = []
-    for i in ModuleList:
-        if (i.DocTemplateName != ''):
-            l.append(i.DocTemplateName)
-    return l
-
 
 Log ('\nFreeCAD init done\n')
    

@@ -12,7 +12,10 @@
 #include <FCNTL.H>
 #include <assert.h>
 #include <time.h>
-
+#include "fcntl.h"
+#ifdef WNT
+#	include <windows.h>
+#endif
 
 // STL 
 #include <string>

@@ -400,15 +400,17 @@ void FCParameterManager::Init(void)
 //**************************************************************************
 // Document handling
 
-void FCParameterManager::LoadOrCreateDocument(const char* sFileName)
+bool FCParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
 	int i=_open(sFileName,_O_RDONLY);
 	if( i != -1)
 	{
 		_close(i);
 		LoadDocument(sFileName);
+		return false;
 	}else{
 		CreateDocument();
+		return true;
 	}
 }
 
@@ -643,7 +645,7 @@ PyParentObject FCPyParameterGrp::Parents[] = {&FCPyObject::Type,&FCPyParameterGr
 FCPyParameterGrp::FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T ) 
  : _cParamGrp(rcParamGrp),FCPyObject( T)
 {
-	GetConsole().Log("Create Param Group %p\n",this);
+	//GetConsole().Log("Create Param Group %p\n",this);
 }
 
 PyObject *FCPyParameterGrp::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -657,7 +659,7 @@ PyObject *FCPyParameterGrp::PyMake(PyObject *ignored, PyObject *args)	// Python 
 //--------------------------------------------------------------------------
 FCPyParameterGrp::~FCPyParameterGrp()						// Everything handled in parent
 {
-	GetConsole().Log("Destroy ParameterGrp %p\n",this);
+	//GetConsole().Log("Destroy ParameterGrp %p\n",this);
 } 
 
 //--------------------------------------------------------------------------

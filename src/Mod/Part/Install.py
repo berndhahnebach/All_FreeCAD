@@ -1,9 +1,8 @@
-# FreeCAD test module  
-# (c) 2002 Jürgen Riegel
+# FreeCAD install script of the part module  
+# (c) 2001 Jürgen Riegel
 #
-# Testing the function of the base system and run 
-# (if existing) the test function of the modules
-#
+# Searching and installing new packages and set up the environment at first
+# start.
 
 #***************************************************************************
 #*   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
@@ -29,68 +28,15 @@
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
 
+# Get the Parameter Group of this module
+ParGrp = App.ParamGet("Modules").GetGroup("Part")
 
-Log ("FreeCAD test running...\n\n")
+# Set the needed information
+ParGrp.SetString("HelpIndex","Part/Help/index.html")
+ParGrp.SetString("DocTemplateName","Part")
+ParGrp.SetString("DocTemplateScript","TemplPart.py")
+ParGrp.SetString("WorkBenchName","Part Design")
+ParGrp.SetString("WorkBenchModule","PartWorkbench.py")
 
-TempPath = os.getenv('TEMP')
-Log ('Using temp path: ' + TempPath + '\n')
-
-# Basics +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-FreeCAD.PrintLog ("Testing console...\n")
-
-FreeCAD.PrintMessage("   Printing message\n")
-FreeCAD.PrintError("   Printing error\n")
-FreeCAD.PrintWarning("   Printing warning\n")
-FreeCAD.PrintLog("   Printing Log\n")
-
-# Application and Document +++++++++++++++++++++++++++++++++++++++++++++++++
-Log ("Testing Application and Document...\n")
-
-Log("   Creating new Part document and filing up\n")
-Doc = App.DocNew("Part")
-i = Doc.UndoLimit
-i = Doc.AvailableUndos
-i = Doc.AvailableRedos
-
-Main = Doc.Main #getting the main label of the document 
-L1 = Main.GetLabel(1)
-L1 = Main.GetLabel(1)
-L1 = Main.GetLabel(1)
-L1 = Main.GetLabel(1)
-L1 = Main.GetLabel(1)
-L1 = Main.GetLabel(1)
-L2 = Main.GetLabel(2)
-L3 = Main.GetLabel(3)
-L4 = Main.GetLabel(4)
-L5 = Main.GetLabel(5)
-L6 = Main.GetLabel(6)
-L7 = Main.GetLabel(7)
-L1.Int = 1
-L1.Real = 1.0
-L1.Name = "Hallo"
-
-# saving and restoring
-
-#SavePath = TempPath + os.sep + "Test1.FCStd"
-SavePath = "E:\\Test1.FCStd"
-Log("   Save and Open the document to: " + SavePath + "\n")
-Doc.SaveAs(SavePath)
-Log("provocate exceptio by try loading a already open document\n")
-try:
-    Doc2 = App.DocOpen(SavePath)
-except:
-    Log("exception thrown, OK\n")
-else:
-    Log("no exception thrown, ERROR\n")
-    raise IOError
-
-#Log(Doc2.Main.GetLabel(1).Name)
-
-#Doc2 = App.DocOpen("e:\\Test.FCPart")
-#Doc.SaveAs("e:\\Test")
-
-
-
-FreeCAD.PrintLog ("FreeCAD test done\n")
-
-
+# mark the installation done
+ParGrp.SetBool("Installed",1)

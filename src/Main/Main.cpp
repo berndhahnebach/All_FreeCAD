@@ -230,20 +230,20 @@ int main( int argc, char ** argv ) {
 	}
 	catch(Standard_Failure e)
 	{
-		GetConsole().Error("Running the application failed, OCC exception caught:");
+		GetConsole().Error("Running the application failed, OCC exception caught:\n");
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
 		cout << "An exception was caught " << E << endl;
 		exit(4);
 	}
 	catch(FCException e)
 	{
-		GetConsole().Error("Running the application failed:");
+		GetConsole().Error("Running the application failed:\n");
 		e.ReportException();
 		exit(5); 
 	}
 	catch(...)
 	{
-		GetConsole().Error("Running the application failed, because of a really nesty (unknown) error...");
+		GetConsole().Error("Running the application failed, because of a really nesty (unknown) error...\n\n");
 		exit(6);
 	}
 
@@ -254,11 +254,15 @@ int main( int argc, char ** argv ) {
 	delete pcGlobalParameter;
 
 	GetConsole().Log("FreeCAD completely terminated\n\n");
+
+#ifdef FREECADMAINPY
 	exit (0);
 }
 
-#ifdef FREECADMAINPY
 } // extern "C" {
+#else
+	return 0;
+}
 #endif
 
 
@@ -287,7 +291,15 @@ void Init(int argc, char ** argv )
 	pcGlobalParameter = new FCParameterManager();
 
 	//pcGlobalParameter->CreateDocument();
-	pcGlobalParameter->LoadOrCreateDocument("AppParam.FCParam");
+	if(pcGlobalParameter->LoadOrCreateDocument("AppParam.FCParam"))
+	{
+		GetConsole().Warning("   Parameter not existing, write initial one\n");
+		GetConsole().Message("   This Warning means normaly FreeCAD running the first time or the\n"
+		                     "   configuration was deleted or moved. You have to reinstall FreeCAD\n"
+		                     "   by typing FreeCAD -i. This build up the standard configuration and\n"
+		                     "   install all present modules. \n");
+
+	}
 /*
 	pcGlobalParameter->GetGroup("BaseApp");
 	FCHandle<FCParametrGrp> h = pcGlobalParameter->GetGroup("BaseApp");
@@ -427,6 +439,7 @@ const char Usage[] = \
 "  -cf file-name  Runs FreeCAD in server mode with script file-name\n"\
 "  -te            Runs FreeCAD to test environment\n"\
 "  -t0            Runs FreeCAD self test function\n"\
+"  -i             Install a new Module (e.g.ModuleName_0.1.FCModule) and the rest\n"\
 "\n consult also the HTML documentation\n"\
 "";
 
@@ -474,19 +487,16 @@ void ParsOptions(int argc, char ** argv)
 					case 'e':  
 					case 'E':  
 						RunMode = 3;
-						sFileName = "TestEnv";
 						sScriptName = FreeCADTestEnv;
 						break;   
 					case '0':  
 						// test script level 0
 						RunMode = 3;
-						sFileName = "Test";
 						sScriptName = FreeCADTest;
 						break;   
 					default:  
 						//default testing level 0
 						RunMode = 3;
-						sFileName = "Test";
 						sScriptName = FreeCADTest;
 						break;   
 				};  
@@ -494,7 +504,6 @@ void ParsOptions(int argc, char ** argv)
 			case 'i': 
 			case 'I':  
 				RunMode = 3;
-				sFileName = "TestEnv";
 				sScriptName = FreeCADInstall;
 				break;  
 			case '?': 
@@ -523,8 +532,8 @@ void PrintInitHelp(void)
 {
 	cerr << endl << endl
 		 << "  An initializing error was caught. This means mainly" << endl
-		 << "  FreeCAD is not installed properly. Type \"FreeCAD -TestEnvironment\""<< endl
-		 << "  to get hints whats wrong." << endl << endl
+		 << "  FreeCAD is not installed properly. Type \"FreeCAD -i\""<< endl
+		 << "  to reinstall FreeCAD." << endl << endl
 		 << "  Good luck ;-)" << endl << endl;
 }
 

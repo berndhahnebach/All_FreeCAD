@@ -149,7 +149,7 @@ public:
 
 	int   LoadDocument(const char* sFileName);
 
-	void  LoadOrCreateDocument(const char* sFileName);
+	bool  LoadOrCreateDocument(const char* sFileName);
 
 	void  SaveDocument(const char* sFileName);
 

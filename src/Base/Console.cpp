@@ -35,6 +35,9 @@
 #	include "PreCompiled.h"
 #else
 #	include <time.h>
+#	include "stdio.h"
+#	include "io.h"
+#	include "fcntl.h"
 #endif
 
 #include "Console.h"
@@ -349,7 +352,14 @@ void FCLoggingConsoleObserver::Log    (const char *sLog)
 
 void FCCmdConsoleObserver::Warning(const char *sWarn)
 {
+#	ifdef WNT
+	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN| FOREGROUND_BLUE);
+#	endif
 	printf("%s",sWarn);
+#	ifdef WNT
+	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+#	endif
+
 }
 
 void FCCmdConsoleObserver::Message(const char *sMsg) 
@@ -359,11 +369,23 @@ void FCCmdConsoleObserver::Message(const char *sMsg)
 
 void FCCmdConsoleObserver::Error  (const char *sErr) 
 {
+#	ifdef WNT
+	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_INTENSITY );
+#	endif
 	printf("%s",sErr);
+#	ifdef WNT
+	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+#	endif
 }
 
 void FCCmdConsoleObserver::Log    (const char *sErr) 
 {
+#	ifdef WNT
+	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED |FOREGROUND_GREEN);
+#	endif
 	printf("%s",sErr);
+#	ifdef WNT
+	::SetConsoleTextAttribute(::GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+#	endif
 }
 
