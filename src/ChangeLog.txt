@@ -184,3 +184,6 @@ Version: V0.1B44 Date: Wed Mar 19 21:41:52 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B45 Date: Thu Mar 20 21:05:21 2003 +++++++++++++++++++++++++++++++
 + Testframe for Parameter and removal
+
+Version: V0.1B46 Date: Wed Mar 26 18:02:11 2003 +++++++++++++++++++++++++++++++
++ new methodes in ParameterGrp (IsEmpty(), HasGroup() )

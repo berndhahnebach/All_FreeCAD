@@ -178,7 +178,10 @@ FCDocument* FCApplication::New(const char * Name)
 	_pActiveDoc = pDoc;
 
 	// runing the start of the workbench object
-	if(Name) GetInterpreter().RunMethodeVoid(pcTemplate, "Start");
+	if(Name)
+	{
+		GetInterpreter().RunMethodVoid(pcTemplate, "Start");
+	}
 
 	// trigger Observers (open windows and so on)
 	NotifyDocNew(pDoc);

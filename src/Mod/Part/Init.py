@@ -26,6 +26,11 @@
 #***************************************************************************/
 
 
+class PartDocument:
+	"Part document"
+	def Info(self):
+		return "Part document"
+		
 class PartTemplate:
 	"Part template object"
 	def Start(self):
@@ -37,6 +42,9 @@ class PartTemplate:
 		#get the active document
 		Doc = App.DocGet()
 		Main = Doc.Main
+
+		Log ('   Init part doc handle...\n')		
+		#Doc.Part = 1
 		
 		L1 = Main.GetLabel(1)
 		L1.GetLabel(1)

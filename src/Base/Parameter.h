@@ -107,67 +107,101 @@ public:
 class  BaseExport FCParameterGrp	: public FCHandled,public FCSubject
 {
 
-protected:
-	FCParameterGrp(DOMElement *GroupNode=0L,const char* sName=0L);
-	~FCParameterGrp();
 
 public:
+	/** @name methodes for group handling */
+	//@{
+	/// get a handle to a sub group or creat one
 	FCHandle<FCParameterGrp> GetGroup(const char* Name);
+	/// get a vector of all sub groups in this group
 	std::vector<FCHandle<FCParameterGrp> > GetGroups(void);
+	/// test if this group is emty
+	bool IsEmpty(void);
+	/// test if a special sub group is in this group
+	bool HasGroup(const char* Name);
+	/// type of the handle
 	typedef FCHandle<FCParameterGrp> handle;
-
-	bool GetBool(const char* Name, bool bPreset=false);
-
-	void  SetBool(const char* Name, bool bValue);
-
-	std::vector<bool> GetBools(const char * sFilter = NULL);
-
-	std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter = NULL);
-
-	long GetInt(const char* Name, long lPreset=0);
-
-	void  SetInt(const char* Name, long lValue);
-
-	std::vector<long> GetInts(const char * sFilter = NULL);
-
-	std::map<std::string,long> GetIntMap(const char * sFilter = NULL);
-
-	double GetFloat(const char* Name, double dPreset=0.0);
-
-	void  SetFloat(const char* Name, double dValue);
-
-	std::vector<double> GetFloats(const char * sFilter = NULL);
-
-	std::map<std::string,double> GetFloatMap(const char * sFilter = NULL);
-
-	void  SetBlob(const char* Name, void *pValue, long lLength);
-
-	void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL);
-
-	void  SetASCII(const char* Name, const char *sValue);
-
-	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
-
-	std::string GetASCII(const char* Name, const char * pPreset=NULL);
-
-	void Clear(void);
-
+	/// remove a sub group from this group
 	void RemoveGrp(const char* Name);
-	void RemoveASCII(const char* Name);
-	void RemoveBlob(const char* Name);
-	void RemoveFloat(const char* Name);
-	void RemoveInt(const char* Name);
-	void RemoveBool(const char* Name);
+	/// clears everithing in this group (all types)
+	void Clear(void);
+	//@}
 
+	/** @name methodes for bool handling */
+	//@{
+	/// read bool values or give default
+	bool GetBool(const char* Name, bool bPreset=false);
+	/// set a bool value
+	void SetBool(const char* Name, bool bValue);
+	/// get a vector of all bool values in this group
+	std::vector<bool> GetBools(const char * sFilter = NULL);
+	/// get a map with all bool values and the keys of this group
+	std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter = NULL);
+	/// remove a bool value from this group
+	void RemoveBool(const char* Name);
+	//@}
+
+	/** @name methodes for Int handling */
+	//@{
+	/// read bool values or give default
+	long GetInt(const char* Name, long lPreset=0);
+	/// set a int value
+	void SetInt(const char* Name, long lValue);
+	/// get a vector of all int values in this group
+	std::vector<long> GetInts(const char * sFilter = NULL);
+	/// get a map with all int values and the keys of this group
+	std::map<std::string,long> GetIntMap(const char * sFilter = NULL);
+	/// remove a int value from this group
+	void RemoveInt(const char* Name);
+	//@}
+
+
+	/** @name methodes for Float handling */
+	//@{
+	/// set a float value
+	double GetFloat(const char* Name, double dPreset=0.0);
+	/// read float values or give default
+	void SetFloat(const char* Name, double dValue);
+	/// get a vector of all float values in this group
+	std::vector<double> GetFloats(const char * sFilter = NULL);
+	/// get a map with all float values and the keys of this group
+	std::map<std::string,double> GetFloatMap(const char * sFilter = NULL);
+	/// remove a float value from this group
+	void RemoveFloat(const char* Name);
+	//@}
+
+
+	/** @name methodes for Blob handling (not implemented yet) */
+	//@{
+	/// set a blob value
+	void  SetBlob(const char* Name, void *pValue, long lLength);
+	/// read blob values or give default
+	void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL);
+	/// remove a blob value from this group
+	void RemoveBlob(const char* Name);
+	//@}
+
+	
+	
+	/** @name methodes for Blob handling (not implemented yet) */
+	//@{
+	/// set a string value
+	void  SetASCII(const char* Name, const char *sValue);
+	/// read a string values with a buffer
+	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
+	/// read a string values 
+	std::string GetASCII(const char* Name, const char * pPreset=NULL);
+	/// remove a string value from this group
+	void RemoveASCII(const char* Name);
 	/** Return all string elements in this group as a vector of strings
 	 *  Its also possible to set a filter criteria.
 	 *  @param sFilter only strings which name includes sFilter are put in the vector
 	 *  @return std::vector of std::strings
 	 */
 	std::vector<std::string> GetASCIIs(const char * sFilter = NULL);
-
 	/// Same as GetASCIIs() but with key,value map
 	std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilter = NULL);
+	//@}
 
 	static void Init(void);
 
@@ -177,6 +211,10 @@ public:
 	const char* GetGroupName(void) {return _cName.c_str();}
 
 protected:
+	/// constructor is protected (handle concept)
+	FCParameterGrp(DOMElement *GroupNode=0L,const char* sName=0L);
+	/// destructor is protected (handle concept)
+	~FCParameterGrp();
 	/// helper function for GetGroup
 	FCHandle<FCParameterGrp> _GetGroup(const char* Name);
 
@@ -289,21 +327,27 @@ public:
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 	// methods
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetGrp);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemGrp);
+	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
+	PYFUNCDEF_D (FCPyParameterGrp,PyHasGroup);
+	PYFUNCDEF_D (FCPyParameterGrp,PyIsEmpty);
+
 	PYFUNCDEF_D (FCPyParameterGrp,PySetBool);
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetBool);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemBool);
+
 	PYFUNCDEF_D (FCPyParameterGrp,PySetInt);
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetInt);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemInt);
+
 	PYFUNCDEF_D (FCPyParameterGrp,PySetFloat);
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetFloat);
+	PYFUNCDEF_D (FCPyParameterGrp,PyRemFloat);
+
 	PYFUNCDEF_D (FCPyParameterGrp,PySetString);
 	PYFUNCDEF_D (FCPyParameterGrp,PyGetString);
-
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemGrp);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemBool);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemInt);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemFloat);
 	PYFUNCDEF_D (FCPyParameterGrp,PyRemString);
-	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
+
 
 protected:
 

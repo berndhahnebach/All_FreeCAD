@@ -188,6 +188,30 @@ std::vector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 	return vrParamGrp;
 }
 
+/// test if this group is emty
+bool FCParameterGrp::IsEmpty(void)
+{
+	if( _pGroupNode->getFirstChild() )
+		return false;
+	else
+		return true;
+}
+
+/// test if a special sub group is in this group
+bool FCParameterGrp::HasGroup(const char* Name)
+{
+	if( _GroupMap.find(Name) != _GroupMap.end() )
+		return true;
+
+	if( FindElement(_pGroupNode,"FCParamGroup",Name) != 0 )
+		return true;
+
+	return false;
+
+}
+
+
+
 bool FCParameterGrp::GetBool(const char* Name, bool bPreset)
 {
 	// check if Element in group
@@ -1017,21 +1041,26 @@ PyTypeObject FCPyParameterGrp::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef FCPyParameterGrp::Methods[] = {
   {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS},
+  {"RemGroup",         (PyCFunction) sPyRemGrp,          Py_NEWARGS},
+  {"HasGroup",         (PyCFunction) sPyHasGroup,        Py_NEWARGS},
+  {"IsEmpty",          (PyCFunction) sPyIsEmpty,         Py_NEWARGS},
+  {"Clear",            (PyCFunction) sPyClear,           Py_NEWARGS},
+
   {"SetBool",          (PyCFunction) sPySetBool,         Py_NEWARGS},
   {"GetBool",          (PyCFunction) sPyGetBool,         Py_NEWARGS},
+  {"RemBool",          (PyCFunction) sPyRemBool,         Py_NEWARGS},
+
   {"SetInt",           (PyCFunction) sPySetInt,          Py_NEWARGS},
   {"GetInt",           (PyCFunction) sPyGetInt,          Py_NEWARGS},
+  {"RemInt",           (PyCFunction) sPyRemInt,          Py_NEWARGS},
+
   {"SetFloat",         (PyCFunction) sPySetFloat,        Py_NEWARGS},
   {"GetFloat",         (PyCFunction) sPyGetFloat,        Py_NEWARGS},
+  {"RemFloat",         (PyCFunction) sPyRemFloat,        Py_NEWARGS},
+
   {"SetString",        (PyCFunction) sPySetString,       Py_NEWARGS},
   {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS},
-
-  {"RemGroup",         (PyCFunction) sPyRemGrp,          Py_NEWARGS},
-  {"RemBool",          (PyCFunction) sPyRemBool,         Py_NEWARGS},
-  {"RemInt",           (PyCFunction) sPyRemInt,          Py_NEWARGS},
-  {"RemFloat",         (PyCFunction) sPyRemFloat,        Py_NEWARGS},
   {"RemString",        (PyCFunction) sPyRemString,       Py_NEWARGS},
-  {"Clear",            (PyCFunction) sPyClear,           Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -1280,6 +1309,23 @@ PyObject *FCPyParameterGrp::PyClear(PyObject *args)
         return NULL;                             // NULL triggers exception 
 	_cParamGrp->Clear();
 	Py_Return; 
+} 
+
+PyObject *FCPyParameterGrp::PyIsEmpty(PyObject *args)
+{ 
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+
+	return Py_BuildValue("i",_cParamGrp->IsEmpty());
+} 
+
+PyObject *FCPyParameterGrp::PyHasGroup(PyObject *args)
+{ 
+	char *pstr;
+    if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+	
+	return Py_BuildValue("i",_cParamGrp->HasGroup(pstr));
 } 
 
 

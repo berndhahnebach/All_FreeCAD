@@ -642,7 +642,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 		PyBuf OldName ( _cActiveWorkbenchName.latin1());
 		PyObject* pcOldWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, OldName.str);
 		assert(pcOldWorkbench);
-		GetInterpreter().RunMethodeVoid(pcOldWorkbench, "Stop");
+		GetInterpreter().RunMethodVoid(pcOldWorkbench, "Stop");
 	}
 	// get the python workbench object from the dictionary
 	PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
@@ -651,7 +651,7 @@ void ApplicationWindow::ActivateWorkbench(const char* name)
 	assert(pcWorkbench);
 
 	// runing the start of the workbench object
-	GetInterpreter().RunMethodeVoid(pcWorkbench, "Start");
+	GetInterpreter().RunMethodVoid(pcWorkbench, "Start");
 
 	_cActiveWorkbenchName = name;
 

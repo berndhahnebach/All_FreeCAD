@@ -136,7 +136,7 @@ int FCInterpreter::RunCommandLine(char *prompt)
  *  Runs a member methode of an object with no parameter and no return value
  *  void (void). There are other methodes to run with returns
  */
-void FCInterpreter::RunMethodeVoid(PyObject *pobject, const char *method)
+void FCInterpreter::RunMethodVoid(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	PyBuf Methode (method);
@@ -151,7 +151,7 @@ void FCInterpreter::RunMethodeVoid(PyObject *pobject, const char *method)
 
 }
 
-PyObject* FCInterpreter::RunMethodeObject(PyObject *pobject, const char *method)
+PyObject* FCInterpreter::RunMethodObject(PyObject *pobject, const char *method)
 {
 	// net buffer because of char* <-> const char*
 	PyBuf Methode (method);
@@ -160,11 +160,42 @@ PyObject* FCInterpreter::RunMethodeObject(PyObject *pobject, const char *method)
 
 	if(PP_Run_Method(pobject ,     // object
 		             Methode.str,  // run method 
-			         "O",		   // no return type
-				     &pcO,		   // so no return object
+			         "O",		   // return type
+				     &pcO,		   // return object
 					 "()")		   // no arguments
 					 != 0)
 		throw FCException("Error runing FCInterpreter::RunMethodeObject()");
 	
 	return pcO;
+}
+
+void FCInterpreter::RunMethod(PyObject *pobject, const char *method,
+                              const char *resfmt,   void *cresult,        /* convert to c/c++ */
+                              const char *argfmt,   ...  )                /* convert to python */
+{
+	PyBuf cMethod(method),cResfmt(resfmt),cArgfmt(argfmt);
+    PyObject *pmeth, *pargs, *presult;
+    va_list argslist;                              /* "pobject.method(args)" */
+    va_start(argslist, argfmt);
+
+    pmeth = PyObject_GetAttrString(pobject, cMethod.str);  
+    if (pmeth == NULL)                             /* get callable object */
+        throw FCException("Error runing FCInterpreter::RunMethod() methode not defined");                                 /* bound method? has self */
+
+	pargs = Py_VaBuildValue(cArgfmt.str, argslist);     /* args: c->python */
+
+    if (pargs == NULL) {
+        Py_DECREF(pmeth);
+        throw FCException("FCInterpreter::RunMethod() wrong arguments");
+    }
+    
+	presult = PyEval_CallObject(pmeth, pargs);   /* run interpreter */
+
+    Py_DECREF(pmeth);
+    Py_DECREF(pargs);
+	if(PP_Convert_Result(presult, cResfmt.str, cresult)!= 0)
+	{
+		PyErr_Print();
+		throw FCException("Error runing FCInterpreter::RunMethod() exception in called methode");
+	}
 }

@@ -254,7 +254,7 @@ FCPythonCommand::FCPythonCommand(const char* name,PyObject * pcPyCommand)
 	Py_INCREF(_pcPyCommand);
 
 	// call the methode "GetResources()" of the command object
-	_pcPyResourceDict = GetInterpreter().RunMethodeObject(_pcPyCommand, "GetResources");
+	_pcPyResourceDict = GetInterpreter().RunMethodObject(_pcPyCommand, "GetResources");
 	// check if the "GetResources()" methode returns a Dict object
 	if(! PyDict_Check(_pcPyResourceDict) ) 
 		throw FCException("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");	
@@ -281,7 +281,7 @@ std::string FCPythonCommand::GetResource(const char* sName)
 
 void FCPythonCommand::Activated(int iMsg)
 {
-	GetInterpreter().RunMethodeVoid(_pcPyCommand, "Activated");
+	GetInterpreter().RunMethodVoid(_pcPyCommand, "Activated");
 }
 
 bool FCPythonCommand::IsActive(void)
@@ -293,7 +293,7 @@ std::string FCPythonCommand::CmdHelpURL(void)
 {
 	PyObject* pcTemp;
 
-	pcTemp = GetInterpreter().RunMethodeObject(_pcPyCommand, "CmdHelpURL"); 
+	pcTemp = GetInterpreter().RunMethodObject(_pcPyCommand, "CmdHelpURL"); 
 
 	if(! pcTemp ) 
 		return std::string();
@@ -307,7 +307,7 @@ void FCPythonCommand::CmdHelpPage(std::string &rcHelpPage)
 {
 	PyObject* pcTemp;
 
-	pcTemp = GetInterpreter().RunMethodeObject(_pcPyCommand, "CmdHelpPage"); 
+	pcTemp = GetInterpreter().RunMethodObject(_pcPyCommand, "CmdHelpPage"); 
 
 	if(! pcTemp ) 
 		return ;
