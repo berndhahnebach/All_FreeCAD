@@ -36,12 +36,12 @@ void PartCutFeature::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("PartCutFeature::InitLabel()\n");
 
-	AddProperty("Float","x","0.0");
-	AddProperty("Float","y","0.0");
-	AddProperty("Float","z","0.0");
-	AddProperty("Float","l","100.0");
-	AddProperty("Float","h","100.0");
-	AddProperty("Float","w","100.0");
+	//AddProperty("Float","x","0.0");
+	//AddProperty("Float","y","0.0");
+	//AddProperty("Float","z","0.0");
+	//AddProperty("Float","l","100.0");
+	//AddProperty("Float","h","100.0");
+	//AddProperty("Float","w","100.0");
 
 }
 
@@ -101,24 +101,15 @@ void PartCutFeature::Validate(TFunction_Logbook& log)
 
 
 
-
-/*
-
-//=======================================================================
-//function : TPartStd_BoxDriver
-//purpose  : Creation of an instance of the driver. It's possible (and recommended)
-//         : to have only one instance of a driver for the whole session.
-//=======================================================================
-
-TSampleOcafFunction_BoxDriver::TSampleOcafFunction_BoxDriver()
-{}
+// sample from OCC Ocaf
+#ifdef false
 
 //=======================================================================
 //function : Validate
 //purpose  : Validation of the object label, its arguments and its results.
 //=======================================================================
 
-void TSampleOcafFunction_BoxDriver::Validate(TFunction_Logbook& log) const
+void TOcafFunction_CutDriver::Validate(TFunction_Logbook& log) const
 {
   // We validate the object label ( Label() ), all the arguments and the results of the object:
   log.SetValid(Label(), Standard_True);
@@ -130,25 +121,27 @@ void TSampleOcafFunction_BoxDriver::Validate(TFunction_Logbook& log) const
 //         : be invoked. If the object label or an argument is modified,
 //         : we must recompute the object - to call the method Execute().
 //=======================================================================
-Standard_Boolean TSampleOcafFunction_BoxDriver::MustExecute(const TFunction_Logbook& log) const
+
+Standard_Boolean TOcafFunction_CutDriver::MustExecute(const TFunction_Logbook& log) const
 {
-	// If the object's label is modified:
+  // If the object's label is modified:
   if (log.IsModified(Label())) return Standard_True; 
 
   // Cut (in our simple case) has two arguments: The original shape, and the tool shape.
-  // They are on the child labels of the box's label:
+  // They are on the child labels of the cut's label:
   // So, OriginalNShape  - is attached to the first  child label
-  //     ToolNShape - is attached to the second child label.
-  // 
+  //     ToolNShape - is attached to the second child label,
+  //     .
   // Let's check them:
-  if (log.IsModified(Label().FindChild(1))) return Standard_True; // width.
-  if (log.IsModified(Label().FindChild(2))) return Standard_True; // length,
-  if (log.IsModified(Label().FindChild(3))) return Standard_True; // width.
-  if (log.IsModified(Label().FindChild(4))) return Standard_True; // length,
-  if (log.IsModified(Label().FindChild(5))) return Standard_True; // width.
-  if (log.IsModified(Label().FindChild(6))) return Standard_True; // length,
+  Handle(TDF_Reference) OriginalRef;
+  Label().FindChild(1).FindAttribute(TDF_Reference::GetID(),OriginalRef);
+  if (log.IsModified(OriginalRef->Get()))   return Standard_True; // Original shape.
+
+  Handle(TDF_Reference) ToolRef;
+  Label().FindChild(2).FindAttribute(TDF_Reference::GetID(),ToolRef);
+  if (log.IsModified(ToolRef->Get()))   return Standard_True; // Tool shape.
   
- // if there are no any modifications concerned the box,
+  // if there are no any modifications concerned the cut,
   // it's not necessary to recompute (to call the method Execute()):
   return Standard_False;
 }
@@ -164,92 +157,91 @@ Standard_Boolean TSampleOcafFunction_BoxDriver::MustExecute(const TFunction_Logb
 //         : if there are no any mistakes occurred we return 0:
 //         : 0 - no mistakes were found.
 //=======================================================================
-Standard_Integer TSampleOcafFunction_BoxDriver::Execute(TFunction_Logbook& log) const
+
+Standard_Integer TOcafFunction_CutDriver::Execute(TFunction_Logbook& log) const
 {
-	// Get the values of dimension and position attributes 
-	Handle(TDataStd_Real) TSR;
-	Standard_Real x,y,z,l,h,w;
-	if (!Label().FindChild(1).FindAttribute(TDataStd_Real::GetID(), TSR )) return 1;
-	l=TSR->Get();
+  // Let's get the arguments (OriginalNShape, ToolNShape of the object):
 
-	if (!Label().FindChild(2).FindAttribute(TDataStd_Real::GetID(), TSR )) return 1;
-	h=TSR->Get();
+	// First, we have to retrieve the TDF_Reference attributes to obtain the root labels of the OriginalNShape and the ToolNShape:
+	Handle(TDF_Reference)  OriginalRef, ToolRef;
+	if (!Label().FindChild(1).FindAttribute(TDF_Reference::GetID(), OriginalRef )) return 1;
+	TDF_Label OriginalLab = OriginalRef->Get();
+	if (!Label().FindChild(2).FindAttribute(TDF_Reference::GetID(), ToolRef)) return 1;
+	TDF_Label ToolLab = ToolRef->Get();
 
-	if (!Label().FindChild(3).FindAttribute(TDataStd_Real::GetID(), TSR )) return 1;
-	w=TSR->Get();
+	// Get the TNaming_NamedShape attributes of these labels
+	Handle(TNaming_NamedShape) OriginalNShape, ToolNShape;
+	if (!( OriginalLab.FindAttribute(TNaming_NamedShape::GetID(),OriginalNShape) ))
+		Standard_Failure::Raise("TOcaf_Commands::CutObjects");		
+	if (!( ToolLab.FindAttribute(TNaming_NamedShape::GetID(),ToolNShape) ))
+		Standard_Failure::Raise("TOcaf_Commands::CutObjects");		
 
-	if (!Label().FindChild(4).FindAttribute(TDataStd_Real::GetID(), TSR )) return 1;
-	x=TSR->Get();
+	// Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
+	TopoDS_Shape OriginalShape  = OriginalNShape->Get();
+	TopoDS_Shape ToolShape = ToolNShape->Get();
 
-	if (!Label().FindChild(5).FindAttribute(TDataStd_Real::GetID(), TSR )) return 1;
-	y=TSR->Get();
+// STEP 2:
+	// Let's call for algorithm computing a cut operation:
+	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
+	// Let's check if the Cut has been successfull:
+	if (!mkCut.IsDone()) 
+	{
+		MessageBox(0,"Cut not done.","Cut Function Driver",MB_ICONERROR);
+		return 2;
+	}
+	TopoDS_Shape ResultShape = mkCut.Shape();
 
-	if (!Label().FindChild(6).FindAttribute(TDataStd_Real::GetID(), TSR )) return 1;
-	z=TSR->Get();
-
-	// Build a box using the dimension and position attributes 
-	BRepPrimAPI_MakeBox mkBox( gp_Pnt(x, y ,z), l, h ,w);
-	TopoDS_Shape ResultShape = mkBox.Shape();
-
-
-	// Build a TNaming_NamedShape using built box
+	// Build a TNaming_NamedShape using built cut
 	TNaming_Builder B(Label());
-	B.Generated(ResultShape);
+	B.Modify( OriginalShape, ResultShape);
 // That's all:
   // If there are no any mistakes we return 0:
   return 0;
 }
 
-TSampleOcafFunction_BoxDriver::~TSampleOcafFunction_BoxDriver() {}
+TOcafFunction_CutDriver::~TOcafFunction_CutDriver() {}
  
 
-
-Standard_EXPORT Handle_Standard_Type& TSampleOcafFunction_BoxDriver_Type_()
+TDF_Label TOcaf_Commands::Cut(TDF_Label ObjectLab, TDF_Label ToolObjectLab)
 {
+  // A data structure for our cut operation:
+  // the result itself is attached to the Result label (as his name and his function attribute) 
+  // its arguments (Original object label; Tool object label) are attached to the child 
+  // labels of the Result Label:
+  //
+  // 0:1 Result Label ---> Name --->  Named shape ---> Function
+  //       |
+  //     0:1:1 -- Original object label Label
+  //       |
+  //     0:1:2 --  object label Label
+  // 
 
-    static Handle_Standard_Type aType1 = STANDARD_TYPE(TFunction_Driver);
-  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(TFunction_Driver);
-  static Handle_Standard_Type aType2 = STANDARD_TYPE(MMgt_TShared);
-  if ( aType2.IsNull()) aType2 = STANDARD_TYPE(MMgt_TShared);
-  static Handle_Standard_Type aType3 = STANDARD_TYPE(Standard_Transient);
-  if ( aType3.IsNull()) aType3 = STANDARD_TYPE(Standard_Transient);
- 
+	// Create a new label in the data structure for the box
+    TDF_Label L = TDF_TagSource::NewChild(MainLab);
 
-  static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("TSampleOcafFunction_BoxDriver",
-			                                 sizeof(TSampleOcafFunction_BoxDriver),
-			                                 1,
-			                                 (Standard_Address)_Ancestors,
-			                                 (Standard_Address)NULL);
+	// Create the data structure : Set a reference attribute on the Original and the Tool objects, set the name attribute
+	TDF_Reference::Set(L.FindChild(1), ObjectLab);
+	TDF_Reference::Set(L.FindChild(2), ToolObjectLab);
+	Handle(TDataStd_Name) ObjectName;
+	ObjectLab.FindAttribute(TDataStd_Name::GetID(),ObjectName);
+	TDataStd_Name::Set(L, ObjectName->Get());
 
-  return _aType;
+
+	// Instanciate a TFunction_Function attribute connected to the current cut driver
+	// and attach it to the data structure as an attribute of the Result Label
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_CutDriver::GetID());
+
+	// Initialize and execute the cut driver (look at the "Execute()" code)
+    TFunction_Logbook log;
+
+	Handle(TOcafFunction_CutDriver) myCutDriver;
+    // Find the TOcafFunction_CutDriver in the TFunction_DriverTable using its GUID 
+	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_CutDriver::GetID(), myCutDriver)) return L;
+		
+	myCutDriver->Init(L);
+    if (myCutDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Cut",MB_ICONERROR);
+
+	return L;
 }
 
-
-// DownCast method
-//   allow safe downcasting
-//
-const Handle(TSampleOcafFunction_BoxDriver) Handle(TSampleOcafFunction_BoxDriver)::DownCast(const Handle(Standard_Transient)& AnObject) 
-{
-  Handle(TSampleOcafFunction_BoxDriver) _anOtherObject;
-
-  if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(TSampleOcafFunction_BoxDriver))) {
-       _anOtherObject = Handle(TSampleOcafFunction_BoxDriver)((Handle(TSampleOcafFunction_BoxDriver)&)AnObject);
-     }
-  }
-
-  return _anOtherObject ;
-}
-const Handle(Standard_Type)& TSampleOcafFunction_BoxDriver::DynamicType() const 
-{ 
-  return STANDARD_TYPE(TSampleOcafFunction_BoxDriver) ; 
-}
-Standard_Boolean TSampleOcafFunction_BoxDriver::IsKind(const Handle(Standard_Type)& AType) const 
-{ 
-  return (STANDARD_TYPE(TSampleOcafFunction_BoxDriver) == AType || TFunction_Driver::IsKind(AType)); 
-}
-
-Handle_TSampleOcafFunction_BoxDriver::~Handle_TSampleOcafFunction_BoxDriver() {}
-
-*/
+#endif

@@ -99,19 +99,67 @@ void PartBoxFeature::Validate(TFunction_Logbook& log)
 
 
 
-
-
-
-/*
+// sample from OCC Ocaf
+#ifdef false
 
 //=======================================================================
-//function : TPartStd_BoxDriver
-//purpose  : Creation of an instance of the driver. It's possible (and recommended)
-//         : to have only one instance of a driver for the whole session.
+//function :	CreateBox
+//purpose  :	Create a box containing a Named shape, a name, a Function 
+//				and a Data structure containing box conctruction parameters
 //=======================================================================
 
-TSampleOcafFunction_BoxDriver::TSampleOcafFunction_BoxDriver()
-{}
+TDF_Label TOcaf_Commands::CreateBox(Standard_Real x, Standard_Real y, Standard_Real z, Standard_Real w, Standard_Real l, Standard_Real h, const TCollection_ExtendedString& Name)
+{
+  // A data structure for our box:
+  // the box itself is attached to the BoxLabel label (as his name and his function attribute) 
+  // its arguments (dimensions: width, length and height; and position: x, y, z) 
+  // are attached to the child labels of the box:
+  //
+  // 0:1 Box Label ---> Name --->  Named shape ---> Function
+  //       |
+  //     0:1:1 -- Width Label
+  //       |
+  //     0:1:2 -- Length Label
+  //       |
+  //     0:1:3 -- Height Label
+  //       |
+  //     0:1:4 -- X Label
+  //       |
+  //     0:1:5 -- Y Label
+  //       |
+  //     0:1:6 -- Z Label
+
+	// Create a new label in the data structure for the box
+    TDF_Label L = TDF_TagSource::NewChild(MainLab);
+
+	// Create the data structure : Set the dimensions, position and name attributes
+	TDataStd_Real::Set(L.FindChild(1), w);
+	TDataStd_Real::Set(L.FindChild(2), l);
+	TDataStd_Real::Set(L.FindChild(3), h);
+	TDataStd_Real::Set(L.FindChild(4), x);
+	TDataStd_Real::Set(L.FindChild(5), y);
+	TDataStd_Real::Set(L.FindChild(6), z);
+	TDataStd_Name::Set(L, Name);
+
+	
+	// Instanciate a TFunction_Function attribute connected to the current box driver
+	// and attach it to the data structure as an attribute of the Box Label
+	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_BoxDriver::GetID());
+
+	// Initialize and execute the box driver (look at the "Execute()" code)
+    TFunction_Logbook log;
+
+	Handle(TOcafFunction_BoxDriver) myBoxDriver;
+    // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
+	if(!TFunction_DriverTable::Get()->FindDriver(TOcafFunction_BoxDriver::GetID(), myBoxDriver)) return L;
+	
+	myBoxDriver->Init(L);
+    if (myBoxDriver->Execute(log)) MessageBox(0,"DFunction_Execute : failed","Box",MB_ICONERROR);
+
+	return L;
+}
+
+
 
 //=======================================================================
 //function : Validate
@@ -200,56 +248,5 @@ Standard_Integer TSampleOcafFunction_BoxDriver::Execute(TFunction_Logbook& log) 
   return 0;
 }
 
-TSampleOcafFunction_BoxDriver::~TSampleOcafFunction_BoxDriver() {}
- 
 
-
-Standard_EXPORT Handle_Standard_Type& TSampleOcafFunction_BoxDriver_Type_()
-{
-
-    static Handle_Standard_Type aType1 = STANDARD_TYPE(TFunction_Driver);
-  if ( aType1.IsNull()) aType1 = STANDARD_TYPE(TFunction_Driver);
-  static Handle_Standard_Type aType2 = STANDARD_TYPE(MMgt_TShared);
-  if ( aType2.IsNull()) aType2 = STANDARD_TYPE(MMgt_TShared);
-  static Handle_Standard_Type aType3 = STANDARD_TYPE(Standard_Transient);
-  if ( aType3.IsNull()) aType3 = STANDARD_TYPE(Standard_Transient);
- 
-
-  static Handle_Standard_Transient _Ancestors[]= {aType1,aType2,aType3,NULL};
-  static Handle_Standard_Type _aType = new Standard_Type("TSampleOcafFunction_BoxDriver",
-			                                 sizeof(TSampleOcafFunction_BoxDriver),
-			                                 1,
-			                                 (Standard_Address)_Ancestors,
-			                                 (Standard_Address)NULL);
-
-  return _aType;
-}
-
-
-// DownCast method
-//   allow safe downcasting
-//
-const Handle(TSampleOcafFunction_BoxDriver) Handle(TSampleOcafFunction_BoxDriver)::DownCast(const Handle(Standard_Transient)& AnObject) 
-{
-  Handle(TSampleOcafFunction_BoxDriver) _anOtherObject;
-
-  if (!AnObject.IsNull()) {
-     if (AnObject->IsKind(STANDARD_TYPE(TSampleOcafFunction_BoxDriver))) {
-       _anOtherObject = Handle(TSampleOcafFunction_BoxDriver)((Handle(TSampleOcafFunction_BoxDriver)&)AnObject);
-     }
-  }
-
-  return _anOtherObject ;
-}
-const Handle(Standard_Type)& TSampleOcafFunction_BoxDriver::DynamicType() const 
-{ 
-  return STANDARD_TYPE(TSampleOcafFunction_BoxDriver) ; 
-}
-Standard_Boolean TSampleOcafFunction_BoxDriver::IsKind(const Handle(Standard_Type)& AType) const 
-{ 
-  return (STANDARD_TYPE(TSampleOcafFunction_BoxDriver) == AType || TFunction_Driver::IsKind(AType)); 
-}
-
-Handle_TSampleOcafFunction_BoxDriver::~Handle_TSampleOcafFunction_BoxDriver() {}
-
-*/
+#endif
