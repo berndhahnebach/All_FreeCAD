@@ -6,7 +6,7 @@ import os,sys,FileTools
 
 #import FileTools
 
-# line seperator 
+# line seperator
 ls = os.linesep
 # path seperator
 ps = os.pathsep
@@ -32,8 +32,8 @@ LogFile.write(param)
 print param
 text = os.popen(param).read()
 LogFile.write(text)
-if not os.path.isdir("../../Doc/SourceDocumentation"):
-    os.mkdir("../../Doc/SourceDocumentation")
+if not os.path.isdir("../../doc/SourceDocumentation"):
+    os.mkdir("../../doc/SourceDocumentation")
 
 #====================================================================
 sys.stdout.write( ' done\n  Generate HTML ...')
