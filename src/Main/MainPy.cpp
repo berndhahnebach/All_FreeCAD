@@ -72,12 +72,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserve
 #endif
 
 extern "C" {
-	#ifdef FC_DEBUG
-	void MainExport initFreeCADDCmdPy() {
-	#else
-	void MainExport initFreeCADCmdPy() {
-	#endif
-
+	void MainExport initFreeCAD() {
 
 		// Init phase ===========================================================
 
