@@ -88,6 +88,7 @@ void DlgOnlineHelpImp::saveSettings()
   DownloadURL->onSave();
   prefExtBrowser->onSave();
   prefStartPage->onSave();
+  prefAuthorize->onSave();
 }
 
 void DlgOnlineHelpImp::loadSettings()
@@ -97,6 +98,7 @@ void DlgOnlineHelpImp::loadSettings()
   DownloadURL->onRestore();
   prefExtBrowser->onRestore();
   prefStartPage->onRestore();
+  prefAuthorize->onRestore();
 }
 
 #include "DlgOnlineHelp.cpp"

@@ -9,6 +9,7 @@ moc_CustomWidgets.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
 moc_DlgActivateWindow.cpp \
+moc_DlgAuthorization.cpp \
 moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
 moc_DlgCommandsImp.cpp \
@@ -42,6 +43,7 @@ moc_DockWindow.cpp \
 moc_Document.cpp \
 moc_FileDialog.cpp \
 moc_HelpView.cpp \
+moc_NetworkRetriever.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
 moc_PythonEditor.cpp \
@@ -63,6 +65,8 @@ DlgActions.cpp \
 DlgActions.h \
 DlgActivateWindow.cpp \
 DlgActivateWindow.h \
+DlgAuthorization.cpp \
+DlgAuthorization.h \
 DlgCommands.cpp \
 DlgCommands.h \
 DlgDocTemplates.cpp \
@@ -156,6 +160,7 @@ GuiConsole.cpp \
 HelpView.cpp \
 Macro.cpp \
 MouseModel.cpp \
+NetworkRetriever.cpp \
 PreCompiled.cpp \
 PrefWidgets.cpp \
 Process.cpp \

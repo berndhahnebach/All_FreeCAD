@@ -143,6 +143,7 @@ moc_CustomWidgets.cpp \
 moc_DlgActions.cpp \
 moc_DlgActionsImp.cpp \
 moc_DlgActivateWindow.cpp \
+moc_DlgAuthorization.cpp \
 moc_DlgCmdbarsImp.cpp \
 moc_DlgCommands.cpp \
 moc_DlgCommandsImp.cpp \
@@ -176,6 +177,7 @@ moc_DockWindow.cpp \
 moc_Document.cpp \
 moc_FileDialog.cpp \
 moc_HelpView.cpp \
+moc_NetworkRetriever.cpp \
 moc_PrefWidgets.cpp \
 moc_Process.cpp \
 moc_PythonEditor.cpp \
@@ -197,6 +199,8 @@ DlgActions.cpp \
 DlgActions.h \
 DlgActivateWindow.cpp \
 DlgActivateWindow.h \
+DlgAuthorization.cpp \
+DlgAuthorization.h \
 DlgCommands.cpp \
 DlgCommands.h \
 DlgDocTemplates.cpp \
@@ -290,6 +294,7 @@ GuiConsole.cpp \
 HelpView.cpp \
 Macro.cpp \
 MouseModel.cpp \
+NetworkRetriever.cpp \
 PreCompiled.cpp \
 PrefWidgets.cpp \
 Process.cpp \
@@ -373,11 +378,12 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
 	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
 	DockWindow.lo Document.lo Doxygen.lo FileDialog.lo \
-	GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo PreCompiled.lo \
-	PrefWidgets.lo Process.lo ProgressBar.lo PropertyPage.lo \
-	PropertyView.lo PythonEditor.lo ReportView.lo resource.lo \
-	Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo TextEdit.lo \
-	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
+	GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo \
+	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
+	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
+	ReportView.lo resource.lo Selection.lo SpinBox.lo \
+	Splashscreen.lo StackBar.lo TextEdit.lo ToolBox.lo \
+	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
 	View3DInventor.lo View3DInventorEx.lo View3DInventorExamples.lo \
 	ViewProvider.lo WaitCursor.lo WhatsThis.lo WidgetFactory.lo \
 	Widgets.lo Window.lo
@@ -419,6 +425,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HelpView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/LanguageFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MouseModel.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/NetworkRetriever.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PrefWidgets.Plo ./$(DEPDIR)/Process.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ProgressBar.Plo \
@@ -549,6 +556,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Macro.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MouseModel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetworkRetriever.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PrefWidgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Process.Plo@am__quote@
