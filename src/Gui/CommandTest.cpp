@@ -52,7 +52,7 @@
 //===========================================================================
 // Std_Test1
 //===========================================================================
-DEF_STD_CMD(FCCmdTest1);
+DEF_STD_CMD_A(FCCmdTest1);
 
 FCCmdTest1::FCCmdTest1()
 	:FCCppCommand("Std_Test1")
@@ -89,11 +89,11 @@ void FCCmdTest1::Activated(int iMsg)
   //       |
   //     0:1:6 -- Z Label
 
-	OpenCommand("Test1 - Box");
-
 	// Create a new label in the data structure for the box
 	FCDocument *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
+
+	OpenCommand("Test1 - Box");
 
     TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
 
@@ -138,10 +138,15 @@ void FCCmdTest1::Activated(int iMsg)
 
 }
 
+bool FCCmdTest1::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
+}
+
 //===========================================================================
 // Std_Test2
 //===========================================================================
-DEF_STD_CMD(FCCmdTest2);
+DEF_STD_CMD_A(FCCmdTest2);
 
 FCCmdTest2::FCCmdTest2()
 	:FCCppCommand("Std_Test2")
@@ -188,6 +193,11 @@ void FCCmdTest2::Activated(int iMsg)
 	// Display it
 	hcPrs->Display(1);
 
+}
+
+bool FCCmdTest2::IsActive(void)
+{
+  return (GetActiveOCCDocument()!=NULL);
 }
 
 
