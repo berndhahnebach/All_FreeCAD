@@ -337,7 +337,7 @@ void ApplicationWindow::CreateTestOperations()
 	CreateViewStdCommands();
 
 	_pclUndoRedoWidget = new FCUndoRedoDlg(this, "Undo/Redo");
-	connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
+	//connect(_pclUndoRedoWidget, SIGNAL(clickedListBox()), this, SLOT(executeUndoRedo()));
 
     // populate a tool bar with some actions
 
@@ -444,20 +444,33 @@ FCGuiDocument* ApplicationWindow::GetActiveDocument(void)
 
 void ApplicationWindow::updateUndo()
 {
-  if (_pclUndoRedoWidget)
-  {
-    _pclUndoRedoWidget->setMode(FCUndoRedoDlg::Undo);
-    _pclUndoRedoWidget->updateUndoRedoList();
-  }
+	puts("ApplicationWindow::updateUndo()");
+	if (_pclUndoRedoWidget)
+	{
+		_pclUndoRedoWidget->setMode(FCUndoRedoDlg::Undo);
+		_pclUndoRedoWidget->updateUndoRedoList();
+	}
 }
 
 void ApplicationWindow::updateRedo()
 {
-  if (_pclUndoRedoWidget)
-  {
-    _pclUndoRedoWidget->setMode(FCUndoRedoDlg::Redo);
-    _pclUndoRedoWidget->updateUndoRedoList();
-  }
+	puts("ApplicationWindow::updateRedo()");
+	if (_pclUndoRedoWidget)
+	{
+		_pclUndoRedoWidget->setMode(FCUndoRedoDlg::Redo);
+		_pclUndoRedoWidget->updateUndoRedoList();
+	}
+}
+
+void ApplicationWindow::slotUndo()
+{
+	puts("ApplicationWindow::slotUndo()");
+}
+
+void ApplicationWindow::slotRedo()
+{
+	puts("ApplicationWindow::slotRedo()");
+
 }
 
 

@@ -174,3 +174,6 @@ Version: V0.1B41 Date: Sat Mar 08 19:16:05 2003 +++++++++++++++++++++++++++++++
 
 Version: V0.1B42 Date: Thu Mar 13 21:36:58 2003 +++++++++++++++++++++++++++++++
 + changes in Customize Dialog
+
+Version: V0.1B43 Date: Sun Mar 16 22:32:35 2003 +++++++++++++++++++++++++++++++
++ startet Undo Redo logic

@@ -142,10 +142,22 @@ public:
 	bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.
 	bool IsValid() const;
-	/// Set a special Labe as modified
+	/// Set a special Label as modified
 	void SetModified(FCLabel* L);
 	/// /// Remove all modifications. After this call The document becomesagain Valid.
 	void PurgeModified();
+	/// Recompute if the document was  not valid and propagate the reccorded modification.
+	void Recompute();
+	/// Get the OCC Document Handle
+	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
+
+	
+	/** @name methodes for the UNDO REDO handling 
+	 *  this methodes are usaly used by the GUI document! Its not intended
+	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO 
+	 *  nececary.
+	 */
+	//@{
 	/// New Command (Short cut for Commit and Open transaction)
 	void NewCommand() ;
 	/// returns True if a Command transaction is open
@@ -178,14 +190,13 @@ public:
 	int GetAvailableRedos() const;
 	/// Will REDO  one step, returns  False if no redo was done (Redos == 0).
 	bool Redo() ;
-	/// Recompute if the document was  not valid and propagate the reccorded modification.
-	void Recompute();
+	//@}
+
+	
 	/// Returns the storage string of the document.
 	const short* StorageFormat() const;
 	/// Change the storage format of the document.
 	void ChangeStorageFormat(const short* sStorageFormat) ;
-	/// Get the OCC Document Handle
-	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
 
 /* Not mapped so far:
 virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Integer aReferenceIdentifier,const Standard_Address aModifContext) ;
@@ -233,7 +244,9 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 
 
 protected:
-
+	/** @name atributes and methodes for label handling
+	 */
+	//@{
 	/// less funktion for the map sorting of TDF_Labels
 	struct LabelLess{
 		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2) const
@@ -241,17 +254,17 @@ protected:
 			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
 				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
 		}
-		//friend class std::map<TDF_Label,FCLabel*,ltstr>;
 	};
-	
+	/// friend daclaration to allow access
 	friend FCLabel;
 	FCLabel *HasPyLabel(TDF_Label cLabel);
-
 	/// map of all existing python label wrappers (sorted)
 	std::map <TDF_Label,FCLabel*,LabelLess> mcLabelMap;
+	FCLabel *						_pcMain;
+	//@}
+	
 	/// handle to the OCC document 
 	Handle_TDocStd_Document _hDoc;
-	FCLabel *						_pcMain;
 
 
 };

@@ -43,6 +43,8 @@
 #endif
 
 #include "DlgUndoRedo.h"
+#include "Application.h"
+#include "Document.h"
 
 
 
@@ -53,6 +55,77 @@ FCUndoRedoList::FCUndoRedoList( QWidget * parent, const char * name, WFlags f)
   : QListBox(parent, name, f)
 {
 }
+
+/* 
+ *  Constructs a FCUndoRedoDlg which is a child of 'parent', with the 
+ *  name 'name'.' 
+ */
+FCUndoRedoDlg::FCUndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
+    : QFrame( parent, name, WType_Popup),
+      _tMode(tMode)
+{
+  if ( !name )
+  	setName( "FCUndoRedoDlg" );
+  resize( 160, 140 ); 
+
+  setFrameStyle( WinPanel | Raised );
+
+  _pTextLabel = new QLabel( this, "TextLabel" );
+  _pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
+  _pTextLabel->setFrameStyle(QFrame::Sunken);
+  _pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
+  _pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
+  _pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
+
+
+  _pListBox = new FCUndoRedoList( this, "ListBox" );
+  _pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
+  _pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
+  _pListBox->setSelectionMode(QListBox::Multi);
+
+  connect(_pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(selChangeUndoRedoList()));
+  connect(_pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
+  connect(_pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(selected()));
+  init();
+}
+
+/*  
+ *  Destroys the object and frees any allocated resources
+ */
+FCUndoRedoDlg::~FCUndoRedoDlg()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+/** 
+ *  This methode fetch the Undo / Redo infromation from the 
+ *  active document and shows it in the Undo redo dialog.
+ */
+void FCUndoRedoDlg::init() 
+{
+	puts("FCUndoRedoDlg::init()");
+	std::vector<std::string> vecReUndos;
+	FCGuiDocument* pcDoc = ApplicationWindow::Instance->GetActiveDocument();
+
+	if(pcDoc)
+	{
+		if (_tMode == Undo)	
+			vecReUndos = pcDoc->GetUndoVector();
+		else
+			vecReUndos = pcDoc->GetRedoVector();
+
+		for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
+			_pListBox->insertItem((*i).c_str());
+		_pTextLabel->setProperty( "text", tr( "Cancel" ) );
+	}else{
+		_pTextLabel->setProperty( "text", tr( "No Undo" ) );
+	}
+
+}
+
+
+
+
 
 void FCUndoRedoList::mouseMoveEvent ( QMouseEvent * e )
 {
@@ -100,60 +173,6 @@ void FCUndoRedoList::mousePressEvent (QMouseEvent* e)
 
 
 
-/* 
- *  Constructs a FCUndoRedoDlg which is a child of 'parent', with the 
- *  name 'name'.' 
- */
-FCUndoRedoDlg::FCUndoRedoDlg( QWidget* parent,  const char* name, TMode tMode )
-    : QFrame( parent, name, WType_Popup),
-      _tMode(tMode)
-{
-  if ( !name )
-  	setName( "FCUndoRedoDlg" );
-  resize( 160, 140 ); 
-
-  setFrameStyle( WinPanel | Raised );
-
-  _pTextLabel = new QLabel( this, "TextLabel" );
-  _pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
-  _pTextLabel->setFrameStyle(QFrame::Sunken);
-  _pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
-  _pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
-  _pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
-
-
-  _pListBox = new FCUndoRedoList( this, "ListBox" );
-  _pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
-  _pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
-  _pListBox->setSelectionMode(QListBox::Multi);
-
-  connect(_pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(selChangeUndoRedoList()));
-  connect(_pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
-  connect(_pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(selected()));
-  init();
-}
-
-/*  
- *  Destroys the object and frees any allocated resources
- */
-FCUndoRedoDlg::~FCUndoRedoDlg()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
-
-void FCUndoRedoDlg::init() 
-{
-  QString name;
-  if (_tMode == Undo)
-    name = "Undo";
-  else
-    name = "Redo";
-
-  for (int i=0; i<20; i++)
-    _pListBox->insertItem(name);
-
-  _pTextLabel->setProperty( "text", tr( "Cancel" ) );
-}
 
 void FCUndoRedoDlg::selChangeUndoRedoList() 
 {

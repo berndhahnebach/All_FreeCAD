@@ -158,19 +158,23 @@ void FCCommand::TestActive(void)
  *  operation default is the Command name.
  *  @see CommitCommand(),AbortCommand()
  */
-void FCCommand::OpenCommand(const char* sName)
+void FCCommand::OpenCommand(const char* sCmdName)
 {
+	if(sCmdName)
+		GetAppWnd()->GetActiveDocument()->OpenCommand(sCmdName);
+	else
+		GetAppWnd()->GetActiveDocument()->OpenCommand(sName.c_str());
 
 }
 
 void FCCommand::CommitCommand(void)
 {
-
+	GetAppWnd()->GetActiveDocument()->CommitCommand();
 }
 
-void FCCommand::AborCommand(void)
+void FCCommand::AbortCommand(void)
 {
-
+	GetAppWnd()->GetActiveDocument()->AbortCommand();
 }
 
 //--------------------------------------------------------------------------

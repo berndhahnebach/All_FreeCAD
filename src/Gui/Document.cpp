@@ -237,6 +237,83 @@ FCView* FCGuiDocument::GetActiveView(void)
 }
 
 
+//--------------------------------------------------------------------------
+// UNDO REDO transaction handling  
+//--------------------------------------------------------------------------
+/** Open a new Undo transaction on the active document
+ *  This methode open a new UNDO transaction on the active document. This transaction
+ *  will later apear in the UNDO REDO dialog with the name of the command. If the user 
+ *  recall the transaction everything changed on the document between OpenCommand() and 
+ *  CommitCommand will be undone (or redone). You can use an alternetive name for the 
+ *  operation default is the Command name.
+ *  @see CommitCommand(),AbortCommand()
+ */
+void FCGuiDocument::OpenCommand(const char* sName)
+{
+	// check on double open Commands
+	assert(!GetDocument()->HasOpenCommand());
+
+	listUndoNames.push_back(sName);
+
+	GetDocument()->NewCommand();
+	
+}
+
+void FCGuiDocument::CommitCommand(void)
+{
+	GetDocument()->CommitCommand();	
+}
+
+void FCGuiDocument::AbortCommand(void)
+{
+	listUndoNames.pop_back();
+
+	GetDocument()->AbortCommand();	
+}
+
+/// Get an Undo string vector with the Undo names
+std::vector<std::string> FCGuiDocument::GetUndoVector(void)
+{
+	std::vector<std::string> vecTemp;
+
+	//std::copy(listUndoNames.begin(),listUndoNames.end(),vecTemp.begin());
+
+	for(std::list<std::string>::iterator It=listUndoNames.begin();It!=listUndoNames.end();It++)
+		vecTemp.push_back(*It);
+
+	return vecTemp;
+}
+
+/// Get an Redo string vector with the Redo names
+std::vector<std::string> FCGuiDocument::GetRedoVector(void)
+{
+	std::vector<std::string> vecTemp;
+
+	std::copy(listRedoNames.begin(),listRedoNames.end(),vecTemp.begin());
+
+	return vecTemp;
+}
+
+/// Will UNDO  one or more steps
+void FCGuiDocument::Undo(int iSteps)
+{
+
+	for (int i=0;i<iSteps;i++)
+	{
+		GetDocument()->Undo();
+	}
+
+}
+
+/// Will REDO  one or more steps
+void FCGuiDocument::Redo(int iSteps)
+{
+	for (int i=0;i<iSteps;i++)
+	{
+		GetDocument()->Undo();
+	}
+
+}
 
 
 

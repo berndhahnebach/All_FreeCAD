@@ -114,7 +114,7 @@ public:
 	/// Commit the Undo transaction on the active document
 	void CommitCommand(void);
 	/// Abort the Undo transaction on the active document
-	void AborCommand(void);
+	void AbortCommand(void);
 	//@}
 
 	/** @name Helper methodes to generate help pages */

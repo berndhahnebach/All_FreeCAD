@@ -83,6 +83,28 @@ public:
 	bool SendMsgToViews(const char* pMsg);
 
 
+
+	/** @name methodes for the UNDO REDO handling */
+	//@{
+	/// Open a new Undo transaction on the document
+	void OpenCommand(const char* sName=0);
+	/// Commit the Undo transaction on the document
+	void CommitCommand(void);
+	/// Abort the Undo transaction on the document
+	void AbortCommand(void);
+	/// Get an Undo string vector with the Undo names
+	std::vector<std::string> GetUndoVector(void);
+	/// Get an Redo string vector with the Redo names
+	std::vector<std::string> GetRedoVector(void);
+	/// Will UNDO  one or more steps
+	void Undo(int iSteps);
+	/// Will REDO  one or more steps
+	void Redo(int iSteps) ;
+
+
+	//@}
+
+
 	/// Geter for the Active View
 	FCView* GetActiveView(void);
 
@@ -109,6 +131,16 @@ private:
 	// the doc/Document
 	FCDocument*						_pcDocument;
 	FCPyHandle<FCDocument>			_hcDocument;
+
+	/** @name attributes for the UNDO REDO facility
+	 */
+	//@{
+	/// undo names list
+	std::list<std::string> listUndoNames;
+	/// redo names list
+	std::list<std::string> listRedoNames;	
+	//@}
+
 };
 
 

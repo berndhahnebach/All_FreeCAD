@@ -212,10 +212,15 @@ protected: // Protected methods
 	/// waiting cursor stuff 
 	void timerEvent( QTimerEvent * e){emit timeEvent();}
 
-// slots for the undo/redo dialog: (not implemented yet)
+	/** @name methodes for the UNDO REDO handling 
+	 *  this methodes are usaly used by the GUI document! Its not intended
+	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO 
+	 *  nececary.
+	 */
+	//@{
 protected slots:
-	void slotUndo(){};
-	void slotRedo(){};
+	void slotUndo();
+	void slotRedo();
 	void updateUndo();
 	void updateRedo();
 	void executeUndoRedo();

@@ -154,6 +154,9 @@ void FCCmdPartTest2::Activated(int iMsg)
 	FCDocument *pcDoc = GetActiveOCCDocument();
 	if(!pcDoc) return;
 
+
+	OpenCommand("Test Load Part");
+
 	GetConsole().Log("Using Doc: %p\n",pcDoc);
 
     TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main()->GetOCCLabel());
@@ -162,13 +165,18 @@ void FCCmdPartTest2::Activated(int iMsg)
 	TopoDS_Shape ResultShape;
 
 	QString fn = FCFileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", GetAppWnd() );
-	if ( fn.isEmpty() ) return;
+	if ( fn.isEmpty() )
+	{
+		AbortCommand();
+		return;
+	}
  
 	try{
 	  BRepTools::Read(ResultShape,(const Standard_CString)fn.latin1(),aBuilder);
 	}
 	// Boeser Fehler ;-)
 	catch(...){
+		AbortCommand();
 	  throw new FCException("Error loading BREP file");
 	}  
 
