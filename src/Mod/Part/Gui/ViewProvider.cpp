@@ -47,7 +47,7 @@ using namespace PartGui;
        
 ViewProviderInventorPart::ViewProviderInventorPart()
 {
-
+  fDeflection = 0,1;
 }
 
 ViewProviderInventorPart::~ViewProviderInventorPart()
@@ -59,7 +59,8 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 { 
 
   SoSeparator * SepShapeRoot=new SoSeparator();
-  if(ComputeFaces(SepShapeRoot,dynamic_cast<Part::PartFeature*>(pcFeature)->GetShape()),0.1)
+//  if(computeFacesNew(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape()))
+  if(ComputeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape(),(float)0.1))
     return SepShapeRoot;
   else
     Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
@@ -71,6 +72,111 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 
 #define MAX2(X, Y)	(  Abs(X) > Abs(Y)? Abs(X) : Abs(Y) )
 #define MAX3(X, Y, Z)	( MAX2 ( MAX2(X,Y) , Z) )
+
+
+
+Standard_Boolean ViewProviderInventorPart::computeFacesNew(SoSeparator* root, const TopoDS_Shape &myShape)
+{
+  TopExp_Explorer ex;
+//	BRepMesh_IncrementalMesh MESH(myShape,fDeflection);
+
+  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
+
+    // get the shape and mesh it
+		const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
+
+
+    // this block mesh the face and transfers it in a C array of vertices and face indexes
+		Standard_Integer nbNodesInFace,nbTriInFace;
+		SbVec3f* vertices=0;
+		long* cons=0;
+    
+    transferToArray(aFace,&vertices,&cons,nbNodesInFace,nbTriInFace);
+
+    if(!vertices) break;
+
+	  // define vertices
+	  SoCoordinate3 * coords = new SoCoordinate3;
+	  coords->point.setValues(0,nbNodesInFace, vertices);
+	  root->addChild(coords);
+
+	  // define the indexed face set
+
+		SoLocateHighlight* h = new SoLocateHighlight();
+    h->color.setValue((float)0.2,(float)0.2,(float)1);
+		SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+		faceset->coordIndex.setValues(0,4*nbTriInFace,(const int*) cons);
+		h->addChild(faceset);
+		root->addChild(h);
+
+		delete [] vertices;
+		delete [] cons;
+
+  } // end of face loop
+
+  return true;
+}
+
+void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,long** cons,int &nbNodesInFace,int &nbTriInFace )
+{
+	TopLoc_Location aLoc;
+
+  // doing the meshing and checking the result
+	BRepMesh_IncrementalMesh MESH(aFace,fDeflection);
+	Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
+  if(aPoly.IsNull()){ 
+    Base::Console().Log("Empty face trianglutaion\n");
+    nbNodesInFace =0;
+    nbTriInFace = 0;
+    vertices = 0l;
+    cons = 0l;
+    return;
+  }
+
+  // geting the transformation of the shape/face
+	gp_Trsf myTransf;
+	Standard_Boolean identity = true;
+	if(!aLoc.IsIdentity())  {
+	  identity = false;
+		myTransf = aLoc.Transformation();
+  }
+
+  // geting size and create the array
+	nbNodesInFace = aPoly->NbNodes();
+	nbTriInFace = aPoly->NbTriangles();
+	*vertices = new SbVec3f[nbNodesInFace];
+	*cons = new long[4*(nbTriInFace)];
+
+  // cycling through the poly mesh
+	const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
+	const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+  Standard_Integer i;
+  for(i=1;i<=nbTriInFace;i++) {
+  // Get the triangle
+
+    Standard_Integer N1,N2,N3;
+    Triangles(i).Get(N1,N2,N3);
+
+    gp_Pnt V1 = Nodes(N1);
+    gp_Pnt V2 = Nodes(N2);
+    gp_Pnt V3 = Nodes(N3);
+
+    // transform the vertices to the place of the face
+    if(!identity) {
+      V1.Transform(myTransf);
+      V2.Transform(myTransf);
+      V3.Transform(myTransf);
+    }
+
+    (*vertices)[N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
+    (*vertices)[N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
+    (*vertices)[N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
+
+    int j = i - 1;
+    N1--; N2--; N3--;
+    (*cons)[4*j] = N1; (*cons)[4*j+1] = N2; (*cons)[4*j+2] = N3; (*cons)[4*j+3] = SO_END_FACE_INDEX;
+  }
+}
 
 
 Standard_Boolean ViewProviderInventorPart::ComputeFaces(SoSeparator* root, const TopoDS_Shape &myShape, float deflection)
@@ -116,58 +222,57 @@ Standard_Boolean ViewProviderInventorPart::ComputeFaces(SoSeparator* root, const
 						Standard_Integer nbTriInFace = aPoly->NbTriangles();
 		
 						SbVec3f* vertices = new SbVec3f[nbNodesInFace];
-						int32_t* cons = new int32_t[4*(nbTriInFace)];
+						long* cons = new long[4*(nbTriInFace)];
       
 						const Poly_Array1OfTriangle& Triangles = aPoly->Triangles();
 						const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
-      
-						Standard_Integer i;
-						for(i=1;i<=nbTriInFace;i++) {
-						// Get the triangle
-	
-							Standard_Integer N1,N2,N3;
-							Triangles(i).Get(N1,N2,N3);
-	
-							gp_Pnt V1 = Nodes(N1);
-							gp_Pnt V2 = Nodes(N2);
-							gp_Pnt V3 = Nodes(N3);
+	          Standard_Integer i;
+	          for(i=1;i<=nbTriInFace;i++) {
+	          // Get the triangle
 
-							if(!identity) {
-								V1.Transform(myTransf);
-								V2.Transform(myTransf);
-								V3.Transform(myTransf);
-							}
+		          Standard_Integer N1,N2,N3;
+		          Triangles(i).Get(N1,N2,N3);
 
-							vertices[N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
-							vertices[N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
-							vertices[N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
-	
-							int j = i - 1;
-							N1--; N2--; N3--;
-							cons[4*j] = N1; cons[4*j+1] = N2; cons[4*j+2] = N3; cons[4*j+3] = SO_END_FACE_INDEX;
-						}
-      
-						// define vertices
-						SoCoordinate3 * coords = new SoCoordinate3;
-						coords->point.setValues(0,nbNodesInFace, vertices);
-						root->addChild(coords);
-      
-						// define the indexed face set
+		          gp_Pnt V1 = Nodes(N1);
+		          gp_Pnt V2 = Nodes(N2);
+		          gp_Pnt V3 = Nodes(N3);
 
-						if(selection) {
-							SoLocateHighlight* h = new SoLocateHighlight();
+		          if(!identity) {
+			          V1.Transform(myTransf);
+			          V2.Transform(myTransf);
+			          V3.Transform(myTransf);
+		          }
+
+		          vertices[N1-1].setValue((float)(V1.X()),(float)(V1.Y()),(float)(V1.Z()));
+		          vertices[N2-1].setValue((float)(V2.X()),(float)(V2.Y()),(float)(V2.Z()));
+		          vertices[N3-1].setValue((float)(V3.X()),(float)(V3.Y()),(float)(V3.Z()));
+
+		          int j = i - 1;
+		          N1--; N2--; N3--;
+		          cons[4*j] = N1; cons[4*j+1] = N2; cons[4*j+2] = N3; cons[4*j+3] = SO_END_FACE_INDEX;
+	          }
+      
+	          // define vertices
+	          SoCoordinate3 * coords = new SoCoordinate3;
+	          coords->point.setValues(0,nbNodesInFace, vertices);
+	          root->addChild(coords);
+
+	          // define the indexed face set
+
+	          if(selection) {
+		          SoLocateHighlight* h = new SoLocateHighlight();
               h->color.setValue((float)0.2,(float)0.2,(float)1);
-							SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-							faceset->coordIndex.setValues(0,4*nbTriInFace, cons);
-							h->addChild(faceset);
-							root->addChild(h);
-						}
-						else {
-							SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-							faceset->coordIndex.setValues(0,4*nbTriInFace, cons);
-							root->addChild(faceset);
-						}
-      
+		          SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+		          faceset->coordIndex.setValues(0,4*nbTriInFace,(const int*) cons);
+		          h->addChild(faceset);
+		          root->addChild(h);
+	          }
+	          else {
+		          SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+		          faceset->coordIndex.setValues(0,4*nbTriInFace, (const int*)cons);
+		          root->addChild(faceset);
+	          }
+
 						delete [] vertices;
 						delete [] cons;
 					}

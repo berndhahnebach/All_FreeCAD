@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,46 +21,32 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
+#ifndef __DLGSETTINGS3DVIEWIMP_H
+#define __DLGSETTINGS3DVIEWIMP_H
 
-#include "../../../Gui/ViewProvider.h"
-
-
-class TopoDS_Shape;
-class SoSeparator;
+#include "DlgSettings3DViewPart.h"
 
 namespace PartGui {
 
+/**
+ * The DlgSettings3DViewPartImp class implements a preference page to change settings
+ * for the Inventor viewer.
+ * \author Jürgen Riegel
+ */
+class DlgSettings3DViewPartImp : public DlgSettings3DViewPart
+{ 
+  Q_OBJECT
 
-class ViewProviderInventorPart:public Gui::ViewProviderInventor
-{
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderInventorPart();
-
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderInventorPart();
-
-  virtual SoNode* create(App::Feature *pcFeature);
+  DlgSettings3DViewPartImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~DlgSettings3DViewPartImp();
 
 protected:
-  Standard_Boolean ComputeFaces(SoSeparator* root, const TopoDS_Shape &myShape, float deflection);
-  Standard_Boolean computeFacesNew(SoSeparator* root, const TopoDS_Shape &myShape);
-  void             transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,long** cons,int &nbNodesInFace,int &nbTriInFace );
-
-  float fDeflection;
-
+  virtual void warnInventor(bool);
+  void saveSettings();
+  void loadSettings();
 };
 
-} // namespace PartGui
+} // namespace Gui
 
-
-#endif // __VIEWPROVIDERPART_H__
-
+#endif // __DLGSETTINGS3DVIEWIMP_H
