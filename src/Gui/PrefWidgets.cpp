@@ -710,34 +710,30 @@ void FCCustomWidget::setItems(const std::vector<std::string>& items)
   _clItems = items;
 }
 
-void FCCustomWidget::appendItems(FCParameterGrp* pcGrp, const std::vector<std::string>& items)
+void FCCustomWidget::appendItems(FCParameterGrp::handle hGrp, const std::vector<std::string>& items)
 {
-  if (!pcGrp) return;
+  if (hGrp.IsNull()) return;
 
-  FCParameterGrp* pcPrefGrp = &(*hPrefGrp);
-
-  if (pcPrefGrp == pcGrp)
+  if (hPrefGrp == hGrp)
   {
     for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
       _clItems.push_back(*it);
   }
   else
   {
-    if (_clWbItems.find(pcGrp) == _clWbItems.end())
+    if (_clWbItems.find(hGrp) == _clWbItems.end())
     {
-      pcGrp->Attach(this);
-      _clWbItems[pcGrp] = items;
+      hGrp->Attach(this);
+      _clWbItems[hGrp] = items;
     }
   }
 }
 
-void FCCustomWidget::removeItems(FCParameterGrp* pcGrp, const std::vector<std::string>& items)
+void FCCustomWidget::removeItems(FCParameterGrp::handle hGrp, const std::vector<std::string>& items)
 {
-  if (!pcGrp) return;
+  if (hGrp.IsNull()) return;
 
-  FCParameterGrp* pcPrefGrp = &(*hPrefGrp);
-
-  if (pcPrefGrp == pcGrp)
+  if (hPrefGrp == hGrp)
   {
     unsigned long startPos=0;
     for (std::vector<std::string>::const_iterator it = items.begin(); it != items.end(); ++it)
@@ -752,10 +748,10 @@ void FCCustomWidget::removeItems(FCParameterGrp* pcGrp, const std::vector<std::s
   }
   else
   {
-    WorkbenchItems::iterator it = _clWbItems.find(pcGrp);
+    WorkbenchItems::iterator it = _clWbItems.find(hGrp);
     if (it != _clWbItems.end())
     {
-      pcGrp->Detach(this);
+      hGrp->Detach(this);
       it->second.clear();
       _clWbItems.erase(it);
     }
@@ -1367,8 +1363,7 @@ bool FCCustomWidgetManager::update()
   return true;
 }
 
-void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vector<std::string>& defIt, 
-                                         const char* parent)
+void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vector<std::string>& defIt, const char* parent)
 {
   FCPopupMenu* popup = getPopupMenu(type.c_str(), parent);
 
@@ -1382,7 +1377,7 @@ void FCCustomWidgetManager::addPopupMenu(const std::string& type, const std::vec
     hPrefGrp = hPrefGrp->GetGroup("Menus");
     hPrefGrp = hPrefGrp->GetGroup(type.c_str());
     
-    popup->appendItems(&(*hPrefGrp), defIt);
+    popup->appendItems(hPrefGrp, defIt);
     popup->update(d->_clCmdMgr);
     return;
   }
@@ -1505,7 +1500,7 @@ void FCCustomWidgetManager::removeMenuItems(const std::string& type, const std::
   hPrefGrp = hPrefGrp->GetGroup("Menus");
   hPrefGrp = hPrefGrp->GetGroup(type.c_str());
 
-  popup->FCCustomWidget::removeItems(&(*hPrefGrp),items);
+  popup->FCCustomWidget::removeItems(hPrefGrp,items);
   popup->update(d->_clCmdMgr);
 }
 
@@ -1528,7 +1523,7 @@ void FCCustomWidgetManager::addToolBar(const std::string& type, const std::vecto
     hPrefGrp = hPrefGrp->GetGroup("Toolbars");
     hPrefGrp = hPrefGrp->GetGroup(type.c_str());
     
-    toolbar->appendItems(&(*hPrefGrp), defIt);
+    toolbar->appendItems(hPrefGrp, defIt);
     toolbar->update(d->_clCmdMgr);
     return;
   }
@@ -1592,7 +1587,7 @@ void FCCustomWidgetManager::removeToolBarItems(const std::string& type, const st
   hPrefGrp = hPrefGrp->GetGroup("Toolbars");
   hPrefGrp = hPrefGrp->GetGroup(type.c_str());
 
-  tb->FCCustomWidget::removeItems(&(*hPrefGrp),items);
+  tb->FCCustomWidget::removeItems(hPrefGrp,items);
   tb->update(d->_clCmdMgr);
 }
 
@@ -1615,7 +1610,7 @@ void FCCustomWidgetManager::addCmdBar(const std::string& type, const std::vector
     hPrefGrp = hPrefGrp->GetGroup("Cmdbar");
     hPrefGrp = hPrefGrp->GetGroup(type.c_str());
     
-    toolbar->appendItems(&(*hPrefGrp), defIt);
+    toolbar->appendItems(hPrefGrp, defIt);
     toolbar->update(d->_clCmdMgr);
     return;
   }
@@ -1677,7 +1672,7 @@ void FCCustomWidgetManager::removeCmdBarItems(const std::string& type, const std
   hPrefGrp = hPrefGrp->GetGroup("Cmdbar");
   hPrefGrp = hPrefGrp->GetGroup(type.c_str());
 
-  tb->FCCustomWidget::removeItems(&(*hPrefGrp),items);
+  tb->FCCustomWidget::removeItems(hPrefGrp,items);
   tb->update(d->_clCmdMgr);
 }
 

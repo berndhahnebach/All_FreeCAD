@@ -393,9 +393,9 @@ class FCCustomWidget : public FCWidgetPrefs
     /** Sets the given items to current */
     void setItems(const std::vector<std::string>& items);
     /** Appends several items */
-    void appendItems(FCParameterGrp*, const std::vector<std::string>& item);
+    void appendItems(FCParameterGrp::handle, const std::vector<std::string>& item);
     /** Removes several items */
-    void removeItems(FCParameterGrp*, const std::vector<std::string>& item);
+    void removeItems(FCParameterGrp::handle, const std::vector<std::string>& item);
     /** Calls @ref restorePreferences() 
      * So it is possible to call the load routine from outside
      */
@@ -433,7 +433,7 @@ class FCCustomWidget : public FCWidgetPrefs
     QString                  _clWorkbench;
     bool                     _bCanModify;
     bool                     _bCanRemovable;
-    typedef std::map<FCParameterGrp*, std::vector<std::string> > WorkbenchItems;
+    typedef std::map<FCParameterGrp::handle, std::vector<std::string> > WorkbenchItems;
     // items from other workbenches
     WorkbenchItems _clWbItems;
 };
