@@ -46,6 +46,7 @@ class GuiExport FCAction : public QAction
     FCAction ( const QString & text, const QString & menuText, int accel, QObject * parent, const char * name = 0, bool toggle = FALSE );
     virtual ~FCAction();
 
+    /// allow to add this to other widgets as 'QToolBar' or 'QPopupMenu'
     virtual bool addTo(QWidget *);
 };
 /*

@@ -39,7 +39,7 @@
 #include <qwindowsstyle.h>
 #include <qvalidator.h>
 
-/** Validate input
+/** Validate input of the command line
  */
 class FCConsoleValidator : public QValidator
 {
@@ -170,18 +170,23 @@ protected:
   void enterEvent ( QEvent * );
   void leaveEvent ( QEvent * );
   QPopupMenu* CreatePopupMenu();
+  /// import old commands from the preferences
   void ReadCmdList();
+  /// export new commands into the preferences
   void SaveCmdList();
 
 public:
   void SetParent(QWidget* parent);
 	static void Destruct(void);
 	static FCCommandLine &Instance(void);
+  /// gloabal function to get command line object
 	friend FCCommandLine &GetCmdLine(void); 
 
 protected slots:
+  /// clear all new commands
   void slotClearConsole();
   void slotOpenConsole();
+  /// launch the command
   void slotLaunchCommand();
 };
 

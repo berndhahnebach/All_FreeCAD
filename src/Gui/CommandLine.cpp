@@ -45,8 +45,7 @@
 #include "../Base/Exception.h"
 
 ////////////////////////////////////////////////////////////////////
-/** Validate input
- */
+
 FCConsoleValidator::FCConsoleValidator ( QWidget * parent, const char * name )
 : QValidator(parent, name)
 {
@@ -69,8 +68,7 @@ void FCConsoleValidator::fixup ( QString & txt) const
 }
 
 ////////////////////////////////////////////////////////////////////
-/** The FCCommandLine class
- */
+
 FCCommandLine::FCCommandLine(void)
 : QComboBox(true, NULL), FCWindow("command line")
 {

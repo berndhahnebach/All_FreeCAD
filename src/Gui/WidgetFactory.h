@@ -32,7 +32,8 @@
 #include "../Base/Factory.h"
 #include <typeinfo>
 
-/** The widget factory supplier class
+/** 
+ * The widget factory supplier class
  */
 class FCWidgetFactorySupplier
 {
@@ -46,6 +47,7 @@ class FCWidgetFactorySupplier
 	  friend FCWidgetFactorySupplier &GetWidgetFactorySupplier(void); 
 
   public:
+    /// produce the widget using the factory
     QWidget* GetWidget(const char* sClassName, QWidget* parent, const char* sPref);
 };
 

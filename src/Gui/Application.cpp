@@ -211,6 +211,17 @@ QToolBar *ApplicationWindow::GetToolBar(const char* name)
 	}
 }
 
+FCvector<QToolBar*> ApplicationWindow::GetToolBars()
+{
+  FCvector<QToolBar*> aclToolbars;
+	for (FCmap <FCstring,QToolBar*>::iterator It = mpcToolBars.begin(); It != mpcToolBars.end(); ++It)
+  {
+    aclToolbars.push_back(It->second);
+  }
+
+  return aclToolbars;
+}
+
 /// Delete a named Toolbar
 void ApplicationWindow::DelToolBar(const char* name)
 {
@@ -331,11 +342,11 @@ void ApplicationWindow::CreateTestOperations()
 	_cCommandManager.AddTo("Std_Paste",pcStdToolBar);
 	pcStdToolBar->addSeparator();
 	// Undo/Redo Toolbutton
-	QToolButton* button = new QToolButtonDropDown(pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
+	QToolButton* button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pUndo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotUndo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateUndo()));
 
-	button = new QToolButtonDropDown(pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
+	button = new FCToolButtonDropDown(pcStdToolBar, QPixmap(pRedo), _pclUndoRedoWidget);
 	connect(button, SIGNAL(clicked()), this, SLOT(slotRedo()));
 	connect(button, SIGNAL(updateWidgetSignal()), this, SLOT(updateRedo()));
 
@@ -374,11 +385,6 @@ void ApplicationWindow::CreateTestOperations()
 
 	setMenuForSDIModeSysButtons( menuBar());
 	 
-  // test for preference widget
-  FCEditSpinBox* sb = new FCEditSpinBox (pcStdToolBar, "Test");
-  sb->setSuffix(" mm");
-  GetWidgetFactorySupplier().GetWidget(typeid(FCEditSpinBox).name(), pcStdToolBar, "Test");
-  GetWidgetFactorySupplier().GetWidget(typeid(FCEditSpinBox).name(), pcStdToolBar, "Test");
 }
 
 /// send Messages to the active view
@@ -491,6 +497,21 @@ void ApplicationWindow::resizeEvent ( QResizeEvent *e)
    setSysButtonsAtMenuPosition();
 }
 
+void ApplicationWindow::closeEvent ( QCloseEvent * e )
+{/*
+  long lNbOfDocs = lpcDocuments.size();
+  FCView* pView = GetActiveView();
+  while (pView != NULL && lNbOfDocs > 0)
+  {
+    lNbOfDocs--;
+    pView->close();
+    if (lNbOfDocs != lpcDocuments.size())
+      return; // cancel pressed
+    pView = GetActiveView();
+  }
+*/
+  QextMdiMainFrm::closeEvent(e);
+}
 
 void ApplicationWindow::exportImage()
 {

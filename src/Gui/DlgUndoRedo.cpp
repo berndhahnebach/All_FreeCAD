@@ -191,71 +191,6 @@ void FCUndoRedoDlg::selected()
 }
 
 
-
-
-
-
-
-
-
-
-
-/* 
- *  Constructs a FCUndoRedoPopup which is a child of 'parent', with the 
- *  name 'name'.' 
- */
-FCUndoRedoPopup::FCUndoRedoPopup( QWidget* parent,  const char* name, bool bUndo )
-    : QPopupMenu( parent, name),
-      _bUndo(bUndo)
-{
-  if ( !name )
-  	setName( "FCUndoRedoDlg" ); 
-
-  _pTextLabel = new QLabel( this, "TextLabel" );
-  _pTextLabel->setProperty( "text", tr( "Cancel" ) );
-  _pTextLabel->setFrameStyle(QFrame::Sunken);
-  _pTextLabel->resize(100, 100);
-
-  _pListBox = new QListBox( this, "ListBox" );
-
-  insertItem(_pListBox);
-  insertItem(_pTextLabel);
-
-//  connect(_pListBox, SIGNAL(selected(int)), this, SLOT(selChangeUndoRedoList()));
-  connect(_pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(selChangeUndoRedoList()));
-
-  init();
-}
-
-/*  
- *  Destroys the object and frees any allocated resources
- */
-FCUndoRedoPopup::~FCUndoRedoPopup()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
-
-void FCUndoRedoPopup::init() 
-{
-  QString name;
-  if (_bUndo == true)
-    name = "Undo";
-  else
-    name = "Redo";
-
-  for (int i=0; i<20; i++)
-    _pListBox->insertItem(name);
-}
-
-void FCUndoRedoPopup::selChangeUndoRedoList() 
-{
-  // close the listbox
-  close();
-}
-
-
-
-
 /* XPM */
 static const char *pUndo[]={
 "20 17 6 1",
@@ -338,13 +273,13 @@ static const char *pArrow[]={
 ".............#",
 ".............#"};
 
-QToolButtonDropDown::QToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
+FCToolButtonDropDown::FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget, const char * name)
   : QToolButton(parent, name), _pWidget(pWidget)
 {
   // set the pixmap onto the button
   setIconSet(rclPixmap);
   // create the drop-down button
-  _pDropDown = new QToolButtonDropDown(parent, name);
+  _pDropDown = new FCToolButtonDropDown(parent, name);
 
   // place the two buttons in a horizontal box
   // (this is important if you drag the parent toolbar to the left/right border)
@@ -363,7 +298,7 @@ QToolButtonDropDown::QToolButtonDropDown(QWidget * parent, const QPixmap& rclPix
   connect(_pDropDown, SIGNAL( clicked()), this, SLOT(popupWidget()));
 }
 
-QToolButtonDropDown::QToolButtonDropDown( QWidget * parent, const char * name)
+FCToolButtonDropDown::FCToolButtonDropDown( QWidget * parent, const char * name)
   : QToolButton(parent, name), _pDropDown(NULL), _pWidget(NULL)
 {
   // resize the drop-down button
@@ -373,14 +308,14 @@ QToolButtonDropDown::QToolButtonDropDown( QWidget * parent, const char * name)
   setIconSet(QPixmap(pArrow));
 }
 
-QToolButtonDropDown::~QToolButtonDropDown()
+FCToolButtonDropDown::~FCToolButtonDropDown()
 {
   if (_pDropDown != NULL)
     delete _pDropDown;
   _pDropDown = NULL;
 }
 
-void QToolButtonDropDown::enterEvent ( QEvent * e )
+void FCToolButtonDropDown::enterEvent ( QEvent * e )
 {
   // do the things of the base class
   QToolButton::enterEvent(e);
@@ -388,7 +323,7 @@ void QToolButtonDropDown::enterEvent ( QEvent * e )
   emit enterEventSignal(e);
 }
 
-void QToolButtonDropDown::leaveEvent ( QEvent * e ) 
+void FCToolButtonDropDown::leaveEvent ( QEvent * e ) 
 {
   // do the things of the base class
   QToolButton::leaveEvent(e);
@@ -398,19 +333,19 @@ void QToolButtonDropDown::leaveEvent ( QEvent * e )
   update();
 }
 
-void QToolButtonDropDown::enterEventSlot(QEvent* e)
+void FCToolButtonDropDown::enterEventSlot(QEvent* e)
 {
   // process the event
   QToolButton::enterEvent(e);
 }
 
-void QToolButtonDropDown::leaveEventSlot(QEvent* e)
+void FCToolButtonDropDown::leaveEventSlot(QEvent* e)
 {
   // process the event
   QToolButton::leaveEvent(e);
 }
 
-void QToolButtonDropDown::popupWidget()
+void FCToolButtonDropDown::popupWidget()
 {
   // popup the widget
   if (_pWidget && _pDropDown)
@@ -445,24 +380,24 @@ void QToolButtonDropDown::popupWidget()
   }
 }
 
-void QToolButtonDropDown::setWidget(QWidget* pWidget)
+void FCToolButtonDropDown::setWidget(QWidget* pWidget)
 {
   _pWidget = pWidget;
 }
 
-QWidget* QToolButtonDropDown::getWidget()
+QWidget* FCToolButtonDropDown::getWidget()
 {
   return _pWidget;
 }
 
-void QToolButtonDropDown::setButtonEnabled(bool bEnable)
+void FCToolButtonDropDown::setButtonEnabled(bool bEnable)
 {
   setEnabled(bEnable);
   if (_pDropDown)
     _pDropDown->setEnabled(bEnable);
 }
 
-bool QToolButtonDropDown::isButtonEnabled()
+bool FCToolButtonDropDown::isButtonEnabled()
 {
   bool bEnabled = true;
   bEnabled &= isEnabled();
@@ -472,14 +407,14 @@ bool QToolButtonDropDown::isButtonEnabled()
   return bEnabled;
 }
 
-void QToolButtonDropDown::setAutoRaiseEx (bool bEnable)
+void FCToolButtonDropDown::setAutoRaiseEx (bool bEnable)
 {
   setAutoRaise(bEnable);
   if (_pDropDown != NULL)
     _pDropDown->setAutoRaise(bEnable);
 }
 
-bool QToolButtonDropDown::autoRaiseEx () const
+bool FCToolButtonDropDown::autoRaiseEx () const
 {
   if (_pDropDown != NULL)
     return _pDropDown->autoRaise() && autoRaise();

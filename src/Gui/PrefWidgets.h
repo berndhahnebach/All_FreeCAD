@@ -33,6 +33,11 @@
 #include "../Base/Parameter.h"
 
 #include <qspinbox.h>
+#include <qcheckbox.h>
+#include <qradiobutton.h>
+#include <qlineedit.h>
+#include <qcombobox.h>
+#include <qlistbox.h>
 #include <qstring.h>
 
 // forward declarations
@@ -48,27 +53,32 @@ class FCWidgetFactorySupplier;
  *  @see FCWidgetPrefsHandler
  *  @see FCWidgetFactorySupplier
  */
-class FCWidgetPrefs
+class FCWidgetPrefs : public FCObserver
 {
   public:
+    /// get the widget's name in preferences
     QString getPrefName();
-    QString getDefaultName();
+    /// use system parameter
     void setUseSystemParameter();
+    /// use user parameter
     void setUseUserParameter();
+    /// return the handler
     FCWidgetPrefsHandler* getHandler();
-
-/**
- * @name restorePreferences
- */
-    virtual void restorePreferences() = 0;
-
-/**
- * @name savePreferences
- */
-    virtual void savePreferences()    = 0;
+    /// install a new handler
+    void installHandler(FCWidgetPrefsHandler*);
+    /// get the handle to the parameter group
+    FCParameterGrp::handle getParamGrp();
+    /// observers method
+    virtual void OnChange(FCSubject &rCaller);
 
   protected:
+    /// restore the preferences
+    virtual void restorePreferences() = 0;
+    /// save the preferences
+    virtual void savePreferences()    = 0;
+    /// constructor
     FCWidgetPrefs(const char * name = 0);
+    /// destructor
     virtual ~FCWidgetPrefs();
 
     FCParameterGrp::handle hPrefGrp;
@@ -83,6 +93,7 @@ class FCWidgetPrefs
 
     // friends
     friend class FCWidgetFactorySupplier;
+    friend class FCWidgetPrefsHandler;
 };
 
 /** The preference handler class
@@ -95,57 +106,20 @@ class FCWidgetPrefsHandler : public QObject
 {
   Q_OBJECT
 
-  private:
+  protected:
     FCWidgetPrefsHandler(FCWidgetPrefs* p);
 
   public slots:
-/**
- * @name Save
- */
-    void Save();
+    /// save
+    virtual void save();
+    /// restore
+    virtual void restore();
 
-/**
- * @name Restore
- */
-    void Restore();
-
-  signals:
-    void saved(const FCstring&);
-
-  private:
+  protected:
     FCWidgetPrefs* pPref;
 
     //friends
     friend class FCWidgetPrefs;
-};
-
-/** The WidgetPrefsManager class
- *  This class manages all available prefereence widgets in FreeCAD. All 
- *  such widgets will be registered here automatically.
- *  @see FCWidgetPrefs
- */
-class FCWidgetPrefsManager : public QObject
-{
-  Q_OBJECT
-
-  private:
-	  // Singleton
-	  FCWidgetPrefsManager();
-  	static FCWidgetPrefsManager *_pcSingleton;
-
-  public:
-  	static FCWidgetPrefsManager &Instance(void);
-
-  public:
-	  void Attach(const FCstring& name, FCWidgetPrefsHandler* w);
-	  void Detach(const FCstring& name, FCWidgetPrefsHandler* w);
-
-  public slots:
-    void slotSave(const FCstring& name);
-
-  private:
-  #	pragma warning( disable : 4251 )
-	  FCmap<FCstring, FCvector<FCWidgetPrefsHandler*> > _sHandlers;
 };
 
 /** The FCEditSpinBox class
@@ -163,10 +137,6 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
     FCEditSpinBox ( QWidget * parent = 0, const char * name = 0 );
     virtual ~FCEditSpinBox();
 
-    // restore from/save to parameters
-    void restorePreferences();
-    void savePreferences();
-
     // PROPERTIES
     // getters
     int    getAccuracy      () const;
@@ -180,9 +150,13 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
     void  setMaxValueFloat (double value);
 
   protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
     virtual QString mapValueToText(int value);
     virtual int mapTextToValue(bool* ok);
     virtual void valueChange();
+    void stepChange();
 
   signals:
     void valueFloatChanged(double value);
@@ -193,28 +167,90 @@ class FCEditSpinBox : public QSpinBox, public FCWidgetPrefs
     double            m_fDivisor;
     double            m_fEpsilon;
 };
-#include <qvariant.h>
-#include <qdialog.h>
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
-class QPushButton;
-class QSpinBox;
 
-class TestDialog : public QDialog
-{ 
+/**
+ *
+ */
+class FCLineEdit : public QLineEdit, public FCWidgetPrefs
+{
     Q_OBJECT
 
-public:
-    TestDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~TestDialog();
+  public:
+    FCLineEdit ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCLineEdit();
 
-    FCEditSpinBox* SpinBox1;
-    QPushButton* buttonOk;
-    QPushButton* buttonCancel;
+  protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
+};
 
-protected:
-    QGridLayout* MyDialogLayout;
+/**
+ *
+ */
+class FCComboBox : public QComboBox, public FCWidgetPrefs
+{
+    Q_OBJECT
+
+  public:
+    FCComboBox ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCComboBox();
+
+  protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
+};
+
+/**
+ *
+ */
+class FCListBox : public QListBox, public FCWidgetPrefs
+{
+    Q_OBJECT
+
+  public:
+    FCListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+    virtual ~FCListBox();
+
+  protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
+};
+
+/**
+ *
+ */
+class FCCheckBox : public QCheckBox, public FCWidgetPrefs
+{
+    Q_OBJECT
+
+  public:
+    FCCheckBox ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCCheckBox();
+
+  protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
+};
+
+/**
+ *
+ */
+class FCRadioButton : public QRadioButton, public FCWidgetPrefs
+{
+    Q_OBJECT
+
+  public:
+    FCRadioButton ( QWidget * parent = 0, const char * name = 0 );
+    virtual ~FCRadioButton();
+
+  protected:
+    // restore from/save to parameters
+    void restorePreferences();
+    void savePreferences();
 };
 
 #endif // __FC_PREF_WIDGETS_H__

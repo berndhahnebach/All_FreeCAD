@@ -1,5 +1,5 @@
 /***************************************************************************
-                          DlgCustomizeImp.h  -  description
+                          DlgSettingsImp.h  -  description
                              -------------------
     begin                : 2002/08/19 21:11:52
     copyright            : (C) 2002 by Werner Mayer
@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 /** \file $RCSfile$
- *  \brief Customize toolbars and button groups
+ *  \brief 
  *  \author Werner Mayer
  *  \version $Revision$
  *  \date    $Date$
@@ -28,42 +28,19 @@
 
 
 
-#ifndef DLGCUSTOMIZE_H
-#define DLGCUSTOMIZE_H
+#ifndef DLG_SETTINGS_IMP_H
+#define DLG_SETTINGS_IMP_H
 
-#include "DlgCustomize.h"
+#include "DlgSettings.h"
 #include "Window.h"
 
-class FCCommand;
-
-/**
- * Dialog which contains all available commands and separate
- * them in several categories (file, edit, view,...).
- * You can extend the existing toolbars or buttongroups with 
- * several commands just by drag and drop.
- */
-class FCDlgCustomize : public FCDlgCustomizeBase
-{ 
+class FCDlgSettings : public FCDlgSettingsBase
+{
   Q_OBJECT
 
   public:
-    FCDlgCustomize( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~FCDlgCustomize();
-
-  protected slots:
-    /// shows the description for the corresponding command
-    void slotDescription(QString);
-    /// show all commands of this category
-    void slotGroupSelected(const QString &);
-    /// shows all buttons of the toolbar
-    void slotToolBarSelected(const QString &);
-    /// creates new toolbar
-    void slotCreateToolBar();
-
-  protected:
-    // groups of commands
-    FCmap<FCstring, FCvector<FCCommand*> > m_alCmdGroups;
-    FCvector<QToolBar*>                    m_aclToolbars;
+    FCDlgSettings( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    ~FCDlgSettings();
 };
 
-#endif // DLGCUSTOMIZE_H
+#endif // DLG_SETTINGS_IMP_H

@@ -252,23 +252,23 @@ void FCHtmlViewValidator::fixup ( QString & txt) const
 {
 }
 
-//// FCComboBox //////////////////////////////////////////////////////
+//// FCHtmlComboBox //////////////////////////////////////////////////////
 
-FCComboBox::FCComboBox ( QWidget * parent, const char * name)
+FCHtmlComboBox::FCHtmlComboBox ( QWidget * parent, const char * name)
 : QComboBox(parent, name)
 {
   setValidator(new FCHtmlViewValidator(this));
   connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(slotKeyPressReturn));
 }
 
-FCComboBox::FCComboBox ( bool rw, QWidget * parent, const char * name)
+FCHtmlComboBox::FCHtmlComboBox ( bool rw, QWidget * parent, const char * name)
 : QComboBox(rw, parent, name)
 {
   setValidator(new FCHtmlViewValidator(this));
   connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(slotKeyPressReturn()));
 }
 
-void FCComboBox::slotKeyPressReturn()
+void FCHtmlComboBox::slotKeyPressReturn()
 {
   emit returnPressed(currentText());
 }
@@ -364,7 +364,7 @@ FCHtmlView::FCHtmlView( const QString& home_,  QWidget* parent,  const char* nam
 	pclButtonOpen->setAutoRaise(true);
 
   // the 'Path' combo box
-  pclPathCombo = new FCComboBox( true, pclButtonGrp, "Paths" );
+  pclPathCombo = new FCHtmlComboBox( true, pclButtonGrp, "Paths" );
   pclPathCombo->setDuplicatesEnabled(false);
   pclPathCombo->setAutoCompletion(true);
   pclPathCombo->setProperty( "minimumSize", QSize( 25, 25 ) );

@@ -268,6 +268,30 @@ FCToolboxGroup::FCToolboxGroup ( const QString & title, QWidget * parent, const 
 
 FCToolboxGroup::~FCToolboxGroup ()
 {
+  savePreferences();
+}
+
+void FCToolboxGroup::restorePreferences()
+{
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
+
+  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (FCvector<FCstring>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    sCommands[*it]->GetAction()->addTo(this);
+  }
+}
+
+void FCToolboxGroup::savePreferences()
+{
+  int i=0;
+  for (FCvector<FCstring>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    hPrefGrp->SetASCII(szBuf, it->c_str());
+  }
 }
 
 void FCToolboxGroup::initialize(QWidget* parent)
@@ -297,6 +321,8 @@ void FCToolboxGroup::initialize(QWidget* parent)
   m_Popup->setCheckable(true);
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(popupMenuAboutToShow()));
   connect(pScrollWidget->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(slotRedrawScrollBar(int)));
+
+  restorePreferences();
 }
 
 void FCToolboxGroup::slotRedrawScrollBar(int v)
@@ -352,6 +378,7 @@ void FCToolboxGroup::dropEvent ( QDropEvent * e)
   if ( pAction ) 
   {
     pAction->addTo(this);
+    alDroppedActions.push_back(pAction->name());
     FCActionDrag::pAction = NULL;
   }
 }

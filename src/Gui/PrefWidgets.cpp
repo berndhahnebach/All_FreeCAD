@@ -48,47 +48,33 @@
 
 FCWidgetPrefs::FCWidgetPrefs(const char * name) : pHandler(NULL)
 {
-  if (name)
-  {
-    m_sPrefName = name;
-    pHandler = new FCWidgetPrefsHandler(this);
-    FCWidgetPrefsManager::Instance().Attach(m_sPrefName.latin1(), pHandler);
-  }
-  else
-    m_sPrefName = getDefaultName();
-
   m_sPrefGrp = "Widget Preferences";
+  m_sPrefName = "_____default_____";
+
+  if (name)
+    m_sPrefName = name;
+
   setUseSystemParameter();
+  if (hPrefGrp.IsValid())
+  {
+    hPrefGrp->Attach(this);
+  }
+
+  // install a handler for automation stuff
+  pHandler = new FCWidgetPrefsHandler(this);
 }
 
 FCWidgetPrefs::~FCWidgetPrefs()
 {
-  FCWidgetPrefsManager::Instance().Detach(m_sPrefName.latin1(), pHandler);
+  hPrefGrp->Detach(this);
 }
 
 void FCWidgetPrefs::setPrefName(QString pref)
 {
-  try
-  {
-    // you must choose another name
-    if (pref == getDefaultName())
-    {
-      char szBuf[200];
-      sprintf(szBuf, "You must choose another name for this item, not \"%s\"\n", pref.latin1());
-      throw FCException(szBuf);
-    }
-
-    m_sPrefName = pref; 
-    pHandler = new FCWidgetPrefsHandler(this);
-    FCWidgetPrefsManager::Instance().Attach(m_sPrefName.latin1(), pHandler);
-  }
-  catch (const FCException&)
-  {
-    GetConsole().Error("\"%s\" is a reserved name, you must choose another name\n", pref.latin1());
-#ifdef _DEBUG
-    throw;
-#endif
-  }
+  hPrefGrp->Detach(this);
+  m_sPrefName = pref; 
+  setUseSystemParameter();
+  hPrefGrp->Attach(this);
 }
 
 QString FCWidgetPrefs::getPrefName()
@@ -96,24 +82,37 @@ QString FCWidgetPrefs::getPrefName()
   return m_sPrefName; 
 }
 
-QString FCWidgetPrefs::getDefaultName()
-{
-  return "Default";
-}
-
 void FCWidgetPrefs::setUseSystemParameter()
 {
-  hPrefGrp = GetApplication().GetSystemParameter().GetGroup(m_sPrefGrp.latin1());
+  hPrefGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Widgets")->GetGroup(m_sPrefGrp.latin1());
+  hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
 }
 
 void FCWidgetPrefs::setUseUserParameter()
 {
-  hPrefGrp = GetApplication().GetUserParameter().GetGroup(m_sPrefGrp.latin1());
+  hPrefGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("Widgets")->GetGroup(m_sPrefGrp.latin1());
+  hPrefGrp = hPrefGrp->GetGroup(m_sPrefName.latin1());
 }
 
 FCWidgetPrefsHandler* FCWidgetPrefs::getHandler()
 {
   return pHandler;
+}
+
+void FCWidgetPrefs::installHandler(FCWidgetPrefsHandler* h)
+{
+  delete pHandler;
+  pHandler = h;
+}
+
+FCParameterGrp::handle FCWidgetPrefs::getParamGrp()
+{
+  return hPrefGrp;
+}
+
+void FCWidgetPrefs::OnChange(FCSubject &rCaller)
+{
+  restorePreferences();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -122,66 +121,15 @@ FCWidgetPrefsHandler::FCWidgetPrefsHandler(FCWidgetPrefs* p) : pPref(p)
 {
 }
 
-void FCWidgetPrefsHandler::Save()
+void FCWidgetPrefsHandler::save()
 {
   pPref->savePreferences();
-  emit saved(pPref->getPrefName().latin1());
+  pPref->getParamGrp()->Notify();
 }
 
-void FCWidgetPrefsHandler::Restore()
+void FCWidgetPrefsHandler::restore()
 {
   pPref->restorePreferences();
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-FCWidgetPrefsManager* FCWidgetPrefsManager::_pcSingleton = 0L;
-
-FCWidgetPrefsManager::FCWidgetPrefsManager()
-{
-}
-
-FCWidgetPrefsManager & FCWidgetPrefsManager::Instance(void)
-{
-	// not initialized?
-	if(!_pcSingleton)
-	{
-		_pcSingleton = new FCWidgetPrefsManager;
-	}
-
-  return *_pcSingleton;
-}
-
-void FCWidgetPrefsManager::slotSave(const FCstring& name)
-{
-  if (_sHandlers.find(name) != _sHandlers.end())
-  {
-    FCvector<FCWidgetPrefsHandler*> aHandlers = _sHandlers[name];
-    for (FCvector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
-      (*it)->Restore();
-  }
-}
-
-void FCWidgetPrefsManager::Attach(const FCstring& name, FCWidgetPrefsHandler* w)
-{
-	_sHandlers[name].push_back(w);
-  connect(w, SIGNAL(saved(const FCstring&)), SLOT(slotSave(const FCstring&)));
-}
-
-void FCWidgetPrefsManager::Detach(const FCstring& name, FCWidgetPrefsHandler* w)
-{
-  if (_sHandlers.find(name) != _sHandlers.end())
-  {
-    FCvector<FCWidgetPrefsHandler*>& aHandlers = _sHandlers[name];
-    for (FCvector<FCWidgetPrefsHandler*>::iterator it = aHandlers.begin(); it != aHandlers.end(); ++it)
-    {
-      if (*it == w)
-      {
-        aHandlers.erase(it);
-        break;
-      }
-    }
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -201,9 +149,6 @@ FCEditSpinBox::FCEditSpinBox ( QWidget * parent, const char * name )
   QSpinBox::setMaxValue(int(fMaxValue * m_fDivisor));
   QSpinBox::setMinValue(int(fMinValue * m_fDivisor));
   QSpinBox::setLineStep(int(fStep     * m_fDivisor));
-
-  // restore the saved data
-  restorePreferences();
 }
 
 FCEditSpinBox::~FCEditSpinBox() 
@@ -282,59 +227,144 @@ void FCEditSpinBox::setValueFloat(double value)
   QSpinBox::setValue(int(m_fDivisor * value + fEps)); 
 }
 
+void FCEditSpinBox::stepChange () 
+{
+  QSpinBox::stepChange();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#include <qvariant.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-
-TestDialog::TestDialog( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : QDialog( parent, name, modal, fl )
+FCLineEdit::FCLineEdit ( QWidget * parent, const char * name )
+: QLineEdit(parent, name), FCWidgetPrefs(name)
 {
-    if ( !name )
-	setName( "MyDialog" );
-    resize( 188, 76 ); 
-    setProperty( "caption", tr( "MyDialog" ) );
-    setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-    MyDialogLayout = new QGridLayout( this ); 
-    MyDialogLayout->setSpacing( 6 );
-    MyDialogLayout->setMargin( 11 );
-
-    SpinBox1 = new FCEditSpinBox( this, "Test" );
-//    SpinBox1 = (FCEditSpinBox*)GetWidgetFactorySupplier().GetWidget(typeid(FCEditSpinBox).name(), this, "Test");
-
-    MyDialogLayout->addMultiCellWidget( SpinBox1, 0, 0, 0, 1 );
-
-    buttonOk = new QPushButton( this, "buttonOk" );
-    buttonOk->setProperty( "text", tr( "&OK" ) );
-    buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-    buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
-
-    MyDialogLayout->addWidget( buttonOk, 1, 0 );
-
-    buttonCancel = new QPushButton( this, "buttonCancel" );
-    buttonCancel->setProperty( "text", tr( "&Cancel" ) );
-    buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-
-    MyDialogLayout->addWidget( buttonCancel, 1, 1 );
-
-    // signals and slots connections
-    connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
-    connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
-
-    connect( buttonOk, SIGNAL( clicked() ), SpinBox1->getHandler(), SLOT( Save() ) );
 }
 
-/*  
- *  Destroys the object and frees any allocated resources
- */
-TestDialog::~TestDialog()
+FCLineEdit::~FCLineEdit()
 {
-    // no need to delete child widgets, Qt does it all for us
 }
 
+void FCLineEdit::restorePreferences()
+{
+  FCstring text = hPrefGrp->GetASCII(getPrefName().latin1(), "");
+  setText(text.c_str());
+}
+
+void FCLineEdit::savePreferences()
+{
+  hPrefGrp->SetASCII(getPrefName().latin1(), text().latin1());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCComboBox::FCComboBox ( QWidget * parent, const char * name )
+: QComboBox(parent, name), FCWidgetPrefs(name)
+{
+}
+
+FCComboBox::~FCComboBox()
+{
+}
+
+void FCComboBox::restorePreferences()
+{
+  clear();
+  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (FCvector<FCstring>::const_iterator it = items.begin(); it != items.end(); ++it)
+    insertItem(it->c_str());
+
+  int item = hPrefGrp->GetInt(getPrefName().latin1(), 0);
+  setCurrentItem(item);
+}
+
+void FCComboBox::savePreferences()
+{
+  for (int i = 0; i < count(); i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    hPrefGrp->SetASCII(szBuf, text(i).latin1());
+  }
+
+  hPrefGrp->SetInt(getPrefName().latin1(), currentItem());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCListBox::FCListBox ( QWidget * parent, const char * name, WFlags f )
+: QListBox(parent, name, f), FCWidgetPrefs(name)
+{
+}
+
+FCListBox::~FCListBox()
+{
+}
+
+void FCListBox::restorePreferences()
+{
+  clear();
+  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (FCvector<FCstring>::const_iterator it = items.begin(); it != items.end(); ++it)
+    insertItem(it->c_str());
+
+  int item = hPrefGrp->GetInt(getPrefName().latin1(), 0);
+  setCurrentItem(item);
+}
+
+void FCListBox::savePreferences()
+{
+  int size = int(count());
+  for (int i = 0; i < size; i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    hPrefGrp->SetASCII(szBuf, item(i)->text().latin1());
+  }
+
+  hPrefGrp->SetInt(getPrefName().latin1(), currentItem());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCCheckBox::FCCheckBox ( QWidget * parent, const char * name )
+: QCheckBox(parent, name), FCWidgetPrefs(name)
+{
+}
+
+FCCheckBox::~FCCheckBox()
+{
+}
+
+void FCCheckBox::restorePreferences()
+{
+  bool enable = hPrefGrp->GetBool(getPrefName().latin1(), false);
+  setChecked(enable);
+}
+
+void FCCheckBox::savePreferences()
+{
+  hPrefGrp->SetBool(getPrefName().latin1(), isChecked());
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+FCRadioButton::FCRadioButton ( QWidget * parent, const char * name )
+: QRadioButton(parent, name), FCWidgetPrefs(name)
+{
+}
+
+FCRadioButton::~FCRadioButton()
+{
+}
+
+void FCRadioButton::restorePreferences()
+{
+  bool enable = hPrefGrp->GetBool(getPrefName().latin1(), false);
+  setChecked(enable);
+}
+
+void FCRadioButton::savePreferences()
+{
+  hPrefGrp->SetBool(getPrefName().latin1(), isChecked());
+}
 
 #include "moc_PrefWidgets.cpp"

@@ -136,6 +136,8 @@ public:
 
 	/// Get a named Toolbar or creat if not in
 	QToolBar *GetToolBar(const char* name);
+  /// Get all toolbars
+  FCvector<QToolBar*> GetToolBars(); 
 	/// Delete a named Toolbar
 	void DelToolBar(const char* name);
 
@@ -193,6 +195,7 @@ public slots:
 protected: // Protected methods
    /** just fits the system menu button position to the menu position */
    virtual void resizeEvent ( QResizeEvent * );
+   virtual void closeEvent ( QCloseEvent * e );
 	/// Handels all commands 
 	FCCommandManager _cCommandManager;
 	FCBmpFactory     _cBmpFactory;
@@ -276,6 +279,7 @@ public:
 	// getter/setter
 	int GetInterval();
 	void SetInterval(int i);
+  /// sets the wait cursor calling API methods of the OS
 	void SetWaitCursor();
 
   // Singleton
@@ -289,6 +293,7 @@ private:
     static FCAutoWaitCursor* _pclSingleton;
 
 protected:
+    /// run the thread, decrement an internal counter
     void run();
 
     QMutex awcMutex;
@@ -301,6 +306,7 @@ protected:
 #endif
 
 public slots:
+    /// increment the internal counter
     void timeEvent();
 };
 

@@ -50,6 +50,7 @@
 #include "DlgMacroRecordImp.h"
 #include "DlgPreferencesImp.h"
 #include "DlgCustomizeImp.h"
+#include "DlgSettingsImp.h"
 #include "Icons/images.cpp"
 #include "Icons/x.xpm"
 
@@ -238,18 +239,7 @@ void FCCmdQuit::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThi
 
 void FCCmdQuit::Activated(void)
 {
-  if (ApplicationWindow::Instance->GetActiveView() == NULL)
-  {
-    qApp->quit();
-    return;
-  }
-
-  int iButton = QMessageBox::warning(ApplicationWindow::Instance, 
-                                     "FreeCAD", "Save changes to file?", "Yes", "No", "Cancel", 0);
-  if (iButton == 1) // no
-    qApp->quit();
-	
-
+  ApplicationWindow::Instance->close();
 	//statusBar()->message(IDS_STATUS_DEFAULT);
 }
 
@@ -740,7 +730,7 @@ void FCCmdDlgCustomize::CmdProfile(char** sMenuText,char** sToolTipText,char** s
 	*sToolTipText = "Customize toolbars and button groups";
 	*sWhatsThis   = *sToolTipText;
 	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "view_fitall";
+	*sPixmap      = "customize";
 	iAccel = 0;
 }
 
@@ -748,6 +738,28 @@ void FCCmdDlgCustomize::CmdProfile(char** sMenuText,char** sToolTipText,char** s
 void FCCmdDlgCustomize::Activated(void)
 {
 	FCDlgCustomize cDlg(AppWnd(),"CustomizeDialog",true);
+	cDlg.exec();
+}
+
+//===========================================================================
+// Std_DlgSettings
+//===========================================================================
+DEF_STD_CMD(FCCmdDlgSettings	,"Std_DlgSettings");
+
+void FCCmdDlgSettings::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
+{
+	*sMenuText	  = "Settings...";
+	*sToolTipText = "Edit the program settings";
+	*sWhatsThis   = *sToolTipText;
+	*sStatusTip   = *sToolTipText;
+	*sPixmap      = "settings";
+	iAccel = 0;
+}
+
+
+void FCCmdDlgSettings::Activated(void)
+{
+	FCDlgSettings cDlg(AppWnd(),"SettingsDialog",true);
 	cDlg.exec();
 }
 
@@ -769,32 +781,12 @@ void FCCmdCommandLine::CmdProfile(char** sMenuText,char** sToolTipText,char** sW
 
 void FCCmdCommandLine::Activated(void)
 {
+  bool b = AppWnd()->isMaximized ();
 	AppWnd()->showMinimized () ;
 	GetInterpreter().RunCommandLine("Console mode");
 	AppWnd()->showMaximized () ;
+  if (!b) AppWnd()->showNormal () ;
 
-}
-
-//===========================================================================
-// Std_TestCommand
-//===========================================================================
-#include "PrefWidgets.h"
-DEF_STD_CMD(FCTestCmd,"Std_TestCmd");
-
-void FCTestCmd::CmdProfile(char** sMenuText,char** sToolTipText,char** sWhatsThis,char** sStatusTip,char** sPixmap,int &iAccel)
-{
-	*sMenuText	  = "test";
-	*sToolTipText = "test";
-	*sWhatsThis   = *sToolTipText;
-	*sStatusTip   = *sToolTipText;
-	*sPixmap      = "CommandLine";
-	iAccel = 0;
-}
-
-
-void FCTestCmd::Activated(void)
-{
-  TestDialog(AppWnd(), "test", true).exec();
 }
 
 
@@ -829,8 +821,8 @@ void CreateStdCommands(void)
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroRecord());
 	rcCmdMgr.AddCommand(new FCCmdDlgMacroExecute());
 	rcCmdMgr.AddCommand(new FCCmdDlgCustomize());
+  rcCmdMgr.AddCommand(new FCCmdDlgSettings());
 	rcCmdMgr.AddCommand(new FCCmdCommandLine());
-  rcCmdMgr.AddCommand(new FCTestCmd());
 
 }
 

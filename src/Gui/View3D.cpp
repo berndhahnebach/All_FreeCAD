@@ -99,6 +99,12 @@ FCGuiDocument* FCView3D::getDocument()
 
 void FCView3D::closeEvent(QCloseEvent* e)
 {
+/*
+  int iButton = QMessageBox::warning(this, "FreeCAD", "Save changes to file?", "Yes", "No", "Cancel", 0);
+  if (iButton != 1) // yes/cancel
+    return;
+*/
+
 	emit sendCloseView(this);
 	QextMdiChildView::closeEvent(e);
 }

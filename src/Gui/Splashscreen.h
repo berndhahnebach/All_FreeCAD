@@ -44,7 +44,9 @@ class QLabel;
 class QProgressBar;
 class QTextView;
 
-// text browser for the help dialog
+/**
+ * text browser for the help dialog
+ */
 class FCSplashBrowser : public QTextBrowser
 {
   Q_OBJECT
@@ -57,7 +59,9 @@ class FCSplashBrowser : public QTextBrowser
     void linkClicked(const QString& txt);
 };
 
-// splash widget base class
+/**
+ * splash widget base class
+ */
 class GuiExport FCSplashWidget : public QLabel, public QThread
 {
   Q_OBJECT
@@ -70,6 +74,7 @@ class GuiExport FCSplashWidget : public QLabel, public QThread
     bool bRun;
 
   protected:
+    /// implement this method in inherited classes
     virtual void run() = 0;
     virtual QString getName() = 0;
     void hideEvent ( QHideEvent * e);
@@ -90,6 +95,7 @@ class GuiExport FCSplashScreen : public FCSplashWidget
     ~FCSplashScreen();
 
   protected:
+    /// run the thread
     virtual void run();
     virtual QString getName();
     QVBoxLayout* SplasherDialogLayout;
@@ -114,6 +120,7 @@ class GuiExport FCSplashAbout : public FCSplashWidget
     static FCSplashAbout* _pclSingleton;
 
   protected:
+    /// run the thread
     virtual void run();
     virtual QString getName();
     void keyPressEvent ( QKeyEvent * e );

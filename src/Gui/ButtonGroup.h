@@ -49,6 +49,7 @@
 
 #include "CommandLine.h"
 #include "Window.h"
+#include "PrefWidgets.h"
 
 // forward declaration
 class QAction;
@@ -70,12 +71,15 @@ class GuiExport FCButtonGroup : public QButtonGroup
     QScrollView *pScrollWidget;
 
   protected:
+    /// initialize the button group
     void initialize(void);
+    /// rearrange the buttons
     void resizeColumns(void);
 
     void mousePressEvent( QMouseEvent * );
 
   protected slots:
+    /// show popup menu
     void popupMenuAboutToShow();
     void setNewBackgroundColor();
     void resetBackgroundColor();
@@ -93,7 +97,7 @@ class GuiExport FCButtonGroup : public QButtonGroup
 };
 
 class FCToolboxButton;
-class GuiExport FCToolboxGroup : public QVButtonGroup
+class GuiExport FCToolboxGroup : public QVButtonGroup, public FCWidgetPrefs
 {
   Q_OBJECT
 
@@ -104,17 +108,25 @@ class GuiExport FCToolboxGroup : public QVButtonGroup
     QScrollView *pScrollWidget;
     QGridLayout* ButtonGroupLayout;
 
+    /// add a new widget
     bool addWidget(QWidget* w, int i);
+    /// add a new toolbox button
     bool addToolboxButton(FCToolboxButton* b, int i);
 
   protected:
+    /// restore the preferences
+    virtual void restorePreferences();
+    /// save the preferences
+    virtual void savePreferences();
     void initialize(QWidget* parent);
     void paintEvent (QPaintEvent * e);
     void mousePressEvent( QMouseEvent * );
+    /// allow drop buttons
     void dropEvent ( QDropEvent * );
     void dragEnterEvent ( QDragEnterEvent * );
     void dragLeaveEvent ( QDragLeaveEvent * );
     void dragMoveEvent ( QDragMoveEvent * );
+    FCvector<FCstring> alDroppedActions;
     QColor       m_Color;
     QPopupMenu*  m_Popup;
 
@@ -142,12 +154,18 @@ class GuiExport FCToolboxButton : public QToolButton
 
     virtual ~FCToolboxButton();
     
+    /// set text and pixmap
     void setTextAndPixmap( const QString &text, const QPixmap &pix);
+    /// set text only
     void setText(const char *text);
+    /// set pixmap only
     void setPixmap( const QPixmap& pixmap );
+    /// set tooltip
     void setTooltip( const QString& tooltip );
+    /// get text
     const char *text() const; 
     QSize sizeHint() const;
+    /// enable the button if enable is true
     void enable(bool enable);
     void showText(bool enable);
     void makeDisabledPixmap();

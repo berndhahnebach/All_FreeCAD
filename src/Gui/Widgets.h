@@ -29,6 +29,7 @@
 #ifndef __FC_WIDGETS_H__
 #define __FC_WIDGETS_H__
 #include "Window.h"
+#include "PrefWidgets.h"
 #include <qprogressbar.h>
 #include <qlabel.h>
 #include <qiconview.h>
@@ -41,7 +42,7 @@ class QHBoxLayout;
 class QTime;
 class QAction;
 
-/*  
+/**
  *  Using the Qt's open/save dialogs with own adjustments
  */
 class GuiExport FCFileDialog
@@ -60,14 +61,21 @@ class GuiExport FCFileDialog
 };
 
 /*  
- *  FreeCAD's progressbar for long operations
+ * FreeCAD's progressbar for long operations
+ * If you call @ref Start() several times without calling
+ * @ref Stop() before the number of new steps will be added 
+ * to the number of current steps, i.e. nevertheless the 
+ * progress bar will run only once.
  */
 class FCProgressBar : public QProgressBar
 {
   public:
     FCProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+    /// start the progress bar
     void Start(QString txt, int steps, bool& flag);
+    /// do the next step
     void Next();
+    /// stop the sequencer
     void Stop ();
 
   protected:
@@ -84,7 +92,7 @@ class FCProgressBar : public QProgressBar
     QString remainingTime;
 };
 
-/*  
+/**
  *  Icon items used by the 'FCCmdView' and 'FCDlgCustomize' classes
  */
 class FCCmdViewItem : public QIconViewItem
@@ -101,7 +109,7 @@ class FCCmdViewItem : public QIconViewItem
     QString description;
 };
 
-/*  
+/**
  *  Icon view class
  */
 class FCCmdView : public QIconView
@@ -122,7 +130,7 @@ class FCCmdView : public QIconView
     void emitSelectionChanged(QString);
 };
 
-/*  
+/**
  *  Class to drag a 'QAction' object
  */
 class FCActionDrag : public QStoredDrag
@@ -138,10 +146,10 @@ class FCActionDrag : public QStoredDrag
     static QAction* pAction;
 };
 
-/*  
+/**
  *  Toolbar class that knows 'drag and drop'
  */
-class FCToolBar : public QToolBar
+class FCToolBar : public QToolBar, public FCWidgetPrefs
 {
   public:
     FCToolBar ( const QString & label, QMainWindow *, QMainWindow::ToolBarDock = QMainWindow::Top, bool newLine = FALSE, const char * name = 0 );
@@ -154,6 +162,9 @@ class FCToolBar : public QToolBar
     void dragEnterEvent ( QDragEnterEvent * );
     void dragLeaveEvent ( QDragLeaveEvent * );
     void dragMoveEvent ( QDragMoveEvent * );
+    virtual void restorePreferences();
+    virtual void savePreferences();
+    FCvector<FCstring> alDroppedActions;
 };
 
 #endif // __FC_WIDGETS_H__

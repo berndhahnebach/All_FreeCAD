@@ -41,6 +41,7 @@
 
 #include "DlgCustomizeImp.h"
 #include "Application.h"
+#include <qobjcoll.h>
 
 /* 
  *  Constructs a FCDlgCustomize which is a child of 'parent', with the 
@@ -50,26 +51,43 @@
  *  TRUE to construct a modal dialog.
  */
 FCDlgCustomize::FCDlgCustomize( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : FCDlgCustomizeBase( parent, name, modal, fl ), FCWindow(name)
+    : FCDlgCustomizeBase( parent, name, modal, fl )
 {
+  // first tab
   connect(IconView1, SIGNAL(emitSelectionChanged(QString)), this, SLOT(slotDescription(QString)));
   connect(ComboBoxCategory, SIGNAL(activated ( const QString & )), this, SLOT(slotGroupSelected(const QString &)));
 
   FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
   FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
 
+  AvailableActions->insertItem("<Separator>");
   for (FCmap<FCstring,FCCommand*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
     // !!!! "Standard commands" muss durch Kategorie ersetzt werden
     m_alCmdGroups["Standard commands"].push_back(it->second);
+    AvailableActions->insertItem(it->second->GetAction()->iconSet().pixmap(), it->second->GetAction()->menuText());
   }
 
   for (FCmap<FCstring, FCvector<FCCommand*> >::iterator it2 = m_alCmdGroups.begin(); it2 != m_alCmdGroups.end(); ++it2)
   {
     ComboBoxCategory->insertItem(it2->first.c_str());
+    ComboBoxCategory2->insertItem(it2->first.c_str());
   }
 
   slotGroupSelected(ComboBoxCategory->text(0));
+
+  // second tab
+  ToolbarActions->setVariableHeight(false);
+  AvailableActions->setVariableHeight(false);
+  connect(ComboToolbars, SIGNAL(activated ( const QString & )), this, SLOT(slotToolBarSelected(const QString &)));
+  connect(CreateToolbar, SIGNAL(clicked()), this, SLOT(slotCreateToolBar()));
+  m_aclToolbars = ApplicationWindow::Instance->GetToolBars();
+  for (FCvector<QToolBar*>::iterator it3 = m_aclToolbars.begin(); it3 != m_aclToolbars.end(); ++it3)
+  {
+    ComboToolbars->insertItem((*it3)->name());
+  }
+
+  slotToolBarSelected(ComboToolbars->text(0));
 }
 
 /*  
@@ -99,6 +117,49 @@ void FCDlgCustomize::slotGroupSelected(const QString & group)
       (void) new FCCmdViewItem(IconView1, (*it)->GetAction());
     }
   }
+}
+
+void FCDlgCustomize::slotToolBarSelected(const QString & name)
+{
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
+
+  ToolbarActions->clear();
+
+  for (FCvector<QToolBar*>::iterator it = m_aclToolbars.begin(); it != m_aclToolbars.end(); ++it)
+  {
+    if ((*it)->name() == name)
+    {
+      const QObjectList* children = (*it)->children ();
+      for (QObjectListIt it(*children); it.current(); ++it)
+      {
+        QString name = it.current()->name();
+        if (it.current()->inherits("QToolButton"))
+        {
+          QToolButton* b = (QToolButton*)it.current();
+          name = b->textLabel();
+          if (sCommands.find(name.latin1()) != sCommands.end())
+          {
+            FCCommand* pCom = sCommands[name.latin1()];
+            ToolbarActions->insertItem(pCom->GetAction()->iconSet().pixmap(), pCom->GetAction()->menuText());
+          }
+        }
+        else if (name.contains("separator", false) > 0)
+        {
+          ToolbarActions->insertItem("<Separator>");
+        }
+      }
+      break;
+    }
+  }
+}
+
+void FCDlgCustomize::slotCreateToolBar()
+{
+  QString text = ToolbarName->text();
+  ToolbarName->clear();
+  QToolBar* toolbar = ApplicationWindow::Instance->GetToolBar(text.latin1());
+  toolbar->show();
 }
 
 #include "DlgCustomize.cpp"

@@ -345,29 +345,33 @@ bool FCActionDrag::decode ( const QMimeSource * e, QAction*  a )
 
 FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QMainWindow::ToolBarDock pos, 
                        bool newLine, const char * name )
-: QToolBar(label, parent, pos, newLine, name)
+: QToolBar(label, parent, pos, newLine, name), FCWidgetPrefs(name)
 {
   // allow drag and drop
   setAcceptDrops(true);
+  restorePreferences();
 }
 
 FCToolBar::FCToolBar ( const QString & label, QMainWindow *parent, QWidget *w, bool newLine, 
                        const char * name, WFlags f )
-: QToolBar(label, parent, w, newLine, name, f)
+: QToolBar(label, parent, w, newLine, name, f), FCWidgetPrefs(name)
 {
   // allow drag and drop
   setAcceptDrops(true);
+  restorePreferences();
 }
 
 FCToolBar::FCToolBar ( QMainWindow * parent, const char * name )
-: QToolBar(parent, name)
+: QToolBar(parent, name), FCWidgetPrefs(name)
 {
   // allow drag and drop
   setAcceptDrops(true);
+  restorePreferences();
 }
 
 FCToolBar::~FCToolBar()
 {
+  savePreferences();
 }
 
 void FCToolBar::dropEvent ( QDropEvent * e)
@@ -377,6 +381,7 @@ void FCToolBar::dropEvent ( QDropEvent * e)
   if ( pAction ) 
   {
     pAction->addTo(this);
+    alDroppedActions.push_back(pAction->name());
     FCActionDrag::pAction = NULL;
   }
 }
@@ -392,6 +397,29 @@ void FCToolBar::dragLeaveEvent ( QDragLeaveEvent * )
 
 void FCToolBar::dragMoveEvent ( QDragMoveEvent * )
 {
+}
+
+void FCToolBar::restorePreferences()
+{
+  FCCommandManager & cCmdMgr = ApplicationWindow::Instance->GetCommandManager();
+  FCmap<FCstring,FCCommand*> sCommands = cCmdMgr.GetCommands();
+
+  FCvector<FCstring> items = hPrefGrp->GetASCIIs(getPrefName().latin1());
+  for (FCvector<FCstring>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    sCommands[*it]->GetAction()->addTo(this);
+  }
+}
+
+void FCToolBar::savePreferences()
+{
+  int i=0;
+  for (FCvector<FCstring>::iterator it = alDroppedActions.begin(); it != alDroppedActions.end(); ++it, i++)
+  {
+    char szBuf[200];
+    sprintf(szBuf, "%s%d", getPrefName().latin1(), i);
+    hPrefGrp->SetASCII(szBuf, it->c_str());
+  }
 }
 
 #include "moc_Widgets.cpp"

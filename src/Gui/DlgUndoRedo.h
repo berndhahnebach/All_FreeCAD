@@ -32,6 +32,7 @@
 #include <qhbox.h>
 
 
+// forward declarations
 class QVBoxLayout; 
 class QHBoxLayout; 
 class QGridLayout; 
@@ -39,13 +40,10 @@ class QLabel;
 class QListBox;
 class QListBoxItem;
 
-/** Special Undo/Redo list box
- * Diese Klasse stellt eine Erweiterung der Basisklasse QListBox dar.
- * Normalerweise werden bei Selektion eines Elements in einem Undo/Redo-Dialog
- * alle darüberliegenden Elemente ebenfalls selektiert.
- * Diese Klasse steuert gerade dieses Verhalten.
+/**
+ * This class implements an extension of 'QListBox'.
+ * If you select an item all items above will be selected automatically.
  */
-
 class FCUndoRedoList : public QListBox
 {
   public:
@@ -57,12 +55,8 @@ class FCUndoRedoList : public QListBox
 };
 
 /**
- * Diese Klasse stellt eine erste Möglchkeit zur Erzeugung eines 
- * Undo/Redo-Dialogs dar. Diese Klasse erbt von QFrame; integriert
- * werden dann einfach ein FCUndoRedoList-Objekt und ein Label.
- * Die Positionierung muss vom Benutzer slebst vorgenommen werden.
+ * This class implements the undo/redo dialog.
  */
-
 class FCUndoRedoDlg : public QFrame
 { 
     Q_OBJECT
@@ -72,8 +66,11 @@ class FCUndoRedoDlg : public QFrame
     FCUndoRedoDlg( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
     virtual ~FCUndoRedoDlg();
 
+    /// sets the mode (Undo, Redo)
     void setMode(TMode tMode);
+    /// returns the mode
     TMode getMode() const;
+    /// updates the undo/redo list
     void updateUndoRedoList();
 
   signals:
@@ -92,66 +89,27 @@ class FCUndoRedoDlg : public QFrame
     TMode            _tMode;
 };
 
-
-/**
- * Das ist eine zweite Möglichkeit, einen Undo/Redo-Dialog zu erzeugen.
- * Als ersten Menüeintrag wählt man hier eine Listbox, als zweiten ein
- * Textlabel. Die Vorteile hierbei sind die, dass man das Verschieben des
- * Menüs nicht selbst vornehmen muss und dass das Zeichnen des Frames vom
- * Popup-Menü selbst gemacht wird.
- * Ein Objekt kann man mit der Methode setPopup() der QToolButton auf 
- * einfache Weise einbinden.
- * Ein Problem stellt hierbei noch folgende Tatsache dar:
- * öffnet man das Menü öfters, so wird es immer schmäler.
- */
-
-class FCUndoRedoPopup : public QPopupMenu
-{
-    Q_OBJECT
-  public:
-    FCUndoRedoPopup( QWidget* parent = 0, const char* name = 0, bool bUndo = true );
-    virtual ~FCUndoRedoPopup();
-
-  protected:
-	  void init();
-
-  protected slots:
-	  void selChangeUndoRedoList();
-
-  protected:
-    QLabel*    _pTextLabel;
-    QListBox*  _pListBox;
-    bool       _bUndo;
-};
-
-
-
-/** Drop Down Toolbar button
- * Description:
- * ============
+/** 
+ * Drop Down Toolbar button
  * This class implements the behaviour of buttons with an additional smaller button
  * (drop-down button). Such buttons are usually used as undo/redo-buttons in a lot
- * of windows programs.
- *
- * Todo:
- * =====
- * When you put the toolbar having one of this kind of button as child to the left or to the
- * right border of your main window then the drop-down button will be arranged below your
- * button and not right besides.
- * This looks a little bit strange.
+ * of Windows programs.
  */
-
-class QToolButtonDropDown : public QToolButton
+class FCToolButtonDropDown : public QToolButton
 {
   Q_OBJECT
   public:
     // constructor/destructor
-    QToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
-    virtual ~QToolButtonDropDown ();
+    FCToolButtonDropDown(QWidget * parent, const QPixmap& rclPixmap, QWidget* pWidget=0, const char * name = 0);
+    virtual ~FCToolButtonDropDown ();
 
+    /// sets a widget, this widget will be shown if click this button
     void setWidget(QWidget* pWidget);
+    /// returns the widget
     QWidget* getWidget();
+    /// enables this button if bEnable is true, otherwise disables it
     void setButtonEnabled(bool bEnable);
+    /// returns true if this button is enabled otherwise false
     bool isButtonEnabled();
     void setAutoRaiseEx (bool bEnable);
     bool autoRaiseEx () const;
@@ -177,11 +135,11 @@ class QToolButtonDropDown : public QToolButton
   private:
     // this constructor will be used to create an instance
     // of this object for '_pDropDown'
-    QToolButtonDropDown(QWidget* parent, const char * name);
+    FCToolButtonDropDown(QWidget* parent, const char * name);
 
     // this is the drop-down button right besides the actual button
     // on the button there will be drawn a small arrow
-    QToolButtonDropDown* _pDropDown;
+    FCToolButtonDropDown* _pDropDown;
 
   protected:
     // show this widget when clicking on drop-down button

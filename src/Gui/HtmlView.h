@@ -34,6 +34,9 @@
 #include <qcombobox.h>
 #include "Window.h"
 
+/**
+ * An extension of the 'QTextBrowser' class
+ */
 class FCTextBrowser : public QTextBrowser
 {
   Q_OBJECT
@@ -45,13 +48,20 @@ class FCTextBrowser : public QTextBrowser
     virtual void setSource (const QString & name);
 
   signals:
+    /// show the popup menu
     void showPopupMenu();
+    /// start an external browser to display complex web sites
     void startExtBrowser(QString);
 
   protected:
     virtual void viewportMousePressEvent (QMouseEvent * e);
 };
 
+/**
+ * Check the input of the combo box of the html view
+ * @see FCHtmlComboBox
+ * @see FCHtmlView
+ */
 class FCHtmlViewValidator : public QValidator
 {
   public:
@@ -62,13 +72,16 @@ class FCHtmlViewValidator : public QValidator
     virtual void fixup ( QString & ) const;
 };
 
-class FCComboBox : public QComboBox
+/**
+ * Check the input of the combo box
+ */
+class FCHtmlComboBox : public QComboBox
 {
   Q_OBJECT
 
   public:
-    FCComboBox ( QWidget * parent=0, const char * name=0 );
-    FCComboBox ( bool rw, QWidget * parent=0, const char * name=0 );
+    FCHtmlComboBox ( QWidget * parent=0, const char * name=0 );
+    FCHtmlComboBox ( bool rw, QWidget * parent=0, const char * name=0 );
 
   signals:
     void returnPressed(QString text);
@@ -77,6 +90,9 @@ class FCComboBox : public QComboBox
     void slotKeyPressReturn();
 };
 
+/**
+ * The HTML viewer class
+ */
 class GuiExport FCHtmlView : public FCDockWindow
 { 
     Q_OBJECT
@@ -85,9 +101,13 @@ class GuiExport FCHtmlView : public FCDockWindow
     FCHtmlView( const QString& home_, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
     ~FCHtmlView();
 
+    /// enable the history
     void SetEnableHistory  (bool b=true);
+    /// enable the bookmarks
     void SetEnableBookmarks(bool b=true);
+    /// set the limit for the history
     bool SetMaxHistory (long lCnt);
+    /// set the limit for the bookmarks
     bool SetMaxBookmarks (long lCnt);
 
   protected slots:
@@ -132,7 +152,7 @@ class GuiExport FCHtmlView : public FCDockWindow
     QToolButton*   pclButtonForward;
     QToolButton*   pclButtonHome;
     QToolButton*   pclButtonOpen;
-    FCComboBox*    pclPathCombo;
+    FCHtmlComboBox*pclPathCombo;
     FCTextBrowser* pclBrowser;
     QString        selectedURL;
     QString        m_strDocDir;
