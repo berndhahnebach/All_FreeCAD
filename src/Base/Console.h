@@ -36,6 +36,19 @@
 #include <iostream>
 #include <fstream> 
 #include <set>
+
+//**************************************************************************
+// Loging levels
+
+#ifdef FC_DEBUG
+/// switch on the loging of python object creation and destruction
+#  undef FC_LOGPYOBJECTS 
+/// switch on the loging of Feature update and execution
+#  define FC_LOGFEATUREUPDATE 
+/// switch on the loging of the Update execution through Doc, App, GuiApp and GuiDoc
+#  define FC_LOGUPDATECHAIN 
+#endif
+
  
 namespace Base {
 

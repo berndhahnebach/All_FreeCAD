@@ -116,7 +116,7 @@ void Command::activated ()
 {
   if(_eType == Cmd_Normal)
   {
-    Base::Console().Log("Activate %s\n",_pcAction->text().latin1());
+    Base::Console().Log("CmdG: %s\n",_pcAction->text().latin1());
     // set the application module type for the macro
     getAppWnd()->macroManager()->setModule(sAppModule.c_str());
     try{
@@ -157,7 +157,7 @@ void Command::toggled (bool b)
 {
   if(_eType == Cmd_Toggle)
   {
-    Base::Console().Log("Toggled %s\n",_pcAction->text().latin1());
+    Base::Console().Log("CmdG: Toggled %s\n",_pcAction->text().latin1());
     if(b)
       activated(1);
     else
@@ -222,7 +222,8 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     getAppWnd()->macroManager()->addLine(MacroManager::Base,format);
   Interpreter().runString(format);
 
-  Base::Console().Log("DoCmd (%s): %s",sName.c_str(),format);
+  //Base::Console().Log("#(%s): %s\n",sName.c_str(),format);
+  Base::Console().Log("CmdC: %s\n",format);
 
   free (format);
 }

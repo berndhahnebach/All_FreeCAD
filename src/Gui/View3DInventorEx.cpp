@@ -122,17 +122,45 @@ void View3DInventorEx::setViewerDefaults(void)
   QColor AmbCol=Col1;
   QColor SpeCol=Col;
   QColor EmCol(0,0,0);
-
+/*
   pcShapeMaterial = new SoMaterial;
   pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
   pcShapeMaterial->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
   pcShapeMaterial->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
   pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
   pcSepRoot->addChild(pcShapeMaterial);
-
+*/
   pcSepRoot->renderCaching = SoSeparator::ON;
   pcSepRoot->addChild(pcShapeHint);
 
+
+  pcSepRoot->addChild(createAxis());
+
+
+  // create the root for the shape
+  pcSepShapeRoot = new SoSeparator();
+  pcSepRoot->addChild(pcSepShapeRoot);
+
+//  _viewer->setSceneGraph(pcSepRoot);
+
+
+  _viewer->setFeedbackVisibility(true);
+  _viewer->setFeedbackSize(15);
+//  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
+  _viewer->viewAll();
+  _viewer->setDecoration(false);
+
+  _viewer->setSceneGraph(pcSepRoot);
+
+  //_viewer->setAntialiasing(true,2);
+//  _viewer->setSceneGraph(new SoCone);
+//  _viewer->show();
+
+  _viewer->show();
+}
+
+SoSeparator *View3DInventorEx::createAxis(void)
+{
   // create axis
   pcSepAxis = new SoSeparator();
 
@@ -154,29 +182,7 @@ void View3DInventorEx::setViewerDefaults(void)
   pcCylinder = new SoCylinder();
   pcCylinder->height.setValue(100);
 
-  pcSepRoot->addChild(pcSepAxis);
-
-
-  // create the root for the shape
-//  pcSepShapeRoot = new SoSeparator();
-//  pcSepRoot->addChild(pcSepShapeRoot);
-
-//  _viewer->setSceneGraph(pcSepRoot);
-
-
-  _viewer->setFeedbackVisibility(true);
-  _viewer->setFeedbackSize(15);
-//  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-  _viewer->viewAll();
-  _viewer->setDecoration(false);
-
-  _viewer->setSceneGraph(pcSepRoot);
-
-
-//  _viewer->setSceneGraph(new SoCone);
-//  _viewer->show();
-
-  _viewer->show();
+  return pcSepAxis;
 }
 
 /*
@@ -209,6 +215,9 @@ void View3DInventorEx::SetShape(void)
 */
 void View3DInventorEx::onUpdate(void)
 {
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::View3DInventorEx::onUpdate()");
+#endif
 
   App::Feature *pcActFeature = getAppDocument()->GetActiveFeature();
 
@@ -220,7 +229,8 @@ void View3DInventorEx::onUpdate(void)
     {
       // if the same just calculate the new representation
       SoNode* Node = pcActViewProvider->create(pcActFeature);
-      _viewer->setSceneGraph(Node);
+      pcSepRoot->addChild(Node);
+      //_viewer->setSceneGraph(Node);
     }else{
       // if not create the new ViewProvider
       if (pcActViewProvider) 
@@ -231,46 +241,15 @@ void View3DInventorEx::onUpdate(void)
         // if succesfully created set the right name an calculate the view
         cViewProviderName = pcActFeature->Type();
         SoNode* Node = pcActViewProvider->create(pcActFeature);
-        _viewer->setSceneGraph(Node);
+        pcSepRoot->addChild(Node);
+        //_viewer->setSceneGraph(Node);
       }else{
-        Base::Console().Warning("View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",pcActFeature->Type());
+        Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",pcActFeature->Type());
         cViewProviderName = "";
       }
     }
 
   }
-
-
-/*
-  TDF_Label L = getAppDocument()->GetActive();
-
-  if(! L.IsNull())
-  {
-    Handle(TNaming_NamedShape) ShapeToViewName;
-    if (!( L.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))
-      return;
-
-    // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
-    TopoDS_Shape ShapeToView  = ShapeToViewName->Get();
-
-    bool nurbs_enable = false;
-    bool selection = true;
-    bool strip_enable = false;
-    bool strip_color = false;
-
-    SoBrepShape cShapeConverter;
-
-    cShapeConverter.SetDeflection(0.5);
-    cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
-    cShapeConverter.SetShape(ShapeToView);
-
-    SoSeparator * SepShapeRoot=new SoSeparator();
-    if(cShapeConverter.Compute2(SepShapeRoot))
-      _viewer->setSceneGraph(SepShapeRoot);
-    else
-      Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
-  }
-*/
 }
 
 
@@ -297,9 +276,8 @@ buffer_realloc(void * bufptr, size_t size)
   buffer_size = size;
   return buffer;
 }
-
-static const std::string&
-buffer_writeaction(SoNode * root)
+ 
+const std::string &View3DInventorEx::writeNodesToString(SoNode * root)
 {
   SoOutput out;
   buffer = (char *)malloc(1024);
@@ -320,6 +298,7 @@ bool View3DInventorEx::onMsg(const char* pMsg, const char** ppReturn)
 {
   if(strcmp("SetStereoOn",pMsg) == 0 ){
     _viewer->setStereoViewing(true);
+    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoOff",pMsg) == 0 ){
     _viewer->setStereoViewing(false);
@@ -353,7 +332,7 @@ bool View3DInventorEx::onMsg(const char* pMsg, const char** ppReturn)
     return true;
   }else if(strcmp("GetCamera",pMsg) == 0 ){
     SoCamera * Cam = _viewer->getCamera();
-    *ppReturn = buffer_writeaction(Cam).c_str();
+    *ppReturn = writeNodesToString(Cam).c_str();
     return true;
   }else if(strncmp("SetCamera",pMsg,9) == 0 ){
     return setCamera(pMsg+10);

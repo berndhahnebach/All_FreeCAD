@@ -88,7 +88,14 @@ PropertyView::~PropertyView()
 }
 
 void PropertyView::onUpdate(void)
-{/*
+{
+
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::PropertyView::onUpdate()");
+#endif
+
+
+/*
   PropertyBuffer* buf = new PropertyBuffer(_pPropEditor, "Test");
 
   // append sample properties

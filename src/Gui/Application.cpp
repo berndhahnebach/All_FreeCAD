@@ -309,6 +309,7 @@ void ApplicationWindow::open(const char* FileName)
     Cmd += "Gui";
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
+    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
     Cmd = EndingMap.find(File.extension())->second.c_str();
@@ -317,7 +318,7 @@ void ApplicationWindow::open(const char* FileName)
     Cmd += "\")";
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-    Base::Console().Log("Gui open: %s\n",Cmd.c_str());
+    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
   }else{
     Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",File.extension().c_str());
@@ -500,12 +501,19 @@ void ApplicationWindow::addWindow( MDIView* view )
   else
     view->show();
 
+
   // look if the window was already inserted
+
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+
   {
+
     if ( it.data() == view )
+
       return;
+
   }
+
 
   // being informed when the view is destroyed
   connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
@@ -710,7 +718,9 @@ void ApplicationWindow::setActiveDocument(Gui::Document* pcDocument)
 {
   d->_pcActiveDocument=pcDocument;
 
-  Console().Log("Activate Document (%p) \n",d->_pcActiveDocument);
+#ifdef FC_LOGUPDATECHAIN
+  Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
+#endif
 
   // notify all views attached to the application (not views belong to a special document)
   for(std::list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
@@ -745,7 +755,10 @@ void ApplicationWindow::onUpdate(void)
 /// get calld if a view gets activated, this manage the whole activation scheme
 void ApplicationWindow::viewActivated(MDIView* pcView)
 {
-  Console().Log("Activate View (%p) Type=\"%s\" \n",pcView,pcView->getName());
+#ifdef FC_LOGUPDATECHAIN
+  Console().Log("Acti: %s,%p\n",pcView->getName(),pcView);
+#endif
+
   // set the new active document
   if(pcView->isPassiv())
     setActiveDocument(0);
@@ -1205,7 +1218,7 @@ void messageHandler( QtMsgType type, const char *msg )
 void ApplicationWindow::runApplication(void)
 {
   // A new QApplication
-  Console().Log("Creating GUI Application...\n");
+  Console().Log("Init: Creating Gui::Application and QApplication\n");
   // if application not yet created by the splasher
   int argc = App::Application::GetARGC();
   qInstallMsgHandler( messageHandler );
@@ -1218,13 +1231,13 @@ void ApplicationWindow::runApplication(void)
   // runing the Gui init script
   Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
   // show the main window
-  Console().Log("Showing GUI Application...\n");
+  Console().Log("Init: Showing Application Window\n");
   mw->onPolish();
   mw->show();
 
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
-  Console().Log("Open command line files...\n");
+  Console().Log("Init: Processing command line files\n");
   unsigned short count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
   std::string File;
@@ -1245,7 +1258,6 @@ void ApplicationWindow::runApplication(void)
 
     // try to open
     try{
-      Console().Log("Open %s\n",File.c_str());
       mw->open(File.c_str());
     }catch(...){
       Console().Error("Can't open file %s \n",File.c_str());
@@ -1259,9 +1271,9 @@ void ApplicationWindow::runApplication(void)
 
 
   // run the Application event loop
-  Console().Log("Running event loop...\n");
+  Console().Log("Init: Entering event loop\n");
   _pcQApp->exec();
-  Console().Log("event loop left\n");
+  Console().Log("Init: event loop left\n");
 }
 
 void ApplicationWindow::startSplasher(void)

@@ -68,7 +68,7 @@ def InitApplications():
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('      Init: ' + Dir + '... ')
+			Log('      Initializing: ' + Dir + '... ')
 			ModGrp = ModPar.GetGroup(Dir)
 			sys.path.append( os.path.join(ModDir,Dir) )
 			PathExtension += ";" + os.path.join(ModDir,Dir)
@@ -79,8 +79,8 @@ def InitApplications():
 			else:
 				Wrn("Init.py not found! "+Dir+" not initialized!\n")
 	os.environ["PATH"] += PathExtension
-	Log("PATH after addition: " + os.environ["PATH"] + "\n")
-	Log("path extension: " + PathExtension + "\n")
+	#Log("PATH after addition: " + os.environ["PATH"] + "\n")
+	#Log("path extension: " + PathExtension + "\n")
 
 #			else:
 #				FreeCAD.PrintMessage('new! install it...\n')
@@ -98,7 +98,7 @@ Msg = FreeCAD.PrintMessage
 Err = FreeCAD.PrintError
 Wrn = FreeCAD.PrintWarning
 
-Log ('\nFreeCAD init running....\n')
+Log ('\nInit: starting App::FreeCADInit.py\n')
 
 # init evera application by importing Init.py
 InitApplications()
@@ -106,7 +106,7 @@ InitApplications()
 # set to no gui, is overwriten by InitGui
 App.GuiUp = 0
 
-Log ('\nFreeCAD init done\n')
+Log ('\nInit: App::FreeCADInit.py done\n')
 
 
 

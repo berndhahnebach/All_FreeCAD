@@ -185,10 +185,9 @@ class BaseExport PyObjectBase : public PyObject
  	 *  Sets the Type of the object (for inherintance) and decrease the
  	 *  the reference count of the PyObject.
  	 */
-	PyObjectBase(PyTypeObject *T) 				// constructor
-		{this->ob_type = T; _Py_NewReference(this);};
+	PyObjectBase(PyTypeObject *T);
 	/// destructor
-	virtual ~PyObjectBase() {};
+	virtual ~PyObjectBase();
 	/// Wrapper for the Python destructor
 	static void PyDestructor(PyObject *P)				// python wrapper
 		{  delete ((PyObjectBase *) P);  };

@@ -216,8 +216,6 @@ Document* Application::New(const char * Name)
 	Document*				pDoc;
 //	PyObject* pcTemplate;
 
-	Base::Console().Log("Application::New(%s)\n",Name);
-
 /*	if(Name)
 	{
 		// net buffer because of char* <-> const char*
@@ -678,11 +676,11 @@ void Application::logStatus()
 
   GetSystemTime(&time);
 
-  Console().Log("Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
+  Console().Log("Init: Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
 #elif defined(FC_OS_LINUX)
   time_t now;
   time(&now);
-  Console().Log("Time: %s\n", ctime(&now));
+  Console().Log("Init: Time: %s\n", ctime(&now));
 #endif
 
   for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)

@@ -192,7 +192,7 @@ void FCCmdTest2::activated(int iMsg)
   App::Document *pcDoc = getActiveOCCDocument();
 	if(!pcDoc) return;
 
-	Base::Console().Log("Using Doc: %p\n",pcDoc);
+	Base::Console().Log("Trac: Using Doc: %p\n",pcDoc);
 
     TDF_Label L = pcDoc->Main();
 

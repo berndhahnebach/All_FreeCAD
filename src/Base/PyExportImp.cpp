@@ -34,8 +34,27 @@
 #endif
 
 #include "PyExportImp.h"
+#include "Console.h"
 
 using namespace Base;
+
+
+// Constructor
+PyObjectBase::PyObjectBase(PyTypeObject *T) 				
+{
+  this->ob_type = T;
+  _Py_NewReference(this);
+#ifdef FC_LOGPYOBJECTS
+  Base::Console().Log("PyO+: %s (%p)\n",T->tp_name, this);
+#endif
+}
+/// destructor
+PyObjectBase::~PyObjectBase() 
+{
+#ifdef FC_LOGPYOBJECTS
+  Base::Console().Log("PyO-: %s (%p)\n",this->ob_type->tp_name, this);
+#endif
+}
 
 /*------------------------------
  * PyObjectBase Type		-- Every class, even the abstract one should have a Type

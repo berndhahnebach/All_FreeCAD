@@ -84,6 +84,9 @@ public:
 //  void SetShape(void);
   bool setCamera(const char* pCamera);
 
+  /// helper to apply a SoWriteAction to a node and write it to a string
+  static const std::string &View3DInventorEx::writeNodesToString(SoNode * root);
+
 
 //signals:
   //void message(const QString&, int );
@@ -95,10 +98,13 @@ public slots:
   void dump();
 
 protected:
+
+  SoSeparator *createAxis(void);
+  
   // inventor nodes:
   SoSeparator * pcSepUserSpecial;
   SoSeparator * pcSepRoot;
-//  SoSeparator * pcSepShapeRoot;
+  SoSeparator * pcSepShapeRoot;
   SoSeparator * pcSepAxis;
   SoShapeHints* pcShapeHint; 
   SoMaterial	* pcShapeMaterial;

@@ -62,14 +62,14 @@ Document::Document(const Handle_TDocStd_Document &hDoc)
  : _hDoc(hDoc)
 {
 	_pcDocPy = new DocumentPy(this);
-	Console().Log("Create Document: %p Py: %p\n",this,_pcDocPy);
+	Console().Log("+App::Document: %p\n",this,_pcDocPy);
 
 }
 
 Document::~Document()
 {
 	_hDoc.Nullify();
-	Console().Log("Destroy Document %p\n",this);
+	Console().Log("-App::Document %p\n",this);
 }
 
 
@@ -293,6 +293,8 @@ void Document::Recompute()
 
   }
 
+  _LogBook.Clear();
+
   _hDoc->Recompute(); 
 
   Notify(DocChanges());
@@ -334,9 +336,6 @@ Feature *Document::GetActiveFeature(void)
 
 void Document::Init (void)
 {
-	Base::Console().Log("Initialising Doc: %p ",this);
-
- 
 	TDF_Label lMain = Main();
 
 	_lBase    = lMain.FindChild(1);

@@ -135,7 +135,7 @@ ViewProviderInventor* ViewProviderInventorFactorySingleton::Produce (const char*
 #ifdef FC_DEBUG
     Base::Console().Warning("\"%s\" ViewProvider is not registered\n", sName);
 #else
-    Base::Console().Log("\"%s\" ViewProvider is not registered\n", sName);
+    Base::Console().Log("Warn: %s ViewProvider is not registered\n", sName);
 #endif
     return NULL;
   }

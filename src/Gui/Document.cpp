@@ -104,8 +104,9 @@ Document::~Document()
 
 void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
-  Base::Console().Log("Document::OnChange()");
-
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::Document::OnChange()");
+#endif
   onUpdate();
 }
 

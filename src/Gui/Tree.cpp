@@ -204,7 +204,9 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
 void TreeView::onUpdate(void)
 {
-  Base::Console().Log("Tree Updated\n");
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::TreeView::onUpdate()");
+#endif
 
   // quick and dirty so far
   delete _pcMainItem;

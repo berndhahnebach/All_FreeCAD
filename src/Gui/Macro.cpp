@@ -74,6 +74,9 @@ void MacroManager::open(MacroType eType,const char *sName)
   _sMacroInProgress += "import FreeCAD\n";
 
   _bIsOpen = true;
+
+  Base::Console().Log("CmdM: Open macro: %s\n",_sName.c_str());
+
 }
 
 /// close (and save) the recording sassion
@@ -87,7 +90,7 @@ void MacroManager::commit(void)
 
   file << 	_sMacroInProgress.c_str();
 
-  Base::Console().Log("Commit Macro: %s\n",_sName.c_str());
+  Base::Console().Log("CmdM: Commit macro: %s\n",_sName.c_str());
 
   _sMacroInProgress = "";
   _sName = "";
@@ -102,6 +105,8 @@ void MacroManager::cancel(void)
   _sMacroInProgress = "";
   _sName = "";
   _sModuleSet.clear();
+
+  Base::Console().Log("CmdM: Candel macro: %s\n",_sName.c_str());
 
   _bIsOpen = false;
 }

@@ -93,6 +93,10 @@ bool MDIView3D::onMsg(const char* pMsg,const char** ppReturn)
 
 void MDIView3D::onUpdate(void)
 {
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::MDIView3D::onUpdate()");
+#endif
+
   _pcView3D->getView()->Redraw();
 }
 
@@ -159,9 +163,13 @@ View3D::View3D(Gui::Document*  pcDocument, QWidget *parent, const char *name, WF
   setFocusPolicy (ClickFocus);
 }
 
+
 View3D::~View3D()
+
 {
+
 }
+
 
 bool View3D::initCasCadeView(void)
 {

@@ -191,6 +191,9 @@ bool View3DInventor::onMsg(const char* pMsg,const char** ppReturn)
 
 void View3DInventor::onUpdate(void)
 {
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
+#endif
 
 }
 

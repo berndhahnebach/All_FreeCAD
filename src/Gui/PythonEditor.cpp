@@ -709,7 +709,6 @@ bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
     return true;
   }
 
-  Base::Console().Log("PythonEditView::OnMsg() unhandled \"%s\"\n",pMsg);
   return false;
 }
 

@@ -53,6 +53,7 @@
 #include <Base/Console.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
+#include <Base/Sequencer.h>
 #include <App/Application.h>
 
 #include "ViewProvider.h"
@@ -274,6 +275,11 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const
 //	BRepMesh_Discret MESH(1.0,myShape,20.0);
 	BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
 
+  // counting faces and start sequencer
+  int l = 1;
+  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
+  Base::Sequencer().start("creating view representation", l);
+
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
 
     // get the shape and mesh it
@@ -340,7 +346,11 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const
 		delete [] vertices;
 		delete [] cons;
 
+    Base::Sequencer().next();
+
   } // end of face loop
+
+  Base::Sequencer().stop();
 
   return true;
 }

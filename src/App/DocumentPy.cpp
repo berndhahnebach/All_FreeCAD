@@ -103,8 +103,6 @@ PyParentObject DocumentPy::Parents[] = {&PyObjectBase::Type, NULL};
 DocumentPy::DocumentPy(Document *pcDoc, PyTypeObject *T)
  : PyObjectBase( T), _pcDoc(pcDoc)
 {
-	Base::Console().Log("Create DocumentPy (%d)\n",this);
-
 }
 
 PyObject *DocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -118,8 +116,6 @@ PyObject *DocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrappe
 //--------------------------------------------------------------------------
 DocumentPy::~DocumentPy()						// Everything handled in parent
 {
-	Console().Log("Destroy PyDocument: %p \n",this);
-
 } 
 
 

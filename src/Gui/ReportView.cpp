@@ -164,7 +164,7 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
   clear();
   setHScrollBarMode(QScrollView::AlwaysOff);
 
-  insert("FreeCAD output.\n");
+//  insert("FreeCAD output.\n");
   Base::Console().AttacheObserver(this);
   getWindowParameter()->Attach( this );
 
@@ -184,13 +184,21 @@ ReportOutput::~ReportOutput()
   delete reportHl;
 }
 
+
 void ReportOutput::append ( const QString & text )
+
 {
+
   QTextEdit::append( text );
 
+
+
   if ( !isVisible() )
+
     scrollToBottom();
+
 }
+
 
 void ReportOutput::restoreFont()
 {

@@ -47,7 +47,7 @@ class Workbench:
 class StandardWorkbench ( Workbench ):
 	"Standard workbench object"
 	def Start(self):
-		Log ('   Set up toolbar...\n')
+		Log ('Init: Setup <none> workbench\n   Set up toolbar...\n')
 
 #		list = ["Std_MDIToplevel","Std_MDITabed","Std_MDINormal","Separator",
 #		"Std_TilePragmatic","Std_TileVertical","Std_TileHoricontal","Separator",
@@ -71,7 +71,7 @@ class StandardWorkbench ( Workbench ):
 		Log ('   Set up menues...\n')
 
 	def Stop(self):
-		Log ('   Stopping workbench...\n')
+		Log ('Init: Stopping <none> workbench...\n')
 		Gui.CommandbarDelete("Special Ops")
 		Gui.CommandbarDelete("TestTools")
 		Gui.CommandbarDelete("Standard views")
@@ -176,16 +176,16 @@ def InitApplications():
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('      Init: ' + Dir + '... ')
+			Log('      Initializing: ' + Dir + '... ')
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
 			if ( os.path.exists(InstallFile) ):
 				execfile(InstallFile)
 				Log('done\n')
 			else:
 				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
+ 
 
-
-Log ('FreeCAD gui init running....\n')
+Log ('Init: starting Gui::FreeCADGuiInit.py\n')
 
 # init the gui
 
@@ -206,4 +206,4 @@ InitToolbars()
 Gui.WorkbenchActivate("<none>")
 
 
-Log ('FreeCAD gui init done\n')
+Log ('Init: Gui::FreeCADGuiInit.py done\n')

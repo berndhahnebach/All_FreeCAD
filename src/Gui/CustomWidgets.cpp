@@ -421,8 +421,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
           }
         }
     */
-    Console().Log("Cannot drop item(s). The size of found items"
-                  " is different to the size of stored items\n");
+    Console().Warning("CustomToolBar::dropEvent(): Cannot drop item(s). The size of found items is different to the size of stored items\n");
     ActionDrag::actions.clear();
 
     return;
