@@ -116,9 +116,9 @@
 // QT
 #define QT_VER 230
 
-// for .NET you must use Qt version 3.1.1
+// for .NET you must use Qt version 3.x
 #ifdef FC_OS_WIN32
-#	if _MSC_VER >= 1300
+#	if (_MSC_VER >= 1300) && (QT_VER < 300)
 #		error "For visual Studio 7.0 use QT 3.x"
 #	endif
 #endif
@@ -136,7 +136,6 @@
 #define QT_DLL
 #define QT_THREAD_SUPPORT
 #define QT_ALTERNATE_QTSMANIP
-#define QT_VER 230
 
 //**************************************************************************
 // SoQt

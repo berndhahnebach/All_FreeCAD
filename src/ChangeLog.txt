@@ -322,3 +322,6 @@ Version: V0.1B69 Date: Sun Jul 27 13:29:20 2003 +++++++++++++++++++++++++++++++
 + use the document provider classes for the whatsthis stuff
 
 Version: V0.1B70 Date: Sun Aug 17 16:06:28 2003 +++++++++++++++++++++++++++++++
+
+Version: V0.1B71 Date: Sun Sep 14 17:38:19 2003 +++++++++++++++++++++++++++++++
++ make a template application; just run MakeApp.py with application name
