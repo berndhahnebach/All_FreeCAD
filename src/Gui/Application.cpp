@@ -73,6 +73,7 @@
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
 #include "Tree.h"
+#include "Tools.h"
 #include "PropertyView.h"
 
 #include "CommandLine.h"
@@ -331,6 +332,7 @@ void ApplicationWindow::CreateStandardOperations()
 		defToolbar.push_back("Std_Redo");
 		defToolbar.push_back("Separator");
 		defToolbar.push_back("Std_Workbench");
+		defToolbar.push_back("Std_WhatsThis");
 		_pcWidgetMgr->addToolBar("file operations", defToolbar);
 
 		defToolbar.clear();
@@ -398,6 +400,7 @@ void ApplicationWindow::CreateStandardOperations()
   
 		defaultMenus.clear();
 		defaultMenus.push_back("Std_About");
+		defaultMenus.push_back("Std_WhatsThis");
 		_pcWidgetMgr->addPopupMenu("?", defaultMenus);
 	}
 
@@ -1518,6 +1521,42 @@ QPixmap FCBmpFactory::GetPixmap(const char* sName)
 
 	return QPixmap(px);
 
+}
+
+QPixmap FCBmpFactory::GetPixmap(const char* sName, const char* sMask, Position pos)
+{
+  QPixmap p1 = GetPixmap(sName);
+  QPixmap p2 = GetPixmap(sMask);
+
+  int x = 0, y = 0;
+
+  switch (pos)
+  {
+    case TopLeft:
+      break;
+    case TopRight:
+      x = p1.width () - p2.width ();
+      break;
+    case BottomLeft:
+      y = p1.height() - p2.height();
+      break;
+    case BottomRight:
+      x = p1.width () - p2.width ();
+      y = p1.height() - p2.height();
+      break;
+  }
+
+  QPixmap p = p1;
+  p = FCTools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
+
+  QPainter pt;
+  pt.begin( &p );
+  pt.setPen(Qt::NoPen);
+  pt.drawRect(x, y, p2.width(), p2.height());
+  pt.drawPixmap(x, y, p2);
+  pt.end();
+
+  return p;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -76,7 +76,12 @@ class FCViewBar;
 class FCBmpFactory
 {
 public:
-	FCBmpFactory(void);
+  enum Position
+  {
+    TopLeft, TopRight, BottomLeft, BottomRight
+  };
+
+  FCBmpFactory(void);
 	~FCBmpFactory();
 	/// Adds a path were pixmaps can be found
 	void AddPath(const char* sPath);
@@ -90,6 +95,7 @@ public:
 
 	/// retrive a pixmap by name
 	QPixmap GetPixmap(const char* sName);
+  QPixmap GetPixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
 
 protected:
 	std::map<std::string,const char*> _mpXPM;
