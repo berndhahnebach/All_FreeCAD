@@ -26,11 +26,11 @@ public:
 	~FCView();
 	FCGuiDocument* getDocument();
 
-/*
+
 signals:
-	void message(const QString&, int );
+	//void message(const QString&, int );
 	void sendCloseView(FCView* theView);
-	*/
+	
 public slots:
 	void closeEvent(QCloseEvent* e);        
 	void onWindowActivated ();

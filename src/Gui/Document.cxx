@@ -85,12 +85,12 @@ void FCGuiDocument::CreateView()
 
 	//connect( w, SIGNAL( message(const QString&, int) ), _pcAppWnd->statusBar(), SLOT( message(const QString&, int )) );
 	//connect( w, SIGNAL(sendCloseView(FCView*)),this,SLOT(onCloseView(FCView*)));
+	connect( w, SIGNAL(closeEvent(FCView*)),this,SLOT(onCloseView(FCView*)));
 
 	QString aName;
     w->setCaption(aName.sprintf("Document 1:1"));
 	
     w->setIcon( FCIcon );
-    // show the very first window in maximized mode
 
 	w->resize( 400, 300 );
     if ( _LpcViews.size() == 1 )
@@ -99,16 +99,19 @@ void FCGuiDocument::CreateView()
 		_pcAppWnd->addWindow(w);
 
 }
-/*
-void FCGuiDocument::onCloseView(MDIWindow* theView)
+
+void FCGuiDocument::slotCloseView(MDIWindow* theView)
 {
 
+	// last view?
+	if(_LpcViews.size() == 1)
+	{
+	}
+	    
   
-  if(countOfWindow() == 1)
-    emit sendCloseFCGuiDocument(this);
-  else
-    removeView(theView);
+  
 }
+/*
 
 void FCGuiDocument::removeView(MDIWindow* theView)
 {
@@ -200,3 +203,5 @@ void FCGuiDocument::onDelete()
 	myOperations->onDelete();
 }
 */
+
+#include "Document_moc.cpp"

@@ -39,5 +39,15 @@ public:
 };
 
 
+DEF_STD_CMD(FCCmdNew   ,"Std_New");
+DEF_STD_CMD(FCCmdSave  ,"Std_Save");
+DEF_STD_CMD(FCCmdSaveAs,"Std_SaveAs");
+DEF_STD_CMD(FCCmdPrint ,"Std_Print");
+DEF_STD_CMD(FCCmdUndo  ,"Std_Undo");
+DEF_STD_CMD(FCCmdRedo  ,"Std_Redo");
+DEF_STD_CMD(FCCmdCut   ,"Std_Cut");
+DEF_STD_CMD(FCCmdCopy  ,"Std_Copy");
+DEF_STD_CMD(FCCmdPaste ,"Std_Paste");
+
 
 #endif

@@ -144,5 +144,16 @@ private:
 #	pragma warning( default : 4251 )
 };
 
+/** The Command Macro Standard
+ *  This macro makes it easyer to define a new command.
+ *  The parameters are the class name and the command name
+ */
+#define DEF_STD_CMD(X,Y) class X : public FCCommand \
+{\
+public:\
+	X():FCCommand(Y){}\
+	virtual void CmdProfile(char** sMenuText, char** sToolTipText,char** sWhatsThis,char** sStatusTip,QPixmap &cPixmap,int &iAccel);\
+	virtual void Activated(void);\
+};
 
 #endif // __Command_h__

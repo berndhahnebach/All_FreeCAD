@@ -46,16 +46,16 @@ L1.Name = "Hallo"
 
 # saving and restoring
 
-SavePath = TempPath + os.sep + "Test.std"
+SavePath = TempPath + os.sep + "Test1.FCStd"
 Log("   Save and Open the document to: " + SavePath + "\n")
-Doc.SaveAs("e:\\Test")
-#Doc.SaveAs(SavePath)
+Doc.SaveAs(SavePath)
 Log( Doc.Path + Doc.Name)
-Doc2 = App.DocOpen("e:\\Test.FCPart")
-#Doc2 = App.DocOpen(SavePath)
+Doc2 = App.DocOpen(SavePath)
 
 Log(Doc2.Main.GetLabel(1).Name)
 
+#Doc2 = App.DocOpen("e:\\Test.FCPart")
+#Doc.SaveAs("e:\\Test")
 
 
 

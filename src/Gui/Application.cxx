@@ -48,7 +48,7 @@ ApplicationWindow::ApplicationWindow()
     //setCentralWidget( vb );
 
 	//setBackgroundPixmap(QPixmap(Background3));
-
+	setUsesBigPixmaps (true);
 	CreateTestOperations();
 	//createCasCadeOperations();
 
@@ -80,12 +80,22 @@ ApplicationWindow::~ApplicationWindow()
 
 void ApplicationWindow::OnDocNew(FCDocument* pcDoc)
 {
-	FCGuiDocument* aDoc = new FCGuiDocument(pcDoc,this);
+	lpcDocuments.push_back( new FCGuiDocument(pcDoc,this) );
 }
 
 void ApplicationWindow::OnDocDelete(FCDocument* pcDoc)
 {
+	FCGuiDocument* pcGDoc=0;
 
+	for(stlport::list<FCGuiDocument*>::iterator It = lpcDocuments.begin();It != lpcDocuments.end();It++)
+	{
+		if( ((*It)->GetDoc()) == pcDoc)
+		{
+			pcGDoc = *It;
+			lpcDocuments.erase(It);
+		}
+	}
+	delete pcGDoc;
 }
 
 
@@ -192,60 +202,19 @@ void ApplicationWindow::slotPaste(void)
 void ApplicationWindow::CreateTestOperations()
 {
 
-    //QPixmap newIcon, helpIcon, closeIcon;
 
-	//QString dir = getResourceDir();
-
-    //newIcon = QPixmap( (const char*) New );
-	//helpIcon = QPixmap( "help.png" );
-	//closeIcon = QPixmap( "close.png" );
-
-
-
+	_cCommandManager.AddCommand(new FCCmdNew());
 	_cCommandManager.AddCommand(new FCCmdOpen());
+	_cCommandManager.AddCommand(new FCCmdSave());
+	_cCommandManager.AddCommand(new FCCmdSaveAs());
+	_cCommandManager.AddCommand(new FCCmdUndo());
+	_cCommandManager.AddCommand(new FCCmdRedo());
+	_cCommandManager.AddCommand(new FCCmdPrint());
+	_cCommandManager.AddCommand(new FCCmdCut());
+	_cCommandManager.AddCommand(new FCCmdCopy());
+	_cCommandManager.AddCommand(new FCCmdPaste());
 
-/*	QAction * pcTemp;
-
-    pcTemp = new QAction( "New", QPixmap(pNew ), "New", CTRL+Key_N, this, "new" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotNewDoc() ) );
-	_cCommandManager.AddCommand("Std_New",FCCommand(pcTemp));
-
-    pcTemp = new QAction( "Open", QPixmap(pOpen ), "Open", CTRL+Key_O, this, "Open" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotOpen() ) );
-	_cCommandManager.AddCommand("Std_Open",FCCommand(pcTemp));
-
-    pcTemp = new QAction( "Save", QPixmap(pSave ), "Save", CTRL+Key_S, this, "Save" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotSave() ) );
-	_cCommandManager.AddCommand("Std_Save",FCCommand(pcTemp));
-
-    pcTemp = new QAction( "SaveAs","SaveAs", 0, this, "SaveAs" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotSaveAs() ) );
-	_cCommandManager.AddCommand("Std_SaveAs",FCCommand(pcTemp));
-
-    pcTemp = new QAction( "Print", QPixmap(pPrint ), "Print", CTRL+Key_P, this, "Print" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotPrint() ) );
-	_cCommandManager.AddCommand("Std_Print",FCCommand(pcTemp));
-
-    pcTemp = new QAction( "Undo", QPixmap(pUndo ), "Undo", CTRL+Key_Z, this, "Undo" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotUndo() ) );
-	_cCommandManager.AddCommand("Std_Undo",FCCommand(pcTemp));
-
-    pcTemp = new QAction( "Redo", QPixmap(pRedo ), "Redo", CTRL+Key_Y, this, "Redo" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotRedo() ) );
-	_cCommandManager.AddCommand("Std_Redo",FCCommand(pcTemp));
-
-	pcTemp = new QAction( "Cut", QPixmap(pCut ), "Cut", CTRL+Key_X, this, "Cut" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotCut() ) );
-	_cCommandManager.AddCommand("Std_Cut",FCCommand(pcTemp));
-
-	pcTemp = new QAction( "Copy", QPixmap(pCopy ), "Copy", CTRL+Key_C, this, "Copy" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotCopy() ) );
-	_cCommandManager.AddCommand("Std_Copy",FCCommand(pcTemp));
-
-	pcTemp = new QAction( "Paste", QPixmap(pPaste ), "Paste", CTRL+Key_V, this, "Paste" );
-	connect( pcTemp, SIGNAL( activated() ) , this, SLOT( slotPaste() ) );
-	_cCommandManager.AddCommand("Std_Paste",FCCommand(pcTemp));
-
+/*
 	//myStdActions.insert(FileNewId, fileNewAction);	
     //fileCloseAction = new QAction( tr("Close", closeIcon, "Close", CTRL+Key_W, this, "close");
     //connect( fileCloseAction, SIGNAL( activated() ) , this, SLOT( onCloseWindow() ) );
@@ -279,14 +248,14 @@ void ApplicationWindow::CreateTestOperations()
 
     myStdToolBar = new QToolBar( this, "file operations" );
     myStdToolBar->setLabel( "File" );
-	//_cCommandManager.AddTo("Std_New",myStdToolBar);
+	_cCommandManager.AddTo("Std_New",myStdToolBar);
 	_cCommandManager.AddTo("Std_Open",myStdToolBar);
-	//_cCommandManager.AddTo("Std_Save",myStdToolBar);
-	//_cCommandManager.AddTo("Std_Print",myStdToolBar);
+	_cCommandManager.AddTo("Std_Save",myStdToolBar);
+	_cCommandManager.AddTo("Std_Print",myStdToolBar);
 	myStdToolBar->addSeparator();
-	//_cCommandManager.AddTo("Std_Cut",myStdToolBar);
-	//_cCommandManager.AddTo("Std_Copy",myStdToolBar);
-	//_cCommandManager.AddTo("Std_Paste",myStdToolBar);
+	_cCommandManager.AddTo("Std_Cut",myStdToolBar);
+	_cCommandManager.AddTo("Std_Copy",myStdToolBar);
+	_cCommandManager.AddTo("Std_Paste",myStdToolBar);
 	myStdToolBar->addSeparator();
 	//_cCommandManager.AddTo("Std_Undo",myStdToolBar);
 	//_cCommandManager.AddTo("Std_Redo",myStdToolBar);
@@ -306,20 +275,20 @@ void ApplicationWindow::CreateTestOperations()
 
     myFilePopup = new QPopupMenu( this );
     menuBar()->insertItem( "File", myFilePopup) ;
-	//_cCommandManager.AddTo("Std_New",myFilePopup);
+	_cCommandManager.AddTo("Std_New",myFilePopup);
 	_cCommandManager.AddTo("Std_Open",myFilePopup);
-	//_cCommandManager.AddTo("Std_Save",myFilePopup);
-	//_cCommandManager.AddTo("Std_SaveAs",myFilePopup);
+	_cCommandManager.AddTo("Std_Save",myFilePopup);
+	_cCommandManager.AddTo("Std_SaveAs",myFilePopup);
 	myFilePopup->insertSeparator();
-	//_cCommandManager.AddTo("Std_Print",myFilePopup);
+	_cCommandManager.AddTo("Std_Print",myFilePopup);
 	myFilePopup->insertSeparator();
 	//_cCommandManager.AddTo("Std_Quit",myFilePopup);
 
     myFilePopup = new QPopupMenu( this );
     menuBar()->insertItem( "Work", myFilePopup );
-	//_cCommandManager.AddTo("Std_Cut",myFilePopup);
-	//_cCommandManager.AddTo("Std_Copy",myFilePopup);
-	//_cCommandManager.AddTo("Std_Paste",myFilePopup);
+	_cCommandManager.AddTo("Std_Cut",myFilePopup);
+	_cCommandManager.AddTo("Std_Copy",myFilePopup);
+	_cCommandManager.AddTo("Std_Paste",myFilePopup);
 	
 
 	setMenuForSDIModeSysButtons( menuBar());

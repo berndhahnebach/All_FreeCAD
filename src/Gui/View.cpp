@@ -77,7 +77,7 @@ FCGuiDocument* FCView::getDocument()
 
 void FCView::closeEvent(QCloseEvent* e)
 {
-	//emit sendCloseView(this);
+	emit sendCloseView(this);
 }
 /*
 

@@ -16,6 +16,7 @@ class QToolBar;
 
 #include "../App/Application.h"
 #include "Command.h"
+#include <list>
 
 class FCGuiDocument;
 
@@ -95,7 +96,9 @@ protected slots:
 private:
     int myNbDocuments;
 	bool myIsDocuments;
-	//stlport::vector<QAction*> vcStdActions;
+#	pragma warning( disable : 4251 )
+ 	stlport::list<FCGuiDocument*> lpcDocuments;
+#	pragma warning( default : 4251 )
 	//QList<QAction> myCasCadeTranslateActions;
 	QToolBar* myStdToolBar;
 	QToolBar* myCasCadeBar;

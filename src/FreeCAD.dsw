@@ -69,7 +69,55 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Sample"=..\..\Cas40\Samples\QT\Sample.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "SampleOcaf"=..\..\Cas40\Samples\MFC\10_SampleOcaf\SampleOcaf.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "fourChildren"=..\..\qextmdi\examples\fourchildren\fourchildren\fourChildren.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mdi"=..\..\qt\examples\mdi\mdi.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mdiframework"=..\..\qextmdi\examples\mdiframework\mdiframework\mdiframework.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

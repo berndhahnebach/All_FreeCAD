@@ -320,6 +320,29 @@ SOURCE=.\Document.cxx
 # Begin Source File
 
 SOURCE=.\Document.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Using moc on $(InputPath)
+InputPath=.\Document.h
+
+"Document_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Document_moc.cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Using moc on $(InputPath)
+InputPath=.\Document.h
+
+"Document_moc.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc $(InputPath) -o Document_moc.cpp
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -346,17 +369,7 @@ SOURCE=.\MouseModel.h
 # Begin Source File
 
 SOURCE=.\PreCompiled.cpp
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
 # ADD CPP /Yc"PreCompiled.h"
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# ADD CPP /Yc"PreCompiled.h"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

@@ -16,7 +16,9 @@
  *   Jürgen Riegel 2002                                                    *
  *                                                                         *
  ***************************************************************************/
- 
+#ifndef __GUIDocument_h__
+#define __GUIDocument_h__
+
 #include "../Base/Export.h"
 
 #include <qobject.h>
@@ -29,9 +31,12 @@
 
 class ApplicationWindow;
 class FCDocument;
+class MDIWindow;
 
-class GuiExport FCGuiDocument 
+class GuiExport FCGuiDocument :public QObject
 {
+	Q_OBJECT
+
 public:
 	FCGuiDocument(FCDocument* pcDocument, ApplicationWindow * app, const char * name=0);
 	~FCGuiDocument();
@@ -40,6 +45,11 @@ public:
 	Handle(AIS_InteractiveContext) GetContext(){return _hContext;}
 
 	void CreateView(void); 
+
+	FCDocument*	 GetDoc(void){return _pcDocument;}
+
+public slots:
+	void slotCloseView(MDIWindow* theView);
 
 
 private:
@@ -56,3 +66,7 @@ private:
 	// the doc/Document
 	FCDocument*						_pcDocument;
 };
+
+
+
+#endif
