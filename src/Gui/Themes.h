@@ -146,6 +146,7 @@ private:
   * descriptions of these methods can be obtained from the Qt documentation.
   */
 
+#if QT_VERSION <= 230
 class StepStyle : public QWindowsStyle
 {
   Q_OBJECT
@@ -253,6 +254,7 @@ private:
     QPalette savePalette;   // save the palette during polish
     QPalette pal;           // a working palette
 };
+#endif
 
 
 

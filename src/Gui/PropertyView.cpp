@@ -148,6 +148,7 @@ void FCPropertyViewItem::paintCell( QPainter *p, const QColorGroup &cg, int colu
 		paintFocus( p, cg, QRect( 0, 0, width, height() ) );*/
 }
 
+#if QT_VERSION <= 230
 void FCPropertyViewItem::paintBranches( QPainter * p, const QColorGroup & cg,
 				  int w, int y, int h, GUIStyle s )
 {
@@ -155,11 +156,23 @@ void FCPropertyViewItem::paintBranches( QPainter * p, const QColorGroup & cg,
     g.setColor( QColorGroup::Base, backgroundColor() );
     QListViewItem::paintBranches( p, g, w, y, h, s );
 }	
+#else
+void FCPropertyViewItem::paintBranches( QPainter * p, const QColorGroup & cg, int w, int y, int h)
+{
+    QColorGroup g( cg );
+    g.setColor( QColorGroup::Base, backgroundColor() );
+    QListViewItem::paintBranches( p, g, w, y, h );
+}	
+#endif
 
 void FCPropertyViewItem::paintFocus( QPainter *p, const QColorGroup &cg, const QRect &r )
 {
     p->save();
+#if QT_VERSION <= 230
     QApplication::style().drawPanel( p, r.x(), r.y(), r.width(), r.height(), cg, TRUE, 1 );
+#else
+    QApplication::style().drawPrimitive(QStyle::PE_Panel, p, QRect(r.x(), r.y(), r.width(), r.height()), cg);
+#endif
     p->restore();
 }
 

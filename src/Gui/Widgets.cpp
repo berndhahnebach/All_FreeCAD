@@ -703,6 +703,7 @@ QSize FCColorButton::minimumSizeHint() const
 
 void FCColorButton::drawButton( QPainter *paint )
 {
+#if QT_VERSION <= 230
   style().drawBevelButton( paint, 0, 0, width(), height(), colorGroup(), isDown() );
   drawButtonLabel( paint );
   if ( hasFocus() ) 
@@ -710,6 +711,15 @@ void FCColorButton::drawButton( QPainter *paint )
    	style().drawFocusRect( paint, style().bevelButtonRect( 0, 0, width(), height()),
 		colorGroup(), &colorGroup().button() );
   }
+#else
+  style().drawPrimitive( QStyle::PE_ButtonBevel, paint, QRect(0, 0, width(), height()), colorGroup());
+  drawButtonLabel( paint );
+  if ( hasFocus() ) 
+  {
+    style().drawPrimitive( QStyle::PE_FocusRect, paint, style().subRect( QStyle::SR_PushButtonContents, this),
+		colorGroup() );
+  }
+#endif
 }
 
 void FCColorButton::drawButtonLabel( QPainter *paint )

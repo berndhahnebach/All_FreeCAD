@@ -61,8 +61,12 @@ public:
 
 	/// paint mimic
     void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
+#if QT_VERSION <= 230
     void paintBranches( QPainter * p, const QColorGroup & cg,
 			int w, int y, int h, GUIStyle s );
+#else
+    void paintBranches( QPainter * p, const QColorGroup & cg,	int w, int y, int h);
+#endif
     void paintFocus( QPainter *p, const QColorGroup &cg, const QRect &r );
 
     void updateBackColor();

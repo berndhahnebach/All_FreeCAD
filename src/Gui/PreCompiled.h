@@ -201,6 +201,8 @@
 #include <qwindowsstyle.h>
 #include <qplatinumstyle.h>
 #include <qsgistyle.h>
+#include <qlistbox.h>
+#include <qlistview.h>
 
 
 // help system

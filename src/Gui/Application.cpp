@@ -1557,12 +1557,17 @@ QStyle* FCStyleFactory::createStyle( const QString& s)
     ret = new QPlatinumStyle;
   else if ( style == "sgi" )
     ret = new QSGIStyle;
+
+#if QT_VERSION < 300
+
   else if ( style == "metal" )
     ret = new MetalStyle;
   else if ( style == "norwegian wood" )
     ret = new NorwegianWoodStyle;
   else if ( style == "step" )
     ret = new StepStyle;
+
+#endif
 
   if(ret)
   	ret->setName(s);

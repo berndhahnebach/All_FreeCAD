@@ -1082,6 +1082,7 @@ void NorwegianWoodStyle::drawButtonMask( QPainter *p, int x, int y, int w, int h
 // Qt3.0. At that time I intend for it to be either a plain rect or a rect with
 // a NeXT style circle
 
+#if QT_VERSION <= 230
 StepStyle::StepStyle() { ; }
 
 StepStyle::~StepStyle() { ; }
@@ -1939,6 +1940,8 @@ void StepStyle::drawCheckMark(QPainter *p, int x, int y, int w, int h,
     p->drawPoints(a);
     p->setPen(savePen);
 }
+#endif
 
-
+#if QT_VERSION <= 230
 #include "moc_Themes.cpp"
+#endif

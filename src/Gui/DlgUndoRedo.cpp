@@ -387,12 +387,21 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
   int sy = 0;
   int x, y, w, h;
   int x2, y2, w2, h2;
+#if QT_VERSION <= 230
   style().toolButtonRect(width()-19, 0, 19, height() ).rect( &x, &y, &w, &h );
   style().toolButtonRect(0, 0, width()-19, height() ).rect( &x2, &y2, &w2, &h2 );
+#else
+  style().visualRect(QRect(width()-19, 0, 19, height()), this).rect( &x, &y, &w, &h );
+  style().visualRect(QRect(0, 0, width()-19, height()), this ).rect( &x2, &y2, &w2, &h2 );
+#endif
 
   if (isDown() || isOn()) 
   {
+#if QT_VERSION <= 230
 	  style().getButtonShift(sx, sy);
+#else
+    //TODO
+#endif
 	  x+=sx;
 	  y+=sy;
   }
@@ -405,7 +414,11 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
 
   if ( !text().isNull() ) 
   {
+#if QT_VERSION <= 230
   	style().drawItem( p, x2, y2, w2, h2, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
+#else
+  	style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, text() );
+#endif
   } 
   else 
   {
@@ -434,30 +447,58 @@ void FCToolButtonDropDown::drawButtonLabel( QPainter * p )
 	    int fh = fontMetrics().height();
       if (isDown()&&bActButton&&!bDropDown)
       {
+#if QT_VERSION <= 230
 	      style().drawItem( p, x2+1, y2+1, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#else
+	      style().drawItem( p, QRect(x2+1, y2+1, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#endif
 	      p->setFont( font() );
+#if QT_VERSION <= 230
 	      style().drawItem( p, x2+1, h2+1 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+#else
+	      style().drawItem( p, QRect(x2+1, h2+1 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+#endif
       }
       else
       {
+#if QT_VERSION <= 230
 	      style().drawItem( p, x2, y2, w2, h2 - fh, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#else
+	      style().drawItem( p, QRect(x2, y2, w2, h2 - fh), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#endif
 	      p->setFont( font() );
+#if QT_VERSION <= 230
 	      style().drawItem( p, x2, h2 - fh, w2, fh, AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+#else
+	      style().drawItem( p, QRect(x2, h2 - fh, w2, fh), AlignCenter + ShowPrefix, colorGroup(), isEnabled(), 0, textLabel() );
+#endif
       }
  	  } 
     else 
     {
       if (isDown()&&bActButton&&!bDropDown)
+#if QT_VERSION <= 230
   	    style().drawItem( p, x2+1, y2+1, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#else
+  	    style().drawItem( p, QRect(x2+1, y2+1, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#endif
       else
+#if QT_VERSION <= 230
   	    style().drawItem( p, x2, y2, w2, h2, AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#else
+  	    style().drawItem( p, QRect(x2, y2, w2, h2), AlignCenter, colorGroup(), TRUE, &pm, QString::null );
+#endif
 	  }
   }
 
   // draw vertical separator line if entered
   if (bEntered)
   {
+#if QT_VERSION <= 230
     style().drawSeparator(p, width()-19, y2-1, width()-19, y2+h2,colorGroup());
+#else
+    style().drawPrimitive( QStyle::PE_Separator, p, QRect( width()-19, y2-1, width()-19, y2+h2 ),	colorGroup() );
+#endif
   }
 }
 

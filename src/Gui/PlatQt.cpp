@@ -636,6 +636,8 @@ void Window::SetFont(Font &font)
 	PWidget(id)->setFont(*PFont(font.GetID()));
 }
 
+#if QT_VERSION <= 230
+
 void Window::SetCursor(Cursor curs)
 {
 	QCursorShape cur;
@@ -672,6 +674,47 @@ void Window::SetCursor(Cursor curs)
 
 	PWidget(id)->setCursor(cur);
 }
+
+#else
+
+void Window::SetCursor(Cursor curs)
+{
+	QCursorShape cur;
+
+	switch (curs)
+	{
+	  case cursorText:
+      cur = QCursor::IbeamCursor;
+		  break;
+
+	  case cursorUp:
+		  cur = QCursor::UpArrowCursor;
+		  break;
+
+	  case cursorWait:
+		  cur = QCursor::WaitCursor;
+		  break;
+
+	  case cursorHoriz:
+		  cur = QCursor::SizeHorCursor;
+		  break;
+
+	  case cursorVert:
+		  cur = QCursor::SizeVerCursor;
+		  break;
+
+	  case cursorHand:
+		  cur = QCursor::PointingHandCursor;
+		  break;
+
+	  default:
+		  cur = QCursor::ArrowCursor;
+	}
+
+	PWidget(id)->setCursor(cur);
+}
+
+#endif
 
 void Window::SetTitle(const char *s)
 {
