@@ -76,6 +76,10 @@ class FCReportOutputPrivate
 FCReportOutput::FCReportOutput(QWidget* parent, const char* name)
  : QTextBrowser(parent, name)
 {
+#if QT_VERSION >= 300
+  setTextFormat(LogText);
+#endif
+
   d = new FCReportOutputPrivate;
 
   QFont _font(  font() );
@@ -109,7 +113,7 @@ void FCReportOutput::appendLog(const char * s, const char * color)
     else
       qs = tr("<font color=\"%1\">%2</font>").arg(color).arg(s);
 #else
-      qs = tr("%1").arg(s);
+      qs = tr("<font color=%1>%2</font>").arg(color).arg(s);;
 #endif
   }
   else
