@@ -1,0 +1,379 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>DlgReportViewBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>DlgReportViewBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>432</width>
+            <height>402</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Output window</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>buttonGroup2</cstring>
+            </property>
+            <property name="title">
+                <string>Output</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>checkLogging</cstring>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <string>checkLogging</string>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>Shoot log messages</string>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>checkWarning</cstring>
+                    </property>
+                    <property name="checked" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <string>checkWarning</string>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>Shoot warnings</string>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>checkError</cstring>
+                    </property>
+                    <property name="checked" stdset="0">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <string>checkError</string>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                    </property>
+                    <property name="text" stdset="0">
+                        <string>Shoot error messages</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>buttonGroup1</cstring>
+            </property>
+            <property name="title">
+                <string>Colors</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Normal messages:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer12</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>colorText</cstring>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <string>colorText</string>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Log messages:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer9</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>colorLogging</cstring>
+                            </property>
+                            <property name="color" stdset="0">
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>255</blue>
+                                </color>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <string>colorLogging</string>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Warnings:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer10</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>colorWarning</cstring>
+                            </property>
+                            <property name="color" stdset="0">
+                                <color>
+                                    <red>255</red>
+                                    <green>170</green>
+                                    <blue>0</blue>
+                                </color>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <string>colorWarning</string>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout8</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel4</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Errors:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer11</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>colorError</cstring>
+                            </property>
+                            <property name="color" stdset="0">
+                                <color>
+                                    <red>255</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <string>colorError</string>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <string>User parameter:BaseApp/Preferences/OutputWindow</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>21</width>
+                    <height>111</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<customwidgets>
+    <customwidget>
+        <class>Gui::PrefCheckBox</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>80</width>
+            <height>20</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <signal>toggled(bool)</signal>
+        <property type="String">text</property>
+        <property type="Bool">checked</property>
+        <property type="Bool">tristate</property>
+        <property type="Bool">enabled</property>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
+    </customwidget>
+    <customwidget>
+        <class>Gui::PrefColorButton</class>
+        <header location="local">PrefWidgets.h</header>
+        <sizehint>
+            <width>40</width>
+            <height>25</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <property type="CString">prefEntry</property>
+        <property type="CString">prefPath</property>
+        <property type="Color">color</property>
+    </customwidget>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
+    </image>
+</images>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>gui::prefcheckbox.h</includehint>
+    <includehint>gui::prefcheckbox.h</includehint>
+    <includehint>gui::prefcheckbox.h</includehint>
+    <includehint>gui::prefcolorbutton.h</includehint>
+    <includehint>gui::prefcolorbutton.h</includehint>
+    <includehint>gui::prefcolorbutton.h</includehint>
+    <includehint>gui::prefcolorbutton.h</includehint>
+</includehints>
+</UI>

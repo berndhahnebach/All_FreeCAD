@@ -79,7 +79,7 @@
                                 <cstring>RecentFiles</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
-                                <cstring>User parameter:BaseApp/RecentFiles</cstring>
+                                <cstring>User parameter:BaseApp/Preferences/RecentFiles</cstring>
                             </property>
                             <property name="valueFloat" stdset="0">
                                 <number>4</number>

@@ -309,6 +309,8 @@ void FCCmdQuit::Activated(int iMsg)
 // Std_Undo
 //===========================================================================
 
+DEF_STD_CMD_AC(FCCmdUndo );
+
 FCCmdUndo::FCCmdUndo()
 	:FCCppCommand("Std_Undo")
 {
@@ -354,6 +356,8 @@ QAction * FCCmdUndo::CreateAction(void)
 //===========================================================================
 // Std_Redo
 //===========================================================================
+
+DEF_STD_CMD_AC(FCCmdRedo );
 
 FCCmdRedo::FCCmdRedo()
 	:FCCppCommand("Std_Redo")

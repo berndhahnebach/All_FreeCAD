@@ -185,7 +185,7 @@ public:
     {
 #ifdef FC_DEBUG
       if (handler->pPref->getParamGrp().IsNull())
-        throw;
+        qFatal( "No parameter group specified!" );
 #endif
       handler->onRestore();
       m_aHandlers.push_back(handler);
@@ -384,6 +384,35 @@ class PrefSlider : public QSlider, public PrefWidget
 public:
   PrefSlider ( QWidget * parent = 0, const char * name = 0 );
   virtual ~PrefSlider();
+
+  // PROPERTIES
+  // getters
+  QString entryName    () const;
+  QString paramGrpPath () const;
+  // setters
+  void  setEntryName     ( const QString& name );
+  void  setParamGrpPath  ( const QString& name );
+
+protected:
+  // restore from/save to parameters
+  void restorePreferences();
+  void savePreferences();
+};
+
+/**
+ * The PrefColorButton class.
+ * \author Werner Mayer
+ */
+class PrefColorButton : public ColorButton, public PrefWidget
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefColorButton ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefColorButton();
 
   // PROPERTIES
   // getters

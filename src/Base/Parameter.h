@@ -195,6 +195,10 @@ public:
 	/// returns the name
 	const char* GetGroupName(void) {return _cName.c_str();}
 
+	/** Notifies all observers for all entries except of sub-groups.
+	 */
+  void NotifyAll();
+
 protected:
 	/// constructor is protected (handle concept)
 	FCParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode=0L,const char* sName=0L);

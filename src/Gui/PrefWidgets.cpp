@@ -56,8 +56,7 @@ PrefWidget::~PrefWidget()
 #ifdef FC_DEBUG
   if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
   {
-    Base::Console().Warning("No valid widget name set!\n");
-    throw;
+    qFatal( "No valid parameter name set! ");
   }
 #endif
   delete pHandler;
@@ -81,8 +80,7 @@ QString PrefWidget::entryName() const
 #ifdef FC_DEBUG
   if (m_sPrefName.isNull() || m_sPrefName.isEmpty())
   {
-    Base::Console().Warning("No valid widget name set!\n");
-    throw;
+    qFatal( "No valid parameter name set!" );
   }
 #endif
 
@@ -613,6 +611,70 @@ void PrefSlider::setEntryName ( const QString& name )
 }
 
 void PrefSlider::setParamGrpPath ( const QString& name )
+{
+  PrefWidget::setParamGrpPath(name);
+}
+
+// --------------------------------------------------------------------
+
+PrefColorButton::PrefColorButton ( QWidget * parent, const char * name )
+  : ColorButton(parent, name), PrefWidget(name)
+{
+}
+
+PrefColorButton::~PrefColorButton()
+{
+}
+
+void PrefColorButton::restorePreferences()
+{
+  if (hPrefGrp.IsNull())
+  {
+    Console().Warning("Cannot restore!\n");
+    return;
+  }
+
+  QColor col = color();
+  long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
+
+  lcol = hPrefGrp->GetInt( entryName().latin1(), lcol );
+  int b = lcol >> 16;  lcol -= b << 16;
+  int g = lcol >> 8;   lcol -= g << 8;
+  int r = lcol;
+
+  setColor(QColor(r,g,b));
+}
+
+void PrefColorButton::savePreferences()
+{
+  if (hPrefGrp.IsNull())
+  {
+    Console().Warning("Cannot save!\n");
+    return;
+  }
+
+  QColor col = color();
+  long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
+
+  hPrefGrp->SetInt( entryName().latin1(), lcol );
+}
+
+QString PrefColorButton::entryName () const
+{
+  return PrefWidget::entryName();
+}
+
+QString PrefColorButton::paramGrpPath () const
+{
+  return PrefWidget::paramGrpPath();
+}
+
+void PrefColorButton::setEntryName ( const QString& name )
+{
+  PrefWidget::setEntryName(name);
+}
+
+void PrefColorButton::setParamGrpPath ( const QString& name )
 {
   PrefWidget::setParamGrpPath(name);
 }

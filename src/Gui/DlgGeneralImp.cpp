@@ -114,7 +114,7 @@ void DlgGeneralImp::setMRUSize()
   FCCommand* pCmd = rclMan.GetCommandByName("Std_MRU");
   if (pCmd)
   {
-    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("RecentFiles");
+    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
     ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }

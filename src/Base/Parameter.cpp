@@ -906,7 +906,11 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 	
 	return pcElem;
 }
-	
+
+/** \todo */	
+void FCParameterGrp::NotifyAll()
+{
+}
 
 //**************************************************************************
 //**************************************************************************

@@ -87,12 +87,33 @@ public:
    */
   void setParagraphType(Paragraph);
 
+  /**
+   * Sets the text color to  \a col.
+   */
+  void setTextColor( const QColor& col );
+
+  /**
+   * Sets the color for log messages to  \a col.
+   */
+  void setLogColor( const QColor& col );
+
+  /**
+   * Sets the color for warnings to  \a col.
+   */
+  void setWarningColor( const QColor& col );
+
+  /**
+   * Sets the color for error messages to  \a col.
+   */
+  void setErrorColor( const QColor& col );
+
 private:
   /** @name for internal use only */
   //@{
   Paragraph type;
   int lastPos;
   int lastPar;
+  QColor txtCol, logCol, warnCol, errCol;
   //@}
 };
 
@@ -101,13 +122,16 @@ private:
  * @see QTextEdit
  * \author Werner Mayer
  */
-class GuiExport ReportOutput : public QTextEdit, public Base::ConsoleObserver
+class GuiExport ReportOutput : public QTextEdit, public WindowParameter, public Base::ConsoleObserver
 {
   Q_OBJECT
 
 public:
   ReportOutput(QWidget* parent=0, const char* name=0);
   virtual ~ReportOutput();
+
+  /** Observes its parameter group. */
+  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
 
   /** Writes warnings */
   void Warning(const char * s);

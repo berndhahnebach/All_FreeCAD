@@ -337,18 +337,19 @@ ApplicationWindow::ApplicationWindow()
   }
 
   // load recent file list
-  hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
   if (hGrp->HasGroup("RecentFiles"))
   {
     hGrp = hGrp->GetGroup("RecentFiles");
-    FCCommand* pCmd = d->_cCommandManager.GetCommandByName("Std_MRU");
+    FCCmdMRU* pCmd = dynamic_cast<FCCmdMRU*>(d->_cCommandManager.GetCommandByName("Std_MRU"));
     if (pCmd)
     {
-      ((FCCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
+      int maxCnt = hGrp->GetInt("RecentFiles", 4);
+      pCmd->setMaxCount( maxCnt );
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
       for (std::vector<std::string>::iterator it = MRU.begin(); it!=MRU.end();++it)
       {
-        ((FCCmdMRU*)pCmd)->addRecentFile(it->c_str());
+        pCmd->addRecentFile( it->c_str() );
       }
     }
   }
@@ -380,9 +381,9 @@ ApplicationWindow::~ApplicationWindow()
   {
     char szBuf[200];
     int i=0;
-    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("RecentFiles");
+    FCParameterGrp::handle hGrp = GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
     hGrp->Clear();
-    hGrp->GetInt("RecentFiles", ((FCCmdMRU*)pCmd)->maxCount());
+    hGrp->SetInt("RecentFiles", ((FCCmdMRU*)pCmd)->maxCount());
 
     QStringList files = ((FCCmdMRU*)pCmd)->recentFiles();
     if ( files.size() > 0 )
@@ -1194,12 +1195,34 @@ void ApplicationWindow::InitApplication(void)
 
 }
 
+void messageHandler( QtMsgType type, const char *msg )
+{
+  bool mute = GuiConsoleObserver::bMute;
+  GuiConsoleObserver::bMute = false;
+
+  switch ( type )
+  {
+    case QtDebugMsg:
+      Base::Console().Message( msg );
+      break;
+    case QtWarningMsg:
+      Base::Console().Warning( msg );
+      break;
+    case QtFatalMsg:
+      Base::Console().Error( msg );
+      abort();                    // deliberately core dump
+  }
+
+  GuiConsoleObserver::bMute = mute;
+}
+
 void ApplicationWindow::RunApplication(void)
 {
 	// A new QApplication
 	Console().Log("Creating GUI Application...\n");
 	// if application not yet created by the splasher
 	int argc = FCApplication::GetARGC();
+  qInstallMsgHandler( messageHandler );
 	if (!_pcQApp)  _pcQApp = new QApplication (argc, FCApplication::GetARGV());
 
 	StartSplasher();
@@ -1694,7 +1717,11 @@ PYFUNCIMP_S(ApplicationWindow,sRunCommand)
 // FCAppConsoleObserver
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+#ifdef FC_DEBUG
+bool GuiConsoleObserver::bMute = true;
+#else
 bool GuiConsoleObserver::bMute = false;
+#endif
 
 GuiConsoleObserver::GuiConsoleObserver(ApplicationWindow *pcAppWnd)
 	:_pcAppWnd(pcAppWnd){}
@@ -1703,9 +1730,7 @@ GuiConsoleObserver::GuiConsoleObserver(ApplicationWindow *pcAppWnd)
 void GuiConsoleObserver::Warning(const char *m)
 {
 	if(!bMute){
-#   ifndef FC_DEBUG
-		  QMessageBox::warning( _pcAppWnd, "Warning",m);
-#   endif
+	  QMessageBox::warning( _pcAppWnd, "Warning",m);
 		_pcAppWnd->statusBar()->message( m, 2001 );
 	}
 }
@@ -1722,9 +1747,7 @@ void GuiConsoleObserver::Error  (const char *m)
 {
 	if(!bMute)
 	{
-#   ifndef FC_DEBUG
-		  QMessageBox::critical( _pcAppWnd, "Exception happens",m);
-#   endif
+	  QMessageBox::critical( _pcAppWnd, "Exception happens",m);
     _pcAppWnd->statusBar()->message( m, 2001 );
 	}
 }

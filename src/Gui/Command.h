@@ -437,7 +437,7 @@ private:
 };
 
 /** The Command Macro Standard
- *  This macro makes it easyer to define a new command.
+ *  This macro makes it easier to define a new command.
  *  The parameters are the class name
  */
 #define DEF_STD_CMD(X) class X : public FCCppCommand \
@@ -448,7 +448,7 @@ public:\
 };
 
 /** The Command Macro Standard + IsActive()
- *  This macro makes it easyer to define a new command.
+ *  This macro makes it easier to define a new command.
  *  The parameters are the class name
  */
 #define DEF_STD_CMD_A(X) class X : public FCCppCommand \
@@ -458,6 +458,20 @@ public:\
 	virtual ~X(){}\
 	virtual void Activated(int iMsg);\
 	virtual bool IsActive(void);\
+};
+
+/** The Command Macro Standard + IsActive() + CreateAction()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ */
+#define DEF_STD_CMD_AC(X) class X : public FCCppCommand \
+{\
+public:\
+	X();\
+	virtual ~X(){}\
+	virtual void Activated(int iMsg);\
+	virtual bool IsActive(void);\
+  virtual QAction * CreateAction(void);\
 };
 
 /** The Command Macro view
@@ -477,43 +491,18 @@ public:\
 		}\
 };
 
-
-/** Some special commands
- *  The undo/redo commands
- */
-class FCCmdUndo : public FCCppCommand
-{
-public:
-  FCCmdUndo();
-  void Activated(int iMsg);
-  bool IsActive(void);
-  QAction * CreateAction(void);
-};
-
-/**
- *  The undo/redo commands
- */
-class FCCmdRedo : public FCCppCommand
-{
-public:
-  FCCmdRedo();
-  void Activated(int iMsg);
-  bool IsActive(void);
-  QAction * CreateAction(void);
-};
-
 /**
  *  The workbench command
  */
 class FCCmdWorkbench : public FCCppCommand
 {
 public:
-	  FCCmdWorkbench();
+  FCCmdWorkbench();
 	void Activated(int iMsg);
-  	QAction * CreateAction(void);
-    void appendItem ( const QString& item );
-    void activate( const QString& item );
-	  bool addTo(QWidget *);
+ 	QAction * CreateAction(void);
+  void appendItem ( const QString& item );
+  void activate( const QString& item );
+  bool addTo(QWidget *);
 
 private:
   QActionGroup *pcAction;

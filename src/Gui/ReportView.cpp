@@ -78,6 +78,10 @@ ReportView::~ReportView()
 ReportHighlighter::ReportHighlighter(QTextEdit* edit)
 : QSyntaxHighlighter(edit), type(Message), lastPos(0), lastPar(0)
 {
+  txtCol = Qt::black;
+  logCol = Qt::blue;
+  warnCol = QColor(255, 170, 0);
+  errCol = Qt::red;
 }
 
 ReportHighlighter::~ReportHighlighter()
@@ -94,19 +98,19 @@ int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOf
 
   if (type == Message)
   {
-    setFormat(lastPos, text.length()-lastPos, Qt::black);
+    setFormat(lastPos, text.length()-lastPos, txtCol);
   }
   else if (type == Warning)
   {
-    setFormat(lastPos, text.length()-lastPos, QColor(255, 170, 0));
+    setFormat(lastPos, text.length()-lastPos, warnCol);
   }
   else if (type == Error)
   {
-    setFormat(lastPos, text.length()-lastPos, Qt::red);
+    setFormat(lastPos, text.length()-lastPos, errCol);
   }
   else if (type == LogText)
   {
-    setFormat(lastPos, text.length()-lastPos, Qt::blue);
+    setFormat(lastPos, text.length()-lastPos, logCol);
   }
 
   lastPos = text.length()-1;
@@ -120,6 +124,26 @@ void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
   type = t;
 }
 
+void ReportHighlighter::setTextColor( const QColor& col )
+{
+  txtCol = col;
+}
+
+void ReportHighlighter::setLogColor( const QColor& col )
+{
+  logCol = col;
+}
+
+void ReportHighlighter::setWarningColor( const QColor& col )
+{
+  warnCol = col;
+}
+
+void ReportHighlighter::setErrorColor( const QColor& col )
+{
+  errCol = col;
+}
+
 // ----------------------------------------------------------
 
 /**
@@ -127,7 +151,8 @@ void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
  *  name 'name' and widget flags set to 'f' 
  */
 ReportOutput::ReportOutput(QWidget* parent, const char* name)
- : QTextEdit(parent, name), _err(true), _warn(true), _logg(false)
+ : QTextEdit(parent, name), WindowParameter("OutputWindow"), 
+   _err(true), _warn(true), _logg(false)
 {
   reportHl = new ReportHighlighter(this);
 
@@ -138,6 +163,9 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
 
   insert("FreeCAD output.\n");
   Base::Console().AttacheObserver(this);
+  GetWindowParameter()->Attach( this );
+
+  GetWindowParameter()->NotifyAll();
 }
 
 /**
@@ -145,6 +173,7 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
  */
 ReportOutput::~ReportOutput()
 {
+  GetWindowParameter()->Detach( this );
   Base::Console().DetacheObserver(this);
   delete reportHl;
 }
@@ -265,16 +294,72 @@ bool ReportOutput::isLogging() const
 void ReportOutput::onToggleError()
 {
   _err = _err ? false : true;
+  GetWindowParameter()->SetBool( "checkError", _err );
 }
 
 void ReportOutput::onToggleWarning()
 {
   _warn = _warn ? false : true;
+  GetWindowParameter()->SetBool( "checkWarning", _warn );
 }
 
 void ReportOutput::onToggleLogging()
 {
   _logg = _logg ? false : true;
+  GetWindowParameter()->SetBool( "checkLogging", _logg );
+}
+
+void ReportOutput::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+{
+  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  if (strcmp(sReason, "checkLogging") == 0)
+  {
+    _logg = rclGrp.GetBool( sReason, _logg );
+  }
+  else if (strcmp(sReason, "checkWarning") == 0)
+  {
+    _warn = rclGrp.GetBool( sReason, _warn );
+  }
+  else if (strcmp(sReason, "checkError") == 0)
+  {
+    _err = rclGrp.GetBool( sReason, _err );
+  }
+  else if (strcmp(sReason, "colorText") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    int b = col >> 16;  col -= b << 16;
+    int g = col >> 8;   col -= g << 8;
+    int r = col;
+
+    reportHl->setTextColor( QColor(r,g,b) );
+  }
+  else if (strcmp(sReason, "colorLogging") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    int b = col >> 16;  col -= b << 16;
+    int g = col >> 8;   col -= g << 8;
+    int r = col;
+
+    reportHl->setLogColor( QColor(r,g,b) );
+  }
+  else if (strcmp(sReason, "colorWarning") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    int b = col >> 16;  col -= b << 16;
+    int g = col >> 8;   col -= g << 8;
+    int r = col;
+
+    reportHl->setWarningColor( QColor(r,g,b) );
+  }
+  else if (strcmp(sReason, "colorError") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    int b = col >> 16;  col -= b << 16;
+    int g = col >> 8;   col -= g << 8;
+    int r = col;
+
+    reportHl->setErrorColor( QColor(r,g,b) );
+  }
 }
 
 #include "moc_ReportView.cpp"

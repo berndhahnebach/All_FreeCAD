@@ -60,6 +60,7 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
 #include "DlgOnlineHelpImp.h"
+#include "DlgReportViewImp.h"
 
 #include "DlgToolbarsImp.h"
 #include "DlgActionsImp.h"
@@ -79,6 +80,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   //
   new PrefPageProducer<DlgGeneralImp>         ( QObject::tr( "FreeCAD" ) );
   new PrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr( "FreeCAD" ) );
+  new PrefPageProducer<DlgReportViewImp>      ( QObject::tr( "FreeCAD" ) );
   new PrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr( "FreeCAD" ) );
   new PrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr( "FreeCAD" ) );
   new PrefPageProducer<DlgSettingsHtmlViewImp>( QObject::tr( "Viewer"  ) );
