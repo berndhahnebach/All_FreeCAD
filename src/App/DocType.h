@@ -128,9 +128,9 @@ public:
   /// clear all touched and ipacted Labels
   //void ClearState(void);
   /// Mark a label as modified by the user
-  void TouchState(TDF_Label &);
+  void TouchState(const TDF_Label &);
   /// Set a label modified
-  void ImpactState(TDF_Label &);
+  void ImpactState(const TDF_Label &);
   /// Updates the document (recalculate)
   void UpdateDoc(void);
 	//@}

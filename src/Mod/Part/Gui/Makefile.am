@@ -2,16 +2,28 @@
 pkglib_LTLIBRARIES=libPartGui.la
 
 BUILT_SOURCES=\
-	DlgPartBox.cpp \
-	DlgPartBox.h \
-	moc_DlgPartBox.cpp \
-	moc_DlgPartBoxImp.cpp
+		DlgPartBox.cpp \
+		DlgPartBox.h \
+		DlgPartImportIges.cpp \
+		DlgPartImportIges.h \
+		DlgPartImportStep.cpp \
+		DlgPartImportStep.h \
+		moc_DlgPartBox.cpp \
+		moc_DlgPartBoxImp.cpp \
+		moc_DlgPartImportIges.cpp \
+		moc_DlgPartImportIgesImp.cpp \
+		moc_DlgPartImportStep.cpp \
+		moc_DlgPartImportStepImp.cpp
 
 libPartGui_la_SOURCES=\
 		AppPartGui.cpp \
 		Command.cpp \
 		DlgPartBoxImp.cpp \
-		DlgPartBoxImp.h
+		DlgPartBoxImp.h \
+		DlgPartImportIgesImp.cpp \
+		DlgPartImportIgesImp.h \
+		DlgPartImportStepImp.cpp \
+		DlgPartImportStepImp.h
 
 # the library search path.
 libPartGui_la_LDFLAGS = -L../App $(all_libraries)

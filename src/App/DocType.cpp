@@ -223,12 +223,12 @@ Feature *DocTypeStd::GetFeature(const TDF_Label &l)
 // State handling
 
 
-void DocTypeStd::TouchState(TDF_Label &l)
+void DocTypeStd::TouchState(const TDF_Label &l)
 {
   _LogBook.SetTouched(l);
 }
 
-void DocTypeStd::ImpactState(TDF_Label &l)
+void DocTypeStd::ImpactState(const TDF_Label &l)
 {
   _LogBook.SetImpacted(l);
 }

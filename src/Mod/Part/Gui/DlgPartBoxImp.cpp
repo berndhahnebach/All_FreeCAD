@@ -41,7 +41,7 @@
  *  TRUE to construct a modal dialog.
  */
 DlgPartBoxImp::DlgPartBoxImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPartBox( parent, name, modal, fl ), WindowParameter(name)
+    : DlgPartBox( parent, name, modal, fl )
 {
 }
 

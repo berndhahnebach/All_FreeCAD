@@ -20,23 +20,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DLGPARTBOXIMP_H
-#define DLGPARTBOXIMP_H
-
-#include "DlgPartBox.h"
 
 
-class DlgPartBoxImp : public DlgPartBox
-{ 
-    Q_OBJECT
+#ifndef __FeaturePartImportIges_H__
+#define __FeaturePartImportIges_H__
 
+
+#include "PartFeature.h"
+
+namespace Part
+{
+
+
+class FeaturePartImportIges :public PartFeature
+{
 public:
-    DlgPartBoxImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgPartBoxImp();
 
-public slots:
-    void OnApply();
+	virtual void InitLabel(const TDF_Label &rcLabel);
+
+//	virtual bool MustExecute(const TFunction_Logbook& log);
+
+	virtual Standard_Integer Execute(TFunction_Logbook& log);
+
+	virtual void Validate(TFunction_Logbook& log);
 
 };
 
-#endif // DLGPARTBOX_H
+
+
+}
+
+
+
+
+#endif // __FeaturePartImportIges_H__

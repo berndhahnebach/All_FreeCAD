@@ -136,11 +136,8 @@ const char *Feature::GetStringProperty(const char *Name)
 
 void Feature::TouchProperty(const char *Name)
 {
-  TDF_Label label = _cFeatureLabel.FindChild( _PropertiesMap[Name] );
-  // gcc: cannot call _cFeatureLabel.FindChild( _PropertiesMap[Name] )
-  // since TouchState() expects a refererence and not const reference
-  _pDocType->TouchState( label );
-  _pDocType->TouchState( _cFeatureLabel );
+    _pDocType->TouchState( _cFeatureLabel.FindChild(_PropertiesMap[Name]) );
+    _pDocType->TouchState( _cFeatureLabel );
 }
 
 void Feature::AttachLabel(const TDF_Label &rcLabel)

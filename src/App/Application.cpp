@@ -456,12 +456,15 @@ PYFUNCIMP_S(FCApplication,sSaveAs)
 
 PYFUNCIMP_S(FCApplication,sGet)
 {
-    char *pstr=0;
-    if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+  char *pstr=0;
+  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 
-	if(pstr == 0)
-		return GetApplication().Active()->GetPyObject();
+  if(pstr == 0){
+    Base::FCPyObject *p = GetApplication().Active()->GetPyObject();
+    p->_INCREF();
+	  return p;
+  }
 
 	Py_INCREF(Py_None);
 	return Py_None;                              // None: no errors 

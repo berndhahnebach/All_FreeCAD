@@ -135,15 +135,27 @@ pkglib_LTLIBRARIES = libPartGui.la
 BUILT_SOURCES = \
 	DlgPartBox.cpp \
 	DlgPartBox.h \
+  DlgPartImportIges.cpp \
+  DlgPartImportIges.h \
+  DlgPartImportStep.cpp \
+  DlgPartImportStep.h \
 	moc_DlgPartBox.cpp \
-	moc_DlgPartBoxImp.cpp
+	moc_DlgPartBoxImp.cpp \
+  moc_DlgPartImportIges.cpp \
+  moc_DlgPartImportIgesImp.cpp \
+  moc_DlgPartImportStep.cpp \
+  moc_DlgPartImportStepImp.cpp
 
 
 libPartGui_la_SOURCES = \
 		AppPartGui.cpp \
 		Command.cpp \
 		DlgPartBoxImp.cpp \
-		DlgPartBoxImp.h
+		DlgPartBoxImp.h \
+		DlgPartImportIgesImp.cpp \
+		DlgPartImportIgesImp.h \
+		DlgPartImportStepImp.cpp \
+		DlgPartImportStepImp.h
 
 
 # the library search path.
@@ -162,7 +174,8 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
 
 libPartGui_la_DEPENDENCIES =
-am_libPartGui_la_OBJECTS = AppPartGui.lo Command.lo DlgPartBoxImp.lo
+am_libPartGui_la_OBJECTS = AppPartGui.lo Command.lo DlgPartBoxImp.lo \
+	DlgPartImportIgesImp.lo DlgPartImportStepImp.lo
 libPartGui_la_OBJECTS = $(am_libPartGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -170,7 +183,9 @@ depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AppPartGui.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Command.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/DlgPartBoxImp.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/DlgPartBoxImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportIgesImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgPartImportStepImp.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -240,6 +255,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AppPartGui.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartBoxImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportIgesImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgPartImportStepImp.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
