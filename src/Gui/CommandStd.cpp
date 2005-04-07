@@ -774,6 +774,7 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
   sToolTipText  = QT_TR_NOOP("Tip of the day");
   sWhatsThis    = QT_TR_NOOP("Tip of the day");
   sStatusTip    = QT_TR_NOOP("Tip of the day");
+  sHelpUrl      = "TipOfTheDay.html";
 }
 
 void StdCmdTipOfTheDay::activated(int iMsg)
@@ -1087,6 +1088,7 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdOCAFBrowse());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
+  rcCmdMgr.addCommand(new StdCmdDescription());
 }
 
 } // namespace Gui

@@ -28,6 +28,8 @@
 # include <qwhatsthis.h>
 #endif
 
+#include "Command.h"
+
 class QTextBrowser;
 
 namespace Gui {
@@ -56,6 +58,33 @@ private:
   QString _url; /**< URL of the Html document. */
   QString _txt; /**< Description of the widget. */
 
+  static QTextBrowser* _helpViewer; /**< global HelpViewer to display help. */
+};
+
+// --------------------------------------------------------------------
+
+/**
+ * @author Werner Mayer
+ */
+class StdCmdDescription : public CppCommand
+{
+public:
+  StdCmdDescription();
+  ~StdCmdDescription();
+  
+  QAction * createAction(void);
+  void toggled ( bool ); 
+  void activated(int iMsg);
+
+  static bool inDescriptionMode();
+  static void enterDescriptionMode();
+  static void leaveDescriptionMode();
+
+  static void setHelpView( QTextBrowser* );
+  static void setSource( const QString& );
+
+private:
+  static bool _descrMode;
   static QTextBrowser* _helpViewer; /**< global HelpViewer to display help. */
 };
 

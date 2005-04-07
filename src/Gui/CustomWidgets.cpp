@@ -421,7 +421,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
           }
         }
     */
-    Console().Warning("CustomToolBar::dropEvent(): Cannot drop item(s). The size of found items is different to the size of stored items\n");
+    Console().Log("CustomToolBar::dropEvent(): Cannot drop item(s). The size of found items is different to the size of stored items\n");
     ActionDrag::actions.clear();
 
     return;
@@ -685,7 +685,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     }
 
     // error
-    Console().Warning("No corresponding Action object found\n");
+    Console().Log("No corresponding Action object found\n");
   }
   else
     QPopupMenu::mouseMoveEvent(e);

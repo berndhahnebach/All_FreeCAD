@@ -35,6 +35,7 @@
 #include "Macro.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
+#include "WhatsThis.h"
 
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
@@ -106,7 +107,7 @@ QAction* Command::getAction( bool create )
   return _pcAction; 
 }
 
-bool Command::isToggle(void)
+bool Command::isToggle(void) const
 {
   return (_eType&Cmd_Toggle) != 0; 
 }
@@ -153,6 +154,7 @@ void Command::activated ()
 
   }
 }
+
 void Command::toggled (bool b)
 {
   if(_eType == Cmd_Toggle)
@@ -168,6 +170,12 @@ void Command::toggled (bool b)
 void Command::testActive(void)
 {
   if(!_pcAction) return;
+
+  if ( StdCmdDescription::inDescriptionMode () )
+  {
+    _pcAction->setEnabled( true );
+    return;
+  }
 
   bool bActive = isActive();
   _pcAction->setEnabled ( bActive );
@@ -314,7 +322,7 @@ CppCommand::CppCommand(const char* name,CMD_Type eType)
   iAccel        = 0;
 }
 
-std::string CppCommand::getResource(const char* sName)
+std::string CppCommand::getResource(const char* sName) const
 {
   return "";
 }
@@ -497,7 +505,7 @@ PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
     throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
 }
 
-std::string PythonCommand::getResource(const char* sName)
+std::string PythonCommand::getResource(const char* sName) const
 {
   PyObject* pcTemp;
   Base::PyBuf ResName(sName);

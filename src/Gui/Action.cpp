@@ -31,6 +31,7 @@
 #include "Command.h"
 #include "DlgUndoRedo.h"
 #include "ToolBoxBar.h"
+#include "WhatsThis.h"
 
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -116,7 +117,10 @@ bool Action::removeFrom ( QWidget * w )
  */
 void Action::onActivated () 
 {
-  _pcCmd->activated();
+  if ( StdCmdDescription::inDescriptionMode () )
+    StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
+  else
+    _pcCmd->activated();
 }
 
 /**
@@ -132,7 +136,7 @@ void Action::onToggled ( bool b)
  */
 void Action::setEnabled ( bool b) 
 {
-  QAction::setEnabled(b);
+  QAction::setEnabled( b );
 }
 
 // --------------------------------------------------------------------

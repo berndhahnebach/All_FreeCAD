@@ -74,25 +74,20 @@ enum CMD_Type {
 class GuiExport Command 
 {
 public:
-
   Command(const char* name,CMD_Type eType=Cmd_Normal);
   virtual ~Command();
 
-  /** @name Methodes to override when create a new command
+  /** @name Methods to override when create a new command
    */
   //@{
   /// Method which get called when activated, needs to be reimplemented!
   virtual void activated(int iMsg){assert((_eType&Cmd_Toggle) == 0);}
   /// Overite this methode if your Cmd is not always active
   virtual bool isActive(void){return true;} 
-  /// Get the help URL
-  virtual std::string cmdHelpURL(void){ return std::string("FCDoc://Msg/NoHelp.htm");}
-  /// Get the help page
-  virtual void cmdHelpPage(std::string &rcHelpPage){return;}
-  /// Creates the used FCAction
+  /// Creates the used QAction
   virtual QAction * createAction(void)=0;
   /// returns the resource values
-  virtual std::string getResource(const char* sName)=0;
+  virtual std::string getResource(const char* sName) const=0;
   /// Reassign QAction stuff
   virtual void languageChange(){}
   //@}
@@ -144,11 +139,7 @@ public:
   /// translate a string to a python string literal (needed e.g. in file names for windows...)
   const std::string strToPython(const char* Str);
   const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());};
-
   //@}
-
-
-
 
   /** @name Helper methodes to generate help pages */
   //@{
@@ -158,17 +149,18 @@ public:
   const char * endCmdHelp(void);
   //@}
 
-
   /** @name checking of internal state */
   //@{
   /// is it a toggle cmd
-  bool isToggle(void);
+  bool isToggle(void) const;
   /// returns the name to which the command belongs
-  const char* getAppModuleName(void){return sAppModule.c_str();}	
+  const char* getAppModuleName(void) const {return sAppModule.c_str();}	
   /// Get the command name
-  const char* getName() { return sName.c_str(); }
+  const char* getName() const { return sName.c_str(); }
   /// Get the name of the grouping of the command
-  const char* getGroupName() { return sGroup.c_str(); }
+  const char* getGroupName() const { return sGroup.c_str(); }
+  /// Get the help URL
+  const char* getHelpUrl(void) const { return sHelpUrl.c_str(); }
   //@}
 
   /** @name interface used by the CommandManager and the FCAction */
@@ -187,8 +179,6 @@ public:
   virtual bool removeFrom(QWidget *pcWidget);
   //@}
 
-
-
 protected:
   /** @name Attributes 
    *  set by the inherited constructor to set up the most important propertys 
@@ -199,10 +189,10 @@ protected:
   std::string sAppModule;
   std::string sGroup;
   std::string sName;
+  std::string sHelpUrl;
   QAction *_pcAction;
   CMD_Type _eType;
   //@}
-
 };
 
 
@@ -222,7 +212,6 @@ protected:
 class GuiExport CppCommand :public Command
 {
 public:
-
   CppCommand(const char* name,CMD_Type eType=Cmd_Normal);
   virtual ~CppCommand() {}
 
@@ -237,7 +226,7 @@ public:
   /// Creates the used FCAction
   virtual QAction * createAction(void);
   /// returns the resource values
-  virtual std::string getResource(const char* sName);
+  virtual std::string getResource(const char* sName) const;
   /// Reassign QAction stuff
   virtual void languageChange();
 
@@ -290,7 +279,7 @@ public:
   /// Creates the used FCAction
   virtual QAction * createAction(void);
   /// returns the resource values
-  virtual std::string getResource(const char* sName);
+  virtual std::string getResource(const char* sName) const;
   //@}
 
 
@@ -509,7 +498,7 @@ public:
   void setMaxCount (int i) { _nMaxItems = i;    }
 
   QStringList recentFiles() const;
-  std::string getResource(const char* sName) { return ""; }
+  std::string getResource(const char* sName) const { return ""; }
 
   /** @name Methods to load or save from preferences */
   //@{

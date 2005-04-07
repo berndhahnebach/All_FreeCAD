@@ -24,10 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qtextbrowser.h>
 #endif
 
 #include "WhatsThis.h"
+#include "Action.h"
 
 using namespace Gui;
 
@@ -99,3 +101,88 @@ void WhatsThis::setHelpView( QTextBrowser* browser )
 {
   _helpViewer = browser;
 }
+
+// --------------------------------------------------------------------
+
+bool StdCmdDescription::_descrMode = false;
+QTextBrowser* StdCmdDescription::_helpViewer = 0L;
+
+StdCmdDescription::StdCmdDescription()
+  :CppCommand("Std_DescriptionMode")
+{
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Des&cription");
+  sToolTipText  = QT_TR_NOOP("Long description of commands");
+  sWhatsThis    = QT_TR_NOOP("Long description of commands");
+  sStatusTip    = QT_TR_NOOP("Long description of commands");
+  iAccel        = Qt::Key_F1;
+}
+
+StdCmdDescription::~StdCmdDescription()
+{
+}
+
+QAction * StdCmdDescription::createAction(void)
+{
+  QAction *pcAction;
+
+  pcAction = new Action(this,qApp->mainWidget(),sName.c_str(),true);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  pcAction->setAccel(iAccel);
+
+  return pcAction;
+}
+
+void StdCmdDescription::activated(int iMsg)
+{
+}
+
+void StdCmdDescription::toggled ( bool b )
+{
+  if ( b )
+    enterDescriptionMode();
+  else
+    leaveDescriptionMode();
+}
+
+bool StdCmdDescription::inDescriptionMode()
+{
+  return _descrMode;
+}
+
+/**
+ * Shows the help text in the specified browser.  
+ */
+void StdCmdDescription::setHelpView( QTextBrowser* browser )
+{
+  _helpViewer = browser;
+}
+
+void StdCmdDescription::setSource( const QString& src )
+{
+  if ( _helpViewer && !src.isEmpty() )
+  {
+    QString url = "index.php@";
+    url.append( src );
+    _helpViewer->setSource( url );
+  }
+}
+
+void StdCmdDescription::enterDescriptionMode()
+{
+  _descrMode = true;
+  QApplication::setOverrideCursor( Qt::WhatsThisCursor, false );
+}
+
+void StdCmdDescription::leaveDescriptionMode()
+{
+  _descrMode = false;
+  QApplication::restoreOverrideCursor();
+}
+
+#include "moc_WhatsThis.cpp"

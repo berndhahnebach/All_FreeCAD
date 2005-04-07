@@ -28,6 +28,7 @@
 # include <qmessagebox.h>
 # include <qpopupmenu.h>
 # include <qregexp.h>
+# include <qwhatsthis.h>
 #endif
 
 #include "CommandLine.h"
@@ -83,6 +84,8 @@ CommandLineBase::CommandLineBase(void)
   setAcceptDrops(true);
 
   connect(lineEdit(), SIGNAL(returnPressed ()), this, SLOT(onLaunchCommand()));
+
+  QWhatsThis::add(this, tr("Simple Python console"));
 
   loadHistory();
   getWindowParameter()->Attach( this );

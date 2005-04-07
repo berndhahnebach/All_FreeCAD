@@ -118,10 +118,10 @@ public:
 
 protected:
   void rebuild();
-  void dropEvent     ( QDropEvent      * );
-  void dragEnterEvent( QDragEnterEvent * );
-  void dragLeaveEvent( QDragLeaveEvent * );
-  void dragMoveEvent ( QDragMoveEvent  * );
+  void dropEvent       ( QDropEvent      * );
+  void dragEnterEvent  ( QDragEnterEvent * );
+  void dragLeaveEvent  ( QDragLeaveEvent * );
+  void dragMoveEvent   ( QDragMoveEvent  * );
 
   virtual void restorePreferences();
   virtual void savePreferences();

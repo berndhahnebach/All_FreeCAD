@@ -110,6 +110,10 @@
     <context>
         <name>Gui::CommandLineBase</name>
         <message>
+            <source>Simple Python console</source>
+            <translation>Einfaches Python Eingabefeld</translation>
+        </message>
+        <message>
             <source>Error</source>
             <translation>Fehler</translation>
         </message>
@@ -1637,6 +1641,21 @@ Möchten Sie die Datei überschreiben?</translation>
         <message>
             <source>Cut out</source>
             <translation>Ausschneiden</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdDescription</name>
+        <message>
+            <source>Standard</source>
+            <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Des&amp;cription</source>
+            <translation>Bes&amp;chreibung</translation>
+        </message>
+        <message>
+            <source>Long description of commands</source>
+            <translation>Ausführliche Beschreibung aller Befehle</translation>
         </message>
     </context>
     <context>

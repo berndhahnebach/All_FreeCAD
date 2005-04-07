@@ -138,7 +138,7 @@ def InitMenues():
 	"Separator", "Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Separator", "Std_Windows"] 
 	Gui.MenuAppendItems("&Windows", list, 0, 0)
 
-	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Separator", "Std_About", "Std_AboutQt", "Separator", "Std_WhatsThis"]
+	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Separator", "Std_About", "Std_AboutQt", "Separator", "Std_WhatsThis", "Std_DescriptionMode"]
 	Gui.MenuAppendItems("&Help", list, 0, 0)
 
 def InitCmdBar():

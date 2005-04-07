@@ -119,6 +119,8 @@ public:
   HelpView( const QString& home_, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~HelpView();
 
+  void setFileSource( const QString& );
+
 signals:
   void setSource( const QString& );
 

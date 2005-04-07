@@ -200,6 +200,7 @@ BUILT_SOURCES = \
 		moc_View3D.cpp \
 		moc_View3DInventor.cpp \
 		moc_View3DInventorEx.cpp \
+		moc_WhatsThis.cpp \
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
 		DlgActions.cpp \

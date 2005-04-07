@@ -200,6 +200,8 @@ TextBrowser::TextBrowser(QWidget * parent, const char * name)
   : QTextBrowser(parent, name)
 {
   WhatsThis::setHelpView( this );
+  StdCmdDescription::setHelpView( this );
+
   d = new TextBrowserPrivate;
 
   setMimeSourceFactory(new HelpSourceFactory);
@@ -532,6 +534,14 @@ HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, W
 HelpView::~HelpView()
 {
   // no need to delete child widgets, Qt does it all for us
+}
+
+/**
+ * Sets the file source \a src to the help view's text browser.
+ */
+void HelpView::setFileSource( const QString& src )
+{
+  emit setSource( src );
 }
 
 /**
