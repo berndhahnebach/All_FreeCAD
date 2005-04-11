@@ -83,9 +83,9 @@ void PythonWindow::OnChange( FCSubject<const char*> &rCaller,const char* rcColor
   pythonSyntax->setColor( rcColor, color );
 }
 
-void PythonWindow::keyPressEvent(QKeyEvent * e)
-{
-  QTextEdit::keyPressEvent(e);
+//void PythonWindow::keyPressEvent(QKeyEvent * e)
+//{
+//  QTextEdit::keyPressEvent(e);
 //
 //  switch (e->key())
 //  {
@@ -113,7 +113,7 @@ void PythonWindow::keyPressEvent(QKeyEvent * e)
 //      }
 //      break;
 //  }
-}
+//}
 
 // ------------------------------------------------------------------------
 
@@ -166,96 +166,11 @@ void PythonEditor::OnChange( FCSubject<const char*> &rCaller,const char* sReason
 
 // ------------------------------------------------------------------------
 
-/**
- *  Constructs a PythonConsole which is a child of 'parent', with the
- *  name 'name'. 
- */
-PythonConsole::PythonConsole(QWidget *parent,const char *name)
-    : PythonWindow(parent, name), lastPara(-1)
-{
-  zoomIn(2);
-#ifdef FC_OS_LINUX
-  QFont serifFont( "Courier", 15, QFont::Normal );
-#else
-  QFont serifFont( "Courier", 10, QFont::Normal );
-#endif
-  setFont(serifFont);
-
-  setTabStopWidth(32);
-}
-
-/** Destroys the object and frees any allocated resources */
-PythonConsole::~PythonConsole()
-{
-}
-
-/**
- * Checks the input of the console to make the correct indentations.
- * After a command is prompted completely the Python interpreter is started.
- */
-void PythonConsole::keyPressEvent(QKeyEvent * e)
-{
-  PythonWindow::keyPressEvent(e);
-
-  switch (e->key())
-  {
-  case Key_Return:
-  case Key_Enter:
-    int para; int idx;
-    getCursorPosition(&para, &idx);
-    QString txt = text(para-1);
-    if (txt.isEmpty() || txt == " ")
-    {
-      bool bMute = GuiConsoleObserver::bMute;
-
-      try
-      {
-        // check if any python command was already launched
-        int prev = lastPara > -1 ? lastPara : 0;
-        QString cmd;
-        // build the python command
-        for (int i=prev; i<para; i++)
-        {
-          cmd += text(i);
-          cmd += "\n";
-        }
-        lastPara = para;
-
-        // launch the command now
-        GuiConsoleObserver::bMute = true;
-        if (!cmd.isEmpty())
-          Base::Interpreter().runString(cmd.latin1());
-      }
-      catch (const Base::Exception& exc)
-      {
-        setColor(Qt::red);
-        pythonSyntax->highlightError(true);
-        insertAt( exc.what(), lastPara-1, 0);
-        pythonSyntax->highlightError(false);
-      }
-
-      GuiConsoleObserver::bMute = bMute;
-    }
-    break;
-  }
-/*
-  // cursor must not be inside the text of the last command
-  int para; int idx;
-  getCursorPosition(&para, &idx);
-  if (para < lastPara)
-  {
-    setCursorPosition(lastPara, idx);
-  }
-*/
-}
-
-// ------------------------------------------------------------------------
-
 namespace Gui {
 class PythonSyntaxHighlighterP
 {
 public:
-  PythonSyntaxHighlighterP() : hlError(false)
+  PythonSyntaxHighlighterP() : hlOutput(false), hlError(false)
   {
     keywords << "and" << "assert" << "break" << "class" << "continue" << "def" << "del" <<
     "elif" << "else" << "except" << "exec" << "finally" << "for" << "from" << "global" <<
@@ -284,7 +199,7 @@ public:
 
   QStringList keywords;
   QString blockComment;
-  bool hlError;
+  bool hlOutput, hlError;
   QColor cNormalText, cComment, cBlockcomment, cLiteral, cNumber,
   cOperator, cKeyword, cClassName, cDefineName;
 };
@@ -367,6 +282,14 @@ void PythonSyntaxHighlighter::setColor( const QString& type, const QColor& col )
   else if ( type == "Operator" )
     d->cOperator = col;
   rehighlight();
+}
+
+/**
+ * If \a b is set to true the following input to the editor is highlighted as normal output.
+ */
+void PythonSyntaxHighlighter::highlightOutput (bool b)
+{
+  d->hlOutput = b;
 }
 
 /**
@@ -580,6 +503,15 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
 {
   QString txt(text);
   int from = 0;
+
+  // highlight as error
+  if ( d->hlOutput )
+  {
+    QFont font = textEdit()->currentFont();
+    font.setItalic( true );
+    setFormat(0, txt.length(), font, Qt::blue);
+    return 0;
+  }
 
   // highlight as error
   if ( d->hlError )

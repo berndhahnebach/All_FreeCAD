@@ -2494,6 +2494,22 @@ SOURCE=.\ProgressBar.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PythonConsole.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PythonConsole.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PythonConsolePy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PythonConsolePy.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\PythonEditor.cpp
 # End Source File
 # Begin Source File

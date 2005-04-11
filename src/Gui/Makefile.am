@@ -222,6 +222,10 @@ libFreeCADGui_la_SOURCES=\
 		PropertyPage.h \
 		PropertyView.cpp \
 		PropertyView.h \
+		PythonConsole.cpp \
+		PythonConsole.h \
+		PythonConsolePy.cpp \
+		PythonConsolePy.h \
 		PythonEditor.cpp \
 		PythonEditor.h \
 		ReportView.cpp \

@@ -363,6 +363,10 @@ libFreeCADGui_la_SOURCES = \
 		PropertyPage.h \
 		PropertyView.cpp \
 		PropertyView.h \
+		PythonConsole.cpp \
+		PythonConsole.h \
+		PythonConsolePy.cpp \
+		PythonConsolePy.h \
 		PythonEditor.cpp \
 		PythonEditor.h \
 		ReportView.cpp \
@@ -500,10 +504,10 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgUndoRedo.lo DockWindow.lo Document.lo Doxygen.lo \
 	FileDialog.lo GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo \
 	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
-	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonEditor.lo \
-	ReportView.lo resource.lo Selection.lo SpinBox.lo \
-	Splashscreen.lo StackBar.lo TextEdit.lo ToolBox.lo \
-	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
+	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonConsole.lo \
+	PythonConsolePy.lo PythonEditor.lo ReportView.lo resource.lo \
+	Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo TextEdit.lo \
+	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
 	View3DInventor.lo View3DInventorEx.lo View3DInventorExamples.lo \
 	ViewProvider.lo WaitCursor.lo WhatsThis.lo WidgetFactory.lo \
 	Widgets.lo Window.lo
@@ -552,6 +556,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ProgressBar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyPage.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PropertyView.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PythonConsole.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/PythonConsolePy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PythonEditor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ReportView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Selection.Plo \
@@ -692,6 +698,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProgressBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyPage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyView.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PythonConsole.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PythonConsolePy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PythonEditor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReportView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Selection.Plo@am__quote@

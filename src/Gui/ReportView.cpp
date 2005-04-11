@@ -31,7 +31,7 @@
 
 #include "ReportView.h"
 #include "FileDialog.h"
-#include "PythonEditor.h"
+#include "PythonConsole.h"
 
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -184,21 +184,13 @@ ReportOutput::~ReportOutput()
   delete reportHl;
 }
 
-
 void ReportOutput::append ( const QString & text )
-
 {
-
   QTextEdit::append( text );
 
-
-
   if ( !isVisible() )
-
     scrollToBottom();
-
 }
-
 
 void ReportOutput::restoreFont()
 {

@@ -175,11 +175,11 @@ void CommandLineBase::onLaunchCommand()
       Interpreter().runString(text(currentItem()).latin1());
     }
   }
-  catch (const Base::Exception& rclE)
+  catch (const Base::Exception& /*rclE*/)
   {
-    QString txt = rclE.what();
-    QString err = QString("'%1' is not defined!").arg( cmd );
-    QMessageBox::warning(this, txt, err);
+//    QString txt = rclE.what();
+//    QString err = QString("'%1' is not defined!").arg( cmd );
+//    QMessageBox::warning(this, txt, err);
   }
 #ifndef FC_DEBUG
   catch (...)

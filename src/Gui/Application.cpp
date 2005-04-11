@@ -501,19 +501,12 @@ void ApplicationWindow::addWindow( MDIView* view )
   else
     view->show();
 
-
   // look if the window was already inserted
-
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
-
   {
-
     if ( it.data() == view )
-
       return;
-
   }
-
 
   // being informed when the view is destroyed
   connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );

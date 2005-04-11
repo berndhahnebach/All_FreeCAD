@@ -31,7 +31,7 @@
 # include <qsyntaxhighlighter.h>
 #endif
 
-#include <TextEdit.h>
+#include "TextEdit.h"
 
 class QListBox;
 class QListBoxItem;
@@ -57,9 +57,6 @@ protected:
   virtual void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
 
 protected:
-  virtual void keyPressEvent(QKeyEvent * e);
-
-protected:
   PythonSyntaxHighlighter* pythonSyntax;
 
 private:
@@ -77,23 +74,6 @@ public:
   ~PythonEditor();
 
   void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
-};
-
-/**
- * Python text console with syntax highlighting..
- * \author Werner Mayer
- */
-class GuiExport PythonConsole : public PythonWindow
-{
-public:
-  PythonConsole(QWidget *parent = 0,const char *name = 0);
-  ~PythonConsole();
-
-protected:
-  void keyPressEvent(QKeyEvent * e);
-
-private:
-  int lastPara;
 };
 
 /**
@@ -118,6 +98,7 @@ public:
   ~PythonSyntaxHighlighter();
 
   int highlightParagraph ( const QString & text, int endStateOfLastPara );
+  void highlightOutput (bool b);
   void highlightError (bool b);
   void setColor( Paragraph type, const QColor& col );
   void setColor( const QString& type, const QColor& col );
