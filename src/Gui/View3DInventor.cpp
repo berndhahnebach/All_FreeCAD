@@ -28,15 +28,26 @@
 # include <TopoDS_Shape.hxx>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/events/SoEvent.h>
 #endif
 
 #include "View3DInventor.h"
+#include "View3DInventorViewer.h"
 #include "Document.h"
 #include "../App/Label.h"
+#include "../App/Feature.h"
+#include "../Base/Console.h"
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
 #include "Inventor/OCC/SoBrepShape.h"
+
+#include "View3DInventorExamples.h"
+#include "ViewProvider.h"
+#include "MouseModel.h"
+
+
+#include "Icons/default_background.xpm"
 
 using namespace Gui;
 
@@ -44,8 +55,12 @@ using namespace Gui;
 View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
-//  _viewer = new SoQtExaminerViewer(this);
-  _viewer = new MyView3DInventor(this);
+  
+  setMouseTracking(true);
+
+  pcActViewProvider = 0l;
+  
+  _viewer = new View3DInventorViewer(this);
 
   setViewerDefaults();
 }
@@ -79,7 +94,7 @@ void View3DInventor::setViewerDefaults(void)
   pcSepRoot->ref();
 
   // empty separator for user special
-  SoSeparator * pcSepUserSpecial= new SoSeparator();
+    SoSeparator * pcSepUserSpecial= new SoSeparator();
   pcSepRoot->addChild(pcSepUserSpecial);
 
 
@@ -95,17 +110,46 @@ void View3DInventor::setViewerDefaults(void)
   QColor AmbCol=Col1;
   QColor SpeCol=Col;
   QColor EmCol(0,0,0);
-
+/*
   pcShapeMaterial = new SoMaterial;
   pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
   pcShapeMaterial->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
   pcShapeMaterial->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
   pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
   pcSepRoot->addChild(pcShapeMaterial);
-
+*/
   pcSepRoot->renderCaching = SoSeparator::ON;
   pcSepRoot->addChild(pcShapeHint);
 
+
+  pcSepRoot->addChild(createAxis());
+
+
+  // create the root for the shape
+  pcSepShapeRoot = new SoSeparator();
+  pcSepRoot->addChild(pcSepShapeRoot);
+
+//  _viewer->setSceneGraph(pcSepRoot);
+
+
+//  _viewer->setFeedbackVisibility(true);
+//  _viewer->setFeedbackSize(15);
+//  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
+  _viewer->viewAll();
+//  _viewer->setDecoration(false);
+
+  _viewer->setSceneGraph(pcSepRoot);
+
+  //_viewer->setAntialiasing(true,2);
+//  _viewer->setSceneGraph(new SoCone);
+//  _viewer->show();
+
+  _viewer->show();
+}
+
+
+SoSeparator *View3DInventor::createAxis(void)
+{
   // create axis
   pcSepAxis = new SoSeparator();
 
@@ -127,23 +171,10 @@ void View3DInventor::setViewerDefaults(void)
   pcCylinder = new SoCylinder();
   pcCylinder->height.setValue(100);
 
-  pcSepRoot->addChild(pcSepAxis);
-
-
-  // create the root for the shape
-  pcSepShapeRoot = new SoSeparator();
-  pcSepRoot->addChild(pcSepShapeRoot);
-
-  _viewer->setSceneGraph(pcSepRoot);
-  //  _viewer->setFeedbackVisibility(true);
-  //  _viewer->setFeedbackSize(20);
-  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-  _viewer->viewAll();
-//  _viewer->setDecoration(false);
-
-  _viewer->show();
+  return pcSepAxis;
 }
 
+/*
 void View3DInventor::setShape(void)
 {
   TopoDS_Shape cShape;
@@ -169,6 +200,97 @@ void View3DInventor::setShape(void)
   cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
   cShapeConverter.Compute(pcSepShapeRoot);
 }
+*/
+
+void View3DInventor::onUpdate(void)
+{
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
+#endif
+
+  App::Feature *pcActFeature = getAppDocument()->GetActiveFeature();
+
+  if(pcActFeature)
+  {
+    std::string cName = pcActFeature->Type();
+    // check if still the same ViewProvider
+    if(cName == cViewProviderName && pcActViewProvider)
+    {
+      // if the same just calculate the new representation
+      SoNode* Node = pcActViewProvider->create(pcActFeature);
+      pcSepRoot->addChild(Node);
+      //_viewer->setSceneGraph(Node);
+    }else{
+      // if not create the new ViewProvider
+      if (pcActViewProvider) 
+        delete pcActViewProvider;
+      pcActViewProvider = ViewProviderInventorFactory().Produce(pcActFeature->Type());
+      if(pcActViewProvider)
+      {
+        // if succesfully created set the right name an calculate the view
+        cViewProviderName = pcActFeature->Type();
+        SoNode* Node = pcActViewProvider->create(pcActFeature);
+        pcSepRoot->addChild(Node);
+        //_viewer->setSceneGraph(Node);
+      }else{
+        Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",pcActFeature->Type());
+        cViewProviderName = "";
+      }
+    }
+
+  }
+}
+void View3DInventor::hideEvent ( QHideEvent * cEvent )
+{
+ // ApplicationWindow::Instance->setPaneText(2, QString(" Dimension"));
+}
+
+void View3DInventor::showDimension (void) const
+{
+/*  if ( _hView.IsNull() )
+    return; // no valid view
+
+  Quantity_Length fWidth, fHeight;
+  _hView->Size(fWidth, fHeight);
+
+  float fLog = float(log10(fWidth)), fFactor;
+  int   nExp = int(fLog);
+  char  szDim[20];
+
+  if (nExp >= 6)
+  {
+    fFactor = 1.0e+6f;
+    strcpy(szDim, "km");
+  }
+  else if (nExp >= 3)
+  {
+    fFactor = 1.0e+3f;
+    strcpy(szDim, "m");
+  }
+  else if ((nExp >= 0) && (fLog > 0.0f))
+  {
+    fFactor = 1.0e+0f;
+    strcpy(szDim, "mm");
+  }
+  else if (nExp >= -3)
+  {
+    fFactor = 1.0e-3f;
+    strcpy(szDim, "um");
+  }
+  else 
+  {
+    fFactor = 1.0e-6f;
+    strcpy(szDim, "nm");
+  }
+
+  char szSize[100];
+  sprintf(szSize, " %.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
+
+  ApplicationWindow::Instance->setPaneText(2, QString(szSize));
+  */
+}
+
+
 
 void View3DInventor::resizeEvent ( QResizeEvent * e)
 {
@@ -181,31 +303,208 @@ const char *View3DInventor::getName(void)
   return "View3DInventor";
 }
 
-bool View3DInventor::onMsg(const char* pMsg,const char** ppReturn)
+// buffer acrobatics for inventor ****************************************************
+static char * buffer;
+static size_t buffer_size = 0;
+static std::string cReturnString;
+
+static void *
+buffer_realloc(void * bufptr, size_t size)
 {
-  printf("Msg: %s View: %p\n",pMsg,this);
+  buffer = (char *)realloc(bufptr, size);
+  buffer_size = size;
+  return buffer;
+}
+ 
+const std::string &View3DInventor::writeNodesToString(SoNode * root)
+{
+  SoOutput out;
+  buffer = (char *)malloc(1024);
+  buffer_size = 1024;
+  out.setBuffer(buffer, buffer_size, buffer_realloc);
+
+  SoWriteAction wa(&out);
+  wa.apply(root);
+
+  cReturnString =buffer;
+  free(buffer);
+  return cReturnString;
+}
+
+// **********************************************************************************
+
+bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
+{
+  if(strcmp("SetStereoOn",pMsg) == 0 ){
+    _viewer->setStereoViewing(true);
+    _viewer->setStereoOffset(10);
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    _viewer->setStereoViewing(false);
+    return true;
+  }else if(strcmp("Example1",pMsg) == 0 ){
+    SoSeparator * root = new SoSeparator;;
+    Texture3D(root);
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("Example2",pMsg) == 0 ){
+    SoSeparator * root = new SoSeparator;;
+    LightManip(root);
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("Example3",pMsg) == 0 ){
+    SoSeparator * root = new SoSeparator;;
+    AnimationTexture(root);
+    _viewer->setSceneGraph(root);
+    return true;
+  }else if(strcmp("GetCamera",pMsg) == 0 ){
+    SoCamera * Cam = _viewer->getCamera();
+    *ppReturn = writeNodesToString(Cam).c_str();
+    return true;
+  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
+    return setCamera(pMsg+10);
+  }else if(strcmp("ViewFit",pMsg) == 0 ){
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewBottom",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-1, 0, 0, 0);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewFront",pMsg) == 0 ){
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-root, 0, 0, -root);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewLeft",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewRear",pMsg) == 0 ){
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0, root, root, 0);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewRight",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewTop",pMsg) == 0 ){
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(0, 0, 0, 1);
+    _viewer->viewAll();
+    return true;
+  }else if(strcmp("ViewAxo",pMsg) == 0 ){
+    float root = (float)(sqrt(3.0)/4.0);
+    SoCamera* cam = _viewer->getCamera();
+    cam->orientation.setValue(-0.333333f, -0.166666f, -0.333333f, -root);
+    _viewer->viewAll();
+    return true;
+  }
 
   return false;
 }
 
 
-void View3DInventor::onUpdate(void)
+bool View3DInventor::onHasMsg(const char* pMsg)
 {
-#ifdef FC_LOGUPDATECHAIN
-  Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
-#endif
-
+  if(strcmp("SetStereoOn",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example1",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example2",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("Example3",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewFit",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewBottom",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewFront",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewLeft",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewRear",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewRight",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewTop",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("ViewAxo",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("GetCamera",pMsg) == 0 ){
+    return true;
+  }else if(strncmp("SetCamera",pMsg,9) == 0 ){
+    return true;
+  }
+  return false;
 }
 
-/*
+#include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoOrthographicCamera.h>
 
-void MDIView::fitAll()
+bool View3DInventor::setCamera(const char* pCamera)
 {
-  myView->fitAll();
+  SoCamera * CamViewer = _viewer->getCamera();
+  if(!CamViewer)
+    Base::Console().Warning("setCamera because no camera set so far....");
+  SoPerspectiveCamera  * CamViewerP = 0;
+  SoOrthographicCamera * CamViewerO = 0;
+
+  if (CamViewer->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+    CamViewerP = (SoPerspectiveCamera *)CamViewer;  // safe downward cast, knows the type
+  }else if (CamViewer->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    CamViewerO = (SoOrthographicCamera *)CamViewer;  // safe downward cast, knows the type
+  }
+
+  SoInput in;
+  in.setBuffer((void*)pCamera,strlen(pCamera));
+
+  SoNode * Cam;
+  SoDB::read(&in,(SoNode*&)Cam);
+
+  if (!Cam){
+    Base::Console().Error("setCamera faild to read: %s\n",pCamera);
+    return true;
+  }
+
+  if (Cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+    if(CamViewerP){
+      CamViewerP->position      = ((SoPerspectiveCamera *)Cam)->position;
+      CamViewerP->orientation   = ((SoPerspectiveCamera *)Cam)->orientation;
+      CamViewerP->nearDistance  = ((SoPerspectiveCamera *)Cam)->nearDistance;
+      CamViewerP->farDistance   = ((SoPerspectiveCamera *)Cam)->farDistance;
+      CamViewerP->focalDistance = ((SoPerspectiveCamera *)Cam)->focalDistance;
+    }
+    else
+      Base::Console().Error("Camera type missmatch");
+  }else if (Cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    if(CamViewerO){
+      CamViewerO->viewportMapping  = ((SoOrthographicCamera *)Cam)->viewportMapping;
+      CamViewerO->position         = ((SoOrthographicCamera *)Cam)->position;
+      CamViewerO->orientation      = ((SoOrthographicCamera *)Cam)->orientation;
+      CamViewerO->nearDistance     = ((SoOrthographicCamera *)Cam)->nearDistance;
+      CamViewerO->farDistance      = ((SoOrthographicCamera *)Cam)->farDistance;
+      CamViewerO->focalDistance    = ((SoOrthographicCamera *)Cam)->focalDistance;
+      CamViewerO->aspectRatio      = ((SoOrthographicCamera *)Cam)->aspectRatio ;
+      CamViewerO->height           = ((SoOrthographicCamera *)Cam)->height;
+    }
+    else
+      Base::Console().Error("Camera type missmatch");
+  }
+
+  return true;
 }
 
 
-*/
 void View3DInventor::onWindowActivated ()
 {
   //myOperations->onSelectionChanged();
@@ -220,5 +519,8 @@ void View3DInventor::dump()
 {
 
 }
+
+
+
 
 #include "moc_View3DInventor.cpp"

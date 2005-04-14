@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,28 +20,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DlgPartImportIgesImp_H
-#define DlgPartImportIgesImp_H
 
-#include "DlgPartImportIges.h"
+#ifndef __VIEW3DINVENTORVIEWER__
+#define __VIEW3DINVENTORVIEWER__
+
+#include "Inventor/Qt/viewers/SoQtViewer.h"
 
 
-namespace PartGui {
+class SoSeparator;
+class SoShapeHints;
+class SoMaterial;
 
-class DlgPartImportIgesImp : public DlgPartImportIges
-{ 
-    Q_OBJECT
 
+namespace Gui {
+
+
+
+
+/** The Inventor viewer
+ *  
+ */
+class View3DInventorViewer: public SoQtViewer
+{
 public:
-    DlgPartImportIgesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgPartImportIgesImp();
+    View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true);
+    ~View3DInventorViewer();
 
-public slots:
-    virtual void OnApply();
-    virtual void onChooseFileName();
+protected:
+  virtual void actualRedraw(void);
+  virtual SbBool processSoEvent(const SoEvent * const ev);
+
+  void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
+  void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue);
+  void View3DInventorViewer::spin(const SbVec2f & pointerpos);
+
+
+
+private:
+  SoSeparator * bckgroundroot;
+  SoSeparator * foregroundroot;
+  SoRotationXYZ * arrowrotation;
 
 };
 
-} // namespace PartGui
+} // namespace Gui
 
-#endif // DlgPartImportIgesImp_H
+#endif  //__VIEW3DINVENTORVIEWER__
+

@@ -32,12 +32,8 @@ class QMouseEvent;
 class QSplitter;
 class QWidget;
 class QPushButton;
-class QVBoxLayout;
-class QHBoxLayout;
-class QWidgetStack;
 class QTabBar;
 class QVBox;
-class SoQtExaminerViewer;
 class SoQtViewer;
 
 class SoSeparator;
@@ -49,7 +45,12 @@ namespace Gui {
 class Document;
 class TreeView;
 class View3D;
+class View3DInventor;
+class View3DInventorViewer;
 class MyView3DInventor;
+class ViewProviderInventor;
+class MouseModel;
+
 
 /** The 3D View Window
  *  It consist out of the 3DView and the tree
@@ -64,7 +65,9 @@ public:
   ~View3DInventor();
 
   /// Mesage handler
-  virtual bool onMsg(const char* pMsg,const char** ppReturn);
+  virtual bool onMsg(const char* pMsg, const char** ppReturn);
+  virtual bool onHasMsg(const char* pMsg);
+
   virtual const char *getName(void);
 
   virtual void resizeEvent ( QResizeEvent * e);
@@ -75,8 +78,13 @@ public:
 
   void setViewerDefaults(void);
 
-  void setShape(void);
+  bool setCamera(const char* pCamera);
+  /// helper to apply a SoWriteAction to a node and write it to a string
+  static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
+  void showDimension (void) const;
+
+  virtual void hideEvent             ( QHideEvent  * );
 
 //signals:
   //void message(const QString&, int );
@@ -88,6 +96,8 @@ public slots:
   void dump();
 
 protected:
+  SoSeparator *createAxis(void);
+
   // inventor nodes:
   SoSeparator * pcSepUserSpecial;
   SoSeparator * pcSepRoot;
@@ -95,29 +105,13 @@ protected:
   SoSeparator * pcSepAxis;
   SoShapeHints* pcShapeHint; 
   SoMaterial	* pcShapeMaterial;
+
+  std::string            cViewProviderName;
+  ViewProviderInventor * pcActViewProvider;
+
 private:
-//  SoQtExaminerViewer * _viewer;
-  MyView3DInventor * _viewer;
-  QWidget*      _pcWidget;
-  QVBox*        _pcFrame;    
-  QWidgetStack* _pcWidgetStack;
-  QTabBar*      _pcTabBar;
-};
 
-
-/** The Inventor viewer
- *  
- */
-class MyView3DInventor: public SoQtViewer
-{
-public:
-    MyView3DInventor (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true) 
-      :SoQtViewer (parent, name, embed, type, build)
-    {
-
-    }
-
-    ~MyView3DInventor(){}
+  View3DInventorViewer * _viewer;
 };
 
 } // namespace Gui

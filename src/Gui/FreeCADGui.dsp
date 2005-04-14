@@ -3171,6 +3171,14 @@ SOURCE=.\View3DInventorExamples.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\View3DInventorViewer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorViewer.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ViewProvider.cpp
 # End Source File
 # Begin Source File

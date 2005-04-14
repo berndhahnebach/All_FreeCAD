@@ -138,6 +138,7 @@
 #include <Inventor/nodes/SoMaterialBinding.h>
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
+#include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/nodes/SoQuadMesh.h>
 #include <Inventor/nodes/SoRotationXYZ.h>
 #include <Inventor/nodes/SoSelection.h>
@@ -150,6 +151,7 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/events/SoEvent.h>
 
 #include <float.h>
 
