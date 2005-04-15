@@ -24,8 +24,22 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <float.h>
+# include <qapplication.h>
+# include <qimage.h>
+# include <GL/gl.h>
+# include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCube.h>
+# include <Inventor/nodes/SoImage.h>
+# include <Inventor/nodes/SoLightModel.h>
+# include <Inventor/nodes/SoLocateHighlight.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
+# include <Inventor/nodes/SoRotationXYZ.h>
+# include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/events/SoEvent.h>
 #endif
 

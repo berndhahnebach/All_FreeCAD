@@ -26,7 +26,10 @@
 #ifndef _PreComp_
 # include <qvbox.h>
 # include <TopoDS_Shape.hxx>
+# include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/events/SoEvent.h>
 #endif

@@ -24,6 +24,10 @@
 #ifndef DLG_EDITOR_IMP_H
 #define DLG_EDITOR_IMP_H
 
+#ifndef _PreComp_
+# include <qmap.h>
+#endif
+
 #include "DlgEditor.h"
 
 namespace Gui {
@@ -32,8 +36,8 @@ class PythonSyntaxHighlighter;
 namespace Dialog {
 
 /** This class implements a preferences page for the editor settings.
- *  Here you can change differnt color settings and font for the editors.
- *  \author Werner Mayer
+ *  Here you can change different color settings and font for editors.
+ *  @author Werner Mayer
  */
 class DlgSettingsEditorImp : public DlgEditorSettingsBase
 {
@@ -51,8 +55,12 @@ protected:
   void saveSettings();
   void loadSettings();
 
+  void languageChange();
+
 private:
-  std::map<QString, long> _mColors; /**< Color map containing color settings */
+  void trToOrig();
+  QMap<QString, long> _mColors; /**< Color map containing color settings. */
+  QMap<QString, QString> _trMap; /**< Holds the original text to each translated text. */
   Gui::PythonSyntaxHighlighter* pythonSyntax;
 
   DlgSettingsEditorImp( const DlgSettingsEditorImp & );
@@ -60,11 +68,15 @@ private:
 };
 
 
-/** This class implements a color map of QString->QColor.
- * A string does not represent the name of the color itself
- * but it represents the "setting" the color is assigned to
- * (e.g. text color, keyword color, ...)
- * \author Werner Mayer
+/** This class implements a color map of string->color.
+ * The string represents the type of word (text, keywords, operators, ...).
+ * To each type a special color is assigned to. These types and their colors
+ * are used within the Python syntax highlighing. The colors are stored as long,
+ * not as QColor objects. 
+ * To get back the (r,g,b) values from a long head the statement as follows:
+ * long col = ...
+ * QColor color(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+ * @author Werner Mayer
  */
 class DefColorMap
 {
@@ -73,10 +85,10 @@ protected:
   ~DefColorMap(void);
 
   static DefColorMap *_pcSingleton;
-  std::map<QString, long> m_clDefColors;
+  QMap<QString, long> m_clDefColors;
 
 public:
-  QStringList keys() const;
+  QStringList types() const;
   long color(const QString& name);
   static void Destruct(void);
   static DefColorMap &Instance(void);

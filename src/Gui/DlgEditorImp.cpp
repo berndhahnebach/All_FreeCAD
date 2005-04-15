@@ -48,7 +48,6 @@ DlgSettingsEditorImp::DlgSettingsEditorImp( QWidget* parent,  const char* name, 
 
   connect(ListBox1, SIGNAL(highlighted ( const QString & )), this, SLOT( onDisplayColor( const QString & ) ));
   connect(ColorBtn, SIGNAL(changed ()), this, SLOT( onChosenColor()));
-  ListBox1->setCurrentItem(0);
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -66,7 +65,8 @@ DlgSettingsEditorImp::~DlgSettingsEditorImp()
 void DlgSettingsEditorImp::onDisplayColor(const QString& name)
 {
   // foreground color
-  long col = _mColors[name];
+  QString org = _trMap[ name ];
+  long col = _mColors[ org ];
   ColorBtn->setColor(QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff));
 }
 
@@ -74,6 +74,8 @@ void DlgSettingsEditorImp::onDisplayColor(const QString& name)
 void DlgSettingsEditorImp::onChosenColor()
 {
   QString text = ListBox1->currentText();
+
+  text = _trMap[ text ];
   if (text.isEmpty())
     return;
 
@@ -92,9 +94,9 @@ void DlgSettingsEditorImp::saveSettings()
 
   // Saves the color map
   FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("Editor");
-  for (std::map<QString, long>::iterator it = _mColors.begin(); it!=_mColors.end(); ++it)
+  for (QMap<QString, long>::Iterator it = _mColors.begin(); it!=_mColors.end(); ++it)
   {
-    hGrp->SetInt(it->first.latin1(), it->second);
+    hGrp->SetInt(it.key().latin1(), it.data());
   }
 
   hGrp->SetASCII( "FontSize", FontSize->currentText().latin1() );
@@ -107,7 +109,7 @@ void DlgSettingsEditorImp::loadSettings()
   EnableFolding->onRestore();
 
   // Restores the color map
-  QStringList names = GetDefCol().keys();
+  QStringList names = GetDefCol().types();
 
   FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("Editor");
   for ( QStringList::Iterator it = names.begin(); it!=names.end(); ++it)
@@ -119,6 +121,8 @@ void DlgSettingsEditorImp::loadSettings()
     pythonSyntax->setColor( *it, color );
   }
 
+  trToOrig();
+
   // fill up font styles
   //
   QFontDatabase fdb;
@@ -127,16 +131,43 @@ void DlgSettingsEditorImp::loadSettings()
 
   FontSize->setCurrentText( hGrp->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
   FontDB  ->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
+
+  ListBox1->setCurrentItem(0);
+}
+
+/**
+ * Builds up the internal map that holds the original text to its translation.
+ * This is used to keep the syntax highlighting stuff working..
+ */ 
+void DlgSettingsEditorImp::trToOrig()
+{
+  // fill up map (tr("text") <-> "text")
+  _trMap.clear();
+  for ( QMap<QString, long>::Iterator it = _mColors.begin(); it != _mColors.end(); it++ )
+  {
+    _trMap[ DlgEditorSettingsBase::tr( it.key() ) ] = it.key();
+  }
+}
+
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgSettingsEditorImp::languageChange()
+{
+  int pos = FontSize->currentItem();
+  DlgEditorSettingsBase::languageChange();
+  FontSize->setCurrentItem( pos );
+
+  trToOrig();
 }
 
 // -------------------------------------------------------------------
 
-DefColorMap *DefColorMap::_pcSingleton = NULL;
+DefColorMap *DefColorMap::_pcSingleton = 0;
 
 /** Construction */
 DefColorMap::DefColorMap(void)
 {
-
   QColor col;
 
   col = Qt::black; long lText     = (col.blue() << 16) | (col.green() << 8) | col.red();
@@ -204,22 +235,22 @@ DefColorMap &DefColorMap::Instance(void)
   return *_pcSingleton;
 }
 
-/** Returns the corresponding color value to the given setting name */ 
-long DefColorMap::color(const QString& name)
+/** Returns the corresponding color value to the given type name */ 
+long DefColorMap::color( const QString& name )
 {
-  if (m_clDefColors.find(name) != m_clDefColors.end())
-    return m_clDefColors[name];
+  if ( m_clDefColors.find( name ) != m_clDefColors.end() )
+    return m_clDefColors[ name ];
   else
     return 0;
 }
 
-/** Returns the names of all settings */
-QStringList DefColorMap::keys() const
+/** Returns the names of all types */
+QStringList DefColorMap::types() const
 {
   QStringList keys;
 
-  for (std::map<QString, long>::const_iterator it = m_clDefColors.begin(); it!=m_clDefColors.end(); ++it)
-    keys.push_back(it->first);
+  for ( QMap<QString, long>::const_iterator it = m_clDefColors.begin(); it!=m_clDefColors.end(); it++ )
+    keys.push_back( it.key() );
   return keys;
 }
 

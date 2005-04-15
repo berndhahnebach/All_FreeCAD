@@ -30,6 +30,7 @@
 class SoSeparator;
 class SoShapeHints;
 class SoMaterial;
+class SoRotationXYZ;
 class SbSphereSheetProjector;
 
 namespace Gui {

@@ -259,6 +259,8 @@ libFreeCADGui_la_SOURCES=\
 		View3DInventorEx.h \
 		View3DInventorExamples.cpp \
 		View3DInventorExamples.h \
+		View3DInventorViewer.cpp \
+		View3DInventorViewer.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
 		WaitCursor.cpp \

@@ -996,7 +996,11 @@ void StdCmdCommandLine::activated(int iMsg)
   // create temporary console sequencer
   Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
   GuiConsoleObserver::bMute = true;
+  Base::Interpreter().runString("PyConsole.restoreStdout()");
+  Base::Interpreter().runString("PyConsole.restoreStderr()");
   Base::Interpreter().runCommandLine("Console mode");
+  Base::Interpreter().runString("PyConsole.redirectStdout()");
+  Base::Interpreter().runString("PyConsole.redirectStderr()");
   GuiConsoleObserver::bMute = mute;
   delete seq;
 

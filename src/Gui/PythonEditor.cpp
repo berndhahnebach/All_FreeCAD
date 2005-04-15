@@ -227,6 +227,12 @@ PythonSyntaxHighlighter::~PythonSyntaxHighlighter()
  */
 void PythonSyntaxHighlighter::setColor( Paragraph type, const QColor& col )
 {
+  // Rehighlighting is very expensive, thus avoid it if this color is already set
+  QColor old = color( type );
+  if ( !old.isValid() )
+    return; // no such type
+  if ( old == col )
+    return; 
   switch ( type )
   {
   case Normal:
@@ -263,6 +269,12 @@ void PythonSyntaxHighlighter::setColor( Paragraph type, const QColor& col )
  */
 void PythonSyntaxHighlighter::setColor( const QString& type, const QColor& col )
 {
+  // Rehighlighting is very expensive, thus avoid it if this color is already set
+  QColor old = color( type );
+  if ( !old.isValid() )
+    return; // no such type
+  if ( old == col )
+    return; 
   if ( type == "Text" )
     d->cNormalText = col;
   else if ( type == "Comment" )
@@ -282,6 +294,63 @@ void PythonSyntaxHighlighter::setColor( const QString& type, const QColor& col )
   else if ( type == "Operator" )
     d->cOperator = col;
   rehighlight();
+}
+
+QColor PythonSyntaxHighlighter::color( Paragraph type )
+{
+  QColor col;
+  switch ( type )
+  {
+  case Normal:
+    col = d->cNormalText;
+    break;
+  case Comment:
+    col = d->cComment;
+    break;
+  case Blockcomment:
+    col = d->cBlockcomment;
+    break;
+  case Literal:
+    col = d->cLiteral;
+    break;
+  case Number:
+    col = d->cNumber;
+    break;
+  case Operator:
+    col = d->cOperator;
+    break;
+  case Keywords:
+    col = d->cKeyword;
+    break;
+  default:
+    break;
+  }
+
+  return col;
+}
+
+QColor PythonSyntaxHighlighter::color( const QString& type )
+{
+  if ( type == "Text" )
+    return d->cNormalText;
+  else if ( type == "Comment" )
+    return d->cComment;
+  else if ( type == "Block comment" )
+    return d->cBlockcomment;
+  else if ( type == "Number" )
+    return d->cNumber;
+  else if ( type == "String" )
+    return d->cLiteral;
+  else if ( type == "Keyword" )
+    return d->cKeyword;
+  else if ( type == "Class name" )
+    return d->cClassName;
+  else if ( type == "Define name" )
+    return d->cDefineName;
+  else if ( type == "Operator" )
+    return d->cOperator;
+  else
+    return QColor(); // not found
 }
 
 /**

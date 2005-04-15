@@ -24,6 +24,10 @@
 #ifndef __PYTHON_CONSOLE_H__
 #define __PYTHON_CONSOLE_H__
 
+#ifndef _PreComp_
+# include <qstringlist.h>
+#endif
+
 #include "PythonEditor.h"
 #include <Base/PyExportImp.h>
 
@@ -54,20 +58,31 @@ protected:
   void contentsDragEnterEvent ( QDragEnterEvent   * e );
   void contentsDragMoveEvent  ( QDragMoveEvent    * e );
 
-  PYFUNCDEF_S(sPyStdout);
-  PYFUNCDEF_S(sPyStderr);
+  void overwriteParagraph( int para, const QString& txt );
+
+  PYFUNCDEF_S(sStdoutPy);
+  PYFUNCDEF_S(sStderrPy);
+  PYFUNCDEF_S(sStdout);
+  PYFUNCDEF_S(sStderr);
 	static PyMethodDef    Methods[]; 
 
 private:
+  int tabsIndent( const QString& ) const;
+  bool performPythonCommand();
   void printPrompt();
   void insertPythonOutput( const QString& );
   void insertPythonError ( const QString& );
 
 private:
-  int startPara;
-  bool indent;
+  int _startPara;
+  bool _indent;
+  QStringList _history;
 
-  static PythonConsole* instance;
+  static PythonConsole* _instance;
+  static PyObject* _stdoutPy;
+  static PyObject* _stderrPy;
+  static PyObject* _stdout;
+  static PyObject* _stderr;
 
   friend class PythonStdoutPy;
   friend class PythonStderrPy;

@@ -400,6 +400,8 @@ libFreeCADGui_la_SOURCES = \
 		View3DInventorEx.h \
 		View3DInventorExamples.cpp \
 		View3DInventorExamples.h \
+		View3DInventorViewer.cpp \
+		View3DInventorViewer.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
 		WaitCursor.cpp \
@@ -509,8 +511,8 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo TextEdit.lo \
 	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
 	View3DInventor.lo View3DInventorEx.lo View3DInventorExamples.lo \
-	ViewProvider.lo WaitCursor.lo WhatsThis.lo WidgetFactory.lo \
-	Widgets.lo Window.lo
+	View3DInventorViewer.lo ViewProvider.lo WaitCursor.lo \
+	WhatsThis.lo WidgetFactory.lo Widgets.lo Window.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -571,6 +573,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventorEx.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventorExamples.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/View3DInventorViewer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WaitCursor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WhatsThis.Plo \
@@ -718,6 +721,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorEx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorExamples.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorViewer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WaitCursor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WhatsThis.Plo@am__quote@

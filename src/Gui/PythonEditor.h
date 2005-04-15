@@ -102,6 +102,8 @@ public:
   void highlightError (bool b);
   void setColor( Paragraph type, const QColor& col );
   void setColor( const QString& type, const QColor& col );
+  QColor color( Paragraph type );
+  QColor color( const QString& type );
 
 private:
   int highlightLiteral( const QString&, int& from, int endStateOfLastPara );
