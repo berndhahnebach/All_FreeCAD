@@ -1,7 +1,7 @@
 # FreeCAD MakeNewBuildNbr script
 # (c) 2003 Werner Mayer
 #
-# Create a new application
+# Creates a new application
 
 #***************************************************************************
 #*   (c) Werner Mayer (werner.wm.mayer@vr-web.de) 2003                     *
@@ -58,10 +58,23 @@ def createApp(Application):
 
 	sys.stdout.write(Application + " module created successfully.\n")
 
+def validateApp(AppName):
+	"""
+	Validates the class name 
+	"""
+	if(len(AppName) < 2):
+		sys.stdout.write("Too short name: '"+AppName+"'\n")
+		sys.exit()
+	# name is long enough
+	clName="class "+AppName+": self=0"
+	try:
+		exec(clName)
+	except:
+		# Invalid class name
+		sys.stdout.write("Invalid name: '"+AppName+"'\n")
+		sys.exit()
 
 sys.stdout.write("Please enter a name for your application:")
 AppName = sys.stdin.readline()[:-1]
-if(len(AppName) < 2):
-	sys.stdout.write("No valid name entered!\n")
-	sys.exit()
+validateApp(AppName)
 createApp(AppName)
