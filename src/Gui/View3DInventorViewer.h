@@ -30,7 +30,7 @@
 class SoSeparator;
 class SoShapeHints;
 class SoMaterial;
-
+class SbSphereSheetProjector;
 
 namespace Gui {
 
@@ -50,11 +50,40 @@ protected:
   virtual void actualRedraw(void);
   virtual SbBool processSoEvent(const SoEvent * const ev);
 
+  void reorientCamera(const SbRotation & rotation);
   void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
   void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue);
   void View3DInventorViewer::spin(const SbVec2f & pointerpos);
 
+protected:
 
+  SbVec2f lastmouseposition;
+  SbPlane panningplane;
+
+  SbBool spinanimatingallowed;
+  SbVec2f lastspinposition;
+  int spinsamplecounter;
+  SbRotation spinincrement;
+  SbSphereSheetProjector * spinprojector;
+  SbTime prevRedrawTime;
+  SbRotation spinRotation;
+  void clearLog(void);
+  void addToLog(const SbVec2s pos, const SbTime time);
+
+  struct { // tracking mouse movement in a log
+    short size;
+    short historysize;
+    SbVec2s * position;
+    SbTime * time;
+  } log;
+
+
+  SbBool axiscrossEnabled;
+  int axiscrossSize;
+  void drawAxisCross(void);
+  static void drawArrow(void);
+
+  bool _bSpining;
 
 private:
   SoSeparator * bckgroundroot;
