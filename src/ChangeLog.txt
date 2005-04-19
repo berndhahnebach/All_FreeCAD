@@ -561,3 +561,4 @@ Version: V0.1B117 Date: Sun Mar 20 14:06:55 2005 +++++++++++++++++++++++++++++++
 + Finishing open from command line and droping on Programm icon
 + solving load dependand modules
 + more convenient Python console
++ Extracting curves from faces

@@ -99,6 +99,9 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_UniformDeflection.hxx>
+#include <TopExp.hxx>
+#include <Poly_PolygonOnTriangulation.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 
 
 #ifndef FC_OS_WIN32

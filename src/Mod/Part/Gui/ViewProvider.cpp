@@ -44,9 +44,14 @@
 # include <Poly_Triangulation.hxx>
 # include <TColgp_Array1OfPnt.hxx>
 # include <TopoDS.hxx>
+# include <TopoDS_Edge.hxx>
 # include <TopoDS_Face.hxx>
 # include <TopoDS_Shape.hxx>
 # include <TopExp_Explorer.hxx>
+# include <TopExp.hxx>
+# include <Poly_PolygonOnTriangulation.hxx>
+# include <TColStd_Array1OfInteger.hxx>
+# include <TopTools_ListOfShape.hxx>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -78,12 +83,10 @@ ViewProviderInventorPart::ViewProviderInventorPart()
 {
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
-
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
   bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
   lHilightColor       = hGrp->GetInt ("HilightColor",0);
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
-
 }
 
 ViewProviderInventorPart::~ViewProviderInventorPart()
@@ -92,8 +95,7 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 }
 
 SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
-{ 
-
+{
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
   bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
@@ -117,16 +119,14 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 
   try{
     computeFaces   (SepShapeRoot,cShape);
-//    computeEdges   (SepShapeRoot,cShape);
+    computeEdges   (SepShapeRoot,cShape);
     computeVertices(SepShapeRoot,cShape);
   } catch (...){
     Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
-    return 0l;   
+    return 0l;
   }
 
-
   return SepShapeRoot;
-
 }
 
 
@@ -171,74 +171,117 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
   SoSeparator *EdgeRoot = new SoSeparator();
   root->addChild(EdgeRoot);
 
-  for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next()) {
+  // build up map edge->face
+  TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
+  TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
 
+  for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next())
+  {
     // get the shape and mesh it
-		const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
+    const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
 
+    // getting the transformation of the shape/face
+    gp_Trsf myTransf;
+    Standard_Boolean identity = true;
     TopLoc_Location aLoc;
+
+    if(!aLoc.IsIdentity())  {
+      identity = false;
+      myTransf = aLoc.Transformation();
+    }
+
+    // try to triangulate the edge
     Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
 
-    if(aPoly.IsNull()) 
-      throw Base::Exception("ViewProviderInventorPart::computeEdges(): Empty face trianglutaion\n");
-    
-    // geting the transformation of the shape/face
-	  gp_Trsf myTransf;
-	  Standard_Boolean identity = true;
-	  if(!aLoc.IsIdentity())  {
-	    identity = false;
-		  myTransf = aLoc.Transformation();
+    SbVec3f* vertices;
+    Standard_Integer nbNodesInFace;
+
+    // triangulation succeeded?
+    if( !aPoly.IsNull() )
+    {
+      // take the edge's triangulation
+      //
+      // getting size and create the array
+      nbNodesInFace = aPoly->NbNodes();
+      vertices = new SbVec3f[nbNodesInFace];
+
+      const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+
+      gp_Pnt V;
+      for( Standard_Integer i=0;i < nbNodesInFace;i++ ) {
+        V = Nodes(i+1);
+        V.Transform(myTransf);
+        vertices[i].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
+      }
+    }
+    else
+    {
+      // the edge has not its own triangulation, but then a face the edge is attached to
+      // must provide this triangulation
+
+      // Look for one face in our map (it doesn't care which one we take)
+      const TopoDS_Face& aFace = TopoDS::Face(edge2Face.FindFromKey(aEdge).First());
+
+      // take the face's triangulation instead
+	    Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
+
+      if(aPolyTria.IsNull()) // actually this shouldn't happen at all
+        throw Base::Exception("Empty face trianglutaion\n");
+
+      // this holds the indices of the edge's triangulation to the actual points
+      Handle(Poly_PolygonOnTriangulation) aPoly = BRep_Tool::PolygonOnTriangulation(aEdge, aPolyTria, aLoc);
+
+      // getting size and create the array
+      nbNodesInFace = aPoly->NbNodes();
+      vertices = new SbVec3f[nbNodesInFace];
+
+      const TColStd_Array1OfInteger& indices = aPoly->Nodes();
+      const TColgp_Array1OfPnt& Nodes = aPolyTria->Nodes();
+
+      gp_Pnt V;
+      int pos = 0;
+      // go through the index array
+      for( Standard_Integer i=indices.Lower();i <= indices.Upper();i++ ) {
+        V = Nodes( indices(i) );
+        V.Transform(myTransf);
+        vertices[pos++].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
+      }
     }
 
-    Standard_Integer i;
-    // geting size and create the array
-	  Standard_Integer nbNodesInFace = aPoly->NbNodes();
-	  SbVec3f* vertices = new SbVec3f[nbNodesInFace];
 
-   	const TColgp_Array1OfPnt& Nodes = aPoly->Nodes();
+    // define vertices
+    SoCoordinate3 * coords = new SoCoordinate3;
+    coords->point.setValues(0,nbNodesInFace, vertices);
+    EdgeRoot->addChild(coords);
 
-    gp_Pnt V;
-
-    for(i=0;i < nbNodesInFace;i++) {
-      V = Nodes(i+1);
-      V.Transform(myTransf);
-      vertices[i].setValue((float)(V.X()),(float)(V.Y()),(float)(V.Z()));
-    }
-
-	  // define vertices
-	  SoCoordinate3 * coords = new SoCoordinate3;
-	  coords->point.setValues(0,nbNodesInFace, vertices);
-	  EdgeRoot->addChild(coords);
-
-	  // define the indexed face set
-		SoLocateHighlight* h = new SoLocateHighlight();
+    // define the indexed face set
+    SoLocateHighlight* h = new SoLocateHighlight();
 //    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
     h->color.setValue((float)0.5,(float)0.0,(float)0.5);
 
     SoLineSet * lineset = new SoLineSet;
-		h->addChild(lineset);
-		EdgeRoot->addChild(h);
-    
+    h->addChild(lineset);
+    EdgeRoot->addChild(h);
+
     /*
-	  GCPnts_TangentialDeflection Algo(aCurve, theU1, theU2, anAngle, TheDeflection);
-	  NumberOfPoints = Algo.NbPoints();
-	  
+    GCPnts_TangentialDeflection Algo(aCurve, theU1, theU2, anAngle, TheDeflection);
+    NumberOfPoints = Algo.NbPoints();
+
     Adaptor3d_Curve          aCurve;
 
-	  if (NumberOfPoints > 0) {
-	    for (i=1;i<NumberOfPoints;i++) { 
-	      SeqP.Append(Algo.Value(i)); 
-	    }
-	    if (j == nbinter) {
-	      SeqP.Append(Algo.Value(NumberOfPoints)); 
-	    }
+    if (NumberOfPoints > 0) {
+      for (i=1;i<NumberOfPoints;i++) {
+        SeqP.Append(Algo.Value(i));
+      }
+      if (j == nbinter) {
+        SeqP.Append(Algo.Value(NumberOfPoints));
+      }
 	  }
 */
   }
 
   return true;
 }
-
 
 
 Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, const TopoDS_Shape &myShape)
