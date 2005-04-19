@@ -42,8 +42,10 @@ using namespace Gui;
 PythonConsole * PythonConsole::_instance = 0;
 PyObject      * PythonConsole::_stdoutPy = 0;
 PyObject      * PythonConsole::_stderrPy = 0;
+PyObject      * PythonConsole::_stdinPy  = 0;
 PyObject      * PythonConsole::_stdout   = 0;
 PyObject      * PythonConsole::_stderr   = 0;
+PyObject      * PythonConsole::_stdin    = 0;
 
 /**
  *  Constructs a PythonConsole which is a child of 'parent', with the
@@ -55,6 +57,11 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   _instance = this;
   _stdoutPy = new PythonStdoutPy( _instance );
   _stderrPy = new PythonStderrPy( _instance );
+  _stdinPy  = new PythonStdinPy ( _instance );
+
+  // use the console highlighter instead
+  delete pythonSyntax;
+  pythonSyntax = new PythonConsoleHighlighter(this);
 
   zoomIn(2);
 #ifdef FC_OS_LINUX
@@ -75,6 +82,7 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   {
     _stdout = PySys_GetObject("stdout");
     _stderr = PySys_GetObject("stderr");
+    _stdin  = PySys_GetObject("stdin");
 	  (void) Py_InitModule("PyConsole", PythonConsole::Methods);
     Base::Interpreter().runString("import sys, PyConsole");
     Base::Interpreter().runString("PyConsole.redirectStdout()");
@@ -100,8 +108,10 @@ PythonConsole::~PythonConsole()
 PyMethodDef PythonConsole::Methods[] = {
 	{"redirectStdout", (PyCFunction) PythonConsole::sStdoutPy,  1},
 	{"redirectStderr", (PyCFunction) PythonConsole::sStderrPy,  1},
+	{"redirectStdin",  (PyCFunction) PythonConsole::sStdinPy,   1},
 	{"restoreStdout",  (PyCFunction) PythonConsole::sStdout,    1},
 	{"restoreStderr",  (PyCFunction) PythonConsole::sStderr,    1},
+	{"restoreStdin",   (PyCFunction) PythonConsole::sStdin,     1},
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -117,6 +127,12 @@ PYFUNCIMP_S(PythonConsole,sStderrPy)
   return Py_None; 
 }
 
+PYFUNCIMP_S(PythonConsole,sStdinPy)
+{
+  PySys_SetObject("stdin", _stdinPy);
+  return Py_None; 
+}
+
 PYFUNCIMP_S(PythonConsole,sStdout)
 {
   PySys_SetObject("stdout", _stdout);
@@ -126,6 +142,12 @@ PYFUNCIMP_S(PythonConsole,sStdout)
 PYFUNCIMP_S(PythonConsole,sStderr)
 {
   PySys_SetObject("stderr", _stderr);
+  return Py_None; 
+}
+
+PYFUNCIMP_S(PythonConsole,sStdin)
+{
+  PySys_SetObject("stdin", _stdin);
   return Py_None; 
 }
 
@@ -258,7 +280,12 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 
       // put statement to the history
       if ( txt.length() > 1 )
-        _history.prepend( txt );
+      {
+        QString cmd = txt;
+        // truncate the last whitespace that is appended from QTextEdit
+        cmd.truncate( cmd.length()-1 );
+        _history.append( cmd );
+      }
 
       // insert tabs if needed
       int tabs = tabsIndent( txt );
@@ -283,32 +310,26 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
   case Key_P:
     if ( e->state() & AltButton )
     {
-      if ( _history.size() > 0 )
+      if ( !_history.isEmpty() )
       {
-        QString cmd = _history.front();
-        _history.pop_front();
-        _history.append( cmd );
-//        setCursorPosition( paragraphs()-1, 4 );
-  //      setOverwriteMode(true);
-        overwriteParagraph( paragraphs()-1, cmd );
-//        insert( cmd );
-  //      setOverwriteMode(false);
+        if ( _history.prev() )
+        {
+          QString cmd = _history.value();
+          overwriteParagraph( paragraphs()-1, cmd );
+        }
       }
     }
     break;
   case Key_N:
     if ( e->state() & AltButton )
     {
-      if ( _history.size() > 0 )
+      if ( !_history.isEmpty() )
       {
-        QString cmd = _history.back();
-        _history.pop_back();
-        _history.prepend( cmd );
-//        setCursorPosition( paragraphs()-1, 4 );
-  //      setOverwriteMode(true);
-        overwriteParagraph( paragraphs()-1, cmd );
-//        insert( cmd );
-  //      setOverwriteMode(false);
+        if ( _history.next() )
+        {
+          QString cmd = _history.value();
+          overwriteParagraph( paragraphs()-1, cmd );
+        }
       }
     }
     break;
@@ -531,4 +552,108 @@ void PythonConsole::overwriteParagraph( int para, const QString& txt )
   del();
   setCursorPosition( para, 4 );
   insert( txt );
+}
+
+// ---------------------------------------------------------------------
+
+PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
+  : PythonSyntaxHighlighter(edit),_output(false), _error(false)
+{
+}
+
+PythonConsoleHighlighter::~PythonConsoleHighlighter()
+{
+}
+
+int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
+{
+  int ret = PythonSyntaxHighlighter::highlightParagraph( text, endStateOfLastPara );
+
+  if ( text.length() > 1 )
+  {
+    // this is only performed after color settings has changed at runtime
+    if ( !text.startsWith(">>> ") && !text.startsWith("... ") && !_output && !_error )
+    {
+      // let's take the normal "Output" color for normal output and error messages
+      // because we cannot distinguish between them anymore
+      QColor col = color( Output );
+      QFont font = textEdit()->currentFont();
+      font.setBold( false );
+      font.setItalic( true );
+      setFormat(0, text.length(), font, col);
+      return 0;
+    }
+  }
+
+  return ret;
+}
+
+/**
+ * If \a b is set to true the following input to the editor is highlighted as normal output.
+ */
+void PythonConsoleHighlighter::highlightOutput (bool b)
+{
+  PythonSyntaxHighlighter::highlightOutput( b );
+  _output = b;
+}
+
+/**
+ * If \a b is set to true the following input to the editor is highlighted as error.
+ */
+void PythonConsoleHighlighter::highlightError (bool b)
+{
+  PythonSyntaxHighlighter::highlightError( b );
+  _error = b;
+}
+
+// ---------------------------------------------------------------------
+
+ConsoleHistory::ConsoleHistory()
+{
+  it = _history.end();
+}
+
+ConsoleHistory::~ConsoleHistory()
+{
+}
+
+bool ConsoleHistory::next() 
+{
+  if ( it != _history.end() )
+  {
+    it++;
+    return true;
+  }
+
+  return false;
+}
+
+bool ConsoleHistory::prev() 
+{
+  if ( it != _history.begin() )
+  {
+    it--;
+    return true;
+  }
+
+  return false;
+}
+
+bool ConsoleHistory::isEmpty() const
+{
+  return _history.isEmpty();
+}
+
+QString ConsoleHistory::value() const
+{
+  if ( it != _history.end() )
+    return *it;
+  else
+    return QString::null;
+}
+
+void ConsoleHistory::append( const QString& item )
+{
+  _history.append( item );
+  it = _history.end();
 }

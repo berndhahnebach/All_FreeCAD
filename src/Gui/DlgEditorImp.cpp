@@ -208,6 +208,12 @@ DefColorMap::DefColorMap(void)
 
   col = Qt::red; long lStrings    = (col.blue() << 16) | (col.green() << 8) | col.red();
   m_clDefColors["String"]         = lStrings;
+
+  col = Qt::blue; long lPyOutput = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Python output"] = lPyOutput;
+
+  col = Qt::red; long lPyError = (col.blue() << 16) | (col.green() << 8) | col.red();
+  m_clDefColors["Python error"] = lPyError;
 }
 
 /** Destruction */

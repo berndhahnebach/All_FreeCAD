@@ -58,6 +58,7 @@ public:
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
 
   PYFUNCDEF_D(PythonStdoutPy,write)
+  PYFUNCDEF_D(PythonStdoutPy,flush)
 
 private:
   PythonConsole* pyConsole;
@@ -90,6 +91,35 @@ public:
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
 
   PYFUNCDEF_D(PythonStderrPy,write)
+  PYFUNCDEF_D(PythonStderrPy,flush)
+
+private:
+  PythonConsole* pyConsole;
+};
+
+/**
+ * Python class for redirection of stdin to an input dialog of Qt.
+ * @author Werner Mayer
+ */
+class GuiExport PythonStdinPy : public Base::PyObjectBase
+{
+  /// always start with Py_Header
+  Py_Header;
+
+public:
+  PythonStdinPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
+  ~PythonStdinPy();
+
+  static PyObject *PyMake(PyObject *, PyObject *);
+
+  //---------------------------------------------------------------------
+  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+  //---------------------------------------------------------------------
+  virtual PyObject *_repr(void);                // the representation
+  PyObject *_getattr(char *attr);               // __getattr__ function
+  int _setattr(char *attr, PyObject *value);    // __setattr__ function
+
+  PYFUNCDEF_D(PythonStdinPy,readline)
 
 private:
   PythonConsole* pyConsole;

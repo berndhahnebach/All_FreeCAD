@@ -83,38 +83,6 @@ void PythonWindow::OnChange( FCSubject<const char*> &rCaller,const char* rcColor
   pythonSyntax->setColor( rcColor, color );
 }
 
-//void PythonWindow::keyPressEvent(QKeyEvent * e)
-//{
-//  QTextEdit::keyPressEvent(e);
-//
-//  switch (e->key())
-//  {
-//    case Key_Colon:
-//      nInsertTabs++;
-//      break;
-//
-//    case Key_Return:
-//    case Key_Enter:
-//      if (nInsertTabs > 0)
-//      {
-//        for (int i=0; i<nInsertTabs;i++)
-//        {
-//          insert("\t");
-//        }
-//      }
-//      else
-//      {
-//        try{
-//        }
-//        catch(...)
-//        {
-//        }
-//        nInsertTabs=0;
-//      }
-//      break;
-//  }
-//}
-
 // ------------------------------------------------------------------------
 
 /**
@@ -195,13 +163,17 @@ public:
     cClassName      = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
     col = GetDefCol().color( "Define name" );
     cDefineName     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Python output" );
+    cOutput        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Python error" );
+    cError         = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
   }
 
   QStringList keywords;
   QString blockComment;
   bool hlOutput, hlError;
   QColor cNormalText, cComment, cBlockcomment, cLiteral, cNumber,
-  cOperator, cKeyword, cClassName, cDefineName;
+  cOperator, cKeyword, cClassName, cDefineName, cOutput, cError;
 };
 } // namespace Gui
 
@@ -256,6 +228,12 @@ void PythonSyntaxHighlighter::setColor( Paragraph type, const QColor& col )
   case Keywords:
     d->cKeyword = col;
     break;
+  case Output:
+    d->cOutput = col;
+    break;
+  case Errors:
+    d->cError = col;
+    break;
   default:
     break;
   }
@@ -293,6 +271,10 @@ void PythonSyntaxHighlighter::setColor( const QString& type, const QColor& col )
     d->cDefineName = col;
   else if ( type == "Operator" )
     d->cOperator = col;
+  else if ( type == "Python output" )
+    d->cOutput = col;
+  else if ( type == "Python error" )
+    d->cError = col;
   rehighlight();
 }
 
@@ -322,6 +304,12 @@ QColor PythonSyntaxHighlighter::color( Paragraph type )
   case Keywords:
     col = d->cKeyword;
     break;
+  case Output:
+    col = d->cOutput;
+    break;
+  case Errors:
+    col = d->cError;
+    break;
   default:
     break;
   }
@@ -349,6 +337,10 @@ QColor PythonSyntaxHighlighter::color( const QString& type )
     return d->cDefineName;
   else if ( type == "Operator" )
     return d->cOperator;
+  else if ( type == "Python output" )
+    return d->cOutput;
+  else if ( type == "Python error" )
+    return d->cError;
   else
     return QColor(); // not found
 }
@@ -577,8 +569,9 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
   if ( d->hlOutput )
   {
     QFont font = textEdit()->currentFont();
+    font.setBold( false );
     font.setItalic( true );
-    setFormat(0, txt.length(), font, Qt::blue);
+    setFormat(0, txt.length(), font, d->cOutput);
     return 0;
   }
 
@@ -586,8 +579,9 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
   if ( d->hlError )
   {
     QFont font = textEdit()->currentFont();
+    font.setBold( false );
     font.setItalic( true );
-    setFormat(0, txt.length(), font, Qt::red);
+    setFormat(0, txt.length(), font, d->cError);
     return 0;
   }
 

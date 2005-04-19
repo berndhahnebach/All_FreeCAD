@@ -234,11 +234,6 @@
                     </item>
                     <item>
                         <property name="text">
-                            <string>Text Selection</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
                             <string>Bookmark</string>
                         </property>
                     </item>
@@ -290,6 +285,16 @@
                     <item>
                         <property name="text">
                             <string>Operator</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Python output</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Python error</string>
                         </property>
                     </item>
                     <property name="name">
@@ -396,6 +401,8 @@ foo(0, 20)
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <tabstops>
     <tabstop>FontDB</tabstop>
     <tabstop>FontSize</tabstop>
@@ -413,6 +420,6 @@ foo(0, 20)
 <includehints>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/Widgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

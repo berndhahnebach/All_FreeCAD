@@ -90,20 +90,23 @@ protected:
     Literal      = 3,
     Number       = 4,
     Operator     = 5,
-    Keywords     = 6
+    Keywords     = 6,
+    Output       = 7,
+    Errors       = 8
   };
 
 public:
   PythonSyntaxHighlighter(QTextEdit* );
-  ~PythonSyntaxHighlighter();
+  virtual ~PythonSyntaxHighlighter();
 
   int highlightParagraph ( const QString & text, int endStateOfLastPara );
-  void highlightOutput (bool b);
-  void highlightError (bool b);
   void setColor( Paragraph type, const QColor& col );
   void setColor( const QString& type, const QColor& col );
   QColor color( Paragraph type );
   QColor color( const QString& type );
+
+  virtual void highlightOutput (bool b);
+  virtual void highlightError (bool b);
 
 private:
   int highlightLiteral( const QString&, int& from, int endStateOfLastPara );

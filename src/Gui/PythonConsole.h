@@ -34,6 +34,27 @@
 namespace Gui {
 
 /**
+ * This class implements the history for the Python console.
+ * @author Werner Mayer
+ */
+class GuiExport ConsoleHistory
+{
+public:
+  ConsoleHistory();
+  ~ConsoleHistory();
+
+  bool next();
+  bool prev();
+  bool isEmpty() const;
+  QString value() const;
+  void append( const QString& );
+
+private:
+  QStringList _history;
+  QStringList::ConstIterator it;
+};
+
+/**
  * Python text console with syntax highlighting..
  * @author Werner Mayer
  */
@@ -62,8 +83,10 @@ protected:
 
   PYFUNCDEF_S(sStdoutPy);
   PYFUNCDEF_S(sStderrPy);
+  PYFUNCDEF_S(sStdinPy);
   PYFUNCDEF_S(sStdout);
   PYFUNCDEF_S(sStderr);
+  PYFUNCDEF_S(sStdin);
 	static PyMethodDef    Methods[]; 
 
 private:
@@ -76,16 +99,37 @@ private:
 private:
   int _startPara;
   bool _indent;
-  QStringList _history;
+  ConsoleHistory _history;
 
   static PythonConsole* _instance;
   static PyObject* _stdoutPy;
   static PyObject* _stderrPy;
+  static PyObject* _stdinPy;
   static PyObject* _stdout;
   static PyObject* _stderr;
+  static PyObject* _stdin;
 
   friend class PythonStdoutPy;
   friend class PythonStderrPy;
+};
+
+/**
+ * Syntax highlighter for Python console.
+ * \author Werner Mayer
+ */
+class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
+{
+public:
+  PythonConsoleHighlighter(QTextEdit* );
+  ~PythonConsoleHighlighter();
+
+  int highlightParagraph ( const QString & text, int endStateOfLastPara );
+
+  virtual void highlightOutput (bool b);
+  virtual void highlightError (bool b);
+
+private:
+  bool _output, _error;
 };
 
 } // namespace Gui

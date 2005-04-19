@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qinputdialog.h>
 #endif
 
 #include "PythonConsolePy.h"
@@ -62,6 +63,7 @@ PyTypeObject PythonStdoutPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef PythonStdoutPy::Methods[] = {
   PYMETHODEDEF(write)
+  PYMETHODEDEF(flush)
   {NULL, NULL}          /* Sentinel */
 };
 
@@ -117,6 +119,11 @@ PYFUNCIMP_D(PythonStdoutPy,write)
   return Py_None;
 } 
 
+PYFUNCIMP_D(PythonStdoutPy,flush)
+{
+  return Py_None;
+} 
+
 // -------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -147,6 +154,7 @@ PyTypeObject PythonStderrPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef PythonStderrPy::Methods[] = {
   PYMETHODEDEF(write)
+  PYMETHODEDEF(flush)
   {NULL, NULL}          /* Sentinel */
 };
 
@@ -200,4 +208,92 @@ PYFUNCIMP_D(PythonStderrPy,write)
       return Py_None;                            // Do not provok error messages 
   pyConsole->insertPythonError( output );
   return Py_None;
+} 
+
+PYFUNCIMP_D(PythonStderrPy,flush)
+{
+  return Py_None;
+} 
+
+// -------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
+PyTypeObject PythonStdinPy::Type = {
+  PyObject_HEAD_INIT(&PyType_Type)
+  0,                      /*ob_size*/
+  "PythonStdinPy",        /*tp_name*/
+  sizeof(PythonStdinPy),  /*tp_basicsize*/
+  0,                      /*tp_itemsize*/
+  /* methods */
+  PyDestructor,           /*tp_dealloc*/
+  0,                      /*tp_print*/
+  __getattr,              /*tp_getattr*/
+  __setattr,              /*tp_setattr*/
+  0,                      /*tp_compare*/
+  __repr,                 /*tp_repr*/
+  0,                      /*tp_as_number*/
+  0,                      /*tp_as_sequence*/
+  0,                      /*tp_as_mapping*/
+  0,                      /*tp_hash*/
+  0,                      /*tp_call */
+};
+
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
+PyMethodDef PythonStdinPy::Methods[] = {
+  PYMETHODEDEF(readline)
+  {NULL, NULL}          /* Sentinel */
+};
+
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject PythonStdinPy::Parents[] = {&PyObjectBase::Type, NULL};     
+
+PythonStdinPy::PythonStdinPy(PythonConsole *con, PyTypeObject *T)
+ : PyObjectBase( T), pyConsole(con)
+{
+}
+
+PythonStdinPy::~PythonStdinPy()
+{
+}
+
+PyObject *PythonStdinPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  return 0;
+}
+
+//--------------------------------------------------------------------------
+// WorkbenchPy representation
+//--------------------------------------------------------------------------
+PyObject *PythonStdinPy::_repr(void)
+{
+  return Py_BuildValue("s", "PythonStdin");
+}
+
+//--------------------------------------------------------------------------
+// WorkbenchPy Attributes
+//--------------------------------------------------------------------------
+PyObject *PythonStdinPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
+{
+  _getattr_up(PyObjectBase); 
+} 
+
+int PythonStdinPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+  return PyObjectBase::_setattr(attr, value); 	// send up to parent
+} 
+
+//--------------------------------------------------------------------------
+// Python wrappers
+//--------------------------------------------------------------------------
+PYFUNCIMP_D(PythonStdinPy,readline)
+{
+  QString txt = QInputDialog::getText ( "Python Input Dialog", "Input for Python:", QLineEdit::Normal, QString::null, 0, 
+                                        pyConsole, "PyInput" );
+  return Py_BuildValue("s", txt.latin1());
 } 
