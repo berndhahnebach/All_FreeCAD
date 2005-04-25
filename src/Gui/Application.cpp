@@ -343,6 +343,7 @@ void ApplicationWindow::createStandardOperations()
   Gui::CreateStdCommands();
   Gui::CreateViewStdCommands();
   Gui::CreateWindowStdCommands();
+
   Gui::CreateTestCommands();
 }
 
@@ -405,25 +406,45 @@ void ApplicationWindow::cascade()
   d->_pWorkspace->cascade();
 }
 
+
 void ApplicationWindow::closeActiveWindow ()
+
 {
+
   d->_pWorkspace->closeActiveWindow();
+
 }
+
+
 
 void ApplicationWindow::closeAllWindows ()
+
 {
+
   d->_pWorkspace->closeAllWindows();
+
 }
+
+
 
 void ApplicationWindow::activateNextWindow ()
+
 {
+
   d->_pWorkspace->activateNextWindow();
+
 }
 
+
+
 void ApplicationWindow::activatePrevWindow ()
+
 {
+
   d->_pWorkspace->activatePrevWindow();
+
 }
+
 
 void ApplicationWindow::onShowView()
 {
@@ -501,12 +522,19 @@ void ApplicationWindow::addWindow( MDIView* view )
   else
     view->show();
 
+
   // look if the window was already inserted
+
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+
   {
+
     if ( it.data() == view )
+
       return;
+
   }
+
 
   // being informed when the view is destroyed
   connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
@@ -1230,6 +1258,10 @@ void ApplicationWindow::runApplication(void)
 
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
+  Console().Log("Init: Starting default Workbench\n");
+  mw->activateWorkbench(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->GetASCII("currentText","Part design").c_str() );
+   
+  
   Console().Log("Init: Processing command line files\n");
   unsigned short count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
@@ -1839,3 +1871,5 @@ void GuiConsoleObserver::Log    (const char *)
 
 
 #include "moc_Application.cpp"
+
+

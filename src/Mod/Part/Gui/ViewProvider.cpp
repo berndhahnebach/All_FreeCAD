@@ -66,6 +66,7 @@
 #include <Mod/Part/App/PartFeature.h>
 
 #include <Poly_Polygon3D.hxx>
+#include <BRepMesh.hxx>
 
 
 //#include "Tree.h"
@@ -104,18 +105,15 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 
   // head separator
   SoSeparator * SepShapeRoot=new SoSeparator();
-  if(! computeFaces(SepShapeRoot,(dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape())){
-    Base::Console().Error("View3DInventorEx::Update() Cannot compute Inventor representation for the actual shape");
-    return 0l;
-  }
+
 
 
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape();
 
   // creating the mesh on the data structure
-  //  BRepMesh::Mesh(myShape,1.0);
-  //	BRepMesh_Discret MESH(1.0,myShape,20.0);
-	BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
+  BRepMesh::Mesh(cShape,fMeshDeviation);
+  //	BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
+	//BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
 
   try{
     computeFaces   (SepShapeRoot,cShape);
@@ -170,6 +168,14 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
   TopExp_Explorer ex;
   SoSeparator *EdgeRoot = new SoSeparator();
   root->addChild(EdgeRoot);
+
+  SoMaterial *Mat = new SoMaterial();
+  Mat->ambientColor. setValue(0,0,0);
+	Mat->ambientColor. setValue(0,0,0);
+	Mat->specularColor.setValue(0,0,0);
+	Mat->emissiveColor.setValue(0,0,0);
+
+  EdgeRoot->addChild(Mat);  
 
   // build up map edge->face
   TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
@@ -256,8 +262,9 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 
     // define the indexed face set
     SoLocateHighlight* h = new SoLocateHighlight();
-//    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-    h->color.setValue((float)0.5,(float)0.0,(float)0.5);
+//    h->
+    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
+//    h->color.setValue((float)0.5,(float)0.0,(float)0.5);
 
     SoLineSet * lineset = new SoLineSet;
     h->addChild(lineset);
@@ -277,7 +284,8 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
         SeqP.Append(Algo.Value(NumberOfPoints));
       }
 	  }
-*/
+  */
+ 
   }
 
   return true;
@@ -293,8 +301,9 @@ Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, co
 
   for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
 
-    // get the shape and mesh it
+    // get the shape 
 		const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
+
 
 
 
