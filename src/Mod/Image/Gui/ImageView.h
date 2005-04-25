@@ -29,7 +29,7 @@ class QToolBar;
 namespace ImageGui
 {
 
-class ImageView : public Gui::MDIView
+class ImageGuiExport ImageView : public Gui::MDIView
 {
     Q_OBJECT
 

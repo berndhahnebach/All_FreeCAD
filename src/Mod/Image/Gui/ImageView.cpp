@@ -246,8 +246,14 @@ int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned l
 // Mouse press event
 void ImageView::mousePressEvent(QMouseEvent* cEvent)
 {
-    _currX = cEvent->x();
-    _currY = cEvent->y();
+    // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+    // Get current cursor position relative to top-left of image box
+    QPoint offset = _pGLImageBox->pos();
+    int box_x = cEvent->x() - offset.x();
+    int box_y = cEvent->y() - offset.y();
+
+    _currX = box_x;
+    _currY = box_y;
     switch(cEvent->stateAfter())
     {
         case Qt::MidButton:
@@ -273,8 +279,14 @@ void ImageView::mousePressEvent(QMouseEvent* cEvent)
 
 void ImageView::mouseDoubleClickEvent(QMouseEvent* cEvent)
 {
-    _currX = cEvent->x();
-    _currY = cEvent->y();
+    // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+    // Get current cursor position relative to top-left of image box
+    QPoint offset = _pGLImageBox->pos();
+    int box_x = cEvent->x() - offset.x();
+    int box_y = cEvent->y() - offset.y();
+
+    _currX = box_x;
+    _currY = box_y;
     if(cEvent->button() == Qt::MidButton)
     {
         double icX = _pGLImageBox->WCToIC_X(_currX);
@@ -290,22 +302,28 @@ void ImageView::mouseMoveEvent(QMouseEvent* cEvent)
 {
     QApplication::flushX();
 
+    // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+    // Get current cursor position relative to top-left of image box
+    QPoint offset = _pGLImageBox->pos();
+    int box_x = cEvent->x() - offset.x();
+    int box_y = cEvent->y() - offset.y();
+
     switch(_currMode)
     {
         case nothing:
             break;
         case panning:
-            _pGLImageBox->relMoveWC(cEvent->x() - dragStartWCx, cEvent->y() - dragStartWCy);
+            _pGLImageBox->relMoveWC(box_x - dragStartWCx, box_y - dragStartWCy);
             break;
         case zooming:
-            zoom(_currX, _currY, cEvent->x(), cEvent->y());
+            zoom(_currX, _currY, box_x, box_y);
             break;
         default:
             break;
     }
 
-    _currX = cEvent->x();
-    _currY = cEvent->y();
+    _currX = box_x;
+    _currY = box_y;
 
 
     // Update the status bar
@@ -315,13 +333,19 @@ void ImageView::mouseMoveEvent(QMouseEvent* cEvent)
 // Mouse release event
 void ImageView::mouseReleaseEvent(QMouseEvent* cEvent)
 {
+    // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+    // Get current cursor position relative to top-left of image box
+    QPoint offset = _pGLImageBox->pos();
+    int box_x = cEvent->x() - offset.x();
+    int box_y = cEvent->y() - offset.y();
+
     switch(_currMode)
     {
         case selection:
-            select(cEvent->x(), cEvent->y());
+            select(box_x, box_y);
             break;
         case addselection:
-            addSelect(cEvent->x(), cEvent->y());
+            addSelect(box_x, box_y);
             break;
         default:
             break;
@@ -332,14 +356,20 @@ void ImageView::mouseReleaseEvent(QMouseEvent* cEvent)
 // Mouse wheel event
 void ImageView::wheelEvent(QWheelEvent * cEvent)
 {
+    // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+    // Get current cursor position relative to top-left of image box
+    QPoint offset = _pGLImageBox->pos();
+    int box_x = cEvent->x() - offset.x();
+    int box_y = cEvent->y() - offset.y();
+
     // Zoom around centrally displayed image point
     int numTicks = cEvent->delta() / 120;
     int ICx, ICy;
     _pGLImageBox->getCentrePoint(ICx, ICy);
     _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor() * pow(2.0, (double)numTicks), true, ICx, ICy);
 
-    _currX = cEvent->x();
-    _currY = cEvent->y();
+    _currX = box_x;
+    _currY = box_y;
 
     // Update the status bar
     updateStatusBar();

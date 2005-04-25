@@ -55,7 +55,7 @@ class ViewProvider;
  *  @see ApplicationWindow
  *  @author Jürgen Riegel
  */
-class BaseView
+class GuiExport BaseView
 {
 public:
   /** View constructor
