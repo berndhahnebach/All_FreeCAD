@@ -602,13 +602,6 @@ void Application::runApplication()
     std::ostringstream temp;
     temp << "OpenFile" << i;
 
-#if 0
-    std::string temp = "OpenFile";
-    char buffer [10];
-    itoa(i,buffer,10);
-    temp += buffer;
-#endif
-
     FileInfo File(mConfig[temp.str()].c_str());
 
     std::string Ext = File.extension();
@@ -871,12 +864,6 @@ void Application::ParsOptions(int argc, char ** argv)
 
         std::ostringstream temp;
         temp << "OpenFile" << OpenFileCount;
-#if 0
-        std::string temp = "OpenFile";
-        char buffer [10];
-        itoa(OpenFileCount,buffer,10);
-        temp += buffer;
-#endif
         mConfig[temp.str()] = argv[i];
         OpenFileCount++;
       }else{
@@ -887,10 +874,6 @@ void Application::ParsOptions(int argc, char ** argv)
 	}
   std::ostringstream buffer;
   buffer << OpenFileCount;
-#if 0
-  char buffer [10];
-  itoa(OpenFileCount,buffer,10);
-#endif
   mConfig["OpenFileCount"] = buffer.str();
 
 }  
