@@ -87,6 +87,7 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
     Base::Interpreter().runString("import sys, PyConsole");
     Base::Interpreter().runString("PyConsole.redirectStdout()");
     Base::Interpreter().runString("PyConsole.redirectStderr()");
+    Base::Interpreter().runString("PyConsole.redirectStdin()");
     Base::Interpreter().runString("print 'Python' + sys.version + ' on ' + sys.platform");
     Base::Interpreter().runString("print \"Type 'help', 'copyright', 'credits' or 'license' for more information.\"");
   }
