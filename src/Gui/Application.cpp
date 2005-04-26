@@ -190,10 +190,6 @@ ApplicationWindow::ApplicationWindow()
   // instanciate the workbench dictionary
   d->_pcWorkbenchDictionary = PyDict_New();
 
-    // attach the console observer
-  Base::Console().AttacheObserver( new GuiConsoleObserver(this) );
-
-
   // setting up the Bitmap manager
 //	QString tmpWb = _cActiveWorkbenchName;
 //	_cBmpFactory.GetPixmap("Function");
@@ -343,7 +339,6 @@ void ApplicationWindow::createStandardOperations()
   Gui::CreateStdCommands();
   Gui::CreateViewStdCommands();
   Gui::CreateWindowStdCommands();
-
   Gui::CreateTestCommands();
 }
 
@@ -406,45 +401,25 @@ void ApplicationWindow::cascade()
   d->_pWorkspace->cascade();
 }
 
-
 void ApplicationWindow::closeActiveWindow ()
-
 {
-
   d->_pWorkspace->closeActiveWindow();
-
 }
-
-
 
 void ApplicationWindow::closeAllWindows ()
-
 {
-
   d->_pWorkspace->closeAllWindows();
-
 }
-
-
 
 void ApplicationWindow::activateNextWindow ()
-
 {
-
   d->_pWorkspace->activateNextWindow();
-
 }
-
-
 
 void ApplicationWindow::activatePrevWindow ()
-
 {
-
   d->_pWorkspace->activatePrevWindow();
-
 }
-
 
 void ApplicationWindow::onShowView()
 {
@@ -522,19 +497,12 @@ void ApplicationWindow::addWindow( MDIView* view )
   else
     view->show();
 
-
   // look if the window was already inserted
-
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
-
   {
-
     if ( it.data() == view )
-
       return;
-
   }
-
 
   // being informed when the view is destroyed
   connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
@@ -885,17 +853,17 @@ void ApplicationWindow::activateWorkbench(const char* name)
     return;
   }
 
-  // close old workbench
-  if(d->_cActiveWorkbenchName != "")
-  {
-    Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
-    PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
-    assert(pcOldWorkbench);
-    customWidgetManager()->hideToolBox();
-    Interpreter().runMethodVoid(pcOldWorkbench, "Stop");
-  }
-
   try{
+    // close old workbench
+    if(d->_cActiveWorkbenchName != "")
+    {
+      Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
+      PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
+      assert(pcOldWorkbench);
+      customWidgetManager()->hideToolBox();
+      Interpreter().runMethodVoid(pcOldWorkbench, "Stop");
+    }
+
     // rename with new workbench before(!!!) calling "Start"
     d->_cActiveWorkbenchName = name;
 
@@ -1217,9 +1185,6 @@ void ApplicationWindow::initApplication(void)
 
 void messageHandler( QtMsgType type, const char *msg )
 {
-//  bool mute = GuiConsoleObserver::bMute;
-//  GuiConsoleObserver::bMute = false;
-
   switch ( type )
   {
     case QtDebugMsg:
@@ -1232,8 +1197,6 @@ void messageHandler( QtMsgType type, const char *msg )
       Base::Console().Error( msg );
       abort();                    // deliberately core dump
   }
-
-//  GuiConsoleObserver::bMute = mute;
 }
 
 void ApplicationWindow::runApplication(void)
@@ -1272,13 +1235,6 @@ void ApplicationWindow::runApplication(void)
     std::ostringstream temp;
     temp << "OpenFile" << i;
 
-#if 0
-    std::string temp = "OpenFile";
-    char buffer [10];
-    itoa(i,buffer,10);
-    temp += buffer;
-#endif
-
     File = App::Application::Config()[temp.str()];
 
     // try to open
@@ -1297,6 +1253,8 @@ void ApplicationWindow::runApplication(void)
 
   // run the Application event loop
   Console().Log("Init: Entering event loop\n");
+  // attach the console observer
+  Base::Console().AttacheObserver( new GuiConsoleObserver(Instance) );
   _pcQApp->exec();
   Console().Log("Init: event loop left\n");
 }
@@ -1871,5 +1829,3 @@ void GuiConsoleObserver::Log    (const char *)
 
 
 #include "moc_Application.cpp"
-
-
