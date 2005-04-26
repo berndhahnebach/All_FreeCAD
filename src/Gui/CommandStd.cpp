@@ -986,6 +986,7 @@ void StdCmdCommandLine::activated(int iMsg)
 {
   bool show = getAppWnd()->isMaximized ();
   bool mute = GuiConsoleObserver::bMute;
+  GuiConsoleObserver::bMute = true;
 
   // pop up the Gui command window
   GUIConsole Wnd;
@@ -995,13 +996,11 @@ void StdCmdCommandLine::activated(int iMsg)
 
   // create temporary console sequencer
   Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
-  GuiConsoleObserver::bMute = true;
   Base::Interpreter().runString("PyConsole.restoreStdout()");
   Base::Interpreter().runString("PyConsole.restoreStderr()");
   Base::Interpreter().runCommandLine("Console mode");
   Base::Interpreter().runString("PyConsole.redirectStdout()");
   Base::Interpreter().runString("PyConsole.redirectStderr()");
-  GuiConsoleObserver::bMute = mute;
   delete seq;
 
 #ifdef Q_WS_X11
@@ -1015,6 +1014,7 @@ void StdCmdCommandLine::activated(int iMsg)
   // pop up the main window
   show ? getAppWnd()->showMaximized () : getAppWnd()->showNormal () ;
   qApp->processEvents();
+  GuiConsoleObserver::bMute = mute;
 }
 
 //===========================================================================
