@@ -48,7 +48,7 @@ class View3D;
 class View3DInventor;
 class View3DInventorViewer;
 class MyView3DInventor;
-class ViewProviderInventor;
+class ViewProviderInventorFeature;
 class MouseModel;
 
 
@@ -107,7 +107,7 @@ protected:
   SoMaterial	* pcShapeMaterial;
 
   std::string            cViewProviderName;
-  ViewProviderInventor * pcActViewProvider;
+  ViewProviderInventorFeature * pcActViewProvider;
 
 private:
 

@@ -198,13 +198,17 @@ void Document::detachView(Gui::BaseView* pcView, bool bPassiv)
 
 void Document::onUpdate(void)
 {
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::Document::onUpdate()");
+#endif
 
 
   TDF_Label L = _pcDocument->GetActive();
 
   if(! L.IsNull()){
 
-  if(!_ActivePresentation.IsNull())
+// Attic will removed soon ####################################################################
+   if(!_ActivePresentation.IsNull())
     _ActivePresentation->Display(0);
     //_hContext->Display(_ActivePresentation->GetAIS(),0);
   // Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
@@ -213,8 +217,13 @@ void Document::onUpdate(void)
     // Display it
     _ActivePresentation->Display(1);
     //_hContext->Display(_ActivePresentation->GetAIS(),1);
-  }
+// ##############################################################################################
 
+
+    
+
+
+  }
   std::list<Gui::BaseView*>::iterator It;
 
   for(It = _LpcViews.begin();It != _LpcViews.end();It++)

@@ -21,69 +21,92 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDER_H__
-#define __VIEWPROVIDER_H__
+#ifndef __VIEWPROVIDERFEATURE_H__
+#define __VIEWPROVIDERFEATURE_H__
 
-class SoNode;
-class QListViewItem;
+#include "../Base/Factory.h"
+#include "ViewProvider.h"
+
+
+namespace App
+{
+  class Feature;
+}
+
 
 namespace Gui {
 
-/** Base class of all view provider
- *  \author Jürgen Riegel
- */
-class GuiExport ViewProvider
+
+class GuiExport ViewProviderInventorFeature:public ViewProviderInventor
 {
 public:
   /**
    * A constructor.
    * A more elaborate description of the constructor.
    */
-  ViewProvider();
+  ViewProviderInventorFeature();
 
   /**
    * A destructor.
    * A more elaborate description of the destructor.
    */
-  virtual ~ViewProvider();
+  virtual ~ViewProviderInventorFeature();
+
+  virtual SoNode* create(App::Feature *pcFeature)=0;
+
+
 };
 
 
-class GuiExport ViewProviderTree:public ViewProvider
+
+
+
+/** The FeatureFactory singleton
+  */
+class GuiExport ViewProviderInventorFeatureFactorySingleton : public Base::Factory
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderTree();
+	static ViewProviderInventorFeatureFactorySingleton& Instance(void);
+	static void Destruct (void);
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderTree();
+    /// produce the ViewProvider using the factory
+	ViewProviderInventorFeature *Produce (const char* sName) const;
 
-  QListViewItem* create();
+private:
+	static ViewProviderInventorFeatureFactorySingleton* _pcSingleton;
+
+	ViewProviderInventorFeatureFactorySingleton(){}
+	~ViewProviderInventorFeatureFactorySingleton(){}
 };
 
-
-class GuiExport ViewProviderInventor:public ViewProvider
+inline GuiExport ViewProviderInventorFeatureFactorySingleton& ViewProviderInventorFeatureFactory(void)
 {
-public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderInventor();
+	return ViewProviderInventorFeatureFactorySingleton::Instance();
+}
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderInventor();
+// --------------------------------------------------------------------
 
+template <class CLASS>
+class ViewProviderInventorFeatureProducer: public Base::AbstractProducer
+{
+	public:
+		/// Constructor
+		ViewProviderInventorFeatureProducer ()
+		{
+			Gui::ViewProviderInventorFeatureFactory().AddProducer(typeid(CLASS).name(), this);
+		}
+
+		virtual ~ViewProviderInventorFeatureProducer (void){}
+
+		/// Produce an instance
+		virtual void* Produce (void) const
+		{ 
+			return (void*)(new CLASS);
+		}
 };
+
+
+
 
 } // namespace Gui
 

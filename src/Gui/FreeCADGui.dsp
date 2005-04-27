@@ -2731,6 +2731,149 @@ SOURCE=.\Window.cpp
 SOURCE=.\Window.h
 # End Source File
 # End Group
+# Begin Group "View3D"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\View3D.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3D.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\View3D.h
+InputName=View3D
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\View3D.h
+InputName=View3D
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventor.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventor.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\View3DInventor.h
+InputName=View3DInventor
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\View3DInventor.h
+InputName=View3DInventor
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorEx.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorEx.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\View3DInventorEx.h
+InputName=View3DInventorEx
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\View3DInventorEx.h
+InputName=View3DInventorEx
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorExamples.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorExamples.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorViewer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\View3DInventorViewer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderFeature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderFeature.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Application.cpp
@@ -3053,137 +3196,6 @@ InputName=View
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3D.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3D.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\View3D.h
-InputName=View3D
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\View3D.h
-InputName=View3D
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventor.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventor.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\View3DInventor.h
-InputName=View3DInventor
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\View3DInventor.h
-InputName=View3DInventor
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventorEx.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventorEx.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\View3DInventorEx.h
-InputName=View3DInventorEx
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\View3DInventorEx.h
-InputName=View3DInventorEx
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventorExamples.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventorExamples.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventorViewer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\View3DInventorViewer.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProvider.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProvider.h
 # End Source File
 # Begin Source File
 

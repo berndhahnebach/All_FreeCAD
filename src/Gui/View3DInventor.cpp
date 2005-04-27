@@ -46,7 +46,7 @@
 #include "Inventor/OCC/SoBrepShape.h"
 
 #include "View3DInventorExamples.h"
-#include "ViewProvider.h"
+#include "ViewProviderFeature.h"
 #include "MouseModel.h"
 
 
@@ -227,7 +227,7 @@ void View3DInventor::onUpdate(void)
       // if not create the new ViewProvider
       if (pcActViewProvider) 
         delete pcActViewProvider;
-      pcActViewProvider = ViewProviderInventorFactory().Produce(pcActFeature->Type());
+      pcActViewProvider = ViewProviderInventorFeatureFactory().Produce(pcActFeature->Type());
       if(pcActViewProvider)
       {
         // if succesfully created set the right name an calculate the view

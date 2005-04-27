@@ -60,7 +60,7 @@
 
 #include "View3DInventorExamples.h"
 #include "Tools.h"
-#include "ViewProvider.h"
+#include "ViewProviderFeature.h"
 
 #include "Icons/default_background.xpm"
 
@@ -235,7 +235,7 @@ void View3DInventorEx::onUpdate(void)
       // if not create the new ViewProvider
       if (pcActViewProvider) 
         delete pcActViewProvider;
-      pcActViewProvider = ViewProviderInventorFactory().Produce(pcActFeature->Type());
+      pcActViewProvider = ViewProviderInventorFeatureFactory().Produce(pcActFeature->Type());
       if(pcActViewProvider)
       {
         // if succesfully created set the right name an calculate the view

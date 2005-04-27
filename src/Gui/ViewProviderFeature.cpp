@@ -21,71 +21,73 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDER_H__
-#define __VIEWPROVIDER_H__
+#include "PreCompiled.h"
 
-class SoNode;
-class QListViewItem;
+#ifndef _PreComp_
+# include <qlistview.h>
+#endif
 
-namespace Gui {
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "../Base/Console.h"
+#include "ViewProviderFeature.h"
+#include "Tree.h"
 
-/** Base class of all view provider
- *  \author Jürgen Riegel
- */
-class GuiExport ViewProvider
+
+
+
+using namespace Gui;
+
+
+      
+ViewProviderInventorFeature::ViewProviderInventorFeature()
 {
-public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProvider();
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProvider();
-};
+}
 
 
-class GuiExport ViewProviderTree:public ViewProvider
+ViewProviderInventorFeature::~ViewProviderInventorFeature()
 {
-public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderTree();
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderTree();
-
-  QListViewItem* create();
-};
+}
 
 
-class GuiExport ViewProviderInventor:public ViewProvider
+
+//===========================================================================
+// FeatureFactorySingleton - Factory for Features
+//===========================================================================
+
+
+
+ViewProviderInventorFeatureFactorySingleton* ViewProviderInventorFeatureFactorySingleton::_pcSingleton = NULL;
+
+ViewProviderInventorFeatureFactorySingleton& ViewProviderInventorFeatureFactorySingleton::Instance(void)
 {
-public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderInventor();
+  if (_pcSingleton == NULL)
+    _pcSingleton = new ViewProviderInventorFeatureFactorySingleton;
+  return *_pcSingleton;
+}
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderInventor();
+void ViewProviderInventorFeatureFactorySingleton::Destruct (void)
+{
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
 
-};
+ViewProviderInventorFeature* ViewProviderInventorFeatureFactorySingleton::Produce (const char* sName) const
+{
+	ViewProviderInventorFeature* w = (ViewProviderInventorFeature*)Factory::Produce(sName);
 
-} // namespace Gui
+  // this Feature class is not registered
+  if (!w)
+  {
+#ifdef FC_DEBUG
+    Base::Console().Warning("\"%s\" ViewProvider is not registered\n", sName);
+#else
+    Base::Console().Log("Warn: %s ViewProvider is not registered\n", sName);
+#endif
+    return NULL;
+  }
 
-#endif // __VIEWPROVIDER_H__
+  return w;
+}
 
