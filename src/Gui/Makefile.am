@@ -263,6 +263,8 @@ libFreeCADGui_la_SOURCES=\
 		View3DInventorViewer.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
+		ViewProviderFeature.cpp \
+		ViewProviderFeature.h \
 		WaitCursor.cpp \
 		WaitCursor.h \
 		WhatsThis.cpp \
