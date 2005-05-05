@@ -21,6 +21,7 @@
  ***************************************************************************/
 
 
+
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
@@ -55,3 +56,4 @@ Base::PyObjectBase *MeshFeature::GetPyObject(void)
 {
   return new MeshFeaturePy(this);
 }
+

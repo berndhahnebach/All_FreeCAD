@@ -87,10 +87,10 @@ void ModuleExport initPartGui() {
   Gui::ApplicationWindow::Instance->macroManager()->setModule("Part");
 
   // Register view provider
-  Gui::ViewProviderInventorFactory().AddProducer("PartBox"       ,new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFactory().AddProducer("PartCut"       ,new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFactory().AddProducer("PartImportStep",new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFactory().AddProducer("PartImportIges",new Gui::ViewProviderInventorProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportStep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
 
 	// instanciating the commands
 	CreateCommands();

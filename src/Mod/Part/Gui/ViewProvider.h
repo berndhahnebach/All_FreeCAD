@@ -24,7 +24,7 @@
 #ifndef __VIEWPROVIDERPART_H__
 #define __VIEWPROVIDERPART_H__
 
-#include "../../../Gui/ViewProvider.h"
+#include "../../../Gui/ViewProviderFeature.h"
 
 
 class TopoDS_Shape;
@@ -35,7 +35,7 @@ class SbVec3f;
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventor
+class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
 {
 public:
   /**

@@ -20,11 +20,10 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef __VIEWPROVIDERMESH_H__
 #define __VIEWPROVIDERMESH_H__
 
-#include <Gui/ViewProvider.h>
+#include <Gui/ViewProviderFeature.h>
 
 
 class SoSeparator;
@@ -37,7 +36,7 @@ namespace MeshGui {
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class ViewProviderInventorMesh : public Gui::ViewProviderInventor
+class ViewProviderInventorMesh : public Gui::ViewProviderInventorFeature
 {
 public:
   ViewProviderInventorMesh();
