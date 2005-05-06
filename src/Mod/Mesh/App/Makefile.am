@@ -27,6 +27,8 @@ libMesh_la_SOURCES=\
 		Core/ViewProj.h \
 		AppMesh.cpp \
 		AppMeshPy.cpp \
+		Delaunay.cpp \
+		Delaunay.h \
 		FeatureMeshImportSTL.cpp \
 		FeatureMeshImportSTL.h \
 		MeshFeature.cpp \
