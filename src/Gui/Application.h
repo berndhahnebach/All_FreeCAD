@@ -283,6 +283,8 @@ public:
   virtual void Error  (const char *m);
   /// get calles when a Log Message is issued
   virtual void Log    (const char *);
+  /// name of the observer
+  virtual const char *Name(void){return "GuiConsole";}
 
   /// Mutes the Observer, no Dialog Box will appear
   static bool bMute;

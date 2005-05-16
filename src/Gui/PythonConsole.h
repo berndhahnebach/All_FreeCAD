@@ -26,9 +26,11 @@
 
 #ifndef _PreComp_
 # include <qstringlist.h>
+# include <qsyntaxhighlighter.h>
 #endif
 
 #include "PythonEditor.h"
+
 #include <Base/PyExportImp.h>
 
 namespace Gui {
@@ -58,12 +60,14 @@ private:
  * Python text console with syntax highlighting..
  * @author Werner Mayer
  */
-class GuiExport PythonConsole : public PythonWindow
+class PythonConsoleHighlighter;
+class GuiExport PythonConsole : public TextEdit, public WindowParameter
 {
 public:
   PythonConsole(QWidget *parent = 0,const char *name = 0);
   ~PythonConsole();
 
+  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
   void doKeyboardAction ( KeyboardAction action );
   void clear ();
   void paste();
@@ -111,6 +115,9 @@ private:
 
   friend class PythonStdoutPy;
   friend class PythonStderrPy;
+
+private:
+  PythonConsoleHighlighter* pythonSyntax;
 };
 
 /**
@@ -125,8 +132,11 @@ public:
 
   int highlightParagraph ( const QString & text, int endStateOfLastPara );
 
-  virtual void highlightOutput (bool b);
-  virtual void highlightError (bool b);
+  void highlightOutput (bool b);
+  void highlightError (bool b);
+
+protected:
+  void colorChanged( const QString& type, const QColor& col );
 
 private:
   bool _output, _error;

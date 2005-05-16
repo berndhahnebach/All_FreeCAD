@@ -27,12 +27,14 @@
 # include <qapplication.h>
 # include <qclipboard.h>
 # include <qfile.h>
+# include <qhbox.h> 
 # include <qmessagebox.h>
 # include <qpaintdevicemetrics.h>
 # include <qpainter.h>
 # include <qprinter.h>
 # include <qregexp.h>
 # include <qsimplerichtext.h>
+# include <private/qrichtext_p.h>
 #endif
 
 #include "PythonEditor.h"
@@ -48,59 +50,26 @@ using namespace Gui;
 using Gui::Dialog::GetDefCol;
 
 /**
- *  Constructs a PythonWindow which is a child of 'parent', with the
- *  name 'name' and installs the Python syntax highlighter.
+ *  Constructs a PythonEditor which is a child of 'parent', with the
+ *  name 'name'. 
  */
-PythonWindow::PythonWindow(QWidget *parent,const char *name)
+PythonEditor::PythonEditor(QWidget *parent,const char *name)
     : TextEdit(parent, name), WindowParameter( "Editor" )
 {
-  nInsertTabs = 0;
   pythonSyntax = new PythonSyntaxHighlighter(this);
 
   FCParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
 
-  // set colors
+  // set colors and font
   hPrefGrp->NotifyAll();
-}
-
-/** Destroys the object and frees any allocated resources */
-PythonWindow::~PythonWindow()
-{
-  getWindowParameter()->Detach( this );
-  delete pythonSyntax;
-}
-
-/** Sets the new color for \a rcColor. */  
-void PythonWindow::OnChange( FCSubject<const char*> &rCaller,const char* rcColor )
-{
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
-
-  long col = hPrefGrp->GetInt( rcColor, GetDefCol().color( rcColor ));
-  QColor color;
-  color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-
-  pythonSyntax->setColor( rcColor, color );
-}
-
-// ------------------------------------------------------------------------
-
-/**
- *  Constructs a PythonEditor which is a child of 'parent', with the
- *  name 'name'. 
- */
-PythonEditor::PythonEditor(QWidget *parent,const char *name)
-    : PythonWindow(parent, name)
-{
-  // set font
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
-  hPrefGrp->Notify( "FontSize" );
-  hPrefGrp->Notify( "Font" );
 }
 
 /** Destroys the object and frees any allocated resources */
 PythonEditor::~PythonEditor()
 {
+  getWindowParameter()->Detach( this );
+  delete pythonSyntax;
 }
 
 /** Sets the new color for \a rcColor. */  
@@ -128,7 +97,11 @@ void PythonEditor::OnChange( FCSubject<const char*> &rCaller,const char* sReason
   }
   else
   {
-    PythonWindow::OnChange( rCaller, sReason );
+    long col = hPrefGrp->GetInt( sReason, GetDefCol().color( sReason ));
+    QColor color;
+    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+
+    pythonSyntax->setColor( sReason, color );
   }
 }
 
@@ -138,7 +111,7 @@ namespace Gui {
 class PythonSyntaxHighlighterP
 {
 public:
-  PythonSyntaxHighlighterP() : hlOutput(false), hlError(false)
+  PythonSyntaxHighlighterP()
   {
     keywords << "and" << "assert" << "break" << "class" << "continue" << "def" << "del" <<
     "elif" << "else" << "except" << "exec" << "finally" << "for" << "from" << "global" <<
@@ -171,7 +144,6 @@ public:
 
   QStringList keywords;
   QString blockComment;
-  bool hlOutput, hlError;
   QColor cNormalText, cComment, cBlockcomment, cLiteral, cNumber,
   cOperator, cKeyword, cClassName, cDefineName, cOutput, cError;
 };
@@ -190,55 +162,6 @@ PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
 PythonSyntaxHighlighter::~PythonSyntaxHighlighter()
 {
   delete d;
-}
-
-/** Sets the color \a col to the paragraph type \a type. 
- * Afterwards relighlight() is called, therefore you should
- * not call this method very often because the whóle text has
- * to be rehighlighted.
- */
-void PythonSyntaxHighlighter::setColor( Paragraph type, const QColor& col )
-{
-  // Rehighlighting is very expensive, thus avoid it if this color is already set
-  QColor old = color( type );
-  if ( !old.isValid() )
-    return; // no such type
-  if ( old == col )
-    return; 
-  switch ( type )
-  {
-  case Normal:
-    d->cNormalText = col;
-    break;
-  case Comment:
-    d->cComment = col;
-    break;
-  case Blockcomment:
-    d->cBlockcomment = col;
-    break;
-  case Literal:
-    d->cLiteral = col;
-    break;
-  case Number:
-    d->cNumber = col;
-    break;
-  case Operator:
-    d->cOperator = col;
-    break;
-  case Keywords:
-    d->cKeyword = col;
-    break;
-  case Output:
-    d->cOutput = col;
-    break;
-  case Errors:
-    d->cError = col;
-    break;
-  default:
-    break;
-  }
-
-  rehighlight();
 }
 
 /** Sets the color \a col to the paragraph type \a type. 
@@ -275,46 +198,7 @@ void PythonSyntaxHighlighter::setColor( const QString& type, const QColor& col )
     d->cOutput = col;
   else if ( type == "Python error" )
     d->cError = col;
-  rehighlight();
-}
-
-QColor PythonSyntaxHighlighter::color( Paragraph type )
-{
-  QColor col;
-  switch ( type )
-  {
-  case Normal:
-    col = d->cNormalText;
-    break;
-  case Comment:
-    col = d->cComment;
-    break;
-  case Blockcomment:
-    col = d->cBlockcomment;
-    break;
-  case Literal:
-    col = d->cLiteral;
-    break;
-  case Number:
-    col = d->cNumber;
-    break;
-  case Operator:
-    col = d->cOperator;
-    break;
-  case Keywords:
-    col = d->cKeyword;
-    break;
-  case Output:
-    col = d->cOutput;
-    break;
-  case Errors:
-    col = d->cError;
-    break;
-  default:
-    break;
-  }
-
-  return col;
+  colorChanged( type, col );
 }
 
 QColor PythonSyntaxHighlighter::color( const QString& type )
@@ -345,216 +229,9 @@ QColor PythonSyntaxHighlighter::color( const QString& type )
     return QColor(); // not found
 }
 
-/**
- * If \a b is set to true the following input to the editor is highlighted as normal output.
- */
-void PythonSyntaxHighlighter::highlightOutput (bool b)
+void PythonSyntaxHighlighter::colorChanged( const QString& type, const QColor& col )
 {
-  d->hlOutput = b;
-}
-
-/**
- * If \a b is set to true the following input to the editor is highlighted as error.
- */
-void PythonSyntaxHighlighter::highlightError (bool b)
-{
-  d->hlError = b;
-}
-
-/**
- * Highlights a part of the text \a txt as block comment.
- */
-int PythonSyntaxHighlighter::highlightBlockComment( const QString& txt, int& from, int endStateOfLastPara )
-{
-  QRegExp rx("(\"\"\"|''')");
-  int pos = txt.find(rx, from);
-  // if this is part of a block search for the closing tag
-  if (endStateOfLastPara == (int)Blockcomment)
-    pos = txt.find(d->blockComment, from);
-  else if (pos > -1)
-    d->blockComment = rx.cap(1);
-
-  // whole line is a comment
-  if ( pos == -1 && endStateOfLastPara == (int)Blockcomment)
-  {
-    setFormat(0, txt.length(), d->cBlockcomment);
-  }
-  // tag for block comments found
-  else if ( pos > -1)
-  {
-    int begin = pos;
-
-    // not part of a block comment
-    if ( endStateOfLastPara != (int)Blockcomment )
-    {
-      // search also for the closing tag
-      int end = txt.find(d->blockComment, begin+3);
-
-      // all between "begin" and "end" is a comment
-      if ( end > -1 )
-      {
-        int len = end - begin + 3;
-        setFormat(begin, len, d->cBlockcomment);
-        from = end+3;
-      }
-      // all after "begin" is a comment
-      else
-      {
-        int len = txt.length() - begin;
-        setFormat(begin, len, d->cBlockcomment);
-        from = txt.length();
-        endStateOfLastPara = (int)Blockcomment;
-      }
-    }
-    // previous line is part of a block comment
-    else
-    {
-      int len = begin + 3;
-      setFormat(0, len, d->cBlockcomment);
-      from = begin+3;
-      endStateOfLastPara = (int)Normal;
-    }
-  }
-
-  return endStateOfLastPara;
-}
-
-/**
- * Highlights a part of the text \a txt as string literal.
- */
-int PythonSyntaxHighlighter::highlightLiteral( const QString& txt, int& from, int endStateOfLastPara )
-{
-  QRegExp rx("(\"|')");
-  int pos = txt.find(rx, from);
-  QString pat = rx.cap(1);
-  if (pos > -1)
-  {
-    int begin = pos;
-
-    // search also for the closing tag
-    int end = txt.find(pat, begin+1);
-
-    if (end > -1)
-    {
-      int len = end - begin + 1;
-      setFormat(begin, len, d->cLiteral);
-      from = end+1;
-      endStateOfLastPara = (int)Normal;
-    }
-    else
-    {
-      // whole line is a literal
-      int len = txt.length()-begin;
-      setFormat(begin, len, d->cLiteral);
-      from = txt.length();
-      endStateOfLastPara = (int)Literal;
-    }
-  }
-
-  // no blocks for literals allowed
-  return (int)endStateOfLastPara;
-}
-
-/**
- * Highlights a part of the text \a txt as comment.
- */
-int PythonSyntaxHighlighter::highlightComment( const QString& txt, int& from, int endStateOfLastPara )
-{
-  // check for comments
-  int pos = txt.find("#", from);
-  if (pos != -1)
-  {
-    int len = txt.length()-pos;
-    setFormat(pos, len, d->cComment);
-    endStateOfLastPara = (int)Comment;
-  }
-
-  return (int)endStateOfLastPara;
-}
-
-/**
- * Highlights a part of the text \a txt as normal text.
- */
-int PythonSyntaxHighlighter::highlightNormalText( const QString& txt, int& from, int endStateOfLastPara )
-{
-  // colourize everything black
-  setFormat(from, txt.length()-from, d->cNormalText);
-
-  return 0;
-}
-
-/**
- * Highlights all keywords of the text \a txt.
- */
-int PythonSyntaxHighlighter::highlightKeyword( const QString& txt, int& from, int endStateOfLastPara )
-{
-  // search for all keywords to colourize
-  for (QStringList::Iterator it = d->keywords.begin(); it != d->keywords.end(); ++it)
-  {
-    QRegExp keyw(QString("\\b%1\\b").arg(*it));
-    int pos = txt.find(keyw, from);
-    while (pos > -1)
-    {
-      QFont font = textEdit()->currentFont();
-      font.setBold( true );
-      setFormat(pos, (*it).length(), font, d->cKeyword);
-
-      // make next word bold
-      if ( (*it) == "def" || (*it) == "class")
-      {
-        QRegExp word("\\b[A-Za-z0-9]+\\b");
-        int wd = txt.find(word, pos+(*it).length());
-        if ( wd > -1)
-        {
-          int len = word.matchedLength();
-          QFont font = textEdit()->currentFont();
-          font.setBold( true );
-          if ((*it) == "def")
-            setFormat(wd, len, font, d->cDefineName);
-          else // *it == "class"
-            setFormat(wd, len, font, d->cClassName);
-        }
-      }
-
-      pos = txt.find(keyw, pos+(*it).length());
-    }
-  }
-
-  return 0;
-}
-
-/**
- * Highlights all operators of the text \a txt.
- */
-int PythonSyntaxHighlighter::highlightOperator( const QString& txt, int& from, int endStateOfLastPara )
-{
-  QRegExp rx( "[\\[\\]\\{\\}\\(\\)\\+\\*\\-/<>]" );
-  int pos = rx.search( txt, from );
-  while ( pos > -1 )
-  {
-    int len = rx.matchedLength();
-    setFormat(pos, len, d->cOperator);
-    pos = rx.search( txt, pos+len );
-  }
-
-  return 0;
-}
-
-/**
- * Highlights all numbers of the text \a txt.
- */
-int PythonSyntaxHighlighter::highlightNumber( const QString& txt, int& from, int endStateOfLastPara )
-{
-  QRegExp rx( "\\b(\\d+)\\b" );
-  int pos = rx.search( txt, from );
-  while ( pos > -1 )
-  {
-    int len = rx.matchedLength();
-    setFormat(pos, len, d->cNumber);
-    pos = rx.search( txt, pos+len );
-  }
-
-  return 0;
+  rehighlight();
 }
 
 /**
@@ -562,88 +239,207 @@ int PythonSyntaxHighlighter::highlightNumber( const QString& txt, int& from, int
  */
 int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
-  QString txt(text);
-  int from = 0;
+  uint i = 0;
+  QChar prev, ch;
+  QString buffer;
 
-  // highlight as error
-  if ( d->hlOutput )
+  const int Standard      = 0;     // Standard text
+  const int Digit         = 1;     // Digits
+  const int Comment       = 2;     // Comment begins with #
+  const int Literal1      = 3;     // String literal beginning with "
+  const int Literal2      = 4;     // Other string literal beginning with '
+  const int Blockcomment1 = 5;     // Block comments beginning and ending with """
+  const int Blockcomment2 = 6;     // Other block comments beginning and ending with '''
+  const int ClassName     = 7;     // Text after the keyword class
+  const int DefineName    = 8;     // Text after the keyword def
+
+  if (endStateOfLastPara==-2) 
+    endStateOfLastPara=Standard;
+
+  while ( i < text.length() )
   {
-    QFont font = textEdit()->currentFont();
-    font.setBold( false );
-    font.setItalic( true );
-    setFormat(0, txt.length(), font, d->cOutput);
-    return 0;
-  }
+    ch = text.at( i ).latin1();
 
-  // highlight as error
-  if ( d->hlError )
-  {
-    QFont font = textEdit()->currentFont();
-    font.setBold( false );
-    font.setItalic( true );
-    setFormat(0, txt.length(), font, d->cError);
-    return 0;
-  }
-
-  // colourize all keywords, operators, numbers, normal text
-  highlightNormalText(txt, from, endStateOfLastPara);
-  highlightKeyword   (txt, from, endStateOfLastPara);
-  highlightOperator  (txt, from, endStateOfLastPara);
-  highlightNumber    (txt, from, endStateOfLastPara);
-
-  QString comnt("#");
-  QRegExp blkcm("(\"\"\"|''')");
-  QRegExp strlt("(\"|')");
-  while ( from < (int)txt.length() && txt != " ")
-  {
-    if ( endStateOfLastPara == int(Blockcomment) )
+    switch ( endStateOfLastPara )
     {
-      // search for closing block comments
-      endStateOfLastPara = highlightBlockComment (txt, from, endStateOfLastPara);
-      if (endStateOfLastPara > 0) return endStateOfLastPara;
+    case Standard:
+      {
+        switch ( ch )
+        {
+        case '#':
+          {
+            // begin a comment
+            setFormat( i, 1, d->cComment);
+            endStateOfLastPara=Comment;
+          } break;
+        case '"':
+          {
+            // Begin either string literal or block comment
+            if ( text.at(i-1) == '"' && text.at(i-2) == '"')
+            {
+              setFormat( i-2, 3, d->cBlockcomment);
+              endStateOfLastPara=Blockcomment1;
+            }
+            else
+            {
+              setFormat( i, 1, d->cLiteral);
+              endStateOfLastPara=Literal1;
+            }
+          } break;
+        case '\'':
+          {
+            // Begin either string literal or block comment
+            if ( text.at(i-1) == '\'' && text.at(i-2) == '\'')
+            {
+              setFormat( i-2, 3, d->cBlockcomment);
+              endStateOfLastPara=Blockcomment2;
+            }
+            else
+            {
+              setFormat( i, 1, d->cLiteral);
+              endStateOfLastPara=Literal2;
+            }
+          } break;
+        case ' ':
+        case '\t':
+          {
+            // ignore whitespaces
+            buffer = QString::null;
+          } break;
+        default:
+          {
+            // this is the beginning of a number
+            if ( ch.isDigit() && !prev.isLetter() && buffer.isEmpty() )
+            {
+              setFormat( i, 1, d->cNumber);
+              endStateOfLastPara=Digit;
+            }
+            // probably an operator
+            else if ( ch.isSymbol() )
+            {
+              setFormat( i, 1, d->cOperator);
+              buffer = QString::null;
+            }
+            // normal text
+            else
+            {
+              if ( !ch.isLetterOrNumber() )
+                buffer = QString::null;
+              buffer += ch;
+
+              // search for keywords
+              if ( buffer.length() > 0 )
+              {
+                bool keywordFound=false;
+                for ( QStringList::Iterator it = d->keywords.begin(); it != d->keywords.end(); ++it ) 
+                {
+                  if ( buffer == *it)
+                  {
+                    if ( buffer == "def")
+                      endStateOfLastPara = DefineName;
+                    else if ( buffer == "class")
+                      endStateOfLastPara = ClassName;
+
+                    QFont font = textEdit()->currentFont();
+                    font.setBold( true );
+                    setFormat( i - buffer.length()+1, buffer.length(),font,d->cKeyword);
+                    keywordFound = true;
+                    break;
+                  }
+                }
+
+                // no keywords matches
+                if (!keywordFound)
+                {
+                  setFormat( i - buffer.length()+1, buffer.length(),d->cNormalText);
+                }
+              }
+            }
+          }
+        }
+      }break;
+    case Comment:
+      {
+        setFormat( i, 1, d->cComment);
+        buffer = QString::null;
+      } break;
+    case Literal1:
+      {
+        setFormat( i, 1, d->cLiteral);
+        buffer = QString::null;
+        if ( ch == '"' )
+          endStateOfLastPara = Standard;
+      } break;
+    case Literal2:
+      {
+        setFormat( i, 1, d->cLiteral);
+        buffer = QString::null;
+        if ( ch == '\'' )
+          endStateOfLastPara = Standard;
+      } break;
+    case Blockcomment1:
+      {
+        setFormat( i, 1, d->cBlockcomment);
+        buffer = QString::null;
+        if ( ch == '"' && text.at(i-1) == '"' && text.at(i-2) == '"')
+          endStateOfLastPara = Standard;
+      } break;
+    case Blockcomment2:
+      {
+        setFormat( i, 1, d->cBlockcomment);
+        buffer = QString::null;
+        if ( ch == '\'' && text.at(i-1) == '\'' && text.at(i-2) == '\'')
+          endStateOfLastPara = Standard;
+      } break;
+    case DefineName:
+      {
+        if ( ch.isLetter() || ch == ' ' )
+        {
+          setFormat( i, 1, d->cDefineName);
+        }
+        else
+        {
+          endStateOfLastPara = Standard;
+        }
+        buffer = QString::null;
+      } break;
+    case ClassName:
+      {
+        if ( ch.isLetter() || ch == ' ' )
+        {
+          setFormat( i, 1, d->cClassName);
+        }
+        else
+        {
+          endStateOfLastPara = Standard;
+        }
+        buffer = QString::null;
+      } break;
+    case Digit:
+      {
+        if ( ch.isDigit() || ch == '.' )
+        {
+          setFormat( i, 1, d->cNumber);
+        }
+        else
+        {
+          endStateOfLastPara = Standard;
+        }
+        buffer = QString::null;
+      }break;
     }
-    else
-    {
-      // search for the first tag
-      int com = txt.find(comnt, from);
-      if (com < 0) com = txt.length();
 
-      int bcm = txt.find(blkcm, from);
-      if (bcm < 0) bcm = txt.length();
-
-      int str = txt.find(strlt, from);
-      if (str < 0) str = txt.length();
-
-      // comment
-      if (com < bcm && com < str)
-      {
-        from = com;
-        highlightComment (txt, from, endStateOfLastPara);
-        return 0;
-      }
-      // block comment
-      else if (bcm < com && bcm <= str)
-      {
-        from = bcm;
-        endStateOfLastPara = highlightBlockComment (txt, from, endStateOfLastPara);
-        if (endStateOfLastPara > 0) return endStateOfLastPara;
-      }
-      // string literal
-      else if (str < com && str < bcm)
-      {
-        from = str;
-        endStateOfLastPara = highlightLiteral (txt, from, endStateOfLastPara);
-        if (endStateOfLastPara > 0) return 0;
-      }
-      // no tag found
-      else
-      {
-        from = txt.length();
-      }
-    }
+    prev = ch;
+    i++;
   }
 
-  return 0;
+  // only block comments can have several lines
+  if ( endStateOfLastPara != Blockcomment1 && endStateOfLastPara != Blockcomment1 ) 
+  {
+    endStateOfLastPara = Standard ;
+  } 
+
+  return endStateOfLastPara;
 }
 
 // ------------------------------------------------------------------------
@@ -655,19 +451,46 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
  *  name 'name'.
  */
 PythonEditView::PythonEditView( QWidget* parent, const char* name)
-    : MDIView(0,parent, name, WDestructiveClose)
+    : MDIView(0,parent, name, WDestructiveClose), WindowParameter( "Editor" )
 {
-  textEdit = new PythonEditor(this);
-  textEdit->setWordWrap( QTextEdit::NoWrap );
+  QHBox* hbox = new QHBox( this );
 
-  setFocusProxy( textEdit );
-  setCentralWidget( textEdit );
+  // create the editor first
+  _textEdit = new PythonEditor(this);
+  _lineMarker = new LineMarker( reinterpret_cast<PythonEditor*>(_textEdit), hbox,"LineMarker");
+  // and reparent it 
+  _textEdit->reparent(hbox, QPoint());
+  _lineMarker->show();
+  _textEdit->setWordWrap( QTextEdit::NoWrap );
+
+
+  setFocusProxy( _textEdit );
+  setCentralWidget( hbox );
+
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  hPrefGrp->Attach( this );
+  hPrefGrp->NotifyAll();
 }
 
 /** Destroys the object and frees any allocated resources */
 PythonEditView::~PythonEditView()
 {
-  delete textEdit;
+  getWindowParameter()->Detach( this );
+  delete _textEdit;
+  delete _lineMarker;
+}
+
+void PythonEditView::OnChange( FCSubject<const char*> &rCaller,const char* rcReason )
+{
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  if (strcmp(rcReason, "EnableLineNumber") == 0)
+  {
+    bool show = hPrefGrp->GetBool( "EnableLineNumber", true );
+    if ( show )
+      _lineMarker->show();
+    else
+      _lineMarker->hide();
+  }
 }
 
 /**
@@ -718,12 +541,12 @@ bool PythonEditView::onHasMsg(const char* pMsg)
   if (strcmp(pMsg,"Print")==0) return true;
   if (strcmp(pMsg,"Cut")==0)
   {
-    bool canWrite = !textEdit->isReadOnly();
-    return (canWrite && (textEdit->hasSelectedText()));
+    bool canWrite = !_textEdit->isReadOnly();
+    return (canWrite && (_textEdit->hasSelectedText()));
   }
   if (strcmp(pMsg,"Copy")==0)
   {
-    return ( textEdit->hasSelectedText() );
+    return ( _textEdit->hasSelectedText() );
   }
   if (strcmp(pMsg,"Paste")==0)
   {
@@ -733,16 +556,16 @@ bool PythonEditView::onHasMsg(const char* pMsg)
     // Copy text from the clipboard (paste)
     text = cb->text();
 
-    bool canWrite = !textEdit->isReadOnly();
+    bool canWrite = !_textEdit->isReadOnly();
     return ( !text.isEmpty() && canWrite );
   }
   if (strcmp(pMsg,"Undo")==0)
   {
-    return textEdit->isUndoAvailable ();
+    return _textEdit->isUndoAvailable ();
   }
   if (strcmp(pMsg,"Redo")==0)
   {
-    return textEdit->isRedoAvailable ();
+    return _textEdit->isRedoAvailable ();
   }
   return false;
 }
@@ -750,7 +573,7 @@ bool PythonEditView::onHasMsg(const char* pMsg)
 /** Checking on close state. */
 bool PythonEditView::canClose(void)
 {
-  if ( !textEdit->isModified() )
+  if ( !_textEdit->isModified() )
     return true;
 
   switch( QMessageBox::warning( this, tr("Unsaved document"),
@@ -774,7 +597,7 @@ bool PythonEditView::canClose(void)
  */
 bool PythonEditView::save()
 {
-  if ( !textEdit->isModified() )
+  if ( !_textEdit->isModified() )
     return true;
 
   // check if saved ever before
@@ -837,17 +660,12 @@ void PythonEditView::openFile (const QString& fileName)
     return;
 
   QTextStream in(&file);
-  QString text;
-
-  while( !in.atEnd() ){
-    line = in.readLine();
-    text = line + "\n";
-    textEdit->append(text);
-  }
+  _textEdit->setText( in.read() );
+  _lineMarker->onRepaint();
 
   file.close();
 
-  textEdit->setModified(false);
+  _textEdit->setModified(false);
 
   emit message( tr("Loaded document %1").arg( fileName ), 2000 );
 }
@@ -858,7 +676,7 @@ void PythonEditView::openFile (const QString& fileName)
  */
 void PythonEditView::cut(void)
 {
-  textEdit->cut();
+  _textEdit->cut();
 }
 
 /**
@@ -866,7 +684,7 @@ void PythonEditView::cut(void)
  */
 void PythonEditView::copy(void)
 {
-  textEdit->copy();
+  _textEdit->copy();
 }
 
 /**
@@ -875,7 +693,7 @@ void PythonEditView::copy(void)
  */
 void PythonEditView::paste(void)
 {
-  textEdit->paste();
+  _textEdit->paste();
 }
 
 /**
@@ -884,7 +702,7 @@ void PythonEditView::paste(void)
  */
 void PythonEditView::undo(void)
 {
-  textEdit->undo();
+  _textEdit->undo();
 }
 
 /**
@@ -893,7 +711,7 @@ void PythonEditView::undo(void)
  */
 void PythonEditView::redo(void)
 {
-  textEdit->redo();
+  _textEdit->redo();
 }
 
 /**
@@ -918,11 +736,11 @@ void PythonEditView::print( QPrinter* printer )
     int dpiy = metrics.logicalDpiY();
     int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
     QRect body( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
-    QSimpleRichText richText( QStyleSheet::convertFromPlainText(textEdit->text()),
+    QSimpleRichText richText( QStyleSheet::convertFromPlainText(_textEdit->text()),
           QFont(),
-          textEdit->context(),
-          textEdit->styleSheet(),
-          textEdit->mimeSourceFactory(),
+          _textEdit->context(),
+          _textEdit->styleSheet(),
+          _textEdit->mimeSourceFactory(),
           body.height() );
     richText.setWidth( &p, body.width() );
     QRect view( body );
@@ -960,10 +778,10 @@ void PythonEditView::saveFile()
     return;
 
   QTextStream out(&file);
-  out << textEdit->text();
+  out << _textEdit->text();
   file.close();
 
-  textEdit->setModified(false);
+  _textEdit->setModified(false);
 
   emit message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
 
@@ -994,6 +812,99 @@ QStringList PythonEditView::redoActions() const
 {
   QStringList lst;
   return lst;
+}
+
+
+LineMarker::LineMarker( TextEdit* textEdit, QWidget* parent, const char* name )
+	: QWidget( parent, name, WRepaintNoErase | WStaticContents | WResizeNoErase ),
+	  _textEdit( textEdit )
+{
+	connect( _textEdit->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( onRepaint() ) );
+	connect( _textEdit, SIGNAL( textChanged() ), this, SLOT( onRepaint() ) );
+  onRepaint();
+
+  QFontMetrics fm( _font );
+  setFixedWidth( fm.width( "0000" ) + 10 );
+}
+
+LineMarker::~LineMarker()
+{
+}
+
+void LineMarker::setFont( QFont f )
+{
+  _font = f;
+}  
+
+void LineMarker::resizeEvent( QResizeEvent *e )
+{
+	_buffer.resize( e->size() );
+	QWidget::resizeEvent( e );
+}
+
+void LineMarker::paintEvent( QPaintEvent* /*e*/ )
+{
+	_buffer.fill();
+
+	QTextParagraph *p = _textEdit->document()->firstParagraph();
+
+  QPainter painter( &_buffer );
+	int y = _textEdit->contentsY();
+	while ( p ) 
+  {
+		if ( !p->isVisible() ) 
+    {
+			p = p->next();
+			continue;
+		}
+
+		if ( p->rect().y() + p->rect().height() - y < 0 ) 
+    {
+			p = p->next();
+			continue;
+		}
+
+		if ( p->rect().y() - y > height() )
+			break;
+    painter.setFont( _font );
+		painter.drawText( 0, p->rect().y() - y,
+				  _buffer.width() - 10, p->rect().height(),
+				  AlignRight | AlignTop,
+				  QString::number(p->paragId()+1) );
+    if (p->paragId()==5)
+    {
+      bool b=p->isListItem();
+      p->setListItem(true);
+    }
+/*      painter.save();
+      painter.setBrush(QColor(0,255,255));
+      painter.drawRoundRect(5,p->rect().y()-y, p->rect().height()+8, p->rect().height());
+      painter.setBrush(Qt::red);
+      painter.drawEllipse(8,p->rect().y()-y, p->rect().height(), p->rect().height());
+      painter.restore();
+    }
+    else if (p->paragId()==6)
+    {
+      int w=p->rect().height();
+      int b=p->rect().y()-y;
+      painter.drawRect(5,b, w-1, w-1);
+      painter.save();
+      painter.setPen(Qt::blue);
+      painter.moveTo(QPoint(8,b+w/2-1));
+      painter.lineTo(QPoint(w,b+w/2-1));
+      painter.moveTo(QPoint(4+w/2,b+3));
+      painter.lineTo(QPoint(4+w/2,b+w-5));
+      painter.restore();
+    }
+    else if (p->paragId()>=8&&p->paragId()<12)
+    {
+      p->hide();
+    }*/
+		p = p->next();
+	}
+
+	painter.end();
+	bitBlt( this, 0, 0, &_buffer );
 }
 
 

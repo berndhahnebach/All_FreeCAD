@@ -29,6 +29,7 @@
 
 #ifndef _PreComp_
 # include <qtextedit.h>
+# include <private/qrichtext_p.h>
 #endif
 
 class QListBox;
@@ -60,6 +61,8 @@ class GuiExport TextEdit : public QTextEdit
 public:
   TextEdit(QWidget *parent = 0,const char *name = 0);
   virtual ~TextEdit();
+
+  QTextDocument *document() const { return QTextEdit::document(); }
 
 private slots:
   void complete();

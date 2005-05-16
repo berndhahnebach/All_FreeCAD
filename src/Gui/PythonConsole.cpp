@@ -33,11 +33,13 @@
 #include "Application.h"
 #include "Action.h"
 #include "Command.h"
+#include "DlgEditorImp.h"
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
 
 using namespace Gui;
+using Gui::Dialog::GetDefCol;
 
 PythonConsole * PythonConsole::_instance = 0;
 PyObject      * PythonConsole::_stdoutPy = 0;
@@ -52,16 +54,19 @@ PyObject      * PythonConsole::_stdin    = 0;
  *  name 'name'. 
  */
 PythonConsole::PythonConsole(QWidget *parent,const char *name)
-    : PythonWindow(parent, name), _startPara(0), _indent(false)
+  : TextEdit(parent, name), WindowParameter( "Editor" ), _startPara(0), _indent(false)
 {
   _instance = this;
   _stdoutPy = new PythonStdoutPy( _instance );
   _stderrPy = new PythonStderrPy( _instance );
   _stdinPy  = new PythonStdinPy ( _instance );
 
-  // use the console highlighter instead
-  delete pythonSyntax;
+  // use the console highlighter
   pythonSyntax = new PythonConsoleHighlighter(this);
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  hPrefGrp->Attach( this );
+  // set colors and font
+  hPrefGrp->NotifyAll();
 
   zoomIn(2);
 #ifdef FC_OS_LINUX
@@ -103,6 +108,8 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
 /** Destroys the object and frees any allocated resources */
 PythonConsole::~PythonConsole()
 {
+  getWindowParameter()->Detach( this );
+  delete pythonSyntax;
 }
 
 // PythonConsole Methods						// Methods structure
@@ -152,6 +159,38 @@ PYFUNCIMP_S(PythonConsole,sStdin)
   return Py_None; 
 }
 
+/** Sets the new color for \a rcColor. */  
+void PythonConsole::OnChange( FCSubject<const char*> &rCaller,const char* sReason )
+{
+  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+
+  QFont font = currentFont();
+  if (strcmp(sReason, "FontSize") == 0)
+  {
+    QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
+
+    bool ok;
+    int size = txt.toInt(&ok);
+    if ( !ok ) size = 9; 
+
+    font.setPointSize( size );
+    setFont( font );
+  }
+  else if (strcmp(sReason, "Font") == 0)
+  {
+    QString family = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
+    font.setFamily( family );
+    setFont( font );
+  }
+  else
+  {
+    long col = hPrefGrp->GetInt( sReason, GetDefCol().color( sReason ));
+    QColor color;
+    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    pythonSyntax->setColor( sReason, color );
+  }
+}
+
 /** 
  * Move the cursor to the right position before the key 
  * event is performed. 
@@ -188,13 +227,13 @@ void PythonConsole::doKeyboardAction ( KeyboardAction action )
     }
   }
 
-  PythonWindow::doKeyboardAction( action );
+  TextEdit::doKeyboardAction( action );
 }
 
 /** Clears the content and writes the propmpt. */
 void PythonConsole::clear ()
 {
-  PythonWindow::clear();
+  TextEdit::clear();
   setText(">>> ");
   moveCursor( MoveLineEnd, false );
 }
@@ -206,7 +245,7 @@ void PythonConsole::removeSelectedText ( int selNum )
 
   // cannot remove ">>> " or "... "
   if ( (_startPara <= para) && index > 3 )
-    PythonWindow::removeSelectedText( selNum );
+    TextEdit::removeSelectedText( selNum );
   else
     QApplication::beep();
 }
@@ -222,7 +261,7 @@ void PythonConsole::paste()
 
   // cannot remove ">>> " or "... "
   if ( (_startPara <= para) && index > 3 && _startPara <= paraFrom )
-    PythonWindow::paste();
+    TextEdit::paste();
   else
     QApplication::beep();
 }
@@ -236,7 +275,7 @@ void PythonConsole::cut()
 
   // cannot remove ">>> " or "... "
   if ( (_startPara <= para) && index > 3 && _startPara <= paraFrom )
-    PythonWindow::cut();
+    TextEdit::cut();
   else
     QApplication::beep();
 }
@@ -263,7 +302,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
     }
   }
 
-  PythonWindow::keyPressEvent(e);
+  TextEdit::keyPressEvent(e);
 
   switch (e->key())
   {
@@ -404,7 +443,7 @@ bool PythonConsole::printCommand( const QString& cmd )
  */
 void PythonConsole::showEvent ( QShowEvent * e )
 {
-  PythonWindow::showEvent( e );
+  TextEdit::showEvent( e );
   // set also the text cursor to the edit field
   setFocus();
 }
@@ -430,7 +469,7 @@ void PythonConsole::contentsDropEvent ( QDropEvent * e )
     }
   }
 
-  PythonWindow::dropEvent(e);
+  TextEdit::dropEvent(e);
 }
 
 /** Dragging of action objects is allowed. */ 
@@ -447,7 +486,7 @@ void PythonConsole::contentsDragEnterEvent ( QDragEnterEvent * e )
   if ( ActionDrag::canDecode( e ) )
     e->accept(true);
   else
-    PythonWindow::dragEnterEvent( e );
+    TextEdit::dragEnterEvent( e );
 }
 
 /** Figures out how many tabs must be set next paragraph. 0 indicates that
@@ -568,25 +607,46 @@ PythonConsoleHighlighter::~PythonConsoleHighlighter()
 
 int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
-  int ret = PythonSyntaxHighlighter::highlightParagraph( text, endStateOfLastPara );
+  const int ErrorOutput   = 9;
+  const int MessageOutput = 10;
 
-  if ( text.length() > 1 )
+  if ( _output )
+    endStateOfLastPara=MessageOutput;
+  else if ( _error )
+    endStateOfLastPara=ErrorOutput;
+  else if ( endStateOfLastPara==MessageOutput || endStateOfLastPara==ErrorOutput)
+    endStateOfLastPara=0;
+  else if ( endStateOfLastPara==-2 )
+    endStateOfLastPara=MessageOutput;
+
+  switch ( endStateOfLastPara )
   {
-    // this is only performed after color settings has changed at runtime
-    if ( !text.startsWith(">>> ") && !text.startsWith("... ") && !_output && !_error )
+  case ErrorOutput:
     {
-      // let's take the normal "Output" color for normal output and error messages
-      // because we cannot distinguish between them anymore
-      QColor col = color( Output );
+      // begin a comment
       QFont font = textEdit()->currentFont();
       font.setBold( false );
       font.setItalic( true );
-      setFormat(0, text.length(), font, col);
-      return 0;
-    }
+      setFormat( 0, text.length(), font, color("Python error"));
+      endStateOfLastPara=ErrorOutput;
+    } break;
+  case MessageOutput:
+    {
+      // begin a comment
+      setFormat( 0, text.length(), color("Python output"));
+      endStateOfLastPara=MessageOutput;
+    } break;
+  default:
+    {
+      endStateOfLastPara=PythonSyntaxHighlighter::highlightParagraph( text, endStateOfLastPara );
+    } break;
   }
 
-  return ret;
+  return endStateOfLastPara;
+}
+
+void PythonConsoleHighlighter::colorChanged( const QString& type, const QColor& col )
+{
 }
 
 /**
@@ -594,7 +654,6 @@ int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int end
  */
 void PythonConsoleHighlighter::highlightOutput (bool b)
 {
-  PythonSyntaxHighlighter::highlightOutput( b );
   _output = b;
 }
 
@@ -603,7 +662,6 @@ void PythonConsoleHighlighter::highlightOutput (bool b)
  */
 void PythonConsoleHighlighter::highlightError (bool b)
 {
-  PythonSyntaxHighlighter::highlightError( b );
   _error = b;
 }
 

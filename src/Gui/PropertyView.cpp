@@ -73,8 +73,8 @@ PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char 
   _pPropEditor->addColumn( "Value" );
 
   // retrieve the Pixmaps
-  pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
-  pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
+  pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
+  pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
   pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
 
   //_pcListView->setSize(200,400);

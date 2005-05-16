@@ -41,39 +41,22 @@ namespace Gui {
 
 class PythonSyntaxHighlighter;
 class PythonSyntaxHighlighterP;
-
-/**
- * Basic stuff for a Python text editor with syntax highlighting..
- * \author Werner Mayer
- */
-class GuiExport PythonWindow : public TextEdit, public WindowParameter
-{
-  Q_OBJECT
-
-protected:
-  PythonWindow(QWidget *parent = 0,const char *name = 0);
-  virtual ~PythonWindow();
-
-  virtual void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
-
-protected:
-  PythonSyntaxHighlighter* pythonSyntax;
-
-private:
-  int nInsertTabs;
-};
+class SyntaxLatex;
 
 /**
  * Python text editor with syntax highlighting..
  * \author Werner Mayer
  */
-class GuiExport PythonEditor : public PythonWindow
+class GuiExport PythonEditor : public TextEdit, public WindowParameter
 {
 public:
   PythonEditor(QWidget *parent = 0,const char *name = 0);
   ~PythonEditor();
 
   void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
+
+private:
+  PythonSyntaxHighlighter* pythonSyntax;
 };
 
 /**
@@ -82,42 +65,42 @@ public:
  */
 class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
 {
-protected:
-  enum Paragraph {
-    Normal       = 0,
-    Comment      = 1,
-    Blockcomment = 2,
-    Literal      = 3,
-    Number       = 4,
-    Operator     = 5,
-    Keywords     = 6,
-    Output       = 7,
-    Errors       = 8
-  };
-
 public:
   PythonSyntaxHighlighter(QTextEdit* );
   virtual ~PythonSyntaxHighlighter();
 
   int highlightParagraph ( const QString & text, int endStateOfLastPara );
-  void setColor( Paragraph type, const QColor& col );
+  
   void setColor( const QString& type, const QColor& col );
-  QColor color( Paragraph type );
   QColor color( const QString& type );
 
-  virtual void highlightOutput (bool b);
-  virtual void highlightError (bool b);
+protected:
+  virtual void colorChanged( const QString& type, const QColor& col );
 
 private:
-  int highlightLiteral( const QString&, int& from, int endStateOfLastPara );
-  int highlightBlockComment( const QString&, int& from, int endStateOfLastPara );
-  int highlightComment( const QString&, int& from, int endStateOfLastPara );
-  int highlightOperator( const QString&, int& from, int endStateOfLastPara );
-  int highlightNumber( const QString&, int& from, int endStateOfLastPara );
-  int highlightNormalText( const QString&, int& from, int endStateOfLastPara );
-  int highlightKeyword( const QString&, int& from, int endStateOfLastPara );
-
   PythonSyntaxHighlighterP* d;
+};
+
+class LineMarker: public QWidget
+{
+    Q_OBJECT
+
+public:
+  LineMarker(TextEdit* textEdit, QWidget* parent, const char* name );
+  virtual ~LineMarker();
+
+public slots:
+  void onRepaint() { repaint( FALSE ); }
+  void setFont( QFont f );
+
+protected:
+  void resizeEvent( QResizeEvent* );
+  void paintEvent ( QPaintEvent * );
+
+private:
+  TextEdit* _textEdit;
+  QPixmap _buffer;
+  QFont _font;
 };
 
 /**
@@ -125,7 +108,7 @@ private:
  * the Python editor and embeds the editor in a window.
  * \author Werner Mayer
  */
-class GuiExport PythonEditView : public MDIView
+class GuiExport PythonEditView : public MDIView, public WindowParameter
 {
   Q_OBJECT
 
@@ -133,7 +116,8 @@ public:
   PythonEditView( QWidget* parent, const char* name);
   ~PythonEditView();
 
-  QTextEdit* editor() const { return textEdit; }
+  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
+  QTextEdit* editor() const { return _textEdit; }
 
   const char *getName(void){return "PythonEditView";}
   void onUpdate(void){};
@@ -166,7 +150,8 @@ private:
   void saveFile();
 
 private:
-  QTextEdit* textEdit;
+  LineMarker* _lineMarker;
+  QTextEdit* _textEdit;
   QString _fileName;
 };
 

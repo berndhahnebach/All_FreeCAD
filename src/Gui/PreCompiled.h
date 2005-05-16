@@ -260,6 +260,7 @@
 #include <qwidgetfactory.h>
 #include <qwidgetstack.h>
 #include <qworkspace.h>
+#include <private/qrichtext_p.h>
 
 #endif //_PreComp_
 
