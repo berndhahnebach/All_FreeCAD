@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="AppPointsGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=AppPointsGui - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPointsGui.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPointsGui.mak" CFG="AppPointsGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "AppPointsGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "AppPointsGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPointsGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPointsGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -95,39 +95,97 @@ PostBuild_Cmds=copy Debug\PointsGui_d.pyd ..\..\..\..\Mod\Points	copy ..\InitGui
 
 # Name "AppPointsGui - Win32 Release"
 # Name "AppPointsGui - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\AppPointsGui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Command.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\PreCompiled.cpp
-# ADD CPP /Yc"PreCompiled.h"
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\PreCompiled.h
-# End Source File
-# End Group
 # Begin Group "Dialogs"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\DlgPointsRead.ui
+
+!IF  "$(CFG)" == "AppPointsGui - Win32 Release"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgPointsRead.ui
+InputName=DlgPointsRead
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppPointsGui - Win32 Debug"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgPointsRead.ui
+InputName=DlgPointsRead
+
+BuildCmds= \
+	%qtdir%\bin\uic.exe "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	%qtdir%\bin\uic.exe "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	%qtdir%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgPointsReadImp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgPointsReadImp.h
+
+!IF  "$(CFG)" == "AppPointsGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DlgPointsReadImp.h
+InputName=DlgPointsReadImp
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppPointsGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DlgPointsReadImp.h
+InputName=DlgPointsReadImp
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "Libs"
 
@@ -211,5 +269,35 @@ SOURCE=..\..\..\..\lib\FreeCADGuiD.lib
 
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\AppPointsGui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Command.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Libs.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=.\PreCompiled.cpp
+# ADD CPP /Yc"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\PreCompiled.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.h
+# End Source File
 # End Target
 # End Project
