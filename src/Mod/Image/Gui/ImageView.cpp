@@ -162,7 +162,7 @@ void ImageView::showBrightened()
     {
         // Fill the intensity map with the preset enhancement
         int numMapEntries = getNumIntensityMapEntries();
-        double expValue = _sliderBrightAdjVal / 1000.0;
+        double expValue = (_sliderBrightAdjVal / 1000.0) * 256 / numMapEntries;
         for (int in = 0; in < numMapEntries; in++)
         {
             double out = 1.0 - exp (-(double)in * expValue);

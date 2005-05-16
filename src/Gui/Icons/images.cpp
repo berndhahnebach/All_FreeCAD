@@ -1399,7 +1399,7 @@ static const char *RawTree_Attr[]={
 "................"};
 
 /* XPM */
-static const char *RawTree_LabelClosed[]={
+static const char *RawTree_LabelOpen[]={
 "16 16 10 1",
 ". c None",
 "# c #000000",
@@ -1429,7 +1429,7 @@ static const char *RawTree_LabelClosed[]={
 "............#ee#"};
 
 /* XPM */
-static const char *RawTree_LabelOpen[]={
+static const char *RawTree_LabelClosed[]={
 "16 16 8 1",
 ". c None",
 "# c #000000",
