@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -19,6 +19,7 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
+
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
@@ -50,7 +51,7 @@ open(PyObject *self, PyObject *args)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
     
-  Base::Console().Log("Open in Mesh with %s",Name);
+  Base::Console().Log("Open in Points with %s",Name);
 
   // extract ending
   std::string cEnding(Name);
@@ -59,17 +60,16 @@ open(PyObject *self, PyObject *args)
     Py_Error(PyExc_Exception,"no file ending");
   cEnding.erase(0,pos+1);
 
-  if(cEnding == "stl" || cEnding == "ast")
+  if(cEnding == "asc")
   {
     // create new document and add Import feature
-    App::Document *pcDoc = App::GetApplication().New();
-    App::Feature *pcFeature = pcDoc->AddFeature("MeshImportSTL");
+/*    App::Document *pcDoc = App::GetApplication().New();
+    App::Feature *pcFeature = pcDoc->AddFeature("PointsImportSTL");
     pcFeature->GetProperty("FileName").Set(Name);
     pcFeature->TouchProperty("FileName");
     pcDoc->Recompute();
-
+*/
   }
-
   else
   {
     Py_Error(PyExc_Exception,"unknown file ending");
@@ -81,14 +81,12 @@ open(PyObject *self, PyObject *args)
 /* module functions */
 static PyObject *                        
 save(PyObject *self, PyObject *args)
-
 {
 	Py_Return;    
-
 }
 
 /* registration table  */
-struct PyMethodDef Mesh_Import_methods[] = {
+struct PyMethodDef Points_Import_methods[] = {
     {"open", open, 1},				/* method name, C func ptr, always-tuple */
     {"save", save, 1},
 

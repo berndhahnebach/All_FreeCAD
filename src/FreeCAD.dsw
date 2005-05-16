@@ -255,6 +255,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "AppPoints"=.\Mod\Points\App\AppPoints.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "AppPointsGui"=.\Mod\Points\Gui\AppPointsGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "AppRaytracing"=.\Mod\Raytracing\App\AppRaytracing.dsp - Package Owner=<4>
 
 Package=<5>

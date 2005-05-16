@@ -37,6 +37,8 @@
 class TFunction_Logbook;
 class PyObjectBase;
 class TopoDS_Shape;
+class TDF_Label;
+//class Standard_Integer;
 
 namespace App
 {
