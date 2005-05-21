@@ -144,6 +144,15 @@ lib_LTLIBRARIES = libPoints.la
 
 libPoints_la_SOURCES = \
 		AppPoints.cpp \
+		AppPointsPy.cpp \
+		FeaturePointsImportAscii.cpp \
+		FeaturePointsImportAscii.h \
+		Points.cpp \
+		Points.h \
+		PointsFeature.cpp \
+		PointsFeature.h \
+		PointsFeaturePy.cpp \
+		PointsFeaturePy.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
@@ -166,6 +175,9 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libPoints_la_DEPENDENCIES =
 am_libPoints_la_OBJECTS = libPoints_la-AppPoints.lo \
+	libPoints_la-AppPointsPy.lo \
+	libPoints_la-FeaturePointsImportAscii.lo libPoints_la-Points.lo \
+	libPoints_la-PointsFeature.lo libPoints_la-PointsFeaturePy.lo \
 	libPoints_la-PreCompiled.lo
 libPoints_la_OBJECTS = $(am_libPoints_la_OBJECTS)
 
@@ -173,6 +185,11 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libPoints_la-AppPoints.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPoints_la-AppPointsPy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPoints_la-Points.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPoints_la-PointsFeature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPoints_la-PointsFeaturePy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPoints_la-PreCompiled.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -240,6 +257,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-AppPoints.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-AppPointsPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-Points.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-PointsFeature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-PointsFeaturePy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPoints_la-PreCompiled.Plo@am__quote@
 
 distclean-depend:
@@ -310,6 +332,171 @@ libPoints_la-AppPoints.lo: AppPoints.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-AppPoints.Plo' tmpdepfile='$(DEPDIR)/libPoints_la-AppPoints.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-AppPoints.lo `test -f 'AppPoints.cpp' || echo '$(srcdir)/'`AppPoints.cpp
+
+libPoints_la-AppPointsPy.o: AppPointsPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-AppPointsPy.o -MD -MP -MF "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-AppPointsPy.o `test -f 'AppPointsPy.cpp' || echo '$(srcdir)/'`AppPointsPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo" "$(DEPDIR)/libPoints_la-AppPointsPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPointsPy.cpp' object='libPoints_la-AppPointsPy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-AppPointsPy.Po' tmpdepfile='$(DEPDIR)/libPoints_la-AppPointsPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-AppPointsPy.o `test -f 'AppPointsPy.cpp' || echo '$(srcdir)/'`AppPointsPy.cpp
+
+libPoints_la-AppPointsPy.obj: AppPointsPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-AppPointsPy.obj -MD -MP -MF "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-AppPointsPy.obj `if test -f 'AppPointsPy.cpp'; then $(CYGPATH_W) 'AppPointsPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPointsPy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo" "$(DEPDIR)/libPoints_la-AppPointsPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPointsPy.cpp' object='libPoints_la-AppPointsPy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-AppPointsPy.Po' tmpdepfile='$(DEPDIR)/libPoints_la-AppPointsPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-AppPointsPy.obj `if test -f 'AppPointsPy.cpp'; then $(CYGPATH_W) 'AppPointsPy.cpp'; else $(CYGPATH_W) '$(srcdir)/AppPointsPy.cpp'; fi`
+
+libPoints_la-AppPointsPy.lo: AppPointsPy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-AppPointsPy.lo -MD -MP -MF "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-AppPointsPy.lo `test -f 'AppPointsPy.cpp' || echo '$(srcdir)/'`AppPointsPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo" "$(DEPDIR)/libPoints_la-AppPointsPy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-AppPointsPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AppPointsPy.cpp' object='libPoints_la-AppPointsPy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-AppPointsPy.Plo' tmpdepfile='$(DEPDIR)/libPoints_la-AppPointsPy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-AppPointsPy.lo `test -f 'AppPointsPy.cpp' || echo '$(srcdir)/'`AppPointsPy.cpp
+
+libPoints_la-FeaturePointsImportAscii.o: FeaturePointsImportAscii.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-FeaturePointsImportAscii.o -MD -MP -MF "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-FeaturePointsImportAscii.o `test -f 'FeaturePointsImportAscii.cpp' || echo '$(srcdir)/'`FeaturePointsImportAscii.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo" "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePointsImportAscii.cpp' object='libPoints_la-FeaturePointsImportAscii.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Po' tmpdepfile='$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-FeaturePointsImportAscii.o `test -f 'FeaturePointsImportAscii.cpp' || echo '$(srcdir)/'`FeaturePointsImportAscii.cpp
+
+libPoints_la-FeaturePointsImportAscii.obj: FeaturePointsImportAscii.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-FeaturePointsImportAscii.obj -MD -MP -MF "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-FeaturePointsImportAscii.obj `if test -f 'FeaturePointsImportAscii.cpp'; then $(CYGPATH_W) 'FeaturePointsImportAscii.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePointsImportAscii.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo" "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePointsImportAscii.cpp' object='libPoints_la-FeaturePointsImportAscii.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Po' tmpdepfile='$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-FeaturePointsImportAscii.obj `if test -f 'FeaturePointsImportAscii.cpp'; then $(CYGPATH_W) 'FeaturePointsImportAscii.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePointsImportAscii.cpp'; fi`
+
+libPoints_la-FeaturePointsImportAscii.lo: FeaturePointsImportAscii.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-FeaturePointsImportAscii.lo -MD -MP -MF "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-FeaturePointsImportAscii.lo `test -f 'FeaturePointsImportAscii.cpp' || echo '$(srcdir)/'`FeaturePointsImportAscii.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo" "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePointsImportAscii.cpp' object='libPoints_la-FeaturePointsImportAscii.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.Plo' tmpdepfile='$(DEPDIR)/libPoints_la-FeaturePointsImportAscii.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-FeaturePointsImportAscii.lo `test -f 'FeaturePointsImportAscii.cpp' || echo '$(srcdir)/'`FeaturePointsImportAscii.cpp
+
+libPoints_la-Points.o: Points.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-Points.o -MD -MP -MF "$(DEPDIR)/libPoints_la-Points.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-Points.o `test -f 'Points.cpp' || echo '$(srcdir)/'`Points.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-Points.Tpo" "$(DEPDIR)/libPoints_la-Points.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-Points.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Points.cpp' object='libPoints_la-Points.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-Points.Po' tmpdepfile='$(DEPDIR)/libPoints_la-Points.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-Points.o `test -f 'Points.cpp' || echo '$(srcdir)/'`Points.cpp
+
+libPoints_la-Points.obj: Points.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-Points.obj -MD -MP -MF "$(DEPDIR)/libPoints_la-Points.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-Points.obj `if test -f 'Points.cpp'; then $(CYGPATH_W) 'Points.cpp'; else $(CYGPATH_W) '$(srcdir)/Points.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-Points.Tpo" "$(DEPDIR)/libPoints_la-Points.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-Points.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Points.cpp' object='libPoints_la-Points.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-Points.Po' tmpdepfile='$(DEPDIR)/libPoints_la-Points.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-Points.obj `if test -f 'Points.cpp'; then $(CYGPATH_W) 'Points.cpp'; else $(CYGPATH_W) '$(srcdir)/Points.cpp'; fi`
+
+libPoints_la-Points.lo: Points.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-Points.lo -MD -MP -MF "$(DEPDIR)/libPoints_la-Points.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-Points.lo `test -f 'Points.cpp' || echo '$(srcdir)/'`Points.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-Points.Tpo" "$(DEPDIR)/libPoints_la-Points.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-Points.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Points.cpp' object='libPoints_la-Points.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-Points.Plo' tmpdepfile='$(DEPDIR)/libPoints_la-Points.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-Points.lo `test -f 'Points.cpp' || echo '$(srcdir)/'`Points.cpp
+
+libPoints_la-PointsFeature.o: PointsFeature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PointsFeature.o -MD -MP -MF "$(DEPDIR)/libPoints_la-PointsFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-PointsFeature.o `test -f 'PointsFeature.cpp' || echo '$(srcdir)/'`PointsFeature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-PointsFeature.Tpo" "$(DEPDIR)/libPoints_la-PointsFeature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-PointsFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PointsFeature.cpp' object='libPoints_la-PointsFeature.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-PointsFeature.Po' tmpdepfile='$(DEPDIR)/libPoints_la-PointsFeature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-PointsFeature.o `test -f 'PointsFeature.cpp' || echo '$(srcdir)/'`PointsFeature.cpp
+
+libPoints_la-PointsFeature.obj: PointsFeature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PointsFeature.obj -MD -MP -MF "$(DEPDIR)/libPoints_la-PointsFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-PointsFeature.obj `if test -f 'PointsFeature.cpp'; then $(CYGPATH_W) 'PointsFeature.cpp'; else $(CYGPATH_W) '$(srcdir)/PointsFeature.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-PointsFeature.Tpo" "$(DEPDIR)/libPoints_la-PointsFeature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-PointsFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PointsFeature.cpp' object='libPoints_la-PointsFeature.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-PointsFeature.Po' tmpdepfile='$(DEPDIR)/libPoints_la-PointsFeature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-PointsFeature.obj `if test -f 'PointsFeature.cpp'; then $(CYGPATH_W) 'PointsFeature.cpp'; else $(CYGPATH_W) '$(srcdir)/PointsFeature.cpp'; fi`
+
+libPoints_la-PointsFeature.lo: PointsFeature.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PointsFeature.lo -MD -MP -MF "$(DEPDIR)/libPoints_la-PointsFeature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-PointsFeature.lo `test -f 'PointsFeature.cpp' || echo '$(srcdir)/'`PointsFeature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-PointsFeature.Tpo" "$(DEPDIR)/libPoints_la-PointsFeature.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-PointsFeature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PointsFeature.cpp' object='libPoints_la-PointsFeature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-PointsFeature.Plo' tmpdepfile='$(DEPDIR)/libPoints_la-PointsFeature.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-PointsFeature.lo `test -f 'PointsFeature.cpp' || echo '$(srcdir)/'`PointsFeature.cpp
+
+libPoints_la-PointsFeaturePy.o: PointsFeaturePy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PointsFeaturePy.o -MD -MP -MF "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-PointsFeaturePy.o `test -f 'PointsFeaturePy.cpp' || echo '$(srcdir)/'`PointsFeaturePy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo" "$(DEPDIR)/libPoints_la-PointsFeaturePy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PointsFeaturePy.cpp' object='libPoints_la-PointsFeaturePy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-PointsFeaturePy.Po' tmpdepfile='$(DEPDIR)/libPoints_la-PointsFeaturePy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-PointsFeaturePy.o `test -f 'PointsFeaturePy.cpp' || echo '$(srcdir)/'`PointsFeaturePy.cpp
+
+libPoints_la-PointsFeaturePy.obj: PointsFeaturePy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PointsFeaturePy.obj -MD -MP -MF "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-PointsFeaturePy.obj `if test -f 'PointsFeaturePy.cpp'; then $(CYGPATH_W) 'PointsFeaturePy.cpp'; else $(CYGPATH_W) '$(srcdir)/PointsFeaturePy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo" "$(DEPDIR)/libPoints_la-PointsFeaturePy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PointsFeaturePy.cpp' object='libPoints_la-PointsFeaturePy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-PointsFeaturePy.Po' tmpdepfile='$(DEPDIR)/libPoints_la-PointsFeaturePy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-PointsFeaturePy.obj `if test -f 'PointsFeaturePy.cpp'; then $(CYGPATH_W) 'PointsFeaturePy.cpp'; else $(CYGPATH_W) '$(srcdir)/PointsFeaturePy.cpp'; fi`
+
+libPoints_la-PointsFeaturePy.lo: PointsFeaturePy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PointsFeaturePy.lo -MD -MP -MF "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPoints_la-PointsFeaturePy.lo `test -f 'PointsFeaturePy.cpp' || echo '$(srcdir)/'`PointsFeaturePy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo" "$(DEPDIR)/libPoints_la-PointsFeaturePy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPoints_la-PointsFeaturePy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PointsFeaturePy.cpp' object='libPoints_la-PointsFeaturePy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPoints_la-PointsFeaturePy.Plo' tmpdepfile='$(DEPDIR)/libPoints_la-PointsFeaturePy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPoints_la-PointsFeaturePy.lo `test -f 'PointsFeaturePy.cpp' || echo '$(srcdir)/'`PointsFeaturePy.cpp
 
 libPoints_la-PreCompiled.o: PreCompiled.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPoints_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPoints_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libPoints_la-PreCompiled.Tpo" \

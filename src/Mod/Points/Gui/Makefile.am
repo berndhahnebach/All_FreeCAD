@@ -1,13 +1,21 @@
 
 lib_LTLIBRARIES=libPointsGui.la
 
-# BUILT_SOURCES=\
-#
+BUILT_SOURCES=\
+		DlgPointsRead.cpp \
+		DlgPointsRead.h \
+		moc_DlgPointsRead.cpp \
+		moc_DlgPointsReadImp.cpp
+
 libPointsGui_la_SOURCES=\
 		AppPointsGui.cpp \
 		Command.cpp \
+		DlgPointsReadImp.cpp \
+		DlgPointsReadImp.h \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		ViewProvider.cpp \
+		ViewProvider.h
 
 # the library search path.
 libPointsGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

@@ -142,13 +142,22 @@ target_alias = @target_alias@
 
 lib_LTLIBRARIES = libPointsGui.la
 
-# BUILT_SOURCES=\
-#
+BUILT_SOURCES = \
+		DlgPointsRead.cpp \
+		DlgPointsRead.h \
+		moc_DlgPointsRead.cpp \
+		moc_DlgPointsReadImp.cpp
+
+
 libPointsGui_la_SOURCES = \
 		AppPointsGui.cpp \
 		Command.cpp \
+		DlgPointsReadImp.cpp \
+		DlgPointsReadImp.h \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		ViewProvider.cpp \
+		ViewProvider.h
 
 
 # the library search path.
@@ -171,17 +180,18 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libPointsGui_la_DEPENDENCIES =
 am_libPointsGui_la_OBJECTS = libPointsGui_la-AppPointsGui.lo \
-	libPointsGui_la-Command.lo \
-	libPointsGui_la-PreCompiled.lo
+	libPointsGui_la-Command.lo libPointsGui_la-DlgPointsReadImp.lo \
+	libPointsGui_la-PreCompiled.lo libPointsGui_la-ViewProvider.lo
 libPointsGui_la_OBJECTS = $(am_libPointsGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = \
-@AMDEP_TRUE@	./$(DEPDIR)/libPointsGui_la-AppPointsGui.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libPointsGui_la-AppPointsGui.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPointsGui_la-Command.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libPointsGui_la-PreCompiled.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPointsGui_la-PreCompiled.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPointsGui_la-ViewProvider.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -201,7 +211,8 @@ DIST_SOURCES = $(libPointsGui_la_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
 SOURCES = $(libPointsGui_la_SOURCES)
 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .lo .o .obj
@@ -249,7 +260,9 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPointsGui_la-AppPointsGui.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPointsGui_la-Command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPointsGui_la-PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPointsGui_la-ViewProvider.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -353,6 +366,39 @@ libPointsGui_la-Command.lo: Command.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-Command.lo `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp
 
+libPointsGui_la-DlgPointsReadImp.o: DlgPointsReadImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-DlgPointsReadImp.o -MD -MP -MF "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-DlgPointsReadImp.o `test -f 'DlgPointsReadImp.cpp' || echo '$(srcdir)/'`DlgPointsReadImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo" "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPointsReadImp.cpp' object='libPointsGui_la-DlgPointsReadImp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Po' tmpdepfile='$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-DlgPointsReadImp.o `test -f 'DlgPointsReadImp.cpp' || echo '$(srcdir)/'`DlgPointsReadImp.cpp
+
+libPointsGui_la-DlgPointsReadImp.obj: DlgPointsReadImp.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-DlgPointsReadImp.obj -MD -MP -MF "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-DlgPointsReadImp.obj `if test -f 'DlgPointsReadImp.cpp'; then $(CYGPATH_W) 'DlgPointsReadImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPointsReadImp.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo" "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPointsReadImp.cpp' object='libPointsGui_la-DlgPointsReadImp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Po' tmpdepfile='$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-DlgPointsReadImp.obj `if test -f 'DlgPointsReadImp.cpp'; then $(CYGPATH_W) 'DlgPointsReadImp.cpp'; else $(CYGPATH_W) '$(srcdir)/DlgPointsReadImp.cpp'; fi`
+
+libPointsGui_la-DlgPointsReadImp.lo: DlgPointsReadImp.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-DlgPointsReadImp.lo -MD -MP -MF "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-DlgPointsReadImp.lo `test -f 'DlgPointsReadImp.cpp' || echo '$(srcdir)/'`DlgPointsReadImp.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo" "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DlgPointsReadImp.cpp' object='libPointsGui_la-DlgPointsReadImp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.Plo' tmpdepfile='$(DEPDIR)/libPointsGui_la-DlgPointsReadImp.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-DlgPointsReadImp.lo `test -f 'DlgPointsReadImp.cpp' || echo '$(srcdir)/'`DlgPointsReadImp.cpp
+
 libPointsGui_la-PreCompiled.o: PreCompiled.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libPointsGui_la-PreCompiled.Tpo" \
 @am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-PreCompiled.o `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp; \
@@ -385,6 +431,39 @@ libPointsGui_la-PreCompiled.lo: PreCompiled.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-PreCompiled.Plo' tmpdepfile='$(DEPDIR)/libPointsGui_la-PreCompiled.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
+
+libPointsGui_la-ViewProvider.o: ViewProvider.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-ViewProvider.o -MD -MP -MF "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-ViewProvider.o `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo" "$(DEPDIR)/libPointsGui_la-ViewProvider.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProvider.cpp' object='libPointsGui_la-ViewProvider.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-ViewProvider.Po' tmpdepfile='$(DEPDIR)/libPointsGui_la-ViewProvider.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-ViewProvider.o `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp
+
+libPointsGui_la-ViewProvider.obj: ViewProvider.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-ViewProvider.obj -MD -MP -MF "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-ViewProvider.obj `if test -f 'ViewProvider.cpp'; then $(CYGPATH_W) 'ViewProvider.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProvider.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo" "$(DEPDIR)/libPointsGui_la-ViewProvider.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProvider.cpp' object='libPointsGui_la-ViewProvider.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-ViewProvider.Po' tmpdepfile='$(DEPDIR)/libPointsGui_la-ViewProvider.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-ViewProvider.obj `if test -f 'ViewProvider.cpp'; then $(CYGPATH_W) 'ViewProvider.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProvider.cpp'; fi`
+
+libPointsGui_la-ViewProvider.lo: ViewProvider.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPointsGui_la-ViewProvider.lo -MD -MP -MF "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPointsGui_la-ViewProvider.lo `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo" "$(DEPDIR)/libPointsGui_la-ViewProvider.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPointsGui_la-ViewProvider.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProvider.cpp' object='libPointsGui_la-ViewProvider.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPointsGui_la-ViewProvider.Plo' tmpdepfile='$(DEPDIR)/libPointsGui_la-ViewProvider.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPointsGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPointsGui_la-ViewProvider.lo `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -482,7 +561,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES)
 
 installdirs:
@@ -513,6 +593,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \

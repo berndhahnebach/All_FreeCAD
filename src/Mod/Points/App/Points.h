@@ -24,6 +24,9 @@
 #ifndef _Points_h_
 #define _Points_h_
 
+#ifndef _PreComp_
+# include <vector>
+#endif
 
 namespace Points
 {

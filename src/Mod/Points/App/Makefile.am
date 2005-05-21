@@ -3,6 +3,15 @@ lib_LTLIBRARIES=libPoints.la
 
 libPoints_la_SOURCES=\
 		AppPoints.cpp \
+		AppPointsPy.cpp \
+		FeaturePointsImportAscii.cpp \
+		FeaturePointsImportAscii.h \
+		Points.cpp \
+		Points.h \
+		PointsFeature.cpp \
+		PointsFeature.h \
+		PointsFeaturePy.cpp \
+		PointsFeaturePy.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 
