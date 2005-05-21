@@ -26,7 +26,7 @@
 namespace ImageGui
 {
 
-class GLImageBox : public QGLWidget
+class ImageGuiExport GLImageBox : public QGLWidget
 {
     Q_OBJECT
 
