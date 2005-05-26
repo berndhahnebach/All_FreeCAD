@@ -36,6 +36,7 @@
 
 #include "DlgParameterImp.h"
 #include "BitmapFactory.h"
+#include "FileDialog.h"
 
 #include "../Base/Parameter.h"
 #include "../App/Application.h"
@@ -180,18 +181,44 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
 ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   : QListView(parent, name, f)
 {
+  QPalette pal = parent->palette();
+  const QColor& bg = pal.color( QPalette::Inactive, QColorGroup::Base );
+  pal.setColor( QPalette::Inactive, QColorGroup::Highlight, bg );
+  parent->setPalette( pal );
+
   menuEdit = new QPopupMenu(this);
+  QFont font = menuEdit->font();
+  font.setBold( true );
+  custom = new CustomMenuItem( tr("Expand"), font );
+  _id = menuEdit->insertItem( custom );
+  menuEdit->connectItem( _id, this, SLOT( onToggleSelectedItem() ) );
+  menuEdit->insertSeparator();
+  menuEdit->insertItem( tr("Add sub-group"), this, SLOT( onCreateSubgroup() ) );
   menuEdit->insertItem( tr("Remove group"), this, SLOT( onDeleteSelectedItem() ) );
+  menuEdit->insertItem( tr("Export group"), this, SLOT( onExportSelectedGroup() ) );
 }
 
 ParameterGroup::~ParameterGroup()
 {
 }
 
+void ParameterGroup::setSelected ( QListViewItem * item, bool selected )
+{
+  if ( selected )
+    QListView::setSelected( item, selected );
+}
+
 void ParameterGroup::contentsContextMenuEvent ( QContextMenuEvent* event )
 {
   if ( selectedItem () )
+  {
+    menuEdit->setItemEnabled( _id, selectedItem()->childCount() > 0 );
+    if ( selectedItem()->isOpen() )
+      custom->setText("Hide");
+    else
+      custom->setText("Expand");
     menuEdit->popup(event->globalPos());
+  }
 }
 
 void ParameterGroup::keyPressEvent (QKeyEvent* event)
@@ -222,10 +249,63 @@ void ParameterGroup::onDeleteSelectedItem()
                                tr("Do really want to remove this parameter group?"),
                                QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes )
     {
-      sel->parent()->takeItem( sel );
+      QListViewItem* parent = sel->parent();
+      parent->takeItem( sel );
       setSelected( item, true );
       delete sel;
+      if ( parent->childCount() == 0 )
+        parent->setOpen( false );
     }
+  }
+}
+
+void ParameterGroup::onToggleSelectedItem()
+{
+  if ( selectedItem () )
+  {
+    if ( selectedItem()->isOpen() )
+      selectedItem()->setOpen( false );
+    else if ( selectedItem()->childCount() > 0 )
+      selectedItem()->setOpen( true );
+  }
+}
+
+void ParameterGroup::onCreateSubgroup()
+{
+  bool ok;
+  QString name = QInputDialog::getText(QObject::tr("New sub-group"), QObject::tr("Enter the name:"), 
+                                      QLineEdit::Normal, QString::null, &ok, this);
+
+  if ( ok && !name.isEmpty() )
+  {
+    QListViewItem* item = selectedItem();
+    if ( item && item->rtti() == 2000 )
+    {
+      ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+      FCHandle<FCParameterGrp> hGrp = para->_hcGrp;
+
+      if ( hGrp->HasGroup( name.latin1() ) )
+      {
+        QMessageBox::critical( this, tr("Existing sub-group"), 
+          tr("The sub-group '%1' already exists.").arg( name ) );
+        return;
+      }
+
+      hGrp = hGrp->GetGroup( name.latin1() );
+      (void)new ParameterGroupItem(para,hGrp);
+      para->setOpen( true );
+    }
+  }
+}
+
+void ParameterGroup::onExportSelectedGroup()
+{
+  bool ok;
+  QString file = FileDialog::getSaveFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
+                                              tr("Export parameter to file"), &ok);
+  if ( ok )
+  {
+    QMessageBox::information( this, "Todo", "Not yet implemented!");
   }
 }
 
@@ -338,12 +418,20 @@ void ParameterValue::onRenamedSelectedItem( QListViewItem * item, int col, const
 void ParameterValue::onCreateTextItem()
 {
   bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New text"), QObject::tr("Enter the name:"), 
+  QString name = QInputDialog::getText(QObject::tr("New text item"), QObject::tr("Enter the name:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
   if ( !ok || name.isEmpty() )
     return;
 
-  QString val = QInputDialog::getText(QObject::tr("New text"), QObject::tr("Enter your text:"), 
+  std::map<std::string,std::string> smap = _hcGrp->GetASCIIMap();
+  if ( smap.find( name.latin1() ) != smap.end() )
+  {
+    QMessageBox::critical( this, tr("Existing item"), 
+      tr("The item '%1' already exists.").arg( name ) );
+    return;
+  }
+
+  QString val = QInputDialog::getText(QObject::tr("New text item"), QObject::tr("Enter your text:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
   if ( ok && !val.isEmpty() )
   {
@@ -356,12 +444,20 @@ void ParameterValue::onCreateTextItem()
 void ParameterValue::onCreateIntItem()
 {
   bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New integer"), QObject::tr("Enter the name:"), 
+  QString name = QInputDialog::getText(QObject::tr("New integer item"), QObject::tr("Enter the name:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
   if ( !ok || name.isEmpty() )
     return;
 
-  int val = QInputDialog::getInteger(QObject::tr("New integer"), QObject::tr("Enter your number:"), 
+  std::map<std::string,long> lmap = _hcGrp->GetIntMap();
+  if ( lmap.find( name.latin1() ) != lmap.end() )
+  {
+    QMessageBox::critical( this, tr("Existing item"), 
+      tr("The item '%1' already exists.").arg( name ) );
+    return;
+  }
+
+  int val = QInputDialog::getInteger(QObject::tr("New integer item"), QObject::tr("Enter your number:"), 
                                      0, -2147483647, 2147483647, 1, &ok, this);
 
   if ( ok )
@@ -375,12 +471,20 @@ void ParameterValue::onCreateIntItem()
 void ParameterValue::onCreateFloatItem()
 {
   bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New float"), QObject::tr("Enter the name:"), 
+  QString name = QInputDialog::getText(QObject::tr("New float item"), QObject::tr("Enter the name:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
   if ( !ok || name.isEmpty() )
     return;
 
-  double val = QInputDialog::getDouble(QObject::tr("New float"), QObject::tr("Enter your number:"), 
+  std::map<std::string,double> fmap = _hcGrp->GetFloatMap();
+  if ( fmap.find( name.latin1() ) != fmap.end() )
+  {
+    QMessageBox::critical( this, tr("Existing item"), 
+      tr("The item '%1' already exists.").arg( name ) );
+    return;
+  }
+
+  double val = QInputDialog::getDouble(QObject::tr("New float item"), QObject::tr("Enter your number:"), 
                                        0, -2147483647, 2147483647, 1, &ok, this);
   if ( ok )
   {
@@ -393,13 +497,21 @@ void ParameterValue::onCreateFloatItem()
 void ParameterValue::onCreateBoolItem()
 {
   bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New boolean"), QObject::tr("Enter the name:"), 
+  QString name = QInputDialog::getText(QObject::tr("New boolean item"), QObject::tr("Enter the name:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
   if ( !ok || name.isEmpty() )
     return;
 
+  std::map<std::string,bool> bmap = _hcGrp->GetBoolMap();
+  if ( bmap.find( name.latin1() ) != bmap.end() )
+  {
+    QMessageBox::critical( this, tr("Existing item"), 
+      tr("The item '%1' already exists.").arg( name ) );
+    return;
+  }
+
   QStringList list; list << "true" << "false";
-  QString val = QInputDialog::getItem (QObject::tr("New boolean"), QObject::tr("Choose an item:"),
+  QString val = QInputDialog::getItem (QObject::tr("New boolean item"), QObject::tr("Choose an item:"),
                                        list, 0, false, &ok, this);
   if ( ok )
   {
@@ -440,7 +552,7 @@ void ParameterGroupItem::fillUp(void)
     (void)new ParameterGroupItem(this,*It);
 }
 
-void ParameterGroupItem::setOpen ( bool o )
+void ParameterGroupItem::setSelected ( bool o )
 {
   if( o )
   {
@@ -448,7 +560,7 @@ void ParameterGroupItem::setOpen ( bool o )
   }else{
     setPixmap(0,Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
   }
-  QListViewItem::setOpen ( o );
+  QListViewItem::setSelected ( o );
 }
 
 void ParameterGroupItem::takeItem ( QListViewItem * item )
@@ -705,6 +817,11 @@ void CustomMenuItem::paint( QPainter* p, const QColorGroup&, bool, bool, int x, 
 QSize CustomMenuItem::sizeHint()
 {
   return QFontMetrics( font ).size( AlignLeft | AlignVCenter | ShowPrefix | DontClip,  string );
+}
+
+void CustomMenuItem::setText( const QString& text )
+{
+  string = text;
 }
 
 #include "DlgParameter.cpp"

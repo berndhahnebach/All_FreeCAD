@@ -39,6 +39,7 @@ class QPopupMenu;
 namespace Gui {
 namespace Dialog {
 
+class CustomMenuItem;
 class ParameterGroupItem;
 
 /**
@@ -83,6 +84,9 @@ public:
   ParameterGroup( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
   virtual ~ParameterGroup();
 
+  /** Makes sure that always exactly one item is selected. */
+  void setSelected ( QListViewItem * item, bool selected );
+
 protected:
   /** Shows the context menu. */
   void contentsContextMenuEvent ( QContextMenuEvent* event );
@@ -94,9 +98,19 @@ protected slots:
    * parameter tree structure.
    */
   void onDeleteSelectedItem();
+  /** Creates a sub-group to the current selected parameter group. */
+  void onCreateSubgroup();
+  /** Expands or closes the selected item. If it is open it will be closed and the
+   * other way round.
+   */
+  void onToggleSelectedItem();
+  /** Exports the current selected parameter with all sub-groups to a file. */
+  void onExportSelectedGroup();
 
 private:
   QPopupMenu* menuEdit;
+  CustomMenuItem* custom;
+  int _id;
 };
 
 // --------------------------------------------------------------------
@@ -125,7 +139,7 @@ public:
 protected:
   /** Shows the context menu. */
   void contentsContextMenuEvent ( QContextMenuEvent* event );
-  /** Triggers the "Del" key. */
+  /** Invokes onDeleteSelectedItem() if the "Del" key was pressed. */
   void keyPressEvent (QKeyEvent* event);
 
 protected slots:
@@ -169,7 +183,7 @@ public:
   ParameterGroupItem( QListView* parent, const FCHandle<FCParameterGrp> &hcGrp);
   ~ParameterGroupItem();
 
-  void setOpen ( bool o );
+  void setSelected ( bool o );
   int rtti () const { return 2000; }
   void takeItem ( QListViewItem * item );
 
@@ -304,6 +318,7 @@ public:
 
   void paint( QPainter* p, const QColorGroup&, bool, bool, int x, int y, int w, int h );
   QSize sizeHint();
+  void setText( const QString& text );
 
 private:
   QString string;

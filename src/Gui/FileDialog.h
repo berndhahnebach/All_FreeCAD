@@ -47,12 +47,13 @@ class GuiExport FileDialog : public QFileDialog
 public:
   static QString getOpenFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
                                    QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null,
-                                   const QString& buttonText = QString::null );
+                                   const QString& buttonText = QString::null, bool * ok = 0 );
   static QString getSaveFileName ( const QString & startWith = QString::null, const QString & filter = QString::null, 
-                                   QWidget* parent = 0, const char* name = 0, const QString & caption = QString::null );
+                                   QWidget* parent = 0, const char* name = 0, 
+                                   const QString & caption = QString::null, bool * ok = 0 );
   static QString getExistingDirectory( const QString & dir = QString::null, QWidget *parent = 0, 
                                        const char* name = 0, const QString& caption = QString::null, 
-                                       bool dirOnly = true, bool resolveSymlinks = true );
+                                       bool dirOnly = true, bool resolveSymlinks = true, bool * ok = 0 );
 
 public:
   FileDialog (Mode mode, QWidget* parent = 0, const char* name = 0, bool modal = false);

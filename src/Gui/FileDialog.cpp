@@ -43,7 +43,8 @@ using namespace Gui;
 /* TRANSLATOR Gui::FileDialog */
 
 QString FileDialog::getOpenFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption, const QString& buttonText )
+                                      const char* name, const QString & caption, const QString& buttonText,
+                                      bool * ok )
 {
   FileDialog fd(ExistingFile, startWith, filter, parent, name, true);
   fd.setCaption(caption);
@@ -54,25 +55,36 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
     if ( btn )
       static_cast<QPushButton*>(btn)->setText( buttonText );
   }
-  if ( fd.exec() )
+
+  bool ok_ = false;
+  ok_ = ( fd.exec() == QDialog::Accepted );
+  if ( ok )
+  	*ok = ok_;
+  if ( ok_ )
     return fd.selectedFileName();
   else
     return QString::null;
 }
 
 QString FileDialog::getSaveFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption )
+                                      const char* name, const QString & caption, bool * ok  )
 {
   FileDialog fd(AnyFile, startWith, filter, parent, name, true);
   fd.setCaption(caption);
-  if ( fd.exec() )
+
+  bool ok_ = false;
+  ok_ = ( fd.exec() == QDialog::Accepted );
+  if ( ok )
+  	*ok = ok_;
+  if ( ok_ )
     return fd.selectedFileName();
   else
     return QString::null;
 }
 
 QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, const char* name,
-                                          const QString& caption, bool dirOnly, bool resolveSymlinks )
+                                          const QString& caption, bool dirOnly, bool resolveSymlinks,
+                                          bool * ok )
 {
   QString path = QFileDialog::getExistingDirectory( dir, parent, name, caption, dirOnly, resolveSymlinks );
   // valid path was selected
@@ -81,6 +93,9 @@ QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, 
     QDir d(path);
     path = d.path(); // get path in Qt manner
   }
+
+  if ( ok )
+  	*ok = !path.isEmpty();
 
   return path;
 }
@@ -156,7 +171,7 @@ QString FileDialog::selectedFileName()
     return QString::null;
 
   // check if fn is a directory, because Qt 3.2.1 returns a non-emtpy
-  // string though cancel was pressed
+  // string even if cancel was pressed
   QFileInfo fi( fn );
   if ( fi.isDir() )
     return QString::null;
