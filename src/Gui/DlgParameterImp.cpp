@@ -214,7 +214,7 @@ void ParameterGroup::contentsContextMenuEvent ( QContextMenuEvent* event )
   {
     menuEdit->setItemEnabled( _id, selectedItem()->childCount() > 0 );
     if ( selectedItem()->isOpen() )
-      custom->setText("Hide");
+      custom->setText("Collapse");
     else
       custom->setText("Expand");
     menuEdit->popup(event->globalPos());
