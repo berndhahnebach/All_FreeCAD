@@ -12,7 +12,6 @@ void RegisterIcons()
   rclBmpFactory.addXPM("FCBackground", FCBackground);
   rclBmpFactory.addXPM("FCIcon", FCIcon);
   rclBmpFactory.addXPM("Flight", Flight);
-  rclBmpFactory.addXPM("form", form);
   rclBmpFactory.addXPM("Function", Function);
   rclBmpFactory.addXPM("Import_Box", Import_Box);
   rclBmpFactory.addXPM("New", New);
