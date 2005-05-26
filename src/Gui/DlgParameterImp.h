@@ -106,6 +106,10 @@ protected slots:
   void onToggleSelectedItem();
   /** Exports the current selected parameter with all sub-groups to a file. */
   void onExportSelectedGroup();
+  /** Changes the name of the leaf of the selected item. */
+  void onRenameSelectedItem();
+  /** This slot is invoked after the value has been changed. */
+  void onRenamedSelectedItem( QListViewItem * item, int col, const QString & text );
 
 private:
   QPopupMenu* menuEdit;
@@ -189,6 +193,10 @@ public:
 
   void fillUp(void);
   FCHandle<FCParameterGrp> _hcGrp;
+
+protected:
+  /** If the name of the item has changed replace() is invoked. */
+  virtual void okRename ( int col );
 };
 
 // --------------------------------------------------------------------

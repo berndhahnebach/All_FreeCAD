@@ -45,7 +45,7 @@
 using namespace Gui::Dialog;
 
 /**
- *  Constructs a DlgParameterImp which is a child of 'parent', with the 
+ *  Constructs a DlgParameterImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f' 
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
@@ -181,10 +181,14 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
 ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   : QListView(parent, name, f)
 {
-  QPalette pal = parent->palette();
+#ifdef FC_OS_WIN32
+  QPalette pal = palette();
   const QColor& bg = pal.color( QPalette::Inactive, QColorGroup::Base );
   pal.setColor( QPalette::Inactive, QColorGroup::Highlight, bg );
-  parent->setPalette( pal );
+  const QColor& ht = pal.color( QPalette::Inactive, QColorGroup::Text );
+  pal.setColor( QPalette::Inactive, QColorGroup::HighlightedText, ht );
+  setPalette( pal );
+#endif
 
   menuEdit = new QPopupMenu(this);
   QFont font = menuEdit->font();
@@ -195,6 +199,7 @@ ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   menuEdit->insertSeparator();
   menuEdit->insertItem( tr("Add sub-group"), this, SLOT( onCreateSubgroup() ) );
   menuEdit->insertItem( tr("Remove group"), this, SLOT( onDeleteSelectedItem() ) );
+  menuEdit->insertItem( tr("Rename group"), this, SLOT( onRenameSelectedItem() ) );
   menuEdit->insertItem( tr("Export group"), this, SLOT( onExportSelectedGroup() ) );
 }
 
@@ -245,7 +250,7 @@ void ParameterGroup::onDeleteSelectedItem()
     if ( !item )
       item = sel->parent();
 
-    if ( QMessageBox::question(this, tr("Remove group"), 
+    if ( QMessageBox::question(this, tr("Remove group"),
                                tr("Do really want to remove this parameter group?"),
                                QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes )
     {
@@ -273,7 +278,7 @@ void ParameterGroup::onToggleSelectedItem()
 void ParameterGroup::onCreateSubgroup()
 {
   bool ok;
-  QString name = QInputDialog::getText(QObject::tr("New sub-group"), QObject::tr("Enter the name:"), 
+  QString name = QInputDialog::getText(QObject::tr("New sub-group"), QObject::tr("Enter the name:"),
                                       QLineEdit::Normal, QString::null, &ok, this);
 
   if ( ok && !name.isEmpty() )
@@ -286,7 +291,7 @@ void ParameterGroup::onCreateSubgroup()
 
       if ( hGrp->HasGroup( name.latin1() ) )
       {
-        QMessageBox::critical( this, tr("Existing sub-group"), 
+        QMessageBox::critical( this, tr("Existing sub-group"),
           tr("The sub-group '%1' already exists.").arg( name ) );
         return;
       }
@@ -309,6 +314,32 @@ void ParameterGroup::onExportSelectedGroup()
   }
 }
 
+void ParameterGroup::onRenameSelectedItem()
+{
+  QListViewItem* sel = selectedItem();
+  if ( sel && sel->rtti() == 2000 )
+  {
+    QListViewItem* par = sel->parent();
+    if ( par && par->rtti() == 2000 )
+    {
+      sel->setRenameEnabled(0,true);
+      sel->startRename(0);
+    }
+    else
+    {
+      QMessageBox::information( this, tr("Rename group"), tr("Cannot rename this group.") );
+    }
+  }
+}
+
+void ParameterGroup::onRenamedSelectedItem( QListViewItem * item, int col, const QString & text )
+{
+  if ( item )
+  {
+    item->setRenameEnabled(0,false);
+  }
+}
+
 // --------------------------------------------------------------------
 
 ParameterValue::ParameterValue( QWidget * parent, const char * name, WFlags f )
@@ -328,7 +359,7 @@ ParameterValue::ParameterValue( QWidget * parent, const char * name, WFlags f )
   menuNew->insertItem( tr("New integer item"), this, SLOT( onCreateIntItem() ) );
   menuNew->insertItem( tr("New boolean item"), this, SLOT( onCreateBoolItem() ) );
 
-  connect( this, SIGNAL( itemRenamed ( QListViewItem*, int, const QString& ) ), 
+  connect( this, SIGNAL( itemRenamed ( QListViewItem*, int, const QString& ) ),
            this, SLOT( onRenamedSelectedItem( QListViewItem*, int, const QString& ) ) );
   connect(this, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onChangeSelectedItem()));
 }
@@ -426,7 +457,7 @@ void ParameterValue::onCreateTextItem()
   std::map<std::string,std::string> smap = _hcGrp->GetASCIIMap();
   if ( smap.find( name.latin1() ) != smap.end() )
   {
-    QMessageBox::critical( this, tr("Existing item"), 
+    QMessageBox::critical( this, tr("Existing item"),
       tr("The item '%1' already exists.").arg( name ) );
     return;
   }
@@ -452,7 +483,7 @@ void ParameterValue::onCreateIntItem()
   std::map<std::string,long> lmap = _hcGrp->GetIntMap();
   if ( lmap.find( name.latin1() ) != lmap.end() )
   {
-    QMessageBox::critical( this, tr("Existing item"), 
+    QMessageBox::critical( this, tr("Existing item"),
       tr("The item '%1' already exists.").arg( name ) );
     return;
   }
@@ -479,7 +510,7 @@ void ParameterValue::onCreateFloatItem()
   std::map<std::string,double> fmap = _hcGrp->GetFloatMap();
   if ( fmap.find( name.latin1() ) != fmap.end() )
   {
-    QMessageBox::critical( this, tr("Existing item"), 
+    QMessageBox::critical( this, tr("Existing item"),
       tr("The item '%1' already exists.").arg( name ) );
     return;
   }
@@ -505,7 +536,7 @@ void ParameterValue::onCreateBoolItem()
   std::map<std::string,bool> bmap = _hcGrp->GetBoolMap();
   if ( bmap.find( name.latin1() ) != bmap.end() )
   {
-    QMessageBox::critical( this, tr("Existing item"), 
+    QMessageBox::critical( this, tr("Existing item"),
       tr("The item '%1' already exists.").arg( name ) );
     return;
   }
@@ -574,6 +605,37 @@ void ParameterGroupItem::takeItem ( QListViewItem * item )
   QListViewItem::takeItem( item );
 }
 
+void ParameterGroupItem::okRename ( int col )
+{
+  QListViewItem* item = parent();
+  if ( item && item->rtti() == 2000 )
+  {
+    QString oldName = text(0);
+    QListViewItem::okRename( 0 );
+    QString newName = text(0);
+
+    // name has changed
+    if ( oldName != newName )
+    {
+      ParameterGroupItem* par = reinterpret_cast<ParameterGroupItem*>(item);
+
+      // first check if there is already a group with name "newName"
+      if ( par->_hcGrp->HasGroup( newName.latin1() ) )
+      {
+        QMessageBox::critical( listView(), QObject::tr("Existing group"),
+          QObject::tr("The group '%1' already exists.").arg( newName ) );
+        setText( 0, oldName );
+      }
+      else
+      {
+        QMessageBox::information(listView(), "Todo", "Not yet implemented!");
+        setText( 0, oldName );
+//        par->_hcGrp->RemoveGrp( oldName.latin1() );
+      }
+    }
+  }
+}
+
 // --------------------------------------------------------------------
 
 ParameterValueItem::ParameterValueItem ( QListView * parent, QString label1, const FCHandle<FCParameterGrp> &hcGrp)
@@ -594,9 +656,9 @@ void ParameterValueItem::okRename ( int col )
   }
   else
   {
-    QString oldName = text(0).latin1();
+    QString oldName = text(0);
     QListViewItem::okRename( 0 );
-    QString newName = text(0).latin1();
+    QString newName = text(0);
 
     // name has changed
     if ( oldName != newName )
