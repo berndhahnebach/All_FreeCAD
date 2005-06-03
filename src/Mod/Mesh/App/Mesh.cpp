@@ -27,7 +27,10 @@
 
 
 #include "Mesh.h"
+#include "core/MeshKernel.h"
 
 using namespace Mesh;
+
+
 
 

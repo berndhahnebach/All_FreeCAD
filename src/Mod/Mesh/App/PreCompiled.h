@@ -34,6 +34,9 @@
 #include <math.h>
 #include <float.h>
 #include <fcntl.h>
+#include <ios>
+#include <io.h>
+
 
 
 // STL

@@ -28,11 +28,12 @@
 # include <vector>
 #endif
 
-#include "core/MeshKernel.h"
 
 
 namespace Mesh
 {
+
+class MeshKernel;
 
 /** Property back of the Mesh datastructure
  *  with objects derived from this class the mesh
@@ -56,8 +57,11 @@ public:
 	/// Constructor
 	Mesh(void);
 
+  /// Gain access to the topological mesh data structure
+  MeshKernel *GetKernel(void){return _Mesh;}
+
 private:
-  MeshKernel _Mesh;
+  MeshKernel *_Mesh;
 
 };
 

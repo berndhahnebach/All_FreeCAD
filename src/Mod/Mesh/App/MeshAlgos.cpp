@@ -28,13 +28,28 @@
 
 #include "MeshAlgos.h"
 #include "Mesh.h"
-#include "core/MeshIO.h"
+#include "Core/MeshIO.h"
+#include "Core/Stream.h"
+
+#include <Base/Exception.h>
 
 using namespace Mesh;
 
 
 Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
 {
-  return new MeshWithProperty();
+  MeshWithProperty *Mesh = new MeshWithProperty();
+  // ask for read permisson
+	if ( access(FileName, 4) != 0 )
+    throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
+ 
+  MeshSTL aReader(* (Mesh->GetKernel()) );
+
+  // read STL file
+  FileStream str( FileName, std::ios::in);
+  if ( !aReader.Load( str ) )
+    throw Base::Exception("STL read failed (load file)");
+
+  return Mesh; 
 }
 

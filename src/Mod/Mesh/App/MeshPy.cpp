@@ -33,6 +33,8 @@ using Base::Console;
 
 
 #include "MeshPy.h"
+#include "Mesh.h"
+
 
 using namespace Mesh;
 
@@ -78,8 +80,8 @@ PyParentObject MeshPy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-MeshPy::MeshPy(MeshFeature *pcFeature, PyTypeObject *T)
-: Base::PyObjectBase(T), _pcFeature(pcFeature)
+MeshPy::MeshPy(MeshWithProperty *pcMesh, PyTypeObject *T)
+: Base::PyObjectBase(T), _pcMesh(pcMesh)
 {
   Base::Console().Log("Create MeshPy: %p \n",this);
 }
@@ -96,6 +98,7 @@ PyObject *MeshPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 MeshPy::~MeshPy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy MeshPy: %p \n",this);
+  delete _pcMesh;
 } 
 
 //--------------------------------------------------------------------------

@@ -33,7 +33,7 @@ namespace Base{
 namespace Mesh
 {
 
-class MeshFeature;
+class MeshWithProperty;
 
 //===========================================================================
 // MeshPy - Python wrapper 
@@ -46,7 +46,7 @@ class AppMeshExport MeshPy :public Base::PyObjectBase
   Py_Header;
 
 public:
-  MeshPy(MeshFeature *pcFeature, PyTypeObject *T = &Type);
+  MeshPy(MeshWithProperty *pcMesh, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
   ~MeshPy();
@@ -63,7 +63,7 @@ public:
 //  PYFUNCDEF_D(MeshPy,getShape)
 
 private:
-  MeshFeature *_pcFeature;
+  MeshWithProperty *_pcMesh;
 };
 
 } //namespace Mesh
