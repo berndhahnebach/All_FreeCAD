@@ -26,7 +26,7 @@
 #include <map>
 
 #include "Helpers.h"
-#include "Mesh.h"
+#include "MeshKernel.h"
 #include "Iterator.h"
 #include <Base/Sequencer.h>
 

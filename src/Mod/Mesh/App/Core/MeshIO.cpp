@@ -25,7 +25,7 @@
 #include "Definitions.h"
 #include "Iterator.h"
 
-#include "Mesh.h"
+#include "MeshKernel.h"
 #include "MeshIO.h"
 
 #include <Base/Sequencer.h>

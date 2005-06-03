@@ -12,8 +12,8 @@ libMesh_la_SOURCES=\
 		Core/Iterator.h \
 		Core/Matrix.cpp \
 		Core/Matrix.h \
-		Core/Mesh.cpp \
-		Core/Mesh.h \
+		Core/MeshKernel.cpp \
+		Core/MeshKernel.h \
 		Core/MeshIO.cpp \
 		Core/MeshIO.h \
 		Core/Stream.cpp \
@@ -36,7 +36,13 @@ libMesh_la_SOURCES=\
 		MeshFeaturePy.cpp \
 		MeshFeaturePy.h \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h   \
+		Mesh.cpp        \
+		Mesh.h \
+		MeshAlgos.cpp \
+		MeshAlgos.h \
+		MeshPy.cpp \
+		MeshPy.h
 
 
 # the library search path.

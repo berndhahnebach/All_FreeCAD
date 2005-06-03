@@ -24,7 +24,7 @@
 #ifndef __MESH_ITERATOR_HXX__
 #define __MESH_ITERATOR_HXX__
 
-#include "Mesh.h"
+#include "MeshKernel.h"
 #include "Elements.h"
 
 namespace Mesh {

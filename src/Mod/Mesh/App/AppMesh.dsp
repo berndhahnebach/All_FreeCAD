@@ -140,19 +140,19 @@ SOURCE=.\Core\Matrix.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\Mesh.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Mesh.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\MeshIO.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Core\MeshIO.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\MeshKernel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\MeshKernel.h
 # End Source File
 # Begin Source File
 
@@ -222,6 +222,22 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Mesh.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Mesh.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MeshAlgos.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MeshAlgos.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\MeshFeature.cpp
 # End Source File
 # Begin Source File
@@ -235,6 +251,14 @@ SOURCE=.\MeshFeaturePy.cpp
 # Begin Source File
 
 SOURCE=.\MeshFeaturePy.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MeshPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MeshPy.h
 # End Source File
 # Begin Source File
 

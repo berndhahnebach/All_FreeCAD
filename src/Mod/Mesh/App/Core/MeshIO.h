@@ -24,7 +24,7 @@
 #ifndef __MESH_MESHIO_HXX__
 #define __MESH_MESHIO_HXX__
 
-#include "Mesh.h"
+#include "MeshKernel.h"
 
 namespace Mesh {
 

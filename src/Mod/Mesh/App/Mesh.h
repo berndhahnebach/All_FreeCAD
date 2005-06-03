@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,71 +21,47 @@
  ***************************************************************************/
 
 
-#ifndef MESH_FEATURE_H
-#define MESH_FEATURE_H
+#ifndef _Mesh_h_
+#define _Mesh_h_
 
-#include <App/Feature.h>
+#ifndef _PreComp_
+# include <vector>
+#endif
 
-#include "Core/MeshKernel.h"
+#include "core/MeshKernel.h"
 
-class TFunction_Logbook;
-class FeaturePy;
-
-namespace Base{
-  class PyObjectBase;
-}
 
 namespace Mesh
 {
 
-class Property;
-
-/** Base class of all mesh feature classes in FreeCAD.
- * This class holds an MeshKernel object.
- * \author Werner Mayer
+/** Property back of the Mesh datastructure
+ *  with objects derived from this class the mesh
+ *  data structur is enriched with aditional data.
+ *  The linking point is the Point or face Index. 
  */
-class AppMeshExport MeshFeature : public App::Feature
+class MeshPropertyBack
 {
 public:
-  /// Constructor
-  MeshFeature(void);
+	/// Constructor
+	MeshPropertyBack(void);
 
-  virtual void InitLabel(const TDF_Label &rcLabel)=0;
-
-
-  /** @name methodes used for recalculation (update) */
-  //@{
-  /** 
-   *  We compute the object and topologically name it.
-   *  If during the execution we found something wrong,
-   *  we return the number of the failure. For example:
-   *  1 - an attribute hasn't been found,
-   *  2 - algorithm failed
-   *  0 - no mistakes were found.
-   */
-  virtual Standard_Integer Execute(TFunction_Logbook& log)=0;
-
-  /**
-   * Validation of the object label, its arguments and its results.
-   */
-  virtual void Validate(TFunction_Logbook& log)=0;
-  //@}
-
-
-  /** @name methods for convenient handling of parameter (properties) */
-  //@{
-  /** Get the actual result mesh. */
-  const MeshKernel& GetMesh() const;
-  //@}
-
-  virtual Base::PyObjectBase *MeshFeature::GetPyObject(void);
-
-protected:
-  MeshKernel _cMesh;
 };
 
-} //namespace Mesh
+
+/** Mesh with property backs
+ */
+class AppMeshExport MeshWithProperty
+{
+public:
+	/// Constructor
+	Mesh(void);
+
+private:
+  MeshKernel _Mesh;
+
+};
 
 
 
+} // namespace Mesh
 #endif 

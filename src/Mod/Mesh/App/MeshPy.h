@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,15 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef MESH_FEATURE_H
-#define MESH_FEATURE_H
+#ifndef MESH_FEATURE_PY_H
+#define MESH_FEATURE_PY_H
 
-#include <App/Feature.h>
-
-#include "Core/MeshKernel.h"
-
-class TFunction_Logbook;
-class FeaturePy;
+#include <Base/PyExportImp.h>
 
 namespace Base{
   class PyObjectBase;
@@ -38,54 +33,41 @@ namespace Base{
 namespace Mesh
 {
 
-class Property;
+class MeshFeature;
 
-/** Base class of all mesh feature classes in FreeCAD.
- * This class holds an MeshKernel object.
- * \author Werner Mayer
- */
-class AppMeshExport MeshFeature : public App::Feature
+//===========================================================================
+// MeshPy - Python wrapper 
+//===========================================================================
+
+// The DocTypeStd python class 
+class AppMeshExport MeshPy :public Base::PyObjectBase
 {
+  /// always start with Py_Header
+  Py_Header;
+
 public:
-  /// Constructor
-  MeshFeature(void);
+  MeshPy(MeshFeature *pcFeature, PyTypeObject *T = &Type);
+  static PyObject *PyMake(PyObject *, PyObject *);
 
-  virtual void InitLabel(const TDF_Label &rcLabel)=0;
+  ~MeshPy();
 
+  //---------------------------------------------------------------------
+  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+  //---------------------------------------------------------------------
 
-  /** @name methodes used for recalculation (update) */
-  //@{
-  /** 
-   *  We compute the object and topologically name it.
-   *  If during the execution we found something wrong,
-   *  we return the number of the failure. For example:
-   *  1 - an attribute hasn't been found,
-   *  2 - algorithm failed
-   *  0 - no mistakes were found.
-   */
-  virtual Standard_Integer Execute(TFunction_Logbook& log)=0;
+  virtual PyObject *_repr(void);  				// the representation
+  PyObject *_getattr(char *attr);					// __getattr__ function
+  int _setattr(char *attr, PyObject *value);		// __setattr__ function
 
-  /**
-   * Validation of the object label, its arguments and its results.
-   */
-  virtual void Validate(TFunction_Logbook& log)=0;
-  //@}
+  
+//  PYFUNCDEF_D(MeshPy,getShape)
 
-
-  /** @name methods for convenient handling of parameter (properties) */
-  //@{
-  /** Get the actual result mesh. */
-  const MeshKernel& GetMesh() const;
-  //@}
-
-  virtual Base::PyObjectBase *MeshFeature::GetPyObject(void);
-
-protected:
-  MeshKernel _cMesh;
+private:
+  MeshFeature *_pcFeature;
 };
 
 } //namespace Mesh
 
 
 
-#endif 
+#endif // MESH_FEATURE_PY_H 
