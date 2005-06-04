@@ -35,37 +35,35 @@ namespace Mesh
 
 class MeshKernel;
 
-/** Property back of the Mesh datastructure
+/** Property bag of the Mesh data structure
  *  with objects derived from this class the mesh
- *  data structur is enriched with aditional data.
- *  The linking point is the Point or face Index. 
+ *  data structure is enriched with additional data.
+ *  The linking point is the Point or face Index.
  */
-class MeshPropertyBack
+class MeshPropertyBag
 {
 public:
 	/// Constructor
-	MeshPropertyBack(void);
-
+	MeshPropertyBag(void);
 };
 
 
-/** Mesh with property backs
+/** Mesh with property bags
  */
 class AppMeshExport MeshWithProperty
 {
 public:
 	/// Constructor
-	Mesh(void);
+	MeshWithProperty(void){}
 
   /// Gain access to the topological mesh data structure
   MeshKernel *GetKernel(void){return _Mesh;}
 
 private:
   MeshKernel *_Mesh;
-
 };
 
-
-
 } // namespace Mesh
-#endif 
+
+#endif // _Mesh_h_
+

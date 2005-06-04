@@ -31,18 +31,18 @@ libMesh_la_SOURCES=\
 		Delaunay.h \
 		FeatureMeshImportSTL.cpp \
 		FeatureMeshImportSTL.h \
+		Mesh.cpp \
+		Mesh.h \
+		MeshAlgos.cpp \
+		MeshAlgos.h \
 		MeshFeature.cpp \
 		MeshFeature.h \
 		MeshFeaturePy.cpp \
 		MeshFeaturePy.h \
-		PreCompiled.cpp \
-		PreCompiled.h   \
-		Mesh.cpp        \
-		Mesh.h \
-		MeshAlgos.cpp \
-		MeshAlgos.h \
 		MeshPy.cpp \
-		MeshPy.h
+		MeshPy.h \
+		PreCompiled.cpp \
+		PreCompiled.h
 
 
 # the library search path.
