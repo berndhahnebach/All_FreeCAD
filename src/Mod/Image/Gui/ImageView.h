@@ -41,7 +41,7 @@ public:
     void onUpdate(void){};
 
     virtual void clearImage();
-    virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format);
+    virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset = true);
     virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
 
 protected slots:

@@ -222,9 +222,9 @@ void ImageView::clearImage()
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format)
+int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset)
 {
-    return (_pGLImageBox->createImageCopy(pSrcPixelData, width, height, format));
+    return (_pGLImageBox->createImageCopy(pSrcPixelData, width, height, format, reset));
 }
 
 // Make the image object inside this view object point to another image source
@@ -247,10 +247,16 @@ int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned l
 void ImageView::mousePressEvent(QMouseEvent* cEvent)
 {
     // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+
     // Get current cursor position relative to top-left of image box
+
     QPoint offset = _pGLImageBox->pos();
+
     int box_x = cEvent->x() - offset.x();
+
     int box_y = cEvent->y() - offset.y();
+
+
 
     _currX = box_x;
     _currY = box_y;
@@ -280,10 +286,16 @@ void ImageView::mousePressEvent(QMouseEvent* cEvent)
 void ImageView::mouseDoubleClickEvent(QMouseEvent* cEvent)
 {
     // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+
     // Get current cursor position relative to top-left of image box
+
     QPoint offset = _pGLImageBox->pos();
+
     int box_x = cEvent->x() - offset.x();
+
     int box_y = cEvent->y() - offset.y();
+
+
 
     _currX = box_x;
     _currY = box_y;
@@ -302,11 +314,17 @@ void ImageView::mouseMoveEvent(QMouseEvent* cEvent)
 {
     QApplication::flushX();
 
+
     // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+
     // Get current cursor position relative to top-left of image box
+
     QPoint offset = _pGLImageBox->pos();
+
     int box_x = cEvent->x() - offset.x();
+
     int box_y = cEvent->y() - offset.y();
+
 
     switch(_currMode)
     {
@@ -334,10 +352,16 @@ void ImageView::mouseMoveEvent(QMouseEvent* cEvent)
 void ImageView::mouseReleaseEvent(QMouseEvent* cEvent)
 {
     // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+
     // Get current cursor position relative to top-left of image box
+
     QPoint offset = _pGLImageBox->pos();
+
     int box_x = cEvent->x() - offset.x();
+
     int box_y = cEvent->y() - offset.y();
+
+
 
     switch(_currMode)
     {
@@ -357,10 +381,16 @@ void ImageView::mouseReleaseEvent(QMouseEvent* cEvent)
 void ImageView::wheelEvent(QWheelEvent * cEvent)
 {
     // Mouse event coordinates are relative to top-left of image view (including toolbar!)
+
     // Get current cursor position relative to top-left of image box
+
     QPoint offset = _pGLImageBox->pos();
+
     int box_x = cEvent->x() - offset.x();
+
     int box_y = cEvent->y() - offset.y();
+
+
 
     // Zoom around centrally displayed image point
     int numTicks = cEvent->delta() / 120;

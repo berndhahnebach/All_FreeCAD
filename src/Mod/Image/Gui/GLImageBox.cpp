@@ -79,7 +79,7 @@ void GLImageBox::resizeGL( int w, int h )
     glMatrixMode(GL_MODELVIEW);
 }
 
-// Redraw
+// Redraw (current image)
 void GLImageBox::redraw()
 {
     glDraw();
@@ -97,7 +97,8 @@ void GLImageBox::paintGL()
     drawImage();
 
     // Emit a signal for owners to draw any graphics that is needed.
-    emit drawGraphics();
+    if (_image.hasValidData() == true)
+        emit drawGraphics();
 
     // flush the OpenGL graphical pipeline
     glFinish();
@@ -492,10 +493,21 @@ void GLImageBox::clearImage()
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format)
+int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset)
 {
     int ret = _image.createCopy(pSrcPixelData, width, height, format);
-    resetDisplay();
+    if (reset == true)
+    {
+        // reset drawing settings (position, scale, colour mapping) if requested
+        resetDisplay();
+    }
+    else
+    {
+        // redraw with same settings
+        limitCurrPos();
+        limitZoomFactor();
+        glDraw();
+    }
     return ret;
 }
 

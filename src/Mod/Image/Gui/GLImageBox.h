@@ -58,7 +58,7 @@ public:
     double ICToWC_Y(double ImageY);
 
     void clearImage();
-    int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format);
+    int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset = true);
     int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
 
     void clearIntensityMap();
