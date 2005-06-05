@@ -33,4 +33,62 @@ using namespace Mesh;
 
 
 
+void DataWithPropertyBag::Add(PropertyBag* New, const char* Name)
+{
+  _Properties[Name] = New;
+}
+
+void DataWithPropertyBag::Remove(const char* Name)
+{
+  
+}
+
+
+void DataWithPropertyBag::RemoveType(const char* TypeName)
+{
+
+}
+
+
+PropertyBag* DataWithPropertyBag::Get(const char* Name)
+{
+  return _Properties[Name];
+}
+
+
+PropertyBag* DataWithPropertyBag::GetFirstOfType(const char* TypeName)
+{
+  for( std::map<std::string,PropertyBag*>::iterator It = _Properties.begin();It!=_Properties.end();It++)
+    if( strcmp(It->second->GetType(),TypeName)==0 )
+      return It->second;
+
+  return 0;
+}
+
+
+std::list<PropertyBag*> DataWithPropertyBag::GetAllOfType(const char* TypeName)
+{
+  std::list<PropertyBag*> List;
+
+  for( std::map<std::string,PropertyBag*>::iterator It = _Properties.begin();It!=_Properties.end();It++)
+    if( strcmp(It->second->GetType(),TypeName)==0 )
+      List.push_back( It->second);
+
+    return List;
+}
+
+
+std::set<std::string> DataWithPropertyBag::GetAllTypes(void)
+{
+  std::set<std::string> Set;
+  
+  for( std::map<std::string,PropertyBag*>::iterator It = _Properties.begin();It!=_Properties.end();It++)
+    Set.insert( It->second->GetType());
+
+  return Set;
+}
+
+
+
+
 

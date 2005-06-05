@@ -28,29 +28,78 @@
 # include <vector>
 #endif
 
-
+#include "core/Vector3D.h"
 
 namespace Mesh
 {
 
 class MeshKernel;
 
-/** Property bag of the Mesh data structure
- *  with objects derived from this class the mesh
- *  data structure is enriched with additional data.
- *  The linking point is the Point or face Index.
+/** Base class of all PropertyBags
  */
-class MeshPropertyBag
+class AppMeshExport PropertyBag
 {
 public:
 	/// Constructor
-	MeshPropertyBag(void);
+  PropertyBag(void){};
+  virtual ~PropertyBag(void){};
+  virtual const char* GetType(void)=0;
+};
+
+
+
+/** Property bag of the Mesh data structure
+ *  with objects derived from this class the mesh
+ *  data structur is enriched with aditional data.
+ *  The linking point is the Point or face Index.
+ *  PropertyBags get registered at the MeshWithProperty class
+ *  and have a name and a type. Its posible to have more then 
+ *  one PropertyBag of the same type.
+ */
+class AppMeshExport MeshPropertyNormal: public PropertyBag
+{
+public:
+	/// Constructor
+	MeshPropertyNormal(void)
+    :PropertyBag() {}
+
+  virtual const char* GetType(void) {return "Normal";}
+
+  std::vector<Vector3D> _Normales;
+
+};
+
+/** Base class of all PropertyBag data structures
+ *  This class handles the registration and acces of 
+ *  PropertyBags
+ */
+class AppMeshExport DataWithPropertyBag
+{
+public:
+  /// Adds a Property Bag to the container
+  void Add(PropertyBag* New, const char* Name);
+  /// deletes a named ProperyBag
+  void Remove(const char* Name);
+  /// delets all PropertyBags of a special type
+  void RemoveType(const char* TypeName);
+  /// Get a PropertyBag with a special name
+  PropertyBag* Get(const char* Name);
+  /// Get a ProperyBag of a special type, or NULL if non of this type is insertd
+  PropertyBag* GetFirstOfType(const char* TypeName);
+  /// Get a list of PorpertyBags of a special type
+  std::list<PropertyBag*> GetAllOfType(const char* TypeName);
+  /// get a list of all registered types
+  std::set<std::string> GetAllTypes(void);
+
+private:
+  std::map<std::string,PropertyBag*> _Properties;
+
 };
 
 
 /** Mesh with property bags
  */
-class AppMeshExport MeshWithProperty
+ class AppMeshExport MeshWithProperty: public DataWithPropertyBag
 {
 public:
 	/// Constructor
