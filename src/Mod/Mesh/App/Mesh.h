@@ -26,9 +26,13 @@
 
 #ifndef _PreComp_
 # include <vector>
+# include <list>
+# include <set>
+# include <string>
+# include <map>
 #endif
 
-#include "core/Vector3D.h"
+#include "Core/Vector3D.h"
 
 namespace Mesh
 {
@@ -41,7 +45,7 @@ class AppMeshExport PropertyBag
 {
 public:
 	/// Constructor
-  PropertyBag(void){};
+  PropertyBag(void){}
   virtual ~PropertyBag(void){};
   virtual const char* GetType(void)=0;
 };
@@ -93,17 +97,16 @@ public:
 
 private:
   std::map<std::string,PropertyBag*> _Properties;
-
 };
 
 
 /** Mesh with property bags
  */
- class AppMeshExport MeshWithProperty: public DataWithPropertyBag
+class AppMeshExport MeshWithProperty: public DataWithPropertyBag
 {
 public:
 	/// Constructor
-	MeshWithProperty(void){}
+	MeshWithProperty(void);
 
   /// Gain access to the topological mesh data structure
   MeshKernel *GetKernel(void){return _Mesh;}

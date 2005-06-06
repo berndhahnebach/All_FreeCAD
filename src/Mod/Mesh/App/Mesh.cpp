@@ -31,7 +31,12 @@
 
 using namespace Mesh;
 
+MeshWithProperty::MeshWithProperty(void)
+{
+  _Mesh = new MeshKernel;
+}
 
+// ----------------------------------------------------------------------------
 
 void DataWithPropertyBag::Add(PropertyBag* New, const char* Name)
 {
