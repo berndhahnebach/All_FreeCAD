@@ -46,6 +46,7 @@ class QT_WIDGET_PLUGIN_EXPORT FileChooser : public QWidget
   Q_PROPERTY( Mode mode READ mode WRITE setMode )
   Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
   Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
+  Q_PROPERTY( QString  buttonText  READ buttonText  WRITE setButtonText    )
 
 public:
   enum Mode { File, Directory };
@@ -57,11 +58,13 @@ public:
   QString filter() const;
   QString fileName() const;
   Mode mode() const;
+  QString buttonText() const;
 
 public slots:
   void setFileName( const QString &fn );
   void setMode( Mode m );
   void setFilter ( const QString & );
+  void setButtonText ( const QString & );
 
 signals:
   void fileNameChanged( const QString & );

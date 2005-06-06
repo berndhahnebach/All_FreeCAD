@@ -135,6 +135,7 @@ class GuiExport FileChooser : public QWidget
   Q_PROPERTY( Mode mode READ mode WRITE setMode )
   Q_PROPERTY( QString  fileName  READ fileName      WRITE setFileName      )
   Q_PROPERTY( QString  filter    READ filter        WRITE setFilter        )
+  Q_PROPERTY( QString  buttonText  READ buttonText  WRITE setButtonText    )
 
 public:
   enum Mode { File, Directory };
@@ -158,10 +159,16 @@ public:
    */
   Mode mode() const;
 
+  /**
+   * Returns the button's text.
+   */
+  QString buttonText() const;
+
 public slots:
   virtual void setFileName( const QString &fn );
   virtual void setMode( Mode m );
   virtual void setFilter ( const QString & );
+  virtual void setButtonText ( const QString & );
 
 signals:
   void fileNameChanged( const QString & );

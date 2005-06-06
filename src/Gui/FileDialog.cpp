@@ -446,4 +446,23 @@ void FileChooser::setFilter ( const QString& filter )
   _filter = filter;
 }
 
+/**
+ * Sets the browse button's text to \a txt.
+ */
+void FileChooser::setButtonText( const QString& txt )
+{
+  button->setText( txt );
+  int w1 = 2*button->fontMetrics().width( txt );
+  int w2 = 2*button->fontMetrics().width( " ... " );
+  button->setFixedWidth( (w1 > w2 ? w1 : w2) );
+}
+
+/**
+ * Returns the browse button's text.
+ */
+QString FileChooser::buttonText() const
+{
+  return button->text();
+}
+
 #include "moc_FileDialog.cpp"

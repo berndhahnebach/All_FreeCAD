@@ -107,6 +107,19 @@ void FileChooser::setFilter ( const QString& filter )
   _filter = filter;
 }
 
+void FileChooser::setButtonText( const QString& txt )
+{
+  button->setText( txt );
+  int w1 = 2*button->fontMetrics().width( txt );
+  int w2 = 2*button->fontMetrics().width( " ... " );
+  button->setFixedWidth( (w1 > w2 ? w1 : w2) );
+}
+
+QString FileChooser::buttonText() const
+{
+  return button->text();
+}
+
 // ------------------------------------------------------------------------------
 
 AccelLineEdit::AccelLineEdit ( QWidget * parent, const char * name )
