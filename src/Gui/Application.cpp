@@ -528,6 +528,28 @@ void ApplicationWindow::addWindow( MDIView* view )
   d->_tabs->setCurrentTab( tab );
 }
 
+void ApplicationWindow::removeWindow( Gui::MDIView* view )
+{
+  // free all connections
+  disconnect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
+
+  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  {
+    if ( it.data() == view )
+    {
+      QTab* tab = d->_tabs->tab( it.key() );
+      d->_tabs->removeTab( tab );
+      d->_mdiIds.remove( it );
+      if ( d->_tabs->count() == 0 )
+        d->_tabs->hide(); // no view open any more
+      break;
+    }
+  }
+
+  // this view is not under control of the main window any more
+  disconnect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
+}
+
 void ApplicationWindow::onWindowDestroyed()
 {
   QObject* obj = (QObject*)sender();

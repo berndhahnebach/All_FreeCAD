@@ -79,6 +79,7 @@ public:
   virtual void OnDocDelete(App::Document* pcDoc);
 
   void addWindow( Gui::MDIView* view );
+  void removeWindow( Gui::MDIView* view );
   QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
 
   /// message when a GuiDocument is about to vanish

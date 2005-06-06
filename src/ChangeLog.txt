@@ -562,3 +562,4 @@ Version: V0.1B117 Date: Sun Mar 20 14:06:55 2005 +++++++++++++++++++++++++++++++
 + solving load dependand modules
 + more convenient Python console
 + Bug 1149706 fixed (Cannot load CAD curves)
++ RFE 1214187 implemented (Remove views from main window)
