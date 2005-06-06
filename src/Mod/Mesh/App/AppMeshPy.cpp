@@ -113,7 +113,7 @@ read(PyObject *self, PyObject *args)
 
   PY_TRY {
     // load the mesh and create a mesh python object with it
-    return new MeshPy(MeshAlgos::Load(File.fileName().c_str()));    
+    return new MeshPy(MeshAlgos::Load(File.filePath().c_str()));    
   } PY_CATCH;
 }
 /* module functions */
