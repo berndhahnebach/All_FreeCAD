@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qdragobject.h>
+# include <qfileinfo.h>
 # include <qvbox.h>
 # include <TopoDS_Shape.hxx>
 # include <Inventor/actions/SoWriteAction.h>
@@ -111,19 +113,19 @@ void View3DInventor::setViewerDefaults(void)
   pcShapeHint->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
 
   // color management
-  QColor Col1(236,212,156); // light brown
-  QColor Col(128,128,128);  // grey
+//  QColor Col1(236,212,156); // light brown
+//  QColor Col(128,128,128);  // grey
 
-  QColor DifCol=Col1;
-  QColor AmbCol=Col1;
-  QColor SpeCol=Col;
-  QColor EmCol(0,0,0);
+//  QColor DifCol=Col1;
+//  QColor AmbCol=Col1;
+//  QColor SpeCol=Col;
+//  QColor EmCol(0,0,0);
 /*
   pcShapeMaterial = new SoMaterial;
   pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
   pcShapeMaterial->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
   pcShapeMaterial->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
-  pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
+  pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256);
   pcSepRoot->addChild(pcShapeMaterial);
 */
   pcSepRoot->renderCaching = SoSeparator::ON;

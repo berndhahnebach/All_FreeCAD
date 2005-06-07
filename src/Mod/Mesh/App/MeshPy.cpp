@@ -34,7 +34,7 @@ using Base::Console;
 
 #include "MeshPy.h"
 #include "Mesh.h"
-#include "core/MeshKernel.h"
+#include "Core/MeshKernel.h"
 
 
 using namespace Mesh;
