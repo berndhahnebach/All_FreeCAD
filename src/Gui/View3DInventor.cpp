@@ -37,9 +37,10 @@
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "Document.h"
-#include "../App/Label.h"
-#include "../App/Feature.h"
-#include "../Base/Console.h"
+#include "Application.h"
+#include <App/Label.h>
+#include <App/Feature.h>
+#include <Base/Console.h>
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
@@ -64,6 +65,10 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
   pcActViewProvider = 0l;
   
   _viewer = new View3DInventorViewer(this);
+
+  // accept drops on the window, get handled in dropEvent, dragEnterEvent   
+  setAcceptDrops(true);
+
 
   setViewerDefaults();
 }
@@ -523,6 +528,27 @@ void View3DInventor::dump()
 
 }
 
+/**
+ * Drops the event \a e and writes the right Python command.
+ */
+void View3DInventor::dropEvent ( QDropEvent      * e )
+{
+  if ( QUriDrag::canDecode(e) )
+  {
+    QStringList fn;
+    QUriDrag::decodeLocalFiles(e, fn);
+
+    for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it ) {
+
+      QFileInfo info(*it);
+      if ( info.exists() && info.isFile() )
+      {
+          ApplicationWindow::Instance->import(info.absFilePath().latin1());
+      }
+    }
+  }else
+    MDIView::dropEvent(e);
+}
 
 
 

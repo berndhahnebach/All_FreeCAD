@@ -325,6 +325,52 @@ void ApplicationWindow::open(const char* FileName)
   appendRecentFile( File.filePath().c_str() );
 }
 
+void ApplicationWindow::import(const char* FileName)
+{
+  // get registered endings
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  // File infos
+  Base::FileInfo File(FileName);
+  
+  std::string te= File.extension();
+
+  if(EndingMap.find(File.extension()) != EndingMap.end())
+  {
+    // geting the module name
+    const std::string &Mod = EndingMap.find(File.extension())->second;
+
+    // issue module loading
+    std::string Cmd = "import ";
+    Cmd += Mod.c_str();
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
+
+    // issue gui module loading
+    Cmd =  "import ";
+    Cmd += Mod.c_str();
+    Cmd += "Gui";
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
+    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+
+    // load the file with the module
+    Cmd = EndingMap.find(File.extension())->second.c_str();
+    Cmd += ".import(\"";
+    Cmd += File.filePath().c_str();
+    Cmd += "\")";
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
+    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+
+  }else{
+    Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",File.extension().c_str());
+    return;
+  }
+
+  // the original file name is required
+  appendRecentFile( File.filePath().c_str() );
+}
+
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

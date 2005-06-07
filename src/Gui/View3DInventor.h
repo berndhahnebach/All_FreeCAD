@@ -68,6 +68,9 @@ public:
   virtual bool onMsg(const char* pMsg, const char** ppReturn);
   virtual bool onHasMsg(const char* pMsg);
 
+  /// handle dropt files on this document
+  void import(const char* FileName);
+
   virtual const char *getName(void);
 
   virtual void resizeEvent ( QResizeEvent * e);
@@ -96,6 +99,9 @@ public slots:
   void dump();
 
 protected:
+
+  void dropEvent        ( QDropEvent        * e );
+
   SoSeparator *createAxis(void);
 
   // inventor nodes:

@@ -44,7 +44,7 @@
 
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
-
+# include <Inventor/nodes/SoLocateHighlight.h>
 
 using namespace MeshGui;
 using Mesh::MeshFeature;
@@ -71,6 +71,10 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
   const MeshKernel* cMesh = meshFea->getMesh().getKernel();
 
   SoSeparator* tree = new SoSeparator();
+
+  SoLocateHighlight* h = new SoLocateHighlight();
+  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
+
   SoCoordinate3* coord = new SoCoordinate3();
   SoNormal* norms = new SoNormal();
   int BaumIndex = 0;
@@ -122,8 +126,9 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
 		nBinding->value=SoNormalBinding::PER_VERTEX;
 	}
 
-	tree->addChild(coord);
-	tree->addChild(fSet);
+  tree->addChild(h);
+	h->addChild(coord);
+	h->addChild(fSet);
 
   Base::Sequencer().stop();
 

@@ -72,6 +72,8 @@ public:
 
   /// open a file
   void open(const char* FileName);
+  /// import a file in the active document
+  void import(const char* FileName);
 
 
   // Observer

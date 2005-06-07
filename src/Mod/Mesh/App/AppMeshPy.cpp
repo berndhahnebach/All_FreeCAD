@@ -87,6 +87,50 @@ open(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
+
+/* module functions */
+static PyObject *                        
+import(PyObject *self, PyObject *args)     
+{                                        
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+    
+  PY_TRY {
+
+    Base::Console().Log("Open in Mesh with %s",Name);
+
+    // extract ending
+    std::string cEnding(Name);
+    unsigned int pos = cEnding.find_last_of('.');
+    if(pos == cEnding.size())
+      Py_Error(PyExc_Exception,"no file ending");
+    cEnding.erase(0,pos+1);
+
+    if(cEnding == "stl" || cEnding == "ast")
+    {
+      // create new document and add Import feature
+      App::Document *pcDoc = App::GetApplication().Active();
+      if (!pcDoc)
+        throw "Import called without a active document??";
+      App::Feature *pcFeature = pcDoc->AddFeature("MeshImportSTL");
+      pcFeature->GetProperty("FileName").Set(Name);
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+
+    }
+
+    else
+    {
+      Py_Error(PyExc_Exception,"unknown file ending");
+    }
+
+
+  } PY_CATCH;
+
+	Py_Return;    
+}
+
 /* module functions */
 static PyObject *                        
 save(PyObject *self, PyObject *args)
@@ -127,10 +171,11 @@ write(PyObject *self, PyObject *args)
 
 /* registration table  */
 struct PyMethodDef Mesh_Import_methods[] = {
-    {"open" ,open , 1},				/* method name, C func ptr, always-tuple */
-    {"save" ,save , 1},
-    {"read" ,read , 1},
-    {"write",write, 1},
+    {"open"   ,open , 1},				/* method name, C func ptr, always-tuple */
+    {"save"   ,save , 1},
+    {"import" ,import,1},
+    {"read"   ,read , 1},
+    {"write"  ,write, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };
