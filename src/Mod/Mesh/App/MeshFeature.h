@@ -27,6 +27,7 @@
 #include <App/Feature.h>
 
 #include "Core/MeshKernel.h"
+#include "Mesh.h"
 
 class TFunction_Logbook;
 class FeaturePy;
@@ -74,14 +75,16 @@ public:
 
   /** @name methods for convenient handling of parameter (properties) */
   //@{
-  /** Get the actual result mesh. */
-  const MeshKernel& GetMesh() const;
+  /** Get the access to the actual mesh */
+  MeshWithProperty& getMesh();
+  /** Set the actual mesh */
+  void setMesh(const MeshWithProperty&);
   //@}
 
   virtual Base::PyObjectBase *MeshFeature::GetPyObject(void);
 
 protected:
-  MeshKernel _cMesh;
+  MeshWithProperty _cMesh;
 };
 
 } //namespace Mesh

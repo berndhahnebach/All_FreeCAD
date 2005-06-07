@@ -46,7 +46,7 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
 	if ( access(FileName, 4) != 0 )
     throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
  
-  MeshSTL aReader(* (Mesh->GetKernel()) );
+  MeshSTL aReader(* (Mesh->getKernel()) );
 
   // read STL file
   FileStream str( FileName, std::ios::in);

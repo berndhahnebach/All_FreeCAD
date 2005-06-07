@@ -44,6 +44,7 @@ using Base::Console;
 #include <App/Topology.h>
 
 
+#include "MeshPy.h"
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"
 
@@ -78,8 +79,9 @@ PyTypeObject MeshFeaturePy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef MeshFeaturePy::Methods[] = {
-//  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-  PYMETHODEDEF(getShape)
+  PYMETHODEDEF(getMesh)
+  PYMETHODEDEF(setMesh)
+
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -148,8 +150,19 @@ int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(MeshFeaturePy,getShape)
+PYFUNCIMP_D(MeshFeaturePy,getMesh)
 {
+  return new MeshPy(&(_pcFeature->getMesh()));
+}
+
+PYFUNCIMP_D(MeshFeaturePy,setMesh)
+{
+ 	PyObject* pcObject;
+  if (!PyArg_ParseTuple(args, "O!", &MeshPy::Type, &pcObject))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  _pcFeature->setMesh(*(reinterpret_cast<MeshPy*>(pcObject)->_pcMesh));
+
   Py_Return;
 }
 

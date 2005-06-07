@@ -146,7 +146,7 @@ void StdCmdNew::activated(int iMsg)
 //  DlgDocTemplatesImp cDlg(this,getAppWnd(),"Template Dialog",true);
 //  cDlg.exec();
 
-  doCommand(Command::Gui,"App.New()");
+  doCommand(Command::Doc,"App.New()");
 }
 
 //===========================================================================

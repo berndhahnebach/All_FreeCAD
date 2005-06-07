@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef MESH_FEATURE_PY_H
-#define MESH_FEATURE_PY_H
+#ifndef MESH_PY_H
+#define MESH_PY_H
 
 #include <Base/PyExportImp.h>
 
@@ -60,9 +60,9 @@ public:
   int _setattr(char *attr, PyObject *value);		// __setattr__ function
 
   
-//  PYFUNCDEF_D(MeshPy,getShape)
+  PYFUNCDEF_D(MeshPy,pointCount)
+  PYFUNCDEF_D(MeshPy,faceCount)
 
-private:
   MeshWithProperty *_pcMesh;
 };
 

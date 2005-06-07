@@ -47,9 +47,14 @@ MeshFeature::MeshFeature()
 {
 }
 
-const MeshKernel& MeshFeature::GetMesh() const
+MeshWithProperty& MeshFeature::getMesh()
 {
   return _cMesh;
+}
+
+void MeshFeature::setMesh(const MeshWithProperty& New)
+{
+  _cMesh = New;
 }
 
 Base::PyObjectBase *MeshFeature::GetPyObject(void)

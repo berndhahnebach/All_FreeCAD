@@ -68,7 +68,7 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
   // getting current setting values...
 	bool computeNormals = /*true*/false;
 
-  const MeshKernel& cMesh = meshFea->GetMesh();
+  const MeshKernel* cMesh = meshFea->getMesh().getKernel();
 
   SoSeparator* tree = new SoSeparator();
   SoCoordinate3* coord = new SoCoordinate3();
@@ -76,10 +76,10 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
   int BaumIndex = 0;
   int AnzDreiecke = 0;
 
-  int* numVertices = new int[cMesh.CountFacets()];
+  int* numVertices = new int[cMesh->CountFacets()];
 
-  Base::Sequencer().start( "Building Inventor node...", cMesh.CountFacets() );
-  MeshFacetIterator cFIter(cMesh);
+  Base::Sequencer().start( "Building Inventor node...", cMesh->CountFacets() );
+  MeshFacetIterator cFIter(*cMesh);
 
   // get all facets and their points and normals
   for ( cFIter.Init(); cFIter.More(); cFIter.Next() )
@@ -106,8 +106,8 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
   }
   
 	SoFaceSet* fSet = new SoFaceSet();
-	fSet->numVertices.setNum(cMesh.CountFacets());
-	fSet->numVertices.setValues(0,cMesh.CountFacets(),numVertices);
+	fSet->numVertices.setNum(cMesh->CountFacets());
+	fSet->numVertices.setValues(0,cMesh->CountFacets(),numVertices);
   delete [] numVertices;
   
 	SoNormalBinding* nBinding=new SoNormalBinding();

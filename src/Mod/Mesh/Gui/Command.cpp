@@ -71,9 +71,9 @@ void CmdMeshImportSTL::activated(int iMsg)
 
 bool CmdMeshImportSTL::isActive(void)
 {
-//	if( getActiveDocument() )
-//		return true;
-//	else
+	if( getActiveDocument() )
+		return true;
+	else
 		return false;
 }
 

@@ -34,6 +34,7 @@ using Base::Console;
 
 #include "MeshPy.h"
 #include "Mesh.h"
+#include "core/MeshKernel.h"
 
 
 using namespace Mesh;
@@ -67,8 +68,8 @@ PyTypeObject MeshPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef MeshPy::Methods[] = {
-//  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-//  PYMETHODEDEF(getShape)
+  PYMETHODEDEF(pointCount)
+  PYMETHODEDEF(faceCount)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -107,8 +108,12 @@ MeshPy::~MeshPy()           // Everything handled in parent
 PyObject *MeshPy::_repr(void)
 {
   std::stringstream a;
-  a << "Mesh: [ ";
-  a << "]" << std::endl;
+  a << "Mesh: ["
+    << _pcMesh->getKernel()->CountFacets()
+    << " Faces, "
+    << _pcMesh->getKernel()->CountPoints()
+    << " Points"
+    << "]" << std::endl;
   return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
@@ -138,9 +143,14 @@ int MeshPy::_setattr(char *attr, PyObject *value) // __setattr__ function: note 
 // Python wrappers
 //--------------------------------------------------------------------------
 
-/*
-PYFUNCIMP_D(MeshPy,getShape)
+
+PYFUNCIMP_D(MeshPy,pointCount)
 {
-  Py_Return;
+  return Py_BuildValue("i",_pcMesh->getKernel()->CountPoints()); 
 }
-*/
+
+PYFUNCIMP_D(MeshPy,faceCount)
+{
+  return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
+}
+

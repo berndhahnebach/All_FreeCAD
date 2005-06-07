@@ -59,7 +59,7 @@ Standard_Integer FeatureMeshImportSTL::Execute(TFunction_Logbook& log)
       return 1;
     }
 
-    MeshSTL aReader(_cMesh );
+    MeshSTL aReader(*(_cMesh.getKernel()) );
 
     // read STL file
     FileStream str( FileName, std::ios::in);

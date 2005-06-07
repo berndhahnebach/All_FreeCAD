@@ -31,10 +31,6 @@
 
 using namespace Mesh;
 
-MeshWithProperty::MeshWithProperty(void)
-{
-  _Mesh = new MeshKernel;
-}
 
 // ----------------------------------------------------------------------------
 
@@ -94,6 +90,33 @@ std::set<std::string> DataWithPropertyBag::GetAllTypes(void)
 }
 
 
+void DataWithPropertyBag::operator= ( const DataWithPropertyBag& New)
+{
+  for( std::map<std::string,PropertyBag*>::const_iterator It = New._Properties.begin();It!=New._Properties.end();It++)
+    *(_Properties[It->first]) = *(It->second);
+  
+  
+}
+
+//*************************************************************************************************************
+
+MeshWithProperty::MeshWithProperty(void)
+{
+  _Mesh = new MeshKernel();
+}
 
 
+MeshWithProperty::MeshWithProperty(const MeshWithProperty& New)
+{
+  _Mesh = new MeshKernel();
+
+  *this = New; 
+}
+
+void MeshWithProperty::operator= ( const MeshWithProperty& New)
+{
+  _Mesh = New._Mesh;
+  
+  DataWithPropertyBag::operator= (New);
+}
 

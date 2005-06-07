@@ -40,19 +40,6 @@ namespace Mesh
 class MeshKernel;
 
 /** Base class of all PropertyBags
- */
-class AppMeshExport PropertyBag
-{
-public:
-	/// Constructor
-  PropertyBag(void){}
-  virtual ~PropertyBag(void){};
-  virtual const char* GetType(void)=0;
-};
-
-
-
-/** Property bag of the Mesh data structure
  *  with objects derived from this class the mesh
  *  data structur is enriched with aditional data.
  *  The linking point is the Point or face Index.
@@ -60,16 +47,113 @@ public:
  *  and have a name and a type. Its posible to have more then 
  *  one PropertyBag of the same type.
  */
-class AppMeshExport MeshPropertyNormal: public PropertyBag
+class AppMeshExport PropertyBag
 {
 public:
 	/// Constructor
-	MeshPropertyNormal(void)
-    :PropertyBag() {}
+  PropertyBag(void){}
+  virtual ~PropertyBag(void){};
+  /** returns the type of the property bag
+    * is to reimplemented by inhereting classes to
+    * allow besides the name a type checking of the bag.
+    * So its posible to have more property bags with the 
+    * same type and different names in the data structure.
+    */
+  virtual const char* GetType(void)=0;
+  /** Get called when the mesh size is changing
+    * this means dependend of the type of the property 
+    * to get invalid. Invalid properties can not get used
+    * until they are recalculated. Its also a good idea to 
+    * clear a included container to save RAM.
+    */
+  virtual void resizeFaces(void){}
+  /** Get called when the amount of the points changing
+   * same as resizeFaces only for the points
+   */
+  virtual void resizePoints(void){}
+  /** Set the property bag valid
+    * this has to be done after build up or recalculation of the 
+    * property bag. The data in the property bag only gets used when 
+    * the bag is valid!
+    */
+  void setValid(void)
+    {_bValid=true;}
+  /** Set the property bag invalid
+    * this is e.g. done when the size of the faces or points has chhanged 
+    * and the data in the property bag are wrong!
+    */
+  void setInvalid(void)
+    {_bValid=false;}
+  /** checks if the bag is valid
+    * invalid bags shut not used for any purpos! Until 
+    * they got recalculated.
+    */
+  bool isValid(void)
+    {return _bValid;}
 
+private:
+  bool _bValid;
+};
+
+
+
+/** Vertex noamal property bag
+ *  This property bag holds normal vectors of the mesh points
+ */
+class AppMeshExport MeshPropertyNormal: public PropertyBag
+{
+public:
+	/** Constructor
+    * can initialized with the size of the points in the mesh to fit well.
+    */
+	MeshPropertyNormal(int size=0)
+    :PropertyBag() 
+  {
+    Normales.resize(size);
+  }
+
+  /// returns the type
   virtual const char* GetType(void) {return "Normal";}
 
-  std::vector<Vector3D> _Normales;
+  /// clears the property
+  virtual void resizePoints(void)
+  {
+    setInvalid();
+    Normales.clear();
+  }
+
+  /// vector of the Normals
+  std::vector<Vector3D> Normales;
+
+};
+
+/** Vertex color property bag
+ *  This property bag holds normal vectors of the mesh points
+ */
+class AppMeshExport MeshPropertyColor: public PropertyBag
+{
+public:
+	/// Constructor
+	MeshPropertyColor(void)
+    :PropertyBag() {}
+
+  virtual const char* GetType(void) {return "VertexColor";}
+
+  /// struct to save the color as float r,g,b
+  struct fColor
+  {
+    float r,g,b;
+  };
+
+  /// clears the property
+  virtual void resizePoints(void)
+  {
+    setInvalid();
+    Color.clear();
+  }
+
+  /// color vector
+  std::vector<fColor> Color;
 
 };
 
@@ -95,6 +179,9 @@ public:
   /// get a list of all registered types
   std::set<std::string> GetAllTypes(void);
 
+  void operator= ( const DataWithPropertyBag& New);
+
+
 private:
   std::map<std::string,PropertyBag*> _Properties;
 };
@@ -107,9 +194,14 @@ class AppMeshExport MeshWithProperty: public DataWithPropertyBag
 public:
 	/// Constructor
 	MeshWithProperty(void);
+	/// Copy Constructor
+	MeshWithProperty(const MeshWithProperty&);
+
+  /// assignment operator
+  void operator= ( const MeshWithProperty& );
 
   /// Gain access to the topological mesh data structure
-  MeshKernel *GetKernel(void){return _Mesh;}
+  MeshKernel *getKernel(void){return _Mesh;}
 
 private:
   MeshKernel *_Mesh;
