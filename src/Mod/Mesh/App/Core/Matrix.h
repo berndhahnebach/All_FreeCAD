@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __MATRIX_HXX__
-#define __MATRIX_HXX__
+#ifndef MATRIX_H
+#define MATRIX_H
 
 #include "Definitions.h"
 #include <math.h>
@@ -37,53 +37,54 @@ class   Matrix4D;
 typedef Matrix4D* PMatrix4D;
 typedef Matrix4D& RMatrix4D;
 
+/**
+ * The Matrix4D class.
+ */
 class AppMeshExport Matrix4D
 {
-  public:
+public:
+  Matrix4D (void);
+  Matrix4D (const Matrix4D& rclMtrx);
+  virtual ~Matrix4D () {};
 
-    Matrix4D (void);
-    Matrix4D (const Matrix4D& rclMtrx);
-    virtual ~Matrix4D () {};
-
-    inline Matrix4D& operator*= (const Matrix4D& rclMtrx);
-    inline Matrix4D& operator=  (const Matrix4D& rclMtrx);
-    inline Matrix4D  operator*  (const Matrix4D& rclMtrx);
-    inline Vector3D  operator*  (const Vector3D& rclVct) const;
-    inline bool      operator!= (const Matrix4D& rclMtrx);
-    inline bool      operator== (const Matrix4D& rclMtrx);
-    inline double*    operator[] (unsigned short usNdx);
-    inline friend Vector3D& operator*= (Vector3D& rclVect, const Matrix4D& rclMtrx);
+  inline Matrix4D& operator*= (const Matrix4D& rclMtrx);
+  inline Matrix4D& operator=  (const Matrix4D& rclMtrx);
+  inline Matrix4D  operator*  (const Matrix4D& rclMtrx);
+  inline Vector3D  operator*  (const Vector3D& rclVct) const;
+  inline bool      operator!= (const Matrix4D& rclMtrx);
+  inline bool      operator== (const Matrix4D& rclMtrx);
+  inline double*    operator[] (unsigned short usNdx);
+  inline friend Vector3D& operator*= (Vector3D& rclVect, const Matrix4D& rclMtrx);
 
 
-    DataStream& SaveData (DataStream& ofs);
-    DataStream& LoadData (DataStream& ifs);
-    void   GetGLMatrix (double dMtrx[16]) const;
-    void   SetGLMatrix (const double dMtrx[16]);
- 
-    virtual unsigned long GetMemSpace (void);
+  DataStream& SaveData (DataStream& ofs);
+  DataStream& LoadData (DataStream& ifs);
+  void   GetGLMatrix (double dMtrx[16]) const;
+  void   SetGLMatrix (const double dMtrx[16]);
 
-    void Unit         (void);
-    void SetMoveX     (float fMove);
-    void SetMoveY     (float fMove);
-    void SetMoveZ     (float fMove);
-    void SetMove      (const Vector3D& rclVct);
-    void SetScaleX    (float fScale);
-    void SetScaleY    (float fScale);
-    void SetScaleZ    (float fScale);
-    void SetScale     (const Vector3D& rclVct);
-    void SetRotX      (float fAngle);
-    void SetRotY      (float fAngle);
-    void SetRotZ      (float fAngle);
-    void SetRotLine   (const Vector3D& rclVct, float fAngle);
-    void Inverse      (void);
-	  void InverseGauss (void);
-    void Transpose    (void);
-    void Print        (void) const;
-    
-  private:
-    double  dMtrx4D[4][4];
+  virtual unsigned long GetMemSpace (void);
+
+  void Unit         (void);
+  void SetMoveX     (float fMove);
+  void SetMoveY     (float fMove);
+  void SetMoveZ     (float fMove);
+  void SetMove      (const Vector3D& rclVct);
+  void SetScaleX    (float fScale);
+  void SetScaleY    (float fScale);
+  void SetScaleZ    (float fScale);
+  void SetScale     (const Vector3D& rclVct);
+  void SetRotX      (float fAngle);
+  void SetRotY      (float fAngle);
+  void SetRotZ      (float fAngle);
+  void SetRotLine   (const Vector3D& rclVct, float fAngle);
+  void Inverse      (void);
+	void InverseGauss (void);
+  void Transpose    (void);
+  void Print        (void) const;
+  
+private:
+  double  dMtrx4D[4][4];
 };
-
 
 inline Matrix4D& Matrix4D::operator *= (const Matrix4D& rclMtrx)
 {
@@ -103,7 +104,6 @@ inline Matrix4D& Matrix4D::operator *= (const Matrix4D& rclMtrx)
   return *this;
 }
 
-
 inline Matrix4D Matrix4D::operator * (const Matrix4D& rclMtrx)
 {
   Matrix4D  clMat;
@@ -119,7 +119,6 @@ inline Matrix4D Matrix4D::operator * (const Matrix4D& rclMtrx)
 
   return clMat;
 }
-
 
 inline Matrix4D& Matrix4D::operator= (const Matrix4D& rclMtrx)
 {
@@ -147,7 +146,6 @@ inline Vector3D Matrix4D::operator* (const Vector3D& rclVct) const
                            dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
 }
 
-
 inline bool Matrix4D::operator== (const Matrix4D& rclMtrx)
 {
   short     iz, is;
@@ -166,7 +164,6 @@ inline bool Matrix4D::operator!= (const Matrix4D& rclMtrx)
   return !( (*this) == rclMtrx );
 }
 
-
 inline Vector3D& operator*= (Vector3D& rclVect,
                               const Matrix4D& rclMtrx)
 {
@@ -181,7 +178,6 @@ inline double* Matrix4D::operator[] (unsigned short usNdx)
 
 } // namespace Mesh
 
-
-#endif
+#endif // MATRIX_H 
 
 

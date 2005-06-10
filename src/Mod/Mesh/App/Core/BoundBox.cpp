@@ -161,6 +161,200 @@ BoundBox3D BoundBox3D::CalcOctant (OCTANT Octant)
 
 #undef HALF
 
+void BoundBox3D::CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& rNormal ) const
+{
+  switch (usPlane)
+  { 
+  //links
+  case 0:
+    rBase.Set(MinX, MinY, MaxZ);
+    rNormal.Set(1.0f, 0.0f, 0.0f);
+    break;
+
+  // rechts
+  case 1:                                   
+    rBase.Set(MaxX, MinY, MaxZ);
+    rNormal.Set(1.0f, 0.0f, 0.0f);
+    break;
+
+  // oben
+  case 2:
+    rBase.Set(MinX, MaxY, MaxZ);
+    rNormal.Set(0.0f, 1.0f, 0.0f);
+    break;
+
+  // unten
+  case 3:
+    rBase.Set(MinX, MinY, MaxZ);
+    rNormal.Set(0.0f, 1.0f, 0.0f);
+    break;
+
+  // vorne
+  case 4:
+    rBase.Set(MinX, MinY, MaxZ);
+    rNormal.Set(0.0f, 0.0f, 1.0f);
+    break;
+
+  // hinten
+  default:
+    rBase.Set(MinX, MinY, MinZ);
+    rNormal.Set(0.0f, 0.0f, 1.0f);
+    break;
+  }
+}
+
+bool BoundBox3D::IntersectPlaneWithLine (unsigned short usSide, const Vector3D& rcBase, 
+                                         const Vector3D& rcDir, Vector3D& rcP0) const
+{
+  float k;
+  Vector3D cBase, cNormal;
+  Vector3D  cDir(rcDir);
+  CalcPlane(usSide, cBase, cNormal);
+
+  if ((cNormal * cDir) == 0.0f) 
+    return false;  // no point of intersection
+  else
+  {
+    k = (cNormal * (cBase - rcBase)) / (cNormal * cDir);
+    cDir.Scale(k, k, k);
+    rcP0 = rcBase + cDir;
+
+    return true;
+  }
+}
+
+bool BoundBox3D::IntersectWithLine ( const Vector3D& rcBase, const Vector3D& rcDir, 
+                                     Vector3D& rcP0, Vector3D& rcP1 ) const
+{
+  Vector3D  clVectRes, clVect[6];
+  unsigned short i, j;
+  
+  j = 0;
+  // schneide jede Seitenflaeche mit der Linie
+  for (i = 0; i < 6; i++)
+  {
+
+    if ( IntersectPlaneWithLine(i, rcBase, rcDir, clVectRes ) )
+    {
+      // pruefe, ob Schnittpunkt innerhalb BB-Grenzen
+      switch (i)
+      {
+        case 0 :  // linke und rechte Ebene
+        case 1 :
+          if ((IS_ON_RAY(MinY, MaxY, clVectRes.y) &&
+               IS_ON_RAY(MinZ, MaxZ, clVectRes.z)) == TRUE) 
+          {
+            clVect[j] = clVectRes;
+            j++;
+          }                                 
+          break;                    
+        case 2 :  // obere und untere Ebene
+        case 3 :
+          if ((IS_ON_RAY(MinX, MaxX, clVectRes.x) &&
+               IS_ON_RAY(MinZ, MaxZ, clVectRes.z))== TRUE) 
+          {
+            clVect[j] = clVectRes;
+            j++;                     
+          }
+          break;                    
+        case 4 :  // vordere und hintere Ebene
+        case 5 :
+          if ((IS_ON_RAY(MinX, MaxX, clVectRes.x) &&
+               IS_ON_RAY(MinY, MaxY, clVectRes.y)) == TRUE) 
+          {
+            clVect[j] = clVectRes;
+            j++;
+          }        
+          break;                    
+      }
+    }
+  }
+  
+  if (j == 2)  
+  {
+    rcP0 = clVect[0];
+    rcP1 = clVect[1];
+    return true;
+  }
+  else if (j > 2)  // suche 2 unterschiedliche Schnittpunkte
+  {
+    for (i = 1; i < j; i++)
+    {
+      if (clVect[i] != clVect[0])
+      {
+        rcP0 = clVect[0];
+        rcP1 = clVect[i];
+        return true;
+      }
+    }
+  }
+  
+  return false; 
+}
+
+BoundBox3D::SIDE BoundBox3D::GetSideFromRay (const Vector3D &rclPt, const Vector3D &rclDir) const
+{
+  Vector3D cIntersection;
+  return GetSideFromRay( rclPt, rclDir, cIntersection);
+}
+
+BoundBox3D::SIDE BoundBox3D::GetSideFromRay (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D rcInt) const
+{
+  Vector3D cP0, cP1;
+  if ( IntersectWithLine(rclPt, rclDir, cP0, cP1) == false )
+    return INVALID;
+
+  Vector3D  cOut;
+  // same orientation
+  if ( (cP1-cP0)*rclDir > 0.0f )
+    cOut = cP1;
+  else
+    cOut = cP0;
+
+  rcInt = cOut;
+
+  float fMax = 1.0e-3f;
+  SIDE  tSide = INVALID;
+
+  if (fabs(cOut.x - MinX) < fMax)      // linke Ebene
+  {
+    fMax = float(fabs(cOut.x - MinX));
+    tSide = LEFT;
+  }
+
+  if (fabs(cOut.x - MaxX) < fMax) // rechte Ebene
+  {
+    fMax = float(fabs(cOut.x - MaxX));
+    tSide = RIGHT;
+  }
+
+  if (fabs(cOut.y - MinY) < fMax) // untere Ebene
+  {
+    fMax = float(fabs(cOut.y - MinY));
+    tSide = BOTTOM;
+  }
+
+  if (fabs(cOut.y - MaxY) < fMax) // obere Ebene
+  {
+    fMax = float(fabs(cOut.y - MaxY));
+    tSide = TOP;
+  }
+
+  if (fabs(cOut.z - MinZ) < fMax) // vordere Ebene
+  { 
+    fMax = float(fabs(cOut.z - MinZ));
+    tSide = FRONT;
+  }
+
+  if (fabs(cOut.z - MaxZ) < fMax) // hintere Ebene
+  {
+    fMax = float(fabs(cOut.z - MaxZ));
+    tSide = BACK;
+  }
+
+  return tSide;
+}
+
 void BoundBox3D::Flush (void)
 {
   MinX = MinY = MinZ =  FLOAT_MAX;

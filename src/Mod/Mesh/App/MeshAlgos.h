@@ -39,7 +39,21 @@ class MeshWithProperty;
 class AppMeshExport MeshAlgos
 {
 public:
+  /** Load a Mesh
+   */
   static MeshWithProperty* Load(const char *FileName);
+
+  /** write a Mesh as binery STL
+   */
+  static void writeBin(MeshWithProperty* Mesh,const char *FileName);
+
+  /** write a Mesh as ASCII STL
+   */
+  static void writeAscii(MeshWithProperty* Mesh,const char *FileName);
+
+  /** Calculate per Vertex normales and adds the Normal property bag
+  */
+  static void CalcVertexNormales(MeshWithProperty* Mesh);
 
 };
 

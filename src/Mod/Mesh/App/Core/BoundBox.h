@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __BOUNDBOX_H__
-#define __BOUNDBOX_H__
+#ifndef BOUNDBOX_H
+#define BOUNDBOX_H
 
 #ifndef _PreComp_
 # include <math.h>
@@ -59,7 +59,7 @@ public:
   float MaxZ;
   //@}
   
-  /** Buils box from pairs of x,y,z values. */
+  /** Builds box from pairs of x,y,z values. */
   inline explicit BoundBox3D ( float fMinX =  FLOAT_MAX, float fMinY =  FLOAT_MAX,
                                float fMinZ =  FLOAT_MAX, float fMaxX = -FLOAT_MAX,
                                float fMaxY = -FLOAT_MAX, float fMaxZ = -FLOAT_MAX );
@@ -119,8 +119,19 @@ public:
    * 6: back,top,right       7: back,top,left 
    */
   inline Vector3D CalcPoint (unsigned short usPoint) const;
+  /** Returns the plane of the given side. */
+  void CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& rNormal ) const;
   /** Checks if this plane specified by (point,normal) cuts this box. */
   inline bool IsCutPlane (const Vector3D &rclBase, const Vector3D &rclNormal) const;
+  /** Computes the intersection points of line and bounding box. */
+  bool IntersectWithLine (const Vector3D& rcBase, const Vector3D& rcDir, Vector3D& rcP0, Vector3D& rcP1) const;
+  /** Computes the intersection point of line and a plane of the bounding box. */
+  bool IntersectPlaneWithLine (unsigned short usSide, const Vector3D& rcBase, const Vector3D& rcDir, 
+                               Vector3D& rcP0) const;
+  /** Returns the side of the bounding box the ray exits. */
+  BoundBox3D::SIDE GetSideFromRay (const Vector3D &rclPt, const Vector3D &rclDir) const;
+  /** Returns the side of the bounding box the ray exits. */
+  BoundBox3D::SIDE GetSideFromRay (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D rcInt) const;
   
   /** Projects the box onto a plane and returns a 2D box. */
   BoundBox2D ProjectBox(const ViewProjMethod *rclP) const;
@@ -368,5 +379,5 @@ inline void BoundBox3D::ScaleZ (float f)
 
 } // namespace Mesh
 
-#endif  // __BOUNDBOX_H__ 
+#endif  // BOUNDBOX_H 
 

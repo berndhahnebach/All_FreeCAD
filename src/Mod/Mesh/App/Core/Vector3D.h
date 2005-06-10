@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __VECTOR3D_H__
-#define __VECTOR3D_H__
+#ifndef VECTOR3D_H
+#define VECTOR3D_H
 
 
 #ifndef _PreComp_
@@ -52,24 +52,43 @@ public:
   inline explicit Vector3D (float fx = 0.0f, float fy = 0.0f, float fz = 0.0f);
   inline Vector3D (const Vector3D& rcVct);
 
+  /** @name Operator */
+  //@{
+  /// Returns a reference to a coordinate. \a usIndex must be in the range [0,2]
   inline float & operator [] (unsigned short usIndex);
+  /// Vector addition
   inline Vector3D operator +  (const Vector3D& rcVct) const;
   inline Vector3D operator &  (const Vector3D& rcVct) const;
+  /// Vector subtraction
   inline Vector3D operator -  (const Vector3D& rcVct) const;
+  /// Negative vector
   inline Vector3D operator - (void) const;
+  /// Vector summation
   inline RVector3D operator += (const Vector3D& rcVct);
+  /// Vector subtraction
   inline RVector3D operator -= (const Vector3D& rcVct);
+  /// Vector scaling
   inline RVector3D operator *= (float fScale);
+  /// Assignment
   inline RVector3D operator =  (const Vector3D& rcVct);
+  /// Scalar product
   inline float operator *  (const Vector3D& rcVct) const;
+  /// Vector scaling
   inline RVector3D operator / (float fDiv); 
+  /// Cross product
   inline Vector3D operator %  (const Vector3D& rcVct) const;
+  /// Comparing for inequality
   inline bool operator != (const Vector3D& rcVct) const;
+  /// Comparing for equality
   inline bool operator == (const Vector3D& rcVct) const;
+  //@}
 
+  // I/O streaming
   DataStream & SaveData (DataStream & ofs);
   DataStream & LoadData (DataStream & ifs);
 
+  /** @name Modification */
+  //@{
   void ScaleX (float f);
   void ScaleY (float f);
   void ScaleZ (float f);
@@ -81,35 +100,36 @@ public:
   void RotateX (float f);
   void RotateY (float f);
   void RotateZ (float f);
+  //@}
 
-  inline void    Set (float fX, float fY, float fZ);
-  inline void    Set (double dX, double dY, double dZ);
+  inline void Set (float fX, float fY, float fZ);
+  inline void Set (double dX, double dY, double dZ);
+
   void  Print (void);
-
   unsigned long GetMemSpace (void);
 
+  /** @name Mathematics */
+  //@{
   inline float Length (void) const;
   void  Normalize (void);
   float GetAngle (const Vector3D &rcVect) const;
-  void TransformToCoordinateSystem (const Vector3D &rclBase,
-                                    const Vector3D &rclDirX,
-                                    const Vector3D &rclDirY);
+  void TransformToCoordinateSystem (const Vector3D &rclBase, const Vector3D &rclDirX, const Vector3D &rclDirY);
   bool Equal(const Vector3D &rclVect) const;
-  inline RVector3D ProjToPlane (const Vector3D &rclBase,
-                                 const Vector3D &rclNorm);
-  inline RVector3D ProjToLine (const Vector3D &rclPoint,
-                                const Vector3D &rclLine);
-  inline float DistanceToPlane (const Vector3D &rclBase,
-                                const Vector3D &rclNorm) const;
-  inline float DistanceToLine (const Vector3D &rclBase,
-                               const Vector3D &rclDirect) const;
-  friend float Distance (const Vector3D &rcVct1,
-                         const Vector3D &rcVct2);
-  friend float DistanceP2 (const Vector3D &rclV1,
-                           const Vector3D &rclV2);
-  friend Vector3D operator * (float fFac,
-                               const Vector3D &rcVct);
+  inline RVector3D ProjToPlane (const Vector3D &rclBase, const Vector3D &rclNorm);
+  inline RVector3D ProjToLine (const Vector3D &rclPoint, const Vector3D &rclLine);
+  inline float DistanceToPlane (const Vector3D &rclBase, const Vector3D &rclNorm) const;
+  inline float DistanceToLine (const Vector3D &rclBase, const Vector3D &rclDirect) const;
   inline float Sqr (void) const;
+  //@}
+
+  /** @name Friends */
+  //@{
+  /// Returns the distance between two points
+  friend float Distance (const Vector3D &rcVct1, const Vector3D &rcVct2);
+  /// Returns the square distance between two points
+  friend float DistanceP2 (const Vector3D &rclV1, const Vector3D &rclV2);
+  friend Vector3D operator * (float fFac, const Vector3D &rcVct);
+  //@}
 };
 
 inline Vector3D::Vector3D (float fx, float fy, float fz)
@@ -235,8 +255,7 @@ inline bool Vector3D::operator == (const Vector3D& rcVct) const
          (fabs (z - rcVct.z) <= FLOAT_EPS);
 }  
 
-inline Vector3D& Vector3D::ProjToPlane (const Vector3D &rclBase,
-                                          const Vector3D &rclNorm)
+inline Vector3D& Vector3D::ProjToPlane (const Vector3D &rclBase, const Vector3D &rclNorm)
 {
   Vector3D clTemp(rclNorm);
   
@@ -244,8 +263,7 @@ inline Vector3D& Vector3D::ProjToPlane (const Vector3D &rclBase,
   return *this;
 }
 
-inline float Vector3D::DistanceToPlane (const Vector3D &rclBase,
-                                     const Vector3D &rclNorm) const
+inline float Vector3D::DistanceToPlane (const Vector3D &rclBase, const Vector3D &rclNorm) const
 {
   return (*this - rclBase) * rclNorm;
 }
@@ -255,15 +273,13 @@ inline float Vector3D::Length (void) const
   return (float)sqrt ((x * x) + (y * y) + (z * z));
 }
 
-inline float Vector3D::DistanceToLine (const Vector3D &rclBase,
-                                    const Vector3D &rclDirect) const
+inline float Vector3D::DistanceToLine (const Vector3D &rclBase, const Vector3D &rclDirect) const
 {
   return (float) fabs((rclDirect % Vector3D(*this - rclBase)).Length() / 
                                      rclDirect.Length());
 }
 
-inline Vector3D& Vector3D::ProjToLine (const Vector3D &rclPoint,
-                                         const Vector3D &rclLine)
+inline Vector3D& Vector3D::ProjToLine (const Vector3D &rclPoint, const Vector3D &rclLine)
 {
   return (*this = ((((rclPoint * rclLine) / rclLine.Sqr()) * rclLine) - rclPoint));
 }

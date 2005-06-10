@@ -41,12 +41,20 @@ void DataWithPropertyBag::Add(PropertyBag* New, const char* Name)
 
 void DataWithPropertyBag::Remove(const char* Name)
 {
-  
+  _Properties.erase(Name); 
 }
 
 
 void DataWithPropertyBag::RemoveType(const char* TypeName)
 {
+  std::vector<std::string> toErase;
+
+  for(std::map<std::string,PropertyBag*>::iterator It= _Properties.begin();It!=_Properties.end();It++)
+    if(strcmp(It->second->GetType(),TypeName) == 0)
+      toErase.push_back(It->first);
+
+    for(std::vector<std::string>::iterator It2 = toErase.begin();It2 != toErase.end();It++)
+    _Properties.erase(*It2); 
 
 }
 

@@ -36,6 +36,7 @@ using Base::Console;
 
 #include "MeshPy.h"
 #include "Mesh.h"
+#include "MeshAlgos.h"
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
 #include "Core/Stream.h"
@@ -167,21 +168,21 @@ PYFUNCIMP_D(MeshPy,write)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
 
-  Base::FileInfo File(Name);
+/*  Base::FileInfo File(Name);
   
   // checking on the file
   if(File.exists() && !File.isWritable())
     Py_Error(PyExc_Exception,"File not writable");
-
+*/
   PY_TRY {
-
-    MeshSTL aReader(*(_pcMesh->getKernel()) );
+    MeshAlgos::writeBin(_pcMesh,Name);
+/*    MeshSTL aReader(*(_pcMesh->getKernel()) );
 
     // read STL file
     FileStream str( File.filePath().c_str(), std::ios::out);
     if ( !aReader.SaveBinary( str ) )
       Py_Error(PyExc_Exception,"STL write failed to write");
-
+*/
   } PY_CATCH;
 
   Py_Return; 
@@ -194,5 +195,10 @@ PYFUNCIMP_D(MeshPy,offset)
 
 PYFUNCIMP_D(MeshPy,calcVertexNormales)
 {
-  return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
+  PY_TRY {
+    MeshAlgos::CalcVertexNormales(_pcMesh);  
+  } PY_CATCH;
+  
+  Py_Return;
+
 }

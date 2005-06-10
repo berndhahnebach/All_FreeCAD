@@ -152,9 +152,9 @@ float Vector3D::GetAngle (const Vector3D &rcVect) const
     return -FLOAT_MAX; // division by zero
 }
 
-void Vector3D::TransformToCoordinateSystem (const Vector3D &rclBase,
+void Vector3D::TransformToCoordinateSystem ( const Vector3D &rclBase,
                                              const Vector3D &rclDirX,
-                                             const Vector3D &rclDirY)
+                                             const Vector3D &rclDirY )
 {
   Vector3D  clVectX, clVectY, clVectZ, clVectOld;
   
