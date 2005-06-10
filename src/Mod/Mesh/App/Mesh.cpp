@@ -53,9 +53,8 @@ void DataWithPropertyBag::RemoveType(const char* TypeName)
     if(strcmp(It->second->GetType(),TypeName) == 0)
       toErase.push_back(It->first);
 
-    for(std::vector<std::string>::iterator It2 = toErase.begin();It2 != toErase.end();It++)
-    _Properties.erase(*It2); 
-
+  for(std::vector<std::string>::iterator It2 = toErase.begin();It2 != toErase.end();It2++)
+    _Properties.erase(*It2);
 }
 
 
@@ -102,8 +101,6 @@ void DataWithPropertyBag::operator= ( const DataWithPropertyBag& New)
 {
   for( std::map<std::string,PropertyBag*>::const_iterator It = New._Properties.begin();It!=New._Properties.end();It++)
     *(_Properties[It->first]) = *(It->second);
-  
-  
 }
 
 //*************************************************************************************************************

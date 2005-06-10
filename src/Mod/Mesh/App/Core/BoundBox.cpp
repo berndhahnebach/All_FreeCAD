@@ -242,7 +242,7 @@ bool BoundBox3D::IntersectWithLine ( const Vector3D& rcBase, const Vector3D& rcD
         case 0 :  // linke und rechte Ebene
         case 1 :
           if ((IS_ON_RAY(MinY, MaxY, clVectRes.y) &&
-               IS_ON_RAY(MinZ, MaxZ, clVectRes.z)) == TRUE) 
+               IS_ON_RAY(MinZ, MaxZ, clVectRes.z)) == true)
           {
             clVect[j] = clVectRes;
             j++;
@@ -251,7 +251,7 @@ bool BoundBox3D::IntersectWithLine ( const Vector3D& rcBase, const Vector3D& rcD
         case 2 :  // obere und untere Ebene
         case 3 :
           if ((IS_ON_RAY(MinX, MaxX, clVectRes.x) &&
-               IS_ON_RAY(MinZ, MaxZ, clVectRes.z))== TRUE) 
+               IS_ON_RAY(MinZ, MaxZ, clVectRes.z))== true)
           {
             clVect[j] = clVectRes;
             j++;                     
@@ -260,7 +260,7 @@ bool BoundBox3D::IntersectWithLine ( const Vector3D& rcBase, const Vector3D& rcD
         case 4 :  // vordere und hintere Ebene
         case 5 :
           if ((IS_ON_RAY(MinX, MaxX, clVectRes.x) &&
-               IS_ON_RAY(MinY, MaxY, clVectRes.y)) == TRUE) 
+               IS_ON_RAY(MinY, MaxY, clVectRes.y)) == true) 
           {
             clVect[j] = clVectRes;
             j++;
