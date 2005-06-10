@@ -65,8 +65,9 @@ class BaseExport FileInfo
       *@endcode
       */
       std::string extension ( bool complete = false ) const;
-    /// checks if the file is readable
+    /// checks if the file exist and is readable
     bool isReadable () const;
+    /// checks if the file exist and is writable
     bool isWritable () const;
     bool isFile () const;
     bool isDir () const;

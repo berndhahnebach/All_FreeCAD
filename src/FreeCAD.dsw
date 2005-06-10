@@ -188,6 +188,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name FreeCADBase
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMainCmd
+    End Project Dependency
 }}}
 
 ###############################################################################

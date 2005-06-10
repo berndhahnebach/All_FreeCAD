@@ -62,6 +62,9 @@ public:
   
   PYFUNCDEF_D(MeshPy,pointCount)
   PYFUNCDEF_D(MeshPy,faceCount)
+  PYFUNCDEF_D(MeshPy,write)
+  PYFUNCDEF_D(MeshPy,offset)
+  PYFUNCDEF_D(MeshPy,calcVertexNormales)
 
   MeshWithProperty *_pcMesh;
 };

@@ -29,12 +29,16 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
+
 using Base::Console;
 
 
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "Core/MeshKernel.h"
+#include "Core/MeshIO.h"
+#include "Core/Stream.h"
 
 
 using namespace Mesh;
@@ -70,6 +74,9 @@ PyTypeObject MeshPy::Type = {
 PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(pointCount)
   PYMETHODEDEF(faceCount)
+  PYMETHODEDEF(write)
+  PYMETHODEDEF(offset)
+  PYMETHODEDEF(calcVertexNormales)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -154,3 +161,38 @@ PYFUNCIMP_D(MeshPy,faceCount)
   return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
 }
 
+PYFUNCIMP_D(MeshPy,write)
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+
+  Base::FileInfo File(Name);
+  
+  // checking on the file
+  if(File.exists() && !File.isWritable())
+    Py_Error(PyExc_Exception,"File not writable");
+
+  PY_TRY {
+
+    MeshSTL aReader(*(_pcMesh->getKernel()) );
+
+    // read STL file
+    FileStream str( File.filePath().c_str(), std::ios::out);
+    if ( !aReader.SaveBinary( str ) )
+      Py_Error(PyExc_Exception,"STL write failed to write");
+
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,offset)
+{
+  return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
+}
+
+PYFUNCIMP_D(MeshPy,calcVertexNormales)
+{
+  return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
+}
