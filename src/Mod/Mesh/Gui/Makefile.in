@@ -147,6 +147,7 @@ lib_LTLIBRARIES = libMeshGui.la
 libMeshGui_la_SOURCES = \
 		AppMeshGui.cpp \
 		Command.cpp \
+		Doxygen.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \
@@ -171,8 +172,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libMeshGui_la_DEPENDENCIES =
 am_libMeshGui_la_OBJECTS = libMeshGui_la-AppMeshGui.lo \
-	libMeshGui_la-Command.lo libMeshGui_la-PreCompiled.lo \
-	libMeshGui_la-ViewProvider.lo
+	libMeshGui_la-Command.lo libMeshGui_la-Doxygen.lo \
+	libMeshGui_la-PreCompiled.lo libMeshGui_la-ViewProvider.lo
 libMeshGui_la_OBJECTS = $(am_libMeshGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -180,6 +181,7 @@ depcomp = $(SHELL) $(top_srcdir)/../../depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libMeshGui_la-AppMeshGui.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-Command.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-Doxygen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -249,6 +251,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-AppMeshGui.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-Command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo@am__quote@
 
@@ -353,6 +356,39 @@ libMeshGui_la-Command.lo: Command.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-Command.Plo' tmpdepfile='$(DEPDIR)/libMeshGui_la-Command.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-Command.lo `test -f 'Command.cpp' || echo '$(srcdir)/'`Command.cpp
+
+libMeshGui_la-Doxygen.o: Doxygen.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-Doxygen.o -MD -MP -MF "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-Doxygen.o `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo" "$(DEPDIR)/libMeshGui_la-Doxygen.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Doxygen.cpp' object='libMeshGui_la-Doxygen.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-Doxygen.Po' tmpdepfile='$(DEPDIR)/libMeshGui_la-Doxygen.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-Doxygen.o `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp
+
+libMeshGui_la-Doxygen.obj: Doxygen.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-Doxygen.obj -MD -MP -MF "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-Doxygen.obj `if test -f 'Doxygen.cpp'; then $(CYGPATH_W) 'Doxygen.cpp'; else $(CYGPATH_W) '$(srcdir)/Doxygen.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo" "$(DEPDIR)/libMeshGui_la-Doxygen.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Doxygen.cpp' object='libMeshGui_la-Doxygen.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-Doxygen.Po' tmpdepfile='$(DEPDIR)/libMeshGui_la-Doxygen.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-Doxygen.obj `if test -f 'Doxygen.cpp'; then $(CYGPATH_W) 'Doxygen.cpp'; else $(CYGPATH_W) '$(srcdir)/Doxygen.cpp'; fi`
+
+libMeshGui_la-Doxygen.lo: Doxygen.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-Doxygen.lo -MD -MP -MF "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-Doxygen.lo `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo" "$(DEPDIR)/libMeshGui_la-Doxygen.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-Doxygen.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Doxygen.cpp' object='libMeshGui_la-Doxygen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-Doxygen.Plo' tmpdepfile='$(DEPDIR)/libMeshGui_la-Doxygen.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-Doxygen.lo `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp
 
 libMeshGui_la-PreCompiled.o: PreCompiled.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-PreCompiled.o -MD -MP -MF "$(DEPDIR)/libMeshGui_la-PreCompiled.Tpo" \

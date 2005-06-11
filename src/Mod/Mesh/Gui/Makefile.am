@@ -6,6 +6,7 @@ lib_LTLIBRARIES=libMeshGui.la
 libMeshGui_la_SOURCES=\
 		AppMeshGui.cpp \
 		Command.cpp \
+		Doxygen.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \

@@ -26,6 +26,15 @@
   // QT extension
 # pragma comment(lib,QTLIBNAME)
 # pragma comment(lib,INVENTORLIBNAME)
+# ifdef FC_DEBUG
+#   pragma comment(lib,"FreeCADBaseD.lib")
+#   pragma comment(lib,"FreeCADAppD.lib")
+#   pragma comment(lib,"FreeCADGuiD.lib")
+# else
+#   pragma comment(lib,"FreeCADBase.lib")
+#   pragma comment(lib,"FreeCADApp.lib")
+#   pragma comment(lib,"FreeCADGui.lib")
+# endif
 
 #else
 //#error "Dont compile this file on UNIX!"
