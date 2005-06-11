@@ -22,6 +22,13 @@
 #	pragma comment(lib,"TKIGES.lib")
 #	pragma comment(lib,"TKShHealing.lib")
 #	pragma comment(lib,"TKSTEP.lib")
+# ifdef FC_DEBUG
+#   pragma comment(lib,"FreeCADBaseD.lib")
+#   pragma comment(lib,"FreeCADAppD.lib")
+# else
+#   pragma comment(lib,"FreeCADBase.lib")
+#   pragma comment(lib,"FreeCADApp.lib")
+# endif
 #endif
 
 

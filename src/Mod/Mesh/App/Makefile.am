@@ -29,6 +29,7 @@ libMesh_la_SOURCES=\
 		AppMeshPy.cpp \
 		Delaunay.cpp \
 		Delaunay.h \
+		Doxygen.cpp \
 		FeatureMeshImportSTL.cpp \
 		FeatureMeshImportSTL.h \
 		Mesh.cpp \

@@ -170,6 +170,7 @@ libMesh_la_SOURCES = \
 		AppMeshPy.cpp \
 		Delaunay.cpp \
 		Delaunay.h \
+		Doxygen.cpp \
 		FeatureMeshImportSTL.cpp \
 		FeatureMeshImportSTL.h \
 		Mesh.cpp \
@@ -209,10 +210,10 @@ am_libMesh_la_OBJECTS = libMesh_la-BoundBox.lo libMesh_la-Definitions.lo \
 	libMesh_la-Stream.lo libMesh_la-Swap.lo libMesh_la-Tools2D.lo \
 	libMesh_la-Vector3D.lo libMesh_la-AppMesh.lo \
 	libMesh_la-AppMeshPy.lo libMesh_la-Delaunay.lo \
-	libMesh_la-FeatureMeshImportSTL.lo libMesh_la-Mesh.lo \
-	libMesh_la-MeshAlgos.lo libMesh_la-MeshFeature.lo \
-	libMesh_la-MeshFeaturePy.lo libMesh_la-MeshPy.lo \
-	libMesh_la-PreCompiled.lo
+	libMesh_la-Doxygen.lo libMesh_la-FeatureMeshImportSTL.lo \
+	libMesh_la-Mesh.lo libMesh_la-MeshAlgos.lo \
+	libMesh_la-MeshFeature.lo libMesh_la-MeshFeaturePy.lo \
+	libMesh_la-MeshPy.lo libMesh_la-PreCompiled.lo
 libMesh_la_OBJECTS = $(am_libMesh_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -223,6 +224,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-BoundBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Definitions.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Delaunay.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Doxygen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Elements.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Matrix.Plo \
@@ -308,6 +310,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-BoundBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Definitions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Delaunay.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Elements.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Matrix.Plo@am__quote@
@@ -788,6 +791,39 @@ libMesh_la-Delaunay.lo: Delaunay.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Delaunay.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-Delaunay.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Delaunay.lo `test -f 'Delaunay.cpp' || echo '$(srcdir)/'`Delaunay.cpp
+
+libMesh_la-Doxygen.o: Doxygen.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Doxygen.o -MD -MP -MF "$(DEPDIR)/libMesh_la-Doxygen.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Doxygen.o `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Doxygen.Tpo" "$(DEPDIR)/libMesh_la-Doxygen.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Doxygen.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Doxygen.cpp' object='libMesh_la-Doxygen.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Doxygen.Po' tmpdepfile='$(DEPDIR)/libMesh_la-Doxygen.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Doxygen.o `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp
+
+libMesh_la-Doxygen.obj: Doxygen.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Doxygen.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-Doxygen.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Doxygen.obj `if test -f 'Doxygen.cpp'; then $(CYGPATH_W) 'Doxygen.cpp'; else $(CYGPATH_W) '$(srcdir)/Doxygen.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Doxygen.Tpo" "$(DEPDIR)/libMesh_la-Doxygen.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Doxygen.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Doxygen.cpp' object='libMesh_la-Doxygen.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Doxygen.Po' tmpdepfile='$(DEPDIR)/libMesh_la-Doxygen.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Doxygen.obj `if test -f 'Doxygen.cpp'; then $(CYGPATH_W) 'Doxygen.cpp'; else $(CYGPATH_W) '$(srcdir)/Doxygen.cpp'; fi`
+
+libMesh_la-Doxygen.lo: Doxygen.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Doxygen.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-Doxygen.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Doxygen.lo `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Doxygen.Tpo" "$(DEPDIR)/libMesh_la-Doxygen.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Doxygen.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Doxygen.cpp' object='libMesh_la-Doxygen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Doxygen.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-Doxygen.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Doxygen.lo `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp
 
 libMesh_la-FeatureMeshImportSTL.o: FeatureMeshImportSTL.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImportSTL.o -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" \
