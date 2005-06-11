@@ -121,6 +121,20 @@ public:
   inline Vector3D CalcPoint (unsigned short usPoint) const;
   /** Returns the plane of the given side. */
   void CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& rNormal ) const;
+  /** Calculates the two points of an edge.
+   * 0. edge P0-P1      1. edge P1-P2      2. edge P2-P3
+   * 3. edge P3-P0      4. edge P4-P5      5. edge P5-P6
+   * 6. edge P6-P7      7. edge P7-P4      8. edge P0-P4
+   * 9. edge P1-P5     10. edge P2-P6     11. edge P3-P7 
+   */
+  bool  CalcDistance (unsigned short usEdge, Vector3D& rcP0, Vector3D& rcP1);
+  /** Intersection point of an inner search ray with the bounding box, built of
+   * the base \a rcVct and the direction \a rcVctDir. \a rcVct must lay inside the
+   * bounding box.
+   */
+  Vector3D IntersectionPoint (const Vector3D &rcVct, const Vector3D &rcVctDir) const;
+  /** Checks for intersection with line incl. search tolerance. */      
+  bool IsCutLine ( const Vector3D& rcBase, const Vector3D& rcDir, float fTolerance = 0.0f);
   /** Checks if this plane specified by (point,normal) cuts this box. */
   inline bool IsCutPlane (const Vector3D &rclBase, const Vector3D &rclNormal) const;
   /** Computes the intersection points of line and bounding box. */
@@ -133,6 +147,11 @@ public:
   /** Returns the side of the bounding box the ray exits. */
   BoundBox3D::SIDE GetSideFromRay (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D rcInt) const;
   
+  /**
+   * Searches for the nearest point of the bounding box. 
+   * \note Point must be inside the bounding box.
+   */
+  Vector3D NearestPoint (const Vector3D &rclPt);
   /** Projects the box onto a plane and returns a 2D box. */
   BoundBox2D ProjectBox(const ViewProjMethod *rclP) const;
 
@@ -270,8 +289,8 @@ inline Vector3D BoundBox3D::CalcPoint (unsigned short usPoint) const
 inline Vector3D BoundBox3D::CalcCenter (void) const
 {
   return Vector3D(MinX + (MaxX - MinX) / 2.0f,
-                   MinY + (MaxY - MinY) / 2.0f,
-                   MinZ + (MaxZ - MinZ) / 2.0f);
+                  MinY + (MaxY - MinY) / 2.0f,
+                  MinZ + (MaxZ - MinZ) / 2.0f);
 }
 
 inline float BoundBox3D::CalcDiagonalLength (void) const

@@ -49,7 +49,9 @@ public:
   float z; /**< z-coordinate */
   //@}
   
+  /// Construction
   inline explicit Vector3D (float fx = 0.0f, float fy = 0.0f, float fz = 0.0f);
+  /// Construction
   inline Vector3D (const Vector3D& rcVct);
 
   /** @name Operator */
@@ -110,24 +112,46 @@ public:
 
   /** @name Mathematics */
   //@{
+  /// Length of the vector.
   inline float Length (void) const;
+  /// Squared length of the vector.
+  inline float Sqr (void) const;
+  /// Set length to 1.
   void  Normalize (void);
+  /// Get angle between both vectors.
   float GetAngle (const Vector3D &rcVect) const;
+  /** Transforms this point to the coordinate system defined by origin \a rclBase, 
+   * vector \a vector rclDirX and vector \a vector rclDirY. 
+   * \note \a rclDirX must be perpendicular to \a rclDirY, i.e. \a rclDirX * \a rclDirY = 0..
+   */
   void TransformToCoordinateSystem (const Vector3D &rclBase, const Vector3D &rclDirX, const Vector3D &rclDirY);
   bool Equal(const Vector3D &rclVect) const;
+  /// Projects this point onto the plane given by the base \a rclBase and the normal \a rclNorm.
   inline RVector3D ProjToPlane (const Vector3D &rclBase, const Vector3D &rclNorm);
+  /// Projects this point onto the line given by the base \a rclPoint and the direction \a rclLine.
+  /**
+   * Projects a point \a rclPoint onto the line defined by the origin and the direction \a rclLine.
+   * The result is a vector from \a rclPoint to the point on the line. The length of this vector 
+   * is the distance from \a rclPoint to the line.
+   * Note: The resulting vector does not depend on the current vector.
+   */
   inline RVector3D ProjToLine (const Vector3D &rclPoint, const Vector3D &rclLine);
+  /** Computes the distance to the given plane. Depending on the side this point is located
+   * the distance can also be negative. The distance is positive if the point is at the same
+   * side the plane normal points to, negative otherwise.
+   */
   inline float DistanceToPlane (const Vector3D &rclBase, const Vector3D &rclNorm) const;
+  /// Computes the distance from this point to the line given by \a rclBase and \a rclDirect.
   inline float DistanceToLine (const Vector3D &rclBase, const Vector3D &rclDirect) const;
-  inline float Sqr (void) const;
   //@}
 
   /** @name Friends */
   //@{
   /// Returns the distance between two points
   friend float Distance (const Vector3D &rcVct1, const Vector3D &rcVct2);
-  /// Returns the square distance between two points
+  /// Returns the squared distance between two points
   friend float DistanceP2 (const Vector3D &rclV1, const Vector3D &rclV2);
+  /// Multiplication of scalar with vector.
   friend Vector3D operator * (float fFac, const Vector3D &rcVct);
   //@}
 };
@@ -284,24 +308,6 @@ inline Vector3D& Vector3D::ProjToLine (const Vector3D &rclPoint, const Vector3D 
   return (*this = ((((rclPoint * rclLine) / rclLine.Sqr()) * rclLine) - rclPoint));
 }
 
-inline float Distance (const Vector3D &rcVct1, 
-                       const Vector3D &rcVct2)
-{
-  return (rcVct1 - rcVct2).Length();
-}
-
-inline float DistanceP2 (const Vector3D &rclV1, 
-                         const Vector3D &rclV2)
-{
-  float x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z; 
-  return x * x + y * y + z * z;
-}
-
-inline Vector3D operator * (float fFac, const Vector3D &rcVct)
-{
-  return Vector3D(rcVct.x * fFac, rcVct.y * fFac, rcVct.z * fFac);
-}
-
 inline float Vector3D::Sqr (void) const
 {
   return (float) ((x * x) + (y * y) + (z * z));
@@ -319,6 +325,23 @@ inline void Vector3D::Set (double dX, double dY, double dZ)
   x = float(dX);
   y = float(dY);
   z = float(dZ);
+}
+
+// global functions
+inline float Distance (const Vector3D &rcVct1, const Vector3D &rcVct2)
+{
+  return (rcVct1 - rcVct2).Length();
+}
+
+inline float DistanceP2 (const Vector3D &rclV1, const Vector3D &rclV2)
+{
+  float x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z; 
+  return x * x + y * y + z * z;
+}
+
+inline Vector3D operator * (float fFac, const Vector3D &rcVct)
+{
+  return Vector3D(rcVct.x * fFac, rcVct.y * fFac, rcVct.z * fFac);
 }
 
 } // namespace Mesh

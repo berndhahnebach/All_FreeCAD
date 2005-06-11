@@ -33,13 +33,35 @@
 #include <math.h>
 
 
-
-struct NODE {float x, y, z;};
-struct TRIA {int iV[3];};
-struct QUAD {int iVer[4];};
-
 using namespace Mesh;
 
+char *upper(char * string) {
+    int i;
+    int l;
+    
+    if (string != NULL) {
+       l = strlen(string);
+       for (i=0; i<l; i++)
+	   string[i] = toupper(string[i]);
+    }
+
+  return string;
+}
+
+char *ltrim (char *psz)
+{
+  int i, sl;
+
+  if (psz) {
+     for (i = 0; (psz[i] == 0x20) || (psz[i] == 0x09); i++);
+     sl = strlen (psz + i);
+     memmove (psz, psz + i, sl);
+     psz[sl] = 0;
+  }
+  return psz;
+}
+
+// --------------------------------------------------------------
 
 MeshSTL::MeshSTL (MeshKernel &rclM)
 : _rclMesh(rclM)
@@ -53,11 +75,13 @@ bool MeshSTL::Load (FileStream &rstrIn)
   if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
     return false;
 
+  //  80 Zeichen ab Position 80 einlesen und auf Key-Woerter solid,facet,normal,vertex,endfacet,endloop testen
   rstrIn.SetPosition(80);
   if (rstrIn.Read(szBuf, 80) == false)
     return false;
   szBuf[80] = 0; 
 
+  upper(szBuf);
   if ((strstr(szBuf, "SOLID") == NULL)  && (strstr(szBuf, "FACET") == NULL)    && (strstr(szBuf, "NORMAL") == NULL) &&
       (strstr(szBuf, "VERTEX") == NULL) && (strstr(szBuf, "ENDFACET") == NULL) && (strstr(szBuf, "ENDLOOP") == NULL))
   {  // wahrscheinlich stl binaer
@@ -75,9 +99,9 @@ bool MeshSTL::Load (FileStream &rstrIn)
 
 bool MeshSTL::LoadAscii (FileStream &rstrIn)
 {
-  char            szLine[200], szKey1[200], szKey2[200];
-  unsigned long           ulVertexCt, ulCt;
-  float            fX, fY, fZ;
+  char szLine[200], szKey1[200], szKey2[200];
+  unsigned long ulVertexCt, ulCt;
+  float fX, fY, fZ;
   MeshGeomFacet clFacet;
   std::vector<MeshGeomFacet>  clFacetAry;
 
@@ -85,11 +109,13 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
     return false;
 
   ulCt = rstrIn.FileSize();
+  Base::Sequencer().start("loading...", ulCt+1);  
 
   ulVertexCt = 0;
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false))
   {
     rstrIn.ReadLine(szLine, 200);
+    upper(ltrim(szLine));
     if (strncmp(szLine, "FACET", 5) == 0)  // normale
     {
       if (sscanf(szLine, "%s %s %f %f %f", szKey1, szKey2, &fX, &fY, &fZ) == 5)
@@ -108,33 +134,38 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
       }
     }
 
+    Base::Sequencer().next();
   }
 
+  Base::Sequencer().stop();
   _rclMesh = clFacetAry;  
 
   return true;
 }
 
-
 bool MeshSTL::LoadBinary (FileStream &rstrIn)
 {
-  char                       szInfo[80];
-  Vector3D                   clVects[4];
-  unsigned short                     usAtt; 
-  unsigned long                      ulCt;
+  char szInfo[80];
+  Vector3D clVects[4];
+  unsigned short usAtt; 
+  unsigned long ulCt;
 
   if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
     return false;
 
+  // Header-Info ueberlesen
   rstrIn.Read(szInfo, sizeof(szInfo));
  
+  // Anzahl Facets
   rstrIn.Read((char*)&ulCt, sizeof(ulCt));
   if (rstrIn.IsBad() == true)
     return false;
 
+  // get file size and calculate the number of facets
   unsigned long ulSize = rstrIn.FileSize(); 
   unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long)))/50;
 
+  // compare the calculated with the read value
 	if (ulCt > ulFac)
 		return false;// not a valid STL file
 
@@ -183,16 +214,18 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
 
 bool MeshSTL::SaveAscii (FileStream &rstrOut) const
 {
-  MeshFacetIterator      clIter(_rclMesh), clEnd(_rclMesh);  
+  MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
-  unsigned long                  i, ulCtFacet;
-  char                   szBuf[200]; 
+  unsigned long i, ulCtFacet;
+  char szBuf[200]; 
 
   if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
       (_rclMesh.CountFacets() == 0))
   {
     return false;
   }
+
+  Base::Sequencer().start("saving...", _rclMesh.CountFacets() + 1);  
 
   strcpy(szBuf, "solid MESH\n");
   rstrOut.Write(szBuf, strlen(szBuf));
@@ -226,27 +259,31 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
     rstrOut.Write(szBuf, strlen(szBuf));
 
     ++clIter; 
+    Base::Sequencer().next();
   } 
 
   strcpy(szBuf, "endsolid MESH\n");
   rstrOut.Write(szBuf, strlen(szBuf));
+
+  Base::Sequencer().stop();
   
   return true;
 }
 
 bool MeshSTL::SaveBinary (FileStream &rstrOut) const
 {
-  MeshFacetIterator      clIter(_rclMesh), clEnd(_rclMesh);  
+  MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
-  unsigned long                  i, ulCtFacet;
-  unsigned short                 usAtt;
-  char                   szInfo[80];
+  unsigned long i, ulCtFacet;
+  unsigned short usAtt;
+  char szInfo[80];
 
-  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
-      (_rclMesh.CountFacets() == 0))
+  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) || (_rclMesh.CountFacets() == 0))
   {
     return false;
   }
+
+  Base::Sequencer().start("saving...", _rclMesh.CountFacets() + 1);  
  
   strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
   rstrOut.Write(szInfo, strlen(szInfo));
@@ -276,33 +313,38 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
     rstrOut << usAtt;
 
     ++clIter;
+    Base::Sequencer().next();
   }
+
+  Base::Sequencer().stop();
 
   return true;
 }
 
 bool MeshInventor::Load (FileStream &rstrIn)
 {
-  char            szLine[200];
-  unsigned long           i, ulCt, ulPoints[3];
-  long            lSeparator;
-  bool            bFlag;
-  Vector3D        clPoint;
-  float            fX, fY, fZ;
-  MeshGeomFacet          clFacet;
-  std::vector<MeshGeomFacet>  clFacetAry;
-  std::vector<Vector3D>         aclPoints;
+  char szLine[200];
+  unsigned long i, ulCt, ulPoints[3];
+  long lSeparator;
+  bool bFlag;
+  Vector3D clPoint;
+  float fX, fY, fZ;
+  MeshGeomFacet clFacet;
+  std::vector<MeshGeomFacet> clFacetAry;
+  std::vector<Vector3D> aclPoints;
 
 
   if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
     return false;
 
   ulCt = rstrIn.FileSize();
+  Base::Sequencer().start("loading...", ulCt+1);  
 ///*
   bFlag = true;
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
   {
       rstrIn.ReadLine(szLine ,200);
+      upper(ltrim(szLine));
       // read the normals
       if (strncmp(szLine, "VECTOR [", 8) == 0){
           while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
@@ -312,6 +354,8 @@ bool MeshInventor::Load (FileStream &rstrIn)
               if (sscanf(szLine, "%f %f %f", &fX, &fY, &fZ) == 3){
                   clFacet.SetNormal(Vector3D(fX, fY, fZ));
                   clFacetAry.push_back(clFacet);
+
+                  Base::Sequencer().next();
 
               }
               else{
@@ -326,6 +370,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
   {
       rstrIn.ReadLine(szLine ,200);
+      upper(ltrim(szLine));
       // read the points
       if (strncmp(szLine, "POINT [", 7) == 0){
           while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
@@ -334,6 +379,8 @@ bool MeshInventor::Load (FileStream &rstrIn)
               if (sscanf(szLine, "%f  %f  %f", &(clPoint.x), &(clPoint.y), &(clPoint.z)) == 3)
               {
                  aclPoints.push_back(clPoint);
+
+                 Base::Sequencer().next();
               }
               else{
                   bFlag = false;
@@ -347,6 +394,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
   {
       rstrIn.ReadLine(szLine ,200);
+      upper(ltrim(szLine));
       // read the points of the facets
       if (strncmp(szLine, "COORDINDEX [ ", 13) == 0){
           while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
@@ -361,6 +409,8 @@ bool MeshInventor::Load (FileStream &rstrIn)
                     clFacet._aclPoints[i] = aclPoints[ulPoints[i]];
                   }
                   clFacetAry[ulCt++] = clFacet;
+
+                  Base::Sequencer().next();
               }
               else
               {
@@ -370,18 +420,20 @@ bool MeshInventor::Load (FileStream &rstrIn)
       }
   }
 
+
+  Base::Sequencer().stop();
   _rclMesh = clFacetAry;
   return true;
 }
 
 bool MeshInventor::Save (FileStream &rstrOut) const
 {
-  MeshFacetIterator      clIter(_rclMesh), clEnd(_rclMesh);
-  MeshPointIterator      clPtIter(_rclMesh), clPtEnd(_rclMesh);
+  MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);
+  MeshPointIterator clPtIter(_rclMesh), clPtEnd(_rclMesh);
   const MeshGeomFacet* pclFacet;
-  MeshFacet              clFacet;
-  unsigned long                  i, ulCtFacet, ulAllFacets = _rclMesh.CountFacets();
-  char                   szBuf[200]; 
+  MeshFacet clFacet;
+  unsigned long i, ulCtFacet, ulAllFacets = _rclMesh.CountFacets();
+  char szBuf[200]; 
 
   if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
       (_rclMesh.CountFacets() == 0))
@@ -389,8 +441,12 @@ bool MeshInventor::Save (FileStream &rstrOut) const
     return false;
   }
 
+  Base::Sequencer().start("saving...", _rclMesh.CountFacets() + 1);  
+
   // Einleitung
   strcpy(szBuf, "#Inventor V2.1 ascii\n\n");
+  rstrOut.Write(szBuf, strlen(szBuf));
+  strcpy(szBuf, "FreeCAD\n");
   rstrOut.Write(szBuf, strlen(szBuf));
   sprintf(szBuf, "# Triangulation Data contains %lu Points and %lu Facets\n",
       _rclMesh.CountPoints(), _rclMesh.CountFacets());
@@ -426,6 +482,8 @@ bool MeshInventor::Save (FileStream &rstrOut) const
               pclFacet->GetNormal().y, pclFacet->GetNormal().z);
       rstrOut.Write(szBuf, strlen(szBuf));
       ++clIter;
+
+      Base::Sequencer().next();
   }
   strcpy(szBuf, "\n]\n}\n");
   rstrOut.Write(szBuf, strlen(szBuf));
@@ -449,6 +507,8 @@ bool MeshInventor::Save (FileStream &rstrOut) const
       sprintf(szBuf, ",\n%.6f  %.6f  %.6f", clPtIter->x, clPtIter->y, clPtIter->z);
       rstrOut.Write(szBuf, strlen(szBuf));
       ++clPtIter;
+
+      Base::Sequencer().next();
   }
   strcpy(szBuf, "\n]\n}\n");
   rstrOut.Write(szBuf, strlen(szBuf));
@@ -482,6 +542,8 @@ bool MeshInventor::Save (FileStream &rstrOut) const
 
   strcpy(szBuf, "#End of Triangulation Data \n  }\n\n");
   rstrOut.Write(szBuf, strlen(szBuf));
+
+  Base::Sequencer().stop();
 
   return true;
 }

@@ -21,13 +21,15 @@
  ***************************************************************************/
 
 
-#ifndef __MESH_ELEMENTS_HXX__
-#define __MESH_ELEMENTS_HXX__
+#ifndef MESH_ELEMENTS_H
+#define MESH_ELEMENTS_H
 
-#include <vector>
+#ifndef _PreComp_
+# include <vector>
+#endif
 
 #include "Definitions.h"
-#include "BoundBox.h"  // Added by ClassView
+#include "BoundBox.h"
 
 
 namespace Mesh {
@@ -35,615 +37,536 @@ namespace Mesh {
 class Vector3D;
 class MeshHelpEdge;
 class MeshPoint;
+
+/**
+ * Helper class providing an operator for comparison 
+ * of two edges. The class holds the point indices of the
+ * underlying edge.
+ */
 class AppMeshExport MeshHelpEdge
 {
-    public:
-    inline bool operator == (const MeshHelpEdge &rclEdge) const;
-
-    public:
-    unsigned long   _ulIndex[2];  // point indicies
+public:
+  inline bool operator == (const MeshHelpEdge &rclEdge) const;
+  unsigned long   _ulIndex[2];  // point indices
 };
 
-
+/**
+ * Structure that holds the facet index with the two corner point
+ * indices of the facet's orientation this edge is attached to.
+ */
 class AppMeshExport MeshIndexEdge
 {
-    public:
-    unsigned long  _ulFacetIndex;  // Facet Index
-    public:
-    unsigned short _ausCorner[2];  // Eckpunkt-Indizies des Facet
+public:
+  unsigned long  _ulFacetIndex;  // Facet index
+  unsigned short _ausCorner[2];  // corner point indices of the facet
 };
 
-
-// stellt ein Punkt in der Mesh-Datenstruktur dar. Erbt von der Klasse Vector3D   
-// und hat zusätzlich noch einen Flagstatus und freiverwendbare Properties. Die    
-// Flags werden über die Methoden Set-/Reset-/Is-Flag modifiziert. Auf die         
-// Properties ist wahlfreier Zugriff möglich. (siehe auf Text Properties)
-// Ein Punkt kann einen (temporär) ungültigen Zustand haben (z.B. beim Löschen von 
-// mehreren Punkte), darf aber im allgemeinen nicht gesetzt sein; d.h. immer nur   
-// innerhalb eines Mesh-internen Alogrihtmus verwendbar.
-class MeshPoint: public Vector3D
+/**
+ * The MeshPoint class represents a point in the mesh data structure. The class inherits from
+ * Vector3D and provides some additional information such as flag state and property value.
+ * The flags can be modified by the Set() and Reset() and queried by IsFlag().
+ * A point can temporary be in an invalid state (e.g during deletion of several points), but
+ * must not be set in general, i.e. always usable within a mesh-internal algorithm.
+ */
+class AppMeshExport MeshPoint: public Vector3D
 {
-    public:
-    enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
+public:
+  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
 
-    public:
-    void SetFlag (TFlagType tF)
-    { _ucFlag |= (unsigned char)(tF); }
-    public:
-    void ResetFlag (TFlagType tF)
-    { _ucFlag &= ~(unsigned char)(tF); }
-    public:
-    bool IsFlag (TFlagType tF) const
-    { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF);  }
-    public:
-    MeshPoint (void) : _ucFlag(0), _ulProp(0),_ulProbeProp(0)
-    {}
-    // -------------------------------------------------------------------
-    // DES: loescht das Facet an der Pos. pIter aus dem Array. Die Nachbar-
-    //   Indizies der anderen Facets werden entspr. angepasst.
-    // PAR: pIter:  zu loeschendes Facet
-    // RET: void
-    // --------------------------------------------------------------------
-    public:
-    inline MeshPoint (const Vector3D &rclPt);
+  /** @name Construction */
+  //@{
+  MeshPoint (void) : _ucFlag(0), _ulProp(0) { }
+  inline MeshPoint (const Vector3D &rclPt);
+  inline MeshPoint (const MeshPoint &rclPt);
+  ~MeshPoint (void) { }
+  //@}
 
-    public:
-    inline MeshPoint (const MeshPoint &rclPt);
+public:
+  /** @name Flag state */
+  //@{
+  void SetFlag (TFlagType tF)
+  { _ucFlag |= (unsigned char)(tF); }
+  void ResetFlag (TFlagType tF)
+  { _ucFlag &= ~(unsigned char)(tF); }
+  bool IsFlag (TFlagType tF) const
+  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF);  }
+  void ResetInvalid (void)
+  { ResetFlag(INVALID); }
+  void  SetInvalid (void)
+  { SetFlag(INVALID); }
+  bool IsValid (void) const
+  { return !IsFlag(INVALID); }
+  //@}
 
-    public:
-    ~MeshPoint (void)
-    {}
+  // Assignment
+  inline MeshPoint& operator = (const MeshPoint &rclPt);
 
-    public:
-    inline MeshPoint& operator = (const MeshPoint &rclPt);
+  // compare operator
+  inline bool operator == (const MeshPoint &rclPt) const;
+  inline bool operator == (const Vector3D &rclV) const;
+  inline bool operator < (const MeshPoint &rclPt) const;
 
-    // compare operator
-    public:
-    inline bool operator == (const MeshPoint &rclPt) const;
-    public:
-    inline bool operator == (const Vector3D &rclV) const;
-    friend DataStream& operator << (DataStream &rclOut, const MeshPoint &rclPt)
-    {
-      return rclOut << rclPt.x << rclPt.y << rclPt.z;
-    }
-    friend DataStream& operator >> (DataStream &rclIn, MeshPoint &rclPt)
-    {
-      return rclIn >> rclPt.x >> rclPt.y >> rclPt.z;
-    }
+  friend DataStream& operator << (DataStream &rclOut, const MeshPoint &rclPt)
+  {
+    return rclOut << rclPt.x << rclPt.y << rclPt.z;
+  }
+  friend DataStream& operator >> (DataStream &rclIn, MeshPoint &rclPt)
+  {
+    return rclIn >> rclPt.x >> rclPt.y >> rclPt.z;
+  }
 
-    public:
-    inline bool operator < (const MeshPoint &rclPt) const;
-
-    public:
-    void ResetInvalid (void)
-    { ResetFlag(INVALID); }
-
-    public:
-    void  SetInvalid (void)
-    { SetFlag(INVALID); }
-    public:
-    bool IsValid (void) const
-    { return !IsFlag(INVALID); }
-    // Flag, kann mit den Methoden XXXFlag modifizert werden.
-    public:
-    unsigned char _ucFlag;
-    public:
-    union 
-    {
-      unsigned long   _ulProp;
-      float    _fProp;
-      void    *_pProp;
-    };
-    unsigned long		_ulProbeProp;
+public:
+  unsigned char _ucFlag; /**< Flag member */
+  unsigned long   _ulProp; /**< Free usable property */
 };
 
-// Stellt eine Dreieckskante in der Mesh-Datenstruktur dar. Ein Kante indiziert    
-// jeweils auf ein Dreieck in dem Facetarray. Zusätzlich ich die Kantenfolgennummer
-// (siehe Beschreibung MeshFacet) des indizierten Dreiecks abgelegt. Beide Daten  
-// werden in einem unsigned long (unsigned long) durch Binärverkettung abgelegt. Dabei    
-// entsprechen die 30 oberen Bits dem Dreichsindex in dem Facetarry, die 2 unteren 
-// Bits der Kantenfolgennummer. Folgendes Beispiel mag dies verdeutlichen.
-// 
-// Eine Kante indiziert das Dreieck mit dem Index 3 und der Kantenfolgennummer 1.  
-// Der Wert wird dann generiert durch
-// 3 << 2 | 1  ===>  0,1 Bit = Kantenfolgenummer  2-32 Bit = Index
-// 
-// Es stehen verschiedene Methoden zum Setzen und Auslesen des                     
-// Index,Kantenfolgenummer zu Verfügung.
-// Ausserdem hat eine Kante noch einen Flagstatus der über die üblichen Methode    
-// modifiziert werden kann.
+/**
+ * The MeshEdge class represents an edge in the mesh data-structure. Each edge
+ * indexes to exactly one facet in the facet array. Additionally the number of edge order
+ * of the indexed facet is stored (@ref MeshFacet).
+ * Both values are stored in an "unsigned long" through binary concatenation. The first 2
+ * bits represent the number of edge order and the other 30 bits represent the facet index.
+ * See following example for illustration:
+ * An edge indexes the facet with index 3 with the number of edge order 1:
+ * The resulting value is calculated by
+ * 3 << 2 | 1 ===> 0,1 Bit (number of edge order) 2-31 Bit (facet index).
+ * This class provides several methods to set or get the index or number of edge order.
+ * Moreover the class provides methods to modify/read the flag state of an edge.
+ */
 class MeshEdge
 {
-    public:
-    enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
-    public:
-    void SetFlag (TFlagType tF)
-    { _ucFlag |= (unsigned char)(tF); }
-    public:
-    void ResetFlag (TFlagType tF)
-    { _ucFlag &= ~(unsigned char)(tF); }
-    public:
-    bool IsFlag (TFlagType tF) const
-    { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
+public:
+  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
 
-    public:
-    void ResetInvalid (void)
-    { ResetFlag(INVALID); }
+  /** @name Construction */
+  //@{
+  MeshEdge (void) : _ulIndex(0) { }
+  MeshEdge (const MeshEdge &rclE) : _ulIndex(rclE._ulIndex), _ucFlag(rclE._ucFlag) { }
+  MeshEdge (unsigned long ulI) : _ulIndex(ulI) { } 
+  MeshEdge (unsigned long ulFInd, unsigned long ulSide) : _ulIndex((ulFInd << 2) | (ulSide & 3)), _ucFlag(0) { }
+  //@}
 
-    public:
-    void  SetInvalid (void)
-    { SetFlag(INVALID); }
-
-    public:
-    bool IsValid (void) const
-    { return !IsFlag(INVALID); }
+public:
+  /** @name Flag state */
+  //@{
+  void SetFlag (TFlagType tF)
+  { _ucFlag |= (unsigned char)(tF); }
+  void ResetFlag (TFlagType tF)
+  { _ucFlag &= ~(unsigned char)(tF); }
+  bool IsFlag (TFlagType tF) const
+  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
+  void ResetInvalid (void)
+  { ResetFlag(INVALID); }
+  void  SetInvalid (void)
+  { SetFlag(INVALID); }
+  bool IsValid (void) const
+  { return !IsFlag(INVALID); }
+  //@}
  
-    public:
-    MeshEdge (void) : _ulIndex(0) 
-    {}
+  // Assignment
+  inline MeshEdge& operator = (const MeshEdge &rclE);
 
-    public:
-    MeshEdge (const MeshEdge &rclE) : _ulIndex(rclE._ulIndex), _ucFlag(rclE._ucFlag)
-    {}
+  // operators
+  unsigned long operator () (void)
+  { return _ulIndex; }
+  bool operator < (const MeshEdge &rclM) const
+  { return _ulIndex < rclM._ulIndex; }
+  bool operator > (const MeshEdge &rclM) const
+  { return _ulIndex > rclM._ulIndex; }
+  bool operator == (const MeshEdge &rclM) const
+  { return _ulIndex == rclM._ulIndex; }
+  
+  friend DataStream& operator << (DataStream &rclOut, const MeshEdge &rclE)
+  {
+    return rclOut << rclE._ulIndex;
+  }
+  friend DataStream& operator >> (DataStream &rclIn, MeshEdge &rclE)
+  {
+    return rclIn >> rclE._ulIndex;
+  }
 
-    public:
-    MeshEdge (unsigned long ulI) : _ulIndex(ulI) 
-    {}
-    public:
-    MeshEdge (unsigned long ulFInd, unsigned long ulSide) : _ulIndex((ulFInd << 2) | (ulSide & 3)), _ucFlag(0)
-    {}
-   
-    public:
-    inline MeshEdge& operator = (const MeshEdge &rclE);
+  /** @name Setters/Getters */
+  //@{
+  /// Sets index and edge-number
+  void Set (unsigned long ulFInd, unsigned long ulSide)
+  { _ulIndex = (ulFInd << 2) | (ulSide & 3); }
+  /// Returns the facet index
+  unsigned long  Index (void) const
+  { return _ulIndex >> 2; }
+  /// Returns the edge-number of the facet
+  unsigned long  Side (void) const
+  { return _ulIndex & 3; }
+  //@}
 
-    // operators
-    public:
-    unsigned long operator () (void)
-    { return _ulIndex; }
-    public:
-    bool operator < (const MeshEdge &rclM) const
-    { return _ulIndex < rclM._ulIndex; }
-    public:
-    bool operator > (const MeshEdge &rclM) const
-    { return _ulIndex > rclM._ulIndex; }
-    public:
-    bool operator == (const MeshEdge &rclM) const
-    { return _ulIndex == rclM._ulIndex; }
-    friend DataStream& operator << (DataStream &rclOut, const MeshEdge &rclE)
-    {
-      return rclOut << rclE._ulIndex;
-    }
-    friend DataStream& operator >> (DataStream &rclIn, MeshEdge &rclE)
-    {
-      return rclIn >> rclE._ulIndex;
-    }
-    // set index and edge-number
-    public:
-    void Set (unsigned long ulFInd, unsigned long ulSide)
-    { _ulIndex = (ulFInd << 2) | (ulSide & 3); }
-    // return the facet index
-    public:
-    unsigned long  Index (void) const
-    { return _ulIndex >> 2; }
-    // return the edge-number of the facet
-    public:
-    unsigned long  Side (void) const
-    { return _ulIndex & 3; }
-    // index and edge-number
-    public:
-    unsigned long  _ulIndex;
-    // Flag, wird über die Methoden Set-/Reset-/Is-Flag modifiziert
-    public:
-    unsigned char _ucFlag;
+public:
+  unsigned long  _ulIndex;/**< Index and edge-number */
+  unsigned char _ucFlag;/**< Flag member */
 };
 
+/**
+ * The MeshGeomEdge class is geometric counterpart to MeshEdge that holds the 
+ * geometric data points of an edge.
+ */
 class AppMeshExport MeshGeomEdge
 {
-    public:
-    MeshGeomEdge (void) : _bBorder(false)
-    {}
+public:
+  MeshGeomEdge (void) : _bBorder(false) {}
 
-    public:
-    Vector3D _aclPoints[2];  // Eckpunkte
-    public:
-    bool     _bBorder;       // TRUE: Grenzkante
+  bool IsFlag (MeshEdge::TFlagType tF) const
+  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
 
-    public:
-    unsigned char _ucFlag;
-
-    public:
-    bool IsFlag (MeshEdge::TFlagType tF) const
-    { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
-
+public:
+  Vector3D _aclPoints[2];  /**< Corner points */
+  bool     _bBorder;       /**< Set to true if border edge */
+  unsigned char _ucFlag; /**<  Flag member */
 };
 
-class CRSGeoFacetModel;
+/**
+ * The MeshFacet class represent a triangle facet in the mesh data.structure. A facet indexes
+ * three neighbour facets and also three corner points.
+ * This class only keeps topologic information but no geometric information at all.
+ * 
+ * Here are the most important conventions concerning the facet's orientation:
+ * \li neighbour or edge number of 0 is defined by corner 0 and 1
+ * \li neighbour or edge number of 1 is defined by corner 1 and 2
+ * \li neighbour or edge number of 2 is defined by corner 2 and 0
+ * \li neighbour index is set to ULONG_MAX if there is no neighbour facet
+ */
 class MeshFacet
 {
-    public:
-    enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
-    public:
-    void SetFlag (TFlagType tF)
-    { _ucFlag |= (unsigned char)(tF); }
-    public:
-    void ResetFlag (TFlagType tF)
-    { _ucFlag &= ~(unsigned char)(tF); }
-    public:
-    bool IsFlag (TFlagType tF) const
-    { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
-    public:
-    inline MeshFacet (void);
+public:
+  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
 
-    public:
-    inline MeshFacet(const MeshFacet &rclF);
+public:
+  /** @name Construction */
+  //@{
+  inline MeshFacet (void);
+  inline MeshFacet(const MeshFacet &rclF);
+  ~MeshFacet (void) { }
+  //@}
 
-    public:
-    ~MeshFacet (void)
-    {}
+  /** @name Flag state */
+  //@{
+  void SetFlag (TFlagType tF)
+  { _ucFlag |= (unsigned char)(tF); }
+  void ResetFlag (TFlagType tF)
+  { _ucFlag &= ~(unsigned char)(tF); }
+  bool IsFlag (TFlagType tF) const
+  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
+  void ResetInvalid (void)
+  { ResetFlag(INVALID); }
+  /**
+   * Marks a facet as invalid. Should be used only temporary from within an algorithm
+   * (e.g. deletion of several facets) but must not be set permanently.
+   * From outside the data-structure must not have invalid facets.
+   */
+  void  SetInvalid (void)
+  { SetFlag(INVALID); }
+  bool IsValid (void) const
+  { return !IsFlag(INVALID); }
+  //@}
 
-    public:
-    inline MeshFacet& operator = (const MeshFacet &rclF);
+  // Assignment
+  inline MeshFacet& operator = (const MeshFacet &rclF);
 
-    friend DataStream& operator << (DataStream &rclOut, const MeshFacet &rclF)
-    {
-      return rclOut << rclF._aulNeighbours[0] << rclF._aulNeighbours[1] << rclF._aulNeighbours[2] <<
-                       rclF._aulPoints[0]     << rclF._aulPoints[1]     << rclF._aulPoints[2] <<
-                       rclF._ucFlag;
-    }
-    friend DataStream& operator >> (DataStream &rclIn, MeshFacet &rclF)
-    {
-      return rclIn >> rclF._aulNeighbours[0] >> rclF._aulNeighbours[1] >> rclF._aulNeighbours[2] >>
-                      rclF._aulPoints[0]     >> rclF._aulPoints[1]     >> rclF._aulPoints[2] >>
-                      rclF._ucFlag;
-    }
-    // getters, setters
-    public:
-    inline void GetEdge (unsigned short usSide, MeshHelpEdge &rclEdge) const;
-    // ermittelt die Kantenfolgenummer des Facets dessen Kante gemeinsam ist dem       
-    // übergebenen Nachbar(als Index).
+  friend DataStream& operator << (DataStream &rclOut, const MeshFacet &rclF)
+  {
+    return rclOut << rclF._aulNeighbours[0] << rclF._aulNeighbours[1] << rclF._aulNeighbours[2] <<
+                     rclF._aulPoints[0]     << rclF._aulPoints[1]     << rclF._aulPoints[2] <<
+                     rclF._ucFlag;
+  }
+  friend DataStream& operator >> (DataStream &rclIn, MeshFacet &rclF)
+  {
+    return rclIn >> rclF._aulNeighbours[0] >> rclF._aulNeighbours[1] >> rclF._aulNeighbours[2] >>
+                    rclF._aulPoints[0]     >> rclF._aulPoints[1]     >> rclF._aulPoints[2] >>
+                    rclF._ucFlag;
+  }
 
-    // ermittelt die Kantenfolgenummer des Facets dessen Kante gemeinsam ist dem       
-    // übergebenen Nachbar(als Index).
-    public:
-    inline std::pair<unsigned long, unsigned long> GetEdge (unsigned short usSide) const;
+  /**
+   * Returns the indices of the corner points of the given edge number. 
+   */
+  inline void GetEdge (unsigned short usSide, MeshHelpEdge &rclEdge) const;
+  /**
+   * Returns the indices of the corner points of the given edge number. 
+   */
+  inline std::pair<unsigned long, unsigned long> GetEdge (unsigned short usSide) const;
+  /**
+   * Returns the edge-number to the given index of neighbour facet.
+   * If \a ulNIndex is not a neighbour USHRT_MAX is returned.
+   */
+  inline unsigned short Side (unsigned long ulNIndex) const;
+  /**
+   * Returns the edge-number defined by two points. If one point is
+   * not a corner point USHRT_MAX is returned.
+   */
+  inline unsigned short Side (unsigned long ulP0, unsigned long P1) const;
+  /**
+   * Replaces the index of the corner point that is equal to \a ulOrig
+   * by \a ulNew. If the facet does not have a corner point with this index
+   * nothing happens.
+   */
+  inline void Transpose (unsigned long ulOrig, unsigned long ulNew);
+  /**
+   * Decrement the index for each corner point that is higher than \a ulIndex.
+   */
+  inline void Decrement (unsigned long ulIndex);
+  /**
+   * Replaces the index of the neighbour facet that is equal to \a ulOrig
+   * by \a ulNew. If the facet does not have a neighbourt with this index
+   * nothing happens.
+   */
+  inline void ReplaceNeighbour (unsigned long ulOrig, unsigned long ulNew);
+  /**
+   * Checks if the neighbour exists at the given edge-number.
+   */
+  bool HasNeighbour (unsigned short usSide) const
+  { return (_aulNeighbours[usSide] != ULONG_MAX); }
+  /** Flips the orientation of the facet. The edge array must be adjusted. */
+  void FlipNormal (void)
+  {
+    std::swap(_aulPoints[1], _aulPoints[2]);
+    std::swap(_aulNeighbours[0], _aulNeighbours[2]);
+  }
 
-    public:
-    inline unsigned short Side (unsigned long ulNIndex) const;
-
-    // ermittelt Kantennummer aus den Eckpunkten(-indizes)
-    public:
-    inline unsigned short Side (unsigned long ulP0, unsigned long P1) const;
-
-    // transpose point index
-    public:
-    inline void Transpose (unsigned long ulOrig, unsigned long ulNew);
-    // decrement index
-    public:
-    inline void Decrement (unsigned long ulIndex);
-    // replace the neighbour index
-    public:
-    inline void ReplaceNeighbour (unsigned long ulOrig, unsigned long ulNew);
-    // Abfrage, ob das Facets an der entspr. Kante (nach Kantenfolgenummer) ein        
-    // Nachbar besitzt.
-    public:
-    bool HasNeighbour (unsigned short usSide) const
-    { return (_aulNeighbours[usSide] != ULONG_MAX); }
-
-    public:
-    void ResetInvalid (void)
-    { ResetFlag(INVALID); }
-
-    // Dreieck ungueltig setzen, bzw Abfrage. Sollte nur innerhalb eines Algorithmus   
-    // verwendet werden. (z.B. beim gleichzeitigen Löschen von mehreren Facets). Die   
-    // Datenstruktur darf nach aussen keine ungültigen Facets enthalten.
-
-    public:
-    void  SetInvalid (void)
-    { SetFlag(INVALID); }
-    // siehe SetInvalid Methode
-    public:
-    bool IsValid (void) const
-    { return !IsFlag(INVALID); }
-    // umdrehen der Normal (genauer Umlaufrichtung). Die Kantenarray muss nach         
-    // umdrehen von Normalen neu aufgebaut werden, bzw. muss die entspr. Kante         
-    // korrigiert werden.
-    public:
-    void FlipNormal (void)
-    {
-      std::swap(_aulPoints[1], _aulPoints[2]);
-      std::swap(_aulNeighbours[0], _aulNeighbours[2]);
-    }
-
-    public:
-    unsigned char _ucFlag;
-    public:
-    union 
-    {
-      unsigned long   _ulProp;
-      float    _fProp;
-      unsigned short  _usProp;
-      void    *_pProp;
-    };
-    unsigned long				_ulProbeProp;
-	CRSGeoFacetModel * _pclGeoFacetModel;
-    public:
-    unsigned long      _aulPoints[3];     // Indizies Eckpunkte
-    public:
-    unsigned long      _aulNeighbours[3]; // Indizies Nachbar-Facets
-
+public:
+  unsigned char _ucFlag; /**< Flag member. */
+  unsigned long _ulProp; /**< Free usable property. */
+  unsigned long _aulPoints[3];     /**< Indices of corner points. */
+  unsigned long _aulNeighbours[3]; /**< Indices of neighbour facets. */
 };
 
-
+/**
+ * The MeshGeomFacet class is geometric counterpart to MeshFacet that holds the 
+ * geometric data points of a triangle.
+ */
 class AppMeshExport MeshGeomFacet 
 {
-    public:
-    MeshGeomFacet (void) : _bNormalCalculated(false)
-    {}
-    public:
-    ~MeshGeomFacet (void)
-    {}
-    // -------------------------------------------------------------------
-    // DES: Ueberprueft, ob der Punkt dem Facet zugeordnet werden kann. Ein
-    //   Punkt gehoert einem Facet wenn der Abstand zur Dreiecksflaeche kleiner
-    //   fDistance ist und wenn sich der Punkt innerhalb des Dreiecks befindet.
-    // PAR: rclPoint:  Punkt
-    //      fDistance: max. Abstand zur Dreiecksflaeche
-    // RET: bool: TRUE, wenn Punkt zum Dreieck gehoert
-    // --------------------------------------------------------------------
-    public:
-    bool IsPointOf (const Vector3D &rclPoint, float fDistance) const;
-    // distance between point and facet-plane
-    public:
-    inline float Distance (const Vector3D &rclPoint) const;
-    // -------------------------------------------------------------------
-    // DES: Ausdehnen des Facets
-    // PAR: fDist: neuer Kanten-Abstand
-    // RET: void:
-    // --------------------------------------------------------------------
-    public:
-    void Enlarge (float fDist);
-    // calculate normal form points
-    public:
-    inline void CalcNormal (void);
-    // arrange normal
-    public:
-    inline void ArrangeNormal (const Vector3D &rclN);
+public:
+  /** @name Construction */
+  //@{
+  MeshGeomFacet (void) : _bNormalCalculated(false) { }
+  /// Destruction
+  ~MeshGeomFacet (void) { }
+  //@}
 
-    // Umlaufrichtung der Eckpunkte an Normal anpassen
-    public:
-    inline void AdjustCirculationDirection (void);
+public:
+  /**
+   * Checks if the point is part of the facet. A point is regarded as part
+   * of a facet if the distance is lower \s fDistance and the point is inside
+   * the triangle.
+   */
+  bool IsPointOf (const Vector3D &rclPoint, float fDistance) const;
+  /**
+   * Calculates the distance of a point to the triangle.
+   */
+  inline float Distance (const Vector3D &rclPoint) const;
+  /**
+   * Enlarges the triangle.
+   */
+  void Enlarge (float fDist);
+  /**
+   * Calculates the facets normal for storing internally.
+   */
+  inline void CalcNormal (void);
+  /**
+   * Arrange the facets normal so the both vectors have the same orientation.
+   */
+  inline void ArrangeNormal (const Vector3D &rclN);
+  /**
+   * Adjusts the facet's orientation to its normal.
+   */
+  inline void AdjustCirculationDirection (void);
+  /** Checks if the normal is not yet calculated. */
+  void NormalInvalid (void) { _bNormalCalculated = false; }
+  /** Query the flag state of the facet. */
+  bool IsFlag (MeshFacet::TFlagType tF) const
+  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
+  /** Calculates the facet's gravity point. */
+  inline Vector3D GetGravityPoint (void) const;
+  /** Returns the normal of the facet. */
+  inline Vector3D GetNormal (void) const;
+  /** Sets the facet's normal. */
+  inline void SetNormal (const Vector3D &rclNormal);
+  /** Returns the wrapping bounding box. */
+  inline BoundBox3D GetBoundBox (void) const;
 
-    public:
-      void NormalInvalid (void) { _bNormalCalculated = false; }
+protected:
+  Vector3D  _clNormal; /**< Normal of the facet. */
+  bool  _bNormalCalculated; /**< True if the normal is already calculated. */
 
-    public:
-    bool IsFlag (MeshFacet::TFlagType tF) const
-    { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
-
-    public:
-    inline Vector3D GetGravityPoint (void) const;
-
-    public:
-    inline Vector3D GetNormal (void) const;
-    inline void      SetNormal (const Vector3D &rclNormal);
-
-    protected:
-    Vector3D  _clNormal;
-  
-    protected:
-    bool  _bNormalCalculated;
-
-    public:
-    Vector3D  _aclPoints[3];
-      public:
-      inline BoundBox3D GetBoundBox (void) const;
-
-    public:
-    unsigned char _ucFlag;
-
-    union 
-    {
-      unsigned long   _ulProp;
-      float    _fProp;
-      void    *_pProp;
-    };
+public:
+  Vector3D  _aclPoints[3]; /**< Geometric corner points. */
+  unsigned char _ucFlag; /**< Flag property */
+  unsigned long   _ulProp; /**< Free usable property. */
 };
 
-
-// verwaltet alle Punkte in der Mesh-Datenstruktur
 typedef  std::vector<MeshPoint>  TMeshPointArray;
+/**
+ * Stores all data points of the mesh structure.
+ */
 class MeshPointArray: public TMeshPointArray
 {
-  public:
-    typedef std::vector<MeshPoint>::iterator        _TIterator;
-    typedef std::vector<MeshPoint>::const_iterator  _TConstIterator;
+public:
+  // Iterator interface
+  typedef std::vector<MeshPoint>::iterator        _TIterator;
+  typedef std::vector<MeshPoint>::const_iterator  _TConstIterator;
 
-    // setzen eines Flags für alle Punkte
-    public:
-    void SetFlag (MeshPoint::TFlagType tF);
-    
-    // rücksetzen eines Flags für alle Punkte
-    public:
-    void ResetFlag (MeshPoint::TFlagType tF);
+  /** @name Construction */
+  //@{
+  // constructor
+  MeshPointArray (void) { }
+  // constructor
+  MeshPointArray (unsigned long ulSize) : TMeshPointArray(ulSize) { }
+  // Destructor
+  ~MeshPointArray (void) { }
+  //@}
 
-     public:
-     void ResetInvalid (void);
-    
-     public:
-     void SetProperty (unsigned long ulVal);
+  /** @name Flag state */
+  //@{
+  /// Sets the flag for all points
+  void SetFlag (MeshPoint::TFlagType tF);
+  /// Resets the flag for all points
+  void ResetFlag (MeshPoint::TFlagType tF);
+  /// Sets all points invalid
+  void ResetInvalid (void);
+  /// Sets the property for all points
+  void SetProperty (unsigned long ulVal);
+  //@}
 
-    // constructors, destructor
-    public:
-    MeshPointArray (void)
-    {}
-
-    public:
-    MeshPointArray (unsigned long ulSize) : TMeshPointArray(ulSize)
-    {}
-    public:
-    ~MeshPointArray (void)
-    {}
-
-    public:
-    MeshPointArray& operator = (const MeshPointArray &rclPAry);
-
-    // -------------------------------------------------------------------
-    // DES: sucht den zugehoerigen Index des Punkts. Zwei Punkte sind gleich,
-    //   wenn sich der Abstand den minimalen Wert (s. definitions.hxx) 
-    //   unterschreitet
-    // PAR:  rclPoint:  Punkt
-    // RET:  unsigned long:    Index, ULONG_MAX wenn kein Index gefunden
-    // --------------------------------------------------------------------
-    public:
-    unsigned long Get (const MeshPoint &rclPoint);
-    // -------------------------------------------------------------------
-    // DES: gibt den Index des Punktes zurueck, bzw. fuegt einer neuer Punkt
-    //   an und gibt dessen Index an. Zwei Punkte sind gleich wenn der Abstand
-    //   den minimalen Abstand (s. definitions.hxx) unterschreitet
-    // PAR:  rclPoint:  Punkt
-    // RET:  unsigned long:    Index
-    // --------------------------------------------------------------------
-    public:
-    unsigned long GetOrAddIndex (const MeshPoint &rclPoint);
+  // Assignment
+  MeshPointArray& operator = (const MeshPointArray &rclPAry);
+  /**
+   * Searches for the first point index  Two points are equal if the distance is less
+   * than FLOAT_EPS. If no such points is found ULONG_MAX is returned. 
+   */
+  unsigned long Get (const MeshPoint &rclPoint);
+  /**
+   * Searches for the first point index  Two points are equal if the distance is less
+   * than FLOAT_EPS. If no such points is found the point is added to the array at end
+   * and its index is returned. 
+   */
+  unsigned long GetOrAddIndex (const MeshPoint &rclPoint);
 };
 
-// verwalten der Kanten in der Mesh-Datenstruktur
 typedef std::vector<MeshEdge> TMeshEdgeArray;
 
+/**
+ * Stores all edges of the mesh data-structure.
+ */
 class MeshEdgeArray: public TMeshEdgeArray
 {
-  public:
-    typedef std::vector<MeshEdge>::iterator        _TIterator;
-    typedef std::vector<MeshEdge>::const_iterator  _TConstIterator;
+public:
+  // Iterator interface
+  typedef std::vector<MeshEdge>::iterator        _TIterator;
+  typedef std::vector<MeshEdge>::const_iterator  _TConstIterator;
+  
+public:
+  /** @name Construction */
+  //@{
+  /// constructor
+  MeshEdgeArray (void) { }
+  /// constructor
+  MeshEdgeArray (unsigned long ulSize) : TMeshEdgeArray(ulSize) { }
+  /// destructor
+  ~MeshEdgeArray (void) { }
+  //@}
 
-    // setzen eines Flags für alle Kanten
-    public:
-    void SetFlag (MeshEdge::TFlagType tF);
-    
-    // rücksetzen eines Flags für alle Kanten
-    public:
-    void ResetFlag (MeshEdge::TFlagType tF);
-    
-    // constructors, destructor
-    public:
-    MeshEdgeArray (void)
-    {}
-    
-    public:
-    MeshEdgeArray (unsigned long ulSize) : TMeshEdgeArray(ulSize)
-    {}
+  /** @name Flag state */
+  //@{
+  /// Sets the flag for all edges. 
+  void SetFlag (MeshEdge::TFlagType tF);
+  /// Resets the flag for all edges. 
+  void ResetFlag (MeshEdge::TFlagType tF);
+  //@}
 
-    public:
-    ~MeshEdgeArray (void)
-    {}
+  // Asignment
+  MeshEdgeArray& operator = (const MeshEdgeArray &rclEAry);
 
-    public:
-    MeshEdgeArray& operator = (const MeshEdgeArray &rclEAry);
+  /**
+   * Adds a new edge to the array. The facet index is defined by \a ulFacetIndex
+   * and the edge-number is defined by ulSide.
+   */
+  inline void Add (unsigned long ulFacetIndex, unsigned long ulSide);
 
-    // add new edge: ulIndex := facet-index  ulSide := edge-number of facet
-    public:
-    inline void Add (unsigned long ulFacetIndex, unsigned long ulSide);
+  /**
+   * Searches for the index of edge with facet index \a ulIndex and edge-number \a ulSide.
+   * If nothing is found ULONG_MAX is returned.
+   */
+  inline unsigned long Find (unsigned long ulIndex, unsigned long ulSide) const;
+  /**
+   * Adjusts the facet indices of edges of a removed facet. Therefore
+   * all following indices are decremened by 1.
+   */
+  void AdjustIndex (unsigned long ulIndex);
 
-    // search for an edge 
-    public:
-    inline unsigned long Find (unsigned long ulIndex, unsigned long ulSide) const;
- 
-    // -------------------------------------------------------------------
-    // DES: Passt die Facet-Indizies eines entfernten Facet der Kanten an.
-    //   D.h. alle nachfolgende Indizies werden um 1 dekrementiert.
-    // PAR: ulIndex:  Facet-Index der entfernt wurde
-    // RET: void
-    // --------------------------------------------------------------------
-    public:
-    void AdjustIndex (unsigned long ulIndex);
-
+  // friend
   friend class MeshEdgeIterator;
 };
 
-// Array zum verwalten der Facets in der Mesh-Datenstruktur
 typedef std::vector<MeshFacet>  TMeshFacetArray;
 
+/**
+ * Stores all facets of the mesh data-structure.
+ */
 class MeshFacetArray: public TMeshFacetArray
 {
-  public:
-    typedef std::vector<MeshFacet>::iterator        _TIterator;
-    typedef std::vector<MeshFacet>::const_iterator  _TConstIterator;
+public:
+  // Iterator interface
+  typedef std::vector<MeshFacet>::iterator        _TIterator;
+  typedef std::vector<MeshFacet>::const_iterator  _TConstIterator;
 
-    // globales Setzen eines Flags für alle Facets
-    public:
-    void SetFlag (MeshFacet::TFlagType tF);
-    
-    // Zurücksetzen eines Flags für alle Facets
-    public:
-    void ResetFlag (MeshFacet::TFlagType tF);
+public:
+  /** @name Construction */
+  //@{
+  /// constructor
+  MeshFacetArray (void) { }
+  /// constructor
+  MeshFacetArray (unsigned long ulSize) : TMeshFacetArray(ulSize) { }
+  /// destructor
+  ~MeshFacetArray (void) { }
+  //@}
 
-     public:
-     void ResetInvalid (void);
+  /** @name Flag state */
+  //@{
+  /// Sets the flag for all facets. 
+  void SetFlag (MeshFacet::TFlagType tF);
+  /// Reets the flag for all facets. 
+  void ResetFlag (MeshFacet::TFlagType tF);
+  /// Sets all facets invalid
+  void ResetInvalid (void);
+  /// Sets the property for all facets
+  void SetProperty (unsigned long ulVal);
+  //@}
 
-     public:
-     void SetProperty (unsigned long ulVal);
-    
-    public:
-    MeshFacetArray (void)
-    {}
-    public:
-    MeshFacetArray (unsigned long ulSize) : TMeshFacetArray(ulSize)
-    {}
+  // Assignment
+  MeshFacetArray& operator = (const MeshFacetArray &rclFAry);
 
-    public:
-    ~MeshFacetArray (void)
-    {}
-
-    public:
-    MeshFacetArray& operator = (const MeshFacetArray &rclFAry);
-
-    // -------------------------------------------------------------------
-    // DES: loescht das Facet an der Pos. pIter aus dem Array. Die Nachbar-
-    //   Indizies der anderen Facets werden entspr. angepasst.
-    // PAR: pIter:  zu loeschendes Facet
-    // RET: void
-    // --------------------------------------------------------------------
-    public:
-    void Erase (_TIterator pIter);
-
-    // -------------------------------------------------------------------
-    // DES: prueft und vertauscht evt. die Punkt-Indizies der Facets
-    // PAR: ulOrig: zu korrigierender Punkt-Index
-    //      ulNew:  neuer Punkt-Index
-    // RET: void
-    // --------------------------------------------------------------------
-    public:
-    void TransposeIndicies (unsigned long ulOrig, unsigned long ulNew);
-    // -------------------------------------------------------------------
-    // DES: dekrementiert alle Punkt-Indizies die groesser ulIndex sind
-    // PAR: ulIndex:  Index
-    // RET: void
-    // --------------------------------------------------------------------
-    public:
-    void DecrementIndicies (unsigned long ulIndex);
-    
-    
+  /**
+   * Removes the facet from the array the iterator points to. All neighbour
+   * indices of the other facets get adjusted.
+   */
+  void Erase (_TIterator pIter);
+  /**
+   * Checks and flips the point indices if needed. @see MeshFacet::Transpose().
+   */
+  void TransposeIndicies (unsigned long ulOrig, unsigned long ulNew);
+  /**
+   * Decrements all point indices that are higher than \a ulIndex.
+   */
+  void DecrementIndicies (unsigned long ulIndex);
 };
 
-// -------------------------------------------------------------------
-// DES: loescht das Facet an der Pos. pIter aus dem Array. Die Nachbar-
-//   Indizies der anderen Facets werden entspr. angepasst.
-// PAR: pIter:  zu loeschendes Facet
-// RET: void
-// --------------------------------------------------------------------
 inline MeshPoint::MeshPoint (const Vector3D &rclPt)
 : Vector3D(rclPt),
   _ucFlag(0),
-  _ulProp(0),
-  _ulProbeProp(0)
+  _ulProp(0)
 {
 }
 
 inline MeshPoint::MeshPoint (const MeshPoint &rclPt)
 : Vector3D(rclPt),
   _ucFlag(rclPt._ucFlag),
-  _ulProp(rclPt._ulProp),
-  _ulProbeProp(rclPt._ulProbeProp)
+  _ulProp(rclPt._ulProp)
 {
 }
 
@@ -652,11 +575,9 @@ inline MeshPoint& MeshPoint::operator = (const MeshPoint &rclPt)
   Vector3D::operator=(rclPt);
   _ucFlag = rclPt._ucFlag;
   _ulProp = rclPt._ulProp;
-  _ulProbeProp = rclPt._ulProbeProp;
   return *this;
 }
 
-// compare operator
 inline bool MeshPoint::operator == (const MeshPoint &rclPt) const
 {
   return DistanceP2(*this, rclPt) < MeshDefinitions::_fMinPointDistanceP2;
@@ -698,7 +619,6 @@ inline bool MeshHelpEdge::operator == (const MeshHelpEdge &rclEdge) const
           ((_ulIndex[0] == rclEdge._ulIndex[1]) && (_ulIndex[1] == rclEdge._ulIndex[0])));
 }
 
-// distance between point and facet-plane
 inline float MeshGeomFacet::Distance (const Vector3D &rclPoint) const
 {
   Vector3D clNorm(_clNormal);
@@ -706,7 +626,6 @@ inline float MeshGeomFacet::Distance (const Vector3D &rclPoint) const
   return float(fabs(rclPoint.DistanceToPlane(_aclPoints[0], clNorm)));
 }
 
-// calculate normal form points
 inline void MeshGeomFacet::CalcNormal (void)
 {
   _clNormal = (_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0]);
@@ -728,7 +647,6 @@ inline void MeshGeomFacet::SetNormal (const Vector3D &rclNormal)
   _bNormalCalculated = true;
 }
 
-// arrange normal
 inline void MeshGeomFacet::ArrangeNormal (const Vector3D &rclN)
 {
   if ((rclN * _clNormal) < 0.0f)
@@ -740,7 +658,6 @@ inline Vector3D MeshGeomFacet::GetGravityPoint (void) const
   return (1.0f / 3.0f) * (_aclPoints[0] + _aclPoints[1] + _aclPoints[2]);
 }
 
-// Umlaufrichtung der Eckpunkte an Normal ausrichten (Normal bereits berechnet)
 inline void MeshGeomFacet::AdjustCirculationDirection (void)
 {
   Vector3D clN = (_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0]);
@@ -755,9 +672,7 @@ inline BoundBox3D MeshGeomFacet::GetBoundBox (void) const
 
 inline MeshFacet::MeshFacet (void)
 : _ucFlag(0),
-  _ulProp(0),
-  _ulProbeProp(0),
-  _pclGeoFacetModel(NULL)
+  _ulProp(0)
 {
   memset(_aulNeighbours, ULONG_MAX, sizeof(ULONG_MAX) * 3);
   memset(_aulPoints, ULONG_MAX, sizeof(ULONG_MAX) * 3);
@@ -765,9 +680,7 @@ inline MeshFacet::MeshFacet (void)
 
 inline MeshFacet::MeshFacet(const MeshFacet &rclF)
 : _ucFlag(rclF._ucFlag),
-  _ulProp(rclF._ulProp),
-  _ulProbeProp(rclF._ulProbeProp),
-  _pclGeoFacetModel(rclF._pclGeoFacetModel)
+  _ulProp(rclF._ulProp)
 {
   _aulPoints[0] = rclF._aulPoints[0];
   _aulPoints[1] = rclF._aulPoints[1];
@@ -782,8 +695,6 @@ inline MeshFacet& MeshFacet::operator = (const MeshFacet &rclF)
 {
   _ucFlag          = rclF._ucFlag;
   _ulProp          = rclF._ulProp;
-  _ulProbeProp     = rclF._ulProbeProp;
-  _pclGeoFacetModel= rclF._pclGeoFacetModel;
 
   _aulPoints[0]    = rclF._aulPoints[0];
   _aulPoints[1]    = rclF._aulPoints[1];
@@ -796,21 +707,17 @@ inline MeshFacet& MeshFacet::operator = (const MeshFacet &rclF)
   return *this;
 }
 
-// getters, setters
 inline void MeshFacet::GetEdge (unsigned short usSide, MeshHelpEdge &rclEdge) const
 {
   rclEdge._ulIndex[0] = _aulPoints[usSide];
   rclEdge._ulIndex[1] = _aulPoints[(usSide+1) % 3];
 }
 
-// ermittelt die Kantenfolgenummer des Facets dessen Kante gemeinsam ist dem       
-// übergebenen Nachbar(als Index).
 inline std::pair<unsigned long, unsigned long> MeshFacet::GetEdge (unsigned short usSide) const
 {
   return std::pair<unsigned long, unsigned long>(_aulPoints[usSide], _aulPoints[(usSide+1)%3]);
 }
 
-// transpose point index
 inline void MeshFacet::Transpose (unsigned long ulOrig, unsigned long ulNew)
 {
   if (_aulPoints[0] == ulOrig)
@@ -821,7 +728,6 @@ inline void MeshFacet::Transpose (unsigned long ulOrig, unsigned long ulNew)
     _aulPoints[2] = ulNew;
 }
 
-// decrement index
 inline void MeshFacet::Decrement (unsigned long ulIndex)
 {
   if (_aulPoints[0] > ulIndex) _aulPoints[0]--;
@@ -829,7 +735,6 @@ inline void MeshFacet::Decrement (unsigned long ulIndex)
   if (_aulPoints[2] > ulIndex) _aulPoints[2]--;
 }
 
-// replace the neighbour index
 inline void MeshFacet::ReplaceNeighbour (unsigned long ulOrig, unsigned long ulNew)
 {
   if (_aulNeighbours[0] == ulOrig)
@@ -840,8 +745,6 @@ inline void MeshFacet::ReplaceNeighbour (unsigned long ulOrig, unsigned long ulN
     _aulNeighbours[2] = ulNew;
 }
 
-// ermittelt die Kantenfolgenummer des Facets dessen Kante gemeinsam ist dem       
-// übergebenen Nachbar(als Index).
 inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const
 {
   if (_aulNeighbours[0] == ulNIndex)
@@ -854,7 +757,6 @@ inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const
     return USHRT_MAX;
 }
 
-// ermittelt die Kantenfolgenummer aus den Eckpunktindizes
 inline unsigned short MeshFacet::Side (unsigned long ulP0, unsigned long ulP1) const
 {
   if (_aulPoints[0] == ulP0)
@@ -882,15 +784,12 @@ inline unsigned short MeshFacet::Side (unsigned long ulP0, unsigned long ulP1) c
   return USHRT_MAX;
 }
 
-
-// add new edge: ulIndex := facet-index  ulSide := edge-number of facet
 inline void MeshEdgeArray::Add (unsigned long ulFacetIndex, unsigned long ulSide)
 {
   MeshEdge  clEdge(ulFacetIndex, ulSide);
   insert(std::lower_bound(begin(), end(), clEdge), clEdge);  
 }
 
-// search for an edge 
 inline unsigned long MeshEdgeArray::Find (unsigned long ulIndex, unsigned long ulSide) const
 {
   std::vector<MeshEdge>::const_iterator pIter;
@@ -905,52 +804,50 @@ inline unsigned long MeshEdgeArray::Find (unsigned long ulIndex, unsigned long u
     return ULONG_MAX;
 }
 
-class Vector3D;
-class AppMeshExport MeshHelpEdge;
-class BoundBox3D;
-class MeshPoint;
-#ifdef OVERREAD_FOLLOW
-#include "cvector3.hxx"
-#endif
+/**
+ * Binary function to query the flags for use with generic STL functions..
+ */
 template <class TCLASS>
 class MeshIsFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
-    public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-    { return rclElem.IsFlag(tFlag); }
+public:
+  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+  { return rclElem.IsFlag(tFlag); }
 };
 
-// Abfrage auf Flagstatus
-// Binäre STL-Funktionsobjekt zur Verwendung in generischen STL-Funktionen
+/**
+ * Binary function to query the flags for use with generic STL functions..
+ */
 template <class TCLASS>
 class MeshIsNotFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
-    public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-    { return !rclElem.IsFlag(tFlag); }
+public:
+  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+  { return !rclElem.IsFlag(tFlag); }
 };
 
-// Setzen eines Flag
-// Binäre STL-Funktionsobjekt zur Verwendung in generischen STL-Funktionen
+/**
+ * Binary function to set the flags for use with generic STL functions..
+ */
 template <class TCLASS>
 class MeshSetFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
-    public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-    { rclElem.SetFlag(tFlag); return true; }
+public:
+  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+  { rclElem.SetFlag(tFlag); return true; }
 };
 
-// Zurücksetzen eines Flags
-// Binäre STL-Funktionsobjekt zur Verwendung in generischen STL-Funktionen
+/**
+ * Binary function to reset the flags for use with generic STL functions..
+ */
 template <class TCLASS>
 class MeshResetFlag: public std::binary_function<TCLASS, typename TCLASS::TFlagType, bool>
 {
-    public:
-    bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
-    { rclElem.ResetFlag(tFlag); return true; }
+public:
+  bool operator () (TCLASS rclElem, typename TCLASS::TFlagType tFlag) const
+  { rclElem.ResetFlag(tFlag); return true; }
 };
-
 
 } // namespace Mesh
 
-#endif
+#endif // MESH_ELEMENTS_H 

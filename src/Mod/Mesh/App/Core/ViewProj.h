@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __VIEW_PROJ_H__
-#define __VIEW_PROJ_H__
+#ifndef VIEW_PROJ_H
+#define VIEW_PROJ_H
 
 #include "Vector3D.h"
 #include "Tools2D.h"
@@ -81,4 +81,4 @@ inline Vector3D ViewProjMatrix::inverse (const Vector2D &rclPt) const
 
 } // namespace Mesh
 
-#endif //__VIEW_PROJ_H__ 
+#endif // VIEW_PROJ_H

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __MESH_DEFINITIONS_HXX__
-#define __MESH_DEFINITIONS_HXX__
+#ifndef MESH_DEFINITIONS_H
+#define MESH_DEFINITIONS_H
 
 // default values
 #define MESH_MIN_PT_DIST           1.0e-5f
@@ -85,4 +85,4 @@ public:
 
 } // namespace Mesh
 
-#endif
+#endif // MESH_DEFINITIONS_H 

@@ -78,6 +78,60 @@ BoundBox3D BoundBox3D::operator | (RBoundBox3D rcBB)
 	
   return cBBRes;
 }
+/// @todo Test it
+bool BoundBox3D::IsCutLine ( const Vector3D& rcBase, const Vector3D& rcDir, float fTolerance)
+{
+  float fDist; 
+ 
+  // zuerst nur grobe und schnelle Pruefung, indem der
+  // Abstand der Linie zum Mittelpunkt der BB berechnet wird
+  // und mit der maximalen Diagonalenlaenge + fTolerance
+  // verglichen wird.
+ 
+  // Distanz zwischen Mittelpunkt und Linie
+  fDist = (rcDir % (CalcCenter() - rcBase)).Length() / rcDir.Length();
+
+  if (fDist > (CalcDiagonalLength() + fTolerance))
+    return false;
+  else // hier genauerer Test
+  {
+    unsigned char i;
+    Vector3D  clVectRes;
+   
+    // schneide jede Seitenflaeche mit der Linie
+    for (i = 0; i < 6; i++)
+    {
+     
+      if (IntersectPlaneWithLine(i, rcBase, rcDir, clVectRes) == true)
+      {
+        // pruefe, ob Schnittpunkt innerhalb BB-Grenzen + Toleranz
+        switch (i)
+        {
+          case 0 :  // linke und rechte Ebene
+          case 1 :
+            if ((IS_ON_RAY (MinY - fTolerance, MaxY + fTolerance, clVectRes.y) &&
+                 IS_ON_RAY (MinZ - fTolerance, MaxZ + fTolerance, clVectRes.z)) == true) 
+              return true;                     
+            break;                    
+          case 2 :  // obere und untere Ebene
+          case 3 :
+            if ((IS_ON_RAY (MinX - fTolerance, MaxX + fTolerance, clVectRes.x) &&
+                 IS_ON_RAY (MinZ - fTolerance, MaxZ + fTolerance, clVectRes.z))== true) 
+              return true;                     
+            break;                    
+          case 4 :  // vordere und hintere Ebene
+          case 5 :
+            if ((IS_ON_RAY (MinX - fTolerance, MaxX + fTolerance, clVectRes.x) &&
+                 IS_ON_RAY (MinY - fTolerance, MaxY + fTolerance, clVectRes.y)) == true) 
+              return true;                     
+            break;                    
+        }
+      }
+    }    
+  }
+  
+  return false;
+} 
 
 bool BoundBox3D::IsValid (void)
 {
@@ -161,6 +215,7 @@ BoundBox3D BoundBox3D::CalcOctant (OCTANT Octant)
 
 #undef HALF
 
+/// @todo Test it
 void BoundBox3D::CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& rNormal ) const
 {
   switch (usPlane)
@@ -203,6 +258,108 @@ void BoundBox3D::CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& r
   }
 }
 
+/// @todo Test it
+bool BoundBox3D::CalcDistance (unsigned short usEdge, Vector3D& rcP0, Vector3D& rcP1)
+{
+  switch (usEdge)
+  {
+  case  0: 
+    rcP0 = CalcPoint(0);
+    rcP1 = CalcPoint(1);
+    break;
+  case  1: 
+    rcP0 = CalcPoint(1);
+    rcP1 = CalcPoint(2);
+    break;
+  case  2: 
+    rcP0 = CalcPoint(2);
+    rcP1 = CalcPoint(3);
+    break;
+  case  3: 
+    rcP0 = CalcPoint(3);
+    rcP1 = CalcPoint(0);
+    break;
+  case  4: 
+    rcP0 = CalcPoint(4);
+    rcP1 = CalcPoint(5);
+    break;
+  case  5: 
+    rcP0 = CalcPoint(5);
+    rcP1 = CalcPoint(6);
+    break;
+  case  6: 
+    rcP0 = CalcPoint(6);
+    rcP1 = CalcPoint(7);
+    break;
+  case  7: 
+    rcP0 = CalcPoint(7);
+    rcP1 = CalcPoint(4);
+    break;
+  case  8: 
+    rcP0 = CalcPoint(0);
+    rcP1 = CalcPoint(4);
+    break;
+  case  9: 
+    rcP0 = CalcPoint(1);
+    rcP1 = CalcPoint(5);
+    break;
+  case 10: 
+    rcP0 = CalcPoint(2);
+    rcP1 = CalcPoint(6);
+    break;
+  case 11: 
+    rcP0 = CalcPoint(3);
+    rcP1 = CalcPoint(7);
+    break;
+  default: 
+    return false; // undefined
+  }
+
+  return false;
+}
+
+/// @todo Test it
+Vector3D BoundBox3D::IntersectionPoint (const Vector3D &rcVct, const Vector3D &rcVctDir) const
+{
+  BoundBox3D cCmpBound(*this);
+  bool rc;
+  unsigned short i;
+  Vector3D   cVctRes;
+	
+  // Vergleichs-BB um REEN_EPS vergroessern
+  cCmpBound.MaxX += FLOAT_EPS;
+  cCmpBound.MaxY += FLOAT_EPS;
+  cCmpBound.MaxZ += FLOAT_EPS;
+  cCmpBound.MinX -= FLOAT_EPS;
+  cCmpBound.MinY -= FLOAT_EPS;
+  cCmpBound.MinZ -= FLOAT_EPS;
+	
+  // Liegt Punkt innerhalb ?
+  if (cCmpBound.IsInBox (rcVct))
+  {
+    // Seitenebenen testen
+    for (i = 0, rc = false; (i < 6) && (!rc); i++)
+    {
+      rc = IntersectPlaneWithLine( i, rcVct, rcVctDir, cVctRes );
+  	  if(!cCmpBound.IsInBox(cVctRes)) 
+        rc = false;
+      if (rc == true )
+      {
+        // Liegt Schnittpunkt in gesuchter Richtung
+        // oder wurde gegenueberliegende Seite gefunden ?
+        // -> Skalarprodukt beider Richtungsvektoren > 0 (Winkel < 90)
+        rc = ((cVctRes - rcVct) * rcVctDir) > 0.0F;
+      }
+    }
+  }
+  else
+    rc = false;
+	
+  // Schnittpunkt zurueckgeben
+  return cVctRes;
+}
+
+/// @todo Test it
 bool BoundBox3D::IntersectPlaneWithLine (unsigned short usSide, const Vector3D& rcBase, 
                                          const Vector3D& rcDir, Vector3D& rcP0) const
 {
@@ -223,6 +380,7 @@ bool BoundBox3D::IntersectPlaneWithLine (unsigned short usSide, const Vector3D& 
   }
 }
 
+/// @todo Test it
 bool BoundBox3D::IntersectWithLine ( const Vector3D& rcBase, const Vector3D& rcDir, 
                                      Vector3D& rcP0, Vector3D& rcP1 ) const
 {
@@ -400,4 +558,27 @@ BoundBox2D BoundBox3D::ProjectBox(const ViewProjMethod *pclP) const
   }
 
   return clBB2D;
+}
+
+/// @todo Test it
+Vector3D BoundBox3D::NearestPoint (const Vector3D &rclPt)
+{
+  // Suche naechsten Punkt auf der BB, !!! Punkt MUSS innerhalb BB liegen !!!
+  float fMinDist = FLOAT_MAX;
+  Vector3D cBase, cNormal, clRet;
+
+  for (int i = 0; i < 6; i++)
+  {
+    Vector3D clTemp = rclPt;
+    CalcPlane(i, cBase, cNormal);
+    clTemp.ProjToPlane(cBase, cNormal);
+    float fDist = (clTemp - rclPt).Length();
+    if (fDist < fMinDist)
+    {
+      fMinDist = fDist;
+      clRet = clTemp; 
+    }
+  }
+
+  return clRet;
 }

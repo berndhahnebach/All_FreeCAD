@@ -21,13 +21,13 @@
  ***************************************************************************/
 
 
-#ifndef __RSWAP_HXX__
-#define __RSWAP_HXX__
+#ifndef RSWAP_H
+#define RSWAP_H
 
 #define LOW_ENDIAN	(unsigned short) 0x4949 
 #define HIGH_ENDIAN	(unsigned short) 0x4D4D 
 
-/*
+/**
  * Definition of functions that allow swapping of data types
  * dependent on the architecture.
  */

@@ -23,42 +23,29 @@
 
 #include "PreCompiled.h"
 
-#include <map>
+#ifndef _PreComp_
+# include <map>
+#endif
+
+#include <Base/Sequencer.h>
 
 #include "Helpers.h"
 #include "MeshKernel.h"
 #include "Iterator.h"
-#include <Base/Sequencer.h>
 
 using namespace Mesh;
 
-/*-------------------------------------------------------------------
-DES: Default Konstruktor
-PAR: void
-RET: 
---------------------------------------------------------------------*/
 MeshKernel::MeshKernel (void)
 : _bValid(true)
 {
   _clBoundBox.Flush();
 }
 
-
-/*-------------------------------------------------------------------
-DES: Copy Konstruktor
-PAR: rclMesh: zu kopierendes Objekt
-RET: 
---------------------------------------------------------------------*/
 MeshKernel::MeshKernel (const MeshKernel &rclMesh)
 {
   *this = rclMesh;
 }
 
-/*-------------------------------------------------------------------
-DES: Zuweisungs-Operator
-PAR: rclMesh: zugewiesendes Objekt
-RET: MeshKernel&: diese Instanz
---------------------------------------------------------------------*/
 MeshKernel& MeshKernel::operator = (const MeshKernel &rclMesh)
 {
   _aclPointArray  = rclMesh._aclPointArray;
@@ -69,14 +56,9 @@ MeshKernel& MeshKernel::operator = (const MeshKernel &rclMesh)
   return *this;
 }
 
-/*-------------------------------------------------------------------
-DES: hinzufuegen eines neuen Facets in die Mesh-Struktur
-PAR: rclSFacet: Facet
-RET: MeshKernel&:    Referenz diese Objekt
---------------------------------------------------------------------*/
 MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
 {
-  unsigned long     i;
+  unsigned long i;
   MeshFacet clFacet;
 
   // Eckpunkte einfuegen
@@ -143,8 +125,7 @@ MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
 
   return *this;
 }
-
-// hinzufuegen von mehreren Facets
+/// @todo Sequencer
 MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
 {
   // kompleter Neu-Aufbau
@@ -166,8 +147,6 @@ MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
   return *this;
 }
 	
-// hinzufuegen einer facette danach Nachbarschaften aktualisieren
-//	
 bool MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
 {
 	*this += rclSFacet;
@@ -177,8 +156,6 @@ bool MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
 	return true;
 }
 		
-// hinzufuegen mehrer facetten danach Nachbarschaften aktualisieren
-//	
 bool MeshKernel::AddFacet(const std::vector<MeshGeomFacet> &rclVAry)
 {
 	// operator += gehtnicht da dann das Mesh neu angelegt wird und somit alle props geloescht werden
@@ -191,22 +168,11 @@ bool MeshKernel::AddFacet(const std::vector<MeshGeomFacet> &rclVAry)
 	return true;
 }
 
-/*-------------------------------------------------------------------
-DES: Einfuegen neuer Kanten, bzw. updaten der vorhandenen. Alle Kanten
-  des Facets werden ueberprueft auf Existenz. Bei Bedarf wird neue Kante
-  eingefuegt. Die neuen Kanten werden entspr. dem Index in das RSsortierte
-  Array eingefuegt. Gleichzeitig werden die Nachbar-Indicies der Facets
-  neu gesetzt.
-PAR:  rclFacet:     Facet in:  ohne gueltigte Nachbar-Indizies
-                          out: gueltigte Nachbar-Indizies
-      ulFacetIndex: Index des Facets im Facet-Array
-RET:  void:
---------------------------------------------------------------------*/
 void MeshKernel::AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex)
 {
-  MeshHelpEdge    clFacetEdge;
-  unsigned long           i, j, k, ulCt;
-  unsigned short          usSide;
+  MeshHelpEdge clFacetEdge;
+  unsigned long i, j, k, ulCt;
+  unsigned short usSide;
 
   ulCt = _aclEdgeArray.size();
 
@@ -233,11 +199,6 @@ void MeshKernel::AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex)
   }
 }
 
-/*-------------------------------------------------------------------
-DES: alles Loeschen
-PAR:  void
-RET:  void:
---------------------------------------------------------------------*/
 void MeshKernel::Clear (void)
 {
   _aclPointArray.clear();
@@ -260,14 +221,12 @@ MeshKernel& MeshKernel::operator = (std::vector<MeshGeomFacet> &rclVAry)
 
   // Sequencer starten
   Base::Sequencer().start("create mesh structure...", rclVAry.size() * 8 + 1);
-//  GetSequencer().Start("create mesh structure...", rclVAry.size() * 8 + 1);
 
   unsigned long k = 0;
   unsigned long i = 0;
   for (std::vector<MeshGeomFacet>::iterator pI = rclVAry.begin(); pI != rclVAry.end(); pI++, i++)
   {
     Base::Sequencer().next();
-//    GetSequencer().Next();
 
     pI->AdjustCirculationDirection();  // Umlaufrichtung an Normale anpassen
     for (unsigned long j = 0; j < 3; j++)
@@ -277,17 +236,13 @@ MeshKernel& MeshKernel::operator = (std::vector<MeshGeomFacet> &rclVAry)
   Assign(clMap);
 
   Base::Sequencer().stop();
-//  GetSequencer().Done();
 
   return *this;
 }
 
-// Aufbauen der Meshstruktur, MeshPointBuilder ist bereits erzeugt und wird in der Methode geloescht !!!
-// Sequencer schon initialisert (Anzahl Facets)
-// Die Map ist nicht sortiert
 void MeshKernel::Assign (MeshPointBuilder &rclMap)
 {
-  unsigned long    ulCtFacets, ulCtEdges, ulCtPoints, ulSteps; 
+  unsigned long ulCtFacets, ulCtEdges, ulCtPoints, ulSteps; 
 
   Clear();  // Alle Arrays zuruecksetzen
 
@@ -312,7 +267,6 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
     for (std::vector<MeshHelpPoint>::iterator pM = rclMap.begin(); pM != rclMap.end();)
     {
       Base::Sequencer().next();
-//      GetSequencer().Next(ulSteps + (pM - rclMap.begin()));
       MeshPoint &rclPt = pM->_clPt;
       _aclPointArray.push_back(rclPt);
       _clBoundBox &= rclPt;
@@ -345,7 +299,6 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
     for (std::vector<MeshFacet>::iterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, i++)
     {
       Base::Sequencer().next();
-//      GetSequencer().Next(ulSteps++);
 
       (pE++)->Set(pF->_aulPoints[0], pF->_aulPoints[1], 0, i);        
       (pE++)->Set(pF->_aulPoints[1], pF->_aulPoints[2], 1, i);        
@@ -357,15 +310,14 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
 
     _aclEdgeArray.reserve((unsigned long)(float(ulCtEdges) * 1.05f));  // Schaetztwert + 5%
 
-    bool                  bET = true;
-    MeshEdge             clEdge;
+    bool bET = true;
+    MeshEdge clEdge;
 
     // Kantenliste aufbauen, doppelte Kante vermeiden, Nachbarschaften setzen
     ulCt = clEdger.size();
     for (pE = clEdger.begin(); pE != clEdger.end();)
     {
       Base::Sequencer().next();
-//      GetSequencer().Next(ulSteps + (pE - clEdger.begin()));
 
       unsigned long ulInd  = pE->Index();
       unsigned long ulSide = pE->Side();
@@ -400,24 +352,9 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
   _aclEdgeArray.resize(ulCtEdges);
 }
 
-
-/*-------------------------------------------------------------------
-DES: loeschen eines Facets. Das Loeschen eines Facets erfordert foldende
-  Schritte: 
-  - Nachbar-Index der Nachbar-Facets auf das geloeschte Facet ungueltig
-    setzen. 
-  - Wenn Nachbar-Facet existiert evt. Kanten-Index auf dieses Facet umbiegen.
-    Wenn kein Nachbar-Facet existiert: Kante loeschen.
-  - Indizies der Nachbar-Facets aller Facets geg. korrigieren.
-  - Indizies der Kanten geg. korrigieren
-  - Falls keine Nachbar-Facets existieren, Eckpunkte daraufhin ueberpruefen,
-    ob sie geloescht werden koennen.
-PAR: clIter:  Facet-Iterator, zeigt auf Facet das geloescht werden soll
-RET: bool:   TRUE, wenn geloescht
---------------------------------------------------------------------*/
 bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
 {
-  unsigned long   i, j, ulNFacet, ulInd, ulEdge;
+  unsigned long i, j, ulNFacet, ulInd, ulEdge;
 
   if (rclIter._clIter >= _aclFacetArray.end())
     return false;
@@ -470,19 +407,11 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
   return true;
 }
 
-/*-------------------------------------------------------------------
-DES: loeschen einer Kante
-PAR: clIter:  Kanten-Iterator: zeigt auf die Kante die geloescht werden
-  soll.
-  Das Loeschen einer Kante erfordert folgende Schritte:
-  - Loeschen der Facet(s), die der Kante zugeordnet sind.
-RET: bool:   TRUE, wenn geloescht
---------------------------------------------------------------------*/
 bool MeshKernel::DeleteEdge (const MeshEdgeIterator &rclIter)
 {
   MeshFacetIterator  clFIter1(*this), clFIter2(*this);
-  MeshFacet          clFacet;
-  unsigned long              ulIndex, ulSide;   
+  MeshFacet clFacet;
+  unsigned long ulIndex, ulSide;   
 
   ulIndex = rclIter._clIter->Index();
   ulSide  = rclIter._clIter->Side();
@@ -512,20 +441,12 @@ bool MeshKernel::DeleteEdge (const MeshEdgeIterator &rclIter)
   return true;
 }
 
-/*-------------------------------------------------------------------
-DES: loeschen eines Punkts. 
-PAR: clIter:  Punkt-Iterator: zeigt auf den Punkt der geloescht werden
-  soll. Das Loschen eines Punktes geschieht nach folgenden Schritte:
-  - Feststellen der Facets, die dem Punkt zugeordnet sind.
-  - Loeschen aller zugeordneten Facets
-RET: bool:   TRUE, wenn geloescht
---------------------------------------------------------------------*/
 bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
 {
-  MeshFacetIterator          pFIter(*this), pFEnd(*this);
+  MeshFacetIterator pFIter(*this), pFEnd(*this);
   std::vector<MeshFacetIterator>  clToDel; 
-  MeshPoint                  clPt;
-  unsigned long                      i;
+  MeshPoint clPt;
+  unsigned long i;
  
   // Eckpunkte aller Facets ueberpruefen
   clPt = *rclIter;
@@ -552,18 +473,7 @@ bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
   return true;
 }
 
-/*-------------------------------------------------------------------
-DES: Ueberprueft, ob der Punkt keinem anderen Facet mehr zugeordnet ist
-  und loescht in im diesem Falle. Die Punkt-Indizies der Facets werden
-  entsprechend angepasst.
-PAR: ulIndex:         Index im Punkt-Array
-     ulFacetIndex:    Index des quasi geloeschten Facet, wird nicht betrachtet
-     bOnlySetInvalid: Der Punkt wird nicht geloescht, sondern nur invalid       
-gesetzt                       Default-Wert: FALSE
-RET: void:
---------------------------------------------------------------------*/
-void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex,
-                            bool bOnlySetInvalid)
+void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, bool bOnlySetInvalid)
 {
   unsigned long  i;
   std::vector<MeshFacet>::iterator pFIter, pFEnd, pFNot;
@@ -615,17 +525,9 @@ void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex,
     _aclPointArray[ulIndex].SetInvalid();
 }
 
-/*-------------------------------------------------------------------
-DES: loescht bzw. umbelegt alle Kanten die aus das Facet indizieren.
-  Wenn kein Nachbar-Facet existiert wird die Kante geloescht.
-  Umbelegen heisst: Kanten die auf das Facet indizieren werden auf das
-  Nachbar-Facet indiziert.
-PAR: ulFacetIndex: zu loeschendes Facet
-RET: void:
---------------------------------------------------------------------*/
 void MeshKernel::CheckAndCorrectEdge (unsigned long ulFacetIndex)
 {
-  unsigned long      i, ulInd, ulSide;
+  unsigned long i, ulInd, ulSide;
   MeshFacet *pclFacet;
 
   for (i = 0; i < 3; i++)
@@ -644,20 +546,14 @@ void MeshKernel::CheckAndCorrectEdge (unsigned long ulFacetIndex)
   }
 }
 
-/*-------------------------------------------------------------------
-DES: loescht alle ungueltige Punkte und Facets und korrigiert 
-  gleichzeitig die Punkt- und Nachbar-Indizies
-PAR: void:
-RET: void:
---------------------------------------------------------------------*/
 void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
 {
-  std::vector<unsigned long>                 aulDecrements;
+  std::vector<unsigned long> aulDecrements;
   std::vector<unsigned long>::iterator       pDIter;
-  unsigned long                           ulDec, i, j, k, ulSteps;
-  MeshPointArray::_TIterator      pPIter, pPEnd;
-  MeshEdgeArray::_TIterator       pEIter, pEEnd;
-  MeshFacetArray::_TIterator      pFIter, pFEnd;
+  unsigned long ulDec, i, j, k, ulSteps;
+  MeshPointArray::_TIterator pPIter, pPEnd;
+  MeshEdgeArray::_TIterator  pEIter, pEEnd;
+  MeshFacetArray::_TIterator pFIter, pFEnd;
 
   ulSteps = 0;
 
@@ -802,19 +698,13 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
   _aclFacetArray = aclFArray;
 }
 
-
-/*-------------------------------------------------------------------
-DES: ermittelt alle Facets die zu dem Punkt geheoren
-PAR: rclIter:  Punkt-Iterator
-RET: RSvector<unsigned long>: Array von Facet-Indizies
---------------------------------------------------------------------*/
 std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIter) const
 {
-  unsigned long                                i, ulPtInd = rclIter.Position();
+  unsigned long i, ulPtInd = rclIter.Position();
   std::vector<MeshFacet>::const_iterator  pFIter = _aclFacetArray.begin();
   std::vector<MeshFacet>::const_iterator  pFBegin = _aclFacetArray.begin();
   std::vector<MeshFacet>::const_iterator  pFEnd = _aclFacetArray.end();
-  std::vector<unsigned long>                      aulBelongs;
+  std::vector<unsigned long> aulBelongs;
 
   while (pFIter < pFEnd)
   {
@@ -832,7 +722,6 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
   return aulBelongs;
 }
 
-// binäres streamen der Daten
 void MeshKernel::SaveStream (DataStream &rclOut)
 {
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
@@ -848,7 +737,6 @@ void MeshKernel::SaveStream (DataStream &rclOut)
             _clBoundBox.MaxX << _clBoundBox.MaxY << _clBoundBox.MaxZ;
 }
 
-// binäres streamen der Daten
 void MeshKernel::RestoreStream (DataStream &rclIn)
 {
   unsigned long  ulCtPt, ulCtEd, ulCtFc;
@@ -871,7 +759,6 @@ void MeshKernel::RestoreStream (DataStream &rclIn)
            _clBoundBox.MaxX >> _clBoundBox.MaxY >> _clBoundBox.MaxZ;
 }
 
-// transformieren der Datenstruktur mit einer Transformations-Matrix
 void MeshKernel::operator *= (const Matrix4D &rclMat)
 {
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
@@ -886,11 +773,10 @@ void MeshKernel::operator *= (const Matrix4D &rclMat)
   }
 }
 
-// Neuaufbau des Kantenarrays.
 void MeshKernel::RebuildEdgeArray (void)
 {
-  unsigned long                ulCt, i, j, k;
-  MeshEdgeBuilder      clEdger;
+  unsigned long ulCt, i, j, k;
+  MeshEdgeBuilder clEdger;
 
   // ueberkomplette Kantenliste generieren
   ulCt = _aclFacetArray.size();
@@ -989,14 +875,6 @@ void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
   RecalcBoundBox();
 }
 
-// -------------------------------------------------------------------
-// DES: loescht bzw. umbelegt alle Kanten die aus das Facet indizieren.
-//   Wenn kein Nachbar-Facet existiert wird die Kante geloescht.
-//   Umbelegen heisst: Kanten die auf das Facet indizieren werden auf das
-//   Nachbar-Facet indiziert.
-// PAR: ulFacetIndex: zu loeschendes Facet
-// RET: void:
-// --------------------------------------------------------------------
 MeshEdgeArray::_TConstIterator MeshKernel::FindEdge (unsigned long ulFacet, unsigned short usSide) const 
 {
   unsigned long ulEdge = (ulFacet << 2) + (unsigned long)(usSide);

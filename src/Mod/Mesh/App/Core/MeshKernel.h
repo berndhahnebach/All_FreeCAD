@@ -21,347 +21,244 @@
  ***************************************************************************/
 
 
-#ifndef __MESH_MESH_HXX__
-#define __MESH_MESH_HXX__
+#ifndef MESH_KERNEL_H
+#define MESH_KERNEL_H
 
-#include <assert.h>
+#ifndef _PreComp_
+# include <assert.h>
+#endif
+
 #include "BoundBox.h"
 #include "Elements.h"
 #include "Helpers.h"
 
 namespace Mesh {
 
+// forward declarations
 class AppMeshExport MeshFacetIterator;
 class AppMeshExport MeshEdgeIterator;
 class AppMeshExport MeshPointIterator;
 class AppMeshExport MeshGeomFacet;
 class AppMeshExport Matrix4D;
 class AppMeshExport DataStream;
-class AppMeshExport MeshFacetIterator;
-class AppMeshExport MeshEdgeIterator;
-class AppMeshExport MeshPointIterator;
 class AppMeshExport Vector3D;
 class AppMeshExport MeshFacet;
 class AppMeshExport MeshHelpEdge;
 class AppMeshExport MeshFacetFunc;
-class AppMeshExport CMeshDelaunay;
 class AppMeshExport MeshSTL;
-class AppMeshExport CMeshSearchNeighbours ;
 
+/** 
+ * The MeshKernel class is the basic class that holds the data points,
+ * the edges and the facets describing a mesh object.
+ * 
+ * The bounding box is calculated during the buildup of the data
+ * structure and gets only re-caclulated after insertion of new facets
+ * but not after removal of facets.
+ *
+ * This class provides only some rudimental querying methods.
+ */
 class AppMeshExport MeshKernel
 {
-   public:
-   MeshKernel (void);
+public:
+  /// Construction
+  MeshKernel (void);
+  /// Construction
+  MeshKernel (const MeshKernel &rclMesh);
+  /// Destruction
+  virtual ~MeshKernel (void) {}
 
-   public:
-    MeshKernel (const MeshKernel &rclMesh);
-    public:
-    virtual ~MeshKernel (void)
-    {}
-    // transformieren der Datenstruktur mit einer Transformations-Matrix
-    public:
-    virtual void operator *= (const Matrix4D &rclMat);
-    
-    // binäres streamen der Daten
-    public:
-    virtual void SaveStream (DataStream &rclOut);
-    
-    // binäres streamen der Daten
-    public:
-    virtual void RestoreStream (DataStream &rclIn);
-    // -------------------------------------------------------------------
-    // DES: Ueberprueft, ob der Punkt keinem anderen Facet mehr zugeordnet ist
-    //   und loescht in im diesem Falle. Die Punkt-Indizies der Facets werden
-    //   entsprechend angepasst.
-    // PAR: ulIndex:         Index im Punkt-Array
-    //      ulFacetIndex:    Index des quasi geloeschten Facet, wird nicht betrachtet
-    //      bOnlySetInvalid: Der Punkt wird nicht geloescht, sondern nur invalid       
-    // gesetzt                       Default-Wert: FALSE
-    // RET: void:
-    // --------------------------------------------------------------------
-    public:
-    unsigned long CountFacets (void) const
-    { return (unsigned long)(_aclFacetArray.size()); }
-    // ermittelt die Anzahl der Kanten
-    public:
-    unsigned long CountEdges (void) const
-    { return (unsigned long)(_aclEdgeArray.size()); }
-    // ermittelt die Anzahl der Punkte
-    public:
-    unsigned long CountPoints (void) const
-    { return (unsigned long)(_aclPointArray.size()); }
-    // ermittelt die BoundingBox
-    public:
-    BoundBox3D GetBoundBox (void) const
-    { return const_cast<BoundBox3D&>(_clBoundBox); }
+  /** @name I/O methods */
+  //@{
+  /// Binary streaming of data
+  virtual void SaveStream (DataStream &rclOut);
+  /// Binary streaming of data
+  virtual void RestoreStream (DataStream &rclIn);
+  //@}
 
-    public:
-    void RecalcBoundBox (void);
+  /** @name Querying */
+  //@{
+  /// Returns the number of facets
+  unsigned long CountFacets (void) const
+  { return (unsigned long)(_aclFacetArray.size()); }
 
-    // gibt den Punkt an dem übergebenen Index zurück. Die Methode ist nicht sehr      
-    // effektiv und  sollte nur für sporadische Zugriffe von Aussen verwendet werden.
-    public:
-    inline MeshPoint GetPoint (unsigned long ulIndex) const;
-    // gibt die Kante an dem übergebenen Index zurück. Die Methode ist nicht sehr      
-    // effektiv und  sollte nur für sporadische Zugriffe von Aussen verwendet werden.
-    public:
-    inline MeshGeomEdge GetEdge (unsigned long ulPos) const;
-    // gibt das Facet an dem übergebenen Index zurück. Die Methode ist nicht sehr      
-    // effektiv und  sollte nur für sporadische Zugriffe von Aussen verwendet werden.
-    public:
-    inline MeshGeomFacet GetFacet (unsigned long ulIndex) const;
-    // -------------------------------------------------------------------
-    // DES: hinzufuegen eines neuen Facets in die Mesh-Struktur
-    // PAR: rclSFacet: Facet
-    // RET: MeshKernel&:    Referenz diese Objekt
-    // --------------------------------------------------------------------
+  /// Returns the number of edges
+  unsigned long CountEdges (void) const
+  { return (unsigned long)(_aclEdgeArray.size()); }
 
-    public:
-    // gibt die Nachbarn zu einem Facet an
-    inline void GetFacetNeighbours (unsigned long ulIndex, unsigned long &rulNIdx0, unsigned long &rulNIdx1, unsigned long &rulNIdx2);
+  // Returns the number of points
+  unsigned long CountPoints (void) const
+  { return (unsigned long)(_aclPointArray.size()); }
 
-    public:
-    std::vector<MeshPoint>& GetPoints (void) { return _aclPointArray; }
-    std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
+  /// Determines the bounding box
+  BoundBox3D GetBoundBox (void) const
+  { return const_cast<BoundBox3D&>(_clBoundBox); }
 
-    public:
-    MeshKernel& operator += (const MeshGeomFacet &rclSFacet);
-    MeshKernel& operator += (const std::vector<MeshGeomFacet> &rclVAry);
+  /** Forces a recalculation of the bounding box. This method should be called after
+   * the removal of points.or after a transformation of the data structure.
+   */ 
+  void RecalcBoundBox (void);
 
-	public:
-		bool AddFacet(const MeshGeomFacet &rclSFacet);
-		bool AddFacet(const std::vector<MeshGeomFacet> &rclVAry);
-    // -------------------------------------------------------------------
-    // DES: einfuegen von Facets
-    // PAR: rclVAry: Facets, !!! dieses Array wird geloescht
-    // RET: MeshKernel&: Referenz
-    // --------------------------------------------------------------------
-    public:
-    MeshKernel& operator = (std::vector<MeshGeomFacet> &rclVAry);
-    // -------------------------------------------------------------------
-    // DES: Zuweisungs-Operator
-    // PAR: rclMesh: zugewiesendes Objekt
-    // RET: MeshKernel&: diese Instanz
-    // --------------------------------------------------------------------
+  /** Returns the point at the given index. This method is rather slow and should be
+   * called occassionally only.
+   */
+  inline MeshPoint GetPoint (unsigned long ulIndex) const;
 
-    protected:
-    void Assign (MeshPointBuilder &rclMap);
+  /** Returns the edge at the given index. This method is rather slow and should be
+   * called occassionally only.
+   */
+  inline MeshGeomEdge GetEdge (unsigned long ulPos) const;
 
-    public:
-    MeshKernel& operator = (const MeshKernel &rclMesh);
-    // -------------------------------------------------------------------
-    // DES: loeschen eines Facets. Das Loeschen eines Facets erfordert foldende
-    //   Schritte: 
-    //   - Nachbar-Index der Nachbar-Facets auf das geloeschte Facet ungueltig
-    //     setzen. 
-    //   - Wenn Nachbar-Facet existiert evt. Kanten-Index auf dieses Facet umbiegen.
-    //     Wenn kein Nachbar-Facet existiert: Kante loeschen.
-    //   - Indizies der Nachbar-Facets aller Facets geg. korrigieren.
-    //   - Indizies der Kanten geg. korrigieren
-    //   - Falls keine Nachbar-Facets existieren, Eckpunkte daraufhin ueberpruefen,
-    //     ob sie geloescht werden koennen.
-    // PAR: clIter:  Facet-Iterator, zeigt auf Facet das geloescht werden soll
-    // RET: bool:   TRUE, wenn geloescht
-    // --------------------------------------------------------------------
-    public:
-    bool DeleteFacet (const MeshFacetIterator &rclIter);
-    // -------------------------------------------------------------------
-    // DES: loeschen einer Kante
-    // PAR: clIter:  Kanten-Iterator: zeigt auf die Kante die geloescht werden
-    //   soll.
-    //   Das Loeschen einer Kante erfordert folgende Schritte:
-    //   - Loeschen der Facet(s), die der Kante zugeordnet sind.
-    // RET: bool:   TRUE, wenn geloescht
-    // --------------------------------------------------------------------
-    public:
-    bool DeleteEdge (const MeshEdgeIterator &rclIter);
-    // -------------------------------------------------------------------
-    // DES: loeschen eines Punkts. 
-    // PAR: clIter:  Punkt-Iterator: zeigt auf den Punkt der geloescht werden
-    //   soll. Das Loschen eines Punktes geschieht nach folgenden Schritte:
-    //   - Feststellen der Facets, die dem Punkt zugeordnet sind.
-    //   - Loeschen aller zugeordneten Facets
-    // RET: bool:   TRUE, wenn geloescht
-    // --------------------------------------------------------------------
-    public:
-    bool DeletePoint (const MeshPointIterator &rclIter);
-    // -------------------------------------------------------------------
-    // DES: ermittelt alle Facets die zu dem Punkt geheoren
-    // PAR: rclIter:  Punkt-Iterator
-    // RET: std::vector<unsigned long>: Array von Facet-Indizies
-    // --------------------------------------------------------------------
-    public:
-    std::vector<unsigned long> HasFacets (const MeshPointIterator &rclIter) const;
-    // translate one point
-    public:
-    inline void MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans);
+  /** Returns the facet at the given index. This method is rather slow and should be
+   * called occassionally only.
+   */
+  inline MeshGeomFacet GetFacet (unsigned long ulIndex) const;
 
-    public:
-    inline void GetFacetPoints (unsigned long ulFaIndex, unsigned long &rclP0, unsigned long &rclP1, unsigned long &rclP2) const;
-    // -------------------------------------------------------------------
-    // DES: alles Loeschen
-    // PAR:  void
-    // RET:  void:
-    // --------------------------------------------------------------------
-    public:
-    void Clear (void);
- 
-    public:
-    inline bool IsBorder (const MeshEdgeArray::_TIterator pPEdge) const;
+  /** Returns the point indices of the given facet index. */
+  inline void GetFacetPoints ( unsigned long ulFaIndex, unsigned long &rclP0, 
+                               unsigned long &rclP1, unsigned long &rclP2) const;
+  /** Returns the indices of the neighbour facets of the given facet index. */
+  inline void GetFacetNeighbours ( unsigned long ulIndex, unsigned long &rulNIdx0, 
+                                   unsigned long &rulNIdx1, unsigned long &rulNIdx2);
+  /** Returns true if the edge the iterator points to is a border edge. */
+  inline bool IsBorder (const MeshEdgeArray::_TIterator pPEdge) const;
+  /** Determines all facets that are associated to this point. This method is rather
+   * slow and should be called occassionally only.
+   */
+  std::vector<unsigned long> HasFacets (const MeshPointIterator &rclIter) const;
+  /** Returns true if the data structure is valid. */
+  virtual bool IsValid (void) const
+  { return _bValid; }
+  /** Returns the array of all data points. */
+  std::vector<MeshPoint>& GetPoints (void) { return _aclPointArray; }
+  /** Returns the array of all facets */
+  std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
+  //@}
 
-    public:
-    virtual void DeleteFacets (const std::vector<unsigned long> &raulFacets);
+  /** Adds a single facet to the data structure. */
+  MeshKernel& operator += (const MeshGeomFacet &rclSFacet);
+  /** Adds an array of facet to the data structure. */
+  MeshKernel& operator += (const std::vector<MeshGeomFacet> &rclVAry);
 
-    public:
-    virtual void DeletePoints (const std::vector<unsigned long> &raulPoints);
+  /** @name Modification */
+  //@{
+  /** Adds a single facet to the data structure. */
+	bool AddFacet(const MeshGeomFacet &rclSFacet);
+  /** Adds an array of facet to the data structure. */
+	bool AddFacet(const std::vector<MeshGeomFacet> &rclVAry);
+  /** Deletes the facet the iterator points to. The deletion of a facet requires
+   * the following steps:
+   * \li Mark the neighbour index of all neighbour facets to the deleted facet as invalid
+   * \li If the neighbour facet exists adjust the edge index if needed, if there is no neighbour
+   *     remove the edges.
+   * \li Adjust the indices of the neighbour facets of all facets.
+   * \li Adjust the indices of the edges.
+   * \li If there is no neighbour facet check if the points can be deleted.
+   * True is returned if the facet could be deleted.
+   */
+  bool DeleteFacet (const MeshFacetIterator &rclIter);
+  /** Removes several facets from the data structure. */
+  virtual void DeleteFacets (const std::vector<unsigned long> &raulFacets);
+  /** Deletes the edge the iterator points to. The deletion of an edge requires the following step:
+   * \li Delete the facet(s) associated to this edge.
+   * True is returned if the edge could be deleted.
+   */
+  bool DeleteEdge (const MeshEdgeIterator &rclIter);
+  /** Deletes the point the iterator points to. The deletion of a point requires the following step:
+   * \li Find all associated facets to this point.
+   * \li Delete these facets.
+   * True is returned if the point could be deleted.
+   */
+  bool DeletePoint (const MeshPointIterator &rclIter);
+  /** Removes several points from the data structure. */
+  virtual void DeletePoints (const std::vector<unsigned long> &raulPoints);
+  /** Clears the whole data structure. */
+  void Clear (void);
+  /** Replaces the current data structure with the structure built up of the array 
+   * of triangles given in \a rclVAry. \a rclVAry gets cleared automatically.
+   */
+  MeshKernel& operator = (std::vector<MeshGeomFacet> &rclVAry);
+  /** Assignment operator. */
+  MeshKernel& operator = (const MeshKernel &rclMesh);
+  /// Transform the data structure with the given transformation matrix.
+  virtual void operator *= (const Matrix4D &rclMat);
+  /** Moves the point at the given index along the vector \a rclTrans. */
+  inline void MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans);
+  //@}
 
-    public:
-    virtual bool IsValid (void) const
-    { return _bValid; }
+protected:
+  /** Adds new edges and updates the available edges respectively. All edges
+   * of the facets get checked if they have an associated MeshEdge. If needed 
+   * a new edge gets added. The new edges get inserted into the array in accordance
+   * to their index. The neighbour indices of the facets get resetted accordingly.
+   */
+  void AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex);
+  /** Deletes and resets respectively all edges indexing the given facet.
+   * If there is no neighbour facet then the edge gets deleted.
+   * Resetting in this case means to make edges that index this facet indexing
+   * the neighbour facet instead.
+   */
+  MeshEdgeArray::_TConstIterator FindEdge (unsigned long ulFacet, unsigned short usSide) const ;
+  inline unsigned long FindEdge (const MeshHelpEdge &rclEdge) const;
 
-    // anpassen der Umlaufrichtung an die Normale
-    protected:
-    inline void AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNormal);
+  void CheckAndCorrectEdge (unsigned long ulFacetIndex);
+  /** Deletes all points and facets that are marked as invalid and corrects the point and
+   * neighbour indices at the same time.
+   */
+  void RemoveInvalids (bool bWithEdgeCorrect = true, bool bWithEdgeDelete = false);
+  /** Checks if this point is associated to no other facet and deletes if so.
+   * The point indices of the facets get adjusted.
+   * \a ulIndex is the index of the point to be deleted. \a ulFacetIndex is the index
+   * of the quasi deleted facet and is ignored. If \a bOnlySetInvalid is true the point
+   * doesn't get deleted but marked as invalid.
+   */
+  void ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, bool bOnlySetInvalid = false);
 
-    // berechnen eine normierten Normale des übergebenen Facet
-    protected:
-    inline Vector3D GetNormal (const MeshFacet &rclFacet) const;
-    // -------------------------------------------------------------------
-    // DES: Ueberprueft, ob der Punkt keinem anderen Facet mehr zugeordnet ist
-    //   und loescht in im diesem Falle. Die Punkt-Indizies der Facets werden
-    //   entsprechend angepasst.
-    // PAR: ulIndex:         Index im Punkt-Array
-    //      ulFacetIndex:    Index des quasi geloeschten Facet, wird nicht betrachtet
-    //      bOnlySetInvalid: Der Punkt wird nicht geloescht, sondern nur invalid       
-    // gesetzt                       Default-Wert: FALSE
-    // RET: void:
-    // --------------------------------------------------------------------
-    protected:
-    MeshPointArray  _aclPointArray;
-    protected:
-    MeshEdgeArray   _aclEdgeArray;
-    protected:
-    MeshFacetArray  _aclFacetArray;
-    protected:
-    BoundBox3D      _clBoundBox;
+  /// Rebuilds the edge array.
+  void RebuildEdgeArray (void);
 
-    protected:
-    bool             _bValid;
-    // -------------------------------------------------------------------
-    // DES: Einfuegen neuer Kanten, bzw. updaten der vorhandenen. Alle Kanten
-    //   des Facets werden ueberprueft auf Existenz. Bei Bedarf wird neue Kante
-    //   eingefuegt. Die neuen Kanten werden entspr. dem Index in das RSsortierte
-    //   Array eingefuegt. Gleichzeitig werden die Nachbar-Indicies der Facets
-    //   neu gesetzt.
-    // PAR:  rclFacet:     Facet in:  ohne gueltigte Nachbar-Indizies
-    //                           out: gueltigte Nachbar-Indizies
-    //       ulFacetIndex: Index des Facets im Facet-Array
-    // RET:  void:
-    // --------------------------------------------------------------------
-    protected:
-    void AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex);
-    // -------------------------------------------------------------------
-    // DES: Ueberprueft, ob der Punkt keinem anderen Facet mehr zugeordnet ist
-    //   und loescht in im diesem Falle. Die Punkt-Indizies der Facets werden
-    //   entsprechend angepasst.
-    // PAR: ulIndex:         Index im Punkt-Array
-    //      ulFacetIndex:    Index des quasi geloeschten Facet, wird nicht betrachtet
-    //      bOnlySetInvalid: Der Punkt wird nicht geloescht, sondern nur invalid       
-    // gesetzt                       Default-Wert: FALSE
-    // RET: void:
-    // --------------------------------------------------------------------
-    protected:
-    inline unsigned long FindEdge (const MeshHelpEdge &rclEdge) const;
-    // -------------------------------------------------------------------
-    // DES: loescht bzw. umbelegt alle Kanten die aus das Facet indizieren.
-    //   Wenn kein Nachbar-Facet existiert wird die Kante geloescht.
-    //   Umbelegen heisst: Kanten die auf das Facet indizieren werden auf das
-    //   Nachbar-Facet indiziert.
-    // PAR: ulFacetIndex: zu loeschendes Facet
-    // RET: void:
-    // --------------------------------------------------------------------
+  /// Rebuilds the neighbour indices for all facets.
+  void RebuildNeighbours (void);
 
-    // -------------------------------------------------------------------
-    // DES: loescht bzw. umbelegt alle Kanten die aus das Facet indizieren.
-    //   Wenn kein Nachbar-Facet existiert wird die Kante geloescht.
-    //   Umbelegen heisst: Kanten die auf das Facet indizieren werden auf das
-    //   Nachbar-Facet indiziert.
-    // PAR: ulFacetIndex: zu loeschendes Facet
-    // RET: void:
-    // --------------------------------------------------------------------
-    protected:
-    MeshEdgeArray::_TConstIterator FindEdge (unsigned long ulFacet, unsigned short usSide) const ;
+  /** Builds up the mesh data-structure. MeshPointBuilder is already created and gets deleted then.
+   * The Map is not sorted.
+   */
+  void Assign (MeshPointBuilder &rclMap);
 
-    protected:
-    void CheckAndCorrectEdge (unsigned long ulFacetIndex);
-    // -------------------------------------------------------------------
-    // DES: loescht alle ungueltige Punkte und Facets und korrigiert 
-    //   gleichzeitig die Punkt- und Nachbar-Indizies
-    // PAR: void:
-    // RET: void:
-    // --------------------------------------------------------------------
-    protected:
-    void RemoveInvalids (bool bWithEdgeCorrect = true, bool bWithEdgeDelete = false);
-    // -------------------------------------------------------------------
-    // DES: Ueberprueft, ob der Punkt keinem anderen Facet mehr zugeordnet ist
-    //   und loescht in im diesem Falle. Die Punkt-Indizies der Facets werden
-    //   entsprechend angepasst.
-    // PAR: ulIndex:         Index im Punkt-Array
-    //      ulFacetIndex:    Index des quasi geloeschten Facet, wird nicht betrachtet
-    //      bOnlySetInvalid: Der Punkt wird nicht geloescht, sondern nur invalid       
-    // gesetzt                       Default-Wert: FALSE
-    // RET: void:
-    // --------------------------------------------------------------------
-    protected:
-    void ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex,
-                                bool bOnlySetInvalid = false);
+  /** Adjusts the facet's orierntation to the given normal direction. */
+  inline void AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNormal);
 
-    // Neuaufbau des Kantenarrays.
-    protected:
-    void RebuildEdgeArray (void);
+  /** Calculates the normal to the given facet. */
+  inline Vector3D GetNormal (const MeshFacet &rclFacet) const;
 
-    // neugenerierung der Nachbarn-Indizes der Facets
-    protected:
-    void RebuildNeighbours (void);
+  MeshPointArray  _aclPointArray; /**< Holds the array of geometric points. */
+  MeshEdgeArray   _aclEdgeArray; /**< Holds the array of edges. */
+  MeshFacetArray  _aclFacetArray; /**< Holds the array of facets. */
+  BoundBox3D      _clBoundBox; /**< The current calculated bounding box. */
+  bool             _bValid; /**< Current state of validality. */
 
+  // friends
   friend class MeshPointIterator;
   friend class MeshEdgeIterator;
   friend class MeshFacetIterator;
   friend class MeshFastFacetIterator;
   friend class MeshInventor;
   friend class MeshSTL;
+  friend class MeshFacetFunc;
+  friend class MeshRefPointToFacets;
+  friend class MeshFacetsNeighbours;
+  friend class MeshNeighbourPoints;
+  friend class MeshFacetTools;
+  friend class MeshSearchNeighbours;
+  friend class MeshAlgorithm;
+  friend class MeshSearchNeighbourFacetsVisitor;
+  friend class MeshVisitFacets;
+  friend class MeshVisitPoints;
+  friend class MeshTopoAlgorithm;
 };
 
-
-/*-------------------------------------------------------------------
-DES: Ueberprueft, ob der Punkt keinem anderen Facet mehr zugeordnet ist
-  und loescht in im diesem Falle. Die Punkt-Indizies der Facets werden
-  entsprechend angepasst.
-PAR: ulIndex:         Index im Punkt-Array
-     ulFacetIndex:    Index des quasi geloeschten Facet, wird nicht betrachtet
-     bOnlySetInvalid: Der Punkt wird nicht geloescht, sondern nur invalid       
-gesetzt                       Default-Wert: FALSE
-RET: void:
---------------------------------------------------------------------*/
-class BoundBox3D;
-class MeshPoint;
-class AppMeshExport MeshGeomEdge;
-class MeshGeomFacet;
-class Matrix4D;
-class DataStream;
-class MeshFacetIterator;
-class AppMeshExport MeshEdgeIterator;
-class AppMeshExport MeshPointIterator;
-class Vector3D;
-class MeshFacet;
-class AppMeshExport MeshHelpEdge;
-#ifdef OVERREAD_FOLLOW
-#include "boundbox.hxx"
-#include "elements.hxx"
-#endif
 inline unsigned long MeshKernel::FindEdge (const MeshHelpEdge &rclEdge) const
 {
-  unsigned long           i, ulCt  = _aclEdgeArray.size();
+  unsigned long i, ulCt  = _aclEdgeArray.size();
   MeshHelpEdge    clEdge;
   const MeshEdge *pclEdge;
 
@@ -376,24 +273,20 @@ inline unsigned long MeshKernel::FindEdge (const MeshHelpEdge &rclEdge) const
   return ULONG_MAX;
 }
 
-// gibt den Punkt an dem übergebenen Index zurück. Die Methode ist nicht sehr      
-// effektiv und  sollte nur für sporadische Zugriffe von Aussen verwendet werden.
 inline MeshPoint MeshKernel::GetPoint (unsigned long ulIndex) const
 {
   assert(ulIndex < _aclPointArray.size());
   return _aclPointArray[ulIndex];
 }
 
-// gibt die Kante an dem übergebenen Index zurück. Die Methode ist nicht sehr      
-// effektiv und  sollte nur für sporadische Zugriffe von Aussen verwendet werden.
 inline MeshGeomEdge MeshKernel::GetEdge (unsigned long ulPos) const
 {
   assert(ulPos < _aclEdgeArray.size());
 
   MeshHelpEdge   clH;
   MeshGeomEdge clEdge;
-  unsigned short         usSide  = (unsigned short)(_aclEdgeArray[ulPos].Side());
-  unsigned long          ulIndex = _aclEdgeArray[ulPos].Index();
+  unsigned short usSide  = (unsigned short)(_aclEdgeArray[ulPos].Side());
+  unsigned long ulIndex = _aclEdgeArray[ulPos].Index();
 
   _aclFacetArray[ulIndex].GetEdge(usSide, clH);
   clEdge._aclPoints[0] = _aclPointArray[clH._ulIndex[0]];
@@ -402,8 +295,6 @@ inline MeshGeomEdge MeshKernel::GetEdge (unsigned long ulPos) const
   return clEdge;
 }
 
-// gibt das Facet an dem übergebenen Index zurück. Die Methode ist nicht sehr      
-// effektiv und  sollte nur für sporadische Zugriffe von Aussen verwendet werden.
 inline MeshGeomFacet MeshKernel::GetFacet (unsigned long ulIndex) const
 {
   assert(ulIndex < _aclFacetArray.size());
@@ -420,7 +311,6 @@ inline MeshGeomFacet MeshKernel::GetFacet (unsigned long ulIndex) const
   return clFacet;
 }
 
-// gibt die Nachbarn zu einem Facet an
 inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long &rulNIdx0, unsigned long &rulNIdx1, unsigned long &rulNIdx2)
 {
   assert(ulIndex < _aclFacetArray.size());
@@ -430,29 +320,25 @@ inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long
   rulNIdx2 = _aclFacetArray[ulIndex]._aulNeighbours[2];
 }
 
-
-/*translate one point*/
 inline void MeshKernel::MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans)
 {
   _aclPointArray[ulPtIndex] += rclTrans;
 }
 
-// anpassen der Umlaufrichtung an die Normale
 inline void MeshKernel::AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNormal)
 {
   Vector3D clN = (_aclPointArray[rclFacet._aulPoints[1]] - _aclPointArray[rclFacet._aulPoints[0]]) %
-                  (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
+                 (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
   if ((clN * rclNormal) < 0.0f)
   {
     rclFacet.FlipNormal();
   }
 }
 
-// berechnen eine normierten Normale des übergebenen Facet
 inline Vector3D MeshKernel::GetNormal (const MeshFacet &rclFacet) const
 {
   Vector3D clN = (_aclPointArray[rclFacet._aulPoints[1]] - _aclPointArray[rclFacet._aulPoints[0]]) %
-                  (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
+                 (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
   clN.Normalize();
   return clN;
 }
@@ -473,4 +359,4 @@ inline bool MeshKernel::IsBorder (const MeshEdgeArray::_TIterator pPEdge) const
 
 } // namespace Mesh
 
-#endif
+#endif // MESH_KERNEL_H 

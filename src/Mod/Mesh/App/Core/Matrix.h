@@ -43,27 +43,49 @@ typedef Matrix4D& RMatrix4D;
 class AppMeshExport Matrix4D
 {
 public:
+  /// Construction
   Matrix4D (void);
+  /// Construction
   Matrix4D (const Matrix4D& rclMtrx);
+  /// Destruction
   virtual ~Matrix4D () {};
 
+  /** @name Operators */
+  //@{
+  /// Matrix multiplication
   inline Matrix4D& operator*= (const Matrix4D& rclMtrx);
+  /// Assignment
   inline Matrix4D& operator=  (const Matrix4D& rclMtrx);
+  /// Matrix multiplication
   inline Matrix4D  operator*  (const Matrix4D& rclMtrx);
+  /// Multiplication matrix with vector 
   inline Vector3D  operator*  (const Vector3D& rclVct) const;
+  /// Comparison
   inline bool      operator!= (const Matrix4D& rclMtrx);
+  /// Comparison
   inline bool      operator== (const Matrix4D& rclMtrx);
+  /// Index operator
   inline double*    operator[] (unsigned short usNdx);
+
+  // friend
   inline friend Vector3D& operator*= (Vector3D& rclVect, const Matrix4D& rclMtrx);
+  //@}
 
-
+  /** @name I/O methods */
+  //@{
+  /// Binary streaming of data
   DataStream& SaveData (DataStream& ofs);
+  /// Binary streaming of data
   DataStream& LoadData (DataStream& ifs);
+  //@}
   void   GetGLMatrix (double dMtrx[16]) const;
   void   SetGLMatrix (const double dMtrx[16]);
 
   virtual unsigned long GetMemSpace (void);
 
+  /** @name Manipulation */
+  //@{
+  /// Makes unity matrix
   void Unit         (void);
   void SetMoveX     (float fMove);
   void SetMoveY     (float fMove);
@@ -76,10 +98,15 @@ public:
   void SetRotX      (float fAngle);
   void SetRotY      (float fAngle);
   void SetRotZ      (float fAngle);
+  /// Rotation around an arbitrary axis passing the origin.
   void SetRotLine   (const Vector3D& rclVct, float fAngle);
+  /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
+  void SetRotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle);
   void Inverse      (void);
 	void InverseGauss (void);
   void Transpose    (void);
+  //@}
+
   void Print        (void) const;
   
 private:
@@ -139,11 +166,11 @@ inline Matrix4D& Matrix4D::operator= (const Matrix4D& rclMtrx)
 inline Vector3D Matrix4D::operator* (const Vector3D& rclVct) const
 {
   return Vector3D((float)(dMtrx4D[0][0]*rclVct.x + dMtrx4D[0][1]*rclVct.y + 
-                           dMtrx4D[0][2]*rclVct.z + dMtrx4D[0][3]),
-                   (float)(dMtrx4D[1][0]*rclVct.x + dMtrx4D[1][1]*rclVct.y + 
-                           dMtrx4D[1][2]*rclVct.z + dMtrx4D[1][3]),
-                   (float)(dMtrx4D[2][0]*rclVct.x + dMtrx4D[2][1]*rclVct.y + 
-                           dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
+                          dMtrx4D[0][2]*rclVct.z + dMtrx4D[0][3]),
+                  (float)(dMtrx4D[1][0]*rclVct.x + dMtrx4D[1][1]*rclVct.y + 
+                          dMtrx4D[1][2]*rclVct.z + dMtrx4D[1][3]),
+                  (float)(dMtrx4D[2][0]*rclVct.x + dMtrx4D[2][1]*rclVct.y + 
+                          dMtrx4D[2][2]*rclVct.z + dMtrx4D[2][3]));
 }
 
 inline bool Matrix4D::operator== (const Matrix4D& rclMtrx)

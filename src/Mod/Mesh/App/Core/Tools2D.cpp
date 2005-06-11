@@ -23,9 +23,6 @@
 
 #include "PreCompiled.h"
 
-#include <set>
-#include <math.h>
-#include <stdio.h>
 #include "Definitions.h"
 #include "Tools2D.h"
 
@@ -261,6 +258,7 @@ static short _CalcTorsion (float *pfLine, float fX, float fY)
   short sQuad[2], i;
   float fResX;
 
+  // Klassifizierung der beiden Polygonpunkte in Quadranten
   for (i = 0; i < 2; i++)
   {
     if (pfLine[i * 2] <= fX)
@@ -269,32 +267,46 @@ static short _CalcTorsion (float *pfLine, float fX, float fY)
       sQuad[i] = (pfLine[i * 2 + 1] > fY) ? 1 : 2;
   }
 
+  // Abbruch bei Linienpunkten innerhalb eines Quadranten
+  // Abbruch bei nichtschneidenden Linienpunkten
   if (abs (sQuad[0] - sQuad[1]) <= 1) return 0;
 
+  // Beide Punkte links von ulX
   if (abs (sQuad[0] - sQuad[1]) == 3)
     return (sQuad[0] == 0) ? 1 : -1;
 
+  // Restfaelle : Quadrantendifferenz von 2
+  // mathematischer Test auf Schnitt
   fResX = pfLine[0] + (fY - pfLine[1]) /
                 ((pfLine[3] - pfLine[1]) / (pfLine[2] - pfLine[0]));
   if (fResX < fX)
 
+    // oben/unten oder unten/oben
     return (sQuad[0] <= 1) ? 1 : -1;
 
+  // Verbleibende Faelle ?
   return 0;
 }
 
 bool Polygon2D::Contains (const Vector2D &rclV) const
 {
+  // Ermittelt mit dem Verfahren der Windungszahl, ob ein Punkt innerhalb 
+  // eines Polygonzugs enthalten ist.
+  // Summe aller Windungszahlen gibt an, ob ja oder nein.
   float pfTmp[4];
   unsigned long i;
   short sTorsion = 0;
 
+  // Fehlercheck
   if (GetCtVectors() < 3)  return false;
 
+  // fuer alle Polygon-Linien
   for (i = 0; i < GetCtVectors(); i++)
   {
+    // Linienstruktur belegen
     if (i == GetCtVectors() - 1)
     {
+      // Polygon automatisch schliessen
       pfTmp[0] = _aclVct[i].fX;
       pfTmp[1] = _aclVct[i].fY;
       pfTmp[2] = _aclVct[0].fX;
@@ -302,29 +314,37 @@ bool Polygon2D::Contains (const Vector2D &rclV) const
     }
     else
     {
+      // uebernehmen Punkt i und i+1
       pfTmp[0] = _aclVct[i].fX;
       pfTmp[1] = _aclVct[i].fY;
       pfTmp[2] = _aclVct[i + 1].fX;
       pfTmp[3] = _aclVct[i + 1].fY;
     }
 
+    // Schnitt-Test durchfuehren und Windungszaehler berechnen
     sTorsion += _CalcTorsion (pfTmp, rclV.fX, rclV.fY);
   }
 
+  // Windungszaehler auswerten
   return sTorsion != 0;
 }
 
 void Polygon2D::Intersect (const Polygon2D &rclPolygon, std::list<Polygon2D> &rclResultPolygonList) const
 {
+  // trimmen des uebergebenen Polygons mit dem aktuellen, Ergebnis ist eine Liste von Polygonen (Untermenge des uebergebenen Polygons)
+  // das eigene (Trim-) Polygon ist geschlossen
+  //
   if ((rclPolygon.GetCtVectors() < 2) || (GetCtVectors() < 2))
     return;
 
+  // position of first points (in or out of polygon)
   bool bInner = Contains(rclPolygon[0]);
 
   Polygon2D clResultPolygon;
   if (bInner == true)  // add first point if inner trim-polygon
     clResultPolygon.Add(rclPolygon[0]);
 
+  // for each polygon segment
   unsigned long ulPolyCt = rclPolygon.GetCtVectors();
   unsigned long ulTrimCt = GetCtVectors();
   for (unsigned long ulVec = 0; ulVec < (ulPolyCt-1); ulVec++)

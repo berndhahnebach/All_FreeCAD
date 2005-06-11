@@ -21,14 +21,13 @@
  ***************************************************************************/
 
 
-#ifndef __RSTREAM_HXX__
-#define __RSTREAM_HXX__
+#ifndef STREAM_H
+#define STREAM_H
 
-#include <string>
 #include "Definitions.h"
-#include <fstream>
 
 #ifndef _PreComp_
+# include <fstream>
 # include <ios>
 # include <iostream>
 # include <sstream>
@@ -44,83 +43,75 @@ typedef DataStream &RDataStream;
 
 class AppMeshExport DataStream
 {
-  public:
+public:
+  DataStream (void);
 
-    DataStream (void);
+  unsigned long GetFlag (void);
+  void SetFlag (unsigned long ulNewFlag);
 
-    unsigned long GetFlag (void);
-    void   SetFlag (unsigned long ulNewFlag);
+  operator void* (void);
+  bool operator! (void);
 
-    operator void* (void);
-    bool operator! (void);
+  virtual bool IsOpen (void) = 0;
+  virtual bool IsGood (void) = 0;
+  virtual bool IsEof (void)  = 0;
+  virtual bool IsFail (void) = 0;
+  virtual bool IsBad (void)  = 0;
 
-    virtual bool IsOpen (void) = 0;
-    virtual bool IsGood (void) = 0;
-    virtual bool IsEof (void)  = 0;
-    virtual bool IsFail (void) = 0;
-    virtual bool IsBad (void)  = 0;
+  virtual void Flush (void) = 0;
+  
+  void SetFormatError (bool bErr);
+  bool IsFormatError (void);
 
-    virtual void Flush (void) = 0;
-    
-    void  SetFormatError (bool bErr);
-    bool IsFormatError (void);
+  bool GetSwap (void);
+  void SetSwap (bool bNewSwab);
 
-    bool GetSwap (void);
-    void  SetSwap (bool bNewSwab);
+  friend DataStream& readSwapOrder (DataStream& rcs);
+  friend DataStream& writeSwapOrder (DataStream& rcs);
 
-    friend DataStream& readSwapOrder (DataStream& rcs);
-    friend DataStream& writeSwapOrder (DataStream& rcs);
-
-    // Import-Methods
-    DataStream& operator>> (DataStream& (*fct) (DataStream&));
-    DataStream& operator>> (char &ch);
-    DataStream& operator>> (unsigned char &uch);
-    DataStream& operator>> (short &s);
-    DataStream& operator>> (unsigned short &us);
-    DataStream& operator>> (long &l);
-    DataStream& operator>> (unsigned long &ul);
-    DataStream& operator>> (float &f);
-    DataStream& operator>> (double &d);
-  //  DataStream& operator>> (bool &b);
- 
-
-    virtual DataStream& Read (char &ch) = 0;
-    virtual DataStream& Read (char* pData, int nSize) = 0;
-    virtual DataStream& ReadLine (char* pData, int nSize,
-                                             char cDelim = '\n');                                              
-    // Export-Methods
-    DataStream& operator<< (DataStream& (*fct) (DataStream&));
-    DataStream& operator<< (char ch);
-    DataStream& operator<< (unsigned char uch);
-    DataStream& operator<< (short s);
-    DataStream& operator<< (unsigned short us);
-    DataStream& operator<< (long l);
-    DataStream& operator<< (unsigned long ul);
-    DataStream& operator<< (float f);
-    DataStream& operator<< (double d);
-   // DataStream& operator<< (bool b);
-
-    virtual DataStream& Write (char ch) = 0;
-    virtual DataStream& Write (const char* pData, int nSize) = 0;
+  // Import-Methods
+  DataStream& operator>> (DataStream& (*fct) (DataStream&));
+  DataStream& operator>> (char &ch);
+  DataStream& operator>> (unsigned char &uch);
+  DataStream& operator>> (short &s);
+  DataStream& operator>> (unsigned short &us);
+  DataStream& operator>> (long &l);
+  DataStream& operator>> (unsigned long &ul);
+  DataStream& operator>> (float &f);
+  DataStream& operator>> (double &d);
+//  DataStream& operator>> (bool &b);
 
 
-  protected:
+  virtual DataStream& Read (char &ch) = 0;
+  virtual DataStream& Read (char* pData, int nSize) = 0;
+  virtual DataStream& ReadLine (char* pData, int nSize,
+                                           char cDelim = '\n');                                              
+  // Export-Methods
+  DataStream& operator<< (DataStream& (*fct) (DataStream&));
+  DataStream& operator<< (char ch);
+  DataStream& operator<< (unsigned char uch);
+  DataStream& operator<< (short s);
+  DataStream& operator<< (unsigned short us);
+  DataStream& operator<< (long l);
+  DataStream& operator<< (unsigned long ul);
+  DataStream& operator<< (float f);
+  DataStream& operator<< (double d);
+ // DataStream& operator<< (bool b);
 
-    // Init-Stream-Data
-    void Init (void);
+  virtual DataStream& Write (char ch) = 0;
+  virtual DataStream& Write (const char* pData, int nSize) = 0;
 
-    // User-format-error occured
-    bool bFormatError;
 
-    // automatic byte-swapping
-    bool bSwap;
-
-    // user-reserved flag
-    unsigned long ulFlag;
-
+protected:
+  /// Init-Stream-Data
+  void Init (void);
+  /// User-format-error occured
+  bool bFormatError;
+  /// automatic byte-swapping
+  bool bSwap;
+  /// user-reserved flag
+  unsigned long ulFlag;
 };
-
-
 
 //--------- CLASS FileStream -------------------------*/
 
@@ -132,43 +123,52 @@ typedef FileStream &RFileStream;
 
 class AppMeshExport FileStream : public DataStream
 {
-  protected:
-    std::fstream *pfs;
+protected:
+  std::fstream *pfs;
 
-  public:
-    FileStream (const char *pszName,
-        //standartparameter auskommentiert wegen VC++ internel compiler error
-        std::ios::openmode om /*= reinterpret_cast <std::ios::open_mode>(std::ios::in  | std::ios::out)*/);
-    FileStream (void);
-    virtual ~FileStream (void);
+public:
+  //commented default parameter because of VC++ internel compiler error
+  FileStream (const char *pszName,
+      std::ios::openmode om /*= reinterpret_cast <std::ios::open_mode>(std::ios::in  | std::ios::out)*/);
+  FileStream (void);
+  virtual ~FileStream (void);
 
-    bool Open (const char* pszName, std::ios::openmode om = (std::ios::openmode)(std::ios::in | std::ios::out));
-    void  Close (void);
+  bool Open (const char* pszName, std::ios::openmode om = (std::ios::openmode)(std::ios::in | std::ios::out));
+  void  Close (void);
 
-    void Flush (void);
+  void Flush (void);
 
-    // Status-Methods
-	  operator void* (void);
-    bool operator! (void);
+  // Status-Methods
+	operator void* (void);
+  bool operator! (void);
 
-    bool IsOpen (void);
-    bool IsGood (void);
-    bool IsEof (void);
-    bool IsFail (void);
-    bool IsBad (void);
+  bool IsOpen (void);
+  bool IsGood (void);
+  bool IsEof (void);
+  bool IsFail (void);
+  bool IsBad (void);
 
-    unsigned long FileSize (void);
-    unsigned long Position (void);
-    void   SetPosition (unsigned long ulPos);
+  unsigned long FileSize (void);
+  unsigned long Position (void);
+  void SetPosition (unsigned long ulPos);
 
-    // I/O-Methods
-    DataStream& Read (char &ch);
-    DataStream& Read (char* pData, int nSize);
-    DataStream& ReadLine (char* pData, int nSize, char cDelim = '\n');
-    DataStream& Write (char ch);
-    DataStream& Write (const char* pData, int nSize);
+  // I/O-Methods
+  DataStream& Read (char &ch);
+  DataStream& Read (char* pData, int nSize);
+  DataStream& ReadLine (char* pData, int nSize, char cDelim = '\n');
+  DataStream& Write (char ch);
+  DataStream& Write (const char* pData, int nSize);
 };
 
+//--------- CLASS FileBuffer -------------------------*/
+
+class AppMeshExport FileBuffer : public std::filebuf
+{
+public:
+  void   SetPosition (unsigned long ulPos);
+  unsigned long Position (void);
+  unsigned long FileSize (void);
+};
 
 //--------- CLASS BlobStream -------------------------*/
 
@@ -178,54 +178,43 @@ typedef BlobStream &RBlobStream;
 
 class AppMeshExport BlobStream : public DataStream
 {
-  protected:
-    char *pBuf, *pszName;
-    unsigned long ulBufSize, ulCursor;
-    
-  public:
+protected:
+  char *pBuf, *pszName;
+  unsigned long ulBufSize, ulCursor;
+  
+public:
+  BlobStream (void);
+  virtual ~BlobStream (void);
 
-    BlobStream (void);
-    virtual ~BlobStream (void);
+  // Stream-Name
+  void SetName (const char *pszBlobName);
+  char *GetName (void);
 
-    // Stream-Name
-    void SetName (const char *pszBlobName);
-    char *GetName (void);
+  // Blob-Interface
+  unsigned long GetPosition (void);
+  char *GetBuffer (void);
+  void SetBuffer (char *pBuffer, unsigned long ulSize);
 
-    // Blob-Interface
-    unsigned long GetPosition (void);
-    char *GetBuffer (void);
-    void SetBuffer (char *pBuffer, unsigned long ulSize);
+  // Status-Methods
+  operator void* (void);
+  bool operator! (void);
 
-    // Status-Methods
-	  operator void* (void);
-    bool operator! (void);
+  bool IsOpen (void);
+  bool IsGood (void);
+  bool IsEof (void);
+  bool IsFail (void);
+  bool IsBad (void);
 
-    bool IsOpen (void);
-    bool IsGood (void);
-    bool IsEof (void);
-    bool IsFail (void);
-    bool IsBad (void);
+  void Flush (void);
 
-    void Flush (void);
-
-    // I/O-Methods
-    void Rewind (void);
-    DataStream& Read (char &ch);
-    DataStream& Read (char* pData, int nSize);
-    DataStream& Write (char ch);
-    DataStream& Write (const char* pData, int nSize);
-
-};
-
-
-class AppMeshExport FileBuffer : public std::filebuf
-{
-  public:
-    void   SetPosition (unsigned long ulPos);
-    unsigned long Position (void);
-    unsigned long FileSize (void);
+  // I/O-Methods
+  void Rewind (void);
+  DataStream& Read (char &ch);
+  DataStream& Read (char* pData, int nSize);
+  DataStream& Write (char ch);
+  DataStream& Write (const char* pData, int nSize);
 };
 
 } // namespace Mesh
 
-#endif
+#endif // STREAM_H

@@ -171,8 +171,7 @@ void Matrix4D::SetRotZ (float fAngle)
   (*this) *= clMat;
 }
 
-void Matrix4D::SetRotLine (const Vector3D& rclVct, 
-                            float fAngle)
+void Matrix4D::SetRotLine (const Vector3D& rclVct, float fAngle)
 {
   // **** Algorithmus wurde aus einem Mathebuch entnohmen 
   Matrix4D  clMA, clMB, clMC, clMRot;
@@ -221,6 +220,20 @@ void Matrix4D::SetRotLine (const Vector3D& rclVct,
       clMRot.dMtrx4D[iz][is] = clMA.dMtrx4D[iz][is]  + clMB.dMtrx4D[iz][is] +
                                clMC.dMtrx4D[iz][is];
   (*this) *= clMRot;
+}
+
+void Matrix4D::SetRotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle)
+{
+  Matrix4D  clMT, clMRot, clMInvT, clM;
+  Vector3D clBase(rclBase);
+  
+  clMT.SetMove(clBase);            // Translation
+  clMInvT.SetMove(clBase *= (-1.0f));  // inverse Translation
+  clMRot.SetRotLine(rclDir, fAngle);
+
+  clM = clMRot * clMInvT;
+  clM = clMT * clM; 
+  (*this) *= clM;  
 }
 
 void Matrix4D::Inverse (void)

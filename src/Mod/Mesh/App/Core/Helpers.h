@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __MESH_HELPERS_HXX__
-#define __MESH_HELPERS_HXX__
+#ifndef MESH_HELPERS_H
+#define MESH_HELPERS_H
 
 #include "Elements.h"
 
@@ -154,7 +154,7 @@ inline void MeshPointBuilder::Add (unsigned long ulCorner, unsigned long ulFacet
   push_back(clObj);
 }
 
-inline void MeshHelpBuilderEdge::Set (unsigned long ulInd1, unsigned long ulInd2,
+inline void MeshHelpBuilderEdge::Set ( unsigned long ulInd1, unsigned long ulInd2,
                                        unsigned long ulSide, unsigned long ulFInd)
 {
   if (ulInd1 < ulInd2)
@@ -189,7 +189,8 @@ inline bool MeshHelpBuilderEdge::operator != (const MeshHelpBuilderEdge &rclObj)
 }
 
 
-inline void MeshEdgeBuilder::Add (unsigned long ulInd1, unsigned long ulInd2, unsigned long ulSide, unsigned long ulFInd)
+inline void MeshEdgeBuilder::Add (unsigned long ulInd1, unsigned long ulInd2, 
+                                  unsigned long ulSide, unsigned long ulFInd)
 {
   MeshHelpBuilderEdge  clObj;
   clObj.Set(ulInd1, ulInd2, ulSide, ulFInd);
@@ -198,4 +199,4 @@ inline void MeshEdgeBuilder::Add (unsigned long ulInd1, unsigned long ulInd2, un
 
 } // namespace Mesh
 
-#endif
+#endif // MESH_HELPERS_H 

@@ -23,15 +23,20 @@
 
 #include "PreCompiled.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#ifndef _PreComp_
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
+#endif
 
 #include "Stream.h"
 #include "Swap.h"
 
 using namespace Mesh;
 
+/** Initializes the stream data. This method should be called before 
+ * Open() and after Close() calls.
+ */
 void DataStream::Init (void)
 {
   bSwap = false;
@@ -39,41 +44,49 @@ void DataStream::Init (void)
   ulFlag = 0;
 }
 
+/** Construction. */
 DataStream::DataStream (void)
 {
   Init ();
 }
 
+/** Returns the user-stream flag. */
 unsigned long DataStream::GetFlag (void)
 {
   return ulFlag;
 }
 
+/** Sets the user-stream flag. */
 void DataStream::SetFlag (unsigned long ulNewFlag)
 {
   ulFlag = ulNewFlag;
 }
 
+/** Returns the swap mode. */
 bool DataStream::GetSwap (void)
 {
   return bSwap;
 }
 
+/** Sets the swap mode. */
 void DataStream::SetSwap (bool bNewSwap)
 {
   bSwap = bNewSwap;
 }
 
+/** Sets format error flag. */
 void  DataStream::SetFormatError (bool bErr)
 {
   bFormatError = bErr;
 }
 
+/** Returns format error flag. */
 bool DataStream::IsFormatError (void)
 {
   return bFormatError;
 }
 
+/** Stream manipulator that reads an id from the current stream. */
 DataStream& Mesh::readSwapOrder (DataStream& rcs)
 {
   unsigned short usOrder;
@@ -82,6 +95,7 @@ DataStream& Mesh::readSwapOrder (DataStream& rcs)
   return rcs;
 }
 
+/** Stream manipulator that writes an id to the current stream. */
 DataStream& Mesh::writeSwapOrder (DataStream& rcs)
 {
   unsigned short usOrder = SwapOrder ();
@@ -89,31 +103,37 @@ DataStream& Mesh::writeSwapOrder (DataStream& rcs)
   return rcs;
 }
 
+/** void operator */
 DataStream::operator void* (void)
 {
   return (void*) (IsGood () && (!IsFormatError ()));
 }
 
+/** ! operator */
 bool DataStream::operator! (void)
 {
   return !this->operator void* ();
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (DataStream& (*fct) (DataStream&))
 {
   return (*fct) (*this);
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (char &ch)
 {
   return Read (ch);
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (unsigned char &uch)
 {
   return *this >> (char&) uch;
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (short &s)
 {
   Read ((char*) &s, sizeof (short));
@@ -121,12 +141,14 @@ DataStream& DataStream::operator>> (short &s)
   return *this;
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (unsigned short &us)
 {
   *this >> (short&) us;
   return *this;
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (long &l)
 {
   Read ((char*) &l, sizeof (long));
@@ -134,12 +156,14 @@ DataStream& DataStream::operator>> (long &l)
   return *this;
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (unsigned long &ul)
 {
   *this >> (long&) ul;
   return *this;
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (float &f)
 {
   Read ((char*) &f, sizeof (float));
@@ -147,6 +171,7 @@ DataStream& DataStream::operator>> (float &f)
   return *this;
 }
 
+/** input operator */
 DataStream& DataStream::operator>> (double &d)
 {
   Read ((char*) &d, sizeof (double));
@@ -154,55 +179,65 @@ DataStream& DataStream::operator>> (double &d)
   return *this;
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (DataStream& (*fct) (DataStream&))
 {
   return (*fct) (*this);
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (char ch)
 {
   return Write (ch);
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (unsigned char uch)
 {
   return *this << (char) uch;
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (short s)
 {
   if (bSwap) SwapVar (s);
   return Write ((char*) &s, sizeof (short));
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (unsigned short us)
 {
   return *this << (short) us;
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (long l)
 {
   if (bSwap) SwapVar (l);
   return Write ((char*) &l, sizeof (long));
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (unsigned long ul)
 {
   return *this << (long) ul;
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (float f)
 {
   if (bSwap) SwapVar ((float&)f);
   return Write ((char*) &f, sizeof (float));
 }
 
+/** output operator */
 DataStream& DataStream::operator<< (double d)
 {
   if (bSwap) SwapVar ((double&) d);
   return Write ((char*) &d, sizeof (double));
 }
 
+/** Reads a line from the stream. */
 DataStream& DataStream::ReadLine (char* pData, int nSize, char cDelim)
 {
   unsigned long i;
@@ -220,12 +255,16 @@ DataStream& DataStream::ReadLine (char* pData, int nSize, char cDelim)
   return *this;
 }
 
+//--------- CLASS FileStream -------------------------*/
+
+/** Construction. */
 FileStream::FileStream (void)
 	: DataStream ()
 {
   pfs = NULL;
 }
 
+/** Construction. */
 FileStream::FileStream (const char *pszName, std::ios::openmode om)
 	: DataStream ()
 {
@@ -233,29 +272,16 @@ FileStream::FileStream (const char *pszName, std::ios::openmode om)
   Open (pszName, om);
 }
 
-/*$$$*/
+/** Denstruction. Closes an open file. */
 FileStream::~FileStream (void)
-/*------------------------------------------------------
- Beschreibung : Destruktor
-		Schliesst gegebenenfalls eine geoffnete
-		Datei.
- Parameter    : void
- Rueckgabe    : void
- -------------------------------------------------------*/
 {
   Close();
   if (pfs)
     delete pfs;
 }
 
-/*$$$*/
+/** Opens a file. */
 bool FileStream::Open (const char* pszName, std::ios::openmode om)
-/*------------------------------------------------------
- Beschreibung : Oeffnet eine Datei
- Parameter    : pszName : Dateiname
-		om : Oeffnungsmodus (std::ios-Flag-Kombination)
- Rueckgabe    : TRUE/FALSE OK / Fehler
- -------------------------------------------------------*/
 {
   // Close open stream
   if (IsOpen ())
@@ -279,13 +305,8 @@ bool FileStream::Open (const char* pszName, std::ios::openmode om)
     return false;
 }
 
-/*$$$*/
+/** Closes an open file. */
 void FileStream::Close (void)
-/*------------------------------------------------------
- Beschreibung : Schliesst eine geoeffnete Datei.
- Parameter    : void
- Rueckgabe    : void
- -------------------------------------------------------*/
 { 
   if (pfs != 0)
   {
@@ -299,13 +320,8 @@ void FileStream::Close (void)
   Init ();
 }
 
-/*$$$*/
+/** Clears the stream. */
 void FileStream::Flush (void)
-/*------------------------------------------------------
- Beschreibung : loescht den Stream (Datei)
- Parameter    : void
- Rueckgabe    : void
- -------------------------------------------------------*/
 { 
   if (!pfs)
     return;
@@ -313,92 +329,48 @@ void FileStream::Flush (void)
   pfs->flush();
 }
 
-/*$$$*/
 FileStream::operator void* (void)
-/*------------------------------------------------------
- Beschreibung : void-Operator zur positiven Statusabfrage
- Parameter    : void
- Rueckgabe    : void
- -------------------------------------------------------*/
 {
   return DataStream::operator void* ();
 }
 
-/*$$$*/
 bool FileStream::operator! (void)
-/*------------------------------------------------------
- Beschreibung : !-Operator zur negativen Statusabfrage
- Parameter    : void
- Rueckgabe    : TRUE/FALSE Fehler / OK
- -------------------------------------------------------*/
 {
   return DataStream::operator! ();
 }
 
-/*$$$*/
+/** Returns true if the file is open, otherwise false is returned. */
 bool FileStream::IsOpen (void)
-/*------------------------------------------------------
- Beschreibung : Liefert Oeffnungszustand des Streams
- Parameter    : void
- Rueckgabe    : TRUE/FALSE File open / closed
- -------------------------------------------------------*/
 {
   return pfs != NULL;
 }
 
-/*$$$*/
+/** Returns the state of the stream. */
 bool FileStream::IsGood (void)
-/*------------------------------------------------------
- Beschreibung : Liefert positiven Zustand des Streams.
- Parameter    : void
- Rueckgabe    : TRUE/FALSE OK / Fehler
- -------------------------------------------------------*/
 {
   return pfs ? pfs->good () : false;
 }
 
-/*$$$*/
+/** Returns the EOF state of the stream. */
 bool FileStream::IsEof (void)
-/*------------------------------------------------------
- Beschreibung : Liefert EOF-Zustand des Streams.
- Parameter    : void
- Rueckgabe    : TRUE/FALSE EOF / nicht EOF
- -------------------------------------------------------*/
 {
   return pfs ? pfs->eof () : false;
 }
 
-/*$$$*/
+/** Retruns the error state of the stream. */
 bool FileStream::IsFail (void)
-/*------------------------------------------------------
- Beschreibung : Liefert Fehlerzustand des Streams
- Parameter    : void
- Rueckgabe    : TRUE/FALSE Fehler / kein Fehler
- -------------------------------------------------------*/
 {
   return pfs ? pfs->fail () : true;
 }
 
-/*$$$*/
+/** Retruns the error state of the stream. */
 bool FileStream::IsBad (void)
-/*------------------------------------------------------
- Beschreibung : Liefert Fehlerzustand des Streams
- Parameter    : void
- Rueckgabe    : TRUE/FALSE Fehler / kein Fehler
- -------------------------------------------------------*/
 {
   return pfs ? pfs->bad () : true;
 }
 
-/*$$$*/
+/** Returns the size of the open file. */
 unsigned long FileStream::FileSize (void)
-/*------------------------------------------------------
- Beschreibung : Liefert die Dateigroesse des geoeffneten
-   Streams
- Parameter    : void
- Rueckgabe    : unsigned long : Dateigroesse in Bytes bzw. 0 (Zero)
-   wenn die Methode fehl geht.
- -------------------------------------------------------*/
 {
   FileBuffer  *pfsbuf;
  
@@ -410,14 +382,8 @@ unsigned long FileStream::FileSize (void)
   return pfsbuf->FileSize();  
 }
 
-/*$$$*/
+/** Returns the current read position. */
 unsigned long FileStream::Position (void)
-/*------------------------------------------------------
- Beschreibung : gibt die aktuelle (Lese-)Position im File an.
- Parameter    : void
- Rueckgabe    : unsigned long : aktuelle Position, 0 wenn nicht 
-  ermittelbar.
- -------------------------------------------------------*/
 {
   FileBuffer  *pfsbuf;
  
@@ -429,13 +395,8 @@ unsigned long FileStream::Position (void)
   return pfsbuf->Position();
 }
 
-
+/** Sets the position in the stream. */
 void FileStream::SetPosition (unsigned long ulPos)
-/*------------------------------------------------------
- Beschreibung : setzt eine neue Position im Stream
- Parameter    : ulPos:  Position
- Rueckgabe    : void
- -------------------------------------------------------*/
 {
   FileBuffer  *pfsbuf;
  
@@ -447,316 +408,45 @@ void FileStream::SetPosition (unsigned long ulPos)
   pfsbuf->SetPosition(ulPos);  
 }
 
-/*$$$*/
+/** Reads a character from the stream. */
 DataStream& FileStream::Read (char &ch)
-/*------------------------------------------------------
- Beschreibung : Liest ein Zeichen aus aktuellem
-		geoeffneten Stream.
- Parameter    : ch : gelesenes Zeichen
- Rueckgabe    : Stream-Referenz
- -------------------------------------------------------*/
 {
   if (pfs == NULL) return *this;
   pfs->read (&ch, 1);
   return *this;
 }
 
-/*$$$*/
+/** Reads a block of size \a nSize from the stream. */
 DataStream& FileStream::Read (char* pData, int nSize)
-/*------------------------------------------------------
- Beschreibung : Liest einen Datenblock aus aktuellem
-		geoeffneten Stream.
- Parameter    : pData : Zeiger auf Zielpuffer
-		nSize : Anzahl geforderter Bytes
- Rueckgabe    : Stream-Referenz
- -------------------------------------------------------*/
 {
   if (pfs == NULL) return *this;
   pfs->read (pData, nSize);
   return *this;
 }
 
-/*$$$*/
-DataStream& FileStream::ReadLine (char* pData, int nSize,
-                                              char cDelim)
-/*------------------------------------------------------
- Beschreibung : Liest eine Zeile aus Stream.
- Parameter    : pData : Lesedatenpuffer
-                nSize : max. Anz. zu lesender Zeichen
-                cDelim: Zeilenende-Zeichen (Default: '\n')
- Rueckgabe    : Stream&
- -------------------------------------------------------*/
+/** Reads a line from the stream. */
+DataStream& FileStream::ReadLine (char* pData, int nSize, char cDelim)
 {
   pfs->getline(pData, nSize, cDelim);    
   return *this;
 }
 
-/*$$$*/
+/** Writes a character into the stream. */
 DataStream& FileStream::Write (char ch)
-/*------------------------------------------------------
- Beschreibung : Schreibt ein Zeichen in aktuellen
-		geoeffneten Stream.
- Parameter    : ch : zu schreibendes Zeichen
- Rueckgabe    : Stream-Referenz
- -------------------------------------------------------*/
 {
   if (pfs == NULL) return *this;
   pfs->write (&ch, 1);
   return *this;
 }
 
-/*$$$*/
+/** Writes a block of size \a nSize into the stream. */
 DataStream& FileStream::Write (const char* pData, int nSize)
-/*------------------------------------------------------
- Beschreibung : Schreibt einen Datenblock in aktuellen
-		geoeffneten Stream.
- Parameter    : pData : Zeiger auf zu schreibende Daten
-		nSize : Laenge des Datenblocks in Bytes
- Rueckgabe    : Stream-Referenz
- -------------------------------------------------------*/
 {
   if (pfs == NULL) return *this;
   pfs->write (pData, nSize);
   return *this;
 }
 
-
-/********************************************************/
-/** IMPLEMENTATION OF BlobStream **********************/
-
-#define BLOB_DEFSIZE    10000
-#define BLOB_DEFNAME    "noname"
-
-/*$$$*/
-BlobStream::BlobStream (void)
-/*------------------------------------------------------
- Beschreibung : Konstruktor.
-         Erzeugt leeren Blobstream.
- Parameter    : void
- Rueckgabe    : void
- -------------------------------------------------------*/
-{
-  pBuf = (char*) malloc (BLOB_DEFSIZE);
-  pszName = strdup (BLOB_DEFNAME);
-  ulBufSize = pBuf ? BLOB_DEFSIZE : 0;
-  ulCursor = 0;
-}
-              
-/*$$$*/
-BlobStream::~BlobStream (void)
-/*------------------------------------------------------
- Beschreibung : Destruktor. 
-         Gibt Streamdaten frei. Vorher in den Stream
-         geschriebene Daten gehen verloren.
- Parameter    : void
- Rueckgabe    : void
- -------------------------------------------------------*/
-{
-  if (pBuf) free (pBuf);
-  if (pszName) free (pszName);
-}
-
-/*$$$*/
-void BlobStream::SetName (const char *pszBlobName)
-/*------------------------------------------------------
- Beschreibung : Setzt den Streamnamen.
-     Kann zur Identifikation mehrerer Streamobjekte
-     dienen.
- Parameter    : pszBlobName : neuer Name
- Rueckgabe    : void
- -------------------------------------------------------*/
-{
-  if (pszName) free (pszName);
-  pszName = strdup (pszBlobName);
-}
-
-/*$$$*/
-char *BlobStream::GetName (void)
-/*------------------------------------------------------
- Beschreibung : Gibt den aktuellen Namen des 
-           Streamobjekts zurueck.
- Parameter    : void
- Rueckgabe    : Ptr. Streamname
- -------------------------------------------------------*/
-{
-  return pszName;
-}
-
-/*$$$*/
-unsigned long BlobStream::GetPosition (void)
-/*------------------------------------------------------
- Beschreibung : Gibt die aktuelle Position des 
-         Stream-Zeigers zurueck. Jede Read/Write-
-         Operation manipuliert diese Position.
- Parameter    : void
- Rueckgabe    : Akt. Stream-Zeiger-Position
- -------------------------------------------------------*/
-{
-  return ulCursor;
-}
-              
-/*$$$*/
-char *BlobStream::GetBuffer (void)
-/*------------------------------------------------------
- Beschreibung : Gibt Zeiger auf internen Streampuffer
-         zurueck. Kann z.B. zur Kopie des Datenblocks
-         und zu einer Konvertierung verwendet werden.
-         Die gueltige Groesse dieses Buffers kann 
-         durch GetPosition() ermittelt werden.
- Parameter    : void
- Rueckgabe    : Ptr .auf Streambuffer
- -------------------------------------------------------*/
-{
-  return pBuf;
-}
-              
-/*$$$*/
-void BlobStream::SetBuffer (char *pBuffer, unsigned long ulSize)
-/*------------------------------------------------------
- Beschreibung : Setzt neuen internen Streambuffer.
-         Koennen z.B. durch IPC empfangene Daten sein.
-         Aktueller Streambuffer wird freigegeben,
-         Daten gehen verloren. Die Daten in pBuffer 
-         werden NICHT kopiert, sie sollten von aussen
-         durch malloc() bereitgestellt werden.
-         Stream-Zeiger wird auf Anfang zurueckgesetzt.
-         
- Parameter    : pBuffer: Ptr. auf Buffer
-                 ulSize : Groesse des Datenblocks in Byte
- Rueckgabe    : void
- -------------------------------------------------------*/
-{
-  if (pBuffer && ulSize)
-  {
-    if (pBuf) free (pBuf);
-    pBuf = pBuffer;
-    ulBufSize = ulSize;
-  }
-  Rewind ();
-}
-              
-/*$$$*/
-BlobStream::operator void* (void)
-/*------------------------------------------------------
- Beschreibung : Valid-Operator
-     z.B. : if (blob_stream) puts ("OK");
- Parameter    : void
- Rueckgabe    : TRUE/FALSE OK / Fehler
- -------------------------------------------------------*/
-{
-  return DataStream::operator void* ();
-}
-              
-/*$$$*/
-bool BlobStream::operator! (void)
-/*------------------------------------------------------
- Beschreibung : Invalid-Operator
-     z.B. : if (!blob_stream) puts ("error");
- Parameter    : void
- Rueckgabe    : TRUE/FALSE Fehler / OK
- -------------------------------------------------------*/
-{
-  return DataStream::operator! ();
-}
-              
-/*$$$*/
-bool BlobStream::IsOpen (void)
-/*------------------------------------------------------
- Beschreibung : Blob-Stream ist grundsaetzlich 
-       schreibend/lesend geoeffnet.
- Parameter    : void
- Rueckgabe    : TRUE
- -------------------------------------------------------*/
-{
-  return true;
-}
-              
-/*$$$*/
-bool BlobStream::IsGood (void)
-/*------------------------------------------------------
- Beschreibung : Liefert Status des Streams zurueck.
- Parameter    : void
- Rueckgabe    : TRUE/FALSE OK / Fehler
- -------------------------------------------------------*/
-{
-  return pBuf != NULL;
-}
-              
-/*$$$*/
-bool BlobStream::IsEof (void)
-/*------------------------------------------------------
- Beschreibung : Liefert EOF-Status des Streams zurueck.
-         EOF wird dann erreicht, wenn der Stream-Zeiger
-         bei Leseoperationen die Gesamtpuffergroesse
-         erreicht.
- Parameter    : void
- Rueckgabe    : TRUE/FALSE EOF / not EOF
- -------------------------------------------------------*/
-{
-  return ulCursor >= ulBufSize;
-}
-              
-bool BlobStream::IsFail (void)
-{
-  return !IsGood ();
-}
-              
-bool BlobStream::IsBad (void)
-{
-  return !IsGood ();
-}
-              
-void BlobStream::Flush (void)
-{
-  ulCursor = 0;
-}
-
-void BlobStream::Rewind (void)
-{
-  ulCursor = 0;
-}
-
-DataStream& BlobStream::Read (char &ch)
-{
-  if (pBuf && !IsEof ()) 
-    ch = pBuf[ulCursor++];
-  return *this;
-}
-              
-DataStream& BlobStream::Read (char* pData, int nSize)
-{
-  int n;
-  if (pBuf)
-    for (n = 0; (n < nSize) && !IsEof (); n++)
-      pData[n] = pBuf[ulCursor++];
-  return *this;
-}
- 
-DataStream& BlobStream::Write (char ch)
-{
-  if (pBuf)
-  {
-    if (ulCursor + 1 >= ulBufSize)
-      pBuf = (char*) realloc (pBuf, ulBufSize += BLOB_DEFSIZE);
-    if (pBuf) pBuf[ulCursor++] = ch;
-  }
-  return *this;  
-}
-              
-DataStream& BlobStream::Write (const char* pData, int nSize)
-{
-  int n;
-  if (pBuf)
-  {
-    if (ulCursor + nSize >= ulBufSize)
-      pBuf = (char*) realloc (pBuf, ulBufSize += nSize + BLOB_DEFSIZE);
-    if (pBuf)
-      for (n = 0; n < nSize; n++)
-        pBuf[ulCursor++] = pData[n];
-  }
-  return *this;
-}
-              
 void FileBuffer::SetPosition (unsigned long ulPos)
 {
   seekoff(ulPos, std::ios::beg, std::ios::in);
@@ -780,39 +470,152 @@ unsigned long FileBuffer::FileSize (void)
   return ulEndpos;
 }
 
-//*********************************************************//
-//******** TEST *******************************************//
+//--------- CLASS BlobStream -------------------------*/
 
+#define BLOB_DEFSIZE    10000
+#define BLOB_DEFNAME    "noname"
 
-#ifdef __TEST__
-
-
-#include <stlall.h>
-
-void main (void)
+/** Construction of an empty stream. */
+BlobStream::BlobStream (void)
 {
-  unsigned long ulValue = 5;
-  FileStream clFile;
-
-  clFile.Open ("hallo", std::ios::out);
-  if (clFile)
-    clFile << writeSwapOrder << ulValue;
-  clFile.Close ();
-
-  ulValue = 1;
-  clFile.Open ("hallo", std::ios::in);
-  if (clFile)
-    clFile >> readSwapOrder >> ulValue;
-  clFile.Close ();
-
-
-  cout << "Read value : " << ulValue << endl;
-
+  pBuf = (char*) malloc (BLOB_DEFSIZE);
+  pszName = strdup (BLOB_DEFNAME);
+  ulBufSize = pBuf ? BLOB_DEFSIZE : 0;
+  ulCursor = 0;
 }
 
+/** Destructs the stream, all data in the stream will be lost. */              
+BlobStream::~BlobStream (void)
+{
+  if (pBuf) free (pBuf);
+  if (pszName) free (pszName);
+}
 
+/** Sets a name to the stream. */
+void BlobStream::SetName (const char *pszBlobName)
+{
+  if (pszName) free (pszName);
+  pszName = strdup (pszBlobName);
+}
 
+/** Returns the name of the stream. */
+char *BlobStream::GetName (void)
+{
+  return pszName;
+}
 
-#endif
+/** Returns the current position of the stream pointer. */
+unsigned long BlobStream::GetPosition (void)
+{
+  return ulCursor;
+}
 
+/** Returns the pointer to the internal stream buffer. This could
+ * be used to make a copy of the data block or to convert the data.
+ * The valid size of the buffer can be determined with GetPosition().
+ */
+char *BlobStream::GetBuffer (void)
+{
+  return pBuf;
+}
 
+/**  Sets the new internal stream buffer. The data of current stream#
+ * will be lost.
+ */
+void BlobStream::SetBuffer (char *pBuffer, unsigned long ulSize)
+{
+  if (pBuffer && ulSize)
+  {
+    if (pBuf) free (pBuf);
+    pBuf = pBuffer;
+    ulBufSize = ulSize;
+  }
+  Rewind ();
+}
+
+BlobStream::operator void* (void)
+{
+  return DataStream::operator void* ();
+}
+
+bool BlobStream::operator! (void)
+{
+  return DataStream::operator! ();
+}
+
+bool BlobStream::IsOpen (void)
+{
+  return true;
+}
+
+bool BlobStream::IsGood (void)
+{
+  return pBuf != NULL;
+}
+
+bool BlobStream::IsEof (void)
+{
+  return ulCursor >= ulBufSize;
+}
+              
+bool BlobStream::IsFail (void)
+{
+  return !IsGood ();
+}
+              
+bool BlobStream::IsBad (void)
+{
+  return !IsGood ();
+}
+              
+void BlobStream::Flush (void)
+{
+  ulCursor = 0;
+}
+
+/** Resets the stream pointer to the beginning. */
+void BlobStream::Rewind (void)
+{
+  ulCursor = 0;
+}
+
+DataStream& BlobStream::Read (char &ch)
+{
+  if (pBuf && !IsEof ()) 
+    ch = pBuf[ulCursor++];
+  return *this;
+}
+
+DataStream& BlobStream::Read (char* pData, int nSize)
+{
+  int n;
+  if (pBuf)
+    for (n = 0; (n < nSize) && !IsEof (); n++)
+      pData[n] = pBuf[ulCursor++];
+  return *this;
+}
+
+DataStream& BlobStream::Write (char ch)
+{
+  if (pBuf)
+  {
+    if (ulCursor + 1 >= ulBufSize)
+      pBuf = (char*) realloc (pBuf, ulBufSize += BLOB_DEFSIZE);
+    if (pBuf) pBuf[ulCursor++] = ch;
+  }
+  return *this;  
+}
+
+DataStream& BlobStream::Write (const char* pData, int nSize)
+{
+  int n;
+  if (pBuf)
+  {
+    if (ulCursor + nSize >= ulBufSize)
+      pBuf = (char*) realloc (pBuf, ulBufSize += nSize + BLOB_DEFSIZE);
+    if (pBuf)
+      for (n = 0; n < nSize; n++)
+        pBuf[ulCursor++] = pData[n];
+  }
+  return *this;
+}

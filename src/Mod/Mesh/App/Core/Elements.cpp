@@ -26,13 +26,6 @@
 
 using namespace Mesh;
 
-/*-------------------------------------------------------------------
-DES: sucht den zugehoerigen Index des Punkts. Zwei Punkte sind gleich,
-  wenn sich der Abstand den minimalen Wert (s. definitions.hxx) 
-  unterschreitet
-PAR:  rclPoint:  Punkt
-RET:  unsigned long:    Index, ULONG_MAX wenn kein Index gefunden
---------------------------------------------------------------------*/
 unsigned long MeshPointArray::Get (const MeshPoint &rclPoint)
 {
   iterator clIter;
@@ -44,13 +37,6 @@ unsigned long MeshPointArray::Get (const MeshPoint &rclPoint)
     return ULONG_MAX;  
 }
 
-/*-------------------------------------------------------------------
-DES: gibt den Index des Punktes zurueck, bzw. fuegt einer neuer Punkt
-  an und gibt dessen Index an. Zwei Punkte sind gleich wenn der Abstand
-  den minimalen Abstand (s. definitions.hxx) unterschreitet
-PAR:  rclPoint:  Punkt
-RET:  unsigned long:    Index
---------------------------------------------------------------------*/
 unsigned long MeshPointArray::GetOrAddIndex (const MeshPoint &rclPoint)
 {
   unsigned long ulIndex;
@@ -64,12 +50,36 @@ unsigned long MeshPointArray::GetOrAddIndex (const MeshPoint &rclPoint)
     return ulIndex;
 }
 
-/*-------------------------------------------------------------------
-DES: Passt die Facet-Indizies eines entfernten Facet der Kanten an.
-  D.h. alle nachfolgende Indizies werden um 1 dekrementiert.
-PAR: ulIndex:  Facet-Index der entfernt wurde
-RET: void
---------------------------------------------------------------------*/
+void MeshPointArray::SetFlag (MeshPoint::TFlagType tF)
+{
+  for (MeshPointArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
+}
+
+void MeshPointArray::ResetFlag (MeshPoint::TFlagType tF)
+{
+  for (MeshPointArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
+}
+
+void MeshPointArray::SetProperty (unsigned long ulVal)
+{
+  for (_TIterator pP = begin(); pP != end(); pP++) pP->_ulProp = ulVal;
+}
+
+void MeshPointArray::ResetInvalid (void)
+{
+  for (_TIterator pP = begin(); pP != end(); pP++) pP->ResetInvalid();
+}
+
+MeshPointArray& MeshPointArray::operator = (const MeshPointArray &rclPAry)
+{
+//  std::vector<MeshPoint>::operator=(rclPAry);
+  TMeshPointArray::operator=(rclPAry);
+
+  return *this;
+}
+
+// -----------------------------------------------------------------
+
 void MeshEdgeArray::AdjustIndex (unsigned long ulIndex)
 {
   _TIterator  pIter, pEnd;
@@ -85,12 +95,24 @@ void MeshEdgeArray::AdjustIndex (unsigned long ulIndex)
   }
 }
 
-/*-------------------------------------------------------------------
-DES: loescht das Facet an der Pos. pIter aus dem Array. Die Nachbar-
-  Indizies der anderen Facets werden entspr. angepasst.
-PAR: pIter:  zu loeschendes Facet
-RET: void
---------------------------------------------------------------------*/
+void MeshEdgeArray::SetFlag (MeshEdge::TFlagType tF)
+{
+  for (MeshEdgeArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
+}
+
+void MeshEdgeArray::ResetFlag (MeshEdge::TFlagType tF)
+{
+  for (MeshEdgeArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
+}
+
+MeshEdgeArray& MeshEdgeArray::operator = (const MeshEdgeArray &rclEAry)
+{
+  TMeshEdgeArray::operator=(rclEAry);
+  return *this;
+}
+
+// -----------------------------------------------------------------
+
 void MeshFacetArray::Erase (_TIterator pIter)
 {
   unsigned long i, *pulN;
@@ -111,12 +133,6 @@ void MeshFacetArray::Erase (_TIterator pIter)
   }
 }
 
-/*-------------------------------------------------------------------
-DES: prueft und vertauscht evt. die Punkt-Indizies der Facets
-PAR: ulOrig: zu korrigierender Punkt-Index
-     ulNew:  neuer Punkt-Index
-RET: void
---------------------------------------------------------------------*/
 void MeshFacetArray::TransposeIndicies (unsigned long ulOrig, unsigned long ulNew)
 {
   _TIterator  pIter = begin(), pEnd = end();
@@ -128,11 +144,6 @@ void MeshFacetArray::TransposeIndicies (unsigned long ulOrig, unsigned long ulNe
   }
 }
 
-/*-------------------------------------------------------------------
-DES: dekrementiert alle Punkt-Indizies die groesser ulIndex sind
-PAR: ulIndex:  Index
-RET: void
---------------------------------------------------------------------*/
 void MeshFacetArray::DecrementIndicies (unsigned long ulIndex)
 {
   _TIterator  pIter = begin(), pEnd = end();
@@ -144,15 +155,34 @@ void MeshFacetArray::DecrementIndicies (unsigned long ulIndex)
   }
 }
 
+void MeshFacetArray::SetFlag (MeshFacet::TFlagType tF)
+{
+  for (MeshFacetArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
+}
 
-/*-------------------------------------------------------------------
-DES: Ueberprueft, ob der Punkt dem Facet zugeordnet werden kann. Ein
-  Punkt gehoert einem Facet wenn der Abstand zur Dreiecksflaeche kleiner
-  fDistance ist und wenn sich der Punkt innerhalb des Dreiecks befindet.
-PAR: rclPoint:  Punkt
-     fDistance: max. Abstand zur Dreiecksflaeche
-RET: bool: TRUE, wenn Punkt zum Dreieck gehoert
---------------------------------------------------------------------*/
+void MeshFacetArray::ResetFlag (MeshFacet::TFlagType tF)
+{
+  for (MeshFacetArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
+}
+
+void MeshFacetArray::SetProperty (unsigned long ulVal)
+{
+  for (_TIterator pF = begin(); pF != end(); pF++) pF->_ulProp = ulVal;
+}
+
+void MeshFacetArray::ResetInvalid (void)
+{
+  for (_TIterator pF = begin(); pF != end(); pF++) pF->ResetInvalid();
+}
+
+MeshFacetArray& MeshFacetArray::operator = (const MeshFacetArray &rclFAry)
+{
+  TMeshFacetArray::operator=(rclFAry);
+  return *this;
+}
+
+// -----------------------------------------------------------------
+
 bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
 {
   if (Distance(rclPoint) > fDistance)
@@ -214,16 +244,11 @@ bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
   return true;
 }
 
-/*-------------------------------------------------------------------
-DES: Ausdehnen des Facets
-PAR: fDist: neuer Kanten-Abstand
-RET: void:
---------------------------------------------------------------------*/
 void MeshGeomFacet::Enlarge (float fDist)
 {
   Vector3D  clM, clU, clV, clPNew[3];
   float      fA, fD;
-  unsigned long     i, ulP1, ulP2, ulP3;
+  unsigned long i, ulP1, ulP2, ulP3;
 
   for (i = 0; i < 3; i++)
   {
@@ -244,83 +269,3 @@ void MeshGeomFacet::Enlarge (float fDist)
   _aclPoints[1] = clPNew[1];
   _aclPoints[2] = clPNew[2];
 }
-
-
-
-// globales Setzen eines Flags für alle Facets
-void MeshFacetArray::SetFlag (MeshFacet::TFlagType tF)
-{
-  for (MeshFacetArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
-}
-
-// Zurücksetzen eines Flags für alle Facets
-void MeshFacetArray::ResetFlag (MeshFacet::TFlagType tF)
-{
-  for (MeshFacetArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
-}
-
-// setzen eines Flags für alle Kanten
-void MeshEdgeArray::SetFlag (MeshEdge::TFlagType tF)
-{
-  for (MeshEdgeArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
-}
-
-// rücksetzen eines Flags für alle Kanten
-void MeshEdgeArray::ResetFlag (MeshEdge::TFlagType tF)
-{
-  for (MeshEdgeArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
-}
-
-// setzen eines Flags für alle Punkte
-void MeshPointArray::SetFlag (MeshPoint::TFlagType tF)
-{
-  for (MeshPointArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
-}
-
-// rücksetzen eines Flags für alle Punkte
-void MeshPointArray::ResetFlag (MeshPoint::TFlagType tF)
-{
-  for (MeshPointArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
-}
-
-
-void MeshPointArray::SetProperty (unsigned long ulVal)
-{
-  for (_TIterator pP = begin(); pP != end(); pP++) pP->_ulProp = ulVal;
-}
-
-void MeshPointArray::ResetInvalid (void)
-{
-  for (_TIterator pP = begin(); pP != end(); pP++) pP->ResetInvalid();
-}
-
-void MeshFacetArray::SetProperty (unsigned long ulVal)
-{
-  for (_TIterator pF = begin(); pF != end(); pF++) pF->_ulProp = ulVal;
-}
-
-void MeshFacetArray::ResetInvalid (void)
-{
-  for (_TIterator pF = begin(); pF != end(); pF++) pF->ResetInvalid();
-}
-
-MeshPointArray& MeshPointArray::operator = (const MeshPointArray &rclPAry)
-{
-//  std::vector<MeshPoint>::operator=(rclPAry);
-  TMeshPointArray::operator=(rclPAry);
-
-  return *this;
-}
-
-MeshEdgeArray& MeshEdgeArray::operator = (const MeshEdgeArray &rclEAry)
-{
-  TMeshEdgeArray::operator=(rclEAry);
-  return *this;
-}
-
-MeshFacetArray& MeshFacetArray::operator = (const MeshFacetArray &rclFAry)
-{
-  TMeshFacetArray::operator=(rclFAry);
-  return *this;
-}
-

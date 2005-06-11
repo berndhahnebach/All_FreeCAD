@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __MESH_MESHIO_HXX__
-#define __MESH_MESHIO_HXX__
+#ifndef MESH_IO_H
+#define MESH_IO_H
 
 #include "MeshKernel.h"
 
@@ -31,57 +31,53 @@ namespace Mesh {
 class MeshKernel;
 class FileStream;
 
+/**
+ * The MeshSTL class is able to read or write mesh object in STL format.
+ */
 class AppMeshExport MeshSTL
 {
-  public:
-    public:
-    MeshSTL (MeshKernel &rclM);
-    public:
-    virtual ~MeshSTL (void)
-    {}
+public:
+  MeshSTL (MeshKernel &rclM);
+  virtual ~MeshSTL (void) { }
 
-    public:
-    bool Load (FileStream &rstrIn);
+  /** Loads an STL file either in binary or ASCII. 
+   * Therefore the file header gets checked to decide if
+   * the file is binary or not.
+   */
+  bool Load (FileStream &rstrIn);
+  /** Loads an ASCII STL file. */
+  bool LoadAscii (FileStream &rstrIn);
+  /** Loads a binary STL file. */
+  bool LoadBinary (FileStream &rstrIn);
 
-    public:
-    bool LoadAscii (FileStream &rstrIn);
+  /** Saves the mesh object into an ASCII file. */
+  bool SaveAscii (FileStream &rstrOut) const;
+  /** Saves the mesh object into a binary file. */
+  bool SaveBinary (FileStream &rstrOut) const;
 
-    public:
-    bool LoadBinary (FileStream &rstrIn);
-
-    public:
-    bool SaveAscii (FileStream &rstrOut) const;
-
-    public:
-    bool SaveBinary (FileStream &rstrOut) const;
-
-  protected:
-    // help methods
-
-    protected:
-    MeshKernel &_rclMesh;   // reference to mesh data structure
-
+protected:
+  MeshKernel &_rclMesh;   /**< reference to mesh data structure */
 };
 
+/**
+ * The MeshInventor class is able to read or write mesh object in 
+ * OpenInventor format.
+ */
 class AppMeshExport MeshInventor
 {
-    public:
-    MeshInventor (MeshKernel &rclM) : _rclMesh(rclM) 
-    {}
-    public:
-    virtual ~MeshInventor (void)
-    {}
+public:
+  MeshInventor (MeshKernel &rclM) : _rclMesh(rclM) { }
+  virtual ~MeshInventor (void) { }
 
-    public:
-    bool Load (FileStream &rstrIn);
+  /** Loads an OpenInventor file. */
+  bool Load (FileStream &rstrIn);
+  /** Writes an OpenInventor file. */
+  bool Save (FileStream &rstrOut) const;
 
-    public:
-    bool Save (FileStream &rstrOut) const;
-
-    protected:
-    MeshKernel &_rclMesh;
+protected:
+  MeshKernel &_rclMesh; /**< reference to mesh data structure */
 };
 
 } // namespace Mesh
 
-#endif
+#endif // MESH_IO_H 
