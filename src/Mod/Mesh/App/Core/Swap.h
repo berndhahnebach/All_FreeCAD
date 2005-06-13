@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef RSWAP_H
-#define RSWAP_H
+#ifndef SWAP_H
+#define SWAP_H
 
 #define LOW_ENDIAN	(unsigned short) 0x4949 
 #define HIGH_ENDIAN	(unsigned short) 0x4D4D 
@@ -49,4 +49,4 @@ void SwapVar (double&);
 } // namespace Mesh
 
 
-#endif
+#endif // SWAP_H 

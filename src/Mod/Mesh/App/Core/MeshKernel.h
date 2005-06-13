@@ -35,17 +35,17 @@
 namespace Mesh {
 
 // forward declarations
-class AppMeshExport MeshFacetIterator;
-class AppMeshExport MeshEdgeIterator;
-class AppMeshExport MeshPointIterator;
-class AppMeshExport MeshGeomFacet;
-class AppMeshExport Matrix4D;
-class AppMeshExport DataStream;
-class AppMeshExport Vector3D;
-class AppMeshExport MeshFacet;
-class AppMeshExport MeshHelpEdge;
-class AppMeshExport MeshFacetFunc;
-class AppMeshExport MeshSTL;
+class MeshFacetIterator;
+class MeshEdgeIterator;
+class MeshPointIterator;
+class MeshGeomFacet;
+class Matrix4D;
+class DataStream;
+class Vector3D;
+class MeshFacet;
+class MeshHelpEdge;
+class MeshFacetFunc;
+class MeshSTL;
 
 /** 
  * The MeshKernel class is the basic class that holds the data points,
@@ -245,8 +245,8 @@ protected:
   friend class MeshSTL;
   friend class MeshFacetFunc;
   friend class MeshRefPointToFacets;
-  friend class MeshFacetsNeighbours;
-  friend class MeshNeighbourPoints;
+  friend class MeshRefFacetToFacets;
+  friend class MeshRefPointToPoints;
   friend class MeshFacetTools;
   friend class MeshSearchNeighbours;
   friend class MeshAlgorithm;
@@ -346,7 +346,7 @@ inline Vector3D MeshKernel::GetNormal (const MeshFacet &rclFacet) const
 inline void MeshKernel::GetFacetPoints (unsigned long ulFaIndex, unsigned long &rclP0, unsigned long &rclP1, unsigned long &rclP2) const
 {
   assert(ulFaIndex < _aclFacetArray.size());
-  const MeshFacet rclFacet = _aclFacetArray[ulFaIndex];
+  const MeshFacet& rclFacet = _aclFacetArray[ulFaIndex];
   rclP0 = rclFacet._aulPoints[0];  
   rclP1 = rclFacet._aulPoints[1];  
   rclP2 = rclFacet._aulPoints[2];  

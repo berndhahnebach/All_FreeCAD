@@ -34,7 +34,7 @@
 #include "Stream.h"
 #include "Tools2D.h"
 
-// Checks if point K lays on the ray [A,B[
+// Checks if point K lies on the ray [A,B[
 #define IS_ON_RAY(A,B,K)  (((A) <= (K)) && ((B) > (K)))
 
 namespace Mesh {
@@ -94,11 +94,11 @@ public:
  
   /** Test methods */
   //@{
-  /** Checks if this point lays inside the box. */
+  /** Checks if this point lies inside the box. */
   inline bool IsInBox (const Vector3D &rcVct) const;
-  /** Checks if this 3D box lays inside the box. */
+  /** Checks if this 3D box lies inside the box. */
   inline bool IsInBox (const BoundBox3D &rcBB) const;
-  /** Checks if this 2D box lays inside the box. */
+  /** Checks if this 2D box lies inside the box. */
   inline bool IsInBox (const BoundBox2D &rcbb) const;
   /** Checks whether the bounding box is valid. */
   bool IsValid (void);
@@ -129,7 +129,7 @@ public:
    */
   bool  CalcDistance (unsigned short usEdge, Vector3D& rcP0, Vector3D& rcP1);
   /** Intersection point of an inner search ray with the bounding box, built of
-   * the base \a rcVct and the direction \a rcVctDir. \a rcVct must lay inside the
+   * the base \a rcVct and the direction \a rcVctDir. \a rcVct must lie inside the
    * bounding box.
    */
   Vector3D IntersectionPoint (const Vector3D &rcVct, const Vector3D &rcVctDir) const;

@@ -346,5 +346,5 @@ inline Vector3D operator * (float fFac, const Vector3D &rcVct)
 
 } // namespace Mesh
 
-#endif // __VECTOR3D_H__ 
+#endif // VECTOR3D_H 
 

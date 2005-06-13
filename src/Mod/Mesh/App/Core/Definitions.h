@@ -64,6 +64,10 @@
 
 namespace Mesh {
 
+/**
+ * Global defined tolerances used to compare points
+ * for equality.
+ */
 class AppMeshExport MeshDefinitions
 {
 public:
