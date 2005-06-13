@@ -100,6 +100,14 @@ PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.pyd ..\..\..\..\Mod\
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\Core\Algorithm.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Algorithm.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Core\BoundBox.cpp
 # End Source File
 # Begin Source File
@@ -124,6 +132,14 @@ SOURCE=.\Core\Elements.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Core\Grid.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Grid.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Core\Helpers.h
 # End Source File
 # Begin Source File
@@ -137,6 +153,14 @@ SOURCE=.\Core\Matrix.cpp
 # Begin Source File
 
 SOURCE=.\Core\Matrix.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\MeshAlgorithm.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\MeshAlgorithm.h
 # End Source File
 # Begin Source File
 
@@ -172,11 +196,27 @@ SOURCE=.\Core\Swap.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Core\Tools.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Tools.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Core\Tools2D.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Core\Tools2D.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\TopoAlgorithm.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\TopoAlgorithm.h
 # End Source File
 # Begin Source File
 
@@ -189,6 +229,14 @@ SOURCE=.\Core\Vector3D.h
 # Begin Source File
 
 SOURCE=.\Core\ViewProj.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Visitor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Visitor.h
 # End Source File
 # End Group
 # Begin Source File

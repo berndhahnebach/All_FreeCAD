@@ -15,6 +15,7 @@
 # pragma comment(lib,"TKTopAlgo.lib")
 # pragma comment(lib,"TKPrim.lib")
 #	pragma comment(lib,"TKXSBase.lib")
+#	pragma comment(lib,"Wm3Foundation60.lib")
 // Application Framwork OCAF
 # pragma comment(lib,"TKCAF.lib")
 # pragma comment(lib,"TKCDF.lib")

@@ -2,16 +2,22 @@
 lib_LTLIBRARIES=libMesh.la
 
 libMesh_la_SOURCES=\
+		Core/Algorithm.cpp \
+		Core/Algorithm.h \
 		Core/BoundBox.cpp \
 		Core/BoundBox.h \
 		Core/Definitions.cpp \
 		Core/Definitions.h \
 		Core/Elements.cpp \
 		Core/Elements.h \
+		Core/Grid.cpp \
+		Core/Grid.h \
 		Core/Helpers.h \
 		Core/Iterator.h \
 		Core/Matrix.cpp \
 		Core/Matrix.h \
+		Core/MeshAlgorithm.cpp \
+		Core/MeshAlgorithm.h \
 		Core/MeshKernel.cpp \
 		Core/MeshKernel.h \
 		Core/MeshIO.cpp \
@@ -20,10 +26,16 @@ libMesh_la_SOURCES=\
 		Core/Stream.h \
 		Core/Swap.cpp \
 		Core/Swap.h \
+		Core/Tools.cpp \
+		Core/Tools.h \
+		Core/TopoAlgorithm.cpp \
+		Core/TopoAlgorithm.h \
 		Core/Tools2D.cpp \
 		Core/Tools2D.h \
 		Core/Vector3D.cpp \
 		Core/Vector3D.h \
+		Core/Visitor.cpp \
+		Core/Visitor.h \
 		Core/ViewProj.h \
 		AppMesh.cpp \
 		AppMeshPy.cpp \
@@ -52,7 +64,8 @@ libMesh_la_CPPFLAGS = -DAppMeshExport=
 
 libMesh_la_LIBADD   = \
 		-lFreeCADBase \
-		-lFreeCADApp
+		-lFreeCADApp \
+		-lFoundation
 
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../

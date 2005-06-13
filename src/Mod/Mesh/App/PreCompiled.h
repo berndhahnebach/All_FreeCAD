@@ -57,9 +57,21 @@
 
 
 // OpenCASCADE
-
+#include <BRepMesh_Discret.hxx>
+#include <BRepMesh_Triangle.hxx>
+#include <BRepMesh_Edge.hxx>
+#include <gp_Pln.hxx>
 #include <TDF_Label.hxx>
+#include <TopoDS_Shape.hxx>
 
+// WildMagic (MagicSoftware)
+#include <Wm3DistSegment3Segment3.h>
+#include <Wm3DistSegment3Triangle3.h>
+#include <Wm3DistVector3Triangle3.h>
+#include <Wm3IntrSegment3Box3.h>
+#include <Wm3IntrSegment3Plane3.h>
+#include <Wm3IntrTriangle3Triangle3.h>
+#include <Wm3Vector3.h>
 
 #endif //_PreComp_
 
