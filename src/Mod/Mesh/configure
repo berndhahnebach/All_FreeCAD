@@ -1044,6 +1044,11 @@ Optional Packages:
                           installation
   --with-OCC-libs         Path of the library files of your OpenCascade
                           installation
+  --with-wildmagic-includes
+                          Path of the header files of your WildMagic3
+                          installation
+  --with-wildmagic-libs   Path of the library files of your WildMagic3
+                          installation
   --with-xercesc-includes Path of the header files of your xerces-c
                           installation
   --with-xercesc-libs     Path of the library files of your xerces-c
@@ -6192,7 +6197,7 @@ test "x$enable_libtool_lock" != xno && enable_libtool_lock=yes
 case $host in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6195 "configure"' > conftest.$ac_ext
+  echo '#line 6200 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -6721,7 +6726,7 @@ chmod -w .
 save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS -o out/conftest2.$ac_objext"
 compiler_c_o=no
-if { (eval echo configure:6724: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
+if { (eval echo configure:6729: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>out/conftest.err; } && test -s out/conftest2.$ac_objext; then
   # The compiler can only warn and ignore the option if not recognized
   # So say no if there are warnings
   if test -s out/conftest.err; then
@@ -8566,7 +8571,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8569 "configure"
+#line 8574 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8664,7 +8669,7 @@ else
     lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8667 "configure"
+#line 8672 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9656,6 +9661,67 @@ all_includes="$all_includes -I$fc_occ_incs"
 all_libraries="$all_libraries -L$fc_occ_libs"
 echo "$as_me:$LINENO: result: OpenCascade $fc_occ_incs : $fc_occ_libs" >&5
 echo "${ECHO_T}OpenCascade $fc_occ_incs : $fc_occ_libs" >&6
+
+# checking for WildMagic3
+# **************************************************************************
+
+{ echo "$as_me:$LINENO: checking WildMagic3..." >&5
+echo "$as_me: checking WildMagic3..." >&6;}
+
+# Check whether --with-wildmagic-includes or --without-wildmagic-includes was given.
+if test "${with_wildmagic_includes+set}" = set; then
+  withval="$with_wildmagic_includes"
+  fc_mgc_incs=$withval
+else
+  fc_mgc_incs=/usr/include/WildMagic3/Include
+fi;
+
+as_ac_File=`echo "ac_cv_file_$fc_mgc_incs/WildMagic3.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $fc_mgc_incs/WildMagic3.h" >&5
+echo $ECHO_N "checking for $fc_mgc_incs/WildMagic3.h... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$fc_mgc_incs/WildMagic3.h"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  :
+else
+  { { echo "$as_me:$LINENO: error:
+	**** Could not find WildMagic3 header files.
+	 Please check your installation. ****
+	 " >&5
+echo "$as_me: error:
+	**** Could not find WildMagic3 header files.
+	 Please check your installation. ****
+	 " >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+
+# Check whether --with-wildmagic-libs or --without-wildmagic-libs was given.
+if test "${with_wildmagic_libs+set}" = set; then
+  withval="$with_wildmagic_libs"
+  fc_mgc_libs=$withval
+else
+  fc_mgc_libs=/usr/lib
+fi;
+
+all_includes="$all_includes -I$fc_mgc_incs"
+all_libraries="$all_libraries -L$fc_mgc_libs"
+echo "$as_me:$LINENO: result: WildMagic3 $fc_mgc_incs : $fc_mgc_libs" >&5
+echo "${ECHO_T}WildMagic3 $fc_mgc_incs : $fc_mgc_libs" >&6
 
 # checking for xerces-c
 # **************************************************************************

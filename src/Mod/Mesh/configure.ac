@@ -126,6 +126,30 @@ all_includes="$all_includes -I$fc_occ_incs"
 all_libraries="$all_libraries -L$fc_occ_libs"
 AC_MSG_RESULT([OpenCascade $fc_occ_incs : $fc_occ_libs])
 
+# checking for WildMagic3
+# **************************************************************************
+
+AC_CHECKING([WildMagic3])
+AC_ARG_WITH(wildmagic-includes,
+	AC_HELP_STRING([--with-wildmagic-includes], [Path of the header files of your WildMagic3 installation]),
+	[fc_mgc_incs=$withval],
+	[fc_mgc_incs=/usr/include/WildMagic3/Include])
+
+AC_CHECK_FILE($fc_mgc_incs/WildMagic3.h,,
+	[AC_MSG_ERROR([
+	**** Could not find WildMagic3 header files.
+	 Please check your installation. ****
+	 ])])
+
+AC_ARG_WITH(wildmagic-libs,
+	AC_HELP_STRING([--with-wildmagic-libs], [Path of the library files of your WildMagic3 installation]),
+	[fc_mgc_libs=$withval],
+	[fc_mgc_libs=/usr/lib])
+
+all_includes="$all_includes -I$fc_mgc_incs"
+all_libraries="$all_libraries -L$fc_mgc_libs"
+AC_MSG_RESULT([WildMagic3 $fc_mgc_incs : $fc_mgc_libs])
+
 # checking for xerces-c
 # **************************************************************************
 
