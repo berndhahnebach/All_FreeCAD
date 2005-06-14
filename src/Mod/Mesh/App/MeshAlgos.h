@@ -25,6 +25,7 @@
 #define _MeshAlgos_h_
 
 #ifndef _PreComp_
+# include <gts.h>
 #endif
 
 

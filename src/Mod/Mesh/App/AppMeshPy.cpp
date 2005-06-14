@@ -29,6 +29,7 @@
 #	include <Python.h>
 # include <BRep_Builder.hxx>
 # include <BRepTools.hxx>
+# include <gts.h>
 #endif
 
 #include <Base/Console.h>
