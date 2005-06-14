@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef ___PROGRESS_BAR_H__
-#define ___PROGRESS_BAR_H__
+#ifndef PROGRESS_BAR_H
+#define PROGRESS_BAR_H
 
 #ifndef _PreComp_
 # include <qprogressbar.h>
@@ -97,22 +97,20 @@ struct ProgressBarPrivate;
 class ProgressBar : public QProgressBar, public Base::SequencerBase
 {
 public:
-  /**
-  * Returns the sequencer object
-  */
+  /** Returns the sequencer object. */
   static ProgressBar* instance();
-  /** Starts the progress bar */
-  bool start(const char* pszStr, unsigned long steps);
-  /** Runs the next step */
-  bool next();
-  /** Set the progress to \a progress. */
+  /** Sets the progress to \a progress. */
   void setProgress( int progress );
-
-  /** Handles all incoming events while the
-   * progress bar is running. All key and mouse
+  /** Handles all incoming events while the progress bar is running. All key and mouse
    * events are ignored to block user input.
    */
   bool eventFilter(QObject* o, QEvent* e);
+
+protected:
+  /** Starts the progress bar */
+  void startStep();
+  /** Increase the progress bar. */
+  void nextStep();
 
 private:
   /** Construction */
@@ -142,4 +140,4 @@ private:
 
 } // namespace Gui
 
-#endif // ___PROGRESS_BAR_H__
+#endif // PROGRESS_BAR_H

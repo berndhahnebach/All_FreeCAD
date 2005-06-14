@@ -42,7 +42,6 @@ using namespace Gui;
 namespace Gui {
 struct ProgressBarPrivate
 {
-  int nLastPercentage;
   QTime measureTime;
   WaitCursor* cWaitCursor;
 };
@@ -158,13 +157,9 @@ void ProgressBar::setProgress( int progress )
   QProgressBar::setProgress( progress );
 }
 
-bool ProgressBar::start(const char* pszStr, unsigned long steps)
+void ProgressBar::startStep()
 {
-  // base stuff
-  bool ret = SequencerBase::start(pszStr, steps);
-
   setTotalSteps(nTotalSteps);
-  d->nLastPercentage = -1;
 
   if ( pendingOperations() == 1 )
   {
@@ -175,34 +170,21 @@ bool ProgressBar::start(const char* pszStr, unsigned long steps)
     // starting
     d->measureTime.start();
   }
-
-  return ret;
 }
 
-bool ProgressBar::next()
+void ProgressBar::nextStep()
 {
-  nProgress++;
-  int perc = nProgress*100 / nTotalSteps;
-
-  // do only an update if we have increased by one percent
-  if ( perc > d->nLastPercentage )
+  if (!wasCanceled())
   {
-    d->nLastPercentage = perc;
-
-    if (!wasCanceled())
-    {
-      setProgress(nProgress++);
-    }
-    else
-    {
-      // force to abort the operation
-      abort();
-    }
-    
-    qApp->processEvents();
+    setProgress(nProgress++);
   }
-
-  return nProgress < nTotalSteps;
+  else
+  {
+    // force to abort the operation
+    abort();
+  }
+  
+  qApp->processEvents();
 }
 
 void ProgressBar::resetData()

@@ -50,8 +50,8 @@ SequencerBase& SequencerBase::Instance ()
 }
 
 SequencerBase::SequencerBase()
-  : nProgress(0), nTotalSteps(0),
-  _bCanceled(false), _nInstStarted(0), _nMaxInstStarted(1)
+  : nProgress(0), nTotalSteps(0), _bLocked(false), _bCanceled(false), 
+    _nInstStarted(0), _nMaxInstStarted(1), _nLastPercentage(-1)
 {
   _setGlobalInstance();
 }
@@ -70,6 +70,11 @@ void SequencerBase::_setGlobalInstance ()
 
 bool SequencerBase::start(const char* pszStr, unsigned long steps)
 {
+  bool ret = false;
+
+  // reset current state of progress (in percent)
+  _nLastPercentage = -1;
+
   // increment the number of running instances
   _nInstStarted++;
 
@@ -105,15 +110,40 @@ bool SequencerBase::start(const char* pszStr, unsigned long steps)
 
     setText(pszStr);
 
-    return true;
+    ret = true;
   }
 
-  return false;
+  // reimplemented in sub-classes
+  if ( !_bLocked )
+    startStep();
+
+  return ret;
+}
+
+void SequencerBase::startStep()
+{
 }
 
 bool SequencerBase::next()
 {
-  return false;
+  nProgress++;
+  int perc = nProgress*100 / nTotalSteps;
+
+  // do only an update if we have increased by one percent
+  if ( perc > _nLastPercentage )
+  {
+    _nLastPercentage = perc;
+  
+    // if not locked
+    if ( !_bLocked )
+      nextStep();
+  }
+
+  return nProgress < nTotalSteps;
+}
+
+void SequencerBase::nextStep()
+{
 }
 
 bool SequencerBase::stop()
@@ -125,6 +155,16 @@ bool SequencerBase::stop()
   }
 
   return (_nInstStarted == 0);
+}
+
+void SequencerBase::setLocked( bool bLocked )
+{
+  _bLocked = bLocked;
+}
+
+bool SequencerBase::isLocked() const
+{
+  return _bLocked;
 }
 
 bool SequencerBase::isRunning() const
@@ -147,6 +187,11 @@ int SequencerBase::pendingOperations() const
   return _nInstStarted;
 }
 
+int SequencerBase::progressInPercent() const
+{
+  return _nLastPercentage;
+}
+
 void SequencerBase::resetData()
 {
   _nInstStarted = 0;
@@ -162,27 +207,6 @@ void SequencerBase::setText(const char*)
 
 using Base::ConsoleSequencer;
 
-bool ConsoleSequencer::start(const char* pszStr, unsigned long steps)
-{
-	// base stuff
-	bool ret = SequencerBase::start(pszStr, steps);
-  _iLastPercentage = -1;
-  return ret;
-}
-
-bool ConsoleSequencer::next()
-{
-  nProgress++;
-  int perc = nProgress*100 / nTotalSteps;
-  if ( perc > _iLastPercentage )
-  {
-    _iLastPercentage = perc;
-    printf("\t\t\t\t\t\t(%2.1f %%)\t\r", (float)perc);
-  }
-
-  return nProgress < nTotalSteps;
-}
-
 ConsoleSequencer::ConsoleSequencer ()
 {
 }
@@ -196,8 +220,18 @@ void ConsoleSequencer::setText (const char* pszTxt)
   printf("%s...\n", pszTxt);
 }
 
+void ConsoleSequencer::startStep()
+{
+}
+
+void ConsoleSequencer::nextStep()
+{
+  printf("\t\t\t\t\t\t(%2.1f %%)\t\r", (float)progressInPercent());
+}
+
 void ConsoleSequencer::resetData()
 {
+  SequencerBase::resetData();
   printf("\n");
 }
 

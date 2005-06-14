@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __SEQUENCER_H__
-#define __SEQUENCER_H__
+#ifndef SEQUENCER_H
+#define SEQUENCER_H
 
 #ifndef _PreComp_
 # include <list>
@@ -98,31 +98,34 @@ public:
    *
    * This mechanism is very useful to have an own sequencer for each layer of FreeCAD. 
    * For example, if FreeCAD is running in server mode you have/need no GUI layer 
-   * and therewith no (graphical) progress bar; in this case SequencerBase is taken.
+   * and therewith no (graphical) progress bar; in this case ConsoleSequencer is taken.
    * But in cases FreeCAD is running with GUI the @ref Gui::ProgressBar is taken instead.
    * @see Sequencer
    */
   static SequencerBase& Instance();
-
   /**
    * Starts a new operation, returns false if there is already a pending operation,
-   * otherwise returns true.
-   * If you want to reimplement this method, it is very important to call it at first 
-   * ín your own implementatation.
+   * otherwise it returns true.
+   * In this method startStep() gets invoked that can be reimplemented in sub-classes.
    */
-  virtual bool start(const char* pszStr, unsigned long steps);
+  bool start(const char* pszStr, unsigned long steps);
   /**
    * Performs the next step and returns true if the operation is not yet finished.
-   * The default implementation does nothing and returns false.
+   * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
    */
-  virtual bool next();
+  bool next();
   /**
    * Reduces the number of pending operations by one and stops the
    * sequencer if all operations are finished. It returns false if there are still
    * pending operations, otherwise returns true.
    */
   virtual bool stop();
-
+  /** If \a bLock is true then the sequencer gets locked. startStep() and nextStep()
+   * don't get invoked any more on until the sequencer gets unlocked again. 
+   */
+  void setLocked( bool bLock );
+  /** Returns true if the sequencer was locked, false otherwise. */
+  bool isLocked() const;
   /** Returns true if the sequencer is running, otherwise returns false. */
   bool isRunning() const;
   /** 
@@ -134,24 +137,34 @@ public:
    * E.g. @ref Gui::ProgressBar calls this method after the ESC button was pressed.
    */
   void tryToCancel();
-
   /** 
    * Returns the number of pending operations. This number complies with the number
    * of calls of @ref start() and @ref stop().
    */
   int pendingOperations() const;
+  /** Returns the current state of progress in percent. */
+  int progressInPercent() const;
 
 protected:
   /** construction */
   SequencerBase();
   /** Destruction */
   virtual ~SequencerBase();
-
   /** 
    * Sets a text what the pending operation is doing. The default implementation 
    * does nothing.
    */
   virtual void setText (const char* pszTxt);
+  /**
+   * This method can be reimplemented in sub-classes to give the user a feedback
+   * when a new sequence starts. The default implementation does nothing.
+   */
+  virtual void startStep();
+  /**
+   * This method can be reimplemented in sub-classes to give the user a feedback
+   * when the next is performed. The default implementation does nothing.
+   */
+  virtual void nextStep();
   /** 
    * Resets internal data. 
    * If you want to reimplement this method, it is very important to call it ín your code.
@@ -171,10 +184,12 @@ private:
    */
   void _setGlobalInstance ();
 
+  bool _bLocked; /**< Lock/unlock sequencer. */
   bool _bCanceled; /**< Is set to true if the last pending operation was canceled */
   int _nInstStarted; /**< Stores the number of pending operations */ 
   int _nMaxInstStarted; /**< Stores the number of maximum pending operations until all pending operations 
                             are finished. */
+  int _nLastPercentage; /**< Progress in percent. */
   std::list<unsigned long> _aSteps; /**< Stores the number of steps for each operation */
   static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */ 
 };
@@ -191,20 +206,17 @@ public:
   /** Destruction */
   ~ConsoleSequencer ();
 
+protected:
   /** Starts the sequencer */
-  bool start(const char* pszStr, unsigned long steps);
-  /**
-   * Writes the current progress to the console window.
-   */
-  bool next();
+  void startStep();
+  /** Writes the current progress to the console window. */
+  void nextStep();
 
 private:
   /** Puts text to the console window */
   void setText (const char* pszTxt);
   /** Resets the sequencer */
   void resetData();
-
-  int _iLastPercentage;
 };
 
 /** Access to the only SequencerBase instance */
@@ -215,4 +227,4 @@ inline SequencerBase& Sequencer ()
 
 } // namespace Base
 
-#endif // __SEQUENCER_H__
+#endif // SEQUENCER_H
