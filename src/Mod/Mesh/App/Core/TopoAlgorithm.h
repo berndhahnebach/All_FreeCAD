@@ -66,58 +66,58 @@ public:
   virtual ~MeshTopoAlgorithm (void);
 
 public:
-	/** 
-	 * Applies the changes.
-	 */
-	void Commit ();
-	/**
-	 * Discard all changes.
-	 */
-	void Discard();
-	/**
-	 * Tries to make a more beautiful mesh.
-	 */
-	void OptimizeTopology();
+  /** 
+   * Applies the changes.
+   */
+  void Commit ();
   /**
-	 * Inserts a new vertex in the given triangle.
-	 * The given point must lie inside the triangle not outside or on an edge.
+   * Discard all changes.
+   */
+  void Discard();
+  /**
+   * Tries to make a more beautiful mesh.
+   */
+  void OptimizeTopology();
+  /**
+   * Inserts a new vertex in the given triangle.
+   * The given point must lie inside the triangle not outside or on an edge.
    */
   void InsertNode(unsigned long ulFacetPos, const Vector3D&  rclPoint);
-	/**
-	 * If the given point references three facets only (the point must not be a border point, 
-	 * this is not checked) then each pair of the three facets must be neighbours.
-	 * The three facets are replaced by one facet. 
-	 * This operation is exactly the inverse operation of InsertNode().
-	 */
-	bool InverseInsertNode(unsigned long ulPointPos);
   /**
-	 * Swaps the common edge of the facet and its neighbour.
-	 * You have to make sure that the two triangles build a convex
-	 * polygon and the facets should lie in the same plane..
+   * If the given point references three facets only (the point must not be a border point, 
+   * this is not checked) then each pair of the three facets must be neighbours.
+   * The three facets are replaced by one facet. 
+   * This operation is exactly the inverse operation of InsertNode().
+   */
+  bool InverseInsertNode(unsigned long ulPointPos);
+  /**
+   * Swaps the common edge of the facet and its neighbour.
+   * You have to make sure that the two triangles build a convex
+   * polygon and the facets should lie in the same plane..
    */
   void SwapEdge(unsigned long ulFacetPos, int iSide);
   /**
-	 * Insert a new edge. Each concerned triangle is broken into two
-	 * new triangles.
+   * Insert a new edge. Each concerned triangle is broken into two
+   * new triangles.
    */
   void SplitEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint);
   /**
-	 * Insert a new edge. Each concerned triangle is broken into two
-	 * new triangles. Unlike SplitEdge this method allows to split a facet several
-	 * times, e.g you can call this method several times for the same facet.
-	 *
-	 * Attention!: 
-	 * the specified side of the facet must be an open edge because the algorithm 
-	 * does not check for neighbours if it is not an open edge.
+   * Insert a new edge. Each concerned triangle is broken into two
+   * new triangles. Unlike SplitEdge this method allows to split a facet several
+   * times, e.g you can call this method several times for the same facet.
+   *
+   * Attention!: 
+   * the specified side of the facet must be an open edge because the algorithm 
+   * does not check for neighbours if it is not an open edge.
    */
   bool MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint, float fTol = FLOAT_EPS);
   /**
-	 * Removes a vertex and retriangulates the arising hole.
+   * Removes a vertex and retriangulates the arising hole.
    */
   bool CollapseNode(unsigned long ulPointPos);
   /**
-	 * Removes the triangles to the given edge (p0 <=> p1) and fills the
-	 * arising hole by tighting the remaining facets.
+   * Removes the triangles to the given edge (p0 <=> p1) and fills the
+   * arising hole by tighting the remaining facets.
    */
   bool CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdgeP1);
   /**
@@ -134,19 +134,19 @@ public:
   void FlipNormals (void);
 
 private:
-	void RefPointToFacet();
+  void RefPointToFacet();
   /**
-	 * Checks if the polygon is convex
+   * Checks if the polygon is convex
    */
   bool IsConvexPolygon(const std::vector<unsigned long>& raulPoly);
-	/**
-	 * Returns the circumjacent polygon the the point.
-	 */
-	bool GetPolygonOfNeighbours(unsigned long ulPointPos, std::vector<unsigned long>& raulPoly);
-	/**
-	 * Retriangulates the polygon.
-	 */
-	bool TriangulatePolygon(const std::vector<unsigned long>& raulPoly, std::vector<MeshGeomFacet>& raclFacets);
+  /**
+   * Returns the circumjacent polygon the the point.
+   */
+  bool GetPolygonOfNeighbours(unsigned long ulPointPos, std::vector<unsigned long>& raulPoly);
+  /**
+   * Retriangulates the polygon.
+   */
+  bool TriangulatePolygon(const std::vector<unsigned long>& raulPoly, std::vector<MeshGeomFacet>& raclFacets);
   /** @deprecated
    * The facet \a ulFacetInd is rearranged so that the neighbour at side \a iSide becomes neighbour 0. 
    */
@@ -176,8 +176,8 @@ private:
 
 private:
   MeshKernel& _rclMesh;
-	MeshRefPointToFacets * _pclRefPt2Fac;
-	std::vector<MeshGeomFacet> _aclNewFacets;
+  MeshRefPointToFacets * _pclRefPt2Fac;
+  std::vector<MeshGeomFacet> _aclNewFacets;
   std::map<unsigned long, std::vector<MeshGeomFacet> > _aclMultiSplitted;
 };
 

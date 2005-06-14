@@ -159,7 +159,7 @@ void MeshSearchNeighbours::SampleAllFacets (void)
     std::copy(clPoints.begin(), clPoints.end(), _aclSampledFacets[i].begin());
   }
 }
-/// @todo
+
 unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long ulFacetIdx, float fDistance, std::vector<Vector3D> &raclResultPoints)
 {
   SampleAllFacets();
@@ -167,10 +167,10 @@ unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long u
   _fMaxDistanceP2 = fDistance * fDistance;
   _clCenter       = _rclMesh.GetFacet(ulFacetIdx).GetGravityPoint();
 
-  _clMgcSphere.Center = Wm3::Vector3<float>(_clCenter.x, _clCenter.y, _clCenter.z);
-  _clMgcSphere.Radius = fDistance;
+  _akSphere.Center = Wm3::Vector3<float>(_clCenter.x, _clCenter.y, _clCenter.z);
+  _akSphere.Radius = fDistance;
 
-  unsigned long            ulVisited = 1;
+  unsigned long ulVisited = 1;
   std::vector<MeshFacetArray::_TIterator>  aclTestedFacet;
 
   _aclResult.clear();

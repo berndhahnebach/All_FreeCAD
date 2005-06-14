@@ -42,7 +42,7 @@ char *upper(char * string) {
     if (string != NULL) {
        l = strlen(string);
        for (i=0; i<l; i++)
-	   string[i] = toupper(string[i]);
+         string[i] = toupper(string[i]);
     }
 
   return string;
@@ -166,8 +166,8 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
   unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long)))/50;
 
   // compare the calculated with the read value
-	if (ulCt > ulFac)
-		return false;// not a valid STL file
+  if (ulCt > ulFac)
+    return false;// not a valid STL file
 
   Base::Sequencer().start("create mesh structure...", ulCt * 4 + 1);
 

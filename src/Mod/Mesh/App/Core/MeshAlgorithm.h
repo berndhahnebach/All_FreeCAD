@@ -198,7 +198,7 @@ public:
                               unsigned long &rclResFacetIndex, Vector3D &rclResPoint) const;
   /** Cuts the mesh with a plane. The result is a list of polylines. */
   bool CutWithPlane (const gp_Pln &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f); 
-	bool CutWithPlane (const Vector3D &clBase, const Vector3D &clNormal, const MeshFacetGrid &rclGrid, 
+  bool CutWithPlane (const Vector3D &clBase, const Vector3D &clNormal, const MeshFacetGrid &rclGrid, 
                      std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f, bool bConnectPolygons = false); 
   /** Gets all facets that cut the plane and lying between the the two points. */
   void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const gp_Pln clPlane, const Vector3D &rclLeft, const Vector3D &rclRight, std::vector<unsigned long> &rclRes) const;

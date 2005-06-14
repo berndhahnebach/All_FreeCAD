@@ -142,9 +142,9 @@ public:
   /** @name Modification */
   //@{
   /** Adds a single facet to the data structure. */
-	bool AddFacet(const MeshGeomFacet &rclSFacet);
+  bool AddFacet(const MeshGeomFacet &rclSFacet);
   /** Adds an array of facet to the data structure. */
-	bool AddFacet(const std::vector<MeshGeomFacet> &rclVAry);
+  bool AddFacet(const std::vector<MeshGeomFacet> &rclVAry);
   /** Deletes the facet the iterator points to. The deletion of a facet requires
    * the following steps:
    * \li Mark the neighbour index of all neighbour facets to the deleted facet as invalid

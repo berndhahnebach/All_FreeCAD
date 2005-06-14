@@ -654,35 +654,35 @@ bool MeshAlgorithm::MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fA
     //BRepMesh_Discret mesh(fAccuracy,aShape,fAngle);
     int NbTri = mesh.NbTriangles() ;
     for ( int nbt = 1, i = 1 ;nbt <= NbTri;nbt++, i += 3 ) {
-		    BRepMesh_Triangle tri = mesh.Triangle(nbt);
-		    tri.Edges(e1,e2,e3,b1,b2,b3);
-			    if (b1) {
-				    i1 = mesh.Edge(e1).FirstNode() ;
-				    i2 = mesh.Edge(e1).LastNode() ;
-			    }
-			    else {
-				    i1 = mesh.Edge(e1).LastNode() ;
-				    i2 = mesh.Edge(e1).FirstNode() ;
-			    }
-		    
-			    if (b2) {
-				    i3 = mesh.Edge(e2).LastNode();
-			    }
-			    else {
-				    i3 = mesh.Edge(e2).FirstNode() ;
-			    }
- 			    cSimpleFacet._aclPoints[0].x = float(mesh.Pnt( i1 ).X());
-			    cSimpleFacet._aclPoints[0].y = float(mesh.Pnt( i1 ).Y());
-			    cSimpleFacet._aclPoints[0].z = float(mesh.Pnt( i1 ).Z());
-			    cSimpleFacet._aclPoints[1].x = float(mesh.Pnt( i2 ).X());
-			    cSimpleFacet._aclPoints[1].y = float(mesh.Pnt( i2 ).Y());
-			    cSimpleFacet._aclPoints[1].z = float(mesh.Pnt( i2 ).Z());
-			    cSimpleFacet._aclPoints[2].x = float(mesh.Pnt( i3 ).X());
-			    cSimpleFacet._aclPoints[2].y = float(mesh.Pnt( i3 ).Y());
-			    cSimpleFacet._aclPoints[2].z = float(mesh.Pnt( i3 ).Z());
+      BRepMesh_Triangle tri = mesh.Triangle(nbt);
+      tri.Edges(e1,e2,e3,b1,b2,b3);
+        if (b1) {
+          i1 = mesh.Edge(e1).FirstNode() ;
+          i2 = mesh.Edge(e1).LastNode() ;
+        }
+        else {
+          i1 = mesh.Edge(e1).LastNode() ;
+          i2 = mesh.Edge(e1).FirstNode() ;
+        }
 
-                vFacets.push_back(cSimpleFacet);
-	 }
+        if (b2) {
+          i3 = mesh.Edge(e2).LastNode();
+        }
+        else {
+          i3 = mesh.Edge(e2).FirstNode() ;
+        }
+        cSimpleFacet._aclPoints[0].x = float(mesh.Pnt( i1 ).X());
+        cSimpleFacet._aclPoints[0].y = float(mesh.Pnt( i1 ).Y());
+        cSimpleFacet._aclPoints[0].z = float(mesh.Pnt( i1 ).Z());
+        cSimpleFacet._aclPoints[1].x = float(mesh.Pnt( i2 ).X());
+        cSimpleFacet._aclPoints[1].y = float(mesh.Pnt( i2 ).Y());
+        cSimpleFacet._aclPoints[1].z = float(mesh.Pnt( i2 ).Z());
+        cSimpleFacet._aclPoints[2].x = float(mesh.Pnt( i3 ).X());
+        cSimpleFacet._aclPoints[2].y = float(mesh.Pnt( i3 ).Y());
+        cSimpleFacet._aclPoints[2].z = float(mesh.Pnt( i3 ).Z());
+
+        vFacets.push_back(cSimpleFacet);
+   }
 
     _rclMesh.Clear();
     _rclMesh = vFacets;
@@ -862,15 +862,9 @@ bool MeshAlgorithm::NearestPointFromPoint (const Vector3D &rclPt, unsigned long 
     }
   }
 
-  float s, t;
   MeshGeomFacet rclSFacet = _rclMesh.GetFacet(ulInd);
-  MeshFacetFunc::DistanceToPoint(rclSFacet, rclPt, s, t);
-
-  Vector3D clS(rclSFacet._aclPoints[1] - rclSFacet._aclPoints[0]);
-  Vector3D clT(rclSFacet._aclPoints[2] - rclSFacet._aclPoints[0]);
-
+  MeshFacetFunc::DistanceToPoint(rclSFacet, rclPt, rclResPoint);
   rclResFacetIndex = ulInd;
-  rclResPoint      = rclSFacet._aclPoints[0] + (s * clS) + (t * clT);
 
   return true;
 }
@@ -884,15 +878,9 @@ bool MeshAlgorithm::NearestPointFromPoint (const Vector3D &rclPt, const MeshFace
     return false;
   }
 
-  float s, t;
   MeshGeomFacet rclSFacet = _rclMesh.GetFacet(ulInd);
-  MeshFacetFunc::DistanceToPoint(rclSFacet, rclPt, s, t);
-
-  Vector3D clS(rclSFacet._aclPoints[1] - rclSFacet._aclPoints[0]);
-  Vector3D clT(rclSFacet._aclPoints[2] - rclSFacet._aclPoints[0]);
-
+  MeshFacetFunc::DistanceToPoint(rclSFacet, rclPt, rclResPoint);
   rclResFacetIndex = ulInd;
-  rclResPoint      = rclSFacet._aclPoints[0] + (s * clS) + (t * clT);
 
   return true;
 }
@@ -905,15 +893,9 @@ bool MeshAlgorithm::NearestPointFromPoint (const Vector3D &rclPt, const MeshFace
   if (ulInd == ULONG_MAX)
     return false;  // no facets inside BoundingBox
 
-  float s, t;
   MeshGeomFacet rclSFacet = _rclMesh.GetFacet(ulInd);
-  MeshFacetFunc::DistanceToPoint(rclSFacet, rclPt, s, t);
-
-  Vector3D clS(rclSFacet._aclPoints[1] - rclSFacet._aclPoints[0]);
-  Vector3D clT(rclSFacet._aclPoints[2] - rclSFacet._aclPoints[0]);
-
+  MeshFacetFunc::DistanceToPoint(rclSFacet, rclPt, rclResPoint);
   rclResFacetIndex = ulInd;
-  rclResPoint      = rclSFacet._aclPoints[0] + (s * clS) + (t * clT);
 
   return true;
 }
@@ -928,7 +910,7 @@ bool MeshAlgorithm::CutWithPlane (const gp_Pln &rclPlane, const MeshFacetGrid &r
   clBase.Set(clPos.X(), clPos.Y(), clPos.Z());
   clNormal.Set(clDir.X(), clDir.Y(), clDir.Z());
 
-	return CutWithPlane (clBase, clNormal, rclGrid, rclResult, fMinEps, false);
+  return CutWithPlane (clBase, clNormal, rclGrid, rclResult, fMinEps, false);
 }
 
 bool MeshAlgorithm::CutWithPlane (const Vector3D &clBase, const Vector3D &clNormal, const MeshFacetGrid &rclGrid, 
@@ -962,21 +944,21 @@ bool MeshAlgorithm::CutWithPlane (const Vector3D &clBase, const Vector3D &clNorm
       clTempPoly.push_back(std::pair<Vector3D, Vector3D>(clE1, clE2));
   }
 
-	if(bConnectPolygons)
-	{
-			//std::list<std::pair<Vector3D, Vector3D> > rclTempLines;
-			std::list<std::pair<Vector3D, Vector3D> > rclResultLines(clTempPoly.begin(),clTempPoly.end());
-			std::list<std::vector<Vector3D> > tempList;
-			ConnectLines(clTempPoly, tempList, fMinEps);
-			ConnectPolygons(tempList, clTempPoly);
+  if(bConnectPolygons)
+  {
+      //std::list<std::pair<Vector3D, Vector3D> > rclTempLines;
+      std::list<std::pair<Vector3D, Vector3D> > rclResultLines(clTempPoly.begin(),clTempPoly.end());
+      std::list<std::vector<Vector3D> > tempList;
+      ConnectLines(clTempPoly, tempList, fMinEps);
+      ConnectPolygons(tempList, clTempPoly);
 
-			for(std::list<std::pair<Vector3D, Vector3D> >::iterator iter = clTempPoly.begin(); iter != clTempPoly.end(); iter++)
-			{
-				rclResultLines.push_front(*iter);
-			}
+      for(std::list<std::pair<Vector3D, Vector3D> >::iterator iter = clTempPoly.begin(); iter != clTempPoly.end(); iter++)
+      {
+        rclResultLines.push_front(*iter);
+      }
 
-			return ConnectLines(rclResultLines, rclResult, fMinEps);
-	}
+      return ConnectLines(rclResultLines, rclResult, fMinEps);
+  }
 
   return ConnectLines(clTempPoly, rclResult, fMinEps);
 }
@@ -1108,37 +1090,34 @@ bool MeshAlgorithm::ConnectPolygons(std::list<std::vector<Vector3D> > &clPolyLis
                                     std::list<std::pair<Vector3D, Vector3D> > &rclLines) const
 {
 
-	for(std::list< std::vector<Vector3D> >::iterator OutIter = clPolyList.begin(); OutIter != clPolyList.end() ; OutIter++)
-	{
-		std::pair<Vector3D,Vector3D> currentSort;
-		float fDist = Distance(OutIter->front(),OutIter->back());
-		currentSort.first = OutIter->front();
-		currentSort.second = OutIter->back();
+  for(std::list< std::vector<Vector3D> >::iterator OutIter = clPolyList.begin(); OutIter != clPolyList.end() ; OutIter++)
+  {
+    std::pair<Vector3D,Vector3D> currentSort;
+    float fDist = Distance(OutIter->front(),OutIter->back());
+    currentSort.first = OutIter->front();
+    currentSort.second = OutIter->back();
 
-		for(std::list< std::vector<Vector3D> >::iterator InnerIter = clPolyList.begin(); InnerIter != clPolyList.end(); InnerIter++)
-		{
-			
-			if(OutIter == InnerIter) continue;
+    for(std::list< std::vector<Vector3D> >::iterator InnerIter = clPolyList.begin(); InnerIter != clPolyList.end(); InnerIter++)
+    {
+      if(OutIter == InnerIter) continue;
 
-			if(Distance(OutIter->front(),InnerIter->front()) < fDist)
-			{
-				currentSort.second = InnerIter->front();
-				fDist = Distance(OutIter->front(),InnerIter->front());
-			}
-			
-			if(Distance(OutIter->front(),InnerIter->back()) < fDist)
-			{
-				currentSort.second = InnerIter->back();
-				fDist = Distance(OutIter->front(),InnerIter->back());
-			}
+      if(Distance(OutIter->front(),InnerIter->front()) < fDist)
+      {
+        currentSort.second = InnerIter->front();
+        fDist = Distance(OutIter->front(),InnerIter->front());
+      }
+      if(Distance(OutIter->front(),InnerIter->back()) < fDist)
+      {
+        currentSort.second = InnerIter->back();
+        fDist = Distance(OutIter->front(),InnerIter->back());
+      }
+    }
 
-		}
+    rclLines.push_front(currentSort);
 
-		rclLines.push_front(currentSort);
+  }
 
-	}
-
-	return true;
+  return true;
 }
 
 void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const gp_Pln clPlane, const Vector3D &rclLeft, 

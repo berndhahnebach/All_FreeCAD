@@ -103,7 +103,7 @@ public:
   /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
   void SetRotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle);
   void Inverse      (void);
-	void InverseGauss (void);
+  void InverseGauss (void);
   void Transpose    (void);
   //@}
 
@@ -122,8 +122,8 @@ inline Matrix4D& Matrix4D::operator *= (const Matrix4D& rclMtrx)
     for (is = 0; is < 4; is++) {
       clMat.dMtrx4D[iz][is] = 0;
       for (ie = 0; ie < 4; ie++)
-	clMat.dMtrx4D[iz][is] += dMtrx4D[iz][ie] * 
-	                        rclMtrx.dMtrx4D[ie][is];
+        clMat.dMtrx4D[iz][is] += dMtrx4D[iz][ie] * 
+                          rclMtrx.dMtrx4D[ie][is];
     }
 
   (*this) = clMat;
@@ -141,7 +141,7 @@ inline Matrix4D Matrix4D::operator * (const Matrix4D& rclMtrx)
       clMat.dMtrx4D[iz][is] = 0;
       for (ie = 0; ie < 4; ie++)
        	clMat.dMtrx4D[iz][is] += dMtrx4D[iz][ie] * 
-	                        rclMtrx.dMtrx4D[ie][is];
+                          rclMtrx.dMtrx4D[ie][is];
     }
 
   return clMat;
@@ -153,12 +153,12 @@ inline Matrix4D& Matrix4D::operator= (const Matrix4D& rclMtrx)
 
   for (iz = 0; iz < 4; iz++)
     for (is = 0; is < 4; is++) 
-	{
+  {
 #if _DEBUG
-		assert( ! _isnan(rclMtrx.dMtrx4D[iz][is]) );
+    assert( ! _isnan(rclMtrx.dMtrx4D[iz][is]) );
 #endif
-      dMtrx4D[iz][is] = rclMtrx.dMtrx4D[iz][is];
-	}
+    dMtrx4D[iz][is] = rclMtrx.dMtrx4D[iz][is];
+  }
   
   return *this;
 }

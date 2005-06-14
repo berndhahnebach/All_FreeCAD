@@ -46,9 +46,9 @@ class AppMeshExport MeshFacetFunc
 {
 public:
   /** Checks if the facet intersects with the given bounding box. */
-  static bool IntersectWithBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB);
+  static bool IntersectBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB);
   /** Checks if the facet is inside the bounding box or intersects with it. */
-  static inline bool ContainedByOrIntersectWithBoundingBox (const MeshGeomFacet &rcF, const BoundBox3D &rcBB);
+  static inline bool ContainedByOrIntersectBoundingBox (const MeshGeomFacet &rcF, const BoundBox3D &rcBB);
   /** Converts a MeshFacet into a MeshGeomFacet. */
   static inline  MeshGeomFacet ToGeomFacet (const MeshKernel &rclMesh, const MeshFacet &rclFacet);
   /** Calculates the area of a facet. */
@@ -68,13 +68,15 @@ public:
   static float DistanceToLineSegment (const MeshGeomFacet &rcF, const Vector3D &rcP1, const Vector3D &rcP2);
   /** Calculates the shortest distance from the point \a rcPt to the facet. */
   static float DistanceToPoint (const MeshGeomFacet &rclFacet, const Vector3D &rcPt)
-  { float s, t; return DistanceToPoint(rclFacet, rcPt, s, t); }
-  /** Calculates the shortest distance from the point \a rcPt to the facet. */
-  static float DistanceToPoint  (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, float &s,float &t);
+  { Vector3D res; return DistanceToPoint(rclFacet, rcPt, res); }
+  /** Calculates the shortest distance from the point \a rcPt to the facet. \a rclNt is the point of the facet
+   * with shortest distance.
+   */
+  static float DistanceToPoint  (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, Vector3D& rclNt );
   /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
    * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
    */
-	static bool IntersectWithLine (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes);
+  static bool IntersectWithLine (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes);
   /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
    * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
    * This does actually the same as IntersectWithLine() with one additionally constraint that the angle 
@@ -104,16 +106,13 @@ public:
   /** Subsamples the facet into points with resolution \a fStep. */
   static void SubSample (const MeshGeomFacet &rclFacet, float fStep, std::vector<Vector3D> &rclPoints);
   /** Calculates the center and radius of the inner circle of the facet. */
-	static float CenterOfInnerCircle(const MeshGeomFacet &rclFacet, Vector3D& rclCenter);
+  static float CenterOfInnerCircle(const MeshGeomFacet &rclFacet, Vector3D& rclCenter);
   /** Calculates the center and radius of the outer circle of the facet. */
   static float CenterOfOuterCircle(const MeshGeomFacet &rclFacet, Vector3D& rclCenter);
   /** Returns the edge number of the facet that is nearest to the point \a rclPt. */
   static unsigned short NearestEdgeToPoint(const MeshGeomFacet& rclFacet, const Vector3D& rclPt);
 
 protected:
-  /** Calculates the minimum distance of two line segments. */
-  static float MinLineLine (const Vector3D &rclSeg0B, const Vector3D &rclSeg0M,
-                            const Vector3D &rclSeg1B, const Vector3D &rclSeg1M, float &s, float &t);
   /** Sqrt(fabs(\a fVal)) */
   static float Dist (float fVal)
   { return float(sqrt(fabs(fVal))); }
@@ -127,11 +126,11 @@ class AppMeshExport MeshEdgeFunc
 {
 public:
   /** Checks if the edge is inside the bounding box or intersects with it. */
-  static bool ContainedByOrIntersectWithBoundingBox (const MeshGeomEdge &rclEdge, const BoundBox3D &rclBB );
+  static bool ContainedByOrIntersectBoundingBox (const MeshGeomEdge &rclEdge, const BoundBox3D &rclBB );
   /** Returns the bounding box of the edge. */
-	static BoundBox3D GetBoundBox (const MeshGeomEdge &rclEdge);
+  static BoundBox3D GetBoundBox (const MeshGeomEdge &rclEdge);
   /** Checks if the edge intersects with the given bounding box. */
-  static bool IntersectWithBoundingBox (const MeshGeomEdge &rclEdge, const BoundBox3D &rclBB);
+  static bool IntersectBoundingBox (const MeshGeomEdge &rclEdge, const BoundBox3D &rclBB);
 };
 
 /**
@@ -150,8 +149,8 @@ public:
   virtual ~MeshRefPointToFacets (void)
   {
     for (std::vector<std::set<MeshFacetArray::_TIterator> >::iterator it = begin(); it != end(); ++it)
-		  it->clear();
-	  clear();
+      it->clear();
+    clear();
     std::vector<std::set<MeshFacetArray::_TIterator> >().swap(*this);
   }
 
@@ -182,10 +181,10 @@ public:
   virtual ~MeshRefFacetToFacets (void)
   {
     for (std::vector<std::set<MeshFacetArray::_TIterator> >::iterator it = begin(); it != end(); ++it)
-			it->clear();
-		clear();
+      it->clear();
+    clear();
     std::vector<std::set<MeshFacetArray::_TIterator> >().swap(*this);
-	}
+  }
   /// Rebuilds up data structure
   void Rebuild (void);
 
@@ -213,10 +212,10 @@ public:
   virtual ~MeshRefPointToPoints (void)
   {
     for (std::vector<std::set<MeshPointArray::_TIterator> >::iterator it = begin(); it != end(); ++it)
-			it->clear();
-		clear();
+      it->clear();
+    clear();
     std::vector<std::set<MeshPointArray::_TIterator> >().swap(*this);
-	}
+  }
 
   /// Rebuilds up data structure
   void Rebuild (void);
@@ -226,7 +225,7 @@ protected:
 };
 
 
-inline bool MeshFacetFunc::ContainedByOrIntersectWithBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB)
+inline bool MeshFacetFunc::ContainedByOrIntersectBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB)
 {
   // Test, ob alle Eckpunkte des Facets sich auf einer der 6 Seiten der BB befinden
   if ((rclFacet.GetBoundBox() && rclBB) == false)
@@ -244,7 +243,7 @@ inline bool MeshFacetFunc::ContainedByOrIntersectWithBoundingBox (const MeshGeom
   }
 
   // "echter" Test auf Schnitt
-  if (MeshFacetFunc::IntersectWithBoundingBox(rclFacet, rclBB))
+  if (MeshFacetFunc::IntersectBoundingBox(rclFacet, rclBB))
     return true;
 
   return false;

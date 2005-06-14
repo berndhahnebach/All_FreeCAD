@@ -242,12 +242,12 @@ void Matrix4D::Inverse (void)
   short  iz, is;
 
   /**** Herausnehmen und Inversion der TranslationsMatrix
-	aus der TransformationMatrix                      ****/
+  aus der TransformationMatrix                      ****/
   for (iz = 0 ;iz < 3; iz++)
     clInvTrlMat.dMtrx4D[iz][3] = -dMtrx4D[iz][3];
 
   /**** Herausnehmen und Inversion der RotationsMatrix
-	aus der TransformationMatrix                      ****/
+  aus der TransformationMatrix                      ****/
   for (iz = 0 ;iz < 3; iz++)
     for (is = 0 ;is < 3; is++)
       clInvRotMat.dMtrx4D[iz][is] = dMtrx4D[is][iz];
@@ -271,29 +271,29 @@ void Matrix_gauss(Matrix a, Matrix b)
     big = 0;
     for (j = 0; j < 4; j++) {
       if (ipiv[j] != 1) {
-	for (k = 0; k < 4; k++) {
-	  if (ipiv[k] == 0) {
-	    if (fabs(a[4*j+k]) >= big) {
-	      big = fabs(a[4*j+k]);
-	      irow = j;
-	      icol = k;
-	    }
-	  } else if (ipiv[k] > 1)
-	    return;  /* Singular matrix */
-	}
+  for (k = 0; k < 4; k++) {
+    if (ipiv[k] == 0) {
+      if (fabs(a[4*j+k]) >= big) {
+        big = fabs(a[4*j+k]);
+        irow = j;
+        icol = k;
+      }
+    } else if (ipiv[k] > 1)
+      return;  /* Singular matrix */
+  }
       }
     }
     ipiv[icol] = ipiv[icol]+1;
     if (irow != icol) {
       for (l = 0; l < 4; l++) {
-	dum = a[4*irow+l];
-	a[4*irow+l] = a[4*icol+l];
-	a[4*icol+l] = dum;
+  dum = a[4*irow+l];
+  a[4*irow+l] = a[4*icol+l];
+  a[4*icol+l] = dum;
       }
       for (l = 0; l < 4; l++) {
-	dum = b[4*irow+l];
-	b[4*irow+l] = b[4*icol+l];
-	b[4*icol+l] = dum;
+  dum = b[4*irow+l];
+  b[4*irow+l] = b[4*icol+l];
+  b[4*icol+l] = dum;
       }
     }
     indxr[i] = irow;
@@ -307,21 +307,21 @@ void Matrix_gauss(Matrix a, Matrix b)
       b[4*icol+l] = b[4*icol+l]*pivinv;
     for (ll = 0; ll < 4; ll++) {
       if (ll != icol) {
-	dum = a[4*ll+icol];
-	a[4*ll+icol] = 0;
-	for (l = 0; l < 4; l++)
-	  a[4*ll+l] = a[4*ll+l] - a[4*icol+l]*dum;
-	for (l = 0; l < 4; l++)
-	  b[4*ll+l] = b[4*ll+l] - b[4*icol+l]*dum;
+  dum = a[4*ll+icol];
+  a[4*ll+icol] = 0;
+  for (l = 0; l < 4; l++)
+    a[4*ll+l] = a[4*ll+l] - a[4*icol+l]*dum;
+  for (l = 0; l < 4; l++)
+    b[4*ll+l] = b[4*ll+l] - b[4*icol+l]*dum;
       }
     }
   }
   for (l = 3; l >= 0; l--) {
     if (indxr[l] != indxc[l]) {
       for (k = 0; k < 4; k++) {
-	dum = a[4*k+indxr[l]];
-	a[4*k+indxr[l]] = a[4*k+indxc[l]];
-	a[4*k+indxc[l]] = dum;
+  dum = a[4*k+indxr[l]];
+  a[4*k+indxr[l]] = a[4*k+indxc[l]];
+  a[4*k+indxc[l]] = dum;
       }
     }
   }
@@ -364,9 +364,9 @@ void Matrix4D::InverseGauss (void)
 {
   double matrix        [16]; 
   double inversematrix [16] = { 1 ,0 ,0 ,0 ,
-								                0 ,1 ,0 ,0 ,
-								                0 ,0 ,1 ,0 ,
-								                0 ,0 ,0 ,1 }; 
+                                0 ,1 ,0 ,0 ,
+                                0 ,0 ,1 ,0 ,
+                                0 ,0 ,0 ,1 }; 
   GetGLMatrix(matrix);
 
 //  Matrix_invert(matrix, inversematrix);

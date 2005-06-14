@@ -24,10 +24,14 @@
 #ifndef MESH_TOOLS_H
 #define MESH_TOOLS_H
 
+#ifndef _PreComp_
+# include <Wm3DistVector3Triangle3.h>
+# include <Wm3Sphere3.h>
+# include <Wm3Triangle3.h>
+#endif
+
 #include "MeshKernel.h"
 #include "Algorithm.h"
-#include <Wm3Sphere3.h>
-#include <Wm3Triangle3.h>
 
 namespace Mesh {
 
@@ -121,7 +125,7 @@ protected:
   std::vector<Vector3D> _aclPointsResult;  // result as vertex
   std::vector<std::vector<Vector3D> > _aclSampledFacets; // sample points from each facet
   float _fSampleDistance;  // distance between two sampled points
-  Wm3::Sphere3<float> _clMgcSphere;
+  Wm3::Sphere3<float> _akSphere;
   bool _bTooFewPoints;    
 
 private:
@@ -158,17 +162,22 @@ inline bool MeshSearchNeighbours::InnerPoint (const Vector3D &rclPt) const
   return DistanceP2(_clCenter, rclPt) < _fMaxDistanceP2;
 }
 
-/// @todo
 inline bool MeshSearchNeighbours::TriangleCutsSphere (const MeshFacet &rclF) const
-{/*
-  Vector3<float> akP0 = _rclPAry[rclF._aulPoints[0]];
-  Vector3<float> akP1 = _rclPAry[rclF._aulPoints[1]];
-  Vector3<float> akP2 = _rclPAry[rclF._aulPoints[2]];
+{
+  Vector3D cP0 = _rclPAry[rclF._aulPoints[0]];
+  Vector3D cP1 = _rclPAry[rclF._aulPoints[1]];
+  Vector3D cP2 = _rclPAry[rclF._aulPoints[2]];
 
-  Wm3::Triangle3<float> clTri(akP0, akP1, akP2);
+  Wm3::Vector3<float> akP0(cP0.x, cP0.y, cP0.z);
+  Wm3::Vector3<float> akP1(cP1.x, cP1.y, cP1.z);
+  Wm3::Vector3<float> akP2(cP2.x, cP2.y, cP2.z);
 
-  return MgcTestIntersection(clTri, _clMgcSphere);*/
-  return false;
+  Wm3::Triangle3<float> akTri(akP0, akP1, akP2);
+  Wm3::DistVector3Triangle3<float> akDistVecTri(_akSphere.Center, akTri);
+
+  float fSqrDist = akDistVecTri.GetSquared();
+  float fRSqr = _akSphere.Radius*_akSphere.Radius;
+  return fSqrDist < fRSqr;
 }
 
 } // namespace Mesh

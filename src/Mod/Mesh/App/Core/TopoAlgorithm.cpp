@@ -23,14 +23,17 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <Wm3Vector3.h>
+# include <Wm3DistVector3Segment3.h>
+#endif
+
 #include "TopoAlgorithm.h"
 #include "Iterator.h"
 #include "MeshKernel.h"
 #include "MeshAlgorithm.h"
 #include "Algorithm.h"
 
-#include <Wm3Vector3.h>
-#include <Wm3DistVector3Segment3.h>
 
 using namespace Mesh;
 using namespace Wm3;
@@ -42,86 +45,86 @@ MeshTopoAlgorithm::MeshTopoAlgorithm (MeshKernel &rclM)
 
 MeshTopoAlgorithm::~MeshTopoAlgorithm (void)
 {
-	delete _pclRefPt2Fac;
-	_pclRefPt2Fac = NULL;
-	_aclNewFacets.clear();
-	_aclMultiSplitted.clear();
+  delete _pclRefPt2Fac;
+  _pclRefPt2Fac = NULL;
+  _aclNewFacets.clear();
+  _aclMultiSplitted.clear();
 }
-/// @todo
+
 void MeshTopoAlgorithm::Commit()
 {
-	// get all not to be deleted facets
-	//
-	if (_aclNewFacets.size() > 0 || _aclMultiSplitted.size() > 0)
-	{
-		for (std::map<unsigned long, std::vector<MeshGeomFacet> >::iterator it = _aclMultiSplitted.begin(); 
-			it!=_aclMultiSplitted.end(); ++it)
-		{
-			for (std::vector<MeshGeomFacet>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-			{
-				_aclNewFacets.push_back(*it2);
-			}
-		}
-		_aclMultiSplitted.clear();
+  // get all not to be deleted facets
+  //
+  if (_aclNewFacets.size() > 0 || _aclMultiSplitted.size() > 0)
+  {
+    for (std::map<unsigned long, std::vector<MeshGeomFacet> >::iterator it = _aclMultiSplitted.begin(); 
+      it!=_aclMultiSplitted.end(); ++it)
+    {
+      for (std::vector<MeshGeomFacet>::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+      {
+        _aclNewFacets.push_back(*it2);
+      }
+    }
+    _aclMultiSplitted.clear();
 
-		for (MeshFacetIterator cFIter(_rclMesh, 0); cFIter.More(); cFIter.Next())
-		{
-			if ( !cFIter->IsFlag(MeshFacet::INVALID) )
-				_aclNewFacets.push_back(*cFIter);
-		}
+    for (MeshFacetIterator cFIter(_rclMesh, 0); cFIter.More(); cFIter.Next())
+    {
+      if ( !cFIter->IsFlag(MeshFacet::INVALID) )
+        _aclNewFacets.push_back(*cFIter);
+    }
 
-//		GetSequencer().Lock();
-		_rclMesh = _aclNewFacets;
-		if (_pclRefPt2Fac) _pclRefPt2Fac->Rebuild();
-//		GetSequencer().Unlock();
-		_aclNewFacets.clear();
-	}
+    Base::Sequencer().setLocked( true );
+    _rclMesh = _aclNewFacets;
+    if (_pclRefPt2Fac) _pclRefPt2Fac->Rebuild();
+    Base::Sequencer().setLocked( false );
+    _aclNewFacets.clear();
+  }
 }
 
 void MeshTopoAlgorithm::Discard()
 {
-	_aclNewFacets.clear();
-	_aclMultiSplitted.clear();
-	ClearFlag();
+  _aclNewFacets.clear();
+  _aclMultiSplitted.clear();
+  ClearFlag();
 }
 
 void MeshTopoAlgorithm::InsertNode(unsigned long ulFacetPos, const Vector3D&  rclPoint)
 {
-	MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
-	if (IsFlag(ulFacetPos)) return; // already marked as INVALID
-	SetFlag(ulFacetPos); // mark for deletion
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+  if (IsFlag(ulFacetPos)) return; // already marked as INVALID
+  SetFlag(ulFacetPos); // mark for deletion
 
-	MeshGeomFacet clFacet;
+  MeshGeomFacet clFacet;
 
-	// create three new facets
-	//
-	clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[0]];
-	clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[1]];
-	clFacet._aclPoints[2] = rclPoint;
-	clFacet.CalcNormal();
-	_aclNewFacets.push_back(clFacet);
+  // create three new facets
+  //
+  clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[0]];
+  clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[1]];
+  clFacet._aclPoints[2] = rclPoint;
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
 
-	clFacet._aclPoints[0] = rclPoint;
-	clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[1]];
-	clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[2]];
-	clFacet.CalcNormal();
-	_aclNewFacets.push_back(clFacet);
-	
-	clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[0]];
-	clFacet._aclPoints[1] = rclPoint;
-	clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[2]];
-	clFacet.CalcNormal();
-	_aclNewFacets.push_back(clFacet);
+  clFacet._aclPoints[0] = rclPoint;
+  clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[1]];
+  clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[2]];
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
+
+  clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[0]];
+  clFacet._aclPoints[1] = rclPoint;
+  clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[2]];
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
 }
 
 void MeshTopoAlgorithm::OptimizeTopology()
 {
-	std::vector<std::set<unsigned long> > clNPoints;
-	clNPoints.resize(_rclMesh._aclPointArray.size());
-	unsigned long ulPt0, ulPt1;
+  std::vector<std::set<unsigned long> > clNPoints;
+  clNPoints.resize(_rclMesh._aclPointArray.size());
+  unsigned long ulPt0, ulPt1;
 
-	// get all current edges
-	//
+  // get all current edges
+  //
   for (MeshFacetArray::_TIterator pFIter = _rclMesh._aclFacetArray.begin(); pFIter != _rclMesh._aclFacetArray.end(); pFIter++)
   {
     unsigned long ulP0 = pFIter->_aulPoints[0];
@@ -136,123 +139,123 @@ void MeshTopoAlgorithm::OptimizeTopology()
     clNPoints[ulP2].insert(ulP1);
   }
 
-	MeshFacetIterator clFIter1(_rclMesh);
-	MeshFacetIterator clFIter2(_rclMesh);
-	// first reset VISITed flag
-	MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
+  MeshFacetIterator clFIter1(_rclMesh);
+  MeshFacetIterator clFIter2(_rclMesh);
+  // first reset VISITed flag
+  MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
 
-	Vector3D p0, p1, q0, q1;
-	MeshFacet clF, clN;
-	for (MeshEdgeArray::_TIterator it = _rclMesh._aclEdgeArray.begin(); it != _rclMesh._aclEdgeArray.end(); ++it)
-	{
+  Vector3D p0, p1, q0, q1;
+  MeshFacet clF, clN;
+  for (MeshEdgeArray::_TIterator it = _rclMesh._aclEdgeArray.begin(); it != _rclMesh._aclEdgeArray.end(); ++it)
+  {
     Base::Sequencer().next();
 
-		clF = _rclMesh._aclFacetArray[it->Index()];
-		if (clF._aulNeighbours[it->Side()] == ULONG_MAX)
-			continue;
+    clF = _rclMesh._aclFacetArray[it->Index()];
+    if (clF._aulNeighbours[it->Side()] == ULONG_MAX)
+      continue;
 
-		clN = _rclMesh._aclFacetArray[clF._aulNeighbours[it->Side()]];
+    clN = _rclMesh._aclFacetArray[clF._aulNeighbours[it->Side()]];
 
-		if (clF.IsFlag(MeshFacet::VISIT) || clN.IsFlag(MeshFacet::VISIT))
-			continue;
+    if (clF.IsFlag(MeshFacet::VISIT) || clN.IsFlag(MeshFacet::VISIT))
+      continue;
 
-		clFIter1.Set(it->Index());
-		const MeshGeomFacet& rclF = *clFIter1;
-		clFIter2.Set(clF._aulNeighbours[it->Side()]);
-		const MeshGeomFacet& rclN = *clFIter2;
+    clFIter1.Set(it->Index());
+    const MeshGeomFacet& rclF = *clFIter1;
+    clFIter2.Set(clF._aulNeighbours[it->Side()]);
+    const MeshGeomFacet& rclN = *clFIter2;
 
-		if (rclF.GetNormal() * rclN.GetNormal() < 0.95f)
-			continue;
+    if (rclF.GetNormal() * rclN.GetNormal() < 0.95f)
+      continue;
 
-		// makes it sense to swap?
-		//
-		// Current length of the edge
-		p0 = _rclMesh._aclPointArray[clF._aulPoints[it->Side()]];
-		p1 = _rclMesh._aclPointArray[clF._aulPoints[(it->Side()+1)%3]];
+    // makes it sense to swap?
+    //
+    // Current length of the edge
+    p0 = _rclMesh._aclPointArray[clF._aulPoints[it->Side()]];
+    p1 = _rclMesh._aclPointArray[clF._aulPoints[(it->Side()+1)%3]];
 
-		ulPt0 = clF._aulPoints[(it->Side()+2)%3];
-		q0 = _rclMesh._aclPointArray[ulPt0];
-		for (int i=0; i<3; ++i)
-		{
-			if (clN._aulNeighbours[i] == it->Index())
-			{
-				ulPt1 = clN._aulPoints[(i+2)%3];
-				q1 = _rclMesh._aclPointArray[ulPt1];
-				break;
-			}
-		}
+    ulPt0 = clF._aulPoints[(it->Side()+2)%3];
+    q0 = _rclMesh._aclPointArray[ulPt0];
+    for (int i=0; i<3; ++i)
+    {
+      if (clN._aulNeighbours[i] == it->Index())
+      {
+        ulPt1 = clN._aulPoints[(i+2)%3];
+        q1 = _rclMesh._aclPointArray[ulPt1];
+        break;
+      }
+    }
 
-		// get all neighbour points (to check the edges)
-		if (clNPoints[ulPt0].find(ulPt1) != clNPoints[ulPt0].end())
-			continue;
-		if (clNPoints[ulPt1].find(ulPt0) != clNPoints[ulPt1].end())
-			continue;
+    // get all neighbour points (to check the edges)
+    if (clNPoints[ulPt0].find(ulPt1) != clNPoints[ulPt0].end())
+      continue;
+    if (clNPoints[ulPt1].find(ulPt0) != clNPoints[ulPt1].end())
+      continue;
 
-		if ((q1-q0).Length() < (p1-p0).Length())
-		{
-			// is polygon convex ?
-			//
-			float a0 = (q0-p0).GetAngle(p1-p0);
-			float a1 = (p1-p0).GetAngle(q1-p0);
+    if ((q1-q0).Length() < (p1-p0).Length())
+    {
+      // is polygon convex ?
+      //
+      float a0 = (q0-p0).GetAngle(p1-p0);
+      float a1 = (p1-p0).GetAngle(q1-p0);
 
-			float b0 = (q0-p1).GetAngle(p0-p1);
-			float b1 = (p0-p1).GetAngle(q1-p1);
+      float b0 = (q0-p1).GetAngle(p0-p1);
+      float b1 = (p0-p1).GetAngle(q1-p1);
 
-			if ((a0+a1<3.0f) && (b0+b1<3.0f))
-			{
-				if (((q1-p0)%(q0-p0))*rclF.GetNormal() < FLOAT_EPS)
-				{
-					continue;
-				}
-				if (((q1-p0)%(q0-p0))*rclN.GetNormal() < FLOAT_EPS)
-				{
-					continue;
-				}
+      if ((a0+a1<3.0f) && (b0+b1<3.0f))
+      {
+        if (((q1-p0)%(q0-p0))*rclF.GetNormal() < FLOAT_EPS)
+        {
+          continue;
+        }
+        if (((q1-p0)%(q0-p0))*rclN.GetNormal() < FLOAT_EPS)
+        {
+          continue;
+        }
 
-				SwapEdge(it->Index(), it->Side());
-			
-				clF.SetFlag(MeshFacet::VISIT);
-				clN.SetFlag(MeshFacet::VISIT);
+        SwapEdge(it->Index(), it->Side());
+      
+        clF.SetFlag(MeshFacet::VISIT);
+        clN.SetFlag(MeshFacet::VISIT);
 
-				// append the new edge to the point neighbourhood
-				clNPoints[ulPt0].insert(ulPt1);
-				clNPoints[ulPt1].insert(ulPt0);
-			}
-		}
-	}
+        // append the new edge to the point neighbourhood
+        clNPoints[ulPt0].insert(ulPt1);
+        clNPoints[ulPt1].insert(ulPt0);
+      }
+    }
+  }
 }
 
 void MeshTopoAlgorithm::SwapEdge(unsigned long ulFacetPos, int iSide)
 {
-	MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
-	if (IsFlag(ulFacetPos)) return; // already marked as INVALID
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+  if (IsFlag(ulFacetPos)) return; // already marked as INVALID
   unsigned long ulNeighbour = rclF._aulNeighbours[iSide];
-	if (ulNeighbour == ULONG_MAX) return;
-	MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
-	if (IsFlag(ulNeighbour)) return; // already marked as INVALID
+  if (ulNeighbour == ULONG_MAX) return;
+  MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
+  if (IsFlag(ulNeighbour)) return; // already marked as INVALID
 
-	SetFlag(ulFacetPos); // mark for deletion
-	SetFlag(ulNeighbour); // mark for deletion
+  SetFlag(ulFacetPos); // mark for deletion
+  SetFlag(ulNeighbour); // mark for deletion
 
-	MeshGeomFacet clFacet1, clFacet2;
-	clFacet1._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[iSide]];
-	clFacet1._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
+  MeshGeomFacet clFacet1, clFacet2;
+  clFacet1._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[iSide]];
+  clFacet1._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
 
-	clFacet2._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+1)%3]];
-	clFacet2._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
+  clFacet2._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+1)%3]];
+  clFacet2._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
 
-	for (int i=0; i<3; ++i)
-	{
-		if (rclN._aulNeighbours[i] == ulFacetPos)
-		{
-			clFacet1._aclPoints[1] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
-			clFacet2._aclPoints[2] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
-			break;
-		}
-	}
+  for (int i=0; i<3; ++i)
+  {
+    if (rclN._aulNeighbours[i] == ulFacetPos)
+    {
+      clFacet1._aclPoints[1] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
+      clFacet2._aclPoints[2] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
+      break;
+    }
+  }
 
-	_aclNewFacets.push_back(clFacet1);
-	_aclNewFacets.push_back(clFacet2);
+  _aclNewFacets.push_back(clFacet1);
+  _aclNewFacets.push_back(clFacet2);
 }
 /// @todo
 bool MeshTopoAlgorithm::MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint, float fTolerance)
@@ -267,58 +270,57 @@ bool MeshTopoAlgorithm::MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, 
     }
   }
 
-	SetFlag(ulFacetPos); // mark for deletion
-	MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
-	// store also the side index
-	unsigned long ulIndex = ((ulFacetPos << 2) | (iSide & 3)); 
+  SetFlag(ulFacetPos); // mark for deletion
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+  // store also the side index
+  unsigned long ulIndex = ((ulFacetPos << 2) | (iSide & 3)); 
 
-	// check if this facet is already splitted at another side
-	for (int i=0; i<3; ++i)
-	{
-		unsigned long ulTestInd = ((ulFacetPos << 2) | (i & 3));
-		if (ulTestInd != ulIndex)
-		{
-			if (_aclMultiSplitted.find(ulTestInd) != _aclMultiSplitted.end())
-				return false; // not allowed to split
-		}
-	}
+  // check if this facet is already splitted at another side
+  for (int i=0; i<3; ++i)
+  {
+    unsigned long ulTestInd = ((ulFacetPos << 2) | (i & 3));
+    if (ulTestInd != ulIndex)
+    {
+      if (_aclMultiSplitted.find(ulTestInd) != _aclMultiSplitted.end())
+        return false; // not allowed to split
+    }
+  }
 
-	// not yet splitted => just append facet
-	if (_aclMultiSplitted.find(ulIndex) == _aclMultiSplitted.end())
-	{
-		MeshGeomFacet clFacet;
+  // not yet splitted => just append facet
+  if (_aclMultiSplitted.find(ulIndex) == _aclMultiSplitted.end())
+  {
+    MeshGeomFacet clFacet;
 
-		// first facet
-		clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[iSide]];
-		clFacet._aclPoints[1] = rclPoint;
-		clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
-		clFacet.CalcNormal();
-		_aclMultiSplitted[ulIndex].push_back(clFacet);
+    // first facet
+    clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[iSide]];
+    clFacet._aclPoints[1] = rclPoint;
+    clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
+    clFacet.CalcNormal();
+    _aclMultiSplitted[ulIndex].push_back(clFacet);
 
-		// second facet
-		clFacet._aclPoints[0] = rclPoint;
-		clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+1)%3]];
-		clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
-		clFacet.CalcNormal();
-		_aclMultiSplitted[ulIndex].push_back(clFacet);
+    // second facet
+    clFacet._aclPoints[0] = rclPoint;
+    clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+1)%3]];
+    clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
+    clFacet.CalcNormal();
+    _aclMultiSplitted[ulIndex].push_back(clFacet);
 
-		return true;
-	}
-	// modify the already buffered facets
-	else
-	{
-		// search for the already inserted facet containing this point
-		for (std::vector<MeshGeomFacet>::iterator it = _aclMultiSplitted[ulIndex].begin(); 
-			it != _aclMultiSplitted[ulIndex].end(); ++it)
-		{
+    return true;
+  }
+  // modify the already buffered facets
+  else
+  {
+    // search for the already inserted facet containing this point
+    for (std::vector<MeshGeomFacet>::iterator it = _aclMultiSplitted[ulIndex].begin(); 
+      it != _aclMultiSplitted[ulIndex].end(); ++it)
+    {
       MeshGeomFacet testFacet;
       testFacet._aclPoints[0] = it->_aclPoints[0];
       testFacet._aclPoints[1] = it->_aclPoints[1];
       testFacet._aclPoints[2] = it->_aclPoints[2];
 
-			if ( (rclPoint == it->_aclPoints[0]) ||
-				   (rclPoint == it->_aclPoints[1]))
-				return false; // do not split with the same point twice or a facet point!!!
+      if ( (rclPoint == it->_aclPoints[0]) || (rclPoint == it->_aclPoints[1]))
+        return false; // do not split with the same point twice or a facet point!!!
 
       Vector3<float> B(rclPoint.x, rclPoint.y, rclPoint.z);
       Vector3<float> C(it->_aclPoints[0].x, it->_aclPoints[0].y, it->_aclPoints[0].z);
@@ -331,247 +333,247 @@ bool MeshTopoAlgorithm::MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, 
       DistVector3Segment3<float> akDist(B, akCD);
       float l= akDist.Get();
 
-			if (l < fTolerance)
-			{
-				MeshGeomFacet clFacet;
+      if (l < fTolerance)
+      {
+        MeshGeomFacet clFacet;
 
-				// first facet
-				clFacet._aclPoints[0] = it->_aclPoints[0];
-				clFacet._aclPoints[1] = rclPoint;
-				clFacet._aclPoints[2] = it->_aclPoints[2];
-				clFacet.CalcNormal();
+        // first facet
+        clFacet._aclPoints[0] = it->_aclPoints[0];
+        clFacet._aclPoints[1] = rclPoint;
+        clFacet._aclPoints[2] = it->_aclPoints[2];
+        clFacet.CalcNormal();
 
-				// second facet (change the existing facet)
-				it->_aclPoints[0] = rclPoint;
+        // second facet (change the existing facet)
+        it->_aclPoints[0] = rclPoint;
         it->CalcNormal();
 
         // insert the new facet
         _aclMultiSplitted[ulIndex].push_back(clFacet);
-	
-				return true;
-			}
-		}
-	}
 
-	// ignored
-	return false;
+        return true;
+      }
+    }
+  }
+
+  // ignored
+  return false;
 }
 
 void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint)
 {
-	MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
-	if (IsFlag(ulFacetPos)) return; // already marked as INVALID
-	SetFlag(ulFacetPos); // mark for deletion
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+  if (IsFlag(ulFacetPos)) return; // already marked as INVALID
+  SetFlag(ulFacetPos); // mark for deletion
 
-	MeshGeomFacet clFacet;
+  MeshGeomFacet clFacet;
 
-	// create the new facets
-	//
-	//
+  // create the new facets
+  //
+  //
   unsigned long ulNeighbour = rclF._aulNeighbours[iSide];
-	if (ulNeighbour != ULONG_MAX)
-	{
-		MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
-		if (IsFlag(ulNeighbour)) return; // already marked as INVALID
-		SetFlag(ulNeighbour); // mark for deletion
-		for (int i=0; i<3; ++i)
-		{
-			if (rclN._aulNeighbours[i] == ulFacetPos)
-			{
-				// third facet
-				clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclN._aulPoints[i]];
-				clFacet._aclPoints[1] = rclPoint;
-				clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
-				clFacet.CalcNormal();
-				_aclNewFacets.push_back(clFacet);
+  if (ulNeighbour != ULONG_MAX)
+  {
+    MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
+    if (IsFlag(ulNeighbour)) return; // already marked as INVALID
+    SetFlag(ulNeighbour); // mark for deletion
+    for (int i=0; i<3; ++i)
+    {
+      if (rclN._aulNeighbours[i] == ulFacetPos)
+      {
+        // third facet
+        clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclN._aulPoints[i]];
+        clFacet._aclPoints[1] = rclPoint;
+        clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
+        clFacet.CalcNormal();
+        _aclNewFacets.push_back(clFacet);
 
-				// fourth facet
-				clFacet._aclPoints[0] = rclPoint;
-				clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclN._aulPoints[(i+1)%3]];
-				clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
-				clFacet.CalcNormal();
-				_aclNewFacets.push_back(clFacet);
+        // fourth facet
+        clFacet._aclPoints[0] = rclPoint;
+        clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclN._aulPoints[(i+1)%3]];
+        clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclN._aulPoints[(i+2)%3]];
+        clFacet.CalcNormal();
+        _aclNewFacets.push_back(clFacet);
 
-				break;
-			}
-		}
-	}
+        break;
+      }
+    }
+  }
 
-	// first facet
-	clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[iSide]];
-	clFacet._aclPoints[1] = rclPoint;
-	clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
-	clFacet.CalcNormal();
-	_aclNewFacets.push_back(clFacet);
+  // first facet
+  clFacet._aclPoints[0] = _rclMesh._aclPointArray[rclF._aulPoints[iSide]];
+  clFacet._aclPoints[1] = rclPoint;
+  clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
 
-	// second facet
-	clFacet._aclPoints[0] = rclPoint;
-	clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+1)%3]];
-	clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
-	clFacet.CalcNormal();
-	_aclNewFacets.push_back(clFacet);
+  // second facet
+  clFacet._aclPoints[0] = rclPoint;
+  clFacet._aclPoints[1] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+1)%3]];
+  clFacet._aclPoints[2] = _rclMesh._aclPointArray[rclF._aulPoints[(iSide+2)%3]];
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
 }
 
 bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdgeP1)
 {
-	RefPointToFacet();
-	std::set<MeshFacetArray::_TIterator> aclNeighbours0 = (*_pclRefPt2Fac)[ulEdgeP0];
-	std::set<MeshFacetArray::_TIterator> aclNeighbours1 = (*_pclRefPt2Fac)[ulEdgeP1];
+  RefPointToFacet();
+  std::set<MeshFacetArray::_TIterator> aclNeighbours0 = (*_pclRefPt2Fac)[ulEdgeP0];
+  std::set<MeshFacetArray::_TIterator> aclNeighbours1 = (*_pclRefPt2Fac)[ulEdgeP1];
 
-	if (aclNeighbours0.size() < 3 || aclNeighbours1.size() < 3)
+  if (aclNeighbours0.size() < 3 || aclNeighbours1.size() < 3)
     return false; // this must be a border point => must not remove
 
-	Vector3D clNew = 0.5f*(_rclMesh._aclPointArray[ulEdgeP0]+_rclMesh._aclPointArray[ulEdgeP1]);
+  Vector3D clNew = 0.5f*(_rclMesh._aclPointArray[ulEdgeP0]+_rclMesh._aclPointArray[ulEdgeP1]);
 
-	// check point 0
-	std::vector<unsigned long> clPoly;
-	if ( !GetPolygonOfNeighbours(ulEdgeP0, clPoly) )
-		return false;
-	if ( !IsConvexPolygon(clPoly) )
-		return false;
+  // check point 0
+  std::vector<unsigned long> clPoly;
+  if ( !GetPolygonOfNeighbours(ulEdgeP0, clPoly) )
+    return false;
+  if ( !IsConvexPolygon(clPoly) )
+    return false;
 
-	// check point 1
-	clPoly.clear();
-	if ( !GetPolygonOfNeighbours(ulEdgeP1, clPoly) )
-		return false;
-	if ( !IsConvexPolygon(clPoly) )
-		return false;
+  // check point 1
+  clPoly.clear();
+  if ( !GetPolygonOfNeighbours(ulEdgeP1, clPoly) )
+    return false;
+  if ( !IsConvexPolygon(clPoly) )
+    return false;
 
-	MeshGeomFacet clFacet;
-	for (std::set<MeshFacetArray::_TIterator>::iterator it0 = aclNeighbours0.begin(); it0 != aclNeighbours0.end(); ++it0)
-	{
-		(*it0)->SetFlag(MeshFacet::INVALID); // mark for deletion
+  MeshGeomFacet clFacet;
+  for (std::set<MeshFacetArray::_TIterator>::iterator it0 = aclNeighbours0.begin(); it0 != aclNeighbours0.end(); ++it0)
+  {
+    (*it0)->SetFlag(MeshFacet::INVALID); // mark for deletion
 
-		bool remove = false;
-		for (int i=0; i<3; ++i)
-		{
-			if ((*it0)->_aulPoints[i] == ulEdgeP1)
-			{
-				remove = true;
-				break;
-			}
+    bool remove = false;
+    for (int i=0; i<3; ++i)
+    {
+      if ((*it0)->_aulPoints[i] == ulEdgeP1)
+      {
+        remove = true;
+        break;
+      }
 
-			if ((*it0)->_aulPoints[i] == ulEdgeP0)
-				clFacet._aclPoints[i] = clNew;
-			else
-				clFacet._aclPoints[i] = _rclMesh._aclPointArray[(*it0)->_aulPoints[i]];
-		}
+      if ((*it0)->_aulPoints[i] == ulEdgeP0)
+        clFacet._aclPoints[i] = clNew;
+      else
+        clFacet._aclPoints[i] = _rclMesh._aclPointArray[(*it0)->_aulPoints[i]];
+    }
 
-		if (!remove)
-		{
-			clFacet.CalcNormal();
-			_aclNewFacets.push_back(clFacet);
-		}
-	}
-	for (std::set<MeshFacetArray::_TIterator>::iterator it1 = aclNeighbours1.begin(); it1 != aclNeighbours1.end(); ++it1)
-	{
-		(*it1)->SetFlag(MeshFacet::INVALID); // mark for deletion
+    if (!remove)
+    {
+      clFacet.CalcNormal();
+      _aclNewFacets.push_back(clFacet);
+    }
+  }
+  for (std::set<MeshFacetArray::_TIterator>::iterator it1 = aclNeighbours1.begin(); it1 != aclNeighbours1.end(); ++it1)
+  {
+    (*it1)->SetFlag(MeshFacet::INVALID); // mark for deletion
 
-		bool remove = false;
-		for (int i=0; i<3; ++i)
-		{
-			if ((*it1)->_aulPoints[i] == ulEdgeP0)
-			{
-				remove = true;
-				break;
-			}
+    bool remove = false;
+    for (int i=0; i<3; ++i)
+    {
+      if ((*it1)->_aulPoints[i] == ulEdgeP0)
+      {
+        remove = true;
+        break;
+      }
 
-			if ((*it1)->_aulPoints[i] == ulEdgeP1)
-				clFacet._aclPoints[i] = clNew;
-			else
-				clFacet._aclPoints[i] = _rclMesh._aclPointArray[(*it1)->_aulPoints[i]];
-		}
+      if ((*it1)->_aulPoints[i] == ulEdgeP1)
+        clFacet._aclPoints[i] = clNew;
+      else
+        clFacet._aclPoints[i] = _rclMesh._aclPointArray[(*it1)->_aulPoints[i]];
+    }
 
-		if (!remove)
-		{
-			clFacet.CalcNormal();
-			_aclNewFacets.push_back(clFacet);
-		}
-	}
+    if (!remove)
+    {
+      clFacet.CalcNormal();
+      _aclNewFacets.push_back(clFacet);
+    }
+  }
 
-	return true;
+  return true;
 }
 
 bool MeshTopoAlgorithm::InverseInsertNode(unsigned long ulPointPos)
 {
-	RefPointToFacet();
-	std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
-	if (aclNeighbours.size() == 3)
-	{
-		std::vector<unsigned long> aulPoly;
-		if ( !GetPolygonOfNeighbours(ulPointPos, aulPoly) )
-			return false; // Oops, this should never occur
+  RefPointToFacet();
+  std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
+  if (aclNeighbours.size() == 3)
+  {
+    std::vector<unsigned long> aulPoly;
+    if ( !GetPolygonOfNeighbours(ulPointPos, aulPoly) )
+      return false; // Oops, this should never occur
 
-		if (TriangulatePolygon(aulPoly, _aclNewFacets))
-		{
-			for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
-			{
-				(*it)->SetFlag(MeshFacet::INVALID); // mark for deletion
-			}
-		}
-		else
-			return false;
+    if (TriangulatePolygon(aulPoly, _aclNewFacets))
+    {
+      for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
+      {
+        (*it)->SetFlag(MeshFacet::INVALID); // mark for deletion
+      }
+    }
+    else
+      return false;
 
-		return true;
-	}
+    return true;
+  }
 
-	return false;
+  return false;
 }
 
 bool MeshTopoAlgorithm::CollapseNode(unsigned long ulPointPos)
 {
-	RefPointToFacet();
-	std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
-	if (aclNeighbours.size() < 3)
+  RefPointToFacet();
+  std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
+  if (aclNeighbours.size() < 3)
     return false; // this must be a border point => must not remove
 
-	std::vector<unsigned long> clPoly;
-	if ( !GetPolygonOfNeighbours(ulPointPos, clPoly) )
-		return false;
+  std::vector<unsigned long> clPoly;
+  if ( !GetPolygonOfNeighbours(ulPointPos, clPoly) )
+    return false;
 
-	if ( !IsConvexPolygon(clPoly) )
-		return false;
+  if ( !IsConvexPolygon(clPoly) )
+    return false;
 
-	if (TriangulatePolygon(clPoly, _aclNewFacets))
-	{
-		for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
-		{
-			(*it)->SetFlag(MeshFacet::INVALID); // mark for deletion
-		}
-	}
-	else
-		return false;
+  if (TriangulatePolygon(clPoly, _aclNewFacets))
+  {
+    for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
+    {
+      (*it)->SetFlag(MeshFacet::INVALID); // mark for deletion
+    }
+  }
+  else
+    return false;
 
-	return true;
+  return true;
 }
 
 bool MeshTopoAlgorithm::IsConvexPolygon(const std::vector<unsigned long>& raulPoly)
 {
   unsigned long ulCt = raulPoly.size();
-	std::vector<unsigned long>::const_iterator pBegin = raulPoly.begin();
+  std::vector<unsigned long>::const_iterator pBegin = raulPoly.begin();
 
   Vector3D a, b, c;
-	Vector3D clNormal;
+  Vector3D clNormal;
 
-	// get reference normal first
-	//
-	a = _rclMesh._aclPointArray[*(pBegin + 1     )]  - _rclMesh._aclPointArray[*(pBegin)];
+  // get reference normal first
+  //
+  a = _rclMesh._aclPointArray[*(pBegin + 1     )]  - _rclMesh._aclPointArray[*(pBegin)];
   b = _rclMesh._aclPointArray[*(pBegin + ulCt-1)]  - _rclMesh._aclPointArray[*(pBegin)];
-	clNormal = a % b;
+  clNormal = a % b;
 
-	// compare with each calculated vector
-	//
+  // compare with each calculated vector
+  //
   for (unsigned long i=0; i<ulCt; ++i)
   {
-		unsigned long ulCurr = i;
-		unsigned long ulNext = (i+1)%ulCt;
-		unsigned long ulPrev = (i-1+ulCt)%ulCt;
+    unsigned long ulCurr = i;
+    unsigned long ulNext = (i+1)%ulCt;
+    unsigned long ulPrev = (i-1+ulCt)%ulCt;
 
     a = _rclMesh._aclPointArray[*(pBegin + ulNext)]  - _rclMesh._aclPointArray[*(pBegin + ulCurr)];
     b = _rclMesh._aclPointArray[*(pBegin + ulPrev)]  - _rclMesh._aclPointArray[*(pBegin + ulCurr)];
-		c = a % b;
-		if (c * clNormal < FLOAT_EPS)
-			return false; // not convex
+    c = a % b;
+    if (c * clNormal < FLOAT_EPS)
+      return false; // not convex
   }
 
   return true;
@@ -579,185 +581,184 @@ bool MeshTopoAlgorithm::IsConvexPolygon(const std::vector<unsigned long>& raulPo
 
 bool MeshTopoAlgorithm::GetPolygonOfNeighbours(unsigned long ulPointPos, std::vector<unsigned long>& raulPoly)
 {
-	RefPointToFacet();
-	raulPoly.clear();
-	std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
+  RefPointToFacet();
+  raulPoly.clear();
+  std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
 
-	MeshFacetArray::_TIterator pFirst = *aclNeighbours.begin();
-	aclNeighbours.erase(aclNeighbours.begin());
+  MeshFacetArray::_TIterator pFirst = *aclNeighbours.begin();
+  aclNeighbours.erase(aclNeighbours.begin());
 
-	unsigned long ulStartPoint;
-	for (int i=0; i<3; ++i)
-	{
-		if (pFirst->_aulPoints[i] == ulPointPos)
-		{
-			ulStartPoint = pFirst->_aulPoints[(i+2)%3];
+  unsigned long ulStartPoint;
+  for (int i=0; i<3; ++i)
+  {
+    if (pFirst->_aulPoints[i] == ulPointPos)
+    {
+      ulStartPoint = pFirst->_aulPoints[(i+2)%3];
+      raulPoly.push_back(ulStartPoint);
+      break;
+    }
+  }
 
-			raulPoly.push_back(ulStartPoint);
-			break;
-		}
-	}
+  while (aclNeighbours.size() > 0)
+  {
+    bool found=false;
+    for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); !found&&it!= aclNeighbours.end(); ++it)
+    {
+      MeshFacetArray::_TIterator pElement = *it;
+      for (int i=0; i<3; ++i)
+      {
+        if (pElement->_aulPoints[i] == ulPointPos && pElement->_aulPoints[(i+1)%3] == ulStartPoint)
+        {
+          ulStartPoint = pElement->_aulPoints[(i+2)%3];
+          raulPoly.push_back(ulStartPoint);
+          aclNeighbours.erase(it);
+          found = true;
+          break;
+        }
+      }
+    }
 
-	while (aclNeighbours.size() > 0)
-	{
-		bool found=false;
-		for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); !found&&it!= aclNeighbours.end(); ++it)
-		{
-			MeshFacetArray::_TIterator pElement = *it;
-			for (int i=0; i<3; ++i)
-			{
-				if (pElement->_aulPoints[i] == ulPointPos && pElement->_aulPoints[(i+1)%3] == ulStartPoint)
-				{
-					ulStartPoint = pElement->_aulPoints[(i+2)%3];
-					raulPoly.push_back(ulStartPoint);
-					aclNeighbours.erase(it);
-					found = true;
-					break;
-				}
-			}
-		}
+    if (found == false)
+      return false;
+  }
 
-		if (found == false)
-			return false;
-	}
-
-	return true;
+  return true;
 }
 
 struct TVertexEval
 {
-	unsigned long ulNext;
-	unsigned long ulPrev;
-	unsigned long ulVertex;
-	float fEval;
+  unsigned long ulNext;
+  unsigned long ulPrev;
+  unsigned long ulVertex;
+  float fEval;
 
   bool operator < (const TVertexEval& v) const
   {
-		return fEval < v.fEval;
+    return fEval < v.fEval;
   }
 };
 
 bool MeshTopoAlgorithm::TriangulatePolygon(const std::vector<unsigned long>& raulPoly, std::vector<MeshGeomFacet>& raclFacets)
 {
 #if 0
-	RSlist<TVertexEval> alVertices;
+  RSlist<TVertexEval> alVertices;
 
-	std::vector<unsigned long> aulPolygon = raulPoly;
-	unsigned long ulCnt = aulPolygon.size();
+  std::vector<unsigned long> aulPolygon = raulPoly;
+  unsigned long ulCnt = aulPolygon.size();
 
-	MeshGeomFacet clFacet;
-	Vector3D u,v;
-	for (unsigned long i=0; i<ulCnt; ++i)
-	{
-		TVertexEval vertex;
-		unsigned long ulInd1 = aulPolygon[i];
-		unsigned long ulInd2 = aulPolygon[(i+1)%ulCnt];
-		unsigned long ulInd3 = aulPolygon[(i-1+ulCnt)%ulCnt];
+  MeshGeomFacet clFacet;
+  Vector3D u,v;
+  for (unsigned long i=0; i<ulCnt; ++i)
+  {
+    TVertexEval vertex;
+    unsigned long ulInd1 = aulPolygon[i];
+    unsigned long ulInd2 = aulPolygon[(i+1)%ulCnt];
+    unsigned long ulInd3 = aulPolygon[(i-1+ulCnt)%ulCnt];
 
-		vertex.ulVertex = ulInd1;
-		vertex.ulNext = ulInd2;
-		vertex.ulPrev = ulInd3;
+    vertex.ulVertex = ulInd1;
+    vertex.ulNext = ulInd2;
+    vertex.ulPrev = ulInd3;
 
-		clFacet._aclPoints[0] = _rclMesh._aclPointArray[ulInd1];
-		clFacet._aclPoints[1] = _rclMesh._aclPointArray[ulInd2];
-		clFacet._aclPoints[2] = _rclMesh._aclPointArray[ulInd3];
-		clFacet.CalcNormal();
+    clFacet._aclPoints[0] = _rclMesh._aclPointArray[ulInd1];
+    clFacet._aclPoints[1] = _rclMesh._aclPointArray[ulInd2];
+    clFacet._aclPoints[2] = _rclMesh._aclPointArray[ulInd3];
+    clFacet.CalcNormal();
 
-		u = clFacet._aclPoints[1] - clFacet._aclPoints[0];
-		v = clFacet._aclPoints[2] - clFacet._aclPoints[0];
-		float fAngle = u.GetAngle(v);
-		if (rclNormal * clFacet.GetNormal() < 0)
-			fAngle = 2*F_PI-fAngle;
-		vertex.fEval = fAngle;
+    u = clFacet._aclPoints[1] - clFacet._aclPoints[0];
+    v = clFacet._aclPoints[2] - clFacet._aclPoints[0];
+    float fAngle = u.GetAngle(v);
+    if (rclNormal * clFacet.GetNormal() < 0)
+      fAngle = 2*F_PI-fAngle;
+    vertex.fEval = fAngle;
 
-		alVertices.push_back(vertex);
-	}
+    alVertices.push_back(vertex);
+  }
 
-	alVertices.sort();
-	
-	TVertexEval vertex;
-	while (alVertices.size() >= 3)
-	{
-		vertex = alVertices.front();
-		alVertices.pop_front();
+  alVertices.sort();
 
-		clFacet._aclPoints[0] = _rclMesh._aclPointArray[vertex.ulVertex];
-		clFacet._aclPoints[1] = _rclMesh._aclPointArray[vertex.ulNext];
-		clFacet._aclPoints[2] = _rclMesh._aclPointArray[vertex.ulPrev];
-		clFacet.CalcNormal();
-		raclFacets.push_back(clFacet);
+  TVertexEval vertex;
+  while (alVertices.size() >= 3)
+  {
+    vertex = alVertices.front();
+    alVertices.pop_front();
 
-		// recalculate the angles of vertices prev and next
-		for (RSlist<TVertexEval>::iterator it = alVertices.begin(); it != alVertices.end(); ++it)
-		{
-			bool found = false;
-			if (it->ulVertex == vertex.ulPrev)
-			{
-				it->ulNext = vertex.ulNext;
-				found = true;
-			}
-			else if (it->ulVertex == vertex.ulNext)
-			{
-				it->ulPrev = vertex.ulPrev;
-				found = true;
-			}
+    clFacet._aclPoints[0] = _rclMesh._aclPointArray[vertex.ulVertex];
+    clFacet._aclPoints[1] = _rclMesh._aclPointArray[vertex.ulNext];
+    clFacet._aclPoints[2] = _rclMesh._aclPointArray[vertex.ulPrev];
+    clFacet.CalcNormal();
+    raclFacets.push_back(clFacet);
 
-			if (found)
-			{
-				clFacet._aclPoints[0] = _rclMesh._aclPointArray[it->ulVertex];
-				clFacet._aclPoints[1] = _rclMesh._aclPointArray[it->ulNext];
-				clFacet._aclPoints[2] = _rclMesh._aclPointArray[it->ulPrev];
-				clFacet.CalcNormal();
+    // recalculate the angles of vertices prev and next
+    for (RSlist<TVertexEval>::iterator it = alVertices.begin(); it != alVertices.end(); ++it)
+    {
+      bool found = false;
+      if (it->ulVertex == vertex.ulPrev)
+      {
+        it->ulNext = vertex.ulNext;
+        found = true;
+      }
+      else if (it->ulVertex == vertex.ulNext)
+      {
+        it->ulPrev = vertex.ulPrev;
+        found = true;
+      }
 
-				u = clFacet._aclPoints[1] - clFacet._aclPoints[0];
-				v = clFacet._aclPoints[2] - clFacet._aclPoints[0];
-				float fAngle = u.GetAngle(v);
-				if (rclNormal * clFacet.GetNormal() < 0)
-					fAngle = 2*F_PI-fAngle;
-				it->fEval = fAngle;
-			}
-		}
+      if (found)
+      {
+        clFacet._aclPoints[0] = _rclMesh._aclPointArray[it->ulVertex];
+        clFacet._aclPoints[1] = _rclMesh._aclPointArray[it->ulNext];
+        clFacet._aclPoints[2] = _rclMesh._aclPointArray[it->ulPrev];
+        clFacet.CalcNormal();
 
-		alVertices.sort();
-	}
+        u = clFacet._aclPoints[1] - clFacet._aclPoints[0];
+        v = clFacet._aclPoints[2] - clFacet._aclPoints[0];
+        float fAngle = u.GetAngle(v);
+        if (rclNormal * clFacet.GetNormal() < 0)
+          fAngle = 2*F_PI-fAngle;
+        it->fEval = fAngle;
+      }
+    }
+
+    alVertices.sort();
+  }
 
 #else
 
-	std::vector<MeshGeomFacet> aclFacets;
-	std::vector<unsigned long> aulPolygon = raulPoly;
-	unsigned long ulCnt = aulPolygon.size();
+  std::vector<MeshGeomFacet> aclFacets;
+  std::vector<unsigned long> aulPolygon = raulPoly;
+  unsigned long ulCnt = aulPolygon.size();
 
-	MeshGeomFacet clFacet;
-	for (unsigned long i=0; i<ulCnt-2; ++i)
-	{
-		clFacet._aclPoints[0] = _rclMesh._aclPointArray[aulPolygon[0]];
-		clFacet._aclPoints[1] = _rclMesh._aclPointArray[aulPolygon[i+1]];
-		clFacet._aclPoints[2] = _rclMesh._aclPointArray[aulPolygon[i+2]];
-		clFacet.CalcNormal();
+  MeshGeomFacet clFacet;
+  for (unsigned long i=0; i<ulCnt-2; ++i)
+  {
+    clFacet._aclPoints[0] = _rclMesh._aclPointArray[aulPolygon[0]];
+    clFacet._aclPoints[1] = _rclMesh._aclPointArray[aulPolygon[i+1]];
+    clFacet._aclPoints[2] = _rclMesh._aclPointArray[aulPolygon[i+2]];
+    clFacet.CalcNormal();
 
-		if (MeshFacetFunc::Area(clFacet) < FLOAT_EPS)
-		{
-			return false; // degenerated facet
-		}
-		raclFacets.push_back(clFacet);
-	}
+    if (MeshFacetFunc::Area(clFacet) < FLOAT_EPS)
+    {
+      return false; // degenerated facet
+    }
+    raclFacets.push_back(clFacet);
+  }
 #endif
 
-	return true;
+  return true;
 }
 
 void MeshTopoAlgorithm::InsertFacets(const std::vector<MeshGeomFacet>& raclFacets)
 {
-	for (std::vector<MeshGeomFacet>::const_iterator it = raclFacets.begin(); it != raclFacets.end(); ++it)
-		_aclNewFacets.push_back(*it);
+  for (std::vector<MeshGeomFacet>::const_iterator it = raclFacets.begin(); it != raclFacets.end(); ++it)
+    _aclNewFacets.push_back(*it);
 }
 
 void MeshTopoAlgorithm::RefPointToFacet()
 {
-	if (_pclRefPt2Fac==0L)
-	{
-		_pclRefPt2Fac = new MeshRefPointToFacets(_rclMesh);
-	}
+  if (_pclRefPt2Fac==0L)
+  {
+    _pclRefPt2Fac = new MeshRefPointToFacets(_rclMesh);
+  }
 }
 
 void MeshTopoAlgorithm::HarmonizeNormals (void)

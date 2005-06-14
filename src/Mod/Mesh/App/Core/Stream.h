@@ -139,7 +139,7 @@ public:
   void Flush (void);
 
   // Status-Methods
-	operator void* (void);
+  operator void* (void);
   bool operator! (void);
 
   bool IsOpen (void);

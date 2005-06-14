@@ -282,7 +282,7 @@ inline Vector3D BoundBox3D::CalcPoint (unsigned short usPoint) const
     case 6: return Vector3D(MaxX, MaxY, MinZ);
     case 7: return Vector3D(MinX, MaxY, MinZ);
   }
-	
+
   return Vector3D();
 }
 

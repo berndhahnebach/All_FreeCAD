@@ -78,7 +78,7 @@ public:
   virtual void Rebuild (int iCtGridPerAxis = MESH_CT_GRID_PER_AXIS);
   /** Rebuilds the grid structure. */
   virtual void Rebuild (unsigned long ulX, unsigned long ulY, unsigned long ulZ);
-  
+
   /** @name Search */
   //@{
   /** Searches for elements lying in the intersection area of the grid and the bounding box. */
@@ -115,8 +115,9 @@ public:
   virtual void Validate (const MeshKernel &rclM) = 0;
 
 protected:
+  /** Returns the indices of the grid this point lies in. If the point is outside the grid the the indices of 
+   * the nearest grid element are taken.*/
   virtual void Position (const Vector3D &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
-  inline void Pos (const Vector3D &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
   /** Checks if this is a valid grid position. */
   inline bool CheckPos (unsigned long ulX, unsigned long ulY, unsigned long ulZ) const;
   /** Initializes the size of the internal structure. */
@@ -131,8 +132,10 @@ protected:
   virtual void RebuildGrid (void) = 0;
   /** Returns the number of stored elements. Must be implemented in sub-classes. */
   virtual unsigned long HasElements (void) const = 0;
+  /** Get the indices of all elements lying in the grids around a given grid with distance \a ulDistance. */
   void GetHull (unsigned long ulX, unsigned long ulY, unsigned long ulZ, unsigned long ulDistance, std::set<unsigned long> &raclInd) const;
-  unsigned long AddElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
+  /** Returns the indices of the elements in the given grid. */
+  unsigned long GetElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
 
 protected:
   std::vector<std::vector<std::vector<std::set<unsigned long> > > >  _aulGrid;   /**< Grid data structure. */
@@ -202,8 +205,9 @@ protected:
   /** Returns the grid numbers to the given point \a rclPoint. */
   inline void PosWithCheck (const Vector3D &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
   /** Adds a new facet element to the grid structure. \a rclFacet is the geometric facet and \a ulFacetIndex 
-   * the corresponding index in the mesh kernel. */
-  inline void Add (const MeshGeomFacet &rclFacet, unsigned long ulFacetIndex, float fEpsilon = 0.0f);
+   * the corresponding index in the mesh kernel. The facet is added to each grid element that intersects 
+   * the facet. */
+  inline void AddFacet (const MeshGeomFacet &rclFacet, unsigned long ulFacetIndex, float fEpsilon = 0.0f);
   /** Returns the number of stored elements. */
   unsigned long HasElements (void) const
   { return _pclMesh->CountFacets(); }
@@ -308,8 +312,8 @@ protected:
   unsigned long   _ulZ;     /**< Number of grids in z. */ 
   Vector3D        _clPt;    /**< Base point of search ray. */
   Vector3D        _clDir;   /**< Direction of search ray. */
-  bool	          _bValidRay; /**< Search ray ok? */
-  float	          _fMaxSearchArea;
+  bool            _bValidRay; /**< Search ray ok? */
+  float           _fMaxSearchArea;
 };
 
 // --------------------------------------------------------------
@@ -333,10 +337,10 @@ inline BoundBox3D  MeshGrid::GetBoundBox (void) const
 
 inline BoundBox3D  MeshGrid::GetMeshBoundBox (void) const
 {
-	BoundBox3D clBBenlarged = _pclMesh->GetBoundBox();
-	clBBenlarged.Enlarge(MESHGRID_BBOX_EXTENSION);
+  BoundBox3D clBBenlarged = _pclMesh->GetBoundBox();
+  clBBenlarged.Enlarge(MESHGRID_BBOX_EXTENSION);
 
-	return clBBenlarged;
+  return clBBenlarged;
 }
 
 inline bool MeshGrid::CheckPos (unsigned long ulX, unsigned long ulY, unsigned long ulZ) const
@@ -346,7 +350,6 @@ inline bool MeshGrid::CheckPos (unsigned long ulX, unsigned long ulY, unsigned l
 
 // --------------------------------------------------------------
 
-// alle Facets die innerhalb der BB liegen
 inline void MeshFacetGrid::Pos (const Vector3D &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const
 {
   rulX = (unsigned long)((rclPoint.x - _fMinX) / _fGridLenX);
@@ -356,41 +359,39 @@ inline void MeshFacetGrid::Pos (const Vector3D &rclPoint, unsigned long &rulX, u
   assert((rulX < _ulCtGridsX) && (rulY < _ulCtGridsY) && (rulZ < _ulCtGridsZ));
 }
 
-// alle Facets die innerhalb der BB liegen
 inline void MeshFacetGrid::PosWithCheck (const Vector3D &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const
 {
-	if ( rclPoint.x < _fMinX)
-		rulX = 0;
-	else
-	{
-		rulX = (unsigned long)((rclPoint.x - _fMinX) / _fGridLenX);
-		if (rulX >= _ulCtGridsX)
-			rulX = (_ulCtGridsX-1);
-	}
+  if ( rclPoint.x < _fMinX)
+    rulX = 0;
+  else
+  {
+    rulX = (unsigned long)((rclPoint.x - _fMinX) / _fGridLenX);
+    if (rulX >= _ulCtGridsX)
+      rulX = (_ulCtGridsX-1);
+  }
 
-	if ( rclPoint.y < _fMinY)
-		rulY = 0;
-	else
-	{
-		rulY = (unsigned long)((rclPoint.y - _fMinY) / _fGridLenY);
-		if (rulY >= _ulCtGridsY)
-			rulY = (_ulCtGridsY-1);
-	}
+  if ( rclPoint.y < _fMinY)
+    rulY = 0;
+  else
+  {
+    rulY = (unsigned long)((rclPoint.y - _fMinY) / _fGridLenY);
+    if (rulY >= _ulCtGridsY)
+      rulY = (_ulCtGridsY-1);
+  }
 
-	if ( rclPoint.z < _fMinZ)
-		rulZ = 0;
-	else
-	{
-		rulZ = (unsigned long)((rclPoint.z - _fMinZ) / _fGridLenZ);
-		if (rulZ >= _ulCtGridsZ)
-			rulZ = (_ulCtGridsZ-1);
-	}
+  if ( rclPoint.z < _fMinZ)
+    rulZ = 0;
+  else
+  {
+    rulZ = (unsigned long)((rclPoint.z - _fMinZ) / _fGridLenZ);
+    if (rulZ >= _ulCtGridsZ)
+      rulZ = (_ulCtGridsZ-1);
+  }
 
-	assert((rulX < _ulCtGridsX) && (rulY < _ulCtGridsY) && (rulZ < _ulCtGridsZ));
+  assert((rulX < _ulCtGridsX) && (rulY < _ulCtGridsY) && (rulZ < _ulCtGridsZ));
 }
 
-/*alle Facets die innerhalb der BB liegen*/
-inline void MeshFacetGrid::Add (const MeshGeomFacet &rclFacet, unsigned long ulFacetIndex, float fEpsilon)
+inline void MeshFacetGrid::AddFacet (const MeshGeomFacet &rclFacet, unsigned long ulFacetIndex, float fEpsilon)
 {
 #if 0
   unsigned long  i, ulX, ulY, ulZ, ulX1, ulY1, ulZ1, ulX2, ulY2, ulZ2;

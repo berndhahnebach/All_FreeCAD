@@ -259,14 +259,14 @@ DataStream& DataStream::ReadLine (char* pData, int nSize, char cDelim)
 
 /** Construction. */
 FileStream::FileStream (void)
-	: DataStream ()
+  : DataStream ()
 {
   pfs = NULL;
 }
 
 /** Construction. */
 FileStream::FileStream (const char *pszName, std::ios::openmode om)
-	: DataStream ()
+  : DataStream ()
 {
   pfs = NULL;
   Open (pszName, om);
@@ -295,9 +295,9 @@ bool FileStream::Open (const char* pszName, std::ios::openmode om)
   if (pfs)
   {
 #ifdef FC_OS_WIN32  
-  om = (std::ios::open_mode)(om | std::ios::binary);
+    om = (std::ios::open_mode)(om | std::ios::binary);
 #endif
-	bSwap = false;
+    bSwap = false;
     pfs->open (pszName, om);
     return pfs->good ();
   }

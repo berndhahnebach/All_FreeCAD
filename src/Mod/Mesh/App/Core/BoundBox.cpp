@@ -54,31 +54,31 @@ BoundBox3D::~BoundBox3D ()
 BoundBox3D BoundBox3D::operator & (RBoundBox3D rcBB)
 {
   BoundBox3D cBBRes;
-	
+
   cBBRes.MinX = std::max<float> (MinX, rcBB.MinX);
   cBBRes.MaxX = std::min<float> (MaxX, rcBB.MaxX);
   cBBRes.MinY = std::max<float> (MinY, rcBB.MinY);
   cBBRes.MaxY = std::min<float> (MaxY, rcBB.MaxY);
   cBBRes.MinZ = std::max<float> (MinZ, rcBB.MinZ);
   cBBRes.MaxZ = std::min<float> (MaxZ, rcBB.MaxZ);
-	
+
   return cBBRes;
 }
 
 BoundBox3D BoundBox3D::operator | (RBoundBox3D rcBB)
 {
   BoundBox3D cBBRes;
-	
+
   cBBRes.MinX = std::min<float> (MinX, rcBB.MinX);
   cBBRes.MaxX = std::max<float> (MaxX, rcBB.MaxX);
   cBBRes.MinY = std::min<float> (MinY, rcBB.MinY);
   cBBRes.MaxY = std::max<float> (MaxY, rcBB.MaxY);
   cBBRes.MinZ = std::min<float> (MinZ, rcBB.MinZ);
   cBBRes.MaxZ = std::max<float> (MaxZ, rcBB.MaxZ);
-	
+
   return cBBRes;
 }
-/// @todo Test it
+
 bool BoundBox3D::IsCutLine ( const Vector3D& rcBase, const Vector3D& rcDir, float fTolerance)
 {
   float fDist; 
@@ -159,7 +159,7 @@ bool BoundBox3D::GetOctantFromVector (Vector3D &rclVct, OCTANT &rclOctant)
 BoundBox3D BoundBox3D::CalcOctant (OCTANT Octant)
 {
   BoundBox3D cOct (*this);
-	
+
   switch (Octant)
   {
     case OCT_LDB:
@@ -167,43 +167,43 @@ BoundBox3D BoundBox3D::CalcOctant (OCTANT Octant)
       cOct.MaxY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MaxZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_RDB:
       cOct.MinX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MaxY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MaxZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_LUB:
       cOct.MaxX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MinY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MaxZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_RUB:
       cOct.MinX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MinY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MaxZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_LDF:
       cOct.MaxX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MaxY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MinZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_RDF:
       cOct.MinX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MaxY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MinZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_LUF:
       cOct.MaxX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MinY = HALF (cOct.MinY, cOct.MaxY);
       cOct.MinZ = HALF (cOct.MinZ, cOct.MaxZ);
       break;
-	
+
     case OCT_RUF:
       cOct.MinX = HALF (cOct.MinX, cOct.MaxX);
       cOct.MinY = HALF (cOct.MinY, cOct.MaxY);
@@ -215,7 +215,6 @@ BoundBox3D BoundBox3D::CalcOctant (OCTANT Octant)
 
 #undef HALF
 
-/// @todo Test it
 void BoundBox3D::CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& rNormal ) const
 {
   switch (usPlane)
@@ -258,7 +257,6 @@ void BoundBox3D::CalcPlane (unsigned short usPlane, Vector3D& rBase, Vector3D& r
   }
 }
 
-/// @todo Test it
 bool BoundBox3D::CalcDistance (unsigned short usEdge, Vector3D& rcP0, Vector3D& rcP1)
 {
   switch (usEdge)
@@ -315,17 +313,16 @@ bool BoundBox3D::CalcDistance (unsigned short usEdge, Vector3D& rcP0, Vector3D& 
     return false; // undefined
   }
 
-  return false;
+  return true;
 }
 
-/// @todo Test it
 Vector3D BoundBox3D::IntersectionPoint (const Vector3D &rcVct, const Vector3D &rcVctDir) const
 {
   BoundBox3D cCmpBound(*this);
   bool rc;
   unsigned short i;
   Vector3D   cVctRes;
-	
+
   // Vergleichs-BB um REEN_EPS vergroessern
   cCmpBound.MaxX += FLOAT_EPS;
   cCmpBound.MaxY += FLOAT_EPS;
@@ -333,7 +330,7 @@ Vector3D BoundBox3D::IntersectionPoint (const Vector3D &rcVct, const Vector3D &r
   cCmpBound.MinX -= FLOAT_EPS;
   cCmpBound.MinY -= FLOAT_EPS;
   cCmpBound.MinZ -= FLOAT_EPS;
-	
+
   // Liegt Punkt innerhalb ?
   if (cCmpBound.IsInBox (rcVct))
   {
@@ -341,7 +338,7 @@ Vector3D BoundBox3D::IntersectionPoint (const Vector3D &rcVct, const Vector3D &r
     for (i = 0, rc = false; (i < 6) && (!rc); i++)
     {
       rc = IntersectPlaneWithLine( i, rcVct, rcVctDir, cVctRes );
-  	  if(!cCmpBound.IsInBox(cVctRes)) 
+      if(!cCmpBound.IsInBox(cVctRes)) 
         rc = false;
       if (rc == true )
       {
@@ -354,12 +351,11 @@ Vector3D BoundBox3D::IntersectionPoint (const Vector3D &rcVct, const Vector3D &r
   }
   else
     rc = false;
-	
+
   // Schnittpunkt zurueckgeben
   return cVctRes;
 }
 
-/// @todo Test it
 bool BoundBox3D::IntersectPlaneWithLine (unsigned short usSide, const Vector3D& rcBase, 
                                          const Vector3D& rcDir, Vector3D& rcP0) const
 {
@@ -380,7 +376,6 @@ bool BoundBox3D::IntersectPlaneWithLine (unsigned short usSide, const Vector3D& 
   }
 }
 
-/// @todo Test it
 bool BoundBox3D::IntersectWithLine ( const Vector3D& rcBase, const Vector3D& rcDir, 
                                      Vector3D& rcP0, Vector3D& rcP1 ) const
 {
@@ -560,7 +555,6 @@ BoundBox2D BoundBox3D::ProjectBox(const ViewProjMethod *pclP) const
   return clBB2D;
 }
 
-/// @todo Test it
 Vector3D BoundBox3D::NearestPoint (const Vector3D &rclPt)
 {
   // Suche naechsten Punkt auf der BB, !!! Punkt MUSS innerhalb BB liegen !!!

@@ -126,7 +126,7 @@ MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
 
   return *this;
 }
-/// @todo Sequencer
+
 MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
 {
   // kompleter Neu-Aufbau
@@ -141,32 +141,32 @@ MeshKernel& MeshKernel::operator += (const std::vector<MeshGeomFacet> &rclVAry)
   for (std::vector<MeshGeomFacet>::const_iterator pV = rclVAry.begin(); pV != rclVAry.end(); pV++, pN++)
     *pN = *pV;
 
-//  GetSequencer().Lock();
+  Base::Sequencer().setLocked( true );
   *this = clNew;
-//  GetSequencer().Unlock();  
+  Base::Sequencer().setLocked( false );
 
   return *this;
 }
-	
+
 bool MeshKernel::AddFacet(const MeshGeomFacet &rclSFacet)
 {
-	*this += rclSFacet;
-	
-	RebuildNeighbours();
+  *this += rclSFacet;
 
-	return true;
+  RebuildNeighbours();
+
+  return true;
 }
-		
+
 bool MeshKernel::AddFacet(const std::vector<MeshGeomFacet> &rclVAry)
 {
-	// operator += gehtnicht da dann das Mesh neu angelegt wird und somit alle props geloescht werden
-	//
-	for (std::vector<MeshGeomFacet>::const_iterator pN = rclVAry.begin();pN!=rclVAry.end();pN++)
-		(*this) += (*pN);
+  // operator += gehtnicht da dann das Mesh neu angelegt wird und somit alle props geloescht werden
+  //
+  for (std::vector<MeshGeomFacet>::const_iterator pN = rclVAry.begin();pN!=rclVAry.end();pN++)
+    (*this) += (*pN);
 
-	RebuildNeighbours();
+  RebuildNeighbours();
 
-	return true;
+  return true;
 }
 
 void MeshKernel::AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex)
