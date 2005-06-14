@@ -33,6 +33,7 @@
 #endif
 
 #include "Core/Vector3D.h"
+#include "Core/Matrix.h"
 
 namespace Mesh
 {
@@ -71,6 +72,13 @@ public:
    * same as resizeFaces only for the points
    */
   virtual void resizePoints(void){}
+
+  /** transform was called for the mesh
+   *  this is the message that the topo data structure is transformed
+   *  if the properties are geometric they need to transformed too!
+   */
+  virtual void transform(const Matrix4D &rclMat){}
+
   /** Set the property bag valid
     * this has to be done after build up or recalculation of the 
     * property bag. The data in the property bag only gets used when 
@@ -106,21 +114,15 @@ public:
 	/** Constructor
     * can initialized with the size of the points in the mesh to fit well.
     */
-	MeshPropertyNormal(int size=0)
-    :PropertyBag() 
-  {
-    Normales.resize(size);
-  }
+	MeshPropertyNormal(int size=0);
 
   /// returns the type
   virtual const char* GetType(void) {return "Normal";}
 
   /// clears the property
-  virtual void resizePoints(void)
-  {
-    setInvalid();
-    Normales.clear();
-  }
+  virtual void resizePoints(void);
+
+  virtual void transform(const Matrix4D &rclMat);
 
   /// vector of the Normals
   std::vector<Vector3D> Normales;
@@ -178,6 +180,10 @@ public:
   std::list<PropertyBag*> GetAllOfType(const char* TypeName);
   /// get a list of all registered types
   std::set<std::string> GetAllTypes(void);
+  /// delete all properties
+  void clear(void);
+  /// transform all properties
+  void transform(const Matrix4D &rclMat);
 
   void operator= ( const DataWithPropertyBag& New);
 
@@ -199,6 +205,12 @@ public:
 
   /// assignment operator
   void operator= ( const MeshWithProperty& );
+
+  /// clears the mesh (and all its properties)
+  void clear(void);
+
+  /// transform the mesh and all properties
+  void transform(const Matrix4D &rclMat);
 
   /// Gain access to the topological mesh data structure
   MeshKernel *getKernel(void){return _Mesh;}

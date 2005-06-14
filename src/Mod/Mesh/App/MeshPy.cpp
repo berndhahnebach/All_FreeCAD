@@ -78,6 +78,11 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(write)
   PYMETHODEDEF(offset)
   PYMETHODEDEF(calcVertexNormales)
+  PYMETHODEDEF(Union)
+  PYMETHODEDEF(coarsen)
+  PYMETHODEDEF(translate)
+  PYMETHODEDEF(addFacet)
+  PYMETHODEDEF(clear)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -190,15 +195,91 @@ PYFUNCIMP_D(MeshPy,write)
 
 PYFUNCIMP_D(MeshPy,offset)
 {
-  return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
+  double Float;
+  if (! PyArg_ParseTuple(args, "d",&Float))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshAlgos::offset(_pcMesh,Float);  
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,coarsen)
+{
+  double Float;
+  if (! PyArg_ParseTuple(args, "d",&Float))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshAlgos::coarsen(_pcMesh,Float);  
+  } PY_CATCH;
+
+  Py_Return; 
 }
 
 PYFUNCIMP_D(MeshPy,calcVertexNormales)
 {
   PY_TRY {
-    MeshAlgos::CalcVertexNormales(_pcMesh);  
+    MeshAlgos::calcVertexNormales(_pcMesh);  
   } PY_CATCH;
   
   Py_Return;
 
+}
+
+PYFUNCIMP_D(MeshPy,Union)
+{
+ 	MeshPy* pcObject;
+  if (!PyArg_ParseTuple(args, "O!", &MeshPy::Type, &pcObject))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshAlgos::Union(_pcMesh,m);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,translate)
+{
+  double x,y,z;
+  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+    return NULL;                         
+
+  PY_TRY {
+    Matrix4D m;
+    m.SetMoveX(x);
+    m.SetMoveY(y);
+    m.SetMoveZ(z);
+    _pcMesh->transform(m);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,addFacet)
+{
+  double x1,y1,z1,x2,y2,z2,x3,y3,z3;
+  if (! PyArg_ParseTuple(args, "ddddddddd",&x1,&y1,&z1,&x2,&y2,&z2,&x3,&y3,&z3))			 
+    return NULL;                         
+
+  PY_TRY {
+    _pcMesh->getKernel()->AddFacet(MeshGeomFacet(Vector3D(x1,y1,z1),
+                                                 Vector3D(x2,y2,x2),
+                                                 Vector3D(x3,y3,x3)));
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,clear)
+{
+  PY_TRY {
+    _pcMesh->clear();
+  } PY_CATCH;
+
+  Py_Return;
 }

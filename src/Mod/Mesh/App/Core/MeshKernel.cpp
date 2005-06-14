@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <map>
+# include <queue>
 #endif
 
 #include <Base/Sequencer.h>

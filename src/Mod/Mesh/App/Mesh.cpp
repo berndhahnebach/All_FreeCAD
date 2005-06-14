@@ -34,6 +34,31 @@ using namespace Mesh;
 
 // ----------------------------------------------------------------------------
 
+MeshPropertyNormal::MeshPropertyNormal(int size)
+{
+  Normales.resize(size);
+}
+
+
+void MeshPropertyNormal::resizePoints(void)
+{
+  setInvalid();
+  Normales.clear();
+}
+
+
+void MeshPropertyNormal::transform(const Matrix4D &rclMat)
+{
+  // trivial implementation ;-)
+  setInvalid();
+  Normales.clear();
+
+}
+
+
+
+// ----------------------------------------------------------------------------
+
 void DataWithPropertyBag::Add(PropertyBag* New, const char* Name)
 {
   _Properties[Name] = New;
@@ -103,6 +128,16 @@ void DataWithPropertyBag::operator= ( const DataWithPropertyBag& New)
     *(_Properties[It->first]) = *(It->second);
 }
 
+void DataWithPropertyBag::clear(void)
+{
+  _Properties.clear();
+}
+
+void DataWithPropertyBag::transform(const Matrix4D &rclMat)
+{
+  for( std::map<std::string,PropertyBag*>::const_iterator It = _Properties.begin();It!=_Properties.end();It++)
+    It->second->transform(rclMat);
+}
 //*************************************************************************************************************
 
 MeshWithProperty::MeshWithProperty(void)
@@ -123,5 +158,17 @@ void MeshWithProperty::operator= ( const MeshWithProperty& New)
   _Mesh = New._Mesh;
   
   DataWithPropertyBag::operator= (New);
+}
+
+void MeshWithProperty::clear(void)
+{
+  DataWithPropertyBag::clear();
+  _Mesh->Clear();
+}
+
+void MeshWithProperty::transform(const Matrix4D &rclMat)
+{
+  DataWithPropertyBag::transform(rclMat);
+  *_Mesh *= rclMat;
 }
 

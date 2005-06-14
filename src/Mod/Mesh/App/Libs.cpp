@@ -15,14 +15,23 @@
 # pragma comment(lib,"TKTopAlgo.lib")
 # pragma comment(lib,"TKPrim.lib")
 #	pragma comment(lib,"TKXSBase.lib")
-#	pragma comment(lib,"Wm3Foundation60.lib")
+
 // Application Framwork OCAF
 # pragma comment(lib,"TKCAF.lib")
 # pragma comment(lib,"TKCDF.lib")
-// OpenCasCade Std IO
-#	pragma comment(lib,"TKIGES.lib")
-#	pragma comment(lib,"TKShHealing.lib")
-#	pragma comment(lib,"TKSTEP.lib")
+
+// wild magic library (succesor of MGC)
+#	pragma comment(lib,"Wm3Foundation60.lib")
+
+// GTS
+#	pragma comment(lib,"gts-0.7.lib")
+//#	pragma comment(lib,"gthread-1.3.lib")
+#	pragma comment(lib,"glib-1.3.lib")
+//#	pragma comment(lib,"gmodule-1.3.lib")
+//#	pragma comment(lib,"gobject-1.3.lib")
+
+
+// FreeCAD libs
 # ifdef FC_DEBUG
 #   pragma comment(lib,"FreeCADBaseD.lib")
 #   pragma comment(lib,"FreeCADAppD.lib")

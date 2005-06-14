@@ -183,6 +183,23 @@ MeshFacetArray& MeshFacetArray::operator = (const MeshFacetArray &rclFAry)
 
 // -----------------------------------------------------------------
 
+MeshGeomFacet::MeshGeomFacet (void) 
+  :_bNormalCalculated(false) 
+{ 
+
+}
+
+
+MeshGeomFacet::MeshGeomFacet (const Vector3D &v1,const Vector3D &v2,const Vector3D &v3)
+  : _bNormalCalculated(false) 
+{
+  _aclPoints[0] = v1;
+  _aclPoints[1] = v2;
+  _aclPoints[2] = v3;
+}
+
+
+
 bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
 {
   if (Distance(rclPoint) > fDistance)

@@ -65,6 +65,11 @@ public:
   PYFUNCDEF_D(MeshPy,write)
   PYFUNCDEF_D(MeshPy,offset)
   PYFUNCDEF_D(MeshPy,calcVertexNormales)
+  PYFUNCDEF_D(MeshPy,Union)
+  PYFUNCDEF_D(MeshPy,coarsen)
+  PYFUNCDEF_D(MeshPy,translate)
+  PYFUNCDEF_D(MeshPy,addFacet)
+  PYFUNCDEF_D(MeshPy,clear)
 
   MeshWithProperty *_pcMesh;
 };

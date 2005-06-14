@@ -160,14 +160,6 @@ read(PyObject *self, PyObject *args)
     return new MeshPy(MeshAlgos::Load(File.filePath().c_str()));    
   } PY_CATCH;
 }
-/* module functions */
-static PyObject *                        
-write(PyObject *self, PyObject *args)
-
-{
-	Py_Return;    
-
-}
 
 /* registration table  */
 struct PyMethodDef Mesh_Import_methods[] = {
@@ -175,7 +167,6 @@ struct PyMethodDef Mesh_Import_methods[] = {
     {"save"   ,save , 1},
     {"import" ,import,1},
     {"read"   ,read , 1},
-    {"write"  ,write, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };

@@ -28,11 +28,11 @@
 #endif
 
 
-
 namespace Mesh
 {
 
 class MeshWithProperty;
+
 
 /** The mesh algorithems container class
  */
@@ -53,7 +53,28 @@ public:
 
   /** Calculate per Vertex normales and adds the Normal property bag
   */
-  static void CalcVertexNormales(MeshWithProperty* Mesh);
+  static void calcVertexNormales(MeshWithProperty* Mesh);
+
+  /** Calculate per Vertex normales and adds the Normal property bag
+  */
+  static void offset(MeshWithProperty* Mesh, float fSize);
+
+  /** Coarsen the mesh
+  */
+  static void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f);
+
+  /** makes a boolean add
+  */
+  static MeshWithProperty* MeshAlgos::Union(MeshWithProperty* Mesh1, MeshWithProperty* Mesh2);
+
+
+  /** Creates a GTS Surface from a MeshKernel
+  */
+  static GtsSurface* createGTSSurface(MeshWithProperty* Mesh);
+
+  /** Creates a GTS Surface from a MeshKernel
+  */
+  static void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface);
 
 };
 

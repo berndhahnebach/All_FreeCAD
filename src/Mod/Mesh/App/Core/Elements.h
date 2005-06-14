@@ -344,8 +344,11 @@ class AppMeshExport MeshGeomFacet
 public:
   /** @name Construction */
   //@{
-  MeshGeomFacet (void) : _bNormalCalculated(false) { }
-  /// Destruction
+  /// default constructor
+  MeshGeomFacet (void); 
+  /// Constructor with the corner points
+  MeshGeomFacet (const Vector3D &v1,const Vector3D &v2,const Vector3D &v3);
+   /// Destruction
   ~MeshGeomFacet (void) { }
   //@}
 
