@@ -949,7 +949,7 @@ void MeshKernel::RebuildNeighbours (void)
       assert(usSide != USHRT_MAX);
       _aclFacetArray[ulF1]._aulNeighbours[usSide] = ulF0;
     }
-    else
-      assert(false);
+//    else
+//      assert(false);
   }
 }

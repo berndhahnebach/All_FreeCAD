@@ -246,13 +246,9 @@ private:
 public:
 	/** @name Init, Destruct an Access methodes */
 	//@{
+  static void init(int argc, char ** argv);
 	static void destruct(void);
-	static void initConfig(int argc, char ** argv, const char * sHomePath  );
-	static void initApplication(void);
-	static void logStatus(void);
-	static void setRunMode(const char*);
 	static void runApplication(void);
-//	static Application &Instance(void);
 	friend Application &GetApplication(void);
 	static std::map<std::string,std::string> &Config(void){return mConfig;}
 	static int GetARGC(void){return _argc;}
@@ -260,8 +256,12 @@ public:
 	//@}
 
 private:
-	/** @name Init, Destruct an Access methodes */
+	/** @name  Private Init, Destruct an Access methodes */
 	//@{
+  static void initConfig(int argc, char ** argv, const char * sHomePath  );
+	static void initApplication(void);
+	static void logStatus(void);
+	static void setRunMode(const char*);
 	// the one and only pointer to the application object
 	static Application *_pcSingelton;
 	/// argument helper function

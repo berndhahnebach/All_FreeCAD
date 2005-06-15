@@ -44,6 +44,9 @@
 
 #include <stdio.h>
 
+#ifdef _MSC_VER
+#	pragma comment(lib,"TKernel.lib")
+#endif
 
 // FreeCAD Base header
 #include "../Base/Console.h"
@@ -61,16 +64,12 @@ using Base::Console;
 using App::Application;
 
 
-#ifdef _MSC_VER
-# pragma comment(lib,"TKernel.lib")
-#endif
 
-
-void PrintInitHelp(void);
 
 
 int main( int argc, char ** argv ) 
 {
+/*
 	EnvPrint("Main =================================================");
 
 	// find the home path....
@@ -81,16 +80,14 @@ int main( int argc, char ** argv )
 		sHomePath = FindHomePathUnix(argv[0]);
 #	endif
 
-
+*/
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
-  Application::setRunMode("Cmd");
+  App::Application::Config()["RunMode"] = "Cmd";
 
-	// parse the options 
-	Application::initConfig(argc,argv,sHomePath.c_str());
-
-	Application::initApplication();
+	// Inits the Application 
+	App::Application::init(argc,argv);
 
 
 	// Run phase ===========================================================
@@ -110,39 +107,3 @@ int main( int argc, char ** argv )
 	return 0;
 }
 
-
-
-/*
-void CheckEnv(void)
-{
-
-	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SetPluginDefaults(Application::Config()["HomePath"].c_str());
-
-	// sets all needed varables if a FreeCAD LibPack is found
-	if(Application::Config()["FreeCADLib"] != "")
-	{
-		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
-
-		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(Application::Config()["FreeCADLib"].c_str());
-	}
-
-	cout << flush;
-
-	bool bFailure=false;
-
-	TestEnvExists("CSF_MDTVFontDirectory",bFailure);
-	TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
-	TestEnvExists("CSF_UnitsDefinition",bFailure);
-	TestEnvExists("CSF_UnitsLexicon",bFailure);
-
-	if (bFailure) {
-     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
-		exit(1);
-	}
-
-}
-
-*/

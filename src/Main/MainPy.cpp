@@ -64,7 +64,7 @@ using App::Application;
 #	define MainExport
 #endif
 
-
+/*
 #ifdef FC_OS_WIN32
 
 std::string path;
@@ -77,28 +77,17 @@ BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserve
 	return TRUE;
 }
 #endif
+*/
+
 
 extern "C" {
 	void MainExport initFreeCAD() {
 
-		// Init phase ===========================================================
+	// Init phase ===========================================================
 
-		std::string sHomePath;
+	// Inits the Application 
+	App::Application::init(0,NULL);
 
-		// find home path
-#		ifdef FC_OS_WIN32
-			sHomePath = path;
-#		else
-			sHomePath = FindPyHomePathUnix("FreeCAD.so");
-#		endif
-
-		char* argv = "FreeCAD";
-		// parse the options
-		Application::initConfig(1,&argv,sHomePath.c_str());
-
-		Application::initApplication();
-
-		Application::logStatus();
 
 
 		return;

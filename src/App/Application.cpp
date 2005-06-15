@@ -445,26 +445,47 @@ void Application::destruct(void)
   }
 }
 
+void Application::init(int argc, char ** argv)
+{
+  if(argc==0)
+  {
+    char buf[100];
+    strncpy(buf,mConfig["ExeName"].c_str(),98);
+    initConfig(1,reinterpret_cast<char **>(&buf),"");
+  }
+  else
+    initConfig(argc,argv,"");
 
+  initApplication();
+}
 
 void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 {
-	
-	static const char sBanner[] = \
-"  #####                 ####  ###   ####  \n" \
-"  #                    #      # #   #   # \n" \
-"  #     ##  #### ####  #     #   #  #   # \n" \
-"  ####  # # #  # #  #  #     #####  #   # \n" \
-"  #     #   #### ####  #    #     # #   # \n" \
-"  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
-"  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
+	// find the home path....
+	std::string HomePath;
+#	ifdef FC_OS_WIN32
+		HomePath = FindHomePathWin32(0);
+#	else
+		HomePath = FindHomePathUnix(argv[0]);
+#	endif
 
+  // try to figure out if using FreeCADLib
+  std::string Temp = GetFreeCADLib(HomePath.c_str());
+
+  // sets all needed varables if a FreeCAD LibPack is found
+  if(Temp != "")
+  {
+	  EnvPrint("MeinGui Set Python ++++++++++++++++++++++++++++++++++++++++++++++");
+	  // sets the python environment variables if the FREECADLIB variable is defined
+	  SetPythonToFreeCADLib(Temp.c_str());
+  }
 	
 	_argc = argc;
 	_argv = argv;
 
 	// use home path out of the main modules
-	mConfig["HomePath"] = sHomePath;
+	mConfig["HomePath"] = HomePath;
+//	mConfig["HomePath"] = sHomePath;
 
 	// extract home path
 	ExtractUser();
@@ -508,14 +529,18 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
-		Console().Message("FreeCAD %d.%dB%d (c) 2001-2005 Juergen Riegel (GPL,LGPL)\n\n%s",Application::VersionMajor,
-                                                                                       Application::VersionMinor,
-                                                                                       Application::VersionBuild,
-                                                                                       sBanner);
+		Console().Message("%d %d, Libs: %d.%dB%d\n\n%s",mConfig["ExeName"].c_str(),
+                                                    mConfig["ExeVersion"].c_str(),
+                                                    Application::VersionMajor,
+                                                    Application::VersionMinor,
+                                                    Application::VersionBuild,
+                                                    mConfig["ConsoleBanner"].c_str());
 	else
-		Console().Message("FreeCAD %d.%dB%d (c) 2001-2005 Juergen Riegel (GPL,LGPL)\n\n",Application::VersionMajor,
-                                                                                     Application::VersionMinor,
-                                                                                     Application::VersionBuild);
+		Console().Message("%d %d, Libs: %d.%dB%d\n\n",mConfig["ExeName"].c_str(),
+                                                  mConfig["ExeVersion"].c_str(),
+                                                  Application::VersionMajor,
+                                                  Application::VersionMinor,
+                                                  Application::VersionBuild);
 
 
 	LoadParameters();

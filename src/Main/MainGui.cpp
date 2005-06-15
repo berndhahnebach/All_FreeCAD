@@ -61,47 +61,48 @@
 
 void PrintInitHelp(void);
 
+const char sBanner[] = "(c) Juergen Riegel 2001-2005"\
+"  #####                 ####  ###   ####  \n" \
+"  #                    #      # #   #   # \n" \
+"  #     ##  #### ####  #     #   #  #   # \n" \
+"  ####  # # #  # #  #  #     #####  #   # \n" \
+"  #     #   #### ####  #    #     # #   # \n" \
+"  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
+"  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
+
 
 
 
 int main( int argc, char ** argv )
 {
+  // Config ===============================================================
 
-	// find the home path....
-	std::string sHomePath;
-#	ifdef FC_OS_WIN32
-		sHomePath = FindHomePathWin32(0);
-#	else
-		sHomePath = FindHomePathUnix(argv[0]);
-#	endif
+  // Name and Version of the Application
+  App::Application::Config()["ExeName"] = "FreeCAD";
+  App::Application::Config()["ExeVersion"] = "0.1";
 
-		// try to figure out if using FreeCADLib
-		std::string Temp = GetFreeCADLib(sHomePath.c_str());
+  // set the banner (for loging and console)
+  App::Application::Config()["ConsoleBanner"] = sBanner;
 
-		// sets all needed varables if a FreeCAD LibPack is found
-		if(Temp != "")
-		{
-			EnvPrint("MeinGui Set Python ++++++++++++++++++++++++++++++++++++++++++++++");
-			// sets the python environment variables if the FREECADLIB variable is defined
-			SetPythonToFreeCADLib(Temp.c_str());
-		}
+
+
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with gui if not overridden in InitConfig...
-	App::Application::setRunMode("Gui");
+	App::Application::Config()["RunMode"] = "Gui";
 
-	// parse the options 
-	App::Application::initConfig(argc,argv,sHomePath.c_str());
+	// Inits the Application 
+	App::Application::init(argc,argv);
 
-	App::Application::initApplication();
+  //App::Application::initConfig(argc,argv,"");//sHomePath.c_str());
+
+	//App::Application::initApplication();
 
   Gui::ApplicationWindow::initApplication();
 
-	// dumps the configuration to the console
-//	Application::DumpConfig();
 
 	// Run phase ===========================================================
 
-	if(App::GetApplication().Config()["RunMode"] == "Gui")
+  if(App::Application::Config()["RunMode"] == "Gui")
 	{
 	// run GUI
     Gui::ApplicationWindow::runApplication();
@@ -120,7 +121,7 @@ int main( int argc, char ** argv )
 	// cleans up 
 	App::Application::destruct();
 
-	Base::Console().Log("FreeCAD completely terminated\n\n");
+	Base::Console().Log("%d completely terminated\n\n",App::Application::Config()["ExeName"].c_str());
 
 	return 0;
 }
