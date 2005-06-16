@@ -64,21 +64,6 @@ using App::Application;
 #	define MainExport
 #endif
 
-/*
-#ifdef FC_OS_WIN32
-
-std::string path;
-
-BOOL APIENTRY DllMain( HANDLE hModule,DWORD  ul_reason_for_call,LPVOID lpReserved)
-{
-
-	path = FindHomePathWin32(hModule);
-
-	return TRUE;
-}
-#endif
-*/
-
 
 extern "C" {
 	void MainExport initFreeCAD() {

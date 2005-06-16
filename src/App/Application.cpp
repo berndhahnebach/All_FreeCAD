@@ -571,10 +571,6 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 
 }
 
-void Application::setRunMode(const char* s)
-{
-	mConfig["RunMode"] = s;
-}
 
 void Application::SaveEnv(const char* s)
 {

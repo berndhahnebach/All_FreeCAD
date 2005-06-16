@@ -407,7 +407,7 @@ void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSur
   gts_object_destroy (GTS_OBJECT (pSurface));
 
   // put the facets the simple way in the mesh, totp is recalculated!
-  MeshK.AddFacet(VAry);
+  MeshK = VAry;
 
 }
 

@@ -1,10 +1,3 @@
-/** \file MainCmd.cpp
- *  \brief The main for the command application
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -63,28 +56,26 @@
 using Base::Console;
 using App::Application;
 
+const char sBanner[] = "(c) Juergen Riegel 2001-2005\n"\
+"  #####                 ####  ###   ####  \n" \
+"  #                    #      # #   #   # \n" \
+"  #     ##  #### ####  #     #   #  #   # \n" \
+"  ####  # # #  # #  #  #     #####  #   # \n" \
+"  #     #   #### ####  #    #     # #   # \n" \
+"  #     #   #    #     #    #     # #   #  ##  ##  ##\n" \
+"  #     #   #### ####   ### #     # ####   ##  ##  ##\n\n" ;
 
 
 
 
 int main( int argc, char ** argv ) 
 {
-/*
-	EnvPrint("Main =================================================");
-
-	// find the home path....
-	std::string sHomePath;
-#	ifdef FC_OS_WIN32
-		sHomePath = FindHomePathWin32(0);
-#	else
-		sHomePath = FindHomePathUnix(argv[0]);
-#	endif
-
-*/
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
   App::Application::Config()["RunMode"] = "Cmd";
+  // set the banner (for loging and console)
+  App::Application::Config()["ConsoleBanner"] = sBanner;
 
 	// Inits the Application 
 	App::Application::init(argc,argv);

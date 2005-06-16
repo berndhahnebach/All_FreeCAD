@@ -261,7 +261,6 @@ private:
   static void initConfig(int argc, char ** argv, const char * sHomePath  );
 	static void initApplication(void);
 	static void logStatus(void);
-	static void setRunMode(const char*);
 	// the one and only pointer to the application object
 	static Application *_pcSingelton;
 	/// argument helper function

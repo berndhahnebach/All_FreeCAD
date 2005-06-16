@@ -268,8 +268,8 @@ PYFUNCIMP_D(MeshPy,addFacet)
 
   PY_TRY {
     _pcMesh->getKernel()->AddFacet(MeshGeomFacet(Vector3D(x1,y1,z1),
-                                                 Vector3D(x2,y2,x2),
-                                                 Vector3D(x3,y3,x3)));
+                                                 Vector3D(x2,y2,z2),
+                                                 Vector3D(x3,y3,z3)));
   } PY_CATCH;
 
   Py_Return;
