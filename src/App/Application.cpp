@@ -529,14 +529,14 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
-		Console().Message("%d %d, Libs: %d.%dB%d\n\n%s",mConfig["ExeName"].c_str(),
+		Console().Message("%s %s, Libs: %d.%dB%d\n\n%s",mConfig["ExeName"].c_str(),
                                                     mConfig["ExeVersion"].c_str(),
                                                     Application::VersionMajor,
                                                     Application::VersionMinor,
                                                     Application::VersionBuild,
                                                     mConfig["ConsoleBanner"].c_str());
 	else
-		Console().Message("%d %d, Libs: %d.%dB%d\n\n",mConfig["ExeName"].c_str(),
+		Console().Message("%s %s, Libs: %d.%dB%d\n\n",mConfig["ExeName"].c_str(),
                                                   mConfig["ExeVersion"].c_str(),
                                                   Application::VersionMajor,
                                                   Application::VersionMinor,
