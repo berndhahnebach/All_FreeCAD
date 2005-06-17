@@ -3,7 +3,7 @@
 
 
 // Std. configurations
-#include "../Config.h"
+#include "../FCConfig.h"
 
 #ifdef _PreComp_
 

@@ -22,7 +22,7 @@
 
 
 // === Incuding of libs: ============================================================================
-#include "../Config.h"
+#include "../FCConfig.h"
 #ifndef FC_OS_WIN32
 # error "Dont compile that file on UNIX!"
 #endif

@@ -1,7 +1,7 @@
 #ifndef __PRECOMPILED_GUI__
 #define __PRECOMPILED_GUI__
 
-#include "../../../Config.h"
+#include "../../../FCConfig.h"
 
 #ifdef _PreComp_
 /// here get the warnings of to long specifieres disabled (needet for VC6)

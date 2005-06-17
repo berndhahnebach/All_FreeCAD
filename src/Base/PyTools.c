@@ -1,4 +1,4 @@
-#include "../Config.h"
+#include "../FCConfig.h"
 #include "PyTools.h"
 
 #include <stdarg.h>

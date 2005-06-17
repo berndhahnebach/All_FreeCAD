@@ -19,7 +19,7 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-/** \file Config.h
+/** \file FCConfig.h
  *  \brief Include all needed defines and macros
  *  Here all defines and macro switching is done for FreeCAD.
  *  Every used Library has its section to define the congiguration.
@@ -27,8 +27,8 @@
  */
 
 
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __FCCONFIG_H__
+#define __FCCONFIG_H__
 
 
 

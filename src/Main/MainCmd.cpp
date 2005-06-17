@@ -21,7 +21,7 @@
  *                                                                         *
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
-#include "../Config.h"
+#include "../FCConfig.h"
 
 #ifdef _PreComp_
 # undef _PreComp_

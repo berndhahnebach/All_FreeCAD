@@ -1,7 +1,7 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
-#include "../../../Config.h"
+#include "../../../FCConfig.h"
 
 #ifdef _PreComp_
 

@@ -28,9 +28,7 @@
 #ifndef _PreComp_
 # include <string>
 # include <vector>
-# include <qmainwindow.h>
 # include <qstringlist.h>
-# include <qworkspace.h>
 #endif
 
 #define  putpix()
@@ -38,6 +36,8 @@
 #include "../Base/Console.h"
 #include "../App/Application.h"
 
+#include <qmainwindow.h>
+#include <qworkspace.h>
 
 class QComboBox;
 class QToolBar;

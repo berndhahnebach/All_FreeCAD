@@ -30,7 +30,7 @@
 #include<string>
 #include<map>
 #include<list>
-#include"../Config.h"
+#include"../FCConfig.h"
 
 
 namespace Base
