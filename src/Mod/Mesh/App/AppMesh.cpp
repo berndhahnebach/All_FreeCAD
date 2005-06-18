@@ -46,6 +46,7 @@ void AppMeshExport initMesh() {
 
   Base::Console().Log("AppMesh loaded\n");
 	App::FeatureFactory().AddProducer("MeshImportSTL",new App::FeatureProducer<Mesh::FeatureMeshImportSTL>);
+	App::FeatureFactory().AddProducer("Mesh",         new App::FeatureProducer<Mesh::MeshFeature>         );
 
   return;
 }

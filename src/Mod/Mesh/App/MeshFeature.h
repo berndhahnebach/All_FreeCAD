@@ -51,7 +51,7 @@ public:
   /// Constructor
   MeshFeature(void);
 
-  virtual void InitLabel(const TDF_Label &rcLabel)=0;
+  virtual void InitLabel(const TDF_Label &rcLabel);
 
 
   /** @name methodes used for recalculation (update) */
@@ -64,12 +64,12 @@ public:
    *  2 - algorithm failed
    *  0 - no mistakes were found.
    */
-  virtual Standard_Integer Execute(TFunction_Logbook& log)=0;
+  virtual Standard_Integer Execute(TFunction_Logbook& log);
 
   /**
    * Validation of the object label, its arguments and its results.
    */
-  virtual void Validate(TFunction_Logbook& log)=0;
+  virtual void Validate(TFunction_Logbook& log);
   //@}
 
 
@@ -82,6 +82,9 @@ public:
   //@}
 
   virtual Base::PyObjectBase *MeshFeature::GetPyObject(void);
+
+  /// Returns the Name/Type of the feature
+  virtual const char *Type(void){return "Mesh";};
 
 protected:
   MeshWithProperty _cMesh;

@@ -109,7 +109,7 @@ void Vector3D::RotateZ (float f)
   y = (cPt.x * fsin) + (cPt.y * fcos);
 }
 
-void Vector3D::Normalize (void)
+RVector3D Vector3D::Normalize (void)
 {
   float fLen = Length ();
   if (fLen != 0.0f)
@@ -118,6 +118,7 @@ void Vector3D::Normalize (void)
     y /= fLen;
     z /= fLen;
   };
+  return *this;
 }
 
 DataStream & Vector3D::SaveData (DataStream& ofs)

@@ -51,6 +51,8 @@ public:
 
   ~MeshPy();
 
+  void setMesh(MeshWithProperty *pcMesh);
+
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
   //---------------------------------------------------------------------
@@ -68,6 +70,8 @@ public:
   PYFUNCDEF_D(MeshPy,Union)
   PYFUNCDEF_D(MeshPy,coarsen)
   PYFUNCDEF_D(MeshPy,translate)
+  PYFUNCDEF_D(MeshPy,rotate)
+  PYFUNCDEF_D(MeshPy,scale)
   PYFUNCDEF_D(MeshPy,addFacet)
   PYFUNCDEF_D(MeshPy,clear)
 

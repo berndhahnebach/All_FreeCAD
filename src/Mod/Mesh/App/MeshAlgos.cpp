@@ -149,7 +149,14 @@ void MeshAlgos::offset(MeshWithProperty* Mesh, float fSize)
     prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
   }
 
+  unsigned int i = 0;
+  // go throug all the Vertex normales
+  for(std::vector<Vector3D>::iterator It= prop->Normales.begin();It != prop->Normales.end();It++,i++)
+    // and move each mesh point in the normal direction
+    Mesh->getKernel()->MovePoint(i,It->Normalize() * fSize);
 
+  // invalid because of points movement
+  Mesh->Remove("VertexNormales");
 }
 
 

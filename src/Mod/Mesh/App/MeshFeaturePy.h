@@ -35,6 +35,7 @@ namespace Mesh
 {
 
 class MeshFeature;
+class MeshPy;
 
 //===========================================================================
 // MeshFeaturePy - Python wrapper 
@@ -64,6 +65,7 @@ public:
 
 private:
   MeshFeature *_pcFeature;
+  MeshPy      *_pcMeshPy;
 };
 
 } //namespace Mesh

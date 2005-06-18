@@ -94,7 +94,9 @@ PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy::
 // constructor
 //--------------------------------------------------------------------------
 MeshFeaturePy::MeshFeaturePy(MeshFeature *pcFeature, PyTypeObject *T)
-: App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
+  : App::FeaturePy(pcFeature, T),
+    _pcFeature(pcFeature),
+    _pcMeshPy(0)
 {
   Base::Console().Log("Create MeshFeaturePy: %p \n",this);
 }
@@ -152,7 +154,13 @@ int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function
 
 PYFUNCIMP_D(MeshFeaturePy,getMesh)
 {
-  return new MeshPy(&(_pcFeature->getMesh()));
+  if(! _pcMeshPy)
+  {
+    _pcMeshPy = new MeshPy(&(_pcFeature->getMesh()));
+    _pcMeshPy->_INCREF();
+  }
+  
+  return _pcMeshPy;
 }
 
 PYFUNCIMP_D(MeshFeaturePy,setMesh)
@@ -160,8 +168,12 @@ PYFUNCIMP_D(MeshFeaturePy,setMesh)
  	PyObject* pcObject;
   if (!PyArg_ParseTuple(args, "O!", &MeshPy::Type, &pcObject))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
-
+  
+  // copy in the Feature Mesh
   _pcFeature->setMesh(*(reinterpret_cast<MeshPy*>(pcObject)->_pcMesh));
+  // and set the python object of this feature
+  if(_pcMeshPy)
+    _pcMeshPy->setMesh(&(_pcFeature->getMesh()));
 
   Py_Return;
 }

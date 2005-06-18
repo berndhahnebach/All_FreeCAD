@@ -81,6 +81,8 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(Union)
   PYMETHODEDEF(coarsen)
   PYMETHODEDEF(translate)
+  PYMETHODEDEF(rotate)
+  PYMETHODEDEF(scale)
   PYMETHODEDEF(addFacet)
   PYMETHODEDEF(clear)
   {NULL, NULL}    /* Sentinel */
@@ -151,6 +153,13 @@ int MeshPy::_setattr(char *attr, PyObject *value) // __setattr__ function: note 
   else 
     return PyObjectBase::_setattr(attr, value); 
 } 
+
+
+void MeshPy::setMesh(MeshWithProperty *pcMesh)
+{
+  _pcMesh = pcMesh;
+}
+
 
 //--------------------------------------------------------------------------
 // Python wrappers
@@ -254,6 +263,40 @@ PYFUNCIMP_D(MeshPy,translate)
     m.SetMoveX(x);
     m.SetMoveY(y);
     m.SetMoveZ(z);
+    _pcMesh->transform(m);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,rotate)
+{
+  double x,y,z;
+  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+    return NULL;                         
+
+  PY_TRY {
+    Matrix4D m;
+    m.SetRotX(x);
+    m.SetRotY(y);
+    m.SetRotZ(z);
+    _pcMesh->transform(m);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,scale)
+{
+  double s;
+  if (! PyArg_ParseTuple(args, "d",&s))			 
+    return NULL;                         
+
+  PY_TRY {
+    Matrix4D m;
+    m.SetScaleX(s);
+    m.SetScaleY(s);
+    m.SetScaleZ(s);
     _pcMesh->transform(m);  
   } PY_CATCH;
 

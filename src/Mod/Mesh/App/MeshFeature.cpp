@@ -47,6 +47,20 @@ MeshFeature::MeshFeature()
 {
 }
 
+void MeshFeature::InitLabel(const TDF_Label &rcLabel)
+{
+}
+
+Standard_Integer MeshFeature::Execute(TFunction_Logbook& log)
+{
+  return 0;
+}
+
+void MeshFeature::Validate(TFunction_Logbook& log)
+{
+}
+
+
 MeshWithProperty& MeshFeature::getMesh()
 {
   return _cMesh;

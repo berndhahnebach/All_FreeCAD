@@ -71,6 +71,8 @@ public:
   inline RVector3D operator -= (const Vector3D& rcVct);
   /// Vector scaling
   inline RVector3D operator *= (float fScale);
+  /// Vector scaling
+  inline Vector3D operator *   (float fScale);
   /// Assignment
   inline RVector3D operator =  (const Vector3D& rcVct);
   /// Scalar product
@@ -117,7 +119,7 @@ public:
   /// Squared length of the vector.
   inline float Sqr (void) const;
   /// Set length to 1.
-  void  Normalize (void);
+  RVector3D Normalize (void);
   /// Get angle between both vectors.
   float GetAngle (const Vector3D &rcVect) const;
   /** Transforms this point to the coordinate system defined by origin \a rclBase, 
@@ -235,6 +237,13 @@ inline Vector3D& Vector3D::operator *= (float fScale)
   y *= fScale;
   z *= fScale;        
   return *this;
+}
+
+inline Vector3D Vector3D::operator * (float fScale)
+{
+  Vector3D temp(*this);
+  temp *= fScale;
+  return temp;
 }
 
 inline Vector3D& Vector3D::operator =  (const Vector3D& rcVct)
