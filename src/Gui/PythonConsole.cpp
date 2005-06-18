@@ -165,6 +165,7 @@ void PythonConsole::OnChange( FCSubject<const char*> &rCaller,const char* sReaso
   FCParameterGrp::handle hPrefGrp = getWindowParameter();
 
   QFont font = currentFont();
+  font.setBold( false ); // if current font is bold we must reset it first
   if (strcmp(sReason, "FontSize") == 0)
   {
     QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();

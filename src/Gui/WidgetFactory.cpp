@@ -80,8 +80,8 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
 
   try
   {
-    const char* cName = dynamic_cast<QWidget*>(w)->className();
 #ifdef FC_DEBUG
+    const char* cName = dynamic_cast<QWidget*>(w)->className();
     Console().Log("Widget of type '%s' created.\n", cName);
 #endif
   }

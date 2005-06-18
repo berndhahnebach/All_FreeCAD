@@ -78,6 +78,7 @@ void PythonEditor::OnChange( FCSubject<const char*> &rCaller,const char* sReason
   FCParameterGrp::handle hPrefGrp = getWindowParameter();
 
   QFont font = currentFont();
+  font.setBold( false ); // if current font is bold we must reset it first
   if (strcmp(sReason, "FontSize") == 0)
   {
     QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
@@ -871,11 +872,11 @@ void LineMarker::paintEvent( QPaintEvent* /*e*/ )
 				  _buffer.width() - 10, p->rect().height(),
 				  AlignRight | AlignTop,
 				  QString::number(p->paragId()+1) );
-    if (p->paragId()==5)
+/*    if (p->paragId()==5)
     {
       bool b=p->isListItem();
       p->setListItem(true);
-    }
+    }*/
 /*      painter.save();
       painter.setBrush(QColor(0,255,255));
       painter.drawRoundRect(5,p->rect().y()-y, p->rect().height()+8, p->rect().height());

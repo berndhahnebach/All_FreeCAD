@@ -115,13 +115,13 @@ void View3DInventorEx::setViewerDefaults(void)
   pcShapeHint->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
 
   // color management
-  QColor Col1(236,212,156); // light brown
-  QColor Col(128,128,128);  // grey
+//  QColor Col1(236,212,156); // light brown
+//  QColor Col(128,128,128);  // grey
 
-  QColor DifCol=Col1;
-  QColor AmbCol=Col1;
-  QColor SpeCol=Col;
-  QColor EmCol(0,0,0);
+//  QColor DifCol=Col1;
+//  QColor AmbCol=Col1;
+//  QColor SpeCol=Col;
+//  QColor EmCol(0,0,0);
 /*
   pcShapeMaterial = new SoMaterial;
   pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
