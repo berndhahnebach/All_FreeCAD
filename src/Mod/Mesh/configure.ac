@@ -150,6 +150,14 @@ all_includes="$all_includes -I$fc_mgc_incs"
 all_libraries="$all_libraries -L$fc_mgc_libs"
 AC_MSG_RESULT([WildMagic3 $fc_mgc_incs : $fc_mgc_libs])
 
+# checking for GTS
+# **************************************************************************
+
+fc_gts_incs=`gts-config --cflags`
+fc_gts_libs=`gts-config --libs`
+all_includes="$all_includes $fc_gts_incs"
+all_libraries="$all_libraries $fc_gts_libs"
+
 # checking for xerces-c
 # **************************************************************************
 

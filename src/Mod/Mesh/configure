@@ -9723,6 +9723,14 @@ all_libraries="$all_libraries -L$fc_mgc_libs"
 echo "$as_me:$LINENO: result: WildMagic3 $fc_mgc_incs : $fc_mgc_libs" >&5
 echo "${ECHO_T}WildMagic3 $fc_mgc_incs : $fc_mgc_libs" >&6
 
+# checking for GTS
+# **************************************************************************
+
+fc_gts_incs=`gts-config --cflags`
+fc_gts_libs=`gts-config --libs`
+all_includes="$all_includes $fc_gts_incs"
+all_libraries="$all_libraries $fc_gts_libs"
+
 # checking for xerces-c
 # **************************************************************************
 
