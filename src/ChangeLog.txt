@@ -565,3 +565,4 @@ Version: V0.1B117 Date: Sun Mar 20 14:06:55 2005 +++++++++++++++++++++++++++++++
 + RFE 1214187 implemented (Remove views from main window)
 
 Version: V0.1B118 Date: Tue Jun 07 15:32:43 2005 +++++++++++++++++++++++++++++++
++ Bug 1165895 fixed (Bug in closing document)
