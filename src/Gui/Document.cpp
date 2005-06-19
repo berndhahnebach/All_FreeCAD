@@ -259,17 +259,18 @@ void Document::canClose ( QCloseEvent * e )
       switch(QMessageBox::warning( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),
         tr("Yes"),tr("No"),tr("Cancel"),0,2))
       {
-      case 0:
+      case 0:          // "Yes" was pressed
         //GetApplication().
         if (save())
-          e->accept();
+          e->accept(); // -> can be closed. document was saved
         else
-          e->ignore();
+          e->ignore(); // -> abort, because saving of document was aborted
         break;
-      case 1:
-        e->accept();
+      case 1:          // "No" was pressed
+        e->accept();   // -> can be closed without saving
         break;
-      case 2:
+      case 2:          // "Cancel" was pressed
+        e->ignore();   // -> abort
         break;
       }
 #   else

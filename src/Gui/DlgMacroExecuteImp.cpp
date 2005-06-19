@@ -122,7 +122,8 @@ void DlgMacroExecuteImp::onExecute()
     QFileInfo fi( d, LineEditMacroName->text() );
     ApplicationWindow::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
     // after macro run recalculate the document
-    ApplicationWindow::Instance->activeDocument()->getDocument()->Recompute();
+    if ( ApplicationWindow::Instance->activeDocument() )
+      ApplicationWindow::Instance->activeDocument()->getDocument()->Recompute();
   }
 }
 
