@@ -183,7 +183,7 @@ void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f)
 }
 
 
-MeshWithProperty* MeshAlgos::Union(MeshWithProperty* Mesh1, MeshWithProperty* Mesh2)
+MeshWithProperty* MeshAlgos::boolean(MeshWithProperty* pMesh1, MeshWithProperty* pMesh2, MeshWithProperty* pResult,int Type)
 {
   GtsSurface * s1, * s2, * s3;
   GtsSurfaceInter * si;
@@ -197,8 +197,8 @@ MeshWithProperty* MeshAlgos::Union(MeshWithProperty* Mesh1, MeshWithProperty* Me
 
 
   // create a GTS surface
-  s1 = MeshAlgos::createGTSSurface(Mesh1);
-  s2 = MeshAlgos::createGTSSurface(Mesh2);
+  s1 = MeshAlgos::createGTSSurface(pMesh1);
+  s2 = MeshAlgos::createGTSSurface(pMesh2);
 
   // clear the mesh (mermory)
   //Mesh1.clear();
@@ -265,20 +265,20 @@ MeshWithProperty* MeshAlgos::Union(MeshWithProperty* Mesh1, MeshWithProperty* Me
 			gts_face_class (),
 			gts_edge_class (),
 			gts_vertex_class ());  
-//  if (!strcmp (operation, "union")) {
+  if (Type==0) {
     gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
     gts_surface_inter_boolean (si, s3, GTS_2_OUT_1);
-//  }
-//  else if (!strcmp (operation, "inter")) {
-//    gts_surface_inter_boolean (si, s3, GTS_1_IN_2);
-//    gts_surface_inter_boolean (si, s3, GTS_2_IN_1);
-//  }
-//  else if (!strcmp (operation, "diff")) {
-//    gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
-//    gts_surface_inter_boolean (si, s3, GTS_2_IN_1);
-//    gts_surface_foreach_face (si->s2, (GtsFunc) gts_triangle_revert, NULL);
-//    gts_surface_foreach_face (s2, (GtsFunc) gts_triangle_revert, NULL);
-//  }
+  }
+  else if (Type==1) {
+    gts_surface_inter_boolean (si, s3, GTS_1_IN_2);
+    gts_surface_inter_boolean (si, s3, GTS_2_IN_1);
+  }
+  else if (Type==2) {
+    gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
+    gts_surface_inter_boolean (si, s3, GTS_2_IN_1);
+    gts_surface_foreach_face (si->s2, (GtsFunc) gts_triangle_revert, NULL);
+    gts_surface_foreach_face (s2, (GtsFunc) gts_triangle_revert, NULL);
+  }
   
   // check that the resulting surface is not self-intersecting 
   if (check_self_intersection) {
@@ -305,21 +305,21 @@ MeshWithProperty* MeshAlgos::Union(MeshWithProperty* Mesh1, MeshWithProperty* Me
   // write resulting surface to standard output 
 
   // get the standard mesh
-  fillMeshFromGTSSurface(Mesh1,s3);
+  fillMeshFromGTSSurface(pResult,s3);
 
 
   // destroy surfaces 
   gts_object_destroy (GTS_OBJECT (s1));
   gts_object_destroy (GTS_OBJECT (s2));
-  gts_object_destroy (GTS_OBJECT (s3));
-  gts_object_destroy (GTS_OBJECT (si));
+//  gts_object_destroy (GTS_OBJECT (s3));
+//  gts_object_destroy (GTS_OBJECT (si));
 
   // destroy bounding box trees (including bounding boxes) 
-  gts_bb_tree_destroy (tree1, TRUE);
-  gts_bb_tree_destroy (tree2, TRUE);  
+//  gts_bb_tree_destroy (tree1, TRUE);
+//  gts_bb_tree_destroy (tree2, TRUE);  
   
   
-  return Mesh1;
+  return pMesh1;
 }
 
 

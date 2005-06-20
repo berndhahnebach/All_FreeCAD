@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 #endif
 
+#include <Base/Console.h>
 
 #include "Mesh.h"
 #include "Core/MeshKernel.h"
@@ -143,14 +144,22 @@ void DataWithPropertyBag::transform(const Matrix4D &rclMat)
 MeshWithProperty::MeshWithProperty(void)
 {
   _Mesh = new MeshKernel();
+  Base::Console().Log("Create MeshWithProperty: %p \n",this);
 }
 
 
 MeshWithProperty::MeshWithProperty(const MeshWithProperty& New)
 {
-  _Mesh = new MeshKernel();
+  _Mesh = new MeshKernel(*(New._Mesh));
+  Base::Console().Log("Create MeshWithProperty: %p \n",this);
 
-  *this = New; 
+}
+
+ 	/// destructor
+MeshWithProperty::~MeshWithProperty(void)
+{
+  delete _Mesh;
+  Base::Console().Log("Destroy MeshWithProperty: %p \n",this);
 }
 
 void MeshWithProperty::operator= ( const MeshWithProperty& New)

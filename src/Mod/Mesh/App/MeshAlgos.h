@@ -65,9 +65,9 @@ public:
   static void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f);
 
   /** makes a boolean add
+   * The int Type stears the boolean oberation: 0=add;1=intersection;2=diff
   */
-  static MeshWithProperty* MeshAlgos::Union(MeshWithProperty* Mesh1, MeshWithProperty* Mesh2);
-
+  static MeshWithProperty* MeshAlgos::boolean(MeshWithProperty* Mesh1, MeshWithProperty* Mesh2, MeshWithProperty* pResult, int Type=0);
 
   /** Creates a GTS Surface from a MeshKernel
   */

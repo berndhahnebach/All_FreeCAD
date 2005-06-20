@@ -203,6 +203,9 @@ public:
 	/// Copy Constructor
 	MeshWithProperty(const MeshWithProperty&);
 
+ 	/// destructor
+	~MeshWithProperty(void);
+
   /// assignment operator
   void operator= ( const MeshWithProperty& );
 

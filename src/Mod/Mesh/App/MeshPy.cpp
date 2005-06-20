@@ -79,12 +79,15 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(offset)
   PYMETHODEDEF(calcVertexNormales)
   PYMETHODEDEF(Union)
+  PYMETHODEDEF(intersect)
+  PYMETHODEDEF(diff)
   PYMETHODEDEF(coarsen)
   PYMETHODEDEF(translate)
   PYMETHODEDEF(rotate)
   PYMETHODEDEF(scale)
   PYMETHODEDEF(addFacet)
   PYMETHODEDEF(clear)
+  PYMETHODEDEF(copy)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -160,6 +163,10 @@ void MeshPy::setMesh(MeshWithProperty *pcMesh)
   _pcMesh = pcMesh;
 }
 
+MeshWithProperty *MeshPy::getMesh(void)
+{
+  return _pcMesh;
+}
 
 //--------------------------------------------------------------------------
 // Python wrappers
@@ -240,13 +247,50 @@ PYFUNCIMP_D(MeshPy,calcVertexNormales)
 
 PYFUNCIMP_D(MeshPy,Union)
 {
- 	MeshPy* pcObject;
-  if (!PyArg_ParseTuple(args, "O!", &MeshPy::Type, &pcObject))     // convert args: Python->C 
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
+
+  pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
     MeshWithProperty* m = pcObject->_pcMesh;
-    MeshAlgos::Union(_pcMesh,m);  
+    MeshAlgos::boolean(_pcMesh,m,_pcMesh,0);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,intersect)
+{
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (MeshPy*)pcObj;
+
+  PY_TRY {
+    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshAlgos::boolean(_pcMesh,m,_pcMesh,1);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,diff)
+{
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (MeshPy*)pcObj;
+
+  PY_TRY {
+    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshAlgos::boolean(_pcMesh,m,_pcMesh,2);  
   } PY_CATCH;
 
   Py_Return;
@@ -325,4 +369,11 @@ PYFUNCIMP_D(MeshPy,clear)
   } PY_CATCH;
 
   Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,copy)
+{
+  PY_TRY {
+   return new MeshPy(new MeshWithProperty(*_pcMesh));
+  } PY_CATCH;
 }

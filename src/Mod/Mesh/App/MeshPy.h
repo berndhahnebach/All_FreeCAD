@@ -26,9 +26,6 @@
 
 #include <Base/PyExportImp.h>
 
-namespace Base{
-  class PyObjectBase;
-}
 
 namespace Mesh
 {
@@ -52,6 +49,7 @@ public:
   ~MeshPy();
 
   void setMesh(MeshWithProperty *pcMesh);
+  MeshWithProperty *getMesh(void);
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -68,18 +66,23 @@ public:
   PYFUNCDEF_D(MeshPy,offset)
   PYFUNCDEF_D(MeshPy,calcVertexNormales)
   PYFUNCDEF_D(MeshPy,Union)
+  PYFUNCDEF_D(MeshPy,intersect)
+  PYFUNCDEF_D(MeshPy,diff)
   PYFUNCDEF_D(MeshPy,coarsen)
   PYFUNCDEF_D(MeshPy,translate)
   PYFUNCDEF_D(MeshPy,rotate)
   PYFUNCDEF_D(MeshPy,scale)
   PYFUNCDEF_D(MeshPy,addFacet)
   PYFUNCDEF_D(MeshPy,clear)
+  PYFUNCDEF_D(MeshPy,copy)
+
+protected:
 
   MeshWithProperty *_pcMesh;
 };
 
 } //namespace Mesh
 
-
+ 
 
 #endif // MESH_FEATURE_PY_H 
