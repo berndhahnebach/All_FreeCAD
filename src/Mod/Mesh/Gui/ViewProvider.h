@@ -28,6 +28,9 @@
 
 class SoSeparator;
 class SbVec3f;
+namespace Mesh {
+  class MeshWithProperty;
+}
 
 namespace MeshGui {
 
@@ -47,6 +50,9 @@ public:
    * an Inventor node \a SoNode with these data. 
    */
   virtual SoNode* create(App::Feature *pcFeature);
+
+  /// helper methode to build up the FaceSet
+  SoSeparator* createMesh(Mesh::MeshWithProperty *pcMesh);
 
 protected:
 };

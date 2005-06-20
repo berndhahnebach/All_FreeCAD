@@ -43,8 +43,12 @@
 #include "ViewProvider.h"
 
 #include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
-# include <Inventor/nodes/SoLocateHighlight.h>
+#include <Inventor/nodes/SoLocateHighlight.h>
+#include <Inventor/nodes/SoDrawStyle.h>
+#include <Inventor/nodes/SoLightModel.h>
+#include <Inventor/nodes/SoMaterial.h>
 
 using namespace MeshGui;
 using Mesh::MeshFeature;
@@ -60,20 +64,11 @@ ViewProviderInventorMesh::~ViewProviderInventorMesh()
 {
 }
 
-SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
+SoSeparator* ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 {
-  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
-  if ( !meshFea ) return 0;
-
-  // getting current setting values...
-	bool computeNormals = /*true*/false;
-
-  const MeshKernel* cMesh = meshFea->getMesh().getKernel();
+  MeshKernel *cMesh = pcMesh->getKernel();
 
   SoSeparator* tree = new SoSeparator();
-
-  SoLocateHighlight* h = new SoLocateHighlight();
-  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
 
   SoCoordinate3* coord = new SoCoordinate3();
   SoNormal* norms = new SoNormal();
@@ -116,22 +111,90 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
   
 	SoNormalBinding* nBinding=new SoNormalBinding();
 	tree->addChild(nBinding);		
-	if(!computeNormals){
+//	if(!computeNormals){
 		tree->addChild(norms);
 		nBinding->value=SoNormalBinding::PER_FACE;
-	}
+/*	}
 	else{
 		norms->ref();
 		norms->unref();
 		nBinding->value=SoNormalBinding::PER_VERTEX;
-	}
+	}*/
 
-  tree->addChild(h);
-	h->addChild(coord);
-	h->addChild(fSet);
+  tree->addChild(coord);
+  tree->addChild(fSet);
 
   Base::Sequencer().stop();
 
 	return tree;
+
+}
+
+
+SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
+{
+  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
+  if ( !meshFea ) 
+    return 0;
+  
+  SoSeparator* pcRoot = new SoSeparator();
+
+  SoSeparator* pcFlatRoot = new SoSeparator();
+  SoSeparator* pcWireRoot = new SoSeparator();
+  SoSeparator* pcPointRoot = new SoSeparator();
+
+  SoSeparator* MeshSet = createMesh(&(meshFea->getMesh()));
+
+  // flat shede part ------------------------------------------
+  SoDrawStyle *pcFlatStyle = new SoDrawStyle();
+  pcFlatStyle->style = SoDrawStyle::FILLED;
+  SoMaterial *pcMaterial = new SoMaterial();
+  pcMaterial->ambientColor.setValue(0.2f,0.2f,0.2f);
+  pcMaterial->diffuseColor.setValue(0.8f,0.8f,0.8f);
+  pcMaterial->specularColor.setValue(0.0f,0.0f,0.0f);
+  pcMaterial->emissiveColor.setValue(0.0f,0.0f,0.0f);
+  pcMaterial->shininess.setValue(0.2f);
+  pcMaterial->transparency.setValue(0.0f);
+  SoLocateHighlight* h = new SoLocateHighlight();
+  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
+  h->addChild(MeshSet);
+  pcFlatRoot->addChild(pcFlatStyle);
+  pcFlatRoot->addChild(pcMaterial);
+  pcFlatRoot->addChild(h);
+
+  // wire part ----------------------------------------------
+  SoDrawStyle *pcWireStyle = new SoDrawStyle();
+  pcWireStyle->style = SoDrawStyle::LINES;
+  pcWireStyle->lineWidth = 2.0;
+  SoLightModel *pcLightModel = new SoLightModel();
+  pcLightModel->model = SoLightModel::BASE_COLOR;
+  pcMaterial = new SoMaterial();
+//  pcMaterial->ambientColor.setValue(0.1f,0.1f,0.1f);
+  pcMaterial->diffuseColor.setValue(0.6f,0.6f,0.6f);
+  pcWireRoot->addChild(pcWireStyle);
+  pcWireRoot->addChild(pcLightModel);
+  pcWireRoot->addChild(pcMaterial);
+  pcWireRoot->addChild(MeshSet);
+
+  // points part ---------------------------------------------
+  SoDrawStyle *pcPointStyle = new SoDrawStyle();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = 4.0;
+  pcMaterial = new SoMaterial();
+  pcMaterial->ambientColor.setValue(0.2f,0.2f,0.2f);
+  pcMaterial->diffuseColor.setValue(0.8f,0.8f,0.8f);
+  pcPointRoot->addChild(pcPointStyle);
+  pcPointRoot->addChild(pcMaterial);
+  pcPointRoot->addChild(MeshSet);
+
+  
+
+
+  pcRoot->addChild(pcFlatRoot);
+  pcRoot->addChild(pcWireRoot);
+//  pcRoot->addChild(pcPointRoot);
+ 
+  return pcRoot;
+
 }
 
