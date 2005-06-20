@@ -237,6 +237,7 @@ void PythonConsole::clear ()
   TextEdit::clear();
   setText(">>> ");
   moveCursor( MoveLineEnd, false );
+  _startPara = 0;
 }
 
 void PythonConsole::removeSelectedText ( int selNum )
@@ -265,6 +266,55 @@ void PythonConsole::paste()
     TextEdit::paste();
   else
     QApplication::beep();
+}
+
+/**
+ * Decodes the clipboard plain text and insert line by line to this text edit and
+ * simulate a "return" event to let decide keyPressEvent() how to continue. This
+ * is to run the Python interpreter if needed.
+ */
+void PythonConsole::pasteSubType( const QCString &subtype )
+{
+  QMimeSource* mime = QApplication::clipboard()->data( QClipboard::Clipboard );
+  if ( !mime )
+    return; // no valid data
+  QCString st = subtype;
+  st.prepend( "text/" );
+
+  if ( document()->hasSelection( QTextDocument::Standard ) )
+    removeSelectedText();
+  if ( !mime->provides( st.data() ) )
+    return;
+
+  QString t;
+  if ( !QTextDrag::canDecode( mime) )
+    return; // cannot decode
+  if ( !QTextDrag::decode( mime, t ) )
+    return;
+#if defined(Q_OS_WIN32)
+  // Need to convert CRLF to LF
+  t.replace( "\r\n", "\n" );
+#elif defined(Q_OS_MAC)
+  //need to convert CR to LF
+  t.replace( '\r', '\n' );
+#endif
+  QChar *uc = (QChar *)t.unicode();
+  for ( int i=0; (uint) i<t.length(); i++ ) {
+      if ( uc[ i ] < ' ' && uc[ i ] != '\n' && uc[ i ] != '\t' )
+    uc[ i ] = ' ';
+  }
+
+  if ( !t.isEmpty() )
+  {
+    QStringList lst = QStringList::split('\n', t, true);
+    for ( QStringList::Iterator it = lst.begin(); it != lst.end(); it++ )
+    {
+      insert( *it );
+      // emulate an key return event to let decide keyPressEvent() how to continue
+      QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+      QApplication::sendEvent( this, &ke );
+    }
+  }
 }
 
 /** Allows cutting in the active line only. */
@@ -348,8 +398,8 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
         performPythonCommand();
       }
     } break;
-  case Key_P:
-    if ( e->state() & AltButton )
+  case Key_Up:
+    if ( e->state() & ControlButton )
     {
       if ( !_history.isEmpty() )
       {
@@ -361,8 +411,8 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       }
     }
     break;
-  case Key_N:
-    if ( e->state() & AltButton )
+  case Key_Down:
+    if ( e->state() & ControlButton )
     {
       if ( !_history.isEmpty() )
       {

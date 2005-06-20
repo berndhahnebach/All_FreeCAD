@@ -71,6 +71,7 @@ public:
   void doKeyboardAction ( KeyboardAction action );
   void clear ();
   void paste();
+  void pasteSubType( const QCString &subtype );
   void cut();
   void removeSelectedText ( int selNum = 0 );
 
