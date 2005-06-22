@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qclipboard.h>
+# include <qmime.h>
 # include <qregexp.h>
 #endif
 
