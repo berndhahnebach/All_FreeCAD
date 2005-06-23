@@ -567,3 +567,5 @@ Version: V0.1B117 Date: Sun Mar 20 14:06:55 2005 +++++++++++++++++++++++++++++++
 Version: V0.1B118 Date: Tue Jun 07 15:32:43 2005 +++++++++++++++++++++++++++++++
 + Bug 1165895 fixed (Bug in closing document)
 + RFE 1223968 implemented (Pasting scripts in the python console)
++ Bug 1224686 Action.h: command not found error during linux make
+  Check for QT_UIC and QT_MOC again after the Qt test

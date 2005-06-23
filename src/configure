@@ -11910,6 +11910,19 @@ echo "$as_me: error: Failed to find matching components of a complete
   fi
 
 
+# check QT_MOC
+if test x$QT_MOC = x; then
+	{ { echo "$as_me:$LINENO: error: Cannot find Qt meta object compiler (moc), bye..." >&5
+echo "$as_me: error: Cannot find Qt meta object compiler (moc), bye..." >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+# check QT_UIC
+if test x$QT_UIC = x; then
+	{ { echo "$as_me:$LINENO: error: Cannot find Qt user interface compiler (uic), bye..." >&5
+echo "$as_me: error: Cannot find Qt user interface compiler (uic), bye..." >&2;}
+   { (exit 1); exit 1; }; }
+fi;
+
 # **************************************************************************
 
 

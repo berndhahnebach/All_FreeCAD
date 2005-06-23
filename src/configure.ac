@@ -267,6 +267,15 @@ AC_MSG_RESULT([SoQt $fc_soqt_incs : $fc_soqt_libs])
 
 BNV_HAVE_QT
 
+# check QT_MOC
+if test x$QT_MOC = x; then
+	AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
+fi;
+# check QT_UIC
+if test x$QT_UIC = x; then
+	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
+fi;
+
 # **************************************************************************
 
 AC_SUBST(all_includes)
