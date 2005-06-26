@@ -74,10 +74,12 @@ public:
    * Discard all changes.
    */
   void Discard();
+#ifdef Use_EdgeList
   /**
    * Tries to make a more beautiful mesh.
    */
   void OptimizeTopology();
+#endif
   /**
    * Inserts a new vertex in the given triangle.
    * The given point must lie inside the triangle not outside or on an edge.
@@ -155,12 +157,14 @@ private:
    * Inserts the edges associated to the facet \a ulFacetPos if needed. This method
    * is safe if the facet has already associated edges.
    */
+#ifdef Use_EdgeList
   void InsertEdges(unsigned long ulFacetPos);
   /**  @deprecated
    * A shared edge of two facets is associated to only one of them. This method
    * deletes all edges of a facet including the edge associated to the neighbour facet
    */
   void DeleteEdges(unsigned long ulFacetPos);
+#endif
 
   void ClearFlag (void)
   { _rclMesh._aclFacetArray.ResetFlag(MeshFacet::INVALID); }

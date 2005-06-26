@@ -216,6 +216,7 @@ protected:
   friend class MeshKernel;
 };
 
+#ifdef Use_EdgeList
 class AppMeshExport MeshEdgeIterator
 {
 public:
@@ -298,6 +299,8 @@ protected:
   // friends
   friend class MeshKernel;
 };
+#endif
+
 
 class MeshFastFacetIterator
 {
@@ -470,6 +473,7 @@ inline MeshPointIterator& MeshPointIterator::operator = (const MeshPointIterator
   return *this;
 }
 
+#ifdef Use_EdgeList
 inline MeshEdgeIterator::MeshEdgeIterator (const MeshKernel &rclM)
 : _rclMesh(rclM)
 {
@@ -540,6 +544,8 @@ inline MeshEdgeIterator& MeshEdgeIterator::operator = (const MeshEdgeIterator &r
   memcpy((void*)&_rclMesh, &rpI._rclMesh, sizeof(&_rclMesh));
   return *this;
 }
+#endif
+
 
 } // namespace Mesh
 

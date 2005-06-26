@@ -117,6 +117,7 @@ void MeshTopoAlgorithm::InsertNode(unsigned long ulFacetPos, const Vector3D&  rc
   _aclNewFacets.push_back(clFacet);
 }
 
+#ifdef Use_EdgeList
 void MeshTopoAlgorithm::OptimizeTopology()
 {
   std::vector<std::set<unsigned long> > clNPoints;
@@ -224,6 +225,7 @@ void MeshTopoAlgorithm::OptimizeTopology()
     }
   }
 }
+#endif
 
 void MeshTopoAlgorithm::SwapEdge(unsigned long ulFacetPos, int iSide)
 {
@@ -807,7 +809,9 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
       ulStartFacet = ULONG_MAX;
   }
  
+#ifdef Use_EdgeList
   _rclMesh.RebuildEdgeArray();
+#endif
   Base::Sequencer().stop(); 
 }
 
@@ -815,13 +819,16 @@ void MeshTopoAlgorithm::FlipNormals (void)
 {
   for (MeshFacetArray::_TIterator i = _rclMesh._aclFacetArray.begin(); i < _rclMesh._aclFacetArray.end(); i++)
     i->FlipNormal();
+#ifdef Use_EdgeList
   _rclMesh.RebuildEdgeArray();
+#endif
 }
 
 //
 // OBSOLETE
 //
 
+#ifdef Use_EdgeList
 void MeshTopoAlgorithm::DeleteEdges(unsigned long ulFacetPos)
 {
   unsigned long i, j, k, ulEdgeInd;
@@ -879,6 +886,8 @@ void MeshTopoAlgorithm::InsertEdges(unsigned long ulFacetPos)
     }
   }
 }
+#endif
+
 
 void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
 {
@@ -886,7 +895,9 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
   MeshFacet clFacet = _rclMesh._aclFacetArray[ulFacetPos];
 
   if (iInd == 1){
+#ifdef Use_EdgeList
     DeleteEdges(ulFacetPos);
+#endif
     ulTmpInd = clFacet._aulPoints[0];
     clFacet._aulPoints[0] = clFacet._aulPoints[1];
     clFacet._aulPoints[1] = clFacet._aulPoints[2];
@@ -896,11 +907,15 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
     clFacet._aulNeighbours[1] = clFacet._aulNeighbours[2];
     clFacet._aulNeighbours[2] = ulTmpInd;
     _rclMesh._aclFacetArray[ulFacetPos] = clFacet;
+#ifdef Use_EdgeList
     InsertEdges(ulFacetPos);
+#endif
   }
   else if (iInd == 2)
   {
+#ifdef Use_EdgeList
     DeleteEdges(ulFacetPos);
+#endif
     ulTmpInd = clFacet._aulPoints[0];
     clFacet._aulPoints[0] = clFacet._aulPoints[2];
     clFacet._aulPoints[2] = clFacet._aulPoints[1];
@@ -910,6 +925,8 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
     clFacet._aulNeighbours[2] = clFacet._aulNeighbours[1];
     clFacet._aulNeighbours[1] = ulTmpInd;
     _rclMesh._aclFacetArray[ulFacetPos] = clFacet;
+#ifdef Use_EdgeList
     InsertEdges(ulFacetPos);
+#endif
   }
 }

@@ -50,7 +50,9 @@ MeshKernel::MeshKernel (const MeshKernel &rclMesh)
 MeshKernel& MeshKernel::operator = (const MeshKernel &rclMesh)
 {
   _aclPointArray  = rclMesh._aclPointArray;
+#ifdef Use_EdgeList
   _aclEdgeArray   = rclMesh._aclEdgeArray;
+#endif
   _aclFacetArray  = rclMesh._aclFacetArray;
   _clBoundBox     = rclMesh._clBoundBox;
   _bValid         = rclMesh._bValid;
@@ -121,8 +123,10 @@ MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
   // Facet ins Facet-Array einfuegen
   _aclFacetArray.push_back(clFacet);
 
+#ifdef Use_EdgeList
   // Kante(n) einfuegen
   AddEdge(clFacet, (unsigned long)(_aclFacetArray.size() - 1));
+#endif
 
   return *this;
 }
@@ -169,6 +173,7 @@ bool MeshKernel::AddFacet(const std::vector<MeshGeomFacet> &rclVAry)
   return true;
 }
 
+#ifdef Use_EdgeList
 void MeshKernel::AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex)
 {
   MeshHelpEdge clFacetEdge;
@@ -199,16 +204,21 @@ void MeshKernel::AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex)
     }
   }
 }
+#endif
 
 void MeshKernel::Clear (void)
 {
   _aclPointArray.clear();
+#ifdef Use_EdgeList
   _aclEdgeArray.clear();
+#endif
   _aclFacetArray.clear();
 
   // auch Speicher freigeben
   MeshPointArray().swap(_aclPointArray);
+#ifdef Use_EdgeList
   MeshEdgeArray().swap(_aclEdgeArray);
+#endif
   MeshFacetArray().swap(_aclFacetArray);
 
   _clBoundBox.Flush();
@@ -289,6 +299,7 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
     MeshPointBuilder().swap(rclMap);  // kleiner Trick um Speicher freizugeben
   }
 
+#ifdef Use_EdgeList
   // sortierte Kantenliste generieren
   {  ////////////////////////////////////////////////////////////////////////////////////
     MeshEdgeBuilder  clEdger;
@@ -343,14 +354,20 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
   }
 
   std::sort(_aclEdgeArray.begin(), _aclEdgeArray.end());  // Kantenliste sortieren
+#endif
 
   ulCtFacets = _aclFacetArray.size();
   ulCtPoints = _aclPointArray.size();
+#ifdef Use_EdgeList
   ulCtEdges  = _aclEdgeArray.size();
+#endif
 
   _aclFacetArray.resize(ulCtFacets);
   _aclPointArray.resize(ulCtPoints);
+#ifdef Use_EdgeList
   _aclEdgeArray.resize(ulCtEdges);
+#endif
+
 }
 
 bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
@@ -367,7 +384,9 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
   // gleichzeitig Kanten loeschen oder umbiegen auf Nachbarfacet
   for (i = 0; i < 3; i++)
   {
+#ifdef Use_EdgeList
     ulEdge   = _aclEdgeArray.Find(ulInd, i);        // Index: zugehoerige Kante
+#endif
     ulNFacet = rclIter._clIter->_aulNeighbours[i];  // Index: Nachbar-Facet
     if (ulNFacet != ULONG_MAX)
     {
@@ -376,17 +395,21 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
         if (_aclFacetArray[ulNFacet]._aulNeighbours[j] == ulInd)
         {
           _aclFacetArray[ulNFacet]._aulNeighbours[j] = ULONG_MAX;
-          if (ulEdge != ULONG_MAX)
-          {  // Kante auf Nachbar-Facet umbiegen
-            _aclEdgeArray.erase(_aclEdgeArray.begin() + ulEdge);
-            _aclEdgeArray.Add(ulNFacet, j);      
-          }
-          break;
+#        ifdef Use_EdgeList
+           if (ulEdge != ULONG_MAX)
+           {  // Kante auf Nachbar-Facet umbiegen
+             _aclEdgeArray.erase(_aclEdgeArray.begin() + ulEdge);
+             _aclEdgeArray.Add(ulNFacet, j);      
+           }
+#        endif
+         break;
         }
       }
     }
+#ifdef Use_EdgeList
     else if (ulEdge != ULONG_MAX)  // Kante entgueltig loeschen da keine Nachbar-Facets
       _aclEdgeArray.erase(_aclEdgeArray.begin() + ulEdge);
+#endif
   }
 
   // Eckpunkte gegenfalls loeschen
@@ -402,12 +425,15 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
   // Facet aus Array loeschen
   _aclFacetArray.Erase(_aclFacetArray.begin() + rclIter.Position());
 
+#ifdef Use_EdgeList
   // Indizies des Kanten-Arrays zu Facets abstimmen
   _aclEdgeArray.AdjustIndex(ulInd);
+#endif
 
   return true;
 }
 
+#ifdef Use_EdgeList
 bool MeshKernel::DeleteEdge (const MeshEdgeIterator &rclIter)
 {
   MeshFacetIterator  clFIter1(*this), clFIter2(*this);
@@ -441,6 +467,7 @@ bool MeshKernel::DeleteEdge (const MeshEdgeIterator &rclIter)
  
   return true;
 }
+#endif
 
 bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
 {
@@ -526,6 +553,7 @@ void MeshKernel::ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, 
     _aclPointArray[ulIndex].SetInvalid();
 }
 
+#ifdef Use_EdgeList
 void MeshKernel::CheckAndCorrectEdge (unsigned long ulFacetIndex)
 {
   unsigned long i, ulInd, ulSide;
@@ -546,6 +574,7 @@ void MeshKernel::CheckAndCorrectEdge (unsigned long ulFacetIndex)
     }
   }
 }
+#endif
 
 void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
 {
@@ -570,6 +599,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
       ulDec++;
   }
 
+#ifdef Use_EdgeList
   // Kanten loeschen
   pEEnd  = _aclEdgeArray.end();
   unsigned long ulValidEdges = 0;
@@ -612,6 +642,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
     _aclEdgeArray = aclEdgeTemp;
     aclEdgeTemp.clear();
   }
+#endif
 
   // Punkt-Indizies der Facets korrigieren
   pFEnd  = _aclFacetArray.end();
@@ -672,6 +703,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
     }
   }
 
+#ifdef Use_EdgeList
   // Indizies der Kanten-Liste korrigieren
   if (bWithEdgeCorrect == true)
   {
@@ -684,6 +716,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
     }
     std::sort(_aclEdgeArray.begin(), _aclEdgeArray.end());
   }
+#endif
 
   // Facets loeschen
   // Anzahl der noch gueltigen Facets
@@ -726,12 +759,20 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
 void MeshKernel::SaveStream (DataStream &rclOut)
 {
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
+#ifdef Use_EdgeList
   MeshEdgeArray::_TIterator   clEIter = _aclEdgeArray.begin(),  clEEIter = _aclEdgeArray.end();
+#endif
   MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
 
-  rclOut << CountPoints() << CountEdges() << CountFacets();
+  rclOut << CountPoints() 
+#ifdef Use_EdgeList
+         << CountEdges() 
+#endif
+         << CountFacets();
   while (clPIter < clPEIter) rclOut << *(clPIter++);
+#ifdef Use_EdgeList
   while (clEIter < clEEIter) rclOut << *(clEIter++);
+#endif
   while (clFIter < clFEIter) rclOut << *(clFIter++);
 
   rclOut << _clBoundBox.MinX << _clBoundBox.MinY << _clBoundBox.MinZ <<
@@ -745,15 +786,21 @@ void MeshKernel::RestoreStream (DataStream &rclIn)
   Clear();
   rclIn >> ulCtPt >> ulCtEd >> ulCtFc; 
   _aclPointArray.resize(ulCtPt);  
+#ifdef Use_EdgeList
   _aclEdgeArray.resize(ulCtEd);
+#endif
   _aclFacetArray.resize(ulCtFc);
 
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
+#ifdef Use_EdgeList
   MeshEdgeArray::_TIterator   clEIter = _aclEdgeArray.begin(),  clEEIter = _aclEdgeArray.end();
+#endif
   MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
 
   while (clPIter < clPEIter) rclIn >> *(clPIter++); 
+#ifdef Use_EdgeList
   while (clEIter < clEEIter) rclIn >> *(clEIter++);
+#endif
   while (clFIter < clFEIter) rclIn >> *(clFIter++);
 
   rclIn >> _clBoundBox.MinX >> _clBoundBox.MinY >> _clBoundBox.MinZ >>
@@ -774,6 +821,7 @@ void MeshKernel::operator *= (const Matrix4D &rclMat)
   }
 }
 
+#ifdef Use_EdgeList
 void MeshKernel::RebuildEdgeArray (void)
 {
   unsigned long ulCt, i, j, k;
@@ -802,6 +850,7 @@ void MeshKernel::RebuildEdgeArray (void)
     _aclEdgeArray.push_back(MeshEdge(pI->Index(), pI->Side()));
   std::sort(_aclEdgeArray.begin(), _aclEdgeArray.end());
 }
+#endif
 
 void MeshKernel::DeleteFacets (const std::vector<unsigned long> &raulFacets)
 {
@@ -876,6 +925,7 @@ void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
   RecalcBoundBox();
 }
 
+#ifdef Use_EdgeList
 MeshEdgeArray::_TConstIterator MeshKernel::FindEdge (unsigned long ulFacet, unsigned short usSide) const 
 {
   unsigned long ulEdge = (ulFacet << 2) + (unsigned long)(usSide);
@@ -900,6 +950,7 @@ MeshEdgeArray::_TConstIterator MeshKernel::FindEdge (unsigned long ulFacet, unsi
 
   return _aclEdgeArray.end();
 }
+#endif
 
 void MeshKernel::RecalcBoundBox (void)
 {
@@ -912,6 +963,7 @@ void MeshKernel::RebuildNeighbours (void)
 {
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >   aclEdgeMap; // Map<Kante, Liste von Facets>
 
+#ifdef Use_EdgeList
   // Kantenmap aufbauen
   unsigned long k = 0;
   for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, k++)
@@ -925,6 +977,7 @@ void MeshKernel::RebuildNeighbours (void)
       aclEdgeMap[std::make_pair(ulP0, ulP1)].push_front(k);
     }
   }
+#endif
 
   // Nachbarn aufloesen
   for (std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pI = aclEdgeMap.begin(); pI != aclEdgeMap.end(); pI++)
