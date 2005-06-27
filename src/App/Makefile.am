@@ -34,6 +34,10 @@ libFreeCADApp_la_SOURCES=\
 		Function.h \
 		Label.cpp \
 		Label.h \
+		Material.cpp \
+		Material.h \
+		MaterialPy.cpp \
+		MaterialPy.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Property.cpp \
