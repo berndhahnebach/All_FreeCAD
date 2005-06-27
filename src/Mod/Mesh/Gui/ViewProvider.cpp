@@ -145,7 +145,7 @@ SoNode* ViewProviderInventorMesh::create(App::Feature *pcFeature)
 
   SoSeparator* MeshSet = createMesh(&(meshFea->getMesh()));
 
-  // flat shede part ------------------------------------------
+  // flat shaded part ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
   SoMaterial *pcMaterial = new SoMaterial();

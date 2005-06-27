@@ -59,7 +59,17 @@ using namespace App;
 Feature::Feature(void)
 :_nextFreeLabel(1)
 {
-
+  _solidMaterial.ambientColor.set(0.2f,0.2f,0.2f);
+  _solidMaterial.diffuseColor.set(0.8f,0.8f,0.8f);
+  _solidMaterial.specularColor.set(0.0f,0.0f,0.0f);
+  _solidMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
+  _solidMaterial.shininess = 0.2f;
+  _solidMaterial.transparency = 0.0f;
+  _lineMaterial.diffuseColor.set(0.1f,0.1f,0.1f);
+  _lineSize = 2.0f;
+  _pointMaterial.diffuseColor.set(0.1f,0.1f,0.1f);;
+  _pointSize = 1.0;
+  _showMode = "Shaded";
 }
 
 

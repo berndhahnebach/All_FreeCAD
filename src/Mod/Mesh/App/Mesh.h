@@ -199,7 +199,7 @@ class AppMeshExport MeshWithProperty: public DataWithPropertyBag
 {
 public:
 	/// Constructor
-	MeshWithProperty(void);
+	MeshWithProperty();
 	/// Copy Constructor
 	MeshWithProperty(const MeshWithProperty&);
 

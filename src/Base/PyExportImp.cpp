@@ -155,3 +155,15 @@ PyObject *PyObjectBase::Py_isA(PyObject *args)		// Python wrapper for isA
 }
 
 
+float PyObjectBase::getFloatFromPy(PyObject *value)
+{
+  if(PyFloat_Check( value) )
+  {
+    return (float) PyFloat_AsDouble(value);
+  }else if(PyInt_Check( value) )
+  {
+    return (float) PyInt_AsLong(value);
+  }else
+    throw "Not allowed type used (float or int expected)...";
+}
+

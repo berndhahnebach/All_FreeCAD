@@ -168,7 +168,7 @@ PYFUNCIMP_S(Application,sGet)
 
   if(pstr == 0){
     Base::PyObjectBase *p = GetApplication().Active()->GetPyObject();
-    p->_INCREF();
+    p->IncRef();
 	  return p;
   }
 

@@ -33,6 +33,8 @@
 #include <Base/Factory.h>
 #include <Base/PyExport.h>
 
+#include <App/Material.h>
+
 
 class TFunction_Logbook;
 class PyObjectBase;
@@ -153,6 +155,14 @@ protected:
   std::map<std::string,int> _PropertiesMap;
 
   Document* _pDoc;
+
+  // Material stuff
+  Material    _solidMaterial;
+  Material    _lineMaterial;
+  float       _lineSize;
+  Material    _pointMaterial;
+  float       _pointSize;
+  std::string _showMode;
 };
 
 

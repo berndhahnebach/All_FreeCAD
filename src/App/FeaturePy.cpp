@@ -98,7 +98,7 @@ PyParentObject App::FeaturePy::Parents[] = {&PyObjectBase::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 App::FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
-: PyObjectBase( T), _pcFeature(pcFeature)
+: PyObjectBase( T), _pcFeature(pcFeature),shadedMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
 {
 	Base::Console().Log("Create FeaturePy: %p \n",this);
 }
@@ -121,6 +121,8 @@ Base::PyObjectBase *Feature::GetPyObject(void)
 FeaturePy::~FeaturePy()						// Everything handled in parent
 {
 	Base::Console().Log("Destroy FeaturePy: %p \n",this);
+
+  shadedMaterialPy->DecRef();
 }
 
 
@@ -144,9 +146,47 @@ PyObject *FeaturePy::_repr(void)
 PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	PY_TRY{
-		if (Base::streq(attr, "XXXX"))						
-			return Py_BuildValue("i",1); 
-		else
+		if (Base::streq(attr, "shadedMaterial"))
+    {
+      if(shadedMaterialPy==0){
+        shadedMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
+//        shadedMaterialPy->IncRef();
+      }
+      shadedMaterialPy->IncRef();
+			return shadedMaterialPy; 
+    }
+    else if (Base::streq(attr, "lineMaterial"))
+    {
+      if(lineMaterialPy==0){
+        lineMaterialPy = new MaterialPy(&(_pcFeature->_lineMaterial));
+//        lineMaterialPy->IncRef();
+      }
+      lineMaterialPy->IncRef();
+			return lineMaterialPy; 
+    }
+    else if (Base::streq(attr, "pointMaterial"))
+    {
+      if(pointMaterialPy==0){
+        pointMaterialPy = new MaterialPy(&(_pcFeature->_pointMaterial));
+//        pointMaterialPy->IncRef();
+      }
+      pointMaterialPy->IncRef();
+			return pointMaterialPy; 
+    }
+    else if (Base::streq(attr, "lineSize"))
+    {
+      return Py_BuildValue("f", _pcFeature->_lineSize);
+    }
+    else if (Base::streq(attr, "pointSize"))
+    {
+      return Py_BuildValue("f", _pcFeature->_pointSize);
+    }
+    else if (Base::streq(attr, "showMode"))
+    {
+        return Py_BuildValue("s", _pcFeature->_showMode.c_str());
+    }
+    else
+
       // search in PropertyList
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
         return Py_BuildValue("s", _pcFeature->GetProperty(attr).GetAsString());
@@ -157,10 +197,29 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (Base::streq(attr, "XXXX")){						// settable new state
-		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
-		return 1;
-  }else
+	if (Base::streq(attr, "shadedMaterial")){						// settable new state
+    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
+    {
+      _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
+    }else
+      throw "material expected for that attribute";
+  }else	if (Base::streq(attr, "lineMaterial")){	
+    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
+    {
+      _pcFeature->_lineMaterial = *((MaterialPy*)value)->_pcMaterial;
+    }else
+      throw "material expected for that attribute";
+  }else	if (Base::streq(attr, "pointMaterial")){	
+    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
+    {
+      _pcFeature->_pointMaterial = *((MaterialPy*)value)->_pcMaterial;
+    }else
+      throw "material expected for that attribute";
+  }else	if (Base::streq(attr, "lineSize")){	
+    _pcFeature->_lineSize = getFloatFromPy(value);
+  }else	if (Base::streq(attr, "pointSize")){	
+    _pcFeature->_pointSize = getFloatFromPy(value);
+  }else{
       // search in PropertyList
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){
         try{
@@ -168,9 +227,10 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
         }catch(...){
           return 1;
         }
-        return 0;
       }else
 			  return PyObjectBase::_setattr(attr, value); 						
+  }
+  return 0;
 } 
 
 void FeaturePy::SetProperty(const char *attr, PyObject *value)

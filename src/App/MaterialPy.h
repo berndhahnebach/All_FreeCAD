@@ -23,8 +23,8 @@
  
 
 
-#ifndef _FeaturePy_h_
-#define _FeaturePy_h_
+#ifndef _MaterialPy_h_
+#define _MaterialPy_h_
 
 #ifndef _PreComp_
 # include <TDF_Label.hxx>
@@ -32,34 +32,33 @@
 
 #include <Base/PyExportImp.h>
 
-#include "MaterialPy.h"
 /*
 class TFunction_Logbook;
 class PyObjectBase;
-class FeaturePy;
+class MaterialPy;
 class TopoDS_Shape;
 */
 namespace App
 {
 
-class Feature;
+class Material;
 
 //===========================================================================
-// FeaturePy - Python wrapper
+// MaterialPy - Python wrapper
 //===========================================================================
 
 /** The DocTypeStd python class
  */
-class AppExport FeaturePy :public Base::PyObjectBase
+class AppExport MaterialPy :public Base::PyObjectBase
 {
 	/// always start with Py_Header
 	Py_Header;
 
 public:
-	FeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
+	MaterialPy(Material *pcMaterial, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
 
-	~FeaturePy();
+	~MaterialPy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
@@ -68,20 +67,17 @@ public:
 	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(FeaturePy,AddFeature)
+	PYFUNCDEF_D(MaterialPy,set)
 
 
 	//---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
-  void SetProperty(const char *attr, PyObject *value);
+  Color getColorFromPy(PyObject *value);
 
-private:
-  Feature *_pcFeature;
 
-  MaterialPy* shadedMaterialPy;
-  MaterialPy* lineMaterialPy;
-  MaterialPy* pointMaterialPy;
+
+  Material *_pcMaterial;
 
 };
 

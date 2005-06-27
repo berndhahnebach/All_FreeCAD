@@ -192,9 +192,9 @@ class BaseExport PyObjectBase : public PyObject
 	static void PyDestructor(PyObject *P)				// python wrapper
 		{  delete ((PyObjectBase *) P);  };
 	/// incref method wrapper (see python extending manual)
-	void _INCREF(void) {Py_INCREF(this);};
+	void IncRef(void) {Py_INCREF(this);};
 	/// decref method wrapper (see python extending manual)	
-	void _DECREF(void) {Py_DECREF(this);};
+	void DecRef(void) {Py_DECREF(this);};
 
 	/** GetAttribute implementation
 	 *  This method implements the retriavel of object attributes.
@@ -209,9 +209,7 @@ class BaseExport PyObjectBase : public PyObject
 	virtual PyObject *_getattr(char *attr);	
 	/// static wrapper for pythons _getattr()
 	static  PyObject *__getattr(PyObject * PyObj, char *attr) 	// This should be the entry in Type. 
-	{ 
-		return ((PyObjectBase*) PyObj)->_getattr(attr); 
-	};
+	  {return ((PyObjectBase*) PyObj)->_getattr(attr);};
    
 	/** SetAttribute implementation
 	 *  This method implements the seting of object attributes.
@@ -225,16 +223,34 @@ class BaseExport PyObjectBase : public PyObject
   static  int __setattr(PyObject *PyObj, 			// This should be the entry in Type. 
                         char *attr, 
                         PyObject *value)
-  {
-    return ((PyObjectBase*) PyObj)->_setattr(attr, value);
-  };
-	/// _repr method
+    {return ((PyObjectBase*) PyObj)->_setattr(attr, value);};
+
+	/** _repr method
+    * Overide this methode to return a string object with some
+    * invormation about the object.
+    * \code
+    * PyObject *MeshFeaturePy::_repr(void)
+    * {
+    *   std::stringstream a;
+    *   a << "MeshFeature: [ ";
+    *   a << "some realy important info about the object!";
+    *   a << "]" << std::endl;
+    *   return Py_BuildValue("s", a.str().c_str());
+    * }
+    * \endcode
+    */
 	virtual PyObject *_repr(void);				
 	/// python wrapper for the _repr() function
 	static  PyObject *__repr(PyObject *PyObj)		
-	{
-    return ((PyObjectBase*) PyObj)->_repr();
-  };
+	  {return ((PyObjectBase*) PyObj)->_repr();};
+
+
+  /** @name helper methodes */
+  //@{
+  /// return a float from an int or flot object, or throw.
+  static float getFloatFromPy(PyObject *value);
+  //@}
+
 
 	/// Type checking							
 	bool isA(PyTypeObject *T);

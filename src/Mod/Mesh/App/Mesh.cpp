@@ -141,7 +141,7 @@ void DataWithPropertyBag::transform(const Matrix4D &rclMat)
 }
 //*************************************************************************************************************
 
-MeshWithProperty::MeshWithProperty(void)
+MeshWithProperty::MeshWithProperty()
 {
   _Mesh = new MeshKernel();
   Base::Console().Log("Create MeshWithProperty: %p \n",this);

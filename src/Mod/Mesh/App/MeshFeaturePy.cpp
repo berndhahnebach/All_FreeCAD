@@ -157,7 +157,7 @@ PYFUNCIMP_D(MeshFeaturePy,getMesh)
   if(! _pcMeshPy)
   {
     _pcMeshPy = new MeshPy(&(_pcFeature->getMesh()));
-    _pcMeshPy->_INCREF();
+    _pcMeshPy->IncRef();
   }
   
   return _pcMeshPy;

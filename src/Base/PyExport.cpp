@@ -50,11 +50,11 @@ using namespace Base;
 
 void PyHandler::IncRef(void)
 {
-	GetPyObject()->_INCREF();
+	GetPyObject()->IncRef();
 }
 
 void PyHandler::DecRef(void)
 {
-	GetPyObject()->_DECREF();
+	GetPyObject()->DecRef();
 }
 

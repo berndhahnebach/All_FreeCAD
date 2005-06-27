@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2005     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,75 +20,39 @@
  *                                                                         *
  ***************************************************************************/
 
- 
 
-
-#ifndef _FeaturePy_h_
-#define _FeaturePy_h_
+#include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
-#include <Base/PyExportImp.h>
+#include "../Base/PyExportImp.h"
+#include "../Base/Console.h"
+#include "../Base/Exception.h"
+using Base::Console;
 
-#include "MaterialPy.h"
-/*
-class TFunction_Logbook;
-class PyObjectBase;
-class FeaturePy;
-class TopoDS_Shape;
-*/
-namespace App
-{
+#include "Material.h"
 
-class Feature;
+using namespace App;
+
 
 //===========================================================================
-// FeaturePy - Python wrapper
+// Material
 //===========================================================================
 
-/** The DocTypeStd python class
- */
-class AppExport FeaturePy :public Base::PyObjectBase
+void Material::set(const char* MatName)
 {
-	/// always start with Py_Header
-	Py_Header;
-
-public:
-	FeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~FeaturePy();
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(FeaturePy,AddFeature)
-
-
-	//---------------------------------------------------------------------
-	// helpers for python exports goes here +++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-  void SetProperty(const char *attr, PyObject *value);
-
-private:
-  Feature *_pcFeature;
-
-  MaterialPy* shadedMaterialPy;
-  MaterialPy* lineMaterialPy;
-  MaterialPy* pointMaterialPy;
-
-};
-
-
-
-} //namespace App
-
-
-
-#endif
+  if(strcmp("Gold",MatName) == 0 ){
+    ambientColor.set(0.3f,0.1f,0.1f);
+    diffuseColor.set(0.8f,0.7f,0.2f);
+    specularColor.set(0.4f,0.3f,0.1f);
+    shininess = .4f;
+  }else if(strcmp("Stone",MatName) == 0 ){
+    ambientColor.set(0.0f,0.0f,0.0f);
+    diffuseColor.set(0.0f,0.0f,0.0f);
+    specularColor.set(0.4f,0.3f,0.1f);
+    shininess = .4f;
+  }else{
+    throw "Unknown material";
+  }
+}

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2005     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,72 +23,80 @@
  
 
 
-#ifndef _FeaturePy_h_
-#define _FeaturePy_h_
+#ifndef _Material_h_
+#define _Material_h_
 
 #ifndef _PreComp_
 # include <TDF_Label.hxx>
 #endif
 
-#include <Base/PyExportImp.h>
+namespace Base
+{
+  class PyObjectBase;
+}
 
-#include "MaterialPy.h"
-/*
-class TFunction_Logbook;
-class PyObjectBase;
-class FeaturePy;
-class TopoDS_Shape;
-*/
 namespace App
 {
 
-class Feature;
 
-//===========================================================================
-// FeaturePy - Python wrapper
-//===========================================================================
-
-/** The DocTypeStd python class
+/** Color class
  */
-class AppExport FeaturePy :public Base::PyObjectBase
+class AppExport Color
 {
-	/// always start with Py_Header
-	Py_Header;
-
 public:
-	FeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
 
-	~FeaturePy();
+  Color()
+    :r(0),g(0),b(0),a(0){}
+  Color(const Color& c)
+    :r(c.r),g(c.g),b(c.b),a(c.a){}
+  bool operator==(const Color& c)
+  {
+    return (c.r==r && c.g==g && c.b==b && c.a==a); 
+  }
+  void set(float R,float G, float B, float A=0.0)
+  {
+    r=R;g=G;b=B;a=A;
+  }
+  Color& operator=(const Color& c)
+  {
+    r=c.r;g=c.g;b=c.b;a=c.a;
+    return *this;
+  }
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+  /// color values, public accesible
+  float r,g,b,a;
+};
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(FeaturePy,AddFeature)
+/** Material class
+ */
+class AppExport Material
+{
+public:
+	/// Constructor
+  Material(void){}
+  Material(const char* MatName){set(MatName);}
+  virtual ~Material() {}
+
+	/** Set a material by name
+	 *  There are some standard materials defined which are:
+   *  - Gold
+   *  - Stone
+   *  The Color and the other properteis of the material are defined in the range [0-1].
+	 */
+  void set(const char* MatName);
 
 
-	//---------------------------------------------------------------------
-	// helpers for python exports goes here +++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-  void SetProperty(const char *attr, PyObject *value);
+  Base::PyObjectBase *Material::GetPyObject(void);
 
-private:
-  Feature *_pcFeature;
-
-  MaterialPy* shadedMaterialPy;
-  MaterialPy* lineMaterialPy;
-  MaterialPy* pointMaterialPy;
+  Color ambientColor;
+  Color diffuseColor;
+  Color specularColor;
+  Color emissiveColor;
+  float shininess;
+  float transparency;
 
 };
 
-
-
 } //namespace App
-
-
 
 #endif

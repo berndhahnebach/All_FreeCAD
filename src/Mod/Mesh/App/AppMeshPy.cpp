@@ -42,6 +42,7 @@
 #include <App/Topology.h>
 
 #include "MeshPy.h"
+#include "Mesh.h"
 #include "MeshAlgos.h"
 
 using namespace Mesh;
@@ -162,12 +163,26 @@ read(PyObject *self, PyObject *args)
   } PY_CATCH;
 }
 
+static PyObject *                        
+newMesh(PyObject *self, PyObject *args)
+
+{
+  if (! PyArg_ParseTuple(args, "") )			 
+    return NULL;                         
+
+  PY_TRY {
+    // load the mesh and create a mesh python object with it
+    return new MeshPy(new MeshWithProperty());    
+  } PY_CATCH;
+}
+
 /* registration table  */
 struct PyMethodDef Mesh_Import_methods[] = {
-    {"open"   ,open , 1},				/* method name, C func ptr, always-tuple */
-    {"save"   ,save , 1},
-    {"import" ,import,1},
-    {"read"   ,read , 1},
+    {"open"   ,open ,   1},				/* method name, C func ptr, always-tuple */
+    {"save"   ,save ,   1},
+    {"import" ,import,  1},
+    {"read"   ,read ,   1},
+    {"newMesh",newMesh, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };
