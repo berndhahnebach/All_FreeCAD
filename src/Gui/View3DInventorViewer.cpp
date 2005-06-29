@@ -55,12 +55,33 @@
 #include <Inventor/projectors/SbSphereSheetProjector.h>
 #include <Inventor/projectors/SbSpherePlaneProjector.h>
 
+
+#include "ViewProvider.h"
+
 // build in Inventor
 
 #include "Icons/default_background.xpm"
 
+
+
 using namespace Gui;
 
+
+
+/// adds an ViewProvider to the view, e.g. from a feature
+void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
+{
+  pcViewProviderRoot->addChild(pcProvider->getRoot());
+  _ViewProviderSet.insert(pcProvider);
+}
+
+void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
+{
+  pcViewProviderRoot->removeChild(pcProvider->getRoot());
+  _ViewProviderSet.erase(pcProvider);
+
+}
+    
 
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
@@ -125,8 +146,8 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     // otherwise take the default image and scale it up to desktop size
     QImage image( default_background );
 
-    int w = QApplication::desktop()->width();
-    int h = QApplication::desktop()->height();
+    int w = QApplication::desktop()->width() + 10;
+    int h = QApplication::desktop()->height() + 10;
     Tools::convert( image.smoothScale(w, h), img->image );
   }
 
@@ -174,6 +195,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   this->foregroundroot->addChild(offset);
   this->foregroundroot->addChild(cube);
   */
+
+  // set the ViewProvider root
+  pcViewProviderRoot = new SoSeparator();
+  setSceneGraph(pcViewProviderRoot);
 }
 
 View3DInventorViewer::~View3DInventorViewer()

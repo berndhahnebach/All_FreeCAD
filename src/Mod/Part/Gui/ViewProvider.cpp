@@ -96,7 +96,7 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 
 }
 
-SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
+void ViewProviderInventorPart::attache(App::Feature *pcFeature)
 {
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
@@ -104,12 +104,13 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
   lHilightColor       = hGrp->GetInt ("HilightColor",0);
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
-  // head separator
-  SoSeparator * SepShapeRoot=new SoSeparator();
-
+  // copy the material properties of the feature
+  setMatFromFeature();
 
 
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape();
+
+
 
   // creating the mesh on the data structure
   BRepMesh::Mesh(cShape,fMeshDeviation);
@@ -117,15 +118,12 @@ SoNode* ViewProviderInventorPart::create(App::Feature *pcFeature)
 	//BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
 
   try{
-    computeFaces   (SepShapeRoot,cShape);
-    computeEdges   (SepShapeRoot,cShape);
-    computeVertices(SepShapeRoot,cShape);
+    computeFaces   (pcRoot,cShape);
+    computeEdges   (pcRoot,cShape);
+    computeVertices(pcRoot,cShape);
   } catch (...){
     Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
-    return 0l;
   }
-
-  return SepShapeRoot;
 }
 
 
@@ -170,13 +168,7 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
   SoSeparator *EdgeRoot = new SoSeparator();
   root->addChild(EdgeRoot);
 
-  SoMaterial *Mat = new SoMaterial();
-  Mat->ambientColor. setValue(0,0,0);
-	Mat->ambientColor. setValue(0,0,0);
-	Mat->specularColor.setValue(0,0,0);
-	Mat->emissiveColor.setValue(0,0,0);
-
-  EdgeRoot->addChild(Mat);  
+  EdgeRoot->addChild(pcLineMaterial);  
 
   // build up map edge->face
   TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
@@ -263,30 +255,12 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 
     // define the indexed face set
     SoLocateHighlight* h = new SoLocateHighlight();
-//    h->
     h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-//    h->color.setValue((float)0.5,(float)0.0,(float)0.5);
 
     SoLineSet * lineset = new SoLineSet;
     h->addChild(lineset);
     EdgeRoot->addChild(h);
 
-    /*
-    GCPnts_TangentialDeflection Algo(aCurve, theU1, theU2, anAngle, TheDeflection);
-    NumberOfPoints = Algo.NbPoints();
-
-    Adaptor3d_Curve          aCurve;
-
-    if (NumberOfPoints > 0) {
-      for (i=1;i<NumberOfPoints;i++) {
-        SeqP.Append(Algo.Value(i));
-      }
-      if (j == nbinter) {
-        SeqP.Append(Algo.Value(NumberOfPoints));
-      }
-	  }
-  */
- 
   }
 
   return true;
@@ -305,10 +279,6 @@ Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, co
     // get the shape 
 		const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
 
-
-
-
-
   }
 
   return true;
@@ -323,6 +293,8 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const
 
   SoSeparator *FaceRoot = new SoSeparator();
   root->addChild(FaceRoot);
+
+  FaceRoot->addChild(pcShadedMaterial);
 
 //  BRepMesh::Mesh(myShape,1.0);
 //	BRepMesh_Discret MESH(1.0,myShape,20.0);

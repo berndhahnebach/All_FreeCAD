@@ -42,10 +42,14 @@
 # pragma warning( disable : 4290 )  // not implemented throw specification
 # pragma warning( disable : 4275 )  
 #endif
-
+namespace App
+{
+  class Feature;
+}
 
 namespace Gui {
 
+class ViewProviderInventor;
 class ApplicationWindow;
 
 /** The Gui Document
@@ -164,6 +168,9 @@ private:
   Base::PyHandle<App::Document>    _hcDocument;
 
   Handle(TPrsStd_AISPresentation) _ActivePresentation;
+
+
+  std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMap;
 
   /** @name attributes for the UNDO REDO facility
    */

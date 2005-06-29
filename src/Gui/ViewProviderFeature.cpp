@@ -28,7 +28,9 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "../Base/Console.h"
+#include <Base/Console.h>
+#include <App/Material.h>
+#include <App/Feature.h>
 #include "ViewProviderFeature.h"
 #include "Tree.h"
 
@@ -41,6 +43,11 @@ using namespace Gui;
       
 ViewProviderInventorFeature::ViewProviderInventorFeature()
 {
+  pcShadedMaterial = new SoMaterial;
+  pcLineMaterial   = new SoMaterial;
+  pcPointMaterial  = new SoMaterial;
+  fLineSize        = 0.0;
+  fPointSize       = 0.0;
 
 }
 
@@ -50,6 +57,26 @@ ViewProviderInventorFeature::~ViewProviderInventorFeature()
 
 }
 
+void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
+{
+  pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+  pcSoMat->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+  pcSoMat->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+  pcSoMat->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+  pcSoMat->shininess.setValue(Mat.shininess);
+  pcSoMat->transparency.setValue(Mat.transparency);
+
+}
+
+void ViewProviderInventorFeature::setMatFromFeature(void)
+{
+  copy(pcFeature->_solidMaterial,pcShadedMaterial);
+  copy(pcFeature->_lineMaterial,pcLineMaterial);
+  copy(pcFeature->_pointMaterial,pcPointMaterial);
+  fLineSize        = pcFeature->_lineSize;
+  fPointSize       = pcFeature->_pointSize;
+
+}
 
 
 //===========================================================================

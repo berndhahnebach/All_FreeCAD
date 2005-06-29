@@ -62,6 +62,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoNormal.h>
 #include <Inventor/nodes/SoNormalBinding.h>
+#include <Inventor/nodes/SoSwitch.h>
 
 #endif  //_PreComp_
 

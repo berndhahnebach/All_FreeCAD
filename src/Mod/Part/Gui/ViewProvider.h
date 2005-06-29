@@ -38,26 +38,28 @@ namespace PartGui {
 class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
+  /// constructor
   ViewProviderInventorPart();
-
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
+  /// destructor
   virtual ~ViewProviderInventorPart();
 
-  virtual SoNode* create(App::Feature *pcFeature);
+
+  virtual void attache(App::Feature *pcFeature);
+
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName){};
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
+  /// Update the Part representation
+  virtual void update(const ChangeType&){}
+
 
 protected:
   Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
   Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
   Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
-  void             transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
 
   // setings stuff
   FCParameterGrp::handle hGrp;

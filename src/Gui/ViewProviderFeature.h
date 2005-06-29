@@ -28,9 +28,12 @@
 #include "ViewProvider.h"
 
 
+class SoMaterial;
+
 namespace App
 {
   class Feature;
+  class Material;
 }
 
 
@@ -40,21 +43,27 @@ namespace Gui {
 class GuiExport ViewProviderInventorFeature:public ViewProviderInventor
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
+  /// constructor.
   ViewProviderInventorFeature();
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
+  /// destructor.
   virtual ~ViewProviderInventorFeature();
 
-  virtual SoNode* create(App::Feature *pcFeature)=0;
+  virtual void attache(App::Feature *pcFeature)=0;
 
+  /// helper to copy material from a feature to a SoMeterial Node
+  void copy(const App::Material&, SoMaterial*);
+  /// helper to set the materials
+  void setMatFromFeature(void);
 
+protected:
+  SoMaterial  *pcShadedMaterial;
+  SoMaterial  *pcLineMaterial;
+  SoMaterial  *pcPointMaterial;
+  float fLineSize;
+  float fPointSize;
+
+  App::Feature *pcFeature;
 };
 
 

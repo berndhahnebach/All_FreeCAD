@@ -269,6 +269,7 @@ int Document::GetAvailableRedos() const
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::Recompute()
 {  
+  DocChanges DocChange;
   
   TDF_MapIteratorOfLabelMap It;
 
@@ -282,13 +283,24 @@ void Document::Recompute()
     Handle(TDataStd_Name) hName;
     if(! It.Key().FindAttribute(TDataStd_Name::GetID(),hName))
       throw Base::Exception("DocTypeStd::UpdateDoc() internal error, feature label with no name\n");
-    Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
+
+    // map the new features
+    if (Feat->_eStatus == Feature::New)
+      DocChange.NewFeatures.push_back(Feat);
 
 		if (Feat->MustExecute(_LogBook))
 		{
 			//_LogBook.SetTouched(It.Key());
-			if(Feat->Execute(_LogBook))
-        Base::Console().Message("Recompute of Feature failed\n");
+      Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
+      if(Feat->Execute(_LogBook)){
+        Feat->_eStatus = Feature::Error;
+        Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getStatus());
+        DocChange.ErrorFeatures.push_back(Feat);
+      }else{
+        DocChange.UpdatedFeatures.push_back(Feat);
+        Feat->_eStatus = Feature::Valid;
+
+      }
 		}
 
   }
@@ -297,7 +309,8 @@ void Document::Recompute()
 
   _hDoc->Recompute(); 
 
-  Notify(DocChanges());
+  Notify(DocChange);
+
 }
 
 Feature *Document::AddFeature(const char* sName)
@@ -314,6 +327,10 @@ Feature *Document::AddFeature(const char* sName)
 		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) sName ));
 		// the rest of the setup do the feature itself
 		pcFeature->AttachLabel(FeatureLabel,this);
+
+    // set the status of the feature to New
+    pcFeature->_eStatus = Feature::New;
+
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
 

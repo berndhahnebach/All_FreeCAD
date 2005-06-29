@@ -127,7 +127,6 @@ PyObject *MaterialPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	PY_TRY{
 		if (Base::streq(attr, "ambientColor"))
     {
       if(_pcMaterial->ambientColor.a == 0.0)			
@@ -136,7 +135,6 @@ PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only
 			  return Py_BuildValue("(ffff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b,_pcMaterial->ambientColor.a); 
     }else
 	    _getattr_up(PyObjectBase); 						
-	}PY_CATCH;
 } 
 
 
@@ -167,13 +165,11 @@ Color MaterialPy::getColorFromPy(PyObject *value)
 
 int MaterialPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	PY_TRY{
 	if (Base::streq(attr, "ambientColor")){						// settable new state
 		_pcMaterial->ambientColor = getColorFromPy(value); 
 		return 0;
   }else
 	  return PyObjectBase::_setattr(attr, value); 						
-	}PY_CATCH;
 } 
 
 

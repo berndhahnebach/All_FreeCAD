@@ -111,7 +111,12 @@ PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 
 Base::PyObjectBase *Feature::GetPyObject(void)
 {
-	return new FeaturePy(this);
+  if(!pcFeaturePy){
+    pcFeaturePy = new FeaturePy(this);
+    pcFeaturePy->IncRef();
+  }
+  pcFeaturePy->IncRef();
+	return pcFeaturePy; 
 }
 
 
@@ -122,9 +127,10 @@ FeaturePy::~FeaturePy()						// Everything handled in parent
 {
 	Base::Console().Log("Destroy FeaturePy: %p \n",this);
 
-  shadedMaterialPy->DecRef();
+  if(shadedMaterialPy) shadedMaterialPy->DecRef();
+  if(lineMaterialPy) lineMaterialPy->DecRef();
+  if(pointMaterialPy) pointMaterialPy->DecRef();
 }
-
 
 //--------------------------------------------------------------------------
 // FeaturePy representation

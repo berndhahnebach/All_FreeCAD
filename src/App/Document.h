@@ -71,12 +71,17 @@ namespace App
 */
 class AppExport DocChanges
 {
+public:
+  std::vector<Feature*> NewFeatures;
+  std::vector<Feature*> UpdatedFeatures;
+  std::vector<Feature*> ErrorFeatures;
+  std::vector<Feature*> DeletedFeatures;
 };
 
 
 
 /** The Document
- *  This is bisides the Applcation class the most importand class in FreeCAD
+ *  This is bisides the Application class the most importand class in FreeCAD
  *  It wrapps the OCC Document and contains all the data of the opend, saved
  *  or newly created FreeCAD Document. The data are organized in trees with
  *  the FCLabel class.

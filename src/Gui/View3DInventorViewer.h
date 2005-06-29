@@ -35,7 +35,7 @@ class SbSphereSheetProjector;
 
 namespace Gui {
 
-
+class ViewProviderInventor;
 
 
 /** The Inventor viewer
@@ -44,10 +44,19 @@ namespace Gui {
 class View3DInventorViewer: public SoQtViewer
 {
 public:
-    View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true);
-    ~View3DInventorViewer();
+  View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true);
+  ~View3DInventorViewer();
+
+  /// adds an ViewProvider to the view, e.g. from a feature
+  void addViewProvider(ViewProviderInventor*);
+  /// remove a ViewProvider
+  void removeViewProvider(ViewProviderInventor*);
+    
 
 protected:
+
+  std::set<ViewProviderInventor*> _ViewProviderSet;
+
   virtual void actualRedraw(void);
   virtual SbBool processSoEvent(const SoEvent * const ev);
 
@@ -55,8 +64,6 @@ protected:
   void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
   void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue);
   void View3DInventorViewer::spin(const SbVec2f & pointerpos);
-
-protected:
 
   SbVec2f lastmouseposition;
   SbPlane panningplane;
@@ -90,6 +97,8 @@ private:
   SoSeparator * bckgroundroot;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;
+
+  SoSeparator * pcViewProviderRoot;
 
 };
 

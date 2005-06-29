@@ -34,13 +34,16 @@
 #endif
 
 
-#include "../App/Document.h"
+#include <App/Document.h>
+#include <App/Feature.h>
 #include "Application.h"
 #include "Document.h"
-#include "View3D.h"
+//#include "View3D.h"
 #include "View3DInventor.h"
-#include "View3DInventorEx.h"
+#include "View3DInventorViewer.h"
+//#include "View3DInventorEx.h"
 #include "BitmapFactory.h"
+#include "ViewProviderFeature.h"
 
 using namespace Gui;
 
@@ -61,6 +64,7 @@ Document::Document(App::Document* pcDocument,ApplicationWindow * app, const char
 
   _pcDocument->Attach(this);
 
+  /*
   // seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
   TCollection_ExtendedString a3DName("Visu3D");
   _hViewer = Viewer(getenv("DISPLAY"),
@@ -86,7 +90,7 @@ Document::Document(App::Document* pcDocument,ApplicationWindow * app, const char
   hTrihedron = new AIS_Trihedron(new Geom_Axis2Placement(gp::XOY()));
   _hContext->Display(hTrihedron);
   _hContext->Deactivate(hTrihedron);
-
+*/
   // open at least one viewer
   createView("View3DIv");
 }
@@ -107,6 +111,57 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
 #ifdef FC_LOGUPDATECHAIN
   Base::Console().Log("Acti: Gui::Document::OnChange()");
 #endif
+  std::list<Gui::BaseView*>::iterator VIt;
+
+  // remove the representation of Features no longer exist
+  std::vector<App::Feature*>::const_iterator It;
+  for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
+  {
+    // cycling to all views of the document
+    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+    {
+      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+      if(pcIvView)
+        pcIvView->getViewer()->removeViewProvider(_ViewProviderMap[*It]);
+    }
+    
+    delete _ViewProviderMap[*It];
+    _ViewProviderMap.erase(*It);
+  }
+
+  // set up new providers
+  for(It=Reason.NewFeatures.begin();It!=Reason.NewFeatures.end();It++)
+  {
+    std::string cName = (*It)->Type();
+    // check if still the same ViewProvider
+    ViewProviderInventorFeature *pcProvider = ViewProviderInventorFeatureFactory().Produce((*It)->Type());
+    _ViewProviderMap[*It] = pcProvider;
+    if(pcProvider)
+    {
+      // if succesfully created set the right name an calculate the view
+      pcProvider->attache(*It);
+
+      // cycling to all views of the document
+      for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+      {
+        View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+        if(pcIvView)
+          pcIvView->getViewer()->addViewProvider(pcProvider);
+      }
+    }else{
+      Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->Type());
+    }
+  }
+
+  // update recalculated features
+  for(It=Reason.UpdatedFeatures.begin();It!=Reason.UpdatedFeatures.end();It++)
+  {
+    _ViewProviderMap[*It]->update(ViewProvider::All);
+  }
+
+  //getViewer()->addViewProvider()
+  
+  
   onUpdate();
 }
 
@@ -148,9 +203,9 @@ void Document::createView(const char* sType)
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
     pcView3D = new Gui::View3DInventor(this,_pcAppWnd,"View3DIv");
-  }else if(strcmp(sType,"View3DOCC") == 0){
+  }else /* if(strcmp(sType,"View3DOCC") == 0){
     pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
-  }else
+  }else*/
     Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
 
   QString aName = tr("%1%2:%3").arg(tr("Unnamed")).arg(_iDocId).arg(_iWinCount++);
@@ -206,8 +261,8 @@ void Document::onUpdate(void)
   TDF_Label L = _pcDocument->GetActive();
 
   if(! L.IsNull()){
-
-// Attic will removed soon ####################################################################
+/*
+   // Attic will removed soon ####################################################################
    if(!_ActivePresentation.IsNull())
     _ActivePresentation->Display(0);
     //_hContext->Display(_ActivePresentation->GetAIS(),0);
@@ -218,7 +273,7 @@ void Document::onUpdate(void)
     _ActivePresentation->Display(1);
     //_hContext->Display(_ActivePresentation->GetAIS(),1);
 // ##############################################################################################
-
+*/
 
     
 

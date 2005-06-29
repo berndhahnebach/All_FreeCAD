@@ -44,7 +44,6 @@ using namespace Gui;
        
 ViewProvider::ViewProvider()
 {
-
 }
 
 ViewProvider::~ViewProvider()
@@ -93,7 +92,7 @@ QListViewItem* ViewProviderTree::create()
        
 ViewProviderInventor::ViewProviderInventor()
 {
-
+  pcRoot = new SoSeparator();
 }
 
 

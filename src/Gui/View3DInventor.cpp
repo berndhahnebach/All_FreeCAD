@@ -61,15 +61,15 @@ using namespace Gui;
 View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
-  
+  // important for highlighting 
   setMouseTracking(true);
+  // accept drops on the window, get handled in dropEvent, dragEnterEvent   
+  setAcceptDrops(true);
 
   pcActViewProvider = 0l;
   
   _viewer = new View3DInventorViewer(this);
 
-  // accept drops on the window, get handled in dropEvent, dragEnterEvent   
-  setAcceptDrops(true);
 
 
   setViewerDefaults();
@@ -148,7 +148,7 @@ void View3DInventor::setViewerDefaults(void)
   _viewer->viewAll();
 //  _viewer->setDecoration(false);
 
-  _viewer->setSceneGraph(pcSepRoot);
+//  _viewer->setSceneGraph(pcSepRoot);
 
   //_viewer->setAntialiasing(true,2);
 //  _viewer->setSceneGraph(new SoCone);
@@ -217,7 +217,7 @@ void View3DInventor::onUpdate(void)
 #ifdef FC_LOGUPDATECHAIN
   Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
 #endif
-
+/*
   App::Feature *pcActFeature = getAppDocument()->GetActiveFeature();
 
   if(pcActFeature)
@@ -227,7 +227,8 @@ void View3DInventor::onUpdate(void)
     if(cName == cViewProviderName && pcActViewProvider)
     {
       // if the same just calculate the new representation
-      SoNode* Node = pcActViewProvider->create(pcActFeature);
+      pcActViewProvider->attache(pcActFeature);
+      SoNode* Node = pcActViewProvider->getRoot();
       pcSepRoot->addChild(Node);
       //_viewer->setSceneGraph(Node);
     }else{
@@ -239,7 +240,8 @@ void View3DInventor::onUpdate(void)
       {
         // if succesfully created set the right name an calculate the view
         cViewProviderName = pcActFeature->Type();
-        SoNode* Node = pcActViewProvider->create(pcActFeature);
+        pcActViewProvider->attache(pcActFeature);
+        SoNode* Node = pcActViewProvider->getRoot();
         pcSepRoot->addChild(Node);
         //_viewer->setSceneGraph(Node);
       }else{
@@ -249,6 +251,9 @@ void View3DInventor::onUpdate(void)
     }
 
   }
+
+*/
+  
 }
 void View3DInventor::hideEvent ( QHideEvent * cEvent )
 {

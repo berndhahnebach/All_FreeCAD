@@ -44,7 +44,6 @@ class SoMaterial;
 namespace Gui {
 class Document;
 class TreeView;
-class View3D;
 class View3DInventor;
 class View3DInventorViewer;
 class MyView3DInventor;
@@ -88,6 +87,8 @@ public:
   void showDimension (void) const;
 
   virtual void hideEvent             ( QHideEvent  * );
+
+  View3DInventorViewer *getViewer(void) {return _viewer;}
 
 //signals:
   //void message(const QString&, int );

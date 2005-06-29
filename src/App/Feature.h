@@ -49,6 +49,7 @@ namespace App
 class Property;
 class Document;
 class FeatureDataProvider;
+class FeaturePy;
 
 /** Base class of all Feature classes in FreeCAD
  */
@@ -57,7 +58,7 @@ class AppExport Feature: public Base::PyHandler
 public:
 	/// Constructor
 	Feature(void);
-  virtual ~Feature() {}
+  virtual ~Feature();
 
 	/** Init the Label the Feature is attached to
 	 *  This methode will be called when the Feature is mounted 
@@ -71,6 +72,24 @@ public:
 
   /// Returns the Name/Type of the feature
   virtual const char *Type(void)=0;
+
+	/** @name status methodes of the feature */
+	//@{
+  /// status types
+  enum Status 
+  {
+    Valid,
+    New,
+    Changed,
+    Inactive,
+    Error
+  };
+
+  /// gets the status
+  Status getStatus(void){ return _eStatus;}
+  /// get the status Message (if any)
+  const char *getStatusMessage(void){return _cStatusMessage.c_str();}
+  //@}
 
 	/** @name methodes used for recalculation (update) */
 	//@{
@@ -148,13 +167,7 @@ public:
   }
 
   friend class FeaturePy;
-
-protected:
-	TDF_Label            _cFeatureLabel;
-	int                  _nextFreeLabel;
-  std::map<std::string,int> _PropertiesMap;
-
-  Document* _pDoc;
+  friend class Document;
 
   // Material stuff
   Material    _solidMaterial;
@@ -163,6 +176,19 @@ protected:
   Material    _pointMaterial;
   float       _pointSize;
   std::string _showMode;
+
+protected:
+	TDF_Label            _cFeatureLabel;
+	int                  _nextFreeLabel;
+  std::map<std::string,int> _PropertiesMap;
+
+  Document* _pDoc;
+
+  FeaturePy* pcFeaturePy;
+
+  Status _eStatus;
+  std::string _cStatusMessage;
+
 };
 
 

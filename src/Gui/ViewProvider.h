@@ -26,6 +26,7 @@
 
 class SoNode;
 class QListViewItem;
+class SoSeparator;
 
 namespace Gui {
 
@@ -46,6 +47,27 @@ public:
    * A more elaborate description of the destructor.
    */
   virtual ~ViewProvider();
+
+	/** @name status methodes of the feature */
+	//@{
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName)=0;
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void)=0;
+  /// change types
+  enum ChangeType 
+  {
+    All,
+    View
+  };
+
+  /** update the content of the ViewProvider
+    * this methode have to implement the recalcualtion
+    * of the ViewProvider. There are different reasons to 
+    * update. E.g. only the view attribute has changed, or
+    * the data has manipulated.
+    */
+  virtual void update(const ChangeType&)=0;
 };
 
 
@@ -71,17 +93,18 @@ public:
 class GuiExport ViewProviderInventor:public ViewProvider
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
+  /// constructor.
   ViewProviderInventor();
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
+  /// destructor.
   virtual ~ViewProviderInventor();
+
+  // returns the root node of the 
+  SoSeparator* getRoot(void){return pcRoot;}
+
+
+protected:
+  SoSeparator *pcRoot;
 
 };
 

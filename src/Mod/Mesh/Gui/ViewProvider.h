@@ -28,6 +28,8 @@
 
 class SoSeparator;
 class SbVec3f;
+class SoSwitch;
+
 namespace Mesh {
   class MeshWithProperty;
 }
@@ -45,16 +47,32 @@ public:
   ViewProviderInventorMesh();
   virtual ~ViewProviderInventorMesh();
 
+
   /** 
    * Extracts the mesh data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
    */
-  virtual SoNode* create(App::Feature *pcFeature);
+  virtual void attache(App::Feature *);
+
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName){};
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
+  /// Update the Mesh representation
+  virtual void update(const ChangeType&);
+
 
   /// helper methode to build up the FaceSet
-  SoSeparator* createMesh(Mesh::MeshWithProperty *pcMesh);
+  void createMesh(Mesh::MeshWithProperty *pcMesh);
 
 protected:
+
+  SoCoordinate3 *pcMeshCoord;
+  SoNormal      *pcMeshNormal;
+  SoFaceSet     *pcMeshFaces;
+
+  SoSwitch      *pcSwitch;
+
 };
 
 } // namespace MeshGui

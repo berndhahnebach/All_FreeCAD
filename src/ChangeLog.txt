@@ -569,3 +569,9 @@ Version: V0.1B118 Date: Tue Jun 07 15:32:43 2005 +++++++++++++++++++++++++++++++
 + RFE 1223968 implemented (Pasting scripts in the python console)
 + Bug 1224686 Action.h: command not found error during linux make
   Check for QT_UIC and QT_MOC again after the Qt test
+
+Version: V0.1B119 Date: Wed Jun 29 12:57:43 2005 +++++++++++++++++++++++++++++++
++ reworking recalculation of the document
++ implementing Feature viewing modes and material
+  - Python binding for that all
++ ViewProvider framework in Inventor viewer

@@ -37,13 +37,14 @@
 # include <sstream>
 #endif
 
-#include "../Base/PyExportImp.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
+#include <Base/PyExportImp.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 using Base::Console;
 
 #include "Document.h"
 #include "Feature.h"
+#include "FeaturePy.h"
 #include "FeatureAttr.h"
 #include "Function.h"
 #include "Property.h"
@@ -57,7 +58,7 @@ using namespace App;
 //===========================================================================
 
 Feature::Feature(void)
-:_nextFreeLabel(1)
+:_nextFreeLabel(1),pcFeaturePy(0)
 {
   _solidMaterial.ambientColor.set(0.2f,0.2f,0.2f);
   _solidMaterial.diffuseColor.set(0.8f,0.8f,0.8f);
@@ -70,6 +71,11 @@ Feature::Feature(void)
   _pointMaterial.diffuseColor.set(0.1f,0.1f,0.1f);;
   _pointSize = 1.0;
   _showMode = "Shaded";
+}
+
+Feature::~Feature(void)
+{
+  pcFeaturePy->DecRef();
 }
 
 
