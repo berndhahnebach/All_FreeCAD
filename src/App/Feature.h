@@ -143,15 +143,18 @@ public:
 	 *  
 	 */
 	void TouchProperty(const char *Name);
+  /// set this feature touched (cause recomputation
+	void Touch(void);
 	//@}
 
 
 	/** @name methodes for conviniant handling of DataProvider
+    * This functionality is sceduled for 0.3
     * @see FeatureDataProvider
     */
 	//@{
+  /// Adds a new DataProvider
   FeatureDataProvider *AddDataProvider(const char* Name);
-
 
 	//@}
 

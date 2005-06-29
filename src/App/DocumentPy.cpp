@@ -131,7 +131,6 @@ PyObject *DocumentPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	PY_TRY{
 		if (streq(attr, "UndoLimit"))						
 			return Py_BuildValue("i", _pcDoc->GetUndoLimit()); 
 		else if (streq(attr, "AvailableUndos"))				
@@ -156,7 +155,6 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 			return Py_BuildValue("u", _pcDoc->StorageFormat()); 
 		else
 			_getattr_up(PyObjectBase); 						
-	}PY_CATCH;
 } 
 
 int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state

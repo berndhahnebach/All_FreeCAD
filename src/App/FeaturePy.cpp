@@ -115,7 +115,7 @@ Base::PyObjectBase *Feature::GetPyObject(void)
     pcFeaturePy = new FeaturePy(this);
     pcFeaturePy->IncRef();
   }
-  pcFeaturePy->IncRef();
+//  pcFeaturePy->IncRef();
 	return pcFeaturePy; 
 }
 
@@ -207,6 +207,9 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
     if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
     {
       _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
+    }else if( PyString_Check( value ))
+    {
+      _pcFeature->_solidMaterial = Material(PyString_AsString(value));
     }else
       throw "material expected for that attribute";
   }else	if (Base::streq(attr, "lineMaterial")){	
@@ -225,6 +228,8 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
     _pcFeature->_lineSize = getFloatFromPy(value);
   }else	if (Base::streq(attr, "pointSize")){	
     _pcFeature->_pointSize = getFloatFromPy(value);
+  }else	if (Base::streq(attr, "showMode")){	
+    _pcFeature->_showMode = PyString_AsString(value);
   }else{
       // search in PropertyList
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){

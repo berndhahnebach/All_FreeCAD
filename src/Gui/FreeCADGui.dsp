@@ -2770,6 +2770,10 @@ InputName=View3DInventor
 # End Source File
 # Begin Source File
 
+SOURCE=.\View3DInventorExamples.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\View3DInventorExamples.h
 # End Source File
 # Begin Source File

@@ -330,7 +330,7 @@ Feature *Document::AddFeature(const char* sName)
 
     // set the status of the feature to New
     pcFeature->_eStatus = Feature::New;
-
+    TouchState(FeatureLabel);
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
 

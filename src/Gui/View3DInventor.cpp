@@ -50,7 +50,6 @@
 
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"
-#include "MouseModel.h"
 
 
 #include "Icons/default_background.xpm"

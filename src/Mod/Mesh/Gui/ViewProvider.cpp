@@ -190,9 +190,7 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcPointRoot->addChild(pcMeshCoord);
   pcPointRoot->addChild(pcMeshFaces);
 
-  // flat shaded (Normal) ------------------------------------------
-//  SoSeparator* pcFlatWireRoot1 = new SoSeparator();
-//  SoSeparator* pcFlatWireRoot2 = new SoSeparator();
+  // wire shaded  ------------------------------------------
   pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
   pcBinding = new SoNormalBinding();
@@ -215,8 +213,6 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcFlatWireRoot->addChild(pcLineMaterial);
   pcFlatWireRoot->addChild(pcMeshCoord);
   pcFlatWireRoot->addChild(pcMeshFaces);
-//  pcFlatWireRoot->addChild(pcFlatWireRoot1);
-//  pcFlatWireRoot->addChild(pcFlatWireRoot2);
  
 
   // puting all togetern with a switch
@@ -229,9 +225,41 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
 
   pcRoot->addChild(pcSwitch);
 
+  setMode(pcFeat->_showMode.c_str());
 }
 
 void ViewProviderInventorMesh::update(const ChangeType& Reason)
 {
   Reason;
+  // set new view modes
+  setMode(pcFeature->_showMode.c_str());
+  // copy the material properties of the feature
+  setMatFromFeature();
+
+}
+
+void ViewProviderInventorMesh::setMode(const char* ModeName)
+{
+  if(stricmp("Flat",ModeName)==0)
+    pcSwitch->whichChild = 0; 
+  else if(stricmp("Wire",ModeName)==0)
+    pcSwitch->whichChild = 1; 
+  else if(stricmp("Point",ModeName)==0)
+    pcSwitch->whichChild = 2; 
+  else if(stricmp("FlatWire",ModeName)==0)
+    pcSwitch->whichChild = 3; 
+  else 
+    Base::Console().Warning("Unknown mode in ViewProviderInventorMesh::setMode(), ignored");
+}
+
+std::vector<std::string> ViewProviderInventorMesh::getModes(void)
+{
+  std::vector<std::string> StrList;
+
+  StrList.push_back("Flat");
+  StrList.push_back("Wire");
+  StrList.push_back("Point");
+  StrList.push_back("FlatWire");
+
+  return StrList;
 }

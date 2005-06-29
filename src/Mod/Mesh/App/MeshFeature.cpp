@@ -44,6 +44,7 @@ using namespace Mesh;
 //===========================================================================
 
 MeshFeature::MeshFeature()
+:pcMeshFeaturePy(0)
 {
 }
 
@@ -69,10 +70,16 @@ MeshWithProperty& MeshFeature::getMesh()
 void MeshFeature::setMesh(const MeshWithProperty& New)
 {
   _cMesh = New;
+  Touch();
 }
 
 Base::PyObjectBase *MeshFeature::GetPyObject(void)
 {
-  return new MeshFeaturePy(this);
+  if(!pcMeshFeaturePy){
+    pcMeshFeaturePy = new MeshFeaturePy(this);
+    pcMeshFeaturePy->IncRef();
+  }
+	return pcMeshFeaturePy; 
+
 }
 

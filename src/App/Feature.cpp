@@ -70,7 +70,7 @@ Feature::Feature(void)
   _lineSize = 2.0f;
   _pointMaterial.diffuseColor.set(0.1f,0.1f,0.1f);;
   _pointSize = 1.0;
-  _showMode = "Shaded";
+  _showMode = "Flat";
 }
 
 Feature::~Feature(void)
@@ -147,6 +147,11 @@ const char *Feature::GetStringProperty(const char *Name)
 void Feature::TouchProperty(const char *Name)
 {
     _pDoc->TouchState( _cFeatureLabel.FindChild(_PropertiesMap[Name]) );
+    _pDoc->TouchState( _cFeatureLabel );
+}
+
+void Feature::Touch(void)
+{
     _pDoc->TouchState( _cFeatureLabel );
 }
 

@@ -47,11 +47,13 @@ void Material::set(const char* MatName)
     diffuseColor.set(0.8f,0.7f,0.2f);
     specularColor.set(0.4f,0.3f,0.1f);
     shininess = .4f;
+    transparency = .0f;
   }else if(strcmp("Stone",MatName) == 0 ){
     ambientColor.set(0.0f,0.0f,0.0f);
     diffuseColor.set(0.0f,0.0f,0.0f);
     specularColor.set(0.4f,0.3f,0.1f);
     shininess = .4f;
+    transparency = .0f;
   }else{
     throw "Unknown material";
   }

@@ -133,7 +133,26 @@ PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only
 			  return Py_BuildValue("(fff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b); 
       else
 			  return Py_BuildValue("(ffff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b,_pcMaterial->ambientColor.a); 
+    }else	if (Base::streq(attr, "diffuseColor"))
+    {
+      if(_pcMaterial->diffuseColor.a == 0.0)			
+			  return Py_BuildValue("(fff)",_pcMaterial->diffuseColor.r,_pcMaterial->diffuseColor.g,_pcMaterial->diffuseColor.b); 
+      else
+			  return Py_BuildValue("(ffff)",_pcMaterial->diffuseColor.r,_pcMaterial->diffuseColor.g,_pcMaterial->diffuseColor.b,_pcMaterial->diffuseColor.a); 
+    }else	if (Base::streq(attr, "specularColor"))
+    {
+      if(_pcMaterial->specularColor.a == 0.0)			
+			  return Py_BuildValue("(fff)",_pcMaterial->specularColor.r,_pcMaterial->specularColor.g,_pcMaterial->specularColor.b); 
+      else
+			  return Py_BuildValue("(ffff)",_pcMaterial->specularColor.r,_pcMaterial->specularColor.g,_pcMaterial->specularColor.b,_pcMaterial->specularColor.a); 
+    }else	if (Base::streq(attr, "shininess"))
+    {
+			return Py_BuildValue("f",_pcMaterial->shininess); 
+    }else	if (Base::streq(attr, "transparency"))
+    {
+			return Py_BuildValue("f",_pcMaterial->transparency); 
     }else
+
 	    _getattr_up(PyObjectBase); 						
 } 
 
@@ -168,7 +187,20 @@ int MaterialPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 	if (Base::streq(attr, "ambientColor")){						// settable new state
 		_pcMaterial->ambientColor = getColorFromPy(value); 
 		return 0;
+  }else if (Base::streq(attr, "diffuseColor")){						// settable new state
+		_pcMaterial->diffuseColor = getColorFromPy(value); 
+		return 0;
+  }else if (Base::streq(attr, "specularColor")){						// settable new state
+		_pcMaterial->specularColor = getColorFromPy(value); 
+		return 0;
+  }else if (Base::streq(attr, "shininess")){						// settable new state
+		_pcMaterial->shininess = getFloatFromPy(value); 
+		return 0;
+  }else if (Base::streq(attr, "transparency")){						// settable new state
+		_pcMaterial->transparency = getFloatFromPy(value); 
+		return 0;
   }else
+
 	  return PyObjectBase::_setattr(attr, value); 						
 } 
 
