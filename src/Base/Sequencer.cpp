@@ -232,6 +232,6 @@ void ConsoleSequencer::nextStep()
 void ConsoleSequencer::resetData()
 {
   SequencerBase::resetData();
-  printf("\n");
+  printf("\t\t\t\t\t\t\t\t\r");
 }
 
