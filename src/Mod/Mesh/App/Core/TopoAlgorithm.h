@@ -57,6 +57,7 @@ class MeshFacet;
  * 
  * cTopAlg.Commit(); // now the data structure is modified
  * \endcode
+ * @author Werner Mayer
  */
 class AppMeshExport MeshTopoAlgorithm
 {
@@ -216,6 +217,41 @@ public:
     }
     return true;
   }
+};
+
+/**
+ * The MeshComponents class searches for topologic independent "isles" of the 
+ * given mesh structure. 
+ *
+ * @author Werner Mayer
+ */
+class AppMeshExport MeshComponents
+{
+public:
+  enum TMode {OverEdge, OverPoint};
+
+  MeshComponents( MeshKernel& rclMesh );
+  ~MeshComponents();
+
+  /**
+	 * Searches for 'isles' of the mesh. If \a tMode is \a OverEdge then facets sharing the same edge are
+   * regarded as connected, if \a tMode is \a OverPoint then facets sharing a common point are regarded
+   * as connected.
+   */ 
+  void SearchForComponents(TMode tMode, std::vector<std::vector<unsigned long> >& aclT) const;
+
+protected:
+  // for sorting of elements
+  struct CNofFacetsCompare : public std::binary_function<const std::vector<unsigned long>&, 
+                                                         const std::vector<unsigned long>&, bool>
+  {
+    bool operator () (const std::vector<unsigned long> &rclC1, const std::vector<unsigned long> &rclC2)
+    {
+      return rclC1.size() > rclC2.size();
+    }
+  };
+protected:
+	MeshKernel& _rclMesh;
 };
 
 } // namespace Mesh

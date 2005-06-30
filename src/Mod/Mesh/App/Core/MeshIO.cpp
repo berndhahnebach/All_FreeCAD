@@ -169,7 +169,11 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
   if (ulCt > ulFac)
     return false;// not a valid STL file
 
+#ifdef Use_EdgeList
   Base::Sequencer().start("create mesh structure...", ulCt * 4 + 1);
+#else
+  Base::Sequencer().start("create mesh structure...", ulCt * 3 / 2);
+#endif
 
   MeshPointBuilder  clMap;
   clMap.resize(ulCt*3);

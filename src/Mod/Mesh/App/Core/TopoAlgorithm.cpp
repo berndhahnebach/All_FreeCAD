@@ -930,3 +930,78 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
 #endif
   }
 }
+
+// ---------------------------------------------------------------------------
+
+/**
+ * Some important formulas:
+ *
+ * Ne = 3Nv - Nb + 3B + 6(G-R)
+ * Nt = 2Nv - Nb + 2B + 4(G-R)
+ *
+ * Ne <= 3Nv + 6(G-R)
+ * Nt <= 2Nv + 4(G-R)
+ *
+ * Ne ~ 3Nv, Nv >> G, Nv >> R
+ * Nt ~ 2Nv, Nv >> G, Nv >> R
+ *
+ * Ne = #Edges
+ * Nt = #Facets
+ * Nv = #Vertices
+ * Nb = #Boundary vertices
+ * B  = #Boundaries
+ * G  = Genus (Number of holes)
+ * R  = #components
+ */
+
+MeshComponents::MeshComponents( MeshKernel& rclMesh )
+: _rclMesh(rclMesh)
+{
+}
+
+MeshComponents::~MeshComponents()
+{
+}
+
+void MeshComponents::SearchForComponents(TMode tMode, std::vector<std::vector<unsigned long> >& aclT) const
+{
+  // reset flag
+  MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
+  MeshVisitFacets clVisit(_rclMesh);
+
+  // all facets
+  std::vector<unsigned long> aulAllFacets(_rclMesh.CountFacets());
+  unsigned long k = 0;
+  for (std::vector<unsigned long>::iterator pI = aulAllFacets.begin(); pI != aulAllFacets.end(); pI++)
+    *pI = k++;
+
+  std::vector<std::vector<unsigned long> > aclConnectComp;
+  while (aulAllFacets.size() > 0)
+  {
+    std::vector<unsigned long> aclComponent;
+    MeshTopFacetVisitor clFVisitor( aclComponent );
+
+    // collect all facets of a component
+    if (tMode == OverEdge)
+      clVisit.VisitNeighbours(clFVisitor, aulAllFacets.front());
+    else if (tMode == OverPoint)
+      clVisit.VisitNeighboursOverCorners(clFVisitor, aulAllFacets.front());
+
+    // get also start facet
+    aclComponent.push_back(aulAllFacets.front());
+    aclConnectComp.push_back(aclComponent);
+
+    // search for all NOT YET visited facets
+    std::vector<unsigned long> aclNotVisited;
+    std::sort(aulAllFacets.begin(), aulAllFacets.end());
+    std::sort(aclComponent.begin(), aclComponent.end());
+    std::back_insert_iterator<std::vector<unsigned long> >  pBInd(aclNotVisited);
+    std::set_difference(aulAllFacets.begin(), aulAllFacets.end(), aclComponent.begin(), aclComponent.end(), pBInd);
+  
+    aulAllFacets = aclNotVisited;
+	}
+
+  // sort components by size (descending order)
+  std::sort(aclConnectComp.begin(), aclConnectComp.end(), CNofFacetsCompare());  
+  aclT = aclConnectComp;
+}
