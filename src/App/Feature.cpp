@@ -66,10 +66,21 @@ Feature::Feature(void)
   _solidMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
   _solidMaterial.shininess = 0.2f;
   _solidMaterial.transparency = 0.0f;
+
+  _lineMaterial.ambientColor.set(0.2f,0.2f,0.2f);
   _lineMaterial.diffuseColor.set(0.1f,0.1f,0.1f);
+  _lineMaterial.specularColor.set(0.0f,0.0f,0.0f);
+  _lineMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
+  _lineMaterial.shininess = 0.0f;
+  _lineMaterial.transparency = 0.0f;
   _lineSize = 2.0f;
-  _pointMaterial.diffuseColor.set(0.1f,0.1f,0.1f);;
-  _pointSize = 1.0;
+
+  _pointMaterial.ambientColor.set(0.9f,0.9f,0.9f);
+  _pointMaterial.diffuseColor.set(0.8f,0.8f,0.8f);;
+  _pointMaterial.specularColor.set(0.0f,0.0f,0.0f);
+  _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
+  _pointMaterial.shininess = 0.3f;
+  _pointSize = 2.0;
   _showMode = "Flat";
 }
 

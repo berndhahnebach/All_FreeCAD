@@ -92,15 +92,15 @@ open(PyObject *self, PyObject *args)
 
 /* module functions */
 static PyObject *                        
-import(PyObject *self, PyObject *args)     
+insert(PyObject *self, PyObject *args)     
 {                                        
   const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
+  if (! PyArg_ParseTuple(args, "s",&Name))	 		 
     return NULL;                         
     
   PY_TRY {
 
-    Base::Console().Log("Open in Mesh with %s",Name);
+    Base::Console().Log("Insert in Mesh with %s",Name);
 
     // extract ending
     std::string cEnding(Name);
@@ -180,7 +180,7 @@ newMesh(PyObject *self, PyObject *args)
 struct PyMethodDef Mesh_Import_methods[] = {
     {"open"   ,open ,   1},				/* method name, C func ptr, always-tuple */
     {"save"   ,save ,   1},
-    {"import" ,import,  1},
+    {"insert" ,insert,  1},
     {"read"   ,read ,   1},
     {"newMesh",newMesh, 1},
 

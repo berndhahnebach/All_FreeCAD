@@ -114,6 +114,7 @@
 #include <Inventor/SbColor.h>
 #include <Inventor/SoInput.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
+#include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/fields/SoMFColor.h>

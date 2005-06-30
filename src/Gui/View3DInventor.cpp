@@ -572,6 +572,25 @@ void View3DInventor::dropEvent ( QDropEvent      * e )
     MDIView::dropEvent(e);
 }
 
+void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
+{
+  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+
+  if ( QUriDrag::canDecode(e) )
+  {
+    QStringList fn;
+    QUriDrag::decodeLocalFiles(e, fn);
+    QString f = fn.first();
+    
+    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+
+    if(EndingMap.find(Ending) != EndingMap.end())
+      e->accept();
+  }else 
+    e->ignore();
+
+}
+
 
 
 #include "moc_View3DInventor.cpp"

@@ -355,7 +355,7 @@ void ApplicationWindow::import(const char* FileName)
 
     // load the file with the module
     Cmd = EndingMap.find(File.extension())->second.c_str();
-    Cmd += ".import(\"";
+    Cmd += ".insert(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
     Base::Interpreter().runString(Cmd.c_str());

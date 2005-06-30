@@ -65,10 +65,28 @@ InterpreterSingleton::~InterpreterSingleton()
 }
 
 
-void InterpreterSingleton::runString(const char *sCmd)
+std::string InterpreterSingleton::runString(const char *sCmd)
 {
-	if(PyRun_SimpleString(PyBuf(sCmd).str)) 
-    throw PyException();
+  PyBuf buf(sCmd);
+  PyObject *module, *dict, *presult;          /* "exec code in d, d" */
+
+  module = PP_Load_Module("__main__");         /* get module, init python */
+  if (module == NULL) throw;                         /* not incref'd */
+  dict = PyModule_GetDict(module);            /* get dict namespace */
+  if (dict == NULL) throw;                           /* not incref'd */
+
+
+  presult = PyRun_String(buf.str, Py_file_input, dict, dict); /* eval direct */
+  if(!presult) throw Exception();
+
+  presult = PyObject_Repr( presult) ;
+  if(presult)
+    return std::string(PyString_AsString(presult));
+  else
+    return std::string();
+  
+//  if(PyRun_SimpleString(buf.str)) 
+//    throw PyException();
 }
 
 void InterpreterSingleton::runFile(const char*pxFileName)

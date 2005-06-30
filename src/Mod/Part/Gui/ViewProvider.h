@@ -44,7 +44,7 @@ public:
   virtual ~ViewProviderInventorPart();
 
 
-  virtual void attache(App::Feature *pcFeature);
+  virtual void attache(App::Feature *);
 
   /// set the viewing mode
   virtual void setMode(const char* ModeName){};

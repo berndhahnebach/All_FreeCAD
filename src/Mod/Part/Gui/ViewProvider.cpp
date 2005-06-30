@@ -96,8 +96,9 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 
 }
 
-void ViewProviderInventorPart::attache(App::Feature *pcFeature)
+void ViewProviderInventorPart::attache(App::Feature *pcFeat)
 {
+  pcFeature = pcFeat;
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
   bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);

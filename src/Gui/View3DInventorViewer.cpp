@@ -146,8 +146,8 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     // otherwise take the default image and scale it up to desktop size
     QImage image( default_background );
 
-    int w = QApplication::desktop()->width() + 10;
-    int h = QApplication::desktop()->height() + 10;
+    int w = QApplication::desktop()->width() + 20;
+    int h = QApplication::desktop()->height() + 20;
     Tools::convert( image.smoothScale(w, h), img->image );
   }
 
@@ -172,7 +172,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   cam->nearDistance = 0;
   cam->farDistance = 10;
 
-  const double ARROWSIZE = 2.0;
+/*  const double ARROWSIZE = 2.0;
 
   SoTranslation * posit = new SoTranslation;
   posit->translation = SbVec3f(-2.5 * ARROWSIZE, 1.5 * ARROWSIZE, 0);
@@ -186,7 +186,8 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   SoCube * cube = new SoCube;
   cube->width = ARROWSIZE;
   cube->height = ARROWSIZE/15.0;
-/*
+*/
+  /*
   this->foregroundroot->addChild(cam);
   this->foregroundroot->addChild(lm);
   this->foregroundroot->addChild(bc);
@@ -197,8 +198,24 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   */
 
   // set the ViewProvider root
+  pcSelection        = new SoSelection();
   pcViewProviderRoot = new SoSeparator();
-  setSceneGraph(pcViewProviderRoot);
+  pcSelection->addChild(pcViewProviderRoot);
+  redrawOnSelectionChange(pcSelection);
+//  redrawOverlayOnSelectionChange(pcSelection);
+  setSceneGraph(pcSelection);
+
+
+  SoBoxHighlightRenderAction *pcRenderAction = new SoBoxHighlightRenderAction();
+//  SoLineHighlightRenderAction *pcRenderAction = new SoLineHighlightRenderAction();
+  pcRenderAction->setLineWidth(4);
+  pcRenderAction->setColor(SbColor(1,1,0));
+  pcRenderAction->setLinePattern(15);
+//  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
+  pcRenderAction->setSmoothing(true);
+
+  setGLRenderAction(pcRenderAction); 
 }
 
 View3DInventorViewer::~View3DInventorViewer()
@@ -226,20 +243,32 @@ void View3DInventorViewer::actualRedraw(void)
   SoGLRenderAction * glra = this->getGLRenderAction();
   glra->apply(this->bckgroundroot);
 
+  SbTime now = SbTime::getTimeOfDay();
+  double secs = now.getValue() -  prevRedrawTime.getValue();
+  prevRedrawTime = now;
+
+  if (_bSpining) {
+    SbRotation deltaRotation = spinRotation;
+    deltaRotation.scaleAngle(secs * 5.0);
+    reorientCamera(deltaRotation);
+  }
 
   // Render normal scenegraph.
   SoQtViewer::actualRedraw();
 
 
   // Increase arrow angle with 1/1000 ° every frame.
-  arrowrotation->angle = arrowrotation->angle.getValue() + (0.001 / M_PI * 180);
+  //arrowrotation->angle = arrowrotation->angle.getValue() + (0.001 / M_PI * 180);
   // Render overlay front scenegraph.
   glClear(GL_DEPTH_BUFFER_BIT);
   glra->apply(this->foregroundroot);
 
   drawAxisCross();
-//  if (_bSpining) { scheduleRedraw(); }
-}
+  
+  if (_bSpining)
+    scheduleRedraw(); 
+  
+} 
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
@@ -271,6 +300,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   const SbVec2s pos(ev->getPosition());
   const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
                      (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
+  SbVec2s MovePos;
   lastmouseposition = posn;
 
   // switching the mouse modes
@@ -287,6 +317,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       {
         RotMode = true;
         ZoomMode = false;
+        MoveTime = ev->getTime();
 
       // Set up initial projection point for the projector object when
       // first starting a drag operation.
@@ -296,34 +327,48 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
         
         getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) );
         processed = true;
-      }else if(MoveMode){
-        RotMode = false;
-        ZoomMode = true;
-        getWidget()->setCursor( QCursor( 8 /*CrossCursor*/) );
-/*       
-        // check on start spining
-        SbTime stoptime = (ev->getTime() - log.time[0]);
-        if (stoptime.getValue() < 0.100) {
-          const SbVec2s glsize(this->getGLSize());
-          SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                                       float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-          SbVec3f to = spinprojector->project(posn);
-          SbRotation rot = spinprojector->getRotation(from, to);
+      }else if(MoveMode && !press){
+        RotMode = false; 
+        
+        SbTime tmp = (ev->getTime() - MoveTime);
+        if (tmp.getValue() < 0.300) 
+        {
+          ZoomMode = true;
+          getWidget()->setCursor( QCursor( 8 /*CrossCursor*/) );
+        }else{
+       
+          ZoomMode = false;
+          getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
 
-          SbTime delta = (log.time[0] - log.time[2]);
-          double deltatime = delta.getValue();
-          rot.invert();
-          rot.scaleAngle(float(0.200 / deltatime));
+          SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+          panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+       
+          // check on start spining
+          SbTime stoptime = (ev->getTime() - log.time[0]);
+          if (stoptime.getValue() < 0.100) {
+            const SbVec2s glsize(this->getGLSize());
+            SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                                         float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+            SbVec3f to = spinprojector->project(posn);
+            SbRotation rot = spinprojector->getRotation(from, to);
 
-          SbVec3f axis;
-          float radians;
-          rot.getValue(axis, radians);
-          if ((radians > 0.01f) && (deltatime < 0.300)) {
-            _bSpining = true;
-            spinRotation = rot;
+            SbTime delta = (log.time[0] - log.time[2]);
+            double deltatime = delta.getValue();
+            rot.invert();
+            rot.scaleAngle(float(0.200 / deltatime));
+
+            SbVec3f axis;
+            float radians;
+            rot.getValue(axis, radians);
+            if ((radians > 0.01f) && (deltatime < 0.300)) {
+              _bSpining = true;
+              spinRotation = rot;
+              MoveMode = false;
+              getWidget()->setCursor( QCursor( 0 /*CrossCursor*/) );
+            }
           }
         }
-*/        processed = true;
+        processed = true;
       }
       break;
     case SoMouseButtonEvent::BUTTON2:
@@ -331,11 +376,19 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     case SoMouseButtonEvent::BUTTON3:
       if(press)
       {
-        MoveMode = true;
-        _bSpining = false;
-        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-        panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-        getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
+        // check on double click
+        SbTime tmp = (ev->getTime() - CenterTime);
+        if (tmp.getValue() < 0.300) 
+        {
+          panToCenter(panningplane, posn);
+        }else{
+          CenterTime = ev->getTime();
+          MoveMode = true;
+          _bSpining = false;
+          SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+          panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+          getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
+        }
       }else{
         MoveMode = false;
         RotMode = false;
@@ -396,8 +449,10 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   return processed || inherited::processSoEvent(ev);
 }
 
-
-
+void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)
+{
+   pan(getCamera(),getGLAspectRatio(),panningplane, SbVec2f(0.5,0.5), currpos);
+}
 
 void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos)
 {

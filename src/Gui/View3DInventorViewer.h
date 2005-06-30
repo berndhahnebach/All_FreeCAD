@@ -61,9 +61,10 @@ protected:
   virtual SbBool processSoEvent(const SoEvent * const ev);
 
   void reorientCamera(const SbRotation & rotation);
-  void View3DInventorViewer::pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
-  void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue);
-  void View3DInventorViewer::spin(const SbVec2f & pointerpos);
+  void pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
+  void zoom(SoCamera * cam, const float diffvalue);
+  void spin(const SbVec2f & pointerpos);
+  void panToCenter(const SbPlane & panningplane, const SbVec2f & currpos);
 
   SbVec2f lastmouseposition;
   SbPlane panningplane;
@@ -92,6 +93,8 @@ protected:
   static void drawArrow(void);
 
   bool _bSpining;
+  SbTime MoveTime;
+  SbTime CenterTime;
 
 private:
   SoSeparator * bckgroundroot;
@@ -99,6 +102,8 @@ private:
   SoRotationXYZ * arrowrotation;
 
   SoSeparator * pcViewProviderRoot;
+  SoSelection * pcSelection;
+
 
 };
 

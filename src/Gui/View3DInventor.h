@@ -103,7 +103,8 @@ public slots:
 
 protected:
 
-  void dropEvent        ( QDropEvent        * e );
+  void dropEvent        ( QDropEvent      * e );
+  void dragEnterEvent   ( QDragEnterEvent * e );
 
   SoSeparator *createAxis(void);
 

@@ -113,6 +113,21 @@ open(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
+/* module functions */
+static PyObject *                        
+insert(PyObject *self, PyObject *args)     
+{                                        
+	std::string strResult;
+
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+    
+  Base::Console().Log("insert in Part with %s",strResult.c_str());
+
+	Py_Return;    
+}
+
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"info"   , info,    1},       
@@ -120,6 +135,7 @@ struct PyMethodDef Part_methods[] = {
     {"Temp"   , Temp,    1},       
     {"open"   , open,    1},       
     {"save"   , Temp,    1},       
+    {"insert" , insert,  1},       
     {NULL     , NULL      }        /* end of table marker */
 };
 
