@@ -74,6 +74,8 @@ public:
 
   virtual void resizeEvent ( QResizeEvent * e);
 
+  virtual void contextMenuEvent ( QContextMenuEvent * e);
+
   virtual void onUpdate(void);
 
   void updatePrefs(void);

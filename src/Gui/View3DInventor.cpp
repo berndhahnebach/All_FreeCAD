@@ -40,6 +40,7 @@
 #include "View3DInventorViewer.h"
 #include "Document.h"
 #include "Application.h"
+#include "MenuManager.h"
 #include <App/Label.h>
 #include <App/Feature.h>
 #include <Base/Console.h>
@@ -50,6 +51,8 @@
 
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"
+
+
 
 
 #include "Icons/default_background.xpm"
@@ -94,6 +97,19 @@ void View3DInventor::updatePrefs(void)
 
 #include <Inventor/nodes/SoCylinder.h>
 #include <Inventor/nodes/SoTransform.h>
+
+void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
+{
+  MenuItem* view = new MenuItem;
+//  view->setCommand( QObject::tr("&View") );
+  *view << "Std_ViewCreateInventor" << "Std_ViewCreateOCC" << "Separator" << "Std_ViewFullScreen" 
+        << "Separator" << "Std_ViewMenu";
+
+  QPopupMenu ContextMenu(this);
+  MenuManager::getInstance().setupContextMenu(view,ContextMenu);
+  ContextMenu.exec(e->globalPos());
+
+}
 
 
 void View3DInventor::setViewerDefaults(void)

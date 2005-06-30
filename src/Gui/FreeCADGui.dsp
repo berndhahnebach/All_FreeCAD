@@ -2945,6 +2945,14 @@ SOURCE=.\Macro.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\MenuManager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MenuManager.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\NetworkRetriever.cpp
 # End Source File
 # Begin Source File
