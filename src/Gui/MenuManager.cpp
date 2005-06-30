@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qmenubar.h>
 # include <qpopupmenu.h>
 #endif
 

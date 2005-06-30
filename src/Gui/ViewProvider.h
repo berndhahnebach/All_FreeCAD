@@ -24,6 +24,10 @@
 #ifndef __VIEWPROVIDER_H__
 #define __VIEWPROVIDER_H__
 
+#ifndef _PreComp_
+# include <vector>
+#endif
+
 class SoNode;
 class QListViewItem;
 class SoSeparator;

@@ -197,9 +197,7 @@ BUILT_SOURCES = \
 		moc_ToolBoxBar.cpp \
 		moc_Tree.cpp \
 		moc_View.cpp\
-		moc_View3D.cpp \
 		moc_View3DInventor.cpp \
-		moc_View3DInventorEx.cpp \
 		moc_WhatsThis.cpp \
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
@@ -347,8 +345,8 @@ libFreeCADGui_la_SOURCES = \
 		HelpView.h \
 		Macro.cpp \
 		Macro.h \
-		MouseModel.cpp \
-		MouseModel.h \
+		MenuManager.cpp \
+		MenuManager.h \
 		NetworkRetriever.cpp \
 		NetworkRetriever.h \
 		PreCompiled.cpp \
@@ -392,12 +390,8 @@ libFreeCADGui_la_SOURCES = \
 		Tree.h \
 		View.cpp \
 		View.h \
-		View3D.cpp \
-		View3D.h \
 		View3DInventor.cpp \
 		View3DInventor.h \
-		View3DInventorEx.cpp \
-		View3DInventorEx.h \
 		View3DInventorExamples.cpp \
 		View3DInventorExamples.h \
 		View3DInventorViewer.cpp \
@@ -506,13 +500,13 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgReportViewImp.lo DlgSettings3DViewImp.lo \
 	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
 	DlgUndoRedo.lo DockWindow.lo Document.lo Doxygen.lo \
-	FileDialog.lo GuiConsole.lo HelpView.lo Macro.lo MouseModel.lo \
+	FileDialog.lo GuiConsole.lo HelpView.lo Macro.lo MenuManager.lo \
 	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
 	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonConsole.lo \
 	PythonConsolePy.lo PythonEditor.lo ReportView.lo resource.lo \
 	Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo TextEdit.lo \
-	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo View3D.lo \
-	View3DInventor.lo View3DInventorEx.lo View3DInventorExamples.lo \
+	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo \
+	View3DInventor.lo View3DInventorExamples.lo \
 	View3DInventorViewer.lo ViewProvider.lo ViewProviderFeature.lo \
 	WaitCursor.lo WhatsThis.lo WidgetFactory.lo Widgets.lo \
 	Window.lo
@@ -554,7 +548,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/FileDialog.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HelpView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/LanguageFactory.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MouseModel.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MenuManager.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/NetworkRetriever.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PrefWidgets.Plo ./$(DEPDIR)/Process.Plo \
@@ -572,9 +566,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/ToolBox.Plo ./$(DEPDIR)/ToolBoxBar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Tools.Plo ./$(DEPDIR)/Translator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Tree.Plo ./$(DEPDIR)/View.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/View3D.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventor.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/View3DInventorEx.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventorExamples.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/View3DInventorViewer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ViewProvider.Plo \
@@ -697,7 +689,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Macro.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MouseModel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetworkRetriever.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PrefWidgets.Plo@am__quote@
@@ -721,9 +713,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Translator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventor.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorEx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorExamples.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/View3DInventorViewer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ViewProvider.Plo@am__quote@

@@ -13,6 +13,8 @@ libMesh_la_SOURCES=\
 		Core/Grid.cpp \
 		Core/Grid.h \
 		Core/Helpers.h \
+		Core/Info.cpp \
+		Core/Info.h \
 		Core/Iterator.h \
 		Core/Matrix.cpp \
 		Core/Matrix.h \

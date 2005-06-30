@@ -24,6 +24,10 @@
 #ifndef __VIEW3DINVENTORVIEWER__
 #define __VIEW3DINVENTORVIEWER__
 
+#ifndef _PreComp_
+# include <set>
+#endif
+
 #include "Inventor/Qt/viewers/SoQtViewer.h"
 
 

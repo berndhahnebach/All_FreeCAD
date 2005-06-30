@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qdragobject.h>
 # include <qfileinfo.h>
+# include <qpopupmenu.h>
 # include <qvbox.h>
 # include <TopoDS_Shape.hxx>
 # include <Inventor/actions/SoWriteAction.h>

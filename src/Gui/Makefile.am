@@ -56,9 +56,7 @@ BUILT_SOURCES=\
 		moc_ToolBoxBar.cpp \
 		moc_Tree.cpp \
 		moc_View.cpp\
-		moc_View3D.cpp \
 		moc_View3DInventor.cpp \
-		moc_View3DInventorEx.cpp \
 		moc_WhatsThis.cpp \
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
@@ -206,8 +204,8 @@ libFreeCADGui_la_SOURCES=\
 		HelpView.h \
 		Macro.cpp \
 		Macro.h \
-		MouseModel.cpp \
-		MouseModel.h \
+		MenuManager.cpp \
+		MenuManager.h \
 		NetworkRetriever.cpp \
 		NetworkRetriever.h \
 		PreCompiled.cpp \
@@ -251,12 +249,8 @@ libFreeCADGui_la_SOURCES=\
 		Tree.h \
 		View.cpp \
 		View.h \
-		View3D.cpp \
-		View3D.h \
 		View3DInventor.cpp \
 		View3DInventor.h \
-		View3DInventorEx.cpp \
-		View3DInventorEx.h \
 		View3DInventorExamples.cpp \
 		View3DInventorExamples.h \
 		View3DInventorViewer.cpp \

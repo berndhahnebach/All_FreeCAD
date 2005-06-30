@@ -28,6 +28,9 @@
 # include <qstring.h>
 #endif
 
+class QPopupMenu;
+class QMenuData;
+
 namespace Gui {
 
 class GuiExport MenuItem

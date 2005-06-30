@@ -40,7 +40,7 @@ using Base::Console;
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
 #include "Core/Stream.h"
-
+#include "Core/Info.h"
 
 using namespace Mesh;
 
@@ -126,12 +126,8 @@ MeshPy::~MeshPy()           // Everything handled in parent
 PyObject *MeshPy::_repr(void)
 {
   std::stringstream a;
-  a << "Mesh: ["
-    << _pcMesh->getKernel()->CountFacets()
-    << " Faces, "
-    << _pcMesh->getKernel()->CountPoints()
-    << " Points"
-    << "]" << std::endl;
+  MeshInfo info(*_pcMesh->getKernel());
+  info.InternalInformation( a );
   return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------

@@ -31,6 +31,7 @@
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoSwitch.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

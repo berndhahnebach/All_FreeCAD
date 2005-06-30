@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qlistview.h>
+# include <Inventor/nodes/SoSeparator.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

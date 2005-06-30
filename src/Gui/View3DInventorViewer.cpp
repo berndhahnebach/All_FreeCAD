@@ -40,6 +40,8 @@
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoTranslation.h>
+# include <Inventor/nodes/SoSelection.h>
+# include <Inventor/actions/SoBoxHighlightRenderAction.h>
 # include <Inventor/events/SoEvent.h>
 #endif
 

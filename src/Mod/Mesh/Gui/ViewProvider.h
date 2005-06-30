@@ -29,6 +29,9 @@
 class SoSeparator;
 class SbVec3f;
 class SoSwitch;
+class SoCoordinate3;
+class SoNormal;
+class SoFaceSet;
 
 namespace Mesh {
   class MeshWithProperty;
