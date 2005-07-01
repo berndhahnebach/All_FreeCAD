@@ -308,13 +308,19 @@ void PythonConsole::pasteSubType( const QCString &subtype )
 
   if ( !t.isEmpty() )
   {
+    int ct = t.contains('\n');
+    int i=0;
     QStringList lst = QStringList::split('\n', t, true);
-    for ( QStringList::Iterator it = lst.begin(); it != lst.end(); it++ )
+    for ( QStringList::Iterator it = lst.begin(); it != lst.end(); it++, i++ )
     {
       insert( *it );
-      // emulate an key return event to let decide keyPressEvent() how to continue
-      QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
-      QApplication::sendEvent( this, &ke );
+
+      if ( i < ct )
+      {
+        // emulate an key return event to let decide keyPressEvent() how to continue
+        QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+        QApplication::sendEvent( this, &ke );
+      }
     }
   }
 }
