@@ -299,7 +299,6 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
     MeshPointBuilder().swap(rclMap);  // kleiner Trick um Speicher freizugeben
   }
 
-#ifdef Use_EdgeList
   // sortierte Kantenliste generieren
   {  ////////////////////////////////////////////////////////////////////////////////////
     MeshEdgeBuilder  clEdger;
@@ -320,7 +319,9 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
     std::sort(clEdger.begin(), clEdger.end());
   
 
+#ifdef Use_EdgeList
     _aclEdgeArray.reserve((unsigned long)(float(ulCtEdges) * 1.05f));  // Schaetztwert + 5%
+#endif
 
     bool bET = true;
     MeshEdge clEdge;
@@ -334,7 +335,10 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
       unsigned long ulInd  = pE->Index();
       unsigned long ulSide = pE->Side();
       clEdge.Set(ulInd, ulSide);
+
+#ifdef Use_EdgeList
       _aclEdgeArray.push_back(clEdge);
+#endif
 
       std::vector<MeshHelpBuilderEdge>::iterator pE2;
       for ( pE2 = pE+1; (pE2 != clEdger.end()) && (*pE2 == *pE); pE2++ )
@@ -353,6 +357,7 @@ void MeshKernel::Assign (MeshPointBuilder &rclMap)
     _bValid = bET;  
   }
 
+#ifdef Use_EdgeList
   std::sort(_aclEdgeArray.begin(), _aclEdgeArray.end());  // Kantenliste sortieren
 #endif
 
@@ -963,7 +968,6 @@ void MeshKernel::RebuildNeighbours (void)
 {
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >   aclEdgeMap; // Map<Kante, Liste von Facets>
 
-#ifdef Use_EdgeList
   // Kantenmap aufbauen
   unsigned long k = 0;
   for (MeshFacetArray::_TIterator pF = _aclFacetArray.begin(); pF != _aclFacetArray.end(); pF++, k++)
@@ -977,7 +981,6 @@ void MeshKernel::RebuildNeighbours (void)
       aclEdgeMap[std::make_pair(ulP0, ulP1)].push_front(k);
     }
   }
-#endif
 
   // Nachbarn aufloesen
   for (std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pI = aclEdgeMap.begin(); pI != aclEdgeMap.end(); pI++)

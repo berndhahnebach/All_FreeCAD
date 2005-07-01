@@ -53,6 +53,33 @@ public:
   std::ostream& InternalInformation (std::ostream& rclStream) const;
 
 protected:
+  /**
+   * Writes detailed point information.
+   */
+  std::ostream& DetailedPointInfo (std::ostream& rclStream) const;
+  /**
+   * Writes detailed edge information.
+   */
+  std::ostream& DetailedEdgeInfo (std::ostream& rclStream) const;
+  /**
+   * Writes detailed facet information.
+   */
+  std::ostream& DetailedFacetInfo (std::ostream& rclStream) const;
+  /**
+   * Writes internal point information.
+   */
+  std::ostream& InternalPointInfo (std::ostream& rclStream) const;
+  /**
+   * Writes internal edge information.
+   */
+  std::ostream& InternalEdgeInfo (std::ostream& rclStream) const;
+  /**
+   * Writes internal facet information.
+   */
+  std::ostream& InternalFacetInfo (std::ostream& rclStream) const;
+
+
+protected:
   const MeshKernel &_rclMesh;   // const reference to mesh data structure
 
 private:

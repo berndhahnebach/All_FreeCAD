@@ -252,7 +252,7 @@ PYFUNCIMP_D(MeshPy,Union)
 
   PY_TRY {
     MeshWithProperty* m = pcObject->_pcMesh;
-    MeshAlgos::boolean(_pcMesh,m,_pcMesh,0);  
+    MeshAlgos::boolean(_pcMesh,m,_pcMesh,0);
   } PY_CATCH;
 
   Py_Return;

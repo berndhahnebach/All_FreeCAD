@@ -23,11 +23,18 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include <iomanip>
+# include <ios>
+# include <map>
+# include <set>
+#endif
+
 #include "Info.h"
 #include "Iterator.h"
 
 using namespace Mesh;
-
+//using namespace std;
 
 MeshInfo::MeshInfo (const MeshKernel &rclM)
 : _rclMesh(rclM)
@@ -39,23 +46,45 @@ std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
   unsigned long ulCtPt, ulCtEd, ulCtFc;
 
   ulCtPt = _rclMesh.CountPoints();
-//  ulCtEd = _rclMesh.CountEdges();
+#ifdef Use_EdgeList
+  ulCtEd = _rclMesh.CountEdges();
+#else
+  std::set<std::pair<unsigned long, unsigned long> > lEdges;
+  MeshFacetArray::_TConstIterator pFIter;
+  pFIter = _rclMesh._aclFacetArray.begin();
+  unsigned long i = 0;
+  while (pFIter < _rclMesh._aclFacetArray.end())
+  {
+    const MeshFacet& rFacet = *pFIter;
+    for ( int j=0; j<3; j++ )
+    {
+      unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+      std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1); 
+      lEdges.insert( cEdge );
+    }
+
+    pFIter++;
+    i++;
+  }
+
+  ulCtEd = lEdges.size();
+#endif
   ulCtFc = _rclMesh.CountFacets();
 
-  rclStream.precision(3);
   rclStream << "Mesh: ["
             << ulCtFc << " Faces, "
+            << ulCtEd << " Edges, "
             << ulCtPt << " Points"
             << "]" << std::endl;
 
   return rclStream;
 }
 
-std::ostream& MeshInfo::DetailedInformation (std::ostream& rclStream) const
+std::ostream& MeshInfo::DetailedPointInfo (std::ostream& rclStream) const
 {
-  unsigned long i, j;
-
   // print points
+  unsigned long i;
   rclStream << _rclMesh.CountPoints() << " Points:" << std::endl;
   MeshPointIterator pPIter(_rclMesh), pPEnd(_rclMesh);
   pPIter.Begin();
@@ -63,44 +92,113 @@ std::ostream& MeshInfo::DetailedInformation (std::ostream& rclStream) const
   i = 0;
 
   rclStream.precision(3);
+  rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
   while (pPIter < pPEnd)
   {
-    rclStream << "P " << (i++) << ": " << (*pPIter).x << ", " << (*pPIter).y << ", " << (*pPIter).z << std::endl;  
+    rclStream << "P " << std::setw(4) << (i++)       << ": ("
+                      << std::setw(8) << (*pPIter).x << ", "
+                      << std::setw(8) << (*pPIter).y << ", "
+                      << std::setw(8) << (*pPIter).z << ")" << std::endl;
     ++pPIter;
-  }  
-/*
+  }
+
+  return rclStream;
+}
+
+std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
+{
   // print edges
-  printf("=== EDGES: %d ======================\n", _rclMesh.CountEdges());
+  unsigned long i;
+#ifdef Use_EdgeList
+//  printf("=== EDGES: %d ======================\n", _rclMesh.CountEdges());
   MeshEdgeIterator pEIter(_rclMesh), pEEnd(_rclMesh);
   pEIter.Begin();
   pEEnd.End();
   i = 0;
+
+  rclStream.precision(3);
+  rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
   while (pEIter < pEEnd)
   {
-    printf("E:%4d: %8.3f  %8.3f  %8.3f | %8.3f  %8.3f  %8.3f | B:%c\n",
+/*    printf("E:%4d: %8.3f  %8.3f  %8.3f | %8.3f  %8.3f  %8.3f | B:%c\n",
            i++, (*pEIter)._aclPoints[0].x, (*pEIter)._aclPoints[0].y,
            (*pEIter)._aclPoints[0].z, (*pEIter)._aclPoints[1].x,
            (*pEIter)._aclPoints[1].y, (*pEIter)._aclPoints[1].z,
-           (*pEIter)._bBorder ? 'X' : '-');  
+           (*pEIter)._bBorder ? 'X' : '-');*/
     ++pEIter;
   }
-*/
+#else
+  // get edges from facets
+  std::map<std::pair<unsigned long, unsigned long>, int > lEdges;
+  MeshFacetArray::_TConstIterator pFIter;
+  pFIter = _rclMesh._aclFacetArray.begin();
+  i = 0;
+  while (pFIter < _rclMesh._aclFacetArray.end())
+  {
+    const MeshFacet& rFacet = *pFIter;
+    for ( int j=0; j<3; j++ )
+    {
+      unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+      std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1);
+      lEdges[ cEdge ]++;
+    }
+
+    pFIter++;
+    i++;
+  }
+
+  // print edges
+  rclStream << lEdges.size() << " Edges:" << std::endl;
+  std::map<std::pair<unsigned long, unsigned long>, int >::const_iterator  pEIter;
+  pEIter = lEdges.begin();
+  i = 0;
+
+  rclStream.precision(3);
+  rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
+  while (pEIter != lEdges.end())
+  {
+    int ct = pEIter->second;
+    const Vector3D& rP0 = _rclMesh._aclPointArray[ pEIter->first.first ];
+    const Vector3D& rP1 = _rclMesh._aclPointArray[ pEIter->first.second ];
+
+    rclStream << "E "    << std::setw(4) << (i++) << ": "
+              << "  P (" << std::setw(8) << rP0.x << ", "
+                         << std::setw(8) << rP0.y << ", "
+                         << std::setw(8) << rP0.z << "); "
+              << "  P (" << std::setw(8) << rP1.x << ", "
+                         << std::setw(8) << rP1.y << ", "
+                         << std::setw(8) << rP1.z << "),  B: " << (ct == 2 ? "n" : "y") << std::endl;
+    pEIter++;
+  }
+#endif
+
+  return rclStream;
+}
+
+std::ostream& MeshInfo::DetailedFacetInfo (std::ostream& rclStream) const
+{
   // print facets
+  unsigned long i, j;
   rclStream << _rclMesh.CountFacets() << " Faces:" << std::endl;
   MeshFacetIterator pFIter(_rclMesh), pFEnd(_rclMesh);
   pFIter.Begin();
   pFEnd.End();
   i = 0;
+
+  rclStream.precision(3);
+  rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
   while (pFIter < pFEnd)
   {
-    rclStream << "F " << (i++) << ": N: " << (*pFIter).GetNormal().x << ", "
-                                          << (*pFIter).GetNormal().y << ", "
-                                          << (*pFIter).GetNormal().z << std::endl;
+    rclStream << "F "    << std::setw(4) << (i++) << ":" << std::endl;
+    rclStream << "  N (" << std::setw(8) << (*pFIter).GetNormal().x << ", "
+                         << std::setw(8) << (*pFIter).GetNormal().y << ", "
+                         << std::setw(8) << (*pFIter).GetNormal().z << ")" << std::endl;
     for (j = 0; j < 3; j++)
     {
-      rclStream << "   " << (*pFIter)._aclPoints[j].x << ", " 
-                         << (*pFIter)._aclPoints[j].y << ", " 
-                         << (*pFIter)._aclPoints[j].z << std::endl;  
+      rclStream << "  P (" << std::setw(8) << (*pFIter)._aclPoints[j].x << ", "
+                           << std::setw(8) << (*pFIter)._aclPoints[j].y << ", "
+                           << std::setw(8) << (*pFIter)._aclPoints[j].z << ")" << std::endl;
     }
     ++pFIter;
   }
@@ -108,11 +206,19 @@ std::ostream& MeshInfo::DetailedInformation (std::ostream& rclStream) const
   return rclStream;
 }
 
-std::ostream& MeshInfo::InternalInformation (std::ostream& rclStream) const
+std::ostream& MeshInfo::DetailedInformation (std::ostream& rclStream) const
 {
-  unsigned long i;
+  DetailedPointInfo( rclStream );
+  DetailedEdgeInfo ( rclStream );
+  DetailedFacetInfo( rclStream );
 
+  return rclStream;
+}
+
+std::ostream& MeshInfo::InternalPointInfo (std::ostream& rclStream) const
+{
   // print points
+  unsigned long i;
   rclStream << _rclMesh.CountPoints() << " Points:" << std::endl;
   MeshPointIterator pPIter(_rclMesh), pPEnd(_rclMesh);
   pPIter.Begin();
@@ -120,45 +226,115 @@ std::ostream& MeshInfo::InternalInformation (std::ostream& rclStream) const
   i = 0;
 
   rclStream.precision(3);
-  rclStream.width(8);
+  rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
   while (pPIter < pPEnd)
   {
-    rclStream << "P " << (i++) << ": " << (*pPIter).x << ", " << (*pPIter).y << ", " << (*pPIter).z;  
+    rclStream << "P " << std::setw(4) << (i++)       << ": ("
+                      << std::setw(8) << (*pPIter).x << ", "
+                      << std::setw(8) << (*pPIter).y << ", "
+                      << std::setw(8) << (*pPIter).z << ")";
     if (pPIter->IsValid() == true)
       rclStream << std::endl;
     else
       rclStream << " invalid" << std::endl;
     ++pPIter;
-  }  
-/*
-  // print edges
-  printf("=== EDGES: %d ======================\n", _rclMesh.CountEdges());
-  CMeshEdgeArray::_TConstIterator  pEIter;
+  }
+
+  return rclStream;
+}
+
+std::ostream& MeshInfo::InternalEdgeInfo (std::ostream& rclStream) const
+{
+  unsigned long i;
+
+#ifdef Use_EdgeList
+  rclStream << _rclMesh.CountEdges() << " Edge:" << std::endl;
+  MeshEdgeArray::_TConstIterator  pEIter;
   pEIter = _rclMesh._aclEdgeArray.begin();
   i = 0;
   while (pEIter < _rclMesh._aclEdgeArray.end())
   {
-    printf("E:%4d  I:%4d  S:%4d", i++, pEIter->Index(), pEIter->Side());
+    rclStream << "E " << std::setw(4) << (i++) << " F: " << std::setw(4) << pEIter->Index()
+                                               << " S: " << std::setw(4) << pEIter->Side();
     if (pEIter->IsValid() == true)
-      printf("\n");
+      rclStream << std::endl;
     else
-      printf(" invalid\n");
+      rclStream << " invalid" << std::endl;
     pEIter++;
-  }    
-*/
+  }
+
+#else
+  // get edges from facets
+  std::map<std::pair<unsigned long, unsigned long>, std::vector<MeshEdge> > lEdges;
+  MeshFacetArray::_TConstIterator pFIter;
+  pFIter = _rclMesh._aclFacetArray.begin();
+  i = 0;
+  while (pFIter < _rclMesh._aclFacetArray.end())
+  {
+    const MeshFacet& rFacet = *pFIter;
+    for ( int j=0; j<3; j++ )
+    {
+      MeshEdge edge;
+      edge.Set(i, j);
+
+      unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+
+      std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1);
+      lEdges[ cEdge ].push_back( edge );
+    }
+
+    pFIter++;
+    i++;
+  }
+
+  // print edges
+  rclStream << lEdges.size() << " Edges:" << std::endl;
+  std::map<std::pair<unsigned long, unsigned long>, std::vector<MeshEdge> >::const_iterator  pEIter;
+  pEIter = lEdges.begin();
+  i = 0;
+  while (pEIter != lEdges.end())
+  {
+    const std::vector<MeshEdge>& ed = pEIter->second;
+
+    rclStream << "E " << std::setw(4) << (i++) << ": P ("
+                      << std::setw(4) << pEIter->first.first  << ", "
+                      << std::setw(4) << pEIter->first.second << ")  ";
+    for ( std::vector<MeshEdge>::const_iterator it = ed.begin(); it!=ed.end(); ++it )
+    {
+      rclStream << "F/S (" << std::setw(4) << it->Index() << ", "
+                           << std::setw(1) << it->Side() << "), ";
+    }
+    if ( ed.size() == 2 )
+      rclStream << std::endl;
+    else if ( ed.size() == 1 )
+      rclStream << " open" << std::endl;
+    else
+      rclStream << " invalid" << std::endl;
+    pEIter++;
+  }
+#endif
+  return rclStream;
+}
+
+std::ostream& MeshInfo::InternalFacetInfo (std::ostream& rclStream) const
+{
   // print facets
+  unsigned long i;
   rclStream << _rclMesh.CountFacets() << " Faces:" << std::endl;
   MeshFacetArray::_TConstIterator pFIter;
   pFIter = _rclMesh._aclFacetArray.begin();
   i = 0;
   while (pFIter < _rclMesh._aclFacetArray.end())
   {
-    rclStream << "F " << (i++) << ": P: " << pFIter->_aulPoints[0] << " "
-                                          << pFIter->_aulPoints[1] << " "
-                                          << pFIter->_aulPoints[2] << " "
-                               << " N: "  << pFIter->_aulNeighbours[0] << " "
-                                          << pFIter->_aulNeighbours[1] << " "
-                                          << pFIter->_aulNeighbours[2] << " ";
+    rclStream << "F " << std::setw(4) << (i++) << ": P ("
+                      << std::setw(4) << pFIter->_aulPoints[0] << ", "
+                      << std::setw(4) << pFIter->_aulPoints[1] << ", "
+                      << std::setw(4) << pFIter->_aulPoints[2] << ")  "
+             << "N (" << std::setw(4) << pFIter->_aulNeighbours[0] << ", "
+                      << std::setw(4) << pFIter->_aulNeighbours[1] << ", "
+                      << std::setw(4) << pFIter->_aulNeighbours[2] << ") ";
+
     if (pFIter->IsValid() == true)
       rclStream << std::endl;
     else
@@ -169,3 +345,13 @@ std::ostream& MeshInfo::InternalInformation (std::ostream& rclStream) const
 
   return rclStream;
 }
+
+std::ostream& MeshInfo::InternalInformation (std::ostream& rclStream) const
+{
+  InternalPointInfo( rclStream );
+  InternalEdgeInfo ( rclStream );
+  InternalFacetInfo( rclStream );
+
+  return rclStream;
+}
+
