@@ -47,7 +47,7 @@ class MeshHelpEdge;
 class MeshFacetFunc;
 class MeshSTL;
 
-#undef Use_EdgeList
+#define Use_EdgeList
 
 /** 
  * The MeshKernel class is the basic class that holds the data points,
