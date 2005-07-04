@@ -56,7 +56,8 @@
 #include <Inventor/events/SoKeyboardEvent.h>
 #include <Inventor/projectors/SbSphereSheetProjector.h>
 #include <Inventor/projectors/SbSpherePlaneProjector.h>
-
+#include <Inventor/actions/SoRayPickAction.h> 
+#include <Inventor/SoPickedPoint.h> 
 
 #include "ViewProvider.h"
 
@@ -355,7 +356,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
           if (stoptime.getValue() < 0.100) {
             const SbVec2s glsize(this->getGLSize());
             SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                                         float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+                                                          float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
             SbVec3f to = spinprojector->project(posn);
             SbRotation rot = spinprojector->getRotation(from, to);
 
@@ -454,6 +455,24 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 
 
   return processed || inherited::processSoEvent(ev);
+}
+
+bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)
+{
+ // attempting raypick in the event_cb() callback method
+  SoRayPickAction rp( getViewportRegion() );
+  rp.setPoint(pos);
+  rp.apply(getSceneManager()->getSceneGraph());
+  SoPickedPoint *Point = rp.getPickedPoint();  
+
+  if(Point)
+  {
+    point = Point->getObjectPoint();
+    norm  = Point->getObjectNormal();
+    return true;
+  }else
+    return NULL;
+
 }
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)
