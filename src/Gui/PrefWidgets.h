@@ -71,7 +71,7 @@ public:
   virtual void setParamGrpPath( const QCString& path );
   virtual QCString paramGrpPath() const;
 
-  virtual void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
+  virtual void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
   void onSave();
   void onRestore();
 

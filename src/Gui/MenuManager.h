@@ -46,9 +46,10 @@ public:
   bool hasItems() const;
   MenuItem* findItem( const QString& );
 
-  void addMenuItem( MenuItem* );
-  void removeItem( MenuItem* );
+  void addMenuItem( const MenuItem* );
+  void removeItem( const MenuItem* );
 
+  MenuItem& operator<< ( const MenuItem* item );
   MenuItem& operator<< ( const QString& command );
   QPtrList<MenuItem> getItems() const;
 

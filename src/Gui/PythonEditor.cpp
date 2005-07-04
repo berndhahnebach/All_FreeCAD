@@ -73,7 +73,7 @@ PythonEditor::~PythonEditor()
 }
 
 /** Sets the new color for \a rcColor. */  
-void PythonEditor::OnChange( FCSubject<const char*> &rCaller,const char* sReason )
+void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
   FCParameterGrp::handle hPrefGrp = getWindowParameter();
 
@@ -481,7 +481,7 @@ PythonEditView::~PythonEditView()
   delete _lineMarker;
 }
 
-void PythonEditView::OnChange( FCSubject<const char*> &rCaller,const char* rcReason )
+void PythonEditView::OnChange( Base::Subject<const char*> &rCaller,const char* rcReason )
 {
   FCParameterGrp::handle hPrefGrp = getWindowParameter();
   if (strcmp(rcReason, "EnableLineNumber") == 0)

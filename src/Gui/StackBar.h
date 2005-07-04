@@ -107,7 +107,7 @@ public:
   virtual ~StackBar();
   
   // observers method
-  void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
+  void OnChange(Base::Subject<const char*> &rCaller,const char* sReason);
 
   /** @name toolbox handling */
   //@{

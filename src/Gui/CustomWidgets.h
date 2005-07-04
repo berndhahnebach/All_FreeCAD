@@ -141,7 +141,7 @@ class GuiExport CustomPopupMenu : public QPopupMenu, public CustomWidget
 public:
   CustomPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
   virtual ~CustomPopupMenu();
-  virtual void OnChange( FCSubject<const char*> &rCaller, const char * sReason );
+  virtual void OnChange( Base::Subject<const char*> &rCaller, const char * sReason );
 
 protected:
   void rebuild();

@@ -359,6 +359,14 @@ SOURCE=.\PropertyAttr.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Selection.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Selection.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Standard
 
 !IF  "$(CFG)" == "FreeCADApp - Win32 Release"

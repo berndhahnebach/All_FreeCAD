@@ -32,10 +32,12 @@
 #endif
 
 #include <Base/Observer.h>
+#include <Base/PyExport.h>
 
 namespace App
 {
 
+class Feature;
 
 /** transport the changes of the Selection
  *  This class transport closer information what was changed in a
@@ -55,7 +57,7 @@ public:
 
 /** The Selction class 
  */
-class AppExport SelectionSingelton :public FCSubject<const SelectionChanges&>
+class AppExport SelectionSingelton :public Base::Subject<const SelectionChanges&>
 {
 public:
   /// Construction
@@ -63,61 +65,38 @@ public:
   /// Destruction
   virtual ~SelectionSingelton();
 
+  static SelectionSingelton& instance(void);
+  static void destruct (void);
 
 
   std::string getSelectionAsString(void);
 
+  void addFeature(Feature*);
+  void removeFeature(Feature*);
 
-  /** 
-   * An enum.
-   * More detailed enum description.
-   */
-
-  enum TEnum { 
-      TVal1, /**< enum value TVal1. */  
-      TVal2, /**< enum value TVal2. */  
-      TVal3  /**< enum value TVal3. */  
-     } 
-  *enumPtr, /**< enum pointer. Details. */
-  enumVar;  /**< enum variable. Details. */
-
-  /**
-   * A pure virtual member.
-   * @see testMe()
-   * @param c1 the first argument.
-   * @param c2 the second argument.
-   */
-  virtual void testMeToo(char c1,char c2) = 0;
-
-  /** @name a group of methodes */
-  //@{
-  /// I am method one
-  virtual void one(void)=0;
-  /// I am method two
-  virtual void two(void)=0;
-  /// I am method three
-  virtual void three(void)=0;
-  //@}
+  const std::set<Feature*> &Selection(void){ return _FeatureSet;}
 
 
-  /** 
-   * a public variable.
-   * Details.
-   */
-  int publicVar;
- 
-  /**
-   * a function variable.
-   * Details.
-   */
-  int (*handler)(int a,int b);
 
-  // VC6 warns a DLL interface, ignore!
-  std::string something;
+protected:
+
+  static SelectionSingelton* _pcSingleton;
+
+  std::set<Feature*> _FeatureSet;
 
 };
 
-} //namespace Base
+
+/// Get the global instance
+inline AppExport SelectionSingelton& Selection(void)
+{
+  return SelectionSingelton::instance();
+}
+
+
+
+
+} //namespace App
 
 #endif // __FILETEMPLATE_H__
 

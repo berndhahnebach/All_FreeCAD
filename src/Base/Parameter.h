@@ -89,7 +89,7 @@ typedef unsigned short XMLCh;
  *  kind of preferences and so on.
  *  @see FCParameterManager
  */
-class  BaseExport FCParameterGrp	: public FCHandled,public FCSubject <const char*>
+class  BaseExport FCParameterGrp	: public FCHandled,public Base::Subject <const char*>
 {
 
 

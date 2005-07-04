@@ -30,7 +30,11 @@
 
 #include <set>
 
-template <class MessageType> class FCSubject;
+
+namespace Base
+{
+
+template <class MessageType> class Subject;
 
 
 /** Observer class
@@ -41,7 +45,7 @@ template <class MessageType> class FCSubject;
  *  @see FCSubject
  */
 template <class _MessageType>
-class FCObserver
+class Observer
 {
 public:
 
@@ -50,27 +54,27 @@ public:
 	 * A constructor.
 	 * No special function so far.
 	 */
-	FCObserver(){};
+	Observer(){};
 
 	/**
 	 * A destructor.
 	 * No special function so far.
 	 */
-	virtual ~FCObserver(){};
+	virtual ~Observer(){};
 
 	/**
 	 * This method need to be reimplemented from the concrete Observer
 	 * and get called by the observed class
 	 * @param pCaller a referenc to the calling object
 	 */
-	virtual void OnChange(FCSubject<_MessageType> &rCaller,_MessageType rcReason)=0;
+	virtual void OnChange(Subject<_MessageType> &rCaller,_MessageType rcReason)=0;
 
 	/**
 	 * This method need to be reimplemented from the concrete Observer
 	 * and get called by the observed class
 	 * @param pCaller a referenc to the calling object
 	 */
-	virtual void OnDestroy(FCSubject<_MessageType> &rCaller){}
+	virtual void OnDestroy(Subject<_MessageType> &rCaller){}
 
   /**
 	 * This method can be reimplemented from the concrete Observer
@@ -88,25 +92,25 @@ public:
  *  @see FCObserver
  */
 template <class _MessageType>
-class FCSubject
+class Subject
 {
 public:
 
-	typedef  FCObserver<_MessageType> ObserverType;
+	typedef  Observer<_MessageType> ObserverType;
 	typedef  _MessageType             MessageType;
-	typedef  FCSubject<_MessageType>  SubjectType;   
+	typedef  Subject<_MessageType>  SubjectType;   
        
 	/**
 	 * A constructor.
 	 * No special function so far.
 	 */
-	FCSubject(){};
+	Subject(){};
 
 	/**
 	 * A destructor.
 	 * No special function so far.
 	 */
-	~FCSubject()
+	~Subject()
 	{
 	  if (_ObserverSet.size() > 0)
 	  {
@@ -125,7 +129,7 @@ public:
 	 * @param ToObserv A pointer to a concrete Observer
 	 * @see Notify
 	 */
-	void Attach(FCObserver<_MessageType> *ToObserv)
+	void Attach(Observer<_MessageType> *ToObserv)
 	{
 		_ObserverSet.insert(ToObserv);
 	}
@@ -136,7 +140,7 @@ public:
 	 * @param ToObserv A pointer to a concrete Observer
 	 * @see Notify
 	 */
-	void Detach(FCObserver<_MessageType> *ToObserv)
+	void Detach(Observer<_MessageType> *ToObserv)
 	{
 		_ObserverSet.erase(ToObserv);
 	}
@@ -149,7 +153,7 @@ public:
 	 */
 	void Notify(_MessageType rcReason)
 	{
-		for(typename std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+		for(typename std::set<Observer<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
 			(*Iter)->OnChange(*this,rcReason);   // send OnChange-signal
 	}
 
@@ -157,10 +161,10 @@ public:
 	 * Get a observer by name if the observer reimplements the Name() mthode.
 	 * @see Observer
 	 */
-	FCObserver<_MessageType> * Get(const char *Name)
+	Observer<_MessageType> * Get(const char *Name)
 	{
     const char* OName;
-		for(typename std::set<FCObserver<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
+		for(typename std::set<Observer<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
     {
 			OName = (*Iter)->Name(*this,rcReason);   // get the name
       if(OName && strcmp(OName,Name) == 0)
@@ -173,12 +177,12 @@ protected:
 #	pragma warning( disable : 4251 )
 #endif
 	/// Vector of attached observers
-	std::set<FCObserver <_MessageType> *> _ObserverSet;
+	std::set<Observer <_MessageType> *> _ObserverSet;
 
 };
 
 
-
+} //namespace Base
 
 
 #endif // __OBSERVER_H__

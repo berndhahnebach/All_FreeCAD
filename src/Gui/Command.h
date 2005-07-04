@@ -573,7 +573,7 @@ public:\
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\
-    return ( getAppWnd()->activeView() && QString( getAppWnd()->activeView()->getName()).contains( "View3DInventorEx" )  > 0)?true:false;\
+    return ( getAppWnd()->activeView() && QString( getAppWnd()->activeView()->getName()).contains( "View3DInventor" )  > 0)?true:false;\
   }\
 };
 

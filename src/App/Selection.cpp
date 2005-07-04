@@ -62,30 +62,41 @@ SelectionSingelton::~SelectionSingelton()
 }
 
 
+SelectionSingelton* SelectionSingelton::_pcSingleton = NULL;
+
+SelectionSingelton& SelectionSingelton::instance(void)
+{
+  if (_pcSingleton == NULL)
+  {
+    _pcSingleton = new SelectionSingelton;
+  }
+
+  return *_pcSingleton;
+}
+
+void SelectionSingelton::destruct (void)
+{
+  if (_pcSingleton != NULL)
+    delete _pcSingleton;
+}
+
+void SelectionSingelton::addFeature(Feature *f)
+{
+  _FeatureSet.insert(f);
+
+}
+
+void SelectionSingelton::removeFeature(Feature *f)
+{
+  _FeatureSet.erase(f);
+
+
+}
+
+
+
 //**************************************************************************
 // separator for other implemetation aspects
-
-/**
- * a normal member taking two arguments and returning an integer value.
- * \par
- * You can use a printf like interface like:
- * \code
- * GetConsole().Warning("Some defects in %s, loading anyway\n",str);
- * \endcode
- * @param a an integer argument.
- * @param s a constant character pointer.
- * @see SelectionSingelton()
- * @see ~SelectionSingelton()
- * @see testMeToo()
- * @see publicVar()
- * @return The test results
- */
-
-
-//**************************************************************************
-//**************************************************************************
-// Seperator for additional classes
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 

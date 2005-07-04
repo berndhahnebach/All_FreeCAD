@@ -58,6 +58,13 @@ public:
     
 
 protected:
+  static void sFinishSelectionCallback(void *,SoSelection *);
+  virtual void finishSelectionCallback(SoSelection *);
+  static void sMadeSelection(void *,SoPath *);
+  virtual void madeSelection(SoPath *);
+  static void sUnmadeSelection(void *,SoPath *);
+  virtual void unmadeSelection(SoPath *);
+
 
   std::set<ViewProviderInventor*> _ViewProviderSet;
 

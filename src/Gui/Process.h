@@ -37,7 +37,7 @@ namespace Gui {
  * For further information refer to the documentation of QProcess.
  * \author Werner Mayer
  */
-class Process : public QProcess, public FCSubject <int>
+class Process : public QProcess, public Base::Subject <int>
 {
   Q_OBJECT
 

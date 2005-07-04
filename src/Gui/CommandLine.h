@@ -76,7 +76,7 @@ public:
   void show();
   void reparent(QWidget* parent);
 
-  void OnChange(FCSubject<const char*> &rCaller,const char* sReason);
+  void OnChange(Base::Subject<const char*> &rCaller,const char* sReason);
 
   static void Destruct(void);
   static CommandLineBase &Instance(void);

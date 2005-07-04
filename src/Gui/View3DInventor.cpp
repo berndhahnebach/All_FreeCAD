@@ -101,10 +101,22 @@ void View3DInventor::updatePrefs(void)
 
 void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
 {
+  MenuItem* StdViews = new MenuItem;
+  StdViews->setCommand( QObject::tr("Standard views") );
+
+  *StdViews<< "Std_ViewBottom"
+           << "Std_ViewFront"
+           << "Std_ViewLeft"
+           << "Std_ViewRear"
+           << "Std_ViewRight"
+           << "Std_ViewTop"
+           << "Separator"
+           << "Std_ViewAxo";
+
+
   MenuItem* view = new MenuItem;
 //  view->setCommand( QObject::tr("&View") );
-  *view << "Std_ViewCreateInventor" << "Std_ViewCreateOCC" << "Separator" << "Std_ViewFullScreen" 
-        << "Separator" << "Std_ViewMenu";
+  *view << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewFullScreen" ;
 
   QPopupMenu ContextMenu(this);
   MenuManager::getInstance().setupContextMenu(view,ContextMenu);

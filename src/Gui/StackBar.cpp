@@ -548,7 +548,7 @@ void StackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
 /**
  * Checks which settings have been changed and updates the internal stuff.
  */
-void StackBar::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
+void StackBar::OnChange(Base::Subject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   if (strcmp(sReason, "SpeedAnimationCmdBar") == 0)

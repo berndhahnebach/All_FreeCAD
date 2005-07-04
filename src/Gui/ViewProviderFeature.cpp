@@ -32,6 +32,7 @@
 #include <Base/Console.h>
 #include <App/Material.h>
 #include <App/Feature.h>
+#include <App/Selection.h>
 #include "ViewProviderFeature.h"
 #include "Tree.h"
 
@@ -57,6 +58,19 @@ ViewProviderInventorFeature::~ViewProviderInventorFeature()
 {
 
 }
+
+
+void ViewProviderInventorFeature::selected(View3DInventorViewer *, SoPath *)
+{
+   Base::Console().Log("Select viewprovider Feature  %p\n",this);
+   App::Selection().addFeature(pcFeature);
+}
+void ViewProviderInventorFeature::unselected(View3DInventorViewer *, SoPath *)
+{
+   Base::Console().Log("Unselect viewprovider Feature  %p\n",this);
+   App::Selection().removeFeature(pcFeature);
+}
+
 
 void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
 {

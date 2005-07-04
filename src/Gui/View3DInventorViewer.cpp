@@ -201,9 +201,14 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 
   // set the ViewProvider root
   pcSelection        = new SoSelection();
+  pcSelection->addFinishCallback(View3DInventorViewer::sFinishSelectionCallback,this);
+  pcSelection->addSelectionCallback( View3DInventorViewer::sMadeSelection, this );
+  pcSelection->addDeselectionCallback( View3DInventorViewer::sUnmadeSelection, this );
+
   pcViewProviderRoot = new SoSeparator();
   pcSelection->addChild(pcViewProviderRoot);
   redrawOnSelectionChange(pcSelection);
+  // is not realy working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
   setSceneGraph(pcSelection);
 
@@ -212,10 +217,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 //  SoLineHighlightRenderAction *pcRenderAction = new SoLineHighlightRenderAction();
   pcRenderAction->setLineWidth(4);
   pcRenderAction->setColor(SbColor(1,1,0));
-  pcRenderAction->setLinePattern(15);
-//  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
-  pcRenderAction->setSmoothing(true);
+  pcRenderAction->setLinePattern(3);
+  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+//  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
+//  pcRenderAction->setSmoothing(true);
 
   setGLRenderAction(pcRenderAction); 
 }
@@ -593,6 +598,55 @@ void View3DInventorViewer::spin(const SbVec2f & pointerpos)
   if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
   
 }
+
+void View3DInventorViewer::sFinishSelectionCallback(void *viewer,SoSelection *path)
+{
+  static_cast<View3DInventorViewer*>(viewer)->finishSelectionCallback(path);
+}
+
+void View3DInventorViewer::finishSelectionCallback(SoSelection *)
+{
+//  Base::Console().Log("SelectionCallback\n");
+}
+
+
+void View3DInventorViewer::sMadeSelection(void *viewer,SoPath *path)
+{
+  static_cast<View3DInventorViewer*>(viewer)->madeSelection(path);
+}
+
+// Callback function triggered for selection / deselection.
+void View3DInventorViewer::madeSelection(  SoPath * path )
+{
+  for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
+    for(int i = 0; i<path->getLength();i++)
+      if((*It)->getRoot() == path->getNodeFromTail(i))
+      {
+        (*It)->selected(this,path);
+        return;
+      }
+}
+
+void View3DInventorViewer::sUnmadeSelection(void *viewer,SoPath *path)
+{
+  static_cast<View3DInventorViewer*>(viewer)->unmadeSelection(path);
+}
+
+// Callback function triggered for deselection.
+void View3DInventorViewer::unmadeSelection(  SoPath * path )
+{
+  for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
+    for(int i = 0; i<path->getLength();i++)
+      if((*It)->getRoot() == path->getNodeFromTail(i))
+      {
+        (*It)->unselected(this,path);
+        return;
+      }
+}
+
+
+
+
 
 //****************************************************************************
 

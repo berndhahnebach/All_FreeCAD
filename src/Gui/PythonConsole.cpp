@@ -162,7 +162,7 @@ PYFUNCIMP_S(PythonConsole,sStdin)
 }
 
 /** Sets the new color for \a rcColor. */  
-void PythonConsole::OnChange( FCSubject<const char*> &rCaller,const char* sReason )
+void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
   FCParameterGrp::handle hPrefGrp = getWindowParameter();
 

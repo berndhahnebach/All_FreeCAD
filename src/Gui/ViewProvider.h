@@ -29,10 +29,14 @@
 #endif
 
 class SoNode;
+class SoPath;
 class QListViewItem;
 class SoSeparator;
 
 namespace Gui {
+
+class View3DInventorViewer;
+
 
 /** Base class of all view provider
  *  \author Jürgen Riegel
@@ -105,6 +109,10 @@ public:
 
   // returns the root node of the 
   SoSeparator* getRoot(void){return pcRoot;}
+
+  // 
+  virtual void selected(View3DInventorViewer *, SoPath *){};
+  virtual void unselected(View3DInventorViewer *, SoPath *){};
 
 
 protected:

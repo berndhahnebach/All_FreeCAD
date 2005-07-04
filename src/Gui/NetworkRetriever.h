@@ -58,7 +58,7 @@ public:
   bool isDownloading() const;
   void abort();
 
-  virtual void OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason);
+  virtual void OnChange (Base::Subject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason);
 
   static bool testWget();
 

@@ -90,12 +90,12 @@ MenuItem* MenuItem::findItem( const QString& name )
   return 0;
 }
 
-void MenuItem::addMenuItem( MenuItem* item )
+void MenuItem::addMenuItem( const MenuItem* item )
 {
   _items.append( item );
 }
 
-void MenuItem::removeItem( MenuItem* item )
+void MenuItem::removeItem( const MenuItem* item )
 {
   _items.remove( item );
 }
@@ -106,6 +106,13 @@ MenuItem& MenuItem::operator<< ( const QString& command )
   item->setCommand( command );;
   return *this;
 }
+
+MenuItem& MenuItem::operator<< ( const MenuItem* item )
+{
+  addMenuItem(item);
+  return *this;
+}
+
 
 QPtrList<MenuItem> MenuItem::getItems() const
 {

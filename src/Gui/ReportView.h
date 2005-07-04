@@ -132,7 +132,7 @@ public:
   virtual ~ReportOutput();
 
   /** Observes its parameter group. */
-  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
+  void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
 
   /** Writes warnings */
   void Warning(const char * s);

@@ -46,7 +46,7 @@ public:
   virtual ~WindowParameter();
 
   bool setGroupName( const char* name );
-  void OnChange(FCSubject<const char*> &rCaller, const char * sReason);
+  void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
 
   /// get the parameters
   static FCParameterGrp::handle getParameter(void);

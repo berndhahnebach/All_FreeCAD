@@ -68,7 +68,7 @@ bool WindowParameter::setGroupName( const char* name )
   return true;
 }
 
-void WindowParameter::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void WindowParameter::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
   Base::Console().Log("Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
 }

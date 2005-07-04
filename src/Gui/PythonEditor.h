@@ -53,7 +53,7 @@ public:
   PythonEditor(QWidget *parent = 0,const char *name = 0);
   ~PythonEditor();
 
-  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
+  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
 
 private:
   PythonSyntaxHighlighter* pythonSyntax;
@@ -116,7 +116,7 @@ public:
   PythonEditView( QWidget* parent, const char* name);
   ~PythonEditView();
 
-  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
+  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
   QTextEdit* editor() const { return _textEdit; }
 
   const char *getName(void){return "PythonEditView";}

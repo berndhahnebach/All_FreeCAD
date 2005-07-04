@@ -51,6 +51,12 @@ public:
 
   virtual void attache(App::Feature *pcFeature)=0;
 
+
+  virtual void selected(View3DInventorViewer *, SoPath *);
+  virtual void unselected(View3DInventorViewer *, SoPath *);
+
+
+
   /// helper to copy material from a feature to a SoMeterial Node
   void copy(const App::Material&, SoMaterial*);
   /// helper to set the materials

@@ -78,11 +78,11 @@ public:
   /// status types
   enum Status 
   {
-    Valid,
-    New,
-    Changed,
-    Inactive,
-    Error
+    Valid,   /**< enum The Feature is Valid */
+    New,     /**< enum The Feature is new */
+    Changed, /**< enum Changed by recalcualtion */
+    Inactive,/**< enum Will not recalculated */
+    Error    /**< enum Feture is in error state */
   };
 
   /// gets the status

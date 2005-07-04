@@ -546,7 +546,7 @@ CustomPopupMenu::~CustomPopupMenu()
   _hCommonGrp->Detach(this);
 }
 
-void CustomPopupMenu::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
   if (strcmp(sReason, "AllowDrag") == 0)
   {

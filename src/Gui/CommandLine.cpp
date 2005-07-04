@@ -358,7 +358,7 @@ void CommandLineBase::show()
     QComboBox::show();
 }
 
-void CommandLineBase::OnChange(FCSubject<const char*> &rCaller,const char* sReason)
+void CommandLineBase::OnChange(Base::Subject<const char*> &rCaller,const char* sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   if (strcmp(sReason, "SizeCmdLine") == 0)

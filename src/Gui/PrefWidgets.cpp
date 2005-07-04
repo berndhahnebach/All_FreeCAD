@@ -96,7 +96,7 @@ QCString PrefWidget::paramGrpPath() const
  * you have to filter out the appropriate parameter with the name \a sReason.
  * \a rCaller calls this method.
  */
-void PrefWidget::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void PrefWidget::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
   if ( QString(sReason) == QString(m_sPrefName) )
     restorePreferences();

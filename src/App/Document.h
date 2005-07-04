@@ -92,7 +92,7 @@ public:
  *  module. The custom document can handle different application specific behavior.
  *  @see Label
  */
-class AppExport Document :public Base::PyHandler, public FCSubject<const DocChanges&>
+class AppExport Document :public Base::PyHandler, public Base::Subject<const DocChanges&>
 {
 
 public:

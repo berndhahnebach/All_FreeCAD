@@ -67,7 +67,7 @@ public:
   PythonConsole(QWidget *parent = 0,const char *name = 0);
   ~PythonConsole();
 
-  void OnChange( FCSubject<const char*> &rCaller,const char* rcReason );
+  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
   void doKeyboardAction ( KeyboardAction action );
   void clear ();
   void paste();

@@ -118,7 +118,7 @@ void NetworkRetriever::testFailure()
   }
 }
 
-void NetworkRetriever::OnChange (FCSubject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason)
+void NetworkRetriever::OnChange (Base::Subject<Gui::Process::MessageType> &rCaller,Gui::Process::MessageType rcReason)
 {
   if (&rCaller != wget)
     return;

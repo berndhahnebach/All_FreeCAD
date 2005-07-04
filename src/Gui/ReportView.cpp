@@ -315,7 +315,7 @@ void ReportOutput::onToggleLogging()
   getWindowParameter()->SetBool( "checkLogging", bLog );
 }
 
-void ReportOutput::OnChange(FCSubject<const char*> &rCaller, const char * sReason)
+void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
   FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
   if (strcmp(sReason, "checkLogging") == 0)

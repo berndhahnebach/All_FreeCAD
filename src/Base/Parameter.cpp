@@ -268,7 +268,7 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
   * Does not much 
   */
 FCParameterGrp::FCParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode,const char* sName)	
-	: FCHandled(), FCSubject<const char*>(),_pGroupNode(GroupNode)
+	: FCHandled(), Subject<const char*>(),_pGroupNode(GroupNode)
 {
 	if(sName) _cName=sName;
 }
