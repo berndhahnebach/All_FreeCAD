@@ -36,7 +36,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Selection.h"
-#include "Exception.h"
+#include <Base/Exception.h>
 
 
 using namespace App;

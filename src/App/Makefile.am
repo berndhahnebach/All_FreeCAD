@@ -44,6 +44,8 @@ libFreeCADApp_la_SOURCES=\
 		Property.h \
 		PropertyAttr.cpp \
 		PropertyAttr.h \
+		Selection.cpp \
+		Selection.h \
 		Topology.cpp \
 		Topology.h
 
