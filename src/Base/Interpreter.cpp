@@ -68,7 +68,7 @@ InterpreterSingleton::~InterpreterSingleton()
 std::string InterpreterSingleton::runString(const char *sCmd)
 {
   PyBuf buf(sCmd);
-#if 0
+#if 1
   PyObject *module, *dict, *presult;          /* "exec code in d, d" */
 
   module = PP_Load_Module("__main__");         /* get module, init python */
@@ -78,17 +78,55 @@ std::string InterpreterSingleton::runString(const char *sCmd)
 
 
   presult = PyRun_String(buf.str, Py_file_input, dict, dict); /* eval direct */
-  if(!presult) throw Exception();
+  if(!presult)
+  {
+    if ( PyErr_Occurred() )
+    {
+      PyErr_Print();
+    }
+    throw Exception();
+  }
 
   presult = PyObject_Repr( presult) ;
   if(presult)
+  {
+    /* output to stdout
+    PyObject* out = PySys_GetObject("stdout");
+    if ( out && PyString_Check(presult) )
+    {
+      PyFile_WriteObject( presult, out, Py_PRINT_RAW );
+    }*/
     return std::string(PyString_AsString(presult));
+  }
   else
+  {
+    PyErr_Clear();
     return std::string();
-#endif
-  if(PyRun_SimpleString(buf.str)) 
+  }
+#else
+  if(PyRun_SimpleString(buf.str))
     throw PyException();
   return "";
+#endif
+}
+
+void InterpreterSingleton::runInteractiveString(const char *sCmd)
+{
+  PyBuf buf(sCmd);
+  PyObject *module, *dict, *presult;          /* "exec code in d, d" */
+
+  module = PP_Load_Module("__main__");         /* get module, init python */
+  if (module == NULL) throw;                         /* not incref'd */
+  dict = PyModule_GetDict(module);            /* get dict namespace */
+  if (dict == NULL) throw;                           /* not incref'd */
+
+  presult = PyRun_String(buf.str, Py_single_input, dict, dict); /* eval direct */
+  if(!presult)
+  {
+    if ( PyErr_Occurred() )
+      PyErr_Print();
+    throw Exception();
+  }
 }
 
 void InterpreterSingleton::runFile(const char*pxFileName)

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PYTHON_CONSOLE_H__
-#define __PYTHON_CONSOLE_H__
+#ifndef PYTHON_CONSOLE_H
+#define PYTHON_CONSOLE_H
 
 #ifndef _PreComp_
 # include <qstringlist.h>
@@ -105,6 +105,7 @@ private:
   int _startPara;
   bool _indent;
   ConsoleHistory _history;
+  QString _output, _error;
 
   static PythonConsole* _instance;
   static PyObject* _stdoutPy;

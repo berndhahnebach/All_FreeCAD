@@ -77,6 +77,8 @@ public:
 	//@{
 	/// Run a statement on the python interpreter and gives back a string with the retresentation of the result.
 	std::string runString(const char *psCmd);
+	/// Run a statement on the python interpreter and gives back a string with the retresentation of the result.
+	void runInteractiveString(const char *psCmd);
 	/// Run file (script) on the python interpreter
 	void runFile(const char*pxFileName);
 	/// Run a statement with arguments on the python interpreter

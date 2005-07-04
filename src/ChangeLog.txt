@@ -582,3 +582,4 @@ Version: V0.1B119 Date: Wed Jun 29 12:57:43 2005 +++++++++++++++++++++++++++++++
   - implement panTo middle mouse double click
 + implementing selection
 + using "right" transparency mode
++ RFE 1187174 implemented (Calling "print" for internal Python objects)

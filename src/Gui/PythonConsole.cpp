@@ -103,7 +103,7 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
     setText("Initialization of Python failed.\n");
   }
 
-  append(">>> ");
+  printPrompt();
   moveCursor( MoveLineEnd, false );
 }
 
@@ -240,6 +240,7 @@ void PythonConsole::clear ()
   setText(">>> ");
   moveCursor( MoveLineEnd, false );
   _startPara = 0;
+  _indent = false;
 }
 
 void PythonConsole::removeSelectedText ( int selNum )
@@ -442,12 +443,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
  */
 void PythonConsole::insertPythonOutput( const QString& msg )
 {
-  int para; int idx;
-  getCursorPosition(&para, &idx);
-  pythonSyntax->highlightOutput(true);
-  insert( msg);
-  pythonSyntax->highlightOutput(false);
-  _startPara = paragraphs() - 1;
+  _output += msg;
 }
 
 /**
@@ -456,25 +452,38 @@ void PythonConsole::insertPythonOutput( const QString& msg )
  */
 void PythonConsole::insertPythonError ( const QString& err )
 {
-  int para; int idx;
-  getCursorPosition(&para, &idx);
-  pythonSyntax->highlightError(true);
-  insert( err);
-  pythonSyntax->highlightError(false);
-  _startPara = paragraphs() - 1;
+  _error += err;
 }
 
 /** Prints the ps1 prompt (>>> ) to the console window. */ 
 void PythonConsole::printPrompt()
 {
+  // write normal messages
+  if (!_output.isEmpty())
+  {
+    pythonSyntax->highlightOutput(true);
+    append( _output);
+    _output=QString::null;
+    pythonSyntax->highlightOutput(false);
+  }
+
+  // write error messages
+  if (!_error.isEmpty())
+  {
+    pythonSyntax->highlightError(true);
+    append( _error);
+    _error = QString::null;
+    pythonSyntax->highlightError(false);
+  }
+  // prompt
+  append(">>> ");
+
   // go to last the paragraph as we don't know sure whether Python 
   // has written something to the console
-  int para = paragraphs();
-  _startPara = para - 1;
-  setCursorPosition(para-1, 0);
-  _indent = false;
-  insertAt(">>> ", para-1, 0 );
+  _startPara = paragraphs() - 1;
+  setCursorPosition(_startPara, 0);
   moveCursor( MoveLineEnd, false );
+  _indent = false;
 }
 
 /**
@@ -625,7 +634,7 @@ bool PythonConsole::performPythonCommand()
     GuiConsoleObserver::bMute = true;
     if ( !pyCmd.isEmpty() )
     {
-      Base::Interpreter().runString( pyCmd.latin1() );
+      Base::Interpreter().runInteractiveString( pyCmd.latin1() );
     }
     GuiConsoleObserver::bMute = bMute;
     setFocus(); // if focus was lost
