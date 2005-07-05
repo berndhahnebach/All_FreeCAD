@@ -187,6 +187,7 @@ BUILT_SOURCES = \
 		moc_NetworkRetriever.cpp \
 		moc_PrefWidgets.cpp \
 		moc_Process.cpp \
+		moc_PythonConsole.cpp \
 		moc_PythonEditor.cpp \
 		moc_ReportView.cpp \
 		moc_SpinBox.cpp \

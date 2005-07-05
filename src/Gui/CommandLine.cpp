@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qcursor.h>
 # include <qmessagebox.h>
 # include <qpopupmenu.h>
@@ -172,7 +173,7 @@ void CommandLineBase::onLaunchCommand()
     }
     else
     {
-      Interpreter().runString(text(currentItem()).latin1());
+      Interpreter().runInteractiveString(text(currentItem()).latin1());
     }
   }
   catch (const Base::Exception& /*rclE*/)
@@ -187,6 +188,25 @@ void CommandLineBase::onLaunchCommand()
     QMessageBox::critical(this, tr("Error"), tr("A really nesty error occurred in the running script"));
   }
 #endif
+
+  // try to update the Python console to show the result output
+  //
+  QWidgetList  *list = QApplication::allWidgets();
+  QWidgetListIt it( *list );         // iterate over the widgets
+  QWidget* w=0L;
+  while ( (w=it.current()) != 0 ) {  // for each widget...
+    ++it;
+    if ( w->qt_cast("Gui::PythonConsole") )
+      break;
+  }
+  delete list;                      // delete the list, not the widgets
+
+  if ( w )
+  {
+    // emulate an key return event to let decide keyPressEvent() how to continue
+    QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+    QApplication::sendEvent( w, &ke );
+  }
 
   // remove first item
   if ( count() > _maxCount )

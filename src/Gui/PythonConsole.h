@@ -63,6 +63,8 @@ private:
 class PythonConsoleHighlighter;
 class GuiExport PythonConsole : public TextEdit, public WindowParameter
 {
+  Q_OBJECT
+
 public:
   PythonConsole(QWidget *parent = 0,const char *name = 0);
   ~PythonConsole();

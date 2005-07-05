@@ -495,6 +495,7 @@ bool PythonConsole::printCommand( const QString& cmd )
   try
   {
     Base::Interpreter().runStringArg("print '%s'", cmd.latin1() );
+    _history.append( cmd );
   }
   catch( ... )
   {
@@ -684,8 +685,6 @@ int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int end
     endStateOfLastPara=ErrorOutput;
   else if ( endStateOfLastPara==MessageOutput || endStateOfLastPara==ErrorOutput)
     endStateOfLastPara=0;
-  else if ( endStateOfLastPara==-2 )
-    endStateOfLastPara=MessageOutput;
 
   switch ( endStateOfLastPara )
   {
@@ -784,3 +783,5 @@ void ConsoleHistory::append( const QString& item )
   _history.append( item );
   it = _history.end();
 }
+
+#include "moc_PythonConsole.cpp"
