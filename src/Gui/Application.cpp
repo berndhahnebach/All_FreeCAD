@@ -177,7 +177,7 @@ ApplicationWindow::ApplicationWindow()
   connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
 
 //	setCaption( "Qt FreeCAD" );
-  setCaption( "FreeCAD" );
+  setCaption( App::Application::Config()["ExeName"].c_str() );
   setIcon(QPixmap(FCIcon));
 
   d->_cActiveWorkbenchName="<none>";
