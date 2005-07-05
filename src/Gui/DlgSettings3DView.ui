@@ -47,7 +47,7 @@
                         <cstring>CheckBox_ShowViewerDecoration</cstring>
                     </property>
                     <property name="text">
-                        <string>Use simple background</string>
+                        <string>Use simple background (sometimes faster)</string>
                     </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>ShowViewerDecoration</cstring>
@@ -77,6 +77,9 @@
                     <property name="name">
                         <cstring>CheckBox_ShowFPS</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
                     <property name="text">
                         <string>Show FPS Count</string>
                     </property>
@@ -95,7 +98,10 @@
                         <bool>true</bool>
                     </property>
                     <property name="text">
-                        <string>Use auto rotation</string>
+                        <string>Use spin rotation</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
                     </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>UseAutoRotation</cstring>
@@ -134,38 +140,94 @@
                 </widget>
                 <widget class="Gui::PrefCheckBox">
                     <property name="name">
-                        <cstring>CheckBox_UseSimpleBackground</cstring>
+                        <cstring>prefCheckBox11</cstring>
                     </property>
                     <property name="text">
-                        <string>Use simple background</string>
+                        <string>Don't use highlighting</string>
                     </property>
                     <property name="prefEntry" stdset="0">
-                        <cstring>UseSimpleBackground</cstring>
+                        <cstring>DontHighlight</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>View</cstring>
                     </property>
                 </widget>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>TextLabel1</cstring>
+                        <cstring>layout1</cstring>
                     </property>
-                    <property name="text">
-                        <string>User defined inventor file (*.iv) for special viewer functions:</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Selection color:</string>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>SelectionColor</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>SelectionColor</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>View</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="Gui::PrefFileChooser">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>PrefLineEdit_UserDefinedViewer</cstring>
+                        <cstring>layout2</cstring>
                     </property>
-                    <property name="filter">
-                        <string>Inventor (*.iv)</string>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Highlight color:</string>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>HighlightColor</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>HighlightColor</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>View</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line1_2</cstring>
                     </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>UserDefinedViewerExt</cstring>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
                     </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>View</cstring>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
                     </property>
                 </widget>
             </vbox>
@@ -175,9 +237,7 @@
 <tabstops>
     <tabstop>CheckBox_CornerCoordSystem</tabstop>
     <tabstop>CheckBox_ShowFPS</tabstop>
-    <tabstop>CheckBox_UseSimpleBackground</tabstop>
     <tabstop>CheckBox_ShowViewerDecoration</tabstop>
-    <tabstop>PrefLineEdit_UserDefinedViewer</tabstop>
     <tabstop>CheckBox_UseAutoRotation</tabstop>
 </tabstops>
 <slots>
@@ -187,6 +247,7 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

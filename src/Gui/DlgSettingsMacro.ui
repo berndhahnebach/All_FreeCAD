@@ -32,7 +32,7 @@
             <property name="title">
                 <string>Macro recording settings</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -42,7 +42,7 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QGroupBox" row="0" column="0">
+                <widget class="QGroupBox">
                     <property name="name">
                         <cstring>GroupBox8</cstring>
                     </property>
@@ -75,7 +75,7 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox" row="1" column="0">
+                <widget class="QGroupBox">
                     <property name="name">
                         <cstring>GroupBox7</cstring>
                     </property>
@@ -122,18 +122,77 @@
                         </widget>
                     </grid>
                 </widget>
-            </grid>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupBox4</cstring>
+                    </property>
+                    <property name="title">
+                        <string>groupBox4</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="Gui::PrefCheckBox">
+                            <property name="name">
+                                <cstring>PConsoleCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Show script commands in python console</string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>ScriptToPyConsole</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>Macro</cstring>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefCheckBox">
+                            <property name="name">
+                                <cstring>FileLogCheckBox</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Log all commands issued by menus to file:</string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>ScriptToFile</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>Macro</cstring>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefFileChooser">
+                            <property name="name">
+                                <cstring>MacroPath_2</cstring>
+                            </property>
+                            <property name="mode">
+                                <enum>File</enum>
+                            </property>
+                            <property name="fileName">
+                                <string>FullScript.FCScript</string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>ScriptFile</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>Macro</cstring>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </vbox>
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <slots>
     <slot access="protected">loadSettings()</slot>
     <slot access="protected">saveSettings()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

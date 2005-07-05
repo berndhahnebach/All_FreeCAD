@@ -213,18 +213,22 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 //  redrawOverlayOnSelectionChange(pcSelection);
   setSceneGraph(pcSelection);
 
-
+/* // Higlighthing of the Selection with Inventor stuff
   SoBoxHighlightRenderAction *pcRenderAction = new SoBoxHighlightRenderAction();
 //  SoLineHighlightRenderAction *pcRenderAction = new SoLineHighlightRenderAction();
   pcRenderAction->setLineWidth(4);
   pcRenderAction->setColor(SbColor(1,1,0));
   pcRenderAction->setLinePattern(3);
-  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-//  pcRenderAction->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
-//  pcRenderAction->setSmoothing(true);
 
   setGLRenderAction(pcRenderAction); 
-}
+  */
+
+  // set the transperency and antialiasing settings
+  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+//  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
+//  getGLRenderAction()->setSmoothing(true);
+
+ }
 
 View3DInventorViewer::~View3DInventorViewer()
 {

@@ -69,10 +69,9 @@ void DlgSettings3DViewImp::saveSettings()
   prefCheckBox8->onSave();
   CheckBox_CornerCoordSystem->onSave();
   CheckBox_ShowFPS->onSave();
-  CheckBox_UseSimpleBackground->onSave();
+//  CheckBox_UseSimpleBackground->onSave();
   CheckBox_ShowViewerDecoration->onSave();
   CheckBox_UseAutoRotation->onSave();
-  PrefLineEdit_UserDefinedViewer->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -80,10 +79,9 @@ void DlgSettings3DViewImp::loadSettings()
   prefCheckBox8->onRestore();
   CheckBox_CornerCoordSystem->onRestore();
   CheckBox_ShowFPS->onRestore();
-  CheckBox_UseSimpleBackground->onRestore();
+//  CheckBox_UseSimpleBackground->onRestore();
   CheckBox_ShowViewerDecoration->onRestore();
   CheckBox_UseAutoRotation->onRestore();
-  PrefLineEdit_UserDefinedViewer->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

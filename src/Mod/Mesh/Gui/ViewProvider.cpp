@@ -39,6 +39,7 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <App/Application.h>
+#include <App/Selection.h>
 #include <Base/Sequencer.h>
 
 #include "ViewProvider.h"
@@ -65,6 +66,30 @@ ViewProviderInventorMesh::ViewProviderInventorMesh()
 ViewProviderInventorMesh::~ViewProviderInventorMesh()
 {
 }
+
+
+void ViewProviderInventorMesh::selected(Gui::View3DInventorViewer *, SoPath *)
+{
+   Base::Console().Log("Select viewprovider Mesh  %p\n",this);
+   App::Selection().addFeature(pcFeature);
+
+   pcHighlight->mode = SoLocateHighlight::ON;
+//   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
+   pcHighlight->color.setValue((float)0.0,(float)0.3,(float)0.0);
+
+ 
+}
+void ViewProviderInventorMesh::unselected(Gui::View3DInventorViewer *, SoPath *)
+{
+   Base::Console().Log("Unselect viewprovider Mesh  %p\n",this);
+   App::Selection().removeFeature(pcFeature);
+
+   pcHighlight->mode = SoLocateHighlight::AUTO;
+//   pcHighlight->style = SoLocateHighlight::EMISSIVE;
+   pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+
+}
+
 
 void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 {
@@ -143,14 +168,19 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcFlatStyle->style = SoDrawStyle::FILLED;
   SoNormalBinding* pcBinding = new SoNormalBinding();
 	pcBinding->value=SoNormalBinding::PER_FACE;
-  SoLocateHighlight* h = new SoLocateHighlight();
-  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-  h->addChild(pcBinding);
-  h->addChild(pcMeshCoord);
-  h->addChild(pcMeshFaces);
+
   pcFlatRoot->addChild(pcFlatStyle);
   pcFlatRoot->addChild(pcShadedMaterial);
-  pcFlatRoot->addChild(h);
+  // Hilight for selection
+  pcHighlight = new SoLocateHighlight();
+  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+//  pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
+  pcHighlight->addChild(pcBinding);
+  pcHighlight->addChild(pcMeshCoord);
+  pcHighlight->addChild(pcMeshFaces);
+  pcFlatRoot->addChild(pcHighlight);
+
+
 
 /*  // flat shaded (per Vertex normales) ------------------------------------------
   pcFlatStyle = new SoDrawStyle();
@@ -173,14 +203,14 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcWireStyle->lineWidth = 2.0;
   SoLightModel *pcLightModel = new SoLightModel();
   pcLightModel->model = SoLightModel::BASE_COLOR;
-  h = new SoLocateHighlight();
-  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-  h->addChild(pcWireStyle);
-  h->addChild(pcLightModel);
-  h->addChild(pcLineMaterial);
-  h->addChild(pcMeshCoord);
-  h->addChild(pcMeshFaces);
-  pcWireRoot->addChild(h);
+  SoLocateHighlight *pcHighlight2 = new SoLocateHighlight();
+  pcHighlight2->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight2->addChild(pcWireStyle);
+  pcHighlight2->addChild(pcLightModel);
+  pcHighlight2->addChild(pcLineMaterial);
+  pcHighlight2->addChild(pcMeshCoord);
+  pcHighlight2->addChild(pcMeshFaces);
+  pcWireRoot->addChild(pcHighlight2);
 
   // points part ---------------------------------------------
   SoDrawStyle *pcPointStyle = new SoDrawStyle();
@@ -196,14 +226,14 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcFlatStyle->style = SoDrawStyle::FILLED;
   pcBinding = new SoNormalBinding();
 	pcBinding->value=SoNormalBinding::PER_FACE;
-  h = new SoLocateHighlight();
-  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-  h->addChild(pcBinding);
-  h->addChild(pcMeshCoord);
-  h->addChild(pcMeshFaces);
+  SoLocateHighlight *pcHighlight3 = new SoLocateHighlight();
+  pcHighlight3->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight3->addChild(pcBinding);
+  pcHighlight3->addChild(pcMeshCoord);
+  pcHighlight3->addChild(pcMeshFaces);
   pcFlatWireRoot->addChild(pcFlatStyle);
   pcFlatWireRoot->addChild(pcShadedMaterial);
-  pcFlatWireRoot->addChild(h);
+  pcFlatWireRoot->addChild(pcHighlight3);
   pcWireStyle = new SoDrawStyle();
   pcWireStyle->style = SoDrawStyle::LINES;
   pcWireStyle->lineWidth = 2.0;

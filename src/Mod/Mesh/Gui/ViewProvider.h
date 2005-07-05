@@ -32,6 +32,13 @@ class SoSwitch;
 class SoCoordinate3;
 class SoNormal;
 class SoFaceSet;
+class SoPath;
+class SoLocateHighlight;
+
+namespace Gui {
+  class View3DInventorViewer;
+}
+
 
 namespace Mesh {
   class MeshWithProperty;
@@ -64,6 +71,9 @@ public:
   /// Update the Mesh representation
   virtual void update(const ChangeType&);
 
+  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
+  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
+
 
   /// helper methode to build up the FaceSet
   void createMesh(Mesh::MeshWithProperty *pcMesh);
@@ -73,6 +83,8 @@ protected:
   SoCoordinate3 *pcMeshCoord;
   SoNormal      *pcMeshNormal;
   SoFaceSet     *pcMeshFaces;
+
+  SoLocateHighlight *pcHighlight;
 
   SoSwitch      *pcSwitch;
 
