@@ -166,16 +166,15 @@ public:
     const char* OName;
 		for(typename std::set<Observer<_MessageType> * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
     {
-			OName = (*Iter)->Name(*this,rcReason);   // get the name
+			OName = (*Iter)->Name();   // get the name
       if(OName && strcmp(OName,Name) == 0)
         return *Iter;
     }
+
+    return 0L;
 	}
 
 protected:
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#endif
 	/// Vector of attached observers
 	std::set<Observer <_MessageType> *> _ObserverSet;
 
