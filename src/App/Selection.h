@@ -55,6 +55,10 @@ public:
 
 
 
+// Export an instance of the base class (to avoid warnning C4275, see also 
+// C++ Language Reference/General Rules and Limitations on MSDN for more details.)
+template class AppExport Base::Subject<const SelectionChanges&>;
+
 /** The Selction class 
  */
 class AppExport SelectionSingelton :public Base::Subject<const SelectionChanges&>
