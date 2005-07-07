@@ -36,9 +36,17 @@ class MeshKernel;
 class AppMeshExport MeshInfo
 {
 public:
-  MeshInfo (const MeshKernel &rclM);
+  MeshInfo (MeshKernel &rclM);
   virtual ~MeshInfo (void) {}
-
+  /** 
+   * Calculates the surface area of the mesh object.
+   */
+  float GetSurface() const;
+  /** 
+   * Calculates the volume of the mesh object. Therefore the mesh must be a solid, if not 0
+   * is returned.
+   */
+  float GetVolume () const;
   /**
    * Writes general information about the mesh structure into the stream.
    */
@@ -80,7 +88,7 @@ protected:
 
 
 protected:
-  const MeshKernel &_rclMesh;   // const reference to mesh data structure
+  MeshKernel &_rclMesh;   // const reference to mesh data structure
 
 private:
   MeshInfo(void);         // not accessible default constructor

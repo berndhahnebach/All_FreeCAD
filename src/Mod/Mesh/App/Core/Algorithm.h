@@ -62,6 +62,9 @@ public:
    * if these facets intersects.
    */
   static bool IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet1, const MeshGeomFacet &rclFacet2);
+  /** This method checks if these facets intersects.
+   */
+  static bool IntersectWithFacet(const MeshGeomFacet &rclFacet1, const MeshGeomFacet &rclFacet2);
   /** Calculates the shortest distance from the line segment defined by \a rcP1 and \a rcP2 to
    * this facet.
    */

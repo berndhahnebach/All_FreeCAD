@@ -406,6 +406,26 @@ bool MeshFacetFunc::IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet1, 
   return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
 }
 
+bool MeshFacetFunc::IntersectWithFacet(const MeshGeomFacet &rclFacet1, const MeshGeomFacet &rclFacet2)
+{
+  // project facet 2 onto facet 1
+  Vector3<float> akU[3] = 
+      {Vector3<float>(rclFacet1._aclPoints[0].x, rclFacet1._aclPoints[0].y, rclFacet1._aclPoints[0].z),
+       Vector3<float>(rclFacet1._aclPoints[1].x, rclFacet1._aclPoints[1].y, rclFacet1._aclPoints[1].z),
+       Vector3<float>(rclFacet1._aclPoints[2].x, rclFacet1._aclPoints[2].y, rclFacet1._aclPoints[2].z)};
+
+  Vector3<float> akV[3] = 
+      {Vector3<float>(rclFacet2._aclPoints[0].x, rclFacet2._aclPoints[0].y, rclFacet2._aclPoints[0].z),
+       Vector3<float>(rclFacet2._aclPoints[1].x, rclFacet2._aclPoints[1].y, rclFacet2._aclPoints[1].z),
+       Vector3<float>(rclFacet2._aclPoints[2].x, rclFacet2._aclPoints[2].y, rclFacet2._aclPoints[2].z)};
+
+  Triangle3<float> akTria1(akU);
+  Triangle3<float> akTria2(akV);
+
+  //Tests two triangles for intersection (Magic Softwate Library)
+  return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
+}
+
 float MeshFacetFunc::CenterOfInnerCircle(const MeshGeomFacet &rclFacet, Vector3D& rclCenter)
 {
   Vector3D p0(rclFacet._aclPoints[0].x, rclFacet._aclPoints[0].y, rclFacet._aclPoints[0].z);

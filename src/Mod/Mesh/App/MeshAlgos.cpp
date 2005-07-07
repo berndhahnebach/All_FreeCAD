@@ -362,9 +362,9 @@ GtsSurface* MeshAlgos::createGTSSurface(MeshWithProperty* Mesh)
   {
     // geting the three points of the facet
     Mesh->getKernel()->GetFacetPoints(pFIter,p1,p2,p3);
-    
+
     // creating the edges and add the face to the surface
-    gts_surface_add_face (Surf, 
+    gts_surface_add_face (Surf,
   	    gts_face_new (Surf->face_class,
           new_edge (aVertex[p1],aVertex[p2]),
           new_edge (aVertex[p2],aVertex[p3]),
@@ -375,7 +375,7 @@ GtsSurface* MeshAlgos::createGTSSurface(MeshWithProperty* Mesh)
                                                                      gts_surface_vertex_number(Surf),
                                                                      gts_surface_edge_number(Surf),
                                                                      gts_surface_is_orientable (Surf)?"orientable":"not orientable",
-                                                                     gts_surface_is_self_intersecting(Surf)?"self-intersections":"no self-intersection" ); 
+                                                                     gts_surface_is_self_intersecting(Surf)?"self-intersections":"no self-intersection" );
 
   return Surf;
 }

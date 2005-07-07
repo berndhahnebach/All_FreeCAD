@@ -31,14 +31,54 @@
 #endif
 
 #include "Info.h"
+#include "Algorithm.h"
+#include "Evaluation.h"
 #include "Iterator.h"
 
 using namespace Mesh;
-//using namespace std;
 
-MeshInfo::MeshInfo (const MeshKernel &rclM)
+MeshInfo::MeshInfo (MeshKernel &rclM)
 : _rclMesh(rclM)
 {
+}
+
+float MeshInfo::GetSurface() const
+{
+  float fSurface = 0.0;
+  MeshFacetIterator cIter(_rclMesh);
+  Vector3D p1,p2,p3;
+  for (cIter.Init(); cIter.More(); cIter.Next())
+  {
+    const MeshGeomFacet& rclF = *cIter;
+    fSurface += MeshFacetFunc::Area(rclF);
+  }
+
+  return fSurface;
+}
+
+float MeshInfo::GetVolume() const
+{
+  MeshEvalSolid cSolid(_rclMesh);
+  if ( cSolid.Validate(false) != MeshEvaluation::Valid )
+    return 0.0f; // no solid
+
+  float fVolume = 0.0;
+  MeshFacetIterator cIter(_rclMesh);
+  Vector3D p1,p2,p3;
+  for (cIter.Init(); cIter.More(); cIter.Next())
+  {
+    const MeshGeomFacet& rclF = *cIter;
+    p1 = rclF._aclPoints[0];
+    p2 = rclF._aclPoints[1];
+    p3 = rclF._aclPoints[2];
+
+    fVolume += (-p3.x*p2.y*p1.z + p2.x*p3.y*p1.z + p3.x*p1.y*p2.z - p1.x*p3.y*p2.z - p2.x*p1.y*p3.z + p1.x*p2.y*p3.z);
+  }
+
+  fVolume /= 6.0;
+  fVolume = fabs(fVolume);
+
+  return fVolume;
 }
 
 std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
@@ -120,11 +160,15 @@ std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
   rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
   while (pEIter < pEEnd)
   {
-/*    printf("E:%4d: %8.3f  %8.3f  %8.3f | %8.3f  %8.3f  %8.3f | B:%c\n",
-           i++, (*pEIter)._aclPoints[0].x, (*pEIter)._aclPoints[0].y,
-           (*pEIter)._aclPoints[0].z, (*pEIter)._aclPoints[1].x,
-           (*pEIter)._aclPoints[1].y, (*pEIter)._aclPoints[1].z,
-           (*pEIter)._bBorder ? 'X' : '-');*/
+    const Vector3D& rP0 = pEIter->_aclPoints[0];
+    const Vector3D& rP1 = pEIter->_aclPoints[0];
+    rclStream << "E "    << std::setw(4) << (i++) << ": "
+              << "  P (" << std::setw(8) << rP0.x << ", "
+                         << std::setw(8) << rP0.y << ", "
+                         << std::setw(8) << rP0.z << "); "
+              << "  P (" << std::setw(8) << rP1.x << ", "
+                         << std::setw(8) << rP1.y << ", "
+                         << std::setw(8) << rP1.z << "),  B: " << (pEIter->_bBorder ? "y" : "n") << std::endl;
     ++pEIter;
   }
 #else

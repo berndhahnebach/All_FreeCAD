@@ -77,6 +77,7 @@
 #include <Wm3Sphere3.h>
 #include <Wm3Triangle3.h>
 #include <Wm3Vector3.h>
+#include <Wm3Matrix3.h>
 
 #endif //_PreComp_
 

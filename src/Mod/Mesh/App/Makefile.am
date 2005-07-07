@@ -10,6 +10,8 @@ libMesh_la_SOURCES=\
 		Core/Definitions.h \
 		Core/Elements.cpp \
 		Core/Elements.h \
+		Core/Evaluation.cpp \
+		Core/Evaluation.h \
 		Core/Grid.cpp \
 		Core/Grid.h \
 		Core/Helpers.h \

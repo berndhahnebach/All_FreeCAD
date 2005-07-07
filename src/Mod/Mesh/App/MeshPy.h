@@ -71,10 +71,14 @@ public:
   PYFUNCDEF_D(MeshPy,coarsen)
   PYFUNCDEF_D(MeshPy,translate)
   PYFUNCDEF_D(MeshPy,rotate)
+  PYFUNCDEF_D(MeshPy,transformToEigen)
   PYFUNCDEF_D(MeshPy,scale)
   PYFUNCDEF_D(MeshPy,addFacet)
   PYFUNCDEF_D(MeshPy,clear)
   PYFUNCDEF_D(MeshPy,copy)
+  PYFUNCDEF_D(MeshPy,hasConsistentOrientation)
+  PYFUNCDEF_D(MeshPy,isSolid)
+  PYFUNCDEF_D(MeshPy,hasNonManifolds)
 
 protected:
 

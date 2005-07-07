@@ -41,6 +41,7 @@ using Base::Console;
 #include "Core/MeshIO.h"
 #include "Core/Stream.h"
 #include "Core/Info.h"
+#include "Core/Evaluation.h"
 
 using namespace Mesh;
 
@@ -84,10 +85,14 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(coarsen)
   PYMETHODEDEF(translate)
   PYMETHODEDEF(rotate)
+  PYMETHODEDEF(transformToEigen)
   PYMETHODEDEF(scale)
   PYMETHODEDEF(addFacet)
   PYMETHODEDEF(clear)
   PYMETHODEDEF(copy)
+  PYMETHODEDEF(hasConsistentOrientation)
+  PYMETHODEDEF(isSolid)
+  PYMETHODEDEF(hasNonManifolds)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -326,6 +331,29 @@ PYFUNCIMP_D(MeshPy,rotate)
   Py_Return;
 }
 
+PYFUNCIMP_D(MeshPy,transformToEigen)
+{
+  PyObject* pcBool;
+  if (!PyArg_ParseTuple(args, "O", &pcBool))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  bool ok = (pcBool == Py_True ? true : false);
+  MeshEigensystem cMeshEval( *_pcMesh->getKernel() );
+  switch ( cMeshEval.Validate( ok ) )
+  {
+  case MeshEvaluation::Fixed:
+    ok = true;
+    break;
+  case MeshEvaluation::Valid:
+  case MeshEvaluation::Invalid:
+  default:
+    ok = false;
+    break;
+  }
+
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
+
 PYFUNCIMP_D(MeshPy,scale)
 {
   double s;
@@ -372,4 +400,65 @@ PYFUNCIMP_D(MeshPy,copy)
   PY_TRY {
    return new MeshPy(new MeshWithProperty(*_pcMesh));
   } PY_CATCH;
+}
+
+PYFUNCIMP_D(MeshPy,hasConsistentOrientation)
+{
+  std::string txt;
+  MeshEvalNormals cMeshEval( *_pcMesh->getKernel() );
+  switch ( cMeshEval.Validate() )
+  {
+  case MeshEvaluation::Valid:
+    txt = "True";
+    break;
+  case MeshEvaluation::Fixed:
+    txt = "Tried to fix";
+    break;
+  case MeshEvaluation::Invalid:
+    txt = "False";
+    break;
+  default:
+    txt = "no information";
+    break;
+  }
+
+  return Py_BuildValue("s",txt.c_str()); 
+}
+
+PYFUNCIMP_D(MeshPy,isSolid)
+{
+  bool ok;
+  MeshEvalSolid cMeshEval( *_pcMesh->getKernel() );
+  switch ( cMeshEval.Validate() )
+  {
+  case MeshEvaluation::Valid:
+    ok = true;
+    break;
+  case MeshEvaluation::Fixed:
+  case MeshEvaluation::Invalid:
+  default:
+    ok = false;
+    break;
+  }
+
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
+
+PYFUNCIMP_D(MeshPy,hasNonManifolds)
+{
+  bool ok;
+  MeshEvalTopology cMeshEval( *_pcMesh->getKernel() );
+  switch ( cMeshEval.Validate() )
+  {
+  case MeshEvaluation::Valid:
+    ok = false;
+    break;
+  case MeshEvaluation::Fixed:
+  case MeshEvaluation::Invalid:
+  default:
+    ok = true;
+    break;
+  }
+
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
