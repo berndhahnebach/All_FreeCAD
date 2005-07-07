@@ -34,6 +34,8 @@
 #include <Base/Observer.h>
 #include <Base/PyExport.h>
 
+#error "selection hase moved to Gui! Dont use this any more"
+
 namespace App
 {
 

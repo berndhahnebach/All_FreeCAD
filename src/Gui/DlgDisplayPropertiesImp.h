@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
+ *   Copyright (c) 2002 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,82 +21,45 @@
  ***************************************************************************/
 
 
-/*  Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
+#ifndef DlgDisplayPropertiesImp_H
+#define DlgDisplayPropertiesImp_H
+
+#include "DlgDisplayProperties.h"
+
+
+namespace Gui {
+class Command;
+namespace Dialog {
+
+/** 
+ * The DlgDisplayPropertiesImp class implements a dialog containing all available document
+ * templates to create a new document.
+ * \author Jürgen Riegel
  */
-#include "PreCompiled.h"
+class DlgDisplayPropertiesImp : public DlgDisplayProperties
+{ 
+    Q_OBJECT
 
-#ifndef _PreComp_
-# include <assert.h>
-# include <string>
-#endif
+public:
+  DlgDisplayPropertiesImp( Gui::Command* pcCmd, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~DlgDisplayPropertiesImp();
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Selection.h"
-#include <Base/Exception.h>
+public slots:
+    virtual void onChangeMaterial(const QString&);
+    virtual void onChangeMode(const QString&);
+    virtual void onChangePlot(const QString&);
+    virtual void onOK(void);
+    virtual void onColorChange();
+    virtual void onCancel();
+    virtual void onChangeTrans(int);
 
-
-using namespace Gui;
-
-
-//**************************************************************************
-// Construction/Destruction
-
-/**
- * A constructor.
- * A more elaborate description of the constructor.
- */
-SelectionSingelton::SelectionSingelton()
-{
-}
-
-/**
- * A destructor.
- * A more elaborate description of the destructor.
- */
-SelectionSingelton::~SelectionSingelton()
-{
-}
+protected:
+  Gui::Command* _pcCmd;
 
 
-SelectionSingelton* SelectionSingelton::_pcSingleton = NULL;
+};
 
-SelectionSingelton& SelectionSingelton::instance(void)
-{
-  if (_pcSingleton == NULL)
-  {
-    _pcSingleton = new SelectionSingelton;
-  }
+} // namespace Dialog
+} // namespace Gui
 
-  return *_pcSingleton;
-}
-
-void SelectionSingelton::destruct (void)
-{
-  if (_pcSingleton != NULL)
-    delete _pcSingleton;
-}
-
-void SelectionSingelton::addFeature(App::Feature *f)
-{
-  _FeatureSet.insert(f);
-
-}
-
-void SelectionSingelton::removeFeature(App::Feature *f)
-{
-  _FeatureSet.erase(f);
-
-
-}
-
-
-
-//**************************************************************************
-// separator for other implemetation aspects
-
-
-
+#endif // DlgDisplayPropertiesImp_H

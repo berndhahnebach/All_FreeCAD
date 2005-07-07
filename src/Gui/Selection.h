@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,32 +21,90 @@
  ***************************************************************************/
 
 
-#ifndef __SELECTION_H__
-#define __SELECTION_H__
+#ifndef __Selection_h__
+#define __Selection_h__
 
-namespace Gui {
+// Std. configurations
 
-/** The selection container
- * \author Jürgen Riegel
+#ifndef _PreComp_
+# include <string>
+# include <map>
+#endif
+
+#include <Base/Observer.h>
+#include <Base/PyExport.h>
+
+namespace App
+{
+  class Feature;
+}
+
+namespace Gui
+{
+
+
+/** transport the changes of the Selection
+ *  This class transport closer information what was changed in a
+ *  Selection. Its a optional information and not all commands set this
+ *  information. If not set all observer of the selection assume a full change
+ *  and update everything (e.g 3D view). This is not a very good idea if, e.g. only
+ *  a small parameter whas changed. There for one can use this class and make the
+ *  update of the document much faster!
+ *@see FCObserver
  */
-class GuiExport Selection
+class GuiExport SelectionChanges
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  Selection();
-
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  ~Selection();
 };
 
-} // namespace Gui
 
 
-#endif // __SELECTION_H_
+// Export an instance of the base class (to avoid warnning C4275, see also 
+// C++ Language Reference/General Rules and Limitations on MSDN for more details.)
+template class GuiExport Base::Subject<const SelectionChanges&>;
+
+/** The Selction class 
+ */
+class GuiExport SelectionSingelton :public Base::Subject<const SelectionChanges&>
+{
+public:
+  /// Construction
+  SelectionSingelton();
+  /// Destruction
+  virtual ~SelectionSingelton();
+
+  static SelectionSingelton& instance(void);
+  static void destruct (void);
+
+
+  std::string getSelectionAsString(void);
+
+  void addFeature(App::Feature*);
+  void removeFeature(App::Feature*);
+
+  const std::set<App::Feature*> &Selection(void){ return _FeatureSet;}
+
+
+
+protected:
+
+  static SelectionSingelton* _pcSingleton;
+
+  std::set<App::Feature*> _FeatureSet;
+
+};
+
+
+/// Get the global instance
+inline GuiExport SelectionSingelton& Selection(void)
+{
+  return SelectionSingelton::instance();
+}
+
+
+
+
+} //namespace Gui
+
+#endif // __FILETEMPLATE_H__
 

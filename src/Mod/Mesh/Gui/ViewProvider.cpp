@@ -39,7 +39,7 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <App/Application.h>
-#include <App/Selection.h>
+#include <Gui/Selection.h>
 #include <Base/Sequencer.h>
 
 #include "ViewProvider.h"
@@ -71,7 +71,7 @@ ViewProviderInventorMesh::~ViewProviderInventorMesh()
 void ViewProviderInventorMesh::selected(Gui::View3DInventorViewer *, SoPath *)
 {
    Base::Console().Log("Select viewprovider Mesh  %p\n",this);
-   App::Selection().addFeature(pcFeature);
+   Gui::Selection().addFeature(pcFeature);
 
    pcHighlight->mode = SoLocateHighlight::ON;
 //   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
@@ -82,7 +82,7 @@ void ViewProviderInventorMesh::selected(Gui::View3DInventorViewer *, SoPath *)
 void ViewProviderInventorMesh::unselected(Gui::View3DInventorViewer *, SoPath *)
 {
    Base::Console().Log("Unselect viewprovider Mesh  %p\n",this);
-   App::Selection().removeFeature(pcFeature);
+   Gui::Selection().removeFeature(pcFeature);
 
    pcHighlight->mode = SoLocateHighlight::AUTO;
 //   pcHighlight->style = SoLocateHighlight::EMISSIVE;

@@ -116,7 +116,7 @@ void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
 
   MenuItem* view = new MenuItem;
 //  view->setCommand( QObject::tr("&View") );
-  *view << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewFullScreen" ;
+  *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewFullScreen" ;
 
   QPopupMenu ContextMenu(this);
   MenuManager::getInstance().setupContextMenu(view,ContextMenu);

@@ -35,11 +35,35 @@
 #include "../Base/Exception.h"
 #include "../App/Document.h"
 #include "Macro.h"
+#include "DlgDisplayPropertiesImp.h"
 
 using namespace Gui;
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//===========================================================================
+// Std_ViewBottom
+//===========================================================================
+DEF_3DV_CMD(StdCmdSetMaterial)
+
+StdCmdSetMaterial::StdCmdSetMaterial()
+  :CppCommand("Std_SetMaterial")
+{
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Material");
+  sToolTipText  = QT_TR_NOOP("Set the material properties of the selcted feature");
+  sWhatsThis    = QT_TR_NOOP("Set the material properties of the selcted feature");
+  sStatusTip    = QT_TR_NOOP("Set the material properties of the selcted feature");
+  sPixmap       = "Std_Tool1";
+  iAccel        = Qt::CTRL+Qt::Key_D;
+}
+
+void StdCmdSetMaterial::activated(int iMsg)
+{
+  Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getAppWnd(), "Windows", true );
+  dlg.exec();
+}
 
 //===========================================================================
 // Std_ViewBottom
@@ -607,6 +631,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdViewCreateInventor());
 
   rcCmdMgr.addCommand(new StdViewFullScreen());
+  rcCmdMgr.addCommand(new StdCmdSetMaterial());
 }
 
 } // namespace Gui

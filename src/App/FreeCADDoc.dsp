@@ -360,10 +360,12 @@ SOURCE=.\PropertyAttr.h
 # Begin Source File
 
 SOURCE=.\Selection.cpp
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=.\Selection.h
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
