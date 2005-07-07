@@ -516,7 +516,7 @@ void ParameterValue::onCreateFloatItem()
   }
 
   double val = QInputDialog::getDouble(QObject::tr("New float item"), QObject::tr("Enter your number:"), 
-                                       0, -2147483647, 2147483647, 1, &ok, this);
+                                       0, -2147483647, 2147483647, 6, &ok, this);
   if ( ok )
   {
     ParameterValueItem *pcItem;
@@ -782,7 +782,7 @@ void ParameterFloat::changeValue()
   bool ok;
 
   double num = QInputDialog::getDouble(QObject::tr("Change value"), QObject::tr("Enter your number:"), 
-                                       text(2).toDouble(), -2147483647, 2147483647, 1, &ok, listView());
+                                       text(2).toDouble(), -2147483647, 2147483647, 6, &ok, listView());
   if ( ok )
   {
     setText(2, QString("%1").arg(num));
