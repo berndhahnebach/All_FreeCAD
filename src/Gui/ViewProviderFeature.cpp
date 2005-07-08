@@ -93,6 +93,10 @@ void ViewProviderInventorFeature::setMatFromFeature(void)
 
 }
 
+void ViewProviderInventorFeature::setTransparency(float trans)
+{
+  pcShadedMaterial->transparency = trans;
+}
 
 //===========================================================================
 // FeatureFactorySingleton - Factory for Features

@@ -245,43 +245,7 @@ void View3DInventor::onUpdate(void)
 #ifdef FC_LOGUPDATECHAIN
   Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
 #endif
-/*
-  App::Feature *pcActFeature = getAppDocument()->GetActiveFeature();
-
-  if(pcActFeature)
-  {
-    std::string cName = pcActFeature->Type();
-    // check if still the same ViewProvider
-    if(cName == cViewProviderName && pcActViewProvider)
-    {
-      // if the same just calculate the new representation
-      pcActViewProvider->attache(pcActFeature);
-      SoNode* Node = pcActViewProvider->getRoot();
-      pcSepRoot->addChild(Node);
-      //_viewer->setSceneGraph(Node);
-    }else{
-      // if not create the new ViewProvider
-      if (pcActViewProvider) 
-        delete pcActViewProvider;
-      pcActViewProvider = ViewProviderInventorFeatureFactory().Produce(pcActFeature->Type());
-      if(pcActViewProvider)
-      {
-        // if succesfully created set the right name an calculate the view
-        cViewProviderName = pcActFeature->Type();
-        pcActViewProvider->attache(pcActFeature);
-        SoNode* Node = pcActViewProvider->getRoot();
-        pcSepRoot->addChild(Node);
-        //_viewer->setSceneGraph(Node);
-      }else{
-        Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",pcActFeature->Type());
-        cViewProviderName = "";
-      }
-    }
-
-  }
-
-*/
-  
+  update();  
 }
 void View3DInventor::hideEvent ( QHideEvent * cEvent )
 {

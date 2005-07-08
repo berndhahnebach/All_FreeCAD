@@ -294,3 +294,5 @@ std::vector<std::string> ViewProviderInventorMesh::getModes(void)
 
   return StrList;
 }
+
+

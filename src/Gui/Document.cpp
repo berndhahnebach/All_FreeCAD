@@ -108,6 +108,14 @@ Document::~Document()
   _pcDocument->DecRef();
 }
 
+
+ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
+{
+   return _ViewProviderMap[Feat];
+}
+
+
+
 void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
 #ifdef FC_LOGUPDATECHAIN

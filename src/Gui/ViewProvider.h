@@ -114,6 +114,18 @@ public:
   virtual void selected(View3DInventorViewer *, SoPath *){};
   virtual void unselected(View3DInventorViewer *, SoPath *){};
 
+  /** @name direct handling methodes
+    *  This group of methodes is to direct influenc the 
+    *  apierence of the viewed content. Its only for fast
+    *  interactions! If you whant to set the visual parameters
+    *  you have to do it on the object viewed by this Provider!
+    */
+  //@{
+  /// Set the transparency
+  virtual void setTransparency(float)=0;
+  //@}
+
+
 
 protected:
   SoSeparator *pcRoot;

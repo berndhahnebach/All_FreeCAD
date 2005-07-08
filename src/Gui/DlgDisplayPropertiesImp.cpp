@@ -32,8 +32,10 @@
 #include "DlgDisplayPropertiesImp.h"
 #include "Command.h"
 #include "Application.h"
-#include "BitmapFactory.h"
 #include "Widgets.h"
+#include "Selection.h"
+#include "Document.h"
+#include "ViewProvider.h"
 
 #include "../App/Application.h"
 
@@ -47,9 +49,25 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd)
+    : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().Selection())
 {
+//  const std::set<App::Feature*> &Sel = Gui::Selection().Selection();
+  std::set<std::string> ModeList;
 
+  for(std::set<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  {
+    ViewProviderInventor *pcProv = pcCmd->getActiveDocument()->getViewProvider(*It);
+    std::vector<std::string> Modes = pcProv->getModes();
+
+    for(std::vector<std::string>::iterator It2= Modes.begin();It2!=Modes.end();It2++)
+      ModeList.insert(*It2);
+
+    Provider.push_back(pcProv);
+  }
+
+
+  for(std::set<std::string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
+    ModeBox->insertItem(It3->c_str()); 
 
 }
 
@@ -64,10 +82,14 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
 void DlgDisplayPropertiesImp::onChangeMaterial(const QString&s)
 {
   Base::Console().Log("Material = %s\n",s.latin1());
+
 }
 void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
 {
   Base::Console().Log("Mode = %s\n",s.latin1());
+  for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setMode(s.latin1()); 
+  _pcCmd->getActiveDocument()->onUpdate();
 }
 
 void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
@@ -93,7 +115,9 @@ void DlgDisplayPropertiesImp::onCancel()
 
 void DlgDisplayPropertiesImp::onChangeTrans(int i)
 {
-  Base::Console().Log("Trans = %d\n",i);
+  for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setTransparency( i/100.0); 
+  _pcCmd->getActiveDocument()->onUpdate();
 }
 
 

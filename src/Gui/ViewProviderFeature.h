@@ -62,6 +62,9 @@ public:
   /// helper to set the materials
   void setMatFromFeature(void);
 
+  /// Set the transparency
+  virtual void setTransparency(float);
+
 protected:
   SoMaterial  *pcShadedMaterial;
   SoMaterial  *pcLineMaterial;

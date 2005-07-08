@@ -117,6 +117,14 @@ public:
   //@}
 
 
+  /** @name View provider handling  */
+  //@{
+  /// Get the view provider for that Feature
+  ViewProviderInventor * getViewProvider(App::Feature *);
+  //@}
+
+
+
   /** @name methodes for the UNDO REDO handling */
   //@{
   /// Open a new Undo transaction on the document

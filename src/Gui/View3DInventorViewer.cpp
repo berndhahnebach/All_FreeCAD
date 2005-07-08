@@ -224,8 +224,8 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   */
 
   // set the transperency and antialiasing settings
-  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-//  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
+//  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
 //  getGLRenderAction()->setSmoothing(true);
 
  }

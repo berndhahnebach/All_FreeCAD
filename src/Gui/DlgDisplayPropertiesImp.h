@@ -26,9 +26,16 @@
 
 #include "DlgDisplayProperties.h"
 
+namespace App
+{
+  class Feature;
+}
 
 namespace Gui {
-class Command;
+
+  class ViewProviderInventor;
+  class Command;
+
 namespace Dialog {
 
 /** 
@@ -55,6 +62,8 @@ public slots:
 
 protected:
   Gui::Command* _pcCmd;
+  const std::set<App::Feature*> &Sel;
+  std::vector<ViewProviderInventor*> Provider;
 
 
 };
