@@ -24,7 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qiconview.h> 
+# include <qcombobox.h>
+# include <qiconview.h>
 # include <qfiledialog.h>
 # include <qlineedit.h>
 #endif

@@ -155,6 +155,8 @@ BUILT_SOURCES = \
 		moc_DlgCommands.cpp \
 		moc_DlgCommandsImp.cpp \
 		moc_DlgCustomizeImp.cpp \
+		moc_DlgDisplayProperties.cpp \
+		moc_DlgDisplayPropertiesImp.cpp \
 		moc_DlgDocTemplates.cpp\
 		moc_DlgDocTemplatesImp.cpp \
 		moc_DlgEditor.cpp \
@@ -210,6 +212,8 @@ BUILT_SOURCES = \
 		DlgAuthorization.h \
 		DlgCommands.cpp \
 		DlgCommands.h \
+		DlgDisplayProperties.cpp \
+		DlgDisplayProperties.h \
 		DlgDocTemplates.cpp \
 		DlgDocTemplates.h \
 		DlgEditor.cpp \
@@ -305,6 +309,8 @@ libFreeCADGui_la_SOURCES = \
 		DlgCommandsImp.h \
 		DlgCustomizeImp.cpp \
 		DlgCustomizeImp.h \
+		DlgDisplayPropertiesImp.cpp \
+		DlgDisplayPropertiesImp.h \
 		DlgDocTemplatesImp.cpp \
 		DlgDocTemplatesImp.h \
 		DlgEditorImp.cpp \
@@ -495,13 +501,14 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	Command.lo CommandStd.lo CommandWindow.lo CommandTest.lo \
 	CommandView.lo CustomWidgets.lo DlgActionsImp.lo \
 	DlgActivateWindowImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
-	DlgCustomizeImp.lo DlgDocTemplatesImp.lo DlgEditorImp.lo \
-	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
-	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
-	DlgReportViewImp.lo DlgSettings3DViewImp.lo \
-	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
-	DlgUndoRedo.lo DockWindow.lo Document.lo Doxygen.lo \
-	FileDialog.lo GuiConsole.lo HelpView.lo Macro.lo MenuManager.lo \
+	DlgCustomizeImp.lo DlgDisplayPropertiesImp.lo \
+	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
+	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
+	DlgParameterImp.lo DlgPreferencesImp.lo DlgReportViewImp.lo \
+	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
+	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
+	DockWindow.lo Document.lo Doxygen.lo FileDialog.lo \
+	GuiConsole.lo HelpView.lo Macro.lo MenuManager.lo \
 	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
 	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonConsole.lo \
 	PythonConsolePy.lo PythonEditor.lo ReportView.lo resource.lo \
@@ -531,6 +538,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCmdbarsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCommandsImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgCustomizeImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgDisplayPropertiesImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgDocTemplatesImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgEditorImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgGeneralImp.Plo \
@@ -668,6 +676,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCmdbarsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCommandsImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgCustomizeImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgDisplayPropertiesImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgDocTemplatesImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgEditorImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgGeneralImp.Plo@am__quote@

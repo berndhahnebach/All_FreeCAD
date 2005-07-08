@@ -24,6 +24,11 @@
 #ifndef DlgDisplayPropertiesImp_H
 #define DlgDisplayPropertiesImp_H
 
+#ifndef _PreComp_
+# include <set>
+# include <vector>
+#endif
+
 #include "DlgDisplayProperties.h"
 
 namespace App
@@ -38,13 +43,13 @@ namespace Gui {
 
 namespace Dialog {
 
-/** 
+/**
  * The DlgDisplayPropertiesImp class implements a dialog containing all available document
  * templates to create a new document.
  * \author Jürgen Riegel
  */
 class DlgDisplayPropertiesImp : public DlgDisplayProperties
-{ 
+{
     Q_OBJECT
 
 public:
