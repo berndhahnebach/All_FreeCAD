@@ -276,6 +276,7 @@ protected:
   friend class MeshTopoAlgorithm;
   friend class MeshInfo;
   friend class MeshEvalTopology;
+  friend class MeshDegenerations;
 };
 
 #ifdef Use_EdgeList

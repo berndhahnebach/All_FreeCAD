@@ -181,12 +181,12 @@ protected:
 // -------------------------------------------------------------------------------
 
 /**
- * Approximation of a quadric into a given set of points. The implicit form of a quadric
+ * Approximation of a quadratic surface into a given set of points. The implicit form of the surface
  * is defined by F(x,y,z) = a * x^2 + b * y^2 + c * z^2 + 
  *                       2d * x * y + 2e * x * z + 2f * y * z +
  *                          g * x + h * y + * i * z + k 
  *                        = 0
- * Depending on the parameters (a,..,k) a quadric defines a sphere, ellipsoid, cylinder, conde
+ * Depending on the parameters (a,..,k) this surface defines a sphere, ellipsoid, cylinder, cone
  * and so on.
  */
 class AppMeshExport MeshQuadraticFit : public MeshPointFit

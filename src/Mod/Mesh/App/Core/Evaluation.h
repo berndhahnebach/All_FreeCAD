@@ -46,7 +46,7 @@ class MeshEvaluation
 public:
   enum State { Invalid, Fixed, Valid };
 
-  MeshEvaluation (MeshKernel &rclB) : _rclMesh(rclB) {}
+  MeshEvaluation (MeshKernel &rclB) : _rclMesh(rclB), _bIsValid(false) {}
   virtual ~MeshEvaluation () {}
 
   /**
@@ -59,8 +59,10 @@ public:
    */
   State Validate ( bool fixup=false )
   {
+    _bIsValid = false;
     if ( Evaluate() )
     {
+      _bIsValid = true;
       return Valid;
     }
     else if ( fixup )
@@ -75,6 +77,11 @@ public:
       return Invalid;
     }
   };
+
+  bool IsValid() const
+  {
+    return _bIsValid;
+  }
 
 protected:
   /**
@@ -95,6 +102,9 @@ protected:
 
 protected:
   MeshKernel& _rclMesh; /**< Mesh kernel */
+
+private:
+  bool _bIsValid; /**< Holds the result of Evakuate(). */
 };
 
 // ----------------------------------------------------
@@ -185,22 +195,6 @@ class AppMeshExport MeshEvalSelfIntersection : public MeshEvaluation
 public:
   MeshEvalSelfIntersection (MeshKernel &rclB) : MeshEvaluation(rclB) {}
   virtual ~MeshEvalSelfIntersection () {}
-
-protected:
-  bool Evaluate ();
-};
-
-// ----------------------------------------------------
-
-/**
- * The MeshDegeneration class searches for degenrated facets. A facet is regarded as
- * degenrated if an angle is < 30° or > 120°.
- */
-class AppMeshExport MeshDegeneration : public MeshEvaluation
-{
-public:
-  MeshDegeneration (MeshKernel& rclM);
-  ~MeshDegeneration() {}
 
 protected:
   bool Evaluate ();

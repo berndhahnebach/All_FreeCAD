@@ -42,6 +42,7 @@
 
 // STL
 #include <algorithm>
+#include <bitset>
 #include <iostream>
 #include <iomanip>
 #include <list>

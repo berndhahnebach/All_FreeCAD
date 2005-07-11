@@ -10,6 +10,8 @@ libMesh_la_SOURCES=\
 		Core/BoundBox.h \
 		Core/Definitions.cpp \
 		Core/Definitions.h \
+		Core/Degeneration.cpp \
+		Core/Degeneration.h \
 		Core/Elements.cpp \
 		Core/Elements.h \
 		Core/Evaluation.cpp \

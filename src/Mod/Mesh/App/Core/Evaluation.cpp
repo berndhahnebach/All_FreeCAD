@@ -458,42 +458,6 @@ bool MeshEvalSelfIntersection::Evaluate ()
   return ulsSelfIntersectFacets.size() == 0;
 }
 
-// ----------------------------------------------------
-
-MeshDegeneration::MeshDegeneration(MeshKernel& rclM)
-: MeshEvaluation(rclM)
-{
-}
-
-bool MeshDegeneration::Evaluate ()
-{
-  std::vector<unsigned long> aulDeg;
-  MeshFacetIterator cIter(_rclMesh);
-
-  Vector3D u,v;
-  float fAngle;
-  for (cIter.Init(); cIter.More(); cIter.Next())
-  {
-    const MeshGeomFacet& rclF = *cIter;
-    for (int i=0; i<3; i++)
-    {
-      u = rclF._aclPoints[(i+1)%3]-rclF._aclPoints[i];
-      v = rclF._aclPoints[(i+2)%3]-rclF._aclPoints[i];
-      u.Normalize();
-      v.Normalize();
-
-      fAngle = u * v;
-      if (fAngle > 0.86f || fAngle < -0.5f)
-      {
-        aulDeg.push_back(cIter.Position());
-        break;
-      }
-    }
-  }
-
-  return (aulDeg.size() == 0);
-}
-
 // ----------------------------------------------------------------
 
 bool MeshEvalNeighbourhood::Evaluate ()

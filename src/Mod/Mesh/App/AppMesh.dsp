@@ -132,6 +132,21 @@ SOURCE=.\Core\Definitions.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Core\Degeneration.cpp
+
+!IF  "$(CFG)" == "AppMesh - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "AppMesh - Win32 Debug"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Degeneration.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Core\Elements.cpp
 # End Source File
 # Begin Source File
