@@ -157,8 +157,12 @@ const char *Feature::GetStringProperty(const char *Name)
 
 void Feature::TouchProperty(const char *Name)
 {
-    _pDoc->TouchState( _cFeatureLabel.FindChild(_PropertiesMap[Name]) );
+  std::map<std::string,int>::iterator it = _PropertiesMap.find( Name );
+  if ( it != _PropertiesMap.end() )
+  {
+    _pDoc->TouchState( _cFeatureLabel.FindChild( it->second ) );
     _pDoc->TouchState( _cFeatureLabel );
+  }
 }
 
 void Feature::Touch(void)

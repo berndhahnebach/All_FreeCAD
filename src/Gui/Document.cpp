@@ -111,7 +111,8 @@ Document::~Document()
 
 ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
 {
-   return _ViewProviderMap[Feat];
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
 
@@ -128,15 +129,21 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
   {
     // cycling to all views of the document
+    ViewProviderInventor* vpInv = getViewProvider( *It );
     for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
     {
       View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-      if(pcIvView)
-        pcIvView->getViewer()->removeViewProvider(_ViewProviderMap[*It]);
+      if(pcIvView && vpInv)
+      {
+        pcIvView->getViewer()->removeViewProvider( vpInv );
+      }
     }
-    
-    delete _ViewProviderMap[*It];
-    _ViewProviderMap.erase(*It);
+
+    if ( vpInv )
+    {
+      delete vpInv;
+      _ViewProviderMap.erase(*It);
+    }
   }
 
   // set up new providers
@@ -166,7 +173,9 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   // update recalculated features
   for(It=Reason.UpdatedFeatures.begin();It!=Reason.UpdatedFeatures.end();It++)
   {
-    _ViewProviderMap[*It]->update(ViewProvider::All);
+    ViewProviderInventor* vpInv = getViewProvider( *It );
+    if ( vpInv )
+      vpInv->update(ViewProvider::All);
   }
 
   //getViewer()->addViewProvider()
