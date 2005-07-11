@@ -46,7 +46,6 @@ float MeshInfo::GetSurface() const
 {
   float fSurface = 0.0;
   MeshFacetIterator cIter(_rclMesh);
-  Vector3D p1,p2,p3;
   for (cIter.Init(); cIter.More(); cIter.Next())
   {
     const MeshGeomFacet& rclF = *cIter;
