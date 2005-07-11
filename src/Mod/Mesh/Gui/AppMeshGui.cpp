@@ -77,8 +77,8 @@ void GuiMeshExport initMeshGui() {
   CreateCommands();
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImportSTL", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"         , new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      , new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
 
   return;
 }

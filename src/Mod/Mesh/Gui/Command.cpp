@@ -36,11 +36,11 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// CmdMeshImportSTL THIS IS JUST A TEST COMMAND
+// CmdMeshImport THIS IS JUST A TEST COMMAND
 //===========================================================================
-DEF_STD_CMD_A(CmdMeshImportSTL);
+DEF_STD_CMD_A(CmdMeshImport);
 
-CmdMeshImportSTL::CmdMeshImportSTL()
+CmdMeshImport::CmdMeshImport()
   :CppCommand("Mesh_Test")
 {
   sAppModule    = "Mesh";
@@ -54,14 +54,14 @@ CmdMeshImportSTL::CmdMeshImportSTL()
   iAccel        = Qt::CTRL+Qt::Key_T;
 }
 
-void CmdMeshImportSTL::activated(int iMsg)
+void CmdMeshImport::activated(int iMsg)
 {
   QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STL (*.stl *.ast);;All Files (*.*)", 
                                                  Gui::ApplicationWindow::Instance );
 	if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"MeshImportSTL\")");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"MeshImport\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
  
@@ -69,7 +69,7 @@ void CmdMeshImportSTL::activated(int iMsg)
   }
 }
 
-bool CmdMeshImportSTL::isActive(void)
+bool CmdMeshImport::isActive(void)
 {
 	if( getActiveDocument() )
 		return true;
@@ -80,5 +80,5 @@ bool CmdMeshImportSTL::isActive(void)
 void CreateCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
-  rcCmdMgr.addCommand(new CmdMeshImportSTL());
+  rcCmdMgr.addCommand(new CmdMeshImport());
 }
