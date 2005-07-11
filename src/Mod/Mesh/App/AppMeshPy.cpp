@@ -71,7 +71,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->AddFeature("MeshImportSTL");
+      App::Feature *pcFeature = pcDoc->AddFeature("MeshImport");
       pcFeature->GetProperty("FileName").Set(Name);
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -115,7 +115,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().Active();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->AddFeature("MeshImportSTL");
+      App::Feature *pcFeature = pcDoc->AddFeature("MeshImport");
       pcFeature->GetProperty("FileName").Set(Name);
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();

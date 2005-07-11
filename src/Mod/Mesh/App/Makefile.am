@@ -4,6 +4,8 @@ lib_LTLIBRARIES=libMesh.la
 libMesh_la_SOURCES=\
 		Core/Algorithm.cpp \
 		Core/Algorithm.h \
+		Core/Approximation.cpp \
+		Core/Approximation.h \
 		Core/BoundBox.cpp \
 		Core/BoundBox.h \
 		Core/Definitions.cpp \
@@ -43,15 +45,15 @@ libMesh_la_SOURCES=\
 		Core/ViewProj.h \
 		AppMesh.cpp \
 		AppMeshPy.cpp \
-		Delaunay.cpp \
-		Delaunay.h \
 		Doxygen.cpp \
-		FeatureMeshImportSTL.cpp \
-		FeatureMeshImportSTL.h \
+		FeatureMeshImport.cpp \
+		FeatureMeshImport.h \
 		Mesh.cpp \
 		Mesh.h \
 		MeshAlgos.cpp \
 		MeshAlgos.h \
+		MeshCurvature.cpp \
+		MeshCurvature.h \
 		MeshFeature.cpp \
 		MeshFeature.h \
 		MeshFeaturePy.cpp \

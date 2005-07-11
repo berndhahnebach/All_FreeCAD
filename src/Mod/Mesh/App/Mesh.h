@@ -159,6 +159,30 @@ public:
 
 };
 
+/**
+ * The MeshPropertyCurvature class holds curvature information for each element of a mesh object.
+ * @author Werner Mayer
+ */
+class AppMeshExport MeshPropertyCurvature: public PropertyBag
+{
+public:
+	MeshPropertyCurvature(int size=0);
+  virtual ~MeshPropertyCurvature();
+
+  const char* GetType() {return "Curvature";}
+
+  void resizePoints();
+  void resizeFaces();
+
+  struct fCurvature
+  {
+    float fMaxCurvature, fMinCurvature;
+    Vector3D cMaxCurvDir, cMinCurvDir;
+  };
+
+  std::vector<fCurvature> Curvature;
+};
+
 /** Base class of all PropertyBag data structures
  *  This class handles the registration and acces of 
  *  PropertyBags

@@ -62,22 +62,32 @@
 #include <BRepMesh_Discret.hxx>
 #include <BRepMesh_Triangle.hxx>
 #include <BRepMesh_Edge.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
+#include <math_Gauss.hxx>
+#include <math_Matrix.hxx>
 #include <TDF_Label.hxx>
 #include <TopoDS_Shape.hxx>
 
 // WildMagic (MagicSoftware)
+#include <Wm3ApprPlaneFit3.h>
+#include <Wm3ApprQuadraticFit3.h>
+#include <Wm3Delaunay3.h>
 #include <Wm3DistSegment3Segment3.h>
 #include <Wm3DistSegment3Triangle3.h>
+#include <Wm3DistVector3Plane3.h>
 #include <Wm3DistVector3Segment3.h>
 #include <Wm3DistVector3Triangle3.h>
+#include <Wm3Eigen.h>
 #include <Wm3IntrSegment3Box3.h>
 #include <Wm3IntrSegment3Plane3.h>
 #include <Wm3IntrTriangle3Triangle3.h>
+#include <Wm3Matrix3.h>
+#include <Wm3MeshCurvature.h>
+#include <Wm3QuadricSurface.h>
 #include <Wm3Sphere3.h>
 #include <Wm3Triangle3.h>
 #include <Wm3Vector3.h>
-#include <Wm3Matrix3.h>
 
 #endif //_PreComp_
 

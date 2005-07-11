@@ -65,6 +65,8 @@ public:
   PYFUNCDEF_D(MeshPy,write)
   PYFUNCDEF_D(MeshPy,offset)
   PYFUNCDEF_D(MeshPy,calcVertexNormales)
+  PYFUNCDEF_D(MeshPy,calcVertexCurvature)
+  PYFUNCDEF_D(MeshPy,calcFaceCurvature)
   PYFUNCDEF_D(MeshPy,Union)
   PYFUNCDEF_D(MeshPy,intersect)
   PYFUNCDEF_D(MeshPy,diff)
@@ -79,6 +81,7 @@ public:
   PYFUNCDEF_D(MeshPy,hasConsistentOrientation)
   PYFUNCDEF_D(MeshPy,isSolid)
   PYFUNCDEF_D(MeshPy,hasNonManifolds)
+  PYFUNCDEF_D(MeshPy,testDelaunay)
 
 protected:
 

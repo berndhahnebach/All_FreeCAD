@@ -24,7 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-
+# include <Wm3Delaunay3.h>
+# include <Wm3Vector3.h>
 #endif
 
 #include <Base/Console.h>
@@ -42,6 +43,7 @@ using Base::Console;
 #include "Core/Stream.h"
 #include "Core/Info.h"
 #include "Core/Evaluation.h"
+#include "Core/Iterator.h"
 
 using namespace Mesh;
 
@@ -79,6 +81,8 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(write)
   PYMETHODEDEF(offset)
   PYMETHODEDEF(calcVertexNormales)
+  PYMETHODEDEF(calcVertexCurvature)
+  PYMETHODEDEF(calcFaceCurvature)
   PYMETHODEDEF(Union)
   PYMETHODEDEF(intersect)
   PYMETHODEDEF(diff)
@@ -93,6 +97,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(hasConsistentOrientation)
   PYMETHODEDEF(isSolid)
   PYMETHODEDEF(hasNonManifolds)
+  PYMETHODEDEF(testDelaunay)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -132,7 +137,7 @@ PyObject *MeshPy::_repr(void)
 {
   std::stringstream a;
   MeshInfo info(*_pcMesh->getKernel());
-  info.InternalInformation( a );
+  info.GeneralInformation( a );
   return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
@@ -240,6 +245,26 @@ PYFUNCIMP_D(MeshPy,calcVertexNormales)
 {
   PY_TRY {
     MeshAlgos::calcVertexNormales(_pcMesh);  
+  } PY_CATCH;
+  
+  Py_Return;
+
+}
+
+PYFUNCIMP_D(MeshPy,calcVertexCurvature)
+{
+  PY_TRY {
+    MeshAlgos::calcVertexCurvature(_pcMesh);  
+  } PY_CATCH;
+  
+  Py_Return;
+
+}
+
+PYFUNCIMP_D(MeshPy,calcFaceCurvature)
+{
+  PY_TRY {
+    MeshAlgos::calcFaceCurvature(_pcMesh);  
   } PY_CATCH;
   
   Py_Return;
@@ -461,4 +486,47 @@ PYFUNCIMP_D(MeshPy,hasNonManifolds)
   }
 
   return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
+
+PYFUNCIMP_D(MeshPy,testDelaunay)
+{
+  PY_TRY {
+    MeshPy* pyMesh = new MeshPy(new MeshWithProperty(*_pcMesh));
+    
+    // get all points
+    MeshKernel* pMesh = pyMesh->getMesh()->getKernel();
+    std::vector< Wm3::Vector3<float> > aPnts;
+    MeshPointIterator cPIt( *pMesh );
+    for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+    {
+      Wm3::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
+      aPnts.push_back( cP );
+    }
+
+    Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false);
+    int cnt; int* idx;
+
+    if ( triaDel.GetHull(cnt, idx) )
+    {
+      std::vector<MeshGeomFacet> aFaces;
+      for ( int i=0; i<cnt; i++ )
+      {
+        MeshGeomFacet face;
+        for ( int j=0; j<3; j++ )
+        {
+          face._aclPoints[j].Set(aPnts[*idx].X(), aPnts[*idx].Y(), aPnts[*idx].Z());
+          *idx++;
+        }
+
+        aFaces.push_back( face );
+      }
+
+      MeshKernel& kernel = *(pyMesh->getMesh()->getKernel());
+      kernel = aFaces;
+    }
+
+//    delete [] idx;
+
+    return pyMesh;
+  } PY_CATCH;
 }

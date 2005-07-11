@@ -108,6 +108,14 @@ SOURCE=.\Core\Algorithm.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Core\Approximation.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\Approximation.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Core\BoundBox.cpp
 # End Source File
 # Begin Source File
@@ -265,24 +273,16 @@ SOURCE=.\AppMeshPy.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Delaunay.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Delaunay.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Doxygen.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=.\FeatureMeshImportSTL.cpp
+SOURCE=.\FeatureMeshImport.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\FeatureMeshImportSTL.h
+SOURCE=.\FeatureMeshImport.h
 # End Source File
 # Begin Source File
 
@@ -304,6 +304,14 @@ SOURCE=.\MeshAlgos.cpp
 # Begin Source File
 
 SOURCE=.\MeshAlgos.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MeshCurvature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MeshCurvature.h
 # End Source File
 # Begin Source File
 

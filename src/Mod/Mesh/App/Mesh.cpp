@@ -56,7 +56,28 @@ void MeshPropertyNormal::transform(const Matrix4D &rclMat)
 
 }
 
+// ----------------------------------------------------------------------------
 
+MeshPropertyCurvature::MeshPropertyCurvature(int size)
+{
+  Curvature.resize(size);
+}
+
+MeshPropertyCurvature::~MeshPropertyCurvature()
+{
+}
+
+void MeshPropertyCurvature::resizePoints() 
+{
+  setInvalid();
+  Curvature.clear();
+}
+
+void MeshPropertyCurvature::resizeFaces()
+{
+  setInvalid();
+  Curvature.clear();
+}
 
 // ----------------------------------------------------------------------------
 
@@ -86,7 +107,11 @@ void DataWithPropertyBag::RemoveType(const char* TypeName)
 
 PropertyBag* DataWithPropertyBag::Get(const char* Name)
 {
-  return _Properties[Name];
+  std::map<std::string,PropertyBag*>::iterator it = _Properties.find( Name );
+  if ( it != _Properties.end() )
+    return it->second;
+  else
+    return 0;
 }
 
 
@@ -103,12 +128,13 @@ PropertyBag* DataWithPropertyBag::GetFirstOfType(const char* TypeName)
 std::list<PropertyBag*> DataWithPropertyBag::GetAllOfType(const char* TypeName)
 {
   std::list<PropertyBag*> List;
-
   for( std::map<std::string,PropertyBag*>::iterator It = _Properties.begin();It!=_Properties.end();It++)
+  {
     if( strcmp(It->second->GetType(),TypeName)==0 )
       List.push_back( It->second);
+  }
 
-    return List;
+  return List;
 }
 
 

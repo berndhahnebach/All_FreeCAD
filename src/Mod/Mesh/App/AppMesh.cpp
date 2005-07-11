@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <Python.h>
 
-#include "FeatureMeshImportSTL.h"
+#include "FeatureMeshImport.h"
 
 
 /* registration table  */
@@ -45,8 +45,8 @@ void AppMeshExport initMesh() {
   (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
 
   Base::Console().Log("AppMesh loaded\n");
-	App::FeatureFactory().AddProducer("MeshImportSTL",new App::FeatureProducer<Mesh::FeatureMeshImportSTL>);
-	App::FeatureFactory().AddProducer("Mesh",         new App::FeatureProducer<Mesh::MeshFeature>         );
+	App::FeatureFactory().AddProducer("MeshImport",new App::FeatureProducer<Mesh::FeatureMeshImport>);
+	App::FeatureFactory().AddProducer("Mesh",      new App::FeatureProducer<Mesh::MeshFeature>      );
 
   return;
 }

@@ -145,6 +145,8 @@ lib_LTLIBRARIES = libMesh.la
 libMesh_la_SOURCES = \
 		Core/Algorithm.cpp \
 		Core/Algorithm.h \
+		Core/Approximation.cpp \
+		Core/Approximation.h \
 		Core/BoundBox.cpp \
 		Core/BoundBox.h \
 		Core/Definitions.cpp \
@@ -184,15 +186,15 @@ libMesh_la_SOURCES = \
 		Core/ViewProj.h \
 		AppMesh.cpp \
 		AppMeshPy.cpp \
-		Delaunay.cpp \
-		Delaunay.h \
 		Doxygen.cpp \
-		FeatureMeshImportSTL.cpp \
-		FeatureMeshImportSTL.h \
+		FeatureMeshImport.cpp \
+		FeatureMeshImport.h \
 		Mesh.cpp \
 		Mesh.h \
 		MeshAlgos.cpp \
 		MeshAlgos.h \
+		MeshCurvature.cpp \
+		MeshCurvature.h \
 		MeshFeature.cpp \
 		MeshFeature.h \
 		MeshFeaturePy.cpp \
@@ -221,7 +223,8 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libMesh_la_DEPENDENCIES =
-am_libMesh_la_OBJECTS = libMesh_la-Algorithm.lo libMesh_la-BoundBox.lo \
+am_libMesh_la_OBJECTS = libMesh_la-Algorithm.lo \
+	libMesh_la-Approximation.lo libMesh_la-BoundBox.lo \
 	libMesh_la-Definitions.lo libMesh_la-Elements.lo \
 	libMesh_la-Evaluation.lo libMesh_la-Grid.lo libMesh_la-Info.lo \
 	libMesh_la-Matrix.lo libMesh_la-MeshAlgorithm.lo \
@@ -230,9 +233,9 @@ am_libMesh_la_OBJECTS = libMesh_la-Algorithm.lo libMesh_la-BoundBox.lo \
 	libMesh_la-TopoAlgorithm.lo libMesh_la-Tools2D.lo \
 	libMesh_la-Vector3D.lo libMesh_la-Visitor.lo \
 	libMesh_la-AppMesh.lo libMesh_la-AppMeshPy.lo \
-	libMesh_la-Delaunay.lo libMesh_la-Doxygen.lo \
-	libMesh_la-FeatureMeshImportSTL.lo libMesh_la-Mesh.lo \
-	libMesh_la-MeshAlgos.lo libMesh_la-MeshFeature.lo \
+	libMesh_la-Doxygen.lo libMesh_la-FeatureMeshImport.lo \
+	libMesh_la-Mesh.lo libMesh_la-MeshAlgos.lo \
+	libMesh_la-MeshCurvature.lo libMesh_la-MeshFeature.lo \
 	libMesh_la-MeshFeaturePy.lo libMesh_la-MeshPy.lo \
 	libMesh_la-PreCompiled.lo
 libMesh_la_OBJECTS = $(am_libMesh_la_OBJECTS)
@@ -243,19 +246,20 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libMesh_la-Algorithm.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-AppMesh.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-AppMeshPy.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Approximation.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-BoundBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Definitions.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Delaunay.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Doxygen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Elements.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Evaluation.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshImport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Grid.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Info.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Matrix.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Mesh.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-MeshAlgorithm.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-MeshAlgos.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-MeshCurvature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-MeshFeature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-MeshFeaturePy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-MeshIO.Plo \
@@ -337,19 +341,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Algorithm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-AppMesh.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-AppMeshPy.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Approximation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-BoundBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Definitions.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Delaunay.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Elements.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Evaluation.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshImport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Grid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Info.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Matrix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Mesh.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-MeshAlgorithm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-MeshAlgos.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-MeshCurvature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-MeshFeature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-MeshFeaturePy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-MeshIO.Plo@am__quote@
@@ -432,6 +437,39 @@ libMesh_la-Algorithm.lo: Core/Algorithm.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Algorithm.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-Algorithm.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Algorithm.lo `test -f 'Core/Algorithm.cpp' || echo '$(srcdir)/'`Core/Algorithm.cpp
+
+libMesh_la-Approximation.o: Core/Approximation.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Approximation.o -MD -MP -MF "$(DEPDIR)/libMesh_la-Approximation.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Approximation.o `test -f 'Core/Approximation.cpp' || echo '$(srcdir)/'`Core/Approximation.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Approximation.Tpo" "$(DEPDIR)/libMesh_la-Approximation.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Approximation.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Core/Approximation.cpp' object='libMesh_la-Approximation.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Approximation.Po' tmpdepfile='$(DEPDIR)/libMesh_la-Approximation.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Approximation.o `test -f 'Core/Approximation.cpp' || echo '$(srcdir)/'`Core/Approximation.cpp
+
+libMesh_la-Approximation.obj: Core/Approximation.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Approximation.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-Approximation.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Approximation.obj `if test -f 'Core/Approximation.cpp'; then $(CYGPATH_W) 'Core/Approximation.cpp'; else $(CYGPATH_W) '$(srcdir)/Core/Approximation.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Approximation.Tpo" "$(DEPDIR)/libMesh_la-Approximation.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Approximation.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Core/Approximation.cpp' object='libMesh_la-Approximation.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Approximation.Po' tmpdepfile='$(DEPDIR)/libMesh_la-Approximation.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Approximation.obj `if test -f 'Core/Approximation.cpp'; then $(CYGPATH_W) 'Core/Approximation.cpp'; else $(CYGPATH_W) '$(srcdir)/Core/Approximation.cpp'; fi`
+
+libMesh_la-Approximation.lo: Core/Approximation.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Approximation.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-Approximation.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Approximation.lo `test -f 'Core/Approximation.cpp' || echo '$(srcdir)/'`Core/Approximation.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Approximation.Tpo" "$(DEPDIR)/libMesh_la-Approximation.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Approximation.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Core/Approximation.cpp' object='libMesh_la-Approximation.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Approximation.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-Approximation.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Approximation.lo `test -f 'Core/Approximation.cpp' || echo '$(srcdir)/'`Core/Approximation.cpp
 
 libMesh_la-BoundBox.o: Core/BoundBox.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-BoundBox.o -MD -MP -MF "$(DEPDIR)/libMesh_la-BoundBox.Tpo" \
@@ -1060,39 +1098,6 @@ libMesh_la-AppMeshPy.lo: AppMeshPy.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-AppMeshPy.lo `test -f 'AppMeshPy.cpp' || echo '$(srcdir)/'`AppMeshPy.cpp
 
-libMesh_la-Delaunay.o: Delaunay.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Delaunay.o -MD -MP -MF "$(DEPDIR)/libMesh_la-Delaunay.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Delaunay.o `test -f 'Delaunay.cpp' || echo '$(srcdir)/'`Delaunay.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Delaunay.Tpo" "$(DEPDIR)/libMesh_la-Delaunay.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Delaunay.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Delaunay.cpp' object='libMesh_la-Delaunay.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Delaunay.Po' tmpdepfile='$(DEPDIR)/libMesh_la-Delaunay.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Delaunay.o `test -f 'Delaunay.cpp' || echo '$(srcdir)/'`Delaunay.cpp
-
-libMesh_la-Delaunay.obj: Delaunay.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Delaunay.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-Delaunay.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Delaunay.obj `if test -f 'Delaunay.cpp'; then $(CYGPATH_W) 'Delaunay.cpp'; else $(CYGPATH_W) '$(srcdir)/Delaunay.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Delaunay.Tpo" "$(DEPDIR)/libMesh_la-Delaunay.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Delaunay.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Delaunay.cpp' object='libMesh_la-Delaunay.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Delaunay.Po' tmpdepfile='$(DEPDIR)/libMesh_la-Delaunay.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Delaunay.obj `if test -f 'Delaunay.cpp'; then $(CYGPATH_W) 'Delaunay.cpp'; else $(CYGPATH_W) '$(srcdir)/Delaunay.cpp'; fi`
-
-libMesh_la-Delaunay.lo: Delaunay.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Delaunay.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-Delaunay.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libMesh_la-Delaunay.lo `test -f 'Delaunay.cpp' || echo '$(srcdir)/'`Delaunay.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-Delaunay.Tpo" "$(DEPDIR)/libMesh_la-Delaunay.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-Delaunay.Tpo"; exit 1; \
-@am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Delaunay.cpp' object='libMesh_la-Delaunay.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Delaunay.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-Delaunay.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Delaunay.lo `test -f 'Delaunay.cpp' || echo '$(srcdir)/'`Delaunay.cpp
-
 libMesh_la-Doxygen.o: Doxygen.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Doxygen.o -MD -MP -MF "$(DEPDIR)/libMesh_la-Doxygen.Tpo" \
 @am__fastdepCXX_TRUE@	  -c -o libMesh_la-Doxygen.o `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp; \
@@ -1126,38 +1131,38 @@ libMesh_la-Doxygen.lo: Doxygen.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Doxygen.lo `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp
 
-libMesh_la-FeatureMeshImportSTL.o: FeatureMeshImportSTL.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImportSTL.o -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshImportSTL.o `test -f 'FeatureMeshImportSTL.cpp' || echo '$(srcdir)/'`FeatureMeshImportSTL.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo"; exit 1; \
+libMesh_la-FeatureMeshImport.o: FeatureMeshImport.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImport.o -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshImport.o `test -f 'FeatureMeshImport.cpp' || echo '$(srcdir)/'`FeatureMeshImport.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshImport.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshImportSTL.cpp' object='libMesh_la-FeatureMeshImportSTL.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshImport.cpp' object='libMesh_la-FeatureMeshImport.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshImport.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshImport.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshImportSTL.o `test -f 'FeatureMeshImportSTL.cpp' || echo '$(srcdir)/'`FeatureMeshImportSTL.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshImport.o `test -f 'FeatureMeshImport.cpp' || echo '$(srcdir)/'`FeatureMeshImport.cpp
 
-libMesh_la-FeatureMeshImportSTL.obj: FeatureMeshImportSTL.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImportSTL.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshImportSTL.obj `if test -f 'FeatureMeshImportSTL.cpp'; then $(CYGPATH_W) 'FeatureMeshImportSTL.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshImportSTL.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo"; exit 1; \
+libMesh_la-FeatureMeshImport.obj: FeatureMeshImport.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImport.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshImport.obj `if test -f 'FeatureMeshImport.cpp'; then $(CYGPATH_W) 'FeatureMeshImport.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshImport.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshImport.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshImportSTL.cpp' object='libMesh_la-FeatureMeshImportSTL.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshImport.cpp' object='libMesh_la-FeatureMeshImport.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshImport.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshImport.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshImportSTL.obj `if test -f 'FeatureMeshImportSTL.cpp'; then $(CYGPATH_W) 'FeatureMeshImportSTL.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshImportSTL.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshImport.obj `if test -f 'FeatureMeshImport.cpp'; then $(CYGPATH_W) 'FeatureMeshImport.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshImport.cpp'; fi`
 
-libMesh_la-FeatureMeshImportSTL.lo: FeatureMeshImportSTL.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImportSTL.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshImportSTL.lo `test -f 'FeatureMeshImportSTL.cpp' || echo '$(srcdir)/'`FeatureMeshImportSTL.cpp; \
-@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Tpo"; exit 1; \
+libMesh_la-FeatureMeshImport.lo: FeatureMeshImport.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImport.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshImport.lo `test -f 'FeatureMeshImport.cpp' || echo '$(srcdir)/'`FeatureMeshImport.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshImport.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshImportSTL.cpp' object='libMesh_la-FeatureMeshImportSTL.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshImportSTL.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshImport.cpp' object='libMesh_la-FeatureMeshImport.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshImport.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshImport.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshImportSTL.lo `test -f 'FeatureMeshImportSTL.cpp' || echo '$(srcdir)/'`FeatureMeshImportSTL.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshImport.lo `test -f 'FeatureMeshImport.cpp' || echo '$(srcdir)/'`FeatureMeshImport.cpp
 
 libMesh_la-Mesh.o: Mesh.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-Mesh.o -MD -MP -MF "$(DEPDIR)/libMesh_la-Mesh.Tpo" \
@@ -1224,6 +1229,39 @@ libMesh_la-MeshAlgos.lo: MeshAlgos.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-MeshAlgos.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-MeshAlgos.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-MeshAlgos.lo `test -f 'MeshAlgos.cpp' || echo '$(srcdir)/'`MeshAlgos.cpp
+
+libMesh_la-MeshCurvature.o: MeshCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-MeshCurvature.o -MD -MP -MF "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-MeshCurvature.o `test -f 'MeshCurvature.cpp' || echo '$(srcdir)/'`MeshCurvature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo" "$(DEPDIR)/libMesh_la-MeshCurvature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MeshCurvature.cpp' object='libMesh_la-MeshCurvature.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-MeshCurvature.Po' tmpdepfile='$(DEPDIR)/libMesh_la-MeshCurvature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-MeshCurvature.o `test -f 'MeshCurvature.cpp' || echo '$(srcdir)/'`MeshCurvature.cpp
+
+libMesh_la-MeshCurvature.obj: MeshCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-MeshCurvature.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-MeshCurvature.obj `if test -f 'MeshCurvature.cpp'; then $(CYGPATH_W) 'MeshCurvature.cpp'; else $(CYGPATH_W) '$(srcdir)/MeshCurvature.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo" "$(DEPDIR)/libMesh_la-MeshCurvature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MeshCurvature.cpp' object='libMesh_la-MeshCurvature.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-MeshCurvature.Po' tmpdepfile='$(DEPDIR)/libMesh_la-MeshCurvature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-MeshCurvature.obj `if test -f 'MeshCurvature.cpp'; then $(CYGPATH_W) 'MeshCurvature.cpp'; else $(CYGPATH_W) '$(srcdir)/MeshCurvature.cpp'; fi`
+
+libMesh_la-MeshCurvature.lo: MeshCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-MeshCurvature.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-MeshCurvature.lo `test -f 'MeshCurvature.cpp' || echo '$(srcdir)/'`MeshCurvature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo" "$(DEPDIR)/libMesh_la-MeshCurvature.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-MeshCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MeshCurvature.cpp' object='libMesh_la-MeshCurvature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-MeshCurvature.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-MeshCurvature.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-MeshCurvature.lo `test -f 'MeshCurvature.cpp' || echo '$(srcdir)/'`MeshCurvature.cpp
 
 libMesh_la-MeshFeature.o: MeshFeature.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-MeshFeature.o -MD -MP -MF "$(DEPDIR)/libMesh_la-MeshFeature.Tpo" \
