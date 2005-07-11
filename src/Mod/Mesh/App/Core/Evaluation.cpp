@@ -281,9 +281,9 @@ bool MeshEvalSingleFacet::Evaluate ()
   // get all non-manifolds
   MeshEvalTopology::Evaluate();
 
-	// for each (multiple) single linked facet there should
-	// exist two valid facets sharing the same edge
-	// so make facet 1 neighbour of facet 2 and vice versa
+  // for each (multiple) single linked facet there should
+  // exist two valid facets sharing the same edge 
+  // so make facet 1 neighbour of facet 2 and vice versa
   const std::vector<MeshFacet>& rclFAry = _rclMesh.GetFacets();
   std::vector<MeshFacet>::const_iterator pI;
 
@@ -320,7 +320,7 @@ bool MeshEvalSingleFacet::Evaluate ()
       {
         unsigned long ulPt0 = std::min<unsigned long>(rclF._aulPoints[i],  rclF._aulPoints[(i+1)%3]);
         unsigned long ulPt1 = std::max<unsigned long>(rclF._aulPoints[i],  rclF._aulPoints[(i+1)%3]);
-        std::pair<unsigned long, unsigned long> clEdge(ulPt0, ulPt1);
+        std::pair<unsigned long, unsigned long> clEdge(ulPt0, ulPt1); 
 
         // number of facets sharing this edge
         ulCtNeighbours += aclHits[clEdge].size();
@@ -339,8 +339,8 @@ bool MeshEvalSingleFacet::Evaluate ()
 }
 
 bool MeshEvalSingleFacet::Fixup ()
-{
-/*  std::vector<unsigned long> aulInvalids;
+{/*
+  std::vector<unsigned long> aulInvalids;
   std::vector<MeshFacet>& raFacets = _rclMesh.GetFacets();
   for ( std::vector<std::list<unsigned long> >::iterator it=_aclManifoldList.begin();it!=_aclManifoldList.end();++it )
   {
@@ -353,7 +353,7 @@ bool MeshEvalSingleFacet::Fixup ()
   }
 
   _aclManifoldList.clear();
-	_rclMesh.DeleteFacets(aulInvalids);*/
+  _rclMesh.DeleteFacets(aulInvalids);*/
   return true;
 }
 
@@ -460,12 +460,12 @@ bool MeshEvalSelfIntersection::Evaluate ()
 
 // ----------------------------------------------------
 
-MeshDegenration::MeshDegenration(MeshKernel& rclM)
+MeshDegeneration::MeshDegeneration(MeshKernel& rclM)
 : MeshEvaluation(rclM)
 {
 }
 
-bool MeshDegenration::Evaluate ()
+bool MeshDegeneration::Evaluate ()
 {
   std::vector<unsigned long> aulDeg;
   MeshFacetIterator cIter(_rclMesh);
@@ -585,11 +585,12 @@ Matrix4D MeshEigensystem::Transform() const
   // x,y,c ... vectors
   // R,Q   ... matrices (R is orthonormal so its transposed(=inverse) is equal to Q)
   //
-  // from local (x) to world (y,c) coordinates we would have the equation
+  // from local (x) to world (y,c) coordinates we have the equation
   // y = R * x  + c
   //     <==> 
   // x = Q * y - Q * c
   Matrix4D clTMat;
+  // rotation part
   clTMat[0][0] = _cU.x; clTMat[0][1] = _cU.y; clTMat[0][2] = _cU.z; clTMat[0][3] = 0.0f;
   clTMat[1][0] = _cV.x; clTMat[1][1] = _cV.y; clTMat[1][2] = _cV.z; clTMat[1][3] = 0.0f;
   clTMat[2][0] = _cW.x; clTMat[2][1] = _cW.y; clTMat[2][2] = _cW.z; clTMat[2][3] = 0.0f;
@@ -670,6 +671,9 @@ Vector3D MeshEigensystem::GetBoundings() const
 
 void MeshEigensystem::CalculateLocalSystem()
 {
+  // at least one facet is needed
+  if ( _rclMesh.CountFacets() < 1 )
+    return; // cannot continue calculation
 #if 0
 /*
   std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
@@ -772,7 +776,7 @@ void MeshEigensystem::CalculateLocalSystem()
 */
 #else
 
-  double sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
+  float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
   sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
 
   std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
@@ -786,12 +790,12 @@ void MeshEigensystem::CalculateLocalSystem()
   }
 
   unsigned nSize = aclPoints.size();
-  sxx = sxx - mx*mx/((double)nSize);
-  sxy = sxy - mx*my/((double)nSize);
-  sxz = sxz - mx*mz/((double)nSize);
-  syy = syy - my*my/((double)nSize);
-  syz = syz - my*mz/((double)nSize);
-  szz = szz - mz*mz/((double)nSize);
+  sxx = sxx - mx*mx/((float)nSize);
+  sxy = sxy - mx*my/((float)nSize);
+  sxz = sxz - mx*mz/((float)nSize);
+  syy = syy - my*my/((float)nSize);
+  syz = syz - my*mz/((float)nSize);
+  szz = szz - mz*mz/((float)nSize);
 
   // Kovarianzmatrix
   Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
@@ -804,7 +808,7 @@ void MeshEigensystem::CalculateLocalSystem()
   Vector3<float> V = rkRot.GetColumn(1);
   Vector3<float> W = rkRot.GetColumn(2);
 
-  _cC.Set(mx/(double)nSize, my/(double)nSize, mz/(double)nSize);
+  _cC.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
   _cU.Set(U.X(), U.Y(), U.Z());
   _cV.Set(V.X(), V.Y(), V.Z());
   _cW.Set(W.X(), W.Y(), W.Z());

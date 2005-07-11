@@ -193,14 +193,14 @@ protected:
 // ----------------------------------------------------
 
 /**
- * The MeshDegenration class searches for degenrated facets. A facet is regarded as
+ * The MeshDegeneration class searches for degenrated facets. A facet is regarded as
  * degenrated if an angle is < 30° or > 120°.
  */
-class AppMeshExport MeshDegenration : public MeshEvaluation
+class AppMeshExport MeshDegeneration : public MeshEvaluation
 {
 public:
-  MeshDegenration (MeshKernel& rclM);
-  ~MeshDegenration() {}
+  MeshDegeneration (MeshKernel& rclM);
+  ~MeshDegeneration() {}
 
 protected:
   bool Evaluate ();
