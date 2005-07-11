@@ -217,7 +217,7 @@ bool Document::saveAs(void)
 
 void Document::createView(const char* sType) 
 {
-  QPixmap FCIcon = Gui::BitmapFactory().pixmap("FCIcon");
+  QPixmap FCIcon = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
   MDIView* pcView3D;
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");

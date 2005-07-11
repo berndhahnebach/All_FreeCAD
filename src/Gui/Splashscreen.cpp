@@ -36,8 +36,10 @@
 #endif
 
 #include "Splashscreen.h"
-#include "Icons/developers.h"
-#include "../Base/Console.h"
+#include <Base/Console.h>
+#include <App/Application.h>
+#include <Gui/BitmapFactory.h>
+
 
 using namespace Gui;
 
@@ -144,7 +146,7 @@ AboutDialog::AboutDialog( QWidget* parent, const char* name )
     : QDialog( parent, name, true,  QLabel::WStyle_Customize  |
                QLabel::WStyle_NoBorder   |
                QLabel::WType_Modal       ),
-    image0( (const char **) splash_screen )
+    image0( Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str()) )
 {
   if ( !name )
     setName( "AboutDlg" );

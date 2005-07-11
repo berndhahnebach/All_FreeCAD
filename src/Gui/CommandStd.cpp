@@ -452,7 +452,7 @@ void StdCmdWorkbench::appendItem ( const QString& item )
     action->setText(QObject::tr(item));
     action->setMenuText(QObject::tr(item));
     action->setToggleAction( true );
-    action->setIconSet(Gui::BitmapFactory().pixmap("FCIcon"));
+    action->setIconSet(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
     pcAction->add( action );
   }
 }

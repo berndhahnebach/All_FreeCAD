@@ -49,7 +49,7 @@ try:
     # copy Modules
     sys.stdout.write( 'Copy modul Tree ...\n')
     DistTools.EnsureDir(DistDir+DistBin+'/Mod')
-    FileTools.cpallWithFilter('../../src/Mod',DistDir+DistBin+'/Mod',FileTools.SetUpFilter(DistTools.ModFilter))
+    FileTools.cpallWithFilter('../../Mod',DistDir+DistBin+'/Mod',FileTools.SetUpFilter(DistTools.ModFilter))
 
 
     #====================================================================

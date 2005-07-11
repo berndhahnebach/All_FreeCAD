@@ -54,12 +54,14 @@
 
 #include "Icons/developers.h"
 #include "Icons/FCIcon.xpm"
-#include "Splashscreen.h"
 #include "WidgetFactory.h"
 #include "CustomWidgets.h"
 #include "Command.h"
 #include "Tree.h"
 #include "PropertyView.h"
+#include "BitmapFactory.h"
+#include "../Gui/Splashscreen.h"
+
 
 #include "CommandLine.h"
 #include "DlgDocTemplatesImp.h"
@@ -176,9 +178,9 @@ ApplicationWindow::ApplicationWindow()
   connect( d->_pWorkspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
   connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
 
-//	setCaption( "Qt FreeCAD" );
+  // caption and icon of the main window
   setCaption( App::Application::Config()["ExeName"].c_str() );
-  setIcon(QPixmap(FCIcon));
+  setIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
 
   d->_cActiveWorkbenchName="<none>";
 
@@ -236,7 +238,7 @@ ApplicationWindow::ApplicationWindow()
   HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
   d->_pcDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
 
-
+#ifdef FC_DEBUG
   // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
   TreeView* pcTree = new TreeView(0,this,"Raw_tree");
   pcTree->setMinimumWidth(210);
@@ -246,6 +248,8 @@ ApplicationWindow::ApplicationWindow()
   PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
   pcPropView->setMinimumWidth(210);
   d->_pcDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
+
+#endif
 
   // Report View
   Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
@@ -1341,8 +1345,9 @@ void ApplicationWindow::startSplasher(void)
 #endif
     if (hGrp->GetBool("AllowSplasher", splash))
     {
-      QPixmap pixmap(( const char** ) splash_screen );
-      _splash = new SplashScreen( pixmap );
+//      QPixmap pixmap(( const char** ) splash_screen );
+//      _splash = new SplashScreen( pixmap );
+      _splash = new SplashScreen( Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str()) );
       _splash->show();
     }
   }

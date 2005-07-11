@@ -49,6 +49,10 @@
 // FreeCAD doc header
 #include "../App/Application.h"
 
+#include "../Gui/Splashscreen.h"
+#include "../Gui/BitmapFactory.h"
+
+#include "../Gui/Icons/developers.h"
 
 // QT extension
 #ifdef _MSC_VER
@@ -83,6 +87,8 @@ int main( int argc, char ** argv )
 
   // set the banner (for loging and console)
   App::Application::Config()["ConsoleBanner"] = sBanner;
+  App::Application::Config()["AppIcon"] = "FCIcon";
+  App::Application::Config()["SplashPicture"] = "FreeCADSplasher";
 
 
 
@@ -93,9 +99,8 @@ int main( int argc, char ** argv )
 	// Inits the Application 
 	App::Application::init(argc,argv);
 
-  //App::Application::initConfig(argc,argv,"");//sHomePath.c_str());
-
-	//App::Application::initApplication();
+ 
+  Gui::BitmapFactory().addXPM("FreeCADSplasher", ( const char** ) splash_screen);
 
   Gui::ApplicationWindow::initApplication();
 

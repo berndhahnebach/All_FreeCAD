@@ -13,6 +13,7 @@ possible commands are:
  - DistSrc         (DS)   Build a source Distr. of the current source tree
  - DistBin         (DB)   Build a binary Distr. of the current source tree
  - DistSetup       (DI)   Build a Setup Distr. of the current source tree
+ - DistSetup       (DUI)  Build a User Setup Distr. of the current source tree
  - DistAll         (DA)   Run all three above modules
  - BuildDoc        (BD)   Create the documentation (source docs)
  - NextBuildNumber (NBN)  Increase the Build Number of this Version 
@@ -39,6 +40,8 @@ elif Cmd == "distbin" or Cmd == "db":
 	import fcbt.DistBin
 elif Cmd == "distsetup" or Cmd == "di":
 	import fcbt.DistSetup
+elif Cmd == "distsetup" or Cmd == "dui":
+	import fcbt.DistUserSetup
 elif Cmd == "distall" or Cmd == "da":
 	import fcbt.DistSrc
 	import fcbt.DistBin

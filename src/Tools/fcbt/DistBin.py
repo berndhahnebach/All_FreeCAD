@@ -60,6 +60,6 @@ FileTools.cpallWithFilter('../../src/Mod',DistDir+DistBin+'/Mod',FileTools.SetUp
 
 #====================================================================
 # ziping a archiv
-os.popen("rar.exe a "+DistDir+DistBin+".rar "+ DistDir+DistBin)
+#os.popen("rar.exe a "+DistDir+DistBin+".rar "+ DistDir+DistBin)
 
-FileTools.rmall(DistDir+DistBin)
+#FileTools.rmall(DistDir+DistBin)
