@@ -111,6 +111,10 @@ bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &
   SbTime CenterTime;
 
 private:
+  SoSeparator* createColorLegend() const;
+  SoSeparator* setMarkerLabel(float x, float y, float z, const char* text) const;
+
+private:
   SoSeparator * bckgroundroot;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;

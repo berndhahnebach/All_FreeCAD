@@ -31,11 +31,11 @@
 #include "Application.h"
 #include "View.h"
 #include "Document.h"
-
-#include "../Base/Exception.h"
-#include "../App/Document.h"
 #include "Macro.h"
 #include "DlgDisplayPropertiesImp.h"
+
+#include <Base/Exception.h>
+#include <App/Document.h>
 
 using namespace Gui;
 
@@ -261,7 +261,7 @@ bool StdCmdViewFitAll::isActive(void)
 DEF_STD_CMD_A(StdViewFullScreen);
 
 StdViewFullScreen::StdViewFullScreen()
-  :CppCommand("Std_ViewFullScreen")
+  :CppCommand("Std_ViewFullScreen", Cmd_Toggle)
 {
   sAppModule  = "";
   sGroup      = QT_TR_NOOP("Standard-View");
@@ -276,7 +276,9 @@ StdViewFullScreen::StdViewFullScreen()
 void StdViewFullScreen::activated(int iMsg)
 {
   MDIView* view = getActiveDocument()->getActiveView();
-  if ( view )
+  if ( view && view->isFullScreen() )
+    view->setFullScreenMode( false );
+  else
     view->setFullScreenMode( true );
 }
 

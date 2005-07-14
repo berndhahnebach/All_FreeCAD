@@ -28,6 +28,7 @@
 
 
 #include "View.h"
+#include "Command.h"
 #include "Document.h"
 #include "Application.h"
 
@@ -197,11 +198,22 @@ void MDIView::setFullScreenMode( bool b )
   }
 }
 
-void MDIView::keyPressEvent ( QKeyEvent   *e )
+void MDIView::keyPressEvent ( QKeyEvent* e )
 {
-  if ( isFullScreen() && e->key() == Key_F )
+  // Note: if the widget is in fullscreen mode then we can return to normal mode either
+  // by pressing F or ESC. Since keyboard is grabbed accelerators don't work any more
+  // (propably accelerators don't work at all - even without having grabbed the keyboard!?)
+  if ( isFullScreen() )
   {
-    setFullScreenMode( false );
+    // use Command's API to hold toogled state consistent
+    if ( e->key() == Key_F || e->key() == Key_Escape )
+    {
+      Command* pcCmd = ApplicationWindow::Instance->commandManager().getCommandByName( "Std_ViewFullScreen" );
+      if( pcCmd )
+      {
+        pcCmd->toggleCommand( "Std_ViewFullScreen", false);
+      }
+    }
   }
   else
   {

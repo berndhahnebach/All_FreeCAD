@@ -36,11 +36,12 @@
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
 #include "WhatsThis.h"
-
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#include "../Base/Interpreter.h"
 #include "WaitCursor.h"
+
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/Interpreter.h>
+#include <Base/Sequencer.h>
 
 using Base::Interpreter;
 using namespace Gui;
@@ -112,9 +113,11 @@ bool Command::isToggle(void) const
   return (_eType&Cmd_Toggle) != 0; 
 }
 
-
 void Command::activated ()
 {
+  // if the app is busy do not allow to drop new commands
+  if ( Base::Sequencer().isRunning() )
+    return; 
   if(_eType == Cmd_Normal)
   {
     Base::Console().Log("CmdG: %s\n",_pcAction->text().latin1());
@@ -157,6 +160,9 @@ void Command::activated ()
 
 void Command::toggled (bool b)
 {
+  // if the app is busy do not allow to drop new commands
+  if ( Base::Sequencer().isRunning() )
+    return; 
   if(_eType == Cmd_Toggle)
   {
     Base::Console().Log("CmdG: Toggled %s\n",_pcAction->text().latin1());

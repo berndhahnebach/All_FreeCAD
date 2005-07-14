@@ -60,7 +60,7 @@
 #include "Tree.h"
 #include "PropertyView.h"
 #include "BitmapFactory.h"
-#include "../Gui/Splashscreen.h"
+#include "Splashscreen.h"
 
 
 #include "CommandLine.h"
@@ -757,7 +757,20 @@ bool ApplicationWindow::sendHasMsgToActiveView(const char* pMsg)
 
 MDIView* ApplicationWindow::activeView(void)
 {
-  MDIView * pView = reinterpret_cast <MDIView *> ( d->_pWorkspace->activeWindow() );
+  // redirect all meesages to the view in fullscreen mode, if so
+  MDIView * pView = 0;
+  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  {
+    if ( it.data()->isFullScreen() )
+    {
+      pView = it.data();
+      break;
+    }
+  }
+  // if no fullscreen window then look in workspace
+  if ( !pView )
+    pView = reinterpret_cast <MDIView *> ( d->_pWorkspace->activeWindow() );
+
   return pView;
 }
 

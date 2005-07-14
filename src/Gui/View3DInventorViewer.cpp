@@ -29,16 +29,21 @@
 # include <qimage.h>
 # include <GL/gl.h>
 # include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoCube.h>
+# include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoImage.h>
+# include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoLightModel.h>
 # include <Inventor/nodes/SoLocateHighlight.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
 # include <Inventor/nodes/SoRotationXYZ.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoTransform.h>
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoSelection.h>
 # include <Inventor/actions/SoBoxHighlightRenderAction.h>
@@ -65,7 +70,7 @@
 
 #include "Icons/default_background.xpm"
 
-
+#include <Inventor/nodes/SoText2.h>
 
 using namespace Gui;
 
@@ -187,7 +192,62 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   offset->translation = SbVec3f(ARROWSIZE/2.0, 0, 0);
 
   // simple color bar
+  SoSeparator* bar = createColorLegend();
   //
+//  SoCube * cube = new SoCube;
+//  cube->width = ARROWSIZE;
+//  cube->height = ARROWSIZE/15.0;
+
+  this->foregroundroot->addChild(cam);
+  this->foregroundroot->addChild(lm);
+  this->foregroundroot->addChild(bc);
+  this->foregroundroot->addChild(posit);
+  this->foregroundroot->addChild(arrowrotation);
+  this->foregroundroot->addChild(offset);
+  this->foregroundroot->addChild(bar);
+
+  // set the ViewProvider root
+  pcSelection        = new SoSelection();
+  pcSelection->addFinishCallback(View3DInventorViewer::sFinishSelectionCallback,this);
+  pcSelection->addSelectionCallback( View3DInventorViewer::sMadeSelection, this );
+  pcSelection->addDeselectionCallback( View3DInventorViewer::sUnmadeSelection, this );
+
+  pcViewProviderRoot = new SoSeparator();
+  pcSelection->addChild(pcViewProviderRoot);
+  redrawOnSelectionChange(pcSelection);
+  // is not realy working with Coin3D. 
+//  redrawOverlayOnSelectionChange(pcSelection);
+  setSceneGraph(pcSelection);
+
+/* // Higlighthing of the Selection with Inventor stuff
+  SoBoxHighlightRenderAction *pcRenderAction = new SoBoxHighlightRenderAction();
+//  SoLineHighlightRenderAction *pcRenderAction = new SoLineHighlightRenderAction();
+  pcRenderAction->setLineWidth(4);
+  pcRenderAction->setColor(SbColor(1,1,0));
+  pcRenderAction->setLinePattern(3);
+
+  setGLRenderAction(pcRenderAction); 
+  */
+
+  // set the transperency and antialiasing settings
+//  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
+//  getGLRenderAction()->setSmoothing(true);
+
+  setSeekTime(0.5);
+  setSeekValueAsPercentage(true);
+  setSeekDistance(50);
+
+ }
+
+View3DInventorViewer::~View3DInventorViewer()
+{
+  this->bckgroundroot->unref();
+  this->foregroundroot->unref();
+}
+
+SoSeparator* View3DInventorViewer::createColorLegend() const
+{
   // points
   // FIXME: use points in range [-1,+1] W.Mayer 2005
   SbVec3f* vertices = new SbVec3f[10];
@@ -228,6 +288,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 
   SoMaterial* mat = new SoMaterial;
   mat->diffuseColor.setValues(0, 10, colors);
+  mat->transparency = 0.3f;
 
   SoMaterialBinding* matBinding = new SoMaterialBinding;
   matBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
@@ -236,64 +297,35 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 	faceset->coordIndex.setValues(0,32,(const int*) idx2);
 
   SoSeparator* root = new SoSeparator();
+  root->addChild(setMarkerLabel(-1.4f,  1.0f, 0.0f, "+1.00"));
+  root->addChild(setMarkerLabel(-1.4f, -1.0f, 0.0f, "+0.50"));
+  root->addChild(setMarkerLabel(-1.4f, -3.0f, 0.0f, "+0.00"));
+  root->addChild(setMarkerLabel(-1.4f, -5.0f, 0.0f, "-0.50"));
+  root->addChild(setMarkerLabel(-1.4f, -7.0f, 0.0f, "-1.00"));
 	root->addChild(coords);
   root->addChild(mat);
   root->addChild(matBinding);
 	root->addChild(faceset);
   delete [] vertices;
 
-//  SoCube * cube = new SoCube;
-//  cube->width = ARROWSIZE;
-//  cube->height = ARROWSIZE/15.0;
+  return root;
+}
 
-  
-  this->foregroundroot->addChild(cam);
-  this->foregroundroot->addChild(lm);
-  this->foregroundroot->addChild(bc);
-  this->foregroundroot->addChild(posit);
-  this->foregroundroot->addChild(arrowrotation);
-  this->foregroundroot->addChild(offset);
-  this->foregroundroot->addChild(root);
-  
-
-  // set the ViewProvider root
-  pcSelection        = new SoSelection();
-  pcSelection->addFinishCallback(View3DInventorViewer::sFinishSelectionCallback,this);
-  pcSelection->addSelectionCallback( View3DInventorViewer::sMadeSelection, this );
-  pcSelection->addDeselectionCallback( View3DInventorViewer::sUnmadeSelection, this );
-
-  pcViewProviderRoot = new SoSeparator();
-  pcSelection->addChild(pcViewProviderRoot);
-  redrawOnSelectionChange(pcSelection);
-  // is not realy working with Coin3D. 
-//  redrawOverlayOnSelectionChange(pcSelection);
-  setSceneGraph(pcSelection);
-
-/* // Higlighthing of the Selection with Inventor stuff
-  SoBoxHighlightRenderAction *pcRenderAction = new SoBoxHighlightRenderAction();
-//  SoLineHighlightRenderAction *pcRenderAction = new SoLineHighlightRenderAction();
-  pcRenderAction->setLineWidth(4);
-  pcRenderAction->setColor(SbColor(1,1,0));
-  pcRenderAction->setLinePattern(3);
-
-  setGLRenderAction(pcRenderAction); 
-  */
-
-  // set the transperency and antialiasing settings
-//  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
-//  getGLRenderAction()->setSmoothing(true);
-
-  setSeekTime(0.5);
-  setSeekValueAsPercentage(true);
-  setSeekDistance(50);
-
- }
-
-View3DInventorViewer::~View3DInventorViewer()
+SoSeparator* View3DInventorViewer::setMarkerLabel(float x, float y, float z, const char* text) const
 {
-  this->bckgroundroot->unref();
-  this->foregroundroot->unref();
+  SoSeparator* label = new SoSeparator;
+  SoTransform* trans = new SoTransform;
+  SoBaseColor* color = new SoBaseColor;
+  SoText2    * text2 = new SoText2;
+
+  trans->translation.setValue(x,y,z);
+  color->rgb.setValue(1,1,1);
+  text2->string.setValue( text );
+  label->addChild(trans);
+  label->addChild(color);
+  label->addChild(text2);
+
+  return label;
 }
 
 void View3DInventorViewer::actualRedraw(void)
@@ -372,7 +404,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   const SbVec2s pos(ev->getPosition());
   const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
                      (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
-  SbVec2s MovePos;
+//  SbVec2s MovePos;
   lastmouseposition = posn;
 
   // switching the mouse modes
@@ -485,7 +517,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 
   // Mouse Movement handling
   if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
+//    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
 
     if(MoveMode && ZoomMode){
       zoom(getCamera(),(posn[1] - prevnormalized[1]) * 10.0f);
@@ -536,8 +568,7 @@ bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &
     norm  = Point->getObjectNormal();
     return true;
   }else
-    return NULL;
-
+    return false;
 }
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)

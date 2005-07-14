@@ -130,10 +130,19 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
     case QEvent::KeyRelease:
     case QEvent::Enter:
     case QEvent::Leave:
-    case QEvent::Close:
     case QEvent::MouseButtonDblClick:
+    case QEvent::ContextMenu:
       {
         return true;
+      } break;
+      
+      // special case if the main window's close button was pressed 
+    case QEvent::Close:
+      {
+        // avoid to exit while app is working
+        // note: all other widget types are allowed to be closed anyway
+        if ( o == ApplicationWindow::Instance )
+          return true; 
       } break;
 
       // do a system beep and ignore the event
