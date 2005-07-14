@@ -583,3 +583,10 @@ Version: V0.1B119 Date: Wed Jun 29 12:57:43 2005 +++++++++++++++++++++++++++++++
 + implementing selection
 + using "right" transparency mode
 + RFE 1187174 implemented (Calling "print" for internal Python objects)
++ Several improvements:
+  - Command Std_ViewFullScreen switched to toggle command
+  - Use ESC or F to leave fullscreen mode (hard coded in MDIView)
+  - Ignore ContextEvents and accelerators while the progress bar is working
+  - Use double prescision for double in parameter editor
+  - Consider fullscreen windows in ApplicationWindow::activeView()
++ Initial impl. of a simple color legend
