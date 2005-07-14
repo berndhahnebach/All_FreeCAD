@@ -202,6 +202,8 @@ public:
   PropertyBag* GetFirstOfType(const char* TypeName);
   /// Get a list of PorpertyBags of a special type
   std::list<PropertyBag*> GetAllOfType(const char* TypeName);
+  /// Get a list of PorpertyBags of a special type
+  std::list<std::string> GetAllNamesOfType(const char* TypeName);
   /// get a list of all registered types
   std::set<std::string> GetAllTypes(void);
   /// delete all properties

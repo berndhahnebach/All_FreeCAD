@@ -31,6 +31,7 @@ class SbVec3f;
 class SoSwitch;
 class SoCoordinate3;
 class SoNormal;
+class SoIndexedFaceSet;
 class SoFaceSet;
 class SoPath;
 class SoLocateHighlight;
@@ -42,6 +43,7 @@ namespace Gui {
 
 namespace Mesh {
   class MeshWithProperty;
+  class MeshPropertyColor;
 }
 
 namespace MeshGui {
@@ -74,19 +76,25 @@ public:
   virtual void selected(Gui::View3DInventorViewer *, SoPath *);
   virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
 
+protected:
 
   /// helper methode to build up the FaceSet
   void createMesh(Mesh::MeshWithProperty *pcMesh);
+  /// helper for the color vertex mode
+  void SetVertexColorMode(Mesh::MeshPropertyColor* pcProp);
 
-protected:
 
-  SoCoordinate3 *pcMeshCoord;
-  SoNormal      *pcMeshNormal;
-  SoFaceSet     *pcMeshFaces;
+
+  SoCoordinate3     *pcMeshCoord;
+  SoNormal          *pcMeshNormal;
+  //SoIndexedFaceSet *pcMeshFaces;
+  SoFaceSet         *pcMeshFaces;
 
   SoLocateHighlight *pcHighlight;
 
-  SoSwitch      *pcSwitch;
+  SoMaterial        *pcColorMat;
+
+  SoSwitch          *pcSwitch;
 
 };
 

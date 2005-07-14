@@ -137,6 +137,18 @@ std::list<PropertyBag*> DataWithPropertyBag::GetAllOfType(const char* TypeName)
   return List;
 }
 
+std::list<std::string> DataWithPropertyBag::GetAllNamesOfType(const char* TypeName)
+{
+  std::list<std::string> List;
+  for( std::map<std::string,PropertyBag*>::iterator It = _Properties.begin();It!=_Properties.end();It++)
+  {
+    if( strcmp(It->second->GetType(),TypeName)==0 )
+      List.push_back( It->first);
+  }
+
+  return List;
+}
+
 
 std::set<std::string> DataWithPropertyBag::GetAllTypes(void)
 {

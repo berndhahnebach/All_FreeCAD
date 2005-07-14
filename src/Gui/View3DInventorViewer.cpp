@@ -175,7 +175,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   cam->nearDistance = 0;
   cam->farDistance = 10;
 
-/*  const double ARROWSIZE = 2.0;
+  const double ARROWSIZE = 2.0;
 
   SoTranslation * posit = new SoTranslation;
   posit->translation = SbVec3f(-2.5 * ARROWSIZE, 1.5 * ARROWSIZE, 0);
@@ -186,19 +186,75 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   SoTranslation * offset = new SoTranslation;
   offset->translation = SbVec3f(ARROWSIZE/2.0, 0, 0);
 
-  SoCube * cube = new SoCube;
-  cube->width = ARROWSIZE;
-  cube->height = ARROWSIZE/15.0;
-*/
-  /*
+  // simple color bar
+  //
+  // points
+  // FIXME: use points in range [-1,+1] W.Mayer 2005
+  SbVec3f* vertices = new SbVec3f[10];
+  vertices[0].setValue(-2.0f, 1.0f, 0.0f);
+  vertices[1].setValue(-1.5f, 1.0f, 0.0f);
+  vertices[2].setValue(-2.0f,-1.0f, 0.0f);
+  vertices[3].setValue(-1.5f,-1.0f, 0.0f);
+  vertices[4].setValue(-2.0f,-3.0f, 0.0f);
+  vertices[5].setValue(-1.5f,-3.0f, 0.0f);
+  vertices[6].setValue(-2.0f,-5.0f, 0.0f);
+  vertices[7].setValue(-1.5f,-5.0f, 0.0f);
+  vertices[8].setValue(-2.0f,-7.0f, 0.0f);
+  vertices[9].setValue(-1.5f,-7.0f, 0.0f);
+  // face indices
+  int32_t idx2[32]=
+  {
+    0,3,1,SO_END_FACE_INDEX,
+    0,2,3,SO_END_FACE_INDEX,
+    2,5,3,SO_END_FACE_INDEX,
+    2,4,5,SO_END_FACE_INDEX,
+    4,7,5,SO_END_FACE_INDEX,
+    4,6,7,SO_END_FACE_INDEX,
+    6,9,7,SO_END_FACE_INDEX,
+    6,8,9,SO_END_FACE_INDEX,
+  };
+
+  SoCoordinate3 * coords = new SoCoordinate3;
+	coords->point.setValues(0,10, vertices);
+
+  float colors[10][3] =
+  {  
+    { 1, 0, 0}, { 1, 0, 0}, // red
+    { 1, 1, 0}, { 1, 1, 0}, // yellow
+    { 0, 1, 0}, { 0, 1 ,0}, // green
+    { 0, 1 ,1}, { 0 ,1, 1}, // cyan
+    { 0 ,0, 1}, { 0 ,0, 1}, // blue
+  };
+
+  SoMaterial* mat = new SoMaterial;
+  mat->diffuseColor.setValues(0, 10, colors);
+
+  SoMaterialBinding* matBinding = new SoMaterialBinding;
+  matBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+
+  SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+	faceset->coordIndex.setValues(0,32,(const int*) idx2);
+
+  SoSeparator* root = new SoSeparator();
+	root->addChild(coords);
+  root->addChild(mat);
+  root->addChild(matBinding);
+	root->addChild(faceset);
+  delete [] vertices;
+
+//  SoCube * cube = new SoCube;
+//  cube->width = ARROWSIZE;
+//  cube->height = ARROWSIZE/15.0;
+
+  
   this->foregroundroot->addChild(cam);
   this->foregroundroot->addChild(lm);
   this->foregroundroot->addChild(bc);
   this->foregroundroot->addChild(posit);
   this->foregroundroot->addChild(arrowrotation);
   this->foregroundroot->addChild(offset);
-  this->foregroundroot->addChild(cube);
-  */
+  this->foregroundroot->addChild(root);
+  
 
   // set the ViewProvider root
   pcSelection        = new SoSelection();
@@ -227,6 +283,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 //  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
   getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
 //  getGLRenderAction()->setSmoothing(true);
+
+  setSeekTime(0.5);
+  setSeekValueAsPercentage(true);
+  setSeekDistance(50);
 
  }
 
@@ -392,7 +452,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
         SbTime tmp = (ev->getTime() - CenterTime);
         if (tmp.getValue() < 0.300) 
         {
-          panToCenter(panningplane, posn);
+          if(!seekToPoint(pos))
+            panToCenter(panningplane, posn);
         }else{
           CenterTime = ev->getTime();
           MoveMode = true;
@@ -427,7 +488,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     const SoLocation2Event * const event = (const SoLocation2Event *) ev;
 
     if(MoveMode && ZoomMode){
-      zoom(getCamera(),(posn[1] - prevnormalized[1]) * 20.0f);
+      zoom(getCamera(),(posn[1] - prevnormalized[1]) * 10.0f);
       processed = true;
     }else if(MoveMode && RotMode) {
       addToLog(ev->getPosition(), ev->getTime());
@@ -930,6 +991,93 @@ void View3DInventorViewer::addToLog(const SbVec2s pos, const SbTime time)
 
 
 #if 0
+
+/*!
+  Call this method to initiate a seek action towards the 3D
+  intersection of the scene and the ray from the screen coordinate's
+  point and in the same direction as the camera is pointing.
+
+  Returns \c TRUE if the ray from the \a screenpos position intersect
+  with any parts of the onscreen geometry, otherwise \c FALSE.
+*/
+SbBool
+So@Gui@Viewer::seekToPoint(const SbVec2s screenpos)
+{
+  if (! PRIVATE(this)->camera)
+    return FALSE;
+
+  SoRayPickAction rpaction(this->getViewportRegion());
+  rpaction.setPoint(screenpos);
+  rpaction.setRadius(2);
+  rpaction.apply(PRIVATE(this)->sceneroot);
+
+  SoPickedPoint * picked = rpaction.getPickedPoint();
+  if (!picked) {
+    // FIXME: this inc seems bogus, but is needed now due to buggy
+    // code in for instance the examinerviewer
+    // processSoEvent(). 20020510 mortene.
+#if 1
+    this->interactiveCountInc(); // decremented in setSeekMode(FALSE)
+#endif // FIXME
+    this->setSeekMode(FALSE);
+    return FALSE;
+  }
+
+  SbVec3f hitpoint;
+  if (PRIVATE(this)->seektopoint) {
+    hitpoint = picked->getPoint();
+  } 
+  else {
+    SoGetBoundingBoxAction bbaction(this->getViewportRegion());
+    bbaction.apply(picked->getPath());
+    SbBox3f bbox = bbaction.getBoundingBox();
+    hitpoint = bbox.getCenter();
+  }
+
+  PRIVATE(this)->camerastartposition = PRIVATE(this)->camera->position.getValue();
+  PRIVATE(this)->camerastartorient = PRIVATE(this)->camera->orientation.getValue();
+
+  // move point to the camera coordinate system, consider
+  // transformations before camera in the scene graph
+  SbMatrix cameramatrix, camerainverse;
+  PRIVATE(this)->getCameraCoordinateSystem(PRIVATE(this)->camera,
+                                           PRIVATE(this)->sceneroot,
+                                           cameramatrix,
+                                           camerainverse);
+  camerainverse.multVecMatrix(hitpoint, hitpoint);
+
+  float fd = PRIVATE(this)->seekdistance;
+  if (!PRIVATE(this)->seekdistanceabs)
+    fd *= (hitpoint - PRIVATE(this)->camera->position.getValue()).length()/100.0f;
+  PRIVATE(this)->camera->focalDistance = fd;
+
+  SbVec3f dir = hitpoint - PRIVATE(this)->camerastartposition;
+  dir.normalize();
+
+  // find a rotation that rotates current camera direction into new
+  // camera direction.
+  SbVec3f olddir;
+  PRIVATE(this)->camera->orientation.getValue().multVec(SbVec3f(0, 0, -1), olddir);
+  SbRotation diffrot(olddir, dir);
+  PRIVATE(this)->cameraendposition = hitpoint - fd * dir;
+  PRIVATE(this)->cameraendorient = PRIVATE(this)->camera->orientation.getValue() * diffrot;
+
+  if (PRIVATE(this)->seeksensor->isScheduled()) {
+    PRIVATE(this)->seeksensor->unschedule();
+    this->interactiveCountDec();
+  }
+
+  PRIVATE(this)->seeksensor->setBaseTime(SbTime::getTimeOfDay());
+  PRIVATE(this)->seeksensor->schedule();
+  this->interactiveCountInc();
+
+  return TRUE;
+}
+
+
+
+
+
 
 SbBool
 SoQtExaminerViewer::processSoEvent(const SoEvent * const ev)
