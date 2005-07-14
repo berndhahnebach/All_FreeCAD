@@ -218,7 +218,7 @@ void PropertyFloat::Set(const char* Str)
 const char* PropertyFloat::GetAsString(void)
 {
 	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%f",_dValue);
+	sprintf(sBuf,"%e",_dValue);
 	return sBuf;
 }
 
@@ -249,16 +249,16 @@ const char* PropertyFloat::SetSubProperty(const char* sSubPropName,const char* s
 const char* PropertyFloat::GetSubProperty(const char* sSubPropName)
 {
 	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%f",_dValue);
+	sprintf(sBuf,"%e",_dValue);
 
 	if(strcmp(sSubPropName,"Value")==0)
-		sprintf(sBuf,"%f",_dValue);
+		sprintf(sBuf,"%e",_dValue);
 	else if(strcmp(sSubPropName,"Max")==0)
-		sprintf(sBuf,"%f",_dMax);
+		sprintf(sBuf,"%e",_dMax);
 	else if(strcmp(sSubPropName,"Min")==0)
-		sprintf(sBuf,"%f",_dMin);
+		sprintf(sBuf,"%e",_dMin);
 	else if(strcmp(sSubPropName,"Step")==0)
-		sprintf(sBuf,"%f",_dStep);
+		sprintf(sBuf,"%e",_dStep);
 	else return "";
 
 	return sBuf;
