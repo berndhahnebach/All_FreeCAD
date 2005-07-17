@@ -86,9 +86,9 @@ public:
   };
 
   /// gets the status
-  Status getStatus(void){ return _eStatus;}
+  Status getStatus(void) const { return _eStatus;}
   /// get the status Message (if any)
-  const char *getStatusMessage(void){return _cStatusMessage.c_str();}
+  const char *getStatusMessage(void) const;//{return _cStatusMessage.c_str();}
   //@}
 
 	/** @name methodes used for recalculation (update) */
@@ -190,7 +190,7 @@ protected:
   FeaturePy* pcFeaturePy;
 
   Status _eStatus;
-  std::string _cStatusMessage;
+//  std::string _cStatusMessage;
 
 };
 

@@ -224,6 +224,24 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
 
 }
 
+const char* Feature::getStatusMessage(void) const
+{
+  switch (_eStatus)
+  {
+  case Valid:
+    return "Valid";
+  case New:
+    return "New";
+  case Changed:
+    return "Changed";
+  case Inactive:
+    return "Inactive";
+  case Error:
+    return "Error";
+  default:
+    return "Unknown";
+  }
+}
 
 Feature *Feature::GetFeature(const TDF_Label &l)
 {

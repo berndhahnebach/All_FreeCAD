@@ -294,7 +294,7 @@ void Document::Recompute()
       Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
       if(Feat->Execute(_LogBook)){
         Feat->_eStatus = Feature::Error;
-        Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getStatus());
+        Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getStatusMessage());
         DocChange.ErrorFeatures.push_back(Feat);
       }else{
         DocChange.UpdatedFeatures.push_back(Feat);
