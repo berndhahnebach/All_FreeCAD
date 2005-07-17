@@ -166,6 +166,21 @@ public:
 class AppMeshExport MeshPropertyCurvature: public PropertyBag
 {
 public:
+  /** Helper class. */
+  struct fCurvature
+  {
+    float fMaxCurvature, fMinCurvature;
+    Vector3D cMaxCurvDir, cMinCurvDir;
+  };
+
+  enum Mode { 
+    MaxCurvature,  /**< Maximum curvature */ 
+    MinCurvature,  /**< Minimum curvature */
+    AvgCurvature,  /**< Average curvature */
+    GaussCurvature /**< Gaussian curvature */
+  };
+
+public:
 	MeshPropertyCurvature(int size=0);
   virtual ~MeshPropertyCurvature();
 
@@ -174,12 +189,11 @@ public:
   void resizePoints();
   void resizeFaces();
 
-  struct fCurvature
-  {
-    float fMaxCurvature, fMinCurvature;
-    Vector3D cMaxCurvDir, cMinCurvDir;
-  };
+  std::vector<float> getCurvature( Mode tMode) const;
+  void setValue(unsigned long pos, const fCurvature& val)
+  { Curvature[pos] = val; }
 
+private:
   std::vector<fCurvature> Curvature;
 };
 

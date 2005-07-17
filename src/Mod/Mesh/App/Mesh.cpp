@@ -79,6 +79,41 @@ void MeshPropertyCurvature::resizeFaces()
   Curvature.clear();
 }
 
+std::vector<float> MeshPropertyCurvature::getCurvature( MeshPropertyCurvature::Mode tMode) const
+{
+  std::vector<float> aCurvatures;
+  if ( tMode == MaxCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->fMaxCurvature );
+    }
+  }
+  else if ( tMode == MinCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( 0.5f * ( it->fMaxCurvature + it->fMinCurvature ) );
+    }
+  }
+  else if ( tMode == AvgCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->fMaxCurvature );
+    }
+  }
+  else if ( tMode == GaussCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->fMaxCurvature * it->fMinCurvature );
+    }
+  }
+
+  return aCurvatures;
+}
+
 // ----------------------------------------------------------------------------
 
 void DataWithPropertyBag::Add(PropertyBag* New, const char* Name)

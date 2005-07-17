@@ -141,7 +141,7 @@ bool MeshCurvaturePerVertex::Compute()
     info.fMinCurvature = aMinCurv[i];
     info.cMaxCurvDir = Vector3D( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
     info.cMinCurvDir = Vector3D( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
-    _curvature->Curvature[i] = info;
+    _curvature->setValue(i, info);
   }
 
   return true;
@@ -219,7 +219,7 @@ void MeshCurvaturePerFace::ExtractCurvature(unsigned long pos, const std::vector
   info.fMinCurvature = fCurv2;
   info.cMaxCurvDir = cCurvDir1;
   info.cMinCurvDir = cCurvDir2;
-  _curvature->Curvature[pos] = info;
+  _curvature->setValue(pos, info);
 }
 
 bool MeshCurvaturePerFace::Compute()
