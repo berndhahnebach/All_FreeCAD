@@ -94,7 +94,7 @@ void ViewProviderInventorMesh::unselected(Gui::View3DInventorViewer *, SoPath *)
 
 
 void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
-{
+{/*
   MeshKernel *cMesh = pcMesh->getKernel();
 
   int TreeIndex = 0;
@@ -134,7 +134,39 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   delete [] numVertices;
   
   Base::Sequencer().stop();
+*/
+  MeshKernel *cMesh = pcMesh->getKernel();
+  SbVec3f* vertices = new SbVec3f[cMesh->CountPoints()];
+  int* faces = new int [4*cMesh->CountFacets()];
 
+  Base::Sequencer().start( "Building View node...", cMesh->CountFacets() );
+
+  unsigned long j=0;
+  Mesh::MeshFacetIterator cFIt(*cMesh);
+  for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ ) 
+  {
+    const Mesh::MeshGeomFacet& rFace = *cFIt;
+    Mesh::MeshFacet aFace = cFIt.GetIndicies();
+
+    for ( int i=0; i<3; i++ )
+    {
+      vertices[aFace._aulPoints[i]].setValue(rFace._aclPoints[i].x, 
+                                             rFace._aclPoints[i].y, 
+                                             rFace._aclPoints[i].z);
+      faces[4*j+i] = aFace._aulPoints[i];
+    }
+
+    faces[4*j+3] = SO_END_FACE_INDEX;
+    Base::Sequencer().next();
+  }
+
+	pcMeshCoord->point.setValues(0,cMesh->CountPoints(), vertices);
+	pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int*) faces);
+
+  delete [] vertices;
+  delete [] faces;
+
+  Base::Sequencer().stop();
 }
 
 
@@ -152,8 +184,8 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   // creat the mesh core nodes
   pcMeshCoord     = new SoCoordinate3();
 //  pcMeshNormal    = new SoNormal();
-  //pcMeshFaces     = new SoIndexedFaceSet();
-  pcMeshFaces     = new SoFaceSet();
+  pcMeshFaces     = new SoIndexedFaceSet();
+//  pcMeshFaces     = new SoFaceSet();
   // and set them
   createMesh(&(meshFea->getMesh()));
 
@@ -255,18 +287,18 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcFlatRoot->addChild(pcFlatStyle);
 
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
-  pcMatBinding->value = SoMaterialBinding::PER_FACE_INDEXED;
+  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
   pcColorMat = new SoMaterial;
-  pcFlatRoot->addChild(pcMatBinding);
-  pcFlatRoot->addChild(pcColorMat);
+  pcColorShadedRoot->addChild(pcColorMat);
+  pcColorShadedRoot->addChild(pcMatBinding);
   // Hilight for selection
-  pcHighlight = new SoLocateHighlight();
-  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  SoLocateHighlight *pcHighlight4 = new SoLocateHighlight();
+  pcHighlight4->color.setValue((float)0.1,(float)0.3,(float)0.7);
 //  pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-  pcHighlight->addChild(pcBinding);
-  pcHighlight->addChild(pcMeshCoord);
-  pcHighlight->addChild(pcMeshFaces);
-  pcColorShadedRoot->addChild(pcHighlight);
+  pcHighlight4->addChild(pcBinding);
+  pcHighlight4->addChild(pcMeshCoord);
+  pcHighlight4->addChild(pcMeshFaces);
+  pcColorShadedRoot->addChild(pcHighlight4);
 
 
   // puting all togetern with a switch
@@ -314,6 +346,7 @@ void ViewProviderInventorMesh::setMode(const char* ModeName)
     if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
     {
       SetVertexColorMode(dynamic_cast<Mesh::MeshPropertyColor*>(pcProp));
+      pcSwitch->whichChild = 4;
 
     }else 
       Base::Console().Warning("Unknown mode in ViewProviderInventorMesh::setMode(), ignored");
@@ -341,5 +374,10 @@ std::vector<std::string> ViewProviderInventorMesh::getModes(void)
 
 void ViewProviderInventorMesh::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
 {
-
+  std::vector<Mesh::MeshPropertyColor::fColor> color = pcProp->Color;
+  for (unsigned long i=0; i<color.size();i++)
+  {
+    Mesh::MeshPropertyColor::fColor& col = color[i];
+    pcColorMat->diffuseColor.set1Value(i, SbColor(col.r, col.g, col.b));
+  }
 }

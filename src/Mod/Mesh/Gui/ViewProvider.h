@@ -87,8 +87,8 @@ protected:
 
   SoCoordinate3     *pcMeshCoord;
   SoNormal          *pcMeshNormal;
-  //SoIndexedFaceSet *pcMeshFaces;
-  SoFaceSet         *pcMeshFaces;
+  SoIndexedFaceSet *pcMeshFaces;
+  //SoFaceSet         *pcMeshFaces;
 
   SoLocateHighlight *pcHighlight;
 
