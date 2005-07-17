@@ -58,12 +58,16 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   for(std::set<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     ViewProviderInventor *pcProv = pcCmd->getActiveDocument()->getViewProvider(*It);
-    std::vector<std::string> Modes = pcProv->getModes();
 
-    for(std::vector<std::string>::iterator It2= Modes.begin();It2!=Modes.end();It2++)
-      ModeList.insert(*It2);
+    if ( pcProv )
+    {
+      std::vector<std::string> Modes = pcProv->getModes();
 
-    Provider.push_back(pcProv);
+      for(std::vector<std::string>::iterator It2= Modes.begin();It2!=Modes.end();It2++)
+        ModeList.insert(*It2);
+
+      Provider.push_back(pcProv);
+    }
   }
 
 

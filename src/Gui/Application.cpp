@@ -758,18 +758,26 @@ bool ApplicationWindow::sendHasMsgToActiveView(const char* pMsg)
 MDIView* ApplicationWindow::activeView(void)
 {
   // redirect all meesages to the view in fullscreen mode, if so
-  MDIView * pView = 0;
+  MDIView* pView = 0;
+  MDIView* pTmp = 0;
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
   {
     if ( it.data()->isFullScreen() )
     {
-      pView = it.data();
+      // store this in case we have a non-acitve view in fullscreen (e.g. opened dialog that is active)
+      pTmp = it.data(); 
+      if ( it.data()->isActiveWindow() )
+        pView = it.data();
       break;
     }
   }
   // if no fullscreen window then look in workspace
   if ( !pView )
+  {
     pView = reinterpret_cast <MDIView *> ( d->_pWorkspace->activeWindow() );
+    if ( !pView && pTmp )
+      pView = pTmp;
+  }
 
   return pView;
 }
@@ -1121,11 +1129,11 @@ void ApplicationWindow::loadDockWndSettings()
   if (!datafile->open(IO_ReadOnly)) 
   {
     // error opening file
-    bool bMute = GuiConsoleObserver::bMute;
-    GuiConsoleObserver::bMute = true;
+    bool bMute = MessageBoxObserver::bMute;
+    MessageBoxObserver::bMute = true;
     Console().Warning((tr("Error: Cannot open file '%1' "
                              "(Maybe you're running FreeCAD the first time)\n").arg(FileName.c_str())));
-    GuiConsoleObserver::bMute = bMute;
+    MessageBoxObserver::bMute = bMute;
     datafile->close();
     delete (datafile);
     return;
@@ -1284,8 +1292,52 @@ void messageHandler( QtMsgType type, const char *msg )
   }
 }
 
+#if 0
+#include <qeventloop.h>
+/**
+ * A modal dialog has its own event loop and normally gets shown with QDialog::exec().
+ * If an exception is thrown from within the dialog and this exception is caught in the calling
+ * instance then for any reason the main event loop from the application gets terminated.
+ *
+ * This class is an attempt to solve the problem with Qt's event loop. The trick is that the method
+ * QEventLoop::exit() gets called when the application is about to being closed. But if the error above
+ * occurs then QEventLoop::exit() is skipped. So this a possibility to determine if the application
+ * should continue or not.
+ * @author Werner Mayer
+ */
+class MainEventLoop : public QEventLoop
+{
+public:
+  MainEventLoop ( QObject * parent = 0, const char * name = 0 )
+    : QEventLoop ( parent, name ), _exited(false)
+  {
+  }
+  virtual void exit ( int retcode = 0 )
+  {
+    _exited = true;
+    QEventLoop::exit(retcode);
+  }
+  virtual int exec ()
+  {
+    int ret = QEventLoop::exec();
+    // do we really want to exit?
+    if ( !_exited )
+    {
+      Base::Console().Log("Error in event loop\n");
+      exec(); // recursive call
+    }
+    return ret;
+  }
+private:
+  bool _exited;
+};
+#endif
+
 void ApplicationWindow::runApplication(void)
 {
+#if 0
+  MainEventLoop loop;
+#endif
   // A new QApplication
   Console().Log("Init: Creating Gui::Application and QApplication\n");
   // if application not yet created by the splasher
@@ -1339,7 +1391,7 @@ void ApplicationWindow::runApplication(void)
   // run the Application event loop
   Console().Log("Init: Entering event loop\n");
   // attach the console observer
-  Base::Console().AttacheObserver( new GuiConsoleObserver(Instance) );
+  Base::Console().AttacheObserver( new MessageBoxObserver(Instance) );
   _pcQApp->exec();
   Console().Log("Init: event loop left\n");
 }
@@ -1868,43 +1920,37 @@ PYFUNCIMP_S(ApplicationWindow,sRunCommand)
 // FCAppConsoleObserver
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+MessageBoxObserver::MessageBoxObserver(ApplicationWindow *pcAppWnd)
+  :_pcAppWnd(pcAppWnd)
+{
 #ifdef FC_DEBUG
-bool GuiConsoleObserver::bMute = true;
-#else
-bool GuiConsoleObserver::bMute = false;
+  this->bErr = false;
+  this->bWrn = false;
 #endif
-
-GuiConsoleObserver::GuiConsoleObserver(ApplicationWindow *pcAppWnd)
-  :_pcAppWnd(pcAppWnd){}
-
-/// get calles when a Warning is issued
-void GuiConsoleObserver::Warning(const char *m)
-{
-  if(!bMute){
-    QMessageBox::warning( _pcAppWnd, "Warning",m);
-    _pcAppWnd->statusBar()->message( m, 2001 );
-  }
 }
 
-/// get calles when a Message is issued
-void GuiConsoleObserver::Message(const char * m)
+/// get called when a Warning is issued
+void MessageBoxObserver::Warning(const char *m)
 {
-  if(!bMute)
-    _pcAppWnd->statusBar()->message( m, 2001 );
+  QMessageBox::warning( _pcAppWnd, QObject::tr("Warning"),m);
+  _pcAppWnd->statusBar()->message( m, 2001 );
 }
 
-/// get calles when a Error is issued
-void GuiConsoleObserver::Error  (const char *m)
+/// get called when a Message is issued
+void MessageBoxObserver::Message(const char * m)
 {
-  if(!bMute)
-  {
-    QMessageBox::critical( _pcAppWnd, "Exception happens",m);
-    _pcAppWnd->statusBar()->message( m, 2001 );
-  }
+  _pcAppWnd->statusBar()->message( m, 2001 );
 }
 
-/// get calles when a Log Message is issued
-void GuiConsoleObserver::Log    (const char *)
+/// get called when a Error is issued
+void MessageBoxObserver::Error  (const char *m)
+{
+  QMessageBox::critical( _pcAppWnd, QObject::tr("Critical Error"),m);
+  _pcAppWnd->statusBar()->message( m, 2001 );
+}
+
+/// get called when a Log Message is issued
+void MessageBoxObserver::Log    (const char *)
 {
 }
 

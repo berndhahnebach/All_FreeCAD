@@ -215,10 +215,10 @@ void ProgressBar::abort()
   //resets
   resetData();
 
-  bool bMute = GuiConsoleObserver::bMute;
-  GuiConsoleObserver::bMute = true;
+  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
+                                                                       ConsoleMsgType::MsgType_Err, false);
   Base::Exception exc("Aborting...");
-  GuiConsoleObserver::bMute = bMute;
+  Base::Console().SetEnabledMsgType("MessageBox",ret, true);
   throw exc;
 }
 

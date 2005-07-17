@@ -985,8 +985,8 @@ StdCmdCommandLine::StdCmdCommandLine()
 void StdCmdCommandLine::activated(int iMsg)
 {
   bool show = getAppWnd()->isMaximized ();
-  bool mute = GuiConsoleObserver::bMute;
-  GuiConsoleObserver::bMute = true;
+  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
+                                                                       ConsoleMsgType::MsgType_Err, false);
 
   // pop up the Gui command window
   GUIConsole Wnd;
@@ -1014,7 +1014,7 @@ void StdCmdCommandLine::activated(int iMsg)
   // pop up the main window
   show ? getAppWnd()->showMaximized () : getAppWnd()->showNormal () ;
   qApp->processEvents();
-  GuiConsoleObserver::bMute = mute;
+  Base::Console().SetEnabledMsgType("MessageBox", ret, true);
 }
 
 //===========================================================================

@@ -61,7 +61,7 @@ StdCmdSetMaterial::StdCmdSetMaterial()
 
 void StdCmdSetMaterial::activated(int iMsg)
 {
-  Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getAppWnd(), "Windows", true );
+  Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getAppWnd()->activeView(), "Display", true );
   dlg.exec();
 }
 

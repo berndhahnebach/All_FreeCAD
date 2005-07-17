@@ -266,17 +266,17 @@ private:
 
 
 
-/** The console observer for the Application window
- *  This class distribute the Messages issued on the console
- *  to the status bar. 
- *  @see FCConsole
- *  @see FCConsoleObserver
- *  @author Jürgen Riegel
+/** The message box observer opens an appropriate dialog for warnings and errors
+ * and writes the text also to the status bar of the main window. Normal text message
+ * are written only to the status bar and log messages are ignored completely.
+ * @see Console
+ * @see ConsoleObserver
+ * @author Jürgen Riegel
  */
-class GuiConsoleObserver: public Base::ConsoleObserver
+class MessageBoxObserver: public Base::ConsoleObserver
 {
 public:
-  GuiConsoleObserver(ApplicationWindow *pcAppWnd);
+  MessageBoxObserver(ApplicationWindow *pcAppWnd);
 
   /// get calles when a Warning is issued
   virtual void Warning(const char *m);
@@ -287,10 +287,8 @@ public:
   /// get calles when a Log Message is issued
   virtual void Log    (const char *);
   /// name of the observer
-  virtual const char *Name(void){return "GuiConsole";}
+  virtual const char *Name(void){return "MessageBox";}
 
-  /// Mutes the Observer, no Dialog Box will appear
-  static bool bMute;
 protected:
   ApplicationWindow* _pcAppWnd;
 };

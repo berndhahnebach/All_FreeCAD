@@ -628,22 +628,25 @@ bool PythonConsole::performPythonCommand()
     }
   }
 
-  try
+  if ( !pyCmd.isEmpty() )
   {
-    // launch the command now
-    bool bMute = GuiConsoleObserver::bMute;
-    GuiConsoleObserver::bMute = true;
-    if ( !pyCmd.isEmpty() )
+    // switch off warnings and errors to avoid pop-up dialogs
+    ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
+                                                                         ConsoleMsgType::MsgType_Err, false);
+    try
     {
+      // launch the command now
       Base::Interpreter().runInteractiveString( pyCmd.latin1() );
+      setFocus(); // if focus was lost
     }
-    GuiConsoleObserver::bMute = bMute;
-    setFocus(); // if focus was lost
-  }
-  catch ( const Base::Exception& )
-  {
-    // Write Python's error output instead, if there is!
-    ok = false;
+    catch ( const Base::Exception& )
+    {
+      // Write Python's error output instead, if there is!
+      ok = false;
+    }
+
+    // restore observer settings
+    Base::Console().SetEnabledMsgType("MessageBox", ret, true);
   }
 
   printPrompt();
