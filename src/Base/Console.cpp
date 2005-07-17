@@ -83,6 +83,55 @@ void ConsoleSingelton::UnsetMode(ConsoleMode m)
 		_bVerbose = false;
 }
 
+/**
+ * \a type can be OR'ed with any of the FreeCAD_ConsoleMsgType flags to enable -- if \a b is true --
+ * or to disable -- if \a b is false -- a console observer with name \a sObs.
+ * The return value is an OR'ed value of all message types that have changed their state. For example
+ * @code
+ * // switch off warnings and error messages
+ * ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("myObs", 
+ *                             ConsoleMsgType::MsgType_Wrn|ConsoleMsgType::MsgType_Err, false);
+ * // do something without notifying observer myObs
+ * ...
+ * // restore the former configuration again
+ * Base::Console().SetEnabledMsgType("myObs", ret, true);
+ * @endcode
+ * switches off warnings and error messages and restore the state before the modification.
+ * If the observer \a sObs doesn't exist then nothing happens.
+ */
+ConsoleMsgFlags ConsoleSingelton::SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b)
+{
+  ConsoleObserver* pObs = Get(sObs);
+  if ( pObs ){
+    ConsoleMsgFlags flags=0;
+
+    if ( type&MsgType_Err ){
+      if ( pObs->bErr != b )
+        flags |= MsgType_Err;
+      pObs->bErr = b;
+    }
+    if ( type&MsgType_Wrn ){
+      if ( pObs->bWrn != b )
+        flags |= MsgType_Wrn;
+      pObs->bWrn = b;
+    }
+    if ( type&MsgType_Txt ){
+      if ( pObs->bMsg != b )
+        flags |= MsgType_Txt;
+      pObs->bMsg = b;
+    }
+    if ( type&MsgType_Log ){
+      if ( pObs->bLog != b )
+        flags |= MsgType_Log;
+      pObs->bLog = b;
+    }
+    return flags;
+  }
+  else {
+    return 0;
+  }
+}
+
 /** Prints a Message
  *  This method issues a Message. 
  *  Messages are used show some non vital information. That means in the

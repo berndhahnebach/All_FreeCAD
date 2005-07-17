@@ -51,6 +51,13 @@
 
  
 namespace Base {
+class ConsoleSingelton;
+}; // namespace Base
+
+typedef Base::ConsoleSingelton ConsoleMsgType;
+typedef unsigned int ConsoleMsgFlags;
+ 
+namespace Base {
 
 /** The console observer class
  *  This class distribute the Messages issued to the FCConsole class. 
@@ -120,12 +127,21 @@ public:
 	/// enumaration for the console modes
 	enum ConsoleMode{
 		Verbose = 1,	// supress Log messages
-		} ;
+	};
+
+  enum FreeCAD_ConsoleMsgType { 
+    MsgType_Txt = 1, 
+    MsgType_Log = 2, 
+    MsgType_Wrn = 4, 
+    MsgType_Err = 8 
+  };
 
 	/// Change mode
 	void SetMode(ConsoleMode m);
 	/// Change mode
 	void UnsetMode(ConsoleMode m);
+  /// Enables or disables message types of a cetain console observer
+  ConsoleMsgFlags SetEnabledMsgType(const char* sObs, ConsoleMsgFlags type, bool b);
 
 	/// singelton 
 	static ConsoleSingelton &Instance(void);
