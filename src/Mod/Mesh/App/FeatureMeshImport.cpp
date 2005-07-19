@@ -30,6 +30,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Sequencer.h>
 #include "FeatureMeshImport.h"
 
 #include "Core/MeshIO.h"
@@ -65,6 +66,9 @@ Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
     FileStream str( FileName, std::ios::in);
     if ( !aReader.Load( str ) )
       throw Base::Exception("Import failed (load file)");
+  }
+  catch(Base::AbortException& e){
+    return 0;
   }
   catch(...){
     Base::Console().Error("FeatureMeshImport::Execute() failed!");

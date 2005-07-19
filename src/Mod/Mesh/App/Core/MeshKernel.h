@@ -67,7 +67,8 @@ public:
   /// Construction
   MeshKernel (const MeshKernel &rclMesh);
   /// Destruction
-  virtual ~MeshKernel (void) {}
+  virtual ~MeshKernel (void)
+  { Clear(); }
 
   /** @name I/O methods */
   //@{

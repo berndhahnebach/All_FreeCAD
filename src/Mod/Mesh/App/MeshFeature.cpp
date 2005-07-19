@@ -77,9 +77,10 @@ Base::PyObjectBase *MeshFeature::GetPyObject(void)
 {
   if(!pcMeshFeaturePy){
     pcMeshFeaturePy = new MeshFeaturePy(this);
-    pcMeshFeaturePy->IncRef();
   }
-	return pcMeshFeaturePy; 
-
+ 
+  // @todo Check if IncRef() has be called every time this object is returned
+  pcMeshFeaturePy->IncRef();
+  return pcMeshFeaturePy; 
 }
 

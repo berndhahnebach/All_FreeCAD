@@ -127,7 +127,8 @@ PyObject *MeshPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 MeshPy::~MeshPy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy MeshPy: %p \n",this);
-  delete _pcMesh;
+  // delete _pcMesh; @todo why deleting a passed object?
+  _pcMesh = 0;
 } 
 
 //--------------------------------------------------------------------------
