@@ -28,9 +28,8 @@
 #endif
 
 #include "Sequencer.h"
-#include "Exception.h"
 
-using Base::SequencerBase;
+using namespace Base;
 
 /**
  * The _pclSequencer member just stores the pointer of the
@@ -124,7 +123,7 @@ void SequencerBase::startStep()
 {
 }
 
-bool SequencerBase::next()
+bool SequencerBase::next(bool canAbort)
 {
   nProgress++;
   int perc = nProgress*100 / nTotalSteps;
@@ -136,13 +135,13 @@ bool SequencerBase::next()
   
     // if not locked
     if ( !_bLocked )
-      nextStep();
+      nextStep(canAbort);
   }
 
   return nProgress < nTotalSteps;
 }
 
-void SequencerBase::nextStep()
+void SequencerBase::nextStep( bool canAbort )
 {
 }
 
@@ -194,6 +193,7 @@ int SequencerBase::progressInPercent() const
 
 void SequencerBase::resetData()
 {
+  _bCanceled = false;
   _nInstStarted = 0;
   _nMaxInstStarted = 1;
   _aSteps.clear();
@@ -224,7 +224,7 @@ void ConsoleSequencer::startStep()
 {
 }
 
-void ConsoleSequencer::nextStep()
+void ConsoleSequencer::nextStep( bool canAbort )
 {
   printf("\t\t\t\t\t\t(%2.1f %%)\t\r", (float)progressInPercent());
 }
@@ -234,4 +234,27 @@ void ConsoleSequencer::resetData()
   SequencerBase::resetData();
   printf("\t\t\t\t\t\t\t\t\r");
 }
+
+// ---------------------------------------------------------
+
+AbortException::AbortException(const char * sMessage)
+  : Exception( sMessage )
+{
+}
+
+AbortException::AbortException()
+{
+  _sErrMsg = "Aborted operation";
+}
+
+AbortException::AbortException(const AbortException &inst)
+{
+	SetMessage(inst._sErrMsg.c_str());
+}
+
+const char* AbortException::what() const throw()
+{
+  return Exception::what();
+}
+
 

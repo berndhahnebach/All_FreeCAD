@@ -29,7 +29,11 @@
 # include <vector>
 #endif
 
+#include "Exception.h"
+
 namespace Base {
+
+class AbortException;
 
 /**
  * \brief This class gives the user an indication of the progress of an operation and
@@ -86,6 +90,9 @@ namespace Base {
  *
  *  \endcode
  *
+ * \note If using the sequencer then you must take into account that the exception
+ * AbortException could be thrown, e.g. in case the ESC was pressed.
+ *
  * \author Werner Mayer
  */
 class BaseExport SequencerBase
@@ -112,8 +119,11 @@ public:
   /**
    * Performs the next step and returns true if the operation is not yet finished.
    * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
+   * If \a canAbort is true (the default) then the operations can be aborted, otherwise
+   * the operation cannot be aborted and the sequencer just acts as an indicator of how
+   * long the operation will take.
    */
-  bool next();
+  bool next( bool canAbort = true );
   /**
    * Reduces the number of pending operations by one and stops the
    * sequencer if all operations are finished. It returns false if there are still
@@ -162,9 +172,10 @@ protected:
   virtual void startStep();
   /**
    * This method can be reimplemented in sub-classes to give the user a feedback
-   * when the next is performed. The default implementation does nothing.
+   * when the next is performed. The default implementation does nothing. If \a canAbort
+   * is true then the pending operation can aborted, otherwise not.
    */
-  virtual void nextStep();
+  virtual void nextStep(bool canAbort);
   /** 
    * Resets internal data. 
    * If you want to reimplement this method, it is very important to call it ín your code.
@@ -210,13 +221,32 @@ protected:
   /** Starts the sequencer */
   void startStep();
   /** Writes the current progress to the console window. */
-  void nextStep();
+  void nextStep(bool canAbort);
 
 private:
   /** Puts text to the console window */
   void setText (const char* pszTxt);
   /** Resets the sequencer */
   void resetData();
+};
+
+/**
+ * The AbortException is thrown if a pending operation was aborted.
+ * @author Werner Mayer
+ */
+class BaseExport AbortException : public Exception
+{
+public:
+  /// Construction
+	AbortException(const char * sMessage);
+  /// Construction
+  AbortException();
+  /// Construction
+  AbortException(const AbortException &inst);
+  /// Destruction
+  virtual ~AbortException() throw() {}
+  /// Description of the exception
+  virtual const char* what() const throw();
 };
 
 /** Access to the only SequencerBase instance */
