@@ -36,6 +36,7 @@
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/FileDialog.h>
+#include <Gui/ViewProvider.h>
 
 using namespace Mesh;
 
@@ -110,11 +111,11 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*>(rMesh.Get("VertexCurvature") );
   if( prop && prop->isValid() )
   {
-    MeshPropertyColor* color = dynamic_cast<MeshPropertyColor*>(rMesh.Get("VertexColor") );
+    MeshPropertyColor* color = dynamic_cast<MeshPropertyColor*>(rMesh.Get("Curvature plot") );
     if ( !color )
     {
       color = new MeshPropertyColor();
-      rMesh.Add(color,"VertexCurvature");  
+      rMesh.Add(color,"Curvature plot");  
     }
 
     std::vector<float> aValues = prop->getCurvature( MeshPropertyCurvature::MaxCurvature );
@@ -181,6 +182,13 @@ void CmdMeshVertexCurvature::activated(int iMsg)
       { fCol.r = 1.0f; fCol.g = 0.0f; fCol.b = 0.0f; }
       color->Color.push_back( fCol );
     }
+  }
+
+  Gui::ViewProviderInventor *pcProv = getActiveDocument()->getViewProvider( mesh );
+  if ( pcProv )
+  {
+    pcProv->setMode("Curvature plot");
+    getActiveDocument()->onUpdate();
   }
 }
 

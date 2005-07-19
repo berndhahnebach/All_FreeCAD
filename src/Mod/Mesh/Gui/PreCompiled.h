@@ -59,6 +59,7 @@
 #include <qfiledialog.h>
 #include <qmainwindow.h>
 #include <qscrollview.h>
+#include <qthread.h>
 #include <qworkspace.h>
 
 // Open Inventor
