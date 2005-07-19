@@ -108,6 +108,8 @@ void ViewProviderInventorPart::attache(App::Feature *pcFeat)
   // copy the material properties of the feature
   setMatFromFeature();
 
+  if ( pcFeature->getStatus() ==  App::Feature::Error )
+    return; // feature is invalid
 
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->GetShape();
 
