@@ -96,6 +96,8 @@ struct ProgressBarPrivate;
  */
 class ProgressBar : public QProgressBar, public Base::SequencerBase
 {
+  Q_OBJECT
+
 public:
   /** Returns the sequencer object. */
   static ProgressBar* instance();
@@ -105,18 +107,35 @@ public:
    * events are ignored to block user input.
    */
   bool eventFilter(QObject* o, QEvent* e);
+  /** Returns the time in milliseconds that must pass before the progress bar appears.
+   */
+  int minimumDuration() const;
+
+public slots:
+  /** Sets the time that must pass before the progress bar appears to \a ms.
+   */
+  void setMinimumDuration ( int ms );
 
 protected:
   /** Starts the progress bar */
   void startStep();
   /** Increase the progress bar. */
-  void nextStep();
+  void nextStep(bool canAbort);
+  void showEvent( QShowEvent* );
 
-private:
+protected slots:
+  /* Shows the progress bar if it is still hidden after the operation has been started
+   * and minimumDuration milliseconds have passed.
+   */
+  void forceShow();
+
+protected:
   /** Construction */
   ProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
   /** Destruction */
   ~ProgressBar ();
+
+private:
   /** @name for internal use only */
   //@{
   /** Puts text to the status bar */

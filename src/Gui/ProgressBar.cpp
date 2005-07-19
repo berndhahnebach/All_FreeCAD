@@ -28,13 +28,13 @@
 # include <qpainter.h>
 # include <qstatusbar.h>
 # include <qdatetime.h>
+# include <qtimer.h>
 # include <qwidgetlist.h>
 #endif
 
 #include "ProgressBar.h"
 #include "Application.h"
 #include "WaitCursor.h"
-#include "../Base/Exception.h"
 
 using namespace Gui;
 
@@ -43,6 +43,8 @@ namespace Gui {
 struct ProgressBarPrivate
 {
   QTime measureTime;
+  QTimer* forceTimer;
+  int minimumDuration;
   WaitCursor* cWaitCursor;
 };
 }
@@ -67,6 +69,9 @@ ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
 {
   d = new Gui::ProgressBarPrivate;
   d->cWaitCursor = 0L;
+  d->minimumDuration = 2000; // 2 seconds
+  d->forceTimer = new QTimer(this);
+  connect( d->forceTimer, SIGNAL(timeout()), this, SLOT(forceShow()) );
 
   setFixedWidth(120);
 
@@ -78,7 +83,37 @@ ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
 
 ProgressBar::~ProgressBar ()
 {
+  disconnect( d->forceTimer, SIGNAL(timeout()), this, SLOT(forceShow()) );
+  delete d->forceTimer;
   delete d;
+}
+
+int ProgressBar::minimumDuration() const
+{
+  return d->minimumDuration;
+}
+
+void ProgressBar::setMinimumDuration ( int ms )
+{
+  if ( progress() == 0 )
+  {
+    d->forceTimer->stop();
+    d->forceTimer->start( ms );
+  }
+
+  d->minimumDuration = ms;
+}
+
+void ProgressBar::forceShow()
+{
+  if ( !isVisible() && !wasCanceled() )
+    show();
+}
+
+void ProgressBar::showEvent( QShowEvent* e )
+{
+  QProgressBar::showEvent( e );
+  d->forceTimer->stop();
 }
 
 void ProgressBar::enterControlEvents()
@@ -92,6 +127,10 @@ void ProgressBar::enterControlEvents()
       w->installEventFilter(this);
   }
   delete list;                      // delete the list, not the widgets
+
+  // Make sure that we get the key events, otherwise the Inventor viewer usurps the key events
+  // This also disables accelerators.
+  grabKeyboard();
 }
 
 void ProgressBar::leaveControlEvents()
@@ -105,6 +144,9 @@ void ProgressBar::leaveControlEvents()
       w->removeEventFilter(this);
   }
   delete list;                      // delete the list, not the widgets
+
+  // relase the keyboard again
+  releaseKeyboard();
 }
 
 bool ProgressBar::eventFilter(QObject* o, QEvent* e)
@@ -172,25 +214,26 @@ void ProgressBar::startStep()
 
   if ( pendingOperations() == 1 )
   {
-    show();
     enterControlEvents();
     d->cWaitCursor = new Gui::WaitCursor;
+    // delay showing the bar
+    d->forceTimer->start( d->minimumDuration );
 
     // starting
     d->measureTime.start();
   }
 }
 
-void ProgressBar::nextStep()
+void ProgressBar::nextStep(bool canAbort)
 {
-  if (!wasCanceled())
-  {
-    setProgress(nProgress++);
-  }
-  else
+  if (wasCanceled() && canAbort)
   {
     // force to abort the operation
     abort();
+  }
+  else
+  {
+    setProgress(nProgress++);
   }
   
   qApp->processEvents();
@@ -204,6 +247,7 @@ void ProgressBar::resetData()
   hide();
   delete d->cWaitCursor;
   d->cWaitCursor = 0L;
+  d->forceTimer->stop();
   leaveControlEvents();
   ApplicationWindow::Instance->setPaneText( 1, "" );
 
@@ -217,7 +261,7 @@ void ProgressBar::abort()
 
   ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
                                                                        ConsoleMsgType::MsgType_Err, false);
-  Base::Exception exc("Aborting...");
+  Base::AbortException exc("Aborting...");
   Base::Console().SetEnabledMsgType("MessageBox",ret, true);
   throw exc;
 }
@@ -258,7 +302,10 @@ bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSte
     }
   }
 
-  ApplicationWindow::Instance->setPaneText( 1, txt );
+  if ( isVisible() )
+    ApplicationWindow::Instance->setPaneText( 1, txt );
 
   return QProgressBar::setIndicator ( indicator, progress, totalSteps );
 }
+
+#include "moc_ProgressBar.cpp"

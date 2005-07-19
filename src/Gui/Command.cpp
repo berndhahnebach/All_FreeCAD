@@ -115,9 +115,6 @@ bool Command::isToggle(void) const
 
 void Command::activated ()
 {
-  // if the app is busy do not allow to drop new commands
-  if ( Base::Sequencer().isRunning() )
-    return; 
   if(_eType == Cmd_Normal)
   {
     Base::Console().Log("CmdG: %s\n",_pcAction->text().latin1());
@@ -127,34 +124,35 @@ void Command::activated ()
       activated(0);
     }catch(Base::PyException &e)
     {
-          e.ReportException();
-          Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
+      e.ReportException();
+      Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
+    }catch(Base::AbortException&)
+    {
     }catch(Base::Exception &e)
     {
-          e.ReportException();
+      e.ReportException();
     }
     catch(std::exception &e)
     {
-          std::string str;
-          str += "C++ exception thrown (";
-          str += e.what();
-          str += ")";
-          Base::Console().Error(str.c_str());
-     }
+      std::string str;
+      str += "C++ exception thrown (";
+      str += e.what();
+      str += ")";
+      Base::Console().Error(str.c_str());
+    }
     catch(Standard_Failure)
     {                                                              
-		      Handle(Standard_Failure) e = Standard_Failure::Caught(); 
-          std::string str;                                         
-          str += "OCC exception thrown (";                         
-          str += e->GetMessageString();                            
-          str += ")\n";                                            
-          Base::Console().Error(str.c_str());                      
+		  Handle(Standard_Failure) e = Standard_Failure::Caught(); 
+      std::string str;                                         
+      str += "OCC exception thrown (";                         
+      str += e->GetMessageString();                            
+      str += ")\n";                                            
+      Base::Console().Error(str.c_str());                      
     }                                                              
     catch(...)                                                     
     {                                                              
-    		  Base::Console().Error("Unknown C++ exception in command thrown");       
+    	Base::Console().Error("Unknown C++ exception in command thrown");       
     }   
-
   }
 }
 
@@ -225,10 +223,10 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 {
   // temp buffer
   char* format = (char*) malloc(strlen(sCmd)+1024);
-    va_list namelessVars;
-    va_start(namelessVars, sCmd);  // Get the "..." vars
-    vsprintf(format, sCmd, namelessVars);
-    va_end(namelessVars);
+  va_list namelessVars;
+  va_start(namelessVars, sCmd);  // Get the "..." vars
+  vsprintf(format, sCmd, namelessVars);
+  va_end(namelessVars);
 
   if(eType == Gui)
     getAppWnd()->macroManager()->addLine(MacroManager::Gui,format);

@@ -186,6 +186,7 @@
 #include <qdragobject.h>
 #include <qdrawutil.h>
 #include <qevent.h>
+#include <qeventloop.h>
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qframe.h>
@@ -222,6 +223,7 @@
 #include <qprinter.h>
 #include <qprocess.h>
 #include <qprogressbar.h>
+#include <qprogressdialog.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qrangecontrol.h>

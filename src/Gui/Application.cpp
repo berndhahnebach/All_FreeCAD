@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qeventloop.h>
 # include <qlabel.h>
 # include <qmenubar.h>
 # include <qstatusbar.h>
@@ -321,7 +322,7 @@ void ApplicationWindow::open(const char* FileName)
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
   }else{
-    Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",File.extension().c_str());
+    Base::Console().Error("ApplicationWindow::open() try to open unknown file type .%s\n",File.extension().c_str());
     return;
   }
 
@@ -1292,12 +1293,11 @@ void messageHandler( QtMsgType type, const char *msg )
   }
 }
 
-#if 0
-#include <qeventloop.h>
 /**
  * A modal dialog has its own event loop and normally gets shown with QDialog::exec().
  * If an exception is thrown from within the dialog and this exception is caught in the calling
- * instance then for any reason the main event loop from the application gets terminated.
+ * instance then the main event loop from the application gets terminated, because the implementation
+ * of QDialog seems not be exception-safe..
  *
  * This class is an attempt to solve the problem with Qt's event loop. The trick is that the method
  * QEventLoop::exit() gets called when the application is about to being closed. But if the error above
@@ -1323,7 +1323,9 @@ public:
     // do we really want to exit?
     if ( !_exited )
     {
+#ifdef FC_DEBUG
       Base::Console().Log("Error in event loop\n");
+#endif
       exec(); // recursive call
     }
     return ret;
@@ -1331,13 +1333,11 @@ public:
 private:
   bool _exited;
 };
-#endif
 
 void ApplicationWindow::runApplication(void)
 {
-#if 0
+  // register own event loop
   MainEventLoop loop;
-#endif
   // A new QApplication
   Console().Log("Init: Creating Gui::Application and QApplication\n");
   // if application not yet created by the splasher
