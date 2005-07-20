@@ -109,8 +109,8 @@ PyParentObject MeshPy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-MeshPy::MeshPy(MeshWithProperty *pcMesh, PyTypeObject *T)
-: Base::PyObjectBase(T), _pcMesh(pcMesh)
+MeshPy::MeshPy(MeshWithProperty *pcMesh,bool ReferencedMesh, PyTypeObject *T)
+: Base::PyObjectBase(T), _pcMesh(pcMesh),_bReferencedMesh(ReferencedMesh)
 {
   Base::Console().Log("Create MeshPy: %p \n",this);
 }
@@ -127,8 +127,7 @@ PyObject *MeshPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 MeshPy::~MeshPy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy MeshPy: %p \n",this);
-  // delete _pcMesh; @todo why deleting a passed object?
-  _pcMesh = 0;
+  if(!_bReferencedMesh) delete _pcMesh;
 } 
 
 //--------------------------------------------------------------------------

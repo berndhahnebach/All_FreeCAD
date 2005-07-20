@@ -298,9 +298,13 @@ SoSeparator* View3DInventorViewer::createColorLegend() const
 
   SoSeparator* root = new SoSeparator();
   root->addChild(setMarkerLabel(-1.4f,  1.0f, 0.0f, "+1.00"));
+  root->addChild(setMarkerLabel(-1.4f,  0.0f, 0.0f, "+0.75"));
   root->addChild(setMarkerLabel(-1.4f, -1.0f, 0.0f, "+0.50"));
-  root->addChild(setMarkerLabel(-1.4f, -3.0f, 0.0f, "+0.00"));
+  root->addChild(setMarkerLabel(-1.4f, -2.0f, 0.0f, "+0.25"));
+  root->addChild(setMarkerLabel(-1.4f, -3.0f, 0.0f, " 0.00"));
+  root->addChild(setMarkerLabel(-1.4f, -4.0f, 0.0f, "-0.25"));
   root->addChild(setMarkerLabel(-1.4f, -5.0f, 0.0f, "-0.50"));
+  root->addChild(setMarkerLabel(-1.4f, -6.0f, 0.0f, "-0.75"));
   root->addChild(setMarkerLabel(-1.4f, -7.0f, 0.0f, "-1.00"));
 	root->addChild(coords);
   root->addChild(mat);

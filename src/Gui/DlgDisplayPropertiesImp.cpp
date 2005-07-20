@@ -39,6 +39,7 @@
 #include "ViewProvider.h"
 
 #include "../App/Application.h"
+#include "../App/Feature.h"
 
 using namespace Gui::Dialog;
 
@@ -52,12 +53,12 @@ using namespace Gui::Dialog;
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().Selection())
 {
-//  const std::set<App::Feature*> &Sel = Gui::Selection().Selection();
+  ViewProviderInventor *pcProv;
   std::set<std::string> ModeList;
 
   for(std::set<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
-    ViewProviderInventor *pcProv = pcCmd->getActiveDocument()->getViewProvider(*It);
+    pcProv = pcCmd->getActiveDocument()->getViewProvider(*It);
 
     if ( pcProv )
     {
@@ -73,6 +74,16 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
 
   for(std::set<std::string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
     ModeBox->insertItem(It3->c_str()); 
+
+  if(Sel.size() == 1){
+    ModeBox->setCurrentText((*(Sel.begin()))->getShowMode());
+    TransBar->setValue((int) ((*(Sel.begin()))->getSolidTransparency() * 100));
+    TransSpin->setValue((int) ((*(Sel.begin()))->getSolidTransparency() * 100));
+  }else{
+    ModeBox->insertItem("");
+    ModeBox->setCurrentText("");
+  }
+
 
 }
 

@@ -73,6 +73,9 @@
                             <property name="name">
                                 <cstring>PlotCombo</cstring>
                             </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -92,6 +95,9 @@
                 <widget class="QComboBox">
                     <property name="name">
                         <cstring>MaterialCombo</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                 </widget>
                 <widget class="Gui::ColorButton">

@@ -76,6 +76,7 @@ public:
     * the data has manipulated.
     */
   virtual void update(const ChangeType&)=0;
+
 };
 
 

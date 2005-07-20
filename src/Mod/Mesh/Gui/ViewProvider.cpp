@@ -313,14 +313,14 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
 
   pcRoot->addChild(pcSwitch);
 
-  setMode(pcFeat->_showMode.c_str());
+  setMode(pcFeat->getShowMode());
 }
 
 void ViewProviderInventorMesh::update(const ChangeType& Reason)
 {
   Reason;
   // set new view modes
-  setMode(pcFeature->_showMode.c_str());
+  setMode(pcFeature->getShowMode());
   // copy the material properties of the feature
   setMatFromFeature();
 
@@ -328,10 +328,6 @@ void ViewProviderInventorMesh::update(const ChangeType& Reason)
 
 void ViewProviderInventorMesh::setMode(const char* ModeName)
 {
-  Mesh::PropertyBag *pcProp = 0;
-  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-
-
   if(stricmp("Flat",ModeName)==0)
     pcSwitch->whichChild = 0; 
   else if(stricmp("Wire",ModeName)==0)
@@ -342,6 +338,8 @@ void ViewProviderInventorMesh::setMode(const char* ModeName)
     pcSwitch->whichChild = 3; 
   else 
   {
+    Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
+    Mesh::PropertyBag *pcProp = 0;
     pcProp = rcMesh.Get(ModeName);
     if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
     {

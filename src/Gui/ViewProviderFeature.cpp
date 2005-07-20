@@ -85,11 +85,11 @@ void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcS
 
 void ViewProviderInventorFeature::setMatFromFeature(void)
 {
-  copy(pcFeature->_solidMaterial,pcShadedMaterial);
-  copy(pcFeature->_lineMaterial,pcLineMaterial);
-  copy(pcFeature->_pointMaterial,pcPointMaterial);
-  fLineSize        = pcFeature->_lineSize;
-  fPointSize       = pcFeature->_pointSize;
+  copy(pcFeature->getSolidMaterial(),pcShadedMaterial);
+  copy(pcFeature->getLineMaterial(),pcLineMaterial);
+  copy(pcFeature->getPointMaterial(),pcPointMaterial);
+  fLineSize        = pcFeature->getLineSize();
+  fPointSize       = pcFeature->getPointSize();
 
 }
 

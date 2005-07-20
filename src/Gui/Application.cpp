@@ -1359,7 +1359,7 @@ void ApplicationWindow::runApplication(void)
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
   Console().Log("Init: Starting default Workbench\n");
-  mw->activateWorkbench(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->GetASCII("currentText","Part design").c_str() );
+  mw->activateWorkbench(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str()).c_str() );
    
   
   Console().Log("Init: Processing command line files\n");

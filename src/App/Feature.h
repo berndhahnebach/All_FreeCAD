@@ -158,6 +158,40 @@ public:
 
 	//@}
 
+	/** @name methodes to change the apperance of the shape
+    */
+	//@{
+  /// set the solid material
+  void setSolidMaterial(const Material &Mat) {_solidMaterial = Mat;}
+  /// get the solid material
+  const Material &getSolidMaterial(void) const {return _solidMaterial;}
+  /// set line size
+  void setSolidTransparency(float trans) {_solidMaterial.transparency = trans;}
+  /// get line Size
+  float getSolidTransparency(void) const {return _solidMaterial.transparency;}
+  /// set the line material
+  void setLineMaterial(const Material &Mat) {_lineMaterial = Mat;}
+  /// get the line material
+  const Material &getLineMaterial(void) const {return _lineMaterial;}
+  /// set the line material
+  void setPointMaterial(const Material &Mat) {_pointMaterial = Mat;}
+  /// get the line material
+  const Material &getPointMaterial(void) const {return _pointMaterial;}
+  /// set point size
+  void setPointSize(float size) {_pointSize = size;}
+  /// get point Size
+  float getPointSize(void) const {return _pointSize;}
+  /// set line size
+  void setLineSize(float size) {_lineSize = size;}
+  /// get line Size
+  float getLineSize(void) const {return _lineSize;}
+  /// get show mode
+  const char* getShowMode(void) const {return _showMode.c_str();}
+  /// get show mode
+  void setShowMode(const char* Mode) {_showMode = Mode;}
+
+	//@}
+
   /// Retrive the Feature from a Document label
   static Feature *GetFeature(const TDF_Label &l);
 
@@ -172,6 +206,8 @@ public:
   friend class FeaturePy;
   friend class Document;
 
+protected:
+
   // Material stuff
   Material    _solidMaterial;
   Material    _lineMaterial;
@@ -180,7 +216,6 @@ public:
   float       _pointSize;
   std::string _showMode;
 
-protected:
 	TDF_Label            _cFeatureLabel;
 	int                  _nextFreeLabel;
   std::map<std::string,int> _PropertiesMap;

@@ -89,6 +89,7 @@ int main( int argc, char ** argv )
   App::Application::Config()["ConsoleBanner"] = sBanner;
   App::Application::Config()["AppIcon"] = "FCIcon";
   App::Application::Config()["SplashPicture"] = "FreeCADSplasher";
+  App::Application::Config()["StartWorkbench"] = "Part design";
 
 
 

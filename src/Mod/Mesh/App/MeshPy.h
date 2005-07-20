@@ -43,7 +43,7 @@ class AppMeshExport MeshPy :public Base::PyObjectBase
   Py_Header;
 
 public:
-  MeshPy(MeshWithProperty *pcMesh, PyTypeObject *T = &Type);
+  MeshPy(MeshWithProperty *pcMesh,bool ReferencedMesh=false, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
   ~MeshPy();
@@ -86,6 +86,7 @@ public:
 protected:
 
   MeshWithProperty *_pcMesh;
+  bool _bReferencedMesh;
 };
 
 } //namespace Mesh

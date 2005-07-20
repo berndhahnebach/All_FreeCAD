@@ -80,6 +80,7 @@ PyTypeObject MeshFeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef MeshFeaturePy::Methods[] = {
   PYMETHODEDEF(getMesh)
+  PYMETHODEDEF(getMeshCopy)
   PYMETHODEDEF(setMesh)
 
   {NULL, NULL}    /* Sentinel */
@@ -113,6 +114,9 @@ PyObject *MeshFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python wr
 MeshFeaturePy::~MeshFeaturePy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy MeshFeaturePy: %p \n",this);
+
+  if( _pcMeshPy) _pcMeshPy->DecRef();
+
 } 
 
 //--------------------------------------------------------------------------
@@ -156,13 +160,18 @@ PYFUNCIMP_D(MeshFeaturePy,getMesh)
 {
   if(! _pcMeshPy)
   {
-    _pcMeshPy = new MeshPy(&(_pcFeature->getMesh()));
+    _pcMeshPy = new MeshPy(&(_pcFeature->getMesh()),true);
+    // keeps the object alive
+    _pcMeshPy->IncRef();
   }
   
-  // @todo Check if IncRef() has be called every time this object is returned
-  _pcMeshPy->IncRef();
   
   return _pcMeshPy;
+}
+
+PYFUNCIMP_D(MeshFeaturePy,getMeshCopy)
+{
+   return new MeshPy(&(_pcFeature->getMesh()),false);
 }
 
 PYFUNCIMP_D(MeshFeaturePy,setMesh)
