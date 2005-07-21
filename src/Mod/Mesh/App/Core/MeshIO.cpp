@@ -134,7 +134,7 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
       }
     }
 
-    Base::Sequencer().next();
+    Base::Sequencer().next( true ); // allow to cancel
   }
 
   Base::Sequencer().stop();
@@ -206,7 +206,7 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
     // ueberlesen Attribut
     rstrIn.Read((char*)&usAtt, sizeof(usAtt));
 
-    Base::Sequencer().next();
+    Base::Sequencer().next( true ); // allow to cancel
   } 
 
   _rclMesh.Assign(clMap);
@@ -263,7 +263,7 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
     rstrOut.Write(szBuf, strlen(szBuf));
 
     ++clIter; 
-    Base::Sequencer().next();
+    Base::Sequencer().next( true );// allow to cancel
   } 
 
   strcpy(szBuf, "endsolid MESH\n");
@@ -317,7 +317,7 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
     rstrOut << usAtt;
 
     ++clIter;
-    Base::Sequencer().next();
+    Base::Sequencer().next( true ); // allow to cancel
   }
 
   Base::Sequencer().stop();
@@ -359,7 +359,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
                   clFacet.SetNormal(Vector3D(fX, fY, fZ));
                   clFacetAry.push_back(clFacet);
 
-                  Base::Sequencer().next();
+                  Base::Sequencer().next( true ); // allow to cancel
 
               }
               else{
@@ -384,7 +384,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
               {
                  aclPoints.push_back(clPoint);
 
-                 Base::Sequencer().next();
+                 Base::Sequencer().next( true ); // allow to cancel
               }
               else{
                   bFlag = false;
@@ -414,7 +414,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
                   }
                   clFacetAry[ulCt++] = clFacet;
 
-                  Base::Sequencer().next();
+                  Base::Sequencer().next( true ); // allow to cancel
               }
               else
               {
@@ -487,7 +487,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
       rstrOut.Write(szBuf, strlen(szBuf));
       ++clIter;
 
-      Base::Sequencer().next();
+      Base::Sequencer().next( true ); // allow to cancel
   }
   strcpy(szBuf, "\n]\n}\n");
   rstrOut.Write(szBuf, strlen(szBuf));
@@ -512,7 +512,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
       rstrOut.Write(szBuf, strlen(szBuf));
       ++clPtIter;
 
-      Base::Sequencer().next();
+      Base::Sequencer().next( true ); // allow to cancel
   }
   strcpy(szBuf, "\n]\n}\n");
   rstrOut.Write(szBuf, strlen(szBuf));

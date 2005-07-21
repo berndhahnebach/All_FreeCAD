@@ -85,7 +85,7 @@ public:
    * This does actually the same as IntersectWithLine() with one additionally constraint that the angle 
    * between the direction of the line and the normal of the plane must not exceed \a fMaxAngle.
    */
-  static bool Forminate (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, 
+  static bool Foraminate (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, 
                          Vector3D &rclRes, float fMaxAngle = F_PI);
   /** Checks if the facet intersects with the plane defined by the base \a rclBase and the normal 
    * \a rclNormal and returns true if two points are found, false otherwise.

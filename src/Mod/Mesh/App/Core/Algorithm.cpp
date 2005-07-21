@@ -171,7 +171,7 @@ bool MeshFacetFunc::IntersectWithPlane (const MeshGeomFacet &rclFacet, const Vec
   return false;
 }
 
-bool MeshFacetFunc::Forminate (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes, float fMaxAngle)
+bool MeshFacetFunc::Foraminate (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes, float fMaxAngle)
 {
   const float fTolerance = 1e-06f;
 

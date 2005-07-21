@@ -966,11 +966,9 @@ MeshGridIterator::MeshGridIterator (const MeshGrid &rclG)
 bool MeshGridIterator::InitOnRay (const Vector3D &rclPt, const Vector3D &rclDir, float fMaxSearchArea, 
                                   std::vector<unsigned long> &raulElements)
 {
-  Vector3D clStartPnt = rclPt - fMaxSearchArea * rclDir;
-
-  return InitOnRay (clStartPnt, rclDir, raulElements);
-
+  bool ret = InitOnRay (rclPt, rclDir, raulElements);
   _fMaxSearchArea = fMaxSearchArea;
+  return ret;
 }
 
 bool MeshGridIterator::InitOnRay (const Vector3D &rclPt, const Vector3D &rclDir, 

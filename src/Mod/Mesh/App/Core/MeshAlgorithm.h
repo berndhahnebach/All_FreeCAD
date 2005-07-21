@@ -62,7 +62,7 @@ public:
    * the intersection point with the ray and the nearest facet with index \a rulFacet.
    * \note This method is optimized by using a grid. So this method be used for a lot of tests..
    */
-  bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, MeshFacetGrid &rclGrid, 
+  bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, const MeshFacetGrid &rclGrid, 
                           Vector3D &rclRes, unsigned long &rulFacet) const;
   /**
    * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
@@ -78,14 +78,12 @@ public:
    * \note This method is optimized by using a grid. So this method be used for a lot of tests..
    */
   bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, float fMaxSearchArea, 
-                          MeshFacetGrid &rclGrid, Vector3D &rclRes, unsigned long &rulFacet) const;
-  /** 
-   * Searches all facets that intersects the line segment defined by the beginning \a rcBegin and the
-   * end point \a rcEnd. All intersected facets are stored with their indices in \a raulFacets.
-   * If no facet is found \a false is returned, true otherwise.
+                          const MeshFacetGrid &rclGrid, Vector3D &rclRes, unsigned long &rulFacet) const;
+  /**
+   * Checks from the viewpoint \a rcView if the vertex \a rcVertex is visible or it is hidden by a facet. 
+   * If the vertex is visible true is returned, false otherwise.
    */
-  bool FindFacetsOnRay (const Vector3D &rcBegin, const Vector3D &rcEnd, const MeshFacetGrid &rclGrid, 
-                        std::vector<unsigned long>&raulFacets) const;
+  bool IsVertexVisible (const Vector3D &rcVertex, const Vector3D &rcView, const MeshFacetGrid &rclGrid ) const;
   /**
    * Returns all boundaries of the mesh.
    */

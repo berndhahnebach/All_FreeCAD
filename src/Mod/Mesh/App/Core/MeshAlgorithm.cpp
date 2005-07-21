@@ -37,9 +37,39 @@
 #include "Iterator.h"
 #include "Algorithm.h"
 #include "Grid.h"
-//#include "Info.h"
 
 using namespace Mesh;
+
+bool MeshAlgorithm::IsVertexVisible (const Vector3D &rcVertex, const Vector3D &rcView, const MeshFacetGrid &rclGrid ) const
+{
+  // we use as max. search area the distance from rcView and rcVertex + the diagonal length of a grid element 
+//  float fLenX, fLenY, fLenZ;
+//  rclGrid.GetGridLengths(fLenX, fLenY, fLenZ);
+//  float fMax = std::max<float>(std::max<float>(fLenX, fLenY), fLenZ);
+
+  Vector3D cDirection = rcVertex-rcView;
+  float fDistance = cDirection.Length();
+//  float fMaxSearchArea = fDistance + + 2.0f * fMax;
+  Vector3D cIntsct; unsigned long uInd;
+
+  // search for the nearest facet to rcView in direction to rcVertex
+  if ( NearestFacetOnRay( rcView, cDirection, /*fMaxSearchArea,*/ rclGrid, cIntsct, uInd) )
+  {
+    // now check if the facet overlays the point
+    float fLen = Mesh::Distance( rcView, cIntsct );
+    if ( fLen < fDistance )
+    {
+      // is it the same point?
+      if ( Mesh::Distance(rcVertex, cIntsct) > 0.001f )
+      {
+        // ok facet overlays the vertex
+        return false;
+      }
+    }
+  }
+
+  return true; // no facet between the two points
+}
 
 bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes, 
                                        unsigned long &rulFacet) const
@@ -52,7 +82,7 @@ bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rc
   MeshFacetIterator  clFIter(_rclMesh);
   for (clFIter.Init(); clFIter.More(); clFIter.Next())
   {
-    if (MeshFacetFunc::Forminate(*clFIter, rclPt, rclDir, clRes) == true)
+    if (MeshFacetFunc::Foraminate(*clFIter, rclPt, rclDir, clRes) == true)
     {
       if (bSol == false) // erste Loesung
       {
@@ -76,7 +106,7 @@ bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rc
   return bSol;
 }
 
-bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, MeshFacetGrid &rclGrid, 
+bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, const MeshFacetGrid &rclGrid, 
                                        Vector3D &rclRes, unsigned long &rulFacet) const
 {
   std::vector<unsigned long> aulFacets;
@@ -101,14 +131,12 @@ bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rc
 }
 
 bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, float fMaxSearchArea, 
-                                       MeshFacetGrid &rclGrid, Vector3D &rclRes, unsigned long &rulFacet) const
+                                       const MeshFacetGrid &rclGrid, Vector3D &rclRes, unsigned long &rulFacet) const
 {
   std::vector<unsigned long> aulFacets;
   MeshGridIterator  clGridIter(rclGrid);
 
-  Vector3D clStartPoint = rclPt - fMaxSearchArea * rclDir;
-
-  if (clGridIter.InitOnRay(clStartPoint, rclDir, fMaxSearchArea, aulFacets) == true)
+  if (clGridIter.InitOnRay(rclPt, rclDir, fMaxSearchArea, aulFacets) == true)
   {
     if (RayNearestField(rclPt, rclDir, aulFacets, rclRes, rulFacet, 1.75f) == false)
     {
@@ -126,44 +154,6 @@ bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rc
   return false;
 }
 
-/// @todo
-bool MeshAlgorithm::FindFacetsOnRay (const Vector3D &rcBegin, const Vector3D &rcEnd, const MeshFacetGrid &rclGrid, 
-                                     std::vector<unsigned long>&raulFacets) const
-{
-  std::vector<unsigned long> aulFacets;
-  std::vector<unsigned long> tmp;
-  MeshGridIterator  clGridIter(rclGrid);
-
-  Vector3D cDir(rcEnd - rcBegin);
-  float fLen = cDir.Length();
-  cDir.Normalize();
-
-  Vector3D res;
-  if (clGridIter.InitOnRay(rcBegin, cDir, fLen, tmp) == true)
-  {
-    aulFacets.insert(aulFacets.end(), tmp.begin(), tmp.end());
-    tmp.clear();
-    while (clGridIter.NextOnRay(tmp) == true)
-    {
-      aulFacets.insert(aulFacets.end(), tmp.begin(), tmp.end());
-    }
-  }
-
-  // now test all the found facets
-  for (std::vector<unsigned long>::const_iterator pF = aulFacets.begin(); pF != aulFacets.end(); pF++)
-  {
-    if (MeshFacetFunc::IntersectWithLine(_rclMesh.GetFacet(*pF), rcBegin, cDir, res) == true)
-    {
-      // check if the found point is in between the line segment
-      if ( (rcBegin - res) * (rcEnd - res) < 0 )
-        raulFacets.push_back( *pF );
-    }
-  }
-
-
-  return (raulFacets.size() > 0);
-}
-
 bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, const std::vector<unsigned long> &raulFacets, 
                                        Vector3D &rclRes, unsigned long &rulFacet) const
 {
@@ -175,7 +165,7 @@ bool MeshAlgorithm::NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rc
   {
     MeshGeomFacet rclSFacet = _rclMesh.GetFacet(*pI);
 
-    if (MeshFacetFunc::Forminate(rclSFacet, rclPt, rclDir, clRes) == true)
+    if (MeshFacetFunc::Foraminate(rclSFacet, rclPt, rclDir, clRes) == true)
     {
       if (bSol == false) // erste Loesung
       {
@@ -208,7 +198,7 @@ bool MeshAlgorithm::RayNearestField (const Vector3D &rclPt, const Vector3D &rclD
 
   for (std::vector<unsigned long>::const_iterator pF = raulFacets.begin(); pF != raulFacets.end(); pF++)
   {
-    if (MeshFacetFunc::Forminate(_rclMesh.GetFacet(*pF), rclPt, rclDir, clRes/*, fMaxAngle*/) == true)
+    if (MeshFacetFunc::Foraminate(_rclMesh.GetFacet(*pF), rclPt, rclDir, clRes/*, fMaxAngle*/) == true)
     {
       if (bSol == false) // erste Loesung
       {
