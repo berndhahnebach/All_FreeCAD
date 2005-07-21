@@ -28,6 +28,7 @@
 # include <qiconview.h>
 # include <qfiledialog.h>
 # include <qlineedit.h>
+# include <qspinbox.h>
 #endif
 
 #include "DlgDisplayPropertiesImp.h"
