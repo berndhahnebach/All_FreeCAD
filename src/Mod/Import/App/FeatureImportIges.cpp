@@ -31,8 +31,9 @@
 # include <TFunction_Logbook.hxx>
 #endif
 
-#include "../../../Base/Console.h"
-#include "../../../Base/Exception.h"
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/Sequencer.h>
 #include "FeatureImportIges.h"
 
 
@@ -80,7 +81,11 @@ Standard_Integer FeatureImportIges::Execute(TFunction_Logbook& log)
 		  return 1;
 	  }
 
-      // read iges-file
+    // just do show the wait cursor when the Gui is up
+    Base::Sequencer().start("Load IGES", 1);
+    Base::Sequencer().next();
+
+    // read iges-file
     if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
       throw Base::Exception("IGES read failed (load file)");
   
@@ -94,7 +99,7 @@ Standard_Integer FeatureImportIges::Execute(TFunction_Logbook& log)
     aShape = aReader.OneShape();
 
 	  SetShape(aShape);
-
+    Base::Sequencer().stop();
   }
   catch(...){
     Base::Console().Error("FeaturePartImportIges::Execute() failed!");

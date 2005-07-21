@@ -31,7 +31,8 @@
 # include <TFunction_Logbook.hxx>
 #endif
 
-#include "../../../Base/Console.h"
+#include <Base/Console.h>
+#include <Base/Sequencer.h>
 #include "FeatureImportStep.h"
 
 
@@ -82,6 +83,9 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
 		  return 1;
 	  }
 
+    // just do show the wait cursor when the Gui is up
+    Base::Sequencer().start("Load IGES", 1);
+    Base::Sequencer().next();
     
     Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
     if (aReader.ReadFile((const Standard_CString)GetStringProperty("FileName")) != IFSelect_RetDone)
@@ -112,7 +116,7 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
     }
 
 	  SetShape(aShape);
-
+    Base::Sequencer().stop();
   }
   catch(...){
     Base::Console().Error("FeaturePartImportStep::Execute() failed!");

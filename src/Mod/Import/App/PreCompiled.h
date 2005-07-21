@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <io.h>
 #include <fcntl.h>
+#include <vector>
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
