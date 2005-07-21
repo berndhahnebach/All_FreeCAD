@@ -21,6 +21,9 @@
 # define GuiMeshExport
 #endif
 
+// Gts
+#include <gts.h>
+
 // standard
 #include <stdio.h>
 #include <assert.h>
