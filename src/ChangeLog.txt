@@ -592,3 +592,5 @@ Version: V0.1B119 Date: Wed Jun 29 12:57:43 2005 +++++++++++++++++++++++++++++++
 + Initial impl. of a simple color legend
 + Show progressbar not from beginning but after a few seconds
 + Using own event loop (QDialog not exception-safe)
++ RFE 1149709	Missing waitcursor implemented (using Sequencer therefore)
++ RFE 1211364	Clean up when closing App (using Python's Py_AtExit and Py_Finalize)

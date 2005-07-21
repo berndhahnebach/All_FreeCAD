@@ -45,7 +45,7 @@ class AbortException;
  *  #include <Base/Sequencer.h>
  *
  *  //first example
- *  if (Base::Sequencer().start ("your text", 10))
+ *  if (Base::Sequencer().start ("my text", 10))
  *  for (int i=0; i<10; i++)
  *  {
  *    // do something
@@ -54,7 +54,7 @@ class AbortException;
  *  Base::Sequencer().stop ();
  *
  *  //second example
- *  if (Base::Sequencer().start ("your text", 10))
+ *  if (Base::Sequencer().start ("my text", 10))
  *  do
  *  {
  *    // do something
@@ -64,34 +64,47 @@ class AbortException;
  *
  *  \endcode
  *
- * The implementation of this class also supports the interlocking of several running
+ * The implementation of this class also supports the nesting of several running
  * operations at a time. 
  *
  *  \code
- *
- *  //start the first operation
- *  Base::Sequencer().start ("your text", 10)
- *  for (int i=0; i<10, i++)
- *  {
- *    // do something
- *
- *    // start the second operation while the first one is still running
- *    Base::Sequencer().start ("another text", 10);
- *    for (int j=0; j<10; j++)
+ *  try{
+ *    //start the first operation
+ *    Base::Sequencer().start ("my text", 10)
+ *    for (int i=0; i<10, i++)
  *    {
- *      // do something different
- *      Base::Sequencer().next ();
+ *      // do something
+ *    
+ *      // start the second operation while the first one is still running
+ *      Base::Sequencer().start ("another text", 10);
+ *      for (int j=0; j<10; j++)
+ *      {
+ *        // do something different
+ *        Base::Sequencer().next ();
+ *      }
+ *      Base::Sequencer().stop ();
+ *    
+ *      Base::Sequencer().next ( true ); // allow to cancel
  *    }
  *    Base::Sequencer().stop ();
- *
- *    Base::Sequencer().next ();
+ *  }catch(const Base::AbortException&){
+ *    // cleanup your data if needed
+ *    // no need to call stop() or halt()
+ *  }catch(...){
+ *    // cleanup your data
+ *    Base::Sequencer().halt();
  *  }
- *  Base::Sequencer().stop ();
- *
+ *    
  *  \endcode
  *
- * \note If using the sequencer then you must take into account that the exception
- * AbortException could be thrown, e.g. in case the ESC was pressed.
+ * \note If using the sequencer with Sequencer().next(\a true ) then you must take into account 
+ * that the exception AbortException could be thrown, e.g. in case the ESC was pressed. So in this 
+ * case it's always a good idea to use the sequencer within a try-catch block.
+ *
+ * \note In case the operation was aborted Sequencer().stop() or Sequencer().halt() needs not to be 
+ * called in the catch-block since SequencerBase cleans up internal data on its own. But if another 
+ * type of exception is thrown and you want to stop your operations and hence the sequencer use 
+ * Sequencer().halt() instead of Sequencer().stop(). This stops all running levels of the sequencer.  
  *
  * \author Werner Mayer
  */
@@ -119,17 +132,21 @@ public:
   /**
    * Performs the next step and returns true if the operation is not yet finished.
    * In this method nextStep() gets invoked that can be reimplemented in sub-classes.
-   * If \a canAbort is true (the default) then the operations can be aborted, otherwise
+   * If \a canAbort is true then the operations can be aborted, otherwise (the default)
    * the operation cannot be aborted and the sequencer just acts as an indicator of how
    * long the operation will take.
    */
-  bool next( bool canAbort = true );
+  bool next( bool canAbort = false );
   /**
    * Reduces the number of pending operations by one and stops the
    * sequencer if all operations are finished. It returns false if there are still
-   * pending operations, otherwise returns true.
+   * pending operations, otherwise it returns true.
    */
-  virtual bool stop();
+  bool stop();
+  /**
+   * This is an emergency stop and terminates all running levels of the sequencer.
+   */
+  void halt();
   /** If \a bLock is true then the sequencer gets locked. startStep() and nextStep()
    * don't get invoked any more on until the sequencer gets unlocked again. 
    */
@@ -147,6 +164,12 @@ public:
    * E.g. @ref Gui::ProgressBar calls this method after the ESC button was pressed.
    */
   void tryToCancel();
+  /** 
+   * If you tried to cancel but then decided to continue the operation.
+   * E.g. in @ref Gui::ProgressBar a dialog appears asking if you really want to cancel. If you decide 
+   * to continue this method must be called.
+   */
+  void rejectCancel();
   /** 
    * Returns the number of pending operations. This number complies with the number
    * of calls of @ref start() and @ref stop().

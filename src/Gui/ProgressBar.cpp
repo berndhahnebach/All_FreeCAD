@@ -28,6 +28,7 @@
 # include <qpainter.h>
 # include <qstatusbar.h>
 # include <qdatetime.h>
+# include <qmessagebox.h>
 # include <qtimer.h>
 # include <qwidgetlist.h>
 #endif
@@ -228,8 +229,29 @@ void ProgressBar::nextStep(bool canAbort)
 {
   if (wasCanceled() && canAbort)
   {
+    // allow key handling of dialog and restore cursor
+    releaseKeyboard();
+    delete d->cWaitCursor;
+    d->cWaitCursor = 0L;
+
+    int ret = QMessageBox::question(ApplicationWindow::Instance,tr("Aborting"),
+                tr("Do you really want to abort the operation?"),  QMessageBox::Yes, 
+                QMessageBox::No|QMessageBox::Default);
+
+    grabKeyboard(); // grab again
+    //rerun observer thread
+    d->cWaitCursor = new Gui::WaitCursor;
+
     // force to abort the operation
-    abort();
+    if ( ret == QMessageBox::Yes )
+    {
+      abort();
+    }
+    else
+    {
+      rejectCancel();
+      setProgress(nProgress++);
+    }
   }
   else
   {

@@ -443,6 +443,8 @@ void Application::destruct(void)
     Console().DetacheObserver(_pConsoleObserverFile);
     delete _pConsoleObserverFile; _pConsoleObserverFile = 0;
   }
+
+  Base::Interpreter().finalize();
 }
 
 void Application::init(int argc, char ** argv)

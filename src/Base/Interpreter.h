@@ -101,6 +101,19 @@ public:
 	bool loadModule(const char* psModName);
 	//@}
 
+  /** @name Cleanup
+   */
+  //@{
+  /** Register a cleanup function to be called by finalize(). The cleanup function will be called with no 
+   * arguments and should return no value. At most 32 cleanup functions can be registered.When the registration 
+   * is successful 0 is returned; on failure -1 is returned. The cleanup function registered last is called 
+   * first. Each cleanup function will be called at most once. Since Python's internal finallization will have 
+   * completed before the cleanup function, no Python APIs should be called by \a func. 
+   */
+  int cleanup(void (*func)(void));
+  /// This calls the registered cleanup functions. @see cleanup() for more details.
+  void finalize();
+  //@}
 
 //	void Register(FCPythonExport *pcPyExporter);
 

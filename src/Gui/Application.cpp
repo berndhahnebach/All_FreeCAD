@@ -320,7 +320,7 @@ void ApplicationWindow::open(const char* FileName)
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-
+    sendMsgToActiveView("ViewFit");
   }else{
     Base::Console().Error("ApplicationWindow::open() try to open unknown file type .%s\n",File.extension().c_str());
     return;

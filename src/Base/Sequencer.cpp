@@ -28,6 +28,7 @@
 #endif
 
 #include "Sequencer.h"
+#include "Console.h"
 
 using namespace Base;
 
@@ -152,8 +153,25 @@ bool SequencerBase::stop()
   {
     resetData();
   }
+  else if ( _nInstStarted < 0)
+  {
+    // stop() has been called too often 
+    _nInstStarted = 0;
+#ifdef FC_DEBUG
+    Base::Console().Error("Must not call 'SequencerBase::stop()'\n");
+#endif
+  }
 
   return (_nInstStarted == 0);
+}
+
+void SequencerBase::halt()
+{
+  if (_nInstStarted != 0)
+  {
+    _nInstStarted = 0;
+    resetData();
+  }
 }
 
 void SequencerBase::setLocked( bool bLocked )
@@ -179,6 +197,11 @@ bool SequencerBase::wasCanceled() const
 void SequencerBase::tryToCancel()
 {
   _bCanceled = true;
+}
+
+void SequencerBase::rejectCancel()
+{
+  _bCanceled = false;
 }
 
 int SequencerBase::pendingOperations() const

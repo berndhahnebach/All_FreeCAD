@@ -98,4 +98,5 @@ void RegisterIcons()
   rclBmpFactory.addXPM("help", help);
   rclBmpFactory.addXPM("helpopen", helpopen);
   rclBmpFactory.addXPM("colors", colors);
+  rclBmpFactory.addXPM("temperature_mapping", temperature_mapping);
 }

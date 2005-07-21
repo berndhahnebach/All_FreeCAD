@@ -310,7 +310,10 @@ void TextBrowser::setSource (const QString & name)
   if ( d->fwStack.top() == url )
     fwStackCount--;
 
+  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
+                                                                       ConsoleMsgType::MsgType_Err, false);
   QTextBrowser::setSource(name);
+  Base::Console().SetEnabledMsgType("MessageBox", ret, true);
 
   emit backwardAvailable( bwStackCount > 0 );
   emit forwardAvailable( fwStackCount > 0 );

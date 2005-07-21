@@ -161,6 +161,16 @@ bool InterpreterSingleton::loadModule(const char* psModName)
 	return true;
 }
 
+int InterpreterSingleton::cleanup(void (*func)(void))
+{
+  return Py_AtExit( func );
+}
+
+void InterpreterSingleton::finalize()
+{
+  Py_Finalize();
+}
+
 void InterpreterSingleton::runStringArg(const char * psCom,...)
 {
 	// va stuff
