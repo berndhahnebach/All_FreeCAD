@@ -314,6 +314,22 @@ protected:
   Vector3D        _clDir;   /**< Direction of search ray. */
   bool            _bValidRay; /**< Search ray ok? */
   float           _fMaxSearchArea;
+  /** Checks if a grid position is already visited by NextOnRay(). */
+  struct GridElement 
+  {
+    GridElement( unsigned long x, unsigned long y, unsigned long z)
+    { this->x = x; this->y = y; this->z = z; }
+    bool operator < (const GridElement& pos) const
+    {
+      if ( x == pos.x)
+      { if ( y == pos.y) return z < pos.z; else return y < pos.y; }
+      else 
+      { return x < pos.x; }
+    }
+  private:
+    unsigned long x,y,z;
+  };
+  std::set<GridElement> _cSearchPositions;
 };
 
 // --------------------------------------------------------------

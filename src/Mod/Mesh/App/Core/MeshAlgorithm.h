@@ -85,6 +85,10 @@ public:
    */
   bool IsVertexVisible (const Vector3D &rcVertex, const Vector3D &rcView, const MeshFacetGrid &rclGrid ) const;
   /**
+   * Calculates the average length of edges.
+   */
+  float GetAverageEdgeLength() const;
+  /**
    * Returns all boundaries of the mesh.
    */
   void GetMeshBorders (std::list<std::vector<Vector3D> > &rclBorders);

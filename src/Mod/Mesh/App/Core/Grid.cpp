@@ -974,6 +974,9 @@ bool MeshGridIterator::InitOnRay (const Vector3D &rclPt, const Vector3D &rclDir,
 bool MeshGridIterator::InitOnRay (const Vector3D &rclPt, const Vector3D &rclDir, 
                                   std::vector<unsigned long> &raulElements)
 {
+  // needed in NextOnRay() to avoid an infinite loop
+  _cSearchPositions.clear();
+
   _fMaxSearchArea = FLOAT_MAX;
 
   raulElements.clear();        
@@ -1041,10 +1044,17 @@ bool MeshGridIterator::NextOnRay (std::vector<unsigned long> &raulElements)
       _bValidRay = false;
       break;
     }
+
+    GridElement pos(_ulX, _ulY, _ulZ);
+    if ( _cSearchPositions.find( pos ) != _cSearchPositions.end() )
+      _bValidRay = false; // grid element already visited => result from GetSideFromRay invalid
   }
 
   if ((_bValidRay == true) && (_rclGrid.CheckPos(_ulX, _ulY, _ulZ) == true))
+  {
+    GridElement pos(_ulX, _ulY, _ulZ); _cSearchPositions.insert(pos);
     raulElements.insert(raulElements.end(), _rclGrid._aulGrid[_ulX][_ulY][_ulZ].begin(), _rclGrid._aulGrid[_ulX][_ulY][_ulZ].end()); 
+  }
   else
     _bValidRay = false;  // Strahl ausgetreten
 

@@ -42,18 +42,12 @@ using namespace Mesh;
 
 bool MeshAlgorithm::IsVertexVisible (const Vector3D &rcVertex, const Vector3D &rcView, const MeshFacetGrid &rclGrid ) const
 {
-  // we use as max. search area the distance from rcView and rcVertex + the diagonal length of a grid element 
-//  float fLenX, fLenY, fLenZ;
-//  rclGrid.GetGridLengths(fLenX, fLenY, fLenZ);
-//  float fMax = std::max<float>(std::max<float>(fLenX, fLenY), fLenZ);
-
   Vector3D cDirection = rcVertex-rcView;
   float fDistance = cDirection.Length();
-//  float fMaxSearchArea = fDistance + + 2.0f * fMax;
   Vector3D cIntsct; unsigned long uInd;
 
   // search for the nearest facet to rcView in direction to rcVertex
-  if ( NearestFacetOnRay( rcView, cDirection, /*fMaxSearchArea,*/ rclGrid, cIntsct, uInd) )
+  if ( NearestFacetOnRay( rcView, cDirection, /*1.2f*fDistance,*/ rclGrid, cIntsct, uInd) )
   {
     // now check if the facet overlays the point
     float fLen = Mesh::Distance( rcView, cIntsct );
@@ -221,6 +215,20 @@ bool MeshAlgorithm::RayNearestField (const Vector3D &rclPt, const Vector3D &rclD
   rulFacet = ulInd;
 
   return bSol;
+}
+
+float MeshAlgorithm::GetAverageEdgeLength() const
+{
+  float fLen = 0.0f;
+  MeshFacetIterator cF(_rclMesh);
+  for ( cF.Init(); cF.More(); cF.Next() )
+  {
+    for ( int i=0; i<3; i++ )
+      fLen += Mesh::Distance( cF->_aclPoints[i], cF->_aclPoints[(i+1)%3] );
+  }
+
+  fLen = fLen / (3.0f * _rclMesh.CountFacets() );
+  return fLen;
 }
 
 void MeshAlgorithm::GetMeshBorders (std::list<std::vector<Vector3D> > &rclBorders)
