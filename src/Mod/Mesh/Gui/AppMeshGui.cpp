@@ -32,7 +32,9 @@
 #include <App/Application.h>
 
 #include <Gui/Application.h>
+#include <Gui/BitmapFactory.h>
 
+#include "images.h"
 #include "ViewProvider.h"
 
 
@@ -72,6 +74,10 @@ void GuiMeshExport initMeshGui() {
   // load needed modules
   Base::Interpreter().loadModule("Mesh");
   Base::Console().Log("AppMeshGui loaded\n");
+
+  // Register icons
+  Gui::BitmapFactory().addXPM("curv_info", curv_info);
+  Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
 
   // instanciating the commands
   CreateCommands();

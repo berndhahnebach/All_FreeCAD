@@ -346,7 +346,7 @@ void ViewProviderInventorMesh::setMode(const char* ModeName)
       pcSwitch->whichChild = 4;
 
     }else 
-      Base::Console().Warning("Unknown mode in ViewProviderInventorMesh::setMode(), ignored");
+      Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorMesh::setMode(), ignored\n", ModeName);
   }
 }
 

@@ -54,15 +54,14 @@ DEF_STD_CMD_A(CmdMeshImport);
 CmdMeshImport::CmdMeshImport()
   :CppCommand("Mesh_Test")
 {
-  sAppModule    = "Mesh";
-  sGroup        = "Mesh";
-  sMenuText     = "Import Mesh";
-//  sToolTipText  = "Create or change an Import Mesh feature";
-  sToolTipText  = "Open STL files from File|Open, please!";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Open";
-  iAccel        = Qt::CTRL+Qt::Key_T;
+  sAppModule    = QT_TR_NOOP("Mesh");
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Import Mesh");
+  sToolTipText  = QT_TR_NOOP("Imports a mesh from file");
+  sWhatsThis    = QT_TR_NOOP("Imports a mesh from file");
+  sStatusTip    = QT_TR_NOOP("Imports a mesh from file");
+  sPixmap       = "import_mesh";
+  iAccel        = 0;
 }
 
 void CmdMeshImport::activated(int iMsg)
@@ -93,13 +92,13 @@ DEF_STD_CMD_A(CmdMeshVertexCurvature);
 CmdMeshVertexCurvature::CmdMeshVertexCurvature()
   :CppCommand("Mesh_VertexCurvature")
 {
-  sAppModule    = "Mesh";
-  sGroup        = "Mesh";
-  sMenuText     = "Curvature per vertex";
-  sToolTipText  = "Calculates the curvature of the vetices of a mesh";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Std_Tool1";
+  sAppModule    = QT_TR_NOOP("Mesh");
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Curvature per vertex");
+  sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
+  sWhatsThis    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
+  sStatusTip    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
+  sPixmap       = "curv_info";
 }
 
 void CmdMeshVertexCurvature::activated(int iMsg)
@@ -138,11 +137,12 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     for ( std::map<MeshPropertyCurvature::Mode, std::string>::iterator mI = modi.begin(); mI != modi.end(); ++mI)
     {
       const char* mode = mI->second.c_str();
+      printf("Mode: %s\n", mode);
       MeshPropertyColor* color = dynamic_cast<MeshPropertyColor*>(rMesh.Get( mode ) );
       if ( !color )
       {
         color = new MeshPropertyColor();
-        rMesh.Add( color, mode );  
+        rMesh.Add( color, mode );
       }
 
       std::vector<float> aValues = prop->getCurvature( mI->first );
@@ -194,7 +194,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
         if ( x < fMin )
         { fCol.r = 0.0f; fCol.g = 0.0f; fCol.b = 1.0f; }
         else if ( x < 0.75f*fMin+0.25f*fMax )
-        { float s = 4.0f*(x-fMin)/(fMax-fMin); 
+        { float s = 4.0f*(x-fMin)/(fMax-fMin);
           fCol.r = 0.0f; fCol.g = s; fCol.b = 1.0f; }
         else if ( x < 0.5f*fMin+0.5f*fMax )
         { float s = (4.0f*x-3.0f*fMin-fMax)/(fMax-fMin);
@@ -210,13 +210,21 @@ void CmdMeshVertexCurvature::activated(int iMsg)
         color->Color.push_back( fCol );
       }
     }
-  }
 
-  Gui::ViewProviderInventor *pcProv = getActiveDocument()->getViewProvider( mesh );
-  if ( pcProv )
+    Gui::ViewProviderInventor *pcProv = getActiveDocument()->getViewProvider( mesh );
+    if ( pcProv )
+    {
+      pcProv->setMode("Max. curvature");
+      getActiveDocument()->onUpdate();
+    }
+  }
+  else if ( prop )
   {
-    pcProv->setMode("Max. curvature");
-    getActiveDocument()->onUpdate();
+    Base::Console().Warning("Invalid property 'VertexCurvature' found.\n");
+  }
+  else
+  {
+    Base::Console().Warning("Property 'VertexCurvature' not found.\n");
   }
 }
 
