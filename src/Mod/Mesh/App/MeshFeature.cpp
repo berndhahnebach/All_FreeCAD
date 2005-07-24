@@ -48,6 +48,12 @@ MeshFeature::MeshFeature()
 {
 }
 
+MeshFeature::~MeshFeature()
+{
+  if ( pcMeshFeaturePy )
+    pcMeshFeaturePy->DecRef();
+}
+
 void MeshFeature::InitLabel(const TDF_Label &rcLabel)
 {
 }
@@ -79,7 +85,7 @@ Base::PyObjectBase *MeshFeature::GetPyObject(void)
     pcMeshFeaturePy = new MeshFeaturePy(this);
   }
  
-  // @todo Check if IncRef() has be called every time this object is returned
+  // Increment every time when this object is returned
   pcMeshFeaturePy->IncRef();
   return pcMeshFeaturePy; 
 }

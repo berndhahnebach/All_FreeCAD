@@ -43,7 +43,7 @@ class Property;
 class MeshFeaturePy;
 
 /** Base class of all mesh feature classes in FreeCAD.
- * This class holds an MeshKernel object.
+ * This class holds a MeshKernel object.
  * \author Werner Mayer
  */
 class AppMeshExport MeshFeature : public App::Feature
@@ -51,11 +51,12 @@ class AppMeshExport MeshFeature : public App::Feature
 public:
   /// Constructor
   MeshFeature(void);
+  virtual ~MeshFeature();
 
   virtual void InitLabel(const TDF_Label &rcLabel);
 
 
-  /** @name methodes used for recalculation (update) */
+  /** @name methods used for recalculation (update) */
   //@{
   /** 
    *  We compute the object and topologically name it.

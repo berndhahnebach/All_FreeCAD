@@ -60,6 +60,20 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
   return Mesh; 
 }
 
+void MeshAlgos::read(MeshWithProperty* Mesh,const char *FileName)
+{
+  // ask for read permisson
+	if ( access(FileName, 4) != 0 )
+    throw Base::Exception("MeshAlgos::read() not able to open File!\n");
+ 
+  MeshSTL aReader(* (Mesh->getKernel()) );
+
+  // read STL file
+  FileStream str( FileName, std::ios::in);
+  if ( !aReader.Load( str ) )
+    throw Base::Exception("Reading file failed");
+}
+
 void MeshAlgos::writeBin(MeshWithProperty* Mesh,const char *FileName)
 {
    Base::FileInfo File(FileName);

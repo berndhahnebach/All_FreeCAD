@@ -78,6 +78,7 @@ PyTypeObject MeshPy::Type = {
 PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(pointCount)
   PYMETHODEDEF(faceCount)
+  PYMETHODEDEF(read)
   PYMETHODEDEF(write)
   PYMETHODEDEF(offset)
   PYMETHODEDEF(calcVertexNormales)
@@ -210,6 +211,19 @@ PYFUNCIMP_D(MeshPy,write)
     if ( !aReader.SaveBinary( str ) )
       Py_Error(PyExc_Exception,"STL write failed to write");
 */
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,read)
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshAlgos::read(_pcMesh,Name);
   } PY_CATCH;
 
   Py_Return; 

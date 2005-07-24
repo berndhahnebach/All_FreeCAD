@@ -52,7 +52,7 @@ class AppMeshExport PropertyBag
 {
 public:
 	/// Constructor
-  PropertyBag(void){}
+  PropertyBag(void) : _bValid(true) { }
   virtual ~PropertyBag(void){};
   /** returns the type of the property bag
     * is to reimplemented by inhereting classes to
@@ -80,7 +80,7 @@ public:
   virtual void transform(const Matrix4D &rclMat){}
 
   /** Set the property bag valid
-    * this has to be done after build up or recalculation of the 
+    * this has to be done after build up or recalculation of the
     * property bag. The data in the property bag only gets used when 
     * the bag is valid!
     */

@@ -52,6 +52,10 @@ public:
    */
   static void writeAscii(MeshWithProperty* Mesh,const char *FileName);
 
+  /** reads a Mesh format if supported
+   */
+  static void read(MeshWithProperty* Mesh,const char *FileName);
+
   /** Calculate per Vertex normales and adds the Normal property bag
   */
   static void calcVertexNormales(MeshWithProperty* Mesh);
