@@ -113,8 +113,7 @@ int CheckMessageBox::information(QWidget * parent, const QString & caption, cons
                             int button0, int button1, int button2)
 {
   CheckMessageBox dlg(caption, text, Information, button0, button1, button2, parent,  "CheckMessageBox");
-  dlg.exec();
-  return 0;
+  return dlg.exec();
 }
 
 /**
@@ -137,8 +136,7 @@ int CheckMessageBox::question(QWidget * parent, const QString & caption, const Q
                             int button0, int button1, int button2)
 {
   CheckMessageBox dlg(caption, text, Question, button0, button1, button2, parent,  "CheckMessageBox");
-  dlg.exec();
-  return 0;
+  return dlg.exec();
 }
 
 /**
@@ -161,8 +159,7 @@ int CheckMessageBox::warning ( QWidget * parent, const QString & caption, const 
                           int button0, int button1, int button2 )
 {
   CheckMessageBox dlg(caption, text, Warning, button0, button1, button2, parent,  "CheckMessageBox");
-  dlg.exec();
-  return 0;
+  return dlg.exec();
 }
 
 /**
@@ -185,8 +182,7 @@ int CheckMessageBox::critical ( QWidget * parent, const QString & caption, const
                            int button0, int button1, int button2 )
 {
   CheckMessageBox dlg(caption, text, Critical, button0, button1, button2, parent,  "CheckMessageBox");
-  dlg.exec();
-  return 0;
+  return dlg.exec();
 }
 
 /**

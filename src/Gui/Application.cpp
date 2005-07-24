@@ -1391,8 +1391,10 @@ void ApplicationWindow::runApplication(void)
   // run the Application event loop
   Console().Log("Init: Entering event loop\n");
   // attach the console observer
-  Base::Console().AttacheObserver( new MessageBoxObserver(Instance) );
+  MessageBoxObserver* msgbox = new MessageBoxObserver(Instance);
+  Base::Console().AttacheObserver( msgbox );
   _pcQApp->exec();
+  Base::Console().DetacheObserver( msgbox );
   Console().Log("Init: event loop left\n");
 }
 
@@ -1932,7 +1934,12 @@ MessageBoxObserver::MessageBoxObserver(ApplicationWindow *pcAppWnd)
 /// get called when a Warning is issued
 void MessageBoxObserver::Warning(const char *m)
 {
+  bool ok = Base::Sequencer().isRunning();
+  if ( ok )
+    Base::Sequencer().pause();
   QMessageBox::warning( _pcAppWnd, QObject::tr("Warning"),m);
+  if ( ok )
+    Base::Sequencer().resume();
   _pcAppWnd->statusBar()->message( m, 2001 );
 }
 
@@ -1945,7 +1952,12 @@ void MessageBoxObserver::Message(const char * m)
 /// get called when a Error is issued
 void MessageBoxObserver::Error  (const char *m)
 {
+  bool ok = ProgressBar::instance()->isRunning();
+  if ( ok )
+    ProgressBar::instance()->pause();
   QMessageBox::critical( _pcAppWnd, QObject::tr("Critical Error"),m);
+  if ( ok )
+    ProgressBar::instance()->resume();
   _pcAppWnd->statusBar()->message( m, 2001 );
 }
 

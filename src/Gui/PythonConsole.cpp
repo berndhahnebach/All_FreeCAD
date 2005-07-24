@@ -56,7 +56,7 @@ PyObject      * PythonConsole::_stdin    = 0;
  *  name 'name'. 
  */
 PythonConsole::PythonConsole(QWidget *parent,const char *name)
-  : TextEdit(parent, name), WindowParameter( "Editor" ), _startPara(0), _indent(false)
+  : TextEdit(parent, name), WindowParameter( "Editor" ), _startPara(0), _indent(false), _autoTabs(true)
 {
   _instance = this;
   _stdoutPy = new PythonStdoutPy( _instance );
@@ -320,7 +320,9 @@ void PythonConsole::pasteSubType( const QCString &subtype )
       {
         // emulate an key return event to let decide keyPressEvent() how to continue
         QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+        _autoTabs = false; // do insert tabs automatically
         QApplication::sendEvent( this, &ke );
+        _autoTabs = true;
       }
     }
   }
@@ -392,8 +394,11 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       if ( tabs > 0 )
       {
         insertAt("... ", para, 0 );
-        for ( int i=0; i<tabs; i++ )
-          insertAt("\t", para, i+4);
+        if ( _autoTabs )
+        {
+          for ( int i=0; i<tabs; i++ )
+            insertAt("\t", para, i+4);
+        }
         moveCursor( MoveLineEnd, false );
 
         // store paragraph where Python command starts

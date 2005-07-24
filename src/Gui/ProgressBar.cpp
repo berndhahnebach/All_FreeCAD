@@ -204,6 +204,21 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
   return QProgressBar::eventFilter(o, e);
 }
 
+void ProgressBar::pause()
+{
+  // allow key handling of dialog and restore cursor
+  releaseKeyboard();
+  delete d->cWaitCursor;
+  d->cWaitCursor = 0L;
+}
+
+void ProgressBar::resume()
+{
+  grabKeyboard(); // grab again
+  //rerun observer thread
+  d->cWaitCursor = new Gui::WaitCursor;
+}
+
 void ProgressBar::setProgress( int progress )
 {
   QProgressBar::setProgress( progress );
@@ -229,18 +244,14 @@ void ProgressBar::nextStep(bool canAbort)
 {
   if (wasCanceled() && canAbort)
   {
-    // allow key handling of dialog and restore cursor
-    releaseKeyboard();
-    delete d->cWaitCursor;
-    d->cWaitCursor = 0L;
+    // restore cursor
+    pause();
 
     int ret = QMessageBox::question(ApplicationWindow::Instance,tr("Aborting"),
                 tr("Do you really want to abort the operation?"),  QMessageBox::Yes, 
                 QMessageBox::No|QMessageBox::Default);
-
-    grabKeyboard(); // grab again
-    //rerun observer thread
-    d->cWaitCursor = new Gui::WaitCursor;
+    // continue and show up wait cursor if needed
+    resume();
 
     // force to abort the operation
     if ( ret == QMessageBox::Yes )

@@ -110,6 +110,14 @@ public:
   /** Returns the time in milliseconds that must pass before the progress bar appears.
    */
   int minimumDuration() const;
+  /** This restores the last overridden cursor and release the keyboard while the progress bar 
+   * is running. This is useful e.g. if a modal dialog appears while a long operation is performed
+   * to indicate that the user can click on the dialog. Every pause() must eventually be followed 
+   * by a corresponding @ref resume().
+   */
+  void pause();
+  /** This sets the wait cursor again and grabs the keyboard. @see pause() */
+  void resume();
 
 public slots:
   /** Sets the time that must pass before the progress bar appears to \a ms.

@@ -106,6 +106,7 @@ private:
 private:
   int _startPara;
   bool _indent;
+  bool _autoTabs;
   ConsoleHistory _history;
   QString _output, _error;
 

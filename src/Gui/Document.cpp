@@ -330,7 +330,7 @@ void Document::canClose ( QCloseEvent * e )
     && _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
   {
 #   ifndef FC_DEBUG
-      switch(QMessageBox::warning( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),
+      switch(QMessageBox::question( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),
         tr("Yes"),tr("No"),tr("Cancel"),0,2))
       {
       case 0:          // "Yes" was pressed
