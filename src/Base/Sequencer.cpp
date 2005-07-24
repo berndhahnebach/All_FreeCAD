@@ -174,6 +174,14 @@ void SequencerBase::halt()
   }
 }
 
+void SequencerBase::pause()
+{
+}
+
+void SequencerBase::resume()
+{
+}
+
 void SequencerBase::setLocked( bool bLocked )
 {
   _bLocked = bLocked;

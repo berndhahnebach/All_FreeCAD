@@ -147,6 +147,17 @@ public:
    * This is an emergency stop and terminates all running levels of the sequencer.
    */
   void halt();
+  /**
+   * Breaks the sequencer if needed. The default implementation does nothing.
+   * Every pause() must eventually be followed by a corresponding @ref resume().
+   * @see Gui::ProgressBar.
+   */
+  virtual void pause();
+  /** 
+   * Continue with progress. The default implementation does nothing.
+   * @see pause(), @see Gui::ProgressBar.
+   */
+  virtual void resume();
   /** If \a bLock is true then the sequencer gets locked. startStep() and nextStep()
    * don't get invoked any more on until the sequencer gets unlocked again. 
    */
