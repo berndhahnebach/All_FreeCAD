@@ -67,12 +67,12 @@ open(PyObject *self, PyObject *args)
       Py_Error(PyExc_Exception,"no file ending");
     cEnding.erase(0,pos+1);
 
-    if(cEnding == "stl" || cEnding == "ast")
+    if(cEnding == "stl" || cEnding == "ast" || cEnding == "STL" || cEnding == "AST")
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->AddFeature("MeshImport");
-      pcFeature->GetProperty("FileName").Set(Name);
+      App::Feature *pcFeature = pcDoc->AddFeature("MeshImport","Mesh Import");
+      pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
@@ -115,8 +115,9 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().Active();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->AddFeature("MeshImport");
-      pcFeature->GetProperty("FileName").Set(Name);
+      App::Feature *pcFeature = pcDoc->AddFeature("MeshImport", "Mesh Import");
+      assert(0);
+//      pcFeature->GetProperty("FileName").Set(Name);
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 

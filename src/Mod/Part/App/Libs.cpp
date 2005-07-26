@@ -32,6 +32,7 @@
 #	pragma comment(lib,"TKGeomAlgo.lib")
 #	pragma comment(lib,"TKGeomBase.lib")
 # pragma comment(lib,"TKBool.lib")
+# pragma comment(lib,"TKBO.lib")
 #	pragma comment(lib,"TKG2d.lib")
 #	pragma comment(lib,"TKG3d.lib")
 #	pragma comment(lib,"TKBRep.lib")

@@ -313,9 +313,9 @@ void Document::Recompute()
 
 }
 
-Feature *Document::AddFeature(const char* sName)
+Feature *Document::AddFeature(const char* sType, const char* sName)
 {
-	Feature *pcFeature = FeatureFactory().Produce(sName);
+	Feature *pcFeature = FeatureFactory().Produce(sType);
 
 	if(pcFeature)
 	{

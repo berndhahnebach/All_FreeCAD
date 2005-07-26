@@ -71,7 +71,7 @@ void CmdMeshImport::activated(int iMsg)
   if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");
-    doCommand(Doc,"f = App.DocGet().AddFeature(\"MeshImport\")");
+    doCommand(Doc,"f = App.DocGet().AddFeature(\"MeshImport\",\"MeshImport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
  

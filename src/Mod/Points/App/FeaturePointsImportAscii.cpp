@@ -38,7 +38,7 @@ using namespace Points;
 void FeaturePointsImportAscii::InitLabel(const TDF_Label &rcLabel)
 {
   Base::Console().Log("FeaturePointsImportAscii::InitLabel()\n");
-  AddProperty("String","FileName","");
+  addProperty("String","FileName");
 }
 
 Standard_Integer FeaturePointsImportAscii::Execute(TFunction_Logbook& log)
@@ -47,7 +47,8 @@ Standard_Integer FeaturePointsImportAscii::Execute(TFunction_Logbook& log)
 
   try{
 
-    const char* FileName = GetStringProperty("FileName");
+assert(0);
+    const char* FileName = 0;//GetStringProperty("FileName");
 
     // ask for read permisson
 		if ( access(FileName, 4) != 0 )

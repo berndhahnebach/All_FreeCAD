@@ -132,8 +132,8 @@ public:
 
 	/** @name Feature handling  */
 	//@{
-  /// Add a feature (by name) to this document and set it active
-	Feature *AddFeature(const char* sName);
+  /// Add a feature of sType with sName to this document and set it active
+	Feature *AddFeature(const char* sType, const char* sName);
   /// Returns the active Feature of this document
 	Feature *GetActiveFeature(void);
   /// Get the label of the active Feature

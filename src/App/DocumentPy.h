@@ -52,7 +52,7 @@ public:
 	PYFUNCDEF_D(DocumentPy,ClearUndos)
 	PYFUNCDEF_D(DocumentPy,Save)
 	PYFUNCDEF_D(DocumentPy,SaveAs)
-	PYFUNCDEF_D(DocumentPy,SetModified)
+//	PYFUNCDEF_D(DocumentPy,SetModified)
 	PYFUNCDEF_D(DocumentPy,PurgeModified)
 
   PYFUNCDEF_D(DocumentPy,NewCommand)

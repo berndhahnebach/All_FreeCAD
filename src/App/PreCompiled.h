@@ -114,6 +114,7 @@
 #include <TDataStd_RealArray.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_Comment.hxx>
+#include <TDF_Reference.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Builder.hxx>
 #include <TFunction_Logbook.hxx>

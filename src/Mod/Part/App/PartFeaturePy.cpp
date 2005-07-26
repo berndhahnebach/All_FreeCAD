@@ -135,39 +135,12 @@ PyObject *PartFeaturePy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *PartFeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	try{
-		if (Base::streq(attr, "XXXX"))						
-			return Py_BuildValue("i",1); 
-//		else
-//      // search in PropertyList
-//      if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
-//        return Py_BuildValue("s", _pcFeature->GetProperty(attr).GetAsString());
-      else
 			  _getattr_up(FeaturePy); 						
-	}catch(...){
-		Py_Error(PyExc_Exception,"Error in get Attribute");
-	}
 } 
 
 int PartFeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (Base::streq(attr, "XXXX")){						// settable new state
-		//_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
-		return 1;
-  }else /*
-      // search in PropertyList
-      if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){
-        try{
-          //char sBuf[256];
-          //sprintf(sBuf,"%f",PyFloat_AsDouble(value));
-          //_pcFeature->GetProperty(attr).Set(sBuf);
-          (dynamic_cast<PropertyFloat&>(_pcFeature->GetProperty(attr))).SetValue(PyFloat_AsDouble(value));
-        }catch(...){
-          return 1;
-        }
-        return 0;
-      }else */
-			  return FeaturePy::_setattr(attr, value); 						
+  return FeaturePy::_setattr(attr, value); 						
 } 
 
 

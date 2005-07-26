@@ -74,7 +74,7 @@ public:
 	//---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
-  void SetProperty(const char *attr, PyObject *value);
+  int setProperty(const char *attr, PyObject *value);
 
 private:
   Feature *_pcFeature;

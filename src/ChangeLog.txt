@@ -594,3 +594,11 @@ Version: V0.1B119 Date: Wed Jun 29 12:57:43 2005 +++++++++++++++++++++++++++++++
 + Using own event loop (QDialog not exception-safe)
 + RFE 1149709	Missing waitcursor implemented (using Sequencer therefore)
 + RFE 1211364	Clean up when closing App (using Python's Py_AtExit and Py_Finalize)
++ BUG 1232848   Recursion in IsKind()
+
+
+Version: V0.1B120 Date: Tue Jul 26 17:09:13 2005 +++++++++++++++++++++++++++++++
++ Move import shapes from Import to Part
++ Reworking Feature Property handling
++ Implementing Feature Linking
++ Add Naming to Features (AddFeature() needs now a Type and a Name

@@ -42,7 +42,7 @@ void FeatureImportStep::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("FeaturePartImportStep::InitLabel()\n");
 
-	AddProperty("String","FileName","");
+	addProperty("String","FileName");
 
 }
 
@@ -69,12 +69,12 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
     STEPControl_Reader aReader;
     TopoDS_Shape aShape;
 
-    const char* FileName = GetStringProperty("FileName");
+    std::string FileName = getPropertyString("FileName");
 
-    if( *FileName == '\0') 
+    if( FileName == "") 
       return 1;
 
-    int i=open(FileName,O_RDONLY);
+    int i=open(FileName.c_str(),O_RDONLY);
 	  if( i != -1)
 	  {
 		  close(i);
@@ -88,7 +88,7 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
     Base::Sequencer().next();
     
     Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-    if (aReader.ReadFile((const Standard_CString)GetStringProperty("FileName")) != IFSelect_RetDone)
+    if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
     {
       throw;
     }

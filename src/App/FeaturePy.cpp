@@ -113,9 +113,9 @@ Base::PyObjectBase *Feature::GetPyObject(void)
 {
   if(!pcFeaturePy){
     pcFeaturePy = new FeaturePy(this);
-    pcFeaturePy->IncRef();
+//    pcFeaturePy->IncRef();
   }
-//  pcFeaturePy->IncRef();
+  pcFeaturePy->IncRef();
 	return pcFeaturePy; 
 }
 
@@ -139,10 +139,10 @@ PyObject *FeaturePy::_repr(void)
 {
   std::stringstream a;
   a << "Feature: [ ";
-  for(std::map<std::string,int>::const_iterator It = _pcFeature->_PropertiesMap.begin();It!=_pcFeature->_PropertiesMap.end();It++)
-  {
-    a << It->first << "=" << _pcFeature->GetProperty(It->first.c_str()).GetAsString() << "; ";
-  }
+//  for(std::map<std::string,int>::const_iterator It = _pcFeature->_PropertiesMap.begin();It!=_pcFeature->_PropertiesMap.end();It++)
+//  {
+//    a << It->first << "=" << _pcFeature->GetProperty(It->first.c_str()).GetAsString() << "; ";
+//  }
   a << "]" << std::endl;
 	return Py_BuildValue("s", a.str().c_str());
 }
@@ -191,13 +191,23 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     {
         return Py_BuildValue("s", _pcFeature->_showMode.c_str());
     }
-    else
-
+    else{
       // search in PropertyList
-      if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
-        return Py_BuildValue("s", _pcFeature->GetProperty(attr).GetAsString());
+      const char* type = _pcFeature->getPropertyType(attr);   
+      if( type != '\0')
+        if(strcmp(type,"Float")==0)
+          return Py_BuildValue("d", _pcFeature->getPropertyFloat(attr));
+        else if(strcmp(type,"Int")==0)
+          return Py_BuildValue("i", _pcFeature->getPropertyInt(attr));
+        else if(strcmp(type,"String")==0)
+          return Py_BuildValue("s", _pcFeature->getPropertyString(attr));
+        else if(strcmp(type,"Link")==0)
+          return _pcFeature->getPropertyLink(attr)->GetPyObject();
+        else
+          return Py_None;
       else
 			  _getattr_up(PyObjectBase); 						
+    }
 	}PY_CATCH;
 } 
 
@@ -234,7 +244,7 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
       // search in PropertyList
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){
         try{
-          SetProperty(attr,value);
+          setProperty(attr,value);
         }catch(...){
           return 1;
         }
@@ -244,21 +254,27 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
   return 0;
 } 
 
-void FeaturePy::SetProperty(const char *attr, PyObject *value)
+int FeaturePy::setProperty(const char *attr, PyObject *value)
 {
   //char sBuf[256];
   //sprintf(sBuf,"%f",PyFloat_AsDouble(value));
   //_pcFeature->GetProperty(attr).Set(sBuf);
   if( PyObject_TypeCheck(value, &PyFloat_Type) )
-    (dynamic_cast<PropertyFloat&>(_pcFeature->GetProperty(attr))).SetValue(PyFloat_AsDouble(value));
+    _pcFeature->setPropertyFloat(PyFloat_AsDouble(value),attr);
   else if( PyObject_TypeCheck(value, &PyInt_Type) )
-    (dynamic_cast<PropertyInteger&>(_pcFeature->GetProperty(attr))).SetValue(PyInt_AsLong(value));
+    _pcFeature->setPropertyInt(PyInt_AsLong(value),attr);
   else if( PyObject_TypeCheck(value, &PyString_Type) )
-    (dynamic_cast<PropertyString&>(_pcFeature->GetProperty(attr))).Set(PyString_AsString(value));
+    _pcFeature->setPropertyString(PyString_AsString(value),attr);
+  else if( PyObject_TypeCheck(value, &(FeaturePy::Type)) )
+  {
+   	FeaturePy  *pcObject = (FeaturePy*)value;
+    _pcFeature->setPropertyLink(pcObject->_pcFeature,attr);
+  }
   else
-    throw Base::Exception("Not fiting type");
+    return 0;
+  
   _pcFeature->TouchProperty(attr);
-
+  return 1;
 }
 
 

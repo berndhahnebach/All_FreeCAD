@@ -42,7 +42,7 @@ using namespace Mesh;
 void FeatureMeshImport::InitLabel(const TDF_Label &rcLabel)
 {
   Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  AddProperty("String","FileName","");
+  addProperty("String","FileName");
 }
 
 Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
@@ -51,10 +51,10 @@ Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
 
   try{
 
-    const char* FileName = GetStringProperty("FileName");
+    std::string FileName =getPropertyString("FileName");
 
     // ask for read permisson
-		if ( access(FileName, 4) != 0 )
+		if ( access(FileName.c_str(), 4) != 0 )
     {
       Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName);
       return 1;
@@ -63,7 +63,7 @@ Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
     MeshSTL aReader(*(_cMesh.getKernel()) );
 
     // read file
-    FileStream str( FileName, std::ios::in);
+    FileStream str( FileName.c_str(), std::ios::in);
     if ( !aReader.Load( str ) )
       throw Base::Exception("Import failed (load file)");
   }

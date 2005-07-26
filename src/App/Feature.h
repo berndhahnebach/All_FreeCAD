@@ -119,25 +119,57 @@ public:
 
 	/** @name methodes for conviniant handling of Parameter (Properties) */
 	//@{
-	/** Insert Property
+
+  /** Insert Property
 	 *  Call this method to add a Property to the Feature
 	 */
-	void AddProperty(const char *Type, const char *Name, const char *InitString);
+	void addProperty(const char *Type, const char *Name);
+
+  /** get Property string representation
+ 	 *  
+	 */
+  //std::string getPropertyAsString(const char *Name){};
+
+  /** get Property type
+ 	 *  
+	 */
+  const char *getPropertyType(const char *Name);
 
 	/** Get a Property of this Feature
 	 *  Call this method to get a Property of this Feature
 	 */
-	Property &GetProperty(const char *Name);
+	//Property &GetProperty(const char *Name);
+
+	/** Insert a Link Property
+	 *  Call this method to add a Link to an other Feature to that Feature
+	 */
+	void setPropertyLink(Feature *pcToLink, const char *Name);
+
+	/** get a Link Property
+	 *  Call this method to get a Link to an other Feature 
+	 */
+	Feature *getPropertyLink(const char *Name);
+
+  /** Get a Property and put it to float
+	 *  This works with all Properties inhereting from Float and Int Properties..
+	 */
+	double getPropertyFloat(const char *Name);
+
+  /** set a float Property 
+	 *  ..
+	 */
+	void setPropertyFloat(double, const char *Name);
+ 
+ 	long getPropertyInt(const char *Name);
+	void setPropertyInt(long, const char *Name);
+  std::string getPropertyString(const char *Name);
+	void setPropertyString(const char*, const char *Name);
+
 
 	/** Get a Property and put it to float
 	 *  This works with all Properties inhereting from Float and Int Properties..
 	 */
-	double GetFloatProperty(const char *Name);
-  
-	/** Get a Property and put it to float
-	 *  This works with all Properties inhereting from Float and Int Properties..
-	 */
-	const char *GetStringProperty(const char *Name);
+	//const char *GetStringProperty(const char *Name);
 
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *  

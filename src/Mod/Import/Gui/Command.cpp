@@ -108,13 +108,12 @@ void ImportStep::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"ImportStep\")");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"ImportStep\",\"ImportStep\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 //	  DoCommand(Doc,"App.DocGet().Update()");
     commitCommand();
   
     updateActive();
-
 
   }
 }
@@ -160,7 +159,7 @@ void ImportIges::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("ImportIGES Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"ImportIges\")");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"ImportIges\",\"ImportIges\")");
 //	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 	  doCommand(Doc,"App.DocGet().Update()");

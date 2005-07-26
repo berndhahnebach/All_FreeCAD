@@ -52,7 +52,6 @@ using Base::Console;
 
 using namespace App;
 
-
 //===========================================================================
 // Feature
 //===========================================================================
@@ -90,42 +89,194 @@ Feature::~Feature(void)
 }
 
 
-void Feature::AddProperty(const char *Type, const char *Name, const char *InitString)
-{
-  Property *Prop;
 
+
+void Feature::addProperty(const char *Type, const char *Name)
+{
+	TDF_Label L = _cFeatureLabel.FindChild(_nextFreeLabel);
 	
   if(	Base::streq(Type, "Float") )
-	{
-		Prop = new PropertyFloat();
-		Prop->Set(InitString);
-  } else if(	Base::streq(Type, "String") )
-	{
-		Prop = new PropertyString();
-		Prop->Set(InitString);
-  } else if(	Base::streq(Type, "Int") )
-	{
-		Prop = new PropertyInteger();
-		Prop->Set(InitString);
-  } else if(	Base::streq(Type, "Bool") )
-	{
-		Prop = new PropertyBool();
-		Prop->Set(InitString);
-	}
-
-
-	TDF_Label L = _cFeatureLabel.FindChild(_nextFreeLabel);
+   	TDataStd_Real::Set(L, 0.0);
+  else if(	Base::streq(Type, "String") )
+   	TDataStd_Name::Set(L,"");
+  else if(	Base::streq(Type, "Int") )
+   	TDataStd_Integer::Set(L,0);
+  else if(	Base::streq(Type, "Link") )
+   	TDF_Reference::Set(L,TDF_Label());
+	
   // remember for search effecience
   _PropertiesMap[Name] = _nextFreeLabel;
+  TDataStd_Comment::Set(L,TCollection_ExtendedString((Standard_CString) Name ));
+  
   _nextFreeLabel++;
+}
 
+const char *Feature::getPropertyType(const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
 
-	TDataStd_Name::Set(L,TCollection_ExtendedString((Standard_CString) Name ));
-	PropertyAttr ::Set(L,Prop);
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyType() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  if( L.IsAttribute(TDataStd_Real::GetID()) ) return "Float";
+  if( L.IsAttribute(TDataStd_Name::GetID()) ) return "String";
+  if( L.IsAttribute(TDataStd_Integer::GetID()) ) return "Int";
+  if( L.IsAttribute(TDF_Reference::GetID()) ) return "Link";
+
+  return "";
 
 }
 
 
+double Feature::getPropertyFloat(const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyFloat() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDataStd_Real) RealAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Real::GetID(), RealAttr )) 
+    throw Base::Exception("Type mismatch, no Float attribute!");
+
+  return RealAttr->Get();
+}
+
+void Feature::setPropertyFloat(double d, const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDataStd_Real) RealAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Real::GetID(), RealAttr )) 
+    throw Base::Exception("Type mismatch, no Float attribute!");
+
+  RealAttr->Set(d);
+
+}
+
+long Feature::getPropertyInt(const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyInt() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDataStd_Integer) IntAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Integer::GetID(), IntAttr )) 
+    throw Base::Exception("Type mismatch, no Int attribute!");
+
+  return IntAttr->Get();
+}
+
+void Feature::setPropertyInt(long d, const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDataStd_Integer) IntAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Integer::GetID(), IntAttr )) 
+    throw Base::Exception("Type mismatch, no Int attribute!");
+
+  IntAttr->Set(d);
+
+}
+
+std::string Feature::getPropertyString(const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyString() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDataStd_Name) StrAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Name::GetID(), StrAttr )) 
+    throw Base::Exception("Type mismatch, no string attribute!");
+
+  return std::string(TCollection_AsciiString(StrAttr->Get()).ToCString());
+}
+
+void Feature::setPropertyString(const char* s, const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDataStd_Name) StrAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Name::GetID(), StrAttr )) 
+    throw Base::Exception("Type mismatch, no string attribute!");
+
+  StrAttr->Set((Standard_CString)s);
+
+}
+
+void Feature::setPropertyLink(Feature *pcToLink, const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDF_Reference) RefAttr;
+
+ 	if (!L.FindAttribute(TDF_Reference::GetID(), RefAttr )) 
+    throw Base::Exception("Type mismatch, no Link attribute!");
+
+  RefAttr->Set( pcToLink->Label());
+}
+
+Feature *Feature::getPropertyLink(const char *Name)
+{
+  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyLink() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+
+  Handle(TDF_Reference) RefAttr;
+
+ 	if (!L.FindAttribute(TDF_Reference::GetID(), RefAttr )) 
+    throw Base::Exception("Type mismatch, no Link attribute!");
+
+  TDF_Label Link = RefAttr->Get();
+  Handle(FeatureAttr) LinkFeat;
+
+  if (!Link.FindAttribute(FeatureAttr::GetID(), LinkFeat)) 
+    throw Base::Exception("Feature::getPropertyLink() link dont link a feature!");
+
+  return LinkFeat->Get();
+
+}
+
+/*
 Property &Feature::GetProperty(const char *Name)
 {
   std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
@@ -154,6 +305,7 @@ const char *Feature::GetStringProperty(const char *Name)
     return dynamic_cast<PropertyString&>(GetProperty(Name)).GetAsString();
 }
 
+*/
 
 void Feature::TouchProperty(const char *Name)
 {
@@ -176,8 +328,8 @@ void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
   _pDoc = dt;
 
 	// Add the one and only FreeCAD FunctionDriver to the driver Tabel !!! Move to APPinit !!!
-	Handle(TFunction_Driver) myDriver = new Function();
-	TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
+	//Handle(TFunction_Driver) myDriver = new Function();
+	//TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
 
 
 	// Instanciate a TFunction_Function attribute connected to the current box driver
@@ -185,23 +337,19 @@ void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(_cFeatureLabel, Function::GetID());
 
 	// Initialize and execute the box driver (look at the "Execute()" code)
-    TFunction_Logbook log;
+//    TFunction_Logbook log;
 
 	Handle(Function) myFunctionDriver;
     // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
-	if(!TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver))
-  {
-    // Werner: What's that???
-//		myFunctionDriver;
-  }
+	TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver);
 
 	myFunctionDriver->Init(_cFeatureLabel);
 
 	InitLabel(_cFeatureLabel);
 
-   if (myFunctionDriver->Execute(log))
+//   if (myFunctionDriver->Execute(log))
 //		Base::Console().Error("Feature::InitLabel()");
-		Base::Console().Log("Feature::InitLabel() Initial Execute Fails (not bad at all ;-)\n");
+//		Base::Console().Log("Feature::InitLabel() Initial Execute Fails (not bad at all ;-)\n");
 
 }
 

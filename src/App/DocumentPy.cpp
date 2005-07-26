@@ -78,7 +78,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(ClearUndos)
   PYMETHODEDEF(SaveAs)
   PYMETHODEDEF(Save)
-  PYMETHODEDEF(SetModified)
+//  PYMETHODEDEF(SetModified)
   PYMETHODEDEF(PurgeModified)
   PYMETHODEDEF(NewCommand)
   PYMETHODEDEF(OpenCommand)
@@ -230,16 +230,16 @@ PYFUNCIMP_D(DocumentPy,Save)
   }PY_CATCH;
 } 
 
-
+/*
 PYFUNCIMP_D(DocumentPy,SetModified)
 { 
   PY_TRY {
 	  assert(0);
-	  _pcDoc->Save(); 
+	  _pcDoc->SetModified(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
-	
+*/	
 PYFUNCIMP_D(DocumentPy,PurgeModified)
 { 
   PY_TRY {
@@ -290,12 +290,12 @@ PYFUNCIMP_D(DocumentPy,Recompute)
 		
 PYFUNCIMP_D(DocumentPy,AddFeature)
 {
-	char *pstr;
-  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+	char *sType,*sName;
+  if (!PyArg_ParseTuple(args, "ss", &sType,&sName))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->AddFeature(pstr);
+	  Feature *pcFtr = _pcDoc->AddFeature(sType,sName);
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else

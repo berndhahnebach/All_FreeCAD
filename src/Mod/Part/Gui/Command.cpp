@@ -193,7 +193,7 @@ void FCCmdPartBox::activated(int iMsg)
 	if ( cDlg.exec()== QDialog::Accepted )
   {
     openCommand("Part Box Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\",\"PartBox\")");
 	  doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
 	  doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
 	  doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
@@ -242,7 +242,7 @@ void FCCmdPartBox2::activated(int iMsg)
 {
   openCommand("PartBox Create");
 
-	doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\")");
+	doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\",\"PartBox\")");
 	doCommand(Doc,"f.x = 0.0");
 	doCommand(Doc,"f.y = 0.0");
 	doCommand(Doc,"f.z = 0.0");
@@ -323,7 +323,7 @@ void PartImportStep::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\")");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\",\"PartImportStep\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 //	  DoCommand(Doc,"App.DocGet().Update()");
     commitCommand();
@@ -375,7 +375,7 @@ void PartImportIges::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportIGES Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\")");
+	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\",\"PartImportIges\")");
 //	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 	  doCommand(Doc,"App.DocGet().Update()");

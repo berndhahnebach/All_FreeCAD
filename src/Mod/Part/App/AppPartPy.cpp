@@ -29,6 +29,8 @@
 #include <Python.h>
 
 #include <Base/Console.h>
+#include <Base/PyExportImp.h>
+#include <Base/Exception.h>
 #include <App/Application.h>
 #include <App/Document.h>
 
@@ -56,74 +58,105 @@ info(PyObject *self, PyObject *args)           /* self unused in modules */
     }
 }
 
-/* module functions */
-static PyObject *                                 /* returns object */
-Box(PyObject *self, PyObject *args)               /* self unused in modules */
-{                                                 /* args from python call */
-	double  Float1,Float2,Float3,Float4,Float5,Float6;
-    if (!PyArg_ParseTuple(args, "(dddddd)",&Float1,&Float2,&Float3,&Float4,&Float5,&Float6))     // convert args: Python->C
-        return NULL;                              /* null=raise exception */
-    else {
 
-
-		return Py_None;                           /* convert C -> Python */
-    }
-}
-/* development function for test purpose */
-static PyObject *                                 /* returns object */
-Temp(PyObject *self, PyObject *args)               /* self unused in modules */
-{                                                 /* args from python call */
-    if (!PyArg_ParseTuple(args, ""))            // convert args: Python->C
-        return NULL;                              /* null=raise exception */
-    
-
-/*		Console().Log("Part.Temp() is runing ....\n");
-
-    App::Document *doc = App::GetApplication().Active();
-		if(!doc) return Py_None;
-
-		Console().Log("Doc init\n");
-		PartDocType *pcType = new PartDocType();
-		doc->InitType(pcType);
-
-		Console().Log("Type Get\n");
-		if(strcmp(doc->GetDocType()->GetTypeName(),"Part")==0)
-		{
-			pcType = dynamic_cast<PartDocType*>( doc->GetDocType() );
-			Console().Log("Part doc detected\n");
-
-		}
-  */
-		return Py_None;                           /* convert C -> Python */
-  
-}
 
 /* module functions */
 static PyObject *                        
 open(PyObject *self, PyObject *args)     
 {                                        
-	std::string strResult;
-
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
     
-  Base::Console().Log("Open in Part with %s",strResult.c_str());
+  PY_TRY {
+
+    Base::Console().Log("Open in Part with %s",Name);
+
+    // extract ending
+    std::string cEnding(Name);
+    unsigned int pos = cEnding.find_last_of('.');
+    if(pos == cEnding.size())
+      Py_Error(PyExc_Exception,"no file ending");
+    cEnding.erase(0,pos+1);
+
+    if(cEnding == "stp" || cEnding == "step" || cEnding == "STP" || cEnding == "STEP")
+    {
+      // create new document and add Import feature
+      App::Document *pcDoc = App::GetApplication().New();
+      App::Feature *pcFeature = pcDoc->AddFeature("PartImportStep","Step open");
+      pcFeature->setPropertyString(Name,"FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+
+    }else if(cEnding == "igs" || cEnding == "iges" || cEnding == "IGS" || cEnding == "IGES")
+    {
+      // create new document and add Import feature
+      App::Document *pcDoc = App::GetApplication().New();
+      App::Feature *pcFeature = pcDoc->AddFeature("PartImportIges","Iges open");
+      pcFeature->setPropertyString(Name,"FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+
+    }
+    else
+    {
+      Py_Error(PyExc_Exception,"unknown file ending");
+    }
+
+
+  } PY_CATCH;
 
 	Py_Return;    
 }
+
 
 /* module functions */
 static PyObject *                        
 insert(PyObject *self, PyObject *args)     
 {                                        
-	std::string strResult;
-
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
     
-  Base::Console().Log("insert in Part with %s",strResult.c_str());
+  PY_TRY {
+
+    Base::Console().Log("Insert in Part with %s",Name);
+
+    // extract ending
+    std::string cEnding(Name);
+    unsigned int pos = cEnding.find_last_of('.');
+    if(pos == cEnding.size())
+      Py_Error(PyExc_Exception,"no file ending");
+    cEnding.erase(0,pos+1);
+
+    if(cEnding == "stp" || cEnding == "step" || cEnding == "STP" || cEnding == "STEP")
+    {
+      App::Document *pcDoc = App::GetApplication().Active();
+      if (!pcDoc)
+        throw "Import called without a active document??";
+      App::Feature *pcFeature = pcDoc->AddFeature("PartImportStep","Step open");
+      pcFeature->setPropertyString(Name,"FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+
+    }else if(cEnding == "igs" || cEnding == "iges" || cEnding == "IGS" || cEnding == "IGES")
+    {
+      App::Document *pcDoc = App::GetApplication().Active();
+      if (!pcDoc)
+        throw "Import called without a active document??";
+      App::Feature *pcFeature = pcDoc->AddFeature("PartImportIges","Iges open");
+      pcFeature->setPropertyString(Name,"FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+
+    }
+    else
+    {
+      Py_Error(PyExc_Exception,"unknown file ending");
+    }
+
+
+  } PY_CATCH;
 
 	Py_Return;    
 }
@@ -131,10 +164,7 @@ insert(PyObject *self, PyObject *args)
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"info"   , info,    1},       
-    {"AddBox" , Box,     1},       
-    {"Temp"   , Temp,    1},       
     {"open"   , open,    1},       
-    {"save"   , Temp,    1},       
     {"insert" , insert,  1},       
     {NULL     , NULL      }        /* end of table marker */
 };

@@ -164,7 +164,7 @@ const Handle(Standard_Type)& ApplicationOCC::DynamicType() const
 }
 Standard_Boolean ApplicationOCC::IsKind(const Handle(Standard_Type)& AType) const
 {
-  return (STANDARD_TYPE(ApplicationOCC) == AType || ApplicationOCC::IsKind(AType));
+  return (STANDARD_TYPE(ApplicationOCC) == AType || TDocStd_Application::IsKind(AType));
 }
 Handle_ApplicationOCC::~Handle_ApplicationOCC() {}
 
@@ -608,6 +608,10 @@ void Application::initApplication(void)
 
 	// starting the init script
 	Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
+
+	// Add the one and only FreeCAD FunctionDriver to the driver Tabel 
+	Handle(TFunction_Driver) myDriver = new Function();
+	TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
 
 
 }

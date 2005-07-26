@@ -31,6 +31,8 @@
 #include "../../../Base/Console.h"
 #include "FeaturePartCut.h"
 
+#include <BRepAlgoAPI_Cut.hxx>
+
 
 using namespace Part;
 
@@ -38,39 +40,35 @@ void PartCutFeature::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("PartCutFeature::InitLabel()\n");
 
-	//AddProperty("Float","x","0.0");
-	//AddProperty("Float","y","0.0");
-	//AddProperty("Float","z","0.0");
-	//AddProperty("Float","l","100.0");
-	//AddProperty("Float","h","100.0");
-	//AddProperty("Float","w","100.0");
+  addProperty("Link","First");
+  addProperty("Link","Second");
 
 }
 
-/*
-bool PartCutFeature::MustExecute(const TFunction_Logbook& log)
-{
-	Base::Console().Log("PartCutFeature::MustExecute()\n");
-	return false;
-}
-*/
 Standard_Integer PartCutFeature::Execute(TFunction_Logbook& log)
 {
 	Base::Console().Log("PartCutFeature::Execute()\n");
 
-/*  cout << GetFloatProperty("x") << endl;
-  cout << GetFloatProperty("y") << endl;
-  cout << GetFloatProperty("z") << endl;
-  cout << GetFloatProperty("l") << endl;
-  cout << GetFloatProperty("h") << endl;
-  cout << GetFloatProperty("w") << endl;*/
-
   try{
 
-  TopoDS_Shape ResultShape;
+    PartFeature *pcFirst  = dynamic_cast<PartFeature*>(getPropertyLink("First"));
+    PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Second"));
+
+    // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
+	  TopoDS_Shape OriginalShape  = pcFirst->GetShape();
+	  TopoDS_Shape ToolShape = pcSecond->GetShape();
+
+  // STEP 2:
+	  // Let's call for algorithm computing a cut operation:
+	  BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
+	  // Let's check if the Cut has been successfull:
+	  if (!mkCut.IsDone()) 
+		  return 2;
+
+    TopoDS_Shape ResultShape = mkCut.Shape();
 
 
-	SetShape(ResultShape);
+  	SetShape(ResultShape);
 
   }
   catch(...){

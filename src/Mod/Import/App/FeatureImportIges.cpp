@@ -43,7 +43,7 @@ void FeatureImportIges::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("FeaturePartImportStep::InitLabel()\n");
 
-	AddProperty("String","FileName","");
+	addProperty("String","FileName");
 
 }
 
@@ -70,9 +70,9 @@ Standard_Integer FeatureImportIges::Execute(TFunction_Logbook& log)
     IGESControl_Reader aReader;
     TopoDS_Shape aShape;
 
-    const char* FileName = GetStringProperty("FileName");
+    std::string FileName = getPropertyString("FileName");
 
-    int i=open(FileName,O_RDONLY);
+    int i=open(FileName.c_str(),O_RDONLY);
 	  if( i != -1)
 	  {
 		  close(i);
@@ -86,7 +86,7 @@ Standard_Integer FeatureImportIges::Execute(TFunction_Logbook& log)
     Base::Sequencer().next();
 
     // read iges-file
-    if (aReader.ReadFile((const Standard_CString)FileName) != IFSelect_RetDone)
+    if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
       throw Base::Exception("IGES read failed (load file)");
   
     // check iges-file (memory)

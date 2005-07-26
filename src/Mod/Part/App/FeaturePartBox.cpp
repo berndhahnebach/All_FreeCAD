@@ -38,12 +38,12 @@ void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("PartBoxFeature::InitLabel()\n");
 
-	AddProperty("Float","x","0.0");
-	AddProperty("Float","y","0.0");
-	AddProperty("Float","z","0.0");
-	AddProperty("Float","l","100.0");
-	AddProperty("Float","h","100.0");
-	AddProperty("Float","w","100.0");
+	addProperty("Float","x");
+	addProperty("Float","y");
+	addProperty("Float","z");
+	addProperty("Float","l");
+	addProperty("Float","h");
+	addProperty("Float","w");
 
 }
 
@@ -65,16 +65,16 @@ Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
   cout << GetFloatProperty("h") << endl;
   cout << GetFloatProperty("w") << endl;*/
 
-	double x = GetFloatProperty("x");
-  double y = GetFloatProperty("y");
-  double z = GetFloatProperty("z");
+	double x = getPropertyFloat("x");
+  double y = getPropertyFloat("y");
+  double z = getPropertyFloat("z");
 
   try{
 	// Build a box using the dimension and position attributes
 	BRepPrimAPI_MakeBox mkBox( gp_Pnt( x, y, z),
-                             GetFloatProperty("l"),
-                             GetFloatProperty("h"),
-                             GetFloatProperty("w"));
+                             getPropertyFloat("l"),
+                             getPropertyFloat("h"),
+                             getPropertyFloat("w"));
 
   TopoDS_Shape ResultShape = mkBox.Shape();
 
