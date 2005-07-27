@@ -104,39 +104,6 @@ void FCCmdPartTest2::activated(int iMsg)
 	if(!pcDoc) return;
 
 
-	openCommand("Test Load Part");
-
-	Base::Console().Log("Using Doc: %p\n",pcDoc);
-
-    TDF_Label L = TDF_TagSource::NewChild(pcDoc->Main());
-
-	L = L.FindChild(1);
-
-	BRep_Builder aBuilder;
-	TopoDS_Shape ResultShape;
-
-	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", getAppWnd() );
-	if ( fn.isEmpty() )
-	{
-		abortCommand();
-		return;
-	}
- 
-	try{
-	  BRepTools::Read(ResultShape,(const Standard_CString)fn.latin1(),aBuilder);
-	}
-	// Boeser Fehler ;-)
-	catch(...){
-		abortCommand();
-    throw new Base::Exception("Error loading BREP file");
-	}
-
-	TNaming_Builder B(L);
-	B.Generated(ResultShape);
-
-	Handle(TPrsStd_AISPresentation) hcPrs= TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID());
-	// Display it
-	hcPrs->Display(1);
 
 	updateActive();
 }

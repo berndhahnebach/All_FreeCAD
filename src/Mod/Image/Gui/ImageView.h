@@ -44,6 +44,16 @@ public:
     virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset = true);
     virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
 
+    virtual void EnableColorActions(bool Enable);
+    virtual int createColorMap(int numEntriesReq = 0, bool Initialise = true);
+    virtual void clearColorMap();
+    virtual int getNumColorMapEntries() const;
+    virtual int setColorMapRGBAValue(int index, float red, float green, float blue, float alpha = 1.0);
+    virtual int setColorMapRedValue(int index, float value);
+    virtual int setColorMapGreenValue(int index, float value);
+    virtual int setColorMapBlueValue(int index, float value);
+    virtual int setColorMapAlphaValue(int index, float value);
+
 protected slots:
     virtual void fitImage();
     virtual void oneToOneImage();
@@ -55,15 +65,13 @@ protected:
     virtual void createActions();
     virtual void showOriginalColors();
     virtual void showBrightened();
-    virtual int createIntensityMap(int numEntriesReq = 0, bool Initialise = true);
-    virtual int getNumIntensityMapEntries() const;
-    virtual int setIntensityMapValue(int index, float value);
     virtual void mousePressEvent(QMouseEvent* cEvent);
     virtual void mouseDoubleClickEvent(QMouseEvent* cEvent);
     virtual void mouseMoveEvent(QMouseEvent* cEvent);
     virtual void mouseReleaseEvent(QMouseEvent* cEvent);
     virtual void wheelEvent(QWheelEvent * cEvent);
     virtual void updateStatusBar();
+    virtual QString createStatusBarText();
 
     virtual void startDrag();
     virtual void zoom(int prevX, int prevY, int currX, int currY);

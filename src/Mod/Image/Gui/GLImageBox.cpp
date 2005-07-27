@@ -47,7 +47,7 @@ GLImageBox::GLImageBox(QWidget* parent, const char* name, const QGLWidget* share
     _zoomFactor = 1.0;
     _base_x0 = 0;
     _base_y0 = 0;
-    _pIntensityMap = 0;
+    _pColorMap = 0;
     _numMapEntries = 0;
 }
 
@@ -57,7 +57,7 @@ GLImageBox::~GLImageBox()
 {
     try
     {
-        delete [] _pIntensityMap;
+        delete [] _pColorMap;
     }
     catch(...) {}
 }
@@ -145,20 +145,23 @@ void GLImageBox::drawImage()
         glRasterPos2f(xx, yy);
 
         // Load the intensity map if present
-        if (_pIntensityMap != 0)
+        if (_pColorMap != 0)
         {
             glPixelTransferf(GL_MAP_COLOR, 1.0);
-            glPixelMapfv(GL_PIXEL_MAP_R_TO_R, _numMapEntries, _pIntensityMap);
-            glPixelMapfv(GL_PIXEL_MAP_G_TO_G, _numMapEntries, _pIntensityMap);
-            glPixelMapfv(GL_PIXEL_MAP_B_TO_B, _numMapEntries, _pIntensityMap);
+            glPixelMapfv(GL_PIXEL_MAP_R_TO_R, _numMapEntries, _pColorMap);
+            glPixelMapfv(GL_PIXEL_MAP_G_TO_G, _numMapEntries, _pColorMap + _numMapEntries);
+            glPixelMapfv(GL_PIXEL_MAP_B_TO_B, _numMapEntries, _pColorMap + _numMapEntries * 2);
+            glPixelMapfv(GL_PIXEL_MAP_A_TO_A, _numMapEntries, _pColorMap + _numMapEntries * 3);
         }
         else
         {
             glPixelTransferf(GL_MAP_COLOR, 0.0);
             float zero = 0.0;
+            float one = 1.0;
             glPixelMapfv(GL_PIXEL_MAP_R_TO_R, 1, &zero);
             glPixelMapfv(GL_PIXEL_MAP_G_TO_G, 1, &zero);
             glPixelMapfv(GL_PIXEL_MAP_B_TO_B, 1, &zero);
+            glPixelMapfv(GL_PIXEL_MAP_A_TO_A, 1, &one);
         }
 
         // Get the pixel format
@@ -532,15 +535,15 @@ int GLImageBox::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned 
 // Display the new image
 void GLImageBox::resetDisplay()
 {
-    clearIntensityMap();
+    clearColorMap();
     setNormal(); // re-draws as well
 }
 
-// Clears the intensity map
-void GLImageBox::clearIntensityMap()
+// Clears the color map
+void GLImageBox::clearColorMap()
 {
-    delete [] _pIntensityMap;
-    _pIntensityMap = 0;
+    delete [] _pColorMap;
+    _pColorMap = 0;
     _numMapEntries = 0;
 }
 
@@ -558,11 +561,11 @@ int GLImageBox::calcNumColorMapEntries()
     return NumEntries;
 }
 
-// Creates an intensity map
+// Creates a color map (All red entries come first, then green, then blue, then alpha)
 // returns 0 for OK, -1 for memory allocation error
 // numRequestedEntries ... requested number of map entries (used if not greater than maximum possible or number of intensity values)
 // Initialise ... flag to initialise the map to a linear scale or not
-int GLImageBox::createIntensityMap(int numEntriesReq, bool Initialise)
+int GLImageBox::createColorMap(int numEntriesReq, bool Initialise)
 {
     // Get the number of map entries to use
     int maxNumEntries = calcNumColorMapEntries();
@@ -572,43 +575,121 @@ int GLImageBox::createIntensityMap(int numEntriesReq, bool Initialise)
     else
         numEntries = std::min<int>(numEntriesReq, maxNumEntries);
 
-    // Clear and re-create the pixel map if it's not the desired size
+    // Clear and re-create the color map if it's not the desired size
     if (numEntries != _numMapEntries)
     {
-        clearIntensityMap();
+        clearColorMap();
         _numMapEntries = numEntries;
 
-        // Create the intensity map
+        // Create the color map (RGBA)
         try
         {
-            _pIntensityMap = new float[_numMapEntries];
+            _pColorMap = new float[4 * _numMapEntries];
         }
         catch(...)
         {
-            clearIntensityMap();
+            clearColorMap();
             return -1;
         }
     }
 
-    // Initialise the intensity map if requested
+    // Initialise the color map if requested
+    // (All red entries come first, then green, then blue, then alpha)
     if (Initialise == true)
     {
+        // For each RGB channel
+        int arrayIndex = 0;
+        for (int chan = 0; chan < 3; chan++)
+        {
+            for (int in = 0; in < _numMapEntries; in++)
+            {
+                _pColorMap[arrayIndex] = (float)in / (float)(_numMapEntries - 1);
+                arrayIndex++;
+            }
+        }
+        // For alpha channel
         for (int in = 0; in < _numMapEntries; in++)
-            _pIntensityMap[in] = (float)in / (float)(_numMapEntries - 1);
+        {
+            _pColorMap[arrayIndex] = 1.0;
+            arrayIndex++;
+        }
     }
 
     return 0;
 }
 
-// Sets an intensity map value
-// index ... index of intensity map entry
-// value ... intensity value for this entry (range 0 to 1)
-int GLImageBox::setIntensityMapValue(int index, float value)
+// Sets a color map RGBA value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map RGBA entry
+// red ... intensity value for this red entry (range 0 to 1)
+// green ... intensity value for this green entry (range 0 to 1)
+// blue ... intensity value for this blue entry (range 0 to 1)
+// alpha ... value for this alpha entry (range 0 to 1)
+int GLImageBox::setColorMapRGBAValue(int index, float red, float green, float blue, float alpha)
+{
+    if ((index < 0) || (index >= _numMapEntries) || 
+        (red < 0.0) || (red > 1.0) || 
+        (green < 0.0) || (green > 1.0) || 
+        (blue < 0.0) || (blue > 1.0) || 
+        (alpha < 0.0) || (alpha > 1.0))
+        return -1;
+
+    _pColorMap[index] = red;
+    _pColorMap[_numMapEntries + index] = green;
+    _pColorMap[_numMapEntries * 2 + index] = blue;
+    _pColorMap[_numMapEntries * 3 + index] = alpha;
+    return 0;
+}
+
+// Sets a color map red value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map red entry
+// value ... intensity value for this red entry (range 0 to 1)
+int GLImageBox::setColorMapRedValue(int index, float value)
 {
     if ((index < 0) || (index >= _numMapEntries) || (value < 0.0) || (value > 1.0))
         return -1;
 
-    _pIntensityMap[index] = value;
+    _pColorMap[index] = value;
+    return 0;
+}
+
+// Sets a color map green value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map green entry
+// value ... intensity value for this green entry (range 0 to 1)
+int GLImageBox::setColorMapGreenValue(int index, float value)
+{
+    if ((index < 0) || (index >= _numMapEntries) || (value < 0.0) || (value > 1.0))
+        return -1;
+
+    _pColorMap[_numMapEntries + index] = value;
+    return 0;
+}
+
+// Sets a color map blue value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map blue entry
+// value ... intensity value for this blue entry (range 0 to 1)
+int GLImageBox::setColorMapBlueValue(int index, float value)
+{
+    if ((index < 0) || (index >= _numMapEntries) || (value < 0.0) || (value > 1.0))
+        return -1;
+
+    _pColorMap[_numMapEntries * 2 + index] = value;
+    return 0;
+}
+
+// Sets a color map alpha value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map alpha entry
+// value ... value for this alpha entry (range 0 to 1)
+int GLImageBox::setColorMapAlphaValue(int index, float value)
+{
+    if ((index < 0) || (index >= _numMapEntries) || (value < 0.0) || (value > 1.0))
+        return -1;
+
+    _pColorMap[_numMapEntries * 3 + index] = value;
     return 0;
 }
 

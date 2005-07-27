@@ -28,12 +28,16 @@
 # include <gts.h>
 #endif
 
+#include "Core/Vector3D.h"
+
+
+class TopoDS_Edge;
 
 namespace Mesh
 {
 
 class MeshWithProperty;
-
+class MeshKernel;
 
 /** The mesh algorithems container class
  */
@@ -88,6 +92,28 @@ public:
   /** Creates a GTS Surface from a MeshKernel
   */
   static void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface);
+
+  static void cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh); 
+
+  /// helper to discredicice a Edge...
+  static void MeshAlgos::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
+
+  struct FaceSplitEdge
+  {
+    unsigned long ulFaceIndex;
+    Vector3D p1,p2;
+  };
+
+  static void projectCurve( MeshWithProperty* pMesh,
+                                       const TopoDS_Edge& aEdge,
+                                       const std::vector<Vector3D> &rclPoints, 
+                                       std::vector<FaceSplitEdge> &vSplitEdges);
+
+  static void cutByCurve(MeshWithProperty* pMesh,const std::vector<FaceSplitEdge> &vSplitEdges);
+
+  static bool projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+
+
 
 };
 

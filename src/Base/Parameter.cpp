@@ -551,7 +551,7 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCFloat",Name);
 	// and set the value
-	sprintf(cBuf,"%e",dValue); // use %e instead of %f to handle values < 1.0e-6
+	sprintf(cBuf,"%.12f",dValue); // use %.12f instead of %f to handle values < 1.0e-6
 	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
 	// trigger observer
 	Notify(Name);

@@ -90,7 +90,7 @@ PyMethodDef PartFeaturePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject PartFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy::Type, NULL};     
+PyParentObject PartFeaturePy::Parents[] = {&PartFeaturePy::Type ,&App::FeaturePy::Type,&PyObjectBase::Type,  NULL};     
 
 //--------------------------------------------------------------------------
 //t constructor

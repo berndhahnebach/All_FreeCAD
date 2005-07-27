@@ -120,6 +120,30 @@ void ImageView::createActions()
     _pShowOrigAct->setOn(true);
 }
 
+// Enable or disable the color actions (_pShowOrigAct and _pShowBrightAct)
+// By default they are enabled
+// If enabling:
+//      image is redisplayed in original colours (i.e color map cleared)
+// If disabling
+//      color map is left as is and image is not redisplayed
+// This function should be used to disable the color actions when a derived class implements its own color map scheme
+void ImageView::EnableColorActions(bool Enable)
+{
+    if (Enable == true)
+    {
+        _pShowOrigAct->setEnabled(true);
+        _pShowBrightAct->setEnabled(true);
+        _pShowOrigAct->setOn(true);
+        showOriginalColors();
+    }
+    else
+    {
+        _pShowOrigAct->setEnabled(false);
+        _pShowBrightAct->setEnabled(false);
+        _pSliderBrightAdj->hide();
+    }
+}
+
 // Slot function to fit (stretch/shrink) the image to the view size
 void ImageView::fitImage()
 {
@@ -151,22 +175,25 @@ void ImageView::handleColorAct( QAction* act)
 // Show the original colors (no enhancement)
 void ImageView::showOriginalColors()
 {
-    _pGLImageBox->clearIntensityMap();
+    _pGLImageBox->clearColorMap();
     _pGLImageBox->redraw();
 }
 
 // Show the image with a brightness adjustment
 void ImageView::showBrightened()
 {
-    if (createIntensityMap(0, false) == 0)
+    if (createColorMap(0, false) == 0)
     {
         // Fill the intensity map with the preset enhancement
-        int numMapEntries = getNumIntensityMapEntries();
+        int numMapEntries = getNumColorMapEntries();
         double expValue = (_sliderBrightAdjVal / 1000.0) * 256 / numMapEntries;
         for (int in = 0; in < numMapEntries; in++)
         {
             double out = 1.0 - exp (-(double)in * expValue);
-            setIntensityMapValue(in, (float)out);
+            setColorMapRedValue(in, (float)out);
+            setColorMapGreenValue(in, (float)out);
+            setColorMapBlueValue(in, (float)out);
+            setColorMapAlphaValue(in, 1.0);
         }
 
         // redraw
@@ -182,32 +209,78 @@ void ImageView::sliderValueAdjusted(int NewValue)
         showBrightened();
 }
 
-// Create an intensity map
+// Create a color map
+// (All red entries come first, then green, then blue, then alpha)
 // returns 0 for OK, -1 for memory allocation error
 // numRequestedEntries ... requested number of map entries (used if not greater than system maximum or 
 //                         if not greater than the maximum number of intensity values in the current image).
 //                         Pass zero to use the maximum possible. Always check the actual number of entries
-//                         created using getNumIntensityMapEntries() after a call to this method.
+//                         created using getNumColorMapEntries() after a call to this method.
 // Initialise ... flag to initialise the map to a linear scale or not
-int ImageView::createIntensityMap(int numEntriesReq, bool Initialise)
+int ImageView::createColorMap(int numEntriesReq, bool Initialise)
 {
-    return (_pGLImageBox->createIntensityMap(numEntriesReq, Initialise));
+    return (_pGLImageBox->createColorMap(numEntriesReq, Initialise));
 }
 
-// Gets the number of entries in the intensity map
-int ImageView::getNumIntensityMapEntries() const
+// Gets the number of entries in the color map (number of entries for each color)
+int ImageView::getNumColorMapEntries() const
 {
-    return (_pGLImageBox->getNumIntensityMapEntries());
+    return (_pGLImageBox->getNumColorMapEntries());
 }
 
-// Sets an intensity map value
-// index ... index of intensity map entry
-// value ... intensity value for this entry (range 0 to 1)
-int ImageView::setIntensityMapValue(int index, float value)
+// Clears the color map
+void ImageView::clearColorMap()
 {
-    return (_pGLImageBox->setIntensityMapValue(index, value));
+    _pGLImageBox->clearColorMap();
 }
 
+// Sets a color map RGBA value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map RGBA entry
+// red ... intensity value for this red entry (range 0 to 1)
+// green ... intensity value for this green entry (range 0 to 1)
+// blue ... intensity value for this blue entry (range 0 to 1)
+// alpha ... intensity value for this alpha entry (range 0 to 1)
+int ImageView::setColorMapRGBAValue(int index, float red, float green, float blue, float alpha)
+{
+    return (_pGLImageBox->setColorMapRGBAValue(index, red, green, blue, alpha));
+}
+
+// Sets a color map red value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map red entry
+// value ... intensity value for this red entry (range 0 to 1)
+int ImageView::setColorMapRedValue(int index, float value)
+{
+    return (_pGLImageBox->setColorMapRedValue(index, value));
+}
+
+// Sets a color map green value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map green entry
+// value ... intensity value for this green entry (range 0 to 1)
+int ImageView::setColorMapGreenValue(int index, float value)
+{
+    return (_pGLImageBox->setColorMapGreenValue(index, value));
+}
+
+// Sets a color map blue value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map blue entry
+// value ... intensity value for this blue entry (range 0 to 1)
+int ImageView::setColorMapBlueValue(int index, float value)
+{
+    return (_pGLImageBox->setColorMapBlueValue(index, value));
+}
+
+// Sets a color map alpha value
+// (All red entries come first, then green, then blue, then alpha)
+// index ... index of color map alpha entry
+// value ... intensity value for this alpha entry (range 0 to 1)
+int ImageView::setColorMapAlphaValue(int index, float value)
+{
+    return (_pGLImageBox->setColorMapAlphaValue(index, value));
+}
 
 // Clears the image data
 void ImageView::clearImage()
@@ -408,6 +481,18 @@ void ImageView::wheelEvent(QWheelEvent * cEvent)
 // Update the status bar with the image parameters for the current mouse position
 void ImageView::updateStatusBar()
 {
+    // Create the text string to display in the status bar
+    QString txt = createStatusBarText();
+
+   // Update status bar with new text
+   statusBar()->message(txt);
+}
+
+// Create the text to display in the status bar.
+// Gets called by updateStatusBar()
+// Override this function in a derived class to add your own text
+QString ImageView::createStatusBarText()
+{
     // Get some image parameters
     //unsigned short numImageSamples = _pGLImageBox->getImageNumSamplesPerPix();
     double zoomFactor = _pGLImageBox->getZoomFactor();
@@ -481,8 +566,7 @@ void ImageView::updateStatusBar()
                         icX, icY, (int)red, (int)green, (int)blue, (int)alpha, tr("zoom").latin1(), zoomFactor);
     }
 
-   // Update status bar with new text
-   statusBar()->message(txt);
+    return txt;
 }
 
 // Starts a mouse drag in the image - stores some initial positions

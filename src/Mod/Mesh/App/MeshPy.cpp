@@ -44,6 +44,7 @@ using Base::Console;
 #include "Core/Info.h"
 #include "Core/Evaluation.h"
 #include "Core/Iterator.h"
+#include <App/Topology.h>
 
 using namespace Mesh;
 
@@ -99,6 +100,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(isSolid)
   PYMETHODEDEF(hasNonManifolds)
   PYMETHODEDEF(testDelaunay)
+  PYMETHODEDEF(cutByShape)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -179,6 +181,24 @@ MeshWithProperty *MeshPy::getMesh(void)
 // Python wrappers
 //--------------------------------------------------------------------------
 
+PYFUNCIMP_D(MeshPy,cutByShape)
+{
+  App::TopoShapePy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(App::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (App::TopoShapePy*)pcObj;
+
+  PY_TRY {
+      TopoDS_Shape aShape = pcObject->getShape();
+
+    MeshAlgos::cutByShape(aShape, _pcMesh);  
+
+  } PY_CATCH;
+
+  Py_Return;
+}
 
 PYFUNCIMP_D(MeshPy,pointCount)
 {

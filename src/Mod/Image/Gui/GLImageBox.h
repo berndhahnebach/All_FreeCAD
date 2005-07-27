@@ -61,10 +61,14 @@ public:
     int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset = true);
     int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
 
-    void clearIntensityMap();
-    int createIntensityMap(int numEntriesReq = 0, bool Initialise = true);
-    int getNumIntensityMapEntries() const { return _numMapEntries; }
-    int setIntensityMapValue(int index, float value);
+    void clearColorMap();
+    int createColorMap(int numEntriesReq = 0, bool Initialise = true);
+    int getNumColorMapEntries() const { return _numMapEntries; }
+    int setColorMapRGBAValue(int index, float red, float green, float blue, float alpha = 1.0);
+    int setColorMapRedValue(int index, float value);
+    int setColorMapGreenValue(int index, float value);
+    int setColorMapBlueValue(int index, float value);
+    int setColorMapAlphaValue(int index, float value);
 
 signals:
   void drawGraphics();
@@ -94,8 +98,8 @@ private:
     int _base_x0;       // defines a fixed position of x0
     int _base_y0;       // defines a fixed position of y0
 
-    float* _pIntensityMap;  // an intensity map (to alter the brightness and contrast)
-    int _numMapEntries;     // number of entries in intensity map
+    float* _pColorMap;  // a RGBA color map (to alter the intensity or colors)
+    int _numMapEntries;     // number of entries in color map
 
 };
 

@@ -31,8 +31,10 @@
 #include <Base/Console.h>
 #include <Base/PyExportImp.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/Topology.h>
 
 //#include "PartDocType.h"
 #include "FeaturePartBox.h"
@@ -161,11 +163,86 @@ insert(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
+/* module functions */
+static PyObject *                        
+read(PyObject *self, PyObject *args)
+
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+
+  Base::FileInfo File(Name);
+  
+  // checking on the file
+  if(!File.isReadable())
+    Py_Error(PyExc_Exception,"File to load not existing or not readable");
+    
+  TopoDS_Shape aShape;
+
+  PY_TRY {
+    if(File.extension() == "igs" ||File.extension() == "IGS" ||File.extension() == "iges" ||File.extension() == "IGES" )
+    {
+      
+      IGESControl_Reader aReader;
+
+        // read iges-file
+      if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
+        Py_Error(PyExc_Exception,"Error in reading IGES");
+  
+      // make brep
+      aReader.TransferRoots();
+      // one shape, who contain's all subshapes
+      aShape = aReader.OneShape();
+
+    }else if(File.extension() == "stp" ||File.extension() == "STP" ||File.extension() == "step" ||File.extension() == "STEP" )
+    {
+      STEPControl_Reader aReader;
+
+      Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
+      if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
+        Py_Error(PyExc_Exception,"Error in reading STEP");
+      
+
+    
+      // Root transfers
+      Standard_Integer nbr = aReader.NbRootsForTransfer();
+      //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
+      for ( Standard_Integer n = 1; n<= nbr; n++)
+      {
+        printf("STEP: Transfering Root %d\n",n);
+        /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
+        // Collecting resulting entities
+        Standard_Integer nbs = aReader.NbShapes();
+        if (nbs == 0) {
+          aHSequenceOfShape.Nullify();
+          Py_Return;
+        } else {
+          for (Standard_Integer i =1; i<=nbs; i++) 
+          {
+            printf("STEP:   Transfering Shape %d\n",n);
+            aShape=aReader.Shape(i);
+            aHSequenceOfShape->Append(aShape);
+          }
+        }
+      }
+
+    }else{
+      Py_Error(PyExc_Exception,"Unknown ending");
+    }
+    
+    return new App::TopoShapePy(aShape); 
+  } PY_CATCH;
+}
+
+
+
 /* registration table  */
 struct PyMethodDef Part_methods[] = {
     {"info"   , info,    1},       
     {"open"   , open,    1},       
     {"insert" , insert,  1},       
+    {"read"   , read,  1},       
     {NULL     , NULL      }        /* end of table marker */
 };
 
