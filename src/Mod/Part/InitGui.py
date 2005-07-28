@@ -44,12 +44,16 @@ class PartWorkbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up part toolbar...\n')
-			list = ["Part_Test1","Part_Test2","Part_Box","Part_Box2","Part_Cut","Part_ImportStep","Part_ImportIges"]
+			list = ["Part_Test1","Part_Test2","Part_Box","Part_Box2","Part_Box3","Part_Cut","Part_ImportStep","Part_ImportIges","Part_ImportBrep"]
 			Gui.ToolbarAppendItems("PartTools", list, 0)
 
 			Log ('   Set up part commandbar...\n')
-			list = ["Part_NewDoc","Part_Box","Part_Box2","Part_Cut","Part_ImportStep","Part_ImportIges"]
-			Gui.CommandbarAppendItems("PartTools", list, 0)
+			list = ["Part_NewDoc","Part_ImportStep","Part_ImportIges","Part_ImportBrep","Part_ImportCurveNet"]
+			Gui.CommandbarAppendItems("Import", list, 0)
+			list = ["Part_NewDoc","Part_Box","Part_Box2","Part_Box3","Part_Cut"]
+			Gui.CommandbarAppendItems("Boolean", list, 0)
+			list = ["Part_Test1","Part_Test2"]
+			Gui.CommandbarAppendItems("Testing", list, 0)
 
 			Log ('   Set up part menues...\n')
 

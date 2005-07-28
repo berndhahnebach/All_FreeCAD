@@ -115,7 +115,7 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
       }
     }
 
-	  SetShape(aShape);
+	  setShape(aShape);
     Base::Sequencer().stop();
   }
   catch(...){

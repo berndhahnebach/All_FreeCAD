@@ -37,6 +37,8 @@
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
+#include "FeaturePartImportBrep.h"
+#include "FeaturePartCurveNet.h"
 
 using Base::Console;
 using namespace Part;
@@ -62,10 +64,13 @@ void ModuleExport initPart() {
 	Console().Log("AppPart loaded\n");
 
 	//new App::FeatureProducer<Part::PartBoxFeature>;
+  App::FeatureFactory().AddProducer("Part"          ,new App::FeatureProducer<Part::PartFeature>);
   App::FeatureFactory().AddProducer("PartBox"       ,new App::FeatureProducer<Part::PartBoxFeature>);
 	App::FeatureFactory().AddProducer("PartCut"       ,new App::FeatureProducer<Part::PartCutFeature>);
 	App::FeatureFactory().AddProducer("PartImportStep",new App::FeatureProducer<Part::FeaturePartImportStep>);
 	App::FeatureFactory().AddProducer("PartImportIges",new App::FeatureProducer<Part::FeaturePartImportIges>);
+	App::FeatureFactory().AddProducer("PartImportBrep",new App::FeatureProducer<Part::FeaturePartImportBrep>);
+	App::FeatureFactory().AddProducer("PartCurveNet"  ,new App::FeatureProducer<Part::FeaturePartCurveNet>);
 
 	return;
 }

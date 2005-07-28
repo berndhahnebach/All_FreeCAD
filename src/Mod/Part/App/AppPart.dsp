@@ -114,11 +114,27 @@ SOURCE=.\FeaturePartBox.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeaturePartCurveNet.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartCurveNet.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\FeaturePartCut.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\FeaturePartCut.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartImportBrep.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartImportBrep.h
 # End Source File
 # Begin Source File
 
@@ -140,6 +156,14 @@ SOURCE=.\FeaturePartImportStep.h
 
 SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=.\PartAlgos.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PartAlgos.h
 # End Source File
 # Begin Source File
 

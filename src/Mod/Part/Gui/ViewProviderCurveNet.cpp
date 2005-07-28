@@ -62,7 +62,7 @@
 #include <Base/Sequencer.h>
 #include <App/Application.h>
 
-#include "ViewProvider.h"
+#include "ViewProviderCurveNet.h"
 
 #include <Mod/Part/App/PartFeature.h>
 
@@ -81,7 +81,7 @@ using namespace PartGui;
 // Construction/Destruction
 
        
-ViewProviderInventorPart::ViewProviderInventorPart()
+ViewProviderCurveNet::ViewProviderCurveNet()
 {
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
@@ -91,12 +91,12 @@ ViewProviderInventorPart::ViewProviderInventorPart()
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 }
 
-ViewProviderInventorPart::~ViewProviderInventorPart()
+ViewProviderCurveNet::~ViewProviderCurveNet()
 {
 
 }
 
-void ViewProviderInventorPart::attache(App::Feature *pcFeat)
+void ViewProviderCurveNet::attache(App::Feature *pcFeat)
 {
   pcFeature = pcFeat;
   // geting actual setting values...
@@ -121,7 +121,6 @@ void ViewProviderInventorPart::attache(App::Feature *pcFeat)
 	//BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
 
   try{
-    computeFaces   (pcRoot,cShape);
     computeEdges   (pcRoot,cShape);
     computeVertices(pcRoot,cShape);
   } catch (...){
@@ -165,7 +164,7 @@ buffer_writeaction(SoNode * root)
 
 // **********************************************************************************
 
-Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderCurveNet::computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
   SoSeparator *EdgeRoot = new SoSeparator();
@@ -270,7 +269,7 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 }
 
 
-Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderCurveNet::computeVertices(SoSeparator* root, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
   SoSeparator *FaceRoot = new SoSeparator();
@@ -290,100 +289,8 @@ Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, co
 
 
 
-Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const TopoDS_Shape &myShape)
-{
-  TopExp_Explorer ex;
 
-  SoSeparator *FaceRoot = new SoSeparator();
-  root->addChild(FaceRoot);
-
-  FaceRoot->addChild(pcShadedMaterial);
-
-//  BRepMesh::Mesh(myShape,1.0);
-//	BRepMesh_Discret MESH(1.0,myShape,20.0);
-	BRepMesh_IncrementalMesh MESH(myShape,fMeshDeviation);
-
-  // counting faces and start sequencer
-  int l = 1;
-  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-  Base::Sequencer().start("creating view representation", l);
-
-  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
-
-    // get the shape and mesh it
-		const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
-
-
-    // this block mesh the face and transfers it in a C array of vertices and face indexes
-		Standard_Integer nbNodesInFace,nbTriInFace;
-		SbVec3f* vertices=0;
-		SbVec3f* vertexnormals=0;
-		long* cons=0;
-    
-    transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
-
-    if(!vertices) break;
-
-    if(!bNoPerVertexNormals)
-    {
-      // define normals (this is optional)
-      SoNormal * norm = new SoNormal;
-      norm->vector.setValues(0, nbNodesInFace, vertexnormals);
-      FaceRoot->addChild(norm);
-
-      // bind one normal per face
-      SoNormalBinding * normb = new SoNormalBinding;
-      normb->value = SoNormalBinding::PER_VERTEX_INDEXED;
-      FaceRoot->addChild(normb);
-    }
-
-	  // define vertices
-	  SoCoordinate3 * coords = new SoCoordinate3;
-	  coords->point.setValues(0,nbNodesInFace, vertices);
-	  FaceRoot->addChild(coords);
-
-   // Turns on backface culling
-//    SoShapeHints * hints = new SoShapeHints;
-//    hints->vertexOrdering = SoShapeHints::CLOCKWISE ;
-//    hints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-//    hints->shapeType = SoShapeHints::SOLID;
-//    hints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-//    root->addChild(hints);
-
-    //SoDrawStyle *Stype = new SoDrawStyle();
-    //Stype->pointSize.setValue(3.0);
-    //Stype->style.setValue( SoDrawStyle::POINTS );
-
-    //SoPointSet *PtSet = new SoPointSet;
-    //root->addChild(PtSet);
-
-	  // define the indexed face set
-		SoLocateHighlight* h = new SoLocateHighlight();
-//    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-    h->color.setValue((float)0.0,(float)0.0,(float)0.5);
-
-    SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-		faceset->coordIndex.setValues(0,4*nbTriInFace,(const int*) cons);
-		h->addChild(faceset);
-		FaceRoot->addChild(h);
-
-    
-//    Base::Console().Log("Inventor tree:\n%s",buffer_writeaction(root).c_str());
-
-		delete [] vertexnormals;
-		delete [] vertices;
-		delete [] cons;
-
-    Base::Sequencer().next();
-
-  } // end of face loop
-
-  Base::Sequencer().stop();
-
-  return true;
-}
-
-void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )
+void ViewProviderCurveNet::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )
 {
 	TopLoc_Location aLoc;
 

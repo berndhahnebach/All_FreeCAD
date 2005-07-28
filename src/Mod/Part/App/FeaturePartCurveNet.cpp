@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2005     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -34,12 +34,13 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
-#include "FeaturePartImportIges.h"
+#include "FeaturePartCurveNet.h"
+#include "PartAlgos.h"
 
 
 using namespace Part;
 
-void FeaturePartImportIges::InitLabel(const TDF_Label &rcLabel)
+void FeaturePartCurveNet::InitLabel(const TDF_Label &rcLabel)
 {
 	Base::Console().Log("FeaturePartImportStep::InitLabel()\n");
 
@@ -48,27 +49,17 @@ void FeaturePartImportIges::InitLabel(const TDF_Label &rcLabel)
 }
 
 /*
-bool FeaturePartImportStep::MustExecute(const TFunction_Logbook& log)
+bool FeaturePartImportBrep::MustExecute(const TFunction_Logbook& log)
 {
 	Base::Console().Log("PartBoxFeature::MustExecute()\n");
 	return false;
 }
 */
-Standard_Integer FeaturePartImportIges::Execute(TFunction_Logbook& log)
+Standard_Integer FeaturePartCurveNet::Execute(TFunction_Logbook& log)
 {
-	Base::Console().Log("FeaturePartImportIges::Execute()\n");
-
-/*  cout << GetFloatProperty("x") << endl;
-  cout << GetFloatProperty("y") << endl;
-  cout << GetFloatProperty("z") << endl;
-  cout << GetFloatProperty("l") << endl;
-  cout << GetFloatProperty("h") << endl;
-  cout << GetFloatProperty("w") << endl;*/
+	Base::Console().Log("FeaturePartCurveNet::Execute()\n");
 
   try{
-
-    IGESControl_Reader aReader;
-    TopoDS_Shape aShape;
 
     std::string FileName = getPropertyString("FileName");
 
@@ -81,25 +72,7 @@ Standard_Integer FeaturePartImportIges::Execute(TFunction_Logbook& log)
 		  return 1;
 	  }
 
-    // just do show the wait cursor when the Gui is up
-    Base::Sequencer().start("Load IGES", 1);
-    Base::Sequencer().next();
-
-      // read iges-file
-    if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
-      throw Base::Exception("IGES read failed (load file)");
-  
-    // check iges-file (memory)
-    //if (!aReader.Check(Standard_True))
-    //  Base::Console().Warning( "IGES model contains errors! try loading anyway....\n" );
-  
-    // make brep
-    aReader.TransferRoots();
-    // one shape, who contain's all subshapes
-    aShape = aReader.OneShape();
-
-	  setShape(aShape);
-    Base::Sequencer().stop();
+	  setShape(PartAlgos::Load(FileName.c_str()));
   }
   catch(...){
     Base::Console().Error("FeaturePartImportIges::Execute() failed!");
@@ -110,7 +83,7 @@ Standard_Integer FeaturePartImportIges::Execute(TFunction_Logbook& log)
 }
 
 
-void FeaturePartImportIges::Validate(TFunction_Logbook& log)
+void FeaturePartCurveNet::Validate(TFunction_Logbook& log)
 {
 	Base::Console().Log("FeaturePartImportStep::Validate()\n");
  

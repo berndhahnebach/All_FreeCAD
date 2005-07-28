@@ -55,8 +55,8 @@ Standard_Integer PartCutFeature::Execute(TFunction_Logbook& log)
     PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Second"));
 
     // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
-	  TopoDS_Shape OriginalShape  = pcFirst->GetShape();
-	  TopoDS_Shape ToolShape = pcSecond->GetShape();
+	  TopoDS_Shape OriginalShape  = pcFirst->getShape();
+	  TopoDS_Shape ToolShape = pcSecond->getShape();
 
   // STEP 2:
 	  // Let's call for algorithm computing a cut operation:
@@ -68,7 +68,7 @@ Standard_Integer PartCutFeature::Execute(TFunction_Logbook& log)
     TopoDS_Shape ResultShape = mkCut.Shape();
 
 
-  	SetShape(ResultShape);
+  	setShape(ResultShape);
 
   }
   catch(...){

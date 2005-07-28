@@ -59,13 +59,28 @@ PartFeature::PartFeature(void)
 
 }
 	
-void PartFeature::SetShape(TopoDS_Shape &Shape)
+void PartFeature::InitLabel(const TDF_Label &rcLabel)
+{
+}
+
+Standard_Integer PartFeature::Execute(TFunction_Logbook& log)
+{
+  return 0;
+}
+
+void PartFeature::Validate(TFunction_Logbook& log)
+{
+}
+
+
+
+void PartFeature::setShape(TopoDS_Shape &Shape)
 {
  	TNaming_Builder B(_cFeatureLabel);
 	B.Generated(Shape);
 }
 
-TopoDS_Shape PartFeature::GetShape(void)
+TopoDS_Shape PartFeature::getShape(void)
 {
   Handle(TNaming_NamedShape) ShapeToViewName;
   if (!( _cFeatureLabel.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))

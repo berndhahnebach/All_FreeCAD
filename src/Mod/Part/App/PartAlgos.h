@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,62 +20,30 @@
  *                                                                         *
  ***************************************************************************/
 
- 
 
+#ifndef _PartAlgos_h_
+#define _PartAlgos_h_
 
-#ifndef _PartFeaturePy_h_
-#define _PartFeaturePy_h_
+#ifndef _PreComp_
+# include <gts.h>
+#endif
 
-//#include <Base/Factory.h>
-#include <Base/PyExportImp.h>
-#include <App/FeaturePy.h>
-
-namespace Base{
-  class PyObjectBase;
-}
 
 namespace Part
 {
 
-class PartFeature;
-
-//===========================================================================
-// PartFeaturePy - Python wrapper 
-//===========================================================================
-
-// The DocTypeStd python class 
-class AppPartExport PartFeaturePy :public App::FeaturePy
+/** The Part algorithems container class
+ */
+class AppPartExport PartAlgos
 {
-	/// always start with Py_Header
-	Py_Header;
-
 public:
-	PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~PartFeaturePy();
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-
-  PYFUNCDEF_D(PartFeaturePy,getShape)
-  PYFUNCDEF_D(PartFeaturePy,setShape)
-
-
-private:
-  PartFeature *_pcFeature;
+  /** Load a Part
+   */
+  static TopoDS_Shape Load(const char *FileName);
 
 };
 
 
 
-} //namespace Part
-
-
-
-#endif
+} // namespace Part
+#endif 

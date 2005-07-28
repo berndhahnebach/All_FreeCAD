@@ -34,6 +34,7 @@
 #include <Gui/WidgetFactory.h>
 
 #include "ViewProvider.h"
+#include "ViewProviderCurveNet.h"
 #include "DlgSettings3DViewPartImp.h"
 
 #include "Part_de.h"
@@ -87,10 +88,11 @@ void ModuleExport initPartGui() {
   Gui::ApplicationWindow::Instance->macroManager()->setModule("Part");
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportStep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartBox"           ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCut"           ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportStep"    ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportIges"    ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportCurveNet",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderCurveNet>);
 
 	// instanciating the commands
 	CreateCommands();

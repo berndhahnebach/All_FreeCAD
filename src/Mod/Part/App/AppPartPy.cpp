@@ -41,6 +41,7 @@
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
+#include "PartAlgos.h"
 
 using Base::Console;
 using namespace Part;
@@ -99,6 +100,15 @@ open(PyObject *self, PyObject *args)
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
+    }else if(cEnding == "brp" || cEnding == "brep" || cEnding == "BRP" || cEnding == "BREP")
+    {
+      // create new document and add Import feature
+      App::Document *pcDoc = App::GetApplication().New();
+      App::Feature *pcFeature = pcDoc->AddFeature("PartImportBrep","Brep open");
+      pcFeature->setPropertyString(Name,"FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+
     }
     else
     {
@@ -151,6 +161,15 @@ insert(PyObject *self, PyObject *args)
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
+    }else if(cEnding == "brp" || cEnding == "brep" || cEnding == "BRP" || cEnding == "BREP")
+    {
+      App::Document *pcDoc = App::GetApplication().Active();
+      if (!pcDoc)
+        throw "Import called without a active document??";
+      App::Feature *pcFeature = pcDoc->AddFeature("PartImportBrep","brep import");
+      pcFeature->setPropertyString(Name,"FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
     }
     else
     {
@@ -171,67 +190,8 @@ read(PyObject *self, PyObject *args)
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
-
-  Base::FileInfo File(Name);
-  
-  // checking on the file
-  if(!File.isReadable())
-    Py_Error(PyExc_Exception,"File to load not existing or not readable");
-    
-  TopoDS_Shape aShape;
-
   PY_TRY {
-    if(File.extension() == "igs" ||File.extension() == "IGS" ||File.extension() == "iges" ||File.extension() == "IGES" )
-    {
-      
-      IGESControl_Reader aReader;
-
-        // read iges-file
-      if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
-        Py_Error(PyExc_Exception,"Error in reading IGES");
-  
-      // make brep
-      aReader.TransferRoots();
-      // one shape, who contain's all subshapes
-      aShape = aReader.OneShape();
-
-    }else if(File.extension() == "stp" ||File.extension() == "STP" ||File.extension() == "step" ||File.extension() == "STEP" )
-    {
-      STEPControl_Reader aReader;
-
-      Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-      if (aReader.ReadFile((const Standard_CString)File.filePath().c_str()) != IFSelect_RetDone)
-        Py_Error(PyExc_Exception,"Error in reading STEP");
-      
-
-    
-      // Root transfers
-      Standard_Integer nbr = aReader.NbRootsForTransfer();
-      //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
-      for ( Standard_Integer n = 1; n<= nbr; n++)
-      {
-        printf("STEP: Transfering Root %d\n",n);
-        /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
-        // Collecting resulting entities
-        Standard_Integer nbs = aReader.NbShapes();
-        if (nbs == 0) {
-          aHSequenceOfShape.Nullify();
-          Py_Return;
-        } else {
-          for (Standard_Integer i =1; i<=nbs; i++) 
-          {
-            printf("STEP:   Transfering Shape %d\n",n);
-            aShape=aReader.Shape(i);
-            aHSequenceOfShape->Append(aShape);
-          }
-        }
-      }
-
-    }else{
-      Py_Error(PyExc_Exception,"Unknown ending");
-    }
-    
-    return new App::TopoShapePy(aShape); 
+    return new App::TopoShapePy(PartAlgos::Load(Name)); 
   } PY_CATCH;
 }
 

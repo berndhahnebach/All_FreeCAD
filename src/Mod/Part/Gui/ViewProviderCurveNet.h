@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,62 +20,58 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
+#ifndef __ViewProviderCurveNet_H__
+#define __ViewProviderCurveNet_H__
+
+#include "ViewProvider.h"
 
 
-#ifndef _PartFeaturePy_h_
-#define _PartFeaturePy_h_
+class TopoDS_Shape;
+class TopoDS_Face;
+class SoSeparator;
+class SbVec3f;
 
-//#include <Base/Factory.h>
-#include <Base/PyExportImp.h>
-#include <App/FeaturePy.h>
+namespace PartGui {
 
-namespace Base{
-  class PyObjectBase;
-}
 
-namespace Part
+class AppPartGuiExport ViewProviderCurveNet:public ViewProviderInventorPart
 {
-
-class PartFeature;
-
-//===========================================================================
-// PartFeaturePy - Python wrapper 
-//===========================================================================
-
-// The DocTypeStd python class 
-class AppPartExport PartFeaturePy :public App::FeaturePy
-{
-	/// always start with Py_Header
-	Py_Header;
-
 public:
-	PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~PartFeaturePy();
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
-
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-
-  PYFUNCDEF_D(PartFeaturePy,getShape)
-  PYFUNCDEF_D(PartFeaturePy,setShape)
+  /// constructor
+  ViewProviderCurveNet();
+  /// destructor
+  virtual ~ViewProviderCurveNet();
 
 
-private:
-  PartFeature *_pcFeature;
+  virtual void attache(App::Feature *);
+
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName){};
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
+  /// Update the Part representation
+  virtual void update(const ChangeType&){}
+
+
+protected:
+  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
+  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
+
+  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+
+  // setings stuff
+  FCParameterGrp::handle hGrp;
+  float fMeshDeviation;     
+  bool  bNoPerVertexNormals;
+  long  lHilightColor;      
+  bool  bQualityNormals;    
+
 
 };
 
+} // namespace PartGui
 
 
-} //namespace Part
+#endif // __VIEWPROVIDERPART_H__
 
-
-
-#endif

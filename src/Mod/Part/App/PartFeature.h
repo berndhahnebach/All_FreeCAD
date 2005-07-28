@@ -56,7 +56,7 @@ public:
 	 *  to a Label in the document. It need to be overwriten in 
 	 *  every Feature
 	 */
-	virtual void InitLabel(const TDF_Label &rcLabel)=0;
+	virtual void InitLabel(const TDF_Label &rcLabel);
 
 
 	/** @name methodes used for recalculation (update) */
@@ -76,13 +76,16 @@ public:
 	 *  2 - algorithm failed
 	 *  0 - no mistakes were found.
 	 */
-	virtual Standard_Integer Execute(TFunction_Logbook& log)=0;
+	virtual Standard_Integer Execute(TFunction_Logbook& log);
 
 	/** Validate
 	 * Validation of the object label, its arguments and its results.
 	 */
-	virtual void Validate(TFunction_Logbook& log)=0;
+	virtual void Validate(TFunction_Logbook& log);
 	//@}
+
+    /// Returns the Name/Type of the feature
+  virtual const char *Type(void){return "Part";};
 
 
 	/** @name methodes for conviniant handling of Parameter (Properties) */
@@ -90,12 +93,12 @@ public:
 	/** Set the result shape
 	 *  
 	 */
-  void SetShape(TopoDS_Shape &Shape);
+  void setShape(TopoDS_Shape &Shape);
   
 	/** Get the actual result shape
 	 *  
 	 */
-  TopoDS_Shape GetShape(void);
+  TopoDS_Shape getShape(void);
   
 	//@}
 

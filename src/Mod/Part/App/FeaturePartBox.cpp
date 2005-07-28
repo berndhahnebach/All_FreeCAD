@@ -79,7 +79,7 @@ Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
   TopoDS_Shape ResultShape = mkBox.Shape();
 
 
-	SetShape(ResultShape);
+	setShape(ResultShape);
 
   }
   catch(...){

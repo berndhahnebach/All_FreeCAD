@@ -98,7 +98,7 @@ Standard_Integer FeatureImportIges::Execute(TFunction_Logbook& log)
     // one shape, who contain's all subshapes
     aShape = aReader.OneShape();
 
-	  SetShape(aShape);
+	  setShape(aShape);
     Base::Sequencer().stop();
   }
   catch(...){

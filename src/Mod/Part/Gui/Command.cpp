@@ -196,8 +196,8 @@ FCCmdPartBox2::FCCmdPartBox2()
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
-	sMenuText		  = "Box2";
-	sToolTipText	= "Create or change a Box feature without Dialog";
+	sMenuText		  = "Box fix 1";
+	sToolTipText	= "Create a Box feature without Dialog";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			  = "Part_Box";
@@ -224,6 +224,50 @@ void FCCmdPartBox2::activated(int iMsg)
 }
 
 bool FCCmdPartBox2::isActive(void)
+{
+	if( getActiveDocument() )
+		return true;
+	else
+		return false;
+
+}
+//===========================================================================
+// Part_Box2
+//===========================================================================
+DEF_STD_CMD_A(FCCmdPartBox3);
+
+FCCmdPartBox3::FCCmdPartBox3()
+	:CppCommand("Part_Box3")
+{
+	sAppModule		= "Part";
+	sGroup			  = "Part";
+	sMenuText		  = "Box fix 2";
+	sToolTipText	= "Create a Box feature without Dialog";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			  = "Part_Box";
+	iAccel			  = 0;
+}
+
+
+void FCCmdPartBox3::activated(int iMsg)
+{
+  openCommand("PartBox Create");
+
+	doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\",\"PartBox\")");
+	doCommand(Doc,"f.x = 50.0");
+	doCommand(Doc,"f.y = 50.0");
+	doCommand(Doc,"f.z = 50.0");
+	doCommand(Doc,"f.l = 100.0");
+	doCommand(Doc,"f.w = 100.0");
+	doCommand(Doc,"f.h = 100.0");
+ 
+  updateActive();
+
+  commitCommand();
+}
+
+bool FCCmdPartBox3::isActive(void)
 {
 	if( getActiveDocument() )
 		return true;
@@ -363,6 +407,107 @@ bool PartImportIges::isActive(void)
 
 }
 
+//===========================================================================
+// PartImportBrep
+//===========================================================================
+DEF_STD_CMD_A(PartImportBrep);
+
+PartImportBrep::PartImportBrep()
+	:CppCommand("Part_ImportBrep")
+{
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Import BREP";
+	sToolTipText	= "Import BREP file format";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Save";
+	iAccel			= 0;
+}
+
+
+void PartImportBrep::activated(int iMsg)
+{
+
+//  DlgPartImportIgesImp cDlg(getAppWnd(),"Part import IGES",true);
+//  if ( cDlg.exec() == QDialog::Accepted )
+
+  
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "BREP (*.brp *.brep *.BREP);;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
+  {
+    openCommand("Part ImportIGES Create");
+	  
+    doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportBrep\",\"PartImportBrep\")");
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+
+    commitCommand();
+  
+    updateActive();
+  }
+
+
+}
+
+bool PartImportBrep::isActive(void)
+{
+	if( getActiveDocument() )
+		return true;
+	else
+		return false;
+
+}
+
+//===========================================================================
+// PartImportCurveNet
+//===========================================================================
+DEF_STD_CMD_A(PartImportCurveNet);
+
+PartImportCurveNet::PartImportCurveNet()
+	:CppCommand("Part_ImportCurveNet")
+{
+	sAppModule		= "Part";
+	sGroup			= "Part";
+	sMenuText		= "Import a curve network";
+	sToolTipText	= "Import a curve network";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Save";
+	iAccel			= 0;
+}
+
+
+void PartImportCurveNet::activated(int iMsg)
+{
+
+ 
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "All CAD (*.stp *. step *.igs *.iges *.brp *.brep );;STEP (*.stp *. step);;IGES (*.igs *.iges);;BREP (*.brp *.brep );;All Files (*.*)", 
+                                                 Gui::ApplicationWindow::Instance );
+	if (! fn.isEmpty() )
+  {
+    openCommand("Part Import Curve Net");
+	  
+    doCommand(Doc,"f = App.DocGet().AddFeature(\"PartCurveNet\",\"PartCurveNet\")");
+	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+
+    commitCommand();
+  
+    updateActive();
+  }
+
+
+}
+
+bool PartImportCurveNet::isActive(void)
+{
+	if( getActiveDocument() )
+		return true;
+	else
+		return false;
+
+}
+
 
 
 void CreateCommands(void)
@@ -371,12 +516,18 @@ void CreateCommands(void)
 
 	rcCmdMgr.addCommand(new FCCmdPartTest1());
 	rcCmdMgr.addCommand(new FCCmdPartTest2());
-	rcCmdMgr.addCommand(new FCCmdPartCut());
+
+  rcCmdMgr.addCommand(new FCCmdPartCut());
 	rcCmdMgr.addCommand(new FCCmdPartBox());
 	rcCmdMgr.addCommand(new FCCmdPartBox2());
-	rcCmdMgr.addCommand(new PartImportIges());
+	rcCmdMgr.addCommand(new FCCmdPartBox3());
+
+  rcCmdMgr.addCommand(new PartImportIges());
 	rcCmdMgr.addCommand(new PartImportStep());
-	rcCmdMgr.addCommand(new CmdPartNewDoc());
+	rcCmdMgr.addCommand(new PartImportBrep());
+	rcCmdMgr.addCommand(new PartImportCurveNet());
+
+  rcCmdMgr.addCommand(new CmdPartNewDoc());
 
 }
 

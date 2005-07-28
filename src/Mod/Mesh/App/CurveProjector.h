@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,62 +20,55 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
+#ifndef _CurveProjector_h_
+#define _CurveProjector_h_
+
+#ifndef _PreComp_
+# include <gts.h>
+#endif
+
+#include "Core/Vector3D.h"
 
 
-#ifndef _PartFeaturePy_h_
-#define _PartFeaturePy_h_
+class TopoDS_Edge;
 
-//#include <Base/Factory.h>
-#include <Base/PyExportImp.h>
-#include <App/FeaturePy.h>
-
-namespace Base{
-  class PyObjectBase;
-}
-
-namespace Part
+namespace Mesh
 {
 
-class PartFeature;
+class MeshWithProperty;
+class MeshKernel;
 
-//===========================================================================
-// PartFeaturePy - Python wrapper 
-//===========================================================================
-
-// The DocTypeStd python class 
-class AppPartExport PartFeaturePy :public App::FeaturePy
+/** The mesh algorithems container class
+ */
+class AppMeshExport CurveProjector
 {
-	/// always start with Py_Header
-	Py_Header;
-
 public:
-	PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
 
-	~PartFeaturePy();
+  void cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh); 
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
+  /// helper to discredicice a Edge...
+  void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+  struct FaceSplitEdge
+  {
+    unsigned long ulFaceIndex;
+    Vector3D p1,p2;
+  };
 
-  PYFUNCDEF_D(PartFeaturePy,getShape)
-  PYFUNCDEF_D(PartFeaturePy,setShape)
+  void projectCurve( MeshWithProperty* pMesh,
+                                       const TopoDS_Edge& aEdge,
+                                       const std::vector<Vector3D> &rclPoints, 
+                                       std::vector<FaceSplitEdge> &vSplitEdges);
 
+  bool projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 
-private:
-  PartFeature *_pcFeature;
+protected:
+  const TopoDS_Shape &aShape;
 
 };
 
 
 
-} //namespace Part
-
-
-
-#endif
+} // namespace Mesh
+#endif 

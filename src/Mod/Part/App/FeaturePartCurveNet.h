@@ -20,62 +20,39 @@
  *                                                                         *
  ***************************************************************************/
 
- 
 
 
-#ifndef _PartFeaturePy_h_
-#define _PartFeaturePy_h_
+#ifndef __FeaturePartCurveNet_H__
+#define __FeaturePartCurveNet_H__
 
-//#include <Base/Factory.h>
-#include <Base/PyExportImp.h>
-#include <App/FeaturePy.h>
 
-namespace Base{
-  class PyObjectBase;
-}
+#include "PartFeature.h"
 
 namespace Part
 {
 
-class PartFeature;
 
-//===========================================================================
-// PartFeaturePy - Python wrapper 
-//===========================================================================
-
-// The DocTypeStd python class 
-class AppPartExport PartFeaturePy :public App::FeaturePy
+class FeaturePartCurveNet :public PartFeature
 {
-	/// always start with Py_Header
-	Py_Header;
-
 public:
-	PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
 
-	~PartFeaturePy();
+	virtual void InitLabel(const TDF_Label &rcLabel);
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
+//	virtual bool MustExecute(const TFunction_Logbook& log);
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
-	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	virtual Standard_Integer Execute(TFunction_Logbook& log);
 
-  PYFUNCDEF_D(PartFeaturePy,getShape)
-  PYFUNCDEF_D(PartFeaturePy,setShape)
+	virtual void Validate(TFunction_Logbook& log);
 
-
-private:
-  PartFeature *_pcFeature;
-
+  /// Returns the Name/Type of the feature
+  virtual const char *Type(void){return "PartImportIges";};
 };
 
 
 
-} //namespace Part
+}
 
 
 
-#endif
+
+#endif // __FeaturePartImportBrep_H__

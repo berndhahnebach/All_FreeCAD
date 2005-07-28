@@ -83,6 +83,7 @@ PyTypeObject PartFeaturePy::Type = {
 PyMethodDef PartFeaturePy::Methods[] = {
 //  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
 	PYMETHODEDEF(getShape)
+	PYMETHODEDEF(setShape)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -155,7 +156,21 @@ PYFUNCIMP_D(PartFeaturePy,getShape)
     //if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     //    return NULL;                             // NULL triggers exception 
 
-  return new App::TopoShapePy(_pcFeature->GetShape());
+  return new App::TopoShapePy(_pcFeature->getShape());
 	//Py_Error(PyExc_Exception,"Not implemented!");
 }
 
+PYFUNCIMP_D(PartFeaturePy,setShape)
+{
+  App::TopoShapePy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(App::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (App::TopoShapePy*)pcObj;
+
+  // copy in the Feature Mesh
+  _pcFeature->setShape(pcObject->getShape());
+
+  Py_Return;
+}
