@@ -56,7 +56,7 @@ Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
     // ask for read permisson
 		if ( access(FileName.c_str(), 4) != 0 )
     {
-      Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName);
+      Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName.c_str());
       return 1;
     }
 

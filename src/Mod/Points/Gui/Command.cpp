@@ -70,7 +70,7 @@ void CmdPointsTest::activated(int iMsg)
 
 }
 
-void CreateCommands(void)
+void CreatePointsCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdPointsTest());

@@ -58,7 +58,7 @@ PartFeature::PartFeature(void)
 {
 
 }
-	
+
 void PartFeature::InitLabel(const TDF_Label &rcLabel)
 {
 }
@@ -74,7 +74,7 @@ void PartFeature::Validate(TFunction_Logbook& log)
 
 
 
-void PartFeature::setShape(TopoDS_Shape &Shape)
+void PartFeature::setShape(const TopoDS_Shape &Shape)
 {
  	TNaming_Builder B(_cFeatureLabel);
 	B.Generated(Shape);

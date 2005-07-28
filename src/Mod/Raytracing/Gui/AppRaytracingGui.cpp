@@ -38,7 +38,8 @@
 #include "Raytracing_de.h"
 #include <Gui/Language/LanguageFactory.h>
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void CreateRaytracingCommands(void);
 
 using namespace RayGui;
 
@@ -84,7 +85,7 @@ void ModuleExport initRaytracingGui() {
   Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
-  CreateCommands();
+  CreateRaytracingCommands();
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( QObject::tr( "Raytracing" ) );

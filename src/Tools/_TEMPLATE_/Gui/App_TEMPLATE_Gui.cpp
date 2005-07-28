@@ -30,7 +30,8 @@
 
 #include <Gui/Application.h>
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void Create_TEMPLATE_Commands(void);
 
 
 /* module functions */
@@ -74,7 +75,7 @@ void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
   Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
-  CreateCommands();
+  Create_TEMPLATE_Commands();
 
 
   return;

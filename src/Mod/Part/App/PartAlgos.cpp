@@ -26,6 +26,9 @@
 # ifdef FC_OS_LINUX
 #	  include <unistd.h>
 # endif
+# include <BRep_Builder.hxx>
+# include <BRepTools.hxx>
+# include <TopTools_HSequenceOfShape.hxx>
 #endif
 
 

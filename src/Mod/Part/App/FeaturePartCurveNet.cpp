@@ -68,7 +68,7 @@ Standard_Integer FeaturePartCurveNet::Execute(TFunction_Logbook& log)
 	  {
 		  close(i);
 	  }else{
-      Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName);
+      Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
 		  return 1;
 	  }
 

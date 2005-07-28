@@ -88,7 +88,7 @@ void CmdImageOpen::activated(int iMsg)
   }
 }
 
-void CreateCommands(void)
+void CreateImageCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
 

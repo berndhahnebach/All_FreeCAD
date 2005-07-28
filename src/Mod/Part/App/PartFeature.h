@@ -93,7 +93,7 @@ public:
 	/** Set the result shape
 	 *  
 	 */
-  void setShape(TopoDS_Shape &Shape);
+  void setShape(const TopoDS_Shape &Shape);
   
 	/** Get the actual result shape
 	 *  

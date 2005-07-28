@@ -34,7 +34,9 @@ libPartGui_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \
-		ViewProvider.h
+		ViewProvider.h \
+		ViewProviderCurveNet.cpp \
+		ViewProviderCurveNet.h
 
 # the library search path.
 libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

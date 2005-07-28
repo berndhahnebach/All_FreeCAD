@@ -410,7 +410,7 @@ bool CmdRaytracingQuickRender::isActive(void)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-void CreateCommands(void)
+void CreateRaytracingCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdRaytracingWriteCamera());

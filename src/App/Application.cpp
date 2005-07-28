@@ -29,6 +29,7 @@
 #ifndef _PreComp_
 #	include <TColStd_SequenceOfExtendedString.hxx>
 #	include <TCollection_ExtendedString.hxx>
+# include <TFunction_DriverTable.hxx>
 # include <iostream>
 # ifdef FC_OS_LINUX
 # include <time.h>

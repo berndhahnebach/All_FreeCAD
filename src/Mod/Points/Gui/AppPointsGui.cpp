@@ -30,7 +30,8 @@
 
 #include <Gui/Application.h>
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void CreatePointsCommands(void);
 
 
 /* module functions */
@@ -74,7 +75,7 @@ void PointsGuiExport initPointsGui() {
   Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
-  CreateCommands();
+  CreatePointsCommands();
 
 
   return;

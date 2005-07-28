@@ -6,12 +6,16 @@ libPart_la_SOURCES=\
 		AppPartPy.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartBox.h \
+		FeaturePartCurveNet.cpp \
+		FeaturePartCurveNet.h \
 		FeaturePartCut.cpp \
 		FeaturePartCut.h \
 		FeaturePartImportIges.cpp \
 		FeaturePartImportIges.h \
 		FeaturePartImportStep.cpp \
 		FeaturePartImportStep.h \
+		PartAlgos.cpp \
+		PartAlgos.h \
 		PartFeature.cpp \
 		PartFeature.h \
 		PartFeaturePy.cpp \

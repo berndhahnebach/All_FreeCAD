@@ -32,6 +32,7 @@
 
 
 class TopoDS_Edge;
+class TopoDS_Shape;
 
 namespace Mesh
 {

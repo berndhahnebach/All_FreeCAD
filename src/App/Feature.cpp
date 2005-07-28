@@ -27,7 +27,12 @@
 # include <TDF_ChildIterator.hxx>
 # include <TDF_Tool.hxx>
 # include <TCollection_AsciiString.hxx>
+# include <TDataStd_Comment.hxx>
+# include <TDataStd_Integer.hxx>
+# include <TDataStd_Real.hxx>
 # include <TDF_ListIteratorOfAttributeList.hxx>
+# include <TDF_Label.hxx>
+# include <TDF_Reference.hxx>
 # include <TFunction_Logbook.hxx>
 # include <TFunction_DriverTable.hxx>
 # include <TFunction_Function.hxx>

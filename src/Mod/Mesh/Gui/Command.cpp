@@ -247,7 +247,7 @@ bool CmdMeshVertexCurvature::isActive(void)
 //  return false;
 }
 
-void CreateCommands(void)
+void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdMeshImport());

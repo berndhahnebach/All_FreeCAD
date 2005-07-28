@@ -26,6 +26,7 @@
 # ifdef FC_OS_LINUX
 #	  include <unistd.h>
 # endif
+# include <gp_Pln.hxx>
 #endif
 
 
@@ -143,7 +144,7 @@ void CurveProjector::projectCurve( MeshWithProperty* pMesh,
         PlanePnt    = ActFacet._aclPoints[i];
       }
 
-      Handle(Geom_Plane) hPlane = new Geom_Plane(gp_Pln(gp_Pnt(PlanePnt.x,PlanePnt.y,PlanePnt.z), 
+      Handle(Geom_Plane) hPlane = new Geom_Plane(gp_Pln(gp_Pnt(PlanePnt.x,PlanePnt.y,PlanePnt.z),
                                                        gp_Dir(PlaneNormal.x,PlaneNormal.y,PlaneNormal.z)));
 
       GeomAPI_IntCS Alg(hCurve,hPlane); 
@@ -180,7 +181,7 @@ void CurveProjector::projectCurve( MeshWithProperty* pMesh,
 
     LastActFacetIdx = ActFacetIdx;
  
-    if(NbrOfHits = 1)
+    if(NbrOfHits == 1)
     {
       ActFacetIdx = NighboursIdx[HitIdx];
       GoOn = true;

@@ -19,7 +19,8 @@
 
 #include <Gui/Application.h>
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void CreateImageCommands(void);
 
 
 /* module functions */
@@ -55,7 +56,7 @@ void ImageGuiExport initImageGui() {
 	Base::Console().Log("AppImageGui loaded\n");
 
 	// instanciating the commands
-	CreateCommands();
+	CreateImageCommands();
 
 
 	return;

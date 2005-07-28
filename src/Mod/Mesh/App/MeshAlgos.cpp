@@ -26,6 +26,7 @@
 # ifdef FC_OS_LINUX
 #	  include <unistd.h>
 # endif
+# include <gp_Pln.hxx>
 #endif
 
 
@@ -606,8 +607,8 @@ void MeshAlgos::projectCurve( MeshWithProperty* pMesh,
     }
 
     LastActFacetIdx = ActFacetIdx;
- 
-    if(NbrOfHits = 1)
+
+    if(NbrOfHits == 1)
     {
       ActFacetIdx = NighboursIdx[HitIdx];
       GoOn = true;

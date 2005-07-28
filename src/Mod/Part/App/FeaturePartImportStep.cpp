@@ -79,7 +79,7 @@ Standard_Integer FeaturePartImportStep::Execute(TFunction_Logbook& log)
 	  {
 		  close(i);
 	  }else{
-      Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName);
+      Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.c_str());
 		  return 1;
 	  }
 

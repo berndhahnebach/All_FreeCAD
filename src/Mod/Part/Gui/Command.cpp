@@ -481,7 +481,7 @@ PartImportCurveNet::PartImportCurveNet()
 void PartImportCurveNet::activated(int iMsg)
 {
 
- 
+
   QString fn = Gui::FileDialog::getOpenFileName( QString::null, "All CAD (*.stp *. step *.igs *.iges *.brp *.brep );;STEP (*.stp *. step);;IGES (*.igs *.iges);;BREP (*.brp *.brep );;All Files (*.*)", 
                                                  Gui::ApplicationWindow::Instance );
 	if (! fn.isEmpty() )
@@ -510,7 +510,7 @@ bool PartImportCurveNet::isActive(void)
 
 
 
-void CreateCommands(void)
+void CreatePartCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
 

@@ -40,7 +40,8 @@
 #include <Gui/WidgetFactory.h>
 #include <Mod/Part/Gui/ViewProvider.h>
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void CreateImportCommands(void);
 
 
 /* module functions */
@@ -89,7 +90,7 @@ void ModuleExport initImportGui() {
 
 
 	// instanciating the commands
-	CreateCommands();
+	CreateImportCommands();
 
 
 	return;

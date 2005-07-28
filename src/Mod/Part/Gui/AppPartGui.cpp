@@ -42,7 +42,8 @@
 
 using namespace PartGui;
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void CreatePartCommands(void);
 
 
 /* module functions */
@@ -95,7 +96,7 @@ void ModuleExport initPartGui() {
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportCurveNet",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderCurveNet>);
 
 	// instanciating the commands
-	CreateCommands();
+	CreatePartCommands();
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( QObject::tr( "Part design" ) );

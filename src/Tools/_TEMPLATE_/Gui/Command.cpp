@@ -60,7 +60,7 @@ void Cmd_TEMPLATE_Test::activated(int iMsg)
   Base::Console().Message("Hello, World!\n");
 }
 
-void CreateCommands(void)
+void Create_TEMPLATE_Commands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new Cmd_TEMPLATE_Test());

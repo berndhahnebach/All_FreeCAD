@@ -47,6 +47,8 @@ libMesh_la_SOURCES=\
 		Core/ViewProj.h \
 		AppMesh.cpp \
 		AppMeshPy.cpp \
+		CurveProjector.cpp \
+		CurveProjector.h \
 		Doxygen.cpp \
 		FeatureMeshImport.cpp \
 		FeatureMeshImport.h \

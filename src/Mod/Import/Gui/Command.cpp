@@ -182,7 +182,7 @@ bool ImportIges::isActive(void)
 
 
 
-void CreateCommands(void)
+void CreateImportCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
 

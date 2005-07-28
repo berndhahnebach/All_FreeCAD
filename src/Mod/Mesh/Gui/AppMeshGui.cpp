@@ -38,7 +38,8 @@
 #include "ViewProvider.h"
 
 
-void CreateCommands(void);
+// use a different name to CreateCommand()
+void CreateMeshCommands(void);
 
 /* module functions */
 static PyObject *                                 /* returns object */
@@ -80,7 +81,7 @@ void GuiMeshExport initMeshGui() {
   Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
 
   // instanciating the commands
-  CreateCommands();
+  CreateMeshCommands();
 
   // Register view provider
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
