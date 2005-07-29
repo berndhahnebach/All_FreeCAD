@@ -26,7 +26,7 @@
 #define Points_FEATURE_H
 
 #include <App/Feature.h>
-
+#include "Points.h"
 
 
 namespace Base{
@@ -35,7 +35,7 @@ namespace Base{
 
 namespace Points
 {
-
+class PointsWithProperty;
 class Property;
 
 /** Base class of all Points feature classes in FreeCAD.
@@ -76,9 +76,10 @@ public:
 
   virtual Base::PyObjectBase *PointsFeature::GetPyObject(void);
 
-
+  PointsWithProperty &getPoints(void){return _Points;}
 
 protected:
+  PointsWithProperty _Points;
 
 };
 

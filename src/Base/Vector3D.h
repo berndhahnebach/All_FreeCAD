@@ -29,17 +29,39 @@
 # include <math.h>
 #endif
 
-#include "Definitions.h"
-#include "Stream.h"
+//#include "Definitions.h"
+//#include "Stream.h"
+#define FLOAT_EPS   1.0e-4f 
 
-namespace Mesh {
+#ifndef  F_PI
+# define F_PI  3.1415926f
+#endif
+
+#ifndef  D_PI
+# define D_PI  3.141592653589793
+#endif
+  
+#ifndef  FLOAT_MAX
+# define FLOAT_MAX 1e30f
+#endif
+
+#ifndef  DOUBLE_MAX
+# define DOUBLE_MAX 1.7976931348623157E+308    /* max decimal value of a "double"*/
+#endif
+
+#ifndef  DOUBLE_MIN
+# define DOUBLE_MIN 2.2250738585072014E-308    /* min decimal value of a "double"*/
+#endif
+
+
+namespace Base {
 
 class   Vector3D;
 typedef Vector3D * PVector3D;
 typedef Vector3D & RVector3D;
 
 /** The mesh vector class. */
-class AppMeshExport Vector3D
+class BaseExport Vector3D
 {
 public:
   /** @name Public data members */
@@ -88,8 +110,8 @@ public:
   //@}
 
   // I/O streaming
-  DataStream & SaveData (DataStream & ofs);
-  DataStream & LoadData (DataStream & ifs);
+  //DataStream & SaveData (DataStream & ofs);
+  //DataStream & LoadData (DataStream & ifs);
 
   /** @name Modification */
   //@{
@@ -353,7 +375,7 @@ inline Vector3D operator * (float fFac, const Vector3D &rcVct)
   return Vector3D(rcVct.x * fFac, rcVct.y * fFac, rcVct.z * fFac);
 }
 
-} // namespace Mesh
+} // namespace Base
 
 #endif // VECTOR3D_H 
 

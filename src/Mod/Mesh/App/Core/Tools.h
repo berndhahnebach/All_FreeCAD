@@ -109,7 +109,7 @@ protected:
   struct CDistRad : public std::binary_function<const Vector3D&, const Vector3D&, bool>
   {
     CDistRad (const Vector3D clCenter) : _clCenter(clCenter) {}
-    bool operator()(const Vector3D &rclPt1, const Vector3D &rclPt2) { return DistanceP2(_clCenter, rclPt1) < DistanceP2(_clCenter, rclPt2); }
+    bool operator()(const Vector3D &rclPt1, const Vector3D &rclPt2) { return Base::DistanceP2(_clCenter, rclPt1) < Base::DistanceP2(_clCenter, rclPt2); }
     Vector3D  _clCenter;
   };
 
@@ -142,7 +142,7 @@ inline bool MeshSearchNeighbours::CheckDistToFacet (const MeshFacet &rclF)
     unsigned long ulPIdx = rclF._aulPoints[i];
     if (_rclPAry[ulPIdx].IsFlag(MeshPoint::MARKED) == false)
     {
-      if (DistanceP2(_clCenter, _rclPAry[ulPIdx]) < _fMaxDistanceP2)
+      if (Base::DistanceP2(_clCenter, _rclPAry[ulPIdx]) < _fMaxDistanceP2)
       {
         bFound = true;
         {
@@ -159,7 +159,7 @@ inline bool MeshSearchNeighbours::CheckDistToFacet (const MeshFacet &rclF)
 
 inline bool MeshSearchNeighbours::InnerPoint (const Vector3D &rclPt) const
 {
-  return DistanceP2(_clCenter, rclPt) < _fMaxDistanceP2;
+  return Base::DistanceP2(_clCenter, rclPt) < _fMaxDistanceP2;
 }
 
 inline bool MeshSearchNeighbours::TriangleCutsSphere (const MeshFacet &rclF) const

@@ -28,11 +28,20 @@
 # include <math.h>
 #endif
 
+#include <Base/Vector3D.h>
+using Base::Vector3D;
+using Base::PVector3D;
+using Base::RVector3D;
+#include <Base/Matrix.h>
+using Base::Matrix4D;
+
+
 #include "Definitions.h"
 #include "ViewProj.h"
-#include "Vector3D.h"
 #include "Stream.h"
 #include "Tools2D.h"
+
+
 
 // Checks if point K lies on the ray [A,B[
 #define IS_ON_RAY(A,B,K)  (((A) <= (K)) && ((B) > (K)))

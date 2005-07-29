@@ -158,7 +158,7 @@ unsigned long MeshDegenerations::MergePoints (bool open, float fMinDistance)
         if (rclPt2.IsFlag(MeshPoint::MARKED))
           continue; // already merged with another point
 
-        if (Mesh::DistanceP2(rclPt1, rclPt2) < fMinDistance)
+        if (Base::DistanceP2(rclPt1, rclPt2) < fMinDistance)
         {
           rclPt2.SetFlag(MeshPoint::MARKED);
           aMergePt.second.push_back(*it2);
@@ -291,7 +291,7 @@ unsigned long MeshDegenerations::CountEdgeTooSmall (float fMinEdgeLength) const
   {
     for (i = 0; i < 3; i++)
     {
-      if (Mesh::Distance(clFIter->_aclPoints[i], clFIter->_aclPoints[(i+1)%3]) < fMinEdgeLength)
+      if (Base::Distance(clFIter->_aclPoints[i], clFIter->_aclPoints[(i+1)%3]) < fMinEdgeLength)
         k++;
     }
     ++clFIter;
@@ -362,15 +362,15 @@ unsigned long MeshDegenerations::RemoveEdgeTooSmall (float fMinEdgeLength, float
       unsigned long    ulP1 = clFacet._aulPoints[1];
       unsigned long    ulP2 = clFacet._aulPoints[2];
 
-      if ((Mesh::Distance(clP0, clP1) < fMinEdgeLength) || (clE20.GetAngle(-clE12) < fMinEdgeAngle))
+      if ((Base::Distance(clP0, clP1) < fMinEdgeLength) || (clE20.GetAngle(-clE12) < fMinEdgeAngle))
       {  // loesche Punkt P1 auf P0
         aclPtDelList.insert(std::make_pair(std::min<unsigned long>(ulP1, ulP0), std::max<unsigned long>(ulP1, ulP0)));
       }
-      else if ((Mesh::Distance(clP1, clP2) < fMinEdgeLength) || (clE01.GetAngle(-clE20) < fMinEdgeAngle))
+      else if ((Base::Distance(clP1, clP2) < fMinEdgeLength) || (clE01.GetAngle(-clE20) < fMinEdgeAngle))
       {  // loesche Punkt P2 auf P1
         aclPtDelList.insert(std::make_pair(std::min<unsigned long>(ulP2, ulP1), std::max<unsigned long>(ulP2, ulP1)));
       }
-      else if ((Mesh::Distance(clP2, clP0) < fMinEdgeLength) || (clE12.GetAngle(-clE01) < fMinEdgeAngle))
+      else if ((Base::Distance(clP2, clP0) < fMinEdgeLength) || (clE12.GetAngle(-clE01) < fMinEdgeAngle))
       {  // loesche Punkt P0 auf P2
         aclPtDelList.insert(std::make_pair(std::min<unsigned long>(ulP0, ulP2), std::max<unsigned long>(ulP0, ulP2)));
       }

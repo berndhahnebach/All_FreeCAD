@@ -29,7 +29,8 @@
 #endif
 
 #include "MeshKernel.h"
-#include "Vector3D.h"
+#include <Base/Vector3D.h>
+using Base::Vector3D;
 
 #define  MESH_CT_GRID          256     // Default value for number of elements per grid
 #define  MESH_MAX_GRIDS        100000  // Default value for maximum number of grids
@@ -40,7 +41,6 @@ namespace Mesh {
 
 class MeshKernel;
 class BoundBox3D;
-class Vector3D;
 class MeshGeomFacet;
 class MeshGrid;
 

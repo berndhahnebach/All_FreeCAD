@@ -602,3 +602,7 @@ Version: V0.1B120 Date: Tue Jul 26 17:09:13 2005 +++++++++++++++++++++++++++++++
 + Reworking Feature Property handling
 + Implementing Feature Linking
 + Add Naming to Features (AddFeature() needs now a Type and a Name
++ Moving Vector3D and Matrix4D in Base::
++ Moving DataWithProperty in Base::
++ Reworking Points
++ Points load Ascii

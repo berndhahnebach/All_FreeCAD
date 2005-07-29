@@ -237,7 +237,7 @@ bool MeshSearchNeighbours::AccumulateNeighbours (const MeshFacet &rclF, unsigned
     _aclOuter.insert(ulPIdx);
     _aclResult.insert(ulPIdx);
 
-    if (DistanceP2(_clCenter, _rclPAry[ulPIdx]) < _fMaxDistanceP2)
+    if (Base::DistanceP2(_clCenter, _rclPAry[ulPIdx]) < _fMaxDistanceP2)
       k++;
   }
 
@@ -323,7 +323,7 @@ unsigned long MeshSearchNeighbours::NeighboursFacetFromFacet (unsigned long ulFa
 
         for (int i = 0; i < 3; i++)
         {
-          if (DistanceP2(_clCenter, _rclPAry[rclF._aulPoints[i]]) < _fMaxDistanceP2)
+          if (Base::DistanceP2(_clCenter, _rclPAry[rclF._aulPoints[i]]) < _fMaxDistanceP2)
           {
             aulFacetSet.insert(*pJ - _rclFAry.begin());
             break;

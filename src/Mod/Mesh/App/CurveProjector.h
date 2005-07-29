@@ -28,7 +28,8 @@
 # include <gts.h>
 #endif
 
-#include "Core/Vector3D.h"
+#include <Base/Vector3D.h>
+using Base::Vector3D;
 
 
 class TopoDS_Edge;

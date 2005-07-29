@@ -28,8 +28,17 @@
 # include <vector>
 #endif
 
+#include <Base/Vector3D.h>
+using Base::Vector3D;
+
+#include <App/DataWithProperty.h>
+
 namespace Points
 {
+
+
+typedef std::vector<Vector3D> PointKernel;
+
 
 /** A single Point
  *  This is a single Point of the point datastructure. Note:
@@ -38,7 +47,8 @@ namespace Points
  *  @see PointsPropertyBack
  *  @see Points
  */
-class PointsAppExport Point
+/*
+  class PointsAppExport Point: puplic Base::Vector3D
 {
 public:
     // construction
@@ -58,13 +68,13 @@ public:
     bool operator!= (const Point& rPt) const;
 };
 
-
+*/
 /** Property back of the Points datastructure
  *  with objects derived from this class the points
  *  data structur is enriched with aditional data.
  *  The linking point is the Point Index. 
  */
-class PointsPropertyBack
+class PointsPropertyBack: public App::PropertyBag
 {
 public:
 	/// Constructor
@@ -75,14 +85,16 @@ public:
 
 /** Points with property backs
  */
-class PointsAppExport Points
+class PointsAppExport PointsWithProperty: public App::DataWithPropertyBag
 {
 public:
 	/// Constructor
 	Points(void);
 
+  PointKernel &getKernel(void){return _Points;}
+
 private:
-  std::vector<Point> _Points;
+  PointKernel _Points;
 
 };
 

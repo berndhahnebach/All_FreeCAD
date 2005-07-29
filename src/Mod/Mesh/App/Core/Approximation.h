@@ -33,8 +33,10 @@
 # include <vector>
 #endif
 
-#include "Vector3D.h"
-#include "Matrix.h"
+#include <Base/Vector3D.h>
+#include <Base/Matrix.h>
+using Base::Vector3D;
+using Base::Matrix4D;
 
 namespace Mesh {
 

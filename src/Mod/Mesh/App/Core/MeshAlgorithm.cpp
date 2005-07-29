@@ -50,11 +50,11 @@ bool MeshAlgorithm::IsVertexVisible (const Vector3D &rcVertex, const Vector3D &r
   if ( NearestFacetOnRay( rcView, cDirection, /*1.2f*fDistance,*/ rclGrid, cIntsct, uInd) )
   {
     // now check if the facet overlays the point
-    float fLen = Mesh::Distance( rcView, cIntsct );
+    float fLen = Base::Distance( rcView, cIntsct );
     if ( fLen < fDistance )
     {
       // is it the same point?
-      if ( Mesh::Distance(rcVertex, cIntsct) > 0.001f )
+      if ( Base::Distance(rcVertex, cIntsct) > 0.001f )
       {
         // ok facet overlays the vertex
         return false;
@@ -224,7 +224,7 @@ float MeshAlgorithm::GetAverageEdgeLength() const
   for ( cF.Init(); cF.More(); cF.Next() )
   {
     for ( int i=0; i<3; i++ )
-      fLen += Mesh::Distance( cF->_aclPoints[i], cF->_aclPoints[(i+1)%3] );
+      fLen += Base::Distance( cF->_aclPoints[i], cF->_aclPoints[(i+1)%3] );
   }
 
   fLen = fLen / (3.0f * _rclMesh.CountFacets() );
@@ -985,7 +985,7 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
   float fToDelDist = fMinEps / 10.0f;
   for (TCIter pF = rclLines.begin(); pF != rclLines.end(); pF++)
   {
-    if (DistanceP2(pF->first, pF->second) < fToDelDist)
+    if (Base::DistanceP2(pF->first, pF->second) < fToDelDist)
       _clToDelete.push_back(pF);
   }
   for (std::list<TCIter>::iterator pI = _clToDelete.begin(); pI != _clToDelete.end(); pI++)
@@ -1016,27 +1016,27 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
       pEnd   = NULL;
       for (pF = rclLines.begin(); pF != rclLines.end(); pF++)
       {
-        if (DistanceP2(clFront, pF->first) < fFrontMin) 
+        if (Base::DistanceP2(clFront, pF->first) < fFrontMin) 
         {
-          fFrontMin   = DistanceP2(clFront, pF->first);
+          fFrontMin   = Base::DistanceP2(clFront, pF->first);
           pFront      = pF;
           bFrontFirst = true;
         }
-        else if (DistanceP2(clEnd, pF->first) < fEndMin)
+        else if (Base::DistanceP2(clEnd, pF->first) < fEndMin)
         {
-          fEndMin     = DistanceP2(clEnd, pF->first);
+          fEndMin     = Base::DistanceP2(clEnd, pF->first);
           pEnd        = pF;
           bEndFirst   = true;
         }
-        else if (DistanceP2(clFront, pF->second) < fFrontMin)
+        else if (Base::DistanceP2(clFront, pF->second) < fFrontMin)
         {
-          fFrontMin   = DistanceP2(clFront, pF->second);
+          fFrontMin   = Base::DistanceP2(clFront, pF->second);
           pFront      = pF;
           bFrontFirst = false;
         }
-        else if (DistanceP2(clEnd, pF->second) < fEndMin)
+        else if (Base::DistanceP2(clEnd, pF->second) < fEndMin)
         {
-          fEndMin     = DistanceP2(clEnd, pF->second);
+          fEndMin     = Base::DistanceP2(clEnd, pF->second);
           pEnd        = pF;
           bEndFirst   = false;
         }        
@@ -1084,7 +1084,7 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
   {
     if (pJ->size() == 2) // only one line segment
     {
-      if (DistanceP2(*pJ->begin(), *(pJ->begin() + 1)) <= fMinEps)
+      if (Base::DistanceP2(*pJ->begin(), *(pJ->begin() + 1)) <= fMinEps)
         _clPolyToDelete.push_back(pJ);
     }
   }
@@ -1101,7 +1101,7 @@ bool MeshAlgorithm::ConnectPolygons(std::list<std::vector<Vector3D> > &clPolyLis
   for(std::list< std::vector<Vector3D> >::iterator OutIter = clPolyList.begin(); OutIter != clPolyList.end() ; OutIter++)
   {
     std::pair<Vector3D,Vector3D> currentSort;
-    float fDist = Distance(OutIter->front(),OutIter->back());
+    float fDist = Base::Distance(OutIter->front(),OutIter->back());
     currentSort.first = OutIter->front();
     currentSort.second = OutIter->back();
 
@@ -1109,15 +1109,15 @@ bool MeshAlgorithm::ConnectPolygons(std::list<std::vector<Vector3D> > &clPolyLis
     {
       if(OutIter == InnerIter) continue;
 
-      if(Distance(OutIter->front(),InnerIter->front()) < fDist)
+      if(Base::Distance(OutIter->front(),InnerIter->front()) < fDist)
       {
         currentSort.second = InnerIter->front();
-        fDist = Distance(OutIter->front(),InnerIter->front());
+        fDist = Base::Distance(OutIter->front(),InnerIter->front());
       }
-      if(Distance(OutIter->front(),InnerIter->back()) < fDist)
+      if(Base::Distance(OutIter->front(),InnerIter->back()) < fDist)
       {
         currentSort.second = InnerIter->back();
-        fDist = Distance(OutIter->front(),InnerIter->back());
+        fDist = Base::Distance(OutIter->front(),InnerIter->back());
       }
     }
 

@@ -79,7 +79,7 @@ PyTypeObject PointsFeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef PointsFeaturePy::Methods[] = {
 //  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-  PYMETHODEDEF(getShape)
+  PYMETHODEDEF(getPoints)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -149,7 +149,7 @@ int PointsFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ functi
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(PointsFeaturePy,getShape)
+PYFUNCIMP_D(PointsFeaturePy,getPoints)
 {
   Py_Return;
 }

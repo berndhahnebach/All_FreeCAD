@@ -121,6 +121,14 @@ SOURCE=.\Attribute.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\DataWithProperty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DataWithProperty.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\DllMain.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

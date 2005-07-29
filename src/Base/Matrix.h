@@ -24,14 +24,14 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "Definitions.h"
+//#include "Definitions.h"
 #include <math.h>
 #include <stdio.h>
 
 #include "Vector3D.h"
-#include "Stream.h"
+//#include "Stream.h"
 
-namespace Mesh {
+namespace Base {
 
 class   Matrix4D;
 typedef Matrix4D* PMatrix4D;
@@ -40,7 +40,7 @@ typedef Matrix4D& RMatrix4D;
 /**
  * The Matrix4D class.
  */
-class AppMeshExport Matrix4D
+class BaseExport Matrix4D
 {
 public:
   /// Construction
@@ -71,13 +71,13 @@ public:
   inline friend Vector3D& operator*= (Vector3D& rclVect, const Matrix4D& rclMtrx);
   //@}
 
-  /** @name I/O methods */
+  /** @name I/O methods 
   //@{
   /// Binary streaming of data
   DataStream& SaveData (DataStream& ofs);
   /// Binary streaming of data
   DataStream& LoadData (DataStream& ifs);
-  //@}
+  //@}*/
   void   GetGLMatrix (double dMtrx[16]) const;
   void   SetGLMatrix (const double dMtrx[16]);
 

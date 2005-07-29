@@ -30,7 +30,7 @@
 
 #include "Vector3D.h"
 
-using namespace Mesh;
+using namespace Base;
 
 void Vector3D::ScaleX (float f)
 {
@@ -121,6 +121,7 @@ RVector3D Vector3D::Normalize (void)
   return *this;
 }
 
+/*
 DataStream & Vector3D::SaveData (DataStream& ofs)
 {
   ofs << x << y << z;
@@ -132,7 +133,7 @@ DataStream & Vector3D::LoadData (DataStream& ifs)
   ifs >> x >> y >> z;
   return ifs;
 }
-
+*/
 float Vector3D::GetAngle (const Vector3D &rcVect) const
 {
   float divid, fNum;

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,55 +21,38 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-# include <fcntl.h>
-# include <TFunction_Logbook.hxx>
-# include <ios>
-#endif
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include "../App/PointsAlgos.h"
-#include "../App/Points.h"
-#include "FeaturePointsImportAscii.h"
+#ifndef __FeaturePartImportBrep_H__
+#define __FeaturePartImportBrep_H__
 
 
-using namespace Points;
+#include "PartFeature.h"
 
-void FeaturePointsImportAscii::InitLabel(const TDF_Label &rcLabel)
+namespace Part
 {
-  Base::Console().Log("FeaturePointsImportAscii::InitLabel()\n");
-  addProperty("String","FileName");
+
+
+class FeaturePartImportBrep :public PartFeature
+{
+public:
+
+	virtual void InitLabel(const TDF_Label &rcLabel);
+
+//	virtual bool MustExecute(const TFunction_Logbook& log);
+
+	virtual Standard_Integer Execute(TFunction_Logbook& log);
+
+	virtual void Validate(TFunction_Logbook& log);
+
+  /// Returns the Name/Type of the feature
+  virtual const char *Type(void){return "PartImportIges";};
+};
+
+
+
 }
 
-Standard_Integer FeaturePointsImportAscii::Execute(TFunction_Logbook& log)
-{
-  Base::Console().Log("FeaturePointsImportAscii::Execute()\n");
 
-  try{
 
-    std::string FileName = getPropertyString("FileName");
 
-    // ask for read permisson
-		if ( access(FileName.c_str(), 4) != 0 )
-    {
-      Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName);
-      return 1;
-    }
-
-     PointsAlgos::Load(getPoints(),FileName.c_str());
-
-  }
-  catch(...){
-    Base::Console().Error("FeaturePointsImportAscii::Execute() failed!");
-    return 2;
-  }
-
-  return 0;
-}
-
-void FeaturePointsImportAscii::Validate(TFunction_Logbook& log)
-{
-  Base::Console().Log("FeaturePointsImportAscii::Validate()\n");
-}
+#endif // __FeaturePartImportBrep_H__

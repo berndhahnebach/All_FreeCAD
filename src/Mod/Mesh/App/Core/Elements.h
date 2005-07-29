@@ -31,10 +31,14 @@
 #include "Definitions.h"
 #include "BoundBox.h"
 
+namespace Base{
+  class Vector3D;
+}
+using Base::Vector3D;
+
 
 namespace Mesh {
 
-class Vector3D;
 class MeshHelpEdge;
 class MeshPoint;
 
@@ -68,7 +72,7 @@ public:
  * A point can temporary be in an invalid state (e.g during deletion of several points), but
  * must not be set in general, i.e. always usable within a mesh-internal algorithm.
  */
-class AppMeshExport MeshPoint: public Vector3D
+class AppMeshExport MeshPoint: public Base::Vector3D
 {
 public:
   enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
@@ -583,12 +587,12 @@ inline MeshPoint& MeshPoint::operator = (const MeshPoint &rclPt)
 
 inline bool MeshPoint::operator == (const MeshPoint &rclPt) const
 {
-  return DistanceP2(*this, rclPt) < MeshDefinitions::_fMinPointDistanceP2;
+  return Base::DistanceP2(*this, rclPt) < MeshDefinitions::_fMinPointDistanceP2;
 }
 
 inline bool MeshPoint::operator == (const Vector3D &rclV) const
 {
-  return DistanceP2(*this, rclV) < MeshDefinitions::_fMinPointDistanceP2;
+  return Base::DistanceP2(*this, rclV) < MeshDefinitions::_fMinPointDistanceP2;
 }
 
 inline bool MeshPoint::operator < (const MeshPoint &rclPt) const

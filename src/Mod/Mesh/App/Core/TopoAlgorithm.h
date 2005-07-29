@@ -38,10 +38,15 @@
 
 #include <Base/Sequencer.h>
 
+namespace Base{
+  class Vector3D;
+}
+using Base::Vector3D;
+
+
 namespace Mesh {
 
 class MeshKernel;
-class Vector3D;
 class MeshFacet;
 
 /**

@@ -32,6 +32,13 @@
 #include "Elements.h"
 #include "Helpers.h"
 
+namespace Base{
+  class Vector3D;
+  class Matrix4D;
+}
+using Base::Vector3D;
+using Base::Matrix4D;
+
 namespace Mesh {
 
 // forward declarations
@@ -39,9 +46,7 @@ class MeshFacetIterator;
 class MeshEdgeIterator;
 class MeshPointIterator;
 class MeshGeomFacet;
-class Matrix4D;
 class DataStream;
-class Vector3D;
 class MeshFacet;
 class MeshHelpEdge;
 class MeshFacetFunc;

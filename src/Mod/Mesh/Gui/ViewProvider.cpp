@@ -58,7 +58,7 @@ using namespace MeshGui;
 using Mesh::MeshFeature;
 using Mesh::MeshKernel;
 using Mesh::MeshFacetIterator;
-using Mesh::Vector3D;
+using Base::Vector3D;
        
 ViewProviderInventorMesh::ViewProviderInventorMesh()
 {
@@ -338,7 +338,7 @@ void ViewProviderInventorMesh::setMode(const char* ModeName)
   else 
   {
     Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-    Mesh::PropertyBag *pcProp = 0;
+    App::PropertyBag *pcProp = 0;
     pcProp = rcMesh.Get(ModeName);
     if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
     {

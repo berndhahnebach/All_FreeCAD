@@ -31,12 +31,17 @@
 
 #include "MeshKernel.h"
 
+#include <Base/Matrix.h>
+#include <Base/Vector3D.h>
+using Base::Vector3D;
+using Base::Matrix4D;
+
+
 namespace Mesh {
 
 class MeshGeomFacet;
 class MeshGeomEdge;
 class BoundBox3D;
-class Vector3D;
 
 /**
  * The MeshFacetFunc class provides methods to extract information about
@@ -71,11 +76,11 @@ public:
   static float DistanceToLineSegment (const MeshGeomFacet &rcF, const Vector3D &rcP1, const Vector3D &rcP2);
   /** Calculates the shortest distance from the point \a rcPt to the facet. */
   static float DistanceToPoint (const MeshGeomFacet &rclFacet, const Vector3D &rcPt)
-  { Vector3D res; return DistanceToPoint(rclFacet, rcPt, res); }
+  { Base::Vector3D res; return DistanceToPoint(rclFacet, rcPt, res); }
   /** Calculates the shortest distance from the point \a rcPt to the facet. \a rclNt is the point of the facet
    * with shortest distance.
    */
-  static float DistanceToPoint  (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, Vector3D& rclNt );
+  static float DistanceToPoint  (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, Base::Vector3D& rclNt );
   /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
    * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
    */
@@ -271,35 +276,35 @@ inline float MeshFacetFunc::Area (const MeshGeomFacet &rclFacet)
 
 inline float MeshFacetFunc::VolumeOfPrism (const MeshGeomFacet& rclF1, const MeshGeomFacet& rclF2)
 {
-  Vector3D P1 = rclF1._aclPoints[0];
-  Vector3D P2 = rclF1._aclPoints[1];
-  Vector3D P3 = rclF1._aclPoints[2];
-  Vector3D Q1 = rclF2._aclPoints[0];
-  Vector3D Q2 = rclF2._aclPoints[1];
-  Vector3D Q3 = rclF2._aclPoints[2];
+  Base::Vector3D P1 = rclF1._aclPoints[0];
+  Base::Vector3D P2 = rclF1._aclPoints[1];
+  Base::Vector3D P3 = rclF1._aclPoints[2];
+  Base::Vector3D Q1 = rclF2._aclPoints[0];
+  Base::Vector3D Q2 = rclF2._aclPoints[1];
+  Base::Vector3D Q3 = rclF2._aclPoints[2];
 
   if ((P1-Q2).Length() < (P1-Q1).Length())
   {
-    Vector3D tmp = Q1;
+    Base::Vector3D tmp = Q1;
     Q1 = Q2;
     Q2 = tmp;
   }
   if ((P1-Q3).Length() < (P1-Q1).Length())
   {
-    Vector3D tmp = Q1;
+    Base::Vector3D tmp = Q1;
     Q1 = Q3;
     Q3 = tmp;
   }
   if ((P2-Q3).Length() < (P2-Q2).Length())
   {
-    Vector3D tmp = Q2;
+    Base::Vector3D tmp = Q2;
     Q2 = Q3;
     Q3 = tmp;
   }
 
-  Vector3D N1 = (P2-P1) % (P3-P1);
-  Vector3D N2 = (P2-P1) % (Q2-P1);
-  Vector3D N3 = (Q2-P1) % (Q1-P1);
+  Base::Vector3D N1 = (P2-P1) % (P3-P1);
+  Base::Vector3D N2 = (P2-P1) % (Q2-P1);
+  Base::Vector3D N3 = (Q2-P1) % (Q1-P1);
 
   float fVol=0.0f;
   fVol += float(fabs((Q3-P1) * N1));

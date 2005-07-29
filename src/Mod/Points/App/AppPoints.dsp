@@ -182,6 +182,14 @@ SOURCE=.\Points.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PointsAlgos.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PointsAlgos.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\PointsFeature.cpp
 # End Source File
 # Begin Source File

@@ -22,14 +22,16 @@
 
 
 #include "PreCompiled.h"
+#ifndef _PreComp_
+# include <stdio.h>
+# include <string.h>
+# include <math.h>
+#endif
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
 
 #include "Matrix.h"
 
-using namespace Mesh;
+using namespace Base;
 
 Matrix4D::Matrix4D (void)
 {
@@ -374,7 +376,7 @@ void Matrix4D::InverseGauss (void)
 
   SetGLMatrix(inversematrix);
 }
-
+/*
 DataStream & Matrix4D::SaveData (DataStream& ofs)
 {
   ofs << dMtrx4D[0][0] << dMtrx4D[0][1]
@@ -401,7 +403,7 @@ DataStream & Matrix4D::LoadData (DataStream& ifs)
  
   return ifs;
 }
-
+*/
 void Matrix4D::GetGLMatrix (double dMtrx[16]) const
 {
   short iz, is;

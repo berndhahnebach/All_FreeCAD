@@ -67,8 +67,8 @@ MeshCurvature::MeshCurvature( MeshWithProperty& rclMesh )
   : _rclMesh(rclMesh), _curvature(0L)
 {
   bool found = false;
-  std::list<PropertyBag*> bag = _rclMesh.GetAllOfType("Curvature");
-  for ( std::list<PropertyBag*>::iterator it = bag.begin(); it != bag.end(); ++it )
+  std::list<App::PropertyBag*> bag = _rclMesh.GetAllOfType("Curvature");
+  for ( std::list<App::PropertyBag*>::iterator it = bag.begin(); it != bag.end(); ++it )
   {
     if ( typeid(**it) == typeid(MeshPropertyCurvature) )
     {

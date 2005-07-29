@@ -43,14 +43,14 @@
 //===========================================================================
 // CmdPointsTest THIS IS JUST A TEST COMMAND
 //===========================================================================
-DEF_STD_CMD(CmdPointsTest);
+DEF_STD_CMD_A(CmdPointsTest);
 
 CmdPointsTest::CmdPointsTest()
   :CppCommand("Points_Test")
 {
   sAppModule    = QT_TR_NOOP("Points");
   sGroup        = QT_TR_NOOP("Points");
-  sMenuText     = QT_TR_NOOP("Test1");
+  sMenuText     = QT_TR_NOOP("Import");
   sToolTipText  = QT_TR_NOOP("Points Test function");
   sWhatsThis    = QT_TR_NOOP("Points Test function");
   sStatusTip    = QT_TR_NOOP("Points Test function");
@@ -65,9 +65,28 @@ void CmdPointsTest::activated(int iMsg)
 	if ( fn.isEmpty() )
 		return;
 
-  PointsGui::DlgPointsReadImp cDlg(fn.latin1(), getAppWnd(),"ReadFile",true);
-	cDlg.exec();
+//  PointsGui::DlgPointsReadImp cDlg(fn.latin1(), getAppWnd(),"ReadFile",true);
+//	cDlg.exec();
 
+  if (! fn.isEmpty() )
+  {
+    openCommand("Points Import Create");
+    doCommand(Doc,"f = App.DocGet().AddFeature(\"PointsImport\",\"PointsImport\")");
+    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    commitCommand();
+ 
+    updateActive();
+  }
+
+
+}
+
+bool CmdPointsTest::isActive(void)
+{
+  if( getActiveDocument() )
+    return true;
+  else
+    return false;
 }
 
 void CreatePointsCommands(void)

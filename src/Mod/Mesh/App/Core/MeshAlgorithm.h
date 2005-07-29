@@ -29,10 +29,14 @@
 class TopoDS_Shape;
 class gp_Pln;
 
+namespace Base{
+  class Vector3D;
+}
+using Base::Vector3D;
+
 namespace Mesh {
 
 class MeshKernel;
-class Vector3D;
 class MeshFacetGrid;
 class Polygon2D;
 class MeshGeomFacet;

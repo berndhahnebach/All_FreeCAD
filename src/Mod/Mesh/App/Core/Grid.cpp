@@ -185,7 +185,7 @@ unsigned long MeshGrid::InSide (const BoundBox3D &rclBB, std::vector<unsigned lo
     {
       for (k = ulMinZ; k <= ulMaxZ; k++)
       {
-        if (DistanceP2(GetBoundBox(i, j, k).CalcCenter(), rclOrg) < fMinDistP2)
+        if (Base::DistanceP2(GetBoundBox(i, j, k).CalcCenter(), rclOrg) < fMinDistP2)
           raulElements.insert(raulElements.end(), _aulGrid[i][j][k].begin(), _aulGrid[i][j][k].end());
       }
     }

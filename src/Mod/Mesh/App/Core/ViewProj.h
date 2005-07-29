@@ -24,9 +24,13 @@
 #ifndef VIEW_PROJ_H
 #define VIEW_PROJ_H
 
-#include "Vector3D.h"
 #include "Tools2D.h"
-#include "Matrix.h"
+
+#include <Base/Vector3D.h>
+using Base::Vector3D;
+#include <Base/Matrix.h>
+using Base::Matrix4D;
+
 
 namespace Mesh {
 

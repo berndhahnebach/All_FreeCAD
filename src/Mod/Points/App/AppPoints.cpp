@@ -32,6 +32,9 @@
 #include <Python.h>
 
 
+#include "FeaturePointsImportAscii.h"
+
+
 /* registration table  */
 
 extern struct PyMethodDef Points_Import_methods[];
@@ -44,9 +47,10 @@ void PointsAppExport initPoints() {
 
   (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
 
-  App::GetApplication();
-
   Base::Console().Log("AppPoints loaded\n");
+
+
+ 	App::FeatureFactory().AddProducer("PointsImport",new App::FeatureProducer<Points::FeaturePointsImportAscii>);
 
   return;
 }

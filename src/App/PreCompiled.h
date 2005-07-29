@@ -19,6 +19,16 @@
 #include <assert.h>
 #include <string>
 
+// STL 
+#include <string>
+#include <list>
+#include <map>
+#include <vector>
+#include <set>
+#include <stack>
+#include <sstream>
+#include <queue>
+
 // OpenCasCade =====================================================================================
 // Base
 #include <Standard_Failure.hxx>

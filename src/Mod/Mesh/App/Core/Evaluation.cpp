@@ -38,7 +38,7 @@
 #include "Helpers.h"
 #include "Grid.h"
 #include "TopoAlgorithm.h"
-#include "Matrix.h"
+#include <Base/Matrix.h>
 
 #include <Base/Sequencer.h>
 

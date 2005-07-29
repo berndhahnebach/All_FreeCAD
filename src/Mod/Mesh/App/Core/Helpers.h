@@ -26,9 +26,13 @@
 
 #include "Elements.h"
 
+namespace Base{
+  class Vector3D;
+}
+using Base::Vector3D;
+
 namespace Mesh {
 
-class Vector3D;
 
 /**
  * Helper class for points.
@@ -128,7 +132,7 @@ inline bool MeshHelpPoint::operator < (const MeshHelpPoint &rclObj) const
 
 inline bool MeshHelpPoint::operator == (const MeshHelpPoint &rclObj) const
 {
-  return DistanceP2(_clPt, rclObj._clPt) < MeshDefinitions::_fMinPointDistanceP2;
+  return Base::DistanceP2(_clPt, rclObj._clPt) < MeshDefinitions::_fMinPointDistanceP2;
 /*
   if (fabs(_clPt.x - rclObj._clPt.x) < (MeshDefinitions::_fMinPointDistanceD1 + 1.0e-2f))
   {

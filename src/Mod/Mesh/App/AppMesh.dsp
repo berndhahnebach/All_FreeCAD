@@ -180,14 +180,6 @@ SOURCE=.\Core\Iterator.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\Matrix.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Matrix.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\MeshAlgorithm.cpp
 # End Source File
 # Begin Source File
@@ -249,14 +241,6 @@ SOURCE=.\Core\TopoAlgorithm.cpp
 # Begin Source File
 
 SOURCE=.\Core\TopoAlgorithm.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Vector3D.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Vector3D.h
 # End Source File
 # Begin Source File
 

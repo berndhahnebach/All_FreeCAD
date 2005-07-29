@@ -490,34 +490,34 @@ unsigned short MeshFacetFunc::NearestEdgeToPoint(const MeshGeomFacet& rclFacet, 
 
   // 1st edge
   Vector3D clDir = rcP2 - rcP1;
-  float fLen = Mesh::Distance(rcP2, rcP1);
+  float fLen = Base::Distance(rcP2, rcP1);
   float t = ( ( rclPt - rcP1 ) * clDir ) / ( fLen * fLen );
   if ( t < 0.0f )
-    fD1 = Mesh::Distance(rclPt, rcP1);
+    fD1 = Base::Distance(rclPt, rcP1);
   else if ( t > 1.0f )
-    fD1 = Mesh::Distance(rclPt, rcP2);
+    fD1 = Base::Distance(rclPt, rcP2);
   else
     fD1 = ( ( ( rclPt - rcP1 ) % clDir).Length() ) / fLen;
 
   // 2nd edge
   clDir = rcP3 - rcP2;
-  fLen = Mesh::Distance(rcP3, rcP2);
+  fLen = Base::Distance(rcP3, rcP2);
   t = ( ( rclPt - rcP2 ) * clDir ) / ( fLen * fLen );
   if ( t < 0.0f )
-    fD2 = Mesh::Distance(rclPt, rcP2);
+    fD2 = Base::Distance(rclPt, rcP2);
   else if ( t > 1.0f )
-    fD2 = Mesh::Distance(rclPt, rcP3);
+    fD2 = Base::Distance(rclPt, rcP3);
   else
     fD2 = ( ( ( rclPt - rcP2 ) % clDir).Length() ) / fLen;
 
   // 3rd edge
   clDir = rcP1 - rcP3;
-  fLen = Mesh::Distance(rcP1, rcP3);
+  fLen = Base::Distance(rcP1, rcP3);
   t = ( ( rclPt - rcP3 ) * clDir ) / ( fLen * fLen );
   if ( t < 0.0f )
-    fD3 = Mesh::Distance(rclPt, rcP3);
+    fD3 = Base::Distance(rclPt, rcP3);
   else if ( t > 1.0f )
-    fD3 = Mesh::Distance(rclPt, rcP1);
+    fD3 = Base::Distance(rclPt, rcP1);
   else
     fD3 = ( ( ( rclPt - rcP3 ) % clDir).Length() ) / fLen;
 
@@ -643,7 +643,7 @@ void MeshRefPointToFacets::SearchNeighbours(MeshFacetArray::_TIterator pFIter, c
   if (pFIter->IsFlag(MeshFacet::VISIT) == true)
     return;
 
-  if (DistanceP2(rclCenter, MeshFacetFunc::ToGeomFacet(_rclMesh, *pFIter).GetGravityPoint()) > fMpxDist)
+  if (Base::DistanceP2(rclCenter, MeshFacetFunc::ToGeomFacet(_rclMesh, *pFIter).GetGravityPoint()) > fMpxDist)
     return;
 
   rclNb.push_back(pFIter);

@@ -31,12 +31,19 @@
 
 #include <Base/Exception.h>
 
+namespace Base{
+  class Vector3D;
+  class Matrix4D;
+}
+using Base::Vector3D;
+using Base::Matrix4D;
+
+
 namespace Mesh
 {
 
 class MeshPropertyCurvature;
 class MeshWithProperty;
-class Vector3D;
 
 /** 
  * The MeshCurvaturePropertyError class indicates an error if the required property object

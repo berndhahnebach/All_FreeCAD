@@ -34,6 +34,7 @@
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
+#include <Base/FileInfo.h>
 
 #include <App/Application.h>
 #include <App/Document.h>
@@ -41,7 +42,10 @@
 #include <App/Property.h>
 #include <App/Topology.h>
 
+#include "Points.h"
+#include "PointsAlgos.h"
 
+using namespace Points;
 
 /* module functions */
 static PyObject *                        
@@ -85,10 +89,36 @@ save(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
+
+/* module functions */
+static PyObject *                        
+read(PyObject *self, PyObject *args)
+
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+
+  Base::FileInfo File(Name);
+  
+  // checking on the file
+  if(!File.isReadable())
+    Py_Error(PyExc_Exception,"File to load not existing or not readable");
+
+  PY_TRY {
+    PointsWithProperty points;
+    // load the mesh and create a mesh python object with it
+    PointsAlgos::Load(points, File.filePath().c_str());    
+  } PY_CATCH;
+  Py_Return;
+}
+
+
 /* registration table  */
 struct PyMethodDef Points_Import_methods[] = {
     {"open", open, 1},				/* method name, C func ptr, always-tuple */
     {"save", save, 1},
+    {"read", read, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };

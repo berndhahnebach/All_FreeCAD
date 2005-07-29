@@ -27,6 +27,7 @@
 
 #include <App/Application.h>
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 
 #include <Gui/Application.h>
 
@@ -69,10 +70,11 @@ void PointsGuiExport initPointsGui() {
 
   (void) Py_InitModule("PointsGui", hello_methods);   /* mod name, table ptr */
 
+  Base::Interpreter().loadModule("Points");
   Base::Console().Log("AppPointsGui loaded\n");
 
-  App::GetApplication();
-  Gui::ApplicationWindow::Instance;
+//  App::GetApplication();
+//  Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
   CreatePointsCommands();

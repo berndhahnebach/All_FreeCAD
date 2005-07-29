@@ -32,83 +32,24 @@
 # include <map>
 #endif
 
-#include "Core/Vector3D.h"
-#include "Core/Matrix.h"
+#include <Base/Matrix.h>
+#include <Base/Vector3D.h>
+using Base::Vector3D;
+using Base::Matrix4D;
+
+#include <App/DataWithProperty.h>
+
 
 namespace Mesh
 {
 
 class MeshKernel;
 
-/** Base class of all PropertyBags
- *  with objects derived from this class the mesh
- *  data structur is enriched with aditional data.
- *  The linking point is the Point or face Index.
- *  PropertyBags get registered at the MeshWithProperty class
- *  and have a name and a type. Its posible to have more then 
- *  one PropertyBag of the same type.
- */
-class AppMeshExport PropertyBag
-{
-public:
-	/// Constructor
-  PropertyBag(void) : _bValid(true) { }
-  virtual ~PropertyBag(void){};
-  /** returns the type of the property bag
-    * is to reimplemented by inhereting classes to
-    * allow besides the name a type checking of the bag.
-    * So its posible to have more property bags with the 
-    * same type and different names in the data structure.
-    */
-  virtual const char* GetType(void)=0;
-  /** Get called when the mesh size is changing
-    * this means dependend of the type of the property 
-    * to get invalid. Invalid properties can not get used
-    * until they are recalculated. Its also a good idea to 
-    * clear a included container to save RAM.
-    */
-  virtual void resizeFaces(void){}
-  /** Get called when the amount of the points changing
-   * same as resizeFaces only for the points
-   */
-  virtual void resizePoints(void){}
-
-  /** transform was called for the mesh
-   *  this is the message that the topo data structure is transformed
-   *  if the properties are geometric they need to transformed too!
-   */
-  virtual void transform(const Matrix4D &rclMat){}
-
-  /** Set the property bag valid
-    * this has to be done after build up or recalculation of the
-    * property bag. The data in the property bag only gets used when 
-    * the bag is valid!
-    */
-  void setValid(void)
-    {_bValid=true;}
-  /** Set the property bag invalid
-    * this is e.g. done when the size of the faces or points has chhanged 
-    * and the data in the property bag are wrong!
-    */
-  void setInvalid(void)
-    {_bValid=false;}
-  /** checks if the bag is valid
-    * invalid bags shut not used for any purpos! Until 
-    * they got recalculated.
-    */
-  bool isValid(void)
-    {return _bValid;}
-
-private:
-  bool _bValid;
-};
-
-
 
 /** Vertex noamal property bag
  *  This property bag holds normal vectors of the mesh points
  */
-class AppMeshExport MeshPropertyNormal: public PropertyBag
+class AppMeshExport MeshPropertyNormal: public App::PropertyBag
 {
 public:
 	/** Constructor
@@ -132,7 +73,7 @@ public:
 /** Vertex color property bag
  *  This property bag holds normal vectors of the mesh points
  */
-class AppMeshExport MeshPropertyColor: public PropertyBag
+class AppMeshExport MeshPropertyColor: public App::PropertyBag
 {
 public:
 	/// Constructor
@@ -163,7 +104,7 @@ public:
  * The MeshPropertyCurvature class holds curvature information for each element of a mesh object.
  * @author Werner Mayer
  */
-class AppMeshExport MeshPropertyCurvature: public PropertyBag
+class AppMeshExport MeshPropertyCurvature: public App::PropertyBag
 {
 public:
   /** Helper class. */
@@ -197,45 +138,11 @@ private:
   std::vector<fCurvature> Curvature;
 };
 
-/** Base class of all PropertyBag data structures
- *  This class handles the registration and acces of 
- *  PropertyBags
- */
-class AppMeshExport DataWithPropertyBag
-{
-public:
-  /// Adds a Property Bag to the container
-  void Add(PropertyBag* New, const char* Name);
-  /// deletes a named ProperyBag
-  void Remove(const char* Name);
-  /// delets all PropertyBags of a special type
-  void RemoveType(const char* TypeName);
-  /// Get a PropertyBag with a special name
-  PropertyBag* Get(const char* Name);
-  /// Get a ProperyBag of a special type, or NULL if non of this type is insertd
-  PropertyBag* GetFirstOfType(const char* TypeName);
-  /// Get a list of PorpertyBags of a special type
-  std::list<PropertyBag*> GetAllOfType(const char* TypeName);
-  /// Get a list of PorpertyBags of a special type
-  std::list<std::string> GetAllNamesOfType(const char* TypeName);
-  /// get a list of all registered types
-  std::set<std::string> GetAllTypes(void);
-  /// delete all properties
-  void clear(void);
-  /// transform all properties
-  void transform(const Matrix4D &rclMat);
-
-  void operator= ( const DataWithPropertyBag& New);
-
-
-private:
-  std::map<std::string,PropertyBag*> _Properties;
-};
 
 
 /** Mesh with property bags
  */
-class AppMeshExport MeshWithProperty: public DataWithPropertyBag
+class AppMeshExport MeshWithProperty: public App::DataWithPropertyBag
 {
 public:
 	/// Constructor

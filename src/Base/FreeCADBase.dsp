@@ -182,6 +182,14 @@ SOURCE=.\Libs.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Matrix.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Matrix.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Observer.h
 # End Source File
 # Begin Source File
@@ -237,6 +245,14 @@ SOURCE=.\Sequencer.cpp
 # Begin Source File
 
 SOURCE=.\Sequencer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Vector3D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Vector3D.h
 # End Source File
 # End Target
 # End Project
