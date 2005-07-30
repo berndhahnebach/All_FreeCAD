@@ -115,6 +115,9 @@ private:
 class AppExport DataWithPropertyBag
 {
 public:
+	/// Constructor
+  DataWithPropertyBag(void) { }
+  virtual ~DataWithPropertyBag(void) { };
   /// Adds a Property Bag to the container
   void Add(PropertyBag* New, const char* Name);
   /// deletes a named ProperyBag
@@ -134,7 +137,7 @@ public:
   /// delete all properties
   void clear(void);
   /// transform all properties
-  void transform(const Matrix4D &rclMat);
+  virtual void transform(const Matrix4D &rclMat);
 
   void operator= ( const DataWithPropertyBag& New);
 
