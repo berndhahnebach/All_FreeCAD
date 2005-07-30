@@ -87,3 +87,4 @@ bool Point::operator!= (const Point& rPt) const
     return ( x != rPt.x || y != rPt.y || z != rPt.z );
 }
 */
+

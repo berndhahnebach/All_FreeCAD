@@ -200,7 +200,7 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
         else if(strcmp(type,"Int")==0)
           return Py_BuildValue("i", _pcFeature->getPropertyInt(attr));
         else if(strcmp(type,"String")==0)
-          return Py_BuildValue("s", _pcFeature->getPropertyString(attr));
+          return Py_BuildValue("s", _pcFeature->getPropertyString(attr).c_str());
         else if(strcmp(type,"Link")==0)
           return _pcFeature->getPropertyLink(attr)->GetPyObject();
         else

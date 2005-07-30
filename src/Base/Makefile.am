@@ -20,6 +20,8 @@ libFreeCADBase_la_SOURCES=\
 		Handle.h \
 		Interpreter.cpp \
 		Interpreter.h \
+		Matrix.cpp \
+		Matrix.h \
 		Observer.cpp \
 		Observer.h \
 		Parameter.cpp \
@@ -34,7 +36,9 @@ libFreeCADBase_la_SOURCES=\
 		PyTools.c \
 		PyTools.h \
 		Sequencer.cpp \
-		Sequencer.h
+		Sequencer.h \
+		Vector3D.cpp \
+		Vector3D.h
 
 libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c
 

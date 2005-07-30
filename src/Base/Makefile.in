@@ -161,6 +161,8 @@ libFreeCADBase_la_SOURCES = \
 		Handle.h \
 		Interpreter.cpp \
 		Interpreter.h \
+		Matrix.cpp \
+		Matrix.h \
 		Observer.cpp \
 		Observer.h \
 		Parameter.cpp \
@@ -175,7 +177,9 @@ libFreeCADBase_la_SOURCES = \
 		PyTools.c \
 		PyTools.h \
 		Sequencer.cpp \
-		Sequencer.h
+		Sequencer.h \
+		Vector3D.cpp \
+		Vector3D.h
 
 
 libFreeCADBase_la_LIBADD = -lpython@fc_py_ver@ -lxerces-c
@@ -194,9 +198,9 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libFreeCADBase_la_DEPENDENCIES =
 am_libFreeCADBase_la_OBJECTS = Console.lo Documentation.lo Doxygen.lo \
 	Exception.lo Factory.lo FileInfo.lo FileTemplate.lo Handle.lo \
-	Interpreter.lo Observer.lo Parameter.lo ParameterPy.lo \
-	PreCompiled.lo PyExport.lo PyExportImp.lo PyTools.lo \
-	Sequencer.lo
+	Interpreter.lo Matrix.lo Observer.lo Parameter.lo \
+	ParameterPy.lo PreCompiled.lo PyExport.lo PyExportImp.lo \
+	PyTools.lo Sequencer.lo Vector3D.lo
 libFreeCADBase_la_OBJECTS = $(am_libFreeCADBase_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -207,13 +211,13 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/Exception.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Factory.Plo ./$(DEPDIR)/FileInfo.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/FileTemplate.Plo ./$(DEPDIR)/Handle.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Interpreter.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Interpreter.Plo ./$(DEPDIR)/Matrix.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Observer.Plo ./$(DEPDIR)/Parameter.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ParameterPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PyExport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PyExportImp.Plo ./$(DEPDIR)/PyTools.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Sequencer.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/Sequencer.Plo ./$(DEPDIR)/Vector3D.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -288,6 +292,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTemplate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Handle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Interpreter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Matrix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Observer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parameter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterPy.Plo@am__quote@
@@ -296,6 +301,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyExportImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyTools.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sequencer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vector3D.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

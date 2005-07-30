@@ -111,6 +111,17 @@ public:
   void SplitEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint);
   /**
    * Insert a new edge. Each concerned triangle is broken into two
+   * new triangles.
+  /**
+   * Splits the facet with index \a ulFacetPos into several facets. The points \a rP1 and \a
+   * rP2 must lie at two different edges of the facets.
+   * @note In this algorithm the neighbour facets of \a ulFacetIndex are not modified. So the
+   * caller has to take care that SplitFacet() gets invoked for these facets, too; otherwise
+   * the topology of the mesh gets broken after the call of Commit()
+   */
+  void SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1, const Vector3D& rP2);
+  /**
+   * Insert a new edge. Each concerned triangle is broken into two
    * new triangles. Unlike SplitEdge this method allows to split a facet several
    * times, e.g you can call this method several times for the same facet.
    *
@@ -261,4 +272,4 @@ protected:
 
 } // namespace Mesh
 
-#endif // MESH_TOPOALGORITHM_H 
+#endif // MESH_TOPOALGORITHM_H

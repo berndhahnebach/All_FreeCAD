@@ -40,6 +40,7 @@
 #include "Core/MeshKernel.h"
 #include "Core/Iterator.h"
 #include "Core/Algorithm.h"
+#include "Core/TopoAlgorithm.h"
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
@@ -523,31 +524,30 @@ void MeshAlgos::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D
 }
 
 
-void MeshAlgos::projectCurve( MeshWithProperty* pMesh,
-                              const TopoDS_Edge& aEdge,
-                              const std::vector<Vector3D> &rclPoints, 
-                              std::vector<FaceSplitEdge> &vSplitEdges)
+void MeshAlgos::projectCurve( MeshWithProperty* pMesh, const TopoDS_Edge& aEdge,
+                              const std::vector<Vector3D> &rclPoints, std::vector<FaceSplitEdge> &vSplitEdges )
 {
   MeshKernel &MeshK = *(pMesh->getKernel());
-  Standard_Real                          fFirst, fLast;
+  Standard_Real fFirst, fLast;
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve( aEdge,fFirst,fLast );
   
-  // geting starting point
+  // getting start point
   gp_Pnt gpPt = hCurve->Value(fFirst);
 
   // projection of the first point 
-  Vector3D StartingPoint = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
-  Vector3D ResultPoint, PlanePnt,PlaneNormal;
-  unsigned long StartFacetIdx,ActFacetIdx,LastActFacetIdx=ULONG_MAX-1;
-  unsigned long NighboursIdx[3];
+  Vector3D cStartPoint = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
+  Vector3D cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal;
+  unsigned long uStartFacetIdx,uCurFacetIdx;
+  unsigned long uLastFacetIdx=ULONG_MAX-1; // use another value as ULONG_MAX
+  unsigned long auNeighboursIdx[3];
   bool GoOn;
   
-  if(! projectPointToMesh(MeshK,StartingPoint,ResultPoint,StartFacetIdx) )
+  if( !projectPointToMesh(MeshK,cStartPoint,cResultPoint,uStartFacetIdx) )
     return;
-  ActFacetIdx = StartFacetIdx;
+  uCurFacetIdx = uStartFacetIdx;
   do{
-    MeshGeomFacet ActFacet= MeshK.GetFacet(ActFacetIdx);
-    MeshK.GetFacetNeighbours ( ActFacetIdx, NighboursIdx[0], NighboursIdx[1], NighboursIdx[2]);
+    MeshGeomFacet cCurFacet= MeshK.GetFacet(uCurFacetIdx);
+    MeshK.GetFacetNeighbours ( uCurFacetIdx, auNeighboursIdx[0], auNeighboursIdx[1], auNeighboursIdx[2]);
     Vector3D PointOnEdge[3];
 
     GoOn = false;
@@ -555,40 +555,44 @@ void MeshAlgos::projectCurve( MeshWithProperty* pMesh,
     
     for(int i=0; i<3; i++)
     {
-      // ignore last visited Facet
-      if(NighboursIdx[i] == LastActFacetIdx ) 
+      // ignore last visited facet
+      if ( auNeighboursIdx[i] == uLastFacetIdx ) 
         continue;
 
-      if(NighboursIdx[i] != ULONG_MAX)
+      // get points of the edge i
+      const Vector3D& cP0 = cCurFacet._aclPoints[i];
+      const Vector3D& cP1 = cCurFacet._aclPoints[(i+1)%3];
+
+      if ( auNeighboursIdx[i] != ULONG_MAX )
       {
-        MeshGeomFacet N = MeshK.GetFacet(NighboursIdx[i]);
-        // calculate the normal by the edge vector and the middle between the two face normales
-        PlaneNormal = (N.GetNormal() + ActFacet.GetNormal()) % (ActFacet._aclPoints[(i+1)%3] - ActFacet._aclPoints[i]);
-        PlanePnt    = ActFacet._aclPoints[i];
+        // calculate the normal by the edge vector and the middle between the two face normals
+        MeshGeomFacet N = MeshK.GetFacet( auNeighboursIdx[i] );
+        cPlaneNormal = ( N.GetNormal() + cCurFacet.GetNormal() ) % ( cP1 - cP0 );
+        cPlanePnt    = cP0;
       }else{
-        // with no neighbours the plane face normal is used
-        PlaneNormal = ActFacet.GetNormal() % (ActFacet._aclPoints[(i+1)%3] - ActFacet._aclPoints[i]);
-        PlanePnt    = ActFacet._aclPoints[i];
+        // with no neighbours the face normal is used
+        cPlaneNormal = cCurFacet.GetNormal() % ( cP1 - cP0 );
+        cPlanePnt    = cP0;
       }
 
-      Handle(Geom_Plane) hPlane = new Geom_Plane(gp_Pln(gp_Pnt(PlanePnt.x,PlanePnt.y,PlanePnt.z), 
-                                                       gp_Dir(PlaneNormal.x,PlaneNormal.y,PlaneNormal.z)));
-
+      Handle(Geom_Plane) hPlane = new Geom_Plane(gp_Pln(gp_Pnt(cPlanePnt.x,cPlanePnt.y,cPlanePnt.z), 
+                                                        gp_Dir(cPlaneNormal.x,cPlaneNormal.y,cPlaneNormal.z)));
+ 
       GeomAPI_IntCS Alg(hCurve,hPlane); 
 
-      if(Alg.IsDone())
+      if ( Alg.IsDone() )
       {
         // deciding by the number of result points (intersections)
         if( Alg.NbPoints() == 1)
         {
           gp_Pnt P = Alg.Point(1);
-          float l = ((Vector3D(P.X(),P.Y(),P.Z())  - ActFacet._aclPoints[i]) * (ActFacet._aclPoints[(i+1)%3] - ActFacet._aclPoints[i])) / 
-                    ((ActFacet._aclPoints[(i+1)%3] - ActFacet._aclPoints[i]) * (ActFacet._aclPoints[(i+1)%3] - ActFacet._aclPoints[i]));
+          float l = ( (Vector3D(P.X(),P.Y(),P.Z())  - cP0 ) * (cP1 - cP0) ) / ( (cP1 - cP0) * ( cP1 - cP0) );
           // is the Point on the Edge of the facet?
           if(l<0.0 || l>1.0)
             PointOnEdge[i] = Vector3D(FLOAT_MAX,0,0);
           else{
-            PointOnEdge[i] = (1-l)*ActFacet._aclPoints[i] + l * ActFacet._aclPoints[(i+1)%3];
+            cSplitPoint = (1-l) * cP0 + l * cP1;
+            PointOnEdge[i] = (1-l)*cP0 + l * cP1;
             NbrOfHits ++;
             HitIdx = i;
           }
@@ -598,37 +602,31 @@ void MeshAlgos::projectCurve( MeshWithProperty* pMesh,
         // more the one intersection (@ToDo)
         }else if(Alg.NbPoints() > 1){
           PointOnEdge[i] = Vector3D(FLOAT_MAX,0,0);
-          Base::Console().Log("MeshAlgos::projectCurve(): More then one intersection in Facet %ld, Edge %d\n",ActFacetIdx,i);
+          Base::Console().Log("MeshAlgos::projectCurve(): More then one intersection in Facet %ld, Edge %d\n",uCurFacetIdx,i);
         }
-
       }
-
-	
     }
 
-    LastActFacetIdx = ActFacetIdx;
+    uLastFacetIdx = uCurFacetIdx;
 
     if(NbrOfHits == 1)
     {
-      ActFacetIdx = NighboursIdx[HitIdx];
+      uCurFacetIdx = auNeighboursIdx[HitIdx];
+      FaceSplitEdge splitEdge;
+      splitEdge.ulFaceIndex = uCurFacetIdx;
+      splitEdge.p1 = cResultPoint;
+      splitEdge.p2 = cSplitPoint;
+      vSplitEdges.push_back( splitEdge );
+      cResultPoint = cSplitPoint;
       GoOn = true;
     }else{
-        Base::Console().Log("MeshAlgos::projectCurve(): Posibel reentry in Facet %ld\n",ActFacetIdx);
+      Base::Console().Log("MeshAlgos::projectCurve(): Posibel reentry in Facet %ld\n", uCurFacetIdx);
     }
 
-    if(ActFacetIdx == StartFacetIdx)
+    if( uCurFacetIdx == uStartFacetIdx )
       GoOn = false;
 
   }while(GoOn);
-
-  // cycling through the points on the edge
-  for( std::vector<Vector3D>::const_iterator It = rclPoints.begin()+1;It!=rclPoints.end();++It)
-  {
-
-
-
-  }
-
 }
 
 bool MeshAlgos::projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex)
@@ -660,19 +658,16 @@ bool MeshAlgos::projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3
 }
 
 
-
-
 void MeshAlgos::cutByCurve(MeshWithProperty* pMesh,const std::vector<FaceSplitEdge> &vSplitEdges)
 {
   MeshKernel &MeshK = *(pMesh->getKernel());
-  MeshGeomFacet GeomFacet;
+  MeshTopoAlgorithm cTopAlg(MeshK);
 
-  for (std::vector<FaceSplitEdge>::const_iterator It = vSplitEdges.begin();It!=vSplitEdges.end();++It)
+  for (std::vector<FaceSplitEdge>::const_iterator it = vSplitEdges.begin();it!=vSplitEdges.end();++it)
   {
-    GeomFacet = MeshK.GetFacet(It->ulFaceIndex);
-
-
+    cTopAlg.SplitFacet( it->ulFaceIndex, it->p1, it->p2 );
   }
 
+  cTopAlg.Commit();
 }
 

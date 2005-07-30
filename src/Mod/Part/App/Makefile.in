@@ -151,6 +151,8 @@ libPart_la_SOURCES = \
 		FeaturePartCurveNet.h \
 		FeaturePartCut.cpp \
 		FeaturePartCut.h \
+		FeaturePartImportBrep.cpp \
+		FeaturePartImportBrep.h \
 		FeaturePartImportIges.cpp \
 		FeaturePartImportIges.h \
 		FeaturePartImportStep.cpp \
@@ -190,6 +192,7 @@ libPart_la_DEPENDENCIES =
 am_libPart_la_OBJECTS = libPart_la-AppPart.lo libPart_la-AppPartPy.lo \
 	libPart_la-FeaturePartBox.lo libPart_la-FeaturePartCurveNet.lo \
 	libPart_la-FeaturePartCut.lo \
+	libPart_la-FeaturePartImportBrep.lo \
 	libPart_la-FeaturePartImportIges.lo \
 	libPart_la-FeaturePartImportStep.lo libPart_la-PartAlgos.lo \
 	libPart_la-PartFeature.lo libPart_la-PartFeaturePy.lo \
@@ -204,6 +207,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartCurveNet.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartCut.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartImportBrep.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartImportIges.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-FeaturePartImportStep.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PartAlgos.Plo \
@@ -280,6 +284,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartCurveNet.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartCut.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartImportBrep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartImportIges.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-FeaturePartImportStep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PartAlgos.Plo@am__quote@
@@ -487,6 +492,39 @@ libPart_la-FeaturePartCut.lo: FeaturePartCut.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartCut.Plo' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartCut.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartCut.lo `test -f 'FeaturePartCut.cpp' || echo '$(srcdir)/'`FeaturePartCut.cpp
+
+libPart_la-FeaturePartImportBrep.o: FeaturePartImportBrep.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportBrep.o -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportBrep.o `test -f 'FeaturePartImportBrep.cpp' || echo '$(srcdir)/'`FeaturePartImportBrep.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportBrep.cpp' object='libPart_la-FeaturePartImportBrep.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportBrep.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportBrep.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportBrep.o `test -f 'FeaturePartImportBrep.cpp' || echo '$(srcdir)/'`FeaturePartImportBrep.cpp
+
+libPart_la-FeaturePartImportBrep.obj: FeaturePartImportBrep.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportBrep.obj -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportBrep.obj `if test -f 'FeaturePartImportBrep.cpp'; then $(CYGPATH_W) 'FeaturePartImportBrep.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartImportBrep.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportBrep.cpp' object='libPart_la-FeaturePartImportBrep.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportBrep.Po' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportBrep.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportBrep.obj `if test -f 'FeaturePartImportBrep.cpp'; then $(CYGPATH_W) 'FeaturePartImportBrep.cpp'; else $(CYGPATH_W) '$(srcdir)/FeaturePartImportBrep.cpp'; fi`
+
+libPart_la-FeaturePartImportBrep.lo: FeaturePartImportBrep.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportBrep.lo -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-FeaturePartImportBrep.lo `test -f 'FeaturePartImportBrep.cpp' || echo '$(srcdir)/'`FeaturePartImportBrep.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo" "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-FeaturePartImportBrep.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeaturePartImportBrep.cpp' object='libPart_la-FeaturePartImportBrep.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-FeaturePartImportBrep.Plo' tmpdepfile='$(DEPDIR)/libPart_la-FeaturePartImportBrep.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-FeaturePartImportBrep.lo `test -f 'FeaturePartImportBrep.cpp' || echo '$(srcdir)/'`FeaturePartImportBrep.cpp
 
 libPart_la-FeaturePartImportIges.o: FeaturePartImportIges.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-FeaturePartImportIges.o -MD -MP -MF "$(DEPDIR)/libPart_la-FeaturePartImportIges.Tpo" \

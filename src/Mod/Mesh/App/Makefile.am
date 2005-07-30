@@ -22,8 +22,6 @@ libMesh_la_SOURCES=\
 		Core/Info.cpp \
 		Core/Info.h \
 		Core/Iterator.h \
-		Core/Matrix.cpp \
-		Core/Matrix.h \
 		Core/MeshAlgorithm.cpp \
 		Core/MeshAlgorithm.h \
 		Core/MeshKernel.cpp \
@@ -40,8 +38,6 @@ libMesh_la_SOURCES=\
 		Core/TopoAlgorithm.h \
 		Core/Tools2D.cpp \
 		Core/Tools2D.h \
-		Core/Vector3D.cpp \
-		Core/Vector3D.h \
 		Core/Visitor.cpp \
 		Core/Visitor.h \
 		Core/ViewProj.h \

@@ -416,6 +416,70 @@ void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, int iSide, const Vec
   _aclNewFacets.push_back(clFacet);
 }
 
+void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1, const Vector3D& rP2)
+{
+  // search for the matching edges
+  int iEdgeNo1=-1, iEdgeNo2=-1;
+  const MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
+  for ( int i=0; i<3; i++ )
+  {
+    Vector3D cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
+    Vector3D cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
+    Vector3D cDir = cEnd - cBase;
+
+    if ( rP1.DistanceToLine(cBase, cDir) < /*MESH_MIN_PT_DIST*/0.05f )
+    {
+      iEdgeNo1 = i;
+    }
+    else if ( rP2.DistanceToLine(cBase, cDir) < /*MESH_MIN_PT_DIST*/0.05f )
+    {
+      iEdgeNo2 = i;
+    }
+  }
+
+  if ( iEdgeNo1 == -1 || iEdgeNo2 == -1 )
+    return; // no two different edge
+
+  // rP1 should lie at the edge with the previous index
+  Vector3D cP1 = rP1;
+  Vector3D cP2 = rP2;
+
+  if ( (iEdgeNo2+1)%3 == iEdgeNo2 )
+  {
+    int tmp = iEdgeNo1;
+    iEdgeNo1 = iEdgeNo2;
+    iEdgeNo2 = tmp;
+    cP1 = rP2;
+    cP2 = rP1;
+  }
+
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+  if (IsFlag(ulFacetPos)) return; // already marked as INVALID
+  SetFlag(ulFacetPos); // mark for deletion
+
+  // create 3 new facets
+  MeshGeomFacet clFacet;
+
+  // facet [P1, Ei+1, P2]
+  clFacet._aclPoints[0] = cP1;
+  clFacet._aclPoints[1] = _rclMesh._aclPointArray[rFace._aulPoints[(iEdgeNo1+1)%3]];
+  clFacet._aclPoints[2] = cP2;
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
+  // facet [P2, Ei+2, Ei]
+  clFacet._aclPoints[0] = cP2;
+  clFacet._aclPoints[1] = _rclMesh._aclPointArray[rFace._aulPoints[(iEdgeNo1+2)%3]];
+  clFacet._aclPoints[2] = _rclMesh._aclPointArray[rFace._aulPoints[iEdgeNo1]];
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
+  // facet [P2, Ei, P1]
+  clFacet._aclPoints[0] = cP2;
+  clFacet._aclPoints[1] = _rclMesh._aclPointArray[rFace._aulPoints[iEdgeNo1]];
+  clFacet._aclPoints[2] = cP1;
+  clFacet.CalcNormal();
+  _aclNewFacets.push_back(clFacet);
+}
+
 bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdgeP1)
 {
   RefPointToFacet();

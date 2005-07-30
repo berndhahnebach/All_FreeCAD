@@ -37,7 +37,7 @@
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
-//#include "FeaturePartImportBrep.h"  <== not yet in repository
+#include "FeaturePartImportBrep.h"
 #include "FeaturePartCurveNet.h"
 
 using Base::Console;
@@ -69,7 +69,7 @@ void ModuleExport initPart() {
 	App::FeatureFactory().AddProducer("PartCut"       ,new App::FeatureProducer<Part::PartCutFeature>);
 	App::FeatureFactory().AddProducer("PartImportStep",new App::FeatureProducer<Part::FeaturePartImportStep>);
 	App::FeatureFactory().AddProducer("PartImportIges",new App::FeatureProducer<Part::FeaturePartImportIges>);
-//	App::FeatureFactory().AddProducer("PartImportBrep",new App::FeatureProducer<Part::FeaturePartImportBrep>); <== not yet in repository
+	App::FeatureFactory().AddProducer("PartImportBrep",new App::FeatureProducer<Part::FeaturePartImportBrep>);
 	App::FeatureFactory().AddProducer("PartCurveNet"  ,new App::FeatureProducer<Part::FeaturePartCurveNet>);
 
 	return;

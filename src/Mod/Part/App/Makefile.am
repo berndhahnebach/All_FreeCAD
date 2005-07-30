@@ -10,6 +10,8 @@ libPart_la_SOURCES=\
 		FeaturePartCurveNet.h \
 		FeaturePartCut.cpp \
 		FeaturePartCut.h \
+		FeaturePartImportBrep.cpp \
+		FeaturePartImportBrep.h \
 		FeaturePartImportIges.cpp \
 		FeaturePartImportIges.h \
 		FeaturePartImportStep.cpp \

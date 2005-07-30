@@ -89,7 +89,7 @@ class PointsAppExport PointsWithProperty: public App::DataWithPropertyBag
 {
 public:
 	/// Constructor
-	Points(void);
+	PointsWithProperty(void){}
 
   PointKernel &getKernel(void){return _Points;}
 

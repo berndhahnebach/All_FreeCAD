@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
+# include <BRep_Builder.hxx>
+# include <BRepTools.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
@@ -70,7 +72,7 @@ Standard_Integer FeaturePartImportBrep::Execute(TFunction_Logbook& log)
 	  {
 		  close(i);
 	  }else{
-      Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName);
+      Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
 		  return 1;
 	  }
 

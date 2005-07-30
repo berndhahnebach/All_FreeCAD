@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 # include <gts.h>
+# include <vector>
 #endif
 
 #include <Base/Vector3D.h>

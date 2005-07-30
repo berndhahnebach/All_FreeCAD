@@ -55,4 +55,4 @@ public:
 
 
 
-#endif // __FeaturePartImportBrep_H__
+#endif // __FeaturePartCurveNet_H__
