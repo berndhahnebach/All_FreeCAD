@@ -152,7 +152,8 @@ void FileDialog::accept()
   if ( QFile(fn).exists() && mode() == AnyFile )
   {
     QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
-    if (QMessageBox::question(this, "Existing file", msg, "Yes", "No", QString::null, 1) == 0)
+    if ( QMessageBox::question(this, tr("Existing file"), msg, QMessageBox::Yes, 
+         QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) == QMessageBox::Yes )
       QFileDialog::accept();
   }
   else

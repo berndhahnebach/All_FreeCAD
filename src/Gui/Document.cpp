@@ -331,19 +331,19 @@ void Document::canClose ( QCloseEvent * e )
   {
 #   ifndef FC_DEBUG
       switch(QMessageBox::question( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),
-        tr("Yes"),tr("No"),tr("Cancel"),0,2))
+        QMessageBox::Yes|QMessageBox::Default,QMessageBox::No,QMessageBox::Cancel|QMessageBox::Escape ))
       {
-      case 0:          // "Yes" was pressed
+      case QMessageBox::Yes: // "Yes" was pressed
         //GetApplication().
         if (save())
           e->accept(); // -> can be closed. document was saved
         else
           e->ignore(); // -> abort, because saving of document was aborted
         break;
-      case 1:          // "No" was pressed
+      case QMessageBox::No: // "No" was pressed
         e->accept();   // -> can be closed without saving
         break;
-      case 2:          // "Cancel" was pressed
+      case QMessageBox::Cancel: // "Cancel" was pressed
         e->ignore();   // -> abort
         break;
       }

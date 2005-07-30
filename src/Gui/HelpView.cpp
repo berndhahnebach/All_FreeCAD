@@ -274,7 +274,8 @@ void TextBrowser::setSource (const QString & name)
       if ( pro != "file")
       {
         QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
-        if (QMessageBox::information(this, "FreeCAD", msg, tr("Yes"), tr("No"), QString::null, 0) == 0)
+        if ( QMessageBox::information(this, "FreeCAD", msg, QMessageBox::Yes|QMessageBox::Default, 
+             QMessageBox::No|QMessageBox::Escape ) == QMessageBox::Yes )
           emit startExternalBrowser(name);
         return;
       }

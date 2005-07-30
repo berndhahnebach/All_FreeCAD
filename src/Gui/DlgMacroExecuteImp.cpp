@@ -27,8 +27,10 @@
 # include <qcombobox.h>
 # include <qdir.h>
 # include <qfileinfo.h>
+# include <qinputdialog.h>
 # include <qlineedit.h>
 # include <qlistview.h>
+# include <qmessagebox.h>
 # include <qpushbutton.h>
 #endif
 
@@ -166,16 +168,52 @@ void DlgMacroExecuteImp::onEdit()
   accept();
 }
 
-/** \todo */
+/** Creates a new macro file. */
 void DlgMacroExecuteImp::onCreate()
 {
-  DlgMacroExecute::onCreate();
+  // query file name
+  QString fn = QInputDialog::getText( tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
+                                      QString::null, 0, this, "Macro file");
+  if ( !fn.isEmpty() )
+  {
+    if ( !fn.endsWith(".FCMacro") )
+      fn += ".FCMacro";
+    QDir dir(_cMacroPath.c_str());
+    QFileInfo fi( dir, fn );
+    if ( fi.exists() && fi.isFile() )
+    {
+      QMessageBox::warning( this, tr("Existing file"), tr("'%1'.\nThis file already exists.").arg( fi.fileName() ) );
+    }
+    else
+    {
+      QString file = QString("%1/%2").arg(dir.absPath()).arg( fn );
+      PythonEditView* edit = new PythonEditView(ApplicationWindow::Instance, "Editor");
+      edit->setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
+      edit->setCaption( file );
+      edit->resize( 400, 300 );
+      ApplicationWindow::Instance->addWindow( edit );
+      edit->openFile(file);
+  
+      accept();
+    }
+  }
 }
 
-/** \todo */
+/** Deletes the selected macro file from your harddisc. */
 void DlgMacroExecuteImp::onDelete()
 {
-  DlgMacroExecute::onDelete();
+  QListViewItem* item = MacrosListView->selectedItem();
+  if (!item) return;
+
+  QString fn = item->text(0);
+  int ret = QMessageBox::question( this, tr("Delete macro"), tr("Do you really want to delete the macro '%1'?").arg( fn ), 
+                                   QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
+  if ( ret == QMessageBox::Yes )
+  {
+    QDir dir(_cMacroPath.c_str());
+    dir.remove( fn );
+    MacrosListView->takeItem( item );
+  }
 }
 
 #include "DlgMacroExecute.cpp"

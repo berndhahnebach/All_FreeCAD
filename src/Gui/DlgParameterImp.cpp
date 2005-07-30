@@ -250,9 +250,9 @@ void ParameterGroup::onDeleteSelectedItem()
     if ( !item )
       item = sel->parent();
 
-    if ( QMessageBox::question(this, tr("Remove group"),
-                               tr("Do really want to remove this parameter group?"),
-                               QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes )
+    if ( QMessageBox::question(this, tr("Remove group"), tr("Do really want to remove this parameter group?"),
+                               QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) == 
+                               QMessageBox::Yes )
     {
       QListViewItem* parent = sel->parent();
       parent->takeItem( sel );
