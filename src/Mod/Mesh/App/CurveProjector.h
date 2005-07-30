@@ -34,6 +34,7 @@ using Base::Vector3D;
 
 class TopoDS_Edge;
 class TopoDS_Shape;
+#include <TopoDS_Edge.hxx>
 
 namespace Mesh
 {
@@ -41,16 +42,12 @@ namespace Mesh
 class MeshWithProperty;
 class MeshKernel;
 
+
 /** The mesh algorithems container class
  */
 class AppMeshExport CurveProjector
 {
 public:
-
-  void cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh); 
-
-  /// helper to discredicice a Edge...
-  void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
 
   struct FaceSplitEdge
   {
@@ -58,15 +55,35 @@ public:
     Vector3D p1,p2;
   };
 
-  void projectCurve( MeshWithProperty* pMesh,
-                                       const TopoDS_Edge& aEdge,
-                                       const std::vector<Vector3D> &rclPoints, 
-                                       std::vector<FaceSplitEdge> &vSplitEdges);
+  template<class T>
+    struct TopoDSLess : public std::binary_function<T, T, bool> {
+    bool operator()(const T& x, const T& y) const{ return x.HashCode(ULONG_MAX-1) < y.HashCode(ULONG_MAX-1);}
+  };
 
-  bool projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+  typedef std::map<TopoDS_Edge, std::vector<FaceSplitEdge>,TopoDSLess<TopoDS_Edge> > result_type;
+
+  CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
+
+
+  /// helper to discredicice a Edge...
+  void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
+
+
+  void projectCurve(const TopoDS_Edge& aEdge,
+                    const std::vector<Vector3D> &rclPoints, 
+                    std::vector<FaceSplitEdge> &vSplitEdges);
+
+  bool projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+
+  result_type &result(void) {return  mvEdgeSplitPoints;}
+
+  
 
 protected:
-  const TopoDS_Shape &aShape;
+  void Do(void);
+  const TopoDS_Shape &_Shape;
+  const MeshWithProperty &_Mesh;
+  result_type mvEdgeSplitPoints;
 
 };
 

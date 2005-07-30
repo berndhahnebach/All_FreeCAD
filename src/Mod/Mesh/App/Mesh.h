@@ -164,6 +164,7 @@ public:
 
   /// Gain access to the topological mesh data structure
   MeshKernel *getKernel(void){return _Mesh;}
+  const MeshKernel *getKernel(void) const {return _Mesh;}
 
 private:
   MeshKernel *_Mesh;

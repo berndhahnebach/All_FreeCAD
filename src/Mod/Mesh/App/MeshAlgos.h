@@ -32,6 +32,7 @@
 #include <Base/Vector3D.h>
 using Base::Vector3D;
 
+#include "CurveProjector.h"
 
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -101,6 +102,7 @@ public:
   /// helper to discredicice a Edge...
   static void MeshAlgos::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
 
+  /*
   struct FaceSplitEdge
   {
     unsigned long ulFaceIndex;
@@ -111,11 +113,11 @@ public:
                                        const TopoDS_Edge& aEdge,
                                        const std::vector<Vector3D> &rclPoints, 
                                        std::vector<FaceSplitEdge> &vSplitEdges);
-
-  static void cutByCurve(MeshWithProperty* pMesh,const std::vector<FaceSplitEdge> &vSplitEdges);
-
+*/
+  static void cutByCurve(MeshWithProperty* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges);
+/*
   static bool projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
-
+*/
 
 
 };

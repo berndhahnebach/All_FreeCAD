@@ -130,7 +130,7 @@ public:
                                unsigned long &rclP1, unsigned long &rclP2) const;
   /** Returns the indices of the neighbour facets of the given facet index. */
   inline void GetFacetNeighbours ( unsigned long ulIndex, unsigned long &rulNIdx0, 
-                                   unsigned long &rulNIdx1, unsigned long &rulNIdx2);
+                                   unsigned long &rulNIdx1, unsigned long &rulNIdx2) const;
 
 #ifdef Use_EdgeList
   /** Returns true if the edge the iterator points to is a border edge. */
@@ -344,7 +344,7 @@ inline MeshGeomFacet MeshKernel::GetFacet (unsigned long ulIndex) const
   return clFacet;
 }
 
-inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long &rulNIdx0, unsigned long &rulNIdx1, unsigned long &rulNIdx2)
+inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long &rulNIdx0, unsigned long &rulNIdx1, unsigned long &rulNIdx2) const 
 {
   assert(ulIndex < _aclFacetArray.size());
 
