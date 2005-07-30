@@ -26,14 +26,20 @@
 #include <Gui/ViewProviderFeature.h>
 
 
-class SoSeparator;
-class SbVec3f;
+class SoSwitch;
+class SoPointSet;
+class SoLocateHighlight;
+class SoCoordinate3;
+
+namespace Points {
+  class PointsPropertyColor;
+}
 
 namespace PointsGui {
 
 /**
- * The ViewProviderInventorMesh class creates
- * a node representing the mesh data structure.
+ * The ViewProviderInventorPoints class creates
+ * a node representing the point data structure.
  * @author Werner Mayer
  */
 class ViewProviderInventorPoints : public Gui::ViewProviderInventorFeature
@@ -43,12 +49,29 @@ public:
   virtual ~ViewProviderInventorPoints();
 
   /** 
-   * Extracts the mesh data from the feature \a pcFeature and creates
+   * Extracts the point data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
    */
-  virtual SoNode* create(App::Feature *pcFeature);
+  virtual void attache(App::Feature *);
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName);
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void);
+  /// Update the point representation
+  virtual void update(const ChangeType&);
+  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
+  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
 
 protected:
+  void createPoints(App::Feature *pcFeature);
+  void setVertexColorMode(Points::PointsPropertyColor*);
+
+protected:
+  SoCoordinate3     *pcPointsCoord;
+  SoPointSet        *pcPoints;
+  SoLocateHighlight *pcHighlight;
+  SoMaterial        *pcColorMat;
+  SoSwitch          *pcSwitch;
 };
 
 } // namespace MeshGui

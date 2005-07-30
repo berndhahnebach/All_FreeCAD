@@ -28,8 +28,9 @@
 #include <App/Application.h>
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
-
 #include <Gui/Application.h>
+
+#include "ViewProvider.h"
 
 // use a different name to CreateCommand()
 void CreatePointsCommands(void);
@@ -73,12 +74,14 @@ void PointsGuiExport initPointsGui() {
   Base::Interpreter().loadModule("Points");
   Base::Console().Log("AppPointsGui loaded\n");
 
-//  App::GetApplication();
-//  Gui::ApplicationWindow::Instance;
-
   // instanciating the commands
   CreatePointsCommands();
 
+  // Register view provider
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("Points",       
+    new Gui::ViewProviderInventorFeatureProducer<PointsGui::ViewProviderInventorPoints>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PointsImport", 
+    new Gui::ViewProviderInventorFeatureProducer<PointsGui::ViewProviderInventorPoints>);
 
   return;
 }

@@ -26,23 +26,28 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <Inventor/nodes/SoCoordinate3.h>
-# include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoFaceSet.h>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoLocateHighlight.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoNormal.h>
-# include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoSwitch.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
-#include <App/Application.h>
 #include <Base/Sequencer.h>
+#include <App/Application.h>
+#include <Gui/Selection.h>
+
+#include <Mod/Points/App/PointsFeature.h>
 
 #include "ViewProvider.h"
 
-#include <Mod/Points/App/PointsFeature.h>
 
 
 using namespace PointsGui;
@@ -51,98 +56,146 @@ using namespace Points;
        
 ViewProviderInventorPoints::ViewProviderInventorPoints()
 {
+  pcSwitch = new SoSwitch;
 }
 
 ViewProviderInventorPoints::~ViewProviderInventorPoints()
 {
 }
 
-SoNode* ViewProviderInventorPoints::create(App::Feature *pcFeature)
+void ViewProviderInventorPoints::selected(Gui::View3DInventorViewer *, SoPath *)
+{
+  Base::Console().Log("Select viewprovider Points  %p\n",this);
+  Gui::Selection().addFeature(pcFeature);
+
+  pcHighlight->mode = SoLocateHighlight::ON;
+  pcHighlight->color.setValue((float)0.0,(float)0.3,(float)0.0);
+}
+
+void ViewProviderInventorPoints::unselected(Gui::View3DInventorViewer *, SoPath *)
+{
+  Base::Console().Log("Unselect viewprovider Points  %p\n",this);
+  Gui::Selection().removeFeature(pcFeature);
+
+  pcHighlight->mode = SoLocateHighlight::AUTO;
+  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+}
+
+void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
 {
   PointsFeature* PtFea = dynamic_cast<PointsFeature*>(pcFeature);
-  if ( !PtFea ) return 0;
+  if ( !PtFea ) return;
 
-
-  SoSeparator* tree = new SoSeparator();
-  SoCoordinate3* coord = new SoCoordinate3();
-
-  tree->addChild(coord);
-//	tree->addChild(fSet);
-
-	return tree;
-}
-
-
-#if 0
-
-SoNode* ViewProviderInventorPoints::create(App::Feature *pcFeature)
-{
-  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
-  if ( !meshFea ) return 0;
-
-  // getting current setting values...
-	bool computeNormals = /*true*/false;
-
-  const MeshKernel& cMesh = meshFea->GetMesh();
-
-  SoSeparator* tree = new SoSeparator();
-  SoCoordinate3* coord = new SoCoordinate3();
-  SoNormal* norms = new SoNormal();
-  int BaumIndex = 0;
-  int AnzDreiecke = 0;
-
-  int* numVertices = new int[cMesh.CountFacets()];
-
-  Base::Sequencer().start( "Building Inventor node...", cMesh.CountFacets() );
-  MeshFacetIterator cFIter(cMesh);
-
-  // get all facets and their points and normals
-  for ( cFIter.Init(); cFIter.More(); cFIter.Next() )
+  // get all points
+  const PointKernel& cPts = PtFea->getPoints().getKernel();
+  int idx=0;
+  for ( PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++ )
   {
-    const Vector3D& cNorm = cFIter->GetNormal();
-    const Vector3D& cP0   = cFIter->_aclPoints[0];
-    const Vector3D& cP1   = cFIter->_aclPoints[1];
-    const Vector3D& cP2   = cFIter->_aclPoints[2];
-
-    const int idxn=AnzDreiecke++;
-		norms->vector.set1Value(idxn,cNorm.x,cNorm.y,cNorm.z);
-		//p1
-		const int idx1=BaumIndex++;
-		coord->point.set1Value(idx1, cP0.x, cP0.y, cP0.z);
-		//p2
-		const int idx2=BaumIndex++;
-		coord->point.set1Value(idx2, cP1.x, cP1.y, cP1.z);
-		//p3
-		const int idx3=BaumIndex++;
-		coord->point.set1Value(idx3, cP2.x, cP2.y, cP2.z);
-		numVertices[ cFIter.Position() ] = 3; //3Vertex pro Fläche.
-
-    Base::Sequencer().next();
+		pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
   }
-  
-	SoFaceSet* fSet = new SoFaceSet();
-	fSet->numVertices.setNum(cMesh.CountFacets());
-	fSet->numVertices.setValues(0,cMesh.CountFacets(),numVertices);
-  delete [] numVertices;
-  
-	SoNormalBinding* nBinding=new SoNormalBinding();
-	tree->addChild(nBinding);		
-	if(!computeNormals){
-		tree->addChild(norms);
-		nBinding->value=SoNormalBinding::PER_FACE;
-	}
-	else{
-		norms->ref();
-		norms->unref();
-		nBinding->value=SoNormalBinding::PER_VERTEX;
-	}
 
-	tree->addChild(coord);
-	tree->addChild(fSet);
-
-  Base::Sequencer().stop();
-
-	return tree;
+	pcPoints->numPoints = cPts.size();
 }
 
-#endif
+void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor* pcProp)
+{
+  std::vector<Points::PointsPropertyColor::fColor> color = pcProp->Color;
+  for (unsigned long i=0; i<color.size();i++)
+  {
+    Points::PointsPropertyColor::fColor& col = color[i];
+    pcColorMat->diffuseColor.set1Value(i, SbColor(col.r, col.g, col.b));
+  }
+}
+
+void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
+{
+  pcFeature = pcFeat;
+  // get and save the feature
+  PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeature);
+  if ( !ptFea )
+    throw "ViewProviderInventorPoints::attach(): wrong feature attached!";
+
+  // copy the material properties of the feature
+  setMatFromFeature();
+
+  pcPointsCoord = new SoCoordinate3();
+  pcPoints = new SoPointSet();
+  createPoints( ptFea );
+
+  SoSeparator* pcPointRoot = new SoSeparator();
+  SoSeparator* pcColorShadedRoot = new SoSeparator();
+
+  // Hilight for selection
+  pcHighlight = new SoLocateHighlight();
+  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight->addChild(pcPointsCoord);
+  pcHighlight->addChild(pcPoints);
+
+  // points part ---------------------------------------------
+  SoDrawStyle *pcPointStyle = new SoDrawStyle();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = 1.0;
+  pcPointRoot->addChild(pcPointStyle);
+  pcPointRoot->addChild(pcPointMaterial);
+  pcHighlight->addChild(pcPointsCoord);
+  pcHighlight->addChild(pcPoints);
+  pcPointRoot->addChild(pcHighlight);
+
+  // color shaded  ------------------------------------------
+  SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
+  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+  pcColorMat = new SoMaterial;
+  pcColorShadedRoot->addChild(pcColorMat);
+  pcColorShadedRoot->addChild(pcMatBinding);
+  pcColorShadedRoot->addChild(pcPointsCoord);
+  pcColorShadedRoot->addChild(pcPoints);
+
+  // putting all together with a switch
+  pcSwitch->addChild(pcPointRoot);
+  pcSwitch->addChild(pcColorShadedRoot);
+  pcSwitch->whichChild = 0; 
+  pcRoot->addChild(pcSwitch);
+
+  pcFeat->setShowMode("Point");
+  setMode(pcFeat->getShowMode());
+}
+
+void ViewProviderInventorPoints::setMode(const char* ModeName)
+{
+  if(stricmp("Point",ModeName)==0)
+    pcSwitch->whichChild = 0; 
+  else 
+  {
+    Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
+    App::PropertyBag *pcProp = 0;
+    pcProp = rcPoints.Get(ModeName);
+    if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
+    {
+      setVertexColorMode(dynamic_cast<Points::PointsPropertyColor*>(pcProp));
+      pcSwitch->whichChild = 1;
+    }else 
+      Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorPoints::setMode(), ignored\n", ModeName);
+  }
+}
+
+std::vector<std::string> ViewProviderInventorPoints::getModes(void)
+{
+  std::vector<std::string> StrList;
+  StrList.push_back("Point");
+
+  Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
+  std::list<std::string> list = rcPoints.GetAllNamesOfType("VertexColor");
+
+  for(std::list<std::string>::iterator It=list.begin();It!=list.end();It++)
+    StrList.push_back(*It);
+
+  return StrList;
+}
+
+void ViewProviderInventorPoints::update(const ChangeType&)
+{
+  // set new view modes
+  setMode(pcFeature->getShowMode());
+  // copy the material properties of the feature
+  setMatFromFeature();
+}

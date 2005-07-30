@@ -170,6 +170,8 @@
 #include <Inventor/nodes/SoLocateHighlight.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMaterialBinding.h>
+#include <Inventor/nodes/SoNormal.h>
+#include <Inventor/nodes/SoNormalBinding.h>
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPointSet.h>
@@ -179,13 +181,12 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
+#include <Inventor/nodes/SoSwitch.h>
 #include <Inventor/nodes/SoTexture2.h>
 #include <Inventor/nodes/SoTexture3.h>
 #include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
-#include <Inventor/nodes/SoNormal.h>
-#include <Inventor/nodes/SoNormalBinding.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 
 #endif  //_PreComp_
