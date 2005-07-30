@@ -35,6 +35,7 @@ namespace Points
 {
 
 class PointsFeature;
+class PointsPy;
 
 //===========================================================================
 // PointsFeaturePy - Python wrapper 
@@ -60,9 +61,11 @@ public:
   PyObject *_getattr(char *attr);					// __getattr__ function
   int _setattr(char *attr, PyObject *value);		// __setattr__ function
   PYFUNCDEF_D(PointsFeaturePy,getPoints)
+  PYFUNCDEF_D(PointsFeaturePy,setPoints)
 
 private:
   PointsFeature *_pcFeature;
+  PointsPy      *_pcPointsPy;
 };
 
 } //namespace Points

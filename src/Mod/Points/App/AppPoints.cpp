@@ -50,6 +50,7 @@ void PointsAppExport initPoints() {
   Base::Console().Log("AppPoints loaded\n");
 
 
+ 	App::FeatureFactory().AddProducer("Points",new App::FeatureProducer<Points::PointsFeature>);
  	App::FeatureFactory().AddProducer("PointsImport",new App::FeatureProducer<Points::FeaturePointsImportAscii>);
 
   return;

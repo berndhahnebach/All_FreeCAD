@@ -43,6 +43,7 @@
 #include <App/Topology.h>
 
 #include "Points.h"
+#include "PointsPy.h"
 #include "PointsAlgos.h"
 
 using namespace Points;
@@ -54,30 +55,32 @@ open(PyObject *self, PyObject *args)
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
+
+  PY_TRY {
     
-  Base::Console().Log("Open in Points with %s",Name);
+    Base::Console().Log("Open in Points with %s",Name);
 
-  // extract ending
-  std::string cEnding(Name);
-  unsigned int pos = cEnding.find_last_of('.');
-  if(pos == cEnding.size())
-    Py_Error(PyExc_Exception,"no file ending");
-  cEnding.erase(0,pos+1);
+    // extract ending
+    std::string cEnding(Name);
+    unsigned int pos = cEnding.find_last_of('.');
+    if(pos == cEnding.size())
+      Py_Error(PyExc_Exception,"no file ending");
+    cEnding.erase(0,pos+1);
 
-  if(cEnding == "asc")
-  {
-    // create new document and add Import feature
-/*    App::Document *pcDoc = App::GetApplication().New();
-    App::Feature *pcFeature = pcDoc->AddFeature("PointsImportSTL");
-    pcFeature->GetProperty("FileName").Set(Name);
-    pcFeature->TouchProperty("FileName");
-    pcDoc->Recompute();
-*/
-  }
-  else
-  {
-    Py_Error(PyExc_Exception,"unknown file ending");
-  }
+    if(cEnding == "asc")
+    {
+      // create new document and add Import feature
+      App::Document *pcDoc = App::GetApplication().New();
+      App::Feature *pcFeature = pcDoc->AddFeature("PointsImport", "Points import");
+      pcFeature->setPropertyString(Name, "FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+    }
+    else
+    {
+      Py_Error(PyExc_Exception,"unknown file ending");
+    }
+  } PY_CATCH;
 
 	Py_Return;    
 }
@@ -106,19 +109,33 @@ read(PyObject *self, PyObject *args)
     Py_Error(PyExc_Exception,"File to load not existing or not readable");
 
   PY_TRY {
-    PointsWithProperty points;
+    PointsWithProperty* points = new PointsWithProperty;
     // load the mesh and create a mesh python object with it
-    PointsAlgos::Load(points, File.filePath().c_str());    
+    PointsAlgos::Load(*points, File.filePath().c_str());
+    return new PointsPy( points );
   } PY_CATCH;
   Py_Return;
 }
 
+static PyObject *                        
+create(PyObject *self, PyObject *args)
+
+{
+  if (! PyArg_ParseTuple(args, "") )			 
+    return NULL;                         
+
+  PY_TRY {
+    // load the mesh and create a mesh python object with it
+    return new PointsPy(new PointsWithProperty());    
+  } PY_CATCH;
+}
 
 /* registration table  */
 struct PyMethodDef Points_Import_methods[] = {
     {"open", open, 1},				/* method name, C func ptr, always-tuple */
     {"save", save, 1},
     {"read", read, 1},
+    {"create", create, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };

@@ -8,6 +8,8 @@ libPoints_la_SOURCES=\
 		FeaturePointsImportAscii.h \
 		Points.cpp \
 		Points.h \
+		PointsPy.cpp \
+		PointsPy.h \
 		PointsAlgos.cpp \
 		PointsAlgos.h \
 		PointsFeature.cpp \

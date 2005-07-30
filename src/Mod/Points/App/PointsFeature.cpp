@@ -46,12 +46,29 @@ PointsFeature::PointsFeature()
 {
 }
 
-/*
-const PointsKernel& PointsFeature::GetPoints() const
+PointsFeature::~PointsFeature()
 {
-  return _cPoints;
 }
-*/
+
+void PointsFeature::InitLabel(const TDF_Label &rcLabel)
+{
+}
+
+Standard_Integer PointsFeature::Execute(TFunction_Logbook& log)
+{
+  return 0;
+}
+
+void PointsFeature::Validate(TFunction_Logbook& log)
+{
+}
+
+void PointsFeature::setPoints(const PointsWithProperty& New)
+{
+  _Points = New;
+  Touch();
+}
+
 Base::PyObjectBase *PointsFeature::GetPyObject(void)
 {
   return new PointsFeaturePy(this);

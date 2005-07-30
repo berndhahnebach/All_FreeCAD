@@ -40,6 +40,36 @@ namespace Points
 typedef std::vector<Vector3D> PointKernel;
 
 
+/** Vertex color property bag
+ *  This property bag holds normal vectors of the points.
+ */
+class PointsAppExport PointsPropertyColor: public App::PropertyBag
+{
+public:
+	/// Constructor
+	PointsPropertyColor(void)
+    :PropertyBag() {}
+
+  virtual const char* GetType(void) {return "VertexColor";}
+
+  /// struct to save the color as float r,g,b
+  struct fColor
+  {
+    float r,g,b;
+  };
+
+  /// clears the property
+  virtual void resizePoints(void)
+  {
+    setInvalid();
+    Color.clear();
+  }
+
+  /// color vector
+  std::vector<fColor> Color;
+
+};
+
 /** A single Point
  *  This is a single Point of the point datastructure. Note:
  *  No additional data will be attached to this basic point. 
@@ -69,19 +99,6 @@ public:
 };
 
 */
-/** Property back of the Points datastructure
- *  with objects derived from this class the points
- *  data structur is enriched with aditional data.
- *  The linking point is the Point Index. 
- */
-class PointsPropertyBack: public App::PropertyBag
-{
-public:
-	/// Constructor
-	PointsPropertyBack(void);
-
-};
-
 
 /** Points with property backs
  */
@@ -98,7 +115,7 @@ private:
 
 };
 
-
-
 } // namespace Points
-#endif 
+
+
+#endif // _Points_h_ 

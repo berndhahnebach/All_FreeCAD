@@ -43,7 +43,7 @@
 using Base::Console;
 #include <App/Topology.h>
 
-
+#include "PointsPy.h"
 #include "PointsFeature.h"
 #include "PointsFeaturePy.h"
 
@@ -80,6 +80,7 @@ PyTypeObject PointsFeaturePy::Type = {
 PyMethodDef PointsFeaturePy::Methods[] = {
 //  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
   PYMETHODEDEF(getPoints)
+  PYMETHODEDEF(setPoints)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -92,7 +93,7 @@ PyParentObject PointsFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy
 // constructor
 //--------------------------------------------------------------------------
 PointsFeaturePy::PointsFeaturePy(PointsFeature *pcFeature, PyTypeObject *T)
-: App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
+: App::FeaturePy(pcFeature, T), _pcFeature(pcFeature), _pcPointsPy(0)
 {
   Base::Console().Log("Create PointsFeaturePy: %p \n",this);
 }
@@ -109,6 +110,7 @@ PyObject *PointsFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python 
 PointsFeaturePy::~PointsFeaturePy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy PointsFeaturePy: %p \n",this);
+  if( _pcPointsPy ) _pcPointsPy->DecRef();
 } 
 
 //--------------------------------------------------------------------------
@@ -151,6 +153,28 @@ int PointsFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ functi
 
 PYFUNCIMP_D(PointsFeaturePy,getPoints)
 {
-  Py_Return;
+  if(! _pcPointsPy)
+    _pcPointsPy = new PointsPy(&(_pcFeature->getPoints()),true);
+  // keeps the object alive
+  _pcPointsPy->IncRef();
+  
+  return _pcPointsPy;
 }
 
+PYFUNCIMP_D(PointsFeaturePy,setPoints)
+{
+ 	PointsPy *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(PointsPy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (PointsPy*)pcObj;
+
+  // copy in the Feature Mesh
+  _pcFeature->setPoints(*(pcObject->getPoints()));
+  // and set the python object of this feature
+  if(_pcPointsPy)
+    _pcPointsPy->setPoints(&(_pcFeature->getPoints()));
+
+  Py_Return;
+}
