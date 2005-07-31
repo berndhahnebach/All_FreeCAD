@@ -43,11 +43,12 @@ class MeshWithProperty;
 class MeshKernel;
 
 
-/** The mesh algorithems container class
+/** The father of all projection algorithems
  */
 class AppMeshExport CurveProjector
 {
 public:
+  CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
 
   struct FaceSplitEdge
   {
@@ -62,8 +63,46 @@ public:
 
   typedef std::map<TopoDS_Edge, std::vector<FaceSplitEdge>,TopoDSLess<TopoDS_Edge> > result_type;
 
-  CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
 
+  result_type &result(void) {return  mvEdgeSplitPoints;}
+
+  void writeIntersectionPointsToFile(const char *name="export_pts.asc");
+
+protected:
+  virtual void Do()=0;  
+  const TopoDS_Shape &_Shape;
+  const MeshWithProperty &_Mesh;
+  result_type mvEdgeSplitPoints;
+
+};
+
+
+/** Project by intersection face planes with the curve
+ */
+class AppMeshExport CurveProjectorShape: public CurveProjector
+{
+public:
+  CurveProjectorShape(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
+
+  void projectCurve(const TopoDS_Edge& aEdge,
+                    std::vector<FaceSplitEdge> &vSplitEdges);
+
+  bool projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+
+  
+
+protected:
+  virtual void Do();  
+};
+
+
+
+/** Project by projecting a sampled curve to the mesh
+ */
+class AppMeshExport CurveProjectorSimple: public CurveProjector
+{
+public:
+  CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
 
   /// helper to discredicice a Edge...
   void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
@@ -75,16 +114,10 @@ public:
 
   bool projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 
-  result_type &result(void) {return  mvEdgeSplitPoints;}
-
   
 
 protected:
-  void Do(void);
-  const TopoDS_Shape &_Shape;
-  const MeshWithProperty &_Mesh;
-  result_type mvEdgeSplitPoints;
-
+  virtual void Do();  
 };
 
 

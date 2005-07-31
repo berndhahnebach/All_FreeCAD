@@ -36,6 +36,8 @@ class FeaturePartCurveNet :public PartFeature
 {
 public:
 
+  FeaturePartCurveNet::FeaturePartCurveNet();
+
 	virtual void InitLabel(const TDF_Label &rcLabel);
 
 //	virtual bool MustExecute(const TFunction_Logbook& log);
@@ -45,7 +47,7 @@ public:
 	virtual void Validate(TFunction_Logbook& log);
 
   /// Returns the Name/Type of the feature
-  virtual const char *Type(void){return "PartImportIges";};
+  virtual const char *Type(void){return "PartCurveNet";};
 };
 
 

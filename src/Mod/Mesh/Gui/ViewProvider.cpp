@@ -236,7 +236,7 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   // wire part ----------------------------------------------
   SoDrawStyle *pcWireStyle = new SoDrawStyle();
   pcWireStyle->style = SoDrawStyle::LINES;
-  pcWireStyle->lineWidth = 2.0;
+  pcWireStyle->lineWidth = fLineSize;
   SoLightModel *pcLightModel = new SoLightModel();
   pcLightModel->model = SoLightModel::BASE_COLOR;
   SoLocateHighlight *pcHighlight2 = new SoLocateHighlight();
@@ -251,7 +251,7 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   // points part ---------------------------------------------
   SoDrawStyle *pcPointStyle = new SoDrawStyle();
   pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = 4.0;
+  pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
   pcPointRoot->addChild(pcMeshCoord);

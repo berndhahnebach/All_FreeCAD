@@ -60,50 +60,52 @@ using namespace Mesh;
 CurveProjector::CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh)
 : _Shape(aShape), _Mesh(pMesh)
 {
-  Do();
+}
+
+void CurveProjector::writeIntersectionPointsToFile(const char *name)
+{
+  // export points
+  FILE* file = fopen(name, "w");
+  for (result_type::const_iterator it1 = mvEdgeSplitPoints.begin();it1!=mvEdgeSplitPoints.end();++it1)
+    for (std::vector<FaceSplitEdge>::const_iterator it2 = it1->second.begin();it2!=it1->second.end();++it2)
+    {
+      fprintf(file, "%.4f %.4f %.4f\n", it2->p1.x, it2->p1.y, it2->p1.z);
+    }
+
+  fclose(file);
 }
 
 
-void CurveProjector::Do(void)
+//**************************************************************************
+//**************************************************************************
+// Seperator for additional classes
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CurveProjectorShape::CurveProjectorShape(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh)
+: CurveProjector(aShape,pMesh)
+{
+  Do();
+}
+
+void CurveProjectorShape::Do(void)
 {
   TopExp_Explorer Ex;
   TopoDS_Shape Edge;
 
-  std::vector<Vector3D> vEdgePolygon;
-
   for (Ex.Init(_Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
 	  const TopoDS_Edge& aEdge = TopoDS::Edge(Ex.Current());
-    GetSampledCurves(aEdge,vEdgePolygon,30);
 
     //std::vector<FaceSplitEdge> vSplitEdges;
-    projectCurve(aEdge,vEdgePolygon, mvEdgeSplitPoints[aEdge]);
+    projectCurve(aEdge, mvEdgeSplitPoints[aEdge]);
 
   }
 
 }
 
 
-void CurveProjector::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints)
-{
-  rclPoints.clear();
-
-    Standard_Real fBegin, fEnd;
-
-    Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
-    float fLen   = float(fEnd - fBegin);
-
-    for (unsigned long i = 0; i <= ulNbOfPoints; i++)
-    {
-      gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints));
-      rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
-    }
-}
-
-
-void CurveProjector::projectCurve( const TopoDS_Edge& aEdge,
-                                   const std::vector<Vector3D> &rclPoints, 
-                                   std::vector<FaceSplitEdge> &vSplitEdges)
+void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
+                                        std::vector<FaceSplitEdge> &vSplitEdges)
 {
   const MeshKernel &MeshK = *(_Mesh.getKernel());
 
@@ -207,6 +209,109 @@ void CurveProjector::projectCurve( const TopoDS_Edge& aEdge,
 
   }while(GoOn);
 
+}
+
+bool CurveProjectorShape::projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex)
+{
+  Vector3D TempResultPoint;
+  float MinLength = FLOAT_MAX;
+  bool bHit = false;
+
+  // go through the whole Mesh
+  MeshFacetIterator It(MeshK);
+  for(It.Init();It.More();It.Next())
+  {
+    // try to project (with angle) to the face
+    if(MeshFacetFunc::Foraminate (*It, Pnt, It->GetNormal(), TempResultPoint) )
+    {
+      // distance to the projected point
+      float Dist = (Pnt-TempResultPoint).Length();
+      if(Dist < MinLength)
+      {
+        // remember the point with the closest distance
+        bHit = true;
+        MinLength = Dist;
+        Rslt = TempResultPoint;
+        FaceIndex = It.Position();
+      }
+    }
+  }
+  return bHit;
+}
+
+
+//**************************************************************************
+//**************************************************************************
+// Seperator for CurveProjectorSimple classe
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+CurveProjectorSimple::CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh)
+: CurveProjector(aShape,pMesh)
+{
+  Do();
+}
+
+
+void CurveProjectorSimple::Do(void)
+{
+  TopExp_Explorer Ex;
+  TopoDS_Shape Edge;
+
+  std::vector<Vector3D> vEdgePolygon;
+
+  for (Ex.Init(_Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
+  {
+	  const TopoDS_Edge& aEdge = TopoDS::Edge(Ex.Current());
+    GetSampledCurves(aEdge,vEdgePolygon,30);
+
+    //std::vector<FaceSplitEdge> vSplitEdges;
+    projectCurve(aEdge,vEdgePolygon, mvEdgeSplitPoints[aEdge]);
+
+  }
+
+}
+
+
+void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints)
+{
+  rclPoints.clear();
+
+    Standard_Real fBegin, fEnd;
+
+    Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
+    float fLen   = float(fEnd - fBegin);
+
+    for (unsigned long i = 0; i <= ulNbOfPoints; i++)
+    {
+      gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints));
+      rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
+    }
+}
+
+
+void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
+                                   const std::vector<Vector3D> &rclPoints, 
+                                   std::vector<FaceSplitEdge> &vSplitEdges)
+{
+  const MeshKernel &MeshK = *(_Mesh.getKernel());
+
+  Standard_Real fFirst, fLast;
+  Handle(Geom_Curve) hCurve = BRep_Tool::Curve( aEdge,fFirst,fLast );
+  
+  // getting start point
+  gp_Pnt gpPt = hCurve->Value(fFirst);
+
+  // projection of the first point 
+  Vector3D cStartPoint = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
+  Vector3D cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal;
+  unsigned long uStartFacetIdx,uCurFacetIdx;
+  unsigned long uLastFacetIdx=ULONG_MAX-1; // use another value as ULONG_MAX
+  unsigned long auNeighboursIdx[3];
+  bool GoOn;
+  
+  if( !projectPointToMesh(MeshK,cStartPoint,cResultPoint,uStartFacetIdx) )
+    return;
 
   // cycling through the points on the edge
   for( std::vector<Vector3D>::const_iterator It = rclPoints.begin()+1;It!=rclPoints.end();++It)
@@ -218,7 +323,7 @@ void CurveProjector::projectCurve( const TopoDS_Edge& aEdge,
 
 }
 
-bool CurveProjector::projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex)
+bool CurveProjectorSimple::projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex)
 {
   Vector3D TempResultPoint;
   float MinLength = FLOAT_MAX;

@@ -84,7 +84,7 @@ PyTypeObject App::FeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef App::FeaturePy::Methods[] = {
 //  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-	PYMETHODEDEF(AddFeature)
+	PYMETHODEDEF(setModified)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -282,13 +282,11 @@ int FeaturePy::setProperty(const char *attr, PyObject *value)
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(FeaturePy,AddFeature)
+PYFUNCIMP_D(FeaturePy,setModified)
 {
-	//char *pstr;
-    //if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-    //    return NULL;                             // NULL triggers exception 
+  _pcFeature->Touch();
 
-	Py_Error(PyExc_Exception,"Not implemented!");
+	Py_Return;
 }
 
 

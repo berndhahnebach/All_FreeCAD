@@ -606,3 +606,4 @@ Version: V0.1B120 Date: Tue Jul 26 17:09:13 2005 +++++++++++++++++++++++++++++++
 + Moving DataWithProperty in Base::
 + Reworking Points
 + Points load Ascii
++ CurveNet Feature in Part

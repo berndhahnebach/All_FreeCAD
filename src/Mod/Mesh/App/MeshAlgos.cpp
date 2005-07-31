@@ -492,8 +492,10 @@ void MeshAlgos::cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh)
   TopoDS_Shape Edge;
 
   // calculate the projection for each Edge
-  CurveProjector Project(aShape,*pMesh);
+  CurveProjectorShape Project(aShape,*pMesh);
 
+  Project.writeIntersectionPointsToFile();
+/*
   // go through the edges and cut the mesh
   for (Ex.Init(aShape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
@@ -503,7 +505,7 @@ void MeshAlgos::cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh)
     cutByCurve(pMesh,Project.result()[aEdge]);
 
   }
-
+*/
 }
 
 
