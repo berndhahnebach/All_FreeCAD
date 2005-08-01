@@ -83,7 +83,9 @@ public:
   PYFUNCDEF_D(MeshPy,isSolid)
   PYFUNCDEF_D(MeshPy,hasNonManifolds)
   PYFUNCDEF_D(MeshPy,testDelaunay)
-  PYFUNCDEF_D(MeshPy,cutByShape)
+  PYFUNCDEF_D(MeshPy,makeCutToolFromShape)
+  PYFUNCDEF_D(MeshPy,cutOuter)
+  PYFUNCDEF_D(MeshPy,cutInner)
 
 protected:
 

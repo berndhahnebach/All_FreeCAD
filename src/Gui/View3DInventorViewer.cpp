@@ -201,10 +201,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   this->foregroundroot->addChild(cam);
   this->foregroundroot->addChild(lm);
   this->foregroundroot->addChild(bc);
-  this->foregroundroot->addChild(posit);
-  this->foregroundroot->addChild(arrowrotation);
-  this->foregroundroot->addChild(offset);
-  this->foregroundroot->addChild(bar);
+//  this->foregroundroot->addChild(posit);
+//  this->foregroundroot->addChild(arrowrotation);
+//  this->foregroundroot->addChild(offset);
+//  this->foregroundroot->addChild(bar);
 
   // set the ViewProvider root
   pcSelection        = new SoSelection();

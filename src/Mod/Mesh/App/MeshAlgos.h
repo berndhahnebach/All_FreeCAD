@@ -97,7 +97,7 @@ public:
   */
   static void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface);
 
-  static void cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh);
+  static void cutByShape(const TopoDS_Shape &aShape,const MeshWithProperty* pMesh,MeshWithProperty* pToolMesh);
 
   /// helper to discredicice a Edge...
   static void MeshAlgos::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);

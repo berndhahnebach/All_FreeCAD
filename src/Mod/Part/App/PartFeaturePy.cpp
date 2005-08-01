@@ -152,12 +152,9 @@ int PartFeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ functio
 
 PYFUNCIMP_D(PartFeaturePy,getShape)
 {
-	//char *pstr;
-    //if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-    //    return NULL;                             // NULL triggers exception 
-
-  return new App::TopoShapePy(_pcFeature->getShape());
-	//Py_Error(PyExc_Exception,"Not implemented!");
+  PY_TRY {
+    return new App::TopoShapePy(_pcFeature->getShape());
+  } PY_CATCH;
 }
 
 PYFUNCIMP_D(PartFeaturePy,setShape)
@@ -168,9 +165,11 @@ PYFUNCIMP_D(PartFeaturePy,setShape)
     return NULL;                             // NULL triggers exception 
 
   pcObject = (App::TopoShapePy*)pcObj;
+  PY_TRY {
 
-  // copy in the Feature Mesh
-  _pcFeature->setShape(pcObject->getShape());
+    // copy in the Feature Mesh
+    _pcFeature->setShape(pcObject->getShape());
+  } PY_CATCH;
 
   Py_Return;
 }

@@ -100,7 +100,9 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(isSolid)
   PYMETHODEDEF(hasNonManifolds)
   PYMETHODEDEF(testDelaunay)
-  PYMETHODEDEF(cutByShape)
+  PYMETHODEDEF(makeCutToolFromShape)
+  PYMETHODEDEF(cutOuter)
+  PYMETHODEDEF(cutInner)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -181,7 +183,7 @@ MeshWithProperty *MeshPy::getMesh(void)
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(MeshPy,cutByShape)
+PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
 {
   App::TopoShapePy   *pcObject;
   PyObject *pcObj;
@@ -190,14 +192,16 @@ PYFUNCIMP_D(MeshPy,cutByShape)
 
   pcObject = (App::TopoShapePy*)pcObj;
 
+  MeshWithProperty *M = new MeshWithProperty();
   PY_TRY {
-      TopoDS_Shape aShape = pcObject->getShape();
+    TopoDS_Shape aShape = pcObject->getShape();
 
-    MeshAlgos::cutByShape(aShape, _pcMesh);  
+    
+    MeshAlgos::cutByShape(aShape, _pcMesh,M);  
 
   } PY_CATCH;
 
-  Py_Return;
+  return new MeshPy(M);
 }
 
 PYFUNCIMP_D(MeshPy,pointCount)
@@ -216,21 +220,8 @@ PYFUNCIMP_D(MeshPy,write)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
 
-/*  Base::FileInfo File(Name);
-  
-  // checking on the file
-  if(File.exists() && !File.isWritable())
-    Py_Error(PyExc_Exception,"File not writable");
-*/
   PY_TRY {
     MeshAlgos::writeBin(_pcMesh,Name);
-/*    MeshSTL aReader(*(_pcMesh->getKernel()) );
-
-    // read STL file
-    FileStream str( File.filePath().c_str(), std::ios::out);
-    if ( !aReader.SaveBinary( str ) )
-      Py_Error(PyExc_Exception,"STL write failed to write");
-*/
   } PY_CATCH;
 
   Py_Return; 
@@ -351,6 +342,40 @@ PYFUNCIMP_D(MeshPy,diff)
   PY_TRY {
     MeshWithProperty* m = pcObject->_pcMesh;
     MeshAlgos::boolean(_pcMesh,m,_pcMesh,2);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,cutOuter)
+{
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (MeshPy*)pcObj;
+
+  PY_TRY {
+    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshAlgos::boolean(_pcMesh,m,_pcMesh,4);  
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,cutInner)
+{
+ 	MeshPy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (MeshPy*)pcObj;
+
+  PY_TRY {
+    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshAlgos::boolean(_pcMesh,m,_pcMesh,3);  
   } PY_CATCH;
 
   Py_Return;

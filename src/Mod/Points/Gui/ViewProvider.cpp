@@ -134,7 +134,7 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   // points part ---------------------------------------------
   SoDrawStyle *pcPointStyle = new SoDrawStyle();
   pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = 1.0;
+  pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
   pcHighlight->addChild(pcPointsCoord);

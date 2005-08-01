@@ -332,21 +332,27 @@ MeshWithProperty* MeshAlgos::boolean(MeshWithProperty* pMesh1, MeshWithProperty*
 			gts_face_class (),
 			gts_edge_class (),
 			gts_vertex_class ());  
-  if (Type==0) {
+  if (Type==0) { // union
     gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
     gts_surface_inter_boolean (si, s3, GTS_2_OUT_1);
   }
-  else if (Type==1) {
+  else if (Type==1) { // inter
     gts_surface_inter_boolean (si, s3, GTS_1_IN_2);
     gts_surface_inter_boolean (si, s3, GTS_2_IN_1);
   }
-  else if (Type==2) {
+  else if (Type==2) { //diff
     gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
     gts_surface_inter_boolean (si, s3, GTS_2_IN_1);
     gts_surface_foreach_face (si->s2, (GtsFunc) gts_triangle_revert, NULL);
     gts_surface_foreach_face (s2, (GtsFunc) gts_triangle_revert, NULL);
   }
-  
+  else if (Type==3) { // cut inner
+    gts_surface_inter_boolean (si, s3, GTS_1_IN_2);
+  }
+  else if (Type==4) { // cut outer
+    gts_surface_inter_boolean (si, s3, GTS_1_OUT_2);
+  }
+   
   // check that the resulting surface is not self-intersecting 
   if (check_self_intersection) {
     GtsSurface * self_intersects;
@@ -486,29 +492,31 @@ void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSur
 }
 
 
-void MeshAlgos::cutByShape(const TopoDS_Shape &aShape, MeshWithProperty* pMesh)
+void MeshAlgos::cutByShape(const TopoDS_Shape &aShape,const MeshWithProperty* pMesh,MeshWithProperty* pToolMesh)
 {
-  TopExp_Explorer Ex;
-  TopoDS_Shape Edge;
 
   // calculate the projection for each Edge
-  CurveProjectorShape Project(aShape,*pMesh);
+//  CurveProjectorShape Project(aShape,*pMesh);
+  CurveProjectorWithToolMesh Project(aShape,*pMesh,*pToolMesh);
 
-  Project.writeIntersectionPointsToFile();
-/*
-  // go through the edges and cut the mesh
-  for (Ex.Init(aShape, TopAbs_EDGE); Ex.More(); Ex.Next())
-  {
-	  const TopoDS_Edge& aEdge = TopoDS::Edge(Ex.Current());
+  //IntersectionLine Lines;
+//  MeshWithProperty *ResultMesh = new MeshWithProperty(); 
 
-    // cuting the edge
-    cutByCurve(pMesh,Project.result()[aEdge]);
+  
+ // boolean(pMesh,ToolMesh,ResultMesh,1);
 
-  }
-*/
+
+
 }
 
+/*
+void MeshAlgos::doIntersection(const MeshWithProperty &pMesh,const MeshWithProperty ToolMesh,IntersectionLine &Lines)
+  {
 
+
+  }
+
+*/
 
 void MeshAlgos::cutByCurve(MeshWithProperty* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges)
 {

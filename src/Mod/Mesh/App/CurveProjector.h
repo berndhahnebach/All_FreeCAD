@@ -36,12 +36,14 @@ class TopoDS_Edge;
 class TopoDS_Shape;
 #include <TopoDS_Edge.hxx>
 
+#include "Mesh.h"
+
 namespace Mesh
 {
 
 class MeshWithProperty;
 class MeshKernel;
-
+class MeshGeomFacet;
 
 /** The father of all projection algorithems
  */
@@ -87,7 +89,7 @@ public:
   void projectCurve(const TopoDS_Edge& aEdge,
                     std::vector<FaceSplitEdge> &vSplitEdges);
 
-  bool projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+  bool findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 
   
 
@@ -112,12 +114,34 @@ public:
                     const std::vector<Vector3D> &rclPoints, 
                     std::vector<FaceSplitEdge> &vSplitEdges);
 
-  bool projectPointToMesh(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+  bool findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 
   
 
 protected:
   virtual void Do();  
+};
+
+/** Project by projecting a sampled curve to the mesh
+ */
+class AppMeshExport CurveProjectorWithToolMesh: public CurveProjector
+{
+public:
+  struct LineSeg {
+    Vector3D p;
+    Vector3D n;
+  };
+
+  CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh,MeshWithProperty &rToolMesh); 
+
+
+  void makeToolMesh(const TopoDS_Edge& aEdge,std::vector<MeshGeomFacet> &cVAry );
+
+  
+  MeshWithProperty &ToolMesh;
+
+protected:
+  virtual void Do();
 };
 
 
