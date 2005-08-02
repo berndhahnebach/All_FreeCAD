@@ -37,16 +37,13 @@
 
 using namespace Points;
 
-void FeaturePointsImportAscii::InitLabel(const TDF_Label &rcLabel)
+void FeaturePointsImportAscii::initFeature(void)
 {
-  Base::Console().Log("FeaturePointsImportAscii::InitLabel()\n");
   addProperty("String","FileName");
 }
 
-Standard_Integer FeaturePointsImportAscii::Execute(TFunction_Logbook& log)
+int FeaturePointsImportAscii::execute(TFunction_Logbook& log)
 {
-  Base::Console().Log("FeaturePointsImportAscii::Execute()\n");
-
   try{
 
     std::string FileName = getPropertyString("FileName");
@@ -69,7 +66,3 @@ Standard_Integer FeaturePointsImportAscii::Execute(TFunction_Logbook& log)
   return 0;
 }
 
-void FeaturePointsImportAscii::Validate(TFunction_Logbook& log)
-{
-  Base::Console().Log("FeaturePointsImportAscii::Validate()\n");
-}

@@ -50,18 +50,16 @@ PointsFeature::~PointsFeature()
 {
 }
 
-void PointsFeature::InitLabel(const TDF_Label &rcLabel)
+void PointsFeature::initFeature(void)
 {
 }
 
-Standard_Integer PointsFeature::Execute(TFunction_Logbook& log)
+int PointsFeature::execute(TFunction_Logbook& log)
 {
   return 0;
 }
 
-void PointsFeature::Validate(TFunction_Logbook& log)
-{
-}
+
 
 void PointsFeature::setPoints(const PointsWithProperty& New)
 {

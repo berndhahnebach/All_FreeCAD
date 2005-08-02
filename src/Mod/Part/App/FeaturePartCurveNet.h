@@ -38,16 +38,15 @@ public:
 
   FeaturePartCurveNet::FeaturePartCurveNet();
 
-	virtual void InitLabel(const TDF_Label &rcLabel);
-
-//	virtual bool MustExecute(const TFunction_Logbook& log);
-
-	virtual Standard_Integer Execute(TFunction_Logbook& log);
-
-	virtual void Validate(TFunction_Logbook& log);
-
+  /** @name methods overide Feature */
+  //@{
+  /// Initialize Feature structure
+  virtual void initFeature(void);
+  /// recalculate the Feature
+  virtual int execute(TFunction_Logbook& log);
   /// Returns the Name/Type of the feature
-  virtual const char *Type(void){return "PartCurveNet";};
+  virtual const char *type(void){return "PartCurveNet";};
+  //@}
 };
 
 

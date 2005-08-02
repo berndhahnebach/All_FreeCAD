@@ -69,6 +69,7 @@ public:
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 	PYFUNCDEF_D(FeaturePy,setModified)
+	PYFUNCDEF_D(FeaturePy,isValid)
 
 
 	//---------------------------------------------------------------------

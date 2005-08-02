@@ -288,13 +288,15 @@ void Document::Recompute()
     if (Feat->_eStatus == Feature::New)
       DocChange.NewFeatures.push_back(Feat);
 
-		if (Feat->MustExecute(_LogBook))
+		if (Feat->MustExecute())
 		{
 			//_LogBook.SetTouched(It.Key());
       Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
-      if(Feat->Execute(_LogBook)){
+
+      Feat->_eStatus = Feature::Recompute;
+      if(Feat->execute(_LogBook)){
         Feat->_eStatus = Feature::Error;
-        Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getStatusMessage());
+        Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getErrorString());
         DocChange.ErrorFeatures.push_back(Feat);
       }else{
         DocChange.UpdatedFeatures.push_back(Feat);
@@ -330,7 +332,9 @@ Feature *Document::AddFeature(const char* sType, const char* sName)
 
     // set the status of the feature to New
     pcFeature->_eStatus = Feature::New;
-    TouchState(FeatureLabel);
+
+    _LogBook.SetTouched(FeatureLabel);
+    //TouchState(FeatureLabel);
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
 
@@ -380,6 +384,7 @@ void Document::ChangeStorageFormat(const short* sStorageFormat)
   _hDoc->ChangeStorageFormat((Standard_ExtString)sStorageFormat); 
 }
 
+/*
 void Document::TouchState(const TDF_Label &l)
 {
   _LogBook.SetTouched(l);
@@ -390,7 +395,7 @@ void Document::ImpactState(const TDF_Label &l)
   _LogBook.SetImpacted(l);
 }
 
-
+*/
 
 /*
 FCLabel *Document::HasLabel(TDF_Label cLabel)

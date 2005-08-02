@@ -39,13 +39,13 @@
 
 using namespace Mesh;
 
-void FeatureMeshImport::InitLabel(const TDF_Label &rcLabel)
+void FeatureMeshImport::initFeature(void)
 {
   Base::Console().Log("FeatureMeshImport::InitLabel()\n");
   addProperty("String","FileName");
 }
 
-Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
+int FeatureMeshImport::execute(TFunction_Logbook& log)
 {
   Base::Console().Log("FeatureMeshImport::Execute()\n");
 
@@ -78,7 +78,3 @@ Standard_Integer FeatureMeshImport::Execute(TFunction_Logbook& log)
   return 0;
 }
 
-void FeatureMeshImport::Validate(TFunction_Logbook& log)
-{
-  Base::Console().Log("FeatureMeshImport::Validate()\n");
-}

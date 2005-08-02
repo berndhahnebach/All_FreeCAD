@@ -36,60 +36,37 @@
 
 using namespace Part;
 
-void PartCutFeature::InitLabel(const TDF_Label &rcLabel)
+void PartCutFeature::initFeature(void)
 {
-	Base::Console().Log("PartCutFeature::InitLabel()\n");
 
   addProperty("Link","First");
   addProperty("Link","Second");
-
 }
 
-Standard_Integer PartCutFeature::Execute(TFunction_Logbook& log)
+Standard_Integer PartCutFeature::execute(TFunction_Logbook& log)
 {
-	Base::Console().Log("PartCutFeature::Execute()\n");
+ 
+  PartFeature *pcFirst  = dynamic_cast<PartFeature*>(getPropertyLink("First"));
+  PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Second"));
 
-  try{
-
-    PartFeature *pcFirst  = dynamic_cast<PartFeature*>(getPropertyLink("First"));
-    PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Second"));
-
-    // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
-	  TopoDS_Shape OriginalShape  = pcFirst->getShape();
-	  TopoDS_Shape ToolShape = pcSecond->getShape();
+  // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
+	TopoDS_Shape OriginalShape  = pcFirst->getShape();
+	TopoDS_Shape ToolShape = pcSecond->getShape();
 
   // STEP 2:
-	  // Let's call for algorithm computing a cut operation:
-	  BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
-	  // Let's check if the Cut has been successfull:
-	  if (!mkCut.IsDone()) 
-		  return 2;
+	// Let's call for algorithm computing a cut operation:
+	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
+	// Let's check if the Cut has been successfull:
+	if (!mkCut.IsDone()) 
+	  return 1;
 
-    TopoDS_Shape ResultShape = mkCut.Shape();
+  TopoDS_Shape ResultShape = mkCut.Shape();
 
 
-  	setShape(ResultShape);
-
-  }
-  catch(...){
-    return 1;
-  }
+  setShape(ResultShape);
 
   return 0;
 }
-
-
-void PartCutFeature::Validate(TFunction_Logbook& log)
-{
-	Base::Console().Log("PartCutFeature::Validate()\n");
- 
-  // We validate the object label ( Label() ), all the arguments and the results of the object:
-  log.SetValid(Label(), Standard_True);
-
-
-}
-
-
 
 
 

@@ -62,29 +62,58 @@ PyObjectBase::~PyObjectBase()
 
 PyTypeObject PyObjectBase::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
-	0,						/*ob_size*/
-	"PyObjectBase",			/*tp_name*/
-	sizeof(PyObjectBase),	/*tp_basicsize*/
-	0,						/*tp_itemsize*/
-			/* methods */
-	PyDestructor,	  		/*tp_dealloc*/
-	0,			 			/*tp_print*/
-	__getattr, 				/*tp_getattr*/
-	__setattr, 				/*tp_setattr*/
-	0,						/*tp_compare*/
-	__repr,			        /*tp_repr*/
-	0,						/*tp_as_number*/
-	0,		 				/*tp_as_sequence*/
-	0,						/*tp_as_mapping*/
-	0,						/*tp_hash*/
-	0,						/*tp_call */
+	0,						                                   	/*ob_size*/
+	"PyObjectBase",			                              /*tp_name*/
+	sizeof(PyObjectBase),	                            /*tp_basicsize*/
+	0,						                                   	/*tp_itemsize*/
+	/* --- methods ---------------------------------------------- */
+	PyDestructor,                                    	/*tp_dealloc*/
+	0,			 		                                    	/*tp_print*/
+	__getattr, 	                                    	/*tp_getattr*/
+	__setattr, 	                                    	/*tp_setattr*/
+	0,				                      	              	/*tp_compare*/
+	__repr,		                      	                /*tp_repr*/
+	0,				                      	              	/*tp_as_number*/
+	0,		 		                      	              	/*tp_as_sequence*/
+	0,				                      	              	/*tp_as_mapping*/
+	0,				                      	              	/*tp_hash*/
+	0,				                      		              /*tp_call */
+  0,                                                /*tp_str  */
+  0,                                                /*tp_getattro*/
+  0,                                                /*tp_setattro*/
+  /* --- Functions to access object as input/output buffer ---------*/
+  0,                                                /* tp_as_buffer */
+  /* --- Flags to define presence of optional/expanded features */
+  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
+  "About PyObjectBase",                             /*tp_doc */
+  0,                                                /*tp_iter */
+  0,                                                /*tp_iternext */
+  0,                                                /*tp_methods */
+  0,                                                /*tp_members */
+  0,                                                /*tp_getset */
+  0,                                                /*tp_base */
+  0,                                                /*tp_dict */
+  0,                                                /*tp_descr_get */
+  0,                                                /*tp_descr_set */
+  0,                                                /*tp_dictoffset */
+  0,                                                /*tp_init */
+  0,                                                /*tp_alloc */
+  0,                                                /*tp_new */
+  0,                                                /*tp_free   Low-level free-memory routine */
+  0,                                                /*tp_is_gc  For PyObject_IS_GC */
+  0,                                                /*tp_bases */
+  0,                                                /*tp_mro    method resolution order */
+  0,                                                /*tp_cache */
+  0,                                                /*tp_subclasses */
+  0                                                 /*tp_weaklist */
 };
 
 /*------------------------------
  * PyObjectBase Methods 	-- Every class, even the abstract one should have a Methods
 ------------------------------*/
 PyMethodDef PyObjectBase::Methods[] = {
-  {"isA",		 (PyCFunction) sPy_isA,			Py_NEWARGS},
+ 	PYMETHODEDEF(isA)
+
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -127,12 +156,12 @@ PyObject *PyObjectBase::_repr(void)
 /*------------------------------
  * PyObjectBase isA		-- the isA functions
 ------------------------------*/
-bool PyObjectBase::isA(PyTypeObject *T)		// if called with a Type, use "typename"
+bool PyObjectBase::IsA(PyTypeObject *T)		// if called with a Type, use "typename"
 {
-  return isA(T->tp_name);
+  return IsA(T->tp_name);
 }
 
-bool PyObjectBase::isA(const char *type_name)		// check typename of each parent
+bool PyObjectBase::IsA(const char *type_name)		// check typename of each parent
 {
   int i;
   PyParentObject  P;
@@ -144,11 +173,11 @@ bool PyObjectBase::isA(const char *type_name)		// check typename of each parent
   return false;
 }
 
-PyObject *PyObjectBase::Py_isA(PyObject *args)		// Python wrapper for isA
+PYFUNCIMP_D(PyObjectBase,isA)
 {
   char *type_name;
   Py_Try(PyArg_ParseTuple(args, "s", &type_name));
-  if(isA(type_name))
+  if(IsA(type_name))
     {Py_INCREF(Py_True); return Py_True;}
   else
     {Py_INCREF(Py_False); return Py_False;};

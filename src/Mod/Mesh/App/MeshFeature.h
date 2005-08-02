@@ -53,29 +53,18 @@ public:
   MeshFeature(void);
   virtual ~MeshFeature();
 
-  virtual void InitLabel(const TDF_Label &rcLabel);
-
-
-  /** @name methods used for recalculation (update) */
+  /** @name methods overide Feature */
   //@{
-  /** 
-   *  We compute the object and topologically name it.
-   *  If during the execution we found something wrong,
-   *  we return the number of the failure. For example:
-   *  1 - an attribute hasn't been found,
-   *  2 - algorithm failed
-   *  0 - no mistakes were found.
-   */
-  virtual Standard_Integer Execute(TFunction_Logbook& log);
-
-  /**
-   * Validation of the object label, its arguments and its results.
-   */
-  virtual void Validate(TFunction_Logbook& log);
+  /// Initialize Feature structure
+  virtual void initFeature(void);
+  /// recalculate the Feature
+  virtual int execute(TFunction_Logbook& log);
+  /// Returns the Name/Type of the feature
+  virtual const char *type(void){return "Mesh";};
   //@}
 
 
-  /** @name methods for convenient handling of parameter (properties) */
+  /** @name methods for mesh handling */
   //@{
   /** Get the access to the actual mesh */
   MeshWithProperty& getMesh();
@@ -83,10 +72,9 @@ public:
   void setMesh(const MeshWithProperty&);
   //@}
 
+  /// handles the MeshPy object
   virtual Base::PyObjectBase *MeshFeature::GetPyObject(void);
 
-  /// Returns the Name/Type of the feature
-  virtual const char *Type(void){return "Mesh";};
 
 protected:
   MeshWithProperty _cMesh;

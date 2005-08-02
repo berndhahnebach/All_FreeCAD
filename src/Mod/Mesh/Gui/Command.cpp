@@ -112,7 +112,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   const std::set<App::Feature*>& sel = Gui::Selection().Selection();
   for ( std::set<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
   {
-    if ( strcmp( (*it)->Type(), "MeshImport") == 0 )
+    if ( strcmp( (*it)->type(), "MeshImport") == 0 )
     {
       mesh = dynamic_cast<MeshFeature*>(*it);
       break;
@@ -234,7 +234,7 @@ bool CmdMeshVertexCurvature::isActive(void)
   const std::set<App::Feature*>& sel = Gui::Selection().Selection();
   for ( std::set<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
   {
-    if ( strcmp( (*it)->Type(), "MeshImport") == 0 )
+    if ( strcmp( (*it)->type(), "MeshImport") == 0 )
   	  return true; // MeshFeature found
   }
 

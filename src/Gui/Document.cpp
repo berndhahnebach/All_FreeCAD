@@ -149,9 +149,9 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   // set up new providers
   for(It=Reason.NewFeatures.begin();It!=Reason.NewFeatures.end();It++)
   {
-    std::string cName = (*It)->Type();
+    std::string cName = (*It)->type();
     // check if still the same ViewProvider
-    ViewProviderInventorFeature *pcProvider = ViewProviderInventorFeatureFactory().Produce((*It)->Type());
+    ViewProviderInventorFeature *pcProvider = ViewProviderInventorFeatureFactory().Produce((*It)->type());
     _ViewProviderMap[*It] = pcProvider;
     if(pcProvider)
     {
@@ -166,7 +166,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
           pcIvView->getViewer()->addViewProvider(pcProvider);
       }
     }else{
-      Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->Type());
+      Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->type());
     }
   }
 

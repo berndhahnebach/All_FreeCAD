@@ -54,17 +54,13 @@ MeshFeature::~MeshFeature()
     pcMeshFeaturePy->DecRef();
 }
 
-void MeshFeature::InitLabel(const TDF_Label &rcLabel)
+void MeshFeature::initFeature(void)
 {
 }
 
-Standard_Integer MeshFeature::Execute(TFunction_Logbook& log)
+Standard_Integer MeshFeature::execute(TFunction_Logbook& log)
 {
   return 0;
-}
-
-void MeshFeature::Validate(TFunction_Logbook& log)
-{
 }
 
 

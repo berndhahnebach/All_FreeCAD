@@ -244,24 +244,24 @@ class BaseExport PyObjectBase : public PyObject
 	static  PyObject *__repr(PyObject *PyObj)		
 	  {return ((PyObjectBase*) PyObj)->_repr();};
 
-
   /** @name helper methodes */
   //@{
   /// return a float from an int or flot object, or throw.
   static float getFloatFromPy(PyObject *value);
   //@}
 
-
 	/// Type checking							
-	bool isA(PyTypeObject *T);
+	bool IsA(PyTypeObject *T);
 	/// Type checking
-	bool isA(const char *type_name);
-	/// Python type checking
-	PyObject *Py_isA(PyObject *args);
+	bool IsA(const char *type_name);
+
+  /// Python type checking
+	PyObject *isA(PyObject *args);
 	/// static python wrapper
-  static PyObject *sPy_isA(PyObject *self, PyObject *args, PyObject *)
+  
+  static PyObject *sisA(PyObject *self, PyObject *args, PyObject *)
   {
-    return ((PyObjectBase*)self)->Py_isA(args);
+    return ((PyObjectBase*)self)->isA(args);
   };
 };
 

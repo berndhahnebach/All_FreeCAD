@@ -154,12 +154,7 @@ public:
 	bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.
 	bool IsValid() const;
-    /// Mark a label as modified by the user
-  void TouchState(const TDF_Label &);
-  /// Set a label modified
-  void ImpactState(const TDF_Label &);
-	/// Set a special Label as modified
-	//void SetModified(FCPyHandle<FCLabel> L);
+
 	/// Remove all modifications. After this call The document becomes again Valid.
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
@@ -232,34 +227,21 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 	friend class DocumentPy;
 	friend class LabelPy;
 	friend class Application;
+	friend class Feature;
 
 protected:
-	/** @name atributes and methodes for label handling
-	 */
-/*	//@{
-	/// less funktion for the map sorting of TDF_Labels
-	struct LabelLess{
-		bool operator () (const TDF_Label &cLabel1, const TDF_Label &cLabel2) const
-		{
-			return (((unsigned short) cLabel1.Depth()<<16)|(unsigned short) cLabel1.Tag()) <
-				   (((unsigned short) cLabel2.Depth()<<16)|(unsigned short) cLabel2.Tag()) ;
-		}
-	};
-	/// friend daclaration to allow access
-	friend class FCLabel;
-	FCPyHandle<FCLabel> HasLabel(TDF_Label cLabel);
-	/// map of all existing python label wrappers (sorted)
-	std::map <TDF_Label,FCPyHandle<FCLabel>,LabelLess> mcLabelMap;
-	FCPyHandle<FCLabel> _hcMain;
-	//@}
-*/
+
+  TFunction_Logbook &getLogBook(void){return _LogBook;}
+
+
+
+protected:
 	/// handle to the OCC document
 	Handle_TDocStd_Document _hDoc;
 
 	// pointer to the python class
 	DocumentPy *_pcDocPy;
 
-protected:
   /// Base label 
 	TDF_Label _lBase;
   /// label for the position of the document

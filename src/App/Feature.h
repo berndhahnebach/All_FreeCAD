@@ -60,45 +60,14 @@ public:
 	Feature(void);
   virtual ~Feature();
 
+	/** @name methodes to overide with a new feature type */
+	//@{
 	/** Init the Label the Feature is attached to
 	 *  This methode will be called when the Feature is mounted 
 	 *  to a Label in the document. It need to be overwriten in 
 	 *  every Feature
 	 */
-	virtual void InitLabel(const TDF_Label &rcLabel)=0;
-
-	/// Get called by the framework when the label is attached to the document
-	void AttachLabel(const TDF_Label &rcLabel,Document*);
-
-  /// Returns the Name/Type of the feature
-  virtual const char *Type(void)=0;
-
-	/** @name status methodes of the feature */
-	//@{
-  /// status types
-  enum Status 
-  {
-    Valid,   /**< enum The Feature is Valid */
-    New,     /**< enum The Feature is new */
-    Changed, /**< enum Changed by recalcualtion */
-    Inactive,/**< enum Will not recalculated */
-    Error    /**< enum Feture is in error state */
-  };
-
-  /// gets the status
-  Status getStatus(void) const { return _eStatus;}
-  /// get the status Message (if any)
-  const char *getStatusMessage(void) const;//{return _cStatusMessage.c_str();}
-  //@}
-
-	/** @name methodes used for recalculation (update) */
-	//@{
-	/** MustExecute
-	 *  We call this method to check if the object was modified to
-	 *  be invoked. If the object label or an argument is modified,
-	 *  we must recompute the object - to call the method Execute().
-	 */
-	virtual bool MustExecute(const TFunction_Logbook& log);
+	virtual void initFeature(void)=0;
 
 	/** Validate
 	 *  We compute the object and topologically name it.
@@ -108,14 +77,66 @@ public:
 	 *  2 - algorithm failed
 	 *  0 - no mistakes were found.
 	 */
-	virtual Standard_Integer Execute(TFunction_Logbook& log)=0;
+	virtual int execute(TFunction_Logbook& log)=0;
+
+  /// Returns the Name/Type of the feature
+  virtual const char *type(void)=0;
+  //@}
+
+
+	/** @name status methodes of the feature */
+	//@{
+  /// status types
+  enum Status 
+  {
+    Valid,    /**< enum The Feature is Valid */
+    New,      /**< enum The Feature is new */
+    Inactive ,/**< enum Will not recalculated */
+    Recompute,/**< enum Fetature is in recomputation*/
+    Error     /**< enum Feture is in error state */
+  };
+
+  /// gets the status
+  Status getStatus(void) const { return _eStatus;}
+  /// set the status, e.g. after recoputation in Execute()
+ // void setStatus(const Status &s){_eStatus = s;}
+  /// get the status Message
+  const char *getStatusString(void) const;//{return _cStatusMessage.c_str();}
+  /// get the error Message (if any)
+  const char *getErrorString(void) const{return _cErrorMessage.c_str();}
+  /// set an error on recoputation
+  void setError(const char* s);
+  /// checks if valid
+  bool isValid(void){return _eStatus == Valid;}
+  /// Recompute only this feature and makes it valid again
+  void recompute(void);
+  //@}
+
+protected:
+	/** @name methodes used for recalculation and document handling
+    *  this methodes are only called/used by the document
+    */
+	//@{
+	/** MustExecute
+	 *  We call this method to check if the object was modified to
+	 *  be invoked. If the object label or an argument is modified.
+	 *  If we must recompute the object - to call the method Execute().
+	 */
+	virtual bool MustExecute(void);
+
+  // remove all modifikations from the property labels
+  void removeModifications(void);
+
+  /// Get called by the framework when the label is attached to the document
+	void AttachLabel(const TDF_Label &rcLabel,Document*);
 
 	/** Validate
 	 * Validation of the object label, its arguments and its results.
 	 */
-	virtual void Validate(TFunction_Logbook& log)=0;
+//	virtual void Validate(TFunction_Logbook& log)=0;
 	//@}
 
+public:
 
 	/** @name methodes for conviniant handling of Parameter (Properties) */
 	//@{
@@ -257,7 +278,7 @@ protected:
   FeaturePy* pcFeaturePy;
 
   Status _eStatus;
-//  std::string _cStatusMessage;
+  std::string _cErrorMessage;
 
 };
 

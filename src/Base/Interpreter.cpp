@@ -168,7 +168,9 @@ int InterpreterSingleton::cleanup(void (*func)(void))
 
 void InterpreterSingleton::finalize()
 {
-  Py_Finalize();
+  try{
+    Py_Finalize();
+  }catch(...){}
 }
 
 void InterpreterSingleton::runStringArg(const char * psCom,...)

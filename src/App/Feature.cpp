@@ -281,86 +281,39 @@ Feature *Feature::getPropertyLink(const char *Name)
 
 }
 
-/*
-Property &Feature::GetProperty(const char *Name)
-{
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
-
-  if(It == _PropertiesMap.end())
-    throw Base::Exception("Feature::GetProperty() unknown property name");
-
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
-
-  Handle(PropertyAttr) PropAttr;
-
- 	if (!L.FindAttribute(PropertyAttr::GetID(), PropAttr )) 
-    throw Base::Exception("Feature::GetProperty() Internal error, no PropertyAttr attached to label");
-
-
-  return *(PropAttr->Get());
-}
-
-double Feature::GetFloatProperty(const char *Name)
-{
-    return dynamic_cast<PropertyFloat&>(GetProperty(Name)).GetValue();
-}
-
-const char *Feature::GetStringProperty(const char *Name)
-{
-    return dynamic_cast<PropertyString&>(GetProperty(Name)).GetAsString();
-}
-
-*/
 
 void Feature::TouchProperty(const char *Name)
 {
   std::map<std::string,int>::iterator it = _PropertiesMap.find( Name );
   if ( it != _PropertiesMap.end() )
   {
-    _pDoc->TouchState( _cFeatureLabel.FindChild( it->second ) );
-    _pDoc->TouchState( _cFeatureLabel );
+    _pDoc->getLogBook().SetTouched( _cFeatureLabel.FindChild( it->second ) );
+    //_pDoc->TouchState( _cFeatureLabel );
   }
 }
 
 void Feature::Touch(void)
 {
-    _pDoc->TouchState( _cFeatureLabel );
+    _pDoc->getLogBook().SetTouched( _cFeatureLabel );
 }
 
 void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 {
+  // remember the document and the Feature label
 	_cFeatureLabel = rcLabel;
   _pDoc = dt;
 
-	// Add the one and only FreeCAD FunctionDriver to the driver Tabel !!! Move to APPinit !!!
-	//Handle(TFunction_Driver) myDriver = new Function();
-	//TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
+  // calls the Init methode of the Feature to set up the properties and data types
+	initFeature();
 
-
-	// Instanciate a TFunction_Function attribute connected to the current box driver
-	// and attach it to the data structure as an attribute of the Box Label
-	Handle(TFunction_Function) myFunction = TFunction_Function::Set(_cFeatureLabel, Function::GetID());
-
-	// Initialize and execute the box driver (look at the "Execute()" code)
-//    TFunction_Logbook log;
-
-	Handle(Function) myFunctionDriver;
-    // Find the TOcafFunction_BoxDriver in the TFunction_DriverTable using its GUID
-	TFunction_DriverTable::Get()->FindDriver(Function::GetID(), myFunctionDriver);
-
-	myFunctionDriver->Init(_cFeatureLabel);
-
-	InitLabel(_cFeatureLabel);
-
-//   if (myFunctionDriver->Execute(log))
-//		Base::Console().Error("Feature::InitLabel()");
-//		Base::Console().Log("Feature::InitLabel() Initial Execute Fails (not bad at all ;-)\n");
 
 }
 
-bool Feature::MustExecute(const TFunction_Logbook& log)
+bool Feature::MustExecute(void)
 {
-	Base::Console().Log("Feature::MustExecute()\n");
+  const TFunction_Logbook& log = _pDoc->getLogBook();
+  Handle(TDF_Reference) RefAttr;
+  TDF_Label L;
 
   // If the object's label is modified:
   if (log.IsModified(_cFeatureLabel)) 
@@ -369,15 +322,44 @@ bool Feature::MustExecute(const TFunction_Logbook& log)
   // checks if a known property has changed
   for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
   {
-    if (log.IsModified( _cFeatureLabel.FindChild(It->second) ))
+    L = _cFeatureLabel.FindChild(It->second);
+    if (log.IsModified(L ))
       return Standard_True;
+
+    // if the property is a link?
+    if (L.FindAttribute(TDF_Reference::GetID(), RefAttr ))
+    {
+      TDF_Label Link = RefAttr->Get();
+      // check link
+      if (log.IsModified(Link ))
+        return Standard_True;
+    }
   }
 
   return false;
 
 }
 
-const char* Feature::getStatusMessage(void) const
+void Feature::recompute(void)
+{
+
+  if(MustExecute())
+  {
+    execute(_pDoc->getLogBook());
+    removeModifications();
+  }
+}
+
+void Feature::removeModifications(void)
+{
+  // checks if a known property has changed
+  for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
+  {
+    _pDoc->getLogBook().IsModified( _cFeatureLabel.FindChild(It->second) );
+  }
+}
+
+const char* Feature::getStatusString(void) const
 {
   switch (_eStatus)
   {
@@ -385,16 +367,23 @@ const char* Feature::getStatusMessage(void) const
     return "Valid";
   case New:
     return "New";
-  case Changed:
-    return "Changed";
   case Inactive:
     return "Inactive";
+  case Recompute:
+    return "Recompute";
   case Error:
     return "Error";
   default:
     return "Unknown";
   }
 }
+
+void Feature::setError(const char* s)
+{
+  _eStatus = Error;
+  _cErrorMessage = s;
+}
+
 
 Feature *Feature::GetFeature(const TDF_Label &l)
 {

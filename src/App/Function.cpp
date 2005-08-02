@@ -109,8 +109,10 @@ Standard_Boolean Function::MustExecute(const TFunction_Logbook& log) const
 		throw Base::Exception("Function::Execute():Wrong document Strukture");
 	
 	// call the Exectute of the App::Feature
-	return myFeatureAttr->Get()->MustExecute(log);
-
+//	return myFeatureAttr->Get()->MustExecute(log);
+// no longer use Function::MustExecute()
+assert(0);
+return 0;
 }
 
 //=======================================================================
@@ -135,8 +137,8 @@ Standard_Integer Function::Execute(TFunction_Logbook& log) const
 		throw Base::Exception("Function::Execute():Wrong document Strukture");
 	
 	// call the Exectute of the App::Feature
-	return myFeatureAttr->Get()->Execute(log);
-
+//	return myFeatureAttr->Get()->Execute(log);
+  return 0;
 	
 }
 

@@ -40,22 +40,15 @@ class FeaturePointsImportAscii : public PointsFeature
 {
 public:
 
-  /** Adds the "filename" property to this feature. */
-	virtual void InitLabel(const TDF_Label &rcLabel);
-
-  /** 
-   * Loads the actual Points data into memory. If the read of data fails 
-   * the value 2 is returned, if the "filename" property is invalid 1 is
-   * returned, 0 otherwise.
-   */
-	virtual Standard_Integer Execute(TFunction_Logbook& log);
-
-
-  /** @todo */
-	virtual void Validate(TFunction_Logbook& log);
-
+  /** @name methods overide Feature */
+  //@{
+  /// Initialize Feature structure
+  virtual void initFeature(void);
+  /// recalculate the Feature
+  virtual int execute(TFunction_Logbook& log);
   /// Returns the Name/Type of the feature
-  virtual const char *Type(void){return "PointsImport";};
+  virtual const char *type(void){return "PointsImport";};
+  //@}
 };
 
 }

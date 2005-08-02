@@ -34,7 +34,7 @@
 
 using namespace Part;
 
-void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
+void PartBoxFeature::initFeature(void)
 {
 	Base::Console().Log("PartBoxFeature::InitLabel()\n");
 
@@ -47,39 +47,24 @@ void PartBoxFeature::InitLabel(const TDF_Label &rcLabel)
 
 }
 
-/*
-bool PartBoxFeature::MustExecute(const TFunction_Logbook& log)
-{
-	Base::Console().Log("PartBoxFeature::MustExecute()\n");
-	return false;
-}
-*/
-Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
+
+int PartBoxFeature::execute(TFunction_Logbook& log)
 {
 	Base::Console().Log("PartBoxFeature::Execute()\n");
 
-/*  cout << GetFloatProperty("x") << endl;
-  cout << GetFloatProperty("y") << endl;
-  cout << GetFloatProperty("z") << endl;
-  cout << GetFloatProperty("l") << endl;
-  cout << GetFloatProperty("h") << endl;
-  cout << GetFloatProperty("w") << endl;*/
-
-	double x = getPropertyFloat("x");
-  double y = getPropertyFloat("y");
-  double z = getPropertyFloat("z");
-
   try{
-	// Build a box using the dimension and position attributes
-	BRepPrimAPI_MakeBox mkBox( gp_Pnt( x, y, z),
-                             getPropertyFloat("l"),
-                             getPropertyFloat("h"),
-                             getPropertyFloat("w"));
+	  // Build a box using the dimension and position attributes
+	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( getPropertyFloat("x"), 
+                                       getPropertyFloat("y"), 
+                                       getPropertyFloat("z")),
+                               getPropertyFloat("l"),
+                               getPropertyFloat("h"),
+                               getPropertyFloat("w"));
 
-  TopoDS_Shape ResultShape = mkBox.Shape();
+    TopoDS_Shape ResultShape = mkBox.Shape();
 
 
-	setShape(ResultShape);
+	  setShape(ResultShape);
 
   }
   catch(...){
@@ -88,18 +73,6 @@ Standard_Integer PartBoxFeature::Execute(TFunction_Logbook& log)
 
   return 0;
 }
-
-
-void PartBoxFeature::Validate(TFunction_Logbook& log)
-{
-	Base::Console().Log("PartBoxFeature::Validate()\n");
- 
-  // We validate the object label ( Label() ), all the arguments and the results of the object:
-  log.SetValid(Label(), Standard_True);
-
-
-}
-
 
 
 

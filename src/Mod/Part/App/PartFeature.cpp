@@ -59,19 +59,14 @@ PartFeature::PartFeature(void)
 
 }
 
-void PartFeature::InitLabel(const TDF_Label &rcLabel)
+void PartFeature::initFeature(void)
 {
 }
 
-Standard_Integer PartFeature::Execute(TFunction_Logbook& log)
+Standard_Integer PartFeature::execute(TFunction_Logbook& log)
 {
   return 0;
 }
-
-void PartFeature::Validate(TFunction_Logbook& log)
-{
-}
-
 
 
 void PartFeature::setShape(const TopoDS_Shape &Shape)
