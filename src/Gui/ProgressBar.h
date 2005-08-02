@@ -35,12 +35,8 @@ namespace Gui {
 struct ProgressBarPrivate;
 
 /**
- * FreeCAD's progressbar for long operations
- * If you call @ref start() several times without calling
- * @ref stop() before the number of new steps will be added
- * to the number of current steps, i.e. nevertheless the
- * progress bar will run only once. Have a look at the following
- * examples:
+ * FreeCAD's progress bar for long operations
+ * To see how to use the progress bar have a look at the following examples:
  *
  * \code
  * unsigned long steps = ...
@@ -56,7 +52,7 @@ struct ProgressBarPrivate;
  * 
  * \endcode
  *
- * The example below shows how to use two interlocking progresses.
+ * The example below shows how to use two nested progresses.
  *
  * \code
  * void function1()

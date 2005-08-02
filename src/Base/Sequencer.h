@@ -106,6 +106,10 @@ class AbortException;
  * type of exception is thrown and you want to stop your operations and hence the sequencer use 
  * Sequencer().halt() instead of Sequencer().stop(). This stops all running levels of the sequencer.  
  *
+ * \note In case several nested sequencers are used then no percentage progress is possible any more
+ * because the number of total steps cannot be determined for sure. Then a busy indicator is shown 
+ * instead of.
+ *
  * \author Werner Mayer
  */
 class BaseExport SequencerBase
@@ -235,7 +239,7 @@ private:
   int _nMaxInstStarted; /**< Stores the number of maximum pending operations until all pending operations 
                             are finished. */
   int _nLastPercentage; /**< Progress in percent. */
-  std::list<unsigned long> _aSteps; /**< Stores the number of steps for each operation */
+  unsigned long _nNewSteps; /**< Is used for nested calls of the sequencer. */
   static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */ 
 };
 

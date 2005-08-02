@@ -219,9 +219,13 @@ void ProgressBar::resume()
   d->cWaitCursor = new Gui::WaitCursor;
 }
 
-void ProgressBar::setProgress( int progress )
+void ProgressBar::setProgress( int progr )
 {
-  QProgressBar::setProgress( progress );
+  // if number of total steps is unknown then incrementy only by one
+  if ( nTotalSteps == 0 )
+    QProgressBar::setProgress(progress()+1);
+  else
+    QProgressBar::setProgress(progr);
 }
 
 void ProgressBar::startStep()
@@ -261,12 +265,12 @@ void ProgressBar::nextStep(bool canAbort)
     else
     {
       rejectCancel();
-      setProgress(nProgress++);
+      setProgress(nProgress+1);
     }
   }
   else
   {
-    setProgress(nProgress++);
+    setProgress(nProgress+1);
   }
   
   qApp->processEvents();

@@ -51,7 +51,7 @@ SequencerBase& SequencerBase::Instance ()
 
 SequencerBase::SequencerBase()
   : nProgress(0), nTotalSteps(0), _bLocked(false), _bCanceled(false), 
-    _nInstStarted(0), _nMaxInstStarted(1), _nLastPercentage(-1)
+    _nInstStarted(0), _nMaxInstStarted(1), _nLastPercentage(-1), _nNewSteps(0)
 {
   _setGlobalInstance();
 }
@@ -79,43 +79,33 @@ bool SequencerBase::start(const char* pszStr, unsigned long steps)
   _nInstStarted++;
 
   // several sequencer started
-  if (_nInstStarted > _nMaxInstStarted)
+  if ( _nInstStarted > _nMaxInstStarted )
   {
-    // calculate the number of iterations using Horner scheme
-    _aSteps.push_front(steps);
-    nTotalSteps = 1;
-    for (std::list<unsigned long>::iterator it=_aSteps.begin(); it!=_aSteps.end();++it)
-    {
-      if ( *it == 0 )
-      {
-        // one process has undetermined number of steps, so
-        // the whole process must be undetermined
-        nTotalSteps = 1;
-        break;
-      }
-
-      nTotalSteps = nTotalSteps * (*it) + 1;
-    }
-
-    nTotalSteps -= 1;
-
+    // if more instances of the sequencer are running then we switch to busy indicator
+    // because it's not possible to determine the total number of steps
+    nTotalSteps = 0;
     _nMaxInstStarted = _nInstStarted;
+    _nNewSteps = steps;
+
+    // reimplemented in sub-classes
+    if ( !_bLocked )
+      startStep();
   }
   else if (_nInstStarted == 1)
   {
-    _aSteps.push_front(steps);
+    _nNewSteps = 1000; // every 10 steps call nextStep() later on
     nTotalSteps = steps;
     nProgress = 0;
     _bCanceled = false;
 
     setText(pszStr);
 
+    // reimplemented in sub-classes
+    if ( !_bLocked )
+      startStep();
+
     ret = true;
   }
-
-  // reimplemented in sub-classes
-  if ( !_bLocked )
-    startStep();
 
   return ret;
 }
@@ -127,7 +117,8 @@ void SequencerBase::startStep()
 bool SequencerBase::next(bool canAbort)
 {
   nProgress++;
-  int perc = nProgress*100 / nTotalSteps;
+  unsigned long uDiv = nTotalSteps > 0 ? nTotalSteps : _nNewSteps;
+  int perc = nProgress*100 / uDiv;
 
   // do only an update if we have increased by one percent
   if ( perc > _nLastPercentage )
@@ -227,7 +218,6 @@ void SequencerBase::resetData()
   _bCanceled = false;
   _nInstStarted = 0;
   _nMaxInstStarted = 1;
-  _aSteps.clear();
 }
 
 void SequencerBase::setText(const char*)
@@ -257,7 +247,8 @@ void ConsoleSequencer::startStep()
 
 void ConsoleSequencer::nextStep( bool canAbort )
 {
-  printf("\t\t\t\t\t\t(%2.1f %%)\t\r", (float)progressInPercent());
+  if ( nTotalSteps != 0 )
+    printf("\t\t\t\t\t\t(%2.1f %%)\t\r", (float)progressInPercent());
 }
 
 void ConsoleSequencer::resetData()
