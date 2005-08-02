@@ -48,19 +48,20 @@ public:
     unsigned long getWidth() const { return _width; }
     unsigned long getHeight() const { return _height; }
     int getFormat() const { return _format; }
+    unsigned short getNumSigBitsPerSample() const { return _numSigBitsPerSample; }
     unsigned short getNumSamples() const { return _numSamples; }
     unsigned short getNumBitsPerSample() const { return _numBitsPerSample; }
     unsigned short getNumBytesPerPixel() const { return _numBytesPerPixel; }
     
     virtual void clear();
-    virtual int createCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format);
-    virtual int pointTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
+    virtual int createCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample);
+    virtual int pointTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership);
 
     virtual int getSample(int x, int y, unsigned short sampleIndex, double &value);
 
 protected:
 
-    int _setColorFormat(int format);
+    int _setColorFormat(int format, unsigned short numSigBitsPerSample);
     int _allocate();
 
     unsigned char* _pPixelData;			// pointer to the pixel data
@@ -68,6 +69,7 @@ protected:
     unsigned long _width;				// width of image (number of pixels in horizontal direction)
     unsigned long _height;				// height of image (number of pixels in vertical direction)
     int _format;				        // colour format of the pixel data
+    unsigned short _numSigBitsPerSample;// number of significant bits per sample (always <= _numBitsPerSample)
 
     // Dependant parameters
     unsigned short _numSamples;		    // number of samples per pixel (e.g. 1 for grey, 3 for rgb, 4 for rgba)

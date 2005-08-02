@@ -144,7 +144,14 @@ void GLImageBox::drawImage()
         int yy = (int)floor(ICToWC_Y(tly - 0.5) + 0.5);
         glRasterPos2f(xx, yy);
 
-        // Load the intensity map if present
+        // Compute scale to stretch number of significant bits to full range
+        // e.g. stretch 12 significant bits to 16-bit range: 0-4095 -> 0-65535, therefore scale = 65535/4095
+        double scale = (pow(2.0, _image.getNumBitsPerSample()) - 1.0) / (pow(2.0, _image.getNumSigBitsPerSample()) - 1.0);
+        glPixelTransferf(GL_RED_SCALE, (float)scale);
+        glPixelTransferf(GL_GREEN_SCALE, (float)scale);
+        glPixelTransferf(GL_BLUE_SCALE, (float)scale);
+
+        // Load the color map if present
         if (_pColorMap != 0)
         {
             glPixelTransferf(GL_MAP_COLOR, 1.0);
@@ -320,13 +327,13 @@ void GLImageBox::limitZoomFactor()
         _zoomFactor = 1.0 / 64.0;
 }
 
-// Set the current position (centre of top left image pixel coordinates) and redraw
+// Set the current position (centre of top left image pixel coordinates)
+// This function does not redraw (call redraw afterwards)
 void GLImageBox::setCurrPos(int x0, int y0)
 {
     _x0 = x0;
     _y0 = y0;
     limitCurrPos();
-    glDraw();
 }
 
 // Fixes a base position at the current position
@@ -344,15 +351,15 @@ void GLImageBox::fixBasePosCurr()
     }
 }
 
-// Set the current zoom factor and redraw
+// Set the current zoom factor
 // Option to centre the zoom at a given image point or not
+// This function does not redraw (call redraw afterwards)
 void GLImageBox::setZoomFactor(double zoomFactor, bool useCentrePt, int ICx, int ICy)
 {
     if ((useCentrePt == false) || (_image.hasValidData() == false))
     {
         _zoomFactor = zoomFactor;
         limitZoomFactor();
-        glDraw();
     }
     else
     {
@@ -388,11 +395,13 @@ void GLImageBox::stretchToFit()
 
     // set current position to top left image pixel
     setCurrPos(0, 0);
+    glDraw();
 }
 
 // Sets the normal viewing position and zoom = 1
 // If the image is smaller than the widget then the image is centred 
 // otherwise we view the top left part of the image
+// This function does not redraw (call redraw afterwards)
 void GLImageBox::setNormal()
 {
     if (_image.hasValidData() == false)
@@ -423,6 +432,7 @@ void GLImageBox::relMoveWC(int WCdx, int WCdy)
     double ICdx = WCdx / _zoomFactor;
     double ICdy = WCdy / _zoomFactor;
     setCurrPos(_base_x0 - (int)floor(ICdx + 0.5), _base_y0 - (int)floor(ICdy + 0.5));
+    glDraw();
 }
 
 // Computes an image x-coordinate from the widget x-coordinate
@@ -492,13 +502,18 @@ void GLImageBox::clearImage()
 // Load image by copying the pixel data
 // The image object will take ownership of the copied pixel data
 // (the source image is still controlled by the caller)
+// If numSigBitsPerSample = 0 then the full range is assumed to be significant
+// This function does not redraw (call redraw afterwards)
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset)
+int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset)
 {
-    int ret = _image.createCopy(pSrcPixelData, width, height, format);
+    // Copy image
+    int ret = _image.createCopy(pSrcPixelData, width, height, format, numSigBitsPerSample);
+
+    // Redraw
     if (reset == true)
     {
         // reset drawing settings (position, scale, colour mapping) if requested
@@ -506,10 +521,9 @@ int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsign
     }
     else
     {
-        // redraw with same settings
+        // use same settings
         limitCurrPos();
         limitZoomFactor();
-        glDraw();
     }
     return ret;
 }
@@ -522,17 +536,32 @@ int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsign
 //      This object will take ownership (control) of the pixel data
 //      (the source image is not (should not be) controlled by the caller anymore)
 //      In this case the memory must have been allocated with the new operator (because this class will use the delete operator)
+// If numSigBitsPerSample = 0 then the full range is assumed to be significant
+// This function does not redraw (call redraw afterwards)
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
-int GLImageBox::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership)
+int GLImageBox::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset)
 {
-    int ret = _image.pointTo(pSrcPixelData, width, height, format, takeOwnership);
-    resetDisplay();
+    // Point to image
+    int ret = _image.pointTo(pSrcPixelData, width, height, format, numSigBitsPerSample, takeOwnership);
+
+    // Redraw
+    if (reset == true)
+    {
+        // reset drawing settings (position, scale, colour mapping) if requested
+        resetDisplay();
+    }
+    else
+    {
+        // use same settings
+        limitCurrPos();
+        limitZoomFactor();
+    }
     return ret;
 }
 
-// Display the new image
+// Reset display settings
 void GLImageBox::resetDisplay()
 {
     clearColorMap();
@@ -557,7 +586,7 @@ int GLImageBox::calcNumColorMapEntries()
     glGetIntegerv(GL_MAX_PIXEL_MAP_TABLE, &maxMapEntries);
     int NumEntries = maxMapEntries;
     if (_image.hasValidData() == true)
-        NumEntries = (int)std::min<double>(pow(2.0, (double)(_image.getNumBitsPerSample())), (double)maxMapEntries);
+        NumEntries = (int)std::min<double>(pow(2.0, (double)(_image.getNumSigBitsPerSample())), (double)maxMapEntries);
     return NumEntries;
 }
 
@@ -691,6 +720,24 @@ int GLImageBox::setColorMapAlphaValue(int index, float value)
 
     _pColorMap[_numMapEntries * 3 + index] = value;
     return 0;
+}
+
+// Helper function to convert a pixel's value (of a sample) to the color map index (i.e. the map index that will be used for that pixel value)
+unsigned int GLImageBox::pixValToMapIndex(double PixVal)
+{
+    if (_pColorMap != NULL)
+    {
+        double MaxVal = pow(2.0, _image.getNumBitsPerSample()) - 1.0;
+        double Scale = (pow(2.0, _image.getNumBitsPerSample()) - 1.0) / (pow(2.0, _image.getNumSigBitsPerSample()) - 1.0);
+        double PixVal01 = Scale * PixVal / MaxVal;
+        int numMapEntries = getNumColorMapEntries();
+        unsigned int MapIndex = (unsigned int)floor(0.5 + PixVal01 * (double)(numMapEntries - 1));
+        return MapIndex;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 

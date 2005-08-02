@@ -31,7 +31,7 @@ ImageBase::ImageBase()
     _owner = true;
     _width = 0;
     _height = 0;
-    _setColorFormat(IB_CF_GREY8);
+    _setColorFormat(IB_CF_GREY8, 8);
 }
 
 // Destructor
@@ -53,7 +53,7 @@ ImageBase::ImageBase(const ImageBase &rhs)
         // rhs is the owner - do a deep copy
         _pPixelData = NULL;
         _owner = false; // avoids a superfluous delete
-        if (createCopy((void *)(rhs._pPixelData), rhs._width, rhs._height, rhs._format) != 0)
+        if (createCopy((void *)(rhs._pPixelData), rhs._width, rhs._height, rhs._format, rhs._numSigBitsPerSample) != 0)
             throw Base::Exception("ImageBase::ImageBase. Error creating copy of image");
     }
     else
@@ -63,7 +63,7 @@ ImageBase::ImageBase(const ImageBase &rhs)
         _owner = rhs._owner;
         _width = rhs._width;
         _height = rhs._height;
-        _setColorFormat(rhs._format);
+        _setColorFormat(rhs._format, rhs._numSigBitsPerSample);
     }
 }
 
@@ -81,7 +81,7 @@ ImageBase & ImageBase::operator=(const ImageBase &rhs)
     {
         // rhs is the owner - do a deep copy
         _owner = false; // avoids a superfluous delete
-        if (createCopy((void *)(rhs._pPixelData), rhs._width, rhs._height, rhs._format) != 0)
+        if (createCopy((void *)(rhs._pPixelData), rhs._width, rhs._height, rhs._format, rhs._numSigBitsPerSample) != 0)
             throw Base::Exception("ImageBase::operator=. Error creating copy of image");
     }
     else
@@ -91,7 +91,7 @@ ImageBase & ImageBase::operator=(const ImageBase &rhs)
         _owner = rhs._owner;
         _width = rhs._width;
         _height = rhs._height;
-        _setColorFormat(rhs._format);
+        _setColorFormat(rhs._format, rhs._numSigBitsPerSample);
     }
 
 	return *this;
@@ -118,12 +118,12 @@ void ImageBase::clear()
     _owner = true;
     _width = 0;
     _height = 0;
-    _setColorFormat(IB_CF_GREY8);
+    _setColorFormat(IB_CF_GREY8, 8);
 }
 
 // Sets the color format and the dependant parameters
 // Returns 0 for OK, -1 for invalid color format
-int ImageBase::_setColorFormat(int format)
+int ImageBase::_setColorFormat(int format, unsigned short numSigBitsPerSample)
 {
     switch (format)
     {
@@ -186,6 +186,11 @@ int ImageBase::_setColorFormat(int format)
             return -1;
     }
 
+    if ((numSigBitsPerSample == 0) || (numSigBitsPerSample > _numBitsPerSample))
+        _numSigBitsPerSample = _numBitsPerSample;
+    else
+        _numSigBitsPerSample = numSigBitsPerSample;
+
     _format = format;
     return 0;
 }
@@ -218,17 +223,18 @@ int ImageBase::_allocate()
 // Load an image by copying the pixel data
 // This object will take ownership of the copied pixel data
 // (the source image is still controlled by the caller)
+// If numSigBitsPerSample = 0 then the full range is assumed to be significant
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int ImageBase::createCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format)
+int ImageBase::createCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample)
 {
     // Clear any existing data
     clear();
 
     // Set the color format and the dependant parameters
-    if (_setColorFormat(format) != 0)
+    if (_setColorFormat(format, numSigBitsPerSample) != 0)
         return -1;
 
     // Set the image size
@@ -256,16 +262,17 @@ int ImageBase::createCopy(void* pSrcPixelData, unsigned long width, unsigned lon
 //      This object will take ownership (control) of the pixel data
 //      (the source image is not (should not be) controlled by the caller anymore)
 //      In this case the memory must have been allocated with the new operator (because this class will use the delete operator)
+// If numSigBitsPerSample = 0 then the full range is assumed to be significant
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
-int ImageBase::pointTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership)
+int ImageBase::pointTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership)
 {
     // Clear any existing data
     clear();
 
     // Set the color format and the dependant parameters
-    if (_setColorFormat(format) != 0)
+    if (_setColorFormat(format, numSigBitsPerSample) != 0)
         return -1;
 
     // Set the image size

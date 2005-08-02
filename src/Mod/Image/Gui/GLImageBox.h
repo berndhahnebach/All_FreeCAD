@@ -58,8 +58,8 @@ public:
     double ICToWC_Y(double ImageY);
 
     void clearImage();
-    int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset = true);
-    int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
+    int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset = true);
+    int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset = true);
 
     void clearColorMap();
     int createColorMap(int numEntriesReq = 0, bool Initialise = true);
@@ -69,6 +69,7 @@ public:
     int setColorMapGreenValue(int index, float value);
     int setColorMapBlueValue(int index, float value);
     int setColorMapAlphaValue(int index, float value);
+    unsigned int pixValToMapIndex(double PixVal);
 
 signals:
   void drawGraphics();

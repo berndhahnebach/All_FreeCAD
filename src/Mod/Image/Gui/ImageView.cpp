@@ -133,8 +133,10 @@ void ImageView::EnableColorActions(bool Enable)
     {
         _pShowOrigAct->setEnabled(true);
         _pShowBrightAct->setEnabled(true);
-        _pShowOrigAct->setOn(true);
-        showOriginalColors();
+        if (_pShowBrightAct->isOn() == true)
+            showBrightened();
+        else
+            showOriginalColors();
     }
     else
     {
@@ -155,6 +157,7 @@ void ImageView::fitImage()
 void ImageView::oneToOneImage()
 {
     _pGLImageBox->setNormal();
+    _pGLImageBox->redraw();
 }
 
 // Slot function to handle the color actions
@@ -173,6 +176,8 @@ void ImageView::handleColorAct( QAction* act)
 }
 
 // Show the original colors (no enhancement)
+// but image will be scaled for the number of significant bits
+// (i.e if 12 significant bits (in 16-bit image) a value of 4095 will be shown as white)
 void ImageView::showOriginalColors()
 {
     _pGLImageBox->clearColorMap();
@@ -184,7 +189,7 @@ void ImageView::showBrightened()
 {
     if (createColorMap(0, false) == 0)
     {
-        // Fill the intensity map with the preset enhancement
+        // Fill the color map with the preset enhancement
         int numMapEntries = getNumColorMapEntries();
         double expValue = (_sliderBrightAdjVal / 1000.0) * 256 / numMapEntries;
         for (int in = 0; in < numMapEntries; in++)
@@ -286,18 +291,25 @@ int ImageView::setColorMapAlphaValue(int index, float value)
 void ImageView::clearImage()
 {
     _pGLImageBox->clearImage();
+    _pGLImageBox->redraw(); // clears view
 }
 
 // Load image by copying the pixel data
 // The image object inside this view object will take ownership of the copied pixel data
 // (the source image is still controlled by the caller)
+// If numSigBitsPerSample = 0 then the full range is assumed to be significant
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset)
+int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset)
 {
-    return (_pGLImageBox->createImageCopy(pSrcPixelData, width, height, format, reset));
+    int ret = _pGLImageBox->createImageCopy(pSrcPixelData, width, height, format, numSigBitsPerSample, reset);
+    if (_pShowBrightAct->isOn() == true)
+        showBrightened();
+    else
+        showOriginalColors();
+    return ret;
 }
 
 // Make the image object inside this view object point to another image source
@@ -308,12 +320,18 @@ int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigne
 //      This object will take ownership (control) of the pixel data
 //      (the source image is not (should not be) controlled by the caller anymore)
 //      In this case the memory must have been allocated with the new operator (because this class will use the delete operator)
+// If numSigBitsPerSample = 0 then the full range is assumed to be significant
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
-int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership)
+int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset)
 {
-    return (_pGLImageBox->pointImageTo(pSrcPixelData, width, height, format, takeOwnership));
+    int ret = _pGLImageBox->pointImageTo(pSrcPixelData, width, height, format, numSigBitsPerSample, takeOwnership, reset);
+    if (_pShowBrightAct->isOn() == true)
+        showBrightened();
+    else
+        showOriginalColors();
+    return ret;
 }
 
 // Mouse press event
@@ -379,6 +397,7 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent* cEvent)
         //int pixX = (int)floor(icX + 0.5);
         //int pixY = (int)floor(icY + 0.5);
         _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor(), true, (int)floor(icX + 0.5), (int)floor(icY + 0.5));
+        _pGLImageBox->redraw();
     }
 }
 
@@ -470,6 +489,7 @@ void ImageView::wheelEvent(QWheelEvent * cEvent)
     int ICx, ICy;
     _pGLImageBox->getCentrePoint(ICx, ICy);
     _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor() * pow(2.0, (double)numTicks), true, ICx, ICy);
+    _pGLImageBox->redraw();
 
     _currX = box_x;
     _currY = box_y;
@@ -596,6 +616,7 @@ void ImageView::zoom(int prevX, int prevY, int currX, int currY)
 
         // Zoom around centrally displayed image point
         _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor() * zoomFactorMultiplier, true, ICx, ICy);
+        _pGLImageBox->redraw();
     }
 }
 

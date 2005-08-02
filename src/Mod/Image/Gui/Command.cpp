@@ -84,7 +84,7 @@ void CmdImageOpen::activated(int iMsg)
       iView->setCaption(QObject::tr("Image viewer"));
       iView->resize( 400, 300 );
       Gui::ApplicationWindow::Instance->addWindow( iView );
-      iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format);
+      iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);
   }
 }
 

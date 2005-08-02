@@ -41,8 +41,8 @@ public:
     void onUpdate(void){};
 
     virtual void clearImage();
-    virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool reset = true);
-    virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, bool takeOwnership);
+    virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset = true);
+    virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset = true);
 
     virtual void EnableColorActions(bool Enable);
     virtual int createColorMap(int numEntriesReq = 0, bool Initialise = true);
