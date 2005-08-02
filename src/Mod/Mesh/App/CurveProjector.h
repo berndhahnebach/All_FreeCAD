@@ -50,7 +50,8 @@ class MeshGeomFacet;
 class AppMeshExport CurveProjector
 {
 public:
-  CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
+  CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh);
+  virtual ~CurveProjector() {}
 
   struct FaceSplitEdge
   {
@@ -71,7 +72,7 @@ public:
   void writeIntersectionPointsToFile(const char *name="export_pts.asc");
 
 protected:
-  virtual void Do()=0;  
+  virtual void Do()=0;
   const TopoDS_Shape &_Shape;
   const MeshWithProperty &_Mesh;
   result_type mvEdgeSplitPoints;
@@ -84,17 +85,18 @@ protected:
 class AppMeshExport CurveProjectorShape: public CurveProjector
 {
 public:
-  CurveProjectorShape(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
+  CurveProjectorShape(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh);
+  virtual ~CurveProjectorShape() {}
 
   void projectCurve(const TopoDS_Edge& aEdge,
                     std::vector<FaceSplitEdge> &vSplitEdges);
 
   bool findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 
-  
+
 
 protected:
-  virtual void Do();  
+  virtual void Do();
 };
 
 
@@ -104,22 +106,23 @@ protected:
 class AppMeshExport CurveProjectorSimple: public CurveProjector
 {
 public:
-  CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh); 
+  CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh);
+  virtual ~CurveProjectorSimple() {}
 
   /// helper to discredicice a Edge...
   void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
 
 
   void projectCurve(const TopoDS_Edge& aEdge,
-                    const std::vector<Vector3D> &rclPoints, 
+                    const std::vector<Vector3D> &rclPoints,
                     std::vector<FaceSplitEdge> &vSplitEdges);
 
   bool findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 
-  
+
 
 protected:
-  virtual void Do();  
+  virtual void Do();
 };
 
 /** Project by projecting a sampled curve to the mesh
@@ -132,12 +135,13 @@ public:
     Vector3D n;
   };
 
-  CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh,MeshWithProperty &rToolMesh); 
+  CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh,MeshWithProperty &rToolMesh);
+  virtual ~CurveProjectorWithToolMesh() {}
 
 
   void makeToolMesh(const TopoDS_Edge& aEdge,std::vector<MeshGeomFacet> &cVAry );
 
-  
+
   MeshWithProperty &ToolMesh;
 
 protected:

@@ -749,6 +749,8 @@ void MeshAlgorithm::SearchFacetsFromPolyline (const std::vector<Vector3D> &rclPo
                                               const MeshFacetGrid& rclGrid, std::vector<unsigned long> &rclResultFacetsIndices) const
 {
   rclResultFacetsIndices.clear();
+  if ( rclPolyline.size() < 3 )
+    return; // no polygon defined
 
   std::set<unsigned long>  aclFacets;
   for (std::vector<Vector3D>::const_iterator pV = rclPolyline.begin(); pV < (rclPolyline.end() - 1); pV++)

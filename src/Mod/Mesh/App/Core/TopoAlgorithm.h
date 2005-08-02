@@ -110,9 +110,6 @@ public:
    */
   void SplitEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint);
   /**
-   * Insert a new edge. Each concerned triangle is broken into two
-   * new triangles.
-  /**
    * Splits the facet with index \a ulFacetPos into several facets. The points \a rP1 and \a
    * rP2 must lie at two different edges of the facets.
    * @note In this algorithm the neighbour facets of \a ulFacetIndex are not modified. So the

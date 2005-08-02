@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/nodes/SoComplexity.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -36,9 +37,11 @@
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoPointSet.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoTransform.h>
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRep_Tool.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>
+# include <Geom_Curve.hxx>
 # include <GeomLProp_SLProps.hxx>
 # include <gp_Trsf.hxx>
 # include <Poly_Array1OfTriangle.hxx>
@@ -181,9 +184,9 @@ Standard_Boolean ViewProviderCurveNet::computeVertices(SoSeparator* root, const 
 
   VertexRoot->addChild(pcPointMaterial);
 
-  SoComplexity *compl = new SoComplexity();
-  compl->value = (float)0.2;
-  VertexRoot->addChild(compl);
+  SoComplexity *copl = new SoComplexity();
+  copl->value = (float)0.2;
+  VertexRoot->addChild(copl);
 
   for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
 
