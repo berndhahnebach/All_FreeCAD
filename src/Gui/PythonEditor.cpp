@@ -307,6 +307,19 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             // ignore whitespaces
             buffer = QString::null;
           } break;
+        case '(': case ')': case '[': case ']': 
+        case '+': case '-': case '*': case '/': 
+          {
+            setFormat( i, 1, d->cOperator );
+            endStateOfLastPara=Standard;
+            buffer = QString::null;
+          } break;
+        case '!': case '=': case '<': case '>': // possibly two characters
+          {
+            setFormat( i, 1, d->cOperator );
+            endStateOfLastPara=Standard;
+            buffer = QString::null;
+          } break;
         default:
           {
             // this is the beginning of a number
@@ -316,7 +329,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
               endStateOfLastPara=Digit;
             }
             // probably an operator
-            else if ( ch.isSymbol() )
+            else if ( ch.isSymbol() || ch.isPunct() )
             {
               setFormat( i, 1, d->cOperator);
               buffer = QString::null;
@@ -394,24 +407,28 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
       } break;
     case DefineName:
       {
-        if ( ch.isLetter() || ch == ' ' )
+        if ( ch.isLetterOrNumber()/* || ch == ' '*/ )
         {
           setFormat( i, 1, d->cDefineName);
         }
         else
         {
+          if ( ch.isSymbol() || ch.isPunct() )
+            setFormat( i, 1, d->cOperator );
           endStateOfLastPara = Standard;
         }
         buffer = QString::null;
       } break;
     case ClassName:
       {
-        if ( ch.isLetter() || ch == ' ' )
+        if ( ch.isLetterOrNumber()/* || ch == ' '*/ )
         {
           setFormat( i, 1, d->cClassName);
         }
         else
         {
+          if ( ch.isSymbol() || ch.isPunct() )
+            setFormat( i, 1, d->cOperator );
           endStateOfLastPara = Standard;
         }
         buffer = QString::null;
@@ -424,6 +441,8 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
         }
         else
         {
+          if ( ch.isSymbol() || ch.isPunct() )
+            setFormat( i, 1, d->cOperator );
           endStateOfLastPara = Standard;
         }
         buffer = QString::null;
@@ -435,7 +454,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
   }
 
   // only block comments can have several lines
-  if ( endStateOfLastPara != Blockcomment1 && endStateOfLastPara != Blockcomment1 ) 
+  if ( endStateOfLastPara != Blockcomment1 && endStateOfLastPara != Blockcomment2 ) 
   {
     endStateOfLastPara = Standard ;
   } 

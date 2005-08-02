@@ -56,7 +56,7 @@ PyObject      * PythonConsole::_stdin    = 0;
  *  name 'name'. 
  */
 PythonConsole::PythonConsole(QWidget *parent,const char *name)
-  : TextEdit(parent, name), WindowParameter( "Editor" ), _startPara(0), _indent(false), _autoTabs(true)
+  : TextEdit(parent, name), WindowParameter( "Editor" ), _startPara(0), _indent(false), _autoTabs(true), _blockComment(false)
 {
   _instance = this;
   _stdoutPy = new PythonStdoutPy( _instance );
@@ -391,7 +391,25 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
 
       // insert tabs if needed
       int tabs = tabsIndent( txt );
-      if ( tabs > 0 )
+      if ( isBlockComment( txt ) && tabs == 0 )
+      {
+        insertAt("... ", para, 0 );
+        moveCursor( MoveLineEnd, false );
+
+        // store paragraph where Python command starts
+        if ( _indent == false )
+          _startPara = para - 1;
+        _indent = true;
+        _blockComment = true;
+      }
+      else if ( _blockComment ) // just closed
+      {
+        _blockComment = false;
+        // recursive call to invoke performPythonCommand()
+        QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+        QApplication::sendEvent( this, &ke );
+      }
+      else if ( tabs > 0 )
       {
         insertAt("... ", para, 0 );
         if ( _autoTabs )
@@ -615,7 +633,7 @@ bool PythonConsole::performPythonCommand()
     {
       // skip ">>> " or "... "
       QString line = text( i ).mid( 4 );
-      if ( line.length() > 1 )
+      if ( line.length() > 1 && !isComment(line) )
       {
         pyCmd += line;
         pyCmd += "\n";
@@ -626,7 +644,7 @@ bool PythonConsole::performPythonCommand()
   {
     // skip ">>> " or "... "
     QString line = text( para-1 ).mid( 4 );
-    if ( line.length() > 1 )
+    if ( line.length() > 1 && !isComment(line) )
     {
       pyCmd += line;
       pyCmd += "\n";
@@ -641,6 +659,7 @@ bool PythonConsole::performPythonCommand()
     try
     {
       // launch the command now
+      int endState = pythonSyntax->endStateOfLastParagraph();
       Base::Interpreter().runInteractiveString( pyCmd.latin1() );
       setFocus(); // if focus was lost
     }
@@ -671,10 +690,54 @@ void PythonConsole::overwriteParagraph( int para, const QString& txt )
   insert( txt );
 }
 
+/**
+ * Checks if the string \a text is a comment beginning with '#'. If so, then the line
+ * is ignored and not given to the Python interpreter.
+ */
+bool PythonConsole::isComment( const QString& text ) const
+{
+  uint i = 0;
+  QChar ch;
+  bool ok=false;
+  while ( i < text.length() )
+  {
+    ch = text.at( i ).latin1();
+    if ( ch == '#' )
+    {
+      ok = true; // line comment
+      break;
+    }
+    else if ( ch == ' ' || ch == '\t' ) 
+    {
+      // white space -> continue
+    }
+    // first valid character is part of a command
+    else
+    {
+      ok = false;
+      break;
+    }
+
+    i++;
+  }
+
+  return ok;
+}
+
+bool PythonConsole::isBlockComment( const QString& ) const
+{
+  int mode = pythonSyntax->endStateOfLastParagraph();
+  // for the values 5 and 6 see PythonSyntaxHighlighter::highlightParagraph()
+  if ( mode == 5 || mode == 6 )
+    return true;
+  else
+    return false;
+}
+
 // ---------------------------------------------------------------------
 
 PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
-  : PythonSyntaxHighlighter(edit),_output(false), _error(false)
+  : PythonSyntaxHighlighter(edit),_output(false), _error(false), _endState(-2)
 {
 }
 
@@ -684,8 +747,8 @@ PythonConsoleHighlighter::~PythonConsoleHighlighter()
 
 int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
-  const int ErrorOutput   = 9;
-  const int MessageOutput = 10;
+  const int ErrorOutput   = 20;
+  const int MessageOutput = 21;
 
   if ( _output )
     endStateOfLastPara=MessageOutput;
@@ -717,7 +780,14 @@ int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int end
     } break;
   }
 
+  _endState = endStateOfLastPara;
+
   return endStateOfLastPara;
+}
+
+int PythonConsoleHighlighter::endStateOfLastParagraph() const
+{
+  return _endState;
 }
 
 void PythonConsoleHighlighter::colorChanged( const QString& type, const QColor& col )

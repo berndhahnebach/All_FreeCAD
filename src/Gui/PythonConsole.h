@@ -87,6 +87,8 @@ protected:
   void contentsDragMoveEvent  ( QDragMoveEvent    * e );
 
   void overwriteParagraph( int para, const QString& txt );
+  bool isComment( const QString& ) const;
+  bool isBlockComment( const QString& ) const;
 
   PYFUNCDEF_S(sStdoutPy);
   PYFUNCDEF_S(sStderrPy);
@@ -107,6 +109,7 @@ private:
   int _startPara;
   bool _indent;
   bool _autoTabs;
+  bool _blockComment;
   ConsoleHistory _history;
   QString _output, _error;
 
@@ -144,7 +147,13 @@ protected:
   void colorChanged( const QString& type, const QColor& col );
 
 private:
+  int endStateOfLastParagraph() const;
+
+private:
   bool _output, _error;
+  int _endState;
+
+  friend class PythonConsole;
 };
 
 } // namespace Gui
