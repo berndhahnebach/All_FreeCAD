@@ -120,19 +120,19 @@ void ImageView::createActions()
     _pShowOrigAct->setOn(true);
 }
 
-// Enable or disable the color actions (_pShowOrigAct and _pShowBrightAct)
+// Enable (show) or disable (hide) the color actions (_pShowOrigAct and _pShowBrightAct)
 // By default they are enabled
 // If enabling:
-//      image is redisplayed in original colours (i.e color map cleared)
+//      image is redisplayed with either original or brightened colors (depending on which state the toggle buttons are in)
 // If disabling
 //      color map is left as is and image is not redisplayed
-// This function should be used to disable the color actions when a derived class implements its own color map scheme
+// This function should be used to hide the color actions when a derived class implements its own color map scheme
 void ImageView::EnableColorActions(bool Enable)
 {
     if (Enable == true)
     {
-        _pShowOrigAct->setEnabled(true);
-        _pShowBrightAct->setEnabled(true);
+        _pShowOrigAct->setVisible(true);
+        _pShowBrightAct->setVisible(true);
         if (_pShowBrightAct->isOn() == true)
             showBrightened();
         else
@@ -140,8 +140,8 @@ void ImageView::EnableColorActions(bool Enable)
     }
     else
     {
-        _pShowOrigAct->setEnabled(false);
-        _pShowBrightAct->setEnabled(false);
+        _pShowOrigAct->setVisible(false);
+        _pShowBrightAct->setVisible(false);
         _pSliderBrightAdj->hide();
     }
 }
