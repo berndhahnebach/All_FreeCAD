@@ -69,6 +69,7 @@ extern "C" {
 	void MainExport initFreeCAD() {
 
 	// Init phase ===========================================================
+  App::Application::Config()["ExeName"] = "FreeCAD";
 
 	// Inits the Application 
 	App::Application::init(0,NULL);
