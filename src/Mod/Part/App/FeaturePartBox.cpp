@@ -53,13 +53,14 @@ int PartBoxFeature::execute(TFunction_Logbook& log)
 	Base::Console().Log("PartBoxFeature::Execute()\n");
 
   try{
+    double x = getPropertyFloat("x");
+    double y = getPropertyFloat("y");
+    double z = getPropertyFloat("z");
+    double l = getPropertyFloat("l");
+    double h = getPropertyFloat("h");
+    double w = getPropertyFloat("w");
 	  // Build a box using the dimension and position attributes
-	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( getPropertyFloat("x"), 
-                                       getPropertyFloat("y"), 
-                                       getPropertyFloat("z")),
-                               getPropertyFloat("l"),
-                               getPropertyFloat("h"),
-                               getPropertyFloat("w"));
+	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( x, y, z ), l, h, w );
 
     TopoDS_Shape ResultShape = mkBox.Shape();
 
