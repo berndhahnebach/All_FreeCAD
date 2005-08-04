@@ -452,9 +452,10 @@ void Application::init(int argc, char ** argv)
 {
   if(argc==0)
   {
-    char buf[100];
+    char* buf = new char[100];
     strncpy(buf,mConfig["ExeName"].c_str(),98);
     initConfig(1,reinterpret_cast<char **>(&buf),"");
+    delete [] buf; buf = 0;
   }
   else
     initConfig(argc,argv,"");
