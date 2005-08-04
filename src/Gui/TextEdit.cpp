@@ -86,13 +86,12 @@ void TextEdit::complete()
 
     QPoint point = textCursorPoint();
     adjustListBoxSize(qApp->desktop()->height() - point.y(), width() / 2);
-    point = mapFromGlobal( point );
-    listBox->move(point);
-    listBox->show();
-    listBox->raise();
-    listBox->setFocus();
-//    listBox->grabKeyboard();
-    listBox->setActiveWindow();
+    point.setX( point.x()+5 ); // insert space
+    int h = visibleHeight();
+    // list box is (partly) hidden
+    if ( point.y() + listBox->height() > h )
+      point.setY( point.y() - listBox->height() );
+    listBox->popup( point );
   }
 }
 
@@ -121,7 +120,6 @@ void TextEdit::itemChosen(QListBoxItem *item)
     insert(item->text().mid(wordPrefix.length()));
   listBox->close();
   setFocus();
-  listBox->releaseKeyboard();
 }
 
 /**
@@ -130,7 +128,7 @@ void TextEdit::itemChosen(QListBoxItem *item)
  */
 void TextEdit::createListBox()
 {
-  listBox = new QListBox(this, "listBox"/*, WType_Popup*/);
+  listBox = new CompletionBox(this, "listBox");
   QAccel *accel = new QAccel(listBox);
   accel->connectItem(accel->insertItem(Key_Escape), listBox, SLOT(close()));
 
@@ -153,6 +151,40 @@ void TextEdit::adjustListBoxSize(int maxHeight, int maxWidth)
    }
    listBox->setFixedHeight(QMIN(totalHeight+20, maxHeight));
    listBox->setFixedWidth(QMIN(listBox->maxItemWidth()+20, maxWidth));
+}
+
+// ------------------------------------------------------------------------------
+
+CompletionBox::CompletionBox( QWidget* parent, const char*  name )
+  :  QListBox( parent, name, WType_Popup )
+{
+  setFrameStyle( WinPanel|Raised );
+  setMouseTracking( true );
+  setMargin(3);
+}
+
+CompletionBox::~CompletionBox()
+{
+}
+
+void CompletionBox::popup( const QPoint& pos )
+{
+  move( pos );
+  show();
+  // select the first item
+  setSelected ( 0, true );
+//  raise();
+//  setFocus();
+}
+
+void CompletionBox::mousePressEvent( QMouseEvent* e )
+{
+  QListBox::mousePressEvent( e );
+  // if the mouse button was pressed outside
+  if  (!rect().contains( e->pos() ))
+  {
+    close();
+  }
 }
 
 #include "moc_TextEdit.cpp" 

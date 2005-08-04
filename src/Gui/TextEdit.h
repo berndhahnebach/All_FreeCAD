@@ -28,6 +28,7 @@
 #include "Window.h"
 
 #ifndef _PreComp_
+# include <qlistbox.h>
 # include <qtextedit.h>
 # include <private/qrichtext_p.h>
 #endif
@@ -36,6 +37,7 @@ class QListBox;
 class QListBoxItem;
 
 namespace Gui {
+class CompletionBox;
 
 /**
  * Completion is a means by which an editor automatically completes words that the user is typing. 
@@ -75,7 +77,30 @@ private:
 
 private:
   QString wordPrefix;
-  QListBox *listBox;
+  CompletionBox *listBox;
+};
+
+/**
+ * The CompletionBox class provides a list box that pops up in a text edit if the user has pressed
+ * an accelerator to complete the current word he is typing in..
+ * @author Werner Mayer
+ */
+class CompletionBox : public QListBox
+{
+public:
+  /// Construction
+  CompletionBox( QWidget* parent = 0, const char*  name=0 );
+  /// Destruction
+  ~CompletionBox();
+
+  /// Opens the list box at position \a pos.
+  void popup( const QPoint& pos );
+
+protected:
+  void mousePressEvent( QMouseEvent * );
+    
+private:
+  QWidget* popupParent;
 };
 
 } // namespace Gui
