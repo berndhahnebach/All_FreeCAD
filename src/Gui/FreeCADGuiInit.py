@@ -121,7 +121,7 @@ def InitMenues():
 	"Separator", "Std_DlgPreferences"]
 	Gui.MenuAppendItems("&Edit", list, 0, 0)
 
-	list = ["Std_ViewCreateInventor", "Std_ViewCreateOCC","Separator","Std_ViewFullScreen","Separator"]
+	list = ["Std_ViewCreateInventor","Separator","Std_ToggleVisibility","Std_ViewFullScreen","Separator"]
 	Gui.MenuAppendItems("&View", list, 1, 0)
 
 	list = ["Std_CommandLine", "Std_DlgParameter", "Std_OCAFBrowser", "Separator",

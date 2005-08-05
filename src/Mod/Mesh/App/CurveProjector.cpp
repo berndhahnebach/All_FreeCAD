@@ -286,7 +286,7 @@ void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vect
 
     for (unsigned long i = 0; i <= ulNbOfPoints; i++)
     {
-      gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints));
+      gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
       rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
     }
 }
@@ -321,7 +321,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   for (unsigned long i = 0; i <= ulNbOfPoints; i++)
   {
     Base::Sequencer().next();
-    gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints));
+    gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
 
     // go through the whole Mesh
     for(It.Init();It.More();It.Next())
@@ -610,7 +610,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
   for (unsigned long i = 0; i <= ulNbOfPoints; i++)
   {
     Base::Sequencer().next();
-    gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints));
+    gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
     Vector3D LinePoint(gpPt.X(),gpPt.Y(),gpPt.Z());
 
     Vector3D ResultNormal;

@@ -81,6 +81,7 @@ public:
 
   void addFeature(App::Feature*);
   void removeFeature(App::Feature*);
+  void clearSelection(void){_FeatureSet.clear();}
 
   const std::set<App::Feature*> &Selection(void){ return _FeatureSet;}
 

@@ -47,7 +47,11 @@ Standard_Integer PartCutFeature::execute(TFunction_Logbook& log)
 {
  
   PartFeature *pcFirst  = dynamic_cast<PartFeature*>(getPropertyLink("First"));
+  if(pcFirst->getStatus() != Valid)
+    return 1;
   PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Second"));
+  if(pcSecond->getStatus() != Valid)
+    return 1;
 
   // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
 	TopoDS_Shape OriginalShape  = pcFirst->getShape();

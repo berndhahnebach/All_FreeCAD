@@ -87,12 +87,14 @@ using namespace PartGui;
        
 ViewProviderCurveNet::ViewProviderCurveNet()
 {
+  /*
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
   bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
   lHilightColor       = hGrp->GetInt ("HilightColor",0);
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+  */
 }
 
 ViewProviderCurveNet::~ViewProviderCurveNet()
@@ -152,7 +154,7 @@ Standard_Boolean ViewProviderCurveNet::computeEdges   (SoSeparator* root, const 
 
     for (unsigned long i = 0; i <= ulNbOfPoints; i++)
     {
-      gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints));
+      gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
       //rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
       vertices[i].setValue((float)(gpPt.X()),(float)(gpPt.Y()),(float)(gpPt.Z()));
     }

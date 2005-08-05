@@ -81,8 +81,7 @@ public:
 
   /// Geter for the Application 
   ApplicationWindow*    getAppWnd(){return _pcAppWnd;}	
-  /// Geter for the OCC Interactive context
-  Handle(AIS_InteractiveContext)  getContext(){return _hContext;}
+
   /// Gerer for the App Document 
   App::Document*  getDocument(void){return _pcDocument;}
 
@@ -121,6 +120,12 @@ public:
   //@{
   /// Get the view provider for that Feature
   ViewProviderInventor * getViewProvider(App::Feature *);
+  /// test if the feature is in show
+  bool isShow(App::Feature *);
+  /// put the feature in show
+  ViewProviderInventor * setShow(App::Feature *);
+  /// set the feature in Noshow
+  ViewProviderInventor * setHide(App::Feature *);
   //@}
 
 
@@ -179,6 +184,7 @@ private:
 
 
   std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMap;
+  std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMapNoShow;
 
   /** @name attributes for the UNDO REDO facility
    */

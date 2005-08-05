@@ -71,7 +71,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->AddFeature("PointsImport", "Points import");
+      App::Feature *pcFeature = pcDoc->addFeature("PointsImport", "Points import");
       pcFeature->setPropertyString(Name, "FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();

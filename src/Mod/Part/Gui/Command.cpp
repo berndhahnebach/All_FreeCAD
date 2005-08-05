@@ -51,6 +51,33 @@ using Gui::FileDialog;
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
+// Part_PickCurveNet
+//===========================================================================
+DEF_STD_CMD(CmdPartPickCurveNet);
+
+CmdPartPickCurveNet::CmdPartPickCurveNet()
+	:CppCommand("Part_PickCurveNet")
+{
+	sAppModule		= "Part";
+	sGroup			  = "Part";
+	sMenuText		  = "Pick a cruve network";
+	sToolTipText	= "Pick a cruve network";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			  = "Test1";
+	iAccel			  = 0;
+}
+
+
+void CmdPartPickCurveNet::activated(int iMsg)
+{
+
+  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+	cDlg.exec();
+
+
+}
+//===========================================================================
 // Std_Test1
 //===========================================================================
 DEF_STD_CMD(FCCmdPartTest1);
@@ -526,6 +553,7 @@ void CreatePartCommands(void)
 	rcCmdMgr.addCommand(new PartImportStep());
 	rcCmdMgr.addCommand(new PartImportBrep());
 	rcCmdMgr.addCommand(new PartImportCurveNet());
+	rcCmdMgr.addCommand(new CmdPartPickCurveNet());
 
   rcCmdMgr.addCommand(new CmdPartNewDoc());
 

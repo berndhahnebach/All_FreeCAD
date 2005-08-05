@@ -56,7 +56,7 @@ using namespace Mesh;
 PyTypeObject MeshPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "MeshPy",        /*tp_name*/
+  "Mesh",        /*tp_name*/
   sizeof(MeshPy),  /*tp_basicsize*/
   0,                      /*tp_itemsize*/
                           /* methods */
@@ -71,6 +71,38 @@ PyTypeObject MeshPy::Type = {
   0,                      /*tp_as_mapping*/
   0,                      /*tp_hash*/
   0,                      /*tp_call */
+  0,                                                /*tp_str  */
+  0,                                                /*tp_getattro*/
+  0,                                                /*tp_setattro*/
+  /* --- Functions to access object as input/output buffer ---------*/
+  0,                                                /* tp_as_buffer */
+  /* --- Flags to define presence of optional/expanded features */
+  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
+  "About PyObjectBase",                             /*tp_doc */
+  0,                                                /*tp_traverse */
+  0,                                                /*tp_clear */
+  0,                                                /*tp_richcompare */
+  0,                                                /*tp_weaklistoffset */
+  0,                                                /*tp_iter */
+  0,                                                /*tp_iternext */
+  0,                                                /*tp_methods */
+  0,                                                /*tp_members */
+  0,                                                /*tp_getset */
+  &Base::PyObjectBase::Type,                        /*tp_base */
+  0,                                                /*tp_dict */
+  0,                                                /*tp_descr_get */
+  0,                                                /*tp_descr_set */
+  0,                                                /*tp_dictoffset */
+  0,                                                /*tp_init */
+  0,                                                /*tp_alloc */
+  0,                                                /*tp_new */
+  0,                                                /*tp_free   Low-level free-memory routine */
+  0,                                                /*tp_is_gc  For PyObject_IS_GC */
+  0,                                                /*tp_bases */
+  0,                                                /*tp_mro    method resolution order */
+  0,                                                /*tp_cache */
+  0,                                                /*tp_subclasses */
+  0                                                 /*tp_weaklist */
 };
 
 //--------------------------------------------------------------------------

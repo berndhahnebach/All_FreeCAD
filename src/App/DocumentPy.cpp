@@ -119,6 +119,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(Dump)
 	PYMETHODEDEF(AddFeature)
 	PYMETHODEDEF(GetActiveFeature)
+	PYMETHODEDEF(GetFeature)
 	PYMETHODEDEF(Update)
 
   {NULL, NULL}		/* Sentinel */
@@ -185,8 +186,13 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 			return Py_BuildValue("u", _pcDoc->HasOpenCommand()?1:0);
 		else if (streq(attr, "StorageFormat"))						
 			return Py_BuildValue("u", _pcDoc->StorageFormat()); 
-		else
-			_getattr_up(PyObjectBase); 						
+    else{
+      Feature *pFeat = _pcDoc->getFeature(attr);
+      if(pFeat)
+        return pFeat->GetPyObject();
+      else
+			 _getattr_up(PyObjectBase); 						
+    }
 } 
 
 int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
@@ -327,7 +333,7 @@ PYFUNCIMP_D(DocumentPy,AddFeature)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->AddFeature(sType,sName);
+	  Feature *pcFtr = _pcDoc->addFeature(sType,sName);
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -343,11 +349,27 @@ PYFUNCIMP_D(DocumentPy,GetActiveFeature)
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->GetActiveFeature();
+	  Feature *pcFtr = _pcDoc->getActiveFeature();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
 		  Py_Error(PyExc_Exception,"No active Feature");
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,GetFeature)
+{
+	
+	char *sName;
+  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+	  Feature *pcFtr = _pcDoc->getFeature(sName);
+	  if(pcFtr)
+		  return pcFtr->GetPyObject();
+	  else
+		  Py_Error(PyExc_Exception,"No Feature with this name!");
   } PY_CATCH;
 }
 

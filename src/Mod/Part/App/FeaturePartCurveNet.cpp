@@ -43,8 +43,8 @@ using namespace Part;
 
 FeaturePartCurveNet::FeaturePartCurveNet()
 {
-  _lineMaterial.ambientColor.set(0.2f,0.2f,0.2f);
-  _lineMaterial.diffuseColor.set(0.1f,0.1f,0.1f);
+  _lineMaterial.ambientColor.set(0.2f,0.8f,0.2f);
+  _lineMaterial.diffuseColor.set(0.1f,0.8f,0.1f);
   _lineMaterial.specularColor.set(0.0f,0.0f,0.0f);
   _lineMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
   _lineMaterial.shininess = 0.0f;

@@ -94,11 +94,13 @@ QListViewItem* ViewProviderTree::create()
 ViewProviderInventor::ViewProviderInventor()
 {
   pcRoot = new SoSeparator();
+  pcRoot->ref();
 }
 
 
 ViewProviderInventor::~ViewProviderInventor()
 {
+  pcRoot->unref();
 
 }
 

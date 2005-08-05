@@ -33,6 +33,7 @@
 #include "Document.h"
 #include "Macro.h"
 #include "DlgDisplayPropertiesImp.h"
+#include "Selection.h"
 
 #include <Base/Exception.h>
 #include <App/Document.h>
@@ -42,9 +43,48 @@ using namespace Gui;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //===========================================================================
-// Std_ViewBottom
+// Std_ToggleVisibility
 //===========================================================================
-DEF_3DV_CMD(StdCmdSetMaterial)
+DEF_STD_CMD_A(StdCmdToggleVisibility);
+
+StdCmdToggleVisibility::StdCmdToggleVisibility()
+  :CppCommand("Std_ToggleVisibility")
+{
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Toggle Visibility");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = Qt::Key_Space;
+}
+
+void StdCmdToggleVisibility::activated(int iMsg)
+{
+  if( getActiveDocument() )
+  {
+    for(std::set<App::Feature*>::const_iterator It=Gui::Selection().Selection().begin();It!=Gui::Selection().Selection().end();It++)
+    {
+      if(getActiveDocument()->isShow(*It))
+        getActiveDocument()->setHide(*It);
+      else
+        getActiveDocument()->setShow(*It);
+
+    }
+    Gui::Selection().clearSelection();
+  }
+}
+
+bool StdCmdToggleVisibility::isActive(void)
+{
+  return ( Gui::Selection().Selection().size() != 0 );
+}
+
+//===========================================================================
+// Std_SetMaterial
+//===========================================================================
+DEF_STD_CMD_A(StdCmdSetMaterial);
 
 StdCmdSetMaterial::StdCmdSetMaterial()
   :CppCommand("Std_SetMaterial")
@@ -63,6 +103,11 @@ void StdCmdSetMaterial::activated(int iMsg)
 {
   Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getAppWnd()->activeView(), "Display", true );
   dlg.exec();
+}
+
+bool StdCmdSetMaterial::isActive(void)
+{
+  return Gui::Selection().Selection().size() != 0;
 }
 
 //===========================================================================
@@ -634,6 +679,7 @@ void CreateViewStdCommands(void)
 
   rcCmdMgr.addCommand(new StdViewFullScreen());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());
+  rcCmdMgr.addCommand(new StdCmdToggleVisibility());
 }
 
 } // namespace Gui

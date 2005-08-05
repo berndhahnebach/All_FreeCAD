@@ -133,11 +133,11 @@ public:
 	/** @name Feature handling  */
 	//@{
   /// Add a feature of sType with sName to this document and set it active
-	Feature *AddFeature(const char* sType, const char* sName);
+	Feature *addFeature(const char* sType, const char* sName);
   /// Returns the active Feature of this document
-	Feature *GetActiveFeature(void);
-  /// Get the label of the active Feature
-  TDF_Label GetActive(void){return _lActiveFeature;}
+	Feature *getActiveFeature(void);
+  /// Returns a Feature of this document
+	Feature *getFeature(const char *Name);
 	//@}
 
   /** sets up the document
@@ -234,6 +234,12 @@ protected:
   TFunction_Logbook &getLogBook(void){return _LogBook;}
 
 
+  struct FeatEntry {
+    TDF_Label L;
+    Feature*  F;
+  };
+
+  std::map<std::string,FeatEntry> FeatMap;
 
 protected:
 	/// handle to the OCC document

@@ -40,12 +40,11 @@
 #include <App/Feature.h>
 #include "Application.h"
 #include "Document.h"
-//#include "View3D.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
-//#include "View3DInventorEx.h"
 #include "BitmapFactory.h"
 #include "ViewProviderFeature.h"
+#include "Selection.h"
 
 using namespace Gui;
 
@@ -115,6 +114,69 @@ ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
   return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
+/// test if the feature is in show
+bool Document::isShow(App::Feature *Feat)
+{
+  return _ViewProviderMap.find( Feat ) != _ViewProviderMap.end();
+}
+
+/// put the feature in show
+ViewProviderInventor * Document::setShow(App::Feature * Feat)
+{
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMapNoShow.find( Feat );
+  if(it != _ViewProviderMapNoShow.end())
+  {
+    ViewProviderInventor *P = it->second;
+
+    _ViewProviderMap[it->first] = P;
+
+    // go through all views and add the view providor
+    std::list<Gui::BaseView*>::iterator VIt;
+    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+    {
+      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+      if(pcIvView && P)
+      {
+        pcIvView->getViewer()->addViewProvider( P );
+      }
+    }
+
+    _ViewProviderMapNoShow.erase(it);
+    return P;
+  }else{
+    return _ViewProviderMap[Feat];
+   }
+}
+
+/// set the feature in Noshow
+ViewProviderInventor * Document::setHide(App::Feature *Feat)
+{
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  if(it != _ViewProviderMap.end())
+  {
+    ViewProviderInventor *P = it->second;
+
+    _ViewProviderMapNoShow[it->first] = P;
+
+    // go through all views and remove
+    std::list<Gui::BaseView*>::iterator VIt;
+    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+    {
+      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+      if(pcIvView && P)
+      {
+        pcIvView->getViewer()->removeViewProvider( P );
+      }
+    }
+
+    // remove it from the visible map
+    _ViewProviderMap.erase(it);
+
+    return P;
+  }else{
+    return _ViewProviderMapNoShow[Feat];
+  }
+}
 
 
 void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
@@ -276,28 +338,6 @@ void Document::onUpdate(void)
   Base::Console().Log("Acti: Gui::Document::onUpdate()");
 #endif
 
-
-  TDF_Label L = _pcDocument->GetActive();
-
-  if(! L.IsNull()){
-/*
-   // Attic will removed soon ####################################################################
-   if(!_ActivePresentation.IsNull())
-    _ActivePresentation->Display(0);
-    //_hContext->Display(_ActivePresentation->GetAIS(),0);
-  // Get the TPrsStd_AISPresentation of the new box TNaming_NamedShape
-    if(!L.FindAttribute(TPrsStd_AISPresentation::GetID(),_ActivePresentation))
-      _ActivePresentation = TPrsStd_AISPresentation::Set(L, TNaming_NamedShape::GetID()); 
-    // Display it
-    _ActivePresentation->Display(1);
-    //_hContext->Display(_ActivePresentation->GetAIS(),1);
-// ##############################################################################################
-*/
-
-    
-
-
-  }
   std::list<Gui::BaseView*>::iterator It;
 
   for(It = _LpcViews.begin();It != _LpcViews.end();It++)

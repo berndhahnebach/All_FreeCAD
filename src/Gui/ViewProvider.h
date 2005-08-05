@@ -32,6 +32,7 @@ class SoNode;
 class SoPath;
 class QListViewItem;
 class SoSeparator;
+class SoEvent;
 
 namespace Gui {
 
@@ -76,6 +77,27 @@ public:
     * the data has manipulated.
     */
   virtual void update(const ChangeType&)=0;
+
+	/** @name editing interface 
+    * this methodes handling the edition of a 
+    * viewprovider. Better the undelaing data.
+    */
+	//@{
+  /** set the ViewProvider in edit mode
+    * that means it get all left and right mouse down and 
+    * mouse move events first and can handle it.
+    * @param bOn true when switch on, false when switch of
+    * @ret   false if the provider whants not go edit, or can not
+    */
+  virtual bool setEdit(bool bOn){bOn;return false;}
+  /** event handlin if the feature is in edit mode
+    * The Viewer will cast all left and right mouse 
+    * events to that methode. If return true it will
+    * also handled by the viewer (selection & context menue)
+    */
+  virtual bool handleEvent(const SoEvent * const ev){return true;}
+
+  //@}
 
 };
 

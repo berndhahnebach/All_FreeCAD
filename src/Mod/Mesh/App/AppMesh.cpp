@@ -44,6 +44,8 @@ void AppMeshExport initMesh() {
 
   (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
 
+  
+
   Base::Console().Log("AppMesh loaded\n");
 	App::FeatureFactory().AddProducer("MeshImport",new App::FeatureProducer<Mesh::FeatureMeshImport>);
 	App::FeatureFactory().AddProducer("Mesh",      new App::FeatureProducer<Mesh::MeshFeature>      );

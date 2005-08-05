@@ -129,8 +129,12 @@ PyObject *PyObjectBase::_getattr(char *attr)
 {
   if (streq(attr, "type"))
     return Py_BuildValue("s", (*(GetParents()))->tp_name);
-
-  return Py_FindMethod(Methods, this, attr);    
+  else if (streq(attr, "__class__"))
+    return Py_BuildValue("s","ObjectBase");
+  else if (streq(attr, "__members__"))
+    return Py_FindMethod(Methods, this, attr); 
+  
+  Py_Return;
 }
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)

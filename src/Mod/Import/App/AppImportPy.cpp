@@ -66,7 +66,7 @@ open(PyObject *self, PyObject *args)
   {
     // create new document and add Import feature
     App::Document *pcDoc = App::GetApplication().New();
-    App::Feature *pcFeature = pcDoc->AddFeature("ImportStep","Step Import");
+    App::Feature *pcFeature = pcDoc->addFeature("ImportStep","Step Import");
     pcFeature->setPropertyString (Name,"FileName");
     pcFeature->TouchProperty("FileName");
     pcDoc->Recompute();
@@ -75,7 +75,7 @@ open(PyObject *self, PyObject *args)
   {
     // create new document and add Import feature
     App::Document *pcDoc = App::GetApplication().New();
-    App::Feature *pcFeature = pcDoc->AddFeature("ImportIges","Iges Import");
+    App::Feature *pcFeature = pcDoc->addFeature("ImportIges","Iges Import");
 assert(0);
 //    pcFeature->GetProperty("FileName").Set(Name);
     pcFeature->TouchProperty("FileName");

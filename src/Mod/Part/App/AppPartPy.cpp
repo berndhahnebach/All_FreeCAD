@@ -86,7 +86,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->AddFeature("PartImportStep","Step open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","Step open");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -95,7 +95,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->AddFeature("PartImportIges","Iges open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","Iges open");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -104,7 +104,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->AddFeature("PartImportBrep","Brep open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","Brep open");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -146,7 +146,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().Active();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->AddFeature("PartImportStep","Step open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","Step open");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -156,7 +156,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().Active();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->AddFeature("PartImportIges","Iges open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","Iges open");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -166,7 +166,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().Active();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->AddFeature("PartImportBrep","brep import");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","brep import");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();

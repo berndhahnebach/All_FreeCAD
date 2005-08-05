@@ -228,18 +228,21 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     }
     else{
       // search in PropertyList
-      const char* type = _pcFeature->getPropertyType(attr);   
-      if( type != '\0')
-        if(strcmp(type,"Float")==0)
-          return Py_BuildValue("d", _pcFeature->getPropertyFloat(attr));
-        else if(strcmp(type,"Int")==0)
-          return Py_BuildValue("i", _pcFeature->getPropertyInt(attr));
-        else if(strcmp(type,"String")==0)
-          return Py_BuildValue("s", _pcFeature->getPropertyString(attr).c_str());
-        else if(strcmp(type,"Link")==0)
-          return _pcFeature->getPropertyLink(attr)->GetPyObject();
-        else
-          return Py_None;
+      if(_pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
+      {
+        const char* type = _pcFeature->getPropertyType(attr);   
+        if( type != '\0')
+          if(strcmp(type,"Float")==0)
+            return Py_BuildValue("d", _pcFeature->getPropertyFloat(attr));
+          else if(strcmp(type,"Int")==0)
+            return Py_BuildValue("i", _pcFeature->getPropertyInt(attr));
+          else if(strcmp(type,"String")==0)
+            return Py_BuildValue("s", _pcFeature->getPropertyString(attr).c_str());
+          else if(strcmp(type,"Link")==0)
+            return _pcFeature->getPropertyLink(attr)->GetPyObject();
+          else
+            return Py_None;
+      }
       else
 			  _getattr_up(PyObjectBase); 						
     }

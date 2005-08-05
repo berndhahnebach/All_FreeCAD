@@ -291,10 +291,18 @@ void Document::Recompute()
 		if (Feat->MustExecute())
 		{
 			//_LogBook.SetTouched(It.Key());
-      Base::Console().Log("Update: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
+      Base::Console().Log("Execute: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
 
       Feat->_eStatus = Feature::Recompute;
-      if(Feat->execute(_LogBook)){
+      int  succes = 1;
+      try{
+        succes = Feat->execute(_LogBook);
+      }catch(...){
+        succes = 3;
+        Base::Console().Warning("exception in Feature::execute(thrown)\n");
+      }
+
+      if(succes > 0){
         Feat->_eStatus = Feature::Error;
         Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getErrorString());
         DocChange.ErrorFeatures.push_back(Feat);
@@ -315,7 +323,8 @@ void Document::Recompute()
 
 }
 
-Feature *Document::AddFeature(const char* sType, const char* sName)
+
+Feature *Document::addFeature(const char* sType, const char* sName)
 {
 	Feature *pcFeature = FeatureFactory().Produce(sType);
 
@@ -338,20 +347,40 @@ Feature *Document::AddFeature(const char* sType, const char* sName)
 		// update the pointer
 		_lActiveFeature = FeatureLabel;
 
-		// return the feature
+    // remember name (for faster search)
+    FeatEntry e;
+    e.F = pcFeature;
+    e.L = FeatureLabel;
+    FeatMap[sName] = FeatEntry(e);
+
+    pcFeature->_Name = sName;
+	
+    // return the feature
 		return pcFeature;
 
 	}else return 0;
 
 }
 
-Feature *Document::GetActiveFeature(void)
+Feature *Document::getActiveFeature(void)
 {
   // checks if there is no active Feature
   if(_lActiveFeature.IsNull()) 
     return 0;
   
   return Feature::GetFeature(_lActiveFeature);
+}
+
+Feature *Document::getFeature(const char *Name)
+{
+  std::map<std::string,FeatEntry>::iterator pos;
+  
+  pos = FeatMap.find(Name);
+
+  if(pos != FeatMap.end())
+    return pos->second.F;
+  else
+    return 0;
 }
 
 

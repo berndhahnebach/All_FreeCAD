@@ -112,29 +112,6 @@ public:
   void recompute(void);
   //@}
 
-protected:
-	/** @name methodes used for recalculation and document handling
-    *  this methodes are only called/used by the document
-    */
-	//@{
-	/** MustExecute
-	 *  We call this method to check if the object was modified to
-	 *  be invoked. If the object label or an argument is modified.
-	 *  If we must recompute the object - to call the method Execute().
-	 */
-	virtual bool MustExecute(void);
-
-  // remove all modifikations from the property labels
-  void removeModifications(void);
-
-  /// Get called by the framework when the label is attached to the document
-	void AttachLabel(const TDF_Label &rcLabel,Document*);
-
-	/** Validate
-	 * Validation of the object label, its arguments and its results.
-	 */
-//	virtual void Validate(TFunction_Logbook& log)=0;
-	//@}
 
 public:
 
@@ -248,6 +225,7 @@ public:
   /// Retrive the Feature from a Document label
   static Feature *GetFeature(const TDF_Label &l);
 
+  const char *getName(void){return _Name.c_str();}
 
 	virtual Base::PyObjectBase *GetPyObject(void);
 
@@ -260,6 +238,28 @@ public:
   friend class Document;
 
 protected:
+	/** @name methodes used for recalculation and document handling
+    *  this methodes are only called/used by the document
+    */
+	//@{
+	/** MustExecute
+	 *  We call this method to check if the object was modified to
+	 *  be invoked. If the object label or an argument is modified.
+	 *  If we must recompute the object - to call the method Execute().
+	 */
+	virtual bool MustExecute(void);
+
+  // remove all modifikations from the property labels
+  void removeModifications(void);
+
+  /// Get called by the framework when the label is attached to the document
+	void AttachLabel(const TDF_Label &rcLabel,Document*);
+
+	/** Validate
+	 * Validation of the object label, its arguments and its results.
+	 */
+//	virtual void Validate(TFunction_Logbook& log)=0;
+	//@}
 
   // Material stuff
   Material    _solidMaterial;
@@ -276,6 +276,8 @@ protected:
   Document* _pDoc;
 
   FeaturePy* pcFeaturePy;
+
+  std::string _Name;
 
   Status _eStatus;
   std::string _cErrorMessage;
