@@ -43,11 +43,11 @@ class MeshWorkbench ( Workbench ):
 			raise
 		else:	
 			Log ('   Set up Mesh toolbar...\n')
-			list = ["Mesh_Test", "Mesh_VertexCurvature"]
+			list = ["Mesh_Import", "Mesh_VertexCurvature"]
 			Gui.ToolbarAppendItems("MeshTools", list, 0)
 
 			Log ('   Setup Mesh commandbar...\n')
-			list = ["Mesh_Test"]
+			list = ["Std_New","Mesh_Import","Mesh_ExMakeMesh","Mesh_ExMakeTool","Mesh_ExMakeUnion"]
 			Gui.CommandbarAppendItems("MeshTools", list, 0)
 
 			Log ('   Setup Mesh menues...\n')

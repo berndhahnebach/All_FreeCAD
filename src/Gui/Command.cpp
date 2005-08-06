@@ -185,6 +185,20 @@ void Command::testActive(void)
   _pcAction->setEnabled ( bActive );
 }
 
+//--------------------------------------------------------------------------
+// Helper methodes
+//--------------------------------------------------------------------------
+
+bool Command::hasActiveDocument(void)
+{
+  return getActiveDocument() != 0;
+}
+/// true when there is a document and a Feature with Name
+bool Command::hasFeature(const char* Name)
+{
+  return getActiveOCCDocument() != 0 && getActiveOCCDocument()->getFeature(Name) != 0;
+}
+
 
 //--------------------------------------------------------------------------
 // UNDO REDO transaction handling  

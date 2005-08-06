@@ -168,8 +168,15 @@ PYFUNCIMP_S(Application,sGet)
 
   if(pstr == 0){
     Base::PyObjectBase *p = GetApplication().Active()->GetPyObject();
-    p->IncRef();
-	  return p;
+    if(p)
+    {
+      p->IncRef();
+	    return p;
+    }else{
+  		PyErr_SetString(PyExc_Exception, "No active document");
+	  	return 0L;
+    }
+
   }
 
 	Py_INCREF(Py_None);

@@ -149,6 +149,15 @@ public:
   const char * endCmdHelp(void);
   //@}
 
+  /** @name Helper methodes for the Active tests */
+  //@{
+  /// true when there is a document
+  bool hasActiveDocument(void);
+  /// true when there is a document and a Feature with Name
+  bool hasFeature(const char* Name);
+
+  //@}
+
   /** @name checking of internal state */
   //@{
   /// is it a toggle cmd

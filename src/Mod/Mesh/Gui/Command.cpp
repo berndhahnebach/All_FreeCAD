@@ -47,12 +47,169 @@ using namespace Mesh;
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// CmdMeshImport THIS IS JUST A TEST COMMAND
+// Example MakeMesh
+//===========================================================================
+DEF_STD_CMD_A(CmdMeshExMakeMesh);
+
+CmdMeshExMakeMesh::CmdMeshExMakeMesh()
+  :CppCommand("Mesh_ExMakeMesh")
+{
+  sAppModule    = QT_TR_NOOP("Mesh");
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Make a Box");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = 0;
+}
+
+void CmdMeshExMakeMesh::activated(int iMsg)
+{
+  openCommand("Mesh Mesh Create");
+  doCommand(Doc,
+    "import Mesh\n"
+    "mb = Mesh.newMesh()\n"
+    "mb.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)\n"
+    "mb.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)\n"
+    "mb.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)\n"
+    "mb.addFacet(0.0,0.0,0.0, 1.0,0.0,1.0, 0.0,0.0,1.0)\n"
+    "mb.addFacet(0.0,0.0,0.0, 0.0,1.0,0.0, 1.0,1.0,0.0)\n"
+    "mb.addFacet(0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0)\n"
+    "mb.addFacet(0.0,1.0,0.0, 0.0,1.0,1.0, 1.0,1.0,1.0)\n"
+    "mb.addFacet(0.0,1.0,0.0, 1.0,1.0,1.0, 1.0,1.0,0.0)\n"
+    "mb.addFacet(0.0,1.0,1.0, 0.0,0.0,1.0, 1.0,0.0,1.0)\n"
+    "mb.addFacet(0.0,1.0,1.0, 1.0,0.0,1.0, 1.0,1.0,1.0)\n"
+    "mb.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
+    "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
+    "mb.scale(100.0)\n"
+    "App.DocGet().AddFeature(\"Mesh\",\"MeshBox\")\n"
+    "App.DocGet().MeshBox.setMesh(mb)\n"
+    "App.DocGet().MeshBox.showMode = \"FlatWire\"\n" 
+    "App.DocGet().Update()" );
+
+  doCommand(Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
+  commitCommand();
+ 
+  updateActive();
+}
+
+bool CmdMeshExMakeMesh::isActive(void)
+{
+  return hasActiveDocument() && !hasFeature("MeshBox");
+}
+
+//===========================================================================
+// Example MakeTool
+//===========================================================================
+DEF_STD_CMD_A(CmdMeshExMakeTool);
+
+CmdMeshExMakeTool::CmdMeshExMakeTool()
+  :CppCommand("Mesh_ExMakeTool")
+{
+  sAppModule    = QT_TR_NOOP("Mesh");
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Make a Tool");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool2";
+  iAccel        = 0;
+}
+
+void CmdMeshExMakeTool::activated(int iMsg)
+{
+  openCommand("Mesh Mesh Create");
+  doCommand(Doc,
+    "import Mesh,MeshGui\n"
+    "mt = Mesh.newMesh()\n"
+    "mt.addFacet(0.0,0.0,0.0, 0.0,0.0,1.0, 0.0,1.0,1.0)\n"
+    "mt.addFacet(0.0,0.0,0.0, 0.0,1.0,1.0, 0.0,1.0,0.0)\n"
+    "mt.addFacet(0.0,0.0,0.0, 1.0,0.0,0.0, 1.0,0.0,1.0)\n"
+    "mt.addFacet(0.0,0.0,0.0, 1.0,0.0,1.0, 0.0,0.0,1.0)\n"
+    "mt.addFacet(0.0,0.0,0.0, 0.0,1.0,0.0, 1.0,1.0,0.0)\n"
+    "mt.addFacet(0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0)\n"
+    "mt.addFacet(0.0,1.0,0.0, 0.0,1.0,1.0, 1.0,1.0,1.0)\n"
+    "mt.addFacet(0.0,1.0,0.0, 1.0,1.0,1.0, 1.0,1.0,0.0)\n"
+    "mt.addFacet(0.0,1.0,1.0, 0.0,0.0,1.0, 1.0,0.0,1.0)\n"
+    "mt.addFacet(0.0,1.0,1.0, 1.0,0.0,1.0, 1.0,1.0,1.0)\n"
+    "mt.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
+    "mt.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
+    "mt.scale(100.0)\n"
+    "mt.translate(50.0,50.0,50.0)\n"
+    "App.DocGet().AddFeature(\"Mesh\",\"MeshTool\")\n"
+    "App.DocGet().MeshTool.setMesh(mt)\n"
+    "App.DocGet().MeshTool.shadedMaterial.diffuseColor = (0.5,0.2,0.2)\n"
+    "App.DocGet().MeshTool.showMode = \"FlatWire\"" );
+
+  commitCommand();
+ 
+  updateActive();
+}
+
+bool CmdMeshExMakeTool::isActive(void)
+{
+  return hasFeature("MeshBox") && !hasFeature("MeshTool");
+}
+
+
+//===========================================================================
+// Example MakeUnion
+//===========================================================================
+DEF_STD_CMD_A(CmdMeshExMakeUnion);
+
+CmdMeshExMakeUnion::CmdMeshExMakeUnion()
+  :CppCommand("Mesh_ExMakeUnion")
+{
+  sAppModule    = QT_TR_NOOP("Mesh");
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Make Union");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool3";
+  iAccel        = 0;
+}
+
+void CmdMeshExMakeUnion::activated(int iMsg)
+{
+  openCommand("Mesh Mesh Create");
+  doCommand(Doc,
+    "import Mesh,MeshGui\n"
+    "m1 = App.DocGet().MeshBox.getMesh()\n"
+    "m2 = App.DocGet().MeshTool.getMesh()\n"
+    "m3 = m1.copy()\n"
+    "m3.Union(m2)\n"
+    "App.DocGet().AddFeature(\"Mesh\",\"MeshUnion\")\n"
+    "App.DocGet().MeshUnion.setMesh(m3)\n"
+    "App.DocGet().MeshUnion.shadedMaterial.ambientColor = (0.1,1,0)\n"
+    "App.DocGet().MeshUnion.shadedMaterial.transparency = 0.5\n"
+    "App.DocGet().MeshUnion.lineMaterial.ambientColor = (0.1,0.11,0.1)\n"
+    "App.DocGet().MeshUnion.lineSize = 2\n"
+    "App.DocGet().MeshUnion.showMode = \"FlatWire\"" );
+
+  doCommand(Gui,"Gui.hide(\"MeshBox\")");
+  doCommand(Gui,"Gui.hide(\"MeshTool\")");
+
+  commitCommand();
+ 
+  updateActive();
+}
+
+bool CmdMeshExMakeUnion::isActive(void)
+{
+  return hasFeature("MeshTool") && !hasFeature("MeshUnion");
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//===========================================================================
+// CmdMeshImport 
 //===========================================================================
 DEF_STD_CMD_A(CmdMeshImport);
 
 CmdMeshImport::CmdMeshImport()
-  :CppCommand("Mesh_Test")
+  :CppCommand("Mesh_Import")
 {
   sAppModule    = QT_TR_NOOP("Mesh");
   sGroup        = QT_TR_NOOP("Mesh");
@@ -252,4 +409,7 @@ void CreateMeshCommands(void)
   Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdMeshImport());
   rcCmdMgr.addCommand(new CmdMeshVertexCurvature());
+  rcCmdMgr.addCommand(new CmdMeshExMakeMesh());
+  rcCmdMgr.addCommand(new CmdMeshExMakeTool());
+  rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
 }
