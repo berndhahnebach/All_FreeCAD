@@ -36,6 +36,7 @@
 
 #include "images.h"
 #include "ViewProvider.h"
+#include "ViewProviderTransform.h"
 
 
 // use a different name to CreateCommand()
@@ -84,8 +85,9 @@ void GuiMeshExport initMeshGui() {
   CreateMeshCommands();
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      , new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport",    new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,    new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransform", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransform>);
 
   return;
 }

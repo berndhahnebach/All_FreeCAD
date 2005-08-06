@@ -45,6 +45,8 @@
 #include "../Base/Factory.h"
 #include "../Base/FileInfo.h"
 #include "../App/Application.h"
+#include "../App/Feature.h"
+#include "../App/Document.h"
 
 #include "Application.h"
 #include "Document.h"
@@ -1521,9 +1523,52 @@ PyMethodDef ApplicationWindow::Methods[] = {
   {"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
   {"RunCommand",            (PyCFunction) ApplicationWindow::sRunCommand,              1},
   {"SendMsgToActiveView",   (PyCFunction) ApplicationWindow::sSendActiveView,          1},
+  {"hide",                  (PyCFunction) ApplicationWindow::shide,                    1},
+  {"show",                  (PyCFunction) ApplicationWindow::sshow,                    1},
 
   {NULL, NULL}		/* Sentinel */
 };
+
+PYFUNCIMP_S(ApplicationWindow,shide)
+{
+  char *psFeatStr;
+  if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
+
+  Document *pcDoc =  Instance->activeDocument();
+
+  if(pcDoc)
+  {
+    App::Feature *pcFeat = pcDoc->getDocument()->getFeature(psFeatStr);
+
+    if(pcFeat)
+    {
+      pcDoc->setHide(pcFeat);  
+    }
+  }
+    
+   Py_Return;
+} 
+PYFUNCIMP_S(ApplicationWindow,sshow)
+{
+  char *psFeatStr;
+  if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
+
+  Document *pcDoc =  Instance->activeDocument();
+
+  if(pcDoc)
+  {
+    App::Feature *pcFeat = pcDoc->getDocument()->getFeature(psFeatStr);
+
+    if(pcFeat)
+    {
+      pcDoc->setShow(pcFeat);  
+    }
+  }
+    
+   Py_Return;
+} 
 
 PYFUNCIMP_S(ApplicationWindow,sSendActiveView)
 {

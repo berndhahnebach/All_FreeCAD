@@ -20,39 +20,69 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef __VIEWPROVIDERMESHTRANSFORM_H__
+#define __VIEWPROVIDERMESHTRANSFORM_H__
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
+class SoSeparator;
+class SbVec3f;
+class SoSwitch;
+class SoCoordinate3;
+class SoNormal;
+class SoIndexedFaceSet;
+class SoFaceSet;
+class SoPath;
+class SoLocateHighlight;
+class SoTransformerManip;
 
-#include <App/Application.h>
-#include <Base/Console.h>
-
-#include <stdio.h>
-#include <Python.h>
-
-#include "FeatureMeshImport.h"
-#include "FeatureMeshTransform.h"
-
-
-/* registration table  */
-extern struct PyMethodDef Mesh_Import_methods[];
-
-
-/* Python entry */
-extern "C" {
-void AppMeshExport initMesh() {
-
-  (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
-
-  
-
-  Base::Console().Log("AppMesh loaded\n");
-	App::FeatureFactory().AddProducer("MeshImport",   new App::FeatureProducer<Mesh::FeatureMeshImport>);
-	App::FeatureFactory().AddProducer("Mesh",         new App::FeatureProducer<Mesh::MeshFeature>      );
-	App::FeatureFactory().AddProducer("MeshTransform",new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
-
-  return;
+namespace Gui {
+  class View3DInventorViewer;
 }
 
-} // extern "C" 
+
+namespace Mesh {
+  class MeshWithProperty;
+  class MeshPropertyColor;
+}
+
+#include "ViewProvider.h"
+
+namespace MeshGui {
+
+/** Like Mesh viewprovider but with manipulator
+ */
+class ViewProviderInventorMeshTransform : public ViewProviderInventorMesh
+{
+public:
+  ViewProviderInventorMeshTransform();
+  virtual ~ViewProviderInventorMeshTransform();
+
+
+  /** 
+   * Extracts the mesh data from the feature \a pcFeature and creates
+   * an Inventor node \a SoNode with these data. 
+   */
+  virtual void attache(App::Feature *);
+
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName);
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void);
+  /// Update the Mesh representation
+  virtual void update(const ChangeType&);
+
+  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
+  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
+
+protected:
+
+  SoTransformerManip *pcTransformerDragger;
+
+  SoSwitch          *pcManipSwitch;
+
+};
+
+} // namespace MeshGui
+
+
+#endif // __VIEWPROVIDERMESHTRANSFORM_H__
+

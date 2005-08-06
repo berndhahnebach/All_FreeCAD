@@ -125,7 +125,7 @@ StdCmdViewBottom::StdCmdViewBottom()
   sWhatsThis    = QT_TR_NOOP("Set to bottom view");
   sStatusTip    = QT_TR_NOOP("Set to bottom view");
   sPixmap       = "view_bottom";
-  iAccel        = 0;
+  iAccel        = Qt::Key_5;
 }
 
 void StdCmdViewBottom::activated(int iMsg)
@@ -148,7 +148,7 @@ StdCmdViewFront::StdCmdViewFront()
   sWhatsThis    = QT_TR_NOOP("Set to front view");
   sStatusTip    = QT_TR_NOOP("Set to front view");
   sPixmap       = "view_front";
-  iAccel        = 0;
+  iAccel        = Qt::Key_1;
 }
 
 void StdCmdViewFront::activated(int iMsg)
@@ -171,7 +171,7 @@ StdCmdViewLeft::StdCmdViewLeft()
   sWhatsThis    = QT_TR_NOOP("Set to left view");
   sStatusTip    = QT_TR_NOOP("Set to left view");
   sPixmap       = "view_left";
-  iAccel        = 0;
+  iAccel        = Qt::Key_6;
 }
 
 void StdCmdViewLeft::activated(int iMsg)
@@ -194,7 +194,7 @@ StdCmdViewRear::StdCmdViewRear()
   sWhatsThis    = QT_TR_NOOP("Set to rear view");
   sStatusTip    = QT_TR_NOOP("Set to rear view");
   sPixmap       = "view_back";
-  iAccel        = 0;
+  iAccel        = Qt::Key_4;
 }
 
 void StdCmdViewRear::activated(int iMsg)
@@ -217,7 +217,7 @@ StdCmdViewRight::StdCmdViewRight()
   sWhatsThis    = QT_TR_NOOP("Set to right view");
   sStatusTip    = QT_TR_NOOP("Set to right view");
   sPixmap       = "view_right";
-  iAccel        = 0;
+  iAccel        = Qt::Key_3;
 }
 
 void StdCmdViewRight::activated(int iMsg)
@@ -240,7 +240,7 @@ StdCmdViewTop::StdCmdViewTop()
   sWhatsThis    = QT_TR_NOOP("Set to top view");
   sStatusTip    = QT_TR_NOOP("Set to top view");
   sPixmap       = "view_top";
-  iAccel        = 0;
+  iAccel        = Qt::Key_2;
 }
 
 void StdCmdViewTop::activated(int iMsg)
@@ -263,7 +263,7 @@ StdCmdViewAxo::StdCmdViewAxo()
   sWhatsThis  = QT_TR_NOOP("Set to axometric view");
   sStatusTip  = QT_TR_NOOP("Set to axometric view");
   sPixmap     = "view_axo";
-  iAccel      = 0;
+  iAccel      = Qt::Key_0;
 }
 
 void StdCmdViewAxo::activated(int iMsg)

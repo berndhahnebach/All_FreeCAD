@@ -202,6 +202,9 @@ public:
   PYFUNCDEF_S(sRunCommand);
   PYFUNCDEF_S(sCommandAdd);
 
+  PYFUNCDEF_S(shide);
+  PYFUNCDEF_S(sshow);
+
   static PyMethodDef    Methods[]; 
  
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,38 +21,34 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
+#ifndef FEATURE_MESH_TRANSFORM_H
+#define FEATURE_MESH_TRANSFORM_H
 
-#include <App/Application.h>
-#include <Base/Console.h>
-
-#include <stdio.h>
-#include <Python.h>
-
-#include "FeatureMeshImport.h"
+#include "MeshFeature.h"
 #include "FeatureMeshTransform.h"
 
+namespace Mesh
+{
 
-/* registration table  */
-extern struct PyMethodDef Mesh_Import_methods[];
+/**
+ * The FeatureMeshImport class reads the any supported mesh format
+ * into the FreeCAD workspace.
+ * @author Werner Mayer
+ */
+class FeatureMeshTransform : public MeshFeature
+{
+public:
+  /** @name methods overide Feature */
+  //@{
+  /// Initialize Feature structure
+  virtual void initFeature(void);
+  /// recalculate the Feature
+  virtual int execute(TFunction_Logbook& log);
+  /// Returns the Name/Type of the feature
+  virtual const char *type(void){return "MeshTransform";};
+  //@}
+};
 
-
-/* Python entry */
-extern "C" {
-void AppMeshExport initMesh() {
-
-  (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
-
-  
-
-  Base::Console().Log("AppMesh loaded\n");
-	App::FeatureFactory().AddProducer("MeshImport",   new App::FeatureProducer<Mesh::FeatureMeshImport>);
-	App::FeatureFactory().AddProducer("Mesh",         new App::FeatureProducer<Mesh::MeshFeature>      );
-	App::FeatureFactory().AddProducer("MeshTransform",new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
-
-  return;
 }
 
-} // extern "C" 
+#endif // FEATURE_MESH_TRANSFORM_H 

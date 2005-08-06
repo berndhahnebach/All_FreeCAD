@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -23,36 +23,58 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <fcntl.h>
+# include <TFunction_Logbook.hxx>
+# include <ios>
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
-
-#include <stdio.h>
-#include <Python.h>
-
-#include "FeatureMeshImport.h"
+#include <Base/Exception.h>
+#include <Base/Sequencer.h>
 #include "FeatureMeshTransform.h"
 
+#include "Core/MeshIO.h"
+#include "Core/Stream.h"
 
-/* registration table  */
-extern struct PyMethodDef Mesh_Import_methods[];
 
+using namespace Mesh;
 
-/* Python entry */
-extern "C" {
-void AppMeshExport initMesh() {
-
-  (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
-
-  
-
-  Base::Console().Log("AppMesh loaded\n");
-	App::FeatureFactory().AddProducer("MeshImport",   new App::FeatureProducer<Mesh::FeatureMeshImport>);
-	App::FeatureFactory().AddProducer("Mesh",         new App::FeatureProducer<Mesh::MeshFeature>      );
-	App::FeatureFactory().AddProducer("MeshTransform",new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
-
-  return;
+void FeatureMeshTransform::initFeature(void)
+{
+  Base::Console().Log("FeatureMeshImport::InitLabel()\n");
+  addProperty("String","FileName");
 }
 
-} // extern "C" 
+int FeatureMeshTransform::execute(TFunction_Logbook& log)
+{
+  Base::Console().Log("FeatureMeshImport::Execute()\n");
+
+  try{
+
+    std::string FileName =getPropertyString("FileName");
+
+    // ask for read permisson
+		if ( access(FileName.c_str(), 4) != 0 )
+    {
+      Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName.c_str());
+      return 1;
+    }
+
+    MeshSTL aReader(*(_cMesh.getKernel()) );
+
+    // read file
+    FileStream str( FileName.c_str(), std::ios::in);
+    if ( !aReader.Load( str ) )
+      throw Base::Exception("Import failed (load file)");
+  }
+  catch(Base::AbortException& e){
+    return 0;
+  }
+  catch(...){
+    Base::Console().Error("FeatureMeshTransform::Execute() failed!");
+    return 2;
+  }
+
+  return 0;
+}
+
