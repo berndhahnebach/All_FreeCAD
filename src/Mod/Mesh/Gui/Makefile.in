@@ -151,7 +151,9 @@ libMeshGui_la_SOURCES = \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \
-		ViewProvider.h
+		ViewProvider.h \
+		ViewProviderTransform.cpp \
+		ViewProviderTransform.h
 
 
 # the library search path.
@@ -173,7 +175,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libMeshGui_la_DEPENDENCIES =
 am_libMeshGui_la_OBJECTS = libMeshGui_la-AppMeshGui.lo \
 	libMeshGui_la-Command.lo libMeshGui_la-Doxygen.lo \
-	libMeshGui_la-PreCompiled.lo libMeshGui_la-ViewProvider.lo
+	libMeshGui_la-PreCompiled.lo libMeshGui_la-ViewProvider.lo \
+	libMeshGui_la-ViewProviderTransform.lo
 libMeshGui_la_OBJECTS = $(am_libMeshGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -183,7 +186,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-Command.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-Doxygen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-PreCompiled.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -254,6 +258,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -455,6 +460,39 @@ libMeshGui_la-ViewProvider.lo: ViewProvider.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProvider.Plo' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProvider.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProvider.lo `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp
+
+libMeshGui_la-ViewProviderTransform.o: ViewProviderTransform.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderTransform.o -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-ViewProviderTransform.o `test -f 'ViewProviderTransform.cpp' || echo '$(srcdir)/'`ViewProviderTransform.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProviderTransform.cpp' object='libMeshGui_la-ViewProviderTransform.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Po' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProviderTransform.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProviderTransform.o `test -f 'ViewProviderTransform.cpp' || echo '$(srcdir)/'`ViewProviderTransform.cpp
+
+libMeshGui_la-ViewProviderTransform.obj: ViewProviderTransform.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderTransform.obj -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-ViewProviderTransform.obj `if test -f 'ViewProviderTransform.cpp'; then $(CYGPATH_W) 'ViewProviderTransform.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProviderTransform.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProviderTransform.cpp' object='libMeshGui_la-ViewProviderTransform.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Po' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProviderTransform.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProviderTransform.obj `if test -f 'ViewProviderTransform.cpp'; then $(CYGPATH_W) 'ViewProviderTransform.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProviderTransform.cpp'; fi`
+
+libMeshGui_la-ViewProviderTransform.lo: ViewProviderTransform.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderTransform.lo -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-ViewProviderTransform.lo `test -f 'ViewProviderTransform.cpp' || echo '$(srcdir)/'`ViewProviderTransform.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProviderTransform.cpp' object='libMeshGui_la-ViewProviderTransform.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Plo' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProviderTransform.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProviderTransform.lo `test -f 'ViewProviderTransform.cpp' || echo '$(srcdir)/'`ViewProviderTransform.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

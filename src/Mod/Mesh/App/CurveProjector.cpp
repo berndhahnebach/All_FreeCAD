@@ -298,10 +298,10 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
                                          const std::vector<Vector3D> &rclPoints, 
                                          std::vector<FaceSplitEdge> &vSplitEdges)
 {
-  Vector3D cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal,TempResultPoint;
+  Vector3D /*cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal,*/TempResultPoint;
   bool bFirst = true;
-  unsigned long auNeighboursIdx[3];
-  std::map<unsigned long,std::vector<Vector3D> >::iterator N1,N2,N3;
+  //unsigned long auNeighboursIdx[3];
+  //std::map<unsigned long,std::vector<Vector3D> >::iterator N1,N2,N3;
 
   const MeshKernel &MeshK = *(_Mesh.getKernel());
   
@@ -597,7 +597,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
   const MeshKernel &MeshK = *(_Mesh.getKernel());
   Vector3D cResultPoint;
 
-  unsigned long ulNbOfPoints = 15,PointCount=0,uCurFacetIdx;
+  unsigned long ulNbOfPoints = 15,PointCount=0/*,uCurFacetIdx*/;
 
   std::vector<LineSeg> LineSegs;
 

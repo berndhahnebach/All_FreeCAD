@@ -10,7 +10,9 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.cpp \
 		PreCompiled.h \
 		ViewProvider.cpp \
-		ViewProvider.h
+		ViewProvider.h \
+		ViewProviderTransform.cpp \
+		ViewProviderTransform.h
 
 # the library search path.
 libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

@@ -247,6 +247,8 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 			  _getattr_up(PyObjectBase); 						
     }
 	}PY_CATCH;
+
+  return Py_None;
 } 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state

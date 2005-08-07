@@ -659,7 +659,6 @@ bool PythonConsole::performPythonCommand()
     try
     {
       // launch the command now
-      int endState = pythonSyntax->endStateOfLastParagraph();
       Base::Interpreter().runInteractiveString( pyCmd.latin1() );
       setFocus(); // if focus was lost
     }

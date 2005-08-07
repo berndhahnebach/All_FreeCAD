@@ -48,6 +48,8 @@ libMesh_la_SOURCES=\
 		Doxygen.cpp \
 		FeatureMeshImport.cpp \
 		FeatureMeshImport.h \
+		FeatureMeshTransform.cpp \
+		FeatureMeshTransform.h \
 		Mesh.cpp \
 		Mesh.h \
 		MeshAlgos.cpp \
