@@ -28,6 +28,8 @@ libMesh_la_SOURCES=\
 		Core/MeshKernel.h \
 		Core/MeshIO.cpp \
 		Core/MeshIO.h \
+		Core/Projection.cpp \
+		Core/Projection.h \
 		Core/Stream.cpp \
 		Core/Stream.h \
 		Core/Swap.cpp \
