@@ -735,7 +735,7 @@ void PythonEditView::redo(void)
 }
 
 /**
- * \todo: Shows the printer dialog.
+ * Shows the printer dialog.
  */
 void PythonEditView::print( QPrinter* printer )
 {

@@ -421,9 +421,25 @@ void TextBrowser::contentsDropEvent(QDropEvent  * e)
         Command* pCmd = rclMan.getCommandByName(action.latin1());
         if (pCmd)
         {
-          /// @todo
-          // show this dummy url
-          setSource( "index.php@copy=CompileOnLinux.html"/*pCmd->cmdHelpURL().c_str()*/ );
+          QString url = pCmd->getHelpUrl();
+          if ( url.isEmpty() )
+          {
+            // cannot show help to this command
+            QString txt = QString(
+            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+            "<html>"
+            "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
+            "<h2>"
+            "  No description for '%1'"
+            "</h2>"
+            "<hr>"
+            "</body>"
+            "</html>" ).arg( action );
+
+            setText( txt );
+          }
+          else
+            setSource( pCmd->getHelpUrl() );
         }
       }
     }

@@ -44,8 +44,11 @@ namespace Gui {
 struct ProgressBarPrivate
 {
   QTime measureTime;
+  QTime progressTime;
+  QTime updateTime;
   QTimer* forceTimer;
   int minimumDuration;
+  bool oneStep;
   WaitCursor* cWaitCursor;
 };
 }
@@ -223,14 +226,27 @@ void ProgressBar::setProgress( int progr )
 {
   // if number of total steps is unknown then incrementy only by one
   if ( nTotalSteps == 0 )
-    QProgressBar::setProgress(progress()+1);
+  {
+    if ( d->oneStep )
+    {
+      d->oneStep = false;
+      QProgressBar::setProgress(progress()+1);
+    }
+  }
   else
+  {
     QProgressBar::setProgress(progr);
+  }
 }
 
 void ProgressBar::startStep()
 {
   setTotalSteps(nTotalSteps);
+  if ( nTotalSteps == 0 )
+  {
+    d->progressTime.start();
+    d->updateTime.start();
+  }
 
   if ( pendingOperations() == 1 )
   {
@@ -272,8 +288,26 @@ void ProgressBar::nextStep(bool canAbort)
   {
     setProgress(nProgress+1);
   }
-  
-  qApp->processEvents();
+
+  if ( nTotalSteps == 0 )
+  {
+    int elapsed = d->progressTime.elapsed();
+    if ( elapsed > 50 )
+    {
+      d->progressTime.restart();
+      d->oneStep = true;
+      elapsed = d->updateTime.elapsed();
+      if ( elapsed > 2000 ) // allow an update every 2 seconds only
+      {
+        d->updateTime.restart();
+        qApp->processEvents();
+      }
+    }
+  }
+  else
+  {
+    qApp->processEvents();
+  }
 }
 
 void ProgressBar::resetData()
