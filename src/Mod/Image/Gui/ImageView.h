@@ -41,8 +41,8 @@ public:
     void onUpdate(void){};
 
     virtual void clearImage();
-    virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset = true);
-    virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset = true);
+    virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode = IV_DISPLAY_RESET);
+    virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode = IV_DISPLAY_RESET);
 
     virtual void EnableColorActions(bool Enable);
     virtual int createColorMap(int numEntriesReq = 0, bool Initialise = true);
@@ -54,9 +54,11 @@ public:
     virtual int setColorMapBlueValue(int index, float value);
     virtual int setColorMapAlphaValue(int index, float value);
 
-protected slots:
+public slots:
     virtual void fitImage();
     virtual void oneToOneImage();
+
+protected slots:
     virtual void handleColorAct( QAction* act);
     virtual void sliderValueAdjusted(int NewValue);
     virtual void drawGraphics();

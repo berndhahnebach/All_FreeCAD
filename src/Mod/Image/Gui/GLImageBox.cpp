@@ -379,7 +379,20 @@ void GLImageBox::setZoomFactor(double zoomFactor, bool useCentrePt, int ICx, int
 
 // Stretch or shrink the image to fit the view (although the zoom factor is limited so a 
 // very small or very big image may not fit completely (depending on the size of the view)
+// This function redraws
 void GLImageBox::stretchToFit()
+{
+    if (_image.hasValidData() == false)
+        return;
+
+    setToFit();
+    glDraw();
+}
+
+// Sets the settings needed to fit the image into the view (although the zoom factor is limited so a 
+// very small or very big image may not fit completely (depending on the size of the view)
+// This function does not redraw (call redraw afterwards)
+void GLImageBox::setToFit()
 {
     if (_image.hasValidData() == false)
         return;
@@ -395,7 +408,6 @@ void GLImageBox::stretchToFit()
 
     // set current position to top left image pixel
     setCurrPos(0, 0);
-    glDraw();
 }
 
 // Sets the normal viewing position and zoom = 1
@@ -503,23 +515,32 @@ void GLImageBox::clearImage()
 // The image object will take ownership of the copied pixel data
 // (the source image is still controlled by the caller)
 // If numSigBitsPerSample = 0 then the full range is assumed to be significant
+// displayMode ... controls the initial display of the image, one of:
+//                      IV_DISPLAY_NOCHANGE  ... no change to view settings when displaying a new image
+//                      IV_DISPLAY_FITIMAGE  ... fit-image when displaying a new image (other settings remain the same)
+//                      IV_DISPLAY_RESET     ... reset settings when displaying a new image (image will be displayed at 1:1 scale with no color map)
 // This function does not redraw (call redraw afterwards)
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset)
+int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode)
 {
     // Copy image
     int ret = _image.createCopy(pSrcPixelData, width, height, format, numSigBitsPerSample);
 
-    // Redraw
-    if (reset == true)
+    // Set display settings depending on mode
+    if (displayMode == IV_DISPLAY_RESET)
     {
         // reset drawing settings (position, scale, colour mapping) if requested
         resetDisplay();
     }
-    else
+    else if (displayMode == IV_DISPLAY_FITIMAGE)
+    {
+        // compute stretch to fit settings
+        setToFit();
+    }
+    else // if (displayMode == IV_DISPLAY_NOCHANGE)
     {
         // use same settings
         limitCurrPos();
@@ -537,22 +558,31 @@ int GLImageBox::createImageCopy(void* pSrcPixelData, unsigned long width, unsign
 //      (the source image is not (should not be) controlled by the caller anymore)
 //      In this case the memory must have been allocated with the new operator (because this class will use the delete operator)
 // If numSigBitsPerSample = 0 then the full range is assumed to be significant
+// displayMode ... controls the initial display of the image, one of:
+//                      IV_DISPLAY_NOCHANGE  ... no change to view settings when displaying a new image
+//                      IV_DISPLAY_FITIMAGE  ... fit-image when displaying a new image (other settings remain the same)
+//                      IV_DISPLAY_RESET     ... reset settings when displaying a new image (image will be displayed at 1:1 scale with no color map)
 // This function does not redraw (call redraw afterwards)
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
-int GLImageBox::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset)
+int GLImageBox::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode)
 {
     // Point to image
     int ret = _image.pointTo(pSrcPixelData, width, height, format, numSigBitsPerSample, takeOwnership);
 
-    // Redraw
-    if (reset == true)
+    // Set display settings depending on mode
+    if (displayMode == IV_DISPLAY_RESET)
     {
         // reset drawing settings (position, scale, colour mapping) if requested
         resetDisplay();
     }
-    else
+    else if (displayMode == IV_DISPLAY_FITIMAGE)
+    {
+        // compute stretch to fit settings
+        setToFit();
+    }
+    else // if (displayMode == IV_DISPLAY_NOCHANGE)
     {
         // use same settings
         limitCurrPos();

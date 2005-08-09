@@ -298,13 +298,17 @@ void ImageView::clearImage()
 // The image object inside this view object will take ownership of the copied pixel data
 // (the source image is still controlled by the caller)
 // If numSigBitsPerSample = 0 then the full range is assumed to be significant
+// displayMode ... controls the initial display of the image, one of:
+//                      IV_DISPLAY_NOCHANGE  ... no change to view settings when displaying a new image
+//                      IV_DISPLAY_FITIMAGE  ... fit-image when displaying a new image (other settings remain the same)
+//                      IV_DISPLAY_RESET     ... reset settings when displaying a new image (image will be displayed at 1:1 scale with no color map)
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
 //		-2 for memory allocation error
-int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset)
+int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode)
 {
-    int ret = _pGLImageBox->createImageCopy(pSrcPixelData, width, height, format, numSigBitsPerSample, reset);
+    int ret = _pGLImageBox->createImageCopy(pSrcPixelData, width, height, format, numSigBitsPerSample, displayMode);
     if (_pShowBrightAct->isOn() == true)
         showBrightened();
     else
@@ -321,12 +325,16 @@ int ImageView::createImageCopy(void* pSrcPixelData, unsigned long width, unsigne
 //      (the source image is not (should not be) controlled by the caller anymore)
 //      In this case the memory must have been allocated with the new operator (because this class will use the delete operator)
 // If numSigBitsPerSample = 0 then the full range is assumed to be significant
+// displayMode ... controls the initial display of the image, one of:
+//                      IV_DISPLAY_NOCHANGE  ... no change to view settings when displaying a new image
+//                      IV_DISPLAY_FITIMAGE  ... fit-image when displaying a new image (other settings remain the same)
+//                      IV_DISPLAY_RESET     ... reset settings when displaying a new image (image will be displayed at 1:1 scale with no color map)
 // Returns:
 //		 0 for OK
 //		-1 for invalid color format
-int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset)
+int ImageView::pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode)
 {
-    int ret = _pGLImageBox->pointImageTo(pSrcPixelData, width, height, format, numSigBitsPerSample, takeOwnership, reset);
+    int ret = _pGLImageBox->pointImageTo(pSrcPixelData, width, height, format, numSigBitsPerSample, takeOwnership, displayMode);
     if (_pShowBrightAct->isOn() == true)
         showBrightened();
     else

@@ -26,6 +26,10 @@
 namespace ImageGui
 {
 
+#define IV_DISPLAY_NOCHANGE     0       // no change to view settings when displaying a new image
+#define IV_DISPLAY_FITIMAGE     1       // fit-image when displaying a new image (other settings remain the same)
+#define IV_DISPLAY_RESET        2       // reset settings when displaying a new image (image will be displayed at 1:1 scale with no color map)
+
 class ImageGuiExport GLImageBox : public QGLWidget
 {
     Q_OBJECT
@@ -58,8 +62,8 @@ public:
     double ICToWC_Y(double ImageY);
 
     void clearImage();
-    int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool reset = true);
-    int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, bool reset = true);
+    int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode = IV_DISPLAY_RESET);
+    int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode = IV_DISPLAY_RESET);
 
     void clearColorMap();
     int createColorMap(int numEntriesReq = 0, bool Initialise = true);
@@ -87,6 +91,7 @@ private:
     void limitCurrPos();
     void limitZoomFactor();
     void setCurrPos(int x0, int y0);
+    void setToFit();
     void resetDisplay();
     int calcNumColorMapEntries();
 

@@ -18,6 +18,9 @@
 #ifndef IMAGEBASE_H
 #define IMAGEBASE_H
 
+namespace Image
+{
+
 #define IB_CF_GREY8     1       // 8-bit grey level images
 #define IB_CF_GREY16    2		// 16-bit grey level images
 #define IB_CF_GREY32    3		// 32-bit grey level images
@@ -29,9 +32,6 @@
 #define IB_CF_RGBA64    9		// 64-bit (16,16,16,16) RGBA color images (A = alpha)
 #define IB_CF_BGRA32    10		// 32-bit (8,8,8,8) BGRA color images (A = alpha)
 #define IB_CF_BGRA64    11		// 64-bit (16,16,16,16) BGRA color images (A = alpha)
-
-namespace Image
-{
 
 class ImageAppExport ImageBase
 {
