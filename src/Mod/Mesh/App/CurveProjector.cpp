@@ -284,7 +284,7 @@ void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vect
     Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
     float fLen   = float(fEnd - fBegin);
 
-    for (unsigned long i = 0; i <= ulNbOfPoints; i++)
+    for (unsigned long i = 0; i < ulNbOfPoints; i++)
     {
       gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
       rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
@@ -607,7 +607,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
 
   std::map<unsigned long,std::vector<Vector3D> > FaceProjctMap;
  
-  for (unsigned long i = 0; i <= ulNbOfPoints; i++)
+  for (unsigned long i = 0; i < ulNbOfPoints; i++)
   {
     Base::Sequencer().next();
     gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));

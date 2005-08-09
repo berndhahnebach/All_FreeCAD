@@ -152,7 +152,7 @@ Standard_Boolean ViewProviderCurveNet::computeEdges   (SoSeparator* root, const 
     Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
     float fLen   = float(fEnd - fBegin);
 
-    for (unsigned long i = 0; i <= ulNbOfPoints; i++)
+    for (unsigned long i = 0; i < ulNbOfPoints; i++)
     {
       gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
       //rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
