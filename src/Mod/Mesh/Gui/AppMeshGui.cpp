@@ -33,10 +33,12 @@
 
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/WorkbenchFactory.h>
 
 #include "images.h"
 #include "ViewProvider.h"
 #include "ViewProviderTransform.h"
+#include "Workbench.h"
 
 
 // use a different name to CreateCommand()
@@ -88,6 +90,7 @@ void GuiMeshExport initMeshGui() {
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport",    new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,    new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransform", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransform>);
+  Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::MeshWorkbench>);
 
   return;
 }

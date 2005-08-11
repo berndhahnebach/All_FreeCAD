@@ -28,7 +28,9 @@
 #ifndef _PreComp_
 # include <string>
 # include <vector>
+# include <qmainwindow.h>
 # include <qstringlist.h>
+# include <qworkspace.h>
 #endif
 
 #define  putpix()
@@ -36,8 +38,6 @@
 #include "../Base/Console.h"
 #include "../App/Application.h"
 
-#include <qmainwindow.h>
-#include <qworkspace.h>
 
 class QComboBox;
 class QToolBar;
@@ -138,6 +138,7 @@ public:
   //@{	
   /// Activate a named workbench
   void activateWorkbench(const char* name);
+  bool _activateWorkbench( const char* name );
   /// update the combo box when there are changes in the workbenches
   void appendWorkbench(const char* name);
   void removeWorkbench(const char* name);
@@ -177,6 +178,14 @@ public:
   //---------------------------------------------------------------------
 
   // static python wrapper of the exported functions
+  PYFUNCDEF_S(sAddWorkbench);      // adds a new workbench name to a list
+  PYFUNCDEF_S(sRemoveWorkbench);   // removes a workbench name from the list
+  PYFUNCDEF_S(sActiveWorkbench);   // retrieves the active workbench object
+  PYFUNCDEF_S(sActivateWorkbench); // activates a workbench object
+  PYFUNCDEF_S(sListWorkbenches);   // retrieves a list of all workbench objects
+  PYFUNCDEF_S(sWorkbenchModule);   // retrieves the module object
+  PYFUNCDEF_S(sGetWorkbench);      // retrieves a workbench object
+
   PYFUNCDEF_S(sMenuAppendItems); // append items
   PYFUNCDEF_S(sMenuRemoveItems); // remove items
   PYFUNCDEF_S(sMenuDelete);      // delete the whole menu
@@ -213,7 +222,7 @@ signals:
   void timeEvent();
 
 public:
-  void onPolish();
+  //void onPolish();
   bool isCustomizable () const;
   void customize ();
 

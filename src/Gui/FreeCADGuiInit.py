@@ -121,7 +121,7 @@ def InitMenues():
 	"Separator", "Std_DlgPreferences"]
 	Gui.MenuAppendItems("&Edit", list, 0, 0)
 
-	list = ["Std_ViewCreateInventor","Separator","Std_ToggleVisibility","Std_ViewFullScreen","Separator"]
+	list = ["Std_ViewCreateInventor","Separator","Std_ToggleVisibility","Std_ViewFullScreen","Separator", "Std_ViewMenu"]
 	Gui.MenuAppendItems("&View", list, 1, 0)
 
 	list = ["Std_CommandLine", "Std_DlgParameter", "Std_OCAFBrowser", "Separator",
@@ -135,7 +135,7 @@ def InitMenues():
 	Gui.MenuAppendItems("Inventor View", list, 0, 0)
 
 	list = ["Std_CloseActiveWindow", "Std_CloseAllWindows", "Separator", "Std_ActivateNextWindow", "Std_ActivatePrevWindow", 
-	"Separator", "Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Separator", "Std_Windows"] 
+	"Separator", "Std_TilePragmatic", "Std_TileHoricontal", "Std_TileVertical", "Std_WindowsMenu", "Separator", "Std_Windows"] 
 	Gui.MenuAppendItems("&Windows", list, 0, 0)
 
 	list = ["Std_OnlineHelp", "Std_TipOfTheDay", "Separator", "Std_About", "Std_AboutQt", "Separator", "Std_WhatsThis", "Std_DescriptionMode"]

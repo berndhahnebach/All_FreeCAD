@@ -26,6 +26,8 @@
 #include "BitmapFactory.h"
 #include "CustomWidgets.h"
 #include "WidgetFactory.h"
+#include "WorkbenchFactory.h"
+#include "Workbench.h"
 #include "Language/LanguageFactory.h"
 
 // ----------------------------------------------------
@@ -108,4 +110,10 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   new WidgetProducer<CommandIconView>;
   new WidgetProducer<AccelLineEdit>;
   new WidgetProducer<ColorButton>;
+
+  // ADD YOUR PREFERENCE WIDGETS HERE
+  //
+  //
+  WorkbenchFactory().AddProducer("FreeCAD", new WorkbenchProducer<StdWorkbench>);
+  WorkbenchFactory().AddProducer("<none>", new WorkbenchProducer<StdWorkbench>);
 }

@@ -28,6 +28,7 @@
 
 
 #include "Command.h"
+#include "Action.h"
 #include "Application.h"
 #include "View.h"
 #include "Document.h"
@@ -342,6 +343,56 @@ void StdCmdMDITabbed::activated(int iMsg)
 }
 
 
+//===========================================================================
+// Std_ViewMenu
+//===========================================================================
+
+DEF_STD_CMD_AC(StdCmdViewMenu);
+
+StdCmdViewMenu::StdCmdViewMenu()
+  :CppCommand("Std_ViewMenu")
+{
+}
+
+void StdCmdViewMenu::activated(int iMsg)
+{
+}
+
+bool StdCmdViewMenu::isActive(void)
+{
+  return true;
+}
+
+QAction * StdCmdViewMenu::createAction(void)
+{
+  return new ViewAction(ApplicationWindow::Instance);
+}
+
+//===========================================================================
+// Std_WindowsMenu
+//===========================================================================
+
+DEF_STD_CMD_AC(StdCmdWindowsMenu );
+
+StdCmdWindowsMenu::StdCmdWindowsMenu()
+  :CppCommand("Std_WindowsMenu")
+{
+}
+
+void StdCmdWindowsMenu::activated(int iMsg)
+{
+}
+
+bool StdCmdWindowsMenu::isActive(void)
+{
+  return true;
+}
+
+QAction * StdCmdWindowsMenu::createAction(void)
+{
+  return new WindowAction(ApplicationWindow::Instance);
+}
+
 
 
 //===========================================================================
@@ -366,6 +417,8 @@ void CreateWindowStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdActivateNextWindow());
   rcCmdMgr.addCommand(new StdCmdActivatePrevWindow());
   rcCmdMgr.addCommand(new StdCmdWindows());
+  rcCmdMgr.addCommand(new StdCmdViewMenu());
+  rcCmdMgr.addCommand(new StdCmdWindowsMenu());
 }
 
 } // namespace Gui

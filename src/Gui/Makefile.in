@@ -186,6 +186,7 @@ BUILT_SOURCES = \
 		moc_Document.cpp \
 		moc_FileDialog.cpp \
 		moc_HelpView.cpp \
+		moc_MainWindow.cpp \
 		moc_NetworkRetriever.cpp \
 		moc_PrefWidgets.cpp \
 		moc_Process.cpp \
@@ -294,6 +295,8 @@ libFreeCADGui_la_SOURCES = \
 		CommandLine.h \
 		Command.cpp \
 		Command.h \
+		CommandBarManager.cpp \
+		CommandBarManager.h \
 		CommandStd.cpp  \
 		CommandWindow.cpp  \
 		CommandTest.cpp \
@@ -353,6 +356,8 @@ libFreeCADGui_la_SOURCES = \
 		HelpView.h \
 		Macro.cpp \
 		Macro.h \
+		MainWindow.cpp \
+		MainWindow.h \
 		MenuManager.cpp \
 		MenuManager.h \
 		NetworkRetriever.cpp \
@@ -388,6 +393,8 @@ libFreeCADGui_la_SOURCES = \
 		StackBar.h \
 		TextEdit.cpp \
 		TextEdit.h \
+		ToolBarManager.cpp \
+		ToolBarManager.h \
 		ToolBox.cpp \
 		ToolBox.h \
 		ToolBoxBar.cpp \
@@ -417,7 +424,15 @@ libFreeCADGui_la_SOURCES = \
 		Widgets.cpp \
 		Widgets.h \
 		Window.cpp \
-		Window.h
+		Window.h \
+		Workbench.cpp \
+		Workbench.h \
+		WorkbenchFactory.cpp \
+		WorkbenchFactory.h \
+		WorkbenchManager.cpp \
+		WorkbenchManager.h \
+		WorkbenchPy.cpp \
+		WorkbenchPy.h
 
 
 EXTRA_DIST = \
@@ -499,8 +514,8 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
 	SoBrepShape.lo LanguageFactory.lo Translator.lo Action.lo \
 	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
-	Command.lo CommandStd.lo CommandWindow.lo CommandTest.lo \
-	CommandView.lo CustomWidgets.lo DlgActionsImp.lo \
+	Command.lo CommandBarManager.lo CommandStd.lo CommandWindow.lo \
+	CommandTest.lo CommandView.lo CustomWidgets.lo DlgActionsImp.lo \
 	DlgActivateWindowImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
 	DlgCustomizeImp.lo DlgDisplayPropertiesImp.lo \
 	DlgDocTemplatesImp.lo DlgEditorImp.lo DlgGeneralImp.lo \
@@ -509,16 +524,17 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
 	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
 	DockWindow.lo Document.lo Doxygen.lo FileDialog.lo \
-	GuiConsole.lo HelpView.lo Macro.lo MenuManager.lo \
+	GuiConsole.lo HelpView.lo Macro.lo MainWindow.lo MenuManager.lo \
 	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
 	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonConsole.lo \
 	PythonConsolePy.lo PythonEditor.lo ReportView.lo resource.lo \
 	Selection.lo SpinBox.lo Splashscreen.lo StackBar.lo TextEdit.lo \
-	ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo View.lo \
-	View3DInventor.lo View3DInventorExamples.lo \
+	ToolBarManager.lo ToolBox.lo ToolBoxBar.lo Tools.lo Tree.lo \
+	View.lo View3DInventor.lo View3DInventorExamples.lo \
 	View3DInventorViewer.lo ViewProvider.lo ViewProviderFeature.lo \
 	WaitCursor.lo WhatsThis.lo WidgetFactory.lo Widgets.lo \
-	Window.lo
+	Window.lo Workbench.lo WorkbenchFactory.lo WorkbenchManager.lo \
+	WorkbenchPy.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -528,6 +544,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Application.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/BitmapFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ButtonGroup.Plo ./$(DEPDIR)/Command.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/CommandBarManager.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandLine.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandStd.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandTest.Plo \
@@ -558,7 +575,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/FileDialog.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/GuiConsole.Plo ./$(DEPDIR)/HelpView.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/LanguageFactory.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MenuManager.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Macro.Plo ./$(DEPDIR)/MainWindow.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/MenuManager.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/NetworkRetriever.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PrefWidgets.Plo ./$(DEPDIR)/Process.Plo \
@@ -573,6 +591,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/SoBrepShape.Plo ./$(DEPDIR)/SpinBox.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Splashscreen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/StackBar.Plo ./$(DEPDIR)/TextEdit.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ToolBarManager.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ToolBox.Plo ./$(DEPDIR)/ToolBoxBar.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Tools.Plo ./$(DEPDIR)/Translator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Tree.Plo ./$(DEPDIR)/View.Plo \
@@ -585,6 +604,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/WhatsThis.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/WidgetFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Widgets.Plo ./$(DEPDIR)/Window.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Workbench.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/WorkbenchFactory.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/WorkbenchManager.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/WorkbenchPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knuminput.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/knumvalidator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/propertyeditor.Plo \
@@ -666,6 +689,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitmapFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ButtonGroup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandBarManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandLine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandStd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CommandTest.Plo@am__quote@
@@ -700,6 +724,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpView.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Macro.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MainWindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetworkRetriever.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
@@ -718,6 +743,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Splashscreen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StackBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TextEdit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBarManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ToolBoxBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tools.Plo@am__quote@
@@ -734,6 +760,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WidgetFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Widgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Window.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Workbench.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WorkbenchFactory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WorkbenchManager.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WorkbenchPy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knuminput.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/knumvalidator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propertyeditor.Plo@am__quote@

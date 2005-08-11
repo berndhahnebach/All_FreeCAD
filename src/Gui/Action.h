@@ -235,6 +235,40 @@ public:
   ~RedoAction();
 };
 
+// --------------------------------------------------------------------
+
+/**
+ * @author Werner Mayer
+ */
+class GuiExport ViewAction : public QAction
+{
+  Q_OBJECT
+
+public:
+  ViewAction ( QObject * parent = 0, const char * name = 0 );
+  virtual ~ViewAction();
+
+  bool addTo ( QWidget * w );
+  bool removeFrom ( QWidget * w );
+};
+
+// --------------------------------------------------------------------
+
+/**
+ * @author Werner Mayer
+ */
+class GuiExport WindowAction : public QAction
+{
+  Q_OBJECT
+
+public:
+  WindowAction ( QObject * parent = 0, const char * name = 0 );
+  virtual ~WindowAction();
+
+  bool addTo ( QWidget * w );
+  bool removeFrom ( QWidget * w );
+};
+
 } // namespace Gui
 
 #endif // __ACTION_H__

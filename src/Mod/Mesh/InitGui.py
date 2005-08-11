@@ -33,6 +33,14 @@
 
 class MeshWorkbench ( Workbench ):
 	"Mesh workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading MeshGui module')
+			import MeshGui
+		except:
+			Err('Cannot load MeshGui')
+			raise
 	def Start(self):
 		# load the module
 		try:

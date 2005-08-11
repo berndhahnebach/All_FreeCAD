@@ -45,6 +45,7 @@ BUILT_SOURCES=\
 		moc_Document.cpp \
 		moc_FileDialog.cpp \
 		moc_HelpView.cpp \
+		moc_MainWindow.cpp \
 		moc_NetworkRetriever.cpp \
 		moc_PrefWidgets.cpp \
 		moc_Process.cpp \
@@ -153,6 +154,8 @@ libFreeCADGui_la_SOURCES=\
 		CommandLine.h \
 		Command.cpp \
 		Command.h \
+		CommandBarManager.cpp \
+		CommandBarManager.h \
 		CommandStd.cpp  \
 		CommandWindow.cpp  \
 		CommandTest.cpp \
@@ -212,6 +215,8 @@ libFreeCADGui_la_SOURCES=\
 		HelpView.h \
 		Macro.cpp \
 		Macro.h \
+		MainWindow.cpp \
+		MainWindow.h \
 		MenuManager.cpp \
 		MenuManager.h \
 		NetworkRetriever.cpp \
@@ -247,6 +252,8 @@ libFreeCADGui_la_SOURCES=\
 		StackBar.h \
 		TextEdit.cpp \
 		TextEdit.h \
+		ToolBarManager.cpp \
+		ToolBarManager.h \
 		ToolBox.cpp \
 		ToolBox.h \
 		ToolBoxBar.cpp \
@@ -276,7 +283,15 @@ libFreeCADGui_la_SOURCES=\
 		Widgets.cpp \
 		Widgets.h \
 		Window.cpp \
-		Window.h
+		Window.h \
+		Workbench.cpp \
+		Workbench.h \
+		WorkbenchFactory.cpp \
+		WorkbenchFactory.h \
+		WorkbenchManager.cpp \
+		WorkbenchManager.h \
+		WorkbenchPy.cpp \
+		WorkbenchPy.h
 
 EXTRA_DIST = \
 		Icons/BmpFactoryIcons.cpp \

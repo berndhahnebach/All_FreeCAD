@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qobjectlist.h>
 #endif
 
@@ -352,6 +353,108 @@ RedoAction::RedoAction ( Command* pcCmd,QObject * parent, const char * name, boo
 
 RedoAction::~RedoAction()
 {
+}
+
+// --------------------------------------------------------------------
+
+ViewAction::ViewAction ( QObject * parent, const char * name )
+  :QAction(parent, name)
+{
+}
+
+ViewAction::~ViewAction()
+{
+}
+
+bool ViewAction::addTo ( QWidget * w )
+{
+  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
+  QWidget* widget = qApp->mainWidget();
+  QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
+
+  if ( menu && mw )
+  {
+    menu->insertItem( tr("Tool&bars"), mw->createDockWindowMenu( QMainWindow::OnlyToolBars ) );
+    menu->insertItem( tr("Vie&ws"), mw->createDockWindowMenu( QMainWindow::NoToolBars ) );
+    connect( menu, SIGNAL( aboutToShow()), mw, SLOT( menuAboutToShow() ) );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool ViewAction::removeFrom ( QWidget * w )
+{
+  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
+  QWidget* widget = qApp->mainWidget();
+  QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
+
+  if ( menu && mw )
+  {
+    uint cnt = menu->count();
+    for ( uint i=0; i<cnt; i++ )
+    {
+      int id = menu->idAt( i );
+      if ( menu->text( id ) == tr("Tool&bars") )
+      {
+        menu->removeItem( id );
+      }
+      else if ( menu->text( id ) == tr("Vie&ws") )
+      {
+        menu->removeItem( id );
+      }
+    }
+
+    disconnect( menu, SIGNAL( aboutToShow()), mw, SLOT( menuAboutToShow() ) );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+// --------------------------------------------------------------------
+
+WindowAction::WindowAction ( QObject * parent, const char * name )
+  :QAction(parent, name)
+{
+}
+
+WindowAction::~WindowAction()
+{
+}
+
+bool WindowAction::addTo ( QWidget * w )
+{
+  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
+  if ( menu )
+  {
+    QWidget* mainWindow = qApp->mainWidget();
+    connect( menu, SIGNAL( aboutToShow()), mainWindow, SLOT( onWindowsMenuAboutToShow() ) );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool WindowAction::removeFrom ( QWidget * w )
+{
+  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
+  if ( menu )
+  {
+    QWidget* mainWindow = qApp->mainWidget();
+    disconnect( menu, SIGNAL( aboutToShow()), mainWindow, SLOT( onWindowsMenuAboutToShow() ) );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 #include "moc_Action.cpp"
