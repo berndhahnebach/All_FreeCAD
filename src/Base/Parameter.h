@@ -1,12 +1,3 @@
-/** \file Parameter.h
- *  \brief The base::parameter module
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  here is the basic parameter engine defined
- *  @see Parameter.cpp
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *

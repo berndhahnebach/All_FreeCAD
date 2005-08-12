@@ -38,8 +38,5 @@ ParGrp.SetString("WorkBenchName",    "Import Design")
 ParGrp.SetString("WorkBenchModule",  "ImportWorkbench.py")
 
 # Append the open handler
-FreeCAD.EndingAdd("brp","Import")
-FreeCAD.EndingAdd("brep","Import")
-
 
 

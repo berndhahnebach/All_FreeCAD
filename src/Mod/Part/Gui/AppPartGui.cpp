@@ -93,6 +93,7 @@ void ModuleExport initPartGui() {
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportStep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportBrep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderCurveNet>);
 
 	// instanciating the commands

@@ -50,8 +50,10 @@ ParGrp.SetString("WorkBenchModule",  "PartWorkbench.py")
 
 App.TemplateAdd("Part",PartTemplate())
 
-FreeCAD.EndingAdd("igs","Import")
-FreeCAD.EndingAdd("iges","Import")
-FreeCAD.EndingAdd("step","Import")
-FreeCAD.EndingAdd("stp","Import")
+FreeCAD.EndingAdd("igs","Part")
+FreeCAD.EndingAdd("iges","Part")
+FreeCAD.EndingAdd("step","Part")
+FreeCAD.EndingAdd("stp","Part")
+FreeCAD.EndingAdd("brep","Part")
+FreeCAD.EndingAdd("brp","Part")
 

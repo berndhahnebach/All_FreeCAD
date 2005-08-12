@@ -192,7 +192,7 @@ void Feature::setPropertyInt(long d, const char *Name)
   std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
-    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+    throw Base::Exception("Feature::setPropertyInt() unknown property name");
 
   TDF_Label L = _cFeatureLabel.FindChild(It->second);
 
@@ -227,7 +227,7 @@ void Feature::setPropertyString(const char* s, const char *Name)
   std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
-    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+    throw Base::Exception("Feature::setPropertyString() unknown property name");
 
   TDF_Label L = _cFeatureLabel.FindChild(It->second);
 
@@ -245,7 +245,7 @@ void Feature::setPropertyLink(Feature *pcToLink, const char *Name)
   std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
-    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+    throw Base::Exception("Feature::setPropertyLink() unknown property name");
 
   TDF_Label L = _cFeatureLabel.FindChild(It->second);
 
