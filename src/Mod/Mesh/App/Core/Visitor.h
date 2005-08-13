@@ -24,7 +24,7 @@
 #ifndef VISITOR_H
 #define VISITOR_H
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshFacet;
 class MeshKernel;
@@ -212,7 +212,7 @@ protected:
   MeshKernel &_rclMesh;
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // VISITOR_H 
 

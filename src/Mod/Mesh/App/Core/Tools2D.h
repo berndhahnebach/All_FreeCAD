@@ -35,7 +35,7 @@
 
 #include "Definitions.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 class Vector2D;
 class BoundBox2D;
@@ -374,7 +374,7 @@ inline bool BoundBox2D::operator== (const BoundBox2D& rclBB) const
       (fMaxY == rclBB.fMaxY);
 }
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // TOOLS2D_H
 

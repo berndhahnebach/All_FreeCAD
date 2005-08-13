@@ -44,7 +44,7 @@ namespace Base{
 using Base::Vector3D;
 
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 class MeshFacet;
@@ -267,6 +267,6 @@ protected:
 	MeshKernel& _rclMesh;
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_TOPOALGORITHM_H

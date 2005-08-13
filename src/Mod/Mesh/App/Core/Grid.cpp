@@ -30,7 +30,7 @@
 #include "Algorithm.h"
 #include "Tools.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 MeshGrid::MeshGrid (const MeshKernel &rclM)
 : _pclMesh(&rclM),

@@ -62,7 +62,7 @@
 #define RAD(D)    ((D) * D_PI / 180.0)
 #define DEGREE(R) ((R) * 180.0 / D_PI) 
 
-namespace Mesh {
+namespace MeshCore {
 
 /**
  * Global defined tolerances used to compare points
@@ -87,6 +87,6 @@ public:
   static void  SetMinPointDistance (float fMin);
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_DEFINITIONS_H 

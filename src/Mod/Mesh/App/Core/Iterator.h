@@ -27,7 +27,7 @@
 #include "MeshKernel.h"
 #include "Elements.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 class MeshGeomFacet;
@@ -547,7 +547,7 @@ inline MeshEdgeIterator& MeshEdgeIterator::operator = (const MeshEdgeIterator &r
 #endif
 
 
-} // namespace Mesh
+} // namespace MeshCore
 
 
 #endif // MESH_ITERATOR_H 

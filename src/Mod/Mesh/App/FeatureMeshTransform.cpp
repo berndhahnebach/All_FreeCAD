@@ -38,6 +38,7 @@
 
 
 using namespace Mesh;
+using namespace MeshCore;
 
 void FeatureMeshTransform::initFeature(void)
 {

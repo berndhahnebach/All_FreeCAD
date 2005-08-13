@@ -32,7 +32,7 @@
 #include "Stream.h"
 #include "Swap.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 /** Initializes the stream data. This method should be called before 
  * Open() and after Close() calls.
@@ -87,7 +87,7 @@ bool DataStream::IsFormatError (void)
 }
 
 /** Stream manipulator that reads an id from the current stream. */
-DataStream& Mesh::readSwapOrder (DataStream& rcs)
+DataStream& MeshCore::readSwapOrder (DataStream& rcs)
 {
   unsigned short usOrder;
   rcs >> usOrder;
@@ -96,7 +96,7 @@ DataStream& Mesh::readSwapOrder (DataStream& rcs)
 }
 
 /** Stream manipulator that writes an id to the current stream. */
-DataStream& Mesh::writeSwapOrder (DataStream& rcs)
+DataStream& MeshCore::writeSwapOrder (DataStream& rcs)
 {
   unsigned short usOrder = SwapOrder ();
   rcs << usOrder;

@@ -37,7 +37,7 @@ using Base::Vector3D;
 #define  MESH_CT_GRID_PER_AXIS 20
 
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 class BoundBox3D;
@@ -487,6 +487,6 @@ inline void MeshFacetGrid::AddFacet (const MeshGeomFacet &rclFacet, unsigned lon
 #endif
 }
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_GRID_H

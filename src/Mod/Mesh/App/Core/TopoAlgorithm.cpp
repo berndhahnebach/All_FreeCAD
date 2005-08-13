@@ -35,7 +35,7 @@
 #include "Algorithm.h"
 
 
-using namespace Mesh;
+using namespace MeshCore;
 using namespace Wm3;
 
 MeshTopoAlgorithm::MeshTopoAlgorithm (MeshKernel &rclM)

@@ -28,7 +28,7 @@
 #include "Iterator.h"
 
 
-using namespace Mesh;
+using namespace MeshCore;
 
 MeshFacetTools::MeshFacetTools (const MeshKernel &rclM)
  : _rclMeshBase(rclM),

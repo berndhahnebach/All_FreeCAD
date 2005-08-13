@@ -56,8 +56,12 @@
 
 using namespace MeshGui;
 using Mesh::MeshFeature;
-using Mesh::MeshKernel;
-using Mesh::MeshFacetIterator;
+
+using MeshCore::MeshKernel;
+using MeshCore::MeshFacetIterator;
+using MeshCore::MeshGeomFacet;
+using MeshCore::MeshFacet;
+
 using Base::Vector3D;
        
 ViewProviderInventorMesh::ViewProviderInventorMesh()
@@ -142,11 +146,11 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   Base::Sequencer().start( "Building View node...", cMesh->CountFacets() );
 
   unsigned long j=0;
-  Mesh::MeshFacetIterator cFIt(*cMesh);
+  MeshFacetIterator cFIt(*cMesh);
   for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
   {
-    const Mesh::MeshGeomFacet& rFace = *cFIt;
-    Mesh::MeshFacet aFace = cFIt.GetIndicies();
+    const MeshGeomFacet& rFace = *cFIt;
+    MeshFacet aFace = cFIt.GetIndicies();
 
     for ( int i=0; i<3; i++ )
     {

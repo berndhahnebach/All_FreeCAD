@@ -37,7 +37,7 @@ namespace Base{
 using Base::Vector3D;
 
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshHelpEdge;
 class MeshPoint;
@@ -855,6 +855,6 @@ public:
   { rclElem.ResetFlag(tFlag); return true; }
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_ELEMENTS_H 

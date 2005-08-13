@@ -37,7 +37,7 @@ using Base::Vector3D;
 using Base::Matrix4D;
 
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshGeomFacet;
 class MeshGeomEdge;
@@ -324,6 +324,6 @@ inline bool MeshFacetFunc::IntersectWithPlane (const MeshGeomFacet &rclFacet, co
 }
 
 
-}; // namespace Mesh 
+}; // namespace MeshCore 
 
 #endif  // MESH_ALGORITHM_H 

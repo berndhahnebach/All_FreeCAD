@@ -39,7 +39,7 @@ namespace Base{
 using Base::Vector3D;
 using Base::Matrix4D;
 
-namespace Mesh {
+namespace MeshCore {
 
 // forward declarations
 class MeshFacetIterator;
@@ -393,6 +393,6 @@ inline bool MeshKernel::IsBorder (const MeshEdgeArray::_TIterator pPEdge) const
 #endif
 
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_KERNEL_H 

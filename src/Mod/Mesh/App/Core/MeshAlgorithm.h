@@ -34,7 +34,7 @@ namespace Base{
 }
 using Base::Vector3D;
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 class MeshFacetGrid;
@@ -234,7 +234,7 @@ protected:
 };
 
 
-} // namespace Mesh
+} // namespace MeshCore
 
 
 #endif // MESH_MESHALGORITHM_H 

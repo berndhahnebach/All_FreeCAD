@@ -42,7 +42,7 @@
 
 #include <Base/Sequencer.h>
 
-using namespace Mesh;
+using namespace MeshCore;
 using namespace Wm3;
 
 

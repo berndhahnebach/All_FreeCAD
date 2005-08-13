@@ -38,12 +38,19 @@ class TopoDS_Shape;
 
 #include "Mesh.h"
 
+namespace MeshCore
+{
+class MeshKernel;
+class MeshGeomFacet;
+};
+
+using MeshCore::MeshKernel;
+using MeshCore::MeshGeomFacet;
+
 namespace Mesh
 {
 
 class MeshWithProperty;
-class MeshKernel;
-class MeshGeomFacet;
 
 /** The father of all projection algorithems
  */

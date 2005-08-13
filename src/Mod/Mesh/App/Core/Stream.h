@@ -35,7 +35,7 @@
 # include <vector>
 #endif
 
-namespace Mesh {
+namespace MeshCore {
 
 class   DataStream;
 typedef DataStream *PDataStream;
@@ -215,6 +215,6 @@ public:
   DataStream& Write (const char* pData, int nSize);
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // STREAM_H

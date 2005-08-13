@@ -26,7 +26,7 @@
 
 #include "MeshKernel.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 
@@ -95,6 +95,6 @@ private:
 };
 
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif

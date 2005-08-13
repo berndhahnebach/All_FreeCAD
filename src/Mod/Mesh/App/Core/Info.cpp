@@ -35,7 +35,7 @@
 #include "Evaluation.h"
 #include "Iterator.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 MeshInfo::MeshInfo (MeshKernel &rclM)
 : _rclMesh(rclM)

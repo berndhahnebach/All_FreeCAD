@@ -36,7 +36,7 @@
 #include "Elements.h"
 
 
-using namespace Mesh;
+using namespace MeshCore;
 using namespace Wm3;
 
 bool MeshFacetFunc::IntersectBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB)

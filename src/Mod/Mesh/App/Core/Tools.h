@@ -33,7 +33,7 @@
 #include "MeshKernel.h"
 #include "Algorithm.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 /**
  * Helper class to get distances between point and mesh.
@@ -180,7 +180,7 @@ inline bool MeshSearchNeighbours::TriangleCutsSphere (const MeshFacet &rclF) con
   return fSqrDist < fRSqr;
 }
 
-} // namespace Mesh
+} // namespace MeshCore
 
 
 #endif  // MESH_TOOLS_H

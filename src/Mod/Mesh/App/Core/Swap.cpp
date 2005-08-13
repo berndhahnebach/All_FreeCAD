@@ -25,25 +25,25 @@
 
 #include "Swap.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
-unsigned short Mesh::SwapOrder (void)
+unsigned short MeshCore::SwapOrder (void)
 {
   unsigned short usDummy = 1;
   return *((char*) &usDummy) == 1 ? LOW_ENDIAN : HIGH_ENDIAN;
 }
 
-void Mesh::SwapVar (char&)
+void MeshCore::SwapVar (char&)
 {
   return;
 }
 
-void Mesh::SwapVar (unsigned char&)
+void MeshCore::SwapVar (unsigned char&)
 {
   return;
 }
 
-void Mesh::SwapVar (short& s)
+void MeshCore::SwapVar (short& s)
 {
   short sTmp;
   int i;
@@ -53,7 +53,7 @@ void Mesh::SwapVar (short& s)
   s = sTmp;
 }
 
-void Mesh::SwapVar (unsigned short& s)
+void MeshCore::SwapVar (unsigned short& s)
 {
   short sTmp;
   int i;
@@ -63,7 +63,7 @@ void Mesh::SwapVar (unsigned short& s)
   s = sTmp;
 }
 
-void Mesh::SwapVar (long& l)
+void MeshCore::SwapVar (long& l)
 {
   long lTmp;
   int i;
@@ -73,7 +73,7 @@ void Mesh::SwapVar (long& l)
   l = lTmp;
 }
 
-void Mesh::SwapVar (unsigned long& l)
+void MeshCore::SwapVar (unsigned long& l)
 {
   long lTmp;
   int i;
@@ -83,7 +83,7 @@ void Mesh::SwapVar (unsigned long& l)
   l = lTmp;
 }
 
-void Mesh::SwapVar (float& f)
+void MeshCore::SwapVar (float& f)
 {
   float fTmp;
   int i;
@@ -93,7 +93,7 @@ void Mesh::SwapVar (float& f)
   f = fTmp;
 }
 
-void Mesh::SwapVar (double& d)
+void MeshCore::SwapVar (double& d)
 {
   double dTmp;
   int i;

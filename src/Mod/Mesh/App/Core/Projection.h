@@ -35,7 +35,7 @@ using Base::Vector3D;
 class TopoDS_Edge;
 class TopoDS_Shape;
 
-namespace Mesh
+namespace MeshCore
 {
 
 class MeshFacetGrid;
@@ -80,7 +80,7 @@ private:
   MeshKernel& _rcMesh;
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 
 #endif  // MESH_PROJECTION_H 

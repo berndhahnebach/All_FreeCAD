@@ -32,7 +32,7 @@
  * dependent on the architecture.
  */
 
-namespace Mesh {
+namespace MeshCore {
 
 /** Returns machine type (low endian, high endian ) */
 unsigned short SwapOrder (void);
@@ -46,7 +46,7 @@ void SwapVar (unsigned long&);
 void SwapVar (float&);
 void SwapVar (double&);
 
-} // namespace Mesh
+} // namespace MeshCore
 
 
 #endif // SWAP_H 

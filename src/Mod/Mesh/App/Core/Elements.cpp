@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 #include "Elements.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 unsigned long MeshPointArray::Get (const MeshPoint &rclPoint)
 {

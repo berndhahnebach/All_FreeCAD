@@ -31,7 +31,7 @@ namespace Base{
 }
 using Base::Vector3D;
 
-namespace Mesh {
+namespace MeshCore {
 
 
 /**
@@ -201,6 +201,6 @@ inline void MeshEdgeBuilder::Add (unsigned long ulInd1, unsigned long ulInd2,
   push_back(clObj);
 }
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_HELPERS_H 

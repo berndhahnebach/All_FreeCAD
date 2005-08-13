@@ -39,7 +39,7 @@
 
 #include <Base/Sequencer.h>
 
-using namespace Mesh;
+using namespace MeshCore;
 
 
 struct TMeshFacetInds

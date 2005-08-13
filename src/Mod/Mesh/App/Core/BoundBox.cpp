@@ -34,7 +34,7 @@
 #include "BoundBox.h"
 
 
-using namespace Mesh;
+using namespace MeshCore;
 
 
 BoundBox3D::BoundBox3D (RVector3D rcVector, float fDistance)

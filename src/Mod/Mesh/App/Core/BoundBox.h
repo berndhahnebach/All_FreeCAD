@@ -46,7 +46,7 @@ using Base::Matrix4D;
 // Checks if point K lies on the ray [A,B[
 #define IS_ON_RAY(A,B,K)  (((A) <= (K)) && ((B) > (K)))
 
-namespace Mesh {
+namespace MeshCore {
 
 class BoundBox3D;
 typedef BoundBox3D * PBoundBox3D;
@@ -405,7 +405,7 @@ inline void BoundBox3D::ScaleZ (float f)
   MinZ *= f; MaxZ *= f;
 }
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif  // BOUNDBOX_H 
 

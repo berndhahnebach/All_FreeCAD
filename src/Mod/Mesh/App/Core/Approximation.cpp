@@ -36,7 +36,7 @@
 #endif
 
 using namespace Wm3;
-using namespace Mesh;
+using namespace MeshCore;
 
 
 void MeshPointFit::Convert( const Wm3::Vector3<float>& wm3, Vector3D& pt)

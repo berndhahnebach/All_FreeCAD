@@ -37,11 +37,17 @@ using Base::Vector3D;
 class TopoDS_Edge;
 class TopoDS_Shape;
 
+namespace MeshCore
+{
+class MeshKernel;
+};
+
+using MeshCore::MeshKernel;
+
 namespace Mesh
 {
 
 class MeshWithProperty;
-class MeshKernel;
 
 /** The mesh algorithems container class
  */

@@ -26,7 +26,7 @@
 
 #include "MeshKernel.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 class FileStream;
@@ -78,6 +78,6 @@ protected:
   MeshKernel &_rclMesh; /**< reference to mesh data structure */
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_IO_H 

@@ -38,7 +38,7 @@
 using Base::Vector3D;
 using Base::Matrix4D;
 
-namespace Mesh {
+namespace MeshCore {
 
 
 /**
@@ -485,6 +485,6 @@ private:
   FunctionContainer(){};
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_APPROXIMATION_H

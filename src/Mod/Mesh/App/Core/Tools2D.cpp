@@ -26,7 +26,7 @@
 #include "Definitions.h"
 #include "Tools2D.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 float Vector2D::GetAngle (const Vector2D &rclVect) const
 {

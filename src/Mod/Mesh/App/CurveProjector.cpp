@@ -54,6 +54,7 @@
 #include <GeomAPI_IntCS.hxx>
 
 using namespace Mesh;
+using namespace MeshCore;
 
 
 

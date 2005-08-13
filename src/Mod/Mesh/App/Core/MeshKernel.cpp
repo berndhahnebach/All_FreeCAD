@@ -34,7 +34,7 @@
 #include "MeshKernel.h"
 #include "Iterator.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 MeshKernel::MeshKernel (void)
 : _bValid(true)

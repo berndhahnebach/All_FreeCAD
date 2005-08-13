@@ -32,7 +32,7 @@ using Base::Vector3D;
 using Base::Matrix4D;
 
 
-namespace Mesh {
+namespace MeshCore {
 
 /**
  * Abstract base class for all project methods.
@@ -83,6 +83,6 @@ inline Vector3D ViewProjMatrix::inverse (const Vector2D &rclPt) const
   return Vector3D(_clMtxInv * clPt);
 }
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // VIEW_PROJ_H

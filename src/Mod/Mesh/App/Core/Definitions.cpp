@@ -28,7 +28,7 @@
 
 #include "Definitions.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 float  MeshDefinitions::_fMinPointDistance    =  float(MESH_MIN_PT_DIST);
 float  MeshDefinitions::_fMinPointDistanceP2  =  _fMinPointDistance * _fMinPointDistance;

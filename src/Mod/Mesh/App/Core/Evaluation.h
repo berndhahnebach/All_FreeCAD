@@ -31,7 +31,7 @@
 
 #include "MeshKernel.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 /**
  * The MeshEvaluation class checks the mesh kernel for correctness with respect to a
@@ -257,6 +257,6 @@ private:
   float _fU, _fV, _fW; /**< Expansion in \a u, \a v, and \a w direction of the transformed mesh. */
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_EVALUATION_H

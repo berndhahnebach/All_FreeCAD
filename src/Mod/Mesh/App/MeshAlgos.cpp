@@ -55,6 +55,7 @@
 #include <GeomAPI_IntCS.hxx>
 
 using namespace Mesh;
+using namespace MeshCore;
 
 
 Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)

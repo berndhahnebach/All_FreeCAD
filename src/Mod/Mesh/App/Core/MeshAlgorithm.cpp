@@ -38,7 +38,7 @@
 #include "Algorithm.h"
 #include "Grid.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 bool MeshAlgorithm::IsVertexVisible (const Vector3D &rcVertex, const Vector3D &rcView, const MeshFacetGrid &rclGrid ) const
 {

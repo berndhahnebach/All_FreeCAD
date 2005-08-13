@@ -40,11 +40,15 @@ using Base::Matrix4D;
 #include <App/DataWithProperty.h>
 
 
+namespace MeshCore
+{
+class MeshKernel;
+};
+
+using MeshCore::MeshKernel;
+
 namespace Mesh
 {
-
-class MeshKernel;
-
 
 /** Vertex noamal property bag
  *  This property bag holds normal vectors of the mesh points

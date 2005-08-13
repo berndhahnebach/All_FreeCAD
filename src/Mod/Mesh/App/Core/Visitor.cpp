@@ -28,7 +28,7 @@
 #include "Algorithm.h"
 #include "MeshAlgorithm.h"
 
-using namespace Mesh;
+using namespace MeshCore;
 
 
 unsigned long MeshVisitFacets::VisitNeighbours (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet)

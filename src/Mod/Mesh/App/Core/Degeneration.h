@@ -33,7 +33,7 @@
 #include "Evaluation.h"
 #include "Definitions.h"
 
-namespace Mesh {
+namespace MeshCore {
 
 class MeshKernel;
 class MeshGeomFacet;
@@ -144,6 +144,6 @@ private:
   std::bitset<12> _errMode; /**< \internal */
 };
 
-} // namespace Mesh
+} // namespace MeshCore
 
 #endif // MESH_DEGENERATION_H 

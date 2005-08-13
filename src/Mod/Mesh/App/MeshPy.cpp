@@ -47,6 +47,7 @@ using Base::Console;
 #include <App/Topology.h>
 
 using namespace Mesh;
+using namespace MeshCore;
 
 
 //--------------------------------------------------------------------------

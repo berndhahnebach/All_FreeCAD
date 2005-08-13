@@ -33,7 +33,7 @@
 #include <math.h>
 
 
-using namespace Mesh;
+using namespace MeshCore;
 
 char *upper(char * string) {
     int i;

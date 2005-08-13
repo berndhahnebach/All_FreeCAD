@@ -40,6 +40,7 @@
 #endif
 
 using namespace Mesh;
+using namespace MeshCore;
 
 MeshCurvaturePropertyError::MeshCurvaturePropertyError(const char * sMessage)
   : Base::Exception(sMessage)
