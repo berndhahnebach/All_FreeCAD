@@ -80,7 +80,7 @@
 #include "Workbench.h"
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
-#include "SoFCSelection.h"
+//#include "SoFCSelection.h"
 
 #include "Inventor/Qt/SoQt.h"
 
@@ -1419,8 +1419,8 @@ void ApplicationWindow::runApplication(void)
 
   Console().Log("Init: Starting default Workbench\n");
   mw->activateWorkbench(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str()).c_str() );
-   
-  Gui::SoFCSelection::initClass();
+
+//  Gui::SoFCSelection::initClass();
 
   
   Console().Log("Init: Processing command line files\n");
