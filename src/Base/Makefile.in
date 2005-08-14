@@ -143,6 +143,8 @@ target_alias = @target_alias@
 lib_LTLIBRARIES = libFreeCADBase.la
 
 libFreeCADBase_la_SOURCES = \
+		BoundBox.cpp \
+		BoundBox.h \
 		Console.cpp \
 		Console.h \
 		Documentation.cpp \
@@ -178,8 +180,15 @@ libFreeCADBase_la_SOURCES = \
 		PyTools.h \
 		Sequencer.cpp \
 		Sequencer.h \
+		Stream.cpp \
+		Stream.h \
+		Swap.cpp \
+		Swap.h \
+		Tools2D.cpp \
+		Tools2D.h \
 		Vector3D.cpp \
-		Vector3D.h
+		Vector3D.h \
+		ViewProj.h
 
 
 libFreeCADBase_la_LIBADD = -lpython@fc_py_ver@ -lxerces-c
@@ -196,17 +205,18 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libFreeCADBase_la_DEPENDENCIES =
-am_libFreeCADBase_la_OBJECTS = Console.lo Documentation.lo Doxygen.lo \
-	Exception.lo Factory.lo FileInfo.lo FileTemplate.lo Handle.lo \
-	Interpreter.lo Matrix.lo Observer.lo Parameter.lo \
+am_libFreeCADBase_la_OBJECTS = BoundBox.lo Console.lo Documentation.lo \
+	Doxygen.lo Exception.lo Factory.lo FileInfo.lo FileTemplate.lo \
+	Handle.lo Interpreter.lo Matrix.lo Observer.lo Parameter.lo \
 	ParameterPy.lo PreCompiled.lo PyExport.lo PyExportImp.lo \
-	PyTools.lo Sequencer.lo Vector3D.lo
+	PyTools.lo Sequencer.lo Stream.lo Swap.lo Tools2D.lo \
+	Vector3D.lo
 libFreeCADBase_la_OBJECTS = $(am_libFreeCADBase_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Console.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/BoundBox.Plo ./$(DEPDIR)/Console.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Documentation.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Doxygen.Plo ./$(DEPDIR)/Exception.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Factory.Plo ./$(DEPDIR)/FileInfo.Plo \
@@ -217,7 +227,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PyExport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PyExportImp.Plo ./$(DEPDIR)/PyTools.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Sequencer.Plo ./$(DEPDIR)/Vector3D.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/Sequencer.Plo ./$(DEPDIR)/Stream.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Swap.Plo ./$(DEPDIR)/Tools2D.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Vector3D.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -283,6 +295,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BoundBox.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Console.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Documentation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Doxygen.Plo@am__quote@
@@ -301,6 +314,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyExportImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PyTools.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sequencer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Stream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Swap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Tools2D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vector3D.Plo@am__quote@
 
 distclean-depend:

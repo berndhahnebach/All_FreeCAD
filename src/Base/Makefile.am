@@ -2,6 +2,8 @@
 lib_LTLIBRARIES=libFreeCADBase.la
 
 libFreeCADBase_la_SOURCES=\
+		BoundBox.cpp \
+		BoundBox.h \
 		Console.cpp \
 		Console.h \
 		Documentation.cpp \
@@ -37,8 +39,15 @@ libFreeCADBase_la_SOURCES=\
 		PyTools.h \
 		Sequencer.cpp \
 		Sequencer.h \
+		Stream.cpp \
+		Stream.h \
+		Swap.cpp \
+		Swap.h \
+		Tools2D.cpp \
+		Tools2D.h \
 		Vector3D.cpp \
-		Vector3D.h
+		Vector3D.h \
+		ViewProj.h
 
 libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c
 

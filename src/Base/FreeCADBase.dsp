@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADBase" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADBase - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak" CFG="FreeCADBase - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FreeCADBase - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADBase - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -97,6 +97,14 @@ PostBuild_Cmds=mkdir ..\..\bin	copy Debug\FreeCADBaseD.dll ..\..\bin	mkdir ..\..
 
 # Name "FreeCADBase - Win32 Release"
 # Name "FreeCADBase - Win32 Debug"
+# Begin Source File
+
+SOURCE=.\BoundBox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\BoundBox.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\Console.cpp
@@ -248,11 +256,39 @@ SOURCE=.\Sequencer.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Stream.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Stream.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Swap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Swap.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Tools2D.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Tools2D.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Vector3D.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Vector3D.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProj.h
 # End Source File
 # End Target
 # End Project
