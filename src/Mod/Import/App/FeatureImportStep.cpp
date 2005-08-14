@@ -119,6 +119,7 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
     Base::Sequencer().stop();
   }
   catch(...){
+    Base::Sequencer().halt();
     Base::Console().Error("FeaturePartImportStep::Execute() failed!");
     return 1;
   }

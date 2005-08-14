@@ -79,6 +79,7 @@ Standard_Integer FeaturePartImportBrep::execute(TFunction_Logbook& log)
     Base::Sequencer().stop();
   }
   catch(...){
+    Base::Sequencer().halt();
     Base::Console().Error("FeaturePartImportIges::Execute() failed!");
     return 1;
   }

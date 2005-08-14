@@ -109,8 +109,6 @@ void PointsAlgos::LoadAscii(PointsWithProperty &points, const char *FileName)
   }catch(...){
     Base::Console().Error("Points read failed\n");
     Kernel.clear();
-    Base::Sequencer().stop();
-
   }
 
   Base::Sequencer().stop();

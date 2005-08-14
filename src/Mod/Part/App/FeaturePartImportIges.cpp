@@ -73,10 +73,7 @@ Standard_Integer FeaturePartImportIges::execute(TFunction_Logbook& log)
 
       // read iges-file
     if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
-    {
-      Base::Sequencer().halt();
       throw Base::Exception("IGES read failed (load file)");
-    }
   
     // check iges-file (memory)
     //if (!aReader.Check(Standard_True))
@@ -91,6 +88,7 @@ Standard_Integer FeaturePartImportIges::execute(TFunction_Logbook& log)
     Base::Sequencer().stop();
   }
   catch(...){
+    Base::Sequencer().halt();
     Base::Console().Error("FeaturePartImportIges::Execute() failed!");
     return 1;
   }
