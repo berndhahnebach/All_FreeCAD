@@ -31,6 +31,7 @@ class TopoDS_Shape;
 class TopoDS_Face;
 class SoSeparator;
 class SbVec3f;
+class SoTransform;
 
 namespace Gui {
   class View3DInventorViewer;
