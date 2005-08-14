@@ -45,7 +45,7 @@ class ViewProviderInventor;
 /** The Inventor viewer
  *  
  */
-class View3DInventorViewer: public SoQtViewer
+class GuiExport View3DInventorViewer: public SoQtViewer
 {
 public:
   View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true);
@@ -56,6 +56,7 @@ public:
   /// remove a ViewProvider
   void removeViewProvider(ViewProviderInventor*);
     
+  bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
 
 protected:
   static void sFinishSelectionCallback(void *,SoSelection *);
@@ -72,7 +73,6 @@ protected:
   virtual SbBool processSoEvent(const SoEvent * const ev);
 
   
-bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
 
   void reorientCamera(const SbRotation & rotation);
   void pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);

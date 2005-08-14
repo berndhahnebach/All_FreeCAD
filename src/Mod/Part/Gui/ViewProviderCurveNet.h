@@ -32,6 +32,11 @@ class TopoDS_Face;
 class SoSeparator;
 class SbVec3f;
 
+namespace Gui {
+  class View3DInventorViewer;
+  class SoFCSelection;
+}
+
 namespace PartGui {
 
 
@@ -53,20 +58,26 @@ public:
   /// Update the Part representation
   virtual void update(const ChangeType&){}
 
+  virtual void setEdit(void);
+  virtual void unsetEdit(void);
+
+  virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
 
 protected:
+  struct Node {
+    Gui::SoFCSelection  *pcHighlight;
+    SoTransform    *pcTransform;
+  };
+
+  std::list<Node> NodeList;
+
+  bool bInEdit;
+
+  /// root of the edge and vertex points
+  SoSeparator *EdgeRoot, *VertexRoot;
+
   Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
   Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
-
-  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
-
-  // setings stuff
-  FCParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
-
 
 };
 

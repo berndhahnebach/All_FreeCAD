@@ -48,6 +48,7 @@
 # include <Inventor/nodes/SoSelection.h>
 # include <Inventor/actions/SoBoxHighlightRenderAction.h>
 # include <Inventor/events/SoEvent.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
 #include "View3DInventorViewer.h"
@@ -509,10 +510,14 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     case SoMouseButtonEvent::BUTTON4:
       if (press) 
         View3DInventorViewer::zoom(getCamera(), 0.05f);
+
+      processed = true;
       break;
     case SoMouseButtonEvent::BUTTON5:
       if (press) 
         View3DInventorViewer::zoom(getCamera(), -0.05f);
+
+      processed = true;
       break;
     default:
       break;
@@ -552,8 +557,13 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     }
   }
 
-
-
+  // give the viewprovider the change to handle the event
+  if(!processed)
+  {
+    std::set<ViewProviderInventor*>::iterator It;
+    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
+      processed = (*It)->handleEvent(ev,*this);
+  }
 
   return processed || inherited::processSoEvent(ev);
 }

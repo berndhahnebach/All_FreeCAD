@@ -63,8 +63,13 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <Gui/View3DInventorViewer.h>
+#include <Gui/SoFCSelection.h>
 #include <App/Application.h>
-# include <Inventor/nodes/SoSphere.h>
+#include <Inventor/nodes/SoSphere.h>
+#include <Inventor/events/SoEvent.h>
+#include <Inventor/events/SoMouseButtonEvent.h>
+
 
 #include "ViewProviderCurveNet.h"
 
@@ -86,6 +91,7 @@ using namespace PartGui;
 
        
 ViewProviderCurveNet::ViewProviderCurveNet()
+:bInEdit(false)
 {
   /*
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
@@ -112,19 +118,124 @@ void ViewProviderCurveNet::attache(App::Feature *pcFeat)
   if ( pcFeature->getStatus() ==  App::Feature::Error )
     return; // feature is invalid
 
-  TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
+//  TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
 
+  /*
   try{
     computeEdges   (pcRoot,cShape);
     computeVertices(pcRoot,cShape);
   } catch (...){
     Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
   }
+*/
+
+  // setup the root for the edges
+  EdgeRoot = new SoSeparator();
+  pcRoot->addChild(EdgeRoot);
+  SoDrawStyle *pcWireStyle = new SoDrawStyle();
+  pcWireStyle->style = SoDrawStyle::LINES;
+  pcWireStyle->lineWidth = fLineSize;
+  EdgeRoot->addChild(pcWireStyle);  
+  EdgeRoot->addChild(pcLineMaterial);  
+
+
+  // setup the root for the vertexes
+  VertexRoot = new SoSeparator();
+  pcRoot->addChild(VertexRoot);
+  VertexRoot->addChild(pcPointMaterial);
+  SoComplexity *copl = new SoComplexity();
+  copl->value = (float)0.2;
+  VertexRoot->addChild(copl);
+
+
+
 }
 
 
 
 // **********************************************************************************
+
+
+void ViewProviderCurveNet::setEdit(void)
+{
+  bInEdit = true;
+  //getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) )
+
+}
+
+void ViewProviderCurveNet::unsetEdit(void)
+{
+  bInEdit = false;
+
+}
+
+bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInventorViewer &Viewer)
+{
+  SbVec3f point, norm;
+
+  // get the position of the mouse
+  const SbVec2s pos(ev->getPosition());
+
+  Base::Console().Log("ViewProviderCurveNet::handleEvent()\n");
+
+
+    // switching the mouse modes
+  if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+
+    const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
+    const int button = event->getButton();
+    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
+    // which button pressed?
+    switch (button) {
+    case SoMouseButtonEvent::BUTTON1:
+      if(press)
+      {
+        Base::Console().Log("ViewProviderCurveNet::handleEvent() press left\n");
+
+        bool bIsNode =  false;
+        for(std::list<Node>::iterator It = NodeList.begin();It != NodeList.end(); It++)
+          if(It->pcHighlight->isHighlighted)
+          {
+            bIsNode = true;
+            break;
+          }
+
+          
+        if(Viewer.pickPoint(pos,point,norm))
+        {
+          Node n;
+          Base::Console().Log("Picked(%f,%f,%f)\n",point[0],point[1],point[2]);
+
+          SoSeparator *TransRoot = new SoSeparator();
+          n.pcTransform          = new SoTransform();
+          TransRoot->addChild(n.pcTransform);
+          n.pcTransform->translation.setValue(point);
+          n.pcHighlight          = new Gui::SoFCSelection();
+          n.pcHighlight->color.setValue((float)0.2,(float)0.5,(float)0.2);
+          SoSphere * sphere      = new SoSphere;
+          sphere->radius = (float)fPointSize;
+          n.pcHighlight->addChild(sphere);
+          TransRoot->addChild(n.pcHighlight);
+          VertexRoot->addChild(TransRoot);
+          
+          NodeList.push_back(n);
+          
+        }
+
+        return true;
+      }
+      break;
+    }
+
+  }
+
+  return false;
+}
+
+
+
+
 
 Standard_Boolean ViewProviderCurveNet::computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape)
 {

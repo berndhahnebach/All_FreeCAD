@@ -63,11 +63,12 @@ FeaturePartCurveNet::FeaturePartCurveNet()
 
 void FeaturePartCurveNet::initFeature(void)
 {
-	addProperty("String","FileName");
+//	addProperty("String","FileName");
 }
 
 int FeaturePartCurveNet::execute(TFunction_Logbook& log)
 {
+  /*
   try{
 
     std::string FileName = getPropertyString("FileName");
@@ -87,6 +88,8 @@ int FeaturePartCurveNet::execute(TFunction_Logbook& log)
     Base::Console().Error("FeaturePartImportIges::Execute() failed!");
     return 1;
   }
+*/
+//  setShape(TopoDS_Shape());
 
   return 0;
 }

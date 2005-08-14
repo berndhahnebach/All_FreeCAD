@@ -80,7 +80,9 @@ public:
 
 	/** @name editing interface 
     * this methodes handling the edition of a 
-    * viewprovider. Better the undelaing data.
+    * viewprovider. Better the underlaing data.
+    * This means also to handle Events of the viewer
+    * in a special way.
     */
 	//@{
   /** set the ViewProvider in edit mode
@@ -89,13 +91,15 @@ public:
     * @param bOn true when switch on, false when switch of
     * @ret   false if the provider whants not go edit, or can not
     */
-  virtual bool setEdit(bool bOn){bOn;return false;}
+  virtual void setEdit(void){};
+  virtual void unsetEdit(void){};
+
   /** event handlin if the feature is in edit mode
     * The Viewer will cast all left and right mouse 
     * events to that methode. If return true it will
     * also handled by the viewer (selection & context menue)
     */
-  virtual bool handleEvent(const SoEvent * const ev){return true;}
+  virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
 
   //@}
 
