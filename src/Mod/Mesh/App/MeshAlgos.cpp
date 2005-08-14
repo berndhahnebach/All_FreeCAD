@@ -35,8 +35,6 @@
 #include "MeshCurvature.h"
 
 #include "Core/MeshIO.h"
-#include "Core/Stream.h"
-#include "Core/Stream.h"
 #include "Core/MeshKernel.h"
 #include "Core/Iterator.h"
 #include "Core/Algorithm.h"

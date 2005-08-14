@@ -40,7 +40,6 @@ using Base::Console;
 #include "MeshAlgos.h"
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
-#include "Core/Stream.h"
 #include "Core/Info.h"
 #include "Core/Evaluation.h"
 #include "Core/Iterator.h"

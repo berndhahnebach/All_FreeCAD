@@ -30,7 +30,10 @@
 
 #include "MeshKernel.h"
 #include <Base/Vector3D.h>
+#include <Base/BoundBox.h>
+
 using Base::Vector3D;
+using Base::BoundBox3D;
 
 #define  MESH_CT_GRID          256     // Default value for number of elements per grid
 #define  MESH_MAX_GRIDS        100000  // Default value for maximum number of grids
@@ -40,7 +43,6 @@ using Base::Vector3D;
 namespace MeshCore {
 
 class MeshKernel;
-class BoundBox3D;
 class MeshGeomFacet;
 class MeshGrid;
 

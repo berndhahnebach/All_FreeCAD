@@ -28,16 +28,19 @@
 # include <assert.h>
 #endif
 
-#include "BoundBox.h"
 #include "Elements.h"
 #include "Helpers.h"
+
+#include <Base/BoundBox.h>
 
 namespace Base{
   class Vector3D;
   class Matrix4D;
+  class DataStream;
 }
 using Base::Vector3D;
 using Base::Matrix4D;
+using Base::DataStream;
 
 namespace MeshCore {
 
@@ -46,11 +49,12 @@ class MeshFacetIterator;
 class MeshEdgeIterator;
 class MeshPointIterator;
 class MeshGeomFacet;
-class DataStream;
 class MeshFacet;
 class MeshHelpEdge;
 class MeshFacetFunc;
 class MeshSTL;
+class MeshFacetVisitor;
+class MeshPointVisitor;
 
 #define Use_EdgeList
 
@@ -124,6 +128,7 @@ public:
    * called occassionally only.
    */
   inline MeshGeomFacet GetFacet (unsigned long ulIndex) const;
+  inline MeshGeomFacet GetFacet (const MeshFacet &rclFacet) const;
 
   /** Returns the point indices of the given facet index. */
   inline void GetFacetPoints ( unsigned long ulFaIndex, unsigned long &rclP0, 
@@ -153,10 +158,107 @@ public:
   std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
   //@}
 
+  /** @name Evaluation */
+  //@{
+  /** Calculates the surface area of the mesh object. */
+  float GetSurface() const;
+  /** Calculates the volume of the mesh object. Therefore the mesh must be a solid, if not 0
+   * is returned.
+   */
+  float GetVolume () const;
+  /** Checks whether the mesh has open edges. */
+  bool HasOpenEdges() const;
+  /** Checks whether the mesh has non.manifold edges. An edge is regarded as non-manifolds if it
+   * shares more than two facets.
+   */
+  bool HasNonManifolds() const;
+  /** Checks whether the mesh intersects itself. */
+  bool HasSelfIntersections() const;
+  //@}
+
   /** Adds a single facet to the data structure. */
   MeshKernel& operator += (const MeshGeomFacet &rclSFacet);
   /** Adds an array of facet to the data structure. */
   MeshKernel& operator += (const std::vector<MeshGeomFacet> &rclVAry);
+
+  /** @name Facet visitors
+   * The MeshKernel class provides different methods to visit "topologic connected" facets 
+   * to a given start facet. Two facets are regarded as "topologic connected" if they share 
+   * a common edge or a common point.
+   * All methods expect a MeshFacetVisitor as argument that can decide to continue or to stop. 
+   * If there is no topologic neighbour facet any more being not marked as "VISIT" the algorithm
+   * stops anyway.
+   * @see MeshFacetVisitor, MeshWrongOrientation, MeshHarmonizer, MeshSearchNeighbourFacetsVisitor
+   * and MeshTopFacetVisitor.
+   */
+  //@{
+  /**
+   * This method visits all neighbour facets, i.e facets that share a common edge 
+   * starting from the facet associated to index \a ulStartFacet. All facets having set the VISIT 
+   * flag are ignored. Therefore the user have to set or unset this flag if needed.
+   * All facets that get visited during this algorithm are marked as VISIT and the Visit() method
+   * of the given MeshFacetVisitor gets invoked. 
+   * If there are no unvisited neighbours any more the algorithms returns immediately and returns 
+   * the number of visited facets.
+   * \note For the start facet \a ulStartFacet MeshFacetVisitor::Visit() does not get invoked though
+   * the facet gets marked as VISIT.
+   */
+  unsigned long VisitNeighbourFacets (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
+  /**
+   * Does basically the same as the method above unless the facets that share just a common point
+   * are regared as neighbours.
+   */
+  unsigned long VisitNeighbourFacetsOverCorners (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
+  //@}
+
+  /** @name Point visitors
+   * The MeshKernel class provides a method to visit neighbour points to a given start point.
+   * Two points are regarded as neighbours if they share an edge.
+   * The method expects a MeshPointVisitor as argument that can decide to continue or to stop. 
+   * If there is no topologic neighbour point any more being not marked as "VISIT" the algorithm
+   * stops anyway.
+   */
+  //@{
+  /**
+   * This method visits all neighbour points starting from the point associated to index \a ulStartPoint. 
+   * All points having set the VISIT flag are ignored. Therefore the user have to set or unset this flag 
+   * if needed before the algorithm starts.
+   * All points that get visited during this algorithm are marked as VISIT and the Visit() method
+   * of the given MeshPointVisitor gets invoked. 
+   * If there are no unvisited neighbours any more the algorithms returns immediately and returns 
+   * the number of visited points.
+   * \note For the start facet \a ulStartPoint MeshPointVisitor::Visit() does not get invoked though
+   * the point gets marked as VISIT.
+   */
+  unsigned long VisitNeighbourPoints (MeshPointVisitor &rclPVisitor, unsigned long ulStartPoint); 
+  //@}
+
+  /** @name Iterators 
+   * The iterator methods are provided for convenience. They return an iterator object that
+   * points to the first element in the appropriate list.
+   * \code
+   * MeshKernel mesh = ...
+   * // iterate over all facets
+   * for ( MeshFacetIterator it = mesh.FacetIterator(); it.More(); it.Next() )
+   * ...
+   * \endcode
+   * An iterator can also be used in the following way
+   * \code
+   * MeshKernel mesh = ...
+   * // iterate over all facets
+   * MeshFacetIterator it(mesh);
+   * for (  it.Init(); it.More(); it.Next() )
+   * ...
+   * \endcode
+   */
+  //@{
+  /** Returns an iterator object to go over all facets. */
+  MeshFacetIterator FacetIterator() const;
+  /** Returns an iterator object to go over all points. */
+  MeshPointIterator PointIterator() const;
+  /** Returns an iterator object to go over all edges. */
+  MeshEdgeIterator  EdgeIterator () const;
+  //@}
 
   /** @name Modification */
   //@{
@@ -269,16 +371,11 @@ protected:
   friend class MeshFastFacetIterator;
   friend class MeshInventor;
   friend class MeshSTL;
-  friend class MeshFacetFunc;
   friend class MeshRefPointToFacets;
   friend class MeshRefFacetToFacets;
   friend class MeshRefPointToPoints;
-  friend class MeshFacetTools;
   friend class MeshSearchNeighbours;
   friend class MeshAlgorithm;
-  friend class MeshSearchNeighbourFacetsVisitor;
-  friend class MeshVisitFacets;
-  friend class MeshVisitPoints;
   friend class MeshTopoAlgorithm;
   friend class MeshInfo;
   friend class MeshEvalTopology;
@@ -342,6 +439,22 @@ inline MeshGeomFacet MeshKernel::GetFacet (unsigned long ulIndex) const
   clFacet._ucFlag       = pclF->_ucFlag;
   clFacet.CalcNormal();
   return clFacet;
+}
+
+inline MeshGeomFacet MeshKernel::GetFacet (const MeshFacet &rclFacet) const
+{
+  assert(rclFacet._aulPoints[0] < _aclPointArray.size());
+  assert(rclFacet._aulPoints[1] < _aclPointArray.size());
+  assert(rclFacet._aulPoints[2] < _aclPointArray.size());
+
+  MeshGeomFacet  clFacet;
+  clFacet._aclPoints[0] = _aclPointArray[rclFacet._aulPoints[0]];
+  clFacet._aclPoints[1] = _aclPointArray[rclFacet._aulPoints[1]];
+  clFacet._aclPoints[2] = _aclPointArray[rclFacet._aulPoints[2]];
+  clFacet._ulProp       = rclFacet._ulProp;
+  clFacet._ucFlag       = rclFacet._ucFlag;
+  clFacet.CalcNormal();
+  return  clFacet;
 }
 
 inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long &rulNIdx0, unsigned long &rulNIdx1, unsigned long &rulNIdx2) const 

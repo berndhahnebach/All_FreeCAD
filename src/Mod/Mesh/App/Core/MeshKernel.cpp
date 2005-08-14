@@ -29,10 +29,14 @@
 #endif
 
 #include <Base/Sequencer.h>
+#include <Base/Stream.h>
 
 #include "Helpers.h"
 #include "MeshKernel.h"
 #include "Iterator.h"
+#include "Evaluation.h"
+
+using Base::DataStream;
 
 using namespace MeshCore;
 
@@ -1008,4 +1012,79 @@ void MeshKernel::RebuildNeighbours (void)
 //    else
 //      assert(false);
   }
+}
+
+// Evaluation
+float MeshKernel::GetSurface() const
+{
+  float fSurface = 0.0;
+  MeshFacetIterator cIter(*this);
+  for (cIter.Init(); cIter.More(); cIter.Next())
+  {
+    fSurface += cIter->Area();
+  }
+
+  return fSurface;
+}
+
+float MeshKernel::GetVolume() const
+{
+  MeshEvalSolid cSolid(const_cast<MeshKernel&>(*this));
+  if ( cSolid.Validate(false) != MeshEvaluation::Valid )
+    return 0.0f; // no solid
+
+  float fVolume = 0.0;
+  MeshFacetIterator cIter(*this);
+  Vector3D p1,p2,p3;
+  for (cIter.Init(); cIter.More(); cIter.Next())
+  {
+    const MeshGeomFacet& rclF = *cIter;
+    p1 = rclF._aclPoints[0];
+    p2 = rclF._aclPoints[1];
+    p3 = rclF._aclPoints[2];
+
+    fVolume += (-p3.x*p2.y*p1.z + p2.x*p3.y*p1.z + p3.x*p1.y*p2.z - p1.x*p3.y*p2.z - p2.x*p1.y*p3.z + p1.x*p2.y*p3.z);
+  }
+
+  fVolume /= 6.0;
+  fVolume = fabs(fVolume);
+
+  return fVolume;
+}
+
+bool MeshKernel::HasOpenEdges() const
+{
+  MeshEvalSolid eval(const_cast<MeshKernel&>(*this));
+  return eval.Validate() != MeshEvaluation::Valid;
+}
+
+bool MeshKernel::HasNonManifolds() const
+{
+  MeshEvalTopology eval(const_cast<MeshKernel&>(*this));
+  return eval.Validate() != MeshEvaluation::Valid;
+}
+
+bool MeshKernel::HasSelfIntersections() const
+{
+  MeshEvalSelfIntersection eval(const_cast<MeshKernel&>(*this));
+  return eval.Validate() != MeshEvaluation::Valid;
+}
+
+// Iterators
+MeshFacetIterator MeshKernel::FacetIterator() const
+{
+  MeshFacetIterator it(*this);
+  it.Begin(); return it;
+}
+
+MeshPointIterator MeshKernel::PointIterator() const
+{
+  MeshPointIterator it(*this);
+  it.Begin(); return it;
+}
+
+MeshEdgeIterator MeshKernel::EdgeIterator() const
+{
+  MeshEdgeIterator it(*this);
+  it.Begin(); return it;
 }

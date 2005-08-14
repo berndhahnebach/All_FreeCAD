@@ -116,14 +116,6 @@ SOURCE=.\Core\Approximation.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\BoundBox.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\BoundBox.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\Definitions.cpp
 # End Source File
 # Begin Source File
@@ -180,14 +172,6 @@ SOURCE=.\Core\Iterator.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\MeshAlgorithm.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\MeshAlgorithm.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\MeshIO.cpp
 # End Source File
 # Begin Source File
@@ -212,22 +196,6 @@ SOURCE=.\Core\Projection.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\Stream.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Stream.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Swap.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Swap.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\Tools.cpp
 # End Source File
 # Begin Source File
@@ -236,23 +204,11 @@ SOURCE=.\Core\Tools.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Core\Tools2D.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\Tools2D.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Core\TopoAlgorithm.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Core\TopoAlgorithm.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Core\ViewProj.h
 # End Source File
 # Begin Source File
 

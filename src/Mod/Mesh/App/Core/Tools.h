@@ -36,47 +36,6 @@
 namespace MeshCore {
 
 /**
- * Helper class to get distances between point and mesh.
- */
-class MeshFacetTools
-{
-public:
-  MeshFacetTools (const MeshKernel &rclM);
-  virtual ~MeshFacetTools () {}
-  /** Returns true if the distance from the \a rclPt to the facet \a ulFacetIdx is less than \a fMaxDistance.
-   * If this restriction is met \a rfDistance is set to the actual distance, otherwise false is returned.
-   */
-  inline bool Distance (const Vector3D &rclPt, unsigned long ulFacetIdx, float fMaxDistance, float &rfDistance) const;
-
-protected:
-  const MeshKernel      &_rclMeshBase; /**< The mesh kernel. */
-  const MeshFacetArray  &_rclFAry; /**< The facet array. */
-  const MeshPointArray  &_rclPAry; /**< The point array. */
-
-private:
-  MeshFacetTools (const MeshFacetTools&);
-  void operator = (const MeshFacetTools&);
-};
-
-bool MeshFacetTools::Distance (const Vector3D &rclPt, unsigned long ulFacetIdx, float fMaxDistance, float &rfDistance) const
-{
-  const unsigned long *pulIdx = _rclFAry[ulFacetIdx]._aulPoints;
-
-  BoundBox3D clBB;
-  clBB &= _rclPAry[*(pulIdx++)];
-  clBB &= _rclPAry[*(pulIdx++)];
-  clBB &= _rclPAry[*pulIdx];
-  clBB.Enlarge(fMaxDistance);
-
-  if (clBB.IsInBox(rclPt) == false)
-    return false;
-
-  rfDistance = MeshFacetFunc::DistanceToPoint(_rclMeshBase.GetFacet(ulFacetIdx), rclPt);
-
-  return rfDistance < fMaxDistance;
-}
-
-/**
  * The MeshSearchNeighbours class provides methods to get all points
  * in the neighbourhood of a given facet.
  */

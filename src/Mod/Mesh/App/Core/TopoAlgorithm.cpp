@@ -31,7 +31,6 @@
 #include "TopoAlgorithm.h"
 #include "Iterator.h"
 #include "MeshKernel.h"
-#include "MeshAlgorithm.h"
 #include "Algorithm.h"
 
 
@@ -802,7 +801,7 @@ bool MeshTopoAlgorithm::TriangulatePolygon(const std::vector<unsigned long>& rau
     clFacet._aclPoints[2] = _rclMesh._aclPointArray[aulPolygon[i+2]];
     clFacet.CalcNormal();
 
-    if (MeshFacetFunc::Area(clFacet) < FLOAT_EPS)
+    if (clFacet.Area() < FLOAT_EPS)
     {
       return false; // degenerated facet
     }
@@ -857,7 +856,7 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
     if ((_rclMesh.GetNormal(_rclMesh._aclFacetArray[ulStartFacet]) * clDir) < 0.0f)
       _rclMesh._aclFacetArray[ulStartFacet].FlipNormal();
 
-    ulVisited += MeshVisitFacets(_rclMesh).VisitNeighbours(clHarmonizer, ulStartFacet);
+    ulVisited += _rclMesh.VisitNeighbourFacets(clHarmonizer, ulStartFacet);
     // nach noch freien Facets (auf Inseln) suchen
     clFIter = std::find_if(_rclMesh._aclFacetArray.begin(),
                         _rclMesh._aclFacetArray.end(),
@@ -1031,7 +1030,6 @@ void MeshComponents::SearchForComponents(TMode tMode, std::vector<std::vector<un
 {
   // reset flag
   MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
-  MeshVisitFacets clVisit(_rclMesh);
 
   // all facets
   std::vector<unsigned long> aulAllFacets(_rclMesh.CountFacets());
@@ -1047,9 +1045,9 @@ void MeshComponents::SearchForComponents(TMode tMode, std::vector<std::vector<un
 
     // collect all facets of a component
     if (tMode == OverEdge)
-      clVisit.VisitNeighbours(clFVisitor, aulAllFacets.front());
+      _rclMesh.VisitNeighbourFacets(clFVisitor, aulAllFacets.front());
     else if (tMode == OverPoint)
-      clVisit.VisitNeighboursOverCorners(clFVisitor, aulAllFacets.front());
+      _rclMesh.VisitNeighbourFacetsOverCorners(clFVisitor, aulAllFacets.front());
 
     // get also start facet
     aclComponent.push_back(aulAllFacets.front());

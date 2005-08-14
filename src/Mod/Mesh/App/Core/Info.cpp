@@ -32,7 +32,6 @@
 
 #include "Info.h"
 #include "Algorithm.h"
-#include "Evaluation.h"
 #include "Iterator.h"
 
 using namespace MeshCore;
@@ -40,44 +39,6 @@ using namespace MeshCore;
 MeshInfo::MeshInfo (MeshKernel &rclM)
 : _rclMesh(rclM)
 {
-}
-
-float MeshInfo::GetSurface() const
-{
-  float fSurface = 0.0;
-  MeshFacetIterator cIter(_rclMesh);
-  for (cIter.Init(); cIter.More(); cIter.Next())
-  {
-    const MeshGeomFacet& rclF = *cIter;
-    fSurface += MeshFacetFunc::Area(rclF);
-  }
-
-  return fSurface;
-}
-
-float MeshInfo::GetVolume() const
-{
-  MeshEvalSolid cSolid(_rclMesh);
-  if ( cSolid.Validate(false) != MeshEvaluation::Valid )
-    return 0.0f; // no solid
-
-  float fVolume = 0.0;
-  MeshFacetIterator cIter(_rclMesh);
-  Vector3D p1,p2,p3;
-  for (cIter.Init(); cIter.More(); cIter.Next())
-  {
-    const MeshGeomFacet& rclF = *cIter;
-    p1 = rclF._aclPoints[0];
-    p2 = rclF._aclPoints[1];
-    p3 = rclF._aclPoints[2];
-
-    fVolume += (-p3.x*p2.y*p1.z + p2.x*p3.y*p1.z + p3.x*p1.y*p2.z - p1.x*p3.y*p2.z - p2.x*p1.y*p3.z + p1.x*p2.y*p3.z);
-  }
-
-  fVolume /= 6.0;
-  fVolume = fabs(fVolume);
-
-  return fVolume;
 }
 
 std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const

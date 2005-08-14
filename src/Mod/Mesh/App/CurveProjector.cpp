@@ -36,7 +36,6 @@
 #include "CurveProjector.h"
 
 #include "Core/MeshIO.h"
-#include "Core/Stream.h"
 #include "Core/MeshKernel.h"
 #include "Core/Iterator.h"
 #include "Core/Algorithm.h"
@@ -225,7 +224,7 @@ bool CurveProjectorShape::findStartPoint(const MeshKernel &MeshK,const Vector3D 
   for(It.Init();It.More();It.Next())
   {
     // try to project (with angle) to the face
-    if(MeshFacetFunc::Foraminate (*It, Pnt, It->GetNormal(), TempResultPoint) )
+    if(It->Foraminate (Pnt, It->GetNormal(), TempResultPoint) )
     {
       // distance to the projected point
       float Dist = (Pnt-TempResultPoint).Length();
@@ -328,7 +327,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
     for(It.Init();It.More();It.Next())
     {
       // try to project (with angle) to the face
-      if(MeshFacetFunc::IntersectWithLine (*It, Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), TempResultPoint) )
+      if(It->IntersectWithLine (Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), TempResultPoint) )
       {
         FaceProjctMap[It.Position()].push_back(TempResultPoint);
         fprintf(file, "%.4f %.4f %.4f\n", TempResultPoint.x, TempResultPoint.y, TempResultPoint.z);
@@ -537,7 +536,7 @@ bool CurveProjectorSimple::findStartPoint(const MeshKernel &MeshK,const Vector3D
   for(It.Init();It.More();It.Next())
   {
     // try to project (with angle) to the face
-    if(MeshFacetFunc::Foraminate (*It, Pnt, It->GetNormal(), TempResultPoint) )
+    if(It->Foraminate (Pnt, It->GetNormal(), TempResultPoint) )
     {
       // distance to the projected point
       float Dist = (Pnt-TempResultPoint).Length();
@@ -620,7 +619,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
     for(It.Init();It.More();It.Next())
     {
       // try to project (with angle) to the face
-      if(MeshFacetFunc::IntersectWithLine (*It, Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), cResultPoint) )
+      if(It->IntersectWithLine (Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), cResultPoint) )
       {
         if(Base::Distance(LinePoint,cResultPoint) < 0.5)
           ResultNormal += It->GetNormal();

@@ -26,10 +26,15 @@
 
 #include "MeshKernel.h"
 
+namespace Base {
+  class FileStream;
+}
+
+using Base::FileStream;
+
 namespace MeshCore {
 
 class MeshKernel;
-class FileStream;
 
 /**
  * The MeshSTL class is able to read or write mesh object in STL format.

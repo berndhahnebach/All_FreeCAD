@@ -52,46 +52,6 @@ public:
 };
 
 /**
- * The MeshVisitFacets class provides different methods to visit "topologic connected" facets 
- * to a given start facet.
- * Two facets are regarded as "topologic connected" if they share a common edge or a common 
- * point.
- * All methods expect a MeshFacetVisitor as argument that can decide to continue or to stop. 
- * If there is no topologic neighbour facet any more being not marked as "VISIT" the algorithm
- * stops anyway.
- */
-class AppMeshExport MeshVisitFacets
-{
-public:
-  /// Construction 
-  MeshVisitFacets (MeshKernel &rclM) : _rclMesh(rclM) { }
-  /// Denstruction 
-  virtual ~MeshVisitFacets(void) { }
-  /**
-   * This method visits all neighbour facets, i.e facets that share a common edge 
-   * starting from the facet associated to index \a ulStartFacet. All facets having set the VISIT 
-   * flag are ignored. Therefore the user have to set or unset this flag if needed.
-   * All facets that get visited during this algorithm are marked as VISIT and the Visit() method
-   * of the given MeshFacetVisitor gets invoked. 
-   * If there are no unvisited neighbours any more the algorithms returns immediately and returns 
-   * the number of visited facets.
-   * \note For the start facet \a ulStartFacet MeshFacetVisitor::Visit() does not get invoked though
-   * the facet gets marked as VISIT.
-   */
-  virtual unsigned long VisitNeighbours (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
-  /**
-   * Does basically the same as the method above unless the facets that share just a common point
-   * are regared as neighbours.
-   */
-  virtual unsigned long VisitNeighboursOverCorners (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
-  /// Not yet implemented.
-  virtual unsigned long VisitTopologicalNeighbours (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
-
-protected:
-  MeshKernel &_rclMesh; /**< The mesh kernel. */
-};
-
-/**
  * Special mesh visitor that searches for facets within a given search radius.
  */
 class AppMeshExport MeshSearchNeighbourFacetsVisitor : public MeshFacetVisitor
@@ -123,11 +83,9 @@ inline bool MeshSearchNeighbourFacetsVisitor::Visit (MeshFacet &rclFacet, const 
     _bFacetsFoundInCurrentLevel = false;
   }
 
-  MeshPointArray &rclPtAry = _rclMeshBase._aclPointArray;
-
   for (int i = 0; i < 3; i++)
   {
-    if ( Base::Distance(_clCenter, rclPtAry[rclFacet._aulPoints[i]]) < _fRadius)
+    if ( Base::Distance(_clCenter, _rclMeshBase.GetPoint(rclFacet._aulPoints[i])) < _fRadius)
     {
       _vecFacets.push_back(ulFInd);
       _bFacetsFoundInCurrentLevel = true;
@@ -176,40 +134,6 @@ public:
    * returned the calling method stops immediately visiting further points.
    */
   virtual bool Visit (MeshPoint &rclPoint, const MeshPoint &rclFrom, unsigned long ulPInd, unsigned long ulLevel) = 0;
-};
-
-/**
- * The MeshVisitPoints class provides a method to visit neighbour points to a given start point.
- * Two points are regarded as neighbours if the mesh has an edge with these points.
- */
-class AppMeshExport MeshVisitPoints
-{
-public:
-  /// Construction 
-  MeshVisitPoints (MeshKernel &rclM) : _rclMesh(rclM)
-  {
-  }
-
-  /// Denstruction 
-  virtual ~MeshVisitPoints(void)
-  {
-  }
- 
-  /**
-   * This method visits all neighbour points starting from the point associated to index \a ulStartPoint. 
-   * All points having set the VISIT flag are ignored. Therefore the user have to set or unset this flag 
-   * if needed before the algorithm starts.
-   * All points that get visited during this algorithm are marked as VISIT and the Visit() method
-   * of the given MeshPointVisitor gets invoked. 
-   * If there are no unvisited neighbours any more the algorithms returns immediately and returns 
-   * the number of visited points.
-   * \note For the start facet \a ulStartPoint MeshPointVisitor::Visit() does not get invoked though
-   * the point gets marked as VISIT.
-   */
-  virtual unsigned long VisitNeighbours (MeshPointVisitor &rclPVisitor, unsigned long ulStartPoint); 
-
-protected:
-  MeshKernel &_rclMesh;
 };
 
 } // namespace MeshCore

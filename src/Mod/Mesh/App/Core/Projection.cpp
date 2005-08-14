@@ -41,7 +41,7 @@
 #include "Projection.h"
 #include "MeshKernel.h"
 #include "Iterator.h"
-#include "MeshAlgorithm.h"
+#include "Algorithm.h"
 #include "Grid.h"
 
 #include <Base/Exception.h>

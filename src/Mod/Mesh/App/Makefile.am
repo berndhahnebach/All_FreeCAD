@@ -6,8 +6,6 @@ libMesh_la_SOURCES=\
 		Core/Algorithm.h \
 		Core/Approximation.cpp \
 		Core/Approximation.h \
-		Core/BoundBox.cpp \
-		Core/BoundBox.h \
 		Core/Definitions.cpp \
 		Core/Definitions.h \
 		Core/Degeneration.cpp \
@@ -22,27 +20,18 @@ libMesh_la_SOURCES=\
 		Core/Info.cpp \
 		Core/Info.h \
 		Core/Iterator.h \
-		Core/MeshAlgorithm.cpp \
-		Core/MeshAlgorithm.h \
 		Core/MeshKernel.cpp \
 		Core/MeshKernel.h \
 		Core/MeshIO.cpp \
 		Core/MeshIO.h \
 		Core/Projection.cpp \
 		Core/Projection.h \
-		Core/Stream.cpp \
-		Core/Stream.h \
-		Core/Swap.cpp \
-		Core/Swap.h \
 		Core/Tools.cpp \
 		Core/Tools.h \
 		Core/TopoAlgorithm.cpp \
 		Core/TopoAlgorithm.h \
-		Core/Tools2D.cpp \
-		Core/Tools2D.h \
 		Core/Visitor.cpp \
 		Core/Visitor.h \
-		Core/ViewProj.h \
 		AppMesh.cpp \
 		AppMeshPy.cpp \
 		CurveProjector.cpp \

@@ -29,7 +29,6 @@
 #include "Core/Tools.h"
 #include "Core/Iterator.h"
 #include "Core/Visitor.h"
-#include "Core/MeshAlgorithm.h"
 #include "Core/Approximation.h"
 
 #include <Base/Sequencer.h>

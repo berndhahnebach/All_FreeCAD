@@ -31,7 +31,6 @@
 #include "Definitions.h"
 #include "Iterator.h"
 #include "Helpers.h"
-#include "MeshAlgorithm.h"
 #include "MeshKernel.h"
 #include "Algorithm.h"
 #include "Info.h"

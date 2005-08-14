@@ -24,20 +24,10 @@
 #include "PreCompiled.h"
 
 #include "Tools.h"
-#include "MeshAlgorithm.h"
 #include "Iterator.h"
 
 
 using namespace MeshCore;
-
-MeshFacetTools::MeshFacetTools (const MeshKernel &rclM)
- : _rclMeshBase(rclM),
-   _rclFAry(rclM._aclFacetArray),
-   _rclPAry(rclM._aclPointArray)
-{
-}
-
-// --------------------------------------------------------------
 
 MeshSearchNeighbours::MeshSearchNeighbours (MeshKernel &rclM, float fSampleDistance)
 : _rclMesh(rclM),
@@ -154,7 +144,7 @@ void MeshSearchNeighbours::SampleAllFacets (void)
   for (clFIter.Init(); clFIter.More(); clFIter.Next(), i++)
   {
     std::vector<Vector3D> clPoints;
-    MeshFacetFunc::SubSample(*clFIter, _fSampleDistance, clPoints);
+    clFIter->SubSample(_fSampleDistance, clPoints);
     _aclSampledFacets[i].resize(clPoints.size());
     std::copy(clPoints.begin(), clPoints.end(), _aclSampledFacets[i].begin());
   }

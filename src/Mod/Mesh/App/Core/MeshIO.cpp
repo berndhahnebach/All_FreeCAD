@@ -29,6 +29,7 @@
 #include "MeshIO.h"
 
 #include <Base/Sequencer.h>
+#include <Base/Stream.h>
 
 #include <math.h>
 

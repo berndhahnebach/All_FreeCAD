@@ -29,12 +29,16 @@
 #endif
 
 #include "Definitions.h"
-#include "BoundBox.h"
+
+#include <Base/BoundBox.h>
 
 namespace Base{
   class Vector3D;
+  class DataStream;
 }
 using Base::Vector3D;
+using Base::DataStream;
+using Base::BoundBox3D;
 
 
 namespace MeshCore {
@@ -219,6 +223,13 @@ public:
   bool IsFlag (MeshEdge::TFlagType tF) const
   { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
 
+  /** Checks if the edge is inside the bounding box or intersects with it. */
+  bool ContainedByOrIntersectBoundingBox (const BoundBox3D &rclBB ) const;
+  /** Returns the bounding box of the edge. */
+  BoundBox3D GetBoundBox () const;
+  /** Checks if the edge intersects with the given bounding box. */
+  bool IntersectBoundingBox (const BoundBox3D &rclBB) const;
+
 public:
   Vector3D _aclPoints[2];  /**< Corner points */
   bool     _bBorder;       /**< Set to true if border edge */
@@ -363,6 +374,11 @@ public:
    * the triangle.
    */
   bool IsPointOf (const Vector3D &rclPoint, float fDistance) const;
+  /** Checks whether the given point is inside the facet with tolerance \a fDistance. 
+   * This method does actually the same as IsPointOf() but this implementation 
+   * is done more effective through comparison of normals.
+   */
+  bool IsPointOfFace (const Vector3D& rclP, float fDistance) const;
   /**
    * Calculates the distance of a point to the triangle.
    */
@@ -372,11 +388,11 @@ public:
    */
   void Enlarge (float fDist);
   /**
-   * Calculates the facets normal for storing internally.
+   * Calculates the facet normal for storing internally.
    */
   inline void CalcNormal (void);
   /**
-   * Arrange the facets normal so the both vectors have the same orientation.
+   * Arrange the facet normal so the both vectors have the same orientation.
    */
   inline void ArrangeNormal (const Vector3D &rclN);
   /**
@@ -396,6 +412,65 @@ public:
   inline void SetNormal (const Vector3D &rclNormal);
   /** Returns the wrapping bounding box. */
   inline BoundBox3D GetBoundBox (void) const;
+  /** Calculates the area of a facet. */
+  inline float Area () const;
+  /** Checks if the facet is inside the bounding box or intersects with it. */
+  inline bool ContainedByOrIntersectBoundingBox (const BoundBox3D &rcBB) const;
+  /** Checks if the facet intersects with the given bounding box. */
+  bool IntersectBoundingBox ( const BoundBox3D &rclBB ) const;
+  /** This method projects the second facet onto the plane defined by this facet and checks then
+   * if both facets intersects.
+   */
+  bool IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet) const;
+  /** This method checks if both facets intersects.
+   */
+  bool IntersectWithFacet(const MeshGeomFacet &rclFacet) const;
+  /** Calculates the shortest distance from the line segment defined by \a rcP1 and \a rcP2 to
+   * this facet.
+   */
+  float DistanceToLineSegment (const Vector3D &rcP1, const Vector3D &rcP2) const;
+  /** Calculates the shortest distance from the point \a rcPt to the facet. */
+  float DistanceToPoint (const Vector3D &rcPt) const
+  { Base::Vector3D res; return DistanceToPoint(rcPt, res); }
+  /** Calculates the shortest distance from the point \a rcPt to the facet. \a rclNt is the point of the facet
+   * with shortest distance.
+   */
+  float DistanceToPoint  ( const Vector3D &rclPt, Base::Vector3D& rclNt ) const;
+  /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
+   * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
+   */
+  bool IntersectWithLine (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes) const;
+  /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
+   * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
+   * This does actually the same as IntersectWithLine() with one additionally constraint that the angle 
+   * between the direction of the line and the normal of the plane must not exceed \a fMaxAngle.
+   */
+  bool Foraminate (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes, float fMaxAngle = F_PI) const;
+  /** Checks if the facet intersects with the plane defined by the base \a rclBase and the normal 
+   * \a rclNormal and returns true if two points are found, false otherwise.
+   */
+  bool IntersectWithPlane (const Vector3D &rclBase, const Vector3D &rclNormal, Vector3D &rclP1, Vector3D &rclP2) const;
+  /**
+   * Checks if the facet intersects with the plane defined by the base \a rclBase and the normal
+   * \a rclNormal.
+   */
+  inline bool IntersectWithPlane (const Vector3D &rclBase, const Vector3D &rclNormal) const;
+  /** Checks if the plane defined by the facet \a rclFacet intersects with the line defined by the base
+   * \a rclBase and the direction \a rclNormal and returns the intersection point \a rclRes if possible. 
+   */
+  bool IntersectPlaneWithLine (const Vector3D &rclBase, const Vector3D &rclNormal, Vector3D &rclRes ) const;
+  /** Calculates the volume of the prism defined by two facets. 
+   * \note The two facets must not intersect.
+   */
+  float VolumeOfPrism (const MeshGeomFacet& rclF) const;
+  /** Subsamples the facet into points with resolution \a fStep. */
+  void SubSample (float fStep, std::vector<Vector3D> &rclPoints) const;
+  /** Calculates the center and radius of the inner circle of the facet. */
+  float CenterOfInnerCircle(Vector3D& rclCenter) const;
+  /** Calculates the center and radius of the outer circle of the facet. */
+  float CenterOfOuterCircle(Vector3D& rclCenter) const;
+  /** Returns the edge number of the facet that is nearest to the point \a rclPt. */
+  unsigned short NearestEdgeToPoint(const Vector3D& rclPt) const;
 
 protected:
   Vector3D  _clNormal; /**< Normal of the facet. */
@@ -675,6 +750,42 @@ inline void MeshGeomFacet::AdjustCirculationDirection (void)
 inline BoundBox3D MeshGeomFacet::GetBoundBox (void) const
 {
   return BoundBox3D(_aclPoints, 3);
+}
+
+inline float MeshGeomFacet::Area () const
+{
+  return ((_aclPoints[1] - _aclPoints[0]) % (_aclPoints[2] - _aclPoints[0])).Length() / 2.0f;
+}
+
+inline bool MeshGeomFacet::ContainedByOrIntersectBoundingBox ( const BoundBox3D &rclBB ) const
+{
+  // Test, ob alle Eckpunkte des Facets sich auf einer der 6 Seiten der BB befinden
+  if ((GetBoundBox() && rclBB) == false)
+    return false;
+
+  // Test, ob Facet-BB komplett in BB liegt
+  if (rclBB.IsInBox(GetBoundBox()))
+    return true;
+
+  // Test, ob einer der Eckpunkte in BB liegt
+  for (int i=0;i<3;i++)
+  {
+    if (rclBB.IsInBox(_aclPoints[i]))
+      return true;
+  }
+
+  // "echter" Test auf Schnitt
+  if (IntersectBoundingBox(rclBB))
+    return true;
+
+  return false;
+}
+
+inline bool MeshGeomFacet::IntersectWithPlane (const Vector3D &rclBase, const Vector3D &rclNormal) const
+{
+  bool bD0 = (_aclPoints[0].DistanceToPlane(rclBase, rclNormal) > 0.0f); 
+  return !((bD0 == (_aclPoints[1].DistanceToPlane(rclBase, rclNormal) > 0.0f)) &&
+           (bD0 == (_aclPoints[2].DistanceToPlane(rclBase, rclNormal) > 0.0f)));
 }
 
 inline MeshFacet::MeshFacet (void)

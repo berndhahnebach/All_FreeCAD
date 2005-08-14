@@ -31,114 +31,223 @@
 
 #include "MeshKernel.h"
 
-#include <Base/Matrix.h>
-#include <Base/Vector3D.h>
-using Base::Vector3D;
-using Base::Matrix4D;
+// forward declarations
+class TopoDS_Shape;
+class gp_Pln;
 
+namespace Base{
+  class Vector2D;
+  class Vector3D;
+  class ViewProjMethod;
+  class Polygon2D;
+}
+
+using Base::Vector2D;
+using Base::Vector3D;
+using Base::ViewProjMethod;
+using Base::Polygon2D;
 
 namespace MeshCore {
 
 class MeshGeomFacet;
 class MeshGeomEdge;
-class BoundBox3D;
+class MeshKernel;
+class MeshFacetGrid;
 
 /**
- * The MeshFacetFunc class provides methods to extract information about
- * a MeshGeomFacet.
+ * The MeshAlgorithm class provides algorithms base on meshes.
  */
-class AppMeshExport MeshFacetFunc
+class AppMeshExport MeshAlgorithm
 {
 public:
-  /** Checks if the facet intersects with the given bounding box. */
-  static bool IntersectBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB);
-  /** Checks if the facet is inside the bounding box or intersects with it. */
-  static inline bool ContainedByOrIntersectBoundingBox (const MeshGeomFacet &rcF, const BoundBox3D &rcBB);
-  /** Converts a MeshFacet into a MeshGeomFacet. */
-  static inline  MeshGeomFacet ToGeomFacet (const MeshKernel &rclMesh, const MeshFacet &rclFacet);
-  /** Calculates the area of a facet. */
-  static inline float Area (const MeshGeomFacet &rclFacet);
-  /** Checks whether the given point is inside the facet with tolerance \a fDistance. 
-   * This method does actually the same as MeshGeomFacet::IsPointOf() but this implementation 
-   * is done more effective through comparison of normals.
-   */
-  static bool IsPointOf (const MeshGeomFacet &rclFacet, const Vector3D& rclP, float fDistance);
-  /** This method projects the second facet onto the plane defined by the first facet and checks then
-   * if these facets intersects.
-   */
-  static bool IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet1, const MeshGeomFacet &rclFacet2);
-  /** This method checks if these facets intersects.
-   */
-  static bool IntersectWithFacet(const MeshGeomFacet &rclFacet1, const MeshGeomFacet &rclFacet2);
-  /** Calculates the shortest distance from the line segment defined by \a rcP1 and \a rcP2 to
-   * this facet.
-   */
-  static float DistanceToLineSegment (const MeshGeomFacet &rcF, const Vector3D &rcP1, const Vector3D &rcP2);
-  /** Calculates the shortest distance from the point \a rcPt to the facet. */
-  static float DistanceToPoint (const MeshGeomFacet &rclFacet, const Vector3D &rcPt)
-  { Base::Vector3D res; return DistanceToPoint(rclFacet, rcPt, res); }
-  /** Calculates the shortest distance from the point \a rcPt to the facet. \a rclNt is the point of the facet
-   * with shortest distance.
-   */
-  static float DistanceToPoint  (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, Base::Vector3D& rclNt );
-  /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
-   * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
-   */
-  static bool IntersectWithLine (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes);
-  /** Calculates the intersection point of the line defined by the base \a rclPt and the direction \a rclDir
-   * with the facet. The intersection must be inside the facet. If there is no intersection false is returned.
-   * This does actually the same as IntersectWithLine() with one additionally constraint that the angle 
-   * between the direction of the line and the normal of the plane must not exceed \a fMaxAngle.
-   */
-  static bool Foraminate (const MeshGeomFacet &rclFacet, const Vector3D &rclPt, const Vector3D &rclDir, 
-                         Vector3D &rclRes, float fMaxAngle = F_PI);
-  /** Checks if the facet intersects with the plane defined by the base \a rclBase and the normal 
-   * \a rclNormal and returns true if two points are found, false otherwise.
-   */
-  static bool IntersectWithPlane (const MeshGeomFacet &rclFacet, const Vector3D &rclBase, const Vector3D &rclNormal, Vector3D &rclP1, Vector3D &rclP2);
+  /// Construction
+  MeshAlgorithm (MeshKernel &rclM) 
+    : _rclMesh(rclM), _rclFAry(rclM._aclFacetArray), _rclPAry(rclM._aclPointArray) { }
+  /// Destruction
+  virtual ~MeshAlgorithm (void) { }
+
+public:
   /**
-   * Checks if the facet intersects with the plane defined by the base \a rclBase and the normal
-   * \a rclNormal.
+   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
+   * the intersection point with the ray and the nearest facet with index \a rulFacet.
+   * \note This method tests all facets so it should only be used occassionally.
    */
-  static inline bool IntersectWithPlane (const MeshGeomFacet &rclFacet, const Vector3D &rclBase, 
-                                         const Vector3D &rclNormal);
-  /** Checks if the plane defined by the facet \a rclFacet intersects with the line defined by the base
-   * \a rclBase and the direction \a rclNormal and returns the intersection point \a rclRes if possible. 
+  bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes, 
+                          unsigned long &rulFacet) const;
+  /**
+   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
+   * the intersection point with the ray and the nearest facet with index \a rulFacet.
+   * \note This method is optimized by using a grid. So this method be used for a lot of tests..
    */
-  static bool IntersectPlaneWithLine (const MeshGeomFacet &rclFacet, const Vector3D &rclBase, 
-                                      const Vector3D &rclNormal, Vector3D &rclRes );
-  /** Calculates the volume of the prism defined by two facets. 
-   * \note The two facets must not intersect.
+  bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, const MeshFacetGrid &rclGrid, 
+                          Vector3D &rclRes, unsigned long &rulFacet) const;
+  /**
+   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
+   * the intersection point with the ray and the nearest facet with index \a rulFacet.
+   * \note This method tests all facets taken from \a raulFacets so it should only be used occassionally.
    */
-  static inline float VolumeOfPrism (const MeshGeomFacet& rclF1, const MeshGeomFacet& rclF2);
-  /** Subsamples the facet into points with resolution \a fStep. */
-  static void SubSample (const MeshGeomFacet &rclFacet, float fStep, std::vector<Vector3D> &rclPoints);
-  /** Calculates the center and radius of the inner circle of the facet. */
-  static float CenterOfInnerCircle(const MeshGeomFacet &rclFacet, Vector3D& rclCenter);
-  /** Calculates the center and radius of the outer circle of the facet. */
-  static float CenterOfOuterCircle(const MeshGeomFacet &rclFacet, Vector3D& rclCenter);
-  /** Returns the edge number of the facet that is nearest to the point \a rclPt. */
-  static unsigned short NearestEdgeToPoint(const MeshGeomFacet& rclFacet, const Vector3D& rclPt);
+  bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, const std::vector<unsigned long> &raulFacets, 
+                          Vector3D &rclRes, unsigned long &rulFacet) const;
+  /**
+   * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
+   * the intersection point with the ray and the nearest facet with index \a rulFacet.
+   * More a search radius around the ray of \a fMaxSearchArea is defined.
+   * \note This method is optimized by using a grid. So this method be used for a lot of tests..
+   */
+  bool NearestFacetOnRay (const Vector3D &rclPt, const Vector3D &rclDir, float fMaxSearchArea, 
+                          const MeshFacetGrid &rclGrid, Vector3D &rclRes, unsigned long &rulFacet) const;
+  /**
+   * Checks from the viewpoint \a rcView if the vertex \a rcVertex is visible or it is hidden by a facet. 
+   * If the vertex is visible true is returned, false otherwise.
+   */
+  bool IsVertexVisible (const Vector3D &rcVertex, const Vector3D &rcView, const MeshFacetGrid &rclGrid ) const;
+  /**
+   * Calculates the average length of edges.
+   */
+  float GetAverageEdgeLength() const;
+  /**
+   * Returns all boundaries of the mesh.
+   */
+  void GetMeshBorders (std::list<std::vector<Vector3D> > &rclBorders);
+  /**
+   * Returns all boundaries of a subset the mesh defined by \a raulInd.
+   */
+  void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Vector3D> > &rclBorders);
+  /** Sets to all facets the flag \a tF. */
+  virtual void SetFacetFlag (MeshFacet::TFlagType tF);
+#ifdef Use_EdgeList
+  /** Sets to all edges the flag \a tF. */
+  virtual void SetEdgeFlag (MeshEdge::TFlagType tF);
+#endif
+  /** Sets to all points the flag \a tF. */
+  virtual void SetPointFlag (MeshPoint::TFlagType tF);
+  /** Resets of all facets the flag \a tF. */
+  virtual void ResetFacetFlag (MeshFacet::TFlagType tF);
+#ifdef Use_EdgeList
+  /** Resets of all edges the flag \a tF. */
+  virtual void ResetEdgeFlag (MeshEdge::TFlagType tF);
+#endif
+  /** Resets of all points the flag \a tF. */
+  virtual void ResetPointFlag (MeshPoint::TFlagType tF);
+  /** Sets to all facets in \a raulInds the flag \a tF. */
+  void SetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF);
+#ifdef Use_EdgeList
+  /** Sets to all edges in \a raulInds the flag \a tF. */
+  void SetEdgesFlag (const std::vector<unsigned long> &raulInds, MeshEdge::TFlagType tF);
+#endif
+  /** Sets to all points in \a raulInds the flag \a tF. */
+  void SetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF);
+  /** Resets from all facets in \a raulInds the flag \a tF. */
+  void ResetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF);
+#ifdef Use_EdgeList
+  /** Resets from all edges in \a raulInds the flag \a tF. */
+  void ResetEdgesFlag (const std::vector<unsigned long> &raulInds, MeshEdge::TFlagType tF);
+#endif
+  /** Resets from all points in \a raulInds the flag \a tF. */
+  void ResetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF);
+  /** Sets to all facets in \a raulInds the properties in raulProps. 
+   * \note Both arrays must have the same size.
+   */
+  void SetFacetsProperty(const std::vector<unsigned long> &raulInds, const std::vector<unsigned long> &raulProps);
+  /** Count all facets with the flag \a tF. */
+  unsigned long CountFacetFlag (MeshFacet::TFlagType tF) const;
+  /** Count all edges with the flag \a tF. */
+  unsigned long CountEdgeFlag (MeshEdge::TFlagType tF) const;
+  /** Count all points with the flag \a tF. */
+  unsigned long CountPointFlag (MeshPoint::TFlagType tF) const;
+  /** Returns all geometric points from the facets in \a rvecIndices. */
+  void PointsFromFacetsIndices (const std::vector<unsigned long> &rvecIndices, std::vector<Vector3D> &rvecPoints) const;
+  /**
+   * CheckFacets() is invoked within this method and all found facets get deleted from the mesh structure. 
+   * The facets to be deleted are returned with their geometric reprsentation.
+   * @see CheckFacets().
+   */
+  void CutFacets (const MeshFacetGrid& rclGrid, const ViewProjMethod *pclP, const Polygon2D& rclPoly, 
+                  bool bCutInner, std::vector<MeshGeomFacet> &raclFacets) const;
+  /**
+   * Does basically the same as method above unless that the facets to be deleted are returned with their
+   * index number in the facet array of the mesh structure.
+   */
+  void CutFacets (const MeshFacetGrid& rclGrid, const ViewProjMethod* pclP, const Polygon2D& rclPoly, 
+                  bool bCutInner, std::vector<unsigned long> &raclCutted) const;
+  /**
+   * Projects the determined facets through projection with \a pclProj into the 2D plane and checks for
+   * intersection with the polygon.
+   * If \a bInner is \a true than all facets with at least one corner inside the polygon get deleted. If \a
+   * bInner is \a false then all facets with at least one corner outside the polygon get deleted.
+   * This algorithm is optimized by using a grid.
+   */
+  void CheckFacets (const MeshFacetGrid &rclGrid, const ViewProjMethod* pclProj, const Polygon2D& rclPoly, 
+                    bool bInner, std::vector<unsigned long> &rclRes) const;
+  /**
+   * Determines all facets of the given array \a raclFacetIndices that lie at the edge or that
+   * have at least neighbour facet that is not inside the array. The resulting array \a raclResultIndices
+   * is not be deleted before the algorithm starts. \a usLevel indicates how often the algorithm is 
+   * repeated.
+   */
+  void CheckBorderFacets (const std::vector<unsigned long> &raclFacetIndices, 
+                          std::vector<unsigned long> &raclResultIndices, unsigned short usLevel = 1);
+  /**
+   * Invokes CheckBorderFacets() to get all border facets of \a raclFacetIndices. Then the content of
+   * \a raclFacetIndices is replaced by all facets that can be deleted.
+   * \note The mesh structure is not modified by this method. This is in the responsibility of the user.
+   */
+  void CutBorderFacets (std::vector<unsigned long> &raclFacetIndices, unsigned short usLevel = 1);
+  /**
+   * Determines all border points as indices of the facets in \a raclFacetIndices. The points are unsorted.
+   */
+  void GetBorderPoints (const std::vector<unsigned long> &raclFacetIndices, std::set<unsigned long> &raclResultPointsIndices);
+  /** Tessellates the shape \a aShape and replaces the mesh structure with the created facets. */
+  bool MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const;
+  /** Computes the surface of the mesh. */
+  float Surface (void) const;
+  /** Subsamples the mesh with point distance \a fDist and stores the points in \a rclPoints. */
+  void SubSampleByDist  (float fDist, std::vector<Vector3D> &rclPoints) const;
+  /**
+   * Subsamples the mesh to produce around \a ulCtPoints. \a ulCtPoints should be greater
+   * than 5 * number of facets.
+   */
+  void SubSampleByCount (unsigned long ulCtPoints, std::vector<Vector3D> &rclPoints) const;
+  /** Returns only the points of the mesh without actually sampling the data. */
+  void SubSampleAllPoints(std::vector<Vector3D> &rclPoints) const;
+  /**
+   * Searches for all facets that intersect the "search tube" with radius \a r around the polyline. 
+   */
+  void SearchFacetsFromPolyline (const std::vector<Vector3D> &rclPolyline, float fRadius,
+                                 const MeshFacetGrid& rclGrid, std::vector<unsigned long> &rclResultFacetsIndices) const;
+  /** Projects a point directly to the mesh (means nearest facet), the result is the facet index and
+   * the formainate point, use second version with grid for more performance.
+   */
+  bool NearestPointFromPoint (const Vector3D &rclPt, unsigned long &rclResFacetIndex, Vector3D &rclResPoint) const;
+  bool NearestPointFromPoint (const Vector3D &rclPt, const MeshFacetGrid& rclGrid, 
+                              unsigned long &rclResFacetIndex, Vector3D &rclResPoint) const;
+  bool NearestPointFromPoint (const Vector3D &rclPt, const MeshFacetGrid& rclGrid, float fMaxSearchArea, 
+                              unsigned long &rclResFacetIndex, Vector3D &rclResPoint) const;
+  /** Cuts the mesh with a plane. The result is a list of polylines. */
+  bool CutWithPlane (const gp_Pln &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f); 
+  bool CutWithPlane (const Vector3D &clBase, const Vector3D &clNormal, const MeshFacetGrid &rclGrid, 
+                     std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f, bool bConnectPolygons = false); 
+  /** Gets all facets that cut the plane and lying between the the two points. */
+  void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const gp_Pln clPlane, const Vector3D &rclLeft, const Vector3D &rclRight, std::vector<unsigned long> &rclRes) const;
+  /** Returns true if the distance from the \a rclPt to the facet \a ulFacetIdx is less than \a fMaxDistance.
+   * If this restriction is met \a rfDistance is set to the actual distance, otherwise false is returned.
+   */
+  bool Distance (const Vector3D &rclPt, unsigned long ulFacetIdx, float fMaxDistance, float &rfDistance) const;
+   
+protected:
+  /** Helper method to connect the intersection points to polylines. */
+  bool ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rclLines, std::list<std::vector<Vector3D> >&rclPolylines, 
+                    float fMinEps) const;
+  bool ConnectPolygons(std::list<std::vector<Vector3D> > &clPolyList, std::list<std::pair<Vector3D, 
+                       Vector3D> > &rclLines) const;
+  /** Searches the nearest facet in \a raulFacets to the ray (\a rclPt, \a rclDir). */
+  bool RayNearestField (const Vector3D &rclPt, const Vector3D &rclDir, const std::vector<unsigned long> &raulFacets, 
+                        Vector3D &rclRes, unsigned long &rulFacet, float fMaxAngle = F_PI) const;
 
 protected:
-  /** Sqrt(fabs(\a fVal)) */
-  static float Dist (float fVal)
-  { return float(sqrt(fabs(fVal))); }
-};
-
-/**
- * The MeshEdgeFunc class provides methods to extract information about
- * a MeshGeomEdge.
- */
-class AppMeshExport MeshEdgeFunc
-{
-public:
-  /** Checks if the edge is inside the bounding box or intersects with it. */
-  static bool ContainedByOrIntersectBoundingBox (const MeshGeomEdge &rclEdge, const BoundBox3D &rclBB );
-  /** Returns the bounding box of the edge. */
-  static BoundBox3D GetBoundBox (const MeshGeomEdge &rclEdge);
-  /** Checks if the edge intersects with the given bounding box. */
-  static bool IntersectBoundingBox (const MeshGeomEdge &rclEdge, const BoundBox3D &rclBB);
+  MeshKernel      &_rclMesh; /**< The mesh kernel. */
+  MeshFacetArray  &_rclFAry; /**< The facet array. */
+  MeshPointArray  &_rclPAry; /**< The point array. */
 };
 
 /**
@@ -231,97 +340,6 @@ public:
 protected:
   MeshKernel  &_rclMesh; /**< The mesh kernel. */
 };
-
-
-inline bool MeshFacetFunc::ContainedByOrIntersectBoundingBox (const MeshGeomFacet &rclFacet, const BoundBox3D &rclBB)
-{
-  // Test, ob alle Eckpunkte des Facets sich auf einer der 6 Seiten der BB befinden
-  if ((rclFacet.GetBoundBox() && rclBB) == false)
-    return false;
-
-  // Test, ob Facet-BB komplett in BB liegt
-  if (rclBB.IsInBox(rclFacet.GetBoundBox()))
-    return true;
-
-  // Test, ob einer der Eckpunkte in BB liegt
-  for (int i=0;i<3;i++)
-  {
-    if (rclBB.IsInBox(rclFacet._aclPoints[i]))
-      return true;
-  }
-
-  // "echter" Test auf Schnitt
-  if (MeshFacetFunc::IntersectBoundingBox(rclFacet, rclBB))
-    return true;
-
-  return false;
-}
-
-inline  MeshGeomFacet MeshFacetFunc::ToGeomFacet (const MeshKernel &rclMesh, const MeshFacet &rclFacet)
-{ 
-  MeshGeomFacet  clRet;
-  clRet._aclPoints[0] = rclMesh._aclPointArray[rclFacet._aulPoints[0]];
-  clRet._aclPoints[1] = rclMesh._aclPointArray[rclFacet._aulPoints[1]];
-  clRet._aclPoints[2] = rclMesh._aclPointArray[rclFacet._aulPoints[2]];
-  clRet._ulProp       = rclFacet._ulProp;
-  clRet.CalcNormal();
-  return  clRet;
-}
-
-inline float MeshFacetFunc::Area (const MeshGeomFacet &rclFacet)
-{
-  return ((rclFacet._aclPoints[1] - rclFacet._aclPoints[0]) % 
-          (rclFacet._aclPoints[2] - rclFacet._aclPoints[0])).Length() / 2.0f;
-}
-
-inline float MeshFacetFunc::VolumeOfPrism (const MeshGeomFacet& rclF1, const MeshGeomFacet& rclF2)
-{
-  Base::Vector3D P1 = rclF1._aclPoints[0];
-  Base::Vector3D P2 = rclF1._aclPoints[1];
-  Base::Vector3D P3 = rclF1._aclPoints[2];
-  Base::Vector3D Q1 = rclF2._aclPoints[0];
-  Base::Vector3D Q2 = rclF2._aclPoints[1];
-  Base::Vector3D Q3 = rclF2._aclPoints[2];
-
-  if ((P1-Q2).Length() < (P1-Q1).Length())
-  {
-    Base::Vector3D tmp = Q1;
-    Q1 = Q2;
-    Q2 = tmp;
-  }
-  if ((P1-Q3).Length() < (P1-Q1).Length())
-  {
-    Base::Vector3D tmp = Q1;
-    Q1 = Q3;
-    Q3 = tmp;
-  }
-  if ((P2-Q3).Length() < (P2-Q2).Length())
-  {
-    Base::Vector3D tmp = Q2;
-    Q2 = Q3;
-    Q3 = tmp;
-  }
-
-  Base::Vector3D N1 = (P2-P1) % (P3-P1);
-  Base::Vector3D N2 = (P2-P1) % (Q2-P1);
-  Base::Vector3D N3 = (Q2-P1) % (Q1-P1);
-
-  float fVol=0.0f;
-  fVol += float(fabs((Q3-P1) * N1));
-  fVol += float(fabs((Q3-P1) * N2));
-  fVol += float(fabs((Q3-P1) * N3));
-
-  fVol /= 6.0f;
-
-  return fVol;;
-}
-
-inline bool MeshFacetFunc::IntersectWithPlane (const MeshGeomFacet &rclFacet, const Vector3D &rclBase, const Vector3D &rclNormal)
-{
-  bool bD0 = (rclFacet._aclPoints[0].DistanceToPlane(rclBase, rclNormal) > 0.0f); 
-  return !((bD0 == (rclFacet._aclPoints[1].DistanceToPlane(rclBase, rclNormal) > 0.0f)) &&
-           (bD0 == (rclFacet._aclPoints[2].DistanceToPlane(rclBase, rclNormal) > 0.0f)));
-}
 
 
 }; // namespace MeshCore 

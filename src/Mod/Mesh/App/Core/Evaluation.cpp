@@ -30,7 +30,6 @@
 #endif
 
 #include "Evaluation.h"
-#include "MeshAlgorithm.h"
 #include "Iterator.h"
 #include "Algorithm.h"
 #include "Visitor.h"
@@ -135,7 +134,7 @@ bool MeshEvalNormals::Evaluate ()
     // get start facet first
     aComponent.push_back(ulStartFacet);
     MeshWrongOrientation clOrientation(aComponent);
-    ulVisited += MeshVisitFacets(_rclMesh).VisitNeighbours(clOrientation, ulStartFacet);
+    ulVisited += _rclMesh.VisitNeighbourFacets(clOrientation, ulStartFacet);
 
     // return immediately after having found one "wrong" facet
     if ( clOrientation.HasWrongOrientatedFacet() )

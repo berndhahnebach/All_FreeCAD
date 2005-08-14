@@ -766,7 +766,7 @@ unsigned long MeshFacetGrid::SearchNearestFromPoint (const Vector3D &rclPt, floa
   unsigned long ulFacetInd = ULONG_MAX;
   float fMinDist   = fMaxSearchArea;
 
-  MeshFacetTools clFTool(*_pclMesh);
+  MeshAlgorithm clFTool(const_cast<MeshKernel&>(*_pclMesh));
 
   BoundBox3D clBB(rclPt.x - fMaxSearchArea, rclPt.y - fMaxSearchArea, rclPt.z - fMaxSearchArea,
            rclPt.x + fMaxSearchArea, rclPt.y + fMaxSearchArea, rclPt.z + fMaxSearchArea);
@@ -845,7 +845,7 @@ void MeshFacetGrid::SearchNearestFacetInGrid(unsigned long ulX, unsigned long ul
   const std::set<unsigned long> &rclSet = _aulGrid[ulX][ulY][ulZ];
   for (std::set<unsigned long>::const_iterator pI = rclSet.begin(); pI != rclSet.end(); pI++)
   {
-    float fDist = MeshFacetFunc::DistanceToPoint(_pclMesh->GetFacet(*pI), rclPt);
+    float fDist = _pclMesh->GetFacet(*pI).DistanceToPoint(rclPt);
     if (fDist < rfMinDist)
     {
       rfMinDist   = fDist;

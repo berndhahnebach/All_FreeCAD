@@ -34,7 +34,6 @@
 #include "FeatureMeshImport.h"
 
 #include "Core/MeshIO.h"
-#include "Core/Stream.h"
 
 
 using namespace Mesh;
