@@ -73,7 +73,8 @@ protected:
   std::list<Node> NodeList;
 
   bool bInEdit;
-
+  bool bMovePointMode;
+  Node PointToMove;
   /// root of the edge and vertex points
   SoSeparator *EdgeRoot, *VertexRoot;
 

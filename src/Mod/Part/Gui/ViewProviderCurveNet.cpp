@@ -69,6 +69,8 @@
 #include <Inventor/nodes/SoSphere.h>
 #include <Inventor/events/SoEvent.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
+#include <Inventor/events/SoKeyboardEvent.h>
+#include <Inventor/events/SoLocation2Event.h>
 
 
 #include "ViewProviderCurveNet.h"
@@ -91,7 +93,7 @@ using namespace PartGui;
 
        
 ViewProviderCurveNet::ViewProviderCurveNet()
-:bInEdit(false)
+:bInEdit(false),bMovePointMode(false)
 {
   /*
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
@@ -129,7 +131,7 @@ void ViewProviderCurveNet::attache(App::Feature *pcFeat)
   }
 */
 
-  // setup the root for the edges
+  // setup the root and material for the edges
   EdgeRoot = new SoSeparator();
   pcRoot->addChild(EdgeRoot);
   SoDrawStyle *pcWireStyle = new SoDrawStyle();
@@ -139,7 +141,7 @@ void ViewProviderCurveNet::attache(App::Feature *pcFeat)
   EdgeRoot->addChild(pcLineMaterial);  
 
 
-  // setup the root for the vertexes
+  // setup the root and material for the vertexes
   VertexRoot = new SoSeparator();
   pcRoot->addChild(VertexRoot);
   VertexRoot->addChild(pcPointMaterial);
@@ -176,10 +178,23 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
   // get the position of the mouse
   const SbVec2s pos(ev->getPosition());
 
-  Base::Console().Log("ViewProviderCurveNet::handleEvent()\n");
+  // Keybooard events
+  if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+    SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
+    switch (ke->getKey()) {
+    case SoKeyboardEvent::LEFT_ALT:
+    case SoKeyboardEvent::RIGHT_ALT:
+    case SoKeyboardEvent::LEFT_CONTROL:
+    case SoKeyboardEvent::RIGHT_CONTROL:
+    case SoKeyboardEvent::LEFT_SHIFT:
+    case SoKeyboardEvent::RIGHT_SHIFT:
+      break;
+    default:
+      break;
+    }
+  }
 
-
-    // switching the mouse modes
+  // switching the mouse buttons
   if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
 
     const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
@@ -195,14 +210,21 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
 
         bool bIsNode =  false;
         for(std::list<Node>::iterator It = NodeList.begin();It != NodeList.end(); It++)
-          if(It->pcHighlight->isHighlighted)
+          if(It->pcHighlight->isHighlighted())
           {
             bIsNode = true;
             break;
           }
 
+        if(bIsNode)
+        {
+          // set the provider in point move mode and remember the point
+          bMovePointMode = true;
+          PointToMove = *It;
 
-        if(Viewer.pickPoint(pos,point,norm))
+
+          return true;
+        }else if(Viewer.pickPoint(pos,point,norm))
         {
           Node n;
           Base::Console().Log("Picked(%f,%f,%f)\n",point[0],point[1],point[2]);
@@ -221,15 +243,34 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
 
           NodeList.push_back(n);
           
+          return true;
+          
         }
 
-        return true;
+      } else // if(pressd)..
+      {
+        if(bMovePointMode)
+        {
+          bMovePointMode = false;
+          return true;
+        }
       }
       break;
     }
 
   }
 
+    // Mouse Movement handling
+  if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+//    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
+
+    if(bMovePointMode && Viewer.pickPoint(pos,point,norm) ){
+      PointToMove.pcTransform->translation.setValue(point);     
+      return true;
+    }
+  }
+
+  // event not processed
   return false;
 }
 
