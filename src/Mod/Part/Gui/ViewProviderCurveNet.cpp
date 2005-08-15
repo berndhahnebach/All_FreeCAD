@@ -64,7 +64,7 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <Gui/View3DInventorViewer.h>
-//#include <Gui/SoFCSelection.h>
+#include <Gui/SoFCSelection.h>
 #include <App/Application.h>
 #include <Inventor/nodes/SoSphere.h>
 #include <Inventor/events/SoEvent.h>
@@ -195,12 +195,12 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
 
         bool bIsNode =  false;
         for(std::list<Node>::iterator It = NodeList.begin();It != NodeList.end(); It++)
-/*          if(It->pcHighlight->isHighlighted)
+          if(It->pcHighlight->isHighlighted)
           {
             bIsNode = true;
             break;
           }
-*/
+
 
         if(Viewer.pickPoint(pos,point,norm))
         {
@@ -211,15 +211,15 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
           n.pcTransform          = new SoTransform();
           TransRoot->addChild(n.pcTransform);
           n.pcTransform->translation.setValue(point);
-//          n.pcHighlight          = new Gui::SoFCSelection();
-//          n.pcHighlight->color.setValue((float)0.2,(float)0.5,(float)0.2);
+          n.pcHighlight          = new Gui::SoFCSelection();
+          n.pcHighlight->color.setValue((float)0.2,(float)0.5,(float)0.2);
           SoSphere * sphere      = new SoSphere;
           sphere->radius = (float)fPointSize;
-//          n.pcHighlight->addChild(sphere);
-//          TransRoot->addChild(n.pcHighlight);
+          n.pcHighlight->addChild(sphere);
+          TransRoot->addChild(n.pcHighlight);
           VertexRoot->addChild(TransRoot);
 
-//          NodeList.push_back(n);
+          NodeList.push_back(n);
           
         }
 
