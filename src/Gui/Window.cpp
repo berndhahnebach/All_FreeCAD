@@ -73,7 +73,7 @@ void WindowParameter::OnChange(Base::Subject<const char*> &rCaller, const char *
   Base::Console().Log("Parameter has changed and window (%s) has not overriden this function!",_handle->GetGroupName());
 }
 
-FCParameterGrp::handle  WindowParameter::getWindowParameter(void)
+ParameterGrp::handle  WindowParameter::getWindowParameter(void)
 {
   return _handle;
 }
@@ -82,7 +82,7 @@ FCParameterGrp::handle  WindowParameter::getWindowParameter(void)
  * Returns a handle to the parameter group to the user parameter 
  * under BaseApp/Preferences.
  */
-FCParameterGrp::handle  WindowParameter::getParameter(void)
+ParameterGrp::handle  WindowParameter::getParameter(void)
 {
   return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
 }

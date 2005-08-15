@@ -98,7 +98,7 @@ private:
  * This code was originally taken from the QStackBarBtn and QStackBar implementation
  * written by Dave Marotti (http://phlan.net/~lndshark/qstackbar).
  */
-class StackBar : public Gui::DockWindow, public FCParameterGrp::ObserverType
+class StackBar : public Gui::DockWindow, public ParameterGrp::ObserverType
 {
   Q_OBJECT;
 

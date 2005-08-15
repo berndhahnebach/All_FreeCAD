@@ -121,9 +121,9 @@ std::map<std::string,std::string> mConfig;
 // some globals set by the commandline options or Init function
 const char*     sScriptName;
 /// pointer to the system parameter (loaded in Init())
-FCParameterManager *pcSystemParameter;
+ParameterManager *pcSystemParameter;
 /// pointer to the user parameter (loaded in Init())
-FCParameterManager *pcUserParameter;
+ParameterManager *pcUserParameter;
 
 
 // forwards
@@ -359,8 +359,8 @@ void Init(int argc, char ** argv )
 	else
 		Console().Message("FreeCAD (c) 2001 Juergen Riegel (GPL,LGPL)\n\n");
 
-	pcSystemParameter = new FCParameterManager();
-	pcUserParameter = new FCParameterManager();
+	pcSystemParameter = new ParameterManager();
+	pcUserParameter = new ParameterManager();
 
 
 	// Init parameter sets ===========================================================
@@ -413,7 +413,7 @@ void Init(int argc, char ** argv )
 		// when runnig in verbose mode no splasher
 		if ( ! (mConfig["Verbose"] == "Strict") && (mConfig["RunMode"] == "Gui") )
 		{
-      FCParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
+      ParameterGrp::handle hGrp = GetApplication().GetSystemParameter().GetGroup("BaseApp")->GetGroup("WindowSettings");
       if (hGrp->GetBool("AllowSplasher", true))
       {
 			  pcQApp = new QApplication ( argc, argv );

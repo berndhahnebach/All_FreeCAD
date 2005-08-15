@@ -65,7 +65,7 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
 
   // use the console highlighter
   pythonSyntax = new PythonConsoleHighlighter(this);
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  ParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
   // set colors and font
   hPrefGrp->NotifyAll();
@@ -164,7 +164,7 @@ PYFUNCIMP_S(PythonConsole,sStdin)
 /** Sets the new color for \a rcColor. */  
 void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  ParameterGrp::handle hPrefGrp = getWindowParameter();
 
   QFont font = currentFont();
   font.setBold( false ); // if current font is bold we must reset it first

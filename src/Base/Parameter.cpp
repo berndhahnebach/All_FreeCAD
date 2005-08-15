@@ -256,7 +256,7 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 
 //**************************************************************************
 //**************************************************************************
-// FCParameterManager
+// ParameterManager
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -267,30 +267,107 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 /** Defauld construction
   * Does not much 
   */
-FCParameterGrp::FCParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode,const char* sName)	
+ParameterGrp::ParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode,const char* sName)	
 	: FCHandled(), Subject<const char*>(),_pGroupNode(GroupNode)
 {
 	if(sName) _cName=sName;
 }
 
 
-
-/** Copy construction
-  * Makes a one to one copy of all parameters and
-  * groups in the container
-  */
-
 /** Destruction
   * complete destruction of the object
   */
-FCParameterGrp::~FCParameterGrp()
+ParameterGrp::~ParameterGrp()
 {
 }
 
 //**************************************************************************
 // Access methodes
 
-FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
+
+void ParameterGrp::copyTo(FCHandle<ParameterGrp> Grp)
+{
+  // delete previos content
+  Grp->Clear();
+
+  // copy all
+  insertTo(Grp);
+}
+
+void ParameterGrp::insertTo(FCHandle<ParameterGrp> Grp)
+{
+  // copy group
+  std::vector<FCHandle<ParameterGrp> > Grps = GetGroups();
+  std::vector<FCHandle<ParameterGrp> >::iterator It1;
+  for(It1 = Grps.begin();It1 != Grps.end();++It1)
+    (*It1)->insertTo(Grp->GetGroup((*It1)->GetGroupName()));
+  
+  // copy strings
+	std::map<std::string,std::string> StringMap = GetASCIIMap();
+  std::map<std::string,std::string>::iterator It2;
+  for(It2 = StringMap.begin();It2 != StringMap.end();++It2)
+    Grp->SetASCII(It2->first.c_str(),It2->second.c_str());
+
+  // copy bool
+	std::map<std::string,bool> BoolMap = GetBoolMap();
+  std::map<std::string,bool>::iterator It3;
+  for(It3 = BoolMap.begin();It3 != BoolMap.end();++It3)
+    Grp->SetBool(It3->first.c_str(),It3->second);
+
+  // copy int
+	std::map<std::string,long> IntMap = GetIntMap();
+  std::map<std::string,long>::iterator It4;
+  for(It4 = IntMap.begin();It4 != IntMap.end();++It4)
+    Grp->SetInt(It4->first.c_str(),It4->second);
+
+  // copy float
+	std::map<std::string,double> FloatMap = GetFloatMap();
+  std::map<std::string,double>::iterator It5;
+  for(It5 = FloatMap.begin();It5 != FloatMap.end();++It5)
+    Grp->SetFloat(It5->first.c_str(),It5->second);
+
+
+}
+
+void ParameterGrp::export(const char* FileName)
+{
+  ParameterManager Mngr;
+
+  Mngr.CreateDocument();
+
+  // copy all into the new document
+  insertTo(Mngr.GetGroup("root"));
+
+  Mngr.SaveDocument(FileName);
+}
+
+void ParameterGrp::import(const char* FileName)
+{
+  ParameterManager Mngr;
+
+  if(Mngr.LoadDocument(FileName) != 1)
+    throw Exception("ParameterGrp::import() cant load document");
+
+  Mngr.GetGroup("root")->copyTo(FCHandle<ParameterGrp>(this));
+
+}
+
+void ParameterGrp::insert(const char* FileName)
+{
+  ParameterManager Mngr;
+
+  if(Mngr.LoadDocument(FileName) != 1)
+    throw Exception("ParameterGrp::import() cant load document");
+
+  Mngr.GetGroup("root")->insertTo(FCHandle<ParameterGrp>(this));
+
+}
+
+
+
+
+
+FCHandle<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
 {
 	std::string cName = Name;
 
@@ -309,7 +386,7 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 	} else if(pos == 0)
 	{
 		// a leading slash is not handled (root unknown)
-		//throw FCException("FCParameterGrp::GetGroup() leading slash not allowed");
+		//throw FCException("ParameterGrp::GetGroup() leading slash not allowed");
 		// remove leading slash
 		cName.erase(0,1);
 		// subsequent call
@@ -327,9 +404,9 @@ FCHandle<FCParameterGrp> FCParameterGrp::GetGroup(const char* Name)
 
 }
 
-FCHandle<FCParameterGrp> FCParameterGrp::_GetGroup(const char* Name)
+FCHandle<ParameterGrp> ParameterGrp::_GetGroup(const char* Name)
 {
-	FCHandle<FCParameterGrp> rParamGrp;
+	FCHandle<ParameterGrp> rParamGrp;
 	DOMElement *pcTemp;
 
 	// already created?
@@ -343,17 +420,17 @@ FCHandle<FCParameterGrp> FCParameterGrp::_GetGroup(const char* Name)
 	pcTemp = FindOrCreateElement(_pGroupNode,"FCParamGroup",Name);
 
 	// create and register handle
-	rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(pcTemp,Name));
+	rParamGrp = FCHandle<ParameterGrp> (new ParameterGrp(pcTemp,Name));
 	_GroupMap[Name] = rParamGrp;
 
 	return rParamGrp;
 
 }
 
-std::vector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
+std::vector<FCHandle<ParameterGrp> > ParameterGrp::GetGroups(void)
 {
-	FCHandle<FCParameterGrp> rParamGrp;
-	std::vector<FCHandle<FCParameterGrp> >  vrParamGrp;
+	FCHandle<ParameterGrp> rParamGrp;
+	std::vector<FCHandle<ParameterGrp> >  vrParamGrp;
 	DOMElement *pcTemp; //= _pGroupNode->getFirstChild();
 	std::string Name;
 
@@ -365,7 +442,7 @@ std::vector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 		// already created?
 		if( ! (rParamGrp=_GroupMap[Name]).IsValid() )
 		{
-			rParamGrp = FCHandle<FCParameterGrp> (new FCParameterGrp(((DOMElement*)pcTemp),Name.c_str()));
+			rParamGrp = FCHandle<ParameterGrp> (new ParameterGrp(((DOMElement*)pcTemp),Name.c_str()));
 			_GroupMap[Name] = rParamGrp;
 		}
 		vrParamGrp.push_back( rParamGrp );
@@ -377,7 +454,7 @@ std::vector<FCHandle<FCParameterGrp> > FCParameterGrp::GetGroups(void)
 }
 
 /// test if this group is emty
-bool FCParameterGrp::IsEmpty(void)
+bool ParameterGrp::IsEmpty(void)
 {
 	if( _pGroupNode->getFirstChild() )
 		return false;
@@ -386,7 +463,7 @@ bool FCParameterGrp::IsEmpty(void)
 }
 
 /// test if a special sub group is in this group
-bool FCParameterGrp::HasGroup(const char* Name)
+bool ParameterGrp::HasGroup(const char* Name)
 {
 	if( _GroupMap.find(Name) != _GroupMap.end() )
 		return true;
@@ -400,7 +477,7 @@ bool FCParameterGrp::HasGroup(const char* Name)
 
 
 
-bool FCParameterGrp::GetBool(const char* Name, bool bPreset)
+bool ParameterGrp::GetBool(const char* Name, bool bPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCBool",Name);
@@ -413,7 +490,7 @@ bool FCParameterGrp::GetBool(const char* Name, bool bPreset)
 		return true;	
 }
 
-void  FCParameterGrp::SetBool(const char* Name, bool bValue)
+void  ParameterGrp::SetBool(const char* Name, bool bValue)
 {
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCBool",Name);
@@ -423,7 +500,7 @@ void  FCParameterGrp::SetBool(const char* Name, bool bValue)
 	Notify(Name);
 }
 
-std::vector<bool> FCParameterGrp::GetBools(const char * sFilter)
+std::vector<bool> ParameterGrp::GetBools(const char * sFilter)
 {
 	std::vector<bool>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -447,7 +524,7 @@ std::vector<bool> FCParameterGrp::GetBools(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter)
+std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter)
 {
 	std::map<std::string,bool>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -471,7 +548,7 @@ std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter)
 	return vrValues;
 }
 
-long FCParameterGrp::GetInt(const char* Name, long lPreset)
+long ParameterGrp::GetInt(const char* Name, long lPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCInt",Name);
@@ -481,7 +558,7 @@ long FCParameterGrp::GetInt(const char* Name, long lPreset)
 	return atol (StrX(pcElem->getAttribute(XStr("Value").unicodeForm())).c_str());
 }
 
-void  FCParameterGrp::SetInt(const char* Name, long lValue)
+void  ParameterGrp::SetInt(const char* Name, long lValue)
 {
 	char cBuf[256];
 	// find or create the Element
@@ -493,7 +570,7 @@ void  FCParameterGrp::SetInt(const char* Name, long lValue)
 	Notify(Name);
 }
 
-std::vector<long> FCParameterGrp::GetInts(const char * sFilter)
+std::vector<long> ParameterGrp::GetInts(const char * sFilter)
 {
 	std::vector<long>  vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
@@ -514,7 +591,7 @@ std::vector<long> FCParameterGrp::GetInts(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,long> FCParameterGrp::GetIntMap(const char * sFilter)
+std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter)
 {
 	std::map<std::string,long>  vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
@@ -535,7 +612,7 @@ std::map<std::string,long> FCParameterGrp::GetIntMap(const char * sFilter)
 	return vrValues;
 }
 
-double FCParameterGrp::GetFloat(const char* Name, double dPreset)
+double ParameterGrp::GetFloat(const char* Name, double dPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCFloat",Name);
@@ -545,7 +622,7 @@ double FCParameterGrp::GetFloat(const char* Name, double dPreset)
 	return atof (StrX(pcElem->getAttribute(XStr("Value").unicodeForm())).c_str());
 }
 
-void  FCParameterGrp::SetFloat(const char* Name, double dValue)
+void  ParameterGrp::SetFloat(const char* Name, double dValue)
 {
 	char cBuf[256];
 	// find or create the Element
@@ -557,7 +634,7 @@ void  FCParameterGrp::SetFloat(const char* Name, double dValue)
 	Notify(Name);
 }
 
-std::vector<double> FCParameterGrp::GetFloats(const char * sFilter)
+std::vector<double> ParameterGrp::GetFloats(const char * sFilter)
 {
 	std::vector<double>  vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
@@ -578,7 +655,7 @@ std::vector<double> FCParameterGrp::GetFloats(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,double> FCParameterGrp::GetFloatMap(const char * sFilter)
+std::map<std::string,double> ParameterGrp::GetFloatMap(const char * sFilter)
 {
 	std::map<std::string,double>  vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
@@ -601,19 +678,19 @@ std::map<std::string,double> FCParameterGrp::GetFloatMap(const char * sFilter)
 
 
 
-void  FCParameterGrp::SetBlob(const char* Name, void *pValue, long lLength)
+void  ParameterGrp::SetBlob(const char* Name, void *pValue, long lLength)
 {
 	// not implemented so far
 	assert(0);
 }
 
-void FCParameterGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset)
+void ParameterGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset)
 {
 	// not implemented so far
 	assert(0);
 }
 
-void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
+void  ParameterGrp::SetASCII(const char* Name, const char *sValue)
 {
 	// find or create the Element
 	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCText",Name);
@@ -632,7 +709,7 @@ void  FCParameterGrp::SetASCII(const char* Name, const char *sValue)
 
 }
 
-void FCParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
+void ParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -649,7 +726,7 @@ void FCParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, co
 	}
 }
 
-std::string FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
+std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -667,7 +744,7 @@ std::string FCParameterGrp::GetASCII(const char* Name, const char * pPreset)
 
 }
 
-std::vector<std::string> FCParameterGrp::GetASCIIs(const char * sFilter)
+std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter)
 {
 	std::vector<std::string>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -691,7 +768,7 @@ std::vector<std::string> FCParameterGrp::GetASCIIs(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilter)
+std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter)
 {
 	std::map<std::string,std::string>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -718,7 +795,7 @@ std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilt
 //**************************************************************************
 // Access methodes
 
-void FCParameterGrp::RemoveGrp(const char* Name)
+void ParameterGrp::RemoveGrp(const char* Name)
 {
 	// remove group handle
 	_GroupMap.erase(Name);
@@ -734,7 +811,7 @@ void FCParameterGrp::RemoveGrp(const char* Name)
 	Notify(Name);
 }
 
-void FCParameterGrp::RemoveASCII(const char* Name)
+void ParameterGrp::RemoveASCII(const char* Name)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -748,7 +825,7 @@ void FCParameterGrp::RemoveASCII(const char* Name)
 
 }
 
-void FCParameterGrp::RemoveBool(const char* Name)
+void ParameterGrp::RemoveBool(const char* Name)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCBool",Name);
@@ -762,7 +839,7 @@ void FCParameterGrp::RemoveBool(const char* Name)
 	Notify(Name);
 }
 
-void FCParameterGrp::RemoveBlob(const char* Name)
+void ParameterGrp::RemoveBlob(const char* Name)
 {
 	/* not implemented yet
 	// check if Element in group
@@ -775,7 +852,7 @@ void FCParameterGrp::RemoveBlob(const char* Name)
 */
 }
 
-void FCParameterGrp::RemoveFloat(const char* Name)
+void ParameterGrp::RemoveFloat(const char* Name)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCFloat",Name);
@@ -789,7 +866,7 @@ void FCParameterGrp::RemoveFloat(const char* Name)
 	Notify(Name);
 }
 
-void FCParameterGrp::RemoveInt(const char* Name)
+void ParameterGrp::RemoveInt(const char* Name)
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCInt",Name);
@@ -803,15 +880,15 @@ void FCParameterGrp::RemoveInt(const char* Name)
 	Notify(Name);
 }
 
-void FCParameterGrp::Clear(void)
+void ParameterGrp::Clear(void)
 {
 	std::vector<DOMNode*> vecNodes;
 
 	// checking on references
-	std::map <std::string ,FCHandle<FCParameterGrp> >::iterator It1;
+	std::map <std::string ,FCHandle<ParameterGrp> >::iterator It1;
 	for(It1 = _GroupMap.begin();It1!=_GroupMap.end();It1++)
 		if(!(It1->second.IsLastRef()))
-			Console().Warning("FCParameterGrp::Clear(): Group clear with active references");
+			Console().Warning("ParameterGrp::Clear(): Group clear with active references");
 	// remove group handles
 	_GroupMap.clear();
 
@@ -840,7 +917,7 @@ void FCParameterGrp::Clear(void)
 // Access methodes
 
 
-DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)
+DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)
 {
 	for (DOMNode *clChild = Start->getFirstChild(); clChild != 0;  clChild = clChild->getNextSibling())
 	{
@@ -866,7 +943,7 @@ DOMElement *FCParameterGrp::FindElement(DOMElement *Start, const char* Type, con
 	return NULL;
 }
 
-DOMElement *FCParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
+DOMElement *ParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
 {
 	DOMNode *clChild = Prev;
 	if(!clChild) return 0l;
@@ -885,7 +962,7 @@ DOMElement *FCParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
 	return NULL;
 }
 
-DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name)
+DOMElement *ParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name)
 {
 	// first try to find it
 	DOMElement *pcElem = FindElement(Start,Type,Name);
@@ -902,7 +979,7 @@ DOMElement *FCParameterGrp::FindOrCreateElement(DOMElement *Start, const char* T
 	return pcElem;
 }
 
-void FCParameterGrp::NotifyAll()
+void ParameterGrp::NotifyAll()
 {
   // get all ints and notify
   std::map<std::string,long>        IntMap    = GetIntMap();
@@ -927,7 +1004,7 @@ void FCParameterGrp::NotifyAll()
 
 //**************************************************************************
 //**************************************************************************
-// FCParameterManager
+// ParameterManager
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Auto;
@@ -939,7 +1016,7 @@ static XercesDOMParser::ValSchemes    gValScheme       = XercesDOMParser::Val_Au
 /** Defauld construction
   * Does not much 
   */
-FCParameterManager::FCParameterManager()	: FCParameterGrp()
+ParameterManager::ParameterManager()	: ParameterGrp()
 {
 	// initialize the XML system
 	Init();
@@ -1002,12 +1079,12 @@ FCParameterManager::FCParameterManager()	: FCParameterGrp()
 /** Destruction
   * complete destruction of the object
   */
-FCParameterManager::~FCParameterManager()
+ParameterManager::~ParameterManager()
 {
 }
 
 
-void FCParameterManager::Init(void)
+void ParameterManager::Init(void)
 {
 	static bool Init = false;
 	if(!Init)
@@ -1042,7 +1119,7 @@ void FCParameterManager::Init(void)
 //**************************************************************************
 // Document handling
 
-bool FCParameterManager::LoadOrCreateDocument(const char* sFileName)
+bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
 	int i=open(sFileName,O_RDONLY);
 	if( i != -1)
@@ -1058,7 +1135,7 @@ bool FCParameterManager::LoadOrCreateDocument(const char* sFileName)
 
 
 
-int  FCParameterManager::LoadDocument(const char* sFileName)
+int  ParameterManager::LoadDocument(const char* sFileName)
 {
     const char *gXmlFile = sFileName;
 
@@ -1107,19 +1184,21 @@ int  FCParameterManager::LoadDocument(const char* sFileName)
         errorsOccured = true;
     }
 
-	if(errorsOccured) return 0;
+	if(errorsOccured) 
+    return 0;
 
 	_pDocument = parser->getDocument();
 	DOMElement* rootElem = _pDocument->getDocumentElement();
 
 	_pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
 
-	if(!_pGroupNode) throw Exception("Malformed Parameter document: Root group not found");
+	if(!_pGroupNode) 
+    throw Exception("Malformed Parameter document: Root group not found");
 	
 	return 1;
 }
 
-void  FCParameterManager::SaveDocument(const char* sFileName)
+void  ParameterManager::SaveDocument(const char* sFileName)
 {
 	DOMPrintFilter   *myFilter = 0;
 
@@ -1204,7 +1283,7 @@ void  FCParameterManager::SaveDocument(const char* sFileName)
 
 }
 
-void  FCParameterManager::CreateDocument(void)
+void  ParameterManager::CreateDocument(void)
 {
 	// creating a document from screatch
 	DOMImplementation* impl =  DOMImplementationRegistry::getDOMImplementation(XStr("Core").unicodeForm());
@@ -1223,7 +1302,7 @@ void  FCParameterManager::CreateDocument(void)
 }
 
 
-void  FCParameterManager::CheckDocument()
+void  ParameterManager::CheckDocument()
 {
 	
 }

@@ -67,7 +67,7 @@ using namespace Base;
 
 /** The ParameterGrp wrapper class
  */
-class FCPyParameterGrp :public Base::PyObjectBase
+class ParameterGrpPy :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;
@@ -80,11 +80,11 @@ public:
 	//---------------------------------------------------------------------
 
 	/// Constructor 
-	FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
+	ParameterGrpPy(const FCHandle<ParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
 	/// Destruction 
-	~FCPyParameterGrp();
+	~ParameterGrpPy();
 
 	//---------------------------------------------------------------------
 	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	
@@ -94,35 +94,38 @@ public:
 	// getter setter
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 	// methods
-	PYFUNCDEF_D (FCPyParameterGrp,PyGetGrp);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemGrp);
-	PYFUNCDEF_D (FCPyParameterGrp,PyHasGroup);
-	PYFUNCDEF_D (FCPyParameterGrp,PyIsEmpty);
-	PYFUNCDEF_D (FCPyParameterGrp,PyClear);
-	PYFUNCDEF_D (FCPyParameterGrp,PyNotify);
-	PYFUNCDEF_D (FCPyParameterGrp,PyNotifyAll);
+	PYFUNCDEF_D (ParameterGrpPy,PyGetGrp);
+	PYFUNCDEF_D (ParameterGrpPy,PyRemGrp);
+	PYFUNCDEF_D (ParameterGrpPy,PyHasGroup);
+	PYFUNCDEF_D (ParameterGrpPy,PyIsEmpty);
+	PYFUNCDEF_D (ParameterGrpPy,PyClear);
+	PYFUNCDEF_D (ParameterGrpPy,PyNotify);
+	PYFUNCDEF_D (ParameterGrpPy,PyNotifyAll);
 
-	PYFUNCDEF_D (FCPyParameterGrp,PySetBool);
-	PYFUNCDEF_D (FCPyParameterGrp,PyGetBool);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemBool);
+	PYFUNCDEF_D (ParameterGrpPy,PySetBool);
+	PYFUNCDEF_D (ParameterGrpPy,PyGetBool);
+	PYFUNCDEF_D (ParameterGrpPy,PyRemBool);
 
-	PYFUNCDEF_D (FCPyParameterGrp,PySetInt);
-	PYFUNCDEF_D (FCPyParameterGrp,PyGetInt);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemInt);
+	PYFUNCDEF_D (ParameterGrpPy,PySetInt);
+	PYFUNCDEF_D (ParameterGrpPy,PyGetInt);
+	PYFUNCDEF_D (ParameterGrpPy,PyRemInt);
 
-	PYFUNCDEF_D (FCPyParameterGrp,PySetFloat);
-	PYFUNCDEF_D (FCPyParameterGrp,PyGetFloat);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemFloat);
+	PYFUNCDEF_D (ParameterGrpPy,PySetFloat);
+	PYFUNCDEF_D (ParameterGrpPy,PyGetFloat);
+	PYFUNCDEF_D (ParameterGrpPy,PyRemFloat);
 
-	PYFUNCDEF_D (FCPyParameterGrp,PySetString);
-	PYFUNCDEF_D (FCPyParameterGrp,PyGetString);
-	PYFUNCDEF_D (FCPyParameterGrp,PyRemString);
+	PYFUNCDEF_D (ParameterGrpPy,PySetString);
+	PYFUNCDEF_D (ParameterGrpPy,PyGetString);
+	PYFUNCDEF_D (ParameterGrpPy,PyRemString);
 
+	PYFUNCDEF_D (ParameterGrpPy,import);
+	PYFUNCDEF_D (ParameterGrpPy,insert);
+	PYFUNCDEF_D (ParameterGrpPy,export);
 
 protected:
 
 	/// Pointer to the FCDocument where the label comes from 
-	FCHandle<FCParameterGrp> _cParamGrp;
+	FCHandle<ParameterGrp> _cParamGrp;
 };
 
 
@@ -130,11 +133,11 @@ protected:
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject FCPyParameterGrp::Type = {
+PyTypeObject ParameterGrpPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FCParameterGrp",		/*tp_name*/
-	sizeof(FCPyParameterGrp),/*tp_basicsize*/
+	"ParameterGrp",		/*tp_name*/
+	sizeof(ParameterGrpPy),/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -153,7 +156,7 @@ PyTypeObject FCPyParameterGrp::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef FCPyParameterGrp::Methods[] = {
+PyMethodDef ParameterGrpPy::Methods[] = {
   {"GetGroup",         (PyCFunction) sPyGetGrp,          Py_NEWARGS},
   {"RemGroup",         (PyCFunction) sPyRemGrp,          Py_NEWARGS},
   {"HasGroup",         (PyCFunction) sPyHasGroup,        Py_NEWARGS},
@@ -178,33 +181,37 @@ PyMethodDef FCPyParameterGrp::Methods[] = {
   {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS},
   {"RemString",        (PyCFunction) sPyRemString,       Py_NEWARGS},
 
+  {"Import",           (PyCFunction) simport,            Py_NEWARGS},
+  {"Insert",           (PyCFunction) sinsert,            Py_NEWARGS},
+  {"Export",           (PyCFunction) sexport,            Py_NEWARGS},
+
   {NULL, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject FCPyParameterGrp::Parents[] = {&PyObjectBase::Type,&FCPyParameterGrp::Type, NULL};     
+PyParentObject ParameterGrpPy::Parents[] = {&PyObjectBase::Type,&ParameterGrpPy::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-FCPyParameterGrp::FCPyParameterGrp(const FCHandle<FCParameterGrp> &rcParamGrp, PyTypeObject *T ) 
+ParameterGrpPy::ParameterGrpPy(const FCHandle<ParameterGrp> &rcParamGrp, PyTypeObject *T ) 
  : PyObjectBase( T),_cParamGrp(rcParamGrp)
 {
 	//Console().Log("Create Param Group %p\n",this);
 }
 
-PyObject *FCPyParameterGrp::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *ParameterGrpPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new FCPyParameterGrp();			// Make new Python-able object
+  //return new ParameterGrpPy();			// Make new Python-able object
   return 0;
 }
 
 //--------------------------------------------------------------------------
 //  FCPyParametrGrp destructor 
 //--------------------------------------------------------------------------
-FCPyParameterGrp::~FCPyParameterGrp()						// Everything handled in parent
+ParameterGrpPy::~ParameterGrpPy()						// Everything handled in parent
 {
 	//Console().Log("Destroy ParameterGrp %p\n",this);
 } 
@@ -212,7 +219,7 @@ FCPyParameterGrp::~FCPyParameterGrp()						// Everything handled in parent
 //--------------------------------------------------------------------------
 // FCPyParametrGrp Attributes
 //--------------------------------------------------------------------------
-PyObject *FCPyParameterGrp::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *ParameterGrpPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	/*
 	try{
@@ -257,7 +264,7 @@ PyObject *FCPyParameterGrp::_getattr(char *attr)				// __getattr__ function: not
 		return 0;
 } 
 
-int FCPyParameterGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int ParameterGrpPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { /*
 	if (streq(attr, "Real"))						// settable new state
 		TDataStd_Real::Set(_cLabel, PyFloat_AsDouble(value)); 
@@ -277,17 +284,54 @@ int FCPyParameterGrp::_setattr(char *attr, PyObject *value) 	// __setattr__ func
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PyObject *FCPyParameterGrp::PyGetGrp(PyObject *args)
+PyObject *ParameterGrpPy::import(PyObject *args)
+{ 
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  PY_TRY {
+    _cParamGrp->import(pstr);
+  }PY_CATCH;
+  Py_Return;
+} 
+
+PyObject *ParameterGrpPy::insert(PyObject *args)
+{ 
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  PY_TRY {
+    _cParamGrp->insert(pstr);
+  }PY_CATCH;
+  Py_Return;
+} 
+
+PyObject *ParameterGrpPy::export(PyObject *args)
+{ 
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  PY_TRY {
+    _cParamGrp->export(pstr);
+  }PY_CATCH;
+  Py_Return;
+} 
+
+
+
+
+
+PyObject *ParameterGrpPy::PyGetGrp(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   PY_TRY {
 	  // get the Handle of the wanted group
-	  FCHandle<FCParameterGrp> handle = _cParamGrp->GetGroup(pstr);
+	  FCHandle<ParameterGrp> handle = _cParamGrp->GetGroup(pstr);
 	  if(handle.IsValid()){
 		  // crate a python wrapper class
-		  FCPyParameterGrp *pcParamGrp = new FCPyParameterGrp(handle);
+		  ParameterGrpPy *pcParamGrp = new ParameterGrpPy(handle);
 		  // increment the reff count
 		  //pcParamGrp->_INCREF();
 		  return pcParamGrp;
@@ -298,7 +342,7 @@ PyObject *FCPyParameterGrp::PyGetGrp(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PySetBool(PyObject *args)
+PyObject *ParameterGrpPy::PySetBool(PyObject *args)
 { 
 	char *pstr;
 	int  Bool;
@@ -310,7 +354,7 @@ PyObject *FCPyParameterGrp::PySetBool(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyGetBool(PyObject *args)
+PyObject *ParameterGrpPy::PyGetBool(PyObject *args)
 { 
 	char *pstr;
 	int  Bool=0;
@@ -321,7 +365,7 @@ PyObject *FCPyParameterGrp::PyGetBool(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PySetInt(PyObject *args)
+PyObject *ParameterGrpPy::PySetInt(PyObject *args)
 { 
 	char *pstr;
 	long  Int;
@@ -333,7 +377,7 @@ PyObject *FCPyParameterGrp::PySetInt(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyGetInt(PyObject *args)
+PyObject *ParameterGrpPy::PyGetInt(PyObject *args)
 { 
 	char *pstr;
 	long  Int=0;
@@ -344,7 +388,7 @@ PyObject *FCPyParameterGrp::PyGetInt(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PySetFloat(PyObject *args)
+PyObject *ParameterGrpPy::PySetFloat(PyObject *args)
 { 
 	char *pstr;
 	double  Float;
@@ -356,7 +400,7 @@ PyObject *FCPyParameterGrp::PySetFloat(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyGetFloat(PyObject *args)
+PyObject *ParameterGrpPy::PyGetFloat(PyObject *args)
 { 
 	char *pstr;
 	double  Float=0.0;
@@ -367,7 +411,7 @@ PyObject *FCPyParameterGrp::PyGetFloat(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PySetString(PyObject *args)
+PyObject *ParameterGrpPy::PySetString(PyObject *args)
 { 
 	char *pstr;
 	char *  str;
@@ -379,7 +423,7 @@ PyObject *FCPyParameterGrp::PySetString(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyGetString(PyObject *args)
+PyObject *ParameterGrpPy::PyGetString(PyObject *args)
 { 
 	char *pstr;
 	char *  str="";
@@ -392,7 +436,7 @@ PyObject *FCPyParameterGrp::PyGetString(PyObject *args)
 
 //----
 
-PyObject *FCPyParameterGrp::PyRemInt(PyObject *args)
+PyObject *ParameterGrpPy::PyRemInt(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -403,7 +447,7 @@ PyObject *FCPyParameterGrp::PyRemInt(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyRemBool(PyObject *args)
+PyObject *ParameterGrpPy::PyRemBool(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -414,7 +458,7 @@ PyObject *FCPyParameterGrp::PyRemBool(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyRemGrp(PyObject *args)
+PyObject *ParameterGrpPy::PyRemGrp(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -425,7 +469,7 @@ PyObject *FCPyParameterGrp::PyRemGrp(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyRemFloat(PyObject *args)
+PyObject *ParameterGrpPy::PyRemFloat(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -436,7 +480,7 @@ PyObject *FCPyParameterGrp::PyRemFloat(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyRemString(PyObject *args)
+PyObject *ParameterGrpPy::PyRemString(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -447,7 +491,7 @@ PyObject *FCPyParameterGrp::PyRemString(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyClear(PyObject *args)
+PyObject *ParameterGrpPy::PyClear(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -457,7 +501,7 @@ PyObject *FCPyParameterGrp::PyClear(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyIsEmpty(PyObject *args)
+PyObject *ParameterGrpPy::PyIsEmpty(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -466,7 +510,7 @@ PyObject *FCPyParameterGrp::PyIsEmpty(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyHasGroup(PyObject *args)
+PyObject *ParameterGrpPy::PyHasGroup(PyObject *args)
 {
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
@@ -476,7 +520,7 @@ PyObject *FCPyParameterGrp::PyHasGroup(PyObject *args)
   }PY_CATCH;
 } 
 
-PyObject *FCPyParameterGrp::PyNotify(PyObject *args)
+PyObject *ParameterGrpPy::PyNotify(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
@@ -486,7 +530,7 @@ PyObject *FCPyParameterGrp::PyNotify(PyObject *args)
   	Py_Return;
   }PY_CATCH;
 } 
-PyObject *FCPyParameterGrp::PyNotifyAll(PyObject *args)
+PyObject *ParameterGrpPy::PyNotifyAll(PyObject *args)
 { 
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
@@ -501,10 +545,10 @@ PyObject *FCPyParameterGrp::PyNotifyAll(PyObject *args)
 
 /** python wrapper function
 */
-PyObject* GetPyObject( const FCHandle<FCParameterGrp> &hcParamGrp)
+PyObject* GetPyObject( const FCHandle<ParameterGrp> &hcParamGrp)
 {
 
-	return new FCPyParameterGrp(hcParamGrp); 
+	return new ParameterGrpPy(hcParamGrp); 
 }
 
 

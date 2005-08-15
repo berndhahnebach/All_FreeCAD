@@ -550,10 +550,10 @@ void StackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
  */
 void StackBar::OnChange(Base::Subject<const char*> &rCaller,const char* sReason)
 {
-  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
   if (strcmp(sReason, "SpeedAnimationCmdBar") == 0)
   {
-    FCParameterGrp::handle hGrp = rclGrp.GetGroup("SpeedAnimationCmdBar");
+    ParameterGrp::handle hGrp = rclGrp.GetGroup("SpeedAnimationCmdBar");
     if (hGrp->GetInts("Value").size() == 0)
       hGrp->SetInt("Value", 100);
     m_lAnimCount = hGrp->GetInt("Value", 100);

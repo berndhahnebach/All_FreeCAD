@@ -588,7 +588,7 @@ QStringList StdCmdMRU::recentFiles() const
 
 void StdCmdMRU::load()
 {
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
   if (hGrp->HasGroup("RecentFiles"))
   {
     hGrp = hGrp->GetGroup("RecentFiles");
@@ -616,7 +616,7 @@ void StdCmdMRU::save()
   {
     char szBuf[200];
     int i=0;
-    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
     hGrp->Clear();
     hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
 

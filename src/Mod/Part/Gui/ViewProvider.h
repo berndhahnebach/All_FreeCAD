@@ -62,7 +62,7 @@ protected:
   void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
 
   // setings stuff
-  FCParameterGrp::handle hGrp;
+  ParameterGrp::handle hGrp;
   float fMeshDeviation;     
   bool  bNoPerVertexNormals;
   long  lHilightColor;      

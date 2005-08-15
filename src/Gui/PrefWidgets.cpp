@@ -381,7 +381,7 @@ void PrefComboBox::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
+  ParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
 
   if ( !isKeepPreference() )
   {
@@ -411,7 +411,7 @@ void PrefComboBox::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
+  ParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   hPGrp->Clear();
 
   if ( !isKeepPreference() )
@@ -471,7 +471,7 @@ void PrefListBox::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
+  ParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   std::vector<std::string> items = hPGrp->GetASCIIs("Item");
 
   if (items.size() > 0)
@@ -492,7 +492,7 @@ void PrefListBox::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
+  ParameterGrp::handle  hPGrp = getWindowParameter()->GetGroup( entryName() );
   hPGrp->Clear();
 
   int size = int(count());
@@ -655,7 +655,7 @@ void PrefSlider::restorePreferences()
     return;
   }
 
-  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
+  ParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
   int o = hPrefs->GetInt("Orientation", orientation());
   setOrientation(Qt::Orientation(o));
   int min = hPrefs->GetInt("MinValue", minValue());
@@ -674,7 +674,7 @@ void PrefSlider::savePreferences()
     return;
   }
 
-  FCParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
+  ParameterGrp::handle hPrefs = getWindowParameter()->GetGroup( entryName() );
   hPrefs->SetInt("Orientation", int(orientation()));
   hPrefs->SetInt("MinValue", minValue());
   hPrefs->SetInt("MaxValue", maxValue());

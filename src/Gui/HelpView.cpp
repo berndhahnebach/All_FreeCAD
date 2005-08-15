@@ -581,7 +581,7 @@ void HelpView::openHelpFile()
  */
 void HelpView::startExternalBrowser( const QString& url )
 {
-  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
   QString browser = hGrp->GetASCII( "ExternalBrowser", "" ).c_str();
 
   if (browser.isEmpty())

@@ -4,7 +4,7 @@
  *  \version $Revision$
  *  \date    $Date$
  *  Here the implemetation of the Observer pattern
- *  @see Parameter.h FCParameterGrp
+ *  @see Parameter.h ParameterGrp
  */
 
 /***************************************************************************

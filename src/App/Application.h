@@ -122,7 +122,14 @@ class AppExport Application //: public PythonExport
 
 public:
 
-	//---------------------------------------------------------------------
+	/// Constructor
+	Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
+	/// Destructor
+	virtual ~Application();
+
+	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
+
+  //---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
@@ -151,22 +158,22 @@ public:
 	/** @name methodes for parameter handling */
 	//@{
   /// returns the system parameter
-	FCParameterManager &                                GetSystemParameter(void) ;
+	ParameterManager &                                GetSystemParameter(void) ;
   /// returns the user parameter
-	FCParameterManager &                                GetUserParameter(void) ;
+	ParameterManager &                                GetUserParameter(void) ;
   /** Gets a parameter group by a full qualified path
     * It's a easy methode to get a group:
     * \code
     * // geting standard parameter
-    * FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+    * ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
     * std::string cDir             = hGrp->GetASCII("ProjectPath", "");
     * std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
     * \endcode
     */
-	FCHandle<FCParameterGrp>                            GetParameterGroupByPath(const char* sName);
+	FCHandle<ParameterGrp>                            GetParameterGroupByPath(const char* sName);
 
-	FCParameterManager &                                GetParameterSet(const char* sName);
-	const std::map<std::string,FCParameterManager *> &  GetParameterSetList(void);
+	ParameterManager &                                GetParameterSet(const char* sName);
+	const std::map<std::string,ParameterManager *> &  GetParameterSetList(void);
 	//@}
 
 	/** @name methodes for the open handler 
@@ -191,12 +198,23 @@ public:
   void rmvOpenType(const char* Type);
 	//@}
 
+	/** @name Init, Destruct an Access methodes */
+	//@{
+  static void init(int argc, char ** argv);
+	static void destruct(void);
+	static void runApplication(void);
+	friend Application &GetApplication(void);
+	static std::map<std::string,std::string> &Config(void){return mConfig;}
+	static int GetARGC(void){return _argc;}
+	static char** GetARGV(void){return _argv;}
+	//@}
+
 
 private:
 	/** @name member for parameter */
 	//@{
-	static FCParameterManager *_pcSysParamMngr;
-	static FCParameterManager *_pcUserParamMngr;
+	static ParameterManager *_pcSysParamMngr;
+	static ParameterManager *_pcUserParamMngr;
 	//@}
 
 
@@ -243,19 +261,6 @@ private:
 
 	friend class ApplicationObserver;
 
-public:
-	/** @name Init, Destruct an Access methodes */
-	//@{
-  static void init(int argc, char ** argv);
-	static void destruct(void);
-	static void runApplication(void);
-	friend Application &GetApplication(void);
-	static std::map<std::string,std::string> &Config(void){return mConfig;}
-	static int GetARGC(void){return _argc;}
-	static char** GetARGV(void){return _argv;}
-	//@}
-
-private:
 	/** @name  Private Init, Destruct an Access methodes */
 	//@{
   static void initConfig(int argc, char ** argv, const char * sHomePath  );
@@ -281,15 +286,6 @@ private:
 	static char ** _argv;
 	//@}
 
-public:
-	/// Constructor
-	Application(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
-	/// Destructor
-	virtual ~Application();
-
-	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
-private:
-
 	/** @name Singelton functions */
 	//@{
 	/// Attach an Observer to monitor the Application
@@ -313,7 +309,7 @@ private:
 	/// The container of all attached Obervers
 	std::set<ApplicationObserver * > _aclObservers;
 
-	std::map<std::string,FCParameterManager *> mpcPramManager;
+	std::map<std::string,ParameterManager *> mpcPramManager;
 	// map for Template objects
 	PyObject*		 _pcTemplateDictionary;
 

@@ -115,7 +115,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   float Dist = Cam->focalDistance.getValue();
 
   // geting standard parameter
-  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
   std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
 
@@ -290,7 +290,7 @@ void CmdRaytracingWritePart::activated(int iMsg)
 {
   
   // get the preferences
-  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
   std::string cPartName        = hGrp->GetASCII("PartName", "TempPart.inc");
   //bool bNotWriteVertexNormals  = hGrp->GetBool("NotWriteVertexNormals",false);
@@ -379,7 +379,7 @@ CmdRaytracingQuickRender::CmdRaytracingQuickRender()
 void CmdRaytracingQuickRender::activated(int iMsg)
 {
   // get the preferences
-  FCParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
 
   //cDir = Gui::FileDialog::getExistingDirectory(cDir.c_str()).latin1();

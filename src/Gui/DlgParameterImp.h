@@ -138,7 +138,7 @@ public:
   void takeItem ( QListViewItem * i );
 
   /** Sets the current parameter group that is displayed. */
-  void setCurrentGroup( const FCHandle<FCParameterGrp>& _hcGrp );
+  void setCurrentGroup( const FCHandle<ParameterGrp>& _hcGrp );
 
 protected:
   /** Shows the context menu. */
@@ -169,7 +169,7 @@ protected slots:
 private:
   QPopupMenu* menuEdit;
   QPopupMenu* menuNew;
-  FCHandle<FCParameterGrp> _hcGrp;
+  FCHandle<ParameterGrp> _hcGrp;
 };
 
 /** The link between the Tree and the shown Label.
@@ -183,8 +183,8 @@ class ParameterGroupItem : public QListViewItem
 {
 public:
   /// Constructor
-  ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<FCParameterGrp> &hcGrp );
-  ParameterGroupItem( QListView* parent, const FCHandle<FCParameterGrp> &hcGrp);
+  ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp );
+  ParameterGroupItem( QListView* parent, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterGroupItem();
 
   void setSelected ( bool o );
@@ -192,7 +192,7 @@ public:
   void takeItem ( QListViewItem * item );
 
   void fillUp(void);
-  FCHandle<FCParameterGrp> _hcGrp;
+  FCHandle<ParameterGrp> _hcGrp;
 
 protected:
   /** If the name of the item has changed replace() is invoked. */
@@ -212,7 +212,7 @@ class ParameterValueItem : public QListViewItem
 {
 public:
   /// Constructor
-  ParameterValueItem ( QListView * parent, QString label1, const FCHandle<FCParameterGrp> &hcGrp);
+  ParameterValueItem ( QListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp);
   virtual ~ParameterValueItem();
 
   /** This is the class Id to distinguish from QListViewItem itself or 
@@ -233,7 +233,7 @@ protected:
   virtual void okRename ( int col );
 
 protected:
-  FCHandle<FCParameterGrp> _hcGrp;
+  FCHandle<ParameterGrp> _hcGrp;
 };
 
 /**
@@ -244,7 +244,7 @@ class ParameterText : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterText ( QListView * parent, QString label1, QString value, const FCHandle<FCParameterGrp> &hcGrp);
+  ParameterText ( QListView * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterText();
 
   void changeValue();
@@ -263,7 +263,7 @@ class ParameterInt : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<FCParameterGrp> &hcGrp);
+  ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterInt();
 
   void changeValue();
@@ -282,7 +282,7 @@ class ParameterFloat : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterFloat ( QListView * parent, QString label1, double value, const FCHandle<FCParameterGrp> &hcGrp);
+  ParameterFloat ( QListView * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterFloat();
 
   void changeValue();
@@ -301,7 +301,7 @@ class ParameterBool : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterBool ( QListView * parent, QString label1, bool value, const FCHandle<FCParameterGrp> &hcGrp);
+  ParameterBool ( QListView * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterBool();
 
   void changeValue();

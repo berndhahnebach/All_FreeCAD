@@ -39,7 +39,7 @@ class ApplicationWindow;
  * Retrieve the parameter group of the specific window by the windowname.
  * @author Jürgen Riegel
  */
-class GuiExport WindowParameter : public FCParameterGrp::ObserverType
+class GuiExport WindowParameter : public ParameterGrp::ObserverType
 {
 public:
   WindowParameter(const char *name);
@@ -49,14 +49,14 @@ public:
   void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
 
   /// get the parameters
-  static FCParameterGrp::handle getParameter(void);
+  static ParameterGrp::handle getParameter(void);
   /// return the parameter group of this window
-  FCParameterGrp::handle getWindowParameter(void);
+  ParameterGrp::handle getWindowParameter(void);
 
   ApplicationWindow* applicationWindow(void);
 
 private:
-  FCParameterGrp::handle _handle;
+  ParameterGrp::handle _handle;
 };
 
 } // namespace Gui

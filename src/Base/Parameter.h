@@ -61,7 +61,7 @@ XERCES_CPP_NAMESPACE_END
 
 
 
-class FCParameterManager;
+class ParameterManager;
 typedef struct _object PyObject;
 typedef unsigned short XMLCh;
 
@@ -78,25 +78,39 @@ typedef unsigned short XMLCh;
  *  Its main task is making user parameter persitent, saving
  *  last used values in dialog boxes, setting and retrieving all
  *  kind of preferences and so on.
- *  @see FCParameterManager
+ *  @see ParameterManager
  */
-class  BaseExport FCParameterGrp	: public FCHandled,public Base::Subject <const char*>
+class  BaseExport ParameterGrp	: public FCHandled,public Base::Subject <const char*>
 {
 
 
 public:
-	/** @name methodes for group handling */
+	/** @name copy and insertation */
+	//@{
+  /// make a deep copy to the other group
+  void copyTo(FCHandle<ParameterGrp>);
+  /// overwrite everithing similar, leaf the others allone 
+  void insertTo(FCHandle<ParameterGrp>); 
+  /// export this group to a file
+  void export(const char* FileName);
+  /// import from a file to this group
+  void import(const char* FileName);
+  /// insert from a file to this group, overwrite only the similar
+  void insert(const char* FileName);
+	//@}
+  
+  /** @name methodes for group handling */
 	//@{
 	/// get a handle to a sub group or creat one
-	FCHandle<FCParameterGrp> GetGroup(const char* Name);
+	FCHandle<ParameterGrp> GetGroup(const char* Name);
 	/// get a vector of all sub groups in this group
-	std::vector<FCHandle<FCParameterGrp> > GetGroups(void);
+	std::vector<FCHandle<ParameterGrp> > GetGroups(void);
 	/// test if this group is emty
 	bool IsEmpty(void);
 	/// test if a special sub group is in this group
 	bool HasGroup(const char* Name);
 	/// type of the handle
-	typedef FCHandle<FCParameterGrp> handle;
+	typedef FCHandle<ParameterGrp> handle;
 	/// remove a sub group from this group
 	void RemoveGrp(const char* Name);
 	/// clears everithing in this group (all types)
@@ -112,7 +126,7 @@ public:
 	/// get a vector of all bool values in this group
 	std::vector<bool> GetBools(const char * sFilter = NULL);
 	/// get a map with all bool values and the keys of this group
-	std::map<std::string,bool> FCParameterGrp::GetBoolMap(const char * sFilter = NULL);
+	std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter = NULL);
 	/// remove a bool value from this group
 	void RemoveBool(const char* Name);
 	//@}
@@ -176,12 +190,12 @@ public:
 	 */
 	std::vector<std::string> GetASCIIs(const char * sFilter = NULL);
 	/// Same as GetASCIIs() but with key,value map
-	std::map<std::string,std::string> FCParameterGrp::GetASCIIMap(const char * sFilter = NULL);
+	std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter = NULL);
 	//@}
 
 	static void Init(void);
 
-	friend class FCParameterManager;
+	friend class ParameterManager;
 
 	/// returns the name
 	const char* GetGroupName(void) {return _cName.c_str();}
@@ -192,11 +206,11 @@ public:
 
 protected:
 	/// constructor is protected (handle concept)
-	FCParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode=0L,const char* sName=0L);
+	ParameterGrp(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *GroupNode=0L,const char* sName=0L);
 	/// destructor is protected (handle concept)
-	~FCParameterGrp();
+	~ParameterGrp();
 	/// helper function for GetGroup
-	FCHandle<FCParameterGrp> _GetGroup(const char* Name);
+	FCHandle<ParameterGrp> _GetGroup(const char* Name);
 
 	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type);
 
@@ -213,7 +227,7 @@ protected:
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FCParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name);
 
 
 	/// DOM Node of the Base node of this group
@@ -221,7 +235,7 @@ protected:
 	/// the own name
 	std::string _cName;
 	/// map of already exported groups
-	std::map <std::string ,FCHandle<FCParameterGrp> > _GroupMap;
+	std::map <std::string ,FCHandle<ParameterGrp> > _GroupMap;
 
 };
 
@@ -229,13 +243,13 @@ protected:
 /** The parameter manager class
  *  This class manages a parameter XML document.
  *  Does loding, saving and handling the DOM document.
- *  @see FCParameterGrp
+ *  @see ParameterGrp
  */
-class BaseExport FCParameterManager	: public FCParameterGrp
+class BaseExport ParameterManager	: public ParameterGrp
 {
 public:
-	FCParameterManager();
-	~FCParameterManager();
+	ParameterManager();
+	~ParameterManager();
 	static void Init(void);
 
 	int   LoadDocument(const char* sFileName);
@@ -270,7 +284,7 @@ XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument   *_pDocument;
 
 /** python wrapper function
 */
-BaseExport PyObject* GetPyObject( const FCHandle<FCParameterGrp> &hcParamGrp);
+BaseExport PyObject* GetPyObject( const FCHandle<ParameterGrp> &hcParamGrp);
 
 
 #endif

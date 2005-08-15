@@ -447,7 +447,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
 {
   if ( !wget->isDownloading() )
   {
-    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
     hGrp = hGrp->GetGroup("Preferences")->GetGroup("OnlineHelp");
     std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
     std::string prx = hGrp->GetASCII("ProxyText", "");

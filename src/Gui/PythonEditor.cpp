@@ -58,7 +58,7 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
 {
   pythonSyntax = new PythonSyntaxHighlighter(this);
 
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  ParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
 
   // set colors and font
@@ -75,7 +75,7 @@ PythonEditor::~PythonEditor()
 /** Sets the new color for \a rcColor. */  
 void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  ParameterGrp::handle hPrefGrp = getWindowParameter();
 
   QFont font = currentFont();
   font.setBold( false ); // if current font is bold we must reset it first
@@ -487,7 +487,7 @@ PythonEditView::PythonEditView( QWidget* parent, const char* name)
   setFocusProxy( _textEdit );
   setCentralWidget( hbox );
 
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  ParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
   hPrefGrp->NotifyAll();
 }
@@ -502,7 +502,7 @@ PythonEditView::~PythonEditView()
 
 void PythonEditView::OnChange( Base::Subject<const char*> &rCaller,const char* rcReason )
 {
-  FCParameterGrp::handle hPrefGrp = getWindowParameter();
+  ParameterGrp::handle hPrefGrp = getWindowParameter();
   if (strcmp(rcReason, "EnableLineNumber") == 0)
   {
     bool show = hPrefGrp->GetBool( "EnableLineNumber", true );

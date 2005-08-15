@@ -292,7 +292,7 @@ LanguageProducer::LanguageProducer (const QString& language, const std::vector<c
   f.AddProducer(id.latin1(), this);
 
   // install the registered module if it provides the current language
-  FCParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
   QString lang = hPGrp->GetASCII("Language", "English").c_str();
   if ( lang == language )

@@ -68,9 +68,9 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal
   ParamVal->header()->setClickEnabled( FALSE, ParamVal->header()->count() - 1 );
   ParamVal->setResizeMode( QListView::AllColumns );
   
-  const std::map<std::string,FCParameterManager *> rcList = App::GetApplication().GetParameterSetList();
+  const std::map<std::string,ParameterManager *> rcList = App::GetApplication().GetParameterSetList();
 
-  for( std::map<std::string,FCParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
+  for( std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
   {
     if(It->first == "User parameter")
       SetNameComboBox->insertItem(It->first.c_str(),1);
@@ -115,7 +115,7 @@ void DlgParameterImp::onGroupSelected( QListViewItem * item )
   if ( item && item->rtti() == 2000 )
   {
     ParamVal->clear();
-    FCHandle<FCParameterGrp> _hcGrp = reinterpret_cast<ParameterGroupItem*>(item)->_hcGrp;
+    FCHandle<ParameterGrp> _hcGrp = reinterpret_cast<ParameterGroupItem*>(item)->_hcGrp;
     reinterpret_cast<ParameterValue*>(ParamVal)->setCurrentGroup( _hcGrp );
 
     // filling up Text nodes
@@ -162,7 +162,7 @@ void DlgParameterImp::onInsertFromFile()
 /** Switches the type of parameters either to user or system parameters. */
 void DlgParameterImp::onParameterSetChange(const QString& rcString)
 {
-  FCParameterManager &rcParMngr = App::GetApplication().GetParameterSet(rcString.latin1());
+  ParameterManager &rcParMngr = App::GetApplication().GetParameterSet(rcString.latin1());
 
   if(_pcMainLabel) delete _pcMainLabel;
   // remove all labels
@@ -287,7 +287,7 @@ void ParameterGroup::onCreateSubgroup()
     if ( item && item->rtti() == 2000 )
     {
       ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
-      FCHandle<FCParameterGrp> hGrp = para->_hcGrp;
+      FCHandle<ParameterGrp> hGrp = para->_hcGrp;
 
       if ( hGrp->HasGroup( name.latin1() ) )
       {
@@ -368,7 +368,7 @@ ParameterValue::~ParameterValue()
 {
 }
 
-void ParameterValue::setCurrentGroup( const FCHandle<FCParameterGrp>& hGrp )
+void ParameterValue::setCurrentGroup( const FCHandle<ParameterGrp>& hGrp )
 {
   _hcGrp = hGrp;
 }
@@ -554,13 +554,13 @@ void ParameterValue::onCreateBoolItem()
 
 // ---------------------------------------------------------------------------
 
-ParameterGroupItem::ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<FCParameterGrp> &hcGrp )
+ParameterGroupItem::ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp )
     : QListViewItem( parent ), _hcGrp(hcGrp)
 {
   fillUp();
 }
 
-ParameterGroupItem::ParameterGroupItem( QListView* parent, const FCHandle<FCParameterGrp> &hcGrp)
+ParameterGroupItem::ParameterGroupItem( QListView* parent, const FCHandle<ParameterGrp> &hcGrp)
     : QListViewItem( parent ), _hcGrp(hcGrp)
 {
   fillUp();
@@ -574,12 +574,12 @@ void ParameterGroupItem::fillUp(void)
 {
   //setPixmap( folderOpen );
   // filing up groups
-  std::vector<FCHandle<FCParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
+  std::vector<FCHandle<ParameterGrp> > vhcParamGrp = _hcGrp->GetGroups();
 
   setText(0,_hcGrp->GetGroupName());
   setPixmap(0,Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
 
-  for(std::vector<FCHandle<FCParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
+  for(std::vector<FCHandle<ParameterGrp> >::iterator It=vhcParamGrp.begin();It!=vhcParamGrp.end();It++)
     (void)new ParameterGroupItem(this,*It);
 }
 
@@ -638,7 +638,7 @@ void ParameterGroupItem::okRename ( int col )
 
 // --------------------------------------------------------------------
 
-ParameterValueItem::ParameterValueItem ( QListView * parent, QString label1, const FCHandle<FCParameterGrp> &hcGrp)
+ParameterValueItem::ParameterValueItem ( QListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp)
   : QListViewItem( parent, label1 ), _hcGrp(hcGrp)
 {
 }
@@ -670,7 +670,7 @@ void ParameterValueItem::okRename ( int col )
 
 // --------------------------------------------------------------------
 
-ParameterText::ParameterText ( QListView * parent, QString label1, QString value, const FCHandle<FCParameterGrp> &hcGrp)
+ParameterText::ParameterText ( QListView * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Text") );
@@ -717,7 +717,7 @@ void ParameterText::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterInt::ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<FCParameterGrp> &hcGrp)
+ParameterInt::ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Int") );
@@ -764,7 +764,7 @@ void ParameterInt::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterFloat::ParameterFloat ( QListView * parent, QString label1, double value, const FCHandle<FCParameterGrp> &hcGrp)
+ParameterFloat::ParameterFloat ( QListView * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Float") );
@@ -811,7 +811,7 @@ void ParameterFloat::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterBool::ParameterBool ( QListView * parent, QString label1, bool value, const FCHandle<FCParameterGrp> &hcGrp)
+ParameterBool::ParameterBool ( QListView * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Bool") );

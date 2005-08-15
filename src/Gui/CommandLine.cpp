@@ -107,7 +107,7 @@ CommandLineBase::~CommandLineBase(void)
 void CommandLineBase::saveHistory()
 {
   // write the recent commands into file
-  FCParameterGrp::handle hCmdGrp = getWindowParameter()->GetGroup("History");
+  ParameterGrp::handle hCmdGrp = getWindowParameter()->GetGroup("History");
 
   // copy from list box first
   std::list<std::string> alCmdList;
@@ -130,11 +130,11 @@ void CommandLineBase::saveHistory()
  */
 void CommandLineBase::loadHistory()
 {
-  FCParameterGrp::handle hGrp = getWindowParameter();
+  ParameterGrp::handle hGrp = getWindowParameter();
   _maxCount = hGrp->GetInt("SizeCmdLine", _maxCount);
 
   // get the recent commands
-  FCParameterGrp::handle hCmdGrp = hGrp->GetGroup("History");
+  ParameterGrp::handle hCmdGrp = hGrp->GetGroup("History");
   std::vector<std::string> cmd = hCmdGrp->GetASCIIs("Command");
 
   int i=0;
@@ -380,7 +380,7 @@ void CommandLineBase::show()
 
 void CommandLineBase::OnChange(Base::Subject<const char*> &rCaller,const char* sReason)
 {
-  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
   if (strcmp(sReason, "SizeCmdLine") == 0)
   {
     _maxCount = rclGrp.GetInt("SizeCmdLine", _maxCount);

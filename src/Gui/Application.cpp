@@ -1108,7 +1108,7 @@ void ApplicationWindow::loadWindowSettings()
 {
   loadDockWndSettings();
 
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   int w = hGrp->GetInt("Width", 1024);
   int h = hGrp->GetInt("Height", 768);
   int x = hGrp->GetInt("PosX", pos().x());
@@ -1125,7 +1125,7 @@ void ApplicationWindow::loadWindowSettings()
 
 void ApplicationWindow::updatePixmapsSize(void)
 {
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
   bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
   if (bigPixmaps != usesBigPixmaps())
@@ -1135,7 +1135,7 @@ void ApplicationWindow::updatePixmapsSize(void)
 void ApplicationWindow::updateStyle(void)
 {
   QStyle& curStyle = QApplication::style();
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
   hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
 
   QString style = hGrp->GetASCII( "WindowStyle", curStyle.name() ).c_str();
@@ -1151,7 +1151,7 @@ void ApplicationWindow::updateStyle(void)
 
 void ApplicationWindow::saveWindowSettings()
 {
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   if (isMaximized())
   {
     hGrp->SetBool("Maximized", true);
@@ -1170,7 +1170,7 @@ void ApplicationWindow::saveWindowSettings()
 
 void ApplicationWindow::loadDockWndSettings()
 {
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   QString str = hGrp->GetASCII("Layout", "").c_str();
 
   if ( !str.isEmpty() )
@@ -1234,7 +1234,7 @@ void ApplicationWindow::saveDockWndSettings()
   QTextStream ts( &str, IO_WriteOnly );
   ts << *this;
 
-  FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   hGrp->SetASCII("Layout", str.latin1());
 /*
   // save dock window settings
@@ -1465,7 +1465,7 @@ void ApplicationWindow::startSplasher(void)
   // when running in verbose mode no splasher
   if ( ! (App::Application::Config()["Verbose"] == "Strict") && (App::Application::Config()["RunMode"] == "Gui") )
   {
-    FCParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 #ifdef FC_DEBUG
   bool splash = false;
 #else
@@ -1494,7 +1494,7 @@ void ApplicationWindow::stopSplasher(void)
 void ApplicationWindow::showTipOfTheDay( bool force )
 {
   // tip of the day?
-  FCParameterGrp::handle
+  ParameterGrp::handle
   hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
 
 #ifdef FC_DEBUG

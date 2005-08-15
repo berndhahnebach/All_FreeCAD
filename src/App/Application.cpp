@@ -174,8 +174,8 @@ Handle_ApplicationOCC::~Handle_ApplicationOCC() {}
 // Application
 //==========================================================================
 
-FCParameterManager *App::Application::_pcSysParamMngr;
-FCParameterManager *App::Application::_pcUserParamMngr;
+ParameterManager *App::Application::_pcSysParamMngr;
+ParameterManager *App::Application::_pcUserParamMngr;
 Base::ConsoleObserverStd  *Application::_pConsoleObserverStd;
 Base::ConsoleObserverFile *Application::_pConsoleObserverFile;
 
@@ -185,7 +185,7 @@ std::map<std::string,std::string> Application::mConfig;
 //**************************************************************************
 // Construction and destruction
 
-Application::Application(FCParameterManager *pcSysParamMngr, FCParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
+Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
 	://_pcSysParamMngr(pcSysParamMngr),
 	 //_pcUserParamMngr(pcUserParamMngr),
 	 _mConfig(mConfig),
@@ -331,22 +331,22 @@ void Application::SetActive(Document* pDoc)
 	_pActiveDoc = pDoc;
 }
 
-FCParameterManager & Application::GetSystemParameter(void) 
+ParameterManager & Application::GetSystemParameter(void) 
 {
 	return *_pcSysParamMngr;
 }
 
-FCParameterManager & Application::GetUserParameter(void) 
+ParameterManager & Application::GetUserParameter(void) 
 {
 	return *_pcUserParamMngr;
 }
 
-FCParameterManager & Application::GetParameterSet(const char* sName)
+ParameterManager & Application::GetParameterSet(const char* sName)
 {
 	return *mpcPramManager[sName];
 }
 
-const std::map<std::string,FCParameterManager *> & Application::GetParameterSetList(void)
+const std::map<std::string,ParameterManager *> & Application::GetParameterSetList(void)
 {
 	return mpcPramManager;
 }
@@ -367,7 +367,7 @@ std::vector<std::string> Application::GetAllTemplates(void)
 	return cTemp;
 }
 
-FCHandle<FCParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
+FCHandle<ParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
 {
 	std::string cName = sName,cTemp;
 
@@ -383,7 +383,7 @@ FCHandle<FCParameterGrp>  Application::GetParameterGroupByPath(const char* sName
 	cName.erase(0,pos+1);
 
 	// test if name is valid
-	std::map<std::string,FCParameterManager *>::iterator It = mpcPramManager.find(cTemp.c_str());
+	std::map<std::string,ParameterManager *>::iterator It = mpcPramManager.find(cTemp.c_str());
 	if (It == mpcPramManager.end())
 		throw Base::Exception("Application::GetParameterGroupByPath() unknown parameter set name specified");
 
@@ -715,11 +715,11 @@ void Application::logStatus()
 void Application::LoadParameters(void)
 {
 	// create standard parameter sets
-	_pcSysParamMngr = new FCParameterManager();
-	_pcUserParamMngr = new FCParameterManager();
+	_pcSysParamMngr = new ParameterManager();
+	_pcUserParamMngr = new ParameterManager();
 
 		// Init parameter sets ===========================================================
-	mConfig["UserParameter"]  += mConfig["HomePath"] + "FC" + mConfig["UserName"] + ".FCParam";
+	mConfig["UserParameter"]  += mConfig["HomePath"] + "Config_" + mConfig["UserName"] + ".FCParam";
 	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
 
 	//puts(mConfig["HomePath"].c_str());

@@ -102,6 +102,16 @@ class ParameterTestCase(unittest.TestCase):
         self.TestPar.RemFloat("44")
         self.failUnless(self.TestPar.GetFloat("44",1.1) == 1.1,"Deletion error at Float")
 
+    def testString(self):
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testFloat\n")
+        #Temp = FreeCAD.ParamGet("System parameter:Test/44")
+        # check on Int
+        self.TestPar.SetString("44","abcdefgh")
+        self.failUnless(self.TestPar.GetString("44") == "abcdefgh","In and out error at String")
+        # check on Deletion
+        self.TestPar.RemString("44")
+        self.failUnless(self.TestPar.GetString("44","hallo") == "hallo","Deletion error at String")
+
     def testNesting(self):
         # Parameter testing
         #FreeCAD.PrintLog("Base::ParameterTestCase::testNesting\n")
@@ -114,6 +124,24 @@ class ParameterTestCase(unittest.TestCase):
                 Temp.SetFloat(`l`,4711.4711)
                 Temp.SetInt(`l`,4711)
                 Temp.SetBool(`l`,1)
+        Temp = 0
+        
+    def testExportImport(self):
+        # Parameter testing
+        #FreeCAD.PrintLog("Base::ParameterTestCase::testNesting\n")
+        self.TestPar.SetFloat("ExTest",4711.4711)
+        self.TestPar.SetInt("ExTest",4711)
+        self.TestPar.SetString("ExTest","4711")
+        self.TestPar.SetBool("ExTest",1)
+        Temp = self.TestPar.GetGroup("ExTest")
+        Temp.SetFloat("ExTest",4711.4711)
+        Temp.SetInt("ExTest",4711)
+        Temp.SetString("ExTest","4711")
+        Temp.SetBool("ExTest",1)
+        self.TestPar.Export("ExportTest.FCExport")
+        Temp = self.TestPar.GetGroup("ImportTest")
+        Temp.Import("ExportTest.FCExport")
+        self.failUnless(Temp.GetFloat("ExTest") == 4711.4711,"ExportImport error")
         Temp = 0
         
     def tearDown(self):

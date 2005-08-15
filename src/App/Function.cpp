@@ -4,7 +4,7 @@
  *  \version $Revision$
  *  \date    $Date$
  *  Here a example of a file layout for FreeCAD.
- *  @see Parameter.h FCParameter FCParameterManager
+ *  @see Parameter.h FCParameter ParameterManager
  */
 
 /***************************************************************************

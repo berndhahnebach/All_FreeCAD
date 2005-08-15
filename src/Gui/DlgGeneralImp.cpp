@@ -79,7 +79,7 @@ void DlgGeneralImp::setMRUSize()
   Command* pCmd = rclMan.getCommandByName("Std_MRU");
   if (pCmd)
   {
-    FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("RecentFiles");
+    ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("RecentFiles");
     ((StdCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }
@@ -107,7 +107,7 @@ void DlgGeneralImp::saveSettings()
   AllowDragMenu->onSave();
   UsesBigPixmaps->onSave();
 
-  FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
   hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
 
   ApplicationWindow::Instance->updateStyle();
@@ -141,7 +141,7 @@ void DlgGeneralImp::loadSettings()
   WindowStyle->setCurrentText( style );
 
   // search for the language files
-  FCParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
   QString language = hGrp->GetASCII("Language", "English").c_str();
   insertLanguages();
   Languages->setCurrentText( language );

@@ -59,8 +59,8 @@ public:
   bool hasCustomItems();
   const QStringList& getCustomItems() const;
   void setCustomItems( const QStringList& items );
-  void addCustomItems( FCParameterGrp::handle, const QStringList& item );
-  void removeCustomItems( FCParameterGrp::handle, const QStringList& item );
+  void addCustomItems( ParameterGrp::handle, const QStringList& item );
+  void removeCustomItems( ParameterGrp::handle, const QStringList& item );
 
   void loadXML();
   void saveXML();
@@ -74,11 +74,11 @@ public:
   QString getWorkbench();
   virtual ~CustomWidget();
 
-  static FCParameterGrp::handle getParameter();
+  static ParameterGrp::handle getParameter();
 
 protected:
   virtual void rebuild() = 0;
-  typedef QMap<FCParameterGrp::handle, QStringList> WorkbenchItems;
+  typedef QMap<ParameterGrp::handle, QStringList> WorkbenchItems;
 
   CustomWidget( const char* grp, const char * name );
   virtual void restorePreferences();
@@ -87,7 +87,7 @@ protected:
   QStringList _Items;
   WorkbenchItems _WbItems;
 
-  FCParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
+  ParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
 
 private:
   void init( const char* grp, const char* name );
@@ -157,7 +157,7 @@ protected:
 private:
   QString _parent;
   bool    _bAllowDrag;
-  FCParameterGrp::handle _hCommonGrp;
+  ParameterGrp::handle _hCommonGrp;
 };
 
 /**

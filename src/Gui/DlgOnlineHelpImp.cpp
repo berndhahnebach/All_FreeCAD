@@ -66,7 +66,7 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp()
  */
 QString DlgOnlineHelpImp::getStartpage()
 {
-  FCParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+  ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
   QString home = QString(hURLGrp->GetASCII( "Startpage", "" ).c_str());
 
   if ( home.isEmpty() )

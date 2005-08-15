@@ -317,7 +317,7 @@ void ReportOutput::onToggleLogging()
 
 void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
 {
-  FCParameterGrp& rclGrp = ((FCParameterGrp&)rCaller);
+  ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
   if (strcmp(sReason, "checkLogging") == 0)
   {
     bLog = rclGrp.GetBool( sReason, bLog );
