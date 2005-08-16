@@ -210,17 +210,20 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
 
         bool bIsNode =  false;
         for(std::list<Node>::iterator It = NodeList.begin();It != NodeList.end(); It++)
+        {
           if(It->pcHighlight->isHighlighted())
           {
             bIsNode = true;
+            PointToMove = *It;
             break;
           }
+        }
 
         if(bIsNode)
         {
           // set the provider in point move mode and remember the point
           bMovePointMode = true;
-          PointToMove = *It;
+          // PointToMove = *It; ### Error 'It' is out of scope->move inside the loop
 
 
           return true;

@@ -244,6 +244,8 @@ libFreeCADGui_la_SOURCES=\
 		resource.cpp \
 		Selection.cpp \
 		Selection.h \
+		SoFCSelection.cpp \
+		SoFCSelection.h \
 		SpinBox.cpp \
 		SpinBox.h \
 		Splashscreen.cpp \

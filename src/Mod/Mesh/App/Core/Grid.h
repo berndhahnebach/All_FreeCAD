@@ -115,6 +115,8 @@ public:
   { return _aulGrid[ulX][ulY][ulZ].size(); }
   /** Validates the grid structure and rebuilds it if needed. Must be implemented in sub-classes. */
   virtual void Validate (const MeshKernel &rclM) = 0;
+  /** Verifies the grid structure and returns false if inconsistencies are found. */
+  virtual bool Verify() const = 0;
 
 protected:
   /** Returns the indices of the grid this point lies in. If the point is outside the grid the the indices of 
@@ -200,6 +202,8 @@ public:
   virtual void Validate (const MeshKernel &rclM);
   /** Validates the grid structure and rebuilds it if needed. */
   virtual void Validate (void);
+  /** Verifies the grid structure and returns false if inconsistencies are found. */
+  virtual bool Verify() const;
 
 protected:
   /** Returns the grid numbers to the given point \a rclPoint. */
@@ -246,6 +250,8 @@ public:
   virtual void Validate (const MeshKernel &rclM);
   /** Validates the grid structure and rebuilds it if needed. */
   virtual void Validate (void);
+  /** Verifies the grid structure and returns false if inconsistencies are found. */
+  virtual bool Verify() const;
 
 protected:
   /** Adds a new point element to the grid structure. \a rclPt is the geometric point and \a ulPtIndex 
@@ -477,7 +483,7 @@ inline void MeshFacetGrid::AddFacet (const MeshGeomFacet &rclFacet, unsigned lon
       {
         for (ulZ = ulZ1; ulZ <= ulZ2; ulZ++)
         {
-//          if (MeshFacetFunc::BBoxContainFacet(GetBoundBox(ulX, ulY, ulZ), rclFacet) == TRUE)
+          if ( rclFacet.IntersectBoundingBox( GetBoundBox(ulX, ulY, ulZ) ) )
             _aulGrid[ulX][ulY][ulZ].insert(ulFacetIndex);
         }
       }

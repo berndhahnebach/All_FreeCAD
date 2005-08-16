@@ -626,6 +626,30 @@ void MeshFacetGrid::Validate (void)
     RebuildGrid();
 }
 
+bool MeshFacetGrid::Verify() const
+{
+  if ( !_pclMesh ) 
+    return false; // no mesh attached
+  if (_pclMesh->CountFacets() != _ulCtElements)
+    return false; // not up-to-date
+
+  MeshGridIterator it(*this);
+  MeshFacetIterator cF(*_pclMesh);
+  for ( it.Init(); it.More(); it.Next() )
+  {
+    std::vector<unsigned long> aulElements;
+    it.GetElements( aulElements );
+    for ( std::vector<unsigned long>::iterator itF = aulElements.begin(); itF != aulElements.end(); ++itF )
+    {
+      cF.Set( *itF );
+      if ( cF->IntersectBoundingBox( it.GetBoundBox() ) == false )
+        return false; // no intersection between facet although the facet is in grid
+    }
+  }
+
+  return true;
+}
+
 void MeshFacetGrid::RebuildGrid (void)
 {
   _ulCtElements = _pclMesh->CountFacets();
@@ -911,6 +935,30 @@ void MeshPointGrid::Validate (void)
 
   if (_pclMesh->CountPoints() != _ulCtElements)
     RebuildGrid();
+}
+
+bool MeshPointGrid::Verify() const
+{
+  if ( !_pclMesh ) 
+    return false; // no mesh attached
+  if (_pclMesh->CountFacets() != _ulCtElements)
+    return false; // not up-to-date
+
+  MeshGridIterator it(*this);
+  MeshPointIterator cP(*_pclMesh);
+  for ( it.Init(); it.More(); it.Next() )
+  {
+    std::vector<unsigned long> aulElements;
+    it.GetElements( aulElements );
+    for ( std::vector<unsigned long>::iterator itP = aulElements.begin(); itP != aulElements.end(); ++itP )
+    {
+      cP.Set( *itP );
+      if ( it.GetBoundBox().IsInBox( *cP ) == false )
+        return false; // point doesn't lie inside the grid element
+    }
+  }
+
+  return true;
 }
 
 void MeshPointGrid::RebuildGrid (void)

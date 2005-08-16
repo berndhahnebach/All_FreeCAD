@@ -117,7 +117,8 @@ void Command::activated ()
 {
   if(_eType == Cmd_Normal)
   {
-    Base::Console().Log("CmdG: %s\n",_pcAction->text().latin1());
+    // Do not query _pcAction since it isn't created necessarily
+    Base::Console().Log("CmdG: %s\n",sName.c_str());
     // set the application module type for the macro
     getAppWnd()->macroManager()->setModule(sAppModule.c_str());
     try{
@@ -163,7 +164,8 @@ void Command::toggled (bool b)
     return; 
   if(_eType == Cmd_Toggle)
   {
-    Base::Console().Log("CmdG: Toggled %s\n",_pcAction->text().latin1());
+    // Do not query _pcAction since it isn't created necessarily
+    Base::Console().Log("CmdG: Toggled %s\n",sName.c_str());
     if(b)
       activated(1);
     else
@@ -279,7 +281,9 @@ void Command::toggleCommand(const char* sCmdName,bool bToggle)
   if(pcCmd)
   {
     assert(pcCmd->isToggle());
-    pcCmd->_pcAction->setOn(bToggle?1:0);
+    // check if the QAction is already created
+    if ( pcCmd->_pcAction )
+      pcCmd->_pcAction->setOn(bToggle?1:0);
   }
 }
 

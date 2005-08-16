@@ -223,8 +223,8 @@ CmdMeshImport::CmdMeshImport()
 
 void CmdMeshImport::activated(int iMsg)
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STL (*.stl *.ast);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString filter = "All STL Files (*.stl *.ast);;Binary STL (*.stl);;ASCII STL (*.ast);;All Files (*.*)";
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, filter, Gui::ApplicationWindow::Instance );
   if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");

@@ -28,6 +28,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/fields/SoSFColor.h>
 #include <Inventor/fields/SoSFEnum.h>
+#include <Inventor/nodes/SoLightModel.h>
 
 class SoFullPath;
 

@@ -42,12 +42,19 @@ using namespace Gui;
 
 /* TRANSLATOR Gui::FileDialog */
 
+/** 
+ * This is a convenience static function that returns an existing file selected by the user. 
+ * If the user pressed Cancel, it returns a null string.
+ */
 QString FileDialog::getOpenFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption, const QString& buttonText,
-                                      bool * ok )
+                                      const char* name, const QString & caption, QString* selectedFilter,
+                                      bool resolveSymlinks, const QString& buttonText, bool * ok )
 {
-  FileDialog fd(ExistingFile, startWith, filter, parent, name, true);
+  FileDialog fd( startWith, filter, parent, name, true );
+  fd.setMode( ExistingFile );
   fd.setCaption(caption);
+  if ( selectedFilter )
+    fd.setFilter( *selectedFilter );
   if ( buttonText != QString::null )
   {
     // search for the OK button to change its text
@@ -61,27 +68,52 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
   if ( ok )
   	*ok = ok_;
   if ( ok_ )
+  {
+    if ( selectedFilter )
+      *selectedFilter = fd.selectedFilter();
     return fd.selectedFileName();
+  }
   else
     return QString::null;
 }
 
+/**
+ * This is a convenience static function that will return a file name selected by the user. The file does not have to exist.
+ */
 QString FileDialog::getSaveFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption, bool * ok  )
+                                      const char* name, const QString & caption, QString * selectedFilter, 
+                                      bool resolveSymlinks, const QString& buttonText, bool * ok  )
 {
-  FileDialog fd(AnyFile, startWith, filter, parent, name, true);
+  FileDialog fd( startWith, filter, parent, name, true );
+  fd.setMode( AnyFile );
   fd.setCaption(caption);
+  if ( selectedFilter )
+    fd.setFilter( *selectedFilter );
+  if ( buttonText != QString::null )
+  {
+    // search for the OK button to change its text
+    QObject* btn = fd.child( "OK", "QPushButton", true );
+    if ( btn )
+      static_cast<QPushButton*>(btn)->setText( buttonText );
+  }
 
   bool ok_ = false;
   ok_ = ( fd.exec() == QDialog::Accepted );
   if ( ok )
   	*ok = ok_;
   if ( ok_ )
+  {
+    if ( selectedFilter )
+      *selectedFilter = fd.selectedFilter();
     return fd.selectedFileName();
+  }
   else
     return QString::null;
 }
 
+/**
+ * This is a convenience static function that will return an existing directory selected by the user.
+ */
 QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, const char* name,
                                           const QString& caption, bool dirOnly, bool resolveSymlinks,
                                           bool * ok )
@@ -101,40 +133,60 @@ QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, 
 }
 
 /**
- * Constructs a file dialog called \a name with the parent \a parent and the mode \a mode. 
- * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
+ * This is a convenience static function that will return one or more existing files selected by the user.
  */
-FileDialog::FileDialog (Mode mode, QWidget* parent, const char* name, bool modal)
-    : QFileDialog(parent, name, modal)
+QStringList FileDialog::getOpenFileNames ( const QString & filter, const QString & dir, QWidget * parent, 
+                                           const char * name, const QString & caption, QString * selectedFilter, 
+                                           bool resolveSymlinks, const QString& buttonText, bool * ok )
 {
-  setMode(mode);
+  FileDialog fd( dir, filter, parent, name, true );
+  fd.setMode( ExistingFile );
+  fd.setCaption(caption);
+  if ( selectedFilter )
+    fd.setFilter( *selectedFilter );
+  if ( buttonText != QString::null )
+  {
+    // search for the OK button to change its text
+    QObject* btn = fd.child( "OK", "QPushButton", true );
+    if ( btn )
+      static_cast<QPushButton*>(btn)->setText( buttonText );
+  }
+
+  bool ok_ = false;
+  QStringList lst;
+  ok_ = ( fd.exec() == QDialog::Accepted );
+  if ( ok )
+  	*ok = ok_;
+  if ( ok_ )
+  {
+    if ( selectedFilter )
+      *selectedFilter = fd.selectedFilter();
+    lst = fd.selectedFiles();
+  }
+
+  return lst;
 }
 
 /**
- * Constructs a file dialog called \a name with the parent \a parent and the mode \a mode.
+ * Constructs a file dialog called \a name and with the parent \a parent. 
+ * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
+ */
+FileDialog::FileDialog ( QWidget* parent, const char* name, bool modal)
+    : QFileDialog(parent, name, modal )
+{
+}
+
+/**
+ * Constructs a file dialog called \a name and with the parent \a parent.
  * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
  *
  * If \a dirName is specified then it will be used as the dialog's working directory, i.e. 
  * it will be the directory that is shown when the dialog appears. If \a filter is specified
  * it will be used as the dialog's file filter.
  */
-FileDialog::FileDialog (Mode mode, const QString& dirName, const QString& filter,
+FileDialog::FileDialog ( const QString& dirName, const QString& filter,
                         QWidget* parent, const char* name, bool modal)
-    : QFileDialog(dirName, filter, parent, name, modal)
-{
-  setMode(mode);
-}
-
-/**
- * Constructs a file dialog called \a name with the parent \a parent.
- * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
- *
- * If \a dirName is specified then it will be used as the dialog's working directory, i.e. 
- * it will be the directory that is shown when the dialog appears. If \a filter is specified
- * it will be used as the dialog's file filter.
- */
-FileDialog::FileDialog (const QString& dirName, const QString& filter, QWidget* parent, const char* name, bool modal)
-  : QFileDialog(dirName, filter, parent, name, modal)
+    : QFileDialog(dirName, filter, parent, name, modal )
 {
 }
 
@@ -389,8 +441,7 @@ void FileChooser::chooseFile()
   QString fn;
   if ( mode() == File )
   {
-    fn = Gui::FileDialog::getOpenFileName( lineEdit->text(), _filter, this, 0,
-      tr( "Select file" ), tr( "Select" ));
+    fn = Gui::FileDialog::getOpenFileName( lineEdit->text(), _filter, this, 0, tr( "Select file" ));
   }
   else
   {

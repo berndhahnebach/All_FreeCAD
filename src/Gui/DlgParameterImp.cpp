@@ -307,7 +307,7 @@ void ParameterGroup::onExportSelectedGroup()
 {
   bool ok;
   QString file = FileDialog::getSaveFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
-                                              tr("Export parameter to file"), &ok);
+                                              tr("Export parameter to file"), 0, true, "Export", &ok);
   if ( ok )
   {
     QMessageBox::information( this, "Todo", "Not yet implemented!");
