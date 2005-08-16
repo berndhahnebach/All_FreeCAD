@@ -51,6 +51,7 @@
 #include <Geom_Plane.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomAPI_IntCS.hxx>
+#include <GeomLProp_CLProps.hxx>
 
 using namespace Mesh;
 using namespace MeshCore;
@@ -528,5 +529,59 @@ void MeshAlgos::cutByCurve(MeshWithProperty* pMesh,const std::vector<CurveProjec
   }
 
   cTopAlg.Commit();
+}
+
+void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up, unsigned short res)
+{
+  TopExp_Explorer Ex;
+  Standard_Real fBegin, fEnd;
+  std::vector<MeshGeomFacet> cVAry;
+
+
+  for (Ex.Init(Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
+  {
+    GeomLProp_CLProps prop(BRep_Tool::Curve(TopoDS::Edge(Ex.Current()),fBegin,fEnd),1,0.001);
+    gp_Dir Tangent;
+    std::vector<Vector3D> prePoint(poly.size());
+    std::vector<Vector3D> actPoint(poly.size());
+
+    for (unsigned long i = 0; i < res; i++)
+    {
+
+      // get point and tangent at the position, up is fix for the moment
+      prop.SetParameter(fBegin + ((fEnd - fBegin) * float(i)) / float(res-1));
+      prop.Tangent(Tangent);
+      Vector3D Tng(Tangent.X(),Tangent.Y(),Tangent.Z());
+      Vector3D Ptn(prop.Value().X(),prop.Value().Y(),prop.Value().Z());
+      Vector3D Up (up);
+      // normalize and calc the third vector of the plane coordinatesystem
+      Tng.Normalize();
+      Up.Normalize();
+      Vector3D Third(Tng%Up);
+
+      int l=0;
+      // got through the profile
+      for(std::vector<Vector3D>::const_iterator It=poly.begin();It!=poly.end();++It,l++)
+        actPoint[l] = ((Third*It->x)+(Up*It->y)+(Tng*It->z)+Ptn);
+
+      if(i) // not the first row 
+      {
+        l=0;
+        for(std::vector<Vector3D>::const_iterator It=poly.begin();It!=poly.end();++It,l++)
+        {
+          if(l) // not first point in row
+          {
+            cVAry.push_back(MeshGeomFacet(prePoint[l-1],actPoint[l-1],prePoint[l]));
+            cVAry.push_back(MeshGeomFacet(prePoint[l]  ,actPoint[l-1],actPoint[l] ));
+          }
+        }
+      }
+        
+      prePoint = actPoint;
+    }
+  }
+
+  ResultMesh.getKernel()->AddFacet(cVAry);
+
 }
 

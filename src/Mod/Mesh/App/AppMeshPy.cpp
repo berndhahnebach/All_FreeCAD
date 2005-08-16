@@ -176,13 +176,43 @@ newMesh(PyObject *self, PyObject *args)
   } PY_CATCH;
 }
 
+static PyObject *                        
+loftOnCurve(PyObject *self, PyObject *args)
+
+{
+  App::TopoShapePy   *pcObject;
+  PyObject *pcObj;
+  if (!PyArg_ParseTuple(args, "O!", &(App::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  pcObject = (App::TopoShapePy*)pcObj;
+  MeshWithProperty *M = new MeshWithProperty();
+
+  PY_TRY {
+    
+    TopoDS_Shape aShape = pcObject->getShape();
+
+    std::vector<Vector3D> poly;
+    poly.push_back(Vector3D(-0.2,0  ,0));
+    poly.push_back(Vector3D( 0.2,0  ,0));
+    poly.push_back(Vector3D( 0.3,0.1,0));
+    poly.push_back(Vector3D( 0.2,0.2,0));
+
+    MeshAlgos::LoftOnCurve(*M,aShape,poly,Vector3D(0,0,1),20);
+
+  } PY_CATCH;
+
+  return new MeshPy(M);
+}
+
 /* registration table  */
 struct PyMethodDef Mesh_Import_methods[] = {
-    {"open"   ,open ,   1},				/* method name, C func ptr, always-tuple */
-    {"save"   ,save ,   1},
-    {"insert" ,insert,  1},
-    {"read"   ,read ,   1},
-    {"newMesh",newMesh, 1},
+    {"open"       ,open ,       1},				/* method name, C func ptr, always-tuple */
+    {"save"       ,save ,       1},
+    {"insert"     ,insert,      1},
+    {"read"       ,read ,       1},
+    {"newMesh"    ,newMesh,     1},
+    {"loftOnCurve",loftOnCurve, 1},
 
     {NULL, NULL}                   /* end of table marker */
 };

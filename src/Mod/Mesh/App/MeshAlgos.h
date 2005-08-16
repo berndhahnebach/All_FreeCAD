@@ -101,12 +101,15 @@ public:
 
   /** Creates a GTS Surface from a MeshKernel
   */
-  static void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface);
+  static void fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface);
 
   static void cutByShape(const TopoDS_Shape &aShape,const MeshWithProperty* pMesh,MeshWithProperty* pToolMesh);
 
   /// helper to discredicice a Edge...
-  static void MeshAlgos::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
+  static void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
+
+  /// creates a mesh loft on base of a curve and an up vector
+  static void LoftOnCurve(MeshWithProperty &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up = Vector3D(0,0,1), unsigned short res = 10);
 
   /*
   struct FaceSplitEdge
