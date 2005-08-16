@@ -329,7 +329,7 @@ void ParameterGrp::insertTo(FCHandle<ParameterGrp> Grp)
 
 }
 
-void ParameterGrp::export(const char* FileName)
+void ParameterGrp::exportTo(const char* FileName)
 {
   ParameterManager Mngr;
 
@@ -341,7 +341,7 @@ void ParameterGrp::export(const char* FileName)
   Mngr.SaveDocument(FileName);
 }
 
-void ParameterGrp::import(const char* FileName)
+void ParameterGrp::importFrom(const char* FileName)
 {
   ParameterManager Mngr;
 

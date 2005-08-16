@@ -118,9 +118,9 @@ public:
 	PYFUNCDEF_D (ParameterGrpPy,PyGetString);
 	PYFUNCDEF_D (ParameterGrpPy,PyRemString);
 
-	PYFUNCDEF_D (ParameterGrpPy,import);
+	PYFUNCDEF_D (ParameterGrpPy,importFrom);
 	PYFUNCDEF_D (ParameterGrpPy,insert);
-	PYFUNCDEF_D (ParameterGrpPy,export);
+	PYFUNCDEF_D (ParameterGrpPy,exportTo);
 
 protected:
 
@@ -181,9 +181,9 @@ PyMethodDef ParameterGrpPy::Methods[] = {
   {"GetString",        (PyCFunction) sPyGetString,       Py_NEWARGS},
   {"RemString",        (PyCFunction) sPyRemString,       Py_NEWARGS},
 
-  {"Import",           (PyCFunction) simport,            Py_NEWARGS},
+  {"Import",           (PyCFunction) simportFrom,        Py_NEWARGS},
   {"Insert",           (PyCFunction) sinsert,            Py_NEWARGS},
-  {"Export",           (PyCFunction) sexport,            Py_NEWARGS},
+  {"Export",           (PyCFunction) sexportTo,          Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -284,13 +284,13 @@ int ParameterGrpPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functi
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PyObject *ParameterGrpPy::import(PyObject *args)
+PyObject *ParameterGrpPy::importFrom(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   PY_TRY {
-    _cParamGrp->import(pstr);
+    _cParamGrp->importFrom(pstr);
   }PY_CATCH;
   Py_Return;
 } 
@@ -306,13 +306,13 @@ PyObject *ParameterGrpPy::insert(PyObject *args)
   Py_Return;
 } 
 
-PyObject *ParameterGrpPy::export(PyObject *args)
+PyObject *ParameterGrpPy::exportTo(PyObject *args)
 { 
 	char *pstr;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   PY_TRY {
-    _cParamGrp->export(pstr);
+    _cParamGrp->exportTo(pstr);
   }PY_CATCH;
   Py_Return;
 } 

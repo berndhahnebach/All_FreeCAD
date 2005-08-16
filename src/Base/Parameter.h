@@ -92,9 +92,9 @@ public:
   /// overwrite everithing similar, leaf the others allone 
   void insertTo(FCHandle<ParameterGrp>); 
   /// export this group to a file
-  void export(const char* FileName);
+  void exportTo(const char* FileName);
   /// import from a file to this group
-  void import(const char* FileName);
+  void importFrom(const char* FileName);
   /// insert from a file to this group, overwrite only the similar
   void insert(const char* FileName);
 	//@}
