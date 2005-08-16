@@ -540,7 +540,7 @@ void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Sh
 
   for (Ex.Init(Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
-    GeomLProp_CLProps prop(BRep_Tool::Curve(TopoDS::Edge(Ex.Current()),fBegin,fEnd),1,0.001);
+    GeomLProp_CLProps prop(BRep_Tool::Curve(TopoDS::Edge(Ex.Current()),fBegin,fEnd),1,0.0000000001);
     gp_Dir Tangent;
     std::vector<Vector3D> prePoint(poly.size());
     std::vector<Vector3D> actPoint(poly.size());
