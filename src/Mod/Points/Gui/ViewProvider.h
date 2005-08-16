@@ -42,7 +42,7 @@ namespace PointsGui {
  * a node representing the point data structure.
  * @author Werner Mayer
  */
-class ViewProviderInventorPoints : public Gui::ViewProviderInventorFeature
+class PointsGuiExport ViewProviderInventorPoints : public Gui::ViewProviderInventorFeature
 {
 public:
   ViewProviderInventorPoints();
