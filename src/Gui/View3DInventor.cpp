@@ -127,60 +127,6 @@ void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
 
 void View3DInventor::setViewerDefaults(void)
 {
-  // create the root group
-  pcSepRoot = new SoSeparator();
-  pcSepRoot->ref();
-
-  // empty separator for user special
-    SoSeparator * pcSepUserSpecial= new SoSeparator();
-  pcSepRoot->addChild(pcSepUserSpecial);
-
-
-  // shape aperance
-  pcShapeHint = new SoShapeHints;
-  pcShapeHint->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
-
-  // color management
-//  QColor Col1(236,212,156); // light brown
-//  QColor Col(128,128,128);  // grey
-
-//  QColor DifCol=Col1;
-//  QColor AmbCol=Col1;
-//  QColor SpeCol=Col;
-//  QColor EmCol(0,0,0);
-/*
-  pcShapeMaterial = new SoMaterial;
-  pcShapeMaterial->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
-  pcShapeMaterial->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
-  pcShapeMaterial->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
-  pcShapeMaterial->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256);
-  pcSepRoot->addChild(pcShapeMaterial);
-*/
-  pcSepRoot->renderCaching = SoSeparator::ON;
-  pcSepRoot->addChild(pcShapeHint);
-
-
-  pcSepRoot->addChild(createAxis());
-
-
-  // create the root for the shape
-  pcSepShapeRoot = new SoSeparator();
-  pcSepRoot->addChild(pcSepShapeRoot);
-
-//  _viewer->setSceneGraph(pcSepRoot);
-
-
-//  _viewer->setFeedbackVisibility(true);
-//  _viewer->setFeedbackSize(15);
-//  _viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-  _viewer->viewAll();
-//  _viewer->setDecoration(false);
-
-//  _viewer->setSceneGraph(pcSepRoot);
-
-  //_viewer->setAntialiasing(true,2);
-//  _viewer->setSceneGraph(new SoCone);
-//  _viewer->show();
 
   _viewer->show();
 }

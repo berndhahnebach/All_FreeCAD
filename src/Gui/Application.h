@@ -28,12 +28,13 @@
 #ifndef _PreComp_
 # include <string>
 # include <vector>
-# include <qmainwindow.h>
 # include <qstringlist.h>
-# include <qworkspace.h>
 #endif
 
 #define  putpix()
+
+#include <qmainwindow.h>
+#include <qworkspace.h>
 
 #include "../Base/Console.h"
 #include "../App/Application.h"

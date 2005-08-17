@@ -220,12 +220,7 @@ loftOnCurve(PyObject *self, PyObject *args)
     
   PY_TRY {
     TopoDS_Shape aShape = pcObject->getShape();
-/*
-    poly.push_back(Vector3D(-0.2,0  ,0));
-    poly.push_back(Vector3D( 0.2,0  ,0));
-    poly.push_back(Vector3D( 0.3,0.1,0));
-    poly.push_back(Vector3D( 0.2,0.2,0));
-*/
+    // use the MeshAlgos 
     MeshAlgos::LoftOnCurve(*M,aShape,poly,Vector3D(x,y,z),size);
 
   } PY_CATCH;
