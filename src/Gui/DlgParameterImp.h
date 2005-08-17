@@ -55,8 +55,6 @@ public:
   ~DlgParameterImp();
 
 public slots:
-  virtual void onInsertFromFile();
-  virtual void onLoadParameterSet();
   virtual void onParameterSetChange(const QString& rcString);
 
 protected slots:
@@ -105,11 +103,11 @@ protected slots:
    */
   void onToggleSelectedItem();
   /** Exports the current selected parameter with all sub-groups to a file. */
-  void onExportSelectedGroup();
+  void onExportToFile();
+  /** Imports a file and inserts the parameter to the current selected parameter node. */
+  void onImportFromFile();
   /** Changes the name of the leaf of the selected item. */
   void onRenameSelectedItem();
-  /** This slot is invoked after the value has been changed. */
-  void onRenamedSelectedItem( QListViewItem * item, int col, const QString & text );
 
 private:
   QPopupMenu* menuEdit;
@@ -155,8 +153,6 @@ protected slots:
   void onDeleteSelectedItem();
   /** Changes the name of the leaf of the selected item. */
   void onRenameSelectedItem();
-  /** This slot is invoked after the value has been changed. */
-  void onRenamedSelectedItem( QListViewItem * item, int col, const QString & text );
   /** Creates and appends a new "text" leaf. */
   void onCreateTextItem();
   /** Creates and appends a new "integer" leaf. */
@@ -190,6 +186,7 @@ public:
   void setSelected ( bool o );
   int rtti () const { return 2000; }
   void takeItem ( QListViewItem * item );
+  void startRename ( int col );
 
   void fillUp(void);
   FCHandle<ParameterGrp> _hcGrp;
@@ -225,6 +222,7 @@ public:
   virtual void appendToGroup() = 0;
   /** Remove the leaf from the parameter group. */
   virtual void removeFromGroup() = 0;
+  void startRename ( int col );
 
 protected:
   /** Replaces the name of the leaf from \a oldName to \a newName. */

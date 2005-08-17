@@ -71,7 +71,7 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
   {
     if ( selectedFilter )
       *selectedFilter = fd.selectedFilter();
-    return fd.selectedFileName();
+    return fd.selectedFile();
   }
   else
     return QString::null;
@@ -105,7 +105,7 @@ QString FileDialog::getSaveFileName ( const QString & startWith, const QString &
   {
     if ( selectedFilter )
       *selectedFilter = fd.selectedFilter();
-    return fd.selectedFileName();
+    return fd.selectedFile();
   }
   else
     return QString::null;
@@ -205,11 +205,12 @@ void FileDialog::accept()
   {
     QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
     if ( QMessageBox::question(this, tr("Existing file"), msg, QMessageBox::Yes, 
-         QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) == QMessageBox::Yes )
-      QFileDialog::accept();
+         QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) != QMessageBox::Yes )
+      return;
   }
-  else
-    QFileDialog::accept();
+
+  setSelection( fn );
+  QFileDialog::accept();
 }
 
 /**
@@ -230,7 +231,7 @@ QString FileDialog::selectedFileName()
     return QString::null;
 
   // search for extension
-  int pos = fn.findRev('.');
+  int pos = fi.fileName().findRev('.');
   if (pos == -1)
   {
     // try to figure out the selected filter

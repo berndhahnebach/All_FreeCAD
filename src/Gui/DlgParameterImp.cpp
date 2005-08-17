@@ -38,8 +38,9 @@
 #include "BitmapFactory.h"
 #include "FileDialog.h"
 
-#include "../Base/Parameter.h"
-#include "../App/Application.h"
+#include <Base/Parameter.h>
+#include <Base/Exception.h>
+#include <App/Application.h>
 
 
 using namespace Gui::Dialog;
@@ -148,17 +149,6 @@ void DlgParameterImp::onGroupSelected( QListViewItem * item )
   }
 }
 
-/** \todo */
-void DlgParameterImp::onLoadParameterSet()
-{ 
-}
-
-/** \todo */
-void DlgParameterImp::onInsertFromFile()
-{
-
-}
-
 /** Switches the type of parameters either to user or system parameters. */
 void DlgParameterImp::onParameterSetChange(const QString& rcString)
 {
@@ -200,7 +190,9 @@ ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   menuEdit->insertItem( tr("Add sub-group"), this, SLOT( onCreateSubgroup() ) );
   menuEdit->insertItem( tr("Remove group"), this, SLOT( onDeleteSelectedItem() ) );
   menuEdit->insertItem( tr("Rename group"), this, SLOT( onRenameSelectedItem() ) );
-  menuEdit->insertItem( tr("Export group"), this, SLOT( onExportSelectedGroup() ) );
+  menuEdit->insertSeparator();
+  menuEdit->insertItem( tr("Export parameter"), this, SLOT( onExportToFile() ) );
+  menuEdit->insertItem( tr("Import parameter"), this, SLOT( onImportFromFile() ) );
 }
 
 ParameterGroup::~ParameterGroup()
@@ -303,14 +295,73 @@ void ParameterGroup::onCreateSubgroup()
   }
 }
 
-void ParameterGroup::onExportSelectedGroup()
+void ParameterGroup::onExportToFile()
 {
   bool ok;
   QString file = FileDialog::getSaveFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
                                               tr("Export parameter to file"), 0, true, "Export", &ok);
   if ( ok )
   {
-    QMessageBox::information( this, "Todo", "Not yet implemented!");
+    QListViewItem* item = selectedItem();
+    if ( item && item->rtti() == 2000 )
+    {
+      ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+      FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+      hGrp->exportTo( file.latin1() );
+    }
+  }
+}
+
+void ParameterGroup::onImportFromFile()
+{
+  bool ok;
+  QString file = FileDialog::getOpenFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
+                                              tr("Import parameter from file"), 0, true, "Import", &ok);
+  if ( ok )
+  {
+    QFileInfo fi(file);
+    QListViewItem* item = selectedItem();
+    if ( item && item->rtti() == 2000 )
+    {
+      ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
+      FCHandle<ParameterGrp> hGrp = para->_hcGrp;
+
+      QListViewItem* child;
+      QPtrList<QListViewItem> remChild;
+      if ( (child=para->firstChild()) != 0 )
+      {
+        remChild.append( child );
+        child = child->nextSibling();
+        while ( child )
+        {
+          remChild.append( child );
+          child = child->nextSibling();
+        }
+      }
+
+      // remove the items and internal parameter values
+      for ( child = remChild.first(); child; child = remChild.next() )
+      {
+        para->takeItem( child );
+        delete child;
+      }
+
+      try
+      {
+        hGrp->importFrom( file.latin1() );
+        std::vector<FCHandle<ParameterGrp> > cSubGrps = hGrp->GetGroups();
+        for ( std::vector<FCHandle<ParameterGrp> >::iterator it = cSubGrps.begin(); it != cSubGrps.end(); ++it )
+        {
+          new ParameterGroupItem(para,*it);
+        }
+
+        para->setOpen( para->childCount() > 0 );
+      }
+      catch( const Base::Exception& )
+      {
+        QMessageBox::critical(this, tr("Import Error"),tr("Reading of '%1' failed.").arg( file ));
+      }
+    }
   }
 }
 
@@ -319,24 +370,7 @@ void ParameterGroup::onRenameSelectedItem()
   QListViewItem* sel = selectedItem();
   if ( sel && sel->rtti() == 2000 )
   {
-    QListViewItem* par = sel->parent();
-    if ( par && par->rtti() == 2000 )
-    {
-      sel->setRenameEnabled(0,true);
-      sel->startRename(0);
-    }
-    else
-    {
-      QMessageBox::information( this, tr("Rename group"), tr("Cannot rename this group.") );
-    }
-  }
-}
-
-void ParameterGroup::onRenamedSelectedItem( QListViewItem * item, int col, const QString & text )
-{
-  if ( item )
-  {
-    item->setRenameEnabled(0,false);
+     sel->startRename(0);
   }
 }
 
@@ -359,8 +393,6 @@ ParameterValue::ParameterValue( QWidget * parent, const char * name, WFlags f )
   menuNew->insertItem( tr("New integer item"), this, SLOT( onCreateIntItem() ) );
   menuNew->insertItem( tr("New boolean item"), this, SLOT( onCreateBoolItem() ) );
 
-  connect( this, SIGNAL( itemRenamed ( QListViewItem*, int, const QString& ) ),
-           this, SLOT( onRenamedSelectedItem( QListViewItem*, int, const QString& ) ) );
   connect(this, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onChangeSelectedItem()));
 }
 
@@ -433,16 +465,7 @@ void ParameterValue::onRenameSelectedItem()
   QListViewItem* sel = selectedItem();
   if ( sel )
   {
-    sel->setRenameEnabled(0,true);
     sel->startRename(0);
-  }
-}
-
-void ParameterValue::onRenamedSelectedItem( QListViewItem * item, int col, const QString & text )
-{
-  if ( item )
-  {
-    item->setRenameEnabled(0,false);
   }
 }
 
@@ -557,12 +580,14 @@ void ParameterValue::onCreateBoolItem()
 ParameterGroupItem::ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp )
     : QListViewItem( parent ), _hcGrp(hcGrp)
 {
+  setRenameEnabled(0,true);
   fillUp();
 }
 
 ParameterGroupItem::ParameterGroupItem( QListView* parent, const FCHandle<ParameterGrp> &hcGrp)
     : QListViewItem( parent ), _hcGrp(hcGrp)
 {
+  setRenameEnabled(0,true);
   fillUp();
 }
 
@@ -605,6 +630,19 @@ void ParameterGroupItem::takeItem ( QListViewItem * item )
   QListViewItem::takeItem( item );
 }
 
+void ParameterGroupItem::startRename ( int col )
+{
+  QListViewItem* par = this->parent();
+  if ( par && par->rtti() == 2000 )
+  {
+    QListViewItem::startRename( col );
+  }
+  else
+  {
+    QMessageBox::information( listView(), QObject::tr("Rename group"), QObject::tr("Cannot rename this group.") );
+  }
+}
+
 void ParameterGroupItem::okRename ( int col )
 {
   QListViewItem* item = parent();
@@ -628,9 +666,11 @@ void ParameterGroupItem::okRename ( int col )
       }
       else
       {
-        QMessageBox::information(listView(), "Todo", "Not yet implemented!");
-        setText( 0, oldName );
-//        par->_hcGrp->RemoveGrp( oldName.latin1() );
+        // rename the group by adding a new group, copy the content and remove the old group
+        FCHandle<ParameterGrp> hOldGrp = par->_hcGrp->GetGroup( oldName.latin1() );
+        FCHandle<ParameterGrp> hNewGrp = par->_hcGrp->GetGroup( newName.latin1() );
+        hOldGrp->copyTo( hNewGrp );
+        par->_hcGrp->RemoveGrp( oldName.latin1() );
       }
     }
   }
@@ -641,10 +681,16 @@ void ParameterGroupItem::okRename ( int col )
 ParameterValueItem::ParameterValueItem ( QListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp)
   : QListViewItem( parent, label1 ), _hcGrp(hcGrp)
 {
+  setRenameEnabled(0,true);
 }
 
 ParameterValueItem::~ParameterValueItem()
 {
+}
+
+void ParameterValueItem::startRename ( int col )
+{
+  QListViewItem::startRename( col );
 }
 
 void ParameterValueItem::okRename ( int col )
