@@ -45,7 +45,10 @@
 #include <Base/Console.h>
 
 #include <TopExp_Explorer.hxx>
+#include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
@@ -531,21 +534,69 @@ void MeshAlgos::cutByCurve(MeshWithProperty* pMesh,const std::vector<CurveProjec
   cTopAlg.Commit();
 }
 
-void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up, unsigned short res)
+class _VertexCompare
+{
+  public:
+    bool operator () (const TopoDS_Vertex &rclV1, const TopoDS_Vertex &rclV2) const
+    { 
+      if (rclV1.IsSame(rclV2) == Standard_True)
+        return false;
+
+      gp_XYZ  clP1 = BRep_Tool::Pnt(rclV1).XYZ();
+      gp_XYZ  clP2 = BRep_Tool::Pnt(rclV2).XYZ();
+
+      if (fabs(clP1.X() - clP2.X()) < dE)
+      {
+        if (fabs(clP1.Y() - clP2.Y()) < dE)
+          return clP1.Z() < clP2.Z();
+        else
+          return clP1.Y() < clP2.Y();
+      }
+      else
+        return clP1.X() < clP2.X();
+    }
+
+    _VertexCompare (void) : dE(1.0e-5) {}
+    double dE;
+};
+
+
+
+void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up, float MaxSize)
 {
   TopExp_Explorer Ex;
   Standard_Real fBegin, fEnd;
   std::vector<MeshGeomFacet> cVAry;
-
+  std::map<TopoDS_Vertex,std::vector<Vector3D>,_VertexCompare> ConnectMap;
 
   for (Ex.Init(Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
-    GeomLProp_CLProps prop(BRep_Tool::Curve(TopoDS::Edge(Ex.Current()),fBegin,fEnd),1,0.0000000001);
+    // get the edge and the belonging Vertexes
+    TopoDS_Edge Edge = (TopoDS_Edge&)Ex.Current();
+    TopoDS_Vertex V1, V2;
+    TopExp::Vertices(Edge, V1, V2);
+    bool bBegin = false,bEnd = false;
+    // geting the geometric curve and the interval
+    GeomLProp_CLProps prop(BRep_Tool::Curve(Edge,fBegin,fEnd),1,0.0000000001);
+    int res = int((fEnd - fBegin)/MaxSize);
+    // do at least 2 segments
+    if(res < 2) 
+      res = 2;
     gp_Dir Tangent;
+
     std::vector<Vector3D> prePoint(poly.size());
     std::vector<Vector3D> actPoint(poly.size());
+    
+    // checking if there is already a end to conect
+    if(ConnectMap.find(V1) != ConnectMap.end() ){
+      bBegin = true;
+      prePoint = ConnectMap[V1];
+    }
+    
+    if(ConnectMap.find(V2) != ConnectMap.end() )
+      bEnd = true;
 
-    for (unsigned long i = 0; i < res; i++)
+    for (long i = 0; i < res; i++)
     {
 
       // get point and tangent at the position, up is fix for the moment
@@ -559,24 +610,45 @@ void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Sh
       Up.Normalize();
       Vector3D Third(Tng%Up);
 
-      int l=0;
+      unsigned int l=0;
+      std::vector<Vector3D>::const_iterator It;
+
       // got through the profile
-      for(std::vector<Vector3D>::const_iterator It=poly.begin();It!=poly.end();++It,l++)
+      for(It=poly.begin();It!=poly.end();++It,l++)
         actPoint[l] = ((Third*It->x)+(Up*It->y)+(Tng*It->z)+Ptn);
 
-      if(i) // not the first row 
+      if(i == res-1 && !bEnd)
+        // remeber the last row to conect to a otger edge with the same vertex
+        ConnectMap[V2] = actPoint;
+
+      if(i==1 && bBegin)
+        // using the end of an other edge as start 
+        prePoint = ConnectMap[V1];
+
+      if(i==0 && !bBegin)
+          // remember the first row for conection to a edge with the same vertex
+          ConnectMap[V1] = actPoint;
+
+      if(i ) // not the first row or somthing to conect to
       {
-        l=0;
-        for(std::vector<Vector3D>::const_iterator It=poly.begin();It!=poly.end();++It,l++)
+        for(l=0;l<actPoint.size();l++)
         {
-          if(l) // not first point in row
+          if(l) // not first point in row 
           {
-            cVAry.push_back(MeshGeomFacet(prePoint[l-1],actPoint[l-1],prePoint[l]));
-            cVAry.push_back(MeshGeomFacet(prePoint[l]  ,actPoint[l-1],actPoint[l] ));
+            if(i == res-1 && bEnd) // if last row and a end to conect
+              actPoint = ConnectMap[V2];
+
+            Vector3D p1 = prePoint[l-1],
+                     p2 = actPoint[l-1],
+                     p3 = prePoint[l],
+                     p4 = actPoint[l];
+
+            cVAry.push_back(MeshGeomFacet(p1,p2,p3));
+            cVAry.push_back(MeshGeomFacet(p3,p2,p4));
           }
         }
       }
-        
+
       prePoint = actPoint;
     }
   }

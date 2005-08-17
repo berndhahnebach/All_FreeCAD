@@ -181,24 +181,52 @@ loftOnCurve(PyObject *self, PyObject *args)
 
 {
   App::TopoShapePy   *pcObject;
-  PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(App::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+  PyObject *pcTopoObj,*pcListObj;
+  float x=0,y=0,z=1,size = 0.1;
+
+  if (!PyArg_ParseTuple(args, "O!O(fff)f", &(App::TopoShapePy::Type), &pcTopoObj,&pcListObj,&x,&y,&z,&size))     // convert args: Python->C 
+//  if (!PyArg_ParseTuple(args, "O!O!", &(App::TopoShapePy::Type), &pcTopoObj,&PyList_Type,&pcListObj,x,y,z,size))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  pcObject = (App::TopoShapePy*)pcObj;
+  pcObject = (App::TopoShapePy*)pcTopoObj;
   MeshWithProperty *M = new MeshWithProperty();
 
-  PY_TRY {
-    
-    TopoDS_Shape aShape = pcObject->getShape();
+  std::vector<Vector3D> poly;
 
-    std::vector<Vector3D> poly;
+  if (!PyList_Check(pcListObj))
+    Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
+  
+  int nSize = PyList_Size(pcListObj);
+  for (int i=0; i<nSize;++i)
+  {
+    PyObject* item = PyList_GetItem(pcListObj, i);
+    if (!PyTuple_Check(item))
+      Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
+    int nTSize = PyTuple_Size(item);
+    if(nTSize != 2 && nTSize != 3)
+      Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
+
+    Vector3D vec(0,0,0);
+
+    for(int l = 0; l < nTSize;l++)
+    {
+      PyObject* item2 = PyTuple_GetItem(item, l);
+      if (!PyFloat_Check(item2))
+        Py_Error(PyExc_Exception,"List of Tuble of three or two floats needed as second parameter!");
+      vec[l] = PyFloat_AS_DOUBLE(item2);
+    }
+    poly.push_back(vec);
+  }
+    
+  PY_TRY {
+    TopoDS_Shape aShape = pcObject->getShape();
+/*
     poly.push_back(Vector3D(-0.2,0  ,0));
     poly.push_back(Vector3D( 0.2,0  ,0));
     poly.push_back(Vector3D( 0.3,0.1,0));
     poly.push_back(Vector3D( 0.2,0.2,0));
-
-    MeshAlgos::LoftOnCurve(*M,aShape,poly,Vector3D(0,0,1),20);
+*/
+    MeshAlgos::LoftOnCurve(*M,aShape,poly,Vector3D(x,y,z),size);
 
   } PY_CATCH;
 

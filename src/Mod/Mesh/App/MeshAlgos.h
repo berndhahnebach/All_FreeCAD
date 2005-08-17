@@ -109,7 +109,7 @@ public:
   static void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
 
   /// creates a mesh loft on base of a curve and an up vector
-  static void LoftOnCurve(MeshWithProperty &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up = Vector3D(0,0,1), unsigned short res = 10);
+  static void LoftOnCurve(MeshWithProperty &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up = Vector3D(0,0,1),  float MaxSize = 0.1);
 
   /*
   struct FaceSplitEdge
