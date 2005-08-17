@@ -65,6 +65,7 @@ public:
   PYFUNCDEF_D(MeshPy,read)
   PYFUNCDEF_D(MeshPy,write)
   PYFUNCDEF_D(MeshPy,offset)
+  PYFUNCDEF_D(MeshPy,offsetSpecial)
   PYFUNCDEF_D(MeshPy,calcVertexNormales)
   PYFUNCDEF_D(MeshPy,calcVertexCurvature)
   PYFUNCDEF_D(MeshPy,calcFaceCurvature)
@@ -86,6 +87,7 @@ public:
   PYFUNCDEF_D(MeshPy,makeCutToolFromShape)
   PYFUNCDEF_D(MeshPy,cutOuter)
   PYFUNCDEF_D(MeshPy,cutInner)
+  PYFUNCDEF_D(MeshPy,flipNormals)
 
 protected:
 

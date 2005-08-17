@@ -85,6 +85,7 @@ public:
   /** Calculate per Vertex normales and adds the Normal property bag
   */
   static void offset(MeshWithProperty* Mesh, float fSize);
+  static void offsetSpecial(MeshWithProperty* Mesh, float fSize, float zmax, float zmin);
 
   /** Coarsen the mesh
   */

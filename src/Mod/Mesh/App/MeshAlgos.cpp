@@ -229,6 +229,35 @@ void MeshAlgos::offset(MeshWithProperty* Mesh, float fSize)
   Mesh->Remove("VertexNormales");
 }
 
+void MeshAlgos::offsetSpecial(MeshWithProperty* Mesh, float fSize, float zmax, float zmin)
+{
+  MeshPropertyNormal *prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
+
+  // calculate the propertie on demand...
+  if(!prop || !prop->isValid())
+  {
+    calcVertexNormales(Mesh);
+    prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
+  }
+
+  unsigned int i = 0;
+  // go throug all the Vertex normales
+  for(std::vector<Vector3D>::iterator It= prop->Normales.begin();It != prop->Normales.end();It++,i++)
+  {
+    Vector3D Pnt = Mesh->getKernel()->GetPoint(i);
+
+    if(Pnt.z < zmax && Pnt.z > zmin)
+    {
+      Pnt.z = 0;
+      Mesh->getKernel()->MovePoint(i,Pnt.Normalize() * fSize);
+    }else
+    // and move each mesh point in the normal direction
+      Mesh->getKernel()->MovePoint(i,It->Normalize() * fSize);
+  }
+  // invalid because of points movement
+  Mesh->Remove("VertexNormales");
+}
+
 
 void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f)
 {
@@ -606,9 +635,11 @@ void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Sh
       Vector3D Ptn(prop.Value().X(),prop.Value().Y(),prop.Value().Z());
       Vector3D Up (up);
       // normalize and calc the third vector of the plane coordinatesystem
-      Tng.Normalize();
+      Tng.Normalize(); 
       Up.Normalize();
       Vector3D Third(Tng%Up);
+
+      Base::Console().Log("Pos: %f %f %f \n",Ptn.x,Ptn.y,Ptn.z);
 
       unsigned int l=0;
       std::vector<Vector3D>::const_iterator It;

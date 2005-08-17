@@ -38,6 +38,7 @@ using Base::Console;
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "MeshAlgos.h"
+#include "Core/TopoAlgorithm.h"
 #include "Core/MeshKernel.h"
 #include "Core/MeshIO.h"
 #include "Core/Info.h"
@@ -114,6 +115,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(read)
   PYMETHODEDEF(write)
   PYMETHODEDEF(offset)
+  PYMETHODEDEF(offsetSpecial)
   PYMETHODEDEF(calcVertexNormales)
   PYMETHODEDEF(calcVertexCurvature)
   PYMETHODEDEF(calcFaceCurvature)
@@ -135,6 +137,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(makeCutToolFromShape)
   PYMETHODEDEF(cutOuter)
   PYMETHODEDEF(cutInner)
+  PYMETHODEDEF(flipNormals)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -280,6 +283,32 @@ PYFUNCIMP_D(MeshPy,offset)
 
   PY_TRY {
     MeshAlgos::offset(_pcMesh,Float);  
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,offsetSpecial)
+{
+  double Float,zmin,zmax;
+  if (! PyArg_ParseTuple(args, "ddd",&Float,&zmin,&zmax))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshAlgos::offsetSpecial(_pcMesh,Float,zmax,zmin);  
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,flipNormals)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshTopoAlgorithm Algo(*(_pcMesh->getKernel()));
+    Algo.FlipNormals();
   } PY_CATCH;
 
   Py_Return; 
