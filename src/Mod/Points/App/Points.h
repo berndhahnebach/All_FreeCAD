@@ -70,6 +70,30 @@ public:
 
 };
 
+/** Vertex grey value property bag
+ *  This property bag holds grey values of the points.
+ */
+class PointsAppExport PointsPropertyGreyvalue: public App::PropertyBag
+{
+public:
+	/// Constructor
+	PointsPropertyGreyvalue(void)
+    :PropertyBag() {}
+
+  virtual const char* GetType(void) {return "VertexGreyvalue";}
+
+  /// clears the property
+  virtual void resizePoints(void)
+  {
+    setInvalid();
+    aGreyvalue.clear();
+  }
+
+  /// greyvalue vector
+  std::vector<float> aGreyvalue;
+
+};
+
 /** A single Point
  *  This is a single Point of the point datastructure. Note:
  *  No additional data will be attached to this basic point. 
