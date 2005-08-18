@@ -84,6 +84,9 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   setAcceptDrops( TRUE );
   viewport()->setAcceptDrops( TRUE );
 
+  // disable wrapping
+  setWordWrap ( QTextEdit::NoWrap );
+
   // try to override Python's stdout/err
   try
   {
