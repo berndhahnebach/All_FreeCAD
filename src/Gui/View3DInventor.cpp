@@ -81,7 +81,7 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
 View3DInventor::~View3DInventor()
 {
   delete _viewer;
-  pcSepRoot->unref();
+//  pcSepRoot->unref();
 }
 
 void View3DInventor::updatePrefs(void)

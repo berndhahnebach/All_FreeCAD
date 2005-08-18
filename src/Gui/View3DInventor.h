@@ -55,7 +55,7 @@ class MouseModel;
  *  It consist out of the 3DView and the tree
  *  \author Jürgen Riegel
  */
-class View3DInventor: public MDIView
+class GuiExport View3DInventor: public MDIView
 {
   Q_OBJECT
 
