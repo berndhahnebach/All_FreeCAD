@@ -107,6 +107,17 @@ void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor*
   }
 }
 
+void ViewProviderInventorPoints::setVertexGreyvalueMode(Points::PointsPropertyGreyvalue* pcProp)
+{
+  std::vector<float> greyvalue = pcProp->aGreyvalue;
+  for (unsigned long i = 0; i < greyvalue.size(); i++)
+  {
+    float& grey = greyvalue[i];
+    pcColorMat->diffuseColor.set1Value(i, SbColor(grey, grey, grey));
+  }
+}
+
+
 void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
 {
   pcFeature = pcFeat;
@@ -173,7 +184,13 @@ void ViewProviderInventorPoints::setMode(const char* ModeName)
     {
       setVertexColorMode(dynamic_cast<Points::PointsPropertyColor*>(pcProp));
       pcSwitch->whichChild = 1;
-    }else 
+    }
+    else if ( pcProp && stricmp("VertexGreyvalue",pcProp->GetType())==0 )
+    {
+      setVertexGreyvalueMode(dynamic_cast<Points::PointsPropertyGreyvalue*>(pcProp));
+      pcSwitch->whichChild = 1;
+    }
+    else 
       Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorPoints::setMode(), ignored\n", ModeName);
   }
 }

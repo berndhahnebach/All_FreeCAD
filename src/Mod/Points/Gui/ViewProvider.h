@@ -33,6 +33,7 @@ class SoCoordinate3;
 
 namespace Points {
   class PointsPropertyColor;
+  class PointsPropertyGreyvalue;
 }
 
 namespace PointsGui {
@@ -65,6 +66,7 @@ public:
 protected:
   void createPoints(App::Feature *pcFeature);
   void setVertexColorMode(Points::PointsPropertyColor*);
+  void setVertexGreyvalueMode(Points::PointsPropertyGreyvalue*);
 
 protected:
   SoCoordinate3     *pcPointsCoord;
