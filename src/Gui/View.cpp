@@ -69,6 +69,8 @@ void BaseView::onClose(void)
 
   if(bIsPassiv){
     ApplicationWindow::Instance->detachView(this);
+    if(_pcDocument)
+      _pcDocument->detachView(this, true);
   }else{
     if(_pcDocument)
       _pcDocument->detachView(this);
