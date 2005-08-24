@@ -94,6 +94,30 @@ public:
 
 };
 
+/** Vertex normal property bag
+ *  This property bag holds normals of the points.
+ */
+class PointsAppExport PointsPropertyNormal : public App::PropertyBag
+{
+public:
+	/// Constructor
+	PointsPropertyNormal(void)
+    :PropertyBag() {}
+
+  virtual const char* GetType(void) {return "VertexNormal";}
+
+  /// clears the property
+  virtual void resizePoints(void)
+  {
+    setInvalid();
+    aVertexNormal.clear();
+  }
+
+  /// normal vector
+  std::vector<Base::Vector3D> aVertexNormal;
+
+};
+
 /** A single Point
  *  This is a single Point of the point datastructure. Note:
  *  No additional data will be attached to this basic point. 
