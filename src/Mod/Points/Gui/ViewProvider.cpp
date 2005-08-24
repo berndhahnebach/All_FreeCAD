@@ -91,10 +91,10 @@ void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
   int idx=0;
   for ( PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++ )
   {
-		pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
+    pcPointsCoord->point.set1Value(idx, it->x, it->y, it->z);
   }
 
-	pcPoints->numPoints = cPts.size();
+  pcPoints->numPoints = cPts.size();
 }
 
 void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor* pcProp)
@@ -117,6 +117,16 @@ void ViewProviderInventorPoints::setVertexGreyvalueMode(Points::PointsPropertyGr
   }
 }
 
+void ViewProviderInventorPoints::setVertexNormalMode(Points::PointsPropertyNormal* pcProp)
+{
+  if ( !pcProp->isValid() ) return; // no valid data
+  std::vector<Vector3D> normal = pcProp->aVertexNormal;
+  int i=0;
+  for ( std::vector<Vector3D>::iterator it = normal.begin(); it != normal.end(); ++it, i++ )
+  {
+    pcPointsNormal->vector.set1Value(i, it->x, it->y, it->z);
+  }
+}
 
 void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
 {
@@ -131,9 +141,11 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
 
   pcPointsCoord = new SoCoordinate3();
   pcPoints = new SoPointSet();
+  pcPointsNormal = new SoNormal();  
   createPoints( ptFea );
 
   SoSeparator* pcPointRoot = new SoSeparator();
+  SoSeparator* pcPointShadedRoot = new SoSeparator();
   SoSeparator* pcColorShadedRoot = new SoSeparator();
 
   // Hilight for selection
@@ -152,6 +164,19 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   pcHighlight->addChild(pcPoints);
   pcPointRoot->addChild(pcHighlight);
 
+  // points shaded ---------------------------------------------
+//  SoLightModel* pcLightModel = new SoLightModel();
+//  pcLightModel->model = SoLightModel::PHONG;
+  pcPointStyle = new SoDrawStyle();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = 2*fPointSize;
+  pcPointShadedRoot->addChild(pcPointStyle);
+//  pcHighlight->addChild(pcLightModel);
+  pcPointShadedRoot->addChild(pcPointMaterial);
+  pcPointShadedRoot->addChild(pcPointsCoord);
+  pcPointShadedRoot->addChild(pcPointsNormal);
+  pcPointShadedRoot->addChild(pcPoints);
+
   // color shaded  ------------------------------------------
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
@@ -164,6 +189,7 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   // putting all together with a switch
   pcSwitch->addChild(pcPointRoot);
   pcSwitch->addChild(pcColorShadedRoot);
+  pcSwitch->addChild(pcPointShadedRoot);
   pcSwitch->whichChild = 0; 
   pcRoot->addChild(pcSwitch);
 
@@ -190,6 +216,11 @@ void ViewProviderInventorPoints::setMode(const char* ModeName)
       setVertexGreyvalueMode(dynamic_cast<Points::PointsPropertyGreyvalue*>(pcProp));
       pcSwitch->whichChild = 1;
     }
+    else if ( pcProp && strcmp("VertexNormal",pcProp->GetType())==0 )
+    {
+      setVertexNormalMode(dynamic_cast<Points::PointsPropertyNormal*>(pcProp));
+      pcSwitch->whichChild = 2;
+    }
     else 
       Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorPoints::setMode(), ignored\n", ModeName);
   }
@@ -201,9 +232,18 @@ std::vector<std::string> ViewProviderInventorPoints::getModes(void)
   StrList.push_back("Point");
 
   Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
-  std::list<std::string> list = rcPoints.GetAllNamesOfType("VertexColor");
+  std::list<std::string>::iterator It;
 
-  for(std::list<std::string>::iterator It=list.begin();It!=list.end();It++)
+  std::list<std::string> list = rcPoints.GetAllNamesOfType("VertexColor");
+  for(It=list.begin();It!=list.end();It++)
+    StrList.push_back(*It);
+
+  list = rcPoints.GetAllNamesOfType("VertexNormal");
+  for(It=list.begin();It!=list.end();It++)
+    StrList.push_back(*It);
+
+  list = rcPoints.GetAllNamesOfType("VertexGreyvalue");
+  for(It=list.begin();It!=list.end();It++)
     StrList.push_back(*It);
 
   return StrList;

@@ -34,6 +34,7 @@ class SoCoordinate3;
 namespace Points {
   class PointsPropertyColor;
   class PointsPropertyGreyvalue;
+  class PointsPropertyNormal;
 }
 
 namespace PointsGui {
@@ -67,6 +68,7 @@ protected:
   void createPoints(App::Feature *pcFeature);
   void setVertexColorMode(Points::PointsPropertyColor*);
   void setVertexGreyvalueMode(Points::PointsPropertyGreyvalue*);
+  void setVertexNormalMode(Points::PointsPropertyNormal*);
 
 protected:
   SoCoordinate3     *pcPointsCoord;
@@ -74,6 +76,7 @@ protected:
   SoLocateHighlight *pcHighlight;
   SoMaterial        *pcColorMat;
   SoSwitch          *pcSwitch;
+  SoNormal          *pcPointsNormal;
 };
 
 } // namespace MeshGui
