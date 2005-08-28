@@ -34,6 +34,9 @@
 #include <math.h>
 #include <assert.h>
 
+// to have std::max defined
+#include <vector>
+
 using namespace Gui;
 
 FileChooser::FileChooser( QWidget *parent, const char *name )
