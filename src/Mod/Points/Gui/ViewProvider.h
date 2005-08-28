@@ -30,6 +30,7 @@ class SoSwitch;
 class SoPointSet;
 class SoLocateHighlight;
 class SoCoordinate3;
+class SoNormal;
 
 namespace Points {
   class PointsPropertyColor;
