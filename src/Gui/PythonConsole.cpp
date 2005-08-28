@@ -84,9 +84,6 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   setAcceptDrops( TRUE );
   viewport()->setAcceptDrops( TRUE );
 
-  // disable wrapping
-  setWordWrap ( QTextEdit::NoWrap );
-
   // try to override Python's stdout/err
   try
   {
@@ -208,8 +205,10 @@ void PythonConsole::doKeyboardAction ( KeyboardAction action )
 
   if ( action == ActionReturn )
   {
-    // move to the end to avoid splitting the paragraph
-    setCursorPosition( paragraphs()-1, 0 );
+    // move to the end to avoid splitting the paragraph 
+    // (if the last paragraph is wrapped make sure to set the cursor to the index after the last character)
+    QString line = text( paragraphs()-1 );
+    setCursorPosition( paragraphs()-1, line.length() );
     moveCursor( MoveLineEnd, false );
   }
   // pass to base class or "eat" the action
