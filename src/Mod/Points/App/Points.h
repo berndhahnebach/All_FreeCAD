@@ -29,7 +29,9 @@
 #endif
 
 #include <Base/Vector3D.h>
+#include <Base/Matrix.h>
 using Base::Vector3D;
+using Base::Matrix4D;
 
 #include <App/DataWithProperty.h>
 
@@ -113,6 +115,8 @@ public:
     aVertexNormal.clear();
   }
 
+  virtual void transform(const Matrix4D &rclMat);
+
   /// normal vector
   std::vector<Base::Vector3D> aVertexNormal;
 
@@ -155,6 +159,9 @@ class PointsAppExport PointsWithProperty: public App::DataWithPropertyBag
 public:
 	/// Constructor
 	PointsWithProperty(void){}
+
+  /// transform the points and all their properties
+  void transform(const Matrix4D &rclMat);
 
   PointKernel &getKernel(void){return _Points;}
 
