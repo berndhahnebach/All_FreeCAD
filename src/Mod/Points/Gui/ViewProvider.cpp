@@ -99,11 +99,11 @@ void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
 
 void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor* pcProp)
 {
-  std::vector<Points::PointsPropertyColor::fColor> color = pcProp->Color;
-  for (unsigned long i=0; i<color.size();i++)
+  const std::vector<Points::PointsPropertyColor::fColor>& color = pcProp->Color;
+  unsigned long i=0;
+  for ( std::vector<Points::PointsPropertyColor::fColor>::const_iterator it = color.begin(); it != color.end(); ++it )
   {
-    Points::PointsPropertyColor::fColor& col = color[i];
-    pcColorMat->diffuseColor.set1Value(i, SbColor(col.r, col.g, col.b));
+    pcColorMat->diffuseColor.set1Value(i++, SbColor(it->r, it->g, it->b));
   }
 }
 
