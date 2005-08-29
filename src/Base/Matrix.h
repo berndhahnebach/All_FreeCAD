@@ -66,6 +66,8 @@ public:
   inline bool      operator== (const Matrix4D& rclMtrx);
   /// Index operator
   inline double*    operator[] (unsigned short usNdx);
+  /// Index operator
+  inline const double*    operator[] (unsigned short usNdx) const;
 
   // friend
   inline friend Vector3D& operator*= (Vector3D& rclVect, const Matrix4D& rclMtrx);
@@ -199,6 +201,11 @@ inline Vector3D& operator*= (Vector3D& rclVect,
 }
 
 inline double* Matrix4D::operator[] (unsigned short usNdx)
+{
+  return dMtrx4D[usNdx];
+}
+
+inline const double* Matrix4D::operator[] (unsigned short usNdx) const
 {
   return dMtrx4D[usNdx];
 }
