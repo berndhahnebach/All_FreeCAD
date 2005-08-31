@@ -33,6 +33,7 @@ class SoPath;
 class QListViewItem;
 class SoSeparator;
 class SoEvent;
+class SoSwitch;
 
 namespace Gui {
 
@@ -61,6 +62,13 @@ public:
 	//@{
   /// set the viewing mode
   virtual void setMode(const char* ModeName)=0;
+  /// set the viewing mode as int
+  virtual void setMode(int Mode)=0;
+  /// get the viewing mode as int
+  virtual int getMode(void)=0;
+  /// get the viewing mode as int
+  virtual std::string getModeName(void)=0;
+
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void)=0;
   /// change types
@@ -91,15 +99,9 @@ public:
     * @param bOn true when switch on, false when switch of
     * @ret   false if the provider whants not go edit, or can not
     */
-  virtual void setEdit(void){};
-  virtual void unsetEdit(void){};
-
-  /** event handlin if the feature is in edit mode
-    * The Viewer will cast all left and right mouse 
-    * events to that methode. If return true it will
-    * also handled by the viewer (selection & context menue)
-    */
-  virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
+  virtual void setEdit(void);
+  virtual void unsetEdit(void);
+  virtual const char* getEditModeName(void){return 0;}
 
   //@}
 
@@ -134,13 +136,35 @@ public:
   /// destructor.
   virtual ~ViewProviderInventor();
 
-  // returns the root node of the 
-  SoSeparator* getRoot(void){return pcRoot;}
+  // returns the root node of the Provider (3D)
+  virtual SoSeparator* getRoot(void){return pcRoot;}
+  // returns the root node of the Provider (3D)
+  virtual SoSeparator* getFrontRoot(void){return 0;}
+  // returns the root node of the Provider (3D)
+  virtual SoSeparator* getBackRoot(void){return 0;}
 
   // 
   virtual void selected(View3DInventorViewer *, SoPath *){};
   virtual void unselected(View3DInventorViewer *, SoPath *){};
 
+	/** @name mode methodes of the feature 
+    * manly stiar a SoSwitch (pcModeSwitch) which select the 
+    * viewing mode.
+    * @see pcModeSwitch
+    */
+	//@{
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName);
+  /// set the viewing mode as int
+  virtual void setMode(int Mode);
+  /// get the viewing mode as int
+  virtual int getMode(void);
+  /// get the viewing mode as int
+  virtual std::string getModeName(void);
+
+  //@}
+
+  
   /** @name direct handling methodes
     *  This group of methodes is to direct influenc the 
     *  apierence of the viewed content. Its only for fast
@@ -152,10 +176,20 @@ public:
   virtual void setTransparency(float)=0;
   //@}
 
+  /** event handlin if the feature is in edit mode
+    * The Viewer will cast all left and right mouse 
+    * events to that methode. If return true it will
+    * also handled by the viewer (selection & context menue)
+    */
+  virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
+
 
 
 protected:
   SoSeparator *pcRoot;
+
+  /// this is the mode switch, all the different viewing modes are collected here
+  SoSwitch    *pcModeSwitch;
 
 };
 

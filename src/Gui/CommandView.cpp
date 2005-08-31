@@ -43,6 +43,60 @@ using namespace Gui;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //===========================================================================
+// Std_OrthographicCamera
+//===========================================================================
+DEF_STD_CMD_A(StdCmdOrthographicCamera);
+
+StdCmdOrthographicCamera::StdCmdOrthographicCamera()
+  :CppCommand("Std_OrthographicCamera")
+{
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Orthographic view");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = 0;
+}
+
+void StdCmdOrthographicCamera::activated(int iMsg)
+{
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"OrthographicCamera\")");
+}
+
+bool StdCmdOrthographicCamera::isActive(void)
+{
+  return true;
+}
+//===========================================================================
+// Std_PerspectiveCamera
+//===========================================================================
+DEF_STD_CMD_A(StdCmdPerspectiveCamera);
+
+StdCmdPerspectiveCamera::StdCmdPerspectiveCamera()
+  :CppCommand("Std_PerspectiveCamera")
+{
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Perspective view");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = 0;
+}
+
+void StdCmdPerspectiveCamera::activated(int iMsg)
+{
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"PerspectiveCamera\")");
+}
+
+bool StdCmdPerspectiveCamera::isActive(void)
+{
+  return true;
+}
+//===========================================================================
 // Std_ToggleVisibility
 //===========================================================================
 DEF_STD_CMD_A(StdCmdToggleVisibility);
@@ -680,6 +734,8 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdViewFullScreen());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());
   rcCmdMgr.addCommand(new StdCmdToggleVisibility());
+  rcCmdMgr.addCommand(new StdCmdPerspectiveCamera());
+  rcCmdMgr.addCommand(new StdCmdOrthographicCamera());
 }
 
 } // namespace Gui

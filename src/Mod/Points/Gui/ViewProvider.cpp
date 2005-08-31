@@ -43,6 +43,7 @@
 #include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <Gui/Selection.h>
+#include <Gui/SoFCSelection.h>
 
 #include <Mod/Points/App/PointsFeature.h>
 
@@ -56,7 +57,7 @@ using namespace Points;
        
 ViewProviderInventorPoints::ViewProviderInventorPoints()
 {
-  pcSwitch = new SoSwitch;
+//  pcSwitch = new SoSwitch;
 }
 
 ViewProviderInventorPoints::~ViewProviderInventorPoints()
@@ -130,14 +131,14 @@ void ViewProviderInventorPoints::setVertexNormalMode(Points::PointsPropertyNorma
 
 void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
 {
-  pcFeature = pcFeat;
+  // call father (set material and feature pointer)
+  ViewProviderInventorFeature::attache(pcFeat);
+
   // get and save the feature
   PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeature);
   if ( !ptFea )
     throw "ViewProviderInventorPoints::attach(): wrong feature attached!";
 
-  // copy the material properties of the feature
-  setMatFromFeature();
 
   pcPointsCoord = new SoCoordinate3();
   pcPoints = new SoPointSet();
@@ -149,7 +150,7 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   SoSeparator* pcColorShadedRoot = new SoSeparator();
 
   // Hilight for selection
-  pcHighlight = new SoLocateHighlight();
+  pcHighlight = new Gui::SoFCSelection();
   pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
   pcHighlight->addChild(pcPointsCoord);
   pcHighlight->addChild(pcPoints);
@@ -160,8 +161,8 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
-  pcHighlight->addChild(pcPointsCoord);
-  pcHighlight->addChild(pcPoints);
+//  pcHighlight->addChild(pcPointsCoord);
+//  pcHighlight->addChild(pcPoints);
   pcPointRoot->addChild(pcHighlight);
 
   // points shaded ---------------------------------------------
@@ -173,9 +174,10 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   pcPointShadedRoot->addChild(pcPointStyle);
 //  pcHighlight->addChild(pcLightModel);
   pcPointShadedRoot->addChild(pcPointMaterial);
-  pcPointShadedRoot->addChild(pcPointsCoord);
+//  pcPointShadedRoot->addChild(pcPointsCoord);
   pcPointShadedRoot->addChild(pcPointsNormal);
-  pcPointShadedRoot->addChild(pcPoints);
+//  pcPointShadedRoot->addChild(pcPoints);
+  pcPointShadedRoot->addChild(pcHighlight);
 
   // color shaded  ------------------------------------------
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
@@ -183,15 +185,16 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   pcColorMat = new SoMaterial;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(pcPointsCoord);
-  pcColorShadedRoot->addChild(pcPoints);
+//  pcColorShadedRoot->addChild(pcPointsCoord);
+//  pcColorShadedRoot->addChild(pcPoints);
+  pcPointShadedRoot->addChild(pcHighlight);
 
   // putting all together with a switch
-  pcSwitch->addChild(pcPointRoot);
-  pcSwitch->addChild(pcColorShadedRoot);
-  pcSwitch->addChild(pcPointShadedRoot);
-  pcSwitch->whichChild = 0; 
-  pcRoot->addChild(pcSwitch);
+  pcModeSwitch->addChild(pcPointRoot);
+  pcModeSwitch->addChild(pcColorShadedRoot);
+  pcModeSwitch->addChild(pcPointShadedRoot);
+  pcModeSwitch->whichChild = 0; 
+//  pcRoot->addChild(pcSwitch);
 
   pcFeat->setShowMode("Point");
   setMode(pcFeat->getShowMode());
@@ -200,7 +203,7 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
 void ViewProviderInventorPoints::setMode(const char* ModeName)
 {
   if(stricmp("Point",ModeName)==0)
-    pcSwitch->whichChild = 0; 
+    pcModeSwitch->whichChild = 0; 
   else 
   {
     Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
@@ -209,17 +212,17 @@ void ViewProviderInventorPoints::setMode(const char* ModeName)
     if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
     {
       setVertexColorMode(dynamic_cast<Points::PointsPropertyColor*>(pcProp));
-      pcSwitch->whichChild = 1;
+      pcModeSwitch->whichChild = 1;
     }
     else if ( pcProp && stricmp("VertexGreyvalue",pcProp->GetType())==0 )
     {
       setVertexGreyvalueMode(dynamic_cast<Points::PointsPropertyGreyvalue*>(pcProp));
-      pcSwitch->whichChild = 1;
+      pcModeSwitch->whichChild = 1;
     }
     else if ( pcProp && strcmp("VertexNormal",pcProp->GetType())==0 )
     {
       setVertexNormalMode(dynamic_cast<Points::PointsPropertyNormal*>(pcProp));
-      pcSwitch->whichChild = 2;
+      pcModeSwitch->whichChild = 2;
     }
     else 
       Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorPoints::setMode(), ignored\n", ModeName);

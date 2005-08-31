@@ -128,6 +128,7 @@ void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
 void View3DInventor::setViewerDefaults(void)
 {
 
+//  _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
   _viewer->show();
 }
 
@@ -356,6 +357,12 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     SoCamera* cam = _viewer->getCamera();
     cam->orientation.setValue(-0.333333f, -0.166666f, -0.333333f, -root);
     _viewer->viewAll();
+    return true;
+  }else if(strcmp("OrthographicCamera",pMsg) == 0 ){
+    _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+    return true;
+  }else if(strcmp("PerspectiveCamera",pMsg) == 0 ){
+    _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
     return true;
   }
 

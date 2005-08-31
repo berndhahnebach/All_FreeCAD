@@ -63,7 +63,7 @@ void MeshPropertyNormal::transform(const Matrix4D& mat)
 
   // Set up the rotation matrix: zero the translations and make the scale factors = 1
   Matrix4D rot;
-  rot.Unit();
+  rot.unity();
   for (int i = 0; i < 3; i++)
     for (int j = 0; j < 3; j++)
       rot[i][j] = mat[i][j] / s[i];

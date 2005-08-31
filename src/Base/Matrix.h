@@ -80,15 +80,17 @@ public:
   /// Binary streaming of data
   DataStream& LoadData (DataStream& ifs);
   //@}*/
-  void   GetGLMatrix (double dMtrx[16]) const;
-  void   SetGLMatrix (const double dMtrx[16]);
+  /// get the matrix in OpenGL style
+  void   getGLMatrix (double dMtrx[16]) const;
+  /// set the matrix in OpenGL style
+  void   setGLMatrix (const double dMtrx[16]);
 
   virtual unsigned long GetMemSpace (void);
 
   /** @name Manipulation */
   //@{
   /// Makes unity matrix
-  void Unit         (void);
+  void unity        (void);
   void SetMoveX     (float fMove);
   void SetMoveY     (float fMove);
   void SetMoveZ     (float fMove);

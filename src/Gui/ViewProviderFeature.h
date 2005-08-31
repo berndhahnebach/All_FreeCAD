@@ -49,7 +49,10 @@ public:
   /// destructor.
   virtual ~ViewProviderInventorFeature();
 
-  virtual void attache(App::Feature *pcFeature)=0;
+
+  virtual void attache(App::Feature *pcFeature);
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void);
 
 
   virtual void selected(View3DInventorViewer *, SoPath *);

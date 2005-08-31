@@ -33,9 +33,10 @@
 #include "ViewProvider.h"
 #include "Tree.h"
 
+# include <Inventor/nodes/SoSwitch.h>
 
 
-
+using namespace std;
 using namespace Gui;
 
 
@@ -52,6 +53,16 @@ ViewProvider::~ViewProvider()
 
 }
 
+void ViewProvider::setEdit(void)
+{
+  if(getEditModeName())
+    setMode(getEditModeName());
+}
+
+void ViewProvider::unsetEdit(void)
+{
+  setMode(0);
+}
 
 
 
@@ -95,6 +106,12 @@ ViewProviderInventor::ViewProviderInventor()
 {
   pcRoot = new SoSeparator();
   pcRoot->ref();
+  pcModeSwitch = new SoSwitch();
+  pcModeSwitch->ref();
+  
+  pcRoot->addChild(pcModeSwitch);
+
+
 }
 
 
@@ -104,5 +121,37 @@ ViewProviderInventor::~ViewProviderInventor()
 
 }
 
+
+void ViewProviderInventor::setMode(const char* ModeName)
+{
+  // collect all modes (with subclasses)
+  vector<string> modes = getModes();
+  vector<string>::iterator p;
+
+  p = find(modes.begin(),modes.end(),ModeName);
+
+  if(p!=modes.end())
+    setMode(p-modes.begin());
+  else
+    Base::Console().Warning("Unknown mode '%s' in ViewProviderInventor::setMode(), ignored\n", ModeName);
+
+}
+
+void ViewProviderInventor::setMode(int Mode)
+{
+  pcModeSwitch->whichChild = Mode;
+}
+
+
+int ViewProviderInventor::getMode(void)
+{
+ return pcModeSwitch->whichChild.getValue();
+}
+
+
+std::string ViewProviderInventor::getModeName(void)
+{
+  return getModes()[getMode()];
+}
 
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,61 +20,69 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
+#define __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
-
-#include "../../../Gui/ViewProviderFeature.h"
-
-
-class TopoDS_Shape;
-class TopoDS_Face;
 class SoSeparator;
 class SbVec3f;
+class SoSwitch;
+class SoCoordinate3;
+class SoNormal;
+class SoIndexedFaceSet;
+class SoFaceSet;
+class SoPath;
+class SoLocateHighlight;
+class SoTransformerManip;
 
-namespace PartGui {
+namespace Gui {
+  class View3DInventorViewer;
+}
 
 
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
+namespace Mesh {
+  class MeshWithProperty;
+  class MeshPropertyColor;
+}
+
+#include "ViewProviderTransform.h"
+
+namespace MeshGui {
+
+/** Like Mesh viewprovider but with manipulator
+ */
+class ViewProviderInventorMeshTransformDemolding : public ViewProviderInventorMesh
 {
 public:
-  /// constructor
-  ViewProviderInventorPart();
-  /// destructor
-  virtual ~ViewProviderInventorPart();
+  ViewProviderInventorMeshTransformDemolding();
+  virtual ~ViewProviderInventorMeshTransformDemolding();
 
 
+  /** 
+   * Extracts the mesh data from the feature \a pcFeature and creates
+   * an Inventor node \a SoNode with these data. 
+   */
   virtual void attache(App::Feature *);
 
   /// set the viewing mode
-  virtual void setMode(const char* ModeName){};
+//  virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
-  /// Update the Part representation
+  /// Update the Mesh representation
   virtual void update(const ChangeType&);
 
   virtual void selected(Gui::View3DInventorViewer *, SoPath *);
   virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
 
 protected:
-  Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
-  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+  SoTransformerManip *pcTransformerDragger;
 
-  // setings stuff
-  ParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
-
+  //SoSwitch          *pcManipSwitch;
 
 };
 
-} // namespace PartGui
+} // namespace MeshGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
 

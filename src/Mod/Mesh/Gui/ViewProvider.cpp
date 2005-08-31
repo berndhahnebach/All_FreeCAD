@@ -40,6 +40,7 @@
 #include <Base/Exception.h>
 #include <App/Application.h>
 #include <Gui/Selection.h>
+#include <Gui/SoFCSelection.h>
 #include <Base/Sequencer.h>
 
 #include "ViewProvider.h"
@@ -47,13 +48,8 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
-#include <Inventor/nodes/SoLocateHighlight.h>
-#include <Inventor/nodes/SoDrawStyle.h>
-#include <Inventor/nodes/SoLightModel.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoIndexedFaceSet.h>
-#include <Inventor/nodes/SoMaterialBinding.h>
 
+using namespace std;
 using namespace MeshGui;
 using Mesh::MeshFeature;
 
@@ -66,7 +62,7 @@ using Base::Vector3D;
        
 ViewProviderInventorMesh::ViewProviderInventorMesh()
 {
-  pcSwitch = new SoSwitch;
+//  pcSwitch = new SoSwitch;
 }
 
 ViewProviderInventorMesh::~ViewProviderInventorMesh()
@@ -98,47 +94,7 @@ void ViewProviderInventorMesh::unselected(Gui::View3DInventorViewer *, SoPath *)
 
 
 void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
-{/*
-  MeshKernel *cMesh = pcMesh->getKernel();
-
-  int TreeIndex = 0;
-//  int FaceCount = 0;
-
-  int* numVertices = new int[cMesh->CountFacets()];
-
-  Base::Sequencer().start( "Building View node...", cMesh->CountFacets() );
-  MeshFacetIterator cFIter(*cMesh);
-
-  // get all facets and their points and normals
-  for ( cFIter.Init(); cFIter.More(); cFIter.Next() )
-  {
-    const Vector3D& cNorm = cFIter->GetNormal();
-    const Vector3D& cP0   = cFIter->_aclPoints[0];
-    const Vector3D& cP1   = cFIter->_aclPoints[1];
-    const Vector3D& cP2   = cFIter->_aclPoints[2];
-
-//    const int idxn=FaceCount++;
-//    pcMeshNormal->vector.set1Value(idxn,cNorm.x,cNorm.y,cNorm.z);
-		//p1
-		const int idx1=TreeIndex++;
-		pcMeshCoord->point.set1Value(idx1, cP0.x, cP0.y, cP0.z);
-		//p2
-		const int idx2=TreeIndex++;
-		pcMeshCoord->point.set1Value(idx2, cP1.x, cP1.y, cP1.z);
-		//p3
-		const int idx3=TreeIndex++;
-		pcMeshCoord->point.set1Value(idx3, cP2.x, cP2.y, cP2.z);
-		numVertices[ cFIter.Position() ] = 3; //3Vertexes per face
-
-    Base::Sequencer().next();
-  }
-  
-	pcMeshFaces->numVertices.setNum(cMesh->CountFacets());
-	pcMeshFaces->numVertices.setValues(0,cMesh->CountFacets(),numVertices);
-  delete [] numVertices;
-  
-  Base::Sequencer().stop();
-*/
+{
   MeshKernel *cMesh = pcMesh->getKernel();
   SbVec3f* vertices = new SbVec3f[cMesh->CountPoints()];
   int* faces = new int [4*cMesh->CountFacets()];
@@ -176,32 +132,35 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 
 void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
 {
-  pcFeature = pcFeat;
+  // call father (set material and feature pointer)
+  ViewProviderInventorFeature::attache(pcFeat);
+
   // get and save the feature
   MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
   if ( !meshFea )
     throw "ViewProviderInventorMesh::attache(): wrong feature attached!";
 
-  // copy the material properties of the feature
-  setMatFromFeature();
-
   // creat the mesh core nodes
   pcMeshCoord     = new SoCoordinate3();
-//  pcMeshNormal    = new SoNormal();
+  //  pcMeshNormal    = new SoNormal();
   pcMeshFaces     = new SoIndexedFaceSet();
-//  pcMeshFaces     = new SoFaceSet();
   // and set them
   createMesh(&(meshFea->getMesh()));
 
 
+  // some helper Separators
+  SoGroup* pcFlatRoot = new SoGroup();
+  SoGroup* pcFlatNormRoot = new SoGroup();
+  SoGroup* pcWireRoot = new SoGroup();
+  SoGroup* pcPointRoot = new SoGroup();
+  SoGroup* pcFlatWireRoot = new SoGroup();
+  SoGroup* pcColorShadedRoot = new SoGroup();
 
-  SoSeparator* pcFlatRoot = new SoSeparator();
-  SoSeparator* pcFlatNormRoot = new SoSeparator();
-  SoSeparator* pcWireRoot = new SoSeparator();
-  SoSeparator* pcPointRoot = new SoSeparator();
-  SoSeparator* pcFlatWireRoot = new SoSeparator();
-  SoSeparator* pcColorShadedRoot = new SoSeparator();
-
+  // only one selection node for the mesh
+  pcHighlight = new Gui::SoFCSelection();
+  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight->addChild(pcMeshCoord);
+  pcHighlight->addChild(pcMeshFaces);
 
   // flat shaded (Normal) ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
@@ -211,15 +170,8 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
 
   pcFlatRoot->addChild(pcFlatStyle);
   pcFlatRoot->addChild(pcShadedMaterial);
-  // Hilight for selection
-  pcHighlight = new SoLocateHighlight();
-  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
-//  pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-  pcHighlight->addChild(pcBinding);
-  pcHighlight->addChild(pcMeshCoord);
-  pcHighlight->addChild(pcMeshFaces);
+  pcFlatRoot->addChild(pcBinding);
   pcFlatRoot->addChild(pcHighlight);
-
 
 
 /*  // flat shaded (per Vertex normales) ------------------------------------------
@@ -243,14 +195,10 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcWireStyle->lineWidth = fLineSize;
   SoLightModel *pcLightModel = new SoLightModel();
   pcLightModel->model = SoLightModel::BASE_COLOR;
-  SoLocateHighlight *pcHighlight2 = new SoLocateHighlight();
-  pcHighlight2->color.setValue((float)0.1,(float)0.3,(float)0.7);
-  pcHighlight2->addChild(pcWireStyle);
-  pcHighlight2->addChild(pcLightModel);
-  pcHighlight2->addChild(pcLineMaterial);
-  pcHighlight2->addChild(pcMeshCoord);
-  pcHighlight2->addChild(pcMeshFaces);
-  pcWireRoot->addChild(pcHighlight2);
+  pcWireRoot->addChild(pcWireStyle);
+  pcWireRoot->addChild(pcLightModel);
+  pcWireRoot->addChild(pcLineMaterial);
+  pcWireRoot->addChild(pcHighlight);
 
   // points part ---------------------------------------------
   SoDrawStyle *pcPointStyle = new SoDrawStyle();
@@ -258,22 +206,17 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
-  pcPointRoot->addChild(pcMeshCoord);
-  pcPointRoot->addChild(pcMeshFaces);
+  pcPointRoot->addChild(pcHighlight);
 
   // wire shaded  ------------------------------------------
   pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
   pcBinding = new SoNormalBinding();
 	pcBinding->value=SoNormalBinding::PER_FACE;
-  SoLocateHighlight *pcHighlight3 = new SoLocateHighlight();
-  pcHighlight3->color.setValue((float)0.1,(float)0.3,(float)0.7);
-  pcHighlight3->addChild(pcBinding);
-  pcHighlight3->addChild(pcMeshCoord);
-  pcHighlight3->addChild(pcMeshFaces);
+  pcFlatWireRoot->addChild(pcBinding);
   pcFlatWireRoot->addChild(pcFlatStyle);
   pcFlatWireRoot->addChild(pcShadedMaterial);
-  pcFlatWireRoot->addChild(pcHighlight3);
+  pcFlatWireRoot->addChild(pcHighlight);
   pcWireStyle = new SoDrawStyle();
   pcWireStyle->style = SoDrawStyle::LINES;
   pcWireStyle->lineWidth = 2.0;
@@ -295,28 +238,21 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcColorMat = new SoMaterial;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-  // Hilight for selection
-  /*SoLocateHighlight *pcHighlight4 = new SoLocateHighlight();*/
-  /*pcHighlight4->color.setValue((float)0.1,(float)0.3,(float)0.7);*/
-//  pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-  pcColorShadedRoot->addChild(pcBinding);   /*pcHighlight4->addChild(pcBinding);*/
-  pcColorShadedRoot->addChild(pcMeshCoord); /*pcHighlight4->addChild(pcMeshCoord);*/
-  pcColorShadedRoot->addChild(pcMeshFaces); /*pcHighlight4->addChild(pcMeshFaces);*/
-  /*pcColorShadedRoot->addChild(pcHighlight4);*/
+  pcColorShadedRoot->addChild(pcBinding);  
+  pcColorShadedRoot->addChild(pcHighlight);
+
 
   // puting all togetern with a switch
-  pcSwitch->addChild(pcFlatRoot);
+  pcModeSwitch->addChild(pcFlatRoot);
 //  pcSwitch->addChild(pcFlatNormRoot);
-  pcSwitch->addChild(pcWireRoot);
-  pcSwitch->addChild(pcPointRoot);
-  pcSwitch->addChild(pcFlatWireRoot);
-  pcSwitch->addChild(pcColorShadedRoot);
+  pcModeSwitch->addChild(pcWireRoot);
+  pcModeSwitch->addChild(pcPointRoot);
+  pcModeSwitch->addChild(pcFlatWireRoot);
+//  pcModeSwitch->addChild(pcColorShadedRoot);
 
-  pcSwitch->whichChild = 0; 
+  // standard viewing (flat)
+  pcModeSwitch->whichChild = 0; 
 
-  pcRoot->addChild(pcSwitch);
-
-  setMode(pcFeat->getShowMode());
 }
 
 void ViewProviderInventorMesh::update(const ChangeType& Reason)
@@ -329,6 +265,7 @@ void ViewProviderInventorMesh::update(const ChangeType& Reason)
 
 }
 
+/*
 void ViewProviderInventorMesh::setMode(const char* ModeName)
 {
   if(stricmp("Flat",ModeName)==0)
@@ -353,20 +290,24 @@ void ViewProviderInventorMesh::setMode(const char* ModeName)
       Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorMesh::setMode(), ignored\n", ModeName);
   }
 }
-
-std::vector<std::string> ViewProviderInventorMesh::getModes(void)
+*/
+vector<string> ViewProviderInventorMesh::getModes(void)
 {
-  std::vector<std::string> StrList;
+  // get the modes of the father
+  vector<string> StrList = ViewProviderInventorFeature::getModes();
 
+  // add your own modes
   StrList.push_back("Flat");
   StrList.push_back("Wire");
   StrList.push_back("Point");
   StrList.push_back("FlatWire");
 
-  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-  std::list<std::string> list = rcMesh.GetAllNamesOfType("VertexColor");
 
-  for(std::list<std::string>::iterator It=list.begin();It!=list.end();It++)
+  // add the dynamic modes (depends on which properties are added to the mesh..)
+  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
+  list<string> List = rcMesh.GetAllNamesOfType("VertexColor");
+
+  for(list<string>::iterator It=List.begin();It!=List.end();It++)
     StrList.push_back(*It);
 
   return StrList;
@@ -375,7 +316,7 @@ std::vector<std::string> ViewProviderInventorMesh::getModes(void)
 
 void ViewProviderInventorMesh::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
 {
-  std::vector<Mesh::MeshPropertyColor::fColor> color = pcProp->Color;
+  vector<Mesh::MeshPropertyColor::fColor> color = pcProp->Color;
   for (unsigned long i=0; i<color.size();i++)
   {
     Mesh::MeshPropertyColor::fColor& col = color[i];

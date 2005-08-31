@@ -35,7 +35,7 @@ using namespace Base;
 
 Matrix4D::Matrix4D (void)
 {
-  (*this).Unit();
+  (*this).unity();
 }
 
 Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
@@ -43,7 +43,7 @@ Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
   (*this) = rclMtrx;
 }
 
-void Matrix4D::Unit (void)
+void Matrix4D::unity (void)
 {
   short iz, is;
 
@@ -61,7 +61,7 @@ void Matrix4D::SetMoveX (float fMove)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[0][3] = fMove;
   (*this) *= clMat;
 }
@@ -70,7 +70,7 @@ void Matrix4D::SetMoveY (float fMove)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[1][3] = fMove;
   (*this) *= clMat;
 }
@@ -79,7 +79,7 @@ void Matrix4D::SetMoveZ (float fMove)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[2][3] = fMove;
   (*this) *= clMat;
 }
@@ -88,7 +88,7 @@ void Matrix4D::SetMove (const Vector3D& rclVct)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[0][3] = rclVct.x;
   clMat.dMtrx4D[1][3] = rclVct.y;
   clMat.dMtrx4D[2][3] = rclVct.z;
@@ -99,7 +99,7 @@ void Matrix4D::SetScaleX (float fScale)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[0][0] = fScale;
   
   (*this) *= clMat;
@@ -109,7 +109,7 @@ void Matrix4D::SetScaleY (float fScale)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[1][1] = fScale;
   (*this) *= clMat;
 }
@@ -118,7 +118,7 @@ void Matrix4D::SetScaleZ (float fScale)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[2][2] = fScale;
   (*this) *= clMat;
 }
@@ -127,7 +127,7 @@ void Matrix4D::SetScale (const Vector3D& rclVct)
 {
   Matrix4D clMat;
 
-  clMat.Unit();
+  clMat.unity();
   clMat.dMtrx4D[0][0] = rclVct.x;
   clMat.dMtrx4D[1][1] = rclVct.y;
   clMat.dMtrx4D[2][2] = rclVct.z;
@@ -369,12 +369,12 @@ void Matrix4D::InverseGauss (void)
                                 0 ,1 ,0 ,0 ,
                                 0 ,0 ,1 ,0 ,
                                 0 ,0 ,0 ,1 }; 
-  GetGLMatrix(matrix);
+  getGLMatrix(matrix);
 
 //  Matrix_invert(matrix, inversematrix);
   Matrix_gauss(matrix,inversematrix);
 
-  SetGLMatrix(inversematrix);
+  setGLMatrix(inversematrix);
 }
 /*
 DataStream & Matrix4D::SaveData (DataStream& ofs)
@@ -404,7 +404,7 @@ DataStream & Matrix4D::LoadData (DataStream& ifs)
   return ifs;
 }
 */
-void Matrix4D::GetGLMatrix (double dMtrx[16]) const
+void Matrix4D::getGLMatrix (double dMtrx[16]) const
 {
   short iz, is;
 
@@ -413,7 +413,7 @@ void Matrix4D::GetGLMatrix (double dMtrx[16]) const
       dMtrx[ iz + 4*is ] = dMtrx4D[iz][is];
 }
 
-void Matrix4D::SetGLMatrix (const double dMtrx[16])
+void Matrix4D::setGLMatrix (const double dMtrx[16])
 {
   short iz, is;
 

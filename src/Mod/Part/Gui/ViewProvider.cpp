@@ -61,6 +61,9 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <App/Application.h>
+#include <Gui/SoFCSelection.h>
+#include <Gui/Selection.h>
+
 
 #include "ViewProvider.h"
 
@@ -96,23 +99,66 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 
 }
 
+
+
+void ViewProviderInventorPart::selected(Gui::View3DInventorViewer *, SoPath *)
+{
+   Base::Console().Log("Select viewprovider Part  %p\n",this);
+   Gui::Selection().addFeature(pcFeature);
+
+}
+void ViewProviderInventorPart::unselected(Gui::View3DInventorViewer *, SoPath *)
+{
+   Base::Console().Log("Unselect viewprovider Part  %p\n",this);
+   Gui::Selection().removeFeature(pcFeature);
+}
+
+std::vector<std::string> ViewProviderInventorPart::getModes(void)
+{
+  // get the modes of the father
+  vector<string> StrList = ViewProviderInventorFeature::getModes();
+
+  // add your own modes
+  StrList.push_back("Normal");
+  StrList.push_back("Flat");
+  StrList.push_back("Wireframe");
+  StrList.push_back("Points");
+
+  return StrList;
+}
+
+
+void ViewProviderInventorPart::update(const ChangeType& Reason)
+{
+  Reason;
+  // set new view modes
+  setMode(pcFeature->getShowMode());
+  // copy the material properties of the feature
+  setMatFromFeature();
+
+}
+
 void ViewProviderInventorPart::attache(App::Feature *pcFeat)
 {
-  pcFeature = pcFeat;
+  // call father (set material and feature pointer)
+  ViewProviderInventorFeature::attache(pcFeat);
+
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
   bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
   lHilightColor       = hGrp->GetInt ("HilightColor",0);
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
-  // copy the material properties of the feature
-  setMatFromFeature();
 
   if ( pcFeature->getStatus() ==  App::Feature::Error )
     return; // feature is invalid
 
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
 
+  // creat achor nodes
+  SoSeparator *EdgeRoot = new SoSeparator();
+  SoSeparator *FaceRoot = new SoSeparator();
+  SoSeparator *VertexRoot = new SoSeparator();
 
 
   // creating the mesh on the data structure
@@ -121,12 +167,43 @@ void ViewProviderInventorPart::attache(App::Feature *pcFeat)
 	//BRepMesh_IncrementalMesh MESH(cShape,fMeshDeviation);
 
   try{
-    computeFaces   (pcRoot,cShape);
-    computeEdges   (pcRoot,cShape);
-    computeVertices(pcRoot,cShape);
+    computeFaces   (FaceRoot,cShape);
+    computeEdges   (EdgeRoot,cShape);
+    computeVertices(VertexRoot,cShape);
   } catch (...){
     Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
   }
+
+  SoGroup* pcNormalRoot = new SoGroup();
+  SoGroup* pcFlatRoot = new SoGroup();
+  SoGroup* pcWireframeRoot = new SoGroup();
+  SoGroup* pcPointsRoot = new SoGroup();
+
+
+  // normal viewing with edges and points
+  pcNormalRoot->addChild(FaceRoot);
+  pcNormalRoot->addChild(EdgeRoot);
+  pcNormalRoot->addChild(VertexRoot);
+
+  // just faces with no edges or points
+  pcFlatRoot->addChild(FaceRoot);
+
+  // only edges
+  pcWireframeRoot->addChild(EdgeRoot);
+//  pcWireframeRoot->addChild(VertexRoot);
+
+  // normal viewing with edges and points
+  pcPointsRoot->addChild(VertexRoot);
+
+   // puting all togetern with the switch
+  pcModeSwitch->addChild(pcNormalRoot);
+  pcModeSwitch->addChild(pcFlatRoot);
+  pcModeSwitch->addChild(pcWireframeRoot);
+  pcModeSwitch->addChild(pcPointsRoot);
+
+  // standard viewing (flat)
+  pcModeSwitch->whichChild = 0; 
+
 }
 
 
@@ -165,13 +242,15 @@ buffer_writeaction(SoNode * root)
 
 // **********************************************************************************
 
-Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
-  SoSeparator *EdgeRoot = new SoSeparator();
-  root->addChild(EdgeRoot);
 
   EdgeRoot->addChild(pcLineMaterial);  
+  SoDrawStyle *pcWireStyle = new SoDrawStyle();
+  pcWireStyle->style = SoDrawStyle::LINES;
+  pcWireStyle->lineWidth = fLineSize;
+  EdgeRoot->addChild(pcWireStyle);
 
   // build up map edge->face
   TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
@@ -257,7 +336,7 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
     EdgeRoot->addChild(coords);
 
     // define the indexed face set
-    SoLocateHighlight* h = new SoLocateHighlight();
+    Gui::SoFCSelection* h = new Gui::SoFCSelection();
     h->color.setValue((float)0.2,(float)0.5,(float)0.2);
 
     SoLineSet * lineset = new SoLineSet;
@@ -270,11 +349,9 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* root, co
 }
 
 
-Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* VertexRoot, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
-  SoSeparator *FaceRoot = new SoSeparator();
-  root->addChild(FaceRoot);
 
 
   for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
@@ -290,12 +367,9 @@ Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* root, co
 
 
 
-Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* FaceRoot, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
-
-  SoSeparator *FaceRoot = new SoSeparator();
-  root->addChild(FaceRoot);
 
   FaceRoot->addChild(pcShadedMaterial);
 
@@ -358,7 +432,7 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* root, const
     //root->addChild(PtSet);
 
 	  // define the indexed face set
-		SoLocateHighlight* h = new SoLocateHighlight();
+		Gui::SoFCSelection* h = new Gui::SoFCSelection();
 //    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
     h->color.setValue((float)0.0,(float)0.0,(float)0.5);
 

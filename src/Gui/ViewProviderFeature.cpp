@@ -60,6 +60,25 @@ ViewProviderInventorFeature::~ViewProviderInventorFeature()
 }
 
 
+void ViewProviderInventorFeature::attache(App::Feature *pcFeat)
+{
+  // save feature pointer
+  pcFeature = pcFeat;
+
+  // copy the material properties of the feature
+  setMatFromFeature();
+
+  // set viewing mode
+  setMode(pcFeature->getShowMode());
+
+}
+
+std::vector<std::string> ViewProviderInventorFeature::getModes(void)
+{
+  // empty
+  return std::vector<std::string>();
+}
+
 void ViewProviderInventorFeature::selected(View3DInventorViewer *, SoPath *)
 {
    Base::Console().Log("Select viewprovider Feature  %p\n",this);

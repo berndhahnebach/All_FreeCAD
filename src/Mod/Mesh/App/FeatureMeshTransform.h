@@ -25,7 +25,6 @@
 #define FEATURE_MESH_TRANSFORM_H
 
 #include "MeshFeature.h"
-#include "FeatureMeshTransform.h"
 
 namespace Mesh
 {

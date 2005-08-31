@@ -43,39 +43,31 @@
 #include <Gui/SoFCSelection.h>
 #include <Base/Sequencer.h>
 
-#include "ViewProvider.h"
-#include "ViewProviderTransform.h"
 
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
-#include <Inventor/nodes/SoLocateHighlight.h>
-#include <Inventor/nodes/SoDrawStyle.h>
-#include <Inventor/nodes/SoLightModel.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoIndexedFaceSet.h>
-#include <Inventor/nodes/SoMaterialBinding.h>
-#include <Inventor/draggers/SoTransformerDragger.h>
-#include <Inventor/manips/SoTransformerManip.h> 
 
-using namespace MeshGui;
 using Mesh::MeshFeature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
-    
+ 
+#include "ViewProviderTransformDemolding.h"
+using namespace MeshGui;
+   
 
  
-ViewProviderInventorMeshTransform::ViewProviderInventorMeshTransform()
+ViewProviderInventorMeshTransformDemolding::ViewProviderInventorMeshTransformDemolding()
 {
 }
 
-ViewProviderInventorMeshTransform::~ViewProviderInventorMeshTransform()
+ViewProviderInventorMeshTransformDemolding::~ViewProviderInventorMeshTransformDemolding()
 {
 }
 
 
-void ViewProviderInventorMeshTransform::selected(Gui::View3DInventorViewer *, SoPath *)
+void ViewProviderInventorMeshTransformDemolding::selected(Gui::View3DInventorViewer *, SoPath *)
 {
    Base::Console().Log("Select viewprovider Mesh  %p\n",this);
    Gui::Selection().addFeature(pcFeature);
@@ -89,7 +81,7 @@ void ViewProviderInventorMeshTransform::selected(Gui::View3DInventorViewer *, So
 
  
 }
-void ViewProviderInventorMeshTransform::unselected(Gui::View3DInventorViewer *, SoPath *)
+void ViewProviderInventorMeshTransformDemolding::unselected(Gui::View3DInventorViewer *, SoPath *)
 {
    Base::Console().Log("Unselect viewprovider Mesh  %p\n",this);
    Gui::Selection().removeFeature(pcFeature);
@@ -105,7 +97,7 @@ void ViewProviderInventorMeshTransform::unselected(Gui::View3DInventorViewer *, 
 
 
 
-void ViewProviderInventorMeshTransform::attache(App::Feature *pcFeat)
+void ViewProviderInventorMeshTransformDemolding::attache(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
   ViewProviderInventorMesh::attache(pcFeat);
@@ -134,10 +126,9 @@ void ViewProviderInventorMeshTransform::attache(App::Feature *pcFeat)
   // adding to the switch
   pcModeSwitch->addChild(pcEditRoot);
 
-//  setMode(pcFeat->getShowMode());
 }
 
-void ViewProviderInventorMeshTransform::update(const ChangeType& Reason)
+void ViewProviderInventorMeshTransformDemolding::update(const ChangeType& Reason)
 {
   Reason;
   // set new view modes
@@ -147,23 +138,22 @@ void ViewProviderInventorMeshTransform::update(const ChangeType& Reason)
 
 }
 
-
-void ViewProviderInventorMeshTransform::setMode(const char* ModeName)
+/*
+void ViewProviderInventorMeshTransformDemolding::setMode(const char* ModeName)
 {
   ViewProviderInventorMesh::setMode(ModeName);
 
   int i = getMode();
 }
+*/
 
-
-std::vector<std::string> ViewProviderInventorMeshTransform::getModes(void)
+std::vector<std::string> ViewProviderInventorMeshTransformDemolding::getModes(void)
 {
   std::vector<std::string> StrList = ViewProviderInventorMesh::getModes();
 
   StrList.push_back("Transform");
 
   return StrList;
-//  return ViewProviderInventorMesh::getModes().push_back("Transform");
 }
 
 

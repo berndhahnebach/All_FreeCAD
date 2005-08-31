@@ -272,6 +272,15 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMainCmd
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -295,6 +304,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name FreeCADGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMain
     End Project Dependency
 }}}
 

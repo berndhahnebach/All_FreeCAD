@@ -38,6 +38,7 @@ class SoLocateHighlight;
 
 namespace Gui {
   class View3DInventorViewer;
+  class SoFCSelection;
 }
 
 
@@ -67,7 +68,7 @@ public:
   virtual void attache(App::Feature *);
 
   /// set the viewing mode
-  virtual void setMode(const char* ModeName);
+//  virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Mesh representation
@@ -87,14 +88,12 @@ protected:
 
   SoCoordinate3     *pcMeshCoord;
   SoNormal          *pcMeshNormal;
-  SoIndexedFaceSet *pcMeshFaces;
+  SoIndexedFaceSet  *pcMeshFaces;
   //SoFaceSet         *pcMeshFaces;
 
-  SoLocateHighlight *pcHighlight;
+  Gui::SoFCSelection *pcHighlight;
 
   SoMaterial        *pcColorMat;
-
-  SoSwitch          *pcSwitch;
 
 };
 

@@ -77,7 +77,6 @@ protected:
 
   SoTransformerManip *pcTransformerDragger;
 
-  SoSwitch          *pcManipSwitch;
 
 };
 

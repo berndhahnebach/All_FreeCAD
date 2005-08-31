@@ -38,6 +38,7 @@
 #include "images.h"
 #include "ViewProvider.h"
 #include "ViewProviderTransform.h"
+#include "ViewProviderTransformDemolding.h"
 #include "Workbench.h"
 
 
@@ -87,9 +88,11 @@ void GuiMeshExport initMeshGui() {
   CreateMeshCommands();
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport",    new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,    new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransform", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransform>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport",             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransform",          new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransform>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransformDemolding", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransformDemolding>);
+
   Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::MeshWorkbench>);
 
   return;

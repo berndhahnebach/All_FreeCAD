@@ -396,7 +396,7 @@ public:
   Matrix4D GetHessian( float x, float y, float z ) const
   {
     Wm3::Matrix3<float> hess = pImplSurf->GetHessian( Wm3::Vector3<float>(x, y, z) );
-    Matrix4D cMat; cMat.Unit();
+    Matrix4D cMat; cMat.unity();
     cMat[0][0] = hess[0][0]; cMat[0][1] = hess[0][1]; cMat[0][2] = hess[0][2];
     cMat[1][0] = hess[1][0]; cMat[1][1] = hess[1][1]; cMat[1][2] = hess[1][2];
     cMat[2][0] = hess[2][0]; cMat[2][1] = hess[2][1]; cMat[2][2] = hess[2][2];

@@ -32,6 +32,11 @@ class SoLocateHighlight;
 class SoCoordinate3;
 class SoNormal;
 
+namespace Gui
+{
+  class SoFCSelection;
+}
+
 namespace Points {
   class PointsPropertyColor;
   class PointsPropertyGreyvalue;
@@ -74,9 +79,8 @@ protected:
 protected:
   SoCoordinate3     *pcPointsCoord;
   SoPointSet        *pcPoints;
-  SoLocateHighlight *pcHighlight;
+  Gui::SoFCSelection *pcHighlight;
   SoMaterial        *pcColorMat;
-  SoSwitch          *pcSwitch;
   SoNormal          *pcPointsNormal;
 };
 

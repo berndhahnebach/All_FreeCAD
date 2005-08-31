@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,60 +21,33 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
+#ifndef FEATURE_MESH_TRANSFORM_DEMOLDING_H
+#define FEATURE_MESH_TRANSFORM_DEMOLDING_H
 
-#include "../../../Gui/ViewProviderFeature.h"
+#include "FeatureMeshTransform.h"
 
+namespace Mesh
+{
 
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-
-namespace PartGui {
-
-
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
+/**
+ * The FeatureMeshImport class reads the any supported mesh format
+ * into the FreeCAD workspace.
+ * @author Werner Mayer
+ */
+class FeatureMeshTransformDemolding : public FeatureMeshTransform
 {
 public:
-  /// constructor
-  ViewProviderInventorPart();
-  /// destructor
-  virtual ~ViewProviderInventorPart();
-
-
-  virtual void attache(App::Feature *);
-
-  /// set the viewing mode
-  virtual void setMode(const char* ModeName){};
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
-  /// Update the Part representation
-  virtual void update(const ChangeType&);
-
-  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
-  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
-
-protected:
-  Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
-
-  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
-
-  // setings stuff
-  ParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
-
-
+  /** @name methods overide Feature */
+  //@{
+  /// Initialize Feature structure
+  virtual void initFeature(void);
+  /// recalculate the Feature
+  virtual int execute(TFunction_Logbook& log);
+  /// Returns the Name/Type of the feature
+  virtual const char *type(void){return "MeshTransformDemolding";};
+  //@}
 };
 
-} // namespace PartGui
+}
 
-
-#endif // __VIEWPROVIDERPART_H__
-
+#endif // FEATURE_MESH_TRANSFORM_H 

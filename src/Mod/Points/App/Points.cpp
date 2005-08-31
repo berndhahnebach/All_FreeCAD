@@ -27,7 +27,7 @@
 #endif
 
 #include "Points.h"
-
+#include <Base/Matrix.h>
 using namespace Points;
 
 /*
@@ -104,9 +104,9 @@ void PointsPropertyNormal::transform(const Matrix4D &mat)
 
   // Set up the rotation matrix: zero the translations and make the scale factors = 1
   Matrix4D rot;
-  rot.Unit();
-  for (int i = 0; i < 3; i++)
-    for (int j = 0; j < 3; j++)
+  rot.unity();
+  for (unsigned short i = 0; i < 3; i++)
+    for (unsigned short j = 0; j < 3; j++)
       rot[i][j] = mat[i][j] / s[i];
 
   // Rotate the normal vectors

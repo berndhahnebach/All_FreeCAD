@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,60 +21,60 @@
  ***************************************************************************/
 
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <fcntl.h>
+# include <TFunction_Logbook.hxx>
+# include <ios>
+#endif
 
-#include "../../../Gui/ViewProviderFeature.h"
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/Sequencer.h>
+#include "FeatureMeshTransformDemolding.h"
+
+#include "Core/MeshIO.h"
 
 
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
+using namespace Mesh;
+using namespace MeshCore;
 
-namespace PartGui {
-
-
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
+void FeatureMeshTransformDemolding::initFeature(void)
 {
-public:
-  /// constructor
-  ViewProviderInventorPart();
-  /// destructor
-  virtual ~ViewProviderInventorPart();
+  Base::Console().Log("FeatureMeshImport::InitLabel()\n");
+  addProperty("String","FileName");
+}
 
+int FeatureMeshTransformDemolding::execute(TFunction_Logbook& log)
+{
+  Base::Console().Log("FeatureMeshImport::Execute()\n");
 
-  virtual void attache(App::Feature *);
+  try{
 
-  /// set the viewing mode
-  virtual void setMode(const char* ModeName){};
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
-  /// Update the Part representation
-  virtual void update(const ChangeType&);
+    std::string FileName =getPropertyString("FileName");
 
-  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
-  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
+    // ask for read permisson
+		if ( access(FileName.c_str(), 4) != 0 )
+    {
+      Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName.c_str());
+      return 1;
+    }
 
-protected:
-  Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
+    MeshSTL aReader(*(_cMesh.getKernel()) );
 
-  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+    // read file
+    FileStream str( FileName.c_str(), std::ios::in);
+    if ( !aReader.Load( str ) )
+      throw Base::Exception("Import failed (load file)");
+  }
+  catch(Base::AbortException& e){
+    return 0;
+  }
+  catch(...){
+    Base::Console().Error("FeatureMeshTransform::Execute() failed!");
+    return 2;
+  }
 
-  // setings stuff
-  ParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
-
-
-};
-
-} // namespace PartGui
-
-
-#endif // __VIEWPROVIDERPART_H__
+  return 0;
+}
 

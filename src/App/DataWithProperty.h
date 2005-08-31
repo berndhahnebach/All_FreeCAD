@@ -32,8 +32,11 @@
 # include <map>
 #endif
 
-#include <Base/Vector3D.h>
-#include <Base/Matrix.h>
+namespace Base
+{
+  class Vector3D;
+  class Matrix4D;
+}
 
 using Base::Vector3D;
 using Base::Matrix4D;
