@@ -29,8 +29,10 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
+#include <Gui/WorkbenchFactory.h>
 
 #include "ViewProvider.h"
+#include "Workbench.h"
 
 // use a different name to CreateCommand()
 void CreatePointsCommands(void);
@@ -82,6 +84,7 @@ void PointsGuiExport initPointsGui() {
     new Gui::ViewProviderInventorFeatureProducer<PointsGui::ViewProviderInventorPoints>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PointsImport", 
     new Gui::ViewProviderInventorFeatureProducer<PointsGui::ViewProviderInventorPoints>);
+  Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
 
   return;
 }

@@ -271,5 +271,13 @@ InputName=Raytracing_de
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.h
+# End Source File
 # End Target
 # End Project

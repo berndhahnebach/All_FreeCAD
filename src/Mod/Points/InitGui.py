@@ -33,6 +33,14 @@
 
 class PointsWorkbench ( Workbench ):
 	"Points workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading PointsGui module')
+			import PointsGui
+		except:
+			Err('Cannot load PointsGui')
+			raise
 	def Start(self):
 		# load the module
 		try:

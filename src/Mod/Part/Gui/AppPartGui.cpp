@@ -30,12 +30,14 @@
 #include <Gui/Application.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/Macro.h>
+#include <Gui/WorkbenchFactory.h>
 
 #include <Gui/WidgetFactory.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderCurveNet.h"
 #include "DlgSettings3DViewPartImp.h"
+#include "Workbench.h"
 
 #include "Part_de.h"
 #include <Gui/Language/LanguageFactory.h>
@@ -96,7 +98,9 @@ void ModuleExport initPartGui() {
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportBrep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderCurveNet>);
 
-	// instanciating the commands
+  Gui::WorkbenchFactory().AddProducer("Part design", new Gui::WorkbenchProducer<PartGui::Workbench>);
+
+  // instanciating the commands
 	CreatePartCommands();
 
   // register preferences pages

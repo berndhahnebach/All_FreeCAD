@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef MESH_WORK_BENCH_H
-#define MESH_WORK_BENCH_H
+#ifndef MESH_WORKBENCH_H
+#define MESH_WORKBENCH_H
 
 #ifndef _PreComp_
 #endif
@@ -34,23 +34,19 @@ namespace MeshGui {
 /**
  * @author Werner Mayer
  */
-class GuiMeshExport MeshWorkbench : public Gui::Workbench
+class GuiMeshExport Workbench : public Gui::StdWorkbench
 {
 public:
-  MeshWorkbench();
-  virtual ~MeshWorkbench();
-  /**
-   * Activates the workbench and adds/remove GUI elements.
-   */
-  virtual bool activate();
-  /**
-   * Deactivates the workbench and undoes all changes, that were done
-   * by the activate() method..
-   */
-  virtual bool deactivate();
+  Workbench();
+  virtual ~Workbench();
+
+protected:
+  Gui::MenuItem* setupMenuBar() const;
+  Gui::ToolBarItem* setupToolBars() const;
+  Gui::ToolBarItem* setupCommandBars() const;
 };
 
 } // namespace MeshGui
 
 
-#endif // WORK_BENCH_H 
+#endif // MESH_WORKBENCH_H 

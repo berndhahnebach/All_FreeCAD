@@ -30,7 +30,7 @@
 #include <Gui/MenuManager.h>
 #include <Gui/ToolBarManager.h>
 
-using namespace MeshGui;
+using namespace PartGui;
 
 Workbench::Workbench()
 {
@@ -44,29 +44,41 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 {
   Gui::MenuItem* root = StdWorkbench::setupMenuBar();
   Gui::MenuItem* item = root->findItem( QObject::tr("&Windows"));
-  Gui::MenuItem* mesh = new Gui::MenuItem;
-  root->insertItem( item, mesh );
-  mesh->setCommand( QObject::tr("&Mesh") );
-  *mesh << "Mesh_Import" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion"; 
+  Gui::MenuItem* part = new Gui::MenuItem;
+  root->insertItem( item, part );
+  part->setCommand( QObject::tr("&Part") );
+  *part << "Part_ImportStep" << "Part_ImportIges" << "Part_ImportBrep" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
+        << "Separator" << "Part_Test1" << "Part_Test2";
   return root;
 }
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
-  Gui::ToolBarItem* mesh = new Gui::ToolBarItem(root);
-  mesh->setCommand( QObject::tr("Mesh Tools") );
-  *mesh << "Mesh_Import" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion"; 
+  Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
+  part->setCommand( QObject::tr("PartTools") );
+  *part << "Part_ImportStep" << "Part_ImportIges" << "Part_ImportBrep" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
+        << "Separator" << "Part_Test1" << "Part_Test2";
   return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
-  // Mesh tools
+  // Part tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
-  Gui::ToolBarItem* mesh = new Gui::ToolBarItem( root );
-  mesh->setCommand( QObject::tr("Mesh Tools") );
-  *mesh << "Std_New" << "Mesh_Import" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
+
+  Gui::ToolBarItem* imp = new Gui::ToolBarItem( root );
+  imp->setCommand( QObject::tr("Import") );
+  *imp << "Part_NewDoc" << "Part_ImportStep" << "Part_ImportIges" << "Part_ImportBrep" << "Part_ImportCurveNet";
+
+  Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
+  bol->setCommand( QObject::tr("Boolean") );
+  *bol << "Part_NewDoc" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+
+  Gui::ToolBarItem* test = new Gui::ToolBarItem( root );
+  test->setCommand( QObject::tr("Testing") );
+  *test << "Part_Test1" << "Part_Test2";
+  
   return root;
 }
 

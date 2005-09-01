@@ -46,6 +46,9 @@ class Workbench:
 
 class StandardWorkbench ( Workbench ):
 	"Standard workbench object"
+	def Import(self):
+		# load the module
+		Log ('Loading FreeCADGui module')
 	def Start(self):
 		Log ('Init: Setup <none> workbench\n   Set up toolbar...\n')
 

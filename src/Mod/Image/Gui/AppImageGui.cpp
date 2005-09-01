@@ -18,6 +18,9 @@
 #include <Base/Console.h>
 
 #include <Gui/Application.h>
+#include <Gui/WorkbenchFactory.h>
+
+#include "Workbench.h"
 
 // use a different name to CreateCommand()
 void CreateImageCommands(void);
@@ -57,6 +60,7 @@ void ImageGuiExport initImageGui() {
 
 	// instanciating the commands
 	CreateImageCommands();
+  Gui::WorkbenchFactory().AddProducer("Image", new Gui::WorkbenchProducer<ImageGui::Workbench>);
 
 
 	return;

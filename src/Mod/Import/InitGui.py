@@ -33,6 +33,15 @@
 
 class ImportWorkbench ( Workbench ):
 	"Import workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading ImportGui module')
+			import Import
+			import ImportGui
+		except:
+			Err('Cannot load ImportGui')
+			raise
 	def Start(self):
 		# load the module
 		try:

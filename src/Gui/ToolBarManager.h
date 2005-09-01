@@ -43,9 +43,11 @@ public:
   bool hasItems() const;
   ToolBarItem* findItem( const QString& );
 
-  void addItem( ToolBarItem* );
-  void removeItem( ToolBarItem* );
+  void appendItem( const ToolBarItem* );
+  bool insertItem( const ToolBarItem*, const ToolBarItem* );
+  void removeItem( const ToolBarItem* );
 
+  ToolBarItem& operator<< ( const ToolBarItem* item );
   ToolBarItem& operator<< ( const QString& command );
   QPtrList<ToolBarItem> getItems() const;
 

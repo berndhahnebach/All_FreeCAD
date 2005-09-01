@@ -40,7 +40,7 @@ ToolBarItem::ToolBarItem()
 ToolBarItem::ToolBarItem( ToolBarItem* item )
 {
   if ( item )
-    item->addItem( this );
+    item->appendItem( this );
 }
 
 ToolBarItem::~ToolBarItem()
@@ -88,14 +88,31 @@ ToolBarItem* ToolBarItem::findItem( const QString& name )
   return 0;
 }
 
-void ToolBarItem::addItem( ToolBarItem* item )
+void ToolBarItem::appendItem( const ToolBarItem* item )
 {
   _items.append( item );
 }
 
-void ToolBarItem::removeItem( ToolBarItem* item )
+bool ToolBarItem::insertItem( const ToolBarItem* before, const ToolBarItem* item)
+{
+  int pos = _items.find( before );
+  if ( pos > -1 )
+  {
+    return _items.insert( pos, item );
+  }
+  else
+    return false;
+}
+
+void ToolBarItem::removeItem( const ToolBarItem* item )
 {
   _items.remove( item );
+}
+
+ToolBarItem& ToolBarItem::operator<< ( const ToolBarItem* item )
+{
+  appendItem(item);
+  return *this;
 }
 
 ToolBarItem& ToolBarItem::operator<< ( const QString& command )

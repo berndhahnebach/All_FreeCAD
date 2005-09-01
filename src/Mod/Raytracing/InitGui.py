@@ -33,6 +33,15 @@
 
 class RaytracingWorkbench ( Workbench ):
 	"Raytracing workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading RaytracingGui module')
+			import PartGui
+			import RaytracingGui
+		except:
+			Err('Cannot load RaytracingGui')
+			raise
 	def Start(self):
 		# load the module
 		try:

@@ -33,6 +33,14 @@
 
 class ImageWorkbench ( Workbench ):
 	"Image workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading ImageGui module')
+			import ImageGui
+		except:
+			Err('Cannot load ImageGui')
+			raise
 	def Start(self):
 		# load the module
 		try:

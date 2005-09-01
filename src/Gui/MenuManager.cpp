@@ -42,7 +42,7 @@ MenuItem::MenuItem()
 MenuItem::MenuItem( MenuItem* item )
 {
   if ( item )
-    item->addMenuItem( this );
+    item->appendItem( this );
 }
 
 MenuItem::~MenuItem()
@@ -90,9 +90,20 @@ MenuItem* MenuItem::findItem( const QString& name )
   return 0;
 }
 
-void MenuItem::addMenuItem( const MenuItem* item )
+void MenuItem::appendItem( const MenuItem* item )
 {
   _items.append( item );
+}
+
+bool MenuItem::insertItem( const MenuItem* before, const MenuItem* item)
+{
+  int pos = _items.find( before );
+  if ( pos > -1 )
+  {
+    return _items.insert( pos, item );
+  }
+  else
+    return false;
 }
 
 void MenuItem::removeItem( const MenuItem* item )
@@ -103,13 +114,13 @@ void MenuItem::removeItem( const MenuItem* item )
 MenuItem& MenuItem::operator<< ( const QString& command )
 {
   MenuItem* item = new MenuItem(this);
-  item->setCommand( command );;
+  item->setCommand( command );
   return *this;
 }
 
 MenuItem& MenuItem::operator<< ( const MenuItem* item )
 {
-  addMenuItem(item);
+  appendItem(item);
   return *this;
 }
 
@@ -123,11 +134,11 @@ QPtrList<MenuItem> MenuItem::getItems() const
 
 MenuManager* MenuManager::_instance=0;
 
-MenuManager& MenuManager::getInstance()
+MenuManager* MenuManager::getInstance()
 {
   if ( !_instance )
     _instance = new MenuManager;
-  return *_instance;
+  return _instance;
 }
 
 MenuManager::MenuManager()

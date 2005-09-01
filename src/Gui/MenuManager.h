@@ -46,7 +46,8 @@ public:
   bool hasItems() const;
   MenuItem* findItem( const QString& );
 
-  void addMenuItem( const MenuItem* );
+  void appendItem( const MenuItem* );
+  bool insertItem( const MenuItem*, const MenuItem* );
   void removeItem( const MenuItem* );
 
   MenuItem& operator<< ( const MenuItem* item );
@@ -77,7 +78,7 @@ public:
   void appendSubmenu( const QString& menu, const QString& submenu );
   void removeSubmenu( const QString& menu, const QString& submenu );
 
-  static MenuManager& getInstance();
+  static MenuManager* getInstance();
 protected:
   MenuManager();
   ~MenuManager();

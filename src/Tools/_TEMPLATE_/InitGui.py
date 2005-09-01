@@ -33,6 +33,14 @@
 
 class _TEMPLATE_Workbench ( Workbench ):
 	"_TEMPLATE_ workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading _TEMPLATE_Gui module')
+			import _TEMPLATE_Gui
+		except:
+			Err('Cannot load _TEMPLATE_Gui')
+			raise
 	def Start(self):
 		# load the module
 		try:

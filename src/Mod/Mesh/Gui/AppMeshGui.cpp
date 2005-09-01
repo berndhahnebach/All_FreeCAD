@@ -92,8 +92,7 @@ void GuiMeshExport initMeshGui() {
   Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransform",          new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransform>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransformDemolding", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransformDemolding>);
-
-  Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::MeshWorkbench>);
+  Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::Workbench>);
 
   return;
 }

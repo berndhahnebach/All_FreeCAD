@@ -21,42 +21,40 @@
  ***************************************************************************/
 
 
-#ifndef WORKBENCH_MANAGER_H
-#define WORKBENCH_MANAGER_H
+#include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qmap.h>
-# include <qstring.h>
 #endif
 
-namespace Gui {
+#include "Workbench.h"
+#include <Gui/ToolBarManager.h>
 
-class Workbench;
+using namespace PointsGui;
 
-class GuiExport WorkbenchManager  
+Workbench::Workbench()
 {
-public:
-  /** Creates the only instance of the WorkbenchManager. */
-  static WorkbenchManager* instance();
+}
 
-  /** Creates and returns an instance of the workbench with name \a name. If there is
-   * no such workbench 0 is returned. If a workbench with \a name has already been created
-   * then no new instance gets created but the already existing instance is returned.
-   */
-  Workbench* getWorkbench ( const QString& name );
-  /** Activates the workbench with name \a name. */
-  bool activate( const QString& name );
+Workbench::~Workbench()
+{
+}
 
-protected:
-	WorkbenchManager();
-	~WorkbenchManager();
+Gui::ToolBarItem* Workbench::setupToolBars() const
+{
+  Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+  Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
+  pnt->setCommand( QObject::tr("PointsTools") );
+  *pnt << "Points_Test";
+  return root;
+}
 
-private:
-  static WorkbenchManager* _instance;
-  QMap<QString, Workbench*> _workbenches;
-};
+Gui::ToolBarItem* Workbench::setupCommandBars() const
+{
+  // point tools
+  Gui::ToolBarItem* root = new Gui::ToolBarItem;
+  Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
+  pnt->setCommand( QObject::tr("PointsTools") );
+  *pnt << "Points_Test";
+  return root;
+}
 
-} // namespace Gui
-
-
-#endif // WORKBENCH_MANAGER_H 

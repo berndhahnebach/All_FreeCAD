@@ -21,42 +21,32 @@
  ***************************************************************************/
 
 
-#ifndef WORKBENCH_MANAGER_H
-#define WORKBENCH_MANAGER_H
+#ifndef PART_WORKBENCH_H
+#define PART_WORKBENCH_H
 
 #ifndef _PreComp_
-# include <qmap.h>
-# include <qstring.h>
 #endif
 
-namespace Gui {
+#include <Gui/Workbench.h>
 
-class Workbench;
+namespace PartGui {
 
-class GuiExport WorkbenchManager  
+/**
+ * @author Werner Mayer
+ */
+class AppPartGuiExport Workbench : public Gui::StdWorkbench
 {
 public:
-  /** Creates the only instance of the WorkbenchManager. */
-  static WorkbenchManager* instance();
-
-  /** Creates and returns an instance of the workbench with name \a name. If there is
-   * no such workbench 0 is returned. If a workbench with \a name has already been created
-   * then no new instance gets created but the already existing instance is returned.
-   */
-  Workbench* getWorkbench ( const QString& name );
-  /** Activates the workbench with name \a name. */
-  bool activate( const QString& name );
+  Workbench();
+  virtual ~Workbench();
 
 protected:
-	WorkbenchManager();
-	~WorkbenchManager();
-
-private:
-  static WorkbenchManager* _instance;
-  QMap<QString, Workbench*> _workbenches;
+  Gui::MenuItem* setupMenuBar() const;
+  Gui::ToolBarItem* setupToolBars() const;
+  Gui::ToolBarItem* setupCommandBars() const;
 };
 
-} // namespace Gui
+} // namespace PartGui
 
 
-#endif // WORKBENCH_MANAGER_H 
+#endif // PART_WORKBENCH_H 

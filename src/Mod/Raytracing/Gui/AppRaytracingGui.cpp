@@ -28,12 +28,14 @@
 #include <App/Application.h>
 #include <Base/Console.h>
 #include <Gui/WidgetFactory.h>
+#include <Gui/WorkbenchFactory.h>
 
 
 #include <Gui/Application.h>
 
 
 #include "DlgSettingsRayImp.h"
+#include "Workbench.h"
 
 #include "Raytracing_de.h"
 #include <Gui/Language/LanguageFactory.h>
@@ -86,12 +88,11 @@ void ModuleExport initRaytracingGui() {
 
   // instanciating the commands
   CreateRaytracingCommands();
+  Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RayGui::Workbench>);
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( QObject::tr( "Raytracing" ) );
   new Gui::LanguageProducer("Deutsch", GetRaytracing_de());
-
-
 
   return;
 }

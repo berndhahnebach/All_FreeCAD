@@ -63,15 +63,10 @@ public:
    */
   void setName( const QString& );
 
-  virtual MenuItem* setupMenuBar() const;
-  virtual ToolBarItem* setupToolBars() const;
-  virtual ToolBarItem* setupCommandBars() const;
-
   /**
-   * Activates the workbench and adds/remove GUI elements. The default implementation does
-   * nothing and returns false.
+   * Activates the workbench and adds/remove GUI elements.
    */
-  virtual bool activate()=0;
+  virtual bool activate();
   /**
    * Creates and returns immediately the corresponding Python workbench object.
    */
@@ -104,6 +99,11 @@ public:
   void appendDockWindow() const;
   void removeDockWindow() const;
 
+protected:
+  virtual MenuItem* setupMenuBar() const=0;
+  virtual ToolBarItem* setupToolBars() const=0;
+  virtual ToolBarItem* setupCommandBars() const=0;
+
 private:
   QString _name;
   Base::PyObjectBase* _workbenchPy;
@@ -114,7 +114,21 @@ class GuiExport StdWorkbench : public Workbench
 public:
   StdWorkbench();
   virtual ~StdWorkbench();
-  virtual bool activate();
+
+protected:
+  virtual MenuItem* setupMenuBar() const;
+  virtual ToolBarItem* setupToolBars() const;
+  virtual ToolBarItem* setupCommandBars() const;
+};
+
+class GuiExport TestWorkbench : public StdWorkbench
+{
+public:
+  TestWorkbench();
+  ~TestWorkbench();
+
+protected:
+  MenuItem* setupMenuBar() const;
 };
 
 } // namespace Gui

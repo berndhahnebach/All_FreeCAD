@@ -33,6 +33,15 @@
 
 class PartWorkbench ( Workbench ):
 	"Part workbench object"
+	def Import(self):
+		# load the module
+		try:
+			Log ('Loading PartGui module')
+			import PartGui
+			import Part
+		except:
+			Err('Cannot load PartGui')
+			raise
 	def Start(self):
 		# load the module
 		try:
