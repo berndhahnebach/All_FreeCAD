@@ -813,6 +813,7 @@ Gui::Document* ApplicationWindow::activeDocument(void)
 void ApplicationWindow::setActiveDocument(Gui::Document* pcDocument)
 {
   d->_pcActiveDocument=pcDocument;
+  App::GetApplication().SetActive( pcDocument ? pcDocument->getDocument() : 0 );
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);

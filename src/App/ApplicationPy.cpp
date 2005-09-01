@@ -167,7 +167,8 @@ PYFUNCIMP_S(Application,sGet)
     return NULL;                             // NULL triggers exception 
 
   if(pstr == 0){
-    Base::PyObjectBase *p = GetApplication().Active()->GetPyObject();
+    Document* doc = GetApplication().Active();
+    Base::PyObjectBase *p = doc ? doc->GetPyObject() : 0;
     if(p)
     {
       p->IncRef();
