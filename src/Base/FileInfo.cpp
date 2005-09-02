@@ -43,6 +43,7 @@
 #include "FileInfo.h"
 
 using namespace Base;
+using namespace std;
 
 
 
@@ -64,7 +65,7 @@ void FileInfo::makeTemp(const char* Template)
 }
 void FileInfo::setFile(const char* name)
 {
-  std::string result;
+  string result;
   const char *It=name;
 
   while(*It != '\0')
@@ -90,22 +91,39 @@ void FileInfo::setFile(const char* name)
 }
 
 
-std::string FileInfo::filePath () const
+string FileInfo::filePath () const
 {
   return FileName;
 }
 
-std::string FileInfo::fileName () const
+string FileInfo::fileName () const
 {
   return FileName.substr(FileName.find_last_of('/')+1);
 }
 
-std::string FileInfo::extension ( bool complete ) const
+string FileInfo::fileNamePure () const
+{
+  string temp = fileName();
+  unsigned int pos = temp.find_last_of('.');
+  
+  if(pos != string::npos)
+    return temp.substr(0,pos);
+  else 
+    return temp;
+}
+
+string FileInfo::extension ( bool complete ) const
 {
   // complete not implemented
   assert(complete==false);
   return FileName.substr(FileName.find_last_of('.')+1);
 }
+
+bool FileInfo::hasExtension ( const char* Ext) const
+{
+  return stricmp(Ext,extension().c_str()) == 0;
+}
+
 
 bool FileInfo::exists () const
 {

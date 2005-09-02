@@ -88,11 +88,17 @@
 
 #include "GuiInitScript.h"
 
+
+#include <locale>
+
+
+
 using Base::Console;
 using Base::Interpreter;
 using namespace Gui;
 using namespace Gui::DockWnd;
 using Gui::Dialog::DlgOnlineHelpImp;
+using namespace std;
 
 static ApplicationWindow* stApp;
 //static QWorkspace* stWs;
@@ -125,9 +131,9 @@ struct ApplicationWindowP
 //  Gui::CustomPopupMenu* viewbar;
 //  Gui::CustomPopupMenu* windows;
   QValueList<int> wndIDs;
-//  std::map<int, QWidget*> mCheckBars;
+//  map<int, QWidget*> mCheckBars;
   /// list of all handled documents
-  std::list<Gui::Document*>         lpcDocuments;
+  list<Gui::Document*>         lpcDocuments;
   /// list of windows
   /// Active document
   Gui::Document*   _pcActiveDocument;
@@ -143,7 +149,7 @@ struct ApplicationWindowP
   QString	 _cActiveWorkbenchName;
   QTimer *		 _pcActivityTimer; 
   /// List of all registered views
-  std::list<Gui::BaseView*>					_LpcViews;
+  list<Gui::BaseView*>					_LpcViews;
   bool _bIsClosing;
   // store it if the CTRL button is pressed or released
   bool _bControlButton;
@@ -211,7 +217,7 @@ ApplicationWindow::ApplicationWindow()
   GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
   GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
 
-  std::string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
+  string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
 
   test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
 */
@@ -293,23 +299,28 @@ ApplicationWindow::~ApplicationWindow()
 // creating std commands
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 void ApplicationWindow::open(const char* FileName)
 {
   // get registered endings
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
   // File infos
   Base::FileInfo File(FileName);
   
-  std::string te= File.extension();
+  string te= File.extension();
 
-  if(EndingMap.find(File.extension()) != EndingMap.end())
+  locale loc;
+  // Get a reference to the ctype<char> facet
+  const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
+
+  ct.tolower(te.begin(),te.end());
+
+  if(EndingMap.find(te) != EndingMap.end())
   {
     // geting the module name
-    const std::string &Mod = EndingMap.find(File.extension())->second;
+    const string &Mod = EndingMap.find(te)->second;
 
     // issue module loading
-    std::string Cmd = "import ";
+    string Cmd = "import ";
     Cmd += Mod.c_str();
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
@@ -323,7 +334,7 @@ void ApplicationWindow::open(const char* FileName)
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
-    Cmd = EndingMap.find(File.extension())->second.c_str();
+    Cmd = EndingMap.find(te)->second.c_str();
     Cmd += ".open(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
@@ -332,7 +343,7 @@ void ApplicationWindow::open(const char* FileName)
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
     sendMsgToActiveView("ViewFit");
   }else{
-    Base::Console().Error("ApplicationWindow::open() try to open unknown file type .%s\n",File.extension().c_str());
+    Base::Console().Error("ApplicationWindow::open() try to open unknown file type .%s\n",te.c_str());
     return;
   }
 
@@ -343,19 +354,23 @@ void ApplicationWindow::open(const char* FileName)
 void ApplicationWindow::import(const char* FileName)
 {
   // get registered endings
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
   // File infos
   Base::FileInfo File(FileName);
   
-  std::string te= File.extension();
+  string te= File.extension();
+  locale loc;
+  // Get a reference to the ctype<char> facet
+  const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
+  ct.tolower(te.begin(),te.end());
 
-  if(EndingMap.find(File.extension()) != EndingMap.end())
+  if(EndingMap.find(te) != EndingMap.end())
   {
     // geting the module name
-    const std::string &Mod = EndingMap.find(File.extension())->second;
+    const string &Mod = EndingMap.find(te)->second;
 
     // issue module loading
-    std::string Cmd = "import ";
+    string Cmd = "import ";
     Cmd += Mod.c_str();
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
@@ -369,7 +384,7 @@ void ApplicationWindow::import(const char* FileName)
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
-    Cmd = EndingMap.find(File.extension())->second.c_str();
+    Cmd = EndingMap.find(te)->second.c_str();
     Cmd += ".insert(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
@@ -378,7 +393,7 @@ void ApplicationWindow::import(const char* FileName)
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
   }else{
-    Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",File.extension().c_str());
+    Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",te.c_str());
     return;
   }
 
@@ -537,7 +552,7 @@ void ApplicationWindow::OnDocDelete(App::Document* pcDoc)
 {
   Gui::Document* pcGDoc;
 
-  for(std::list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+  for(list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
   {
     if( ((*It)->getDocument()) == pcDoc)
     {
@@ -813,14 +828,14 @@ Gui::Document* ApplicationWindow::activeDocument(void)
 void ApplicationWindow::setActiveDocument(Gui::Document* pcDocument)
 {
   d->_pcActiveDocument=pcDocument;
-  App::GetApplication().SetActive( pcDocument ? pcDocument->getDocument() : 0 );
+  App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
 #endif
 
   // notify all views attached to the application (not views belong to a special document)
-  for(std::list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
+  for(list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
     (*It)->setDocument(pcDocument);
 }
 
@@ -838,12 +853,12 @@ void ApplicationWindow::detachView(Gui::BaseView* pcView)
 void ApplicationWindow::onUpdate(void)
 {
   // update all documents
-  for(std::list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+  for(list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
   {
     (*It)->onUpdate();
   }
   // update all the independed views
-  for(std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
+  for(list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
   {
     (*It2)->onUpdate();
   }
@@ -886,7 +901,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
     e->accept();
   }else{
     // ask all documents if closable
-    for (std::list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+    for (list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
     {
       (*It)->canClose ( e );
   //			if(! e->isAccepted() ) break;
@@ -895,7 +910,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
   }
 
   // ask all passiv views if closable
-  for (std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
+  for (list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
   {
     if((*It2)->canClose() )
       e->accept();
@@ -910,7 +925,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
   {
     d->_bIsClosing = true;
 
-    std::list<Gui::Document*>::iterator It;
+    list<Gui::Document*>::iterator It;
 
     // close all views belonging to a document
     for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
@@ -920,7 +935,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
     //detache the passiv views
     //SetActiveDocument(0);
-    std::list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
+    list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
     while (It2!=d->_LpcViews.end())
     {
       (*It2)->onClose();
@@ -1181,7 +1196,7 @@ void ApplicationWindow::loadDockWndSettings()
   }
 /*
   // open file
-  std::string FileName(GetApplication().GetHomePath());
+  string FileName(GetApplication().GetHomePath());
   FileName += "FreeCAD.xml";
   QFile* datafile = new QFile(FileName.c_str());
   if (!datafile->open(IO_ReadOnly)) 
@@ -1250,7 +1265,7 @@ void ApplicationWindow::saveDockWndSettings()
   doc.appendChild(root);
 
   // save into file
-  std::string FileName(GetApplication().GetHomePath());
+  string FileName(GetApplication().GetHomePath());
   FileName += "FreeCAD.xml";
   QFile* datafile = new QFile (FileName.c_str());
   if (!datafile->open(IO_WriteOnly)) 
@@ -1298,8 +1313,8 @@ CommandManager &ApplicationWindow::commandManager(void)
 void ApplicationWindow::languageChange()
 {
   CommandManager& rclMan = commandManager();
-  std::vector<Command*> cmd = rclMan.getAllCommands();
-  for ( std::vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
+  vector<Command*> cmd = rclMan.getAllCommands();
+  for ( vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
   {
     (*it)->languageChange();
   }
@@ -1329,7 +1344,7 @@ QSplashScreen *ApplicationWindow::_splash = NULL;
 
 void ApplicationWindow::initApplication(void)
 {
-//	std::map<std::string,std::string> &Config = GetApplication().Config();
+//	map<string,string> &Config = GetApplication().Config();
 
 
   new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
@@ -1427,11 +1442,11 @@ void ApplicationWindow::runApplication(void)
   Console().Log("Init: Processing command line files\n");
   unsigned short count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
-  std::string File;
+  string File;
   for (unsigned short i=0; i<count; i++)
   {
     // getting file name
-    std::ostringstream temp;
+    ostringstream temp;
     temp << "OpenFile" << i;
 
     File = App::Application::Config()[temp.str()];
@@ -1543,7 +1558,7 @@ void ApplicationWindow::dropEvent ( QDropEvent      * e )
 
 void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
 {
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
 
   if ( QUriDrag::canDecode(e) )
   {
@@ -1551,7 +1566,12 @@ void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
     QUriDrag::decodeLocalFiles(e, fn);
     QString f = fn.first();
     
-    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+    string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+    locale loc;
+    // Get a reference to the ctype<char> facet
+    const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
+
+    ct.tolower(Ending.begin(),Ending.end());
 
     if(EndingMap.find(Ending) != EndingMap.end())
       e->accept();

@@ -249,9 +249,9 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
 /// Save the document
 bool Document::save(void)
 {
-  if(_pcDocument->IsSaved())
+  if(_pcDocument->isSaved())
   {
-    getDocument()->Save();
+    getDocument()->save();
     return true;
   }
   else
@@ -267,7 +267,7 @@ bool Document::saveAs(void)
   QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getAppWnd());
   if (!fn.isEmpty())
   {
-    getDocument()->SaveAs(fn.latin1());
+    getDocument()->saveAs(fn.latin1());
     return true;
   }
   else
@@ -289,7 +289,9 @@ void Document::createView(const char* sType)
   }else*/
     Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
 
-  QString aName = tr("%1%2:%3").arg(tr("Unnamed")).arg(_iDocId).arg(_iWinCount++);
+  const char* name = getDocument()->getName();
+
+  QString aName = tr("%1 : %3").arg(name).arg(_iWinCount++);
 
 
   pcView3D->setCaption(aName);
@@ -365,7 +367,7 @@ bool Document::isLastView(void)
  */
 void Document::canClose ( QCloseEvent * e )
 {
-  if(! _pcDocument->IsSaved()
+  if(! _pcDocument->isSaved()
     && _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
     && _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
   {

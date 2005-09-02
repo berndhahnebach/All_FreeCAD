@@ -53,6 +53,8 @@ class BaseExport FileInfo
     std::string filePath () const;
     /// Returns the name of the file, excluding the path, including the extension.
     std::string fileName () const;
+    /// Returns the name of the file, excluding the path and the extension.
+    std::string fileNamePure () const;
     /** Returns the file's extension name.
       * If complete is TRUE (the default), extension() returns the string of all characters in the file name after (but not including) the first '.' character.
       * If complete is FALSE, extension() returns the string of all characters in the file name after (but not including) the last '.' character.
@@ -63,8 +65,11 @@ class BaseExport FileInfo
       *  ext = fi.extension(false);   // ext = "gz"
       *  ext = fi.extension();   // ext = "gz"
       *@endcode
-      */
-      std::string extension ( bool complete = false ) const;
+    */
+    std::string extension ( bool complete = false ) const;
+    /// checks for a special extension, NOT case sensetive
+    bool hasExtension ( const char* Ext) const;
+
     /// checks if the file exist and is readable
     bool isReadable () const;
     /// checks if the file exist and is writable

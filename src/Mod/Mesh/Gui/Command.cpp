@@ -276,113 +276,12 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     }
   }
 
-//  App::Feature* fea = getActiveDocument()->getDocument()->GetActiveFeature();
+
+
+  
+  //  App::Feature* fea = getActiveDocument()->getDocument()->GetActiveFeature();
 //  MeshFeature* mesh = dynamic_cast<MeshFeature*>(fea);
-  MeshWithProperty& rMesh = mesh->getMesh();
-  MeshAlgos::calcVertexCurvature( &rMesh );
 
-  MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*>(rMesh.Get("VertexCurvature") );
-  if( prop && prop->isValid() )
-  {
-    std::map<MeshPropertyCurvature::Mode, std::string> modi;
-    modi[MeshPropertyCurvature::MaxCurvature] = "Max. curvature";
-    modi[MeshPropertyCurvature::MinCurvature] = "Min. curvature";
-    modi[MeshPropertyCurvature::AvgCurvature] = "Avg. curvature";
-    modi[MeshPropertyCurvature::GaussCurvature] = "Gaussian curvature";
-
-
-    for ( std::map<MeshPropertyCurvature::Mode, std::string>::iterator mI = modi.begin(); mI != modi.end(); ++mI)
-    {
-      const char* mode = mI->second.c_str();
-      printf("Mode: %s\n", mode);
-      MeshPropertyColor* color = dynamic_cast<MeshPropertyColor*>(rMesh.Get( mode ) );
-      if ( !color )
-      {
-        color = new MeshPropertyColor();
-        rMesh.Add( color, mode );
-      }
-
-      std::vector<float> aValues = prop->getCurvature( mI->first );
-      if ( aValues.empty() ) return; // no values inside
-      float fMin = *std::min_element( aValues.begin(), aValues.end() );/*-1.0f*/;
-      float fMax = *std::max_element( aValues.begin(), aValues.end() );/* 1.0f*/;
-
-      // histogram over all values
-      std::map<int, int> aHistogram;
-      for ( std::vector<float>::iterator it2 = aValues.begin(); it2 != aValues.end(); ++it2 )
-      {
-        int grp = (int)(10.0f*( *it2 - fMin )/( fMax - fMin ));
-        aHistogram[grp]++;
-      }
-
-      float fRMin;
-      for ( std::map<int, int>::iterator mIt = aHistogram.begin(); mIt != aHistogram.end(); ++mIt )
-      {
-        if ( (float)mIt->second / (float)aValues.size() > 0.05f )
-        {
-          fRMin = mIt->first * ( fMax - fMin )/10.0f + fMin;
-          break;
-        }
-      }
-
-      float fRMax;
-      for ( std::map<int, int>::reverse_iterator rIt = aHistogram.rbegin(); rIt != aHistogram.rend(); ++rIt )
-      {
-        if ( (float)rIt->second / (float)aValues.size() > 0.05f )
-        {
-          fRMax = rIt->first * ( fMax - fMin )/10.0f + fMin;
-          break;
-        }
-      }
-
-      float fAbs = std::max<float>(fabs(fRMin), fabs(fRMax));
-      fRMin = -fAbs;
-      fRMax =  fAbs;
-      Base::Console().Message("Type: %s: Min: %.2f, Max: %.2f, Range:[%.2f, %.2f]\n", mode, fMin, fMax, fRMin, fRMax);
-      fMin = fRMin; fMax = fRMax;
-
-      color->Color.clear();
-      for ( std::vector<float>::iterator it = aValues.begin(); it != aValues.end(); ++it )
-      {
-        MeshPropertyColor::fColor fCol;
-        float x = *it;
-
-        // Lookup table (linear interpolating)
-        if ( x < fMin )
-        { fCol.r = 0.0f; fCol.g = 0.0f; fCol.b = 1.0f; }
-        else if ( x < 0.75f*fMin+0.25f*fMax )
-        { float s = 4.0f*(x-fMin)/(fMax-fMin);
-          fCol.r = 0.0f; fCol.g = s; fCol.b = 1.0f; }
-        else if ( x < 0.5f*fMin+0.5f*fMax )
-        { float s = (4.0f*x-3.0f*fMin-fMax)/(fMax-fMin);
-          fCol.r = 0.0f; fCol.g = 1.0f; fCol.b = 1.0f-s; }
-        else if ( x < 0.25f*fMin+0.75f*fMax )
-        { float s = (4.0f*x-2.0f*(fMin+fMax))/(fMax-fMin);
-          fCol.r = s; fCol.g = 1.0f; fCol.b = 0.0f; }
-        else if ( x < fMax )
-        { float s = (4.0f*x-fMin-3.0f*fMax)/(fMax-fMin);
-          fCol.r = 1.0f; fCol.g = 1.0f-s; fCol.b = 0.0f; }
-        else
-        { fCol.r = 1.0f; fCol.g = 0.0f; fCol.b = 0.0f; }
-        color->Color.push_back( fCol );
-      }
-    }
-
-    Gui::ViewProviderInventor *pcProv = getActiveDocument()->getViewProvider( mesh );
-    if ( pcProv )
-    {
-      pcProv->setMode("Max. curvature");
-      getActiveDocument()->onUpdate();
-    }
-  }
-  else if ( prop )
-  {
-    Base::Console().Warning("Invalid property 'VertexCurvature' found.\n");
-  }
-  else
-  {
-    Base::Console().Warning("Property 'VertexCurvature' not found.\n");
-  }
 }
 
 bool CmdMeshVertexCurvature::isActive(void)

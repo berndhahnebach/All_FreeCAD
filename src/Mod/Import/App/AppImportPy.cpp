@@ -65,7 +65,7 @@ open(PyObject *self, PyObject *args)
   if(cEnding == "stp" || cEnding == "step")
   {
     // create new document and add Import feature
-    App::Document *pcDoc = App::GetApplication().New();
+    App::Document *pcDoc = App::GetApplication().newDocument();
     App::Feature *pcFeature = pcDoc->addFeature("ImportStep","Step Import");
     pcFeature->setPropertyString (Name,"FileName");
     pcFeature->TouchProperty("FileName");
@@ -74,7 +74,7 @@ open(PyObject *self, PyObject *args)
   }else if(cEnding == "igs" || cEnding == "iges")
   {
     // create new document and add Import feature
-    App::Document *pcDoc = App::GetApplication().New();
+    App::Document *pcDoc = App::GetApplication().newDocument();
     App::Feature *pcFeature = pcDoc->addFeature("ImportIges","Iges Import");
 assert(0);
 //    pcFeature->GetProperty("FileName").Set(Name);

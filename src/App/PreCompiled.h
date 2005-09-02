@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string>
+#include <time.h>
 
 // STL 
 #include <string>

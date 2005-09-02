@@ -45,6 +45,7 @@
 
 using Base::Console;
 using namespace Part;
+using namespace std;
 
 
 /* module functions */
@@ -74,37 +75,35 @@ open(PyObject *self, PyObject *args)
   PY_TRY {
 
     Base::Console().Log("Open in Part with %s",Name);
+    Base::FileInfo file(Name);
 
     // extract ending
-    std::string cEnding(Name);
-    unsigned int pos = cEnding.find_last_of('.');
-    if(pos == cEnding.size())
+    if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
-    cEnding.erase(0,pos+1);
 
-    if(cEnding == "stp" || cEnding == "step" || cEnding == "STP" || cEnding == "STEP")
+    if(file.hasExtension("stp") || file.hasExtension("step"))
     {
       // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","Step open");
+      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","StepOpen");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
-    }else if(cEnding == "igs" || cEnding == "iges" || cEnding == "IGS" || cEnding == "IGES")
+    }else if(file.hasExtension("igs") || file.hasExtension("iges"))
     {
       // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","Iges open");
+      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","IgesOpen");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
-    }else if(cEnding == "brp" || cEnding == "brep" || cEnding == "BRP" || cEnding == "BREP")
+    }else if(file.hasExtension("brp") || file.hasExtension("brep"))
     {
       // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","Brep open");
+      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","BrepOpen");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -133,40 +132,38 @@ insert(PyObject *self, PyObject *args)
   PY_TRY {
 
     Base::Console().Log("Insert in Part with %s",Name);
+    Base::FileInfo file(Name);
 
     // extract ending
-    std::string cEnding(Name);
-    unsigned int pos = cEnding.find_last_of('.');
-    if(pos == cEnding.size())
+    if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
-    cEnding.erase(0,pos+1);
 
-    if(cEnding == "stp" || cEnding == "step" || cEnding == "STP" || cEnding == "STEP")
+    if(file.hasExtension("stp") || file.hasExtension("step"))
     {
-      App::Document *pcDoc = App::GetApplication().Active();
+      App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","Step open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","StepImport");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
-    }else if(cEnding == "igs" || cEnding == "iges" || cEnding == "IGS" || cEnding == "IGES")
+    }else if(file.hasExtension("igs") || file.hasExtension("iges"))
     {
-      App::Document *pcDoc = App::GetApplication().Active();
+      App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","Iges open");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","IgesImport");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
 
-    }else if(cEnding == "brp" || cEnding == "brep" || cEnding == "BRP" || cEnding == "BREP")
+    }else if(file.hasExtension("brp") || file.hasExtension("brep"))
     {
-      App::Document *pcDoc = App::GetApplication().Active();
+      App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","brep import");
+      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","BrepImport");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();

@@ -58,7 +58,15 @@ public:
   virtual void selected(View3DInventorViewer *, SoPath *);
   virtual void unselected(View3DInventorViewer *, SoPath *);
 
+  /// check if the Data has to be recalculated
+  bool ifDataNewer(void);
+  /// check if the matrial has to be recalculated
+  bool ifMaterialNewer(void);
 
+  virtual void update(const ChangeType&);
+
+  virtual void updateData(void){};
+  
 
   /// helper to copy material from a feature to a SoMeterial Node
   void copy(const App::Material&, SoMaterial*);
@@ -76,6 +84,9 @@ protected:
   float fPointSize;
 
   App::Feature *pcFeature;
+
+  time_t calcMaterial,calcData;
+
 };
 
 

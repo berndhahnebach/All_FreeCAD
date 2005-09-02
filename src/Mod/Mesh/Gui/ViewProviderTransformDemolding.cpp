@@ -74,10 +74,7 @@ void ViewProviderInventorMeshTransformDemolding::selected(Gui::View3DInventorVie
 
    pcHighlight->mode = SoLocateHighlight::ON;
 //   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-   pcHighlight->color.setValue((float)0.0,(float)0.3,(float)0.0);
-
-   // switch on dragger
-//   pcManipSwitch->whichChild = 0;
+   pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
 
  
 }
@@ -87,12 +84,7 @@ void ViewProviderInventorMeshTransformDemolding::unselected(Gui::View3DInventorV
    Gui::Selection().removeFeature(pcFeature);
 
    pcHighlight->mode = SoLocateHighlight::AUTO;
-//   pcHighlight->style = SoLocateHighlight::EMISSIVE;
-   pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
    
-   // switch off dragger
-//   pcManipSwitch->whichChild = -1;
-
 }
 
 
@@ -128,14 +120,11 @@ void ViewProviderInventorMeshTransformDemolding::attache(App::Feature *pcFeat)
 
 }
 
-void ViewProviderInventorMeshTransformDemolding::update(const ChangeType& Reason)
+void ViewProviderInventorMeshTransformDemolding::updateData(void)
 {
-  Reason;
-  // set new view modes
-  setMode(pcFeature->getShowMode());
-  // copy the material properties of the feature
-  setMatFromFeature();
+  ViewProviderInventorMesh::updateData();
 
+  
 }
 
 /*

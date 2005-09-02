@@ -51,6 +51,7 @@
 using Base::Console;
 using Base::streq;
 using namespace App;
+using namespace std;
 
 
 
@@ -58,8 +59,8 @@ using namespace App;
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-Document::Document(const Handle_TDocStd_Document &hDoc)
- : _hDoc(hDoc)
+Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
+ : _hDoc(hDoc),_Name(Name)
 {
 	_pcDocPy = new DocumentPy(this);
 	Console().Log("+App::Document: %p\n",this,_pcDocPy);
@@ -74,45 +75,13 @@ Document::~Document()
 
 
 
-/*
-void Document::InitType(App::DocType *pcDocType)
-{
-	// attach the type object
-
-	FCDocTypeAttr::Set(Main(),pcDocType);
-
-	
-	//Main()->GetOCCLabel().AddAttribute(new FCDocTypeAttr(pcDocType));
-
-	// set up document
-	pcDocType->Init(this);
-
-}
-*/
-
-/*
-DocType *Document::GetDocType(void)
-{
-	Handle_FCDocTypeAttr hAttr;
-
-	Main().FindAttribute(FCDocTypeAttr::GetID(),hAttr);
-
-	return hAttr->Get();
-*/
-	
-	/*	Handle(FCDocTypeAttr) TSR;
-	if (!Main()->GetOCCLabel().FindAttribute(FCDocTypeAttr::GetID(), TSR )) 
-		return 0;
-
-	return TSR->Get();*/
-//}
 
 //--------------------------------------------------------------------------
 // Exported functions
 //--------------------------------------------------------------------------
 
 // Save the Document under a new Name
-void Document::SaveAs (const char* Name)
+void Document::saveAs (const char* Name)
 {
 	// creat a non const buffer
 	Base::PyBuf name(Name);
@@ -120,11 +89,33 @@ void Document::SaveAs (const char* Name)
 	Handle(ApplicationOCC) hApp = GetApplication().GetOCCApp();
 	if(hApp->SaveAs(_hDoc,(Standard_CString)name.str)==CDF_SS_Failure) 
 		throw Base::Exception("SaveAs failed");
+
+  GetApplication().renameDocument(_Name.c_str(),TCollection_AsciiString(_hDoc->GetName()).ToCString());
+  _Name = TCollection_AsciiString(_hDoc->GetName()).ToCString();
+
 }
 // Save the document under the name its been opened
-void Document::Save (void)
+void Document::save (void)
 {
 	Handle(TDocStd_Application)::DownCast(_hDoc->Application())->Save(_hDoc);
+}
+
+bool Document::isSaved() const
+{
+	return _hDoc->IsSaved() != 0;
+}
+
+
+/// Get the document name of a saved document
+const char* Document::getName() const
+{
+  return _Name.c_str();
+}
+
+/// Get the path of a saved document
+const short* Document::getPath() const
+{
+  return _hDoc->GetPath().ToExtString();
 }
 
 bool Document::Undo(void)					
@@ -137,23 +128,6 @@ bool Document::Redo(void)
   return _hDoc->Redo() != 0; 
 }
 
-bool Document::IsSaved() const
-{
-	return _hDoc->IsSaved() != 0;
-}
-
-
-/// Get the document name of a saved document
-const short* Document::GetName() const
-{
-  return _hDoc->GetName().ToExtString(); 
-}
-
-/// Get the path of a saved document
-const short* Document::GetPath() const
-{
-  return _hDoc->GetPath().ToExtString();
-}
 
 /*
 /// Get the Main Label of the document
@@ -309,7 +283,8 @@ void Document::Recompute()
       }else{
         DocChange.UpdatedFeatures.push_back(Feat);
         Feat->_eStatus = Feature::Valid;
-
+        // set the time of change
+        time(&Feat->touchTime);
       }
 		}
 
@@ -324,18 +299,26 @@ void Document::Recompute()
 }
 
 
-Feature *Document::addFeature(const char* sType, const char* sName)
+Feature *Document::addFeature(const char* sType, const char* pFeatName)
 {
 	Feature *pcFeature = FeatureFactory().Produce(sType);
 
+  string FeatName;
+
 	if(pcFeature)
 	{
+    // get Unique name
+    if(pFeatName)
+      FeatName = getUniqueFeatureName(pFeatName);
+    else
+      FeatName = getUniqueFeatureName(sType);
+
 		// next free label
 		TDF_Label FeatureLabel = _lFeature.FindChild(_iNextFreeFeature++);
 		// mount the feature on its place
 		FeatureAttr::Set(FeatureLabel,pcFeature);
 		// name
-		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) sName ));
+		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) FeatName.c_str() ));
 		// the rest of the setup do the feature itself
 		pcFeature->AttachLabel(FeatureLabel,this);
 
@@ -351,9 +334,9 @@ Feature *Document::addFeature(const char* sType, const char* sName)
     FeatEntry e;
     e.F = pcFeature;
     e.L = FeatureLabel;
-    FeatMap[sName] = FeatEntry(e);
+    FeatMap[FeatName] = FeatEntry(e);
 
-    pcFeature->_Name = sName;
+    pcFeature->_Name = FeatName;
 	
     // return the feature
 		return pcFeature;
@@ -361,6 +344,34 @@ Feature *Document::addFeature(const char* sType, const char* sName)
 	}else return 0;
 
 }
+
+
+/// Remove a feature out of the document
+void Document::remFeature(const char* sName)
+{
+  DocChanges DocChange;
+
+  std::map<std::string,FeatEntry>::iterator pos;
+  
+  pos = FeatMap.find(sName);
+
+  // name not found?
+  if(pos == FeatMap.end())
+    return;
+
+  FeatEntry e = pos->second;
+
+  DocChange.DeletedFeatures.push_back(e.F);
+
+  Notify(DocChange);
+
+  // remove Feature Attribute
+  e.L.ForgetAttribute (FeatureAttr::GetID()); 
+
+  // finely delete the Feature
+  delete e.F;
+}
+
 
 Feature *Document::getActiveFeature(void)
 {
@@ -383,6 +394,49 @@ Feature *Document::getFeature(const char *Name)
     return 0;
 }
 
+const char *Document::getFeatureName(Feature *pFeat)
+{
+  std::map<std::string,FeatEntry>::iterator pos;
+
+  for(pos = FeatMap.begin();pos != FeatMap.end();++pos)
+    if(pos->second.F == pFeat)
+      return pos->first.c_str();
+
+  return 0;
+}
+
+string Document::getUniqueFeatureName(const char *Name)
+{
+  std::map<std::string,FeatEntry>::iterator pos;
+
+  // name in use?
+  pos = FeatMap.find(Name);
+
+  if (pos == FeatMap.end())
+    // if not, name is OK
+    return Name;
+  else
+  {
+    // find highes sufix
+    int nSuff = 0;  
+    for(pos = FeatMap.begin();pos != FeatMap.end();++pos)
+    {
+      const string &rclObjName = pos->first;
+      int nPos = rclObjName.find_last_not_of("0123456789");
+      if (rclObjName.substr(0, nPos + 1) == Name)  // Prefix gleich
+      {
+        string clSuffix(rclObjName.substr(nPos + 1));
+        if (clSuffix.size() > 0)
+          nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+      }
+    }
+    char szName[200];
+    sprintf(szName, "%s%d", Name, nSuff + 1);
+	
+    return string(szName);
+  }
+	
+}
 
 void Document::Init (void)
 {
@@ -402,13 +456,13 @@ void Document::Init (void)
 }
 
 /// Returns the storage string of the document.
-const short* Document::StorageFormat() const
+const short* Document::storageFormat() const
 {
   return _hDoc->StorageFormat().ToExtString(); 
 }
 
 /// Change the storage format of the document.
-void Document::ChangeStorageFormat(const short* sStorageFormat) 
+void Document::changeStorageFormat(const short* sStorageFormat) 
 {
   _hDoc->ChangeStorageFormat((Standard_ExtString)sStorageFormat); 
 }

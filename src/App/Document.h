@@ -97,7 +97,7 @@ class AppExport Document :public Base::PyHandler, public Base::Subject<const Doc
 
 public:
   /// init with an OpenCasCade Document (done by App::Application)
-	Document(const Handle_TDocStd_Document &hDoc);
+	Document(const Handle_TDocStd_Document &hDoc, const char* Name);
   /// Destruction
 	virtual ~Document();
 
@@ -115,29 +115,35 @@ public:
  	/** @name File handling of the document */
 	//@{
 	/// Save the Document under a new Name
-	void SaveAs (const char* Name);
+	void saveAs (const char* Name);
 	/// Save the document under the name its been opened
-	void Save (void);
+	void save (void);
 	/// Is the document already saved to a file
-	bool IsSaved() const;
-	/// Get the document name of a saved document (UNICODE)
-	const short* GetName() const;
-	/// Get the path of a saved document (UNICODE)
-	const short* GetPath() const;
+	bool isSaved() const;
+	/// Get the document name of a saved document 
+	const char* getName() const;
+	/// Get the path of a saved document 
+	const short* getPath() const;
 	/// Returns the storage string of the document.
-	const short* StorageFormat() const;
+	const short* storageFormat() const;
 	/// Change the storage format of the document.
-	void ChangeStorageFormat(const short* sStorageFormat) ;
+	void changeStorageFormat(const short* sStorageFormat) ;
   //@}
 
 	/** @name Feature handling  */
 	//@{
   /// Add a feature of sType with sName to this document and set it active
-	Feature *addFeature(const char* sType, const char* sName);
+	Feature *addFeature(const char* sType, const char* sName=0);
+  /// Remove a feature out of the document
+	void remFeature(const char* sName);
   /// Returns the active Feature of this document
 	Feature *getActiveFeature(void);
   /// Returns a Feature of this document
 	Feature *getFeature(const char *Name);
+  /// Returns a Name of an Feature or 0
+	const char *getFeatureName(Feature *pFeat);
+  /// Returns a Name of an Feature or 0
+  std::string getUniqueFeatureName(const char *Name);
 	//@}
 
   /** sets up the document
@@ -241,9 +247,9 @@ protected:
 
   std::map<std::string,FeatEntry> FeatMap;
 
-protected:
 	/// handle to the OCC document
 	Handle_TDocStd_Document _hDoc;
+  std::string _Name;
 
 	// pointer to the python class
 	DocumentPy *_pcDocPy;

@@ -242,6 +242,14 @@ SOURCE=.\Doxygen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeatureMeshCurvature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureMeshCurvature.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\FeatureMeshImport.cpp
 # End Source File
 # Begin Source File

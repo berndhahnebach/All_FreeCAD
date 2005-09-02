@@ -53,6 +53,7 @@
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"
 
+#include <locale>
 
 
 
@@ -513,6 +514,12 @@ void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
     QString f = fn.first();
     
     std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+
+    locale loc;
+    // Get a reference to the ctype<char> facet
+    const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
+
+    ct.tolower(Ending.begin(),Ending.end());
 
     if(EndingMap.find(Ending) != EndingMap.end())
       e->accept();

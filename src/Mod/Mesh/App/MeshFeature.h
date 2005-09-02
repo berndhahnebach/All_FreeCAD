@@ -67,9 +67,9 @@ public:
   /** @name methods for mesh handling */
   //@{
   /** Get the access to the actual mesh */
-  MeshWithProperty& getMesh();
+  virtual MeshWithProperty& getMesh();
   /** Set the actual mesh */
-  void setMesh(const MeshWithProperty&);
+  virtual void setMesh(const MeshWithProperty&);
   //@}
 
   /// handles the MeshPy object

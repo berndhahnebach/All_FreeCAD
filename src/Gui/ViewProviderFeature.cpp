@@ -44,12 +44,16 @@ using namespace Gui;
 
       
 ViewProviderInventorFeature::ViewProviderInventorFeature()
+:pcFeature(0)
 {
   pcShadedMaterial = new SoMaterial;
   pcLineMaterial   = new SoMaterial;
   pcPointMaterial  = new SoMaterial;
   fLineSize        = 0.0;
   fPointSize       = 0.0;
+
+  calcMaterial = 0;
+  calcData=0;
 
 }
 
@@ -72,6 +76,36 @@ void ViewProviderInventorFeature::attache(App::Feature *pcFeat)
   setMode(pcFeature->getShowMode());
 
 }
+
+bool ViewProviderInventorFeature::ifDataNewer(void)
+{
+  // first do attache
+  assert(pcFeature);
+  return pcFeature->getTouchTime() >= calcData; 
+}
+
+bool ViewProviderInventorFeature::ifMaterialNewer(void)
+{
+  // first do attache
+  assert(pcFeature);
+  return pcFeature->getTouchViewTime() >= calcMaterial; 
+
+}
+
+
+void ViewProviderInventorFeature::update(const ChangeType&)
+{
+  if(ifDataNewer())
+    updateData();
+
+  if(ifMaterialNewer())
+  {
+    setMatFromFeature();
+    setMode(pcFeature->getShowMode());
+  }
+
+}
+
 
 std::vector<std::string> ViewProviderInventorFeature::getModes(void)
 {
@@ -110,6 +144,8 @@ void ViewProviderInventorFeature::setMatFromFeature(void)
   fLineSize        = pcFeature->getLineSize();
   fPointSize       = pcFeature->getPointSize();
 
+  // touch the material time
+  time(&calcMaterial);
 }
 
 void ViewProviderInventorFeature::setTransparency(float trans)

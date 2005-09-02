@@ -113,8 +113,6 @@ public:
   //@}
 
 
-public:
-
 	/** @name methodes for conviniant handling of Parameter (Properties) */
 	//@{
 
@@ -173,8 +171,14 @@ public:
 	 *  
 	 */
 	void TouchProperty(const char *Name);
-  /// set this feature touched (cause recomputation
+  /// set this feature touched (cause recomputation on depndend features)
 	void Touch(void);
+  /// set the view parameter of this feature touched (cause recomputation of representation)
+	void TouchView(void);
+  /// get the touch time
+  time_t getTouchTime(void){return touchTime;}
+  /// get the view touch time
+  time_t getTouchViewTime(void){return touchViewTime;}
 	//@}
 
 
@@ -222,6 +226,7 @@ public:
 
 	//@}
 
+
   /// Retrive the Feature from a Document label
   static Feature *GetFeature(const TDF_Label &l);
 
@@ -233,6 +238,8 @@ public:
   {
     return _cFeatureLabel;
   }
+
+  App::Document &getDocument(void){return *_pDoc;}
 
   friend class FeaturePy;
   friend class Document;
@@ -269,11 +276,13 @@ protected:
   float       _pointSize;
   std::string _showMode;
 
+  time_t touchTime,touchViewTime;
+
 	TDF_Label            _cFeatureLabel;
 	int                  _nextFreeLabel;
   std::map<std::string,int> _PropertiesMap;
 
-  Document* _pDoc;
+  App::Document* _pDoc;
 
   FeaturePy* pcFeaturePy;
 

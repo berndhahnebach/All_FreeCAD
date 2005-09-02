@@ -119,6 +119,7 @@ PyMethodDef App::FeaturePy::Methods[] = {
   PYMETHODEDEF(isA)
 // FeaturePy 
 	PYMETHODEDEF(setModified)
+	PYMETHODEDEF(setModifiedView)
 	PYMETHODEDEF(isValid)
 
 	{NULL, NULL}		/* Sentinel */
@@ -325,6 +326,13 @@ int FeaturePy::setProperty(const char *attr, PyObject *value)
 PYFUNCIMP_D(FeaturePy,setModified)
 {
   _pcFeature->Touch();
+
+	Py_Return;
+}
+
+PYFUNCIMP_D(FeaturePy,setModifiedView)
+{
+  _pcFeature->TouchView();
 
 	Py_Return;
 }

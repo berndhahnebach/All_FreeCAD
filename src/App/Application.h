@@ -122,10 +122,6 @@ class AppExport Application //: public PythonExport
 
 public:
 
-	/// Constructor
-	Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
-	/// Destructor
-	virtual ~Application();
 
 	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
 
@@ -135,22 +131,21 @@ public:
 
 	/** @name methodes for document handling */
 	//@{
-	/// Creates a new document with a template
-  App::Document* New(const char * Name=0l);
+	/// Creates a new document 
+  App::Document* newDocument(const char * Name=0l);
+  /// find a unique docuement name
+  std::string getUniqueDocumentName(const char *Name);
+  /// renams a document
+  void renameDocument(const char *OldName, const char *NewName){};
 	/// Open an existing document from a file
-	App::Document* Open(const char * Name=0l);
-	/// Save the active document to the name it was opened
-	App::Document* Save(void);
-	/// Save the active Document to a filename
-	App::Document* SaveAs(const char * Name=0l);
+	App::Document* openDocument(const char * FileName=0l);
 	/// Retrive the active document
-	App::Document* Active(void);
+	App::Document* getActiveDocument(void);
 	/// Set the active document
-	void SetActive(App::Document* pDoc);
+	void setActiveDocument(App::Document* pDoc);
+	void setActiveDocument(const char *Name);
 	/// Geter for the OCC Aplication
 	Handle_ApplicationOCC GetOCCApp(void) {return _hApp;}
-	/// Get for all possible tamplates
-	std::vector<std::string> GetAllTemplates(void);
 	//@}
 	
 
@@ -211,6 +206,12 @@ public:
 
 
 private:
+
+	/// Constructor
+	Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig);
+	/// Destructor
+	virtual ~Application();
+
 	/** @name member for parameter */
 	//@{
 	static ParameterManager *_pcSysParamMngr;
@@ -297,6 +298,8 @@ private:
 	/// Notify the Obervers on a deleted Doc
 	void NotifyDocDelete(App::Document* pcDoc);
 	/// The Observer is a friend of the Application
+	/// The container of all attached Obervers
+	std::set<ApplicationObserver * > _aclObservers;
 	//@}
 
 
@@ -305,13 +308,19 @@ private:
 	/// Handle to the OCC Application
 	Handle_ApplicationOCC _hApp;
 	/// Handles the App::Document (and python) objects;
-	std::vector<App::Document*> _DocVector;
-	/// The container of all attached Obervers
-	std::set<ApplicationObserver * > _aclObservers;
+//	std::vector<App::Document*> _DocVector;
+
+  /// map of all docuements
+  struct DocEntry {
+    Handle_TDocStd_Document hDoc;
+    Document*  pDoc;
+  };
+  std::map<std::string,DocEntry> DocMap;
+
 
 	std::map<std::string,ParameterManager *> mpcPramManager;
 	// map for Template objects
-	PyObject*		 _pcTemplateDictionary;
+//	PyObject*		 _pcTemplateDictionary;
 
 	std::map<std::string,std::string> &_mConfig;
 	App::Document* _pActiveDoc;

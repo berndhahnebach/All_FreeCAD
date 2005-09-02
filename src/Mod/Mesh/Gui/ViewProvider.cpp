@@ -39,6 +39,7 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <App/Application.h>
+#include <App/Document.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 #include <Base/Sequencer.h>
@@ -77,7 +78,7 @@ void ViewProviderInventorMesh::selected(Gui::View3DInventorViewer *, SoPath *)
 
    pcHighlight->mode = SoLocateHighlight::ON;
 //   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-   pcHighlight->color.setValue((float)0.0,(float)0.3,(float)0.0);
+   pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
 
  
 }
@@ -88,7 +89,7 @@ void ViewProviderInventorMesh::unselected(Gui::View3DInventorViewer *, SoPath *)
 
    pcHighlight->mode = SoLocateHighlight::AUTO;
 //   pcHighlight->style = SoLocateHighlight::EMISSIVE;
-   pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+   pcHighlight->colorHighlight.setValue((float)0.1,(float)0.3,(float)0.7);
 
 }
 
@@ -158,7 +159,8 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
 
   // only one selection node for the mesh
   pcHighlight = new Gui::SoFCSelection();
-  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight->featureName = pcFeature->getName();
+  pcHighlight->documentName = pcFeature->getDocument().getName();
   pcHighlight->addChild(pcMeshCoord);
   pcHighlight->addChild(pcMeshFaces);
 
@@ -228,19 +230,6 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcFlatWireRoot->addChild(pcMeshCoord);
   pcFlatWireRoot->addChild(pcMeshFaces);
 
-  // color shaded  ------------------------------------------
-  pcFlatStyle = new SoDrawStyle();
-  pcFlatStyle->style = SoDrawStyle::FILLED;
-  pcFlatRoot->addChild(pcFlatStyle);
-
-  SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
-  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-  pcColorMat = new SoMaterial;
-  pcColorShadedRoot->addChild(pcColorMat);
-  pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(pcBinding);  
-  pcColorShadedRoot->addChild(pcHighlight);
-
 
   // puting all togetern with a switch
   pcModeSwitch->addChild(pcFlatRoot);
@@ -248,49 +237,20 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcModeSwitch->addChild(pcWireRoot);
   pcModeSwitch->addChild(pcPointRoot);
   pcModeSwitch->addChild(pcFlatWireRoot);
-//  pcModeSwitch->addChild(pcColorShadedRoot);
 
   // standard viewing (flat)
   pcModeSwitch->whichChild = 0; 
 
 }
 
-void ViewProviderInventorMesh::update(const ChangeType& Reason)
+void ViewProviderInventorMesh::updateData(void)
 {
-  Reason;
-  // set new view modes
-  setMode(pcFeature->getShowMode());
-  // copy the material properties of the feature
-  setMatFromFeature();
-
+  // get the mesh
+  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
+  createMesh(&(meshFea->getMesh()));
 }
 
-/*
-void ViewProviderInventorMesh::setMode(const char* ModeName)
-{
-  if(stricmp("Flat",ModeName)==0)
-    pcSwitch->whichChild = 0; 
-  else if(stricmp("Wire",ModeName)==0)
-    pcSwitch->whichChild = 1; 
-  else if(stricmp("Point",ModeName)==0)
-    pcSwitch->whichChild = 2; 
-  else if(stricmp("FlatWire",ModeName)==0)
-    pcSwitch->whichChild = 3; 
-  else 
-  {
-    Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-    App::PropertyBag *pcProp = 0;
-    pcProp = rcMesh.Get(ModeName);
-    if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
-    {
-      SetVertexColorMode(dynamic_cast<Mesh::MeshPropertyColor*>(pcProp));
-      pcSwitch->whichChild = 4;
 
-    }else 
-      Base::Console().Warning("Unknown mode '%s' in ViewProviderInventorMesh::setMode(), ignored\n", ModeName);
-  }
-}
-*/
 vector<string> ViewProviderInventorMesh::getModes(void)
 {
   // get the modes of the father
@@ -302,24 +262,7 @@ vector<string> ViewProviderInventorMesh::getModes(void)
   StrList.push_back("Point");
   StrList.push_back("FlatWire");
 
-
-  // add the dynamic modes (depends on which properties are added to the mesh..)
-  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-  list<string> List = rcMesh.GetAllNamesOfType("VertexColor");
-
-  for(list<string>::iterator It=List.begin();It!=List.end();It++)
-    StrList.push_back(*It);
-
   return StrList;
 }
 
 
-void ViewProviderInventorMesh::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
-{
-  vector<Mesh::MeshPropertyColor::fColor> color = pcProp->Color;
-  for (unsigned long i=0; i<color.size();i++)
-  {
-    Mesh::MeshPropertyColor::fColor& col = color[i];
-    pcColorMat->diffuseColor.set1Value(i, SbColor(col.r, col.g, col.b));
-  }
-}

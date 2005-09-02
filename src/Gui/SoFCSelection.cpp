@@ -37,6 +37,8 @@
 #include <Inventor/SoPickedPoint.h>
 
 #include "SoFCSelection.h"
+#include "Application.h"
+#include <QString.h>
 
 using namespace Gui;
 
@@ -70,9 +72,14 @@ SoFCSelection::SoFCSelection()
 
   SO_NODE_CONSTRUCTOR(SoFCSelection);
 
-  SO_NODE_ADD_FIELD(color, (SbColor(0.3f, 0.3f, 0.3f)));
-  SO_NODE_ADD_FIELD(style, (EMISSIVE));
-  SO_NODE_ADD_FIELD(mode, (AUTO));
+  SO_NODE_ADD_FIELD(colorHighlight, (SbColor(0.1f, 0.1f, 0.5f)));
+  SO_NODE_ADD_FIELD(colorSelection, (SbColor(0.1f, 0.5f, 0.1f)));
+  SO_NODE_ADD_FIELD(style,          (EMISSIVE));
+  SO_NODE_ADD_FIELD(mode,           (AUTO));
+  SO_NODE_ADD_FIELD(selected,       (OFF));
+  SO_NODE_ADD_FIELD(documentName,   (""));
+  SO_NODE_ADD_FIELD(featureName,    (""));
+  SO_NODE_ADD_FIELD(subElementName, (""));
 
   SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE);
   SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE_DIFFUSE);
@@ -82,6 +89,10 @@ SoFCSelection::SoFCSelection()
   SO_NODE_DEFINE_ENUM_VALUE(Modes, ON);
   SO_NODE_DEFINE_ENUM_VALUE(Modes, OFF);
   SO_NODE_SET_SF_ENUM_TYPE(mode, Modes);
+
+  SO_NODE_DEFINE_ENUM_VALUE(Selected, NOTSELECTED);
+  SO_NODE_DEFINE_ENUM_VALUE(Selected, SELECTED);
+  SO_NODE_SET_SF_ENUM_TYPE(selected, Selected);
 
   highlighted = FALSE;
 }
@@ -98,7 +109,6 @@ SoFCSelection::~SoFCSelection()
 void
 SoFCSelection::initClass(void)
 {
-//  SO_NODE_INTERNAL_INIT_CLASS(SoFCSelection, SO_FROM_INVENTOR_1);
   SO_NODE_INIT_CLASS(SoFCSelection,SoSeparator,"Separator");
 }
 
@@ -127,6 +137,13 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
             action->getCurPath()->copy();
           SoFCSelection::currenthighlight->ref();
           highlighted = TRUE;
+          QString msg("Preselection: ");
+          msg += documentName.getValue().getString();
+          msg += ".";
+          msg += featureName.getValue().getString();
+          msg += ".";
+          msg += subElementName.getValue().getString();
+          Gui::ApplicationWindow::Instance->statusBar()->message(msg);
           this->touch(); // force scene redraw
           this->redrawHighlighted(action, TRUE);
         }
@@ -147,7 +164,7 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 {
   SoState * state = action->getState();
   state->push();
-  if (highlighted || this->mode.getValue() == ON) {
+  if (highlighted || this->mode.getValue() == ON || this->selected.getValue() == SELECTED) {
     this->setOverride(action);
   }
   inherited::GLRenderBelowPath(action);
@@ -160,7 +177,7 @@ SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 {
   SoState * state = action->getState();
   state->push();
-  if (highlighted || this->mode.getValue() == ON) {
+  if (highlighted || this->mode.getValue() == ON || this->selected.getValue() == SELECTED) {
     this->setOverride(action);
   }
   inherited::GLRenderInPath(action);
@@ -183,14 +200,18 @@ void
 SoFCSelection::setOverride(SoGLRenderAction * action)
 {
   SoState * state = action->getState();
-  SoLazyElement::setEmissive(state, &this->color.getValue());
+  if(this->selected.getValue() == SELECTED)
+    SoLazyElement::setEmissive(state, &this->colorSelection.getValue());
+  else
+    SoLazyElement::setEmissive(state, &this->colorHighlight.getValue());
   SoOverrideElement::setEmissiveColorOverride(state, this, TRUE);
 
   Styles mystyle = (Styles) this->style.getValue();
   if (mystyle == SoFCSelection::EMISSIVE_DIFFUSE) {
-    SoLazyElement::setDiffuse(state, this,
-                               1, &this->color.getValue(),
-                              &colorpacker);
+    if(this->selected.getValue() == SELECTED)
+      SoLazyElement::setDiffuse(state, this,1, &this->colorSelection.getValue(),&colorpacker);
+    else
+      SoLazyElement::setDiffuse(state, this,1, &this->colorHighlight.getValue(),&colorpacker);
     SoOverrideElement::setDiffuseColorOverride(state, this, TRUE);
   }
 }

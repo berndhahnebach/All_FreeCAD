@@ -59,19 +59,52 @@ open(PyObject *self, PyObject *args)
   PY_TRY {
     
     Base::Console().Log("Open in Points with %s",Name);
+    Base::FileInfo file(Name);
 
     // extract ending
-    std::string cEnding(Name);
-    unsigned int pos = cEnding.find_last_of('.');
-    if(pos == cEnding.size())
+    if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
-    cEnding.erase(0,pos+1);
 
-    if(cEnding == "asc")
+    if(file.hasExtension("asc"))
     {
       // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->addFeature("PointsImport", "Points import");
+      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+      App::Feature *pcFeature = pcDoc->addFeature("PointsImport", "PointsOpen");
+      pcFeature->setPropertyString(Name, "FileName");
+      pcFeature->TouchProperty("FileName");
+      pcDoc->Recompute();
+    }
+    else
+    {
+      Py_Error(PyExc_Exception,"unknown file ending");
+    }
+  } PY_CATCH;
+
+	Py_Return;    
+}
+
+static PyObject *                        
+insert(PyObject *self, PyObject *args)     
+{                                        
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+
+  PY_TRY {
+    
+    Base::Console().Log("Import in Points with %s",Name);
+    Base::FileInfo file(Name);
+
+    // extract ending
+    if(file.extension() == "")
+      Py_Error(PyExc_Exception,"no file ending");
+
+    if(file.hasExtension("asc"))
+    {
+      App::Document *pcDoc = App::GetApplication().getActiveDocument();
+      if (!pcDoc)
+        throw "Import called without a active document??";
+      App::Feature *pcFeature = pcDoc->addFeature("PointsImport", "PointsOpen");
       pcFeature->setPropertyString(Name, "FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -130,12 +163,13 @@ create(PyObject *self, PyObject *args)
   } PY_CATCH;
 }
 
-/* registration table  */
+// registration table  
 struct PyMethodDef Points_Import_methods[] = {
-    {"open", open, 1},				/* method name, C func ptr, always-tuple */
-    {"save", save, 1},
-    {"read", read, 1},
-    {"create", create, 1},
+    {"open",  open,   1},				/* method name, C func ptr, always-tuple */
+    {"insert",insert, 1},
+    {"save",  save,   1},
+    {"read",  read,   1},
+    {"create",create, 1},
 
-    {NULL, NULL}                   /* end of table marker */
+    {NULL, NULL}                /* end of table marker */
 };

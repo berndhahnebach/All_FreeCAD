@@ -42,6 +42,7 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <App/Application.h>
+#include <App/Document.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 
@@ -70,7 +71,7 @@ void ViewProviderInventorPoints::selected(Gui::View3DInventorViewer *, SoPath *)
   Gui::Selection().addFeature(pcFeature);
 
   pcHighlight->mode = SoLocateHighlight::ON;
-  pcHighlight->color.setValue((float)0.0,(float)0.3,(float)0.0);
+  pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
 }
 
 void ViewProviderInventorPoints::unselected(Gui::View3DInventorViewer *, SoPath *)
@@ -79,7 +80,7 @@ void ViewProviderInventorPoints::unselected(Gui::View3DInventorViewer *, SoPath 
   Gui::Selection().removeFeature(pcFeature);
 
   pcHighlight->mode = SoLocateHighlight::AUTO;
-  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight->colorHighlight.setValue((float)0.1,(float)0.3,(float)0.7);
 }
 
 void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
@@ -151,7 +152,8 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
 
   // Hilight for selection
   pcHighlight = new Gui::SoFCSelection();
-  pcHighlight->color.setValue((float)0.1,(float)0.3,(float)0.7);
+  pcHighlight->featureName = pcFeature->getName();
+  pcHighlight->documentName = pcFeature->getDocument().getName();
   pcHighlight->addChild(pcPointsCoord);
   pcHighlight->addChild(pcPoints);
 

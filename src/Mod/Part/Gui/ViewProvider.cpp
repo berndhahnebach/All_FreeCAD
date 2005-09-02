@@ -61,6 +61,7 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <App/Application.h>
+#include <App/Document.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/Selection.h>
 
@@ -99,7 +100,7 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 
 }
 
-
+/*
 
 void ViewProviderInventorPart::selected(Gui::View3DInventorViewer *, SoPath *)
 {
@@ -112,7 +113,7 @@ void ViewProviderInventorPart::unselected(Gui::View3DInventorViewer *, SoPath *)
    Base::Console().Log("Unselect viewprovider Part  %p\n",this);
    Gui::Selection().removeFeature(pcFeature);
 }
-
+*/
 std::vector<std::string> ViewProviderInventorPart::getModes(void)
 {
   // get the modes of the father
@@ -256,7 +257,8 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot
   TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, edge2Face);
 
-  for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next())
+  int i=0;
+  for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next(),i++)
   {
     // get the shape and mesh it
     const TopoDS_Edge& aEdge = TopoDS::Edge(ex.Current());
@@ -337,7 +339,11 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot
 
     // define the indexed face set
     Gui::SoFCSelection* h = new Gui::SoFCSelection();
-    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
+    SbString name("Edge");
+    name += SbString(i);
+    h->featureName = pcFeature->getName();
+    h->documentName = pcFeature->getDocument().getName();
+    h->subElementName = name;
 
     SoLineSet * lineset = new SoLineSet;
     h->addChild(lineset);
@@ -382,7 +388,8 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* FaceRoot, c
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
   Base::Sequencer().start("creating view representation", l);
 
-  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
+  int i = 0;
+  for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
 
     // get the shape and mesh it
 		const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
@@ -433,8 +440,11 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* FaceRoot, c
 
 	  // define the indexed face set
 		Gui::SoFCSelection* h = new Gui::SoFCSelection();
-//    h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-    h->color.setValue((float)0.0,(float)0.0,(float)0.5);
+    SbString name("Face");
+    name += SbString(i);
+    h->featureName = pcFeature->getName();
+    h->documentName = pcFeature->getDocument().getName();
+    h->subElementName = name;
 
     SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
 		faceset->coordIndex.setValues(0,4*nbTriInFace,(const int*) cons);

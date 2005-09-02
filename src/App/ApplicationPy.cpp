@@ -70,9 +70,6 @@ PyMethodDef Application::Methods[] = {
 	{"ConfigGet",      (PyCFunction) Application::sGetConfig,      1},
 	{"ConfigSet",      (PyCFunction) Application::sSetConfig,      1},
 	{"ConfigDump",     (PyCFunction) Application::sDumpConfig,     1},
-	{"TemplateAdd",    (PyCFunction) Application::sTemplateAdd,    1},
-	{"TemplateDelete", (PyCFunction) Application::sTemplateDelete ,1},
-	{"TemplateGet",    (PyCFunction) Application::sTemplateGet    ,1},
 	{"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1},
 	{"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
 	{"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
@@ -89,7 +86,7 @@ PYFUNCIMP_S(Application,sOpen)
 
 	try {
 		// return new document
-		return (GetApplication().Open(pstr)->GetPyObject());
+		return (GetApplication().openDocument(pstr)->GetPyObject());
 	}
 	catch(Base::Exception e) {
 		PyErr_SetString(PyExc_IOError, e.what());
@@ -125,7 +122,7 @@ PYFUNCIMP_S(Application,sNew)
         return NULL;                             // NULL triggers exception 
 
 	PY_TRY{
-		Document*	pDoc = GetApplication().New(pstr);
+		Document*	pDoc = GetApplication().newDocument(pstr);
 		if (pDoc)
 			return pDoc->GetPyObject();
 		else
@@ -167,7 +164,7 @@ PYFUNCIMP_S(Application,sGet)
     return NULL;                             // NULL triggers exception 
 
   if(pstr == 0){
-    Document* doc = GetApplication().Active();
+    Document* doc = GetApplication().getActiveDocument();
     Base::PyObjectBase *p = doc ? doc->GetPyObject() : 0;
     if(p)
     {
@@ -273,40 +270,6 @@ PYFUNCIMP_S(Application,sGetVersion)
 	return pList;
 }
 
-PYFUNCIMP_S(Application,sTemplateAdd)
-{
-	char*       psKey;
-	PyObject*   pcObject;
-	if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
-
-	Py_INCREF(pcObject);
-
-	PyDict_SetItemString(GetApplication()._pcTemplateDictionary,psKey,pcObject);
-
-	Py_INCREF(Py_None);
-	return Py_None;
-} 
-
-PYFUNCIMP_S(Application,sTemplateDelete)
-{
-	char*       psKey;
-	if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-		return NULL;										// NULL triggers exception 
-
-	PyDict_DelItemString(GetApplication()._pcTemplateDictionary,psKey);
-
-	Py_INCREF(Py_None);
-    return Py_None;
-} 
-
-PYFUNCIMP_S(Application,sTemplateGet)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-	return GetApplication()._pcTemplateDictionary;
-}
 
 PYFUNCIMP_S(Application,sEndingAdd)
 {

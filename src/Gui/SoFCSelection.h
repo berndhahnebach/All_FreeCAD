@@ -37,7 +37,9 @@ namespace Gui {
 
 
 
-/** FreeCAD selection node
+/** selection node
+ *  this node do the complete highlighting and selection together with the viewer
+ *  it is d
  *  \author Jürgen Riegel
  */
 class GuiExport SoFCSelection : public SoSeparator {
@@ -53,15 +55,27 @@ public:
     AUTO, ON, OFF
   };
 
+  enum Selected {
+    NOTSELECTED, SELECTED
+  };
+
   enum Styles {
     EMISSIVE, EMISSIVE_DIFFUSE
   };
 
   bool isHighlighted(void){return highlighted;}
 
-  SoSFColor color;
+  SoSFColor colorHighlight;
+  SoSFColor colorSelection;
   SoSFEnum style;
   SoSFEnum mode;
+  SoSFEnum selected;
+
+  SoSFString documentName;
+  SoSFString featureName;
+  SoSFString subElementName;
+
+
 
   virtual void handleEvent(SoHandleEventAction * action);
   virtual void GLRenderBelowPath(SoGLRenderAction * action);

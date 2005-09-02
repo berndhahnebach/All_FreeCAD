@@ -171,9 +171,9 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 		else if (streq(attr, "AvailableRedos"))				
 			return Py_BuildValue("i", _pcDoc->GetAvailableRedos()); 
 		else if (streq(attr, "Name"))						
-			return Py_BuildValue("u", _pcDoc->GetName()); 
+			return Py_BuildValue("u", _pcDoc->getName()); 
 		else if (streq(attr, "Path"))						
-			return Py_BuildValue("u", _pcDoc->GetPath()); 
+			return Py_BuildValue("u", _pcDoc->getPath()); 
 		else if (streq(attr, "Main")){
 			//_pcDoc->Main()->IncRef();
 			return new LabelPy(_pcDoc->_hDoc->Main()); 
@@ -185,7 +185,7 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 		else if (streq(attr, "HasOpenCommand"))				
 			return Py_BuildValue("u", _pcDoc->HasOpenCommand()?1:0);
 		else if (streq(attr, "StorageFormat"))						
-			return Py_BuildValue("u", _pcDoc->StorageFormat()); 
+			return Py_BuildValue("u", _pcDoc->storageFormat()); 
     else{
       Feature *pFeat = _pcDoc->getFeature(attr);
       if(pFeat)
@@ -201,7 +201,7 @@ int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 		_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
 		return 1;
 	}else if (streq(attr, "StorageFormat")){						// settable new state
-		_pcDoc->ChangeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
+		_pcDoc->changeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
 		return 1;
 	}else  
 		return PyObjectBase::_setattr(attr, value); 	// send up to parent
@@ -255,7 +255,7 @@ PYFUNCIMP_D(DocumentPy,SaveAs)
     if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
   PY_TRY {
-		_pcDoc->SaveAs(pstr);
+		_pcDoc->saveAs(pstr);
   	Py_Return; 
   }PY_CATCH;
 } 
@@ -263,7 +263,7 @@ PYFUNCIMP_D(DocumentPy,SaveAs)
 PYFUNCIMP_D(DocumentPy,Save)
 { 
   PY_TRY {
-	  _pcDoc->Save(); 
+	  _pcDoc->save(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -328,8 +328,8 @@ PYFUNCIMP_D(DocumentPy,Recompute)
 		
 PYFUNCIMP_D(DocumentPy,AddFeature)
 {
-	char *sType,*sName;
-  if (!PyArg_ParseTuple(args, "ss", &sType,&sName))     // convert args: Python->C 
+	char *sType,*sName=0;
+  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {

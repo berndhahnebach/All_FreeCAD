@@ -59,19 +59,17 @@ open(PyObject *self, PyObject *args)
   PY_TRY {
 
     Base::Console().Log("Open in Mesh with %s",Name);
+    Base::FileInfo file(Name);
 
     // extract ending
-    std::string cEnding(Name);
-    unsigned int pos = cEnding.find_last_of('.');
-    if(pos == cEnding.size())
+    if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
-    cEnding.erase(0,pos+1);
 
-    if(cEnding == "stl" || cEnding == "ast" || cEnding == "STL" || cEnding == "AST")
+    if(file.hasExtension("stl") || file.hasExtension("ast"))
     {
       // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().New();
-      App::Feature *pcFeature = pcDoc->addFeature("MeshImport","MeshImport");
+      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
+      App::Feature *pcFeature = pcDoc->addFeature("MeshImport","MeshOpen");
       pcFeature->setPropertyString(Name,"FileName");
       pcFeature->TouchProperty("FileName");
       pcDoc->Recompute();
@@ -101,18 +99,16 @@ insert(PyObject *self, PyObject *args)
   PY_TRY {
 
     Base::Console().Log("Insert in Mesh with %s",Name);
+    Base::FileInfo file(Name);
 
     // extract ending
-    std::string cEnding(Name);
-    unsigned int pos = cEnding.find_last_of('.');
-    if(pos == cEnding.size())
+    if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
-    cEnding.erase(0,pos+1);
 
-    if(cEnding == "stl" || cEnding == "ast")
+    if(file.hasExtension("stl") || file.hasExtension("ast"))
     {
-      // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().Active();
+      // add Import feature
+      App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
       App::Feature *pcFeature = pcDoc->addFeature("MeshImport", "MeshImport");

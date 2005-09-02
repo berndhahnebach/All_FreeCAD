@@ -86,6 +86,9 @@ Feature::Feature(void)
   _pointMaterial.shininess = 0.3f;
   _pointSize = 2.0;
   _showMode = "Flat";
+
+  time(&touchTime);
+  time(&touchViewTime);
 }
 
 Feature::~Feature(void)
@@ -295,6 +298,12 @@ void Feature::TouchProperty(const char *Name)
 void Feature::Touch(void)
 {
     _pDoc->getLogBook().SetTouched( _cFeatureLabel );
+    time(&touchTime);
+}
+
+void Feature::TouchView(void)
+{
+    time(&touchViewTime);
 }
 
 void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)

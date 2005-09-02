@@ -46,15 +46,13 @@ public:
 
   virtual void attache(App::Feature *);
 
-  /// set the viewing mode
-  virtual void setMode(const char* ModeName){};
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Part representation
   virtual void update(const ChangeType&);
 
-  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
-  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
+//  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
+//  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
 
 protected:
   Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);

@@ -55,15 +55,7 @@
 #include "../Base/Console.h"
 #include "Tools.h"
 #include <qcursor.h>
-
-#include <Inventor/events/SoMotion3Event.h>
-#include <Inventor/events/SoLocation2Event.h>
-#include <Inventor/events/SoMouseButtonEvent.h>
-#include <Inventor/events/SoKeyboardEvent.h>
-#include <Inventor/projectors/SbSphereSheetProjector.h>
-#include <Inventor/projectors/SbSpherePlaneProjector.h>
-#include <Inventor/actions/SoRayPickAction.h> 
-#include <Inventor/SoPickedPoint.h> 
+#include "SoFCSelection.h"
 
 #include "ViewProvider.h"
 
@@ -747,6 +739,25 @@ void View3DInventorViewer::sMadeSelection(void *viewer,SoPath *path)
 // Callback function triggered for selection / deselection.
 void View3DInventorViewer::madeSelection(  SoPath * path )
 {
+  for(int i = 0; i<path->getLength();i++)
+  {
+    SoNode *node = path->getNodeFromTail(i);
+    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
+    {
+      SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
+      Base::Console().Log("Select:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
+                                               SelNode->featureName.getValue().getString(),
+                                               SelNode->subElementName.getValue().getString());
+
+      SelNode->selected = SoFCSelection::SELECTED;
+
+    }
+
+  }
+
+
+
+/*
   for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
     for(int i = 0; i<path->getLength();i++)
       if((*It)->getRoot() == path->getNodeFromTail(i))
@@ -754,6 +765,8 @@ void View3DInventorViewer::madeSelection(  SoPath * path )
         (*It)->selected(this,path);
         return;
       }
+*/
+
 }
 
 void View3DInventorViewer::sUnmadeSelection(void *viewer,SoPath *path)
@@ -764,6 +777,21 @@ void View3DInventorViewer::sUnmadeSelection(void *viewer,SoPath *path)
 // Callback function triggered for deselection.
 void View3DInventorViewer::unmadeSelection(  SoPath * path )
 {
+  for(int i = 0; i<path->getLength();i++)
+  {
+    SoNode *node = path->getNodeFromTail(i);
+    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
+    {
+      SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
+      Base::Console().Log("Unselect:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
+                                               SelNode->featureName.getValue().getString(),
+                                               SelNode->subElementName.getValue().getString());
+      SelNode->selected = SoFCSelection::NOTSELECTED;
+
+    }
+
+  }
+/*
   for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
     for(int i = 0; i<path->getLength();i++)
       if((*It)->getRoot() == path->getNodeFromTail(i))
@@ -771,6 +799,7 @@ void View3DInventorViewer::unmadeSelection(  SoPath * path )
         (*It)->unselected(this,path);
         return;
       }
+      */
 }
 
 

@@ -136,6 +136,14 @@ SOURCE=.\ViewProvider.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ViewProviderCurvature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderCurvature.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ViewProviderTransform.cpp
 # End Source File
 # Begin Source File

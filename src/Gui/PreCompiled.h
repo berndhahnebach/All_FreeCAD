@@ -35,6 +35,7 @@
 #include <stack>
 #include <queue>
 
+
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 
@@ -157,6 +158,14 @@
 #include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/events/SoMotion3Event.h>
+#include <Inventor/events/SoLocation2Event.h>
+#include <Inventor/events/SoMouseButtonEvent.h>
+#include <Inventor/events/SoKeyboardEvent.h>
+#include <Inventor/projectors/SbSphereSheetProjector.h>
+#include <Inventor/projectors/SbSpherePlaneProjector.h>
+#include <Inventor/actions/SoRayPickAction.h> 
+#include <Inventor/SoPickedPoint.h> 
 
 #include <float.h>
 
@@ -268,6 +277,7 @@
 #include <qwidgetstack.h>
 #include <qworkspace.h>
 #include <private/qrichtext_p.h>
+
 
 #endif //_PreComp_
 

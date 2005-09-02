@@ -237,7 +237,6 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
           TransRoot->addChild(n.pcTransform);
           n.pcTransform->translation.setValue(point);
           n.pcHighlight          = new Gui::SoFCSelection();
-          n.pcHighlight->color.setValue((float)0.2,(float)0.5,(float)0.2);
           SoSphere * sphere      = new SoSphere;
           sphere->radius = (float)fPointSize;
           n.pcHighlight->addChild(sphere);

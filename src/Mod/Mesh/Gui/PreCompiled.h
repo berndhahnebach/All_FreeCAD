@@ -99,7 +99,6 @@
 #include <Inventor/nodes/SoLineSet.h>
 #include <Inventor/nodes/SoLocateHighlight.h>
 #include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMaterialBinding.h>
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoNormalBinding.h>

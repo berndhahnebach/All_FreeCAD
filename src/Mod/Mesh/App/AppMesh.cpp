@@ -34,6 +34,7 @@
 #include "FeatureMeshImport.h"
 #include "FeatureMeshTransform.h"
 #include "FeatureMeshTransformDemolding.h"
+#include "FeatureMeshCurvature.h"
 
 
 /* registration table  */
@@ -53,6 +54,7 @@ void AppMeshExport initMesh() {
 	App::FeatureFactory().AddProducer("Mesh",                  new App::FeatureProducer<Mesh::MeshFeature>      );
 	App::FeatureFactory().AddProducer("MeshTransform"         ,new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
 	App::FeatureFactory().AddProducer("MeshTransformDemolding",new App::FeatureProducer<Mesh::FeatureMeshTransformDemolding>      );
+	App::FeatureFactory().AddProducer("MeshCurvature"         ,new App::FeatureProducer<Mesh::FeatureMeshCurvature>      );
 
   return;
 }

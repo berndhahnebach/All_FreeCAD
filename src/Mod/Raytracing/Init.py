@@ -26,46 +26,13 @@
 #***************************************************************************/
 
 
-class RaytracingDocument:
-	"Raytracing document"
-	def Info(self):
-		return "Raytracing document"
-
-class RaytracingTemplate:
-	"Raytracing template object"
-	def Start(self):
-		# switch to the right workbench
-		if(App.GuiUp == 1):
-			Log ('Switching to Raytracing workbench')
-			Gui.WorkbenchActivate("Raytracing design")
-		Log ('   Set up Raytracing document...\n')
-		#get the active document
-		Doc = App.DocGet()
-		Main = Doc.Main
-
-		Log ('   Init Raytracing doc handle...\n')
-		#Doc.Raytracing = 1
-
-		L1 = Main.GetLabel(1)
-		L1.GetLabel(1)
-		L1.Int = 1
-		L1.Real = 1.0
-		L1.Name = "Hallo"
-		L2 = L1.GetLabel(1)
-		L3 = L1.GetLabel(2)
-
-
-
 # Get the Parameter Group of this module
 ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Raytracing")
 
 # Set the needed information
 ParGrp.SetString("HelpIndex",        "Raytracing/Help/index.html")
-ParGrp.SetString("DocTemplateName",  "Raytracing")
-ParGrp.SetString("DocTemplateScript","TemplRaytracing.py")
 ParGrp.SetString("WorkBenchName",    "Raytracing Design")
 ParGrp.SetString("WorkBenchModule",  "RaytracingWorkbench.py")
 
-App.TemplateAdd("Raytracing",RaytracingTemplate())
 
 

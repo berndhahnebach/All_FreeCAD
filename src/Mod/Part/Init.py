@@ -31,13 +31,7 @@ class PartDocument:
 	def Info(self):
 		return "Part document"
 		
-class PartTemplate:
-	"Part template object"
-	def Start(self):
-		Log ('runing obsolete python template\n')
             
-
-
 # Get the Parameter Group of this module
 ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Part")
 
@@ -48,7 +42,6 @@ ParGrp.SetString("DocTemplateScript","TemplPart.py")
 ParGrp.SetString("WorkBenchName",    "Part Design")
 ParGrp.SetString("WorkBenchModule",  "PartWorkbench.py")
 
-App.TemplateAdd("Part",PartTemplate())
 
 FreeCAD.EndingAdd("igs","Part")
 FreeCAD.EndingAdd("iges","Part")

@@ -86,6 +86,7 @@ using namespace std;
 //using Base::GetConsole;
 using namespace Base;
 using namespace App;
+using namespace std;
 
 
 
@@ -196,7 +197,7 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
 	mpcPramManager["User parameter"] = _pcUserParamMngr;
 
 	// instanciate the workbench dictionary
-	_pcTemplateDictionary = PyDict_New();
+//	_pcTemplateDictionary = PyDict_New();
 
 	// seting up Python binding
 	(void) Py_InitModule("FreeCAD", Application::Methods);
@@ -211,56 +212,81 @@ Application::~Application()
 //**************************************************************************
 // Interface
 
-Document* Application::New(const char * Name)
+Document* Application::newDocument(const char * Name)
 {
-	Handle_TDocStd_Document hDoc;
-	Document*				pDoc;
-//	PyObject* pcTemplate;
 
-/*	if(Name)
-	{
-		// net buffer because of char* <-> const char*
-		PyBuf NameBuf(Name);
+  DocEntry newDoc;
 
-		// get the python template object from the dictionary
-		pcTemplate = PyDict_GetItemString(_pcTemplateDictionary, NameBuf.str);
+  // get anyway a valid name!
+  if(!Name)
+    Name = "Unnamed";
+  string name = getUniqueDocumentName(Name);
 
-		// test if the template is valid
-		if(!pcTemplate)
-			return NULL;
-	}*/
-
-	_hApp->NewDocument("FreeCad-Std",hDoc);
+  // OCC Document schema
+	_hApp->NewDocument("FreeCad-Std",newDoc.hDoc);
 	//_hApp->NewDocument("MDTV-Standard",hDoc);
 	//_hApp->NewDocument("Standard",hDoc);
-	pDoc = new Document(hDoc);
+
+  // create the FreeCAD document
+  newDoc.pDoc = new Document(newDoc.hDoc,name.c_str());
 
 	// add the document to the internal list
-//	pDoc->IncRef();
-	_DocVector.push_back(pDoc);
-	_pActiveDoc = pDoc;
+	DocMap[name] = newDoc;
+	_pActiveDoc = newDoc.pDoc;
 
-	// creat the type object
-	//DocTypeStd *pDocType = new DocTypeStd();
 
-	pDoc->Init();
+	newDoc.pDoc->Init();
 	// trigger Observers (open windows and so on)
-	NotifyDocNew(pDoc);
+	NotifyDocNew(newDoc.pDoc);
 
-	return pDoc;
+	return newDoc.pDoc;
 }
 
-Document* Application::Open(const char * Name)
+
+string Application::getUniqueDocumentName(const char *Name)
 {
-	Handle_TDocStd_Document hDoc;
-	Document*				pDoc;
-  FileInfo File(Name);
+  map<string,DocEntry>::iterator pos;
+
+  // name in use?
+  pos = DocMap.find(Name);
+
+  if (pos == DocMap.end())
+    // if not, name is OK
+    return Name;
+  else
+  {
+    // find highes sufix
+    int nSuff = 0;  
+    for(pos = DocMap.begin();pos != DocMap.end();++pos)
+    {
+      const string &rclObjName = pos->first;
+      int nPos = rclObjName.find_last_not_of("0123456789");
+      if (rclObjName.substr(0, nPos + 1) == Name)  // Prefix gleich
+      {
+        string clSuffix(rclObjName.substr(nPos + 1));
+        if (clSuffix.size() > 0)
+          nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+      }
+    }
+    char szName[200];
+    sprintf(szName, "%s%d", Name, nSuff + 1);
+	
+    return string(szName);
+  }
+	
+}
+
+
+Document* Application::openDocument(const char * FileName)
+{
+  DocEntry newDoc;
+  FileInfo File(FileName);
   std::string Ext = File.extension();
 
   // checking on the extension
   if(Ext == "FCStd" || Ext == "std")
   {
-    switch(_hApp->Open(TCollection_ExtendedString((Standard_CString) Name),hDoc) )
+    switch(_hApp->Open(TCollection_ExtendedString((Standard_CString) FileName),newDoc.hDoc) )
 	  {
 		  case CDF_RS_OK:
 			  break;
@@ -287,49 +313,44 @@ Document* Application::Open(const char * Name)
 	  }
 	  
 	  // Creating a FreeCAD Document
-	  pDoc = new Document(hDoc);
-	  pDoc->IncRef();
-	  _DocVector.push_back(pDoc);
-	  _pActiveDoc = pDoc;
+    string name = TCollection_AsciiString(newDoc.hDoc->GetName()).ToCString();
+	  newDoc.pDoc = new Document(newDoc.hDoc,name.c_str());
+	  DocMap[name] = newDoc;
+	  _pActiveDoc = newDoc.pDoc;
 
 
 	  // trigger Observers (open windows and so on)
-	  NotifyDocNew(pDoc);
+	  NotifyDocNew(newDoc.pDoc);
   }else{
     throw Base::Exception("Unknown file extension");
   }
 
-	return pDoc;
+	return newDoc.pDoc;
 }
 
-Document* Application::Save(void)
+
+Document* Application::getActiveDocument(void)
 {
-	Document*	pDoc = Active();
-
-	pDoc->Save();
-	
-	return pDoc;
-}
-
-Document* Application::SaveAs(const char * Name)
-{
-	Document*	pDoc = Active();
-
-	pDoc->SaveAs(Name);
-	
-	return pDoc;
-}
-
-Document* Application::Active(void)
-{
-	
 	return _pActiveDoc;
 }
 
-void Application::SetActive(Document* pDoc)
+void Application::setActiveDocument(Document* pDoc)
 {
 	_pActiveDoc = pDoc;
 }
+
+void Application::setActiveDocument(const char *Name)
+{
+  std::map<std::string,DocEntry>::iterator pos;
+  pos = DocMap.find(Name);
+
+  if(pos != DocMap.end())
+	  _pActiveDoc = pos->second.pDoc;
+  else
+    Base::Console().Warning("try to set unknown document active (ignored)!");
+}
+
+
 
 ParameterManager & Application::GetSystemParameter(void) 
 {
@@ -351,6 +372,7 @@ const std::map<std::string,ParameterManager *> & Application::GetParameterSetLis
 	return mpcPramManager;
 }
 
+/*
 std::vector<std::string> Application::GetAllTemplates(void)
 {
 	PyObject *key, *value;
@@ -360,12 +382,13 @@ std::vector<std::string> Application::GetAllTemplates(void)
 
 	// insert all items
 	while (PyDict_Next(_pcTemplateDictionary, &pos, &key, &value)) {
-		/* do something interesting with the values... */
+		// do something interesting with the values... 
 		cTemp.push_back(PyString_AsString(key));
 	}
 
 	return cTemp;
 }
+*/
 
 FCHandle<ParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
 {
@@ -640,7 +663,7 @@ void Application::runApplication()
 
       // try to open 
       try{
-        Application::_pcSingelton->Open(File.fileName().c_str());
+        Application::_pcSingelton->openDocument(File.fileName().c_str());
       }catch(...){
         Console().Error("Can't open file %s \n",File.fileName().c_str());
       }

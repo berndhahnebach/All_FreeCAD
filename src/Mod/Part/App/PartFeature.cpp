@@ -56,6 +56,8 @@ using namespace Part;
 
 PartFeature::PartFeature(void)
 {
+  _showMode = "Normal";
+
 
 }
 

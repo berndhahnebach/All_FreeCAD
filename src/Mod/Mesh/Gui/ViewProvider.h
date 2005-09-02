@@ -72,7 +72,7 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Mesh representation
-  virtual void update(const ChangeType&);
+  virtual void updateData(void);
 
   virtual void selected(Gui::View3DInventorViewer *, SoPath *);
   virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
@@ -81,8 +81,6 @@ protected:
 
   /// helper methode to build up the FaceSet
   void createMesh(Mesh::MeshWithProperty *pcMesh);
-  /// helper for the color vertex mode
-  void SetVertexColorMode(Mesh::MeshPropertyColor* pcProp);
 
 
 
@@ -92,8 +90,6 @@ protected:
   //SoFaceSet         *pcMeshFaces;
 
   Gui::SoFCSelection *pcHighlight;
-
-  SoMaterial        *pcColorMat;
 
 };
 
