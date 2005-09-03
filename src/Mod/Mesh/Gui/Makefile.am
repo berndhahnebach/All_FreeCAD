@@ -13,6 +13,8 @@ libMeshGui_la_SOURCES=\
 		ViewProvider.h \
 		ViewProviderTransform.cpp \
 		ViewProviderTransform.h \
+		ViewProviderTransformDemolding.cpp \
+		ViewProviderTransformDemolding.h \
 		Workbench.cpp \
 		Workbench.h
 

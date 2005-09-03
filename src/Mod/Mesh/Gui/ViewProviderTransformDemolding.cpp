@@ -26,12 +26,16 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoFaceSet.h>
+# include <Inventor/nodes/SoLocateHighlight.h>
+# include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoSwitch.h>
+# include <Inventor/manips/SoTransformerManip.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -52,12 +56,12 @@ using Mesh::MeshFeature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
- 
+
 #include "ViewProviderTransformDemolding.h"
 using namespace MeshGui;
-   
 
- 
+
+
 ViewProviderInventorMeshTransformDemolding::ViewProviderInventorMeshTransformDemolding()
 {
 }
@@ -76,7 +80,7 @@ void ViewProviderInventorMeshTransformDemolding::selected(Gui::View3DInventorVie
 //   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
    pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
 
- 
+
 }
 void ViewProviderInventorMeshTransformDemolding::unselected(Gui::View3DInventorViewer *, SoPath *)
 {
@@ -84,7 +88,7 @@ void ViewProviderInventorMeshTransformDemolding::unselected(Gui::View3DInventorV
    Gui::Selection().removeFeature(pcFeature);
 
    pcHighlight->mode = SoLocateHighlight::AUTO;
-   
+
 }
 
 

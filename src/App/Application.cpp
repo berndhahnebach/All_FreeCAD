@@ -418,9 +418,19 @@ void Application::addOpenType(const char* Type, const char* ModuleName)
   _mEndings[Type] = ModuleName;
 }
 
-const char* Application::hasOpenType(const char* Type)
+const char* Application::hasOpenType(const char* Type) const
 {
-  return _mEndings[Type].c_str();
+  for ( std::map<std::string, std::string>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it )
+  {
+#ifdef FC_OS_LINUX
+  if ( strcasecmp(Type,it->first.c_str()) == 0 )
+#else
+  if ( stricmp(Type,it->first.c_str()) == 0 )
+#endif
+    return it->second.c_str();
+  }
+
+  return 0;
 }
 
 void Application::rmvOpenType(const char* Type)

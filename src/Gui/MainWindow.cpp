@@ -1209,21 +1209,17 @@ void MainWindow::dropEvent ( QDropEvent      * e )
 
 void MainWindow::dragEnterEvent ( QDragEnterEvent * e )
 {
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
-
   if ( QUriDrag::canDecode(e) )
   {
     QStringList fn;
     QUriDrag::decodeLocalFiles(e, fn);
     QString f = fn.first();
-    
-    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+    string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
 
-    if(EndingMap.find(Ending) != EndingMap.end())
+    if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
       e->accept();
-  }else 
+  }else
     e->ignore();
-
 }
 
 

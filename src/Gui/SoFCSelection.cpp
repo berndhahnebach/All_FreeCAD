@@ -23,6 +23,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qstatusbar.h>
+# include <qstring.h>
 #endif
 
 //#include <Inventor/nodes/SoSubNodeP.h>
@@ -38,7 +40,6 @@
 
 #include "SoFCSelection.h"
 #include "Application.h"
-#include <QString.h>
 
 using namespace Gui;
 

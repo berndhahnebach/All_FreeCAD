@@ -121,7 +121,11 @@ string FileInfo::extension ( bool complete ) const
 
 bool FileInfo::hasExtension ( const char* Ext) const
 {
+#ifdef FC_OS_LINUX
+  return strcasecmp(Ext,extension().c_str()) == 0;
+#else
   return stricmp(Ext,extension().c_str()) == 0;
+#endif
 }
 
 

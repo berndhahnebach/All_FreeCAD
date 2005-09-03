@@ -36,6 +36,7 @@
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoPointSet.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoSwitch.h>
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRep_Tool.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>

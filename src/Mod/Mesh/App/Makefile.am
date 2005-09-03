@@ -41,6 +41,8 @@ libMesh_la_SOURCES=\
 		FeatureMeshImport.h \
 		FeatureMeshTransform.cpp \
 		FeatureMeshTransform.h \
+		FeatureMeshTransformDemolding.cpp \
+		FeatureMeshTransformDemolding.h \
 		Mesh.cpp \
 		Mesh.h \
 		MeshAlgos.cpp \

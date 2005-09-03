@@ -16,8 +16,6 @@ BUILT_SOURCES=\
 		moc_DlgCustomizeImp.cpp \
 		moc_DlgDisplayProperties.cpp \
 		moc_DlgDisplayPropertiesImp.cpp \
-		moc_DlgDocTemplates.cpp\
-		moc_DlgDocTemplatesImp.cpp \
 		moc_DlgEditor.cpp \
 		moc_DlgEditorImp.cpp \
 		moc_DlgGeneral.cpp \
@@ -75,8 +73,6 @@ BUILT_SOURCES=\
 		DlgCommands.h \
 		DlgDisplayProperties.cpp \
 		DlgDisplayProperties.h \
-		DlgDocTemplates.cpp \
-		DlgDocTemplates.h \
 		DlgEditor.cpp \
 		DlgEditor.h \
 		DlgGeneral.cpp \
@@ -174,8 +170,6 @@ libFreeCADGui_la_SOURCES=\
 		DlgCustomizeImp.h \
 		DlgDisplayPropertiesImp.cpp \
 		DlgDisplayPropertiesImp.h \
-		DlgDocTemplatesImp.cpp \
-		DlgDocTemplatesImp.h \
 		DlgEditorImp.cpp \
 		DlgEditorImp.h \
 		DlgGeneralImp.cpp \
@@ -314,7 +308,6 @@ EXTRA_DIST = \
 		DlgActivateWindow.ui \
 		DlgAuthorization.ui \
 		DlgCommands.ui \
-		DlgDocTemplates.ui \
 		DlgEditor.ui \
 		DlgGeneral.ui \
 		DlgMacroExecute.ui \

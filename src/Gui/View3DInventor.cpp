@@ -505,16 +505,16 @@ void View3DInventor::dropEvent ( QDropEvent      * e )
 
 void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
 {
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+//  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
 
   if ( QUriDrag::canDecode(e) )
   {
     QStringList fn;
     QUriDrag::decodeLocalFiles(e, fn);
     QString f = fn.first();
-    
-    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
 
+    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+/*
     locale loc;
     // Get a reference to the ctype<char> facet
     const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
@@ -522,8 +522,10 @@ void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
     ct.tolower(Ending.begin(),Ending.end());
 
     if(EndingMap.find(Ending) != EndingMap.end())
+*/
+    if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
       e->accept();
-  }else 
+  }else
     e->ignore();
 
 }

@@ -48,7 +48,13 @@
 # include <Inventor/nodes/SoSelection.h>
 # include <Inventor/actions/SoBoxHighlightRenderAction.h>
 # include <Inventor/events/SoEvent.h>
+# include <Inventor/events/SoKeyboardEvent.h>
+# include <Inventor/events/SoLocation2Event.h>
+# include <Inventor/events/SoMotion3Event.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
+# include <Inventor/actions/SoRayPickAction.h>
+# include <Inventor/projectors/SbSphereSheetProjector.h>
+# include <Inventor/SoPickedPoint.h>
 #endif
 
 #include "View3DInventorViewer.h"

@@ -185,8 +185,8 @@ public:
 	//@{
   /// register a ending and a module name
   void addOpenType(const char* Type, const char* ModuleName);
-  /// checks if a type is already registered and returns the module name on sucess or NULL at fail
-  const char* hasOpenType(const char* Type);
+  /// checks if a type is already registered and returns the module name on success or NULL at fail
+  const char* hasOpenType(const char* Type) const;
   /// returns a map of all registered open types
   const std::map<std::string,std::string> &getOpenType(void);
   /// removes a open handler type

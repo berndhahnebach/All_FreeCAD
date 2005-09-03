@@ -15,7 +15,9 @@ libRaytracingGui_la_SOURCES=\
 		DlgSettingsRayImp.cpp \
 		DlgSettingsRayImp.h \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		Workbench.cpp \
+		Workbench.h
 
 # the library search path.
 libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

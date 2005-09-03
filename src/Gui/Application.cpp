@@ -301,16 +301,20 @@ ApplicationWindow::~ApplicationWindow()
 
 void ApplicationWindow::open(const char* FileName)
 {
-  // get registered endings
+/*  // get registered endings
   const map<string,string> &EndingMap = App::GetApplication().getOpenType();
   // File infos
   Base::FileInfo File(FileName);
-  
+
   string te= File.extension();
 
   locale loc;
   // Get a reference to the ctype<char> facet
+#ifdef FC_OS_LINUX
+  const ctype<char>& ct = use_facet<ctype<char> >(loc);
+#else
   const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
+#endif
 
   ct.tolower(te.begin(),te.end());
 
@@ -318,23 +322,29 @@ void ApplicationWindow::open(const char* FileName)
   {
     // geting the module name
     const string &Mod = EndingMap.find(te)->second;
+*/
+ Base::FileInfo File(FileName);
+ string te = File.extension();
+ const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
+ if ( Mod != 0 )
+ {
     // issue module loading
     string Cmd = "import ";
-    Cmd += Mod.c_str();
+    Cmd += Mod/*.c_str()*/;
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
 
     // issue gui module loading
     Cmd =  "import ";
-    Cmd += Mod.c_str();
+    Cmd += Mod/*.c_str()*/;
     Cmd += "Gui";
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
-    Cmd = EndingMap.find(te)->second.c_str();
+    Cmd = Mod; //EndingMap.find(te)->second.c_str();
     Cmd += ".open(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
@@ -353,11 +363,12 @@ void ApplicationWindow::open(const char* FileName)
 
 void ApplicationWindow::import(const char* FileName)
 {
+/*
   // get registered endings
   const map<string,string> &EndingMap = App::GetApplication().getOpenType();
   // File infos
   Base::FileInfo File(FileName);
-  
+
   string te= File.extension();
   locale loc;
   // Get a reference to the ctype<char> facet
@@ -368,23 +379,29 @@ void ApplicationWindow::import(const char* FileName)
   {
     // geting the module name
     const string &Mod = EndingMap.find(te)->second;
+*/
+ Base::FileInfo File(FileName);
+ string te = File.extension();
+ const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
+ if ( Mod != 0 )
+ {
     // issue module loading
     string Cmd = "import ";
-    Cmd += Mod.c_str();
+    Cmd += Mod/*.c_str()*/;
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
 
     // issue gui module loading
     Cmd =  "import ";
-    Cmd += Mod.c_str();
+    Cmd += Mod/*.c_str()*/;
     Cmd += "Gui";
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
-    Cmd = EndingMap.find(te)->second.c_str();
+    Cmd = Mod; //EndingMap.find(te)->second.c_str();
     Cmd += ".insert(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
@@ -393,7 +410,7 @@ void ApplicationWindow::import(const char* FileName)
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
   }else{
-    Base::Console().Error("ApplicationWindow::open() try to open unknowne file type .%s\n",te.c_str());
+    Base::Console().Error("ApplicationWindow::import() try to open unknowne file type .%s\n",te.c_str());
     return;
   }
 
@@ -1558,15 +1575,16 @@ void ApplicationWindow::dropEvent ( QDropEvent      * e )
 
 void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
 {
-  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
+//  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
 
   if ( QUriDrag::canDecode(e) )
   {
     QStringList fn;
     QUriDrag::decodeLocalFiles(e, fn);
     QString f = fn.first();
-    
+
     string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
+/*
     locale loc;
     // Get a reference to the ctype<char> facet
     const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
@@ -1574,10 +1592,11 @@ void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
     ct.tolower(Ending.begin(),Ending.end());
 
     if(EndingMap.find(Ending) != EndingMap.end())
+*/
+    if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
       e->accept();
-  }else 
+  }else
     e->ignore();
-
 }
 
 //**************************************************************************
