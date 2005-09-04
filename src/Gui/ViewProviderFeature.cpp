@@ -113,17 +113,6 @@ std::vector<std::string> ViewProviderInventorFeature::getModes(void)
   return std::vector<std::string>();
 }
 
-void ViewProviderInventorFeature::selected(View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Select viewprovider Feature  %p\n",this);
-   Gui::Selection().addFeature(pcFeature);
-}
-void ViewProviderInventorFeature::unselected(View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Unselect viewprovider Feature  %p\n",this);
-   Gui::Selection().removeFeature(pcFeature);
-}
-
 
 void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
 {

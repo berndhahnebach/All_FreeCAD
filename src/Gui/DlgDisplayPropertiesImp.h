@@ -67,7 +67,7 @@ public slots:
 
 protected:
   Gui::Command* _pcCmd;
-  const std::set<App::Feature*> &Sel;
+  std::vector<App::Feature*> Sel;
   std::vector<ViewProviderInventor*> Provider;
 
 

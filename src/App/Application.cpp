@@ -242,6 +242,18 @@ Document* Application::newDocument(const char * Name)
 	return newDoc.pDoc;
 }
 
+App::Document* Application::getDocument(const char *Name)
+{
+  map<string,DocEntry>::iterator pos;
+
+  pos = DocMap.find(Name);
+
+  if (pos == DocMap.end())
+    return 0;
+
+  return pos->second.pDoc;
+}
+
 
 string Application::getUniqueDocumentName(const char *Name)
 {

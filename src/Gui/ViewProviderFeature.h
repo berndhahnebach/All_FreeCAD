@@ -54,10 +54,6 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
 
-
-  virtual void selected(View3DInventorViewer *, SoPath *);
-  virtual void unselected(View3DInventorViewer *, SoPath *);
-
   /// check if the Data has to be recalculated
   bool ifDataNewer(void);
   /// check if the matrial has to be recalculated

@@ -266,8 +266,8 @@ void CmdMeshVertexCurvature::activated(int iMsg)
 //  updateActive();
 
   MeshFeature* mesh;
-  const std::set<App::Feature*>& sel = Gui::Selection().Selection();
-  for ( std::set<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
+  std::vector<App::Feature*> sel = Gui::Selection().getSelectedFeatures();
+  for ( std::vector<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
   {
     if ( strcmp( (*it)->type(), "MeshImport") == 0 )
     {
@@ -287,8 +287,8 @@ void CmdMeshVertexCurvature::activated(int iMsg)
 bool CmdMeshVertexCurvature::isActive(void)
 {
   // Check for the selected mesh feature
-  const std::set<App::Feature*>& sel = Gui::Selection().Selection();
-  for ( std::set<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
+  std::vector<App::Feature*> sel = Gui::Selection().getSelectedFeatures();
+  for ( std::vector<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
   {
     if ( strcmp( (*it)->type(), "MeshImport") == 0 )
   	  return true; // MeshFeature found

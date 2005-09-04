@@ -143,9 +143,6 @@ public:
   // returns the root node of the Provider (3D)
   virtual SoSeparator* getBackRoot(void){return 0;}
 
-  // 
-  virtual void selected(View3DInventorViewer *, SoPath *){};
-  virtual void unselected(View3DInventorViewer *, SoPath *){};
 
 	/** @name mode methodes of the feature 
     * manly stiar a SoSwitch (pcModeSwitch) which select the 

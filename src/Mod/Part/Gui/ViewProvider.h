@@ -51,9 +51,6 @@ public:
   /// Update the Part representation
   virtual void update(const ChangeType&);
 
-//  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
-//  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
-
 protected:
   Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
   Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);

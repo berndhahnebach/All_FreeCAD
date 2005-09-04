@@ -65,24 +65,6 @@ ViewProviderInventorPoints::~ViewProviderInventorPoints()
 {
 }
 
-void ViewProviderInventorPoints::selected(Gui::View3DInventorViewer *, SoPath *)
-{
-  Base::Console().Log("Select viewprovider Points  %p\n",this);
-  Gui::Selection().addFeature(pcFeature);
-
-  pcHighlight->mode = SoLocateHighlight::ON;
-  pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
-}
-
-void ViewProviderInventorPoints::unselected(Gui::View3DInventorViewer *, SoPath *)
-{
-  Base::Console().Log("Unselect viewprovider Points  %p\n",this);
-  Gui::Selection().removeFeature(pcFeature);
-
-  pcHighlight->mode = SoLocateHighlight::AUTO;
-  pcHighlight->colorHighlight.setValue((float)0.1,(float)0.3,(float)0.7);
-}
-
 void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
 {
   PointsFeature* PtFea = dynamic_cast<PointsFeature*>(pcFeature);
@@ -154,6 +136,7 @@ void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
   pcHighlight = new Gui::SoFCSelection();
   pcHighlight->featureName = pcFeature->getName();
   pcHighlight->documentName = pcFeature->getDocument().getName();
+  pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcPointsCoord);
   pcHighlight->addChild(pcPoints);
 

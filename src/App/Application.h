@@ -141,6 +141,8 @@ public:
 	App::Document* openDocument(const char * FileName=0l);
 	/// Retrive the active document
 	App::Document* getActiveDocument(void);
+	/// Retrive a named document
+	App::Document* getDocument(const char *Name);
 	/// Set the active document
 	void setActiveDocument(App::Document* pDoc);
 	void setActiveDocument(const char *Name);

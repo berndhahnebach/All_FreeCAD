@@ -30,6 +30,7 @@
 #include "Action.h"
 #include "Application.h"
 #include "Document.h"
+#include "Selection.h"
 #include "ToolBoxBar.h"
 #include "HelpView.h"
 #include "Macro.h"
@@ -199,6 +200,18 @@ bool Command::hasActiveDocument(void)
 bool Command::hasFeature(const char* Name)
 {
   return getActiveOCCDocument() != 0 && getActiveOCCDocument()->getFeature(Name) != 0;
+}
+
+Gui::SelectionSingelton&  Command::getSelection(void)
+{
+  return Gui::Selection();
+}
+
+std::string Command::getUniqueFeatureName(const char *BaseName)
+{
+  assert(hasActiveDocument());
+
+  return getActiveDocument()->getDocument()->getUniqueFeatureName(BaseName);
 }
 
 

@@ -74,8 +74,6 @@ public:
   /// Update the Mesh representation
   virtual void updateData(void);
 
-  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
-  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
 
 protected:
 

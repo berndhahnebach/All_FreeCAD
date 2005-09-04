@@ -75,36 +75,6 @@ ViewProviderInventorMeshTransform::~ViewProviderInventorMeshTransform()
 }
 
 
-void ViewProviderInventorMeshTransform::selected(Gui::View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Select viewprovider Mesh  %p\n",this);
-   Gui::Selection().addFeature(pcFeature);
-
-   pcHighlight->mode = SoLocateHighlight::ON;
-//   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-   pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
-
-   // switch on dragger
-//   pcManipSwitch->whichChild = 0;
-
- 
-}
-void ViewProviderInventorMeshTransform::unselected(Gui::View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Unselect viewprovider Mesh  %p\n",this);
-   Gui::Selection().removeFeature(pcFeature);
-
-   pcHighlight->mode = SoLocateHighlight::AUTO;
-//   pcHighlight->style = SoLocateHighlight::EMISSIVE;
-   pcHighlight->colorHighlight.setValue((float)0.1,(float)0.3,(float)0.7);
-   
-   // switch off dragger
-//   pcManipSwitch->whichChild = -1;
-
-}
-
-
-
 void ViewProviderInventorMeshTransform::attache(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes

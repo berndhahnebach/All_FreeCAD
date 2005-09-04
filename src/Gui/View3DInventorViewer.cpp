@@ -62,6 +62,7 @@
 #include "Tools.h"
 #include <qcursor.h>
 #include "SoFCSelection.h"
+#include "Selection.h"
 
 #include "ViewProvider.h"
 
@@ -110,7 +111,8 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   volume.ortho(-1, 1, -1, 1, -1, 1);
   spinprojector->setViewVolume(volume);
 
-  _bSpining = false; 
+  _bSpining = false;
+  _bRejectSelection = false;
 
   axiscrossEnabled = true;
   axiscrossSize = 10;
@@ -420,62 +422,76 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     // SoDebugError::postInfo("processSoEvent", "button = %d", button);
     switch (button) {
     case SoMouseButtonEvent::BUTTON1:
-      if(MoveMode && press)
+      if(press)
       {
-        RotMode = true;
-        ZoomMode = false;
-        MoveTime = ev->getTime();
-
-      // Set up initial projection point for the projector object when
-      // first starting a drag operation.
-        spinprojector->project(lastmouseposition);
-        //interactiveCountInc();
-        clearLog();
-        
-        getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) );
-        processed = true;
-      }else if(MoveMode && !press){
-        RotMode = false; 
-        
-        SbTime tmp = (ev->getTime() - MoveTime);
-        if (tmp.getValue() < 0.300) 
+        _bRejectSelection = false;
+        if(MoveMode)
         {
-          ZoomMode = true;
-          getWidget()->setCursor( QCursor( 8 /*CrossCursor*/) );
-        }else{
-       
+          RotMode = true;
           ZoomMode = false;
-          getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
+          MoveTime = ev->getTime();
 
-          SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-          panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+        // Set up initial projection point for the projector object when
+        // first starting a drag operation.
+          spinprojector->project(lastmouseposition);
+          //interactiveCountInc();
+          clearLog();
+        
+          getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) );
+          processed = true;
+        } 
+      }
+      else
+      {
+        // if you come out of rotation dont deselect anything
+        if(_bRejectSelection || MoveMode)
+        {
+          _bRejectSelection=false;
+          processed = true;
+        }
+        if(MoveMode){
+          RotMode = false; 
+        
+          SbTime tmp = (ev->getTime() - MoveTime);
+          if (tmp.getValue() < 0.300) 
+          {
+            ZoomMode = true;
+            getWidget()->setCursor( QCursor( 8 /*CrossCursor*/) );
+          }else{
        
-          // check on start spining
-          SbTime stoptime = (ev->getTime() - log.time[0]);
-          if (stoptime.getValue() < 0.100) {
-            const SbVec2s glsize(this->getGLSize());
-            SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                          float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-            SbVec3f to = spinprojector->project(posn);
-            SbRotation rot = spinprojector->getRotation(from, to);
+            ZoomMode = false;
+            getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
 
-            SbTime delta = (log.time[0] - log.time[2]);
-            double deltatime = delta.getValue();
-            rot.invert();
-            rot.scaleAngle(float(0.200 / deltatime));
+            SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+            panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+       
+            // check on start spining
+            SbTime stoptime = (ev->getTime() - log.time[0]);
+            if (stoptime.getValue() < 0.100) {
+              const SbVec2s glsize(this->getGLSize());
+              SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                            float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+              SbVec3f to = spinprojector->project(posn);
+              SbRotation rot = spinprojector->getRotation(from, to);
 
-            SbVec3f axis;
-            float radians;
-            rot.getValue(axis, radians);
-            if ((radians > 0.01f) && (deltatime < 0.300)) {
-              _bSpining = true;
-              spinRotation = rot;
-              MoveMode = false;
-              getWidget()->setCursor( QCursor( 0 /*CrossCursor*/) );
+              SbTime delta = (log.time[0] - log.time[2]);
+              double deltatime = delta.getValue();
+              rot.invert();
+              rot.scaleAngle(float(0.200 / deltatime));
+
+              SbVec3f axis;
+              float radians;
+              rot.getValue(axis, radians);
+              if ((radians > 0.01f) && (deltatime < 0.300)) {
+                _bSpining = true;
+                spinRotation = rot;
+                MoveMode = false;
+                getWidget()->setCursor( QCursor( 0 /*CrossCursor*/) );
+              }
             }
           }
+          processed = true;
         }
-        processed = true;
       }
       break;
     case SoMouseButtonEvent::BUTTON2:
@@ -502,6 +518,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
         RotMode = false;
         ZoomMode = false;
         getWidget()->setCursor( QCursor( 0 /*CrossCursor*/) );
+        _bRejectSelection = true;
       }
       processed = true;
       break;
@@ -757,6 +774,10 @@ void View3DInventorViewer::madeSelection(  SoPath * path )
 
       SelNode->selected = SoFCSelection::SELECTED;
 
+      Gui::Selection().addSelection(SelNode->documentName.getValue().getString(),
+                                    SelNode->featureName.getValue().getString(),
+                                    SelNode->subElementName.getValue().getString());
+    
     }
 
   }
@@ -794,18 +815,15 @@ void View3DInventorViewer::unmadeSelection(  SoPath * path )
                                                SelNode->subElementName.getValue().getString());
       SelNode->selected = SoFCSelection::NOTSELECTED;
 
+      Gui::Selection().rmvSelection(SelNode->documentName.getValue().getString(),
+                                    SelNode->featureName.getValue().getString(),
+                                    SelNode->subElementName.getValue().getString());
+    
+
+
     }
 
   }
-/*
-  for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
-    for(int i = 0; i<path->getLength();i++)
-      if((*It)->getRoot() == path->getNodeFromTail(i))
-      {
-        (*It)->unselected(this,path);
-        return;
-      }
-      */
 }
 
 

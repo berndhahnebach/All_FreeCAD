@@ -37,10 +37,135 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Selection.h"
 #include <Base/Exception.h>
+#include <App/Application.h>
+#include <App/Document.h>
+#include <App/Feature.h>
 
 
 using namespace Gui;
+using namespace std;
 
+
+vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char* pDocName)
+{
+  vector<App::Feature*> temp;
+  App::Document *pcDoc;
+  string DocName;
+
+  if(pDocName)
+    pcDoc =  App::GetApplication().getDocument(pDocName);
+  else
+    pcDoc = App::GetApplication().getActiveDocument();
+
+  if(!pcDoc)
+    return temp;
+
+  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  {
+    if(It->pDoc == pcDoc)
+    {
+      if(It->pFeat)
+        temp.push_back(It->pFeat);
+    }
+  }
+
+  return temp;
+}
+
+vector<SelectionSingelton::SelObj> SelectionSingelton::getSelection(const char* pDocName)
+{
+  vector<SelObj> temp;
+  SelObj tempSelObj;
+
+  App::Document *pcDoc;
+  string DocName;
+
+  if(pDocName)
+    pcDoc =  App::GetApplication().getDocument(pDocName);
+  else
+    pcDoc = App::GetApplication().getActiveDocument();
+
+  if(!pcDoc)
+    return temp;
+
+  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  {
+    if(It->pDoc == pcDoc)
+    {
+      tempSelObj.DocName  = It->DocName.c_str();
+      tempSelObj.FeatName = It->FeatName.c_str();
+      tempSelObj.SubName  = It->SubName.c_str();
+      tempSelObj.TypeName = It->TypeName.c_str();
+      tempSelObj.pFeat    = It->pFeat;
+      tempSelObj.pDoc     = It->pDoc;
+        
+      temp.push_back(tempSelObj);
+    }
+  }
+
+  return temp;
+}
+
+unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* pDocName)
+{
+  unsigned int iNbr=0;
+  App::Document *pcDoc;
+  string DocName;
+
+  if(pDocName)
+    pcDoc =  App::GetApplication().getDocument(pDocName);
+  else
+    pcDoc = App::GetApplication().getActiveDocument();
+
+  if(!pcDoc)
+    return 0;
+
+  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+    if(It->pDoc == pcDoc && It->TypeName.find_first_of(TypeName) == 0)
+      iNbr++;
+
+  return iNbr;
+}
+
+
+void SelectionSingelton::addSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
+{
+  _SelObj temp;
+
+  if(pDocName)
+    temp.pDoc =  App::GetApplication().getDocument(pDocName);
+  else
+    temp.pDoc = App::GetApplication().getActiveDocument();
+
+  temp.pFeat = temp.pDoc->getFeature(pFeatName);
+
+
+  temp.DocName = pDocName;
+  temp.FeatName = pFeatName;
+  temp.SubName = pSubName;
+
+  if(temp.pFeat)
+    temp.TypeName = temp.pFeat->type();
+
+  _SelList.push_back(temp);
+}
+
+void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
+{
+  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  {
+    if(It->DocName == pDocName && It->FeatName == pFeatName && It->SubName == pSubName )
+    {
+      _SelList.erase(It);
+      break;
+    }
+  }
+}
+
+void SelectionSingelton::clearSelection(void)
+{
+  _SelList.clear();
+}
 
 //**************************************************************************
 // Construction/Destruction
@@ -79,7 +204,7 @@ void SelectionSingelton::destruct (void)
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
-
+/*
 void SelectionSingelton::addFeature(App::Feature *f)
 {
   _FeatureSet.insert(f);
@@ -92,7 +217,7 @@ void SelectionSingelton::removeFeature(App::Feature *f)
 
 
 }
-
+*/
 
 
 //**************************************************************************

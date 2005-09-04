@@ -107,6 +107,7 @@ protected:
   static void drawArrow(void);
 
   bool _bSpining;
+  bool _bRejectSelection;
   SbTime MoveTime;
   SbTime CenterTime;
 
@@ -114,7 +115,6 @@ private:
   SoSeparator* createColorLegend() const;
   SoSeparator* setMarkerLabel(float x, float y, float z, const char* text) const;
 
-private:
   SoSeparator * bckgroundroot;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;

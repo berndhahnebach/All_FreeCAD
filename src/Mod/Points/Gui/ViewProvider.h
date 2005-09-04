@@ -67,8 +67,6 @@ public:
   virtual std::vector<std::string> getModes(void);
   /// Update the point representation
   virtual void update(const ChangeType&);
-  virtual void selected(Gui::View3DInventorViewer *, SoPath *);
-  virtual void unselected(Gui::View3DInventorViewer *, SoPath *);
 
 protected:
   void createPoints(App::Feature *pcFeature);

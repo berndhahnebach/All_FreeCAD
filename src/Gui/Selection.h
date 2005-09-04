@@ -37,6 +37,7 @@
 namespace App
 {
   class Feature;
+  class Document;
 }
 
 namespace Gui
@@ -77,21 +78,70 @@ public:
   static void destruct (void);
 
 
-  std::string getSelectionAsString(void);
+ // std::string getSelectionAsString(void);
 
-  void addFeature(App::Feature*);
-  void removeFeature(App::Feature*);
-  void clearSelection(void){_FeatureSet.clear();}
+//  void addFeature(App::Feature*);
+//  void removeFeature(App::Feature*);
 
-  const std::set<App::Feature*> &Selection(void){ return _FeatureSet;}
+  /// Add a selection (for internal use)
+  void addSelection(const char* pDocName, const char* pFeatName, const char* pSubName);
+  /// Remove a selection (for internal use)
+  void rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName);
 
+  /** returns the number of selected objects with an special feature type
+   *  Its the conviniant way to check if the right features selected to do 
+   *  an operation (GuiCommand). The checking also detect base type. E.g. 
+   *  "Part" also fits on "PartImport" or "PartTransform types.
+   *  If no document name is given the active document is asumed.
+   */
+  unsigned int getNbrOfType(const char *TypeName, const char* pDocName=0);
 
+  /** returns a vector of Features selected for the given Document name
+   * if no document name is given the features from the active document are returnd.
+   * If nothing for this Document is selected a empty vector is returnd.
+   * The vector reflects the sequence of selection!
+   */
+  std::vector<App::Feature*> getSelectedFeatures(const char* pDocName=0);
+
+  struct SelObj {
+    const char* DocName;
+    const char* FeatName;
+    const char* SubName;
+    const char* TypeName;
+    App::Document* pDoc;
+    App::Feature*  pFeat;
+  };
+
+  /** returns a vector of selection objectse
+   * if no document name is given the objects of the active are returned.
+   * If nothing for this Document is selected a empty vector is returnd.
+   * The vector reflects the sequence of selection!
+   */
+  std::vector<SelObj> getSelection(const char* pDocName=0);
+
+  /// clears the selection
+  void clearSelection(void);
+
+  /// size of selcted enteties for all docuements
+  unsigned int size(void){return _SelList.size();}
 
 protected:
 
-  static SelectionSingelton* _pcSingleton;
+  /// helper to retrive document by name
+  App::Document* getDocument(const char* pDocName=0);
 
-  std::set<App::Feature*> _FeatureSet;
+
+  struct _SelObj {
+    std::string DocName;
+    std::string FeatName;
+    std::string SubName;
+    std::string TypeName;
+    App::Document* pDoc;
+    App::Feature*  pFeat;
+  };
+  std::list<_SelObj> _SelList;
+
+  static SelectionSingelton* _pcSingleton;
 
 };
 

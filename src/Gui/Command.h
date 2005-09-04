@@ -47,6 +47,7 @@ class CommandManager;
 class Command;
 class ActionGroup;
 class Document;
+class SelectionSingelton;
 class MDIView;
 
 
@@ -93,16 +94,25 @@ public:
   //@}
 
 
-  /** @name Helper methodes to get importend classes */
+  /** @name Helper methodes to get importand classes */
   //@{
   /// Get pointer to the Application Window
   ApplicationWindow*  getAppWnd(void);   
+  /// Get a referenc to the selection 
+  Gui::SelectionSingelton&  getSelection(void);
   /// Get pointer to the active gui document
   Gui::Document*  getActiveDocument(void);
   /// Get ponter to the active CasCade document 
   App::Document*  getActiveOCCDocument(void);
+  /// Get unique Feature name from the active document 
+  std::string getUniqueFeatureName(const char *BaseName);
   /// Get the FCAxtion object of this command
   QAction*  getAction(bool create=true);
+  //@}
+
+  /** @name Helper methodes for activation */
+  //@{
+
   //@}
 
   /** @name Helper methodes for the UNDO REDO  and Update handling */

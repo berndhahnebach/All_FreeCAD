@@ -118,7 +118,7 @@ void StdCmdToggleVisibility::activated(int iMsg)
 {
   if( getActiveDocument() )
   {
-    for(std::set<App::Feature*>::const_iterator It=Gui::Selection().Selection().begin();It!=Gui::Selection().Selection().end();It++)
+    for(std::vector<App::Feature*>::const_iterator It=Gui::Selection().getSelectedFeatures().begin();It!=Gui::Selection().getSelectedFeatures().end();It++)
     {
       if(getActiveDocument()->isShow(*It))
         getActiveDocument()->setHide(*It);
@@ -132,7 +132,7 @@ void StdCmdToggleVisibility::activated(int iMsg)
 
 bool StdCmdToggleVisibility::isActive(void)
 {
-  return ( Gui::Selection().Selection().size() != 0 );
+  return ( Gui::Selection().size() != 0 );
 }
 
 //===========================================================================
@@ -161,7 +161,7 @@ void StdCmdSetMaterial::activated(int iMsg)
 
 bool StdCmdSetMaterial::isActive(void)
 {
-  return Gui::Selection().Selection().size() != 0;
+  return Gui::Selection().size() != 0;
 }
 
 //===========================================================================

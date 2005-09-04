@@ -74,29 +74,6 @@ ViewProviderInventorMesh::~ViewProviderInventorMesh()
 }
 
 
-void ViewProviderInventorMesh::selected(Gui::View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Select viewprovider Mesh  %p\n",this);
-   Gui::Selection().addFeature(pcFeature);
-
-   pcHighlight->mode = SoLocateHighlight::ON;
-//   pcHighlight->style = SoLocateHighlight::EMISSIVE_DIFFUSE;
-   pcHighlight->colorHighlight.setValue((float)0.0,(float)0.3,(float)0.0);
-
- 
-}
-void ViewProviderInventorMesh::unselected(Gui::View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Unselect viewprovider Mesh  %p\n",this);
-   Gui::Selection().removeFeature(pcFeature);
-
-   pcHighlight->mode = SoLocateHighlight::AUTO;
-//   pcHighlight->style = SoLocateHighlight::EMISSIVE;
-   pcHighlight->colorHighlight.setValue((float)0.1,(float)0.3,(float)0.7);
-
-}
-
-
 void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 {
   MeshKernel *cMesh = pcMesh->getKernel();
@@ -164,6 +141,7 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcHighlight = new Gui::SoFCSelection();
   pcHighlight->featureName = pcFeature->getName();
   pcHighlight->documentName = pcFeature->getDocument().getName();
+  pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcMeshCoord);
   pcHighlight->addChild(pcMeshFaces);
 

@@ -30,12 +30,13 @@
 #	include <TPrsStd_AISPresentation.hxx>
 #endif
 
-#include "../../../Base/Exception.h"
-#include "../../../App/Document.h"
-#include "../../../App/Label.h"
-#include "../../../Gui/Application.h"
-#include "../../../Gui/Command.h"
-#include "../../../Gui/FileDialog.h"
+#include <Base/Exception.h>
+#include <App/Document.h>
+#include <App/Label.h>
+#include <Gui/Application.h>
+#include <Gui/Command.h>
+#include <Gui/FileDialog.h>
+#include <Gui/Selection.h>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
@@ -72,8 +73,8 @@ CmdPartPickCurveNet::CmdPartPickCurveNet()
 void CmdPartPickCurveNet::activated(int iMsg)
 {
 
-  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
-	cDlg.exec();
+//  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+//	cDlg.exec();
 
 
 }
@@ -325,8 +326,24 @@ FCCmdPartCut::FCCmdPartCut()
 void FCCmdPartCut::activated(int iMsg)
 {
 
-  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
-	cDlg.exec();
+  unsigned int n = getSelection().getNbrOfType("Part");
+
+  if(n != 2)
+  {
+    Base::Console().Warning("Pleas select two shapes (Part Feature)");
+    return;
+  }
+
+  string FeatName = getUniqueFeatureName("Cut");
+
+  vector<Gui::SelectionSingelton::SelObj> Sel = getSelection().getSelection();
+
+  openCommand("Part Cut");
+	doCommand(Doc,"App.DocGet().AddFeature(\"PartCut\",\"%s\")",FeatName.c_str());
+	doCommand(Doc,"App.DocGet().%s.Base = App.DocGet().%s",FeatName.c_str(),Sel[0].FeatName);
+	doCommand(Doc,"App.DocGet().%s.Tool = App.DocGet().%s",FeatName.c_str(),Sel[1].FeatName);
+  commitCommand();
+  
 
 }
 

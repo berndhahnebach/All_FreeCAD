@@ -73,7 +73,7 @@ SoFCSelection::SoFCSelection()
 
   SO_NODE_CONSTRUCTOR(SoFCSelection);
 
-  SO_NODE_ADD_FIELD(colorHighlight, (SbColor(0.1f, 0.1f, 0.5f)));
+  SO_NODE_ADD_FIELD(colorHighlight, (SbColor(0.1f, 0.1f, 0.8f)));
   SO_NODE_ADD_FIELD(colorSelection, (SbColor(0.1f, 0.5f, 0.1f)));
   SO_NODE_ADD_FIELD(style,          (EMISSIVE));
   SO_NODE_ADD_FIELD(mode,           (AUTO));
@@ -126,6 +126,7 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
+  static char buf[512];
   Modes mymode = (Modes) this->mode.getValue();
   if (mymode == AUTO) {
     const SoEvent * event = action->getEvent();
@@ -138,13 +139,14 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
             action->getCurPath()->copy();
           SoFCSelection::currenthighlight->ref();
           highlighted = TRUE;
-          QString msg("Preselection: ");
-          msg += documentName.getValue().getString();
-          msg += ".";
-          msg += featureName.getValue().getString();
-          msg += ".";
-          msg += subElementName.getValue().getString();
-          Gui::ApplicationWindow::Instance->statusBar()->message(msg);
+          sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                        ,featureName.getValue().getString()
+                                                        ,subElementName.getValue().getString()
+                                                        ,pp->getPoint()[0]
+                                                        ,pp->getPoint()[1]
+                                                        ,pp->getPoint()[2]);
+
+          Gui::ApplicationWindow::Instance->statusBar()->message(buf,3000);
           this->touch(); // force scene redraw
           this->redrawHighlighted(action, TRUE);
         }

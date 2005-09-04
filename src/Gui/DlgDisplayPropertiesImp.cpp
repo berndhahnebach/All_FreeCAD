@@ -52,12 +52,12 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().Selection())
+    : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().getSelectedFeatures())
 {
   ViewProviderInventor *pcProv;
   std::set<std::string> ModeList;
 
-  for(std::set<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     pcProv = pcCmd->getActiveDocument()->getViewProvider(*It);
 
