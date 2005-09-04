@@ -140,7 +140,7 @@ PyObject *PyObjectBase::_getattr(char *attr)
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
 	//FCcerr << "Unknown attribute" << FCendl;
-  return 1;
+  return 0;
 }
 
 /*------------------------------

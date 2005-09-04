@@ -68,7 +68,7 @@ InterpreterSingleton::~InterpreterSingleton()
 std::string InterpreterSingleton::runString(const char *sCmd)
 {
   PyBuf buf(sCmd);
-#if 1
+
   PyObject *module, *dict, *presult;          /* "exec code in d, d" */
 
   module = PP_Load_Module("__main__");         /* get module, init python */
@@ -80,22 +80,17 @@ std::string InterpreterSingleton::runString(const char *sCmd)
   presult = PyRun_String(buf.str, Py_file_input, dict, dict); /* eval direct */
   if(!presult)
   {
-    if ( PyErr_Occurred() )
+    throw PyException();
+/*    if ( PyErr_Occurred() )
     {
-      PyErr_Print();
-    }
-    throw Exception();
+      void PP_Fetch_Error_Text();
+      throw PythonException(PP_last_error_type,PP_last_error_info,PP_last_error_trace);
+    }*/
   }
 
   presult = PyObject_Repr( presult) ;
   if(presult)
   {
-    /* output to stdout
-    PyObject* out = PySys_GetObject("stdout");
-    if ( out && PyString_Check(presult) )
-    {
-      PyFile_WriteObject( presult, out, Py_PRINT_RAW );
-    }*/
     return std::string(PyString_AsString(presult));
   }
   else
@@ -103,12 +98,8 @@ std::string InterpreterSingleton::runString(const char *sCmd)
     PyErr_Clear();
     return std::string();
   }
-#else
-  if(PyRun_SimpleString(buf.str))
-    throw PyException();
-  return "";
-#endif
 }
+
 
 void InterpreterSingleton::runInteractiveString(const char *sCmd)
 {
@@ -353,3 +344,39 @@ PyObject *InterpreterSingleton::CreateFrom(const std::map<std::string,std::strin
   return Dict;
 
 }
+
+/*
+
+PythonException::PythonException(void)
+{
+  ErrMsg = "Unknown Python error";
+}
+
+PythonException::PythonException(const PythonException &inst)
+{
+  *this = inst;
+
+}
+
+
+PythonException::PythonException(const char * sErrorType,const char * sErrorInfo,const char * sErrorTraceback)
+: ErrorType(sErrorType),ErrorInfo(sErrorInfo),ErrorTraceback(sErrorTraceback)
+{
+  ErrMsg = ErrorType + ErrorInfo + ErrorTraceback;
+}
+
+
+PythonException &PythonException::operator=(const PythonException &inst)
+{
+  ErrMsg         = inst.ErrMsg;
+  ErrorType      = inst.ErrorType;
+  ErrorInfo      = inst.ErrorInfo;
+  ErrorTraceback = inst.ErrorTraceback;
+  return *this;
+}
+
+const char* PythonException::what(void) const throw()
+{
+	return ErrMsg.c_str();
+}
+*/

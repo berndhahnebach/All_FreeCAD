@@ -124,35 +124,26 @@ void Command::activated ()
     getAppWnd()->macroManager()->setModule(sAppModule.c_str());
     try{
       activated(0);
-    }catch(Base::PyException &e)
-    {
+    }catch(Base::PyException &e){
       e.ReportException();
       Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
-    }catch(Base::AbortException&)
-    {
-    }catch(Base::Exception &e)
-    {
+    }catch(Base::AbortException&){
+    }catch(Base::Exception &e){
       e.ReportException();
-    }
-    catch(std::exception &e)
-    {
+    }catch(std::exception &e){
       std::string str;
       str += "C++ exception thrown (";
       str += e.what();
       str += ")";
       Base::Console().Error(str.c_str());
-    }
-    catch(Standard_Failure)
-    {                                                              
+    }catch(Standard_Failure){                                                              
 		  Handle(Standard_Failure) e = Standard_Failure::Caught(); 
       std::string str;                                         
       str += "OCC exception thrown (";                         
       str += e->GetMessageString();                            
       str += ")\n";                                            
       Base::Console().Error(str.c_str());                      
-    }                                                              
-    catch(...)                                                     
-    {                                                              
+    }catch(...){                                                              
     	Base::Console().Error("Unknown C++ exception in command thrown");       
     }   
   }

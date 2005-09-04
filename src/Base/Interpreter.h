@@ -62,6 +62,7 @@ protected:
 
 };
 
+
 /** The Interpreter class
  *  This class manage the python interpreter and hold a lot 
  *  helper functions for handling python stuff
@@ -177,7 +178,7 @@ protected:
 	// singelton
 	static InterpreterSingleton *_pcSingelton;
 	friend InterpreterSingleton &GetInterpreter(void);
-	
+
 	std::string _cDebugFileName;
 	
 };
@@ -191,6 +192,28 @@ inline InterpreterSingleton &Interpreter(void)
 {
 	return InterpreterSingleton::Instance();
 }
+
+/*
+class BaseExport PythonException: public std::exception
+{
+
+public:
+	PythonException(const char * sErrorType,const char * sErrorInfo,const char * sErrorTraceback);
+  PythonException(void);
+  PythonException(const PythonException &inst);
+  virtual ~PythonException() throw() {}
+
+	PythonException &operator=(const PythonException &inst);
+  
+  virtual const char* what(void) const throw();
+
+  std::string ErrMsg;
+	std::string ErrorType;
+	std::string ErrorInfo;
+	std::string ErrorTraceback;
+};
+*/
+
 
 
 } //namespace Base 

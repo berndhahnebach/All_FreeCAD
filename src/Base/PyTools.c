@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <string.h>
+#include <assert.h>
 #include <compile.h>
 #include <eval.h>
 
@@ -199,6 +200,9 @@ PyObject *PP_last_traceback = NULL;     /* saved exception traceback object */
 
 void PP_Fetch_Error_Text()
 {
+    // called without exception happened!
+    //assert(PyErr_Occurred());
+
     char *tempstr;
     PyObject *errobj, *errdata, *errtraceback, *pystring;
 
