@@ -44,7 +44,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
-  ray->setCommand( QObject::tr("RaytracingTools") );
+  ray->setCommand( "RaytracingTools" );
   *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
   return root;
 }
@@ -54,7 +54,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
   // Part tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
-  ray->setCommand( QObject::tr("RaytracingTools") );
+  ray->setCommand( "RaytracingTools" );
   *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
   return root;
 }

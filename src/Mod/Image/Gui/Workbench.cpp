@@ -44,7 +44,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
-  part->setCommand( QObject::tr("Image") );
+  part->setCommand( "Image" );
   *part << "Image_Open";
   return root;
 }
@@ -54,7 +54,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
   // Part tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* img = new Gui::ToolBarItem( root );
-  img->setCommand( QObject::tr("Image") );
+  img->setCommand( "Image" );
   *img << "Image_Open";
   return root;
 }

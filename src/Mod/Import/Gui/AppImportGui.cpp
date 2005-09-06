@@ -36,9 +36,12 @@
 #include <Gui/Application.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/Macro.h>
-
+#include <Gui/WorkbenchFactory.h>
 #include <Gui/WidgetFactory.h>
+
 #include <Mod/Part/Gui/ViewProvider.h>
+
+#include "Workbench.h"
 
 // use a different name to CreateCommand()
 void CreateImportCommands(void);
@@ -91,6 +94,7 @@ void ModuleExport initImportGui() {
 
 	// instanciating the commands
 	CreateImportCommands();
+  Gui::WorkbenchFactory().AddProducer("Import", new Gui::WorkbenchProducer<ImportGui::Workbench>);
 
 
 	return;

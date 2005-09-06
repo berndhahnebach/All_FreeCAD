@@ -44,7 +44,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 {
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-  pnt->setCommand( QObject::tr("PointsTools") );
+  pnt->setCommand( "PointsTools" );
   *pnt << "Points_Test";
   return root;
 }
@@ -54,7 +54,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
   // point tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-  pnt->setCommand( QObject::tr("PointsTools") );
+  pnt->setCommand( "PointsTools" );
   *pnt << "Points_Test";
   return root;
 }

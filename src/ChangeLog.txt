@@ -611,3 +611,4 @@ Version: V0.1B120 Date: Tue Jul 26 17:09:13 2005 +++++++++++++++++++++++++++++++
 
 Version: V0.3B1 Date: Thu Aug 11 06:20:13 2005 +++++++++++++++++++++++++++++++
 + Begin Workbench framework redesign
++ BUG 1216922 fixed (Bug with active document)
