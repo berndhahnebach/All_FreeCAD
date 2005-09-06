@@ -80,6 +80,7 @@ std::string InterpreterSingleton::runString(const char *sCmd)
   presult = PyRun_String(buf.str, Py_file_input, dict, dict); /* eval direct */
   if(!presult)
   {
+    PyErr_Clear(); // must be called to keep Python interpreter in a valid state (Werner)
     throw PyException();
 /*    if ( PyErr_Occurred() )
     {
