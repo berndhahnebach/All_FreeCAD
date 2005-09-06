@@ -73,6 +73,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
     QWidget* w = _toolBox->item( i );
     if ( w && w->inherits("QToolBar") )
     {
+      // if the bar already exists keep it unchanged
       if ( toolBar->findItem( w->name() ) )
       {
         tbs.append( reinterpret_cast<QToolBar*>(w) );
@@ -108,7 +109,8 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
     if ( !bar )
     {
       bar = new ToolBoxBar( item->command(), _toolBox, item->command().latin1() );
-      _toolBox->addItem( bar, item->command() );
+      bar->setLabel( QObject::tr( item->command() ) ); // i18n
+      _toolBox->addItem( bar, bar->label() );
 
       QPtrList<ToolBarItem> subitems = item->getItems();
       ToolBarItem* subitem;
@@ -121,4 +123,53 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
       }
     }
   }
+
+  // resize to required height
+  _toolBox->hide();
+  _toolBox->show();
+}
+
+QPtrList<QToolBar> CommandBarManager::commandBars() const
+{
+  QPtrList<QToolBar> bars;
+  int ct = _toolBox->count();
+  for ( int i=0; i<ct; i++ )
+  {
+    QWidget* w = _toolBox->item( i );
+    if ( w && w->inherits("QToolBar") )
+    {
+      bars.append( reinterpret_cast<QToolBar*>(w) );
+    }
+  }
+
+  return bars;
+}
+
+QToolBar* CommandBarManager::getOrCreateCommandBar( const QString& name, bool activate )
+{
+  QToolBar* bar=0;
+  int ct = _toolBox->count();
+  for ( int i=0; i<ct; i++ )
+  {
+    QWidget* w = _toolBox->item( i );
+    if ( w && w->inherits("QToolBar") )
+    {
+      if ( strcmp(w->name(), name.latin1()) == 0 )
+      {
+        bar = reinterpret_cast<QToolBar*>(w);
+        break;
+      }
+    }
+  }
+  
+  if ( !bar )
+  {
+    bar = new ToolBoxBar( name, _toolBox, name.latin1() );
+    _toolBox->addItem( bar, name );
+  }
+
+  if ( activate )
+    _toolBox->setCurrentItem( bar );
+
+  return bar;
 }

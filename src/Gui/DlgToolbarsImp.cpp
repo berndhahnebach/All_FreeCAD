@@ -133,6 +133,7 @@ void DlgCustomToolbars::onNewActionChanged( QListViewItem *i )
 /** Shows all buttons of the toolbar */
 void DlgCustomToolbars::onItemActivated(const QString & name)
 {
+#ifndef NEW_WB_FRAMEWORK
   CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
   ToolbarActions->clear();
@@ -162,6 +163,7 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
       }
     }
   }
+#endif
 }
 
 /** Adds a new action */
@@ -326,9 +328,10 @@ DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
 /** Adds created or removes deleted toolbars */
 void DlgCustomToolbarsImp::apply()
 {
+#ifndef NEW_WB_FRAMEWORK
   QString text = ComboToolbars->currentText();
   Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getToolBar( text );
-  toolbar->clearUp();
+  toolbar->clear();
 
   const QObjectList* children = toolbar->children ();
 
@@ -370,6 +373,8 @@ void DlgCustomToolbarsImp::apply()
 
   toolbar->setCustomItems( items );
   toolbar->saveXML();
+#else
+#endif
 }
 
 /** Discards all changes */
@@ -380,6 +385,7 @@ void DlgCustomToolbarsImp::cancel()
 /** Shows all actions from the last specified commandbar */
 void DlgCustomToolbarsImp::updateData()
 {
+#ifndef NEW_WB_FRAMEWORK
   ComboToolbars->clear();
   ToolbarActions->clear();
   _aclToolbars = ApplicationWindow::Instance->customWidgetManager()->getToolBars();
@@ -399,11 +405,14 @@ void DlgCustomToolbarsImp::updateData()
     ToolbarActions->setEnabled(false);
     ComboToolbars->setEnabled (false);
   }
+#else
+#endif
 }
 
 /** Creates new toolbar */
 void DlgCustomToolbarsImp::onCreateToolbar()
 {
+#ifndef NEW_WB_FRAMEWORK
   QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->customWidgetManager()->countToolBars());
   QString text = QInputDialog::getText( tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
                                       QLineEdit::Normal, def, 0, this );
@@ -419,11 +428,14 @@ void DlgCustomToolbarsImp::onCreateToolbar()
     ToolbarActions->setEnabled(true);
     ComboToolbars->setEnabled (true);
   }
+#else
+#endif
 }
 
 /** Deletes a toolbar */
 void DlgCustomToolbarsImp::onDeleteToolbar()
 {
+#ifndef NEW_WB_FRAMEWORK
   QValueList<CheckListItem> items;
   QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->customWidgetManager()->getToolBars();
   Gui::CustomToolBar* it;
@@ -443,6 +455,8 @@ void DlgCustomToolbarsImp::onDeleteToolbar()
 
     updateData();
   }
+#else
+#endif
 }
 
 #include "DlgToolbars.cpp"

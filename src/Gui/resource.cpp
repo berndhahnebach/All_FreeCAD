@@ -114,6 +114,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   // ADD YOUR PREFERENCE WIDGETS HERE
   //
   //
-  WorkbenchFactory().AddProducer("FreeCAD", new WorkbenchProducer<StdWorkbench>);
   WorkbenchFactory().AddProducer("<none>", new WorkbenchProducer<StdWorkbench>);
+  WorkbenchFactory().AddProducer("FreeCAD", new WorkbenchProducer<StdWorkbench>);
+  WorkbenchFactory().AddProducer("FreeCAD Test", new WorkbenchProducer<TestWorkbench>);
 }

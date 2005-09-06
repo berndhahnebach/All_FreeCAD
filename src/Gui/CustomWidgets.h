@@ -53,9 +53,13 @@ class ToolBox;
  * the workbench it belongs to.
  * \author Werner Mayer
  */
-class GuiExport CustomWidget : public PrefWidget
+class GuiExport CustomWidget
+#ifndef NEW_WB_FRAMEWORK
+ : public PrefWidget
+#endif
 {
 public:
+#ifndef NEW_WB_FRAMEWORK
   bool hasCustomItems();
   const QStringList& getCustomItems() const;
   void setCustomItems( const QStringList& items );
@@ -64,23 +68,30 @@ public:
 
   void loadXML();
   void saveXML();
-
+#endif
   virtual void setRemovable(bool b);
   bool isRemovable() const;
 
   virtual void setCanModify(bool b);
   bool canModify() const;
 
+#ifndef NEW_WB_FRAMEWORK
   QString getWorkbench();
+#endif
   virtual ~CustomWidget();
 
+#ifndef NEW_WB_FRAMEWORK
   static ParameterGrp::handle getParameter();
-
+#endif
 protected:
+#ifndef NEW_WB_FRAMEWORK
   virtual void rebuild() = 0;
+#endif
+#ifndef NEW_WB_FRAMEWORK
   typedef QMap<ParameterGrp::handle, QStringList> WorkbenchItems;
-
+#endif
   CustomWidget( const char* grp, const char * name );
+#ifndef NEW_WB_FRAMEWORK
   virtual void restorePreferences();
   virtual void savePreferences();
 
@@ -88,11 +99,13 @@ protected:
   WorkbenchItems _WbItems;
 
   ParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
-
+#endif
 private:
   void init( const char* grp, const char* name );
 
+#ifndef NEW_WB_FRAMEWORK
   QString  _Workbench;
+#endif
   bool     _bCanModify;
   bool     _bCanRemove;
 };
@@ -110,22 +123,24 @@ public:
   CustomToolBar ( QMainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
   virtual ~CustomToolBar();
 
-  virtual void clearUp();
   void setCanModify( bool b );
 
 public:
   static bool isAllowed( QWidget* w );
 
 protected:
+#ifndef NEW_WB_FRAMEWORK
   void rebuild();
+#endif
   void dropEvent       ( QDropEvent      * );
   void dragEnterEvent  ( QDragEnterEvent * );
   void dragLeaveEvent  ( QDragLeaveEvent * );
   void dragMoveEvent   ( QDragMoveEvent  * );
 
+#ifndef NEW_WB_FRAMEWORK
   virtual void restorePreferences();
   virtual void savePreferences();
-
+#endif
 protected slots:
   void languageChange();
 };
@@ -144,22 +159,28 @@ public:
   virtual void OnChange( Base::Subject<const char*> &rCaller, const char * sReason );
 
 protected:
+#ifndef NEW_WB_FRAMEWORK
   void rebuild();
+#endif
   void dropEvent        ( QDropEvent      * );
   void dragEnterEvent   ( QDragEnterEvent * );
   void dragLeaveEvent   ( QDragLeaveEvent * );
   void dragMoveEvent    ( QDragMoveEvent  * );
   void mouseMoveEvent   ( QMouseEvent     * );
 
+#ifndef NEW_WB_FRAMEWORK
   virtual void restorePreferences();
   virtual void savePreferences();
-
+#endif
 private:
   QString _parent;
   bool    _bAllowDrag;
+#ifndef NEW_WB_FRAMEWORK
   ParameterGrp::handle _hCommonGrp;
+#endif
 };
 
+#ifndef NEW_WB_FRAMEWORK
 /**
  * Class that manages the construction/destruction of all customizable widgets.
  * At destruction time of a custom widget its content will be written to preferences.
@@ -209,7 +230,7 @@ public:
 private:
   struct CustomWidgetManagerP* d;
 };
-
+#endif //NEW_WB_FRAMEWORK
 } // namespace Gui
 
 #endif // CUSTOM_WIDGETS_H__

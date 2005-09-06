@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 # include <qstring.h>
+# include <qptrlist.h>
 #endif
 
 namespace Gui {
@@ -47,6 +48,8 @@ public:
   static CommandBarManager* getInstance();
   void setup( ToolBarItem* ) const;
   void setToolBox( DockWnd::ToolBox* );
+  QPtrList<QToolBar> commandBars() const;
+  QToolBar* getOrCreateCommandBar( const QString& name, bool activate=false );
 
 protected:
   CommandBarManager();

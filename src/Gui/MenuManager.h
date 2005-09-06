@@ -33,6 +33,8 @@ class QMenuData;
 
 namespace Gui {
 
+class ApplicationWindow;
+
 class GuiExport MenuItem
 {
 public:
@@ -82,6 +84,7 @@ public:
 protected:
   MenuManager();
   ~MenuManager();
+  void languageChange() const;
 
 private:
   QPopupMenu* findSubmenu( QPopupMenu* menu, const QString& submenu, int& );
@@ -92,6 +95,8 @@ private:
 
 private:
   static MenuManager* _instance;
+
+  friend class ApplicationWindow;
 };
 
 } // namespace Gui

@@ -101,7 +101,7 @@ public:
    * If nothing for this Document is selected a empty vector is returnd.
    * The vector reflects the sequence of selection!
    */
-  std::vector<App::Feature*> getSelectedFeatures(const char* pDocName=0);
+  std::vector<App::Feature*> getSelectedFeatures(const char* pDocName=0) const;
 
   struct SelObj {
     const char* DocName;

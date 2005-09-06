@@ -263,7 +263,7 @@ protected:
   QString sWhatsThis;
   QString sStatusTip;
   QString sPixmap;
-  int         iAccel;
+  int     iAccel;
   //@}
 };
 

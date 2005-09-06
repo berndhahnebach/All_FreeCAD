@@ -22,7 +22,7 @@
 
 
 #include "PreCompiled.h"
-
+//#undef NEW_WB_FRAMEWORK
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qeventloop.h>
@@ -64,6 +64,7 @@
 #include "PropertyView.h"
 #include "BitmapFactory.h"
 #include "Splashscreen.h"
+#include "MenuManager.h"
 
 
 #include "CommandLine.h"
@@ -100,9 +101,6 @@ using namespace Gui::DockWnd;
 using Gui::Dialog::DlgOnlineHelpImp;
 using namespace std;
 
-static ApplicationWindow* stApp;
-//static QWorkspace* stWs;
-
 
 ApplicationWindow* ApplicationWindow::Instance = 0L;
 
@@ -112,47 +110,46 @@ namespace Gui {
 struct ApplicationWindowP
 {
   ApplicationWindowP()
-    : /*toolbars(0L), viewbar(0L), */_pcActiveDocument(0L), _bIsClosing(false), _bControlButton(false)
+    : _pcActiveDocument(0L), _bIsClosing(false)
   {
     // create the macro manager
     _pcMacroMngr = new MacroManager();
+#ifdef NEW_WB_FRAMEWORK
     _cActiveWorkbench = 0;
+#endif
   }
 
   ~ApplicationWindowP()
   {
-//    viewbar = 0L;
-//    delete toolbars;
+#ifndef NEW_WB_FRAMEWORK
     delete _pcWidgetMgr;
+#endif
     delete _pcMacroMngr;
   }
 
-//  QPopupMenu* toolbars;
-//  Gui::CustomPopupMenu* viewbar;
-//  Gui::CustomPopupMenu* windows;
   QValueList<int> wndIDs;
-//  map<int, QWidget*> mCheckBars;
   /// list of all handled documents
   list<Gui::Document*>         lpcDocuments;
-  /// list of windows
   /// Active document
   Gui::Document*   _pcActiveDocument;
+#ifndef NEW_WB_FRAMEWORK
   Gui::CustomWidgetManager*		 _pcWidgetMgr;
+#endif
   Gui::DockWindowManager* _pcDockMgr;
   MacroManager*  _pcMacroMngr;
   QLabel *         _pclSizeLabel, *_pclActionLabel;
   ToolBox*        _pcStackBar;
   /// workbench python dictionary
   PyObject*		 _pcWorkbenchDictionary;
-//  QString			 _cActiveWorkbenchName;
+#ifdef NEW_WB_FRAMEWORK
   Workbench*	 _cActiveWorkbench;
+#else
   QString	 _cActiveWorkbenchName;
+#endif
   QTimer *		 _pcActivityTimer; 
   /// List of all registered views
   list<Gui::BaseView*>					_LpcViews;
   bool _bIsClosing;
-  // store it if the CTRL button is pressed or released
-  bool _bControlButton;
   /// Handels all commands 
   CommandManager _cCommandManager;
   QWorkspace* _pWorkspace;
@@ -175,8 +172,6 @@ ApplicationWindow::ApplicationWindow()
 
   // init the Inventor subsystem
   SoQt::init(this);
-
-
   SoDB::init();
 
   d = new ApplicationWindowP;
@@ -197,20 +192,18 @@ ApplicationWindow::ApplicationWindow()
   setCaption( App::Application::Config()["ExeName"].c_str() );
   setIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
 
-  d->_cActiveWorkbenchName = "<none>";
-  d->_cActiveWorkbench = WorkbenchManager::instance()->getWorkbench("<none>");
-
   // global access 
   Instance = this;
-
-  stApp = this;
 
   // instanciate the workbench dictionary
   d->_pcWorkbenchDictionary = PyDict_New();
 
-  // setting up the Bitmap manager
-//	QString tmpWb = _cActiveWorkbenchName;
-//	_cBmpFactory.GetPixmap("Function");
+#ifndef NEW_WB_FRAMEWORK
+  d->_cActiveWorkbenchName = "<none>";
+#else
+//  d->_cActiveWorkbench = WorkbenchManager::instance()->getWorkbench("<none>");
+#endif
+
 /*
   QDir dir(GetApplication().GetHomePath()); 
   QString root = dir.path();
@@ -234,8 +227,8 @@ ApplicationWindow::ApplicationWindow()
 
   // update gui timer
   d->_pcActivityTimer = new QTimer( this );
-    connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(updateCmdActivity()) );
-    d->_pcActivityTimer->start( 300, TRUE );
+  connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(updateCmdActivity()) );
+  d->_pcActivityTimer->start( 300, TRUE );
 
 
   // Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -246,7 +239,9 @@ ApplicationWindow::ApplicationWindow()
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
   d->_pcStackBar = new ToolBox(this,"Cmd_Group");
   CommandBarManager::getInstance()->setToolBox( d->_pcStackBar );
+#ifndef NEW_WB_FRAMEWORK
   d->_pcWidgetMgr = new Gui::CustomWidgetManager( d->_pcStackBar );
+#endif
   d->_pcDockMgr = new Gui::DockWindowManager();
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
@@ -434,19 +429,7 @@ void ApplicationWindow::createStandardOperations()
   Gui::CreateWindowStdCommands();
   Gui::CreateTestCommands();
 }
-/*
-void ApplicationWindow::onPolish()
-{
-  d->viewbar  = d->_pcWidgetMgr->getPopupMenu("&View");
-  d->viewbar->setCanModify(true);
-  d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
 
-  connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(onShowView(     )));
-
-  d->windows = d->_pcWidgetMgr->getPopupMenu("&Windows");
-//  connect(d->windows, SIGNAL( aboutToShow()), this, SLOT( onWindowsMenuAboutToShow() ) );
-}
-*/
 bool ApplicationWindow::isCustomizable () const
 {
   return true;
@@ -514,48 +497,6 @@ void ApplicationWindow::activatePrevWindow ()
   d->_pWorkspace->activatePrevWindow();
 }
 
-void ApplicationWindow::onShowView()
-{
-//  Gui::CustomPopupMenu* menu = d->viewbar;
-/*
-  Gui::CustomPopupMenu* menu = (QPopupMenu*)sender();
-  // get a copy of the items an reassign to force the rebuild
-  QStringList items = menu->getCustomItems();
-  menu->setCustomItems( items );
-  menu->setCheckable(true);
-//  d->mCheckBars.clear();
-
-  // toolbars
-  menu->insertItem(tr("Toolbars"), createDockWindowMenu( OnlyToolBars ));
-  menu->insertSeparator();
-
-  connect( menu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
-
-  QPtrList<QDockWindow> wnds = dockWindows ();
-  QDockWindow* dw;
-  for ( dw = wnds.first(); dw; dw = wnds.next() )
-  {
-    if ( !dw->inherits("QToolBar") )
-    {
-      QString label = dw->caption();
-      int id = menu->insertItem( label, dw, SLOT( toggleVisible() ) );
-      menu->setItemChecked( id, dw->isVisible() );
-    }
-  }
-
-  // status bar
-  menu->insertSeparator();
-  QWidget* w = statusBar();
-  int id = menu->insertItem( tr("Status bar"), this, SLOT( onToggleStatusBar() ) );
-//  d->mCheckBars[id] = w;
-  menu->setItemChecked(id, w->isVisible());*/
-}
-
-void ApplicationWindow::onToggleStatusBar()
-{
-  QWidget* w = statusBar();
-  w->isVisible() ? w->hide() : w->show();
-}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // document observers
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -967,7 +908,9 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
     d->_pcActivityTimer->stop();
 
+#ifndef NEW_WB_FRAMEWORK
     activateWorkbench("<none>");
+#endif
     QMainWindow::closeEvent( e );
   }
 }
@@ -977,9 +920,10 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
  * The old workbench gets deactivated before. If \a name is already
  * active or if the switch fails false is returned. 
  */
-bool ApplicationWindow::_activateWorkbench( const char* name )
+#ifdef NEW_WB_FRAMEWORK
+bool ApplicationWindow::activateWorkbench( const char* name )
 {
-  if ( d->_cActiveWorkbench->name() == name )
+  if ( d->_cActiveWorkbench && d->_cActiveWorkbench->name() == name )
     return false; // already active
   // net buffer because of char* <-> const char*
   Base::PyBuf Name(name);
@@ -1010,11 +954,17 @@ bool ApplicationWindow::_activateWorkbench( const char* name )
   if ( ok )
   {
     d->_cActiveWorkbench = actWb;
+    // update the Std_Workbench command and its action object
+    StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
+    if ( pCmd && pCmd->getAction(false) )
+    {
+      pCmd->notify( name );
+    }
   }
 
   return ok;
 }
-
+#else
 /**
  *  Activate the named workbench by calling the methodes in the 
  *  python workbench object. If the workbench is allready active
@@ -1069,7 +1019,7 @@ void ApplicationWindow::activateWorkbench(const char* name)
     // do nothing here
   }
 }
-
+#endif
 void ApplicationWindow::appendWorkbench(const char* name)
 {
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
@@ -1306,15 +1256,19 @@ bool ApplicationWindow::isClosing(void)
   return d->_bIsClosing;
 }
 
+#ifndef NEW_WB_FRAMEWORK
 Gui::CustomWidgetManager* ApplicationWindow::customWidgetManager(void) 
 { 
   return d->_pcWidgetMgr; 
 }
-
+#endif
 QString ApplicationWindow::activeWorkbench(void)
 {
+#ifndef NEW_WB_FRAMEWORK
   return d->_cActiveWorkbenchName;
-//  return d->_cActiveWorkbench->name(); <=== New
+#else
+  return d->_cActiveWorkbench ? d->_cActiveWorkbench->name() : /*QString::null*/"__NONE__";
+#endif
 }
 
 MacroManager *ApplicationWindow::macroManager(void)
@@ -1335,7 +1289,7 @@ void ApplicationWindow::languageChange()
   {
     (*it)->languageChange();
   }
-
+/*
   // and finally update the menu bar since QMenuBar owns no "text" property
   Gui::CustomWidgetManager* cw = customWidgetManager();
   const QMap<int, QString>& mi = cw->menuBarItems();
@@ -1347,8 +1301,10 @@ void ApplicationWindow::languageChange()
     int id = mb->idAt( i );
     QMap<int, QString>::ConstIterator it = mi.find( id );
     if ( it != mi.end() )
-      mb->changeItem( id, tr( it.data()/*mb->text( id )*/ ) );
+      mb->changeItem( id, tr( it.data() ) );
   }
+*/
+  MenuManager::getInstance()->languageChange();
 }
 
 //**************************************************************************
@@ -1445,7 +1401,6 @@ void ApplicationWindow::runApplication(void)
   Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
   // show the main window
   Console().Log("Init: Showing Application Window\n");
-  //mw->onPolish();
   mw->show();
 
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
@@ -1604,6 +1559,19 @@ void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
 
 // FCApplication Methods						// Methods structure
 PyMethodDef ApplicationWindow::Methods[] = {
+#ifdef NEW_WB_FRAMEWORK
+  {"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
+  {"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
+  {"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
+  {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
+  {"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
+  {"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
+  {"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},
+  {"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
+  {"CommandbarAppendItems", (PyCFunction) ApplicationWindow::sCommandbarAppendItems,   1},
+  {"CommandbarRemoveItems", (PyCFunction) ApplicationWindow::sCommandbarRemoveItems,   1},
+  {"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
+
   {"AddWorkbench",          (PyCFunction) ApplicationWindow::sAddWorkbench,            1},
   {"RemoveWorkbench",       (PyCFunction) ApplicationWindow::sRemoveWorkbench,         1},
   {"ActiveWorkbench",       (PyCFunction) ApplicationWindow::sActiveWorkbench,         1},
@@ -1611,6 +1579,7 @@ PyMethodDef ApplicationWindow::Methods[] = {
   {"ListWorkbenches",       (PyCFunction) ApplicationWindow::sListWorkbenches,         1},
   {"GetWorkbench",          (PyCFunction) ApplicationWindow::sGetWorkbench,            1},
   {"WorkbenchModule",       (PyCFunction) ApplicationWindow::sWorkbenchModule,         1},
+#else
   {"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
   {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
   {"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
@@ -1624,6 +1593,7 @@ PyMethodDef ApplicationWindow::Methods[] = {
   {"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
   {"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
   {"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
+#endif
   {"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
   {"CreateDialog",          (PyCFunction) ApplicationWindow::sCreateDialog,            1},
   {"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
@@ -1718,6 +1688,7 @@ PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
   return pPyResource;
 } 
 
+#ifdef NEW_WB_FRAMEWORK
 PYFUNCIMP_S(ApplicationWindow,sListWorkbenches)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
@@ -1739,6 +1710,73 @@ PYFUNCIMP_S(ApplicationWindow,sAddWorkbench)
   Py_INCREF(Py_None);
   return Py_None;
 } 
+
+PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
+{
+  char*       psKey;
+  PyObject*   pcObject;
+  if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
+
+  //Py_INCREF(pcObject);
+
+  PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
+
+  Instance->appendWorkbench(psKey);
+
+  Py_INCREF(Py_None);
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
+{
+  return Py_None;
+}
+PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
+{
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
+{
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
+{
+  return Py_None;
+}
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
+{
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
+{
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
+{
+    return Py_None;
+}
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
+{
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
+{
+  return Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
+{
+  return Py_None;
+}
+
 
 PYFUNCIMP_S(ApplicationWindow,sRemoveWorkbench)
 {
@@ -1796,7 +1834,7 @@ PYFUNCIMP_S(ApplicationWindow,sActivateWorkbench)
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
-  Instance->_activateWorkbench(psKey);
+  Instance->activateWorkbench(psKey);
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1820,7 +1858,8 @@ PYFUNCIMP_S(ApplicationWindow,sGetWorkbench)
 //  pyObj->_INCREF();
   return pyObj;
 } 
-
+#endif
+#ifndef NEW_WB_FRAMEWORK
 PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
 {
   PyObject* pObject;
@@ -2143,7 +2182,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
 
   return Instance->d->_pcWorkbenchDictionary;
 }
-
+#endif
 PYFUNCIMP_S(ApplicationWindow,sCommandAdd)
 {
   char*       pName;

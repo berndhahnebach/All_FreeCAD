@@ -369,6 +369,44 @@ QAction * StdCmdViewMenu::createAction(void)
 }
 
 //===========================================================================
+// Std_ViewStatusBar
+//===========================================================================
+
+DEF_STD_CMD_AC(StdCmdStatusBar);
+
+StdCmdStatusBar::StdCmdStatusBar()
+  :CppCommand("Std_ViewStatusBar", Cmd_Toggle)
+{
+  sAppModule    = "";
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Status bar");
+  sToolTipText  = QT_TR_NOOP("Toggles the status bar");
+  sWhatsThis    = QT_TR_NOOP("Toggles the status bar");
+  sStatusTip    = QT_TR_NOOP("Toggles the status bar");
+  iAccel        = 0;
+}
+
+QAction * StdCmdStatusBar::createAction(void)
+{
+  QAction *pcAction = CppCommand::createAction();
+  activated(0); // hide status bar
+  pcAction->setOn(true); // and show it again invoking the toggle action
+
+  return pcAction;
+}
+
+void StdCmdStatusBar::activated(int iMsg)
+{
+  QWidget* w = getAppWnd()->statusBar();
+  w->isVisible() ? w->hide() : w->show();
+}
+
+bool StdCmdStatusBar::isActive(void)
+{
+  return true;
+}
+
+//===========================================================================
 // Std_WindowsMenu
 //===========================================================================
 
@@ -419,6 +457,7 @@ void CreateWindowStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdWindows());
   rcCmdMgr.addCommand(new StdCmdViewMenu());
   rcCmdMgr.addCommand(new StdCmdWindowsMenu());
+  rcCmdMgr.addCommand(new StdCmdStatusBar());
 }
 
 } // namespace Gui

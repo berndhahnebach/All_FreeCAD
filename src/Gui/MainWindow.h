@@ -42,7 +42,6 @@ class QSplashScreen;
 
 namespace Gui {
 class BaseView;
-class CustomWidgetManager;
 class CommandManager;
 class Document;
 class MacroManager;
@@ -156,9 +155,6 @@ public:
 
   /// Reference to the command manager
   Gui::CommandManager &commandManager(void);
-
-  /// Returns the widget manager
-  Gui::CustomWidgetManager* customWidgetManager(void);
 
   /** @name status bar handling */
   //@{	

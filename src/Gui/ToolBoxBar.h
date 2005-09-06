@@ -42,13 +42,11 @@ class GuiExport CommandBar : public Gui::CustomToolBar
 public:
   virtual void setTextToLastItem( const QString& ) = 0;
   void setDummyToLastItem();
+  void clear();
 
 protected:
   CommandBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
   virtual ~CommandBar ();
-
-protected slots:
-  virtual void clearUp();
 
 private:
   QWidget*     m_Dummy;

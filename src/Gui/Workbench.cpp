@@ -195,31 +195,31 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
   // File
   MenuItem* file = new MenuItem( menuBar );
-  file->setCommand( QObject::tr("&File") );
+  file->setCommand( "&File" );
   *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs" << "Separator" << "Std_Print"
         << "Separator" << "Std_MRU" << "Separator" << "Std_Quit";
 
   // Edit
   MenuItem* edit = new MenuItem( menuBar );
-  edit->setCommand( QObject::tr("&Edit") );
+  edit->setCommand( "&Edit" );
   *edit << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo"
         << "Separator" << "Std_DlgPreferences";
 
   // View
   MenuItem* view = new MenuItem( menuBar );
-  view->setCommand( QObject::tr("&View") );
+  view->setCommand( "&View" );
   *view << "Std_ViewCreateInventor" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
-        << "Separator" << "Std_ViewMenu";
+        << "Separator" << "Std_ViewMenu" << "Std_ViewStatusBar";
   
   // Tools
   MenuItem* tool = new MenuItem( menuBar );
-  tool->setCommand( QObject::tr("&Tools") );
+  tool->setCommand( "&Tools" );
   *tool << "Std_CommandLine" << "Std_DlgParameter" << "Std_OCAFBrowser" << "Separator" << "Std_DlgMacroRecord" 
         << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Separator" << "Std_DlgCustomize";
 
   // Windows
   MenuItem* wnd = new MenuItem( menuBar );
-  wnd->setCommand( QObject::tr("&Windows") );
+  wnd->setCommand( "&Windows" );
   *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow" 
        << "Std_ActivatePrevWindow" << "Separator" << "Std_TilePragmatic" << "Std_TileHoricontal" 
        << "Std_TileVertical" << "Std_WindowsMenu" << "Separator" << "Std_Windows";
@@ -230,7 +230,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
   // Help
   MenuItem* help = new MenuItem( menuBar );
-  help->setCommand( QObject::tr("&Help") );
+  help->setCommand( "&Help" );
   *help << "Std_OnlineHelp" << "Std_TipOfTheDay" << "Separator" << "Std_About" << "Std_AboutQt"
         << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
 
@@ -243,19 +243,19 @@ ToolBarItem* StdWorkbench::setupToolBars() const
   
   // File
   ToolBarItem* file = new ToolBarItem( root );
-  file->setCommand( QObject::tr("file operations") );
+  file->setCommand( "file operations" );
   *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
         << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
         << "Std_Workbench" << "Std_WhatsThis";
 
   // Macro
   ToolBarItem* macro = new ToolBarItem( root );
-  macro->setCommand( QObject::tr("Macro recording") );
+  macro->setCommand( "Macro recording" );
   *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute";
 
   // View
   ToolBarItem* view = new ToolBarItem( root );
-  view->setCommand( QObject::tr("Standard views") );
+  view->setCommand( "Standard views" );
   *view << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
         << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
 
@@ -266,23 +266,17 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
 {
   ToolBarItem* root = new ToolBarItem;
   
-  // File
-  ToolBarItem* file = new ToolBarItem( root );
-  file->setCommand( QObject::tr("file operations") );
-  *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
-        << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
-        << "Std_Workbench" << "Std_WhatsThis";
-
-  // Macro
-  ToolBarItem* macro = new ToolBarItem( root );
-  macro->setCommand( QObject::tr("Macro recording") );
-  *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute";
-
   // View
   ToolBarItem* view = new ToolBarItem( root );
-  view->setCommand( QObject::tr("Standard views") );
+  view->setCommand( "Standard views" );
   *view << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
         << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
+  // Special Ops
+  ToolBarItem* macro = new ToolBarItem( root );
+  macro->setCommand( "Special Ops" );
+  *macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute"
+         << "Std_DlgCustomize" << "Std_CommandLine";
+
 
   return root;
 }
@@ -303,22 +297,33 @@ MenuItem* TestWorkbench::setupMenuBar() const
   // Setup the default menu bar
   MenuItem* menuBar = StdWorkbench::setupMenuBar();
 
-  MenuItem* item = menuBar->findItem( QObject::tr("&Help"));
+  MenuItem* item = menuBar->findItem( "&Help" );
   item->removeItem(item->findItem("Std_WhatsThis"));
 
   // Test commands
   MenuItem* test = new MenuItem;
   menuBar->insertItem( item, test );
-  test->setCommand( QObject::tr("Test &Commands") );
+  test->setCommand( "Test &Commands" );
   *test << "Std_Test1" << "Std_Test2" << "Std_Test3" << "Std_Test4" << "Std_Test5" 
         << "Std_Test6" << "Std_Test7" << "Std_Test8";
 
   // Inventor View
   MenuItem* opiv = new MenuItem;
   menuBar->insertItem( item, opiv );
-  opiv->setCommand( QObject::tr("&Inventor View") );
+  opiv->setCommand( "&Inventor View" );
   *opiv << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3" << "Std_ViewIvDecorationOn" 
         << "Std_ViewIvDecorationOff" << "Std_ViewIvStereoOn" << "Std_ViewIvStereoOff" << "Std_ViewIvIssueCamPos";
 
   return menuBar;
 }
+
+ToolBarItem* TestWorkbench::setupToolBars() const
+{
+  return 0;
+}
+
+ToolBarItem* TestWorkbench::setupCommandBars() const
+{
+  return 0;
+}
+

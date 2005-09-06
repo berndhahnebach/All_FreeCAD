@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qlabel.h>
+# include <qmainwindow.h>
 # include <qobjectlist.h>
 # include <qtoolbutton.h>
 #endif
@@ -42,6 +43,10 @@ CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, W
 {
   // remove immediately from main window again
 //  ApplicationWindow::Instance->removeToolBar(this);
+  QWidget* widget = qApp->mainWidget();
+  QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
+  if ( mw ) // avoid to show in dock menu
+    mw->setAppropriate(this, false);
   setFrameStyle( QFrame::NoFrame );
   setOrientation( Qt::Vertical );
   setPalette(QPalette(Qt::white, Qt::white));
@@ -56,9 +61,9 @@ CommandBar::~CommandBar ()
 /**
  * Clears up the contents.
  */
-void CommandBar::clearUp()
+void CommandBar::clear()
 {
-  CustomToolBar::clearUp();
+  CustomToolBar::clear();
   m_Dummy = NULL;
 }
 

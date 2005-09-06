@@ -164,8 +164,8 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
       }
       else
       {
-//        ApplicationWindow::Instance->removeDockWindow( dw );
-//        delete dw;
+        ApplicationWindow::Instance->removeDockWindow( dw );
+        delete dw;
       }
     }
   }
@@ -186,6 +186,7 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
     if ( !bar )
     {
       bar = new QToolBar( item->command(), ApplicationWindow::Instance, ApplicationWindow::Instance, false, item->command().latin1() );
+      bar->setLabel( QObject::tr( item->command() ) ); // i18n
       ApplicationWindow::Instance->addDockWindow( bar );
 
       QPtrList<ToolBarItem> subitems = item->getItems();

@@ -46,7 +46,7 @@ using namespace Gui;
 using namespace std;
 
 
-vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char* pDocName)
+vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char* pDocName) const
 {
   vector<App::Feature*> temp;
   App::Document *pcDoc;
@@ -60,7 +60,7 @@ vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char* pDocNa
   if(!pcDoc)
     return temp;
 
-  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
   {
     if(It->pDoc == pcDoc)
     {

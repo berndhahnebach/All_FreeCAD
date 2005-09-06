@@ -129,6 +129,8 @@ public:
 
 protected:
   MenuItem* setupMenuBar() const;
+  ToolBarItem* setupToolBars() const;
+  ToolBarItem* setupCommandBars() const;
 };
 
 } // namespace Gui

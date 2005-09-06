@@ -106,7 +106,6 @@ struct MainWindowP
   {
     viewbar = 0L;
     delete toolbars;
-    delete _pcWidgetMgr;
 //TODO    delete _pcMacroMngr;
   }
 
@@ -120,7 +119,6 @@ struct MainWindowP
   /// list of windows
   /// Active document
   Gui::Document*   _pcActiveDocument;
-  Gui::CustomWidgetManager*		 _pcWidgetMgr;
   Gui::DockWindowManager* _pcDockMgr;
   MacroManager*  _pcMacroMngr;
   QLabel *         _pclSizeLabel, *_pclActionLabel;
@@ -231,7 +229,6 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
 
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
   d->_pcStackBar = new ToolBox(this,"Cmd_Group");
-  d->_pcWidgetMgr = new Gui::CustomWidgetManager( d->_pcStackBar );
   d->_pcDockMgr = new Gui::DockWindowManager();
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
@@ -293,14 +290,6 @@ void MainWindow::createStandardOperations()
 
 void MainWindow::onPolish()
 {
-  d->viewbar  = d->_pcWidgetMgr->getPopupMenu("&View");
-  d->viewbar->setCanModify(true);
-  d->toolbars = new QPopupMenu(d->viewbar, "Toolbars");
-
-  connect(d->viewbar,  SIGNAL(aboutToShow (   )), this, SLOT(onShowView(     )));
-
-  d->windows = d->_pcWidgetMgr->getPopupMenu("&Windows");
-  connect(d->windows, SIGNAL( aboutToShow()), this, SLOT( onWindowsMenuAboutToShow() ) );
 }
 
 bool MainWindow::isCustomizable () const
@@ -352,37 +341,6 @@ void MainWindow::cascade()
 
 void MainWindow::onShowView()
 {
-  Gui::CustomPopupMenu* menu = d->viewbar;
-  // get a copy of the items an reassign to force the rebuild
-  QStringList items = menu->getCustomItems();
-  menu->setCustomItems( items );
-  menu->setCheckable(true);
-  d->mCheckBars.clear();
-
-  // toolbars
-  menu->insertItem(tr("Toolbars"), createDockWindowMenu( OnlyToolBars ));
-  menu->insertSeparator();
-
-  connect( menu, SIGNAL( aboutToShow() ), this, SLOT( menuAboutToShow() ) );
-
-  QPtrList<QDockWindow> wnds = dockWindows ();
-  QDockWindow* dw;
-  for ( dw = wnds.first(); dw; dw = wnds.next() )
-  {
-    if ( !dw->inherits("QToolBar") )
-    {
-      QString label = dw->caption();
-      int id = menu->insertItem( label, dw, SLOT( toggleVisible() ) );
-      menu->setItemChecked( id, dw->isVisible() );
-    }
-  }
-
-  // status bar
-  menu->insertSeparator();
-  QWidget* w = statusBar();
-  int id = menu->insertItem( tr("Status bar"), this, SLOT( onToggleStatusBar() ) );
-  d->mCheckBars[id] = w;
-  menu->setItemChecked(id, w->isVisible());
 }
 
 void MainWindow::onToggleStatusBar()
@@ -752,7 +710,6 @@ void MainWindow::activateWorkbench(const char* name)
     Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
     PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
     assert(pcOldWorkbench);
-    customWidgetManager()->hideToolBox();
     Interpreter().runMethodVoid(pcOldWorkbench, "Stop");
   }
 
@@ -762,8 +719,6 @@ void MainWindow::activateWorkbench(const char* name)
 
     // running the start of the workbench object
     Interpreter().runMethodVoid(pcWorkbench, "Start");
-    d->_pcWidgetMgr->update(name);
-    customWidgetManager()->showToolBox();
 
     // update the Std_Workbench command and its action object
     Command* pCmd = d->_cCommandManager.getCommandByName("Std_Workbench");
@@ -1016,11 +971,6 @@ bool MainWindow::isClosing(void)
   return d->_bIsClosing;
 }
 
-Gui::CustomWidgetManager* MainWindow::customWidgetManager(void) 
-{ 
-  return d->_pcWidgetMgr; 
-}
-
 QString MainWindow::activeWorkbench(void)
 {
   return d->_cActiveWorkbenchName;
@@ -1043,20 +993,6 @@ void MainWindow::languageChange()
   for ( std::vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
   {
     (*it)->languageChange();
-  }
-
-  // and finally update the menu bar since QMenuBar owns no "text" property
-  Gui::CustomWidgetManager* cw = customWidgetManager();
-  const QMap<int, QString>& mi = cw->menuBarItems();
- 
-  QMenuBar* mb = menuBar();
-  uint cnt = mb->count();
-  for ( uint i=0; i<cnt; i++ )
-  {
-    int id = mb->idAt( i );
-    QMap<int, QString>::ConstIterator it = mi.find( id );
-    if ( it != mi.end() )
-      mb->changeItem( id, tr( it.data()/*mb->text( id )*/ ) );
   }
 }
 

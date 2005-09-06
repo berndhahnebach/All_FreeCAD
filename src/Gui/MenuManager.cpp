@@ -167,6 +167,8 @@ void MenuManager::setup( MenuItem* menuBar ) const
     else
       setup( item, bar );
   }
+
+  languageChange();
 }
 
 void MenuManager::setup( MenuItem* item, QMenuData* data ) const
@@ -177,7 +179,7 @@ void MenuManager::setup( MenuItem* item, QMenuData* data ) const
   if ( !menu )
   {
     menu = new QPopupMenu( ApplicationWindow::Instance, item->command() );
-    data->insertItem(item->command(), menu);
+    int id = data->insertItem(item->command(), menu);
   }
   else
   {
@@ -405,4 +407,28 @@ QPopupMenu* MenuManager::findSubmenu( QPopupMenu* menu, const QString& submenu, 
   }
 
   return 0;
+}
+
+void MenuManager::languageChange() const
+{
+//  QMenuBar* mb = ApplicationWindow::Instance->menuBar();
+//  uint cnt = mb->count();
+//  for ( uint i=0; i<cnt; i++ )
+//  {
+//    int id = mb->idAt( i );
+//    QMap<int, QString>::ConstIterator it = _menuBar.find( id );
+//    if ( it != _menuBar.end() )
+//      mb->changeItem( id, ApplicationWindow::tr( it.data() ) );
+//  }
+  QMenuBar* mb = ApplicationWindow::Instance->menuBar();
+  uint ct = mb->count();
+  for ( uint i=0; i<ct; i++ )
+  {
+    int id = mb->idAt( i );
+    QMenuItem* item = mb->findItem( id );
+    if ( item && item->popup() )
+    {
+      mb->changeItem( id, ApplicationWindow::tr( item->popup()->name() ) );
+    }
+  }
 }

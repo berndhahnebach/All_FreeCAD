@@ -401,7 +401,11 @@ void StdCmdWorkbench::activated( int pos )
 void StdCmdWorkbench::activate ( const QString& item )
 {
   try{
+#ifdef NEW_WB_FRAMEWORK
+    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", item.latin1());
+#else
     doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", item.latin1());
+#endif
   }
   catch(const Base::Exception&)
   {

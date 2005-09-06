@@ -57,6 +57,9 @@ protected:
 
 protected slots:
   void onCreateToolbar();
+#ifdef NEW_WB_FRAMEWORK
+  void onItemActivated(const QString &);
+#endif
   void onDeleteToolbar();
 };
 

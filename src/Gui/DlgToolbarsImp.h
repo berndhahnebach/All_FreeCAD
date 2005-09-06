@@ -73,7 +73,10 @@ protected:
   /** Groups of commands */
   std::map<std::string, std::vector<Command*> > _alCmdGroups;
   /** List of all toolbars */
+
+#ifndef NEW_WB_FRAMEWORK
   QPtrList<Gui::CustomToolBar>                _aclToolbars;
+#endif
 };
 
 /** This class implements the creation of user defined toolbars.

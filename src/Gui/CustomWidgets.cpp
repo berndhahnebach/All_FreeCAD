@@ -47,7 +47,11 @@ using namespace Gui::DockWnd;
  * The widget is attached to the parameter sub-group \a name.
  */
 CustomWidget::CustomWidget(const char* grp, const char * name)
+#ifndef NEW_WB_FRAMEWORK
     : PrefWidget(), _bCanModify(true), _bCanRemove(true)
+#else
+    : _bCanModify(true), _bCanRemove(true)
+#endif
 {
   init(grp, name);
 }
@@ -57,22 +61,27 @@ CustomWidget::CustomWidget(const char* grp, const char * name)
  */
 CustomWidget::~CustomWidget()
 {
+#ifndef NEW_WB_FRAMEWORK
   if (hPrefGrp.IsValid())
     hPrefGrp->Detach(this);
+#endif
 }
 
 void CustomWidget::init(const char* grp, const char* name)
 {
+#ifndef NEW_WB_FRAMEWORK
   _Workbench = ApplicationWindow::Instance->activeWorkbench();
   setEntryName( _Workbench.latin1() );
   hPrefGrp = getParameter()->GetGroup(_Workbench.latin1());
   hPrefGrp = hPrefGrp->GetGroup( grp )->GetGroup( name );
   hPrefGrp->Attach(this);
+#endif
 }
 
 /**
  * Restores the settings of this widget.
  */
+#ifndef NEW_WB_FRAMEWORK
 void CustomWidget::restorePreferences()
 {
   if (hPrefGrp.IsNull())
@@ -210,7 +219,7 @@ void CustomWidget::removeCustomItems( ParameterGrp::handle hGrp, const QStringLi
 
   rebuild();
 }
-
+#endif
 /** 
  * Sets the 'removable' property to b
  * After switching to a new workbench the customizable
@@ -250,6 +259,7 @@ bool CustomWidget::canModify() const
 /** Calls @ref restorePreferences()
  * So it is possible to call the load routine from outside.
  */
+#ifndef NEW_WB_FRAMEWORK
 void CustomWidget::loadXML()
 {
   restorePreferences();
@@ -263,7 +273,7 @@ void CustomWidget::saveXML()
 {
   savePreferences();
 }
-
+#endif
 // --------------------------------------------------------------------
 
 /**
@@ -310,13 +320,14 @@ void CustomToolBar::languageChange()
 /**
  * If this toolbar can be modified it is rebuild, otherwise nothing happens.
  */
+#ifndef NEW_WB_FRAMEWORK
 void CustomToolBar::rebuild()
 {
   CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
   if (!canModify())
     return; // no need to read again
 
-  clearUp();
+  clear();
   for ( QStringList::Iterator it = _Items.begin(); it != _Items.end(); ++it )
   {
     if (*it == "Separator")
@@ -339,7 +350,7 @@ void CustomToolBar::rebuild()
     }
   }
 }
-
+#endif
 void CustomToolBar::setCanModify(bool b)
 {
   CustomWidget::setCanModify( b );
@@ -373,14 +384,6 @@ bool CustomToolBar::isAllowed( QWidget* w )
   return false;
 }
 
-/**
- * Clear the toolbar's content.
- */
-void CustomToolBar::clearUp()
-{
-  clear();
-}
-
 void CustomToolBar::dropEvent ( QDropEvent * e)
 {
   QPtrList<QWidget> childs;
@@ -404,7 +407,9 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   // is the same as the number of items
   //
   // different sizes ->just append at the end
+#ifndef NEW_WB_FRAMEWORK
   if ( childs.count() != _Items.size() )
+#endif
   {
     /*    // create a new button
         //
@@ -451,6 +456,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   }
 #endif
 
+#ifndef NEW_WB_FRAMEWORK
   // find right position for the new widget(s)
   QStringList items;
   QStringList::Iterator it2 = _Items.begin();
@@ -495,6 +501,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   // clear all and rebuild it again
   //
   rebuild();
+#endif
 }
 
 void CustomToolBar::dragEnterEvent ( QDragEnterEvent * e)
@@ -510,6 +517,7 @@ void CustomToolBar::dragMoveEvent ( QDragMoveEvent * )
 {
 }
 
+#ifndef NEW_WB_FRAMEWORK
 void CustomToolBar::restorePreferences()
 {
   CustomWidget::restorePreferences();
@@ -522,7 +530,7 @@ void CustomToolBar::savePreferences()
   CustomWidget::savePreferences();
   hPrefGrp->SetBool("visible",  !isHidden());
 }
-
+#endif
 // --------------------------------------------------------------------
 
 /**
@@ -532,6 +540,7 @@ void CustomToolBar::savePreferences()
 CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char* menu )
   : QPopupMenu(parent, name), CustomWidget("Menus", name), _bAllowDrag(false)
 {
+#ifndef NEW_WB_FRAMEWORK
   setGroupName( "General" );
   _hCommonGrp = getWindowParameter();
   _hCommonGrp->Attach(this);
@@ -539,11 +548,14 @@ CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char
   //  setAcceptDrops(true);
   if (menu)
     this->_parent = menu;
+#endif
 }
 
 CustomPopupMenu::~CustomPopupMenu()
 {
+#ifndef NEW_WB_FRAMEWORK
   _hCommonGrp->Detach(this);
+#endif
 }
 
 void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
@@ -558,6 +570,7 @@ void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char *
 /**
  * If this menu can be modified it is rebuild, otherwise nothing happens.
  */
+#ifndef NEW_WB_FRAMEWORK
 void CustomPopupMenu::rebuild()
 {
   CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
@@ -587,7 +600,7 @@ void CustomPopupMenu::rebuild()
     }
   }
 }
-
+#endif
 void CustomPopupMenu::dropEvent ( QDropEvent * e)
 {
   // create a new button
@@ -600,8 +613,12 @@ void CustomPopupMenu::dropEvent ( QDropEvent * e)
     pCom = cCmdMgr.getCommandByName( (*it).latin1() );
     if (pCom != NULL)
     {
+#ifndef NEW_WB_FRAMEWORK
       if (pCom->addTo(this))
         _Items.push_back( *it );
+#else
+      pCom->addTo(this);
+#endif
     }
   }
 
@@ -691,6 +708,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     QPopupMenu::mouseMoveEvent(e);
 }
 
+#ifndef NEW_WB_FRAMEWORK
 void CustomPopupMenu::restorePreferences()
 {
   CustomWidget::restorePreferences();
@@ -704,9 +722,9 @@ void CustomPopupMenu::savePreferences()
     hPrefGrp->SetASCII("Parent Menu", _parent.latin1());
   hPrefGrp->SetBool("AllowDrag", _bAllowDrag);
 }
-
+#endif
 // --------------------------------------------------------------------
-
+#ifndef NEW_WB_FRAMEWORK
 namespace Gui {
 struct CustomWidgetManagerP
 {
@@ -1321,5 +1339,5 @@ void CustomWidgetManager::hideToolBox()
 {
   d->_pclStackBar->hide();
 }
-
+#endif //NEW_WB_FRAMEWORK
 #include "moc_CustomWidgets.cpp"
